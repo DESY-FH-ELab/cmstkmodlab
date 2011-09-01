@@ -1,0 +1,154 @@
+#include "HO820ComHandler.h"
+
+/*!
+  The USB serial port &lt;ioPort&gt; may be specified in several ways:<br><br>
+  ttyUSB0 ... ttyUSB3<br>
+  "/dev/ttyUSB0" ... "/dev/ttyUSB3"
+*/
+HO820ComHandler::HO820ComHandler( ioport_t ioPort )
+{
+  // save ioport 
+  fIoPort = ioPort;
+
+  // initialize
+  OpenIoPort();
+  InitializeIoPort();
+}
+
+HO820ComHandler::~HO820ComHandler( void )
+{
+  // restore ioport options as they were
+  RestoreIoPort();
+  
+  // close device file
+  CloseIoPort();
+}
+
+//! Send the command string &lt;commandString&gt; to device.
+void HO820ComHandler::SendCommand( const char *commandString )
+{
+  if (!fDeviceAvailable) return;
+
+  char singleCharacter = 0; 
+
+  for ( unsigned int i = 0; i < strlen( commandString ); i++ ) {
+    
+    // scan command string character wise & write
+    singleCharacter = commandString[i];
+    write( fIoPortFileDescriptor, &singleCharacter, 1 );
+  }
+
+  // send feed characters
+  SendFeedString();
+}
+
+//! Read a string from device.
+/*!
+\par Input:
+  <br><b>Receive string must be at least 41 characters long.</b>
+
+  This function must be placed right in time before
+  the device starts sending.
+
+  See example program in class description.
+*/
+void HO820ComHandler::ReceiveString( char *receiveString )
+{
+  if (!fDeviceAvailable) return;
+
+  usleep( 10000 );
+
+  int timeout = 0, readResult = 0;
+
+  while ( timeout < 100000 )  {
+
+    readResult = read( fIoPortFileDescriptor, receiveString, 1024 );
+
+    if ( readResult > 0 ) {
+      receiveString[readResult] = 0;
+      break;
+    }
+    
+    timeout++;
+  }
+}
+
+//! Open I/O port.
+/*!
+  \internal
+*/
+void HO820ComHandler::OpenIoPort( void )
+{
+  // open io port ( read/write | no term control | no DCD line check )
+  fIoPortFileDescriptor = open( fIoPort, O_RDWR | O_NOCTTY  | O_NDELAY );
+
+  // check if successful
+  if ( fIoPortFileDescriptor == -1 ) {
+    std::cerr << "[HO820ComHandler::OpenIoPort] ** ERROR: could not open device file " << fIoPort << "." << endl;
+    std::cerr << "                               (probably it's not user-writable)." << std::endl;
+    fDeviceAvailable = false;
+    return;
+  }
+
+  else {
+    // configure port with no delay
+    fcntl( fIoPortFileDescriptor, F_SETFL, FNDELAY );
+  }
+
+  fDeviceAvailable = true;
+}
+
+//! Initialize I/O port.
+/*!
+  \internal
+*/
+void HO820ComHandler::InitializeIoPort( void )
+{
+  if (!fDeviceAvailable) return;
+
+  // get and save current ioport settings for later restoring
+  tcgetattr( fIoPortFileDescriptor, &fCurrentTermios );
+}
+
+//! Restore former I/O port settings.
+/*!
+  \internal
+*/
+void HO820ComHandler::RestoreIoPort( void )
+{
+  if (!fDeviceAvailable) return;
+
+  // restore old com port settings
+  tcsetattr( fIoPortFileDescriptor, TCSANOW, &fCurrentTermios );
+}
+
+//! Close I/O port.
+/*!
+  \internal
+*/
+void HO820ComHandler::CloseIoPort( void )
+{
+  if (!fDeviceAvailable) return;
+
+  close( fIoPortFileDescriptor );
+}
+
+//! Send command termination string (<CR><NL>).
+/*!
+  \internal
+*/
+void HO820ComHandler::SendFeedString( void )
+{
+  if (!fDeviceAvailable) return;
+
+  // feed string is <NL>
+  char feedString = 10;
+
+  // write <CR> and get echo
+  write( fIoPortFileDescriptor, &feedString, 1 );
+}
+
+bool HO820ComHandler::DeviceAvailable()
+{
+  return fDeviceAvailable;
+}
