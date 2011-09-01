@@ -1,0 +1,4 @@
+export TKMODLABBASE="@basepath@"
+export PATH="@basepath@/tools/bin:$PATH"
+export PATH="@basepath@/thermal:$PATH"
+export LD_LIBRARY_PATH="@basepath@/devices/lib:$LD_LIBRARY_PATH"
