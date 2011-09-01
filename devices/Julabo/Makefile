@@ -2,8 +2,12 @@ LIBDIR        = ../lib
 
 LIB           = TkModLabJulabo
 
+ARCHITECTURE := $(shell uname)
+KERNELMAJOR  := $(shell uname -r | cut -d . -f 1)
+KERNELMINOR  := $(shell uname -r | cut -d . -f 2)
+
 MODULES       = FP50ComHandler \
-                VJulaboFP50 \
+		VJulaboFP50 \
                 JulaboFP50Fake \
                 JulaboFP50
 
@@ -12,6 +16,15 @@ CXX           = g++
 CXXFLAGS      = -fPIC
 LD            = g++
 SOFLAGS       = -shared
+
+ifeq ($(ARCHITECTURE),Darwin)
+CXXFLAGS     += -DUSE_FAKEIO
+endif
+ifeq ($(ARCHITECTURE),Linux)
+ifeq ($(shell test $(KERNELMINOR) -lt 6 && echo true),true)
+CXXFLAGS     += -DUSE_FAKEIO
+endif
+endif
 
 ALLDEPEND = $(addsuffix .d,$(MODULES))
 

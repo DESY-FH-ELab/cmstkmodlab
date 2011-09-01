@@ -148,6 +148,8 @@ void FP50ComHandler::OpenIoPort( void ) {
 
 void FP50ComHandler::InitializeIoPort( void ) {
 
+#ifndef USE_FAKEIO
+
   // get and save current ioport settings for later restoring
   tcgetattr( fIoPortFileDescriptor, &fCurrentTermios );
 
@@ -193,15 +195,15 @@ void FP50ComHandler::InitializeIoPort( void ) {
   //  fThisTermios.c_iflag   |=  ICRNL; // DO NOT ENABLE!!
   fThisTermios.c_iflag   |=  IXON;
   fThisTermios.c_iflag   &= ~IXOFF;
-  // fThisTermios.c_iflag   &= ~IUCLC; // removed to get compiled on OSX
+  fThisTermios.c_iflag   &= ~IUCLC;
   fThisTermios.c_iflag   &= ~IXANY;
   fThisTermios.c_iflag   &= ~IMAXBEL;
   
-  // fThisTermios.c_iflag   &= ~IUTF8; // removed to get compiled on ancient linux
+  fThisTermios.c_iflag   &= ~IUTF8;
 
   // right i/o/l flags?
   fThisTermios.c_oflag   |=  OPOST;
-  // fThisTermios.c_oflag   &= ~OLCUC; // removed to get compiled on OSX
+  fThisTermios.c_oflag   &= ~OLCUC;
   fThisTermios.c_oflag   &= ~OCRNL;
   fThisTermios.c_oflag   |=  ONLCR;
   fThisTermios.c_oflag   &= ~ONOCR;
@@ -219,6 +221,7 @@ void FP50ComHandler::InitializeIoPort( void ) {
   // commit changes
   tcsetattr( fIoPortFileDescriptor, TCSANOW, &fThisTermios );
 
+#endif
 }
 
 
