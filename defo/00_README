@@ -1,0 +1,17 @@
+
+REQUIRED PACKAGES:
+
+* libboost_serialization, libboost_devel and depending packages
+* libqwtplot3d, libqwtplot3d-devel
+* libqwt, libqwt-devel
+
+COMPILING:
+
+qmake
+make
+
+OTHER:
+
+* a subdir 'out' must exist in the working dir, otherwise defo will
+  complain that it cannot create its output folders ('out' is in the repository)
+
