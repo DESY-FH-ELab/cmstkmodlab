@@ -2,9 +2,11 @@ BASEPATH      = $(shell pwd)
 
 subdirs	      = devices \
 		thermal \
+		defo \
 		tools
 
-qtsubdirs     = thermal
+qtsubdirs     = thermal \
+		defo
 
 all: qt scripts
 	@for dir in $(subdirs); do (cd $$dir; make); done
