@@ -7,7 +7,7 @@
 ///
 void DefoPoint::init( void ) {
   
-  isRed_ = false;
+  isBlue_ = false;
   x_ = 0.;;
   y_ = 0.;
   slope_ = 0.;

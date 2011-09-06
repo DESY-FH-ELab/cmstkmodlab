@@ -15,7 +15,7 @@ DefoRecoImage::DefoRecoImage() {
   halfSquareWidth_ = cfgReader.getValue<int>( "HALF_SQUARE_WIDTH" );
   squareSeedOffsetX_ = cfgReader.getValue<int>( "SQUARE_SEED_OFFSET_X" );
   squareSeedOffsetY_ = cfgReader.getValue<int>( "SQUARE_SEED_OFFSET_Y" );
-  reddishnessThreshold_ = cfgReader.getValue<double>( "REDDISHNESS_THRESHOLD" );
+  blueishnessThreshold_ = cfgReader.getValue<double>( "BLUEISHNESS_THRESHOLD" );
   debugLevel_ = cfgReader.getValue<unsigned int>( "DEBUG_LEVEL" );
 
 }
@@ -83,14 +83,14 @@ std::pair<DefoPointCollection,DefoRawImage> DefoRecoImage::reconstruct( DefoRawI
 	}
 
 
-	// determine if it's a red LED before the next iterations
+	// determine if it's a blue LED before the next iterations
 	// so we can later (iteration 3) draw the cross in the appropriate color
-	const double reddishness = calculateReddishness( theImage.getImage(), DefoPoint( xIt, yIt ) );
-	if( reddishness > reddishnessThreshold_ ) {
-	  intermediatePoint.setRed( true );
-	  if( debugLevel_ >= 3 ) std::cout << " [DefoRecoImage::reconstruct] =3= Identified red point: x: "
+	const double blueishness = calculateBlueishness( theImage.getImage(), DefoPoint( xIt, yIt ) );
+	if( blueishness > blueishnessThreshold_ ) {
+	  intermediatePoint.setBlue( true );
+	  if( debugLevel_ >= 3 ) std::cout << " [DefoRecoImage::reconstruct] =3= Identified blue point: x: "
 					   << intermediatePoint.getX() << " y: " << intermediatePoint.getY() 
-					   << " reddishness: " << reddishness << std::endl;
+					   << " blueishness: " << blueishness << std::endl;
 	}
 
 	// iteration 2
@@ -156,7 +156,7 @@ std::pair<DefoPointCollection,DefoRawImage> DefoRecoImage::reconstruct( DefoRawI
 DefoPoint DefoRecoImage::averageSquare( QImage const& theImage, DefoPoint const& theSeed, QImage* imageForDrawing ) const {
   
   DefoPoint outputPoint( 0., 0. );
-  outputPoint.setRed( theSeed.isRed() ); // copy "red" flag
+  outputPoint.setBlue( theSeed.isBlue() ); // copy "red" flag
   int squareSummedAmplitude = 0;
 
   // create a square of pixels round the seed
@@ -185,9 +185,9 @@ DefoPoint DefoRecoImage::averageSquare( QImage const& theImage, DefoPoint const&
     // draw square
     theSquare.draw( *imageForDrawing );
     
-    // set draw color: blue if white point / green if red point
+    // set draw color: blue if white point / green if blue point
     unsigned int colorIndex = qRgb( 255, 0, 0 );
-    if( outputPoint.isRed() ) colorIndex = qRgb( 0, 255, 0 ); // draw green cross if red point
+    if( outputPoint.isBlue() ) colorIndex = qRgb( 0, 255, 0 ); // draw green cross if blue point
 
     // draw cross @ output point
     for( int px = -2; px <= 2; ++px ) imageForDrawing->setPixel( outputPoint.getPixX() + px, outputPoint.getPixY(), colorIndex );
@@ -202,13 +202,13 @@ DefoPoint DefoRecoImage::averageSquare( QImage const& theImage, DefoPoint const&
 
 
 ///
-/// determines the "reddishness" of a point,
-/// i.e. the average ratio red/cyan of the color of its pixels
-/// to determine if this is the reflection of a red LED
+/// determines the "blueishness" of a point,
+/// i.e. the average ratio blue/yellow of the color of its pixels
+/// to determine if this is the reflection of a blue LED
 ///
-double DefoRecoImage::calculateReddishness( QImage const& theImage, DefoPoint const& theSeed ) const {
+double DefoRecoImage::calculateBlueishness( QImage const& theImage, DefoPoint const& theSeed ) const {
 
-  double summedReddishness = 0.;
+  double summedBlueishness = 0.;
   unsigned int nPixel = 0;
 
   // create a square of pixels round the seed
@@ -220,16 +220,16 @@ double DefoRecoImage::calculateReddishness( QImage const& theImage, DefoPoint co
     // retrieve grayscale value of that pixel
     const int grayscaleValue = qGray( theImage.pixel( it.getPoint().getPixX(), it.getPoint().getPixY() ) );
 
-    // determine "reddishness" of this pixel
+    // determine "blueishness" of this pixel
     if( grayscaleValue ) {
 
-      const double cyan = (
-	  qBlue( theImage.pixel( it.getPoint().getPixX(), it.getPoint().getPixY() ) )
+      const double yellow = (
+	  qRed( theImage.pixel( it.getPoint().getPixX(), it.getPoint().getPixY() ) )
 	+ qGreen( theImage.pixel( it.getPoint().getPixX(), it.getPoint().getPixY() ) )
       ) / 2.;
 
-      if( cyan ) {
-	summedReddishness += qRed( theImage.pixel( it.getPoint().getPixX(), it.getPoint().getPixY() ) ) / cyan;
+      if( yellow ) {
+	summedBlueishness += qBlue( theImage.pixel( it.getPoint().getPixX(), it.getPoint().getPixY() ) ) / yellow;
 	nPixel++;
       }
     }
@@ -237,9 +237,9 @@ double DefoRecoImage::calculateReddishness( QImage const& theImage, DefoPoint co
 
   }
 
-  if( nPixel ) return( summedReddishness / nPixel );
+  if( nPixel ) return( summedBlueishness / nPixel );
   else {
-    std::cerr << " [DefoRecoImage::calculateReddishness] ** ERROR: no pixels > 0 in point window" << std::endl;
+    std::cerr << " [DefoRecoImage::calculateBlueishness] ** ERROR: no pixels > 0 in point window" << std::endl;
     throw;
   }
   

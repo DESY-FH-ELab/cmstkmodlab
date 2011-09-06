@@ -21,7 +21,7 @@ class DefoRecoImage {
 
  private:
   DefoPoint averageSquare( QImage const&, DefoPoint const&, QImage* = 0 ) const;
-  double calculateReddishness( QImage const&, DefoPoint const& ) const;
+  double calculateBlueishness( QImage const&, DefoPoint const& ) const;
 
   DefoSquareCollection forbiddenAreas_;
   int step1Threshold_;
@@ -31,7 +31,7 @@ class DefoRecoImage {
   unsigned int halfSquareWidth_;
   int squareSeedOffsetX_;
   int squareSeedOffsetY_;
-  double reddishnessThreshold_;
+  double blueishnessThreshold_;
   unsigned int debugLevel_;
 
 };

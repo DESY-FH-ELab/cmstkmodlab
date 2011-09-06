@@ -275,8 +275,8 @@ class DefoMainWindow : public QWidget {
   QLabel *seedingThresholdsStep1Label_;
   QLabel *seedingThresholdsStep2Label_;
   QLabel *seedingThresholdsStep3Label_;
-  QGroupBox *reddishnessGroupBox_;
-  QDoubleSpinBox *reddishnessSpinBox_;
+  QGroupBox *blueishnessGroupBox_;
+  QDoubleSpinBox *blueishnessSpinBox_;
   QGroupBox *hswGroupBox_;
   QDoubleSpinBox *hswSpinBox_;
   QGroupBox *groupBox_14;

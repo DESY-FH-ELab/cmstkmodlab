@@ -4086,7 +4086,7 @@ grayscale-average:</string>
         </property>
        </widget>
       </widget>
-      <widget class="QGroupBox" name="reddishnessGroupBox_" >
+      <widget class="QGroupBox" name="blueishnessGroupBox_" >
        <property name="geometry" >
         <rect>
          <x>200</x>
@@ -4099,9 +4099,9 @@ grayscale-average:</string>
         <string notr="true" >color: rgb(0, 0, 127);</string>
        </property>
        <property name="title" >
-        <string>Reddishness threshold</string>
+        <string>Blueishness threshold</string>
        </property>
-       <widget class="QDoubleSpinBox" name="reddishnessSpinBox_" >
+       <widget class="QDoubleSpinBox" name="blueishnessSpinBox_" >
         <property name="geometry" >
          <rect>
           <x>20</x>

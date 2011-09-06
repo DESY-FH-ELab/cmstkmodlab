@@ -41,8 +41,8 @@ class DefoPoint {
   const std::pair<int,int> getIndex( void ) const { return index_; }
   unsigned int getPixX( void ) const { return static_cast<int>( round( x_ ) ); }
   unsigned int getPixY( void ) const { return static_cast<int>( round( y_ ) ); }
-  void setRed( bool isRed ) { isRed_ = isRed; }
-  bool isRed( void ) const { return isRed_; }
+  void setBlue( bool isBlue ) { isBlue_ = isBlue; }
+  bool isBlue( void ) const { return isBlue_; }
   void setValid( bool isValid ) { isValid_ = isValid; }
   bool isValid( void ) const { return isValid_; }
   DefoPoint operator/=( const double& aFactor ) { x_ /= aFactor; y_ /= aFactor; return *this; }
@@ -63,7 +63,7 @@ class DefoPoint {
   double y_;
   double slope_;
   double height_;
-  bool isRed_;
+  bool isBlue_;
   std::pair<int,int> index_;
   bool isIndexed_;
   bool isValid_; // contains valid height data? for use with DefoSurfacePlot..
@@ -74,7 +74,7 @@ class DefoPoint {
     ar & y_;
     ar & slope_;
     ar & height_;
-    ar & isRed_;
+    ar & isBlue_;
     ar & index_;
     ar & isIndexed_;
     ar & isValid_;

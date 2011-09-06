@@ -110,7 +110,7 @@ const DefoSplineField DefoRecoSurface::createZSplines( DefoPointCollection const
   std::pair<int,int> indexRangeX = std::make_pair<int,int>( 0, 0 );
   std::pair<int,int> indexRangeY = std::make_pair<int,int>( 0, 0 );
 
-  // here we assume that there is at least one point right/left/above/below the red one, resp., in the image;
+  // here we assume that there is at least one point right/left/above/below the blue one, resp., in the image;
   // otherwise the reconstruction will probably crash later
   for( DefoPointCollection::const_iterator it = currentPoints.begin(); it < currentPoints.end(); ++it ) {
     if( it->getIndex().first  < indexRangeX.first )  indexRangeX.first = it->getIndex().first;
@@ -123,8 +123,8 @@ const DefoSplineField DefoRecoSurface::createZSplines( DefoPointCollection const
 				   << " .. " << indexRangeX.second << " y: " << indexRangeY.first << " .. " << indexRangeY.second << std::endl;
 
 
-  // we need the red point (from *ref*) as geom. reference
-  std::pair<bool,DefoPointCollection::const_iterator> redPointByIndex = findPointByIndex( referencePoints, std::make_pair<int,int>( 0, 0 ) );
+  // we need the blue point (from *ref*) as geom. reference, it always has index 0,0
+  std::pair<bool,DefoPointCollection::const_iterator> bluePointByIndex = findPointByIndex( referencePoints, std::make_pair<int,int>( 0, 0 ) );
 
 
   // now attach the points to the spline sets according to their indices
@@ -155,8 +155,8 @@ const DefoSplineField DefoRecoSurface::createZSplines( DefoPointCollection const
 
 	// convert from pixel units to real units on module
 
-	// find the distance of this point along y wrt the center (red point)
-	//	const double thisPointOffset = ( *(referencePointByIndex.second) - *(redPointByIndex.second) ).getY() * pitchY_ * nominalCameraDistance_ / focalLength_;
+	// find the distance of this point along y wrt the center (blue point)
+	//	const double thisPointOffset = ( *(referencePointByIndex.second) - *(bluePointByIndex.second) ).getY() * pitchY_ * nominalCameraDistance_ / focalLength_;
 
 	// includes angular correction
 	//	double cameraDistance = sqrt( pow( horizontalDistanceToSensor_ + thisPointOffset, 2. ) + pow( heightAboveSensor_, 2. ) );
@@ -223,9 +223,9 @@ const DefoSplineField DefoRecoSurface::createZSplines( DefoPointCollection const
 	
 	// convert from pixel units to real units on module
 
-	// find the distance along y of this point wrt the center (red point)
-	// const double thisPointOffset = ( *(referencePointByIndex.second) - *(redPointByIndex.second) ).getY() * pitchY_ * nominalCameraDistance_ / focalLength_;
-	//const double thisPointOffset = ( *(redPointByIndex.second) - *(referencePointByIndex.second) ).getY() * pitchY_ * nominalCameraDistance_ / focalLength_;
+	// find the distance along y of this point wrt the center (blue point)
+	// const double thisPointOffset = ( *(referencePointByIndex.second) - *(bluePointByIndex.second) ).getY() * pitchY_ * nominalCameraDistance_ / focalLength_;
+	//const double thisPointOffset = ( *(bluePointByIndex.second) - *(referencePointByIndex.second) ).getY() * pitchY_ * nominalCameraDistance_ / focalLength_;
 
 	// includes angular correction
 	//	double cameraDistance = sqrt( pow( horizontalDistanceToSensor_ + thisPointOffset, 2. ) + pow( heightAboveSensor_, 2. ) );
@@ -845,32 +845,32 @@ const std::pair<double,double> DefoRecoSurface::determineAverageSpacing( DefoPoi
 
 
 ///
-/// determine the indices of the points with respect to the "red point in the middle",
-/// where the red point has (0,0);
+/// determine the indices of the points with respect to the "blue point in the middle",
+/// where the blue point has (0,0);
 /// returns the abs index range along x,y, i.e. the maximum |index|
 /// which is needed for display with QwtPlot3D
 ///
 std::pair<unsigned int, unsigned int> DefoRecoSurface::indexPoints( DefoPointCollection& points ) const {
 
-  // first, look for "red points" and make sure there's only one
-  unsigned int nRedPoints = 0;
-  DefoPointCollection::iterator redPointIt;
+  // first, look for "blue points" and make sure there's only one
+  unsigned int nBluePoints = 0;
+  DefoPointCollection::iterator bluePointIt;
 
   for( DefoPointCollection::iterator pIt = points.begin(); pIt < points.end(); ++pIt ) {
-    if( pIt->isRed() ) {
-      nRedPoints++; 
-      redPointIt = pIt;
+    if( pIt->isBlue() ) {
+      nBluePoints++; 
+      bluePointIt = pIt;
     }
   }
 
-  if( 1 != nRedPoints ) {
-    std::cerr << " [DefoRecoSurface::indexPoints] ** ERROR: illegal number: " << nRedPoints << " of red points found." << std::endl;
+  if( 1 != nBluePoints ) {
+    std::cerr << " [DefoRecoSurface::indexPoints] ** ERROR: illegal number: " << nBluePoints << " of blue points found." << std::endl;
     throw;
   }
 
   else { // debug
-    if( debugLevel_ >= 1 ) std::cout << " [DefoRecoSurface::indexPoints] =1= Found one red point: x: " 
-				    << redPointIt->getX() << " y: " << redPointIt->getY() << std::endl;
+    if( debugLevel_ >= 1 ) std::cout << " [DefoRecoSurface::indexPoints] =1= Found one blue point: x: " 
+				    << bluePointIt->getX() << " y: " << bluePointIt->getY() << std::endl;
   }
 
   // determine the average spacing of the points in x,y in pixels,
@@ -880,35 +880,35 @@ std::pair<unsigned int, unsigned int> DefoRecoSurface::indexPoints( DefoPointCol
   if( debugLevel_ >= 1 ) std::cout << " [DefoRecoSurface::indexPoints] =1= Determined average spacing: x: "
 				   << spacing.first << " y: " << spacing.second << std::endl;
 
-  // also need the full x,y ranges of the PointCollection wrt. to the red one in the middle
+  // also need the full x,y ranges of the PointCollection wrt. to the blue one in the middle
   // (these pairs are min,max)
   std::pair<double,double> xRange = std::make_pair<double,double>( 0., 0. );
   std::pair<double,double> yRange = std::make_pair<double,double>( 0., 0. );
 
   // get min/max in a loop
   for( DefoPointCollection::const_iterator pIt = points.begin(); pIt < points.end(); ++pIt ) {
-    if( pIt->getX() - redPointIt->getX() > xRange.second ) xRange.second = pIt->getX() - redPointIt->getX();
-    if( pIt->getX() - redPointIt->getX() < xRange.first )  xRange.first  = pIt->getX() - redPointIt->getX();
-    if( pIt->getY() - redPointIt->getY() > yRange.second ) yRange.second = pIt->getY() - redPointIt->getY();
-    if( pIt->getY() - redPointIt->getY() < yRange.first )  yRange.first  = pIt->getY() - redPointIt->getY();
+    if( pIt->getX() - bluePointIt->getX() > xRange.second ) xRange.second = pIt->getX() - bluePointIt->getX();
+    if( pIt->getX() - bluePointIt->getX() < xRange.first )  xRange.first  = pIt->getX() - bluePointIt->getX();
+    if( pIt->getY() - bluePointIt->getY() > yRange.second ) yRange.second = pIt->getY() - bluePointIt->getY();
+    if( pIt->getY() - bluePointIt->getY() < yRange.first )  yRange.first  = pIt->getY() - bluePointIt->getY();
   }
 
 
   // debug
-  if( debugLevel_ >= 2 ) std::cout << " [DefoRecoSurface::indexPoints] =2= Point range wrt. red point is: x: "
+  if( debugLevel_ >= 2 ) std::cout << " [DefoRecoSurface::indexPoints] =2= Point range wrt. blue point is: x: "
 				   << xRange.first << " .. " << xRange.second
 				   << " y: " << yRange.first << " .. " << yRange.second << std::endl;
 
 
 
   
-  // now start with the red point;
+  // now start with the blue point;
   // estimate position of next one (with spacing) and look which point is closest to that;
   // if one is found, it gets the appropriate integer indices.
   // If no point is close enough, skip index, because there is obviously no matching point
 
   std::pair<int,int> index = std::make_pair<int,int>( 0, 0 );
-  (*redPointIt).setIndex( index ); // red point is indexed <0,0> by definition
+  (*bluePointIt).setIndex( index ); // blue point is indexed <0,0> by definition
 
 
 
@@ -918,10 +918,10 @@ std::pair<unsigned int, unsigned int> DefoRecoSurface::indexPoints( DefoPointCol
   // in the first pass (outer loop), we go along the positive y-direction in the middle column,
   // then from each of the points start branching along a (x-)row
 
-  DefoPoint startPointAlongX = *redPointIt;
+  DefoPoint startPointAlongX = *bluePointIt;
 
   // go along y, starting from the middle, until we hit the range limits (+ some margin)
-  while( startPointAlongX.getY() - redPointIt->getY() < yRange.second + spacingEstimate_ ) {
+  while( startPointAlongX.getY() - bluePointIt->getY() < yRange.second + spacingEstimate_ ) {
 
     // the new starting point for this (x-)row in the middle (y-)column
     DefoPoint thisPoint = startPointAlongX;
@@ -1027,7 +1027,7 @@ std::pair<unsigned int, unsigned int> DefoRecoSurface::indexPoints( DefoPointCol
 
     // break the loop if we exceed the range
     // to avoid "not found" messages in debug output
-    if( nextEstimate.getY() - redPointIt->getY() > yRange.second + spacingEstimate_ ) break;
+    if( nextEstimate.getY() - bluePointIt->getY() > yRange.second + spacingEstimate_ ) break;
 
     // look for next point around this estimate
     if( debugLevel_ >= 3 ) std::cout << " [DefoRecoSurface::indexPoints] =3= SEARCH POINT along-y around estimate: x: " 
@@ -1066,11 +1066,11 @@ std::pair<unsigned int, unsigned int> DefoRecoSurface::indexPoints( DefoPointCol
   // in the second pass (outer loop), we go along the negative y-direction in the middle column,
   // then from each of the points start branching along a (x-)row
 
-  startPointAlongX = *redPointIt;
+  startPointAlongX = *bluePointIt;
   index = std::make_pair<int,int>( 0, 0 );
 
   // go along y, starting from the middle, until we hit the range limits (+ some margin)
-  while( startPointAlongX.getY() - redPointIt->getY() > yRange.first - spacingEstimate_ ) {
+  while( startPointAlongX.getY() - bluePointIt->getY() > yRange.first - spacingEstimate_ ) {
 
     // the new starting point for this (x-)row in the middle (y-)column
     DefoPoint thisPoint = startPointAlongX;
@@ -1176,7 +1176,7 @@ std::pair<unsigned int, unsigned int> DefoRecoSurface::indexPoints( DefoPointCol
 
     // break the loop if we exceed the range
     // to avoid "not found" messages in debug output
-    if( nextEstimate.getY() - redPointIt->getY() < yRange.first - spacingEstimate_ ) break;
+    if( nextEstimate.getY() - bluePointIt->getY() < yRange.first - spacingEstimate_ ) break;
 
     // look for next point around this estimate
     if( debugLevel_ >= 3 ) std::cout << " [DefoRecoSurface::indexPoints] =3= search point along-y around estimate: x: " 
