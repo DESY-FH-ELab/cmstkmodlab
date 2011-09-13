@@ -5,6 +5,7 @@
 #include <string>
 #include <iostream>
 #include <fstream>
+#include <sstream>
 
 class DefoConfigReader {
 
@@ -26,18 +27,22 @@ class DefoConfigReader {
     bool isFound = false;
     aType returnValue = 0;
     std::string buffer;
-    
-    while( !file.eof() ) {
-      file >> buffer;
-      if( key == buffer ) {
-	file >> returnValue; isFound = true;
+
+    while (std::getline(file, buffer)) {
+      while (buffer[0]==' ') buffer = buffer.substr(1, buffer.length());
+      if (buffer[0]=='\0') continue;
+      if (buffer[0]=='#') continue;
+
+      std::istringstream iss(buffer.c_str(), std::istringstream::in);
+      iss >> buffer;
+      if( key == buffer ) { 
+	iss >> returnValue; isFound = true;
       }
     }
     
     file.close();
     if( !isFound ) issueKeyError( key );
-    return returnValue;
-    
+    return returnValue;    
   }
 
  private:
