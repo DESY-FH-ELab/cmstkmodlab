@@ -51,6 +51,7 @@
 #include "DefoPoint.h"
 #include "DefoRecoImage.h"
 #include "DefoRecoSurface.h"
+#include "DefoImageLabel.h"
 
 #include "qwt_plot.h"
 
@@ -113,16 +114,17 @@ class DefoMainWindow : public QWidget {
   QTabWidget *mainTabWidget_;
   QWidget *online_tab;
   QGroupBox *rawimageGroupBox_;
-  QLabel *rawimageLabel_;
-  QToolButton *rawimageZoomButton_;
+  //   QLabel *rawimageLabel_;
+  DefoImageLabel *rawimageLabel_;
+  //   QToolButton *rawimageZoomButton_;
   QGroupBox *areaGroupBox_;
   QPushButton *areaNewButton_;
-  QPushButton *areaClearButton_;
-  QPushButton *areaDoneButton_;
-  QPushButton *areaCancelButton_;
+  QPushButton *areaDeleteButton_;
+  //   QPushButton *areaDoneButton_;
+  //   QPushButton *areaCancelButton_;
   QComboBox *areaComboBox_;
   QLabel *areaLabel_;
-  QPushButton *rawimageSaveButton_;
+  //   QPushButton *rawimageSaveButton_;
   QGroupBox *displayGroupBox_;
   QRadioButton *displayAreasButton_;
   QRadioButton *displaySplinesButton_;

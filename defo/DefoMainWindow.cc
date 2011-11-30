@@ -53,7 +53,7 @@ void DefoMainWindow::setupUi( void ) {
   rawimageGroupBox_->setFont(font1);
   rawimageGroupBox_->setStyleSheet(QString::fromUtf8("color: rgb(0, 0, 127);"));
   rawimageGroupBox_->setAlignment(Qt::AlignCenter);
-  rawimageLabel_ = new QLabel( rawimageGroupBox_ );
+  rawimageLabel_ = new DefoImageLabel( rawimageGroupBox_ );
   rawimageLabel_->setObjectName(QString::fromUtf8("rawimageLabel_"));
   rawimageLabel_->setGeometry(QRect(20, 50, 525, 700));
   rawimageLabel_->setStyleSheet(QString::fromUtf8("background-color: rgb(255, 255, 255);"));
@@ -62,46 +62,46 @@ void DefoMainWindow::setupUi( void ) {
 //   rawimageWidget_->setGeometry(QRect(20, 50, 525, 700));
 //   rawimageWidget_->setAutoFillBackground(false);
 //   rawimageWidget_->setStyleSheet(QString::fromUtf8("background-color: rgb(255, 255, 255);"));
-  rawimageZoomButton_ = new QToolButton(rawimageGroupBox_);
-  rawimageZoomButton_->setObjectName(QString::fromUtf8("rawimageZoomButton_"));
-  rawimageZoomButton_->setGeometry(QRect(560, 520, 91, 41));
-  rawimageZoomButton_->setStyleSheet(QString::fromUtf8("background-color: rgb(236, 235, 234);"));
+//   rawimageZoomButton_ = new QToolButton(rawimageGroupBox_);
+//   rawimageZoomButton_->setObjectName(QString::fromUtf8("rawimageZoomButton_"));
+//   rawimageZoomButton_->setGeometry(QRect(560, 520, 91, 41));
+//   rawimageZoomButton_->setStyleSheet(QString::fromUtf8("background-color: rgb(236, 235, 234);"));
   QIcon icon;
   icon.addPixmap(QPixmap(QString::fromUtf8("icons/48px-Icon-Lupe.png")), QIcon::Normal, QIcon::Off);
-  rawimageZoomButton_->setIcon(icon);
-  rawimageZoomButton_->setPopupMode(QToolButton::DelayedPopup);
-  rawimageZoomButton_->setToolButtonStyle(Qt::ToolButtonIconOnly);
-  rawimageZoomButton_->setArrowType(Qt::NoArrow);
+//   rawimageZoomButton_->setIcon(icon);
+//   rawimageZoomButton_->setPopupMode(QToolButton::DelayedPopup);
+//   rawimageZoomButton_->setToolButtonStyle(Qt::ToolButtonIconOnly);
+//   rawimageZoomButton_->setArrowType(Qt::NoArrow);
   areaGroupBox_ = new QGroupBox(rawimageGroupBox_);
   areaGroupBox_->setObjectName(QString::fromUtf8("areaGroupBox_"));
-  areaGroupBox_->setGeometry(QRect(560, 50, 91, 221));
+  areaGroupBox_->setGeometry(QRect(560, 50, 91, 160));
   areaGroupBox_->setFont(font);
   areaGroupBox_->setAlignment(Qt::AlignCenter);
   areaNewButton_ = new QPushButton(areaGroupBox_);
   areaNewButton_->setObjectName(QString::fromUtf8("areaNewButton_"));
-  areaNewButton_->setEnabled(false);
+  areaNewButton_->setEnabled(true);
   areaNewButton_->setGeometry(QRect(20, 90, 51, 26));
   areaNewButton_->setStyleSheet(QString::fromUtf8("background-color: rgb(236, 235, 234);"));
   areaNewButton_->setFlat(false);
-  areaClearButton_ = new QPushButton(areaGroupBox_);
-  areaClearButton_->setObjectName(QString::fromUtf8("areaClearButton_"));
-  areaClearButton_->setEnabled(false);
-  areaClearButton_->setGeometry(QRect(20, 150, 51, 26));
-  areaClearButton_->setStyleSheet(QString::fromUtf8("background-color: rgb(236, 235, 234);"));
-  areaDoneButton_ = new QPushButton(areaGroupBox_);
-  areaDoneButton_->setObjectName(QString::fromUtf8("areaDoneButton_"));
-  areaDoneButton_->setEnabled(false);
-  areaDoneButton_->setGeometry(QRect(20, 180, 51, 26));
+  areaDeleteButton_ = new QPushButton(areaGroupBox_);
+  areaDeleteButton_->setObjectName(QString::fromUtf8("areaDeleteButton_"));
+  areaDeleteButton_->setEnabled(false);
+  areaDeleteButton_->setGeometry(QRect(20, 120, 51, 26));
+  areaDeleteButton_->setStyleSheet(QString::fromUtf8("background-color: rgb(236, 235, 234);"));
+//   areaDoneButton_ = new QPushButton(areaGroupBox_);
+//   areaDoneButton_->setObjectName(QString::fromUtf8("areaDoneButton_"));
+//   areaDoneButton_->setEnabled(false);
+//   areaDoneButton_->setGeometry(QRect(20, 180, 51, 26));
   QFont font2;
   font2.setBold(true);
   font2.setWeight(75);
-  areaDoneButton_->setFont(font2);
-  areaDoneButton_->setStyleSheet(QString::fromUtf8("background-color: rgb(0, 255, 0);"));
-  areaCancelButton_ = new QPushButton(areaGroupBox_);
-  areaCancelButton_->setObjectName(QString::fromUtf8("areaCancelButton_"));
-  areaCancelButton_->setEnabled(false);
-  areaCancelButton_->setGeometry(QRect(20, 120, 51, 26));
-  areaCancelButton_->setStyleSheet(QString::fromUtf8("background-color: rgb(236, 235, 234);"));
+//   areaDoneButton_->setFont(font2);
+//   areaDoneButton_->setStyleSheet(QString::fromUtf8("background-color: rgb(0, 255, 0);"));
+//   areaCancelButton_ = new QPushButton(areaGroupBox_);
+//   areaCancelButton_->setObjectName(QString::fromUtf8("areaCancelButton_"));
+//   areaCancelButton_->setEnabled(false);
+//   areaCancelButton_->setGeometry(QRect(20, 120, 51, 26));
+//   areaCancelButton_->setStyleSheet(QString::fromUtf8("background-color: rgb(236, 235, 234);"));
   areaComboBox_ = new QComboBox(areaGroupBox_);
   areaComboBox_->setObjectName(QString::fromUtf8("areaComboBox_"));
   areaComboBox_->setEnabled(false);
@@ -112,14 +112,14 @@ void DefoMainWindow::setupUi( void ) {
   areaLabel_->setGeometry(QRect(20, 30, 51, 20));
   areaLabel_->setStyleSheet(QString::fromUtf8("color: rgb(0, 0, 127);"));
   areaLabel_->setAlignment(Qt::AlignCenter);
-  rawimageSaveButton_ = new QPushButton(rawimageGroupBox_);
-  rawimageSaveButton_->setObjectName(QString::fromUtf8("rawimageSaveButton_"));
-  rawimageSaveButton_->setGeometry(QRect(560, 450, 91, 41));
-  rawimageSaveButton_->setFont(font1);
-  rawimageSaveButton_->setStyleSheet(QString::fromUtf8("background-color: rgb(236, 235, 234);"));
+//   rawimageSaveButton_ = new QPushButton(rawimageGroupBox_);
+//   rawimageSaveButton_->setObjectName(QString::fromUtf8("rawimageSaveButton_"));
+//   rawimageSaveButton_->setGeometry(QRect(560, 450, 91, 41));
+//   rawimageSaveButton_->setFont(font1);
+//   rawimageSaveButton_->setStyleSheet(QString::fromUtf8("background-color: rgb(236, 235, 234);"));
   displayGroupBox_ = new QGroupBox(rawimageGroupBox_);
   displayGroupBox_->setObjectName(QString::fromUtf8("displayGroupBox_"));
-  displayGroupBox_->setGeometry(QRect(560, 310, 91, 91));
+  displayGroupBox_->setGeometry(QRect(560, 230, 91, 91));
   displayGroupBox_->setFont(font);
   displayGroupBox_->setAlignment(Qt::AlignCenter);
   displayGroupBox_->setCheckable(false);
@@ -1386,14 +1386,14 @@ void DefoMainWindow::retranslateUi( void ) {
   //  MainWindow->setWindowTitle(QApplication::translate("MainWindow", "MainWindow", 0, QApplication::UnicodeUTF8));
   setWindowTitle(QApplication::translate("MainWindow", "MainWindow", 0, QApplication::UnicodeUTF8));
   rawimageGroupBox_->setTitle(QApplication::translate("MainWindow", "Current raw image", 0, QApplication::UnicodeUTF8));
-  rawimageZoomButton_->setText(QApplication::translate("MainWindow", "...", 0, QApplication::UnicodeUTF8));
+  //  rawimageZoomButton_->setText(QApplication::translate("MainWindow", "...", 0, QApplication::UnicodeUTF8));
   areaGroupBox_->setTitle(QApplication::translate("MainWindow", "Area", 0, QApplication::UnicodeUTF8));
   areaNewButton_->setText(QApplication::translate("MainWindow", "New", 0, QApplication::UnicodeUTF8));
-  areaClearButton_->setText(QApplication::translate("MainWindow", "Clear", 0, QApplication::UnicodeUTF8));
-  areaDoneButton_->setText(QApplication::translate("MainWindow", "DONE", 0, QApplication::UnicodeUTF8));
-  areaCancelButton_->setText(QApplication::translate("MainWindow", "Cancel", 0, QApplication::UnicodeUTF8));
+  areaDeleteButton_->setText(QApplication::translate("MainWindow", "Delete", 0, QApplication::UnicodeUTF8));
+//   areaDoneButton_->setText(QApplication::translate("MainWindow", "DONE", 0, QApplication::UnicodeUTF8));
+//   areaCancelButton_->setText(QApplication::translate("MainWindow", "Cancel", 0, QApplication::UnicodeUTF8));
   areaLabel_->setText(QApplication::translate("MainWindow", "Select", 0, QApplication::UnicodeUTF8));
-  rawimageSaveButton_->setText(QApplication::translate("MainWindow", "Save", 0, QApplication::UnicodeUTF8));
+  //  rawimageSaveButton_->setText(QApplication::translate("MainWindow", "Save", 0, QApplication::UnicodeUTF8));
   displayGroupBox_->setTitle(QApplication::translate("MainWindow", "Display", 0, QApplication::UnicodeUTF8));
   displayAreasButton_->setText(QApplication::translate("MainWindow", "Areas", 0, QApplication::UnicodeUTF8));
   displaySplinesButton_->setText(QApplication::translate("MainWindow", "Splines", 0, QApplication::UnicodeUTF8));
@@ -1489,14 +1489,10 @@ void DefoMainWindow::retranslateUi( void ) {
   zscaleGroupbox_->setTitle(QApplication::translate("MainWindow", "z scale", 0, QApplication::UnicodeUTF8));
   zscalePlusButton_->setText(QApplication::translate("MainWindow", "+", 0, QApplication::UnicodeUTF8));
   zscaleMinusButton_->setText(QApplication::translate("MainWindow", "-", 0, QApplication::UnicodeUTF8));
-
-  //  surfaceResetButton_->setText(QApplication::translate("MainWindow", "Reset", 0, QApplication::UnicodeUTF8));
-
   mainTabWidget_->setTabText(mainTabWidget_->indexOf(offline_tab), QApplication::translate("MainWindow", "Offline", 0, QApplication::UnicodeUTF8));
   basefolderGroupBox_->setTitle(QApplication::translate("MainWindow", "Output base folder", 0, QApplication::UnicodeUTF8));
   basefolderTextedit_->setPlainText(QApplication::translate("MainWindow", "out", 0, QApplication::UnicodeUTF8));
   basefolderEditButton_->setText(QApplication::translate("MainWindow", "Edit", 0, QApplication::UnicodeUTF8));
-
   chillerparametersGroupBox_->setTitle(QApplication::translate("MainWindow", "Chiller parameters", 0, QApplication::UnicodeUTF8));
   chillerParametersLabel1_->setText(QApplication::translate("MainWindow", "Prop (Xp)", 0, QApplication::UnicodeUTF8));
   chillerParametersLabel2_->setText(QApplication::translate("MainWindow", "Int (Tn)", 0, QApplication::UnicodeUTF8));
@@ -1542,6 +1538,9 @@ void DefoMainWindow::retranslateUi( void ) {
 ///
 void DefoMainWindow::setupSignalsAndSlots( void ) {
 
+  // rawimage & areas
+  connect( areaNewButton_, SIGNAL(clicked()), rawimageLabel_, SLOT(defineArea()) );
+
   // action polling
   connect( this, SIGNAL(pollAction()), schedule_, SLOT(pollAction()) );
   connect( schedule_, SIGNAL(newAction(DefoSchedule::scheduleItem)), this, SLOT( handleAction(DefoSchedule::scheduleItem)) );
@@ -1561,7 +1560,6 @@ void DefoMainWindow::setupSignalsAndSlots( void ) {
   connect( measurementidDefaultButton_, SIGNAL(clicked()), this, SLOT(defaultMeasurementId()) );
 
   // offline display
-
   connect( displaytype3DButton_, SIGNAL(toggled( bool ) ), surfacePlot_, SLOT( toggleView( bool ) ) );
   connect( displayitemsAxesButton_, SIGNAL( toggled( bool ) ), surfacePlot_, SLOT( setIsAxes( bool ) ) );
   connect( displayitemsMeshButton_, SIGNAL( toggled( bool ) ), surfacePlot_, SLOT( setIsMesh( bool ) ) );
@@ -1581,7 +1579,6 @@ void DefoMainWindow::setupSignalsAndSlots( void ) {
   connect( zscaleMinusButton_, SIGNAL( clicked() ), surfacePlot_, SLOT( decreaseZScale() ) );
 
   // advanced
-  
   connect( basefolderEditButton_, SIGNAL( clicked() ), this, SLOT( editBaseFolder() ) );
 
 }
@@ -1671,17 +1668,21 @@ void DefoMainWindow::handleAction( DefoSchedule::scheduleItem item ) {
       imageinfoTextedit_->appendPlainText( QString( "Fetched: %1" ).arg( datime.toString( QString( "dd.MM.yy hh:mm:ss" ) ) ) );
       imageinfoTextedit_->appendPlainText( QString( "Type: from disk [%1]" ).arg( item.second ) );
 
-      // scale image
-      QSize newSize( 700, 525 ); 
-      QImage *transformedImage = new QImage( qImage.scaled( newSize ) );
+//       // scale image
+//       QSize newSize( 700, 525 ); 
+//       QImage *transformedImage = new QImage( qImage.scaled( newSize ) );
 
-      // rotate 90deg
-      QTransform rotateTransform;
-      rotateTransform.rotate(90);
-      *transformedImage = transformedImage->transformed( rotateTransform );
+//       // rotate 90deg
+//       QTransform rotateTransform;
+//       rotateTransform.rotate(90);
+//       *transformedImage = transformedImage->transformed( rotateTransform );
 
-      // display
-      rawimageLabel_->setPixmap( QPixmap::fromImage( *transformedImage ) );
+//       // display
+//       rawimageLabel_->setPixmap( QPixmap::fromImage( *transformedImage ) );
+
+      // tell the label to rotate the image and display
+      rawimageLabel_->setRotation( true );
+      rawimageLabel_->displayImageToSize( qImage );
 
       isRefImage_ = true;
 
@@ -1752,17 +1753,21 @@ void DefoMainWindow::handleAction( DefoSchedule::scheduleItem item ) {
       imageinfoTextedit_->appendPlainText( QString( "Fetched: %1" ).arg( datime.toString( QString( "dd.MM.yy hh:mm:ss" ) ) ) );
       imageinfoTextedit_->appendPlainText( QString( "Type: from disk [%1]" ).arg( item.second ) );
 
-      // scale image
-      QSize newSize( 700, 525 ); 
-      QImage *transformedImage = new QImage( qImage.scaled( newSize ) );
+//       // scale image
+//       QSize newSize( 700, 525 ); 
+//       QImage *transformedImage = new QImage( qImage.scaled( newSize ) );
 
-      // rotate 90deg
-      QTransform rotateTransform;
-      rotateTransform.rotate(90);
-      *transformedImage = transformedImage->transformed( rotateTransform );
+//       // rotate 90deg
+//       QTransform rotateTransform;
+//       rotateTransform.rotate(90);
+//       *transformedImage = transformedImage->transformed( rotateTransform );
 
-      // display
-      rawimageLabel_->setPixmap( QPixmap::fromImage( *transformedImage ) );
+//       // display
+//       rawimageLabel_->setPixmap( QPixmap::fromImage( *transformedImage ) );
+
+      // tell the label to rotate the image and display
+      rawimageLabel_->setRotation( true );
+      rawimageLabel_->displayImageToSize( qImage );
 
       // surface reconstruction
       const DefoSurface defoSurface = defoRecoSurface_.reconstruct( defoImageOutput_.first, referenceImageOutput_.first );
@@ -1805,7 +1810,7 @@ void DefoMainWindow::handleAction( DefoSchedule::scheduleItem item ) {
     break;
 
   case DefoSchedule::GOTO:
-    std::cout << " GOTO SHOULD NEVER ARRIVE HERE!" << std::endl;
+    std::cerr << " SHIT.. GOTO SHOULD NEVER ARRIVE HERE!" << std::endl;
     throw;
     break;
 

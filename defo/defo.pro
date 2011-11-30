@@ -36,7 +36,9 @@ HEADERS += DefoMainWindow.h \
            DefoConfigReader.h \
            DefoRecoSurface.h \
            DefoSurface.h \
-	   DefoSurfacePlot.h
+	   DefoSurfacePlot.h \
+	   DefoImageLabel.h \
+	   DefoArea.h 
 
 FORMS += defo.ui
 
@@ -51,4 +53,5 @@ SOURCES += defo.cc \
            DefoConfigReader.cc \
            DefoRecoSurface.cc \
            DefoSurface.cc \
-	   DefoSurfacePlot.cc
+	   DefoSurfacePlot.cc \
+	   DefoImageLabel.cc
