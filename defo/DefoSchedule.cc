@@ -23,6 +23,7 @@ DefoSchedule::DefoSchedule() {
   }
 
   // which of these action require a parameter?
+  actionItemsRequiringParameter_.push_back( DefoSchedule::FILE_SET );
   actionItemsRequiringParameter_.push_back( DefoSchedule::FILE_REF );
   actionItemsRequiringParameter_.push_back( DefoSchedule::FILE_DEFO );
   actionItemsRequiringParameter_.push_back( DefoSchedule::TEMP );

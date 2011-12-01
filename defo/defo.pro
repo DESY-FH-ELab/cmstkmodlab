@@ -54,4 +54,5 @@ SOURCES += defo.cc \
            DefoRecoSurface.cc \
            DefoSurface.cc \
 	   DefoSurfacePlot.cc \
-	   DefoImageLabel.cc
+	   DefoImageLabel.cc \
+	   defoMainWindowObjSettings.inc.cc	

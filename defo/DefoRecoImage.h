@@ -12,12 +12,14 @@
 #include "DefoPoint.h"
 #include "DefoSquare.h"
 #include "DefoConfigReader.h"
+#include "DefoArea.h"
+
 
 class DefoRecoImage {
 
  public:
   DefoRecoImage();
-  std::pair<DefoPointCollection,DefoRawImage> reconstruct( DefoRawImage& );
+  std::pair<DefoPointCollection,DefoRawImage> reconstruct( DefoRawImage&, DefoArea& );
 
  private:
   DefoPoint averageSquare( QImage const&, DefoPoint const&, QImage* = 0 ) const;

@@ -23,11 +23,15 @@ DefoRecoImage::DefoRecoImage() {
 
 ///
 /// point finding & reconstruction in a raw image;
+/// requires:
+///  1. the image (DefoRawImage)
+///  2. a DefoArea, i.e. a selection frame in pixels inside the image;
+///     will only search for points within this area
 /// returns: 
 ///  1. vector of DefoPoints, one for each dot reconstructed in theImage
 ///  2. a copy of the original image with square & cross showing reco results
 ///
-std::pair<DefoPointCollection,DefoRawImage> DefoRecoImage::reconstruct( DefoRawImage& theImage ) {
+std::pair<DefoPointCollection,DefoRawImage> DefoRecoImage::reconstruct( DefoRawImage& theImage, DefoArea& theArea ) {
 
   DefoRawImage copyOfTheRawImage( theImage );
   DefoPointCollection outputCollection;
@@ -40,9 +44,9 @@ std::pair<DefoPointCollection,DefoRawImage> DefoRecoImage::reconstruct( DefoRawI
   if( debugLevel_ >= 2 ) std::cout << " [DefoRecoImage::reconstruct] =2= Image has: "
 				   << imageWidth.first << " x " << imageWidth.second << " pixels" << std::endl;
   
-  // scan all pixels, but keep <halfSquareWidth+1> distance from borders
-  for( unsigned int xIt = halfSquareWidth_ + 1; xIt < imageWidth.first - halfSquareWidth_ - 1; ++xIt ) {
-    for( unsigned int yIt = halfSquareWidth_ + 1; yIt < imageWidth.second - halfSquareWidth_ - 1; ++yIt ) {
+
+  for( int xIt = theArea.getRectangle().x(); xIt < theArea.getRectangle().x() + theArea.getRectangle().width(); ++xIt ) {
+    for( int yIt = theArea.getRectangle().y(); yIt < theArea.getRectangle().y() + theArea.getRectangle().height(); ++yIt ) {
 
       // do not consider areas around points already picked up
       if( forbiddenAreas_.isInside( DefoPoint( xIt, yIt ) ) ) continue;

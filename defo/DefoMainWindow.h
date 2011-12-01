@@ -52,6 +52,7 @@
 #include "DefoRecoImage.h"
 #include "DefoRecoSurface.h"
 #include "DefoImageLabel.h"
+#include "DefoConfigReader.h"
 
 #include "qwt_plot.h"
 
@@ -86,10 +87,19 @@ class DefoMainWindow : public QWidget {
   
   void editBaseFolder( void );
 
+  void receiveArea( DefoArea area );
+  void deleteCurrentArea( void );
+  void toggleAreaDisplay( bool isChecked );
+
+
  signals:
   void pollAction( void );
+  void imagelabelRefreshAreas( std::vector<DefoArea> );
+  void imagelabelDisplayAreas( bool );
 
  private:
+
+  unsigned int debugLevel_;
 
   DefoSchedule* schedule_;
   QTimer* pollingDelay_;
@@ -109,6 +119,8 @@ class DefoMainWindow : public QWidget {
   QString measurementId_;
   QString baseFolderName_;
   QString currentFolderName_;
+
+  std::vector<DefoArea> areas_;
 
   QWidget *centralwidget;
   QTabWidget *mainTabWidget_;
