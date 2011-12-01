@@ -141,6 +141,18 @@ class DefoMainWindow : public QWidget {
   QRadioButton *displayAreasButton_;
   QRadioButton *displaySplinesButton_;
   QRadioButton *displayRecoitemButton_;
+
+  QGroupBox *refreshGroupBox_;
+  QPushButton *refreshCameraButton_;
+  QPushButton *refreshFileButton_;
+  QGroupBox *manualGroupBox_;
+  QPushButton *manualREFButton_;
+  QPushButton *manualDEFOButton_;
+  QPushButton *manualFILEREFButton_;
+  QPushButton *manualFILEDEFOButton_;
+  QPushButton *manualTEMPButton_;
+  QToolButton *rawimageZoomButton_;
+
   QGroupBox *scheduleGroupBox_;
   QPushButton *scheduleClearButton_;
   QPushButton *scheduleVerifyButton_;
@@ -308,14 +320,14 @@ class DefoMainWindow : public QWidget {
   QDoubleSpinBox *surfaceRecoSearchpathSpinbox_;
   QGroupBox *groupBox_20;
   QGroupBox *geometryGroupBox_;
-  QSpinBox *geometrySpinbox1_;
-  QSpinBox *geometrySpinbox2_;
-  QSpinBox *geometrySpinbox3_;
-  QDoubleSpinBox *geometrySpinbox4_;
-  QLabel *geometryLabel1_;
-  QLabel *geometryLabel2_;
-  QLabel *geometryLabel3_;
-  QLabel *geometryLabel4_;
+  QSpinBox *geometryFSpinbox_;
+  QSpinBox *geometryLgSpinbox_;
+  QSpinBox *geometryLcSpinbox_;
+  QDoubleSpinBox *geometryDeltaSpinbox_;
+  QLabel *geometryFLabel_;
+  QLabel *geometryLgLabel_;
+  QLabel *geometryLcLabel_;
+  QLabel *geometryDeltaLabel_;
   QGroupBox *geometryPitchGroupBox_;
   QLabel *geometryPitchLabel1_;
   QLabel *geometryPitchLabel2_;

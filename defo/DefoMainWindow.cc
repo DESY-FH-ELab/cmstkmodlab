@@ -14,11 +14,22 @@
 ///
 DefoMainWindow::DefoMainWindow( QWidget* parent ) : QWidget( parent ) {
 
-  DefoConfigReader cfgReader( "defo.cfg" );
-  debugLevel_ = cfgReader.getValue<unsigned int>( "DEBUG_LEVEL" );
-
   setupUi();
   setupSignalsAndSlots();
+
+  DefoConfigReader cfgReader( "defo.cfg" );
+  debugLevel_ = cfgReader.getValue<unsigned int>( "DEBUG_LEVEL" ); // only parameter directly needed by this class
+
+  // update cfg settings
+  seedingThresholdsStep1Spinbox_->setValue( cfgReader.getValue<double>( "STEP1_THRESHOLD" ) );
+  seedingThresholdsStep2Spinbox_->setValue( cfgReader.getValue<double>( "STEP2_THRESHOLD" ) );
+  seedingThresholdsStep3Spinbox_->setValue( cfgReader.getValue<double>( "STEP3_THRESHOLD" ) );
+  blueishnessSpinBox_->setValue( cfgReader.getValue<double>( "BLUEISHNESS_THRESHOLD" ) );
+  hswSpinBox_->setValue( cfgReader.getValue<double>( "HALF_SQUARE_WIDTH" ) );
+  geometryFSpinbox_->setValue( cfgReader.getValue<double>( "LENS_FOCAL_LENGTH" ) * 1000 ); // mm -> meter conversion!!
+  geometryLgSpinbox_->setValue( cfgReader.getValue<double>( "NOMINAL_GRID_DISTANCE" ) * 1000 ); // mm -> meter conversion!!
+  geometryLcSpinbox_->setValue( cfgReader.getValue<double>( "NOMINAL_CAMERA_DISTANCE" ) * 1000 ); // mm -> meter conversion!!
+  geometryDeltaSpinbox_->setValue( cfgReader.getValue<double>( "NOMINAL_VIEWING_ANGLE" ) ); 
 
   pollingDelay_ = new QTimer();
 
