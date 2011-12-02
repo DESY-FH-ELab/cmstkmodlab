@@ -3,8 +3,10 @@
 #define _EOS550DSYSCALL_H
 
 #include <string>
+#include <sstream>
 #include <vector>
 #include <utility>
+#include <cstdio>
 
 #include "EOS550D.h"
 
@@ -31,12 +33,14 @@ class EOS550DSyscall : public EOS550D {
   virtual bool getAndSaveImage( const std::string& );
   void setGphoto2Path( std::string& p ) { gphoto2_ = p; } // for default see ctor impl.
 
+  void test( void );
+
  private:
 
   std::string gphoto2_;
   bool executeCommandList( CommandList const& );
-
-
+  bool executeCommandListReturnOutput( CommandList const&, std::string& );
+  
 };
 
 #endif
