@@ -8,7 +8,7 @@
 DefoRecoSurface::DefoRecoSurface() {
 
   // read parameters
-  DefoConfigReader cfgReader( "defo.cfg" );
+  DefoConfigReader cfgReader( "/home/tkmodlab/software/cmstkmodlab/trunk/defo/defo.cfg" );
   spacingEstimate_ = cfgReader.getValue<int>( "SPACING_ESTIMATE" );
   searchPathHalfWidth_ = cfgReader.getValue<int>( "SEARCH_PATH_HALF_WIDTH" );
   nominalGridDistance_ = cfgReader.getValue<double>( "NOMINAL_GRID_DISTANCE" );

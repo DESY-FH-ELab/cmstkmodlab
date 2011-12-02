@@ -7,7 +7,7 @@
 ///
 DefoRecoImage::DefoRecoImage() {
 
-  DefoConfigReader cfgReader( "defo.cfg" );
+  DefoConfigReader cfgReader( "/home/tkmodlab/software/cmstkmodlab/trunk/defo/defo.cfg" );
 
   step1Threshold_ = cfgReader.getValue<int>( "STEP1_THRESHOLD" );
   step2Threshold_ = cfgReader.getValue<int>( "STEP2_THRESHOLD" );
@@ -90,6 +90,7 @@ std::pair<DefoPointCollection,DefoRawImage> DefoRecoImage::reconstruct( DefoRawI
 	// determine if it's a blue LED before the next iterations
 	// so we can later (iteration 3) draw the cross in the appropriate color
 	const double blueishness = calculateBlueishness( theImage.getImage(), DefoPoint( xIt, yIt ) );
+
 	if( blueishness > blueishnessThreshold_ ) {
 	  intermediatePoint.setBlue( true );
 	  if( debugLevel_ >= 3 ) std::cout << " [DefoRecoImage::reconstruct] =3= Identified blue point: x: "
