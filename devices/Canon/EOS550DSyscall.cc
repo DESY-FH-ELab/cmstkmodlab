@@ -12,9 +12,200 @@ EOS550DSyscall::EOS550DSyscall() : gphoto2_( std::string( "/usr/bin/gphoto2" ) )
 
 
 ///
+/// query the camera & return currently set aperture 
+///
+EOS550D::Aperture const& EOS550DSyscall::readAperture( void ) {
+
+  CommandList list;
+  Command aCmd;
+
+  aCmd.first = "get-config";
+  aCmd.second = "aperture";
+  
+  list.push_back( aCmd );
+  std::string output;
+  executeCommandListReturnOutput( list, output );
+
+  // now parse the output
+  std::stringstream s;
+  s << output;
+  
+  // get current value;
+  // scan the list that gphoto spits out,
+  // get the value of "Current:" entry and compare with
+  // the index:value list to get the index (->enum)
+
+  // we can use doubles for any possible value of aperture
+  std::string buf; double val, cmp; int index;
+  while( std::string( "Current:" ) != buf ) s >> buf; // wind forward till "Current:"
+  s >> val; // this is the current value;
+  while( !s.eof() ) {
+    s >> buf >> index >> cmp; // buf is garbage
+    if( cmp == val ) {
+      cfg_.aperture_ = static_cast<EOS550D::Aperture>( index );
+      return cfg_.aperture_;
+    }
+  }
+  
+  cfg_.aperture_ = EOS550D::FINVALID;
+  return cfg_.aperture_;
+
+}
+
+
+
+///
+/// query the camera & return currently set speed
+///
+EOS550D::ShutterSpeed const& EOS550DSyscall::readShutterSpeed( void ) {
+
+  CommandList list;
+  Command aCmd;
+
+  aCmd.first = "get-config";
+  aCmd.second = "shutterspeed";
+  
+  list.push_back( aCmd );
+  std::string output;
+  executeCommandListReturnOutput( list, output );
+
+  // now parse the output
+  std::stringstream s;
+  s << output;
+  
+  // get current value: (see readAperture comment);
+  // here we have to use strings since values can be "bulb", "1/4", etc.
+  std::string buf, val, cmp; int index;
+  while( std::string( "Current:" ) != buf ) s >> buf; // wind forward till "Current:"
+  s >> val; // this is the current value;
+  while( !s.eof() ) {
+    s >> buf >> index >> cmp; // buf is garbage
+    if( cmp == val ) {
+      cfg_.shutterSpeed_ = static_cast<EOS550D::ShutterSpeed>( index );
+      return cfg_.shutterSpeed_;
+    }
+  }
+  
+  cfg_.shutterSpeed_ = EOS550D::SINVALID;
+  return cfg_.shutterSpeed_;
+
+}
+
+
+
+///
+/// query the camera & return currently set iso seeting
+///
+EOS550D::Iso const& EOS550DSyscall::readIso( void ) {
+
+  CommandList list;
+  Command aCmd;
+
+  aCmd.first = "get-config";
+  aCmd.second = "iso";
+  
+  list.push_back( aCmd );
+  std::string output;
+  executeCommandListReturnOutput( list, output );
+
+  // now parse the output
+  std::stringstream s;
+  s << output;
+  
+  // get current value: (see readAperture comment);
+  // here we have to use strings since value can be "auto"
+  std::string buf, val, cmp; int index;
+  while( std::string( "Current:" ) != buf ) s >> buf; // wind forward till "Current:"
+  s >> val; // this is the current value;
+  while( !s.eof() ) {
+    s >> buf >> index >> cmp; // buf is garbage
+    if( cmp == val ) {
+      cfg_.iso_ = static_cast<EOS550D::Iso>( index );
+      return cfg_.iso_;
+    }
+  }
+  
+  cfg_.iso_ = EOS550D::ISOINVALID;
+  return cfg_.iso_;
+
+}
+
+
+
+///
+/// read full cfg object in one go
+/// (with one gphoto call)
+///
+EOS550D::EOS550DConfig const& EOS550DSyscall::readConfig( void ) {
+
+  CommandList list;
+  Command aCmd;
+  
+  aCmd.first = "get-config";
+  aCmd.second = "aperture";
+  list.push_back( aCmd );
+
+  aCmd.first = "get-config";
+  aCmd.second = "shutterspeed";
+  list.push_back( aCmd );
+
+  aCmd.first = "get-config";
+  aCmd.second = "iso";
+  list.push_back( aCmd );
+
+  std::string output;
+  executeCommandListReturnOutput( list, output );
+
+  // now parse the output
+  std::stringstream s;
+  s << output;
+
+  
+  { // first aperture
+    std::string buf; double val, cmp; int index;
+    while( std::string( "Current:" ) != buf ) s >> buf; // wind forward till "Current:"
+    s >> val; // this is the current aperture value
+    do {
+      s >> buf >> index >> cmp;
+      if( cmp == val ) { cfg_.aperture_ = static_cast<EOS550D::Aperture>( index ); break; }
+    } while( std::string( "Choice:" ) == buf );
+    if( cmp != val ) cfg_.aperture_ = EOS550D::FINVALID; // just in case
+  }
+
+  {
+    // now shutterspeed
+    std::string buf, val, cmp; int index;
+    while( std::string( "Current:" ) != buf ) s >> buf; // wind forward till "Current:"
+    s >> val; // this is the current aperture value
+    do {
+      s >> buf >> index >> cmp;
+      if( cmp == val ) { cfg_.shutterSpeed_ = static_cast<EOS550D::ShutterSpeed>( index ); break; }
+    } while( std::string( "Choice:" ) == buf );
+    if( cmp != val ) cfg_.shutterSpeed_ = EOS550D::SINVALID; // just in case
+  }
+
+  {
+    // finally, iso
+    std::string buf, val, cmp; int index;
+    while( std::string( "Current:" ) != buf ) s >> buf; // wind forward till "Current:"
+    s >> val; // this is the current aperture value
+    do {
+      s >> buf >> index >> cmp;
+      if( cmp == val ) { cfg_.iso_ = static_cast<EOS550D::Iso>( index ); break; }
+    } while( std::string( "Choice:" ) == buf );
+    if( cmp != val ) cfg_.iso_ = EOS550D::ISOINVALID; // just in case
+  }
+
+  return cfg_;
+
+}
+
+
+
 ///
 ///
-bool EOS550DSyscall::setAperture( EOS550D::Aperture aperture ) {
+///
+bool EOS550DSyscall::writeAperture( EOS550D::Aperture aperture ) {
 
   CommandList list;
   Command aCmd;
@@ -36,10 +227,10 @@ bool EOS550DSyscall::setAperture( EOS550D::Aperture aperture ) {
 ///
 ///
 ///
-bool EOS550DSyscall::setShutterSpeed( EOS550D::ShutterSpeed speed ) {
+bool EOS550DSyscall::writeShutterSpeed( EOS550D::ShutterSpeed speed ) {
 
   CommandList list;
-  std::pair<std::string,std::string> aCmd;
+  Command aCmd;
 
   std::stringstream s;
   s << "shutterspeed=" << speed;
@@ -58,7 +249,7 @@ bool EOS550DSyscall::setShutterSpeed( EOS550D::ShutterSpeed speed ) {
 ///
 ///
 ///
-bool EOS550DSyscall::setIso( EOS550D::Iso iso ) {
+bool EOS550DSyscall::writeIso( EOS550D::Iso iso ) {
 
   CommandList list;
   Command aCmd;
@@ -78,6 +269,39 @@ bool EOS550DSyscall::setIso( EOS550D::Iso iso ) {
 
 
 ///
+/// set all known cfg parameters in one go
+/// (one single gphoto2 call)
+///
+bool EOS550DSyscall::writeConfig( EOS550D::EOS550DConfig const& cfg ) {
+  
+  CommandList list;
+  Command aCmd;
+  std::stringstream s;
+
+  s << "aperture=" << cfg.aperture_;
+  aCmd.first = "set-config-index";
+  aCmd.second = s.str();
+  list.push_back( aCmd );
+
+  s.str("");
+  s << "shutterspeed=" << cfg.shutterSpeed_;
+  aCmd.first = "set-config-index";
+  aCmd.second = s.str();
+  list.push_back( aCmd );
+
+  s.str("");
+  s << "iso=" << cfg.iso_;
+  aCmd.first = "set-config-index";
+  aCmd.second = s.str();
+  list.push_back( aCmd );
+
+  executeCommandList( list );
+
+}
+
+
+
+///
 ///
 ///
 bool EOS550DSyscall::getAndSaveImage( const std::string& filepath ) {
@@ -89,7 +313,7 @@ bool EOS550DSyscall::getAndSaveImage( const std::string& filepath ) {
   aCmd.second = "";
   list.push_back( aCmd );
 
-  aCmd.first = "filename";
+  aCmd.first = "filename"; // specify filepath
   aCmd.second = filepath.c_str();
   list.push_back( aCmd );
 
