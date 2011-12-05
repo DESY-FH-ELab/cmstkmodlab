@@ -7,7 +7,7 @@
 ///
 DefoRecoImage::DefoRecoImage() {
 
-  DefoConfigReader cfgReader( "/home/tkmodlab/software/cmstkmodlab/trunk/defo/defo.cfg" );
+  DefoConfigReader cfgReader( "defo.cfg" );
 
   step1Threshold_ = cfgReader.getValue<int>( "STEP1_THRESHOLD" );
   step2Threshold_ = cfgReader.getValue<int>( "STEP2_THRESHOLD" );

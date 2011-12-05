@@ -441,16 +441,27 @@ void DefoMainWindow::startPolling( void ) {
   
   // create output folder
   QDir baseDir( baseFolderName_ );
-  QString subdir = measurementidTextedit_->toPlainText();
-  if( !baseDir.mkdir( subdir ) ) {
+  QString subdirName = measurementidTextedit_->toPlainText();
+  QDir subdir = QDir( baseFolderName_ + "/" + subdirName );
+
+  if( subdir.exists() ) {
+    QMessageBox::StandardButton rVal = QMessageBox::question( this, tr("[DefoMainWindow::startPolling]"),
+        QString("Directory \'%1\' already exists, do you want to save data from this measurement to it?\n\nIf not, hit CANCEL and change the measurement ID.").arg(subdirName), 
+        QMessageBox::Ok | QMessageBox::Cancel );
+
+    if( QMessageBox::Cancel == rVal ) return;
+
+  }
+
+  else if( !baseDir.mkdir( subdirName ) ) {
     QMessageBox::critical( this, tr("[DefoMainWindow::startPolling]"),
-			   QString("[FILE_DEFO]: cannot create measurement dir: \'%1\'").arg(subdir),
+			   QString("Cannot create measurement dir: \'%1\'").arg(subdirName),
 			   QMessageBox::Ok );
-    std::cerr << " [DefoMainWindow::handleAction] ** ERROR: [FILE_DEFO]: cannot create measurement dir: " 
-	      << subdir.toStdString() << std::endl;
+    std::cerr << " [DefoMainWindow::handleAction] ** ERROR: cannot create measurement dir: " 
+	      << subdirName.toStdString() << std::endl;
   }
   
-  currentFolderName_ = baseFolderName_ + "/" + subdir;
+  currentFolderName_ = baseFolderName_ + "/" + subdirName;
 
   // highlight color for table view to green
   scheduleTableview_->setStyleSheet(QString::fromUtf8("background-color: rgb(255, 255, 255);\n selection-background-color: rgb( 0,155,0 ); "));
