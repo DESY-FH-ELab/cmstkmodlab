@@ -82,6 +82,7 @@ class DefoMainWindow : public QWidget {
   void setupSignalsAndSlots( void );
 
  public slots:
+
   void handleAction( DefoSchedule::scheduleItem item );
   void startPolling( void );
   void stopPolling( void );
@@ -96,9 +97,11 @@ class DefoMainWindow : public QWidget {
   void deleteCurrentArea( void );
   void toggleAreaDisplay( bool isChecked );
 
-  void loadAndDisplayImageFromCamera( void );
+  void loadImageFromCamera( void );
+  void handleCameraAction( DefoCamHandler::Action );
 
  signals:
+
   void pollAction( void );
   void imagelabelRefreshAreas( std::vector<DefoArea> );
   void imagelabelDisplayAreas( bool );
@@ -128,6 +131,8 @@ class DefoMainWindow : public QWidget {
   QString measurementId_;
   QString baseFolderName_;
   QString currentFolderName_;
+
+  std::string filepathPlaced_; // where the camHandler put the file
 
   std::vector<DefoArea> areas_;
 

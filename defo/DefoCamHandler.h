@@ -3,6 +3,7 @@
 #ifndef _DEFOCAMHANDLER_H
 #define _DEFOCAMHANDLER_H
 
+#include <iostream>
 #include <string>
 
 #include <QThread>
@@ -35,6 +36,9 @@ class DefoCamHandler : public QThread {
   
  protected:
   void run();
+
+ signals:
+  void actionFinished( DefoCamHandler::Action );
 
 };
 

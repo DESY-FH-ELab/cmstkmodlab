@@ -256,7 +256,7 @@ void DefoMainWindow::setupUi( void ) {
   measurementidDefaultButton_->setGeometry(QRect(80, 80, 61, 31));
   measurementidDefaultButton_->setStyleSheet(QString::fromUtf8("background-color: rgb(236, 235, 234)"));
   measurementidTextedit_ = new QPlainTextEdit(measurementidGroupBox_);
-  measurementidTextedit_->setObjectName(QString::fromUtf8("plainTextEdit_4"));
+  measurementidTextedit_->setObjectName(QString::fromUtf8("measurementidTextedit"));
   measurementidTextedit_->setGeometry(QRect(10, 20, 331, 51));
   measurementidTextedit_->setStyleSheet(QString::fromUtf8("background-color: rgb(255, 255, 255)"));
   measurementidTextedit_->setReadOnly(true);

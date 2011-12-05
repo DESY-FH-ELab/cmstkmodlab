@@ -22,6 +22,7 @@ void DefoCamHandler::run( void ) {
 
   case DefoCamHandler::GETIMAGE:
     camera_.getAndSaveImage( filePath_ );
+    actionFinished( DefoCamHandler::GETIMAGE );
     break;
 
   default:

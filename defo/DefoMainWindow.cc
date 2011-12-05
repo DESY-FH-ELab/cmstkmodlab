@@ -33,13 +33,11 @@ DefoMainWindow::DefoMainWindow( QWidget* parent ) : QWidget( parent ) {
 
   pollingDelay_ = new QTimer();
 
-  // set default measurement id
-  defaultMeasurementId();
-
   isRefImage_ = false;
 
+  // set default measurement id
   baseFolderName_ = basefolderTextedit_->toPlainText(); // LOAD DEFAULT
-
+  defaultMeasurementId();
 
 }
 
@@ -57,7 +55,9 @@ void DefoMainWindow::setupSignalsAndSlots( void ) {
   connect( displayAreasButton_, SIGNAL(toggled(bool)), this, SLOT(toggleAreaDisplay(bool)) );
   connect( this, SIGNAL(imagelabelDisplayAreas(bool)), rawimageLabel_, SLOT(displayAreas(bool)) );
   connect( this, SIGNAL(imagelabelRefreshAreas(std::vector<DefoArea>)), rawimageLabel_, SLOT(refreshAreas(std::vector<DefoArea>)) );
-  connect( refreshCameraButton_, SIGNAL(clicked()), this, SLOT(retrieveImageFromCamera()) );
+  connect( refreshCameraButton_, SIGNAL(clicked()), this, SLOT(loadImageFromCamera()) );
+  qRegisterMetaType<DefoCamHandler::Action>("DefoCamHandler::Action");
+  connect( &camHandler_, SIGNAL(actionFinished(DefoCamHandler::Action)), this, SLOT(handleCameraAction(DefoCamHandler::Action)) );
 
   // action polling
   connect( this, SIGNAL(pollAction()), schedule_, SLOT(pollAction()) );
@@ -649,17 +649,83 @@ void DefoMainWindow::toggleAreaDisplay( bool isChecked ) {
 
 
 ///
+/// this function triggers threaded file download from the camera;
+/// the file path has to be put in filepathPlaced_
+/// so that displayImageFromCamera() can pick it up there
 ///
-///
-void DefoMainWindow::loadAndDisplayImageFromCamera( void ) {
+void DefoMainWindow::loadImageFromCamera( void ) {
 
+  // image is stored as a "set-" file
+  // above the subfolder structure
+  currentFolderName_ = baseFolderName_ + "/" + measurementidTextedit_->toPlainText();
+  QDir folderDir( currentFolderName_ );
+  
+  if( !folderDir.exists() ) QDir( baseFolderName_ ).mkdir( measurementidTextedit_->toPlainText() );
+
+  QDateTime datime = QDateTime::currentDateTime();
+  QString filePath = currentFolderName_ + QString( "/" ) // folder 
+    + QString( "set-" ) + datime.toString( QString( "ddMMyy-hhmmss" ) ) // filename
+    + QString( ".jpg" ); // extension
+  
   // the the handler what to do (and where)
   // and run thread
   camHandler_.setAction( DefoCamHandler::GETIMAGE );
-  camHandler_.setFilePath( currentFolderName_.toStdString().c_str() );
+  camHandler_.setFilePath( filePath.toStdString() );
   camHandler_.start();
 
-  DefoRawImage img( currentFolderName_.toStdString().c_str() );
-  rawimageLabel_->displayImageToSize( img.getImage() );
+  filepathPlaced_ = filePath.toStdString();
+  
+  this->setCursor( Qt::BusyCursor );
+
+}
+ 
+ 
+ 
+///
+/// we assume that filepathPlaced_ is correctly set;
+/// but better check...
+///
+void DefoMainWindow::handleCameraAction( DefoCamHandler::Action action ) {
+  
+  
+  switch( action ) {
+
+  case DefoCamHandler::GETCFG:
+    {
+    } break;
+
+  case DefoCamHandler::SETCFG:
+    {
+    } break;
+    
+
+  case DefoCamHandler::GETIMAGE:
+    {
+      QFile file( QString( filepathPlaced_.c_str() ) );
+      if( !file.exists() ) {
+	std::cerr << " [DefoMainWindow::displayImageFromCamera] ** ERROR: file \""
+		  << file.fileName().toStdString() << "\" does not exist." << std::endl;
+	throw; // for the moment
+      }
+      
+      DefoRawImage img( filepathPlaced_.c_str() );
+      
+      if( img.getImage().isNull() ) {
+	std::cerr << " [DefoMainWindow::displayImageFromCamera] ** ERROR: file \""
+		  << file.fileName().toStdString() << "\" is null." << std::endl;
+	throw; // for the moment
+      }
+      
+      rawimageLabel_->displayImageToSize( img.getImage() );
+      this->setCursor( Qt::ArrowCursor );
+
+    } break;
+
+
+  default:
+    break;
+
+  }
+
 
 }
