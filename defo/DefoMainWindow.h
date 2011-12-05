@@ -96,7 +96,7 @@ class DefoMainWindow : public QWidget {
   void deleteCurrentArea( void );
   void toggleAreaDisplay( bool isChecked );
 
-  void retrieveImageFromCamera();
+  void loadAndDisplayImageFromCamera( void );
 
  signals:
   void pollAction( void );

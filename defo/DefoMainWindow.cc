@@ -651,7 +651,7 @@ void DefoMainWindow::toggleAreaDisplay( bool isChecked ) {
 ///
 ///
 ///
-void DefoMainWindow::loadImageFromCamera() {
+void DefoMainWindow::loadAndDisplayImageFromCamera( void ) {
 
   // the the handler what to do (and where)
   // and run thread
