@@ -57,6 +57,7 @@ void DefoMainWindow::setupSignalsAndSlots( void ) {
   connect( displayAreasButton_, SIGNAL(toggled(bool)), this, SLOT(toggleAreaDisplay(bool)) );
   connect( this, SIGNAL(imagelabelDisplayAreas(bool)), rawimageLabel_, SLOT(displayAreas(bool)) );
   connect( this, SIGNAL(imagelabelRefreshAreas(std::vector<DefoArea>)), rawimageLabel_, SLOT(refreshAreas(std::vector<DefoArea>)) );
+  connect( refreshCameraButton_, SIGNAL(clicked()), this, SLOT(retrieveImageFromCamera()) );
 
   // action polling
   connect( this, SIGNAL(pollAction()), schedule_, SLOT(pollAction()) );
@@ -642,5 +643,23 @@ void DefoMainWindow::toggleAreaDisplay( bool isChecked ) {
 
   if( isChecked ) emit( imagelabelDisplayAreas( true ) );
   else emit( imagelabelDisplayAreas( false ) );
+
+}
+
+
+
+///
+///
+///
+void DefoMainWindow::loadImageFromCamera() {
+
+  // the the handler what to do (and where)
+  // and run thread
+  camHandler_.setAction( DefoCamHandler::GETIMAGE );
+  camHandler_.setFilePath( currentFolderName_.toStdString().c_str() );
+  camHandler_.start();
+
+  DefoRawImage img( currentFolderName_.toStdString().c_str() );
+  rawimageLabel_->displayImageToSize( img.getImage() );
 
 }

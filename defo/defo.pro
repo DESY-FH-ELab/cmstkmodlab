@@ -14,8 +14,9 @@ macx {
 else { 
     INCLUDEPATH += /usr/include/qwt
     INCLUDEPATH += /usr/include/qwtplot3d
+    INCLUDEPATH += ../devices/Canon
     LIBS += -lqwt -lqwtplot3d
-    LIBS += -L../devices/lib -lTkModLabKeithley -lTkModLabGreisinger -lTkModLabJulabo -lTkModLabHameg
+    LIBS += -L../devices/lib -lTkModLabKeithley -lTkModLabGreisinger -lTkModLabJulabo -lTkModLabHameg -lTkModLabCanon
     LIBS += -L/usr/lib64 -lboost_serialization
 }
 QT += core gui opengl
@@ -38,6 +39,7 @@ HEADERS += DefoMainWindow.h \
            DefoSurface.h \
 	   DefoSurfacePlot.h \
 	   DefoImageLabel.h \
+	   DefoCamHandler.h \
 	   DefoArea.h 
 
 FORMS += defo.ui
@@ -55,4 +57,5 @@ SOURCES += defo.cc \
            DefoSurface.cc \
 	   DefoSurfacePlot.cc \
 	   DefoImageLabel.cc \
-	   defoMainWindowObjSettings.inc.cc	
+	   defoMainWindowObjSettings.inc.cc \
+	   DefoCamHandler.cc

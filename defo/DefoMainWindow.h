@@ -45,6 +45,7 @@
 #include <QInputDialog>
 #include <QCheckBox>
 
+
 #include "DefoSurfacePlot.h"
 #include "DefoSchedule.h"
 #include "DefoRawImage.h"
@@ -53,11 +54,15 @@
 #include "DefoRecoSurface.h"
 #include "DefoImageLabel.h"
 #include "DefoConfigReader.h"
+#include "DefoCamHandler.h"
 
 #include "qwt_plot.h"
 
 
 QT_BEGIN_NAMESPACE
+
+
+
 
 
 ///
@@ -91,16 +96,20 @@ class DefoMainWindow : public QWidget {
   void deleteCurrentArea( void );
   void toggleAreaDisplay( bool isChecked );
 
+  void retrieveImageFromCamera();
 
  signals:
   void pollAction( void );
   void imagelabelRefreshAreas( std::vector<DefoArea> );
   void imagelabelDisplayAreas( bool );
 
+
  private:
 
   unsigned int debugLevel_;
 
+  DefoCamHandler camHandler_;
+  
   DefoSchedule* schedule_;
   QTimer* pollingDelay_;
 
@@ -126,17 +135,12 @@ class DefoMainWindow : public QWidget {
   QTabWidget *mainTabWidget_;
   QWidget *online_tab;
   QGroupBox *rawimageGroupBox_;
-  //   QLabel *rawimageLabel_;
   DefoImageLabel *rawimageLabel_;
-  //   QToolButton *rawimageZoomButton_;
   QGroupBox *areaGroupBox_;
   QPushButton *areaNewButton_;
   QPushButton *areaDeleteButton_;
-  //   QPushButton *areaDoneButton_;
-  //   QPushButton *areaCancelButton_;
   QComboBox *areaComboBox_;
   QLabel *areaLabel_;
-  //   QPushButton *rawimageSaveButton_;
   QGroupBox *displayGroupBox_;
   QRadioButton *displayAreasButton_;
   QRadioButton *displaySplinesButton_;

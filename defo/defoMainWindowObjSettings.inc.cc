@@ -124,7 +124,7 @@ void DefoMainWindow::setupUi( void ) {
   refreshGroupBox_->setChecked(false);
   refreshCameraButton_ = new QPushButton(refreshGroupBox_);
   refreshCameraButton_->setObjectName(QString::fromUtf8("refreshCameraButton_"));
-  refreshCameraButton_->setEnabled(false);
+  refreshCameraButton_->setEnabled(true);
   refreshCameraButton_->setGeometry(QRect(10, 20, 81, 31));
   refreshCameraButton_->setStyleSheet(QString::fromUtf8(""));
   refreshCameraButton_->setFlat(false);
