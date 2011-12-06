@@ -655,6 +655,10 @@ void DefoMainWindow::toggleAreaDisplay( bool isChecked ) {
 ///
 void DefoMainWindow::loadImageFromCamera( void ) {
 
+  // temp display
+  QImage tmpImage( "icons/loading.jpg" );
+  rawimageLabel_->displayImageToSize( tmpImage );
+
   // image is stored as a "set-" file
   // above the subfolder structure
   currentFolderName_ = baseFolderName_ + "/" + measurementidTextedit_->toPlainText();
