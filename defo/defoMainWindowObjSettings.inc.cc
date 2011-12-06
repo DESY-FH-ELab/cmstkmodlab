@@ -130,7 +130,7 @@ void DefoMainWindow::setupUi( void ) {
   refreshCameraButton_->setFlat(false);
   refreshFileButton_ = new QPushButton(refreshGroupBox_);
   refreshFileButton_->setObjectName(QString::fromUtf8("refreshFileButton_"));
-  refreshFileButton_->setEnabled(false);
+  refreshFileButton_->setEnabled(true);
   refreshFileButton_->setGeometry(QRect(10, 60, 81, 31));
   refreshFileButton_->setStyleSheet(QString::fromUtf8(""));
   refreshFileButton_->setFlat(false);

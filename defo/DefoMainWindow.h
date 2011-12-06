@@ -100,6 +100,8 @@ class DefoMainWindow : public QWidget {
   void loadImageFromCamera( void );
   void handleCameraAction( DefoCamHandler::Action );
 
+  void loadImageFromFile( void );
+
  signals:
 
   void pollAction( void );

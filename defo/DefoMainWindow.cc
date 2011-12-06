@@ -56,8 +56,9 @@ void DefoMainWindow::setupSignalsAndSlots( void ) {
   connect( this, SIGNAL(imagelabelDisplayAreas(bool)), rawimageLabel_, SLOT(displayAreas(bool)) );
   connect( this, SIGNAL(imagelabelRefreshAreas(std::vector<DefoArea>)), rawimageLabel_, SLOT(refreshAreas(std::vector<DefoArea>)) );
   connect( refreshCameraButton_, SIGNAL(clicked()), this, SLOT(loadImageFromCamera()) );
-  qRegisterMetaType<DefoCamHandler::Action>("DefoCamHandler::Action");
+  qRegisterMetaType<DefoCamHandler::Action>("DefoCamHandler::Action"); // signal is from qthread
   connect( &camHandler_, SIGNAL(actionFinished(DefoCamHandler::Action)), this, SLOT(handleCameraAction(DefoCamHandler::Action)) );
+  connect( refreshFileButton_, SIGNAL(clicked()), this, SLOT(loadImageFromFile()) );
 
   // action polling
   connect( this, SIGNAL(pollAction()), schedule_, SLOT(pollAction()) );
@@ -650,8 +651,9 @@ void DefoMainWindow::toggleAreaDisplay( bool isChecked ) {
 
 ///
 /// this function triggers threaded file download from the camera;
+/// the thread emits actionFinished when ready which is connected to handleCameraAction;
 /// the file path has to be put in filepathPlaced_
-/// so that displayImageFromCamera() can pick it up there
+/// so that handleCameraAction can pick it up there
 ///
 void DefoMainWindow::loadImageFromCamera( void ) {
 
@@ -720,8 +722,16 @@ void DefoMainWindow::handleCameraAction( DefoCamHandler::Action action ) {
 	throw; // for the moment
       }
       
+      rawimageLabel_->setRotation( true );
       rawimageLabel_->displayImageToSize( img.getImage() );
       this->setCursor( Qt::ArrowCursor );
+      areaNewButton_->setEnabled( true );
+
+      // image info
+      QDateTime datime = QDateTime::currentDateTime();
+      imageinfoTextedit_->appendPlainText( QString( "Raw image size: %1 x %2 pixel" ).arg(img.getImage().width()).arg(img.getImage().height()) );
+      imageinfoTextedit_->appendPlainText( QString( "Fetched: %1" ).arg( datime.toString( QString( "dd.MM.yy hh:mm:ss" ) ) ) );
+      imageinfoTextedit_->appendPlainText( QString( "Type: from camera" ) );
 
     } break;
 
@@ -731,5 +741,38 @@ void DefoMainWindow::handleCameraAction( DefoCamHandler::Action action ) {
 
   }
 
+
+}
+
+
+
+///
+///
+///
+void DefoMainWindow::loadImageFromFile( void ) {
+  
+  QFileDialog::Options options;
+
+  QString selectedFilter;
+  QString fileName = QFileDialog::getOpenFileName( 0,
+						   QString("Image"),
+						   QString("."),
+						   QString("Raw image files (*.jpg *png)"),
+						   &selectedFilter,
+						   options );
+
+  if( fileName.isEmpty() ) return;
+
+  std::ifstream file( fileName.toStdString().c_str() ); 
+
+  QImage img( fileName );
+  rawimageLabel_->setRotation( true );
+  rawimageLabel_->displayImageToSize( img );
+  areaNewButton_->setEnabled( true );
+
+  QDateTime datime = QDateTime::currentDateTime();
+  imageinfoTextedit_->appendPlainText( QString( "Raw image size: %1 x %2 pixel" ).arg(img.width()).arg(img.height()) );
+  imageinfoTextedit_->appendPlainText( QString( "Fetched: %1" ).arg( datime.toString( QString( "dd.MM.yy hh:mm:ss" ) ) ) );
+  imageinfoTextedit_->appendPlainText( QString( "Type: from disk [%1]" ).arg( fileName ) );
 
 }
