@@ -44,7 +44,7 @@
 #include <QMessageBox>
 #include <QInputDialog>
 #include <QCheckBox>
-
+//#include <QMetaEnum>
 
 #include "DefoSurfacePlot.h"
 #include "DefoSchedule.h"
@@ -62,16 +62,15 @@
 QT_BEGIN_NAMESPACE
 
 
-
-
-
 ///
 ///
 ///
 class DefoMainWindow : public QWidget {
 
   Q_OBJECT
-
+  Q_ENUMS( ShutterSpeed )
+  Q_ENUMS( Aperture )
+  Q_ENUMS( Iso )
 
  public:
   DefoMainWindow( QWidget *parent = 0 );
@@ -80,6 +79,9 @@ class DefoMainWindow : public QWidget {
   void setupUi( void );
   void retranslateUi( void );
   void setupSignalsAndSlots( void );
+
+  // use the same enums as EOS550D class
+  #include "../devices/Canon/eosParameters.h"
 
  public slots:
 
@@ -102,6 +104,7 @@ class DefoMainWindow : public QWidget {
 
   void loadImageFromFile( void );
 
+
  signals:
 
   void pollAction( void );
@@ -110,6 +113,8 @@ class DefoMainWindow : public QWidget {
 
 
  private:
+
+  void fillComboBoxes( void );
 
   unsigned int debugLevel_;
 
@@ -177,6 +182,7 @@ class DefoMainWindow : public QWidget {
   QPushButton *measurementidEditButton_;
   QPushButton *measurementidDefaultButton_;
   QPlainTextEdit *measurementidTextedit_;
+  QPushButton *quitButton_;
   QGroupBox *imageinfoGroupBox_;
   QPlainTextEdit *imageinfoTextedit_;
   QWidget *tab_2;
@@ -346,8 +352,17 @@ class DefoMainWindow : public QWidget {
   QDoubleSpinBox *geometryPitchSpinbox2_;
   QStatusBar *statusbar;
 
-
-
+  QGroupBox *cameraOptionsGroupBox_;
+  QComboBox *apertureComboBox_;
+  QLabel *apertureLabel_;
+  QLabel *exptimeLabel_;
+  QComboBox *exptimeComboBox_;
+  QLabel *isoLabel_;
+  QComboBox *isoComboBox_;
+  QPushButton *testconnectionButton_;
+  QLabel *wbalanceLabel_;
+  QComboBox *wbalanceComboBox_;
+  
 };
 
 

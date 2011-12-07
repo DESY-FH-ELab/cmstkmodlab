@@ -247,6 +247,13 @@ void DefoMainWindow::setupUi( void ) {
   measurementidGroupBox_->setFont(font4);
   measurementidGroupBox_->setStyleSheet(QString::fromUtf8("color: rgb(0, 0, 127);"));
   measurementidGroupBox_->setAlignment(Qt::AlignCenter);
+  QFont quitButtonFont;
+  quitButtonFont.setBold(true);
+  quitButtonFont.setWeight(75);
+  quitButton_ = new QPushButton(measurementidGroupBox_);
+  quitButton_->setObjectName(QString::fromUtf8("quitButton_"));
+  quitButton_->setGeometry(QRect(259, 80, 81, 31));
+  quitButton_->setFont(quitButtonFont);
   measurementidEditButton_ = new QPushButton(measurementidGroupBox_);
   measurementidEditButton_->setObjectName(QString::fromUtf8("measurementidEditButton_"));
   measurementidEditButton_->setGeometry(QRect(10, 80, 61, 31));
@@ -1409,7 +1416,58 @@ void DefoMainWindow::setupUi( void ) {
   geometryPitchSpinbox2_->setObjectName(QString::fromUtf8("geometryPitchSpinbox2_"));
   geometryPitchSpinbox2_->setGeometry(QRect(40, 70, 71, 26));
   geometryPitchSpinbox2_->setStyleSheet(QString::fromUtf8("background-color: rgb(255, 255, 255);"));
+
+  cameraOptionsGroupBox_ = new QGroupBox(advanced_tab);
+  cameraOptionsGroupBox_->setObjectName(QString::fromUtf8("cameraOptionsGroupBox_"));
+  cameraOptionsGroupBox_->setGeometry(QRect(430, 610, 601, 161));
+  cameraOptionsGroupBox_->setFont(font1);
+  cameraOptionsGroupBox_->setStyleSheet(QString::fromUtf8("color: rgb(0, 0, 127);"));
+  cameraOptionsGroupBox_->setAlignment(Qt::AlignCenter);
+  apertureComboBox_ = new QComboBox(cameraOptionsGroupBox_);
+  apertureComboBox_->setObjectName(QString::fromUtf8("apertureComboBox_"));
+  apertureComboBox_->setGeometry(QRect(80, 30, 81, 31));
+  apertureLabel_ = new QLabel(cameraOptionsGroupBox_);
+  apertureLabel_->setObjectName(QString::fromUtf8("apertureLabel_"));
+  apertureLabel_->setGeometry(QRect(10, 30, 61, 31));
+  apertureLabel_->setFont(font9);
+  apertureLabel_->setStyleSheet(QString::fromUtf8("color: rgb(1, 89, 23);"));
+  apertureLabel_->setAlignment(Qt::AlignCenter);
+  exptimeLabel_ = new QLabel(cameraOptionsGroupBox_);
+  exptimeLabel_->setObjectName(QString::fromUtf8("exptimeLabel_"));
+  exptimeLabel_->setGeometry(QRect(10, 70, 61, 31));
+  exptimeLabel_->setFont(font9);
+  exptimeLabel_->setStyleSheet(QString::fromUtf8("color: rgb(1, 89, 23);"));
+  exptimeLabel_->setAlignment(Qt::AlignCenter);
+  exptimeComboBox_ = new QComboBox(cameraOptionsGroupBox_);
+  exptimeComboBox_->setObjectName(QString::fromUtf8("exptimeComboBox_"));
+  exptimeComboBox_->setGeometry(QRect(80, 70, 81, 31));
+  isoLabel_ = new QLabel(cameraOptionsGroupBox_);
+  isoLabel_->setObjectName(QString::fromUtf8("isoLabel_"));
+  isoLabel_->setGeometry(QRect(10, 110, 61, 31));
+  isoLabel_->setFont(font9);
+  isoLabel_->setStyleSheet(QString::fromUtf8("color: rgb(1, 89, 23);"));
+  isoLabel_->setAlignment(Qt::AlignCenter);
+  isoComboBox_ = new QComboBox(cameraOptionsGroupBox_);
+  isoComboBox_->setObjectName(QString::fromUtf8("isoComboBox_"));
+  isoComboBox_->setGeometry(QRect(80, 110, 81, 31));
+  testconnectionButton_ = new QPushButton(cameraOptionsGroupBox_);
+  testconnectionButton_->setObjectName(QString::fromUtf8("testconnectionButton_"));
+  testconnectionButton_->setGeometry(QRect(480, 30, 101, 31));
+  testconnectionButton_->setFont(font2);
+  wbalanceLabel_ = new QLabel(cameraOptionsGroupBox_);
+  wbalanceLabel_->setObjectName(QString::fromUtf8("wbalanceLabel_"));
+  wbalanceLabel_->setGeometry(QRect(170, 30, 71, 31));
+  wbalanceLabel_->setFont(font9);
+  wbalanceLabel_->setStyleSheet(QString::fromUtf8("color: rgb(1, 89, 23);"));
+  wbalanceLabel_->setAlignment(Qt::AlignCenter);
+  wbalanceComboBox_ = new QComboBox(cameraOptionsGroupBox_);
+  wbalanceComboBox_->setObjectName(QString::fromUtf8("wbalanceComboBox_"));
+  wbalanceComboBox_->setGeometry(QRect(250, 30, 81, 31));
+
+
   mainTabWidget_->addTab(advanced_tab, QString());
+
+
   //  MainWindow->setCentralWidget(centralwidget);
   // setCentralWidget(centralwidget);
   //  statusbar = new QStatusBar(this);
@@ -1466,6 +1524,7 @@ void DefoMainWindow::retranslateUi( void ) {
   measurementidEditButton_->setText(QApplication::translate("MainWindow", "Edit", 0, QApplication::UnicodeUTF8));
   measurementidDefaultButton_->setText(QApplication::translate("MainWindow", "Default", 0, QApplication::UnicodeUTF8));
   measurementidTextedit_->setPlainText(QApplication::translate("MainWindow", "", 0, QApplication::UnicodeUTF8));
+  quitButton_->setText(QApplication::translate("MainWindow", "QUIT", 0, QApplication::UnicodeUTF8));
   imageinfoGroupBox_->setTitle(QApplication::translate("MainWindow", "Image info", 0, QApplication::UnicodeUTF8));
 //   imageinfoTextedit_->setPlainText(QApplication::translate("MainWindow", "date:\n"
 // 							   "size:\n"
@@ -1580,7 +1639,17 @@ void DefoMainWindow::retranslateUi( void ) {
   geometryPitchGroupBox_->setTitle(QApplication::translate("MainWindow", "Pixel pitch (\302\265m)", 0, QApplication::UnicodeUTF8));
   geometryPitchLabel1_->setText(QApplication::translate("MainWindow", "X", 0, QApplication::UnicodeUTF8));
   geometryPitchLabel2_->setText(QApplication::translate("MainWindow", "Y", 0, QApplication::UnicodeUTF8));
+
+  cameraOptionsGroupBox_->setTitle(QApplication::translate("MainWindow", "Camera options", 0, QApplication::UnicodeUTF8));
+  apertureLabel_->setText(QApplication::translate("MainWindow", "Aperture", 0, QApplication::UnicodeUTF8));
+  exptimeLabel_->setText(QApplication::translate("MainWindow", "ExpTime", 0, QApplication::UnicodeUTF8));
+  isoLabel_->setText(QApplication::translate("MainWindow", "Iso", 0, QApplication::UnicodeUTF8));
+  testconnectionButton_->setText(QApplication::translate("MainWindow", "Test connection", 0, QApplication::UnicodeUTF8));
+  wbalanceLabel_->setText(QApplication::translate("MainWindow", "WBalance", 0, QApplication::UnicodeUTF8));
   mainTabWidget_->setTabText(mainTabWidget_->indexOf(advanced_tab), QApplication::translate("MainWindow", "Advanced", 0, QApplication::UnicodeUTF8));
+
+  mainTabWidget_->setTabText(mainTabWidget_->indexOf(advanced_tab), QApplication::translate("MainWindow", "Advanced", 0, QApplication::UnicodeUTF8));
+
   //  Q_UNUSED(DefoMainWindow);
 
 }

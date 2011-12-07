@@ -39,6 +39,9 @@ DefoMainWindow::DefoMainWindow( QWidget* parent ) : QWidget( parent ) {
   baseFolderName_ = basefolderTextedit_->toPlainText(); // LOAD DEFAULT
   defaultMeasurementId();
 
+  // supply combo boxes with allowed values
+  fillComboBoxes();
+
 }
 
 
@@ -77,6 +80,8 @@ void DefoMainWindow::setupSignalsAndSlots( void ) {
   // measurement id
   connect( measurementidEditButton_, SIGNAL(clicked()), this, SLOT(editMeasurementId()) );
   connect( measurementidDefaultButton_, SIGNAL(clicked()), this, SLOT(defaultMeasurementId()) );
+  connect( quitButton_, SIGNAL(clicked()), qApp, SLOT(quit()));
+
 
   // offline display
   connect( displaytype3DButton_, SIGNAL(toggled( bool ) ), surfacePlot_, SLOT( toggleView( bool ) ) );
@@ -783,3 +788,94 @@ void DefoMainWindow::loadImageFromFile( void ) {
   imageinfoTextedit_->appendPlainText( QString( "Type: from disk [%1]" ).arg( fileName ) );
 
 }
+
+
+
+///
+///
+///
+void DefoMainWindow::fillComboBoxes( void ) {
+
+
+  // shutter speed
+  int enumIndex = metaObject()->indexOfEnumerator( "ShutterSpeed" );
+  QMetaEnum metaEnum = metaObject()->enumerator( enumIndex );
+  
+  for( int i = 0; i < metaEnum.keyCount(); ++i ) {
+    
+    std::string shutterSpeedEntry( metaEnum.key( i ) );
+    
+    // cases
+    if( "BULB" == shutterSpeedEntry ) exptimeComboBox_->addItem( "B" );
+    else if( "SINVALID" == shutterSpeedEntry ) continue; // dont want this in the list
+    else { // now parse the entry
+      
+      if( "L" == shutterSpeedEntry.substr( 0, 1 ) ) {
+	shutterSpeedEntry.erase( 0, 1 ); // remove the "L"
+	replace( shutterSpeedEntry.begin(), shutterSpeedEntry.end(), '_', '.');
+	shutterSpeedEntry.append( "s" );
+      }
+
+      else if( "S" == shutterSpeedEntry.substr( 0, 1 ) ) {
+	shutterSpeedEntry.erase( 0, 1 ); // remove the "S"
+	shutterSpeedEntry.insert( 0, "1/" );
+	shutterSpeedEntry.append( "s" );
+      }
+
+      exptimeComboBox_->addItem( shutterSpeedEntry.c_str() );
+
+    }
+    
+  } // for
+  exptimeComboBox_->addItem( "-" ); // when cam is off
+
+
+  // aperture
+  enumIndex = metaObject()->indexOfEnumerator( "Aperture" );
+  metaEnum = metaObject()->enumerator( enumIndex );
+  
+  for( int i = 0; i < metaEnum.keyCount(); ++i ) {
+    
+    std::string apertureEntry( metaEnum.key( i ) );
+    
+    // cases
+    if( "FINVALID" == apertureEntry ) continue; // dont want this in the list
+    else { // now parse the entry
+      
+      replace( apertureEntry.begin(), apertureEntry.end(), '_', '.');
+      apertureComboBox_->addItem( apertureEntry.c_str() );
+
+    }
+    
+  } // for
+  apertureComboBox_->addItem( "-" ); // when cam is off
+  
+
+
+  // iso
+  enumIndex = metaObject()->indexOfEnumerator( "Iso" );
+  metaEnum = metaObject()->enumerator( enumIndex );
+  
+  for( int i = 0; i < metaEnum.keyCount(); ++i ) {
+    
+    std::string isoEntry( metaEnum.key( i ) );
+    
+    // cases
+    if( "ISOINVALID" == isoEntry ) continue; // dont want this in the list
+    else { // now parse the entry
+      
+      isoEntry.erase( 0, 3 ); // remove the "ISO"
+      isoComboBox_->addItem( isoEntry.c_str() );
+
+    }
+    
+  } // for
+  isoComboBox_->addItem( "-" ); // when cam is off
+
+
+
+}
+
+
+
+
