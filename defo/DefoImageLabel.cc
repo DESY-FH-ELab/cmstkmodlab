@@ -35,7 +35,7 @@ void DefoImageLabel::displayImageToSize( QImage& originalImage ) {
   // rotate if required
   if( isRotation_ ) {
     QTransform rotateTransform;
-    rotateTransform.rotate( 90. );
+    rotateTransform.rotate( -90. );
     *transformedImage = transformedImage->transformed( rotateTransform );
   }
 
@@ -117,36 +117,14 @@ void DefoImageLabel::createAndSendArea( void ) {
 		   rubberBand_->size().width(),
 		   rubberBand_->size().height() );
 
-//   std::cout << "LOC: " 
-// 	    << rectangle.x() << " " 
-// 	    << rectangle.y() << " " 
-// 	    << rectangle.width() << " " 
-// 	    << rectangle.height() << " " 
-// 	    << std::endl; /////////////////////////////////
-
+  if( debugLevel_ >= 3 ) std::cout << " [DefoImageLabel::createAndSendArea] =3= Created area: x: " 
+				   << rectangle.x() << " y: " << rectangle.y()
+				   << " w: " << rectangle.width() << " h: " << rectangle.height() 
+				   << " (in local " << (isRotation_?"rotated ":"") << "coords)"
+				   << std::endl << std::flush;
 
   transformToOriginal( rectangle );
 
-//   std::cout << "ORIG: " 
-// 	    << rectangle.x() << " " 
-// 	    << rectangle.y() << " " 
-// 	    << rectangle.width() << " " 
-// 	    << rectangle.height() << " " 
-// 	    << std::endl; /////////////////////////////////
-
-
-
-//   transformToLocal( rectangle ); /////////////////////////////////
-
-
-
-//   std::cout << "BACK: " 
-// 	    << rectangle.x() << " " 
-// 	    << rectangle.y() << " " 
-// 	    << rectangle.width() << " " 
-// 	    << rectangle.height() << " " 
-// 	    << std::endl; /////////////////////////////////
-    
   // send off the result
   DefoArea area( rectangle );
   emit( areaDefined( area ) );
@@ -159,10 +137,10 @@ void DefoImageLabel::createAndSendArea( void ) {
   setCursor( Qt::ArrowCursor );
 
 
-  if( debugLevel_ >= 3 ) std::cout << " [DefoImageLabel::createAndSendArea] =3= Created area: x: " 
+  if( debugLevel_ >= 3 ) std::cout << " [DefoImageLabel::createAndSendArea] =3= Emitted area: x: " 
 				   << rectangle.x() << " y: " << rectangle.y()
-				   << " w: " << rectangle.width() << " h: " << rectangle.height() << " (in original image)"
-				   << std::endl;
+				   << " w: " << rectangle.width() << " h: " << rectangle.height() << " (in original coords)"
+				   << std::endl << std::flush;
 }
 
 
@@ -222,37 +200,35 @@ void DefoImageLabel::transformToOriginal( QRect& rect ) {
   // get the scale factors from the original size of the image;
   // assume the image is scaled to the size of *this
   // and might be rotated -90deg
+
   double xScale = 0., yScale = 0.;
+
   if( isRotation_ ) {
+
     xScale = originalImageSize_.height() / static_cast<double>( width() );
     yScale = originalImageSize_.width() / static_cast<double>( height() );
+
+    // the rotated upper-left and lower-right will be the current:
+    QPoint lowerLeft( rect.x(), rect.y()+rect.height() );
+    QPoint upperRight( rect.x()+rect.width(), rect.y() );
+
+    QPoint newUpperLeft( yScale * ( height() - lowerLeft.y() ), xScale * lowerLeft.x() );
+    QPoint newLowerRight( yScale * ( height() - upperRight.y() ), xScale * upperRight.x() );
+
+    rect = QRect( newUpperLeft.x(), newUpperLeft.y(), (newLowerRight-newUpperLeft).x(), (newLowerRight - newUpperLeft).y() );
+    
   }
   else {
+
     xScale = originalImageSize_.width() / static_cast<double>( width() );
     yScale = originalImageSize_.height() / static_cast<double>( height() );
-  }
 
-  // eventually we must rotate it +90deg
-  if( isRotation_ ) {
-    rect.setRect( rect.y(), 
-		   width() - rect.x(), 
-		   rect.height(), 
-		   rect.width()   );
-  }
-  
-  // scale it according to the original image size
-  rect.setRect(  static_cast<int>( rect.x() * xScale ),
-		  static_cast<int>( rect.y() * yScale ),
-		  static_cast<int>( rect.width() * xScale ),
-		  static_cast<int>( rect.height() * yScale )  );
+    // no rotation, so scale the points directly
+    QPoint upperLeft( xScale * rect.x(), yScale * rect.y() );
+    QPoint lowerRight( xScale * ( rect.x() + rect.width() ), yScale * ( rect.y() + rect.height() ) );
 
-  // if rotated, the new origin (described by x(),y())
-  // is now the lower left, need to shift
-  if( isRotation_ ) {
-    rect.setRect(  static_cast<int>( rect.x() ),
-		   static_cast<int>( rect.y() - rect.height()  ),
-		   static_cast<int>( rect.width() ),
-		   static_cast<int>( rect.height() )  );
+    rect = QRect( upperLeft.x(), upperLeft.y(), (lowerRight-upperLeft).x(), (lowerRight - upperLeft).y() );
+
   }
 
 }
@@ -273,35 +249,31 @@ void DefoImageLabel::transformToLocal( QRect& rect ) {
   // and might be rotated -90deg
   double xScale = 0., yScale = 0.;
   if( isRotation_ ) {
+
     xScale = height() / static_cast<double>( originalImageSize_.width() );
     yScale = width() / static_cast<double>( originalImageSize_.height() );
+
+    // the rotated upper-left and lower right will be the current:
+    QPoint upperRight( rect.x()+rect.width(), rect.y() );
+    QPoint lowerLeft( rect.x(), rect.y()+rect.height() );
+
+    QPoint newUpperLeft( yScale * upperRight.y(), xScale * ( originalImageSize_.width() - upperRight.x() ) );
+    QPoint newLowerRight( yScale * lowerLeft.y(), xScale * ( originalImageSize_.width() - lowerLeft.x() ) );
+
+    rect = QRect( newUpperLeft.x(), newUpperLeft.y(), (newLowerRight-newUpperLeft).x(), (newLowerRight - newUpperLeft).y() );
+
   }
   else {
+
     xScale = width() / static_cast<double>( originalImageSize_.width() );
     yScale = height() / static_cast<double>( originalImageSize_.height() );
-  }
 
-  // eventually we must rotate it +90deg
-  if( isRotation_ ) {
-    rect.setRect( originalImageSize_.height() - rect.y(), 
-		  rect.x(), 
-		  rect.height(), 
-		  rect.width()   );
-  }
-  
-  // scale it according to the original image size
-  rect.setRect(  static_cast<int>( rect.x() * xScale ),
-		 static_cast<int>( rect.y() * yScale ),
-		 static_cast<int>( rect.width() * xScale ),
-		 static_cast<int>( rect.height() * yScale )  );
+    // no rotation, so scale the points directly
+    QPoint upperLeft( xScale * rect.x(), yScale * rect.y() );
+    QPoint lowerRight( xScale * ( rect.x() + rect.width() ), yScale * ( rect.y() + rect.height() ) );
 
-  // if rotated, the new origin (described by x(),y())
-  // is now the upper right, need to shift
-  if( isRotation_ ) {
-    rect.setRect(  static_cast<int>( rect.x() - rect.width() ),
-		   static_cast<int>( rect.y() ),
-		   static_cast<int>( rect.width() ),
-		   static_cast<int>( rect.height() )  );
+    rect = QRect( upperLeft.x(), upperLeft.y(), (lowerRight-upperLeft).x(), (lowerRight - upperLeft).y() );
+
   }
 
 }

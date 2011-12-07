@@ -25,3 +25,6 @@ files:
 
 defo.png: deformed surface
 ref.png: flat sensor
+
+defo_900, ref_900:
+same, but scaled to 900x600 for testing

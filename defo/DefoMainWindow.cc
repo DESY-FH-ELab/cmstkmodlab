@@ -603,6 +603,11 @@ void DefoMainWindow::receiveArea( DefoArea area ) {
   // refresh display
   emit( imagelabelRefreshAreas( areas_ ) );
 
+  if( debugLevel_ >= 3 ) std::cout << " [DefoMainWindow::receiveArea] =3= Received area: x: " 
+				   << area.getRectangle().x() << " y: " << area.getRectangle().y()
+				   << " w: " << area.getRectangle().width() << " h: " << area.getRectangle().height() << " (in original image)"
+				   << std::endl;
+
 }
 
 
@@ -729,6 +734,7 @@ void DefoMainWindow::handleCameraAction( DefoCamHandler::Action action ) {
 
       // image info
       QDateTime datime = QDateTime::currentDateTime();
+      imageinfoTextedit_->clear();
       imageinfoTextedit_->appendPlainText( QString( "Raw image size: %1 x %2 pixel" ).arg(img.getImage().width()).arg(img.getImage().height()) );
       imageinfoTextedit_->appendPlainText( QString( "Fetched: %1" ).arg( datime.toString( QString( "dd.MM.yy hh:mm:ss" ) ) ) );
       imageinfoTextedit_->appendPlainText( QString( "Type: from camera" ) );
@@ -771,6 +777,7 @@ void DefoMainWindow::loadImageFromFile( void ) {
   areaNewButton_->setEnabled( true );
 
   QDateTime datime = QDateTime::currentDateTime();
+  imageinfoTextedit_->clear();
   imageinfoTextedit_->appendPlainText( QString( "Raw image size: %1 x %2 pixel" ).arg(img.width()).arg(img.height()) );
   imageinfoTextedit_->appendPlainText( QString( "Fetched: %1" ).arg( datime.toString( QString( "dd.MM.yy hh:mm:ss" ) ) ) );
   imageinfoTextedit_->appendPlainText( QString( "Type: from disk [%1]" ).arg( fileName ) );
