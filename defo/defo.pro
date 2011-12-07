@@ -7,14 +7,13 @@ macx {
     INCLUDEPATH += /opt/local/include/qwtplot3d
     INCLUDEPATH += /opt/local/include/GL
     LIBS += -L/opt/local/lib -lqwt -lqwtplot3d
-    LIBS += ../devices/Keithley/*.o ../devices/Greisinger/*.o ../devices/Julabo/*.o ../devices/Hameg/*.o
+    LIBS += ../devices/Keithley/*.o ../devices/Greisinger/*.o ../devices/Julabo/*.o ../devices/Hameg/*.o ../devices/Canon/*.o
     LIBS += -lboost_serialization
     DEFINES += USE_FAKEIO
 }
 else { 
     INCLUDEPATH += /usr/include/qwt
     INCLUDEPATH += /usr/include/qwtplot3d
-    INCLUDEPATH += ../devices/Canon
     LIBS += -lqwt -lqwtplot3d
     LIBS += -L../devices/lib -lTkModLabKeithley -lTkModLabGreisinger -lTkModLabJulabo -lTkModLabHameg -lTkModLabCanon
     LIBS += -L/usr/lib64 -lboost_serialization
