@@ -8,7 +8,7 @@
 
 #include <QThread>
 
-#include "EOS550DSyscall.h"
+#include "devices/Canon/EOS550DSyscall.h"
 
 
 ///
