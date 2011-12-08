@@ -24,6 +24,15 @@ class DefoRecoSurface {
   DefoRecoSurface();
   const DefoSurface reconstruct( DefoPointCollection&, DefoPointCollection& );
 
+  void setSpacingEstimate( int s ) { spacingEstimate_ = s; }
+  void setSearchPathHalfWidth( int s ) { searchPathHalfWidth_ = s; }
+  void setNominalGridDistance( double n ) { nominalGridDistance_ = n; }
+  void setNominalCameraDistance( double n ) { nominalCameraDistance_ = n; calculateHelpers(); }
+  void setNominalViewingAngle( double a ) { nominalViewingAngle_ = a; calculateHelpers(); }
+  void setPitchX( double p ) { pitchX_ = p; }
+  void setPitchY( double p ) { pitchY_ = p; }
+  void setFocalLength( double l ) { focalLength_ = l; }
+
  private:
   const DefoSplineField createXYSplines( DefoPointCollection const& );
   const DefoSplineField createZSplines( DefoPointCollection const&, DefoPointCollection const& );
@@ -37,6 +46,7 @@ class DefoRecoSurface {
   const std::pair<bool,DefoPointCollection::const_iterator> findPointByIndex( DefoPointCollection const&, std::pair<int,int> const& ) const;
   void removeGlobalOffset( DefoSplineField& ) const;
   void removeTilt( DefoSplineField& ) const;
+  void calculateHelpers( void );
 
   int spacingEstimate_;
   int searchPathHalfWidth_;

@@ -13,8 +13,8 @@ DefoRecoImage::DefoRecoImage() {
   step2Threshold_ = cfgReader.getValue<int>( "STEP2_THRESHOLD" );
   step3Threshold_ = cfgReader.getValue<int>( "STEP3_THRESHOLD" );
   halfSquareWidth_ = cfgReader.getValue<int>( "HALF_SQUARE_WIDTH" );
-  squareSeedOffsetX_ = cfgReader.getValue<int>( "SQUARE_SEED_OFFSET_X" );
-  squareSeedOffsetY_ = cfgReader.getValue<int>( "SQUARE_SEED_OFFSET_Y" );
+  //  squareSeedOffsetX_ = cfgReader.getValue<int>( "SQUARE_SEED_OFFSET_X" );
+  //  squareSeedOffsetY_ = cfgReader.getValue<int>( "SQUARE_SEED_OFFSET_Y" );
   blueishnessThreshold_ = cfgReader.getValue<double>( "BLUEISHNESS_THRESHOLD" );
   debugLevel_ = cfgReader.getValue<unsigned int>( "DEBUG_LEVEL" );
 

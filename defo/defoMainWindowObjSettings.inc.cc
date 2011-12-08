@@ -1166,16 +1166,22 @@ void DefoMainWindow::setupUi( void ) {
   font8.setWeight(50);
   chillerParametersSpinbox1_->setFont(font1);
   chillerParametersSpinbox1_->setStyleSheet(QString::fromUtf8("background-color: rgb(255, 255, 255)"));
+  chillerParametersSpinbox1_->setMinimum( 0.1 );
+  chillerParametersSpinbox1_->setMaximum( 99.9 );
   chillerParametersSpinbox2_ = new QSpinBox(chillerparametersGroupBox_);
   chillerParametersSpinbox2_->setObjectName(QString::fromUtf8("chillerParametersSpinbox2_"));
   chillerParametersSpinbox2_->setGeometry(QRect(80, 100, 91, 41));
   chillerParametersSpinbox2_->setFont(font1);
   chillerParametersSpinbox2_->setStyleSheet(QString::fromUtf8("background-color: rgb(255, 255, 255)"));
+  chillerParametersSpinbox2_->setMinimum( 3 );
+  chillerParametersSpinbox2_->setMaximum( 9999 );
   chillerParametersSpinbox3_ = new QSpinBox(chillerparametersGroupBox_);
   chillerParametersSpinbox3_->setObjectName(QString::fromUtf8("chillerParametersSpinbox3_"));
   chillerParametersSpinbox3_->setGeometry(QRect(80, 160, 91, 41));
   chillerParametersSpinbox3_->setFont(font1);
   chillerParametersSpinbox3_->setStyleSheet(QString::fromUtf8("background-color: rgb(255, 255, 255)"));
+  chillerParametersSpinbox3_->setMinimum( 0 );
+  chillerParametersSpinbox3_->setMaximum( 999 );
   chillerParametersLabel1_ = new QLabel(chillerparametersGroupBox_);
   chillerParametersLabel1_->setObjectName(QString::fromUtf8("chillerParametersLabel1_"));
   chillerParametersLabel1_->setGeometry(QRect(10, 50, 61, 16));
@@ -1422,11 +1428,12 @@ void DefoMainWindow::setupUi( void ) {
   geometryPitchSpinbox1_->setObjectName(QString::fromUtf8("geometryPitchSpinbox1_"));
   geometryPitchSpinbox1_->setGeometry(QRect(40, 30, 71, 26));
   geometryPitchSpinbox1_->setStyleSheet(QString::fromUtf8("background-color: rgb(255, 255, 255);"));
+  geometryPitchSpinbox1_->setDecimals(3);
   geometryPitchSpinbox2_ = new QDoubleSpinBox(geometryPitchGroupBox_);
   geometryPitchSpinbox2_->setObjectName(QString::fromUtf8("geometryPitchSpinbox2_"));
   geometryPitchSpinbox2_->setGeometry(QRect(40, 70, 71, 26));
   geometryPitchSpinbox2_->setStyleSheet(QString::fromUtf8("background-color: rgb(255, 255, 255);"));
-
+  geometryPitchSpinbox2_->setDecimals(3);
   cameraOptionsGroupBox_ = new QGroupBox(advanced_tab);
   cameraOptionsGroupBox_->setObjectName(QString::fromUtf8("cameraOptionsGroupBox_"));
   cameraOptionsGroupBox_->setGeometry(QRect(430, 610, 601, 161));
@@ -1483,10 +1490,12 @@ void DefoMainWindow::setupUi( void ) {
   cameraConnectionTestButton_->setObjectName(QString::fromUtf8("cameraConnectionTestButton_"));
   cameraConnectionTestButton_->setGeometry(QRect(20, 50, 91, 31));
   cameraConnectionTestButton_->setFont(normalButtonFont);
+  cameraConnectionTestButton_->setEnabled( false ); // not yet
   cameraConnectionResetButton_ = new QPushButton(cameraConnectionGroupBox_);
   cameraConnectionResetButton_->setObjectName(QString::fromUtf8("cameraConnectionResetButton_"));
   cameraConnectionResetButton_->setGeometry(QRect(20, 90, 91, 31));
   cameraConnectionResetButton_->setFont(normalButtonFont);
+  cameraConnectionResetButton_->setEnabled( false ); // not yet
 
   mainTabWidget_->addTab(advanced_tab, QString());
 

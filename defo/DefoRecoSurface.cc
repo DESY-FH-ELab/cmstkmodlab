@@ -19,7 +19,17 @@ DefoRecoSurface::DefoRecoSurface() {
   focalLength_= cfgReader.getValue<double>( "LENS_FOCAL_LENGTH" );
   debugLevel_ = cfgReader.getValue<unsigned int>( "DEBUG_LEVEL" );
 
-  // calculate some helper variables
+  calculateHelpers();
+
+}
+
+
+
+///
+/// calculate some helper variables
+///
+void DefoRecoSurface::calculateHelpers( void ) {
+
   heightAboveSensor_ = nominalCameraDistance_ * sin( nominalViewingAngle_ );
   if( tan( nominalViewingAngle_ ) != 0. ) horizontalDistanceToSensor_ = heightAboveSensor_ / tan( nominalViewingAngle_ );
   else {
@@ -28,7 +38,6 @@ DefoRecoSurface::DefoRecoSurface() {
   }
 
 }
-
 
 
 ///

@@ -105,6 +105,7 @@ class DefoMainWindow : public QWidget {
   void loadImageFromFile( void );
 
   void cameraEnabledButtonToggled( bool );
+  void writeParameters( void );
 
  signals:
 
@@ -117,7 +118,7 @@ class DefoMainWindow : public QWidget {
 
   void fillComboBoxes( void );
   void readCameraParametersFromCfgFile( void );
-  void writeParameters( void );
+
 
   unsigned int debugLevel_;
 

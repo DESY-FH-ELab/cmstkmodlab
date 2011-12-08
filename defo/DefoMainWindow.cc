@@ -33,7 +33,15 @@ DefoMainWindow::DefoMainWindow( QWidget* parent ) : QWidget( parent ) {
   geometryFSpinbox_->setValue( cfgReader.getValue<double>( "LENS_FOCAL_LENGTH" ) * 1000 ); // mm -> meter conversion!!
   geometryLgSpinbox_->setValue( cfgReader.getValue<double>( "NOMINAL_GRID_DISTANCE" ) * 1000 ); // mm -> meter conversion!!
   geometryLcSpinbox_->setValue( cfgReader.getValue<double>( "NOMINAL_CAMERA_DISTANCE" ) * 1000 ); // mm -> meter conversion!!
-  geometryDeltaSpinbox_->setValue( cfgReader.getValue<double>( "NOMINAL_VIEWING_ANGLE" ) ); 
+  geometryDeltaSpinbox_->setValue( cfgReader.getValue<double>( "NOMINAL_VIEWING_ANGLE" ) );
+  geometryPitchSpinbox1_->setValue( cfgReader.getValue<double>( "PIXEL_PITCH_X" ) * 1.e6 ); // m -> micrometer
+  geometryPitchSpinbox2_->setValue( cfgReader.getValue<double>( "PIXEL_PITCH_Y" ) * 1.e6); // m -> micrometer
+  surfaceRecoSpacingSpinbox_->setValue( cfgReader.getValue<int>( "SPACING_ESTIMATE" ) );
+  surfaceRecoSearchpathSpinbox_->setValue( cfgReader.getValue<int>( "SEARCH_PATH_HALF_WIDTH" ) );
+  chillerParametersSpinbox1_->setValue( cfgReader.getValue<double>( "CHILLER_PARAMETER_XP" ) );
+  chillerParametersSpinbox2_->setValue( cfgReader.getValue<int>( "CHILLER_PARAMETER_TN" ) );
+  chillerParametersSpinbox3_->setValue( cfgReader.getValue<int>( "CHILLER_PARAMETER_TV" ) );
+
   readCameraParametersFromCfgFile();
 
   cameraConnectionCheckBox_->setChecked( "true" == cfgReader.getValue<std::string>( "CAMERA_ON_WHEN_START" )?true:false);
@@ -110,6 +118,7 @@ void DefoMainWindow::setupSignalsAndSlots( void ) {
   // advanced
   connect( basefolderEditButton_, SIGNAL( clicked() ), this, SLOT( editBaseFolder() ) );
   connect( cameraConnectionCheckBox_, SIGNAL( toggled(bool) ), this, SLOT( cameraEnabledButtonToggled(bool) ) );
+  connect( advancedApplyButton_, SIGNAL( clicked() ), this, SLOT( writeParameters() ) );
 
 }
 
@@ -714,6 +723,7 @@ void DefoMainWindow::handleCameraAction( DefoCamHandler::Action action ) {
 
   case DefoCamHandler::GETCFG:
     {
+      this->setCursor( Qt::ArrowCursor );
     } break;
 
   case DefoCamHandler::SETCFG:
@@ -983,7 +993,25 @@ void DefoMainWindow::cameraEnabledButtonToggled( bool isChecked ) {
 ///
 void DefoMainWindow::writeParameters( void ) {
 
-
+  // defo classes
   
+
+  // camera
+  if( isCameraEnabled_ ) {
+
+    // load values from advanced tab comboboxes to cfg object
+    EOS550D::EOS550DConfig cfg;
+    cfg.shutterSpeed_ = static_cast<EOS550D::ShutterSpeed>( exptimeComboBox_->currentIndex() );
+    cfg.aperture_ = static_cast<EOS550D::Aperture>( apertureComboBox_->currentIndex() );
+    cfg.iso_ = static_cast<EOS550D::Iso>( isoComboBox_->currentIndex() );
+
+    // send it
+    camHandler_.setAction( DefoCamHandler::SETCFG );
+    camHandler_.setCfg( cfg );
+    camHandler_.start();
+
+    this->setCursor( Qt::BusyCursor );
+
+  }
 
 }
