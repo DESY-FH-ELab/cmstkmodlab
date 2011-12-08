@@ -4108,6 +4108,11 @@ grayscale-average:</string>
          <height>171</height>
         </rect>
        </property>
+       <property name="font" >
+        <font>
+         <pointsize>9</pointsize>
+        </font>
+       </property>
        <property name="styleSheet" >
         <string notr="true" >color: rgb(0, 0, 127);</string>
        </property>
@@ -4267,6 +4272,11 @@ grayscale-average:</string>
          <width>151</width>
          <height>81</height>
         </rect>
+       </property>
+       <property name="font" >
+        <font>
+         <pointsize>9</pointsize>
+        </font>
        </property>
        <property name="styleSheet" >
         <string notr="true" >color: rgb(0, 0, 127);</string>
@@ -5065,7 +5075,7 @@ color: rgb(170, 0, 0);</string>
         </rect>
        </property>
       </widget>
-      <widget class="QGroupBox" name="groupBox" >
+      <widget class="QGroupBox" name="cameraConnectionGroupBox_" >
        <property name="geometry" >
         <rect>
          <x>449</x>
@@ -5074,13 +5084,18 @@ color: rgb(170, 0, 0);</string>
          <height>131</height>
         </rect>
        </property>
+       <property name="font" >
+        <font>
+         <pointsize>10</pointsize>
+        </font>
+       </property>
        <property name="title" >
         <string>Connection</string>
        </property>
        <property name="alignment" >
         <set>Qt::AlignCenter</set>
        </property>
-       <widget class="QCheckBox" name="checkBox" >
+       <widget class="QCheckBox" name="cameraConnectionCheckBox_" >
         <property name="geometry" >
          <rect>
           <x>30</x>
@@ -5088,6 +5103,11 @@ color: rgb(170, 0, 0);</string>
           <width>71</width>
           <height>22</height>
          </rect>
+        </property>
+        <property name="font" >
+         <font>
+          <pointsize>9</pointsize>
+         </font>
         </property>
         <property name="text" >
          <string>Enabled</string>
@@ -5099,7 +5119,7 @@ color: rgb(170, 0, 0);</string>
          </size>
         </property>
        </widget>
-       <widget class="QPushButton" name="testconnectionButton_" >
+       <widget class="QPushButton" name="cameraConnectionTestButton_" >
         <property name="geometry" >
          <rect>
           <x>20</x>
@@ -5117,7 +5137,7 @@ color: rgb(170, 0, 0);</string>
          <string>Test</string>
         </property>
        </widget>
-       <widget class="QPushButton" name="testconnectionButton_1" >
+       <widget class="QPushButton" name="cameraConnectionResetButton_" >
         <property name="geometry" >
          <rect>
           <x>20</x>

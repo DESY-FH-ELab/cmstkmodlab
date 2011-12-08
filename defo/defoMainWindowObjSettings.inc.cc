@@ -12,6 +12,20 @@ void DefoMainWindow::setupUi( void ) {
   //  if (MainWindow->objectName().isEmpty()) MainWindow->setObjectName(QString::fromUtf8("MainWindow"));
   //  MainWindow->resize(1120, 900);
   resize(1120, 900);
+
+  // declare various fonts
+  QFont largeGroupBoxFont;
+  largeGroupBoxFont.setPointSize(12);
+
+  QFont smallGroupBoxFont;
+  smallGroupBoxFont.setPointSize(10);
+
+  QFont checkBoxFont( smallGroupBoxFont );
+  QFont normalButtonFont( smallGroupBoxFont );
+
+  QFont applyButtonFont;
+  applyButtonFont.setPointSize(11);
+
   QFont font;
   font.setPointSize(10);
 //   MainWindow->setFont(font);
@@ -1251,40 +1265,36 @@ void DefoMainWindow::setupUi( void ) {
   hswSpinBox_->setFont(font8);
   hswSpinBox_->setStyleSheet(QString::fromUtf8("background-color: rgb(255, 255, 255);"));
   hswSpinBox_->setDecimals(0);
-  groupBox_14 = new QGroupBox(advanced_tab);
-  groupBox_14->setObjectName(QString::fromUtf8("groupBox_14"));
-  groupBox_14->setGeometry(QRect(640, 40, 391, 61));
-  groupBox_14->setStyleSheet(QString::fromUtf8("background-color: rgb(236, 235, 234);"));
-  pushButton_12 = new QPushButton(groupBox_14);
-  pushButton_12->setObjectName(QString::fromUtf8("pushButton_12"));
-  pushButton_12->setGeometry(QRect(10, 10, 91, 41));
-  QFont font11;
-  font11.setPointSize(14);
-  font11.setBold(true);
-  font11.setWeight(75);
-  pushButton_12->setFont(font11);
-  pushButton_12->setStyleSheet(QString::fromUtf8("background-color: rgb(212, 212, 212);\n"
+  advancedActionGroupBox_ = new QGroupBox(advanced_tab);
+  advancedActionGroupBox_->setObjectName(QString::fromUtf8("advancedActionGroupBox_"));
+  advancedActionGroupBox_->setGeometry(QRect(640, 40, 391, 61));
+  advancedActionGroupBox_->setStyleSheet(QString::fromUtf8("background-color: rgb(236, 235, 234);"));
+  advancedApplyButton_ = new QPushButton(advancedActionGroupBox_);
+  advancedApplyButton_->setObjectName(QString::fromUtf8("advancedApplyButton_"));
+  advancedApplyButton_->setGeometry(QRect(10, 10, 91, 41));
+  advancedApplyButton_->setFont(applyButtonFont);
+  advancedApplyButton_->setStyleSheet(QString::fromUtf8("background-color: rgb(212, 212, 212);\n"
 						 "color: rgb(170, 0, 0);"));
-  pushButton_13 = new QPushButton(groupBox_14);
-  pushButton_13->setObjectName(QString::fromUtf8("pushButton_13"));
-  pushButton_13->setGeometry(QRect(110, 10, 61, 41));
-  pushButton_13->setFont(font2);
-  pushButton_13->setStyleSheet(QString::fromUtf8("background-color: rgb(212, 212, 212);"));
-  pushButton_14 = new QPushButton(groupBox_14);
-  pushButton_14->setObjectName(QString::fromUtf8("pushButton_14"));
-  pushButton_14->setGeometry(QRect(180, 10, 61, 41));
-  pushButton_14->setFont(font2);
-  pushButton_14->setStyleSheet(QString::fromUtf8("background-color: rgb(212, 212, 212);"));
-  pushButton_15 = new QPushButton(groupBox_14);
-  pushButton_15->setObjectName(QString::fromUtf8("pushButton_15"));
-  pushButton_15->setGeometry(QRect(250, 10, 61, 41));
-  pushButton_15->setFont(font2);
-  pushButton_15->setStyleSheet(QString::fromUtf8("background-color: rgb(212, 212, 212);"));
-  pushButton_18 = new QPushButton(groupBox_14);
-  pushButton_18->setObjectName(QString::fromUtf8("pushButton_18"));
-  pushButton_18->setGeometry(QRect(320, 10, 61, 41));
-  pushButton_18->setFont(font2);
-  pushButton_18->setStyleSheet(QString::fromUtf8("background-color: rgb(212, 212, 212);"));
+  advancedReadButton_ = new QPushButton(advancedActionGroupBox_);
+  advancedReadButton_->setObjectName(QString::fromUtf8("advancedReadButton_"));
+  advancedReadButton_->setGeometry(QRect(110, 10, 61, 41));
+  advancedReadButton_->setFont(applyButtonFont);
+  advancedReadButton_->setStyleSheet(QString::fromUtf8("background-color: rgb(212, 212, 212);"));
+  advancedLoadButton_ = new QPushButton(advancedActionGroupBox_);
+  advancedLoadButton_->setObjectName(QString::fromUtf8("advancedLoadButton_"));
+  advancedLoadButton_->setGeometry(QRect(180, 10, 61, 41));
+  advancedLoadButton_->setFont(applyButtonFont);
+  advancedLoadButton_->setStyleSheet(QString::fromUtf8("background-color: rgb(212, 212, 212);"));
+  advancedSaveButton_ = new QPushButton(advancedActionGroupBox_);
+  advancedSaveButton_->setObjectName(QString::fromUtf8("advancedSaveButton_"));
+  advancedSaveButton_->setGeometry(QRect(250, 10, 61, 41));
+  advancedSaveButton_->setFont(applyButtonFont);
+  advancedSaveButton_->setStyleSheet(QString::fromUtf8("background-color: rgb(212, 212, 212);"));
+  advancedDefaultButton_ = new QPushButton(advancedActionGroupBox_);
+  advancedDefaultButton_->setObjectName(QString::fromUtf8("advancedDefaultButton_"));
+  advancedDefaultButton_->setGeometry(QRect(320, 10, 61, 41));
+  advancedDefaultButton_->setFont(applyButtonFont);
+  advancedDefaultButton_->setStyleSheet(QString::fromUtf8("background-color: rgb(212, 212, 212);"));
   commentGroupBox_ = new QGroupBox(advanced_tab);
   commentGroupBox_->setObjectName(QString::fromUtf8("commentGroupBox_"));
   commentGroupBox_->setGeometry(QRect(40, 130, 581, 221));
@@ -1450,10 +1460,6 @@ void DefoMainWindow::setupUi( void ) {
   isoComboBox_ = new QComboBox(cameraOptionsGroupBox_);
   isoComboBox_->setObjectName(QString::fromUtf8("isoComboBox_"));
   isoComboBox_->setGeometry(QRect(80, 110, 81, 31));
-  testconnectionButton_ = new QPushButton(cameraOptionsGroupBox_);
-  testconnectionButton_->setObjectName(QString::fromUtf8("testconnectionButton_"));
-  testconnectionButton_->setGeometry(QRect(480, 30, 101, 31));
-  testconnectionButton_->setFont(font2);
   wbalanceLabel_ = new QLabel(cameraOptionsGroupBox_);
   wbalanceLabel_->setObjectName(QString::fromUtf8("wbalanceLabel_"));
   wbalanceLabel_->setGeometry(QRect(170, 30, 71, 31));
@@ -1463,7 +1469,24 @@ void DefoMainWindow::setupUi( void ) {
   wbalanceComboBox_ = new QComboBox(cameraOptionsGroupBox_);
   wbalanceComboBox_->setObjectName(QString::fromUtf8("wbalanceComboBox_"));
   wbalanceComboBox_->setGeometry(QRect(250, 30, 81, 31));
-
+  cameraConnectionGroupBox_ = new QGroupBox(cameraOptionsGroupBox_);
+  cameraConnectionGroupBox_->setObjectName(QString::fromUtf8("cameraConnectionGroupBox_"));
+  cameraConnectionGroupBox_->setGeometry(QRect(449, 20, 131, 131));
+  cameraConnectionGroupBox_->setFont(smallGroupBoxFont);
+  cameraConnectionGroupBox_->setAlignment(Qt::AlignCenter);
+  cameraConnectionCheckBox_ = new QCheckBox(cameraConnectionGroupBox_);
+  cameraConnectionCheckBox_->setObjectName(QString::fromUtf8("cameraConnectionCheckBox_"));
+  cameraConnectionCheckBox_->setGeometry(QRect(30, 20, 71, 22));
+  cameraConnectionCheckBox_->setFont(checkBoxFont);
+  cameraConnectionCheckBox_->setIconSize(QSize(30, 30));
+  cameraConnectionTestButton_ = new QPushButton(cameraConnectionGroupBox_);
+  cameraConnectionTestButton_->setObjectName(QString::fromUtf8("cameraConnectionTestButton_"));
+  cameraConnectionTestButton_->setGeometry(QRect(20, 50, 91, 31));
+  cameraConnectionTestButton_->setFont(normalButtonFont);
+  cameraConnectionResetButton_ = new QPushButton(cameraConnectionGroupBox_);
+  cameraConnectionResetButton_->setObjectName(QString::fromUtf8("cameraConnectionResetButton_"));
+  cameraConnectionResetButton_->setGeometry(QRect(20, 90, 91, 31));
+  cameraConnectionResetButton_->setFont(normalButtonFont);
 
   mainTabWidget_->addTab(advanced_tab, QString());
 
@@ -1619,12 +1642,12 @@ void DefoMainWindow::retranslateUi( void ) {
   seedingThresholdsStep3Label_->setText(QApplication::translate("MainWindow", "Step 3", 0, QApplication::UnicodeUTF8));
   blueishnessGroupBox_->setTitle(QApplication::translate("MainWindow", "Blueishness threshold", 0, QApplication::UnicodeUTF8));
   hswGroupBox_->setTitle(QApplication::translate("MainWindow", "Half square width (px)", 0, QApplication::UnicodeUTF8));
-  groupBox_14->setTitle(QString());
-  pushButton_12->setText(QApplication::translate("MainWindow", "APPLY", 0, QApplication::UnicodeUTF8));
-  pushButton_13->setText(QApplication::translate("MainWindow", "READ", 0, QApplication::UnicodeUTF8));
-  pushButton_14->setText(QApplication::translate("MainWindow", "LOAD", 0, QApplication::UnicodeUTF8));
-  pushButton_15->setText(QApplication::translate("MainWindow", "SAVE", 0, QApplication::UnicodeUTF8));
-  pushButton_18->setText(QApplication::translate("MainWindow", "DEFAULT", 0, QApplication::UnicodeUTF8));
+  advancedActionGroupBox_->setTitle(QString());
+  advancedApplyButton_->setText(QApplication::translate("MainWindow", "Apply", 0, QApplication::UnicodeUTF8));
+  advancedReadButton_->setText(QApplication::translate("MainWindow", "Read", 0, QApplication::UnicodeUTF8));
+  advancedLoadButton_->setText(QApplication::translate("MainWindow", "Load", 0, QApplication::UnicodeUTF8));
+  advancedSaveButton_->setText(QApplication::translate("MainWindow", "Save", 0, QApplication::UnicodeUTF8));
+  advancedDefaultButton_->setText(QApplication::translate("MainWindow", "Default", 0, QApplication::UnicodeUTF8));
   commentGroupBox_->setTitle(QApplication::translate("MainWindow", "Comment", 0, QApplication::UnicodeUTF8));
   commentTextEdit_->setPlainText(QApplication::translate("MainWindow", "# ADD COMMENT", 0, QApplication::UnicodeUTF8));
   surfaceRecoGroupBox_->setTitle(QApplication::translate("MainWindow", "Surface reconstruction", 0, QApplication::UnicodeUTF8));
@@ -1644,8 +1667,12 @@ void DefoMainWindow::retranslateUi( void ) {
   apertureLabel_->setText(QApplication::translate("MainWindow", "Aperture", 0, QApplication::UnicodeUTF8));
   exptimeLabel_->setText(QApplication::translate("MainWindow", "ExpTime", 0, QApplication::UnicodeUTF8));
   isoLabel_->setText(QApplication::translate("MainWindow", "Iso", 0, QApplication::UnicodeUTF8));
-  testconnectionButton_->setText(QApplication::translate("MainWindow", "Test connection", 0, QApplication::UnicodeUTF8));
   wbalanceLabel_->setText(QApplication::translate("MainWindow", "WBalance", 0, QApplication::UnicodeUTF8));
+  cameraConnectionGroupBox_->setTitle(QApplication::translate("MainWindow", "Connection", 0, QApplication::UnicodeUTF8));
+  cameraConnectionCheckBox_->setText(QApplication::translate("MainWindow", "Enabled", 0, QApplication::UnicodeUTF8));
+  cameraConnectionTestButton_->setText(QApplication::translate("MainWindow", "Test", 0, QApplication::UnicodeUTF8));
+  cameraConnectionResetButton_->setText(QApplication::translate("MainWindow", "Reset", 0, QApplication::UnicodeUTF8));
+  
   mainTabWidget_->setTabText(mainTabWidget_->indexOf(advanced_tab), QApplication::translate("MainWindow", "Advanced", 0, QApplication::UnicodeUTF8));
 
   mainTabWidget_->setTabText(mainTabWidget_->indexOf(advanced_tab), QApplication::translate("MainWindow", "Advanced", 0, QApplication::UnicodeUTF8));

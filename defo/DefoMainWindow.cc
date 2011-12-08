@@ -20,6 +20,10 @@ DefoMainWindow::DefoMainWindow( QWidget* parent ) : QWidget( parent ) {
   DefoConfigReader cfgReader( "defo.cfg" );
   debugLevel_ = cfgReader.getValue<unsigned int>( "DEBUG_LEVEL" ); // only parameter directly needed by this class
 
+  // supply combo boxes with allowed values;
+  // must be done before cfgReading!
+  fillComboBoxes();
+
   // update cfg settings
   seedingThresholdsStep1Spinbox_->setValue( cfgReader.getValue<double>( "STEP1_THRESHOLD" ) );
   seedingThresholdsStep2Spinbox_->setValue( cfgReader.getValue<double>( "STEP2_THRESHOLD" ) );
@@ -30,6 +34,10 @@ DefoMainWindow::DefoMainWindow( QWidget* parent ) : QWidget( parent ) {
   geometryLgSpinbox_->setValue( cfgReader.getValue<double>( "NOMINAL_GRID_DISTANCE" ) * 1000 ); // mm -> meter conversion!!
   geometryLcSpinbox_->setValue( cfgReader.getValue<double>( "NOMINAL_CAMERA_DISTANCE" ) * 1000 ); // mm -> meter conversion!!
   geometryDeltaSpinbox_->setValue( cfgReader.getValue<double>( "NOMINAL_VIEWING_ANGLE" ) ); 
+  readCameraParametersFromCfgFile();
+
+  cameraConnectionCheckBox_->setChecked( "true" == cfgReader.getValue<std::string>( "CAMERA_ON_WHEN_START" )?true:false);
+  isCameraEnabled_ = cameraConnectionCheckBox_->isChecked();
 
   pollingDelay_ = new QTimer();
 
@@ -38,9 +46,6 @@ DefoMainWindow::DefoMainWindow( QWidget* parent ) : QWidget( parent ) {
   // set default measurement id
   baseFolderName_ = basefolderTextedit_->toPlainText(); // LOAD DEFAULT
   defaultMeasurementId();
-
-  // supply combo boxes with allowed values
-  fillComboBoxes();
 
 }
 
@@ -104,6 +109,7 @@ void DefoMainWindow::setupSignalsAndSlots( void ) {
 
   // advanced
   connect( basefolderEditButton_, SIGNAL( clicked() ), this, SLOT( editBaseFolder() ) );
+  connect( cameraConnectionCheckBox_, SIGNAL( toggled(bool) ), this, SLOT( cameraEnabledButtonToggled(bool) ) );
 
 }
 
@@ -712,6 +718,7 @@ void DefoMainWindow::handleCameraAction( DefoCamHandler::Action action ) {
 
   case DefoCamHandler::SETCFG:
     {
+      this->setCursor( Qt::ArrowCursor );
     } break;
     
 
@@ -844,12 +851,11 @@ void DefoMainWindow::fillComboBoxes( void ) {
       
       replace( apertureEntry.begin(), apertureEntry.end(), '_', '.');
       apertureComboBox_->addItem( apertureEntry.c_str() );
-
     }
     
   } // for
   apertureComboBox_->addItem( "-" ); // when cam is off
-  
+
 
 
   // iso
@@ -866,7 +872,6 @@ void DefoMainWindow::fillComboBoxes( void ) {
       
       isoEntry.erase( 0, 3 ); // remove the "ISO"
       isoComboBox_->addItem( isoEntry.c_str() );
-
     }
     
   } // for
@@ -878,4 +883,107 @@ void DefoMainWindow::fillComboBoxes( void ) {
 
 
 
+///
+/// read camera options, set camhandler cfg accordingly
+/// (but do not write options to camera)
+///
+void DefoMainWindow::readCameraParametersFromCfgFile( void ) {
+  
+  // read options
+  DefoConfigReader cfgReader( "defo.cfg" );
+  std::string shutterspeed( cfgReader.getValue<std::string>( "CAMERA_SHUTTERSPEED" ) );
+  std::string aperture( cfgReader.getValue<std::string>( "CAMERA_APERTURE" ) );
+  std::string iso( cfgReader.getValue<std::string>( "CAMERA_ISO" ) );
 
+  // set options
+
+  // shutter speed
+  int index = exptimeComboBox_->findText( shutterspeed.c_str(), Qt::MatchExactly | Qt::MatchCaseSensitive );
+  if( 0 > index ) {
+    std::cerr << " [DefoMainWindow::readCameraOptionsFromCfgFile] ** ERROR: In configuration file: \'"
+	      << cfgReader.getFileName() << "\': invalid shutterspeed: \'" << shutterspeed << "\'" << std::endl;
+    QMessageBox::critical( this, tr("[DefoMainWindow::readCameraOptionsFromCfgFile]"),
+			   QString("In configuration file \'%1\': invalid shutterspeed: \'%2\'").arg(cfgReader.getFileName().c_str() ).arg(shutterspeed.c_str()),
+			   QMessageBox::Ok );
+    exptimeComboBox_->setCurrentIndex( exptimeComboBox_->count()-1 ); // this is the "-"
+
+    // set camhandler cfg
+    camHandler_.setShutterSpeed( EOS550D::SINVALID );
+  }
+  else {
+    exptimeComboBox_->setCurrentIndex( index );
+    camHandler_.setShutterSpeed( static_cast<EOS550D::ShutterSpeed>( index ) );
+  }
+
+
+  // aperture
+  index = apertureComboBox_->findText( aperture.c_str(), Qt::MatchExactly | Qt::MatchCaseSensitive );
+  if( 0 > index ) {
+    std::cerr << " [DefoMainWindow::readCameraOptionsFromCfgFile] ** ERROR: In configuration file: \'"
+	      << cfgReader.getFileName() << "\': invalid aperture: \'" << aperture << "\'" << std::endl;
+    QMessageBox::critical( this, tr("[DefoMainWindow::readCameraOptionsFromCfgFile]"),
+			   QString("In configuration file \'%1\': invalid aperture: \'%2\'").arg(cfgReader.getFileName().c_str() ).arg(aperture.c_str()),
+			   QMessageBox::Ok );
+    apertureComboBox_->setCurrentIndex( apertureComboBox_->count()-1 ); // this is the "-"
+
+    // set camhandler cfg
+    camHandler_.setAperture( EOS550D::FINVALID );
+  }
+  else {
+    apertureComboBox_->setCurrentIndex( index );
+    camHandler_.setAperture( static_cast<EOS550D::Aperture>( index ) );
+  }
+
+  // iso
+  index = isoComboBox_->findText( iso.c_str(), Qt::MatchExactly | Qt::MatchCaseSensitive );
+  if( 0 > index ) {
+    std::cerr << " [DefoMainWindow::readCameraOptionsFromCfgFile] ** ERROR: In configuration file: \'"
+	      << cfgReader.getFileName() << "\': invalid iso value: \'" << iso << "\'" << std::endl;
+    QMessageBox::critical( this, tr("[DefoMainWindow::readCameraOptionsFromCfgFile]"),
+			   QString("In configuration file \'%1\': invalid iso value: \'%2\'").arg(cfgReader.getFileName().c_str() ).arg(iso.c_str()),
+			   QMessageBox::Ok );
+    isoComboBox_->setCurrentIndex( isoComboBox_->count()-1 ); // this is the "-"
+
+    // set camhandler cfg
+    camHandler_.setIso( EOS550D::ISOINVALID );
+  }
+  else {
+    isoComboBox_->setCurrentIndex( index );
+    camHandler_.setIso( static_cast<EOS550D::Iso>( index ) );
+  }
+
+}
+
+
+
+///
+///
+///
+void DefoMainWindow::cameraEnabledButtonToggled( bool isChecked ) {
+
+  isCameraEnabled_ = isChecked;
+
+  // upload settings as they're saved in the camHandler cfg member
+  if( isCameraEnabled_ ) {
+    
+    this->setCursor( Qt::BusyCursor );
+    
+    // tell it what to do & run thread
+    camHandler_.setAction( DefoCamHandler::SETCFG );
+    camHandler_.start();
+
+  }
+
+}
+
+
+
+///
+/// write all parameters from the advanced tab
+///
+void DefoMainWindow::writeParameters( void ) {
+
+
+  
+
+}

@@ -14,15 +14,17 @@ void DefoCamHandler::run( void ) {
 
   case DefoCamHandler::GETCFG:
     // nothing yet
+    emit actionFinished( DefoCamHandler::GETCFG );
     break;
 
   case DefoCamHandler::SETCFG:
-    // nothing yet
+    camera_.writeConfig( cfg_ );
+    emit actionFinished( DefoCamHandler::SETCFG );
     break;
 
   case DefoCamHandler::GETIMAGE:
     camera_.getAndSaveImage( filePath_ );
-    actionFinished( DefoCamHandler::GETIMAGE );
+    emit actionFinished( DefoCamHandler::GETIMAGE );
     break;
 
   default:

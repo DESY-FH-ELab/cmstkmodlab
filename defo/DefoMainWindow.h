@@ -104,6 +104,7 @@ class DefoMainWindow : public QWidget {
 
   void loadImageFromFile( void );
 
+  void cameraEnabledButtonToggled( bool );
 
  signals:
 
@@ -115,22 +116,24 @@ class DefoMainWindow : public QWidget {
  private:
 
   void fillComboBoxes( void );
+  void readCameraParametersFromCfgFile( void );
+  void writeParameters( void );
 
   unsigned int debugLevel_;
 
-  DefoCamHandler camHandler_;
-  
-  DefoSchedule* schedule_;
-  QTimer* pollingDelay_;
+  DefoCamHandler camHandler_; // camera steering
+  bool isCameraEnabled_; // flag for camera operation on/off
 
-  DefoRecoImage defoRecoImage_;
-  DefoRecoSurface defoRecoSurface_;
+  DefoSchedule* schedule_; // the measurement schedule
+  QTimer* pollingDelay_; // timer to allow for GUI update when polling
 
-  std::pair<DefoPointCollection,DefoRawImage> referenceImageOutput_;
+  DefoRecoImage defoRecoImage_; // image reconstruction instance
+  DefoRecoSurface defoRecoSurface_; // surface reconstruction instance
+
+  std::pair<DefoPointCollection,DefoRawImage> referenceImageOutput_; 
   std::pair<DefoPointCollection,DefoRawImage> defoImageOutput_;
 
-  // surface output plot on "offline" tab
-  DefoSurfacePlot* surfacePlot_;
+  DefoSurfacePlot* surfacePlot_; // surface output plot on "offline" tab
 
   bool isPolling_; // volatile switch indicating if schedule is being processed
   bool isRefImage_; // ref image has been taken?
@@ -139,7 +142,7 @@ class DefoMainWindow : public QWidget {
   QString baseFolderName_;
   QString currentFolderName_;
 
-  std::string filepathPlaced_; // where the camHandler put the file
+  std::string filepathPlaced_; // where the camHandler puts the file
 
   std::vector<DefoArea> areas_;
 
@@ -322,12 +325,12 @@ class DefoMainWindow : public QWidget {
   QDoubleSpinBox *blueishnessSpinBox_;
   QGroupBox *hswGroupBox_;
   QDoubleSpinBox *hswSpinBox_;
-  QGroupBox *groupBox_14;
-  QPushButton *pushButton_12;
-  QPushButton *pushButton_13;
-  QPushButton *pushButton_14;
-  QPushButton *pushButton_15;
-  QPushButton *pushButton_18;
+  QGroupBox *advancedActionGroupBox_;
+  QPushButton *advancedApplyButton_;
+  QPushButton *advancedReadButton_;
+  QPushButton *advancedLoadButton_;
+  QPushButton *advancedSaveButton_;
+  QPushButton *advancedDefaultButton_;
   QGroupBox *commentGroupBox_;
   QPlainTextEdit *commentTextEdit_;
   QGroupBox *surfaceRecoGroupBox_;
@@ -359,10 +362,13 @@ class DefoMainWindow : public QWidget {
   QComboBox *exptimeComboBox_;
   QLabel *isoLabel_;
   QComboBox *isoComboBox_;
-  QPushButton *testconnectionButton_;
   QLabel *wbalanceLabel_;
   QComboBox *wbalanceComboBox_;
-  
+  QGroupBox *cameraConnectionGroupBox_;
+  QCheckBox *cameraConnectionCheckBox_;
+  QPushButton *cameraConnectionTestButton_;
+  QPushButton *cameraConnectionResetButton_;
+
 };
 
 

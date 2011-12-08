@@ -25,7 +25,7 @@ class DefoConfigReader {
     }
 
     bool isFound = false;
-    aType returnValue = 0;
+    aType returnValue;
     std::string buffer;
 
     while (std::getline(file, buffer)) {
@@ -44,6 +44,8 @@ class DefoConfigReader {
     if( !isFound ) issueKeyError( key );
     return returnValue;    
   }
+
+  std::string getFileName( void ) { return inputFileName_; }
 
  private:
   void issueKeyError( const std::string& ) const;
