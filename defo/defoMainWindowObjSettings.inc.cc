@@ -187,11 +187,19 @@ void DefoMainWindow::setupUi( void ) {
   manualTEMPButton_->setFlat(false);
   rawimageZoomButton_ = new QToolButton(rawimageGroupBox_);
   rawimageZoomButton_->setObjectName(QString::fromUtf8("rawimageZoomButton_"));
-  rawimageZoomButton_->setGeometry(QRect(570, 700, 81, 51));
+  rawimageZoomButton_->setGeometry(QRect(560, 700, 51, 41));
   rawimageZoomButton_->setStyleSheet(QString::fromUtf8(""));
   //  QIcon icon;
   //  icon.addPixmap(QPixmap(QString::fromUtf8("icons/48px-Icon-Lupe.png")), QIcon::Normal, QIcon::Off);
   rawimageZoomButton_->setIcon(icon);
+
+  rawimageHistoButton_ = new QToolButton(rawimageGroupBox_);
+  rawimageHistoButton_->setObjectName(QString::fromUtf8("rawimageHistoButton_"));
+  rawimageHistoButton_->setGeometry(QRect(620, 700, 41, 41));
+  rawimageHistoButton_->setStyleSheet(QString::fromUtf8(""));
+  QIcon histoIcon;
+  histoIcon.addPixmap(QPixmap(QString::fromUtf8("icons/histogram.png")), QIcon::Normal, QIcon::Off);
+  rawimageHistoButton_->setIcon(histoIcon);
 
   scheduleGroupBox_ = new QGroupBox(online_tab);
   scheduleGroupBox_->setObjectName(QString::fromUtf8("scheduleGroupBox_"));
@@ -1544,6 +1552,7 @@ void DefoMainWindow::retranslateUi( void ) {
   manualFILEDEFOButton_->setText(QApplication::translate("MainWindow", "File defo", 0, QApplication::UnicodeUTF8));
   manualTEMPButton_->setText(QApplication::translate("MainWindow", "Temp", 0, QApplication::UnicodeUTF8));
   rawimageZoomButton_->setText(QApplication::translate("MainWindow", "...", 0, QApplication::UnicodeUTF8));
+  rawimageHistoButton_->setText(QApplication::translate("MainWindow", "...", 0, QApplication::UnicodeUTF8));
   scheduleGroupBox_->setTitle(QApplication::translate("MainWindow", "Schedule", 0, QApplication::UnicodeUTF8));
   scheduleClearButton_->setText(QApplication::translate("MainWindow", "Clear", 0, QApplication::UnicodeUTF8));
   scheduleVerifyButton_->setText(QApplication::translate("MainWindow", "Verify", 0, QApplication::UnicodeUTF8));

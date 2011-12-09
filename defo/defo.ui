@@ -31,7 +31,7 @@
      <string notr="true" />
     </property>
     <property name="currentIndex" >
-     <number>3</number>
+     <number>0</number>
     </property>
     <widget class="QWidget" name="online_tab" >
      <attribute name="title" >
@@ -476,10 +476,10 @@
       <widget class="QToolButton" name="rawimageZoomButton_" >
        <property name="geometry" >
         <rect>
-         <x>570</x>
+         <x>560</x>
          <y>700</y>
-         <width>81</width>
-         <height>51</height>
+         <width>51</width>
+         <height>41</height>
         </rect>
        </property>
        <property name="styleSheet" >
@@ -491,6 +491,26 @@
        <property name="icon" >
         <iconset>
          <normaloff>icons/48px-Icon-Lupe.png</normaloff>icons/48px-Icon-Lupe.png</iconset>
+       </property>
+      </widget>
+      <widget class="QToolButton" name="rawimageHistoButton_" >
+       <property name="geometry" >
+        <rect>
+         <x>620</x>
+         <y>700</y>
+         <width>41</width>
+         <height>41</height>
+        </rect>
+       </property>
+       <property name="styleSheet" >
+        <string notr="true" />
+       </property>
+       <property name="text" >
+        <string>...</string>
+       </property>
+       <property name="icon" >
+        <iconset>
+         <normaloff>icons/histogram.png</normaloff>icons/histogram.png</iconset>
        </property>
       </widget>
      </widget>
@@ -5030,7 +5050,7 @@ color: rgb(170, 0, 0);</string>
         <set>Qt::AlignCenter</set>
        </property>
       </widget>
-      <widget class="QComboBox" name="focusComboBox_" >
+      <widget class="QComboBox" name="isoComboBox_" >
        <property name="geometry" >
         <rect>
          <x>80</x>

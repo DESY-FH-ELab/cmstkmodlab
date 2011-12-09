@@ -16,6 +16,8 @@ void DefoImageLabel::init( void ) {
   DefoConfigReader cfgReader( "defo.cfg" );
   debugLevel_ = cfgReader.getValue<unsigned int>( "DEBUG_LEVEL" );
   
+  isView_ = false;
+  
 }
 
 
@@ -24,6 +26,8 @@ void DefoImageLabel::init( void ) {
 ///
 ///
 void DefoImageLabel::displayImageToSize( QImage& originalImage ) {
+
+  origImage_ = originalImage; // make a copy
 
   originalImageSize_ = originalImage.size();
   
@@ -273,6 +277,50 @@ void DefoImageLabel::transformToLocal( QRect& rect ) {
     QPoint lowerRight( xScale * ( rect.x() + rect.width() ), yScale * ( rect.y() + rect.height() ) );
 
     rect = QRect( upperLeft.x(), upperLeft.y(), (lowerRight-upperLeft).x(), (lowerRight - upperLeft).y() );
+
+  }
+
+}
+
+
+
+///
+///
+///
+void DefoImageLabel::showHistogram( void ) {
+
+  // if it exists already, we shut it down
+  if( isView_ ) {
+    view_.hide();
+    isView_ = false;
+  }
+  
+  // otherwise, we create and show it
+  else {
+    
+    view_.clear();
+    isView_ = true;
+    QRect r;
+
+    // if there's an area defined, we display info from it,
+    // otherwise from the whole image
+    if( areaRubberBands_.size() ) {
+      r = areaRubberBands_.at( 0 )->geometry();
+      transformToOriginal( r );
+    }
+    else {
+      r = origImage_.rect();
+    }
+    
+    for( int x = r.x(); x < r.x() + r.width(); ++x ) {
+      for( int y = r.y(); y < r.y() + r.height(); ++y ) {
+	view_.addPixel( origImage_.pixel( x, y ) );
+      }
+    }
+    
+    view_.createCurves();
+    view_.show();
+    view_.replot();
 
   }
 

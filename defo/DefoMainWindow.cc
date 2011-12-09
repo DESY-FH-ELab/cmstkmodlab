@@ -46,6 +46,7 @@ DefoMainWindow::DefoMainWindow( QWidget* parent ) : QWidget( parent ) {
 
   cameraConnectionCheckBox_->setChecked( "true" == cfgReader.getValue<std::string>( "CAMERA_ON_WHEN_START" )?true:false);
   isCameraEnabled_ = cameraConnectionCheckBox_->isChecked();
+  cameraEnabledButtonToggled( isCameraEnabled_ );
 
   pollingDelay_ = new QTimer();
 
@@ -75,6 +76,7 @@ void DefoMainWindow::setupSignalsAndSlots( void ) {
   qRegisterMetaType<DefoCamHandler::Action>("DefoCamHandler::Action"); // signal is from qthread
   connect( &camHandler_, SIGNAL(actionFinished(DefoCamHandler::Action)), this, SLOT(handleCameraAction(DefoCamHandler::Action)) );
   connect( refreshFileButton_, SIGNAL(clicked()), this, SLOT(loadImageFromFile()) );
+  connect( rawimageHistoButton_, SIGNAL(clicked()), rawimageLabel_, SLOT( showHistogram() ) );
 
   // action polling
   connect( this, SIGNAL(pollAction()), schedule_, SLOT(pollAction()) );
@@ -813,7 +815,6 @@ void DefoMainWindow::loadImageFromFile( void ) {
 ///
 void DefoMainWindow::fillComboBoxes( void ) {
 
-
   // shutter speed
   int enumIndex = metaObject()->indexOfEnumerator( "ShutterSpeed" );
   QMetaEnum metaEnum = metaObject()->enumerator( enumIndex );
@@ -982,8 +983,30 @@ void DefoMainWindow::cameraEnabledButtonToggled( bool isChecked ) {
     camHandler_.setAction( DefoCamHandler::SETCFG );
     camHandler_.start();
 
+    // enable controls
+    refreshCameraButton_->setEnabled( true );
+    manualREFButton_->setEnabled( true );
+    manualDEFOButton_->setEnabled( true );
+    cameraConnectionTestButton_->setEnabled( true );
+    cameraConnectionResetButton_->setEnabled( true );
+    apertureComboBox_->setEnabled( true );
+    exptimeComboBox_->setEnabled( true );
+    isoComboBox_->setEnabled( true );
+    wbalanceComboBox_->setEnabled( true );
   }
 
+  else {
+    // disable all controls
+    refreshCameraButton_->setEnabled( false );
+    manualREFButton_->setEnabled( false );
+    manualDEFOButton_->setEnabled( false );
+    cameraConnectionTestButton_->setEnabled( false );
+    cameraConnectionResetButton_->setEnabled( false );
+    apertureComboBox_->setEnabled( false );
+    exptimeComboBox_->setEnabled( false );
+    isoComboBox_->setEnabled( false );
+    wbalanceComboBox_->setEnabled( false );
+  }
 }
 
 
@@ -994,7 +1017,23 @@ void DefoMainWindow::cameraEnabledButtonToggled( bool isChecked ) {
 void DefoMainWindow::writeParameters( void ) {
 
   // defo classes
+  defoRecoImage_.setSeedingThresholds( seedingThresholdsStep1Spinbox_->value(),
+				       seedingThresholdsStep2Spinbox_->value(),
+				       seedingThresholdsStep3Spinbox_->value()  );
+  defoRecoImage_.setHalfSquareWidth( hswSpinBox_->value() );
+  defoRecoImage_.setBlueishnessThreshold( blueishnessSpinBox_->value() );
   
+  defoRecoSurface_.setSpacingEstimate( surfaceRecoSpacingSpinbox_->value() );
+  defoRecoSurface_.setSearchPathHalfWidth( surfaceRecoSearchpathSpinbox_->value() );
+  defoRecoSurface_.setNominalGridDistance( geometryLgSpinbox_->value() );
+  defoRecoSurface_.setNominalCameraDistance( geometryLcSpinbox_->value() );
+  defoRecoSurface_.setNominalViewingAngle( geometryDeltaSpinbox_->value() );
+  defoRecoSurface_.setPitchX( geometryPitchSpinbox1_->value() );
+  defoRecoSurface_.setPitchY( geometryPitchSpinbox2_->value() );
+  defoRecoSurface_.setFocalLength( geometryFSpinbox_->value() );
+
+  // chiller comes later..
+
 
   // camera
   if( isCameraEnabled_ ) {

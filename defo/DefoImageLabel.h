@@ -16,6 +16,8 @@
 #include "DefoPoint.h"
 #include "DefoArea.h"
 #include "DefoConfigReader.h"
+#include "DefoHistogramView.h"
+
 
 
 ///
@@ -72,6 +74,7 @@ class DefoImageLabel : public QLabel {
   void defineArea( void );
   void displayAreas( bool );
   void refreshAreas( std::vector<DefoArea> area );
+  void showHistogram( void );
 
  signals:
   void areaDefined( DefoArea area );
@@ -85,10 +88,12 @@ class DefoImageLabel : public QLabel {
   void transformToOriginal( QRect& );
   void transformToLocal( QRect& );
 
-  //QRubberBand *rubberBand_;
+  QImage origImage_;
   DefoImageLabelRubberBand *rubberBand_; // for later
   std::vector<DefoImageLabelRubberBand*> areaRubberBands_;
   QPoint myPoint_;
+  DefoHistogramView view_;
+  bool isView_;
   bool isRotation_; // rotation by -90 deg?
   bool isDefineArea_;
   QSize originalImageSize_;

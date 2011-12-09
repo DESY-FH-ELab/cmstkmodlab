@@ -68,9 +68,6 @@ QT_BEGIN_NAMESPACE
 class DefoMainWindow : public QWidget {
 
   Q_OBJECT
-  Q_ENUMS( ShutterSpeed )
-  Q_ENUMS( Aperture )
-  Q_ENUMS( Iso )
 
  public:
   DefoMainWindow( QWidget *parent = 0 );
@@ -82,6 +79,10 @@ class DefoMainWindow : public QWidget {
 
   // use the same enums as EOS550D class
   #include "../devices/Canon/eosParameters.h"
+
+  Q_ENUMS( ShutterSpeed )
+  Q_ENUMS( Aperture )
+  Q_ENUMS( Iso )
 
  public slots:
 
@@ -172,6 +173,7 @@ class DefoMainWindow : public QWidget {
   QPushButton *manualFILEDEFOButton_;
   QPushButton *manualTEMPButton_;
   QToolButton *rawimageZoomButton_;
+  QToolButton *rawimageHistoButton_;
 
   QGroupBox *scheduleGroupBox_;
   QPushButton *scheduleClearButton_;

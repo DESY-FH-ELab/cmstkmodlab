@@ -39,7 +39,8 @@ HEADERS += DefoMainWindow.h \
 	   DefoSurfacePlot.h \
 	   DefoImageLabel.h \
 	   DefoCamHandler.h \
-	   DefoArea.h 
+	   DefoArea.h \
+	   DefoHistogramView.h
 
 FORMS += defo.ui
 
@@ -57,4 +58,5 @@ SOURCES += defo.cc \
 	   DefoSurfacePlot.cc \
 	   DefoImageLabel.cc \
 	   defoMainWindowObjSettings.inc.cc \
-	   DefoCamHandler.cc
+	   DefoCamHandler.cc \
+	   DefoHistogramView.cc
