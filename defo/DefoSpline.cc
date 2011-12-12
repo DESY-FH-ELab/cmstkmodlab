@@ -2,6 +2,17 @@
 #include "DefoSpline.h"
 
 
+///
+///
+///
+DefoSplineSetBase::DefoSplineSetBase( void ) {
+
+  DefoConfigReader cfgReader( "defo.cfg" );
+  debugLevel_ = cfgReader.getValue<unsigned int>( "DEBUG_LEVEL" );
+
+}
+
+
 
 ///
 /// add offset to all splines in a set
@@ -95,6 +106,12 @@ bool DefoSplineSetX::doFitZ( void ) {
   std::vector<double> h;
   h.push_back( 0. );
 
+  // avoid crashwhen np = 0, seems to be related to  "points_.end() - 1"
+  if( 0 == points_.size() ) {
+    std::cout << " [DefoSplineSetX::doFitZ] ** WARNING: number of Points is zero." << std::endl;
+    return false; 
+  }
+
   // create splines & calculate their parameters
   // we have nPoints - 1 splines in the row
   for( DefoPointCollection::const_iterator it = points_.begin(); it < points_.end() - 1; ++it ) {
@@ -187,11 +204,23 @@ bool DefoSplineSetY::doFitZ( void ) {
   std::vector<double> h;
   h.push_back( 0. );
 
+  // avoid crashwhen np = 0, seems to be related to  "points_.end() - 1"
+  if( 0 == points_.size() ) {
+    std::cout << " [DefoSplineSetY::doFitZ] ** WARNING: number of Points is zero." << std::endl;
+    return false; 
+  }
+
   // create splines & calculate their parameters
   // we have nPoints - 1 splines in the row
   for( DefoPointCollection::const_iterator it = points_.begin(); it < points_.end() - 1; ++it ) {
     
     DefoSpline aSpline;
+
+//     std::cout << "SL: " << it->getSlope() << " "
+// 	      << (it+1)->getSlope() << " " 
+// 	      << it->getY() << " " 
+// 	      << (it+1)->getY()
+// 	      << std::endl; /////////////////////////////////
 
     // set coefficiencts
     aSpline.setA( ( it->getSlope() - (it+1)->getSlope() ) / 2. / ( it->getY() - (it+1)->getY() ) );
@@ -209,7 +238,7 @@ bool DefoSplineSetY::doFitZ( void ) {
     splines_.push_back( aSpline );
 
     // z value at end point for next spline
-//    std::cout << "HY: " << it->getX() << " " << it->getY() << " " <<  h.back() << std::endl; /////////////////////////////////
+    //    std::cout << "HY: " << it->getX() << " " << it->getY() << " " <<  h.back() << std::endl; /////////////////////////////////
     h.push_back( aSpline.eval( (it+1)->getY() ) );
     
   }

@@ -48,7 +48,8 @@ std::pair<DefoPointCollection,DefoRawImage> DefoRecoImage::reconstruct( DefoRawI
   for( int xIt = theArea.getRectangle().x(); xIt < theArea.getRectangle().x() + theArea.getRectangle().width(); ++xIt ) {
     for( int yIt = theArea.getRectangle().y(); yIt < theArea.getRectangle().y() + theArea.getRectangle().height(); ++yIt ) {
 
-      // do not consider areas around points already picked up
+      // do not consider areas around points already picked up;
+      // at this stage we need to check in order to avoid too many L1 seeds
       if( forbiddenAreas_.isInside( DefoPoint( xIt, yIt ) ) ) continue;
       
       // check if this pixel has a grayscale adc value above step1 threshold
@@ -132,13 +133,21 @@ std::pair<DefoPointCollection,DefoRawImage> DefoRecoImage::reconstruct( DefoRawI
 	  continue;
 	}
 
+	// check again since the point can be reconstructed at a distance from the seed
+	if( forbiddenAreas_.isInside( intermediatePoint ) ) continue;
+
 	theOutput.first.push_back( intermediatePoint );
 
 	if( debugLevel_ >= 3 ) std::cout << " [DefoRecoImage::reconstruct] =3= Reconstructed point at: x: "
-					 << intermediatePoint.getX() << " y: " << intermediatePoint.getY() << std::endl;
+					 << intermediatePoint.getX() << " y: " << intermediatePoint.getY()
+					 << " blue: " << blueishness << std::endl;
 
 	// save square around this point as already tagged
 	forbiddenAreas_.push_back( DefoSquare( intermediatePoint, halfSquareWidth_ ) );
+	
+// 	std::cout << "PB FA: " << forbiddenAreas_.back().getCenter().getX() << " " << forbiddenAreas_.back().getCenter().getY()
+// 		  << " " << forbiddenAreas_.back().getHalfWidth() << std::endl; /////////////////////////////////
+
 
       }
 

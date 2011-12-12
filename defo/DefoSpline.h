@@ -11,7 +11,7 @@
 #include <boost/serialization/base_object.hpp>
 
 #include "DefoPoint.h"
-
+#include "DefoConfigReader.h"
 
 ///
 /// class for holding a single spline
@@ -64,12 +64,13 @@ class DefoSplineSetBase {
   friend class boost::serialization::access;
 
  public:
-  DefoSplineSetBase() {}
+  DefoSplineSetBase();
   virtual ~DefoSplineSetBase() {}
   virtual bool doFitXY( void ) = 0;
   virtual bool doFitZ( void ) = 0;
   std::vector<DefoSpline> const& getSplines( void ) const { return splines_; }
   DefoPointCollection const& getPoints( void ) const { return points_; }
+  size_t getNPoints( void ) const { return points_.size(); }
   void addPoint( DefoPoint const& point ) { points_.push_back( point ); }
   void clear( void ) { splines_.resize( 0 ); points_.resize( 0 ); }
   void offset( double );
@@ -78,6 +79,7 @@ class DefoSplineSetBase {
  protected:
   std::vector<DefoSpline> splines_;
   DefoPointCollection points_;
+  int debugLevel_;
 
  private:
   template<class Archive>

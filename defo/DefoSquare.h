@@ -18,8 +18,8 @@ class DefoSquare {
 
  public:
   DefoSquare( const DefoPoint& theCenter, const unsigned int& theHalfWidth ) { centerPoint_ = theCenter; halfWidth_ = theHalfWidth; }
-  DefoPoint& getCenter( void ) { return centerPoint_; }
-  unsigned int getHalfWidth( void ) { return halfWidth_; }
+  DefoPoint const& getCenter( void ) const { return centerPoint_; }
+  unsigned int getHalfWidth( void ) const { return halfWidth_; }
   void setCenter( const DefoPoint& theCenter ) { centerPoint_ = theCenter; }
   void setWidth( const unsigned& theHalfWidth ) { halfWidth_ = theHalfWidth; }
   bool isInside( const DefoPoint& ) const;

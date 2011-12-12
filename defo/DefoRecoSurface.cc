@@ -189,6 +189,9 @@ const DefoSplineField DefoRecoSurface::createZSplines( DefoPointCollection const
 
     }
     
+    // check if there are any points attached to the set
+    if( 0 == aSplineSet.getNPoints() ) continue;
+
     // do the fit
     aSplineSet.doFitZ();
     
@@ -257,7 +260,10 @@ const DefoSplineField DefoRecoSurface::createZSplines( DefoPointCollection const
       }
 
     }
-    
+
+    // check if there are any points attached to the set
+    if( 0 == aSplineSet.getNPoints() ) continue;
+
     // do the fit
     aSplineSet.doFitZ();
     
@@ -960,6 +966,19 @@ std::pair<unsigned int, unsigned int> DefoRecoSurface::indexPoints( DefoPointCol
       
       // found one?
       if( nextPointC.first ) {
+
+	// need to make sure we don't catch the same point again
+	// otherwise we get an infinite loop
+	if( ( fabs( thisPoint.getX() - nextPointC.second->getX() ) < 0.1 ) &&
+	    ( fabs( thisPoint.getY() - nextPointC.second->getY() ) < 0.1 )    ) {
+
+	  if( debugLevel_ >= 3 ) std::cout << " [DefoRecoSurface::indexPoints] =3=" 
+					   << " break indexing (+y+x) because point: x: " << thisPoint.getX()
+					   << " y: " << thisPoint.getY() << " already indexed: " 
+					   << index.first - 1 << " " << index.second << std::endl;
+	  break;
+	}
+
 	thisPoint = *(nextPointC.second); // set new current point
 	nextPointC.second->setIndex( index ); // set the index of the point
 	if( debugLevel_ > 2 ) std::cout << " [DefoRecoSurface::indexPoints] =3= Found next point along-x: x: "
@@ -1009,6 +1028,18 @@ std::pair<unsigned int, unsigned int> DefoRecoSurface::indexPoints( DefoPointCol
       
       // found one?
       if( nextPointC.first ) {
+
+	// need to make sure we don't catch the same point again
+	// otherwise we get an infinite loop
+	if( ( fabs( thisPoint.getX() - nextPointC.second->getX() ) < 0.1 ) &&
+	    ( fabs( thisPoint.getY() - nextPointC.second->getY() ) < 0.1 )    ) {
+	  if( debugLevel_ >= 3 ) std::cout << " [DefoRecoSurface::indexPoints] =3=" 
+					   << " break indexing (+y-x) because point: x: " << thisPoint.getX()
+					   << " y: " << thisPoint.getY() << " already indexed: " 
+					   << index.first - 1 << " " << index.second << std::endl;
+	  break;
+	}
+
 	thisPoint = *(nextPointC.second); // set new current point
 	nextPointC.second->setIndex( index ); // set the index of the point
 	if( debugLevel_ > 2 ) std::cout << " [DefoRecoSurface::indexPoints] =3= FOUND NEXT point along-x: x: "
@@ -1050,6 +1081,19 @@ std::pair<unsigned int, unsigned int> DefoRecoSurface::indexPoints( DefoPointCol
 
     // found one?
     if( nextPointC.first ) {
+
+      // need to make sure we don't catch the same point again
+      // otherwise we get an infinite loop
+      if( ( fabs( startPointAlongX.getX() - nextPointC.second->getX() ) < 0.1 ) &&
+	  ( fabs( startPointAlongX.getY() - nextPointC.second->getY() ) < 0.1 )    ) {
+
+	if( debugLevel_ >= 3 ) std::cout << " [DefoRecoSurface::indexPoints] =3=" 
+					 << " break indexing (y++) because point: x: " << thisPoint.getX()
+					 << " y: " << thisPoint.getY() << " already indexed: " 
+					 << index.first - 1 << " " << index.second << std::endl;
+	break;
+      }
+	
       startPointAlongX = *(nextPointC.second); // set new current point
       nextPointC.second->setIndex( index ); // set the index of the point
       if( debugLevel_ >= 3 ) std::cout << " [DefoRecoSurface::indexPoints] =3= FOUND NEXT point along-y: x: "
@@ -1109,6 +1153,19 @@ std::pair<unsigned int, unsigned int> DefoRecoSurface::indexPoints( DefoPointCol
       
       // found one?
       if( nextPointC.first ) {
+
+	// need to make sure we don't catch the same point again
+	// otherwise we get an infinite loop
+	if( ( fabs( thisPoint.getX() - nextPointC.second->getX() ) < 0.1 ) &&
+	    ( fabs( thisPoint.getY() - nextPointC.second->getY() ) < 0.1 )    ) {
+
+	  if( debugLevel_ >= 3 ) std::cout << " [DefoRecoSurface::indexPoints] =3=" 
+					   << " break indexing (-y+x) because point: x: " << thisPoint.getX()
+					   << " y: " << thisPoint.getY() << " already indexed: " 
+					   << index.first - 1 << " " << index.second << std::endl;
+	  break;
+	}
+
 	thisPoint = *(nextPointC.second); // set new current point
 	nextPointC.second->setIndex( index ); // set the index of the point
 	if( debugLevel_ > 2 ) std::cout << " [DefoRecoSurface::indexPoints] =3= FOUND NEXT point along-x: x: "
@@ -1158,6 +1215,19 @@ std::pair<unsigned int, unsigned int> DefoRecoSurface::indexPoints( DefoPointCol
       
       // found one?
       if( nextPointC.first ) {
+
+	// need to make sure we don't catch the same point again
+	// otherwise we get an infinite loop
+	if( ( fabs( thisPoint.getX() - nextPointC.second->getX() ) < 0.1 ) &&
+	    ( fabs( thisPoint.getY() - nextPointC.second->getY() ) < 0.1 )    ) {
+
+	  if( debugLevel_ >= 3 ) std::cout << " [DefoRecoSurface::indexPoints] =3=" 
+					   << " break indexing (-y-x) because point: x: " << thisPoint.getX()
+					   << " y: " << thisPoint.getY() << " already indexed: " 
+					   << index.first - 1 << " " << index.second << std::endl;
+	  break;
+	}
+
 	thisPoint = *(nextPointC.second); // set new current point
 	nextPointC.second->setIndex( index ); // set the index of the point
 	if( debugLevel_ > 2 ) std::cout << " [DefoRecoSurface::indexPoints] =3= FOUND NEXT point along-x: x: "
@@ -1199,6 +1269,19 @@ std::pair<unsigned int, unsigned int> DefoRecoSurface::indexPoints( DefoPointCol
 
     // found one?
     if( nextPointC.first ) {
+
+      // need to make sure we don't catch the same point again
+      // otherwise we get an infinite loop
+      if( ( fabs( startPointAlongX.getX() - nextPointC.second->getX() ) < 0.1 ) &&
+	  ( fabs( startPointAlongX.getY() - nextPointC.second->getY() ) < 0.1 )    ) {
+
+	if( debugLevel_ >= 3 ) std::cout << " [DefoRecoSurface::indexPoints] =3=" 
+					 << " break indexing (x++) because point: x: " << thisPoint.getX()
+					 << " y: " << thisPoint.getY() << " already indexed: " 
+					 << index.first - 1 << " " << index.second << std::endl;	
+	break;
+      }
+
       startPointAlongX = *(nextPointC.second); // set new current point
       nextPointC.second->setIndex( index ); // set the index of the point
       if( debugLevel_ >= 3 ) std::cout << " [DefoRecoSurface::indexPoints] =3= FOUND NEXT point along-y: x: "
