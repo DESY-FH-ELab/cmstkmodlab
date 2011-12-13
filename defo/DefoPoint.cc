@@ -105,3 +105,16 @@ bool DefoPointCollectionAverageYPredicate( DefoPointCollection const& one, DefoP
   return ( average.first / nPoints.first ) < ( average.second / nPoints.second );
 
 }
+
+
+
+///
+/// for sorting std::pair<DefoPoint,DefoPoint> according to second.abs();
+/// (for use e.g. when the second is a difference)
+/// 
+bool DefoPointPairSecondAbsPredicate( std::pair<DefoPointCollection::iterator,DefoPoint> const& one, 
+				      std::pair<DefoPointCollection::iterator,DefoPoint> const& another ) {
+
+  return( one.second.abs() < another.second.abs() );
+
+}

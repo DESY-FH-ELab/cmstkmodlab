@@ -43,6 +43,7 @@ class DefoRecoSurface {
   const std::pair<double,double> determineAverageSpacing( DefoPointCollection const& ) const;
   std::pair<unsigned int, unsigned int> indexPoints( DefoPointCollection& ) const;
   std::pair<bool,DefoPointCollection::iterator> findClosestPoint( DefoPoint const&, DefoPointCollection& ) const;
+  std::pair<bool,DefoPointCollection::iterator> findClosestPointExcluded( DefoPoint const&, DefoPointCollection&, DefoPoint const& ) const;
   const std::pair<bool,DefoPointCollection::const_iterator> findPointByIndex( DefoPointCollection const&, std::pair<int,int> const& ) const;
   void removeGlobalOffset( DefoSplineField& ) const;
   void removeTilt( DefoSplineField& ) const;

@@ -40,8 +40,24 @@ double DefoSplineSetBase::eval( double pos ) const {
   }
 
   // no spline with matching range?
-  std::cerr << " [DefoSplineSetBase::eval] ** ERROR: failed to evaluate spline at pos: " << pos << std::endl;
+  std::cerr << " [DefoSplineSetBase::eval] ** ERROR: failed to evaluate spline at pos: " << pos 
+	    << " (range: [ " << validityRange().first << " , " << validityRange().second << " ]." << std::endl << std::flush;
   throw;
+
+}
+
+
+
+///
+///
+///
+std::pair<double,double> const DefoSplineSetBase::validityRange( void ) const {
+
+  std::pair<double,double> result = std::make_pair<double,double>( 0., 0. );
+  result.first = splines_.front().getValidityRange().first;
+  result.second = splines_.back().getValidityRange().second;
+
+  return result;
 
 }
 

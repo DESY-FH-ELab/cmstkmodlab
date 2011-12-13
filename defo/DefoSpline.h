@@ -70,6 +70,7 @@ class DefoSplineSetBase {
   virtual bool doFitZ( void ) = 0;
   std::vector<DefoSpline> const& getSplines( void ) const { return splines_; }
   DefoPointCollection const& getPoints( void ) const { return points_; }
+  std::pair<double,double> const validityRange( void ) const;
   size_t getNPoints( void ) const { return points_.size(); }
   void addPoint( DefoPoint const& point ) { points_.push_back( point ); }
   void clear( void ) { splines_.resize( 0 ); points_.resize( 0 ); }

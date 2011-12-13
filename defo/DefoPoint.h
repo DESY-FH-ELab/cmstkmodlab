@@ -38,6 +38,7 @@ class DefoPoint {
   double const& getY( void ) const { return y_; }
   double const& getSlope( void ) const { return slope_; }
   double const& getHeight( void ) const { return height_; }
+  double abs( void ) const { return sqrt( pow( x_, 2. ) + pow( y_, 2. ) ); }
   const std::pair<int,int> getIndex( void ) const { return index_; }
   unsigned int getPixX( void ) const { return static_cast<int>( round( x_ ) ); }
   unsigned int getPixY( void ) const { return static_cast<int>( round( y_ ) ); }
@@ -97,5 +98,6 @@ bool DefoPointXPredicate( DefoPoint const&, DefoPoint const& );
 bool DefoPointYPredicate( DefoPoint const&, DefoPoint const& );
 bool DefoPointCollectionAverageXPredicate( DefoPointCollection const&, DefoPointCollection const& );
 bool DefoPointCollectionAverageYPredicate( DefoPointCollection const&, DefoPointCollection const& );
-
+bool DefoPointPairSecondAbsPredicate( std::pair<DefoPointCollection::iterator,DefoPoint> const&, 
+				      std::pair<DefoPointCollection::iterator,DefoPoint> const& );
 #endif
