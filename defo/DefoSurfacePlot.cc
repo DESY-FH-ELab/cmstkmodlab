@@ -142,6 +142,7 @@ void DefoSurfacePlot::setData( DefoSurface const& surface ) {
   for( unsigned int i = 0; i < indexRange.first; ++i ) {
     data[i] = new Qwt3D::Triple[indexRange.second] ;
     for( unsigned int j = 0; j < field[i].size(); ++j ) { // the rest of the column should be zero!!
+
       if(field[i][j].isValid() ) {
 	data[i][j] = Qwt3D::Triple( field[i][j].getX(), field[i][j].getY(), field[i][j].getHeight() * DEFORSURFACEPLOT_Z_SCALING /* to µm*/ );
       }
@@ -204,6 +205,8 @@ DefoPoint const& DefoSurfacePlot::neighbour( std::pair<unsigned int, unsigned in
   return field[matrixPos.first][matrixPos.second];
 
 }
+
+
 
 ///
 ///

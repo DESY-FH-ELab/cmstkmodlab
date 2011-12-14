@@ -52,27 +52,24 @@ const DefoSurface DefoRecoSurface::reconstruct( DefoPointCollection& currentPoin
 
   DefoSurface theSurface;
 
-  // // create XY splines for display
-  // const DefoSplineField currentXYSplineField = createXYSplines( currentPoints );
+  //  if( debugLevel_ >= 2 ) std::cout << " [DefoRecoSurface::reconstruct] =2= Indexing ref." << std::endl;
 
-  if( debugLevel_ >= 2 ) std::cout << " [DefoRecoSurface::createZSplines] =2= Indexing defo." << std::endl;
+  //refPointIndexRange_ = indexPoints( referencePoints );
 
-  // index the points for matching ref and reco
-  std::pair<unsigned int, unsigned int> recoPointIndexRange = indexPoints( currentPoints );
+//   if( debugLevel_ >= 2 ) std::cout << " [DefoRecoSurface::reconstruct] =2= " 
+// 				   << "ref point index range is: x: "
+// 				   << refPointIndexRange.first << " y: "
+// 				   << refPointIndexRange.second << std::endl;
 
-  if( debugLevel_ >= 2 ) std::cout << " [DefoRecoSurface::createZSplines] =2= " 
-				   << "reco point index range is: x: "
-				   << recoPointIndexRange.first << " y: "
-				   << recoPointIndexRange.second << std::endl;
+//   if( debugLevel_ >= 2 ) std::cout << " [DefoRecoSurface::reconstruct] =2= Indexing defo." << std::endl;
 
-  if( debugLevel_ >= 2 ) std::cout << " [DefoRecoSurface::createZSplines] =2= Indexing ref." << std::endl;
+//   // index the points for matching ref and reco
+//   //  recoPointIndexRange_ = indexPoints( currentPoints );
 
-  std::pair<unsigned int, unsigned int> refPointIndexRange = indexPoints( referencePoints );
-
-  if( debugLevel_ >= 2 ) std::cout << " [DefoRecoSurface::createZSplines] =2= " 
-				   << "ref point index range is: x: "
-				   << refPointIndexRange.first << " y: "
-				   << refPointIndexRange.second << std::endl;
+//   if( debugLevel_ >= 2 ) std::cout << " [DefoRecoSurface::reconstruct] =2= " 
+// 				   << "reco point index range is: x: "
+// 				   << recoPointIndexRange.first << " y: "
+// 				   << recoPointIndexRange.second << std::endl;
 
 
   // create raw z splines for surface reconstruction
@@ -874,7 +871,7 @@ const std::pair<double,double> DefoRecoSurface::determineAverageSpacing( DefoPoi
 /// returns the abs index range along x,y, i.e. the maximum |index|
 /// which is needed for display with QwtPlot3D
 ///
-std::pair<unsigned int, unsigned int> DefoRecoSurface::indexPoints( DefoPointCollection& points ) const {
+std::pair<unsigned int, unsigned int> DefoRecoSurface::indexPoints( DefoPointCollection& points ) {
 
   // first, look for "blue points" and make sure there's only one
   unsigned int nBluePoints = 0;
@@ -1346,9 +1343,12 @@ std::pair<unsigned int, unsigned int> DefoRecoSurface::indexPoints( DefoPointCol
   // finally, check if all points are indexed
   // and fill the output collection
 
+  // clear the indexed points vector
+  indexedPoints_.resize( 0 );
+
   std::pair<unsigned int, unsigned int> outputRange( 0, 0 );
 
-  for( DefoPointCollection::const_iterator it = points.begin(); it < points.end(); ++it ) {
+  for( DefoPointCollection::iterator it = points.begin(); it < points.end(); ++it ) {
     if( abs( it->getIndex().first  ) > (int)outputRange.first  ) outputRange.first  = abs( it->getIndex().first   );
     if( abs( it->getIndex().second ) > (int)outputRange.second ) outputRange.second = abs( it->getIndex().second  );
 
@@ -1356,8 +1356,14 @@ std::pair<unsigned int, unsigned int> DefoRecoSurface::indexPoints( DefoPointCol
       std::cerr << " [DefoRecoSurface::indexPoints] ** WARNING: Point not indexed at posistion: x: " 
 		<< it->getX() << " y: " << it->getY() << std::endl;
     }
+    // fill them in a vector (for display purposes)
+    else indexedPoints_.push_back( *it );
   }
 
+  if( debugLevel_ >= 2 ) std::cout << " [DefoRecoSurface::indexPoints] =2= " 
+				   << "ref point index range is: x: "
+				   << outputRange.first << " y: "
+				   << outputRange.second << std::endl;
   return outputRange;
 
 }

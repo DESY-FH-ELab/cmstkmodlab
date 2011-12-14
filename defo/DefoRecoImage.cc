@@ -13,8 +13,6 @@ DefoRecoImage::DefoRecoImage() {
   step2Threshold_ = cfgReader.getValue<int>( "STEP2_THRESHOLD" );
   step3Threshold_ = cfgReader.getValue<int>( "STEP3_THRESHOLD" );
   halfSquareWidth_ = cfgReader.getValue<int>( "HALF_SQUARE_WIDTH" );
-  //  squareSeedOffsetX_ = cfgReader.getValue<int>( "SQUARE_SEED_OFFSET_X" );
-  //  squareSeedOffsetY_ = cfgReader.getValue<int>( "SQUARE_SEED_OFFSET_Y" );
   blueishnessThreshold_ = cfgReader.getValue<double>( "BLUEISHNESS_THRESHOLD" );
   debugLevel_ = cfgReader.getValue<unsigned int>( "DEBUG_LEVEL" );
 
@@ -145,10 +143,6 @@ std::pair<DefoPointCollection,DefoRawImage> DefoRecoImage::reconstruct( DefoRawI
 	// save square around this point as already tagged
 	forbiddenAreas_.push_back( DefoSquare( intermediatePoint, halfSquareWidth_ ) );
 	
-// 	std::cout << "PB FA: " << forbiddenAreas_.back().getCenter().getX() << " " << forbiddenAreas_.back().getCenter().getY()
-// 		  << " " << forbiddenAreas_.back().getHalfWidth() << std::endl; /////////////////////////////////
-
-
       }
 
     }

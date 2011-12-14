@@ -32,6 +32,8 @@ class DefoRecoSurface {
   void setPitchX( double p ) { pitchX_ = p; }
   void setPitchY( double p ) { pitchY_ = p; }
   void setFocalLength( double l ) { focalLength_ = l; }
+  std::pair<unsigned int, unsigned int> indexPoints( DefoPointCollection& );
+  std::vector<DefoPoint> const& getIndexedPoints( void ) { return indexedPoints_; }
 
  private:
   const DefoSplineField createXYSplines( DefoPointCollection const& );
@@ -41,7 +43,6 @@ class DefoRecoSurface {
   void mountZSplines( DefoSplineField& ) const;
   void mountZSplinesOld( DefoSplineField& ) const;
   const std::pair<double,double> determineAverageSpacing( DefoPointCollection const& ) const;
-  std::pair<unsigned int, unsigned int> indexPoints( DefoPointCollection& ) const;
   std::pair<bool,DefoPointCollection::iterator> findClosestPoint( DefoPoint const&, DefoPointCollection& ) const;
   std::pair<bool,DefoPointCollection::iterator> findClosestPointExcluded( DefoPoint const&, DefoPointCollection&, DefoPoint const& ) const;
   const std::pair<bool,DefoPointCollection::const_iterator> findPointByIndex( DefoPointCollection const&, std::pair<int,int> const& ) const;
@@ -49,6 +50,8 @@ class DefoRecoSurface {
   void removeTilt( DefoSplineField& ) const;
   void calculateHelpers( void );
 
+/*   std::pair<unsigned int, unsigned int> refPointIndexRange_; */
+/*   std::pair<unsigned int, unsigned int> recoPointIndexRange_; */
   int spacingEstimate_;
   int searchPathHalfWidth_;
   double nominalGridDistance_;
@@ -60,6 +63,7 @@ class DefoRecoSurface {
   double pitchY_;
   double focalLength_;
   unsigned int debugLevel_;
+  std::vector<DefoPoint> indexedPoints_;
 
 };
 

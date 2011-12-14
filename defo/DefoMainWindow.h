@@ -99,6 +99,7 @@ class DefoMainWindow : public QWidget {
   void receiveArea( DefoArea area );
   void deleteCurrentArea( void );
   void toggleAreaDisplay( bool isChecked );
+  void toggleIndicesDisplay( bool isChecked );
 
   void loadImageFromCamera( void );
   void handleCameraAction( DefoCamHandler::Action );
@@ -113,7 +114,8 @@ class DefoMainWindow : public QWidget {
   void pollAction( void );
   void imagelabelRefreshAreas( std::vector<DefoArea> );
   void imagelabelDisplayAreas( bool );
-
+  void imagelabelRefreshIndices( std::vector<DefoPoint> );
+  void imagelabelDisplayIndices( bool );
 
  private:
 
@@ -162,6 +164,7 @@ class DefoMainWindow : public QWidget {
   QRadioButton *displayAreasButton_;
   QRadioButton *displaySplinesButton_;
   QRadioButton *displayRecoitemButton_;
+  QRadioButton *displayIndicesButton_;
 
   QGroupBox *refreshGroupBox_;
   QPushButton *refreshCameraButton_;

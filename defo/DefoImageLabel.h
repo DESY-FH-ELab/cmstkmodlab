@@ -6,6 +6,7 @@
 #include <utility>
 
 #include <QLabel>
+//#include <QGraphicsView>
 #include <QRubberBand>
 #include <QMouseEvent>
 #include <QPoint>
@@ -21,14 +22,15 @@
 
 
 ///
-/// rubberband with a different color
+/// rubberband with a different color,
+/// for displaying selected areas
 ///
-class DefoImageLabelRubberBand : public QRubberBand {
+class DefoImageLabelAreaRubberBand : public QRubberBand {
 
   Q_OBJECT
 
-  public:
-  DefoImageLabelRubberBand( Shape s, QWidget * p = 0 ) : QRubberBand( s, p ) {}
+ public:
+  DefoImageLabelAreaRubberBand( Shape s, QWidget* p = 0 ) : QRubberBand( s, p ) {}
   void setName( QString name ) { name_ = name; }
   QString& getName( void ) { return name_; }
 
@@ -36,9 +38,8 @@ class DefoImageLabelRubberBand : public QRubberBand {
   QString name_;
 
  protected:
-  
-  void paintEvent(QPaintEvent *pe ) {
-    //    QRect r( pe->rect().x(), pe->rect().y()-20, pe->rect().width()+40, pe->rect().height()+40 );
+
+  virtual void paintEvent(QPaintEvent *pe ) {
     QRegion reg( pe->rect() );
     setMask( reg ); // need to replace the mask to fill the entire rect
     QPainter painter(this);
@@ -49,9 +50,44 @@ class DefoImageLabelRubberBand : public QRubberBand {
     painter.drawText( 3,13, name_ );
   }
 
-
+  
+  
 };
 
+
+
+// ///
+// ///
+// ///
+// class DefoImageLabelIndexRubberBand : public QRubberBand {
+  
+//  Q_OBJECT
+    
+//  public:
+//   DefoImageLabelIndexRubberBand( Shape s, QWidget* p = 0 ) : QRubberBand( s, p ) {}
+//   void setIndex( std::pair<int,int> i ) { index_ = i; };
+    
+//  private:
+//   std::pair<int,int> index_;
+
+//  protected:
+  
+//   virtual void paintEvent(QPaintEvent *pe ) {
+//     //    Q_UNUSED( pe );
+//     QRegion reg( pe->rect() );
+//     setMask( reg ); // need to replace the mask to fill the entire rect
+//     QPainter painter(this);
+//     QPen pen( Qt::magenta, 2 );
+//     //    pen.setStyle( Qt::NoPen );
+//     painter.setPen( pen );
+//     //painter.drawRect( pe->rect() ); //////////////////////
+//     QFont font;
+//     font.setPointSize( 6 );
+//     painter.setFont( font );
+//     painter.drawText( 0, 22, QString::number( index_.first ) + "," + QString::number( index_.second ) );
+//   }
+
+// };
 
 
 
@@ -74,12 +110,15 @@ class DefoImageLabel : public QLabel {
   void defineArea( void );
   void displayAreas( bool );
   void refreshAreas( std::vector<DefoArea> area );
+  void displayIndices( bool );
+  void refreshIndices( std::vector<DefoPoint> points );
   void showHistogram( void );
 
  signals:
   void areaDefined( DefoArea area );
   
  private:
+  virtual void paintEvent(QPaintEvent* );
   void mousePressEvent( QMouseEvent* );
   void mouseMoveEvent( QMouseEvent* );
   void mouseReleaseEvent( QMouseEvent* );
@@ -89,8 +128,9 @@ class DefoImageLabel : public QLabel {
   void transformToLocal( QRect& );
 
   QImage origImage_;
-  DefoImageLabelRubberBand *rubberBand_; // for later
-  std::vector<DefoImageLabelRubberBand*> areaRubberBands_;
+  DefoImageLabelAreaRubberBand *rubberBand_;
+  std::vector<DefoImageLabelAreaRubberBand*> areaRubberBands_;
+  std::vector<DefoPoint> indexPoints_;
   QPoint myPoint_;
   DefoHistogramView view_;
   bool isView_;
@@ -99,6 +139,7 @@ class DefoImageLabel : public QLabel {
   QSize originalImageSize_;
   unsigned int debugLevel_;
   bool isDisplayAreas_;
+  bool isDisplayIndices_;
 
 };
 #endif

@@ -107,7 +107,7 @@ void DefoMainWindow::setupUi( void ) {
 
   displayGroupBox_ = new QGroupBox(rawimageGroupBox_);
   displayGroupBox_->setObjectName(QString::fromUtf8("displayGroupBox_"));
-  displayGroupBox_->setGeometry(QRect(560, 210, 101, 91));
+  displayGroupBox_->setGeometry(QRect(560, 200, 101, 111));
   displayGroupBox_->setFont(font);
   displayGroupBox_->setAlignment(Qt::AlignCenter);
   displayGroupBox_->setCheckable(false);
@@ -120,14 +120,17 @@ void DefoMainWindow::setupUi( void ) {
   displaySplinesButton_ = new QRadioButton(displayGroupBox_);
   displaySplinesButton_->setObjectName(QString::fromUtf8("displaySplinesButton_"));
   displaySplinesButton_->setEnabled(false);
-  displaySplinesButton_->setGeometry(QRect(10, 60, 71, 22));
+  displaySplinesButton_->setGeometry(QRect(10, 80, 71, 22));
   displaySplinesButton_->setAutoExclusive( false ); // all may be ticked independently
   displayRecoitemButton_ = new QRadioButton(displayGroupBox_);
   displayRecoitemButton_->setEnabled(false);
   displayRecoitemButton_->setObjectName(QString::fromUtf8("displayRecoitemButton_"));
   displayRecoitemButton_->setGeometry(QRect(10, 20, 81, 22));
   displayRecoitemButton_->setAutoExclusive( false ); // all may be ticked independently
-
+  displayIndicesButton_ = new QRadioButton(displayGroupBox_);
+  displayIndicesButton_->setObjectName(QString::fromUtf8("displayIndicesButton_"));
+  displayIndicesButton_->setEnabled(true);
+  displayIndicesButton_->setGeometry(QRect(10, 60, 61, 22));
 
   refreshGroupBox_ = new QGroupBox(rawimageGroupBox_);
   refreshGroupBox_->setObjectName(QString::fromUtf8("refreshGroupBox_"));
@@ -1268,6 +1271,7 @@ void DefoMainWindow::setupUi( void ) {
   blueishnessSpinBox_->setFont(font8);
   blueishnessSpinBox_->setStyleSheet(QString::fromUtf8("background-color: rgb(255, 255, 255)"));
   blueishnessSpinBox_->setDecimals(2);
+  blueishnessSpinBox_->setSingleStep(0.1);
   hswGroupBox_ = new QGroupBox(rawimagerecoGroupBox_);
   hswGroupBox_->setObjectName(QString::fromUtf8("hswGroupBox_"));
   hswGroupBox_->setGeometry(QRect(200, 130, 151, 81));
@@ -1542,6 +1546,7 @@ void DefoMainWindow::retranslateUi( void ) {
   displayAreasButton_->setText(QApplication::translate("MainWindow", "Areas", 0, QApplication::UnicodeUTF8));
   displaySplinesButton_->setText(QApplication::translate("MainWindow", "Splines", 0, QApplication::UnicodeUTF8));
   displayRecoitemButton_->setText(QApplication::translate("MainWindow", "Recoitems", 0, QApplication::UnicodeUTF8));
+  displayIndicesButton_->setText(QApplication::translate("MainWindow", "Indices", 0, QApplication::UnicodeUTF8));
   refreshGroupBox_->setTitle(QApplication::translate("MainWindow", "Refresh", 0, QApplication::UnicodeUTF8));
   refreshCameraButton_->setText(QApplication::translate("MainWindow", "Camera", 0, QApplication::UnicodeUTF8));
   refreshFileButton_->setText(QApplication::translate("MainWindow", "File", 0, QApplication::UnicodeUTF8));

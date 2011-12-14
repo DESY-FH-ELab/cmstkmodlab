@@ -197,9 +197,9 @@
        <property name="geometry" >
         <rect>
          <x>560</x>
-         <y>210</y>
+         <y>200</y>
          <width>101</width>
-         <height>91</height>
+         <height>111</height>
         </rect>
        </property>
        <property name="font" >
@@ -242,7 +242,7 @@
         <property name="geometry" >
          <rect>
           <x>10</x>
-          <y>60</y>
+          <y>80</y>
           <width>71</width>
           <height>22</height>
          </rect>
@@ -262,6 +262,22 @@
         </property>
         <property name="text" >
          <string>Recoitems</string>
+        </property>
+       </widget>
+       <widget class="QRadioButton" name="displayIndicesButton_" >
+        <property name="enabled" >
+         <bool>false</bool>
+        </property>
+        <property name="geometry" >
+         <rect>
+          <x>10</x>
+          <y>60</y>
+          <width>61</width>
+          <height>22</height>
+         </rect>
+        </property>
+        <property name="text" >
+         <string>Indices</string>
         </property>
        </widget>
       </widget>

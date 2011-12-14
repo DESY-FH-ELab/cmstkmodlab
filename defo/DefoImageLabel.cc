@@ -11,6 +11,7 @@ void DefoImageLabel::init( void ) {
   isRotation_ = 0.;
   isDefineArea_ = false;
   isDisplayAreas_ = false;
+  isDisplayIndices_ = false;
 
   // read parameters
   DefoConfigReader cfgReader( "defo.cfg" );
@@ -56,7 +57,7 @@ void DefoImageLabel::mousePressEvent( QMouseEvent *event ) {
   
   if( isDefineArea_ ) {
     myPoint_ = event->pos();
-    rubberBand_ = new DefoImageLabelRubberBand(QRubberBand::Rectangle, this);
+    rubberBand_ = new DefoImageLabelAreaRubberBand(QRubberBand::Rectangle, this);
     rubberBand_->setGeometry( QRect( myPoint_, QSize() ) );
     rubberBand_->show();
   }
@@ -156,10 +157,12 @@ void DefoImageLabel::displayAreas( bool isDisplay ) {
 
   isDisplayAreas_ = isDisplay;
 
-  for( std::vector<DefoImageLabelRubberBand*>::iterator it = areaRubberBands_.begin(); it < areaRubberBands_.end(); ++it ) {
+  for( std::vector<DefoImageLabelAreaRubberBand*>::iterator it = areaRubberBands_.begin(); it < areaRubberBands_.end(); ++it ) {
     isDisplayAreas_ ? (*it)->show() : (*it)->hide();
   }
-      
+  
+  update();
+  
 }
 
 
@@ -170,7 +173,7 @@ void DefoImageLabel::displayAreas( bool isDisplay ) {
 void DefoImageLabel::refreshAreas( std::vector<DefoArea> areas ) {
 
   // reset the vector
-  for( std::vector<DefoImageLabelRubberBand*>::iterator it = areaRubberBands_.begin(); it < areaRubberBands_.end(); ++it ) {
+  for( std::vector<DefoImageLabelAreaRubberBand*>::iterator it = areaRubberBands_.begin(); it < areaRubberBands_.end(); ++it ) {
     (*it)->hide();
     delete( *it );
   }
@@ -178,7 +181,7 @@ void DefoImageLabel::refreshAreas( std::vector<DefoArea> areas ) {
   
   for( std::vector<DefoArea>::iterator it = areas.begin(); it < areas.end(); ++it ) {
     
-    DefoImageLabelRubberBand* aRubberBand = new DefoImageLabelRubberBand( QRubberBand::Rectangle, this );
+    DefoImageLabelAreaRubberBand* aRubberBand = new DefoImageLabelAreaRubberBand( QRubberBand::Rectangle, this );
     QRect r = it->getRectangle();
     transformToLocal( r );
     aRubberBand->setGeometry( r );
@@ -187,6 +190,51 @@ void DefoImageLabel::refreshAreas( std::vector<DefoArea> areas ) {
     if( isDisplayAreas_ ) aRubberBand->show();
     
   }
+
+}
+
+
+
+///
+///
+///
+void DefoImageLabel::displayIndices( bool isDisplay ) {
+
+  isDisplayIndices_ = isDisplay;
+
+//   for( std::vector<DefoImageLabelIndexRubberBand*>::iterator it = indexRubberBands_.begin(); it < indexRubberBands_.end(); ++it ) {
+//     isDisplayIndices_ ? (*it)->show() : (*it)->hide();
+//   }
+  
+  update();
+
+}
+
+
+
+///
+///
+///
+void DefoImageLabel::refreshIndices( std::vector<DefoPoint> points ) {
+
+  indexPoints_.resize( 0 );
+  
+  indexPoints_ = points;
+
+  update();
+
+//   for( std::vector<DefoPoint>::iterator it = points.begin(); it < points.end(); ++it ) {
+    
+//     DefoImageLabelIndexRubberBand* aRubberBand = new DefoImageLabelIndexRubberBand( QRubberBand::Rectangle, this );
+
+//     QRect r( it->getX(), it->getY(), 30, 30 ); // must be square since rotation possible
+//     transformToLocal( r );
+//     aRubberBand->setGeometry( r );
+//     aRubberBand->setIndex( it->getIndex() );
+//     indexRubberBands_.push_back( aRubberBand );
+//     if( isDisplayIndices_ ) aRubberBand->show();
+    
+//   }
 
 }
 
@@ -322,6 +370,40 @@ void DefoImageLabel::showHistogram( void ) {
     view_.show();
     view_.replot();
 
+  }
+
+}
+
+
+
+///
+///
+///
+void DefoImageLabel::paintEvent( QPaintEvent* e ) {
+
+  // first draw the label
+  QLabel:: paintEvent( e );
+
+  // then additional items:
+
+  // indices
+  if( isDisplayIndices_ ) {
+
+    // move the indices text a bit right/up
+    const std::pair<int,int> offset( 3, -3 );
+
+    for( std::vector<DefoPoint>::const_iterator it = indexPoints_.begin(); it < indexPoints_.end(); ++it ) {
+      QRect r( it->getX(), it->getY(), 0, 0 ); // we pack it in a QRect so we can use the transform methods
+      transformToLocal( r );
+      QPainter painter( this );
+      QPen pen( Qt::magenta, 2 );
+      painter.setPen( pen );
+      QFont font;
+      font.setPointSize( 7 );
+      painter.setFont( font );
+      painter.drawText( r.x() + offset.first, r.y() + offset.second, 
+			QString::number( it->getIndex().first ) + "," + QString::number( it->getIndex().second ) );
+    }
   }
 
 }
