@@ -49,19 +49,19 @@ void DefoSurfacePlot::draw( void ) {
   zScale_ = 700. * 400.; // starting value (experimental..)
   xyScale_ = 900.; // experimental..
 
-  scalefactor_ = amplitude / 160. * xyScale_; // experimental..
+  scalefactor_ = amplitude / 160. * ( xyScale_ / DEFORSURFACEPLOT_XY_SCALING ); // experimental..
   //  setScale( scalefactor_, scalefactor_, zScale_ / DEFORSURFACEPLOT_Z_SCALING ); // z-axis is in µm, all others in m
 
   // currently not to be changed
   setBackgroundColor(Qwt3D::RGBA(1,1,1));
 
 
-  // tick marks
-  for (unsigned i=0; i!=coordinates()->axes.size(); ++i) {
-    coordinates()->axes[i].setMajors(7);
-    coordinates()->axes[i].setMinors(4);
-    coordinates()->axes[i].setTicLength( 0.001, 0.0005 );
-  }
+//   // tick marks
+//   for (unsigned i=0; i!=coordinates()->axes.size(); ++i) {
+//     coordinates()->axes[i].setMajors(7);
+//     coordinates()->axes[i].setMinors(4);
+//     coordinates()->axes[i].setTicLength( 0.001 * DEFORSURFACEPLOT_XY_SCALING, 0.0005 * DEFORSURFACEPLOT_XY_SCALING );
+//   }
   
 
   // axes
@@ -71,20 +71,22 @@ void DefoSurfacePlot::draw( void ) {
   legend()->setTitleString( QString( "Z / " ) + QChar(0x00B5) + QString( "m" ) );
 
   for (unsigned i=0; i!= coordinates()->axes.size(); ++i) {
-    coordinates()->axes[i].setTicLength( 0.002, 0.001 );
+    coordinates()->axes[i].setTicLength( 0.002 * DEFORSURFACEPLOT_XY_SCALING, 0.001 * DEFORSURFACEPLOT_XY_SCALING );
+    coordinates()->axes[i].setMajors(10);
+    coordinates()->axes[i].setMinors(5);
   }
 
-  coordinates()->axes[Qwt3D::X1].setLabelString( "X / m" );
-  coordinates()->axes[Qwt3D::X2].setLabelString( "X / m" );
-  coordinates()->axes[Qwt3D::X3].setLabelString( "X / m" );
-  coordinates()->axes[Qwt3D::X4].setLabelString( "X / m" );
+  coordinates()->axes[Qwt3D::X1].setLabelString( "X / cm" );
+  coordinates()->axes[Qwt3D::X2].setLabelString( "X / cm" );
+  coordinates()->axes[Qwt3D::X3].setLabelString( "X / cm" );
+  coordinates()->axes[Qwt3D::X4].setLabelString( "X / cm" );
 
-  coordinates()->axes[Qwt3D::Y1].setLabelString( "Y / m" );
-  coordinates()->axes[Qwt3D::Y2].setLabelString( "Y / m" );
-  coordinates()->axes[Qwt3D::Y3].setLabelString( "Y / m" );
-  coordinates()->axes[Qwt3D::Y4].setLabelString( "Y / m" );
+  coordinates()->axes[Qwt3D::Y1].setLabelString( "Y / cm" );
+  coordinates()->axes[Qwt3D::Y2].setLabelString( "Y / cm" );
+  coordinates()->axes[Qwt3D::Y3].setLabelString( "Y / cm" );
+  coordinates()->axes[Qwt3D::Y4].setLabelString( "Y / cm" );
 
-  coordinates()->axes[Qwt3D::Z1].setLabelString( QString( "Z / " ) + QChar(0x00B5) + QString( "m" ) );
+  coordinates()->axes[Qwt3D::Z1].setLabelString( QString( "Z / " ) + QChar(0x00B5) + QString( "m" ) ); // QChar makes the µ
   coordinates()->axes[Qwt3D::Z2].setLabelString( QString( "Z / " ) + QChar(0x00B5) + QString( "m" ) );
   coordinates()->axes[Qwt3D::Z3].setLabelString( QString( "Z / " ) + QChar(0x00B5) + QString( "m" ) );
   coordinates()->axes[Qwt3D::Z4].setLabelString( QString( "Z / " ) + QChar(0x00B5) + QString( "m" ) );
@@ -144,11 +146,15 @@ void DefoSurfacePlot::setData( DefoSurface const& surface ) {
     for( unsigned int j = 0; j < field[i].size(); ++j ) { // the rest of the column should be zero!!
 
       if(field[i][j].isValid() ) {
-	data[i][j] = Qwt3D::Triple( field[i][j].getX(), field[i][j].getY(), field[i][j].getHeight() * DEFORSURFACEPLOT_Z_SCALING /* to µm*/ );
+	data[i][j] = Qwt3D::Triple( field[i][j].getX() * DEFORSURFACEPLOT_XY_SCALING, 
+				    field[i][j].getY() * DEFORSURFACEPLOT_XY_SCALING,
+				    field[i][j].getHeight() * DEFORSURFACEPLOT_Z_SCALING /* to µm*/ );
       }
       else { // use valid neighbour
 	DefoPoint const& aNeighbour = neighbour( std::make_pair<unsigned int, unsigned int>( i, j ), field );
-	data[i][j] = Qwt3D::Triple( aNeighbour.getX(), aNeighbour.getY(), aNeighbour.getHeight() * DEFORSURFACEPLOT_Z_SCALING /* to µm*/ );
+	data[i][j] = Qwt3D::Triple( aNeighbour.getX() * DEFORSURFACEPLOT_XY_SCALING, 
+				    aNeighbour.getY() * DEFORSURFACEPLOT_XY_SCALING, 
+				    aNeighbour.getHeight() * DEFORSURFACEPLOT_Z_SCALING /* to µm*/ );
       }
       
       if( data[i][j].z < amplitudeRange_.first )  amplitudeRange_.first  = data[i][j].z;
