@@ -42,6 +42,9 @@ std::pair<DefoPointCollection,DefoRawImage> DefoRecoImage::reconstruct( DefoRawI
   if( debugLevel_ >= 2 ) std::cout << " [DefoRecoImage::reconstruct] =2= Image has: "
 				   << imageWidth.first << " x " << imageWidth.second << " pixels" << std::endl;
   
+  // clear the areas
+  forbiddenAreas_.makeEmpty();
+
 
   for( int xIt = theArea.getRectangle().x(); xIt < theArea.getRectangle().x() + theArea.getRectangle().width(); ++xIt ) {
     for( int yIt = theArea.getRectangle().y(); yIt < theArea.getRectangle().y() + theArea.getRectangle().height(); ++yIt ) {
@@ -148,8 +151,6 @@ std::pair<DefoPointCollection,DefoRawImage> DefoRecoImage::reconstruct( DefoRawI
     }
   }
 
-  forbiddenAreas_.makeEmpty();
-
   return theOutput;
 
 }
@@ -188,20 +189,20 @@ DefoPoint DefoRecoImage::averageSquare( QImage const& theImage, DefoPoint const&
   // divide by total sum for center-of-gravity
   if( squareSummedAmplitude > 0 ) outputPoint /= squareSummedAmplitude;
 
-  if( imageForDrawing ) {
+//   if( imageForDrawing ) {
 
-    // draw square
-    theSquare.draw( *imageForDrawing );
+//     // draw square
+//     theSquare.draw( *imageForDrawing );
     
-    // set draw color: blue if white point / green if blue point
-    unsigned int colorIndex = qRgb( 255, 0, 0 );
-    if( outputPoint.isBlue() ) colorIndex = qRgb( 0, 255, 0 ); // draw green cross if blue point
+//     // set draw color: blue if white point / green if blue point
+//     unsigned int colorIndex = qRgb( 255, 0, 0 );
+//     if( outputPoint.isBlue() ) colorIndex = qRgb( 0, 255, 0 ); // draw green cross if blue point
 
-    // draw cross @ output point
-    for( int px = -2; px <= 2; ++px ) imageForDrawing->setPixel( outputPoint.getPixX() + px, outputPoint.getPixY(), colorIndex );
-    for( int py = -2; py <= 2; ++py ) imageForDrawing->setPixel( outputPoint.getPixX(), outputPoint.getPixY() + py, colorIndex );
+//     // draw cross @ output point
+//     for( int px = -2; px <= 2; ++px ) imageForDrawing->setPixel( outputPoint.getPixX() + px, outputPoint.getPixY(), colorIndex );
+//     for( int py = -2; py <= 2; ++py ) imageForDrawing->setPixel( outputPoint.getPixX(), outputPoint.getPixY() + py, colorIndex );
 
-  }  
+//   }  
 
   return outputPoint;
 

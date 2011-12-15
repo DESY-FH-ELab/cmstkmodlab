@@ -71,10 +71,14 @@ void DefoMainWindow::setupSignalsAndSlots( void ) {
   connect( areaDeleteButton_, SIGNAL(clicked()), this, SLOT(deleteCurrentArea()) );
   connect( displayAreasButton_, SIGNAL(toggled(bool)), this, SLOT(toggleAreaDisplay(bool)) );
   connect( displayIndicesButton_, SIGNAL(toggled(bool)), this, SLOT(toggleIndicesDisplay(bool)) );
+  connect( displayIndicesButton_, SIGNAL(toggled(bool)), this, SLOT(toggleIndicesDisplay(bool)) );
+  connect( displayRecoitemButton_, SIGNAL(toggled(bool)), this, SLOT(togglePointSquareDisplay(bool)) );
   connect( this, SIGNAL(imagelabelDisplayAreas(bool)), rawimageLabel_, SLOT(displayAreas(bool)) );
   connect( this, SIGNAL(imagelabelRefreshAreas(std::vector<DefoArea>)), rawimageLabel_, SLOT(refreshAreas(std::vector<DefoArea>)) );
   connect( this, SIGNAL(imagelabelDisplayIndices(bool)), rawimageLabel_, SLOT(displayIndices(bool)) );
   connect( this, SIGNAL(imagelabelRefreshIndices(std::vector<DefoPoint>)), rawimageLabel_, SLOT(refreshIndices(std::vector<DefoPoint>)) );
+  connect( this, SIGNAL(imagelabelDisplayPointSquares(bool)), rawimageLabel_, SLOT(displayPointSquares(bool)) );
+  connect( this, SIGNAL(imagelabelRefreshPointSquares(std::vector<DefoSquare>)), rawimageLabel_, SLOT(refreshPointSquares(std::vector<DefoSquare>)) );
   connect( refreshCameraButton_, SIGNAL(clicked()), this, SLOT(loadImageFromCamera()) );
   qRegisterMetaType<DefoCamHandler::Action>("DefoCamHandler::Action"); // signal is from qthread
   connect( &camHandler_, SIGNAL(actionFinished(DefoCamHandler::Action)), this, SLOT(handleCameraAction(DefoCamHandler::Action)) );
@@ -176,9 +180,11 @@ void DefoMainWindow::handleAction( DefoSchedule::scheduleItem item ) {
       // disable polling, wait for PAUSE/RES button pressed
       pausePolling();
       
-      // by default, enable area display, disable indices
+      // by default, enable area display & points, disable indices
       displayAreasButton_->setChecked( true );
+      displayRecoitemButton_->setChecked( true );
       displayIndicesButton_->setChecked( false );
+      
 
       QFileInfo fileInfo( item.second );
       if( !fileInfo.exists() ) {
@@ -287,6 +293,7 @@ void DefoMainWindow::handleAction( DefoSchedule::scheduleItem item ) {
       else area = areas_.at( 0 );
       referenceImageOutput_ = defoRecoImage_.reconstruct( refImage, area );
       QImage& qImage =  referenceImageOutput_.second.getImage();
+      emit( imagelabelRefreshPointSquares( defoRecoImage_.getForbiddenAreas() ) );
 
       // do the indexing
       if( debugLevel_ >= 2 ) std::cout << " [DefoMainWindow::handleAction] =2= [FILE_REF] Indexing ref points" << std::endl;
@@ -387,6 +394,7 @@ void DefoMainWindow::handleAction( DefoSchedule::scheduleItem item ) {
 
       defoImageOutput_ = defoRecoImage_.reconstruct( defoImage, area );
       QImage& qImage =  defoImageOutput_.second.getImage();
+      emit( imagelabelRefreshPointSquares( defoRecoImage_.getForbiddenAreas() ) );
 
       // save the updated file
       QString recoImageFileName = outputDir.path() + "/defoimage_reco.jpg";
@@ -708,6 +716,17 @@ void DefoMainWindow::toggleAreaDisplay( bool isChecked ) {
 void DefoMainWindow::toggleIndicesDisplay( bool isChecked ) {
 
   emit( imagelabelDisplayIndices( isChecked ) );
+
+}
+
+
+
+///
+///
+///
+void DefoMainWindow::togglePointSquareDisplay( bool isChecked ) {
+
+  emit( imagelabelDisplayPointSquares( isChecked ) );
 
 }
 

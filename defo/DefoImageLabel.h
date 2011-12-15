@@ -15,6 +15,7 @@
 #include <QStyleOptionFocusRect>
 
 #include "DefoPoint.h"
+#include "DefoSquare.h"
 #include "DefoArea.h"
 #include "DefoConfigReader.h"
 #include "DefoHistogramView.h"
@@ -56,41 +57,6 @@ class DefoImageLabelAreaRubberBand : public QRubberBand {
 
 
 
-// ///
-// ///
-// ///
-// class DefoImageLabelIndexRubberBand : public QRubberBand {
-  
-//  Q_OBJECT
-    
-//  public:
-//   DefoImageLabelIndexRubberBand( Shape s, QWidget* p = 0 ) : QRubberBand( s, p ) {}
-//   void setIndex( std::pair<int,int> i ) { index_ = i; };
-    
-//  private:
-//   std::pair<int,int> index_;
-
-//  protected:
-  
-//   virtual void paintEvent(QPaintEvent *pe ) {
-//     //    Q_UNUSED( pe );
-//     QRegion reg( pe->rect() );
-//     setMask( reg ); // need to replace the mask to fill the entire rect
-//     QPainter painter(this);
-//     QPen pen( Qt::magenta, 2 );
-//     //    pen.setStyle( Qt::NoPen );
-//     painter.setPen( pen );
-//     //painter.drawRect( pe->rect() ); //////////////////////
-//     QFont font;
-//     font.setPointSize( 6 );
-//     painter.setFont( font );
-//     painter.drawText( 0, 22, QString::number( index_.first ) + "," + QString::number( index_.second ) );
-//   }
-
-// };
-
-
-
 ///
 /// qlabel for displaying images
 /// with special qrubberband support
@@ -113,6 +79,8 @@ class DefoImageLabel : public QLabel {
   void displayIndices( bool );
   void refreshIndices( std::vector<DefoPoint> points );
   void showHistogram( void );
+  void displayPointSquares( bool );
+  void refreshPointSquares( std::vector<DefoSquare> squares );
 
  signals:
   void areaDefined( DefoArea area );
@@ -129,8 +97,9 @@ class DefoImageLabel : public QLabel {
 
   QImage origImage_;
   DefoImageLabelAreaRubberBand *rubberBand_;
-  std::vector<DefoImageLabelAreaRubberBand*> areaRubberBands_;
+  std::vector<DefoArea> areas_;
   std::vector<DefoPoint> indexPoints_;
+  std::vector<DefoSquare> pointSquares_;
   QPoint myPoint_;
   DefoHistogramView view_;
   bool isView_;
@@ -140,6 +109,7 @@ class DefoImageLabel : public QLabel {
   unsigned int debugLevel_;
   bool isDisplayAreas_;
   bool isDisplayIndices_;
+  bool isDisplayPointSquares_;
 
 };
 #endif

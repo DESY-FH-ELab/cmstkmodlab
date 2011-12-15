@@ -17,6 +17,7 @@ class DefoSquare {
   friend class DefoSquareIterator;
 
  public:
+  DefoSquare() {}
   DefoSquare( const DefoPoint& theCenter, const unsigned int& theHalfWidth ) { centerPoint_ = theCenter; halfWidth_ = theHalfWidth; }
   DefoPoint const& getCenter( void ) const { return centerPoint_; }
   unsigned int getHalfWidth( void ) const { return halfWidth_; }

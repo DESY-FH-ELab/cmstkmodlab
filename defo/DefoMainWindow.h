@@ -100,6 +100,7 @@ class DefoMainWindow : public QWidget {
   void deleteCurrentArea( void );
   void toggleAreaDisplay( bool isChecked );
   void toggleIndicesDisplay( bool isChecked );
+  void togglePointSquareDisplay( bool isChecked );
 
   void loadImageFromCamera( void );
   void handleCameraAction( DefoCamHandler::Action );
@@ -116,6 +117,8 @@ class DefoMainWindow : public QWidget {
   void imagelabelDisplayAreas( bool );
   void imagelabelRefreshIndices( std::vector<DefoPoint> );
   void imagelabelDisplayIndices( bool );
+  void imagelabelRefreshPointSquares( std::vector<DefoSquare> );
+  void imagelabelDisplayPointSquares( bool );
 
  private:
 

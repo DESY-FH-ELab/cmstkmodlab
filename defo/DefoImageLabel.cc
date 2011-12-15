@@ -156,12 +156,7 @@ void DefoImageLabel::createAndSendArea( void ) {
 void DefoImageLabel::displayAreas( bool isDisplay ) {
 
   isDisplayAreas_ = isDisplay;
-
-  for( std::vector<DefoImageLabelAreaRubberBand*>::iterator it = areaRubberBands_.begin(); it < areaRubberBands_.end(); ++it ) {
-    isDisplayAreas_ ? (*it)->show() : (*it)->hide();
-  }
-  
-  update();
+  update(); // call paintEvent
   
 }
 
@@ -172,24 +167,10 @@ void DefoImageLabel::displayAreas( bool isDisplay ) {
 ///
 void DefoImageLabel::refreshAreas( std::vector<DefoArea> areas ) {
 
-  // reset the vector
-  for( std::vector<DefoImageLabelAreaRubberBand*>::iterator it = areaRubberBands_.begin(); it < areaRubberBands_.end(); ++it ) {
-    (*it)->hide();
-    delete( *it );
-  }
-  areaRubberBands_.resize( 0 );
-  
-  for( std::vector<DefoArea>::iterator it = areas.begin(); it < areas.end(); ++it ) {
-    
-    DefoImageLabelAreaRubberBand* aRubberBand = new DefoImageLabelAreaRubberBand( QRubberBand::Rectangle, this );
-    QRect r = it->getRectangle();
-    transformToLocal( r );
-    aRubberBand->setGeometry( r );
-    aRubberBand->setName( it->getName() );
-    areaRubberBands_.push_back( aRubberBand );
-    if( isDisplayAreas_ ) aRubberBand->show();
-    
-  }
+  // reset vector
+  areas_.resize( 0 );
+  areas_ = areas;
+  update(); // call paintEvent
 
 }
 
@@ -201,12 +182,7 @@ void DefoImageLabel::refreshAreas( std::vector<DefoArea> areas ) {
 void DefoImageLabel::displayIndices( bool isDisplay ) {
 
   isDisplayIndices_ = isDisplay;
-
-//   for( std::vector<DefoImageLabelIndexRubberBand*>::iterator it = indexRubberBands_.begin(); it < indexRubberBands_.end(); ++it ) {
-//     isDisplayIndices_ ? (*it)->show() : (*it)->hide();
-//   }
-  
-  update();
+  update(); // call paintEvent
 
 }
 
@@ -218,23 +194,33 @@ void DefoImageLabel::displayIndices( bool isDisplay ) {
 void DefoImageLabel::refreshIndices( std::vector<DefoPoint> points ) {
 
   indexPoints_.resize( 0 );
-  
   indexPoints_ = points;
+  update(); // call paintEvent
 
-  update();
+}
 
-//   for( std::vector<DefoPoint>::iterator it = points.begin(); it < points.end(); ++it ) {
-    
-//     DefoImageLabelIndexRubberBand* aRubberBand = new DefoImageLabelIndexRubberBand( QRubberBand::Rectangle, this );
 
-//     QRect r( it->getX(), it->getY(), 30, 30 ); // must be square since rotation possible
-//     transformToLocal( r );
-//     aRubberBand->setGeometry( r );
-//     aRubberBand->setIndex( it->getIndex() );
-//     indexRubberBands_.push_back( aRubberBand );
-//     if( isDisplayIndices_ ) aRubberBand->show();
-    
-//   }
+
+///
+///
+///
+void DefoImageLabel::displayPointSquares( bool isDisplay ) {
+
+  isDisplayPointSquares_ = isDisplay;
+  update(); // call paintEvent
+
+}
+
+
+
+///
+///
+///
+void DefoImageLabel::refreshPointSquares( std::vector<DefoSquare> squares ) {
+
+  pointSquares_.resize( 0 );
+  pointSquares_ = squares;
+  update(); // call paintEvent
 
 }
 
@@ -352,8 +338,8 @@ void DefoImageLabel::showHistogram( void ) {
 
     // if there's an area defined, we display info from it,
     // otherwise from the whole image
-    if( areaRubberBands_.size() ) {
-      r = areaRubberBands_.at( 0 )->geometry();
+    if( areas_.size() ) {
+      r = areas_.at( 0 ).getRectangle();
       transformToOriginal( r );
     }
     else {
@@ -386,6 +372,62 @@ void DefoImageLabel::paintEvent( QPaintEvent* e ) {
 
   // then additional items:
 
+
+
+  // areas
+  if( isDisplayAreas_ ) {
+
+    for( std::vector<DefoArea>::iterator it = areas_.begin(); it < areas_.end(); ++it ) {
+
+      QRect r = it->getRectangle();
+      transformToLocal( r );
+      QPainter painter(this);
+      QPen pen( Qt::yellow, 1 );
+      pen.setStyle( Qt::DotLine );
+      painter.setPen( pen );
+      painter.drawRect( r );
+      painter.drawText( r.x() + 3, r.y() + 13, it->getName() );
+
+    }
+
+  }
+
+
+  // points and HW sqaures around them
+  if( isDisplayPointSquares_ ) {
+
+    for( std::vector<DefoSquare>::iterator it = pointSquares_.begin(); it < pointSquares_.end(); ++it ) {
+
+      QPainter painter(this);
+
+      // blue point is marked differently
+      if( it->getCenter().isBlue() ) painter.setPen( QPen( Qt::red, 1 ) );
+      else painter.setPen( QPen( Qt::blue, 1 ) );
+
+      QRect r( it->getCenter().getPixX(), it->getCenter().getPixY(), 0, 0 ); // we pack it in a QRect so we can use the transform methods
+      transformToLocal( r );
+      QPoint p = r.topLeft(); // this is the reco point position
+
+      // first the cross
+
+      for( int px = -1; px <= 1; ++px )
+	painter.drawPoint( p + QPoint( px, 0 ) );
+      for( int py = -1; py <= 1; ++py )
+	painter.drawPoint( p + QPoint( 0, py ) );
+
+      // then the square
+      r = QRect( it->getCenter().getPixX() - it->getHalfWidth(),
+		 it->getCenter().getPixY() - it->getHalfWidth(),
+		 it->getHalfWidth() * 2, it->getHalfWidth() * 2  );
+      transformToLocal( r );
+      painter.drawRect( r );
+
+    }
+
+  }
+
+
+
   // indices
   if( isDisplayIndices_ ) {
 
@@ -402,8 +444,10 @@ void DefoImageLabel::paintEvent( QPaintEvent* e ) {
       font.setPointSize( 7 );
       painter.setFont( font );
       painter.drawText( r.x() + offset.first, r.y() + offset.second, 
-			QString::number( it->getIndex().first ) + "," + QString::number( it->getIndex().second ) );
+        QString::number( it->getIndex().first ) + "," + QString::number( it->getIndex().second ) );
     }
+
   }
+
 
 }

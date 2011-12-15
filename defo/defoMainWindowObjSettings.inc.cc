@@ -123,7 +123,7 @@ void DefoMainWindow::setupUi( void ) {
   displaySplinesButton_->setGeometry(QRect(10, 80, 71, 22));
   displaySplinesButton_->setAutoExclusive( false ); // all may be ticked independently
   displayRecoitemButton_ = new QRadioButton(displayGroupBox_);
-  displayRecoitemButton_->setEnabled(false);
+  displayRecoitemButton_->setEnabled(true);
   displayRecoitemButton_->setObjectName(QString::fromUtf8("displayRecoitemButton_"));
   displayRecoitemButton_->setGeometry(QRect(10, 20, 81, 22));
   displayRecoitemButton_->setAutoExclusive( false ); // all may be ticked independently
@@ -1545,7 +1545,7 @@ void DefoMainWindow::retranslateUi( void ) {
   displayGroupBox_->setTitle(QApplication::translate("MainWindow", "Display", 0, QApplication::UnicodeUTF8));
   displayAreasButton_->setText(QApplication::translate("MainWindow", "Areas", 0, QApplication::UnicodeUTF8));
   displaySplinesButton_->setText(QApplication::translate("MainWindow", "Splines", 0, QApplication::UnicodeUTF8));
-  displayRecoitemButton_->setText(QApplication::translate("MainWindow", "Recoitems", 0, QApplication::UnicodeUTF8));
+  displayRecoitemButton_->setText(QApplication::translate("MainWindow", "Points", 0, QApplication::UnicodeUTF8));
   displayIndicesButton_->setText(QApplication::translate("MainWindow", "Indices", 0, QApplication::UnicodeUTF8));
   refreshGroupBox_->setTitle(QApplication::translate("MainWindow", "Refresh", 0, QApplication::UnicodeUTF8));
   refreshCameraButton_->setText(QApplication::translate("MainWindow", "Camera", 0, QApplication::UnicodeUTF8));
