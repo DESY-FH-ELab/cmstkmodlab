@@ -81,6 +81,7 @@ class DefoImageLabel : public QLabel {
   void showHistogram( void );
   void displayPointSquares( bool );
   void refreshPointSquares( std::vector<DefoSquare> squares );
+  void displayCoords( bool );
 
  signals:
   void areaDefined( DefoArea area );
@@ -110,6 +111,7 @@ class DefoImageLabel : public QLabel {
   bool isDisplayAreas_;
   bool isDisplayIndices_;
   bool isDisplayPointSquares_;
+  bool isDisplayCoords_;
 
 };
 #endif

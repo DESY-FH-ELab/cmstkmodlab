@@ -84,7 +84,7 @@ void DefoMainWindow::setupSignalsAndSlots( void ) {
   connect( &camHandler_, SIGNAL(actionFinished(DefoCamHandler::Action)), this, SLOT(handleCameraAction(DefoCamHandler::Action)) );
   connect( refreshFileButton_, SIGNAL(clicked()), this, SLOT(loadImageFromFile()) );
   connect( rawimageHistoButton_, SIGNAL(clicked()), rawimageLabel_, SLOT( showHistogram() ) );
-
+  connect( displayCoordsButton_, SIGNAL(toggled(bool)), rawimageLabel_, SLOT( displayCoords(bool)) );
 
   // action polling
   connect( this, SIGNAL(pollAction()), schedule_, SLOT(pollAction()) );
@@ -184,7 +184,8 @@ void DefoMainWindow::handleAction( DefoSchedule::scheduleItem item ) {
       displayAreasButton_->setChecked( true );
       displayRecoitemButton_->setChecked( true );
       displayIndicesButton_->setChecked( false );
-      
+      displayCoordsButton_->setChecked( true );
+
 
       QFileInfo fileInfo( item.second );
       if( !fileInfo.exists() ) {

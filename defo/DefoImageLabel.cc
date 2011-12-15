@@ -12,6 +12,7 @@ void DefoImageLabel::init( void ) {
   isDefineArea_ = false;
   isDisplayAreas_ = false;
   isDisplayIndices_ = false;
+  isDisplayCoords_ = false;
 
   // read parameters
   DefoConfigReader cfgReader( "defo.cfg" );
@@ -227,6 +228,18 @@ void DefoImageLabel::refreshPointSquares( std::vector<DefoSquare> squares ) {
 
 
 ///
+///
+///
+void DefoImageLabel::displayCoords( bool isDisplay ) {
+
+  isDisplayCoords_ = isDisplay;
+  update(); // call paintEvent
+
+}
+
+
+
+///
 /// transform a QRect
 /// from the coordinate system of the displayed image
 /// (which is scaled and eventually rotated)
@@ -372,8 +385,6 @@ void DefoImageLabel::paintEvent( QPaintEvent* e ) {
 
   // then additional items:
 
-
-
   // areas
   if( isDisplayAreas_ ) {
 
@@ -449,5 +460,53 @@ void DefoImageLabel::paintEvent( QPaintEvent* e ) {
 
   }
 
+
+  // coordinate system
+  if( isDisplayCoords_ ) {
+
+    QPainter painter( this );
+    painter.setPen( QPen( Qt::white, 1 ) );
+    
+    if( isRotation_ ) { // draw in bottom left corner
+      
+      // horizontal line (Y)
+      painter.drawLine( 10, size().height() - 10, 40, size().height() - 10 );
+      // and arrow
+      painter.drawLine( 40, size().height() - 10, 37, size().height() - 10 + 3 );
+      painter.drawLine( 40, size().height() - 10, 37, size().height() - 10 - 3 );
+      // and text
+      painter.drawText( 45, size().height() - 5, "Y" );
+      
+      // vertical line (X)
+      painter.drawLine( 10, size().height() - 10, 10, size().height() - 10 - 30 );
+      // and arrow
+      painter.drawLine( 10, size().height() - 10 - 30,  7, size().height() - 10 - 30 + 3);
+      painter.drawLine( 10, size().height() - 10 - 30, 13, size().height() - 10 - 30 + 3);
+      // and text
+      painter.drawText(  7, size().height() - 10 - 34, "X" );
+      
+    }
+    
+    else {
+      
+      // horizontal line (X)
+      painter.drawLine( 10, 10, 40, 10 );
+      // and arrow
+      painter.drawLine( 40, 10, 37, 10 + 3 );
+      painter.drawLine( 40, 10, 37, 10 - 3 );
+      // and text
+      painter.drawText( 45, 15, "X" );
+      
+      // vertical line (Y)
+      painter.drawLine( 10, 10, 10, 10 + 30 );
+      // and arrow
+      painter.drawLine( 10, 10 + 30,  7, 10 + 30 - 3);
+      painter.drawLine( 10, 10 + 30, 13, 10 + 30 - 3);
+      // and text
+      painter.drawText(  7, 10 + 43, "Y" );
+      
+    }
+
+  }
 
 }

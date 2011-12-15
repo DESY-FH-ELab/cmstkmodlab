@@ -107,7 +107,7 @@ void DefoMainWindow::setupUi( void ) {
 
   displayGroupBox_ = new QGroupBox(rawimageGroupBox_);
   displayGroupBox_->setObjectName(QString::fromUtf8("displayGroupBox_"));
-  displayGroupBox_->setGeometry(QRect(560, 200, 101, 111));
+  displayGroupBox_->setGeometry(QRect(560, 200, 101, 131));
   displayGroupBox_->setFont(font);
   displayGroupBox_->setAlignment(Qt::AlignCenter);
   displayGroupBox_->setCheckable(false);
@@ -119,7 +119,7 @@ void DefoMainWindow::setupUi( void ) {
   displayAreasButton_->setAutoExclusive( false ); // all may be ticked independently
   displaySplinesButton_ = new QRadioButton(displayGroupBox_);
   displaySplinesButton_->setObjectName(QString::fromUtf8("displaySplinesButton_"));
-  displaySplinesButton_->setEnabled(false);
+  displaySplinesButton_->setEnabled(false); // not yet
   displaySplinesButton_->setGeometry(QRect(10, 80, 71, 22));
   displaySplinesButton_->setAutoExclusive( false ); // all may be ticked independently
   displayRecoitemButton_ = new QRadioButton(displayGroupBox_);
@@ -131,10 +131,16 @@ void DefoMainWindow::setupUi( void ) {
   displayIndicesButton_->setObjectName(QString::fromUtf8("displayIndicesButton_"));
   displayIndicesButton_->setEnabled(true);
   displayIndicesButton_->setGeometry(QRect(10, 60, 61, 22));
+  displayIndicesButton_->setAutoExclusive( false ); // all may be ticked independently
+  displayCoordsButton_ = new QRadioButton(displayGroupBox_);
+  displayCoordsButton_->setObjectName(QString::fromUtf8("displayCoordsButton_"));
+  displayCoordsButton_->setEnabled(true);
+  displayCoordsButton_->setGeometry(QRect(10, 100, 71, 22));
+  displayCoordsButton_->setAutoExclusive( false ); // all may be ticked independently
 
   refreshGroupBox_ = new QGroupBox(rawimageGroupBox_);
   refreshGroupBox_->setObjectName(QString::fromUtf8("refreshGroupBox_"));
-  refreshGroupBox_->setGeometry(QRect(560, 320, 101, 101));
+  refreshGroupBox_->setGeometry(QRect(560, 340, 101, 101));
   refreshGroupBox_->setFont(font);
   refreshGroupBox_->setAlignment(Qt::AlignCenter);
   refreshGroupBox_->setCheckable(false);
@@ -153,7 +159,7 @@ void DefoMainWindow::setupUi( void ) {
   refreshFileButton_->setFlat(false);
   manualGroupBox_ = new QGroupBox(rawimageGroupBox_);
   manualGroupBox_->setObjectName(QString::fromUtf8("manualGroupBox_"));
-  manualGroupBox_->setGeometry(QRect(560, 440, 101, 241));
+  manualGroupBox_->setGeometry(QRect(560, 450, 101, 241));
   manualGroupBox_->setFont(font);
   manualGroupBox_->setAlignment(Qt::AlignCenter);
   manualGroupBox_->setCheckable(false);
@@ -190,7 +196,7 @@ void DefoMainWindow::setupUi( void ) {
   manualTEMPButton_->setFlat(false);
   rawimageZoomButton_ = new QToolButton(rawimageGroupBox_);
   rawimageZoomButton_->setObjectName(QString::fromUtf8("rawimageZoomButton_"));
-  rawimageZoomButton_->setGeometry(QRect(560, 700, 51, 41));
+  rawimageZoomButton_->setGeometry(QRect(560, 710, 51, 41));
   rawimageZoomButton_->setStyleSheet(QString::fromUtf8(""));
   //  QIcon icon;
   //  icon.addPixmap(QPixmap(QString::fromUtf8("icons/48px-Icon-Lupe.png")), QIcon::Normal, QIcon::Off);
@@ -198,7 +204,7 @@ void DefoMainWindow::setupUi( void ) {
 
   rawimageHistoButton_ = new QToolButton(rawimageGroupBox_);
   rawimageHistoButton_->setObjectName(QString::fromUtf8("rawimageHistoButton_"));
-  rawimageHistoButton_->setGeometry(QRect(620, 700, 41, 41));
+  rawimageHistoButton_->setGeometry(QRect(620, 710, 41, 41));
   rawimageHistoButton_->setStyleSheet(QString::fromUtf8(""));
   QIcon histoIcon;
   histoIcon.addPixmap(QPixmap(QString::fromUtf8("icons/histogram.png")), QIcon::Normal, QIcon::Off);
@@ -1547,6 +1553,7 @@ void DefoMainWindow::retranslateUi( void ) {
   displaySplinesButton_->setText(QApplication::translate("MainWindow", "Splines", 0, QApplication::UnicodeUTF8));
   displayRecoitemButton_->setText(QApplication::translate("MainWindow", "Points", 0, QApplication::UnicodeUTF8));
   displayIndicesButton_->setText(QApplication::translate("MainWindow", "Indices", 0, QApplication::UnicodeUTF8));
+  displayCoordsButton_->setText(QApplication::translate("MainWindow", "Coords", 0, QApplication::UnicodeUTF8));
   refreshGroupBox_->setTitle(QApplication::translate("MainWindow", "Refresh", 0, QApplication::UnicodeUTF8));
   refreshCameraButton_->setText(QApplication::translate("MainWindow", "Camera", 0, QApplication::UnicodeUTF8));
   refreshFileButton_->setText(QApplication::translate("MainWindow", "File", 0, QApplication::UnicodeUTF8));

@@ -89,7 +89,7 @@ void DefoSurfacePlot::draw( void ) {
   coordinates()->axes[Qwt3D::Z3].setLabelString( QString( "Z / " ) + QChar(0x00B5) + QString( "m" ) );
   coordinates()->axes[Qwt3D::Z4].setLabelString( QString( "Z / " ) + QChar(0x00B5) + QString( "m" ) );
 
-  makeCurrent();
+  makeCurrent(); // QGLWidget::makeCurrent
   updateData();
   updateGL();
 
@@ -117,7 +117,7 @@ void DefoSurfacePlot::setData( DefoSurface const& surface ) {
   amplitudeRange_ = std::make_pair<double,double>( 0., 0. );
 
   // set x or y field, according to what has been chosen
-  DefoPointField const& field = POINTS_X == pointSet_ ? surface.getPointFields().first : surface.getPointFields().second;
+  DefoPointField const& field = POINTS_X==pointSet_ ? surface.getPointFields().first : surface.getPointFields().second;
 
   // determine its dimensions
   std::pair<unsigned int, unsigned int> indexRange;

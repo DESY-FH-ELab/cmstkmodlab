@@ -168,6 +168,7 @@ class DefoMainWindow : public QWidget {
   QRadioButton *displaySplinesButton_;
   QRadioButton *displayRecoitemButton_;
   QRadioButton *displayIndicesButton_;
+  QRadioButton *displayCoordsButton_;
 
   QGroupBox *refreshGroupBox_;
   QPushButton *refreshCameraButton_;

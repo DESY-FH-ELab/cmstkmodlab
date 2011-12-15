@@ -15,7 +15,6 @@
 // scaling for the z axis (m -> µm)
 #define DEFORSURFACEPLOT_Z_SCALING 1000000.
 
-
 ///
 /// a container/manager for the QwtPlot3D
 /// reco surface output plot on the GUI

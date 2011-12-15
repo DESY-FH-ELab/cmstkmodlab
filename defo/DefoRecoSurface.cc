@@ -52,39 +52,12 @@ const DefoSurface DefoRecoSurface::reconstruct( DefoPointCollection& currentPoin
 
   DefoSurface theSurface;
 
-  //  if( debugLevel_ >= 2 ) std::cout << " [DefoRecoSurface::reconstruct] =2= Indexing ref." << std::endl;
-
-  //refPointIndexRange_ = indexPoints( referencePoints );
-
-//   if( debugLevel_ >= 2 ) std::cout << " [DefoRecoSurface::reconstruct] =2= " 
-// 				   << "ref point index range is: x: "
-// 				   << refPointIndexRange.first << " y: "
-// 				   << refPointIndexRange.second << std::endl;
-
-//   if( debugLevel_ >= 2 ) std::cout << " [DefoRecoSurface::reconstruct] =2= Indexing defo." << std::endl;
-
-//   // index the points for matching ref and reco
-//   //  recoPointIndexRange_ = indexPoints( currentPoints );
-
-//   if( debugLevel_ >= 2 ) std::cout << " [DefoRecoSurface::reconstruct] =2= " 
-// 				   << "reco point index range is: x: "
-// 				   << recoPointIndexRange.first << " y: "
-// 				   << recoPointIndexRange.second << std::endl;
-
-
   // create raw z splines for surface reconstruction
   DefoSplineField currentZSplineField = createZSplines( currentPoints, referencePoints );
+
   // connect x and y splines
   mountZSplines( currentZSplineField );
 
-  // CAN BE DEPRECATED
-  // together with groupPointsSorted and SEARCH_PATH_HALF_WIDTH
-  // maybe + others
-  //   // create raw z splines for surface reconstruction - OLD VERSION
-  //   DefoSplineField currentZSplineField = createZSplinesOld( currentPoints, referencePoints );
-  //   // connect x and y splines - OLD VERSION
-  //   mountZSplinesOld( currentZSplineField );
-  
   // correct for global offsets
   removeGlobalOffset( currentZSplineField );
 
@@ -170,16 +143,19 @@ const DefoSplineField DefoRecoSurface::createZSplines( DefoPointCollection const
 
 	// convert from pixel units to real units on module
 
-	// find the distance of this point along y wrt the center (blue point)
-	//	const double thisPointOffset = ( *(referencePointByIndex.second) - *(bluePointByIndex.second) ).getY() * pitchY_ * nominalCameraDistance_ / focalLength_;
+	// blue point at x=0,y=0
+	aPoint.setXY( ( aPoint.getX() - bluePointByIndex.second->getX() ) * pitchX_ * nominalCameraDistance_ / focalLength_ ,
+		      ( aPoint.getY() - bluePointByIndex.second->getY() ) * pitchY_ * nominalCameraDistance_ / focalLength_ );
 
-	// includes angular correction
-	//	double cameraDistance = sqrt( pow( horizontalDistanceToSensor_ + thisPointOffset, 2. ) + pow( heightAboveSensor_, 2. ) );
+// 	aPoint.setXY( aPoint.getX() * pitchX_ * nominalCameraDistance_ / focalLength_ , // old version
+// 		      aPoint.getY() * pitchY_ * nominalCameraDistance_ / focalLength_ );
 
-	// 	aPoint.setXY( aPoint.getX() * pitchX_ * cameraDistance / focalLength_ , 
-	// 		      aPoint.getY() * pitchY_ * cameraDistance / focalLength_ );
-	aPoint.setXY( aPoint.getX() * pitchX_ * nominalCameraDistance_ / focalLength_ , // old version
-		      aPoint.getY() * pitchY_ * nominalCameraDistance_ / focalLength_ );
+
+	std::cout << "LLLL: " << aPoint.getX() << " " << bluePointByIndex.second->getX() << " "
+		  << aPoint.getY() << " " << bluePointByIndex.second->getY() << std::endl; /////////////////////////////////
+
+
+
 
 	aSplineSet.addPoint( aPoint );
 
@@ -233,25 +209,15 @@ const DefoSplineField DefoRecoSurface::createZSplines( DefoPointCollection const
 
 	// the attached slope (= tan(alpha)) is derived from the difference in y position
 	aPoint.setSlope( correctionFactors.first * ( *(currentPointByIndex.second) - *(referencePointByIndex.second) ).getX() ); // ##### check
-	// 	std::cout << "SLOPE-A-X: " << index.first << " " << index.second << " " << aPoint.getSlope()
-	// 		  << " " << correctionFactors.first
-	// 		  << " " << ( *(currentPointByIndex.second) - *(referencePointByIndex.second) ).getX()
-	// 		  << " " << ( *(currentPointByIndex.second) - *(referencePointByIndex.second) ).getY()
-	// 		  << std::endl; /////////////////////////////////
 	
 	// convert from pixel units to real units on module
 
-	// find the distance along y of this point wrt the center (blue point)
-	// const double thisPointOffset = ( *(referencePointByIndex.second) - *(bluePointByIndex.second) ).getY() * pitchY_ * nominalCameraDistance_ / focalLength_;
-	//const double thisPointOffset = ( *(bluePointByIndex.second) - *(referencePointByIndex.second) ).getY() * pitchY_ * nominalCameraDistance_ / focalLength_;
+	// 	aPoint.setXY( aPoint.getX() * pitchX_ * nominalCameraDistance_ / focalLength_ , // old version
+	// 		      aPoint.getY() * pitchY_ * nominalCameraDistance_ / focalLength_ );
 
-	// includes angular correction
-	//	double cameraDistance = sqrt( pow( horizontalDistanceToSensor_ + thisPointOffset, 2. ) + pow( heightAboveSensor_, 2. ) );
-
-	// 	aPoint.setXY( aPoint.getX() * pitchX_ * cameraDistance / focalLength_ , 
-	// 		      aPoint.getY() * pitchY_ * cameraDistance / focalLength_ );
-	aPoint.setXY( aPoint.getX() * pitchX_ * nominalCameraDistance_ / focalLength_ , // old version
-		      aPoint.getY() * pitchY_ * nominalCameraDistance_ / focalLength_ );
+	// blue point at x=0,y=0
+	aPoint.setXY( ( aPoint.getX() - bluePointByIndex.second->getX() ) * pitchX_ * nominalCameraDistance_ / focalLength_ ,
+		      ( aPoint.getY() - bluePointByIndex.second->getY() ) * pitchY_ * nominalCameraDistance_ / focalLength_ );
 
 	aSplineSet.addPoint( aPoint );
 
