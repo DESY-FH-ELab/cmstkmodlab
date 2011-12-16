@@ -623,6 +623,12 @@ void DefoMainWindow::manualFileRef( void ) {
   handleAction( item );
   isManual_ = false;
 
+  // by default, enable area display & points, disable indices
+  displayAreasButton_->setChecked( true );
+  displayRecoitemButton_->setChecked( true );
+  displayIndicesButton_->setChecked( false );
+  displayCoordsButton_->setChecked( true );
+  
 }
 
 
@@ -859,6 +865,19 @@ void DefoMainWindow::handleCameraAction( DefoCamHandler::Action action ) {
       imageinfoTextedit_->appendPlainText( QString( "Fetched: %1" ).arg( datime.toString( QString( "dd.MM.yy hh:mm:ss" ) ) ) );
       imageinfoTextedit_->appendPlainText( QString( "Type: from camera" ) );
 
+      // few settings
+      
+      if( areas_.empty() ) {
+	areaNewButton_->setEnabled( true ); 
+	areaDeleteButton_->setEnabled( false );
+      } else {
+	areaNewButton_->setEnabled( false ); // for the moment, restricted to 1 rea // @@@@
+	areaDeleteButton_->setEnabled( true );
+      }
+      
+      emit( imagelabelRefreshPointSquares( std::vector<DefoSquare>() ) );
+      emit( imagelabelRefreshIndices( std::vector<DefoPoint>() ) );
+      
     } break;
 
 
@@ -900,6 +919,19 @@ void DefoMainWindow::loadImageFromFile( void ) {
   imageinfoTextedit_->appendPlainText( QString( "Fetched: %1" ).arg( datime.toString( QString( "dd.MM.yy hh:mm:ss" ) ) ) );
   imageinfoTextedit_->appendPlainText( QString( "Type: from disk [%1]" ).arg( fileName ) );
 
+  // few settings
+
+  if( areas_.empty() ) {
+    areaNewButton_->setEnabled( true ); 
+    areaDeleteButton_->setEnabled( false );
+  } else {
+    areaNewButton_->setEnabled( false ); // for the moment, restricted to 1 rea // @@@@
+    areaDeleteButton_->setEnabled( true );
+  }
+
+  emit( imagelabelRefreshPointSquares( std::vector<DefoSquare>() ) );
+  emit( imagelabelRefreshIndices( std::vector<DefoPoint>() ) );
+  
 }
 
 
