@@ -45,7 +45,10 @@ class DefoRawImage {
  public:
   DefoRawImage() {}
   DefoRawImage( const char* fileName ) { image_.load( fileName ); }
+  DefoRawImage( QImage& i ) { image_ = i; }
   QImage& getImage( void ) { return image_; }
+  void setImage( QImage& i ) { image_ = i; }
+  void loadFromFile( const char* fileName ) { image_.load( fileName ); }
   void save( const char* fileName ) { image_.save( fileName ); }
   void draw( DefoSplineField const& );
 

@@ -374,7 +374,7 @@
          <x>560</x>
          <y>450</y>
          <width>101</width>
-         <height>241</height>
+         <height>151</height>
         </rect>
        </property>
        <property name="font" >
@@ -438,50 +438,6 @@
          <bool>false</bool>
         </property>
        </widget>
-       <widget class="QPushButton" name="manualFILEREFButton_" >
-        <property name="enabled" >
-         <bool>false</bool>
-        </property>
-        <property name="geometry" >
-         <rect>
-          <x>10</x>
-          <y>110</y>
-          <width>81</width>
-          <height>31</height>
-         </rect>
-        </property>
-        <property name="styleSheet" >
-         <string notr="true" />
-        </property>
-        <property name="text" >
-         <string>File ref</string>
-        </property>
-        <property name="flat" >
-         <bool>false</bool>
-        </property>
-       </widget>
-       <widget class="QPushButton" name="manualFILEDEFOButton_" >
-        <property name="enabled" >
-         <bool>false</bool>
-        </property>
-        <property name="geometry" >
-         <rect>
-          <x>10</x>
-          <y>150</y>
-          <width>81</width>
-          <height>31</height>
-         </rect>
-        </property>
-        <property name="styleSheet" >
-         <string notr="true" />
-        </property>
-        <property name="text" >
-         <string>File defo</string>
-        </property>
-        <property name="flat" >
-         <bool>false</bool>
-        </property>
-       </widget>
        <widget class="QPushButton" name="manualTEMPButton_" >
         <property name="enabled" >
          <bool>false</bool>
@@ -489,7 +445,7 @@
         <property name="geometry" >
          <rect>
           <x>10</x>
-          <y>190</y>
+          <y>110</y>
           <width>81</width>
           <height>31</height>
          </rect>

@@ -47,7 +47,7 @@ void DefoSurfacePlot::draw( void ) {
   const double amplitude = ( amplitudeRange_.second - amplitudeRange_.first ); // this amplitude is already in µm
 
   zScale_ = 700. * 400.; // starting value (experimental..)
-  xyScale_ = 900.; // experimental..
+  xyScale_ = 1600.; // experimental..
 
   scalefactor_ = amplitude / 160. * ( xyScale_ / DEFORSURFACEPLOT_XY_SCALING ); // experimental..
   //  setScale( scalefactor_, scalefactor_, zScale_ / DEFORSURFACEPLOT_Z_SCALING ); // z-axis is in µm, all others in m

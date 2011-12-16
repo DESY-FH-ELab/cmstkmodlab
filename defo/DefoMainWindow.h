@@ -85,33 +85,26 @@ class DefoMainWindow : public QWidget {
   Q_ENUMS( Iso )
 
  public slots:
-
   void handleAction( DefoSchedule::scheduleItem item );
   void startPolling( void );
   void stopPolling( void );
   void pausePolling( void );
-
+  void manualFileRef( void );
   void editMeasurementId( void );
   void defaultMeasurementId( void );
-  
   void editBaseFolder( void );
-
   void receiveArea( DefoArea area );
   void deleteCurrentArea( void );
   void toggleAreaDisplay( bool isChecked );
   void toggleIndicesDisplay( bool isChecked );
   void togglePointSquareDisplay( bool isChecked );
-
   void loadImageFromCamera( void );
   void handleCameraAction( DefoCamHandler::Action );
-
   void loadImageFromFile( void );
-
   void cameraEnabledButtonToggled( bool );
   void writeParameters( void );
 
  signals:
-
   void pollAction( void );
   void imagelabelRefreshAreas( std::vector<DefoArea> );
   void imagelabelDisplayAreas( bool );
@@ -124,7 +117,6 @@ class DefoMainWindow : public QWidget {
 
   void fillComboBoxes( void );
   void readCameraParametersFromCfgFile( void );
-
 
   unsigned int debugLevel_;
 
@@ -142,6 +134,7 @@ class DefoMainWindow : public QWidget {
 
   DefoSurfacePlot* surfacePlot_; // surface output plot on "offline" tab
 
+  bool isManual_; // used for switching handleAction when manual buttons pressed
   bool isPolling_; // volatile switch indicating if schedule is being processed
   bool isRefImage_; // ref image has been taken?
 
@@ -176,8 +169,8 @@ class DefoMainWindow : public QWidget {
   QGroupBox *manualGroupBox_;
   QPushButton *manualREFButton_;
   QPushButton *manualDEFOButton_;
-  QPushButton *manualFILEREFButton_;
-  QPushButton *manualFILEDEFOButton_;
+/*   QPushButton *manualFILEREFButton_; */
+/*   QPushButton *manualFILEDEFOButton_; */
   QPushButton *manualTEMPButton_;
   QToolButton *rawimageZoomButton_;
   QToolButton *rawimageHistoButton_;

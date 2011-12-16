@@ -71,6 +71,8 @@ class DefoImageLabel : public QLabel {
   ~DefoImageLabel() {}
   void setRotation( bool rot ) { isRotation_ = rot; }
   void displayImageToSize( QImage& );
+  bool isImage( void ) { return isImage_; }
+  QImage& getOriginalImage( void ) { return origImage_; }
 
  public slots:
   void defineArea( void );
@@ -101,6 +103,7 @@ class DefoImageLabel : public QLabel {
   std::vector<DefoArea> areas_;
   std::vector<DefoPoint> indexPoints_;
   std::vector<DefoSquare> pointSquares_;
+  bool isImage_;
   QPoint myPoint_;
   DefoHistogramView view_;
   bool isView_;

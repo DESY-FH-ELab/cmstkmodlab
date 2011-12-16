@@ -50,6 +50,7 @@ DefoMainWindow::DefoMainWindow( QWidget* parent ) : QWidget( parent ) {
 
   pollingDelay_ = new QTimer();
 
+  isManual_ = false;
   isRefImage_ = false;
 
   // set default measurement id
@@ -91,6 +92,9 @@ void DefoMainWindow::setupSignalsAndSlots( void ) {
   connect( schedule_, SIGNAL(newAction(DefoSchedule::scheduleItem)), this, SLOT( handleAction(DefoSchedule::scheduleItem)) );
   connect( schedule_, SIGNAL(unableToDeliverAction()), this, SLOT(stopPolling()) );
   connect( schedule_, SIGNAL(newRow(int)), scheduleTableview_, SLOT(selectRow(int)) );
+
+  // manual action buttons
+  connect( manualREFButton_, SIGNAL(clicked()), this, SLOT(manualFileRef()) );
 
   // schedule buttons & misc
   connect( scheduleStartButton_, SIGNAL(clicked()), this, SLOT(startPolling()) );
@@ -244,23 +248,42 @@ void DefoMainWindow::handleAction( DefoSchedule::scheduleItem item ) {
     {
       std::cout << " [DefoMainWindow::handleAction] =2= received FILE_REF" << std::endl;
 
+      DefoRawImage refImage;
+      
       // disable any area modification action now
       areaNewButton_->setEnabled( false );
       areaDeleteButton_->setEnabled( false );
 
-      // check file name/path
-      QFileInfo fileInfo( item.second );
-      if( !fileInfo.exists() ) {
-	QMessageBox::critical( this, tr("[DefoMainWindow::handleAction]"),
-			       QString("[FILE_REF]: file \'%1\' not found.").arg(item.second),
-			       QMessageBox::Ok );
-	std::cerr << " [DefoMainWindow::handleAction] ** ERROR: [FILE_REF] cannot open file: " << item.second.toStdString() << std::endl;
-	imageinfoTextedit_->appendPlainText( QString( "ERROR: [FILE_REF] cannot open file: \'%1\'" ).arg( item.second ) );
-	scheduleTableview_->setStyleSheet(QString::fromUtf8("background-color: rgb(255, 255, 255);\n selection-background-color: rgb( 255,0,0 ); "));
-	stopPolling();
-	isContinuePolling = false;
-	break;
+     if( isManual_ ) { // operation with manual buttons: use image from imageLabel_
+
+	if( !( rawimageLabel_->isImage() ) ) {
+	  std::cout << " [DefoMainWindow::handleAction] =2= [FILE_REF} quitting since no image loaded." << std::endl;
+	  return;
+	}
+
+	refImage.setImage( rawimageLabel_->getOriginalImage() );
+
       }
+
+      else { // operation via schedule: load image from file
+
+	// check file name/path
+	QFileInfo fileInfo( item.second );
+	if( !fileInfo.exists() ) {
+	  QMessageBox::critical( this, tr("[DefoMainWindow::handleAction]"),
+				 QString("[FILE_REF]: file \'%1\' not found.").arg(item.second),
+				 QMessageBox::Ok );
+	  std::cerr << " [DefoMainWindow::handleAction] ** ERROR: [FILE_REF] cannot open file: " << item.second.toStdString() << std::endl;
+	  imageinfoTextedit_->appendPlainText( QString( "ERROR: [FILE_REF] cannot open file: \'%1\'" ).arg( item.second ) );
+	  scheduleTableview_->setStyleSheet(QString::fromUtf8("background-color: rgb(255, 255, 255);\n selection-background-color: rgb( 255,0,0 ); "));
+	  stopPolling();
+	  isContinuePolling = false;
+	  break;
+
+	}
+	refImage.loadFromFile( item.second.toStdString().c_str() );
+      }
+
 
       // create output folder
       QDateTime datime = QDateTime::currentDateTime();
@@ -277,7 +300,7 @@ void DefoMainWindow::handleAction( DefoSchedule::scheduleItem item ) {
       QDir outputDir = QDir( currentFolderName_ + "/" + subdir );
 
       // get the image & save it
-      DefoRawImage refImage( item.second.toStdString().c_str() );
+      //      DefoRawImage refImage( item.second.toStdString().c_str() );
       QString rawImageFileName = outputDir.path() + "/refimage_raw.jpg";
       refImage.getImage().save( rawImageFileName, 0, 100 );
 
@@ -522,16 +545,17 @@ void DefoMainWindow::startPolling( void ) {
   // highlight color for table view to green
   scheduleTableview_->setStyleSheet(QString::fromUtf8("background-color: rgb(255, 255, 255);\n selection-background-color: rgb( 0,155,0 ); "));
 
-  scheduleStartButton_->setEnabled( false ); // toggle some buttons enable
+  // toggle some buttons enable
+  scheduleStartButton_->setEnabled( false ); 
   schedulePauseButton_->setEnabled( true );
   scheduleStopButton_->setEnabled( true );
   measurementidEditButton_->setEnabled( false );
   measurementidDefaultButton_->setEnabled( false );
   basefolderEditButton_->setEnabled( false );
 
-  // clear the indices with an empty vector
+  // clear display items (with empty vectors)
   emit( imagelabelRefreshIndices( std::vector<DefoPoint>() ) );
-  
+  emit( imagelabelRefreshPointSquares( std::vector<DefoSquare>() ) );
 
   imageinfoTextedit_->clear(); // clear the imageinfo
 
@@ -583,6 +607,21 @@ void DefoMainWindow::pausePolling( void ) {
     isPolling_ = true;
     emit pollAction();
   }
+
+}
+
+
+
+///
+///
+///
+void DefoMainWindow::manualFileRef( void ) {
+
+  // string is empty in that case, since we load from image label
+  isManual_ = true;
+  DefoSchedule::scheduleItem item( DefoSchedule::FILE_REF, QString( "" ) );
+  handleAction( item );
+  isManual_ = false;
 
 }
 
@@ -850,8 +889,6 @@ void DefoMainWindow::loadImageFromFile( void ) {
 
   if( fileName.isEmpty() ) return;
 
-  std::ifstream file( fileName.toStdString().c_str() ); 
-
   QImage img( fileName );
   rawimageLabel_->setRotation( true );
   rawimageLabel_->displayImageToSize( img );
@@ -1042,8 +1079,8 @@ void DefoMainWindow::cameraEnabledButtonToggled( bool isChecked ) {
 
     // enable controls
     refreshCameraButton_->setEnabled( true );
-    manualREFButton_->setEnabled( true );
-    manualDEFOButton_->setEnabled( true );
+    //    manualREFButton_->setEnabled( true );
+    //    manualDEFOButton_->setEnabled( true );
     cameraConnectionTestButton_->setEnabled( true );
     cameraConnectionResetButton_->setEnabled( true );
     apertureComboBox_->setEnabled( true );
@@ -1055,8 +1092,8 @@ void DefoMainWindow::cameraEnabledButtonToggled( bool isChecked ) {
   else {
     // disable all controls
     refreshCameraButton_->setEnabled( false );
-    manualREFButton_->setEnabled( false );
-    manualDEFOButton_->setEnabled( false );
+    //    manualREFButton_->setEnabled( false );
+    //    manualDEFOButton_->setEnabled( false );
     cameraConnectionTestButton_->setEnabled( false );
     cameraConnectionResetButton_->setEnabled( false );
     apertureComboBox_->setEnabled( false );

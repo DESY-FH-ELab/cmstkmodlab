@@ -143,18 +143,12 @@ const DefoSplineField DefoRecoSurface::createZSplines( DefoPointCollection const
 
 	// convert from pixel units to real units on module
 
-	// blue point at x=0,y=0
+	// set blue point at x=0,y=0
 	aPoint.setXY( ( aPoint.getX() - bluePointByIndex.second->getX() ) * pitchX_ * nominalCameraDistance_ / focalLength_ ,
 		      ( aPoint.getY() - bluePointByIndex.second->getY() ) * pitchY_ * nominalCameraDistance_ / focalLength_ );
 
 // 	aPoint.setXY( aPoint.getX() * pitchX_ * nominalCameraDistance_ / focalLength_ , // old version
 // 		      aPoint.getY() * pitchY_ * nominalCameraDistance_ / focalLength_ );
-
-
-	std::cout << "LLLL: " << aPoint.getX() << " " << bluePointByIndex.second->getX() << " "
-		  << aPoint.getY() << " " << bluePointByIndex.second->getY() << std::endl; /////////////////////////////////
-
-
 
 
 	aSplineSet.addPoint( aPoint );

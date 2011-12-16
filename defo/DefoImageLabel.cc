@@ -8,6 +8,7 @@
 ///
 void DefoImageLabel::init( void ) {
   
+  isImage_ = false;
   isRotation_ = 0.;
   isDefineArea_ = false;
   isDisplayAreas_ = false;
@@ -46,6 +47,8 @@ void DefoImageLabel::displayImageToSize( QImage& originalImage ) {
   }
 
   setPixmap( QPixmap::fromImage( *transformedImage ) );
+
+  isImage_ = true;
 
 }
 
@@ -388,32 +391,39 @@ void DefoImageLabel::paintEvent( QPaintEvent* e ) {
   // areas
   if( isDisplayAreas_ ) {
 
+    QPainter painter(this);
+    
     for( std::vector<DefoArea>::iterator it = areas_.begin(); it < areas_.end(); ++it ) {
-
       QRect r = it->getRectangle();
       transformToLocal( r );
-      QPainter painter(this);
       QPen pen( Qt::yellow, 1 );
       pen.setStyle( Qt::DotLine );
       painter.setPen( pen );
       painter.drawRect( r );
       painter.drawText( r.x() + 3, r.y() + 13, it->getName() );
-
     }
-
+    
+    // the legend
+    QFont font; font.setPointSize( 10 ); painter.setFont( font );
+    painter.setPen( QPen( Qt::yellow, 1 ) );
+    painter.drawText( size().width() / 2 - 112, size().height() - 7, "areas" );
+    
   }
-
+  
 
   // points and HW sqaures around them
   if( isDisplayPointSquares_ ) {
 
+    QPainter painter(this);
+    QColor const dRed( 180, 70, 0 );
+    QFont font; font.setPointSize( 10 ); painter.setFont( font );
+    
+
     for( std::vector<DefoSquare>::iterator it = pointSquares_.begin(); it < pointSquares_.end(); ++it ) {
 
-      QPainter painter(this);
-
       // blue point is marked differently
-      if( it->getCenter().isBlue() ) painter.setPen( QPen( Qt::red, 1 ) );
-      else painter.setPen( QPen( Qt::blue, 1 ) );
+      if( it->getCenter().isBlue() ) painter.setPen( QPen( Qt::blue, 1 ) );
+      else painter.setPen( QPen( dRed, 1 ) );
 
       QRect r( it->getCenter().getPixX(), it->getCenter().getPixY(), 0, 0 ); // we pack it in a QRect so we can use the transform methods
       transformToLocal( r );
@@ -435,6 +445,12 @@ void DefoImageLabel::paintEvent( QPaintEvent* e ) {
 
     }
 
+    // the legend
+    painter.setPen( QPen( dRed, 1 ) );
+    painter.drawText( size().width() / 2 - 70, size().height() - 7, "white points" );
+    painter.setPen( QPen( Qt::blue, 1 ) );
+    painter.drawText( size().width() / 2 + 10, size().height() - 7, "blue point" );
+
   }
 
 
@@ -445,10 +461,11 @@ void DefoImageLabel::paintEvent( QPaintEvent* e ) {
     // move the indices text a bit right/up
     const std::pair<int,int> offset( 3, -3 );
 
+    QPainter painter( this );
+
     for( std::vector<DefoPoint>::const_iterator it = indexPoints_.begin(); it < indexPoints_.end(); ++it ) {
       QRect r( it->getX(), it->getY(), 0, 0 ); // we pack it in a QRect so we can use the transform methods
       transformToLocal( r );
-      QPainter painter( this );
       QPen pen( Qt::magenta, 2 );
       painter.setPen( pen );
       QFont font;
@@ -457,6 +474,11 @@ void DefoImageLabel::paintEvent( QPaintEvent* e ) {
       painter.drawText( r.x() + offset.first, r.y() + offset.second, 
         QString::number( it->getIndex().first ) + "," + QString::number( it->getIndex().second ) );
     }
+
+    // the legend
+    QFont font; font.setPointSize( 10 ); painter.setFont( font );
+    painter.setPen( QPen( Qt::magenta, 1 ) );
+    painter.drawText( size().width() / 2 + 77, size().height() - 7, "point indices" );
 
   }
 
