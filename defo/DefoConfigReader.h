@@ -7,7 +7,12 @@
 #include <fstream>
 #include <sstream>
 
-class DefoConfigReader {
+#include <QObject>
+#include <QMessageBox>
+
+class DefoConfigReader : public QObject {
+
+  Q_OBJECT
 
  public:
   DefoConfigReader( const char* );
@@ -21,7 +26,10 @@ class DefoConfigReader {
     std::ifstream file( inputFileName_.c_str(), std::ios::in );
     if( !file.good() ) {
       std::cerr << " [DefoConfigReader::openAndCheckFile] ** ERROR: failed to open file: " << inputFileName_ << "." << std::endl;
-      throw;
+      QMessageBox::critical( 0, tr("[DefoConfigReader::getValue]"),
+	     QString("Failed to open configuration file: \"%1\". No chance!").arg( QString( inputFileName_.c_str() ) ),
+	     QMessageBox::Abort );
+      throw; // must abort
     }
 
     bool isFound = false;

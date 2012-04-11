@@ -26,7 +26,7 @@ class DefoRecoImage {
   DefoSquareCollection const& getForbiddenAreas( void ) const { return forbiddenAreas_; }
 
  private:
-  DefoPoint averageSquare( QImage const&, DefoPoint const&, QImage* = 0 ) const;
+  DefoPoint averageSquare( QImage const&, DefoPoint const& ) const;
   double calculateBlueishness( QImage const&, DefoPoint const& ) const;
 
   DefoSquareCollection forbiddenAreas_;

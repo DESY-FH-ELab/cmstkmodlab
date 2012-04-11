@@ -5,7 +5,11 @@
 ///
 ///
 DefoSchedule::DefoSchedule() {
-  
+
+  // read parameters
+  DefoConfigReader cfgReader( "defo.cfg" );
+  debugLevel_ = cfgReader.getValue<unsigned int>( "DEBUG_LEVEL" );
+
   // fixed size table
   model_.setRowCount( _SCHEDULE_NROWS );
   model_.setColumnCount( _SCHEDULE_NCOLUMNS );
@@ -99,7 +103,7 @@ void DefoSchedule::pollAction( void ) {
     QString parameter( "" );
     if( model_.item( currentIndex_, 1 ) ) parameter = model_.item( currentIndex_, 1 )->text();
 
-    std::cout << " [DefoSchedule::pollAction] =2= emitting: " << currentAction << ", \"" 
+    if( debugLevel_ >= 2 ) std::cout << " [DefoSchedule::pollAction] =2= emitting: " << currentAction << ", \"" 
 	      << model_.item( currentIndex_, 0 )->text().toStdString() << "\"" << std::endl;
 
     emit newRow( currentIndex_ );
@@ -129,8 +133,8 @@ int DefoSchedule::checkRowValidity( void ) {
     // get action value
     std::map<std::string,int>::iterator it = actionItems_.find( item0->text().toStdString() );
     if( actionItems_.end() == it ) {
-      std::cerr << " [DefoSchedule::checkRowValidity] -- Return BAD_ROW since unknown action: \"" 
-		<< item0->text().toStdString() << "\" row: " << currentIndex_ + 1 << std::endl;
+      std::cerr << " [DefoSchedule::checkRowValidity] WARNING ** Return BAD_ROW since unknown action: \"" 
+		<< item0->text().toStdString() << "\" row: " << currentIndex_ + 1 << ". Fix your schedule." << std::endl;
       return DefoSchedule::BAD_ROW; // unknown item
     }
 
@@ -141,8 +145,8 @@ int DefoSchedule::checkRowValidity( void ) {
 
     if( !(actionItemsRequiringParameter_.end() == itP) ) { // needs a parameter
       if( !item1 ) {
-	std::cerr << " [DefoSchedule::checkRowValidity] -- Return BAD_ROW since missing parameter for action: \"" 
-		  << item0->text().toStdString() << "\" row: " << currentIndex_ + 1 << std::endl;
+	std::cerr << " [DefoSchedule::checkRowValidity] WARNING ** Return BAD_ROW since missing parameter for action: \"" 
+		  << item0->text().toStdString() << "\" row: " << currentIndex_ + 1 << ". Fix your schedule." << std::endl;
 	return DefoSchedule::BAD_ROW; // no parameter given
       }	
     }
@@ -154,19 +158,19 @@ int DefoSchedule::checkRowValidity( void ) {
 
   else { // no action given
     if( item1 ) {
-      std::cerr << " [DefoSchedule::checkRowValidity] -- Return BAD_ROW since no action but parameter: \"" 
-		<< item1->text().toStdString() << "\" row: " << currentIndex_ + 1 << std::endl;
+      std::cerr << " [DefoSchedule::checkRowValidity] WARNING ** Return BAD_ROW since no action but parameter: \"" 
+		<< item1->text().toStdString() << "\" row: " << currentIndex_ + 1 << ". Fix your schedule." << std::endl;
       return DefoSchedule::BAD_ROW; // if there's a parameter, obviously something's wrong
     }
 
-    std::cerr << " [DefoSchedule::checkRowValidity] -- Return EMPTY_ROW for row: " << currentIndex_ + 1 << std::endl;
+    if( debugLevel_ >= 3 ) std::cout << " [DefoSchedule::checkRowValidity] =3= Return EMPTY_ROW for row: " << currentIndex_ + 1 
+	      << ". Fix your schedule." << std::endl;
     return DefoSchedule::EMPTY_ROW; // otherwise it's simply an empty row
 
   }
 
   // if we get here, there's a quirk in this logic...
-  std::cerr << " [DefoSchedule::checkRowValidity] ** ERROR: should not be here (row: " << currentIndex_ + 1 << ")" << std::endl;
-  throw;
+  std::cerr << " [DefoSchedule::checkRowValidity] ** ERROR: Should not reach this point (row: " << currentIndex_ + 1 << ")" << std::endl;
   
 }
 

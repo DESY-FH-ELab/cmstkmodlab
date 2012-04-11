@@ -16,6 +16,9 @@
 #include <QFileDialog>
 #include <QMessageBox>
 
+#include "DefoConfigReader.h"
+
+
 #define _SCHEDULE_NROWS 20
 #define _SCHEDULE_NCOLUMNS 3
 
@@ -63,6 +66,7 @@ class DefoSchedule : public QObject {
   std::map<std::string,int> actionItems_;
   std::vector<int> actionItemsRequiringParameter_;
   unsigned int currentIndex_; // points to current row
+  unsigned int debugLevel_;
 
 };
 

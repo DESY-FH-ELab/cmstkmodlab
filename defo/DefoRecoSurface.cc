@@ -34,7 +34,7 @@ void DefoRecoSurface::calculateHelpers( void ) {
   heightAboveSensor_ = nominalCameraDistance_ * sin( nominalViewingAngle_ );
   if( tan( nominalViewingAngle_ ) != 0. ) horizontalDistanceToSensor_ = heightAboveSensor_ / tan( nominalViewingAngle_ );
   else {
-    std::cerr << " [DefoRecoSurface::DefoRecoSurface] ** ERROR: tan(delta) is zero, check parameters" << std::endl;
+    std::cerr << " [DefoRecoSurface::calculateHelpers] ** ERROR: tan(delta) is zero, no chance for proper reconstruction. Check parameters in configuration file. Abort." << std::endl;
     throw;
   }
 
@@ -265,8 +265,8 @@ const DefoSplineField DefoRecoSurface::createZSplinesOld( DefoPointCollection co
   // in current image and reference image
   if( currentGroups.first.size() != referenceGroups.first.size()   ||
       currentGroups.second.size() != referenceGroups.second.size()    ) {
-    std::cerr << " [DefoRecoSurface::createZSplinesOld] ** ERROR: Size mismatch in sorted point groups." << std::endl;
-    throw;
+    std::cerr << " [DefoRecoSurface::createZSplinesOld] ** ERROR: Size mismatch in sorted point groups, empty output." << std::endl;
+    return theOutput;
   }
 
   // x,y correction factors: see Diss. S. Koenig, p. 100
@@ -368,7 +368,7 @@ void DefoRecoSurface::mountZSplines( DefoSplineField& splineField ) const {
   theOffsets.first.resize( nSplines.first, 0. );
   theOffsets.second.resize( nSplines.second, 0. );
 
-  // this container stores and int per splineset
+  // this container stores and int per splineset, counting the mounting processes,
   // used to properly calculate the average
   DefoSplineFieldCounters theCounters;
   theCounters.first.resize( nSplines.first, 0 );
@@ -648,8 +648,8 @@ const DefoSplineField DefoRecoSurface::createXYSplines( DefoPointCollection cons
 
     // fit the splineset
     if( !aSplineSet.doFitXY() ) {
-      std::cerr << " [DefoRecoSurface::createRawSplines] ** ERROR: failed to fit splineset along Y." << std::endl;
-      throw;
+      std::cerr << " [DefoRecoSurface::createXYSplines] ** ERROR: Failed to fit splineset along Y, return empty output." << std::endl;
+      return theOutput;
     }
 
     // attach to output field (as *second*!!)
@@ -672,8 +672,8 @@ const DefoSplineField DefoRecoSurface::createXYSplines( DefoPointCollection cons
 
     // fit the splineset
     if( !aSplineSet.doFitXY() ) {
-      std::cerr << " [DefoRecoSurface::createRawSplines] ** ERROR: failed to fit splineset along X." << std::endl;
-      throw;
+      std::cerr << " [DefoRecoSurface::createXYSplines] ** ERROR: Failed to fit splineset along X, return empty output." << std::endl;
+      return theOutput;
     }
 
     // attach to output field (as *first*!!)
@@ -814,8 +814,9 @@ const std::pair<double,double> DefoRecoSurface::determineAverageSpacing( DefoPoi
   }
 
   if( !( nSpacings.first && nSpacings.second ) ) {
-    std::cerr << " [DefoRecoSurface::determineAverageSpacing] ** ERROR: unable to determine spacing." << std::endl;
-    throw;
+    std::cerr << " [DefoRecoSurface::determineAverageSpacing] ** ERROR: unable to determine spacing, trying default (" 
+	      <<  spacingEstimate_ << " pix)." << std::endl;
+    return std::make_pair<double,double>( spacingEstimate_, spacingEstimate_ );
   }
 
   // average
@@ -845,8 +846,9 @@ std::pair<unsigned int, unsigned int> DefoRecoSurface::indexPoints( DefoPointCol
   }
 
   if( 1 != nBluePoints ) {
-    std::cerr << " [DefoRecoSurface::indexPoints] ** ERROR: illegal number: " << nBluePoints << " of blue points found." << std::endl;
-    throw;
+    std::cerr << " [DefoRecoSurface::indexPoints] ** ERROR: illegal number: " << nBluePoints 
+	      << " of blue points found. Returning index 0,0." << std::endl;
+    return std::make_pair<unsigned int, unsigned int>( 0, 0 );
   }
 
   else { // debug

@@ -246,7 +246,7 @@ void DefoMainWindow::handleAction( DefoSchedule::scheduleItem item ) {
 
   case DefoSchedule::FILE_REF:
     {
-      std::cout << " [DefoMainWindow::handleAction] =2= received FILE_REF" << std::endl;
+      if( debugLevel_ >= 2 ) std::cout << " [DefoMainWindow::handleAction] =2= received FILE_REF" << std::endl;
 
       DefoRawImage refImage;
       
@@ -257,7 +257,7 @@ void DefoMainWindow::handleAction( DefoSchedule::scheduleItem item ) {
      if( isManual_ ) { // operation with manual buttons: use image from imageLabel_
 
 	if( !( rawimageLabel_->isImage() ) ) {
-	  std::cout << " [DefoMainWindow::handleAction] =2= [FILE_REF} quitting since no image loaded." << std::endl;
+	  if( debugLevel_ >= 1 ) std::cout << " [DefoMainWindow::handleAction] =1= [FILE_REF] quitting since no image loaded." << std::endl;
 	  return;
 	}
 
@@ -487,8 +487,7 @@ void DefoMainWindow::handleAction( DefoSchedule::scheduleItem item ) {
 
 
   case DefoSchedule::GOTO:
-    std::cerr << " SHIT.. GOTO SHOULD NEVER ARRIVE HERE!" << std::endl;
-    throw;
+    std::cerr << " SHIT.. GOTO NOT YET IMPLEMENTED!" << std::endl;
     break;
 
 
@@ -842,7 +841,10 @@ void DefoMainWindow::handleCameraAction( DefoCamHandler::Action action ) {
       if( !file.exists() ) {
 	std::cerr << " [DefoMainWindow::displayImageFromCamera] ** ERROR: file \""
 		  << file.fileName().toStdString() << "\" does not exist." << std::endl;
-	throw; // for the moment
+	QMessageBox::critical( this, tr("[DefoMainWindow::handleCameraAction]"),
+			       QString("File: %1 does not exist.").arg( QString( filepathPlaced_.c_str() ) ),
+			       QMessageBox::Ok );
+	return;
       }
       
       DefoRawImage img( filepathPlaced_.c_str() );
@@ -850,7 +852,10 @@ void DefoMainWindow::handleCameraAction( DefoCamHandler::Action action ) {
       if( img.getImage().isNull() ) {
 	std::cerr << " [DefoMainWindow::displayImageFromCamera] ** ERROR: file \""
 		  << file.fileName().toStdString() << "\" is null." << std::endl;
-	throw; // for the moment
+	QMessageBox::critical( this, tr("[DefoMainWindow::handleCameraAction]"),
+			       QString("Retrieved null image from file: %1.").arg( QString( filepathPlaced_.c_str() ) ),
+			       QMessageBox::Ok );
+	return;
       }
       
       rawimageLabel_->setRotation( true );
@@ -871,7 +876,7 @@ void DefoMainWindow::handleCameraAction( DefoCamHandler::Action action ) {
 	areaNewButton_->setEnabled( true ); 
 	areaDeleteButton_->setEnabled( false );
       } else {
-	areaNewButton_->setEnabled( false ); // for the moment, restricted to 1 rea // @@@@
+	areaNewButton_->setEnabled( false ); // for the moment, restricted to 1 area // @@@@
 	areaDeleteButton_->setEnabled( true );
       }
       

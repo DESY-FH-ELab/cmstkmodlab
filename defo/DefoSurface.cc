@@ -72,8 +72,8 @@ void DefoSurface::dumpSplineField( void ) const {
 void DefoSurface::createPointFields( void ) {
 
   if( !isSplineField_ ) {
-    std::cerr << " [DefoSurface::createPointFields] ** ERROR: spline field not set" << std::endl;
-    throw;
+    std::cerr << " [DefoSurface::createPointFields] ** ERROR: Spline field not set. Doing nothing." << std::endl;
+    return;
   }
 
   // determine index range
@@ -83,7 +83,7 @@ void DefoSurface::createPointFields( void ) {
     if( abs( it->getIndex().second ) > (int)indexRange.second ) indexRange.second = abs( it->getIndex().second  );
 
     if( !it->isIndexed() ) {
-      std::cerr << " [DefoRecoSurface::indexPoints] ** WARNING: Point not indexed at posistion: x: " 
+      std::cerr << " [DefoSurface::createPointFields] ** WARNING: Point not indexed at position: x: " 
 		<< it->getX() << " y: " << it->getY() << std::endl;
     }
 
@@ -96,7 +96,7 @@ void DefoSurface::createPointFields( void ) {
     it->resize( indexRange.second * 2 + 1 );
   }
 
-  std::cout << " [DefoSurface::createPointFields] =2= matrix dimensions: x: " << indexRange.first << " y: " << indexRange.second << std::endl;
+  //  std::cout << " [DefoSurface::createPointFields] =2= matrix dimensions: x: " << indexRange.first << " y: " << indexRange.second << std::endl;
 
   
 
@@ -115,13 +115,6 @@ void DefoSurface::createPointFields( void ) {
       std::pair<int,int> absIndex = aPoint.getIndex();
       absIndex.first += indexRange.first;
       absIndex.second += indexRange.second;
-
-//       std::cout << "ABSIND: " 
-// 		<< std::setw( 5 ) << aPoint.getIndex().first 
-// 		<< std::setw( 5 ) << aPoint.getIndex().second 
-// 		<< std::setw( 5 ) << absIndex.first 
-// 		<< std::setw( 5 ) << absIndex.second
-// 		<< std::endl;
 
       pointFields_.first.at( absIndex.first ).at( absIndex.second ) = aPoint; // uuaargh..
 

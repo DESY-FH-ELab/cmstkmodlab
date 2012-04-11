@@ -7,6 +7,7 @@
 #include <string>
 
 #include <QThread>
+#include <QMessageBox>
 
 #include "devices/Canon/EOS550DSyscall.h"
 

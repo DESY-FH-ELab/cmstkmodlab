@@ -74,10 +74,9 @@ bool DefoPointCollectionAverageXPredicate( DefoPointCollection const& one, DefoP
   for( DefoPointCollection::const_iterator it = one.begin(); it < one.end(); ++it ) average.first += it->getX(), ++nPoints.first;
   for( DefoPointCollection::const_iterator it = another.begin(); it < another.end(); ++it ) average.second += it->getX(), ++nPoints.second;
   
-  // TO BE FIXED LATER IF IT OCCURS!!
   if( !( nPoints.first && nPoints.second ) ) {
-    std::cerr << " [DefoPointCollectionAverageXPredicate] ** ERROR: empty collection." << std::endl;
-    throw;
+    std::cerr << " [DefoPointCollectionAverageXPredicate] ** ERROR: Empty input collection, sorting will fail." << std::endl;
+    return false;
   }
 
   return ( average.first / nPoints.first ) < ( average.second / nPoints.second );
@@ -98,8 +97,8 @@ bool DefoPointCollectionAverageYPredicate( DefoPointCollection const& one, DefoP
   
   // TO BE FIXED LATER IF IT OCCURS!!
   if( !( nPoints.first && nPoints.second ) ) {
-    std::cerr << " [DefoPointCollectionAverageXPredicate] ** ERROR: empty collection." << std::endl;
-    throw;
+    std::cerr << " [DefoPointCollectionAverageYPredicate] ** ERROR: Empty input collection, sorting will fail." << std::endl;
+    return false;
   }
 
   return ( average.first / nPoints.first ) < ( average.second / nPoints.second );

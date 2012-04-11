@@ -73,7 +73,7 @@ std::pair<DefoPointCollection,DefoRawImage> DefoRecoImage::reconstruct( DefoRawI
 	// do this recursively 3 times for improving the coordinates
 
 	// iteration 1
-	DefoPoint intermediatePoint = averageSquare( theImage.getImage(), DefoPoint( xIt, yIt ), 0 );
+	DefoPoint intermediatePoint = averageSquare( theImage.getImage(), DefoPoint( xIt, yIt ) );
 
 	// check if this point is still in range, otherwise drop it
 	if( intermediatePoint.getX() < halfSquareWidth_ + 1 ||
@@ -101,7 +101,7 @@ std::pair<DefoPointCollection,DefoRawImage> DefoRecoImage::reconstruct( DefoRawI
 	}
 
 	// iteration 2
-	intermediatePoint = averageSquare( theImage.getImage(), intermediatePoint, 0 );
+	intermediatePoint = averageSquare( theImage.getImage(), intermediatePoint );
 
 	// check if this point is still in range, otherwise drop it
 	if( intermediatePoint.getX() < halfSquareWidth_ + 1 ||
@@ -118,7 +118,7 @@ std::pair<DefoPointCollection,DefoRawImage> DefoRecoImage::reconstruct( DefoRawI
 
 	// iteration 3;
 	// we draw the point now, even if it could be dropped later
-        intermediatePoint = averageSquare( theImage.getImage(), intermediatePoint, &(theOutput.second.getImage()) );
+        intermediatePoint = averageSquare( theImage.getImage(), intermediatePoint );
 
 
 	// check if this point is still in range, otherwise drop it
@@ -162,7 +162,7 @@ std::pair<DefoPointCollection,DefoRawImage> DefoRecoImage::reconstruct( DefoRawI
 /// find center-of-gravity and return this as the reconstructed point position;
 /// if 3rd parameter is nonzero, draw rectangle & cross in that image
 ///
-DefoPoint DefoRecoImage::averageSquare( QImage const& theImage, DefoPoint const& theSeed, QImage* imageForDrawing ) const {
+DefoPoint DefoRecoImage::averageSquare( QImage const& theImage, DefoPoint const& theSeed ) const {
   
   DefoPoint outputPoint( 0., 0. );
   outputPoint.setBlue( theSeed.isBlue() ); // copy "red" flag
@@ -188,21 +188,6 @@ DefoPoint DefoRecoImage::averageSquare( QImage const& theImage, DefoPoint const&
 
   // divide by total sum for center-of-gravity
   if( squareSummedAmplitude > 0 ) outputPoint /= squareSummedAmplitude;
-
-//   if( imageForDrawing ) {
-
-//     // draw square
-//     theSquare.draw( *imageForDrawing );
-    
-//     // set draw color: blue if white point / green if blue point
-//     unsigned int colorIndex = qRgb( 255, 0, 0 );
-//     if( outputPoint.isBlue() ) colorIndex = qRgb( 0, 255, 0 ); // draw green cross if blue point
-
-//     // draw cross @ output point
-//     for( int px = -2; px <= 2; ++px ) imageForDrawing->setPixel( outputPoint.getPixX() + px, outputPoint.getPixY(), colorIndex );
-//     for( int py = -2; py <= 2; ++py ) imageForDrawing->setPixel( outputPoint.getPixX(), outputPoint.getPixY() + py, colorIndex );
-
-//   }  
 
   return outputPoint;
 
@@ -248,8 +233,8 @@ double DefoRecoImage::calculateBlueishness( QImage const& theImage, DefoPoint co
 
   if( nPixel ) return( summedBlueishness / nPixel );
   else {
-    std::cerr << " [DefoRecoImage::calculateBlueishness] ** ERROR: no pixels > 0 in point window" << std::endl;
-    throw;
+    std::cerr << " [DefoRecoImage::calculateBlueishness] ** ERROR: No pixels > 0 in point window, expect program failure." << std::endl;
+    return 0.;
   }
-  
+
 }

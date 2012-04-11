@@ -41,9 +41,9 @@ double DefoSplineSetBase::eval( double pos ) const {
 
   // no spline with matching range?
   std::cerr << " [DefoSplineSetBase::eval] ** ERROR: failed to evaluate spline at pos: " << pos 
-	    << " (range: [ " << validityRange().first << " , " << validityRange().second << " ]." << std::endl << std::flush;
-  throw;
-
+	    << " (range: [ " << validityRange().first << " , " << validityRange().second << " ]. Returning 0." << std::endl << std::flush;
+  return 0.;
+  
 }
 
 
@@ -122,7 +122,7 @@ bool DefoSplineSetX::doFitZ( void ) {
   std::vector<double> h;
   h.push_back( 0. );
 
-  // avoid crashwhen np = 0, seems to be related to  "points_.end() - 1"
+  // avoid crash when np = 0, seems to be related to  "points_.end() - 1"
   if( 0 == points_.size() ) {
     std::cout << " [DefoSplineSetX::doFitZ] ** WARNING: number of Points is zero." << std::endl;
     return false; 
@@ -264,48 +264,3 @@ bool DefoSplineSetY::doFitZ( void ) {
 
 }
 
-
-
-// ///
-// /// add the normalization ("c") constants from "from" field to those of "to" field;
-// /// this is used for averaging them...
-// ///
-// void DefoAddSplineFieldNormalization( DefoSplineField& to, DefoSplineField const& from ) {
-  
-//   // check for compatibility in size
-//   if( ( to.first.size() != from.first.size() ) || 
-//       ( to.second.size() != from.second.size() )  ) {
-
-//     std::cerr << " [DefoAddSplineFieldNormalization] ** ERROR: incompatible size" << std::endl;
-//     throw;
-
-//   }
-
-//   DefoSplineSetXCollection::iterator toX;
-//   DefoSplineSetXCollection::const_iterator fromX;
-//   DefoSplineSetYCollection::iterator toY;
-//   DefoSplineSetYCollection::const_iterator fromY;
-
-//   // first
-//   for( toX = to.first.begin(), fromX = from.first.begin();
-//        toX < to.first.end();
-//        ++toX, ++fromX ) {
-    
-//     // lift "to" splineset by height of first point of "from"
-//     toX->offset( fromX->eval( fromX->getPoints().front().getX() ) );
-
-//   }
-  
-
-//   // second
-//   for( toY = to.second.begin(), fromY = from.second.begin();
-//        toY < to.second.end();
-//        ++toY, ++fromY ) {
-
-//     // lift "to" splineset by height of first point of "from"
-//     toY->offset( fromY->eval( fromY->getPoints().front().getY() ) );
-
-//   }
-
-  
-// }

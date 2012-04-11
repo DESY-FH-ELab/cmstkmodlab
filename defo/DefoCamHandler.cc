@@ -29,7 +29,9 @@ void DefoCamHandler::run( void ) {
 
   default:
     std::cerr << " [DefoCamHandler::run] ** ERROR: switch reached default" << std::endl;
-    throw;
+    QMessageBox::critical( 0, tr("[DefoCamHandler::run]"),
+	 QString("Switch statement reached default, this should not happen.\nCheck for illegal arguments in calls to DefoCamHandler::setAction."),
+	 QMessageBox::Ok );
 
   }
 

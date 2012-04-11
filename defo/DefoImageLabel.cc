@@ -113,8 +113,11 @@ void DefoImageLabel::defineArea( void ) {
 void DefoImageLabel::createAndSendArea( void ) {
 
   if( !pixmap() ) {
-    std::cerr << " [DefoImageLabel::mouseReleaseEvent] ** ERROR: no pixmap loaded." << std::endl;
-    throw;
+    std::cerr << " [DefoImageLabel::createAndSendArea] ** ERROR: no pixmap loaded." << std::endl;
+    QMessageBox::critical( 0, tr("[DefoImageLabel::createAndSendArea]"),
+	 QString("No pixmap loaded, area creation stopped.\n"),
+	 QMessageBox::Ok );
+    return;
   }
   
 
