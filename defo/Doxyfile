@@ -146,7 +146,7 @@ FILE_PATTERNS          = *.c \
                          *.VHDL \
 			 *.cfg
 RECURSIVE              = NO
-EXCLUDE                = 
+EXCLUDE                = moc_*
 EXCLUDE_SYMLINKS       = NO
 EXCLUDE_PATTERNS       = 
 EXCLUDE_SYMBOLS        = 

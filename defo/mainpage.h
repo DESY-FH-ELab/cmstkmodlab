@@ -287,7 +287,7 @@ h_j (x_{j+1}) = h_{j+1} (x_{j+1})\ \mbox{for}\ j = 1..N-1
 \frac{\delta h_j}{\delta x} (x_{j+1}) = \frac{\delta h_{j+1}}{\delta x} (x_{j+1}) = h_{j+1} \ \mbox{for}\ j = 1..N-1
 \f]
 \f[
-\frac{\delta h_1}{\delta x} (x_1) = \Delta S_0, h_1 = 0
+\frac{\delta h_1}{\delta x} (x_1) = \Delta S_1, h_1 = 0
 \f]
 where the last equation describes the freedom of choice of an initial
 slope \f$\Delta S_1\f$ and height \f$h_1\f$ at the position of the
