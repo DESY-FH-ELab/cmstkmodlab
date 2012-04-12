@@ -210,6 +210,19 @@ void DefoMainWindow::setupUi( void ) {
   histoIcon.addPixmap(QPixmap(QString::fromUtf8("icons/histogram.png")), QIcon::Normal, QIcon::Off);
   rawimageHistoButton_->setIcon(histoIcon);
 
+  statusGroupBox_ = new QGroupBox(rawimageGroupBox_);
+  statusGroupBox_->setObjectName(QString::fromUtf8("statusGroupBox_"));
+  statusGroupBox_->setGeometry(QRect(560, 610, 101, 51));
+  statusGroupBox_->setFont(font);
+  statusGroupBox_->setAlignment(Qt::AlignCenter);
+  statusGroupBox_->setCheckable(false);
+  statusGroupBox_->setChecked(false);
+  refCheckBox_ = new QCheckBox(statusGroupBox_);
+  refCheckBox_->setObjectName(QString::fromUtf8("refCheckBox_"));
+  refCheckBox_->setGeometry(QRect(10, 20, 79, 22));
+  refCheckBox_->setChecked( false );
+  refCheckBox_->setEnabled( false ); // display only
+  
   scheduleGroupBox_ = new QGroupBox(online_tab);
   scheduleGroupBox_->setObjectName(QString::fromUtf8("scheduleGroupBox_"));
   scheduleGroupBox_->setGeometry(QRect(690, 340, 351, 461));
@@ -1563,6 +1576,8 @@ void DefoMainWindow::retranslateUi( void ) {
   manualTEMPButton_->setText(QApplication::translate("MainWindow", "Temp", 0, QApplication::UnicodeUTF8));
   rawimageZoomButton_->setText(QApplication::translate("MainWindow", "...", 0, QApplication::UnicodeUTF8));
   rawimageHistoButton_->setText(QApplication::translate("MainWindow", "...", 0, QApplication::UnicodeUTF8));
+  statusGroupBox_->setTitle(QApplication::translate("MainWindow", "Status", 0, QApplication::UnicodeUTF8));
+  refCheckBox_->setText(QApplication::translate("MainWindow", "Reference", 0, QApplication::UnicodeUTF8));
   scheduleGroupBox_->setTitle(QApplication::translate("MainWindow", "Schedule", 0, QApplication::UnicodeUTF8));
   scheduleClearButton_->setText(QApplication::translate("MainWindow", "Clear", 0, QApplication::UnicodeUTF8));
   scheduleVerifyButton_->setText(QApplication::translate("MainWindow", "Verify", 0, QApplication::UnicodeUTF8));

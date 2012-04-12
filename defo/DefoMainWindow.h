@@ -202,6 +202,8 @@ class DefoMainWindow : public QWidget {
   QPushButton *manualTEMPButton_;
   QToolButton *rawimageZoomButton_;
   QToolButton *rawimageHistoButton_;
+  QGroupBox *statusGroupBox_;
+  QCheckBox *refCheckBox_;
 
   QGroupBox *scheduleGroupBox_;
   QPushButton *scheduleClearButton_;

@@ -51,7 +51,7 @@ DefoMainWindow::DefoMainWindow( QWidget* parent ) : QWidget( parent ) {
   pollingDelay_ = new QTimer();
 
   isManual_ = false;
-  isRefImage_ = false;
+  isRefImage_ = false; refCheckBox_->setChecked( false );
 
   // set default measurement id
   baseFolderName_ = basefolderTextedit_->toPlainText(); // LOAD DEFAULT
@@ -161,7 +161,7 @@ void DefoMainWindow::handleAction( DefoSchedule::scheduleItem item ) {
     {
       if( debugLevel_ >= 2 ) std::cout << " [DefoMainWindow::handleAction] =2= received REF" << std::endl;
 
-      isRefImage_ = true;
+      isRefImage_ = true; refCheckBox_->setChecked( true );
     }
     break;
 
@@ -351,7 +351,7 @@ void DefoMainWindow::handleAction( DefoSchedule::scheduleItem item ) {
       rawimageLabel_->setRotation( true );
       rawimageLabel_->displayImageToSize( qImage );
 
-      isRefImage_ = true;
+      isRefImage_ = true; refCheckBox_->setChecked( true );
 
     }
     break;
@@ -483,16 +483,27 @@ void DefoMainWindow::handleAction( DefoSchedule::scheduleItem item ) {
       surfacePlot_->setDisplayTitle( measurementId_ );
       surfacePlot_->setData( defoSurface );
       surfacePlot_->draw();
-      
+
       { // serialize the output
 	QString surfaceFileName = outputDir.path() + "/surface.defosurface";
 	std::ofstream ofs( surfaceFileName.toStdString().c_str() );
 	boost::archive::binary_oarchive oa( ofs );
 	oa << defoSurface;
       }
-      
+
+      if( areas_.empty() ) {
+	areaNewButton_->setEnabled( true ); 
+	areaDeleteButton_->setEnabled( false );
+      } else {
+	areaNewButton_->setEnabled( false ); // for the moment, restricted to 1 rea // @@@@
+	areaDeleteButton_->setEnabled( true );
+      }
+
     }
     break;
+
+
+
 
   case DefoSchedule::TEMP:
     std::cout << " TEMP action yet unsupported." << std::endl;
@@ -803,6 +814,10 @@ void DefoMainWindow::deleteCurrentArea( void ) {
 
   // redraw remaining areas
   emit( imagelabelRefreshAreas( areas_ ) );
+
+  // we have to disable the refimage
+  // because the ref info is bound to the area
+  isRefImage_ = false; refCheckBox_->setChecked( false );
 
 }
 
