@@ -95,6 +95,7 @@ void DefoMainWindow::setupSignalsAndSlots( void ) {
 
   // manual action buttons
   connect( manualREFButton_, SIGNAL(clicked()), this, SLOT(manualFileRef()) );
+  connect( manualDEFOButton_, SIGNAL(clicked()), this, SLOT(manualFileDefo()) );
 
   // schedule buttons & misc
   connect( scheduleStartButton_, SIGNAL(clicked()), this, SLOT(startPolling()) );
@@ -244,6 +245,9 @@ void DefoMainWindow::handleAction( DefoSchedule::scheduleItem item ) {
     
 
 
+
+
+
   case DefoSchedule::FILE_REF:
     {
       if( debugLevel_ >= 2 ) std::cout << " [DefoMainWindow::handleAction] =2= received FILE_REF" << std::endl;
@@ -355,27 +359,13 @@ void DefoMainWindow::handleAction( DefoSchedule::scheduleItem item ) {
 
 
 
+
+
   case DefoSchedule::FILE_DEFO:
     {
       if( debugLevel_ >= 2 ) std::cout << " [DefoMainWindow::handleAction] =2= received FILE_DEFO" << std::endl;
 
-      // disable any area modification action now
-      areaNewButton_->setEnabled( false );
-      areaDeleteButton_->setEnabled( false );
-
-      // check file name/path
-      QFileInfo fileInfo( item.second );
-      if( !fileInfo.exists() ) {
-	QMessageBox::critical( this, tr("[DefoMainWindow::handleAction]"),
-			       QString("[FILE_DEFO]: file \'%1\' not found.").arg(item.second),
-			       QMessageBox::Ok );
-	std::cerr << " [DefoMainWindow::handleAction] ** ERROR: [FILE_DEFO] cannot open file: " << item.second.toStdString() << std::endl;
-	imageinfoTextedit_->appendPlainText( QString( "ERROR: [FILE_DEFO] cannot open file: \'%1\'" ).arg( item.second ) );
-	scheduleTableview_->setStyleSheet(QString::fromUtf8("background-color: rgb(255, 255, 255);\n selection-background-color: rgb( 255,0,0 ); "));
-	stopPolling();
-	isContinuePolling = false;
-	break;
-      }
+      DefoRawImage defoImage;
 
       if( !isRefImage_ ) { // check if we have a reference for the reconstruction
 	QMessageBox::critical( this, tr("[DefoMainWindow::handleAction]"),
@@ -387,6 +377,46 @@ void DefoMainWindow::handleAction( DefoSchedule::scheduleItem item ) {
 	isContinuePolling = false;
 	break;
       }
+
+      // disable any area modification action now
+      areaNewButton_->setEnabled( false );
+      areaDeleteButton_->setEnabled( false );
+
+
+      if( isManual_ ) { // operation with manual buttons: use image from imageLabel_
+	
+	if( !( rawimageLabel_->isImage() ) ) {
+	  if( debugLevel_ >= 1 ) std::cout << " [DefoMainWindow::handleAction] =1= [FILE_REF] quitting since no image loaded." << std::endl;
+	  return;
+	}
+	
+	defoImage.setImage( rawimageLabel_->getOriginalImage() );
+	
+	QString subdirName = measurementidTextedit_->toPlainText();
+	currentFolderName_ = baseFolderName_ + "/" + subdirName;
+	
+      }
+
+      else {
+
+	// check file name/path
+	QFileInfo fileInfo( item.second );
+	if( !fileInfo.exists() ) {
+	  QMessageBox::critical( this, tr("[DefoMainWindow::handleAction]"),
+				 QString("[FILE_DEFO]: file \'%1\' not found.").arg(item.second),
+				 QMessageBox::Ok );
+	  std::cerr << " [DefoMainWindow::handleAction] ** ERROR: [FILE_DEFO] cannot open file: " << item.second.toStdString() << std::endl;
+	  imageinfoTextedit_->appendPlainText( QString( "ERROR: [FILE_DEFO] cannot open file: \'%1\'" ).arg( item.second ) );
+	  scheduleTableview_->setStyleSheet(QString::fromUtf8("background-color: rgb(255, 255, 255);\n selection-background-color: rgb( 255,0,0 ); "));
+	  stopPolling();
+	  isContinuePolling = false;
+	  break;
+	}
+
+	defoImage.loadFromFile( item.second.toStdString().c_str() );
+
+      }
+	
 
       // create output folder
       QDateTime datime = QDateTime::currentDateTime();
@@ -404,7 +434,6 @@ void DefoMainWindow::handleAction( DefoSchedule::scheduleItem item ) {
 
 
       // get the image & save the raw version
-      DefoRawImage defoImage( item.second.toStdString().c_str() );
       QString rawImageFileName = outputDir.path() + "/defoimage_raw.jpg";
       defoImage.getImage().save( rawImageFileName, 0, 100 );
       
@@ -592,7 +621,7 @@ void DefoMainWindow::stopPolling( void ) {
 
   // also enable manual operation
   manualREFButton_->setEnabled( true );
-  // manualDEFOButton_->setEnabled( true ); // not yet
+  manualDEFOButton_->setEnabled( true ); // not yet
   // manualTEMPButton_->setEnabled( true ); // not yet
 
   // gray out
@@ -633,6 +662,27 @@ void DefoMainWindow::manualFileRef( void ) {
   // string is empty in that case, since we load from image label
   isManual_ = true;
   DefoSchedule::scheduleItem item( DefoSchedule::FILE_REF, QString( "" ) );
+  handleAction( item );
+  isManual_ = false;
+
+  // by default, enable area display & points, disable indices
+  displayAreasButton_->setChecked( true );
+  displayRecoitemButton_->setChecked( true );
+  displayIndicesButton_->setChecked( false );
+  displayCoordsButton_->setChecked( true );
+  
+}
+
+
+
+///
+///
+///
+void DefoMainWindow::manualFileDefo( void ) {
+
+  // string is empty in that case, since we load from image label
+  isManual_ = true;
+  DefoSchedule::scheduleItem item( DefoSchedule::FILE_DEFO, QString( "" ) );
   handleAction( item );
   isManual_ = false;
 
@@ -1130,8 +1180,8 @@ void DefoMainWindow::cameraEnabledButtonToggled( bool isChecked ) {
 
     // enable controls
     refreshCameraButton_->setEnabled( true );
-    //    manualREFButton_->setEnabled( true );
-    //    manualDEFOButton_->setEnabled( true );
+    // manualREFButton_->setEnabled( true );
+    // manualDEFOButton_->setEnabled( true );
     cameraConnectionTestButton_->setEnabled( true );
     cameraConnectionResetButton_->setEnabled( true );
     apertureComboBox_->setEnabled( true );

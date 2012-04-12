@@ -172,7 +172,7 @@ void DefoMainWindow::setupUi( void ) {
   manualREFButton_->setFlat(false);
   manualDEFOButton_ = new QPushButton(manualGroupBox_);
   manualDEFOButton_->setObjectName(QString::fromUtf8("manualDEFOButton_"));
-  manualDEFOButton_->setEnabled(false);
+  manualDEFOButton_->setEnabled(true);
   manualDEFOButton_->setGeometry(QRect(10, 70, 81, 31));
   manualDEFOButton_->setStyleSheet(QString::fromUtf8(""));
   manualDEFOButton_->setFlat(false);
@@ -1560,8 +1560,6 @@ void DefoMainWindow::retranslateUi( void ) {
   manualGroupBox_->setTitle(QApplication::translate("MainWindow", "Manual", 0, QApplication::UnicodeUTF8));
   manualREFButton_->setText(QApplication::translate("MainWindow", "Ref", 0, QApplication::UnicodeUTF8));
   manualDEFOButton_->setText(QApplication::translate("MainWindow", "Defo", 0, QApplication::UnicodeUTF8));
-//   manualFILEREFButton_->setText(QApplication::translate("MainWindow", "File ref", 0, QApplication::UnicodeUTF8));
-//   manualFILEDEFOButton_->setText(QApplication::translate("MainWindow", "File defo", 0, QApplication::UnicodeUTF8));
   manualTEMPButton_->setText(QApplication::translate("MainWindow", "Temp", 0, QApplication::UnicodeUTF8));
   rawimageZoomButton_->setText(QApplication::translate("MainWindow", "...", 0, QApplication::UnicodeUTF8));
   rawimageHistoButton_->setText(QApplication::translate("MainWindow", "...", 0, QApplication::UnicodeUTF8));
@@ -1579,11 +1577,6 @@ void DefoMainWindow::retranslateUi( void ) {
   measurementidTextedit_->setPlainText(QApplication::translate("MainWindow", "", 0, QApplication::UnicodeUTF8));
   quitButton_->setText(QApplication::translate("MainWindow", "QUIT", 0, QApplication::UnicodeUTF8));
   imageinfoGroupBox_->setTitle(QApplication::translate("MainWindow", "Image info", 0, QApplication::UnicodeUTF8));
-//   imageinfoTextedit_->setPlainText(QApplication::translate("MainWindow", "date:\n"
-// 							   "size:\n"
-// 							   "type:\n"
-// 							   "fetched-from:\n"
-// 							   "grayscale-average:", 0, QApplication::UnicodeUTF8));
   mainTabWidget_->setTabText(mainTabWidget_->indexOf(online_tab), QApplication::translate("MainWindow", "Online", 0, QApplication::UnicodeUTF8));
   historyGroupBox_->setTitle(QApplication::translate("MainWindow", "History", 0, QApplication::UnicodeUTF8));
   historyZoomButton_->setText(QApplication::translate("MainWindow", "...", 0, QApplication::UnicodeUTF8));

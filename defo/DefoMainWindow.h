@@ -117,6 +117,7 @@ class DefoMainWindow : public QWidget {
   void stopPolling( void );
   void pausePolling( void );
   void manualFileRef( void );
+  void manualFileDefo( void );
   void editMeasurementId( void );
   void defaultMeasurementId( void );
   void editBaseFolder( void );
