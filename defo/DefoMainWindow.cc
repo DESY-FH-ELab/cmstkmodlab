@@ -263,6 +263,9 @@ void DefoMainWindow::handleAction( DefoSchedule::scheduleItem item ) {
 
 	refImage.setImage( rawimageLabel_->getOriginalImage() );
 
+	QString subdirName = measurementidTextedit_->toPlainText();
+	currentFolderName_ = baseFolderName_ + "/" + subdirName;
+
       }
 
       else { // operation via schedule: load image from file
@@ -289,7 +292,7 @@ void DefoMainWindow::handleAction( DefoSchedule::scheduleItem item ) {
       QDateTime datime = QDateTime::currentDateTime();
       QDir currentDir( currentFolderName_ );
       QString subdir = datime.toString( QString( "ddMMyy-hhmmss" ) );
-      if( !currentDir.mkdir( subdir ) ) {
+      if( !currentDir.mkpath( subdir ) ) {
 	QMessageBox::critical( this, tr("[DefoMainWindow::handleAction]"),
 			       QString("[FILE_DEFO]: cannot create output dir: \'%1\'").arg(subdir),
 			       QMessageBox::Ok );
@@ -300,17 +303,17 @@ void DefoMainWindow::handleAction( DefoSchedule::scheduleItem item ) {
       QDir outputDir = QDir( currentFolderName_ + "/" + subdir );
 
       // get the image & save it
-      //      DefoRawImage refImage( item.second.toStdString().c_str() );
       QString rawImageFileName = outputDir.path() + "/refimage_raw.jpg";
       refImage.getImage().save( rawImageFileName, 0, 100 );
+
 
       // point reconstruction
 
       // check if we have an area defined;
-      // otherwise define the whole image
+      // otherwise define area as the whole image
       DefoArea area;
       if( areas_.empty() ) {
-	if( debugLevel_ >= 3 ) std::cout << " [DefoMainWindow::handleAction] =3= [FILE_REF] creating pseudo area." << std::endl;
+	if( debugLevel_ >= 3 ) std::cout << " [DefoMainWindow::handleAction] =3= [FILE_REF] creating pseudo area over whole image." << std::endl;
 	QRect rect( 0, 0, refImage.getImage().width(), refImage.getImage().height() );
 	area = DefoArea( rect );
       }
@@ -329,8 +332,9 @@ void DefoMainWindow::handleAction( DefoSchedule::scheduleItem item ) {
       emit( imagelabelRefreshIndices( indexedPoints ) );
 
       // save the updated file
-      QString recoImageFileName = outputDir.path() + "/refimage_reco.jpg";
-      qImage.save( recoImageFileName, 0, 100 );
+      // DOESNT MAKE SENSE, it's now the same as _raw
+      //       QString recoImageFileName = outputDir.path() + "/refimage_reco.jpg";
+      //       qImage.save( recoImageFileName, 0, 100 );
 
       // display info
       imageinfoTextedit_->clear();
@@ -538,7 +542,7 @@ void DefoMainWindow::startPolling( void ) {
     std::cerr << " [DefoMainWindow::handleAction] ** ERROR: cannot create measurement dir: " 
 	      << subdirName.toStdString() << std::endl;
   }
-  
+
   currentFolderName_ = baseFolderName_ + "/" + subdirName;
 
   // highlight color for table view to green
@@ -551,6 +555,11 @@ void DefoMainWindow::startPolling( void ) {
   measurementidEditButton_->setEnabled( false );
   measurementidDefaultButton_->setEnabled( false );
   basefolderEditButton_->setEnabled( false );
+
+  // no manual operation when schedule is active
+  manualREFButton_->setEnabled( false );
+  manualDEFOButton_->setEnabled( false );
+  manualTEMPButton_->setEnabled( false );
 
   // clear display items (with empty vectors)
   emit( imagelabelRefreshIndices( std::vector<DefoPoint>() ) );
@@ -580,6 +589,11 @@ void DefoMainWindow::stopPolling( void ) {
   measurementidEditButton_->setEnabled( true );
   measurementidDefaultButton_->setEnabled( true );
   basefolderEditButton_->setEnabled( true );
+
+  // also enable manual operation
+  manualREFButton_->setEnabled( true );
+  // manualDEFOButton_->setEnabled( true ); // not yet
+  // manualTEMPButton_->setEnabled( true ); // not yet
 
   // gray out
   scheduleTableview_->setStyleSheet(QString::fromUtf8("background-color: rgb(255, 255, 255);\n selection-background-color: rgb( 200,200,200 ); "));

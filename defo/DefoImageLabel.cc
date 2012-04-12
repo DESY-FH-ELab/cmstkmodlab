@@ -414,7 +414,7 @@ void DefoImageLabel::paintEvent( QPaintEvent* e ) {
   }
   
 
-  // points and HW sqaures around them
+  // points and HW squares around them
   if( isDisplayPointSquares_ ) {
 
     QPainter painter(this);
