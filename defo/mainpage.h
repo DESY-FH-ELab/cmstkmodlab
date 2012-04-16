@@ -29,6 +29,8 @@
 &nbsp;&nbsp;\ref gui_online_subsec <BR>
 &nbsp;&nbsp;&nbsp;&nbsp;\ref gui_online_measurementid_subsubsec <BR>
 &nbsp;&nbsp;&nbsp;&nbsp;\ref gui_online_areas_subsubsec <BR>
+&nbsp;&nbsp;&nbsp;&nbsp;\ref gui_online_display_subsubsec <BR>
+&nbsp;&nbsp;&nbsp;&nbsp;\ref gui_online_refresh_subsubsec <BR>
 &nbsp;&nbsp;&nbsp;&nbsp;\ref gui_online_manual_subsubsec <BR>
 &nbsp;&nbsp;&nbsp;&nbsp;\ref gui_online_schedules_subsubsec <BR>
 &nbsp;&nbsp;&nbsp;&nbsp;\ref gui_online_output_subsubsec <BR>
@@ -79,7 +81,7 @@ consistently hard-coded in various places in calls to the
 DefoConfigReader constructor. The default name is <tt>defo.cfg</tt>
 and the default location is the current directory in which the
 application has started. In the following, capitalized terms,
-e.g. HALF_SQUARE_WIDTH, denote reconstruction parameters in the
+e.g. <tt>HALF_SQUARE_WIDTH</tt>, denote reconstruction parameters in the
 configuration file. All file paths are given relative to the svn root
 (<tt>cmstkmodlab/trunk/</tt>).
 
@@ -423,7 +425,7 @@ overview_sec).
 \image html screenshot_gui_online.gif "The online tab"
 
 
-\subsubsection gui_online_measurementid_subsubsec      6.2.2 Measurement ID
+\subsubsection gui_online_measurementid_subsubsec      6.2.1 Measurement ID
 
 The measurement ID serves as a common identification string for a
 group of deformation measurements (including reference
@@ -453,9 +455,59 @@ displayed as a yellow dotted line. Areas are assigned names A1...An,
 however, currently only one single area A1 is supported (thus the
 <tt>no.</tt> spin box for area selection is not of particular use).
 
-\subsubsection gui_online_manual_subsubsec  6.2.3 Manual operation
-\subsubsection gui_online_schedules_subsubsec  6.2.4 Schedules
+When an area is deleted, all reference information is invalidated
+and a new reference image must be loaded and processed.
 
+\subsubsection gui_online_display_subsubsec  6.2.3 Display options
+The following information can be displayed as overlays on an image:
+<DL>
+<DT>Points</DT>
+<DD>The reconstructed point positions are marked by a cross (3 px lines),
+surrounded by a square of size <tt>HALF_SQUARE_WIDTH</tt> (see \ref point_subsec).
+Crosses and squares are drawn in orange for normal points and in
+blue for the blue point.</DD>
+<DT>Areas</DT>
+<DD>Areas are indicated as rectangles of yellow dotted lines which
+show the area name in the top left corner.</DD>
+<DT>Indices</DT>
+<DD>If enabled, a pair of integers is drawn in magenta indicating the reconstructed indices
+of each point relative to the blue point. The blue point has indices (0,0) by definition.</DD>
+<DT>Splines</DT>
+<DD>The reconstructed splines (see \ref splinecreation_subsec) are shown which
+interconnect the reconstructed points and from which the surface slope
+is determined. <SPAN style="color:#ff0000"><B>Not yet implemented!</B></span></DD>
+<DT>Coords</DT>
+<DD>Whether to draw a coordinate system at the bottom left corner of the image.</DD>
+</DL>
+
+\subsubsection gui_online_refresh_subsubsec  6.2.4 Refreshing images
+Two buttons in this section allow for refreshing the current image display
+either by capturing with the camera or from a file (a file dialog will open).
+The camera button is not clickable when camera operation is globally
+disabled (see \ref gui_advanced_subsec).
+
+\subsubsection gui_online_manual_subsubsec  6.2.5 Manual operation and status
+The <i>Manual</i> section of the online tab features three buttons for manual (non-scheduled)
+point and surface reconstruction as well as  chiller temperature setting. Surface reconstruction
+will be performed on the current image as displayed on the tab. 
+
+<DL>
+<DT>REF</DT><DD>Reconstruct the points in the current image and store the result
+as the reference for future images, until a new reference image is taken.</DD>
+<DT>DEFO</DT><DD>Reconstruct the points in the current image, perform surface reconstruction 
+relative to the last reference image and display the results in the offline tab (\ref gui_offline_subsec).
+</DD>
+<DT>TEMP</DT><DD>Opens a temperature dialog and sets the chiller target temperature to the specified value.</DD>.
+<SPAN style="color:#ff0000"><B>Not yet implemented!</B></span>
+</DL>
+
+Surface reconstruction (<i>DEFO</i>) can only be performed if an image has previously been processed
+as a reference image. Apart from this, deleting an area will invalidate the reference. The spinbox in
+the <i>Status</i> section indicates whether valid reference data is currently available and
+surface reconstruction can be performed. Clicking the <tt>DEFO</tt> button while the spinbox is
+not checked results in an error message.
+
+\subsubsection gui_online_schedules_subsubsec  6.2.6 Schedules
 For automated operation (e.g. repeated series or overnight measurements),
 the defo GUI offers a programmable schedule. A schedule consists of
 a list of entries, each comprising a command/action and - if required -
@@ -468,14 +520,14 @@ Possible actions are:
 <DL>
 <DT>SET</DT>
 <DD>Loads an image from the camera and then pauses the schedule (enabling manual image refresh), thus allowing for
-modifications of the setup, parameters, lighting, area definitions, etc. The schedule can be resumed
-using the PAUSE/RES button. <b>Value: none</b></DD>
+modifications of the setup, parameters, lighting, area definitions, etc. Manual refresh of the image is also possible.
+The schedule can be resumed using the PAUSE/RES button. <b>Value: none</b> <SPAN style="color:#ff0000"><B>Not yet implemented!</B></span></DD>
 
 <DT>REF</DT><DD>Capture an image from the camera, reconstruct the points and store the result
-as the reference for future images, until a new reference image is taken. <b>Value: none</b></DD>
+as the reference for future images, until a new reference image is taken. <b>Value: none</b><SPAN style="color:#ff0000"> <B>Not yet implemented!</B></span> </DD>
 
 <DT>DEFO</DT><DD>Capture an image from the camera and reconstruct the surface relative to the
-most recently taken reference image. <b>Value: none</b></DD>
+most recently taken reference image. <b>Value: none</b><SPAN style="color:#ff0000"> <B>Not yet implemented!</B></span> </DD>
 
 <DT>FILE_SET</DT><DD>Load an image from a file and then pause the schedule, enabling manual image refresh,
 thus allowing for modifications of the setup, parameters, lighting, area definitions, etc. The schedule can be resumed
@@ -487,17 +539,18 @@ as the reference for future images, until a new reference image is taken. <b>Val
 <DT>FILE_DEFO</DT><DD>Load an image from file and reconstruct the surface relative to the
 most recently taken reference image. <b>Value: file path</b></DD>
 
-<DT>TEMP</DT><DD>Set the chiller bath target temperature. <b>Value: target temperature in deg C.</b></DD>
+<DT>TEMP</DT><DD>Set the chiller bath target temperature. <b>Value: target temperature in deg C.</b> <SPAN style="color:#ff0000"><B>Not yet implemented!</B></span> </DD>
 
 <DT>SLEEP</DT><DD>Sleep for the specified amount of seconds, e.g. to allow the chiller to reach a
 target temperature. <b>Value: time in seconds.</b></DD>
 
-<DT>GOTO</DT><DD>Jump to a schedule entry by line number (allowing program loops). <b>Value: schedule line number</b></DD>
+<DT>GOTO</DT><DD>Jump to a schedule entry by line number (allowing program loops). <b>Value: schedule line number</b> <SPAN style="color:#ff0000"><B>Not yet implemented!</B></span> </DD>
 
 <DT>END</DT><DD>Stop a schedule. <b>Value: none</b></DD>
 </DL>
 
-\subsubsection gui_online_output_subsubsec     6.2.4 Output folders
+\subsubsection gui_online_output_subsubsec     6.2.7 Output files and folders
+
 
 \subsection gui_cooling_subsec                 6.3 Cooling tab
 \image html screenshot_gui_cooling.gif "The cooling tab"

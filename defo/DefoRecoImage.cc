@@ -117,7 +117,6 @@ std::pair<DefoPointCollection,DefoRawImage> DefoRecoImage::reconstruct( DefoRawI
 	}
 
 	// iteration 3;
-	// we draw the point now, even if it could be dropped later
         intermediatePoint = averageSquare( theImage.getImage(), intermediatePoint );
 
 

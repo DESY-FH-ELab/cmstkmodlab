@@ -110,7 +110,6 @@ void DefoMainWindow::setupSignalsAndSlots( void ) {
   connect( measurementidDefaultButton_, SIGNAL(clicked()), this, SLOT(defaultMeasurementId()) );
   connect( quitButton_, SIGNAL(clicked()), qApp, SLOT(quit()));
 
-
   // offline display
   connect( displaytype3DButton_, SIGNAL(toggled( bool ) ), surfacePlot_, SLOT( toggleView( bool ) ) );
   connect( displayitemsAxesButton_, SIGNAL( toggled( bool ) ), surfacePlot_, SLOT( setIsAxes( bool ) ) );
@@ -152,6 +151,67 @@ void DefoMainWindow::handleAction( DefoSchedule::scheduleItem item ) {
   case DefoSchedule::SET:
     {
       if( debugLevel_ >= 2 ) std::cout << " [DefoMainWindow::handleAction] =2= received SET" << std::endl;
+      
+      // disable polling, wait for PAUSE/RES button pressed
+      pausePolling();
+      
+      // by default, enable area display & points, disable indices
+      displayAreasButton_->setChecked( true );
+      displayRecoitemButton_->setChecked( true );
+      displayIndicesButton_->setChecked( false );
+      displayCoordsButton_->setChecked( true );
+
+
+      QFileInfo fileInfo( item.second );
+      if( !fileInfo.exists() ) {
+	QMessageBox::critical( this, tr("[DefoMainWindow::handleAction]"),
+			       QString("[FILE_SET]: file \'%1\' not found.").arg(item.second),
+			       QMessageBox::Ok );
+	std::cerr << " [DefoMainWindow::handleAction] ** ERROR: [FILE_SET] cannot open file: " << item.second.toStdString() << std::endl;
+	imageinfoTextedit_->appendPlainText( QString( "ERROR: [FILE_SET] cannot open file: \'%1\'" ).arg( item.second ) );
+	scheduleTableview_->setStyleSheet(QString::fromUtf8("background-color: rgb(255, 255, 255);\n selection-background-color: rgb( 255,0,0 ); "));
+	break;
+      }
+
+      // create output folder
+      QDateTime datime = QDateTime::currentDateTime();
+      QDir currentDir( currentFolderName_ );
+      QString subdir = datime.toString( QString( "ddMMyy-hhmmss" ) );
+      if( !currentDir.mkdir( subdir ) ) {
+	QMessageBox::critical( this, tr("[DefoMainWindow::handleAction]"),
+			       QString("[FILE_SET]: cannot create output dir: \'%1\'").arg(subdir),
+			       QMessageBox::Ok );
+	std::cerr << " [DefoMainWindow::handleAction] ** ERROR: [FILE_SET]: cannot create output dir: " 
+		  << subdir.toStdString() << std::endl;
+      }
+
+      QDir outputDir = QDir( currentFolderName_ + "/" + subdir );
+
+      // get the image
+      loadImageFromCamera();
+      //      DefoRawImage setImage( item.second.toStdString().c_str() );
+      //      QString rawImageFileName = outputDir.path() + "/setimage_raw.jpg";
+      //      setImage.getImage().save( rawImageFileName, 0, 100 );
+
+//       // display info
+//       imageinfoTextedit_->clear();
+//       datime = QDateTime::currentDateTime(); // resuse!!
+//       imageinfoTextedit_->appendPlainText( QString( "Raw image size: %1 x %2 pixel" ).arg(setImage.getImage().width()).arg(setImage.getImage().height()) );
+//       imageinfoTextedit_->appendPlainText( QString( "Fetched: %1" ).arg( datime.toString( QString( "dd.MM.yy hh:mm:ss" ) ) ) );
+//       imageinfoTextedit_->appendPlainText( QString( "Type: from camera" ) );
+
+//       // tell the label to rotate the image and display
+//       rawimageLabel_->setRotation( true );
+//       rawimageLabel_->displayImageToSize( setImage.getImage() );
+
+//       if( areas_.empty() ) {
+// 	areaNewButton_->setEnabled( true ); 
+// 	areaDeleteButton_->setEnabled( false );
+//       } else {
+// 	areaNewButton_->setEnabled( false ); // for the moment, restricted to 1 rea // @@@@
+// 	areaDeleteButton_->setEnabled( true );
+//       }
+
     }
 
     
@@ -177,8 +237,10 @@ void DefoMainWindow::handleAction( DefoSchedule::scheduleItem item ) {
 
 
 
-
   case DefoSchedule::FILE_SET:
+    //
+    // 
+    //
     {
       if( debugLevel_ >= 2 ) std::cout << " [DefoMainWindow::handleAction] =2= received FILE_SET" << std::endl;
 
@@ -880,7 +942,7 @@ void DefoMainWindow::loadImageFromCamera( void ) {
     + QString( "set-" ) + datime.toString( QString( "ddMMyy-hhmmss" ) ) // filename
     + QString( ".jpg" ); // extension
   
-  // the the handler what to do (and where)
+  // tell the handler what to do (and where)
   // and run thread
   camHandler_.setAction( DefoCamHandler::GETIMAGE );
   camHandler_.setFilePath( filePath.toStdString() );
