@@ -150,7 +150,8 @@ class DefoMainWindow : public QWidget {
 
   void fillComboBoxes( void );
   void readCameraParametersFromCfgFile( void );
-
+  QDir const checkAndCreateOutputFolder( void );
+  
   unsigned int debugLevel_;
 
   DefoCamHandler camHandler_; // camera steering

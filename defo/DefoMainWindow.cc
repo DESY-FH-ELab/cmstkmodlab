@@ -161,19 +161,8 @@ void DefoMainWindow::handleAction( DefoSchedule::scheduleItem item ) {
       displayIndicesButton_->setChecked( false );
       displayCoordsButton_->setChecked( true );
 
-      // create output folder
-      QDateTime datime = QDateTime::currentDateTime();
-      QDir currentDir( currentFolderName_ );
-      QString subdir = datime.toString( QString( "ddMMyy-hhmmss" ) );
-      if( !currentDir.mkdir( subdir ) ) {
-	QMessageBox::critical( this, tr("[DefoMainWindow::handleAction]"),
-			       QString("[FILE_SET]: cannot create output dir: \'%1\'").arg(subdir),
-			       QMessageBox::Ok );
-	std::cerr << " [DefoMainWindow::handleAction] ** ERROR: [FILE_SET]: cannot create output dir: " 
-		  << subdir.toStdString() << std::endl;
-      }
-
-      QDir outputDir = QDir( currentFolderName_ + "/" + subdir );
+      // output folder
+      QDir outputDir = checkAndCreateOutputFolder();
 
       // get the image
       loadImageFromCamera();
@@ -241,19 +230,7 @@ void DefoMainWindow::handleAction( DefoSchedule::scheduleItem item ) {
 	break;
       }
 
-      // create output folder
-      QDateTime datime = QDateTime::currentDateTime();
-      QDir currentDir( currentFolderName_ );
-      QString subdir = datime.toString( QString( "ddMMyy-hhmmss" ) );
-      if( !currentDir.mkdir( subdir ) ) {
-	QMessageBox::critical( this, tr("[DefoMainWindow::handleAction]"),
-			       QString("[FILE_SET]: cannot create output dir: \'%1\'").arg(subdir),
-			       QMessageBox::Ok );
-	std::cerr << " [DefoMainWindow::handleAction] ** ERROR: [FILE_SET]: cannot create output dir: " 
-		  << subdir.toStdString() << std::endl;
-      }
-
-      QDir outputDir = QDir( currentFolderName_ + "/" + subdir );
+      QDir outputDir = checkAndCreateOutputFolder();
 
       // get the image & save it
       DefoRawImage setImage( item.second.toStdString().c_str() );
@@ -262,7 +239,7 @@ void DefoMainWindow::handleAction( DefoSchedule::scheduleItem item ) {
 
       // display info
       imageinfoTextedit_->clear();
-      datime = QDateTime::currentDateTime(); // resuse!!
+      QDateTime datime = QDateTime::currentDateTime(); // resuse!!
       imageinfoTextedit_->appendPlainText( QString( "Raw image size: %1 x %2 pixel" ).arg(setImage.getImage().width()).arg(setImage.getImage().height()) );
       imageinfoTextedit_->appendPlainText( QString( "Fetched: %1" ).arg( datime.toString( QString( "dd.MM.yy hh:mm:ss" ) ) ) );
       imageinfoTextedit_->appendPlainText( QString( "Type: from disk [%1]" ).arg( item.second ) );
@@ -329,20 +306,7 @@ void DefoMainWindow::handleAction( DefoSchedule::scheduleItem item ) {
 	refImage.loadFromFile( item.second.toStdString().c_str() );
       }
 
-
-      // create output folder
-      QDateTime datime = QDateTime::currentDateTime();
-      QDir currentDir( currentFolderName_ );
-      QString subdir = datime.toString( QString( "ddMMyy-hhmmss" ) );
-      if( !currentDir.mkpath( subdir ) ) {
-	QMessageBox::critical( this, tr("[DefoMainWindow::handleAction]"),
-			       QString("[FILE_DEFO]: cannot create output dir: \'%1\'").arg(subdir),
-			       QMessageBox::Ok );
-	std::cerr << " [DefoMainWindow::handleAction] ** ERROR: [FILE_REF]: cannot create output dir: " 
-		  << subdir.toStdString() << std::endl;
-      }
-
-      QDir outputDir = QDir( currentFolderName_ + "/" + subdir );
+      QDir outputDir = checkAndCreateOutputFolder();
 
       // get the image & save it
       QString rawImageFileName = outputDir.path() + "/refimage_raw.jpg";
@@ -380,7 +344,7 @@ void DefoMainWindow::handleAction( DefoSchedule::scheduleItem item ) {
 
       // display info
       imageinfoTextedit_->clear();
-      datime = QDateTime::currentDateTime(); // resuse!!
+      QDateTime datime = QDateTime::currentDateTime(); // resuse!!
       imageinfoTextedit_->appendPlainText( QString( "Raw image size: %1 x %2 pixel" ).arg(qImage.width()).arg(qImage.height()) );
       imageinfoTextedit_->appendPlainText( QString( "Fetched: %1" ).arg( datime.toString( QString( "dd.MM.yy hh:mm:ss" ) ) ) );
       imageinfoTextedit_->appendPlainText( QString( "Type: from disk [%1]" ).arg( item.second ) );
@@ -389,8 +353,15 @@ void DefoMainWindow::handleAction( DefoSchedule::scheduleItem item ) {
       rawimageLabel_->setRotation( true );
       rawimageLabel_->displayImageToSize( qImage );
 
+      // we have a reference now, enable future defo
       isRefImage_ = true; refCheckBox_->setChecked( true );
 
+      // by default, enable area display & points, disable indices
+      displayAreasButton_->setChecked( true );
+      displayRecoitemButton_->setChecked( true );
+      displayIndicesButton_->setChecked( false );
+      displayCoordsButton_->setChecked( true );
+      
     }
     break;
 
@@ -455,21 +426,8 @@ void DefoMainWindow::handleAction( DefoSchedule::scheduleItem item ) {
 
       }
 	
-
-      // create output folder
-      QDateTime datime = QDateTime::currentDateTime();
-      QDir currentDir( currentFolderName_ );
-      QString subdir = datime.toString( QString( "ddMMyy-hhmmss" ) );
-      if( !currentDir.mkdir( subdir ) ) {
-	QMessageBox::critical( this, tr("[DefoMainWindow::handleAction]"),
-			       QString("[FILE_DEFO]: cannot create output dir: \'%1\'").arg(subdir),
-			       QMessageBox::Ok );
-	std::cerr << " [DefoMainWindow::handleAction] ** ERROR: [FILE_DEFO]: cannot create output dir: " 
-		  << subdir.toStdString() << std::endl;
-      }
-
-      QDir outputDir = QDir( currentFolderName_ + "/" + subdir );
-
+      // output folder
+      QDir outputDir = checkAndCreateOutputFolder();
 
       // get the image & save the raw version
       QString rawImageFileName = outputDir.path() + "/defoimage_raw.jpg";
@@ -506,7 +464,7 @@ void DefoMainWindow::handleAction( DefoSchedule::scheduleItem item ) {
 
       // display info
       imageinfoTextedit_->clear();
-      datime = QDateTime::currentDateTime(); // resuse!
+      QDateTime datime = QDateTime::currentDateTime(); // resuse!
       imageinfoTextedit_->appendPlainText( QString( "Raw image size: %1 x %2 pixel" ).arg(qImage.width()).arg(qImage.height()) );
       imageinfoTextedit_->appendPlainText( QString( "Fetched: %1" ).arg( datime.toString( QString( "dd.MM.yy hh:mm:ss" ) ) ) );
       imageinfoTextedit_->appendPlainText( QString( "Type: from disk [%1]" ).arg( item.second ) );
@@ -537,6 +495,12 @@ void DefoMainWindow::handleAction( DefoSchedule::scheduleItem item ) {
 	areaDeleteButton_->setEnabled( true );
       }
 
+      // by default, enable area display & points, disable indices
+      displayAreasButton_->setChecked( true );
+      displayRecoitemButton_->setChecked( true );
+      displayIndicesButton_->setChecked( false );
+      displayCoordsButton_->setChecked( true );
+      
     }
     break;
 
@@ -982,7 +946,7 @@ void DefoMainWindow::handleCameraAction( DefoCamHandler::Action action ) {
 
       // image info;
       // reading cam settings from the comboboxes,
-      // should find a way of reading this directly from the camhandler..
+      // should find a way of reading/translating this directly from the camhandler..
       QDateTime datime = QDateTime::currentDateTime();
       imageinfoTextedit_->clear();
       imageinfoTextedit_->appendPlainText( QString( "Raw image size: %1 x %2 pixel" ).arg(img.getImage().width()).arg(img.getImage().height()) );
@@ -994,7 +958,6 @@ void DefoMainWindow::handleCameraAction( DefoCamHandler::Action action ) {
 	  .arg( isoComboBox_->currentText() ) );
 
       // few settings
-      
       if( areas_.empty() ) {
 	areaNewButton_->setEnabled( true ); 
 	areaDeleteButton_->setEnabled( false );
@@ -1215,6 +1178,31 @@ void DefoMainWindow::readCameraParametersFromCfgFile( void ) {
   else {
     isoComboBox_->setCurrentIndex( index );
     camHandler_.setIso( static_cast<EOS550D::Iso>( index ) );
+  }
+
+}
+
+
+
+///
+/// check if output folder with timestamp exists,
+/// otherwise create
+///
+QDir const DefoMainWindow::checkAndCreateOutputFolder( void ) {
+
+  QDateTime datime = QDateTime::currentDateTime();
+  QDir currentDir( currentFolderName_ );
+  QString subdirName = datime.toString( QString( "ddMMyy-hhmmss" ) );
+  QDir subdir = QDir( currentFolderName_ + "/" + subdirName );
+  
+  if( subdir.exists() ) return subdir;
+
+  else if( !currentDir.mkdir( subdirName ) ) {
+    QMessageBox::critical( this, tr("[DefoMainWindow::checkAndCreateOutputFolder]"),
+			   QString("[FILE_SET]: cannot create output dir: \'%1\'").arg(subdirName),
+			   QMessageBox::Ok );
+    std::cerr << " [DefoMainWindow::checkAndCreateOutputFolder] ** ERROR: cannot create output dir: " 
+	      << subdirName.toStdString() << std::endl;
   }
 
 }
