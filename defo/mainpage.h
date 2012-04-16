@@ -521,7 +521,7 @@ Possible actions are:
 <DT>SET</DT>
 <DD>Loads an image from the camera and then pauses the schedule (enabling manual image refresh), thus allowing for
 modifications of the setup, parameters, lighting, area definitions, etc. Manual refresh of the image is also possible.
-The schedule can be resumed using the PAUSE/RES button. <b>Value: none</b> <SPAN style="color:#ff0000"><B>Not yet implemented!</B></span></DD>
+The schedule can be resumed using the PAUSE/RES button. <b>Value: none</b></DD>
 
 <DT>REF</DT><DD>Capture an image from the camera, reconstruct the points and store the result
 as the reference for future images, until a new reference image is taken. <b>Value: none</b><SPAN style="color:#ff0000"> <B>Not yet implemented!</B></span> </DD>

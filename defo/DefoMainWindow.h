@@ -78,8 +78,13 @@ class DefoMainWindow : public QWidget {
   void setupSignalsAndSlots( void );
 
   // use the same enums as EOS550D class
-  //  #include "../devices/Canon/eosParameters.h" // DOESNT WORK, moc doesnt expand includes any more!!!
+  //  #include "../devices/Canon/eosParameters.h"
+
+  // !!!!!!!!!
+  // ABOVE INCLUDE DOESNT WORK, since moc doesnt expand includes in this version!!!
   // so we have to include them in plain text... shit
+  // !!!!!!!!!
+
   // all possible speeds, correct order, so we can call them by index;
   // last entry must be SINVALID!
   enum ShutterSpeed { 

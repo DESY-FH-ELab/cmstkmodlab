@@ -161,18 +161,6 @@ void DefoMainWindow::handleAction( DefoSchedule::scheduleItem item ) {
       displayIndicesButton_->setChecked( false );
       displayCoordsButton_->setChecked( true );
 
-
-      QFileInfo fileInfo( item.second );
-      if( !fileInfo.exists() ) {
-	QMessageBox::critical( this, tr("[DefoMainWindow::handleAction]"),
-			       QString("[FILE_SET]: file \'%1\' not found.").arg(item.second),
-			       QMessageBox::Ok );
-	std::cerr << " [DefoMainWindow::handleAction] ** ERROR: [FILE_SET] cannot open file: " << item.second.toStdString() << std::endl;
-	imageinfoTextedit_->appendPlainText( QString( "ERROR: [FILE_SET] cannot open file: \'%1\'" ).arg( item.second ) );
-	scheduleTableview_->setStyleSheet(QString::fromUtf8("background-color: rgb(255, 255, 255);\n selection-background-color: rgb( 255,0,0 ); "));
-	break;
-      }
-
       // create output folder
       QDateTime datime = QDateTime::currentDateTime();
       QDir currentDir( currentFolderName_ );
@@ -189,31 +177,19 @@ void DefoMainWindow::handleAction( DefoSchedule::scheduleItem item ) {
 
       // get the image
       loadImageFromCamera();
-      //      DefoRawImage setImage( item.second.toStdString().c_str() );
-      //      QString rawImageFileName = outputDir.path() + "/setimage_raw.jpg";
-      //      setImage.getImage().save( rawImageFileName, 0, 100 );
 
-//       // display info
-//       imageinfoTextedit_->clear();
-//       datime = QDateTime::currentDateTime(); // resuse!!
-//       imageinfoTextedit_->appendPlainText( QString( "Raw image size: %1 x %2 pixel" ).arg(setImage.getImage().width()).arg(setImage.getImage().height()) );
-//       imageinfoTextedit_->appendPlainText( QString( "Fetched: %1" ).arg( datime.toString( QString( "dd.MM.yy hh:mm:ss" ) ) ) );
-//       imageinfoTextedit_->appendPlainText( QString( "Type: from camera" ) );
+      // switch state
+      if( areas_.empty() ) {
+	areaNewButton_->setEnabled( true ); 
+	areaDeleteButton_->setEnabled( false );
+      } else {
+	areaNewButton_->setEnabled( false ); // for the moment, restricted to 1 rea // @@@@
+	areaDeleteButton_->setEnabled( true );
+      }
 
-//       // tell the label to rotate the image and display
-//       rawimageLabel_->setRotation( true );
-//       rawimageLabel_->displayImageToSize( setImage.getImage() );
-
-//       if( areas_.empty() ) {
-// 	areaNewButton_->setEnabled( true ); 
-// 	areaDeleteButton_->setEnabled( false );
-//       } else {
-// 	areaNewButton_->setEnabled( false ); // for the moment, restricted to 1 rea // @@@@
-// 	areaDeleteButton_->setEnabled( true );
-//       }
 
     }
-
+    break;
     
 
 
@@ -1009,7 +985,13 @@ void DefoMainWindow::handleCameraAction( DefoCamHandler::Action action ) {
       imageinfoTextedit_->clear();
       imageinfoTextedit_->appendPlainText( QString( "Raw image size: %1 x %2 pixel" ).arg(img.getImage().width()).arg(img.getImage().height()) );
       imageinfoTextedit_->appendPlainText( QString( "Fetched: %1" ).arg( datime.toString( QString( "dd.MM.yy hh:mm:ss" ) ) ) );
-      imageinfoTextedit_->appendPlainText( QString( "Type: from camera" ) );
+      imageinfoTextedit_->appendPlainText( //&
+        QString( "Type: from camera [F%1 %2s I%3]" ) //&
+	  .arg(camHandler_.getConfig().shutterSpeed_)
+   	  .arg(static_cast<EOS550D::Aperture>(camHandler_.getConfig().aperture_) )
+	  .arg(static_cast<EOS550D::Aperture>(camHandler_.getConfig().iso_)) );
+      std::cout << "KKK: " << camHandler_.getConfig().shutterSpeed_ << " " << camHandler_.getConfig().aperture_ << " "
+		<< camHandler_.getConfig().iso_ << std::endl; /////////////////////////////////
 
       // few settings
       
