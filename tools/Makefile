@@ -1,6 +1,7 @@
 subdirs	      = LabControl2Root \
 		LabControl2Report \
-		quickplot
+		quickplot \
+		ReadGMH3750
 
 all:
 	@for dir in $(subdirs); do (cd $$dir; make); done
