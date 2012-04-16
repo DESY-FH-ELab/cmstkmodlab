@@ -980,18 +980,18 @@ void DefoMainWindow::handleCameraAction( DefoCamHandler::Action action ) {
       this->setCursor( Qt::ArrowCursor );
       areaNewButton_->setEnabled( true );
 
-      // image info
+      // image info;
+      // reading cam settings from the comboboxes,
+      // should find a way of reading this directly from the camhandler..
       QDateTime datime = QDateTime::currentDateTime();
       imageinfoTextedit_->clear();
       imageinfoTextedit_->appendPlainText( QString( "Raw image size: %1 x %2 pixel" ).arg(img.getImage().width()).arg(img.getImage().height()) );
       imageinfoTextedit_->appendPlainText( QString( "Fetched: %1" ).arg( datime.toString( QString( "dd.MM.yy hh:mm:ss" ) ) ) );
       imageinfoTextedit_->appendPlainText( //&
-        QString( "Type: from camera [F%1 %2s I%3]" ) //&
-	  .arg(camHandler_.getConfig().shutterSpeed_)
-   	  .arg(static_cast<EOS550D::Aperture>(camHandler_.getConfig().aperture_) )
-	  .arg(static_cast<EOS550D::Aperture>(camHandler_.getConfig().iso_)) );
-      std::cout << "KKK: " << camHandler_.getConfig().shutterSpeed_ << " " << camHandler_.getConfig().aperture_ << " "
-		<< camHandler_.getConfig().iso_ << std::endl; /////////////////////////////////
+        QString( "Type: from camera [%1 %2 ISO%3]" ) //&
+	  .arg( exptimeComboBox_->currentText() )
+   	  .arg( apertureComboBox_->currentText() )
+	  .arg( isoComboBox_->currentText() ) );
 
       // few settings
       
