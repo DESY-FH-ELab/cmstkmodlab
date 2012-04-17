@@ -19,6 +19,27 @@ DefoRecoImage::DefoRecoImage() {
 }
 
 
+
+///
+/// image reconstructor class:
+/// identify dots, return reconstructed center points
+///
+DefoRecoImage::DefoRecoImage( const char* cfgFile ) {
+
+  // file checking is left to the cfg reader
+  DefoConfigReader cfgReader( cfgFile );
+
+  step1Threshold_ = cfgReader.getValue<int>( "STEP1_THRESHOLD" );
+  step2Threshold_ = cfgReader.getValue<int>( "STEP2_THRESHOLD" );
+  step3Threshold_ = cfgReader.getValue<int>( "STEP3_THRESHOLD" );
+  halfSquareWidth_ = cfgReader.getValue<int>( "HALF_SQUARE_WIDTH" );
+  blueishnessThreshold_ = cfgReader.getValue<double>( "BLUEISHNESS_THRESHOLD" );
+  debugLevel_ = cfgReader.getValue<unsigned int>( "DEBUG_LEVEL" );
+
+}
+
+
+
 ///
 /// point finding & reconstruction in a raw image;
 /// requires:
