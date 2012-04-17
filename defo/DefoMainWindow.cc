@@ -1197,7 +1197,7 @@ QDir const DefoMainWindow::checkAndCreateOutputFolder( void ) {
   
   if( subdir.exists() ) return subdir;
 
-  else if( !currentDir.mkdir( subdirName ) ) {
+  else if( !currentDir.mkpath( subdirName ) ) {
     QMessageBox::critical( this, tr("[DefoMainWindow::checkAndCreateOutputFolder]"),
 			   QString("[FILE_SET]: cannot create output dir: \'%1\'").arg(subdirName),
 			   QMessageBox::Ok );
