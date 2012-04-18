@@ -21,6 +21,7 @@ class DefoRecoImage {
   DefoRecoImage();
   DefoRecoImage( const char* );
   std::pair<DefoPointCollection,DefoRawImage> reconstruct( DefoRawImage&, DefoArea& );
+  std::vector<std::pair<DefoPoint,QColor> > findPoints( DefoRawImage&, DefoArea& );
   void setSeedingThresholds( int a, int b, int c ) { step1Threshold_ = a; step2Threshold_ = b; step3Threshold_ = c; }
   void setHalfSquareWidth( unsigned int h ) { halfSquareWidth_ = h; }
   void setBlueishnessThreshold( double b ) { blueishnessThreshold_ = b; }

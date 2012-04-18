@@ -178,6 +178,165 @@ std::pair<DefoPointCollection,DefoRawImage> DefoRecoImage::reconstruct( DefoRawI
 
 
 ///
+/// point finding & reconstruction in a raw image.
+/// This function basically has the same functionality as
+/// DefoRecoImage::reconstruct but returns the collection of 
+/// the point positions and the corresponding color values
+///
+/// requires:
+///  1. the image (DefoRawImage)
+///  2. a DefoArea, i.e. a selection frame in pixels inside the image;
+///     will only search for points within this area
+/// returns: 
+///  a vector of pairs consisting of:
+///   1. DefoPoint, one for each dot reconstructed in theImage
+///   2. the corresponding color as a QColor object
+///
+std::vector<std::pair<DefoPoint,QColor> > DefoRecoImage::findPoints( DefoRawImage& image, DefoArea& area) {
+
+  std::vector<std::pair<DefoPoint,QColor> > theOutput;
+
+  std::pair<double,double> imageWidth( image.getImage().width(), image.getImage().height() );
+
+  if( debugLevel_ >= 2 ) std::cout << " [DefoRecoImage::reconstruct] =2= Image has: "
+				   << imageWidth.first << " x " << imageWidth.second << " pixels" << std::endl;
+  
+  // clear the areas
+  forbiddenAreas_.makeEmpty();
+
+
+  for( int xIt = area.getRectangle().x(); xIt < area.getRectangle().x() + area.getRectangle().width(); ++xIt ) {
+    for( int yIt = area.getRectangle().y(); yIt < area.getRectangle().y() + area.getRectangle().height(); ++yIt ) {
+
+      // do not consider areas around points already picked up;
+      // at this stage we need to check in order to avoid too many L1 seeds
+      if( forbiddenAreas_.isInside( DefoPoint( xIt, yIt ) ) ) continue;
+      
+      // check if this pixel has a grayscale adc value above step1 threshold
+      if( qGray( image.getImage().pixel( xIt, yIt ) ) > step1Threshold_ ) {
+      
+	// have an initial seed, check average amplitude
+	// of some more pixels ahead
+	double theProbe = 0.;
+	theProbe += qGray( image.getImage().pixel( xIt + 2, yIt + 2 ) );
+	theProbe += qGray( image.getImage().pixel( xIt + 2, yIt + 3 ) );
+	theProbe += qGray( image.getImage().pixel( xIt + 3, yIt + 2 ) );
+	theProbe += qGray( image.getImage().pixel( xIt + 3 ,yIt + 3 ) );
+ 	theProbe /= 4.;
+
+	// check if the summed value is above step2 threshold
+	if( theProbe < step2Threshold_ ) continue;
+
+	// have a "cornfirmed" seed here..
+	// now reconstruct its position;
+	// do this recursively 3 times for improving the coordinates
+
+	// iteration 1
+	DefoPoint intermediatePoint = averageSquare( image.getImage(), DefoPoint( xIt, yIt ) );
+
+	// check if this point is still in range, otherwise drop it
+	if( intermediatePoint.getX() < halfSquareWidth_ + 1 ||
+	    intermediatePoint.getY() < halfSquareWidth_ + 1 ||
+	    intermediatePoint.getX() > imageWidth.first  - halfSquareWidth_ - 1 ||
+	    intermediatePoint.getY() > imageWidth.second - halfSquareWidth_ - 1    ) {
+	  
+	  if( debugLevel_ >= 3 ) std::cout << " [DefoRecoImage::findPoints] =3= (Pos1) Point: x: "
+					   << xIt << " y: " << yIt << " jumped to: x: "
+					   << intermediatePoint.getX() << " y: " << intermediatePoint.getY()
+					   << " . Dropping it." << std::endl;
+	  continue;
+	}
+
+
+
+	// determine point color
+
+	double red = 0.;
+	double green = 0.;
+	double blue = 0.;
+	unsigned int nPixel = 0;
+	
+	// create a square of pixels round the seed
+	DefoSquare theSquare( DefoPoint( xIt, yIt ), halfSquareWidth_ );
+	
+	// loop all pixels in the square
+	for( DefoSquare::iterator it = theSquare.begin(); it <= theSquare.end(); ++it ) {
+	  
+	  // retrieve grayscale value of that pixel
+	  const int grayscaleValue = qGray( image.getImage().pixel( it.getPoint().getPixX(), it.getPoint().getPixY() ) );
+	  
+	  // determine "blueishness" of this pixel
+	  if( grayscaleValue ) {
+	    
+	    red   += qRed( image.getImage().pixel( it.getPoint().getPixX(), it.getPoint().getPixY() ) );
+	    green += qGreen( image.getImage().pixel( it.getPoint().getPixX(), it.getPoint().getPixY() ) );
+	    blue  += qBlue( image.getImage().pixel( it.getPoint().getPixX(), it.getPoint().getPixY() ) );
+	    nPixel++;
+
+	  }
+	}
+
+
+	// iteration 2
+	intermediatePoint = averageSquare( image.getImage(), intermediatePoint );
+
+	// check if this point is still in range, otherwise drop it
+	if( intermediatePoint.getX() < halfSquareWidth_ + 1 ||
+	    intermediatePoint.getY() < halfSquareWidth_ + 1 ||
+	    intermediatePoint.getX() > imageWidth.first  - halfSquareWidth_ - 1 ||
+	    intermediatePoint.getY() > imageWidth.second - halfSquareWidth_ - 1    ) {
+	  
+	  if( debugLevel_ >= 3 ) std::cout << " [DefoRecoImage::findPoints] =3= (Pos2) Point: x: "
+					   << xIt << " y: " << yIt << " jumped to: x: "
+					   << intermediatePoint.getX() << " y: " << intermediatePoint.getY()
+					   << " . Dropping it." << std::endl;
+	  continue;
+	}
+
+	// iteration 3;
+        intermediatePoint = averageSquare( image.getImage(), intermediatePoint );
+
+
+	// check if this point is still in range, otherwise drop it
+	if( intermediatePoint.getX() < halfSquareWidth_ + 1 ||
+	    intermediatePoint.getY() < halfSquareWidth_ + 1 ||
+	    intermediatePoint.getX() > imageWidth.first  - halfSquareWidth_ - 1 ||
+	    intermediatePoint.getY() > imageWidth.second - halfSquareWidth_ - 1    ) {
+	  
+	  if( debugLevel_ >= 3 ) std::cout << " [DefoRecoImage::findPoints] =3= (Pos3) Point: x: "
+					   << xIt << " y: " << yIt << " jumped to: x: "
+					   << intermediatePoint.getX() << " y: " << intermediatePoint.getY()
+					   << " . Dropping it." << std::endl;
+	  continue;
+	}
+
+	// check again since the point can be reconstructed at a distance from the seed
+	if( forbiddenAreas_.isInside( intermediatePoint ) ) continue;
+
+	QColor color( int( red / nPixel ), int( green / nPixel ), int( blue / nPixel ) );
+	theOutput.push_back( std::make_pair<DefoPoint,QColor>( intermediatePoint, color ) );
+
+	if( debugLevel_ >= 3 ) std::cout << " [DefoRecoImage::findPoints] =3= Reconstructed point at: x: "
+					 << intermediatePoint.getX() << " y: " << intermediatePoint.getY()
+					 << " red: " << color.red() / nPixel 
+					 << " green: " << color.green() / nPixel 
+					 << " blue: " << color.blue() / nPixel << std::endl;
+
+	// save square around this point as already tagged
+	forbiddenAreas_.push_back( DefoSquare( intermediatePoint, halfSquareWidth_ ) );
+	
+      }
+
+    }
+  }
+
+  return theOutput;
+
+}
+
+
+
+///
 /// around a given seed point (theSeed), create a square (width=halfSquareWidth),
 /// find center-of-gravity and return this as the reconstructed point position;
 /// if 3rd parameter is nonzero, draw rectangle & cross in that image
