@@ -152,6 +152,11 @@ void DefoMainWindow::handleAction( DefoSchedule::scheduleItem item ) {
     {
       if( debugLevel_ >= 2 ) std::cout << " [DefoMainWindow::handleAction] =2= received SET" << std::endl;
       
+      if( !isCameraEnabled_ ) {
+	std::cerr << " [DefoMainWindow::handleAction] ** ERROR: [SET] camera is disabled. Exit." << std::endl;
+	return;
+      }
+
       // disable polling, wait for PAUSE/RES button pressed
       pausePolling();
       
@@ -184,9 +189,67 @@ void DefoMainWindow::handleAction( DefoSchedule::scheduleItem item ) {
 
   case DefoSchedule::REF:
     {
+
       if( debugLevel_ >= 2 ) std::cout << " [DefoMainWindow::handleAction] =2= received REF" << std::endl;
 
+      if( !isCameraEnabled_ ) {
+	std::cerr << " [DefoMainWindow::handleAction] ** ERROR: [REF] camera is disabled. Skip." << std::endl;
+	break;
+      }
+
+      // disable any area modification action now
+      areaNewButton_->setEnabled( false );
+      areaDeleteButton_->setEnabled( false );
+
+      loadImageFromCamera();
+      DefoRawImage refImage( rawimageLabel_->getOriginalImage() );
+
+      QDir outputDir = checkAndCreateOutputFolder();
+
+      // get the image & save it
+      QString rawImageFileName = outputDir.path() + "/refimage_raw.jpg";
+      refImage.getImage().save( rawImageFileName, 0, 100 );
+
+
+      // point reconstruction
+
+      // check if we have an area defined;
+      // otherwise define area as the whole image
+      DefoArea area;
+      if( areas_.empty() ) {
+	if( debugLevel_ >= 3 ) std::cout << " [DefoMainWindow::handleAction] =3= [REF] creating pseudo area over whole image." << std::endl;
+	QRect rect( 0, 0, refImage.getImage().width(), refImage.getImage().height() );
+	area = DefoArea( rect );
+      }
+      else area = areas_.at( 0 );
+      referenceImageOutput_ = defoRecoImage_.reconstruct( refImage, area );
+      emit( imagelabelRefreshPointSquares( defoRecoImage_.getForbiddenAreas() ) );
+
+      // do the indexing
+      if( debugLevel_ >= 2 ) std::cout << " [DefoMainWindow::handleAction] =2= [REF] Indexing ref points" << std::endl;
+      std::pair<unsigned int, unsigned int> refPointIndexRange = defoRecoSurface_.indexPoints( referenceImageOutput_.first );
+      Q_UNUSED( refPointIndexRange ); // for the moment
+
+      // get the indexedPoints & pass them to the display
+      std::vector<DefoPoint> const& indexedPoints = defoRecoSurface_.getIndexedPoints();
+      emit( imagelabelRefreshIndices( indexedPoints ) );
+
+      // write to text file, should later be serialized for easier reading
+      QString pointFilePath = outputDir.path() + "/points.txt";
+      writePointsToFile( indexedPoints, pointFilePath );
+
+      // display info:
+      // displaying is done by handleCameraAction()
+
+      // we have a reference now, enable future defo
       isRefImage_ = true; refCheckBox_->setChecked( true );
+
+      // by default, enable area display & points, disable indices
+      displayAreasButton_->setChecked( true );
+      displayRecoitemButton_->setChecked( true );
+      displayIndicesButton_->setChecked( false );
+      displayCoordsButton_->setChecked( true );
+
     }
     break;
 
@@ -196,6 +259,94 @@ void DefoMainWindow::handleAction( DefoSchedule::scheduleItem item ) {
   case DefoSchedule::DEFO:
     {
       if( debugLevel_ >= 2 ) std::cout << " [DefoMainWindow::handleAction] =2= received DEFO" << std::endl;
+      
+
+      if( !isCameraEnabled_ ) {
+	std::cerr << " [DefoMainWindow::handleAction] ** ERROR: [DEFO] camera is disabled. Skip." << std::endl;
+	break;
+      }
+
+      if( !isRefImage_ ) { // check if we have a reference for the reconstruction
+	QMessageBox::critical( this, tr("[DefoMainWindow::handleAction]"),
+			       QString("[FILE_DEFO]: no reference image taken."),//.arg(item.second),
+			       QMessageBox::Ok );
+	std::cerr << " [DefoMainWindow::handleAction] ** ERROR: [FILE_DEFO]: no reference image taken." << item.second.toStdString() << std::endl;
+	scheduleTableview_->setStyleSheet(QString::fromUtf8("background-color: rgb(255, 255, 255);\n selection-background-color: rgb( 255,0,0 ); "));
+	stopPolling();
+	isContinuePolling = false; // stop the schedule
+	break;
+      }
+
+      // get image: first to display, then grab it for reco
+      loadImageFromCamera();
+      DefoRawImage defoImage( rawimageLabel_->getOriginalImage() );
+
+      // output folder
+      QDir outputDir = checkAndCreateOutputFolder();
+
+      // get the image & save the raw version
+      QString rawImageFileName = outputDir.path() + "/defoimage_raw.jpg";
+      defoImage.getImage().save( rawImageFileName, 0, 100 );
+      
+      // point reconstruction
+
+      // check if we have an area defined;
+      // otherwise define the whole image
+      DefoArea area;
+      if( areas_.empty() ) {
+	if( debugLevel_ >= 3 ) std::cout << " [DefoMainWindow::handleAction] =3= [DEFO] creating pseudo area." << std::endl;
+	QRect rect( 0, 0, defoImage.getImage().width(), defoImage.getImage().height() );
+	area = DefoArea( rect );
+      }
+      else area = areas_.at( 0 );
+
+      defoImageOutput_ = defoRecoImage_.reconstruct( defoImage, area );
+      emit( imagelabelRefreshPointSquares( defoRecoImage_.getForbiddenAreas() ) );
+
+      // run the indexing
+      if( debugLevel_ >= 2 ) std::cout << " [DefoMainWindow::handleAction] =2= [DEFO] Indexing defo points" << std::endl;
+      std::pair<unsigned int, unsigned int> recoPointIndexRange = defoRecoSurface_.indexPoints( defoImageOutput_.first );
+      Q_UNUSED( recoPointIndexRange );
+
+      // get the indexedPoints & pass them to the display
+      std::vector<DefoPoint> const& indexedPoints = defoRecoSurface_.getIndexedPoints();
+      emit( imagelabelRefreshIndices( indexedPoints ) );
+
+      // write to text file, should later be serialized for easier reading
+      QString pointFilePath = outputDir.path() + "/points.txt";
+      writePointsToFile( indexedPoints, pointFilePath );
+
+      // display info
+      // displaying is done by handleCameraAction()
+
+      // surface reconstruction
+      const DefoSurface defoSurface = defoRecoSurface_.reconstruct( defoImageOutput_.first, referenceImageOutput_.first );
+
+      surfacePlot_->setDisplayTitle( measurementId_ );
+      surfacePlot_->setData( defoSurface );
+      surfacePlot_->draw();
+
+      { // serialize the output
+	QString surfaceFileName = outputDir.path() + "/surface.defosurface";
+	std::ofstream ofs( surfaceFileName.toStdString().c_str() );
+	boost::archive::binary_oarchive oa( ofs );
+	oa << defoSurface;
+      }
+
+      if( areas_.empty() ) {
+	areaNewButton_->setEnabled( true ); 
+	areaDeleteButton_->setEnabled( false );
+      } else {
+	areaNewButton_->setEnabled( false ); // for the moment, restricted to 1 rea // @@@@
+	areaDeleteButton_->setEnabled( true );
+      }
+
+      // by default, enable area display & points, disable indices
+      displayAreasButton_->setChecked( true );
+      displayRecoitemButton_->setChecked( true );
+      displayIndicesButton_->setChecked( false );
+      displayCoordsButton_->setChecked( true );
+
     }
     break;
 
@@ -337,10 +488,9 @@ void DefoMainWindow::handleAction( DefoSchedule::scheduleItem item ) {
       std::vector<DefoPoint> const& indexedPoints = defoRecoSurface_.getIndexedPoints();
       emit( imagelabelRefreshIndices( indexedPoints ) );
 
-      // save the updated file
-      // DOESNT MAKE SENSE, it's now the same as _raw
-      //       QString recoImageFileName = outputDir.path() + "/refimage_reco.jpg";
-      //       qImage.save( recoImageFileName, 0, 100 );
+      // write to text file, should later be serialized for easier reading
+      QString pointFilePath = outputDir.path() + "/points.txt";
+      writePointsToFile( indexedPoints, pointFilePath );
 
       // display info
       imageinfoTextedit_->clear();
@@ -449,10 +599,6 @@ void DefoMainWindow::handleAction( DefoSchedule::scheduleItem item ) {
       QImage& qImage =  defoImageOutput_.second.getImage();
       emit( imagelabelRefreshPointSquares( defoRecoImage_.getForbiddenAreas() ) );
 
-      // save the updated file
-      QString recoImageFileName = outputDir.path() + "/defoimage_reco.jpg";
-      qImage.save( recoImageFileName, 0, 100 );
-
       // run the indexing
       if( debugLevel_ >= 2 ) std::cout << " [DefoMainWindow::handleAction] =2= [FILE_DEFO] Indexing defo points" << std::endl;
       std::pair<unsigned int, unsigned int> recoPointIndexRange = defoRecoSurface_.indexPoints( defoImageOutput_.first );
@@ -461,6 +607,10 @@ void DefoMainWindow::handleAction( DefoSchedule::scheduleItem item ) {
       // get the indexedPoints & pass them to the display
       std::vector<DefoPoint> const& indexedPoints = defoRecoSurface_.getIndexedPoints();
       emit( imagelabelRefreshIndices( indexedPoints ) );
+
+      // write to text file, should later be serialized for easier reading
+      QString pointFilePath = outputDir.path() + "/points.txt";
+      writePointsToFile( indexedPoints, pointFilePath );
 
       // display info
       imageinfoTextedit_->clear();
@@ -866,6 +1016,10 @@ void DefoMainWindow::togglePointSquareDisplay( bool isChecked ) {
 ///
 void DefoMainWindow::loadImageFromCamera( void ) {
 
+//   DefoRawImage image( "test/test3/ref_cr.jpg" ); /////////////////////////////////
+//   rawimageLabel_->setRotation( true ); /////////////////////////////////
+//   rawimageLabel_->displayImageToSize( image.getImage() ); /////////////////////////////////
+
   // temp display
   QImage tmpImage( "icons/loading.jpg" );
   rawimageLabel_->displayImageToSize( tmpImage );
@@ -917,7 +1071,8 @@ void DefoMainWindow::handleCameraAction( DefoCamHandler::Action action ) {
     
 
   case DefoCamHandler::GETIMAGE:
-    {
+    { //  loads image on display
+
       QFile file( QString( filepathPlaced_.c_str() ) );
       if( !file.exists() ) {
 	std::cerr << " [DefoMainWindow::displayImageFromCamera] ** ERROR: file \""
@@ -1293,6 +1448,29 @@ void DefoMainWindow::writeParameters( void ) {
 
     this->setCursor( Qt::BusyCursor );
 
+  }
+
+}
+
+
+
+///
+///
+///
+void DefoMainWindow::writePointsToFile( std::vector<DefoPoint> const& points, QString const& filepath ) const {
+
+  std::ofstream file( filepath.toStdString().c_str() );
+  if( file.bad() ) {
+    std::cerr << " [DefoMainWindow::writePointsToFile] ** ERROR: cannot open file: \"" << filepath.toStdString() << "\"." << std::endl;
+    return;
+  }
+
+  for( DefoPointCollection::const_iterator it = points.begin(); it < points.end(); ++it ) {
+    file << "POINT  x: " << std::setw( 8 ) << it->getX() 
+	 << " y: " << std::setw( 8 ) << it->getY()
+	 << " x-index: " << std::setw( 3 ) << it->getIndex().first
+	 << " y-index: " << std::setw( 3 ) << it->getIndex().second
+	 << std::setw( 8 ) << (it->isBlue()?" BLUE":" WHITE") << std::endl;
   }
 
 }

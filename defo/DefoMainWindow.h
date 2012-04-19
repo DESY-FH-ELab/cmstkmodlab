@@ -11,6 +11,7 @@
 #define DEFOYG7928_H
 
 #include <iostream>
+#include <iomanip>
 #include <string>
 #include <fstream>
 
@@ -151,7 +152,8 @@ class DefoMainWindow : public QWidget {
   void fillComboBoxes( void );
   void readCameraParametersFromCfgFile( void );
   QDir const checkAndCreateOutputFolder( void );
-  
+  void writePointsToFile( std::vector<DefoPoint> const&, QString const& ) const;
+
   unsigned int debugLevel_;
 
   DefoCamHandler camHandler_; // camera steering
