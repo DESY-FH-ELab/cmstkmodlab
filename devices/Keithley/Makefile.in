@@ -2,6 +2,8 @@ LIBDIR        = ../lib
 
 LIB           = TkModLabKeithley
 
+USEFAKEDEVICES=@usefakedevices@
+
 MODULES       = KMMComHandler \
                 VKeithley2700 \
                 Keithley2700Fake \
@@ -12,6 +14,10 @@ CXX           = g++
 CXXFLAGS      = -fPIC
 LD            = g++
 SOFLAGS       = -shared
+
+ifeq ($(USEFAKEDEVICES),1)
+CXXFLAGS     += -DUSE_FAKEIO
+endif
 
 ALLDEPEND = $(addsuffix .d,$(MODULES))
 

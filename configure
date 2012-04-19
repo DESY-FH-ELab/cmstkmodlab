@@ -1,0 +1,86 @@
+#!/bin/sh
+
+echo 
+echo "  CMSTkModLab configuration script."
+echo
+
+BASEPATH=$PWD
+ARCHITECTURE=`uname`
+KERNELMAJOR=`uname -r | cut -d . -f 1`
+KERNELMINOR=`uname -r | cut -d . -f 2`
+
+NODEFO=0
+NOTHERMAL=0
+USEFAKEDEVICES=0
+
+while test $# -gt 0; do 
+  case $1 in
+    --nodefo)
+      NODEFO=1
+      ;;
+    --nothermal)
+      NOTHERMAL=1
+      ;;
+    --fake)
+      USEFAKEDEVICES=1
+      ;;
+  *)
+    # Call standard parser
+    ;;
+  esac
+
+  shift
+done
+
+if test $ARCHITECTURE = "Darwin"; then
+    echo Darwin architecture: fake device support forced
+    USEFAKEDEVICES=1
+fi
+if test $ARCHITECTURE = "Linux" && test $KERNELMINOR -lt 6; then
+    echo Linux kernel minor version < 6: fake device support forced
+    USEFAKEDEVICES=1
+fi
+
+if test $USEFAKEDEVICES = 1; then
+    echo build with fake device support
+else
+    echo build with real device support
+fi
+if test $NODEFO = 1; then
+    echo build without DEFO support
+else
+    echo build with DEFO support
+fi
+if test $NOTHERMAL = 1; then
+    echo build without THERMAL support
+else
+    echo build with THERMAL support
+fi
+
+SED_VARIABLES="BASEPATH ARCHITECTURE KERNELMAJOR KERNELMINOR NODEFO NOTHERMAL USEFAKEDEVICES"
+
+echo "#!/bin/sh
+dest=\`basename \$1 .in\`
+sed \\" > config.status
+
+for key in $SED_VARIABLES; do
+  eval key_value='"$'${key}'"'
+  key_lower=`echo $key | awk '{print tolower($1)}'`
+  echo "   -e 's?@$key_lower@?$key_value?g' \\" >> config.status
+done
+echo "   < \$1 > \$dest" >> config.status
+chmod +x config.status
+
+echo ""
+echo -n 'running config.status ..... '
+served_dirs=
+ROOTDIR=`pwd`
+for a in `find . -name '*.in' -print`; do
+  if test `basename $a` = "Makefile.in"; then
+    served_dirs="$served_dirs `dirname $a` "
+  fi
+  cd `dirname $a`
+  $ROOTDIR/config.status `basename $a`
+  cd $ROOTDIR
+done
+echo done.

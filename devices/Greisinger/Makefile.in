@@ -1,15 +1,23 @@
-
 LIBDIR        = ../lib
 
-LIB           = TkModLabCanon
+LIB           = TkModLabGreisinger
 
-MODULES       = EOS550DSyscall
+USEFAKEDEVICES=@usefakedevices@
+
+MODULES       = GMH3750ComHandler \
+                VGMH3750 \
+                GMH3750Fake \
+                GMH3750
 
 CC            = gcc
 CXX           = g++
 CXXFLAGS      = -fPIC
 LD            = g++
 SOFLAGS       = -shared
+
+ifeq ($(USEFAKEDEVICES),1)
+CXXFLAGS     += -DUSE_FAKEIO
+endif
 
 ALLDEPEND = $(addsuffix .d,$(MODULES))
 
@@ -26,14 +34,14 @@ $(LIBDIR)/lib$(LIB).so: $(addsuffix .o,$(MODULES))
 	@echo "Linking shared library $@"
 	$(LD) $(SOFLAGS) $^ -o $@
 
-%.d: %.cc
+%.d: %.cpp
 	@echo Making dependency for file $< ...
 	@set -e;\
 	$(CXX) -M $(CPPFLAGS) $(CXXFLAGS)  $< |\
 	sed 's!$*\.o!& $@!' >$@;\
 	[ -s $@ ] || rm -f $@
 
-%.o: %.cc
+%.o: %.cpp
 	@echo "Compiling $<"
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $< -o $@
 
