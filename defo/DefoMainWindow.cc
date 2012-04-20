@@ -3,11 +3,8 @@
 
 
 
-// contains setupUi and retranslateUi
+// contains DefoMainWindow::setupUi and ::retranslateUi
 #include "defoMainWindowObjSettings.inc.cc"
-
-
-
 
 ///
 ///
@@ -667,8 +664,7 @@ void DefoMainWindow::handleAction( DefoSchedule::scheduleItem item ) {
     {
       if( debugLevel_ >= 2 ) std::cout << " [DefoMainWindow::handleAction] =2= received SLEEP " << item.second.toStdString() << std::endl;
       bool isOk = false;
-      unsigned int time = 0;
-      time = item.second.toUInt( &isOk, 10 );
+      unsigned int time = item.second.toUInt( &isOk, 10 );
       if( !isOk ) {
 	std::cerr << " [DefoMainWindow::handleAction] ** ERROR: [SLEEP] bad conversion to uint: " << item.second.toStdString() << std::endl;
 	stopPolling();
@@ -676,7 +672,12 @@ void DefoMainWindow::handleAction( DefoSchedule::scheduleItem item ) {
 	break;
       }
       isContinuePolling = false; // further polling done by timer
-      if( isPolling_ ) QTimer::singleShot( time*1000, schedule_, SLOT(pollAction()) );
+
+      if( isPolling_ ) {
+	sleepTimer_.setInterval( time*1000 );
+	connect( &sleepTimer_, SIGNAL(timeout()), schedule_, SLOT(pollAction()) );
+	sleepTimer_.run();
+      }
     }
     break;
 
@@ -747,6 +748,8 @@ void DefoMainWindow::startPolling( void ) {
   measurementidEditButton_->setEnabled( false );
   measurementidDefaultButton_->setEnabled( false );
   basefolderEditButton_->setEnabled( false );
+  scheduleLoadButton_->setEnabled( false );
+  scheduleClearButton_->setEnabled( false );
 
   // no manual operation when schedule is active
   manualREFButton_->setEnabled( false );
@@ -781,6 +784,8 @@ void DefoMainWindow::stopPolling( void ) {
   measurementidEditButton_->setEnabled( true );
   measurementidDefaultButton_->setEnabled( true );
   basefolderEditButton_->setEnabled( true );
+  scheduleLoadButton_->setEnabled( true );
+  scheduleClearButton_->setEnabled( true );
 
   // also enable manual operation
   manualREFButton_->setEnabled( true );
@@ -791,7 +796,11 @@ void DefoMainWindow::stopPolling( void ) {
   scheduleTableview_->setStyleSheet(QString::fromUtf8("background-color: rgb(255, 255, 255);\n selection-background-color: rgb( 200,200,200 ); "));
 
   isPolling_ = false;
-
+  
+  // take care that the timer stops, otherwise it will trigger polling again
+  if( sleepTimer_.isActive() ) sleepTimer_.halt();
+  
+  
 }
 
 
@@ -805,12 +814,16 @@ void DefoMainWindow::pausePolling( void ) {
     if( debugLevel_ >= 2 ) std::cout << " [DefoMainWindow::pausePolling] =2= Pause polling." << std::endl;
     scheduleTableview_->setStyleSheet(QString::fromUtf8("background-color: rgb(255, 255, 255);\n selection-background-color: rgb( 200,200,0 ); "));
     isPolling_ = false;
+    if( sleepTimer_.isRunning() ) sleepTimer_.pause();
   }
   else {
     if( debugLevel_ >= 2 ) std::cout << " [DefoMainWindow::pausePolling] =2= Resume polling." << std::endl;
     scheduleTableview_->setStyleSheet(QString::fromUtf8("background-color: rgb(255, 255, 255);\n selection-background-color: rgb( 0,200,0 ); "));
     isPolling_ = true;
-    emit pollAction();
+    
+    // if schedule has been paused during a sleep, we resume sleeping
+    if( sleepTimer_.isRunning() )  sleepTimer_.resume();
+    else emit pollAction(); // otherwise goto next schedule item
   }
 
 }
@@ -1474,3 +1487,86 @@ void DefoMainWindow::writePointsToFile( std::vector<DefoPoint> const& points, QS
   }
 
 }
+
+
+
+///
+///
+///
+DefoSleepTimer::DefoSleepTimer() { 
+
+  connect( this, SIGNAL(timeout()), this, SLOT(reset()) );
+  isRunning_ = false; 
+
+  DefoConfigReader cfgReader( "defo.cfg" );
+  debugLevel_ = cfgReader.getValue<unsigned int>( "DEBUG_LEVEL" ); // for messaging only
+
+}
+
+
+
+///
+///
+///
+void DefoSleepTimer::run( void ) {
+
+  setSingleShot( true );
+  totalRemainingMSec_ = interval();
+  time_.start();
+  isRunning_ = true;
+  start();
+
+}
+
+
+
+///
+///
+///
+void DefoSleepTimer::halt( void ) {
+
+  isRunning_ = false;
+  stop();
+
+}
+
+
+
+///
+///
+///
+void DefoSleepTimer::pause( void ) {
+
+  totalRemainingMSec_ -= time_.elapsed();
+  stop();
+
+}
+
+
+
+///
+///
+///
+void DefoSleepTimer::resume( void ) {
+
+  setSingleShot( true );
+  setInterval( totalRemainingMSec_ );
+  if( debugLevel_ >= 3 ) std::cout << " [DefoSleepTimer::resume] =3= resume with remaining msec: " << totalRemainingMSec_ << std::endl;
+  time_.start();
+  isRunning_ = true;
+  start();
+
+}
+
+
+
+///
+///
+///
+void DefoSleepTimer::reset( void ) {
+
+  if( debugLevel_ >= 3 ) std::cout << " [DefoSleepTimer::reset] =3= sleep timer reset." << std::endl;
+  isRunning_ = false;
+
+}
+

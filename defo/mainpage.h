@@ -519,9 +519,9 @@ Possible actions are:
 
 <DL>
 <DT>SET</DT>
-<DD>Loads an image from the camera and then pauses the schedule (enabling manual image refresh), thus allowing for
+<DD>Loads an image from the camera and then pauses the schedule, thus allowing for
 modifications of the setup, parameters, lighting, area definitions, etc. Manual refresh of the image is also possible.
-The schedule can be resumed using the PAUSE/RES button. <b>Value: none</b></DD>
+Once everything is arranged properly, the schedule can be resumed using the PAUSE/RES button. <b>Value: none</b></DD>
 
 <DT>REF</DT><DD>Capture an image from the camera, reconstruct the points and store the result
 as the reference for future images, until a new reference image is taken. <b>Value: none</b> </DD>
@@ -530,23 +530,25 @@ as the reference for future images, until a new reference image is taken. <b>Val
 most recently taken reference image. <b>Value: none</b></DD>
 
 <DT>FILE_SET</DT><DD>Load an image from a file and then pause the schedule, enabling manual image refresh,
-thus allowing for modifications of the setup, parameters, lighting, area definitions, etc. The schedule can be resumed
-using the PAUSE/RES button. <b>Value: file path</b></DD>
+thus allowing for modifications of the setup, parameters, lighting, area definitions, etc. Once everything is arranged properly,
+the schedule can be resumed using the PAUSE/RES button. <b>Value: image file path</b></DD>
 
 <DT>FILE_REF</DT><DD>Load an image from file, reconstruct the points and store the result
-as the reference for future images, until a new reference image is taken. <b>Value: file path</b></DD>
+as the reference for future images, until a new reference image is taken. <b>Value: image file path</b></DD>
 
 <DT>FILE_DEFO</DT><DD>Load an image from file and reconstruct the surface relative to the
-most recently taken reference image. <b>Value: file path</b></DD>
+most recently taken reference image. <b>Value: image file path</b></DD>
 
 <DT>TEMP</DT><DD>Set the chiller bath target temperature. <b>Value: target temperature in deg C.</b> <SPAN style="color:#ff0000"><B>Not yet implemented!</B></span> </DD>
 
 <DT>SLEEP</DT><DD>Sleep for the specified amount of seconds, e.g. to allow the chiller to reach a
-target temperature. <b>Value: time in seconds.</b></DD>
+target temperature. When a schedule is paused during a <tt>SLEEP</tt> action, the sleep 
+is also paused, i.e. after resuming the schedule the GUI will sit through the remaining number of seconds.
+<b>Value: time in seconds.</b></DD>
 
 <DT>GOTO</DT><DD>Jump to a schedule entry by line number (allowing program loops). <b>Value: schedule line number</b> <SPAN style="color:#ff0000"><B>Not yet implemented!</B></span> </DD>
 
-<DT>END</DT><DD>Stop a schedule. <b>Value: none</b></DD>
+<DT>END</DT><DD>Stop a schedule. Not explicitly required, but prevents error messages.<b>Value: none</b></DD>
 </DL>
 
 \subsubsection gui_online_output_subsubsec     6.2.7 Output files and folders

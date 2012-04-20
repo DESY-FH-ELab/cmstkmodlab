@@ -63,6 +63,38 @@
 QT_BEGIN_NAMESPACE
 
 
+
+///
+/// QTimer with pause/resume functionality
+///
+/// MUST USE run/halt INSTEAD OF start/stop!
+///
+class DefoSleepTimer : public QTimer {
+
+  Q_OBJECT
+
+ public:
+  DefoSleepTimer();
+
+ public slots:
+  void run( void );
+  void halt( void );
+  void pause( void );
+  void resume( void );
+  void reset( void );
+  bool isRunning( void ) { return isRunning_; }
+
+ private:
+  bool isRunning_;
+  QTime time_;
+  unsigned int totalRemainingMSec_;
+  unsigned int debugLevel_;
+
+};
+
+
+
+
 ///
 ///
 ///
@@ -161,6 +193,7 @@ class DefoMainWindow : public QWidget {
 
   DefoSchedule* schedule_; // the measurement schedule
   QTimer* pollingDelay_; // timer to allow for GUI update when polling
+  DefoSleepTimer sleepTimer_; // pauseable timer used for SLEEP schedule entries
 
   DefoRecoImage defoRecoImage_; // image reconstruction instance
   DefoRecoSurface defoRecoSurface_; // surface reconstruction instance

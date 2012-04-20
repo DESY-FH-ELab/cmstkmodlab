@@ -19,10 +19,13 @@
 #include "DefoConfigReader.h"
 
 
+
 #define _SCHEDULE_NROWS 20
 #define _SCHEDULE_NCOLUMNS 3
 
-
+///
+///
+///
 class DefoSchedule : public QObject {
 
   Q_OBJECT
