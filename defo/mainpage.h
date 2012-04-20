@@ -546,7 +546,7 @@ target temperature. When a schedule is paused during a <tt>SLEEP</tt> action, th
 is also paused, i.e. after resuming the schedule the GUI will sit through the remaining number of seconds.
 <b>Value: time in seconds.</b></DD>
 
-<DT>GOTO</DT><DD>Jump to a schedule entry by line number (allowing program loops). <b>Value: schedule line number</b> <SPAN style="color:#ff0000"><B>Not yet implemented!</B></span> </DD>
+<DT>GOTO</DT><DD>Jump to a schedule entry by line number (allowing program loops). <b>Value: schedule line number</b></DD>
 
 <DT>END</DT><DD>Stop a schedule. Not explicitly required, but prevents error messages.<b>Value: none</b></DD>
 </DL>
