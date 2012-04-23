@@ -169,6 +169,15 @@ class DefoMainWindow : public QWidget {
   void loadImageFromFile( void );
   void cameraEnabledButtonToggled( bool );
   void writeParameters( void );
+  
+  void panelButton1Clicked( void );
+  void panelButton2Clicked( void );
+  void panelButton3Clicked( void );
+  void panelButton4Clicked( void );
+  void panelButton5Clicked( void );
+  void allPanelsOn( void );
+  void allPanelsOff( void );
+
 
  signals:
   void pollAction( void );
@@ -179,17 +188,19 @@ class DefoMainWindow : public QWidget {
   void imagelabelRefreshPointSquares( std::vector<DefoSquare> );
   void imagelabelDisplayPointSquares( bool );
 
- private:
 
+ private:
   void fillComboBoxes( void );
   void readCameraParametersFromCfgFile( void );
   QDir const checkAndCreateOutputFolder( void );
   void writePointsToFile( std::vector<DefoPoint> const&, QString const& ) const;
+  void initLightPanelStates( std::string const& );
 
   unsigned int debugLevel_;
 
   DefoCamHandler camHandler_; // camera steering
   bool isCameraEnabled_; // flag for camera operation on/off
+  bool isConradEnabled_; // flag for relay card operation
 
   DefoSchedule* schedule_; // the measurement schedule
   QTimer* pollingDelay_; // timer to allow for GUI update when polling
@@ -215,6 +226,8 @@ class DefoMainWindow : public QWidget {
 
   std::vector<DefoArea> areas_;
 
+  std::vector<bool> lightPanelStates_;
+
   QWidget *centralwidget;
   QTabWidget *mainTabWidget_;
   QWidget *online_tab;
@@ -238,9 +251,8 @@ class DefoMainWindow : public QWidget {
   QGroupBox *manualGroupBox_;
   QPushButton *manualREFButton_;
   QPushButton *manualDEFOButton_;
-/*   QPushButton *manualFILEREFButton_; */
-/*   QPushButton *manualFILEDEFOButton_; */
   QPushButton *manualTEMPButton_;
+  QPushButton *manualCALIBButton_;
   QToolButton *rawimageZoomButton_;
   QToolButton *rawimageHistoButton_;
   QGroupBox *statusGroupBox_;
@@ -412,7 +424,7 @@ class DefoMainWindow : public QWidget {
   QDoubleSpinBox *surfaceRecoSpacingSpinbox_;
   QGroupBox *surfaceRecoSearchpathGroupBox_;
   QDoubleSpinBox *surfaceRecoSearchpathSpinbox_;
-  QGroupBox *groupBox_20;
+  //  QGroupBox *groupBox_20;
   QGroupBox *geometryGroupBox_;
   QSpinBox *geometryFSpinbox_;
   QSpinBox *geometryLgSpinbox_;
@@ -428,6 +440,24 @@ class DefoMainWindow : public QWidget {
   QDoubleSpinBox *geometryPitchSpinbox1_;
   QDoubleSpinBox *geometryPitchSpinbox2_;
   QStatusBar *statusbar;
+
+  QGroupBox *powerGroupBox_;
+  QGroupBox *lightPanelsGroupBox_;
+  QGroupBox *lightPanelsAllPanelsGroupBox_;
+  QPushButton *allPanelsOnButton_;
+  QPushButton *allPanelsOffButton_;
+  std::vector<QPushButton*> lightPanelsButtons_;
+  //   QPushButton *lightPanelsButton1_;
+  //   QPushButton *lightPanelsButton2_;
+  //   QPushButton *lightPanelsButton4_;
+  //   QPushButton *lightPanelsButton3_;
+  //   QPushButton *lightPanelsButton5_;
+  QGroupBox *ledsGroupBox_;
+  QPushButton *ledsPowerOnButton_;
+  QGroupBox *cameraPowerGroupBox_;
+  QPushButton *cameraPowerOnButton_;
+  QGroupBox *conradGroupBox_;
+  QCheckBox *conradEnabledCheckbox_;
 
   QGroupBox *cameraOptionsGroupBox_;
   QComboBox *apertureComboBox_;

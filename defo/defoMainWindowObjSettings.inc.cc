@@ -159,7 +159,7 @@ void DefoMainWindow::setupUi( void ) {
   refreshFileButton_->setFlat(false);
   manualGroupBox_ = new QGroupBox(rawimageGroupBox_);
   manualGroupBox_->setObjectName(QString::fromUtf8("manualGroupBox_"));
-  manualGroupBox_->setGeometry(QRect(560, 450, 101, 151));
+  manualGroupBox_->setGeometry(QRect(560, 450, 101, 181));
   manualGroupBox_->setFont(font);
   manualGroupBox_->setAlignment(Qt::AlignCenter);
   manualGroupBox_->setCheckable(false);
@@ -167,31 +167,25 @@ void DefoMainWindow::setupUi( void ) {
   manualREFButton_ = new QPushButton(manualGroupBox_);
   manualREFButton_->setObjectName(QString::fromUtf8("manualREFButton_"));
   manualREFButton_->setEnabled(true);
-  manualREFButton_->setGeometry(QRect(10, 30, 81, 31));
+  manualREFButton_->setGeometry(QRect(10, 20, 81, 31));
   manualREFButton_->setStyleSheet(QString::fromUtf8(""));
   manualREFButton_->setFlat(false);
   manualDEFOButton_ = new QPushButton(manualGroupBox_);
   manualDEFOButton_->setObjectName(QString::fromUtf8("manualDEFOButton_"));
   manualDEFOButton_->setEnabled(true);
-  manualDEFOButton_->setGeometry(QRect(10, 70, 81, 31));
+  manualDEFOButton_->setGeometry(QRect(10, 60, 81, 31));
   manualDEFOButton_->setStyleSheet(QString::fromUtf8(""));
   manualDEFOButton_->setFlat(false);
-//   manualFILEREFButton_ = new QPushButton(manualGroupBox_);
-//   manualFILEREFButton_->setObjectName(QString::fromUtf8("manualFILEREFButton_"));
-//   manualFILEREFButton_->setEnabled(true);
-//   manualFILEREFButton_->setGeometry(QRect(10, 110, 81, 31));
-//   manualFILEREFButton_->setStyleSheet(QString::fromUtf8(""));
-//   manualFILEREFButton_->setFlat(false);
-//   manualFILEDEFOButton_ = new QPushButton(manualGroupBox_);
-//   manualFILEDEFOButton_->setObjectName(QString::fromUtf8("manualFILEDEFOButton_"));
-//   manualFILEDEFOButton_->setEnabled(false);
-//   manualFILEDEFOButton_->setGeometry(QRect(10, 150, 81, 31));
-//   manualFILEDEFOButton_->setStyleSheet(QString::fromUtf8(""));
-//   manualFILEDEFOButton_->setFlat(false);
+  manualCALIBButton_ = new QPushButton(manualGroupBox_);
+  manualCALIBButton_->setObjectName(QString::fromUtf8("manualCALIBButton_"));
+  manualCALIBButton_->setEnabled(true);
+  manualCALIBButton_->setGeometry(QRect(10, 140, 81, 31));
+  manualCALIBButton_->setStyleSheet(QString::fromUtf8(""));
+  manualCALIBButton_->setFlat(false);
   manualTEMPButton_ = new QPushButton(manualGroupBox_);
   manualTEMPButton_->setObjectName(QString::fromUtf8("manualTEMPButton_"));
   manualTEMPButton_->setEnabled(false);
-  manualTEMPButton_->setGeometry(QRect(10, 110, 81, 31));
+  manualTEMPButton_->setGeometry(QRect(10, 100, 81, 31));
   manualTEMPButton_->setStyleSheet(QString::fromUtf8(""));
   manualTEMPButton_->setFlat(false);
   rawimageZoomButton_ = new QToolButton(rawimageGroupBox_);
@@ -212,7 +206,7 @@ void DefoMainWindow::setupUi( void ) {
 
   statusGroupBox_ = new QGroupBox(rawimageGroupBox_);
   statusGroupBox_->setObjectName(QString::fromUtf8("statusGroupBox_"));
-  statusGroupBox_->setGeometry(QRect(560, 610, 101, 51));
+  statusGroupBox_->setGeometry(QRect(560, 650, 101, 51));
   statusGroupBox_->setFont(font);
   statusGroupBox_->setAlignment(Qt::AlignCenter);
   statusGroupBox_->setCheckable(false);
@@ -1182,7 +1176,7 @@ void DefoMainWindow::setupUi( void ) {
 
   chillerparametersGroupBox_ = new QGroupBox(advanced_tab);
   chillerparametersGroupBox_->setObjectName(QString::fromUtf8("chillerparametersGroupBox_"));
-  chillerparametersGroupBox_->setGeometry(QRect(830, 360, 201, 241));
+  chillerparametersGroupBox_->setGeometry(QRect(620, 360, 201, 241));
   chillerparametersGroupBox_->setFont(font1);
   chillerparametersGroupBox_->setStyleSheet(QString::fromUtf8("color: rgb(0, 0, 127);"));
   chillerparametersGroupBox_->setAlignment(Qt::AlignHCenter);
@@ -1346,7 +1340,7 @@ void DefoMainWindow::setupUi( void ) {
 
   surfaceRecoGroupBox_ = new QGroupBox(advanced_tab);
   surfaceRecoGroupBox_->setObjectName(QString::fromUtf8("surfaceRecoGroupBox_"));
-  surfaceRecoGroupBox_->setGeometry(QRect(430, 360, 381, 241));
+  surfaceRecoGroupBox_->setGeometry(QRect(430, 360, 171, 241));
   surfaceRecoGroupBox_->setFont(font1);
   surfaceRecoGroupBox_->setStyleSheet(QString::fromUtf8("color: rgb(0, 0, 127);"));
   surfaceRecoGroupBox_->setAlignment(Qt::AlignCenter);
@@ -1372,12 +1366,12 @@ void DefoMainWindow::setupUi( void ) {
   surfaceRecoSearchpathSpinbox_->setFont(font8);
   surfaceRecoSearchpathSpinbox_->setStyleSheet(QString::fromUtf8("background-color: rgb(255, 255, 255);"));
   surfaceRecoSearchpathSpinbox_->setDecimals(0);
-  groupBox_20 = new QGroupBox(advanced_tab);
-  groupBox_20->setObjectName(QString::fromUtf8("groupBox_20"));
-  groupBox_20->setGeometry(QRect(640, 110, 391, 241));
-  groupBox_20->setFont(font1);
-  groupBox_20->setStyleSheet(QString::fromUtf8("color: rgb(0, 0, 127);"));
-  groupBox_20->setAlignment(Qt::AlignCenter);
+//   groupBox_20 = new QGroupBox(advanced_tab);
+//   groupBox_20->setObjectName(QString::fromUtf8("groupBox_20"));
+//   groupBox_20->setGeometry(QRect(640, 110, 391, 241));
+//   groupBox_20->setFont(font1);
+//   groupBox_20->setStyleSheet(QString::fromUtf8("color: rgb(0, 0, 127);"));
+//   groupBox_20->setAlignment(Qt::AlignCenter);
 
   geometryGroupBox_ = new QGroupBox(advanced_tab);
   geometryGroupBox_->setObjectName(QString::fromUtf8("geometryGroupBox_"));
@@ -1465,6 +1459,77 @@ void DefoMainWindow::setupUi( void ) {
   geometryPitchSpinbox2_->setGeometry(QRect(40, 70, 71, 26));
   geometryPitchSpinbox2_->setStyleSheet(QString::fromUtf8("background-color: rgb(255, 255, 255);"));
   geometryPitchSpinbox2_->setDecimals(3);
+
+  // power group
+  powerGroupBox_ = new QGroupBox(advanced_tab);
+  powerGroupBox_->setObjectName(QString::fromUtf8("powerGroupBox_"));
+  powerGroupBox_->setGeometry(QRect(630, 130, 401, 221));
+  powerGroupBox_->setFont(font1);
+  powerGroupBox_->setStyleSheet(QString::fromUtf8("color: rgb(0, 0, 127);"));
+  powerGroupBox_->setAlignment(Qt::AlignCenter);
+  lightPanelsGroupBox_ = new QGroupBox(powerGroupBox_);
+  lightPanelsGroupBox_->setObjectName(QString::fromUtf8("lightPanelsGroupBox_"));
+  lightPanelsGroupBox_->setGeometry(QRect(10, 20, 271, 191));
+  lightPanelsGroupBox_->setFont(smallGroupBoxFont);
+  lightPanelsGroupBox_->setAlignment(Qt::AlignCenter);
+  lightPanelsButtons_.push_back( new QPushButton(lightPanelsGroupBox_) );
+  lightPanelsButtons_.back()->setObjectName(QString::fromUtf8("lightPanelsButton1_"));
+  lightPanelsButtons_.back()->setGeometry(QRect(60, 20, 51, 51));
+  lightPanelsButtons_.back()->setFont( font12 );
+  lightPanelsButtons_.push_back( new QPushButton(lightPanelsGroupBox_) );
+  lightPanelsButtons_.back()->setObjectName(QString::fromUtf8("lightPanelsButton2_"));
+  lightPanelsButtons_.back()->setGeometry(QRect(60, 80, 51, 51));
+  lightPanelsButtons_.back()->setFont( font12 );
+  lightPanelsButtons_.push_back( new QPushButton(lightPanelsGroupBox_) );
+  lightPanelsButtons_.back()->setObjectName(QString::fromUtf8("lightPanelsButton3_"));
+  lightPanelsButtons_.back()->setGeometry(QRect(10, 20, 41, 111));
+  lightPanelsButtons_.back()->setFont( font12 );
+  lightPanelsButtons_.push_back( new QPushButton(lightPanelsGroupBox_) );
+  lightPanelsButtons_.back()->setObjectName(QString::fromUtf8("lightPanelsButton4_"));
+  lightPanelsButtons_.back()->setGeometry(QRect(120, 20, 41, 111));
+  lightPanelsButtons_.back()->setFont( font12 );
+  lightPanelsButtons_.push_back( new QPushButton(lightPanelsGroupBox_) );
+  lightPanelsButtons_.back()->setObjectName(QString::fromUtf8("lightPanelsButton5_"));
+  lightPanelsButtons_.back()->setGeometry(QRect(10, 140, 151, 41));
+  lightPanelsButtons_.back()->setFont( font12 );
+  lightPanelsAllPanelsGroupBox_ = new QGroupBox(lightPanelsGroupBox_);
+  lightPanelsAllPanelsGroupBox_->setObjectName(QString::fromUtf8("lightPanelsAllPanelsGroupBox_"));
+  lightPanelsAllPanelsGroupBox_->setGeometry(QRect(180, 30, 81, 141));
+  lightPanelsAllPanelsGroupBox_->setFont(smallGroupBoxFont);
+  lightPanelsAllPanelsGroupBox_->setAlignment(Qt::AlignCenter);
+  allPanelsOnButton_ = new QPushButton(lightPanelsAllPanelsGroupBox_);
+  allPanelsOnButton_->setObjectName(QString::fromUtf8("allPanelsOnButton_"));
+  allPanelsOnButton_->setGeometry(QRect(10, 30, 61, 41));
+  allPanelsOffButton_ = new QPushButton(lightPanelsAllPanelsGroupBox_);
+  allPanelsOffButton_->setObjectName(QString::fromUtf8("allPanelsOffButton_"));
+  allPanelsOffButton_->setGeometry(QRect(10, 80, 61, 41));
+  conradGroupBox_ = new QGroupBox(powerGroupBox_);
+  conradGroupBox_->setObjectName(QString::fromUtf8("conradGroupBox_"));
+  conradGroupBox_->setGeometry(QRect(290, 20, 101, 51));
+  conradGroupBox_->setFont(smallGroupBoxFont);
+  conradGroupBox_->setAlignment(Qt::AlignCenter);
+  conradEnabledCheckbox_ = new QCheckBox(conradGroupBox_);
+  conradEnabledCheckbox_->setObjectName(QString::fromUtf8("conradEnabledCheckbox_"));
+  conradEnabledCheckbox_->setGeometry(QRect(10, 20, 81, 22));
+  cameraPowerGroupBox_ = new QGroupBox(powerGroupBox_);
+  cameraPowerGroupBox_->setObjectName(QString::fromUtf8("cameraPowerGroupBox_"));
+  cameraPowerGroupBox_->setGeometry(QRect(290, 150, 101, 61));
+  cameraPowerGroupBox_->setFont(smallGroupBoxFont);
+  cameraPowerGroupBox_->setAlignment(Qt::AlignCenter);
+  cameraPowerOnButton_ = new QPushButton(cameraPowerGroupBox_);
+  cameraPowerOnButton_->setObjectName(QString::fromUtf8("cameraPowerOnButton_"));
+  cameraPowerOnButton_->setGeometry(QRect(20, 20, 61, 31));
+  ledsGroupBox_ = new QGroupBox(powerGroupBox_);
+  ledsGroupBox_->setObjectName(QString::fromUtf8("ledsGroupBox_"));
+  ledsGroupBox_->setGeometry(QRect(290, 80, 101, 61));
+  ledsGroupBox_->setFont(smallGroupBoxFont);
+  ledsGroupBox_->setAlignment(Qt::AlignCenter);
+  ledsPowerOnButton_ = new QPushButton(ledsGroupBox_);
+  ledsPowerOnButton_->setObjectName(QString::fromUtf8("ledsPowerOnButton_"));
+  ledsPowerOnButton_->setGeometry(QRect(20, 20, 61, 31));
+  
+
+  // camera group
   cameraOptionsGroupBox_ = new QGroupBox(advanced_tab);
   cameraOptionsGroupBox_->setObjectName(QString::fromUtf8("cameraOptionsGroupBox_"));
   cameraOptionsGroupBox_->setGeometry(QRect(430, 610, 601, 161));
@@ -1574,6 +1639,7 @@ void DefoMainWindow::retranslateUi( void ) {
   manualREFButton_->setText(QApplication::translate("MainWindow", "Ref", 0, QApplication::UnicodeUTF8));
   manualDEFOButton_->setText(QApplication::translate("MainWindow", "Defo", 0, QApplication::UnicodeUTF8));
   manualTEMPButton_->setText(QApplication::translate("MainWindow", "Temp", 0, QApplication::UnicodeUTF8));
+  manualCALIBButton_->setText(QApplication::translate("MainWindow", "Calib", 0, QApplication::UnicodeUTF8));
   rawimageZoomButton_->setText(QApplication::translate("MainWindow", "...", 0, QApplication::UnicodeUTF8));
   rawimageHistoButton_->setText(QApplication::translate("MainWindow", "...", 0, QApplication::UnicodeUTF8));
   statusGroupBox_->setTitle(QApplication::translate("MainWindow", "Status", 0, QApplication::UnicodeUTF8));
@@ -1691,7 +1757,7 @@ void DefoMainWindow::retranslateUi( void ) {
   surfaceRecoGroupBox_->setTitle(QApplication::translate("MainWindow", "Surface reconstruction", 0, QApplication::UnicodeUTF8));
   surfaceRecoSpacingGroupBox_->setTitle(QApplication::translate("MainWindow", "Spacing estimate (px)", 0, QApplication::UnicodeUTF8));
   surfaceRecoSearchpathGroupBox_->setTitle(QApplication::translate("MainWindow", "Searchpath width (px)", 0, QApplication::UnicodeUTF8));
-  groupBox_20->setTitle(QApplication::translate("MainWindow", "Output options", 0, QApplication::UnicodeUTF8));
+  //  groupBox_20->setTitle(QApplication::translate("MainWindow", "Output options", 0, QApplication::UnicodeUTF8));
   geometryGroupBox_->setTitle(QApplication::translate("MainWindow", "Geometry parameters", 0, QApplication::UnicodeUTF8));
   geometryFLabel_->setText(QApplication::translate("MainWindow", "f [mm]", 0, QApplication::UnicodeUTF8));
   geometryLgLabel_->setText(QApplication::translate("MainWindow", "L<sub>g</sub> [mm]", 0, QApplication::UnicodeUTF8));
@@ -1700,6 +1766,22 @@ void DefoMainWindow::retranslateUi( void ) {
   geometryPitchGroupBox_->setTitle(QApplication::translate("MainWindow", "Pixel pitch (\302\265m)", 0, QApplication::UnicodeUTF8));
   geometryPitchLabel1_->setText(QApplication::translate("MainWindow", "X", 0, QApplication::UnicodeUTF8));
   geometryPitchLabel2_->setText(QApplication::translate("MainWindow", "Y", 0, QApplication::UnicodeUTF8));
+
+  powerGroupBox_->setTitle(QApplication::translate("MainWindow", "Power", 0, QApplication::UnicodeUTF8));
+  lightPanelsGroupBox_->setTitle(QApplication::translate("MainWindow", "Light Panels", 0, QApplication::UnicodeUTF8));
+  for( unsigned int i = 0; i < 5; ++i ) {
+    lightPanelsButtons_.at( i )->setText(QApplication::translate("MainWindow",
+      (QString("%1").arg(i)).toStdString().c_str(), 0, QApplication::UnicodeUTF8));
+  }
+  lightPanelsAllPanelsGroupBox_->setTitle(QApplication::translate("MainWindow", "All panels", 0, QApplication::UnicodeUTF8));
+  allPanelsOnButton_->setText(QApplication::translate("MainWindow", "ON", 0, QApplication::UnicodeUTF8));
+  allPanelsOffButton_->setText(QApplication::translate("MainWindow", "OFF", 0, QApplication::UnicodeUTF8));
+  conradGroupBox_->setTitle(QApplication::translate("MainWindow", "Conrad", 0, QApplication::UnicodeUTF8));
+  conradEnabledCheckbox_->setText(QApplication::translate("MainWindow", "Enabled", 0, QApplication::UnicodeUTF8));
+  ledsGroupBox_->setTitle(QApplication::translate("MainWindow", "LEDs", 0, QApplication::UnicodeUTF8));
+  ledsPowerOnButton_->setText(QApplication::translate("MainWindow", "ON/OFF", 0, QApplication::UnicodeUTF8));
+  cameraPowerGroupBox_->setTitle(QApplication::translate("MainWindow", "Camera", 0, QApplication::UnicodeUTF8));
+  cameraPowerOnButton_->setText(QApplication::translate("MainWindow", "ON/OFF", 0, QApplication::UnicodeUTF8));
 
   cameraOptionsGroupBox_->setTitle(QApplication::translate("MainWindow", "Camera options", 0, QApplication::UnicodeUTF8));
   apertureLabel_->setText(QApplication::translate("MainWindow", "Aperture", 0, QApplication::UnicodeUTF8));
