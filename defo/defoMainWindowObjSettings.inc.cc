@@ -1771,7 +1771,7 @@ void DefoMainWindow::retranslateUi( void ) {
   lightPanelsGroupBox_->setTitle(QApplication::translate("MainWindow", "Light Panels", 0, QApplication::UnicodeUTF8));
   for( unsigned int i = 0; i < 5; ++i ) {
     lightPanelsButtons_.at( i )->setText(QApplication::translate("MainWindow",
-      (QString("%1").arg(i)).toStdString().c_str(), 0, QApplication::UnicodeUTF8));
+      (QString("%1").arg(i+1)).toStdString().c_str(), 0, QApplication::UnicodeUTF8));
   }
   lightPanelsAllPanelsGroupBox_->setTitle(QApplication::translate("MainWindow", "All panels", 0, QApplication::UnicodeUTF8));
   allPanelsOnButton_->setText(QApplication::translate("MainWindow", "ON", 0, QApplication::UnicodeUTF8));

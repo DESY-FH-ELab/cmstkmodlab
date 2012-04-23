@@ -5569,6 +5569,12 @@ color: rgb(170, 0, 0);</string>
           <height>111</height>
          </rect>
         </property>
+        <property name="font" >
+         <font>
+          <weight>75</weight>
+          <bold>true</bold>
+         </font>
+        </property>
         <property name="text" >
          <string>3</string>
         </property>
