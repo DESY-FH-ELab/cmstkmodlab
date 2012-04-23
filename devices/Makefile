@@ -2,7 +2,8 @@ subdirs	      = Julabo \
 		Keithley \
                 Greisinger \
 		Hameg \
-		Canon
+		Canon \
+		Conrad
 
 all:
 	@for dir in $(subdirs); do (cd $$dir; make); done
