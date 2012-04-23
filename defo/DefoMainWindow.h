@@ -177,7 +177,7 @@ class DefoMainWindow : public QWidget {
   void panelButton5Clicked( void );
   void allPanelsOn( void );
   void allPanelsOff( void );
-
+  void conradEnabledToggled( bool );
 
  signals:
   void pollAction( void );

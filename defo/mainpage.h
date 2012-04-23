@@ -418,7 +418,7 @@ execution, the files <tt>tkmodlabenv.sh (.csh)</tt> in the svn root
 <tt>source</tt> shell command. The GUI requires the presence of the
 configuration file <tt>defo.cfg</tt> in the current directory,
 i.e. the directory in which the application has started (see also \ref
-overview_sec).
+overview_sec, and \ref app_config_subsec).
 
 \subsection gui_online_subsec                  6.2 Online tab
 
@@ -575,6 +575,25 @@ not by DefoMainWindow. <b>Value: schedule line number</b></DD>
 \subsection gui_advanced_subsec                6.5 Advanced tab
 \image html screenshot_gui_advanced.gif "The advanced tab"
 
+\subsubsection gui_advanced_basefolder_subsubsec     6.5.1 Output base folder
+This field allows to specify the subdirectory under which all output
+is stored. Subfolders will automatically be created under the base folder
+for each individual measurement (see \ref gui_online_measurementid_subsubsec).
+
+\subsubsection gui_advanced_commentfield_subsubsec   6.5.2 Comment field
+Manual input for text comments & logs which are written to the
+output. <SPAN style="color:#ff0000"><B>Not yet implemented!</B></span>
+
+\subsubsection gui_advanced_parameters_subsubsec   6.5.3 Algorithm parameters
+The inputs in the  <i>Raw image reconstruction</i>, <i>Surface reconstruction</i>,
+<i>Geometry</i> and <i>Chiller</i> groups allow for setting the various configuration
+parameters and are initialized from the configuration file (\ref app_config_subsec)
+on startup. After modifying the parameters manually, the <tt>Apply</tt> button
+must be clicked to make these changes persistent.
+
+\subsubsection gui_advanced_power_subsubsec   6.5.4 Power options
+
+
 \subsection gui_viewer                         6.6 Defo Viewer
 
 
@@ -582,60 +601,146 @@ not by DefoMainWindow. <b>Value: schedule line number</b></DD>
 
 \subsection app_config_subsec        A.1 The configuration file
 
+All algorithms and the GUI rely on the presence of a configuration
+file whose name and location are consistently hard-coded in
+various places in calls to the DefoConfigReader constructor.
+The default name is <tt>defo.cfg</tt> and the default location
+is the current directory in which the application has started.
+
+Parameters are specified in "name value" format where name and value
+must be given on the same line and separated by at least one space or
+tab. Lines starting with a hash mark (#) are considered as
+comments and will be ignored.
+
 <PRE>
+
+
 ##################################
-## DEFO main configuration file ##
+## DEFO MAIN CONFIGURATION FILE ##
 ##################################
+
 
 # seeding thresholds [adc]
-STEP1_THRESHOLD         40
-STEP2_THRESHOLD         50
-STEP3_THRESHOLD         80
+STEP1_THRESHOLD		35
+STEP2_THRESHOLD		37
+STEP3_THRESHOLD		50
 
 # half width of seeding square [pixel]
-HALF_SQUARE_WIDTH       10
+HALF_SQUARE_WIDTH	15
 
-# offsets for seeding square [pixel]
-SQUARE_SEED_OFFSET_X    0
-SQUARE_SEED_OFFSET_Y    0
-
-# "blueishness" (blue/yellow adc ratio) above
-# which a point is considered blue
-BLUEISHNESS_THRESHOLD   2.1
+# "blueishness" (blue/yellow adc ratio)
+# above which a point is considered blue
+BLUEISHNESS_THRESHOLD	0.8
 
 # this is the spacing threshold
 # above which two points are supposed to
 # be on different splines [pixel]
-SPACING_ESTIMATE        10
+SPACING_ESTIMATE	25
 
 # points are put on the same spline along x (y)
 # if their y (x) component differs from that
 # of the previous one by not more than this: [pixel]
-# (this option is deprecated)
-SEARCH_PATH_HALF_WIDTH  10
+SEARCH_PATH_HALF_WIDTH	8
 
 # straight distance from grid to *center* of DUT [meter]
-NOMINAL_GRID_DISTANCE   2.5179
+NOMINAL_GRID_DISTANCE	1.802
 
 # straight distance from ccd chip to *center* of DUT [meter]
-NOMINAL_CAMERA_DISTANCE 2.5179
+NOMINAL_CAMERA_DISTANCE 1.822
 
 # angle under which the camera sees the DUT *center* [radian]
-NOMINAL_VIEWING_ANGLE   0.119428926
+# camera: atan(145mm/1816mm) = 0.079677
+# grid:   atan(123mm/1798mm) = 0.068303
+NOMINAL_VIEWING_ANGLE	0.079677
 ##1.451367401
 
 # pixel pitch on chip along X/Y [meter]
-PIXEL_PITCH_X           0.00001
-PIXEL_PITCH_Y           0.00001
+# Chip size from Canon EOS 550D Specs: CMOS-Sensor (22.3mm x 14.9mm)
+# Maximum image size: 5184 x 3456
+# PIXEL_PITCH_X = 22.3e-3m/5184 = 4.302e-06m
+# PIXEL_PITCH_Y = 14.9e-3m/3456 = 4.311e-06m
+PIXEL_PITCH_X		4.302e-06
+PIXEL_PITCH_Y		4.311e-06
 
 # focal length of camera lens [meter]
-LENS_FOCAL_LENGTH       0.12
+LENS_FOCAL_LENGTH	0.085
 
-# defines the verbosity of debug output (integer),
+# camera options;
+# for possible values see end of this file;
+CAMERA_SHUTTERSPEED	1s
+CAMERA_APERTURE		F8
+CAMERA_ISO		100
+CAMERA_WHITEBALANCE	yet_undefined...
+# camera connection enable upon program startup? [true/false]
+# this does not switch the camera power!
+# (see relay_on_when_start)
+CAMERA_ON_WHEN_START	false
+
+# chiller parameters
+CHILLER_PARAMETER_XP	0.1
+CHILLER_PARAMETER_TN	3
+CHILLER_PARAMETER_TV	0
+
+# should the conrad relays
+# be enabled at startup? [true/false]
+# devices will be powered immediately
+RELAY_POWER_WHEN_START	true
+
+# light panel power state on program startup;
+# this is a 5-digit string (1/0) indicating the power state
+# for panels 1-5 (see sketch at end of file)
+# panel                 12345
+#----------------------------
+PANEL_STATE_WHEN_START	11111
+
+# calibration LEDs on at startup? [true/false]
+LEDS_POWER_WHEN_START	false
+
+# should the camera be powered
+# at program startup? (true/false)
+CAMERA_POWER_WHEN_START	false
+
+# defines the verbosity of debug output [0-3],
 # 0 = silent, 3 = maximum verbosity
-DEBUG_LEVEL             2
+DEBUG_LEVEL		0
 
+
+##################################
+##     END OF CONFIGURATION     ##
+##################################
+
+
+
+# some aux information:
+
+## current possible values for CAMERA_SHUTTERSPEED: 
+# 30s 25s 20s 15s 13s 10s 8s 6s 5s 4s 3.2s 2.5s 2s 1.6s 1.3s 1s 0.8s
+# 0.6s 0.5s 0.4s 0.3s 1/4s 1/5s 1/6s 1/8s 1/10s 1/13s 1/15s 1/20s
+# 1/25s 1/30s 1/40s 1/50s 1/60s 1/80s 1/100s 1/125s 1/160s 1/200s
+# 1/250s 1/320s 1/400s 1/500s 1/640s 1/800s 1/1000s 1/1250s 1/1600s
+# 1/2000s 1/2500s 1/3200s 1/4000s
+#
+## current possible values for CAMERA_APERTURE
+# F5.6 F6.3 F7.1 F8 F9 F10 F11 F13 F14 F16 F18 F20 F22 F25 F29 F32 F36
+#
+## current possible values for CAMERA_ISO
+# AUTO 100 200 400 800 1600 3200 6400
+
+# panel numbering for PANEL_STATE_WHEN_START, 
+# as seen from below:
+# ---------------
+# |   |     |   |
+# |   |  1  |   |
+# |   |     |   |
+# | 3 |-----| 4 |
+# |   |     |   |
+# |   |  2  |   |
+# |   |     |   |
+# ---------------
+# |      5      |
+# ---------------
 </PRE>
+
 \subsection app_containers_subsec    A.2 Overview of the container classes
 \subsection app_literature_subsec    A.3 Literature & links
 - Diss. Stefan Koenig (RWTH): <a href="http://darwin.bth.rwth-aachen.de/opus3/volltexte/2003/642/">pdf</a>

@@ -34,7 +34,7 @@ DefoMainWindow::DefoMainWindow( QWidget* parent ) : QWidget( parent ) {
   geometryPitchSpinbox1_->setValue( cfgReader.getValue<double>( "PIXEL_PITCH_X" ) * 1.e6 ); // m -> micrometer
   geometryPitchSpinbox2_->setValue( cfgReader.getValue<double>( "PIXEL_PITCH_Y" ) * 1.e6); // m -> micrometer
   surfaceRecoSpacingSpinbox_->setValue( cfgReader.getValue<int>( "SPACING_ESTIMATE" ) );
-  surfaceRecoSearchpathSpinbox_->setValue( cfgReader.getValue<int>( "SEARCH_PATH_HALF_WIDTH" ) );
+  //  surfaceRecoSearchpathSpinbox_->setValue( cfgReader.getValue<int>( "SEARCH_PATH_HALF_WIDTH" ) );
   chillerParametersSpinbox1_->setValue( cfgReader.getValue<double>( "CHILLER_PARAMETER_XP" ) );
   chillerParametersSpinbox2_->setValue( cfgReader.getValue<int>( "CHILLER_PARAMETER_TN" ) );
   chillerParametersSpinbox3_->setValue( cfgReader.getValue<int>( "CHILLER_PARAMETER_TV" ) );
@@ -152,7 +152,7 @@ void DefoMainWindow::setupSignalsAndSlots( void ) {
   connect( lightPanelsButtons_.at( 4 ), SIGNAL( clicked() ), this, SLOT( panelButton5Clicked() ) );
   connect( allPanelsOnButton_, SIGNAL(clicked()), this, SLOT(allPanelsOn() ) );
   connect( allPanelsOffButton_, SIGNAL(clicked()), this, SLOT(allPanelsOff() ) );
-
+  connect( conradEnabledCheckbox_, SIGNAL( toggled(bool) ), this, SLOT( conradEnabledToggled(bool) ) );
 }
 
 
@@ -1444,6 +1444,26 @@ void DefoMainWindow::cameraEnabledButtonToggled( bool isChecked ) {
     isoComboBox_->setEnabled( false );
     wbalanceComboBox_->setEnabled( false );
   }
+}
+
+
+
+///
+///
+///
+void DefoMainWindow::conradEnabledToggled( bool isChecked ) {
+
+  isConradEnabled_ = isChecked;
+
+  for( unsigned int i = 0; i < 5; ++i ) {
+    lightPanelsButtons_.at( i )->setEnabled( isChecked );
+  }
+  
+  allPanelsOnButton_->setEnabled( isChecked );
+  allPanelsOffButton_->setEnabled( isChecked );
+  ledsPowerOnButton_->setEnabled( isChecked );
+  cameraPowerOnButton_->setEnabled( isChecked );
+
 }
 
 
