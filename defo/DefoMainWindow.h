@@ -192,7 +192,7 @@ class DefoMainWindow : public QWidget {
  private:
   void fillComboBoxes( void );
   void readCameraParametersFromCfgFile( void );
-  QDir const checkAndCreateOutputFolder( void );
+  QDir const checkAndCreateOutputFolder( char const* );
   void writePointsToFile( std::vector<DefoPoint> const&, QString const& ) const;
   void initLightPanelStates( std::string const& );
 

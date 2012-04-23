@@ -39,7 +39,7 @@ DefoMainWindow::DefoMainWindow( QWidget* parent ) : QWidget( parent ) {
   chillerParametersSpinbox2_->setValue( cfgReader.getValue<int>( "CHILLER_PARAMETER_TN" ) );
   chillerParametersSpinbox3_->setValue( cfgReader.getValue<int>( "CHILLER_PARAMETER_TV" ) );
 
-  readCameraParametersFromCfgFile();
+  readCameraParametersFromCfgFile(); // this is grouped
 
   cameraConnectionCheckBox_->setChecked( "true" == cfgReader.getValue<std::string>( "CAMERA_ON_WHEN_START" )?true:false);
   isCameraEnabled_ = cameraConnectionCheckBox_->isChecked();
@@ -186,7 +186,7 @@ void DefoMainWindow::handleAction( DefoSchedule::scheduleItem item ) {
       displayCoordsButton_->setChecked( true );
 
       // output folder
-      QDir outputDir = checkAndCreateOutputFolder();
+      QDir outputDir = checkAndCreateOutputFolder( "set" );
 
       // get the image
       loadImageFromCamera();
@@ -223,7 +223,7 @@ void DefoMainWindow::handleAction( DefoSchedule::scheduleItem item ) {
       loadImageFromCamera();
       DefoRawImage refImage( rawimageLabel_->getOriginalImage() );
 
-      QDir outputDir = checkAndCreateOutputFolder();
+      QDir outputDir = checkAndCreateOutputFolder( "ref" );
 
       // get the image & save it
       QString rawImageFileName = outputDir.path() + "/refimage_raw.jpg";
@@ -301,7 +301,7 @@ void DefoMainWindow::handleAction( DefoSchedule::scheduleItem item ) {
       DefoRawImage defoImage( rawimageLabel_->getOriginalImage() );
 
       // output folder
-      QDir outputDir = checkAndCreateOutputFolder();
+      QDir outputDir = checkAndCreateOutputFolder( "defo" );
 
       // get the image & save the raw version
       QString rawImageFileName = outputDir.path() + "/defoimage_raw.jpg";
@@ -400,7 +400,7 @@ void DefoMainWindow::handleAction( DefoSchedule::scheduleItem item ) {
 	break;
       }
 
-      QDir outputDir = checkAndCreateOutputFolder();
+      QDir outputDir = checkAndCreateOutputFolder( "file_set" );
 
       // get the image & save it
       DefoRawImage setImage( item.second.toStdString().c_str() );
@@ -476,7 +476,7 @@ void DefoMainWindow::handleAction( DefoSchedule::scheduleItem item ) {
 	refImage.loadFromFile( item.second.toStdString().c_str() );
       }
 
-      QDir outputDir = checkAndCreateOutputFolder();
+     QDir outputDir = checkAndCreateOutputFolder( "file_ref" );
 
       // get the image & save it
       QString rawImageFileName = outputDir.path() + "/refimage_raw.jpg";
@@ -596,7 +596,7 @@ void DefoMainWindow::handleAction( DefoSchedule::scheduleItem item ) {
       }
 	
       // output folder
-      QDir outputDir = checkAndCreateOutputFolder();
+      QDir outputDir = checkAndCreateOutputFolder( "file_defo" );
 
       // get the image & save the raw version
       QString rawImageFileName = outputDir.path() + "/defoimage_raw.jpg";
@@ -1380,13 +1380,14 @@ void DefoMainWindow::readCameraParametersFromCfgFile( void ) {
 
 ///
 /// check if output folder with timestamp exists,
-/// otherwise create
+/// otherwise create. "type" is a prefix for the folder name
+/// to identify the action
 ///
-QDir const DefoMainWindow::checkAndCreateOutputFolder( void ) {
+QDir const DefoMainWindow::checkAndCreateOutputFolder( char const* type ) {
 
   QDateTime datime = QDateTime::currentDateTime();
   QDir currentDir( currentFolderName_ );
-  QString subdirName = datime.toString( QString( "ddMMyy-hhmmss" ) );
+  QString subdirName = QString( type ) + datime.toString( QString( ".ddMMyy-hhmmss" ) );
   QDir subdir = QDir( currentFolderName_ + "/" + subdirName );
   
   if( subdir.exists() ) return subdir;
