@@ -511,10 +511,20 @@ not checked results in an error message.
 For automated operation (e.g. repeated series or overnight measurements),
 the defo GUI offers a programmable schedule. A schedule consists of
 a list of entries, each comprising a command/action and - if required -
-an associated value. All entries have a unique line number. Schedules can be
-started, paused/resumed and cancelled using the respective buttons.
+an associated value. All entries have a unique line number. There must not
+be entries following an empty row as the latter will be interpreted
+as the end of the schedule. For the same reason, an <tt>END</tt> command
+at the schedule's end is not strictly required. Except for <tt>GOTO</tt>,
+all schedule actions are handled by DefoMainWindow::handleAction.
+
+Schedules can be started, paused/resumed and cancelled using the respective buttons.
 It is also possible to save a schedule or load it from a file, which is by
 default placed under the <tt>schedules</tt> folder (extension: <tt>.defoschedule</tt>).
+The <tt>Clear</tt> button erases the schedule and clears the table. Upon clicking the
+<tt>Verify</tt> button, the GUI will check the schedule for inconsistencies such as
+syntax errors, non-existing input files, invalid <tt>GOTO</tt> statements, etc. If
+no error message is displayed, the schedule is considered executable.
+
 Possible actions are:
 
 <DL>
@@ -546,7 +556,9 @@ target temperature. When a schedule is paused during a <tt>SLEEP</tt> action, th
 is also paused, i.e. after resuming the schedule the GUI will sit through the remaining number of seconds.
 <b>Value: time in seconds.</b></DD>
 
-<DT>GOTO</DT><DD>Jump to a schedule entry by line number (allowing program loops). <b>Value: schedule line number</b></DD>
+<DT>GOTO</DT><DD>Jump to a schedule entry by line number, allowing program loops. Line numbers start at 1,
+as displayed in the schedule table. Technically, this case is caught and handled by class DefoSchedule and
+not by DefoMainWindow. <b>Value: schedule line number</b></DD>
 
 <DT>END</DT><DD>Stop a schedule. Not explicitly required, but prevents error messages.<b>Value: none</b></DD>
 </DL>

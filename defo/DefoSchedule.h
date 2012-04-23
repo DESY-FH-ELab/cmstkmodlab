@@ -54,6 +54,8 @@ class DefoSchedule : public QObject {
   void clear( void );
   void loadFromFile( void );
   void saveToFile( void );
+  void validate( void );
+
 
  signals:
 
@@ -63,13 +65,17 @@ class DefoSchedule : public QObject {
 
  private:
 
-  int checkRowValidity( void );
+  int checkRowValidity( unsigned int );
+  void issueMissingFileError( int, QString, QString, QString );
+  void issueGotoInvalidLineError( int, QString, int );
+  void issueGotoPointsToItselfError( int, QString );
+  void issueCameraNotEnabledError( int, QString, QString );
 
   QStandardItemModel model_;
   std::map<std::string,int> actionItems_;
   std::vector<int> actionItemsRequiringParameter_;
   unsigned int currentIndex_; // points to current row
-  unsigned int debugLevel_;
+  unsigned int debugLevel_;  
 
 };
 

@@ -240,7 +240,7 @@ void DefoMainWindow::setupUi( void ) {
   scheduleVerifyButton_->setObjectName(QString::fromUtf8("scheduleVerifyButton_"));
   scheduleVerifyButton_->setGeometry(QRect(20, 360, 71, 31));
   scheduleVerifyButton_->setStyleSheet(QString::fromUtf8("background-color: rgb(236, 235, 234);"));
-  scheduleVerifyButton_->setEnabled( false );
+  scheduleVerifyButton_->setEnabled( true );
 
   scheduleLoadButton_ = new QPushButton(scheduleGroupBox_);
   scheduleLoadButton_->setObjectName(QString::fromUtf8("scheduleLoadButton_"));

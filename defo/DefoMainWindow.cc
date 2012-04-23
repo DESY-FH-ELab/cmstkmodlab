@@ -89,6 +89,7 @@ void DefoMainWindow::setupSignalsAndSlots( void ) {
   connect( schedule_, SIGNAL(newAction(DefoSchedule::scheduleItem)), this, SLOT( handleAction(DefoSchedule::scheduleItem)) );
   connect( schedule_, SIGNAL(unableToDeliverAction()), this, SLOT(stopPolling()) );
   connect( schedule_, SIGNAL(newRow(int)), scheduleTableview_, SLOT(selectRow(int)) );
+  connect( scheduleVerifyButton_, SIGNAL(clicked()), schedule_, SLOT(validate()) );
 
   // manual action buttons
   connect( manualREFButton_, SIGNAL(clicked()), this, SLOT(manualFileRef()) );
@@ -684,7 +685,8 @@ void DefoMainWindow::handleAction( DefoSchedule::scheduleItem item ) {
 
 
   case DefoSchedule::GOTO:
-    std::cerr << " SHIT.. GOTO NOT YET IMPLEMENTED!" << std::endl;
+    // this case is caught and handled by the schedule, so we should never arrive here
+    std::cerr << " [DefoMainWindow::handleAction] ** WARNING: [GOTO] this should not happen :-(" << std::endl;
     break;
 
 
@@ -756,6 +758,9 @@ void DefoMainWindow::startPolling( void ) {
   manualDEFOButton_->setEnabled( false );
   manualTEMPButton_->setEnabled( false );
 
+  // and no schedule editing either
+  scheduleTableview_->setEnabled( false );
+
   // clear display items (with empty vectors)
   emit( imagelabelRefreshIndices( std::vector<DefoPoint>() ) );
   emit( imagelabelRefreshPointSquares( std::vector<DefoSquare>() ) );
@@ -789,8 +794,8 @@ void DefoMainWindow::stopPolling( void ) {
 
   // also enable manual operation
   manualREFButton_->setEnabled( true );
-  manualDEFOButton_->setEnabled( true ); // not yet
-  // manualTEMPButton_->setEnabled( true ); // not yet
+  manualDEFOButton_->setEnabled( true );
+  scheduleTableview_->setEnabled( true ); // enable editing
 
   // gray out
   scheduleTableview_->setStyleSheet(QString::fromUtf8("background-color: rgb(255, 255, 255);\n selection-background-color: rgb( 200,200,200 ); "));

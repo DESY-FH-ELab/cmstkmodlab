@@ -54,7 +54,7 @@ void DefoSchedule::pollAction( void ) {
     repeatCounter++;
 
     // check if we have something useful...
-    if( DefoSchedule::GOOD_ROW != checkRowValidity() ) {
+    if( DefoSchedule::GOOD_ROW != checkRowValidity( currentIndex_ ) ) {
       emit unableToDeliverAction(); // we have an invalid row here or the end of the table
       return;
     }
@@ -122,10 +122,10 @@ void DefoSchedule::pollAction( void ) {
 /// check for invalid or empty items in row,
 /// return one of: DefoSchedule::rowStates
 ///
-int DefoSchedule::checkRowValidity( void ) {
+int DefoSchedule::checkRowValidity( unsigned int index ) {
 
-  QStandardItem* item0 = model_.item( currentIndex_, 0 );
-  QStandardItem* item1 = model_.item( currentIndex_, 1 );
+  QStandardItem* item0 = model_.item( index, 0 );
+  QStandardItem* item1 = model_.item( index, 1 );
 
   // if we have an action
   if( item0 ) {
@@ -134,7 +134,7 @@ int DefoSchedule::checkRowValidity( void ) {
     std::map<std::string,int>::iterator it = actionItems_.find( item0->text().toStdString() );
     if( actionItems_.end() == it ) {
       std::cerr << " [DefoSchedule::checkRowValidity] WARNING ** Return BAD_ROW since unknown action: \"" 
-		<< item0->text().toStdString() << "\" row: " << currentIndex_ + 1 << ". Fix your schedule." << std::endl;
+		<< item0->text().toStdString() << "\" row: " << index + 1 << ". Fix your schedule." << std::endl;
       return DefoSchedule::BAD_ROW; // unknown item
     }
 
@@ -146,7 +146,7 @@ int DefoSchedule::checkRowValidity( void ) {
     if( !(actionItemsRequiringParameter_.end() == itP) ) { // needs a parameter
       if( !item1 ) {
 	std::cerr << " [DefoSchedule::checkRowValidity] WARNING ** Return BAD_ROW since missing parameter for action: \"" 
-		  << item0->text().toStdString() << "\" row: " << currentIndex_ + 1 << ". Fix your schedule." << std::endl;
+		  << item0->text().toStdString() << "\" row: " << index + 1 << ". Fix your schedule." << std::endl;
 	return DefoSchedule::BAD_ROW; // no parameter given
       }	
     }
@@ -159,18 +159,18 @@ int DefoSchedule::checkRowValidity( void ) {
   else { // no action given
     if( item1 ) {
       std::cerr << " [DefoSchedule::checkRowValidity] WARNING ** Return BAD_ROW since no action but parameter: \"" 
-		<< item1->text().toStdString() << "\" row: " << currentIndex_ + 1 << ". Fix your schedule." << std::endl;
+		<< item1->text().toStdString() << "\" row: " << index + 1 << ". Fix your schedule." << std::endl;
       return DefoSchedule::BAD_ROW; // if there's a parameter, obviously something's wrong
     }
 
-    if( debugLevel_ >= 3 ) std::cout << " [DefoSchedule::checkRowValidity] =3= Return EMPTY_ROW for row: " << currentIndex_ + 1 
+    if( debugLevel_ >= 3 ) std::cout << " [DefoSchedule::checkRowValidity] =3= Return EMPTY_ROW for row: " << index + 1 
 	      << ". Fix your schedule." << std::endl;
     return DefoSchedule::EMPTY_ROW; // otherwise it's simply an empty row
 
   }
 
   // if we get here, there's a quirk in this logic...
-  std::cerr << " [DefoSchedule::checkRowValidity] ** ERROR: Should not reach this point (row: " << currentIndex_ + 1 << ")" << std::endl;
+  std::cerr << " [DefoSchedule::checkRowValidity] ** ERROR: Should not reach this point (row: " << index + 1 << ")" << std::endl;
   
 }
 
@@ -284,4 +284,134 @@ void DefoSchedule::saveToFile( void ) {
 
   file.close();
   
+}
+
+
+
+///
+/// make sure (as good as possible) that the schedule is executable:
+/// check validity, existence of input files, goto lines exist, camera enabled, etc.
+///
+void DefoSchedule::validate( void ) {
+
+  // determine number of filled rows in model,
+  // until an END action or an empty row appears
+  unsigned int nFilledRows = 0;
+  for( int row = 0; row < model_.rowCount(); ++row ) {
+
+    if( DefoSchedule::EMPTY_ROW == checkRowValidity( row ) ) break;
+
+    QStandardItem* item0 = model_.item( row, 0 );
+    std::map<std::string,int>::iterator it = actionItems_.find( item0->text().toStdString() );
+    if( !item0 ) break;
+
+    nFilledRows++;
+
+  }
+
+
+  for( unsigned int row = 0; row < nFilledRows; ++row ) {
+
+    // check basic syntax
+    if( DefoSchedule::GOOD_ROW != checkRowValidity( row ) ) {
+      QMessageBox::critical( 0, tr("[DefoSchedule::validate]"), 
+			     QString( "ERROR ** syntax problem in row %1" ).arg( row + 1 ),
+			     QMessageBox::Ok );
+      std::cerr << " [DefoSchedule::validate] ** ERROR: schedule table: syntax problem in row " << row + 1 << std::endl;
+
+    }
+
+    // various tests for individual actions
+    QStandardItem* item0 = model_.item( row, 0 );
+    QStandardItem* item1 = model_.item( row, 1 );
+
+    // get action value
+    std::map<std::string,int>::iterator it = actionItems_.find( item0->text().toStdString() );
+
+    switch( it->second ) {
+
+    case DefoSchedule::GOTO:
+      { // here we check for endless loops and if goto points to an invalid/empty row
+	bool isOk = false;
+	const unsigned int rowPointedTo = model_.item( row, 1 )->text().toUInt( &isOk, 10 ) - 1;
+	if( rowPointedTo >= nFilledRows ) issueGotoInvalidLineError( row, QString( "DefoSchedule::validate" ), rowPointedTo );
+	if( rowPointedTo == row ) issueGotoPointsToItselfError( row, QString( "DefoSchedule::validate" ) );
+	
+      } break;
+
+
+    case DefoSchedule::FILE_SET:
+    case DefoSchedule::FILE_REF:
+    case DefoSchedule::FILE_DEFO:
+      { // check if the files exists
+	if( !QFile( item1->text() ).exists() ) issueMissingFileError( row, QString( "DefoSchedule::validate" ),
+								      QString( it->first.c_str() ), item1->text() );
+      } break;
+
+    case DefoSchedule::SET:
+    case DefoSchedule::REF:
+    case DefoSchedule::DEFO:
+      { // check if camera is enabled & powered
+	// comes later (have to ask DefoMainWindow..)
+      } break;
+
+    default:
+      {} break;
+
+    }
+      
+  }
+
+}
+
+
+
+///
+/// row is real row number (starts at 0)
+///
+void DefoSchedule::issueMissingFileError( int row, QString issuer, QString action, QString filename ) {
+
+  QMessageBox::critical( 0, issuer, 
+			 QString( "Row %1 [" ).arg( row+1 ) + action + QString( "] ** ERROR: Cannot open file:\n \"%1\"" ).arg( filename ),
+			 QMessageBox::Ok );
+
+}
+
+
+
+///
+/// row is real row number (starts at 0)
+///
+void DefoSchedule::issueGotoInvalidLineError( int row, QString issuer, int pointToRow ) {
+  
+  QMessageBox::critical( 0, issuer, 
+			 QString( "Row %1 " ).arg( row+1 ) + QString( "** ERROR: GOTO points to invalid line: %1" ).arg( pointToRow+1 ),
+			 QMessageBox::Ok );
+  
+}
+
+
+
+///
+/// row is real row number (starts at 0)
+///
+void DefoSchedule::issueGotoPointsToItselfError( int row, QString issuer ) {
+
+  QMessageBox::critical( 0, issuer, 
+			 QString( "Row %1 " ).arg( row+1 ) + QString( "** ERROR: GOTO points to itself" ),
+			 QMessageBox::Ok );
+
+}
+
+
+
+///
+/// row is real row number (starts at 0)
+///
+void DefoSchedule::issueCameraNotEnabledError( int row, QString issuer, QString action ) {
+
+  QMessageBox::critical( 0, issuer, 
+			 QString( "Row %1 [" ).arg( row+1 ) + action + QString( "] ** ERROR: Camera is disabled." ),
+			 QMessageBox::Ok );
+
 }
