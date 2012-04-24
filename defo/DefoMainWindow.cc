@@ -1661,9 +1661,9 @@ void DefoMainWindow::allPanelsOff( void ) {
 void DefoMainWindow::allPanelsOn( void ) {
 
     for( unsigned int i = 0; i < 5; ++i ) {
-    lightPanelStates_.at( i ) = true;
-    lightPanelsButtons_.at( i )->setStyleSheet("background-color: rgb(252, 250, 210); color: rgb(0, 0, 0)");
-    // SWITCH CONRAD
+      lightPanelStates_.at( i ) = true;
+      lightPanelsButtons_.at( i )->setStyleSheet("background-color: rgb(252, 250, 210); color: rgb(0, 0, 0)");
+      // SWITCH CONRAD
   }
 
 }
