@@ -30,7 +30,7 @@
 /// and has some color functionality
 ///
 /// if the button is "controlling" it
-/// emits stateChanged() when clickedOn() is received;
+/// emits stateChanged() when clickedAction() is received;
 /// such that we can make other buttons just "followers"
 ///
 class ConradPushButton : public QPushButton {
@@ -49,7 +49,7 @@ class ConradPushButton : public QPushButton {
   void setControlling( bool c ) { isControlling_ = c; }
 
  public slots:
-  void clickedOn( void );
+  void clickedAction( void );
 
  signals:
   void stateChanged( void );
@@ -89,6 +89,7 @@ private slots:
 
 private:
   void setupSignalsAndSlots( void );
+  void disableAllItems( void );
   void setupUi( void );
   void retranslateUi( void );
 
@@ -115,6 +116,7 @@ private:
   QGroupBox *portGroupBox_;
   QComboBox *portComboBox_;
   QCheckBox *connectCheckBox_;
+  QPushButton *updateButton_;
 
 };
 

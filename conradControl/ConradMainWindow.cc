@@ -15,7 +15,7 @@ ConradMainWindow::ConradMainWindow( QWidget* parent ) : QWidget( parent ) {
   // otherwise we call setupCardCommunication twice
   updateCommBox();
   isCommunication_ = false;
-  setupCardCommunication();
+  QTimer::singleShot( 100, this, SLOT(setupCardCommunication()) );
 
   setupSignalsAndSlots();
 
@@ -30,14 +30,25 @@ void ConradMainWindow::setupCardCommunication( void ) {
 
   if( 0 == portComboBox_->currentText().toStdString().size() ) {
     QMessageBox::critical( 0, tr("[ConradMainWindow::setupCardCommunication]"), 
-			   QString("No devices."), QMessageBox::Ok );
+			   QString("No comm devices found."), QMessageBox::Ok );
+    disableAllItems();
     return;
   }
 
-  std::cout << "CONNECT: " <<  portComboBox_->currentText().toStdString() << std::endl; /////////////////////////////////
+  QString portString = QString( "/dev/" ) + portComboBox_->currentText();
+  std::cout << "CONNECT: " <<  portString.toStdString() << std::endl; //
+//   conradController_ = new ConradController( portString.toStdString().c_str() );
 
-  isCommunication_ = true; /////////////
-  connectCheckBox_->setChecked( true ); ///////////////
+//   if( !conradController_->initialize() ) { // check communication
+//     disableAllItems();
+//     // we don't delete the controller to prevent segfaults
+//     return;
+//   }
+
+//   else { // we're happy
+//     isCommunication_ = true;
+//     connectCheckBox_->setChecked( true );
+//   }
 
 }
 
@@ -65,23 +76,26 @@ void ConradMainWindow::setupSignalsAndSlots( void ) {
   // re-connect to card when new port selected
   QObject::connect( portComboBox_, SIGNAL(currentIndexChanged(int)), this, SLOT(setupCardCommunication()) );
 
+  // trigger searching for device files
+  QObject::connect( updateButton_, SIGNAL(clicked()), this, SLOT(updateCommBox()) );
+
 
   // INTERCONNECT BUTTONS:
-  // here we define which panels are connected to which channels on the card!!!
+  // here we hard-wire which panels are connected to which channels on the card!!!
   
   // channels <> panels: 1<>1, 2<>2, 3<>3, 4<>4, 5<>5 (1..8)
   for( unsigned int i = 0; i < 5; ++i ) { // both directions
-    QObject::connect( channelButtons_.at( i ), SIGNAL(clicked()), lightPanelButtons_.at( i ), SLOT(clickedOn()) );
-    QObject::connect( lightPanelButtons_.at( i ), SIGNAL(clicked()), channelButtons_.at( i ), SLOT(clickedOn()) );
+    QObject::connect( channelButtons_.at( i ), SIGNAL(clicked()), lightPanelButtons_.at( i ), SLOT(clickedAction()) );
+    QObject::connect( lightPanelButtons_.at( i ), SIGNAL(clicked()), channelButtons_.at( i ), SLOT(clickedAction()) );
   }
 
-  // LEDs: channel 6 (1..8)
-  QObject::connect( ledButton_, SIGNAL(clicked()), channelButtons_.at( 5 ), SLOT(clickedOn()) );
-  QObject::connect( channelButtons_.at( 5 ), SIGNAL(clicked()), ledButton_, SLOT(clickedOn()) );
+  // LEDs: channel 6 (1..8), both directions
+  QObject::connect( ledButton_, SIGNAL(clicked()), channelButtons_.at( 5 ), SLOT(clickedAction()) );
+  QObject::connect( channelButtons_.at( 5 ), SIGNAL(clicked()), ledButton_, SLOT(clickedAction()) );
   
-  // Camera: channel 7 (1..8)
-  QObject::connect( cameraButton_, SIGNAL(clicked()), channelButtons_.at( 6 ), SLOT(clickedOn()) );
-  QObject::connect( channelButtons_.at( 6 ), SIGNAL(clicked()), cameraButton_, SLOT(clickedOn()) );
+  // Camera: channel 7 (1..8), both directions
+  QObject::connect( cameraButton_, SIGNAL(clicked()), channelButtons_.at( 6 ), SLOT(clickedAction()) );
+  QObject::connect( channelButtons_.at( 6 ), SIGNAL(clicked()), cameraButton_, SLOT(clickedAction()) );
 
 }
 
@@ -91,10 +105,20 @@ void ConradMainWindow::setupSignalsAndSlots( void ) {
 ///
 ///
 void ConradMainWindow::handleState( void ) {
-  
-  std::cout << "ConradMainWindow::handleChannels" << std::endl;
-  for( std::vector<ConradPushButton*>::const_iterator it = channelButtons_.begin(); it < channelButtons_.end(); ++it ) {
-    std::cout << "BUTTON: " << it - channelButtons_.begin() << " " << ((*it)->isActive()?"ACTIVE":"*") << std::endl;
+
+  if( conradController_ && isCommunication_ ) {
+
+    // identify the sender and switch that channel
+    // only if the signal comes from a "controlling" channel button
+    for( std::vector<ConradPushButton*>::const_iterator it = channelButtons_.begin(); it < channelButtons_.end(); ++it ) {
+
+      if( sender() == (*it) ) {
+	std::cout << "SWITCHING CHANNEL: " << it - channelButtons_.begin() + 1 << " " << ( (*it)->isActive()?"ON":"OFF" ) << std::endl; // REPLACE!!
+	//conradController_->setChannel( it - channelButtons_.begin(), (*it)->isActive() ); // REPLACE!!
+      }
+
+    }
+
   }
 
 }
@@ -167,6 +191,32 @@ void ConradMainWindow::updateCommBox( void ) {
   for( QStringList::const_iterator it = list.begin(); it < list.end(); ++it ) {
     portComboBox_->addItem( *it );
   }
+
+}
+
+
+
+///
+///
+///
+void ConradMainWindow::disableAllItems( void ) {
+
+  for( std::vector<ConradPushButton*>::iterator it = lightPanelButtons_.begin(); it < lightPanelButtons_.end(); ++it ) {
+    (*it)->setEnabled( false );
+  }
+
+  for( std::vector<ConradPushButton*>::iterator it = channelButtons_.begin(); it < channelButtons_.end(); ++it ) {
+    (*it)->setEnabled( false );
+  }
+
+  allPanelsOnButton_->setEnabled( false );
+  allPanelsOffButton_->setEnabled( false );
+  allChannelsOnButton_->setEnabled( false );
+  allChannelsOffButton_->setEnabled( false );
+  ledButton_->setEnabled( false );
+  cameraButton_->setEnabled( false );
+
+  // we leave the update button available.
 
 }
 
@@ -337,12 +387,17 @@ void ConradMainWindow::setupUi() {
   portComboBox_->setGeometry(QRect(20, 30, 111, 31));
   connectCheckBox_ = new QCheckBox(portGroupBox_);
   connectCheckBox_->setObjectName(QString::fromUtf8("connectCheckBox_"));
-  connectCheckBox_->setGeometry(QRect(160, 31, 81, 31));
+  connectCheckBox_->setGeometry(QRect(190, 30, 61, 31));
   connectCheckBox_->setChecked( false );
   connectCheckBox_->setEnabled( false ); // display only
   QFont font4;
   font4.setPointSize(11);
   connectCheckBox_->setFont(font4);
+
+  updateButton_ = new QPushButton(portGroupBox_);
+  updateButton_->setObjectName(QString::fromUtf8("updateButton_"));
+  updateButton_->setGeometry(QRect(150, 30, 31, 31));
+
   //  setCentralWidget(centralwidget);
   //  menubar = new QMenuBar(ConradMainWindow);
   //  menubar->setObjectName(QString::fromUtf8("menubar"));
@@ -388,7 +443,8 @@ void ConradMainWindow::retranslateUi() {
   allChannelsOffButton_->setText(QApplication::translate("ConradMainWindow", "OFF", 0, QApplication::UnicodeUTF8));
   allChannelsOnButton_->setText(QApplication::translate("ConradMainWindow", "ON", 0, QApplication::UnicodeUTF8));
   portGroupBox_->setTitle(QApplication::translate("ConradMainWindow", "Comm", 0, QApplication::UnicodeUTF8));
-  connectCheckBox_->setText(QApplication::translate("ConradMainWindow", "Connect", 0, QApplication::UnicodeUTF8));
+  connectCheckBox_->setText(QApplication::translate("ConradMainWindow", "COM", 0, QApplication::UnicodeUTF8));
+  updateButton_->setText(QApplication::translate("ConradMainWindow", "Up", 0, QApplication::UnicodeUTF8));
   //  Q_UNUSED(ConradMainWindow);
 
 } // retranslateUi
@@ -409,7 +465,7 @@ ConradPushButton::ConradPushButton( QWidget* parent ) : QPushButton( parent ) {
   isActive_ = false;
   updateColor();
 
-  QObject::connect( this, SIGNAL(clicked()), this, SLOT(clickedOn()) );
+  QObject::connect( this, SIGNAL(clicked()), this, SLOT(clickedAction()) );
 
 }
 
@@ -418,7 +474,7 @@ ConradPushButton::ConradPushButton( QWidget* parent ) : QPushButton( parent ) {
 ///
 ///
 ///
-void ConradPushButton::clickedOn( void ) {
+void ConradPushButton::clickedAction( void ) {
 
   // toggle
   isActive_ = !isActive_;
@@ -445,3 +501,16 @@ void ConradPushButton::updateColor( void ) {
   }
 
 }
+
+
+
+
+
+////////////////////////////////////////////////////
+////////////// T H E   A T T I C ///////////////////
+////////////////////////////////////////////////////
+
+
+//     QMessageBox::critical( 0, tr("[ConradMainWindow::setupCardCommunication]"), 
+// 			   QString("Communication with card through device: %1 failed.").arg( portString ), 
+// 			   QMessageBox::Ok );
