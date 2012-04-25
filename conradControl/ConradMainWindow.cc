@@ -24,7 +24,8 @@ ConradMainWindow::ConradMainWindow( QWidget* parent ) : QWidget( parent ) {
 
 
 ///
-///
+/// try to connect to card
+/// via the comm port that is currently displayed on the portComboBox_
 ///
 void ConradMainWindow::setupCardCommunication( void ) {
 
@@ -37,17 +38,32 @@ void ConradMainWindow::setupCardCommunication( void ) {
 
   QString portString = QString( "/dev/" ) + portComboBox_->currentText();
   std::cout << "CONNECT: " <<  portString.toStdString() << std::endl; //
+
+//   if( conradController_ ) delete conradController_;
 //   conradController_ = new ConradController( portString.toStdString().c_str() );
 
 //   if( !conradController_->initialize() ) { // check communication
 //     disableAllItems();
-//     // we don't delete the controller to prevent segfaults
+//     // don't delete the controller to prevent segfaults
 //     return;
 //   }
 
 //   else { // we're happy
+
 //     isCommunication_ = true;
 //     connectCheckBox_->setChecked( true );
+
+//     // query & display current status
+//     std::vector<bool> status = conradController_->queryStatus();
+//     if( status.size() != 8 ) {
+//       std::cerr << " [ConradMainWindow::setupCardCommunication] ** ERROR: received malformed state vector." << std::endl;
+//       return;
+//     }
+
+//     for( unsigned int i = 0; i < 8; ++i ) {
+//       channelButtons_.at( i )->setActive( status.at( i ) );
+//     }
+
 //   }
 
 }
