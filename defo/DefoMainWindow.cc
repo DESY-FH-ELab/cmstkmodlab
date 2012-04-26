@@ -58,14 +58,14 @@ DefoMainWindow::DefoMainWindow( QWidget* parent ) : QWidget( parent ) {
   defaultMeasurementId();
 
   // read light panel startup cfg...
-  lightPanelStates_.resize( 5 );
-  initLightPanelStates( cfgReader.getValue<std::string>( "PANEL_STATE_WHEN_START" ) );
+  //  lightPanelStates_.resize( 5 );
+  //  initLightPanelStates( cfgReader.getValue<std::string>( "PANEL_STATE_WHEN_START" ) );
   
   // .. and set buttons
-  for( unsigned int i = 0; i < 5; ++i ) {
-    if( lightPanelStates_.at( i ) ) lightPanelsButtons_.at( i )->setStyleSheet("background-color: rgb(252, 250, 210); color: rgb(0, 0, 0)");
-    else lightPanelsButtons_.at( i )->setStyleSheet("background-color: rgb(0, 0, 0); color: rgb(255, 255, 255)");
-  }
+  //  for( unsigned int i = 0; i < 5; ++i ) {
+  //    if( lightPanelStates_.at( i ) ) lightPanelsButtons_.at( i )->setStyleSheet("background-color: rgb(252, 250, 210); color: rgb(0, 0, 0)");
+  //    else lightPanelsButtons_.at( i )->setStyleSheet("background-color: rgb(0, 0, 0); color: rgb(255, 255, 255)");
+  //  }
   
 }
 
@@ -145,11 +145,11 @@ void DefoMainWindow::setupSignalsAndSlots( void ) {
   connect( cameraConnectionCheckBox_, SIGNAL( toggled(bool) ), this, SLOT( cameraEnabledButtonToggled(bool) ) );
   connect( advancedApplyButton_, SIGNAL( clicked() ), this, SLOT( writeParameters() ) );
 
-  connect( lightPanelsButtons_.at( 0 ), SIGNAL( clicked() ), this, SLOT( panelButton1Clicked() ) );
-  connect( lightPanelsButtons_.at( 1 ), SIGNAL( clicked() ), this, SLOT( panelButton2Clicked() ) );
-  connect( lightPanelsButtons_.at( 2 ), SIGNAL( clicked() ), this, SLOT( panelButton3Clicked() ) );
-  connect( lightPanelsButtons_.at( 3 ), SIGNAL( clicked() ), this, SLOT( panelButton4Clicked() ) );
-  connect( lightPanelsButtons_.at( 4 ), SIGNAL( clicked() ), this, SLOT( panelButton5Clicked() ) );
+  // light panel buttons & co
+  for( std::vector<DefoTogglePushButton*>::const_iterator it = lightPanelButtons_.begin(); it < lightPanelButtons_.end(); ++it ) {
+    (*it)->setControlling( true );
+    QObject::connect( *it, SIGNAL(stateChanged()), this, SLOT(handleConradEvent()) );
+  }
   connect( allPanelsOnButton_, SIGNAL(clicked()), this, SLOT(allPanelsOn() ) );
   connect( allPanelsOffButton_, SIGNAL(clicked()), this, SLOT(allPanelsOff() ) );
   connect( conradEnabledCheckbox_, SIGNAL( toggled(bool) ), this, SLOT( conradEnabledToggled(bool) ) );
@@ -1456,7 +1456,7 @@ void DefoMainWindow::conradEnabledToggled( bool isChecked ) {
   isConradEnabled_ = isChecked;
 
   for( unsigned int i = 0; i < 5; ++i ) {
-    lightPanelsButtons_.at( i )->setEnabled( isChecked );
+    lightPanelButtons_.at( i )->setEnabled( isChecked );
   }
   
   allPanelsOnButton_->setEnabled( isChecked );
@@ -1541,101 +1541,26 @@ void DefoMainWindow::writePointsToFile( std::vector<DefoPoint> const& points, QS
 ///
 ///
 void DefoMainWindow::initLightPanelStates( std::string const& stateString ) {
-
-  if( stateString.size() != 5 ) {
-    std::cerr << " [DefoMainWindow::initLightPanelStates] ** ERROR: argument to cfg parameter PANEL_STATE_WHEN_START has size: "
-	      << stateString.size() << ". All panels off." << std::endl;
-    for( unsigned int i = 0; i < 5; ++i ) lightPanelStates_.at( i ) = false;
-    return;
-  }
+  Q_UNUSED(stateString)
+//   if( stateString.size() != 5 ) {
+//     std::cerr << " [DefoMainWindow::initLightPanelStates] ** ERROR: argument to cfg parameter PANEL_STATE_WHEN_START has size: "
+// 	      << stateString.size() << ". All panels off." << std::endl;
+//     for( unsigned int i = 0; i < 5; ++i ) lightPanelStates_.at( i ) = false;
+//     return;
+//   }
   
-  for( unsigned int i = 0; i < stateString.size(); ++i ) {
+//   for( unsigned int i = 0; i < stateString.size(); ++i ) {
     
-    if( stateString.at( i ) == '0' ) lightPanelStates_.at( i ) = false;
-    else if( stateString.at( i ) == '1' ) lightPanelStates_.at( i ) = true;
-    else {
-      std::cerr << " [DefoMainWindow::initLightPanelStates] ** WARNING: bogus character: \"" << stateString.at( i )
-		<< "\" as argument to cfg parameter PANEL_STATE_WHEN_START, will interpret this as \"off\"." << std::endl;
-      lightPanelStates_.at( i ) = false;
-    }
+//     if( stateString.at( i ) == '0' ) lightPanelStates_.at( i ) = false;
+//     else if( stateString.at( i ) == '1' ) lightPanelStates_.at( i ) = true;
+//     else {
+//       std::cerr << " [DefoMainWindow::initLightPanelStates] ** WARNING: bogus character: \"" << stateString.at( i )
+// 		<< "\" as argument to cfg parameter PANEL_STATE_WHEN_START, will interpret this as \"off\"." << std::endl;
+//       lightPanelStates_.at( i ) = false;
+//     }
     
-  }
+//   }
   
-}
-
-
-
-///
-///
-///
-void DefoMainWindow::panelButton1Clicked( void ) {
-  
-  lightPanelStates_.at( 0 ) = !lightPanelStates_.at( 0 );
-  if( lightPanelStates_.at( 0 ) ) lightPanelsButtons_.at( 0 )->setStyleSheet("background-color: rgb(252, 250, 210); color: rgb(0, 0, 0)");
-  else lightPanelsButtons_.at( 0 )->setStyleSheet("background-color: rgb(0, 0, 0); color: rgb(255, 255, 255)");
-  
-  // SWITCH CONRAD (later)
-
-}
-
-
-
-///
-///
-///
-void DefoMainWindow::panelButton2Clicked( void ) {
-
-  lightPanelStates_.at( 1 ) = !lightPanelStates_.at( 1 );
-  if( lightPanelStates_.at( 1 ) ) lightPanelsButtons_.at( 1 )->setStyleSheet("background-color: rgb(252, 250, 210); color: rgb(0, 0, 0)");
-  else lightPanelsButtons_.at( 1 )->setStyleSheet("background-color: rgb(0, 0, 0); color: rgb(255, 255, 255)");
-  
-  // SWITCH CONRAD (later)
-
-}
-
-
-
-///
-///
-///
-void DefoMainWindow::panelButton3Clicked( void ) {
-
-  lightPanelStates_.at( 2 ) = !lightPanelStates_.at( 2 );
-  if( lightPanelStates_.at( 2 ) ) lightPanelsButtons_.at( 2 )->setStyleSheet("background-color: rgb(252, 250, 210); color: rgb(0, 0, 0)");
-  else lightPanelsButtons_.at( 2 )->setStyleSheet("background-color: rgb(0, 0, 0); color: rgb(255, 255, 255)");
-  
-  // SWITCH CONRAD (later)
-
-}
-
-
-
-///
-///
-///
-void DefoMainWindow::panelButton4Clicked( void ) {
-
-  lightPanelStates_.at( 3 ) = !lightPanelStates_.at( 3 );
-  if( lightPanelStates_.at( 3 ) ) lightPanelsButtons_.at( 3 )->setStyleSheet("background-color: rgb(252, 250, 210); color: rgb(0, 0, 0)");
-  else lightPanelsButtons_.at( 3 )->setStyleSheet("background-color: rgb(0, 0, 0); color: rgb(255, 255, 255)");
-  
-  // SWITCH CONRAD (later)
-
-}
-
-
-
-///
-///
-///
-void DefoMainWindow::panelButton5Clicked( void ) {
-
-  lightPanelStates_.at( 4 ) = !lightPanelStates_.at( 4 );
-  if( lightPanelStates_.at( 4 ) ) lightPanelsButtons_.at( 4 )->setStyleSheet("background-color: rgb(252, 250, 210); color: rgb(0, 0, 0)");
-  else lightPanelsButtons_.at( 4 )->setStyleSheet("background-color: rgb(0, 0, 0); color: rgb(255, 255, 255)");
-  
-  // SWITCH CONRAD (later)
-
 }
 
 
@@ -1645,10 +1570,8 @@ void DefoMainWindow::panelButton5Clicked( void ) {
 ///
 void DefoMainWindow::allPanelsOff( void ) {
 
-  for( unsigned int i = 0; i < 5; ++i ) {
-    lightPanelStates_.at( i ) = false;
-    lightPanelsButtons_.at( i )->setStyleSheet("background-color: rgb(0, 0, 0); color: rgb(255, 255, 255)");
-    // SWITCH CONRAD
+  for( std::vector<DefoTogglePushButton*>::const_iterator it = lightPanelButtons_.begin(); it < lightPanelButtons_.end(); ++it ) {
+    (*it)->setActive( false );
   }
 
 }
@@ -1660,10 +1583,82 @@ void DefoMainWindow::allPanelsOff( void ) {
 ///
 void DefoMainWindow::allPanelsOn( void ) {
 
-    for( unsigned int i = 0; i < 5; ++i ) {
-      lightPanelStates_.at( i ) = true;
-      lightPanelsButtons_.at( i )->setStyleSheet("background-color: rgb(252, 250, 210); color: rgb(0, 0, 0)");
-      // SWITCH CONRAD
+  for( std::vector<DefoTogglePushButton*>::const_iterator it = lightPanelButtons_.begin(); it < lightPanelButtons_.end(); ++it ) {
+    (*it)->setActive( true );
+  }
+
+}
+
+
+
+///
+///
+///
+void DefoMainWindow::handleConradEvent( void ) {
+
+  if( conradController_ && isConradCommunication_ ) {
+    
+    // identify the sender and switch that channel
+    // only if the signal comes from a "controlling" channel button
+    for( std::vector<DefoTogglePushButton*>::const_iterator it = lightPanelButtons_.begin(); it < lightPanelButtons_.end(); ++it ) {
+      
+      if( sender() == (*it) ) {
+	std::cout << "SWITCHING CHANNEL: " << it - lightPanelButtons_.begin() + 1 << " " << ( (*it)->isActive()?"ON":"OFF" ) << std::endl; // REPLACE!!
+	//conradController_->setChannel( it - channelButtons_.begin(), (*it)->isActive() ); // REPLACE!!
+      }
+      
+    }
+    
+  }
+  
+}
+
+
+
+///
+///
+///
+DefoTogglePushButton::DefoTogglePushButton( QWidget* parent ) : QPushButton( parent ) {
+
+  // default color scheme is gray_green
+  colorScheme_ = DefoTogglePushButton::Gray_Green;
+  
+  isActive_ = false;
+  updateColor();
+
+  QObject::connect( this, SIGNAL(clicked()), this, SLOT(clickedAction()) );
+
+}
+
+
+
+///
+///
+///
+void DefoTogglePushButton::clickedAction( void ) {
+
+  // toggle
+  isActive_ = !isActive_;
+  updateColor();
+  if( isControlling_ ) emit stateChanged();
+
+}
+
+
+
+///
+///
+///
+void DefoTogglePushButton::updateColor( void ) {
+
+  if( DefoTogglePushButton::Gray_Green == colorScheme_ ) {
+    if( isActive_ ) setStyleSheet("background-color: rgb(0, 255, 0); color: rgb(0, 0, 0)");
+    else setStyleSheet("background-color: rgb(240, 240, 240); color: rgb(0, 0, 0)");
+  }
+
+  else {
+    if( isActive_ ) setStyleSheet("background-color: rgb(252, 250, 210); color: rgb(0, 0, 0)");
+    else setStyleSheet("background-color: rgb(0, 0, 0); color: rgb(255, 255, 255)");
   }
 
 }

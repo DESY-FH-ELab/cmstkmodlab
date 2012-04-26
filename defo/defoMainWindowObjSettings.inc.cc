@@ -1472,37 +1472,42 @@ void DefoMainWindow::setupUi( void ) {
   lightPanelsGroupBox_->setGeometry(QRect(10, 20, 271, 191));
   lightPanelsGroupBox_->setFont(smallGroupBoxFont);
   lightPanelsGroupBox_->setAlignment(Qt::AlignCenter);
-  lightPanelsButtons_.push_back( new QPushButton(lightPanelsGroupBox_) );
-  lightPanelsButtons_.back()->setObjectName(QString::fromUtf8("lightPanelsButton1_"));
-  lightPanelsButtons_.back()->setGeometry(QRect(60, 20, 51, 51));
-  lightPanelsButtons_.back()->setFont( font12 );
-  lightPanelsButtons_.push_back( new QPushButton(lightPanelsGroupBox_) );
-  lightPanelsButtons_.back()->setObjectName(QString::fromUtf8("lightPanelsButton2_"));
-  lightPanelsButtons_.back()->setGeometry(QRect(60, 80, 51, 51));
-  lightPanelsButtons_.back()->setFont( font12 );
-  lightPanelsButtons_.push_back( new QPushButton(lightPanelsGroupBox_) );
-  lightPanelsButtons_.back()->setObjectName(QString::fromUtf8("lightPanelsButton3_"));
-  lightPanelsButtons_.back()->setGeometry(QRect(10, 20, 41, 111));
-  lightPanelsButtons_.back()->setFont( font12 );
-  lightPanelsButtons_.push_back( new QPushButton(lightPanelsGroupBox_) );
-  lightPanelsButtons_.back()->setObjectName(QString::fromUtf8("lightPanelsButton4_"));
-  lightPanelsButtons_.back()->setGeometry(QRect(120, 20, 41, 111));
-  lightPanelsButtons_.back()->setFont( font12 );
-  lightPanelsButtons_.push_back( new QPushButton(lightPanelsGroupBox_) );
-  lightPanelsButtons_.back()->setObjectName(QString::fromUtf8("lightPanelsButton5_"));
-  lightPanelsButtons_.back()->setGeometry(QRect(10, 140, 151, 41));
-  lightPanelsButtons_.back()->setFont( font12 );
+  lightPanelButtons_.push_back( new DefoTogglePushButton(lightPanelsGroupBox_) );
+  lightPanelButtons_.back()->setObjectName(QString::fromUtf8("lightPanelsButton1_"));
+  lightPanelButtons_.back()->setGeometry(QRect(60, 20, 51, 51));
+  lightPanelButtons_.back()->setColorScheme( DefoTogglePushButton::Black_White );
+  lightPanelButtons_.back()->setFont( font12 );
+  lightPanelButtons_.push_back( new DefoTogglePushButton(lightPanelsGroupBox_) );
+  lightPanelButtons_.back()->setObjectName(QString::fromUtf8("lightPanelsButton2_"));
+  lightPanelButtons_.back()->setGeometry(QRect(60, 80, 51, 51));
+  lightPanelButtons_.back()->setColorScheme( DefoTogglePushButton::Black_White );
+  lightPanelButtons_.back()->setFont( font12 );
+  lightPanelButtons_.push_back( new DefoTogglePushButton(lightPanelsGroupBox_) );
+  lightPanelButtons_.back()->setObjectName(QString::fromUtf8("lightPanelsButton3_"));
+  lightPanelButtons_.back()->setGeometry(QRect(10, 20, 41, 111));
+  lightPanelButtons_.back()->setColorScheme( DefoTogglePushButton::Black_White );
+  lightPanelButtons_.back()->setFont( font12 );
+  lightPanelButtons_.push_back( new DefoTogglePushButton(lightPanelsGroupBox_) );
+  lightPanelButtons_.back()->setObjectName(QString::fromUtf8("lightPanelsButton4_"));
+  lightPanelButtons_.back()->setGeometry(QRect(120, 20, 41, 111));
+  lightPanelButtons_.back()->setColorScheme( DefoTogglePushButton::Black_White );
+  lightPanelButtons_.back()->setFont( font12 );
+  lightPanelButtons_.push_back( new DefoTogglePushButton(lightPanelsGroupBox_) );
+  lightPanelButtons_.back()->setObjectName(QString::fromUtf8("lightPanelsButton5_"));
+  lightPanelButtons_.back()->setGeometry(QRect(10, 140, 151, 41));
+  lightPanelButtons_.back()->setColorScheme( DefoTogglePushButton::Black_White );
+  lightPanelButtons_.back()->setFont( font12 );
   lightPanelsAllPanelsGroupBox_ = new QGroupBox(lightPanelsGroupBox_);
   lightPanelsAllPanelsGroupBox_->setObjectName(QString::fromUtf8("lightPanelsAllPanelsGroupBox_"));
-  lightPanelsAllPanelsGroupBox_->setGeometry(QRect(180, 30, 81, 141));
+  lightPanelsAllPanelsGroupBox_->setGeometry(QRect(180, 20, 81, 101));
   lightPanelsAllPanelsGroupBox_->setFont(smallGroupBoxFont);
   lightPanelsAllPanelsGroupBox_->setAlignment(Qt::AlignCenter);
   allPanelsOnButton_ = new QPushButton(lightPanelsAllPanelsGroupBox_);
   allPanelsOnButton_->setObjectName(QString::fromUtf8("allPanelsOnButton_"));
-  allPanelsOnButton_->setGeometry(QRect(10, 30, 61, 41));
+  allPanelsOnButton_->setGeometry(QRect(10, 20, 61, 31));
   allPanelsOffButton_ = new QPushButton(lightPanelsAllPanelsGroupBox_);
   allPanelsOffButton_->setObjectName(QString::fromUtf8("allPanelsOffButton_"));
-  allPanelsOffButton_->setGeometry(QRect(10, 80, 61, 41));
+  allPanelsOffButton_->setGeometry(QRect(10, 60, 61, 31));
   conradGroupBox_ = new QGroupBox(powerGroupBox_);
   conradGroupBox_->setObjectName(QString::fromUtf8("conradGroupBox_"));
   conradGroupBox_->setGeometry(QRect(290, 20, 101, 51));
@@ -1527,7 +1532,18 @@ void DefoMainWindow::setupUi( void ) {
   ledsPowerOnButton_ = new QPushButton(ledsGroupBox_);
   ledsPowerOnButton_->setObjectName(QString::fromUtf8("ledsPowerOnButton_"));
   ledsPowerOnButton_->setGeometry(QRect(20, 20, 61, 31));
-  
+  commPortGroupBox_ = new QGroupBox(lightPanelsGroupBox_);
+  commPortGroupBox_->setObjectName(QString::fromUtf8("commPortGroupBox_"));
+  commPortGroupBox_->setGeometry(QRect(180, 130, 81, 51));
+  commPortGroupBox_->setAlignment(Qt::AlignCenter);
+  commPortLineEdit_ = new QLineEdit(commPortGroupBox_);
+  commPortLineEdit_->setObjectName(QString::fromUtf8("commPortLineEdit_"));
+  commPortLineEdit_->setGeometry(QRect(10, 20, 61, 26));
+  QFont commPortFont;
+  commPortFont.setFamily(QString::fromUtf8("Liberation Mono"));
+  commPortLineEdit_->setFont(commPortFont);
+  commPortLineEdit_->setAlignment(Qt::AlignCenter);
+  commPortLineEdit_->setStyleSheet(QString::fromUtf8("background-color: rgb(255, 255, 255);"));
 
   // camera group
   cameraOptionsGroupBox_ = new QGroupBox(advanced_tab);
@@ -1770,7 +1786,7 @@ void DefoMainWindow::retranslateUi( void ) {
   powerGroupBox_->setTitle(QApplication::translate("MainWindow", "Power", 0, QApplication::UnicodeUTF8));
   lightPanelsGroupBox_->setTitle(QApplication::translate("MainWindow", "Light Panels", 0, QApplication::UnicodeUTF8));
   for( unsigned int i = 0; i < 5; ++i ) {
-    lightPanelsButtons_.at( i )->setText(QApplication::translate("MainWindow",
+    lightPanelButtons_.at( i )->setText(QApplication::translate("MainWindow",
       (QString("%1").arg(i+1)).toStdString().c_str(), 0, QApplication::UnicodeUTF8));
   }
   lightPanelsAllPanelsGroupBox_->setTitle(QApplication::translate("MainWindow", "All panels", 0, QApplication::UnicodeUTF8));
@@ -1782,6 +1798,8 @@ void DefoMainWindow::retranslateUi( void ) {
   ledsPowerOnButton_->setText(QApplication::translate("MainWindow", "ON/OFF", 0, QApplication::UnicodeUTF8));
   cameraPowerGroupBox_->setTitle(QApplication::translate("MainWindow", "Camera", 0, QApplication::UnicodeUTF8));
   cameraPowerOnButton_->setText(QApplication::translate("MainWindow", "ON/OFF", 0, QApplication::UnicodeUTF8));
+  commPortGroupBox_->setTitle(QApplication::translate("MainWindow", "CommPort", 0, QApplication::UnicodeUTF8));
+  commPortLineEdit_->setText(QApplication::translate("MainWindow", "ttyUSB0", 0, QApplication::UnicodeUTF8));
 
   cameraOptionsGroupBox_->setTitle(QApplication::translate("MainWindow", "Camera options", 0, QApplication::UnicodeUTF8));
   apertureLabel_->setText(QApplication::translate("MainWindow", "Aperture", 0, QApplication::UnicodeUTF8));

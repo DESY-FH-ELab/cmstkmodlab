@@ -15,8 +15,6 @@
 #include <string>
 #include <fstream>
 
-//#include <boost/archive/text_oarchive.hpp>
-//#include <boost/archive/text_iarchive.hpp>
 #include <boost/archive/binary_oarchive.hpp>
 #include <boost/archive/binary_iarchive.hpp>
 
@@ -45,7 +43,8 @@
 #include <QMessageBox>
 #include <QInputDialog>
 #include <QCheckBox>
-//#include <QMetaEnum>
+
+#include "qwt_plot.h"
 
 #include "DefoSurfacePlot.h"
 #include "DefoSchedule.h"
@@ -57,10 +56,51 @@
 #include "DefoConfigReader.h"
 #include "DefoCamHandler.h"
 
-#include "qwt_plot.h"
+#include "devices/Conrad/ConradController.h"
 
 
 QT_BEGIN_NAMESPACE
+
+
+
+///
+/// QPushButton which remembers a boolean state
+/// and has some color functionality
+///
+/// if the button is "controlling" it
+/// emits stateChanged() when clickedAction() is received;
+/// such that we can make other buttons just "followers"
+///
+class DefoTogglePushButton : public QPushButton {
+
+ Q_OBJECT
+
+ public:
+
+  enum ColorScheme { Black_White, Gray_Green };
+  
+  DefoTogglePushButton( QWidget* parent = 0 );
+  void setColorScheme( DefoTogglePushButton::ColorScheme scheme ) { colorScheme_ = scheme; updateColor(); }
+  bool isActive( void ) { return isActive_; }
+  void setActive( bool a ) { if( a != isActive_ ) click(); }
+  bool isControlling( void ) { return isControlling_; }
+  void setControlling( bool c ) { isControlling_ = c; }
+
+ public slots:
+  void clickedAction( void );
+
+ signals:
+  void stateChanged( void );
+
+ private:
+  void updateColor( void );
+
+  bool isControlling_;
+  bool isActive_;
+  DefoTogglePushButton::ColorScheme colorScheme_;
+
+};
+
 
 
 
@@ -169,14 +209,9 @@ class DefoMainWindow : public QWidget {
   void loadImageFromFile( void );
   void cameraEnabledButtonToggled( bool );
   void writeParameters( void );
-  
-  void panelButton1Clicked( void );
-  void panelButton2Clicked( void );
-  void panelButton3Clicked( void );
-  void panelButton4Clicked( void );
-  void panelButton5Clicked( void );
   void allPanelsOn( void );
   void allPanelsOff( void );
+  void handleConradEvent( void );
   void conradEnabledToggled( bool );
 
  signals:
@@ -197,6 +232,9 @@ class DefoMainWindow : public QWidget {
   void initLightPanelStates( std::string const& );
 
   unsigned int debugLevel_;
+
+  ConradController* conradController_;
+  bool isConradCommunication_;
 
   DefoCamHandler camHandler_; // camera steering
   bool isCameraEnabled_; // flag for camera operation on/off
@@ -226,7 +264,7 @@ class DefoMainWindow : public QWidget {
 
   std::vector<DefoArea> areas_;
 
-  std::vector<bool> lightPanelStates_;
+  //  std::vector<bool> lightPanelStates_;
 
   QWidget *centralwidget;
   QTabWidget *mainTabWidget_;
@@ -446,18 +484,15 @@ class DefoMainWindow : public QWidget {
   QGroupBox *lightPanelsAllPanelsGroupBox_;
   QPushButton *allPanelsOnButton_;
   QPushButton *allPanelsOffButton_;
-  std::vector<QPushButton*> lightPanelsButtons_;
-  //   QPushButton *lightPanelsButton1_;
-  //   QPushButton *lightPanelsButton2_;
-  //   QPushButton *lightPanelsButton4_;
-  //   QPushButton *lightPanelsButton3_;
-  //   QPushButton *lightPanelsButton5_;
+  std::vector<DefoTogglePushButton*> lightPanelButtons_;
   QGroupBox *ledsGroupBox_;
   QPushButton *ledsPowerOnButton_;
   QGroupBox *cameraPowerGroupBox_;
   QPushButton *cameraPowerOnButton_;
   QGroupBox *conradGroupBox_;
   QCheckBox *conradEnabledCheckbox_;
+  QGroupBox *commPortGroupBox_;
+  QLineEdit *commPortLineEdit_;
 
   QGroupBox *cameraOptionsGroupBox_;
   QComboBox *apertureComboBox_;
