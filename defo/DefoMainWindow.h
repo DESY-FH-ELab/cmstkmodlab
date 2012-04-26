@@ -212,7 +212,9 @@ class DefoMainWindow : public QWidget {
   void allPanelsOn( void );
   void allPanelsOff( void );
   void handleConradEvent( void );
-  void conradEnabledToggled( bool );
+  void enableConrad( bool );
+  void timerEnableConrad( void ) { enableConrad( true ); } // for enable with timer
+  void setupConradCommunication( void );
 
  signals:
   void pollAction( void );
@@ -230,15 +232,18 @@ class DefoMainWindow : public QWidget {
   QDir const checkAndCreateOutputFolder( char const* );
   void writePointsToFile( std::vector<DefoPoint> const&, QString const& ) const;
   void initLightPanelStates( std::string const& );
+  
+
 
   unsigned int debugLevel_;
 
   ConradController* conradController_;
   bool isConradCommunication_;
+  bool isConradCommOnStartup_;
+  //  bool isConradEnabled_; // global state
 
   DefoCamHandler camHandler_; // camera steering
   bool isCameraEnabled_; // flag for camera operation on/off
-  bool isConradEnabled_; // flag for relay card operation
 
   DefoSchedule* schedule_; // the measurement schedule
   QTimer* pollingDelay_; // timer to allow for GUI update when polling

@@ -34,10 +34,18 @@ DefoMainWindow::DefoMainWindow( QWidget* parent ) : QWidget( parent ) {
   geometryPitchSpinbox1_->setValue( cfgReader.getValue<double>( "PIXEL_PITCH_X" ) * 1.e6 ); // m -> micrometer
   geometryPitchSpinbox2_->setValue( cfgReader.getValue<double>( "PIXEL_PITCH_Y" ) * 1.e6); // m -> micrometer
   surfaceRecoSpacingSpinbox_->setValue( cfgReader.getValue<int>( "SPACING_ESTIMATE" ) );
-  //  surfaceRecoSearchpathSpinbox_->setValue( cfgReader.getValue<int>( "SEARCH_PATH_HALF_WIDTH" ) );
   chillerParametersSpinbox1_->setValue( cfgReader.getValue<double>( "CHILLER_PARAMETER_XP" ) );
   chillerParametersSpinbox2_->setValue( cfgReader.getValue<int>( "CHILLER_PARAMETER_TN" ) );
   chillerParametersSpinbox3_->setValue( cfgReader.getValue<int>( "CHILLER_PARAMETER_TV" ) );
+
+  // connect to Conrad?
+  isConradCommunication_ = false;
+  isConradCommOnStartup_ = ( "true" == cfgReader.getValue<std::string>( "CONRAD_COMM_WHEN_START" )?true:false );
+
+  if( isConradCommOnStartup_ ) {
+    // this is with timer because otherwise error window appears before GUI :-(
+    QTimer::singleShot( 100, this, SLOT(timerEnableConrad()) );
+  }
 
   readCameraParametersFromCfgFile(); // this is grouped
 
@@ -45,9 +53,6 @@ DefoMainWindow::DefoMainWindow( QWidget* parent ) : QWidget( parent ) {
   isCameraEnabled_ = cameraConnectionCheckBox_->isChecked();
   cameraEnabledButtonToggled( isCameraEnabled_ );
 
-  conradEnabledCheckbox_->setChecked( "true" == cfgReader.getValue<std::string>( "RELAY_POWER_WHEN_START" )?true:false);
-  isConradEnabled_ = conradEnabledCheckbox_->isChecked();
-  
   pollingDelay_ = new QTimer();
 
   isManual_ = false;
@@ -152,7 +157,7 @@ void DefoMainWindow::setupSignalsAndSlots( void ) {
   }
   connect( allPanelsOnButton_, SIGNAL(clicked()), this, SLOT(allPanelsOn() ) );
   connect( allPanelsOffButton_, SIGNAL(clicked()), this, SLOT(allPanelsOff() ) );
-  connect( conradEnabledCheckbox_, SIGNAL( toggled(bool) ), this, SLOT( conradEnabledToggled(bool) ) );
+  connect( conradEnabledCheckbox_, SIGNAL( toggled(bool) ), this, SLOT( enableConrad(bool) ) );
 }
 
 
@@ -1451,18 +1456,94 @@ void DefoMainWindow::cameraEnabledButtonToggled( bool isChecked ) {
 ///
 ///
 ///
-void DefoMainWindow::conradEnabledToggled( bool isChecked ) {
+void DefoMainWindow::enableConrad( bool isChecked ) {
+  
+  // it's a request to enable conrad
+  if( isChecked ) setupConradCommunication(); // better renew if already established
 
-  isConradEnabled_ = isChecked;
+  // it's request to disable conrad
+  else {
+    //     if( conradController_ ) delete conradController_;
+    //     conradController_ = 0; // better leave it...
+    isConradCommunication_ = false;
+    commPortLineEdit_->setText( QString( "-" ) );
+  }
 
+  // switch buttons enable
   for( unsigned int i = 0; i < 5; ++i ) {
-    lightPanelButtons_.at( i )->setEnabled( isChecked );
+    lightPanelButtons_.at( i )->setEnabled( isConradCommunication_ );
   }
   
-  allPanelsOnButton_->setEnabled( isChecked );
-  allPanelsOffButton_->setEnabled( isChecked );
-  ledsPowerOnButton_->setEnabled( isChecked );
-  cameraPowerOnButton_->setEnabled( isChecked );
+  allPanelsOnButton_->setEnabled( isConradCommunication_ );
+  allPanelsOffButton_->setEnabled( isConradCommunication_ );
+  ledsPowerOnButton_->setEnabled( isConradCommunication_ );
+  cameraPowerOnButton_->setEnabled( isConradCommunication_ );
+  
+}
+///
+///
+///
+void DefoMainWindow::initLightPanelStates( std::string const& stateString ) {
+  Q_UNUSED(stateString)
+//   if( stateString.size() != 5 ) {
+//     std::cerr << " [DefoMainWindow::initLightPanelStates] ** ERROR: argument to cfg parameter PANEL_STATE_WHEN_START has size: "
+// 	      << stateString.size() << ". All panels off." << std::endl;
+//     for( unsigned int i = 0; i < 5; ++i ) lightPanelStates_.at( i ) = false;
+//     return;
+//   }
+  
+//   for( unsigned int i = 0; i < stateString.size(); ++i ) {
+    
+//     if( stateString.at( i ) == '0' ) lightPanelStates_.at( i ) = false;
+//     else if( stateString.at( i ) == '1' ) lightPanelStates_.at( i ) = true;
+//     else {
+//       std::cerr << " [DefoMainWindow::initLightPanelStates] ** WARNING: bogus character: \"" << stateString.at( i )
+// 		<< "\" as argument to cfg parameter PANEL_STATE_WHEN_START, will interpret this as \"off\"." << std::endl;
+//       lightPanelStates_.at( i ) = false;
+//     }
+    
+//   }
+  
+}
+
+
+
+///
+///
+///
+void DefoMainWindow::setupConradCommunication( void ) {
+
+  // create a list with all available ttyUSB device files
+  QDir devDir( "/dev" );
+  QStringList filters;
+  filters << "ttyUSB*"; 
+  QStringList list = devDir.entryList( filters, QDir::System ); 
+
+  isConradCommunication_ = false;
+
+  // browse until we find the correct one
+  for( QStringList::const_iterator it = list.begin(); it < list.end(); ++it ) {
+    
+    if( conradController_ ) delete conradController_; // renew
+    conradController_ = new ConradController( (*it).toStdString().c_str() );
+    
+    if( conradController_->initialize() ) { // check communication
+      isConradCommunication_ = true;
+      commPortLineEdit_->setText( *it );
+      conradEnabledCheckbox_->setChecked( true ); // request must not always come from checkbox, so make sure it's on
+      break;
+    }
+    
+  }
+
+  if( !isConradCommunication_ ) {
+    commPortLineEdit_->setText( QString( "-" ) );
+    QMessageBox::critical( this, tr("[DefoMainWindow::setupConradCommunication]"),
+			   QString("ERROR ** Cannot connect to Conrad."),
+			   QMessageBox::Ok );
+    std::cerr << " [DefoMainWindow::setupConradCommunication] ** ERROR: Cannot connect to Conrad." << std::endl;
+    conradEnabledCheckbox_->setChecked( false );
+  }
 
 }
 
@@ -1533,34 +1614,6 @@ void DefoMainWindow::writePointsToFile( std::vector<DefoPoint> const& points, QS
 	 << std::setw( 8 ) << (it->isBlue()?" BLUE":" WHITE") << std::endl;
   }
 
-}
-
-
-
-///
-///
-///
-void DefoMainWindow::initLightPanelStates( std::string const& stateString ) {
-  Q_UNUSED(stateString)
-//   if( stateString.size() != 5 ) {
-//     std::cerr << " [DefoMainWindow::initLightPanelStates] ** ERROR: argument to cfg parameter PANEL_STATE_WHEN_START has size: "
-// 	      << stateString.size() << ". All panels off." << std::endl;
-//     for( unsigned int i = 0; i < 5; ++i ) lightPanelStates_.at( i ) = false;
-//     return;
-//   }
-  
-//   for( unsigned int i = 0; i < stateString.size(); ++i ) {
-    
-//     if( stateString.at( i ) == '0' ) lightPanelStates_.at( i ) = false;
-//     else if( stateString.at( i ) == '1' ) lightPanelStates_.at( i ) = true;
-//     else {
-//       std::cerr << " [DefoMainWindow::initLightPanelStates] ** WARNING: bogus character: \"" << stateString.at( i )
-// 		<< "\" as argument to cfg parameter PANEL_STATE_WHEN_START, will interpret this as \"off\"." << std::endl;
-//       lightPanelStates_.at( i ) = false;
-//     }
-    
-//   }
-  
 }
 
 

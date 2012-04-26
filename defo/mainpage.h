@@ -614,7 +614,6 @@ comments and will be ignored.
 
 <PRE>
 
-
 ##################################
 ## DEFO MAIN CONFIGURATION FILE ##
 ##################################
@@ -681,23 +680,27 @@ CHILLER_PARAMETER_XP	0.1
 CHILLER_PARAMETER_TN	3
 CHILLER_PARAMETER_TV	0
 
-# should the conrad relays
+# should the conrad relay communication
 # be enabled at startup? [true/false]
-# devices will be powered immediately
-RELAY_POWER_WHEN_START	true
+# active devices will be powered immediately
+CONRAD_COMM_WHEN_START	true
 
 # light panel power state on program startup;
 # this is a 5-digit string (1/0) indicating the power state
-# for panels 1-5 (see sketch at end of file)
+# for panels 1-5, see sketch at end of file;
+# (only effective if RELAY_POWER_WHEN_START = true)
+#
 # panel                 12345
 #----------------------------
 PANEL_STATE_WHEN_START	11111
 
-# calibration LEDs on at startup? [true/false]
+# calibration LEDs powered at startup? [true/false]
+# (only effective if RELAY_POWER_WHEN_START = true)
 LEDS_POWER_WHEN_START	false
 
 # should the camera be powered
-# at program startup? (true/false)
+# at program startup? [true/false]
+(only effective if RELAY_POWER_WHEN_START = true)
 CAMERA_POWER_WHEN_START	false
 
 # defines the verbosity of debug output [0-3],
@@ -739,6 +742,7 @@ DEBUG_LEVEL		0
 # ---------------
 # |      5      |
 # ---------------
+
 </PRE>
 
 \subsection app_containers_subsec    A.2 Overview of the container classes
