@@ -41,9 +41,11 @@ DefoMainWindow::DefoMainWindow( QWidget* parent ) : QWidget( parent ) {
   // connect to Conrad?
   isConradCommunication_ = false;
   isConradCommOnStartup_ = ( "true" == cfgReader.getValue<std::string>( "CONRAD_COMM_WHEN_START" )?true:false );
+  panelStartupState_ = cfgReader.getValue<std::string>( "PANEL_STATE_WHEN_START" );
 
   if( isConradCommOnStartup_ ) {
     // this is with timer because otherwise error window appears before GUI :-(
+    isStartup_ = true; // switched back by enableConrad()
     QTimer::singleShot( 100, this, SLOT(timerEnableConrad()) );
   }
 
@@ -62,16 +64,6 @@ DefoMainWindow::DefoMainWindow( QWidget* parent ) : QWidget( parent ) {
   baseFolderName_ = basefolderTextedit_->toPlainText(); // LOAD DEFAULT
   defaultMeasurementId();
 
-  // read light panel startup cfg...
-  //  lightPanelStates_.resize( 5 );
-  //  initLightPanelStates( cfgReader.getValue<std::string>( "PANEL_STATE_WHEN_START" ) );
-  
-  // .. and set buttons
-  //  for( unsigned int i = 0; i < 5; ++i ) {
-  //    if( lightPanelStates_.at( i ) ) lightPanelsButtons_.at( i )->setStyleSheet("background-color: rgb(252, 250, 210); color: rgb(0, 0, 0)");
-  //    else lightPanelsButtons_.at( i )->setStyleSheet("background-color: rgb(0, 0, 0); color: rgb(255, 255, 255)");
-  //  }
-  
 }
 
 
@@ -1462,91 +1454,124 @@ void DefoMainWindow::cameraEnabledButtonToggled( bool isChecked ) {
 void DefoMainWindow::enableConrad( bool isChecked ) {
   
   // it's a request to enable conrad
-  if( isChecked ) setupConradCommunication(); // better renew if already established
+  if( isChecked ) {
+
+    setupConradCommunication(); // better renew if already established
+    if( !isConradCommunication_ ) return;
+
+    if( isStartup_ ) { // GUI is starting up
+      initLightPanelStates( panelStartupState_ );
+      isStartup_ = false; // switch back
+    }
+    else { // event triggered by the conrad enabled checkbox: read states from card
+      // const std::vector<bool> states = conradController_->queryStatus(); // ENABLE!
+      for( unsigned int i = 0; i < 5; ++i ) {
+	// lightPanelButtons_.at( i )->setEnabled( states.at( i ) ); // ENABLE!
+      }
+    }
+
+  }
 
   // it's request to disable conrad
   else {
-    //     if( conradController_ ) delete conradController_;
-    //     conradController_ = 0; // better leave it...
     isConradCommunication_ = false;
     commPortLineEdit_->setText( QString( "-" ) );
+    allPanelsOff(); // unset all buttons
+    ledsPowerOnButton_->setActive( false ); // dto.
+    cameraPowerOnButton_->setActive( false ); // dto.
+    // btw. we leave the conradController_ pointer valid, just in case..
   }
 
   // switch buttons enable
-  for( unsigned int i = 0; i < 5; ++i ) {
-    lightPanelButtons_.at( i )->setEnabled( isConradCommunication_ );
-  }
-  
-  allPanelsOnButton_->setEnabled( isConradCommunication_ );
-  allPanelsOffButton_->setEnabled( isConradCommunication_ );
-  ledsPowerOnButton_->setEnabled( isConradCommunication_ );
-  cameraPowerOnButton_->setEnabled( isConradCommunication_ );
-  
+  enableConradButtons( isConradCommunication_ );
+
 }
+
+
+
 ///
-///
+/// switch light panels according to a string
+/// as specified in the cfg file (PANEL_STATE_WHEN_START)
 ///
 void DefoMainWindow::initLightPanelStates( std::string const& stateString ) {
-  Q_UNUSED(stateString)
-//   if( stateString.size() != 5 ) {
-//     std::cerr << " [DefoMainWindow::initLightPanelStates] ** ERROR: argument to cfg parameter PANEL_STATE_WHEN_START has size: "
-// 	      << stateString.size() << ". All panels off." << std::endl;
-//     for( unsigned int i = 0; i < 5; ++i ) lightPanelStates_.at( i ) = false;
-//     return;
-//   }
+
+  allPanelsOff();
+
+  if( stateString.size() != 5 ) {
+    std::cerr << " [DefoMainWindow::initLightPanelStates] ** ERROR: argument to cfg parameter PANEL_STATE_WHEN_START has size: "
+	      << stateString.size() << ". All panels off." << std::endl;
+    return;
+  }
+
   
-//   for( unsigned int i = 0; i < stateString.size(); ++i ) {
+  for( unsigned int i = 0; i < stateString.size(); ++i ) {
     
-//     if( stateString.at( i ) == '0' ) lightPanelStates_.at( i ) = false;
-//     else if( stateString.at( i ) == '1' ) lightPanelStates_.at( i ) = true;
-//     else {
-//       std::cerr << " [DefoMainWindow::initLightPanelStates] ** WARNING: bogus character: \"" << stateString.at( i )
-// 		<< "\" as argument to cfg parameter PANEL_STATE_WHEN_START, will interpret this as \"off\"." << std::endl;
-//       lightPanelStates_.at( i ) = false;
-//     }
+    if( '0' == stateString.at( i ) ); // nothing
+    else if( '1' == stateString.at( i ) ) lightPanelButtons_.at( i )->click();
+    else {
+      std::cerr << " [DefoMainWindow::initLightPanelStates] ** WARNING: bogus character: \"" << stateString.at( i )
+		<< "\" as argument to cfg parameter PANEL_STATE_WHEN_START, will interpret this as \"off\"." << std::endl;
+    }
     
-//   }
+  }
   
 }
 
 
 
 ///
-///
+/// auto-detect conrad card thru /dev/ttyUSB* files
 ///
 void DefoMainWindow::setupConradCommunication( void ) {
 
-  // create a list with all available ttyUSB device files
+  // create a list with all available ttyUSB device (system) files
   QDir devDir( "/dev" );
   //QDir devDir( "/home/olzem/cms/upgrade/defo/svn/cmstkmodlab/trunk/defo" ); //////////////////////////////////////////// testing
   QStringList filters;
   filters << "ttyUSB*"; 
   QStringList list = devDir.entryList( filters, QDir::System ); // only system files!
-  // QStringList list = devDir.entryList( filters, QDir::Files ); ///////////////////////////////// testing
+  //QStringList list = devDir.entryList( filters, QDir::Files ); ///////////////////////////////// testing
+
   isConradCommunication_ = false;
 
-  // browse until we find the correct one
+  // browse and try initialize() until conradController_ gets an answer
   for( QStringList::const_iterator it = list.begin(); it < list.end(); ++it ) {
 
     if( conradController_ ) delete conradController_; // renew
     conradController_ = new ConradController( (*it).toStdString().c_str() );
     
     if( conradController_->initialize() ) { // check communication
+
       isConradCommunication_ = true;
       commPortLineEdit_->setText( *it );
-      conradEnabledCheckbox_->setChecked( true ); // request must not always come from checkbox, so make sure it's on
+
+      // request must not always come from checkbox, so make sure it's on;
+      // here we must block signals, otherwise the checkbox triggers setupConradCommunication again
+      bool oldState = conradEnabledCheckbox_->blockSignals( true );
+      conradEnabledCheckbox_->setChecked( true ); 
+      conradEnabledCheckbox_->blockSignals( oldState );
+
       break;
     }
     
   }
 
+  // if not successful..
   if( !isConradCommunication_ ) {
+
     commPortLineEdit_->setText( QString( "-" ) );
     QMessageBox::critical( this, tr("[DefoMainWindow::setupConradCommunication]"),
-			   QString("ERROR ** Cannot connect to Conrad."),
+			   QString("ERROR ** Cannot connect to Conrad.\nCheck if /dev/ttyUSB* device files are present."),
 			   QMessageBox::Ok );
-    std::cerr << " [DefoMainWindow::setupConradCommunication] ** ERROR: Cannot connect to Conrad." << std::endl;
+    std::cerr << " [DefoMainWindow::setupConradCommunication] ** ERROR: Cannot connect to Conrad. Check if /dev/ttyUSB* device files are present." << std::endl;
+
+    bool oldState = conradEnabledCheckbox_->blockSignals( true );
     conradEnabledCheckbox_->setChecked( false );
+    conradEnabledCheckbox_->blockSignals( oldState );
+    
+    // switch buttons enable
+    enableConradButtons( false );
+
   }
 
 }
@@ -1554,7 +1579,7 @@ void DefoMainWindow::setupConradCommunication( void ) {
 
 
 ///
-///
+/// switch relays when conrad events (buttons pushed) appear
 ///
 void DefoMainWindow::handleConradEvent( void ) {
 
@@ -1585,6 +1610,50 @@ void DefoMainWindow::handleConradEvent( void ) {
     
   }
   
+}
+
+
+
+///
+/// all panel buttons inactive, doesn't trigger action
+///
+void DefoMainWindow::allPanelsOff( void ) {
+
+  for( std::vector<DefoTogglePushButton*>::const_iterator it = lightPanelButtons_.begin(); it < lightPanelButtons_.end(); ++it ) {
+    (*it)->setActive( false );
+  }
+
+}
+
+
+
+///
+/// all panel buttons active, doesn't trigger action
+///
+void DefoMainWindow::allPanelsOn( void ) {
+
+  for( std::vector<DefoTogglePushButton*>::const_iterator it = lightPanelButtons_.begin(); it < lightPanelButtons_.end(); ++it ) {
+    (*it)->setActive( true );
+  }
+
+}
+
+
+
+///
+/// set enabled state of all conrad power buttons
+///
+void DefoMainWindow::enableConradButtons( bool enable ) {
+
+  for( unsigned int i = 0; i < 5; ++i ) {
+    lightPanelButtons_.at( i )->setEnabled( enable );
+  }
+
+  allPanelsOnButton_->setEnabled( enable );
+  allPanelsOffButton_->setEnabled( enable );
+  ledsPowerOnButton_->setEnabled( enable );
+  cameraPowerOnButton_->setEnabled( enable );
+
 }
 
 
@@ -1652,32 +1721,6 @@ void DefoMainWindow::writePointsToFile( std::vector<DefoPoint> const& points, QS
 	 << " x-index: " << std::setw( 3 ) << it->getIndex().first
 	 << " y-index: " << std::setw( 3 ) << it->getIndex().second
 	 << std::setw( 8 ) << (it->isBlue()?" BLUE":" WHITE") << std::endl;
-  }
-
-}
-
-
-
-///
-///
-///
-void DefoMainWindow::allPanelsOff( void ) {
-
-  for( std::vector<DefoTogglePushButton*>::const_iterator it = lightPanelButtons_.begin(); it < lightPanelButtons_.end(); ++it ) {
-    (*it)->setActive( false );
-  }
-
-}
-
-
-
-///
-///
-///
-void DefoMainWindow::allPanelsOn( void ) {
-
-  for( std::vector<DefoTogglePushButton*>::const_iterator it = lightPanelButtons_.begin(); it < lightPanelButtons_.end(); ++it ) {
-    (*it)->setActive( true );
   }
 
 }

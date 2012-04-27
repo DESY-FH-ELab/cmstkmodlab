@@ -232,7 +232,7 @@ class DefoMainWindow : public QWidget {
   QDir const checkAndCreateOutputFolder( char const* );
   void writePointsToFile( std::vector<DefoPoint> const&, QString const& ) const;
   void initLightPanelStates( std::string const& );
-  
+  void enableConradButtons( bool );
 
 
   unsigned int debugLevel_;
@@ -240,7 +240,8 @@ class DefoMainWindow : public QWidget {
   ConradController* conradController_;
   bool isConradCommunication_;
   bool isConradCommOnStartup_;
-  //  bool isConradEnabled_; // global state
+  bool isStartup_; // whether Conrad configuring happens at startup, not a nice solution..
+  std::string panelStartupState_;
 
   DefoCamHandler camHandler_; // camera steering
   bool isCameraEnabled_; // flag for camera operation on/off
