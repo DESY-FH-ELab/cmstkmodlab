@@ -1521,7 +1521,8 @@ void DefoMainWindow::setupUi( void ) {
   cameraPowerGroupBox_->setGeometry(QRect(290, 150, 101, 61));
   cameraPowerGroupBox_->setFont(smallGroupBoxFont);
   cameraPowerGroupBox_->setAlignment(Qt::AlignCenter);
-  cameraPowerOnButton_ = new QPushButton(cameraPowerGroupBox_);
+  cameraPowerOnButton_ = new DefoTogglePushButton(cameraPowerGroupBox_);
+  cameraPowerOnButton_->setColorScheme( DefoTogglePushButton::Gray_Green );
   cameraPowerOnButton_->setObjectName(QString::fromUtf8("cameraPowerOnButton_"));
   cameraPowerOnButton_->setGeometry(QRect(20, 20, 61, 31));
   ledsGroupBox_ = new QGroupBox(powerGroupBox_);
@@ -1529,7 +1530,8 @@ void DefoMainWindow::setupUi( void ) {
   ledsGroupBox_->setGeometry(QRect(290, 80, 101, 61));
   ledsGroupBox_->setFont(smallGroupBoxFont);
   ledsGroupBox_->setAlignment(Qt::AlignCenter);
-  ledsPowerOnButton_ = new QPushButton(ledsGroupBox_);
+  ledsPowerOnButton_ = new DefoTogglePushButton(ledsGroupBox_);
+  ledsPowerOnButton_->setColorScheme( DefoTogglePushButton::Gray_Green );
   ledsPowerOnButton_->setObjectName(QString::fromUtf8("ledsPowerOnButton_"));
   ledsPowerOnButton_->setGeometry(QRect(20, 20, 61, 31));
   commPortGroupBox_ = new QGroupBox(lightPanelsGroupBox_);

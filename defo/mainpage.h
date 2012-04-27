@@ -7,9 +7,11 @@
 \section contents_sec              Contents
 
 \ref overview_sec <BR>
+
 \ref imagereco_sec <BR>
 &nbsp;&nbsp;\ref point_subsec <BR>
 &nbsp;&nbsp;\ref bluepoint_subsec <BR>
+
 \ref surfacereco_sec <BR>
 &nbsp;&nbsp;\ref units_subsec <BR>
 &nbsp;&nbsp;\ref spacing_subsec <BR>
@@ -19,11 +21,15 @@
 &nbsp;&nbsp;\ref surfacecreation_subsec <BR>
 &nbsp;&nbsp;\ref offsetsandtilts_subsec <BR>
 &nbsp;&nbsp;\ref surfaceevaluation_subsec <BR>
+
 \ref surfaceformat_sec <BR>
+
 \ref devices_sec <BR>
 &nbsp;&nbsp;\ref camera_subsec <BR>
 &nbsp;&nbsp;\ref chiller_subsection <BR>
 &nbsp;&nbsp;\ref multimeter_subsection <BR>
+&nbsp;&nbsp;\ref relaycard_subsection <BR>
+
 \ref gui_sec <BR>
 &nbsp;&nbsp;\ref gui_overview_subsec <BR>
 &nbsp;&nbsp;\ref gui_online_subsec <BR>
@@ -38,6 +44,7 @@
 &nbsp;&nbsp;\ref gui_offline_subsec <BR>
 &nbsp;&nbsp;\ref gui_advanced_subsec <BR>
 &nbsp;&nbsp;\ref gui_viewer <BR>
+
 \ref appendix_sec <BR>
 &nbsp;&nbsp;\ref app_config_subsec <BR>
 &nbsp;&nbsp;\ref app_containers_subsec <BR>
@@ -394,13 +401,29 @@ expand #include statements.</font>
 A Julabo FP50 chiller is used as cooling plant. The corresponding
 functionality for steering the chiller and reading the operation
 parameters is embedded in the <tt>JulaboFP50</tt> class
-(<tt>devices/Julabo</tt>).
+(<tt>devices/Julabo</tt>). <SPAN style="color:#ff0000"><B>Not yet implemented!</B></span>
 
 \subsection multimeter_subsection		5.3 Multimeter
 
 pt100 temperature probes are read out via the Keithley 2700 multimeter.
 The corresponding functionality is embedded in the <tt>Keithley2700</tt>
-class (<tt>devices/Keithley</tt>).
+class (<tt>devices/Keithley</tt>). <SPAN style="color:#ff0000"><B>Not yet implemented!</B></span>
+
+\subsection relaycard_subsection		5.4 Power relay card
+Power switching for the light panels, the calibration LED system and
+the camera is handled by a Conrad C-Control 8-fold relay card which is
+connected via USB (onboard USB <> RS232 adapter). Access to the
+hardware is provided by the <tt>ConradController</tt> class
+(<tt>devices/Conrad</tt>). The following table indicates the
+association of the relay channels (0..8) to the power devices as it is
+implemented in the GUI. A sketch of the panel geometry can be found in
+the example configuration file (\ref app_config_subsec).
+
+<table border="1">
+  <tr><th>Relay channel</th><td>0</td><td>1</td><td>2</td><td>3</td><td>4</td><td>5</td><td>6</td><td>7</td></tr>
+  <tr><th>Device</th><td>panel 1</td><td>panel 2</td><td>panel 3</td><td>panel 4</td><td>panel 5</td>
+	<td>LED system</td><td>camera</td><td>--</td></tr>
+</table>
 
 \section gui_sec                               6. GUI
 
@@ -439,14 +462,13 @@ button restores the default string). The buttons are disabled during
 reconstruction or schedule execution.
 
 \subsubsection gui_online_areas_subsubsec      6.2.2 Areas
-
 The surface reconstruction process can be restricted to an area of
 interest ("area"). When an area is defined, all image features outside
 its boundaries are dismissed. Thus, an area is also useful for
 omitting parts of an image which are affected by ambient light
-effects, unwanted reflections or other nuisances. So far, only
-one single area can be defined which must involve a properly
-reconstructed and recognized blue point.
+effects, unwanted reflections or other nuisances. So far, only one
+single rectangular area can be defined <B>which must involve a properly
+reconstructible and recognizable blue point</B>.
 
 An area can be defined by clicking the <tt>New</tt> button and
 subsequent click-and-drag in the image to define its rectangular
@@ -497,8 +519,12 @@ as the reference for future images, until a new reference image is taken.</DD>
 <DT>DEFO</DT><DD>Reconstruct the points in the current image, perform surface reconstruction 
 relative to the last reference image and display the results in the offline tab (\ref gui_offline_subsec).
 </DD>
-<DT>TEMP</DT><DD>Opens a temperature dialog and sets the chiller target temperature to the specified value.</DD>.
-<SPAN style="color:#ff0000"><B>Not yet implemented!</B></span>
+<DT>TEMP</DT><DD>Opens a temperature dialog and sets the chiller target temperature to the specified value.
+<SPAN style="color:#ff0000"><B>Not yet implemented!</B></span></DD>
+<DT>CALIB</DT><DD>Switches off the light panels and powers the calibration LED system. Subsequently, an
+image of the LEDs is taken and reconstructed, and the point positions are written to the
+output folder in a plain text file. Afterwards, the power state of the light panels is
+restored and the LEDs are shut down. <SPAN style="color:#ff0000"><B>Not yet implemented!</B></span></DD>
 </DL>
 
 Surface reconstruction (<i>DEFO</i>) can only be performed if an image has previously been processed
@@ -549,7 +575,14 @@ as the reference for future images, until a new reference image is taken. <b>Val
 <DT>FILE_DEFO</DT><DD>Load an image from file and reconstruct the surface relative to the
 most recently taken reference image. <b>Value: image file path</b></DD>
 
-<DT>TEMP</DT><DD>Set the chiller bath target temperature. <b>Value: target temperature in deg C.</b> <SPAN style="color:#ff0000"><B>Not yet implemented!</B></span> </DD>
+<DT>TEMP</DT><DD>Set the chiller bath target temperature. <b>Value:
+target temperature in deg C.</b> <SPAN style="color:#ff0000"><B>Not
+yet implemented!</B></span> </DD>
+
+<DT>CALIB</DT><DD>Switches off the light panels and powers the calibration LED system. Subsequently, an
+image of the LEDs is taken and reconstructed, and the point positions are written to the
+output folder in a plain text file. Afterwards, the power state of the light panels is
+restored and the LEDs are shut down.  <b>Value: none</b> <SPAN style="color:#ff0000"><B> Not yet implemented!</B></span></DD>
 
 <DT>SLEEP</DT><DD>Sleep for the specified amount of seconds, e.g. to allow the chiller to reach a
 target temperature. When a schedule is paused during a <tt>SLEEP</tt> action, the sleep 
@@ -592,7 +625,30 @@ on startup. After modifying the parameters manually, the <tt>Apply</tt> button
 must be clicked to make these changes persistent.
 
 \subsubsection gui_advanced_power_subsubsec   6.5.4 Power options
+The items in the power group serve as the control interface to the
+Conrad relay card.  Software control can be enabled via the
+<tt>Enabled</tt> check box which will trigger auto-detection of the
+card through the <tt>ttyUSB</tt> device driver files in the
+<tt>/dev</tt> directory. Once the communication with the device is
+established, the steering buttons will be enabled, the
+<tt>CommPort</tt> display shows the device file, and the current state
+of the power channels is indicated by the color of the buttons. In
+the above screenshot, light panels 1 and 3 as well as the LED system
+are powered while panels 2, 4, 5 and the camera are switched off.
 
+If the <tt>CONRAD_COMM_WHEN_START</tt> configuration option is set to
+<tt>true</tt>, software control will be enabled at program startup. In
+that case, the desired initial power states of the light panels, the
+LED system and the camera can be specified via the
+<tt>PANEL_STATE_WHEN_START</tt>, <tt>LEDS_POWER_WHEN_START</tt> and
+<tt>CAMERA_POWER_WHEN_START</tt> configuration options. The respective
+channels will then be powered immediately at startup.
+
+Individual light panel power can be switched via the light panel
+buttons 1..5 (yellow = on, black = off); the two buttons in the <tt>All
+panels</tt> group power on/off all panels at the same time.  The LED
+system and the camera can be toggled via the respective buttons (green
+= on, gray = off).
 
 \subsection gui_viewer                         6.6 Defo Viewer
 
@@ -742,7 +798,7 @@ DEBUG_LEVEL		0
 # ---------------
 # |      5      |
 # ---------------
-
+#
 </PRE>
 
 \subsection app_containers_subsec    A.2 Overview of the container classes

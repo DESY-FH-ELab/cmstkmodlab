@@ -491,9 +491,9 @@ class DefoMainWindow : public QWidget {
   QPushButton *allPanelsOffButton_;
   std::vector<DefoTogglePushButton*> lightPanelButtons_;
   QGroupBox *ledsGroupBox_;
-  QPushButton *ledsPowerOnButton_;
+  DefoTogglePushButton *ledsPowerOnButton_;
   QGroupBox *cameraPowerGroupBox_;
-  QPushButton *cameraPowerOnButton_;
+  DefoTogglePushButton *cameraPowerOnButton_;
   QGroupBox *conradGroupBox_;
   QCheckBox *conradEnabledCheckbox_;
   QGroupBox *commPortGroupBox_;

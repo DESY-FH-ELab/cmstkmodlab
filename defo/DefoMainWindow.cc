@@ -155,6 +155,9 @@ void DefoMainWindow::setupSignalsAndSlots( void ) {
     (*it)->setControlling( true );
     QObject::connect( *it, SIGNAL(stateChanged()), this, SLOT(handleConradEvent()) );
   }
+  connect( ledsPowerOnButton_, SIGNAL(clicked()), this, SLOT(handleConradEvent() ) );
+  connect( cameraPowerOnButton_, SIGNAL(clicked()), this, SLOT(handleConradEvent() ) );
+
   connect( allPanelsOnButton_, SIGNAL(clicked()), this, SLOT(allPanelsOn() ) );
   connect( allPanelsOffButton_, SIGNAL(clicked()), this, SLOT(allPanelsOff() ) );
   connect( conradEnabledCheckbox_, SIGNAL( toggled(bool) ), this, SLOT( enableConrad(bool) ) );
@@ -1515,15 +1518,16 @@ void DefoMainWindow::setupConradCommunication( void ) {
 
   // create a list with all available ttyUSB device files
   QDir devDir( "/dev" );
+  //QDir devDir( "/home/olzem/cms/upgrade/defo/svn/cmstkmodlab/trunk/defo" ); //////////////////////////////////////////// testing
   QStringList filters;
   filters << "ttyUSB*"; 
-  QStringList list = devDir.entryList( filters, QDir::System ); 
-
+  QStringList list = devDir.entryList( filters, QDir::System ); // only system files!
+  // QStringList list = devDir.entryList( filters, QDir::Files ); ///////////////////////////////// testing
   isConradCommunication_ = false;
 
   // browse until we find the correct one
   for( QStringList::const_iterator it = list.begin(); it < list.end(); ++it ) {
-    
+
     if( conradController_ ) delete conradController_; // renew
     conradController_ = new ConradController( (*it).toStdString().c_str() );
     
@@ -1545,6 +1549,42 @@ void DefoMainWindow::setupConradCommunication( void ) {
     conradEnabledCheckbox_->setChecked( false );
   }
 
+}
+
+
+
+///
+///
+///
+void DefoMainWindow::handleConradEvent( void ) {
+
+  if( conradController_ && isConradCommunication_ ) {
+    
+    // the panel buttons:
+    // identify the sender and switch that channel
+    for( std::vector<DefoTogglePushButton*>::const_iterator it = lightPanelButtons_.begin(); it < lightPanelButtons_.end(); ++it ) {
+      
+      if( sender() == (*it) ) {
+	std::cout << "SWITCHING CHANNEL: " << it - lightPanelButtons_.begin() + 1 << " " << ( (*it)->isActive()?"ON":"OFF" ) << std::endl; // REPLACE!!
+	//conradController_->setChannel( it - channelButtons_.begin(), (*it)->isActive() ); // REPLACE!!
+      }
+      
+    }
+
+    // led power button:
+    if( sender() == ledsPowerOnButton_ ) {
+      std::cout << "SWITCHING LEDS POWER " << ( ledsPowerOnButton_->isActive()?"ON":"OFF" ) << std::endl; // REPLACE!!
+      //conradController_->setChannel( 5, ledsPowerOnButton_->isActive() ); // REPLACE!!
+    }
+
+    // camera power button:
+    if( sender() == cameraPowerOnButton_ ) {
+      std::cout << "SWITCHING CAMERA POWER " << ( cameraPowerOnButton_->isActive()?"ON":"OFF" ) << std::endl; // REPLACE!!
+      //conradController_->setChannel( 6, ledsPowerOnButton_->isActive() ); // REPLACE!!
+    }
+    
+  }
+  
 }
 
 
@@ -1647,30 +1687,6 @@ void DefoMainWindow::allPanelsOn( void ) {
 ///
 ///
 ///
-void DefoMainWindow::handleConradEvent( void ) {
-
-  if( conradController_ && isConradCommunication_ ) {
-    
-    // identify the sender and switch that channel
-    // only if the signal comes from a "controlling" channel button
-    for( std::vector<DefoTogglePushButton*>::const_iterator it = lightPanelButtons_.begin(); it < lightPanelButtons_.end(); ++it ) {
-      
-      if( sender() == (*it) ) {
-	std::cout << "SWITCHING CHANNEL: " << it - lightPanelButtons_.begin() + 1 << " " << ( (*it)->isActive()?"ON":"OFF" ) << std::endl; // REPLACE!!
-	//conradController_->setChannel( it - channelButtons_.begin(), (*it)->isActive() ); // REPLACE!!
-      }
-      
-    }
-    
-  }
-  
-}
-
-
-
-///
-///
-///
 DefoTogglePushButton::DefoTogglePushButton( QWidget* parent ) : QPushButton( parent ) {
 
   // default color scheme is gray_green
@@ -1706,7 +1722,7 @@ void DefoTogglePushButton::updateColor( void ) {
 
   if( DefoTogglePushButton::Gray_Green == colorScheme_ ) {
     if( isActive_ ) setStyleSheet("background-color: rgb(0, 255, 0); color: rgb(0, 0, 0)");
-    else setStyleSheet("background-color: rgb(240, 240, 240); color: rgb(0, 0, 0)");
+    else setStyleSheet("background-color: rgb(180, 180, 180); color: rgb(0, 0, 0)");
   }
 
   else {
