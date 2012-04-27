@@ -104,6 +104,7 @@ void DefoMainWindow::setupSignalsAndSlots( void ) {
   // manual action buttons
   connect( manualREFButton_, SIGNAL(clicked()), this, SLOT(manualFileRef()) );
   connect( manualDEFOButton_, SIGNAL(clicked()), this, SLOT(manualFileDefo()) );
+  connect( manualCALIBButton_, SIGNAL(clicked()), this, SLOT(manualCalib()) );
 
   // schedule buttons & misc
   connect( scheduleStartButton_, SIGNAL(clicked()), this, SLOT(startPolling()) );
@@ -676,8 +677,104 @@ void DefoMainWindow::handleAction( DefoSchedule::scheduleItem item ) {
 
 
 
+
+
   case DefoSchedule::TEMP:
-    std::cout << " TEMP action yet unsupported." << std::endl;
+    {
+      
+//       if( isManual_ ) {
+      
+// 	bool ok;
+// 	double temp = QInputDialog::getDouble(this, tr(" [DefoMainWindow::handleAction] TEMP"),
+// 					   tr(""), QLineEdit::Normal,
+// 					   QDir::home().dirName(), &ok);
+//       if (ok && !text.isEmpty())
+// 	textLabel->setText(text);
+
+    }
+    break;
+
+
+
+
+
+  case DefoSchedule::CALIB:
+    {
+      
+      if( debugLevel_ >= 2 ) std::cout << " [DefoMainWindow::handleAction] =2= received CALIB" << std::endl;
+
+      if( !isConradCommunication_ ) {
+	std::cerr << " [DefoMainWindow::handleAction] ** ERROR: [CALIB] no communication with conrad." << std::endl;
+	imageinfoTextedit_->clear();
+	imageinfoTextedit_->appendPlainText( QString( "CALIB: no communication with conrad." ) );
+
+	if( isManual_ ) {
+	  QMessageBox::critical( this, tr("[DefoMainWindow::handleAction]"),
+				 QString("[CALIB]: no communication with conrad."),
+				 QMessageBox::Ok );
+	}
+
+	break;
+      }
+
+      // switch off panels (saving the state), power on leds, disable controls
+      std::string const saveState = getLightPanelStates();
+      allPanelsOff();
+      if( !ledsPowerOnButton_->isActive() ) ledsPowerOnButton_->click();
+      enableConradButtons( false );
+
+      // disable display of data which are not available
+      displayAreasButton_->setChecked( false ); displayAreasButton_->setEnabled( false );
+      displayRecoitemButton_->setChecked( true );
+      displayIndicesButton_->setChecked( false ); displayIndicesButton_->setEnabled( false );
+      displayCoordsButton_->setChecked( true );
+
+      // get image: first to display, then grab it for reco
+      loadImageFromCamera();
+      DefoRawImage calibImage( rawimageLabel_->getOriginalImage() );
+
+      // output folder
+      QDir outputDir = checkAndCreateOutputFolder( "calib" );
+
+      // get the image & save the raw version
+      QString rawImageFileName = outputDir.path() + "/calibimage_raw.jpg";
+      calibImage.getImage().save( rawImageFileName, 0, 100 );
+
+      // define a pseudo-area (whole image)
+      QRect rect( 0, 0, calibImage.getImage().width(), calibImage.getImage().height() );
+      DefoArea area( rect );
+
+      // reconstruct & display points
+      std::vector<std::pair<DefoPoint,QColor> > output = defoRecoImage_.findPoints( calibImage, area );
+      emit( imagelabelRefreshPointSquares( defoRecoImage_.getForbiddenAreas() ) );
+
+      // write points
+      QString outputFileString = outputDir.path() + "/points.txt";
+      std::ofstream outputFile( outputFileString.toStdString().c_str() );
+
+      for( std::vector<std::pair<DefoPoint,QColor> >::const_iterator it = output.begin(); it < output.end(); ++it ) {
+	outputFile << "POINT"
+		   << std::setw( 5 ) << it-output.begin()+1
+		   << std::setw( 10 ) << it->first.getX()
+		   << std::setw( 10 ) << it->first.getY()
+		   << "  R " << std::setw( 3 ) << it->second.red()
+		   << "  G " << std::setw( 3 ) << it->second.green()
+		   << "  B " << std::setw( 3 ) << it->second.blue()
+		   << std::endl;
+      }
+
+      outputFile.close();
+
+      // switch off leds again, restore light panel state, enable all power buttons
+      ledsPowerOnButton_->click();
+      initLightPanelStates( saveState );
+      enableConradButtons( true );
+
+      // restore display options
+      displayAreasButton_->setEnabled( true );
+      displayIndicesButton_->setEnabled( true );
+
+    } 
     break;
 
 
@@ -894,6 +991,20 @@ void DefoMainWindow::manualFileDefo( void ) {
   displayIndicesButton_->setChecked( false );
   displayCoordsButton_->setChecked( true );
   
+}
+
+
+
+///
+///
+///
+void DefoMainWindow::manualCalib( void ) {
+
+  isManual_ = true;
+  DefoSchedule::scheduleItem item( DefoSchedule::CALIB, QString( "" ) );
+  handleAction( item );
+  isManual_ = false;
+
 }
 
 
@@ -1392,15 +1503,18 @@ QDir const DefoMainWindow::checkAndCreateOutputFolder( char const* type ) {
   
   if( subdir.exists() ) return subdir; // ok, take that one
 
-  else if( !currentDir.mkpath( subdirName ) ) {
+  if( !currentDir.mkpath( subdirName ) ) {
+
     QMessageBox::critical( this, tr("[DefoMainWindow::checkAndCreateOutputFolder]"),
 			   QString("[FILE_SET]: cannot create output dir: \'%1\'").arg(subdirName),
 			   QMessageBox::Ok );
     std::cerr << " [DefoMainWindow::checkAndCreateOutputFolder] ** ERROR: cannot create output dir: " 
 	      << subdirName.toStdString() << std::endl;
+    return QDir( "" ); // bogus
+
   }
 
-  return QDir( "" );
+  return subdir;
 
 }
 
@@ -1517,6 +1631,20 @@ void DefoMainWindow::initLightPanelStates( std::string const& stateString ) {
     
   }
   
+}
+
+
+
+///
+/// get a string describing the light panel state
+/// according to cfg file (PANEL_STATE_WHEN_START)
+///
+std::string const DefoMainWindow::getLightPanelStates( void ) {
+
+  std::string state( "" );
+  for( unsigned int i = 0; i < 5; ++i ) state.append( lightPanelButtons_.at( i )->isActive()?"1":"0" );
+  return state;
+
 }
 
 

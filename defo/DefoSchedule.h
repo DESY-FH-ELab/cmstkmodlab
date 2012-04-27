@@ -38,7 +38,7 @@ class DefoSchedule : public QObject {
   // those action which require a parameter must also be pushed on the
   // actionItemsRequiringParameter_
   // has to be done in a more convenient way later
-  enum actions { INVALID, SET, REF, DEFO, FILE_SET, FILE_REF, FILE_DEFO, TEMP, SLEEP, GOTO, END };
+  enum actions { INVALID, SET, REF, DEFO, FILE_SET, FILE_REF, FILE_DEFO, TEMP, SLEEP, CALIB, GOTO, END };
 
   enum rowStates { GOOD_ROW, EMPTY_ROW, BAD_ROW };
 

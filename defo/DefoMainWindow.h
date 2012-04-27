@@ -196,6 +196,7 @@ class DefoMainWindow : public QWidget {
   void pausePolling( void );
   void manualFileRef( void );
   void manualFileDefo( void );
+  void manualCalib( void );
   void editMeasurementId( void );
   void defaultMeasurementId( void );
   void editBaseFolder( void );
@@ -232,6 +233,7 @@ class DefoMainWindow : public QWidget {
   QDir const checkAndCreateOutputFolder( char const* );
   void writePointsToFile( std::vector<DefoPoint> const&, QString const& ) const;
   void initLightPanelStates( std::string const& );
+  std::string const getLightPanelStates( void );
   void enableConradButtons( bool );
 
 
@@ -269,8 +271,6 @@ class DefoMainWindow : public QWidget {
   std::string filepathPlaced_; // where the camHandler puts the file
 
   std::vector<DefoArea> areas_;
-
-  //  std::vector<bool> lightPanelStates_;
 
   QWidget *centralwidget;
   QTabWidget *mainTabWidget_;
