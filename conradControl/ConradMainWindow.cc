@@ -55,7 +55,7 @@ void ConradMainWindow::setupCardCommunication( void ) {
 
 //     // query & display current status
 //     std::vector<bool> status = conradController_->queryStatus();
-//     if( status.size() != 8 ) {
+//     if( status.size() != 8 ) { // would be 0 if query failed (according to ConradController::queryStatus)
 //       std::cerr << " [ConradMainWindow::setupCardCommunication] ** ERROR: received malformed state vector." << std::endl;
 //       return;
 //     }
@@ -370,12 +370,12 @@ void ConradMainWindow::setupUi() {
 
   channelButtons_.at( 5 ) = new ConradPushButton(channelsGroupBox_);
   channelButtons_.at( 5 )->setObjectName(QString::fromUtf8("channelButtons_6"));
-  channelButtons_.at( 5 )->setGeometry(QRect(20, 270, 61, 31));
+  channelButtons_.at( 5 )->setGeometry(QRect(20, 230, 61, 31));
   channelButtons_.at( 5 )->setFont(font3);
 
   channelButtons_.at( 6 ) = new ConradPushButton(channelsGroupBox_);
   channelButtons_.at( 6 )->setObjectName(QString::fromUtf8("channelButtons_7"));
-  channelButtons_.at( 6 )->setGeometry(QRect(20, 230, 61, 31));
+  channelButtons_.at( 6 )->setGeometry(QRect(20, 270, 61, 31));
   channelButtons_.at( 6 )->setFont(font3);
 
   channelButtons_.at( 7 ) = new ConradPushButton(channelsGroupBox_);
