@@ -1390,7 +1390,7 @@ QDir const DefoMainWindow::checkAndCreateOutputFolder( char const* type ) {
   QString subdirName = QString( type ) + datime.toString( QString( ".ddMMyy-hhmmss" ) );
   QDir subdir = QDir( currentFolderName_ + "/" + subdirName );
   
-  if( subdir.exists() ) return subdir;
+  if( subdir.exists() ) return subdir; // ok, take that one
 
   else if( !currentDir.mkpath( subdirName ) ) {
     QMessageBox::critical( this, tr("[DefoMainWindow::checkAndCreateOutputFolder]"),
@@ -1399,6 +1399,8 @@ QDir const DefoMainWindow::checkAndCreateOutputFolder( char const* type ) {
     std::cerr << " [DefoMainWindow::checkAndCreateOutputFolder] ** ERROR: cannot create output dir: " 
 	      << subdirName.toStdString() << std::endl;
   }
+
+  return QDir( "" );
 
 }
 
