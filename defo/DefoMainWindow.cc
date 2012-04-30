@@ -781,7 +781,7 @@ void DefoMainWindow::handleAction( DefoSchedule::scheduleItem item ) {
       emit( imagelabelRefreshPointSquares( defoRecoImage_.getForbiddenAreas() ) );
 
       // write points
-      QString outputFileString = outputDir.path() + "/points.txt";
+      QString outputFileString = outputDir.path() + "/calibpoints.txt";
       std::ofstream outputFile( outputFileString.toStdString().c_str() );
 
       for( std::vector<std::pair<DefoPoint,QColor> >::const_iterator it = output.begin(); it < output.end(); ++it ) {

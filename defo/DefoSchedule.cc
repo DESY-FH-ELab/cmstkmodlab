@@ -39,7 +39,8 @@ DefoSchedule::DefoSchedule() {
 
 
 ///
-///
+/// get next action in table and send it to the caller
+/// via an emit newAction()
 ///
 void DefoSchedule::pollAction( void ) {
 
@@ -119,7 +120,7 @@ void DefoSchedule::pollAction( void ) {
 
 
 ///
-/// check for invalid or empty items in row,
+/// check for invalid or empty items in a single row (index "row"),
 /// return one of: DefoSchedule::rowStates
 ///
 int DefoSchedule::checkRowValidity( unsigned int index ) {
@@ -194,7 +195,7 @@ void DefoSchedule::clear( void ) {
 
 
 ///
-///
+/// load a schedule from a atext file
 ///
 void DefoSchedule::loadFromFile( void ) {
 
@@ -245,7 +246,7 @@ void DefoSchedule::loadFromFile( void ) {
 
 
 ///
-///
+/// save schedule to a text file
 ///
 void DefoSchedule::saveToFile( void ) {
 
@@ -289,7 +290,7 @@ void DefoSchedule::saveToFile( void ) {
 
 
 ///
-/// make sure (as good as possible) that the schedule is executable:
+/// make sure (as good as possible) that the whole schedule is executable:
 /// check validity, existence of input files, goto lines exist, camera enabled, etc.
 ///
 void DefoSchedule::validate( void ) {
@@ -355,6 +356,17 @@ void DefoSchedule::validate( void ) {
 	// comes later (have to ask DefoMainWindow..)
       } break;
 
+    case DefoSchedule::TEMP:
+      {
+	// check if the temperature value makes sense
+	bool isOk = false;
+	double temp = model_.item( row, 1 )->text().toDouble( &isOk );
+	if( !isOk ) {
+	  issueBogusTemperatureError( row, QString( "DefoSchedule::validate" ) );
+	}
+
+      } break;
+
     default:
       {} break;
 
@@ -412,6 +424,19 @@ void DefoSchedule::issueCameraNotEnabledError( int row, QString issuer, QString 
 
   QMessageBox::critical( 0, issuer, 
 			 QString( "Row %1 [" ).arg( row+1 ) + action + QString( "] ** ERROR: Camera is disabled." ),
+			 QMessageBox::Ok );
+
+}
+
+
+
+///
+/// row is real row number (starts at 0)
+///
+void DefoSchedule::issueBogusTemperatureError( int row, QString issuer ) {
+
+  QMessageBox::critical( 0, issuer, 
+			 QString( "Row %1 " ).arg( row+1 ) + QString( "** ERROR: bogus temperature value." ),
 			 QMessageBox::Ok );
 
 }

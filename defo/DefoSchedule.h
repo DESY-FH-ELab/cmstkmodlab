@@ -24,7 +24,7 @@
 #define _SCHEDULE_NCOLUMNS 3
 
 ///
-///
+/// class for storing and polling defo schedules
 ///
 class DefoSchedule : public QObject {
 
@@ -70,7 +70,7 @@ class DefoSchedule : public QObject {
   void issueGotoInvalidLineError( int, QString, int );
   void issueGotoPointsToItselfError( int, QString );
   void issueCameraNotEnabledError( int, QString, QString );
-
+  void issueBogusTemperatureError( int, QString );
   QStandardItemModel model_;
   std::map<std::string,int> actionItems_;
   std::vector<int> actionItemsRequiringParameter_;

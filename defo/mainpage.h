@@ -447,19 +447,18 @@ overview_sec, and \ref app_config_subsec).
 
 \image html screenshot_gui_online.gif "The online tab"
 
-
 \subsubsection gui_online_measurementid_subsubsec      6.2.1 Measurement ID
-
 The measurement ID serves as a common identification string for a
-group of deformation measurements (including reference
+group of deformation measurements (including reference or calibration
 measurements). In particular, all output for a given measurement,
 manual or schedule driven, will be stored in a subfolder named after
 the currently valid measurement ID. The measurement ID is initially
 set to the default string <tt>defomeasurement-ddmmyy-hhmmss</tt>
 (including date and time, see figure), however an arbitrary string can
 also be chosen using the <tt>Edit</tt> button (the <tt>Default</tt>
-button restores the default string). The buttons are disabled during
-reconstruction or schedule execution.
+button restores the default string). A new measurement ID should be
+specified whenever a schedule is started (or restarted). The buttons
+are disabled during reconstruction or schedule execution.
 
 \subsubsection gui_online_areas_subsubsec      6.2.2 Areas
 The surface reconstruction process can be restricted to an area of
@@ -533,6 +532,11 @@ the <i>Status</i> section indicates whether valid reference data is currently av
 surface reconstruction can be performed. Clicking the <tt>DEFO</tt> button while the spinbox is
 not checked results in an error message.
 
+Manual operation via these buttons is performed through calls to DefoMainWindow::handleAction
+with the respective action item. The buttons are connected to the slots DefoMainWindow::manualFileRef, 
+DefoMainWindow::manualFileDefo, DefoMainWindow::manualCalib and DefoMainWindow::manualTemp.
+
+
 \subsubsection gui_online_schedules_subsubsec  6.2.6 Schedules
 For automated operation (e.g. repeated series or overnight measurements),
 the defo GUI offers a programmable schedule. A schedule consists of
@@ -596,8 +600,58 @@ not by DefoMainWindow. <b>Value: schedule line number</b></DD>
 <DT>END</DT><DD>Stop a schedule. Not explicitly required, but prevents error messages.<b>Value: none</b></DD>
 </DL>
 
-\subsubsection gui_online_output_subsubsec     6.2.7 Output files and folders
+Technically, class DefoSchedule has the functionality for storing defo
+schedules, schedule bookkeeping as well as delivering single action
+items (DefoSchedule::scheduleItem) to the caller DefoMainWindow upon
+request via the DefoSchedule::pollAction slot. The interpretation of
+the action items and the invocation of the respective action is done
+within DefoMainWindow::handleAction which comprises one C++ switch
+case for each action item type. One exception is the GOTO action which
+is caught and handled by DefoSchedule itself.
 
+\subsubsection gui_online_output_subsubsec     6.2.7 Output files and folders
+All output is stored under the <i>output base folder</i> which can be
+specified on the advanced tab. Default is the subdirectory
+<tt>out</tt> in the folder in which the application is started.
+
+Once a manual measurement is initiated via the manual buttons, or when
+a schedule is started, a <i> measurement group subfolder</i> with the
+measurement ID (\ref gui_online_measurementid_subsubsec) as its name
+is created under the base folder. Each action - manual or schedule
+driven - that produces output during a measurement (SET, REF, DEFO,
+FILE_SET, FILE_REF, FILE_DEFO, CALIB) will place its files in a within
+that measurement folder in a separate subdirectory whose name is of
+the form: <tt>action.ddmmyy-hhmmss</tt>. The following listing shows
+an example of the directory structure:
+
+<pre>
+.
+`-- defomeasurement-300412-161339
+    |-- file_defo.300412-161349
+    |   |-- defoimage_raw.jpg
+    |   |-- points.txt
+    |   `-- surface.defosurface
+    |-- file_ref.300412-161345
+    |   |-- points.txt
+    |   `-- refimage_raw.jpg
+    `-- file_set.300412-161344
+        `-- setimage_raw.jpg
+</pre>
+
+The following output files can be found in the action subfolders:
+<DL>
+<DT><tt><B>*image_raw.jpg</B></tt></DT>
+<DD>A copy of the raw input image that was used for reconstruction, or has been loaded
+from camera/file during a SET / FILE_SET action.</DD>
+<DT><tt><B>points.txt</B></tt></DT>
+<DD>Text file listing all reconstructed points, their position (in pixels),
+their indices and the reconstructed point color (white or blue).</DD>
+<DT><tt><B>calibpoints.txt</B></tt></DT>
+<DD>Text file for LED calibration listing all reconstructed points, their position (in pixels),
+as well as their color composition (RGB).</DD>
+<DT><tt><B>surface.defosurface</B></tt></DT>
+<DD>A reconstructed surface file (see \ref surfaceformat_sec).</DD>
+</DL>
 
 \subsection gui_cooling_subsec                 6.3 Cooling tab
 \image html screenshot_gui_cooling.gif "The cooling tab"
