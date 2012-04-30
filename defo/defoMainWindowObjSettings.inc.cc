@@ -184,7 +184,7 @@ void DefoMainWindow::setupUi( void ) {
   manualCALIBButton_->setFlat(false);
   manualTEMPButton_ = new QPushButton(manualGroupBox_);
   manualTEMPButton_->setObjectName(QString::fromUtf8("manualTEMPButton_"));
-  manualTEMPButton_->setEnabled(false);
+  manualTEMPButton_->setEnabled(true);
   manualTEMPButton_->setGeometry(QRect(10, 100, 81, 31));
   manualTEMPButton_->setStyleSheet(QString::fromUtf8(""));
   manualTEMPButton_->setFlat(false);

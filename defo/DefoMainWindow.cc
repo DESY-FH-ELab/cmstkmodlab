@@ -105,6 +105,7 @@ void DefoMainWindow::setupSignalsAndSlots( void ) {
   connect( manualREFButton_, SIGNAL(clicked()), this, SLOT(manualFileRef()) );
   connect( manualDEFOButton_, SIGNAL(clicked()), this, SLOT(manualFileDefo()) );
   connect( manualCALIBButton_, SIGNAL(clicked()), this, SLOT(manualCalib()) );
+  connect( manualTEMPButton_, SIGNAL(clicked()), this, SLOT(manualTemp()) );
 
   // schedule buttons & misc
   connect( scheduleStartButton_, SIGNAL(clicked()), this, SLOT(startPolling()) );
@@ -682,14 +683,45 @@ void DefoMainWindow::handleAction( DefoSchedule::scheduleItem item ) {
   case DefoSchedule::TEMP:
     {
       
-//       if( isManual_ ) {
+      if( isManual_ ) { // manual oeration via online tab button
       
-// 	bool ok;
-// 	double temp = QInputDialog::getDouble(this, tr(" [DefoMainWindow::handleAction] TEMP"),
-// 					   tr(""), QLineEdit::Normal,
-// 					   QDir::home().dirName(), &ok);
-//       if (ok && !text.isEmpty())
-// 	textLabel->setText(text);
+	bool isOk = false;
+	double temp = QInputDialog::getDouble(this, 
+					      tr(" [DefoMainWindow::handleAction] TEMP"),
+					      tr("New target bath temperature [degC]:"),
+					      0., // def value
+					      -35., // min
+					      35., // max
+					      1, // decimals
+					      &isOk );
+
+	if( !isOk ) {
+	  QMessageBox::critical( this, tr("[DefoMainWindow::handleAction]"),
+				 QString("[TEMP]: error in input - received temp: %1").arg( temp ),
+				 QMessageBox::Ok );
+	  std::cerr << " [DefoMainWindow::handleAction] ** ERROR [TEMP]: error in input - received temp: " << temp << "." << std::endl;
+	}
+	else {
+	  // SET CHILLER TEMPERATURE HERE
+	}
+	  
+      }
+
+      else { // schedule operation
+
+	bool isOk = false;
+	double temp = item.second.toDouble( &isOk );
+
+	if( !isOk ) {
+	  std::cerr << " [DefoMainWindow::handleAction] ** ERROR [TEMP]: error in input - received temp: "
+		    << item.second.toStdString() << "." << std::endl;
+	  break;
+	}
+
+	// SET CHILLER TEMPERATURE HERE
+	
+      }
+
 
     }
     break;
@@ -1002,6 +1034,20 @@ void DefoMainWindow::manualCalib( void ) {
 
   isManual_ = true;
   DefoSchedule::scheduleItem item( DefoSchedule::CALIB, QString( "" ) );
+  handleAction( item );
+  isManual_ = false;
+
+}
+
+
+
+///
+///
+///
+void DefoMainWindow::manualTemp( void ) {
+
+  isManual_ = true;
+  DefoSchedule::scheduleItem item( DefoSchedule::TEMP, QString( "" ) );
   handleAction( item );
   isManual_ = false;
 

@@ -194,9 +194,10 @@ class DefoMainWindow : public QWidget {
   void startPolling( void );
   void stopPolling( void );
   void pausePolling( void );
-  void manualFileRef( void );
-  void manualFileDefo( void );
-  void manualCalib( void );
+  void manualFileRef( void ); // online tab: manual ref button pressed
+  void manualFileDefo( void ); // online tab: manual defo button pressed
+  void manualCalib( void ); // online tab: manual calib button pressed
+  void manualTemp( void );  // online tab: manual temp button pressed
   void editMeasurementId( void );
   void defaultMeasurementId( void );
   void editBaseFolder( void );
