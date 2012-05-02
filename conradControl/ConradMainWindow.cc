@@ -39,32 +39,34 @@ void ConradMainWindow::setupCardCommunication( void ) {
   QString portString = QString( "/dev/" ) + portComboBox_->currentText();
   std::cout << "CONNECT: " <<  portString.toStdString() << std::endl; //
 
-//   if( conradController_ ) delete conradController_;
-//   conradController_ = new ConradController( portString.toStdString().c_str() );
+  if( conradController_ ) delete conradController_;
+  conradController_ = new ConradController( portString.toStdString().c_str() );
 
-//   if( !conradController_->initialize() ) { // check communication
-//     disableAllItems();
-//     // don't delete the controller to prevent segfaults
-//     return;
-//   }
+  if( !conradController_->initialize() ) { // check communication
+    std::cerr << " [ConradMainWindow::setupCardCommunication] -- No comm: " << portString.toStdString() << std::endl;
+    disableAllItems();
+    // don't delete the controller to prevent segfaults
+    return;
+  }
 
-//   else { // we're happy
+  else { // we're happy
 
-//     isCommunication_ = true;
-//     connectCheckBox_->setChecked( true );
+    std::cerr << " [ConradMainWindow::setupCardCommunication] -- Connect: " << portString.toStdString() << std::endl;
+    isCommunication_ = true;
+    connectCheckBox_->setChecked( true );
 
-//     // query & display current status
-//     std::vector<bool> status = conradController_->queryStatus();
-//     if( status.size() != 8 ) { // would be 0 if query failed (according to ConradController::queryStatus)
-//       std::cerr << " [ConradMainWindow::setupCardCommunication] ** ERROR: received malformed state vector." << std::endl;
-//       return;
-//     }
+    // query & display current status
+    std::vector<bool> status = conradController_->queryStatus();
+    if( status.size() != 8 ) { // would be 0 if query failed (according to ConradController::queryStatus)
+      std::cerr << " [ConradMainWindow::setupCardCommunication] ** ERROR: received malformed state vector." << std::endl;
+      return;
+    }
 
-//     for( unsigned int i = 0; i < 8; ++i ) {
-//       channelButtons_.at( i )->setActive( status.at( i ) );
-//     }
+    for( unsigned int i = 0; i < 8; ++i ) {
+      channelButtons_.at( i )->setActive( status.at( i ) );
+    }
 
-//   }
+  }
 
 }
 
@@ -129,8 +131,7 @@ void ConradMainWindow::handleState( void ) {
     for( std::vector<ConradPushButton*>::const_iterator it = channelButtons_.begin(); it < channelButtons_.end(); ++it ) {
 
       if( sender() == (*it) ) {
-	std::cout << "SWITCHING CHANNEL: " << it - channelButtons_.begin() + 1 << " " << ( (*it)->isActive()?"ON":"OFF" ) << std::endl; // REPLACE!!
-	//conradController_->setChannel( it - channelButtons_.begin(), (*it)->isActive() ); // REPLACE!!
+	conradController_->setChannel( it - channelButtons_.begin() + 1, (*it)->isActive() );
       }
 
     }
@@ -200,8 +201,8 @@ void ConradMainWindow::updateCommBox( void ) {
 
   QDir devDir( "/dev" );
   QStringList filters;
-  //filters << "ttyUSB*"; // /dev/ttyUSB* !!!!!!!!!!!!!!
-  filters << "ttyS*"; // /dev/ttyUSB* !!!!!!!!!!!!!!
+  filters << "ttyUSB*"; // /dev/ttyUSB* !!!!!!!!!!!!!!
+  //filters << "ttyS*"; // /dev/ttyUSB* !!!!!!!!!!!!!!
   QStringList list = devDir.entryList( filters, QDir::System ); 
   
   for( QStringList::const_iterator it = list.begin(); it < list.end(); ++it ) {
