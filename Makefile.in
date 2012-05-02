@@ -9,7 +9,7 @@ ifeq ($(NOTHERMAL),0)
 subdirs      += thermal
 endif
 ifeq ($(NODEFO),0)
-subdirs      += defo
+subdirs      += defo conradControl
 endif
 
 qtsubdirs     = 
@@ -17,7 +17,7 @@ ifeq ($(NOTHERMAL),0)
 qtsubdirs    += thermal
 endif
 ifeq ($(NODEFO),0)
-qtsubdirs    += defo
+qtsubdirs    += defo conradControl
 endif
 
 all: qt
