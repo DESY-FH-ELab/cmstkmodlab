@@ -38,6 +38,7 @@
 &nbsp;&nbsp;&nbsp;&nbsp;\ref gui_online_display_subsubsec <BR>
 &nbsp;&nbsp;&nbsp;&nbsp;\ref gui_online_refresh_subsubsec <BR>
 &nbsp;&nbsp;&nbsp;&nbsp;\ref gui_online_manual_subsubsec <BR>
+&nbsp;&nbsp;&nbsp;&nbsp;\ref gui_online_zoomandhisto_subsubsec <BR>
 &nbsp;&nbsp;&nbsp;&nbsp;\ref gui_online_schedules_subsubsec <BR>
 &nbsp;&nbsp;&nbsp;&nbsp;\ref gui_online_output_subsubsec <BR>
 &nbsp;&nbsp;\ref gui_cooling_subsec <BR>
@@ -327,8 +328,8 @@ independently.
 Given the freedom of choice of initial slopes and heights at the
 borders of the spline sets (\ref splinecreation_subsec), the
 individually reconstructed spline sets generally have arbitrary height
-offsets with respect to each other. In order to remove these offsets,
-the spline sets must be levelled to a common reference frame, i.e. the
+offsets with respect to each other. In order to level these offsets,
+the spline sets must be linked to a common reference frame, i.e. the
 constants C of the individual splines have to be adjusted such that a
 continuous surface shape is obtained. The levelling is done per spline
 set, thus all splines in a set receive the same correction addend to
@@ -355,6 +356,21 @@ divided by the total number of comparisons, thus averaging all
 possible local offsets. The result is a smooth surface (g).
 
 \subsection offsetsandtilts_subsec   3.7 Removal of global offsets and tilts
+After cross mounting (\ref surfacecreation_subsec) the individual spline
+sets are levelled to a common reference frame which, however, still
+has few arbitrary parameters which cannot be determined by the measurement.
+Besides a global offset along the z coordinate there may be remaining
+rotations around all three axes. 
+
+Subsequent to a deformation measurement, method DefoRecoSurface::removeGlobalOffset
+is called to remove a global offset along the z coordinate by altering the
+constants C of the individual splines such that the lowest point in the
+surface has a height of zero.
+
+Global tilts are supposed to be removed by method
+DefoRecoSurface::removeTilt which is currently present as a skeleton but <SPAN
+style="color:#ff0000"><B>not yet implemented</B></SPAN>.
+
 \subsection surfaceevaluation_subsec 3.8 Surface evaluation
 
 \section surfaceformat_sec         4. Format of surface objects
@@ -414,10 +430,14 @@ Power switching for the light panels, the calibration LED system and
 the camera is handled by a Conrad C-Control 8-fold relay card which is
 connected via USB (onboard USB <> RS232 adapter). Access to the
 hardware is provided by the <tt>ConradController</tt> class
-(<tt>devices/Conrad</tt>). The following table indicates the
-association of the relay channels (0..8) to the power devices as it is
-implemented in the GUI. A sketch of the panel geometry can be found in
-the example configuration file (\ref app_config_subsec).
+(<tt>devices/Conrad</tt>) through the <tt>/dev/ttyUSB*</tt> device
+files. The user must be member of the <tt>uucp</tt> system group (or
+whatever group they belong to) to obtain access to these files.
+
+The following table indicates the association of the relay channels
+(0..8) to the power devices as it is implemented in the GUI. A sketch
+of the panel geometry can be found in the example configuration file
+(\ref app_config_subsec).
 
 <table border="1">
   <tr><th>Relay channel</th><td>0</td><td>1</td><td>2</td><td>3</td><td>4</td><td>5</td><td>6</td><td>7</td></tr>
@@ -536,8 +556,20 @@ Manual operation via these buttons is performed through calls to DefoMainWindow:
 with the respective action item. The buttons are connected to the slots DefoMainWindow::manualFileRef, 
 DefoMainWindow::manualFileDefo, DefoMainWindow::manualCalib and DefoMainWindow::manualTemp.
 
+\subsubsection gui_online_zoomandhisto_subsubsec 6.2.6 Zoom and histogram buttons
+The magnifying glass button allows for zooming in/out of the image currently displayed
+on the online tab. <SPAN style="color:#ff0000"><B> Not yet implemented!</B></span>
 
-\subsubsection gui_online_schedules_subsubsec  6.2.6 Schedules
+When the histogram button is clicked, a window opens showing four
+histograms of the pixel color RGB and grayscale distributions within
+the selected area (or the whole image if no area is defined). The RGB
+color space is statically defined according to the model described in
+Qt's QColor documentation and thus typically does not match the
+whitebalance of the image. A further click on the button closes the
+window. Technically, the histogram button is connected to
+DefoImageLabel::showHistogram.
+
+\subsubsection gui_online_schedules_subsubsec  6.2.7 Schedules
 For automated operation (e.g. repeated series or overnight measurements),
 the defo GUI offers a programmable schedule. A schedule consists of
 a list of entries, each comprising a command/action and - if required -
@@ -609,7 +641,7 @@ within DefoMainWindow::handleAction which comprises one C++ switch
 case for each action item type. One exception is the GOTO action which
 is caught and handled by DefoSchedule itself.
 
-\subsubsection gui_online_output_subsubsec     6.2.7 Output files and folders
+\subsubsection gui_online_output_subsubsec     6.2.8 Output files and folders
 All output is stored under the <i>output base folder</i> which can be
 specified on the advanced tab. Default is the subdirectory
 <tt>out</tt> in the folder in which the application is started.

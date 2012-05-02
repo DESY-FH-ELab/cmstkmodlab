@@ -58,8 +58,17 @@ class DefoImageLabelAreaRubberBand : public QRubberBand {
 
 
 ///
-/// qlabel for displaying images
-/// with special qrubberband support
+/// QLabel for displaying images with special QRubberband support
+/// for displaying areas and scaled/rotated display
+///
+/// Objects of this class keep a copy of the the original image (origImage_)
+/// as well as a second "local" image for display which is scaled to the
+/// size of the DefoImageLabel and - if wanted - rotated wrt. the original.
+/// The transform methods do the transformations of a QRect (e.g. a DefoArea)
+/// between both frames.
+///
+/// Additionally, this class knows how to display areas, point indices and
+/// the point indicator which it receives from DefoMainWindow
 ///
 class DefoImageLabel : public QLabel {
 

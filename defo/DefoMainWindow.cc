@@ -48,6 +48,14 @@ DefoMainWindow::DefoMainWindow( QWidget* parent ) : QWidget( parent ) {
     isStartup_ = true; // switched back by enableConrad()
     QTimer::singleShot( 100, this, SLOT(timerEnableConrad()) );
   }
+  else {
+    isConradCommunication_ = false;
+    commPortLineEdit_->setText( QString( "-" ) );
+    allPanelsOff(); // unset all buttons
+    ledsPowerOnButton_->setActive( false ); // dto.
+    cameraPowerOnButton_->setActive( false ); // dto.
+    enableConradButtons( false ); // switch buttons enable
+  }
 
   readCameraParametersFromCfgFile(); // this is grouped
 
@@ -1212,10 +1220,6 @@ void DefoMainWindow::togglePointSquareDisplay( bool isChecked ) {
 ///
 void DefoMainWindow::loadImageFromCamera( void ) {
 
-//   DefoRawImage image( "test/test3/ref_cr.jpg" ); /////////////////////////////////
-//   rawimageLabel_->setRotation( true ); /////////////////////////////////
-//   rawimageLabel_->displayImageToSize( image.getImage() ); /////////////////////////////////
-
   // temp display
   QImage tmpImage( "icons/loading.jpg" );
   rawimageLabel_->displayImageToSize( tmpImage );
@@ -1584,9 +1588,7 @@ void DefoMainWindow::cameraEnabledButtonToggled( bool isChecked ) {
 
     // enable controls
     refreshCameraButton_->setEnabled( true );
-    // manualREFButton_->setEnabled( true );
-    // manualDEFOButton_->setEnabled( true );
-    cameraConnectionTestButton_->setEnabled( true );
+    cameraConnectionTestButton_->setEnabled( false ); // NOT YET
     cameraConnectionResetButton_->setEnabled( true );
     apertureComboBox_->setEnabled( true );
     exptimeComboBox_->setEnabled( true );
@@ -1625,11 +1627,17 @@ void DefoMainWindow::enableConrad( bool isChecked ) {
       initLightPanelStates( panelStartupState_ );
       isStartup_ = false; // switch back
     }
+
     else { // event triggered by the conrad enabled checkbox: read states from card
-      // const std::vector<bool> states = conradController_->queryStatus(); // ENABLE!
+
+      const std::vector<bool> states = conradController_->queryStatus(); // ENABLE!
       for( unsigned int i = 0; i < 5; ++i ) {
-	// lightPanelButtons_.at( i )->setEnabled( states.at( i ) ); // ENABLE!
+	enableConradButtons( true ); // switch buttons enable, must do this here, otherwise setActive won't work
+	lightPanelButtons_.at( i )->setActive( states.at( i ) ); // ENABLE!
       }
+      ledsPowerOnButton_->setActive( states.at( 5 ) );
+      cameraPowerOnButton_->setActive( states.at( 6 ) );
+
     }
 
   }
@@ -1642,10 +1650,8 @@ void DefoMainWindow::enableConrad( bool isChecked ) {
     ledsPowerOnButton_->setActive( false ); // dto.
     cameraPowerOnButton_->setActive( false ); // dto.
     // btw. we leave the conradController_ pointer valid, just in case..
+    enableConradButtons( false ); // switch buttons enable
   }
-
-  // switch buttons enable
-  enableConradButtons( isConradCommunication_ );
 
 }
 
@@ -1682,8 +1688,8 @@ void DefoMainWindow::initLightPanelStates( std::string const& stateString ) {
 
 
 ///
-/// get a string describing the light panel state
-/// according to cfg file (PANEL_STATE_WHEN_START)
+/// create a string describing the light panel state
+/// according to syntax in cfg file (PANEL_STATE_WHEN_START)
 ///
 std::string const DefoMainWindow::getLightPanelStates( void ) {
 
@@ -1713,13 +1719,18 @@ void DefoMainWindow::setupConradCommunication( void ) {
   // browse and try initialize() until conradController_ gets an answer
   for( QStringList::const_iterator it = list.begin(); it < list.end(); ++it ) {
 
+    QString port = QString( "/dev/" ) + *it;
+
     if( conradController_ ) delete conradController_; // renew
-    conradController_ = new ConradController( (*it).toStdString().c_str() );
+    conradController_ = new ConradController( port.toStdString().c_str() );
     
     if( conradController_->initialize() ) { // check communication
 
       isConradCommunication_ = true;
       commPortLineEdit_->setText( *it );
+
+      if( debugLevel_ >= 1 ) std::cout << " [DefoMainWindow::setupConradCommunication] =1= connection to conrad via: " 
+				       << port.toStdString() << "." << std::endl;
 
       // request must not always come from checkbox, so make sure it's on;
       // here we must block signals, otherwise the checkbox triggers setupConradCommunication again
@@ -1727,7 +1738,19 @@ void DefoMainWindow::setupConradCommunication( void ) {
       conradEnabledCheckbox_->setChecked( true ); 
       conradEnabledCheckbox_->blockSignals( oldState );
 
+      // read and init status
+      std::vector<bool> status = conradController_->queryStatus();
+      if( status.size() != 8 ) { // would be 0 if query failed (according to ConradController::queryStatus)
+	std::cerr << " [DefoMainWindow::setupConradCommunication] ** ERROR: received malformed state vector." << std::endl;
+	return;
+      }
+      
+      for( unsigned int i = 0; i < 5; ++i ) {
+	lightPanelButtons_.at( i )->setActive( status.at( i ) );
+      }
+      
       break;
+
     }
     
   }
@@ -1739,7 +1762,7 @@ void DefoMainWindow::setupConradCommunication( void ) {
     QMessageBox::critical( this, tr("[DefoMainWindow::setupConradCommunication]"),
 			   QString("ERROR ** Cannot connect to Conrad.\nCheck if /dev/ttyUSB* device files are present."),
 			   QMessageBox::Ok );
-    std::cerr << " [DefoMainWindow::setupConradCommunication] ** ERROR: Cannot connect to Conrad. Check if /dev/ttyUSB* device files are present." << std::endl;
+    std::cerr << " [DefoMainWindow::setupConradCommunication] ** ERROR: Cannot connect to Conrad. Check if /dev/ttyUSB* device files are present or another program is using the device." << std::endl;
 
     bool oldState = conradEnabledCheckbox_->blockSignals( true );
     conradEnabledCheckbox_->setChecked( false );
@@ -1766,22 +1789,22 @@ void DefoMainWindow::handleConradEvent( void ) {
     for( std::vector<DefoTogglePushButton*>::const_iterator it = lightPanelButtons_.begin(); it < lightPanelButtons_.end(); ++it ) {
       
       if( sender() == (*it) ) {
-	std::cout << "SWITCHING CHANNEL: " << it - lightPanelButtons_.begin() + 1 << " " << ( (*it)->isActive()?"ON":"OFF" ) << std::endl; // REPLACE!!
-	//conradController_->setChannel( it - channelButtons_.begin(), (*it)->isActive() ); // REPLACE!!
+	//std::cout << "SWITCHING CHANNEL: " << it - lightPanelButtons_.begin() + 1 << " " << ( (*it)->isActive()?"ON":"OFF" ) << std::endl; // REPLACE!!
+	conradController_->setChannel( it - lightPanelButtons_.begin() + 1, (*it)->isActive() ); // REPLACE!!
       }
       
     }
 
     // led power button:
     if( sender() == ledsPowerOnButton_ ) {
-      std::cout << "SWITCHING LEDS POWER " << ( ledsPowerOnButton_->isActive()?"ON":"OFF" ) << std::endl; // REPLACE!!
-      //conradController_->setChannel( 5, ledsPowerOnButton_->isActive() ); // REPLACE!!
+      //std::cout << "SWITCHING LEDS POWER " << ( ledsPowerOnButton_->isActive()?"ON":"OFF" ) << std::endl; // REPLACE!!
+      conradController_->setChannel( 6, ledsPowerOnButton_->isActive() ); // REPLACE!!
     }
 
     // camera power button:
     if( sender() == cameraPowerOnButton_ ) {
-      std::cout << "SWITCHING CAMERA POWER " << ( cameraPowerOnButton_->isActive()?"ON":"OFF" ) << std::endl; // REPLACE!!
-      //conradController_->setChannel( 6, ledsPowerOnButton_->isActive() ); // REPLACE!!
+      //std::cout << "SWITCHING CAMERA POWER " << ( cameraPowerOnButton_->isActive()?"ON":"OFF" ) << std::endl; // REPLACE!!
+      conradController_->setChannel( 7, cameraPowerOnButton_->isActive() ); // REPLACE!!
     }
     
   }

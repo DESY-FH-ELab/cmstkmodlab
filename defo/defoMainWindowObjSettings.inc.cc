@@ -1546,6 +1546,7 @@ void DefoMainWindow::setupUi( void ) {
   commPortLineEdit_->setFont(commPortFont);
   commPortLineEdit_->setAlignment(Qt::AlignCenter);
   commPortLineEdit_->setStyleSheet(QString::fromUtf8("background-color: rgb(255, 255, 255);"));
+  commPortLineEdit_->setReadOnly( true );
 
   // camera group
   cameraOptionsGroupBox_ = new QGroupBox(advanced_tab);

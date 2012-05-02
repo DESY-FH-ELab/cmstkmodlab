@@ -338,7 +338,7 @@ void DefoImageLabel::transformToLocal( QRect& rect ) {
 
 
 ///
-///
+/// opens the 
 ///
 void DefoImageLabel::showHistogram( void ) {
 
@@ -359,7 +359,8 @@ void DefoImageLabel::showHistogram( void ) {
     // otherwise from the whole image
     if( areas_.size() ) {
       r = areas_.at( 0 ).getRectangle();
-      transformToOriginal( r );
+      // no transformation here, because we received the areas_ coordinates
+      // in the "original image" frame
     }
     else {
       r = origImage_.rect();

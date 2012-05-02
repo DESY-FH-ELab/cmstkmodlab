@@ -7,6 +7,7 @@
 ///
 DefoHistogramView::DefoHistogramView ( QWidget* p ) : QwtPlot( p ) {
 
+  setWindowFlags( Qt::WindowStaysOnTopHint );
   init();
 
 }
@@ -52,6 +53,8 @@ void DefoHistogramView::init( void ) {
 ///
 ///
 void DefoHistogramView::addPixel( QRgb const& rgb ) {
+
+
 
   unsigned int red = qRed( rgb );
   redY_[red] += 1.;
@@ -112,14 +115,6 @@ void DefoHistogramView::createCurves( void ) {
     if( 1. > blueY_[i] )  blueY_[i] = .01;
     if( 1. > grayY_[i] )  grayY_[i] = .01;
   }
-
-
-//   for( unsigned int i = 0; i < _PLOTSIZE; ++i ) { /////////////////////////////////
-//     std::cout << "R: " << i << " " << redX_[i] << " " << redY_[i] << std::endl;
-//     std::cout << "G: " << i << " " << greenX_[i] << " " << greenY_[i] << std::endl;
-//     std::cout << "B: " << i << " " << blueX_[i] << " " << blueY_[i] << std::endl;
-//     std::cout << "W: " << i << " " << grayX_[i] << " " << grayY_[i] << std::endl;
-//    }
 
   redC_->attach(this);
   redC_->setPen(QPen(Qt::red));
