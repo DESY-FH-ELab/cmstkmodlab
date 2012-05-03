@@ -100,7 +100,7 @@ void DefoMainWindow::setupSignalsAndSlots( void ) {
   connect( refreshCameraButton_, SIGNAL(clicked()), this, SLOT(loadImageFromCamera()) );
   qRegisterMetaType<DefoCamHandler::Action>("DefoCamHandler::Action"); // signal is from qthread
   connect( &camHandler_, SIGNAL(actionFinished(DefoCamHandler::Action)), this, SLOT(handleCameraAction(DefoCamHandler::Action)) );
-  connect( refreshFileButton_, SIGNAL(clicked()), this, SLOT(loadImageFromFile()) );
+  connect( refreshFileButton_, SIGNAL(clicked()), this, SLOT(loadImageFromFileWithDialog()) );
   connect( rawimageHistoButton_, SIGNAL(clicked()), rawimageLabel_, SLOT( showHistogram() ) );
   connect( displayCoordsButton_, SIGNAL(toggled(bool)), rawimageLabel_, SLOT( displayCoords(bool)) );
 
@@ -772,6 +772,7 @@ void DefoMainWindow::handleAction( DefoSchedule::scheduleItem item ) {
       displayCoordsButton_->setChecked( true );
 
       // get image: first to display, then grab it for reco
+      //loadImageFromFile( QString( "/home/olzem/cms/upgrade/defo/svn/cmstkmodlab/trunk/defo/test/pointFinder/IMG_1159996538.jpg" ) ); //TESTESTESTEST
       loadImageFromCamera();
       DefoRawImage calibImage( rawimageLabel_->getOriginalImage() );
 
@@ -804,14 +805,15 @@ void DefoMainWindow::handleAction( DefoSchedule::scheduleItem item ) {
 		   << "  B " << std::setw( 3 ) << it->second.blue()
 		   << std::endl;
       }
-
       outputFile.close();
+
+      // enable again (must be here, otherwise following statements have no effect)
+      enableConradButtons( true );
 
       // switch off leds again, restore light panel state, enable all power buttons
       ledsPowerOnButton_->click();
       initPowerStates( saveState, ledsPowerOnButton_->isActive(), cameraPowerOnButton_->isActive() );
-      enableConradButtons( true );
-
+      
       // restore display options
       displayAreasButton_->setEnabled( true );
       displayIndicesButton_->setEnabled( true );
@@ -1338,11 +1340,45 @@ void DefoMainWindow::handleCameraAction( DefoCamHandler::Action action ) {
 }
 
 
+///
+/// get an image from a file via a file dialog
+///
+void DefoMainWindow::loadImageFromFile( QString const& fileName ) {
+  
+  if( fileName.isEmpty() ) return;
+
+  QImage img( fileName );
+  rawimageLabel_->setRotation( true );
+  rawimageLabel_->displayImageToSize( img );
+  areaNewButton_->setEnabled( true );
+
+  QDateTime datime = QDateTime::currentDateTime();
+  imageinfoTextedit_->clear();
+  imageinfoTextedit_->appendPlainText( QString( "Raw image size: %1 x %2 pixel" ).arg(img.width()).arg(img.height()) );
+  imageinfoTextedit_->appendPlainText( QString( "Fetched: %1" ).arg( datime.toString( QString( "dd.MM.yy hh:mm:ss" ) ) ) );
+  imageinfoTextedit_->appendPlainText( QString( "Type: from disk [%1]" ).arg( fileName ) );
+
+  // few settings
+
+  if( areas_.empty() ) {
+    areaNewButton_->setEnabled( true ); 
+    areaDeleteButton_->setEnabled( false );
+  } else {
+    areaNewButton_->setEnabled( false ); // for the moment, restricted to 1 rea // @@@@
+    areaDeleteButton_->setEnabled( true );
+  }
+
+  emit( imagelabelRefreshPointSquares( std::vector<DefoSquare>() ) );
+  emit( imagelabelRefreshIndices( std::vector<DefoPoint>() ) );
+  
+}
+
+
 
 ///
+/// get an image from a file via a file dialog
 ///
-///
-void DefoMainWindow::loadImageFromFile( void ) {
+void DefoMainWindow::loadImageFromFileWithDialog( void ) {
   
   QFileDialog::Options options;
 
@@ -1548,6 +1584,9 @@ void DefoMainWindow::readCameraParametersFromCfgFile( void ) {
 ///
 QDir const DefoMainWindow::checkAndCreateOutputFolder( char const* type ) {
 
+  QString mIdName = measurementidTextedit_->toPlainText();
+  currentFolderName_ = baseFolderName_ + "/" + mIdName;
+
   QDateTime datime = QDateTime::currentDateTime();
   QDir currentDir( currentFolderName_ );
   QString subdirName = QString( type ) + datime.toString( QString( ".ddMMyy-hhmmss" ) );
@@ -1558,7 +1597,7 @@ QDir const DefoMainWindow::checkAndCreateOutputFolder( char const* type ) {
   if( !currentDir.mkpath( subdirName ) ) {
 
     QMessageBox::critical( this, tr("[DefoMainWindow::checkAndCreateOutputFolder]"),
-			   QString("[FILE_SET]: cannot create output dir: \'%1\'").arg(subdirName),
+			   QString("Cannot create output dir: \'%1\'").arg(subdirName),
 			   QMessageBox::Ok );
     std::cerr << " [DefoMainWindow::checkAndCreateOutputFolder] ** ERROR: cannot create output dir: " 
 	      << subdirName.toStdString() << std::endl;
@@ -1772,7 +1811,7 @@ void DefoMainWindow::setupConradCommunication( void ) {
 
     commPortLineEdit_->setText( QString( "-" ) );
     QMessageBox::critical( this, tr("[DefoMainWindow::setupConradCommunication]"),
-			   QString("ERROR ** Cannot connect to Conrad.\nMake sure that /dev/ttyUSB* is present and readable/nand no other process is connecting to the device."),
+			   QString("ERROR ** Cannot connect to Conrad.\nMake sure that /dev/ttyUSB* is present and readable\nand no other process is connecting to the device."),
 			   QMessageBox::Ok );
     std::cerr << " [DefoMainWindow::setupConradCommunication] ** ERROR: Cannot connect to Conrad. Make sure that /dev/ttyUSB* is present and readable and no other process is connecting to the device." << std::endl;
 

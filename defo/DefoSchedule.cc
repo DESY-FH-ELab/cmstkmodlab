@@ -195,7 +195,7 @@ void DefoSchedule::clear( void ) {
 
 
 ///
-/// load a schedule from a atext file
+/// load a schedule from a a text file
 ///
 void DefoSchedule::loadFromFile( void ) {
 
@@ -230,7 +230,10 @@ void DefoSchedule::loadFromFile( void ) {
 
     // we create a small leak here, but dont care..
     QStandardItem* item0 = new QStandardItem( QString( buf0.c_str() ) );
-    QStandardItem* item1 = new QStandardItem( QString( buf1.c_str() ) );
+
+    QStandardItem* item1;
+    if( !(std::string( "-" ) == buf1) ) item1 = new QStandardItem( QString( buf1.c_str() ) );
+    else item1 = new QStandardItem( QString("") );
 
     model_.setItem( rowCounter, 0, item0 );
     model_.setItem( rowCounter, 1, item1 );
@@ -275,8 +278,11 @@ void DefoSchedule::saveToFile( void ) {
     QStandardItem* item0 = model_.item( row, 0 );
     QStandardItem* item1 = model_.item( row, 1 );
     
-    if( !item0 ) break; // if empty action then we should be done
-    file << item0->text().toStdString() << "\t" << item1->text().toStdString();
+    if( !item0 ) break; // if empty action then we're done
+    file << item0->text().toStdString() << "\t";
+
+    if( item1->text().size() ) file << item1->text().toStdString();
+    else file << "-";
     
     file << std::endl;
 

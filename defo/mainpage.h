@@ -579,13 +579,18 @@ as the end of the schedule. For the same reason, an <tt>END</tt> command
 at the schedule's end is not strictly required. Except for <tt>GOTO</tt>,
 all schedule actions are handled by DefoMainWindow::handleAction.
 
-Schedules can be started, paused/resumed and cancelled using the respective buttons.
-It is also possible to save a schedule or load it from a file, which is by
-default placed under the <tt>schedules</tt> folder (extension: <tt>.defoschedule</tt>).
-The <tt>Clear</tt> button erases the schedule and clears the table. Upon clicking the
-<tt>Verify</tt> button, the GUI will check the schedule for inconsistencies such as
-syntax errors, non-existing input files, invalid <tt>GOTO</tt> statements, etc. If
-no error message is displayed, the schedule is considered executable.
+Schedules can be started, paused/resumed and cancelled using the
+respective buttons.  The <tt>Clear</tt> button erases the schedule and
+clears the table. Upon clicking the <tt>Verify</tt> button, the GUI
+will check the schedule for inconsistencies such as syntax errors,
+non-existing input files, invalid <tt>GOTO</tt> statements, etc. If no
+error message is displayed, the schedule is considered executable.  It
+is also possible to save a schedule or load it from a file, which is
+by default placed under the <tt>schedules</tt> folder (extension:
+<tt>.defoschedule</tt>).  Schedule files can also be created or
+modified manually with an editor; in that case a hyphen ("-") must
+be placed in the second column when an action takes no value (example
+line in schedule file: <B><tt>CALIB - </tt></B>).
 
 Possible actions are:
 
@@ -618,7 +623,7 @@ yet implemented!</B></span> </DD>
 <DT>CALIB</DT><DD>Switches off the light panels and powers the calibration LED system. Subsequently, an
 image of the LEDs is taken and reconstructed, and the point positions are written to the
 output folder in a plain text file. Afterwards, the power state of the light panels is
-restored and the LEDs are shut down.  <b>Value: none</b> <SPAN style="color:#ff0000"><B> Not yet implemented!</B></span></DD>
+restored and the LEDs are shut down.  <b>Value: none</b></DD>
 
 <DT>SLEEP</DT><DD>Sleep for the specified amount of seconds, e.g. to allow the chiller to reach a
 target temperature. When a schedule is paused during a <tt>SLEEP</tt> action, the sleep 

@@ -208,7 +208,8 @@ class DefoMainWindow : public QWidget {
   void togglePointSquareDisplay( bool isChecked );
   void loadImageFromCamera( void );
   void handleCameraAction( DefoCamHandler::Action );
-  void loadImageFromFile( void );
+  void loadImageFromFile( QString const& );
+  void loadImageFromFileWithDialog( void );
   void cameraEnabledButtonToggled( bool );
   void writeParameters( void );
   void allPanelsOn( void );
