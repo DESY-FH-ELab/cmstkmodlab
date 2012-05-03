@@ -436,7 +436,10 @@ connected via USB (onboard USB <> RS232 adapter). Access to the
 hardware is provided by the <tt>ConradController</tt> class
 (<tt>devices/Conrad</tt>) through the <tt>/dev/ttyUSB*</tt> device
 files. The user must be member of the <tt>uucp</tt> system group (or
-whatever group they belong to) to obtain access to these files.
+whatever group they belong to) to obtain access to these files.  Once
+the communication is enabled (either manually or at startup, see \ref
+gui_advanced_power_subsubsec) the relay card will - if possible - 
+be automatically detected and initialized.
 
 The following table indicates the association of the relay channels
 (0..8) to the power devices as it is implemented in the GUI. A sketch
