@@ -233,7 +233,7 @@ class DefoMainWindow : public QWidget {
   void readCameraParametersFromCfgFile( void );
   QDir const checkAndCreateOutputFolder( char const* );
   void writePointsToFile( std::vector<DefoPoint> const&, QString const& ) const;
-  void initLightPanelStates( std::string const& );
+  void initPowerStates( std::string const&, bool, bool );
   std::string const getLightPanelStates( void );
   void enableConradButtons( bool );
 
@@ -243,6 +243,8 @@ class DefoMainWindow : public QWidget {
   ConradController* conradController_;
   bool isConradCommunication_;
   bool isConradCommOnStartup_;
+  bool isLEDPowerOnStartup_;
+  bool isCameraPowerOnStartup_;
   bool isStartup_; // whether Conrad configuring happens at startup, not a nice solution..
   std::string panelStartupState_;
 

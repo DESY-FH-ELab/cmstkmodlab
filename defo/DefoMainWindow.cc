@@ -42,8 +42,10 @@ DefoMainWindow::DefoMainWindow( QWidget* parent ) : QWidget( parent ) {
   isConradCommunication_ = false;
   isConradCommOnStartup_ = ( "true" == cfgReader.getValue<std::string>( "CONRAD_COMM_WHEN_START" )?true:false );
   panelStartupState_ = cfgReader.getValue<std::string>( "PANEL_STATE_WHEN_START" );
+  isLEDPowerOnStartup_ = ( "true" == cfgReader.getValue<std::string>( "LEDS_POWER_WHEN_START" )?true:false );
+  isCameraPowerOnStartup_ = ( "true" == cfgReader.getValue<std::string>( "CAMERA_POWER_WHEN_START" )?true:false );
 
-  if( isConradCommOnStartup_ ) {
+  if( isConradCommOnStartup_ ) { // start up Conrad
     // this is with timer because otherwise error window appears before GUI :-(
     isStartup_ = true; // switched back by enableConrad()
     QTimer::singleShot( 100, this, SLOT(timerEnableConrad()) );
@@ -807,7 +809,7 @@ void DefoMainWindow::handleAction( DefoSchedule::scheduleItem item ) {
 
       // switch off leds again, restore light panel state, enable all power buttons
       ledsPowerOnButton_->click();
-      initLightPanelStates( saveState );
+      initPowerStates( saveState, ledsPowerOnButton_->isActive(), cameraPowerOnButton_->isActive() );
       enableConradButtons( true );
 
       // restore display options
@@ -1624,7 +1626,11 @@ void DefoMainWindow::enableConrad( bool isChecked ) {
     if( !isConradCommunication_ ) return;
 
     if( isStartup_ ) { // GUI is starting up
-      initLightPanelStates( panelStartupState_ );
+      initPowerStates( panelStartupState_, isLEDPowerOnStartup_, isCameraPowerOnStartup_ );
+//       ledsPowerOnButton_->setActive( isLEDPowerOnStartup_ ); // switch LEDs
+//       conradController_->setChannel( 6, isLEDPowerOnStartup_ );
+//       cameraPowerOnButton_->setActive( isCameraPowerOnStartup_ ); // switch cam
+//       conradController_->setChannel( 7, isCameraPowerOnStartup_ );
       isStartup_ = false; // switch back
     }
 
@@ -1659,9 +1665,10 @@ void DefoMainWindow::enableConrad( bool isChecked ) {
 
 ///
 /// switch light panels according to a string
-/// as specified in the cfg file (PANEL_STATE_WHEN_START)
+/// as specified in the cfg file (PANEL_STATE_WHEN_START),
+/// and switch camera/led power according to 2nd & 3rd argument
 ///
-void DefoMainWindow::initLightPanelStates( std::string const& stateString ) {
+void DefoMainWindow::initPowerStates( std::string const& stateString, bool isLeds, bool isCamera ) {
 
   allPanelsOff();
 
@@ -1682,7 +1689,12 @@ void DefoMainWindow::initLightPanelStates( std::string const& stateString ) {
     }
     
   }
-  
+
+  ledsPowerOnButton_->setActive( isLeds ); // switch LEDs
+  conradController_->setChannel( 6, isLeds );
+  cameraPowerOnButton_->setActive( isCamera ); // switch cam
+  conradController_->setChannel( 7, isCamera );
+
 }
 
 
@@ -1760,9 +1772,9 @@ void DefoMainWindow::setupConradCommunication( void ) {
 
     commPortLineEdit_->setText( QString( "-" ) );
     QMessageBox::critical( this, tr("[DefoMainWindow::setupConradCommunication]"),
-			   QString("ERROR ** Cannot connect to Conrad.\nCheck if /dev/ttyUSB* device files are present."),
+			   QString("ERROR ** Cannot connect to Conrad.\nMake sure that /dev/ttyUSB* is present and readable/nand no other process is connecting to the device."),
 			   QMessageBox::Ok );
-    std::cerr << " [DefoMainWindow::setupConradCommunication] ** ERROR: Cannot connect to Conrad. Check if /dev/ttyUSB* device files are present or another program is using the device." << std::endl;
+    std::cerr << " [DefoMainWindow::setupConradCommunication] ** ERROR: Cannot connect to Conrad. Make sure that /dev/ttyUSB* is present and readable and no other process is connecting to the device." << std::endl;
 
     bool oldState = conradEnabledCheckbox_->blockSignals( true );
     conradEnabledCheckbox_->setChecked( false );
