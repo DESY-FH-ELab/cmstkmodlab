@@ -19,6 +19,8 @@ ConradMainWindow::ConradMainWindow( QWidget* parent ) : QWidget( parent ) {
 
   setupSignalsAndSlots();
 
+  conradController_ = 0;
+
 }
 
 
