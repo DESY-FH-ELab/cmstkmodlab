@@ -1543,6 +1543,7 @@ void DefoMainWindow::setupUi( void ) {
   commPortLineEdit_->setGeometry(QRect(10, 20, 61, 26));
   QFont commPortFont;
   commPortFont.setFamily(QString::fromUtf8("Liberation Mono"));
+  commPortFont.setPointSize(9);
   commPortLineEdit_->setFont(commPortFont);
   commPortLineEdit_->setAlignment(Qt::AlignCenter);
   commPortLineEdit_->setStyleSheet(QString::fromUtf8("background-color: rgb(255, 255, 255);"));

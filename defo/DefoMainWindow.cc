@@ -39,6 +39,7 @@ DefoMainWindow::DefoMainWindow( QWidget* parent ) : QWidget( parent ) {
   chillerParametersSpinbox3_->setValue( cfgReader.getValue<int>( "CHILLER_PARAMETER_TV" ) );
 
   // connect to Conrad?
+  conradController_ = 0;
   isConradCommunication_ = false;
   isConradCommOnStartup_ = ( "true" == cfgReader.getValue<std::string>( "CONRAD_COMM_WHEN_START" )?true:false );
   panelStartupState_ = cfgReader.getValue<std::string>( "PANEL_STATE_WHEN_START" );
@@ -51,6 +52,7 @@ DefoMainWindow::DefoMainWindow( QWidget* parent ) : QWidget( parent ) {
     QTimer::singleShot( 100, this, SLOT(timerEnableConrad()) );
   }
   else {
+    isStartup_ = false;
     isConradCommunication_ = false;
     commPortLineEdit_->setText( QString( "-" ) );
     allPanelsOff(); // unset all buttons
@@ -1662,26 +1664,18 @@ void DefoMainWindow::enableConrad( bool isChecked ) {
   
   // it's a request to enable conrad
   if( isChecked ) {
-
     setupConradCommunication(); // better renew if already established
     if( !isConradCommunication_ ) return;
 
-    if( isStartup_ ) { // GUI is starting up
+    if( isStartup_ ) { // even triggered because GUI is starting up
       initPowerStates( panelStartupState_, isLEDPowerOnStartup_, isCameraPowerOnStartup_ );
-//       ledsPowerOnButton_->setActive( isLEDPowerOnStartup_ ); // switch LEDs
-//       conradController_->setChannel( 6, isLEDPowerOnStartup_ );
-//       cameraPowerOnButton_->setActive( isCameraPowerOnStartup_ ); // switch cam
-//       conradController_->setChannel( 7, isCameraPowerOnStartup_ );
       isStartup_ = false; // switch back
     }
 
     else { // event triggered by the conrad enabled checkbox: read states from card
-
-      const std::vector<bool> states = conradController_->queryStatus(); // ENABLE!
-      for( unsigned int i = 0; i < 5; ++i ) {
-	enableConradButtons( true ); // switch buttons enable, must do this here, otherwise setActive won't work
-	lightPanelButtons_.at( i )->setActive( states.at( i ) ); // ENABLE!
-      }
+      const std::vector<bool> states = conradController_->queryStatus();
+      enableConradButtons( true ); // switch buttons enable, must do this here, otherwise setActive won't work
+      for( unsigned int i = 0; i < 5; ++i ) lightPanelButtons_.at( i )->setActive( states.at( i ) );
       ledsPowerOnButton_->setActive( states.at( 5 ) );
       cameraPowerOnButton_->setActive( states.at( 6 ) );
 
@@ -1714,7 +1708,7 @@ void DefoMainWindow::initPowerStates( std::string const& stateString, bool isLed
   allPanelsOff();
 
   if( stateString.size() != 5 ) {
-    std::cerr << " [DefoMainWindow::initLightPanelStates] ** ERROR: argument to cfg parameter PANEL_STATE_WHEN_START has size: "
+    std::cerr << " [DefoMainWindow::initPowerStates] ** ERROR: argument to cfg parameter PANEL_STATE_WHEN_START has size: "
 	      << stateString.size() << ". All panels off." << std::endl;
     return;
   }
@@ -1725,7 +1719,7 @@ void DefoMainWindow::initPowerStates( std::string const& stateString, bool isLed
     if( '0' == stateString.at( i ) ); // nothing
     else if( '1' == stateString.at( i ) ) lightPanelButtons_.at( i )->click();
     else {
-      std::cerr << " [DefoMainWindow::initLightPanelStates] ** WARNING: bogus character: \"" << stateString.at( i )
+      std::cerr << " [DefoMainWindow::initPowerStates] ** WARNING: bogus character: \"" << stateString.at( i )
 		<< "\" as argument to cfg parameter PANEL_STATE_WHEN_START, will interpret this as \"off\"." << std::endl;
     }
     
