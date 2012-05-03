@@ -44,6 +44,10 @@
 &nbsp;&nbsp;\ref gui_cooling_subsec <BR>
 &nbsp;&nbsp;\ref gui_offline_subsec <BR>
 &nbsp;&nbsp;\ref gui_advanced_subsec <BR>
+&nbsp;&nbsp;&nbsp;&nbsp;\ref gui_advanced_basefolder_subsubsec <BR>
+&nbsp;&nbsp;&nbsp;&nbsp;\ref gui_advanced_commentfield_subsubsec <BR>
+&nbsp;&nbsp;&nbsp;&nbsp;\ref gui_advanced_parameters_subsubsec <BR>
+&nbsp;&nbsp;&nbsp;&nbsp;\ref gui_advanced_power_subsubsec <BR>
 &nbsp;&nbsp;\ref gui_viewer <BR>
 
 \ref appendix_sec <BR>
@@ -543,8 +547,7 @@ relative to the last reference image and display the results in the offline tab 
 <DT>CALIB</DT><DD>Switches off the light panels and powers the calibration LED system. Subsequently, an
 image of the LEDs is taken and reconstructed, and the point positions are written to the
 output folder in a plain text file. Afterwards, the power state of the light panels is
-restored and the LEDs are shut down. <SPAN style="color:#ff0000"><B>Not yet implemented!</B></span></DD>
-</DL>
+restored and the LEDs are shut down.</DD></DL>
 
 Surface reconstruction (<i>DEFO</i>) can only be performed if an image has previously been processed
 as a reference image. Apart from this, deleting an area will invalidate the reference. The spinbox in
@@ -580,61 +583,66 @@ at the schedule's end is not strictly required. Except for <tt>GOTO</tt>,
 all schedule actions are handled by DefoMainWindow::handleAction.
 
 Schedules can be started, paused/resumed and cancelled using the
-respective buttons.  The <tt>Clear</tt> button erases the schedule and
+respective buttons. The <tt>Clear</tt> button erases the schedule and
 clears the table. Upon clicking the <tt>Verify</tt> button, the GUI
 will check the schedule for inconsistencies such as syntax errors,
 non-existing input files, invalid <tt>GOTO</tt> statements, etc. If no
 error message is displayed, the schedule is considered executable.  It
 is also possible to save a schedule or load it from a file, which is
 by default placed under the <tt>schedules</tt> folder (extension:
-<tt>.defoschedule</tt>).  Schedule files can also be created or
-modified manually with an editor; in that case a hyphen ("-") must
-be placed in the second column when an action takes no value (example
-line in schedule file: <B><tt>CALIB - </tt></B>).
+<tt>.defoschedule</tt>). Schedule files can also be created or
+modified manually with an editor; note that in a plain text file a
+hyphen ("-") must be placed in the second column when an action takes
+no value (example line in plain text schedule file: <B><tt>CALIB - </tt></B>).
 
-Possible actions are:
+Possible actions are the following, followed by the value in brackets ("-" if no value required):
 
 <DL>
-<DT>SET</DT>
+<DT><B><TT>SET -</TT></B></DT>
 <DD>Loads an image from the camera and then pauses the schedule, thus allowing for
 modifications of the setup, parameters, lighting, area definitions, etc. Manual refresh of the image is also possible.
-Once everything is arranged properly, the schedule can be resumed using the PAUSE/RES button. <b>Value: none</b></DD>
+Once everything is arranged properly, the schedule can be resumed using the PAUSE/RES button.</DD>
 
-<DT>REF</DT><DD>Capture an image from the camera, reconstruct the points and store the result
-as the reference for future images, until a new reference image is taken. <b>Value: none</b> </DD>
+<DT><B><TT>REF -</TT></B></DT>
+<DD>Capture an image from the camera, reconstruct the points and store the result
+as the reference for future images, until a new reference image is taken.</DD>
 
-<DT>DEFO</DT><DD>Capture an image from the camera and reconstruct the surface relative to the
-most recently taken reference image. <b>Value: none</b></DD>
+<DT><B><TT>DEFO -</TT></B></DT><DD>Capture an image from the camera and reconstruct the surface relative to the
+most recently taken reference image. </DD>
 
-<DT>FILE_SET</DT><DD>Load an image from a file and then pause the schedule, enabling manual image refresh,
+<DT><B><TT>FILE_SET &lt;image_file_path&gt;</TT></B></DT>
+<DD>Load an image from a file and then pause the schedule, enabling manual image refresh,
 thus allowing for modifications of the setup, parameters, lighting, area definitions, etc. Once everything is arranged properly,
-the schedule can be resumed using the PAUSE/RES button. <b>Value: image file path</b></DD>
+the schedule can be resumed using the PAUSE/RES button.</DD>
 
-<DT>FILE_REF</DT><DD>Load an image from file, reconstruct the points and store the result
-as the reference for future images, until a new reference image is taken. <b>Value: image file path</b></DD>
+<DT><B><TT>FILE_REF &lt;image_file_path&gt;</TT></B></DT><DD>Load an image from file, reconstruct the points and store the result
+as the reference for future images, until a new reference image is taken.</DD>
 
-<DT>FILE_DEFO</DT><DD>Load an image from file and reconstruct the surface relative to the
-most recently taken reference image. <b>Value: image file path</b></DD>
+<DT><B><TT>FILE_DEFO &lt;image_file_path&gt;</TT></B></DT><DD>Load an image from file and reconstruct the surface relative to the
+most recently taken reference image.</DD>
 
-<DT>TEMP</DT><DD>Set the chiller bath target temperature. <b>Value:
-target temperature in deg C.</b> <SPAN style="color:#ff0000"><B>Not
+<DT><B><TT>TEMP &lt;target_temperature_in_degC&gt;</TT></B></DT>
+<DD>Set the chiller bath target temperature.<SPAN style="color:#ff0000"> <B>Not
 yet implemented!</B></span> </DD>
 
-<DT>CALIB</DT><DD>Switches off the light panels and powers the calibration LED system. Subsequently, an
+<DT><B><TT>CALIB -</TT></B></DT>
+<DD>Switches off the light panels and powers the calibration LED system. Subsequently, an
 image of the LEDs is taken and reconstructed, and the point positions are written to the
 output folder in a plain text file. Afterwards, the power state of the light panels is
-restored and the LEDs are shut down.  <b>Value: none</b></DD>
+restored and the LEDs are shut down.</DD>
 
-<DT>SLEEP</DT><DD>Sleep for the specified amount of seconds, e.g. to allow the chiller to reach a
+<DT><B><TT>SLEEP &lt;time_in_seconds&gt;</TT></B></DT>
+<DD>Sleep for the specified amount of seconds, e.g. to allow the chiller to reach a
 target temperature. When a schedule is paused during a <tt>SLEEP</tt> action, the sleep 
 is also paused, i.e. after resuming the schedule the GUI will sit through the remaining number of seconds.
-<b>Value: time in seconds.</b></DD>
+</DD>
 
-<DT>GOTO</DT><DD>Jump to a schedule entry by line number, allowing program loops. Line numbers start at 1,
+<DT><B><TT>GOTO &lt;schedule_line_number&gt;</TT></B></DT><DD>Jump to a schedule entry by line number, allowing program loops. Line numbers start at 1,
 as displayed in the schedule table. Technically, this case is caught and handled by class DefoSchedule and
-not by DefoMainWindow. <b>Value: schedule line number</b></DD>
+not by DefoMainWindow.</DD>
 
-<DT>END</DT><DD>Stop a schedule. Not explicitly required, but prevents error messages.<b>Value: none</b></DD>
+<DT><B><TT>END -</TT></B></DT>
+<DD>Stop a schedule. Not explicitly required since an empty row has the same effect, but is more clear and prevents error messages.</DD>
 </DL>
 
 Technically, class DefoSchedule has the functionality for storing defo
@@ -705,8 +713,9 @@ is stored. Subfolders will automatically be created under the base folder
 for each individual measurement (see \ref gui_online_measurementid_subsubsec).
 
 \subsubsection gui_advanced_commentfield_subsubsec   6.5.2 Comment field
-Manual input for text comments & logs which are written to the
-output. <SPAN style="color:#ff0000"><B>Not yet implemented!</B></span>
+Manual input for text comments & log messages. All contents of this
+text field are continously written to the file <tt>comment.txt</tt>
+in the current <i>measurementId</i> directory under the <i>output base folder</i>.
 
 \subsubsection gui_advanced_parameters_subsubsec   6.5.3 Algorithm parameters
 The inputs in the  <i>Raw image reconstruction</i>, <i>Surface reconstruction</i>,

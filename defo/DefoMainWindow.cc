@@ -165,6 +165,8 @@ void DefoMainWindow::setupSignalsAndSlots( void ) {
   connect( allPanelsOnButton_, SIGNAL(clicked()), this, SLOT(allPanelsOn() ) );
   connect( allPanelsOffButton_, SIGNAL(clicked()), this, SLOT(allPanelsOff() ) );
   connect( conradEnabledCheckbox_, SIGNAL( toggled(bool) ), this, SLOT( enableConrad(bool) ) );
+
+  connect( commentTextEdit_, SIGNAL(textChanged()), this, SLOT(handleCommentAction()) );
 }
 
 
@@ -1592,7 +1594,7 @@ QDir const DefoMainWindow::checkAndCreateOutputFolder( char const* type ) {
   QString subdirName = QString( type ) + datime.toString( QString( ".ddMMyy-hhmmss" ) );
   QDir subdir = QDir( currentFolderName_ + "/" + subdirName );
   
-  if( subdir.exists() ) return subdir; // ok, take that one
+  if( subdir.exists() ) return subdir; // ok, we take that one
 
   if( !currentDir.mkpath( subdirName ) ) {
 
@@ -1972,6 +1974,38 @@ void DefoMainWindow::writePointsToFile( std::vector<DefoPoint> const& points, QS
 	 << " y-index: " << std::setw( 3 ) << it->getIndex().second
 	 << std::setw( 8 ) << (it->isBlue()?" BLUE":" WHITE") << std::endl;
   }
+
+}
+
+
+
+///
+/// handle action in the comment window / advanced tab;
+/// writes the complete content of the comment window to a file
+///
+void DefoMainWindow::handleCommentAction( void ) {
+
+  QString path = baseFolderName_ + "/" + measurementidTextedit_->toPlainText();
+  
+  if( !( QDir( path ).exists() ) ) {
+    
+    if( !( QDir( baseFolderName_ ).mkdir( measurementidTextedit_->toPlainText() ) ) ) {
+      QMessageBox::critical( this, tr("[DefoMainWindow::handleCommentAction]"),
+			     QString("Cannot create folder: %1").arg( path ),
+			     QMessageBox::Ok );
+      std::cerr << " [DefoMainWindow::handleCommentAction] ** ERROR: Cannot create folder: " 
+		<< path.toStdString() << std::endl;
+      return;
+    }
+
+  }
+
+  QString filepath = path + "/comment.txt";
+  QFile outfile( filepath );
+  outfile.open( QIODevice::WriteOnly | QIODevice::Text );
+  QTextStream out(&outfile);
+  out << commentTextEdit_->toPlainText() << endl;
+  outfile.close();
 
 }
 

@@ -43,6 +43,7 @@
 #include <QMessageBox>
 #include <QInputDialog>
 #include <QCheckBox>
+#include <QTextStream>
 
 #include "qwt_plot.h"
 
@@ -218,6 +219,7 @@ class DefoMainWindow : public QWidget {
   void enableConrad( bool );
   void timerEnableConrad( void ) { enableConrad( true ); } // for enable with timer
   void setupConradCommunication( void );
+  void handleCommentAction( void );
 
  signals:
   void pollAction( void );
