@@ -34,16 +34,18 @@ DefoMainWindow::DefoMainWindow( QWidget* parent ) : QWidget( parent ) {
   geometryPitchSpinbox1_->setValue( cfgReader.getValue<double>( "PIXEL_PITCH_X" ) * 1.e6 ); // m -> micrometer
   geometryPitchSpinbox2_->setValue( cfgReader.getValue<double>( "PIXEL_PITCH_Y" ) * 1.e6); // m -> micrometer
   surfaceRecoSpacingSpinbox_->setValue( cfgReader.getValue<int>( "SPACING_ESTIMATE" ) );
-  chillerParametersSpinbox1_->setValue( cfgReader.getValue<double>( "CHILLER_PARAMETER_XP" ) );
-  chillerParametersSpinbox2_->setValue( cfgReader.getValue<int>( "CHILLER_PARAMETER_TN" ) );
-  chillerParametersSpinbox3_->setValue( cfgReader.getValue<int>( "CHILLER_PARAMETER_TV" ) );
+  chillerStartupParameters_ = DefoChillerParameterTriplet( cfgReader.getValue<float>( "CHILLER_PARAMETER_XP" ),
+							   cfgReader.getValue<int>( "CHILLER_PARAMETER_TN" ),
+							   cfgReader.getValue<int>( "CHILLER_PARAMETER_TV" ) );
 
   // connect to chiller?
   julabo_ = 0;
   if( "true" == cfgReader.getValue<std::string>( "CHILLER_COMM_WHEN_START" )?true:false ) {
     QTimer::singleShot( 100, this, SLOT(timerEnableChiller()) );
   }
-  else isChillerEnabled_ = false;
+  else {
+    isChillerEnabled_ = false;
+  }
 
   // connect to Conrad?
   conradController_ = 0;
@@ -1781,11 +1783,9 @@ void DefoMainWindow::setupConradCommunication( void ) {
 
   // create a list with all available ttyUSB device (system) files
   QDir devDir( "/dev" );
-  //QDir devDir( "/home/olzem/cms/upgrade/defo/svn/cmstkmodlab/trunk/defo" ); //////////////////////////////////////////// testing
   QStringList filters;
   filters << "ttyUSB*"; 
   QStringList list = devDir.entryList( filters, QDir::System ); // only system files!
-  //QStringList list = devDir.entryList( filters, QDir::Files ); ///////////////////////////////// testing
 
   isConradCommunication_ = false;
 
@@ -2047,17 +2047,17 @@ void DefoMainWindow::enableChiller( bool isEnable ) {
   if( isEnable ) { // request chiller comm enable
 
     if( julabo_ ) delete julabo_;
-    julabo_ = new JulaboFP50( "/dev/ttyS0" );
+    julabo_ = new JulaboFP50( "/dev/ttyS5" );
 
     if( !( julabo_->IsCommunication() ) ) { // failure
 
       isChillerEnabled_ = false;
 
       std::cerr << " [DefoMainWindow::enableChiller] ** ERROR: Cannot connect to chiller."
-		<< " Make sure the device is connected to /dev/ttyS0." << std::endl;
+		<< " Make sure the device is connected to /dev/ttyS5." << std::endl;
 
       QMessageBox::critical( this, tr("[DefoMainWindow::enableChiller]"),
-			     QString("ERROR: cannot connect to chiller.\nMake sure the device is connected to /dev/ttyS0."),
+			     QString("ERROR: cannot connect to chiller.\nMake sure the device is connected to /dev/ttyS5."),
 			     QMessageBox::Ok );
 
       // here we must block signals, otherwise the checkbox triggers function again
@@ -2065,9 +2065,9 @@ void DefoMainWindow::enableChiller( bool isEnable ) {
       chillerEnabledCheckBox_->setChecked( false ); 
       chillerEnabledCheckBox_->blockSignals( oldState );
 
-      chillerParametersSpinbox1_ ->setEnabled( false );
-      chillerParametersSpinbox2_ ->setEnabled( false );
-      chillerParametersSpinbox3_ ->setEnabled( false );
+      chillerParametersSpinbox1_->setEnabled( false );
+      chillerParametersSpinbox2_->setEnabled( false );
+      chillerParametersSpinbox3_->setEnabled( false );
 
       return;
 
@@ -2077,13 +2077,23 @@ void DefoMainWindow::enableChiller( bool isEnable ) {
 
       isChillerEnabled_ = true;
       
+      // check box, inhibit signals, see above..
       bool oldState = chillerEnabledCheckBox_->blockSignals( true );
       chillerEnabledCheckBox_->setChecked( true ); 
       chillerEnabledCheckBox_->blockSignals( oldState );
 
-      chillerParametersSpinbox1_ ->setEnabled( true );
-      chillerParametersSpinbox2_ ->setEnabled( true );
-      chillerParametersSpinbox3_ ->setEnabled( true );
+      chillerParametersSpinbox1_->setEnabled( true );
+      chillerParametersSpinbox2_->setEnabled( true );
+      chillerParametersSpinbox3_->setEnabled( true );
+      
+
+      // transmit parameters from cfg file
+      julabo_->SetControlParameters( chillerStartupParameters_.xp_, 
+				     chillerStartupParameters_.tn_,
+				     chillerStartupParameters_.tv_  );
+      chillerParametersSpinbox1_->setValue( chillerStartupParameters_.xp_ );
+      chillerParametersSpinbox2_->setValue( chillerStartupParameters_.tn_ );
+      chillerParametersSpinbox3_->setValue( chillerStartupParameters_.tv_ );
 
       // btw we leave julabo_ valid, just in case..
 
@@ -2096,12 +2106,12 @@ void DefoMainWindow::enableChiller( bool isEnable ) {
     isChillerEnabled_ = false;
   
     bool oldState = chillerEnabledCheckBox_->blockSignals( true );
-    chillerEnabledCheckBox_->setChecked( true ); 
+    chillerEnabledCheckBox_->setChecked( false ); 
     chillerEnabledCheckBox_->blockSignals( oldState );
     
-    chillerParametersSpinbox1_ ->setEnabled( true );
-    chillerParametersSpinbox2_ ->setEnabled( true );
-    chillerParametersSpinbox3_ ->setEnabled( true );
+    chillerParametersSpinbox1_->setEnabled( false );
+    chillerParametersSpinbox2_->setEnabled( false );
+    chillerParametersSpinbox3_->setEnabled( false );
     
     // btw we leave julabo_ valid, just in case..
     

@@ -66,6 +66,20 @@ QT_BEGIN_NAMESPACE
 
 
 ///
+/// holds chiller parameters
+///
+class DefoChillerParameterTriplet {
+ public:
+  DefoChillerParameterTriplet() {}
+  DefoChillerParameterTriplet( double xp, int tn, int tv ) { xp_ = xp; tn_ = tn; tv_ = tv; }
+  double xp_;
+  int tn_;
+  int tv_;
+};
+
+
+
+///
 /// QPushButton which remembers a boolean state
 /// and has some color functionality
 ///
@@ -191,6 +205,8 @@ class DefoMainWindow : public QWidget {
   Q_ENUMS( Aperture )
   Q_ENUMS( Iso )
 
+
+
  public slots:
   void handleAction( DefoSchedule::scheduleItem item );
   void startPolling( void );
@@ -248,6 +264,7 @@ class DefoMainWindow : public QWidget {
 
   JulaboFP50* julabo_;
   bool isChillerEnabled_;
+  DefoChillerParameterTriplet chillerStartupParameters_;
 
   ConradController* conradController_;
   bool isConradCommunication_;

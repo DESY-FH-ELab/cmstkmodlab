@@ -47,10 +47,12 @@
 &nbsp;&nbsp;&nbsp;&nbsp;\ref gui_advanced_basefolder_subsubsec <BR>
 &nbsp;&nbsp;&nbsp;&nbsp;\ref gui_advanced_commentfield_subsubsec <BR>
 &nbsp;&nbsp;&nbsp;&nbsp;\ref gui_advanced_parameters_subsubsec <BR>
+&nbsp;&nbsp;&nbsp;&nbsp;\ref gui_advanced_chiller_subsubsec <BR>
 &nbsp;&nbsp;&nbsp;&nbsp;\ref gui_advanced_power_subsubsec <BR>
 &nbsp;&nbsp;\ref gui_viewer <BR>
 
 \ref appendix_sec <BR>
+&nbsp;&nbsp;\ref app_todo_subsec <BR>
 &nbsp;&nbsp;\ref app_config_subsec <BR>
 &nbsp;&nbsp;\ref app_containers_subsec <BR>
 &nbsp;&nbsp;\ref app_literature_subsec <BR>
@@ -417,16 +419,16 @@ expand #include statements.</font>
 \endhtmlonly
 
 \subsection chiller_subsection			5.2 Chiller
-
 A Julabo FP50 chiller is used as cooling plant. The corresponding
 functionality for steering the chiller and reading the operation
 parameters is embedded in the <tt>JulaboFP50</tt> class
-(<tt>devices/Julabo</tt>). The chiller is supposed to be connected
-via the first RS232 port (<tt>/dev/ttyS0</tt>).
-<SPAN style="color:#ff0000"><B>Not yet implemented!</B></span>
+(<tt>devices/Julabo</tt>). The chiller is supposed to be connected via
+the left RS232 connector of the serial adapter card as seen from the
+back of cmstkmodlab2. In order to obtain access to the corresponding
+device file <tt>/dev/ttyS5</tt> the user must be member of the
+<tt>dialout</tt> system group (or whatever group the file belongs to).
 
 \subsection multimeter_subsection		5.3 Multimeter
-
 pt100 temperature probes are read out via the Keithley 2700 multimeter.
 The corresponding functionality is embedded in the <tt>Keithley2700</tt>
 class (<tt>devices/Keithley</tt>). <SPAN style="color:#ff0000"><B>Not yet implemented!</B></span>
@@ -723,13 +725,30 @@ text field are continously written to the file <tt>comment.txt</tt>
 in the current <i>measurementId</i> directory under the <i>output base folder</i>.
 
 \subsubsection gui_advanced_parameters_subsubsec   6.5.3 Algorithm parameters
-The inputs in the  <i>Raw image reconstruction</i>, <i>Surface reconstruction</i>,
-<i>Geometry</i> and <i>Chiller</i> groups allow for setting the various configuration
+The inputs in the  <i>Raw image reconstruction</i>, <i>Surface reconstruction</i> and
+<i>Geometry</i> groups allow for setting the various configuration
 parameters and are initialized from the configuration file (\ref app_config_subsec)
 on startup. After modifying the parameters manually, the <tt>Apply</tt> button
 must be clicked to make these changes persistent.
 
-\subsubsection gui_advanced_power_subsubsec   6.5.4 Power options
+\subsubsection gui_advanced_chiller_subsubsec 6.5.4 Chiller
+The chiller group comprises the communication switch as well as the
+steering controls for the chiller control parameters. Checking the
+<tt>Enabled</tt> checkbox in the <tt>Communication</tt> field will
+trigger an attempt to initialize the chiller communication (see \ref
+chiller_subsection) and - upon successful handshake - upload the
+controller parameters as specified in the configuration file
+(<tt>CHILLER_PARAMETER_XP</tt>, <tt>CHILLER_PARAMETER_TN</tt>,
+</tt>CHILLER_PARAMETER_TV</tt>). When the configuration parameter
+<tt>CHILLER_COMM_WHEN_START</tt> is set to true, the chiller will be
+automatically initialized at program startup. Unchecking the checkbox
+will terminate communication.
+
+The controller parameters Xp, Tv, Tn can be modified at any time when
+communication is enabled. The <tt>Apply</tt> buton must be hit
+to make the changes persistent.
+
+\subsubsection gui_advanced_power_subsubsec   6.5.5 Power options
 The items in the power group serve as the control interface to the
 Conrad relay card.  Software control can be enabled via the
 <tt>Enabled</tt> check box which will trigger auto-detection of the
@@ -760,7 +779,13 @@ system and the camera can be toggled via the respective buttons (green
 
 \section appendix_sec              Appendix
 
-\subsection app_config_subsec        A.1 The configuration file
+\subsection app_todo_subsec        A.1 TODO
+<UL>
+<LI> put in a DefoTogglePushButton for chiller circulator on/off
+<LI> advanced tab: load cfg from file
+</UL>
+
+\subsection app_config_subsec        A.2 The configuration file
 
 All algorithms and the GUI rely on the presence of a configuration
 file whose name and location are consistently hard-coded in

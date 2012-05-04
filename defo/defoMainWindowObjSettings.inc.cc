@@ -1192,6 +1192,7 @@ void DefoMainWindow::setupUi( void ) {
   chillerParametersSpinbox1_->setStyleSheet(QString::fromUtf8("background-color: rgb(255, 255, 255)"));
   chillerParametersSpinbox1_->setMinimum( 0.1 );
   chillerParametersSpinbox1_->setMaximum( 99.9 );
+  chillerParametersSpinbox1_->setEnabled( false );
   chillerParametersSpinbox2_ = new QSpinBox(chillerparametersGroupBox_);
   chillerParametersSpinbox2_->setObjectName(QString::fromUtf8("chillerParametersSpinbox2_"));
   chillerParametersSpinbox2_->setGeometry(QRect(80, 140, 91, 31));
@@ -1199,6 +1200,7 @@ void DefoMainWindow::setupUi( void ) {
   chillerParametersSpinbox2_->setStyleSheet(QString::fromUtf8("background-color: rgb(255, 255, 255)"));
   chillerParametersSpinbox2_->setMinimum( 3 );
   chillerParametersSpinbox2_->setMaximum( 9999 );
+  chillerParametersSpinbox2_->setEnabled( false );
   chillerParametersSpinbox3_ = new QSpinBox(chillerparametersGroupBox_);
   chillerParametersSpinbox3_->setObjectName(QString::fromUtf8("chillerParametersSpinbox3_"));
   chillerParametersSpinbox3_->setGeometry(QRect(80, 190, 91, 31));
@@ -1206,6 +1208,7 @@ void DefoMainWindow::setupUi( void ) {
   chillerParametersSpinbox3_->setStyleSheet(QString::fromUtf8("background-color: rgb(255, 255, 255)"));
   chillerParametersSpinbox3_->setMinimum( 0 );
   chillerParametersSpinbox3_->setMaximum( 999 );
+  chillerParametersSpinbox3_->setEnabled( false );
   chillerParametersLabel1_ = new QLabel(chillerparametersGroupBox_);
   chillerParametersLabel1_->setObjectName(QString::fromUtf8("chillerParametersLabel1_"));
   chillerParametersLabel1_->setGeometry(QRect(10, 100, 61, 16));
