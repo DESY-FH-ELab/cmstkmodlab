@@ -43,8 +43,9 @@ bool JulaboFP50::SetWorkingTemperature( const float workingTemp ) const {
   stringstream theCommand;
   theCommand << "out_sp_00 " << workingTemp;
   comHandler_->SendCommand( theCommand.str().c_str() );
-  
+  usleep( 10000 );
   comHandler_->SendCommand( "in_sp_00" );
+  usleep( 10000 );
   comHandler_->ReceiveString( buffer );
   StripBuffer( buffer );
 
@@ -80,8 +81,9 @@ bool JulaboFP50::SetPumpPressure( const unsigned int pressureStage ) const {
   stringstream theCommand;
   theCommand << "out_sp_07 " << pressureStage;
   comHandler_->SendCommand( theCommand.str().c_str() );
-  
+  usleep( 10000 );
   comHandler_->SendCommand( "in_sp_07" );
+  usleep( 10000 );
   comHandler_->ReceiveString( buffer );
   StripBuffer( buffer );
 
@@ -109,8 +111,9 @@ bool JulaboFP50::SetCirculatorOn( void ) const {
   char buffer[1000];
   
   comHandler_->SendCommand( "out_mode_05 1" );
-  
+  usleep( 10000 );
   comHandler_->SendCommand( "in_mode_05" );
+  usleep( 10000 );
   comHandler_->ReceiveString( buffer );
   StripBuffer( buffer );
 
@@ -138,8 +141,9 @@ bool JulaboFP50::SetCirculatorOff( void ) const {
   char buffer[1000];
   
   comHandler_->SendCommand( "out_mode_05 0" );
-  
+  usleep( 10000 );
   comHandler_->SendCommand( "in_mode_05" );
+  usleep( 10000 );
   comHandler_->ReceiveString( buffer );
   StripBuffer( buffer );
 
@@ -187,9 +191,10 @@ bool JulaboFP50::SetControlParameters( float xp, int tn, int tv ) const {
   // proportional
   theCommand << "out_par_06 " << xp;
   comHandler_->SendCommand( theCommand.str().c_str() );
-
+  usleep( 10000 );
   // verify
   comHandler_->SendCommand( "in_par_06" );
+  usleep( 10000 );
   comHandler_->ReceiveString( buffer );
   StripBuffer( buffer );
 
@@ -203,9 +208,10 @@ bool JulaboFP50::SetControlParameters( float xp, int tn, int tv ) const {
   theCommand.str( "" );
   theCommand << "out_par_07 " << tn;
   comHandler_->SendCommand( theCommand.str().c_str() );
-
+  usleep( 10000 );
   // verify
   comHandler_->SendCommand( "in_par_07" );
+  usleep( 10000 );
   comHandler_->ReceiveString( buffer );
   StripBuffer( buffer );
 
@@ -219,9 +225,10 @@ bool JulaboFP50::SetControlParameters( float xp, int tn, int tv ) const {
   theCommand.str( "" );
   theCommand << "out_par_08 " << tv;
   comHandler_->SendCommand( theCommand.str().c_str() );
-
+  usleep( 10000 );
   // verify
   comHandler_->SendCommand( "in_par_08" );
+  usleep( 10000 );
   comHandler_->ReceiveString( buffer );
   StripBuffer( buffer );
 
@@ -249,6 +256,7 @@ float JulaboFP50::GetBathTemperature( void ) const {
   char buffer[1000];
 
   comHandler_->SendCommand( "in_pv_00" );
+  usleep( 10000 );
   comHandler_->ReceiveString( buffer );
   StripBuffer( buffer );
   return( atof( buffer ) );
@@ -269,6 +277,7 @@ float JulaboFP50::GetSafetySensorTemperature( void ) const {
   char buffer[1000];
   
   comHandler_->SendCommand( "in_pv_03" );
+  usleep( 10000 );
   comHandler_->ReceiveString( buffer );
   StripBuffer( buffer );
 
@@ -290,6 +299,7 @@ float JulaboFP50::GetWorkingTemperature( void ) const {
   char buffer[1000];
   
   comHandler_->SendCommand( "in_sp_00" );
+  usleep( 10000 );
   comHandler_->ReceiveString( buffer );
   StripBuffer( buffer );
 
@@ -312,6 +322,7 @@ int JulaboFP50::GetHeatingPower( void ) const
   char buffer[1000];
 
   comHandler_->SendCommand( "in_pv_01" );
+  usleep( 10000 );
   comHandler_->ReceiveString( buffer );
   StripBuffer( buffer );
 
@@ -332,6 +343,7 @@ unsigned int JulaboFP50::GetPumpPressure( void ) const {
   char buffer[1000];
   
   comHandler_->SendCommand( "in_sp_07" );
+  usleep( 10000 );
   comHandler_->ReceiveString( buffer );
   StripBuffer( buffer );
 
@@ -353,6 +365,7 @@ bool JulaboFP50::GetCirculatorStatus( void ) const {
   char buffer[1000];
   
   comHandler_->SendCommand( "in_mode_05" );
+  usleep( 10000 );
   comHandler_->ReceiveString( buffer );
   StripBuffer( buffer );
 
@@ -379,6 +392,7 @@ std::pair<int,std::string> JulaboFP50::GetStatus( void ) const {
 
   char buffer[1000];
   comHandler_->SendCommand( "status" );
+  usleep( 10000 );
   comHandler_->ReceiveString( buffer );
   StripBuffer( buffer );
 
@@ -419,6 +433,7 @@ float JulaboFP50::GetProportionalParameter( void ) const {
   char buffer[1000];
 
   comHandler_->SendCommand( "in_par_06" );
+  usleep( 10000 );
   comHandler_->ReceiveString( buffer );
   StripBuffer( buffer );
 
@@ -440,6 +455,7 @@ int JulaboFP50::GetIntegralParameter( void ) const {
   char buffer[1000];
 
   comHandler_->SendCommand( "in_par_07" );
+  usleep( 10000 );
   comHandler_->ReceiveString( buffer );
   StripBuffer( buffer );
 
@@ -461,6 +477,7 @@ int JulaboFP50::GetDifferentialParameter( void ) const {
   char buffer[1000];
 
   comHandler_->SendCommand( "in_par_08" );
+  usleep( 10000 );
   comHandler_->ReceiveString( buffer );
   StripBuffer( buffer );
 
@@ -591,6 +608,7 @@ void JulaboFP50::Device_Init( void ) {
 
   char buffer[200];
   comHandler_->SendCommand( "version" );
+  usleep( 10000 );
   comHandler_->ReceiveString( buffer );
 
   if( std::string::npos == std::string( buffer ).find( "JULABO TOPTECH-SERIES MC-2 VERSION 3.0" ) ) {
