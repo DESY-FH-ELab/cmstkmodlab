@@ -1951,8 +1951,6 @@ void DefoMainWindow::writeParameters( void ) {
   defoRecoSurface_.setPitchY( geometryPitchSpinbox2_->value() );
   defoRecoSurface_.setFocalLength( geometryFSpinbox_->value() );
 
-  // chiller comes later..
-
 
   // camera
   if( isCameraEnabled_ ) {
@@ -1966,13 +1964,13 @@ void DefoMainWindow::writeParameters( void ) {
     // send it
     camHandler_.setAction( DefoCamHandler::SETCFG );
     camHandler_.setCfg( cfg );
-    camHandler_.start();
+    camHandler_.start(); // start thread
 
-    this->setCursor( Qt::BusyCursor );
+    this->setCursor( Qt::BusyCursor ); // will be restored by handleCameraAction at end of thread
 
   }
 
-  // camera
+  // chiller
   if( isChillerEnabled_ && 0 != julabo_ ) {
 
     julabo_->SetControlParameters( chillerParametersSpinbox1_->value(),    //xp
