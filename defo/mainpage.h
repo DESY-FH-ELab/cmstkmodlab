@@ -421,7 +421,9 @@ expand #include statements.</font>
 A Julabo FP50 chiller is used as cooling plant. The corresponding
 functionality for steering the chiller and reading the operation
 parameters is embedded in the <tt>JulaboFP50</tt> class
-(<tt>devices/Julabo</tt>). <SPAN style="color:#ff0000"><B>Not yet implemented!</B></span>
+(<tt>devices/Julabo</tt>). The chiller is supposed to be connected
+via the first RS232 port (<tt>/dev/ttyS0</tt>).
+<SPAN style="color:#ff0000"><B>Not yet implemented!</B></span>
 
 \subsection multimeter_subsection		5.3 Multimeter
 
@@ -839,28 +841,32 @@ CHILLER_PARAMETER_XP	0.1
 CHILLER_PARAMETER_TN	3
 CHILLER_PARAMETER_TV	0
 
+# should the rs232 chiller communication
+# be enabled at startup? [true/false]
+CHILLER_COMM_WHEN_START	true
+
 # should the conrad relay communication
 # be enabled at startup? [true/false]
 # active devices will be powered immediately
-CONRAD_COMM_WHEN_START	true
+CONRAD_COMM_WHEN_START	false
 
 # light panel power state on program startup;
-# this is a 5-digit string (1/0) indicating the power state
-# for panels 1-5, see sketch at end of file;
-# (only effective if RELAY_POWER_WHEN_START = true)
+# this is a 5-digit string consisting of [1/0]
+# indicating the power state for panels 1-5, sketch below
+# (only effective if CONRAD_COMM_WHEN_START = true)
 #
 # panel                 12345
 #----------------------------
 PANEL_STATE_WHEN_START	11111
 
 # calibration LEDs powered at startup? [true/false]
-# (only effective if RELAY_POWER_WHEN_START = true)
+# (only effective if CONRAD_COMM_WHEN_START = true)
 LEDS_POWER_WHEN_START	false
 
 # should the camera be powered
 # at program startup? [true/false]
-(only effective if RELAY_POWER_WHEN_START = true)
-CAMERA_POWER_WHEN_START	false
+(only effective if CONRAD_COMM_WHEN_START = true)
+CAMERA_POWER_WHEN_START	true
 
 # defines the verbosity of debug output [0-3],
 # 0 = silent, 3 = maximum verbosity
@@ -889,7 +895,7 @@ DEBUG_LEVEL		0
 # AUTO 100 200 400 800 1600 3200 6400
 
 # panel numbering for PANEL_STATE_WHEN_START, 
-# as seen from below:
+# as seen from underneath the panel:
 # ---------------
 # |   |     |   |
 # |   |  1  |   |
@@ -901,7 +907,7 @@ DEBUG_LEVEL		0
 # ---------------
 # |      5      |
 # ---------------
-#
+
 </PRE>
 
 \subsection app_containers_subsec    A.2 Overview of the container classes

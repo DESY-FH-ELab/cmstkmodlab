@@ -325,7 +325,7 @@ void DefoSchedule::validate( void ) {
 			     QString( "ERROR ** syntax problem in row %1" ).arg( row + 1 ),
 			     QMessageBox::Ok );
       std::cerr << " [DefoSchedule::validate] ** ERROR: schedule table: syntax problem in row " << row + 1 << std::endl;
-
+      break;
     }
 
     // various tests for individual actions
@@ -369,6 +369,9 @@ void DefoSchedule::validate( void ) {
 	double temp = model_.item( row, 1 )->text().toDouble( &isOk );
 	if( !isOk ) {
 	  issueBogusTemperatureError( row, QString( "DefoSchedule::validate" ) );
+	}
+	if( temp < __FP50_LOWER_TEMP_LIMIT || temp > __FP50_UPPER_TEMP_LIMIT ) { // these from JulaboFP50.h
+	  issueExcessTemperatureError( row, QString( "DefoSchedule::validate" ) );
 	}
 
       } break;
@@ -443,6 +446,19 @@ void DefoSchedule::issueBogusTemperatureError( int row, QString issuer ) {
 
   QMessageBox::critical( 0, issuer, 
 			 QString( "Row %1 " ).arg( row+1 ) + QString( "** ERROR: bogus temperature value." ),
+			 QMessageBox::Ok );
+
+}
+
+
+
+///
+/// row is real row number (starts at 0)
+///
+void DefoSchedule::issueExcessTemperatureError( int row, QString issuer ) {
+
+  QMessageBox::critical( 0, issuer, 
+			 QString( "Row %1 " ).arg( row+1 ) + QString( "** ERROR: temperature exceeds Julabo soft thresholds." ),
 			 QMessageBox::Ok );
 
 }

@@ -17,7 +17,7 @@
 #include <QMessageBox>
 
 #include "DefoConfigReader.h"
-
+#include "devices/Julabo/JulaboFP50.h" // for temperature soft thresholds
 
 
 #define _SCHEDULE_NROWS 20
@@ -71,6 +71,7 @@ class DefoSchedule : public QObject {
   void issueGotoPointsToItselfError( int, QString );
   void issueCameraNotEnabledError( int, QString, QString );
   void issueBogusTemperatureError( int, QString );
+  void issueExcessTemperatureError( int, QString );
   QStandardItemModel model_;
   std::map<std::string,int> actionItems_;
   std::vector<int> actionItemsRequiringParameter_;

@@ -38,6 +38,13 @@ DefoMainWindow::DefoMainWindow( QWidget* parent ) : QWidget( parent ) {
   chillerParametersSpinbox2_->setValue( cfgReader.getValue<int>( "CHILLER_PARAMETER_TN" ) );
   chillerParametersSpinbox3_->setValue( cfgReader.getValue<int>( "CHILLER_PARAMETER_TV" ) );
 
+  // connect to chiller?
+  julabo_ = 0;
+  if( "true" == cfgReader.getValue<std::string>( "CHILLER_COMM_WHEN_START" )?true:false ) {
+    QTimer::singleShot( 100, this, SLOT(timerEnableChiller()) );
+  }
+  else isChillerEnabled_ = false;
+
   // connect to Conrad?
   conradController_ = 0;
   isConradCommunication_ = false;
@@ -156,6 +163,9 @@ void DefoMainWindow::setupSignalsAndSlots( void ) {
   connect( cameraConnectionCheckBox_, SIGNAL( toggled(bool) ), this, SLOT( cameraEnabledButtonToggled(bool) ) );
   connect( advancedApplyButton_, SIGNAL( clicked() ), this, SLOT( writeParameters() ) );
 
+  // chiller
+  connect( chillerEnabledCheckBox_, SIGNAL( toggled(bool) ), this, SLOT( enableChiller(bool) ) );
+
   // light panel buttons & co
   for( std::vector<DefoTogglePushButton*>::const_iterator it = lightPanelButtons_.begin(); it < lightPanelButtons_.end(); ++it ) {
     (*it)->setControlling( true );
@@ -163,12 +173,13 @@ void DefoMainWindow::setupSignalsAndSlots( void ) {
   }
   connect( ledsPowerOnButton_, SIGNAL(clicked()), this, SLOT(handleConradEvent() ) );
   connect( cameraPowerOnButton_, SIGNAL(clicked()), this, SLOT(handleConradEvent() ) );
-
   connect( allPanelsOnButton_, SIGNAL(clicked()), this, SLOT(allPanelsOn() ) );
   connect( allPanelsOffButton_, SIGNAL(clicked()), this, SLOT(allPanelsOff() ) );
   connect( conradEnabledCheckbox_, SIGNAL( toggled(bool) ), this, SLOT( enableConrad(bool) ) );
 
+  // comment field
   connect( commentTextEdit_, SIGNAL(textChanged()), this, SLOT(handleCommentAction()) );
+
 }
 
 
@@ -698,7 +709,15 @@ void DefoMainWindow::handleAction( DefoSchedule::scheduleItem item ) {
     {
       
       if( isManual_ ) { // manual oeration via online tab button
-      
+
+	if( !isChillerEnabled_ || 0 == julabo_ ) { // no communication
+	  QMessageBox::critical( this, tr("[DefoMainWindow::handleAction]"),
+				 QString("[TEMP]: No communication with chiller."),
+				 QMessageBox::Ok );
+	  std::cerr << " [DefoMainWindow::handleAction] ** ERROR [TEMP]: no communication with chiller." << std::endl;
+	  break;
+	}
+
 	bool isOk = false;
 	double temp = QInputDialog::getDouble(this, 
 					      tr(" [DefoMainWindow::handleAction] TEMP"),
@@ -709,22 +728,29 @@ void DefoMainWindow::handleAction( DefoSchedule::scheduleItem item ) {
 					      1, // decimals
 					      &isOk );
 
-	if( !isOk ) {
+	if( !isOk ) { // dialog failed
 	  QMessageBox::critical( this, tr("[DefoMainWindow::handleAction]"),
 				 QString("[TEMP]: error in input - received temp: %1").arg( temp ),
 				 QMessageBox::Ok );
 	  std::cerr << " [DefoMainWindow::handleAction] ** ERROR [TEMP]: error in input - received temp: " << temp << "." << std::endl;
+	  break;
 	}
+
 	else {
-	  // SET CHILLER TEMPERATURE HERE
+	  julabo_->SetWorkingTemperature( static_cast<float>( temp ) ); // there's no float dialog unfortunately
 	}
 	  
       }
 
       else { // schedule operation
 
+	if( !isChillerEnabled_ || 0 == julabo_ ) { // no communication
+	  std::cerr << " [DefoMainWindow::handleAction] ** ERROR [TEMP]: no communication with chiller." << std::endl;
+	  break;
+	}
+
 	bool isOk = false;
-	double temp = item.second.toDouble( &isOk );
+	double temp = item.second.toFloat( &isOk );
 
 	if( !isOk ) {
 	  std::cerr << " [DefoMainWindow::handleAction] ** ERROR [TEMP]: error in input - received temp: "
@@ -732,7 +758,7 @@ void DefoMainWindow::handleAction( DefoSchedule::scheduleItem item ) {
 	  break;
 	}
 
-	// SET CHILLER TEMPERATURE HERE
+	julabo_->SetWorkingTemperature(  temp );
 	
       }
 
@@ -1807,7 +1833,7 @@ void DefoMainWindow::setupConradCommunication( void ) {
 
     commPortLineEdit_->setText( QString( "-" ) );
     QMessageBox::critical( this, tr("[DefoMainWindow::setupConradCommunication]"),
-			   QString("ERROR ** Cannot connect to Conrad.\nMake sure that /dev/ttyUSB* is present and readable\nand no other process is connecting to the device."),
+			   QString("ERROR: cannot connect to Conrad.\nMake sure that /dev/ttyUSB* is present and readable\nand no other process is connecting to the device."),
 			   QMessageBox::Ok );
     std::cerr << " [DefoMainWindow::setupConradCommunication] ** ERROR: Cannot connect to Conrad. Make sure that /dev/ttyUSB* is present and readable and no other process is connecting to the device." << std::endl;
 
@@ -1946,6 +1972,16 @@ void DefoMainWindow::writeParameters( void ) {
 
   }
 
+  // camera
+  if( isChillerEnabled_ && 0 != julabo_ ) {
+
+    julabo_->SetControlParameters( chillerParametersSpinbox1_->value(),    //xp
+				   chillerParametersSpinbox2_->value(),    //tn
+				   chillerParametersSpinbox3_->value()  ); //tv
+
+  }
+
+
 }
 
 
@@ -2000,6 +2036,80 @@ void DefoMainWindow::handleCommentAction( void ) {
   QTextStream out(&outfile);
   out << commentTextEdit_->toPlainText() << endl;
   outfile.close();
+
+}
+
+
+
+///
+///
+///
+void DefoMainWindow::enableChiller( bool isEnable ) {
+
+  if( isEnable ) { // request chiller comm enable
+
+    if( julabo_ ) delete julabo_;
+    julabo_ = new JulaboFP50( "/dev/ttyS0" );
+
+    if( !( julabo_->IsCommunication() ) ) { // failure
+
+      isChillerEnabled_ = false;
+
+      std::cerr << " [DefoMainWindow::enableChiller] ** ERROR: Cannot connect to chiller."
+		<< " Make sure the device is connected to /dev/ttyS0." << std::endl;
+
+      QMessageBox::critical( this, tr("[DefoMainWindow::enableChiller]"),
+			     QString("ERROR: cannot connect to chiller.\nMake sure the device is connected to /dev/ttyS0."),
+			     QMessageBox::Ok );
+
+      // here we must block signals, otherwise the checkbox triggers function again
+      bool oldState = chillerEnabledCheckBox_->blockSignals( true );
+      chillerEnabledCheckBox_->setChecked( false ); 
+      chillerEnabledCheckBox_->blockSignals( oldState );
+
+      chillerParametersSpinbox1_ ->setEnabled( false );
+      chillerParametersSpinbox2_ ->setEnabled( false );
+      chillerParametersSpinbox3_ ->setEnabled( false );
+
+      return;
+
+    }
+
+    else { // success
+
+      isChillerEnabled_ = true;
+      
+      bool oldState = chillerEnabledCheckBox_->blockSignals( true );
+      chillerEnabledCheckBox_->setChecked( true ); 
+      chillerEnabledCheckBox_->blockSignals( oldState );
+
+      chillerParametersSpinbox1_ ->setEnabled( true );
+      chillerParametersSpinbox2_ ->setEnabled( true );
+      chillerParametersSpinbox3_ ->setEnabled( true );
+
+      // btw we leave julabo_ valid, just in case..
+
+    }
+
+  }
+
+  else { // request chiller disable
+  
+    isChillerEnabled_ = false;
+  
+    bool oldState = chillerEnabledCheckBox_->blockSignals( true );
+    chillerEnabledCheckBox_->setChecked( true ); 
+    chillerEnabledCheckBox_->blockSignals( oldState );
+    
+    chillerParametersSpinbox1_ ->setEnabled( true );
+    chillerParametersSpinbox2_ ->setEnabled( true );
+    chillerParametersSpinbox3_ ->setEnabled( true );
+    
+    // btw we leave julabo_ valid, just in case..
+    
+  }
+
+
 
 }
 

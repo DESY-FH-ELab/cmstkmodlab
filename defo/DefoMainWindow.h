@@ -58,6 +58,7 @@
 #include "DefoCamHandler.h"
 
 #include "devices/Conrad/ConradController.h"
+#include "devices/Julabo/JulaboFP50.h"
 
 
 QT_BEGIN_NAMESPACE
@@ -220,6 +221,8 @@ class DefoMainWindow : public QWidget {
   void timerEnableConrad( void ) { enableConrad( true ); } // for enable with timer
   void setupConradCommunication( void );
   void handleCommentAction( void );
+  void enableChiller( bool );
+  void timerEnableChiller( void ) { enableChiller( true ); } // for enable with timer
 
  signals:
   void pollAction( void );
@@ -242,6 +245,9 @@ class DefoMainWindow : public QWidget {
 
 
   unsigned int debugLevel_;
+
+  JulaboFP50* julabo_;
+  bool isChillerEnabled_;
 
   ConradController* conradController_;
   bool isConradCommunication_;
@@ -449,6 +455,8 @@ class DefoMainWindow : public QWidget {
   QLabel *chillerParametersLabel1_;
   QLabel *chillerParametersLabel2_;
   QLabel *chillerParametersLabel3_;
+  QGroupBox *chillerConnectionGroupBox_;
+  QCheckBox *chillerEnabledCheckBox_;
   QGroupBox *rawimagerecoGroupBox_;
   QGroupBox *seedingthresholdsGroupBox_;
   QDoubleSpinBox *seedingThresholdsStep1Spinbox_;

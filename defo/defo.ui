@@ -4003,7 +4003,7 @@ grayscale-average:</string>
        <string notr="true" >color: rgb(0, 0, 127);</string>
       </property>
       <property name="title" >
-       <string>Chiller parameters</string>
+       <string>Chiller</string>
       </property>
       <property name="alignment" >
        <set>Qt::AlignHCenter|Qt::AlignTop</set>
@@ -4015,9 +4015,9 @@ grayscale-average:</string>
        <property name="geometry" >
         <rect>
          <x>80</x>
-         <y>40</y>
+         <y>90</y>
          <width>91</width>
-         <height>41</height>
+         <height>31</height>
         </rect>
        </property>
        <property name="font" >
@@ -4035,9 +4035,9 @@ grayscale-average:</string>
        <property name="geometry" >
         <rect>
          <x>80</x>
-         <y>100</y>
+         <y>140</y>
          <width>91</width>
-         <height>41</height>
+         <height>31</height>
         </rect>
        </property>
        <property name="font" >
@@ -4053,9 +4053,9 @@ grayscale-average:</string>
        <property name="geometry" >
         <rect>
          <x>80</x>
-         <y>160</y>
+         <y>190</y>
          <width>91</width>
-         <height>41</height>
+         <height>31</height>
         </rect>
        </property>
        <property name="font" >
@@ -4071,7 +4071,7 @@ grayscale-average:</string>
        <property name="geometry" >
         <rect>
          <x>10</x>
-         <y>50</y>
+         <y>100</y>
          <width>61</width>
          <height>16</height>
         </rect>
@@ -4097,7 +4097,7 @@ grayscale-average:</string>
        <property name="geometry" >
         <rect>
          <x>10</x>
-         <y>110</y>
+         <y>150</y>
          <width>61</width>
          <height>16</height>
         </rect>
@@ -4123,7 +4123,7 @@ grayscale-average:</string>
        <property name="geometry" >
         <rect>
          <x>10</x>
-         <y>170</y>
+         <y>200</y>
          <width>61</width>
          <height>16</height>
         </rect>
@@ -4144,6 +4144,35 @@ grayscale-average:</string>
        <property name="alignment" >
         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
        </property>
+      </widget>
+      <widget class="QGroupBox" name="chillerConnectionGroupBox_" >
+       <property name="geometry" >
+        <rect>
+         <x>20</x>
+         <y>30</y>
+         <width>161</width>
+         <height>51</height>
+        </rect>
+       </property>
+       <property name="title" >
+        <string>Communication</string>
+       </property>
+       <property name="alignment" >
+        <set>Qt::AlignCenter</set>
+       </property>
+       <widget class="QCheckBox" name="chillerEnabledCheckBox_" >
+        <property name="geometry" >
+         <rect>
+          <x>40</x>
+          <y>20</y>
+          <width>71</width>
+          <height>22</height>
+         </rect>
+        </property>
+        <property name="text" >
+         <string>Enabled</string>
+        </property>
+       </widget>
       </widget>
      </widget>
      <widget class="QGroupBox" name="rawimagerecoGroupBox_" >
