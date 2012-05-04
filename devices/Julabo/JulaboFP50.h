@@ -24,6 +24,7 @@ class JulaboFP50 : public VJulaboFP50
   bool SetCirculatorOff( void ) const;
   bool SetControlParameters( float, int, int ) const;
 
+  bool IsCommunication( void ) const { return isCommunication_; }
   float GetBathTemperature( void ) const;
   float GetSafetySensorTemperature( void ) const;
   float GetWorkingTemperature( void ) const;
@@ -43,6 +44,8 @@ class JulaboFP50 : public VJulaboFP50
 
   void Device_Init( void );
   FP50ComHandler* comHandler_;
+  bool isCommunication_;
+
 };
 
 #endif

@@ -17,6 +17,7 @@ JulaboFP50::JulaboFP50( const ioport_t ioPort )
   : VJulaboFP50(ioPort)
 {
   comHandler_ = new FP50ComHandler( ioPort );
+  isCommunication_ = false;
   Device_Init();
 }
 
@@ -595,7 +596,10 @@ void JulaboFP50::Device_Init( void ) {
   if( std::string::npos == std::string( buffer ).find( "JULABO TOPTECH-SERIES MC-2 VERSION 3.0" ) ) {
     std::cerr << " [JulaboFP50::Device_Init] ** ERROR: Device communication problem." << std::endl;
     std::cerr << "  > (could not read software version string)" << std::endl;
-    //    throw;
+    isCommunication_ = false;
+    return;
   }
+
+  isCommunication_ = true;
 
 }
