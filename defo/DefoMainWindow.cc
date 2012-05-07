@@ -167,6 +167,7 @@ void DefoMainWindow::setupSignalsAndSlots( void ) {
 
   // chiller
   connect( chillerEnabledCheckBox_, SIGNAL( toggled(bool) ), this, SLOT( enableChiller(bool) ) );
+  connect( chillerCirculatorButton_, SIGNAL( clicked() ), this, SLOT( chillerCirculatorEvent() ) );
 
   // light panel buttons & co
   for( std::vector<DefoTogglePushButton*>::const_iterator it = lightPanelButtons_.begin(); it < lightPanelButtons_.end(); ++it ) {
@@ -2068,6 +2069,8 @@ void DefoMainWindow::enableChiller( bool isEnable ) {
       chillerParametersSpinbox1_->setEnabled( false );
       chillerParametersSpinbox2_->setEnabled( false );
       chillerParametersSpinbox3_->setEnabled( false );
+      chillerCirculatorButton_->setEnabled( false );
+      chillerPumpSpinBox_->setEnabled( false );
 
       return;
 
@@ -2085,7 +2088,8 @@ void DefoMainWindow::enableChiller( bool isEnable ) {
       chillerParametersSpinbox1_->setEnabled( true );
       chillerParametersSpinbox2_->setEnabled( true );
       chillerParametersSpinbox3_->setEnabled( true );
-      
+      chillerCirculatorButton_->setEnabled( true );
+      chillerPumpSpinBox_->setEnabled( true );
 
       // transmit parameters from cfg file
       julabo_->SetControlParameters( chillerStartupParameters_.xp_, 
@@ -2094,6 +2098,10 @@ void DefoMainWindow::enableChiller( bool isEnable ) {
       chillerParametersSpinbox1_->setValue( chillerStartupParameters_.xp_ );
       chillerParametersSpinbox2_->setValue( chillerStartupParameters_.tn_ );
       chillerParametersSpinbox3_->setValue( chillerStartupParameters_.tv_ );
+
+      // get status from machine & set cooling tab controls
+      chillerCirculatorButton_->setActive( julabo_->GetCirculatorStatus() );
+      chillerPumpSpinBox_->setValue( julabo_->GetPumpPressure() );
 
       // btw we leave julabo_ valid, just in case..
 
@@ -2112,12 +2120,26 @@ void DefoMainWindow::enableChiller( bool isEnable ) {
     chillerParametersSpinbox1_->setEnabled( false );
     chillerParametersSpinbox2_->setEnabled( false );
     chillerParametersSpinbox3_->setEnabled( false );
-    
+    chillerCirculatorButton_->setEnabled( false );
+    chillerPumpSpinBox_->setEnabled( false );
+
     // btw we leave julabo_ valid, just in case..
     
   }
 
+}
 
+
+
+///
+///
+///
+void DefoMainWindow::chillerCirculatorEvent( void ) {
+
+  if( julabo_  && isChillerEnabled_ ) {
+    if( chillerCirculatorButton_->isActive() ) julabo_->SetCirculatorOn();
+    else julabo_->SetCirculatorOff();
+  }
 
 }
 
@@ -2164,7 +2186,12 @@ void DefoTogglePushButton::updateColor( void ) {
     else setStyleSheet("background-color: rgb(180, 180, 180); color: rgb(0, 0, 0)");
   }
 
-  else {
+  else if( DefoTogglePushButton::Red_Green == colorScheme_ ) {
+    if( isActive_ ) setStyleSheet("background-color: rgb(0, 255, 0); color: rgb(0, 0, 0)");
+    else setStyleSheet("background-color: rgb( 255, 0, 0 ); color: rgb(0, 0, 0)");
+  }
+
+  else { // black_white, where white is a bit smoky
     if( isActive_ ) setStyleSheet("background-color: rgb(252, 250, 210); color: rgb(0, 0, 0)");
     else setStyleSheet("background-color: rgb(0, 0, 0); color: rgb(255, 255, 255)");
   }

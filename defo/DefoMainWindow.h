@@ -93,7 +93,7 @@ class DefoTogglePushButton : public QPushButton {
 
  public:
 
-  enum ColorScheme { Black_White, Gray_Green };
+  enum ColorScheme { Black_White, Gray_Green, Red_Green };
   
   DefoTogglePushButton( QWidget* parent = 0 );
   void setColorScheme( DefoTogglePushButton::ColorScheme scheme ) { colorScheme_ = scheme; updateColor(); }
@@ -239,6 +239,7 @@ class DefoMainWindow : public QWidget {
   void handleCommentAction( void );
   void enableChiller( bool );
   void timerEnableChiller( void ) { enableChiller( true ); } // for enable with timer
+  void chillerCirculatorEvent( void );
 
  signals:
   void pollAction( void );
@@ -378,6 +379,11 @@ class DefoMainWindow : public QWidget {
   QLCDNumber *chillerBathMinLcd_;
   QLabel *chillerBathMinLabel_;
   QPushButton *chillerClearButton_;
+  QGroupBox *chillerCirculatorGroupBox_;
+  DefoTogglePushButton *chillerCirculatorButton_;
+  QGroupBox *chillerPumpGroupBox_;
+  QSpinBox *chillerPumpSpinBox_;
+
   QGroupBox *sensorsGroupBox_;
   QLCDNumber *sensorsLcd5_;
   QLCDNumber *sensorsLcd8_;
@@ -440,12 +446,11 @@ class DefoMainWindow : public QWidget {
   QLabel *sensorsSensor1MinLabel_;
   QLCDNumber *sensorsLcdMax3_;
   QPushButton *sensorsClearButton_;
+
   QWidget *offline_tab;
   QGroupBox *surfaceGroupBox_;
   QTabWidget *surfacesTabWidget_;
   QWidget *tab;
-  //  QPushButton *surfaceResetButton_;
-
   QGroupBox *displaytypeGroupbox_;
   QRadioButton *displaytype2DButton_;
   QRadioButton *displaytype3DButton_;
