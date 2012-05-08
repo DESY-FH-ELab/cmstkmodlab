@@ -240,6 +240,7 @@ class DefoMainWindow : public QWidget {
   void enableChiller( bool );
   void timerEnableChiller( void ) { enableChiller( true ); } // for enable with timer
   void chillerCirculatorEvent( void );
+  void updateChillerControls( void );
 
  signals:
   void pollAction( void );
@@ -266,6 +267,8 @@ class DefoMainWindow : public QWidget {
   JulaboFP50* julabo_;
   bool isChillerEnabled_;
   DefoChillerParameterTriplet chillerStartupParameters_;
+  unsigned int chillerUpdateInterval_; // in seconds
+  QTimer chillerUpdateTimer_;
 
   ConradController* conradController_;
   bool isConradCommunication_;

@@ -40,6 +40,13 @@ DefoMainWindow::DefoMainWindow( QWidget* parent ) : QWidget( parent ) {
 
   // connect to chiller?
   julabo_ = 0;
+  chillerUpdateInterval_ = cfgReader.getValue<unsigned int>( "CHILLER_UPDATE_INTERVAL" );
+  if( chillerUpdateInterval_ < 1 ) {
+    std::cerr << " [DefoMainWindow::DefoMainWindow] ** WARNING: illegal update interval: " << chillerUpdateInterval_ << ". Using 4 sec." << std::endl;
+    chillerUpdateInterval_ = 4;
+  }
+
+  chillerUpdateTimer_.setInterval( chillerUpdateInterval_ * 1000 ); // update interval for chiller controls, msec
   if( "true" == cfgReader.getValue<std::string>( "CHILLER_COMM_WHEN_START" )?true:false ) {
     QTimer::singleShot( 100, this, SLOT(timerEnableChiller()) );
   }
@@ -168,6 +175,7 @@ void DefoMainWindow::setupSignalsAndSlots( void ) {
   // chiller
   connect( chillerEnabledCheckBox_, SIGNAL( toggled(bool) ), this, SLOT( enableChiller(bool) ) );
   connect( chillerCirculatorButton_, SIGNAL( clicked() ), this, SLOT( chillerCirculatorEvent() ) );
+  connect( &chillerUpdateTimer_, SIGNAL( timeout() ), this, SLOT( updateChillerControls() ) );
 
   // light panel buttons & co
   for( std::vector<DefoTogglePushButton*>::const_iterator it = lightPanelButtons_.begin(); it < lightPanelButtons_.end(); ++it ) {
@@ -2071,6 +2079,7 @@ void DefoMainWindow::enableChiller( bool isEnable ) {
       chillerParametersSpinbox3_->setEnabled( false );
       chillerCirculatorButton_->setEnabled( false );
       chillerPumpSpinBox_->setEnabled( false );
+      chillerUpdateTimer_.stop(); // just in case
 
       return;
 
@@ -2102,6 +2111,7 @@ void DefoMainWindow::enableChiller( bool isEnable ) {
       // get status from machine & set cooling tab controls
       chillerCirculatorButton_->setActive( julabo_->GetCirculatorStatus() );
       chillerPumpSpinBox_->setValue( julabo_->GetPumpPressure() );
+      chillerUpdateTimer_.start();
 
       // btw we leave julabo_ valid, just in case..
 
@@ -2122,6 +2132,7 @@ void DefoMainWindow::enableChiller( bool isEnable ) {
     chillerParametersSpinbox3_->setEnabled( false );
     chillerCirculatorButton_->setEnabled( false );
     chillerPumpSpinBox_->setEnabled( false );
+    chillerUpdateTimer_.stop();
 
     // btw we leave julabo_ valid, just in case..
     
@@ -2139,6 +2150,30 @@ void DefoMainWindow::chillerCirculatorEvent( void ) {
   if( julabo_  && isChillerEnabled_ ) {
     if( chillerCirculatorButton_->isActive() ) julabo_->SetCirculatorOn();
     else julabo_->SetCirculatorOff();
+  }
+
+}
+
+
+
+///
+/// query machine for bath & target temp, circulator status, etc
+/// and set the controls accordingly
+///
+/// this is for use with a timer in regular intervals
+///
+void DefoMainWindow::updateChillerControls( void ) {
+
+  if( julabo_ && isChillerEnabled_ ) {
+    chillerBathLcd_->display( julabo_->GetBathTemperature() );
+    chillerTargetLcd_->display( julabo_->GetWorkingTemperature() );
+    chillerPowerLcd_->display( julabo_->GetHeatingPower() );
+    chillerCirculatorButton_->setActive( julabo_->GetCirculatorStatus() );
+    chillerPumpSpinBox_->setValue( julabo_->GetPumpPressure() );
+  }
+  
+  else {
+    std::cout << " [DefoMainWindow::updateChillerControls] ** WARNING: Cannot update chiller controls." << std::endl;
   }
 
 }

@@ -51,21 +51,8 @@ void DefoMainWindow::setupUi( void ) {
   rawimageLabel_->setObjectName(QString::fromUtf8("rawimageLabel_"));
   rawimageLabel_->setGeometry(QRect(20, 50, 525, 700));
   rawimageLabel_->setStyleSheet(QString::fromUtf8("background-color: rgb(255, 255, 255);"));
-//   rawimageWidget_ = new QWidget(rawimageGroupBox_);
-//   rawimageWidget_->setObjectName(QString::fromUtf8("rawimageWidget_"));
-//   rawimageWidget_->setGeometry(QRect(20, 50, 525, 700));
-//   rawimageWidget_->setAutoFillBackground(false);
-//   rawimageWidget_->setStyleSheet(QString::fromUtf8("background-color: rgb(255, 255, 255);"));
-//   rawimageZoomButton_ = new QToolButton(rawimageGroupBox_);
-//   rawimageZoomButton_->setObjectName(QString::fromUtf8("rawimageZoomButton_"));
-//   rawimageZoomButton_->setGeometry(QRect(560, 520, 91, 41));
-//   rawimageZoomButton_->setStyleSheet(QString::fromUtf8("background-color: rgb(236, 235, 234);"));
   QIcon icon;
   icon.addPixmap(QPixmap(QString::fromUtf8("icons/48px-Icon-Lupe.png")), QIcon::Normal, QIcon::Off);
-//   rawimageZoomButton_->setIcon(icon);
-//   rawimageZoomButton_->setPopupMode(QToolButton::DelayedPopup);
-//   rawimageZoomButton_->setToolButtonStyle(Qt::ToolButtonIconOnly);
-//   rawimageZoomButton_->setArrowType(Qt::NoArrow);
   areaGroupBox_ = new QGroupBox(rawimageGroupBox_);
   areaGroupBox_->setObjectName(QString::fromUtf8("areaGroupBox_"));
   areaGroupBox_->setGeometry(QRect(560, 50, 101, 141));
@@ -82,10 +69,6 @@ void DefoMainWindow::setupUi( void ) {
   areaDeleteButton_->setEnabled(false);
   areaDeleteButton_->setGeometry(QRect(10, 100, 81, 31));
   areaDeleteButton_->setStyleSheet(QString::fromUtf8("background-color: rgb(236, 235, 234);"));
-//   areaDoneButton_ = new QPushButton(areaGroupBox_);
-//   areaDoneButton_->setObjectName(QString::fromUtf8("areaDoneButton_"));
-//   areaDoneButton_->setEnabled(false);
-//   areaDoneButton_->setGeometry(QRect(20, 180, 51, 26));
   QFont font2;
   font2.setBold(true);
   font2.setWeight(75);
@@ -102,8 +85,6 @@ void DefoMainWindow::setupUi( void ) {
   areaLabel_->setFont(font);
   areaLabel_->setStyleSheet(QString::fromUtf8("color: rgb(0, 0, 127);"));
   areaLabel_->setAlignment(Qt::AlignCenter);
-
-
 
   displayGroupBox_ = new QGroupBox(rawimageGroupBox_);
   displayGroupBox_->setObjectName(QString::fromUtf8("displayGroupBox_"));

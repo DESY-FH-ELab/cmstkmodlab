@@ -870,6 +870,10 @@ CHILLER_PARAMETER_TV	0
 # be enabled at startup? [true/false]
 CHILLER_COMM_WHEN_START	true
 
+# time interval in seconds between updates
+# of the chiller status displays (min 1)
+CHILLER_UPDATE_INTERVAL	3
+
 # should the conrad relay communication
 # be enabled at startup? [true/false]
 # active devices will be powered immediately
