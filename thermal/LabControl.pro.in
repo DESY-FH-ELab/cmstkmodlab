@@ -6,12 +6,12 @@ macx {
     INCLUDEPATH += /opt/local/include/qwt
     LIBS += -L/opt/local/lib -lqwt 
     LIBS += ../devices/Keithley/*.o ../devices/Greisinger/*.o ../devices/Julabo/*.o ../devices/Hameg/*.o
-    DEFINES += USE_FAKEIO
 }
 else { 
     INCLUDEPATH += /usr/include/qwt
     LIBS += -lqwt -L../devices/lib -lTkModLabKeithley -lTkModLabGreisinger -lTkModLabJulabo -lTkModLabHameg
 }
+DEFINES += @configdefines@
 INCLUDEPATH += ../
 
 TARGET = LabControl
