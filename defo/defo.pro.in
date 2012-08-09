@@ -9,7 +9,6 @@ macx {
     LIBS += -L/opt/local/lib -lqwt -lqwtplot3d
     LIBS += ../devices/Keithley/*.o ../devices/Greisinger/*.o ../devices/Julabo/*.o ../devices/Hameg/*.o ../devices/Canon/*.o ../devices/Conrad/*.o
     LIBS += -lboost_serialization
-    DEFINES += USE_FAKEIO
 }
 else { 
     INCLUDEPATH += /usr/include/qwt
@@ -18,6 +17,7 @@ else {
     LIBS += -L../devices/lib -lTkModLabKeithley -lTkModLabGreisinger -lTkModLabJulabo -lTkModLabHameg -lTkModLabCanon -lTkModLabConrad
     LIBS += -L/usr/lib64 -lboost_serialization
 }
+DEFINES += @configdefines@
 QT += core gui opengl
 TEMPLATE = app
 TARGET = defo
