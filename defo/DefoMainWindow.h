@@ -57,8 +57,8 @@
 #include "DefoConfigReader.h"
 #include "DefoCamHandler.h"
 
-#include "devices/Conrad/ConradController.h"
 #include "devices/Julabo/VJulaboFP50.h"
+#include "devices/Conrad/VConradController.h"
 
 
 QT_BEGIN_NAMESPACE
@@ -270,7 +270,7 @@ class DefoMainWindow : public QWidget {
   unsigned int chillerUpdateInterval_; // in seconds
   QTimer chillerUpdateTimer_;
 
-  ConradController* conradController_;
+  VConradController* conradController_;
   bool isConradCommunication_;
   bool isConradCommOnStartup_;
   bool isLEDPowerOnStartup_;

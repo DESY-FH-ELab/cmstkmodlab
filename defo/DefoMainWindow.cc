@@ -1,7 +1,9 @@
 #ifdef USE_FAKEIO
 #include "devices/Julabo/JulaboFP50Fake.h"
+#include "devices/Conrad/ConradControllerFake.h"
 #else
-#include "devices/Hameg/Hameg8143.h"
+#include "devices/Julabo/JulaboFP50.h"
+#include "devices/Conrad/ConradController.h"
 #endif
 
 #include "DefoMainWindow.h"
@@ -1809,7 +1811,11 @@ void DefoMainWindow::setupConradCommunication( void ) {
     QString port = QString( "/dev/" ) + *it;
 
     if( conradController_ ) delete conradController_; // renew
-    conradController_ = new ConradController( port.toStdString().c_str() );
+#ifdef USE_FAKEIO
+    conradController_ = new ConradControllerFake(port.toStdString().c_str());
+#else
+    conradController_ = new ConradController(port.toStdString().c_str());
+#endif
     
     if( conradController_->initialize() ) { // check communication
 
