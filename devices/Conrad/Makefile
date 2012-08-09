@@ -2,7 +2,7 @@ LIBDIR        = ../lib
 
 LIB           = TkModLabConrad
 
-MODULES       = ConradCommunication ConradController
+MODULES       = ConradCommunication VConradController ConradController ConradControllerFake
 
 CC            = gcc
 CXX           = g++

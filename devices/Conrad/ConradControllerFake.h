@@ -1,17 +1,15 @@
-#ifndef ConradController_h
-#define ConradController_h
+#ifndef ConradControllerFake_h
+#define ConradControllerFake_h
 
 #include <vector>
 
 #include "VConradController.h"
 
-class ConradCommunication;
-
 /// \brief Class handling readout of Conrad multimeter
-class ConradController : public VConradController {
+class ConradControllerFake : public VConradController {
 public:
-    ConradController(const char* comPort);
-    ~ConradController();
+    ConradControllerFake(const char* comPort);
+    ~ConradControllerFake();
 
     bool initialize();
 
@@ -20,9 +18,8 @@ public:
     bool setSingleChannel(unsigned channel, bool value) const;
 
 private:
-    bool queryRawStatus(unsigned char& status) const;
 
-    ConradCommunication* m_communication;
+    mutable bool status_[8];
 };
 
 #endif

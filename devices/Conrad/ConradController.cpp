@@ -8,7 +8,8 @@
 
 //! Default constructor
 ConradController::ConradController(const char* comPort)
-    : m_communication(new ConradCommunication(comPort))
+  : VConradController(comPort),
+    m_communication(new ConradCommunication(comPort))
 {
 }
 
