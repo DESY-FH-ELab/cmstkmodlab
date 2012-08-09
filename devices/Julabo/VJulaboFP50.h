@@ -25,6 +25,7 @@ class VJulaboFP50
   virtual bool SetCirculatorOff( void ) const = 0;
   virtual bool SetControlParameters( float, int, int ) const = 0;
 
+  virtual bool IsCommunication( void ) const = 0;
   virtual float GetBathTemperature( void ) const = 0;
   virtual float GetSafetySensorTemperature( void ) const = 0;
   virtual float GetWorkingTemperature( void ) const = 0;

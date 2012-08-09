@@ -1,3 +1,8 @@
+#ifdef USE_FAKEIO
+#include "devices/Julabo/JulaboFP50Fake.h"
+#else
+#include "devices/Hameg/Hameg8143.h"
+#endif
 
 #include "DefoMainWindow.h"
 
@@ -2056,7 +2061,11 @@ void DefoMainWindow::enableChiller( bool isEnable ) {
   if( isEnable ) { // request chiller comm enable
 
     if( julabo_ ) delete julabo_;
-    julabo_ = new JulaboFP50( "/dev/ttyS5" );
+#ifdef USE_FAKEIO
+    julabo_ = new JulaboFP50Fake("/dev/ttyS5");
+#else
+    julabo_ = new JulaboFP50("/dev/ttyS5");
+#endif
 
     if( !( julabo_->IsCommunication() ) ) { // failure
 

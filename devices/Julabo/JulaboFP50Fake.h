@@ -22,6 +22,7 @@ class JulaboFP50Fake : public VJulaboFP50
   bool SetCirculatorOff( void ) const;
   bool SetControlParameters( float, int, int ) const;
 
+  bool IsCommunication( void ) const { return true; }
   float GetBathTemperature( void ) const;
   float GetSafetySensorTemperature( void ) const;
   float GetWorkingTemperature( void ) const;

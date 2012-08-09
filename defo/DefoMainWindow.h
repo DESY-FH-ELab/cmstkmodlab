@@ -58,7 +58,7 @@
 #include "DefoCamHandler.h"
 
 #include "devices/Conrad/ConradController.h"
-#include "devices/Julabo/JulaboFP50.h"
+#include "devices/Julabo/VJulaboFP50.h"
 
 
 QT_BEGIN_NAMESPACE
@@ -264,7 +264,7 @@ class DefoMainWindow : public QWidget {
 
   unsigned int debugLevel_;
 
-  JulaboFP50* julabo_;
+  VJulaboFP50* julabo_;
   bool isChillerEnabled_;
   DefoChillerParameterTriplet chillerStartupParameters_;
   unsigned int chillerUpdateInterval_; // in seconds

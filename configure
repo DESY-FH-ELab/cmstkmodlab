@@ -12,6 +12,7 @@ KERNELMINOR=`uname -r | cut -d . -f 2`
 NODEFO=0
 NOTHERMAL=0
 USEFAKEDEVICES=0
+CONFIGDEFINES=""
 
 while test $# -gt 0; do 
   case $1 in
@@ -23,6 +24,7 @@ while test $# -gt 0; do
       ;;
     --fake)
       USEFAKEDEVICES=1
+      CONFIGDEFINES="USE_FAKEIO"
       ;;
   *)
     # Call standard parser
@@ -57,7 +59,7 @@ else
     echo build with THERMAL support
 fi
 
-SED_VARIABLES="BASEPATH ARCHITECTURE KERNELMAJOR KERNELMINOR NODEFO NOTHERMAL USEFAKEDEVICES"
+SED_VARIABLES="BASEPATH ARCHITECTURE KERNELMAJOR KERNELMINOR NODEFO NOTHERMAL USEFAKEDEVICES CONFIGDEFINES"
 
 echo "#!/bin/sh
 dest=\`basename \$1 .in\`
