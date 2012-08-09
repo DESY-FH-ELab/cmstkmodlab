@@ -31,6 +31,10 @@ int main(int argc, char * argv[])
     std::cout.precision(3);
     std::cout.setf(ios::fixed,ios::floatfield);
     std::cout << temperature << std::endl;
+    std::ofstream ofile("ReadGMH3750.last");
+    ofile.precision(3);
+    ofile.setf(ios::fixed,ios::floatfield);
+    ofile << temperature << std::endl;
   } else {
     std::ofstream ofile(argv[1], std::fstream::app);
     if (ofile.good()) {
