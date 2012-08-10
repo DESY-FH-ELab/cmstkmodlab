@@ -1,6 +1,15 @@
+/*
+  FIXME Toggle with USE_FAKEIO at make file level, not header file!
+  This ensures that both fake and real devices will offer the exact same API
+  without having to check manually at each change and allows for more clear
+  code. Only one type of device can be instantiated in the code and the library
+  then decides whether to give a fake device or a real one.
+  */
 #ifdef USE_FAKEIO
 #include "devices/Julabo/JulaboFP50Fake.h"
+typedef JulaboFP50Fake JulaboFP50;
 #include "devices/Conrad/ConradControllerFake.h"
+typedef ConradControllerFake ConradController;
 #else
 #include "devices/Julabo/JulaboFP50.h"
 #include "devices/Conrad/ConradController.h"
@@ -1811,11 +1820,7 @@ void DefoMainWindow::setupConradCommunication( void ) {
     QString port = QString( "/dev/" ) + *it;
 
     if( conradController_ ) delete conradController_; // renew
-#ifdef USE_FAKEIO
-    conradController_ = new ConradControllerFake(port.toStdString().c_str());
-#else
     conradController_ = new ConradController(port.toStdString().c_str());
-#endif
     
     if( conradController_->initialize() ) { // check communication
 
@@ -2067,11 +2072,7 @@ void DefoMainWindow::enableChiller( bool isEnable ) {
   if( isEnable ) { // request chiller comm enable
 
     if( julabo_ ) delete julabo_;
-#ifdef USE_FAKEIO
-    julabo_ = new JulaboFP50Fake("/dev/ttyS5");
-#else
     julabo_ = new JulaboFP50("/dev/ttyS5");
-#endif
 
     if( !( julabo_->IsCommunication() ) ) { // failure
 
