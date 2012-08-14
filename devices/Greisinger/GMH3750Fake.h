@@ -3,8 +3,6 @@
 
 #include "VGMH3750.h"
 
-using namespace std;
-
 class GMH3750Fake : public VGMH3750
 {
  public:

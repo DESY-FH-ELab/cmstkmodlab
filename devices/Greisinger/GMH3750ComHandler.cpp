@@ -102,8 +102,10 @@ void GMH3750ComHandler::OpenIoPort( void )
   // check if successful
   if ( fIoPortFileDescriptor == -1 ) {
     
-    std::cerr << "[GMH3750ComHandler::OpenIoPort] ** ERROR: could not open device file " << fIoPort << "." << endl;
-    std::cerr << "                               (probably it's not user-writable)." << std::endl;
+    std::cerr << "[GMH3750ComHandler::OpenIoPort] ** ERROR: could not open device file "
+              << fIoPort << "." << std::endl;
+    std::cerr << "                               (probably it's not user-writable)."
+              << std::endl;
     throw;
   
   } else {

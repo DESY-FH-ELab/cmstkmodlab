@@ -5,8 +5,6 @@
 
 #include "VGMH3750.h"
 
-using namespace std;
-
 class GMH3750 : public VGMH3750
 {
  public:

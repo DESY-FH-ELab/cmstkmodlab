@@ -1,8 +1,6 @@
 #ifndef _VGMH3750_H_
 #define _VGMH3750_H_
 
-using namespace std;
-
 typedef const char* ioport_t;
 
 class VGMH3750
