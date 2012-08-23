@@ -16,8 +16,9 @@ TestWindow::TestWindow(QWidget *parent) :
 
 
   // MEASUREMENT MODEL
-  model_ = new DefoSurfaceModel();
-  layout->addWidget( new DefoImageWidget(model_) );
+  listModel_ = new DefoMeasurementListModel();
+  layout->addWidget( new DefoRawImageWidget(listModel_, this) );
+
   QPushButton *fileButton = new QPushButton("&Load reference", buttons);
   fileButton->setSizePolicy( QSizePolicy::Maximum, QSizePolicy::Maximum);
   connect(fileButton, SIGNAL(clicked()), this, SLOT(fileButtonClicked()));
@@ -36,6 +37,23 @@ TestWindow::TestWindow(QWidget *parent) :
   // CANON CAMERA MODEL
   cameraModel_ = new DefoCameraModel(this);
 
+  QPushButton *cameraButton = new QPushButton("&Take picture", buttons);
+  cameraButton->setSizePolicy( QSizePolicy::Maximum, QSizePolicy::Maximum);
+  connect(
+          cameraButton
+        , SIGNAL(clicked())
+        , cameraModel_
+        , SLOT(acquirePicture())
+  );
+  connect(
+          cameraModel_
+        , SIGNAL(newImage(QImage))
+        , this
+        , SLOT(newCameraImage(QImage))
+  );
+  buttonLayout->addWidget( cameraButton );
+
+  // Camera options
   buttonLayout->addWidget(new DefoCameraOptionComboBox(
         cameraModel_
       , DefoCameraModel::APERTURE
@@ -51,79 +69,27 @@ TestWindow::TestWindow(QWidget *parent) :
       , DefoCameraModel::SHUTTER_SPEED
       , this
   ));
-  buttonLayout->addWidget(new DefoCameraOptionComboBox(
-        cameraModel_
-      , DefoCameraModel::WHITE_BALANCE
-      , this
-  ));
-
-  QPushButton *cameraButton = new QPushButton("&Take picture", buttons);
-  cameraButton->setSizePolicy( QSizePolicy::Maximum, QSizePolicy::Maximum);
-  connect(
-          cameraButton
-        , SIGNAL(clicked())
-        , cameraModel_
-        , SLOT(acquirePicture())
-  );
-  connect(
-          cameraModel_
-        , SIGNAL(newImage(QImage))
-        , this
-        , SLOT(newCameraImage(QImage))
-  );
-//  connect(
-//          cameraButton
-//        , SIGNAL(clicked())
-//        , this
-//        , SLOT(cameraButtonClicked())
-//  );
-  buttonLayout->addWidget( cameraButton );
-
+//  buttonLayout->addWidget(new DefoCameraOptionComboBox(
+//        cameraModel_
+//      , DefoCameraModel::WHITE_BALANCE
+//      , this
+//  ));
 
   setCentralWidget( central );
 
 }
 
-TestWindow::~TestWindow() {
-//  delete model_;
-}
-
-void TestWindow::fileButtonClicked()
-{
+void TestWindow::fileButtonClicked() {
 
   QImage image(QFileDialog::getOpenFileName(this, "Choose reference image"));
-  DefoMeasurement* reference = new DefoMeasurement(image);
-  QRect* area = NULL; //new QRect( 0, 0, 200, 200 );
-
-//  reference->findPoints( area );
-
-  model_->setReferenceMeasurement( reference );
+  DefoMeasurement measurement(image);
+  listModel_->addMeasurement( measurement );
 
 }
 
-void TestWindow::newCameraImage(QImage newImage)
-{
+void TestWindow::newCameraImage(QImage newImage) {
 
-  QImage image(newImage);
-
-  DefoMeasurement* reference = new DefoMeasurement(image);
-
-//  reference->findPoints( area );
-
-  model_->setReferenceMeasurement( reference );
-
-}
-
-void TestWindow::cameraButtonClicked( )
-{
-
-  std::string location = camera_->acquirePhoto();
-  QImage image(QString(location.c_str()));
-
-  DefoMeasurement* reference = new DefoMeasurement(image);
-
-//  reference->findPoints( area );
-
-  model_->setReferenceMeasurement( reference );
+  DefoMeasurement measurement(newImage);
+  listModel_->addMeasurement( measurement );
 
 }

@@ -4,11 +4,7 @@
 #include <QMainWindow>
 #include <QPushButton>
 #include <QFileDialog>
-#include <QImage>
 #include <QComboBox>
-
-#include "DefoImageWidget.h"
-#include "DefoSurfaceModel.h"
 
 #include "DefoConradModel.h"
 #include "DefoConradWidget.h"
@@ -21,25 +17,22 @@
 
 #include "DefoCameraModel.h"
 #include "DefoCameraOptionComboBox.h"
+#include "DefoImageWidget.h"
+#include "DefoMeasurementListModel.h"
 
 class TestWindow : public QMainWindow
 {
     Q_OBJECT
 public:
   explicit TestWindow(QWidget *parent = 0);
-  ~TestWindow();
-
-protected:
-  DefoSurfaceModel* model_;
-  DefoCameraModel* cameraModel_;
-  EOS550D* camera_;
-
-signals:
 
 public slots:
   void fileButtonClicked();
-  void cameraButtonClicked();
   void newCameraImage(QImage newImage);
+
+protected:
+  DefoMeasurementListModel* listModel_;
+  DefoCameraModel* cameraModel_;
 
 };
 

@@ -5,24 +5,68 @@
 #include <QPainter>
 #include <QDateTime>
 #include <QSize>
-#include "DefoSurfaceModel.h"
+
+#include "DefoMeasurementListModel.h"
+#include "DefoPointRecognitionModel.h"
 
 class DefoImageWidget : public QWidget
 {
     Q_OBJECT
 public:
-  explicit DefoImageWidget(DefoSurfaceModel* model, QWidget *parent = 0);
+  explicit DefoImageWidget(
+      DefoMeasurementListModel* model
+    , QWidget *parent = 0
+  );
 
 protected:
-  DefoSurfaceModel* model_;
+  DefoMeasurementListModel* measurementListModel_;
   void paintEvent(QPaintEvent *event);
 
-  static QSize MINIMUM_SIZE;
+  /// Subroutine for paintEvent that prepares the image to be drawn.
+  virtual QImage prepareImage(const QImage& image) const = 0;
+
+  static const QSize MINIMUM_SIZE;
+  QSize getImageDrawingSize() const;
 
 signals:
 
 public slots:
-  void referenceChanged();
+  void selectionChanged();
+
+};
+
+/// Displays the raw camera image.
+class DefoRawImageWidget : public DefoImageWidget {
+
+    Q_OBJECT
+public:
+  explicit DefoRawImageWidget(
+      DefoMeasurementListModel* model
+    , QWidget *parent = 0
+  );
+
+  QImage prepareImage(const QImage& image) const;
+
+};
+
+/// Displays a visualisation of the current point recognition thresholds.
+class DefoImageThresholdsWidget : public DefoImageWidget {
+
+  Q_OBJECT
+public:
+  explicit DefoImageThresholdsWidget(
+      DefoMeasurementListModel* listModel
+    , DefoPointRecognitionModel* recognitionModel
+    , QWidget *parent = 0
+  );
+
+  QImage prepareImage(const QImage& image) const;
+
+public slots:
+  void thresholdChanged(int threshold, int value);
+
+protected:
+  DefoPointRecognitionModel* recognitionModel_;
 
 };
 
