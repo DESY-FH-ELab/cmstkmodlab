@@ -7,6 +7,7 @@ macx {
     INCLUDEPATH += /opt/local/include/qwtplot3d
     INCLUDEPATH += /opt/local/include/GL
     LIBS += -L/opt/local/lib -lqwt -lqwtplot3d
+# include libgphoto2
     LIBS += ../devices/Keithley/*.o ../devices/Greisinger/*.o ../devices/Julabo/*.o ../devices/Hameg/*.o ../devices/Canon/*.o ../devices/Conrad/*.o
     LIBS += -lboost_serialization
 }
@@ -14,7 +15,8 @@ else {
     INCLUDEPATH += /usr/include/qwt
     INCLUDEPATH += /usr/include/qwtplot3d
     LIBS += -lqwt -lqwtplot3d
-    LIBS += -L../devices/lib -lTkModLabKeithley -lTkModLabGreisinger -lTkModLabJulabo -lTkModLabHameg -lTkModLabCanon -lTkModLabConrad
+    LIBS += -lgphoto2
+    LIBS += -L../devices/lib -lTkModLabKeithley -lTkModLabGreisinger -lTkModLabJulabo -lTkModLabHameg -lTkModLabConrad -lTkModLabCanon
     LIBS += -L/usr/lib64 -lboost_serialization
 }
 DEFINES += @configdefines@
@@ -26,9 +28,7 @@ INCLUDEPATH += .
 INCLUDEPATH += ..
 
 # Input
-HEADERS += DefoMainWindow.h \
-           DefoSchedule.h \
-           DefoRawImage.h \
+HEADERS += DefoSchedule.h \
            DefoPoint.h \
            DefoSpline.h \
            DefoRecoImage.h \
@@ -38,25 +38,48 @@ HEADERS += DefoMainWindow.h \
            DefoSurface.h \
 	   DefoSurfacePlot.h \
 	   DefoImageLabel.h \
-	   DefoCamHandler.h \
 	   DefoArea.h \
-	   DefoHistogramView.h
+	   DefoHistogramView.h \
+    TestWindow.h \
+    DefoMeasurement.h \
+    DefoKeithleyModel.h \
+    DefoJulaboModel.h \
+    DefoConradWidget.h \
+    DefoConradModel.h \
+    DefoConradCheckbox.h \
+    DefoSurfaceModel.h \
+    DefoImageWidget.h \
+    DefoJulaboWidget.h \
+    DefoState.h \
+    DefoKeithleyWidget.h \
+    DefoCameraModel.h \
+    DefoTemperatureHistoryModel.h \
+    DefoTemperatureHistoryWidget.h
 
 FORMS += defo.ui
 
 SOURCES += defo.cc \
-           DefoMainWindow.cc \
            DefoSchedule.cc \
-           DefoRawImage.cc \
            DefoPoint.cc \
            DefoSpline.cc \
-           DefoRecoImage.cc \
            DefoSquare.cc \
            DefoConfigReader.cc \
            DefoRecoSurface.cc \
            DefoSurface.cc \
 	   DefoSurfacePlot.cc \
-	   DefoImageLabel.cc \
-	   defoMainWindowObjSettings.inc.cc \
-	   DefoCamHandler.cc \
-	   DefoHistogramView.cc
+           DefoImageLabel.cc \
+	   DefoHistogramView.cc \
+    TestWindow.cc \
+    DefoMeasurement.cc \
+    DefoKeithleyModel.cc \
+    DefoJulaboModel.cc \
+    DefoConradWidget.cc \
+    DefoConradModel.cc \
+    DefoConradCheckbox.cc \
+    DefoSurfaceModel.cc \
+    DefoImageWidget.cc \
+    DefoJulaboWidget.cc \
+    DefoKeithleyWidget.cc \
+    DefoCameraModel.cc \
+    DefoTemperatureHistoryModel.cc \
+    DefoTemperatureHistoryWidget.cc

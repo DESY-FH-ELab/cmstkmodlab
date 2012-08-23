@@ -1,56 +1,36 @@
-
-
 #ifndef _EOS550D_H
 #define _EOS550D_H
 
-#include <iostream>
+#include <string>
+#include <map>
+#include <stdlib.h>
 
+#include "CameraComHandler.h"
+#include "VEOS550D.h"
 
 ///
-/// Base class for EOS550D
+/// Real device class for the Canon EOS 550D camera.
 ///
-class EOS550D {
+class EOS550D : public VEOS550D {
 
- public:
+public:
+  explicit EOS550D(const char* port);
+  ~EOS550D();
 
-  // this contains enums with the allowed
-  // settings for Aperture, ShutterSpeed, Iso, ...
-  #include "eosParameters.h"
+  bool initialize();
 
+  std::vector<std::string> readOptions(const Option& option) const;
+  int readOption(const Option& option);
+  bool writeOption(const Option& option, int value);
 
-  class EOS550DConfig {
-  public:
-    EOS550DConfig() {}
-    ~EOS550DConfig() {}
-    EOS550D::Aperture aperture_;
-    EOS550D::ShutterSpeed shutterSpeed_;
-    EOS550D::Iso iso_;
-  };
+  /// Returns the absolute (local) location of the retrieved picture.
+  virtual std::string acquirePhoto();
 
+protected:
+  CameraComHandler* handler_;
 
-  EOS550D() {}
-  virtual ~EOS550D() {}
-
-  virtual EOS550D::Aperture const& getAperture( void ) { return cfg_.aperture_; }
-  virtual EOS550D::ShutterSpeed const& getShutterSpeed( void ) { return cfg_.shutterSpeed_; }
-  virtual EOS550D::Iso const& getIso( void ) { return cfg_.iso_; }
-  virtual EOS550D::EOS550DConfig const& getConfig( void ) { return cfg_; }
-
-  virtual EOS550D::Aperture const& readAperture( void ) = 0;
-  virtual EOS550D::ShutterSpeed const& readShutterSpeed( void ) = 0;
-  virtual EOS550D::Iso const& readIso( void  ) = 0;
-  virtual EOS550D::EOS550DConfig const& readConfig( void ) = 0;
-
-  virtual bool writeAperture( EOS550D::Aperture ) = 0;
-  virtual bool writeShutterSpeed( EOS550D::ShutterSpeed ) = 0;
-  virtual bool writeIso( EOS550D::Iso ) = 0;
-  virtual bool writeConfig( EOS550DConfig const& ) = 0;
-
-  virtual bool getAndSaveImage( const std::string& ) = 0;
-
- protected: 
-
-  EOS550D::EOS550DConfig cfg_;
+  std::vector<std::string> optionNames_;
+  std::vector<OptionList> optionLists_;
 
 };
 

@@ -400,7 +400,8 @@ bool EOS550DSyscall::executeCommandListReturnOutput( CommandList const& list, st
   }
 
   // catch stderr, too
-  commandString += " 2>&1";
+  //  commandString += " 2>&1";
+  std::cout << "LLL: " << commandString << std::endl; /////////////////////////////////
 
 
   output.clear();

@@ -7,11 +7,12 @@
   */
 #ifdef USE_FAKEIO
 #include "devices/Julabo/JulaboFP50Fake.h"
-typedef JulaboFP50Fake JulaboFP50;
+typedef JulaboFP50Fake JulaboFP50_t;
 #include "devices/Conrad/ConradControllerFake.h"
 typedef ConradControllerFake ConradController;
 #else
 #include "devices/Julabo/JulaboFP50.h"
+typedef JulaboFP50 JulaboFP50_t;
 #include "devices/Conrad/ConradController.h"
 #endif
 
@@ -2072,7 +2073,7 @@ void DefoMainWindow::enableChiller( bool isEnable ) {
   if( isEnable ) { // request chiller comm enable
 
     if( julabo_ ) delete julabo_;
-    julabo_ = new JulaboFP50("/dev/ttyS5");
+    julabo_ = new JulaboFP50_t("/dev/ttyS5");
 
     if( !( julabo_->IsCommunication() ) ) { // failure
 

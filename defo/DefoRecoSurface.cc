@@ -144,7 +144,7 @@ const DefoSplineField DefoRecoSurface::createZSplines( DefoPointCollection const
 	// convert from pixel units to real units on module
 
 	// set blue point at x=0,y=0
-	aPoint.setXY( ( aPoint.getX() - bluePointByIndex.second->getX() ) * pitchX_ * nominalCameraDistance_ / focalLength_ ,
+	aPoint.setPosition( ( aPoint.getX() - bluePointByIndex.second->getX() ) * pitchX_ * nominalCameraDistance_ / focalLength_ ,
 		      ( aPoint.getY() - bluePointByIndex.second->getY() ) * pitchY_ * nominalCameraDistance_ / focalLength_ );
 
 // 	aPoint.setXY( aPoint.getX() * pitchX_ * nominalCameraDistance_ / focalLength_ , // old version
@@ -210,7 +210,7 @@ const DefoSplineField DefoRecoSurface::createZSplines( DefoPointCollection const
 	// 		      aPoint.getY() * pitchY_ * nominalCameraDistance_ / focalLength_ );
 
 	// blue point at x=0,y=0
-	aPoint.setXY( ( aPoint.getX() - bluePointByIndex.second->getX() ) * pitchX_ * nominalCameraDistance_ / focalLength_ ,
+	aPoint.setPosition( ( aPoint.getX() - bluePointByIndex.second->getX() ) * pitchX_ * nominalCameraDistance_ / focalLength_ ,
 		      ( aPoint.getY() - bluePointByIndex.second->getY() ) * pitchY_ * nominalCameraDistance_ / focalLength_ );
 
 	aSplineSet.addPoint( aPoint );
@@ -296,7 +296,7 @@ const DefoSplineField DefoRecoSurface::createZSplinesOld( DefoPointCollection co
       aPoint.setSlope( correctionFactors.first * (*currentPointIt - *referencePointIt).getY() );
 
       // convert from pixel units to real units on module
-      aPoint.setXY( aPoint.getX() * pitchX_ * nominalCameraDistance_ / focalLength_ , 
+      aPoint.setPosition( aPoint.getX() * pitchX_ * nominalCameraDistance_ / focalLength_ , 
  		    aPoint.getY() * pitchY_ * nominalCameraDistance_ / focalLength_ );
 
       aSplineSet.addPoint( aPoint );
@@ -332,7 +332,7 @@ const DefoSplineField DefoRecoSurface::createZSplinesOld( DefoPointCollection co
       aPoint.setSlope( correctionFactors.first * (*currentPointIt - *referencePointIt).getX() );
 
       // convert from pixel units to real units
-      aPoint.setXY( aPoint.getX() * pitchX_ * nominalCameraDistance_ / focalLength_ , 
+      aPoint.setPosition( aPoint.getX() * pitchX_ * nominalCameraDistance_ / focalLength_ , 
  		    aPoint.getY() * pitchY_ * nominalCameraDistance_ / focalLength_   );
 
       aSplineSet.addPoint( aPoint );

@@ -98,7 +98,7 @@ void Keithley2700::DisableActiveChannels( string channelString ) {
 ///
 const reading_t Keithley2700::Scan( void ) {
 
-  reading_t theReading;
+  reading_t theReading(0);
   char buffer[1000];
 
   // presume that it will work..
@@ -120,7 +120,7 @@ const reading_t Keithley2700::Scan( void ) {
   comHandler_->SendCommand( "ROUT:SCAN:LSEL NONE" );
 
   // tokenize output
-  std::vector<std::string> tokens;
+  std::vector<std::string> tokens(0);
   Tokenize( string( buffer ), tokens, "," );
 
   if( isDebug_ ) {

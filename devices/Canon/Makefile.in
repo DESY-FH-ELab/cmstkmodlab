@@ -4,7 +4,7 @@ LIB           = TkModLabCanon
 
 USEFAKEDEVICES=@usefakedevices@
 
-MODULES       = EOS550DSyscall
+MODULES       = VEOS550D EOS550D CameraComHandler
 
 CC            = gcc
 CXX           = g++

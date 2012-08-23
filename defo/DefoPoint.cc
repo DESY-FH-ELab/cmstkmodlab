@@ -6,9 +6,8 @@
 ///
 ///
 void DefoPoint::init( void ) {
-  
-  isBlue_ = false;
-  x_ = 0.;;
+
+  x_ = 0.;
   y_ = 0.;
   slope_ = 0.;
   height_ = 0.;
@@ -17,6 +16,55 @@ void DefoPoint::init( void ) {
 
 }
 
+///
+/// Allows for non-hardcoded selection of coordinate
+///
+const double & DefoPoint::getPosition( const DefoPoint::Axis& coordinate ) const {
+//  if (coordinate == DefoPoint::X)
+//    return x_;
+//  else //if (coordinate == DefoPoint::Y)
+//    return y_;
+////  else // Should not happen
+////    return 0.;
+  switch ( coordinate ) {
+    case DefoPoint::X:
+      return x_;
+      break;
+    default: // DefoPoint::Y
+      return y_;
+  }
+}
+
+/**
+  Sets the color of the point.
+  */
+void DefoPoint::setColor( const QColor& color ) {
+  color_ = color;
+}
+
+/**
+  Returns the currently set color of the point or an invalid QColor (black)
+  if none has been set.
+  */
+const QColor& DefoPoint::getColor( void ) const {
+  return color_;
+}
+
+/**
+  Determines and returns whether the point's color can be considere blue.
+  */
+bool DefoPoint::isBlue( void ) const {
+  return /*color_.hsvSaturation() > 100  // Saturated enough,
+      && color_.value() > 100          // far enough from black,
+      &&*/ color_.hsvHue() < 300        // not quite magenta...
+      && color_.hsvHue() > 180;       // ... nor cyan.
+}
+
+
+std::ostream& operator<<(std::ostream& out, const DefoPoint& p) {
+  out << '(' << p.getX() << ',' << p.getY() << ')';
+  return out;
+}
 
 
 ///
@@ -114,6 +162,6 @@ bool DefoPointCollectionAverageYPredicate( DefoPointCollection const& one, DefoP
 bool DefoPointPairSecondAbsPredicate( std::pair<DefoPointCollection::iterator,DefoPoint> const& one, 
 				      std::pair<DefoPointCollection::iterator,DefoPoint> const& another ) {
 
-  return( one.second.abs() < another.second.abs() );
+    return( one.second.abs() < another.second.abs() );
 
 }

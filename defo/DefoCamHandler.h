@@ -29,9 +29,9 @@ class DefoCamHandler : public QThread {
   EOS550D::EOS550DConfig const& getConfig( void ) { return cfg_; }
   void setCfg( EOS550D::EOS550DConfig const& c ) { cfg_ = c; }
   void setFilePath( std::string const& p ) { filePath_ = p; }
-  void setShutterSpeed( EOS550D::ShutterSpeed s ) { cfg_.shutterSpeed_ = s; }
-  void setAperture( EOS550D::Aperture a ) { cfg_.aperture_ = a; }
-  void setIso( EOS550D::Iso a ) { cfg_.iso_ = a; }
+  void setShutterSpeed( EOS550D::ShutterSpeed s ) { cfg_.shutterSpeed = s; }
+  void setAperture( EOS550D::Aperture a ) { cfg_.aperture = a; }
+  void setIso( EOS550D::Iso a ) { cfg_.iso = a; }
 
  private:
   EOS550DSyscall camera_;

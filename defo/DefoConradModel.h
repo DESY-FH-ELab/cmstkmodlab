@@ -1,0 +1,97 @@
+#ifndef DEFOCONRADMODEL_H
+#define DEFOCONRADMODEL_H
+
+#include <QStringList>
+#include <QDir>
+#include <iostream>
+
+#include "DefoState.h"
+
+#ifdef USE_FAKEIO
+#include "devices/Conrad/ConradControllerFake.h"
+typedef ConradControllerFake ConradController_t;
+#else
+#include "devices/Conrad/ConradController.h"
+typedef ConradController ConradController_t;
+#endif
+
+
+/*
+  Original code by Jan Olzem and Andreas Mussgiller.
+  Invasive refactor by Sander Vanheule.
+  */
+
+/**
+  Model for controlling the Conrad switch.
+  This model can be used to set and query the state of the switch. The
+  response of the device will not be instantaneous and as such device control
+  should be handled in a separate thread. Device states INITIALIZING and
+  CLOSING signify that no operations on that device should be attempted!
+
+  Currently any state changing command that does not comply with the ongoing
+  operation will be ignored (e.g. disable switch while switch state is
+  INITIALIZING).
+  */
+class DefoConradModel : public QObject
+{
+    Q_OBJECT
+
+public:
+  /**
+    Enumeration of the (relais) switches controlled by the device. The values
+    correspond to the switch indices for setSwitchEnabled if they are wired up
+    correctly.
+    */
+  enum DeviceSwitch {
+      LIGHT_PANEL_1 = 0 /**< LED light panel number 1 */
+    , LIGHT_PANEL_2     /**< LED light panel number 2 */
+    , LIGHT_PANEL_3     /**< LED light panel number 3 */
+    , LIGHT_PANEL_4     /**< LED light panel number 4 */
+    , LIGHT_PANEL_5     /**< LED light panel number 5 */
+    , CALIBRATION_LEDS  /**< Calibration LED on granite ground plate */
+    , CAMERA            /**< Digital photo camera */
+    , SWITCH_8          /**< Currently not used */
+  };
+
+  // TODO Add initialisation parameters
+  explicit DefoConradModel(QObject *parent = 0);
+  ~DefoConradModel();
+
+  // Methods for control and status querying of the device itself, as specified
+  // by the abstract parent class
+  void setDeviceEnabled( bool enabled );
+  const State& getDeviceState() const;
+
+  // Methods for power control and status querying of the devices connected to
+  // the switch
+  void setSwitchEnabled( DeviceSwitch device, bool enabled );
+  const State& getSwitchState( DeviceSwitch device ) const;
+
+protected:
+  VConradController* controller_;
+  void renewController( const QString& port );
+  void initialize();
+  void close();
+
+  // Last known communication state
+  State state_;
+  void setDeviceState( State state );
+
+  std::vector<State> switchStates_;
+  void setSwitchState( DeviceSwitch device, State state );
+  void setAllSwitchesReady( const std::vector<bool>& ready );
+
+signals:
+  // Classname identifiers are needed because Qt can't resolve internal enums
+  void deviceStateChanged(/*DefoConradModel::*/State newState);
+  void switchStateChanged(
+      DefoConradModel::DeviceSwitch device
+    , /*DefoConradModel::*/State newState
+  );
+
+public slots:
+//  void checkSwitchConnection( void );
+
+};
+
+#endif // DEFOCONRADMODEL_H

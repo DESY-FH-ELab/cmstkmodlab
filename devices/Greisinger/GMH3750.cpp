@@ -22,7 +22,8 @@ bool GMH3750::Read(double & temperature)
 {
   char command[10];
   char buffer[1000];
-  
+  bzero( buffer, 1000 );
+
   command[0] = 254;
   command[1] = 0;
   command[2] = 61;
@@ -30,11 +31,14 @@ bool GMH3750::Read(double & temperature)
 
   comHandler_->SendCommand( command, 3 );
   comHandler_->ReceiveString( buffer );
-
+  
   unsigned char byte3 = buffer[3];
   unsigned char byte4 = buffer[4];
   unsigned char byte6 = buffer[6];
   unsigned char byte7 = buffer[7];
+
+  for( unsigned int i = 0; i < 8; ++i ) std::cout << (int)buffer[i] << " ";
+  std::cout << std::endl; /////////////////////////////////
 
   int DP;
   DP = ( (0xFF-byte3) >> 3 ) - 15;

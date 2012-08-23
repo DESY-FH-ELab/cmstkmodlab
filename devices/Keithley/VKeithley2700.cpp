@@ -12,7 +12,7 @@ VKeithley2700::VKeithley2700( ioport_t port )
 /// comma separated list of channels or channel ranges
 /// e.g. "0,3,6-9,12"
 ///
-const channels_t VKeithley2700::ParseChannelString( const string& channelString ) const
+const channels_t VKeithley2700::ParseChannelString( const std::string& channelString ) const
 {
   channels_t channels;
   channels.resize( 0 );
@@ -23,7 +23,7 @@ const channels_t VKeithley2700::ParseChannelString( const string& channelString 
   }
 
   // tokenize comma-separated channels/channel-ranges
-  std::vector<string> tokens;
+  std::vector<std::string> tokens;
   Tokenize( channelString, tokens, "," );
 
   for( std::vector<std::string>::const_iterator it = tokens.begin(); it < tokens.end(); ++it ) {
@@ -60,10 +60,10 @@ void VKeithley2700::Tokenize(const std::string& string,
                              const std::string& delimiters ) const
 {
   // Skip delimiters at beginning.
-  string::size_type lastPos = string.find_first_not_of( delimiters, 0 );
+  std::string::size_type lastPos = string.find_first_not_of( delimiters, 0 );
 
   // Find first "non-delimiter".
-  string::size_type pos = string.find_first_of( delimiters, lastPos );
+  std::string::size_type pos = string.find_first_of( delimiters, lastPos );
 
   while ( std::string::npos != pos || std::string::npos != lastPos ) {
 

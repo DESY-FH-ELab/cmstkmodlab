@@ -5,10 +5,11 @@
 ///
 ///
 ///
-DefoSplineSetBase::DefoSplineSetBase( void ) {
+DefoSplineSetBase::DefoSplineSetBase( DefoPoint::Axis axis ) {
 
   DefoConfigReader cfgReader( "defo.cfg" );
   debugLevel_ = cfgReader.getValue<unsigned int>( "DEBUG_LEVEL" );
+  axis_ = axis;
 
 }
 
@@ -61,43 +62,60 @@ std::pair<double,double> const DefoSplineSetBase::validityRange( void ) const {
 
 }
 
+bool DefoSplineSetBase::doFitXY( void ) {
+  // Adapted from original (duplicate) implementation
+  // XXX Why is this method needed??
 
-
-///
-/// fit XY splines
-/// (SAME-Y = ALONG-X)
-///
-bool DefoSplineSetX::doFitXY( void ) {
-  
   // z values for each spline;
   // first value is arbitrary
   // (note: this z is not the height!!)
   std::vector<double> z;
   z.push_back( 0. );
 
+  std::pair<double,double> current = std::make_pair<double,double>( 0., 0. );
+  std::pair<double,double> next = std::make_pair<double,double>( 0., 0. );
+
   // create splines & calculate their parameters
   // we have nPoints - 1 splines in the row
   for( DefoPointCollection::const_iterator it = points_.begin(); it < points_.end() - 1; ++it ) {
-    
+
     DefoSpline aSpline;
 
+    // select values according to coordinate
+    if ( axis_ == DefoPoint::X ) { // SAME-Y = ALONG-X
+
+      current.first = it->getX();
+      current.second = it->getY();
+      next.first = (it+1)->getX();
+      next.second = (it+1)->getY();
+
+    } else { // SAME-X = ALONG-Y
+
+      current.first = it->getY();
+      current.second = it->getX();
+      next.first = (it+1)->getY();
+      next.second = (it+1)->getX();
+
+    }
+
+
     // next z comes from recurrence relation
-    const double nextZ = -1. * z.back() + 2. * ( (it+1)->getY() - it->getY() ) / ( (it+1)->getX() - it->getX() );
+    const double nextZ = -1. * z.back() + 2. * ( next.second - current.second ) / ( next.first - current.first );
 
     // two shortcuts
     const double thisZ = z.back();
-    const double k = ( nextZ - thisZ ) / 2. / ( (it+1)->getX() - it->getX() );
+    const double k = ( nextZ - thisZ ) / 2. / ( next.first - current.first );
 
     // then these are the parameters for the spline (y = ax^2 + bx + c):
     aSpline.setA( k );
-    aSpline.setB( thisZ - 2. * k * it->getX() );
-    aSpline.setC( it->getY() - z.back() * it->getX() + k * pow( it->getX(), 2. ) );
+    aSpline.setB( thisZ - 2. * k * current.first );
+    aSpline.setC( current.second - z.back() * current.first + k * pow( current.first, 2. ) );
 
     // pushback z for next round
     z.push_back( nextZ );
-    
+
     // pushback spline
-    aSpline.setValidityRange( it->getX(), (it+1)->getX() );
+    aSpline.setValidityRange( current.first, next.first );
     splines_.push_back( aSpline );
 
   }
@@ -105,99 +123,63 @@ bool DefoSplineSetX::doFitXY( void ) {
   // MISSING CHECK
 
   return true;
-
 }
-
 
 
 ///
 /// fit Z splines
 /// for surface reconstruction
-/// (SAME-Y = ALONG-X)
 ///
-bool DefoSplineSetX::doFitZ( void ) {
+bool DefoSplineSetBase::doFitZ( void ) {
 
   // height (h) values for each spline;
   // first value is arbitrary
-  std::vector<double> h;
-  h.push_back( 0. );
+//  std::vector<double> h;
+//  h.push_back( 0. );
+
+  // Only the last value is of interest
+  double h = 0.;
 
   // avoid crash when np = 0, seems to be related to  "points_.end() - 1"
   if( 0 == points_.size() ) {
     std::cout << " [DefoSplineSetX::doFitZ] ** WARNING: number of Points is zero." << std::endl;
-    return false; 
+    return false;
   }
 
   // create splines & calculate their parameters
   // we have nPoints - 1 splines in the row
   for( DefoPointCollection::const_iterator it = points_.begin(); it < points_.end() - 1; ++it ) {
-    
-    DefoSpline aSpline;
 
-    // set coefficiencts
-    aSpline.setA( ( it->getSlope() - (it+1)->getSlope() ) / 2. / ( it->getX() - (it+1)->getX() ) );
-    aSpline.setB( ( (it+1)->getSlope() * it->getX() - it->getSlope() * (it+1)->getX() ) / ( it->getX() - (it+1)->getX() ) );
-    
-    // shortcuts for C
-    const double c1 = (it+1)->getSlope() * pow( it->getX(), 2. );
-    const double c2 = it->getSlope() * it->getX() * ( it->getX() - 2. * (it+1)->getX() );
-    const double c3 = 2. * ( (it+1)->getX() - it->getX() ) * h.back();
-    const double c4 = 2. * ( it->getX() - (it+1)->getX() );
-    aSpline.setC( -1. * ( c1 + c2 + c3 ) / c4 );
+    DefoSpline aSpline;
+    // use known coordinate to request the correct value
+    // FIXME Slower than seperate, but duplicate implementation.
+    const double thisValue = it->getPosition(axis_);
+    const double nextValue = (it+1)->getPosition(axis_);
+
+    const double thisSlope = it->getSlope();
+    const double nextSlope = (it+1)->getSlope();
+
+    const double diff = thisValue - nextValue;
+
+    // set coefficients
+    // S_1 = 2Ax_1 + B
+    // S_2 = 2Ax_2 + B
+    const double a = ( thisSlope - nextSlope ) / 2. / diff;
+    const double b = ( nextSlope * thisValue - thisSlope * nextValue ) / diff;
+
+    aSpline.setA( a );
+    aSpline.setB( b );
+
+    // h = Ax**2 + Bx + C
+//    aSpline.setC( h.back() - ( a * thisValue + b ) * thisValue );
+    aSpline.setC( h - ( a * thisValue + b ) * thisValue );
 
     // store it
-    aSpline.setValidityRange( it->getX(), (it+1)->getX() );
+    aSpline.setValidityRange( thisValue, nextValue );
     splines_.push_back( aSpline );
 
     // z value at end point for next spline
-    h.push_back( aSpline.eval( (it+1)->getX() ) );
-
-    
-  }
-
-  // MISSING CHECK
-  return true;
-
-}
-
-
-
-///
-/// like DefoSplineSetX::doFitXY but
-/// X <> Y
-/// (SAME-X = ALONG-Y)
-///
-bool DefoSplineSetY::doFitXY( void ) {
-
-  // z values for each spline;
-  // first value is arbitrary
-  std::vector<double> z;
-  z.push_back( 0. );
-
-  // create splines & calculate their parameters
-  // we have nPoints - 1 splines in the row
-  for( DefoPointCollection::const_iterator it = points_.begin(); it < points_.end() - 1; ++it ) {
-    
-    DefoSpline aSpline;
-
-    // next z comes from recurrence relation
-    const double nextZ = -1. * z.back() + 2. * ( (it+1)->getX() - it->getX() ) / ( (it+1)->getY() - it->getY() );
-
-    // two shortcuts
-    const double thisZ = z.back();
-    const double k = ( nextZ - thisZ ) / 2. / ( (it+1)->getY() - it->getY() );
-
-    // then these are the parameters for the spline (y = ax^2 + bx + c):
-    aSpline.setA( k );
-    aSpline.setB( thisZ - 2. * k * it->getY() );
-    aSpline.setC( it->getX() - z.back() * it->getY() + k * pow( it->getY(), 2. ) );
-
-    // pushback z for next round
-    z.push_back( nextZ );
-    
-    // pushback spline
-    aSpline.setValidityRange( it->getY(), (it+1)->getY() );
-    splines_.push_back( aSpline );
+    h =  aSpline.eval( nextValue );
 
   }
 
@@ -205,62 +187,3 @@ bool DefoSplineSetY::doFitXY( void ) {
   return true;
 
 }
-
-
-
-///
-/// fit Z splines
-/// for surface reconstruction
-/// (SAME-X = ALONG-Y)
-///
-bool DefoSplineSetY::doFitZ( void ) {
-
-  // height (h) values for each spline;
-  // first value is arbitrary
-  std::vector<double> h;
-  h.push_back( 0. );
-
-  // avoid crashwhen np = 0, seems to be related to  "points_.end() - 1"
-  if( 0 == points_.size() ) {
-    std::cout << " [DefoSplineSetY::doFitZ] ** WARNING: number of Points is zero." << std::endl;
-    return false; 
-  }
-
-  // create splines & calculate their parameters
-  // we have nPoints - 1 splines in the row
-  for( DefoPointCollection::const_iterator it = points_.begin(); it < points_.end() - 1; ++it ) {
-    
-    DefoSpline aSpline;
-
-//     std::cout << "SL: " << it->getSlope() << " "
-// 	      << (it+1)->getSlope() << " " 
-// 	      << it->getY() << " " 
-// 	      << (it+1)->getY()
-// 	      << std::endl; /////////////////////////////////
-
-    // set coefficiencts
-    aSpline.setA( ( it->getSlope() - (it+1)->getSlope() ) / 2. / ( it->getY() - (it+1)->getY() ) );
-    aSpline.setB( ( (it+1)->getSlope() * it->getY() - it->getSlope() * (it+1)->getY() ) / ( it->getY() - (it+1)->getY() ) );
-    
-    // shortcuts for C
-    const double c1 = (it+1)->getSlope() * pow( it->getY(), 2. );
-    const double c2 = it->getSlope() * it->getY() * ( it->getY() - 2. * (it+1)->getY() );
-    const double c3 = 2. * ( (it+1)->getY() - it->getY() ) * h.back();
-    const double c4 = 2. * ( it->getY() - (it+1)->getY() );
-    aSpline.setC( -1. * ( c1 + c2 + c3 ) / c4 );
-
-    // store it
-    aSpline.setValidityRange( it->getY(), (it+1)->getY() );
-    splines_.push_back( aSpline );
-
-    // z value at end point for next spline
-    //    std::cout << "HY: " << it->getX() << " " << it->getY() << " " <<  h.back() << std::endl; /////////////////////////////////
-    h.push_back( aSpline.eval( (it+1)->getY() ) );
-    
-  }
-
-  // MISSING CHECK
-  return true;
-
-}
-

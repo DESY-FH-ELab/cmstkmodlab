@@ -46,7 +46,7 @@ class FP50ComHandler {
 
  private:
 
-  void OpenIoPort( void );
+  void OpenIoPort( void ) throw (int);
   void InitializeIoPort( void );
   void RestoreIoPort( void );
   void CloseIoPort( void );

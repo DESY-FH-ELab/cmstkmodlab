@@ -60,7 +60,7 @@ LabControl::LabControl(QWidget *parent) :
     julabo_ = new JulaboFP50Fake("/dev/ttyS0");
     hameg8143_ = new Hameg8143Fake("/dev/ttyUSB0");
 #else
-    julabo_ = new JulaboFP50("/dev/ttyS0");
+    julabo_ = new JulaboFP50("/dev/ttyS5");
     hameg8143_ = new Hameg8143("/dev/ttyUSB0");
 #endif
 

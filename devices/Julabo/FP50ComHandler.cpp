@@ -117,7 +117,7 @@ void FP50ComHandler::ReceiveString( char *receiveString ) {
   \internal
 */
 
-void FP50ComHandler::OpenIoPort( void ) {
+void FP50ComHandler::OpenIoPort( void ) throw (int) {
 
 
   // open io port ( read/write | no term control | no DCD line check )
@@ -127,7 +127,7 @@ void FP50ComHandler::OpenIoPort( void ) {
   if ( fIoPortFileDescriptor == -1 ) {
     std::cerr << "[FP50ComHandler::OpenIoPort] ** ERROR: could not open device file " << fIoPort << "." << endl;
     std::cerr << "                               (probably it's not user-writable)." << std::endl;
-    throw;
+    throw int(-1);
   }
 
   else {

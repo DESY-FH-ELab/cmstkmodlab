@@ -1,7 +1,8 @@
 
 #include <QApplication>
 
-#include "DefoMainWindow.h"
+//#include "DefoMainWindow.h"
+#include "TestWindow.h"
 
 
 int main( int argc, char** argv ) {
@@ -9,7 +10,7 @@ int main( int argc, char** argv ) {
   QApplication app( argc, argv );
   app.setStyle("cleanlooks");
 
-  DefoMainWindow mainWindow;
+  TestWindow mainWindow;
 
   mainWindow.show();
 

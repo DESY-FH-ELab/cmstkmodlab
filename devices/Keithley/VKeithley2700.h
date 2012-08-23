@@ -20,23 +20,21 @@ typedef std::pair<unsigned int, unsigned int> range_t;
 
 typedef const char* ioport_t;
 
-using namespace std;
-
 class VKeithley2700
 {
  public:
   VKeithley2700( ioport_t );
 
-  virtual void SetActiveChannels( string ) = 0;
-  virtual void AddActiveChannels( string ) = 0;
-  virtual void DisableActiveChannels( string ) = 0;
+  virtual void SetActiveChannels( std::string ) = 0;
+  virtual void AddActiveChannels( std::string ) = 0;
+  virtual void DisableActiveChannels( std::string ) = 0;
   virtual const reading_t Scan( void ) = 0;
   virtual void Dump( void ) const = 0;
   virtual bool IsScanOk( void ) = 0;
 
  protected:
 
-  const channels_t ParseChannelString( const string& ) const;
+  const channels_t ParseChannelString( const std::string& ) const;
   void Tokenize( const std::string&, std::vector<std::string>&, const std::string& ) const;
   unsigned int EvaluateChannelToken( const std::string& ) const;
   const range_t EvaluateRangeToken( const std::string& ) const;

@@ -118,7 +118,7 @@ void KMMComHandler::ReceiveString( char *receiveString ) {
   \internal
 */
 
-void KMMComHandler::OpenIoPort( void ) {
+void KMMComHandler::OpenIoPort( void ) throw (int) {
 
 
   // open io port ( read/write | no term control | no DCD line check )
@@ -128,7 +128,7 @@ void KMMComHandler::OpenIoPort( void ) {
   if ( fIoPortFileDescriptor == -1 ) {
     std::cerr << "[KMMComHandler::OpenIoPort] ** ERROR: could not open device file " << fIoPort << "." << endl;
     std::cerr << "                               (probably it's not user-writable)." << std::endl;
-    throw;
+    throw 1;
   }
 
   else {

@@ -8,6 +8,8 @@
 #include <utility>
 #include <cmath>
 
+#include <QColor>
+
 #include <boost/serialization/vector.hpp>
 #include <boost/serialization/utility.hpp>
 
@@ -22,12 +24,17 @@ class DefoPoint {
   friend class boost::serialization::access;
 
  public:
+  enum Axis {
+      X,
+      Y
+  };
+
   DefoPoint() { init(); }
   DefoPoint( double x, double y ) { init(); x_ = x; y_ = y; }
   DefoPoint( double x, double y, double slope ) { init(); x_ = x; y_ = y; slope_ = slope; }
   void setX( double x ) { x_ = x; }
   void setY( double y ) { y_ = y; }
-  void setXY( double x, double y ) { x_ = x; y_ = y; }
+  void setPosition( double x, double y ) { x_ = x; y_ = y; }
   void setSlope( double slope ) { slope_ = slope; }
   void setHeight( double height ) { height_ = height; }
   void setIndex( std::pair<int,int>& index ) { index_ = index; isIndexed_ = true; }
@@ -36,14 +43,16 @@ class DefoPoint {
   bool isIndexed( void ) const { return isIndexed_; }
   double const& getX( void ) const { return x_; }
   double const& getY( void ) const { return y_; }
+  double const& getPosition( const DefoPoint::Axis& ) const;
   double const& getSlope( void ) const { return slope_; }
   double const& getHeight( void ) const { return height_; }
   double abs( void ) const { return sqrt( pow( x_, 2. ) + pow( y_, 2. ) ); }
   const std::pair<int,int> getIndex( void ) const { return index_; }
   unsigned int getPixX( void ) const { return static_cast<int>( round( x_ ) ); }
   unsigned int getPixY( void ) const { return static_cast<int>( round( y_ ) ); }
-  void setBlue( bool isBlue ) { isBlue_ = isBlue; }
-  bool isBlue( void ) const { return isBlue_; }
+  void setColor( const QColor& color );
+  const QColor& getColor( void ) const;
+  bool isBlue( void ) const;
   void setValid( bool isValid ) { isValid_ = isValid; }
   bool isValid( void ) const { return isValid_; }
   DefoPoint operator/=( const double& aFactor ) { x_ /= aFactor; y_ /= aFactor; return *this; }
@@ -64,13 +73,14 @@ class DefoPoint {
   double y_;
   double slope_;
   double height_;
-  bool isBlue_;
+  QColor color_;
   std::pair<int,int> index_;
   bool isIndexed_;
   bool isValid_; // contains valid height data? for use with DefoSurfacePlot..
 
   template<class Archive>
-  void serialize( Archive & ar, const unsigned int version ) { 
+  void serialize( Archive & ar, const unsigned int version ) {
+    bool isBlue_ = isBlue(); // FIXME temporary fix
     ar & x_;
     ar & y_;
     ar & slope_;
@@ -86,6 +96,8 @@ class DefoPoint {
 
 BOOST_CLASS_VERSION( DefoPoint, 0 )
 
+
+std::ostream& operator<< (std::ostream& out, const DefoPoint& p);
 
 typedef std::vector<DefoPoint> DefoPointCollection;
 typedef std::vector<std::vector<DefoPoint> > DefoPointField;

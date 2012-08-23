@@ -64,10 +64,10 @@ class DefoSplineSetBase {
   friend class boost::serialization::access;
 
  public:
-  DefoSplineSetBase();
+  DefoSplineSetBase( DefoPoint::Axis axis );
   virtual ~DefoSplineSetBase() {}
-  virtual bool doFitXY( void ) = 0;
-  virtual bool doFitZ( void ) = 0;
+  virtual bool doFitXY( void );
+  virtual bool doFitZ( void );
   std::vector<DefoSpline> const& getSplines( void ) const { return splines_; }
   DefoPointCollection const& getPoints( void ) const { return points_; }
   std::pair<double,double> const validityRange( void ) const;
@@ -78,6 +78,7 @@ class DefoSplineSetBase {
   double eval( double ) const;
 
  protected:
+  DefoPoint::Axis axis_;
   std::vector<DefoSpline> splines_;
   DefoPointCollection points_;
   int debugLevel_;
@@ -104,10 +105,10 @@ class DefoSplineSetX : public DefoSplineSetBase {
   friend class boost::serialization::access;
 
  public:
-  DefoSplineSetX() {}
+  DefoSplineSetX() : DefoSplineSetBase( DefoPoint::X ) {}
   virtual ~DefoSplineSetX() { clear(); }
-  virtual bool doFitXY( void );
-  virtual bool doFitZ( void );
+//  virtual bool doFitXY( void );
+//  virtual bool doFitZ( void );
   
  private:
   template<class Archive>
@@ -130,10 +131,10 @@ class DefoSplineSetY : public DefoSplineSetBase {
   friend class boost::serialization::access;
 
  public:
-  DefoSplineSetY() {}
+  DefoSplineSetY() : DefoSplineSetBase( DefoPoint::Y ) {}
   virtual ~DefoSplineSetY() { clear(); }
-  virtual bool doFitXY( void );
-  virtual bool doFitZ( void );
+//  virtual bool doFitXY( void );
+//  virtual bool doFitZ( void );
 
  private:
   template<class Archive>

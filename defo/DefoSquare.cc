@@ -8,12 +8,10 @@
 ///
 bool DefoSquare::isInside( const DefoPoint& aPoint ) const {
 
-  if( ( aPoint.getX() < centerPoint_.getX() + halfWidth_ ) &&
-      ( aPoint.getX() > centerPoint_.getX() - halfWidth_ ) &&
-      ( aPoint.getY() < centerPoint_.getY() + halfWidth_ ) &&
-      ( aPoint.getY() > centerPoint_.getY() - halfWidth_ )    ) return true;
-
-  return false;
+  return ( ( aPoint.getX() < centerPoint_.getX() + halfWidth_ ) &&
+           ( aPoint.getX() > centerPoint_.getX() - halfWidth_ ) &&
+           ( aPoint.getY() < centerPoint_.getY() + halfWidth_ ) &&
+           ( aPoint.getY() > centerPoint_.getY() - halfWidth_ )    );
 
 }
 
@@ -26,12 +24,10 @@ bool DefoSquare::isOnBorder( const DefoPoint& point ) const {
 
   // summands of -1 are due to rounding (-> appear only at upper borders)
   
-  if( centerPoint_.getPixX() - halfWidth_     == point.getPixX() ||
-      centerPoint_.getPixX() + halfWidth_ - 1 == point.getPixX() ||
-      centerPoint_.getPixY() - halfWidth_     == point.getPixY() ||
-      centerPoint_.getPixY() + halfWidth_ - 1 == point.getPixY()    ) return true;
-
-  return false;
+  return ( centerPoint_.getPixX() - halfWidth_     == point.getPixX() ||
+           centerPoint_.getPixX() + halfWidth_ - 1 == point.getPixX() ||
+           centerPoint_.getPixY() - halfWidth_     == point.getPixY() ||
+           centerPoint_.getPixY() + halfWidth_ - 1 == point.getPixY()    );
 
 }
 
@@ -42,12 +38,11 @@ bool DefoSquare::isOnBorder( const DefoPoint& point ) const {
 ///
 bool DefoSquare::isFitInImage( const QImage& theImage ) const {
 
-  if( ( centerPoint_.getX() + halfWidth_ > theImage.width() ) ||
-      ( centerPoint_.getX() - halfWidth_ < 0) ||
-      ( centerPoint_.getY() + halfWidth_ > theImage.height() ) ||
-      ( centerPoint_.getY() - halfWidth_ < 0)  ) return false;
-
-  return true;
+  // TODO define strictness for > 0
+  return ( ( centerPoint_.getX() + halfWidth_ <  theImage.width() ) &&
+           ( centerPoint_.getX() - halfWidth_ >= 0 ) &&
+           ( centerPoint_.getY() + halfWidth_ <  theImage.height() ) &&
+           ( centerPoint_.getY() - halfWidth_ >= 0 ) );
 
 }
 
@@ -136,16 +131,24 @@ void DefoSquareIterator::operator++() {
 ///
 bool DefoSquareCollection::isInside( const DefoPoint& aPoint ) const {
 
-  for( DefoSquareCollection::const_iterator it = this->begin(); it < this->end(); ++it ) {
-    if( it->isInside( aPoint ) ) {
-//       std::cout << "REJ: " << aPoint.getX() << " " << aPoint.getY() << " " << it->getCenter().getX() << " " << it->getCenter().getY()
-//       		<< " " << it->getHalfWidth() << std::endl;
-      return true;
-    }
+//  for( DefoSquareCollection::const_iterator it = this->begin(); it < this->end(); ++it ) {
+//    if( it->isInside( aPoint ) ) {
+////       std::cout << "REJ: " << aPoint.getX() << " " << aPoint.getY() << " " << it->getCenter().getX() << " " << it->getCenter().getY()
+////       		<< " " << it->getHalfWidth() << std::endl;
+//      return true;
+//    }
+//  }
+
+//  return false;
+
+  DefoSquareCollection::const_iterator it = this->begin();
+
+  while ( it < this->end() && !it->isInside( aPoint ) ) {
+    ++it;
   }
 
-  return false;
-
+  // Inside if the iterator is not at the end
+  return it != this->end();
 }
 
 
@@ -158,3 +161,21 @@ void DefoSquareCollection::makeEmpty( void ) {
   while( size() ) pop_back();
 
 }
+
+///**
+//  * Returns a pointer to the DefoSqaure containing the given point or NULL if there is no
+//  * such DefoSqaure.
+//  */
+//const DefoSquare* DefoSquareCollection::getSquareAtPoint(const DefoPoint& aPoint) const {
+//  DefoSquareCollection::const_iterator it = this->begin();
+
+//  while ( it < this->end() && !it->isInside( aPoint ) ) {
+//    ++it;
+//  }
+
+//  // Inside if the iterator is not at the end
+//  if ( it != this->end())
+//    return (const DefoSquare*) it;
+//  else
+//    return NULL;
+//}

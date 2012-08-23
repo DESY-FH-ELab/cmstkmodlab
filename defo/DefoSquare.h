@@ -61,7 +61,9 @@ class DefoSquareIterator : public DefoSquare, public DefoPoint {
 class DefoSquareCollection : public std::vector<DefoSquare> {
 
  public:
+  DefoSquareCollection() : std::vector<DefoSquare>() {};
   bool isInside( const DefoPoint& ) const;
+//  const DefoSquare* getSquareAtPoint( const DefoPoint& ) const;
   void makeEmpty( void );
 
 };

@@ -60,6 +60,8 @@ void GMH3750ComHandler::SendCommand( const char *commandString, int length )
   //SendFeedString();
 }
 
+
+
 //! Read a string from device.
 /*!
 \par Input:
@@ -76,7 +78,7 @@ void GMH3750ComHandler::ReceiveString( char *receiveString )
 
   int timeout = 0, readResult = 0;
 
-  while ( timeout < 100000 )  {
+  while ( timeout < 500000 )  {
 
     readResult = read( fIoPortFileDescriptor, receiveString, 1024 );
 
@@ -88,6 +90,9 @@ void GMH3750ComHandler::ReceiveString( char *receiveString )
     
     timeout++;
   }
+  
+  std::cout << "TO: " << timeout << std::endl; /////////////////////////////////
+
 }
 
 //! Open I/O port.

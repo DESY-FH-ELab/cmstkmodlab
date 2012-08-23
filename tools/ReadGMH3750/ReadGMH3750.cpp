@@ -19,9 +19,9 @@ int main(int argc, char * argv[])
   
   VGMH3750 * gmh3750;  
 #ifdef USE_FAKEIO
-  gmh3750 = new GMH3750Fake("/dev/ttyS4");
+  gmh3750 = new GMH3750Fake("/dev/ttyS5");
 #else
-  gmh3750 = new GMH3750("/dev/ttyS4");
+  gmh3750 = new GMH3750("/dev/ttyS5");
 #endif
 
   double temperature;

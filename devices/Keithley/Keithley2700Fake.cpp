@@ -2,6 +2,8 @@
 
 #include "Keithley2700Fake.h"
 
+using namespace std;
+
 ///
 ///
 ///

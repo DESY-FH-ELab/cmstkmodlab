@@ -23,9 +23,9 @@ class Keithley2700 : public VKeithley2700
  public:
   Keithley2700( ioport_t );
 
-  void SetActiveChannels( string );
-  void AddActiveChannels( string );
-  void DisableActiveChannels( string );
+  void SetActiveChannels( std::string );
+  void AddActiveChannels( std::string );
+  void DisableActiveChannels( std::string );
   const reading_t Scan( void );
   void Dump( void ) const;
   bool IsScanOk( void );

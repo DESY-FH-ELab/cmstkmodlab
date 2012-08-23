@@ -1,4 +1,8 @@
 
+  /// WARNING!
+  /// THESE DEFS ARE REPEATED IN THE DEFO CODE
+  /// (DefoMainWindow.h)
+  /// if you change them here, do it also there!
 
 
   // all possible speeds, correct order, so we can call them by index;
