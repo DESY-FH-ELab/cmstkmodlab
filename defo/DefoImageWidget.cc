@@ -14,13 +14,14 @@ DefoImageWidget::DefoImageWidget(
   connect(
           measurementListModel_
         , SIGNAL(selectionChanged(int))
-        , SLOT(selectionChanged())
+        , this
+        , SLOT(selectionChanged(int))
   );
   setMinimumSize(MINIMUM_SIZE);
 
 }
 
-void DefoImageWidget::selectionChanged() {
+void DefoImageWidget::selectionChanged(int index) {
   update();
 }
 
@@ -37,11 +38,13 @@ void DefoImageWidget::paintEvent(QPaintEvent *event) {
       Rotate (according to camera orientation) and
       save the current state before handing of to child class
       */
-    painter.rotate(-90);
     painter.save();
 
     DefoMeasurement measurement = measurementListModel_->getSelection();
     QImage prepared = prepareImage(measurement.getImage());
+
+    painter.translate(prepared.height(), 0);
+    painter.rotate(90);
 
     // Draw image
     painter.drawImage( QPoint(0,0), prepared );
@@ -87,11 +90,14 @@ void DefoImageWidget::paintEvent(QPaintEvent *event) {
 }
 
 /// Returns the prefered size of the image to be drawn.
-QSize DefoImageWidget::getImageDrawingSize() const {
+QSize DefoImageWidget::getImageDrawingSize(const QImage& image) const {
+
+  QSize currentMax = size();
+  currentMax.transpose();
 
   return QSize(
-        std::max(MINIMUM_SIZE.width(), width())
-      , std::max(MINIMUM_SIZE.height(), height())
+          std::min(currentMax.width(), image.width())
+        , std::min(currentMax.height(), image.height())
   );
 
 }
@@ -112,7 +118,7 @@ DefoRawImageWidget::DefoRawImageWidget(
 QImage DefoRawImageWidget::prepareImage(const QImage& image) const {
 
   // TODO Maximal image size and centering
-  return image.scaled(getImageDrawingSize(), Qt::KeepAspectRatio);
+  return image.scaled(getImageDrawingSize(image), Qt::KeepAspectRatio);
 
 }
 
@@ -124,33 +130,67 @@ DefoImageThresholdsWidget::DefoImageThresholdsWidget(
 ) :
     DefoImageWidget(listModel, parent)
   , recognitionModel_(recognitionModel)
-{}
+{
+  connect(
+        recognitionModel_
+      , SIGNAL(thresholdValueChanged(DefoPointRecognitionModel::Threshold,int))
+      , this
+      , SLOT(thresholdChanged(DefoPointRecognitionModel::Threshold,int))
+  );
+}
 
 QImage DefoImageThresholdsWidget::prepareImage(const QImage& image) const {
 
-  QImage copy(image);
-
-  for (int x=0; x<copy.width(); ++x) {
-    for (int y=0; y<copy.height(); ++y) {
-      int gray = qGray(copy.pixel(x, y));
-
-      // Colour according to brightness
-      if (gray > recognitionModel_->getThresholdValue(3))
-        copy.setPixel(x, y, 0x0000FF);
-      else if (gray > recognitionModel_->getThresholdValue(2))
-        copy.setPixel(x, y, 0x00FF00);
-      else if (gray > recognitionModel_->getThresholdValue(1))
-        copy.setPixel(x, y, 0xFF0000);
-      else
-        copy.setPixel(x, y, 0);
-    }
-  }
-
-  return copy.scaled( getImageDrawingSize(), Qt::KeepAspectRatio );
+  // Used cache image instead of rescanning the picture
+  return imageCache_.scaled(
+          getImageDrawingSize(imageCache_)
+        , Qt::KeepAspectRatio
+  );
 
 }
 
-void DefoImageThresholdsWidget::thresholdChanged(int threshold, int value) {
+void DefoImageThresholdsWidget::thresholdChanged(
+    DefoPointRecognitionModel::Threshold threshold
+  , int value
+) {
   // Don't care about which thresholds or what value, needs to be redone anyway
+  updateCache();
   update();
+}
+
+void DefoImageThresholdsWidget::selectionChanged(int index) {
+  updateCache();
+  DefoImageWidget::selectionChanged(index);
+}
+
+/// Updates the current image cache.
+void DefoImageThresholdsWidget::updateCache() {
+
+  imageCache_ = QImage(measurementListModel_->getSelection().getImage());
+  int thres1 = recognitionModel_->getThresholdValue(
+          DefoPointRecognitionModel::THRESHOLD_1
+  );
+  int thres2 = recognitionModel_->getThresholdValue(
+          DefoPointRecognitionModel::THRESHOLD_2
+  );
+  int thres3 = recognitionModel_->getThresholdValue(
+          DefoPointRecognitionModel::THRESHOLD_3
+  );
+
+  for (int x=0; x<imageCache_.width(); ++x) {
+    for (int y=0; y<imageCache_.height(); ++y) {
+      int gray = qGray(imageCache_.pixel(x, y));
+
+      // Colour according to brightness
+      if (gray > thres3)
+        imageCache_.setPixel(x, y, 0x0000FF);
+      else if (gray > thres2)
+        imageCache_.setPixel(x, y, 0x00FF00);
+      else if (gray > thres1)
+        imageCache_.setPixel(x, y, 0xFF0000);
+      else
+        imageCache_.setPixel(x, y, 0);
+    }
+  }
+
 }

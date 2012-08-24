@@ -1,14 +1,12 @@
 #include "DefoPointRecognitionModel.h"
 
+const int DefoPointRecognitionModel::THRESHOLD_MINIMUM = 0;
+const int DefoPointRecognitionModel::THRESHOLD_MAXIMUM = 255;
+
 DefoPointRecognitionModel::DefoPointRecognitionModel(QObject *parent) :
     QObject(parent)
   , thresholds_(3)
 {
-
-  DefoConfigReader cfgReader( "defo.cfg" );
-  thresholds_[0] = cfgReader.getValue<int>( "STEP1_THRESHOLD" );
-  thresholds_[1] = cfgReader.getValue<int>( "STEP2_THRESHOLD" );
-  thresholds_[2] = cfgReader.getValue<int>( "STEP3_THRESHOLD" );
 
 //  halfSquareWidth_ = cfgReader.getValue<int>( "HALF_SQUARE_WIDTH" );
 //  blueishnessThreshold_ = cfgReader.getValue<double>( "BLUEISHNESS_THRESHOLD" );
@@ -16,17 +14,55 @@ DefoPointRecognitionModel::DefoPointRecognitionModel(QObject *parent) :
 
 }
 
-int DefoPointRecognitionModel::getThresholdValue(int threshold) const {
-  return thresholds_.at(threshold-1);
+int DefoPointRecognitionModel::getThresholdValue(
+    const Threshold& threshold
+) const {
+  return thresholds_.at(threshold);
 }
 
-void DefoPointRecognitionModel::setThresholdValue(int threshold, int value) {
+void DefoPointRecognitionModel::setThresholdValue(
+    const Threshold& threshold
+  , int value
+) {
 
-  int i = threshold-1;
+  if ( thresholds_.at(threshold) != value) {
 
-  if ( thresholds_.at(i) != value) {
-    thresholds_[i] = value;
-    emit thresholdValueChanged(threshold, value);
+    /*
+      Test if the value makes sense, i.e. if its not smaller than any lower
+      thresholds
+      */
+    thresholds_[threshold] = std::max(
+            value
+          , getThresholdDynamicMininum(threshold)
+    );
+
+    // Fist emit lower threshold so that the image is not refreshed.
+    if ( threshold < THRESHOLD_3 ) {
+      emit dynamicMinimumChanged(
+              static_cast<Threshold>(threshold+1)
+            , thresholds_[threshold]
+      );
+    }
+
+    emit thresholdValueChanged(threshold, thresholds_[threshold]);
+
   }
+
+}
+
+/**
+  Returns the lowest logical value given threshold may take.
+  For thresholds 2 and 3 it does not make sense to have a lower value than the
+  preceding threshold.
+  \return The current value of the preceding threshold or 0 if threshold 1.
+  */
+int DefoPointRecognitionModel::getThresholdDynamicMininum(
+    const Threshold& threshold
+) const {
+
+  if ( threshold > 0 )
+    return getThresholdValue(static_cast<Threshold>(threshold-1));
+  else
+    return THRESHOLD_MINIMUM;
 
 }

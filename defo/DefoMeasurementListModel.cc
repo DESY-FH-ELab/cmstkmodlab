@@ -49,6 +49,9 @@ void DefoMeasurementListModel::addMeasurement(
 ) {
 
   measurementList_.push_back(measurement);
+//  std::cout << "Measurement on "
+//            << measurementList_.back().getTimeStamp().toString().toStdString()
+//            << std::endl;
   emit measurementCountChanged( getMeasurementCount() );
 
   // Select if wanted or first measurement

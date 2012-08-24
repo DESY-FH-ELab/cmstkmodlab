@@ -17,8 +17,12 @@
 
 #include "DefoCameraModel.h"
 #include "DefoCameraOptionComboBox.h"
-#include "DefoImageWidget.h"
+
 #include "DefoMeasurementListModel.h"
+#include "DefoImageWidget.h"
+
+#include "DefoPointRecognitionModel.h"
+#include "DefoThresholdSlider.h"
 
 class TestWindow : public QMainWindow
 {

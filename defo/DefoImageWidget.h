@@ -26,12 +26,10 @@ protected:
   virtual QImage prepareImage(const QImage& image) const = 0;
 
   static const QSize MINIMUM_SIZE;
-  QSize getImageDrawingSize() const;
-
-signals:
+  QSize getImageDrawingSize(const QImage& image) const;
 
 public slots:
-  void selectionChanged();
+  virtual void selectionChanged(int index);
 
 };
 
@@ -63,10 +61,16 @@ public:
   QImage prepareImage(const QImage& image) const;
 
 public slots:
-  void thresholdChanged(int threshold, int value);
+  void thresholdChanged(
+      DefoPointRecognitionModel::Threshold threshold
+    , int value
+  );
+  void selectionChanged(int index);
 
 protected:
   DefoPointRecognitionModel* recognitionModel_;
+  QImage imageCache_;
+  void updateCache();
 
 };
 

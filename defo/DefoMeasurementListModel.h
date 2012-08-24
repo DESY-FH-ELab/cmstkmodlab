@@ -27,7 +27,7 @@ public:
   int getMeasurementCount() const;
   const DefoMeasurement& getMeasurement(int index) const;
 
-  void addMeasurement(const DefoMeasurement& measurement, bool select = false);
+  void addMeasurement(const DefoMeasurement& measurement, bool select = true);
 //  void removeMeasurement(int index);
   // int indexOf(const DefoSurface& surface) const;
 
