@@ -1,14 +1,13 @@
-#ifndef _DEFOSURFACEMODEL_H
-#define _DEFOSURFACEMODEL_H
+#ifndef _DEFOMEASUREMENTLISTMODEL_H
+#define _DEFOMEASUREMENTLISTMODEL_H
 
 #include <map>
 #include <QObject>
 #include <QDateTime>
+#include <QMutex>
+#include <QMutexLocker>
 #include "DefoSurface.h"
 #include "DefoMeasurement.h"
-
-// TODO Place reference_ in measurementList_ and provide a good way to access
-// or change it.
 
 class DefoMeasurementListModel : public QObject
 {
@@ -16,37 +15,37 @@ class DefoMeasurementListModel : public QObject
 
 public:
   explicit DefoMeasurementListModel(QObject *parent = 0);
-//  ~DefoMeasurementListModel();
-
-  // Reference surface
-//  bool hasReferenceMeasurement() const;
-//  const DefoMeasurement* getReferenceMeasurement() const;
-//  void setReferenceMeasurement(DefoMeasurement* reference);
 
   // Deformation measurements
   int getMeasurementCount() const;
-  const DefoMeasurement& getMeasurement(int index) const;
+  const DefoMeasurement* getMeasurement(int index) const;
 
-  void addMeasurement(const DefoMeasurement& measurement, bool select = true);
-//  void removeMeasurement(int index);
-  // int indexOf(const DefoSurface& surface) const;
-
-  const DefoMeasurement& getSelection() const;
-
-public slots:
-  void setSelectionIndex(int index);
+  void addMeasurement(const DefoMeasurement* measurement);
+  const DefoPointCollection* getMeasurementPoints(
+      const DefoMeasurement* measurement
+  );
+  void setMeasurementPoints(
+      const DefoMeasurement* measurement
+    , const DefoPointCollection* points
+  );
+  void appendMeasurementPoints(
+      const DefoMeasurement* measurement
+    , const DefoPointCollection* points
+  );
 
 protected:
-//  DefoMeasurement* reference_;
-//  std::map<QDateTime,DefoSurface> deformedList_;
-  std::vector<DefoMeasurement> measurementList_;
-  int selectedIndex_;
+  std::vector<const DefoMeasurement*> measurementList_;
+
+  typedef std::map<const DefoMeasurement*, const DefoPointCollection*> PointMap;
+  PointMap points_;
+
+  // For thread safety
+  QMutex mutex_;
 
 signals:
-//  void referenceChanged();
   void measurementCountChanged(int count);
-  void selectionChanged(int index);
+  void pointsUpdated(const DefoMeasurement* measurement);
 
 };
 
-#endif // _DEFOSURFACEMODEL_H
+#endif // _DEFOMEASUREMENTLISTMODEL_H

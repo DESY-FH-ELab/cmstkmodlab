@@ -7,6 +7,7 @@
 #include <QSize>
 
 #include "DefoMeasurementListModel.h"
+#include "DefoMeasurementSelectionModel.h"
 #include "DefoPointRecognitionModel.h"
 
 class DefoImageWidget : public QWidget
@@ -14,12 +15,12 @@ class DefoImageWidget : public QWidget
     Q_OBJECT
 public:
   explicit DefoImageWidget(
-      DefoMeasurementListModel* model
+      DefoMeasurementSelectionModel* model
     , QWidget *parent = 0
   );
 
 protected:
-  DefoMeasurementListModel* measurementListModel_;
+  DefoMeasurementSelectionModel* selectionModel_;
   void paintEvent(QPaintEvent *event);
 
   /// Subroutine for paintEvent that prepares the image to be drawn.
@@ -29,7 +30,7 @@ protected:
   QSize getImageDrawingSize(const QImage& image) const;
 
 public slots:
-  virtual void selectionChanged(int index);
+  virtual void selectionChanged(const DefoMeasurement* measurement);
 
 };
 
@@ -39,7 +40,7 @@ class DefoRawImageWidget : public DefoImageWidget {
     Q_OBJECT
 public:
   explicit DefoRawImageWidget(
-      DefoMeasurementListModel* model
+      DefoMeasurementSelectionModel* model
     , QWidget *parent = 0
   );
 
@@ -53,7 +54,7 @@ class DefoImageThresholdsWidget : public DefoImageWidget {
   Q_OBJECT
 public:
   explicit DefoImageThresholdsWidget(
-      DefoMeasurementListModel* listModel
+      DefoMeasurementSelectionModel* selectionModel
     , DefoPointRecognitionModel* recognitionModel
     , QWidget *parent = 0
   );
@@ -65,12 +66,35 @@ public slots:
       DefoPointRecognitionModel::Threshold threshold
     , int value
   );
-  void selectionChanged(int index);
+  void selectionChanged(const DefoMeasurement* measurement);
 
 protected:
   DefoPointRecognitionModel* recognitionModel_;
   QImage imageCache_;
   void updateCache();
+
+};
+
+/*
+  POINT RECOGNITION DISPLAY
+  */
+
+class DefoImagePointsWidget : public DefoRawImageWidget {
+  \
+  Q_OBJECT
+public:
+  explicit DefoImagePointsWidget(
+      DefoMeasurementListModel *listModel
+    , DefoMeasurementSelectionModel *selectionModel
+    , QWidget *parent
+  );
+
+protected:
+  DefoMeasurementListModel* listModel_;
+  void paintEvent(QPaintEvent *event);
+
+protected slots:
+  void pointsUpdated(const DefoMeasurement* measurement);
 
 };
 

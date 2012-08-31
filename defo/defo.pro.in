@@ -37,7 +37,6 @@ HEADERS += DefoSchedule.h \
            DefoRecoSurface.h \
            DefoSurface.h \
 	   DefoSurfacePlot.h \
-	   DefoImageLabel.h \
 	   DefoArea.h \
 	   DefoHistogramView.h \
     TestWindow.h \
@@ -47,16 +46,22 @@ HEADERS += DefoSchedule.h \
     DefoConradWidget.h \
     DefoConradModel.h \
     DefoConradCheckbox.h \
-    DefoSurfaceModel.h \
     DefoImageWidget.h \
     DefoJulaboWidget.h \
     DefoState.h \
     DefoKeithleyWidget.h \
     DefoCameraModel.h \
     DefoTemperatureHistoryModel.h \
-    DefoTemperatureHistoryWidget.h
-
-FORMS += defo.ui
+    DefoTemperatureHistoryWidget.h \
+    DefoCameraOptionComboBox.h \
+    DefoPointRecognitionModel.h \
+    DefoMeasurementListModel.h \
+    DefoThresholdSpinBox.h \
+    DefoCameraWidget.h \
+    DefoMeasurementSelectionModel.h \
+    DefoMeasurementListComboBox.h \
+    DefoPointBin.h \
+    DefoPointIndexer.h
 
 SOURCES += defo.cc \
            DefoSchedule.cc \
@@ -67,7 +72,6 @@ SOURCES += defo.cc \
            DefoRecoSurface.cc \
            DefoSurface.cc \
 	   DefoSurfacePlot.cc \
-           DefoImageLabel.cc \
 	   DefoHistogramView.cc \
     TestWindow.cc \
     DefoMeasurement.cc \
@@ -76,10 +80,18 @@ SOURCES += defo.cc \
     DefoConradWidget.cc \
     DefoConradModel.cc \
     DefoConradCheckbox.cc \
-    DefoSurfaceModel.cc \
     DefoImageWidget.cc \
     DefoJulaboWidget.cc \
     DefoKeithleyWidget.cc \
     DefoCameraModel.cc \
     DefoTemperatureHistoryModel.cc \
-    DefoTemperatureHistoryWidget.cc
+    DefoTemperatureHistoryWidget.cc \
+    DefoCameraOptionComboBox.cc \
+    DefoPointRecognitionModel.cc \
+    DefoMeasurementListModel.cc \
+    DefoThresholdSpinBox.cc \
+    DefoCameraWidget.cc \
+    DefoMeasurementSelectionModel.cc \
+    DefoMeasurementListComboBox.cc \
+    DefoPointBin.cc \
+    DefoPointIndexer.cc

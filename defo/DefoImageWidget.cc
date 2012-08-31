@@ -4,24 +4,24 @@
 const QSize DefoImageWidget::MINIMUM_SIZE = QSize(300,400);
 
 DefoImageWidget::DefoImageWidget(
-    DefoMeasurementListModel* model
+    DefoMeasurementSelectionModel* model
   , QWidget* parent
 ) :
     QWidget(parent)
-  , measurementListModel_(model)
+  , selectionModel_(model)
 {
 
   connect(
-          measurementListModel_
-        , SIGNAL(selectionChanged(int))
+          selectionModel_
+        , SIGNAL(selectionChanged(const DefoMeasurement*))
         , this
-        , SLOT(selectionChanged(int))
+        , SLOT(selectionChanged(const DefoMeasurement*))
   );
   setMinimumSize(MINIMUM_SIZE);
 
 }
 
-void DefoImageWidget::selectionChanged(int index) {
+void DefoImageWidget::selectionChanged(const DefoMeasurement* measurement) {
   update();
 }
 
@@ -30,7 +30,7 @@ void DefoImageWidget::paintEvent(QPaintEvent *event) {
   // TODO repaint only certain rectangle
   QWidget::paintEvent(event);
 
-  if (measurementListModel_->getMeasurementCount() > 0) {
+  if (selectionModel_->getSelection() != NULL) {
 
     QPainter painter(this);
 
@@ -40,8 +40,8 @@ void DefoImageWidget::paintEvent(QPaintEvent *event) {
       */
     painter.save();
 
-    DefoMeasurement measurement = measurementListModel_->getSelection();
-    QImage prepared = prepareImage(measurement.getImage());
+    const DefoMeasurement* measurement = selectionModel_->getSelection();
+    QImage prepared = prepareImage(measurement->getImage());
 
     painter.translate(prepared.height(), 0);
     painter.rotate(90);
@@ -51,40 +51,6 @@ void DefoImageWidget::paintEvent(QPaintEvent *event) {
 
     // Restore own state.
     painter.restore();
-
-    // POINT DRAWING
-
-//    DefoPointCollection points = measurement->getPoints();
-//    QPen pen( Qt::NoBrush, 1 );
-//    double scaling = ((double) scaledImage.width()) / ((double) image.width());
-//    const int width = 8;
-
-//    for ( DefoPointCollection::iterator it = points.begin();
-//          it < points.end();
-//          ++it
-//    ) {
-//      QColor c = it->getColor();
-//      c.setHsv( c.hue(), 255, 255 );
-//      pen.setColor( c );
-
-//      int x = round( it->getX() * scaling - width/2 );
-//      int y = round( it->getY() * scaling - width/2 );
-
-//      // Draw point
-////      painter.setBrush(Qt::SolidPattern);
-//      painter.setPen( pen );
-//      painter.drawEllipse(
-//              static_cast<int>( x )
-//            , static_cast<int>( y )
-//            , width
-//            , width
-//      );
-
-      // Draw square
-//      pen.setBrush( Qt::NoBrush );
-//      painter.setPen( pen );
-//      painter.drawRect( x-5, y-5, 10, 10 );
-//    }
 
   }
 }
@@ -109,26 +75,23 @@ QSize DefoImageWidget::getImageDrawingSize(const QImage& image) const {
 
 /* RAW IMAGE DISPLAY */
 DefoRawImageWidget::DefoRawImageWidget(
-    DefoMeasurementListModel *model
+    DefoMeasurementSelectionModel *model
   , QWidget *parent
 ) :
     DefoImageWidget(model, parent)
 {}
 
 QImage DefoRawImageWidget::prepareImage(const QImage& image) const {
-
-  // TODO Maximal image size and centering
   return image.scaled(getImageDrawingSize(image), Qt::KeepAspectRatio);
-
 }
 
 /* IMAGE THRESHOLDS VISUALISATION */
 DefoImageThresholdsWidget::DefoImageThresholdsWidget(
-    DefoMeasurementListModel *listModel
+    DefoMeasurementSelectionModel *selectionModel
   , DefoPointRecognitionModel *recognitionModel
   , QWidget *parent
 ) :
-    DefoImageWidget(listModel, parent)
+    DefoImageWidget(selectionModel, parent)
   , recognitionModel_(recognitionModel)
 {
   connect(
@@ -142,10 +105,13 @@ DefoImageThresholdsWidget::DefoImageThresholdsWidget(
 QImage DefoImageThresholdsWidget::prepareImage(const QImage& image) const {
 
   // Used cache image instead of rescanning the picture
-  return imageCache_.scaled(
-          getImageDrawingSize(imageCache_)
-        , Qt::KeepAspectRatio
-  );
+  if ( !imageCache_.isNull() )
+    return imageCache_.scaled(
+            getImageDrawingSize(imageCache_)
+          , Qt::KeepAspectRatio
+    );
+  else
+    return QImage();
 
 }
 
@@ -158,39 +124,137 @@ void DefoImageThresholdsWidget::thresholdChanged(
   update();
 }
 
-void DefoImageThresholdsWidget::selectionChanged(int index) {
+void DefoImageThresholdsWidget::selectionChanged(
+    const DefoMeasurement* measurement
+) {
   updateCache();
-  DefoImageWidget::selectionChanged(index);
+  DefoImageWidget::selectionChanged(measurement);
 }
 
 /// Updates the current image cache.
 void DefoImageThresholdsWidget::updateCache() {
 
-  imageCache_ = QImage(measurementListModel_->getSelection().getImage());
-  int thres1 = recognitionModel_->getThresholdValue(
-          DefoPointRecognitionModel::THRESHOLD_1
-  );
-  int thres2 = recognitionModel_->getThresholdValue(
-          DefoPointRecognitionModel::THRESHOLD_2
-  );
-  int thres3 = recognitionModel_->getThresholdValue(
-          DefoPointRecognitionModel::THRESHOLD_3
-  );
+  const DefoMeasurement* measurement = selectionModel_->getSelection();
 
-  for (int x=0; x<imageCache_.width(); ++x) {
-    for (int y=0; y<imageCache_.height(); ++y) {
-      int gray = qGray(imageCache_.pixel(x, y));
+  if (measurement != NULL) {
+    imageCache_ = QImage(selectionModel_->getSelection()->getImage());
+    int thres1 = recognitionModel_->getThresholdValue(
+            DefoPointRecognitionModel::THRESHOLD_1
+    );
+    int thres2 = recognitionModel_->getThresholdValue(
+            DefoPointRecognitionModel::THRESHOLD_2
+    );
+    int thres3 = recognitionModel_->getThresholdValue(
+            DefoPointRecognitionModel::THRESHOLD_3
+    );
 
-      // Colour according to brightness
-      if (gray > thres3)
-        imageCache_.setPixel(x, y, 0x0000FF);
-      else if (gray > thres2)
-        imageCache_.setPixel(x, y, 0x00FF00);
-      else if (gray > thres1)
-        imageCache_.setPixel(x, y, 0xFF0000);
-      else
-        imageCache_.setPixel(x, y, 0);
+    for (int x=0; x<imageCache_.width(); ++x) {
+      for (int y=0; y<imageCache_.height(); ++y) {
+        int gray = qGray(imageCache_.pixel(x, y));
+
+        // Colour according to brightness
+        if (gray > thres3)
+          imageCache_.setPixel(x, y, 0x0000FF);
+        else if (gray > thres2)
+          imageCache_.setPixel(x, y, 0x00FF00);
+        else if (gray > thres1)
+          imageCache_.setPixel(x, y, 0xFF0000);
+        else
+          imageCache_.setPixel(x, y, 0);
+      }
     }
+  }
+  else
+    imageCache_ = QImage();
+
+}
+
+
+/* IMAGE POINT RECOGNITION DISPLAY */
+DefoImagePointsWidget::DefoImagePointsWidget(
+    DefoMeasurementListModel *listModel
+  , DefoMeasurementSelectionModel *selectionModel
+  , QWidget *parent
+) :
+    DefoRawImageWidget(selectionModel, parent)
+  , listModel_(listModel)
+{
+  connect(
+        listModel_
+      , SIGNAL(pointsUpdated(const DefoMeasurement*))
+      , SLOT(pointsUpdated(const DefoMeasurement*))
+  );
+}
+
+void DefoImagePointsWidget::pointsUpdated(const DefoMeasurement *measurement) {
+  update();
+}
+
+void DefoImagePointsWidget::paintEvent(QPaintEvent *event) {
+
+  DefoRawImageWidget::paintEvent(event);
+
+  const DefoMeasurement* measurement = selectionModel_->getSelection();
+
+  if ( measurement != NULL
+    && listModel_->getMeasurementPoints(measurement) != NULL
+    && listModel_->getMeasurementPoints(measurement)->size() > 0
+  ) {
+
+    const DefoPointCollection* points =
+        listModel_->getMeasurementPoints(measurement);
+
+    QPainter painter(this);
+
+    painter.save();
+
+    QImage image = selectionModel_->getSelection()->getImage();
+    // Get bounding box for drawing area
+    QSize drawingSize = getImageDrawingSize(image);
+    // Find rescaled image size
+    double aspectRatio = ((double) image.width()) / image.height();
+
+    if ( aspectRatio*drawingSize.height() > drawingSize.width() )
+      drawingSize.setHeight( drawingSize.width()/aspectRatio );
+    else
+      drawingSize.setWidth( drawingSize.height()*aspectRatio );
+
+    painter.translate(drawingSize.height(), 0);
+    painter.rotate(90);
+
+
+    QPen pen( Qt::NoBrush, 1 );
+
+    double scaling = ((double) drawingSize.height()) / ((double) image.height());
+    const int width = 8;
+
+    for ( DefoPointCollection::const_iterator it = points->begin()
+        ; it < points->end()
+        ; ++it
+    ) {
+
+      QColor c = it->getColor();
+      c.setHsv( c.hue(), 255, 255 );
+      pen.setColor( c );
+
+      int x = round( it->getX() * scaling - width/2. );
+      int y = round( it->getY() * scaling - width/2. );
+
+//      Draw point
+      painter.setPen( pen );
+//      painter.drawEllipse(x, y, width, width);
+
+//       Draw square
+//      pen.setBrush( Qt::NoBrush );
+//      painter.setPen( pen );
+      painter.drawRect( x, y, width, width );
+
+    }
+
+    painter.restore();
+
   }
 
 }
+
+

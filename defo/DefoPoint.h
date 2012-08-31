@@ -37,6 +37,7 @@ class DefoPoint {
   void setPosition( double x, double y ) { x_ = x; y_ = y; }
   void setSlope( double slope ) { slope_ = slope; }
   void setHeight( double height ) { height_ = height; }
+  // TODO setIndex(Axis, int)
   void setIndex( std::pair<int,int>& index ) { index_ = index; isIndexed_ = true; }
   void setIndexX( int index ) { index_.first  = index; isIndexed_ = true; }
   void setIndexY( int index ) { index_.second = index; isIndexed_ = true; }

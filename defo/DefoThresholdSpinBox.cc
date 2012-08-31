@@ -1,17 +1,17 @@
-#include "DefoThresholdSlider.h"
+#include "DefoThresholdSpinBox.h"
 
-DefoThresholdSlider::DefoThresholdSlider(
+DefoThresholdSpinBox::DefoThresholdSpinBox(
     DefoPointRecognitionModel* model
   , const DefoPointRecognitionModel::Threshold& threshold
   , QWidget *parent
 ) :
-    QSlider(Qt::Horizontal, parent)
+    QSpinBox(parent)
   , model_(model)
   , threshold_(threshold)
 {
 
   // Don't update while changing, calculations are to lengthy for this
-  setTracking(false);
+  setKeyboardTracking(false);
 
   int min = DefoPointRecognitionModel::THRESHOLD_MINIMUM;
   int max = DefoPointRecognitionModel::THRESHOLD_MAXIMUM;
@@ -37,18 +37,18 @@ DefoThresholdSlider::DefoThresholdSlider(
         this
       , SIGNAL(valueChanged(int))
       , this
-      , SLOT(sliderValueChanged(int))
+      , SLOT(spinnerValueChanged(int))
   );
 
   setValue(model_->getThresholdValue(threshold_));
 
 }
 
-void DefoThresholdSlider::sliderValueChanged(int value) {
+void DefoThresholdSpinBox::spinnerValueChanged(int value) {
   model_->setThresholdValue(threshold_, value);
 }
 
-void DefoThresholdSlider::modelValueChanged(
+void DefoThresholdSpinBox::modelValueChanged(
     DefoPointRecognitionModel::Threshold threshold
   , int value
 ) {
@@ -56,7 +56,7 @@ void DefoThresholdSlider::modelValueChanged(
     setValue(value);
 }
 
-void DefoThresholdSlider::dynamicMinimumChanged(
+void DefoThresholdSpinBox::dynamicMinimumChanged(
     DefoPointRecognitionModel::Threshold threshold
   , int minimum
 ) {

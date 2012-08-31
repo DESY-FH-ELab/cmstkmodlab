@@ -70,10 +70,18 @@ bool CameraComHandler::initialize() {
 
   // Initialize camera with above options
   int error = gp_camera_init(camera_, context_);
+  bool success;
   if ( error < GP_OK ) {
     gp_camera_exit(camera_, context_);
     gp_camera_free(camera_);
     camera_ = NULL;
+    success = false;
+  }
+  else {
+    // Test if really connected (by asking for information)
+    CameraText text;
+    error = gp_camera_get_summary(camera_, &text, context_);
+    success = (error == GP_OK);
   }
 
   //  if (camera_ != NULL) {
@@ -83,7 +91,7 @@ bool CameraComHandler::initialize() {
   //              << std::endl;
   //  }
 
-  return (error == GP_OK);
+  return success;
 
 }
 

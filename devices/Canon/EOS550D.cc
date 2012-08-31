@@ -1,5 +1,4 @@
 
-#include <cstdio>
 #include "EOS550D.h"
 
 // DEVICE CONTROLLER CLASS
@@ -9,6 +8,7 @@ EOS550D::EOS550D(const char* port) :
   , handler_(NULL)
   , optionNames_(4) //create room for the total number of support options
   , optionLists_(4)
+  , tempPictureFiles_()
 {
 
   // Save names for supported options
@@ -22,7 +22,19 @@ EOS550D::EOS550D(const char* port) :
 }
 
 EOS550D::~EOS550D() {
+
+  // Close connection to device
   delete handler_;
+
+  // Clear all temporary files
+  for ( std::deque<std::string>::const_iterator it = tempPictureFiles_.begin()
+      ; it < tempPictureFiles_.end()
+      ; ++it
+  ) {
+    // TODO log success/failure
+    remove( it->c_str() );
+  }
+
 }
 
 bool EOS550D::initialize() {
@@ -73,7 +85,7 @@ bool EOS550D::writeOption(const VEOS550D::Option &option, int value) {
 std::string EOS550D::acquirePhoto() {
 
   // Create temporary file
-  char tempFileName[] = "/tmp/defo-XXXXXX";
+  char tempFileName[] = "/tmp/canon-XXXXXX";
   int filedescriptor = mkstemp(tempFileName);
 
   handler_->acquireAndDownloadPicture(filedescriptor);
@@ -81,6 +93,9 @@ std::string EOS550D::acquirePhoto() {
   close(filedescriptor);
 
   std::string fnCopy(tempFileName);
+  tempPictureFiles_.push_back(fnCopy);
+//  std::cout << "Created " << fnCopy << std::endl;
+
   return fnCopy;
 
 }

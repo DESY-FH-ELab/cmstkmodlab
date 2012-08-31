@@ -6,55 +6,58 @@
 #include <QColor>
 
 //#include "DefoSurface.h"
-//#include "DefoSquare.h"
-//#include "DefoPoint.h"
+#include "DefoSquare.h"
+#include "DefoPoint.h"
 
 class DefoMeasurement {
 public:
-  DefoMeasurement(const QImage& image);
+  DefoMeasurement(const QString& imageLocation);
 
   const QDateTime& getTimeStamp() const;
-  const QImage& getImage() const;
+  QImage getImage() const;
 
-
-
-//  const DefoSurface& getSurface() const;
-//  const DefoPointCollection& getPoints() const;
-//  void findPoints(const QRect* area);
+  const DefoPointCollection* findPoints(
+      const QRect* searchArea
+    , int step1Threshold
+    , int step2Threshold
+    , int step3Threshold
+    , int halfSquareWidth
+  ) const;
 
 protected:
   /// (Local) date and time of measurement.
-  QDateTime timestamp_;
+  const QDateTime timestamp_;
   /// Image of the actual 'raw' measurement.
-  QImage image_;
+  const QString imageLocation_;
   /// Information about the temperature (gradient)
   // TODO implement TemperatureSensorStatus
   // TODO implement ChillerStatus
-  // TODO implement CameraStatus
+  // TODO implement CameraStatus: EXIF data in picture file
   // TODO implement DevicePowerStatus or LedPanelPowerStatus
 
   /*
-    ANALYSIS DEPENDENT INFORMATION. DOES NOT BELONG IN 'MEASUREMENT' CLASS.
+    Analysis depentent information, does not belong in 'measurement' class.
+    Processing can happen here, but storing it is not the purpose of this
+    object.
     */
-  /// Procesed information about the surface in the image.
-//  DefoSurface surface_;
+  DefoPoint getCenterOfGravity(
+      const QImage& image
+    , const QRect &area
+    , int threshold
+  ) const;
 
-  /// Collection of the recognised points in the image.
-//  DefoPointCollection points_;
-//  void determinePointColors();
+  void determinePointColors(
+      const QImage& image
+    , DefoPointCollection* points
+    , int halfSquareWidth
+    , int threshold
+  ) const;
 
-//  const QColor getAverageColor(const QRect& area) const;
-//  const DefoPoint getCenterOfGravity(const QRect& area) const;
-
-
-private:
-//  int step1Threshold_;
-//  int step2Threshold_;
-//  int step3Threshold_;
-//  unsigned int spacingAssumed_;
-//  unsigned int halfSquareWidth_;
-//  double blueishnessThreshold_;
-//  unsigned int debugLevel_;
+  const QColor getAverageColor(
+      const QImage& image
+    , const QRect& area
+    , int threshold
+  ) const;
 
 };
 

@@ -120,10 +120,9 @@ void DefoCameraModel::setDeviceState(State state) {
 /// Instruct the camera to take a picture and cache the file in a QImage.
 void DefoCameraModel::acquirePicture() {
 
-    std::string location = controller_->acquirePhoto();
-
-    image_ = QImage(QString(location.c_str()));
-    emit newImage(image_);
+    location_ = controller_->acquirePhoto().c_str();
+    image_ = QImage(location_);
+    emit newImage(location_);
 
 }
 
@@ -135,4 +134,8 @@ const QImage & DefoCameraModel::getLastPicture() const {
 
 int DefoCameraModel::getOptionValue(const Option &option) const {
   return controller_->readOption(static_cast<EOS550D::Option>(option));
+}
+
+const QString & DefoCameraModel::getLastPictureLocation() const {
+  return location_;
 }

@@ -1,14 +1,14 @@
-#ifndef DEFOTHRESHOLDSLIDER_H
-#define DEFOTHRESHOLDSLIDER_H
+#ifndef DEFOTHRESHOLDSPINBOX_H
+#define DEFOTHRESHOLDSPINBOX_H
 
-#include <QSlider>
+#include <QSpinBox>
 #include "DefoPointRecognitionModel.h"
 
-class DefoThresholdSlider : public QSlider
+class DefoThresholdSpinBox : public QSpinBox
 {
     Q_OBJECT
 public:
-  explicit DefoThresholdSlider(
+  explicit DefoThresholdSpinBox(
       DefoPointRecognitionModel* model
     , const DefoPointRecognitionModel::Threshold& threshold
     , QWidget *parent = 0
@@ -19,7 +19,7 @@ protected:
   const DefoPointRecognitionModel::Threshold threshold_;
 
 protected slots:
-  void sliderValueChanged(int value);
+  void spinnerValueChanged(int value);
   void modelValueChanged(
       DefoPointRecognitionModel::Threshold threshold
     , int value
@@ -31,4 +31,4 @@ protected slots:
 
 };
 
-#endif // DEFOTHRESHOLDSLIDER_H
+#endif // DEFOTHRESHOLDSPINBOX_H

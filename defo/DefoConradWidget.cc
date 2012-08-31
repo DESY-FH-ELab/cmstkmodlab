@@ -18,7 +18,7 @@ DefoConradWidget::DefoConradWidget(DefoConradModel* model, QWidget *parent) :
         new DefoConradSwitchCheckbox(
               model
             , static_cast<DefoConradModel::DeviceSwitch>(i)
-            , QString("Enable panel ") + QString::number(i+1)
+            , QString("Power panel ") + QString::number(i+1)
             , this
         )
     );
@@ -27,7 +27,7 @@ DefoConradWidget::DefoConradWidget(DefoConradModel* model, QWidget *parent) :
       new DefoConradSwitchCheckbox(
             model
           , DefoConradModel::CALIBRATION_LEDS
-          , "Enable calibration leds"
+          , "Power calibration leds"
           , this
       )
   );
@@ -36,7 +36,7 @@ DefoConradWidget::DefoConradWidget(DefoConradModel* model, QWidget *parent) :
       new DefoConradSwitchCheckbox(
             model
           , DefoConradModel::CAMERA
-          , "Enable camera"
+          , "Power camera"
           , this
       )
   );

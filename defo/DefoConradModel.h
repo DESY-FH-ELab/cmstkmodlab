@@ -7,13 +7,13 @@
 
 #include "DefoState.h"
 
-#ifdef USE_FAKEIO
-#include "devices/Conrad/ConradControllerFake.h"
-typedef ConradControllerFake ConradController_t;
-#else
+//#ifdef USE_FAKEIO
+//#include "devices/Conrad/ConradControllerFake.h"
+//typedef ConradControllerFake ConradController_t;
+//#else
 #include "devices/Conrad/ConradController.h"
 typedef ConradController ConradController_t;
-#endif
+//#endif
 
 
 /*
@@ -22,7 +22,7 @@ typedef ConradController ConradController_t;
   */
 
 /**
-  Model for controlling the Conrad switch.
+  \brief Model for controlling the Conrad switch.
   This model can be used to set and query the state of the switch. The
   response of the device will not be instantaneous and as such device control
   should be handled in a separate thread. Device states INITIALIZING and

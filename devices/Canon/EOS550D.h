@@ -2,8 +2,9 @@
 #define _EOS550D_H
 
 #include <string>
-#include <map>
+#include <deque>
 #include <stdlib.h>
+#include <stdio.h>
 
 #include "CameraComHandler.h"
 #include "VEOS550D.h"
@@ -31,6 +32,8 @@ protected:
 
   std::vector<std::string> optionNames_;
   std::vector<OptionList> optionLists_;
+
+  std::deque<std::string> tempPictureFiles_;
 
 };
 

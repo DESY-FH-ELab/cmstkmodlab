@@ -6,9 +6,9 @@ const int DefoPointRecognitionModel::THRESHOLD_MAXIMUM = 255;
 DefoPointRecognitionModel::DefoPointRecognitionModel(QObject *parent) :
     QObject(parent)
   , thresholds_(3)
+  , halfSquareWidth_(0)
 {
 
-//  halfSquareWidth_ = cfgReader.getValue<int>( "HALF_SQUARE_WIDTH" );
 //  blueishnessThreshold_ = cfgReader.getValue<double>( "BLUEISHNESS_THRESHOLD" );
   //  debugLevel_ = cfgReader.getValue<unsigned int>( "DEBUG_LEVEL" );
 
@@ -64,5 +64,18 @@ int DefoPointRecognitionModel::getThresholdDynamicMininum(
     return getThresholdValue(static_cast<Threshold>(threshold-1));
   else
     return THRESHOLD_MINIMUM;
+
+}
+
+int DefoPointRecognitionModel::getHalfSquareWidth() const {
+  return halfSquareWidth_;
+}
+
+void DefoPointRecognitionModel::setHalfSquareWidth(int value) {
+
+  if (halfSquareWidth_ != value) {
+    if (value > 0) halfSquareWidth_ = value;
+    emit halfSquareWidthChanged(halfSquareWidth_);
+  }
 
 }

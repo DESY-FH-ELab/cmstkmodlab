@@ -3,6 +3,7 @@
 
 #include <QObject>
 #include <QImage>
+#include <QFile>
 
 #include <map>
 
@@ -10,6 +11,7 @@
 #include "../devices/Canon/EOS550D.h"
 typedef EOS550D EOS550D_t;
 
+#include <QImage>
 #include "DefoState.h"
 
 class DefoCameraModel :
@@ -34,6 +36,8 @@ public:
   int getOptionValue( const Option& option) const;
 
   const QImage& getLastPicture() const;
+  const QString& getLastPictureLocation() const;
+  // TODO getLastPictureExif()
 
 public slots:
   virtual void setDeviceEnabled( bool enabled );
@@ -48,12 +52,13 @@ protected:
   void resetParameterCache();
 
   // image cache
+  QString location_;
   QImage image_;
 
 signals:
   void deviceStateChanged(State newState);
   void deviceOptionChanged(DefoCameraModel::Option option, int newValue);
-  void newImage( QImage image );
+  void newImage(QString location);
 
 };
 

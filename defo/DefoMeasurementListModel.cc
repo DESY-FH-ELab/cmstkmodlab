@@ -2,40 +2,7 @@
 
 DefoMeasurementListModel::DefoMeasurementListModel(QObject *parent) :
     QObject(parent)
-  , selectedIndex_(-1)
 {}
-
-//DefoMeasurementListModel::~DefoMeasurementListModel() {
-////  delete reference_;
-//}
-
-///**
-//  * Returns whether a reference measurement is currently set.
-//  */
-//bool DefoMeasurementListModel::hasReferenceMeasurement() const {
-//  return reference_ != NULL;
-//}
-
-///**
-//  * Returns a reference to the current reference surface or NULL
-//  * if none is set.
-//  */
-//const DefoMeasurement * DefoMeasurementListModel::getReferenceMeasurement() const {
-//  return reference_;
-//}
-
-///**
-//  * Sets the current reference measurement.
-//  */
-//void DefoMeasurementListModel::setReferenceMeasurement(DefoMeasurement *reference) {
-////  delete reference_;
-//  reference_ = reference;
-
-////  QString time = reference_->getTimeStamp().toString("dd.MM.yyyy");
-////  std::cout << time.toStdString() << std::endl;
-
-//  emit referenceChanged();
-//}
 
 /**
   \brief Adds a deformation measurement to the list.
@@ -44,19 +11,19 @@ DefoMeasurementListModel::DefoMeasurementListModel(QObject *parent) :
   selection.
   */
 void DefoMeasurementListModel::addMeasurement(
-    const DefoMeasurement &measurement
-  , bool select
-) {
+    const DefoMeasurement* measurement
+) {  
 
+  QMutexLocker locker(&mutex_);
+
+  // Store measurement* in list
   measurementList_.push_back(measurement);
+  // Set initial point collection to NULL, i.e. non existant
+  points_[measurement] = NULL;
 //  std::cout << "Measurement on "
 //            << measurementList_.back().getTimeStamp().toString().toStdString()
 //            << std::endl;
   emit measurementCountChanged( getMeasurementCount() );
-
-  // Select if wanted or first measurement
-  if (select || getMeasurementCount() == 0)
-    setSelectionIndex(measurementList_.size() - 1);
 
 }
 
@@ -67,35 +34,75 @@ int DefoMeasurementListModel::getMeasurementCount() const {
 }
 
 /// Returns measurement at index i.
-const DefoMeasurement& DefoMeasurementListModel::getMeasurement(int i) const {
+const DefoMeasurement* DefoMeasurementListModel::getMeasurement(int i) const {
   return measurementList_.at(i);
 }
 
 /**
-  Sets the currently selected measurement.
-  \arg index Index of the measurement to be selected.
+  Returns the point collection associated with the measurement, or NULL if
+  the image has not been scanned yet (or the measurement is not in the list).
   */
-void DefoMeasurementListModel::setSelectionIndex(int index) {
+const DefoPointCollection* DefoMeasurementListModel::getMeasurementPoints(
+    const DefoMeasurement* measurement
+) {
 
-  if ( index != selectedIndex_ ) {
+  PointMap::const_iterator it = points_.find(measurement);
 
-    // Only store if the new value makes sense.
-    if ( index > -1 && index < getMeasurementCount() )
-      selectedIndex_ = index;
+  if ( it == points_.end() )
+    return NULL;
+  else
+    return it->second;
 
-    emit selectionChanged(selectedIndex_);
+}
+
+
+/**
+  Sets the current point collection for the given measurement.
+  If the measurement is not already present, this will add the measurement to
+  the list!
+  If adding points to the current set, please use appendMeasurementPoints,
+  which makes the whole procedure thread safe.
+  */
+void DefoMeasurementListModel::setMeasurementPoints(
+    const DefoMeasurement *measurement
+  , const DefoPointCollection *points
+) {
+
+  if ( points_.find(measurement) == points_.end() )
+    addMeasurement(measurement);
+
+  points_[measurement] = points;
+  emit pointsUpdated(measurement);
+
+}
+
+/**
+  Append the collection of points to the current collection of points.
+  This is equivalent to calling getMeasurementPoints, adding points to a copy
+  of that collection and then calling setMeasurementPoints with the extended
+  copy, but this function makes the whole proces thread safe.
+  */
+void DefoMeasurementListModel::appendMeasurementPoints(
+    const DefoMeasurement *measurement
+  , const DefoPointCollection *points
+) {
+
+  QMutexLocker locker(&mutex_);
+
+  if ( points != NULL ) {
+
+    const DefoPointCollection* currentList = getMeasurementPoints(measurement);
+    if ( currentList != NULL ) {
+      // Copy the current point collection
+      DefoPointCollection* newPoints = new DefoPointCollection(*currentList);
+      // Insert given points
+      newPoints->insert(newPoints->end(), points->begin(), points->end());
+      // Set new points
+      setMeasurementPoints(measurement, newPoints);
+    }
+    else // Currently empty, so just set list
+      setMeasurementPoints(measurement, points);
+
   }
 
 }
-
-const DefoMeasurement& DefoMeasurementListModel::getSelection() const {
-  return measurementList_.at(selectedIndex_);
-}
-
-///// Removes surface at index i.
-//void DefoMeasurementListModel::removeMeasurement(int i) {
-////  if (index < getSurfaceCount()) {
-////    deformedList_.erase(deformedList_.begin() + i);
-////    emit measurementCountChanged();
-//  //  }
-//}

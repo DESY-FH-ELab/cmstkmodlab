@@ -22,11 +22,24 @@ public:
   int getThresholdValue(const Threshold& threshold) const;
   int getThresholdDynamicMininum(const Threshold& threshold) const;
 
+  // Half square width functions
+  int getHalfSquareWidth() const;
+
+  // Point color functions
+//  int getReferencePointHue() const;
+//  int getReferencePointHueWidth() const;
+
 public slots:
   void setThresholdValue(const Threshold& threshold, int value);
+  void setHalfSquareWidth(int value);
+//  void setReferencePointHue(int value);
+//  void setReferencePointHueWidth(int value);
 
 protected:
   std::vector<int> thresholds_;
+  int halfSquareWidth_;
+//  int referencePointHue_;
+//  int referencePointHueWidth_;
 
 signals:
   void thresholdValueChanged(
@@ -37,6 +50,8 @@ signals:
       DefoPointRecognitionModel::Threshold threshold
     , int value
   );
+  void halfSquareWidthChanged(int value);
+//  void referencePointHueChanged(int value);
 
 };
 
