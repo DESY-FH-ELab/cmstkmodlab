@@ -1,63 +1,27 @@
 #include "DefoConradModel.h"
-#include <QFuture>
 
 DefoConradModel::DefoConradModel(QObject *parent) :
     QObject(parent)
+  , DefoAbstractDeviceModel()
+  , switchStates_(8, OFF)
 {
-
-  controller_ = NULL;
-
-  state_ = OFF;
-  switchStates_.assign( 8, OFF );
 
   setDeviceEnabled(true);
 
   // TODO Implement a timer to periodically check the device status.
 
-  // TODO initialise switch and devices
-
 }
 
-/**
-  Shuts down the switch and connected devices and cleans up.
-  */
+/// Shuts down all the devices before closing down.
 DefoConradModel::~DefoConradModel() {
-
   close();
-  delete controller_;
-
 }
 
 /**
   Will try to enable communication with the switch.
   */
 void DefoConradModel::setDeviceEnabled(bool enabled) {
-
-   // To be enabled and off
-  if ( enabled && getDeviceState() == OFF )
-    initialize();
-  // To be disabled and on
-  else if ( !enabled && getDeviceState() == READY )
-    close();
-
-  /*
-   If in 'busy state', a signal for OFF/READY will follow soon, reverting
-   any changes ignored by only checking for steady states (i.e. OFF and READY).
-   */
-
-}
-
-/**
-  Renews the current ConradController* for the given port.
-  */
-void DefoConradModel::renewController( const QString& port ) {
-
-  if ( controller_ ) {
-    delete controller_;
-  }
-
-  controller_ = new ConradController_t( port.toStdString().c_str() );
-
+  DefoAbstractDeviceModel::setDeviceEnabled(enabled);
 }
 
 /**
@@ -101,7 +65,13 @@ void DefoConradModel::initialize( void ) {
     std::vector<bool> status = controller_->queryStatus();
 
     // Announce new states
-    if( status.size() != 8 ) {
+    if( status.size() == 8 ) {
+
+      setAllSwitchesReady( status );
+      setDeviceState( READY );
+
+    }
+    else {
 
       // would be 0 if query failed (according to ConradController::queryStatus)
       // This means device malfunction, so set state accordingly
@@ -112,12 +82,6 @@ void DefoConradModel::initialize( void ) {
 
       std::cerr << " [DefoConradModel::initialize] "
                 << "** ERROR: received malformed state vector." << std::endl;
-
-    }
-    else {
-
-      setDeviceState( READY );
-      setAllSwitchesReady( status );
 
     }
 
@@ -157,11 +121,10 @@ void DefoConradModel::close() {
 
     // Disable all connected devices
     for ( int i = 0; i < 8; ++i )
-      setSwitchEnabled( static_cast<DeviceSwitch>(i), false );
+      setSwitchEnabledRaw( static_cast<DeviceSwitch>(i), false );
 
     // Disable switch
-    delete controller_;
-    controller_ = NULL; // Essential step to prevent segfaults!
+    destroyController();
 
     setDeviceState( OFF );
 
@@ -169,28 +132,15 @@ void DefoConradModel::close() {
 
 }
 
-
-/**
-  Returns the current state of the switch. If control of the Conrad relais
-  switch is handled in a separate thread, the GUI can stay responsive and
-  display the correct state of the device.
-  */
-const /*DefoConradModel::*/State& DefoConradModel::getDeviceState() const {
-
-  return state_;
-
-}
-
-
 /**
   Sets the current state of the switch and emits a switchStateChanged upon
   change.
   */
-void DefoConradModel::setDeviceState( /*DefoConradModel::*/State state ) {
+void DefoConradModel::setDeviceState(State state) {
 
   if ( state_ != state ) {
     state_ = state;
-    emit deviceStateChanged(state);
+    emit deviceStateChanged(state_);
   }
 
 }
@@ -204,57 +154,31 @@ void DefoConradModel::setSwitchEnabled(
   , bool enabled
 ) {
 
-  // Enable switch if necessary
-  if ( getDeviceState() == OFF && enabled && getSwitchState(device) != OFF )
-    initialize();
-
-  // Continue if possible
   // TODO Upon failure, check if the switch is still reachable
-  if ( getDeviceState() == READY || getDeviceState() == CLOSING ) {
 
-    if ( enabled && getSwitchState(device) == OFF ) {
+  // Check if the switch communication is ready
+  if ( getDeviceState() == READY )
+    setSwitchEnabledRaw(device, enabled);
+  else
+    setSwitchState(device, OFF);
 
-      setSwitchState( device, INITIALIZING );
-      // Add 1 to device because of shift required by setChannel
-      bool success = controller_->setChannel( device + 1, enabled );
-      setSwitchState( device, success ? READY : OFF );
-
-    }
-    else if ( !enabled && getSwitchState(device) == READY ) {
-
-      setSwitchState( device, CLOSING );
-      // Add 1 to device because of shift required by setChannel
-      bool success = controller_->setChannel( device + 1, enabled );
-      setSwitchState( device, success ? OFF : READY );
-
-    }
-
-    // TODO Busy state does not correspond to new state
-
-  }
 
   // TODO Notify of malfunction
 
 }
 
 
-/**
-  Returns whether the requested device is currently enabled.
-  */
-const /*DefoConradModel::*/State& DefoConradModel::getSwitchState(
+/// Returns whether the requested device is currently enabled.
+const State& DefoConradModel::getSwitchState(
     DefoConradModel::DeviceSwitch device
 ) const {
-
   return switchStates_.at( device );
-
 }
 
-/**
-  Sets the current state for a device and emits a signal if necessary.
-  */
+/// Sets the current state for a device and emits a signal if necessary.
 void DefoConradModel::setSwitchState(
-      DefoConradModel::DeviceSwitch device
-    , /*DefoConradModel::*/State state
+    DefoConradModel::DeviceSwitch device
+  , State state
 ) {
 
   if ( switchStates_.at( device ) != state ) {
@@ -275,6 +199,28 @@ void DefoConradModel::setAllSwitchesReady( const std::vector<bool>& ready ) {
     // Set device state according to queried state
     device = static_cast<DeviceSwitch>(i);
     setSwitchState( device, ready.at(device) ? READY : OFF );
+  }
+
+}
+
+/// Sets the switch state without checking the device state
+void DefoConradModel::setSwitchEnabledRaw(DeviceSwitch device, bool enabled) {
+
+  if ( enabled && getSwitchState(device) == OFF ) {
+
+    setSwitchState( device, INITIALIZING );
+    // Add 1 to device because of shift required by setChannel
+    bool success = controller_->setChannel( device + 1, enabled );
+    setSwitchState( device, success ? READY : OFF );
+
+  }
+  else if ( !enabled && getSwitchState(device) == READY ) {
+
+    setSwitchState( device, CLOSING );
+    // Add 1 to device because of shift required by setChannel
+    bool success = controller_->setChannel( device + 1, enabled );
+    setSwitchState( device, success ? OFF : READY );
+
   }
 
 }

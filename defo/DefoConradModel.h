@@ -32,9 +32,11 @@ typedef ConradController ConradController_t;
   operation will be ignored (e.g. disable switch while switch state is
   INITIALIZING).
   */
-class DefoConradModel : public QObject
+class DefoConradModel :
+    public QObject
+  , public DefoAbstractDeviceModel<ConradController_t>
 {
-    Q_OBJECT
+  Q_OBJECT
 
 public:
   /**
@@ -57,40 +59,32 @@ public:
   explicit DefoConradModel(QObject *parent = 0);
   ~DefoConradModel();
 
-  // Methods for control and status querying of the device itself, as specified
-  // by the abstract parent class
-  void setDeviceEnabled( bool enabled );
-  const State& getDeviceState() const;
-
   // Methods for power control and status querying of the devices connected to
   // the switch
   void setSwitchEnabled( DeviceSwitch device, bool enabled );
   const State& getSwitchState( DeviceSwitch device ) const;
 
+public slots:
+  // Methods for control and status querying of the device itself, as specified
+  // by the abstract parent class
+  void setDeviceEnabled( bool enabled );
+
 protected:
-  VConradController* controller_;
-  void renewController( const QString& port );
   void initialize();
   void close();
 
   // Last known communication state
-  State state_;
   void setDeviceState( State state );
 
   std::vector<State> switchStates_;
   void setSwitchState( DeviceSwitch device, State state );
   void setAllSwitchesReady( const std::vector<bool>& ready );
+  void setSwitchEnabledRaw( DeviceSwitch device, bool enabled );
 
 signals:
   // Classname identifiers are needed because Qt can't resolve internal enums
-  void deviceStateChanged(/*DefoConradModel::*/State newState);
-  void switchStateChanged(
-      DefoConradModel::DeviceSwitch device
-    , /*DefoConradModel::*/State newState
-  );
-
-public slots:
-//  void checkSwitchConnection( void );
+  void deviceStateChanged(State newState);
+  void switchStateChanged(DefoConradModel::DeviceSwitch device, State newState);
 
 };
 

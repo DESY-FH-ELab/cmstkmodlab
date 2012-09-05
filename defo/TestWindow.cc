@@ -134,16 +134,9 @@ TestWindow::TestWindow(QWidget *parent) :
   pointsLayout->addWidget(savePoints);
   connect(savePoints, SIGNAL(clicked()), SLOT(writePoints()));
 
+//  photographer = new Photographer(listModel_, cameraModel_, 5);
+
   setCentralWidget( central );
-
-//  timer_ = new QTimer(this);
-
-//  pictureInterval_ = 1000*60;
-
-//  timer_->setInterval(pictureInterval_);
-//  timer_->setSingleShot(false);
-//  connect(timer_, SIGNAL(timeout()), SLOT(timedPicture()));
-//  timer_->start();
 
 }
 
@@ -152,7 +145,7 @@ void TestWindow::pointButtonClicked() {
   const DefoMeasurement* measurement = selectionModel_->getSelection();
   listModel_->setMeasurementPoints(measurement, NULL);
 
-  PointFinder* finder;
+  DefoPointFinder* finder;
   QRect searchArea = measurement->getImage().rect();
   const int width = searchArea.width();
 
@@ -167,7 +160,7 @@ void TestWindow::pointButtonClicked() {
     searchArea.setLeft( i/blocks * width );
     searchArea.setRight( (i+1)/blocks * width );
 
-    finder = new PointFinder(
+    finder = new DefoPointFinder(
         listModel_
       , pointModel_
       , measurement
@@ -203,45 +196,6 @@ void TestWindow::newCameraImage(QString location) {
 
 }
 
-//// Growing interval picture taking test for camera timeout
-//void TestWindow::timedPicture()
-//{
-
-//  pictureInterval_ *= 2;
-//  timer_->setInterval(pictureInterval_);
-
-//  cameraModel_->acquirePicture();
-
-//}
-
-/* POINT FINDING THREAD */
-PointFinder::PointFinder(
-    DefoMeasurementListModel *listModel
-  , DefoPointRecognitionModel *pointModel
-  , const DefoMeasurement *measurement
-  , const QRect &searchRectangle
-) :
-    listModel_(listModel)
-  , pointModel_(pointModel)
-  , measurement_(measurement)
-  , searchArea_(searchRectangle)
-{}
-
-void PointFinder::run() {
-
-  const DefoPointCollection* points = measurement_->findPoints(
-      &searchArea_
-    , pointModel_->getThresholdValue(DefoPointRecognitionModel::THRESHOLD_1)
-    , pointModel_->getThresholdValue(DefoPointRecognitionModel::THRESHOLD_2)
-    , pointModel_->getThresholdValue(DefoPointRecognitionModel::THRESHOLD_3)
-    , pointModel_->getHalfSquareWidth()
-  );
-
-  listModel_->appendMeasurementPoints(measurement_, points);
-
-}
-
-
 /* Coordinate binning test */
 const QString CoordinateSaver::LINE_FORMAT = "%1\t%2\n";
 
@@ -271,4 +225,53 @@ void TestWindow::writePoints()
   for (DefoPointCollection::const_iterator it = points->begin(); it < points->end(); ++it)
     saver.writePoint(it->getX(), it->getY());
 
+}
+
+/**
+  Constructs a new timed picture acquisition controller.
+  \arg listModel The measurement list model.
+  \arg cameraModel The camera device model.
+  \arg interval The interval between two consecutive images, in minutes.
+  */
+Photographer::Photographer(
+    DefoMeasurementListModel *listModel
+  , DefoCameraModel* cameraModel
+  , int interval
+  , QObject* parent
+) :
+    QObject(parent)
+  , listModel_(listModel)
+  , cameraModel_(cameraModel)
+  , timer_(this)
+  , interval_(1000*60*interval)
+{
+
+    timer_.setInterval(interval_);
+    timer_.setSingleShot(false);
+    connect(&timer_, SIGNAL(timeout()), SLOT(takePicture()));
+    connect(
+          cameraModel_
+        , SIGNAL(deviceStateChanged(State))
+        , SLOT(setCameraState(State))
+    );
+
+    setCameraState(cameraModel_->getDeviceState());
+
+}
+
+// Growing interval picture taking test for camera timeout
+void Photographer::takePicture() {
+
+//  pictureInterval_ *= 2;
+//  timer_->setInterval(pictureInterval_);
+
+  cameraModel_->acquirePicture();
+
+}
+
+void Photographer::setCameraState(State state) {
+  if (state == READY)
+    timer_.start();
+  else
+    timer_.stop();
 }

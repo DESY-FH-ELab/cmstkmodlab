@@ -1,7 +1,7 @@
 #include "DefoConradCheckbox.h"
 
 
-/*--- DefoConradAction ---*/
+/*--- DefoConradCheckbox ---*/
 
 DefoConradCheckbox::DefoConradCheckbox(
     DefoConradModel *model
@@ -9,17 +9,13 @@ DefoConradCheckbox::DefoConradCheckbox(
   , QWidget *parent
 ) :
     QCheckBox(text, parent), model_(model)
-{
-
-//  setCheckable( true );
-
-}
+{}
 
 
 
 /*--- DefoConradDeviceCheckbox ---*/
 
-/// Creates a new action associated with the Conrad relais switch.
+/// Creates a new checkbox associated with the Conrad relais switch.
 DefoConradDeviceCheckbox::DefoConradDeviceCheckbox(
     DefoConradModel* model
   , const QString& text
@@ -28,26 +24,27 @@ DefoConradDeviceCheckbox::DefoConradDeviceCheckbox(
     DefoConradCheckbox(model, text, parent)
 {
 
-  setChecked( model->getDeviceState() == READY );
-
   connect(
-        model
+        model_
       , SIGNAL( deviceStateChanged(State) )
       , this
       , SLOT( deviceStateChanged(State) )
   );
 
-  connect( this, SIGNAL(toggled(bool)), this, SLOT(setChecked(bool)) );
+  connect( this, SIGNAL(toggled(bool)), model_, SLOT(setDeviceEnabled(bool)) );
+
+//  setChecked( model->getDeviceState() == READY );
+  deviceStateChanged( model_->getDeviceState() );
 
 }
 
-/// Method to set the model when the DefoConradAction is toggled.
-void DefoConradDeviceCheckbox::setChecked(bool checked) {
+///// Method to set the model when the DefoConradAction is toggled.
+//void DefoConradDeviceCheckbox::setChecked(bool checked) {
 
-  DefoConradCheckbox::setChecked( checked );
-  model_->setDeviceEnabled( checked );
+//  DefoConradCheckbox::setChecked( checked );
+//  model_->setDeviceEnabled( checked );
 
-}
+//}
 
 /// Sets whether it makes sense to be enabled according to switch state.
 void DefoConradDeviceCheckbox::deviceStateChanged(
@@ -80,9 +77,6 @@ DefoConradSwitchCheckbox::DefoConradSwitchCheckbox(
     DefoConradCheckbox(model, text, parent), device_(device)
 {
 
-  setEnabled( model->getDeviceState() == READY );
-  setChecked( model->getSwitchState(device) == READY );
-
   connect(
         model
       , SIGNAL(
@@ -107,7 +101,10 @@ DefoConradSwitchCheckbox::DefoConradSwitchCheckbox(
       , SLOT( deviceStateChanged(State) )
   );
 
-  connect( this, SIGNAL(toggled(bool)), this, SLOT(setChecked(bool)) );
+  connect( this, SIGNAL(toggled(bool)), this, SLOT(buttonToggled(bool)) );
+
+  deviceStateChanged( model->getDeviceState() );
+  switchStateChanged( device_, model->getSwitchState(device) );
 
 }
 
@@ -119,27 +116,22 @@ void DefoConradSwitchCheckbox::switchStateChanged(
 
   // Check if the updated device is ours
   if ( device_ == device ) {
-    setChecked(
-          newState == READY
-//      ||  newState == INITIALIZING
+    setChecked( newState == READY ||  newState == INITIALIZING );
+    setEnabled(
+         model_->getDeviceState() == READY
+      && newState != INITIALIZING
+      && newState != CLOSING
     );
   }
 
 }
 
-/// Method to set the model when the DefoConradAction is toggled.
-void DefoConradSwitchCheckbox::setChecked(bool checked) {
-
-  DefoConradCheckbox::setChecked( checked );
+/// Method to set the model when the checkbox is toggled.
+void DefoConradSwitchCheckbox::buttonToggled(bool checked) {
   model_->setSwitchEnabled( device_, checked );
-
 }
 
 /// Sets whether it makes sense to be enabled according to switch state.
-void DefoConradSwitchCheckbox::deviceStateChanged(
-    State newState
-) {
-
+void DefoConradSwitchCheckbox::deviceStateChanged(State newState) {
   setEnabled( newState == READY );
-
 }

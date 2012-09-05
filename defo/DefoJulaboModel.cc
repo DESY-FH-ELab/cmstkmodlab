@@ -18,8 +18,9 @@ const QString DefoJulaboModel::JULABO_PORT = QString("/dev/ttyS5");
   */
 DefoJulaboModel::DefoJulaboModel(float updateInterval, QObject *parent) :
     QObject(parent)
-  , state_(OFF) // Initialize all fields to prevent random values
-  , controller_(NULL)
+//  , state_(OFF) // Initialize all fields to prevent random values
+//  , controller_(NULL)
+  , DefoAbstractDeviceModel()
   , updateInterval_(updateInterval)
   , proportional_(0.1, 99.9, 1)
   , integral_(3, 9999, 0)
@@ -38,11 +39,6 @@ DefoJulaboModel::DefoJulaboModel(float updateInterval, QObject *parent) :
 
   setDeviceEnabled(true);
 
-}
-
-/// Destroys the model and closes any leftover connection.
-DefoJulaboModel::~DefoJulaboModel() {
-  close();
 }
 
 // Getter functions for (cached) Julabo state information
@@ -104,41 +100,6 @@ void DefoJulaboModel::initialize() {
     delete controller_;
     controller_ = NULL;
   }
-
-}
-
-/// Closes the connection to the device.
-void DefoJulaboModel::close() {
-
-  if ( state_ == READY ) {
-    setDeviceState( CLOSING );
-
-    delete controller_;
-    controller_ = NULL;
-
-    setDeviceState( OFF );
-  }
-
-}
-
-/// Renews the current JulaboFP50_t* for the given port.
-void DefoJulaboModel::renewController(const QString& port) {
-
-  if ( controller_ ) {
-    delete controller_;
-  }
-
-  controller_ = new JulaboFP50_t(
-        port.toStdString().c_str()
-  );
-
-}
-
-
-/// Returns the current state of the device.
-const State& DefoJulaboModel::getDeviceState() const {
-
-  return state_;
 
 }
 
@@ -233,19 +194,7 @@ template <class T> void DefoJulaboModel::updateParameterCache(
 
 /// Attempts to enable/disable the (communication with) the Julabo FP50 chiller.
 void DefoJulaboModel::setDeviceEnabled(bool enabled) {
-
-   // To be enabled and off
-  if ( enabled && getDeviceState() == OFF )
-    initialize();
-  // To be disabled and on
-  else if ( !enabled && getDeviceState() == READY )
-    close();
-
-  /*
-   If in 'busy state', a signal for OFF/READY will follow soon, reverting
-   any changes ignored by only checking for steady states (i.e. OFF and READY).
-   */
-
+  DefoAbstractDeviceModel::setDeviceEnabled(enabled);
 }
 
 // Cooling parameters
@@ -290,14 +239,14 @@ void DefoJulaboModel::setCirculatorEnabled(bool enabled) {
 }
 
 /// Attempts to set the pump pressure stage.
-void DefoJulaboModel::setPumpPressureValue(int value) {
+void DefoJulaboModel::setPumpPressureValue(int pressure) {
 
-  if ( pumpPressure_.getValue() != value ) {
+  if ( pumpPressure_.getValue() != pressure ) {
 
     unsigned int oldValue = pumpPressure_.getValue();
 
-    if (   pumpPressure_.setValue(static_cast<unsigned int>(value))
-        && !controller_->SetPumpPressure(value)
+    if (   pumpPressure_.setValue(static_cast<unsigned int>(pressure))
+        && !controller_->SetPumpPressure(pressure)
     )
       pumpPressure_.setValue(oldValue);
 

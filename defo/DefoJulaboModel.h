@@ -81,14 +81,14 @@ typedef Parameter<unsigned int> ParameterUInt;
 /**
   Command and control model of the Julabo chiller.
   */
-class DefoJulaboModel : public QObject
+class DefoJulaboModel :
+    public QObject
+  , public DefoAbstractDeviceModel<JulaboFP50_t>
 {
-    Q_OBJECT
+
+  Q_OBJECT
 public:
   explicit DefoJulaboModel(float updateInterval = 5, QObject *parent = 0);
-  ~DefoJulaboModel();
-
-  const State& getDeviceState() const;
 
   const ParameterFloat& getProportionalParameter() const;
   const ParameterUInt& getIntegralParameter() const;
@@ -111,7 +111,7 @@ public slots:
 
   void setCirculatorEnabled( bool enabled );
 
-  void setPumpPressureValue( int pump );
+  void setPumpPressureValue( int pressure );
 
   void setWorkingTemperatureValue( double temperature );
 
@@ -119,17 +119,17 @@ public slots:
 protected:
   static const QString JULABO_PORT;
 
-  VJulaboFP50* controller_;
-  void renewController( const QString& port );
+//  VJulaboFP50* controller_;
+//  void renewController( const QString& port );
   void initialize();
-  void close();
+//  void close();
 
   /// Time interval between cache refreshes; in seconds.
   const float updateInterval_;
   QTimer* timer_;
 
   // cached config information
-  State state_;
+//  State state_;
   void setDeviceState( State state );
 
   template <class T> void updateParameterCache(

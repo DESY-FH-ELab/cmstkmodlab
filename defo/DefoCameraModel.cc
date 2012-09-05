@@ -87,7 +87,7 @@ void DefoCameraModel::setOptionSelection(
   // Only update if intention to change
   if ( parameters_[option] != value ) {
 
-    int oldValue = parameters_[option];
+//    int oldValue = parameters_[option];
     bool success = controller_->writeOption(
             static_cast<EOS550D::Option>(option)
           , value
@@ -111,7 +111,7 @@ void DefoCameraModel::setDeviceState(State state) {
 
   if (state != state_) {
     state_ = state;
-    emit deviceStateChanged(state);
+    emit deviceStateChanged(state_);
   }
 
 }

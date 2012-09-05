@@ -7,7 +7,6 @@
 #include <QComboBox>
 #include <QImage>
 #include <QTimer>
-#include <QThread>
 
 #include "DefoConradModel.h"
 #include "DefoConradWidget.h"
@@ -28,6 +27,44 @@
 
 #include "DefoPointRecognitionModel.h"
 #include "DefoThresholdSpinBox.h"
+#include "DefoPointFinder.h"
+
+
+class CoordinateSaver : public QFile
+{
+  Q_OBJECT
+public:
+  explicit CoordinateSaver(const QString& filename, QObject* parent = 0);
+  ~CoordinateSaver();
+  void writePoint(double x, double y);
+
+protected:
+  const static QString LINE_FORMAT;
+
+};
+
+class Photographer : public QObject
+{
+  Q_OBJECT
+public:
+  explicit Photographer(
+      DefoMeasurementListModel* listModel
+    , DefoCameraModel* cameraModel
+    , int interval
+    , QObject* parent = 0
+  );
+
+protected:
+  QTimer timer_;
+  int interval_;
+  DefoMeasurementListModel* listModel_;
+  DefoCameraModel* cameraModel_;
+
+protected slots:
+  void takePicture();
+  void setCameraState(State state);
+
+};
 
 class TestWindow : public QMainWindow
 {
@@ -49,46 +86,10 @@ protected:
 
   QDir currentDir_;
 
-//  QTimer* timer_;
-//  int pictureInterval_;
+  Photographer* photographer;
 
 protected slots:
-//  void timedPicture();
   void writePoints();
-
-};
-
-class CoordinateSaver : public QFile {
-
-  Q_OBJECT
-public:
-  explicit CoordinateSaver(const QString& filename, QObject* parent = 0);
-  ~CoordinateSaver();
-  void writePoint(double x, double y);
-
-protected:
-  const static QString LINE_FORMAT;
-
-};
-
-class PointFinder : public QThread {
-
-  Q_OBJECT
-public:
-  explicit PointFinder(
-      DefoMeasurementListModel *listModel
-    , DefoPointRecognitionModel *pointModel
-    , const DefoMeasurement *measurement
-    , const QRect& searchRectangle
-  );
-
-protected:
-  DefoMeasurementListModel* listModel_;
-  DefoPointRecognitionModel *pointModel_;
-  const DefoMeasurement* measurement_;
-  const QRect searchArea_;
-
-  void run();
 
 };
 

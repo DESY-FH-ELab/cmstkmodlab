@@ -242,12 +242,12 @@ void DefoImagePointsWidget::paintEvent(QPaintEvent *event) {
 
 //      Draw point
       painter.setPen( pen );
-//      painter.drawEllipse(x, y, width, width);
+      painter.drawEllipse(x, y, width, width);
 
 //       Draw square
 //      pen.setBrush( Qt::NoBrush );
 //      painter.setPen( pen );
-      painter.drawRect( x, y, width, width );
+//      painter.drawRect( x, y, width, width );
 
     }
 
