@@ -61,7 +61,8 @@ HEADERS += DefoSchedule.h \
     DefoMeasurementSelectionModel.h \
     DefoMeasurementListComboBox.h \
     DefoPointBin.h \
-    DefoPointIndexer.h
+    DefoPointIndexer.h \
+    DefoPointFinder.h
 
 SOURCES += defo.cc \
            DefoSchedule.cc \
@@ -94,4 +95,5 @@ SOURCES += defo.cc \
     DefoMeasurementSelectionModel.cc \
     DefoMeasurementListComboBox.cc \
     DefoPointBin.cc \
-    DefoPointIndexer.cc
+    DefoPointIndexer.cc \
+    DefoPointFinder.cc
