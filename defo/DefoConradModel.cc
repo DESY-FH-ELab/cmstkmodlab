@@ -34,68 +34,79 @@ void DefoConradModel::initialize( void ) {
   setDeviceState( INITIALIZING );
 
   // create a list with all available ttyUSB device (system) files
-  QStringList filters;
-  filters.append("ttyUSB*");
+  QStringList filters("ttyUSB*");
 
   QDir devDir( "/dev" );
-  QStringList list = devDir.entryList(
-          filters
-        , QDir::System // only system files!
-  );
+  devDir.setNameFilters(filters);
+  devDir.setFilter(QDir::System);
+  QStringList list = devDir.entryList();
 
-  // browse and try initialize() until conradController_ gets an answer
-  QStringList::const_iterator it = list.begin();
-  QString port = QString( "/dev/" ) + *it;
+  // Only loop over list when not empty
+  if ( !list.empty() ) {
 
-  renewController( port );
+    // browse and try initialize() until conradController_ gets an answer
+    QStringList::const_iterator it = list.begin();
+    QString port = QString( "/dev/" ) + *it;
 
-  while ( it < list.end() && !controller_->initialize() ) {
-
-    // Compose full absolute location of USB device
-    port = QString( "/dev/" ) + *it;
     renewController( port );
 
-    ++it;
-  }
+    while ( it < list.end() && !controller_->initialize() ) {
 
-  // check communication; if it not at end, switch was found
-  if( it != list.end() ) {
+      // Compose full absolute location of USB device
+      port = QString( "/dev/" ) + *it;
+      renewController( port );
 
-    // read and init status
-    std::vector<bool> status = controller_->queryStatus();
+      ++it;
+    }
 
-    // Announce new states
-    if( status.size() == 8 ) {
+    // check communication; if it is not at the end, switch was found
+    if( it != list.end() ) {
 
-      setAllSwitchesReady( status );
-      setDeviceState( READY );
+      // read and init status
+      std::vector<bool> status = controller_->queryStatus();
 
+      // Announce new states
+      if( status.size() == 8 ) {
+
+        setAllSwitchesReady( status );
+        setDeviceState( READY );
+
+        // FIXME Redirect to central logger
+        //    if( debugLevel_ >= 1 )
+        std::cout << " [DefoConradModel::initialize] =1= "
+                  << "connection to conrad via: " << port.toStdString() << "."
+                  << std::endl;
+
+      }
+      else {
+
+        /*
+         would be 0 if query failed (according to ConradController::queryStatus)
+         This means device malfunction, so set state accordingly
+         */
+
+        setDeviceFullOff();
+
+        std::cerr << " [DefoConradModel::initialize] "
+                  << "** ERROR: received malformed state vector."
+                  << std::endl;
+
+      }
     }
     else {
-
-      // would be 0 if query failed (according to ConradController::queryStatus)
-      // This means device malfunction, so set state accordingly
-
-      setDeviceState( OFF );
-      status.assign( 8, false );
-      setAllSwitchesReady(status);
-
+      // if not successful; i.e. DEVICE NOT FOUND
+      setDeviceFullOff();
+      // TODO Log why it failed
       std::cerr << " [DefoConradModel::initialize] "
-                << "** ERROR: received malformed state vector." << std::endl;
-
+                << "** ERROR: Cannot connect to Conrad. Make sure that "
+                << "/dev/ttyUSB* is present and readable and no other process "
+                << "is connecting to the device." << std::endl;
     }
 
-    // FIXME Redirect to central logger
-//    if( debugLevel_ >= 1 )
-      std::cout << " [DefoConradModel::initialize] =1= "
-                << "connection to conrad via: " << port.toStdString() << "."
-                << std::endl;
-
   }
-  else { // if not successful; i.e. DEVICE NOT FOUND
+  else {
 
-    setDeviceState( OFF );
-    setAllSwitchesReady( std::vector<bool>( 8, false ) );
+    setDeviceFullOff();
 
     std::cerr << " [DefoConradModel::initialize] "
               << "** ERROR: Cannot connect to Conrad. Make sure that "
@@ -104,6 +115,12 @@ void DefoConradModel::initialize( void ) {
 
   }
 
+}
+
+/// Sets all the device states to OFF
+void DefoConradModel::setDeviceFullOff() {
+  setDeviceState( OFF );
+  setAllSwitchesReady( std::vector<bool>( 8, false ) );
 }
 
 /**

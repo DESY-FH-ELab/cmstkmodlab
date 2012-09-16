@@ -6,10 +6,6 @@
 #include <utility>
 #include <cmath>
 
-#include <boost/serialization/vector.hpp>
-#include <boost/serialization/utility.hpp>
-#include <boost/serialization/base_object.hpp>
-
 #include "DefoPoint.h"
 #include "DefoConfigReader.h"
 
@@ -18,8 +14,6 @@
 /// of the form: y = ax^2 + bx + c
 ///
 class DefoSpline {
-
-  friend class boost::serialization::access;
 
  public:
   DefoSpline() {}
@@ -40,18 +34,7 @@ class DefoSpline {
   double a_, b_, c_;
   std::pair<double,double> validityRange_;
 
-  template<class Archive>
-  void serialize( Archive & ar, const unsigned int version ) { 
-    ar & a_; 
-    ar & b_;
-    ar & c_;
-    ar & validityRange_;
-    if( version ) {}; // empty
-  }
-
 };
-
-BOOST_CLASS_VERSION( DefoSpline, 0 )
 
 
 
@@ -60,8 +43,6 @@ BOOST_CLASS_VERSION( DefoSpline, 0 )
 /// (one row or column of points/splines)
 ///
 class DefoSplineSetBase {
-
-  friend class boost::serialization::access;
 
  public:
   DefoSplineSetBase( DefoPoint::Axis axis );
@@ -83,17 +64,7 @@ class DefoSplineSetBase {
   DefoPointCollection points_;
   int debugLevel_;
 
- private:
-  template<class Archive>
-  void serialize( Archive & ar, const unsigned int version ) { 
-    ar & splines_;
-    ar & points_;
-    if( version ) {}; // empty
-  }
-
 };
-
-BOOST_CLASS_VERSION( DefoSplineSetBase, 0 )
 
 
 
@@ -102,24 +73,13 @@ BOOST_CLASS_VERSION( DefoSplineSetBase, 0 )
 ///
 class DefoSplineSetX : public DefoSplineSetBase {
 
-  friend class boost::serialization::access;
-
  public:
   DefoSplineSetX() : DefoSplineSetBase( DefoPoint::X ) {}
   virtual ~DefoSplineSetX() { clear(); }
 //  virtual bool doFitXY( void );
 //  virtual bool doFitZ( void );
-  
- private:
-  template<class Archive>
-  void serialize( Archive & ar, const unsigned int version ) { 
-    ar & boost::serialization::base_object<DefoSplineSetBase>( *this );
-    if( version ) {}; // empty
-  }
 
 };
-
-BOOST_CLASS_VERSION( DefoSplineSetX, 0 )
 
 
 
@@ -128,24 +88,13 @@ BOOST_CLASS_VERSION( DefoSplineSetX, 0 )
 ///
 class DefoSplineSetY : public DefoSplineSetBase {
 
-  friend class boost::serialization::access;
-
  public:
   DefoSplineSetY() : DefoSplineSetBase( DefoPoint::Y ) {}
   virtual ~DefoSplineSetY() { clear(); }
 //  virtual bool doFitXY( void );
 //  virtual bool doFitZ( void );
 
- private:
-  template<class Archive>
-  void serialize( Archive & ar, const unsigned int version ) { 
-    ar & boost::serialization::base_object<DefoSplineSetBase>( *this );
-    if( version ) {}; // empty
-  }
-
 };
-
-BOOST_CLASS_VERSION( DefoSplineSetY, 0 )
 
 
 

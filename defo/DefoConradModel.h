@@ -2,18 +2,19 @@
 #define DEFOCONRADMODEL_H
 
 #include <QStringList>
+#include <QString>
 #include <QDir>
 #include <iostream>
 
 #include "DefoState.h"
 
-//#ifdef USE_FAKEIO
-//#include "devices/Conrad/ConradControllerFake.h"
-//typedef ConradControllerFake ConradController_t;
-//#else
+#ifdef USE_FAKEIO
+#include "devices/Conrad/ConradControllerFake.h"
+typedef ConradControllerFake ConradController_t;
+#else
 #include "devices/Conrad/ConradController.h"
 typedef ConradController ConradController_t;
-//#endif
+#endif
 
 
 /*
@@ -78,6 +79,9 @@ protected:
 
   std::vector<State> switchStates_;
   void setSwitchState( DeviceSwitch device, State state );
+
+private:
+  void setDeviceFullOff();
   void setAllSwitchesReady( const std::vector<bool>& ready );
   void setSwitchEnabledRaw( DeviceSwitch device, bool enabled );
 

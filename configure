@@ -43,6 +43,16 @@ if test $ARCHITECTURE = "Linux" && test $KERNELMINOR -lt 6; then
     USEFAKEDEVICES=1
 fi
 
+# Support multiple distros (e.g. Ubuntu (Debian), openSUSE)
+if [ -n `locate qwtplot3d.so` ]; then
+	echo Using Qwt libraries with qt4 suffix.
+	QWTDEFINES="QWT_QT4"
+	QWTLIBS="-lqwtplot3d-qt4 -lqwt-qt4"
+else
+	QWTDEFINES=""
+	QWTLIBS="-lqwtplot3d -lqwt"
+fi
+
 if test $USEFAKEDEVICES = 1; then
     echo build with fake device support
 else
@@ -59,7 +69,7 @@ else
     echo build with THERMAL support
 fi
 
-SED_VARIABLES="BASEPATH ARCHITECTURE KERNELMAJOR KERNELMINOR NODEFO NOTHERMAL USEFAKEDEVICES CONFIGDEFINES"
+SED_VARIABLES="BASEPATH ARCHITECTURE KERNELMAJOR KERNELMINOR NODEFO NOTHERMAL USEFAKEDEVICES CONFIGDEFINES QWTDEFINES QWTLIBS"
 
 echo "#!/bin/sh
 dest=\`basename \$1 .in\`

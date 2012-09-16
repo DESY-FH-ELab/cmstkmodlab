@@ -5,10 +5,17 @@
 #include <QString>
 #include <Qt>
 
-#include <qwt3d_surfaceplot.h>
-#include <qwt3d_surfaceplot.h>
-#include <qwt3d_types.h>
-#include <qwt3d_portability.h>
+#ifdef QWT_QT4
+#include <qwtplot3d-qt4/qwt3d_surfaceplot.h>
+#include <qwtplot3d-qt4/qwt3d_surfaceplot.h>
+#include <qwtplot3d-qt4/qwt3d_types.h>
+#include <qwtplot3d-qt4/qwt3d_portability.h>
+#else
+#include <qwtplot3d/qwt3d_surfaceplot.h>
+#include <qwtplot3d/qwt3d_surfaceplot.h>
+#include <qwtplot3d/qwt3d_types.h>
+#include <qwtplot3d/qwt3d_portability.h>
+#endif
 
 #include "DefoSurface.h"
 

@@ -29,7 +29,7 @@ int main() {
 //  close(fileDescriptor);
 //  delete handler;
 
-  EOS550D* camera = new EOS550D("usb:001");
+  EOS550D* camera = new EOS550D("usb:");
   if ( camera->initialize() ) {
 
     vector<string> options = camera->readOptions(EOS550D::ISO);

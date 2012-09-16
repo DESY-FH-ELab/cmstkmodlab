@@ -2,9 +2,6 @@
 #ifndef _DEFOSURFACE_H
 #define _DEFOSURFACE_H
 
-#include <boost/serialization/vector.hpp>
-#include <boost/serialization/utility.hpp>
-
 #include "DefoSpline.h"
 #include "DefoPoint.h"
 
@@ -13,8 +10,6 @@
 /// a container for surfae reco results
 ///
 class DefoSurface {
-
-  friend class boost::serialization::access;
 
  public:
   DefoSurface();
@@ -35,18 +30,6 @@ class DefoSurface {
   bool isSplineField_;
   bool isPoints_;
 
-  template<class Archive>
-  void serialize( Archive & ar, const unsigned int version ) { 
-    ar & points_; 
-    ar & splineField_;
-    ar & pointFields_;
-    ar & isSplineField_;
-    ar & isPoints_;
-    if( version ) {}; // empty
-  }
-
 };
-
-BOOST_CLASS_VERSION( DefoSurface, 0 )
 
 #endif

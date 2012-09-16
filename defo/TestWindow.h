@@ -55,10 +55,10 @@ public:
   );
 
 protected:
-  QTimer timer_;
-  int interval_;
   DefoMeasurementListModel* listModel_;
   DefoCameraModel* cameraModel_;
+  int interval_;
+  QTimer timer_;
 
 protected slots:
   void takePicture();

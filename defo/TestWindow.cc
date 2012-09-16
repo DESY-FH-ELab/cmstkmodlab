@@ -242,8 +242,8 @@ Photographer::Photographer(
     QObject(parent)
   , listModel_(listModel)
   , cameraModel_(cameraModel)
-  , timer_(this)
   , interval_(1000*60*interval)
+  , timer_(this)
 {
 
     timer_.setInterval(interval_);

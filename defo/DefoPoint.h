@@ -10,9 +10,6 @@
 
 #include <QColor>
 
-#include <boost/serialization/vector.hpp>
-#include <boost/serialization/utility.hpp>
-
 
 ///
 /// DefoPoint is the "swiss army-knife" coordinate container.
@@ -20,8 +17,6 @@
 /// height & slope values attached (if needed)
 ///
 class DefoPoint {
-
-  friend class boost::serialization::access;
 
  public:
   enum Axis {
@@ -79,23 +74,7 @@ class DefoPoint {
   bool isIndexed_;
   bool isValid_; // contains valid height data? for use with DefoSurfacePlot..
 
-  template<class Archive>
-  void serialize( Archive & ar, const unsigned int version ) {
-    bool isBlue_ = isBlue(); // FIXME temporary fix
-    ar & x_;
-    ar & y_;
-    ar & slope_;
-    ar & height_;
-    ar & isBlue_;
-    ar & index_;
-    ar & isIndexed_;
-    ar & isValid_;
-    if( version ) {}; // empty
-  }
-
 };
-
-BOOST_CLASS_VERSION( DefoPoint, 0 )
 
 
 std::ostream& operator<< (std::ostream& out, const DefoPoint& p);
