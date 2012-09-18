@@ -157,8 +157,14 @@ void TestWindow::pointButtonClicked() {
 
   for (double i = 0; i < blocks; ++i) {
 
+    /*
+      In Qt the rectangle borders are placed ON the pixels, in contrast to e.g.
+      Swing where they are in between the pixels.
+      As a consequence, the right-side border has to be one pixel to the left in
+      order to avoid overlapping rectangles.
+      */
     searchArea.setLeft( i/blocks * width );
-    searchArea.setRight( (i+1)/blocks * width );
+    searchArea.setRight( (i+1)/blocks * width - 1 );
 
     finder = new DefoPointFinder(
         listModel_
@@ -197,7 +203,7 @@ void TestWindow::newCameraImage(QString location) {
 }
 
 /* Coordinate binning test */
-const QString CoordinateSaver::LINE_FORMAT = "%1\t%2\n";
+const QString CoordinateSaver::LINE_FORMAT = "%1\t%2\t%3\n";
 
 CoordinateSaver::CoordinateSaver(const QString &filename, QObject* parent) :
   QFile(filename, parent)
@@ -209,21 +215,33 @@ CoordinateSaver::~CoordinateSaver() {
   close();
 }
 
-void CoordinateSaver::writePoint(double x, double y)
+void CoordinateSaver::writePoint(const DefoPoint& point)
 {
-  QString line = LINE_FORMAT.arg(x, 0, 'e', 5).arg(y, 0, 'e', 5);
+  double x = point.getX();
+  double y = point.getY();
+  int hue = point.getColor().hsvHue();
+
+  QString line = LINE_FORMAT.arg(x, 0, 'e', 5).arg(y, 0, 'e', 5).arg(hue);
   write(line.toAscii());
 }
 
 void TestWindow::writePoints()
 {
 
-  CoordinateSaver saver("/home/tkmodlab/Desktop/coords.txt");
-  const DefoMeasurement* meas = selectionModel_->getSelection();
-  const DefoPointCollection* points = listModel_->getMeasurementPoints(meas);
+  QString file = QFileDialog::getSaveFileName(this, "Choose location");
 
-  for (DefoPointCollection::const_iterator it = points->begin(); it < points->end(); ++it)
-    saver.writePoint(it->getX(), it->getY());
+  if (file.length() > 0) {
+    CoordinateSaver saver(file);
+    const DefoMeasurement* meas = selectionModel_->getSelection();
+    const DefoPointCollection* points = listModel_->getMeasurementPoints(meas);
+
+    for ( DefoPointCollection::const_iterator it = points->begin()
+        ; it < points->end()
+        ; ++it
+    ) {
+      saver.writePoint(*it);
+    }
+  }
 
 }
 

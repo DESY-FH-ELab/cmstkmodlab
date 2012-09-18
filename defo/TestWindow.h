@@ -28,6 +28,7 @@
 #include "DefoPointRecognitionModel.h"
 #include "DefoThresholdSpinBox.h"
 #include "DefoPointFinder.h"
+#include "DefoPoint.h"
 
 
 class CoordinateSaver : public QFile
@@ -36,7 +37,7 @@ class CoordinateSaver : public QFile
 public:
   explicit CoordinateSaver(const QString& filename, QObject* parent = 0);
   ~CoordinateSaver();
-  void writePoint(double x, double y);
+  void writePoint(const DefoPoint &point);
 
 protected:
   const static QString LINE_FORMAT;

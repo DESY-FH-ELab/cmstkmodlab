@@ -122,9 +122,11 @@ const DefoPointCollection* DefoMeasurement::findPoints(
 
             // check again since the point can be reconstructed at a distance
             // from the seed
-            if( !forbiddenAreas.isInside( intermediate ) ) {
-              // FIXME check if point is still inside search area (unambigously)
-              // FIMXE implement point/brightness isolation
+            if (
+                area.contains(intermediate.getPixX(), intermediate.getPixY())
+                && !forbiddenAreas.isInside(intermediate)
+            ) {
+              // FIXME implement point/brightness isolation
 
               // Create DefoSquare around last found COG
               DefoSquare searchSquare( intermediate, halfSquareWidth );
