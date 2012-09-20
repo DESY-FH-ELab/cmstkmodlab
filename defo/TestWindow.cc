@@ -203,7 +203,7 @@ void TestWindow::newCameraImage(QString location) {
 }
 
 /* Coordinate binning test */
-const QString CoordinateSaver::LINE_FORMAT = "%1\t%2\t%3\n";
+const QString CoordinateSaver::LINE_FORMAT = "%1\t%2\t%3\t%4\t%5\n";
 
 CoordinateSaver::CoordinateSaver(const QString &filename, QObject* parent) :
   QFile(filename, parent)
@@ -219,9 +219,17 @@ void CoordinateSaver::writePoint(const DefoPoint& point)
 {
   double x = point.getX();
   double y = point.getY();
-  int hue = point.getColor().hsvHue();
+  QColor color = point.getColor();
+  int hue = color.hsvHue();
+  int saturation = color.hsvSaturation();
+  int value = color.value();
 
-  QString line = LINE_FORMAT.arg(x, 0, 'e', 5).arg(y, 0, 'e', 5).arg(hue);
+  QString line = LINE_FORMAT
+      .arg(x, 0, 'e', 5)
+      .arg(y, 0, 'e', 5)
+      .arg(hue)
+      .arg(saturation)
+      .arg(value);
   write(line.toAscii());
 }
 
