@@ -13,8 +13,9 @@ macx {
 else {
     LIBS += -L../devices/lib -lTkModLabKeithley -lTkModLabGreisinger -lTkModLabJulabo -lTkModLabHameg -lTkModLabConrad -lTkModLabCanon
     LIBS += -lgphoto2
-    DEFINES += @qwtdefines@
-    LIBS += @qwtlibs@ -lGL -lGLU
+    INCLUDEPATH += /usr/include/qwt
+    DEFINES += 
+    LIBS += -lqwt -lqwtplot3d -lGL -lGLU
 }
 DEFINES += @configdefines@
 QT += core gui opengl
@@ -28,7 +29,6 @@ INCLUDEPATH += ..
 HEADERS += DefoSchedule.h \
            DefoPoint.h \
            DefoSpline.h \
-           DefoRecoImage.h \
            DefoSquare.h \
            DefoConfigReader.h \
            DefoRecoSurface.h \
