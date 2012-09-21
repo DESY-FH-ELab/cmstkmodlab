@@ -6,11 +6,31 @@
 #include <QDateTime>
 #include <QSize>
 
+#include "DefoCameraModel.h"
 #include "DefoMeasurementListModel.h"
 #include "DefoMeasurementSelectionModel.h"
 #include "DefoPointRecognitionModel.h"
 
-class DefoImageWidget : public QWidget
+class DefoImageBaseWidget : public QWidget
+{
+    Q_OBJECT
+public:
+  DefoImageBaseWidget(
+      QWidget *parent = 0
+  );
+
+protected:
+  virtual void paintEvent(QPaintEvent *event) = 0;
+
+  /// Subroutine for paintEvent that prepares the image to be drawn.
+  virtual QImage prepareImage(const QImage& image) const = 0;
+
+  static const QSize MINIMUM_SIZE;
+  QSize getImageDrawingSize(const QImage& image) const;
+
+};
+
+class DefoImageWidget : public DefoImageBaseWidget
 {
     Q_OBJECT
 public:
@@ -26,11 +46,29 @@ protected:
   /// Subroutine for paintEvent that prepares the image to be drawn.
   virtual QImage prepareImage(const QImage& image) const = 0;
 
-  static const QSize MINIMUM_SIZE;
-  QSize getImageDrawingSize(const QImage& image) const;
-
 public slots:
   virtual void selectionChanged(const DefoMeasurement* measurement);
+
+};
+
+class DefoLiveViewImageWidget : public DefoImageBaseWidget
+{
+    Q_OBJECT
+public:
+  explicit DefoLiveViewImageWidget(
+      DefoCameraModel* model
+    , QWidget *parent = 0
+  );
+
+protected:
+  DefoCameraModel* cameraModel_;
+  void paintEvent(QPaintEvent *event);
+
+  /// Subroutine for paintEvent that prepares the image to be drawn.
+  QImage prepareImage(const QImage& image) const;
+
+public slots:
+  virtual void newLiveViewImage(QString location);
 
 };
 

@@ -10,7 +10,10 @@ DefoCameraModel::DefoCameraModel(QObject *parent) :
   parameters_[ISO] = initValue;
   parameters_[SHUTTER_SPEED] = initValue;
   parameters_[WHITE_BALANCE] = initValue;
-
+ 
+  liveViewTimer_.setInterval(1000);
+  connect(&liveViewTimer_, SIGNAL(timeout()), this, SLOT(acquireLiveViewPicture()));
+ 
   setDeviceEnabled(true);
 
 }
@@ -32,6 +35,22 @@ void DefoCameraModel::setDeviceEnabled(bool enabled) {
   DefoAbstractDeviceModel::setDeviceEnabled(enabled);
 }
 
+void DefoCameraModel::setLiveViewEnabled(bool enabled) {
+  
+  if (enabled && !controller_->isInPreviewMode()) {
+    controller_->startPreviewMode();
+
+    liveViewTimer_.start();
+
+    emit liveViewModeChanged(true);
+  } else if (!enabled && controller_->isInPreviewMode()) {
+    controller_->stopPreviewMode();
+
+    liveViewTimer_.stop();
+
+    emit liveViewModeChanged(false);
+  }
+}
 
 /// Initialize the model by retrieving the current settings.
 void DefoCameraModel::initialize() {
@@ -116,21 +135,29 @@ void DefoCameraModel::setDeviceState(State state) {
 
 }
 
-
 /// Instruct the camera to take a picture and cache the file in a QImage.
 void DefoCameraModel::acquirePicture() {
 
     location_ = controller_->acquirePhoto().c_str();
     image_ = QImage(location_);
     emit newImage(location_);
-
 }
 
+/// Instruct the camera to take a picture and cache the file in a QImage.
+void DefoCameraModel::acquireLiveViewPicture() {
+
+    location_ = controller_->acquirePreview().c_str();
+    liveViewImage_ = QImage(location_);
+    emit newLiveViewImage(location_);
+}
 
 const QImage & DefoCameraModel::getLastPicture() const {
   return image_;
 }
 
+const QImage & DefoCameraModel::getLastLiveViewPicture() const {
+  return liveViewImage_;
+}
 
 int DefoCameraModel::getOptionValue(const Option &option) const {
   return controller_->readOption(static_cast<EOS550D::Option>(option));

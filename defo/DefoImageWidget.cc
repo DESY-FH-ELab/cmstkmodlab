@@ -1,13 +1,41 @@
 #include "DefoImageWidget.h"
 
-/// Minimum size of the widget displaying the currently selected measurement.
-const QSize DefoImageWidget::MINIMUM_SIZE = QSize(300,400);
+///
+/// DefoImageBaseWidget
+///
 
+/// Minimum size of the widget displaying the currently selected measurement.
+const QSize DefoImageBaseWidget::MINIMUM_SIZE = QSize(300,400);
+
+DefoImageBaseWidget::DefoImageBaseWidget(
+    QWidget* parent
+) :
+    QWidget(parent)
+{
+  setMinimumSize(MINIMUM_SIZE);
+}
+
+/// Returns the prefered size of the image to be drawn.
+QSize DefoImageBaseWidget::getImageDrawingSize(const QImage& image) const {
+
+  QSize currentMax = size();
+  currentMax.transpose();
+
+  return QSize(
+          std::min(currentMax.width(), image.width())
+        , std::min(currentMax.height(), image.height())
+  );
+
+}
+
+///
+/// DefoImageWidget
+///
 DefoImageWidget::DefoImageWidget(
     DefoMeasurementSelectionModel* model
   , QWidget* parent
 ) :
-    QWidget(parent)
+    DefoImageBaseWidget(parent)
   , selectionModel_(model)
 {
 
@@ -17,11 +45,10 @@ DefoImageWidget::DefoImageWidget(
         , this
         , SLOT(selectionChanged(const DefoMeasurement*))
   );
-  setMinimumSize(MINIMUM_SIZE);
 
 }
 
-void DefoImageWidget::selectionChanged(const DefoMeasurement* measurement) {
+void DefoImageWidget::selectionChanged(const DefoMeasurement* /* measurement */) {
   update();
 }
 
@@ -55,19 +82,61 @@ void DefoImageWidget::paintEvent(QPaintEvent *event) {
   }
 }
 
-/// Returns the prefered size of the image to be drawn.
-QSize DefoImageWidget::getImageDrawingSize(const QImage& image) const {
+///
+/// DefoLiveViewImageWidget
+///
+DefoLiveViewImageWidget::DefoLiveViewImageWidget(
+    DefoCameraModel* model
+  , QWidget* parent
+) :
+    DefoImageBaseWidget(parent)
+  , cameraModel_(model)
+{
 
-  QSize currentMax = size();
-  currentMax.transpose();
-
-  return QSize(
-          std::min(currentMax.width(), image.width())
-        , std::min(currentMax.height(), image.height())
+  connect(
+          cameraModel_
+	, SIGNAL(newLiveViewImage(QString))
+        , this
+        , SLOT(newLiveViewImage(QString))
   );
+  setMinimumSize(MINIMUM_SIZE);
 
 }
 
+void DefoLiveViewImageWidget::newLiveViewImage(QString /* location */) {
+  update();
+}
+
+void DefoLiveViewImageWidget::paintEvent(QPaintEvent *event) {
+
+  // TODO repaint only certain rectangle
+  QWidget::paintEvent(event);
+
+  if (cameraModel_->getLastLiveViewPicture().isNull()) return;
+
+  QPainter painter(this);
+
+  /*
+    Rotate (according to camera orientation) and
+    save the current state before handing of to child class
+  */
+  painter.save();
+
+  QImage prepared = prepareImage(cameraModel_->getLastLiveViewPicture());
+
+  painter.translate(prepared.height(), 0);
+  painter.rotate(90);
+
+  // Draw image
+  painter.drawImage( QPoint(0,0), prepared );
+
+  // Restore own state.
+  painter.restore();
+}
+
+QImage DefoLiveViewImageWidget::prepareImage(const QImage& image) const {
+  return image.scaled(getImageDrawingSize(image), Qt::KeepAspectRatio);
+}
 
 /*
   CHILD CLASSES
@@ -102,7 +171,7 @@ DefoImageThresholdsWidget::DefoImageThresholdsWidget(
   );
 }
 
-QImage DefoImageThresholdsWidget::prepareImage(const QImage& image) const {
+QImage DefoImageThresholdsWidget::prepareImage(const QImage& /* image */) const {
 
   // Used cache image instead of rescanning the picture
   if ( !imageCache_.isNull() )
@@ -116,8 +185,8 @@ QImage DefoImageThresholdsWidget::prepareImage(const QImage& image) const {
 }
 
 void DefoImageThresholdsWidget::thresholdChanged(
-    DefoPointRecognitionModel::Threshold threshold
-  , int value
+    DefoPointRecognitionModel::Threshold /* threshold */
+  , int /* value */
 ) {
   // Don't care about which thresholds or what value, needs to be redone anyway
   updateCache();
@@ -186,7 +255,7 @@ DefoImagePointsWidget::DefoImagePointsWidget(
   );
 }
 
-void DefoImagePointsWidget::pointsUpdated(const DefoMeasurement *measurement) {
+void DefoImagePointsWidget::pointsUpdated(const DefoMeasurement * /* measurement */) {
   update();
 }
 

@@ -8,6 +8,8 @@
 #include <QVBoxLayout>
 #include <QFileDialog>
 #include <QLabel>
+#include <QStackedWidget>
+#include <QFrame>
 
 #include "DefoState.h"
 #include "DefoCameraModel.h"
@@ -42,11 +44,20 @@ protected:
 
   // Widgets
   QCheckBox* enableCheckBox_;
-  QPushButton* pictureButton_;
+  QPushButton* loadFileButton_;
+  QPushButton* previewButton_;
+  QCheckBox* liveviewCheckBox_;
   QWidget* buttons_;
+  QStackedWidget* imageStack_;
+  QFrame* buttonsNRawImage_;
+  QWidget* buttonsCamera_;
+  DefoRawImageWidget* rawImage_;
+  QFrame* liveImageFrame_;
+  DefoLiveViewImageWidget* liveImage_;
 
 protected slots:
   void deviceStateChanged(State newState);
+  void liveViewModeChanged(bool enabled);
   void openButtonClicked();
 //  void saveButtonClicked();
 

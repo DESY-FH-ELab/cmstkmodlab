@@ -4,6 +4,7 @@
 #include <QObject>
 #include <QImage>
 #include <QFile>
+#include <QTimer>
 
 #include <map>
 
@@ -37,11 +38,14 @@ public:
 
   const QImage& getLastPicture() const;
   const QString& getLastPictureLocation() const;
+  const QImage& getLastLiveViewPicture() const;
   // TODO getLastPictureExif()
 
 public slots:
   virtual void setDeviceEnabled( bool enabled );
+  virtual void setLiveViewEnabled( bool enabled );
   void acquirePicture();
+  void acquireLiveViewPicture();
 
 protected:
   virtual void initialize();
@@ -54,12 +58,15 @@ protected:
   // image cache
   QString location_;
   QImage image_;
+  QImage liveViewImage_;
+  QTimer liveViewTimer_;
 
 signals:
   void deviceStateChanged(State newState);
   void deviceOptionChanged(DefoCameraModel::Option option, int newValue);
   void newImage(QString location);
-
+  void liveViewModeChanged(bool state);
+  void newLiveViewImage(QString location);
 };
 
 #endif // DEFOCAMERAMODEL_H

@@ -28,10 +28,10 @@ DefoCameraWidget::DefoCameraWidget(
   buttons_->setLayout(buttonLayout);
 
   // Loading an image
-  QPushButton *loadFileButton = new QPushButton("&Load file", buttons_);
-  connect(loadFileButton, SIGNAL(clicked()), this, SLOT(openButtonClicked()));
+  loadFileButton_ = new QPushButton("&Load file", buttons_);
+  connect(loadFileButton_, SIGNAL(clicked()), this, SLOT(openButtonClicked()));
 
-  buttonLayout->addWidget(loadFileButton, 0, 0);
+  buttonLayout->addWidget(loadFileButton_, 0, 0);
 
 //  enableCheckBox_ = new DefoConradSwitchCheckbox(
 //        conradModel_
@@ -57,10 +57,16 @@ DefoCameraWidget::DefoCameraWidget(
       , SLOT(deviceStateChanged(State))
   );
 
+  connect(
+        cameraModel_
+      , SIGNAL(liveViewModeChanged(bool))
+      , this
+      , SLOT(liveViewModeChanged(bool))
+  );
+
   // Taking a picture
-  pictureButton_ = new QPushButton("&Take picture", buttons_);
-  buttonLayout->addWidget(pictureButton_, 0, 1);
-  buttonLayout->addWidget(loadFileButton, 0, 0);
+  previewButton_ = new QPushButton("&Take preview", buttons_);
+  buttonLayout->addWidget(previewButton_, 0, 1);
 
 //  QPushButton *saveFileButton = new QPushButton("&Save picture", buttons_);
 //  connect(saveFileButton, SIGNAL(clicked()), this, SLOT(saveButtonClicked()));
@@ -68,58 +74,117 @@ DefoCameraWidget::DefoCameraWidget(
 
 
   connect(
-          pictureButton_
+          previewButton_
         , SIGNAL(clicked())
         , cameraModel_
         , SLOT(acquirePicture())
   );
 
+  // Switching into preview mode
+  liveviewCheckBox_ = new QCheckBox("Live", this);
+  connect(
+	  liveviewCheckBox_
+        , SIGNAL(toggled(bool))
+        , cameraModel_
+        , SLOT(setLiveViewEnabled(bool))
+  );
+  buttonLayout->addWidget(liveviewCheckBox_, 0, 2);
+
+  // Image display
+  imageStack_ = new QStackedWidget(this);
+ 
+  buttonsNRawImage_ = new QFrame(imageStack_);
+  QVBoxLayout* frameLayout = new QVBoxLayout(buttonsNRawImage_);
+  buttonsNRawImage_->setFrameShape(QFrame::Box);
+  buttonsNRawImage_->setLayout(frameLayout);
+
+  buttonLayout = new QGridLayout();
+  buttonsCamera_ = new QWidget(buttonsNRawImage_);
+  buttonsCamera_->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);
+  buttonsCamera_->setLayout(buttonLayout);
+
   // Camera options
-  buttonLayout->addWidget( new QLabel("Aperture", buttons_), 1, 0 );
+  buttonLayout->addWidget( new QLabel("Aperture", buttonsCamera_), 0, 0 );
   buttonLayout->addWidget(new DefoCameraOptionComboBox(
         cameraModel_
       , DefoCameraModel::APERTURE
       , this
-  ), 2, 0);
-  buttonLayout->addWidget( new QLabel("ISO", buttons_), 1, 1 );
+  ), 1, 0);
+  buttonLayout->addWidget( new QLabel("ISO", buttonsCamera_), 0, 1 );
   buttonLayout->addWidget(new DefoCameraOptionComboBox(
         cameraModel_
       , DefoCameraModel::ISO
       , this
-  ), 2, 1);
-  buttonLayout->addWidget( new QLabel("Shutter speed", buttons_), 1, 2 );
+  ), 1, 1);
+  buttonLayout->addWidget( new QLabel("Shutter speed", buttonsCamera_), 0, 2 );
   buttonLayout->addWidget(new DefoCameraOptionComboBox(
         cameraModel_
       , DefoCameraModel::SHUTTER_SPEED
       , this
-  ), 2, 2);
-  buttonLayout->addWidget( new QLabel("White balance", buttons_), 1, 3 );
+  ), 1, 2);
+  buttonLayout->addWidget( new QLabel("White balance", buttonsCamera_), 0, 3 );
   buttonLayout->addWidget(new DefoCameraOptionComboBox(
         cameraModel_
       , DefoCameraModel::WHITE_BALANCE
       , this
-  ), 2, 3);
+  ), 1, 3);
 
   buttonLayout->addWidget(
-        new DefoMeasurementListComboBox(listModel_, selectionModel_, buttons_)
-      , 3
+        new DefoMeasurementListComboBox(listModel_, selectionModel_, this)
+      , 2
       , 0
       , 1
       , 4
   );
 
-  // Image display
-  layout->addWidget( new DefoRawImageWidget(selectionModel_, this) );
+  frameLayout->addWidget(buttonsCamera_);
 
+  rawImage_ = new DefoRawImageWidget(selectionModel_, buttonsNRawImage_);
+  frameLayout->addWidget(rawImage_);
+
+  imageStack_->addWidget(buttonsNRawImage_);
+  
+  liveImageFrame_ = new QFrame(imageStack_);
+  frameLayout = new QVBoxLayout(liveImageFrame_);
+  liveImageFrame_->setLayout(frameLayout);
+  liveImageFrame_->setFrameShape(QFrame::Box);
+  liveImage_ = new DefoLiveViewImageWidget(cameraModel_, liveImageFrame_);
+  frameLayout->addWidget(liveImage_);
+
+  imageStack_->addWidget(liveImageFrame_);
+
+  imageStack_->setCurrentWidget(buttonsNRawImage_);
+
+  layout->addWidget( imageStack_ );
+  
   deviceStateChanged(cameraModel_->getDeviceState());
-
+  
 }
 
 void DefoCameraWidget::deviceStateChanged(State newState) {
 
   enableCheckBox_->setChecked( newState == INITIALIZING || newState == READY );
-  pictureButton_->setEnabled( newState == READY );
+  previewButton_->setEnabled( newState == READY );
+  liveviewCheckBox_->setEnabled( newState == READY );
 
+}
+
+void DefoCameraWidget::liveViewModeChanged( bool enabled ) {
+
+  if (enabled) {
+    imageStack_->setCurrentWidget(liveImageFrame_);
+
+    loadFileButton_->setEnabled( false );
+    enableCheckBox_->setEnabled( false );
+    previewButton_->setEnabled( false );
+    
+  } else {
+    imageStack_->setCurrentWidget(buttonsNRawImage_);
+
+    loadFileButton_->setEnabled( true );
+    enableCheckBox_->setEnabled( true );
+    previewButton_->setEnabled( true );
+  }
 }
 
 void DefoCameraWidget::openButtonClicked() {
