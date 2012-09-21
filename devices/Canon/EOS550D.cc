@@ -9,6 +9,9 @@ EOS550D::EOS550D(const char* port) :
   , optionNames_(4) //create room for the total number of support options
   , optionLists_(4)
   , tempPictureFiles_()
+  , previewFileName_("/tmp/canon-preview.jpg")
+  , isInPreviewMode_(false)
+
 {
 
   // Save names for supported options
@@ -98,4 +101,51 @@ std::string EOS550D::acquirePhoto() {
 
   return fnCopy;
 
+}
+
+/**
+  \brief Captures a preview image with the camera and returns the download
+  location.
+  */
+std::string EOS550D::acquirePreview() {
+
+  handler_->acquirePreview(previewFileName_.c_str());
+
+  return previewFileName_;
+}
+
+bool EOS550D::isInPreviewMode() {
+
+  return isInPreviewMode_;
+}
+
+/**
+  \brief Switches the camera into preview mode (a.k.a. live view).
+  */
+bool EOS550D::startPreviewMode() {
+
+  if (isInPreviewMode_) return false;
+
+  handler_->startPreviewMode();
+
+  isInPreviewMode_ = true;
+  
+  return true;
+}
+
+/**
+  \brief Switches off preview mode (a.k.a. live view). The file
+  with the preview image is deleted.
+  */
+bool EOS550D::stopPreviewMode() {
+
+  if (!isInPreviewMode_) return false;
+ 
+  handler_->stopPreviewMode();
+
+  remove(previewFileName_.c_str());
+
+  isInPreviewMode_ = false;
+ 
+  return true;
 }

@@ -34,6 +34,16 @@ class VEOS550D {
   /// Returns the absolute (local) location of the retrieved picture.
   virtual std::string acquirePhoto() = 0;
 
+  /// Returns the absolute (local) location of the retrieved preview picture.
+  virtual std::string acquirePreview() = 0;
+  
+  /// Returns true if camera is in preview mode (a.k.a. live view)
+  virtual bool isInPreviewMode() = 0;
+  /// Switches camera into preview mode (a.k.a. live view)
+  virtual bool startPreviewMode() = 0;
+  /// Switches off preview mode (a.k.a. live view)
+  virtual bool stopPreviewMode() = 0;
+
 protected:
   typedef std::vector<std::string> OptionList;
   static int indexOf(const OptionList& list, const std::string& value);

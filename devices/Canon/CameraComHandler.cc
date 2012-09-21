@@ -246,3 +246,55 @@ bool CameraComHandler::acquireAndDownloadPicture(int filedescriptor) const {
   return (error == GP_OK);
 
 }
+
+/**
+  \brief Instructs the camera to take a preview picture, downloads it and writes
+  it in the file given by filename. In order to do this, the file needs to have
+  at least write permissions for the current user.
+  \arg filename name of a file that is writable by the current user.
+  \return true if picture was acquired and saved, false otherwise.
+  */
+bool CameraComHandler::acquirePreview(const char* filename) const {
+
+  // FIXME decent error checking
+  CameraFile *file;
+  gp_file_new(&file);
+
+  // Take and store the picture
+  int error = gp_camera_capture_preview(camera_, file, context_);
+  error = gp_file_save(file, filename);
+  
+  gp_file_unref(file);
+  
+  return (error == GP_OK);
+}
+
+/**
+  \brief Switches camera into preview mode.
+  \return true if operation was successful, false otherwise.
+  */
+bool CameraComHandler::startPreviewMode() const {
+
+  // FIXME decent error checking
+  CameraFile *file;
+  gp_file_new(&file);
+
+  // Take and store the picture
+  int error = gp_camera_capture_preview(camera_, file, context_);
+ 
+  gp_file_unref(file);
+  
+  return (error == GP_OK);
+}
+
+/**
+  \brief Switches off camera preview mode.
+  \return true if operation was successful, false otherwise.
+  */
+bool CameraComHandler::stopPreviewMode() const {
+
+  int error = gp_camera_exit(camera_, context_);
+  error = gp_camera_init(camera_, context_);
+
+  return (error == GP_OK);
+}

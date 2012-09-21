@@ -26,6 +26,12 @@ public:
 
   /// Returns the absolute (local) location of the retrieved picture.
   virtual std::string acquirePhoto();
+  /// Returns the absolute (local) location of the retrieved preview picture.
+  virtual std::string acquirePreview();
+
+  virtual bool isInPreviewMode();
+  virtual bool startPreviewMode();
+  virtual bool stopPreviewMode();
 
 protected:
   CameraComHandler* handler_;
@@ -34,7 +40,8 @@ protected:
   std::vector<OptionList> optionLists_;
 
   std::deque<std::string> tempPictureFiles_;
-
+  const std::string previewFileName_;
+  bool isInPreviewMode_;
 };
 
 #endif

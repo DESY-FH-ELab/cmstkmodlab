@@ -21,8 +21,12 @@ public:
   bool writeConfigValue(const char* name, const char* value);
 
   bool acquireAndDownloadPicture(int filedescriptor) const;
+  bool acquirePreview(const char* filename) const;
+  bool startPreviewMode() const;
+  bool stopPreviewMode() const;
 
 protected:
+
   GPContext* context_;
   Camera* camera_;
 
