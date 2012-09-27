@@ -12,13 +12,13 @@ macx {
 }
 else {
     LIBS += -L../devices/lib -lTkModLabKeithley -lTkModLabGreisinger -lTkModLabJulabo -lTkModLabHameg -lTkModLabConrad -lTkModLabCanon
-    LIBS += -lgphoto2
-    INCLUDEPATH += /usr/include/qwt
+    LIBS += -lgphoto2 -lexiv2
+    INCLUDEPATH += /usr/include/qwt /usr/include/exiv2
     DEFINES += 
     LIBS += -lqwt -lqwtplot3d -lGL -lGLU
 }
 DEFINES += @configdefines@
-QT += core gui opengl
+QT += core gui opengl script xml
 TEMPLATE = app
 TARGET = defo
 DEPENDPATH += .
@@ -38,6 +38,7 @@ HEADERS += DefoSchedule.h \
 	   DefoHistogramView.h \
     TestWindow.h \
     DefoMeasurement.h \
+    DefoExifReader.h \
     DefoKeithleyModel.h \
     DefoJulaboModel.h \
     DefoConradWidget.h \
@@ -59,7 +60,12 @@ HEADERS += DefoSchedule.h \
     DefoMeasurementListComboBox.h \
     DefoPointBin.h \
     DefoPointIndexer.h \
-    DefoPointFinder.h
+    DefoPointFinder.h \
+    DefoScriptModel.h \
+    DefoScriptThread.h \
+    DefoScriptWidget.h \
+    DefoScriptableGlobals.h \
+    DefoScriptableCamera.h
 
 SOURCES += defo.cc \
            DefoSchedule.cc \
@@ -73,6 +79,7 @@ SOURCES += defo.cc \
 	   DefoHistogramView.cc \
     TestWindow.cc \
     DefoMeasurement.cc \
+    DefoExifReader.cc \
     DefoKeithleyModel.cc \
     DefoJulaboModel.cc \
     DefoConradWidget.cc \
@@ -93,4 +100,9 @@ SOURCES += defo.cc \
     DefoMeasurementListComboBox.cc \
     DefoPointBin.cc \
     DefoPointIndexer.cc \
-    DefoPointFinder.cc
+    DefoPointFinder.cc \
+    DefoScriptModel.cc \
+    DefoScriptThread.cc \
+    DefoScriptWidget.cc \
+    DefoScriptableGlobals.cc \
+    DefoScriptableCamera.cc
