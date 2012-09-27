@@ -20,6 +20,9 @@
 #include "DefoCameraModel.h"
 #include "DefoCameraWidget.h"
 
+#include "DefoScriptModel.h"
+#include "DefoScriptWidget.h"
+
 #include "DefoMeasurementListModel.h"
 #include "DefoMeasurementSelectionModel.h"
 #include "DefoMeasurementListComboBox.h"
@@ -75,7 +78,7 @@ public:
 
 public slots:
   void pointButtonClicked();
-  void newCameraImage(QString location);
+  void newCameraImage(QString location, bool keep);
 
 protected:
   DefoMeasurementListModel* listModel_;
@@ -92,6 +95,20 @@ protected:
 protected slots:
   void writePoints();
 
+};
+
+class ScriptWindow : public QMainWindow
+{
+  Q_OBJECT
+public:
+  explicit ScriptWindow(QWidget *parent = 0);
+
+public slots:
+
+protected:
+  DefoScriptModel* scriptModel_;
+
+protected slots:
 };
 
 #endif // TESTWINDOW_H

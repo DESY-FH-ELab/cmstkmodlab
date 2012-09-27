@@ -8,7 +8,7 @@ TestWindow::TestWindow(QWidget *parent) :
   QDateTime dt = QDateTime::currentDateTimeUtc();
   QString measurementDirPath("/home/tkmodlab/Desktop/measurements/%1-%2/");
   measurementDirPath = measurementDirPath.arg(dt.toString("yyyyMMdd"));
-
+  
   int i = 1;
   do {
     currentDir_.setPath( measurementDirPath.arg(i) );
@@ -32,10 +32,10 @@ TestWindow::TestWindow(QWidget *parent) :
   layout->addWidget( conradWidget );
 
   // JULABO MODEL
-//  layout->addWidget( new DefoJulaboWidget(new DefoJulaboModel(3)) );
+  //layout->addWidget( new DefoJulaboWidget(new DefoJulaboModel(3)) );
 
   // KEITHLEY MODEL
-//  layout->addWidget( new DefoKeithleyWidget(new DefoKeithleyModel(5)) );
+  //layout->addWidget( new DefoKeithleyWidget(new DefoKeithleyModel(5)) );
 
   // MEASUREMENT MODEL
   listModel_ = new DefoMeasurementListModel();
@@ -59,7 +59,7 @@ TestWindow::TestWindow(QWidget *parent) :
     cameraModel_->setOptionSelection(DefoCameraModel::SHUTTER_SPEED, 26);
   }
 
-  connect(cameraModel_, SIGNAL(newImage(QString)), SLOT(newCameraImage(QString)));
+  connect(cameraModel_, SIGNAL(newImage(QString,bool)), SLOT(newCameraImage(QString,bool)));
 
   pointModel_ = new DefoPointRecognitionModel(this);
 
@@ -142,7 +142,7 @@ TestWindow::TestWindow(QWidget *parent) :
 
 void TestWindow::pointButtonClicked() {
 
-  const DefoMeasurement* measurement = selectionModel_->getSelection();
+  const DefoMeasurementBase* measurement = selectionModel_->getSelection();
   listModel_->setMeasurementPoints(measurement, NULL);
 
   DefoPointFinder* finder;
@@ -179,27 +179,46 @@ void TestWindow::pointButtonClicked() {
 
 }
 
-void TestWindow::newCameraImage(QString location) {
+void TestWindow::newCameraImage(QString location, bool keep) {
 
-  const DefoMeasurement* measurement = new DefoMeasurement(location);
+  if (!keep) {
+    
+    DefoPreviewMeasurement * measurement = new DefoPreviewMeasurement(location);
+  
+    listModel_->addMeasurement(measurement);
+    selectionModel_->setSelection(measurement);
 
-  // TODO save when needed, i.e. always from now on
-  QDateTime dt = measurement->getTimeStamp();
+  } else {
 
-  // Create with first picture taken
-  if (!currentDir_.exists())
-    currentDir_.mkpath(currentDir_.absolutePath());
+    DefoMeasurement * measurement = new DefoMeasurement(location);
+    
+    // TODO save when needed, i.e. always from now on
+    QDateTime dt = measurement->getTimeStamp();
 
-  QString imageLocation = currentDir_.absoluteFilePath("%1.jpg");
-  imageLocation = imageLocation.arg(dt.toString("yyyyMMddhhmmss"));
+    // Create with first picture taken
+    if (!currentDir_.exists())
+      currentDir_.mkpath(currentDir_.absolutePath());
+    
+    QString imageLocation = currentDir_.absoluteFilePath("%1.jpg");
+    imageLocation = imageLocation.arg(dt.toString("yyyyMMddhhmmss"));
+    
+    measurement->setImageLocation(imageLocation);
 
-  QFile file(cameraModel_->getLastPictureLocation());
-  file.copy(imageLocation);
-  file.close();
+    QFile file(cameraModel_->getLastPictureLocation());
+    file.copy(imageLocation);
+    file.close();
 
-  listModel_->addMeasurement( measurement );
-  selectionModel_->setSelection(measurement);
+    // acquire status information and store in measurement
+    measurement->readExifData();
+    measurement->acquireData(pointModel_);
+    
+    measurement->write(currentDir_.absolutePath());
 
+    listModel_->addMeasurement(measurement);
+    selectionModel_->setSelection(measurement);
+
+    listModel_->write(currentDir_.absolutePath());
+  }
 }
 
 /* Coordinate binning test */
@@ -240,7 +259,7 @@ void TestWindow::writePoints()
 
   if (file.length() > 0) {
     CoordinateSaver saver(file);
-    const DefoMeasurement* meas = selectionModel_->getSelection();
+    const DefoMeasurementBase* meas = selectionModel_->getSelection();
     const DefoPointCollection* points = listModel_->getMeasurementPoints(meas);
 
     for ( DefoPointCollection::const_iterator it = points->begin()
@@ -291,7 +310,7 @@ void Photographer::takePicture() {
 //  pictureInterval_ *= 2;
 //  timer_->setInterval(pictureInterval_);
 
-  cameraModel_->acquirePicture();
+  cameraModel_->acquirePicture(true);
 
 }
 
@@ -300,4 +319,23 @@ void Photographer::setCameraState(State state) {
     timer_.start();
   else
     timer_.stop();
+}
+
+ScriptWindow::ScriptWindow(QWidget *parent) :
+    QMainWindow(parent)
+{
+  QHBoxLayout *layout = new QHBoxLayout();
+  QWidget *central = new QWidget();
+  central->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);
+  central->setLayout(layout);
+  
+  DefoCameraModel* cameraModel = new DefoCameraModel(this);
+
+  //DefoScriptModel* script = new DefoScriptModel(cameraModel, this);
+  //DefoScriptWidget* scriptWidget = new DefoScriptWidget(script, this);
+  //scriptWidget->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);
+
+  //layout->addWidget(scriptWidget);
+
+  setCentralWidget( central );
 }
