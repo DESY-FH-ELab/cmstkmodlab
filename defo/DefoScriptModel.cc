@@ -1,20 +1,28 @@
 #include <QFile>
 #include <QTextStream>
+#include <QPlainTextDocumentLayout>
+#include <QFont>
 
 #include "DefoScriptModel.h"
 
 DefoScriptModel::DefoScriptModel(
-    DefoCameraModel* cameraModel
+    DefoConradModel* conradModel
+  , DefoCameraModel* cameraModel
   , QObject *parent
 ) :
     QObject(parent)
+  , conradModel_(conradModel)
   , cameraModel_(cameraModel)
 {
   script_ = new QTextDocument(this);
+  script_->setDocumentLayout(new QPlainTextDocumentLayout(script_));
+  script_->setDefaultFont(QFont("Courier New",10));
+
   currentScriptFilename_ = QString();
 
   scriptThread_ = new DefoScriptThread(
       this
+    , conradModel_
     , cameraModel_
     , this
   );
@@ -49,35 +57,26 @@ void DefoScriptModel::saveScript(const QString filename) {
 
 void DefoScriptModel::executeScript() {
 
-  std::cout << "void DefoScriptModel::executeScript()" << std::endl;
-
   scriptThread_->executeScript(script_->toPlainText());
-
 }
 
 void DefoScriptModel::abortScript() {
 
-  std::cout << "void DefoScriptModel::abortScript()" << std::endl;
-
   scriptThread_->abortScript();
-
 }
 
 void DefoScriptModel::executionStarted() {
 
-  std::cout << "void DefoScriptModel::executionStarted()" << std::endl;
   executionTime_ = 0;
   executionTimer_.start(1000);
 }
 
 void DefoScriptModel::executionFinished() {
 
-  std::cout << "void DefoScriptModel::executionFinished()" << std::endl;
   executionTimer_.stop();  
 }
 
 void DefoScriptModel::executionHeartBeat() {
 
   executionTime_++;
-
 }

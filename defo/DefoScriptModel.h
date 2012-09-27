@@ -5,6 +5,7 @@
 #include <QTimer>
 #include <QTextDocument>
 
+#include "DefoConradModel.h"
 #include "DefoCameraModel.h"
 #include "DefoScriptThread.h"
 
@@ -15,7 +16,8 @@ class DefoScriptModel :
 public:
 
   explicit DefoScriptModel(
-      DefoCameraModel* cameraModel
+      DefoConradModel* conradModel
+    , DefoCameraModel* cameraModel
     , QObject *parent = 0
   );
 
@@ -42,6 +44,7 @@ protected:
 
   QTimer executionTimer_;
   int executionTime_;
+  DefoConradModel* conradModel_;
   DefoCameraModel* cameraModel_;
   DefoScriptThread* scriptThread_;
 

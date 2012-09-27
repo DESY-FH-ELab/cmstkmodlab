@@ -136,11 +136,11 @@ void DefoCameraModel::setDeviceState(State state) {
 }
 
 /// Instruct the camera to take a picture and cache the file in a QImage.
-void DefoCameraModel::acquirePicture() {
+void DefoCameraModel::acquirePicture(bool keep) {
 
     location_ = controller_->acquirePhoto().c_str();
     image_ = QImage(location_);
-    emit newImage(location_);
+    emit newImage(location_, keep);
 }
 
 /// Instruct the camera to take a picture and cache the file in a QImage.

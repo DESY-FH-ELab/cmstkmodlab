@@ -44,7 +44,7 @@ public:
 public slots:
   virtual void setDeviceEnabled( bool enabled );
   virtual void setLiveViewEnabled( bool enabled );
-  void acquirePicture();
+  void acquirePicture(bool keep);
   void acquireLiveViewPicture();
 
 protected:
@@ -64,7 +64,7 @@ protected:
 signals:
   void deviceStateChanged(State newState);
   void deviceOptionChanged(DefoCameraModel::Option option, int newValue);
-  void newImage(QString location);
+  void newImage(QString location, bool keep);
   void liveViewModeChanged(bool state);
   void newLiveViewImage(QString location);
 };

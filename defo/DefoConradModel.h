@@ -69,6 +69,8 @@ public slots:
   // Methods for control and status querying of the device itself, as specified
   // by the abstract parent class
   void setDeviceEnabled( bool enabled );
+  void enableSwitch( DefoConradModel::DeviceSwitch device );
+  void disableSwitch( DefoConradModel::DeviceSwitch device );
 
 protected:
   void initialize();

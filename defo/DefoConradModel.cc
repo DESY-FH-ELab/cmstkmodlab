@@ -24,6 +24,14 @@ void DefoConradModel::setDeviceEnabled(bool enabled) {
   DefoAbstractDeviceModel::setDeviceEnabled(enabled);
 }
 
+void DefoConradModel::enableSwitch( DefoConradModel::DeviceSwitch device ) {
+  setSwitchEnabled(device, true);
+}
+
+void DefoConradModel::disableSwitch( DefoConradModel::DeviceSwitch device ) {
+  setSwitchEnabled(device, false);
+}
+
 /**
   Auto-detects Conrad card through /dev/ttyUSB* files and tests the connection.
   */

@@ -2,6 +2,7 @@
 #define DEFOSCRIPTABLECAMERA_H
 
 #include <QObject>
+#include <QMutex>
 
 #include "DefoCameraModel.h"
 
@@ -15,11 +16,16 @@ public:
     , QObject *parent = 0
   );
 public slots:
-  void test1();
-  void test2(float value);
-  float getTemp1();
+  void takePicture();
+
+signals:
+  void acquirePicture(bool);
+
 protected:
   DefoCameraModel* cameraModel_;
+
+  // For thread safety
+  QMutex mutex_;
 };
 
 #endif // DEFOSCRIPTABLECAMERA_H

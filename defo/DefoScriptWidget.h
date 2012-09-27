@@ -7,9 +7,15 @@
 #include <QGridLayout>
 #include <QVBoxLayout>
 #include <QFileDialog>
-#include <QTextEdit>
+#include <QPlainTextEdit>
 
 #include "DefoScriptModel.h"
+
+class ScriptEdit : public QPlainTextEdit {
+public:
+    ScriptEdit(QWidget* parent) : QPlainTextEdit(parent) { }
+    virtual QSize sizeHint() const { return QSize(500, 400); }
+};
 
 class DefoScriptWidget : 
       public QWidget
@@ -32,7 +38,7 @@ protected:
   QPushButton* executeScriptButton_;
   QPushButton* abortScriptButton_;
   QWidget* buttons_;
-  QTextEdit* scriptEditor_;
+  ScriptEdit* scriptEditor_;
 
 protected slots:
   void openScriptButtonClicked();
@@ -41,6 +47,7 @@ protected slots:
   void executeScriptButtonClicked();
   void abortScriptButtonClicked();
 
+  void scriptChanged();
 };
 
 #endif // DEFOCAMERAWIDGET_H

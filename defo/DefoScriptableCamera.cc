@@ -1,5 +1,7 @@
 #include <iostream>
 
+#include <QMutexLocker>
+
 #include "DefoScriptableCamera.h"
 
 DefoScriptableCamera::DefoScriptableCamera(
@@ -9,17 +11,12 @@ DefoScriptableCamera::DefoScriptableCamera(
     QObject(parent)
   , cameraModel_(cameraModel)
 {
-
+  connect(this, SIGNAL(acquirePicture(bool)),
+          cameraModel_, SLOT(acquirePicture(bool)));
 }
 
-void DefoScriptableCamera::test1() {
-  std::cout << "sc: test1" << std::endl;
-}
-
-void DefoScriptableCamera::test2(float value) {
-  std::cout << "sc: test2 " << value << std::endl;
-}
-
-float DefoScriptableCamera::getTemp1() {
-  return 12.3456;
+void DefoScriptableCamera::takePicture() {
+  QMutexLocker locker(&mutex_);
+  emit(acquirePicture(true));
+  sleep(2);
 }

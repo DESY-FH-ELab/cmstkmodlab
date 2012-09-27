@@ -2,6 +2,7 @@
 #define DEFOSCRIPTABLEGLOBALS_H
 
 #include <QObject>
+#include <QMutex>
 
 #include "DefoScriptModel.h"
 
@@ -22,6 +23,9 @@ public slots:
 
 protected:
   DefoScriptModel* scriptModel_;
+
+  // For thread safety
+  QMutex mutex_;
 };
 
 #endif // DEFOSCRIPTABLEGLOBALS_H
