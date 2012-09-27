@@ -37,6 +37,7 @@ HEADERS += DefoSchedule.h \
 	   DefoArea.h \
 	   DefoHistogramView.h \
     TestWindow.h \
+    DefoMainWindow.h \
     DefoMeasurement.h \
     DefoExifReader.h \
     DefoKeithleyModel.h \
@@ -65,6 +66,7 @@ HEADERS += DefoSchedule.h \
     DefoScriptThread.h \
     DefoScriptWidget.h \
     DefoScriptableGlobals.h \
+    DefoScriptableConrad.h \
     DefoScriptableCamera.h
 
 SOURCES += defo.cc \
@@ -78,6 +80,7 @@ SOURCES += defo.cc \
 	   DefoSurfacePlot.cc \
 	   DefoHistogramView.cc \
     TestWindow.cc \
+    DefoMainWindow.cc \
     DefoMeasurement.cc \
     DefoExifReader.cc \
     DefoKeithleyModel.cc \
@@ -105,4 +108,5 @@ SOURCES += defo.cc \
     DefoScriptThread.cc \
     DefoScriptWidget.cc \
     DefoScriptableGlobals.cc \
+    DefoScriptableConrad.cc \
     DefoScriptableCamera.cc
