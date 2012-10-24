@@ -9,16 +9,16 @@ class DefoMeasurementSelectionModel : public QObject
     Q_OBJECT
 public:
   explicit DefoMeasurementSelectionModel(QObject *parent = 0);
-  const DefoMeasurement* getSelection() const;
+  const DefoMeasurementBase* getSelection() const;
 
 public slots:
-  void setSelection(const DefoMeasurement* selection);
+  void setSelection(const DefoMeasurementBase* selection);
 
 protected:
-  const DefoMeasurement* selection_;
+  const DefoMeasurementBase* selection_;
 
 signals:
-  void selectionChanged(const DefoMeasurement* selection);
+  void selectionChanged(const DefoMeasurementBase* selection);
 
 };
 

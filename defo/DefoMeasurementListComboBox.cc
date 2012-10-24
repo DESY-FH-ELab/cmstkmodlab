@@ -24,9 +24,9 @@ DefoMeasurementListComboBox::DefoMeasurementListComboBox(
   // Respond to selection changes
   connect(
         selectionModel_
-      , SIGNAL(selectionChanged(const DefoMeasurement*))
+      , SIGNAL(selectionChanged(const DefoMeasurementBase*))
       , this
-      , SLOT(setSelection(const DefoMeasurement*))
+      , SLOT(setSelection(const DefoMeasurementBase*))
   );
   connect(
         this
@@ -41,7 +41,7 @@ DefoMeasurementListComboBox::DefoMeasurementListComboBox(
 
 }
 
-const QString DefoMeasurementListComboBox::LABEL_FORMAT = "%1. %2";
+const QString DefoMeasurementListComboBox::LABEL_FORMAT = "%1. %2 %3";
 const QString DefoMeasurementListComboBox::TIME_FORMAT = "yyyy-MM-dd hh:mm:ss";
 
 void DefoMeasurementListComboBox::fillOptions(int count) {
@@ -54,7 +54,7 @@ void DefoMeasurementListComboBox::fillOptions(int count) {
   // Empty map
   indexMap_.clear();
 
-  const DefoMeasurement* measurement;
+  const DefoMeasurementBase* measurement;
 
   // Fill it up and add to view
   for (int i = 0; i < count; ++i) {
@@ -64,6 +64,7 @@ void DefoMeasurementListComboBox::fillOptions(int count) {
         LABEL_FORMAT
           .arg(i+1)
           .arg(measurement->getTimeStamp().toString(TIME_FORMAT))
+	  .arg((measurement->isPreview()==true ? "*" : ""))
     );
   }
 
@@ -72,7 +73,7 @@ void DefoMeasurementListComboBox::fillOptions(int count) {
 }
 
 void DefoMeasurementListComboBox::setSelection(
-    const DefoMeasurement *selection
+    const DefoMeasurementBase *selection
 ) {
 
   MeasurementMap::const_iterator it = indexMap_.find(selection);
