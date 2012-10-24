@@ -6,6 +6,8 @@
 #include <QDateTime>
 #include <QMutex>
 #include <QMutexLocker>
+#include <QDir>
+
 #include "DefoSurface.h"
 #include "DefoMeasurement.h"
 
@@ -18,25 +20,27 @@ public:
 
   // Deformation measurements
   int getMeasurementCount() const;
-  const DefoMeasurement* getMeasurement(int index) const;
+  const DefoMeasurementBase* getMeasurement(int index) const;
 
-  void addMeasurement(const DefoMeasurement* measurement);
+  void addMeasurement(const DefoMeasurementBase* measurement);
   const DefoPointCollection* getMeasurementPoints(
-      const DefoMeasurement* measurement
+      const DefoMeasurementBase* measurement
   );
   void setMeasurementPoints(
-      const DefoMeasurement* measurement
+      const DefoMeasurementBase* measurement
     , const DefoPointCollection* points
   );
   void appendMeasurementPoints(
-      const DefoMeasurement* measurement
+      const DefoMeasurementBase* measurement
     , const DefoPointCollection* points
   );
 
-protected:
-  std::vector<const DefoMeasurement*> measurementList_;
+  void write(const QDir& path);
 
-  typedef std::map<const DefoMeasurement*, const DefoPointCollection*> PointMap;
+protected:
+  std::vector<const DefoMeasurementBase*> measurementList_;
+
+  typedef std::map<const DefoMeasurementBase*, const DefoPointCollection*> PointMap;
   PointMap points_;
 
   // For thread safety
@@ -44,7 +48,7 @@ protected:
 
 signals:
   void measurementCountChanged(int count);
-  void pointsUpdated(const DefoMeasurement* measurement);
+  void pointsUpdated(const DefoMeasurementBase* measurement);
 
 };
 

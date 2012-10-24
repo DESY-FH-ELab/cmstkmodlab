@@ -1,3 +1,6 @@
+#include <QFile>
+#include <QXmlStreamWriter>
+
 #include "DefoMeasurementListModel.h"
 
 DefoMeasurementListModel::DefoMeasurementListModel(QObject *parent) :
@@ -11,7 +14,7 @@ DefoMeasurementListModel::DefoMeasurementListModel(QObject *parent) :
   selection.
   */
 void DefoMeasurementListModel::addMeasurement(
-    const DefoMeasurement* measurement
+    const DefoMeasurementBase* measurement
 ) {  
 
   QMutexLocker locker(&mutex_);
@@ -34,7 +37,7 @@ int DefoMeasurementListModel::getMeasurementCount() const {
 }
 
 /// Returns measurement at index i.
-const DefoMeasurement* DefoMeasurementListModel::getMeasurement(int i) const {
+const DefoMeasurementBase* DefoMeasurementListModel::getMeasurement(int i) const {
   return measurementList_.at(i);
 }
 
@@ -43,7 +46,7 @@ const DefoMeasurement* DefoMeasurementListModel::getMeasurement(int i) const {
   the image has not been scanned yet (or the measurement is not in the list).
   */
 const DefoPointCollection* DefoMeasurementListModel::getMeasurementPoints(
-    const DefoMeasurement* measurement
+    const DefoMeasurementBase* measurement
 ) {
 
   PointMap::const_iterator it = points_.find(measurement);
@@ -64,7 +67,7 @@ const DefoPointCollection* DefoMeasurementListModel::getMeasurementPoints(
   which makes the whole procedure thread safe.
   */
 void DefoMeasurementListModel::setMeasurementPoints(
-    const DefoMeasurement *measurement
+    const DefoMeasurementBase *measurement
   , const DefoPointCollection *points
 ) {
 
@@ -83,7 +86,7 @@ void DefoMeasurementListModel::setMeasurementPoints(
   copy, but this function makes the whole proces thread safe.
   */
 void DefoMeasurementListModel::appendMeasurementPoints(
-    const DefoMeasurement *measurement
+    const DefoMeasurementBase *measurement
   , const DefoPointCollection *points
 ) {
 
@@ -105,4 +108,36 @@ void DefoMeasurementListModel::appendMeasurementPoints(
 
   }
 
+}
+
+
+void DefoMeasurementListModel::write(const QDir& path)
+{
+  QString fileLocation = path.absoluteFilePath("measurements.xml");
+
+  QFile file(fileLocation);
+  if (!file.open(QIODevice::WriteOnly | QIODevice::Text | QIODevice::Truncate))
+    return;
+
+  QXmlStreamWriter stream(&file);
+  stream.setAutoFormatting(true);
+  stream.writeStartDocument();
+
+  stream.writeStartElement("DefoMeasurements");
+
+  const DefoMeasurementBase* measurement;
+  int count = 1;
+  for (int i = 0; i < this->getMeasurementCount(); ++i) {
+    measurement = this->getMeasurement(i);
+    if (measurement->isPreview()) continue;
+
+    stream.writeStartElement("DefoMeasurement");
+    stream.writeAttribute("index", QString().setNum(count++));
+    stream.writeAttribute("timestamp", measurement->getTimeStamp().toString("yyyyMMddhhmmss"));
+    stream.writeEndElement();
+  }
+
+  stream.writeEndElement();
+  
+  stream.writeEndDocument();
 }
