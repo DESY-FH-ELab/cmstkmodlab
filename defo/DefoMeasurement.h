@@ -114,8 +114,8 @@ protected:
 
   // Keithley information
   State keithleyState_;
-  std::vector<State> temperatureSensorStates_
-  std::vector<float> temperatures_
+  std::vector<State> temperatureSensorStates_;
+  std::vector<float> temperatures_;
 };
 
 #endif // _DEFOMEASUREMENT_H

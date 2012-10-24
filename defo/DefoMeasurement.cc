@@ -389,7 +389,7 @@ void DefoMeasurement::acquireData(const DefoPointRecognitionModel* model) {
 void DefoMeasurement::acquireData(const DefoConradModel* model) {
 
   conradState_ = model->getDeviceState();
-  if (conradState_ =! READY) return;
+  if (conradState_ != READY) return;
 
   panelStates_.push_back(model->getSwitchState(DefoConradModel::LIGHT_PANEL_1));
   panelStates_.push_back(model->getSwitchState(DefoConradModel::LIGHT_PANEL_2));
@@ -402,7 +402,7 @@ void DefoMeasurement::acquireData(const DefoConradModel* model) {
 void DefoMeasurement::acquireData(const DefoJulaboModel* model) {
 
   julaboState_ = model->getDeviceState();
-  if (julaboState_ =! READY) return;
+  if (julaboState_ != READY) return;
 
   circulatorState_ = model->isCirculatorEnabled();
   bathTemperature_ = model->getBathTemperature();
@@ -411,7 +411,7 @@ void DefoMeasurement::acquireData(const DefoJulaboModel* model) {
 void DefoMeasurement::acquireData(const DefoKeithleyModel* model) {
 
   keithleyState_ = model->getDeviceState();
-  if (keithleyState_ =! READY) return;
+  if (keithleyState_ != READY) return;
   
   temperatureSensorStates_.clear();
   temperatures_.clear();

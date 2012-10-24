@@ -52,7 +52,7 @@ QScriptValue DefoScriptableGlobals::eTime() {
 }
 
 QScriptValue DefoScriptableGlobals::mkUTime(int year, int month, int day,
-				    int hour, int minute, int second) {
+				    int hour, int minute, int second) const {
   QDateTime dt(QDate(year, month, day), QTime(hour, minute, second), Qt::UTC);
   uint utime = dt.toTime_t();
   return QScriptValue(utime);

@@ -51,25 +51,25 @@ void DefoScriptableJulabo::setWorkingTemperature( double temperature ) {
   emit changeWorkingTemperature(temperature);
 }
 
-QScriptValue DefoScriptableJulabo::circulator() const {
+QScriptValue DefoScriptableJulabo::circulator() {
   
   QMutexLocker locker(&mutex_);
   return QScriptValue(julaboModel_->isCirculatorEnabled());
 }
 
-QScriptValue DefoScriptableJulabo::workingTemperature() const {
+QScriptValue DefoScriptableJulabo::workingTemperature() {
   
   QMutexLocker locker(&mutex_);
-  return QScriptValue(julaboModel_->getWorkingTemperatureParameter());
+  return QScriptValue(julaboModel_->getWorkingTemperatureParameter().getValue());
 }
 
-QScriptValue DefoScriptableJulabo::bath() const {
+QScriptValue DefoScriptableJulabo::bath() {
   
   QMutexLocker locker(&mutex_);
   return QScriptValue(julaboModel_->getBathTemperature());
 }
 
-QScriptValue DefoScriptableJulabo::safety() const {
+QScriptValue DefoScriptableJulabo::safety() {
   
   QMutexLocker locker(&mutex_);
   return QScriptValue(julaboModel_->getSafetySensorTemperature());

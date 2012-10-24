@@ -24,10 +24,10 @@ public slots:
   void disableCirculator();
   void setWorkingTemperature( double temperature );
 
-  QScriptValue circulator() const;
-  QScriptValue workingTemperature() const;
-  QScriptValue bath() const;
-  QScriptValue safety() const;
+  QScriptValue circulator();
+  QScriptValue workingTemperature();
+  QScriptValue bath();
+  QScriptValue safety();
 
 signals:
   void changeP( double p );

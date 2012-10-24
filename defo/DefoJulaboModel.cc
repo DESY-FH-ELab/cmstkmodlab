@@ -26,8 +26,8 @@ DefoJulaboModel::DefoJulaboModel(float updateInterval, QObject *parent) :
   , integral_(3, 9999, 0)
   , differential_(0, 999, 0)
   , pumpPressure_(1, 4, 0)
-  , workingTemperature_(-94.99, 300.00, 2)
   , circulatorEnabled_(false)
+  , workingTemperature_(-94.99, 300.00, 2)
   , bathTemperature_(0)
   , safetySensorTemperature_(0)
   , power_(0)
@@ -258,17 +258,19 @@ void DefoJulaboModel::setPumpPressureValue(int pressure) {
 
 void DefoJulaboModel::setWorkingTemperatureValue(double value) {
 
-  if ( workingTemperature_.getValue() != value ) {
+  if ( state_ == READY ) {
 
-    float oldValue = workingTemperature_.getValue();
+    if ( workingTemperature_.getValue() != value ) {
 
-    if (   workingTemperature_.setValue(static_cast<float>(value))
-        && !controller_->SetWorkingTemperature(value)
-    )
-      workingTemperature_.setValue(oldValue);
+      float oldValue = workingTemperature_.getValue();
 
-    emit informationChanged();
+      if (   workingTemperature_.setValue(static_cast<float>(value))
+          && !controller_->SetWorkingTemperature(value)
+          )
+        workingTemperature_.setValue(oldValue);
 
+      emit informationChanged();
+
+    }
   }
-
 }

@@ -27,7 +27,7 @@ public slots:
   QScriptValue uTime() const;
   QScriptValue eTime();
   QScriptValue mkUTime(int year, int month, int day,
-                       int hour, int minute, int second);
+                       int hour, int minute, int second) const;
 
 protected:
 
