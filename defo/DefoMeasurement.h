@@ -9,8 +9,12 @@
 //#include "DefoSurface.h"
 #include "DefoSquare.h"
 #include "DefoPoint.h"
+#include "DefoState.h"
 
 #include "DefoPointRecognitionModel.h"
+#include "DefoConradModel.h"
+#include "DefoJulaboModel.h"
+#include "DefoKeithleyModel.h"
 
 class DefoMeasurementBase {
 public:
@@ -81,6 +85,9 @@ public:
   void setImageLocation(const QString& imageLocation);
   void readExifData();
   void acquireData(const DefoPointRecognitionModel* model);
+  void acquireData(const DefoConradModel* model);
+  void acquireData(const DefoJulaboModel* model);
+  void acquireData(const DefoKeithleyModel* model);
 
   void write(const QDir& path);
 
@@ -95,10 +102,20 @@ protected:
   float exifAperture_;
   int exifISO_;
 
-  /// Information about the temperature (gradient)
-  // TODO implement TemperatureSensorStatus
-  // TODO implement ChillerStatus
-  // TODO implement DevicePowerStatus or LedPanelPowerStatus
+  // Conrad information
+  State conradState_;
+  std::vector<State> panelStates_;
+  State ledState_;
+
+  // Julabo information
+  State julaboState_;
+  bool circulatorState_;
+  float bathTemperature_;
+
+  // Keithley information
+  State keithleyState_;
+  std::vector<State> temperatureSensorStates_
+  std::vector<float> temperatures_
 };
 
 #endif // _DEFOMEASUREMENT_H

@@ -384,7 +384,46 @@ void DefoMeasurement::acquireData(const DefoPointRecognitionModel* model) {
   pointRecognitionThresholds_.push_back(
      model->getThresholdValue(DefoPointRecognitionModel::THRESHOLD_3)
   );
+}
 
+void DefoMeasurement::acquireData(const DefoConradModel* model) {
+
+  conradState_ = model->getDeviceState();
+  if (conradState_ =! READY) return;
+
+  panelStates_.push_back(model->getSwitchState(DefoConradModel::LIGHT_PANEL_1));
+  panelStates_.push_back(model->getSwitchState(DefoConradModel::LIGHT_PANEL_2));
+  panelStates_.push_back(model->getSwitchState(DefoConradModel::LIGHT_PANEL_3));
+  panelStates_.push_back(model->getSwitchState(DefoConradModel::LIGHT_PANEL_4));
+  panelStates_.push_back(model->getSwitchState(DefoConradModel::LIGHT_PANEL_5));
+  ledState_ = model->getSwitchState(DefoConradModel::CALIBRATION_LEDS);
+}
+
+void DefoMeasurement::acquireData(const DefoJulaboModel* model) {
+
+  julaboState_ = model->getDeviceState();
+  if (julaboState_ =! READY) return;
+
+  circulatorState_ = model->isCirculatorEnabled();
+  bathTemperature_ = model->getBathTemperature();
+}
+
+void DefoMeasurement::acquireData(const DefoKeithleyModel* model) {
+
+  keithleyState_ = model->getDeviceState();
+  if (keithleyState_ =! READY) return;
+  
+  temperatureSensorStates_.clear();
+  temperatures_.clear();
+  
+  for (unsigned int channel = 0;channel<10;++channel) {
+    temperatureSensorStates_.push_back(model->getSensorState(channel));
+    if (temperatureSensorStates_.back()==READY) {
+      temperatures_.push_back(model->getTemperature(channel));
+    } else {
+      temperatures_.push_back(0);
+    }
+  }
 }
 
 void DefoMeasurement::write(const QDir& path)
@@ -426,6 +465,36 @@ void DefoMeasurement::write(const QDir& path)
   stream.writeStartElement("ISO");
   stream.writeAttribute("value", QString().setNum(exifISO_));
   stream.writeEndElement();
+  stream.writeEndElement();
+  
+  stream.writeStartElement("Conrad");
+  stream.writeAttribute("available", QString().setNum(conradState_==READY));
+  stream.writeStartElement("Panel1");
+  stream.writeAttribute("on", QString().setNum(panelStates_[0]==READY));
+  stream.writeEndElement();
+  stream.writeStartElement("Panel2");
+  stream.writeAttribute("on", QString().setNum(panelStates_[1]==READY));
+  stream.writeEndElement();
+  stream.writeStartElement("Panel3");
+  stream.writeAttribute("on", QString().setNum(panelStates_[2]==READY));
+  stream.writeEndElement();
+  stream.writeStartElement("Panel4");
+  stream.writeAttribute("on", QString().setNum(panelStates_[3]==READY));
+  stream.writeEndElement();
+  stream.writeStartElement("Panel5");
+  stream.writeAttribute("on", QString().setNum(panelStates_[4]==READY));
+  stream.writeEndElement();
+  stream.writeStartElement("LEDs");
+  stream.writeAttribute("on", QString().setNum(ledState_==READY));
+  stream.writeEndElement();
+  stream.writeEndElement();
+  
+  stream.writeStartElement("Julabo");
+  stream.writeAttribute("available", QString().setNum(julaboState_==READY));
+  stream.writeEndElement();
+  
+  stream.writeStartElement("Keithley");
+  stream.writeAttribute("available", QString().setNum(keithleyState_==READY));
   stream.writeEndElement();
   
   stream.writeEndElement();

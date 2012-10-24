@@ -132,7 +132,6 @@ DefoMainWindow::DefoMainWindow(QWidget *parent) :
         cfgReader.getValue<int>( "HALF_SQUARE_WIDTH" )
         );
 
-
   // POINT RECOGNITION TAB
   QTabWidget* tabs = new QTabWidget(this);
   //  tabs->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);
@@ -196,8 +195,6 @@ DefoMainWindow::DefoMainWindow(QWidget *parent) :
 
   tabWidget_->addTab(temperatureWidget, "Temperature");
 
-////  photographer = new Photographer(listModel_, cameraModel_, 5);
-
   setCentralWidget(tabWidget_);
 }
 
@@ -233,6 +230,9 @@ void DefoMainWindow::newCameraImage(QString location, bool keep) {
     // acquire status information and store in measurement
     measurement->readExifData();
     measurement->acquireData(pointModel_);
+    measurement->acquireData(conradModel_);
+    measurement->acquireData(julaboModel_);
+    measurement->acquireData(keithleyModel_);
 
     measurement->write(currentDir_.absolutePath());
 
