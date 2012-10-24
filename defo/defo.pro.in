@@ -67,7 +67,9 @@ HEADERS += DefoSchedule.h \
     DefoScriptWidget.h \
     DefoScriptableGlobals.h \
     DefoScriptableConrad.h \
-    DefoScriptableCamera.h
+    DefoScriptableCamera.h \
+    DefoScriptableJulabo.h \
+    DefoScriptableKeithley.h
 
 SOURCES += defo.cc \
            DefoSchedule.cc \
@@ -109,4 +111,6 @@ SOURCES += defo.cc \
     DefoScriptWidget.cc \
     DefoScriptableGlobals.cc \
     DefoScriptableConrad.cc \
-    DefoScriptableCamera.cc
+    DefoScriptableCamera.cc \
+    DefoScriptableJulabo.cc \
+    DefoScriptableKeithley.cc
