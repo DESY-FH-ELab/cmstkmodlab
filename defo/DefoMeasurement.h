@@ -4,14 +4,19 @@
 #include <QDateTime>
 #include <QImage>
 #include <QColor>
+#include <QDir>
 
 //#include "DefoSurface.h"
 #include "DefoSquare.h"
 #include "DefoPoint.h"
 
-class DefoMeasurement {
+#include "DefoPointRecognitionModel.h"
+
+class DefoMeasurementBase {
 public:
-  DefoMeasurement(const QString& imageLocation);
+  DefoMeasurementBase(const QString& imageLocation);
+
+  virtual bool isPreview() const = 0;
 
   const QDateTime& getTimeStamp() const;
   QImage getImage() const;
@@ -28,12 +33,7 @@ protected:
   /// (Local) date and time of measurement.
   const QDateTime timestamp_;
   /// Image of the actual 'raw' measurement.
-  const QString imageLocation_;
-  /// Information about the temperature (gradient)
-  // TODO implement TemperatureSensorStatus
-  // TODO implement ChillerStatus
-  // TODO implement CameraStatus: EXIF data in picture file
-  // TODO implement DevicePowerStatus or LedPanelPowerStatus
+  QString imageLocation_;
 
   /*
     Analysis depentent information, does not belong in 'measurement' class.
@@ -59,6 +59,46 @@ protected:
     , int threshold
   ) const;
 
+};
+
+class DefoPreviewMeasurement :
+      public DefoMeasurementBase
+{
+public:
+  DefoPreviewMeasurement(const QString& imageLocation);
+
+  bool isPreview() const { return true; }
+};
+
+class DefoMeasurement :
+      public DefoMeasurementBase
+{
+public:
+  DefoMeasurement(const QString& imageLocation);
+
+  bool isPreview() const { return false; }
+
+  void setImageLocation(const QString& imageLocation);
+  void readExifData();
+  void acquireData(const DefoPointRecognitionModel* model);
+
+  void write(const QDir& path);
+
+protected:
+
+  std::vector<int> pointRecognitionThresholds_;
+
+  // Exif information
+  float exifFocalLength_;
+  float exifExposureTime_;
+  QString exifExposureTimeString_;
+  float exifAperture_;
+  int exifISO_;
+
+  /// Information about the temperature (gradient)
+  // TODO implement TemperatureSensorStatus
+  // TODO implement ChillerStatus
+  // TODO implement DevicePowerStatus or LedPanelPowerStatus
 };
 
 #endif // _DEFOMEASUREMENT_H

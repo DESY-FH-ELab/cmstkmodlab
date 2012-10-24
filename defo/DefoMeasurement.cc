@@ -1,16 +1,22 @@
-#include "DefoMeasurement.h"
 #include <iostream>
 
-DefoMeasurement::DefoMeasurement(const QString& imageLocation) :
-    imageLocation_(imageLocation)
-  , timestamp_(QDateTime::currentDateTimeUtc())
+#include <QFile>
+#include <QXmlStreamWriter>
+
+#include "DefoExifReader.h"
+
+#include "DefoMeasurement.h"
+
+DefoMeasurementBase::DefoMeasurementBase(const QString& imageLocation) :
+    timestamp_(QDateTime::currentDateTimeUtc())
+  , imageLocation_(imageLocation)
 {}
 
-const QDateTime & DefoMeasurement::getTimeStamp() const {
+const QDateTime & DefoMeasurementBase::getTimeStamp() const {
   return timestamp_;
 }
 
-QImage DefoMeasurement::getImage() const {
+QImage DefoMeasurementBase::getImage() const {
   return QImage(imageLocation_);
 }
 
@@ -20,7 +26,7 @@ QImage DefoMeasurement::getImage() const {
   image may be provided. In the case this points to NULL, the whole image is
   searched for suitable points.
   */
-const DefoPointCollection* DefoMeasurement::findPoints(
+const DefoPointCollection* DefoMeasurementBase::findPoints(
     const QRect* searchArea
   , int step1Threshold
   , int step2Threshold
@@ -186,7 +192,7 @@ const DefoPointCollection* DefoMeasurement::findPoints(
   * of the DefoPoint. Please remark that this function does not check if there
   * is only one blue point, but tags all points exceeding the threshold!
   */
-void DefoMeasurement::determinePointColors(
+void DefoMeasurementBase::determinePointColors(
     const QImage& image
   , DefoPointCollection* points
   , int halfSquareWidth
@@ -233,7 +239,7 @@ void DefoMeasurement::determinePointColors(
   * image are taken into account. Otherwise a point at (0,0) is returned.
   */
 // FIXME DefoSquare <> QRect
-DefoPoint DefoMeasurement::getCenterOfGravity(
+DefoPoint DefoMeasurementBase::getCenterOfGravity(
     const QImage& image
   , const QRect &area
   , int threshold
@@ -288,7 +294,7 @@ DefoPoint DefoMeasurement::getCenterOfGravity(
   * outside image, only the pixels inside image are taken into account.
   * If the overlap of area and image is empty, rgb(0,0,0) is returned.
   */
-const QColor DefoMeasurement::getAverageColor(
+const QColor DefoMeasurementBase::getAverageColor(
     const QImage& image
   , const QRect &area
   , int threshold
@@ -334,4 +340,95 @@ const QColor DefoMeasurement::getAverageColor(
 
   return average;
 
+}
+
+DefoPreviewMeasurement::DefoPreviewMeasurement(const QString& imageLocation) :
+    DefoMeasurementBase(imageLocation)
+{
+
+}
+
+DefoMeasurement::DefoMeasurement(const QString& imageLocation) :
+    DefoMeasurementBase(imageLocation)
+{
+
+}
+
+void DefoMeasurement::setImageLocation(const QString& imageLocation) {
+
+  imageLocation_ = imageLocation;
+}
+  
+void DefoMeasurement::readExifData() {
+
+  DefoExifReader reader(imageLocation_);
+  reader.read();
+
+  exifFocalLength_ = reader.getFloatValue("Exif.Photo.FocalLength");
+  exifExposureTime_ = reader.getFloatValue("Exif.Photo.ExposureTime");
+  exifExposureTimeString_ = reader.getStringValue("Exif.Photo.ExposureTime");
+  exifAperture_ = reader.getLongValue("Exif.Photo.FNumber");
+  exifISO_ = reader.getLongValue("Exif.Photo.ISOSpeedRatings");
+}
+
+void DefoMeasurement::acquireData(const DefoPointRecognitionModel* model) {
+
+  pointRecognitionThresholds_.clear();
+
+  pointRecognitionThresholds_.push_back(
+     model->getThresholdValue(DefoPointRecognitionModel::THRESHOLD_1)
+  );
+  pointRecognitionThresholds_.push_back(
+     model->getThresholdValue(DefoPointRecognitionModel::THRESHOLD_2)
+  );
+  pointRecognitionThresholds_.push_back(
+     model->getThresholdValue(DefoPointRecognitionModel::THRESHOLD_3)
+  );
+
+}
+
+void DefoMeasurement::write(const QDir& path)
+{
+  QString fileLocation = path.absoluteFilePath("%1.xml");
+  fileLocation = fileLocation.arg(timestamp_.toString("yyyyMMddhhmmss"));
+
+  QFile file(fileLocation);
+  if (!file.open(QIODevice::WriteOnly | QIODevice::Text | QIODevice::Truncate))
+    return;
+
+  QXmlStreamWriter stream(&file);
+  stream.setAutoFormatting(true);
+  stream.writeStartDocument();
+
+  stream.writeStartElement("DefoMeasurement");
+  stream.writeAttribute("timestamp", timestamp_.toString("yyyyMMddhhmmss"));
+
+  stream.writeStartElement("Thresholds");
+  for (uint i=0;i<pointRecognitionThresholds_.size();++i) {
+    stream.writeStartElement("Threshold");
+    stream.writeAttribute("index", QString().setNum(i+1));
+    stream.writeAttribute("value", QString().setNum(pointRecognitionThresholds_[i]));
+    stream.writeEndElement();
+  }
+  stream.writeEndElement();
+
+  stream.writeStartElement("Exif");
+  stream.writeStartElement("FocalLength");
+  stream.writeAttribute("value", QString().setNum(exifFocalLength_));
+  stream.writeEndElement();
+  stream.writeStartElement("ExposureTime");
+  stream.writeAttribute("value", QString().setNum(exifExposureTime_));
+  stream.writeAttribute("string", exifExposureTimeString_);
+  stream.writeEndElement();
+  stream.writeStartElement("Aperture");
+  stream.writeAttribute("value", QString().setNum(exifAperture_));
+  stream.writeEndElement();
+  stream.writeStartElement("ISO");
+  stream.writeAttribute("value", QString().setNum(exifISO_));
+  stream.writeEndElement();
+  stream.writeEndElement();
+  
+  stream.writeEndElement();
+  
+  stream.writeEndDocument();
 }
