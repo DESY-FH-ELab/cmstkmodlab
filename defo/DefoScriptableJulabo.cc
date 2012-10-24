@@ -11,59 +11,66 @@ DefoScriptableJulabo::DefoScriptableJulabo(
     QObject(parent)
   , julaboModel_(julaboModel)
 {
-  //connect(this, SIGNAL(enableSwitch(DefoJulaboModel::DeviceSwitch)),
-  //       julaboModel_,SLOT(enableSwitch(DefoJulaboModel::DeviceSwitch)));
+  connect(this, SIGNAL(changeP(double)),
+          julaboModel_,SLOT(setProportionalValue(double)));
+  connect(this, SIGNAL(changeTv(double)),
+          julaboModel_,SLOT(setIntegralValue(double)));
+  connect(this, SIGNAL(changeTd(double)),
+          julaboModel_,SLOT(setDifferentialValue(double)));
+  
+  connect(this, SIGNAL(switchCirculator(bool)),
+          julaboModel_, SLOT(setCirculatorEnabled(bool)));
+
+  connect(this, SIGNAL(changeWorkingTemperature(double)),
+          julaboModel_, SLOT(setWorkingTemperatureValue(double)));
 }
 
-/*
-void DefoScriptableJulabo::enablePanel(int panel) {
+void DefoScriptableJulabo::setPID( double p, double tv, double td ) {
+
+  QMutexLocker locker(&mutex_);
+  
+  emit changeP(p);
+  emit changeTv(tv);
+  emit changeTd(td);
+}
+
+void DefoScriptableJulabo::enableCirculator() {
+
+  QMutexLocker locker(&mutex_);
+  emit switchCirculator( true );
+}
+void DefoScriptableJulabo::disableCirculator() {
+
+  QMutexLocker locker(&mutex_);
+  emit switchCirculator( false );
+}
+
+void DefoScriptableJulabo::setWorkingTemperature( double temperature ) {
+
+  QMutexLocker locker(&mutex_);
+  emit changeWorkingTemperature(temperature);
+}
+
+QScriptValue DefoScriptableJulabo::circulator() const {
   
   QMutexLocker locker(&mutex_);
-
-  if (panel<1 || panel>5) return;
-
-  emit enableSwitch(static_cast<DefoJulaboModel::DeviceSwitch>(panel-1));
+  return QScriptValue(julaboModel_->isCirculatorEnabled());
 }
 
-void DefoScriptableJulabo::disablePanel(int panel) {
+QScriptValue DefoScriptableJulabo::workingTemperature() const {
   
   QMutexLocker locker(&mutex_);
-
-  if (panel<1 || panel>5) return;
-
-  emit disableSwitch(static_cast<DefoJulaboModel::DeviceSwitch>(panel-1));
+  return QScriptValue(julaboModel_->getWorkingTemperatureParameter());
 }
 
-QScriptValue DefoScriptableJulabo::panel(int panel) {
-
+QScriptValue DefoScriptableJulabo::bath() const {
+  
   QMutexLocker locker(&mutex_);
-
-  if (panel<1 || panel>5) return QScriptValue(0);
-
-  int state = static_cast<int>(julaboModel_->getSwitchState(static_cast<DefoJulaboModel::DeviceSwitch>(panel-1)));
-  return QScriptValue(state);
+  return QScriptValue(julaboModel_->getBathTemperature());
 }
 
-void DefoScriptableJulabo::enableCalibrationLEDs() {
-
+QScriptValue DefoScriptableJulabo::safety() const {
+  
   QMutexLocker locker(&mutex_);
-
-  emit enableSwitch(DefoJulaboModel::CALIBRATION_LEDS);
+  return QScriptValue(julaboModel_->getSafetySensorTemperature());
 }
-
-void DefoScriptableJulabo::disableCalibrationLEDs() {
-
-  QMutexLocker locker(&mutex_);
-
-  emit disableSwitch(DefoJulaboModel::CALIBRATION_LEDS);
-}
-
-QScriptValue DefoScriptableJulabo::calibrationLEDs() {
-
-  QMutexLocker locker(&mutex_);
-
-  int state = static_cast<int>(julaboModel_->getSwitchState(DefoJulaboModel::CALIBRATION_LEDS));
-  return QScriptValue(state);
-}
-
-*/

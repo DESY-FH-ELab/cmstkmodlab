@@ -18,19 +18,10 @@ public:
   );
 
 public slots:
-  /*
-  void enablePanel(int panel);
-  void disablePanel(int panel);
-  QScriptValue panel(int panel);
-  void enableCalibrationLEDs();
-  void disableCalibrationLEDs();
-  QScriptValue calibrationLEDs();
-  */
-signals:
-  /*
-  void enableSwitch( DefoConradModel::DeviceSwitch device );
-  void disableSwitch( DefoConradModel::DeviceSwitch device );
-  */
+
+  QScriptValue state(unsigned int channel);
+  QScriptValue temperature(unsigned int channel);
+
 protected:
   DefoKeithleyModel* keithleyModel_;
 

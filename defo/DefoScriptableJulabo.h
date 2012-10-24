@@ -18,19 +18,24 @@ public:
   );
 
 public slots:
-  /*
-  void enablePanel(int panel);
-  void disablePanel(int panel);
-  QScriptValue panel(int panel);
-  void enableCalibrationLEDs();
-  void disableCalibrationLEDs();
-  QScriptValue calibrationLEDs();
-  */
+
+  void setPID( double p, double tv, double td );
+  void enableCirculator();
+  void disableCirculator();
+  void setWorkingTemperature( double temperature );
+
+  QScriptValue circulator() const;
+  QScriptValue workingTemperature() const;
+  QScriptValue bath() const;
+  QScriptValue safety() const;
+
 signals:
-  /*
-  void enableSwitch( DefoConradModel::DeviceSwitch device );
-  void disableSwitch( DefoConradModel::DeviceSwitch device );
-  */
+  void changeP( double p );
+  void changeTv( double tv );
+  void changeTd( double td );
+  void switchCirculator( bool );
+  void changeWorkingTemperature( double temperature );
+
 protected:
   DefoJulaboModel* julaboModel_;
 

@@ -11,59 +11,24 @@ DefoScriptableKeithley::DefoScriptableKeithley(
     QObject(parent)
   , keithleyModel_(keithleyModel)
 {
-  //connect(this, SIGNAL(enableSwitch(DefoKeithleyModel::DeviceSwitch)),
-  //       keithleyModel_,SLOT(enableSwitch(DefoKeithleyModel::DeviceSwitch)));
+
 }
 
-/*
-void DefoScriptableKeithley::enablePanel(int panel) {
-  
-  QMutexLocker locker(&mutex_);
-
-  if (panel<1 || panel>5) return;
-
-  emit enableSwitch(static_cast<DefoKeithleyModel::DeviceSwitch>(panel-1));
-}
-
-void DefoScriptableKeithley::disablePanel(int panel) {
-  
-  QMutexLocker locker(&mutex_);
-
-  if (panel<1 || panel>5) return;
-
-  emit disableSwitch(static_cast<DefoKeithleyModel::DeviceSwitch>(panel-1));
-}
-
-QScriptValue DefoScriptableKeithley::panel(int panel) {
+QScriptValue DefoScriptableKeithley::state(unsigned int channel) {
 
   QMutexLocker locker(&mutex_);
 
-  if (panel<1 || panel>5) return QScriptValue(0);
+  if (channel>9) return QScriptValue(0);
 
-  int state = static_cast<int>(keithleyModel_->getSwitchState(static_cast<DefoKeithleyModel::DeviceSwitch>(panel-1)));
+  int state = static_cast<int>(keithleyModel_->getSensorState(channel));
   return QScriptValue(state);
 }
 
-void DefoScriptableKeithley::enableCalibrationLEDs() {
+QScriptValue DefoScriptableKeithley::temperature(unsigned int channel) {
 
   QMutexLocker locker(&mutex_);
 
-  emit enableSwitch(DefoKeithleyModel::CALIBRATION_LEDS);
+  if (channel>9) return QScriptValue(-99);
+
+  return QScriptValue(keithleyModel_->getTemperature(channel));
 }
-
-void DefoScriptableKeithley::disableCalibrationLEDs() {
-
-  QMutexLocker locker(&mutex_);
-
-  emit disableSwitch(DefoKeithleyModel::CALIBRATION_LEDS);
-}
-
-QScriptValue DefoScriptableKeithley::calibrationLEDs() {
-
-  QMutexLocker locker(&mutex_);
-
-  int state = static_cast<int>(keithleyModel_->getSwitchState(DefoKeithleyModel::CALIBRATION_LEDS));
-  return QScriptValue(state);
-}
-
-*/
