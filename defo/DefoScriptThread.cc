@@ -4,17 +4,23 @@
 #include "DefoScriptableGlobals.h"
 #include "DefoScriptableConrad.h"
 #include "DefoScriptableCamera.h"
+#include "DefoScriptableJulabo.h"
+#include "DefoScriptableKeithley.h"
 
 DefoScriptThread::DefoScriptThread(
     DefoScriptModel* scriptModel
   , DefoConradModel* conradModel
   , DefoCameraModel* cameraModel
+  , DefoJulaboModel* julaboModel
+  , DefoKeithleyModel* keithleyModel
   , QObject *parent
 ) :
     QThread(parent)
   , scriptModel_(scriptModel)
   , conradModel_(conradModel)
   , cameraModel_(cameraModel)
+  , julaboModel_(julaboModel)
+  , keithleyModel_(keithleyModel)
 {
 
 }
@@ -36,6 +42,14 @@ void DefoScriptThread::executeScript(const QString & script)
   DefoScriptableCamera *cameraObj = new DefoScriptableCamera(cameraModel_, this);
   QScriptValue cameraValue = engine_->newQObject(cameraObj);
   engine_->globalObject().setProperty("camera", cameraValue);
+
+  DefoScriptableJulabo *julaboObj = new DefoScriptableJulabo(julaboModel_, this);
+  QScriptValue julaboValue = engine_->newQObject(julaboObj);
+  engine_->globalObject().setProperty("julabo", julaboValue);
+
+  DefoScriptableKeithley *keithleyObj = new DefoScriptableKeithley(keithleyModel_, this);
+  QScriptValue keithleyValue = engine_->newQObject(keithleyObj);
+  engine_->globalObject().setProperty("keithley", keithleyValue);
 
   start();
   // engine_->evaluate(script_);

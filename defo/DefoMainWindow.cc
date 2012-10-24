@@ -40,6 +40,8 @@ DefoMainWindow::DefoMainWindow(QWidget *parent) :
   scriptModel_ = new DefoScriptModel(
         conradModel_
       , cameraModel_
+      , julaboModel_
+      , keithleyModel_
       , this
   );
 

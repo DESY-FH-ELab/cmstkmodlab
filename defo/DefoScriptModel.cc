@@ -8,11 +8,15 @@
 DefoScriptModel::DefoScriptModel(
     DefoConradModel* conradModel
   , DefoCameraModel* cameraModel
+  , DefoJulaboModel* julaboModel
+  , DefoKeithleyModel* keithleyModel
   , QObject *parent
 ) :
     QObject(parent)
   , conradModel_(conradModel)
   , cameraModel_(cameraModel)
+  , julaboModel_(julaboModel)
+  , keithleyModel_(keithleyModel)
 {
   script_ = new QTextDocument(this);
   script_->setDocumentLayout(new QPlainTextDocumentLayout(script_));
@@ -24,6 +28,8 @@ DefoScriptModel::DefoScriptModel(
       this
     , conradModel_
     , cameraModel_
+    , julaboModel_
+    , keithleyModel_
     , this
   );
   connect(scriptThread_, SIGNAL(started()), this, SLOT(executionStarted()));

@@ -7,6 +7,8 @@
 
 #include "DefoConradModel.h"
 #include "DefoCameraModel.h"
+#include "DefoJulaboModel.h"
+#include "DefoKeithleyModel.h"
 #include "DefoScriptThread.h"
 
 class DefoScriptModel :
@@ -18,6 +20,8 @@ public:
   explicit DefoScriptModel(
       DefoConradModel* conradModel
     , DefoCameraModel* cameraModel
+    , DefoJulaboModel* julaboModel
+    , DefoKeithleyModel* keithleyModel
     , QObject *parent = 0
   );
 
@@ -46,6 +50,8 @@ protected:
   int executionTime_;
   DefoConradModel* conradModel_;
   DefoCameraModel* cameraModel_;
+  DefoJulaboModel* julaboModel_;
+  DefoKeithleyModel* keithleyModel_;
   DefoScriptThread* scriptThread_;
 
 signals:

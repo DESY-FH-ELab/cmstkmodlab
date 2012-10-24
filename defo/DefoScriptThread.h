@@ -9,6 +9,8 @@ class DefoScriptModel;
 
 #include "DefoConradModel.h"
 #include "DefoCameraModel.h"
+#include "DefoJulaboModel.h"
+#include "DefoKeithleyModel.h"
 
 class DefoScriptThread : 
       public QThread
@@ -18,6 +20,8 @@ public:
       DefoScriptModel* scriptModel
     , DefoConradModel* conradModel
     , DefoCameraModel* cameraModel
+    , DefoJulaboModel* julaboModel
+    , DefoKeithleyModel* keithleyModel
     , QObject *parent = 0
   );
 
@@ -32,6 +36,8 @@ protected:
   DefoScriptModel* scriptModel_;
   DefoConradModel* conradModel_;
   DefoCameraModel* cameraModel_;
+  DefoJulaboModel* julaboModel_;
+  DefoKeithleyModel* keithleyModel_;
 };
 
 #endif // DEFOSCRIPTTHREAD_H
