@@ -41,14 +41,14 @@ DefoImageWidget::DefoImageWidget(
 
   connect(
           selectionModel_
-        , SIGNAL(selectionChanged(const DefoMeasurement*))
+        , SIGNAL(selectionChanged(const DefoMeasurementBase*))
         , this
-        , SLOT(selectionChanged(const DefoMeasurement*))
+        , SLOT(selectionChanged(const DefoMeasurementBase*))
   );
 
 }
 
-void DefoImageWidget::selectionChanged(const DefoMeasurement* /* measurement */) {
+void DefoImageWidget::selectionChanged(const DefoMeasurementBase* /* measurement */) {
   update();
 }
 
@@ -67,7 +67,7 @@ void DefoImageWidget::paintEvent(QPaintEvent *event) {
       */
     painter.save();
 
-    const DefoMeasurement* measurement = selectionModel_->getSelection();
+    const DefoMeasurementBase* measurement = selectionModel_->getSelection();
     QImage prepared = prepareImage(measurement->getImage());
 
     painter.translate(prepared.height(), 0);
@@ -194,7 +194,7 @@ void DefoImageThresholdsWidget::thresholdChanged(
 }
 
 void DefoImageThresholdsWidget::selectionChanged(
-    const DefoMeasurement* measurement
+    const DefoMeasurementBase* measurement
 ) {
   updateCache();
   DefoImageWidget::selectionChanged(measurement);
@@ -203,7 +203,7 @@ void DefoImageThresholdsWidget::selectionChanged(
 /// Updates the current image cache.
 void DefoImageThresholdsWidget::updateCache() {
 
-  const DefoMeasurement* measurement = selectionModel_->getSelection();
+  const DefoMeasurementBase* measurement = selectionModel_->getSelection();
 
   if (measurement != NULL) {
     imageCache_ = QImage(selectionModel_->getSelection()->getImage());
@@ -250,12 +250,12 @@ DefoImagePointsWidget::DefoImagePointsWidget(
 {
   connect(
         listModel_
-      , SIGNAL(pointsUpdated(const DefoMeasurement*))
-      , SLOT(pointsUpdated(const DefoMeasurement*))
+      , SIGNAL(pointsUpdated(const DefoMeasurementBase*))
+      , SLOT(pointsUpdated(const DefoMeasurementBase*))
   );
 }
 
-void DefoImagePointsWidget::pointsUpdated(const DefoMeasurement * /* measurement */) {
+void DefoImagePointsWidget::pointsUpdated(const DefoMeasurementBase * /* measurement */) {
   update();
 }
 
@@ -263,7 +263,7 @@ void DefoImagePointsWidget::paintEvent(QPaintEvent *event) {
 
   DefoRawImageWidget::paintEvent(event);
 
-  const DefoMeasurement* measurement = selectionModel_->getSelection();
+  const DefoMeasurementBase* measurement = selectionModel_->getSelection();
 
   if ( measurement != NULL
     && listModel_->getMeasurementPoints(measurement) != NULL
