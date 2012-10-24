@@ -3,6 +3,7 @@
 
 #include <QObject>
 #include <QMutex>
+#include <QScriptValue>
 
 #include "DefoScriptModel.h"
 
@@ -10,18 +11,26 @@ class DefoScriptableGlobals :
       public QObject
 {
   Q_OBJECT
+
 public:
   explicit DefoScriptableGlobals(
       DefoScriptModel* scriptModel
     , QObject *parent = 0
   );
+
 public slots:
   void wait(int seconds);
-  uint eTime();
-  uint uTime();
-  uint mkUTime(int year, int month, int day, int hour, int minute, int second);
+  void print(int value);
+  void print(uint value);
+  void print(double value);
+  void print(QString text);
+  QScriptValue uTime() const;
+  QScriptValue eTime();
+  QScriptValue mkUTime(int year, int month, int day,
+                       int hour, int minute, int second);
 
 protected:
+
   DefoScriptModel* scriptModel_;
 
   // For thread safety

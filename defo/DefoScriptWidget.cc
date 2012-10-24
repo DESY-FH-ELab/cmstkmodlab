@@ -1,3 +1,6 @@
+#include <QGroupBox>
+#include <QVBoxLayout>
+
 #include "DefoScriptWidget.h"
 
 DefoScriptWidget::DefoScriptWidget(
@@ -13,12 +16,11 @@ DefoScriptWidget::DefoScriptWidget(
   setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);
 
   // Camera buttons
+  QGridLayout *buttonLayout = new QGridLayout();
   buttons_ = new QWidget(this);
   buttons_->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);
-  layout->addWidget(buttons_);
-
-  QGridLayout *buttonLayout = new QGridLayout();
   buttons_->setLayout(buttonLayout);
+  layout->addWidget(buttons_);
 
   // load a script
   openScriptButton_ = new QPushButton("&Open script", buttons_);
@@ -46,11 +48,18 @@ DefoScriptWidget::DefoScriptWidget(
   buttonLayout->addWidget(abortScriptButton_, 0, 4);
 
   // script editor
-  scriptEditor_ = new QTextEdit(this);
+  scriptEditor_ = new ScriptEdit(this);
   scriptEditor_->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);
+  scriptEditor_->resize(600, 400);
   scriptEditor_->setDocument(scriptModel_->scriptDocument());
-  scriptEditor_->setAcceptRichText(false);
-  layout->addWidget(scriptEditor_);
+  scriptEditor_->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
+  scriptEditor_->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
+  layout->addWidget(scriptEditor_, 1);
+
+  connect(scriptModel_->scriptDocument(), SIGNAL(contentsChanged()),
+          this, SLOT(scriptChanged()));
+
+  updateGeometry();
 }
 
 void DefoScriptWidget::openScriptButtonClicked() {
@@ -62,7 +71,6 @@ void DefoScriptWidget::openScriptButtonClicked() {
 						, 0
 						, 0);
   if (!filename.isNull()) scriptModel_->openScript(filename);
-
 }
 
 void DefoScriptWidget::saveScriptButtonClicked() {
@@ -85,17 +93,18 @@ void DefoScriptWidget::saveAsScriptButtonClicked() {
   if (filename.isNull()) return;
   if (!filename.endsWith("dsr")) filename += ".dsr";
   scriptModel_->saveScript(filename);
-
 }
 
 void DefoScriptWidget::executeScriptButtonClicked() {
 
   scriptModel_->executeScript();
-
 }
 
 void DefoScriptWidget::abortScriptButtonClicked() {
 
   scriptModel_->abortScript();
+}
+
+void DefoScriptWidget::scriptChanged() {
 
 }

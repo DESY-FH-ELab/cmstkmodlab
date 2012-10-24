@@ -7,6 +7,7 @@
 
 class DefoScriptModel;
 
+#include "DefoConradModel.h"
 #include "DefoCameraModel.h"
 
 class DefoScriptThread : 
@@ -15,6 +16,7 @@ class DefoScriptThread :
 public:
   explicit DefoScriptThread(
       DefoScriptModel* scriptModel
+    , DefoConradModel* conradModel
     , DefoCameraModel* cameraModel
     , QObject *parent = 0
   );
@@ -28,6 +30,7 @@ protected:
   QScriptEngine* engine_;
 
   DefoScriptModel* scriptModel_;
+  DefoConradModel* conradModel_;
   DefoCameraModel* cameraModel_;
 };
 
