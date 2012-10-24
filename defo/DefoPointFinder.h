@@ -13,14 +13,14 @@ public:
   explicit DefoPointFinder(
       DefoMeasurementListModel *listModel
     , DefoPointRecognitionModel *pointModel
-    , const DefoMeasurement *measurement
+    , const DefoMeasurementBase *measurement
     , const QRect& searchRectangle
   );
 
 protected:
   DefoMeasurementListModel* listModel_;
-  DefoPointRecognitionModel *pointModel_;
-  const DefoMeasurement* measurement_;
+  DefoPointRecognitionModel* pointModel_;
+  const DefoMeasurementBase* measurement_;
   const QRect searchArea_;
 
   void run();

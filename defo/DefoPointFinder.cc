@@ -1,9 +1,10 @@
+
 #include "DefoPointFinder.h"
 
 DefoPointFinder::DefoPointFinder(
     DefoMeasurementListModel *listModel
   , DefoPointRecognitionModel *pointModel
-  , const DefoMeasurement *measurement
+  , const DefoMeasurementBase *measurement
   , const QRect &searchRectangle
 ) :
     listModel_(listModel)
