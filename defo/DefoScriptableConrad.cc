@@ -13,9 +13,11 @@ DefoScriptableConrad::DefoScriptableConrad(
 {
   connect(this, SIGNAL(enableSwitch(DefoConradModel::DeviceSwitch)),
           conradModel_,SLOT(enableSwitch(DefoConradModel::DeviceSwitch)));
+  connect(this, SIGNAL(disableSwitch(DefoConradModel::DeviceSwitch)),
+          conradModel_,SLOT(disableSwitch(DefoConradModel::DeviceSwitch)));
 }
 
-void DefoScriptableConrad::enablePanel(int panel) {
+void DefoScriptableConrad::enablePanel(unsigned int panel) {
   
   QMutexLocker locker(&mutex_);
 
@@ -24,7 +26,7 @@ void DefoScriptableConrad::enablePanel(int panel) {
   emit enableSwitch(static_cast<DefoConradModel::DeviceSwitch>(panel-1));
 }
 
-void DefoScriptableConrad::disablePanel(int panel) {
+void DefoScriptableConrad::disablePanel(unsigned int panel) {
   
   QMutexLocker locker(&mutex_);
 
@@ -33,7 +35,7 @@ void DefoScriptableConrad::disablePanel(int panel) {
   emit disableSwitch(static_cast<DefoConradModel::DeviceSwitch>(panel-1));
 }
 
-QScriptValue DefoScriptableConrad::panel(int panel) {
+QScriptValue DefoScriptableConrad::panel(unsigned int panel) {
 
   QMutexLocker locker(&mutex_);
 
