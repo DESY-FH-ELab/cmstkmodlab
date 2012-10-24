@@ -198,3 +198,84 @@ DefoMainWindow::DefoMainWindow(QWidget *parent) :
 
   setCentralWidget(tabWidget_);
 }
+
+void DefoMainWindow::newCameraImage(QString location, bool keep) {
+
+  if (!keep) {
+
+    DefoPreviewMeasurement * measurement = new DefoPreviewMeasurement(location);
+
+    listModel_->addMeasurement(measurement);
+    selectionModel_->setSelection(measurement);
+
+  } else {
+
+    DefoMeasurement * measurement = new DefoMeasurement(location);
+
+    // TODO save when needed, i.e. always from now on
+    QDateTime dt = measurement->getTimeStamp();
+
+    // Create with first picture taken
+    if (!currentDir_.exists())
+      currentDir_.mkpath(currentDir_.absolutePath());
+
+    QString imageLocation = currentDir_.absoluteFilePath("%1.jpg");
+    imageLocation = imageLocation.arg(dt.toString("yyyyMMddhhmmss"));
+
+    measurement->setImageLocation(imageLocation);
+
+    QFile file(cameraModel_->getLastPictureLocation());
+    file.copy(imageLocation);
+    file.close();
+
+    // acquire status information and store in measurement
+    measurement->readExifData();
+    measurement->acquireData(pointModel_);
+
+    measurement->write(currentDir_.absolutePath());
+
+    listModel_->addMeasurement(measurement);
+    selectionModel_->setSelection(measurement);
+
+    listModel_->write(currentDir_.absolutePath());
+  }
+}
+
+void DefoMainWindow::pointButtonClicked() {
+
+  const DefoMeasurementBase* measurement = selectionModel_->getSelection();
+  listModel_->setMeasurementPoints(measurement, NULL);
+
+  DefoPointFinder* finder;
+  QRect searchArea = measurement->getImage().rect();
+  const int width = searchArea.width();
+
+  /*
+    The number of blocks depends on the number of cores available and the
+    number of cores you want to be available for other tasks.
+    */
+  const int blocks = 6;
+
+  for (double i = 0; i < blocks; ++i) {
+
+    /*
+      In Qt the rectangle borders are placed ON the pixels, in contrast to e.g.
+      Swing where they are in between the pixels.
+      As a consequence, the right-side border has to be one pixel to the left in
+      order to avoid overlapping rectangles.
+      */
+    searchArea.setLeft( i/blocks * width );
+    searchArea.setRight( (i+1)/blocks * width - 1 );
+
+    finder = new DefoPointFinder(
+        listModel_
+      , pointModel_
+      , measurement
+      , searchArea
+    );
+
+    finder->start();
+
+  }
+
+}
