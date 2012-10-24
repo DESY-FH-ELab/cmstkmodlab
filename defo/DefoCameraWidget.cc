@@ -48,7 +48,7 @@ DefoCameraWidget::DefoCameraWidget(
   );
   // TODO connect camera model state change
   enableCheckBox_->setChecked(cameraModel_->getDeviceState() == READY);
-  buttonLayout->addWidget(enableCheckBox_, 0, 3);
+  buttonLayout->addWidget(enableCheckBox_, 0, 4);
 
   connect(
         cameraModel_
@@ -64,7 +64,7 @@ DefoCameraWidget::DefoCameraWidget(
       , SLOT(liveViewModeChanged(bool))
   );
 
-  // Taking a picture
+  // Taking a preview picture
   previewButton_ = new QPushButton("&Take preview", buttons_);
   buttonLayout->addWidget(previewButton_, 0, 1);
 
@@ -72,12 +72,26 @@ DefoCameraWidget::DefoCameraWidget(
 //  connect(saveFileButton, SIGNAL(clicked()), this, SLOT(saveButtonClicked()));
 //  buttonLayout->addWidget(saveFileButton, 0, 2);
 
-
   connect(
           previewButton_
         , SIGNAL(clicked())
-        , cameraModel_
-        , SLOT(acquirePicture())
+        , this
+        , SLOT(previewButtonClicked())
+  );
+
+  // Taking a picture
+  pictureButton_ = new QPushButton("&Take picture", buttons_);
+  buttonLayout->addWidget(pictureButton_, 0, 2);
+
+//  QPushButton *saveFileButton = new QPushButton("&Save picture", buttons_);
+//  connect(saveFileButton, SIGNAL(clicked()), this, SLOT(saveButtonClicked()));
+//  buttonLayout->addWidget(saveFileButton, 0, 2);
+
+  connect(
+          pictureButton_
+        , SIGNAL(clicked())
+        , this
+        , SLOT(pictureButtonClicked())
   );
 
   // Switching into preview mode
@@ -88,7 +102,7 @@ DefoCameraWidget::DefoCameraWidget(
         , cameraModel_
         , SLOT(setLiveViewEnabled(bool))
   );
-  buttonLayout->addWidget(liveviewCheckBox_, 0, 2);
+  buttonLayout->addWidget(liveviewCheckBox_, 0, 3);
 
   // Image display
   imageStack_ = new QStackedWidget(this);
@@ -139,6 +153,7 @@ DefoCameraWidget::DefoCameraWidget(
 
   frameLayout->addWidget(buttonsCamera_);
 
+
   rawImage_ = new DefoRawImageWidget(selectionModel_, buttonsNRawImage_);
   frameLayout->addWidget(rawImage_);
 
@@ -165,6 +180,7 @@ void DefoCameraWidget::deviceStateChanged(State newState) {
 
   enableCheckBox_->setChecked( newState == INITIALIZING || newState == READY );
   previewButton_->setEnabled( newState == READY );
+  pictureButton_->setEnabled( newState == READY );
   liveviewCheckBox_->setEnabled( newState == READY );
 
 }
@@ -177,13 +193,15 @@ void DefoCameraWidget::liveViewModeChanged( bool enabled ) {
     loadFileButton_->setEnabled( false );
     enableCheckBox_->setEnabled( false );
     previewButton_->setEnabled( false );
-    
+    pictureButton_->setEnabled( false );
+
   } else {
     imageStack_->setCurrentWidget(buttonsNRawImage_);
 
     loadFileButton_->setEnabled( true );
     enableCheckBox_->setEnabled( true );
     previewButton_->setEnabled( true );
+    pictureButton_->setEnabled( true );
   }
 }
 
@@ -194,6 +212,16 @@ void DefoCameraWidget::openButtonClicked() {
   listModel_->addMeasurement( measurement );
   selectionModel_->setSelection( measurement );
 
+}
+
+void DefoCameraWidget::previewButtonClicked() {
+
+  cameraModel_->acquirePicture(false);
+}
+
+void DefoCameraWidget::pictureButtonClicked() {
+
+  cameraModel_->acquirePicture(true);
 }
 
 //void DefoCameraWidget::saveButtonClicked() {
