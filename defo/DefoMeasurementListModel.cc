@@ -149,7 +149,6 @@ void DefoMeasurementListModel::clear() {
 
 void DefoMeasurementListModel::read(const QString& filename) {
 
-  //std::cout << filename.toAscii().constData() << std::endl;
   QFile file(filename);
   if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
     return;

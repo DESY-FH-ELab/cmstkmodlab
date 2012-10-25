@@ -495,10 +495,30 @@ void DefoMeasurement::write(const QDir& path)
   
   stream.writeStartElement("Julabo");
   stream.writeAttribute("available", QString().setNum(julaboState_==READY));
+  if (julaboState_==READY) {
+    stream.writeStartElement("Circulator");
+    stream.writeAttribute("on", QString().setNum((int)circulatorState_));
+    stream.writeEndElement();
+    stream.writeStartElement("BathTemperature);
+    stream.writeAttribute("value", QString().setNum(bathTemperature_));
+    stream.writeEndElement();
+  }
   stream.writeEndElement();
   
   stream.writeStartElement("Keithley");
   stream.writeAttribute("available", QString().setNum(keithleyState_==READY));
+  if (keithleyState_==READY) {
+    for (unsigned int idx = 0;
+         idx < temperatureSensorStates_.count() && idx < temperatures_.count();
+         ++idx) {
+      if (temperatureSensorStates_[idx]==READY) {
+        stream.writeStartElement("TemperatureSensor");
+        stream.writeAttribute("index", QString().setNum(idx);
+        stream.writeAttribute("temperature", QString().setNum(temperatures_[idx]);
+        stream.writeEndElement();
+      }
+    }
+  }
   stream.writeEndElement();
   
   stream.writeEndElement();
@@ -508,4 +528,110 @@ void DefoMeasurement::write(const QDir& path)
 
 void DefoMeasurement::read(const QString& filename) {
 
+  QFile file(filename);
+  if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
+    return;
+
+  QXmlStreamReader stream(&file);
+
+  while (!stream.atEnd()) {
+    stream.readNextStartElement();
+
+    if (stream.isStartElement() && stream.name()=="DefoMeasurement") {
+      // consistency check
+      QString timestamp = stream.attributes().value("timestamp").toString();
+      QDateTime dt = QDateTime::fromString(timestamp, "yyyyMMddhhmmss");
+      if (dt!=getTimeStamp()) {
+        // do something
+      }
+    }
+
+    if (stream.isStartElement() && stream.name()=="Thresholds") {
+      pointRecognitionThresholds_.resize(3);
+    }
+
+    if (stream.isStartElement() && stream.name()=="Threshold") {
+      unsigned int index = stream.attributes().value("index").toString().toUInt() - 1;
+      int threshold = stream.attributes().value("threshold").toString().toInt();
+      pointRecognitionThresholds_[index] = threshold
+    }
+
+    if (stream.isStartElement() && stream.name()=="FocalLength") {
+      exifFocalLength_ = stream.attributes().value("value").toString().toFloat();
+    }
+    if (stream.isStartElement() && stream.name()=="ExposureTime") {
+      exifExposureTime_ = stream.attributes().value("value").toString().toFloat();
+      exifExposureTimeString_ = stream.attributes().value("string").toString();
+    }
+    if (stream.isStartElement() && stream.name()=="Aperture") {
+      exifAperture_ = stream.attributes().value("value").toString().toFloat();
+    }
+    if (stream.isStartElement() && stream.name()=="ISO") {
+      exifISO_ = stream.attributes().value("value").toString().toInt();
+    }
+
+    if (stream.isStartElement() && stream.name()=="Conrad") {
+      bool state = stream.attributes().value("available").toString().toInt();
+      if (state) {
+        conradState_ = READY;
+      } else {
+        conradState_ = OFF;
+      }
+    }
+    if (stream.isStartElement() && stream.name().startsWith("Panel")) {
+      unsigned int index = stream.name().toString().replace("Panel", "").toUInt() - 1;
+      bool state = stream.attributes().value("on").toString().toInt();
+      if (state) {
+        panelStates_[index] = READY;
+      } else {
+        panelStates_[index] = OFF;
+      }      
+    }
+    if (stream.isStartElement() && stream.name()=="LEDs") {
+      bool state = stream.attributes().value("on").toString().toInt();
+      if (state) {
+        ledState_ = READY;
+      } else {
+        ledState_ = OFF;
+      }      
+    }
+
+    if (stream.isStartElement() && stream.name()=="Julabo") {
+      bool state = stream.attributes().value("available").toString().toInt();
+      if (state) {
+        julaboState_ = READY;
+      } else {
+        julaboState_ = OFF;
+        circulatorState_ = false;
+        bathTemperature_ = -99.9;
+      }
+    }
+    if (stream.isStartElement() && stream.name()=="Circulator") {
+      circulatorState_ = stream.attributes().value("value").toString().toInt();
+    }
+    if (stream.isStartElement() && stream.name()=="BathTemperature") {
+      bathTemperature_ = stream.attributes().value("value").toString().toFloat();
+    }
+ 
+    if (stream.isStartElement() && stream.name()=="Keithley") {
+      bool state = stream.attributes().value("available").toString().toInt();
+      temperatureSensorStates_.resize(10);
+      temperatures_.resize(10);
+      for (unsigned int idx = 0;idx < 10;++idx) {
+        temperatureSensorStates_[idx] = OFF;
+        temperatures_[idx] = -99.9;
+      }
+      if (state) {
+        keithleyState_ = READY;
+      } else {
+        keithleyState_ = OFF;
+      }
+    }
+    if (stream.isStartElement() && stream.name()=="TemperatureSensor") {
+      unsigned int idx = stream.attributes().value("index").toString().toUInt();
+      temperatureSensorStates_[idx] = READY;
+      temperatures_[idx] = stream.attributes().value("threshold").toString().toFloat();
+    }
+
+  }
 }
