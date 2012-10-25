@@ -168,6 +168,8 @@ void DefoMainWindow::prepareNewMeasurement() {
     currentDir_.setPath( measurementDirPath.arg(i) );
     ++i;
   } while ( currentDir_.exists() );
+
+  listModel_->clear();
 }
 
 void DefoMainWindow::newCameraImage(QString location, bool keep) {
