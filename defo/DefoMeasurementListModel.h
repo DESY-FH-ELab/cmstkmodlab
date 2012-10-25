@@ -36,6 +36,8 @@ public:
   );
 
   void write(const QDir& path);
+  void clear();
+  void read(const QString& filename);
 
 protected:
   std::vector<const DefoMeasurementBase*> measurementList_;

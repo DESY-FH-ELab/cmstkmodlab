@@ -1,5 +1,6 @@
 #include <QFile>
 #include <QXmlStreamWriter>
+#include <QXmlStreamReader>
 
 #include "DefoMeasurementListModel.h"
 
@@ -113,7 +114,7 @@ void DefoMeasurementListModel::appendMeasurementPoints(
 
 void DefoMeasurementListModel::write(const QDir& path)
 {
-  QString fileLocation = path.absoluteFilePath("measurements.xml");
+  QString fileLocation = path.absoluteFilePath("measurements.odmx");
 
   QFile file(fileLocation);
   if (!file.open(QIODevice::WriteOnly | QIODevice::Text | QIODevice::Truncate))
@@ -140,4 +141,40 @@ void DefoMeasurementListModel::write(const QDir& path)
   stream.writeEndElement();
   
   stream.writeEndDocument();
+}
+
+void DefoMeasurementListModel::clear() {
+
+}
+
+void DefoMeasurementListModel::read(const QString& filename) {
+
+  //std::cout << filename.toAscii().constData() << std::endl;
+  QFile file(filename);
+  if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
+    return;
+
+  QXmlStreamReader stream(&file);
+  DefoMeasurement* measurement;
+  QDir basepath(filename);
+  basepath.cdUp();
+
+  while (!stream.atEnd()) {
+    stream.readNextStartElement();
+    if (stream.isStartElement() && stream.name()=="DefoMeasurement") {
+      QString timestamp = stream.attributes().value("timestamp").toString();
+      QDateTime dt = QDateTime::fromString(timestamp, "yyyyMMddhhmmss");
+
+      QString imageLocation = basepath.absoluteFilePath("%1.jpg");
+      imageLocation = imageLocation.arg(dt.toString("yyyyMMddhhmmss"));
+      measurement = new DefoMeasurement(imageLocation);
+      measurement->setTimeStamp(dt);
+
+      QString dataLocation = basepath.absoluteFilePath("%1.xml");
+      dataLocation = dataLocation.arg(dt.toString("yyyyMMddhhmmss"));
+      measurement->read(dataLocation);
+
+      addMeasurement(measurement);
+    }
+  }
 }

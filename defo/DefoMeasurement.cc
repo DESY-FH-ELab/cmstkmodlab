@@ -12,6 +12,10 @@ DefoMeasurementBase::DefoMeasurementBase(const QString& imageLocation) :
   , imageLocation_(imageLocation)
 {}
 
+void DefoMeasurementBase::setTimeStamp(const QDateTime& dt) {
+  timestamp_ = dt;
+}
+
 const QDateTime & DefoMeasurementBase::getTimeStamp() const {
   return timestamp_;
 }
@@ -500,4 +504,8 @@ void DefoMeasurement::write(const QDir& path)
   stream.writeEndElement();
   
   stream.writeEndDocument();
+}
+
+void DefoMeasurement::read(const QString& filename) {
+
 }

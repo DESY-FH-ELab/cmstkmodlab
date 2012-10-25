@@ -22,6 +22,7 @@ public:
 
   virtual bool isPreview() const = 0;
 
+  void setTimeStamp(const QDateTime& dt);
   const QDateTime& getTimeStamp() const;
   QImage getImage() const;
 
@@ -35,7 +36,7 @@ public:
 
 protected:
   /// (Local) date and time of measurement.
-  const QDateTime timestamp_;
+  QDateTime timestamp_;
   /// Image of the actual 'raw' measurement.
   QString imageLocation_;
 
@@ -90,6 +91,7 @@ public:
   void acquireData(const DefoKeithleyModel* model);
 
   void write(const QDir& path);
+  void read(const QString& filename);
 
 protected:
 
