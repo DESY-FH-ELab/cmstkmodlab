@@ -13,6 +13,12 @@ DefoScriptableGlobals::DefoScriptableGlobals(
   , scriptModel_(scriptModel)
 { }
 
+void DefoScriptableGlobals::newMeasurement() {
+
+  QMutexLocker locker(&mutex_);
+  scriptModel_->doPrepareNewMeasurement();
+}
+
 void DefoScriptableGlobals::wait(int seconds) {
 
   std::cout << "void DefoScriptableGlobals::wait(int seconds) " << seconds << std::endl;
@@ -20,24 +26,36 @@ void DefoScriptableGlobals::wait(int seconds) {
   std::cout << "void DefoScriptableGlobals::wait(int seconds) done" << std::endl;
 }
 
-void DefoScriptableGlobals::print(int value) {
+void DefoScriptableGlobals::message(int value) {
 
-  std::cout << "int:    " << value << std::endl;
+  QMutexLocker locker(&mutex_);
+  QString message = QString("%1")
+    .arg(value);
+  scriptModel_->doAppendMessageText(message);
 }
 
-void DefoScriptableGlobals::print(uint value) {
+void DefoScriptableGlobals::message(uint value) {
 
-  std::cout << "uint:   " << value << std::endl;
+  QMutexLocker locker(&mutex_);
+  QString message = QString("%1")
+    .arg(value);
+  scriptModel_->doAppendMessageText(message);
 }
 
-void DefoScriptableGlobals::print(double value) {
+void DefoScriptableGlobals::message(double value) {
 
-  std::cout << "double: " << value << std::endl;
+  QMutexLocker locker(&mutex_);
+  QString message = QString("%1")
+    .arg(value);
+  scriptModel_->doAppendMessageText(message);
 }
 
-void DefoScriptableGlobals::print(QString text) {
+void DefoScriptableGlobals::message(const QString & text) {
 
-  std::cout << "text:   " << text.toAscii().constData() << std::endl;
+  QMutexLocker locker(&mutex_);
+  QString message = QString("%1")
+    .arg(text);
+  scriptModel_->doAppendMessageText(message);
 }
 
 QScriptValue DefoScriptableGlobals::uTime() const

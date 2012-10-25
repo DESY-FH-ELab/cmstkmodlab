@@ -2,6 +2,7 @@
 #include <QTextStream>
 #include <QPlainTextDocumentLayout>
 #include <QFont>
+#include <QDateTime>
 
 #include "DefoScriptModel.h"
 
@@ -34,6 +35,18 @@ DefoScriptModel::DefoScriptModel(
   );
   connect(scriptThread_, SIGNAL(started()), this, SLOT(executionStarted()));
   connect(scriptThread_, SIGNAL(finished()), this, SLOT(executionFinished()));
+
+  connect(conradModel_, SIGNAL(defoMessage(const QString &)),
+	  this, SLOT(doAppendMessageText(const QString &)));
+
+  connect(cameraModel_, SIGNAL(defoMessage(const QString &)),
+	  this, SLOT(doAppendMessageText(const QString &)));
+
+  connect(julaboModel_, SIGNAL(defoMessage(const QString &)),
+	  this, SLOT(doAppendMessageText(const QString &)));
+
+  connect(keithleyModel_, SIGNAL(defoMessage(const QString &)),
+	  this, SLOT(doAppendMessageText(const QString &)));
 
   connect(&executionTimer_, SIGNAL(timeout()), this, SLOT(executionHeartBeat()));
 }
@@ -73,6 +86,9 @@ void DefoScriptModel::abortScript() {
 
 void DefoScriptModel::executionStarted() {
 
+  emit setControlsEnabled(false);
+  emit clearMessageText();
+
   executionTime_ = 0;
   executionTimer_.start(1000);
 }
@@ -80,6 +96,30 @@ void DefoScriptModel::executionStarted() {
 void DefoScriptModel::executionFinished() {
 
   executionTimer_.stop();  
+
+  emit setControlsEnabled(true);
+}
+
+void DefoScriptModel::doPrepareNewMeasurement() {
+
+  emit prepareNewMeasurement();
+}
+
+void DefoScriptModel::doClearMessageText() {
+  
+  emit clearMessageText();
+}
+
+void DefoScriptModel::doAppendMessageText(const QString & text) {
+
+  if (!executionTimer_.isActive()) return;
+
+  static QString TIME_FORMAT = "yyyy-MM-dd hh:mm:ss";
+  QDateTime dt = QDateTime::currentDateTime();
+  QString message = QString("%1 - %2")
+    .arg(dt.toString(TIME_FORMAT))
+    .arg(text);
+  emit appendMessageText(message);
 }
 
 void DefoScriptModel::executionHeartBeat() {

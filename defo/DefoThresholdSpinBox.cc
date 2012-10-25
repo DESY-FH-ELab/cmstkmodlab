@@ -29,6 +29,13 @@ DefoThresholdSpinBox::DefoThresholdSpinBox(
 
   connect(
         model_
+      , SIGNAL(controlStateChanged(bool))
+      , this
+      , SLOT(controlStateChanged(bool))
+  );
+
+  connect(
+        model_
       , SIGNAL(dynamicMinimumChanged(DefoPointRecognitionModel::Threshold,int))
       , this
       , SLOT(dynamicMinimumChanged(DefoPointRecognitionModel::Threshold,int))
@@ -62,4 +69,8 @@ void DefoThresholdSpinBox::dynamicMinimumChanged(
 ) {
   if (threshold_ == threshold)
     setValue( std::max(minimum, value()) );
+}
+
+void DefoThresholdSpinBox::controlStateChanged(bool enabled) {
+  setEnabled(enabled);
 }

@@ -16,7 +16,7 @@ DefoKeithleyModel::DefoKeithleyModel(double updateInterval, QObject *parent) :
   connect( timer_, SIGNAL(timeout()), this, SLOT(scanTemperatures()) );
 
   setDeviceEnabled(false);
-
+  setControlsEnabled(true);
 }
 
 
@@ -107,6 +107,10 @@ void DefoKeithleyModel::setSensorEnabled(unsigned int sensor, bool enabled) {
     setSensorState( sensor, OFF );
   }
 
+}
+
+void DefoKeithleyModel::setControlsEnabled(bool enabled) {
+  emit controlStateChanged(enabled);
 }
 
 /// Returns the current cached state of the requested sensor.

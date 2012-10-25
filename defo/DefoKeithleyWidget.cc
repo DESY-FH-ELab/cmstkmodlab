@@ -45,8 +45,14 @@ DefoKeithleyWidget::DefoKeithleyWidget(
         , SLOT(keithleyStateChanged(State))
   );
 
-  keithleyStateChanged( model_->getDeviceState() );
+  connect(
+          model_
+        , SIGNAL(controlStateChanged(bool))
+        , this
+        , SLOT(controlStateChanged(bool))
+  );
 
+  keithleyStateChanged( model_->getDeviceState() );
 }
 
 /// Updates the GUI when the Keithley multimeter is enabled/disabled.
@@ -57,6 +63,10 @@ void DefoKeithleyWidget::keithleyStateChanged(State newState) {
 
 }
 
+/// Updates the GUI when the Keithley multimeter is enabled/disabled.
+void DefoKeithleyWidget::controlStateChanged(bool enabled) {
+  keithleyCheckBox_->setEnabled(enabled);
+}
 
 /* DefoTemperatureWidget implementation */
 
@@ -110,6 +120,13 @@ DefoKeithleyTemperatureWidget::DefoKeithleyTemperatureWidget(
         , SLOT(keithleyStateChanged(State))
   );
 
+  connect(
+          model_
+        , SIGNAL(controlStateChanged(bool))
+        , this
+        , SLOT(controlStateChanged(bool))
+  );
+
   layout->addWidget(enabledCheckBox_);
   layout->addWidget(historyWidget_);
 
@@ -128,13 +145,24 @@ void DefoKeithleyTemperatureWidget::updateWidgets() {
   );
 
   historyWidget_->setEnabled( sensorState == READY );
-
+  
 
 }
 
 /// Updates the GUI according to the current device state.
-void DefoKeithleyTemperatureWidget::keithleyStateChanged(State state) {
+void DefoKeithleyTemperatureWidget::keithleyStateChanged(State /*state*/) {
   updateWidgets();
+}
+
+/// Updates the GUI when the Keithley multimeter is enabled/disabled.
+void DefoKeithleyTemperatureWidget::controlStateChanged(bool enabled) {
+  if (enabled) {
+    State state = model_->getDeviceState();
+    enabledCheckBox_->setEnabled(state == READY
+			      || state == INITIALIZING);
+  } else {
+    enabledCheckBox_->setEnabled(false);
+  }
 }
 
 /// Updates the GUI according to the current sensor state.

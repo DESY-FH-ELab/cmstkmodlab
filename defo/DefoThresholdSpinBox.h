@@ -28,6 +28,7 @@ protected slots:
       DefoPointRecognitionModel::Threshold threshold
     , int minimum
   );
+  void controlStateChanged(bool);
 
 };
 

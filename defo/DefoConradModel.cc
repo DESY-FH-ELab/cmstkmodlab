@@ -7,6 +7,7 @@ DefoConradModel::DefoConradModel(QObject *parent) :
 {
 
   setDeviceEnabled(true);
+  setControlsEnabled(true);
 
   // TODO Implement a timer to periodically check the device status.
 
@@ -30,6 +31,10 @@ void DefoConradModel::enableSwitch( DefoConradModel::DeviceSwitch device ) {
 
 void DefoConradModel::disableSwitch( DefoConradModel::DeviceSwitch device ) {
   setSwitchEnabled(device, false);
+}
+
+void DefoConradModel::setControlsEnabled(bool enabled) {
+  emit controlStateChanged(enabled);
 }
 
 /**

@@ -17,7 +17,6 @@ public:
 signals:
 
 public slots:
-
 };
 
 #endif // DEFOCONRADWIDGET_H

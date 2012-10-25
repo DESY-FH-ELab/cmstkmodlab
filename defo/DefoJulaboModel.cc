@@ -25,8 +25,8 @@ DefoJulaboModel::DefoJulaboModel(float updateInterval, QObject *parent) :
   , proportional_(0.1, 99.9, 1)
   , integral_(3, 9999, 0)
   , differential_(0, 999, 0)
-  , pumpPressure_(1, 4, 0)
   , circulatorEnabled_(false)
+  , pumpPressure_(1, 4, 0)
   , workingTemperature_(-94.99, 300.00, 2)
   , bathTemperature_(0)
   , safetySensorTemperature_(0)
@@ -197,6 +197,10 @@ void DefoJulaboModel::setDeviceEnabled(bool enabled) {
   DefoAbstractDeviceModel::setDeviceEnabled(enabled);
 }
 
+void DefoJulaboModel::setControlsEnabled(bool enabled) {
+  emit controlStateChanged(enabled);
+}
+
 // Cooling parameters
 
 /// Attempts to set the proportional parameter (Xp) to the given value.
@@ -241,7 +245,7 @@ void DefoJulaboModel::setCirculatorEnabled(bool enabled) {
 /// Attempts to set the pump pressure stage.
 void DefoJulaboModel::setPumpPressureValue(int pressure) {
 
-  if ( pumpPressure_.getValue() != pressure ) {
+  if ( (int)pumpPressure_.getValue() != pressure ) {
 
     unsigned int oldValue = pumpPressure_.getValue();
 

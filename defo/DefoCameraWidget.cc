@@ -59,6 +59,13 @@ DefoCameraWidget::DefoCameraWidget(
 
   connect(
         cameraModel_
+      , SIGNAL(controlStateChanged(bool))
+      , this
+      , SLOT(controlStateChanged(bool))
+  );
+
+  connect(
+        cameraModel_
       , SIGNAL(liveViewModeChanged(bool))
       , this
       , SLOT(liveViewModeChanged(bool))
@@ -185,6 +192,21 @@ void DefoCameraWidget::deviceStateChanged(State newState) {
 
 }
 
+void DefoCameraWidget::controlStateChanged(bool enabled) {
+
+  if (enabled) {
+    enableCheckBox_->setEnabled(true);
+    deviceStateChanged(cameraModel_->getDeviceState());
+    loadFileButton_->setEnabled(true);
+  } else {
+    enableCheckBox_->setEnabled(false);
+    previewButton_->setEnabled(false);
+    pictureButton_->setEnabled(false);
+    liveviewCheckBox_->setEnabled(false);
+    loadFileButton_->setEnabled(false);
+  }
+}
+
 void DefoCameraWidget::liveViewModeChanged( bool enabled ) {
 
   if (enabled) {
@@ -223,11 +245,3 @@ void DefoCameraWidget::pictureButtonClicked() {
 
   cameraModel_->acquirePicture(true);
 }
-
-//void DefoCameraWidget::saveButtonClicked() {
-
-//  QString file = QFileDialog::getSaveFileName(this, "Choose location");
-//  const DefoMeasurement* m = selectionModel_->getSelection();
-//  m->getImage().save(file);
-
-//}

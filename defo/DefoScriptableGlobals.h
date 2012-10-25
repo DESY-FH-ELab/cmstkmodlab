@@ -19,11 +19,12 @@ public:
   );
 
 public slots:
+  void newMeasurement();
   void wait(int seconds);
-  void print(int value);
-  void print(uint value);
-  void print(double value);
-  void print(QString text);
+  void message(int value);
+  void message(uint value);
+  void message(double value);
+  void message(const QString & text);
   QScriptValue uTime() const;
   QScriptValue eTime();
   QScriptValue mkUTime(int year, int month, int day,

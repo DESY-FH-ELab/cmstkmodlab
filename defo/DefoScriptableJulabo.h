@@ -19,7 +19,7 @@ public:
 
 public slots:
 
-  void setPID( double p, double tv, double td );
+  void setPID( double p, int tv, int td );
   void enableCirculator();
   void disableCirculator();
   void setWorkingTemperature( double temperature );
@@ -31,8 +31,8 @@ public slots:
 
 signals:
   void changeP( double p );
-  void changeTv( double tv );
-  void changeTd( double td );
+  void changeTv( int tv );
+  void changeTd( int td );
   void switchCirculator( bool );
   void changeWorkingTemperature( double temperature );
 

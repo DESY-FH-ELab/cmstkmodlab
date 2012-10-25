@@ -21,7 +21,7 @@ protected:
 
 public slots:
   virtual void deviceStateChanged(State newState) = 0;
-
+  virtual void controlStateChanged(bool) = 0;
 };
 
 
@@ -39,6 +39,7 @@ public:
 
 public slots:
   virtual void deviceStateChanged(State newState);
+  virtual void controlStateChanged(bool);
 //  virtual void setChecked( bool checked );
 
 };
@@ -65,6 +66,7 @@ protected:
 
 public slots:
   virtual void deviceStateChanged(State newState);
+  virtual void controlStateChanged(bool);
   void switchStateChanged(
       DefoConradModel::DeviceSwitch device
     , State newState

@@ -169,6 +169,14 @@ DefoImageThresholdsWidget::DefoImageThresholdsWidget(
       , this
       , SLOT(thresholdChanged(DefoPointRecognitionModel::Threshold,int))
   );
+
+  connect(
+        recognitionModel_
+      , SIGNAL(controlStateChanged(bool))
+      , this
+      , SLOT(controlStateChanged(bool))
+  );
+
 }
 
 QImage DefoImageThresholdsWidget::prepareImage(const QImage& /* image */) const {
@@ -198,6 +206,10 @@ void DefoImageThresholdsWidget::selectionChanged(
 ) {
   updateCache();
   DefoImageWidget::selectionChanged(measurement);
+}
+
+void DefoImageThresholdsWidget::controlStateChanged(bool) {
+
 }
 
 /// Updates the current image cache.

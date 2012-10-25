@@ -35,6 +35,10 @@ void DefoCameraModel::setDeviceEnabled(bool enabled) {
   DefoAbstractDeviceModel::setDeviceEnabled(enabled);
 }
 
+void DefoCameraModel::setControlsEnabled(bool enabled) {
+  emit controlStateChanged(enabled);
+}
+
 void DefoCameraModel::setLiveViewEnabled(bool enabled) {
   
   if (enabled && !controller_->isInPreviewMode()) {
@@ -141,6 +145,7 @@ void DefoCameraModel::acquirePicture(bool keep) {
     location_ = controller_->acquirePhoto().c_str();
     image_ = QImage(location_);
     emit newImage(location_, keep);
+    emit defoMessage("new image aquired");
 }
 
 /// Instruct the camera to take a picture and cache the file in a QImage.

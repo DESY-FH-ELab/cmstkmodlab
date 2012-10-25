@@ -31,6 +31,13 @@ DefoConradDeviceCheckbox::DefoConradDeviceCheckbox(
       , SLOT( deviceStateChanged(State) )
   );
 
+  connect(
+        model_
+      , SIGNAL( controlStateChanged(bool) )
+      , this
+      , SLOT( controlStateChanged(bool) )
+  );
+
   connect( this, SIGNAL(toggled(bool)), model_, SLOT(setDeviceEnabled(bool)) );
 
 //  setChecked( model->getDeviceState() == READY );
@@ -63,6 +70,15 @@ void DefoConradDeviceCheckbox::deviceStateChanged(
 
 }
 
+void DefoConradDeviceCheckbox::controlStateChanged(bool enabled) {
+  if (enabled) {
+    State state = model_->getDeviceState();
+    setEnabled( state != INITIALIZING
+	     && state != CLOSING );
+  } else {
+    setEnabled( false );
+  }
+}
 
 
 /*--- DefoConradSwitchCheckbox ---*/
@@ -101,6 +117,13 @@ DefoConradSwitchCheckbox::DefoConradSwitchCheckbox(
       , SLOT( deviceStateChanged(State) )
   );
 
+  connect(
+        model_
+      , SIGNAL( controlStateChanged(bool) )
+      , this
+      , SLOT( controlStateChanged(bool) )
+  );
+
   connect( this, SIGNAL(toggled(bool)), this, SLOT(buttonToggled(bool)) );
 
   deviceStateChanged( model->getDeviceState() );
@@ -134,4 +157,12 @@ void DefoConradSwitchCheckbox::buttonToggled(bool checked) {
 /// Sets whether it makes sense to be enabled according to switch state.
 void DefoConradSwitchCheckbox::deviceStateChanged(State newState) {
   setEnabled( newState == READY );
+}
+
+void DefoConradSwitchCheckbox::controlStateChanged(bool enabled) {
+  if (enabled) {
+    setEnabled( model_->getDeviceState() == READY );
+  } else {
+    setEnabled( false );
+  }
 }

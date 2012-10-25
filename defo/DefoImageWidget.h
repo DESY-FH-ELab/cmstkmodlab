@@ -105,6 +105,7 @@ public slots:
     , int value
   );
   void selectionChanged(const DefoMeasurementBase* measurement);
+  void controlStateChanged(bool);
 
 protected:
   DefoPointRecognitionModel* recognitionModel_;

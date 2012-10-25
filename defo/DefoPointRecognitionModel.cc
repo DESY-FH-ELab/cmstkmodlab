@@ -79,3 +79,7 @@ void DefoPointRecognitionModel::setHalfSquareWidth(int value) {
   }
 
 }
+
+void DefoPointRecognitionModel::setControlsEnabled(bool enabled) {
+  emit controlStateChanged(enabled);
+}

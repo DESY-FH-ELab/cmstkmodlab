@@ -41,6 +41,7 @@ protected:
 
 public slots:
   void updateDeviceState( State newState );
+  void controlStateChanged(bool);
   void updateChillerInfo();
 
 };

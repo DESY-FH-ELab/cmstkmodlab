@@ -11,10 +11,16 @@
 
 #include "DefoScriptModel.h"
 
-class ScriptEdit : public QPlainTextEdit {
+class DefoScriptEdit : public QPlainTextEdit {
 public:
-    ScriptEdit(QWidget* parent) : QPlainTextEdit(parent) { }
+    DefoScriptEdit(QWidget* parent) : QPlainTextEdit(parent) { }
     virtual QSize sizeHint() const { return QSize(500, 400); }
+};
+
+class DefoMessageDisplay : public QPlainTextEdit {
+public:
+    DefoMessageDisplay(QWidget* parent) : QPlainTextEdit(parent) { }
+    virtual QSize sizeHint() const { return QSize(500, 100); }
 };
 
 class DefoScriptWidget : 
@@ -27,6 +33,10 @@ public:
     , QWidget *parent = 0
   );
 
+public slots:
+  void clearMessageText();
+  void appendMessageText( const QString & text );
+
 protected:
   // Models
   DefoScriptModel* scriptModel_;
@@ -38,7 +48,8 @@ protected:
   QPushButton* executeScriptButton_;
   QPushButton* abortScriptButton_;
   QWidget* buttons_;
-  ScriptEdit* scriptEditor_;
+  DefoScriptEdit* scriptEditor_;
+  DefoMessageDisplay* messageDisplay_;
 
 protected slots:
   void openScriptButtonClicked();

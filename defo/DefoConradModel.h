@@ -71,6 +71,7 @@ public slots:
   void setDeviceEnabled( bool enabled );
   void enableSwitch( DefoConradModel::DeviceSwitch device );
   void disableSwitch( DefoConradModel::DeviceSwitch device );
+  void setControlsEnabled(bool enabled);
 
 protected:
   void initialize();
@@ -91,7 +92,8 @@ signals:
   // Classname identifiers are needed because Qt can't resolve internal enums
   void deviceStateChanged(State newState);
   void switchStateChanged(DefoConradModel::DeviceSwitch device, State newState);
-
+  void defoMessage(const QString & text);
+  void controlStateChanged(bool);
 };
 
 #endif // DEFOCONRADMODEL_H

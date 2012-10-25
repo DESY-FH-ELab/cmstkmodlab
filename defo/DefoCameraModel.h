@@ -43,6 +43,7 @@ public:
 
 public slots:
   virtual void setDeviceEnabled( bool enabled );
+  void setControlsEnabled(bool enabled);
   virtual void setLiveViewEnabled( bool enabled );
   void acquirePicture(bool keep);
   void acquireLiveViewPicture();
@@ -67,6 +68,8 @@ signals:
   void newImage(QString location, bool keep);
   void liveViewModeChanged(bool state);
   void newLiveViewImage(QString location);
+  void defoMessage(const QString & text);
+  void controlStateChanged(bool);
 };
 
 #endif // DEFOCAMERAMODEL_H

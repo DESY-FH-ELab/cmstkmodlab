@@ -41,6 +41,7 @@ public:
   explicit DefoMainWindow(QWidget *parent = 0);
 
 public slots:
+  void prepareNewMeasurement();
   void newCameraImage(QString location, bool keep);
   void pointButtonClicked();
 

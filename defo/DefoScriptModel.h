@@ -37,6 +37,9 @@ public:
 public slots:
   void executionStarted();
   void executionFinished();
+  void doPrepareNewMeasurement();
+  void doClearMessageText();
+  void doAppendMessageText(const QString & text);
 
 protected slots:
   void executionHeartBeat();
@@ -55,7 +58,11 @@ protected:
   DefoScriptThread* scriptThread_;
 
 signals:
+  void prepareNewMeasurement();
   void scriptLoaded();
+  void setControlsEnabled(bool enabled);
+  void clearMessageText();
+  void appendMessageText(const QString & text);
 };
 
 #endif // DEFOSCRIPTMODEL_H

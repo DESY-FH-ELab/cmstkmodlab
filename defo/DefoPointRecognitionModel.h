@@ -34,6 +34,7 @@ public slots:
   void setHalfSquareWidth(int value);
 //  void setReferencePointHue(int value);
 //  void setReferencePointHueWidth(int value);
+  void setControlsEnabled(bool enabled);
 
 protected:
   std::vector<int> thresholds_;
@@ -52,7 +53,7 @@ signals:
   );
   void halfSquareWidthChanged(int value);
 //  void referencePointHueChanged(int value);
-
+  void controlStateChanged(bool);
 };
 
 #endif // DEFOPOINTRECOGNITIONMODEL_H

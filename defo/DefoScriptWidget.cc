@@ -48,7 +48,7 @@ DefoScriptWidget::DefoScriptWidget(
   buttonLayout->addWidget(abortScriptButton_, 0, 4);
 
   // script editor
-  scriptEditor_ = new ScriptEdit(this);
+  scriptEditor_ = new DefoScriptEdit(this);
   scriptEditor_->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);
   scriptEditor_->resize(600, 400);
   scriptEditor_->setDocument(scriptModel_->scriptDocument());
@@ -59,7 +59,21 @@ DefoScriptWidget::DefoScriptWidget(
   connect(scriptModel_->scriptDocument(), SIGNAL(contentsChanged()),
           this, SLOT(scriptChanged()));
 
+  // message display
+  messageDisplay_ = new DefoMessageDisplay(this);
+  messageDisplay_->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);
+  messageDisplay_->resize(600, 100);
+  messageDisplay_->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
+  messageDisplay_->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
+  messageDisplay_->setReadOnly(true);
+  layout->addWidget(messageDisplay_, 2);
+
   updateGeometry();
+
+  connect(scriptModel_, SIGNAL(clearMessageText()),
+          this, SLOT(clearMessageText()));
+  connect(scriptModel_, SIGNAL(appendMessageText(const QString &)),
+          this, SLOT(appendMessageText(const QString &)));
 }
 
 void DefoScriptWidget::openScriptButtonClicked() {
@@ -107,4 +121,14 @@ void DefoScriptWidget::abortScriptButtonClicked() {
 
 void DefoScriptWidget::scriptChanged() {
 
+}
+
+void DefoScriptWidget::clearMessageText( ) {
+  
+  messageDisplay_->setPlainText("");
+}
+
+void DefoScriptWidget::appendMessageText( const QString & text ) {
+  
+  messageDisplay_->appendPlainText(text);
 }

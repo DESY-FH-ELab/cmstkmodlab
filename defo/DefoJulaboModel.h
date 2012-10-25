@@ -104,6 +104,7 @@ public:
 
 public slots:
   void setDeviceEnabled( bool enabled );
+  void setControlsEnabled(bool enabled);
 
   void setProportionalValue( double value );
   void setIntegralValue( int value );
@@ -155,7 +156,8 @@ protected slots:
 signals:
   void deviceStateChanged( State newState );
   void informationChanged();
-
+  void defoMessage(const QString & text);
+  void controlStateChanged(bool);
 };
 
 #endif // DEFOJULABOMODEL_H

@@ -28,6 +28,7 @@ protected:
 
 public slots:
   void keithleyStateChanged(State newState);
+  void controlStateChanged(bool);
 
 };
 
@@ -58,6 +59,7 @@ protected:
 
 public slots:
   void keithleyStateChanged( State state );
+  void controlStateChanged(bool);
   void sensorStateChagned( uint sensor, State state );
   void sensorTemperatureChanged( uint sensor, double temperature );
 

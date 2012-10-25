@@ -5,16 +5,7 @@
 DefoMainWindow::DefoMainWindow(QWidget *parent) :
     QMainWindow(parent)
 {
-  // Set up current directory for saving images
-  QDateTime dt = QDateTime::currentDateTimeUtc();
-  QString measurementDirPath("/home/tkmodlab/Desktop/measurements/%1-%2/");
-  measurementDirPath = measurementDirPath.arg(dt.toString("yyyyMMdd"));
-  
-  int i = 1;
-  do {
-    currentDir_.setPath( measurementDirPath.arg(i) );
-    ++i;
-  } while ( currentDir_.exists() );
+  prepareNewMeasurement();
 
   // CONRAD MODEL
   conradModel_ = new DefoConradModel(this);
@@ -44,7 +35,19 @@ DefoMainWindow::DefoMainWindow(QWidget *parent) :
       , keithleyModel_
       , this
   );
-
+  connect(scriptModel_, SIGNAL(prepareNewMeasurement()),
+	  this, SLOT(prepareNewMeasurement()));
+  connect(scriptModel_, SIGNAL(setControlsEnabled(bool)),
+	  conradModel_, SLOT(setControlsEnabled(bool)));
+  connect(scriptModel_, SIGNAL(setControlsEnabled(bool)),
+	  cameraModel_, SLOT(setControlsEnabled(bool)));
+  connect(scriptModel_, SIGNAL(setControlsEnabled(bool)),
+	  julaboModel_, SLOT(setControlsEnabled(bool)));
+  connect(scriptModel_, SIGNAL(setControlsEnabled(bool)),
+	  keithleyModel_, SLOT(setControlsEnabled(bool)));
+  connect(scriptModel_, SIGNAL(setControlsEnabled(bool)),
+	  pointModel_, SLOT(setControlsEnabled(bool)));
+  
   tabWidget_ = new QTabWidget(this);
   tabWidget_->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);
 
@@ -98,15 +101,13 @@ DefoMainWindow::DefoMainWindow(QWidget *parent) :
   measurementWidget->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);
   measurementWidget->setLayout(layout);
 
-  layout->addWidget(
-        new DefoCameraWidget(
-          cameraModel_
-          , conradModel_
-          , listModel_
-          , selectionModel_
-          , this
-          )
-        );
+  layout->addWidget(new DefoCameraWidget(
+					 cameraModel_
+				       , conradModel_
+				       , listModel_
+				       , selectionModel_
+				       , this
+					 ));
 
   if (cameraModel_->getDeviceState() == READY) {
     cameraModel_->setOptionSelection(DefoCameraModel::APERTURE, 6);
@@ -191,11 +192,26 @@ DefoMainWindow::DefoMainWindow(QWidget *parent) :
   temperatureWidget->setLayout(layout);
 
   // KEITHLEY MODEL
-  layout->addWidget( new DefoKeithleyWidget(keithleyModel_) );
+  DefoKeithleyWidget *keithleyWidget = new DefoKeithleyWidget(keithleyModel_);
+  layout->addWidget( keithleyWidget );
 
   tabWidget_->addTab(temperatureWidget, "Temperature");
 
   setCentralWidget(tabWidget_);
+}
+
+void DefoMainWindow::prepareNewMeasurement() {
+
+  // Set up current directory for saving images
+  QDateTime dt = QDateTime::currentDateTimeUtc();
+  QString measurementDirPath("/home/tkmodlab/Desktop/measurements/%1-%2/");
+  measurementDirPath = measurementDirPath.arg(dt.toString("yyyyMMdd"));
+  
+  int i = 1;
+  do {
+    currentDir_.setPath( measurementDirPath.arg(i) );
+    ++i;
+  } while ( currentDir_.exists() );
 }
 
 void DefoMainWindow::newCameraImage(QString location, bool keep) {

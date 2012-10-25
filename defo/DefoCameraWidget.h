@@ -58,12 +58,11 @@ protected:
 
 protected slots:
   void deviceStateChanged(State newState);
+  void controlStateChanged(bool);
   void liveViewModeChanged(bool enabled);
   void openButtonClicked();
   void previewButtonClicked();
   void pictureButtonClicked();
-//  void saveButtonClicked();
-
 };
 
 #endif // DEFOCAMERAWIDGET_H

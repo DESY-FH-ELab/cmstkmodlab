@@ -37,6 +37,7 @@ public:
 public slots:
   void setDeviceEnabled( bool enabled );
   void setSensorEnabled( unsigned int sensor, bool enabled );
+  void setControlsEnabled(bool enabled);
 
 protected:
   // FIXME Find out which port this needs to be or autoconfigure
@@ -64,7 +65,8 @@ signals:
   void deviceStateChanged(State newState);
   void sensorStateChanged(unsigned int sensor, State newState);
   void temperatureChanged(unsigned int sensor, double temperature);
-
+  void defoMessage(const QString & text);
+  void controlStateChanged(bool);
 };
 
 #endif // DEFOKEITHLEYMODEL_H
