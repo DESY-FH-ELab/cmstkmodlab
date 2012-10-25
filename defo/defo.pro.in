@@ -8,10 +8,22 @@ macx {
     INCLUDEPATH += /opt/local/include/GL
     LIBS += -L/opt/local/lib -lqwt -lqwtplot3d
 # include libgphoto2
-    LIBS += ../devices/Keithley/*.o ../devices/Greisinger/*.o ../devices/Julabo/*.o ../devices/Hameg/*.o ../devices/Canon/*.o ../devices/Conrad/*.o
+    LIBS += @basepath@/devices/Keithley/*.o
+    LIBS += @basepath@/devices/Greisinger/*.o
+    LIBS += @basepath@/devices/Julabo/*.o
+    LIBS += @basepath@/devices/Hameg/*.o
+    LIBS += @basepath@/devices/Canon/*.o
+    LIBS += @basepath@/devices/Conrad/*.o
+    LIBS += @basepath@/defo/defoCommon/*.o
 }
 else {
-    LIBS += -L../devices/lib -lTkModLabKeithley -lTkModLabGreisinger -lTkModLabJulabo -lTkModLabHameg -lTkModLabConrad -lTkModLabCanon
+    LIBS += -L@basepath@/devices/lib -lTkModLabKeithley
+    LIBS += -L@basepath@/devices/lib -lTkModLabGreisinger
+    LIBS += -L@basepath@/devices/lib -lTkModLabJulabo
+    LIBS += -L@basepath@/devices/lib -lTkModLabHameg
+    LIBS += -L@basepath@/devices/lib -lTkModLabConrad
+    LIBS += -L@basepath@/devices/lib -lTkModLabCanon
+    LIBS += -L@basepath@/defo/defoCommon -lDefoCommon
     LIBS += -lgphoto2 -lexiv2
     INCLUDEPATH += /usr/include/qwt /usr/include/exiv2
     DEFINES += 
@@ -23,7 +35,7 @@ TEMPLATE = app
 TARGET = defo
 DEPENDPATH += .
 INCLUDEPATH += .
-INCLUDEPATH += ..
+INCLUDEPATH += @basepath@
 
 # Input
 HEADERS += DefoSchedule.h \
@@ -49,11 +61,11 @@ HEADERS += DefoSchedule.h \
     DefoJulaboWidget.h \
     DefoState.h \
     DefoKeithleyWidget.h \
-    DefoCameraModel.h \
     DefoTemperatureHistoryModel.h \
     DefoTemperatureHistoryWidget.h \
     DefoCameraOptionComboBox.h \
     DefoPointRecognitionModel.h \
+    DefoPointRecognitionWidget.h \
     DefoMeasurementListModel.h \
     DefoThresholdSpinBox.h \
     DefoCameraWidget.h \
@@ -62,6 +74,7 @@ HEADERS += DefoSchedule.h \
     DefoPointBin.h \
     DefoPointIndexer.h \
     DefoPointFinder.h \
+    DefoPointSaver.h \
     DefoScriptModel.h \
     DefoScriptThread.h \
     DefoScriptWidget.h \
@@ -98,6 +111,7 @@ SOURCES += defo.cc \
     DefoTemperatureHistoryWidget.cc \
     DefoCameraOptionComboBox.cc \
     DefoPointRecognitionModel.cc \
+    DefoPointRecognitionWidget.cc \
     DefoMeasurementListModel.cc \
     DefoThresholdSpinBox.cc \
     DefoCameraWidget.cc \
@@ -106,6 +120,7 @@ SOURCES += defo.cc \
     DefoPointBin.cc \
     DefoPointIndexer.cc \
     DefoPointFinder.cc \
+    DefoPointSaver.cc \
     DefoScriptModel.cc \
     DefoScriptThread.cc \
     DefoScriptWidget.cc \

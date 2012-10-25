@@ -30,9 +30,7 @@
 #include "DefoImageWidget.h"
 
 #include "DefoPointRecognitionModel.h"
-#include "DefoThresholdSpinBox.h"
-#include "DefoPointFinder.h"
-#include "DefoPoint.h"
+#include "DefoPointRecognitionWidget.h"
 
 class DefoMainWindow : public QMainWindow
 {
@@ -43,7 +41,6 @@ public:
 public slots:
   void prepareNewMeasurement();
   void newCameraImage(QString location, bool keep);
-  void pointButtonClicked();
 
 protected:
 
