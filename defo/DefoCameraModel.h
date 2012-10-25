@@ -9,7 +9,7 @@
 #include <map>
 
 // TODO USE_FAKEIO
-#include "../devices/Canon/EOS550D.h"
+#include "devices/Canon/EOS550D.h"
 typedef EOS550D EOS550D_t;
 
 #include <QImage>
