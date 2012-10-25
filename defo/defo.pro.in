@@ -14,7 +14,7 @@ macx {
     LIBS += @basepath@/devices/Hameg/*.o
     LIBS += @basepath@/devices/Canon/*.o
     LIBS += @basepath@/devices/Conrad/*.o
-    LIBS += @basepath@/defo/defoCommon/*.o
+#    LIBS += @basepath@/defo/defoCommon/*.o
 }
 else {
     LIBS += -L@basepath@/devices/lib -lTkModLabKeithley
@@ -23,7 +23,7 @@ else {
     LIBS += -L@basepath@/devices/lib -lTkModLabHameg
     LIBS += -L@basepath@/devices/lib -lTkModLabConrad
     LIBS += -L@basepath@/devices/lib -lTkModLabCanon
-    LIBS += -L@basepath@/defo/defoCommon -lDefoCommon
+#    LIBS += -L@basepath@/defo/defoCommon -lDefoCommon
     LIBS += -lgphoto2 -lexiv2
     INCLUDEPATH += /usr/include/qwt /usr/include/exiv2
     DEFINES += 
@@ -61,6 +61,7 @@ HEADERS += DefoSchedule.h \
     DefoJulaboWidget.h \
     DefoState.h \
     DefoKeithleyWidget.h \
+    DefoCameraModel.h \
     DefoTemperatureHistoryModel.h \
     DefoTemperatureHistoryWidget.h \
     DefoCameraOptionComboBox.h \
