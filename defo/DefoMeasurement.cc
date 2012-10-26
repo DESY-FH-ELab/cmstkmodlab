@@ -473,33 +473,27 @@ void DefoMeasurement::write(const QDir& path)
   
   stream.writeStartElement("Conrad");
   stream.writeAttribute("available", QString().setNum(conradState_==READY));
-  stream.writeStartElement("Panel1");
-  stream.writeAttribute("on", QString().setNum(panelStates_[0]==READY));
-  stream.writeEndElement();
-  stream.writeStartElement("Panel2");
-  stream.writeAttribute("on", QString().setNum(panelStates_[1]==READY));
-  stream.writeEndElement();
-  stream.writeStartElement("Panel3");
-  stream.writeAttribute("on", QString().setNum(panelStates_[2]==READY));
-  stream.writeEndElement();
-  stream.writeStartElement("Panel4");
-  stream.writeAttribute("on", QString().setNum(panelStates_[3]==READY));
-  stream.writeEndElement();
-  stream.writeStartElement("Panel5");
-  stream.writeAttribute("on", QString().setNum(panelStates_[4]==READY));
-  stream.writeEndElement();
-  stream.writeStartElement("LEDs");
-  stream.writeAttribute("on", QString().setNum(ledState_==READY));
-  stream.writeEndElement();
-  stream.writeEndElement();
-  
+  if (conradState_==READY) {
+    for (unsigned int idx = 0;idx<5;++idx) {
+      QString name = "Panel";
+      name += QString().setNum(idx+1);
+      stream.writeStartElement(name);
+      stream.writeAttribute("on", QString().setNum(panelStates_[0]==READY));
+      stream.writeEndElement();
+    }
+    stream.writeStartElement("LEDs");
+    stream.writeAttribute("on", QString().setNum(ledState_==READY));
+    stream.writeEndElement();
+    stream.writeEndElement();
+  }
+
   stream.writeStartElement("Julabo");
   stream.writeAttribute("available", QString().setNum(julaboState_==READY));
   if (julaboState_==READY) {
     stream.writeStartElement("Circulator");
     stream.writeAttribute("on", QString().setNum((int)circulatorState_));
     stream.writeEndElement();
-    stream.writeStartElement("BathTemperature);
+    stream.writeStartElement("BathTemperature");
     stream.writeAttribute("value", QString().setNum(bathTemperature_));
     stream.writeEndElement();
   }
@@ -509,12 +503,12 @@ void DefoMeasurement::write(const QDir& path)
   stream.writeAttribute("available", QString().setNum(keithleyState_==READY));
   if (keithleyState_==READY) {
     for (unsigned int idx = 0;
-         idx < temperatureSensorStates_.count() && idx < temperatures_.count();
+         idx < temperatureSensorStates_.size() && idx < temperatures_.size();
          ++idx) {
       if (temperatureSensorStates_[idx]==READY) {
         stream.writeStartElement("TemperatureSensor");
-        stream.writeAttribute("index", QString().setNum(idx);
-        stream.writeAttribute("temperature", QString().setNum(temperatures_[idx]);
+        stream.writeAttribute("index", QString().setNum(idx));
+        stream.writeAttribute("temperature", QString().setNum(temperatures_[idx]));
         stream.writeEndElement();
       }
     }
@@ -552,8 +546,8 @@ void DefoMeasurement::read(const QString& filename) {
 
     if (stream.isStartElement() && stream.name()=="Threshold") {
       unsigned int index = stream.attributes().value("index").toString().toUInt() - 1;
-      int threshold = stream.attributes().value("threshold").toString().toInt();
-      pointRecognitionThresholds_[index] = threshold
+      int threshold = stream.attributes().value("value").toString().toInt();
+      pointRecognitionThresholds_[index] = threshold;
     }
 
     if (stream.isStartElement() && stream.name()=="FocalLength") {
@@ -572,13 +566,18 @@ void DefoMeasurement::read(const QString& filename) {
 
     if (stream.isStartElement() && stream.name()=="Conrad") {
       bool state = stream.attributes().value("available").toString().toInt();
+      panelStates_.resize(5);
+      for (unsigned int idx = 0;idx<5;++idx) {
+	panelStates_[idx] = OFF;
+      }
+      ledState_ = OFF;
       if (state) {
-        conradState_ = READY;
+	conradState_ = READY;
       } else {
-        conradState_ = OFF;
+	conradState_ = OFF;
       }
     }
-    if (stream.isStartElement() && stream.name().startsWith("Panel")) {
+    if (stream.isStartElement() && stream.name().toString().startsWith("Panel")) {
       unsigned int index = stream.name().toString().replace("Panel", "").toUInt() - 1;
       bool state = stream.attributes().value("on").toString().toInt();
       if (state) {
@@ -598,12 +597,12 @@ void DefoMeasurement::read(const QString& filename) {
 
     if (stream.isStartElement() && stream.name()=="Julabo") {
       bool state = stream.attributes().value("available").toString().toInt();
+      circulatorState_ = false;
+      bathTemperature_ = -99.9;
       if (state) {
         julaboState_ = READY;
       } else {
         julaboState_ = OFF;
-        circulatorState_ = false;
-        bathTemperature_ = -99.9;
       }
     }
     if (stream.isStartElement() && stream.name()=="Circulator") {
@@ -632,6 +631,5 @@ void DefoMeasurement::read(const QString& filename) {
       temperatureSensorStates_[idx] = READY;
       temperatures_[idx] = stream.attributes().value("threshold").toString().toFloat();
     }
-
   }
 }
