@@ -41,6 +41,7 @@ HEADERS += ../DefoConfigReader.h \
            ../DefoPoint.h \
            ../DefoSpline.h \
            DefoRecoMainWindow.h \
+           DefoMeasurementListTreeWidget.h \
            ../DefoMeasurement.h \
            ../DefoConradModel.h \
            ../DefoCameraModel.h \
@@ -66,6 +67,7 @@ SOURCES += defoReco.cc \
            ../DefoPoint.cc \
            ../DefoSpline.cc \
            DefoRecoMainWindow.cc \
+           DefoMeasurementListTreeWidget.cc \
            ../DefoMeasurement.cc \
            ../DefoConradModel.cc \
            ../DefoCameraModel.cc \
