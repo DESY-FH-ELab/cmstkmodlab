@@ -49,10 +49,12 @@ if test $ARCHITECTURE = "Darwin"; then
         QWTLIBS="-lqwtplot3d -lqwt"
     fi
 fi
+if test $ARCHITECTURE = "Linux"; then
+    SOFLAGS="-shared"
+fi
 if test $ARCHITECTURE = "Linux" && test $KERNELMINOR -lt 6; then
     echo Linux kernel minor version < 6: fake device support forced
     USEFAKEDEVICES=1
-    SOFLAGS="-shared"
     QWTDEFINES=""
     QWTLIBS="-lqwtplot3d -lqwt"
 fi
