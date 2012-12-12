@@ -14,6 +14,7 @@ macx {
     LIBS += @basepath@/devices/Hameg/*.o
     LIBS += @basepath@/devices/Canon/*.o
     LIBS += @basepath@/devices/Conrad/*.o
+    LIBS += @basepath@/defo/defoCommon/*.o
 }
 else {
     LIBS += -L@basepath@/devices/lib -lTkModLabKeithley
@@ -22,8 +23,10 @@ else {
     LIBS += -L@basepath@/devices/lib -lTkModLabHameg
     LIBS += -L@basepath@/devices/lib -lTkModLabConrad
     LIBS += -L@basepath@/devices/lib -lTkModLabCanon
+    LIBS += -L@basepath@/defo/defoCommon -lDefoCommon
     LIBS += -lgphoto2 -lexiv2
     INCLUDEPATH += /usr/include/qwt /usr/include/exiv2
+    INCLUDEPATH += @basepath@/defo/defoCommon
     DEFINES += 
     LIBS += -lqwt -lqwtplot3d -lGL -lGLU
 }
@@ -31,31 +34,29 @@ DEFINES += @configdefines@
 QT += core gui opengl xml
 TEMPLATE = app
 TARGET = defoReco
-DEPENDPATH += .
+DEPENDPATH += ../defoCommon
 INCLUDEPATH += .
 INCLUDEPATH += ..
 INCLUDEPATH += @basepath@
 
 # Input
-HEADERS += ../DefoConfigReader.h \
+HEADERS += DefoRecoMainWindow.h \
            ../DefoPoint.h \
            ../DefoSpline.h \
-           DefoRecoMainWindow.h \
+           ../DefoMeasurementListModel.h \
+           ../DefoMeasurementListComboBox.h \
+           ../DefoMeasurementSelectionModel.h \
            DefoMeasurementListTreeWidget.h \
+           DefoMeasurementInfoListTreeWidget.h \
+           DefoRecoPointRecognitionWidget.h \
            ../DefoMeasurement.h \
-           ../DefoConradModel.h \
-           ../DefoCameraModel.h \
-           ../DefoJulaboModel.h \
-           ../DefoKeithleyModel.h \
-           ../DefoExifReader.h \
+           DefoRecoImageWidget.h \
+           DefoRecoImageZoomModel.h \
+           ../DefoROIModel.h \
            ../DefoImageWidget.h \
-           ../DefoState.h \
            ../DefoPointRecognitionModel.h \
            ../DefoPointRecognitionWidget.h \
-           ../DefoMeasurementListModel.h \
            ../DefoThresholdSpinBox.h \
-           ../DefoMeasurementSelectionModel.h \
-           ../DefoMeasurementListComboBox.h \
            ../DefoPointBin.h \
            ../DefoPointIndexer.h \
            ../DefoPointFinder.h \
@@ -63,24 +64,23 @@ HEADERS += ../DefoConfigReader.h \
            ../DefoSquare.h
 
 SOURCES += defoReco.cc \
-           ../DefoConfigReader.cc \
+           DefoRecoMainWindow.cc \
            ../DefoPoint.cc \
            ../DefoSpline.cc \
-           DefoRecoMainWindow.cc \
+           ../DefoMeasurementListModel.cc \
+           ../DefoMeasurementListComboBox.cc \
+           ../DefoMeasurementSelectionModel.cc \
            DefoMeasurementListTreeWidget.cc \
+           DefoMeasurementInfoListTreeWidget.cc \
+           DefoRecoPointRecognitionWidget.cc \
            ../DefoMeasurement.cc \
-           ../DefoConradModel.cc \
-           ../DefoCameraModel.cc \
-           ../DefoJulaboModel.cc \
-           ../DefoKeithleyModel.cc \
-           ../DefoExifReader.cc \
+           DefoRecoImageWidget.cc \
+           DefoRecoImageZoomModel.cc \
+           ../DefoROIModel.cc \
            ../DefoImageWidget.cc \
            ../DefoPointRecognitionModel.cc \
            ../DefoPointRecognitionWidget.cc \
-           ../DefoMeasurementListModel.cc \
            ../DefoThresholdSpinBox.cc \
-           ../DefoMeasurementSelectionModel.cc \
-           ../DefoMeasurementListComboBox.cc \
            ../DefoPointBin.cc \
            ../DefoPointIndexer.cc \
            ../DefoPointFinder.cc \

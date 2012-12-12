@@ -14,8 +14,10 @@
 
 #include "DefoMeasurementListModel.h"
 #include "DefoMeasurementSelectionModel.h"
+#include "DefoROIModel.h"
 
 #include "DefoMeasurementListTreeWidget.h"
+#include "DefoMeasurementInfoListTreeWidget.h"
 #include "DefoImageWidget.h"
 
 #include "DefoPointRecognitionModel.h"
@@ -38,8 +40,18 @@ protected:
   DefoMeasurementListModel *listModel_;
   DefoMeasurementSelectionModel *selectionModel_;
 
+  DefoMeasurementSelectionModel *roiSelectionModel_;
+  DefoROIModel *roiModel_;
+
+  DefoMeasurementSelectionModel *refSelectionModel_;
+  DefoMeasurementSelectionModel *defoSelectionModel_;
+
+  DefoPointRecognitionModel* refPointModel_;
+  DefoPointRecognitionModel* defoPointModel_;
+
 protected slots:
   void loadMeasurementButtonClicked();
+  void saveMeasurementButtonClicked();
 };
 
 #endif // DEFORECOMAINWINDOW_H
