@@ -37,20 +37,22 @@ done
 if test $ARCHITECTURE = "Darwin"; then
     echo Darwin architecture: fake device support forced
     USEFAKEDEVICES=1
+
+    # Support multiple distros (e.g. Ubuntu (Debian), openSUSE)
+    if [ -n `locate qwtplot3d.so` ]; then
+	echo Using Qwt libraries with qt4 suffix.
+	QWTDEFINES="QWT_QT4"
+	QWTLIBS="-lqwtplot3d-qt4 -lqwt-qt4"
+    else
+	QWTDEFINES=""
+	QWTLIBS="-lqwtplot3d -lqwt"
+    fi
 fi
 if test $ARCHITECTURE = "Linux" && test $KERNELMINOR -lt 6; then
     echo Linux kernel minor version < 6: fake device support forced
     USEFAKEDEVICES=1
-fi
-
-# Support multiple distros (e.g. Ubuntu (Debian), openSUSE)
-if [ -n `locate qwtplot3d.so` ]; then
-	echo Using Qwt libraries with qt4 suffix.
-	QWTDEFINES="QWT_QT4"
-	QWTLIBS="-lqwtplot3d-qt4 -lqwt-qt4"
-else
-	QWTDEFINES=""
-	QWTLIBS="-lqwtplot3d -lqwt"
+    QWTDEFINES=""
+    QWTLIBS="-lqwtplot3d -lqwt"
 fi
 
 if test $USEFAKEDEVICES = 1; then

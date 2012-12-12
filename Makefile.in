@@ -38,6 +38,5 @@ tkmodlabenv.csh: tkmodlabenv.csh.in @basepath@/config.status
 clean:
 	@rm -f *~
 	@for dir in $(subdirs); do (cd $$dir; make clean); done
-	@rm -f Makefile
 	@rm -f tkmodlabenv.sh
 	@rm -f tkmodlabenv.csh
