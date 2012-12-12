@@ -30,11 +30,37 @@ HEADERS += DefoConfigReader.h \
            DefoKeithleyModel.h \
            DefoJulaboModel.h \
            DefoCameraModel.h \
-           DefoConradModel.h
+           DefoConradModel.h \
+           DefoMeasurement.h \
+           DefoMeasurementListModel.h \
+           DefoMeasurementSelectionModel.h \
+           DefoMeasurementListComboBox.h \
+           DefoPointRecognitionModel.h \
+           DefoPointRecognitionWidget.h \
+           DefoThresholdSpinBox.h \
+           DefoImageWidget.h \
+           DefoPoint.h \
+           DefoSquare.h \
+           DefoPointFinder.h \
+           DefoPointSaver.h \
+           DefoROIModel.h
 
 SOURCES += DefoConfigReader.cc \
            DefoExifReader.cc \
            DefoKeithleyModel.cc \
            DefoJulaboModel.cc \
            DefoCameraModel.cc \
-           DefoConradModel.cc
+           DefoConradModel.cc \
+           DefoMeasurement.cc \
+           DefoMeasurementListModel.cc \
+           DefoMeasurementSelectionModel.cc \
+           DefoMeasurementListComboBox.cc \
+           DefoPointRecognitionModel.cc \
+           DefoPointRecognitionWidget.cc \
+           DefoThresholdSpinBox.cc \
+           DefoImageWidget.cc \
+           DefoPoint.cc \
+           DefoSquare.cc \
+           DefoPointFinder.cc \
+           DefoPointSaver.cc \
+           DefoROIModel.cc

@@ -41,49 +41,23 @@ INCLUDEPATH += @basepath@
 
 # Input
 HEADERS += DefoRecoMainWindow.h \
-           ../DefoPoint.h \
            ../DefoSpline.h \
-           ../DefoMeasurementListModel.h \
-           ../DefoMeasurementListComboBox.h \
-           ../DefoMeasurementSelectionModel.h \
            DefoMeasurementListTreeWidget.h \
            DefoMeasurementInfoListTreeWidget.h \
            DefoRecoPointRecognitionWidget.h \
-           ../DefoMeasurement.h \
            DefoRecoImageWidget.h \
            DefoRecoImageZoomModel.h \
-           ../DefoROIModel.h \
-           ../DefoImageWidget.h \
-           ../DefoPointRecognitionModel.h \
-           ../DefoPointRecognitionWidget.h \
-           ../DefoThresholdSpinBox.h \
            ../DefoPointBin.h \
-           ../DefoPointIndexer.h \
-           ../DefoPointFinder.h \
-           ../DefoPointSaver.h \
-           ../DefoSquare.h
+           ../DefoPointIndexer.h
 
 SOURCES += defoReco.cc \
            DefoRecoMainWindow.cc \
-           ../DefoPoint.cc \
            ../DefoSpline.cc \
-           ../DefoMeasurementListModel.cc \
-           ../DefoMeasurementListComboBox.cc \
-           ../DefoMeasurementSelectionModel.cc \
            DefoMeasurementListTreeWidget.cc \
            DefoMeasurementInfoListTreeWidget.cc \
            DefoRecoPointRecognitionWidget.cc \
-           ../DefoMeasurement.cc \
            DefoRecoImageWidget.cc \
            DefoRecoImageZoomModel.cc \
-           ../DefoROIModel.cc \
-           ../DefoImageWidget.cc \
-           ../DefoPointRecognitionModel.cc \
-           ../DefoPointRecognitionWidget.cc \
-           ../DefoThresholdSpinBox.cc \
            ../DefoPointBin.cc \
-           ../DefoPointIndexer.cc \
-           ../DefoPointFinder.cc \
-           ../DefoPointSaver.cc \
-           ../DefoSquare.cc
+           ../DefoPointIndexer.cc
 

@@ -8,7 +8,6 @@
 #include <QMutexLocker>
 #include <QDir>
 
-#include "DefoSurface.h"
 #include "DefoMeasurement.h"
 
 class DefoMeasurementListModel : public QObject
