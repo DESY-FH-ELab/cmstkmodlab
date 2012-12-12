@@ -24,9 +24,9 @@ DefoMeasurementListComboBox::DefoMeasurementListComboBox(
   // Respond to selection changes
   connect(
         selectionModel_
-      , SIGNAL(selectionChanged(const DefoMeasurementBase*))
+      , SIGNAL(selectionChanged(DefoMeasurement*))
       , this
-      , SLOT(setSelection(const DefoMeasurementBase*))
+      , SLOT(setSelection(DefoMeasurement*))
   );
   connect(
         this
@@ -54,7 +54,7 @@ void DefoMeasurementListComboBox::fillOptions(int count) {
   // Empty map
   indexMap_.clear();
 
-  const DefoMeasurementBase* measurement;
+  const DefoMeasurement* measurement;
 
   // Fill it up and add to view
   for (int i = 0; i < count; ++i) {
@@ -73,7 +73,7 @@ void DefoMeasurementListComboBox::fillOptions(int count) {
 }
 
 void DefoMeasurementListComboBox::setSelection(
-    const DefoMeasurementBase *selection
+    DefoMeasurement *selection
 ) {
 
   MeasurementMap::const_iterator it = indexMap_.find(selection);

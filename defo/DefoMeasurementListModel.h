@@ -20,29 +20,32 @@ public:
 
   // Deformation measurements
   int getMeasurementCount() const;
-  const DefoMeasurementBase* getMeasurement(int index) const;
+  const DefoMeasurement* getMeasurement(int index) const;
+  DefoMeasurement* getMeasurement(int index);
 
-  void addMeasurement(const DefoMeasurementBase* measurement);
+  void addMeasurement(DefoMeasurement* measurement);
   const DefoPointCollection* getMeasurementPoints(
-      const DefoMeasurementBase* measurement
+      DefoMeasurement* measurement
   );
   void setMeasurementPoints(
-      const DefoMeasurementBase* measurement
+      DefoMeasurement* measurement
     , const DefoPointCollection* points
   );
   void appendMeasurementPoints(
-      const DefoMeasurementBase* measurement
+      DefoMeasurement* measurement
     , const DefoPointCollection* points
   );
 
   void write(const QDir& path);
+  void writePoints(const QDir& path);
   void clear();
   void read(const QString& filename);
+  void readPoints(const QDir& path);
 
 protected:
-  std::vector<const DefoMeasurementBase*> measurementList_;
+  std::vector<DefoMeasurement*> measurementList_;
 
-  typedef std::map<const DefoMeasurementBase*, const DefoPointCollection*> PointMap;
+  typedef std::map<DefoMeasurement*, const DefoPointCollection*> PointMap;
   PointMap points_;
 
   // For thread safety
@@ -50,7 +53,7 @@ protected:
 
 signals:
   void measurementCountChanged(int count);
-  void pointsUpdated(const DefoMeasurementBase* measurement);
+  void pointsUpdated(const DefoMeasurement* measurement);
 
 };
 

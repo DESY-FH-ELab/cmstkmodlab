@@ -62,6 +62,8 @@ void DefoKeithleyModel::initialize() {
 void DefoKeithleyModel::setDeviceEnabled(bool enabled) {
   // Trivial reimplementation as slot.
   DefoAbstractDeviceModel::setDeviceEnabled(enabled);
+
+  //scanTemperatures();
 }
 
 void DefoKeithleyModel::setDeviceState(State state) {

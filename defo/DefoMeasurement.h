@@ -3,6 +3,7 @@
 
 #include <QDateTime>
 #include <QImage>
+#include <QPolygonF>
 #include <QColor>
 #include <QDir>
 
@@ -16,29 +17,70 @@
 #include "DefoJulaboModel.h"
 #include "DefoKeithleyModel.h"
 
-class DefoMeasurementBase {
+class DefoMeasurement {
 public:
-  DefoMeasurementBase(const QString& imageLocation);
+  DefoMeasurement(const QString& imageLocation, bool preview);
 
-  virtual bool isPreview() const = 0;
+  bool isPreview() const { return previewImage_; }
 
   void setTimeStamp(const QDateTime& dt);
   const QDateTime& getTimeStamp() const;
   QImage getImage() const;
 
+  float getFocalLength() const { return exifFocalLength_; }
+
   const DefoPointCollection* findPoints(
       const QRect* searchArea
+    , const QPolygonF* roi
     , int step1Threshold
     , int step2Threshold
     , int step3Threshold
     , int halfSquareWidth
   ) const;
 
+  void setImageLocation(const QString& imageLocation);
+  void readExifData();
+  void acquireData(const DefoPointRecognitionModel* model);
+  void acquireData(const DefoConradModel* model);
+  void acquireData(const DefoJulaboModel* model);
+  void acquireData(const DefoKeithleyModel* model);
+
+  void write(const QDir& path);
+  void read(const QString& filename);
+
 protected:
   /// (Local) date and time of measurement.
   QDateTime timestamp_;
   /// Image of the actual 'raw' measurement.
   QString imageLocation_;
+
+  QImage image_;
+
+  bool previewImage_;
+
+  std::vector<int> pointRecognitionThresholds_;
+
+  // Exif information
+  float exifFocalLength_;
+  float exifExposureTime_;
+  QString exifExposureTimeString_;
+  float exifAperture_;
+  int exifISO_;
+
+  // Conrad information
+  State conradState_;
+  std::vector<State> panelStates_;
+  State ledState_;
+
+  // Julabo information
+  State julaboState_;
+  bool circulatorState_;
+  float bathTemperature_;
+
+  // Keithley information
+  State keithleyState_;
+  std::vector<State> temperatureSensorStates_;
+  std::vector<float> temperatures_;
 
   /*
     Analysis depentent information, does not belong in 'measurement' class.
@@ -64,60 +106,6 @@ protected:
     , int threshold
   ) const;
 
-};
-
-class DefoPreviewMeasurement :
-      public DefoMeasurementBase
-{
-public:
-  DefoPreviewMeasurement(const QString& imageLocation);
-
-  bool isPreview() const { return true; }
-};
-
-class DefoMeasurement :
-      public DefoMeasurementBase
-{
-public:
-  DefoMeasurement(const QString& imageLocation);
-
-  bool isPreview() const { return false; }
-
-  void setImageLocation(const QString& imageLocation);
-  void readExifData();
-  void acquireData(const DefoPointRecognitionModel* model);
-  void acquireData(const DefoConradModel* model);
-  void acquireData(const DefoJulaboModel* model);
-  void acquireData(const DefoKeithleyModel* model);
-
-  void write(const QDir& path);
-  void read(const QString& filename);
-
-protected:
-
-  std::vector<int> pointRecognitionThresholds_;
-
-  // Exif information
-  float exifFocalLength_;
-  float exifExposureTime_;
-  QString exifExposureTimeString_;
-  float exifAperture_;
-  int exifISO_;
-
-  // Conrad information
-  State conradState_;
-  std::vector<State> panelStates_;
-  State ledState_;
-
-  // Julabo information
-  State julaboState_;
-  bool circulatorState_;
-  float bathTemperature_;
-
-  // Keithley information
-  State keithleyState_;
-  std::vector<State> temperatureSensorStates_;
-  std::vector<float> temperatures_;
 };
 
 #endif // _DEFOMEASUREMENT_H

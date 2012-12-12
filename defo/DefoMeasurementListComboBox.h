@@ -27,12 +27,12 @@ protected:
     Mapping should be one to one, i.e. index in the combobox is the same in the
     list model.
     */
-  typedef std::map<const DefoMeasurementBase*, int> MeasurementMap;
+  typedef std::map<const DefoMeasurement*, int> MeasurementMap;
   MeasurementMap indexMap_;
 
 protected slots:
   void fillOptions(int count);
-  void setSelection(const DefoMeasurementBase* selection);
+  void setSelection(DefoMeasurement* selection);
   void selectionChanged(int index);
 
 signals:

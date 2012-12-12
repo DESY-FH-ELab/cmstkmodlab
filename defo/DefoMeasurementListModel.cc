@@ -15,7 +15,7 @@ DefoMeasurementListModel::DefoMeasurementListModel(QObject *parent) :
   selection.
   */
 void DefoMeasurementListModel::addMeasurement(
-    const DefoMeasurementBase* measurement
+    DefoMeasurement* measurement
 ) {  
 
   QMutexLocker locker(&mutex_);
@@ -38,7 +38,12 @@ int DefoMeasurementListModel::getMeasurementCount() const {
 }
 
 /// Returns measurement at index i.
-const DefoMeasurementBase* DefoMeasurementListModel::getMeasurement(int i) const {
+const DefoMeasurement* DefoMeasurementListModel::getMeasurement(int i) const {
+  return measurementList_.at(i);
+}
+
+/// Returns measurement at index i.
+DefoMeasurement* DefoMeasurementListModel::getMeasurement(int i) {
   return measurementList_.at(i);
 }
 
@@ -47,7 +52,7 @@ const DefoMeasurementBase* DefoMeasurementListModel::getMeasurement(int i) const
   the image has not been scanned yet (or the measurement is not in the list).
   */
 const DefoPointCollection* DefoMeasurementListModel::getMeasurementPoints(
-    const DefoMeasurementBase* measurement
+    DefoMeasurement* measurement
 ) {
 
   PointMap::const_iterator it = points_.find(measurement);
@@ -68,7 +73,7 @@ const DefoPointCollection* DefoMeasurementListModel::getMeasurementPoints(
   which makes the whole procedure thread safe.
   */
 void DefoMeasurementListModel::setMeasurementPoints(
-    const DefoMeasurementBase *measurement
+    DefoMeasurement *measurement
   , const DefoPointCollection *points
 ) {
 
@@ -87,7 +92,7 @@ void DefoMeasurementListModel::setMeasurementPoints(
   copy, but this function makes the whole proces thread safe.
   */
 void DefoMeasurementListModel::appendMeasurementPoints(
-    const DefoMeasurementBase *measurement
+    DefoMeasurement *measurement
   , const DefoPointCollection *points
 ) {
 
@@ -111,7 +116,6 @@ void DefoMeasurementListModel::appendMeasurementPoints(
 
 }
 
-
 void DefoMeasurementListModel::write(const QDir& path)
 {
   QString fileLocation = path.absoluteFilePath("measurements.odmx");
@@ -126,7 +130,7 @@ void DefoMeasurementListModel::write(const QDir& path)
 
   stream.writeStartElement("DefoMeasurements");
 
-  const DefoMeasurementBase* measurement;
+  const DefoMeasurement* measurement;
   int count = 1;
   for (int i = 0; i < this->getMeasurementCount(); ++i) {
     measurement = this->getMeasurement(i);
@@ -143,8 +147,56 @@ void DefoMeasurementListModel::write(const QDir& path)
   stream.writeEndDocument();
 }
 
-void DefoMeasurementListModel::clear() {
+void DefoMeasurementListModel::writePoints(const QDir& path)
+{
+  QString filename = "points_%1.xml";
+  for (int i = 0; i < this->getMeasurementCount(); ++i) {
+    DefoMeasurement* measurement = this->getMeasurement(i);
+    if (measurement->isPreview()) continue;
 
+    const DefoPointCollection* points =this->getMeasurementPoints(measurement);
+    if (!points || points->size()==0) continue;
+
+    QString fileLocation = path.absoluteFilePath(filename.arg(measurement->getTimeStamp().toString("yyyyMMddhhmmss")));
+
+    QFile file(fileLocation);
+    if (!file.open(QIODevice::WriteOnly | QIODevice::Text | QIODevice::Truncate))
+      continue;
+
+    QXmlStreamWriter stream(&file);
+    stream.setAutoFormatting(true);
+    stream.writeStartDocument();
+
+    stream.writeStartElement("DefoPoints");
+    stream.writeAttribute("count", QString().setNum(points->size()));
+
+    for (DefoPointCollection::const_iterator it = points->begin();
+         it != points->end();
+         ++it) {
+      stream.writeStartElement("DefoPoint");
+      stream.writeAttribute("x", QString().setNum(it->getX()));
+      stream.writeAttribute("y", QString().setNum(it->getY()));
+      int h, s ,v;
+      QColor c = it->getColor();
+      h = c.hsvHue();
+      s = c.hsvSaturation();
+      v = c.value();
+      stream.writeAttribute("H", QString().setNum(h));
+      stream.writeAttribute("S", QString().setNum(s));
+      stream.writeAttribute("V", QString().setNum(v));
+      stream.writeEndElement();
+    }
+
+    stream.writeEndElement();
+
+    stream.writeEndDocument();
+  }
+}
+
+void DefoMeasurementListModel::clear() {
+  measurementList_.clear();
+  points_.clear();
+  emit measurementCountChanged(0);
 }
 
 void DefoMeasurementListModel::read(const QString& filename) {
@@ -166,7 +218,7 @@ void DefoMeasurementListModel::read(const QString& filename) {
 
       QString imageLocation = basepath.absoluteFilePath("%1.jpg");
       imageLocation = imageLocation.arg(dt.toString("yyyyMMddhhmmss"));
-      measurement = new DefoMeasurement(imageLocation);
+      measurement = new DefoMeasurement(imageLocation, false);
       measurement->setTimeStamp(dt);
 
       QString dataLocation = basepath.absoluteFilePath("%1.xml");
@@ -175,5 +227,47 @@ void DefoMeasurementListModel::read(const QString& filename) {
 
       addMeasurement(measurement);
     }
+  }
+}
+
+void DefoMeasurementListModel::readPoints(const QDir& path)
+{
+  QString filename = "points_%1.xml";
+  for (int i = 0; i < this->getMeasurementCount(); ++i) {
+    DefoMeasurement* measurement = this->getMeasurement(i);
+    if (measurement->isPreview()) continue;
+
+    QString fileLocation = path.absoluteFilePath(filename.arg(measurement->getTimeStamp().toString("yyyyMMddhhmmss")));
+
+    QFile file(fileLocation);
+    if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
+      continue;
+
+    DefoPointCollection* points = new DefoPointCollection;
+
+    QXmlStreamReader stream(&file);
+    while (!stream.atEnd()) {
+      stream.readNextStartElement();
+      if (stream.isStartElement() && stream.name()=="DefoPoint") {
+        float x = stream.attributes().value("x").toString().toFloat();
+        float y = stream.attributes().value("y").toString().toFloat();
+        int H = stream.attributes().value("H").toString().toInt();
+        int S = stream.attributes().value("S").toString().toInt();
+        int V = stream.attributes().value("V").toString().toInt();
+        DefoPoint p(x, y);
+        QColor c;
+        c.setHsv(H, S, V);
+        p.setColor(c);
+
+        points->push_back(p);
+      }
+    }
+
+    if (points->size()==0) {
+      delete points;
+      continue;
+    }
+
+    this->setMeasurementPoints(measurement, points);
   }
 }

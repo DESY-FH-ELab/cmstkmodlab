@@ -105,6 +105,34 @@ void DefoScriptModel::doPrepareNewMeasurement() {
   emit prepareNewMeasurement();
 }
 
+void DefoScriptModel::message(int value) {
+
+  QString message = QString("%1")
+    .arg(value);
+  this->doAppendMessageText(message);
+}
+
+void DefoScriptModel::message(uint value) {
+
+  QString message = QString("%1")
+    .arg(value);
+  this->doAppendMessageText(message);
+}
+
+void DefoScriptModel::message(double value) {
+
+  QString message = QString("%1")
+    .arg(value);
+  this->doAppendMessageText(message);
+}
+
+void DefoScriptModel::message(const QString & text) {
+
+  QString message = QString("%1")
+    .arg(text);
+  this->doAppendMessageText(message);
+}
+
 void DefoScriptModel::doClearMessageText() {
   
   emit clearMessageText();

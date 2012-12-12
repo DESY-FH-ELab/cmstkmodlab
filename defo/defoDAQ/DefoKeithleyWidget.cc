@@ -168,7 +168,7 @@ void DefoKeithleyTemperatureWidget::controlStateChanged(bool enabled) {
 /// Updates the GUI according to the current sensor state.
 void DefoKeithleyTemperatureWidget::sensorStateChagned(
     unsigned int sensor
-  , State state
+  , State /* state */
 ) {
 
   if ( sensor_ == sensor )

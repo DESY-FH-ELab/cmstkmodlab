@@ -230,7 +230,7 @@ void DefoCameraWidget::liveViewModeChanged( bool enabled ) {
 void DefoCameraWidget::openButtonClicked() {
 
   QString location( QFileDialog::getOpenFileName(this, "Choose image") );
-  const DefoMeasurement* measurement = new DefoMeasurement(location);
+  DefoMeasurement* measurement = new DefoMeasurement(location, false);
   listModel_->addMeasurement( measurement );
   selectionModel_->setSelection( measurement );
 

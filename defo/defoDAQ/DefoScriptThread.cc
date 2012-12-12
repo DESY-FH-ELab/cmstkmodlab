@@ -30,16 +30,17 @@ void DefoScriptThread::executeScript(const QString & script)
   script_ = script;
 
   engine_ = new QScriptEngine();
+  engine_->setProcessEventsInterval(1000);
 
   DefoScriptableGlobals *globalsObj = new DefoScriptableGlobals(scriptModel_, this);
   QScriptValue globalsValue = engine_->newQObject(globalsObj);
   engine_->globalObject().setProperty("defo", globalsValue);
 
-  DefoScriptableConrad *conradObj = new DefoScriptableConrad(conradModel_, this);
+  DefoScriptableConrad *conradObj = new DefoScriptableConrad(scriptModel_, conradModel_, this);
   QScriptValue conradValue = engine_->newQObject(conradObj);
   engine_->globalObject().setProperty("conrad", conradValue);
 
-  DefoScriptableCamera *cameraObj = new DefoScriptableCamera(cameraModel_, this);
+  DefoScriptableCamera *cameraObj = new DefoScriptableCamera(scriptModel_, cameraModel_, this);
   QScriptValue cameraValue = engine_->newQObject(cameraObj);
   engine_->globalObject().setProperty("camera", cameraValue);
 
@@ -52,22 +53,31 @@ void DefoScriptThread::executeScript(const QString & script)
   engine_->globalObject().setProperty("keithley", keithleyValue);
 
   start();
-  // engine_->evaluate(script_);
-  // qDebug() << script_;
 }
 
 void DefoScriptThread::abortScript() {
-  if (engine_) engine_->abortEvaluation();
+  std::cout << "abort" << std::endl;
+  if (engine_) {
+    std::cout << "abort " << (int)engine_->isEvaluating() << std::endl;
+    engine_->abortEvaluation();
+    //delete engine_;
+    //engine_ = 0;
+    //terminate();
+  }
 }
 
 void DefoScriptThread::run() {
 
   if (engine_->canEvaluate(script_)) {
-    engine_->evaluate(script_);
+    QScriptValue fun = engine_->evaluate(script_);
+    //QScriptContext * context = engine_->pushContext();
+    //QScriptValue v = context->activationObject();
+    //v.setProperty("fun", fun);
+    //engine_->evaluate("fun()");
+    //engine_->popContext();
+    delete engine_;
+    engine_ = 0;
   } else {
     qDebug() << script_;
   }
-
-  delete engine_;
-  engine_ = 0;
 }

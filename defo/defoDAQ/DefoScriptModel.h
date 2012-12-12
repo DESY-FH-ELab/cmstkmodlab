@@ -34,6 +34,11 @@ public:
   void abortScript();
   int executionTime() const { return executionTime_; }
 
+  void message(int value);
+  void message(uint value);
+  void message(double value);
+  void message(const QString & text);
+
 public slots:
   void executionStarted();
   void executionFinished();

@@ -1,0 +1,40 @@
+#-------------------------------------------------
+#
+# Project created by QtCreator 2012-10-25T14:54:37
+#
+#-------------------------------------------------
+
+macx {
+    INCLUDEPATH += /opt/local/include/qwt
+    INCLUDEPATH += /opt/local/include/qwtplot3d
+    INCLUDEPATH += /opt/local/include/GL
+}
+else {
+    INCLUDEPATH += /usr/include/qwt /usr/include/exiv2
+    DEFINES += 
+    LIBS += -lgphoto2 -lexiv2
+    LIBS += -lqwt -lqwtplot3d -lGL -lGLU
+}
+
+DEFINES += @configdefines@
+QT += core gui opengl script xml
+TARGET = DefoCommon
+TEMPLATE = lib
+DEPENDPATH += .
+INCLUDEPATH += .
+INCLUDEPATH += @basepath@
+
+HEADERS += DefoConfigReader.h \
+           DefoExifReader.h \
+           DefoState.h \
+           DefoKeithleyModel.h \
+           DefoJulaboModel.h \
+           DefoCameraModel.h \
+           DefoConradModel.h
+
+SOURCES += DefoConfigReader.cc \
+           DefoExifReader.cc \
+           DefoKeithleyModel.cc \
+           DefoJulaboModel.cc \
+           DefoCameraModel.cc \
+           DefoConradModel.cc

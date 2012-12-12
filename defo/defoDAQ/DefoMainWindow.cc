@@ -5,8 +5,6 @@
 DefoMainWindow::DefoMainWindow(QWidget *parent) :
     QMainWindow(parent)
 {
-  prepareNewMeasurement();
-
   // CONRAD MODEL
   conradModel_ = new DefoConradModel(this);
 
@@ -14,7 +12,7 @@ DefoMainWindow::DefoMainWindow(QWidget *parent) :
   julaboModel_ = new DefoJulaboModel(5);
 
   // KEITHLEY MODEL
-  keithleyModel_ = new DefoKeithleyModel(60);
+  keithleyModel_ = new DefoKeithleyModel(10);
 
   // MEASUREMENT MODEL
   listModel_ = new DefoMeasurementListModel();
@@ -47,7 +45,9 @@ DefoMainWindow::DefoMainWindow(QWidget *parent) :
 	  keithleyModel_, SLOT(setControlsEnabled(bool)));
   connect(scriptModel_, SIGNAL(setControlsEnabled(bool)),
 	  pointModel_, SLOT(setControlsEnabled(bool)));
-  
+
+  prepareNewMeasurement();
+
   tabWidget_ = new QTabWidget(this);
   tabWidget_->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);
 
@@ -116,7 +116,7 @@ DefoMainWindow::DefoMainWindow(QWidget *parent) :
   }
 
   // read default settings
-  DefoConfigReader cfgReader( "defo.cfg" );
+  DefoConfigReader cfgReader( "../defo.cfg" );
   pointModel_->setThresholdValue(
         DefoPointRecognitionModel::THRESHOLD_1
         , cfgReader.getValue<int>( "STEP1_THRESHOLD" )
@@ -176,14 +176,14 @@ void DefoMainWindow::newCameraImage(QString location, bool keep) {
 
   if (!keep) {
 
-    DefoPreviewMeasurement * measurement = new DefoPreviewMeasurement(location);
+    DefoMeasurement * measurement = new DefoMeasurement(location, false);
 
     listModel_->addMeasurement(measurement);
     selectionModel_->setSelection(measurement);
 
   } else {
 
-    DefoMeasurement * measurement = new DefoMeasurement(location);
+    DefoMeasurement * measurement = new DefoMeasurement(location, true);
 
     // TODO save when needed, i.e. always from now on
     QDateTime dt = measurement->getTimeStamp();

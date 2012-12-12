@@ -142,7 +142,7 @@ TestWindow::TestWindow(QWidget *parent) :
 
 void TestWindow::pointButtonClicked() {
 
-  const DefoMeasurementBase* measurement = selectionModel_->getSelection();
+  DefoMeasurement* measurement = selectionModel_->getSelection();
   listModel_->setMeasurementPoints(measurement, NULL);
 
   DefoPointFinder* finder;
@@ -183,14 +183,14 @@ void TestWindow::newCameraImage(QString location, bool keep) {
 
   if (!keep) {
     
-    DefoPreviewMeasurement * measurement = new DefoPreviewMeasurement(location);
+    DefoMeasurement * measurement = new DefoMeasurement(location, false);
   
     listModel_->addMeasurement(measurement);
     selectionModel_->setSelection(measurement);
 
   } else {
 
-    DefoMeasurement * measurement = new DefoMeasurement(location);
+    DefoMeasurement * measurement = new DefoMeasurement(location, true);
     
     // TODO save when needed, i.e. always from now on
     QDateTime dt = measurement->getTimeStamp();
@@ -259,7 +259,7 @@ void TestWindow::writePoints()
 
   if (file.length() > 0) {
     CoordinateSaver saver(file);
-    const DefoMeasurementBase* meas = selectionModel_->getSelection();
+    DefoMeasurement* meas = selectionModel_->getSelection();
     const DefoPointCollection* points = listModel_->getMeasurementPoints(meas);
 
     for ( DefoPointCollection::const_iterator it = points->begin()
@@ -329,7 +329,7 @@ ScriptWindow::ScriptWindow(QWidget *parent) :
   central->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);
   central->setLayout(layout);
   
-  DefoCameraModel* cameraModel = new DefoCameraModel(this);
+  //DefoCameraModel* cameraModel = new DefoCameraModel(this);
 
   //DefoScriptModel* script = new DefoScriptModel(cameraModel, this);
   //DefoScriptWidget* scriptWidget = new DefoScriptWidget(script, this);

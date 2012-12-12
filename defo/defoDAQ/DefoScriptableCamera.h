@@ -4,6 +4,8 @@
 #include <QObject>
 #include <QMutex>
 
+#include <DefoScriptModel.h>
+
 #include "DefoCameraModel.h"
 
 class DefoScriptableCamera :
@@ -12,7 +14,8 @@ class DefoScriptableCamera :
   Q_OBJECT
 public:
   explicit DefoScriptableCamera(
-      DefoCameraModel* cameraModel
+      DefoScriptModel* scriptModel
+    , DefoCameraModel* cameraModel
     , QObject *parent = 0
   );
 public slots:
@@ -22,6 +25,7 @@ signals:
   void acquirePicture(bool);
 
 protected:
+  DefoScriptModel* scriptModel_;
   DefoCameraModel* cameraModel_;
 
   // For thread safety

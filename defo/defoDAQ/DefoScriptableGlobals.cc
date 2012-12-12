@@ -21,41 +21,34 @@ void DefoScriptableGlobals::newMeasurement() {
 
 void DefoScriptableGlobals::wait(int seconds) {
 
-  std::cout << "void DefoScriptableGlobals::wait(int seconds) " << seconds << std::endl;
+  QString message = QString("wait for %1 second(s) ...").arg(seconds);
+  this->message(message);
   sleep(seconds);
-  std::cout << "void DefoScriptableGlobals::wait(int seconds) done" << std::endl;
+  this->message("done");
 }
 
 void DefoScriptableGlobals::message(int value) {
 
   QMutexLocker locker(&mutex_);
-  QString message = QString("%1")
-    .arg(value);
-  scriptModel_->doAppendMessageText(message);
+  scriptModel_->message(value);
 }
 
 void DefoScriptableGlobals::message(uint value) {
 
   QMutexLocker locker(&mutex_);
-  QString message = QString("%1")
-    .arg(value);
-  scriptModel_->doAppendMessageText(message);
+  scriptModel_->message(value);
 }
 
 void DefoScriptableGlobals::message(double value) {
 
   QMutexLocker locker(&mutex_);
-  QString message = QString("%1")
-    .arg(value);
-  scriptModel_->doAppendMessageText(message);
+  scriptModel_->message(value);
 }
 
 void DefoScriptableGlobals::message(const QString & text) {
 
   QMutexLocker locker(&mutex_);
-  QString message = QString("%1")
-    .arg(text);
-  scriptModel_->doAppendMessageText(message);
+  scriptModel_->message(text);
 }
 
 QScriptValue DefoScriptableGlobals::uTime() const

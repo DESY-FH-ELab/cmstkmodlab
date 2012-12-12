@@ -5,6 +5,8 @@
 #include <QMutex>
 #include <QScriptValue>
 
+#include <DefoScriptModel.h>
+
 #include "DefoConradModel.h"
 
 class DefoScriptableConrad :
@@ -13,7 +15,8 @@ class DefoScriptableConrad :
   Q_OBJECT
 public:
   explicit DefoScriptableConrad(
-      DefoConradModel* conradModel
+      DefoScriptModel* scriptModel
+    , DefoConradModel* conradModel
     , QObject *parent = 0
   );
 
@@ -30,6 +33,7 @@ signals:
   void disableSwitch( DefoConradModel::DeviceSwitch device );
 
 protected:
+  DefoScriptModel* scriptModel_;
   DefoConradModel* conradModel_;
 
   // For thread safety

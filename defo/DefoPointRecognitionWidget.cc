@@ -74,7 +74,7 @@ DefoPointRecognitionWidget::DefoPointRecognitionWidget(
 
 void DefoPointRecognitionWidget::findPointsButtonClicked() {
 
-  const DefoMeasurementBase* measurement = selectionModel_->getSelection();
+  DefoMeasurement* measurement = selectionModel_->getSelection();
   listModel_->setMeasurementPoints(measurement, NULL);
 
   DefoPointFinder* finder;
@@ -115,7 +115,7 @@ void DefoPointRecognitionWidget::savePointsButtonClicked()
 
   if (file.length() > 0) {
     PointSaver saver(file);
-    const DefoMeasurementBase* meas = selectionModel_->getSelection();
+    DefoMeasurement* meas = selectionModel_->getSelection();
     const DefoPointCollection* points = listModel_->getMeasurementPoints(meas);
 
     for ( DefoPointCollection::const_iterator it = points->begin()

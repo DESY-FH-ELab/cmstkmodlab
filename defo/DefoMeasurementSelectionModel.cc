@@ -5,12 +5,12 @@ DefoMeasurementSelectionModel::DefoMeasurementSelectionModel(QObject *parent) :
   , selection_(NULL)
 {}
 
-const DefoMeasurementBase * DefoMeasurementSelectionModel::getSelection() const {
+DefoMeasurement * DefoMeasurementSelectionModel::getSelection() const {
   return selection_;
 }
 
 void DefoMeasurementSelectionModel::setSelection(
-    const DefoMeasurementBase *selection
+    DefoMeasurement *selection
 ) {
 
   if (selection_ != selection) {

@@ -5,6 +5,7 @@
 #include "DefoMeasurement.h"
 #include "DefoMeasurementListModel.h"
 #include "DefoPointRecognitionModel.h"
+#include "DefoROIModel.h"
 
 class DefoPointFinder : public QThread {
 
@@ -13,18 +14,19 @@ public:
   explicit DefoPointFinder(
       DefoMeasurementListModel *listModel
     , DefoPointRecognitionModel *pointModel
-    , const DefoMeasurementBase *measurement
+    , DefoMeasurement *measurement
     , const QRect& searchRectangle
+    , DefoROIModel * roiModel = 0
   );
 
 protected:
   DefoMeasurementListModel* listModel_;
   DefoPointRecognitionModel* pointModel_;
-  const DefoMeasurementBase* measurement_;
+  DefoMeasurement* measurement_;
   const QRect searchArea_;
+  DefoROIModel* roiModel_;
 
   void run();
-
 };
 
 #endif // DEFOPOINTFINDER_H

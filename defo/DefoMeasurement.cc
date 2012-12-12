@@ -7,21 +7,30 @@
 
 #include "DefoMeasurement.h"
 
-DefoMeasurementBase::DefoMeasurementBase(const QString& imageLocation) :
+DefoMeasurement::DefoMeasurement(const QString& imageLocation, bool preview) :
     timestamp_(QDateTime::currentDateTimeUtc())
   , imageLocation_(imageLocation)
-{}
+  , previewImage_(preview)
+{
+  if (image_.isNull()) {
+    QImage temp(imageLocation_);
+    QMatrix matrix;
+    matrix.rotate(90);
+    image_ = temp.transformed(matrix);
+  }
+}
 
-void DefoMeasurementBase::setTimeStamp(const QDateTime& dt) {
+void DefoMeasurement::setTimeStamp(const QDateTime& dt) {
   timestamp_ = dt;
 }
 
-const QDateTime & DefoMeasurementBase::getTimeStamp() const {
+const QDateTime & DefoMeasurement::getTimeStamp() const {
   return timestamp_;
 }
 
-QImage DefoMeasurementBase::getImage() const {
-  return QImage(imageLocation_);
+QImage DefoMeasurement::getImage() const {
+
+  return image_;
 }
 
 /**
@@ -30,8 +39,9 @@ QImage DefoMeasurementBase::getImage() const {
   image may be provided. In the case this points to NULL, the whole image is
   searched for suitable points.
   */
-const DefoPointCollection* DefoMeasurementBase::findPoints(
+const DefoPointCollection* DefoMeasurement::findPoints(
     const QRect* searchArea
+  , const QPolygonF* roi
   , int step1Threshold
   , int step2Threshold
   , int step3Threshold
@@ -77,7 +87,7 @@ const DefoPointCollection* DefoMeasurementBase::findPoints(
       // Check if the point is in the allowed area AND bright enough
       // FIXME leap over forbidden areas instead of having to skip every pixel
 
-      if (    !forbiddenAreas.isInside( DefoPoint( x, y ) )
+      if (!forbiddenAreas.isInside( DefoPoint( x, y ) )
            && qGray( image.pixel(x,y) ) > step1Threshold
            && imageArea.contains( x+3, y+3 )
       ) {
@@ -149,8 +159,15 @@ const DefoPointCollection* DefoMeasurementBase::findPoints(
 
               // save square around this point as already tagged
               forbiddenAreas.push_back( searchSquare );
-              points->push_back(intermediate);
 
+              if (roi->size()==0) {
+                points->push_back(intermediate);
+              } else {
+                if (roi->containsPoint(QPointF(intermediate.getX(), intermediate.getY()),
+                                       Qt::OddEvenFill)) {
+                  points->push_back(intermediate);
+                }
+              }
             }
           }
           // FIXME central logging
@@ -196,7 +213,7 @@ const DefoPointCollection* DefoMeasurementBase::findPoints(
   * of the DefoPoint. Please remark that this function does not check if there
   * is only one blue point, but tags all points exceeding the threshold!
   */
-void DefoMeasurementBase::determinePointColors(
+void DefoMeasurement::determinePointColors(
     const QImage& image
   , DefoPointCollection* points
   , int halfSquareWidth
@@ -243,7 +260,7 @@ void DefoMeasurementBase::determinePointColors(
   * image are taken into account. Otherwise a point at (0,0) is returned.
   */
 // FIXME DefoSquare <> QRect
-DefoPoint DefoMeasurementBase::getCenterOfGravity(
+DefoPoint DefoMeasurement::getCenterOfGravity(
     const QImage& image
   , const QRect &area
   , int threshold
@@ -298,7 +315,7 @@ DefoPoint DefoMeasurementBase::getCenterOfGravity(
   * outside image, only the pixels inside image are taken into account.
   * If the overlap of area and image is empty, rgb(0,0,0) is returned.
   */
-const QColor DefoMeasurementBase::getAverageColor(
+const QColor DefoMeasurement::getAverageColor(
     const QImage& image
   , const QRect &area
   , int threshold
@@ -343,18 +360,6 @@ const QColor DefoMeasurementBase::getAverageColor(
   }
 
   return average;
-
-}
-
-DefoPreviewMeasurement::DefoPreviewMeasurement(const QString& imageLocation) :
-    DefoMeasurementBase(imageLocation)
-{
-
-}
-
-DefoMeasurement::DefoMeasurement(const QString& imageLocation) :
-    DefoMeasurementBase(imageLocation)
-{
 
 }
 

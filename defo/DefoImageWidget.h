@@ -47,7 +47,7 @@ protected:
   virtual QImage prepareImage(const QImage& image) const = 0;
 
 public slots:
-  virtual void selectionChanged(const DefoMeasurementBase* measurement);
+  virtual void selectionChanged(DefoMeasurement* measurement);
 
 };
 
@@ -104,7 +104,7 @@ public slots:
       DefoPointRecognitionModel::Threshold threshold
     , int value
   );
-  void selectionChanged(const DefoMeasurementBase* measurement);
+  void selectionChanged(DefoMeasurement* measurement);
   void controlStateChanged(bool);
 
 protected:
@@ -133,7 +133,7 @@ protected:
   void paintEvent(QPaintEvent *event);
 
 protected slots:
-  void pointsUpdated(const DefoMeasurementBase* measurement);
+  void pointsUpdated(const DefoMeasurement* measurement);
 
 };
 
