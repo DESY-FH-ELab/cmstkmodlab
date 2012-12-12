@@ -15,6 +15,7 @@
 #include "DefoMeasurementListModel.h"
 #include "DefoMeasurementSelectionModel.h"
 #include "DefoROIModel.h"
+#include "DefoAlignmentModel.h"
 
 #include "DefoMeasurementListTreeWidget.h"
 #include "DefoMeasurementInfoListTreeWidget.h"
@@ -22,6 +23,9 @@
 
 #include "DefoPointRecognitionModel.h"
 #include "DefoPointRecognitionWidget.h"
+
+#include "DefoReconstructionModel.h"
+#include "DefoReconstructionWidget.h"
 
 class DefoRecoMainWindow : public QMainWindow
 {
@@ -43,11 +47,16 @@ protected:
   DefoMeasurementSelectionModel *roiSelectionModel_;
   DefoROIModel *roiModel_;
 
+  DefoMeasurementSelectionModel *alignmentSelectionModel_;
+  DefoAlignmentModel *alignmentModel_;
+
   DefoMeasurementSelectionModel *refSelectionModel_;
   DefoMeasurementSelectionModel *defoSelectionModel_;
 
   DefoPointRecognitionModel* refPointModel_;
   DefoPointRecognitionModel* defoPointModel_;
+
+  DefoReconstructionModel* reconstructionModel_;
 
 protected slots:
   void loadMeasurementButtonClicked();

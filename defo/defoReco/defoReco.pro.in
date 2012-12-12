@@ -49,6 +49,8 @@ HEADERS += DefoRecoMainWindow.h \
            DefoRecoPointRecognitionWidget.h \
            DefoRecoImageWidget.h \
            DefoRecoImageZoomModel.h \
+           DefoReconstructionModel.h \
+           DefoReconstructionWidget.h \
            ../DefoPointBin.h \
            ../DefoPointIndexer.h
 
@@ -60,6 +62,8 @@ SOURCES += defoReco.cc \
            DefoRecoPointRecognitionWidget.cc \
            DefoRecoImageWidget.cc \
            DefoRecoImageZoomModel.cc \
+           DefoReconstructionModel.cc \
+           DefoReconstructionWidget.cc \
            ../DefoPointBin.cc \
            ../DefoPointIndexer.cc
 

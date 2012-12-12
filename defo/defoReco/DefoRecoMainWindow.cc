@@ -18,15 +18,35 @@ DefoRecoMainWindow::DefoRecoMainWindow(QWidget *parent) :
   // MEASUREMENT MODEL
   listModel_ = new DefoMeasurementListModel(this);
   selectionModel_ = new DefoMeasurementSelectionModel(this);
-  roiSelectionModel_ = new DefoMeasurementSelectionModel(this);
-  refSelectionModel_ = new DefoMeasurementSelectionModel(this);
-  defoSelectionModel_ = new DefoMeasurementSelectionModel(this);
 
+  roiSelectionModel_ = new DefoMeasurementSelectionModel(this);
   roiModel_ = new DefoROIModel(this);
 
+  alignmentSelectionModel_ = new DefoMeasurementSelectionModel(this);
+  alignmentModel_ = new DefoAlignmentModel(this);
+
   // POINT MODEL
+  refSelectionModel_ = new DefoMeasurementSelectionModel(this);
   refPointModel_ = new DefoPointRecognitionModel(this);
+  defoSelectionModel_ = new DefoMeasurementSelectionModel(this);
   defoPointModel_ = new DefoPointRecognitionModel(this);
+
+  reconstructionModel_ = new DefoReconstructionModel(listModel_, this);
+
+  connect(refSelectionModel_,
+          SIGNAL(selectionChanged(DefoMeasurement*)),
+          reconstructionModel_,
+          SLOT(referenceSelectionChanged(DefoMeasurement*)));
+
+  connect(defoSelectionModel_,
+          SIGNAL(selectionChanged(DefoMeasurement*)),
+          reconstructionModel_,
+          SLOT(defoSelectionChanged(DefoMeasurement*)));
+
+  connect(listModel_,
+          SIGNAL(pointsUpdated(const DefoMeasurement*)),
+          reconstructionModel_,
+          SLOT(pointsUpdated(const DefoMeasurement*)));
 
   tabWidget_ = new QTabWidget(this);
   tabWidget_->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);
@@ -90,12 +110,10 @@ DefoRecoMainWindow::DefoRecoMainWindow(QWidget *parent) :
 
   layout = new QHBoxLayout();
   QWidget * pointsWidget = new QWidget(tabWidget_);
-  pointsWidget->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);
   pointsWidget->setLayout(layout);
 
   vbox = new QVBoxLayout();
   QWidget * refPointWidget = new QWidget(pointsWidget);
-  refPointWidget->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);
   refPointWidget->setLayout(vbox);
 
   DefoMeasurementListComboBox *refSelect = new DefoMeasurementListComboBox(listModel_, refSelectionModel_, refPointWidget);
@@ -128,7 +146,6 @@ DefoRecoMainWindow::DefoRecoMainWindow(QWidget *parent) :
 
   vbox = new QVBoxLayout();
   QWidget * defoPointWidget = new QWidget(pointsWidget);
-  defoPointWidget->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);
   defoPointWidget->setLayout(vbox);
   
   DefoMeasurementListComboBox *defoSelect = new DefoMeasurementListComboBox(listModel_, defoSelectionModel_, defoPointWidget);
@@ -160,7 +177,28 @@ DefoRecoMainWindow::DefoRecoMainWindow(QWidget *parent) :
   layout->addWidget(defoPointWidget);
 
   tabWidget_->addTab(pointsWidget, "Points");
-  
+
+  vbox = new QVBoxLayout();
+  QWidget * alignmentWidget = new QWidget(tabWidget_);
+  alignmentWidget->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);
+  alignmentWidget->setLayout(vbox);
+
+  DefoMeasurementListComboBox *alignmentSelect = new DefoMeasurementListComboBox(listModel_,
+                                                                                 alignmentSelectionModel_,
+                                                                                 alignmentWidget);
+  vbox->addWidget(alignmentSelect);
+
+  DefoRecoAlignmentImageWidget *alignmentImage = new DefoRecoAlignmentImageWidget(alignmentSelectionModel_,
+                                                                                  alignmentModel_,
+                                                                                  alignmentWidget);
+  vbox->addWidget(alignmentImage);
+
+  tabWidget_->addTab(alignmentWidget, "Alignment");
+
+  DefoReconstructionWidget *recoWidget = new DefoReconstructionWidget(reconstructionModel_,
+                                                                      tabWidget_);
+  tabWidget_->addTab(recoWidget, "Reconstruction");
+
   setCentralWidget(tabWidget_);
 }
 
@@ -177,6 +215,7 @@ void DefoRecoMainWindow::loadMeasurementButtonClicked() {
   std::cout << currentDir_.absolutePath().toStdString() << std::endl;
 
   roiModel_->read(currentDir_.absoluteFilePath("roi.xml"));
+  alignmentModel_->read(currentDir_.absoluteFilePath("alignment.xml"));
 
   listModel_->clear();
   listModel_->read(filename);
@@ -186,6 +225,7 @@ void DefoRecoMainWindow::loadMeasurementButtonClicked() {
 void DefoRecoMainWindow::saveMeasurementButtonClicked() {
 
   roiModel_->write(currentDir_.absolutePath());
+  alignmentModel_->write(currentDir_.absolutePath());
 
   listModel_->writePoints(currentDir_);
 }
