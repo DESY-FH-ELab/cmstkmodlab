@@ -23,6 +23,7 @@ macx {
 else {
     INCLUDEPATH += /usr/include/qwt /usr/include/exiv2
     LIBS += -lgphoto2 -lexiv2
+    LIBS += -lopencv_core -lopencv_imgproc -lopencv_highgui
     LIBS += -lqwt -lqwtplot3d -lGL -lGLU
 }
 

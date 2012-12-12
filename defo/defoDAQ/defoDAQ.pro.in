@@ -27,6 +27,7 @@ else {
     LIBS += -L@basepath@/devices/lib -lTkModLabCanon
     LIBS += -L@basepath@/defo/defoCommon -lDefoCommon
     LIBS += -lgphoto2 -lexiv2
+    LIBS += -lopencv_core -lopencv_imgproc -lopencv_highgui
     INCLUDEPATH += /usr/include/qwt /usr/include/exiv2
     LIBS += -lqwt -lqwtplot3d -lGL -lGLU
 }
