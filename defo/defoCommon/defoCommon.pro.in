@@ -8,10 +8,20 @@ macx {
     INCLUDEPATH += /opt/local/include/qwt
     INCLUDEPATH += /opt/local/include/qwtplot3d
     INCLUDEPATH += /opt/local/include/GL
+    INCLUDEPATH += /opt/local/include/exiv2
+    LIBS += -L/opt/local/lib -lexiv2
+    LIBS += -L/opt/local/lib -lopencv_core -lopencv_imgproc -lopencv_highgui
+    LIBS += -L/opt/local/lib -lgphoto2 -lgphoto2_port
+    LIBS += -L/opt/local/lib -lqwt -lqwtplot3d -lGL -lGLU
+    LIBS += @basepath@/devices/Keithley/*.o
+    LIBS += @basepath@/devices/Greisinger/*.o
+    LIBS += @basepath@/devices/Julabo/*.o
+    LIBS += @basepath@/devices/Hameg/*.o
+    LIBS += @basepath@/devices/Canon/*.o
+    LIBS += @basepath@/devices/Conrad/*.o
 }
 else {
     INCLUDEPATH += /usr/include/qwt /usr/include/exiv2
-    DEFINES += 
     LIBS += -lgphoto2 -lexiv2
     LIBS += -lqwt -lqwtplot3d -lGL -lGLU
 }

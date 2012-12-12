@@ -7,7 +7,9 @@ macx {
     INCLUDEPATH += /opt/local/include/qwtplot3d
     INCLUDEPATH += /opt/local/include/GL
     LIBS += -L/opt/local/lib -lqwt -lqwtplot3d
-# include libgphoto2
+    LIBS += -L/opt/local/lib -lexiv2
+    LIBS += -L/opt/local/lib -lopencv_core -lopencv_imgproc -lopencv_highgui
+    LIBS += -L/opt/local/lib -lgphoto2 -lgphoto2_port
     LIBS += @basepath@/devices/Keithley/*.o
     LIBS += @basepath@/devices/Greisinger/*.o
     LIBS += @basepath@/devices/Julabo/*.o
@@ -26,7 +28,6 @@ else {
     LIBS += -L@basepath@/defo/defoCommon -lDefoCommon
     LIBS += -lgphoto2 -lexiv2
     INCLUDEPATH += /usr/include/qwt /usr/include/exiv2
-    INCLUDEPATH += @basepath@/defo/defoCommon
     DEFINES += 
     LIBS += -lqwt -lqwtplot3d -lGL -lGLU
 }
@@ -38,6 +39,7 @@ DEPENDPATH += ../defoCommon
 INCLUDEPATH += .
 INCLUDEPATH += ..
 INCLUDEPATH += @basepath@
+INCLUDEPATH += @basepath@/defo/defoCommon
 
 # Input
 HEADERS += DefoRecoMainWindow.h \
