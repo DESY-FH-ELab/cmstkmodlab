@@ -11,14 +11,14 @@ class DefoMeasurementListTreeWidgetItem : public QTreeWidgetItem
 {
 public:
   explicit DefoMeasurementListTreeWidgetItem(
-      const DefoMeasurementBase* measurement
+      DefoMeasurement* measurement
     , QTreeWidget *parent = 0
   );
 
-  const DefoMeasurementBase* getMeasurement() { return measurement_; }
+  DefoMeasurement* getMeasurement() { return measurement_; }
 
 protected:
-  const DefoMeasurementBase* measurement_;
+  DefoMeasurement* measurement_;
 };
 
 class DefoMeasurementListTreeWidget : public QTreeWidget
@@ -42,13 +42,13 @@ protected:
      Mapping should be one to one, i.e. index in the combobox is the same in the
      list model.
   */
-  typedef std::map<const DefoMeasurementBase*,
+  typedef std::map<const DefoMeasurement*,
                    DefoMeasurementListTreeWidgetItem*> MeasurementMap;
   MeasurementMap indexMap_;
 
 protected slots:
   void fillTree(int count);
-  void setSelection(const DefoMeasurementBase* selection);
+  void setSelection(DefoMeasurement* selection);
   void selectionChanged();
 
 signals:

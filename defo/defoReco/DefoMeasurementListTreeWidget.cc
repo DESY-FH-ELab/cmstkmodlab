@@ -1,7 +1,7 @@
 #include "DefoMeasurementListTreeWidget.h"
 
 DefoMeasurementListTreeWidgetItem::DefoMeasurementListTreeWidgetItem(
-      const DefoMeasurementBase* measurement
+      DefoMeasurement* measurement
     , QTreeWidget *parent
 ) :
     QTreeWidgetItem(parent)
@@ -22,7 +22,6 @@ DefoMeasurementListTreeWidget::DefoMeasurementListTreeWidget(
   QTreeWidgetItem * headerItem = new QTreeWidgetItem();
   headerItem->setText(0, QString("Idx"));
   headerItem->setText(1, QString("Timestamp"));
-  headerItem->setText(2, QString("P1"));
   setHeaderItem(headerItem);
   
   // Copy values
@@ -35,9 +34,9 @@ DefoMeasurementListTreeWidget::DefoMeasurementListTreeWidget(
   // Respond to selection changes
   connect(
   	  selectionModel_
-        , SIGNAL(selectionChanged(const DefoMeasurementBase*))
+        , SIGNAL(selectionChanged(DefoMeasurement*))
         , this
-        , SLOT(setSelection(const DefoMeasurementBase*))
+        , SLOT(setSelection(DefoMeasurement*))
   	  );
   
   connect(this
@@ -62,7 +61,7 @@ void DefoMeasurementListTreeWidget::fillTree(int count) {
   // // Empty map
   indexMap_.clear();
 
-  const DefoMeasurementBase* measurement;
+  DefoMeasurement* measurement;
 
   // Fill it up and add to view
   for (int i = 0; i < count; ++i) {
@@ -83,7 +82,7 @@ void DefoMeasurementListTreeWidget::fillTree(int count) {
 }
 
 void DefoMeasurementListTreeWidget::setSelection(
-    const DefoMeasurementBase *selection
+    DefoMeasurement *selection
 ) {
   MeasurementMap::const_iterator it = indexMap_.find(selection);
   
@@ -99,7 +98,7 @@ void DefoMeasurementListTreeWidget::selectionChanged() {
   QList<QTreeWidgetItem*> items = selectedItems();
   if (items.count()==1) {
     DefoMeasurementListTreeWidgetItem* item = dynamic_cast<DefoMeasurementListTreeWidgetItem*>(items.first());
-    const DefoMeasurementBase* measurement = item->getMeasurement();
+    DefoMeasurement* measurement = item->getMeasurement();
     selectionModel_->setSelection(measurement);
   } else {
     selectionModel_->setSelection(NULL);
