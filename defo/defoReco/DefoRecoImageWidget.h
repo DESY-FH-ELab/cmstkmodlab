@@ -10,6 +10,7 @@
 #include "DefoMeasurementSelectionModel.h"
 #include "DefoRecoImageZoomModel.h"
 #include "DefoROIModel.h"
+#include "DefoAlignmentModel.h"
 
 class DefoRecoImageContentWidget : public QWidget {
   Q_OBJECT
@@ -110,6 +111,22 @@ protected slots:
   void pointsUpdated(const DefoMeasurement* measurement);
 };
 
+class DefoRecoAlignmentImageContentWidget : public DefoRecoImageContentWidget {
+  Q_OBJECT
+public:
+  explicit DefoRecoAlignmentImageContentWidget(
+      DefoMeasurementSelectionModel* model
+    , DefoRecoImageZoomModel* zoomModel
+    , DefoAlignmentModel* alignmentModel
+    , QWidget *parent = 0
+  );
+
+  void paintEvent(QPaintEvent *event);
+
+protected:
+  DefoAlignmentModel* alignmentModel_;
+};
+
 class DefoRecoImageWidget : public QScrollArea {
     Q_OBJECT
 public:
@@ -182,6 +199,27 @@ public:
     , DefoMeasurementSelectionModel *selectionModel
     , QWidget *parent
   );
+};
+
+class DefoRecoAlignmentImageWidget : public DefoRecoImageWidget {
+    Q_OBJECT
+public:
+  DefoRecoAlignmentImageWidget(
+      DefoMeasurementSelectionModel* model
+    , DefoAlignmentModel* alignmentModel
+    , QWidget *parent = 0
+  );
+
+  virtual void mouseMoveEvent(QMouseEvent * e);
+  virtual void mousePressEvent(QMouseEvent * e);
+  virtual void mouseReleaseEvent(QMouseEvent * e);
+
+public slots:
+
+  void alignmentChanged(double angle);
+
+protected:
+  DefoAlignmentModel* alignmentModel_;
 };
 
 #endif // DEFORECOIMAGEWIDGET_H

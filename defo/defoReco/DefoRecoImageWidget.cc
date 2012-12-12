@@ -355,6 +355,84 @@ void DefoRecoImagePointsContentWidget::pointsUpdated(const DefoMeasurement* /*me
   update();
 }
 
+DefoRecoAlignmentImageContentWidget::DefoRecoAlignmentImageContentWidget(
+    DefoMeasurementSelectionModel* model
+  , DefoRecoImageZoomModel* zoomModel
+  , DefoAlignmentModel* alignmentModel
+  , QWidget* parent
+) :
+    DefoRecoImageContentWidget(model, zoomModel, parent)
+  , alignmentModel_(alignmentModel)
+{
+
+}
+
+void DefoRecoAlignmentImageContentWidget::paintEvent(QPaintEvent *event) {
+
+  // std::cout << "DefoRecoAlignmentImageContentWidget::paintEvent(QPaintEvent *event)" << std::endl;
+
+  // std::cout << event->rect().x() << ", "  << event->rect().y() << ", "  << event->rect().width() << ", "  << event->rect().height() << std::endl;
+
+  // TODO repaint only certain rectangle
+  QWidget::paintEvent(event);
+
+  if (selectionModel_->getSelection() != NULL) {
+
+    QPainter painter(this);
+
+    /*
+      Rotate (according to camera orientation) and
+      save the current state before handing of to child class
+      */
+    painter.save();
+
+    const DefoMeasurement* measurement = selectionModel_->getSelection();
+    QImage prepared = prepareImage(measurement->getImage());
+
+    //painter.translate(prepared.height(), 0);
+    //painter.rotate(90);
+
+    // Draw image
+    painter.drawImage( QPoint(event->rect().x(), event->rect().y()), prepared , event->rect());
+
+    float width = this->width();
+    float height = this->height();
+
+    QPen pen1(Qt::NoBrush, 1);
+    pen1.setColor(QColor(255, 0, 0, 255));
+    pen1.setWidth(1);
+    QPen pen2(Qt::NoBrush, 1);
+    pen2.setColor(QColor(0, 255, 255, 255));
+    pen2.setWidth(1);
+
+    float xo = alignmentModel_->getOrigin().x()*width;
+    float yo = alignmentModel_->getOrigin().y()*height;
+    float xt = alignmentModel_->getTip().x()*width;
+    float yt = alignmentModel_->getTip().y()*height;
+
+    painter.setPen(pen1);
+    painter.drawLine(xo, yo, xt, yt);
+    painter.drawLine(xo, yo, xo, yt);
+
+    if (alignmentModel_->getSelectedPoint()==DefoAlignmentModel::Origin) {
+      painter.setPen(pen2);
+    } else {
+      painter.setPen(pen1);
+    }
+    painter.drawEllipse(xo-4, yo-4, 8, 8);
+
+    if (alignmentModel_->getSelectedPoint()==DefoAlignmentModel::Tip) {
+      painter.setPen(pen2);
+    } else {
+      painter.setPen(pen1);
+    }
+    painter.drawEllipse(xt-4, yt-4, 8, 8);
+
+    // Restore own state.
+    painter.restore();
+  }
+}
+
 /// Minimum size of the widget displaying the currently selected measurement.
 const QSize DefoRecoImageWidget::MINIMUM_SIZE = QSize(300,400);
 
@@ -560,4 +638,69 @@ DefoRecoImagePointsWidget::DefoRecoImagePointsWidget(
   DefoRecoImageWidget(selectionModel, parent)
 {
   setWidget(new DefoRecoImagePointsContentWidget(listModel, selectionModel, zoomModel_, this));
+}
+
+DefoRecoAlignmentImageWidget::DefoRecoAlignmentImageWidget(
+    DefoMeasurementSelectionModel* model
+  , DefoAlignmentModel* alignmentModel
+  , QWidget* parent
+) :
+    DefoRecoImageWidget(model, parent)
+  , alignmentModel_(alignmentModel)
+{
+  setWidget(new DefoRecoAlignmentImageContentWidget(model, zoomModel_, alignmentModel_, this));
+
+  connect(
+          alignmentModel_
+        , SIGNAL(alignmentChanged(double))
+        , this
+        , SLOT(alignmentChanged(double))
+  );
+}
+
+void DefoRecoAlignmentImageWidget::mouseMoveEvent(QMouseEvent * e)
+{
+  DefoAlignmentModel::AlignmentPoint currentSelectedPoint = alignmentModel_->getSelectedPoint();
+  if (currentSelectedPoint==DefoAlignmentModel::None) return;
+
+  float width = widget()->width();
+  float height = widget()->height();
+
+  float x = horizontalScrollBar()->value() + e->x();
+  float y = verticalScrollBar()->value() + e->y();
+
+  float newX = x / width;
+  float newY = y / height;
+
+  alignmentModel_->setPoint(currentSelectedPoint, newX, newY);
+}
+
+void DefoRecoAlignmentImageWidget::mousePressEvent(QMouseEvent * e)
+{
+  float width = widget()->width();
+  float height = widget()->height();
+
+  int x = horizontalScrollBar()->value() + e->x();
+  int y = verticalScrollBar()->value() + e->y();
+
+  DefoAlignmentModel::AlignmentPoint point;
+  float distance = alignmentModel_->getClosestPoint(point,
+                                              width, height,
+                                              x, y);
+
+  if (distance>5) return;
+
+  alignmentModel_->selectPoint(point);
+
+  widget()->update();
+}
+
+void DefoRecoAlignmentImageWidget::mouseReleaseEvent(QMouseEvent * /*e*/) {
+  DefoAlignmentModel::AlignmentPoint currentSelectedPoint = alignmentModel_->getSelectedPoint();
+  alignmentModel_->selectPoint(DefoAlignmentModel::None);
+  if (currentSelectedPoint!=DefoAlignmentModel::None) widget()->update();
+}
+
+void DefoRecoAlignmentImageWidget::alignmentChanged(double /*angle*/) {
+  widget()->update();
 }
