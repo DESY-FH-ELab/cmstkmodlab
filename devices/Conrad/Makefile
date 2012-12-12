@@ -2,13 +2,24 @@ LIBDIR        = ../lib
 
 LIB           = TkModLabConrad
 
+USEFAKEDEVICES=1
+ARCHITECTURE=Darwin
+
 MODULES       = ConradCommunication VConradController ConradController ConradControllerFake
 
 CC            = gcc
 CXX           = g++
 CXXFLAGS      = -fPIC
 LD            = g++
-SOFLAGS       = -shared
+SOFLAGS       = -m64 -O2 -dynamiclib -single_module -undefined dynamic_lookup
+
+ifeq ($(USEFAKEDEVICES),1)
+CXXFLAGS     += -DUSE_FAKEIO
+endif
+
+ifeq ($(ARCHITECTURE),Darwin)
+CXXFLAGS     += -I/opt/local/include
+endif
 
 ALLDEPEND = $(addsuffix .d,$(MODULES))
 

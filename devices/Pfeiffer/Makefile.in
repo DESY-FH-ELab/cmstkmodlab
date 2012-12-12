@@ -13,7 +13,7 @@ CC            = gcc
 CXX           = g++
 CXXFLAGS      = -fPIC
 LD            = g++
-SOFLAGS       = -shared
+SOFLAGS       = @soflags@
 
 ifeq ($(USEFAKEDEVICES),1)
 CXXFLAGS     += -DUSE_FAKEIO
