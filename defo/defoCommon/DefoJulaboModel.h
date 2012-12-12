@@ -1,7 +1,7 @@
 #ifndef DEFOJULABOMODEL_H
 #define DEFOJULABOMODEL_H
 
-#include <math.h>
+#include <cmath>
 
 #include <QString>
 #include <QTimer>
@@ -59,7 +59,7 @@ protected:
     T result;
     // try not to perform unnescesary calculations
     if ( precision > 0 ) {
-      double factor = pow10(precision);
+      double factor = std::pow(10., (int)precision);
       T fixed = floor( value*factor + 0.5 );
       result = fixed / factor;
     }
