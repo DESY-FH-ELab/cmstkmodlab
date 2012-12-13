@@ -11,6 +11,7 @@
 #include "DefoMeasurementListModel.h"
 #include "DefoMeasurementSelectionModel.h"
 #include "DefoAlignmentModel.h"
+#include "DefoPointIndexerModel.h"
 #include "DefoColorSelectionModel.h"
 
 class DefoReconstructionModel : public QObject
@@ -21,6 +22,7 @@ public:
                                  , DefoMeasurementSelectionModel* refSelectionModel
                                  , DefoMeasurementSelectionModel* defoSelectionModel
                                  , DefoAlignmentModel* alignmentModel
+                                 , DefoPointIndexerModel* pointIndexerModel
                                  , DefoColorSelectionModel* refColorModel
                                  , DefoColorSelectionModel* defoColorModel
                                  , QObject *parent = 0);
@@ -33,6 +35,7 @@ public slots:
   void defoSelectionChanged(DefoMeasurement*);
   void pointsUpdated(const DefoMeasurement*);
   void alignmentChanged(double angle);
+  void pointIndexerChanged(DefoVPointIndexer *);
   void refColorChanged(float hue, float saturation);
   void defoColorChanged(float hue, float saturation);
 
@@ -43,12 +46,15 @@ protected:
   bool alignPoints(const DefoPointCollection* original,
                    DefoPointCollection& aligned);
 
+  void dumpPoints(const DefoPointCollection& points);
+
   DefoMeasurementListModel* listModel_;
   DefoMeasurement* refMeasurement_;
   DefoMeasurement* defoMeasurement_;
   float angle_;
   DefoPointCollection refCollection_;
   DefoPointCollection defoCollection_;
+  DefoVPointIndexer* pointIndexer_;
   QColor refColor_;
   QColor defoColor_;
 

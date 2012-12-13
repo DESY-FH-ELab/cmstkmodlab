@@ -29,7 +29,7 @@ protected:
   DefoVPointIndexer* selectedIndexer_;
 
 signals:
-  void indexerChanged(DefoVPointIndexer *);
+  void pointIndexerChanged(DefoVPointIndexer *);
 };
 
 #endif // DEFOALIGNMENTMODEL_H

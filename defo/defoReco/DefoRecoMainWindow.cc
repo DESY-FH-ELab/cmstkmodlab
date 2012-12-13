@@ -42,6 +42,7 @@ DefoRecoMainWindow::DefoRecoMainWindow(QWidget *parent) :
                                                      refSelectionModel_,
                                                      defoSelectionModel_,
                                                      alignmentModel_,
+                                                     pointIndexerModel_,
                                                      refColorModel_,
                                                      defoColorModel_,
                                                      this);
@@ -104,7 +105,7 @@ DefoRecoMainWindow::DefoRecoMainWindow(QWidget *parent) :
   tabWidget_->addTab(roiWidget, "ROI");
 
   // read default settings
-  DefoConfigReader cfgReader( "../defo.cfg" );
+  DefoConfigReader cfgReader( "/Users/mussgill/Documents/Physik/CMS/Labor/cmstkmodlab/trunk/defo/defo.cfg" );
 
   layout = new QHBoxLayout();
   QWidget * pointsWidget = new QWidget(tabWidget_);

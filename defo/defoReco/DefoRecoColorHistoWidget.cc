@@ -49,10 +49,6 @@ void DefoRecoColorHistoWidget::paintEvent(QPaintEvent *event) {
 
   QPainter painter(this);
 
-  /*
-      Rotate (according to camera orientation) and
-      save the current state before handing of to child class
-      */
   painter.save();
 
   QPen pen1(Qt::SolidPattern, 1);
@@ -80,8 +76,6 @@ void DefoRecoColorHistoWidget::paintEvent(QPaintEvent *event) {
     DefoMeasurement* measurement = selectionModel_->getSelection();
     const DefoPointCollection* points = listModel_->getMeasurementPoints(measurement);
 
-    std::cout << "points: " << points << std::endl;
-
     if (points && points->size()>0) {
 
       for (DefoPointCollection::const_iterator it = points->begin();
@@ -101,10 +95,12 @@ void DefoRecoColorHistoWidget::paintEvent(QPaintEvent *event) {
     }
   }
 
+  painter.setBrush(Qt::NoBrush);
+
   QPen pen3(Qt::NoBrush, 1);
   QColor c = colorModel_->getColor();
   pen3.setColor(c);
-  pen3.setWidth(1);
+  pen3.setWidth(2);
 
   H = c.hsvHueF();
   S = 0.9*radius*c.hsvSaturationF();

@@ -13,7 +13,7 @@ DefoPointIndexerListComboBox::DefoPointIndexerListComboBox(
   // Respond to selection changes
   connect(
         model_
-      , SIGNAL(indexerChanged(DefoVPointIndexer*))
+      , SIGNAL(pointIndexerChanged(DefoVPointIndexer*))
       , this
       , SLOT(setSelection(DefoVPointIndexer*))
   );

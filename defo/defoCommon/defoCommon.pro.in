@@ -61,7 +61,8 @@ HEADERS += DefoConfigReader.h \
            DefoPointIndexerModel.h \
            DefoPointIndexerListComboBox.h \
            DefoVPointIndexer.h \
-           DefoPointIndexer.h
+           DefoPointIndexer.h \
+           DefoPropagationPointIndexer.h
 
 SOURCES += DefoConfigReader.cc \
            DefoExifReader.cc \
@@ -88,4 +89,5 @@ SOURCES += DefoConfigReader.cc \
            DefoPointIndexerModel.cc \
            DefoPointIndexerListComboBox.cc \
            DefoVPointIndexer.cc \
-           DefoPointIndexer.cc
+           DefoPointIndexer.cc \
+           DefoPropagationPointIndexer.cc

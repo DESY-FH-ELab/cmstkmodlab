@@ -35,11 +35,14 @@ class DefoPoint {
   void setHeight( double height ) { height_ = height; }
   // TODO setIndex(Axis, int)
   void setIndex( std::pair<int,int>& index ) { index_ = index; isIndexed_ = true; }
+  void setIndex( int indexX, int indexY ) { index_.first = indexX; index_.second = indexY; isIndexed_ = true; }
   void setIndexX( int index ) { index_.first  = index; isIndexed_ = true; }
   void setIndexY( int index ) { index_.second = index; isIndexed_ = true; }
+  void unindex() { isIndexed_ = false; }
   bool isIndexed( void ) const { return isIndexed_; }
   double const& getX( void ) const { return x_; }
   double const& getY( void ) const { return y_; }
+  double getDistanceXY(const DefoPoint& other, double& dx, double& dy) const;
   double const& getPosition( const DefoPoint::Axis& ) const;
   double const& getSlope( void ) const { return slope_; }
   double const& getHeight( void ) const { return height_; }

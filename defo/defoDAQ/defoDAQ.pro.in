@@ -66,10 +66,8 @@ HEADERS += DefoMainWindow.h \
 	   ../DefoHistogramView.h \
     ../TestWindow.h \
     ../DefoTemperatureHistoryModel.h \
-    ../DefoTemperatureHistoryWidget.h \
-    ../DefoPointBin.h \
-    ../DefoPointIndexer.h
-
+    ../DefoTemperatureHistoryWidget.h
+    
 SOURCES += defoDAQ.cc \
            DefoMainWindow.cc \
            DefoKeithleyWidget.cc \
@@ -94,6 +92,4 @@ SOURCES += defoDAQ.cc \
 	   ../DefoHistogramView.cc \
     ../TestWindow.cc \
     ../DefoTemperatureHistoryModel.cc \
-    ../DefoTemperatureHistoryWidget.cc \
-     ../DefoPointBin.cc \
-    ../DefoPointIndexer.cc
+    ../DefoTemperatureHistoryWidget.cc

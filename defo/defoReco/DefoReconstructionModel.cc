@@ -8,6 +8,7 @@ DefoReconstructionModel::DefoReconstructionModel(
   , DefoMeasurementSelectionModel* refSelectionModel
   , DefoMeasurementSelectionModel* defoSelectionModel
   , DefoAlignmentModel* alignmentModel
+  , DefoPointIndexerModel* pointIndexerModel
   , DefoColorSelectionModel* refColorModel
   , DefoColorSelectionModel* defoColorModel
   , QObject *parent
@@ -18,6 +19,7 @@ DefoReconstructionModel::DefoReconstructionModel(
   angle_ = 0.0;
   refMeasurement_ = 0;
   defoMeasurement_ = 0;
+  pointIndexer_ = 0;
 
   connect(refSelectionModel,
           SIGNAL(selectionChanged(DefoMeasurement*)),
@@ -38,6 +40,11 @@ DefoReconstructionModel::DefoReconstructionModel(
           SIGNAL(alignmentChanged(double)),
           this,
           SLOT(alignmentChanged(double)));
+
+  connect(pointIndexerModel,
+          SIGNAL(pointIndexerChanged(DefoVPointIndexer*)),
+          this,
+          SLOT(pointIndexerChanged(DefoVPointIndexer*)));
 
   connect(refColorModel,
           SIGNAL(colorChanged(float,float)),
@@ -74,6 +81,12 @@ void DefoReconstructionModel::alignmentChanged(double angle) {
   emit setupChanged();
 }
 
+void DefoReconstructionModel::pointIndexerChanged(DefoVPointIndexer * indexer) {
+  std::cout << "void DefoReconstructionModel::pointIndexerChanged(DefoVPointIndexer * indexer)" << std::endl;
+  pointIndexer_ = indexer;
+  emit setupChanged();
+}
+
 void DefoReconstructionModel::refColorChanged(float hue, float saturation) {
   std::cout << "void DefoReconstructionModel::refColorChanged(float hue, float saturation)" << std::endl;
   refColor_.setHsvF(hue, saturation, 1.0, 1.0);
@@ -91,6 +104,11 @@ void DefoReconstructionModel::reconstruct() {
 
   if (refMeasurement_==0 || defoMeasurement_==0) {
     std::cout << "reco: reference and deformed measurements not selected" << std::endl;
+    return;
+  }
+
+  if (pointIndexer_==0) {
+    std::cout << "reco: point indexer not available" << std::endl;
     return;
   }
 
@@ -115,6 +133,9 @@ void DefoReconstructionModel::reconstruct() {
     std::cout << "reco: deformed points could not be aligned" << std::endl;
     return;
   }
+
+  pointIndexer_->indexPoints(&refCollection_, refColor_);
+  dumpPoints(refCollection_);
 }
 
 bool DefoReconstructionModel::alignPoints(const DefoPointCollection* original,
@@ -134,8 +155,6 @@ bool DefoReconstructionModel::alignPoints(const DefoPointCollection* original,
     double c = std::cos(angle_);
     double s = std::sin(angle_);
 
-    std::ofstream ofile("/home/tkmodlab/software/cmstkmodlab/trunk/defo/defoReco/points.txt");
-
     for (DefoPointCollection::const_iterator it = original->begin();
          it!=original->end();
          ++it) {
@@ -144,11 +163,26 @@ bool DefoReconstructionModel::alignPoints(const DefoPointCollection* original,
       np.setX(p.getX()*c - p.getY()*s);
       np.setY(p.getX()*s + p.getY()*c);
 
-      ofile << p.getX() << " " << np.getX() << " " << p.getY() << " " << np.getY() << " " << np.getColor().hsvHue() << std::endl;
-
       aligned.push_back(np);
     }
   }
 
   return true;
+}
+
+void DefoReconstructionModel::dumpPoints(const DefoPointCollection& points) {
+
+    std::ofstream ofile("/User/mussgill/Desktop/points.txt");
+
+    for (DefoPointCollection::const_iterator it = points.begin();
+         it!=points.end();
+         ++it) {
+
+      ofile << it->getX() << " "
+            << it->getY() << " "
+            << it->getColor().hsvHueF() << " "
+            << it->getColor().hsvSaturationF() << " "
+            << it->getIndex().first << " "
+            << it->getIndex().second << std::endl;
+    }
 }

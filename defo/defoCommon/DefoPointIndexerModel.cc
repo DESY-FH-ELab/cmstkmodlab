@@ -5,15 +5,23 @@
 #include <QXmlStreamWriter>
 
 #include "DefoPointIndexerModel.h"
+#include "DefoPropagationPointIndexer.h"
 #include "DefoPointIndexer.h"
 
 DefoPointIndexerModel::DefoPointIndexerModel(QObject *parent) :
     QObject(parent)
 {
   DefoVPointIndexer *indexer;
+
+  indexer = new DefoPropagationPointIndexer(this);
+  indexers_.push_back(indexer);
+  indexerNames_[indexer] = "Propagation Indexer";
+
   indexer = new DefoPointIndexer(this);
   indexers_.push_back(indexer);
   indexerNames_[indexer] = "Sorting Indexer";
+
+  setSelectedIndexer(indexers_.at(0));
 }
 
 const std::string DefoPointIndexerModel::getIndexerName(const DefoVPointIndexer* indexer) const {
@@ -27,5 +35,7 @@ DefoVPointIndexer* DefoPointIndexerModel::getSelectedIndexer() const {
 }
 
 void DefoPointIndexerModel::setSelectedIndexer(DefoVPointIndexer* indexer) {
-  selectedIndexer_ = indexer;
+    bool changed = (selectedIndexer_!=indexer);
+    selectedIndexer_ = indexer;
+    if (changed) emit pointIndexerChanged(indexer);
 }
