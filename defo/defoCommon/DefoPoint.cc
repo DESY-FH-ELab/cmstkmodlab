@@ -1,6 +1,18 @@
+#include <iostream>
 
 #include "DefoPoint.h"
 
+DefoPoint::DefoPoint( const DefoPoint& other ) {
+
+  x_ = other.x_;
+  y_ = other.y_;
+  slope_ = other.slope_;
+  height_ = other.height_;
+  color_ = other.color_;
+  index_ = std::make_pair<int,int>(other.index_.first, other.index_.second);
+  isIndexed_ = other.isIndexed_;
+  isValid_ = other.isValid_;
+}
 
 ///
 ///
@@ -48,6 +60,13 @@ void DefoPoint::setColor( const QColor& color ) {
   */
 const QColor& DefoPoint::getColor( void ) const {
   return color_;
+}
+
+bool DefoPoint::hasReferenceColor(const QColor& seedColor) const {
+  float dhue = color_.hsvHueF() - seedColor.hsvHueF();
+  float dsat = color_.hsvSaturationF() - seedColor.hsvSaturationF();
+  float d = std::sqrt(dhue*dhue+dsat*dsat);
+  return (d<0.1);
 }
 
 /**

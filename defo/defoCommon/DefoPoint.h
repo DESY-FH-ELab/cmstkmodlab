@@ -27,6 +27,7 @@ class DefoPoint {
   DefoPoint() { init(); }
   DefoPoint( double x, double y ) { init(); x_ = x; y_ = y; }
   DefoPoint( double x, double y, double slope ) { init(); x_ = x; y_ = y; slope_ = slope; }
+  DefoPoint( const DefoPoint& other );
   void setX( double x ) { x_ = x; }
   void setY( double y ) { y_ = y; }
   void setPosition( double x, double y ) { x_ = x; y_ = y; }
@@ -48,6 +49,7 @@ class DefoPoint {
   unsigned int getPixY( void ) const { return static_cast<int>( round( y_ ) ); }
   void setColor( const QColor& color );
   const QColor& getColor( void ) const;
+  bool hasReferenceColor(const QColor& seedColor) const;
   bool isBlue( void ) const;
   void setValid( bool isValid ) { isValid_ = isValid; }
   bool isValid( void ) const { return isValid_; }
