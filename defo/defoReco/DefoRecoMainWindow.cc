@@ -9,6 +9,8 @@
 #include "DefoPointRecognitionModel.h"
 #include "DefoRecoPointRecognitionWidget.h"
 #include "DefoMeasurementListComboBox.h"
+#include "DefoPointIndexerListComboBox.h"
+#include "DefoRecoColorHistoWidget.h"
 
 DefoRecoMainWindow::DefoRecoMainWindow(QWidget *parent) :
     QMainWindow(parent)
@@ -31,22 +33,18 @@ DefoRecoMainWindow::DefoRecoMainWindow(QWidget *parent) :
   defoSelectionModel_ = new DefoMeasurementSelectionModel(this);
   defoPointModel_ = new DefoPointRecognitionModel(this);
 
-  reconstructionModel_ = new DefoReconstructionModel(listModel_, this);
+  pointIndexerModel_ = new DefoPointIndexerModel(this);
 
-  connect(refSelectionModel_,
-          SIGNAL(selectionChanged(DefoMeasurement*)),
-          reconstructionModel_,
-          SLOT(referenceSelectionChanged(DefoMeasurement*)));
+  refColorModel_ = new DefoColorSelectionModel(this);
+  defoColorModel_ = new DefoColorSelectionModel(this);
 
-  connect(defoSelectionModel_,
-          SIGNAL(selectionChanged(DefoMeasurement*)),
-          reconstructionModel_,
-          SLOT(defoSelectionChanged(DefoMeasurement*)));
-
-  connect(listModel_,
-          SIGNAL(pointsUpdated(const DefoMeasurement*)),
-          reconstructionModel_,
-          SLOT(pointsUpdated(const DefoMeasurement*)));
+  reconstructionModel_ = new DefoReconstructionModel(listModel_,
+                                                     refSelectionModel_,
+                                                     defoSelectionModel_,
+                                                     alignmentModel_,
+                                                     refColorModel_,
+                                                     defoColorModel_,
+                                                     this);
 
   tabWidget_ = new QTabWidget(this);
   tabWidget_->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);
@@ -194,6 +192,29 @@ DefoRecoMainWindow::DefoRecoMainWindow(QWidget *parent) :
   vbox->addWidget(alignmentImage);
 
   tabWidget_->addTab(alignmentWidget, "Alignment");
+
+  vbox = new QVBoxLayout();
+  QWidget * indexerWidget = new QWidget(tabWidget_);
+  indexerWidget->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);
+  indexerWidget->setLayout(vbox);
+
+  DefoPointIndexerListComboBox *indexerSelect = new DefoPointIndexerListComboBox(pointIndexerModel_,
+                                                                                 indexerWidget);
+  vbox->addWidget(indexerSelect);
+
+  DefoRecoColorHistoWidget *refIndexerSelect = new DefoRecoColorHistoWidget(listModel_,
+                                                                            refSelectionModel_,
+                                                                            refColorModel_,
+                                                                            indexerWidget);
+  vbox->addWidget(refIndexerSelect);
+
+  DefoRecoColorHistoWidget *defoIndexerSelect = new DefoRecoColorHistoWidget(listModel_,
+                                                                             defoSelectionModel_,
+                                                                             defoColorModel_,
+                                                                             indexerWidget);
+  vbox->addWidget(defoIndexerSelect);
+
+  tabWidget_->addTab(indexerWidget, "Indexer");
 
   DefoReconstructionWidget *recoWidget = new DefoReconstructionWidget(reconstructionModel_,
                                                                       tabWidget_);

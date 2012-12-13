@@ -51,11 +51,17 @@ HEADERS += DefoConfigReader.h \
            DefoThresholdSpinBox.h \
            DefoImageWidget.h \
            DefoPoint.h \
+           DefoPointBin.h \
            DefoSquare.h \
            DefoPointFinder.h \
            DefoPointSaver.h \
            DefoROIModel.h \
-           DefoAlignmentModel.h
+           DefoAlignmentModel.h \
+           DefoColorSelectionModel.h \
+           DefoPointIndexerModel.h \
+           DefoPointIndexerListComboBox.h \
+           DefoVPointIndexer.h \
+           DefoPointIndexer.h
 
 SOURCES += DefoConfigReader.cc \
            DefoExifReader.cc \
@@ -72,8 +78,14 @@ SOURCES += DefoConfigReader.cc \
            DefoThresholdSpinBox.cc \
            DefoImageWidget.cc \
            DefoPoint.cc \
+           DefoPointBin.cc \
            DefoSquare.cc \
            DefoPointFinder.cc \
            DefoPointSaver.cc \
            DefoROIModel.cc \
-           DefoAlignmentModel.cc
+           DefoAlignmentModel.cc \
+           DefoColorSelectionModel.cc \
+           DefoPointIndexerModel.cc \
+           DefoPointIndexerListComboBox.cc \
+           DefoVPointIndexer.cc \
+           DefoPointIndexer.cc

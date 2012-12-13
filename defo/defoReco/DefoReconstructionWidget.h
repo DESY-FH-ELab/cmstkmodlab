@@ -21,6 +21,7 @@ protected:
 protected slots:
 
   void setupChanged();
+  void reconstructButtonClicked();
 };
 
 #endif // DEFORECONSTRUCTIONWIDGET_H

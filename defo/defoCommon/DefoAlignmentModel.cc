@@ -75,7 +75,11 @@ double DefoAlignmentModel::getAngle() const {
   double dx = origin_.x()-tip_.x();
   double dy = origin_.y()-tip_.y();
 
-  return std::atan2(dx, dy);
+  if (dy<0) {
+    return std::atan2(-dx, -dy);
+  } else {
+    return std::atan2(dx, dy);
+  }
 }
 
 void DefoAlignmentModel::write(const QDir& path)
@@ -136,4 +140,6 @@ void DefoAlignmentModel::read(const QString& filename) {
       tip_.setY(y);
     }
   }
+
+  emit alignmentChanged(getAngle());
 }

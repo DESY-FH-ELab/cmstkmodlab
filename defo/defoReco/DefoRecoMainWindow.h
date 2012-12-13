@@ -8,7 +8,6 @@
 #include <QPushButton>
 #include <QFileDialog>
 #include <QComboBox>
-#include <QComboBox>
 #include <QImage>
 #include <QTimer>
 
@@ -23,6 +22,9 @@
 
 #include "DefoPointRecognitionModel.h"
 #include "DefoPointRecognitionWidget.h"
+
+#include "DefoPointIndexerModel.h"
+#include "DefoColorSelectionModel.h"
 
 #include "DefoReconstructionModel.h"
 #include "DefoReconstructionWidget.h"
@@ -55,6 +57,10 @@ protected:
 
   DefoPointRecognitionModel* refPointModel_;
   DefoPointRecognitionModel* defoPointModel_;
+
+  DefoPointIndexerModel* pointIndexerModel_;
+  DefoColorSelectionModel* refColorModel_;
+  DefoColorSelectionModel* defoColorModel_;
 
   DefoReconstructionModel* reconstructionModel_;
 

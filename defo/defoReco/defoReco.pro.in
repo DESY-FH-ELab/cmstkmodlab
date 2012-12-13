@@ -52,8 +52,7 @@ HEADERS += DefoRecoMainWindow.h \
            DefoRecoImageZoomModel.h \
            DefoReconstructionModel.h \
            DefoReconstructionWidget.h \
-           ../DefoPointBin.h \
-           ../DefoPointIndexer.h
+           DefoRecoColorHistoWidget.h
 
 SOURCES += defoReco.cc \
            DefoRecoMainWindow.cc \
@@ -65,6 +64,5 @@ SOURCES += defoReco.cc \
            DefoRecoImageZoomModel.cc \
            DefoReconstructionModel.cc \
            DefoReconstructionWidget.cc \
-           ../DefoPointBin.cc \
-           ../DefoPointIndexer.cc
+           DefoRecoColorHistoWidget.cc
 
