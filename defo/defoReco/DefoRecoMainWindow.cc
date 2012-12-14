@@ -105,7 +105,8 @@ DefoRecoMainWindow::DefoRecoMainWindow(QWidget *parent) :
   tabWidget_->addTab(roiWidget, "ROI");
 
   // read default settings
-  DefoConfigReader cfgReader( "/Users/mussgill/Documents/Physik/CMS/Labor/cmstkmodlab/trunk/defo/defo.cfg" );
+  //DefoConfigReader cfgReader( "/Users/mussgill/Documents/Physik/CMS/Labor/cmstkmodlab/trunk/defo/defo.cfg" );
+  DefoConfigReader cfgReader( "../defo.cfg" );
 
   layout = new QHBoxLayout();
   QWidget * pointsWidget = new QWidget(tabWidget_);
@@ -246,6 +247,8 @@ void DefoRecoMainWindow::loadMeasurementButtonClicked() {
 
   roiModel_->read(currentDir_.absoluteFilePath("roi.xml"));
   alignmentModel_->read(currentDir_.absoluteFilePath("alignment.xml"));
+  refColorModel_->read(currentDir_.absoluteFilePath("refcolor.xml"));
+  defoColorModel_->read(currentDir_.absoluteFilePath("defocolor.xml"));
 
   listModel_->clear();
   listModel_->read(filename);
@@ -254,8 +257,10 @@ void DefoRecoMainWindow::loadMeasurementButtonClicked() {
 
 void DefoRecoMainWindow::saveMeasurementButtonClicked() {
 
-  roiModel_->write(currentDir_.absolutePath());
-  alignmentModel_->write(currentDir_.absolutePath());
+  roiModel_->write(currentDir_.absoluteFilePath("roi.xml"));
+  alignmentModel_->write(currentDir_.absoluteFilePath("alignment.xml"));
+  refColorModel_->write(currentDir_.absoluteFilePath("refcolor.xml"));
+  defoColorModel_->write(currentDir_.absoluteFilePath("defocolor.xml"));
 
   listModel_->writePoints(currentDir_);
 }

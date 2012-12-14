@@ -103,7 +103,7 @@ void DefoReconstructionModel::defoColorChanged(float hue, float saturation) {
 void DefoReconstructionModel::reconstruct() {
   std::cout << "void DefoReconstructionModel::reconstruct()" << std::endl;
 
-  if (refMeasurement_==0 /*|| defoMeasurement_==0*/) {
+  if (refMeasurement_==0 || defoMeasurement_==0) {
     std::cout << "reco: reference and deformed measurements not selected" << std::endl;
     return;
   }
@@ -119,30 +119,29 @@ void DefoReconstructionModel::reconstruct() {
     return;
   }
 
-  /*
   const DefoPointCollection* defoPoints = listModel_->getMeasurementPoints(defoMeasurement_);
   if (!defoPoints || defoPoints->size()==0) {
     std::cout << "reco: deformed measurement does not contain points" << std::endl;
     return;
   }
-  */
 
   if (!alignPoints(refPoints, refCollection_)) {
     std::cout << "reco: reference points could not be aligned" << std::endl;
     return;
   }
 
-  /*
   if (!alignPoints(defoPoints, defoCollection_)) {
     std::cout << "reco: deformed points could not be aligned" << std::endl;
     return;
   }
-  */
 
   pointIndexer_->indexPoints(&refCollection_, refColor_);
-  
-  DefoPointSaver saver("~/points.txt");
-  saver.writePoints(refCollection_);
+  pointIndexer_->indexPoints(&defoCollection_, defoColor_);
+
+  DefoPointSaver refSaver("./refPoints.txt");
+  refSaver.writePoints(refCollection_);
+  DefoPointSaver defoSaver("./defoPoints.txt");
+  defoSaver.writePoints(defoCollection_);
 }
 
 bool DefoReconstructionModel::alignPoints(const DefoPointCollection* original,
