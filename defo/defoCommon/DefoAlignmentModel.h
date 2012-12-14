@@ -19,6 +19,7 @@ public:
                         float width, float height,
                         float x, float y);
   void setPoint(AlignmentPoint point, float newX, float newY);
+  void reset();
   AlignmentPoint getSelectedPoint() const { return selectedPoint_; }
   void selectPoint(AlignmentPoint point) { selectedPoint_ = point; }
 

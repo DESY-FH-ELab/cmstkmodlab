@@ -533,9 +533,14 @@ void DefoMeasurement::write(const QDir& path)
   stream.writeEndDocument();
 }
 
-void DefoMeasurement::read(const QString& filename) {
+void DefoMeasurement::read(const QDir&path) {
 
-  QFile file(filename);
+  pointRecognitionHalfSquareWidth_ = 15;
+
+  QString fileLocation = path.absoluteFilePath("%1.xml");
+  fileLocation = fileLocation.arg(timestamp_.toString("yyyyMMddhhmmss"));
+
+  QFile file(fileLocation);
   if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
     return;
 
@@ -554,7 +559,7 @@ void DefoMeasurement::read(const QString& filename) {
     }
 
     if (stream.isStartElement() && stream.name()=="Thresholds") {
-      pointRecognitionThresholds_.resize(3);
+      pointRecognitionThresholds_.resize(DefoPointRecognitionModel::MAXTHRESHOLDS);
     }
 
     if (stream.isStartElement() && stream.name()=="Threshold") {

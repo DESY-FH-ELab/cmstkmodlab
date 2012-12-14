@@ -25,6 +25,9 @@ public:
 
 public slots:
   virtual void selectionChanged(DefoMeasurement* measurement);
+  void thresholdValueChanged(DefoPointRecognitionModel::Threshold threshold,
+                             int value);
+  void halfSquareWidthChanged(int value);
 
 protected:
   // Models

@@ -45,8 +45,8 @@ public:
   void acquireData(const DefoJulaboModel* model);
   void acquireData(const DefoKeithleyModel* model);
 
-  void write(const QDir& path);
-  void read(const QString& filename);
+  virtual void write(const QDir& path);
+  virtual void read(const QDir&path);
 
 protected:
   /// (Local) date and time of measurement.

@@ -44,6 +44,8 @@ INCLUDEPATH += @basepath@/defo/defoCommon
 
 # Input
 HEADERS += DefoRecoMainWindow.h \
+           DefoRecoMeasurement.h \
+           DefoRecoMeasurementListModel.h \
            ../DefoSpline.h \
            DefoMeasurementListTreeWidget.h \
            DefoMeasurementInfoListTreeWidget.h \
@@ -56,6 +58,8 @@ HEADERS += DefoRecoMainWindow.h \
 
 SOURCES += defoReco.cc \
            DefoRecoMainWindow.cc \
+           DefoRecoMeasurement.cc \
+           DefoRecoMeasurementListModel.cc \
            ../DefoSpline.cc \
            DefoMeasurementListTreeWidget.cc \
            DefoMeasurementInfoListTreeWidget.cc \

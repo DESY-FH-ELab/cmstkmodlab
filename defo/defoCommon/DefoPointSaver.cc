@@ -38,8 +38,8 @@ void DefoPointSaver::writePoint(const DefoPoint& point)
       .arg(saturation, 0, 'e', 6)
       .arg(value, 0, 'e', 6)
       .arg((int)(point.isIndexed()))
-      .arg(point.getIndex().first)
-      .arg(point.getIndex().second)
+      .arg(point.getIndex().first, 5)
+      .arg(point.getIndex().second, 5)
       .arg((int)point.isValid());
   
   write(line.toAscii());

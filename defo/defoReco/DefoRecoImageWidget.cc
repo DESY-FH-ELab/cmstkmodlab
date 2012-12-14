@@ -701,6 +701,20 @@ void DefoRecoAlignmentImageWidget::mouseReleaseEvent(QMouseEvent * /*e*/) {
   if (currentSelectedPoint!=DefoAlignmentModel::None) widget()->update();
 }
 
+void DefoRecoAlignmentImageWidget::keyReleaseEvent(QKeyEvent * event) {
+
+  switch (event->key()) {
+    case Qt::Key_R:
+      alignmentModel_->reset();
+      event->accept();
+      break;
+  default:
+    break;
+  }
+
+  DefoRecoImageWidget::keyReleaseEvent(event);
+}
+
 void DefoRecoAlignmentImageWidget::alignmentChanged(double /*angle*/) {
   widget()->update();
 }

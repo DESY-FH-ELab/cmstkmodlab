@@ -217,6 +217,13 @@ void DefoMeasurementListModel::writePoints(const QDir& path)
       stream.writeAttribute("H", QString().setNum(h, 'e', 6));
       stream.writeAttribute("S", QString().setNum(s, 'e', 6));
       stream.writeAttribute("V", QString().setNum(v, 'e', 6));
+
+      stream.writeAttribute("indexed", QString().setNum(it->isIndexed()));
+      if (it->isIndexed()) {
+        stream.writeAttribute("ix", QString().setNum(it->getIndex().first));
+        stream.writeAttribute("iy", QString().setNum(it->getIndex().second));
+      }
+
       stream.writeEndElement();
     }
 
@@ -254,9 +261,7 @@ void DefoMeasurementListModel::read(const QString& filename) {
       measurement = new DefoMeasurement(imageLocation, false);
       measurement->setTimeStamp(dt);
 
-      QString dataLocation = basepath.absoluteFilePath("%1.xml");
-      dataLocation = dataLocation.arg(dt.toString("yyyyMMddhhmmss"));
-      measurement->read(dataLocation);
+      measurement->read(basepath);
 
       addMeasurement(measurement);
     }
@@ -291,6 +296,16 @@ void DefoMeasurementListModel::readPoints(const QDir& path)
         QColor c;
         c.setHsvF(H, S, V);
         p.setColor(c);
+
+        p.setValid(true);
+
+        bool indexed = (stream.attributes().value("indexed").toString().toInt()==1);
+        p.unindex();
+        if (indexed) {
+          int ix = stream.attributes().value("ix").toString().toInt();
+          int iy = stream.attributes().value("iy").toString().toInt();
+          p.setIndex(ix, iy);
+        }
 
         points->push_back(p);
       }

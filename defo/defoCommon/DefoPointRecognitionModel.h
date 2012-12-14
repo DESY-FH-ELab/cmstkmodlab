@@ -12,6 +12,7 @@ public:
       THRESHOLD_1 = 0 ///< Identifier for threshold 1
     , THRESHOLD_2 = 1 ///< Identifier for threshold 2
     , THRESHOLD_3 = 2 ///< Identifier for threshold 3
+    , MAXTHRESHOLDS
   };
 
   explicit DefoPointRecognitionModel(QObject *parent = 0);

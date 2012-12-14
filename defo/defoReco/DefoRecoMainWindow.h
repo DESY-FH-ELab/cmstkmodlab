@@ -11,7 +11,7 @@
 #include <QImage>
 #include <QTimer>
 
-#include "DefoMeasurementListModel.h"
+#include "DefoRecoMeasurementListModel.h"
 #include "DefoMeasurementSelectionModel.h"
 #include "DefoROIModel.h"
 #include "DefoAlignmentModel.h"
@@ -43,7 +43,7 @@ protected:
 
   QTabWidget* tabWidget_;
 
-  DefoMeasurementListModel *listModel_;
+  DefoRecoMeasurementListModel *listModel_;
   DefoMeasurementSelectionModel *selectionModel_;
 
   DefoMeasurementSelectionModel *roiSelectionModel_;

@@ -8,6 +8,7 @@
 #include "DefoPointFinder.h"
 #include "DefoPoint.h"
 #include "DefoPointSaver.h"
+#include "DefoRecoMeasurement.h"
 
 #include "DefoRecoPointRecognitionWidget.h"
 
@@ -73,17 +74,55 @@ DefoRecoPointRecognitionWidget::DefoRecoPointRecognitionWidget(
 
   connect(selectionModel_, SIGNAL(selectionChanged(DefoMeasurement*)),
           this, SLOT(selectionChanged(DefoMeasurement*)));
-  
+
   connect(
         pointModel_
       , SIGNAL(controlStateChanged(bool))
       , this
       , SLOT(controlStateChanged(bool))
   );
+
+  connect(
+        pointModel_
+      , SIGNAL(thresholdValueChanged(DefoPointRecognitionModel::Threshold,int))
+      , this
+      , SLOT(thresholdValueChanged(DefoPointRecognitionModel::Threshold,int))
+  );
+
+  connect(
+        pointModel_
+      , SIGNAL(halfSquareWidthChanged(int))
+      , this
+      , SLOT(halfSquareWidthChanged(int))
+  );
 }
 
-void DefoRecoPointRecognitionWidget::selectionChanged(DefoMeasurement* /*measurement*/) {
+void DefoRecoPointRecognitionWidget::selectionChanged(DefoMeasurement* measurement) {
 
+  DefoRecoMeasurement* rm = dynamic_cast<DefoRecoMeasurement*>(measurement);
+  if (!rm) return;
+  pointModel_->setThresholdValue(DefoPointRecognitionModel::THRESHOLD_1,
+                                 rm->getRecoThresholdValue(DefoPointRecognitionModel::THRESHOLD_1));
+  pointModel_->setThresholdValue(DefoPointRecognitionModel::THRESHOLD_2,
+                                 rm->getRecoThresholdValue(DefoPointRecognitionModel::THRESHOLD_2));
+  pointModel_->setThresholdValue(DefoPointRecognitionModel::THRESHOLD_3,
+                                 rm->getRecoThresholdValue(DefoPointRecognitionModel::THRESHOLD_3));
+  pointModel_->setHalfSquareWidth(rm->getRecoHalfSquareWidthValue());
+}
+
+void DefoRecoPointRecognitionWidget::thresholdValueChanged(DefoPointRecognitionModel::Threshold threshold,
+                                                           int value) {
+
+  DefoRecoMeasurement* rm = dynamic_cast<DefoRecoMeasurement*>(selectionModel_->getSelection());
+  if (!rm) return;
+  rm->setRecoThresholdValue(threshold, value);
+}
+
+void DefoRecoPointRecognitionWidget::halfSquareWidthChanged(int value) {
+
+  DefoRecoMeasurement* rm = dynamic_cast<DefoRecoMeasurement*>(selectionModel_->getSelection());
+  if (!rm) return;
+  rm->setRecoHalfSquareWidthValue(value);
 }
 
 void DefoRecoPointRecognitionWidget::findPointsButtonClicked() {

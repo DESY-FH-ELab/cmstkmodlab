@@ -51,16 +51,22 @@ void DefoAlignmentModel::setPoint(AlignmentPoint point, float newX, float newY)
   if (point==None) return;
 
   QPointF * p = 0;
+  QPointF * other = 0;
   switch (point) {
   case Origin:
     p = &origin_;
+    other = &tip_;
     break;
   case Tip:
     p = &tip_;
+    other = &origin_;
     break;
   default:
     break;
   }
+
+  QPointF d = *p - *other;
+  if (d.manhattanLength()<20) return;
 
   bool needUpdate = (newX!=p->x()) || (newY!=p->y());
 
@@ -68,6 +74,14 @@ void DefoAlignmentModel::setPoint(AlignmentPoint point, float newX, float newY)
   p->setY(newY);
 
   if (needUpdate) emit alignmentChanged(getAngle());
+}
+
+void DefoAlignmentModel::reset() {
+  if (tip_.x() == origin_.x()) return;
+  float mx = (tip_.x() + origin_.x())/2.0;
+  origin_.setX(mx);
+  tip_.setX(mx);
+  emit alignmentChanged(getAngle());
 }
 
 double DefoAlignmentModel::getAngle() const {

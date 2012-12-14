@@ -213,6 +213,7 @@ public:
   virtual void mouseMoveEvent(QMouseEvent * e);
   virtual void mousePressEvent(QMouseEvent * e);
   virtual void mouseReleaseEvent(QMouseEvent * e);
+  virtual void keyReleaseEvent(QKeyEvent * event);
 
 public slots:
 

@@ -18,7 +18,7 @@ DefoRecoMainWindow::DefoRecoMainWindow(QWidget *parent) :
   currentDir_ = "/home/tkmodlab/Desktop/measurements";
 
   // MEASUREMENT MODEL
-  listModel_ = new DefoMeasurementListModel(this);
+  listModel_ = new DefoRecoMeasurementListModel(this);
   selectionModel_ = new DefoMeasurementSelectionModel(this);
 
   roiSelectionModel_ = new DefoMeasurementSelectionModel(this);
@@ -262,5 +262,6 @@ void DefoRecoMainWindow::saveMeasurementButtonClicked() {
   refColorModel_->write(currentDir_.absoluteFilePath("refcolor.xml"));
   defoColorModel_->write(currentDir_.absoluteFilePath("defocolor.xml"));
 
+  listModel_->write(currentDir_);
   listModel_->writePoints(currentDir_);
 }
