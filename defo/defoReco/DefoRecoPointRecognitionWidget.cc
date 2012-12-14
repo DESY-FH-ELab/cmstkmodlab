@@ -143,7 +143,7 @@ void DefoRecoPointRecognitionWidget::savePointsButtonClicked()
   QString file = QFileDialog::getSaveFileName(this, "Choose location");
 
   if (file.length() > 0) {
-    PointSaver saver(file);
+    DefoPointSaver saver(file);
     DefoMeasurement* meas = selectionModel_->getSelection();
     const DefoPointCollection* points = listModel_->getMeasurementPoints(meas);
 

@@ -222,6 +222,8 @@ DefoRecoMainWindow::DefoRecoMainWindow(QWidget *parent) :
   tabWidget_->addTab(recoWidget, "Reconstruction");
 
   setCentralWidget(tabWidget_);
+
+  pointIndexerModel_->setSelectedIndexer(pointIndexerModel_->getIndexer(0));
 }
 
 void DefoRecoMainWindow::loadMeasurementButtonClicked() {

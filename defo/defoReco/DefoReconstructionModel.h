@@ -46,8 +46,6 @@ protected:
   bool alignPoints(const DefoPointCollection* original,
                    DefoPointCollection& aligned);
 
-  void dumpPoints(const DefoPointCollection& points);
-
   DefoMeasurementListModel* listModel_;
   DefoMeasurement* refMeasurement_;
   DefoMeasurement* defoMeasurement_;

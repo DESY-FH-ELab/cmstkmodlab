@@ -5,12 +5,12 @@
 
 #include "DefoPoint.h"
 
-class PointSaver : public QFile
+class DefoPointSaver : public QFile
 {
   Q_OBJECT
 public:
-  explicit PointSaver(const QString& filename, QObject* parent = 0);
-  ~PointSaver();
+  explicit DefoPointSaver(const QString& filename, QObject* parent = 0);
+  ~DefoPointSaver();
   void writePoints(const DefoPointCollection &points);
   void writePoint(const DefoPoint &point);
 
