@@ -176,14 +176,14 @@ void DefoMainWindow::newCameraImage(QString location, bool keep) {
 
   if (!keep) {
 
-    DefoMeasurement * measurement = new DefoMeasurement(location, false);
+    DefoMeasurement * measurement = new DefoMeasurement(location, true);
 
     listModel_->addMeasurement(measurement);
     selectionModel_->setSelection(measurement);
 
   } else {
 
-    DefoMeasurement * measurement = new DefoMeasurement(location, true);
+    DefoMeasurement * measurement = new DefoMeasurement(location, false);
 
     // TODO save when needed, i.e. always from now on
     QDateTime dt = measurement->getTimeStamp();
