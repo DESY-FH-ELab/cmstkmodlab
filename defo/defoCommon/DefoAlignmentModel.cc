@@ -82,11 +82,9 @@ double DefoAlignmentModel::getAngle() const {
   }
 }
 
-void DefoAlignmentModel::write(const QDir& path)
+void DefoAlignmentModel::write(const QString& filename)
 {
-  QString fileLocation = path.absoluteFilePath("alignment.xml");
-
-  QFile file(fileLocation);
+  QFile file(filename);
   if (!file.open(QIODevice::WriteOnly | QIODevice::Text | QIODevice::Truncate))
     return;
 

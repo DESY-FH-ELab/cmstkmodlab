@@ -26,7 +26,7 @@ public:
   bool containsPoint(float width, float height,
                      float x, float y);
 
-  void write(const QDir& path);
+  void write(const QString& filename);
   void read(const QString& filename);
 
 protected:

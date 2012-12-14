@@ -15,7 +15,7 @@ public:
 
   const QColor& getColor() const { return color_; }
 
-  void write(const QDir& path);
+  void write(const QString& filename);
   void read(const QString& filename);
 
 protected:

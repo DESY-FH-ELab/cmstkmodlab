@@ -27,7 +27,7 @@ public:
 
   double getAngle() const;
 
-  void write(const QDir& path);
+  void write(const QString& filename);
   void read(const QString& filename);
 
 protected:

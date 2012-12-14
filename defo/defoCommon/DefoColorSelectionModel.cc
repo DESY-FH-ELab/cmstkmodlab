@@ -30,11 +30,9 @@ void DefoColorSelectionModel::setColor(float hue, float saturation)
   if (needUpdate) emit colorChanged(hue, saturation);
 }
 
-void DefoColorSelectionModel::write(const QDir& path)
+void DefoColorSelectionModel::write(const QString& filename)
 {
-  QString fileLocation = path.absoluteFilePath("color.xml");
-
-  QFile file(fileLocation);
+  QFile file(filename);
   if (!file.open(QIODevice::WriteOnly | QIODevice::Text | QIODevice::Truncate))
     return;
 
@@ -64,8 +62,8 @@ void DefoColorSelectionModel::read(const QString& filename) {
     stream.readNextStartElement();
 
     if (stream.isStartElement() && stream.name()=="DefoColor") {
-      double H = stream.attributes().value("H").toString().toDouble();
-      double S = stream.attributes().value("S").toString().toDouble();
+      float H = stream.attributes().value("H").toString().toFloat();
+      float S = stream.attributes().value("S").toString().toFloat();
       color_.setHsvF(H, S, 1.0, 1.0);
      }
   }

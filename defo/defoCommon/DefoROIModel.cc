@@ -74,11 +74,9 @@ void DefoROIModel::removePoint() {
   }
 }
 
-void DefoROIModel::write(const QDir& path)
+void DefoROIModel::write(const QString& filename)
 {
-  QString fileLocation = path.absoluteFilePath("roi.xml");
-
-  QFile file(fileLocation);
+  QFile file(filename);
   if (!file.open(QIODevice::WriteOnly | QIODevice::Text | QIODevice::Truncate))
     return;
 
