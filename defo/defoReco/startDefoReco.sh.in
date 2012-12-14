@@ -1,0 +1,4 @@
+#!/bin/bash
+source @basepath@/tkmodlabenv.sh
+cd @basepath@/defo/defoReco
+./defoReco
