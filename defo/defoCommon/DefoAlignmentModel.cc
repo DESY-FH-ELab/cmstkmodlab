@@ -97,13 +97,13 @@ void DefoAlignmentModel::write(const QDir& path)
   stream.writeStartElement("DefoAlignment");
 
   stream.writeStartElement("Origin");
-  stream.writeAttribute("x", QString().setNum(origin_.x()));
-  stream.writeAttribute("y", QString().setNum(origin_.y()));
+  stream.writeAttribute("x", QString().setNum(origin_.x(), 'e', 6));
+  stream.writeAttribute("y", QString().setNum(origin_.y(), 'e', 6));
   stream.writeEndElement();
 
   stream.writeStartElement("Tip");
-  stream.writeAttribute("x", QString().setNum(tip_.x()));
-  stream.writeAttribute("y", QString().setNum(tip_.y()));
+  stream.writeAttribute("x", QString().setNum(tip_.x(), 'e', 6));
+  stream.writeAttribute("y", QString().setNum(tip_.y(), 'e', 6));
   stream.writeEndElement();
 
   stream.writeEndElement();
@@ -127,15 +127,15 @@ void DefoAlignmentModel::read(const QString& filename) {
     }
 
     if (stream.isStartElement() && stream.name()=="Origin") {
-      float x = stream.attributes().value("x").toString().toFloat();
-      float y = stream.attributes().value("y").toString().toFloat();
+      double x = stream.attributes().value("x").toString().toDouble();
+      double y = stream.attributes().value("y").toString().toDouble();
       origin_.setX(x);
       origin_.setY(y);
     }
 
     if (stream.isStartElement() && stream.name()=="Tip") {
-      float x = stream.attributes().value("x").toString().toFloat();
-      float y = stream.attributes().value("y").toString().toFloat();
+      double x = stream.attributes().value("x").toString().toDouble();
+      double y = stream.attributes().value("y").toString().toDouble();
       tip_.setX(x);
       tip_.setY(y);
     }

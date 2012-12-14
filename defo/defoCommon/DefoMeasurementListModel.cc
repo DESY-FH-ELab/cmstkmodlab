@@ -174,16 +174,16 @@ void DefoMeasurementListModel::writePoints(const QDir& path)
          it != points->end();
          ++it) {
       stream.writeStartElement("DefoPoint");
-      stream.writeAttribute("x", QString().setNum(it->getX()));
-      stream.writeAttribute("y", QString().setNum(it->getY()));
-      int h, s ,v;
+      stream.writeAttribute("x", QString().setNum(it->getX(), 'e', 6));
+      stream.writeAttribute("y", QString().setNum(it->getY(), 'e', 6));
+      float h, s ,v;
       QColor c = it->getColor();
-      h = c.hsvHue();
-      s = c.hsvSaturation();
-      v = c.value();
-      stream.writeAttribute("H", QString().setNum(h));
-      stream.writeAttribute("S", QString().setNum(s));
-      stream.writeAttribute("V", QString().setNum(v));
+      h = c.hsvHueF();
+      s = c.hsvSaturationF();
+      v = c.valueF();
+      stream.writeAttribute("H", QString().setNum(h, 'e', 6));
+      stream.writeAttribute("S", QString().setNum(s, 'e', 6));
+      stream.writeAttribute("V", QString().setNum(v, 'e', 6));
       stream.writeEndElement();
     }
 
@@ -249,14 +249,14 @@ void DefoMeasurementListModel::readPoints(const QDir& path)
     while (!stream.atEnd()) {
       stream.readNextStartElement();
       if (stream.isStartElement() && stream.name()=="DefoPoint") {
-        float x = stream.attributes().value("x").toString().toFloat();
-        float y = stream.attributes().value("y").toString().toFloat();
-        int H = stream.attributes().value("H").toString().toInt();
-        int S = stream.attributes().value("S").toString().toInt();
-        int V = stream.attributes().value("V").toString().toInt();
+        double x = stream.attributes().value("x").toString().toDouble();
+        double y = stream.attributes().value("y").toString().toDouble();
+        float H = stream.attributes().value("H").toString().toFloat();
+        float S = stream.attributes().value("S").toString().toFloat();
+        float V = stream.attributes().value("V").toString().toFloat();
         DefoPoint p(x, y);
         QColor c;
-        c.setHsv(H, S, V);
+        c.setHsvF(H, S, V);
         p.setColor(c);
 
         points->push_back(p);

@@ -28,9 +28,6 @@ float DefoROIModel::getClosestPoint(int & index,
     float xp = p.x()*width;
     float yp = p.y()*height;
 
-    // std::cout << x << " -> " << xp << std::endl;
-    // std::cout << y << " -> " << yp << std::endl;
-
     temp = std::sqrt((x-xp)*(x-xp) + (y-yp)*(y-yp));
     if (temp<distance) {
       distance = temp;
@@ -97,8 +94,8 @@ void DefoROIModel::write(const QDir& path)
     stream.writeStartElement("Point");
     stream.writeAttribute("index", QString().setNum(i));
     const QPointF &p = at(i);
-    stream.writeAttribute("x", QString().setNum(p.x()));
-    stream.writeAttribute("y", QString().setNum(p.y()));
+    stream.writeAttribute("x", QString().setNum(p.x(), 'e', 6));
+    stream.writeAttribute("y", QString().setNum(p.y(), 'e', 6));
     stream.writeEndElement();
   }
   stream.writeEndElement();
@@ -129,8 +126,8 @@ void DefoROIModel::read(const QString& filename) {
     if (stream.isStartElement() && stream.name()=="Point") {
       int index = stream.attributes().value("index").toString().toInt();
       QPointF & p = this->operator[](index);
-      float x = stream.attributes().value("x").toString().toFloat();
-      float y = stream.attributes().value("y").toString().toFloat();
+      double x = stream.attributes().value("x").toString().toDouble();
+      double y = stream.attributes().value("y").toString().toDouble();
       p.setX(x);
       p.setY(y);
     }

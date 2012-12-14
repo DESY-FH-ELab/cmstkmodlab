@@ -22,8 +22,8 @@ void PointSaver::writePoint(const DefoPoint& point)
   int value = color.value();
 
   QString line = LINE_FORMAT
-      .arg(x, 0, 'e', 5)
-      .arg(y, 0, 'e', 5)
+      .arg(x, 0, 'e', 6)
+      .arg(y, 0, 'e', 6)
       .arg(hue)
       .arg(saturation)
       .arg(value);

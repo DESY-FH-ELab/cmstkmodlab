@@ -9,7 +9,7 @@
 DefoColorSelectionModel::DefoColorSelectionModel(QObject *parent) :
     QObject(parent)
 {
-  color_.setHsvF(0.0, 0.0, 1.0, 0.5);
+  color_.setHsvF(0.0, 0.0, 1.0, 1.0);
 }
 
 float DefoColorSelectionModel::getDistance(float hue, float saturation) {
@@ -25,7 +25,7 @@ void DefoColorSelectionModel::setColor(float hue, float saturation)
 
   bool needUpdate = (hue!=color_.hueF()) || (saturation!=color_.saturationF());
 
-  color_.setHsvF(hue, saturation, 1.0, 0.5);
+  color_.setHsvF(hue, saturation, 1.0, 1.0);
 
   if (needUpdate) emit colorChanged(hue, saturation);
 }
@@ -43,8 +43,8 @@ void DefoColorSelectionModel::write(const QDir& path)
   stream.writeStartDocument();
 
   stream.writeStartElement("DefoColor");
-  stream.writeAttribute("H", QString().setNum(color_.hueF()));
-  stream.writeAttribute("S", QString().setNum(color_.saturationF()));
+  stream.writeAttribute("H", QString().setNum(color_.hueF(), 'e', 6));
+  stream.writeAttribute("S", QString().setNum(color_.saturationF(), 'e', 6));
   stream.writeEndElement();
 
   stream.writeEndElement();
@@ -64,9 +64,9 @@ void DefoColorSelectionModel::read(const QString& filename) {
     stream.readNextStartElement();
 
     if (stream.isStartElement() && stream.name()=="DefoColor") {
-      float H = stream.attributes().value("H").toString().toFloat();
-      float S = stream.attributes().value("S").toString().toFloat();
-      color_.setHsvF(H, S, 1.0, 0.5);
+      double H = stream.attributes().value("H").toString().toDouble();
+      double S = stream.attributes().value("S").toString().toDouble();
+      color_.setHsvF(H, S, 1.0, 1.0);
      }
   }
 

@@ -11,19 +11,15 @@ DefoPropagationPointIndexer::DefoPropagationPointIndexer(QObject *parent) :
 
 void DefoPropagationPointIndexer::indexPoints(DefoPointCollection *points, const QColor& seedColor) {
 
-    std::cout << "void DefoPropagationPointIndexer::indexPoints(DefoPointCollection *points, const QColor& seedColor)" << std::endl;
-
     for (DefoPointCollection::iterator it = points->begin();
          it != points->end();
          ++it) {
         it->unindex();
     }
 
-    std::cout << "void DefoPropagationPointIndexer::indexPoints(DefoPointCollection *points, const QColor& seedColor)" << std::endl;
-
     DefoPoint * seed = findSeed(points, seedColor);
     if (!seed) return;
-    seed->setIndex(0 ,0);
+    seed->setIndex(0, 0);
 
     double dx, dy, d;
     determineGrid(points, seed, dx, dy, d);
@@ -76,14 +72,13 @@ void DefoPropagationPointIndexer::indexPoints(DefoPointCollection *points, const
 
 DefoPoint * DefoPropagationPointIndexer::findSeed(DefoPointCollection* points, const QColor& seedColor) {
 
-    std::cout << "void DefoPropagationPointIndexer::findSeeds(DefoPointCollection *points, const QColor& seedColor)" << std::endl;
-
     DefoPoint * temp = 0;
     for (DefoPointCollection::iterator it = points->begin();
          it != points->end();
          ++it) {
-        std::cout << it->getColor().hsvHueF() << " " << it->getColor().hsvSaturationF() << std::endl;
-        if (it->hasReferenceColor(seedColor)) temp = &(*it);
+        if (it->hasReferenceColor(seedColor)) {
+            temp = &(*it);
+        }
     }
 
     return temp;
@@ -96,7 +91,7 @@ void DefoPropagationPointIndexer::determineGrid(DefoPointCollection* points, con
     for (DefoPointCollection::iterator it = points->begin();
          it != points->end();
          ++it) {
-      if (&(*it)==seed) continue;
+        if (it->getX()==seed->getX() && it->getY()==seed->getY()) continue;
 
       td = seed->getDistanceXY(*it, tdx, tdy);
       if (std::fabs(tdx)<20.0 || std::fabs(tdy)<20.0) continue;
@@ -107,8 +102,8 @@ void DefoPropagationPointIndexer::determineGrid(DefoPointCollection* points, con
       }
     }
 
-    dx = mindx;
-    dy = mindy;
+    dx = std::fabs(mindx);
+    dy = std::fabs(mindy);
     d = mind;
 }
 
@@ -121,22 +116,22 @@ DefoPoint * DefoPropagationPointIndexer::findNeighbour(DefoPointCollection* poin
     for (DefoPointCollection::iterator it = points->begin();
          it != points->end();
          ++it) {
-        if (&(*it)==seed) continue;
+        if (it->getX()==seed->getX() && it->getY()==seed->getY()) continue;
 
         d = seed->getDistanceXY(*it, dx, dy);
 
         if (axis==X) {
             if (std::fabs(dy)>window) continue;
-            if (direction==Forward && dx<0) continue;
-            if (direction==Backward && dx>0) continue;
+            if (direction==Forward && dx>0) continue;
+            if (direction==Backward && dx<0) continue;
             if (std::fabs(dx)<std::fabs(min)) {
                 min = dx;
                 nextPoint = &(*it);
             }
         } else {
             if (std::fabs(dx)>window) continue;
-            if (direction==Forward && dy<0) continue;
-            if (direction==Backward && dy>0) continue;
+            if (direction==Forward && dy>0) continue;
+            if (direction==Backward && dy<0) continue;
             if (std::fabs(dy)<std::fabs(min)) {
                 min = dy;
                 nextPoint = &(*it);

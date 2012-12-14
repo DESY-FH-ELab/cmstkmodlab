@@ -20,8 +20,6 @@ DefoPointIndexerModel::DefoPointIndexerModel(QObject *parent) :
   indexer = new DefoPointIndexer(this);
   indexers_.push_back(indexer);
   indexerNames_[indexer] = "Sorting Indexer";
-
-  setSelectedIndexer(indexers_.at(0));
 }
 
 const std::string DefoPointIndexerModel::getIndexerName(const DefoVPointIndexer* indexer) const {

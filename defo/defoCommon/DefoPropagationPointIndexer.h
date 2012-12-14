@@ -27,7 +27,6 @@ protected:
                      double& dx, double& dy, double& d);
   DefoPoint * findNeighbour(DefoPointCollection* points, const DefoPoint* seed,
                             Axis axis, Direction direction, double window);
-
 };
 
 #endif // DEFOPROPAGATIONPOINTINDEXER_H
