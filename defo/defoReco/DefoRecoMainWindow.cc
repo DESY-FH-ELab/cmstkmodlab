@@ -203,18 +203,24 @@ DefoRecoMainWindow::DefoRecoMainWindow(QWidget *parent) :
                                                                                  indexerWidget);
   vbox->addWidget(indexerSelect);
 
+  hbox = new QHBoxLayout();
+  QWidget * indexerColorWidget = new QWidget(indexerWidget);
+  indexerColorWidget->setLayout(hbox);
+  vbox->addWidget(indexerColorWidget);
+  
   DefoRecoColorHistoWidget *refIndexerSelect = new DefoRecoColorHistoWidget(listModel_,
                                                                             refSelectionModel_,
                                                                             refColorModel_,
-                                                                            indexerWidget);
-  vbox->addWidget(refIndexerSelect);
+                                                                            indexerColorWidget);
+  hbox->addWidget(refIndexerSelect);
 
   DefoRecoColorHistoWidget *defoIndexerSelect = new DefoRecoColorHistoWidget(listModel_,
                                                                              defoSelectionModel_,
                                                                              defoColorModel_,
-                                                                             indexerWidget);
-  vbox->addWidget(defoIndexerSelect);
-
+                                                                             indexerColorWidget);
+  hbox->addWidget(defoIndexerSelect);
+  
+  
   tabWidget_->addTab(indexerWidget, "Indexer");
 
   DefoReconstructionWidget *recoWidget = new DefoReconstructionWidget(reconstructionModel_,

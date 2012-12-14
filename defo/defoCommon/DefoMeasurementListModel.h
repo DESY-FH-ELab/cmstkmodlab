@@ -47,6 +47,8 @@ protected:
   typedef std::map<DefoMeasurement*, const DefoPointCollection*> PointMap;
   PointMap points_;
 
+  void cleanupPoints(DefoPointCollection* points);
+
   // For thread safety
   QMutex mutex_;
 

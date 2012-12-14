@@ -29,6 +29,12 @@ void DefoPoint::init( void ) {
 
 }
 
+double DefoPoint::getDistance(const DefoPoint& other) const {
+    double dx = x_ - other.x_;
+    double dy = y_ - other.y_;
+    return std::sqrt(dx*dx+dy*dy);
+}
+
 double DefoPoint::getDistanceXY(const DefoPoint& other, double& dx, double& dy) const {
     dx = x_ - other.x_;
     dy = y_ - other.y_;

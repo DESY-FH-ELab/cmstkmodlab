@@ -49,6 +49,7 @@ HEADERS += DefoConfigReader.h \
            DefoPointRecognitionModel.h \
            DefoPointRecognitionWidget.h \
            DefoThresholdSpinBox.h \
+           DefoHalfSquareWidthSpinBox.h \
            DefoImageWidget.h \
            DefoPoint.h \
            DefoPointBin.h \
@@ -77,6 +78,7 @@ SOURCES += DefoConfigReader.cc \
            DefoPointRecognitionModel.cc \
            DefoPointRecognitionWidget.cc \
            DefoThresholdSpinBox.cc \
+           DefoHalfSquareWidthSpinBox.cc \
            DefoImageWidget.cc \
            DefoPoint.cc \
            DefoPointBin.cc \

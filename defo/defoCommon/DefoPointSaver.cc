@@ -1,6 +1,6 @@
 #include "DefoPointSaver.h"
 
-const QString DefoPointSaver::LINE_FORMAT = "%1\t%2\t%3\t%4\t%5\t%6\t%7\t%8\n";
+const QString DefoPointSaver::LINE_FORMAT = "%1\t%2\t%3\t%4\t%5\t%6\t%7\t%8\t%9\n";
 
 DefoPointSaver::DefoPointSaver(const QString &filename, QObject* parent) :
   QFile(filename, parent)
@@ -17,7 +17,8 @@ void DefoPointSaver::writePoints(const DefoPointCollection &points)
     for (DefoPointCollection::const_iterator it = points.begin();
          it != points.end();
          ++it) {
-         writePoint(*it);
+         if ((*it).isValid())
+           writePoint(*it);
     }
 }
 
@@ -38,7 +39,8 @@ void DefoPointSaver::writePoint(const DefoPoint& point)
       .arg(value, 0, 'e', 6)
       .arg((int)(point.isIndexed()))
       .arg(point.getIndex().first)
-      .arg(point.getIndex().second);
+      .arg(point.getIndex().second)
+      .arg((int)point.isValid());
   
   write(line.toAscii());
 }

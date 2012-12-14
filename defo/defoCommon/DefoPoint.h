@@ -42,6 +42,7 @@ class DefoPoint {
   bool isIndexed( void ) const { return isIndexed_; }
   double const& getX( void ) const { return x_; }
   double const& getY( void ) const { return y_; }
+  double getDistance(const DefoPoint& other) const;
   double getDistanceXY(const DefoPoint& other, double& dx, double& dy) const;
   double const& getPosition( const DefoPoint::Axis& ) const;
   double const& getSlope( void ) const { return slope_; }

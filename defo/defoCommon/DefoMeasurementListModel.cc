@@ -101,19 +101,51 @@ void DefoMeasurementListModel::appendMeasurementPoints(
   if ( points != NULL ) {
 
     const DefoPointCollection* currentList = getMeasurementPoints(measurement);
+    DefoPointCollection* newPoints;
+    
     if ( currentList != NULL ) {
-      // Copy the current point collection
-      DefoPointCollection* newPoints = new DefoPointCollection(*currentList);
-      // Insert given points
-      newPoints->insert(newPoints->end(), points->begin(), points->end());
-      // Set new points
-      setMeasurementPoints(measurement, newPoints);
+      newPoints = new DefoPointCollection(*currentList);
+    } else {
+      newPoints = new DefoPointCollection();
     }
-    else // Currently empty, so just set list
-      setMeasurementPoints(measurement, points);
+    
+    // Insert given points
+    newPoints->insert(newPoints->end(), points->begin(), points->end());
 
+    cleanupPoints(newPoints);
+
+    // Set new points
+    setMeasurementPoints(measurement, newPoints);
   }
+}
 
+void DefoMeasurementListModel::cleanupPoints(DefoPointCollection* points)
+{
+    double d;
+    for (DefoPointCollection::iterator it1 = points->begin();
+         it1 != points->end();
+         ++it1) {
+         if ((*it1).isValid()==false) continue;
+
+         for (DefoPointCollection::iterator it2 = it1+1;
+             it2 != points->end();
+             ++it2) {
+             if ((*it2).isValid()==false) continue;
+
+             d = it1->getDistance(*it2);
+             if (d<1.0) {
+                 (*it2).setValid(false);
+             }
+         }
+    }
+    
+    for (DefoPointCollection::iterator it1 = points->begin();
+         it1 != points->end();
+         ++it1) {
+         if ((*it1).isValid()==false) {
+            points->erase(it1);
+         }
+    }
 }
 
 void DefoMeasurementListModel::write(const QDir& path)

@@ -59,6 +59,7 @@ protected:
   bool previewImage_;
 
   std::vector<int> pointRecognitionThresholds_;
+  int pointRecognitionHalfSquareWidth_;
 
   // Exif information
   float exifFocalLength_;

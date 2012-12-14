@@ -161,10 +161,12 @@ const DefoPointCollection* DefoMeasurement::findPoints(
               forbiddenAreas.push_back( searchSquare );
 
               if (roi->size()==0) {
+                intermediate.setValid(true);
                 points->push_back(intermediate);
               } else {
-                if (roi->containsPoint(QPointF(intermediate.getX(), intermediate.getY()),
+                if (roi->containsPoint(QPointF(intermediate.getPixX(), intermediate.getPixY()),
                                        Qt::OddEvenFill)) {
+                  intermediate.setValid(true);
                   points->push_back(intermediate);
                 }
               }
@@ -393,6 +395,8 @@ void DefoMeasurement::acquireData(const DefoPointRecognitionModel* model) {
   pointRecognitionThresholds_.push_back(
      model->getThresholdValue(DefoPointRecognitionModel::THRESHOLD_3)
   );
+  
+  pointRecognitionHalfSquareWidth_ = model->getHalfSquareWidth();
 }
 
 void DefoMeasurement::acquireData(const DefoConradModel* model) {
@@ -458,6 +462,10 @@ void DefoMeasurement::write(const QDir& path)
     stream.writeAttribute("value", QString().setNum(pointRecognitionThresholds_[i]));
     stream.writeEndElement();
   }
+  stream.writeEndElement();
+  
+  stream.writeStartElement("HalfSquareWidth");
+  stream.writeAttribute("value", QString().setNum(pointRecognitionHalfSquareWidth_));
   stream.writeEndElement();
 
   stream.writeStartElement("Exif");
@@ -553,6 +561,11 @@ void DefoMeasurement::read(const QString& filename) {
       unsigned int index = stream.attributes().value("index").toString().toUInt() - 1;
       int threshold = stream.attributes().value("value").toString().toInt();
       pointRecognitionThresholds_[index] = threshold;
+    }
+
+    if (stream.isStartElement() && stream.name()=="HalfSquareWidth") {
+      int hsw = stream.attributes().value("value").toString().toInt();
+      pointRecognitionHalfSquareWidth_ = hsw;
     }
 
     if (stream.isStartElement() && stream.name()=="FocalLength") {
