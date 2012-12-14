@@ -11,6 +11,7 @@ class PointSaver : public QFile
 public:
   explicit PointSaver(const QString& filename, QObject* parent = 0);
   ~PointSaver();
+  void writePoints(const DefoPointCollection &points);
   void writePoint(const DefoPoint &point);
 
 protected:
