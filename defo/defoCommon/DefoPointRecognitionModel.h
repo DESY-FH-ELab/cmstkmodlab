@@ -19,6 +19,9 @@ public:
   // Methods for value, range and logical lower limit
   static const int THRESHOLD_MINIMUM;
   static const int THRESHOLD_MAXIMUM;
+  static const int HALFSQUAREWIDTH_MINIMUM;
+  static const int HALFSQUAREWIDTH_MAXIMUM;
+
   int getThresholdValue(const Threshold& threshold) const;
   int getThresholdDynamicMininum(const Threshold& threshold) const;
 

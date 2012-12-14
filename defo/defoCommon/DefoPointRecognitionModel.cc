@@ -3,6 +3,9 @@
 const int DefoPointRecognitionModel::THRESHOLD_MINIMUM = 0;
 const int DefoPointRecognitionModel::THRESHOLD_MAXIMUM = 255;
 
+const int DefoPointRecognitionModel::HALFSQUAREWIDTH_MINIMUM = 0;
+const int DefoPointRecognitionModel::HALFSQUAREWIDTH_MAXIMUM = 250;
+
 DefoPointRecognitionModel::DefoPointRecognitionModel(QObject *parent) :
     QObject(parent)
   , thresholds_(3)

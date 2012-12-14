@@ -4,6 +4,7 @@
 #include <QFileDialog>
 
 #include "DefoThresholdSpinBox.h"
+#include "DefoHalfSquareWidthSpinBox.h"
 #include "DefoPointFinder.h"
 #include "DefoPoint.h"
 #include "DefoPointSaver.h"
@@ -40,7 +41,7 @@ DefoRecoPointRecognitionWidget::DefoRecoPointRecognitionWidget(
   QHBoxLayout* thresholdLayout = new QHBoxLayout(thresholdSpinners);
   thresholdSpinners->setLayout(thresholdLayout);
 
-  QString format("Threshold %1");
+  QString format("Thr %1");
   for (int i=0; i<3; i++) {
     thresholdLayout->addWidget(new QLabel(format.arg(i+1)));
     thresholdLayout->addWidget(new DefoThresholdSpinBox(
@@ -48,6 +49,10 @@ DefoRecoPointRecognitionWidget::DefoRecoPointRecognitionWidget(
                                , static_cast<DefoPointRecognitionModel::Threshold>(i)
                                  ));
   }
+  thresholdLayout->addWidget(new QLabel("HSW"));
+  thresholdLayout->addWidget(new DefoHalfSquareWidthSpinBox(
+                                 pointModel_
+                            ));
 
   // POINT FINDING
   QWidget* points = new QWidget(this);
@@ -77,9 +82,8 @@ DefoRecoPointRecognitionWidget::DefoRecoPointRecognitionWidget(
   );
 }
 
-void DefoRecoPointRecognitionWidget::selectionChanged(DefoMeasurement* measurement) {
+void DefoRecoPointRecognitionWidget::selectionChanged(DefoMeasurement* /*measurement*/) {
 
-  std::cout << measurement << std::endl;
 }
 
 void DefoRecoPointRecognitionWidget::findPointsButtonClicked() {
@@ -94,15 +98,12 @@ void DefoRecoPointRecognitionWidget::findPointsButtonClicked() {
   float xmin = roiArea.left();
   float xmax = roiArea.right();
   float ymin = roiArea.top();
-  float ymax = roiArea.bottom();
+  float ymax = roiArea.bottom()+pointModel_->getHalfSquareWidth();
 
-  //std::cout << xmin << std::endl;
-  //std::cout << xmax << std::endl;
-  //std::cout << ymin << std::endl;
-  //std::cout << ymax << std::endl;
-
-  QRect searchArea(xmin*imageArea.width(), ymin*imageArea.height(),
-                   (xmax-xmin)*imageArea.width(), (ymax-ymin)*imageArea.height());
+  QRect searchArea(xmin*imageArea.width(),
+                   ymin*imageArea.height() - pointModel_->getHalfSquareWidth(),
+                   (xmax-xmin)*imageArea.width(),
+                   (ymax-ymin)*imageArea.height() + pointModel_->getHalfSquareWidth());
 
   /*
     The number of blocks depends on the number of cores available and the
@@ -120,11 +121,8 @@ void DefoRecoPointRecognitionWidget::findPointsButtonClicked() {
       order to avoid overlapping rectangles.
       */
     QRect area = searchArea;
-    area.setX(searchArea.x()+i*width-1);
-    area.setWidth(width+1);
-
-    //std::cout << "VER: " << area.y() << ", " << area.height() << std::endl;
-    //std::cout << "HOR: " << area.x() << ", " << area.right() << std::endl;
+    area.setX(searchArea.x()+i*width - pointModel_->getHalfSquareWidth());
+    area.setWidth(width + 2 * pointModel_->getHalfSquareWidth());
 
     finder = new DefoPointFinder(
         listModel_
@@ -147,12 +145,7 @@ void DefoRecoPointRecognitionWidget::savePointsButtonClicked()
     DefoMeasurement* meas = selectionModel_->getSelection();
     const DefoPointCollection* points = listModel_->getMeasurementPoints(meas);
 
-    for ( DefoPointCollection::const_iterator it = points->begin()
-        ; it < points->end()
-        ; ++it
-    ) {
-      saver.writePoint(*it);
-    }
+    saver.writePoints(*points);
   }
 }
 

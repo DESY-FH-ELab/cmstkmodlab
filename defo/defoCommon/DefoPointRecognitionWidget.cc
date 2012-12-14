@@ -4,6 +4,7 @@
 #include <QFileDialog>
 
 #include "DefoThresholdSpinBox.h"
+#include "DefoHalfSquareWidthSpinBox.h"
 #include "DefoPointFinder.h"
 #include "DefoPoint.h"
 #include "DefoPointSaver.h"
@@ -38,7 +39,7 @@ DefoPointRecognitionWidget::DefoPointRecognitionWidget(
   QHBoxLayout* thresholdLayout = new QHBoxLayout(thresholdSpinners);
   thresholdSpinners->setLayout(thresholdLayout);
 
-  QString format("Threshold %1");
+  QString format("Thr %1");
   for (int i=0; i<3; i++) {
     thresholdLayout->addWidget(new QLabel(format.arg(i+1)));
     thresholdLayout->addWidget(new DefoThresholdSpinBox(
@@ -46,6 +47,10 @@ DefoPointRecognitionWidget::DefoPointRecognitionWidget(
                                , static_cast<DefoPointRecognitionModel::Threshold>(i)
                                  ));
   }
+  thresholdLayout->addWidget(new QLabel("HSW"));
+  thresholdLayout->addWidget(new DefoHalfSquareWidthSpinBox(
+                                 pointModel_
+                            ));
 
   // POINT FINDING
   QWidget* points = new QWidget(this);
@@ -118,12 +123,7 @@ void DefoPointRecognitionWidget::savePointsButtonClicked()
     DefoMeasurement* meas = selectionModel_->getSelection();
     const DefoPointCollection* points = listModel_->getMeasurementPoints(meas);
 
-    for ( DefoPointCollection::const_iterator it = points->begin()
-        ; it < points->end()
-        ; ++it
-    ) {
-      saver.writePoint(*it);
-    }
+    saver.writePoints(*points);
   }
 }
 
