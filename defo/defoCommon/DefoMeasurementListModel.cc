@@ -121,31 +121,32 @@ void DefoMeasurementListModel::appendMeasurementPoints(
 
 void DefoMeasurementListModel::cleanupPoints(DefoPointCollection* points)
 {
-    double d;
-    for (DefoPointCollection::iterator it1 = points->begin();
-         it1 != points->end();
-         ++it1) {
-         if ((*it1).isValid()==false) continue;
+  double d;
+  for (DefoPointCollection::iterator it1 = points->begin();
+       it1 != points->end();
+       ++it1) {
+    if ((*it1).isValid()==false) continue;
 
-         for (DefoPointCollection::iterator it2 = it1+1;
-             it2 != points->end();
-             ++it2) {
-             if ((*it2).isValid()==false) continue;
+    for (DefoPointCollection::iterator it2 = it1+1;
+         it2 != points->end();
+         ++it2) {
+      if ((*it2).isValid()==false) continue;
 
-             d = it1->getDistance(*it2);
-             if (d<1.0) {
-                 (*it2).setValid(false);
-             }
-         }
+      d = it1->getDistance(*it2);
+      if (d<1.0) {
+        (*it2).setValid(false);
+      }
     }
-    
-    for (DefoPointCollection::iterator it1 = points->begin();
-         it1 != points->end();
-         ++it1) {
-         if ((*it1).isValid()==false) {
-            points->erase(it1);
-         }
+  }
+
+  for (DefoPointCollection::iterator it1 = points->begin();
+       it1 != points->end();) {
+    if ((*it1).isValid()==false) {
+      points->erase(it1);
+    } else {
+      ++it1;
     }
+  }
 }
 
 void DefoMeasurementListModel::write(const QDir& path)
