@@ -12,10 +12,14 @@ DefoReconstructionModel::DefoReconstructionModel(
   , DefoPointIndexerModel* pointIndexerModel
   , DefoColorSelectionModel* refColorModel
   , DefoColorSelectionModel* defoColorModel
+  , DefoMeasurementPairListModel* pairListModel
+  , DefoMeasurementPairSelectionModel* pairSelectionModel
   , QObject *parent
   ) :
     QObject(parent),
-    listModel_(listModel)
+    listModel_(listModel),
+    pairListModel_(pairListModel),
+    pairSelectionModel_(pairSelectionModel)
 {
   angle_ = 0.0;
   refMeasurement_ = 0;
@@ -125,6 +129,9 @@ void DefoReconstructionModel::reconstruct() {
     return;
   }
 
+  DefoMeasurementPair * measurementPair = pairListModel_->findMeasurementPair(refMeasurement_,
+                                                                              defoMeasurement_);
+
   if (!alignPoints(refPoints, refCollection_)) {
     std::cout << "reco: reference points could not be aligned" << std::endl;
     return;
@@ -142,6 +149,10 @@ void DefoReconstructionModel::reconstruct() {
   refSaver.writePoints(refCollection_);
   DefoPointSaver defoSaver("./defoPoints.txt");
   defoSaver.writePoints(defoCollection_);
+
+  if (measurementPair==0) {
+    pairListModel_->addMeasurementPair(refMeasurement_, defoMeasurement_);
+  }
 }
 
 bool DefoReconstructionModel::alignPoints(const DefoPointCollection* original,

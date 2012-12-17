@@ -10,7 +10,16 @@ DefoReconstructionWidget::DefoReconstructionWidget(
     QWidget(parent)
   , reconstructionModel_(reconstructionModel)
 {
-  setMinimumSize(QSize(300, 300));
+  setMinimumSize(QSize(200, 300));
+
+  QBoxLayout *layout = new QVBoxLayout();
+  setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);
+  setLayout(layout);
+
+  QPushButton * reconstructButton = new QPushButton("&Reconstruct", this);
+  connect(reconstructButton, SIGNAL(clicked()),
+          this, SLOT(reconstructButtonClicked()));
+  layout->addWidget(reconstructButton);
 
   connect(
           reconstructionModel_
@@ -18,22 +27,6 @@ DefoReconstructionWidget::DefoReconstructionWidget(
         , this
         , SLOT(setupChanged())
   	  );
-
-  QBoxLayout *layout = new QHBoxLayout();
-  QWidget * reconstructionWidget = new QWidget(this);
-  reconstructionWidget->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);
-  reconstructionWidget->setLayout(layout);
-
-  QBoxLayout *vbox = new QVBoxLayout();
-  QWidget * reconstructionInfoWidget = new QWidget(reconstructionWidget);
-  reconstructionInfoWidget->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);
-  reconstructionInfoWidget->setLayout(vbox);
-  layout->addWidget(reconstructionInfoWidget);
-
-  QPushButton * reconstructButton = new QPushButton("&Reconstruct", reconstructionInfoWidget);
-  connect(reconstructButton, SIGNAL(clicked()),
-          this, SLOT(reconstructButtonClicked()));
-  vbox->addWidget(reconstructButton);
 }
 
 void DefoReconstructionWidget::setupChanged() {

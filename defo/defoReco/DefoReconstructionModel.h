@@ -25,6 +25,8 @@ public:
                                  , DefoPointIndexerModel* pointIndexerModel
                                  , DefoColorSelectionModel* refColorModel
                                  , DefoColorSelectionModel* defoColorModel
+                                 , DefoMeasurementPairListModel* pairListModel
+                                 , DefoMeasurementPairSelectionModel* pairSelectionModel
                                  , QObject *parent = 0);
 
   double getAngle() const { return angle_; }
@@ -49,6 +51,8 @@ protected:
   DefoMeasurementListModel* listModel_;
   DefoMeasurement* refMeasurement_;
   DefoMeasurement* defoMeasurement_;
+  DefoMeasurementPairListModel* pairListModel_;
+  DefoMeasurementPairSelectionModel* pairSelectionModel_;
   float angle_;
   DefoPointCollection refCollection_;
   DefoPointCollection defoCollection_;
@@ -61,4 +65,4 @@ signals:
   void setupChanged();
 };
 
-#endif // DEFORECOIMAGEZOOMMODEL_H
+#endif // DEFORECONSTRUCTIONMODEL_H

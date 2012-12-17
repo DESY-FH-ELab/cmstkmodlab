@@ -33,7 +33,7 @@ else {
     LIBS += -lqwt -lqwtplot3d -lGL -lGLU
 }
 DEFINES += @configdefines@
-QT += core gui opengl xml
+QT += core gui opengl xml svg
 TEMPLATE = app
 TARGET = defoReco
 DEPENDPATH += ../defoCommon
@@ -54,7 +54,9 @@ HEADERS += DefoRecoMainWindow.h \
            DefoRecoImageZoomModel.h \
            DefoReconstructionModel.h \
            DefoReconstructionWidget.h \
-           DefoRecoColorHistoWidget.h
+           DefoRecoColorHistoWidget.h \
+           DefoGeometryModel.h \
+           DefoGeometryWidget.h
 
 SOURCES += defoReco.cc \
            DefoRecoMainWindow.cc \
@@ -68,5 +70,7 @@ SOURCES += defoReco.cc \
            DefoRecoImageZoomModel.cc \
            DefoReconstructionModel.cc \
            DefoReconstructionWidget.cc \
-           DefoRecoColorHistoWidget.cc
+           DefoRecoColorHistoWidget.cc \
+           DefoGeometryModel.cc \
+           DefoGeometryWidget.cc
 

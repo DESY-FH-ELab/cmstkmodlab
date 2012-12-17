@@ -29,6 +29,9 @@
 #include "DefoReconstructionModel.h"
 #include "DefoReconstructionWidget.h"
 
+#include "DefoGeometryModel.h"
+#include "DefoGeometryWidget.h"
+
 class DefoRecoMainWindow : public QMainWindow
 {
   Q_OBJECT
@@ -62,6 +65,10 @@ protected:
   DefoColorSelectionModel* refColorModel_;
   DefoColorSelectionModel* defoColorModel_;
 
+  DefoGeometryModel* geometryModel_;
+
+  DefoMeasurementPairListModel* measurementPairListModel_;
+  DefoMeasurementPairSelectionModel* measurementPairSelectionModel_;
   DefoReconstructionModel* reconstructionModel_;
 
 protected slots:

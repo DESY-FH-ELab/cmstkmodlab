@@ -38,6 +38,11 @@ DefoRecoMainWindow::DefoRecoMainWindow(QWidget *parent) :
   refColorModel_ = new DefoColorSelectionModel(this);
   defoColorModel_ = new DefoColorSelectionModel(this);
 
+  geometryModel_ = new DefoGeometryModel(this);
+
+  measurementPairListModel_ = new DefoMeasurementPairListModel(this);
+  measurementPairSelectionModel_ = new DefoMeasurementPairSelectionModel(this);
+
   reconstructionModel_ = new DefoReconstructionModel(listModel_,
                                                      refSelectionModel_,
                                                      defoSelectionModel_,
@@ -45,6 +50,8 @@ DefoRecoMainWindow::DefoRecoMainWindow(QWidget *parent) :
                                                      pointIndexerModel_,
                                                      refColorModel_,
                                                      defoColorModel_,
+                                                     measurementPairListModel_,
+                                                     measurementPairSelectionModel_,
                                                      this);
 
   tabWidget_ = new QTabWidget(this);
@@ -224,9 +231,32 @@ DefoRecoMainWindow::DefoRecoMainWindow(QWidget *parent) :
   
   tabWidget_->addTab(indexerWidget, "Indexer");
 
-  DefoReconstructionWidget *recoWidget = new DefoReconstructionWidget(reconstructionModel_,
-                                                                      tabWidget_);
+  hbox = new QHBoxLayout();
+  QWidget * recoWidget = new QWidget(tabWidget_);
+  recoWidget->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);
+  recoWidget->setLayout(hbox);
+
+  DefoReconstructionWidget *recoControllerWidget = new DefoReconstructionWidget(reconstructionModel_,
+                                                                                recoWidget);
+  hbox->addWidget(recoControllerWidget);
+
+  DefoGeometryWidget *geometryWidget = new DefoGeometryWidget(geometryModel_,
+                                                              recoWidget);
+  hbox->addWidget(geometryWidget);
+
   tabWidget_->addTab(recoWidget, "Reconstruction");
+
+  vbox = new QVBoxLayout();
+  QWidget * analysisWidget = new QWidget(tabWidget_);
+  analysisWidget->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);
+  analysisWidget->setLayout(vbox);
+
+  DefoMeasurementPairListComboBox *analysisSelect = new DefoMeasurementPairListComboBox(measurementPairListModel_,
+                                                                                        measurementPairSelectionModel_,
+                                                                                        analysisWidget);
+  vbox->addWidget(analysisSelect);
+
+  tabWidget_->addTab(analysisWidget, "Analysis");
 
   setCentralWidget(tabWidget_);
 
@@ -249,6 +279,7 @@ void DefoRecoMainWindow::loadMeasurementButtonClicked() {
   alignmentModel_->read(currentDir_.absoluteFilePath("alignment.xml"));
   refColorModel_->read(currentDir_.absoluteFilePath("refcolor.xml"));
   defoColorModel_->read(currentDir_.absoluteFilePath("defocolor.xml"));
+  geometryModel_->read(currentDir_.absoluteFilePath("geometry.xml"));
 
   listModel_->clear();
   listModel_->read(filename);
@@ -261,6 +292,7 @@ void DefoRecoMainWindow::saveMeasurementButtonClicked() {
   alignmentModel_->write(currentDir_.absoluteFilePath("alignment.xml"));
   refColorModel_->write(currentDir_.absoluteFilePath("refcolor.xml"));
   defoColorModel_->write(currentDir_.absoluteFilePath("defocolor.xml"));
+  geometryModel_->write(currentDir_.absoluteFilePath("geometry.xml"));
 
   listModel_->write(currentDir_);
   listModel_->writePoints(currentDir_);
