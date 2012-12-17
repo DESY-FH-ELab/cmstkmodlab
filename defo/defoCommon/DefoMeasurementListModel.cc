@@ -319,3 +319,73 @@ void DefoMeasurementListModel::readPoints(const QDir& path)
     this->setMeasurementPoints(measurement, points);
   }
 }
+
+DefoMeasurementPairListModel::DefoMeasurementPairListModel(QObject *parent) :
+    QObject(parent)
+{}
+
+/**
+  \brief Adds a deformation measurement pair to the list.
+  \arg measurementPair DefoMeasurementPair to be added.
+  \arg select If true, the added measurement will be set as the current
+  selection.
+  */
+void DefoMeasurementPairListModel::addMeasurementPair(
+    DefoMeasurement* reference
+  , DefoMeasurement* deformed
+) {
+
+  QMutexLocker locker(&mutex_);
+
+  // Store measurementPair* in list
+  measurementPairList_.push_back(new DefoMeasurementPair(reference, deformed));
+
+  emit measurementPairCountChanged( getMeasurementPairCount() );
+}
+
+/**
+  \brief Adds a deformation measurement pair to the list.
+  \arg measurementPair DefoMeasurementPair to be added.
+  \arg select If true, the added measurement will be set as the current
+  selection.
+  */
+void DefoMeasurementPairListModel::addMeasurementPair(
+    DefoMeasurementPair* measurementPair
+) {
+
+  QMutexLocker locker(&mutex_);
+
+  // Store measurementPair* in list
+  measurementPairList_.push_back(measurementPair);
+
+  emit measurementPairCountChanged( getMeasurementPairCount() );
+}
+
+/// Returns the number of measurements currently stored.
+int DefoMeasurementPairListModel::getMeasurementPairCount() const {
+  return measurementPairList_.size();
+}
+
+/// Returns measurement at index i.
+const DefoMeasurementPair* DefoMeasurementPairListModel::getMeasurementPair(int i) const {
+  return measurementPairList_.at(i);
+}
+
+/// Returns measurement at index i.
+DefoMeasurementPair* DefoMeasurementPairListModel::getMeasurementPair(int i) {
+  return measurementPairList_.at(i);
+}
+
+DefoMeasurementPair* DefoMeasurementPairListModel::findMeasurementPair(DefoMeasurement* reference,
+                                                                       DefoMeasurement* deformed) {
+
+  for (std::vector<DefoMeasurementPair*>::iterator it = measurementPairList_.begin();
+       it != measurementPairList_.end();
+       ++it) {
+    DefoMeasurementPair* pair = *it;
+    if (pair->first==reference && pair->second==deformed)
+      return pair;
+  }
+
+  return 0;
+ }

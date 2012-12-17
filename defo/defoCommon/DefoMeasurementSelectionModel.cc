@@ -19,3 +19,23 @@ void DefoMeasurementSelectionModel::setSelection(
   }
 
 }
+
+DefoMeasurementPairSelectionModel::DefoMeasurementPairSelectionModel(QObject *parent) :
+    QObject(parent)
+  , selection_(NULL)
+{}
+
+DefoMeasurementPair * DefoMeasurementPairSelectionModel::getSelection() const {
+  return selection_;
+}
+
+void DefoMeasurementPairSelectionModel::setSelection(
+    DefoMeasurementPair *selection
+) {
+
+  if (selection_ != selection) {
+    selection_ = selection;
+    emit selectionChanged(selection_);
+  }
+
+}

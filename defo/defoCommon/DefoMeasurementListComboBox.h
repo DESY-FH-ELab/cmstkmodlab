@@ -39,4 +39,38 @@ signals:
 
 };
 
+class DefoMeasurementPairListComboBox : public QComboBox
+{
+    Q_OBJECT
+public:
+  explicit DefoMeasurementPairListComboBox(
+      DefoMeasurementPairListModel* listModel
+    , DefoMeasurementPairSelectionModel* selectionModel
+    , QWidget *parent = 0
+  );
+
+protected:
+  static const QString LABEL_FORMAT;
+  static const QString TIME_FORMAT;
+
+  DefoMeasurementPairListModel* listModel_;
+  DefoMeasurementPairSelectionModel* selectionModel_;
+
+  /**
+    Mapping of the measurements in the list to the indices in the combo box.
+    Mapping should be one to one, i.e. index in the combobox is the same in the
+    list model.
+    */
+  typedef std::map<const DefoMeasurementPair*, int> MeasurementPairMap;
+  MeasurementPairMap indexMap_;
+
+protected slots:
+  void fillOptions(int count);
+  void setSelection(DefoMeasurementPair* selection);
+  void selectionChanged(int index);
+
+signals:
+
+};
+
 #endif // DEFOMEASUREMENTLISTCOMBOBOX_H

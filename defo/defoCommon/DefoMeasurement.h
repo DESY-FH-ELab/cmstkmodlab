@@ -1,6 +1,8 @@
 #ifndef _DEFOMEASUREMENT_H
 #define _DEFOMEASUREMENT_H
 
+#include <utility>
+
 #include <QDateTime>
 #include <QImage>
 #include <QPolygonF>
@@ -107,6 +109,13 @@ protected:
     , int threshold
   ) const;
 
+};
+
+class DefoMeasurementPair : public std::pair<DefoMeasurement*,DefoMeasurement*> {
+
+  public:
+  DefoMeasurementPair(DefoMeasurement* reference,
+                      DefoMeasurement* deformed);
 };
 
 #endif // _DEFOMEASUREMENT_H

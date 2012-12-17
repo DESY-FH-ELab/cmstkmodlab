@@ -58,4 +58,32 @@ signals:
 
 };
 
+class DefoMeasurementPairListModel : public QObject
+{
+    Q_OBJECT
+
+public:
+  explicit DefoMeasurementPairListModel(QObject *parent = 0);
+
+  // Deformation measurements
+  int getMeasurementPairCount() const;
+  const DefoMeasurementPair* getMeasurementPair(int index) const;
+  DefoMeasurementPair* getMeasurementPair(int index);
+  DefoMeasurementPair* findMeasurementPair(DefoMeasurement* reference,
+                                           DefoMeasurement* deformed);
+
+  void addMeasurementPair(DefoMeasurement* reference,
+                          DefoMeasurement* deformed);
+  void addMeasurementPair(DefoMeasurementPair* measurementPair);
+
+protected:
+  std::vector<DefoMeasurementPair*> measurementPairList_;
+
+  // For thread safety
+  QMutex mutex_;
+
+signals:
+  void measurementPairCountChanged(int count);
+};
+
 #endif // _DEFOMEASUREMENTLISTMODEL_H
