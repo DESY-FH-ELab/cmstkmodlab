@@ -77,11 +77,11 @@ const QColor& DefoPoint::getColor( void ) const {
 
 bool DefoPoint::hasReferenceColor(const QColor& seedColor) const {
   float dhue = color_.hsvHueF() - seedColor.hsvHueF();
+  if (std::fabs(dhue) > 0.5)
+    dhue = 1 - std::fabs(dhue);
   float dsat = color_.hsvSaturationF() - seedColor.hsvSaturationF();
   float d = std::sqrt(dhue*dhue+dsat*dsat);
-  //std::cout << d << std::endl;
   if (d<0.1) {
-      //std::cout << "ref " << d << std::endl;
       return true;
   }
   return false;

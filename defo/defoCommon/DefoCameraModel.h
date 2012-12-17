@@ -8,9 +8,13 @@
 
 #include <map>
 
-// TODO USE_FAKEIO
+#ifdef USE_FAKEIO
+#include "devices/Canon/EOS550DFake.h"
+typedef EOS550DFake EOS550D_t;
+#else
 #include "devices/Canon/EOS550D.h"
 typedef EOS550D EOS550D_t;
+#endif
 
 #include <QImage>
 #include "DefoState.h"
