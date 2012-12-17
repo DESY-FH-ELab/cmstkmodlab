@@ -57,16 +57,9 @@ HEADERS += DefoMainWindow.h \
            DefoScriptableCamera.h \
            DefoScriptableJulabo.h \
            DefoScriptableKeithley.h \
-           ../DefoSchedule.h \
-           ../DefoSpline.h \
-           ../DefoRecoSurface.h \
-           ../DefoSurface.h \
-	   ../DefoSurfacePlot.h \
-	   ../DefoArea.h \
-	   ../DefoHistogramView.h \
-    ../TestWindow.h \
-    ../DefoTemperatureHistoryModel.h \
-    ../DefoTemperatureHistoryWidget.h
+           ../TestWindow.h \
+           ../DefoTemperatureHistoryModel.h \
+           ../DefoTemperatureHistoryWidget.h
     
 SOURCES += defoDAQ.cc \
            DefoMainWindow.cc \
@@ -84,12 +77,6 @@ SOURCES += defoDAQ.cc \
            DefoScriptableCamera.cc \
            DefoScriptableJulabo.cc \
            DefoScriptableKeithley.cc \
-           ../DefoSchedule.cc \
-           ../DefoSpline.cc \
-           ../DefoRecoSurface.cc \
-           ../DefoSurface.cc \
-	   ../DefoSurfacePlot.cc \
-	   ../DefoHistogramView.cc \
-    ../TestWindow.cc \
-    ../DefoTemperatureHistoryModel.cc \
-    ../DefoTemperatureHistoryWidget.cc
+           ../TestWindow.cc \
+           ../DefoTemperatureHistoryModel.cc \
+           ../DefoTemperatureHistoryWidget.cc

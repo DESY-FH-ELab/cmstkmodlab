@@ -46,7 +46,6 @@ INCLUDEPATH += @basepath@/defo/defoCommon
 HEADERS += DefoRecoMainWindow.h \
            DefoRecoMeasurement.h \
            DefoRecoMeasurementListModel.h \
-           ../DefoSpline.h \
            DefoMeasurementListTreeWidget.h \
            DefoMeasurementInfoListTreeWidget.h \
            DefoRecoPointRecognitionWidget.h \
@@ -56,13 +55,17 @@ HEADERS += DefoRecoMainWindow.h \
            DefoReconstructionWidget.h \
            DefoRecoColorHistoWidget.h \
            DefoGeometryModel.h \
-           DefoGeometryWidget.h
+           DefoGeometryWidget.h \
+           DefoAnalysisWidget.h \
+           ../DefoSpline.h \
+           ../DefoSurface.h \
+           ../DefoRecoSurface.h \
+           ../DefoSurfacePlot.h
 
 SOURCES += defoReco.cc \
            DefoRecoMainWindow.cc \
            DefoRecoMeasurement.cc \
            DefoRecoMeasurementListModel.cc \
-           ../DefoSpline.cc \
            DefoMeasurementListTreeWidget.cc \
            DefoMeasurementInfoListTreeWidget.cc \
            DefoRecoPointRecognitionWidget.cc \
@@ -72,5 +75,10 @@ SOURCES += defoReco.cc \
            DefoReconstructionWidget.cc \
            DefoRecoColorHistoWidget.cc \
            DefoGeometryModel.cc \
-           DefoGeometryWidget.cc
+           DefoGeometryWidget.cc \
+           DefoAnalysisWidget.cc \
+           ../DefoSpline.cc \
+           ../DefoSurface.cc \
+           ../DefoRecoSurface.cc \
+           ../DefoSurfacePlot.cc
 

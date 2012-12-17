@@ -11,6 +11,7 @@
 #include "DefoMeasurementListComboBox.h"
 #include "DefoPointIndexerListComboBox.h"
 #include "DefoRecoColorHistoWidget.h"
+#include "DefoAnalysisWidget.h"
 
 DefoRecoMainWindow::DefoRecoMainWindow(QWidget *parent) :
     QMainWindow(parent)
@@ -255,6 +256,11 @@ DefoRecoMainWindow::DefoRecoMainWindow(QWidget *parent) :
                                                                                         measurementPairSelectionModel_,
                                                                                         analysisWidget);
   vbox->addWidget(analysisSelect);
+
+  DefoAnalysisWidget *analysisDisplay = new DefoAnalysisWidget(measurementPairListModel_,
+                                                               measurementPairSelectionModel_,
+                                                               analysisWidget);
+  vbox->addWidget(analysisDisplay);
 
   tabWidget_->addTab(analysisWidget, "Analysis");
 
