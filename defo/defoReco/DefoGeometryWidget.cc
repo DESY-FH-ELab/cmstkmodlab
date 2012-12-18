@@ -83,7 +83,7 @@ DefoGeometryWidget::DefoGeometryWidget(
 
 void DefoGeometryWidget::prepareSketch() {
 
-  QString filename = CMSTkModLabBasePath;
+  QString filename(Defo::CMSTkModLabBasePath.c_str());
   QPixmap pix(filename + "/share/ODMSketch.svg");
   sketch_->load(filename + "/share/ODMSketch.svg");
 }
