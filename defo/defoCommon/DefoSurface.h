@@ -1,10 +1,8 @@
-
 #ifndef _DEFOSURFACE_H
 #define _DEFOSURFACE_H
 
 #include "DefoSpline.h"
 #include "DefoPoint.h"
-
 
 ///
 /// a container for surfae reco results
@@ -29,7 +27,6 @@ class DefoSurface {
   
   bool isSplineField_;
   bool isPoints_;
-
 };
 
 #endif

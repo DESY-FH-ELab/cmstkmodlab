@@ -11,10 +11,7 @@
 DefoSurface::DefoSurface() {
 
   isSplineField_ = false;
-
 }
-
-
 
 ///
 ///

@@ -1,3 +1,4 @@
+#include "DefoConfig.h"
 
 #include "DefoSpline.h"
 
@@ -7,13 +8,11 @@
 ///
 DefoSplineSetBase::DefoSplineSetBase( DefoPoint::Axis axis ) {
 
-  DefoConfigReader cfgReader( "defo.cfg" );
+  DefoConfigReader cfgReader( std::string(CMSTkModLabBasePath) + "/defo/defo.cfg" );
   debugLevel_ = cfgReader.getValue<unsigned int>( "DEBUG_LEVEL" );
   axis_ = axis;
 
 }
-
-
 
 ///
 /// add offset to all splines in a set
