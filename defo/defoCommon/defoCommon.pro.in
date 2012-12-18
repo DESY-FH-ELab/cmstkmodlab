@@ -68,7 +68,8 @@ HEADERS += DefoConfig.h \
            DefoPointIndexer.h \
            DefoPropagationPointIndexer.h
 
-SOURCES += DefoConfigReader.cc \
+SOURCES += DefoConfig.cc \
+           DefoConfigReader.cc \
            DefoExifReader.cc \
            DefoKeithleyModel.cc \
            DefoJulaboModel.cc \

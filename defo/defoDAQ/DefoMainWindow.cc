@@ -119,7 +119,7 @@ DefoMainWindow::DefoMainWindow(QWidget *parent) :
   }
 
   // read default settings
-  DefoConfigReader cfgReader( std::string(CMSTkModLabBasePath) + "/defo/defo.cfg" );
+  DefoConfigReader cfgReader( std::string(Defo::CMSTkModLabBasePath) + "/defo/defo.cfg" );
   pointModel_->setThresholdValue(
         DefoPointRecognitionModel::THRESHOLD_1
         , cfgReader.getValue<int>( "STEP1_THRESHOLD" )

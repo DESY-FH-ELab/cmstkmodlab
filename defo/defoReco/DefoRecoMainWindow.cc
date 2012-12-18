@@ -116,7 +116,7 @@ DefoRecoMainWindow::DefoRecoMainWindow(QWidget *parent) :
   tabWidget_->addTab(roiWidget, "ROI");
 
   // read default settings
-  DefoConfigReader cfgReader( std::string(CMSTkModLabBasePath) + "/defo/defo.cfg" );
+  DefoConfigReader cfgReader( std::string(Defo::CMSTkModLabBasePath) + "/defo/defo.cfg" );
 
   layout = new QHBoxLayout();
   QWidget * pointsWidget = new QWidget(tabWidget_);

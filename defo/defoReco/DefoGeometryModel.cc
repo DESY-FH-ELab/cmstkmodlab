@@ -1,9 +1,11 @@
+#include <string>
 #include <iostream>
 #include <fstream>
 
 #include <QFile>
 #include <QXmlStreamWriter>
 
+#include "DefoConfig.h"
 #include "DefoGeometryModel.h"
 #include "DefoConfigReader.h"
 
@@ -12,7 +14,7 @@ DefoGeometryModel::DefoGeometryModel(
   ) :
     QObject(parent)
 {
-  DefoConfigReader cfgReader( "../defo.cfg" );
+  DefoConfigReader cfgReader( std::string(Defo::CMSTkModLabBasePath) + "/defo/defo.cfg" );
 
   angle1_ = cfgReader.getValue<double>( "ANGLE1" );
   angle2_ = cfgReader.getValue<double>( "ANGLE2" );

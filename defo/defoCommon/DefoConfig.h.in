@@ -1,6 +1,10 @@
 #ifndef DEFOCONFIG_H
 #define DEFOCONFIG_H
 
-#define CMSTkModLabBasePath "@basepath@"
+#include <string>
+
+namespace Defo {
+  extern const std::string CMSTkModLabBasePath;
+}
 
 #endif // DEFOCONFIG_H

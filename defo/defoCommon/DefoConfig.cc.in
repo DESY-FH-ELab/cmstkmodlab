@@ -1,0 +1,3 @@
+#include "DefoConfig.h"
+
+const std::string Defo::CMSTkModLabBasePath("@basepath@");
