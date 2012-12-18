@@ -44,4 +44,14 @@ void DefoMeasurementInfoListTreeWidget::setSelection(
   item->setText(0, "focal length");
   item->setText(1, QString("%1 mm").arg(measurement->getFocalLength()));
   addTopLevelItem(item);
+
+  QImage image = measurement->getImage();
+  item = new QTreeWidgetItem(this);
+  item->setText(0, "width");
+  item->setText(1, QString("%1 pixel").arg(image.width()));
+  addTopLevelItem(item);
+  item = new QTreeWidgetItem(this);
+  item->setText(0, "height");
+  item->setText(1, QString("%1 pixel").arg(image.height()));
+  addTopLevelItem(item);
 }
