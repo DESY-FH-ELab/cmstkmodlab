@@ -57,8 +57,6 @@ HEADERS += DefoRecoMainWindow.h \
            DefoGeometryModel.h \
            DefoGeometryWidget.h \
            DefoAnalysisWidget.h \
-           ../DefoSpline.h \
-           ../DefoSurface.h \
            ../DefoRecoSurface.h \
            ../DefoSurfacePlot.h
 
@@ -77,8 +75,6 @@ SOURCES += defoReco.cc \
            DefoGeometryModel.cc \
            DefoGeometryWidget.cc \
            DefoAnalysisWidget.cc \
-           ../DefoSpline.cc \
-           ../DefoSurface.cc \
            ../DefoRecoSurface.cc \
            ../DefoSurfacePlot.cc
 

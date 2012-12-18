@@ -35,7 +35,8 @@ DEPENDPATH += .
 INCLUDEPATH += .
 INCLUDEPATH += @basepath@
 
-HEADERS += DefoConfigReader.h \
+HEADERS += DefoConfig.h \
+           DefoConfigReader.h \
            DefoExifReader.h \
            DefoState.h \
            DefoKeithleyModel.h \
@@ -54,6 +55,8 @@ HEADERS += DefoConfigReader.h \
            DefoPoint.h \
            DefoPointBin.h \
            DefoSquare.h \
+           DefoSpline.h \
+           DefoSurface.h \
            DefoPointFinder.h \
            DefoPointSaver.h \
            DefoROIModel.h \
@@ -83,6 +86,8 @@ SOURCES += DefoConfigReader.cc \
            DefoPoint.cc \
            DefoPointBin.cc \
            DefoSquare.cc \
+           DefoSpline.cc \
+           DefoSurface.cc \
            DefoPointFinder.cc \
            DefoPointSaver.cc \
            DefoROIModel.cc \
