@@ -1,5 +1,8 @@
+#include <string>
+
 #include <QGroupBox>
 
+#include "DefoConfig.h"
 #include "DefoMainWindow.h"
 
 DefoMainWindow::DefoMainWindow(QWidget *parent) :
@@ -116,7 +119,7 @@ DefoMainWindow::DefoMainWindow(QWidget *parent) :
   }
 
   // read default settings
-  DefoConfigReader cfgReader( "../defo.cfg" );
+  DefoConfigReader cfgReader( std::string(CMSTkModLabBasePath) + "/defo/defo.cfg" );
   pointModel_->setThresholdValue(
         DefoPointRecognitionModel::THRESHOLD_1
         , cfgReader.getValue<int>( "STEP1_THRESHOLD" )
