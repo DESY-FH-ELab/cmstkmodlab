@@ -58,8 +58,8 @@ HEADERS += DefoMainWindow.h \
            DefoScriptableJulabo.h \
            DefoScriptableKeithley.h \
            ../TestWindow.h \
-           ../DefoTemperatureHistoryModel.h \
-           ../DefoTemperatureHistoryWidget.h
+           DefoTemperatureHistoryModel.h \
+           DefoTemperatureHistoryWidget.h
     
 SOURCES += defoDAQ.cc \
            DefoMainWindow.cc \
@@ -78,5 +78,5 @@ SOURCES += defoDAQ.cc \
            DefoScriptableJulabo.cc \
            DefoScriptableKeithley.cc \
            ../TestWindow.cc \
-           ../DefoTemperatureHistoryModel.cc \
-           ../DefoTemperatureHistoryWidget.cc
+           DefoTemperatureHistoryModel.cc \
+           DefoTemperatureHistoryWidget.cc
