@@ -661,3 +661,7 @@ DefoMeasurementPair::DefoMeasurementPair(DefoMeasurement* reference,
   std::pair<DefoMeasurement*,DefoMeasurement*>(reference, deformed) {
 
 }
+
+void DefoMeasurementPair::setSurface(DefoSurface& surface) {
+  surface_ = surface;
+}

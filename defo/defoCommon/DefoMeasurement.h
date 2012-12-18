@@ -9,7 +9,7 @@
 #include <QColor>
 #include <QDir>
 
-//#include "DefoSurface.h"
+#include "DefoSurface.h"
 #include "DefoSquare.h"
 #include "DefoPoint.h"
 #include "DefoState.h"
@@ -113,9 +113,15 @@ protected:
 
 class DefoMeasurementPair : public std::pair<DefoMeasurement*,DefoMeasurement*> {
 
-  public:
+public:
   DefoMeasurementPair(DefoMeasurement* reference,
                       DefoMeasurement* deformed);
+
+  void setSurface(DefoSurface& surface);
+  const DefoSurface& getSurface() const { return surface_; }
+
+protected:
+  DefoSurface surface_;
 };
 
 #endif // _DEFOMEASUREMENT_H
