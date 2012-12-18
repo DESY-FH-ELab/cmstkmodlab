@@ -28,10 +28,10 @@ public:
   typedef std::vector<std::string> OptionList;
   /// Copy enum values from VEOS500D to not expose them directly.
   enum Option {
-      APERTURE      = EOS550D::APERTURE
-    , SHUTTER_SPEED = EOS550D::SHUTTER_SPEED
-    , ISO           = EOS550D::ISO
-    , WHITE_BALANCE = EOS550D::WHITE_BALANCE
+      APERTURE      = VEOS550D::APERTURE
+    , SHUTTER_SPEED = VEOS550D::SHUTTER_SPEED
+    , ISO           = VEOS550D::ISO
+    , WHITE_BALANCE = VEOS550D::WHITE_BALANCE
   };
 
   explicit DefoCameraModel(QObject *parent = 0);

@@ -67,19 +67,19 @@ void DefoCameraModel::initialize() {
 
     setOptionSelection(
             APERTURE
-          , controller_->readOption(EOS550D::APERTURE)
+          , controller_->readOption(VEOS550D::APERTURE)
     );
     setOptionSelection(
             ISO
-          , controller_->readOption(EOS550D::ISO)
+          , controller_->readOption(VEOS550D::ISO)
     );
     setOptionSelection(
             SHUTTER_SPEED
-          , controller_->readOption(EOS550D::SHUTTER_SPEED)
+          , controller_->readOption(VEOS550D::SHUTTER_SPEED)
     );
     setOptionSelection(
             WHITE_BALANCE
-          , controller_->readOption(EOS550D::WHITE_BALANCE)
+          , controller_->readOption(VEOS550D::WHITE_BALANCE)
     );
 
     setDeviceState(READY);
@@ -97,7 +97,7 @@ std::vector<std::string> DefoCameraModel::getOptions(
     const Option &option
 ) const {
 
-  return controller_->readOptions(static_cast<EOS550D::Option>(option));
+  return controller_->readOptions(static_cast<VEOS550D::Option>(option));
 
 }
 
@@ -112,7 +112,7 @@ void DefoCameraModel::setOptionSelection(
 
 //    int oldValue = parameters_[option];
     bool success = controller_->writeOption(
-            static_cast<EOS550D::Option>(option)
+            static_cast<VEOS550D::Option>(option)
           , value
     );
 //    std::cout << success << std::endl;
@@ -165,7 +165,7 @@ const QImage & DefoCameraModel::getLastLiveViewPicture() const {
 }
 
 int DefoCameraModel::getOptionValue(const Option &option) const {
-  return controller_->readOption(static_cast<EOS550D::Option>(option));
+  return controller_->readOption(static_cast<VEOS550D::Option>(option));
 }
 
 const QString & DefoCameraModel::getLastPictureLocation() const {
