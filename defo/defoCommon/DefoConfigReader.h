@@ -15,7 +15,7 @@ class DefoConfigReader : public QObject {
   Q_OBJECT
 
  public:
-  DefoConfigReader( const char* );
+  DefoConfigReader( const std::string & filename );
   ~DefoConfigReader();
 
   ///

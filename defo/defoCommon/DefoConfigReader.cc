@@ -4,21 +4,17 @@
 ///
 ///
 ///
-DefoConfigReader::DefoConfigReader( const char* inputFileName ) {
+DefoConfigReader::DefoConfigReader( const std::string & inputFileName ) {
 
   inputFileName_ = std::string( inputFileName );
-
 }
-
-
 
 ///
 ///
 ///
 DefoConfigReader::~DefoConfigReader() {
+
 }
-
-
 
 ///
 ///
@@ -29,8 +25,7 @@ void DefoConfigReader::issueKeyError( std::string const& key ) const {
 
   QMessageBox::critical( 0, tr("[DefoConfigReader::issueKeyError]"),
 	 QString("Failed to read value for key: \"%1\"\n from file: \"%2\".\n Fix immediately, otherwise you will get unexpected results!").arg( QString( key.c_str() ) ).arg( QString( inputFileName_.c_str() ) ),
-	 QMessageBox::Ok );
-  
+	 QMessageBox::Ok ); 
 }
 
 
