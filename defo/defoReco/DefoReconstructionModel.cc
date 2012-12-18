@@ -3,6 +3,7 @@
 
 #include "DefoReconstructionModel.h"
 #include "DefoPointSaver.h"
+#include "DefoRecoSurface.h"
 
 DefoReconstructionModel::DefoReconstructionModel(
     DefoMeasurementListModel * listModel
@@ -150,8 +151,18 @@ void DefoReconstructionModel::reconstruct() {
   DefoPointSaver defoSaver("./defoPoints.txt");
   defoSaver.writePoints(defoCollection_);
 
+  DefoRecoSurface reco;
+  DefoSurface surface = reco.reconstruct(defoCollection_, refCollection_);
+
+
   if (measurementPair==0) {
-    pairListModel_->addMeasurementPair(refMeasurement_, defoMeasurement_);
+    measurementPair = new DefoMeasurementPair(refMeasurement_, defoMeasurement_);
+  }
+
+  measurementPair->setSurface(surface);
+
+  if (measurementPair==0) {
+    pairListModel_->addMeasurementPair(measurementPair);
   }
 }
 
