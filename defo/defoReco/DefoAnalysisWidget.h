@@ -25,7 +25,7 @@ protected:
   DefoSurfacePlot* plot3D_;
 
 protected slots:
-
+  void selectionChanged(DefoMeasurementPair* selection);
 };
 
 #endif // DEFOANALYSISWIDGET_H
