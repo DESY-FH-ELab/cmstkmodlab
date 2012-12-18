@@ -1,6 +1,9 @@
+#include <string>
+
 #include <QGroupBox>
 #include <QFileDialog>
 
+#include "DefoConfig.h"
 #include "DefoImageWidget.h"
 #include "DefoRecoImageWidget.h"
 
@@ -113,8 +116,7 @@ DefoRecoMainWindow::DefoRecoMainWindow(QWidget *parent) :
   tabWidget_->addTab(roiWidget, "ROI");
 
   // read default settings
-  //DefoConfigReader cfgReader( "/Users/mussgill/Documents/Physik/CMS/Labor/cmstkmodlab/trunk/defo/defo.cfg" );
-  DefoConfigReader cfgReader( "../defo.cfg" );
+  DefoConfigReader cfgReader( std::string(CMSTkModLabBasePath) + "/defo/defo.cfg" );
 
   layout = new QHBoxLayout();
   QWidget * pointsWidget = new QWidget(tabWidget_);
