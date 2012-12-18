@@ -1,6 +1,0 @@
-#ifndef DEFOCONFIG_H
-#define DEFOCONFIG_H
-
-const char * CMSTkModLabBasePath = "@basepath@";
-
-#endif // DEFOCONFIG_H
