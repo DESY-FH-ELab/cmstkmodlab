@@ -55,6 +55,12 @@ class DefoLiveViewImageWidget : public DefoImageBaseWidget
 {
     Q_OBJECT
 public:
+
+  enum MarkerMode { None = 0,
+                    Boxed = 1,
+                    Axis = 2,
+                    MarkerModeMax = 3 };
+
   explicit DefoLiveViewImageWidget(
       DefoCameraModel* model
     , QWidget *parent = 0
@@ -66,6 +72,9 @@ protected:
 
   /// Subroutine for paintEvent that prepares the image to be drawn.
   QImage prepareImage(const QImage& image) const;
+
+  MarkerMode markerMode_;
+  virtual void keyReleaseEvent(QKeyEvent * event);
 
 public slots:
   virtual void newLiveViewImage(QString location);

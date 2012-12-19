@@ -1,3 +1,5 @@
+#include <QKeyEvent>
+
 #include "DefoImageWidget.h"
 
 ///
@@ -91,6 +93,7 @@ DefoLiveViewImageWidget::DefoLiveViewImageWidget(
 ) :
     DefoImageBaseWidget(parent)
   , cameraModel_(model)
+  , markerMode_(Boxed)
 {
 
   connect(
@@ -105,6 +108,22 @@ DefoLiveViewImageWidget::DefoLiveViewImageWidget(
 
 void DefoLiveViewImageWidget::newLiveViewImage(QString /* location */) {
   update();
+}
+
+void DefoLiveViewImageWidget::keyReleaseEvent(QKeyEvent * event) {
+
+  switch (event->key()) {
+    case Qt::Key_Space:
+      {
+        int mm = static_cast<int>(markerMode_);
+        markerMode_ = static_cast<MarkerMode>(mm+1);
+        if (markerMode_==MarkerModeMax) markerMode_ = None;
+        event->accept();
+      }
+      break;
+    default:
+      break;
+  }
 }
 
 void DefoLiveViewImageWidget::paintEvent(QPaintEvent *event) {
@@ -129,6 +148,60 @@ void DefoLiveViewImageWidget::paintEvent(QPaintEvent *event) {
 
   // Draw image
   painter.drawImage( QPoint(0,0), prepared );
+
+  int width = prepared.width();
+  int height = prepared.height();
+
+  switch (markerMode_) {
+  case Axis:
+    {
+      QPen pen1(Qt::NoBrush, 1);
+      pen1.setColor(QColor(255, 255, 255, 255));
+      pen1.setWidth(3);
+      QPen pen2(Qt::NoBrush, 1);
+      pen2.setColor(QColor(255, 0, 0, 255));
+      pen2.setWidth(1);
+
+      painter.setPen(pen1);
+      painter.drawLine(0, height/2, 0.90*(width/2), height/2);
+      painter.drawLine(1.10*(width/2), height/2, width, height/2);
+      painter.drawLine(width/2, 0, width/2, 0.90*(height/2));
+      painter.drawLine(width/2, 1.10*(height/2), width/2, height);
+      painter.setPen(pen2);
+      painter.drawLine(0, height/2, 0.90*(width/2), height/2);
+      painter.drawLine(1.10*(width/2), height/2, width, height/2);
+      painter.drawLine(width/2, 0, width/2, 0.90*(height/2));
+      painter.drawLine(width/2, 1.10*(height/2), width/2, height);
+    }
+  case Boxed:
+    {
+      QPen pen1(Qt::NoBrush, 1);
+      pen1.setColor(QColor(255, 255, 255, 255));
+      pen1.setWidth(3);
+      QPen pen2(Qt::NoBrush, 1);
+      pen2.setColor(QColor(255, 0, 0, 255));
+      pen2.setWidth(1);
+
+      painter.setPen(pen1);
+      painter.drawRect(0.10*(width/2), 0.10*(height/2),1.80*(width/2), 1.80*(height/2));
+      painter.drawRect(0.50*(width/2), 0.50*(height/2),1.00*(width/2), 1.00*(height/2));
+      painter.drawRect(0.90*(width/2), 0.90*(height/2),0.20*(width/2), 0.20*(height/2));
+      painter.drawLine(0, height/2, 0.90*(width/2), height/2);
+      painter.drawLine(1.10*(width/2), height/2, width, height/2);
+      painter.drawLine(width/2, 0, width/2, 0.90*(height/2));
+      painter.drawLine(width/2, 1.10*(height/2), width/2, height);
+      painter.setPen(pen2);
+      painter.drawRect(0.10*(width/2), 0.10*(height/2),1.80*(width/2), 1.80*(height/2));
+      painter.drawRect(0.50*(width/2), 0.50*(height/2),1.00*(width/2), 1.00*(height/2));
+      painter.drawRect(0.90*(width/2), 0.90*(height/2),0.20*(width/2), 0.20*(height/2));
+      painter.drawLine(0, height/2, 0.90*(width/2), height/2);
+      painter.drawLine(1.10*(width/2), height/2, width, height/2);
+      painter.drawLine(width/2, 0, width/2, 0.90*(height/2));
+      painter.drawLine(width/2, 1.10*(height/2), width/2, height);
+    }
+  default:
+    break;
+  }
 
   // Restore own state.
   painter.restore();
