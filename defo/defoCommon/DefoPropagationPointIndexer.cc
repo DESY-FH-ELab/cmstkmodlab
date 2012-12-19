@@ -91,15 +91,16 @@ void DefoPropagationPointIndexer::determineGrid(DefoPointCollection* points, con
     for (DefoPointCollection::iterator it = points->begin();
          it != points->end();
          ++it) {
-        if (it->getX()==seed->getX() && it->getY()==seed->getY()) continue;
+      td = seed->getDistanceXY((*it), tdx, tdy);
 
-      td = seed->getDistanceXY(*it, tdx, tdy);
+      if (td<20.0) continue;
       if (std::fabs(tdx)<20.0 || std::fabs(tdy)<20.0) continue;
-      if (std::fabs(tdx)<std::fabs(mindx) && std::fabs(tdy)<std::fabs(mindy)) {
+      if ((std::fabs(tdx)<std::fabs(mindx) || std::fabs(tdy)<std::fabs(mindy)) &&
+           td < mind) {
         mindx = tdx;
         mindy = tdy;
         mind = td;
-      }
+       }
     }
 
     dx = std::fabs(mindx);
@@ -116,9 +117,8 @@ DefoPoint * DefoPropagationPointIndexer::findNeighbour(DefoPointCollection* poin
     for (DefoPointCollection::iterator it = points->begin();
          it != points->end();
          ++it) {
-        if (it->getX()==seed->getX() && it->getY()==seed->getY()) continue;
-
         d = seed->getDistanceXY(*it, dx, dy);
+        if (d<20.0) continue;
 
         if (axis==X) {
             if (std::fabs(dy)>window) continue;
