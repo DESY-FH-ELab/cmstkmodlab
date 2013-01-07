@@ -95,6 +95,10 @@ DefoMainWindow::DefoMainWindow(QWidget *parent) :
 
   vlayout->addWidget(groupbox);
 
+  QPushButton *newMeasurementButton = new QPushButton("&New Measurement", widget);
+  connect(newMeasurementButton, SIGNAL(clicked()), this, SLOT(prepareNewMeasurement()));
+  vlayout->addWidget(newMeasurementButton);
+
   layout->addWidget(widget);
 
   tabWidget_->addTab(powerAndControlWidget, "Power and Control");
@@ -106,10 +110,10 @@ DefoMainWindow::DefoMainWindow(QWidget *parent) :
 
   layout->addWidget(new DefoCameraWidget(
 					 cameraModel_
-				       , conradModel_
-				       , listModel_
-				       , selectionModel_
-				       , this
+                   , conradModel_
+                   , listModel_
+                   , selectionModel_
+                   , this
 					 ));
 
   if (cameraModel_->getDeviceState() == READY) {
@@ -163,7 +167,7 @@ void DefoMainWindow::prepareNewMeasurement() {
 
   // Set up current directory for saving images
   QDateTime dt = QDateTime::currentDateTimeUtc();
-  QString measurementDirPath("/home/tkmodlab/Desktop/measurements/%1-%2/");
+  QString measurementDirPath(QDir::homePath() + "/Desktop/measurements/%1-%2/");
   measurementDirPath = measurementDirPath.arg(dt.toString("yyyyMMdd"));
   
   int i = 1;
