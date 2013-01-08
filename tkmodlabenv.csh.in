@@ -1,5 +1,7 @@
 setenv TKMODLABBASE "@basepath@"
 setenv PATH "@basepath@/tools/bin:$PATH"
 setenv PATH "@basepath@/thermal:$PATH"
+setenv PATH "@basepath@/defo/defoDAQ:$PATH"
+setenv PATH "@basepath@/defo/defoReco:$PATH"
 setenv LD_LIBRARY_PATH "@basepath@/devices/lib:$LD_LIBRARY_PATH"
 setenv LD_LIBRARY_PATH "@basepath@/defo/defoCommon:$LD_LIBRARY_PATH"
