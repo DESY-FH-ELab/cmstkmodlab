@@ -93,8 +93,12 @@ DefoRecoMainWindow::DefoRecoMainWindow(QWidget *parent) :
 										 measurementInfoWidget);
   vbox->addWidget(treeWidget);
 
+  DefoMeasurementCommentTextView * commentView = new DefoMeasurementCommentTextView(selectionModel_,
+                                                                                    measurementInfoWidget);
+  vbox->addWidget(commentView);
+
   DefoMeasurementInfoListTreeWidget * infoTreeWidget = new DefoMeasurementInfoListTreeWidget(selectionModel_,
-											     measurementInfoWidget);
+                                                                                             measurementInfoWidget);
   vbox->addWidget(infoTreeWidget);
 
   DefoRecoRawImageWidget *rawImage = new DefoRecoRawImageWidget(selectionModel_, measurementInfoWidget);

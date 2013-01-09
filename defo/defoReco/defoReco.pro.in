@@ -48,6 +48,7 @@ HEADERS += DefoRecoMainWindow.h \
            DefoRecoMeasurementListModel.h \
            DefoMeasurementListTreeWidget.h \
            DefoMeasurementInfoListTreeWidget.h \
+           DefoMeasurementCommentTextView.h \
            DefoRecoPointRecognitionWidget.h \
            DefoRecoImageWidget.h \
            DefoRecoImageZoomModel.h \
@@ -66,6 +67,7 @@ SOURCES += defoReco.cc \
            DefoRecoMeasurementListModel.cc \
            DefoMeasurementListTreeWidget.cc \
            DefoMeasurementInfoListTreeWidget.cc \
+           DefoMeasurementCommentTextView.cc \
            DefoRecoPointRecognitionWidget.cc \
            DefoRecoImageWidget.cc \
            DefoRecoImageZoomModel.cc \

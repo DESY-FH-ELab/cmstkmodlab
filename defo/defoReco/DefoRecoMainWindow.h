@@ -18,6 +18,7 @@
 
 #include "DefoMeasurementListTreeWidget.h"
 #include "DefoMeasurementInfoListTreeWidget.h"
+#include "DefoMeasurementCommentTextView.h"
 #include "DefoImageWidget.h"
 
 #include "DefoPointRecognitionModel.h"
