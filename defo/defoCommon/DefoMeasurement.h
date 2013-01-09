@@ -31,6 +31,22 @@ public:
   QImage getImage() const;
 
   float getFocalLength() const { return exifFocalLength_; }
+  float getExposureTime() const { return exifExposureTime_; }
+  const QString& getExposureTimeString() const { return exifExposureTimeString_; }
+  float getAperture() const { return exifAperture_; }
+  int getISO() const { return exifISO_; }
+
+  State getConradState() const { return conradState_; }
+  State getPanelState(unsigned int panel) const { return panelStates_[panel]; }
+  State getLEDState() const { return ledState_; }
+
+  State getJulaboState() const { return julaboState_; }
+  bool getCirculatorState() const { return circulatorState_; }
+  float getBathTemperature() const { return bathTemperature_; }
+
+  State getKeithleyState() const { return keithleyState_; }
+  State getTemperatureSensorState(unsigned int sensor) const { return temperatureSensorStates_[sensor]; }
+  float getTemperature(unsigned int sensor) const { return temperatures_[sensor]; }
 
   const QString& getComment() const { return comment_; }
 
