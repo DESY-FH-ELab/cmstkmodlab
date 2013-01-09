@@ -20,9 +20,11 @@ public:
   );
 public slots:
   void takePicture();
+  void comment(const QString& text);
 
 signals:
   void acquirePicture(bool);
+  void setComment(const QString&);
 
 protected:
   DefoScriptModel* scriptModel_;

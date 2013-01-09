@@ -54,6 +54,7 @@ public slots:
   virtual void setLiveViewEnabled( bool enabled );
   void acquirePicture(bool keep);
   void acquireLiveViewPicture();
+  void setComment(const QString&);
 
 protected:
   virtual void initialize();

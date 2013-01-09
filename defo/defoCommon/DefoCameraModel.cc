@@ -160,6 +160,10 @@ void DefoCameraModel::acquireLiveViewPicture() {
     emit newLiveViewImage(location_);
 }
 
+void DefoCameraModel::setComment(const QString& comment) {
+    comment_->setPlainText(comment);
+}
+
 const QImage & DefoCameraModel::getLastPicture() const {
   return image_;
 }

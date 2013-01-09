@@ -15,6 +15,8 @@ DefoScriptableCamera::DefoScriptableCamera(
 {
   connect(this, SIGNAL(acquirePicture(bool)),
           cameraModel_, SLOT(acquirePicture(bool)));
+  connect(this, SIGNAL(comment(QString)),
+          cameraModel_, SLOT(setComment(QString)));
 }
 
 void DefoScriptableCamera::takePicture() {
@@ -24,4 +26,10 @@ void DefoScriptableCamera::takePicture() {
 
   emit(acquirePicture(true));
   sleep(2);
+}
+
+void DefoScriptableCamera::comment(const QString & text) {
+  QMutexLocker locker(&mutex_);
+
+  emit(setComment(text));
 }
