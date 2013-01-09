@@ -32,6 +32,8 @@ public:
 
   float getFocalLength() const { return exifFocalLength_; }
 
+  const QString& getComment() const { return comment_; }
+
   const DefoPointCollection* findPoints(
       const QRect* searchArea
     , const QPolygonF* roi
