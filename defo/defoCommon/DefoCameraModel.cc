@@ -1,9 +1,14 @@
+#include <QPlainTextDocumentLayout>
+
 #include "DefoCameraModel.h"
 
 DefoCameraModel::DefoCameraModel(QObject *parent) :
     QObject(parent)
   , DefoAbstractDeviceModel()
 {
+  comment_ = new QTextDocument(this);
+  comment_->setDocumentLayout(new QPlainTextDocumentLayout(comment_));
+  comment_->setDefaultFont(QFont("Courier New",10));
 
   int initValue = 0;
   parameters_[APERTURE] = initValue;
@@ -15,7 +20,6 @@ DefoCameraModel::DefoCameraModel(QObject *parent) :
   connect(&liveViewTimer_, SIGNAL(timeout()), this, SLOT(acquireLiveViewPicture()));
  
   setDeviceEnabled(true);
-
 }
 
 

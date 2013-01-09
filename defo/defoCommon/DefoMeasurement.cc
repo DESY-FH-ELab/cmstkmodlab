@@ -382,6 +382,10 @@ void DefoMeasurement::readExifData() {
   exifISO_ = reader.getLongValue("Exif.Photo.ISOSpeedRatings");
 }
 
+void DefoMeasurement::acquireData(const DefoCameraModel* model) {
+  comment_ = model->commentDocument()->toPlainText();
+}
+
 void DefoMeasurement::acquireData(const DefoPointRecognitionModel* model) {
 
   pointRecognitionThresholds_.clear();
@@ -454,6 +458,10 @@ void DefoMeasurement::write(const QDir& path)
 
   stream.writeStartElement("DefoMeasurement");
   stream.writeAttribute("timestamp", timestamp_.toString("yyyyMMddhhmmss"));
+
+  stream.writeStartElement("Comment");
+  stream.writeCharacters(comment_);
+  stream.writeEndElement();
 
   stream.writeStartElement("Thresholds");
   for (uint i=0;i<pointRecognitionThresholds_.size();++i) {
@@ -540,6 +548,8 @@ void DefoMeasurement::read(const QDir&path) {
   QString fileLocation = path.absoluteFilePath("%1.xml");
   fileLocation = fileLocation.arg(timestamp_.toString("yyyyMMddhhmmss"));
 
+  comment_ = "";
+
   QFile file(fileLocation);
   if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
     return;
@@ -556,6 +566,10 @@ void DefoMeasurement::read(const QDir&path) {
       if (dt!=getTimeStamp()) {
         // do something
       }
+    }
+
+    if (stream.isStartElement() && stream.name()=="Comment") {
+      comment_ = stream.readElementText();
     }
 
     if (stream.isStartElement() && stream.name()=="Thresholds") {

@@ -10,6 +10,7 @@
 #include <QLabel>
 #include <QStackedWidget>
 #include <QFrame>
+#include <QPlainTextEdit>
 
 #include "DefoState.h"
 #include "DefoCameraModel.h"
@@ -22,6 +23,12 @@
 #include "DefoMeasurementSelectionModel.h"
 #include "DefoMeasurementListComboBox.h"
 #include "DefoImageWidget.h"
+
+class DefoImageCommentEdit : public QPlainTextEdit {
+public:
+    DefoImageCommentEdit(QWidget* parent) : QPlainTextEdit(parent) { }
+    virtual QSize sizeHint() const { return QSize(500, 50); }
+};
 
 class DefoCameraWidget : public QWidget
 {
@@ -49,6 +56,7 @@ protected:
   QPushButton* pictureButton_;
   QCheckBox* liveviewCheckBox_;
   QWidget* buttons_;
+  DefoImageCommentEdit* commentEditor_;
   QStackedWidget* imageStack_;
   QFrame* buttonsNRawImage_;
   QWidget* buttonsCamera_;

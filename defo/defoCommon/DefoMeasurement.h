@@ -14,6 +14,7 @@
 #include "DefoPoint.h"
 #include "DefoState.h"
 
+#include "DefoCameraModel.h"
 #include "DefoPointRecognitionModel.h"
 #include "DefoConradModel.h"
 #include "DefoJulaboModel.h"
@@ -42,6 +43,7 @@ public:
 
   void setImageLocation(const QString& imageLocation);
   void readExifData();
+  void acquireData(const DefoCameraModel* model);
   void acquireData(const DefoPointRecognitionModel* model);
   void acquireData(const DefoConradModel* model);
   void acquireData(const DefoJulaboModel* model);
@@ -84,6 +86,8 @@ protected:
   State keithleyState_;
   std::vector<State> temperatureSensorStates_;
   std::vector<float> temperatures_;
+
+  QString comment_;
 
   /*
     Analysis depentent information, does not belong in 'measurement' class.

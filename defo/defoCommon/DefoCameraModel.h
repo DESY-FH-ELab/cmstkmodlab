@@ -5,6 +5,7 @@
 #include <QImage>
 #include <QFile>
 #include <QTimer>
+#include <QTextDocument>
 
 #include <map>
 
@@ -45,6 +46,8 @@ public:
   const QImage& getLastLiveViewPicture() const;
   // TODO getLastPictureExif()
 
+  QTextDocument* commentDocument() const { return comment_; }
+
 public slots:
   virtual void setDeviceEnabled( bool enabled );
   void setControlsEnabled(bool enabled);
@@ -65,6 +68,8 @@ protected:
   QImage image_;
   QImage liveViewImage_;
   QTimer liveViewTimer_;
+  QTextDocument* comment_;
+
 
 signals:
   void deviceStateChanged(State newState);

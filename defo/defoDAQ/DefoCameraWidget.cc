@@ -111,6 +111,13 @@ DefoCameraWidget::DefoCameraWidget(
   );
   buttonLayout->addWidget(liveviewCheckBox_, 0, 3);
 
+  commentEditor_ = new DefoImageCommentEdit(this);
+  commentEditor_->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);
+  commentEditor_->setDocument(cameraModel_->commentDocument());
+  commentEditor_->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
+  commentEditor_->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
+  layout->addWidget(commentEditor_);
+
   // Image display
   imageStack_ = new QStackedWidget(this);
  
