@@ -210,6 +210,7 @@ void DefoMainWindow::newCameraImage(QString location, bool keep) {
 
     // acquire status information and store in measurement
     measurement->readExifData();
+    measurement->acquireData(cameraModel_);
     measurement->acquireData(pointModel_);
     measurement->acquireData(conradModel_);
     measurement->acquireData(julaboModel_);
