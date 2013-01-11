@@ -1,6 +1,7 @@
 #include <QFile>
 #include <QXmlStreamWriter>
 #include <QXmlStreamReader>
+#include <QProcess>
 
 #include "DefoMeasurementListModel.h"
 
@@ -178,6 +179,37 @@ void DefoMeasurementListModel::write(const QDir& path)
   stream.writeEndElement();
   
   stream.writeEndDocument();
+}
+
+void DefoMeasurementListModel::exportMeasurement(const QDir& path, const QString& filename)
+{
+  QString dirName = filename;
+  dirName.remove(0, dirName.lastIndexOf('/'));
+  dirName.remove(".tar.gz");
+
+  QDir tempDir = QDir::temp();
+  tempDir.mkdir(dirName);
+
+  QStringList ifilelist = path.entryList(QDir::NoDotAndDotDot | QDir::Files);
+  foreach (QString file, ifilelist) {
+      QFile::copy(QString("%1/%2").arg(path.path()).arg(file),
+                  QString("%1/%2").arg(tempDir.path()).arg(file));
+  }
+
+  QStringList args;
+  args << "-cvzf";
+  args << filename;
+  args << "-C";
+  args << QDir::temp().path();
+  args << dirName;
+
+  QProcess tar(this);
+  tar.start("tar", args);
+
+  foreach (QString file, ifilelist) {
+      QFile::remove(QString("%1/%2").arg(tempDir.path()).arg(file));
+  }
+  QDir::temp().rmdir(dirName);
 }
 
 void DefoMeasurementListModel::writePoints(const QDir& path)

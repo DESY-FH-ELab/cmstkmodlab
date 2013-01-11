@@ -36,6 +36,7 @@ public:
   );
 
   void write(const QDir& path);
+  void exportMeasurement(const QDir& path, const QString& filename);
   void writePoints(const QDir& path);
   void clear();
   void read(const QString& filename);

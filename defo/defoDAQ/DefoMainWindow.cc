@@ -1,6 +1,7 @@
 #include <string>
 
 #include <QGroupBox>
+#include <QFileDialog>
 
 #include "DefoConfig.h"
 #include "DefoMainWindow.h"
@@ -95,10 +96,6 @@ DefoMainWindow::DefoMainWindow(QWidget *parent) :
 
   vlayout->addWidget(groupbox);
 
-  QPushButton *newMeasurementButton = new QPushButton("&New Measurement", widget);
-  connect(newMeasurementButton, SIGNAL(clicked()), this, SLOT(prepareNewMeasurement()));
-  vlayout->addWidget(newMeasurementButton);
-
   layout->addWidget(widget);
 
   tabWidget_->addTab(powerAndControlWidget, "Power and Control");
@@ -122,6 +119,27 @@ DefoMainWindow::DefoMainWindow(QWidget *parent) :
     cameraModel_->setOptionSelection(DefoCameraModel::SHUTTER_SPEED, 26);
   }
 
+  vlayout = new QVBoxLayout();
+  widget = new QWidget(measurementWidget);
+  //widget->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);
+  widget->setLayout(vlayout);
+
+  // Camera buttons
+  QWidget* buttons = new QWidget(widget);
+  // buttons->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);
+  vlayout->addWidget(buttons);
+
+  QGridLayout *buttonLayout = new QGridLayout();
+  buttons->setLayout(buttonLayout);
+
+  QPushButton *exportMeasurementButton = new QPushButton("&Export Measurement", buttons);
+  connect(exportMeasurementButton, SIGNAL(clicked()), this, SLOT(exportMeasurement()));
+  buttonLayout->addWidget(exportMeasurementButton, 0, 0);
+
+  QPushButton *newMeasurementButton = new QPushButton("&New Measurement", buttons);
+  connect(newMeasurementButton, SIGNAL(clicked()), this, SLOT(prepareNewMeasurement()));
+  buttonLayout->addWidget(newMeasurementButton, 0, 1);
+
   // read default settings
   DefoConfigReader cfgReader( std::string(Defo::CMSTkModLabBasePath) + "/defo/defo.cfg" );
   pointModel_->setThresholdValue(
@@ -144,8 +162,10 @@ DefoMainWindow::DefoMainWindow(QWidget *parent) :
       new DefoPointRecognitionWidget(listModel_,
                                      selectionModel_,
                                      pointModel_,
-                                     measurementWidget);
-  layout->addWidget(pointWidget);
+                                     widget);
+  vlayout->addWidget(pointWidget);
+
+  layout->addWidget(widget);
 
   tabWidget_->addTab(measurementWidget, "Measurement");
 
@@ -161,6 +181,20 @@ DefoMainWindow::DefoMainWindow(QWidget *parent) :
   tabWidget_->addTab(temperatureWidget, "Temperature");
 
   setCentralWidget(tabWidget_);
+}
+
+void DefoMainWindow::exportMeasurement() {
+
+  QString filename = QFileDialog::getSaveFileName(this
+                                                , "export measurement"
+                                                , "./"
+                                                , "zipped tarball (*.tar.gz)"
+                                                , 0
+                                                , 0);
+  if (filename.isNull()) return;
+  if (!filename.endsWith(".tar.gz")) filename += ".tar.gz";
+
+  listModel_->exportMeasurement(currentDir_.absolutePath(), filename);
 }
 
 void DefoMainWindow::prepareNewMeasurement() {

@@ -39,6 +39,7 @@ public:
   explicit DefoMainWindow(QWidget *parent = 0);
 
 public slots:
+  void exportMeasurement();
   void prepareNewMeasurement();
   void newCameraImage(QString location, bool keep);
 
@@ -57,10 +58,6 @@ protected:
   DefoPointRecognitionModel* pointModel_;
 
   DefoScriptModel* scriptModel_;
-
-protected slots:
-  //void writePoints();
-
 };
 
 #endif // DEFOMAINWINDOW_H
