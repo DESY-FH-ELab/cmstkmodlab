@@ -105,7 +105,7 @@ void DefoScriptWidget::saveAsScriptButtonClicked() {
 						, 0
 						, 0);
   if (filename.isNull()) return;
-  if (!filename.endsWith("dsr")) filename += ".dsr";
+  if (!filename.endsWith(".dsr")) filename += ".dsr";
   scriptModel_->saveScript(filename);
 }
 
