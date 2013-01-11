@@ -51,7 +51,6 @@ protected:
 
   // Widgets
   QCheckBox* enableCheckBox_;
-  QPushButton* loadFileButton_;
   QPushButton* previewButton_;
   QPushButton* pictureButton_;
   QCheckBox* liveviewCheckBox_;
@@ -68,7 +67,6 @@ protected slots:
   void deviceStateChanged(State newState);
   void controlStateChanged(bool);
   void liveViewModeChanged(bool enabled);
-  void openButtonClicked();
   void previewButtonClicked();
   void pictureButtonClicked();
 };

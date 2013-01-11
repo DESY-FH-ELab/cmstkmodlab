@@ -17,7 +17,7 @@ DefoCameraWidget::DefoCameraWidget(
   // Layouts to put everything into place
   QVBoxLayout* layout = new QVBoxLayout();
   setLayout(layout);
-//  setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);
+  // setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);
 
   // Camera buttons
   buttons_ = new QWidget(this);
@@ -27,18 +27,6 @@ DefoCameraWidget::DefoCameraWidget(
   QGridLayout *buttonLayout = new QGridLayout();
   buttons_->setLayout(buttonLayout);
 
-  // Loading an image
-  loadFileButton_ = new QPushButton("&Load file", buttons_);
-  connect(loadFileButton_, SIGNAL(clicked()), this, SLOT(openButtonClicked()));
-
-  buttonLayout->addWidget(loadFileButton_, 0, 0);
-
-//  enableCheckBox_ = new DefoConradSwitchCheckbox(
-//        conradModel_
-//      , DefoConradModel::CAMERA
-//      , "Enable &camera"
-//      , this
-//  );
   enableCheckBox_ = new QCheckBox("Enable camera", this);
   connect(
           enableCheckBox_
@@ -89,10 +77,6 @@ DefoCameraWidget::DefoCameraWidget(
   // Taking a picture
   pictureButton_ = new QPushButton("&Take picture", buttons_);
   buttonLayout->addWidget(pictureButton_, 0, 2);
-
-//  QPushButton *saveFileButton = new QPushButton("&Save picture", buttons_);
-//  connect(saveFileButton, SIGNAL(clicked()), this, SLOT(saveButtonClicked()));
-//  buttonLayout->addWidget(saveFileButton, 0, 2);
 
   connect(
           pictureButton_
@@ -204,13 +188,11 @@ void DefoCameraWidget::controlStateChanged(bool enabled) {
   if (enabled) {
     enableCheckBox_->setEnabled(true);
     deviceStateChanged(cameraModel_->getDeviceState());
-    loadFileButton_->setEnabled(true);
   } else {
     enableCheckBox_->setEnabled(false);
     previewButton_->setEnabled(false);
     pictureButton_->setEnabled(false);
     liveviewCheckBox_->setEnabled(false);
-    loadFileButton_->setEnabled(false);
   }
 }
 
@@ -219,7 +201,6 @@ void DefoCameraWidget::liveViewModeChanged( bool enabled ) {
   if (enabled) {
     imageStack_->setCurrentWidget(liveImageFrame_);
 
-    loadFileButton_->setEnabled( false );
     enableCheckBox_->setEnabled( false );
     previewButton_->setEnabled( false );
     pictureButton_->setEnabled( false );
@@ -227,20 +208,10 @@ void DefoCameraWidget::liveViewModeChanged( bool enabled ) {
   } else {
     imageStack_->setCurrentWidget(buttonsNRawImage_);
 
-    loadFileButton_->setEnabled( true );
     enableCheckBox_->setEnabled( true );
     previewButton_->setEnabled( true );
     pictureButton_->setEnabled( true );
   }
-}
-
-void DefoCameraWidget::openButtonClicked() {
-
-  QString location( QFileDialog::getOpenFileName(this, "Choose image") );
-  DefoMeasurement* measurement = new DefoMeasurement(location, false);
-  listModel_->addMeasurement( measurement );
-  selectionModel_->setSelection( measurement );
-
 }
 
 void DefoCameraWidget::previewButtonClicked() {
