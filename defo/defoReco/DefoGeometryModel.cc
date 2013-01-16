@@ -19,7 +19,8 @@ DefoGeometryModel::DefoGeometryModel(
   angle1_ = cfgReader.getValue<double>( "ANGLE1" );
   angle2_ = cfgReader.getValue<double>( "ANGLE2" );
   distance_ = cfgReader.getValue<double>( "DISTANCE" );
-  height_ = cfgReader.getValue<double>( "HEIGHT" );
+  height1_ = cfgReader.getValue<double>( "HEIGHT1" );
+  height2_ = cfgReader.getValue<double>( "HEIGHT2" );
 }
 
 void DefoGeometryModel::setAngle1(double v) {
@@ -40,9 +41,15 @@ void DefoGeometryModel::setDistance(double v) {
   if (valueChanged) emit geometryChanged();
 }
 
-void DefoGeometryModel::setHeight(double v) {
-  bool valueChanged = (v==height_);
-  height_ = v;
+void DefoGeometryModel::setHeight1(double v) {
+  bool valueChanged = (v==height1_);
+  height1_ = v;
+  if (valueChanged) emit geometryChanged();
+}
+
+void DefoGeometryModel::setHeight2(double v) {
+  bool valueChanged = (v==height2_);
+  height2_ = v;
   if (valueChanged) emit geometryChanged();
 }
 
@@ -61,7 +68,8 @@ void DefoGeometryModel::write(const QString& filename)
   stream.writeAttribute("angle1", QString().setNum(angle1_, 'e', 6));
   stream.writeAttribute("angle2", QString().setNum(angle2_, 'e', 6));
   stream.writeAttribute("distance", QString().setNum(distance_, 'e', 6));
-  stream.writeAttribute("height", QString().setNum(height_, 'e', 6));
+  stream.writeAttribute("height1", QString().setNum(height1_, 'e', 6));
+  stream.writeAttribute("height2", QString().setNum(height2_, 'e', 6));
 
   stream.writeEndElement();
 
@@ -83,7 +91,8 @@ void DefoGeometryModel::read(const QString& filename) {
       angle1_ = stream.attributes().value("angle1").toString().toDouble();
       angle2_ = stream.attributes().value("angle2").toString().toDouble();
       distance_ = stream.attributes().value("distance").toString().toDouble();
-      height_ = stream.attributes().value("height").toString().toDouble();
+      height1_ = stream.attributes().value("height1").toString().toDouble();
+      height2_ = stream.attributes().value("height2").toString().toDouble();
     }
   }
 
