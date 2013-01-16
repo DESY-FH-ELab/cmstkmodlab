@@ -188,11 +188,11 @@ void DefoMainWindow::exportMeasurement() {
   QString filename = QFileDialog::getSaveFileName(this
                                                 , "export measurement"
                                                 , "./"
-                                                , "zipped tarball (*.tar.gz)"
+                                                , "ODM Measurement Archive (*.odma)"
                                                 , 0
                                                 , 0);
   if (filename.isNull()) return;
-  if (!filename.endsWith(".tar.gz")) filename += ".tar.gz";
+  if (!filename.endsWith(".odma")) filename += ".odma";
 
   listModel_->exportMeasurement(currentDir_.absolutePath(), filename);
 }

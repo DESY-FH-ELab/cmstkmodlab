@@ -185,7 +185,7 @@ void DefoMeasurementListModel::exportMeasurement(const QDir& path, const QString
 {
   QString dirName = filename;
   dirName.remove(0, dirName.lastIndexOf('/'));
-  dirName.remove(".tar.gz");
+  dirName.remove(".odma");
 
   QDir tempDir = QDir::temp();
   tempDir.mkdir(dirName);
