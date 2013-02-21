@@ -65,8 +65,8 @@ void DefoAlignmentModel::setPoint(AlignmentPoint point, float newX, float newY)
     break;
   }
 
-  QPointF d = *p - *other;
-  if (d.manhattanLength()<20) return;
+  float length = std::sqrt((newX-other->x())*(newX-other->x()) + (newY-other->y())*(newY-other->y()));
+  if (length<0.05) return;
 
   bool needUpdate = (newX!=p->x()) || (newY!=p->y());
 
