@@ -13,13 +13,30 @@
 
 DefoSvgWidget::DefoSvgWidget(QWidget* parent)
     :QSvgWidget(parent) {
-   setSizePolicy(QSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed));
+   setSizePolicy(QSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding));
    sizePolicy().setHeightForWidth(true);
 }
 
 int DefoSvgWidget::heightForWidth(int w) const {
-  std::cout << w << "\t" << w*410/530 << std::endl;
+  //std::cout << w << "\t" << w*410/530 << std::endl;
   return w*410/530;
+}
+
+int DefoSvgWidget::widthForHeight(int h) const {
+  //std::cout << h << "\t" << h*530/410 << std::endl;
+  return h*530/410;
+}
+
+void DefoSvgWidget::resizeEvent(QResizeEvent *event) {
+  QSize s = event->size();
+  //std::cout << s.width() << "\t" << s.height() << std::endl;
+  int h = heightForWidth(s.width());
+  if (h<=s.height()) {
+    resize(s.width(), h);
+  } else {
+    int w = widthForHeight(s.height());
+    resize(w, s.height());
+  }
 }
 
 DefoGeometryWidget::DefoGeometryWidget(

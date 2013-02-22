@@ -4,6 +4,7 @@
 #include <QWidget>
 #include <QSvgWidget>
 #include <QDoubleSpinBox>
+#include <QResizeEvent>
 
 #include "DefoGeometryModel.h"
 
@@ -13,6 +14,9 @@ class DefoSvgWidget : public QSvgWidget
 public:
     DefoSvgWidget(QWidget* parent = 0);
     virtual int heightForWidth(int) const;
+    virtual int widthForHeight(int) const;
+
+    virtual void resizeEvent(QResizeEvent *event);
 };
 
 class DefoGeometryWidget : public QWidget
