@@ -1,4 +1,7 @@
 #include <QBoxLayout>
+#include <QGridLayout>
+#include <iostream>
+
 #include <QPushButton>
 #include <QLabel>
 #include <QFile>
@@ -10,10 +13,12 @@
 
 DefoSvgWidget::DefoSvgWidget(QWidget* parent)
     :QSvgWidget(parent) {
-
+   setSizePolicy(QSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed));
+   sizePolicy().setHeightForWidth(true);
 }
 
 int DefoSvgWidget::heightForWidth(int w) const {
+  std::cout << w << "\t" << w*410/530 << std::endl;
   return w*410/530;
 }
 
@@ -25,8 +30,6 @@ DefoGeometryWidget::DefoGeometryWidget(
   , geometryModel_(geometryModel)
 {
   QBoxLayout *layout = new QVBoxLayout();
-
-  setMinimumSize(QSize(400, 300));
   setLayout(layout);
 
   connect(
@@ -37,14 +40,11 @@ DefoGeometryWidget::DefoGeometryWidget(
   	  );
 
   sketch_ = new DefoSvgWidget(this);
-  QSizePolicy qsp(QSizePolicy::Preferred, QSizePolicy::Preferred);
-  qsp.setHeightForWidth(true);
-  sketch_->setSizePolicy(qsp);
   layout->addWidget(sketch_);
 
-  QBoxLayout *hlayout = new QHBoxLayout();
+  QGridLayout *grid = new QGridLayout();
   QWidget * inputs = new QWidget(this);
-  inputs->setLayout(hlayout);
+  inputs->setLayout(grid);
   layout->addWidget(inputs);
 
   angle1SpinBox_ = new QDoubleSpinBox(inputs);
@@ -53,7 +53,7 @@ DefoGeometryWidget::DefoGeometryWidget(
   angle1SpinBox_->setRange(10.0, 45.0);
   angle1SpinBox_->setDecimals(1);
   angle1SpinBox_->setSingleStep(0.1);
-  hlayout->addWidget(angle1SpinBox_);
+  grid->addWidget(angle1SpinBox_, 0, 0);
   angle1SpinBox_->setValue(geometryModel_->getAngle1());
   connect(angle1SpinBox_, SIGNAL(valueChanged(double)),
           this, SLOT(angle1Changed(double)));
@@ -64,7 +64,7 @@ DefoGeometryWidget::DefoGeometryWidget(
   angle2SpinBox_->setRange(10.0, 45.0);
   angle2SpinBox_->setDecimals(1);
   angle2SpinBox_->setSingleStep(0.1);
-  hlayout->addWidget(angle2SpinBox_);
+  grid->addWidget(angle2SpinBox_, 0, 1);
   angle2SpinBox_->setValue(geometryModel_->getAngle2());
   connect(angle2SpinBox_, SIGNAL(valueChanged(double)),
           this, SLOT(angle2Changed(double)));
@@ -75,7 +75,7 @@ DefoGeometryWidget::DefoGeometryWidget(
   distanceSpinBox_->setRange(100.0, 999.0);
   distanceSpinBox_->setDecimals(0);
   distanceSpinBox_->setSingleStep(1.0);
-  hlayout->addWidget(distanceSpinBox_);
+  grid->addWidget(distanceSpinBox_, 1, 0);
   distanceSpinBox_->setValue(geometryModel_->getDistance());
   connect(distanceSpinBox_, SIGNAL(valueChanged(double)),
           this, SLOT(distanceChanged(double)));
@@ -86,7 +86,7 @@ DefoGeometryWidget::DefoGeometryWidget(
   height1SpinBox_->setRange(1000.0, 2000.0);
   height1SpinBox_->setDecimals(0);
   height1SpinBox_->setSingleStep(1.0);
-  hlayout->addWidget(height1SpinBox_);
+  grid->addWidget(height1SpinBox_, 1, 1);
   height1SpinBox_->setValue(geometryModel_->getHeight1());
   connect(height1SpinBox_, SIGNAL(valueChanged(double)),
           this, SLOT(height1Changed(double)));
@@ -97,7 +97,7 @@ DefoGeometryWidget::DefoGeometryWidget(
   height2SpinBox_->setRange(0.0, 500.0);
   height2SpinBox_->setDecimals(0);
   height2SpinBox_->setSingleStep(1.0);
-  hlayout->addWidget(height2SpinBox_);
+  grid->addWidget(height2SpinBox_, 1, 2);
   height2SpinBox_->setValue(geometryModel_->getHeight2());
   connect(height2SpinBox_, SIGNAL(valueChanged(double)),
           this, SLOT(height2Changed(double)));

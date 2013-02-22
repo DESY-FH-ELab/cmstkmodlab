@@ -12,7 +12,7 @@ class DefoSvgWidget : public QSvgWidget
     Q_OBJECT
 public:
     DefoSvgWidget(QWidget* parent = 0);
-    int heightForWidth(int w) const;
+    virtual int heightForWidth(int) const;
 };
 
 class DefoGeometryWidget : public QWidget
