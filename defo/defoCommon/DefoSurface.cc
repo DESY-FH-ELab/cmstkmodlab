@@ -1,9 +1,40 @@
 
 #include <iostream>
+#include <fstream>
 #include <iomanip>
+
+#include <QHash>
 
 #include "DefoSurface.h"
 
+class DefoSplineXYPair
+{
+public:
+  DefoSplineXYPair(const double& x = 0, const double& y = 0)
+    :x_(x), y_(y) {}
+  double x_, y_;
+};
+
+inline bool operator==(const DefoSplineXYPair &lhs, const DefoSplineXYPair &rhs)
+{
+  return lhs.x_==rhs.x_ && lhs.y_==rhs.y_;
+}
+
+inline uint qHash(const DefoSplineXYPair &key)
+{
+  return (qHash((uint)key.x_) ^ (qHash((uint)key.y_)<<1));
+}
+
+class DefoSplineXYDefoPair
+{
+public:
+  DefoSplineXYDefoPair()
+    :x_(0), y_(0), hasx_(false), hasy_(false) {}
+  void setX(const double &x) { x_ = x; hasx_ = true; }
+  void setY(const double &y) { y_ = y; hasy_ = true; }
+  double x_, y_;
+  bool hasx_, hasy_;
+};
 
 ///
 ///
@@ -17,6 +48,11 @@ DefoSurface::DefoSurface() {
 ///
 ///
 void DefoSurface::dumpSplineField( void ) const {
+
+  QHash<DefoSplineXYPair,DefoSplineXYDefoPair> hmap;
+  typedef QHash<DefoSplineXYPair,DefoSplineXYDefoPair>::iterator it_t;
+  DefoSplineXYPair key;
+  DefoSplineXYDefoPair value;
 
   // first "along-x" splines
   DefoSplineSetXCollection const& splinesX = splineField_.first;
@@ -33,6 +69,18 @@ void DefoSurface::dumpSplineField( void ) const {
 		<< std::setw( 14 ) << itC->eval( itP->getX() )
 		<< std::endl;
 
+      key.x_ = itP->getX();
+      key.y_ = itP->getY();
+      value.setX(itC->eval(itP->getX()));
+
+      it_t it = hmap.find(key);
+      if (it==hmap.end()) {
+        value.y_ = 0;
+        value.hasy_ = false;
+        hmap.insert(key, value);
+      } else {
+        it.value().setX(itC->eval(itP->getX()));
+      }
     }
 
   }
@@ -52,11 +100,33 @@ void DefoSurface::dumpSplineField( void ) const {
 		<< std::setw( 14 ) << itC->eval( itP->getY() )
 		<< std::endl;
 
+      key.x_ = itP->getX();
+      key.y_ = itP->getY();
+      value.setY(itC->eval(itP->getY()));
+
+      it_t it = hmap.find(key);
+      if (it==hmap.end()) {
+        value.x_ = 0;
+        value.hasx_ = false;
+        hmap.insert(key, value);
+      } else {
+        it.value().setY(itC->eval(itP->getY()));
+      }
+
     }
 
   }
 
-
+  std::ofstream ofile("defoDump.txt");
+  for (it_t it = hmap.begin();it!=hmap.end();++it) {\
+    ofile << it.key().x_ << "\t"
+          << it.key().y_ << "\t"
+          << it.value().x_ << "\t"
+          << (int)it.value().hasx_ << "\t"
+          << it.value().y_ << "\t"
+          << (int)it.value().hasy_
+          << std::endl;
+  }
 }
 
 
