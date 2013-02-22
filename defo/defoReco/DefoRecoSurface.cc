@@ -1,14 +1,16 @@
-
+#include "DefoConfig.h"
 #include "DefoRecoSurface.h"
 
 
 ///
 ///
 ///
-DefoRecoSurface::DefoRecoSurface() {
+DefoRecoSurface::DefoRecoSurface(QObject *parent)
+  :QObject(parent)
+{
 
   // read parameters
-  DefoConfigReader cfgReader( "defo.cfg" );
+  DefoConfigReader cfgReader( std::string(Defo::CMSTkModLabBasePath) + "/defo/defo.cfg" );
   spacingEstimate_ = cfgReader.getValue<int>( "SPACING_ESTIMATE" );
   searchPathHalfWidth_ = cfgReader.getValue<int>( "SEARCH_PATH_HALF_WIDTH" );
   nominalGridDistance_ = cfgReader.getValue<double>( "NOMINAL_GRID_DISTANCE" );
@@ -24,8 +26,6 @@ DefoRecoSurface::DefoRecoSurface() {
 
 }
 
-
-
 ///
 /// calculate some helper variables
 ///
@@ -40,9 +40,6 @@ void DefoRecoSurface::calculateHelpers( void ) {
 
 }
 
-
-
-
 ///
 /// perform the reconstruction based on two point collections:
 /// a) reconstructed points of current image
@@ -54,21 +51,29 @@ const DefoSurface DefoRecoSurface::reconstruct( DefoPointCollection& currentPoin
 
   // create raw z splines for surface reconstruction
   DefoSplineField currentZSplineField = createZSplines( currentPoints, referencePoints );
+  emit incrementRecoProgress();
 
   // connect x and y splines
   mountZSplines( currentZSplineField );
+  emit incrementRecoProgress();
 
   // correct for global offsets
   removeGlobalOffset( currentZSplineField );
+  emit incrementRecoProgress();
 
   // attach the spline field
   theSurface.setSplineField( currentZSplineField );
+  emit incrementRecoProgress();
+
   theSurface.setPoints( referencePoints ); // ref points for the moment because createZSplines uses them
+  emit incrementRecoProgress();
+
   theSurface.createPointFields(); // create matrix of points (internal)
-  //  theSurface.dumpSplineField();
+  emit incrementRecoProgress();
+
+  theSurface.dumpSplineField();
 
   return theSurface;
-
 }
 
 

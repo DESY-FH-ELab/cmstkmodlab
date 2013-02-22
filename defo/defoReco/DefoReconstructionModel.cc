@@ -3,7 +3,6 @@
 
 #include "DefoReconstructionModel.h"
 #include "DefoPointSaver.h"
-#include "DefoRecoSurface.h"
 
 DefoReconstructionModel::DefoReconstructionModel(
     DefoMeasurementListModel * listModel
@@ -61,6 +60,12 @@ DefoReconstructionModel::DefoReconstructionModel(
           SIGNAL(colorChanged(float,float)),
           this,
           SLOT(defoColorChanged(float,float)));
+
+  reco_ = new DefoRecoSurface(this);
+  connect(reco_,
+          SIGNAL(incrementRecoProgress()),
+          this,
+          SLOT(incrementRecoProgress()));
 }
 
 void DefoReconstructionModel::refSelectionChanged(DefoMeasurement* measurement) {
@@ -105,8 +110,14 @@ void DefoReconstructionModel::defoColorChanged(float hue, float saturation) {
   emit setupChanged();
 }
 
+void DefoReconstructionModel::incrementRecoProgress() {
+  emit incrementProgress();
+}
+
 void DefoReconstructionModel::reconstruct() {
   std::cout << "void DefoReconstructionModel::reconstruct()" << std::endl;
+
+  emit recoProgressChanged(0);
 
   if (refMeasurement_==0 || defoMeasurement_==0) {
     std::cout << "reco: reference and deformed measurements not selected" << std::endl;
@@ -130,38 +141,50 @@ void DefoReconstructionModel::reconstruct() {
     return;
   }
 
-  DefoMeasurementPair * measurementPair = pairListModel_->findMeasurementPair(refMeasurement_,
-                                                                              defoMeasurement_);
-
   if (!alignPoints(refPoints, refCollection_)) {
     std::cout << "reco: reference points could not be aligned" << std::endl;
     return;
   }
+  emit incrementProgress();
 
   if (!alignPoints(defoPoints, defoCollection_)) {
     std::cout << "reco: deformed points could not be aligned" << std::endl;
     return;
   }
+  emit incrementProgress();
 
   pointIndexer_->indexPoints(&refCollection_, refColor_);
+  emit incrementProgress();
+
   pointIndexer_->indexPoints(&defoCollection_, defoColor_);
+  emit incrementProgress();
 
   DefoPointSaver refSaver("./refPoints.txt");
   refSaver.writePoints(refCollection_);
   DefoPointSaver defoSaver("./defoPoints.txt");
   defoSaver.writePoints(defoCollection_);
+  emit incrementProgress();
 
-  DefoRecoSurface reco;
-  DefoSurface surface = reco.reconstruct(defoCollection_, refCollection_);
+  reco_->setFocalLength(refMeasurement_->getFocalLength());
+  reco_->setNominalCameraDistance(1.822*1000.);
+  reco_->setNominalGridDistance(1.802*1000.);
+  reco_->setPitchX(22.3/5184.); // mm/pixel
+  reco_->setPitchY(14.9/3456.); // mm/pixel
+  emit incrementProgress();
 
+  DefoSurface surface = reco_->reconstruct(defoCollection_, refCollection_);
 
+  bool newPair = false;
+  DefoMeasurementPair * measurementPair = pairListModel_->findMeasurementPair(refMeasurement_,
+                                                                              defoMeasurement_);
   if (measurementPair==0) {
+    newPair = true;
     measurementPair = new DefoMeasurementPair(refMeasurement_, defoMeasurement_);
   }
 
   measurementPair->setSurface(surface);
 
-  if (measurementPair==0) {
+  if (newPair) {
     pairListModel_->addMeasurementPair(measurementPair);
   }
 }

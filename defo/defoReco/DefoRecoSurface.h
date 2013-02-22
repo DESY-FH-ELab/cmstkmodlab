@@ -8,6 +8,8 @@
 #include <algorithm>
 #include <limits>
 
+#include <QObject>
+
 #include "DefoPoint.h"
 #include "DefoSurface.h"
 #include "DefoSpline.h"
@@ -18,10 +20,13 @@
 /// perform surface reconstruction
 /// based on reco point collection
 ///
-class DefoRecoSurface {
-
+class DefoRecoSurface : public QObject
+{
+   Q_OBJECT
  public:
-  DefoRecoSurface();
+  DefoRecoSurface(QObject *parent = 0);
+  ~DefoRecoSurface() {}
+
   const DefoSurface reconstruct( DefoPointCollection&, DefoPointCollection& );
 
   void setSpacingEstimate( int s ) { spacingEstimate_ = s; }
@@ -65,6 +70,9 @@ class DefoRecoSurface {
   unsigned int debugLevel_;
   std::vector<DefoPoint> indexedPoints_;
 
+signals:
+
+  void incrementRecoProgress();
 };
 
 

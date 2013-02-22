@@ -238,18 +238,18 @@ DefoRecoMainWindow::DefoRecoMainWindow(QWidget *parent) :
   
   tabWidget_->addTab(indexerWidget, "Indexer");
 
-  hbox = new QHBoxLayout();
+  vbox = new QVBoxLayout();
   QWidget * recoWidget = new QWidget(tabWidget_);
-  recoWidget->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);
-  recoWidget->setLayout(hbox);
+  //recoWidget->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);
+  recoWidget->setLayout(vbox);
 
   DefoReconstructionWidget *recoControllerWidget = new DefoReconstructionWidget(reconstructionModel_,
                                                                                 recoWidget);
-  hbox->addWidget(recoControllerWidget);
+  vbox->addWidget(recoControllerWidget);
 
   DefoGeometryWidget *geometryWidget = new DefoGeometryWidget(geometryModel_,
                                                               recoWidget);
-  hbox->addWidget(geometryWidget);
+  vbox->addWidget(geometryWidget);
 
   tabWidget_->addTab(recoWidget, "Reconstruction");
 

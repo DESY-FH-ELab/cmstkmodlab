@@ -2,6 +2,7 @@
 #define DEFORECONSTRUCTIONWIDGET_H
 
 #include <QWidget>
+#include <QProgressBar>
 
 #include "DefoReconstructionModel.h"
 
@@ -17,11 +18,14 @@ public:
 protected:
 
   DefoReconstructionModel* reconstructionModel_;
+  QProgressBar *progressBar_;
 
-protected slots:
+public slots:
 
   void setupChanged();
   void reconstructButtonClicked();
+  void recoProgressChanged(int);
+  void incrementProgress();
 };
 
 #endif // DEFORECONSTRUCTIONWIDGET_H

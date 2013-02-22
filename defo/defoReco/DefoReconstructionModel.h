@@ -13,6 +13,7 @@
 #include "DefoAlignmentModel.h"
 #include "DefoPointIndexerModel.h"
 #include "DefoColorSelectionModel.h"
+#include "DefoRecoSurface.h"
 
 class DefoReconstructionModel : public QObject
 {
@@ -42,6 +43,7 @@ public slots:
   void defoColorChanged(float hue, float saturation);
 
   void reconstruct();
+  void incrementRecoProgress();
 
 protected:
 
@@ -60,9 +62,13 @@ protected:
   QColor refColor_;
   QColor defoColor_;
 
+  DefoRecoSurface *reco_;
+
 signals:
 
   void setupChanged();
+  void recoProgressChanged(int);
+  void incrementProgress();
 };
 
 #endif // DEFORECONSTRUCTIONMODEL_H
