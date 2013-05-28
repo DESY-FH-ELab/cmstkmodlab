@@ -241,6 +241,14 @@ int main(int argc, char *argv[])
         filename += ".txt";
 
         it->surface.dumpSplineField(filename);
+
+        filename = "defoStats_";
+        filename += it->undeformed;
+        filename += "_";
+        filename += it->deformed;
+        filename += ".txt";
+
+        it->surface.dumpStats(filename);
     }
 
     return 0;
