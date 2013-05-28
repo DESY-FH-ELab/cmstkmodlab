@@ -8,14 +8,6 @@
 
 #include "DefoSurface.h"
 
-class DefoSplineXYPair
-{
-public:
-  DefoSplineXYPair(const double& x = 0, const double& y = 0)
-    :x_(x), y_(y) {}
-  int ix_, iy_;
-  double x_, y_;
-};
 
 inline bool operator==(const DefoSplineXYPair &lhs, const DefoSplineXYPair &rhs)
 {
@@ -27,17 +19,6 @@ inline uint qHash(const DefoSplineXYPair &key)
   return (qHash((uint)key.x_) ^ (qHash((uint)key.y_)<<1));
 }
 
-class DefoSplineXYDefoPair
-{
-public:
-  DefoSplineXYDefoPair()
-    :x_(0), y_(0), hasx_(false), hasy_(false) {}
-  void setX(const double &x) { x_ = x; hasx_ = true; }
-  void setY(const double &y) { y_ = y; hasy_ = true; }
-  double x_, y_;
-  bool hasx_, hasy_;
-};
-
 ///
 ///
 ///
@@ -46,100 +27,192 @@ DefoSurface::DefoSurface() {
   isSplineField_ = false;
 }
 
+DefoSurface::DefoSurface(const DefoSurface& other) {
+
+  points_ = other.points_;
+  splineField_ = other.splineField_;
+  pointFields_ = other.pointFields_;
+
+  isSplineField_ = other.isSplineField_;
+  isPoints_ = other.isPoints_;
+
+  makeStats();
+}
+
+void DefoSurface::makeStats() {
+
+    typedef QHash<DefoSplineXYPair,DefoSplineXYDefoPair>::iterator it_t;
+    DefoSplineXYPair key;
+    DefoSplineXYDefoPair value;
+
+    // first "along-x" splines
+    DefoSplineSetXCollection const& splinesX = splineField_.first;
+
+    // loop set of spline "rows", itC is a DefoSplineSetX
+    for( DefoSplineSetXCollection::const_iterator itC = splinesX.begin();
+         itC < splinesX.end();
+         ++itC ) {
+
+      // loop the points
+      for( DefoPointCollection::const_iterator itP = itC->getPoints().begin();
+           itP < itC->getPoints().end();
+           ++itP ) {
+
+        key.ix_ = itP->getIndex().first;
+        key.x_ = itP->getX();
+        key.iy_ = itP->getIndex().second;
+        key.y_ = itP->getY();
+        value.setX(itC->eval(itP->getX()));
+
+        it_t it = defoPointMap_.find(key);
+        if (it==defoPointMap_.end()) {
+          value.y_ = 0;
+          value.hasy_ = false;
+          defoPointMap_.insert(key, value);
+        } else {
+          it.value().setX(itC->eval(itP->getX()));
+        }
+      }
+    }
+
+    // then "along-y" splines
+    DefoSplineSetYCollection const& splinesY = splineField_.second;
+
+    // loop set of spline "rows", itC is a DefoSplineSetX
+    for( DefoSplineSetYCollection::const_iterator itC = splinesY.begin();
+         itC < splinesY.end();
+         ++itC ) {
+
+      // loop the points
+      for( DefoPointCollection::const_iterator itP = itC->getPoints().begin();
+           itP < itC->getPoints().end();
+           ++itP ) {
+
+        key.ix_ = itP->getIndex().first;
+        key.x_ = itP->getX();
+        key.iy_ = itP->getIndex().second;
+        key.y_ = itP->getY();
+        value.setY(itC->eval(itP->getY()));
+
+        it_t it = defoPointMap_.find(key);
+        if (it==defoPointMap_.end()) {
+          value.x_ = 0;
+          value.hasx_ = false;
+          defoPointMap_.insert(key, value);
+        } else {
+          it.value().setY(itC->eval(itP->getY()));
+        }
+
+      }
+    }
+
+    stats_.maxZFromXSplines = -1e9;
+    stats_.minZFromXSplines = +1e9;
+
+    // "along-x" splines
+    DefoSplineSetXCollection const& splinesXminmax = splineField_.first;
+
+    // loop set of spline "rows", itC is a DefoSplineSetX
+    for( DefoSplineSetXCollection::const_iterator itC = splinesXminmax.begin();
+         itC < splinesXminmax.end();
+         ++itC ) {
+
+        // loop the points
+        for( DefoPointCollection::const_iterator itP = itC->getPoints().begin();
+             itP < itC->getPoints().end();
+             ++itP ) {
+
+            double z = itC->eval(itP->getX());
+            if (z>stats_.maxZFromXSplines) {
+                stats_.maxZFromXSplines = z;
+                stats_.posAtMaxZFromXSplines.first = itP->getX();
+                stats_.posAtMaxZFromXSplines.second = itP->getY();
+            }
+            if (z<stats_.minZFromXSplines) {
+                stats_.minZFromXSplines = z;
+                stats_.posAtMinZFromXSplines.first = itP->getX();
+                stats_.posAtMinZFromXSplines.second = itP->getY();
+            }
+        }
+    }
+
+    stats_.maxZFromYSplines = -1e9;
+    stats_.minZFromYSplines = +1e9;
+
+    // "along-y" splines
+    DefoSplineSetYCollection const& splinesYminmax = splineField_.second;
+
+    // loop set of spline "rows", itC is a DefoSplineSetX
+    for( DefoSplineSetYCollection::const_iterator itC = splinesYminmax.begin();
+         itC < splinesYminmax.end();
+         ++itC ) {
+
+        // loop the points
+        for( DefoPointCollection::const_iterator itP = itC->getPoints().begin();
+             itP < itC->getPoints().end();
+             ++itP ) {
+
+            double z = itC->eval(itP->getY());
+            if (z>stats_.maxZFromYSplines) {
+                stats_.maxZFromYSplines = z;
+                stats_.posAtMaxZFromYSplines.first = itP->getX();
+                stats_.posAtMaxZFromYSplines.second = itP->getY();
+            }
+            if (z<stats_.minZFromYSplines) {
+                stats_.minZFromYSplines = z;
+                stats_.posAtMinZFromYSplines.first = itP->getX();
+                stats_.posAtMinZFromYSplines.second = itP->getY();
+            }
+        }
+    }
+
+}
+
 ///
 ///
 ///
 void DefoSurface::dumpSplineField( std::string& filename ) const {
 
-  QHash<DefoSplineXYPair,DefoSplineXYDefoPair> hmap;
-  typedef QHash<DefoSplineXYPair,DefoSplineXYDefoPair>::iterator it_t;
-  DefoSplineXYPair key;
-  DefoSplineXYDefoPair value;
+    typedef QHash<DefoSplineXYPair,DefoSplineXYDefoPair>::const_iterator it_t;
 
-  // first "along-x" splines
-  DefoSplineSetXCollection const& splinesX = splineField_.first;
-  
-  // loop set of spline "rows", itC is a DefoSplineSetX
-  for( DefoSplineSetXCollection::const_iterator itC = splinesX.begin(); itC < splinesX.end(); ++itC ) {
-    
-    // loop the points
-    for( DefoPointCollection::const_iterator itP = itC->getPoints().begin(); itP < itC->getPoints().end(); ++itP ) {
-      
-      /*
-      std::cout << "HX: "
-		<< std::setw( 14 ) << itP->getX() 
-		<< std::setw( 14 ) << itP->getY() 
-		<< std::setw( 14 ) << itC->eval( itP->getX() )
-		<< std::endl;
-      */
+    if (filename.length()==0) return;
 
-      key.ix_ = itP->getIndex().first;
-      key.x_ = itP->getX();
-      key.iy_ = itP->getIndex().second;
-      key.y_ = itP->getY();
-      value.setX(itC->eval(itP->getX()));
-
-      it_t it = hmap.find(key);
-      if (it==hmap.end()) {
-        value.y_ = 0;
-        value.hasy_ = false;
-        hmap.insert(key, value);
-      } else {
-        it.value().setX(itC->eval(itP->getX()));
-      }
+    std::ofstream ofile(filename.c_str());
+    for (it_t it = defoPointMap_.begin();it!=defoPointMap_.end();++it) {
+        ofile << std::setw(8)  << it.key().ix_ << " "
+              << std::setw(8)  << it.key().iy_ << " "
+              << std::setw(14) << it.key().x_ << " "
+              << std::setw(14) << it.key().y_ << " "
+              << std::setw(14) << it.value().x_ << " "
+              << std::setw(3)  << (int)it.value().hasx_ << " "
+              << std::setw(14) << it.value().y_ << " "
+              << std::setw(3)  << (int)it.value().hasy_
+              << std::endl;
     }
+}
 
-  }
+///
+///
+///
+void DefoSurface::dumpStats( std::string& filename ) const {
 
-  // then "along-y" splines
-  DefoSplineSetYCollection const& splinesY = splineField_.second;
+    if (filename.length()==0) return;
 
-  // loop set of spline "rows", itC is a DefoSplineSetX
-  for( DefoSplineSetYCollection::const_iterator itC = splinesY.begin(); itC < splinesY.end(); ++itC ) {
-    
-    // loop the points
-    for( DefoPointCollection::const_iterator itP = itC->getPoints().begin(); itP < itC->getPoints().end(); ++itP ) {
-      
-        /*
-      std::cout << "HY: "
-		<< std::setw( 14 ) << itP->getX() 
-		<< std::setw( 14 ) << itP->getY() 
-		<< std::setw( 14 ) << itC->eval( itP->getY() )
-		<< std::endl;
-*/
+    std::ofstream ofile(filename.c_str());
 
-      key.ix_ = itP->getIndex().first;
-      key.x_ = itP->getX();
-      key.iy_ = itP->getIndex().second;
-      key.y_ = itP->getY();
-      value.setY(itC->eval(itP->getY()));
+    ofile << std::setw(8)  << stats_.maxZFromXSplines << " "
+          << std::setw(8)  << stats_.posAtMaxZFromXSplines.first << " "
+          << std::setw(8)  << stats_.posAtMaxZFromXSplines.second << std::endl;
+    ofile << std::setw(8)  << stats_.minZFromXSplines << " "
+          << std::setw(8)  << stats_.posAtMinZFromXSplines.first << " "
+          << std::setw(8)  << stats_.posAtMinZFromXSplines.second << std::endl;
 
-      it_t it = hmap.find(key);
-      if (it==hmap.end()) {
-        value.x_ = 0;
-        value.hasx_ = false;
-        hmap.insert(key, value);
-      } else {
-        it.value().setY(itC->eval(itP->getY()));
-      }
-
-    }
-  }
-
-  if (filename.length()==0) return;
-
-  std::ofstream ofile(filename.c_str());
-  for (it_t it = hmap.begin();it!=hmap.end();++it) {\
-    ofile << std::setw(8)  << it.key().ix_ << " "
-          << std::setw(8)  << it.key().iy_ << " "
-          << std::setw(14) << it.key().x_ << " "
-          << std::setw(14) << it.key().y_ << " "
-          << std::setw(14) << it.value().x_ << " "
-          << std::setw(3)  << (int)it.value().hasx_ << " "
-          << std::setw(14) << it.value().y_ << " "
-          << std::setw(3)  << (int)it.value().hasy_
-          << std::endl;
-  }
+    ofile << std::setw(8)  << stats_.maxZFromYSplines << " "
+          << std::setw(8)  << stats_.posAtMaxZFromYSplines.first << " "
+          << std::setw(8)  << stats_.posAtMaxZFromYSplines.second << std::endl;
+    ofile << std::setw(8)  << stats_.minZFromYSplines << " "
+          << std::setw(8)  << stats_.posAtMinZFromYSplines.first << " "
+          << std::setw(8)  << stats_.posAtMinZFromYSplines.second << std::endl;
 }
 
 ///
