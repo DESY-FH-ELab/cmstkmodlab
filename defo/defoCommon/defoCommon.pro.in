@@ -56,6 +56,7 @@ HEADERS += DefoConfig.h \
            DefoPointBin.h \
            DefoSquare.h \
            DefoSpline.h \
+           DefoRecoSurface.h \
            DefoSurface.h \
            DefoPointFinder.h \
            DefoPointSaver.h \
@@ -88,6 +89,7 @@ SOURCES += DefoConfig.cc \
            DefoPointBin.cc \
            DefoSquare.cc \
            DefoSpline.cc \
+           DefoRecoSurface.cc \
            DefoSurface.cc \
            DefoPointFinder.cc \
            DefoPointSaver.cc \
