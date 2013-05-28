@@ -11,6 +11,7 @@
 #include <QStackedWidget>
 #include <QFrame>
 #include <QPlainTextEdit>
+#include <QSpinBox>
 
 #include "DefoState.h"
 #include "DefoCameraModel.h"
@@ -56,6 +57,7 @@ protected:
   QCheckBox* liveviewCheckBox_;
   QWidget* buttons_;
   DefoImageCommentEdit* commentEditor_;
+  QSpinBox* calibAmplitudeSpinBox_;
   QStackedWidget* imageStack_;
   QFrame* buttonsNRawImage_;
   QWidget* buttonsCamera_;

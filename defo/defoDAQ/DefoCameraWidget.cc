@@ -87,8 +87,7 @@ DefoCameraWidget::DefoCameraWidget(
 
   // Switching into preview mode
   liveviewCheckBox_ = new QCheckBox("Live", this);
-  connect(
-	  liveviewCheckBox_
+  connect(liveviewCheckBox_
         , SIGNAL(toggled(bool))
         , cameraModel_
         , SLOT(setLiveViewEnabled(bool))
@@ -101,6 +100,13 @@ DefoCameraWidget::DefoCameraWidget(
   commentEditor_->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
   commentEditor_->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
   layout->addWidget(commentEditor_);
+
+  calibAmplitudeSpinBox_ = new QSpinBox(this);
+  calibAmplitudeSpinBox_->setRange(-1000, 1000);
+  calibAmplitudeSpinBox_->setSuffix("um");
+  layout->addWidget(calibAmplitudeSpinBox_);
+  connect(calibAmplitudeSpinBox_, SIGNAL(valueChanged(int)),
+          cameraModel_, SLOT(setCalibAmplitude(int)));
 
   // Image display
   imageStack_ = new QStackedWidget(this);
@@ -151,7 +157,6 @@ DefoCameraWidget::DefoCameraWidget(
 
   frameLayout->addWidget(buttonsCamera_);
 
-
   rawImage_ = new DefoRawImageWidget(selectionModel_, buttonsNRawImage_);
   frameLayout->addWidget(rawImage_);
 
@@ -180,7 +185,6 @@ void DefoCameraWidget::deviceStateChanged(State newState) {
   previewButton_->setEnabled( newState == READY );
   pictureButton_->setEnabled( newState == READY );
   liveviewCheckBox_->setEnabled( newState == READY );
-
 }
 
 void DefoCameraWidget::controlStateChanged(bool enabled) {
