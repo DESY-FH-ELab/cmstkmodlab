@@ -47,6 +47,7 @@ public:
   // TODO getLastPictureExif()
 
   QTextDocument* commentDocument() const { return comment_; }
+  int getCalibAmplitude() const { return calibAmplitude_; }
 
 public slots:
   virtual void setDeviceEnabled( bool enabled );
@@ -55,6 +56,7 @@ public slots:
   void acquirePicture(bool keep);
   void acquireLiveViewPicture();
   void setComment(const QString&);
+  void setCalibAmplitude(int amplitude);
 
 protected:
   virtual void initialize();
@@ -70,6 +72,7 @@ protected:
   QImage liveViewImage_;
   QTimer liveViewTimer_;
   QTextDocument* comment_;
+  int calibAmplitude_;
 
 
 signals:

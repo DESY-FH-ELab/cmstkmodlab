@@ -49,6 +49,7 @@ public:
   float getTemperature(unsigned int sensor) const { return temperatures_[sensor]; }
 
   const QString& getComment() const { return comment_; }
+  const int getCalibAmplitude() const { return calibAmplitude_; }
 
   const DefoPointCollection* findPoints(
       const QRect* searchArea
@@ -106,6 +107,7 @@ protected:
   std::vector<float> temperatures_;
 
   QString comment_;
+  int calibAmplitude_;
 
   /*
     Analysis depentent information, does not belong in 'measurement' class.

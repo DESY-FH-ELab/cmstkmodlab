@@ -10,6 +10,8 @@ DefoCameraModel::DefoCameraModel(QObject *parent) :
   comment_->setDocumentLayout(new QPlainTextDocumentLayout(comment_));
   comment_->setDefaultFont(QFont("Courier New",10));
 
+  calibAmplitude_ = 0;
+  
   int initValue = 0;
   parameters_[APERTURE] = initValue;
   parameters_[ISO] = initValue;
@@ -162,6 +164,10 @@ void DefoCameraModel::acquireLiveViewPicture() {
 
 void DefoCameraModel::setComment(const QString& comment) {
     comment_->setPlainText(comment);
+}
+
+void DefoCameraModel::setCalibAmplitude(int amplitude) {
+    calibAmplitude_ = amplitude;
 }
 
 const QImage & DefoCameraModel::getLastPicture() const {

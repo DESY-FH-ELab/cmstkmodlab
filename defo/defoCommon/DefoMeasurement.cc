@@ -384,6 +384,7 @@ void DefoMeasurement::readExifData() {
 
 void DefoMeasurement::acquireData(const DefoCameraModel* model) {
   comment_ = model->commentDocument()->toPlainText();
+  calibAmplitude_ = model->getCalibAmplitude();
 }
 
 void DefoMeasurement::acquireData(const DefoPointRecognitionModel* model) {
@@ -461,6 +462,10 @@ void DefoMeasurement::write(const QDir& path)
 
   stream.writeStartElement("Comment");
   stream.writeCharacters(comment_);
+  stream.writeEndElement();
+
+  stream.writeStartElement("Calibration");
+  stream.writeAttribute("amplitude", QString().setNum(calibAmplitude_));
   stream.writeEndElement();
 
   stream.writeStartElement("Thresholds");
@@ -570,6 +575,10 @@ void DefoMeasurement::read(const QDir&path) {
 
     if (stream.isStartElement() && stream.name()=="Comment") {
       comment_ = stream.readElementText();
+    }
+
+    if (stream.isStartElement() && stream.name()=="Calibration") {
+      calibAmplitude_ = stream.attributes().value("amplitude").toString().toInt();
     }
 
     if (stream.isStartElement() && stream.name()=="Thresholds") {
