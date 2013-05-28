@@ -192,6 +192,13 @@ void DefoReconstructionModel::reconstruct() {
 
   DefoSurface surface = reco_->reconstruct(defoCollection_, refCollection_);
 
+  std::string filename = "defoDump_";
+  filename += refMeasurement_->getTimeStamp().toString("yyyyMMddhhmmss").toStdString();
+  filename += "_";
+  filename += defoMeasurement_->getTimeStamp().toString("yyyyMMddhhmmss").toStdString();
+  filename += ".txt";
+  surface.dumpSplineField(filename);
+
   bool newPair = false;
   DefoMeasurementPair * measurementPair = pairListModel_->findMeasurementPair(refMeasurement_,
                                                                               defoMeasurement_);

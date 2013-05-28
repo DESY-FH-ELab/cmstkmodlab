@@ -40,6 +40,16 @@ void DefoMeasurementInfoListTreeWidget::setSelection(
   item->setText(1, measurement->getTimeStamp().toString(TIME_FORMAT));
   addTopLevelItem(item);
 
+  QTreeWidgetItem * calibItem = new QTreeWidgetItem(this);
+  calibItem->setText(0, "calibration");
+  calibItem->setText(1, "");
+  addTopLevelItem(calibItem);
+
+  item = new QTreeWidgetItem(calibItem);
+  item->setText(0, "amplitude");
+  item->setText(1, QString("%1 um").arg(measurement->getCalibAmplitude()));
+  calibItem->addChild(item);
+
   item = new QTreeWidgetItem(this);
   item->setText(0, "focal length");
   item->setText(1, QString("%1 mm").arg(measurement->getFocalLength()));
