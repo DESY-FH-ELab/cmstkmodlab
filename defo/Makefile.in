@@ -5,7 +5,8 @@ USEFAKEDEVICES= @usefakedevices@
 
 subdirs	      = defoCommon \
 		defoDAQ \
-                defoReco
+                defoReco \
+		defoCalib
 
 all:
 	@for dir in $(subdirs); do (cd $$dir; make); done

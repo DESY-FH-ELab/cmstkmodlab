@@ -1,0 +1,29 @@
+#-------------------------------------------------
+#
+# Project created by QtCreator 2013-05-28T10:50:39
+#
+#-------------------------------------------------
+
+macx {
+    INCLUDEPATH += /opt/local/include/exiv2
+    LIBS += -L/opt/local/lib -lexiv2
+}
+else {
+    INCLUDEPATH += /usr/include/exiv2
+    LIBS += -lexiv2
+}
+
+QT       += core xml
+
+TARGET = defoCalib
+DEPENDPATH += ../defoCommon
+INCLUDEPATH += .
+INCLUDEPATH += ..
+INCLUDEPATH += @basepath@
+INCLUDEPATH += @basepath@/defo/defoCommon
+CONFIG   += console
+CONFIG   -= app_bundle
+
+TEMPLATE = app
+
+SOURCES += main.cpp
