@@ -13,6 +13,7 @@
 #include "DefoAlignmentModel.h"
 #include "DefoPointIndexerModel.h"
 #include "DefoColorSelectionModel.h"
+#include "DefoGeometryModel.h"
 #include "DefoRecoSurface.h"
 
 class DefoReconstructionModel : public QObject
@@ -28,6 +29,7 @@ public:
                                  , DefoColorSelectionModel* defoColorModel
                                  , DefoMeasurementPairListModel* pairListModel
                                  , DefoMeasurementPairSelectionModel* pairSelectionModel
+                                 , DefoGeometryModel* geometryModel
                                  , QObject *parent = 0);
 
   double getAngle() const { return angle_; }
@@ -41,6 +43,7 @@ public slots:
   void pointIndexerChanged(DefoVPointIndexer *);
   void refColorChanged(float hue, float saturation);
   void defoColorChanged(float hue, float saturation);
+  void geometryChanged();
 
   void reconstruct();
   void incrementRecoProgress();
@@ -55,6 +58,7 @@ protected:
   DefoMeasurement* defoMeasurement_;
   DefoMeasurementPairListModel* pairListModel_;
   DefoMeasurementPairSelectionModel* pairSelectionModel_;
+  DefoGeometryModel* geometryModel_;
   float angle_;
   DefoPointCollection refCollection_;
   DefoPointCollection defoCollection_;

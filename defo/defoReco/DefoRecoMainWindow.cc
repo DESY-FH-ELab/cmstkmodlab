@@ -56,6 +56,7 @@ DefoRecoMainWindow::DefoRecoMainWindow(QWidget *parent) :
                                                      defoColorModel_,
                                                      measurementPairListModel_,
                                                      measurementPairSelectionModel_,
+                                                     geometryModel_,
                                                      this);
 
   tabWidget_ = new QTabWidget(this);

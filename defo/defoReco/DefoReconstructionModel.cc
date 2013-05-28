@@ -14,12 +14,14 @@ DefoReconstructionModel::DefoReconstructionModel(
   , DefoColorSelectionModel* defoColorModel
   , DefoMeasurementPairListModel* pairListModel
   , DefoMeasurementPairSelectionModel* pairSelectionModel
+  , DefoGeometryModel* geometryModel
   , QObject *parent
   ) :
     QObject(parent),
     listModel_(listModel),
     pairListModel_(pairListModel),
-    pairSelectionModel_(pairSelectionModel)
+    pairSelectionModel_(pairSelectionModel),
+    geometryModel_(geometryModel)
 {
   angle_ = 0.0;
   refMeasurement_ = 0;
@@ -62,6 +64,10 @@ DefoReconstructionModel::DefoReconstructionModel(
           SLOT(defoColorChanged(float,float)));
 
   reco_ = new DefoRecoSurface(this);
+
+  reco_->setPitchX(22.3/5184.); // mm/pixel
+  reco_->setPitchY(14.9/3456.); // mm/pixel
+
   connect(reco_,
           SIGNAL(incrementRecoProgress()),
           this,
@@ -107,6 +113,22 @@ void DefoReconstructionModel::refColorChanged(float hue, float saturation) {
 void DefoReconstructionModel::defoColorChanged(float hue, float saturation) {
   std::cout << "void DefoReconstructionModel::defoColorChanged(float hue, float saturation)" << std::endl;
   defoColor_.setHsvF(hue, saturation, 1.0, 1.0);
+  emit setupChanged();
+}
+
+void DefoReconstructionModel::geometryChanged() {
+  std::cout << "void DefoReconstructionModel::geometryChanged()" << std::endl;
+
+  // geometryModel_->getAngle1();
+  // geometryModel_->getAngle2();
+  // geometryModel_->getDistance();
+  // geometryModel_->getHeight1();
+  // geometryModel_->getHeight2();
+
+  reco_->setNominalGridDistance(1.802*1000.);
+  reco_->setNominalCameraDistance(1.822*1000.);
+  //reco_->setNominalViewingAngle();
+
   emit setupChanged();
 }
 
@@ -166,10 +188,6 @@ void DefoReconstructionModel::reconstruct() {
   emit incrementProgress();
 
   reco_->setFocalLength(refMeasurement_->getFocalLength());
-  reco_->setNominalCameraDistance(1.822*1000.);
-  reco_->setNominalGridDistance(1.802*1000.);
-  reco_->setPitchX(22.3/5184.); // mm/pixel
-  reco_->setPitchY(14.9/3456.); // mm/pixel
   emit incrementProgress();
 
   DefoSurface surface = reco_->reconstruct(defoCollection_, refCollection_);
