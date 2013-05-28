@@ -2,6 +2,7 @@
 #include <iostream>
 #include <fstream>
 #include <iomanip>
+#include <string>
 
 #include <QHash>
 
@@ -12,6 +13,7 @@ class DefoSplineXYPair
 public:
   DefoSplineXYPair(const double& x = 0, const double& y = 0)
     :x_(x), y_(y) {}
+  int ix_, iy_;
   double x_, y_;
 };
 
@@ -47,7 +49,7 @@ DefoSurface::DefoSurface() {
 ///
 ///
 ///
-void DefoSurface::dumpSplineField( void ) const {
+void DefoSurface::dumpSplineField( std::string& filename ) const {
 
   QHash<DefoSplineXYPair,DefoSplineXYDefoPair> hmap;
   typedef QHash<DefoSplineXYPair,DefoSplineXYDefoPair>::iterator it_t;
@@ -63,13 +65,17 @@ void DefoSurface::dumpSplineField( void ) const {
     // loop the points
     for( DefoPointCollection::const_iterator itP = itC->getPoints().begin(); itP < itC->getPoints().end(); ++itP ) {
       
+      /*
       std::cout << "HX: "
 		<< std::setw( 14 ) << itP->getX() 
 		<< std::setw( 14 ) << itP->getY() 
 		<< std::setw( 14 ) << itC->eval( itP->getX() )
 		<< std::endl;
+      */
 
+      key.ix_ = itP->getIndex().first;
       key.x_ = itP->getX();
+      key.iy_ = itP->getIndex().second;
       key.y_ = itP->getY();
       value.setX(itC->eval(itP->getX()));
 
@@ -94,13 +100,17 @@ void DefoSurface::dumpSplineField( void ) const {
     // loop the points
     for( DefoPointCollection::const_iterator itP = itC->getPoints().begin(); itP < itC->getPoints().end(); ++itP ) {
       
+        /*
       std::cout << "HY: "
 		<< std::setw( 14 ) << itP->getX() 
 		<< std::setw( 14 ) << itP->getY() 
 		<< std::setw( 14 ) << itC->eval( itP->getY() )
 		<< std::endl;
+*/
 
+      key.ix_ = itP->getIndex().first;
       key.x_ = itP->getX();
+      key.iy_ = itP->getIndex().second;
       key.y_ = itP->getY();
       value.setY(itC->eval(itP->getY()));
 
@@ -114,23 +124,23 @@ void DefoSurface::dumpSplineField( void ) const {
       }
 
     }
-
   }
 
-  std::ofstream ofile("defoDump.txt");
+  if (filename.length()==0) return;
+
+  std::ofstream ofile(filename.c_str());
   for (it_t it = hmap.begin();it!=hmap.end();++it) {\
-    ofile << it.key().x_ << "\t"
-          << it.key().y_ << "\t"
-          << it.value().x_ << "\t"
-          << (int)it.value().hasx_ << "\t"
-          << it.value().y_ << "\t"
-          << (int)it.value().hasy_
+    ofile << std::setw(8)  << it.key().ix_ << " "
+          << std::setw(8)  << it.key().iy_ << " "
+          << std::setw(14) << it.key().x_ << " "
+          << std::setw(14) << it.key().y_ << " "
+          << std::setw(14) << it.value().x_ << " "
+          << std::setw(3)  << (int)it.value().hasx_ << " "
+          << std::setw(14) << it.value().y_ << " "
+          << std::setw(3)  << (int)it.value().hasy_
           << std::endl;
   }
 }
-
-
-
 
 ///
 /// create pair of DefoPointField,

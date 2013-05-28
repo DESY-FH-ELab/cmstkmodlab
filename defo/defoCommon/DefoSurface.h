@@ -17,7 +17,7 @@ class DefoSurface {
   void setSplineField( DefoSplineField const& field ) { splineField_ = field; isSplineField_ = true; }
   DefoPointFields const& getPointFields( void ) const { return pointFields_; }
   void setPointFields( DefoPointFields const& fields ) { pointFields_ = fields; isPoints_ = true; }
-  void dumpSplineField( void ) const;
+  void dumpSplineField( std::string& filename ) const;
   void createPointFields( void );
 
  private:

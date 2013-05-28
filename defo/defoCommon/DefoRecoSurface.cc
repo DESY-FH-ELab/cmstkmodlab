@@ -71,7 +71,7 @@ const DefoSurface DefoRecoSurface::reconstruct( DefoPointCollection& currentPoin
   theSurface.createPointFields(); // create matrix of points (internal)
   emit incrementRecoProgress();
 
-  theSurface.dumpSplineField();
+  //theSurface.dumpSplineField();
 
   return theSurface;
 }
