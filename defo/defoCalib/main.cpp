@@ -11,12 +11,18 @@
 #include <QString>
 #include <QDir>
 
+#include <DefoPoint.h>
+#include <DefoRecoSurface.h>
+#include <DefoSurface.h>
+
 class image {
 public:
     std::string timestamp;
+    float focalLength;
     std::string comment;
     int amplitude;
     bool hasPoints;
+    DefoPointCollection points;
 };
 
 class measurementSet {
@@ -24,13 +30,55 @@ public:
     double amplitude;
     std::string undeformed;
     std::string deformed;
+    DefoSurface surface;
 };
+
+bool readPoints(std::string& filename, image& i) {
+
+    i.points.clear();
+
+    QFile file(filename.c_str());
+    if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
+        return false;
+
+    QXmlStreamReader stream(&file);
+
+    while (!stream.atEnd()) {
+        stream.readNextStartElement();
+        if (stream.isStartElement() && stream.name()=="DefoPoint") {
+            double x = stream.attributes().value("x").toString().toDouble();
+            double y = stream.attributes().value("y").toString().toDouble();
+            float H = stream.attributes().value("H").toString().toFloat();
+            float S = stream.attributes().value("S").toString().toFloat();
+            float V = stream.attributes().value("V").toString().toFloat();
+            DefoPoint p(x, y);
+            QColor c;
+            c.setHsvF(H, S, V);
+            p.setColor(c);
+
+            p.setValid(true);
+
+            bool indexed = (stream.attributes().value("indexed").toString().toInt()==1);
+            p.unindex();
+            if (indexed) {
+              int ix = stream.attributes().value("ix").toString().toInt();
+              int iy = stream.attributes().value("iy").toString().toInt();
+              p.setIndex(ix, iy);
+            }
+
+            i.points.push_back(p);
+        }
+    }
+
+    return true;
+}
 
 bool parseImage(std::string& dataPath, image& i) {
 
     std::string filename = dataPath + "/";
     filename += i.timestamp;
     filename += ".xml";
+
     QFile file(filename.c_str());
     if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
         return false;
@@ -41,14 +89,18 @@ bool parseImage(std::string& dataPath, image& i) {
         stream.readNextStartElement();
         if (stream.isStartElement() && stream.name()=="DefoMeasurement") {
             std::string timestamp = stream.attributes().value("timestamp").toString().toStdString();
+        }
 
-            if (stream.isStartElement() && stream.name()=="Comment") {
-                i.comment = stream.readElementText().toStdString();
-            }
+        if (stream.isStartElement() && stream.name()=="Comment") {
+            i.comment = stream.readElementText().toStdString();
+        }
 
-            if (stream.isStartElement() && stream.name()=="Calibration") {
-                i.amplitude = stream.attributes().value("amplitude").toString().toInt();
-            }
+        if (stream.isStartElement() && stream.name()=="Calibration") {
+            i.amplitude = stream.attributes().value("amplitude").toString().toInt();
+        }
+
+        if (stream.isStartElement() && stream.name()=="FocalLength") {
+            i.focalLength = stream.attributes().value("value").toString().toFloat();
         }
     }
 
@@ -60,6 +112,14 @@ bool parseImage(std::string& dataPath, image& i) {
         i.hasPoints = true;
     } else {
         i.hasPoints = false;
+    }
+
+    if (i.hasPoints) {
+        filename = dataPath + "/";
+        filename += "offlinePoints_";
+        filename += i.timestamp;
+        filename += ".xml";
+        readPoints(filename, i);
     }
 
     return true;
@@ -94,17 +154,11 @@ void dump(std::map<std::string,image>& images) {
     for (std::map<std::string,image>::iterator it = images.begin();
          it!=images.end();
          ++it) {
-        std::cout << "image: " << it->first << std::endl;
         image& i = it->second;
-        std::cout << "  has points: " << (int)i.hasPoints << std::endl;
-        std::cout << "  amplitude:  " << i.amplitude << std::endl;
-        std::cout << "  comment:    " << i.comment << std::endl;
+        if (!i.hasPoints) continue;
+        std::cout << "image: " << it->first << std::endl;
+        std::cout << "  amplitude:        " << i.amplitude << std::endl;
     }
-}
-
-bool checkImages(std::string& dataPath, std::map<std::string,std::string>& uniqueImages) {
-
-    return true;
 }
 
 int main(int argc, char *argv[])
@@ -135,7 +189,6 @@ int main(int argc, char *argv[])
             iss >> dataPath;
         } else if (key=="MEASUREMENT") {
             measurementSet m;
-            iss >> m.amplitude;
             iss >> m.undeformed;
             iss >> m.deformed;
             measurementSets.push_back(m);
@@ -156,15 +209,39 @@ int main(int argc, char *argv[])
         return 0;
     }
 
+    DefoRecoSurface reco;
+
+    reco.setPitchX(22.3/5184.); // mm/pixel
+    reco.setPitchY(14.9/3456.); // mm/pixel
+
+    reco.setNominalGridDistance(1.802*1000.);
+    reco.setNominalCameraDistance(1.822*1000.);
+
     std::cout << "datapath: " << dataPath << std::endl;
     std::cout << "measurements:" << std::endl;
     for (std::vector<measurementSet>::iterator it = measurementSets.begin();
          it!=measurementSets.end();
          ++it) {
-        std::cout << it->amplitude << " um\t" << it->undeformed << "\t" << it->deformed << std::endl;
-    }
 
-    if (!checkImages(dataPath, uniqueImages)) return -1;
+        image& undeformed = images[it->undeformed];
+        image& deformed = images[it->deformed];
+
+        it->amplitude = deformed.amplitude - undeformed.amplitude;
+
+        std::cout << it->amplitude << "um\t" << it->undeformed << "\t" << it->deformed << std::endl;
+
+        reco.setFocalLength(undeformed.focalLength);
+
+        it->surface = reco.reconstruct(undeformed.points, deformed.points);
+
+        std::string filename = "defoDump_";
+        filename += it->undeformed;
+        filename += "_";
+        filename += it->deformed;
+        filename += ".txt";
+
+        it->surface.dumpSplineField(filename);
+    }
 
     return 0;
 }
