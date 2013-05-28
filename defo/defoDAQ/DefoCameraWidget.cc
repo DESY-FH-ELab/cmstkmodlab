@@ -103,7 +103,7 @@ DefoCameraWidget::DefoCameraWidget(
 
   calibAmplitudeSpinBox_ = new QSpinBox(this);
   calibAmplitudeSpinBox_->setRange(-1000, 1000);
-  calibAmplitudeSpinBox_->setSuffix("um");
+  calibAmplitudeSpinBox_->setSuffix(" um");
   layout->addWidget(calibAmplitudeSpinBox_);
   connect(calibAmplitudeSpinBox_, SIGNAL(valueChanged(int)),
           cameraModel_, SLOT(setCalibAmplitude(int)));
