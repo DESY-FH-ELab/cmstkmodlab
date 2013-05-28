@@ -27,6 +27,8 @@
 #include "DefoPointIndexerModel.h"
 #include "DefoColorSelectionModel.h"
 
+#include "DefoOfflinePreparationModel.h"
+
 #include "DefoReconstructionModel.h"
 #include "DefoReconstructionWidget.h"
 
@@ -44,6 +46,7 @@ public slots:
 protected:
 
   QDir currentDir_;
+  QList<QDir> tempDirs_;
 
   QTabWidget* tabWidget_;
 
@@ -70,11 +73,14 @@ protected:
 
   DefoMeasurementPairListModel* measurementPairListModel_;
   DefoMeasurementPairSelectionModel* measurementPairSelectionModel_;
+
+  DefoOfflinePreparationModel* offlineModel_;
   DefoReconstructionModel* reconstructionModel_;
 
 protected slots:
   void loadMeasurementButtonClicked();
   void saveMeasurementButtonClicked();
+  void exportMeasurementButtonClicked();
 };
 
 #endif // DEFORECOMAINWINDOW_H

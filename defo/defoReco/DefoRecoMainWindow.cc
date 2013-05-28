@@ -2,6 +2,7 @@
 
 #include <QGroupBox>
 #include <QFileDialog>
+#include <QProcess>
 
 #include "DefoConfig.h"
 #include "DefoImageWidget.h"
@@ -47,6 +48,18 @@ DefoRecoMainWindow::DefoRecoMainWindow(QWidget *parent) :
   measurementPairListModel_ = new DefoMeasurementPairListModel(this);
   measurementPairSelectionModel_ = new DefoMeasurementPairSelectionModel(this);
 
+  offlineModel_ = new DefoOfflinePreparationModel(listModel_,
+                                                  refSelectionModel_,
+                                                  defoSelectionModel_,
+                                                  alignmentModel_,
+                                                  pointIndexerModel_,
+                                                  refColorModel_,
+                                                  defoColorModel_,
+                                                  measurementPairListModel_,
+                                                  measurementPairSelectionModel_,
+                                                  this);
+  offlineModel_->setCurrentDir(currentDir_);
+
   reconstructionModel_ = new DefoReconstructionModel(listModel_,
                                                      refSelectionModel_,
                                                      defoSelectionModel_,
@@ -79,15 +92,20 @@ DefoRecoMainWindow::DefoRecoMainWindow(QWidget *parent) :
   measurementButtonWidget->setLayout(hbox);
   vbox->addWidget(measurementButtonWidget);
 
-  QPushButton * loadMeasurementButton = new QPushButton("&Load measurement", measurementButtonWidget);
+  QPushButton * loadMeasurementButton = new QPushButton("&Load", measurementButtonWidget);
   connect(loadMeasurementButton, SIGNAL(clicked()),
    	  this, SLOT(loadMeasurementButtonClicked()));
   hbox->addWidget(loadMeasurementButton);
 
-  QPushButton * saveMeasurementButton = new QPushButton("&Save measurement", measurementButtonWidget);
+  QPushButton * saveMeasurementButton = new QPushButton("&Save", measurementButtonWidget);
   connect(saveMeasurementButton, SIGNAL(clicked()),
           this, SLOT(saveMeasurementButtonClicked()));
   hbox->addWidget(saveMeasurementButton);
+
+  QPushButton * exportMeasurementButton = new QPushButton("&Export", measurementButtonWidget);
+  connect(exportMeasurementButton, SIGNAL(clicked()),
+          this, SLOT(exportMeasurementButtonClicked()));
+  hbox->addWidget(exportMeasurementButton);
 
   DefoMeasurementListTreeWidget * treeWidget = new DefoMeasurementListTreeWidget(listModel_,
 										 selectionModel_,
@@ -135,26 +153,26 @@ DefoRecoMainWindow::DefoRecoMainWindow(QWidget *parent) :
   vbox->addWidget(refSelect);
 
   DefoRecoPointRecognitionWidget * refPointRecognitionWidget =
-    new DefoRecoPointRecognitionWidget(listModel_,
-				       refSelectionModel_,
-                                       refPointModel_,
-                                       roiModel_,
-				       refPointWidget);
+          new DefoRecoPointRecognitionWidget(listModel_,
+                                             refSelectionModel_,
+                                             refPointModel_,
+                                             roiModel_,
+                                             refPointWidget);
   refPointModel_->setThresholdValue(
-        DefoPointRecognitionModel::THRESHOLD_1
-        , cfgReader.getValue<int>( "STEP1_THRESHOLD" )
-        );
+              DefoPointRecognitionModel::THRESHOLD_1
+              , cfgReader.getValue<int>( "STEP1_THRESHOLD" )
+              );
   refPointModel_->setThresholdValue(
-        DefoPointRecognitionModel::THRESHOLD_2
-        , cfgReader.getValue<int>( "STEP2_THRESHOLD" )
-        );
+              DefoPointRecognitionModel::THRESHOLD_2
+              , cfgReader.getValue<int>( "STEP2_THRESHOLD" )
+              );
   refPointModel_->setThresholdValue(
-        DefoPointRecognitionModel::THRESHOLD_3
-        , cfgReader.getValue<int>( "STEP3_THRESHOLD" )
-        );
+              DefoPointRecognitionModel::THRESHOLD_3
+              , cfgReader.getValue<int>( "STEP3_THRESHOLD" )
+              );
   refPointModel_->setHalfSquareWidth(
-        cfgReader.getValue<int>( "HALF_SQUARE_WIDTH" )
-        );
+              cfgReader.getValue<int>( "HALF_SQUARE_WIDTH" )
+              );
   vbox->addWidget(refPointRecognitionWidget);
 
   layout->addWidget(refPointWidget);
@@ -167,26 +185,26 @@ DefoRecoMainWindow::DefoRecoMainWindow(QWidget *parent) :
   vbox->addWidget(defoSelect);
 
   DefoRecoPointRecognitionWidget * defoPointRecognitionWidget =
-    new DefoRecoPointRecognitionWidget(listModel_,
-				       defoSelectionModel_,
-				       defoPointModel_,
-                                       roiModel_,
-                                       defoPointWidget);
+          new DefoRecoPointRecognitionWidget(listModel_,
+                                             defoSelectionModel_,
+                                             defoPointModel_,
+                                             roiModel_,
+                                             defoPointWidget);
   defoPointModel_->setThresholdValue(
-        DefoPointRecognitionModel::THRESHOLD_1
-        , cfgReader.getValue<int>( "STEP1_THRESHOLD" )
-        );
+              DefoPointRecognitionModel::THRESHOLD_1
+              , cfgReader.getValue<int>( "STEP1_THRESHOLD" )
+              );
   defoPointModel_->setThresholdValue(
-        DefoPointRecognitionModel::THRESHOLD_2
-        , cfgReader.getValue<int>( "STEP2_THRESHOLD" )
-        );
+              DefoPointRecognitionModel::THRESHOLD_2
+              , cfgReader.getValue<int>( "STEP2_THRESHOLD" )
+              );
   defoPointModel_->setThresholdValue(
-        DefoPointRecognitionModel::THRESHOLD_3
-        , cfgReader.getValue<int>( "STEP3_THRESHOLD" )
-        );
+              DefoPointRecognitionModel::THRESHOLD_3
+              , cfgReader.getValue<int>( "STEP3_THRESHOLD" )
+              );
   defoPointModel_->setHalfSquareWidth(
-        cfgReader.getValue<int>( "HALF_SQUARE_WIDTH" )
-        );
+              cfgReader.getValue<int>( "HALF_SQUARE_WIDTH" )
+              );
   vbox->addWidget(defoPointRecognitionWidget);
 
   layout->addWidget(defoPointWidget);
@@ -236,7 +254,11 @@ DefoRecoMainWindow::DefoRecoMainWindow(QWidget *parent) :
                                                                              indexerColorWidget);
   hbox->addWidget(defoIndexerSelect);
   
-  
+  QPushButton * offlineButton = new QPushButton("&Prepare for offline processing", indexerWidget);
+  connect(offlineButton, SIGNAL(clicked()),
+          offlineModel_, SLOT(prepare()));
+  vbox->addWidget(offlineButton);
+
   tabWidget_->addTab(indexerWidget, "Indexer");
 
   vbox = new QVBoxLayout();
@@ -281,8 +303,29 @@ void DefoRecoMainWindow::loadMeasurementButtonClicked() {
   QString filename = QFileDialog::getOpenFileName(this,
 						  QString("Load Measurement"),
                                                   currentDir_.absolutePath(),
-						  QString("ODM Measurement Files (*.odmx)"));
+                          QString("ODM Measurement Files (*.odmx);;ODM Measurement Archive (*.odma)"));
   if (filename.isNull()) return;
+
+  if (filename.endsWith(".odma")) {
+    QString dirname = filename;
+    dirname.remove(0, dirname.lastIndexOf('/'));
+    dirname.remove(".odma");
+
+    QStringList args;
+    args << "-cvzf";
+    args << filename;
+    args << "-C";
+    args << QDir::temp().path();
+
+    QProcess tar(this);
+    tar.start("tar", args);
+
+    QDir tempDir = QDir::temp();
+    tempDir.cd(dirname);
+
+    tempDirs_.append(tempDir);
+    filename = tempDir.absoluteFilePath("measurements.odmx");
+  }
 
   QFileInfo fi(filename);
   currentDir_ = fi.absolutePath();
@@ -297,6 +340,7 @@ void DefoRecoMainWindow::loadMeasurementButtonClicked() {
   listModel_->clear();
   listModel_->read(filename);
   listModel_->readPoints(currentDir_);
+  offlineModel_->setCurrentDir(currentDir_);
 }
 
 void DefoRecoMainWindow::saveMeasurementButtonClicked() {
@@ -309,4 +353,20 @@ void DefoRecoMainWindow::saveMeasurementButtonClicked() {
 
   listModel_->write(currentDir_);
   listModel_->writePoints(currentDir_);
+}
+
+void DefoRecoMainWindow::exportMeasurementButtonClicked() {
+
+  saveMeasurementButtonClicked();
+
+  QString filename = QFileDialog::getSaveFileName(this
+                                                , "export measurement"
+                                                , "./"
+                                                , "ODM Measurement Archive (*.odma)"
+                                                , 0
+                                                , 0);
+  if (filename.isNull()) return;
+  if (!filename.endsWith(".odma")) filename += ".odma";
+
+  listModel_->exportMeasurement(currentDir_.absolutePath(), filename);
 }
