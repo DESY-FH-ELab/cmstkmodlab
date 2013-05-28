@@ -49,7 +49,7 @@ public:
   float getTemperature(unsigned int sensor) const { return temperatures_[sensor]; }
 
   const QString& getComment() const { return comment_; }
-  const int getCalibAmplitude() const { return calibAmplitude_; }
+  int getCalibAmplitude() const { return calibAmplitude_; }
 
   const DefoPointCollection* findPoints(
       const QRect* searchArea
