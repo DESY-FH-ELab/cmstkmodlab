@@ -2,6 +2,7 @@
 #include <QKeyEvent>
 #include <QMouseEvent>
 #include <QScrollBar>
+#include <QMenu>
 
 #include "DefoRecoImageWidget.h"
 
@@ -369,10 +370,6 @@ DefoRecoAlignmentImageContentWidget::DefoRecoAlignmentImageContentWidget(
 
 void DefoRecoAlignmentImageContentWidget::paintEvent(QPaintEvent *event) {
 
-  // std::cout << "DefoRecoAlignmentImageContentWidget::paintEvent(QPaintEvent *event)" << std::endl;
-
-  // std::cout << event->rect().x() << ", "  << event->rect().y() << ", "  << event->rect().width() << ", "  << event->rect().height() << std::endl;
-
   // TODO repaint only certain rectangle
   QWidget::paintEvent(event);
 
@@ -548,6 +545,34 @@ DefoRecoROIImageWidget::DefoRecoROIImageWidget(
         , this
         , SLOT(roiChanged())
   );
+
+  setContextMenuPolicy(Qt::CustomContextMenu);
+  connect(this, SIGNAL(customContextMenuRequested(const QPoint&)),
+          this, SLOT(showContextMenu(const QPoint&)));
+}
+
+void DefoRecoROIImageWidget::showContextMenu(const QPoint& p) {
+
+  QPoint globalPos = this->viewport()->mapToGlobal(p);
+
+  QMenu myMenu;
+  QAction * addBeforeAction = myMenu.addAction("add point before");
+  QAction * addAfterAction = myMenu.addAction("add point after");
+  QAction * removeAction = NULL;
+
+  if (roiModel_->numberOfPoints()>=4) removeAction = myMenu.addAction("remove point");
+
+  QAction* selectedItem = myMenu.exec(globalPos);
+  if (selectedItem==addBeforeAction) {
+      roiModel_->insertPointBefore();
+  } else if (selectedItem==addAfterAction) {
+      roiModel_->insertPointAfter();
+  } else if (selectedItem==removeAction && removeAction!=NULL) {
+      roiModel_->removePoint();
+  }
+
+  roiModel_->selectPoint(-1);
+  widget()->update();
 }
 
 void DefoRecoROIImageWidget::mouseMoveEvent(QMouseEvent * e)
@@ -582,37 +607,16 @@ void DefoRecoROIImageWidget::mousePressEvent(QMouseEvent * e)
 
   if (distance>5 && index!=-1) return;
 
-  std::cout << index << ": " << distance << std::endl;
+  // std::cout << index << ": " << distance << std::endl;
 
   roiModel_->selectPoint(index);
 
   widget()->update();
 }
 
-void DefoRecoROIImageWidget::keyReleaseEvent(QKeyEvent * event) {
-
-  if ((event->modifiers() & Qt::ShiftModifier)) {
-    switch (event->key()) {
-    case Qt::Key_Plus:
-      roiModel_->appendPoint();
-      event->accept();
-      break;
-    case Qt::Key_Minus:
-      roiModel_->removePoint();
-      event->accept();
-      break;
-    default:
-      break;
-    }
-  }
-
-  DefoRecoImageWidget::keyReleaseEvent(event);
-}
-
 void DefoRecoROIImageWidget::mouseReleaseEvent(QMouseEvent * /*e*/) {
-  int currentSelectedPoint = roiModel_->getSelectedPoint();
   roiModel_->selectPoint(-1);
-  if (currentSelectedPoint!=-1) widget()->update();
+  widget()->update();
 }
 
 void DefoRecoROIImageWidget::roiChanged() {

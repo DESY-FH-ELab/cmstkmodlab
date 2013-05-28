@@ -58,18 +58,51 @@ bool DefoROIModel::containsPoint(float width, float height,
   return QPolygonF::containsPoint(p, Qt::OddEvenFill);
 }
 
-void DefoROIModel::appendPoint() {
-  const QPointF & lastP = last();
-  const QPointF & firstP = first();
-  QPointF np((lastP.x()+firstP.x())/2,
-             (lastP.y()+firstP.y())/2);
-  push_back(np);
-  emit roiChanged();
+void DefoROIModel::insertPointBefore() {
+  if (selectedPoint_==-1) return;
+
+  if (selectedPoint_==0) {
+    const QPointF & lastP = last();
+    const QPointF & firstP = first();
+    QPointF np((lastP.x()+firstP.x())/2,
+               (lastP.y()+firstP.y())/2);
+    insert(0, np);
+    emit roiChanged();
+  } else {
+      const QPointF & lastP = at(selectedPoint_-1);
+      const QPointF & firstP = at(selectedPoint_);
+      QPointF np((lastP.x()+firstP.x())/2,
+                 (lastP.y()+firstP.y())/2);
+      insert(selectedPoint_, np);
+      emit roiChanged();
+  }
+}
+
+void DefoROIModel::insertPointAfter() {
+  if (selectedPoint_==-1) return;
+
+  if (selectedPoint_==size()-1) {
+    const QPointF & lastP = last();
+    const QPointF & firstP = first();
+    QPointF np((lastP.x()+firstP.x())/2,
+               (lastP.y()+firstP.y())/2);
+    push_back(np);
+    emit roiChanged();
+  } else {
+      const QPointF & lastP = at(selectedPoint_);
+      const QPointF & firstP = at(selectedPoint_+1);
+      QPointF np((lastP.x()+firstP.x())/2,
+                 (lastP.y()+firstP.y())/2);
+      insert(selectedPoint_+1, np);
+      emit roiChanged();
+  }
+
 }
 
 void DefoROIModel::removePoint() {
+  if (selectedPoint_==-1) return;
   if (size()>3) {
-    pop_back();
+    remove(selectedPoint_);
     emit roiChanged();
   }
 }

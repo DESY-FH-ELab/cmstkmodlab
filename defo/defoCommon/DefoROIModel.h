@@ -19,8 +19,10 @@ public:
   void setPoint(int index, float newX, float newY);
   int getSelectedPoint() const { return selectedPoint_; }
   void selectPoint(int index) { selectedPoint_ = index; }
+  int numberOfPoints() const { return size(); }
 
-  void appendPoint();
+  void insertPointBefore();
+  void insertPointAfter();
   void removePoint();
 
   bool containsPoint(float width, float height,
