@@ -11,11 +11,14 @@ class DefoPointSaver : public QFile
 public:
   explicit DefoPointSaver(const QString& filename, QObject* parent = 0);
   ~DefoPointSaver();
+
   void writePoints(const DefoPointCollection &points);
-  void writePoint(const DefoPoint &point);
+  void writeXMLPoints(const DefoPointCollection &points);
 
 protected:
   const static QString LINE_FORMAT;
+
+  void writePoint(const DefoPoint &point);
 };
 
 #endif // DEFOPOINTSAVER_H
