@@ -679,6 +679,7 @@ void DefoMeasurement::read(const QDir&path) {
     }
   }
 }
+
 DefoMeasurementPair::DefoMeasurementPair(DefoMeasurement* reference,
                                          DefoMeasurement* deformed) :
   std::pair<DefoMeasurement*,DefoMeasurement*>(reference, deformed) {
