@@ -18,7 +18,8 @@ class VJulaboFP50
  public:
 
   VJulaboFP50( ioport_t );
-
+  virtual ~VJulaboFP50() {}
+  
   virtual bool SetWorkingTemperature( const float ) const = 0;
   virtual bool SetPumpPressure( const unsigned int ) const = 0;
   virtual bool SetCirculatorOn( void ) const = 0;
