@@ -5,18 +5,18 @@ USEFAKEDEVICES= @usefakedevices@
 
 subdirs	      = devices tools
 ifeq ($(NOTHERMAL),0)
-subdirs      += common thermal
+subdirs      += thermal
 endif
 ifeq ($(NODEFO),0)
-subdirs      += common defo conradControl
+subdirs      += defo conradControl
 endif
 
 qtsubdirs     = 
 ifeq ($(NOTHERMAL),0)
-qtsubdirs    += common thermal
+qtsubdirs    += thermal
 endif
 ifeq ($(NODEFO),0)
-qtsubdirs    +=  common defo/defoCommon defo/defoDAQ defo/defoReco defo/defoCalib conradControl
+qtsubdirs    += defo/defoCommon defo/defoDAQ defo/defoReco defo/defoCalib conradControl
 endif
 
 all: qt
