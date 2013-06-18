@@ -6,17 +6,9 @@
 
 #include <QWidget>
 
-#ifdef QWT_QT4
-#include <qwt-qt4/qwt_plot.h>
-#include <qwt-qt4/qwt_plot_curve.h>
-#include <qwt-qt4/qwt_scale_engine.h>
-#else
-#include <qwt/qwt_plot.h>
-#include <qwt/qwt_plot_curve.h>
-#include <qwt/qwt_scale_engine.h>
-#endif
-
-
+#include <qwt_plot.h>
+#include <qwt_plot_curve.h>
+#include <qwt_scale_engine.h>
 
 #define _PLOTSIZE 256
 
