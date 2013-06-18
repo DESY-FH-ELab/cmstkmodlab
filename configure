@@ -39,24 +39,33 @@ if test $ARCHITECTURE = "Darwin"; then
     USEFAKEDEVICES=1
     CONFIGDEFINES="USE_FAKEIO"
     SOFLAGS="-m64 -O2 -dynamiclib -single_module -undefined dynamic_lookup"
-    # Support multiple distros (e.g. Ubuntu (Debian), openSUSE)
-    if [ -n `locate qwtplot3d.so` ]; then
-        echo Using Qwt libraries with qt4 suffix.
-        QWTDEFINES="QWT_QT4"
-        QWTLIBS="-lqwtplot3d-qt4 -lqwt-qt4"
-    else
-        QWTDEFINES=""
-        QWTLIBS="-lqwtplot3d -lqwt"
-    fi
 fi
 if test $ARCHITECTURE = "Linux"; then
     SOFLAGS="-shared"
+    if test $KERNELMINOR -lt 6; then
+	echo "Linux kernel minor version < 6: fake device support forced"
+	USEFAKEDEVICES=1
+    fi
 fi
-if test $ARCHITECTURE = "Linux" && test $KERNELMINOR -lt 6; then
-    echo Linux kernel minor version < 6: fake device support forced
-    USEFAKEDEVICES=1
-    QWTDEFINES=""
-    QWTLIBS="-lqwtplot3d -lqwt"
+
+# Support multiple distros (e.g. Ubuntu (Debian), openSUSE)
+if [ -n `locate qwtplot3d.so` ]; then
+    echo "Using Qwtplot3d libraries with qt4 suffix."
+    QWTLIBS="-lqwtplot3d-qt4"
+    QWTINCLUDES="/usr/include/qwtplot3d-qt4"
+else
+    echo "Using Qwtplot3d libraries without qt4 suffix."
+    QWTLIBS="-lqwtplot3d"
+    QWTINCLUDES="/usr/include/qwtplot3d"
+fi
+if [ -n `locate qwt.so` ]; then
+    echo "Using Qwt libraries with qt4 suffix."
+    QWTLIBS="$QWTLIBS -lqwt-qt4"
+    QWTINCLUDES="$QWTINCLUDES /usr/include/qwt-qt4"
+else
+    echo "Using Qwt libraries without qt4 suffix."
+    QWTLIBS="$QWTLIBS -lqwt"
+    QWTINCLUDES="$QWTINCLUDES /usr/include/qwt"
 fi
 
 if test $USEFAKEDEVICES = 1; then
@@ -75,7 +84,7 @@ else
     echo build with THERMAL support
 fi
 
-SED_VARIABLES="BASEPATH ARCHITECTURE KERNELMAJOR KERNELMINOR NODEFO NOTHERMAL USEFAKEDEVICES SOFLAGS CONFIGDEFINES QWTDEFINES QWTLIBS"
+SED_VARIABLES="BASEPATH ARCHITECTURE KERNELMAJOR KERNELMINOR NODEFO NOTHERMAL USEFAKEDEVICES SOFLAGS CONFIGDEFINES QWTLIBS QWTINCLUDES"
 
 echo "#!/bin/sh
 dest=\`basename \$1 .in\`

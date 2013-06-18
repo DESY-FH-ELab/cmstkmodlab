@@ -4,12 +4,12 @@
 QT += core gui
 macx { 
     INCLUDEPATH += /opt/local/include/qwt
-    LIBS += -L/opt/local/lib -lqwt 
+    LIBS += -L/opt/local/lib @qwtlibs@
     LIBS += ../devices/Keithley/*.o ../devices/Greisinger/*.o ../devices/Julabo/*.o ../devices/Hameg/*.o
 }
 else { 
-    INCLUDEPATH += /usr/include/qwt
-    LIBS += -lqwt -L../devices/lib -lTkModLabKeithley -lTkModLabGreisinger -lTkModLabJulabo -lTkModLabHameg
+    INCLUDEPATH += @qwtincludes@
+    LIBS += @qwtlibs@ -L../devices/lib -lTkModLabKeithley -lTkModLabGreisinger -lTkModLabJulabo -lTkModLabHameg
 }
 DEFINES += @configdefines@
 INCLUDEPATH += ../

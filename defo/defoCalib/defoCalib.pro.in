@@ -6,7 +6,7 @@
 
 macx {
     INCLUDEPATH += /opt/local/include/exiv2
-    LIBS += -L/opt/local/lib -lqwt -lqwtplot3d
+    LIBS += -L/opt/local/lib @qwtlibs@
     LIBS += -L/opt/local/lib -lexiv2
     LIBS += -L/opt/local/lib -lopencv_core -lopencv_imgproc -lopencv_highgui
     LIBS += -L/opt/local/lib -lgphoto2 -lgphoto2_port
