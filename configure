@@ -56,21 +56,13 @@ if test $ARCHITECTURE = "Linux"; then
         QWTINCLUDES="/usr/include/qwtplot3d-qt4"
         QWTLIBS="-lqwtplot3d-qt4"
     else
+        echo Using Qwt libraries without qt4 suffix.
         QWTDEFINES=""
         QWTINCLUDES="/usr/include/qwtplot3d"
         QWTLIBS="-lqwtplot3d"
     fi
     QWTINCLUDES+=" /usr/include/qwt"
     QWTLIBS+=" -lqwt"
-fi
-if [ -n `locate -l 1 qwt.so` ]; then
-    echo "Using Qwt libraries with qt4 suffix."
-    QWTLIBS="$QWTLIBS -lqwt-qt4"
-    QWTINCLUDES="$QWTINCLUDES /usr/include/qwt-qt4"
-else
-    echo "Using Qwt libraries without qt4 suffix."
-    QWTLIBS="$QWTLIBS -lqwt"
-    QWTINCLUDES="$QWTINCLUDES /usr/include/qwt"
 fi
 
 if test $USEFAKEDEVICES = 1; then
