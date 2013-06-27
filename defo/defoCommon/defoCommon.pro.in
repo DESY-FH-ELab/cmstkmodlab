@@ -5,17 +5,16 @@
 #-------------------------------------------------
 
 macx {
-    INCLUDEPATH += /opt/local/include/qwt
-    INCLUDEPATH += /opt/local/include/qwtplot3d
     INCLUDEPATH += /opt/local/include/GL
     INCLUDEPATH += /opt/local/include/exiv2
     LIBS += -lgphoto2_port
     LIBS += -L/opt/local/lib
 }
 else {
-    INCLUDEPATH += @qwtincludes@ /usr/include/exiv2
+    INCLUDEPATH += /usr/include/exiv2
 }
 
+INCLUDEPATH += @qwtincludes@
 LIBS += @qwtlibs@ -lGL -lGLU
 LIBS += -lopencv_core -lopencv_imgproc -lopencv_highgui
 LIBS += -lgphoto2 -lexiv2

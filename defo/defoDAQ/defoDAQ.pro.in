@@ -3,8 +3,6 @@
 ######################################################################
 
 macx {
-    INCLUDEPATH += /opt/local/include/qwt
-    INCLUDEPATH += /opt/local/include/qwtplot3d
     INCLUDEPATH += /opt/local/include/GL
     LIBS += -L/opt/local/lib @qwtlibs@
     LIBS += -L/opt/local/lib -lexiv2
@@ -28,9 +26,11 @@ else {
     LIBS += -L@basepath@/defo/defoCommon -lDefoCommon
     LIBS += -lgphoto2 -lexiv2
     LIBS += -lopencv_core -lopencv_imgproc -lopencv_highgui
-    INCLUDEPATH += @qwtincludes@ /usr/include/exiv2
+    INCLUDEPATH += /usr/include/exiv2
     LIBS += @qwtlibs@ -lGL -lGLU
 }
+
+INCLUDEPATH += @qwtincludes@
 DEFINES += @configdefines@
 QT += core gui opengl script xml
 TEMPLATE = app
