@@ -49,7 +49,7 @@ if test $ARCHITECTURE = "Linux"; then
 fi
 
 # Support multiple distros (e.g. Ubuntu (Debian), openSUSE)
-if [ -n `locate qwtplot3d.so` ]; then
+if [ -n `locate -l 1 qwtplot3d.so` ]; then
     echo "Using Qwtplot3d libraries with qt4 suffix."
     QWTLIBS="-lqwtplot3d-qt4"
     QWTINCLUDES="/usr/include/qwtplot3d-qt4"
@@ -58,7 +58,7 @@ else
     QWTLIBS="-lqwtplot3d"
     QWTINCLUDES="/usr/include/qwtplot3d"
 fi
-if [ -n `locate qwt.so` ]; then
+if [ -n `locate -l 1 qwt.so` ]; then
     echo "Using Qwt libraries with qt4 suffix."
     QWTLIBS="$QWTLIBS -lqwt-qt4"
     QWTINCLUDES="$QWTINCLUDES /usr/include/qwt-qt4"
