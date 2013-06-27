@@ -8,9 +8,15 @@ subdirs	      = Julabo \
 		Keithley \
                 Greisinger \
 		Hameg \
-		Canon \
 		Conrad \
 		Pfeiffer
+
+ifeq ($(NOTHERMAL),0)
+subdirs      += 
+endif
+ifeq ($(NODEFO),0)
+subdirs      += Canon
+endif
 
 all:
 	@for dir in $(subdirs); do (cd $$dir; make); done
