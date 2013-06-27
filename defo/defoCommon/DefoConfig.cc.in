@@ -1,4 +1,5 @@
 #include "DefoConfigReader.h"
+#include "DefoConfigWriter.h"
 
 #include "DefoConfig.h"
 
@@ -20,6 +21,11 @@ DefoConfig* DefoConfig::instance(const std::string filename)
     }
   }
   return instance_;
+}
+
+void DefoConfig::safe(const std::string filename) {
+  DefoConfigWriter writer(filename);
+  writer.write(keyvalueMap_);
 }
 
 void DefoConfig::issueKeyError(std::string const& key) const {

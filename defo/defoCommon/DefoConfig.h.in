@@ -6,6 +6,7 @@
 #include <map>
 
 #include <QObject>
+#include <QVariant>
 #include <QMessageBox>
 
 namespace Defo {
@@ -18,8 +19,8 @@ class DefoConfig {
 
   static DefoConfig* instance(const std::string filename = std::string());
 
-  template <class aType> aType getValue( std::string const& key ) const {
-    aType returnValue;
+  template <class aType> aType getValue(std::string const& key) const {
+    aType returnValue = 0;
     std::map<std::string,std::string>::const_iterator it = keyvalueMap_.find(key);
     if (it!=keyvalueMap_.end()) {
       std::istringstream iss(it->second.c_str(), std::istringstream::in);
@@ -29,6 +30,13 @@ class DefoConfig {
     }
     return returnValue;
   }
+
+  template <class aType> void setValue(std::string const& key, aType value) {
+    QVariant variant(value);
+    keyvalueMap_[key] = variant.toString().toStdString();
+  }
+
+  void safe(const std::string filename);
 
  protected:
 
