@@ -11,6 +11,7 @@
 #include <QString>
 #include <QDir>
 
+#include <DefoConfig.h>
 #include <DefoPoint.h>
 #include <DefoRecoSurface.h>
 #include <DefoSurface.h>
@@ -177,6 +178,7 @@ int main(int argc, char *argv[])
     std::string line;
     std::string key;
     std::string dataPath;
+    std::string cfgFile;
     std::vector<measurementSet> measurementSets;
     std::map<std::string,image> images;
     std::map<std::string,std::string> uniqueImages;
@@ -185,7 +187,9 @@ int main(int argc, char *argv[])
         std::istringstream iss(line);
         iss >> key;
 
-        if (key=="DATA") {
+        if (key=="CFG") {
+            iss >> cfgFile;
+        } else if (key=="DATA") {
             iss >> dataPath;
         } else if (key=="MEASUREMENT") {
             measurementSet m;
@@ -195,6 +199,12 @@ int main(int argc, char *argv[])
             uniqueImages[m.undeformed] = m.undeformed;
             uniqueImages[m.deformed] = m.deformed;
         }
+    }
+ 
+    if (cfgFile.empty()) {
+      DefoConfig::instance(std::string(Defo::CMSTkModLabBasePath) + "/defo/defo.cfg");
+    } else {
+      DefoConfig::instance(cfgFile);
     }
 
     if (!parseODMX(dataPath, images)) {
@@ -211,11 +221,12 @@ int main(int argc, char *argv[])
 
     DefoRecoSurface reco;
 
-    reco.setPitchX(22.3/5184.); // mm/pixel
-    reco.setPitchY(14.9/3456.); // mm/pixel
+    reco.setPitchX(DefoConfig::instance()->getValue<int>("PIXEL_PITCH_X"));
+    reco.setPitchY(DefoConfig::instance()->getValue<int>("PIXEL_PITCH_Y"));
 
-    reco.setNominalGridDistance(1.802*1000.);
-    reco.setNominalCameraDistance(1.822*1000.);
+    reco.setNominalGridDistance(DefoConfig::instance()->getValue<int>("NOMINAL_GRID_DISTANCE")*1000.);
+    reco.setNominalCameraDistance(DefoConfig::instance()->getValue<int>("NOMINAL_CAMERA_DISTANCE")*1000.);
+    reco.setNominalViewingAngle(DefoConfig::instance()->getValue<int>("NOMINAL_VIEWING_ANGLE")*1000.);
 
     std::cout << "datapath: " << dataPath << std::endl;
     std::cout << "measurements:" << std::endl;
