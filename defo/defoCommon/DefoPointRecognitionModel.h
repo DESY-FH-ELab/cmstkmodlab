@@ -1,8 +1,9 @@
 #ifndef DEFOPOINTRECOGNITIONMODEL_H
 #define DEFOPOINTRECOGNITIONMODEL_H
 
+#include <vector>
+
 #include <QObject>
-#include "DefoConfigReader.h"
 
 class DefoPointRecognitionModel : public QObject
 {

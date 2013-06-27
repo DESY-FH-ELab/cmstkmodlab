@@ -10,20 +10,18 @@ DefoRecoSurface::DefoRecoSurface(QObject *parent)
 {
 
   // read parameters
-  DefoConfigReader cfgReader( std::string(Defo::CMSTkModLabBasePath) + "/defo/defo.cfg" );
-  spacingEstimate_ = cfgReader.getValue<int>( "SPACING_ESTIMATE" );
-  searchPathHalfWidth_ = cfgReader.getValue<int>( "SEARCH_PATH_HALF_WIDTH" );
-  nominalGridDistance_ = cfgReader.getValue<double>( "NOMINAL_GRID_DISTANCE" );
-  nominalCameraDistance_ = cfgReader.getValue<double>( "NOMINAL_CAMERA_DISTANCE" );
-  nominalViewingAngle_ = cfgReader.getValue<double>( "NOMINAL_VIEWING_ANGLE" );
-  pitchX_= cfgReader.getValue<double>( "PIXEL_PITCH_X" );
-  pitchY_= cfgReader.getValue<double>( "PIXEL_PITCH_Y" );
-  focalLength_= cfgReader.getValue<double>( "LENS_FOCAL_LENGTH" );
-  debugLevel_ = cfgReader.getValue<unsigned int>( "DEBUG_LEVEL" );
+  spacingEstimate_ = DefoConfig::instance()->getValue<int>( "SPACING_ESTIMATE" );
+  searchPathHalfWidth_ = DefoConfig::instance()->getValue<int>( "SEARCH_PATH_HALF_WIDTH" );
+  nominalGridDistance_ = DefoConfig::instance()->getValue<double>( "NOMINAL_GRID_DISTANCE" );
+  nominalCameraDistance_ = DefoConfig::instance()->getValue<double>( "NOMINAL_CAMERA_DISTANCE" );
+  nominalViewingAngle_ = DefoConfig::instance()->getValue<double>( "NOMINAL_VIEWING_ANGLE" );
+  pitchX_= DefoConfig::instance()->getValue<double>( "PIXEL_PITCH_X" );
+  pitchY_= DefoConfig::instance()->getValue<double>( "PIXEL_PITCH_Y" );
+  focalLength_= DefoConfig::instance()->getValue<double>( "LENS_FOCAL_LENGTH" );
+  debugLevel_ = DefoConfig::instance()->getValue<unsigned int>( "DEBUG_LEVEL" );
 
   // to be called after cfg reading
   calculateHelpers();
-
 }
 
 ///

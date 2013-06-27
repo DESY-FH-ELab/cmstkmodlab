@@ -72,8 +72,8 @@ void DefoImageWidget::paintEvent(QPaintEvent *event) {
     const DefoMeasurement* measurement = selectionModel_->getSelection();
     QImage prepared = prepareImage(measurement->getImage());
 
-    painter.translate(prepared.height(), 0);
-    painter.rotate(90);
+    //painter.translate(prepared.height(), 0);
+    //painter.rotate(90);
 
     // Draw image
     painter.drawImage( QPoint(0,0), prepared );
@@ -373,9 +373,8 @@ void DefoImagePointsWidget::paintEvent(QPaintEvent *event) {
     else
       drawingSize.setWidth( drawingSize.height()*aspectRatio );
 
-    painter.translate(drawingSize.height(), 0);
-    painter.rotate(90);
-
+    //painter.translate(drawingSize.height(), 0);
+    //painter.rotate(90);
 
     QPen pen( Qt::NoBrush, 1 );
 

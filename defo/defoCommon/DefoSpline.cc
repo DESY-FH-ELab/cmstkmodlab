@@ -8,8 +8,7 @@
 ///
 DefoSplineSetBase::DefoSplineSetBase( DefoPoint::Axis axis ) {
 
-  DefoConfigReader cfgReader( std::string(Defo::CMSTkModLabBasePath) + "/defo/defo.cfg" );
-  debugLevel_ = cfgReader.getValue<unsigned int>( "DEBUG_LEVEL" );
+  debugLevel_ = DefoConfig::instance()->getValue<unsigned int>( "DEBUG_LEVEL" );
   axis_ = axis;
 
 }

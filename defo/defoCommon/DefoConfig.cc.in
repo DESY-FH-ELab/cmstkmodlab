@@ -1,3 +1,35 @@
+#include "DefoConfigReader.h"
+
 #include "DefoConfig.h"
 
 const std::string Defo::CMSTkModLabBasePath("@basepath@");
+
+DefoConfig* DefoConfig::instance_ = NULL;
+
+DefoConfig::DefoConfig(const std::string filename)
+{
+  DefoConfigReader reader(filename);
+  reader.fill(keyvalueMap_);
+}
+
+DefoConfig* DefoConfig::instance(const std::string filename)
+{
+  if (instance_==NULL) {
+    if (!filename.empty()) {
+      instance_ = new DefoConfig(filename);
+    }
+  }
+  return instance_;
+}
+
+void DefoConfig::issueKeyError(std::string const& key) const {
+  
+  std::cerr << " [issueKeyError::getValue] ** ERROR: failed to get value for key: "
+	    << key << "." << std::endl;
+
+  QMessageBox::critical( 0,
+			 QString("[DefoConfigReader::issueKeyError]"),
+			 QString("Failed to find value for key: \"%1\"\n.")
+			 .arg( QString( key.c_str() ) ),
+			 QMessageBox::Ok ); 
+}

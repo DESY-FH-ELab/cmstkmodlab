@@ -1,3 +1,5 @@
+#include "DefoConfig.h"
+
 #include "DefoPointRecognitionModel.h"
 
 const int DefoPointRecognitionModel::THRESHOLD_MINIMUM = 0;

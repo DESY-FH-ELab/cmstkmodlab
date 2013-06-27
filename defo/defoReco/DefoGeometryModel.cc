@@ -14,13 +14,11 @@ DefoGeometryModel::DefoGeometryModel(
   ) :
     QObject(parent)
 {
-  DefoConfigReader cfgReader( std::string(Defo::CMSTkModLabBasePath) + "/defo/defo.cfg" );
-
-  angle1_ = cfgReader.getValue<double>( "ANGLE1" );
-  angle2_ = cfgReader.getValue<double>( "ANGLE2" );
-  distance_ = cfgReader.getValue<double>( "DISTANCE" );
-  height1_ = cfgReader.getValue<double>( "HEIGHT1" );
-  height2_ = cfgReader.getValue<double>( "HEIGHT2" );
+  angle1_ = DefoConfig::instance()->getValue<double>( "ANGLE1" );
+  angle2_ = DefoConfig::instance()->getValue<double>( "ANGLE2" );
+  distance_ = DefoConfig::instance()->getValue<double>( "DISTANCE" );
+  height1_ = DefoConfig::instance()->getValue<double>( "HEIGHT1" );
+  height2_ = DefoConfig::instance()->getValue<double>( "HEIGHT2" );
 }
 
 void DefoGeometryModel::setAngle1(double v) {

@@ -141,21 +141,20 @@ DefoMainWindow::DefoMainWindow(QWidget *parent) :
   buttonLayout->addWidget(newMeasurementButton, 0, 1);
 
   // read default settings
-  DefoConfigReader cfgReader( std::string(Defo::CMSTkModLabBasePath) + "/defo/defo.cfg" );
   pointModel_->setThresholdValue(
         DefoPointRecognitionModel::THRESHOLD_1
-        , cfgReader.getValue<int>( "STEP1_THRESHOLD" )
+        , DefoConfig::instance()->getValue<int>( "STEP1_THRESHOLD" )
         );
   pointModel_->setThresholdValue(
         DefoPointRecognitionModel::THRESHOLD_2
-        , cfgReader.getValue<int>( "STEP2_THRESHOLD" )
+        , DefoConfig::instance()->getValue<int>( "STEP2_THRESHOLD" )
         );
   pointModel_->setThresholdValue(
         DefoPointRecognitionModel::THRESHOLD_3
-        , cfgReader.getValue<int>( "STEP3_THRESHOLD" )
+        , DefoConfig::instance()->getValue<int>( "STEP3_THRESHOLD" )
         );
   pointModel_->setHalfSquareWidth(
-        cfgReader.getValue<int>( "HALF_SQUARE_WIDTH" )
+        DefoConfig::instance()->getValue<int>( "HALF_SQUARE_WIDTH" )
         );
 
   DefoPointRecognitionWidget * pointWidget =

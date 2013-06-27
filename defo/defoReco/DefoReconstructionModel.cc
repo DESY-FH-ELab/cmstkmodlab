@@ -1,8 +1,10 @@
 #include <iostream>
 #include <fstream>
+#include <cmath>
 
 #include "DefoReconstructionModel.h"
 #include "DefoPointSaver.h"
+#include "DefoConfig.h"
 
 DefoReconstructionModel::DefoReconstructionModel(
     DefoMeasurementListModel * listModel
@@ -65,8 +67,8 @@ DefoReconstructionModel::DefoReconstructionModel(
 
   reco_ = new DefoRecoSurface(this);
 
-  reco_->setPitchX(22.3/5184.); // mm/pixel
-  reco_->setPitchY(14.9/3456.); // mm/pixel
+  reco_->setPitchX(DefoConfig::instance()->getValue<int>("PIXEL_PITCH_X"));
+  reco_->setPitchY(DefoConfig::instance()->getValue<int>("PIXEL_PITCH_Y"));
 
   connect(reco_,
           SIGNAL(incrementRecoProgress()),
@@ -119,15 +121,30 @@ void DefoReconstructionModel::defoColorChanged(float hue, float saturation) {
 void DefoReconstructionModel::geometryChanged() {
   std::cout << "void DefoReconstructionModel::geometryChanged()" << std::endl;
 
-  // geometryModel_->getAngle1();
-  // geometryModel_->getAngle2();
-  // geometryModel_->getDistance();
-  // geometryModel_->getHeight1();
-  // geometryModel_->getHeight2();
+  double angle1 = geometryModel_->getAngle1();
+  double angle1Rad = angle1 * M_PI / 180.;
+  double angle2 = geometryModel_->getAngle2();
+  double angle2Rad = angle2 * M_PI / 180.;
+  double distance = geometryModel_->getDistance();
+  double height1 = geometryModel_->getHeight1();
+  double height2 = geometryModel_->getHeight2();
 
-  reco_->setNominalGridDistance(1.802*1000.);
-  reco_->setNominalCameraDistance(1.822*1000.);
-  //reco_->setNominalViewingAngle();
+  // height of camera rotation point over surface
+  double heightCameraToSurface = height1 - height2 - distance * std::sin(angle2Rad);
+
+  // viewing distance from camera to surface
+  // (assumption: camera is mounted perpendicular to frame)
+  double distanceCamera = heightCameraToSurface / std::sin(angle2Rad);
+
+  // distance from grid to surface calculated as the shortest distance
+  // between grid and the point on the surface under the grid roation axis
+  double distanceGrid = (height1 - height2) * std::cos(angle1Rad);
+
+  reco_->setNominalGridDistance(distanceGrid);
+  reco_->setNominalCameraDistance(distanceCamera);
+
+  // not really sure about this one...
+  reco_->setNominalViewingAngle(angle2Rad);
 
   emit setupChanged();
 }

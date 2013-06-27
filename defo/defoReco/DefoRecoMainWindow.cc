@@ -138,9 +138,6 @@ DefoRecoMainWindow::DefoRecoMainWindow(QWidget *parent) :
 
   tabWidget_->addTab(roiWidget, "ROI");
 
-  // read default settings
-  DefoConfigReader cfgReader( std::string(Defo::CMSTkModLabBasePath) + "/defo/defo.cfg" );
-
   layout = new QHBoxLayout();
   QWidget * pointsWidget = new QWidget(tabWidget_);
   pointsWidget->setLayout(layout);
@@ -160,18 +157,18 @@ DefoRecoMainWindow::DefoRecoMainWindow(QWidget *parent) :
                                              refPointWidget);
   refPointModel_->setThresholdValue(
               DefoPointRecognitionModel::THRESHOLD_1
-              , cfgReader.getValue<int>( "STEP1_THRESHOLD" )
+              , DefoConfig::instance()->getValue<int>( "STEP1_THRESHOLD" )
               );
   refPointModel_->setThresholdValue(
               DefoPointRecognitionModel::THRESHOLD_2
-              , cfgReader.getValue<int>( "STEP2_THRESHOLD" )
+              , DefoConfig::instance()->getValue<int>( "STEP2_THRESHOLD" )
               );
   refPointModel_->setThresholdValue(
               DefoPointRecognitionModel::THRESHOLD_3
-              , cfgReader.getValue<int>( "STEP3_THRESHOLD" )
+              , DefoConfig::instance()->getValue<int>( "STEP3_THRESHOLD" )
               );
   refPointModel_->setHalfSquareWidth(
-              cfgReader.getValue<int>( "HALF_SQUARE_WIDTH" )
+              DefoConfig::instance()->getValue<int>( "HALF_SQUARE_WIDTH" )
               );
   vbox->addWidget(refPointRecognitionWidget);
 
@@ -192,18 +189,18 @@ DefoRecoMainWindow::DefoRecoMainWindow(QWidget *parent) :
                                              defoPointWidget);
   defoPointModel_->setThresholdValue(
               DefoPointRecognitionModel::THRESHOLD_1
-              , cfgReader.getValue<int>( "STEP1_THRESHOLD" )
+              , DefoConfig::instance()->getValue<int>( "STEP1_THRESHOLD" )
               );
   defoPointModel_->setThresholdValue(
               DefoPointRecognitionModel::THRESHOLD_2
-              , cfgReader.getValue<int>( "STEP2_THRESHOLD" )
+              , DefoConfig::instance()->getValue<int>( "STEP2_THRESHOLD" )
               );
   defoPointModel_->setThresholdValue(
               DefoPointRecognitionModel::THRESHOLD_3
-              , cfgReader.getValue<int>( "STEP3_THRESHOLD" )
+              , DefoConfig::instance()->getValue<int>( "STEP3_THRESHOLD" )
               );
   defoPointModel_->setHalfSquareWidth(
-              cfgReader.getValue<int>( "HALF_SQUARE_WIDTH" )
+              DefoConfig::instance()->getValue<int>( "HALF_SQUARE_WIDTH" )
               );
   vbox->addWidget(defoPointRecognitionWidget);
 
