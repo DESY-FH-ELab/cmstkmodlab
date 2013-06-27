@@ -4,6 +4,7 @@ NODEFO        = @nodefo@
 USEFAKEDEVICES= @usefakedevices@
 
 subdirs	      = Julabo \
+		Huber \
 		Keithley \
                 Greisinger \
 		Hameg \
