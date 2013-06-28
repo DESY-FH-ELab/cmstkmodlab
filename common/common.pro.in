@@ -39,10 +39,18 @@ HEADERS += DeviceState.h \
            ApplicationConfigReader.h \
            ApplicationConfigWriter.h \
            JulaboModel.h \
-           JulaboWidget.h
+           JulaboWidget.h \
+           KeithleyModel.h \
+           KeithleyWidget.h \
+           HamegModel.h \
+           HamegWidget.h
            
 SOURCES += ApplicationConfig.cc \
            ApplicationConfigReader.cc \
            ApplicationConfigWriter.cc \
            JulaboModel.cc \
-           JulaboWidget.cc
+           JulaboWidget.cc \
+           KeithleyModel.cc \
+           KeithleyWidget.cc \
+           HamegModel.cc \
+           HamegWidget.cc

@@ -95,7 +95,7 @@ protected slots:
 signals:
   void deviceStateChanged( State newState );
   void informationChanged();
-  void defoMessage(const QString & text);
+  void message(const QString & text);
   void controlStateChanged(bool);
 };
 
