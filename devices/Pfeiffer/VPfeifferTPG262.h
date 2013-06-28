@@ -15,7 +15,8 @@ class VPfeifferTPG262
  public:
 
   VPfeifferTPG262( ioport_t );
-
+  virtual ~VPfeifferTPG262();
+  
   virtual bool IsCommunication( void ) const = 0;
   virtual int GetErrorStatus( void ) const = 0;
   virtual float GetPressure1( void ) const = 0;

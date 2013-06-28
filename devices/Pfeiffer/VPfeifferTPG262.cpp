@@ -7,3 +7,8 @@ VPfeifferTPG262::VPfeifferTPG262( const ioport_t ioPort )
 {
 
 }
+
+VPfeifferTPG262::~VPfeifferTPG262()
+{
+
+}

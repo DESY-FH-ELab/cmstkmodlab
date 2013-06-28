@@ -70,7 +70,7 @@ const reading_t Keithley2700Fake::Scan( void )
   for (channels_t::const_iterator channelsIt = enabledChannels_.begin();
        channelsIt != enabledChannels_.end();
        ++channelsIt) {
-    theReading.push_back( std::pair<unsigned int, double>( *channelsIt, 1.0 + *channelsIt ) );
+    theReading.push_back( std::pair<unsigned int, double>( *channelsIt, 10.0 + *channelsIt + (std::rand() % 100)/100. ) );
     usleep(500);
   }
 
