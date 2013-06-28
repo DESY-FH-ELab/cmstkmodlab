@@ -19,6 +19,7 @@ class VHameg8143 {
   };
 
   VHameg8143( const ioport_t );
+  virtual ~VHameg8143();
 
  public:
 

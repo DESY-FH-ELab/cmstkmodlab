@@ -7,6 +7,12 @@ VKeithley2700::VKeithley2700( ioport_t port )
 {
 
 }
+
+VKeithley2700::~VKeithley2700()
+{
+
+}
+
 ///
 /// string:
 /// comma separated list of channels or channel ranges

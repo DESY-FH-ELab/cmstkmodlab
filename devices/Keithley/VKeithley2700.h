@@ -24,7 +24,8 @@ class VKeithley2700
 {
  public:
   VKeithley2700( ioport_t );
-
+  virtual ~VKeithley2700();
+  
   virtual void SetActiveChannels( std::string ) = 0;
   virtual void AddActiveChannels( std::string ) = 0;
   virtual void DisableActiveChannels( std::string ) = 0;
