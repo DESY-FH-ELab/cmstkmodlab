@@ -75,6 +75,7 @@ KeithleyTemperatureWidget::KeithleyTemperatureWidget(KeithleyModel* model,
   currentDisplay_ = new QLCDNumber(LCD_SIZE, this);
   currentDisplay_->setSegmentStyle(QLCDNumber::Flat);
   currentDisplay_->setSmallDecimalPoint(true);
+  currentDisplay_->setDigitCount(5);
 
   connect(model_,
           SIGNAL(sensorStateChanged(uint,State)),
@@ -149,7 +150,7 @@ void KeithleyTemperatureWidget::sensorTemperatureChanged(unsigned int sensor,
                                                          double temperature)
 {
     if (sensor_!=sensor) return;
-    currentDisplay_->display(temperature);
+    currentDisplay_->display(QString("%.2f").arg(temperature));
 }
 
 /// Updates the model according to the GUI change.

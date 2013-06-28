@@ -1,14 +1,14 @@
-#include "HamegWidget.h"
+#include "PfeifferWidget.h"
 
 /**
-  \brief Creates a new panel with all the controls and read-outs for the Hameg
+  \brief Creates a new panel with all the controls and read-outs for the Pfeiffer
   chiller.
   */
-HamegWidget::HamegWidget(HamegModel* model, QWidget *parent) :
+PfeifferWidget::PfeifferWidget(PfeifferModel* model, QWidget *parent) :
     QWidget(parent), model_(model)
 {
   // Create all the nescessary widgets
-  hamegCheckBox_ = new QCheckBox("Enable power supply", this);
+  pfeifferCheckBox_ = new QCheckBox("Enable vacuum gauges", this);
 
   operationPanel_ = new QWidget(this);
 
@@ -99,7 +99,7 @@ HamegWidget::HamegWidget(HamegModel* model, QWidget *parent) :
           this,
           SLOT(updateInfo()));
 
-  connect(hamegCheckBox_,
+  connect(pfeifferCheckBox_,
           SIGNAL(toggled(bool)),
           model,
           SLOT(setDeviceEnabled(bool)));
@@ -147,17 +147,17 @@ HamegWidget::HamegWidget(HamegModel* model, QWidget *parent) :
 /**
   Updates the GUI according to the new state of the chiller chiller.
   */
-void HamegWidget::updateDeviceState(State newState) {
+void PfeifferWidget::updateDeviceState(State newState) {
 
   bool ready = (newState == READY);
-  hamegCheckBox_->setChecked( ready );
+  pfeifferCheckBox_->setChecked( ready );
   operationPanel_->setEnabled( ready );
 }
 
 /// Updates the GUI when the Keithley multimeter is enabled/disabled.
-void HamegWidget::controlStateChanged(bool enabled) {
+void PfeifferWidget::controlStateChanged(bool enabled) {
   
-  hamegCheckBox_->setEnabled(enabled);
+  pfeifferCheckBox_->setEnabled(enabled);
   if (enabled) {
     State state = model_->getDeviceState();
   }
@@ -167,7 +167,7 @@ void HamegWidget::controlStateChanged(bool enabled) {
   Sets the values of all the subelements (except the global enablement)
   according to the model.
   */
-void HamegWidget::updateInfo() {
+void PfeifferWidget::updateInfo() {
 
 //  proportionalSpinner_->setValue(model_->getProportionalParameter().getValue());
 //  integralSpinner_->setValue(model_->getIntegralParameter().getValue());

@@ -24,6 +24,7 @@ LIBS += @basepath@/devices/Julabo/*.o
 LIBS += @basepath@/devices/Hameg/*.o
 LIBS += @basepath@/devices/Canon/*.o
 LIBS += @basepath@/devices/Conrad/*.o
+LIBS += @basepath@/devices/Pfeiffer/*.o
 
 DEFINES += @configdefines@
 QT += core gui opengl script xml
@@ -43,7 +44,9 @@ HEADERS += DeviceState.h \
            KeithleyModel.h \
            KeithleyWidget.h \
            HamegModel.h \
-           HamegWidget.h
+           HamegWidget.h \
+           PfeifferModel.h \
+           PfeifferWidget.h
            
 SOURCES += ApplicationConfig.cc \
            ApplicationConfigReader.cc \
@@ -53,4 +56,6 @@ SOURCES += ApplicationConfig.cc \
            KeithleyModel.cc \
            KeithleyWidget.cc \
            HamegModel.cc \
-           HamegWidget.cc
+           HamegWidget.cc \
+           PfeifferModel.cc \
+           PfeifferWidget.cc
