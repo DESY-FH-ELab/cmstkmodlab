@@ -1,0 +1,41 @@
+#include "ApplicationConfigReader.h"
+#include "ApplicationConfigWriter.h"
+
+#include "ApplicationConfig.h"
+
+const std::string Config::CMSTkModLabBasePath("@basepath@");
+
+ApplicationConfig* ApplicationConfig::instance_ = NULL;
+
+ApplicationConfig::ApplicationConfig(const std::string filename)
+{
+  ApplicationConfigReader reader(filename);
+  reader.fill(keyvalueMap_);
+}
+
+ApplicationConfig* ApplicationConfig::instance(const std::string filename)
+{
+  if (instance_==NULL) {
+    if (!filename.empty()) {
+      instance_ = new ApplicationConfig(filename);
+    }
+  }
+  return instance_;
+}
+
+void ApplicationConfig::safe(const std::string filename) {
+  ApplicationConfigWriter writer(filename);
+  writer.write(keyvalueMap_);
+}
+
+void ApplicationConfig::issueKeyError(std::string const& key) const {
+  
+  std::cerr << " [issueKeyError::getValue] ** ERROR: failed to get value for key: "
+	    << key << "." << std::endl;
+
+  QMessageBox::critical( 0,
+			 QString("[ApplicationConfigReader::issueKeyError]"),
+			 QString("Failed to find value for key: \"%1\"\n.")
+			 .arg( QString( key.c_str() ) ),
+			 QMessageBox::Ok ); 
+}

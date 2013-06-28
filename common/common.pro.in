@@ -1,0 +1,48 @@
+#-------------------------------------------------
+#
+# Project created by QtCreator 2012-10-25T14:54:37
+#
+#-------------------------------------------------
+
+macx {
+    INCLUDEPATH += /opt/local/include/GL
+    INCLUDEPATH += /opt/local/include/exiv2
+    LIBS += -lgphoto2_port
+    LIBS += -L/opt/local/lib
+}
+else {
+    INCLUDEPATH += /usr/include/exiv2
+}
+
+INCLUDEPATH += @qwtincludes@
+LIBS += @qwtlibs@ -lGL -lGLU
+LIBS += -lopencv_core -lopencv_imgproc -lopencv_highgui
+LIBS += -lgphoto2 -lexiv2
+LIBS += @basepath@/devices/Keithley/*.o
+LIBS += @basepath@/devices/Greisinger/*.o
+LIBS += @basepath@/devices/Julabo/*.o
+LIBS += @basepath@/devices/Hameg/*.o
+LIBS += @basepath@/devices/Canon/*.o
+LIBS += @basepath@/devices/Conrad/*.o
+
+DEFINES += @configdefines@
+QT += core gui opengl script xml
+TARGET = Common
+TEMPLATE = lib
+DEPENDPATH += .
+INCLUDEPATH += .
+INCLUDEPATH += @basepath@
+
+HEADERS += DeviceState.h \
+           DeviceParameter.h \
+           ApplicationConfig.h \
+           ApplicationConfigReader.h \
+           ApplicationConfigWriter.h \
+           JulaboModel.h \
+           JulaboWidget.h
+           
+SOURCES += ApplicationConfig.cc \
+           ApplicationConfigReader.cc \
+           ApplicationConfigWriter.cc \
+           JulaboModel.cc \
+           JulaboWidget.cc

@@ -11,7 +11,7 @@ ifeq ($(NODEFO),0)
 subdirs      += defo conradControl
 endif
 
-qtsubdirs     = 
+qtsubdirs     = common
 ifeq ($(NOTHERMAL),0)
 qtsubdirs    += thermal
 endif
