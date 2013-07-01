@@ -5,7 +5,7 @@ const QString KeithleyModel::KEITHLEY_PORT = QString("/dev/ttyS4");
 
 KeithleyModel::KeithleyModel(double updateInterval, QObject *parent) :
       QObject(parent)
-    , AbstractDeviceModel()
+    , AbstractDeviceModel<Keithley2700_t>()
     , updateInterval_(updateInterval)
     , sensorStates_(SENSOR_COUNT, OFF)
     , temperatures_(SENSOR_COUNT, 0.0)
@@ -59,7 +59,7 @@ void KeithleyModel::initialize() {
 
 void KeithleyModel::setDeviceEnabled(bool enabled) {
   // Trivial reimplementation as slot.
-  AbstractDeviceModel::setDeviceEnabled(enabled);
+  AbstractDeviceModel<Keithley2700_t>::setDeviceEnabled(enabled);
 
   //scanTemperatures();
 }

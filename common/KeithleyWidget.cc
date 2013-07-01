@@ -75,7 +75,7 @@ KeithleyTemperatureWidget::KeithleyTemperatureWidget(KeithleyModel* model,
   currentDisplay_ = new QLCDNumber(LCD_SIZE, this);
   currentDisplay_->setSegmentStyle(QLCDNumber::Flat);
   currentDisplay_->setSmallDecimalPoint(true);
-  currentDisplay_->setDigitCount(5);
+  currentDisplay_->setNumDigits(5);
 
   connect(model_,
           SIGNAL(sensorStateChanged(uint,State)),

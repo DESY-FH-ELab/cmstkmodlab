@@ -9,7 +9,7 @@ HamegModel::HamegModel(QObject *parent) :
     QObject(parent)
 //  , state_(OFF) // Initialize all fields to prevent random values
 //  , controller_(NULL)
-  , AbstractDeviceModel()
+  , AbstractDeviceModel<Hameg8143_t>()
 {
   setDeviceEnabled(true);
 }
@@ -60,7 +60,7 @@ void HamegModel::updateInformation() {
 
 /// Attempts to enable/disable the (communication with) the Hameg FP50 chiller.
 void HamegModel::setDeviceEnabled(bool enabled) {
-  AbstractDeviceModel::setDeviceEnabled(enabled);
+  AbstractDeviceModel<Hameg8143_t>::setDeviceEnabled(enabled);
 }
 
 void HamegModel::setControlsEnabled(bool enabled) {

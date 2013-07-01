@@ -9,7 +9,7 @@ PfeifferModel::PfeifferModel(QObject *parent) :
     QObject(parent)
 //  , state_(OFF) // Initialize all fields to prevent random values
 //  , controller_(NULL)
-  , AbstractDeviceModel()
+  , AbstractDeviceModel<PfeifferTPG262_t>()
 {
   setDeviceEnabled(true);
 }
@@ -60,7 +60,7 @@ void PfeifferModel::updateInformation() {
 
 /// Attempts to enable/disable the (communication with) the Pfeiffer TPG262 gauge.
 void PfeifferModel::setDeviceEnabled(bool enabled) {
-  AbstractDeviceModel::setDeviceEnabled(enabled);
+  AbstractDeviceModel<PfeifferTPG262_t>::setDeviceEnabled(enabled);
 }
 
 void PfeifferModel::setControlsEnabled(bool enabled) {

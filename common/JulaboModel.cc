@@ -18,9 +18,7 @@ const QString JulaboModel::JULABO_PORT = QString("/dev/ttyS5");
   */
 JulaboModel::JulaboModel(float updateInterval, QObject *parent) :
     QObject(parent)
-//  , state_(OFF) // Initialize all fields to prevent random values
-//  , controller_(NULL)
-  , AbstractDeviceModel()
+  , AbstractDeviceModel<JulaboFP50_t>()
   , updateInterval_(updateInterval)
   , proportional_(0.1, 99.9, 1)
   , integral_(3, 9999, 0)
@@ -192,7 +190,7 @@ template <class T> void JulaboModel::updateParameterCache(
 
 /// Attempts to enable/disable the (communication with) the Julabo FP50 chiller.
 void JulaboModel::setDeviceEnabled(bool enabled) {
-  AbstractDeviceModel::setDeviceEnabled(enabled);
+  AbstractDeviceModel<JulaboFP50_t>::setDeviceEnabled(enabled);
 }
 
 void JulaboModel::setControlsEnabled(bool enabled) {
