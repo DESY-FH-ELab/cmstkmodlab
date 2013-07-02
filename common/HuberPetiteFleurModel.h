@@ -13,7 +13,7 @@
 #include "devices/Huber/HuberPetiteFleurFake.h"
 typedef HuberPetiteFleurFake HuberPetiteFleur_t;
 #else
-#include "devices/Huber/HuberPetiteFleur8143.h"
+#include "devices/Huber/HuberPetiteFleur.h"
 typedef HuberPetiteFleur HuberPetiteFleur_t;
 #endif
 
