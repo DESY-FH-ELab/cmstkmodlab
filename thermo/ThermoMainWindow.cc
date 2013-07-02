@@ -15,16 +15,27 @@ ThermoMainWindow::ThermoMainWindow(QWidget *parent) :
   julaboModel_ = new JulaboModel(5);
 
   // KEITHLEY MODEL
-  keithleyModel_ = new KeithleyModel(10);
+  keithleyModel_ = new KeithleyModel(15);
 
   // HAMEG MODEL
-  hamegModel_ = new HamegModel();
+  hamegModel_ = new HamegModel(5);
+
+  // PFEIFFER MODEL
+  pfeifferModel_ = new PfeifferModel(5);
 
   // SCRIPT MODEL
   scriptModel_ = new ThermoScriptModel(julaboModel_,
                                        keithleyModel_,
+                                       hamegModel_,
+                                       pfeifferModel_,
                                        this);
   
+  daqModel_ = new ThermoDAQModel(julaboModel_,
+                                 keithleyModel_,
+                                 hamegModel_,
+                                 pfeifferModel_,
+                                 this);
+
 //  connect(scriptModel_, SIGNAL(prepareNewMeasurement()),
 //	  this, SLOT(prepareNewMeasurement()));
 //  connect(scriptModel_, SIGNAL(setControlsEnabled(bool)),
@@ -67,6 +78,11 @@ ThermoMainWindow::ThermoMainWindow(QWidget *parent) :
   KeithleyWidget* keithleyWidget = new KeithleyWidget(keithleyModel_);
   keithleyWidget->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);
   tabWidget_->addTab(keithleyWidget, "Multimeter");
+
+  // PFEIFFER MODEL
+  PfeifferWidget* pfeifferWidget = new PfeifferWidget(pfeifferModel_);
+  pfeifferWidget->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);
+  tabWidget_->addTab(pfeifferWidget, "Vacuum");
 
   // SCRIPT MODEL
   ThermoScriptWidget* scriptWidget = new ThermoScriptWidget(scriptModel_);

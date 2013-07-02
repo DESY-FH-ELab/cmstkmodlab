@@ -76,12 +76,12 @@ ThermoScriptWidget::ThermoScriptWidget(ThermoScriptModel* scriptModel,
 
 void ThermoScriptWidget::openScriptButtonClicked() {
 
-  QString filename = QFileDialog::getOpenFileName(this
-						, "open script"
-                                                , "./"
-                        , "Thermo Scripts (*.dsr)"
-						, 0
-						, 0);
+  QString filename = QFileDialog::getOpenFileName(this,
+                                                  "open script",
+                                                  "./",
+                                                  "Thermo Scripts (*.tsr)",
+                                                  0,
+                                                  0);
   if (!filename.isNull()) scriptModel_->openScript(filename);
 }
 
@@ -96,14 +96,14 @@ void ThermoScriptWidget::saveScriptButtonClicked() {
 
 void ThermoScriptWidget::saveAsScriptButtonClicked() {
 
-  QString filename = QFileDialog::getSaveFileName(this
-						, "save script"
-                                                , "./"
-                        , "Thermo Scripts (*.dsr)"
-						, 0
-						, 0);
+  QString filename = QFileDialog::getSaveFileName(this,
+                                                  "save script",
+                                                  "./",
+                                                  "Thermo Scripts (*.tsr)",
+                                                  0,
+                                                  0);
   if (filename.isNull()) return;
-  if (!filename.endsWith(".dsr")) filename += ".dsr";
+  if (!filename.endsWith(".tsr")) filename += ".tsr";
   scriptModel_->saveScript(filename);
 }
 

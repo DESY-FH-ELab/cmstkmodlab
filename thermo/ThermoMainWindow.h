@@ -18,8 +18,13 @@
 #include "KeithleyModel.h"
 #include "KeithleyWidget.h"
 
+#include "PfeifferModel.h"
+#include "PfeifferWidget.h"
+
 #include "ThermoScriptModel.h"
-// #include "ThermoScriptWidget.h"
+#include "ThermoScriptWidget.h"
+
+#include "ThermoDAQModel.h"
 
 class ThermoMainWindow : public QMainWindow
 {
@@ -38,8 +43,11 @@ protected:
   JulaboModel* julaboModel_;
   HamegModel* hamegModel_;
   KeithleyModel* keithleyModel_;
+  PfeifferModel* pfeifferModel_;
 
   ThermoScriptModel* scriptModel_;
+
+  ThermoDAQModel* daqModel_;
 };
 
 #endif // THERMOMAINWINDOW_H

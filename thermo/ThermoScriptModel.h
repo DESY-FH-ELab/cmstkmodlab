@@ -7,16 +7,20 @@
 
 #include "JulaboModel.h"
 #include "KeithleyModel.h"
-//#include "DefoScriptThread.h"
+#include "HamegModel.h"
+#include "PfeifferModel.h"
 
-class ThermoScriptModel :
-      public QObject
+#include "ThermoScriptThread.h"
+
+class ThermoScriptModel : public QObject
 {
     Q_OBJECT
 public:
 
   explicit ThermoScriptModel(JulaboModel* julaboModel,
                              KeithleyModel* keithleyModel,
+                             HamegModel* hamegModel,
+                             PfeifferModel* pfeifferModel,
                              QObject *parent = 0);
 
   QTextDocument* scriptDocument() { return script_; }
@@ -51,7 +55,9 @@ protected:
   int executionTime_;
   JulaboModel* julaboModel_;
   KeithleyModel* keithleyModel_;
-  // ThermoScriptThread* scriptThread_;
+  HamegModel* hamegModel_;
+  PfeifferModel* pfeifferModel_;
+  ThermoScriptThread* scriptThread_;
 
 signals:
   void prepareNewMeasurement();
