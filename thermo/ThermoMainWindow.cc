@@ -4,6 +4,7 @@
 #include <QFileDialog>
 
 #include "ApplicationConfig.h"
+#include "ThermoDAQWidget.h"
 #include "ThermoScriptWidget.h"
 
 #include "ThermoMainWindow.h"
@@ -35,6 +36,7 @@ ThermoMainWindow::ThermoMainWindow(QWidget *parent) :
                                  hamegModel_,
                                  pfeifferModel_,
                                  this);
+  daqStreamer_ = new ThermoDAQStreamer(daqModel_, this);
 
 //  connect(scriptModel_, SIGNAL(prepareNewMeasurement()),
 //	  this, SLOT(prepareNewMeasurement()));
@@ -83,6 +85,11 @@ ThermoMainWindow::ThermoMainWindow(QWidget *parent) :
   PfeifferWidget* pfeifferWidget = new PfeifferWidget(pfeifferModel_);
   pfeifferWidget->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);
   tabWidget_->addTab(pfeifferWidget, "Vacuum");
+
+  // DAQ MODEL
+  ThermoDAQWidget* daqWidget = new ThermoDAQWidget(daqModel_);
+  daqWidget->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);
+  tabWidget_->addTab(daqWidget, "DAQ");
 
   // SCRIPT MODEL
   ThermoScriptWidget* scriptWidget = new ThermoScriptWidget(scriptModel_);

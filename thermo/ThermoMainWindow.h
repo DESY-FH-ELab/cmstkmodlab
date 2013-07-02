@@ -25,6 +25,7 @@
 #include "ThermoScriptWidget.h"
 
 #include "ThermoDAQModel.h"
+#include "ThermoDAQStreamer.h"
 
 class ThermoMainWindow : public QMainWindow
 {
@@ -48,6 +49,7 @@ protected:
   ThermoScriptModel* scriptModel_;
 
   ThermoDAQModel* daqModel_;
+  ThermoDAQStreamer* daqStreamer_;
 };
 
 #endif // THERMOMAINWINDOW_H
