@@ -9,6 +9,10 @@ KeithleyModel::KeithleyModel(double updateInterval, QObject *parent) :
     , updateInterval_(updateInterval)
     , sensorStates_(SENSOR_COUNT, OFF)
     , temperatures_(SENSOR_COUNT, 0.0)
+    , gradients_(SENSOR_COUNT, 0.0)
+    , timeBuffer_(1+(60*5)/updateInterval)
+    , temperatureBuffer_(1+(60*5)/updateInterval, temperatures_)
+    , absoluteTime_(0)
 {
   timer_ = new QTimer(this);
   timer_->setInterval(updateInterval_ * 1000);
@@ -130,6 +134,8 @@ double KeithleyModel::getTemperature(unsigned int sensor) const
   */
 void KeithleyModel::scanTemperatures() {
 
+  absoluteTime_ += updateInterval_;
+
   reading_t reading = controller_->Scan();
 
   // Good scan, cache the retrieved temperatures
@@ -161,6 +167,30 @@ void KeithleyModel::scanTemperatures() {
     }
 
   }
+
+  timeBuffer_.push_back(absoluteTime_);
+  temperatureBuffer_.push_back(temperatures_);
+
+  double lastTime = timeBuffer_.get();
+  const std::vector<double> &lastTemperatures = temperatureBuffer_.get();
+  double dt = (absoluteTime_ - lastTime) / 60.;
+
+  //  std::cout << "lastTime: " << lastTime << std::endl;
+  //  std::cout << "absoluteTime: " << absoluteTime_ << std::endl;
+  //  std::cout << lastTemperatures.size() << std::endl;
+
+  if (dt>10) {
+      for (unsigned int i=0;i<SENSOR_COUNT;++i) {
+          if (sensorStates_[i] != READY) continue;
+
+          double gradient = (temperatures_[i] - lastTemperatures[i]) / dt;
+          if ( gradients_.at(i) != gradient ) {
+              gradients_[i] = gradient;
+              emit temperatureGradientChanged(i, gradient);
+          }
+      }
+  }
+
   // FIXME If bad scans don't normally happen, close(), otherwise ignore.
 //  else
 //    close();

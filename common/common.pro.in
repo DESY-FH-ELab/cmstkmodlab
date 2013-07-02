@@ -7,20 +7,23 @@
 macx {
     INCLUDEPATH += /opt/local/include/GL
     LIBS += -L/opt/local/lib
+    LIBS += -L@basepath@/devices/lib -lTkModLabKeithley
+    LIBS += -L@basepath@/devices/lib -lTkModLabGreisinger
+    LIBS += -L@basepath@/devices/lib -lTkModLabJulabo
+    LIBS += -L@basepath@/devices/lib -lTkModLabHameg
+    LIBS += -L@basepath@/devices/lib -lTkModLabPfeiffer
+    LIBS += -L@basepath@/devices/lib -lTkModLabHuber
 }
 else {
-    INCLUDEPATH += /usr/include/exiv2
+    INCLUDEPATH += @qwtincludes@
+    LIBS += @qwtlibs@ -lGL -lGLU
+    LIBS += -L@basepath@/devices/lib -lTkModLabKeithley
+    LIBS += -L@basepath@/devices/lib -lTkModLabGreisinger
+    LIBS += -L@basepath@/devices/lib -lTkModLabJulabo
+    LIBS += -L@basepath@/devices/lib -lTkModLabHameg
+    LIBS += -L@basepath@/devices/lib -lTkModLabPfeiffer
+    LIBS += -L@basepath@/devices/lib -lTkModLabHuber
 }
-
-INCLUDEPATH += @qwtincludes@
-LIBS += @qwtlibs@ -lGL -lGLU
-LIBS += @basepath@/devices/Keithley/*.o
-LIBS += @basepath@/devices/Greisinger/*.o
-LIBS += @basepath@/devices/Julabo/*.o
-LIBS += @basepath@/devices/Hameg/*.o
-LIBS += @basepath@/devices/Canon/*.o
-LIBS += @basepath@/devices/Conrad/*.o
-LIBS += @basepath@/devices/Pfeiffer/*.o
 
 DEFINES += @configdefines@
 QT += core gui opengl script xml
@@ -32,26 +35,41 @@ INCLUDEPATH += @basepath@
 
 HEADERS += DeviceState.h \
            DeviceParameter.h \
+           Ringbuffer.h \
            ApplicationConfig.h \
            ApplicationConfigReader.h \
            ApplicationConfigWriter.h \
            JulaboModel.h \
+           ScriptableJulabo.h \
            JulaboWidget.h \
+           HuberPetiteFleurModel.h \
+           ScriptableHuberPetiteFleur.h \
+           HuberPetiteFleurWidget.h \
            KeithleyModel.h \
+           ScriptableKeithley.h \
            KeithleyWidget.h \
            HamegModel.h \
+           ScriptableHameg.h \
            HamegWidget.h \
            PfeifferModel.h \
+           ScriptablePfeiffer.h \
            PfeifferWidget.h
            
 SOURCES += ApplicationConfig.cc \
            ApplicationConfigReader.cc \
            ApplicationConfigWriter.cc \
            JulaboModel.cc \
+           ScriptableJulabo.cc \
            JulaboWidget.cc \
+           HuberPetiteFleurModel.cc \
+           ScriptableHuberPetiteFleur.cc \
+           HuberPetiteFleurWidget.cc \
            KeithleyModel.cc \
+           ScriptableKeithley.cc \
            KeithleyWidget.cc \
            HamegModel.cc \
+           ScriptableHameg.cc \
            HamegWidget.cc \
            PfeifferModel.cc \
+           ScriptablePfeiffer.cc \
            PfeifferWidget.cc

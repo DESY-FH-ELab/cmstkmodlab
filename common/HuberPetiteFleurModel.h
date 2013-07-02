@@ -1,5 +1,5 @@
-#ifndef PFEIFFERMODEL_H
-#define PFEIFFERMODEL_H
+#ifndef HUBERPETITEFLEURMODEL_H
+#define HUBERPETITEFLEURMODEL_H
 
 #include <cmath>
 
@@ -10,32 +10,32 @@
 #include "DeviceParameter.h"
 
 #ifdef USE_FAKEIO
-#include "devices/Pfeiffer/PfeifferTPG262Fake.h"
-typedef PfeifferTPG262Fake PfeifferTPG262_t;
+#include "devices/Huber/HuberPetiteFleurFake.h"
+typedef HuberPetiteFleurFake HuberPetiteFleur_t;
 #else
-#include "devices/Pfeiffer/PfeifferTPG262.h"
-typedef PfeifferTPG262 PfeifferTPG262_t;
+#include "devices/Huber/HuberPetiteFleur8143.h"
+typedef HuberPetiteFleur HuberPetiteFleur_t;
 #endif
 
 /**
-  Command and control model of the Pfeiffer TPG262 gauge.
+  Command and control model of the petiteFleur chiller.
   */
-class PfeifferModel :
+class HuberPetiteFleurModel :
     public QObject
-  , public AbstractDeviceModel<PfeifferTPG262_t>
+  , public AbstractDeviceModel<HuberPetiteFleur_t>
 {
 
   Q_OBJECT
 public:
-  explicit PfeifferModel(float updateInterval = 5, QObject *parent = 0);
+  explicit HuberPetiteFleurModel(float updateInterval = 5, QObject *parent = 0);
 
 public slots:
-  void setDeviceEnabled( bool enabled );
+  void setDeviceEnabled(bool enabled);
   void setControlsEnabled(bool enabled);
 
 protected:
 
-  static const QString Pfeiffer_PORT;
+  static const QString HuberPetiteFleur_PORT;
 
   void initialize();
 
@@ -55,4 +55,4 @@ signals:
   void controlStateChanged(bool);
 };
 
-#endif // PFEIFFERMODEL_H
+#endif // HUBERPETITEFLEURMODEL_H

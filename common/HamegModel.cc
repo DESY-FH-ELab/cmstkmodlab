@@ -5,13 +5,19 @@
   */
 const QString HamegModel::Hameg_PORT = QString("/dev/ttyS5");
 
-HamegModel::HamegModel(QObject *parent) :
+HamegModel::HamegModel(float updateInterval, QObject *parent) :
     QObject(parent)
 //  , state_(OFF) // Initialize all fields to prevent random values
 //  , controller_(NULL)
   , AbstractDeviceModel<Hameg8143_t>()
+  , updateInterval_(updateInterval)
 {
-  setDeviceEnabled(true);
+    timer_ = new QTimer(this);
+    timer_->setInterval(updateInterval_ * 1000);
+    connect( timer_, SIGNAL(timeout()), this, SLOT(updateInformation()) );
+
+    setDeviceEnabled(true);
+    setControlsEnabled(true);
 }
 
 /**

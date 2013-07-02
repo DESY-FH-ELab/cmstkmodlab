@@ -21,7 +21,7 @@ KeithleyWidget::KeithleyWidget(KeithleyModel* model,
   // Add all the temperature sensor displays
   for ( unsigned int i = 0; i < KeithleyModel::SENSOR_COUNT; ++i ) {
     sensorLayout->addWidget(new KeithleyTemperatureWidget(model_, i, this),
-                            i/5, i%5);
+                            i/4, i%4);
   }
 
   connect(keithleyCheckBox_,
@@ -72,10 +72,15 @@ KeithleyTemperatureWidget::KeithleyTemperatureWidget(KeithleyModel* model,
 
   enabledCheckBox_ = new QCheckBox(LABEL_FORMAT.arg(sensor), this);
 
-  currentDisplay_ = new QLCDNumber(LCD_SIZE, this);
-  currentDisplay_->setSegmentStyle(QLCDNumber::Flat);
-  currentDisplay_->setSmallDecimalPoint(true);
-  currentDisplay_->setNumDigits(5);
+  currentTempDisplay_ = new QLCDNumber(LCD_SIZE, this);
+  currentTempDisplay_->setSegmentStyle(QLCDNumber::Flat);
+  currentTempDisplay_->setSmallDecimalPoint(true);
+  currentTempDisplay_->setNumDigits(5);
+
+  currentGradientDisplay_ = new QLCDNumber(LCD_SIZE/2, this);
+  currentGradientDisplay_->setSegmentStyle(QLCDNumber::Flat);
+  currentGradientDisplay_->setSmallDecimalPoint(true);
+  currentGradientDisplay_->setNumDigits(8);
 
   connect(model_,
           SIGNAL(sensorStateChanged(uint,State)),
@@ -86,6 +91,11 @@ KeithleyTemperatureWidget::KeithleyTemperatureWidget(KeithleyModel* model,
           SIGNAL(temperatureChanged(uint,double)),
           this,
           SLOT(sensorTemperatureChanged(uint,double)));
+
+  connect(model_,
+          SIGNAL(temperatureGradientChanged(uint,double)),
+          this,
+          SLOT(sensorTemperatureGradientChanged(uint,double)));
 
   connect(enabledCheckBox_,
           SIGNAL(toggled(bool)),
@@ -103,7 +113,8 @@ KeithleyTemperatureWidget::KeithleyTemperatureWidget(KeithleyModel* model,
           SLOT(controlStateChanged(bool)));
 
   layout->addWidget(enabledCheckBox_);
-  layout->addWidget(currentDisplay_);
+  layout->addWidget(currentTempDisplay_);
+  layout->addWidget(currentGradientDisplay_);
 
   updateWidgets();
 }
@@ -118,7 +129,7 @@ void KeithleyTemperatureWidget::updateWidgets() {
     || sensorState == INITIALIZING
   );
 
-  currentDisplay_->setEnabled( sensorState == READY );
+  currentTempDisplay_->setEnabled( sensorState == READY );
 }
 
 /// Updates the GUI according to the current device state.
@@ -150,7 +161,15 @@ void KeithleyTemperatureWidget::sensorTemperatureChanged(unsigned int sensor,
                                                          double temperature)
 {
     if (sensor_!=sensor) return;
-    currentDisplay_->display(QString("%.2f").arg(temperature));
+    currentTempDisplay_->display(QString::number(temperature, 'f', 2));
+}
+
+/// Relays the new temperature to the history model.
+void KeithleyTemperatureWidget::sensorTemperatureGradientChanged(unsigned int sensor,
+                                                                 double gradient)
+{
+    if (sensor_!=sensor) return;
+    currentGradientDisplay_->display(QString::number(gradient, 'f', 5));
 }
 
 /// Updates the model according to the GUI change.

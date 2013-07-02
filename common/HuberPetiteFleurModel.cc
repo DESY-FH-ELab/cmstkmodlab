@@ -1,15 +1,15 @@
-#include "PfeifferModel.h"
+#include "HuberPetiteFleurModel.h"
 
 /*
-  PfeifferModel implementation
+  HuberPetiteFleurModel implementation
   */
-const QString PfeifferModel::Pfeiffer_PORT = QString("/dev/ttyS5");
+const QString HuberPetiteFleurModel::HuberPetiteFleur_PORT = QString("/dev/ttyS5");
 
-PfeifferModel::PfeifferModel(float updateInterval, QObject *parent) :
+HuberPetiteFleurModel::HuberPetiteFleurModel(float updateInterval, QObject *parent) :
     QObject(parent)
 //  , state_(OFF) // Initialize all fields to prevent random values
 //  , controller_(NULL)
-  , AbstractDeviceModel<PfeifferTPG262_t>()
+  , AbstractDeviceModel<HuberPetiteFleur_t>()
   , updateInterval_(updateInterval)
 {
     timer_ = new QTimer(this);
@@ -21,14 +21,14 @@ PfeifferModel::PfeifferModel(float updateInterval, QObject *parent) :
 }
 
 /**
-  Sets up the communication with the Pfeiffer TPG262 gauge and retrieves the
+  Sets up the communication with the Huber Petite Fleur chiller and retrieves the
   settings and read-outs.
   */
-void PfeifferModel::initialize() {
+void HuberPetiteFleurModel::initialize() {
 
   setDeviceState(INITIALIZING);
 
-  renewController(Pfeiffer_PORT);
+  renewController(HuberPetiteFleur_PORT);
 
   bool enabled = ( controller_ != NULL ) && ( controller_->IsCommunication() );
 
@@ -44,7 +44,7 @@ void PfeifferModel::initialize() {
 }
 
 /// \see AbstractDeviceModel::setDeviceState
-void PfeifferModel::setDeviceState( State state ) {
+void HuberPetiteFleurModel::setDeviceState( State state ) {
 
   if ( state_ != state ) {
     state_ = state;
@@ -54,21 +54,21 @@ void PfeifferModel::setDeviceState( State state ) {
 }
 
 /**
-  Updates the cached information about the Pfeiffer chiller and signals any
+  Updates the cached information about the HuberPetiteFleur chiller and signals any
   changes.
   */
-void PfeifferModel::updateInformation() {
+void HuberPetiteFleurModel::updateInformation() {
 
   if ( state_ == READY ) {
     emit informationChanged();
   }
 }
 
-/// Attempts to enable/disable the (communication with) the Pfeiffer TPG262 gauge.
-void PfeifferModel::setDeviceEnabled(bool enabled) {
-  AbstractDeviceModel<PfeifferTPG262_t>::setDeviceEnabled(enabled);
+/// Attempts to enable/disable the (communication with) the HuberPetiteFleur FP50 chiller.
+void HuberPetiteFleurModel::setDeviceEnabled(bool enabled) {
+  AbstractDeviceModel<HuberPetiteFleur_t>::setDeviceEnabled(enabled);
 }
 
-void PfeifferModel::setControlsEnabled(bool enabled) {
+void HuberPetiteFleurModel::setControlsEnabled(bool enabled) {
   emit controlStateChanged(enabled);
 }

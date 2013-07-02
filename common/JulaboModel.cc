@@ -149,7 +149,6 @@ void JulaboModel::updateInformation() {
       circulatorEnabled_ = newCirculatorStatus;
 
       emit informationChanged();
-
     }
 
   }

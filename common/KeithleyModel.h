@@ -9,6 +9,7 @@
 #include <QTimer>
 
 #include "DeviceState.h"
+#include "Ringbuffer.h"
 
 #ifdef USE_FAKEIO
 #include "devices/Keithley/Keithley2700Fake.h"
@@ -52,6 +53,11 @@ protected:
   // cached config information
   std::vector<State> sensorStates_;
   std::vector<double> temperatures_;
+  std::vector<double> gradients_;
+
+  Ringbuffer<double> timeBuffer_;
+  Ringbuffer<std::vector<double> > temperatureBuffer_;
+  double absoluteTime_;
 
   void setDeviceState( State state );
   void setSensorState( unsigned int sensor, State state );
@@ -65,6 +71,7 @@ signals:
   void deviceStateChanged(State newState);
   void sensorStateChanged(unsigned int sensor, State newState);
   void temperatureChanged(unsigned int sensor, double temperature);
+  void temperatureGradientChanged(unsigned int sensor, double gradient);
   void message(const QString & text);
   void controlStateChanged(bool);
 };

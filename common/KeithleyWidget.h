@@ -46,7 +46,8 @@ protected:
   static const QString LABEL_FORMAT;
 
   QCheckBox* enabledCheckBox_;
-  QLCDNumber* currentDisplay_;
+  QLCDNumber* currentTempDisplay_;
+  QLCDNumber* currentGradientDisplay_;
 
   void updateWidgets();
 
@@ -55,6 +56,7 @@ public slots:
   void controlStateChanged(bool);
   void sensorStateChagned(uint sensor, State state );
   void sensorTemperatureChanged(uint sensor, double temperature);
+  void sensorTemperatureGradientChanged(uint sensor, double temperature);
 
   void enabledCheckBoxToggled(bool enabled);
 };
