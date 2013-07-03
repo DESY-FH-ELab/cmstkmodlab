@@ -264,7 +264,7 @@ void LabControlDataCollector::pushData()
 
 void LabControlDataCollector::daqTimeVector(unsigned int startTime,
                                             unsigned int stopTime,
-                                            QwtArray<double> & vector)
+                                            QVector<double> & vector)
 {
     for (std::vector<LabControlData>::const_iterator it = dataVec_.begin();
          it != dataVec_.end();
@@ -279,7 +279,7 @@ void LabControlDataCollector::daqTimeVector(unsigned int startTime,
 void LabControlDataCollector::temperatureVector(unsigned int channel,
                                                 unsigned int startTime,
                                                 unsigned int stopTime,
-                                                QwtArray<double> & vector)
+                                                QVector<double> & vector)
 {
     for (std::vector<LabControlData>::const_iterator it = dataVec_.begin();
          it != dataVec_.end();
@@ -293,7 +293,7 @@ void LabControlDataCollector::temperatureVector(unsigned int channel,
 
 void LabControlDataCollector::referenceTemperatureVector(unsigned int startTime,
                                                          unsigned int stopTime,
-                                                         QwtArray<double> & vector)
+                                                         QVector<double> & vector)
 {
     for (std::vector<LabControlData>::const_iterator it = dataVec_.begin();
          it != dataVec_.end();
@@ -307,7 +307,7 @@ void LabControlDataCollector::referenceTemperatureVector(unsigned int startTime,
 
 void LabControlDataCollector::bathTemperatureVector(unsigned int startTime,
                                                     unsigned int stopTime,
-                                                    QwtArray<double> & vector)
+                                                    QVector<double> & vector)
 {
     for (std::vector<LabControlData>::const_iterator it = dataVec_.begin();
          it != dataVec_.end();
@@ -321,7 +321,7 @@ void LabControlDataCollector::bathTemperatureVector(unsigned int startTime,
 
 void LabControlDataCollector::safetySensorTemperatureVector(unsigned int startTime,
                                                             unsigned int stopTime,
-                                                            QwtArray<double> & vector)
+                                                            QVector<double> & vector)
 {
     for (std::vector<LabControlData>::const_iterator it = dataVec_.begin();
          it != dataVec_.end();
@@ -335,7 +335,7 @@ void LabControlDataCollector::safetySensorTemperatureVector(unsigned int startTi
 
 void LabControlDataCollector::heatingPowerVector(unsigned int startTime,
                                                  unsigned int stopTime,
-                                                 QwtArray<double> & vector)
+                                                 QVector<double> & vector)
 {
     for (std::vector<LabControlData>::const_iterator it = dataVec_.begin();
          it != dataVec_.end();

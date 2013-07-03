@@ -7,8 +7,7 @@
 
 #include <QThread>
 #include <QDateTime>
-
-#include <qwt_array.h>
+#include <QVector>
 
 #include "devices/Julabo/VJulaboFP50.h"
 #include "devices/Hameg/VHameg8143.h"
@@ -126,18 +125,18 @@ class LabControlDataCollector
     void writeHameg(std::ostream & os);
 
     void daqTimeVector(unsigned int startTime, unsigned int stopTime,
-                       QwtArray<double> & vector);
+                       QVector<double> & vector);
     void temperatureVector(unsigned int channel,
                            unsigned int startTime, unsigned int stopTime,
-                           QwtArray<double> & vector);
+                           QVector<double> & vector);
     void referenceTemperatureVector(unsigned int startTime, unsigned int stopTime,
-                                    QwtArray<double> & vector);
+                                    QVector<double> & vector);
     void bathTemperatureVector(unsigned int startTime, unsigned int stopTime,
-                               QwtArray<double> & vector);
+                               QVector<double> & vector);
     void safetySensorTemperatureVector(unsigned int startTime, unsigned int stopTime,
-                                       QwtArray<double> & vector);
+                                       QVector<double> & vector);
     void heatingPowerVector(unsigned int startTime, unsigned int stopTime,
-                            QwtArray<double> & vector);
+                            QVector<double> & vector);
 
 protected:
 

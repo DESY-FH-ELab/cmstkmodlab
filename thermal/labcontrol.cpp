@@ -464,17 +464,17 @@ void LabControl::initPlots()
     };
 
     static QSize symbolSize(7,7);
-    static QwtSymbol symbols[] = {
-        QwtSymbol(QwtSymbol::XCross, colors[0], colors[0], symbolSize), // 0
-        QwtSymbol(QwtSymbol::XCross, colors[1], colors[1], symbolSize), // 1
-        QwtSymbol(QwtSymbol::XCross, colors[2], colors[2], symbolSize), // 2
-        QwtSymbol(QwtSymbol::XCross, colors[3], colors[3], symbolSize), // 3
-        QwtSymbol(QwtSymbol::XCross, colors[4], colors[4], symbolSize), // 4
-        QwtSymbol(QwtSymbol::XCross, colors[5], colors[5], symbolSize), // 5
-        QwtSymbol(QwtSymbol::XCross, colors[6], colors[6], symbolSize), // 6
-        QwtSymbol(QwtSymbol::XCross, colors[7], colors[7], symbolSize), // 7
-        QwtSymbol(QwtSymbol::XCross, colors[8], colors[8], symbolSize), // 8
-        QwtSymbol(QwtSymbol::XCross, colors[9], colors[9], symbolSize), // 9
+    static QwtSymbol* symbols[] = {
+        new QwtSymbol(QwtSymbol::XCross, colors[0], colors[0], symbolSize), // 0
+        new QwtSymbol(QwtSymbol::XCross, colors[1], colors[1], symbolSize), // 1
+        new QwtSymbol(QwtSymbol::XCross, colors[2], colors[2], symbolSize), // 2
+        new QwtSymbol(QwtSymbol::XCross, colors[3], colors[3], symbolSize), // 3
+        new QwtSymbol(QwtSymbol::XCross, colors[4], colors[4], symbolSize), // 4
+        new QwtSymbol(QwtSymbol::XCross, colors[5], colors[5], symbolSize), // 5
+        new QwtSymbol(QwtSymbol::XCross, colors[6], colors[6], symbolSize), // 6
+        new QwtSymbol(QwtSymbol::XCross, colors[7], colors[7], symbolSize), // 7
+        new QwtSymbol(QwtSymbol::XCross, colors[8], colors[8], symbolSize), // 8
+        new QwtSymbol(QwtSymbol::XCross, colors[9], colors[9], symbolSize), // 9
     };
 
     LabControlPlot * plot;
@@ -508,7 +508,7 @@ void LabControl::initPlots()
     if (ui->PlotReference->isChecked()) {
         plot = new LabControlPlot("Ref", QColor(Qt::white));
         plot->setStyle(QwtPlotCurve::Lines);
-        plot->setSymbol(QwtSymbol(QwtSymbol::XCross, QColor(Qt::white), QColor(Qt::white), symbolSize));
+        plot->setSymbol(new QwtSymbol(QwtSymbol::XCross, QColor(Qt::white), QColor(Qt::white), symbolSize));
         plot->getDataVector_ = &LabControlDataCollector::referenceTemperatureVector;
         plot->attach(ui->DisplayTempVsTime);
         plots_.push_back(plot);
@@ -517,7 +517,7 @@ void LabControl::initPlots()
     if (ui->PlotBath->isChecked()) {
         plot = new LabControlPlot("Bath", QColor(Qt::darkGreen));
         plot->setStyle(QwtPlotCurve::Lines);
-        plot->setSymbol(QwtSymbol(QwtSymbol::Rect, QColor(Qt::darkGreen), QColor(Qt::darkGreen), symbolSize));
+        plot->setSymbol(new QwtSymbol(QwtSymbol::Rect, QColor(Qt::darkGreen), QColor(Qt::darkGreen), symbolSize));
         plot->getDataVector_ = &LabControlDataCollector::bathTemperatureVector;
         plot->attach(ui->DisplayTempVsTime);
         plots_.push_back(plot);
@@ -526,7 +526,7 @@ void LabControl::initPlots()
     if (ui->PlotSafetySensor->isChecked()) {
         plot = new LabControlPlot("Safety", QColor(Qt::darkBlue));
         plot->setStyle(QwtPlotCurve::Lines);
-        plot->setSymbol(QwtSymbol(QwtSymbol::Rect, QColor(Qt::darkBlue), QColor(Qt::darkBlue), symbolSize));
+        plot->setSymbol(new QwtSymbol(QwtSymbol::Rect, QColor(Qt::darkBlue), QColor(Qt::darkBlue), symbolSize));
         plot->getDataVector_ = &LabControlDataCollector::safetySensorTemperatureVector;
         plot->attach(ui->DisplayTempVsTime);
         plots_.push_back(plot);
@@ -535,7 +535,7 @@ void LabControl::initPlots()
     if (ui->PlotHeatingPower->isChecked()) {
         plot = new LabControlPlot("Power", QColor(Qt::darkRed));
         plot->setStyle(QwtPlotCurve::Lines);
-        plot->setSymbol(QwtSymbol(QwtSymbol::Rect, QColor(Qt::darkRed), QColor(Qt::darkRed), symbolSize));
+        plot->setSymbol(new QwtSymbol(QwtSymbol::Rect, QColor(Qt::darkRed), QColor(Qt::darkRed), symbolSize));
         plot->getDataVector_ = &LabControlDataCollector::heatingPowerVector;
         plot->attach(ui->DisplayTempVsTime);
         plots_.push_back(plot);
@@ -562,7 +562,7 @@ void LabControl::updatePlots()
     unsigned int startTime = ui->PlotStartSlider->value();
     unsigned int stopTime = currentStopTime_;
 
-    QwtArray<double> daqTimeVec;
+    QVector<double> daqTimeVec;
     dataCollector_.daqTimeVector(startTime, stopTime, daqTimeVec);
 
     LabControlPlot * plot;
@@ -572,17 +572,17 @@ void LabControl::updatePlots()
 
          plot = *it;
          void (LabControlDataCollector::*getDataVector)(unsigned int, unsigned int,
-                                                        QwtArray<double> &) = plot->getDataVector_;
+                                                        QVector<double> &) = plot->getDataVector_;
          void (LabControlDataCollector::*getChannelDataVector)(unsigned int,
                                                                unsigned int, unsigned int,
-                                                               QwtArray<double> &) = plot->getChannelDataVector_;
-         QwtArray<double> dataVec;
+                                                               QVector<double> &) = plot->getChannelDataVector_;
+         QVector<double> dataVec;
          if (plot->getDataVector_)
              (dataCollector_.*getDataVector)(startTime, stopTime, dataVec);
          if (plot->getChannelDataVector_)
              (dataCollector_.*getChannelDataVector)(plot->channel_, startTime, stopTime, dataVec);
 
-         plot->setData(daqTimeVec, dataVec);
+         plot->setSamples(daqTimeVec, dataVec);
     }
 
     ui->DisplayTempVsTime->replot();
