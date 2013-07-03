@@ -17,7 +17,6 @@ HamegModel::HamegModel(float updateInterval, QObject *parent) :
     connect( timer_, SIGNAL(timeout()), this, SLOT(updateInformation()) );
 
     setDeviceEnabled(true);
-    setControlsEnabled(true);
 }
 
 /**
@@ -48,6 +47,12 @@ void HamegModel::setDeviceState( State state ) {
 
   if ( state_ != state ) {
     state_ = state;
+
+    // No need to run the timer if the chiller is not ready
+    if ( state_ == READY )
+      timer_->start();
+    else
+      timer_->stop();
 
     emit deviceStateChanged(state);
   }

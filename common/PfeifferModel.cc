@@ -6,18 +6,29 @@
 const QString PfeifferModel::Pfeiffer_PORT = QString("/dev/ttyS5");
 
 PfeifferModel::PfeifferModel(float updateInterval, QObject *parent) :
-    QObject(parent)
-//  , state_(OFF) // Initialize all fields to prevent random values
-//  , controller_(NULL)
-  , AbstractDeviceModel<PfeifferTPG262_t>()
-  , updateInterval_(updateInterval)
+    QObject(parent),
+    AbstractDeviceModel<PfeifferTPG262_t>(),
+    pressure1_(1013),
+    pressure2_(1013),
+    updateInterval_(updateInterval)
 {
     timer_ = new QTimer(this);
     timer_->setInterval(updateInterval_ * 1000);
-    connect( timer_, SIGNAL(timeout()), this, SLOT(updateInformation()) );
+    connect(timer_, SIGNAL(timeout()), this, SLOT(updateInformation()));
 
     setDeviceEnabled(true);
-    setControlsEnabled(true);
+}
+
+double PfeifferModel::getPressure1() const
+{
+    return 0.3;
+    return pressure1_;
+}
+
+double PfeifferModel::getPressure2() const
+{
+    return 2.0;
+    return pressure2_;
 }
 
 /**
@@ -49,6 +60,12 @@ void PfeifferModel::setDeviceState( State state ) {
   if ( state_ != state ) {
     state_ = state;
 
+    // No need to run the timer if the chiller is not ready
+    if ( state_ == READY )
+      timer_->start();
+    else
+      timer_->stop();
+
     emit deviceStateChanged(state);
   }
 }
@@ -59,8 +76,28 @@ void PfeifferModel::setDeviceState( State state ) {
   */
 void PfeifferModel::updateInformation() {
 
-  if ( state_ == READY ) {
-    emit informationChanged();
+    std::cout << "-----> PfeifferModel::updateInformation()" << std::endl;
+
+    if ( state_ == READY ) {
+
+      bool changed = false;
+      double temp;
+
+      temp = controller_->GetPressure1();
+      if (pressure1_!=temp) {
+        changed = true;
+        pressure1_ = temp;
+      }
+
+      temp = controller_->GetPressure2();
+      if (pressure2_!=temp) {
+        changed = true;
+        pressure2_ = temp;
+      }
+
+      std::cout << "##### PfeifferModel::updateInformation()" << std::endl;
+
+      emit informationChanged();
   }
 }
 

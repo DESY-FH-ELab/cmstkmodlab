@@ -29,6 +29,9 @@ class PfeifferModel :
 public:
   explicit PfeifferModel(float updateInterval = 5, QObject *parent = 0);
 
+    double getPressure1() const;
+    double getPressure2() const;
+
 public slots:
   void setDeviceEnabled( bool enabled );
   void setControlsEnabled(bool enabled);
@@ -38,6 +41,9 @@ protected:
   static const QString Pfeiffer_PORT;
 
   void initialize();
+
+  double pressure1_;
+  double pressure2_;
 
   /// Time interval between cache refreshes; in seconds.
   const double updateInterval_;
