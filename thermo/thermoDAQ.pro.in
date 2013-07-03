@@ -43,7 +43,8 @@ HEADERS += ThermoMainWindow.h \
            ThermoScriptableGlobals.h \
            ThermoDAQModel.h \
            ThermoDAQStreamer.h \
-           ThermoDAQWidget.h
+           ThermoDAQWidget.h \
+           ThermoDAQDisplayWidget.h
     
 SOURCES += thermoDAQ.cc \
            ThermoMainWindow.cc \
@@ -53,4 +54,5 @@ SOURCES += thermoDAQ.cc \
            ThermoScriptableGlobals.cc \
            ThermoDAQModel.cc \
            ThermoDAQStreamer.cc \
-           ThermoDAQWidget.cc
+           ThermoDAQWidget.cc \
+           ThermoDAQDisplayWidget.cc

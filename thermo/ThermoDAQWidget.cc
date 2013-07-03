@@ -1,97 +1,76 @@
 #include <QGroupBox>
 #include <QVBoxLayout>
+#include <QXmlStreamWriter>
 
 #include "ThermoDAQWidget.h"
 
-ThermoDAQWidget::ThermoDAQWidget(ThermoDAQModel* DAQModel, QWidget *parent) :
+ThermoDAQWidget::ThermoDAQWidget(ThermoDAQModel* daqModel, QWidget *parent) :
     QWidget(parent),
-    DAQModel_(DAQModel)
+    daqModel_(daqModel)
 {
   // Layouts to put everything into place
   QVBoxLayout* layout = new QVBoxLayout();
   setLayout(layout);
   setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);
 
-  // Camera buttons
   QGridLayout *buttonLayout = new QGridLayout();
   buttons_ = new QWidget(this);
   buttons_->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);
   buttons_->setLayout(buttonLayout);
   layout->addWidget(buttons_);
 
-  // load a DAQ
-  openDAQButton_ = new QPushButton("&Open DAQ", buttons_);
-  connect(openDAQButton_, SIGNAL(clicked()), this, SLOT(openDAQButtonClicked()));
-  buttonLayout->addWidget(openDAQButton_, 0, 0);
+  // start a measurement
+  startMeasurementButton_ = new QPushButton("Start Measurement", buttons_);
+  connect(startMeasurementButton_, SIGNAL(clicked()), daqModel_, SLOT(startMeasurement()));
+  buttonLayout->addWidget(startMeasurementButton_, 0, 0);
 
-  // save a DAQ
-  saveDAQButton_ = new QPushButton("&Save DAQ", buttons_);
-  connect(saveDAQButton_, SIGNAL(clicked()), this, SLOT(saveDAQButtonClicked()));
-  buttonLayout->addWidget(saveDAQButton_, 0, 1);
+  // stop a measurement
+  stopMeasurementButton_ = new QPushButton("Stop Measurement", buttons_);
+  connect(stopMeasurementButton_, SIGNAL(clicked()), daqModel_, SLOT(stopMeasurement()));
+  buttonLayout->addWidget(stopMeasurementButton_, 0, 1);
 
-  // save a DAQ with new name
-  saveAsDAQButton_ = new QPushButton("&Save DAQ as", buttons_);
-  connect(saveAsDAQButton_, SIGNAL(clicked()), this, SLOT(saveAsDAQButtonClicked()));
-  buttonLayout->addWidget(saveAsDAQButton_, 0, 2);
+  // clear history
+  clearHistoryButton_ = new QPushButton("Clear History", buttons_);
+  connect(clearHistoryButton_, SIGNAL(clicked()), daqModel_, SLOT(clearHistory()));
+  buttonLayout->addWidget(clearHistoryButton_, 0, 2);
 
-  // save a DAQ
-  executeDAQButton_ = new QPushButton("&Execute DAQ", buttons_);
-  connect(executeDAQButton_, SIGNAL(clicked()), this, SLOT(executeDAQButtonClicked()));
-  buttonLayout->addWidget(executeDAQButton_, 0, 3);
+  logEdit_ = new QPlainTextEdit(this);
+  layout->addWidget(logEdit_);
 
-  // execute DAQ
-  abortDAQButton_ = new QPushButton("&Abort DAQ", buttons_);
-  connect(abortDAQButton_, SIGNAL(clicked()), this, SLOT(abortDAQButtonClicked()));
-  buttonLayout->addWidget(abortDAQButton_, 0, 4);
-
-  temperaturePlot_ = new QwtPlot(QwtText("Temperatures"), this);
-  layout->addWidget(temperaturePlot_);
-
-  pressurePlot_ = new QwtPlot(QwtText("Pressures"), this);
-  layout->addWidget(pressurePlot_);
+  // log button
+  logButton_ = new QPushButton("Add Log Message", this);
+  connect(logButton_, SIGNAL(clicked()), this, SLOT(logButtonClicked()));
+  layout->addWidget(logButton_);
 
   updateGeometry();
+
+  connect(daqModel_, SIGNAL(daqStateChanged(bool)),
+          this, SLOT(daqStateChanged(bool)));
+  daqStateChanged(false);
 }
 
-void ThermoDAQWidget::openDAQButtonClicked() {
-
-//  QString filename = QFileDialog::getOpenFileName(this,
-//                                                  "open DAQ",
-//                                                  "./",
-//                                                  "Thermo DAQs (*.tsr)",
-//                                                  0,
-//                                                  0);
-//  if (!filename.isNull()) DAQModel_->openDAQ(filename);
+void ThermoDAQWidget::daqStateChanged(bool running)
+{
+    if (running) {
+        startMeasurementButton_->setEnabled(false);
+        stopMeasurementButton_->setEnabled(true);
+    } else {
+        startMeasurementButton_->setEnabled(true);
+        stopMeasurementButton_->setEnabled(false);
+    }
 }
 
-void ThermoDAQWidget::saveDAQButtonClicked() {
+void ThermoDAQWidget::logButtonClicked()
+{
+    QDateTime& utime = daqModel_->currentTime();
 
-//  QString filename = DAQModel_->currentDAQFilename();
-//  if (filename.isNull())
-//    this->saveAsDAQButtonClicked();
-//  else
-//    DAQModel_->saveDAQ(filename);
-}
+    QString buffer;
+    QXmlStreamWriter xml(&buffer);
 
-void ThermoDAQWidget::saveAsDAQButtonClicked() {
+    xml.writeStartElement("Log");
+    xml.writeAttribute("time", utime.toString());
+    xml.writeCharacters(logEdit_->toPlainText());
+    xml.writeEndElement();
 
-//  QString filename = QFileDialog::getSaveFileName(this,
-//                                                  "save DAQ",
-//                                                  "./",
-//                                                  "Thermo DAQs (*.tsr)",
-//                                                  0,
-//                                                  0);
-//  if (filename.isNull()) return;
-//  if (!filename.endsWith(".tsr")) filename += ".tsr";
-//  DAQModel_->saveDAQ(filename);
-}
-
-void ThermoDAQWidget::executeDAQButtonClicked() {
-
-//  DAQModel_->executeDAQ();
-}
-
-void ThermoDAQWidget::abortDAQButtonClicked() {
-
-//  DAQModel_->abortDAQ();
+    daqModel_->customDAQMessage(buffer);
 }

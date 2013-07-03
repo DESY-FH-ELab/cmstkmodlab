@@ -2,48 +2,70 @@
 #define THERMODAQMODEL_H
 
 #include <QObject>
+#include <QVector>
+#include <QDateTime>
+
+#include <qwt_date.h>
 
 #include "JulaboModel.h"
 #include "KeithleyModel.h"
 #include "HamegModel.h"
 #include "PfeifferModel.h"
 
-template <typename value_type> class ThermoDAQValue
-{
-public:
-    ThermoDAQValue(unsigned int time, value_type value) {
-        time_ = time;
-        value_ = value;
-    }
+//template <typename value_type> class ThermoDAQValue
+//{
+//public:
+//    ThermoDAQValue(unsigned int time, value_type value) {
+//        time_ = time;
+//        value_ = value;
+//    }
 
-    unsigned int& time() { return time_; }
-    value_type& value() { return value_; }
+//    unsigned int& time() { return time_; }
+//    const unsigned int& time() const { return time_; }
+//    value_type& value() { return value_; }
+//    const value_type& value() const { return value_; }
 
-protected:
+//protected:
 
-    unsigned int time_;
-    value_type value_;
-};
+//    unsigned int time_;
+//    value_type value_;
+//};
 
-template <typename value_type> class ThermoDAQValueVector : public std::vector<ThermoDAQValue<value_type> >
+template <typename value_type> class ThermoDAQValueVector : public QVector<double>
 {
 public:
     ThermoDAQValueVector() {
 
     }
 
-    void push(unsigned time, value_type value) {
-        std::vector<ThermoDAQValue<value_type> >::push_back(ThermoDAQValue<value_type>(time, value));
+    void clear() {
+        QVector<double>::clear();
+        values_.clear();
     }
 
-    bool pushIfChanged(unsigned time, value_type value) {
-        if (std::vector<ThermoDAQValue<value_type> >::size()>0 && lastValue()==value) return false;
-        std::vector<ThermoDAQValue<value_type> >::push_back(ThermoDAQValue<value_type>(time, value));
+    bool push(const QDateTime& time, value_type value) {
+        bool ret = QVector<double>::size()>0 && lastValue()==value;
+        QVector<double>::append(QwtDate::toDouble(time));
+        values_.append(value);
+        return ret;
+    }
+
+    bool pushIfChanged(const QDateTime& time, value_type value) {
+        if (QVector<double>::size()>0 && lastValue()==value) return false;
+        QVector<double>::append(QwtDate::toDouble(time));
+        values_.append(value);
         return true;
     }
 
-    unsigned int& lastTime() { return std::vector<ThermoDAQValue<value_type> >::back().time(); }
-    value_type& lastValue() { return std::vector<ThermoDAQValue<value_type> >::back().value(); }
+    double& lastTime() { return QVector<double>::last(); }
+    const double& lastTime() const { return QVector<double>::last(); }
+    value_type& lastValue() { return values_.last(); }
+
+    const double* constTimes() const { return QVector<double>::constData(); }
+    const value_type* constValues() const { return values_.constData(); }
+
+protected:
+    QVector<value_type> values_;
 };
 
 class ThermoDAQModel : public QObject
@@ -56,10 +78,26 @@ public:
                             PfeifferModel* pfeifferModel,
                             QObject *parent = 0);
 
+    QDateTime& currentTime();
+    void customDAQMessage(const QString & message);
+
+    const ThermoDAQValueVector<double>* getKeithleyTemperature(uint sensor) const
+    { return &keithleyTemperature_[sensor]; }
+
+    const ThermoDAQValueVector<double>* getPressure1() const
+    { return &pfeifferPressure1_; }
+    const ThermoDAQValueVector<double>* getPressure2() const
+    { return &pfeifferPressure2_; }
+
 protected slots:
     void julaboInfoChanged();
     void keithleySensorStateChanged(unsigned int sensor, State newState);
     void keithleyTemperatureChanged(unsigned int sensor, double temperature);
+    void pfeifferInfoChanged();
+
+    void startMeasurement();
+    void stopMeasurement();
+    void clearHistory();
 
 protected:
   JulaboModel* julaboModel_;
@@ -67,20 +105,25 @@ protected:
   HamegModel* hamegModel_;
   PfeifferModel* pfeifferModel_;
 
-  unsigned int currentTime_;
-  unsigned int currentTime();
+  QDateTime currentTime_;
 
   // JULABO DATA
-  ThermoDAQValueVector<float> julaboWorkingTemperature_;
-  ThermoDAQValueVector<float> julaboBathTemperature_;
+  ThermoDAQValueVector<double> julaboWorkingTemperature_;
+  ThermoDAQValueVector<double> julaboBathTemperature_;
 
   // KEITHLEY DATA
   ThermoDAQValueVector<State> keithleySensorState_[10];
-  ThermoDAQValueVector<float> keithleyTemperature_[10];
+  ThermoDAQValueVector<double> keithleyTemperature_[10];
+
+  // PFEIFFER DATA
+  ThermoDAQValueVector<double> pfeifferPressure1_;
+  ThermoDAQValueVector<double> pfeifferPressure2_;
 
 signals:
 
   void daqMessage(const QString & message);
+  void daqStateChanged(bool running);
+  void newDataAvailable();
 };
 
 #endif // THERMODAQMODEL_H

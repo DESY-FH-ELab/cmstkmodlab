@@ -9,8 +9,6 @@
 #include <QFileDialog>
 #include <QPlainTextEdit>
 
-#include <qwt_plot.h>
-
 #include "ThermoDAQModel.h"
 
 class ThermoDAQWidget : public QWidget
@@ -19,29 +17,22 @@ class ThermoDAQWidget : public QWidget
 public:
   explicit ThermoDAQWidget(ThermoDAQModel* DAQModel, QWidget *parent = 0);
 
-public slots:
-
 protected:
   // Models
-  ThermoDAQModel* DAQModel_;
+  ThermoDAQModel* daqModel_;
 
   // Widgets
-  QPushButton* openDAQButton_;
-  QPushButton* saveDAQButton_;
-  QPushButton* saveAsDAQButton_;
-  QPushButton* executeDAQButton_;
-  QPushButton* abortDAQButton_;
+  QPushButton* startMeasurementButton_;
+  QPushButton* stopMeasurementButton_;
+  QPushButton* clearHistoryButton_;
   QWidget* buttons_;
 
-  QwtPlot* temperaturePlot_;
-  QwtPlot* pressurePlot_;
+  QPlainTextEdit* logEdit_;
+  QPushButton* logButton_;
 
 protected slots:
-  void openDAQButtonClicked();
-  void saveDAQButtonClicked();
-  void saveAsDAQButtonClicked();
-  void executeDAQButtonClicked();
-  void abortDAQButtonClicked();
+  void daqStateChanged(bool running);
+  void logButtonClicked();
 };
 
 #endif // THERMODAQWIDGET_H
