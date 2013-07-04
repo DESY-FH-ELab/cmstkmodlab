@@ -28,6 +28,9 @@ ThermoDAQModel::ThermoDAQModel(JulaboModel* julaboModel,
 
     connect(pfeifferModel_, SIGNAL(informationChanged()),
             this, SLOT(pfeifferInfoChanged()));
+
+    connect(hamegModel_, SIGNAL(informationChanged()),
+            this, SLOT(hamegInfoChanged()));
 }
 
 void ThermoDAQModel::startMeasurement()
@@ -65,6 +68,30 @@ void ThermoDAQModel::startMeasurement()
     xml.writeAttribute("time", utime.toString());
     xml.writeAttribute("p1", QString::number(pfeifferModel_->getPressure1(), 'e', 2));
     xml.writeAttribute("p2", QString::number(pfeifferModel_->getPressure2(), 'e', 2));
+    xml.writeEndElement();
+
+    xml.writeStartElement("HamegSetup");
+    xml.writeAttribute("time", utime.toString());
+    xml.writeAttribute("remote", hamegRemoteMode_==true ? "1" : "0");
+    xml.writeAttribute("outputs", hamegOutputsEnabled_==true ? "1" : "0");
+    xml.writeAttribute("CV1", hamegCVMode_[0]==true ? "1" : "0");
+    xml.writeAttribute("CV2", hamegCVMode_[1]==true ? "1" : "0");
+    xml.writeEndElement();
+
+    xml.writeStartElement("HamegSetvalues");
+    xml.writeAttribute("time", utime.toString());
+    xml.writeAttribute("V1", QString::number(hamegSetVoltage_[0]));
+    xml.writeAttribute("C1", QString::number(hamegSetCurrent_[0]));
+    xml.writeAttribute("V2", QString::number(hamegSetVoltage_[1]));
+    xml.writeAttribute("C2", QString::number(hamegSetCurrent_[1]));
+    xml.writeEndElement();
+
+    xml.writeStartElement("HamegValues");
+    xml.writeAttribute("time", utime.toString());
+    xml.writeAttribute("V1", QString::number(hamegVoltage_[0]));
+    xml.writeAttribute("C1", QString::number(hamegCurrent_[0]));
+    xml.writeAttribute("V2", QString::number(hamegVoltage_[1]));
+    xml.writeAttribute("C2", QString::number(hamegCurrent_[1]));
     xml.writeEndElement();
 
     emit daqMessage(buffer);
@@ -168,8 +195,6 @@ void ThermoDAQModel::keithleyTemperatureChanged(unsigned int sensor, double temp
 
 void ThermoDAQModel::pfeifferInfoChanged()
 {
-    std::cout << "----> ThermoDAQModel::pfeifferInfoChanged()" << std::endl;
-
     QDateTime utime = currentTime();
 
     bool changed = false;
@@ -193,4 +218,63 @@ void ThermoDAQModel::pfeifferInfoChanged()
     }
 
     emit newDataAvailable();
+}
+
+void ThermoDAQModel::hamegInfoChanged()
+{
+    QDateTime utime = currentTime();
+
+    QString buffer;
+    QXmlStreamWriter xml(&buffer);
+    xml.setAutoFormatting(true);
+
+    // setup
+    bool changed = false;
+    changed |= updateIfChanged<bool>(hamegRemoteMode_, hamegModel_->isRemoteMode());
+    changed |= updateIfChanged<bool>(hamegOutputsEnabled_, hamegModel_->isOutputEnabled());
+    changed |= updateIfChanged<bool>(hamegCVMode_[0], hamegModel_->isConstantVoltageMode(1));
+    changed |= updateIfChanged<bool>(hamegCVMode_[1], hamegModel_->isConstantVoltageMode(2));
+    if (changed) {
+        xml.writeStartElement("HamegSetup");
+        xml.writeAttribute("time", utime.toString());
+        xml.writeAttribute("remote", hamegRemoteMode_==true ? "1" : "0");
+        xml.writeAttribute("outputs", hamegOutputsEnabled_==true ? "1" : "0");
+        xml.writeAttribute("CV1", hamegCVMode_[0]==true ? "1" : "0");
+        xml.writeAttribute("CV2", hamegCVMode_[1]==true ? "1" : "0");
+        xml.writeEndElement();
+    }
+
+    // set values
+    changed = false;
+    changed |= updateIfChanged<float>(hamegSetVoltage_[0], hamegModel_->getVoltageParameter(1).getValue());
+    changed |= updateIfChanged<float>(hamegSetVoltage_[1], hamegModel_->getVoltageParameter(2).getValue());
+    changed |= updateIfChanged<float>(hamegSetCurrent_[0], hamegModel_->getCurrentParameter(1).getValue());
+    changed |= updateIfChanged<float>(hamegSetCurrent_[1], hamegModel_->getCurrentParameter(2).getValue());
+    if (changed) {
+        xml.writeStartElement("HamegSetvalues");
+        xml.writeAttribute("time", utime.toString());
+        xml.writeAttribute("V1", QString::number(hamegSetVoltage_[0]));
+        xml.writeAttribute("C1", QString::number(hamegSetCurrent_[0]));
+        xml.writeAttribute("V2", QString::number(hamegSetVoltage_[1]));
+        xml.writeAttribute("C2", QString::number(hamegSetCurrent_[1]));
+        xml.writeEndElement();
+    }
+
+    // measured values
+    changed = false;
+    changed |= updateIfChanged<float>(hamegVoltage_[0], hamegModel_->getVoltage(1));
+    changed |= updateIfChanged<float>(hamegVoltage_[1], hamegModel_->getVoltage(2));
+    changed |= updateIfChanged<float>(hamegCurrent_[0], hamegModel_->getCurrent(1));
+    changed |= updateIfChanged<float>(hamegCurrent_[1], hamegModel_->getCurrent(2));
+    if (changed) {
+        xml.writeStartElement("HamegValues");
+        xml.writeAttribute("time", utime.toString());
+        xml.writeAttribute("V1", QString::number(hamegVoltage_[0]));
+        xml.writeAttribute("C1", QString::number(hamegCurrent_[0]));
+        xml.writeAttribute("V2", QString::number(hamegVoltage_[1]));
+        xml.writeAttribute("C2", QString::number(hamegCurrent_[1]));
+        xml.writeEndElement();
+    }
+
+    if (buffer.length()>0) emit daqMessage(buffer);
 }

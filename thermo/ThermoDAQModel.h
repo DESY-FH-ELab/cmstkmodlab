@@ -94,6 +94,7 @@ protected slots:
     void keithleySensorStateChanged(unsigned int sensor, State newState);
     void keithleyTemperatureChanged(unsigned int sensor, double temperature);
     void pfeifferInfoChanged();
+    void hamegInfoChanged();
 
     void startMeasurement();
     void stopMeasurement();
@@ -107,6 +108,12 @@ protected:
 
   QDateTime currentTime_;
 
+  template <typename T> bool updateIfChanged(T &variable, T newValue) {
+      if (variable==newValue) return false;
+      variable = newValue;
+      return true;
+  }
+
   // JULABO DATA
   ThermoDAQValueVector<double> julaboWorkingTemperature_;
   ThermoDAQValueVector<double> julaboBathTemperature_;
@@ -118,6 +125,15 @@ protected:
   // PFEIFFER DATA
   ThermoDAQValueVector<double> pfeifferPressure1_;
   ThermoDAQValueVector<double> pfeifferPressure2_;
+
+  // HAMEG DATA
+  bool hamegRemoteMode_;
+  bool hamegOutputsEnabled_;
+  bool hamegCVMode_[2];
+  float hamegSetVoltage_[2];
+  float hamegSetCurrent_[2];
+  float hamegVoltage_[2];
+  float hamegCurrent_[2];
 
 signals:
 

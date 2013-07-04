@@ -36,7 +36,8 @@ INCLUDEPATH += @basepath@
 INCLUDEPATH += @basepath@/common
 
 # Input
-HEADERS += ThermoMainWindow.h \
+HEADERS += TestWindow.h \
+           ThermoMainWindow.h \
            ThermoScriptModel.h \
            ThermoScriptThread.h \
            ThermoScriptWidget.h \
@@ -47,6 +48,7 @@ HEADERS += ThermoMainWindow.h \
            ThermoDAQDisplayWidget.h
     
 SOURCES += thermoDAQ.cc \
+           TestWindow.cc \
            ThermoMainWindow.cc \
            ThermoScriptModel.cc \
            ThermoScriptThread.cc \

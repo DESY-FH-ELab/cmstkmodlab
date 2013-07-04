@@ -1,7 +1,9 @@
 #include <QApplication>
 
 #include "ApplicationConfig.h"
+
 #include "ThermoMainWindow.h"
+#include "TestWindow.h"
 
 int main( int argc, char** argv ) {
 
@@ -10,7 +12,8 @@ int main( int argc, char** argv ) {
 
   ApplicationConfig::instance(std::string(Config::CMSTkModLabBasePath) + "/thermo/thermo.cfg");
 
-  ThermoMainWindow mainWindow;
+  //ThermoMainWindow mainWindow;
+  TestWindow mainWindow;
 
   mainWindow.show();
 
