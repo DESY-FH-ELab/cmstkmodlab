@@ -1,146 +1,197 @@
+#include <iostream>
+
+#include <QGridLayout>
+
 #include "HamegWidget.h"
+
+HamegChannelWidget::HamegChannelWidget(HamegModel* model, int channel, QWidget *parent) :
+    QGroupBox(parent),
+    model_(model),
+    channel_(channel)
+{
+    setTitle(QString("channel %1").arg(channel));
+
+    QGridLayout* layout = new QGridLayout();
+    setLayout(layout);
+
+    QButtonGroup* modeGroup = new QButtonGroup(this);
+    cvModeButton_ = new QRadioButton("Constant Voltage Mode", this);
+    modeGroup->addButton(cvModeButton_);
+    layout->addWidget(cvModeButton_, 0, 0);
+    ccModeButton_ = new QRadioButton("Constant Current Mode", this);
+    modeGroup->addButton(ccModeButton_);
+    layout->addWidget(ccModeButton_, 1, 0);
+
+    QHBoxLayout* hlayout;
+
+    hlayout= new QHBoxLayout();
+    QGroupBox* voltageGroup = new QGroupBox("Voltage", this);
+    voltageGroup->setLayout(hlayout);
+
+    voltageDisplay_ = new QLCDNumber(LCD_SIZE, voltageGroup);
+    voltageDisplay_->setSegmentStyle(QLCDNumber::Flat);
+    voltageDisplay_->setSmallDecimalPoint(true);
+    voltageDisplay_->setDigitCount(6);
+    hlayout->addWidget(voltageDisplay_);
+
+    voltageSpinner_ = new QDoubleSpinBox(voltageGroup);
+    voltageSpinner_->setMinimum(0.0);
+    voltageSpinner_->setMaximum(30.0);
+    voltageSpinner_->setSingleStep(0.1);
+    hlayout->addWidget(voltageSpinner_);
+
+    layout->addWidget(voltageGroup, 0, 1);
+
+    hlayout= new QHBoxLayout();
+    QGroupBox* currentGroup = new QGroupBox("Current", this);
+    currentGroup->setLayout(hlayout);
+
+    currentDisplay_ = new QLCDNumber(LCD_SIZE, currentGroup);
+    currentDisplay_->setSegmentStyle(QLCDNumber::Flat);
+    currentDisplay_->setSmallDecimalPoint(true);
+    currentDisplay_->setDigitCount(6);
+    hlayout->addWidget(currentDisplay_);
+
+    currentSpinner_ = new QDoubleSpinBox(voltageGroup);
+    currentSpinner_->setMinimum(0.0);
+    currentSpinner_->setMaximum(1.0);
+    currentSpinner_->setSingleStep(0.001);
+    hlayout->addWidget(currentSpinner_);
+
+    layout->addWidget(currentGroup, 1, 1);
+
+    connect(modeGroup, SIGNAL(buttonClicked(int)),
+            this, SLOT(modeChanged(int)));
+
+    connect(voltageSpinner_, SIGNAL(valueChanged(double)),
+            this, SLOT(voltageSpinnerChanged(double)));
+    connect(currentSpinner_, SIGNAL(valueChanged(double)),
+            this, SLOT(currentSpinnerChanged(double)));
+
+    connect(model_, SIGNAL(deviceStateChanged(State)),
+            this, SLOT(updateDeviceState(State)));
+
+    connect(model_, SIGNAL(controlStateChanged(bool)),
+            this, SLOT(controlStateChanged(bool)));
+
+    connect(model_, SIGNAL(informationChanged()),
+            this, SLOT(updateInfo()));
+}
+
+void HamegChannelWidget::modeChanged(int button)
+{
+    if (button==0) {
+        model_->setVoltage(channel_, voltageSpinner_->value());
+    } else {
+        model_->setCurrent(channel_, currentSpinner_->value());
+    }
+}
+
+void HamegChannelWidget::voltageSpinnerChanged(double voltage)
+{
+    model_->setVoltage(channel_, voltage);
+}
+
+void HamegChannelWidget::currentSpinnerChanged(double voltage)
+{
+    model_->setCurrent(channel_, voltage);
+}
+
+void HamegChannelWidget::updateDeviceState(State)
+{
+    std::cout << "HamegChannelWidget::updateDeviceState(State)" << std::endl;
+}
+
+void HamegChannelWidget::controlStateChanged(bool state)
+{
+    std::cout << "HamegChannelWidget::controlStateChanged(bool state)" << std::endl;
+}
+
+void HamegChannelWidget::updateInfo()
+{
+    std::cout << "HamegChannelWidget::updateInfo()" << std::endl;
+
+    unsigned int status = model_->getStatus();
+
+    if (channel_==1) {
+        if (status&VHameg8143::hmCV1) {
+            cvModeButton_->setChecked(true);
+        } else if (status&VHameg8143::hmCC1) {
+            ccModeButton_->setChecked(true);
+        }
+    } else {
+        if (status&VHameg8143::hmCV2) {
+            cvModeButton_->setChecked(true);
+        } else if (status&VHameg8143::hmCC2) {
+            ccModeButton_->setChecked(true);
+        }
+    }
+
+    float setVoltage = model_->getVoltageParameter(channel_).getValue();
+    voltageSpinner_->setValue(setVoltage);
+    float voltage = model_->getVoltage(channel_);
+    voltageDisplay_->display(voltage);
+
+    float setCurrent = model_->getCurrentParameter(channel_).getValue();
+    currentSpinner_->setValue(setCurrent);
+    float current = model_->getCurrent(channel_);
+    currentDisplay_->display(current);
+}
 
 /**
   \brief Creates a new panel with all the controls and read-outs for the Hameg
   chiller.
   */
 HamegWidget::HamegWidget(HamegModel* model, QWidget *parent) :
-    QWidget(parent), model_(model)
+    QWidget(parent),
+    model_(model)
 {
-  // Create all the nescessary widgets
-  hamegCheckBox_ = new QCheckBox("Enable power supply", this);
+    QVBoxLayout* layout = new QVBoxLayout();
+    setLayout(layout);
 
-  operationPanel_ = new QWidget(this);
+    hamegCheckBox_ = new QCheckBox("Enable power supply", this);
+    layout->addWidget(hamegCheckBox_);
 
-//  DeviceParameterFloat prop = model_->getProportionalParameter();
-//  proportionalSpinner_ = new QDoubleSpinBox(operationPanel_);
-//  proportionalSpinner_->setDecimals(prop.getPrecision());
-//  proportionalSpinner_->setMinimum(prop.getMinimum());
-//  proportionalSpinner_->setMaximum(prop.getMaximum());
+    operationPanel_ = new QWidget(this);
+    QVBoxLayout* layout2 = new QVBoxLayout();
+    operationPanel_->setLayout(layout2);
+    layout->addWidget(operationPanel_);
 
-//  DeviceParameterUInt integral = model_->getIntegralParameter();
-//  integralSpinner_ = new QSpinBox(operationPanel_);
-//  integralSpinner_->setMinimum(integral.getMinimum());
-//  integralSpinner_->setMaximum(integral.getMaximum());
+    QHBoxLayout* hlayout = new QHBoxLayout();
+    QWidget* buttonPanel = new QWidget(operationPanel_);
+    buttonPanel->setLayout(hlayout);
+    layout2->addWidget(buttonPanel);
 
-//  DeviceParameterUInt differential = model_->getDifferentialParameter();
-//  differentialSpinner_ = new QSpinBox(operationPanel_);
-//  differentialSpinner_->setMinimum(differential.getMinimum());
-//  differentialSpinner_->setMaximum(differential.getMaximum());
+    hamegRemoteBox_ = new QCheckBox("Remote mode", buttonPanel);
+    hlayout->addWidget(hamegRemoteBox_);
 
-//  circulatorCheckBox_ = new QCheckBox("Enable circulator", operationPanel_);
+    hamegOutputBox_= new QCheckBox("Outputs enabled", buttonPanel);
+    hlayout->addWidget(hamegOutputBox_);
 
-//  DeviceParameterUInt pump = model_->getPumpPressureParameter();
-//  pumpSpinner_ = new QSpinBox(operationPanel_);
-//  pumpSpinner_->setMinimum(pump.getMinimum());
-//  pumpSpinner_->setMaximum(pump.getMaximum());
-
-//  bathTempLCD_ = new QLCDNumber(LCD_SIZE, operationPanel_);
-//  bathTempLCD_->setSegmentStyle(QLCDNumber::Flat);
-//  bathTempLCD_->setSmallDecimalPoint(true);
-
-//  DeviceParameterFloat working = model_->getWorkingTemperatureParameter();
-//  workingTempSpinner_ = new QDoubleSpinBox(operationPanel_);
-//  workingTempSpinner_->setDecimals(working.getPrecision());
-//  workingTempSpinner_->setMinimum(working.getMinimum());
-//  workingTempSpinner_->setMaximum(working.getMaximum());
-
-//  powerLCD_ = new QLCDNumber(LCD_SIZE, operationPanel_);
-//  powerLCD_->setSegmentStyle(QLCDNumber::Flat);
-
-//  // Put everything in place
-//  QVBoxLayout* layout = new QVBoxLayout(this);
-//  setLayout(layout);
-
-//  layout->addWidget(chillerCheckBox_);
-//  layout->addWidget(operationPanel_);
-
-//  QHBoxLayout* operationLayout = new QHBoxLayout(operationPanel_);
-//  operationPanel_->setLayout(operationLayout);
-
-//  QWidget* parameterPanel = new QWidget(operationPanel_);
-//  operationLayout->addWidget(parameterPanel);
-//  QFormLayout* parameterLayout = new QFormLayout(parameterPanel);
-//  parameterPanel->setLayout(parameterLayout);
-
-//  parameterLayout->addRow("Proportional", proportionalSpinner_);
-//  parameterLayout->addRow("Integral", integralSpinner_);
-//  parameterLayout->addRow("Differential", differentialSpinner_);
-
-//  QWidget* tempPanel = new QWidget(operationPanel_);
-//  operationLayout->addWidget(tempPanel);
-//  QFormLayout* tempLayout = new QFormLayout(tempPanel);
-//  tempPanel->setLayout(tempLayout);
-
-//  tempLayout->addRow(circulatorCheckBox_);
-//  tempLayout->addRow("Pump pressure", pumpSpinner_);
-//  tempLayout->addRow(
-//        QString::fromUtf8("Bath temperature (°C)")
-//      , bathTempLCD_);
-//  tempLayout->addRow(
-//        QString::fromUtf8("Working temperature (°C)")
-//      , workingTempSpinner_
-//  );
-//  tempLayout->addRow("Power (%)", powerLCD_);
+    // Create all the nescessary widgets
+    channel1_ = new HamegChannelWidget(model_, 1, operationPanel_);
+    layout2->addWidget(channel1_);
+    channel2_ = new HamegChannelWidget(model_, 2, operationPanel_);
+    layout2->addWidget(channel2_);
 
   // Connect all the signals
-  connect(model_,
-          SIGNAL(deviceStateChanged(State)),
-          this,
-          SLOT(updateDeviceState(State)));
+  connect(model_, SIGNAL(deviceStateChanged(State)),
+          this, SLOT(updateDeviceState(State)));
+  connect(model_, SIGNAL(controlStateChanged(bool)),
+          this, SLOT(controlStateChanged(bool)));
+  connect(model_, SIGNAL(informationChanged()),
+          this, SLOT(updateInfo()));
 
-  connect(model_,
-          SIGNAL(controlStateChanged(bool)),
-          this,
-          SLOT(controlStateChanged(bool)));
+  connect(hamegCheckBox_, SIGNAL(toggled(bool)),
+          model_, SLOT(setDeviceEnabled(bool)));
 
-  connect(model_,
-          SIGNAL(informationChanged()),
-          this,
-          SLOT(updateInfo()));
-
-  connect(hamegCheckBox_,
-          SIGNAL(toggled(bool)),
-          model,
-          SLOT(setDeviceEnabled(bool)));
-
-//  connect(
-//          proportionalSpinner_
-//        , SIGNAL(valueChanged(double))
-//        , model_
-//        , SLOT(setProportionalValue(double))
-//  );
-
-//  connect(
-//          differentialSpinner_
-//        , SIGNAL(valueChanged(int))
-//        , model_
-//        , SLOT(setDifferentialValue(int))
-//  );
-
-//  connect(
-//          circulatorCheckBox_
-//        , SIGNAL(toggled(bool))
-//        , model_
-//        , SLOT(setCirculatorEnabled(bool))
-//  );
-
-//  connect(
-//          pumpSpinner_
-//        , SIGNAL(valueChanged(int))
-//        , model_
-//        , SLOT(setPumpPressureValue(int))
-//  );
-
-//  connect(
-//        workingTempSpinner_
-//        , SIGNAL(valueChanged(double))
-//        , model_
-//        , SLOT(setWorkingTemperatureValue(double))
-//  );
+  connect(hamegRemoteBox_, SIGNAL(toggled(bool)),
+          model_, SLOT(setRemoteMode(bool)));
+  connect(hamegOutputBox_, SIGNAL(toggled(bool)),
+          model_, SLOT(switchOutputOn(bool)));
 
   // Set GUI according to the current chiller state
-  updateDeviceState( model_->getDeviceState() );
+  updateDeviceState(model_->getDeviceState());
   updateInfo();
 }
 
@@ -150,8 +201,8 @@ HamegWidget::HamegWidget(HamegModel* model, QWidget *parent) :
 void HamegWidget::updateDeviceState(State newState) {
 
   bool ready = (newState == READY);
-  hamegCheckBox_->setChecked( ready );
-  operationPanel_->setEnabled( ready );
+  hamegCheckBox_->setChecked(ready);
+  operationPanel_->setEnabled(ready);
 }
 
 /// Updates the GUI when the Keithley multimeter is enabled/disabled.
@@ -167,19 +218,24 @@ void HamegWidget::controlStateChanged(bool enabled) {
   Sets the values of all the subelements (except the global enablement)
   according to the model.
   */
-void HamegWidget::updateInfo() {
+void HamegWidget::updateInfo()
+{
+    unsigned int status = model_->getStatus();
 
-//  proportionalSpinner_->setValue(model_->getProportionalParameter().getValue());
-//  integralSpinner_->setValue(model_->getIntegralParameter().getValue());
-//  differentialSpinner_->setValue(model_->getDifferentialParameter().getValue());
+    if (status&VHameg8143::hmRM0) {
+        hamegRemoteBox_->setChecked(false);
+        channel1_->setEnabled(false);
+        channel2_->setEnabled(false);
+        hamegOutputBox_->setEnabled(false);
+    } else if (status&VHameg8143::hmRM1) {
+        hamegRemoteBox_->setChecked(true);
+        channel1_->setEnabled(true);
+        channel2_->setEnabled(true);
+        hamegOutputBox_->setEnabled(true);
+    }
 
-//  circulatorCheckBox_->setChecked(model_->isCirculatorEnabled());
-
-//  pumpSpinner_->setValue(model_->getPumpPressureParameter().getValue());
-
-//  bathTempLCD_->display(model_->getBathTemperature());
-//  workingTempSpinner_->setValue(
-//        model_->getWorkingTemperatureParameter().getValue()
-//  );
-//  powerLCD_->display( static_cast<int>(model_->getPower()) );
+    if (status&VHameg8143::hmOP0)
+        hamegOutputBox_->setChecked(false);
+    else if (status&VHameg8143::hmOP1)
+        hamegOutputBox_->setChecked(true);
 }
