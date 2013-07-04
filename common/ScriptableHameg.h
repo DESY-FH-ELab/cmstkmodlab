@@ -15,8 +15,26 @@ public:
 
 public slots:
 
-//  QScriptValue state(unsigned int channel);
-//  QScriptValue temperature(unsigned int channel);
+  QScriptValue isRemoteMode();
+  QScriptValue isOutputEnabled();
+  QScriptValue isConstantVoltageMode(int channel);
+
+  void remoteOn();
+  void remoteOff();
+
+  void switchOutputOn();
+  void switchOutputOff();
+
+  void setVoltage(int channel, float voltage);
+  QScriptValue getVoltage(int channel);
+  void setCurrent(int channel, float current);
+  QScriptValue getCurrent(int channel);
+
+signals:
+  void changeRemoteMode(bool);
+  void changeOutputState(bool);
+  void changeSetVoltage(int, float);
+  void changeSetCurrent(int, float);
 
 protected:
   HamegModel* hamegModel_;
