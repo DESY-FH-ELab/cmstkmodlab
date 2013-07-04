@@ -24,6 +24,8 @@ else {
     LIBS += @qwtlibs@ -lGL -lGLU
 }
 
+QMAKE_CXXFLAGS += -std=c++0x
+
 INCLUDEPATH += @qwtincludes@
 DEFINES += @configdefines@
 QT += core gui opengl script xml
