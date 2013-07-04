@@ -2,10 +2,10 @@
 #define DEVICEPARAMETER_H
 
 /// A numerical parameter value class bounded by (inclusive) limits.
-template <class T> class DeviceParameter {
+template <typename T> class DeviceParameter {
 public:
   // TODO Include units
-  DeviceParameter(T min, T max, unsigned int precision) :
+    DeviceParameter(T min, T max, unsigned int precision) :
     max_(max), min_(min), precision_(precision) {
     // Start with lowest value allowed.
     value_ = min;
