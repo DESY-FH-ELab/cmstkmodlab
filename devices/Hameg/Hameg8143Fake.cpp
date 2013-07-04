@@ -5,11 +5,11 @@
 Hameg8143Fake::Hameg8143Fake( const ioport_t ioPort )
   :VHameg8143(ioPort)
 {
-  statusBits_ = hmOP1 | hmCV1 | hmCC2 | hmRM1;
-  voltage_[0] = 12.34;
-  voltage_[1] = 12.34;
-  current_[0] = 1.234;
-  current_[1] = 1.234;
+  statusBits_ = hmOP0 | hmCV1 | hmCV2 | hmRM0;
+  voltage_[0] = 0.0;
+  voltage_[1] = 0.0;
+  current_[0] = 0.0;
+  current_[1] = 0.0;
 }
 
 Hameg8143Fake::~Hameg8143Fake()
@@ -61,6 +61,8 @@ float Hameg8143Fake::GetSetVoltage(int channel) const
   
 float Hameg8143Fake::GetVoltage(int channel) const
 {
+  if ((channel==1 && statusBits_&hmCC1) ||
+      (channel==2 && statusBits_&hmCC2)) return resistance_ * current_[channel-1];
   return voltage_[channel-1];
 }
 
@@ -84,6 +86,8 @@ float Hameg8143Fake::GetSetCurrent(int channel) const
 
 float Hameg8143Fake::GetCurrent(int channel) const
 {
+  if ((channel==1 && statusBits_&hmCV1) ||
+      (channel==2 && statusBits_&hmCV2)) return voltage_[channel-1] / resistance_;
   return current_[channel-1];
 }
  
