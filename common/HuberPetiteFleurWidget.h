@@ -29,16 +29,9 @@ protected:
 
   QWidget* operationPanel_;
 
-//  QDoubleSpinBox* proportionalSpinner_;
-//  QSpinBox* integralSpinner_;
-//  QSpinBox* differentialSpinner_;
-
-//  QCheckBox* circulatorCheckBox_;
-//  QSpinBox* pumpSpinner_;
-
-//  QLCDNumber* bathTempLCD_;
-//  QDoubleSpinBox* workingTempSpinner_;
-//  QLCDNumber* powerLCD_;
+    QCheckBox* circulatorCheckBox_;
+    QLCDNumber* bathTempLCD_;
+    QDoubleSpinBox* workingTempSpinner_;
 
 public slots:
   void updateDeviceState( State newState );

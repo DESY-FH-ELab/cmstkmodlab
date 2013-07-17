@@ -7,81 +7,36 @@
 HuberPetiteFleurWidget::HuberPetiteFleurWidget(HuberPetiteFleurModel* model, QWidget *parent) :
     QWidget(parent), model_(model)
 {
-  // Create all the nescessary widgets
+  QVBoxLayout* layout = new QVBoxLayout(this);
+  setLayout(layout);
+
   huberPetiteFleurCheckBox_ = new QCheckBox("Enable chiller", this);
+  layout->addWidget(huberPetiteFleurCheckBox_);
 
   operationPanel_ = new QWidget(this);
+  QFormLayout* operationLayout = new QFormLayout(operationPanel_);
+  operationPanel_->setLayout(operationLayout);
+  layout->addWidget(operationPanel_);
 
-//  DeviceParameterFloat prop = model_->getProportionalParameter();
-//  proportionalSpinner_ = new QDoubleSpinBox(operationPanel_);
-//  proportionalSpinner_->setDecimals(prop.getPrecision());
-//  proportionalSpinner_->setMinimum(prop.getMinimum());
-//  proportionalSpinner_->setMaximum(prop.getMaximum());
+  circulatorCheckBox_ = new QCheckBox("Enable circulator", operationPanel_);
+  operationLayout->addRow(circulatorCheckBox_);
 
-//  DeviceParameterUInt integral = model_->getIntegralParameter();
-//  integralSpinner_ = new QSpinBox(operationPanel_);
-//  integralSpinner_->setMinimum(integral.getMinimum());
-//  integralSpinner_->setMaximum(integral.getMaximum());
+  bathTempLCD_ = new QLCDNumber(LCD_SIZE, operationPanel_);
+  bathTempLCD_->setSegmentStyle(QLCDNumber::Flat);
+  bathTempLCD_->setSmallDecimalPoint(true);
+  operationLayout->addRow(QString::fromUtf8("Bath temperature (°C)"),
+                             bathTempLCD_);
 
-//  DeviceParameterUInt differential = model_->getDifferentialParameter();
-//  differentialSpinner_ = new QSpinBox(operationPanel_);
-//  differentialSpinner_->setMinimum(differential.getMinimum());
-//  differentialSpinner_->setMaximum(differential.getMaximum());
-
-//  circulatorCheckBox_ = new QCheckBox("Enable circulator", operationPanel_);
-
-//  DeviceParameterUInt pump = model_->getPumpPressureParameter();
-//  pumpSpinner_ = new QSpinBox(operationPanel_);
-//  pumpSpinner_->setMinimum(pump.getMinimum());
-//  pumpSpinner_->setMaximum(pump.getMaximum());
-
-//  bathTempLCD_ = new QLCDNumber(LCD_SIZE, operationPanel_);
-//  bathTempLCD_->setSegmentStyle(QLCDNumber::Flat);
-//  bathTempLCD_->setSmallDecimalPoint(true);
-
-//  DeviceParameterFloat working = model_->getWorkingTemperatureParameter();
-//  workingTempSpinner_ = new QDoubleSpinBox(operationPanel_);
-//  workingTempSpinner_->setDecimals(working.getPrecision());
-//  workingTempSpinner_->setMinimum(working.getMinimum());
-//  workingTempSpinner_->setMaximum(working.getMaximum());
-
-//  powerLCD_ = new QLCDNumber(LCD_SIZE, operationPanel_);
-//  powerLCD_->setSegmentStyle(QLCDNumber::Flat);
-
-//  // Put everything in place
-//  QVBoxLayout* layout = new QVBoxLayout(this);
-//  setLayout(layout);
-
-//  layout->addWidget(chillerCheckBox_);
-//  layout->addWidget(operationPanel_);
-
-//  QHBoxLayout* operationLayout = new QHBoxLayout(operationPanel_);
-//  operationPanel_->setLayout(operationLayout);
-
-//  QWidget* parameterPanel = new QWidget(operationPanel_);
-//  operationLayout->addWidget(parameterPanel);
-//  QFormLayout* parameterLayout = new QFormLayout(parameterPanel);
-//  parameterPanel->setLayout(parameterLayout);
-
-//  parameterLayout->addRow("Proportional", proportionalSpinner_);
-//  parameterLayout->addRow("Integral", integralSpinner_);
-//  parameterLayout->addRow("Differential", differentialSpinner_);
-
-//  QWidget* tempPanel = new QWidget(operationPanel_);
-//  operationLayout->addWidget(tempPanel);
-//  QFormLayout* tempLayout = new QFormLayout(tempPanel);
-//  tempPanel->setLayout(tempLayout);
-
-//  tempLayout->addRow(circulatorCheckBox_);
-//  tempLayout->addRow("Pump pressure", pumpSpinner_);
-//  tempLayout->addRow(
-//        QString::fromUtf8("Bath temperature (°C)")
-//      , bathTempLCD_);
-//  tempLayout->addRow(
-//        QString::fromUtf8("Working temperature (°C)")
-//      , workingTempSpinner_
-//  );
-//  tempLayout->addRow("Power (%)", powerLCD_);
+  DeviceParameterFloat working = model_->getWorkingTemperatureParameter();
+  workingTempSpinner_ = new QDoubleSpinBox(operationPanel_);
+  workingTempSpinner_->setSingleStep(0.1);
+  workingTempSpinner_->setKeyboardTracking(false);
+  workingTempSpinner_->setButtonSymbols(QAbstractSpinBox::NoButtons);
+  workingTempSpinner_->setDecimals(working.getPrecision());
+  workingTempSpinner_->setMinimum(working.getMinimum());
+  workingTempSpinner_->setMaximum(working.getMaximum());
+  operationLayout->addRow(QString::fromUtf8("Working temperature (°C)"),
+                          workingTempSpinner_);
 
   // Connect all the signals
   connect(model_,
@@ -104,40 +59,19 @@ HuberPetiteFleurWidget::HuberPetiteFleurWidget(HuberPetiteFleurModel* model, QWi
           model,
           SLOT(setDeviceEnabled(bool)));
 
-//  connect(
-//          proportionalSpinner_
-//        , SIGNAL(valueChanged(double))
-//        , model_
-//        , SLOT(setProportionalValue(double))
-//  );
+  connect(
+          circulatorCheckBox_
+        , SIGNAL(toggled(bool))
+        , model_
+        , SLOT(setCirculatorEnabled(bool))
+  );
 
-//  connect(
-//          differentialSpinner_
-//        , SIGNAL(valueChanged(int))
-//        , model_
-//        , SLOT(setDifferentialValue(int))
-//  );
-
-//  connect(
-//          circulatorCheckBox_
-//        , SIGNAL(toggled(bool))
-//        , model_
-//        , SLOT(setCirculatorEnabled(bool))
-//  );
-
-//  connect(
-//          pumpSpinner_
-//        , SIGNAL(valueChanged(int))
-//        , model_
-//        , SLOT(setPumpPressureValue(int))
-//  );
-
-//  connect(
-//        workingTempSpinner_
-//        , SIGNAL(valueChanged(double))
-//        , model_
-//        , SLOT(setWorkingTemperatureValue(double))
-//  );
+  connect(
+        workingTempSpinner_
+        , SIGNAL(valueChanged(double))
+        , model_
+        , SLOT(setWorkingTemperatureValue(double))
+  );
 
   // Set GUI according to the current chiller state
   updateDeviceState( model_->getDeviceState() );
@@ -169,17 +103,11 @@ void HuberPetiteFleurWidget::controlStateChanged(bool enabled) {
   */
 void HuberPetiteFleurWidget::updateInfo() {
 
-//  proportionalSpinner_->setValue(model_->getProportionalParameter().getValue());
-//  integralSpinner_->setValue(model_->getIntegralParameter().getValue());
-//  differentialSpinner_->setValue(model_->getDifferentialParameter().getValue());
+ circulatorCheckBox_->setChecked(model_->isCirculatorEnabled());
 
-//  circulatorCheckBox_->setChecked(model_->isCirculatorEnabled());
+ char buffer[10];
+ sprintf(buffer, "%.02f", model_->getBathTemperature());
+ bathTempLCD_->display(buffer);
 
-//  pumpSpinner_->setValue(model_->getPumpPressureParameter().getValue());
-
-//  bathTempLCD_->display(model_->getBathTemperature());
-//  workingTempSpinner_->setValue(
-//        model_->getWorkingTemperatureParameter().getValue()
-//  );
-//  powerLCD_->display( static_cast<int>(model_->getPower()) );
+ workingTempSpinner_->setValue(model_->getWorkingTemperatureParameter().getValue());
 }

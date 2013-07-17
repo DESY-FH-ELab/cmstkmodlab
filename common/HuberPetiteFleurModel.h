@@ -29,9 +29,17 @@ class HuberPetiteFleurModel :
 public:
   explicit HuberPetiteFleurModel(float updateInterval = 5, QObject *parent = 0);
 
+    bool isCirculatorEnabled() const;
+    const DeviceParameterFloat& getWorkingTemperatureParameter() const;
+    float getBathTemperature() const;
+
 public slots:
   void setDeviceEnabled(bool enabled);
   void setControlsEnabled(bool enabled);
+
+  void setCirculatorEnabled( bool enabled );
+
+  void setWorkingTemperatureValue( double temperature );
 
 protected:
 
@@ -44,6 +52,15 @@ protected:
   QTimer* timer_;
 
   void setDeviceState( State state );
+
+  template <class T> void updateParameterCache(
+      DeviceParameter<T>& parameter
+    , const T& value
+  );
+
+  bool circulatorEnabled_;
+  DeviceParameterFloat workingTemperature_; ///< Working temperature; units °C
+  float bathTemperature_; ///< Current cooling bath temperature; units °C
 
 protected slots:
   void updateInformation();
