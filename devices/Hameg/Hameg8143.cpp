@@ -1,4 +1,5 @@
 #include <cmath>
+#include <sstream>
 
 #include "Hameg8143.h"
 
@@ -24,9 +25,22 @@ unsigned int Hameg8143::GetStatus() const
   char buffer[1000];
   comHandler_->ReceiveString(buffer);
   StripBuffer(buffer);
-  std::cout << buffer << std::endl;
 
-  return 0;
+  std::istringstream iss(buffer);
+  std::string temp;
+  unsigned int status = 0;
+  while (iss >> temp) {
+	  if (temp=="OP0") status |= hmOP0;
+	  if (temp=="OP1") status |= hmOP1;
+	  if (temp=="CV1") status |= hmCV1;
+	  if (temp=="CC1") status |= hmCC1;
+	  if (temp=="CV2") status |= hmCV2;
+	  if (temp=="CC2") status |= hmCC2;
+	  if (temp=="RM1") status |= hmRM1;
+	  if (temp=="RM0") status |= hmRM0;
+  }
+
+  return status;
 }
 
 bool Hameg8143::SetRemoteMode(bool remote) const
@@ -158,7 +172,7 @@ float Hameg8143::GetCurrent(int channel) const
   comHandler_->ReceiveString(buffer);
   StripBuffer(buffer);
   std::string buf = buffer;
-  buf = buf.substr(buf.find('=')+1);
+  buf = buf.substr(buf.find(':')+1);
   buf = buf.substr(0, buf.find('A'));
 
   float current = std::atof(buf.c_str());

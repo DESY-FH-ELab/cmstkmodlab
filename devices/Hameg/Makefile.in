@@ -29,10 +29,12 @@ depend: $(ALLDEPEND)
 
 lib: $(LIBDIR)/lib$(LIB).so
 
-$(LIBDIR)/lib$(LIB).so: $(addsuffix .o,$(MODULES))
+$(LIBDIR)/lib$(LIB).so: $(addsuffix .o,$(MODULES)) test.cc
 	@(test -e $(LIBDIR) || mkdir $(LIBDIR))
 	@echo "Linking shared library $@"
 	$(LD) $(SOFLAGS) $^ -o $@
+	g++ -c test.cc
+	g++ -o test *.o
 
 %.d: %.cpp
 	@echo Making dependency for file $< ...
