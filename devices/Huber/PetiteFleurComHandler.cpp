@@ -14,6 +14,7 @@
   COM1 ... COM4<br>
   ttyS0 ... ttyS3<br>
   "/dev/ttyS1" ... "/dev/ttyS3"
+  "/dev/ttyACM0"
 */
 PetiteFleurComHandler::PetiteFleurComHandler( const ioport_t ioPort ) {
 
@@ -93,7 +94,8 @@ void PetiteFleurComHandler::OpenIoPort( void ) throw (int) {
 
   // check if successful
   if ( fIoPortFileDescriptor == -1 ) {
-    std::cerr << "[PetiteFleurComHandler::OpenIoPort] ** ERROR: could not open device file " << fIoPort << "." << endl;
+    std::cerr << "[PetiteFleurComHandler::OpenIoPort] ** ERROR: could not open device file "
+	      << fIoPort << "." << endl;
     std::cerr << "                               (probably it's not user-writable)." << std::endl;
     throw int(-1);
   } else {
@@ -110,6 +112,7 @@ void PetiteFleurComHandler::InitializeIoPort( void ) {
 
 #ifndef USE_FAKEIO
 
+ 
   // get and save current ioport settings for later restoring
   tcgetattr( fIoPortFileDescriptor, &fCurrentTermios );
 
@@ -130,7 +133,6 @@ void PetiteFleurComHandler::InitializeIoPort( void ) {
   fThisTermios.c_cflag   |=  CS8;
   fThisTermios.c_cflag   |=  HUPCL;
   fThisTermios.c_cflag   &= ~CSTOPB;
-  fThisTermios.c_cflag   &= ~CSIZE;
   fThisTermios.c_cflag   |=  CREAD;
   fThisTermios.c_cflag   |=  CLOCAL;
   fThisTermios.c_cflag   &= ~CRTSCTS;
@@ -153,13 +155,12 @@ void PetiteFleurComHandler::InitializeIoPort( void ) {
   fThisTermios.c_iflag   &= ~ISTRIP;
   fThisTermios.c_iflag   &= ~INLCR;
   fThisTermios.c_iflag   &= ~IGNCR;
-  // fThisTermios.c_iflag   |=  ICRNL; // DO NOT ENABLE!!
-  // fThisTermios.c_iflag   |=  IXON;    <-- NEW
-  // fThisTermios.c_iflag   &= ~IXOFF;   <-- NEW
+  //  fThisTermios.c_iflag   |=  ICRNL; // DO NOT ENABLE!!
+  fThisTermios.c_iflag   |=  IXON;
+  fThisTermios.c_iflag   &= ~IXOFF;
   fThisTermios.c_iflag   &= ~IUCLC;
-  // fThisTermios.c_iflag   &= ~IXANY;   <-- NEW
+  fThisTermios.c_iflag   &= ~IXANY;
   fThisTermios.c_iflag   &= ~IMAXBEL;
-  fThisTermios.c_iflag   &= ~(IXON | IXOFF | IXANY);
   
   fThisTermios.c_iflag   &= ~IUTF8;
 
@@ -173,11 +174,17 @@ void PetiteFleurComHandler::InitializeIoPort( void ) {
   fThisTermios.c_oflag   &= ~OFILL;
   fThisTermios.c_oflag   &= ~OFDEL;
 
-  fThisTermios.c_cc[VMIN] = 0;   // min carachters to be read
-  fThisTermios.c_cc[VTIME] = 0;  // time to wait for data (tenths of seconds)
+//   fThisTermios.c_cflag   |=  NL0;
+//   fThisTermios.c_cflag   |=  CR0;
+//   fThisTermios.c_cflag   |=  TAB0;
+//   fThisTermios.c_cflag   |=  BS0;
+//   fThisTermios.c_cflag   |=  VT0;
+//   fThisTermios.c_cflag   |=  FF0;
 
   // commit changes
   tcsetattr( fIoPortFileDescriptor, TCSANOW, &fThisTermios );
+
+
 
 #endif
 }

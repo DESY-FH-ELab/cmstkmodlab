@@ -20,6 +20,8 @@
 #define ttyS2 "/dev/ttyS2"
 #define ttyS3 "/dev/ttyS3"
 
+#define ttyACM0 "/dev/ttyACM0"
+
 #define _COMHANDLER_DELAY 1000
 
 typedef const char* ioport_t;

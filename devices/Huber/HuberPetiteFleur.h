@@ -18,29 +18,21 @@ class HuberPetiteFleur : public VHuberPetiteFleur
 
   HuberPetiteFleur( ioport_t );
 
-  bool SetWorkingTemperature( const float ) const;
-  bool SetPumpPressure( const unsigned int ) const;
-  bool SetCirculatorOn( void ) const;
-  bool SetCirculatorOff( void ) const;
-  bool SetControlParameters( float, int, int ) const;
+  bool SetWorkingTemperature( const float ) const; //SP@
+  bool SetCirculatorOn( void ) const; //CA@ +00001
+  bool SetCirculatorOff( void ) const; //CA@ +00000
+  //bool SetControlParameters( float, int, int ) const; //not included yet -> switch external/internal mode?
 
   bool IsCommunication( void ) const { return isCommunication_; }
-  float GetBathTemperature( void ) const;
-  float GetSafetySensorTemperature( void ) const;
-  float GetWorkingTemperature( void ) const;
-  int GetHeatingPower( void ) const;
-  unsigned int GetPumpPressure( void ) const;
-  bool GetCirculatorStatus( void ) const;
-  std::pair<int,std::string> GetStatus( void ) const;
-  float GetProportionalParameter( void ) const;
-  int GetIntegralParameter( void ) const;
-  int GetDifferentialParameter( void ) const;
-  
-  bool SaveControlParameters( const std::string& ) const;
-  bool LoadControlParametersAndApply( const std::string& ) const;
-  void StripBuffer( char* ) const;
+  float GetBathTemperature( void ) const; //TI?
+  float GetWorkingTemperature( void ) const; //SP?
+  bool GetCirculatorStatus( void ) const; //CA?
 
  private:
+
+  void StripBuffer( char* ) const;
+  int ToInteger(const char*) const;
+  float ToFloat(const char*) const;
 
   void Device_Init( void );
   PetiteFleurComHandler* comHandler_;
