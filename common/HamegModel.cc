@@ -5,16 +5,17 @@
 /*
   HamegModel implementation
   */
-const QString HamegModel::Hameg_PORT = QString("/dev/ttyS5");
+const QString HamegModel::Hameg_PORT = QString("/dev/ttyUSB0");
 
 HamegModel::HamegModel(float updateInterval, QObject *parent) :
     QObject(parent),
     AbstractDeviceModel<Hameg8143_t>(),
     updateInterval_(updateInterval),
-    voltage1Parameter_(0, 5.000, 3),
-    current1Parameter_(0, 1.000, 3),
-    voltage2Parameter_(0, 5.000, 3),
-    current2Parameter_(0, 1.000, 3)
+    forceRemoteMode_(false),
+    voltage1Parameter_(0, 30.000, 2),
+    current1Parameter_(0, 0.250, 3),
+    voltage2Parameter_(0, 30.000, 2),
+    current2Parameter_(0, 0.250, 3)
 {
     timer_ = new QTimer(this);
     timer_->setInterval(updateInterval_ * 1000);
@@ -24,7 +25,7 @@ HamegModel::HamegModel(float updateInterval, QObject *parent) :
 }
 
 /**
-  Sets up the communication with the Hameg FP50 chiller and retrieves the
+  Sets up the communication with the Hameg power supply and retrieves the
   settings and read-outs.
   */
 void HamegModel::initialize() {
@@ -72,7 +73,7 @@ void HamegModel::updateInformation() {
 
   if ( state_ == READY ) {
 
-      unsigned int newStatus = controller_->GetStatus();
+	  unsigned int newStatus = controller_->GetStatus();
 
       float newSetVoltage1 = controller_->GetSetVoltage(1);
       float newSetCurrent1 = controller_->GetSetCurrent(1);
@@ -84,13 +85,15 @@ void HamegModel::updateInformation() {
       float newVoltage2 = controller_->GetVoltage(2);
       float newCurrent2 = controller_->GetCurrent(2);
 
+      if (!forceRemoteMode_) controller_->SetRemoteMode(false);
+
       if (newStatus != status_ ||
           newSetVoltage1 != voltage1Parameter_.getValue() ||
           newSetCurrent1 != current1Parameter_.getValue() ||
           newSetVoltage2 != voltage2Parameter_.getValue() ||
           newSetCurrent2 != current2Parameter_.getValue() ||
           newVoltage1 != voltage_[0] || newCurrent1 != current_[0] ||
-          newVoltage2 != voltage_[0] || newCurrent2 != current_[0] ) {
+          newVoltage2 != voltage_[1] || newCurrent2 != current_[1] ) {
 
           status_ = newStatus;
 
@@ -103,6 +106,8 @@ void HamegModel::updateInformation() {
           current_[0] = newCurrent1;
           voltage_[1] = newVoltage2;
           current_[1] = newCurrent2;
+
+          std::cout << "emit informationChanged()" << std::endl;
 
           emit informationChanged();
       }
@@ -155,7 +160,7 @@ float HamegModel::getCurrent(int channel) const
 void HamegModel::setRemoteMode(bool remote)
 {
     if (state_!=READY) return;
-    std::cout << "remote " << (int)remote << std::endl;
+    forceRemoteMode_ = remote;
     controller_->SetRemoteMode(remote);
 }
 
@@ -190,6 +195,7 @@ void HamegModel::setVoltage(int channel, float voltage)
             voltage2Parameter_.setValue(oldVoltage);
         }
     }
+    if (!forceRemoteMode_) controller_->SetRemoteMode(false);
 }
 
 void HamegModel::setCurrent(int channel, float current)
@@ -214,4 +220,5 @@ void HamegModel::setCurrent(int channel, float current)
             current2Parameter_.setValue(oldCurrent);
         }
     }
+    if (!forceRemoteMode_) controller_->SetRemoteMode(false);
 }

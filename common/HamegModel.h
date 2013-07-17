@@ -58,6 +58,7 @@ protected:
   /// Time interval between cache refreshes; in seconds.
   const double updateInterval_;
   QTimer* timer_;
+  bool forceRemoteMode_;
 
   void setDeviceState( State state );
 

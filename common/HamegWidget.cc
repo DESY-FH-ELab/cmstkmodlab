@@ -16,9 +16,11 @@ HamegChannelWidget::HamegChannelWidget(HamegModel* model, int channel, QWidget *
 
     QButtonGroup* modeGroup = new QButtonGroup(this);
     cvModeButton_ = new QRadioButton("Constant Voltage Mode", this);
+    cvModeButton_->setEnabled(false);
     modeGroup->addButton(cvModeButton_);
     layout->addWidget(cvModeButton_, 0, 0);
     ccModeButton_ = new QRadioButton("Constant Current Mode", this);
+    ccModeButton_->setEnabled(false);
     modeGroup->addButton(ccModeButton_);
     layout->addWidget(ccModeButton_, 1, 0);
 
@@ -37,7 +39,9 @@ HamegChannelWidget::HamegChannelWidget(HamegModel* model, int channel, QWidget *
     voltageSpinner_ = new QDoubleSpinBox(voltageGroup);
     voltageSpinner_->setMinimum(0.0);
     voltageSpinner_->setMaximum(30.0);
-    voltageSpinner_->setSingleStep(0.1);
+    voltageSpinner_->setSingleStep(0.01);
+    voltageSpinner_->setDecimals(2);
+    voltageSpinner_->setKeyboardTracking(false);
     hlayout->addWidget(voltageSpinner_);
 
     layout->addWidget(voltageGroup, 0, 1);
@@ -49,24 +53,18 @@ HamegChannelWidget::HamegChannelWidget(HamegModel* model, int channel, QWidget *
     currentDisplay_ = new QLCDNumber(LCD_SIZE, currentGroup);
     currentDisplay_->setSegmentStyle(QLCDNumber::Flat);
     currentDisplay_->setSmallDecimalPoint(true);
-    currentDisplay_->setDigitCount(6);
+    currentDisplay_->setDigitCount(8);
     hlayout->addWidget(currentDisplay_);
 
     currentSpinner_ = new QDoubleSpinBox(voltageGroup);
     currentSpinner_->setMinimum(0.0);
-    currentSpinner_->setMaximum(1.0);
+    currentSpinner_->setMaximum(0.25);
     currentSpinner_->setSingleStep(0.001);
+    currentSpinner_->setDecimals(3);
+    currentSpinner_->setKeyboardTracking(false);
     hlayout->addWidget(currentSpinner_);
 
     layout->addWidget(currentGroup, 1, 1);
-
-    connect(modeGroup, SIGNAL(buttonClicked(int)),
-            this, SLOT(modeChanged(int)));
-
-    connect(voltageSpinner_, SIGNAL(valueChanged(double)),
-            this, SLOT(voltageSpinnerChanged(double)));
-    connect(currentSpinner_, SIGNAL(valueChanged(double)),
-            this, SLOT(currentSpinnerChanged(double)));
 
     connect(model_, SIGNAL(deviceStateChanged(State)),
             this, SLOT(updateDeviceState(State)));
@@ -76,6 +74,18 @@ HamegChannelWidget::HamegChannelWidget(HamegModel* model, int channel, QWidget *
 
     connect(model_, SIGNAL(informationChanged()),
             this, SLOT(updateInfo()));
+
+    connect(modeGroup, SIGNAL(buttonClicked(int)),
+            this, SLOT(modeChanged(int)));
+
+    connect(voltageSpinner_, SIGNAL(valueChanged(double)),
+            this, SLOT(voltageSpinnerChanged(double)));
+    connect(currentSpinner_, SIGNAL(valueChanged(double)),
+            this, SLOT(currentSpinnerChanged(double)));
+
+    // Set GUI according to the current chiller state
+    updateDeviceState(model_->getDeviceState());
+    updateInfo();
 }
 
 void HamegChannelWidget::modeChanged(int button)
@@ -99,12 +109,12 @@ void HamegChannelWidget::currentSpinnerChanged(double voltage)
 
 void HamegChannelWidget::updateDeviceState(State)
 {
-    std::cout << "HamegChannelWidget::updateDeviceState(State)" << std::endl;
+
 }
 
 void HamegChannelWidget::controlStateChanged(bool state)
 {
-    std::cout << "HamegChannelWidget::controlStateChanged(bool state)" << std::endl;
+
 }
 
 void HamegChannelWidget::updateInfo()
@@ -114,6 +124,7 @@ void HamegChannelWidget::updateInfo()
     unsigned int status = model_->getStatus();
 
     if (channel_==1) {
+
         if (status&VHameg8143::hmCV1) {
             cvModeButton_->setChecked(true);
         } else if (status&VHameg8143::hmCC1) {
@@ -127,15 +138,20 @@ void HamegChannelWidget::updateInfo()
         }
     }
 
+    char dummy[10];
+
     float setVoltage = model_->getVoltageParameter(channel_).getValue();
     voltageSpinner_->setValue(setVoltage);
     float voltage = model_->getVoltage(channel_);
-    voltageDisplay_->display(voltage);
+    sprintf(dummy, "%.02f", voltage);
+    voltageDisplay_->display(dummy);
 
     float setCurrent = model_->getCurrentParameter(channel_).getValue();
     currentSpinner_->setValue(setCurrent);
     float current = model_->getCurrent(channel_);
-    currentDisplay_->display(current);
+    sprintf(dummy, "%.03f", current);
+    std::cout << dummy << " " << current << std::endl;
+    currentDisplay_->display(dummy);
 }
 
 /**
@@ -220,6 +236,8 @@ void HamegWidget::controlStateChanged(bool enabled) {
   */
 void HamegWidget::updateInfo()
 {
+	std::cout << "HamegWidget::updateInfo()" << std::endl;
+
     unsigned int status = model_->getStatus();
 
     if (status&VHameg8143::hmRM0) {
