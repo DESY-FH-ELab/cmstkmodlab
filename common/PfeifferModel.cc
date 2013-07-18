@@ -3,12 +3,14 @@
 /*
   PfeifferModel implementation
   */
-const QString PfeifferModel::Pfeiffer_PORT = QString("/dev/ttyS5");
+const QString PfeifferModel::Pfeiffer_PORT = QString("/dev/ttyS4");
 
 PfeifferModel::PfeifferModel(float updateInterval, QObject *parent) :
     QObject(parent),
     AbstractDeviceModel<PfeifferTPG262_t>(),
+    status1_(VPfeifferTPG262::tpg262GaugeInvalidStatus),
     pressure1_(1013),
+    status2_(VPfeifferTPG262::tpg262GaugeInvalidStatus),
     pressure2_(1013),
     updateInterval_(updateInterval)
 {
@@ -19,15 +21,23 @@ PfeifferModel::PfeifferModel(float updateInterval, QObject *parent) :
     setDeviceEnabled(true);
 }
 
+VPfeifferTPG262::GaugeStatus PfeifferModel::getStatus1() const
+{
+    return status1_;
+}
+
 double PfeifferModel::getPressure1() const
 {
-    return 0.3;
     return pressure1_;
+}
+
+VPfeifferTPG262::GaugeStatus PfeifferModel::getStatus2() const
+{
+    return status2_;
 }
 
 double PfeifferModel::getPressure2() const
 {
-    return 2.0;
     return pressure2_;
 }
 
@@ -80,25 +90,26 @@ void PfeifferModel::updateInformation() {
 
     if ( state_ == READY ) {
 
-      bool changed = false;
-      double temp;
+        VPfeifferTPG262::reading_t reading1, reading2;
+        bool ok = controller_->GetPressures(reading1, reading2);
 
-      temp = controller_->GetPressure1();
-      if (pressure1_!=temp) {
-        changed = true;
-        pressure1_ = temp;
-      }
+        if (ok) {
+            if ( status1_ != reading1.first ||
+                 pressure1_ != reading1.second ||
+                 status2_ != reading2.first ||
+                 pressure2_!= reading2.second ) {
 
-      temp = controller_->GetPressure2();
-      if (pressure2_!=temp) {
-        changed = true;
-        pressure2_ = temp;
-      }
+                status1_ = reading1.first;
+                pressure1_ = reading1.second;
+                status2_ = reading2.first;
+                pressure2_ = reading2.second;
 
-      std::cout << "##### PfeifferModel::updateInformation()" << std::endl;
+                std::cout << "##### PfeifferModel::updateInformation()" << std::endl;
 
-      emit informationChanged();
-  }
+                emit informationChanged();
+            }
+        }
+    }
 }
 
 /// Attempts to enable/disable the (communication with) the Pfeiffer TPG262 gauge.

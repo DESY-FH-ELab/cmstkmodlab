@@ -29,7 +29,9 @@ class PfeifferModel :
 public:
   explicit PfeifferModel(float updateInterval = 5, QObject *parent = 0);
 
+    VPfeifferTPG262::GaugeStatus getStatus1() const;
     double getPressure1() const;
+    VPfeifferTPG262::GaugeStatus getStatus2() const;
     double getPressure2() const;
 
 public slots:
@@ -42,7 +44,9 @@ protected:
 
   void initialize();
 
+  VPfeifferTPG262::GaugeStatus status1_;
   double pressure1_;
+  VPfeifferTPG262::GaugeStatus status2_;
   double pressure2_;
 
   /// Time interval between cache refreshes; in seconds.

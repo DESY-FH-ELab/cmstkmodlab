@@ -9,6 +9,8 @@
 #include <QSpinBox>
 #include <QVBoxLayout>
 #include <QWidget>
+#include <QGroupBox>
+#include <QLabel>
 
 #include "PfeifferModel.h"
 #include "DeviceState.h"
@@ -21,6 +23,7 @@ public:
 
 protected:
   const static int LCD_SIZE = 5;
+  static const QString LABEL_FORMAT;
 
   PfeifferModel* model_;
 
@@ -28,16 +31,31 @@ protected:
 
   QWidget* operationPanel_;
 
-//  QDoubleSpinBox* proportionalSpinner_;
-//  QSpinBox* integralSpinner_;
-//  QSpinBox* differentialSpinner_;
+public slots:
+  void updateDeviceState( State newState );
+  void controlStateChanged(bool);
+  void updateInfo();
+};
 
-//  QCheckBox* circulatorCheckBox_;
-//  QSpinBox* pumpSpinner_;
+class PfeifferGaugeWidget : public QGroupBox
+{
+  Q_OBJECT
 
-//  QLCDNumber* bathTempLCD_;
-//  QDoubleSpinBox* workingTempSpinner_;
-//  QLCDNumber* powerLCD_;
+public:
+  explicit PfeifferGaugeWidget(PfeifferModel* model_,
+                                     unsigned int sensor,
+                                     QWidget *parent = 0);
+
+protected:
+
+  PfeifferModel* model_;
+  unsigned int sensor_;
+
+  static const unsigned int LCD_SIZE;
+  static const QString LABEL_FORMAT;
+
+  QLabel* statusDisplay_;
+  QLCDNumber* pressureDisplay_;
 
 public slots:
   void updateDeviceState( State newState );
