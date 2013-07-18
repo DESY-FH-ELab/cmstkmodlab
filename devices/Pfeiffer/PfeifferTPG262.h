@@ -21,13 +21,25 @@ class PfeifferTPG262 : public VPfeifferTPG262
 
   virtual bool IsCommunication( void ) const { return isCommunication_; }
   virtual int GetErrorStatus( void ) const;
-  virtual float GetPressure1( void ) const;
-  virtual float GetPressure2( void ) const;
+  virtual bool GetPressure1(reading_t & reading);
+  virtual bool GetPressure2(reading_t & reading);
+  virtual bool GetPressures(reading_t & reading1, reading_t & reading2);
+
+  /*
+  virtual void SendETX (void) const;
+  virtual void Reset (void) const;
+  virtual int KeyLock( void ) const;
+  virtual void SetContinuous( void ) const;
+  virtual stat_t Readout( float & pressure1, float & pressure2 ) const;
+  virtual int GuageIdentification (void) const;
+*/
 
  private:
 
   void StripBuffer( char* ) const;
   void Device_Init( void );
+  int SetPressureUnit(void) const;
+  bool SetBRate(void);
   TPG262ComHandler* comHandler_;
   bool isCommunication_;
 };

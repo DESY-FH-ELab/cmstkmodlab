@@ -83,7 +83,7 @@ void TPG262ComHandler::ReceiveString( char *receiveString )
 
   while ( timeout < 100000 )  {
 
-    readResult = read( fIoPortFileDescriptor, receiveString, 1024 );
+    readResult = read( fIoPortFileDescriptor, receiveString, 1000 );
 
     if ( readResult > 0 )   {
       receiveString[readResult] = 0;
@@ -224,8 +224,22 @@ void TPG262ComHandler::CloseIoPort( void )
 void TPG262ComHandler::SendFeedString( void )
 {
   // feed string is <NL>
-  char feedString = 10;
+  char feedString = 13;
 
   // write <CR> and get echo
   write( fIoPortFileDescriptor, &feedString, 1 );
+
+  feedString = 10;
+
+  // write <LF> and get echo
+  write( fIoPortFileDescriptor, &feedString, 1 );
+
+}
+void TPG262ComHandler::SendResetInterface()
+{
+	char singleCharacter=0x03;
+	write( fIoPortFileDescriptor, &singleCharacter, 1);
+
+	// send feed characters
+	SendFeedString();
 }

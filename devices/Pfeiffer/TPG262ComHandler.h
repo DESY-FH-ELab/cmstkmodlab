@@ -14,11 +14,13 @@
 #define COM2 "/dev/ttyS1"
 #define COM3 "/dev/ttyS2"
 #define COM4 "/dev/ttyS3"
+#define COM5 "/dev/ttyS3"
 
 #define ttyS0 "/dev/ttyS0"
 #define ttyS1 "/dev/ttyS1"
 #define ttyS2 "/dev/ttyS2"
 #define ttyS3 "/dev/ttyS3"
+#define ttys4 "/dev/ttyS3"
 
 #define _COMHANDLER_DELAY 1000
 
@@ -43,6 +45,7 @@ class TPG262ComHandler {
   void SendCommand( const char* );
   void SendEnquiry();
   void ReceiveString( char* );
+  void SendResetInterface ();
 
 
  private:
@@ -51,7 +54,7 @@ class TPG262ComHandler {
   void InitializeIoPort( void );
   void RestoreIoPort( void );
   void CloseIoPort( void );
-  void SendFeedString( void );
+ void SendFeedString( void );
 
   int fIoPortFileDescriptor;
 
