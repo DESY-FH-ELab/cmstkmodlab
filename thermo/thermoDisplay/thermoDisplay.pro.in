@@ -28,35 +28,17 @@ QMAKE_CXXFLAGS += -std=c++0x
 
 INCLUDEPATH += @qwtincludes@
 DEFINES += @configdefines@
-QT += core gui opengl script xml
+QT += core gui xml network
 TEMPLATE = app
-TARGET = thermoDAQ
-DEPENDPATH += ../common
+TARGET = thermoDisplay
+DEPENDPATH += @basepath@/common
 INCLUDEPATH += .
 INCLUDEPATH += ..
 INCLUDEPATH += @basepath@
 INCLUDEPATH += @basepath@/common
 
 # Input
-HEADERS += TestWindow.h \
-           ThermoMainWindow.h \
-           ThermoScriptModel.h \
-           ThermoScriptThread.h \
-           ThermoScriptWidget.h \
-           ThermoScriptableGlobals.h \
-           ThermoDAQModel.h \
-           ThermoDAQStreamer.h \
-           ThermoDAQWidget.h \
-           ThermoDAQDisplayWidget.h
+HEADERS += ThermoDAQClient.h
     
-SOURCES += thermoDAQ.cc \
-           TestWindow.cc \
-           ThermoMainWindow.cc \
-           ThermoScriptModel.cc \
-           ThermoScriptThread.cc \
-           ThermoScriptWidget.cc \
-           ThermoScriptableGlobals.cc \
-           ThermoDAQModel.cc \
-           ThermoDAQStreamer.cc \
-           ThermoDAQWidget.cc \
-           ThermoDAQDisplayWidget.cc
+SOURCES += thermoDisplay.cc \
+           ThermoDAQClient.cc

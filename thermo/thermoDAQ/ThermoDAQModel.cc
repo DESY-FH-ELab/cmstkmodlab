@@ -7,19 +7,19 @@
 
 #include "ThermoDAQModel.h"
 
-ThermoDAQModel::ThermoDAQModel(JulaboModel* julaboModel,
+ThermoDAQModel::ThermoDAQModel(HuberPetiteFleurModel* huberModel,
                                KeithleyModel* keithleyModel,
                                HamegModel* hamegModel,
                                PfeifferModel* pfeifferModel,
                                QObject *parent) :
     QObject(parent),
-    julaboModel_(julaboModel),
+    huberModel_(huberModel),
     keithleyModel_(keithleyModel),
     hamegModel_(hamegModel),
     pfeifferModel_(pfeifferModel)
 {
-    connect(julaboModel_, SIGNAL(informationChanged()),
-            this, SLOT(julaboInfoChanged()));
+    connect(huberModel_, SIGNAL(informationChanged()),
+            this, SLOT(huberInfoChanged()));
 
     connect(keithleyModel_, SIGNAL(sensorStateChanged(uint,State)),
             this, SLOT(keithleySensorStateChanged(uint,State)));
@@ -37,16 +37,23 @@ void ThermoDAQModel::startMeasurement()
 {
     emit daqStateChanged(true);
 
+    QString buffer;
+    createDAQStatusMessage(buffer);
+    emit daqMessage(buffer);
+}
+
+void ThermoDAQModel::createDAQStatusMessage(QString &buffer)
+{
     QDateTime& utime = currentTime();
 
-    QString buffer;
     QXmlStreamWriter xml(&buffer);
     xml.setAutoFormatting(true);
 
-    xml.writeStartElement("JulaboTemperature");
+    xml.writeStartElement("HuberTemperature");
     xml.writeAttribute("time", utime.toString());
-    xml.writeAttribute("work", QString::number(julaboModel_->getWorkingTemperatureParameter().getValue(), 'f', 2));
-    xml.writeAttribute("bath", QString::number(julaboModel_->getBathTemperature(), 'f', 2));
+    xml.writeAttribute("circulator", huberModel_->isCirculatorEnabled()==true ? "1" : "0");
+    xml.writeAttribute("work", QString::number(huberModel_->getWorkingTemperatureParameter().getValue(), 'f', 2));
+    xml.writeAttribute("bath", QString::number(huberModel_->getBathTemperature(), 'f', 2));
     xml.writeEndElement();
 
     for (int sensor=0;sensor<10;++sensor) {
@@ -66,8 +73,10 @@ void ThermoDAQModel::startMeasurement()
 
     xml.writeStartElement("PfeifferPressure");
     xml.writeAttribute("time", utime.toString());
-    xml.writeAttribute("p1", QString::number(pfeifferModel_->getPressure1(), 'e', 2));
-    xml.writeAttribute("p2", QString::number(pfeifferModel_->getPressure2(), 'e', 2));
+    xml.writeAttribute("s1", QString::number((int)pfeifferModel_->getStatus1()));
+    xml.writeAttribute("p1", QString::number(pfeifferModel_->getPressure1(), 'e', 3));
+    xml.writeAttribute("s2", QString::number((int)pfeifferModel_->getStatus2()));
+    xml.writeAttribute("p2", QString::number(pfeifferModel_->getPressure2(), 'e', 3));
     xml.writeEndElement();
 
     xml.writeStartElement("HamegSetup");
@@ -93,8 +102,6 @@ void ThermoDAQModel::startMeasurement()
     xml.writeAttribute("V2", QString::number(hamegVoltage_[1]));
     xml.writeAttribute("C2", QString::number(hamegCurrent_[1]));
     xml.writeEndElement();
-
-    emit daqMessage(buffer);
 }
 
 void ThermoDAQModel::stopMeasurement()
@@ -119,28 +126,28 @@ void ThermoDAQModel::customDAQMessage(const QString & message)
     emit daqMessage(message);
 }
 
-void ThermoDAQModel::julaboInfoChanged()
+void ThermoDAQModel::huberInfoChanged()
 {
-    std::cout << "ThermoDAQModel::julaboInfoChanged()" << std::endl;
+    std::cout << "ThermoDAQModel::huberInfoChanged()" << std::endl;
 
     QDateTime utime = currentTime();
 
     bool changed = false;
 
-    changed |= julaboBathTemperature_.push(utime,
-                                          julaboModel_->getWorkingTemperatureParameter().getValue());
-    changed |= julaboBathTemperature_.push(utime,
-                                           julaboModel_->getBathTemperature());
-
+    changed |= updateIfChanged<float>(huberWorkingTemperature_,
+                                      huberModel_->getWorkingTemperatureParameter().getValue());
+    changed |= updateIfChanged<float>(huberBathTemperature_, huberModel_->getBathTemperature());
+    changed |= updateIfChanged<bool>(huberCirculator_, huberModel_->isCirculatorEnabled());
 
     if (changed) {
         QString buffer;
         QXmlStreamWriter xml(&buffer);
 
-        xml.writeStartElement("JulaboTemperature");
+        xml.writeStartElement("HuberTemperature");
         xml.writeAttribute("time", utime.toString());
-        xml.writeAttribute("work", QString::number(julaboModel_->getWorkingTemperatureParameter().getValue(), 'f', 2));
-        xml.writeAttribute("bath", QString::number(julaboModel_->getBathTemperature(), 'f', 2));
+        xml.writeAttribute("circulator", huberCirculator_==true ? "1" : "0");
+        xml.writeAttribute("work", QString::number(huberWorkingTemperature_, 'f', 2));
+        xml.writeAttribute("bath", QString::number(huberBathTemperature_, 'f', 2));
         xml.writeEndElement();
 
         emit daqMessage(buffer);
@@ -154,7 +161,7 @@ void ThermoDAQModel::keithleySensorStateChanged(unsigned int sensor, State newSt
 
     QDateTime& utime = currentTime();
 
-    bool changed = keithleySensorState_[sensor].pushIfChanged(utime, newState);
+    bool changed = updateIfChanged<State>(keithleySensorState_[sensor], newState);
 
     if (changed) {
         QString buffer;
@@ -176,7 +183,7 @@ void ThermoDAQModel::keithleyTemperatureChanged(unsigned int sensor, double temp
 
     QDateTime& utime = currentTime();
 
-    bool changed = keithleyTemperature_[sensor].pushIfChanged(utime, temperature);
+    bool changed = updateIfChanged<double>(keithleyTemperature_[sensor], temperature);
 
     if (changed) {
         QString buffer;
@@ -198,11 +205,10 @@ void ThermoDAQModel::pfeifferInfoChanged()
     QDateTime utime = currentTime();
 
     bool changed = false;
-
-    changed |= pfeifferPressure1_.push(utime,
-                                       pfeifferModel_->getPressure1());
-    changed |= pfeifferPressure2_.push(utime,
-                                       pfeifferModel_->getPressure2());
+    changed |= updateIfChanged<int>(pfeifferStatus1_, (int)pfeifferModel_->getStatus1());
+    changed |= updateIfChanged<double>(pfeifferPressure1_, pfeifferModel_->getPressure1());
+    changed |= updateIfChanged<int>(pfeifferStatus2_, (int)pfeifferModel_->getStatus2());
+    changed |= updateIfChanged<double>(pfeifferPressure2_, pfeifferModel_->getPressure2());
 
     if (changed) {
         QString buffer;
@@ -210,8 +216,10 @@ void ThermoDAQModel::pfeifferInfoChanged()
 
         xml.writeStartElement("PfeifferPressure");
         xml.writeAttribute("time", utime.toString());
-        xml.writeAttribute("p1", QString::number(pfeifferModel_->getPressure1(), 'e', 2));
-        xml.writeAttribute("p2", QString::number(pfeifferModel_->getPressure2(), 'e', 2));
+        xml.writeAttribute("s1", QString::number(pfeifferStatus1_));
+        xml.writeAttribute("p1", QString::number(pfeifferPressure1_, 'e', 3));
+        xml.writeAttribute("s2", QString::number(pfeifferStatus2_));
+        xml.writeAttribute("p2", QString::number(pfeifferPressure2_, 'e', 3));
         xml.writeEndElement();
 
         emit daqMessage(buffer);

@@ -7,7 +7,7 @@
 
 class ThermoScriptModel;
 
-#include "JulaboModel.h"
+#include "HuberPetiteFleurModel.h"
 #include "KeithleyModel.h"
 #include "HamegModel.h"
 #include "PfeifferModel.h"
@@ -16,7 +16,7 @@ class ThermoScriptThread : public QThread
 {
 public:
   explicit ThermoScriptThread(ThermoScriptModel* scriptModel,
-                              JulaboModel* julaboModel,
+                              HuberPetiteFleurModel* huberModel,
                               KeithleyModel* keithleyModel,
                               HamegModel* hamegModel,
                               PfeifferModel* pfeifferModel,
@@ -32,7 +32,7 @@ protected:
   QScriptEngine* engine_;
 
   ThermoScriptModel* scriptModel_;
-  JulaboModel* julaboModel_;
+  HuberPetiteFleurModel* huberModel_;
   KeithleyModel* keithleyModel_;
   HamegModel* hamegModel_;
   PfeifferModel* pfeifferModel_;

@@ -6,13 +6,13 @@
 
 #include "ThermoScriptModel.h"
 
-ThermoScriptModel::ThermoScriptModel(JulaboModel* julaboModel,
+ThermoScriptModel::ThermoScriptModel(HuberPetiteFleurModel* huberModel,
                                      KeithleyModel* keithleyModel,
                                      HamegModel* hamegModel,
                                      PfeifferModel* pfeifferModel,
                                      QObject *parent) :
     QObject(parent),
-    julaboModel_(julaboModel),
+    huberModel_(huberModel),
     keithleyModel_(keithleyModel),
     hamegModel_(hamegModel),
     pfeifferModel_(pfeifferModel)
@@ -24,7 +24,7 @@ ThermoScriptModel::ThermoScriptModel(JulaboModel* julaboModel,
     currentScriptFilename_ = QString();
 
     scriptThread_ = new ThermoScriptThread(this,
-                                           julaboModel_,
+                                           huberModel_,
                                            keithleyModel_,
                                            hamegModel_,
                                            pfeifferModel_,
@@ -32,7 +32,7 @@ ThermoScriptModel::ThermoScriptModel(JulaboModel* julaboModel,
     connect(scriptThread_, SIGNAL(started()), this, SLOT(executionStarted()));
     connect(scriptThread_, SIGNAL(finished()), this, SLOT(executionFinished()));
 
-    connect(julaboModel_, SIGNAL(message(const QString &)),
+    connect(huberModel_, SIGNAL(message(const QString &)),
             this, SLOT(doAppendMessageText(const QString &)));
 
     connect(keithleyModel_, SIGNAL(message(const QString &)),

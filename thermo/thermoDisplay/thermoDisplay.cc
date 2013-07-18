@@ -1,9 +1,9 @@
 #include <QApplication>
+#include <QTcpSocket>
 
 #include "ApplicationConfig.h"
 
-#include "ThermoMainWindow.h"
-#include "TestWindow.h"
+#include "ThermoDAQClient.h"
 
 int main( int argc, char** argv ) {
 
@@ -13,10 +13,13 @@ int main( int argc, char** argv ) {
   ApplicationConfig::instance(std::string(Config::CMSTkModLabBasePath) + "/thermo/thermo.cfg");
 
   //ThermoMainWindow mainWindow;
-  TestWindow mainWindow;
+  //TestWindow mainWindow;
 
-  mainWindow.show();
+  //mainWindow.show();
+
+  ThermoDAQClient client(55555);
+
+  client.readDAQStatus();
 
   return app.exec();
-
 }

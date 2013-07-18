@@ -7,7 +7,7 @@
 
 #include <qwt_date.h>
 
-#include "JulaboModel.h"
+#include "HuberPetiteFleurModel.h"
 #include "KeithleyModel.h"
 #include "HamegModel.h"
 #include "PfeifferModel.h"
@@ -72,25 +72,19 @@ class ThermoDAQModel : public QObject
 {
     Q_OBJECT
 public:
-    explicit ThermoDAQModel(JulaboModel* julaboModel,
+    explicit ThermoDAQModel(HuberPetiteFleurModel* huberModel,
                             KeithleyModel* keithleyModel,
                             HamegModel* hamegModel,
                             PfeifferModel* pfeifferModel,
                             QObject *parent = 0);
 
     QDateTime& currentTime();
+
     void customDAQMessage(const QString & message);
-
-    const ThermoDAQValueVector<double>* getKeithleyTemperature(uint sensor) const
-    { return &keithleyTemperature_[sensor]; }
-
-    const ThermoDAQValueVector<double>* getPressure1() const
-    { return &pfeifferPressure1_; }
-    const ThermoDAQValueVector<double>* getPressure2() const
-    { return &pfeifferPressure2_; }
+    void createDAQStatusMessage(QString & buffer);
 
 protected slots:
-    void julaboInfoChanged();
+    void huberInfoChanged();
     void keithleySensorStateChanged(unsigned int sensor, State newState);
     void keithleyTemperatureChanged(unsigned int sensor, double temperature);
     void pfeifferInfoChanged();
@@ -101,7 +95,7 @@ protected slots:
     void clearHistory();
 
 protected:
-  JulaboModel* julaboModel_;
+  HuberPetiteFleurModel* huberModel_;
   KeithleyModel* keithleyModel_;
   HamegModel* hamegModel_;
   PfeifferModel* pfeifferModel_;
@@ -114,17 +108,20 @@ protected:
       return true;
   }
 
-  // JULABO DATA
-  ThermoDAQValueVector<double> julaboWorkingTemperature_;
-  ThermoDAQValueVector<double> julaboBathTemperature_;
+  // HUBER DATA
+  bool huberCirculator_;
+  float huberWorkingTemperature_;
+  float huberBathTemperature_;
 
   // KEITHLEY DATA
-  ThermoDAQValueVector<State> keithleySensorState_[10];
-  ThermoDAQValueVector<double> keithleyTemperature_[10];
+  State keithleySensorState_[10];
+  double keithleyTemperature_[10];
 
   // PFEIFFER DATA
-  ThermoDAQValueVector<double> pfeifferPressure1_;
-  ThermoDAQValueVector<double> pfeifferPressure2_;
+  int pfeifferStatus1_;
+  double pfeifferPressure1_;
+  int pfeifferStatus2_;
+  double pfeifferPressure2_;
 
   // HAMEG DATA
   bool hamegRemoteMode_;

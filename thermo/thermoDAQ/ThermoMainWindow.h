@@ -9,8 +9,8 @@
 #include <QImage>
 #include <QTimer>
 
-#include "JulaboModel.h"
-#include "JulaboWidget.h"
+#include "HuberPetiteFleurModel.h"
+#include "HuberPetiteFleurWidget.h"
 
 #include "HamegModel.h"
 #include "HamegWidget.h"
@@ -26,6 +26,7 @@
 
 #include "ThermoDAQModel.h"
 #include "ThermoDAQStreamer.h"
+#include "ThermoDAQServer.h"
 
 class ThermoMainWindow : public QMainWindow
 {
@@ -41,7 +42,7 @@ protected:
 
   QTabWidget* tabWidget_;
 
-  JulaboModel* julaboModel_;
+  HuberPetiteFleurModel* huberModel_;
   HamegModel* hamegModel_;
   KeithleyModel* keithleyModel_;
   PfeifferModel* pfeifferModel_;
@@ -50,6 +51,7 @@ protected:
 
   ThermoDAQModel* daqModel_;
   ThermoDAQStreamer* daqStreamer_;
+  ThermoDAQServer* daqServer_;
 };
 
 #endif // THERMOMAINWINDOW_H

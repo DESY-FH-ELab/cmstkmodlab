@@ -2,20 +2,20 @@
 
 #include "ThermoScriptThread.h"
 #include "ThermoScriptableGlobals.h"
-#include "ScriptableJulabo.h"
+#include "ScriptableHuberPetiteFleur.h"
 #include "ScriptableKeithley.h"
 #include "ScriptableHameg.h"
 #include "ScriptablePfeiffer.h"
 
 ThermoScriptThread::ThermoScriptThread(ThermoScriptModel* scriptModel,
-                                       JulaboModel* julaboModel,
+                                       HuberPetiteFleurModel* huberModel,
                                        KeithleyModel* keithleyModel,
                                        HamegModel* hamegModel,
                                        PfeifferModel* pfeifferModel,
                                        QObject *parent) :
     QThread(parent),
     scriptModel_(scriptModel),
-    julaboModel_(julaboModel),
+    huberModel_(huberModel),
     keithleyModel_(keithleyModel),
     hamegModel_(hamegModel),
     pfeifferModel_(pfeifferModel)
@@ -34,9 +34,9 @@ void ThermoScriptThread::executeScript(const QString & script)
   QScriptValue globalsValue = engine_->newQObject(globalsObj);
   engine_->globalObject().setProperty("thermo", globalsValue);
 
-  ScriptableJulabo *julaboObj = new ScriptableJulabo(julaboModel_, this);
-  QScriptValue julaboValue = engine_->newQObject(julaboObj);
-  engine_->globalObject().setProperty("julabo", julaboValue);
+  ScriptableHuberPetiteFleur *huberObj = new ScriptableHuberPetiteFleur(huberModel_, this);
+  QScriptValue huberValue = engine_->newQObject(huberObj);
+  engine_->globalObject().setProperty("huber", huberValue);
 
   ScriptableKeithley *keithleyObj = new ScriptableKeithley(keithleyModel_, this);
   QScriptValue keithleyValue = engine_->newQObject(keithleyObj);

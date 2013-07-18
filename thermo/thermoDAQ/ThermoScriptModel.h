@@ -5,7 +5,7 @@
 #include <QTimer>
 #include <QTextDocument>
 
-#include "JulaboModel.h"
+#include "HuberPetiteFleurModel.h"
 #include "KeithleyModel.h"
 #include "HamegModel.h"
 #include "PfeifferModel.h"
@@ -17,7 +17,7 @@ class ThermoScriptModel : public QObject
     Q_OBJECT
 public:
 
-  explicit ThermoScriptModel(JulaboModel* julaboModel,
+  explicit ThermoScriptModel(HuberPetiteFleurModel* huberModel,
                              KeithleyModel* keithleyModel,
                              HamegModel* hamegModel,
                              PfeifferModel* pfeifferModel,
@@ -53,7 +53,7 @@ protected:
 
   QTimer executionTimer_;
   int executionTime_;
-  JulaboModel* julaboModel_;
+  HuberPetiteFleurModel* huberModel_;
   KeithleyModel* keithleyModel_;
   HamegModel* hamegModel_;
   PfeifferModel* pfeifferModel_;

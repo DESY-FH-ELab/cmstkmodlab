@@ -13,28 +13,32 @@ ThermoDAQWidget::ThermoDAQWidget(ThermoDAQModel* daqModel, QWidget *parent) :
   setLayout(layout);
   setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);
 
-  QGridLayout *buttonLayout = new QGridLayout();
+  QHBoxLayout *buttonLayout = new QHBoxLayout();
   buttons_ = new QWidget(this);
-  buttons_->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);
+  //buttons_->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);
   buttons_->setLayout(buttonLayout);
   layout->addWidget(buttons_);
 
   // start a measurement
   startMeasurementButton_ = new QPushButton("Start Measurement", buttons_);
   connect(startMeasurementButton_, SIGNAL(clicked()), daqModel_, SLOT(startMeasurement()));
-  buttonLayout->addWidget(startMeasurementButton_, 0, 0);
+  buttonLayout->addWidget(startMeasurementButton_);
 
   // stop a measurement
   stopMeasurementButton_ = new QPushButton("Stop Measurement", buttons_);
   connect(stopMeasurementButton_, SIGNAL(clicked()), daqModel_, SLOT(stopMeasurement()));
-  buttonLayout->addWidget(stopMeasurementButton_, 0, 1);
+  buttonLayout->addWidget(stopMeasurementButton_);
+
+  buttonLayout->addSpacing(200);
 
   // clear history
   clearHistoryButton_ = new QPushButton("Clear History", buttons_);
   connect(clearHistoryButton_, SIGNAL(clicked()), daqModel_, SLOT(clearHistory()));
-  buttonLayout->addWidget(clearHistoryButton_, 0, 2);
+  buttonLayout->addWidget(clearHistoryButton_);
 
   logEdit_ = new QPlainTextEdit(this);
+  logEdit_->setMinimumWidth(600);
+  logEdit_->setMaximumHeight(100);
   layout->addWidget(logEdit_);
 
   // log button
