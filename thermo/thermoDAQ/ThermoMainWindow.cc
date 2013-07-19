@@ -39,8 +39,8 @@ ThermoMainWindow::ThermoMainWindow(QWidget *parent) :
 
     daqStreamer_ = new ThermoDAQStreamer(daqModel_, this);
 
-    //daqServer_ = new ThermoDAQServer(daqModel_, this);
-    //daqServer_->listen(QHostAddress::LocalHost, 55555);
+    daqServer_ = new ThermoDAQServer(daqModel_, this);
+    daqServer_->listen(QHostAddress::LocalHost, 55555);
     //std::cout << daqServer_->serverPort() << std::endl;
 
     //  connect(scriptModel_, SIGNAL(prepareNewMeasurement()),
