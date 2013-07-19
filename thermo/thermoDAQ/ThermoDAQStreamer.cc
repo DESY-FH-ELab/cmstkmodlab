@@ -20,8 +20,8 @@ ThermoDAQStreamer::ThermoDAQStreamer(ThermoDAQModel* model, QObject* parent) :
 
 void ThermoDAQStreamer::handleDAQMessage(const QString& message)
 {
-    std::cout << message.toStdString() << std::endl;
-    if (isStreaming_) {
+    // std::cout << message.toStdString() << std::endl;
+    if (isStreaming_ && message.length()>0) {
         *stream_ << message << "\n";
         stream_->flush();
     }

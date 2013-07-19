@@ -13,7 +13,7 @@ TestWindow::TestWindow(QWidget *parent) :
     central->setLayout(layout);
 
     // HUBER MODEL
-    huberModel_ = new HuberPetiteFleurModel(30, this);
+    huberModel_ = new HuberPetiteFleurModel(15, this);
     HuberPetiteFleurWidget* huberWidget = new HuberPetiteFleurWidget(huberModel_, central);
     huberWidget->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);
     layout->addWidget(huberWidget);

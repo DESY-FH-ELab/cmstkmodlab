@@ -50,7 +50,7 @@ void ThermoDAQModel::createDAQStatusMessage(QString &buffer)
     xml.setAutoFormatting(true);
 
     xml.writeStartElement("HuberTemperature");
-    xml.writeAttribute("time", utime.toString());
+    xml.writeAttribute("time", utime.toString(Qt::ISODate));
     xml.writeAttribute("circulator", huberModel_->isCirculatorEnabled()==true ? "1" : "0");
     xml.writeAttribute("work", QString::number(huberModel_->getWorkingTemperatureParameter().getValue(), 'f', 2));
     xml.writeAttribute("bath", QString::number(huberModel_->getBathTemperature(), 'f', 2));
@@ -58,29 +58,29 @@ void ThermoDAQModel::createDAQStatusMessage(QString &buffer)
 
     for (int sensor=0;sensor<10;++sensor) {
         xml.writeStartElement("KeithleyState");
-        xml.writeAttribute("time", utime.toString());
+        xml.writeAttribute("time", utime.toString(Qt::ISODate));
         xml.writeAttribute("sensor", QString::number(sensor));
         xml.writeAttribute("state", QString::number(keithleyModel_->getSensorState(sensor)));
         xml.writeEndElement();
     }
     for (int sensor=0;sensor<10;++sensor) {
         xml.writeStartElement("KeithleyTemperature");
-        xml.writeAttribute("time", utime.toString());
+        xml.writeAttribute("time", utime.toString(Qt::ISODate));
         xml.writeAttribute("sensor", QString::number(sensor));
         xml.writeAttribute("temperature", QString::number(keithleyModel_->getTemperature(sensor), 'f', 2));
         xml.writeEndElement();
     }
 
     xml.writeStartElement("PfeifferPressure");
-    xml.writeAttribute("time", utime.toString());
+    xml.writeAttribute("time", utime.toString(Qt::ISODate));
     xml.writeAttribute("s1", QString::number((int)pfeifferModel_->getStatus1()));
-    xml.writeAttribute("p1", QString::number(pfeifferModel_->getPressure1(), 'e', 3));
+    xml.writeAttribute("p1", QString::number(pfeifferModel_->getPressure1(), 'e', 2));
     xml.writeAttribute("s2", QString::number((int)pfeifferModel_->getStatus2()));
-    xml.writeAttribute("p2", QString::number(pfeifferModel_->getPressure2(), 'e', 3));
+    xml.writeAttribute("p2", QString::number(pfeifferModel_->getPressure2(), 'e', 2));
     xml.writeEndElement();
 
     xml.writeStartElement("HamegSetup");
-    xml.writeAttribute("time", utime.toString());
+    xml.writeAttribute("time", utime.toString(Qt::ISODate));
     xml.writeAttribute("remote", hamegRemoteMode_==true ? "1" : "0");
     xml.writeAttribute("outputs", hamegOutputsEnabled_==true ? "1" : "0");
     xml.writeAttribute("CV1", hamegCVMode_[0]==true ? "1" : "0");
@@ -88,7 +88,7 @@ void ThermoDAQModel::createDAQStatusMessage(QString &buffer)
     xml.writeEndElement();
 
     xml.writeStartElement("HamegSetvalues");
-    xml.writeAttribute("time", utime.toString());
+    xml.writeAttribute("time", utime.toString(Qt::ISODate));
     xml.writeAttribute("V1", QString::number(hamegSetVoltage_[0]));
     xml.writeAttribute("C1", QString::number(hamegSetCurrent_[0]));
     xml.writeAttribute("V2", QString::number(hamegSetVoltage_[1]));
@@ -96,11 +96,15 @@ void ThermoDAQModel::createDAQStatusMessage(QString &buffer)
     xml.writeEndElement();
 
     xml.writeStartElement("HamegValues");
-    xml.writeAttribute("time", utime.toString());
+    xml.writeAttribute("time", utime.toString(Qt::ISODate));
     xml.writeAttribute("V1", QString::number(hamegVoltage_[0]));
     xml.writeAttribute("C1", QString::number(hamegCurrent_[0]));
     xml.writeAttribute("V2", QString::number(hamegVoltage_[1]));
     xml.writeAttribute("C2", QString::number(hamegCurrent_[1]));
+    xml.writeEndElement();
+
+    xml.writeStartElement("DAQStarted");
+    xml.writeAttribute("time", utime.toString(Qt::ISODate));
     xml.writeEndElement();
 }
 
@@ -144,7 +148,7 @@ void ThermoDAQModel::huberInfoChanged()
         QXmlStreamWriter xml(&buffer);
 
         xml.writeStartElement("HuberTemperature");
-        xml.writeAttribute("time", utime.toString());
+        xml.writeAttribute("time", utime.toString(Qt::ISODate));
         xml.writeAttribute("circulator", huberCirculator_==true ? "1" : "0");
         xml.writeAttribute("work", QString::number(huberWorkingTemperature_, 'f', 2));
         xml.writeAttribute("bath", QString::number(huberBathTemperature_, 'f', 2));
@@ -168,7 +172,7 @@ void ThermoDAQModel::keithleySensorStateChanged(unsigned int sensor, State newSt
         QXmlStreamWriter xml(&buffer);
 
         xml.writeStartElement("KeithleyState");
-        xml.writeAttribute("time", utime.toString());
+        xml.writeAttribute("time", utime.toString(Qt::ISODate));
         xml.writeAttribute("sensor", QString::number(sensor));
         xml.writeAttribute("state", QString::number(newState));
         xml.writeEndElement();
@@ -190,7 +194,7 @@ void ThermoDAQModel::keithleyTemperatureChanged(unsigned int sensor, double temp
         QXmlStreamWriter xml(&buffer);
 
         xml.writeStartElement("KeithleyTemperature");
-        xml.writeAttribute("time", utime.toString());
+        xml.writeAttribute("time", utime.toString(Qt::ISODate));
         xml.writeAttribute("sensor", QString::number(sensor));
         xml.writeAttribute("temperature", QString::number(temperature, 'f', 2));
         xml.writeEndElement();
@@ -215,7 +219,7 @@ void ThermoDAQModel::pfeifferInfoChanged()
         QXmlStreamWriter xml(&buffer);
 
         xml.writeStartElement("PfeifferPressure");
-        xml.writeAttribute("time", utime.toString());
+        xml.writeAttribute("time", utime.toString(Qt::ISODate));
         xml.writeAttribute("s1", QString::number(pfeifferStatus1_));
         xml.writeAttribute("p1", QString::number(pfeifferPressure1_, 'e', 3));
         xml.writeAttribute("s2", QString::number(pfeifferStatus2_));
@@ -244,7 +248,7 @@ void ThermoDAQModel::hamegInfoChanged()
     changed |= updateIfChanged<bool>(hamegCVMode_[1], hamegModel_->isConstantVoltageMode(2));
     if (changed) {
         xml.writeStartElement("HamegSetup");
-        xml.writeAttribute("time", utime.toString());
+        xml.writeAttribute("time", utime.toString(Qt::ISODate));
         xml.writeAttribute("remote", hamegRemoteMode_==true ? "1" : "0");
         xml.writeAttribute("outputs", hamegOutputsEnabled_==true ? "1" : "0");
         xml.writeAttribute("CV1", hamegCVMode_[0]==true ? "1" : "0");
@@ -260,7 +264,7 @@ void ThermoDAQModel::hamegInfoChanged()
     changed |= updateIfChanged<float>(hamegSetCurrent_[1], hamegModel_->getCurrentParameter(2).getValue());
     if (changed) {
         xml.writeStartElement("HamegSetvalues");
-        xml.writeAttribute("time", utime.toString());
+        xml.writeAttribute("time", utime.toString(Qt::ISODate));
         xml.writeAttribute("V1", QString::number(hamegSetVoltage_[0]));
         xml.writeAttribute("C1", QString::number(hamegSetCurrent_[0]));
         xml.writeAttribute("V2", QString::number(hamegSetVoltage_[1]));
@@ -276,7 +280,7 @@ void ThermoDAQModel::hamegInfoChanged()
     changed |= updateIfChanged<float>(hamegCurrent_[1], hamegModel_->getCurrent(2));
     if (changed) {
         xml.writeStartElement("HamegValues");
-        xml.writeAttribute("time", utime.toString());
+        xml.writeAttribute("time", utime.toString(Qt::ISODate));
         xml.writeAttribute("V1", QString::number(hamegVoltage_[0]));
         xml.writeAttribute("C1", QString::number(hamegCurrent_[0]));
         xml.writeAttribute("V2", QString::number(hamegVoltage_[1]));
