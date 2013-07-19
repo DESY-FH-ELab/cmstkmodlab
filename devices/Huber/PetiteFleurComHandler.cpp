@@ -50,6 +50,8 @@ void PetiteFleurComHandler::SendCommand( const char *commandString ) {
     write( fIoPortFileDescriptor, &singleCharacter, 1 );
   }
 
+  //std::cout << "write: " << commandString << std::endl;
+
   // send feed characters
   SendFeedString();
 }
@@ -70,17 +72,21 @@ void PetiteFleurComHandler::ReceiveString( char *receiveString ) {
 
   int timeout = 0, readResult = 0;
 
-  while ( timeout < 100000 )  {
+  while ( timeout < 10 )  {
+
+    usleep( 100000 );
 
     readResult = read( fIoPortFileDescriptor, receiveString, 1024 );
 
-    if ( readResult > 0 )   {
+    if ( readResult > 0 ) {
       receiveString[readResult] = 0;
-      break;
+      //std::cout << "read: " << readResult << " " << receiveString << std::endl;
+      return;
     }
-    
     timeout++;
   }
+
+  //std::cout << "timeout" << std::endl;
 }
 
 //! Open I/O port.
@@ -184,8 +190,6 @@ void PetiteFleurComHandler::InitializeIoPort( void ) {
   // commit changes
   tcsetattr( fIoPortFileDescriptor, TCSANOW, &fThisTermios );
 
-
-
 #endif
 }
 
@@ -212,11 +216,7 @@ void PetiteFleurComHandler::CloseIoPort( void ) {
 /*!
   \internal
 */
-void PetiteFleurComHandler::SendFeedString( void ) {
-
-  // feed string is <NL>
-  char feedString = 10;
-
-  // write <CR> and get echo
-  write( fIoPortFileDescriptor, &feedString, 1 );
+void PetiteFleurComHandler::SendFeedString( void )
+{
+  write( fIoPortFileDescriptor, "\n\r", 2 );
 }

@@ -30,6 +30,7 @@ class HuberPetiteFleur : public VHuberPetiteFleur
 
  private:
 
+  const int uDelay_;
   void StripBuffer( char* ) const;
   int ToInteger(const char*) const;
   float ToFloat(const char*) const;

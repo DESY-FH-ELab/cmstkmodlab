@@ -14,7 +14,8 @@
 ///
 ///
 HuberPetiteFleur::HuberPetiteFleur( const ioport_t ioPort )
-  : VHuberPetiteFleur(ioPort)
+  : VHuberPetiteFleur(ioPort),
+    uDelay_(250000)
 {
   comHandler_ = new PetiteFleurComHandler( ioPort );
   isCommunication_ = false;
@@ -43,24 +44,17 @@ bool HuberPetiteFleur::SetWorkingTemperature( const float workingTemp ) const {
   sprintf(buffer, "%+06d", iTemp);
 
   stringstream theCommand;
-  theCommand << "SP@ " << buffer;
-  usleep( 100000 );
+  theCommand << "SP! " << buffer;
+
   comHandler_->SendCommand( theCommand.str().c_str() );
-  std::cout << "HPF: " << theCommand.str() << std::endl;
+  usleep( uDelay_ );
 
-  usleep( 100000 );
-  comHandler_->SendCommand( "SP?\n\r" );
+  comHandler_->SendCommand( "SP?" );
+  usleep( uDelay_ );
 
-  usleep( 100000 );
   comHandler_->ReceiveString( buffer );
+  usleep( uDelay_ );
   StripBuffer( buffer );
-
-  std::cout << "HPF: " << buffer << std::endl;
-  std::cout << "HPF: " << ToInteger(buffer) << std::endl;
-  std::cout << "HPF: " << ToFloat(buffer) << std::endl;
-
-  usleep( 100000 );
-  comHandler_->ReceiveString( buffer );
 
   if( std::fabs( iTemp - ToInteger(buffer) ) > 1 ) {
     std::cerr << " [HuberPetiteFleur::SetWorkingTemp] ** ERROR: check failed." << std::endl;
@@ -83,10 +77,10 @@ bool HuberPetiteFleur::SetCirculatorOn( void ) const {
 
   char buffer[1000];
   
-  usleep( 100000 );
+  usleep( uDelay_ );
   comHandler_->SendCommand( "CA@ +00001" );
 
-  usleep( 100000 );
+  usleep( uDelay_ );
   comHandler_->ReceiveString( buffer );
   StripBuffer( buffer );
 
@@ -112,10 +106,10 @@ bool HuberPetiteFleur::SetCirculatorOff( void ) const {
 
   char buffer[1000];
   
-  usleep( 100000 );
+  usleep( uDelay_ );
   comHandler_->SendCommand( "CA@ +00000" );
 
-  usleep( 100000 );
+  usleep( uDelay_ );
   comHandler_->ReceiveString( buffer );
   StripBuffer( buffer );
 
@@ -141,10 +135,10 @@ float HuberPetiteFleur::GetBathTemperature( void ) const {
 
   char buffer[1000];
 
-  usleep( 100000 );
-  comHandler_->SendCommand( "TI?\n\r" );
+  usleep( uDelay_ );
+  comHandler_->SendCommand( "TI?" );
 
-  usleep( 100000 );
+  usleep( uDelay_ );
   comHandler_->ReceiveString( buffer );
   StripBuffer( buffer );
 
@@ -162,10 +156,10 @@ float HuberPetiteFleur::GetWorkingTemperature( void ) const {
 
   char buffer[1000];
 
-  usleep( 100000 );
-  comHandler_->SendCommand( "SP?\n\r" );
+  usleep( uDelay_ );
+  comHandler_->SendCommand( "SP?" );
 
-  usleep( 100000 );
+  usleep( uDelay_ );
   comHandler_->ReceiveString( buffer );
   StripBuffer( buffer );
 
@@ -185,10 +179,10 @@ bool HuberPetiteFleur::GetCirculatorStatus( void ) const {
 
   char buffer[1000];
 
-  usleep( 100000 );
-  comHandler_->SendCommand( "CA?\n\r" );
+  usleep( uDelay_ );
+  comHandler_->SendCommand( "CA?" );
 
-  usleep( 100000 );
+  usleep( uDelay_ );
   comHandler_->ReceiveString( buffer );
   StripBuffer( buffer );
   int status = ToInteger(buffer);
@@ -247,14 +241,14 @@ void HuberPetiteFleur::Device_Init( void ) {
 
   char buffer[1000];
   
-  usleep( 100000 );
-  comHandler_->SendCommand( "CA?\n\r" );
+  comHandler_->SendCommand( "CA?" );
+  usleep( uDelay_ );
 
-  usleep( 100000 );
   comHandler_->ReceiveString( buffer );
+  usleep( uDelay_ );
   StripBuffer( buffer );
   std::string temp(buffer);
-  
+
   if (temp.compare(0, 2, "CA")!=0) {
     std::cerr << " [HuberPetiteFleur::Device_Init] ** ERROR: Device communication problem." << std::endl;
     isCommunication_ = false;
