@@ -14,7 +14,7 @@ int main()
 
   //ret = pfeiffer.GetPressure1(reading);
   //ret = pfeiffer.GetPressure2(reading);
-  ret = pfeiffer.GetPressures(reading1, reading2);
+  //ret = pfeiffer.GetPressures(reading1, reading2);
 
   return 0;
 }
