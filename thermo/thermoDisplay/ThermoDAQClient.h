@@ -17,6 +17,10 @@ protected slots:
 
     void read();
 
+signals:
+
+    void handleMessage(QString&);
+
 protected:
 
     int socket_;

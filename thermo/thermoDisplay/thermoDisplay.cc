@@ -3,23 +3,33 @@
 
 #include "ApplicationConfig.h"
 
+#include "ThermoDisplayMainWindow.h"
+#include "ThermoDAQNetworkReader.h"
 #include "ThermoDAQClient.h"
 
 int main( int argc, char** argv ) {
 
   QApplication app( argc, argv );
-  app.setStyle("cleanlooks");
 
   ApplicationConfig::instance(std::string(Config::CMSTkModLabBasePath) + "/thermo/thermo.cfg");
 
-  //ThermoMainWindow mainWindow;
-  //TestWindow mainWindow;
+  if (app.arguments().size()==2 &&
+      app.arguments().at(1)=="--nogui") {
 
-  //mainWindow.show();
+      ThermoDAQClient * client = new ThermoDAQClient(55555);
+      ThermoDAQNetworkReader * reader = new ThermoDAQNetworkReader(&app);
 
-  ThermoDAQClient client(55555);
+      QObject::connect(client, SIGNAL(handleMessage(QString&)),
+                       reader, SLOT(run(QString&)));
+      QObject::connect(reader, SIGNAL(finished()),
+                       &app, SLOT(quit()));
 
-  client.readDAQStatus();
+      client->readDAQStatus();
+
+  } else {
+      ThermoDisplayMainWindow * mainWindow = new ThermoDisplayMainWindow();
+      mainWindow->show();
+  }
 
   return app.exec();
 }

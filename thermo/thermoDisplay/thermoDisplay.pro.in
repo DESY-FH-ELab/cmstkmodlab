@@ -38,7 +38,11 @@ INCLUDEPATH += @basepath@
 INCLUDEPATH += @basepath@/common
 
 # Input
-HEADERS += ThermoDAQClient.h
+HEADERS += ThermoDAQClient.h \
+           ThermoDAQNetworkReader.h \
+           ThermoDisplayMainWindow.h
     
 SOURCES += thermoDisplay.cc \
-           ThermoDAQClient.cc
+           ThermoDAQClient.cc \
+           ThermoDAQNetworkReader.cc \
+           ThermoDisplayMainWindow.cc
