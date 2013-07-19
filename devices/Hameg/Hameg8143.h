@@ -41,8 +41,10 @@ class Hameg8143 : public VHameg8143
  private:
 
   void StripBuffer( char* ) const;
-  
+  void DeviceInit();
+
   HO820ComHandler* comHandler_;
+  bool isDeviceAvailable_;
 };
 
 #endif

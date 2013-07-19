@@ -4,9 +4,11 @@
 #include "Hameg8143.h"
 
 Hameg8143::Hameg8143( const ioport_t ioPort )
-  :VHameg8143(ioPort)
+  :VHameg8143(ioPort),
+   isDeviceAvailable_(false)
 {
   comHandler_ = new HO820ComHandler( ioPort );
+  DeviceInit();
 }
 
 Hameg8143::~Hameg8143()
@@ -16,7 +18,7 @@ Hameg8143::~Hameg8143()
 
 bool Hameg8143::DeviceAvailable() const
 {
-
+  return isDeviceAvailable_;
 }
 
 unsigned int Hameg8143::GetStatus() const
@@ -228,5 +230,21 @@ void Hameg8143::StripBuffer(char* buffer) const
       buffer[c] = 0;
       break;
     }
+  }
+}
+
+void Hameg8143::DeviceInit()
+{
+  comHandler_->SendCommand("ID?");
+
+  char buffer[1000];
+  comHandler_->ReceiveString(buffer);
+  StripBuffer(buffer);
+  std::string buf = buffer;
+
+  if (buf.find("HAMEG Instruments,HM8143", 0)==0) {
+    isDeviceAvailable_ = true;
+  } else {
+    isDeviceAvailable_ = false;
   }
 }
