@@ -1,18 +1,20 @@
 #include "KeithleyModel.h"
 
-const QString KeithleyModel::KEITHLEY_PORT = QString("/dev/ttyS4");
-
-
-KeithleyModel::KeithleyModel(double updateInterval, QObject *parent) :
-      QObject(parent)
-    , AbstractDeviceModel<Keithley2700_t>()
-    , updateInterval_(updateInterval)
-    , sensorStates_(SENSOR_COUNT, OFF)
-    , temperatures_(SENSOR_COUNT, 0.0)
-    , gradients_(SENSOR_COUNT, 0.0)
-    , timeBuffer_(1+(60*5)/updateInterval)
-    , temperatureBuffer_(1+(60*5)/updateInterval, temperatures_)
-    , absoluteTime_(0)
+KeithleyModel::KeithleyModel(const char* port,
+                             double updateInterval,
+                             QObject *parent) :
+    QObject(parent),
+    AbstractDeviceModel<Keithley2700_t>(),
+    port_(port),
+    updateInterval_(updateInterval),
+    sensorStates_(SENSOR_COUNT, OFF),
+    temperatures_(SENSOR_COUNT, 0.0),
+    gradients_(SENSOR_COUNT, 0.0),
+//    timeBuffer_(1+(60*5)/updateInterval),
+//    temperatureBuffer_(1+(60*5)/updateInterval, temperatures_),
+    timeBuffer_(4),
+    temperatureBuffer_(4, temperatures_),
+    absoluteTime_(0)
 {
   timer_ = new QTimer(this);
   timer_->setInterval(updateInterval_ * 1000);
@@ -31,7 +33,7 @@ void KeithleyModel::initialize() {
 
   try {
 
-    renewController(KEITHLEY_PORT);
+    renewController(port_);
 
     //std::cout << std::numeric_limits<float>::max() << ", "
     //          << std::numeric_limits<float>::infinity << std::endl;
@@ -43,7 +45,7 @@ void KeithleyModel::initialize() {
     setDeviceState(READY);
 
     // Set empty string to disable all channels
-//    controller_->SetActiveChannels("0-9");
+    // controller_->SetActiveChannels("0-9");
 
     // ... then reenable previously enabled sensors.
     for (unsigned int i = 0; i < SENSOR_COUNT; ++i) {
@@ -51,7 +53,7 @@ void KeithleyModel::initialize() {
         controller_->AddActiveChannels( constructString(i) );
     }
 
-//    scanTemperatures();
+    // scanTemperatures();
 
   }
   catch (int e) {
@@ -65,7 +67,7 @@ void KeithleyModel::setDeviceEnabled(bool enabled) {
   // Trivial reimplementation as slot.
   AbstractDeviceModel<Keithley2700_t>::setDeviceEnabled(enabled);
 
-  //scanTemperatures();
+  // scanTemperatures();
 }
 
 void KeithleyModel::setDeviceState(State state) {
@@ -134,8 +136,6 @@ double KeithleyModel::getTemperature(unsigned int sensor) const
   */
 void KeithleyModel::scanTemperatures() {
 
-  absoluteTime_ += updateInterval_;
-
   reading_t reading = controller_->Scan();
 
   // Good scan, cache the retrieved temperatures
@@ -143,11 +143,9 @@ void KeithleyModel::scanTemperatures() {
 
     std::cout << reading.size() << " temperature readings" << std::endl;
 
-    for (
-           reading_t::const_iterator it = reading.begin()
-         ; it < reading.end()
-         ; ++it
-    ) {
+    for (reading_t::const_iterator it = reading.begin();
+         it < reading.end();
+         ++it) {
 
       unsigned int sensor = it->first;
       double temperature = it->second;
@@ -173,23 +171,30 @@ void KeithleyModel::scanTemperatures() {
 
   double lastTime = timeBuffer_.get();
   const std::vector<double> &lastTemperatures = temperatureBuffer_.get();
-  double dt = (absoluteTime_ - lastTime) / 60.;
+  double dt = absoluteTime_ - lastTime;
 
-  //  std::cout << "lastTime: " << lastTime << std::endl;
-  //  std::cout << "absoluteTime: " << absoluteTime_ << std::endl;
-  //  std::cout << lastTemperatures.size() << std::endl;
+  std::cout << "lastTime: " << lastTime << std::endl;
+  std::cout << "absoluteTime: " << absoluteTime_ << std::endl;
+  std::cout << "dt: " << dt << std::endl;
 
-  if (dt>10) {
+  if (dt>=30) {
       for (unsigned int i=0;i<SENSOR_COUNT;++i) {
           if (sensorStates_[i] != READY) continue;
 
-          double gradient = (temperatures_[i] - lastTemperatures[i]) / dt;
+          double gradient = (temperatures_[i] - lastTemperatures[i]) / (dt/60.);
           if ( gradients_.at(i) != gradient ) {
               gradients_[i] = gradient;
               emit temperatureGradientChanged(i, gradient);
           }
       }
+      std::cout << "dT/dt: "
+                << temperatures_[0] << " "
+                << lastTemperatures[0] << " "
+                << dt/60 << " = "
+                << gradients_[0] << std::endl;
   }
+
+  absoluteTime_ += updateInterval_;
 
   // FIXME If bad scans don't normally happen, close(), otherwise ignore.
 //  else

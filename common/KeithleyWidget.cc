@@ -14,7 +14,6 @@ KeithleyWidget::KeithleyWidget(KeithleyModel* model,
   sensorControlWidget_= new QWidget(this);
   layout->addWidget(sensorControlWidget_);
 
-  // TODO QGridLayout
   QGridLayout* sensorLayout = new QGridLayout(sensorControlWidget_);
   sensorControlWidget_->setLayout(sensorLayout);
 
@@ -67,7 +66,7 @@ KeithleyTemperatureWidget::KeithleyTemperatureWidget(KeithleyModel* model,
     model_(model),
     sensor_(sensor)
 {
-  QVBoxLayout* layout = new QVBoxLayout(this);
+  QFormLayout* layout = new QFormLayout(this);
   setLayout(layout);
 
   enabledCheckBox_ = new QCheckBox(LABEL_FORMAT.arg(sensor), this);
@@ -112,9 +111,11 @@ KeithleyTemperatureWidget::KeithleyTemperatureWidget(KeithleyModel* model,
           this,
           SLOT(controlStateChanged(bool)));
 
-  layout->addWidget(enabledCheckBox_);
-  layout->addWidget(currentTempDisplay_);
-  layout->addWidget(currentGradientDisplay_);
+  layout->addRow(enabledCheckBox_);
+  layout->addRow(QString::fromUtf8("T"), currentTempDisplay_);
+  layout->addRow(QString::fromUtf8("dT/dt") ,currentGradientDisplay_);
+  //layout->addRow(QString::fromUtf8("T (°C)"), currentTempDisplay_);
+  //layout->addRow(QString::fromUtf8("dT/dt (°C/min)") ,currentGradientDisplay_);
 
   updateWidgets();
 }

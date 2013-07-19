@@ -27,10 +27,9 @@ class KeithleyModel :
 public:
   static const unsigned int SENSOR_COUNT = 10;
 
-  explicit KeithleyModel(
-      double updateInterval = 60
-    , QObject *parent = 0
-  );
+  explicit KeithleyModel(const char* port,
+                         double updateInterval = 60,
+                         QObject *parent = 0);
 
   const State& getSensorState( unsigned int sensor ) const;
   double getTemperature( unsigned int sensor ) const;
@@ -42,11 +41,11 @@ public slots:
 
 protected:
   // FIXME Find out which port this needs to be or autoconfigure
-  static const QString KEITHLEY_PORT;
 
   void initialize();
 
   /// Time interval between cache refreshes; in seconds.
+  QString port_;
   const double updateInterval_;
   QTimer* timer_;
 

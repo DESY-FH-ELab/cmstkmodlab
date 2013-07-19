@@ -159,7 +159,7 @@ void PfeifferGaugeWidget::updateInfo()
     statusDisplay_->setText(VPfeifferTPG262::GetGaugeStatusAsString(status).c_str());
 
     if (pressure<1) {
-        sprintf(dummy, "%.03E", pressure);
+        sprintf(dummy, "%.02E", pressure);
     } else {
         sprintf(dummy, "%d", (int)pressure);
     }
