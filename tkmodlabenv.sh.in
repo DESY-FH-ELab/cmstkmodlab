@@ -1,9 +1,10 @@
 export TKMODLABBASE="@basepath@"
 export PATH="@basepath@/tools/bin:$PATH"
-export PATH="@basepath@/thermal:$PATH"
+export PATH="@basepath@/thermo/thermoDAQ:$PATH"
+export PATH="@basepath@/thermo/thermoDisplay:$PATH"
+export PATH="@basepath@/thermo/thermoDAQ2Root:$PATH"
 export PATH="@basepath@/defo/defoDAQ:$PATH"
 export PATH="@basepath@/defo/defoReco:$PATH"
 export LD_LIBRARY_PATH="@basepath@/devices/lib:$LD_LIBRARY_PATH"
 export LD_LIBRARY_PATH="@basepath@/common:$LD_LIBRARY_PATH"
 export LD_LIBRARY_PATH="@basepath@/defo/defoCommon:$LD_LIBRARY_PATH"
-
