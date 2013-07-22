@@ -9,21 +9,14 @@ MODULES       = PetiteFleurComHandler \
                 HuberPetiteFleurFake \
                 HuberPetiteFleur
 
-CC            = gcc
-CXX           = g++
-CXXFLAGS      = -fPIC
-LD            = g++
-SOFLAGS       = @soflags@
-
-ifeq ($(USEFAKEDEVICES),1)
-CXXFLAGS     += -DUSE_FAKEIO
-endif
+BASEPATH      = @basepath@
+include $(BASEPATH)/devices/Makefile.common
 
 ALLDEPEND = $(addsuffix .d,$(MODULES))
 
 EXISTDEPEND = $(shell find . -name \*.d -type f -print)
 
-all: depend lib
+all: depend lib test
 
 depend: $(ALLDEPEND)
 
@@ -33,8 +26,9 @@ $(LIBDIR)/lib$(LIB).so: $(addsuffix .o,$(MODULES)) test.cc
 	@(test -e $(LIBDIR) || mkdir $(LIBDIR))
 	@echo "Linking shared library $@"
 	$(LD) $(SOFLAGS) $^ -o $@
-	g++ -c test.cc
-	g++ -o test *.o
+
+test: test.cc
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) test.cc -o test -L../lib -lTkModLabHuber
 
 %.d: %.cpp
 	@echo Making dependency for file $< ...

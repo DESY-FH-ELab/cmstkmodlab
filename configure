@@ -42,6 +42,9 @@ if test $ARCHITECTURE = "Darwin"; then
     USEFAKEDEVICES=1
     CONFIGDEFINES="USE_FAKEIO"
     SOFLAGS="-m64 -O2 -dynamiclib -single_module -undefined dynamic_lookup"
+    CC="clang"
+    CXX="clang++"
+    LD="clang++"
     QWTDEFINES=""
     QWTINCLUDES="/opt/local/include/qwtplot3d /opt/local/include/qwt"
     QWTLIBS="-lqwtplot3d -lqwt"
@@ -52,6 +55,9 @@ if test $ARCHITECTURE = "Linux" && test $KERNELMINOR -lt 6; then
 fi
 if test $ARCHITECTURE = "Linux"; then
     SOFLAGS="-shared"
+    CC="gcc"
+    CXX="g++"
+    LD="g++"
     # Support multiple distros (e.g. Ubuntu (Debian), openSUSE)
     if [ -n "`locate qwtplot3d-qt4.so`" ]; then
         echo Using Qwt libraries with qt4 suffix.
@@ -84,7 +90,7 @@ else
     echo build with THERMAL support
 fi
 
-SED_VARIABLES="BASEPATH ARCHITECTURE KERNELMAJOR KERNELMINOR NODEFO NOTHERMAL USEFAKEDEVICES SOFLAGS CONFIGDEFINES QWTDEFINES QWTINCLUDES QWTLIBS ROOTINCPATH ROOTLIBS"
+SED_VARIABLES="BASEPATH ARCHITECTURE KERNELMAJOR KERNELMINOR CXX CC LD NODEFO NOTHERMAL USEFAKEDEVICES SOFLAGS CONFIGDEFINES QWTDEFINES QWTINCLUDES QWTLIBS ROOTINCPATH ROOTLIBS"
 
 echo "#!/bin/sh
 dest=\`basename \$1 .in\`

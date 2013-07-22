@@ -1,0 +1,9 @@
+CC            = @cc@
+CXX           = @cxx@
+CXXFLAGS      = -fPIC -std=c++0x
+LD            = g++
+SOFLAGS       = @soflags@
+
+ifeq ($(USEFAKEDEVICES),1)
+CXXFLAGS     += -DUSE_FAKEIO
+endif
