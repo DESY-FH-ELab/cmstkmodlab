@@ -18,6 +18,7 @@ public:
 
     bool push(const QDateTime& time, T value) {
         bool ret = QVector<double>::size()>0 && lastValue()==value;
+        ret = true;
         QVector<double>::append(QwtDate::toDouble(time));
         values_.append(value);
         return ret;

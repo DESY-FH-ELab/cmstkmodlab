@@ -32,16 +32,16 @@ protected:
     ThermoDAQNetworkReader* reader_;
 
     ThermoDAQValueVector<double> bathTemperature_;
-    ThermoDAQDisplayPlotItem<double>* bathTemperaturePlot_;
+    ThermoDAQDisplayPlotItem* bathTemperaturePlot_;
     ThermoDAQValueVector<double> workingTemperature_;
-    ThermoDAQDisplayPlotItem<double>* workingTemperaturePlot_;
+    ThermoDAQDisplayPlotItem* workingTemperaturePlot_;
     ThermoDAQValueVector<double> temperature_[10];
-    ThermoDAQDisplayPlotItem<double>* temperaturePlot_[10];
+    ThermoDAQDisplayPlotItem* temperaturePlot_[10];
 
     ThermoDAQValueVector<double> pressure1_;
-    ThermoDAQDisplayPlotItem<double>* pressure1Plot_;
+    ThermoDAQDisplayPlotItem* pressure1Plot_;
     ThermoDAQValueVector<double> pressure2_;
-    ThermoDAQDisplayPlotItem<double>* pressure2Plot_;
+    ThermoDAQDisplayPlotItem* pressure2Plot_;
 
     ThermoDAQTemperatureDisplayWidget* tempDisplay_;
     ThermoDAQPressureDisplayWidget* pDisplay_;
