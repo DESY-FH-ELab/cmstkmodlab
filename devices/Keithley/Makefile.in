@@ -9,15 +9,8 @@ MODULES       = KMMComHandler \
                 Keithley2700Fake \
                 Keithley2700
 
-CC            = gcc
-CXX           = g++
-CXXFLAGS      = -fPIC
-LD            = g++
-SOFLAGS       = @soflags@
-
-ifeq ($(USEFAKEDEVICES),1)
-CXXFLAGS     += -DUSE_FAKEIO
-endif
+BASEPATH      = @basepath@
+include $(BASEPATH)/devices/Makefile.common
 
 ALLDEPEND = $(addsuffix .d,$(MODULES))
 
