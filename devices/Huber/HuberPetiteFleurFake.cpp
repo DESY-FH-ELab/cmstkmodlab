@@ -72,7 +72,7 @@ float HuberPetiteFleurFake::GetBathTemperature( void ) const
   std::cout << " [HuberPetiteFleurFake::GetBathTemperature] -- FAKE: Returning T = "
 	    << workingTemp_ << std::endl;
   usleep( 10000 );
-  return workingTemp_;
+  return workingTemp_ + (double)rand() / RAND_MAX;
 }
 
 ///
