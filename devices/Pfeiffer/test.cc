@@ -1,12 +1,18 @@
 #include <iostream>
 
+#ifdef USE_FAKEIO
+#include "PfeifferTPG262Fake.h"
+typedef PfeifferTPG262Fake PfeifferTPG262_t;
+#else
 #include "PfeifferTPG262.h"
+typedef PfeifferTPG262 PfeifferTPG262_t;
+#endif
 
 int main()
 {
   std::cout << "test" << std::endl;
 
-  PfeifferTPG262 pfeiffer("/dev/ttyS4");
+  PfeifferTPG262_t pfeiffer("/dev/ttyS4");
 
   std::pair<VPfeifferTPG262::GaugeStatus,float> reading1;
   std::pair<VPfeifferTPG262::GaugeStatus,float> reading2;

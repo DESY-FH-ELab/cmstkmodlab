@@ -31,7 +31,7 @@ class Hameg8143Fake : public VHameg8143
 
   private:
 
-  const static float resistance_ = 100.;
+  static constexpr float resistance_ = 100.;
   
   mutable unsigned int statusBits_;
   mutable float voltage_[2];

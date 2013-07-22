@@ -1,13 +1,19 @@
 #include <iostream>
 #include <cmath>
 
+#ifdef USE_FAKEIO
+#include "HuberPetiteFleurFake.h"
+typedef HuberPetiteFleurFake HuberPetiteFleur_t;
+#else
 #include "HuberPetiteFleur.h"
+typedef HuberPetiteFleur HuberPetiteFleur_t;
+#endif
 
 int main()
 {
   std::cout << "test" << std::endl;
   
-  HuberPetiteFleur huber("/dev/ttyACM0");
+  HuberPetiteFleur_t huber("/dev/ttyACM0");
   
   huber.SetWorkingTemperature(12.34);
 

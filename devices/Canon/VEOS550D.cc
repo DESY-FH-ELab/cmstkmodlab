@@ -9,7 +9,7 @@ int VEOS550D::indexOf(
   , const std::string &value
 ) {
 
-  unsigned int i = list.size() - 1;
+  int i = list.size() - 1;
   // loop until found or smaller than 0
   while ( list[i] != value && i >= 0 )
     --i;
