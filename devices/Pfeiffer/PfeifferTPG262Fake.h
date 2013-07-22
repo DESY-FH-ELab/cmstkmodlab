@@ -20,17 +20,10 @@ class PfeifferTPG262Fake : public VPfeifferTPG262
   PfeifferTPG262Fake( ioport_t );
 
   virtual bool IsCommunication( void ) const { return true; }
-  virtual int GetErrorStatus( void ) const { return 0x0; }
-  virtual int GetPressure1(float & pressure) { return 0x0; }
-  virtual int GetPressure2(float & pressure) { return 0x0; }
-  virtual stat_t GetPressure(float & pressure1, float & pressure2);
-  virtual stat_t Readout( float & pressure1, float & pressure2 ) const {return stat_t (0x0,0x0);}
-  virtual void SendETX (void) const {;}
-  virtual void Reset (void) const {;}
-  virtual int KeyLock( void ) const{ return 0x0; }
-  virtual void SetContinuous( void ) const{;}
-  virtual int GuageIdentification (void) const {return 0x0;}
-
+  virtual int GetErrorStatus( void ) const;
+  virtual bool GetPressure1(reading_t & reading);
+  virtual bool GetPressure2(reading_t & reading);
+  virtual bool GetPressures(reading_t & reading1, reading_t & reading2);
 };
 
 #endif
