@@ -15,7 +15,7 @@ ifeq ($(USEFAKEDEVICES),1)
 CXXFLAGS     += -DUSE_FAKEIO
 endif
 
-LIBS          = ../../devices/Pfeiffer/*.o
+LIBS          = -L/home/tkmodlab/software/cmstkmodlab/trunk/devices/lib -lTkModLabPfeiffer
 
 LD            = g++
 LDFLAGS       = -O2
@@ -28,12 +28,12 @@ LD            = MACOSX_DEPLOYMENT_TARGET=$(OSXTARGET) g++
 LDFLAGS       = -O2
 endif
 
-all: $(BINDIR)/$(TARGET)
+all: $(TARGET)
 
-$(BINDIR)/$(TARGET): $(addsuffix .o,$(SOURCE)) 
+$(TARGET): $(addsuffix .o,$(SOURCE)) 
 	@(test -e $(BINDIR) || mkdir $(BINDIR))
 	@echo "Building binary $@"
-	$(CXX) $(CXXFLAGS) -o $(BINDIR)/$(TARGET) $< $(LIBS)
+	$(CXX) $(CXXFLAGS) -o $(TARGET) $< $(LIBS)
 
 %.o: %.cpp
 	@echo "Compiling $<"
