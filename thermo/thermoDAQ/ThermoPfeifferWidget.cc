@@ -114,7 +114,7 @@ void ThermoPfeifferWidget::updateInfo()
         p1_ = p;
         changed = true;
     }
-    p = model_->getPressure1();
+    p = model_->getPressure2();
     if (p!=p2_) {
             p2_ = p;
             changed = true;
