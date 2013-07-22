@@ -28,7 +28,7 @@ QMAKE_CXXFLAGS += -std=c++0x
 
 INCLUDEPATH += @qwtincludes@
 DEFINES += @configdefines@
-QT += core gui xml network
+QT += core gui xml network script
 TEMPLATE = app
 TARGET = thermoDisplay
 DEPENDPATH += @basepath@/common
@@ -40,9 +40,11 @@ INCLUDEPATH += @basepath@/common
 # Input
 HEADERS += ThermoDAQClient.h \
            ThermoDAQNetworkReader.h \
-           ThermoDisplayMainWindow.h
+           ThermoDisplayMainWindow.h \
+           ThermoDAQDisplayWidget.h 
     
 SOURCES += thermoDisplay.cc \
            ThermoDAQClient.cc \
            ThermoDAQNetworkReader.cc \
-           ThermoDisplayMainWindow.cc
+           ThermoDisplayMainWindow.cc \
+           ThermoDAQDisplayWidget.cc

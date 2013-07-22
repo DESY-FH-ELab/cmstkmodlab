@@ -28,7 +28,7 @@ QMAKE_CXXFLAGS += -std=c++0x
 
 INCLUDEPATH += @qwtincludes@
 DEFINES += @configdefines@
-QT += core gui opengl script xml network
+QT += core gui opengl script xml network svg
 TEMPLATE = app
 TARGET = thermoDAQ
 DEPENDPATH += @basepath@/common
@@ -47,7 +47,8 @@ HEADERS += TestWindow.h \
            ThermoDAQModel.h \
            ThermoDAQStreamer.h \
            ThermoDAQWidget.h \
-	   ThermoDAQServer.h
+	   ThermoDAQServer.h \
+           ThermoPfeifferWidget.h
     
 SOURCES += thermoDAQ.cc \
            TestWindow.cc \
@@ -59,5 +60,5 @@ SOURCES += thermoDAQ.cc \
            ThermoDAQModel.cc \
            ThermoDAQStreamer.cc \
            ThermoDAQWidget.cc \
-           ThermoDAQServer.cc
-
+           ThermoDAQServer.cc \
+           ThermoPfeifferWidget.cc

@@ -39,7 +39,12 @@ void ThermoDisplayMainWindow::updateInfo()
 
     const Measurement_t& m = reader_->getMeasurement();
 
-    bath_.pushIfChanged(m.dt, m.bathTemperature);
+    bathTemperature_.pushIfChanged(m.dt, m.bathTemperature);
+    workingTemperature_.pushIfChanged(m.dt, m.workingTemperature);
+
+    for (int i=0;i<bathTemperature_.size();++i) {
+
+    }
 
     timer_->start(10000);
 }

@@ -65,7 +65,8 @@ protected:
     ThermoDAQClient* client_;
     ThermoDAQNetworkReader* reader_;
 
-    ThermoDAQValueVector<float> bath_;
+    ThermoDAQValueVector<float> bathTemperature_;
+    ThermoDAQValueVector<float> workingTemperature_;
 };
 
 #endif // THERMODISPLAYMAINWINDOW_H

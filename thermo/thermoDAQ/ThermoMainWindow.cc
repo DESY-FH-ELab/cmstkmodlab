@@ -69,7 +69,8 @@ ThermoMainWindow::ThermoMainWindow(QWidget *parent) :
     wlayout->addWidget(huberWidget);
 
     // PFEIFFER MODEL
-    PfeifferWidget* pfeifferWidget = new PfeifferWidget(pfeifferModel_, widget);
+    //PfeifferWidget* pfeifferWidget = new PfeifferWidget(pfeifferModel_, widget);
+    ThermoPfeifferWidget* pfeifferWidget = new ThermoPfeifferWidget(pfeifferModel_, widget);
     pfeifferWidget->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);
     wlayout->addWidget(pfeifferWidget);
 

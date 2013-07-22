@@ -20,6 +20,7 @@
 
 #include "PfeifferModel.h"
 #include "PfeifferWidget.h"
+#include "ThermoPfeifferWidget.h"
 
 #include "ThermoScriptModel.h"
 #include "ThermoScriptWidget.h"
