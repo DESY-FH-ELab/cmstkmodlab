@@ -15,6 +15,7 @@ void ThermoDAQNetworkReader::run(QString& buffer)
 {
     process(buffer);
     std::cout << "ThermoDAQNetworkReader::run(QString& buffer): finished" << std::endl;
+    std::cout << buffer.toStdString() << std::endl;
     emit finished();
 }
 

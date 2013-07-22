@@ -4,48 +4,12 @@
 #include <QMainWindow>
 #include <QTimer>
 #include <QVector>
-
-#include <qwt_date.h>
+#include <QTabWidget>
 
 #include "ThermoDAQClient.h"
 #include "ThermoDAQNetworkReader.h"
-
-template <typename value_type> class ThermoDAQValueVector : public QVector<double>
-{
-public:
-    ThermoDAQValueVector() {
-
-    }
-
-    void clear() {
-        QVector<double>::clear();
-        values_.clear();
-    }
-
-    bool push(const QDateTime& time, value_type value) {
-        bool ret = QVector<double>::size()>0 && lastValue()==value;
-        QVector<double>::append(QwtDate::toDouble(time));
-        values_.append(value);
-        return ret;
-    }
-
-    bool pushIfChanged(const QDateTime& time, value_type value) {
-        if (QVector<double>::size()>0 && lastValue()==value) return false;
-        QVector<double>::append(QwtDate::toDouble(time));
-        values_.append(value);
-        return true;
-    }
-
-    double& lastTime() { return QVector<double>::last(); }
-    const double& lastTime() const { return QVector<double>::last(); }
-    value_type& lastValue() { return values_.last(); }
-
-    const double* constTimes() const { return QVector<double>::constData(); }
-    const value_type* constValues() const { return values_.constData(); }
-
-protected:
-    QVector<value_type> values_;
-};
+#include "ThermoDAQDisplayWidget.h"
+#include "ThermoDAQValueVector.h"
 
 class ThermoDisplayMainWindow : public QMainWindow
 {
@@ -62,11 +26,25 @@ protected:
 
     QTimer* timer_;
 
+    QTabWidget* tabWidget_;
+
     ThermoDAQClient* client_;
     ThermoDAQNetworkReader* reader_;
 
-    ThermoDAQValueVector<float> bathTemperature_;
-    ThermoDAQValueVector<float> workingTemperature_;
+    ThermoDAQValueVector<double> bathTemperature_;
+    ThermoDAQDisplayPlotItem<double>* bathTemperaturePlot_;
+    ThermoDAQValueVector<double> workingTemperature_;
+    ThermoDAQDisplayPlotItem<double>* workingTemperaturePlot_;
+    ThermoDAQValueVector<double> temperature_[10];
+    ThermoDAQDisplayPlotItem<double>* temperaturePlot_[10];
+
+    ThermoDAQValueVector<double> pressure1_;
+    ThermoDAQDisplayPlotItem<double>* pressure1Plot_;
+    ThermoDAQValueVector<double> pressure2_;
+    ThermoDAQDisplayPlotItem<double>* pressure2Plot_;
+
+    ThermoDAQTemperatureDisplayWidget* tempDisplay_;
+    ThermoDAQPressureDisplayWidget* pDisplay_;
 };
 
 #endif // THERMODISPLAYMAINWINDOW_H

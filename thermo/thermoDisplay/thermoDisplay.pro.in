@@ -41,7 +41,8 @@ INCLUDEPATH += @basepath@/common
 HEADERS += ThermoDAQClient.h \
            ThermoDAQNetworkReader.h \
            ThermoDisplayMainWindow.h \
-           ThermoDAQDisplayWidget.h 
+           ThermoDAQDisplayWidget.h \
+	   ThermoDAQValueVector.h
     
 SOURCES += thermoDisplay.cc \
            ThermoDAQClient.cc \
