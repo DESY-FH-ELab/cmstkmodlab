@@ -1,6 +1,4 @@
-subdirs	      = LabControl2Root \
-		LabControl2Report \
-		quickplot \
+subdirs	      = quickplot \
 		ReadGMH3750 \
 		ReadTPG262
 
