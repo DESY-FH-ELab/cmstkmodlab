@@ -103,4 +103,5 @@ ThermoMainWindow::ThermoMainWindow(QWidget *parent) :
     tabWidget_->addTab(widget, "DAQ + Scripting");
 
     setCentralWidget(tabWidget_);
+    updateGeometry();
 }

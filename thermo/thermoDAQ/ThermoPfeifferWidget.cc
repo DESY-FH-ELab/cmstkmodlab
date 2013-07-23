@@ -14,12 +14,12 @@ ThermoPfeifferSvgWidget::ThermoPfeifferSvgWidget(QWidget* parent)
 
 int ThermoPfeifferSvgWidget::heightForWidth(int w) const {
   //std::cout << w << "\t" << w*410/530 << std::endl;
-  return w*330/350;
+  return w*650/750;
 }
 
 int ThermoPfeifferSvgWidget::widthForHeight(int h) const {
   //std::cout << h << "\t" << h*530/410 << std::endl;
-  return h*350/330;
+  return h*750/650;
 }
 
 void ThermoPfeifferSvgWidget::resizeEvent(QResizeEvent *event) {
