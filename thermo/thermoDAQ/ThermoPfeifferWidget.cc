@@ -132,6 +132,8 @@ void ThermoPfeifferWidget::updateSketch() {
 
   if (p1_<1) {
       sprintf(dummy, "%.02e", p1_);
+  } else if (p1_<10) {
+      sprintf(dummy, "%.01f", p1_);
   } else {
       sprintf(dummy, "%d", (int)p1_);
   }
@@ -140,6 +142,8 @@ void ThermoPfeifferWidget::updateSketch() {
 
   if (p2_<1) {
       sprintf(dummy, "%.02e", p2_);
+  } else if (p2_<10) {
+      sprintf(dummy, "%.01f", p2_);
   } else {
       sprintf(dummy, "%d", (int)p2_);
   }

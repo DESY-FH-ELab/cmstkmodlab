@@ -160,6 +160,8 @@ void PfeifferGaugeWidget::updateInfo()
 
     if (pressure<1) {
         sprintf(dummy, "%.02E", pressure);
+    } else if (pressure<10) {
+        sprintf(dummy, "%.01f", pressure);
     } else {
         sprintf(dummy, "%d", (int)pressure);
     }
