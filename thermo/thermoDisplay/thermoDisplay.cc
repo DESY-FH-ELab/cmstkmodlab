@@ -1,35 +1,49 @@
 #include <QApplication>
 #include <QTcpSocket>
 
+#include "SingletonApplication.h"
 #include "ApplicationConfig.h"
 
 #include "ThermoDisplayMainWindow.h"
 #include "ThermoDAQNetworkReader.h"
 #include "ThermoDAQClient.h"
 
+static constexpr std::string thermoDisplayGUID = "{413A4B5E-EEAD-44E5-8195-4106D8C1A2DD}";
+#define SINGLETON 1
+
 int main( int argc, char** argv ) {
 
-  QApplication app( argc, argv );
+#ifdef SINGLETON
+    SingletonApplication app(argc, argv, thermoDisplayGUID.c_str());
+    if(!app.lock()){
+        std::cout << "Application instance already running!" << std::endl;
+        exit(1);
+    }
+#else
+    QApplication app( argc, argv );
+#endif
 
-  ApplicationConfig::instance(std::string(Config::CMSTkModLabBasePath) + "/thermo/thermo.cfg");
+    app.setStyle("cleanlooks");
 
-  if (app.arguments().size()==2 &&
-      app.arguments().at(1)=="--nogui") {
+    ApplicationConfig::instance(std::string(Config::CMSTkModLabBasePath) + "/thermo/thermo.cfg");
 
-      ThermoDAQClient * client = new ThermoDAQClient(55555);
-      ThermoDAQNetworkReader * reader = new ThermoDAQNetworkReader(&app);
+    if (app.arguments().size()==2 &&
+            app.arguments().at(1)=="--nogui") {
 
-      QObject::connect(client, SIGNAL(handleMessage(QString&)),
-                       reader, SLOT(run(QString&)));
-      QObject::connect(reader, SIGNAL(finished()),
-                       &app, SLOT(quit()));
+        ThermoDAQClient * client = new ThermoDAQClient(55555);
+        ThermoDAQNetworkReader * reader = new ThermoDAQNetworkReader(&app);
 
-      client->readDAQStatus();
+        QObject::connect(client, SIGNAL(handleMessage(QString&)),
+                         reader, SLOT(run(QString&)));
+        QObject::connect(reader, SIGNAL(finished()),
+                         &app, SLOT(quit()));
 
-  } else {
-      ThermoDisplayMainWindow * mainWindow = new ThermoDisplayMainWindow();
-      mainWindow->show();
-  }
+        client->readDAQStatus();
 
-  return app.exec();
+    } else {
+        ThermoDisplayMainWindow * mainWindow = new ThermoDisplayMainWindow();
+        mainWindow->show();
+    }
+
+    return app.exec();
 }

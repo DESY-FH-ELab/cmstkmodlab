@@ -4,6 +4,8 @@
 #include "DefoMainWindow.h"
 #include "TestWindow.h"
 
+static constexpr std::string defoDAQGUID = "{94E678B7-AD8C-4027-971D-5F49E0FFC647}";
+
 int main( int argc, char** argv ) {
 
   qRegisterMetaType<DefoConradModel::DeviceSwitch>("DefoConradModel::DeviceSwitch");

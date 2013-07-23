@@ -38,6 +38,7 @@ INCLUDEPATH += @basepath@
 HEADERS += DeviceState.h \
            DeviceParameter.h \
            Ringbuffer.h \
+	   SingletonApplication.h \
            ApplicationConfig.h \
            ApplicationConfigReader.h \
            ApplicationConfigWriter.h \
@@ -57,7 +58,8 @@ HEADERS += DeviceState.h \
            ScriptablePfeiffer.h \
            PfeifferWidget.h
            
-SOURCES += ApplicationConfig.cc \
+SOURCES += SingletonApplication.cc \
+	   ApplicationConfig.cc \
            ApplicationConfigReader.cc \
            ApplicationConfigWriter.cc \
            JulaboModel.cc \
