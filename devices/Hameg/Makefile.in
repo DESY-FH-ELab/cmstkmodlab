@@ -27,7 +27,7 @@ $(LIBDIR)/lib$(LIB).so: $(addsuffix .o,$(MODULES))
 	@echo "Linking shared library $@"
 	$(LD) $(SOFLAGS) $^ -o $@
 
-test: test.cc
+test: test.cc $(LIBDIR)/lib$(LIB).so
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) test.cc -o test -L../lib -lTkModLabHameg
 
 %.d: %.cpp
@@ -46,6 +46,7 @@ clean:
 	@rm -f $(addsuffix .o,$(MODULES))
 	@rm -f *.d
 	@rm -f *~
+	@rm -f test
 
 ifeq ($(findstring clean,$(MAKECMDGOALS)),)
 ifneq ($(EXISTDEPEND),)
