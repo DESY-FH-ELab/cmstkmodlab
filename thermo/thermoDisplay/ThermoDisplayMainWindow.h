@@ -21,6 +21,8 @@ public slots:
 
     void requestData();
     void updateInfo();
+    void exportPlot();
+    void clearData();
 
 protected:
 

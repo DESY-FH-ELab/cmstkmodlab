@@ -110,6 +110,8 @@ class ThermoDAQDisplayWidget : public QwtPlot
 public:
   explicit ThermoDAQDisplayWidget(QWidget *parent = 0);
 
+    void exportPlot();
+
 protected slots:
   void showItem(QwtPlotItem* item, bool on);
 

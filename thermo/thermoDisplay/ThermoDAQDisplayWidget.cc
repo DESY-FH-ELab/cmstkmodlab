@@ -14,6 +14,7 @@
 #include <qwt_date.h>
 #include <qwt_painter.h>
 #include <qwt_legend_label.h>
+#include <qwt_plot_renderer.h>
 
 #include "ThermoDAQDisplayWidget.h"
 
@@ -156,7 +157,7 @@ ThermoDAQLegend::~ThermoDAQLegend()
 void ThermoDAQLegend::renderLegend( QPainter *painter,
     const QRectF &rect, bool fillBackground ) const
 {
-    std::cout << "ThermoDAQLegend::renderLegend" << std::endl;
+    // std::cout << "ThermoDAQLegend::renderLegend" << std::endl;
 
     if (fillBackground) {
         if (autoFillBackground() || testAttribute( Qt::WA_StyledBackground)) {
@@ -198,7 +199,7 @@ int ThermoDAQLegend::scrollExtent( Qt::Orientation orientation ) const
 void ThermoDAQLegend::updateLegend(const QVariant &itemInfo,
                                    const QList<QwtLegendData> &data)
 {
-    std::cout << "ThermoDAQLegend::updateLegend " << data.size() << std::endl;
+    // std::cout << "ThermoDAQLegend::updateLegend " << data.size() << std::endl;
     QStandardItemModel *mdl = qobject_cast<QStandardItemModel*>(d_listView->model());
 
     QwtPlotItem *plotItem = qvariant_cast<QwtPlotItem *>(itemInfo);
@@ -233,14 +234,14 @@ void ThermoDAQLegend::updateLegend(const QVariant &itemInfo,
 
 void ThermoDAQLegend::updateItem(QStandardItem *item, const QwtLegendData &data)
 {
-    std::cout << "ThermoDAQLegend::updateItem" << std::endl;
+    // std::cout << "ThermoDAQLegend::updateItem" << std::endl;
 
     const QVariant key = item->data();
     const qlonglong ptr = key.value<qlonglong>();
     ThermoDAQDisplayPlotItem* titem = (ThermoDAQDisplayPlotItem*)ptr;
 
-    std::cout << titem->title().text().toStdString() << std::endl;
-    std::cout << (int)titem->isEnabled() << std::endl;
+    // std::cout << titem->title().text().toStdString() << std::endl;
+    // std::cout << (int)titem->isEnabled() << std::endl;
 
     item->setCheckable(titem->isEnabled());
     if (titem->isEnabled()==false) {
@@ -463,6 +464,16 @@ ThermoDAQDisplayWidget::ThermoDAQDisplayWidget(QWidget *parent) :
 
 //    zoomer_->setZoomBase(rect);
 //}
+
+void ThermoDAQDisplayWidget::exportPlot()
+{
+    QwtPlotRenderer renderer;
+    renderer.setDiscardFlag(QwtPlotRenderer::DiscardBackground, true);
+    renderer.setDiscardFlag(QwtPlotRenderer::DiscardCanvasBackground, true);
+    renderer.setDiscardFlag(QwtPlotRenderer::DiscardCanvasFrame, true);
+    renderer.setDiscardFlag(QwtPlotRenderer::DiscardLegend, true);
+    renderer.exportTo(this, "thermoDisplay", QSizeF(300, 200), 300);
+}
 
 void ThermoDAQDisplayWidget::showItem(QwtPlotItem* item, bool on)
 {

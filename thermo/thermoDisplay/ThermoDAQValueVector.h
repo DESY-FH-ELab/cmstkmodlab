@@ -11,7 +11,7 @@ public:
 
     }
 
-    void clear() {
+    void clearData() {
         QVector<double>::clear();
         values_.clear();
     }
