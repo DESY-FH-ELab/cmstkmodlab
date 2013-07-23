@@ -7,14 +7,14 @@
 #include "ThermoMainWindow.h"
 #include "TestWindow.h"
 
-static constexpr std::string thermoDAQGUID = "{2F9BC7D7-44A2-4625-A7C6-2EBE3C27C7F5}";
+static const char* thermoDAQGUID = "{2F9BC7D7-44A2-4625-A7C6-2EBE3C27C7F5}";
 #define SINGLETON 1
 
 int main( int argc, char** argv )
 {
 
 #ifdef SINGLETON
-    SingletonApplication app(argc, argv, thermoDAQGUID.c_str());
+    SingletonApplication app(argc, argv, thermoDAQGUID);
     if(!app.lock()){
         std::cout << "Application instance already running!" << std::endl;
         exit(1);

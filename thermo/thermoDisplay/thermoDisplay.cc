@@ -8,13 +8,13 @@
 #include "ThermoDAQNetworkReader.h"
 #include "ThermoDAQClient.h"
 
-static constexpr std::string thermoDisplayGUID = "{413A4B5E-EEAD-44E5-8195-4106D8C1A2DD}";
+static const char* thermoDisplayGUID = "{413A4B5E-EEAD-44E5-8195-4106D8C1A2DD}";
 #define SINGLETON 1
 
 int main( int argc, char** argv ) {
 
 #ifdef SINGLETON
-    SingletonApplication app(argc, argv, thermoDisplayGUID.c_str());
+    SingletonApplication app(argc, argv, thermoDisplayGUID);
     if(!app.lock()){
         std::cout << "Application instance already running!" << std::endl;
         exit(1);
