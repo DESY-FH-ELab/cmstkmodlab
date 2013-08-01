@@ -1,0 +1,1789 @@
+
+<HuberTemperature time="2013-07-30T16:09:56" circulator="1" work="15.00" bath="15.00"/>
+<KeithleyState time="2013-07-30T16:09:56" sensor="0" state="1"/>
+<KeithleyState time="2013-07-30T16:09:56" sensor="1" state="1"/>
+<KeithleyState time="2013-07-30T16:09:56" sensor="2" state="1"/>
+<KeithleyState time="2013-07-30T16:09:56" sensor="3" state="1"/>
+<KeithleyState time="2013-07-30T16:09:56" sensor="4" state="1"/>
+<KeithleyState time="2013-07-30T16:09:56" sensor="5" state="1"/>
+<KeithleyState time="2013-07-30T16:09:56" sensor="6" state="1"/>
+<KeithleyState time="2013-07-30T16:09:56" sensor="7" state="1"/>
+<KeithleyState time="2013-07-30T16:09:56" sensor="8" state="1"/>
+<KeithleyState time="2013-07-30T16:09:56" sensor="9" state="1"/>
+<KeithleyTemperature time="2013-07-30T16:09:56" sensor="0" temperature="16.44"/>
+<KeithleyTemperature time="2013-07-30T16:09:56" sensor="1" temperature="17.15"/>
+<KeithleyTemperature time="2013-07-30T16:09:56" sensor="2" temperature="17.55"/>
+<KeithleyTemperature time="2013-07-30T16:09:56" sensor="3" temperature="20.89"/>
+<KeithleyTemperature time="2013-07-30T16:09:56" sensor="4" temperature="16.43"/>
+<KeithleyTemperature time="2013-07-30T16:09:56" sensor="5" temperature="16.66"/>
+<KeithleyTemperature time="2013-07-30T16:09:56" sensor="6" temperature="16.77"/>
+<KeithleyTemperature time="2013-07-30T16:09:56" sensor="7" temperature="16.39"/>
+<KeithleyTemperature time="2013-07-30T16:09:56" sensor="8" temperature="16.46"/>
+<KeithleyTemperature time="2013-07-30T16:09:56" sensor="9" temperature="16.31"/>
+<PfeifferPressure time="2013-07-30T16:09:56" s1="0" p1="3.58e-03" s2="1" p2="5.06e-09"/>
+<HamegSetup time="2013-07-30T16:09:56" remote="1" outputs="0" CV1="0" CV2="0"/>
+<HamegSetvalues time="2013-07-30T16:09:56" V1="1" C1="0.25" V2="0.62" C2="0.13"/>
+<HamegValues time="2013-07-30T16:09:56" V1="1" C1="0" V2="0.62" C2="0"/>
+<DAQStarted time="2013-07-30T16:09:56"/>
+<HuberTemperature time="2013-07-30T16:10:02" circulator="1" work="15.00" bath="15.03"/>
+<KeithleyTemperature time="2013-07-30T16:10:11" sensor="0" temperature="16.45"/>
+<KeithleyTemperature time="2013-07-30T16:10:11" sensor="1" temperature="17.15"/>
+<KeithleyTemperature time="2013-07-30T16:10:11" sensor="2" temperature="17.55"/>
+<KeithleyTemperature time="2013-07-30T16:10:11" sensor="3" temperature="20.90"/>
+<KeithleyTemperature time="2013-07-30T16:10:11" sensor="4" temperature="16.43"/>
+<KeithleyTemperature time="2013-07-30T16:10:11" sensor="5" temperature="16.67"/>
+<KeithleyTemperature time="2013-07-30T16:10:11" sensor="6" temperature="16.77"/>
+<KeithleyTemperature time="2013-07-30T16:10:11" sensor="7" temperature="16.39"/>
+<KeithleyTemperature time="2013-07-30T16:10:11" sensor="8" temperature="16.46"/>
+<KeithleyTemperature time="2013-07-30T16:10:11" sensor="9" temperature="16.31"/>
+<HuberTemperature time="2013-07-30T16:10:17" circulator="1" work="15.00" bath="14.96"/>
+<KeithleyTemperature time="2013-07-30T16:10:31" sensor="0" temperature="16.45"/>
+<KeithleyTemperature time="2013-07-30T16:10:31" sensor="1" temperature="17.15"/>
+<KeithleyTemperature time="2013-07-30T16:10:31" sensor="2" temperature="17.55"/>
+<KeithleyTemperature time="2013-07-30T16:10:31" sensor="3" temperature="20.90"/>
+<KeithleyTemperature time="2013-07-30T16:10:31" sensor="4" temperature="16.43"/>
+<KeithleyTemperature time="2013-07-30T16:10:31" sensor="5" temperature="16.67"/>
+<KeithleyTemperature time="2013-07-30T16:10:31" sensor="6" temperature="16.77"/>
+<KeithleyTemperature time="2013-07-30T16:10:31" sensor="7" temperature="16.39"/>
+<KeithleyTemperature time="2013-07-30T16:10:31" sensor="8" temperature="16.47"/>
+<KeithleyTemperature time="2013-07-30T16:10:31" sensor="9" temperature="16.31"/>
+<HuberTemperature time="2013-07-30T16:10:31" circulator="1" work="15.00" bath="15.05"/>
+<PfeifferPressure time="2013-07-30T16:10:35" s1="0" p1="3.570e-03" s2="1" p2="5.060e-09"/>
+<KeithleyTemperature time="2013-07-30T16:10:51" sensor="0" temperature="16.45"/>
+<KeithleyTemperature time="2013-07-30T16:10:51" sensor="1" temperature="17.15"/>
+<KeithleyTemperature time="2013-07-30T16:10:51" sensor="2" temperature="17.55"/>
+<KeithleyTemperature time="2013-07-30T16:10:51" sensor="3" temperature="20.90"/>
+<KeithleyTemperature time="2013-07-30T16:10:51" sensor="4" temperature="16.43"/>
+<KeithleyTemperature time="2013-07-30T16:10:51" sensor="5" temperature="16.67"/>
+<KeithleyTemperature time="2013-07-30T16:10:51" sensor="6" temperature="16.77"/>
+<KeithleyTemperature time="2013-07-30T16:10:51" sensor="7" temperature="16.39"/>
+<KeithleyTemperature time="2013-07-30T16:10:51" sensor="8" temperature="16.46"/>
+<KeithleyTemperature time="2013-07-30T16:10:51" sensor="9" temperature="16.31"/>
+<HuberTemperature time="2013-07-30T16:10:51" circulator="1" work="15.00" bath="15.02"/>
+<PfeifferPressure time="2013-07-30T16:10:55" s1="0" p1="3.580e-03" s2="1" p2="5.060e-09"/>
+<HuberTemperature time="2013-07-30T16:11:02" circulator="1" work="15.00" bath="14.97"/>
+<KeithleyTemperature time="2013-07-30T16:11:11" sensor="0" temperature="16.45"/>
+<KeithleyTemperature time="2013-07-30T16:11:11" sensor="1" temperature="17.15"/>
+<KeithleyTemperature time="2013-07-30T16:11:11" sensor="2" temperature="17.55"/>
+<KeithleyTemperature time="2013-07-30T16:11:11" sensor="3" temperature="20.90"/>
+<KeithleyTemperature time="2013-07-30T16:11:11" sensor="4" temperature="16.43"/>
+<KeithleyTemperature time="2013-07-30T16:11:11" sensor="5" temperature="16.67"/>
+<KeithleyTemperature time="2013-07-30T16:11:11" sensor="6" temperature="16.77"/>
+<KeithleyTemperature time="2013-07-30T16:11:11" sensor="7" temperature="16.39"/>
+<KeithleyTemperature time="2013-07-30T16:11:11" sensor="8" temperature="16.46"/>
+<KeithleyTemperature time="2013-07-30T16:11:11" sensor="9" temperature="16.31"/>
+<HuberTemperature time="2013-07-30T16:11:17" circulator="1" work="15.00" bath="14.94"/>
+<KeithleyTemperature time="2013-07-30T16:11:31" sensor="0" temperature="16.45"/>
+<KeithleyTemperature time="2013-07-30T16:11:31" sensor="1" temperature="17.15"/>
+<KeithleyTemperature time="2013-07-30T16:11:31" sensor="2" temperature="17.55"/>
+<KeithleyTemperature time="2013-07-30T16:11:31" sensor="3" temperature="20.91"/>
+<KeithleyTemperature time="2013-07-30T16:11:31" sensor="4" temperature="16.43"/>
+<KeithleyTemperature time="2013-07-30T16:11:31" sensor="5" temperature="16.67"/>
+<KeithleyTemperature time="2013-07-30T16:11:31" sensor="6" temperature="16.77"/>
+<KeithleyTemperature time="2013-07-30T16:11:31" sensor="7" temperature="16.39"/>
+<KeithleyTemperature time="2013-07-30T16:11:31" sensor="8" temperature="16.46"/>
+<KeithleyTemperature time="2013-07-30T16:11:31" sensor="9" temperature="16.31"/>
+<PfeifferPressure time="2013-07-30T16:11:31" s1="0" p1="3.570e-03" s2="1" p2="5.060e-09"/>
+<HuberTemperature time="2013-07-30T16:11:31" circulator="1" work="15.00" bath="14.99"/>
+<PfeifferPressure time="2013-07-30T16:11:35" s1="0" p1="3.580e-03" s2="1" p2="5.060e-09"/>
+<KeithleyTemperature time="2013-07-30T16:11:51" sensor="0" temperature="16.45"/>
+<KeithleyTemperature time="2013-07-30T16:11:51" sensor="1" temperature="17.15"/>
+<KeithleyTemperature time="2013-07-30T16:11:51" sensor="2" temperature="17.55"/>
+<KeithleyTemperature time="2013-07-30T16:11:51" sensor="3" temperature="20.91"/>
+<KeithleyTemperature time="2013-07-30T16:11:51" sensor="4" temperature="16.43"/>
+<KeithleyTemperature time="2013-07-30T16:11:51" sensor="5" temperature="16.67"/>
+<KeithleyTemperature time="2013-07-30T16:11:51" sensor="6" temperature="16.77"/>
+<KeithleyTemperature time="2013-07-30T16:11:51" sensor="7" temperature="16.40"/>
+<KeithleyTemperature time="2013-07-30T16:11:51" sensor="8" temperature="16.47"/>
+<KeithleyTemperature time="2013-07-30T16:11:51" sensor="9" temperature="16.31"/>
+<HuberTemperature time="2013-07-30T16:11:51" circulator="1" work="15.00" bath="15.04"/>
+<HuberTemperature time="2013-07-30T16:12:02" circulator="1" work="15.00" bath="15.08"/>
+<KeithleyTemperature time="2013-07-30T16:12:11" sensor="0" temperature="16.45"/>
+<KeithleyTemperature time="2013-07-30T16:12:11" sensor="1" temperature="17.15"/>
+<KeithleyTemperature time="2013-07-30T16:12:11" sensor="2" temperature="17.55"/>
+<KeithleyTemperature time="2013-07-30T16:12:11" sensor="3" temperature="20.91"/>
+<KeithleyTemperature time="2013-07-30T16:12:11" sensor="4" temperature="16.43"/>
+<KeithleyTemperature time="2013-07-30T16:12:11" sensor="5" temperature="16.67"/>
+<KeithleyTemperature time="2013-07-30T16:12:11" sensor="6" temperature="16.77"/>
+<KeithleyTemperature time="2013-07-30T16:12:11" sensor="7" temperature="16.40"/>
+<KeithleyTemperature time="2013-07-30T16:12:11" sensor="8" temperature="16.47"/>
+<KeithleyTemperature time="2013-07-30T16:12:11" sensor="9" temperature="16.31"/>
+<PfeifferPressure time="2013-07-30T16:12:11" s1="0" p1="3.570e-03" s2="1" p2="5.060e-09"/>
+<PfeifferPressure time="2013-07-30T16:12:15" s1="0" p1="3.580e-03" s2="1" p2="5.060e-09"/>
+<HuberTemperature time="2013-07-30T16:12:15" circulator="1" work="15.00" bath="14.98"/>
+<KeithleyTemperature time="2013-07-30T16:12:31" sensor="0" temperature="16.45"/>
+<KeithleyTemperature time="2013-07-30T16:12:31" sensor="1" temperature="17.15"/>
+<KeithleyTemperature time="2013-07-30T16:12:31" sensor="2" temperature="17.54"/>
+<KeithleyTemperature time="2013-07-30T16:12:31" sensor="3" temperature="20.91"/>
+<KeithleyTemperature time="2013-07-30T16:12:31" sensor="4" temperature="16.43"/>
+<KeithleyTemperature time="2013-07-30T16:12:31" sensor="5" temperature="16.67"/>
+<KeithleyTemperature time="2013-07-30T16:12:31" sensor="6" temperature="16.77"/>
+<KeithleyTemperature time="2013-07-30T16:12:31" sensor="7" temperature="16.39"/>
+<KeithleyTemperature time="2013-07-30T16:12:31" sensor="8" temperature="16.46"/>
+<KeithleyTemperature time="2013-07-30T16:12:31" sensor="9" temperature="16.31"/>
+<HuberTemperature time="2013-07-30T16:12:31" circulator="1" work="15.00" bath="14.94"/>
+<KeithleyTemperature time="2013-07-30T16:12:51" sensor="0" temperature="16.45"/>
+<KeithleyTemperature time="2013-07-30T16:12:51" sensor="1" temperature="17.15"/>
+<KeithleyTemperature time="2013-07-30T16:12:51" sensor="2" temperature="17.55"/>
+<KeithleyTemperature time="2013-07-30T16:12:51" sensor="3" temperature="20.92"/>
+<KeithleyTemperature time="2013-07-30T16:12:51" sensor="4" temperature="16.43"/>
+<KeithleyTemperature time="2013-07-30T16:12:51" sensor="5" temperature="16.67"/>
+<KeithleyTemperature time="2013-07-30T16:12:51" sensor="6" temperature="16.77"/>
+<KeithleyTemperature time="2013-07-30T16:12:51" sensor="7" temperature="16.40"/>
+<KeithleyTemperature time="2013-07-30T16:12:51" sensor="8" temperature="16.47"/>
+<KeithleyTemperature time="2013-07-30T16:12:51" sensor="9" temperature="16.31"/>
+<PfeifferPressure time="2013-07-30T16:12:51" s1="0" p1="3.570e-03" s2="1" p2="5.060e-09"/>
+<HuberTemperature time="2013-07-30T16:12:51" circulator="1" work="15.00" bath="14.97"/>
+<HuberTemperature time="2013-07-30T16:13:02" circulator="1" work="15.00" bath="15.03"/>
+<KeithleyTemperature time="2013-07-30T16:13:11" sensor="0" temperature="16.45"/>
+<KeithleyTemperature time="2013-07-30T16:13:11" sensor="1" temperature="17.15"/>
+<KeithleyTemperature time="2013-07-30T16:13:11" sensor="2" temperature="17.55"/>
+<KeithleyTemperature time="2013-07-30T16:13:11" sensor="3" temperature="20.92"/>
+<KeithleyTemperature time="2013-07-30T16:13:11" sensor="4" temperature="16.43"/>
+<KeithleyTemperature time="2013-07-30T16:13:11" sensor="5" temperature="16.67"/>
+<KeithleyTemperature time="2013-07-30T16:13:11" sensor="6" temperature="16.77"/>
+<KeithleyTemperature time="2013-07-30T16:13:11" sensor="7" temperature="16.40"/>
+<KeithleyTemperature time="2013-07-30T16:13:11" sensor="8" temperature="16.47"/>
+<KeithleyTemperature time="2013-07-30T16:13:11" sensor="9" temperature="16.31"/>
+<HuberTemperature time="2013-07-30T16:13:17" circulator="1" work="15.00" bath="15.07"/>
+<KeithleyTemperature time="2013-07-30T16:13:31" sensor="0" temperature="16.45"/>
+<KeithleyTemperature time="2013-07-30T16:13:31" sensor="1" temperature="17.15"/>
+<KeithleyTemperature time="2013-07-30T16:13:31" sensor="2" temperature="17.55"/>
+<KeithleyTemperature time="2013-07-30T16:13:31" sensor="3" temperature="20.92"/>
+<KeithleyTemperature time="2013-07-30T16:13:31" sensor="4" temperature="16.44"/>
+<KeithleyTemperature time="2013-07-30T16:13:31" sensor="5" temperature="16.67"/>
+<KeithleyTemperature time="2013-07-30T16:13:31" sensor="6" temperature="16.77"/>
+<KeithleyTemperature time="2013-07-30T16:13:31" sensor="7" temperature="16.40"/>
+<KeithleyTemperature time="2013-07-30T16:13:31" sensor="8" temperature="16.47"/>
+<KeithleyTemperature time="2013-07-30T16:13:31" sensor="9" temperature="16.31"/>
+<HuberTemperature time="2013-07-30T16:13:31" circulator="1" work="15.00" bath="14.92"/>
+<KeithleyTemperature time="2013-07-30T16:13:51" sensor="0" temperature="16.45"/>
+<KeithleyTemperature time="2013-07-30T16:13:51" sensor="1" temperature="17.15"/>
+<KeithleyTemperature time="2013-07-30T16:13:51" sensor="2" temperature="17.55"/>
+<KeithleyTemperature time="2013-07-30T16:13:51" sensor="3" temperature="20.92"/>
+<KeithleyTemperature time="2013-07-30T16:13:51" sensor="4" temperature="16.44"/>
+<KeithleyTemperature time="2013-07-30T16:13:51" sensor="5" temperature="16.67"/>
+<KeithleyTemperature time="2013-07-30T16:13:51" sensor="6" temperature="16.78"/>
+<KeithleyTemperature time="2013-07-30T16:13:51" sensor="7" temperature="16.40"/>
+<KeithleyTemperature time="2013-07-30T16:13:51" sensor="8" temperature="16.47"/>
+<KeithleyTemperature time="2013-07-30T16:13:51" sensor="9" temperature="16.31"/>
+<HuberTemperature time="2013-07-30T16:13:51" circulator="1" work="15.00" bath="15.03"/>
+<HuberTemperature time="2013-07-30T16:14:02" circulator="1" work="15.00" bath="15.00"/>
+<KeithleyTemperature time="2013-07-30T16:14:11" sensor="0" temperature="16.45"/>
+<KeithleyTemperature time="2013-07-30T16:14:11" sensor="1" temperature="17.15"/>
+<KeithleyTemperature time="2013-07-30T16:14:11" sensor="2" temperature="17.54"/>
+<KeithleyTemperature time="2013-07-30T16:14:11" sensor="3" temperature="20.93"/>
+<KeithleyTemperature time="2013-07-30T16:14:11" sensor="4" temperature="16.44"/>
+<KeithleyTemperature time="2013-07-30T16:14:11" sensor="5" temperature="16.67"/>
+<KeithleyTemperature time="2013-07-30T16:14:11" sensor="6" temperature="16.77"/>
+<KeithleyTemperature time="2013-07-30T16:14:11" sensor="7" temperature="16.40"/>
+<KeithleyTemperature time="2013-07-30T16:14:11" sensor="8" temperature="16.47"/>
+<KeithleyTemperature time="2013-07-30T16:14:11" sensor="9" temperature="16.31"/>
+<HuberTemperature time="2013-07-30T16:14:17" circulator="1" work="15.00" bath="14.98"/>
+<KeithleyTemperature time="2013-07-30T16:14:31" sensor="0" temperature="16.45"/>
+<KeithleyTemperature time="2013-07-30T16:14:31" sensor="1" temperature="17.15"/>
+<KeithleyTemperature time="2013-07-30T16:14:31" sensor="2" temperature="17.55"/>
+<KeithleyTemperature time="2013-07-30T16:14:31" sensor="3" temperature="20.93"/>
+<KeithleyTemperature time="2013-07-30T16:14:31" sensor="4" temperature="16.44"/>
+<KeithleyTemperature time="2013-07-30T16:14:31" sensor="5" temperature="16.67"/>
+<KeithleyTemperature time="2013-07-30T16:14:31" sensor="6" temperature="16.77"/>
+<KeithleyTemperature time="2013-07-30T16:14:31" sensor="7" temperature="16.40"/>
+<KeithleyTemperature time="2013-07-30T16:14:31" sensor="8" temperature="16.47"/>
+<KeithleyTemperature time="2013-07-30T16:14:31" sensor="9" temperature="16.31"/>
+<HuberTemperature time="2013-07-30T16:14:31" circulator="1" work="15.00" bath="15.01"/>
+<KeithleyTemperature time="2013-07-30T16:14:51" sensor="0" temperature="16.45"/>
+<KeithleyTemperature time="2013-07-30T16:14:51" sensor="1" temperature="17.15"/>
+<KeithleyTemperature time="2013-07-30T16:14:51" sensor="2" temperature="17.54"/>
+<KeithleyTemperature time="2013-07-30T16:14:51" sensor="3" temperature="20.93"/>
+<KeithleyTemperature time="2013-07-30T16:14:51" sensor="4" temperature="16.44"/>
+<KeithleyTemperature time="2013-07-30T16:14:51" sensor="5" temperature="16.67"/>
+<KeithleyTemperature time="2013-07-30T16:14:51" sensor="6" temperature="16.77"/>
+<KeithleyTemperature time="2013-07-30T16:14:51" sensor="7" temperature="16.40"/>
+<KeithleyTemperature time="2013-07-30T16:14:51" sensor="8" temperature="16.47"/>
+<KeithleyTemperature time="2013-07-30T16:14:51" sensor="9" temperature="16.31"/>
+<KeithleyTemperature time="2013-07-30T16:15:11" sensor="0" temperature="16.45"/>
+<KeithleyTemperature time="2013-07-30T16:15:11" sensor="1" temperature="17.15"/>
+<KeithleyTemperature time="2013-07-30T16:15:11" sensor="2" temperature="17.54"/>
+<KeithleyTemperature time="2013-07-30T16:15:11" sensor="3" temperature="20.93"/>
+<KeithleyTemperature time="2013-07-30T16:15:11" sensor="4" temperature="16.44"/>
+<KeithleyTemperature time="2013-07-30T16:15:11" sensor="5" temperature="16.68"/>
+<KeithleyTemperature time="2013-07-30T16:15:11" sensor="6" temperature="16.77"/>
+<KeithleyTemperature time="2013-07-30T16:15:11" sensor="7" temperature="16.40"/>
+<KeithleyTemperature time="2013-07-30T16:15:11" sensor="8" temperature="16.47"/>
+<KeithleyTemperature time="2013-07-30T16:15:11" sensor="9" temperature="16.31"/>
+<PfeifferPressure time="2013-07-30T16:15:11" s1="0" p1="3.560e-03" s2="1" p2="5.060e-09"/>
+<PfeifferPressure time="2013-07-30T16:15:15" s1="0" p1="3.570e-03" s2="1" p2="5.060e-09"/>
+<HuberTemperature time="2013-07-30T16:15:15" circulator="1" work="15.00" bath="14.96"/>
+<KeithleyTemperature time="2013-07-30T16:15:31" sensor="0" temperature="16.45"/>
+<KeithleyTemperature time="2013-07-30T16:15:31" sensor="1" temperature="17.15"/>
+<KeithleyTemperature time="2013-07-30T16:15:31" sensor="2" temperature="17.54"/>
+<KeithleyTemperature time="2013-07-30T16:15:31" sensor="3" temperature="20.93"/>
+<KeithleyTemperature time="2013-07-30T16:15:31" sensor="4" temperature="16.44"/>
+<KeithleyTemperature time="2013-07-30T16:15:31" sensor="5" temperature="16.67"/>
+<KeithleyTemperature time="2013-07-30T16:15:31" sensor="6" temperature="16.78"/>
+<KeithleyTemperature time="2013-07-30T16:15:31" sensor="7" temperature="16.40"/>
+<KeithleyTemperature time="2013-07-30T16:15:31" sensor="8" temperature="16.47"/>
+<KeithleyTemperature time="2013-07-30T16:15:31" sensor="9" temperature="16.31"/>
+<PfeifferPressure time="2013-07-30T16:15:31" s1="0" p1="3.560e-03" s2="1" p2="5.060e-09"/>
+<HuberTemperature time="2013-07-30T16:15:31" circulator="1" work="15.00" bath="15.00"/>
+<KeithleyTemperature time="2013-07-30T16:15:51" sensor="0" temperature="16.45"/>
+<KeithleyTemperature time="2013-07-30T16:15:51" sensor="1" temperature="17.15"/>
+<KeithleyTemperature time="2013-07-30T16:15:51" sensor="2" temperature="17.54"/>
+<KeithleyTemperature time="2013-07-30T16:15:51" sensor="3" temperature="20.94"/>
+<KeithleyTemperature time="2013-07-30T16:15:51" sensor="4" temperature="16.44"/>
+<KeithleyTemperature time="2013-07-30T16:15:51" sensor="5" temperature="16.67"/>
+<KeithleyTemperature time="2013-07-30T16:15:51" sensor="6" temperature="16.78"/>
+<KeithleyTemperature time="2013-07-30T16:15:51" sensor="7" temperature="16.40"/>
+<KeithleyTemperature time="2013-07-30T16:15:51" sensor="8" temperature="16.47"/>
+<KeithleyTemperature time="2013-07-30T16:15:51" sensor="9" temperature="16.31"/>
+<HuberTemperature time="2013-07-30T16:15:51" circulator="1" work="15.00" bath="15.02"/>
+<HuberTemperature time="2013-07-30T16:16:02" circulator="1" work="15.00" bath="15.05"/>
+<KeithleyTemperature time="2013-07-30T16:16:11" sensor="0" temperature="16.45"/>
+<KeithleyTemperature time="2013-07-30T16:16:11" sensor="1" temperature="17.15"/>
+<KeithleyTemperature time="2013-07-30T16:16:11" sensor="2" temperature="17.54"/>
+<KeithleyTemperature time="2013-07-30T16:16:11" sensor="3" temperature="20.94"/>
+<KeithleyTemperature time="2013-07-30T16:16:11" sensor="4" temperature="16.44"/>
+<KeithleyTemperature time="2013-07-30T16:16:11" sensor="5" temperature="16.68"/>
+<KeithleyTemperature time="2013-07-30T16:16:11" sensor="6" temperature="16.78"/>
+<KeithleyTemperature time="2013-07-30T16:16:11" sensor="7" temperature="16.40"/>
+<KeithleyTemperature time="2013-07-30T16:16:11" sensor="8" temperature="16.48"/>
+<KeithleyTemperature time="2013-07-30T16:16:11" sensor="9" temperature="16.31"/>
+<HuberTemperature time="2013-07-30T16:16:17" circulator="1" work="15.00" bath="15.00"/>
+<KeithleyTemperature time="2013-07-30T16:16:31" sensor="0" temperature="16.45"/>
+<KeithleyTemperature time="2013-07-30T16:16:31" sensor="1" temperature="17.15"/>
+<KeithleyTemperature time="2013-07-30T16:16:31" sensor="2" temperature="17.54"/>
+<KeithleyTemperature time="2013-07-30T16:16:31" sensor="3" temperature="20.94"/>
+<KeithleyTemperature time="2013-07-30T16:16:31" sensor="4" temperature="16.44"/>
+<KeithleyTemperature time="2013-07-30T16:16:31" sensor="5" temperature="16.67"/>
+<KeithleyTemperature time="2013-07-30T16:16:31" sensor="6" temperature="16.78"/>
+<KeithleyTemperature time="2013-07-30T16:16:31" sensor="7" temperature="16.40"/>
+<KeithleyTemperature time="2013-07-30T16:16:31" sensor="9" temperature="16.32"/>
+<PfeifferPressure time="2013-07-30T16:16:31" s1="0" p1="3.570e-03" s2="1" p2="5.060e-09"/>
+<HuberTemperature time="2013-07-30T16:16:31" circulator="1" work="15.00" bath="15.01"/>
+<PfeifferPressure time="2013-07-30T16:16:35" s1="0" p1="3.560e-03" s2="1" p2="5.060e-09"/>
+<KeithleyTemperature time="2013-07-30T16:16:51" sensor="0" temperature="16.45"/>
+<KeithleyTemperature time="2013-07-30T16:16:51" sensor="1" temperature="17.15"/>
+<KeithleyTemperature time="2013-07-30T16:16:51" sensor="2" temperature="17.54"/>
+<KeithleyTemperature time="2013-07-30T16:16:51" sensor="3" temperature="20.94"/>
+<KeithleyTemperature time="2013-07-30T16:16:51" sensor="4" temperature="16.44"/>
+<KeithleyTemperature time="2013-07-30T16:16:51" sensor="5" temperature="16.68"/>
+<KeithleyTemperature time="2013-07-30T16:16:51" sensor="6" temperature="16.78"/>
+<KeithleyTemperature time="2013-07-30T16:16:51" sensor="7" temperature="16.40"/>
+<KeithleyTemperature time="2013-07-30T16:16:51" sensor="8" temperature="16.48"/>
+<KeithleyTemperature time="2013-07-30T16:16:51" sensor="9" temperature="16.32"/>
+<HuberTemperature time="2013-07-30T16:16:51" circulator="1" work="15.00" bath="14.96"/>
+<KeithleyTemperature time="2013-07-30T16:17:11" sensor="0" temperature="16.45"/>
+<KeithleyTemperature time="2013-07-30T16:17:11" sensor="1" temperature="17.15"/>
+<KeithleyTemperature time="2013-07-30T16:17:11" sensor="2" temperature="17.54"/>
+<KeithleyTemperature time="2013-07-30T16:17:11" sensor="3" temperature="20.95"/>
+<KeithleyTemperature time="2013-07-30T16:17:11" sensor="4" temperature="16.44"/>
+<KeithleyTemperature time="2013-07-30T16:17:11" sensor="5" temperature="16.68"/>
+<KeithleyTemperature time="2013-07-30T16:17:11" sensor="6" temperature="16.78"/>
+<KeithleyTemperature time="2013-07-30T16:17:11" sensor="7" temperature="16.40"/>
+<KeithleyTemperature time="2013-07-30T16:17:11" sensor="8" temperature="16.48"/>
+<KeithleyTemperature time="2013-07-30T16:17:11" sensor="9" temperature="16.31"/>
+<HuberTemperature time="2013-07-30T16:17:17" circulator="1" work="15.00" bath="15.01"/>
+<KeithleyTemperature time="2013-07-30T16:17:31" sensor="0" temperature="16.45"/>
+<KeithleyTemperature time="2013-07-30T16:17:31" sensor="1" temperature="17.15"/>
+<KeithleyTemperature time="2013-07-30T16:17:31" sensor="2" temperature="17.54"/>
+<KeithleyTemperature time="2013-07-30T16:17:31" sensor="3" temperature="20.95"/>
+<KeithleyTemperature time="2013-07-30T16:17:31" sensor="4" temperature="16.44"/>
+<KeithleyTemperature time="2013-07-30T16:17:31" sensor="5" temperature="16.68"/>
+<KeithleyTemperature time="2013-07-30T16:17:31" sensor="6" temperature="16.78"/>
+<KeithleyTemperature time="2013-07-30T16:17:31" sensor="7" temperature="16.41"/>
+<KeithleyTemperature time="2013-07-30T16:17:31" sensor="8" temperature="16.48"/>
+<KeithleyTemperature time="2013-07-30T16:17:31" sensor="9" temperature="16.32"/>
+<HuberTemperature time="2013-07-30T16:17:31" circulator="1" work="15.00" bath="14.98"/>
+<KeithleyTemperature time="2013-07-30T16:17:51" sensor="0" temperature="16.45"/>
+<KeithleyTemperature time="2013-07-30T16:17:51" sensor="1" temperature="17.14"/>
+<KeithleyTemperature time="2013-07-30T16:17:51" sensor="2" temperature="17.54"/>
+<KeithleyTemperature time="2013-07-30T16:17:51" sensor="3" temperature="20.95"/>
+<KeithleyTemperature time="2013-07-30T16:17:51" sensor="4" temperature="16.44"/>
+<KeithleyTemperature time="2013-07-30T16:17:51" sensor="5" temperature="16.68"/>
+<KeithleyTemperature time="2013-07-30T16:17:51" sensor="6" temperature="16.78"/>
+<KeithleyTemperature time="2013-07-30T16:17:51" sensor="7" temperature="16.41"/>
+<KeithleyTemperature time="2013-07-30T16:17:51" sensor="8" temperature="16.48"/>
+<KeithleyTemperature time="2013-07-30T16:17:51" sensor="9" temperature="16.32"/>
+<HuberTemperature time="2013-07-30T16:18:02" circulator="1" work="15.00" bath="14.97"/>
+<KeithleyTemperature time="2013-07-30T16:18:11" sensor="0" temperature="16.45"/>
+<KeithleyTemperature time="2013-07-30T16:18:11" sensor="1" temperature="17.15"/>
+<KeithleyTemperature time="2013-07-30T16:18:11" sensor="2" temperature="17.54"/>
+<KeithleyTemperature time="2013-07-30T16:18:11" sensor="3" temperature="20.95"/>
+<KeithleyTemperature time="2013-07-30T16:18:11" sensor="4" temperature="16.44"/>
+<KeithleyTemperature time="2013-07-30T16:18:11" sensor="5" temperature="16.68"/>
+<KeithleyTemperature time="2013-07-30T16:18:11" sensor="6" temperature="16.78"/>
+<KeithleyTemperature time="2013-07-30T16:18:11" sensor="7" temperature="16.41"/>
+<KeithleyTemperature time="2013-07-30T16:18:11" sensor="8" temperature="16.48"/>
+<KeithleyTemperature time="2013-07-30T16:18:11" sensor="9" temperature="16.32"/>
+<HuberTemperature time="2013-07-30T16:18:17" circulator="1" work="15.00" bath="15.02"/>
+<KeithleyTemperature time="2013-07-30T16:18:31" sensor="0" temperature="16.45"/>
+<KeithleyTemperature time="2013-07-30T16:18:31" sensor="1" temperature="17.15"/>
+<KeithleyTemperature time="2013-07-30T16:18:31" sensor="2" temperature="17.54"/>
+<KeithleyTemperature time="2013-07-30T16:18:31" sensor="3" temperature="20.95"/>
+<KeithleyTemperature time="2013-07-30T16:18:31" sensor="4" temperature="16.44"/>
+<KeithleyTemperature time="2013-07-30T16:18:31" sensor="5" temperature="16.68"/>
+<KeithleyTemperature time="2013-07-30T16:18:31" sensor="6" temperature="16.78"/>
+<KeithleyTemperature time="2013-07-30T16:18:31" sensor="7" temperature="16.41"/>
+<KeithleyTemperature time="2013-07-30T16:18:31" sensor="8" temperature="16.48"/>
+<KeithleyTemperature time="2013-07-30T16:18:31" sensor="9" temperature="16.32"/>
+<HuberTemperature time="2013-07-30T16:18:31" circulator="1" work="15.00" bath="15.01"/>
+<KeithleyTemperature time="2013-07-30T16:18:51" sensor="0" temperature="16.45"/>
+<KeithleyTemperature time="2013-07-30T16:18:51" sensor="1" temperature="17.15"/>
+<KeithleyTemperature time="2013-07-30T16:18:51" sensor="2" temperature="17.54"/>
+<KeithleyTemperature time="2013-07-30T16:18:51" sensor="3" temperature="20.96"/>
+<KeithleyTemperature time="2013-07-30T16:18:51" sensor="4" temperature="16.44"/>
+<KeithleyTemperature time="2013-07-30T16:18:51" sensor="5" temperature="16.68"/>
+<KeithleyTemperature time="2013-07-30T16:18:51" sensor="6" temperature="16.78"/>
+<KeithleyTemperature time="2013-07-30T16:18:51" sensor="7" temperature="16.41"/>
+<KeithleyTemperature time="2013-07-30T16:18:51" sensor="8" temperature="16.48"/>
+<KeithleyTemperature time="2013-07-30T16:18:51" sensor="9" temperature="16.32"/>
+<PfeifferPressure time="2013-07-30T16:18:51" s1="0" p1="3.560e-03" s2="0" p2="5.150e-09"/>
+<HuberTemperature time="2013-07-30T16:18:51" circulator="1" work="15.00" bath="14.98"/>
+<HuberTemperature time="2013-07-30T16:19:02" circulator="1" work="15.00" bath="14.93"/>
+<KeithleyTemperature time="2013-07-30T16:19:11" sensor="0" temperature="16.46"/>
+<KeithleyTemperature time="2013-07-30T16:19:11" sensor="1" temperature="17.15"/>
+<KeithleyTemperature time="2013-07-30T16:19:11" sensor="2" temperature="17.54"/>
+<KeithleyTemperature time="2013-07-30T16:19:11" sensor="3" temperature="20.96"/>
+<KeithleyTemperature time="2013-07-30T16:19:11" sensor="4" temperature="16.44"/>
+<KeithleyTemperature time="2013-07-30T16:19:11" sensor="5" temperature="16.68"/>
+<KeithleyTemperature time="2013-07-30T16:19:11" sensor="6" temperature="16.78"/>
+<KeithleyTemperature time="2013-07-30T16:19:11" sensor="7" temperature="16.41"/>
+<KeithleyTemperature time="2013-07-30T16:19:11" sensor="8" temperature="16.48"/>
+<KeithleyTemperature time="2013-07-30T16:19:11" sensor="9" temperature="16.32"/>
+<HuberTemperature time="2013-07-30T16:19:17" circulator="1" work="15.00" bath="15.04"/>
+<KeithleyTemperature time="2013-07-30T16:19:31" sensor="0" temperature="16.46"/>
+<KeithleyTemperature time="2013-07-30T16:19:31" sensor="1" temperature="17.15"/>
+<KeithleyTemperature time="2013-07-30T16:19:31" sensor="2" temperature="17.54"/>
+<KeithleyTemperature time="2013-07-30T16:19:31" sensor="3" temperature="20.96"/>
+<KeithleyTemperature time="2013-07-30T16:19:31" sensor="4" temperature="16.45"/>
+<KeithleyTemperature time="2013-07-30T16:19:31" sensor="5" temperature="16.68"/>
+<KeithleyTemperature time="2013-07-30T16:19:31" sensor="6" temperature="16.78"/>
+<KeithleyTemperature time="2013-07-30T16:19:31" sensor="7" temperature="16.41"/>
+<KeithleyTemperature time="2013-07-30T16:19:31" sensor="8" temperature="16.48"/>
+<KeithleyTemperature time="2013-07-30T16:19:31" sensor="9" temperature="16.32"/>
+<PfeifferPressure time="2013-07-30T16:19:31" s1="0" p1="3.560e-03" s2="1" p2="5.060e-09"/>
+<HuberTemperature time="2013-07-30T16:19:31" circulator="1" work="15.00" bath="15.05"/>
+<KeithleyTemperature time="2013-07-30T16:19:51" sensor="0" temperature="16.45"/>
+<KeithleyTemperature time="2013-07-30T16:19:51" sensor="1" temperature="17.15"/>
+<KeithleyTemperature time="2013-07-30T16:19:51" sensor="2" temperature="17.54"/>
+<KeithleyTemperature time="2013-07-30T16:19:51" sensor="3" temperature="20.97"/>
+<KeithleyTemperature time="2013-07-30T16:19:51" sensor="4" temperature="16.44"/>
+<KeithleyTemperature time="2013-07-30T16:19:51" sensor="5" temperature="16.68"/>
+<KeithleyTemperature time="2013-07-30T16:19:51" sensor="6" temperature="16.78"/>
+<KeithleyTemperature time="2013-07-30T16:19:51" sensor="7" temperature="16.41"/>
+<KeithleyTemperature time="2013-07-30T16:19:51" sensor="8" temperature="16.48"/>
+<KeithleyTemperature time="2013-07-30T16:19:51" sensor="9" temperature="16.32"/>
+<HuberTemperature time="2013-07-30T16:19:51" circulator="1" work="15.00" bath="14.96"/>
+<HuberTemperature time="2013-07-30T16:20:02" circulator="1" work="15.00" bath="15.01"/>
+<KeithleyTemperature time="2013-07-30T16:20:11" sensor="0" temperature="16.45"/>
+<KeithleyTemperature time="2013-07-30T16:20:11" sensor="1" temperature="17.15"/>
+<KeithleyTemperature time="2013-07-30T16:20:11" sensor="2" temperature="17.54"/>
+<KeithleyTemperature time="2013-07-30T16:20:11" sensor="3" temperature="20.97"/>
+<KeithleyTemperature time="2013-07-30T16:20:11" sensor="4" temperature="16.44"/>
+<KeithleyTemperature time="2013-07-30T16:20:11" sensor="5" temperature="16.68"/>
+<KeithleyTemperature time="2013-07-30T16:20:11" sensor="6" temperature="16.78"/>
+<KeithleyTemperature time="2013-07-30T16:20:11" sensor="7" temperature="16.41"/>
+<KeithleyTemperature time="2013-07-30T16:20:11" sensor="8" temperature="16.48"/>
+<KeithleyTemperature time="2013-07-30T16:20:11" sensor="9" temperature="16.32"/>
+<HuberTemperature time="2013-07-30T16:20:17" circulator="1" work="15.00" bath="15.04"/>
+<KeithleyTemperature time="2013-07-30T16:20:31" sensor="0" temperature="16.46"/>
+<KeithleyTemperature time="2013-07-30T16:20:31" sensor="1" temperature="17.15"/>
+<KeithleyTemperature time="2013-07-30T16:20:31" sensor="2" temperature="17.54"/>
+<KeithleyTemperature time="2013-07-30T16:20:31" sensor="3" temperature="20.97"/>
+<KeithleyTemperature time="2013-07-30T16:20:31" sensor="4" temperature="16.44"/>
+<KeithleyTemperature time="2013-07-30T16:20:31" sensor="5" temperature="16.68"/>
+<KeithleyTemperature time="2013-07-30T16:20:31" sensor="7" temperature="16.41"/>
+<KeithleyTemperature time="2013-07-30T16:20:31" sensor="8" temperature="16.48"/>
+<KeithleyTemperature time="2013-07-30T16:20:31" sensor="9" temperature="16.32"/>
+<HuberTemperature time="2013-07-30T16:20:31" circulator="1" work="15.00" bath="14.96"/>
+<PfeifferPressure time="2013-07-30T16:20:35" s1="0" p1="3.550e-03" s2="1" p2="5.060e-09"/>
+<KeithleyTemperature time="2013-07-30T16:20:51" sensor="0" temperature="16.46"/>
+<KeithleyTemperature time="2013-07-30T16:20:51" sensor="1" temperature="17.15"/>
+<KeithleyTemperature time="2013-07-30T16:20:51" sensor="2" temperature="17.54"/>
+<KeithleyTemperature time="2013-07-30T16:20:51" sensor="3" temperature="20.97"/>
+<KeithleyTemperature time="2013-07-30T16:20:51" sensor="4" temperature="16.44"/>
+<KeithleyTemperature time="2013-07-30T16:20:51" sensor="5" temperature="16.68"/>
+<KeithleyTemperature time="2013-07-30T16:20:51" sensor="6" temperature="16.78"/>
+<KeithleyTemperature time="2013-07-30T16:20:51" sensor="7" temperature="16.41"/>
+<KeithleyTemperature time="2013-07-30T16:20:51" sensor="8" temperature="16.48"/>
+<KeithleyTemperature time="2013-07-30T16:20:51" sensor="9" temperature="16.32"/>
+<HuberTemperature time="2013-07-30T16:20:51" circulator="1" work="15.00" bath="14.99"/>
+<HuberTemperature time="2013-07-30T16:21:02" circulator="1" work="15.00" bath="15.02"/>
+<KeithleyTemperature time="2013-07-30T16:21:11" sensor="0" temperature="16.46"/>
+<KeithleyTemperature time="2013-07-30T16:21:11" sensor="1" temperature="17.15"/>
+<KeithleyTemperature time="2013-07-30T16:21:11" sensor="2" temperature="17.54"/>
+<KeithleyTemperature time="2013-07-30T16:21:11" sensor="3" temperature="20.98"/>
+<KeithleyTemperature time="2013-07-30T16:21:11" sensor="4" temperature="16.45"/>
+<KeithleyTemperature time="2013-07-30T16:21:11" sensor="5" temperature="16.68"/>
+<KeithleyTemperature time="2013-07-30T16:21:11" sensor="6" temperature="16.78"/>
+<KeithleyTemperature time="2013-07-30T16:21:11" sensor="7" temperature="16.41"/>
+<KeithleyTemperature time="2013-07-30T16:21:11" sensor="8" temperature="16.48"/>
+<KeithleyTemperature time="2013-07-30T16:21:11" sensor="9" temperature="16.32"/>
+<PfeifferPressure time="2013-07-30T16:21:15" s1="0" p1="3.560e-03" s2="1" p2="5.060e-09"/>
+<HuberTemperature time="2013-07-30T16:21:15" circulator="1" work="15.00" bath="15.01"/>
+<KeithleyTemperature time="2013-07-30T16:21:31" sensor="0" temperature="16.46"/>
+<KeithleyTemperature time="2013-07-30T16:21:31" sensor="1" temperature="17.15"/>
+<KeithleyTemperature time="2013-07-30T16:21:31" sensor="2" temperature="17.54"/>
+<KeithleyTemperature time="2013-07-30T16:21:31" sensor="3" temperature="20.98"/>
+<KeithleyTemperature time="2013-07-30T16:21:31" sensor="4" temperature="16.45"/>
+<KeithleyTemperature time="2013-07-30T16:21:31" sensor="5" temperature="16.68"/>
+<KeithleyTemperature time="2013-07-30T16:21:31" sensor="6" temperature="16.78"/>
+<KeithleyTemperature time="2013-07-30T16:21:31" sensor="7" temperature="16.41"/>
+<KeithleyTemperature time="2013-07-30T16:21:31" sensor="8" temperature="16.48"/>
+<KeithleyTemperature time="2013-07-30T16:21:31" sensor="9" temperature="16.32"/>
+<PfeifferPressure time="2013-07-30T16:21:31" s1="0" p1="3.550e-03" s2="1" p2="5.060e-09"/>
+<HuberTemperature time="2013-07-30T16:21:31" circulator="1" work="15.00" bath="14.97"/>
+<KeithleyTemperature time="2013-07-30T16:21:51" sensor="0" temperature="16.45"/>
+<KeithleyTemperature time="2013-07-30T16:21:51" sensor="1" temperature="17.15"/>
+<KeithleyTemperature time="2013-07-30T16:21:51" sensor="2" temperature="17.54"/>
+<KeithleyTemperature time="2013-07-30T16:21:51" sensor="3" temperature="20.98"/>
+<KeithleyTemperature time="2013-07-30T16:21:51" sensor="4" temperature="16.45"/>
+<KeithleyTemperature time="2013-07-30T16:21:51" sensor="5" temperature="16.68"/>
+<KeithleyTemperature time="2013-07-30T16:21:51" sensor="6" temperature="16.79"/>
+<KeithleyTemperature time="2013-07-30T16:21:51" sensor="7" temperature="16.41"/>
+<KeithleyTemperature time="2013-07-30T16:21:51" sensor="8" temperature="16.49"/>
+<KeithleyTemperature time="2013-07-30T16:21:51" sensor="9" temperature="16.32"/>
+<PfeifferPressure time="2013-07-30T16:21:51" s1="0" p1="3.560e-03" s2="1" p2="5.060e-09"/>
+<HuberTemperature time="2013-07-30T16:21:51" circulator="1" work="15.00" bath="14.99"/>
+<PfeifferPressure time="2013-07-30T16:21:55" s1="0" p1="3.550e-03" s2="1" p2="5.060e-09"/>
+<HuberTemperature time="2013-07-30T16:22:02" circulator="1" work="15.00" bath="14.93"/>
+<KeithleyTemperature time="2013-07-30T16:22:11" sensor="0" temperature="16.46"/>
+<KeithleyTemperature time="2013-07-30T16:22:11" sensor="1" temperature="17.15"/>
+<KeithleyTemperature time="2013-07-30T16:22:11" sensor="2" temperature="17.54"/>
+<KeithleyTemperature time="2013-07-30T16:22:11" sensor="3" temperature="20.99"/>
+<KeithleyTemperature time="2013-07-30T16:22:11" sensor="4" temperature="16.45"/>
+<KeithleyTemperature time="2013-07-30T16:22:11" sensor="5" temperature="16.69"/>
+<KeithleyTemperature time="2013-07-30T16:22:11" sensor="6" temperature="16.79"/>
+<KeithleyTemperature time="2013-07-30T16:22:11" sensor="7" temperature="16.41"/>
+<KeithleyTemperature time="2013-07-30T16:22:11" sensor="8" temperature="16.48"/>
+<KeithleyTemperature time="2013-07-30T16:22:11" sensor="9" temperature="16.32"/>
+<PfeifferPressure time="2013-07-30T16:22:15" s1="0" p1="3.560e-03" s2="1" p2="5.060e-09"/>
+<HuberTemperature time="2013-07-30T16:22:15" circulator="1" work="15.00" bath="14.98"/>
+<KeithleyTemperature time="2013-07-30T16:22:31" sensor="0" temperature="16.46"/>
+<KeithleyTemperature time="2013-07-30T16:22:31" sensor="1" temperature="17.15"/>
+<KeithleyTemperature time="2013-07-30T16:22:31" sensor="2" temperature="17.54"/>
+<KeithleyTemperature time="2013-07-30T16:22:31" sensor="3" temperature="20.99"/>
+<KeithleyTemperature time="2013-07-30T16:22:31" sensor="4" temperature="16.45"/>
+<KeithleyTemperature time="2013-07-30T16:22:31" sensor="5" temperature="16.68"/>
+<KeithleyTemperature time="2013-07-30T16:22:31" sensor="6" temperature="16.79"/>
+<KeithleyTemperature time="2013-07-30T16:22:31" sensor="7" temperature="16.41"/>
+<KeithleyTemperature time="2013-07-30T16:22:31" sensor="8" temperature="16.49"/>
+<KeithleyTemperature time="2013-07-30T16:22:31" sensor="9" temperature="16.32"/>
+<HuberTemperature time="2013-07-30T16:22:31" circulator="1" work="15.00" bath="14.95"/>
+<KeithleyTemperature time="2013-07-30T16:22:51" sensor="0" temperature="16.46"/>
+<KeithleyTemperature time="2013-07-30T16:22:51" sensor="1" temperature="17.15"/>
+<KeithleyTemperature time="2013-07-30T16:22:51" sensor="2" temperature="17.54"/>
+<KeithleyTemperature time="2013-07-30T16:22:51" sensor="3" temperature="20.99"/>
+<KeithleyTemperature time="2013-07-30T16:22:51" sensor="4" temperature="16.45"/>
+<KeithleyTemperature time="2013-07-30T16:22:51" sensor="5" temperature="16.69"/>
+<KeithleyTemperature time="2013-07-30T16:22:51" sensor="6" temperature="16.79"/>
+<KeithleyTemperature time="2013-07-30T16:22:51" sensor="7" temperature="16.41"/>
+<KeithleyTemperature time="2013-07-30T16:22:51" sensor="8" temperature="16.49"/>
+<KeithleyTemperature time="2013-07-30T16:22:51" sensor="9" temperature="16.32"/>
+<PfeifferPressure time="2013-07-30T16:22:51" s1="0" p1="3.550e-03" s2="1" p2="5.060e-09"/>
+<HuberTemperature time="2013-07-30T16:22:51" circulator="1" work="15.00" bath="14.98"/>
+<HuberTemperature time="2013-07-30T16:23:02" circulator="1" work="15.00" bath="14.94"/>
+<KeithleyTemperature time="2013-07-30T16:23:11" sensor="0" temperature="16.46"/>
+<KeithleyTemperature time="2013-07-30T16:23:11" sensor="1" temperature="17.15"/>
+<KeithleyTemperature time="2013-07-30T16:23:11" sensor="2" temperature="17.54"/>
+<KeithleyTemperature time="2013-07-30T16:23:11" sensor="3" temperature="20.99"/>
+<KeithleyTemperature time="2013-07-30T16:23:11" sensor="4" temperature="16.45"/>
+<KeithleyTemperature time="2013-07-30T16:23:11" sensor="5" temperature="16.68"/>
+<KeithleyTemperature time="2013-07-30T16:23:11" sensor="6" temperature="16.79"/>
+<KeithleyTemperature time="2013-07-30T16:23:11" sensor="7" temperature="16.41"/>
+<KeithleyTemperature time="2013-07-30T16:23:11" sensor="8" temperature="16.49"/>
+<KeithleyTemperature time="2013-07-30T16:23:11" sensor="9" temperature="16.32"/>
+<HuberTemperature time="2013-07-30T16:23:17" circulator="1" work="15.00" bath="15.05"/>
+<KeithleyTemperature time="2013-07-30T16:23:31" sensor="0" temperature="16.46"/>
+<KeithleyTemperature time="2013-07-30T16:23:31" sensor="1" temperature="17.15"/>
+<KeithleyTemperature time="2013-07-30T16:23:31" sensor="2" temperature="17.54"/>
+<KeithleyTemperature time="2013-07-30T16:23:31" sensor="3" temperature="21.00"/>
+<KeithleyTemperature time="2013-07-30T16:23:31" sensor="4" temperature="16.45"/>
+<KeithleyTemperature time="2013-07-30T16:23:31" sensor="5" temperature="16.69"/>
+<KeithleyTemperature time="2013-07-30T16:23:31" sensor="6" temperature="16.79"/>
+<KeithleyTemperature time="2013-07-30T16:23:31" sensor="7" temperature="16.41"/>
+<KeithleyTemperature time="2013-07-30T16:23:31" sensor="8" temperature="16.49"/>
+<KeithleyTemperature time="2013-07-30T16:23:31" sensor="9" temperature="16.33"/>
+<PfeifferPressure time="2013-07-30T16:23:31" s1="0" p1="3.550e-03" s2="0" p2="6.300e-09"/>
+<HuberTemperature time="2013-07-30T16:23:31" circulator="1" work="15.00" bath="14.97"/>
+<PfeifferPressure time="2013-07-30T16:23:35" s1="0" p1="3.550e-03" s2="1" p2="5.060e-09"/>
+<KeithleyTemperature time="2013-07-30T16:23:51" sensor="0" temperature="16.46"/>
+<KeithleyTemperature time="2013-07-30T16:23:51" sensor="1" temperature="17.15"/>
+<KeithleyTemperature time="2013-07-30T16:23:51" sensor="2" temperature="17.54"/>
+<KeithleyTemperature time="2013-07-30T16:23:51" sensor="3" temperature="21.00"/>
+<KeithleyTemperature time="2013-07-30T16:23:51" sensor="4" temperature="16.45"/>
+<KeithleyTemperature time="2013-07-30T16:23:51" sensor="5" temperature="16.69"/>
+<KeithleyTemperature time="2013-07-30T16:23:51" sensor="6" temperature="16.79"/>
+<KeithleyTemperature time="2013-07-30T16:23:51" sensor="7" temperature="16.42"/>
+<KeithleyTemperature time="2013-07-30T16:23:51" sensor="8" temperature="16.49"/>
+<KeithleyTemperature time="2013-07-30T16:23:51" sensor="9" temperature="16.33"/>
+<HuberTemperature time="2013-07-30T16:23:51" circulator="1" work="15.00" bath="15.03"/>
+<HuberTemperature time="2013-07-30T16:24:02" circulator="1" work="15.00" bath="15.02"/>
+
+<HamegSetup time="2013-07-30T16:24:02" remote="1" outputs="1" CV1="0" CV2="1"/>
+<HamegValues time="2013-07-30T16:24:02" V1="0.72" C1="0.249" V2="0.6" C2="0"/>
+<KeithleyTemperature time="2013-07-30T16:24:11" sensor="0" temperature="16.46"/>
+<KeithleyTemperature time="2013-07-30T16:24:11" sensor="1" temperature="17.15"/>
+<KeithleyTemperature time="2013-07-30T16:24:11" sensor="2" temperature="17.54"/>
+<KeithleyTemperature time="2013-07-30T16:24:11" sensor="3" temperature="21.00"/>
+<KeithleyTemperature time="2013-07-30T16:24:11" sensor="4" temperature="16.45"/>
+<KeithleyTemperature time="2013-07-30T16:24:11" sensor="5" temperature="16.69"/>
+<KeithleyTemperature time="2013-07-30T16:24:11" sensor="6" temperature="16.79"/>
+<KeithleyTemperature time="2013-07-30T16:24:11" sensor="7" temperature="16.46"/>
+<KeithleyTemperature time="2013-07-30T16:24:11" sensor="8" temperature="16.63"/>
+<KeithleyTemperature time="2013-07-30T16:24:11" sensor="9" temperature="16.32"/>
+<HuberTemperature time="2013-07-30T16:24:17" circulator="1" work="15.00" bath="14.94"/>
+<KeithleyTemperature time="2013-07-30T16:24:31" sensor="0" temperature="16.46"/>
+<KeithleyTemperature time="2013-07-30T16:24:31" sensor="1" temperature="17.15"/>
+<KeithleyTemperature time="2013-07-30T16:24:31" sensor="2" temperature="17.54"/>
+<KeithleyTemperature time="2013-07-30T16:24:31" sensor="3" temperature="21.00"/>
+<KeithleyTemperature time="2013-07-30T16:24:31" sensor="4" temperature="16.45"/>
+<KeithleyTemperature time="2013-07-30T16:24:31" sensor="5" temperature="16.74"/>
+<KeithleyTemperature time="2013-07-30T16:24:31" sensor="6" temperature="16.86"/>
+<KeithleyTemperature time="2013-07-30T16:24:31" sensor="7" temperature="16.72"/>
+<KeithleyTemperature time="2013-07-30T16:24:31" sensor="8" temperature="17.08"/>
+<KeithleyTemperature time="2013-07-30T16:24:31" sensor="9" temperature="16.33"/>
+<HuberTemperature time="2013-07-30T16:24:31" circulator="1" work="15.00" bath="15.09"/>
+<KeithleyTemperature time="2013-07-30T16:24:51" sensor="0" temperature="16.46"/>
+<KeithleyTemperature time="2013-07-30T16:24:51" sensor="1" temperature="17.15"/>
+<KeithleyTemperature time="2013-07-30T16:24:51" sensor="2" temperature="17.54"/>
+<KeithleyTemperature time="2013-07-30T16:24:51" sensor="3" temperature="21.00"/>
+<KeithleyTemperature time="2013-07-30T16:24:51" sensor="4" temperature="16.45"/>
+<KeithleyTemperature time="2013-07-30T16:24:51" sensor="5" temperature="16.80"/>
+<KeithleyTemperature time="2013-07-30T16:24:51" sensor="6" temperature="16.94"/>
+<KeithleyTemperature time="2013-07-30T16:24:51" sensor="7" temperature="16.95"/>
+<KeithleyTemperature time="2013-07-30T16:24:51" sensor="8" temperature="17.44"/>
+<KeithleyTemperature time="2013-07-30T16:24:51" sensor="9" temperature="16.33"/>
+<HuberTemperature time="2013-07-30T16:24:51" circulator="1" work="15.00" bath="14.94"/>
+<HuberTemperature time="2013-07-30T16:25:02" circulator="1" work="15.00" bath="14.99"/>
+<KeithleyTemperature time="2013-07-30T16:25:11" sensor="0" temperature="16.46"/>
+<KeithleyTemperature time="2013-07-30T16:25:11" sensor="1" temperature="17.15"/>
+<KeithleyTemperature time="2013-07-30T16:25:11" sensor="2" temperature="17.54"/>
+<KeithleyTemperature time="2013-07-30T16:25:11" sensor="3" temperature="21.01"/>
+<KeithleyTemperature time="2013-07-30T16:25:11" sensor="4" temperature="16.45"/>
+<KeithleyTemperature time="2013-07-30T16:25:11" sensor="5" temperature="16.86"/>
+<KeithleyTemperature time="2013-07-30T16:25:11" sensor="6" temperature="17.01"/>
+<KeithleyTemperature time="2013-07-30T16:25:11" sensor="7" temperature="17.12"/>
+<KeithleyTemperature time="2013-07-30T16:25:11" sensor="8" temperature="17.71"/>
+<KeithleyTemperature time="2013-07-30T16:25:11" sensor="9" temperature="16.34"/>
+<HuberTemperature time="2013-07-30T16:25:17" circulator="1" work="15.00" bath="14.98"/>
+<KeithleyTemperature time="2013-07-30T16:25:31" sensor="0" temperature="16.46"/>
+<KeithleyTemperature time="2013-07-30T16:25:31" sensor="1" temperature="17.15"/>
+<KeithleyTemperature time="2013-07-30T16:25:31" sensor="2" temperature="17.54"/>
+<KeithleyTemperature time="2013-07-30T16:25:31" sensor="3" temperature="21.01"/>
+<KeithleyTemperature time="2013-07-30T16:25:31" sensor="4" temperature="16.45"/>
+<KeithleyTemperature time="2013-07-30T16:25:31" sensor="5" temperature="16.89"/>
+<KeithleyTemperature time="2013-07-30T16:25:31" sensor="6" temperature="17.06"/>
+<KeithleyTemperature time="2013-07-30T16:25:31" sensor="7" temperature="17.25"/>
+<KeithleyTemperature time="2013-07-30T16:25:31" sensor="8" temperature="17.91"/>
+<KeithleyTemperature time="2013-07-30T16:25:31" sensor="9" temperature="16.35"/>
+<HuberTemperature time="2013-07-30T16:25:31" circulator="1" work="15.00" bath="14.97"/>
+<KeithleyTemperature time="2013-07-30T16:25:51" sensor="0" temperature="16.46"/>
+<KeithleyTemperature time="2013-07-30T16:25:51" sensor="1" temperature="17.15"/>
+<KeithleyTemperature time="2013-07-30T16:25:51" sensor="2" temperature="17.54"/>
+<KeithleyTemperature time="2013-07-30T16:25:51" sensor="3" temperature="21.02"/>
+<KeithleyTemperature time="2013-07-30T16:25:51" sensor="4" temperature="16.46"/>
+<KeithleyTemperature time="2013-07-30T16:25:51" sensor="5" temperature="16.93"/>
+<KeithleyTemperature time="2013-07-30T16:25:51" sensor="6" temperature="17.11"/>
+<KeithleyTemperature time="2013-07-30T16:25:51" sensor="7" temperature="17.34"/>
+<KeithleyTemperature time="2013-07-30T16:25:51" sensor="8" temperature="18.06"/>
+<KeithleyTemperature time="2013-07-30T16:25:51" sensor="9" temperature="16.36"/>
+<HuberTemperature time="2013-07-30T16:25:51" circulator="1" work="15.00" bath="14.98"/>
+<HuberTemperature time="2013-07-30T16:26:02" circulator="1" work="15.00" bath="14.99"/>
+<KeithleyTemperature time="2013-07-30T16:26:11" sensor="0" temperature="16.46"/>
+<KeithleyTemperature time="2013-07-30T16:26:11" sensor="1" temperature="17.15"/>
+<KeithleyTemperature time="2013-07-30T16:26:11" sensor="2" temperature="17.54"/>
+<KeithleyTemperature time="2013-07-30T16:26:11" sensor="3" temperature="21.02"/>
+<KeithleyTemperature time="2013-07-30T16:26:11" sensor="4" temperature="16.46"/>
+<KeithleyTemperature time="2013-07-30T16:26:11" sensor="5" temperature="16.96"/>
+<KeithleyTemperature time="2013-07-30T16:26:11" sensor="6" temperature="17.14"/>
+<KeithleyTemperature time="2013-07-30T16:26:11" sensor="7" temperature="17.42"/>
+<KeithleyTemperature time="2013-07-30T16:26:11" sensor="8" temperature="18.17"/>
+<KeithleyTemperature time="2013-07-30T16:26:11" sensor="9" temperature="16.37"/>
+<HuberTemperature time="2013-07-30T16:26:17" circulator="1" work="15.00" bath="15.03"/>
+<KeithleyTemperature time="2013-07-30T16:26:31" sensor="0" temperature="16.47"/>
+<KeithleyTemperature time="2013-07-30T16:26:31" sensor="1" temperature="17.15"/>
+<KeithleyTemperature time="2013-07-30T16:26:31" sensor="2" temperature="17.54"/>
+<KeithleyTemperature time="2013-07-30T16:26:31" sensor="3" temperature="21.02"/>
+<KeithleyTemperature time="2013-07-30T16:26:31" sensor="4" temperature="16.46"/>
+<KeithleyTemperature time="2013-07-30T16:26:31" sensor="5" temperature="16.98"/>
+<KeithleyTemperature time="2013-07-30T16:26:31" sensor="6" temperature="17.16"/>
+<KeithleyTemperature time="2013-07-30T16:26:31" sensor="7" temperature="17.47"/>
+<KeithleyTemperature time="2013-07-30T16:26:31" sensor="8" temperature="18.26"/>
+<KeithleyTemperature time="2013-07-30T16:26:31" sensor="9" temperature="16.37"/>
+<HuberTemperature time="2013-07-30T16:26:31" circulator="1" work="15.00" bath="15.01"/>
+<KeithleyTemperature time="2013-07-30T16:26:51" sensor="0" temperature="16.47"/>
+<KeithleyTemperature time="2013-07-30T16:26:51" sensor="1" temperature="17.15"/>
+<KeithleyTemperature time="2013-07-30T16:26:51" sensor="2" temperature="17.54"/>
+<KeithleyTemperature time="2013-07-30T16:26:51" sensor="3" temperature="21.03"/>
+<KeithleyTemperature time="2013-07-30T16:26:51" sensor="4" temperature="16.46"/>
+<KeithleyTemperature time="2013-07-30T16:26:51" sensor="5" temperature="16.99"/>
+<KeithleyTemperature time="2013-07-30T16:26:51" sensor="6" temperature="17.18"/>
+<KeithleyTemperature time="2013-07-30T16:26:51" sensor="7" temperature="17.51"/>
+<KeithleyTemperature time="2013-07-30T16:26:51" sensor="8" temperature="18.32"/>
+<KeithleyTemperature time="2013-07-30T16:26:51" sensor="9" temperature="16.37"/>
+<PfeifferPressure time="2013-07-30T16:26:51" s1="0" p1="3.540e-03" s2="1" p2="5.060e-09"/>
+<HuberTemperature time="2013-07-30T16:26:51" circulator="1" work="15.00" bath="14.99"/>
+<PfeifferPressure time="2013-07-30T16:26:55" s1="0" p1="3.550e-03" s2="1" p2="5.060e-09"/>
+<HuberTemperature time="2013-07-30T16:27:02" circulator="1" work="15.00" bath="15.03"/>
+<KeithleyTemperature time="2013-07-30T16:27:11" sensor="0" temperature="16.47"/>
+<KeithleyTemperature time="2013-07-30T16:27:11" sensor="1" temperature="17.15"/>
+<KeithleyTemperature time="2013-07-30T16:27:11" sensor="2" temperature="17.54"/>
+<KeithleyTemperature time="2013-07-30T16:27:11" sensor="3" temperature="21.03"/>
+<KeithleyTemperature time="2013-07-30T16:27:11" sensor="4" temperature="16.46"/>
+<KeithleyTemperature time="2013-07-30T16:27:11" sensor="5" temperature="17.01"/>
+<KeithleyTemperature time="2013-07-30T16:27:11" sensor="6" temperature="17.20"/>
+<KeithleyTemperature time="2013-07-30T16:27:11" sensor="7" temperature="17.55"/>
+<KeithleyTemperature time="2013-07-30T16:27:11" sensor="8" temperature="18.36"/>
+<KeithleyTemperature time="2013-07-30T16:27:11" sensor="9" temperature="16.38"/>
+<HuberTemperature time="2013-07-30T16:27:17" circulator="1" work="15.00" bath="15.04"/>
+<KeithleyTemperature time="2013-07-30T16:27:31" sensor="0" temperature="16.47"/>
+<KeithleyTemperature time="2013-07-30T16:27:31" sensor="1" temperature="17.16"/>
+<KeithleyTemperature time="2013-07-30T16:27:31" sensor="2" temperature="17.54"/>
+<KeithleyTemperature time="2013-07-30T16:27:31" sensor="3" temperature="21.03"/>
+<KeithleyTemperature time="2013-07-30T16:27:31" sensor="4" temperature="16.47"/>
+<KeithleyTemperature time="2013-07-30T16:27:31" sensor="5" temperature="17.02"/>
+<KeithleyTemperature time="2013-07-30T16:27:31" sensor="6" temperature="17.21"/>
+<KeithleyTemperature time="2013-07-30T16:27:31" sensor="7" temperature="17.57"/>
+<KeithleyTemperature time="2013-07-30T16:27:31" sensor="8" temperature="18.40"/>
+<KeithleyTemperature time="2013-07-30T16:27:31" sensor="9" temperature="16.39"/>
+<HuberTemperature time="2013-07-30T16:27:31" circulator="1" work="15.00" bath="15.08"/>
+<PfeifferPressure time="2013-07-30T16:27:35" s1="0" p1="3.540e-03" s2="1" p2="5.060e-09"/>
+<KeithleyTemperature time="2013-07-30T16:27:51" sensor="0" temperature="16.48"/>
+<KeithleyTemperature time="2013-07-30T16:27:51" sensor="1" temperature="17.16"/>
+<KeithleyTemperature time="2013-07-30T16:27:51" sensor="2" temperature="17.54"/>
+<KeithleyTemperature time="2013-07-30T16:27:51" sensor="3" temperature="21.04"/>
+<KeithleyTemperature time="2013-07-30T16:27:51" sensor="4" temperature="16.47"/>
+<KeithleyTemperature time="2013-07-30T16:27:51" sensor="5" temperature="17.03"/>
+<KeithleyTemperature time="2013-07-30T16:27:51" sensor="6" temperature="17.22"/>
+<KeithleyTemperature time="2013-07-30T16:27:51" sensor="7" temperature="17.59"/>
+<KeithleyTemperature time="2013-07-30T16:27:51" sensor="8" temperature="18.42"/>
+<KeithleyTemperature time="2013-07-30T16:27:51" sensor="9" temperature="16.39"/>
+<HuberTemperature time="2013-07-30T16:27:51" circulator="1" work="15.00" bath="14.98"/>
+<HuberTemperature time="2013-07-30T16:28:02" circulator="1" work="15.00" bath="15.00"/>
+<KeithleyTemperature time="2013-07-30T16:28:11" sensor="0" temperature="16.48"/>
+<KeithleyTemperature time="2013-07-30T16:28:11" sensor="1" temperature="17.16"/>
+<KeithleyTemperature time="2013-07-30T16:28:11" sensor="2" temperature="17.54"/>
+<KeithleyTemperature time="2013-07-30T16:28:11" sensor="3" temperature="21.04"/>
+<KeithleyTemperature time="2013-07-30T16:28:11" sensor="4" temperature="16.47"/>
+<KeithleyTemperature time="2013-07-30T16:28:11" sensor="5" temperature="17.03"/>
+<KeithleyTemperature time="2013-07-30T16:28:11" sensor="6" temperature="17.22"/>
+<KeithleyTemperature time="2013-07-30T16:28:11" sensor="7" temperature="17.60"/>
+<KeithleyTemperature time="2013-07-30T16:28:11" sensor="8" temperature="18.45"/>
+<KeithleyTemperature time="2013-07-30T16:28:11" sensor="9" temperature="16.40"/>
+<PfeifferPressure time="2013-07-30T16:28:15" s1="0" p1="3.550e-03" s2="1" p2="5.060e-09"/>
+<HuberTemperature time="2013-07-30T16:28:15" circulator="1" work="15.00" bath="14.95"/>
+<KeithleyTemperature time="2013-07-30T16:28:31" sensor="0" temperature="16.48"/>
+<KeithleyTemperature time="2013-07-30T16:28:31" sensor="1" temperature="17.15"/>
+<KeithleyTemperature time="2013-07-30T16:28:31" sensor="2" temperature="17.54"/>
+<KeithleyTemperature time="2013-07-30T16:28:31" sensor="3" temperature="21.04"/>
+<KeithleyTemperature time="2013-07-30T16:28:31" sensor="4" temperature="16.48"/>
+<KeithleyTemperature time="2013-07-30T16:28:31" sensor="5" temperature="17.04"/>
+<KeithleyTemperature time="2013-07-30T16:28:31" sensor="6" temperature="17.23"/>
+<KeithleyTemperature time="2013-07-30T16:28:31" sensor="7" temperature="17.61"/>
+<KeithleyTemperature time="2013-07-30T16:28:31" sensor="8" temperature="18.46"/>
+<KeithleyTemperature time="2013-07-30T16:28:31" sensor="9" temperature="16.40"/>
+<PfeifferPressure time="2013-07-30T16:28:31" s1="0" p1="3.540e-03" s2="1" p2="5.060e-09"/>
+<HuberTemperature time="2013-07-30T16:28:31" circulator="1" work="15.00" bath="14.97"/>
+<KeithleyTemperature time="2013-07-30T16:28:51" sensor="0" temperature="16.48"/>
+<KeithleyTemperature time="2013-07-30T16:28:51" sensor="1" temperature="17.16"/>
+<KeithleyTemperature time="2013-07-30T16:28:51" sensor="2" temperature="17.54"/>
+<KeithleyTemperature time="2013-07-30T16:28:51" sensor="3" temperature="21.05"/>
+<KeithleyTemperature time="2013-07-30T16:28:51" sensor="4" temperature="16.48"/>
+<KeithleyTemperature time="2013-07-30T16:28:51" sensor="5" temperature="17.04"/>
+<KeithleyTemperature time="2013-07-30T16:28:51" sensor="6" temperature="17.24"/>
+<KeithleyTemperature time="2013-07-30T16:28:51" sensor="7" temperature="17.62"/>
+<KeithleyTemperature time="2013-07-30T16:28:51" sensor="8" temperature="18.48"/>
+<KeithleyTemperature time="2013-07-30T16:28:51" sensor="9" temperature="16.40"/>
+<HuberTemperature time="2013-07-30T16:28:51" circulator="1" work="15.00" bath="14.99"/>
+<HuberTemperature time="2013-07-30T16:29:02" circulator="1" work="15.00" bath="15.06"/>
+<KeithleyTemperature time="2013-07-30T16:29:11" sensor="0" temperature="16.49"/>
+<KeithleyTemperature time="2013-07-30T16:29:11" sensor="1" temperature="17.16"/>
+<KeithleyTemperature time="2013-07-30T16:29:11" sensor="2" temperature="17.55"/>
+<KeithleyTemperature time="2013-07-30T16:29:11" sensor="3" temperature="21.05"/>
+<KeithleyTemperature time="2013-07-30T16:29:11" sensor="4" temperature="16.48"/>
+<KeithleyTemperature time="2013-07-30T16:29:11" sensor="5" temperature="17.05"/>
+<KeithleyTemperature time="2013-07-30T16:29:11" sensor="6" temperature="17.24"/>
+<KeithleyTemperature time="2013-07-30T16:29:11" sensor="7" temperature="17.63"/>
+<KeithleyTemperature time="2013-07-30T16:29:11" sensor="8" temperature="18.48"/>
+<KeithleyTemperature time="2013-07-30T16:29:11" sensor="9" temperature="16.40"/>
+<PfeifferPressure time="2013-07-30T16:29:11" s1="0" p1="3.550e-03" s2="1" p2="5.060e-09"/>
+<PfeifferPressure time="2013-07-30T16:29:15" s1="0" p1="3.540e-03" s2="1" p2="5.060e-09"/>
+<HuberTemperature time="2013-07-30T16:29:15" circulator="1" work="15.00" bath="15.02"/>
+<KeithleyTemperature time="2013-07-30T16:29:31" sensor="0" temperature="16.49"/>
+<KeithleyTemperature time="2013-07-30T16:29:31" sensor="1" temperature="17.16"/>
+<KeithleyTemperature time="2013-07-30T16:29:31" sensor="2" temperature="17.54"/>
+<KeithleyTemperature time="2013-07-30T16:29:31" sensor="3" temperature="21.05"/>
+<KeithleyTemperature time="2013-07-30T16:29:31" sensor="4" temperature="16.49"/>
+<KeithleyTemperature time="2013-07-30T16:29:31" sensor="5" temperature="17.05"/>
+<KeithleyTemperature time="2013-07-30T16:29:31" sensor="6" temperature="17.25"/>
+<KeithleyTemperature time="2013-07-30T16:29:31" sensor="7" temperature="17.64"/>
+<KeithleyTemperature time="2013-07-30T16:29:31" sensor="8" temperature="18.49"/>
+<KeithleyTemperature time="2013-07-30T16:29:31" sensor="9" temperature="16.40"/>
+<HuberTemperature time="2013-07-30T16:29:31" circulator="1" work="15.00" bath="14.98"/>
+<KeithleyTemperature time="2013-07-30T16:29:51" sensor="0" temperature="16.49"/>
+<KeithleyTemperature time="2013-07-30T16:29:51" sensor="1" temperature="17.16"/>
+<KeithleyTemperature time="2013-07-30T16:29:51" sensor="2" temperature="17.55"/>
+<KeithleyTemperature time="2013-07-30T16:29:51" sensor="3" temperature="21.06"/>
+<KeithleyTemperature time="2013-07-30T16:29:51" sensor="4" temperature="16.49"/>
+<KeithleyTemperature time="2013-07-30T16:29:51" sensor="5" temperature="17.05"/>
+<KeithleyTemperature time="2013-07-30T16:29:51" sensor="6" temperature="17.25"/>
+<KeithleyTemperature time="2013-07-30T16:29:51" sensor="7" temperature="17.64"/>
+<KeithleyTemperature time="2013-07-30T16:29:51" sensor="8" temperature="18.50"/>
+<KeithleyTemperature time="2013-07-30T16:29:51" sensor="9" temperature="16.41"/>
+<HuberTemperature time="2013-07-30T16:29:51" circulator="1" work="15.00" bath="15.00"/>
+<HuberTemperature time="2013-07-30T16:30:02" circulator="1" work="15.00" bath="15.01"/>
+<KeithleyTemperature time="2013-07-30T16:30:11" sensor="0" temperature="16.49"/>
+<KeithleyTemperature time="2013-07-30T16:30:11" sensor="1" temperature="17.16"/>
+<KeithleyTemperature time="2013-07-30T16:30:11" sensor="2" temperature="17.54"/>
+<KeithleyTemperature time="2013-07-30T16:30:11" sensor="3" temperature="21.06"/>
+<KeithleyTemperature time="2013-07-30T16:30:11" sensor="4" temperature="16.49"/>
+<KeithleyTemperature time="2013-07-30T16:30:11" sensor="5" temperature="17.06"/>
+<KeithleyTemperature time="2013-07-30T16:30:11" sensor="6" temperature="17.25"/>
+<KeithleyTemperature time="2013-07-30T16:30:11" sensor="7" temperature="17.64"/>
+<KeithleyTemperature time="2013-07-30T16:30:11" sensor="8" temperature="18.51"/>
+<KeithleyTemperature time="2013-07-30T16:30:11" sensor="9" temperature="16.41"/>
+<HuberTemperature time="2013-07-30T16:30:17" circulator="1" work="15.00" bath="15.05"/>
+<KeithleyTemperature time="2013-07-30T16:30:31" sensor="0" temperature="16.49"/>
+<KeithleyTemperature time="2013-07-30T16:30:31" sensor="1" temperature="17.16"/>
+<KeithleyTemperature time="2013-07-30T16:30:31" sensor="2" temperature="17.55"/>
+<KeithleyTemperature time="2013-07-30T16:30:31" sensor="3" temperature="21.06"/>
+<KeithleyTemperature time="2013-07-30T16:30:31" sensor="4" temperature="16.49"/>
+<KeithleyTemperature time="2013-07-30T16:30:31" sensor="5" temperature="17.06"/>
+<KeithleyTemperature time="2013-07-30T16:30:31" sensor="6" temperature="17.25"/>
+<KeithleyTemperature time="2013-07-30T16:30:31" sensor="7" temperature="17.65"/>
+<KeithleyTemperature time="2013-07-30T16:30:31" sensor="8" temperature="18.51"/>
+<KeithleyTemperature time="2013-07-30T16:30:31" sensor="9" temperature="16.41"/>
+<HuberTemperature time="2013-07-30T16:30:31" circulator="1" work="15.00" bath="14.94"/>
+<KeithleyTemperature time="2013-07-30T16:30:51" sensor="0" temperature="16.50"/>
+<KeithleyTemperature time="2013-07-30T16:30:51" sensor="1" temperature="17.16"/>
+<KeithleyTemperature time="2013-07-30T16:30:51" sensor="2" temperature="17.55"/>
+<KeithleyTemperature time="2013-07-30T16:30:51" sensor="3" temperature="21.07"/>
+<KeithleyTemperature time="2013-07-30T16:30:51" sensor="4" temperature="16.49"/>
+<KeithleyTemperature time="2013-07-30T16:30:51" sensor="5" temperature="17.06"/>
+<KeithleyTemperature time="2013-07-30T16:30:51" sensor="6" temperature="17.26"/>
+<KeithleyTemperature time="2013-07-30T16:30:51" sensor="7" temperature="17.65"/>
+<KeithleyTemperature time="2013-07-30T16:30:51" sensor="8" temperature="18.51"/>
+<KeithleyTemperature time="2013-07-30T16:30:51" sensor="9" temperature="16.41"/>
+<HuberTemperature time="2013-07-30T16:30:51" circulator="1" work="15.00" bath="15.02"/>
+<HuberTemperature time="2013-07-30T16:31:02" circulator="1" work="15.00" bath="14.98"/>
+<KeithleyTemperature time="2013-07-30T16:31:11" sensor="0" temperature="16.50"/>
+<KeithleyTemperature time="2013-07-30T16:31:11" sensor="1" temperature="17.16"/>
+<KeithleyTemperature time="2013-07-30T16:31:11" sensor="2" temperature="17.55"/>
+<KeithleyTemperature time="2013-07-30T16:31:11" sensor="3" temperature="21.07"/>
+<KeithleyTemperature time="2013-07-30T16:31:11" sensor="4" temperature="16.50"/>
+<KeithleyTemperature time="2013-07-30T16:31:11" sensor="5" temperature="17.06"/>
+<KeithleyTemperature time="2013-07-30T16:31:11" sensor="6" temperature="17.26"/>
+<KeithleyTemperature time="2013-07-30T16:31:11" sensor="7" temperature="17.65"/>
+<KeithleyTemperature time="2013-07-30T16:31:11" sensor="8" temperature="18.52"/>
+<KeithleyTemperature time="2013-07-30T16:31:11" sensor="9" temperature="16.42"/>
+<HuberTemperature time="2013-07-30T16:31:17" circulator="1" work="15.00" bath="14.95"/>
+<KeithleyTemperature time="2013-07-30T16:31:31" sensor="0" temperature="16.50"/>
+<KeithleyTemperature time="2013-07-30T16:31:31" sensor="1" temperature="17.17"/>
+<KeithleyTemperature time="2013-07-30T16:31:31" sensor="2" temperature="17.55"/>
+<KeithleyTemperature time="2013-07-30T16:31:31" sensor="3" temperature="21.08"/>
+<KeithleyTemperature time="2013-07-30T16:31:31" sensor="4" temperature="16.50"/>
+<KeithleyTemperature time="2013-07-30T16:31:31" sensor="5" temperature="17.06"/>
+<KeithleyTemperature time="2013-07-30T16:31:31" sensor="6" temperature="17.26"/>
+<KeithleyTemperature time="2013-07-30T16:31:31" sensor="7" temperature="17.66"/>
+<KeithleyTemperature time="2013-07-30T16:31:31" sensor="8" temperature="18.52"/>
+<KeithleyTemperature time="2013-07-30T16:31:31" sensor="9" temperature="16.42"/>
+<HuberTemperature time="2013-07-30T16:31:31" circulator="1" work="15.00" bath="15.00"/>
+<KeithleyTemperature time="2013-07-30T16:31:51" sensor="0" temperature="16.50"/>
+<KeithleyTemperature time="2013-07-30T16:31:51" sensor="1" temperature="17.16"/>
+<KeithleyTemperature time="2013-07-30T16:31:51" sensor="2" temperature="17.55"/>
+<KeithleyTemperature time="2013-07-30T16:31:51" sensor="3" temperature="21.08"/>
+<KeithleyTemperature time="2013-07-30T16:31:51" sensor="4" temperature="16.50"/>
+<KeithleyTemperature time="2013-07-30T16:31:51" sensor="5" temperature="17.07"/>
+<KeithleyTemperature time="2013-07-30T16:31:51" sensor="6" temperature="17.26"/>
+<KeithleyTemperature time="2013-07-30T16:31:51" sensor="7" temperature="17.66"/>
+<KeithleyTemperature time="2013-07-30T16:31:51" sensor="8" temperature="18.53"/>
+<KeithleyTemperature time="2013-07-30T16:31:51" sensor="9" temperature="16.42"/>
+<HuberTemperature time="2013-07-30T16:31:51" circulator="1" work="15.00" bath="15.06"/>
+<HuberTemperature time="2013-07-30T16:32:02" circulator="1" work="15.00" bath="15.08"/>
+<KeithleyTemperature time="2013-07-30T16:32:11" sensor="0" temperature="16.50"/>
+<KeithleyTemperature time="2013-07-30T16:32:11" sensor="1" temperature="17.17"/>
+<KeithleyTemperature time="2013-07-30T16:32:11" sensor="2" temperature="17.55"/>
+<KeithleyTemperature time="2013-07-30T16:32:11" sensor="3" temperature="21.08"/>
+<KeithleyTemperature time="2013-07-30T16:32:11" sensor="4" temperature="16.50"/>
+<KeithleyTemperature time="2013-07-30T16:32:11" sensor="5" temperature="17.07"/>
+<KeithleyTemperature time="2013-07-30T16:32:11" sensor="6" temperature="17.27"/>
+<KeithleyTemperature time="2013-07-30T16:32:11" sensor="7" temperature="17.66"/>
+<KeithleyTemperature time="2013-07-30T16:32:11" sensor="8" temperature="18.53"/>
+<KeithleyTemperature time="2013-07-30T16:32:11" sensor="9" temperature="16.42"/>
+<HuberTemperature time="2013-07-30T16:32:17" circulator="1" work="15.00" bath="14.99"/>
+<KeithleyTemperature time="2013-07-30T16:32:31" sensor="0" temperature="16.51"/>
+<KeithleyTemperature time="2013-07-30T16:32:31" sensor="1" temperature="17.17"/>
+<KeithleyTemperature time="2013-07-30T16:32:31" sensor="2" temperature="17.55"/>
+<KeithleyTemperature time="2013-07-30T16:32:31" sensor="3" temperature="21.09"/>
+<KeithleyTemperature time="2013-07-30T16:32:31" sensor="4" temperature="16.51"/>
+<KeithleyTemperature time="2013-07-30T16:32:31" sensor="5" temperature="17.07"/>
+<KeithleyTemperature time="2013-07-30T16:32:31" sensor="6" temperature="17.27"/>
+<KeithleyTemperature time="2013-07-30T16:32:31" sensor="7" temperature="17.66"/>
+<KeithleyTemperature time="2013-07-30T16:32:31" sensor="8" temperature="18.53"/>
+<KeithleyTemperature time="2013-07-30T16:32:31" sensor="9" temperature="16.43"/>
+<HuberTemperature time="2013-07-30T16:32:31" circulator="1" work="15.00" bath="14.94"/>
+<KeithleyTemperature time="2013-07-30T16:32:51" sensor="0" temperature="16.51"/>
+<KeithleyTemperature time="2013-07-30T16:32:51" sensor="1" temperature="17.17"/>
+<KeithleyTemperature time="2013-07-30T16:32:51" sensor="2" temperature="17.55"/>
+<KeithleyTemperature time="2013-07-30T16:32:51" sensor="3" temperature="21.09"/>
+<KeithleyTemperature time="2013-07-30T16:32:51" sensor="4" temperature="16.51"/>
+<KeithleyTemperature time="2013-07-30T16:32:51" sensor="5" temperature="17.07"/>
+<KeithleyTemperature time="2013-07-30T16:32:51" sensor="6" temperature="17.27"/>
+<KeithleyTemperature time="2013-07-30T16:32:51" sensor="7" temperature="17.67"/>
+<KeithleyTemperature time="2013-07-30T16:32:51" sensor="8" temperature="18.53"/>
+<KeithleyTemperature time="2013-07-30T16:32:51" sensor="9" temperature="16.43"/>
+<HuberTemperature time="2013-07-30T16:32:51" circulator="1" work="15.00" bath="15.08"/>
+<PfeifferPressure time="2013-07-30T16:32:55" s1="0" p1="3.540e-03" s2="0" p2="1.300e-06"/>
+<HuberTemperature time="2013-07-30T16:33:02" circulator="1" work="15.00" bath="15.04"/>
+<KeithleyTemperature time="2013-07-30T16:33:11" sensor="0" temperature="16.51"/>
+<KeithleyTemperature time="2013-07-30T16:33:11" sensor="1" temperature="17.17"/>
+<KeithleyTemperature time="2013-07-30T16:33:11" sensor="2" temperature="17.55"/>
+<KeithleyTemperature time="2013-07-30T16:33:11" sensor="3" temperature="21.10"/>
+<KeithleyTemperature time="2013-07-30T16:33:11" sensor="4" temperature="16.50"/>
+<KeithleyTemperature time="2013-07-30T16:33:11" sensor="5" temperature="17.08"/>
+<KeithleyTemperature time="2013-07-30T16:33:11" sensor="6" temperature="17.27"/>
+<KeithleyTemperature time="2013-07-30T16:33:11" sensor="7" temperature="17.67"/>
+<KeithleyTemperature time="2013-07-30T16:33:11" sensor="8" temperature="18.53"/>
+<KeithleyTemperature time="2013-07-30T16:33:11" sensor="9" temperature="16.43"/>
+<PfeifferPressure time="2013-07-30T16:33:11" s1="0" p1="3.540e-03" s2="1" p2="5.060e-09"/>
+<HuberTemperature time="2013-07-30T16:33:17" circulator="1" work="15.00" bath="14.94"/>
+<KeithleyTemperature time="2013-07-30T16:33:31" sensor="0" temperature="16.51"/>
+<KeithleyTemperature time="2013-07-30T16:33:31" sensor="1" temperature="17.17"/>
+<KeithleyTemperature time="2013-07-30T16:33:31" sensor="2" temperature="17.55"/>
+<KeithleyTemperature time="2013-07-30T16:33:31" sensor="3" temperature="21.10"/>
+<KeithleyTemperature time="2013-07-30T16:33:31" sensor="4" temperature="16.51"/>
+<KeithleyTemperature time="2013-07-30T16:33:31" sensor="5" temperature="17.08"/>
+<KeithleyTemperature time="2013-07-30T16:33:31" sensor="6" temperature="17.27"/>
+<KeithleyTemperature time="2013-07-30T16:33:31" sensor="7" temperature="17.67"/>
+<KeithleyTemperature time="2013-07-30T16:33:31" sensor="8" temperature="18.53"/>
+<KeithleyTemperature time="2013-07-30T16:33:31" sensor="9" temperature="16.43"/>
+<HuberTemperature time="2013-07-30T16:33:31" circulator="1" work="15.00" bath="15.04"/>
+<KeithleyTemperature time="2013-07-30T16:33:51" sensor="0" temperature="16.51"/>
+<KeithleyTemperature time="2013-07-30T16:33:51" sensor="1" temperature="17.17"/>
+<KeithleyTemperature time="2013-07-30T16:33:51" sensor="2" temperature="17.55"/>
+<KeithleyTemperature time="2013-07-30T16:33:51" sensor="3" temperature="21.10"/>
+<KeithleyTemperature time="2013-07-30T16:33:51" sensor="4" temperature="16.51"/>
+<KeithleyTemperature time="2013-07-30T16:33:51" sensor="5" temperature="17.08"/>
+<KeithleyTemperature time="2013-07-30T16:33:51" sensor="6" temperature="17.27"/>
+<KeithleyTemperature time="2013-07-30T16:33:51" sensor="7" temperature="17.67"/>
+<KeithleyTemperature time="2013-07-30T16:33:51" sensor="8" temperature="18.54"/>
+<KeithleyTemperature time="2013-07-30T16:33:51" sensor="9" temperature="16.43"/>
+<HuberTemperature time="2013-07-30T16:33:51" circulator="1" work="15.00" bath="14.95"/>
+<HuberTemperature time="2013-07-30T16:34:02" circulator="1" work="15.00" bath="14.98"/>
+<KeithleyTemperature time="2013-07-30T16:34:11" sensor="0" temperature="16.52"/>
+<KeithleyTemperature time="2013-07-30T16:34:11" sensor="1" temperature="17.17"/>
+<KeithleyTemperature time="2013-07-30T16:34:11" sensor="2" temperature="17.55"/>
+<KeithleyTemperature time="2013-07-30T16:34:11" sensor="3" temperature="21.11"/>
+<KeithleyTemperature time="2013-07-30T16:34:11" sensor="4" temperature="16.51"/>
+<KeithleyTemperature time="2013-07-30T16:34:11" sensor="5" temperature="17.08"/>
+<KeithleyTemperature time="2013-07-30T16:34:11" sensor="6" temperature="17.27"/>
+<KeithleyTemperature time="2013-07-30T16:34:11" sensor="7" temperature="17.67"/>
+<KeithleyTemperature time="2013-07-30T16:34:11" sensor="8" temperature="18.54"/>
+<KeithleyTemperature time="2013-07-30T16:34:11" sensor="9" temperature="16.43"/>
+<HuberTemperature time="2013-07-30T16:34:17" circulator="1" work="15.00" bath="14.97"/>
+<KeithleyTemperature time="2013-07-30T16:34:31" sensor="0" temperature="16.51"/>
+<KeithleyTemperature time="2013-07-30T16:34:31" sensor="1" temperature="17.17"/>
+<KeithleyTemperature time="2013-07-30T16:34:31" sensor="2" temperature="17.55"/>
+<KeithleyTemperature time="2013-07-30T16:34:31" sensor="3" temperature="21.11"/>
+<KeithleyTemperature time="2013-07-30T16:34:31" sensor="4" temperature="16.51"/>
+<KeithleyTemperature time="2013-07-30T16:34:31" sensor="5" temperature="17.08"/>
+<KeithleyTemperature time="2013-07-30T16:34:31" sensor="6" temperature="17.28"/>
+<KeithleyTemperature time="2013-07-30T16:34:31" sensor="7" temperature="17.67"/>
+<KeithleyTemperature time="2013-07-30T16:34:31" sensor="8" temperature="18.54"/>
+<KeithleyTemperature time="2013-07-30T16:34:31" sensor="9" temperature="16.43"/>
+<HuberTemperature time="2013-07-30T16:34:31" circulator="1" work="15.00" bath="14.95"/>
+<KeithleyTemperature time="2013-07-30T16:34:51" sensor="0" temperature="16.51"/>
+<KeithleyTemperature time="2013-07-30T16:34:51" sensor="1" temperature="17.18"/>
+<KeithleyTemperature time="2013-07-30T16:34:51" sensor="2" temperature="17.56"/>
+<KeithleyTemperature time="2013-07-30T16:34:51" sensor="3" temperature="21.12"/>
+<KeithleyTemperature time="2013-07-30T16:34:51" sensor="4" temperature="16.52"/>
+<KeithleyTemperature time="2013-07-30T16:34:51" sensor="5" temperature="17.08"/>
+<KeithleyTemperature time="2013-07-30T16:34:51" sensor="6" temperature="17.28"/>
+<KeithleyTemperature time="2013-07-30T16:34:51" sensor="7" temperature="17.68"/>
+<KeithleyTemperature time="2013-07-30T16:34:51" sensor="8" temperature="18.54"/>
+<KeithleyTemperature time="2013-07-30T16:34:51" sensor="9" temperature="16.43"/>
+<HuberTemperature time="2013-07-30T16:34:51" circulator="1" work="15.00" bath="14.97"/>
+<HuberTemperature time="2013-07-30T16:35:02" circulator="1" work="15.00" bath="15.01"/>
+<KeithleyTemperature time="2013-07-30T16:35:11" sensor="0" temperature="16.52"/>
+<KeithleyTemperature time="2013-07-30T16:35:11" sensor="1" temperature="17.17"/>
+<KeithleyTemperature time="2013-07-30T16:35:11" sensor="2" temperature="17.56"/>
+<KeithleyTemperature time="2013-07-30T16:35:11" sensor="3" temperature="21.12"/>
+<KeithleyTemperature time="2013-07-30T16:35:11" sensor="4" temperature="16.51"/>
+<KeithleyTemperature time="2013-07-30T16:35:11" sensor="5" temperature="17.08"/>
+<KeithleyTemperature time="2013-07-30T16:35:11" sensor="6" temperature="17.28"/>
+<KeithleyTemperature time="2013-07-30T16:35:11" sensor="7" temperature="17.68"/>
+<KeithleyTemperature time="2013-07-30T16:35:11" sensor="8" temperature="18.54"/>
+<KeithleyTemperature time="2013-07-30T16:35:11" sensor="9" temperature="16.43"/>
+<PfeifferPressure time="2013-07-30T16:35:15" s1="0" p1="3.540e-03" s2="0" p2="5.900e-09"/>
+<HuberTemperature time="2013-07-30T16:35:15" circulator="1" work="15.00" bath="15.02"/>
+<KeithleyTemperature time="2013-07-30T16:35:31" sensor="0" temperature="16.52"/>
+<KeithleyTemperature time="2013-07-30T16:35:31" sensor="1" temperature="17.18"/>
+<KeithleyTemperature time="2013-07-30T16:35:31" sensor="2" temperature="17.56"/>
+<KeithleyTemperature time="2013-07-30T16:35:31" sensor="3" temperature="21.12"/>
+<KeithleyTemperature time="2013-07-30T16:35:31" sensor="4" temperature="16.51"/>
+<KeithleyTemperature time="2013-07-30T16:35:31" sensor="5" temperature="17.08"/>
+<KeithleyTemperature time="2013-07-30T16:35:31" sensor="6" temperature="17.28"/>
+<KeithleyTemperature time="2013-07-30T16:35:31" sensor="7" temperature="17.68"/>
+<KeithleyTemperature time="2013-07-30T16:35:31" sensor="8" temperature="18.54"/>
+<KeithleyTemperature time="2013-07-30T16:35:31" sensor="9" temperature="16.43"/>
+<HuberTemperature time="2013-07-30T16:35:31" circulator="1" work="15.00" bath="14.94"/>
+<KeithleyTemperature time="2013-07-30T16:35:51" sensor="0" temperature="16.52"/>
+<KeithleyTemperature time="2013-07-30T16:35:51" sensor="1" temperature="17.18"/>
+<KeithleyTemperature time="2013-07-30T16:35:51" sensor="2" temperature="17.56"/>
+<KeithleyTemperature time="2013-07-30T16:35:51" sensor="3" temperature="21.13"/>
+<KeithleyTemperature time="2013-07-30T16:35:51" sensor="4" temperature="16.52"/>
+<KeithleyTemperature time="2013-07-30T16:35:51" sensor="5" temperature="17.09"/>
+<KeithleyTemperature time="2013-07-30T16:35:51" sensor="6" temperature="17.28"/>
+<KeithleyTemperature time="2013-07-30T16:35:51" sensor="7" temperature="17.68"/>
+<KeithleyTemperature time="2013-07-30T16:35:51" sensor="8" temperature="18.54"/>
+<KeithleyTemperature time="2013-07-30T16:35:51" sensor="9" temperature="16.44"/>
+<PfeifferPressure time="2013-07-30T16:35:51" s1="0" p1="3.540e-03" s2="1" p2="5.060e-09"/>
+<HuberTemperature time="2013-07-30T16:35:51" circulator="1" work="15.00" bath="15.00"/>
+<HuberTemperature time="2013-07-30T16:36:02" circulator="1" work="15.00" bath="14.98"/>
+<KeithleyTemperature time="2013-07-30T16:36:11" sensor="0" temperature="16.52"/>
+<KeithleyTemperature time="2013-07-30T16:36:11" sensor="1" temperature="17.18"/>
+<KeithleyTemperature time="2013-07-30T16:36:11" sensor="2" temperature="17.56"/>
+<KeithleyTemperature time="2013-07-30T16:36:11" sensor="3" temperature="21.13"/>
+<KeithleyTemperature time="2013-07-30T16:36:11" sensor="4" temperature="16.52"/>
+<KeithleyTemperature time="2013-07-30T16:36:11" sensor="5" temperature="17.09"/>
+<KeithleyTemperature time="2013-07-30T16:36:11" sensor="6" temperature="17.28"/>
+<KeithleyTemperature time="2013-07-30T16:36:11" sensor="7" temperature="17.68"/>
+<KeithleyTemperature time="2013-07-30T16:36:11" sensor="8" temperature="18.55"/>
+<KeithleyTemperature time="2013-07-30T16:36:11" sensor="9" temperature="16.44"/>
+<PfeifferPressure time="2013-07-30T16:36:15" s1="0" p1="3.530e-03" s2="1" p2="5.060e-09"/>
+<HuberTemperature time="2013-07-30T16:36:15" circulator="1" work="15.00" bath="14.95"/>
+<KeithleyTemperature time="2013-07-30T16:36:31" sensor="0" temperature="16.52"/>
+<KeithleyTemperature time="2013-07-30T16:36:31" sensor="1" temperature="17.18"/>
+<KeithleyTemperature time="2013-07-30T16:36:31" sensor="2" temperature="17.56"/>
+<KeithleyTemperature time="2013-07-30T16:36:31" sensor="3" temperature="21.13"/>
+<KeithleyTemperature time="2013-07-30T16:36:31" sensor="4" temperature="16.52"/>
+<KeithleyTemperature time="2013-07-30T16:36:31" sensor="5" temperature="17.09"/>
+<KeithleyTemperature time="2013-07-30T16:36:31" sensor="6" temperature="17.29"/>
+<KeithleyTemperature time="2013-07-30T16:36:31" sensor="7" temperature="17.68"/>
+<KeithleyTemperature time="2013-07-30T16:36:31" sensor="8" temperature="18.55"/>
+<KeithleyTemperature time="2013-07-30T16:36:31" sensor="9" temperature="16.44"/>
+<PfeifferPressure time="2013-07-30T16:36:31" s1="0" p1="3.540e-03" s2="1" p2="5.060e-09"/>
+<HuberTemperature time="2013-07-30T16:36:31" circulator="1" work="15.00" bath="15.04"/>
+<PfeifferPressure time="2013-07-30T16:36:35" s1="0" p1="3.530e-03" s2="1" p2="5.060e-09"/>
+<KeithleyTemperature time="2013-07-30T16:36:51" sensor="0" temperature="16.52"/>
+<KeithleyTemperature time="2013-07-30T16:36:51" sensor="1" temperature="17.18"/>
+<KeithleyTemperature time="2013-07-30T16:36:51" sensor="2" temperature="17.56"/>
+<KeithleyTemperature time="2013-07-30T16:36:51" sensor="3" temperature="21.14"/>
+<KeithleyTemperature time="2013-07-30T16:36:51" sensor="4" temperature="16.52"/>
+<KeithleyTemperature time="2013-07-30T16:36:51" sensor="5" temperature="17.09"/>
+<KeithleyTemperature time="2013-07-30T16:36:51" sensor="6" temperature="17.29"/>
+<KeithleyTemperature time="2013-07-30T16:36:51" sensor="7" temperature="17.68"/>
+<KeithleyTemperature time="2013-07-30T16:36:51" sensor="8" temperature="18.55"/>
+<KeithleyTemperature time="2013-07-30T16:36:51" sensor="9" temperature="16.44"/>
+<HuberTemperature time="2013-07-30T16:36:51" circulator="1" work="15.00" bath="14.92"/>
+<HuberTemperature time="2013-07-30T16:37:02" circulator="1" work="15.00" bath="14.95"/>
+<KeithleyTemperature time="2013-07-30T16:37:11" sensor="0" temperature="16.52"/>
+<KeithleyTemperature time="2013-07-30T16:37:11" sensor="1" temperature="17.18"/>
+<KeithleyTemperature time="2013-07-30T16:37:11" sensor="2" temperature="17.56"/>
+<KeithleyTemperature time="2013-07-30T16:37:11" sensor="3" temperature="21.14"/>
+<KeithleyTemperature time="2013-07-30T16:37:11" sensor="4" temperature="16.52"/>
+<KeithleyTemperature time="2013-07-30T16:37:11" sensor="5" temperature="17.09"/>
+<KeithleyTemperature time="2013-07-30T16:37:11" sensor="6" temperature="17.28"/>
+<KeithleyTemperature time="2013-07-30T16:37:11" sensor="7" temperature="17.68"/>
+<KeithleyTemperature time="2013-07-30T16:37:11" sensor="8" temperature="18.55"/>
+<KeithleyTemperature time="2013-07-30T16:37:11" sensor="9" temperature="16.44"/>
+<HuberTemperature time="2013-07-30T16:37:17" circulator="1" work="15.00" bath="15.03"/>
+<KeithleyTemperature time="2013-07-30T16:37:31" sensor="0" temperature="16.53"/>
+<KeithleyTemperature time="2013-07-30T16:37:31" sensor="1" temperature="17.18"/>
+<KeithleyTemperature time="2013-07-30T16:37:31" sensor="2" temperature="17.57"/>
+<KeithleyTemperature time="2013-07-30T16:37:31" sensor="3" temperature="21.14"/>
+<KeithleyTemperature time="2013-07-30T16:37:31" sensor="4" temperature="16.52"/>
+<KeithleyTemperature time="2013-07-30T16:37:31" sensor="5" temperature="17.09"/>
+<KeithleyTemperature time="2013-07-30T16:37:31" sensor="6" temperature="17.29"/>
+<KeithleyTemperature time="2013-07-30T16:37:31" sensor="7" temperature="17.69"/>
+<KeithleyTemperature time="2013-07-30T16:37:31" sensor="8" temperature="18.55"/>
+<KeithleyTemperature time="2013-07-30T16:37:31" sensor="9" temperature="16.44"/>
+<HuberTemperature time="2013-07-30T16:37:31" circulator="1" work="15.00" bath="14.99"/>
+<KeithleyTemperature time="2013-07-30T16:37:51" sensor="0" temperature="16.52"/>
+<KeithleyTemperature time="2013-07-30T16:37:51" sensor="1" temperature="17.19"/>
+<KeithleyTemperature time="2013-07-30T16:37:51" sensor="2" temperature="17.56"/>
+<KeithleyTemperature time="2013-07-30T16:37:51" sensor="3" temperature="21.15"/>
+<KeithleyTemperature time="2013-07-30T16:37:51" sensor="4" temperature="16.52"/>
+<KeithleyTemperature time="2013-07-30T16:37:51" sensor="5" temperature="17.09"/>
+<KeithleyTemperature time="2013-07-30T16:37:51" sensor="6" temperature="17.29"/>
+<KeithleyTemperature time="2013-07-30T16:37:51" sensor="7" temperature="17.69"/>
+<KeithleyTemperature time="2013-07-30T16:37:51" sensor="8" temperature="18.55"/>
+<KeithleyTemperature time="2013-07-30T16:37:51" sensor="9" temperature="16.44"/>
+<PfeifferPressure time="2013-07-30T16:37:51" s1="0" p1="3.530e-03" s2="0" p2="6.260e-09"/>
+<HuberTemperature time="2013-07-30T16:37:51" circulator="1" work="15.00" bath="14.95"/>
+<PfeifferPressure time="2013-07-30T16:37:55" s1="0" p1="3.530e-03" s2="1" p2="5.060e-09"/>
+<HuberTemperature time="2013-07-30T16:38:02" circulator="1" work="15.00" bath="15.01"/>
+<KeithleyTemperature time="2013-07-30T16:38:11" sensor="0" temperature="16.53"/>
+<KeithleyTemperature time="2013-07-30T16:38:11" sensor="1" temperature="17.19"/>
+<KeithleyTemperature time="2013-07-30T16:38:11" sensor="2" temperature="17.57"/>
+<KeithleyTemperature time="2013-07-30T16:38:11" sensor="3" temperature="21.15"/>
+<KeithleyTemperature time="2013-07-30T16:38:11" sensor="4" temperature="16.52"/>
+<KeithleyTemperature time="2013-07-30T16:38:11" sensor="5" temperature="17.09"/>
+<KeithleyTemperature time="2013-07-30T16:38:11" sensor="6" temperature="17.29"/>
+<KeithleyTemperature time="2013-07-30T16:38:11" sensor="7" temperature="17.69"/>
+<KeithleyTemperature time="2013-07-30T16:38:11" sensor="8" temperature="18.55"/>
+<KeithleyTemperature time="2013-07-30T16:38:11" sensor="9" temperature="16.44"/>
+<HuberTemperature time="2013-07-30T16:38:17" circulator="1" work="15.00" bath="15.06"/>
+<KeithleyTemperature time="2013-07-30T16:38:31" sensor="0" temperature="16.53"/>
+<KeithleyTemperature time="2013-07-30T16:38:31" sensor="1" temperature="17.19"/>
+<KeithleyTemperature time="2013-07-30T16:38:31" sensor="2" temperature="17.57"/>
+<KeithleyTemperature time="2013-07-30T16:38:31" sensor="3" temperature="21.15"/>
+<KeithleyTemperature time="2013-07-30T16:38:31" sensor="4" temperature="16.53"/>
+<KeithleyTemperature time="2013-07-30T16:38:31" sensor="5" temperature="17.09"/>
+<KeithleyTemperature time="2013-07-30T16:38:31" sensor="6" temperature="17.29"/>
+<KeithleyTemperature time="2013-07-30T16:38:31" sensor="7" temperature="17.69"/>
+<KeithleyTemperature time="2013-07-30T16:38:31" sensor="8" temperature="18.55"/>
+<KeithleyTemperature time="2013-07-30T16:38:31" sensor="9" temperature="16.45"/>
+<KeithleyTemperature time="2013-07-30T16:38:51" sensor="0" temperature="16.53"/>
+<KeithleyTemperature time="2013-07-30T16:38:51" sensor="1" temperature="17.19"/>
+<KeithleyTemperature time="2013-07-30T16:38:51" sensor="2" temperature="17.56"/>
+<KeithleyTemperature time="2013-07-30T16:38:51" sensor="3" temperature="21.16"/>
+<KeithleyTemperature time="2013-07-30T16:38:51" sensor="4" temperature="16.53"/>
+<KeithleyTemperature time="2013-07-30T16:38:51" sensor="5" temperature="17.09"/>
+<KeithleyTemperature time="2013-07-30T16:38:51" sensor="6" temperature="17.29"/>
+<KeithleyTemperature time="2013-07-30T16:38:51" sensor="7" temperature="17.68"/>
+<KeithleyTemperature time="2013-07-30T16:38:51" sensor="8" temperature="18.55"/>
+<KeithleyTemperature time="2013-07-30T16:38:51" sensor="9" temperature="16.45"/>
+<HuberTemperature time="2013-07-30T16:38:51" circulator="1" work="15.00" bath="14.97"/>
+<HuberTemperature time="2013-07-30T16:39:02" circulator="1" work="15.00" bath="15.05"/>
+<KeithleyTemperature time="2013-07-30T16:39:11" sensor="0" temperature="16.53"/>
+<KeithleyTemperature time="2013-07-30T16:39:11" sensor="1" temperature="17.19"/>
+<KeithleyTemperature time="2013-07-30T16:39:11" sensor="2" temperature="17.57"/>
+<KeithleyTemperature time="2013-07-30T16:39:11" sensor="3" temperature="21.16"/>
+<KeithleyTemperature time="2013-07-30T16:39:11" sensor="4" temperature="16.53"/>
+<KeithleyTemperature time="2013-07-30T16:39:11" sensor="5" temperature="17.09"/>
+<KeithleyTemperature time="2013-07-30T16:39:11" sensor="6" temperature="17.29"/>
+<KeithleyTemperature time="2013-07-30T16:39:11" sensor="7" temperature="17.69"/>
+<KeithleyTemperature time="2013-07-30T16:39:11" sensor="8" temperature="18.56"/>
+<KeithleyTemperature time="2013-07-30T16:39:11" sensor="9" temperature="16.44"/>
+<HuberTemperature time="2013-07-30T16:39:17" circulator="1" work="15.00" bath="15.06"/>
+<KeithleyTemperature time="2013-07-30T16:39:31" sensor="0" temperature="16.53"/>
+<KeithleyTemperature time="2013-07-30T16:39:31" sensor="1" temperature="17.19"/>
+<KeithleyTemperature time="2013-07-30T16:39:31" sensor="2" temperature="17.57"/>
+<KeithleyTemperature time="2013-07-30T16:39:31" sensor="3" temperature="21.17"/>
+<KeithleyTemperature time="2013-07-30T16:39:31" sensor="4" temperature="16.53"/>
+<KeithleyTemperature time="2013-07-30T16:39:31" sensor="5" temperature="17.09"/>
+<KeithleyTemperature time="2013-07-30T16:39:31" sensor="6" temperature="17.29"/>
+<KeithleyTemperature time="2013-07-30T16:39:31" sensor="7" temperature="17.69"/>
+<KeithleyTemperature time="2013-07-30T16:39:31" sensor="8" temperature="18.56"/>
+<KeithleyTemperature time="2013-07-30T16:39:31" sensor="9" temperature="16.45"/>
+<HuberTemperature time="2013-07-30T16:39:31" circulator="1" work="15.00" bath="15.02"/>
+<KeithleyTemperature time="2013-07-30T16:39:51" sensor="0" temperature="16.53"/>
+<KeithleyTemperature time="2013-07-30T16:39:51" sensor="1" temperature="17.19"/>
+<KeithleyTemperature time="2013-07-30T16:39:51" sensor="2" temperature="17.57"/>
+<KeithleyTemperature time="2013-07-30T16:39:51" sensor="3" temperature="21.17"/>
+<KeithleyTemperature time="2013-07-30T16:39:51" sensor="4" temperature="16.53"/>
+<KeithleyTemperature time="2013-07-30T16:39:51" sensor="5" temperature="17.09"/>
+<KeithleyTemperature time="2013-07-30T16:39:51" sensor="6" temperature="17.30"/>
+<KeithleyTemperature time="2013-07-30T16:39:51" sensor="7" temperature="17.69"/>
+<KeithleyTemperature time="2013-07-30T16:39:51" sensor="8" temperature="18.56"/>
+<KeithleyTemperature time="2013-07-30T16:39:51" sensor="9" temperature="16.45"/>
+<HuberTemperature time="2013-07-30T16:39:51" circulator="1" work="15.00" bath="14.94"/>
+<PfeifferPressure time="2013-07-30T16:39:55" s1="0" p1="3.530e-03" s2="0" p2="6.320e-09"/>
+<HuberTemperature time="2013-07-30T16:40:02" circulator="1" work="15.00" bath="14.95"/>
+<KeithleyTemperature time="2013-07-30T16:40:11" sensor="0" temperature="16.53"/>
+<KeithleyTemperature time="2013-07-30T16:40:11" sensor="1" temperature="17.19"/>
+<KeithleyTemperature time="2013-07-30T16:40:11" sensor="2" temperature="17.57"/>
+<KeithleyTemperature time="2013-07-30T16:40:11" sensor="3" temperature="21.18"/>
+<KeithleyTemperature time="2013-07-30T16:40:11" sensor="4" temperature="16.53"/>
+<KeithleyTemperature time="2013-07-30T16:40:11" sensor="5" temperature="17.10"/>
+<KeithleyTemperature time="2013-07-30T16:40:11" sensor="6" temperature="17.30"/>
+<KeithleyTemperature time="2013-07-30T16:40:11" sensor="7" temperature="17.69"/>
+<KeithleyTemperature time="2013-07-30T16:40:11" sensor="8" temperature="18.56"/>
+<KeithleyTemperature time="2013-07-30T16:40:11" sensor="9" temperature="16.45"/>
+<PfeifferPressure time="2013-07-30T16:40:11" s1="0" p1="3.530e-03" s2="0" p2="1.180e-06"/>
+<PfeifferPressure time="2013-07-30T16:40:15" s1="0" p1="3.530e-03" s2="1" p2="5.060e-09"/>
+<HuberTemperature time="2013-07-30T16:40:15" circulator="1" work="15.00" bath="14.98"/>
+<KeithleyTemperature time="2013-07-30T16:40:31" sensor="0" temperature="16.54"/>
+<KeithleyTemperature time="2013-07-30T16:40:31" sensor="1" temperature="17.19"/>
+<KeithleyTemperature time="2013-07-30T16:40:31" sensor="2" temperature="17.57"/>
+<KeithleyTemperature time="2013-07-30T16:40:31" sensor="3" temperature="21.18"/>
+<KeithleyTemperature time="2013-07-30T16:40:31" sensor="4" temperature="16.53"/>
+<KeithleyTemperature time="2013-07-30T16:40:31" sensor="5" temperature="17.10"/>
+<KeithleyTemperature time="2013-07-30T16:40:31" sensor="6" temperature="17.29"/>
+<KeithleyTemperature time="2013-07-30T16:40:31" sensor="7" temperature="17.69"/>
+<KeithleyTemperature time="2013-07-30T16:40:31" sensor="8" temperature="18.56"/>
+<KeithleyTemperature time="2013-07-30T16:40:31" sensor="9" temperature="16.45"/>
+<HuberTemperature time="2013-07-30T16:40:31" circulator="1" work="15.00" bath="14.97"/>
+<KeithleyTemperature time="2013-07-30T16:40:51" sensor="0" temperature="16.53"/>
+<KeithleyTemperature time="2013-07-30T16:40:51" sensor="1" temperature="17.20"/>
+<KeithleyTemperature time="2013-07-30T16:40:51" sensor="2" temperature="17.57"/>
+<KeithleyTemperature time="2013-07-30T16:40:51" sensor="3" temperature="21.18"/>
+<KeithleyTemperature time="2013-07-30T16:40:51" sensor="4" temperature="16.53"/>
+<KeithleyTemperature time="2013-07-30T16:40:51" sensor="5" temperature="17.10"/>
+<KeithleyTemperature time="2013-07-30T16:40:51" sensor="6" temperature="17.30"/>
+<KeithleyTemperature time="2013-07-30T16:40:51" sensor="7" temperature="17.69"/>
+<KeithleyTemperature time="2013-07-30T16:40:51" sensor="8" temperature="18.56"/>
+<KeithleyTemperature time="2013-07-30T16:40:51" sensor="9" temperature="16.45"/>
+<HuberTemperature time="2013-07-30T16:40:51" circulator="1" work="15.00" bath="15.06"/>
+<HuberTemperature time="2013-07-30T16:41:02" circulator="1" work="15.00" bath="15.03"/>
+<KeithleyTemperature time="2013-07-30T16:41:11" sensor="0" temperature="16.54"/>
+<KeithleyTemperature time="2013-07-30T16:41:11" sensor="1" temperature="17.19"/>
+<KeithleyTemperature time="2013-07-30T16:41:11" sensor="2" temperature="17.58"/>
+<KeithleyTemperature time="2013-07-30T16:41:11" sensor="3" temperature="21.19"/>
+<KeithleyTemperature time="2013-07-30T16:41:11" sensor="4" temperature="16.54"/>
+<KeithleyTemperature time="2013-07-30T16:41:11" sensor="5" temperature="17.10"/>
+<KeithleyTemperature time="2013-07-30T16:41:11" sensor="6" temperature="17.30"/>
+<KeithleyTemperature time="2013-07-30T16:41:11" sensor="7" temperature="17.70"/>
+<KeithleyTemperature time="2013-07-30T16:41:11" sensor="8" temperature="18.56"/>
+<KeithleyTemperature time="2013-07-30T16:41:11" sensor="9" temperature="16.45"/>
+<HuberTemperature time="2013-07-30T16:41:17" circulator="1" work="15.00" bath="15.07"/>
+<KeithleyTemperature time="2013-07-30T16:41:31" sensor="0" temperature="16.54"/>
+<KeithleyTemperature time="2013-07-30T16:41:31" sensor="1" temperature="17.20"/>
+<KeithleyTemperature time="2013-07-30T16:41:31" sensor="2" temperature="17.58"/>
+<KeithleyTemperature time="2013-07-30T16:41:31" sensor="3" temperature="21.19"/>
+<KeithleyTemperature time="2013-07-30T16:41:31" sensor="4" temperature="16.53"/>
+<KeithleyTemperature time="2013-07-30T16:41:31" sensor="5" temperature="17.10"/>
+<KeithleyTemperature time="2013-07-30T16:41:31" sensor="6" temperature="17.30"/>
+<KeithleyTemperature time="2013-07-30T16:41:31" sensor="7" temperature="17.70"/>
+<KeithleyTemperature time="2013-07-30T16:41:31" sensor="8" temperature="18.56"/>
+<KeithleyTemperature time="2013-07-30T16:41:31" sensor="9" temperature="16.45"/>
+<HuberTemperature time="2013-07-30T16:41:31" circulator="1" work="15.00" bath="14.96"/>
+<KeithleyTemperature time="2013-07-30T16:41:51" sensor="0" temperature="16.54"/>
+<KeithleyTemperature time="2013-07-30T16:41:51" sensor="1" temperature="17.20"/>
+<KeithleyTemperature time="2013-07-30T16:41:51" sensor="2" temperature="17.58"/>
+<KeithleyTemperature time="2013-07-30T16:41:51" sensor="3" temperature="21.19"/>
+<KeithleyTemperature time="2013-07-30T16:41:51" sensor="4" temperature="16.54"/>
+<KeithleyTemperature time="2013-07-30T16:41:51" sensor="5" temperature="17.10"/>
+<KeithleyTemperature time="2013-07-30T16:41:51" sensor="6" temperature="17.30"/>
+<KeithleyTemperature time="2013-07-30T16:41:51" sensor="7" temperature="17.70"/>
+<KeithleyTemperature time="2013-07-30T16:41:51" sensor="8" temperature="18.56"/>
+<KeithleyTemperature time="2013-07-30T16:41:51" sensor="9" temperature="16.45"/>
+<HuberTemperature time="2013-07-30T16:41:51" circulator="1" work="15.00" bath="14.97"/>
+<HuberTemperature time="2013-07-30T16:42:02" circulator="1" work="15.00" bath="15.00"/>
+<KeithleyTemperature time="2013-07-30T16:42:11" sensor="0" temperature="16.54"/>
+<KeithleyTemperature time="2013-07-30T16:42:11" sensor="1" temperature="17.20"/>
+<KeithleyTemperature time="2013-07-30T16:42:11" sensor="2" temperature="17.58"/>
+<KeithleyTemperature time="2013-07-30T16:42:11" sensor="3" temperature="21.20"/>
+<KeithleyTemperature time="2013-07-30T16:42:11" sensor="4" temperature="16.53"/>
+<KeithleyTemperature time="2013-07-30T16:42:11" sensor="5" temperature="17.10"/>
+<KeithleyTemperature time="2013-07-30T16:42:11" sensor="6" temperature="17.30"/>
+<KeithleyTemperature time="2013-07-30T16:42:11" sensor="7" temperature="17.70"/>
+<KeithleyTemperature time="2013-07-30T16:42:11" sensor="8" temperature="18.57"/>
+<KeithleyTemperature time="2013-07-30T16:42:11" sensor="9" temperature="16.45"/>
+<PfeifferPressure time="2013-07-30T16:42:15" s1="0" p1="3.530e-03" s2="0" p2="6.130e-09"/>
+<HuberTemperature time="2013-07-30T16:42:15" circulator="1" work="15.00" bath="14.98"/>
+<KeithleyTemperature time="2013-07-30T16:42:31" sensor="0" temperature="16.54"/>
+<KeithleyTemperature time="2013-07-30T16:42:31" sensor="1" temperature="17.20"/>
+<KeithleyTemperature time="2013-07-30T16:42:31" sensor="2" temperature="17.58"/>
+<KeithleyTemperature time="2013-07-30T16:42:31" sensor="3" temperature="21.20"/>
+<KeithleyTemperature time="2013-07-30T16:42:31" sensor="4" temperature="16.54"/>
+<KeithleyTemperature time="2013-07-30T16:42:31" sensor="5" temperature="17.10"/>
+<KeithleyTemperature time="2013-07-30T16:42:31" sensor="6" temperature="17.30"/>
+<KeithleyTemperature time="2013-07-30T16:42:31" sensor="7" temperature="17.70"/>
+<KeithleyTemperature time="2013-07-30T16:42:31" sensor="8" temperature="18.57"/>
+<KeithleyTemperature time="2013-07-30T16:42:31" sensor="9" temperature="16.46"/>
+<PfeifferPressure time="2013-07-30T16:42:31" s1="0" p1="3.530e-03" s2="0" p2="1.090e-06"/>
+<HuberTemperature time="2013-07-30T16:42:31" circulator="1" work="15.00" bath="15.01"/>
+<PfeifferPressure time="2013-07-30T16:42:35" s1="0" p1="3.530e-03" s2="1" p2="5.060e-09"/>
+<KeithleyTemperature time="2013-07-30T16:42:51" sensor="0" temperature="16.54"/>
+<KeithleyTemperature time="2013-07-30T16:42:51" sensor="1" temperature="17.20"/>
+<KeithleyTemperature time="2013-07-30T16:42:51" sensor="2" temperature="17.58"/>
+<KeithleyTemperature time="2013-07-30T16:42:51" sensor="3" temperature="21.20"/>
+<KeithleyTemperature time="2013-07-30T16:42:51" sensor="4" temperature="16.54"/>
+<KeithleyTemperature time="2013-07-30T16:42:51" sensor="5" temperature="17.10"/>
+<KeithleyTemperature time="2013-07-30T16:42:51" sensor="6" temperature="17.30"/>
+<KeithleyTemperature time="2013-07-30T16:42:51" sensor="7" temperature="17.70"/>
+<KeithleyTemperature time="2013-07-30T16:42:51" sensor="8" temperature="18.57"/>
+<KeithleyTemperature time="2013-07-30T16:42:51" sensor="9" temperature="16.46"/>
+<HuberTemperature time="2013-07-30T16:42:51" circulator="1" work="15.00" bath="14.93"/>
+<HuberTemperature time="2013-07-30T16:43:02" circulator="1" work="15.00" bath="14.98"/>
+<KeithleyTemperature time="2013-07-30T16:43:11" sensor="0" temperature="16.54"/>
+<KeithleyTemperature time="2013-07-30T16:43:11" sensor="1" temperature="17.20"/>
+<KeithleyTemperature time="2013-07-30T16:43:11" sensor="2" temperature="17.58"/>
+<KeithleyTemperature time="2013-07-30T16:43:11" sensor="3" temperature="21.21"/>
+<KeithleyTemperature time="2013-07-30T16:43:11" sensor="4" temperature="16.54"/>
+<KeithleyTemperature time="2013-07-30T16:43:11" sensor="5" temperature="17.11"/>
+<KeithleyTemperature time="2013-07-30T16:43:11" sensor="6" temperature="17.30"/>
+<KeithleyTemperature time="2013-07-30T16:43:11" sensor="7" temperature="17.70"/>
+<KeithleyTemperature time="2013-07-30T16:43:11" sensor="8" temperature="18.57"/>
+<KeithleyTemperature time="2013-07-30T16:43:11" sensor="9" temperature="16.46"/>
+<HuberTemperature time="2013-07-30T16:43:17" circulator="1" work="15.00" bath="14.97"/>
+<KeithleyTemperature time="2013-07-30T16:43:31" sensor="0" temperature="16.54"/>
+<KeithleyTemperature time="2013-07-30T16:43:31" sensor="1" temperature="17.20"/>
+<KeithleyTemperature time="2013-07-30T16:43:31" sensor="2" temperature="17.58"/>
+<KeithleyTemperature time="2013-07-30T16:43:31" sensor="3" temperature="21.21"/>
+<KeithleyTemperature time="2013-07-30T16:43:31" sensor="4" temperature="16.54"/>
+<KeithleyTemperature time="2013-07-30T16:43:31" sensor="5" temperature="17.10"/>
+<KeithleyTemperature time="2013-07-30T16:43:31" sensor="6" temperature="17.30"/>
+<KeithleyTemperature time="2013-07-30T16:43:31" sensor="7" temperature="17.70"/>
+<KeithleyTemperature time="2013-07-30T16:43:31" sensor="8" temperature="18.57"/>
+<KeithleyTemperature time="2013-07-30T16:43:31" sensor="9" temperature="16.46"/>
+<HuberTemperature time="2013-07-30T16:43:31" circulator="1" work="15.00" bath="15.00"/>
+<PfeifferPressure time="2013-07-30T16:43:35" s1="0" p1="3.520e-03" s2="1" p2="5.060e-09"/>
+<KeithleyTemperature time="2013-07-30T16:43:51" sensor="0" temperature="16.54"/>
+<KeithleyTemperature time="2013-07-30T16:43:51" sensor="1" temperature="17.21"/>
+<KeithleyTemperature time="2013-07-30T16:43:51" sensor="2" temperature="17.58"/>
+<KeithleyTemperature time="2013-07-30T16:43:51" sensor="3" temperature="21.21"/>
+<KeithleyTemperature time="2013-07-30T16:43:51" sensor="4" temperature="16.54"/>
+<KeithleyTemperature time="2013-07-30T16:43:51" sensor="5" temperature="17.11"/>
+<KeithleyTemperature time="2013-07-30T16:43:51" sensor="6" temperature="17.31"/>
+<KeithleyTemperature time="2013-07-30T16:43:51" sensor="7" temperature="17.70"/>
+<KeithleyTemperature time="2013-07-30T16:43:51" sensor="8" temperature="18.57"/>
+<KeithleyTemperature time="2013-07-30T16:43:51" sensor="9" temperature="16.46"/>
+<HuberTemperature time="2013-07-30T16:43:51" circulator="1" work="15.00" bath="14.95"/>
+<KeithleyTemperature time="2013-07-30T16:44:11" sensor="0" temperature="16.54"/>
+<KeithleyTemperature time="2013-07-30T16:44:11" sensor="1" temperature="17.21"/>
+<KeithleyTemperature time="2013-07-30T16:44:11" sensor="2" temperature="17.59"/>
+<KeithleyTemperature time="2013-07-30T16:44:11" sensor="3" temperature="21.22"/>
+<KeithleyTemperature time="2013-07-30T16:44:11" sensor="4" temperature="16.54"/>
+<KeithleyTemperature time="2013-07-30T16:44:11" sensor="5" temperature="17.11"/>
+<KeithleyTemperature time="2013-07-30T16:44:11" sensor="6" temperature="17.30"/>
+<KeithleyTemperature time="2013-07-30T16:44:11" sensor="7" temperature="17.70"/>
+<KeithleyTemperature time="2013-07-30T16:44:11" sensor="8" temperature="18.57"/>
+<KeithleyTemperature time="2013-07-30T16:44:11" sensor="9" temperature="16.46"/>
+<PfeifferPressure time="2013-07-30T16:44:11" s1="0" p1="3.530e-03" s2="1" p2="5.060e-09"/>
+<PfeifferPressure time="2013-07-30T16:44:15" s1="0" p1="3.520e-03" s2="1" p2="5.060e-09"/>
+<HuberTemperature time="2013-07-30T16:44:15" circulator="1" work="15.00" bath="15.03"/>
+<KeithleyTemperature time="2013-07-30T16:44:31" sensor="0" temperature="16.55"/>
+<KeithleyTemperature time="2013-07-30T16:44:31" sensor="1" temperature="17.21"/>
+<KeithleyTemperature time="2013-07-30T16:44:31" sensor="2" temperature="17.59"/>
+<KeithleyTemperature time="2013-07-30T16:44:31" sensor="3" temperature="21.22"/>
+<KeithleyTemperature time="2013-07-30T16:44:31" sensor="4" temperature="16.54"/>
+<KeithleyTemperature time="2013-07-30T16:44:31" sensor="5" temperature="17.11"/>
+<KeithleyTemperature time="2013-07-30T16:44:31" sensor="6" temperature="17.30"/>
+<KeithleyTemperature time="2013-07-30T16:44:31" sensor="7" temperature="17.70"/>
+<KeithleyTemperature time="2013-07-30T16:44:31" sensor="8" temperature="18.57"/>
+<KeithleyTemperature time="2013-07-30T16:44:31" sensor="9" temperature="16.46"/>
+<HuberTemperature time="2013-07-30T16:44:31" circulator="1" work="15.00" bath="14.98"/>
+<KeithleyTemperature time="2013-07-30T16:44:51" sensor="0" temperature="16.54"/>
+<KeithleyTemperature time="2013-07-30T16:44:51" sensor="1" temperature="17.21"/>
+<KeithleyTemperature time="2013-07-30T16:44:51" sensor="2" temperature="17.59"/>
+<KeithleyTemperature time="2013-07-30T16:44:51" sensor="3" temperature="21.23"/>
+<KeithleyTemperature time="2013-07-30T16:44:51" sensor="4" temperature="16.54"/>
+<KeithleyTemperature time="2013-07-30T16:44:51" sensor="5" temperature="17.11"/>
+<KeithleyTemperature time="2013-07-30T16:44:51" sensor="6" temperature="17.30"/>
+<KeithleyTemperature time="2013-07-30T16:44:51" sensor="7" temperature="17.71"/>
+<KeithleyTemperature time="2013-07-30T16:44:51" sensor="8" temperature="18.57"/>
+<KeithleyTemperature time="2013-07-30T16:44:51" sensor="9" temperature="16.46"/>
+<PfeifferPressure time="2013-07-30T16:44:51" s1="0" p1="3.530e-03" s2="1" p2="5.060e-09"/>
+<HuberTemperature time="2013-07-30T16:44:51" circulator="1" work="15.00" bath="14.94"/>
+<HuberTemperature time="2013-07-30T16:45:02" circulator="1" work="15.00" bath="14.98"/>
+<KeithleyTemperature time="2013-07-30T16:45:11" sensor="0" temperature="16.55"/>
+<KeithleyTemperature time="2013-07-30T16:45:11" sensor="1" temperature="17.21"/>
+<KeithleyTemperature time="2013-07-30T16:45:11" sensor="2" temperature="17.59"/>
+<KeithleyTemperature time="2013-07-30T16:45:11" sensor="3" temperature="21.23"/>
+<KeithleyTemperature time="2013-07-30T16:45:11" sensor="4" temperature="16.54"/>
+<KeithleyTemperature time="2013-07-30T16:45:11" sensor="5" temperature="17.11"/>
+<KeithleyTemperature time="2013-07-30T16:45:11" sensor="6" temperature="17.31"/>
+<KeithleyTemperature time="2013-07-30T16:45:11" sensor="7" temperature="17.70"/>
+<KeithleyTemperature time="2013-07-30T16:45:11" sensor="8" temperature="18.57"/>
+<KeithleyTemperature time="2013-07-30T16:45:11" sensor="9" temperature="16.46"/>
+<PfeifferPressure time="2013-07-30T16:45:15" s1="0" p1="3.520e-03" s2="1" p2="5.060e-09"/>
+<HuberTemperature time="2013-07-30T16:45:15" circulator="1" work="15.00" bath="15.07"/>
+<KeithleyTemperature time="2013-07-30T16:45:31" sensor="0" temperature="16.55"/>
+<KeithleyTemperature time="2013-07-30T16:45:31" sensor="1" temperature="17.21"/>
+<KeithleyTemperature time="2013-07-30T16:45:31" sensor="2" temperature="17.59"/>
+<KeithleyTemperature time="2013-07-30T16:45:31" sensor="3" temperature="21.23"/>
+<KeithleyTemperature time="2013-07-30T16:45:31" sensor="4" temperature="16.54"/>
+<KeithleyTemperature time="2013-07-30T16:45:31" sensor="5" temperature="17.11"/>
+<KeithleyTemperature time="2013-07-30T16:45:31" sensor="6" temperature="17.31"/>
+<KeithleyTemperature time="2013-07-30T16:45:31" sensor="7" temperature="17.70"/>
+<KeithleyTemperature time="2013-07-30T16:45:31" sensor="8" temperature="18.57"/>
+<KeithleyTemperature time="2013-07-30T16:45:31" sensor="9" temperature="16.46"/>
+<KeithleyTemperature time="2013-07-30T16:45:51" sensor="0" temperature="16.55"/>
+<KeithleyTemperature time="2013-07-30T16:45:51" sensor="1" temperature="17.21"/>
+<KeithleyTemperature time="2013-07-30T16:45:51" sensor="2" temperature="17.59"/>
+<KeithleyTemperature time="2013-07-30T16:45:51" sensor="3" temperature="21.24"/>
+<KeithleyTemperature time="2013-07-30T16:45:51" sensor="4" temperature="16.54"/>
+<KeithleyTemperature time="2013-07-30T16:45:51" sensor="5" temperature="17.11"/>
+<KeithleyTemperature time="2013-07-30T16:45:51" sensor="6" temperature="17.31"/>
+<KeithleyTemperature time="2013-07-30T16:45:51" sensor="7" temperature="17.71"/>
+<KeithleyTemperature time="2013-07-30T16:45:51" sensor="8" temperature="18.57"/>
+<KeithleyTemperature time="2013-07-30T16:45:51" sensor="9" temperature="16.46"/>
+<HuberTemperature time="2013-07-30T16:45:51" circulator="1" work="15.00" bath="14.97"/>
+<HuberTemperature time="2013-07-30T16:46:02" circulator="1" work="15.00" bath="14.96"/>
+<KeithleyTemperature time="2013-07-30T16:46:11" sensor="0" temperature="16.55"/>
+<KeithleyTemperature time="2013-07-30T16:46:11" sensor="1" temperature="17.22"/>
+<KeithleyTemperature time="2013-07-30T16:46:11" sensor="2" temperature="17.59"/>
+<KeithleyTemperature time="2013-07-30T16:46:11" sensor="3" temperature="21.24"/>
+<KeithleyTemperature time="2013-07-30T16:46:11" sensor="4" temperature="16.54"/>
+<KeithleyTemperature time="2013-07-30T16:46:11" sensor="5" temperature="17.11"/>
+<KeithleyTemperature time="2013-07-30T16:46:11" sensor="6" temperature="17.31"/>
+<KeithleyTemperature time="2013-07-30T16:46:11" sensor="7" temperature="17.71"/>
+<KeithleyTemperature time="2013-07-30T16:46:11" sensor="8" temperature="18.57"/>
+<KeithleyTemperature time="2013-07-30T16:46:11" sensor="9" temperature="16.46"/>
+<HuberTemperature time="2013-07-30T16:46:17" circulator="1" work="15.00" bath="14.99"/>
+<KeithleyTemperature time="2013-07-30T16:46:31" sensor="0" temperature="16.55"/>
+<KeithleyTemperature time="2013-07-30T16:46:31" sensor="1" temperature="17.22"/>
+<KeithleyTemperature time="2013-07-30T16:46:31" sensor="2" temperature="17.60"/>
+<KeithleyTemperature time="2013-07-30T16:46:31" sensor="3" temperature="21.24"/>
+<KeithleyTemperature time="2013-07-30T16:46:31" sensor="4" temperature="16.55"/>
+<KeithleyTemperature time="2013-07-30T16:46:31" sensor="5" temperature="17.11"/>
+<KeithleyTemperature time="2013-07-30T16:46:31" sensor="6" temperature="17.31"/>
+<KeithleyTemperature time="2013-07-30T16:46:31" sensor="7" temperature="17.71"/>
+<KeithleyTemperature time="2013-07-30T16:46:31" sensor="8" temperature="18.58"/>
+<KeithleyTemperature time="2013-07-30T16:46:31" sensor="9" temperature="16.46"/>
+<HuberTemperature time="2013-07-30T16:46:31" circulator="1" work="15.00" bath="15.01"/>
+<KeithleyTemperature time="2013-07-30T16:46:51" sensor="0" temperature="16.55"/>
+<KeithleyTemperature time="2013-07-30T16:46:51" sensor="1" temperature="17.21"/>
+<KeithleyTemperature time="2013-07-30T16:46:51" sensor="2" temperature="17.60"/>
+<KeithleyTemperature time="2013-07-30T16:46:51" sensor="3" temperature="21.25"/>
+<KeithleyTemperature time="2013-07-30T16:46:51" sensor="4" temperature="16.54"/>
+<KeithleyTemperature time="2013-07-30T16:46:51" sensor="5" temperature="17.11"/>
+<KeithleyTemperature time="2013-07-30T16:46:51" sensor="6" temperature="17.31"/>
+<KeithleyTemperature time="2013-07-30T16:46:51" sensor="7" temperature="17.71"/>
+<KeithleyTemperature time="2013-07-30T16:46:51" sensor="8" temperature="18.58"/>
+<KeithleyTemperature time="2013-07-30T16:46:51" sensor="9" temperature="16.46"/>
+<HuberTemperature time="2013-07-30T16:46:51" circulator="1" work="15.00" bath="15.03"/>
+<HuberTemperature time="2013-07-30T16:47:02" circulator="1" work="15.00" bath="15.02"/>
+
+<HamegSetup time="2013-07-30T16:47:02" remote="1" outputs="0" CV1="0" CV2="0"/>
+<HamegValues time="2013-07-30T16:47:02" V1="1" C1="0" V2="0.62" C2="0"/>
+<KeithleyTemperature time="2013-07-30T16:47:11" sensor="0" temperature="16.55"/>
+<KeithleyTemperature time="2013-07-30T16:47:11" sensor="1" temperature="17.22"/>
+<KeithleyTemperature time="2013-07-30T16:47:11" sensor="2" temperature="17.60"/>
+<KeithleyTemperature time="2013-07-30T16:47:11" sensor="3" temperature="21.25"/>
+<KeithleyTemperature time="2013-07-30T16:47:11" sensor="4" temperature="16.55"/>
+<KeithleyTemperature time="2013-07-30T16:47:11" sensor="5" temperature="17.11"/>
+<KeithleyTemperature time="2013-07-30T16:47:11" sensor="6" temperature="17.30"/>
+<KeithleyTemperature time="2013-07-30T16:47:11" sensor="7" temperature="17.63"/>
+<KeithleyTemperature time="2013-07-30T16:47:11" sensor="8" temperature="18.39"/>
+<KeithleyTemperature time="2013-07-30T16:47:11" sensor="9" temperature="16.47"/>
+<HuberTemperature time="2013-07-30T16:47:17" circulator="1" work="15.00" bath="15.00"/>
+<KeithleyTemperature time="2013-07-30T16:47:31" sensor="0" temperature="16.55"/>
+<KeithleyTemperature time="2013-07-30T16:47:31" sensor="1" temperature="17.22"/>
+<KeithleyTemperature time="2013-07-30T16:47:31" sensor="2" temperature="17.60"/>
+<KeithleyTemperature time="2013-07-30T16:47:31" sensor="3" temperature="21.25"/>
+<KeithleyTemperature time="2013-07-30T16:47:31" sensor="4" temperature="16.55"/>
+<KeithleyTemperature time="2013-07-30T16:47:31" sensor="5" temperature="17.06"/>
+<KeithleyTemperature time="2013-07-30T16:47:31" sensor="6" temperature="17.23"/>
+<KeithleyTemperature time="2013-07-30T16:47:31" sensor="7" temperature="17.38"/>
+<KeithleyTemperature time="2013-07-30T16:47:31" sensor="8" temperature="17.95"/>
+<KeithleyTemperature time="2013-07-30T16:47:31" sensor="9" temperature="16.46"/>
+<HuberTemperature time="2013-07-30T16:47:31" circulator="1" work="15.00" bath="14.99"/>
+<KeithleyTemperature time="2013-07-30T16:47:51" sensor="0" temperature="16.55"/>
+<KeithleyTemperature time="2013-07-30T16:47:51" sensor="1" temperature="17.22"/>
+<KeithleyTemperature time="2013-07-30T16:47:51" sensor="2" temperature="17.60"/>
+<KeithleyTemperature time="2013-07-30T16:47:51" sensor="3" temperature="21.26"/>
+<KeithleyTemperature time="2013-07-30T16:47:51" sensor="4" temperature="16.55"/>
+<KeithleyTemperature time="2013-07-30T16:47:51" sensor="5" temperature="16.99"/>
+<KeithleyTemperature time="2013-07-30T16:47:51" sensor="6" temperature="17.15"/>
+<KeithleyTemperature time="2013-07-30T16:47:51" sensor="7" temperature="17.16"/>
+<KeithleyTemperature time="2013-07-30T16:47:51" sensor="8" temperature="17.60"/>
+<KeithleyTemperature time="2013-07-30T16:47:51" sensor="9" temperature="16.46"/>
+<HuberTemperature time="2013-07-30T16:47:51" circulator="1" work="15.00" bath="15.02"/>
+<HuberTemperature time="2013-07-30T16:48:02" circulator="1" work="15.00" bath="15.04"/>
+<KeithleyTemperature time="2013-07-30T16:48:11" sensor="0" temperature="16.55"/>
+<KeithleyTemperature time="2013-07-30T16:48:11" sensor="1" temperature="17.22"/>
+<KeithleyTemperature time="2013-07-30T16:48:11" sensor="2" temperature="17.60"/>
+<KeithleyTemperature time="2013-07-30T16:48:11" sensor="3" temperature="21.26"/>
+<KeithleyTemperature time="2013-07-30T16:48:11" sensor="4" temperature="16.55"/>
+<KeithleyTemperature time="2013-07-30T16:48:11" sensor="5" temperature="16.94"/>
+<KeithleyTemperature time="2013-07-30T16:48:11" sensor="6" temperature="17.09"/>
+<KeithleyTemperature time="2013-07-30T16:48:11" sensor="7" temperature="17.00"/>
+<KeithleyTemperature time="2013-07-30T16:48:11" sensor="8" temperature="17.34"/>
+<KeithleyTemperature time="2013-07-30T16:48:11" sensor="9" temperature="16.45"/>
+<HuberTemperature time="2013-07-30T16:48:17" circulator="1" work="15.00" bath="14.96"/>
+<KeithleyTemperature time="2013-07-30T16:48:31" sensor="0" temperature="16.55"/>
+<KeithleyTemperature time="2013-07-30T16:48:31" sensor="1" temperature="17.22"/>
+<KeithleyTemperature time="2013-07-30T16:48:31" sensor="2" temperature="17.60"/>
+<KeithleyTemperature time="2013-07-30T16:48:31" sensor="3" temperature="21.26"/>
+<KeithleyTemperature time="2013-07-30T16:48:31" sensor="4" temperature="16.55"/>
+<KeithleyTemperature time="2013-07-30T16:48:31" sensor="5" temperature="16.90"/>
+<KeithleyTemperature time="2013-07-30T16:48:31" sensor="6" temperature="17.03"/>
+<KeithleyTemperature time="2013-07-30T16:48:31" sensor="7" temperature="16.87"/>
+<KeithleyTemperature time="2013-07-30T16:48:31" sensor="8" temperature="17.15"/>
+<KeithleyTemperature time="2013-07-30T16:48:31" sensor="9" temperature="16.44"/>
+<HuberTemperature time="2013-07-30T16:48:31" circulator="1" work="15.00" bath="14.98"/>
+<KeithleyTemperature time="2013-07-30T16:48:51" sensor="0" temperature="16.55"/>
+<KeithleyTemperature time="2013-07-30T16:48:51" sensor="1" temperature="17.22"/>
+<KeithleyTemperature time="2013-07-30T16:48:51" sensor="2" temperature="17.60"/>
+<KeithleyTemperature time="2013-07-30T16:48:51" sensor="3" temperature="21.26"/>
+<KeithleyTemperature time="2013-07-30T16:48:51" sensor="4" temperature="16.55"/>
+<KeithleyTemperature time="2013-07-30T16:48:51" sensor="5" temperature="16.87"/>
+<KeithleyTemperature time="2013-07-30T16:48:51" sensor="6" temperature="17.00"/>
+<KeithleyTemperature time="2013-07-30T16:48:51" sensor="7" temperature="16.78"/>
+<KeithleyTemperature time="2013-07-30T16:48:51" sensor="8" temperature="17.00"/>
+<KeithleyTemperature time="2013-07-30T16:48:51" sensor="9" temperature="16.43"/>
+<HuberTemperature time="2013-07-30T16:48:51" circulator="1" work="15.00" bath="14.97"/>
+<HuberTemperature time="2013-07-30T16:49:02" circulator="1" work="15.00" bath="15.04"/>
+<KeithleyTemperature time="2013-07-30T16:49:11" sensor="0" temperature="16.55"/>
+<KeithleyTemperature time="2013-07-30T16:49:11" sensor="1" temperature="17.22"/>
+<KeithleyTemperature time="2013-07-30T16:49:11" sensor="2" temperature="17.60"/>
+<KeithleyTemperature time="2013-07-30T16:49:11" sensor="3" temperature="21.27"/>
+<KeithleyTemperature time="2013-07-30T16:49:11" sensor="4" temperature="16.54"/>
+<KeithleyTemperature time="2013-07-30T16:49:11" sensor="5" temperature="16.85"/>
+<KeithleyTemperature time="2013-07-30T16:49:11" sensor="6" temperature="16.97"/>
+<KeithleyTemperature time="2013-07-30T16:49:11" sensor="7" temperature="16.71"/>
+<KeithleyTemperature time="2013-07-30T16:49:11" sensor="8" temperature="16.90"/>
+<KeithleyTemperature time="2013-07-30T16:49:11" sensor="9" temperature="16.43"/>
+<KeithleyTemperature time="2013-07-30T16:49:31" sensor="0" temperature="16.55"/>
+<KeithleyTemperature time="2013-07-30T16:49:31" sensor="1" temperature="17.22"/>
+<KeithleyTemperature time="2013-07-30T16:49:31" sensor="2" temperature="17.60"/>
+<KeithleyTemperature time="2013-07-30T16:49:31" sensor="3" temperature="21.27"/>
+<KeithleyTemperature time="2013-07-30T16:49:31" sensor="4" temperature="16.54"/>
+<KeithleyTemperature time="2013-07-30T16:49:31" sensor="5" temperature="16.83"/>
+<KeithleyTemperature time="2013-07-30T16:49:31" sensor="6" temperature="16.94"/>
+<KeithleyTemperature time="2013-07-30T16:49:31" sensor="7" temperature="16.66"/>
+<KeithleyTemperature time="2013-07-30T16:49:31" sensor="8" temperature="16.82"/>
+<KeithleyTemperature time="2013-07-30T16:49:31" sensor="9" temperature="16.42"/>
+<HuberTemperature time="2013-07-30T16:49:31" circulator="1" work="15.00" bath="14.98"/>
+<KeithleyTemperature time="2013-07-30T16:49:51" sensor="0" temperature="16.55"/>
+<KeithleyTemperature time="2013-07-30T16:49:51" sensor="1" temperature="17.23"/>
+<KeithleyTemperature time="2013-07-30T16:49:51" sensor="2" temperature="17.61"/>
+<KeithleyTemperature time="2013-07-30T16:49:51" sensor="3" temperature="21.27"/>
+<KeithleyTemperature time="2013-07-30T16:49:51" sensor="4" temperature="16.54"/>
+<KeithleyTemperature time="2013-07-30T16:49:51" sensor="5" temperature="16.82"/>
+<KeithleyTemperature time="2013-07-30T16:49:51" sensor="6" temperature="16.93"/>
+<KeithleyTemperature time="2013-07-30T16:49:51" sensor="7" temperature="16.62"/>
+<KeithleyTemperature time="2013-07-30T16:49:51" sensor="8" temperature="16.76"/>
+<KeithleyTemperature time="2013-07-30T16:49:51" sensor="9" temperature="16.42"/>
+<HuberTemperature time="2013-07-30T16:49:51" circulator="1" work="15.00" bath="15.02"/>
+<HuberTemperature time="2013-07-30T16:50:02" circulator="1" work="15.00" bath="14.95"/>
+<KeithleyTemperature time="2013-07-30T16:50:11" sensor="0" temperature="16.55"/>
+<KeithleyTemperature time="2013-07-30T16:50:11" sensor="1" temperature="17.23"/>
+<KeithleyTemperature time="2013-07-30T16:50:11" sensor="2" temperature="17.61"/>
+<KeithleyTemperature time="2013-07-30T16:50:11" sensor="3" temperature="21.28"/>
+<KeithleyTemperature time="2013-07-30T16:50:11" sensor="4" temperature="16.54"/>
+<KeithleyTemperature time="2013-07-30T16:50:11" sensor="5" temperature="16.80"/>
+<KeithleyTemperature time="2013-07-30T16:50:11" sensor="6" temperature="16.91"/>
+<KeithleyTemperature time="2013-07-30T16:50:11" sensor="7" temperature="16.59"/>
+<KeithleyTemperature time="2013-07-30T16:50:11" sensor="8" temperature="16.72"/>
+<KeithleyTemperature time="2013-07-30T16:50:11" sensor="9" temperature="16.42"/>
+<HuberTemperature time="2013-07-30T16:50:17" circulator="1" work="15.00" bath="15.01"/>
+<KeithleyTemperature time="2013-07-30T16:50:31" sensor="0" temperature="16.55"/>
+<KeithleyTemperature time="2013-07-30T16:50:31" sensor="1" temperature="17.23"/>
+<KeithleyTemperature time="2013-07-30T16:50:31" sensor="2" temperature="17.61"/>
+<KeithleyTemperature time="2013-07-30T16:50:31" sensor="3" temperature="21.28"/>
+<KeithleyTemperature time="2013-07-30T16:50:31" sensor="4" temperature="16.54"/>
+<KeithleyTemperature time="2013-07-30T16:50:31" sensor="5" temperature="16.79"/>
+<KeithleyTemperature time="2013-07-30T16:50:31" sensor="6" temperature="16.90"/>
+<KeithleyTemperature time="2013-07-30T16:50:31" sensor="7" temperature="16.57"/>
+<KeithleyTemperature time="2013-07-30T16:50:31" sensor="8" temperature="16.68"/>
+<KeithleyTemperature time="2013-07-30T16:50:31" sensor="9" temperature="16.41"/>
+<HuberTemperature time="2013-07-30T16:50:31" circulator="1" work="15.00" bath="15.03"/>
+<KeithleyTemperature time="2013-07-30T16:50:51" sensor="0" temperature="16.55"/>
+<KeithleyTemperature time="2013-07-30T16:50:51" sensor="1" temperature="17.23"/>
+<KeithleyTemperature time="2013-07-30T16:50:51" sensor="2" temperature="17.61"/>
+<KeithleyTemperature time="2013-07-30T16:50:51" sensor="3" temperature="21.28"/>
+<KeithleyTemperature time="2013-07-30T16:50:51" sensor="4" temperature="16.54"/>
+<KeithleyTemperature time="2013-07-30T16:50:51" sensor="5" temperature="16.79"/>
+<KeithleyTemperature time="2013-07-30T16:50:51" sensor="6" temperature="16.89"/>
+<KeithleyTemperature time="2013-07-30T16:50:51" sensor="7" temperature="16.55"/>
+<KeithleyTemperature time="2013-07-30T16:50:51" sensor="8" temperature="16.65"/>
+<KeithleyTemperature time="2013-07-30T16:50:51" sensor="9" temperature="16.41"/>
+<HuberTemperature time="2013-07-30T16:50:51" circulator="1" work="15.00" bath="15.04"/>
+<HuberTemperature time="2013-07-30T16:51:02" circulator="1" work="15.00" bath="14.96"/>
+<KeithleyTemperature time="2013-07-30T16:51:11" sensor="0" temperature="16.55"/>
+<KeithleyTemperature time="2013-07-30T16:51:11" sensor="1" temperature="17.23"/>
+<KeithleyTemperature time="2013-07-30T16:51:11" sensor="2" temperature="17.61"/>
+<KeithleyTemperature time="2013-07-30T16:51:11" sensor="3" temperature="21.29"/>
+<KeithleyTemperature time="2013-07-30T16:51:11" sensor="4" temperature="16.53"/>
+<KeithleyTemperature time="2013-07-30T16:51:11" sensor="5" temperature="16.78"/>
+<KeithleyTemperature time="2013-07-30T16:51:11" sensor="6" temperature="16.89"/>
+<KeithleyTemperature time="2013-07-30T16:51:11" sensor="7" temperature="16.54"/>
+<KeithleyTemperature time="2013-07-30T16:51:11" sensor="8" temperature="16.64"/>
+<KeithleyTemperature time="2013-07-30T16:51:11" sensor="9" temperature="16.41"/>
+<HuberTemperature time="2013-07-30T16:51:17" circulator="1" work="15.00" bath="14.99"/>
+<KeithleyTemperature time="2013-07-30T16:51:31" sensor="1" temperature="17.23"/>
+<KeithleyTemperature time="2013-07-30T16:51:31" sensor="2" temperature="17.61"/>
+<KeithleyTemperature time="2013-07-30T16:51:31" sensor="3" temperature="21.29"/>
+<KeithleyTemperature time="2013-07-30T16:51:31" sensor="4" temperature="16.53"/>
+<KeithleyTemperature time="2013-07-30T16:51:31" sensor="5" temperature="16.78"/>
+<KeithleyTemperature time="2013-07-30T16:51:31" sensor="6" temperature="16.88"/>
+<KeithleyTemperature time="2013-07-30T16:51:31" sensor="7" temperature="16.53"/>
+<KeithleyTemperature time="2013-07-30T16:51:31" sensor="8" temperature="16.62"/>
+<KeithleyTemperature time="2013-07-30T16:51:31" sensor="9" temperature="16.41"/>
+<HuberTemperature time="2013-07-30T16:51:31" circulator="1" work="15.00" bath="14.97"/>
+<KeithleyTemperature time="2013-07-30T16:51:51" sensor="0" temperature="16.54"/>
+<KeithleyTemperature time="2013-07-30T16:51:51" sensor="1" temperature="17.23"/>
+<KeithleyTemperature time="2013-07-30T16:51:51" sensor="2" temperature="17.61"/>
+<KeithleyTemperature time="2013-07-30T16:51:51" sensor="3" temperature="21.29"/>
+<KeithleyTemperature time="2013-07-30T16:51:51" sensor="4" temperature="16.53"/>
+<KeithleyTemperature time="2013-07-30T16:51:51" sensor="5" temperature="16.78"/>
+<KeithleyTemperature time="2013-07-30T16:51:51" sensor="6" temperature="16.88"/>
+<KeithleyTemperature time="2013-07-30T16:51:51" sensor="7" temperature="16.52"/>
+<KeithleyTemperature time="2013-07-30T16:51:51" sensor="8" temperature="16.61"/>
+<KeithleyTemperature time="2013-07-30T16:51:51" sensor="9" temperature="16.40"/>
+<HuberTemperature time="2013-07-30T16:51:51" circulator="1" work="15.00" bath="14.98"/>
+<HuberTemperature time="2013-07-30T16:52:02" circulator="1" work="15.00" bath="15.00"/>
+<KeithleyTemperature time="2013-07-30T16:52:11" sensor="0" temperature="16.54"/>
+<KeithleyTemperature time="2013-07-30T16:52:11" sensor="1" temperature="17.23"/>
+<KeithleyTemperature time="2013-07-30T16:52:11" sensor="2" temperature="17.61"/>
+<KeithleyTemperature time="2013-07-30T16:52:11" sensor="3" temperature="21.29"/>
+<KeithleyTemperature time="2013-07-30T16:52:11" sensor="4" temperature="16.53"/>
+<KeithleyTemperature time="2013-07-30T16:52:11" sensor="5" temperature="16.77"/>
+<KeithleyTemperature time="2013-07-30T16:52:11" sensor="6" temperature="16.87"/>
+<KeithleyTemperature time="2013-07-30T16:52:11" sensor="7" temperature="16.52"/>
+<KeithleyTemperature time="2013-07-30T16:52:11" sensor="8" temperature="16.60"/>
+<KeithleyTemperature time="2013-07-30T16:52:11" sensor="9" temperature="16.40"/>
+<HuberTemperature time="2013-07-30T16:52:17" circulator="1" work="15.00" bath="14.95"/>
+<KeithleyTemperature time="2013-07-30T16:52:31" sensor="0" temperature="16.54"/>
+<KeithleyTemperature time="2013-07-30T16:52:31" sensor="1" temperature="17.23"/>
+<KeithleyTemperature time="2013-07-30T16:52:31" sensor="2" temperature="17.62"/>
+<KeithleyTemperature time="2013-07-30T16:52:31" sensor="3" temperature="21.30"/>
+<KeithleyTemperature time="2013-07-30T16:52:31" sensor="4" temperature="16.53"/>
+<KeithleyTemperature time="2013-07-30T16:52:31" sensor="5" temperature="16.77"/>
+<KeithleyTemperature time="2013-07-30T16:52:31" sensor="6" temperature="16.87"/>
+<KeithleyTemperature time="2013-07-30T16:52:31" sensor="7" temperature="16.51"/>
+<KeithleyTemperature time="2013-07-30T16:52:31" sensor="8" temperature="16.60"/>
+<KeithleyTemperature time="2013-07-30T16:52:31" sensor="9" temperature="16.40"/>
+<HuberTemperature time="2013-07-30T16:52:31" circulator="1" work="15.00" bath="14.94"/>
+<KeithleyTemperature time="2013-07-30T16:52:51" sensor="0" temperature="16.54"/>
+<KeithleyTemperature time="2013-07-30T16:52:51" sensor="1" temperature="17.23"/>
+<KeithleyTemperature time="2013-07-30T16:52:51" sensor="2" temperature="17.62"/>
+<KeithleyTemperature time="2013-07-30T16:52:51" sensor="3" temperature="21.30"/>
+<KeithleyTemperature time="2013-07-30T16:52:51" sensor="4" temperature="16.53"/>
+<KeithleyTemperature time="2013-07-30T16:52:51" sensor="5" temperature="16.77"/>
+<KeithleyTemperature time="2013-07-30T16:52:51" sensor="6" temperature="16.87"/>
+<KeithleyTemperature time="2013-07-30T16:52:51" sensor="7" temperature="16.51"/>
+<KeithleyTemperature time="2013-07-30T16:52:51" sensor="8" temperature="16.59"/>
+<KeithleyTemperature time="2013-07-30T16:52:51" sensor="9" temperature="16.40"/>
+<HuberTemperature time="2013-07-30T16:52:51" circulator="1" work="15.00" bath="15.05"/>
+<HuberTemperature time="2013-07-30T16:53:02" circulator="1" work="15.00" bath="15.07"/>
+<KeithleyTemperature time="2013-07-30T16:53:11" sensor="0" temperature="16.54"/>
+<KeithleyTemperature time="2013-07-30T16:53:11" sensor="1" temperature="17.23"/>
+<KeithleyTemperature time="2013-07-30T16:53:11" sensor="2" temperature="17.62"/>
+<KeithleyTemperature time="2013-07-30T16:53:11" sensor="3" temperature="21.30"/>
+<KeithleyTemperature time="2013-07-30T16:53:11" sensor="4" temperature="16.53"/>
+<KeithleyTemperature time="2013-07-30T16:53:11" sensor="5" temperature="16.77"/>
+<KeithleyTemperature time="2013-07-30T16:53:11" sensor="6" temperature="16.87"/>
+<KeithleyTemperature time="2013-07-30T16:53:11" sensor="7" temperature="16.51"/>
+<KeithleyTemperature time="2013-07-30T16:53:11" sensor="8" temperature="16.59"/>
+<KeithleyTemperature time="2013-07-30T16:53:11" sensor="9" temperature="16.40"/>
+<HuberTemperature time="2013-07-30T16:53:17" circulator="1" work="15.00" bath="15.01"/>
+<KeithleyTemperature time="2013-07-30T16:53:31" sensor="0" temperature="16.54"/>
+<KeithleyTemperature time="2013-07-30T16:53:31" sensor="1" temperature="17.23"/>
+<KeithleyTemperature time="2013-07-30T16:53:31" sensor="2" temperature="17.62"/>
+<KeithleyTemperature time="2013-07-30T16:53:31" sensor="3" temperature="21.30"/>
+<KeithleyTemperature time="2013-07-30T16:53:31" sensor="4" temperature="16.52"/>
+<KeithleyTemperature time="2013-07-30T16:53:31" sensor="5" temperature="16.76"/>
+<KeithleyTemperature time="2013-07-30T16:53:31" sensor="6" temperature="16.86"/>
+<KeithleyTemperature time="2013-07-30T16:53:31" sensor="7" temperature="16.50"/>
+<KeithleyTemperature time="2013-07-30T16:53:31" sensor="8" temperature="16.59"/>
+<KeithleyTemperature time="2013-07-30T16:53:31" sensor="9" temperature="16.40"/>
+<HuberTemperature time="2013-07-30T16:53:31" circulator="1" work="15.00" bath="14.98"/>
+<PfeifferPressure time="2013-07-30T16:53:35" s1="0" p1="3.510e-03" s2="1" p2="5.060e-09"/>
+<KeithleyTemperature time="2013-07-30T16:53:51" sensor="0" temperature="16.54"/>
+<KeithleyTemperature time="2013-07-30T16:53:51" sensor="1" temperature="17.23"/>
+<KeithleyTemperature time="2013-07-30T16:53:51" sensor="2" temperature="17.62"/>
+<KeithleyTemperature time="2013-07-30T16:53:51" sensor="3" temperature="21.30"/>
+<KeithleyTemperature time="2013-07-30T16:53:51" sensor="4" temperature="16.53"/>
+<KeithleyTemperature time="2013-07-30T16:53:51" sensor="5" temperature="16.76"/>
+<KeithleyTemperature time="2013-07-30T16:53:51" sensor="6" temperature="16.87"/>
+<KeithleyTemperature time="2013-07-30T16:53:51" sensor="7" temperature="16.50"/>
+<KeithleyTemperature time="2013-07-30T16:53:51" sensor="8" temperature="16.58"/>
+<KeithleyTemperature time="2013-07-30T16:53:51" sensor="9" temperature="16.40"/>
+<PfeifferPressure time="2013-07-30T16:53:51" s1="0" p1="3.520e-03" s2="1" p2="5.060e-09"/>
+<HuberTemperature time="2013-07-30T16:53:51" circulator="1" work="15.00" bath="15.01"/>
+<HuberTemperature time="2013-07-30T16:54:02" circulator="1" work="15.00" bath="15.02"/>
+<KeithleyTemperature time="2013-07-30T16:54:11" sensor="0" temperature="16.54"/>
+<KeithleyTemperature time="2013-07-30T16:54:11" sensor="1" temperature="17.23"/>
+<KeithleyTemperature time="2013-07-30T16:54:11" sensor="2" temperature="17.62"/>
+<KeithleyTemperature time="2013-07-30T16:54:11" sensor="3" temperature="21.31"/>
+<KeithleyTemperature time="2013-07-30T16:54:11" sensor="4" temperature="16.53"/>
+<KeithleyTemperature time="2013-07-30T16:54:11" sensor="5" temperature="16.76"/>
+<KeithleyTemperature time="2013-07-30T16:54:11" sensor="6" temperature="16.87"/>
+<KeithleyTemperature time="2013-07-30T16:54:11" sensor="7" temperature="16.50"/>
+<KeithleyTemperature time="2013-07-30T16:54:11" sensor="8" temperature="16.58"/>
+<KeithleyTemperature time="2013-07-30T16:54:11" sensor="9" temperature="16.40"/>
+<HuberTemperature time="2013-07-30T16:54:17" circulator="1" work="15.00" bath="15.01"/>
+<KeithleyTemperature time="2013-07-30T16:54:31" sensor="0" temperature="16.54"/>
+<KeithleyTemperature time="2013-07-30T16:54:31" sensor="1" temperature="17.24"/>
+<KeithleyTemperature time="2013-07-30T16:54:31" sensor="2" temperature="17.62"/>
+<KeithleyTemperature time="2013-07-30T16:54:31" sensor="3" temperature="21.31"/>
+<KeithleyTemperature time="2013-07-30T16:54:31" sensor="4" temperature="16.53"/>
+<KeithleyTemperature time="2013-07-30T16:54:31" sensor="5" temperature="16.76"/>
+<KeithleyTemperature time="2013-07-30T16:54:31" sensor="6" temperature="16.86"/>
+<KeithleyTemperature time="2013-07-30T16:54:31" sensor="7" temperature="16.49"/>
+<KeithleyTemperature time="2013-07-30T16:54:31" sensor="8" temperature="16.58"/>
+<KeithleyTemperature time="2013-07-30T16:54:31" sensor="9" temperature="16.39"/>
+<HuberTemperature time="2013-07-30T16:54:31" circulator="1" work="15.00" bath="14.97"/>
+<KeithleyTemperature time="2013-07-30T16:54:51" sensor="0" temperature="16.54"/>
+<KeithleyTemperature time="2013-07-30T16:54:51" sensor="1" temperature="17.24"/>
+<KeithleyTemperature time="2013-07-30T16:54:51" sensor="2" temperature="17.62"/>
+<KeithleyTemperature time="2013-07-30T16:54:51" sensor="3" temperature="21.31"/>
+<KeithleyTemperature time="2013-07-30T16:54:51" sensor="4" temperature="16.52"/>
+<KeithleyTemperature time="2013-07-30T16:54:51" sensor="5" temperature="16.76"/>
+<KeithleyTemperature time="2013-07-30T16:54:51" sensor="6" temperature="16.86"/>
+<KeithleyTemperature time="2013-07-30T16:54:51" sensor="7" temperature="16.49"/>
+<KeithleyTemperature time="2013-07-30T16:54:51" sensor="8" temperature="16.58"/>
+<KeithleyTemperature time="2013-07-30T16:54:51" sensor="9" temperature="16.39"/>
+<HuberTemperature time="2013-07-30T16:54:51" circulator="1" work="15.00" bath="15.04"/>
+<PfeifferPressure time="2013-07-30T16:54:55" s1="0" p1="3.510e-03" s2="1" p2="5.060e-09"/>
+<HuberTemperature time="2013-07-30T16:55:02" circulator="1" work="15.00" bath="15.10"/>
+<KeithleyTemperature time="2013-07-30T16:55:11" sensor="0" temperature="16.53"/>
+<KeithleyTemperature time="2013-07-30T16:55:11" sensor="1" temperature="17.24"/>
+<KeithleyTemperature time="2013-07-30T16:55:11" sensor="2" temperature="17.62"/>
+<KeithleyTemperature time="2013-07-30T16:55:11" sensor="3" temperature="21.31"/>
+<KeithleyTemperature time="2013-07-30T16:55:11" sensor="4" temperature="16.52"/>
+<KeithleyTemperature time="2013-07-30T16:55:11" sensor="5" temperature="16.76"/>
+<KeithleyTemperature time="2013-07-30T16:55:11" sensor="6" temperature="16.86"/>
+<KeithleyTemperature time="2013-07-30T16:55:11" sensor="7" temperature="16.50"/>
+<KeithleyTemperature time="2013-07-30T16:55:11" sensor="8" temperature="16.58"/>
+<KeithleyTemperature time="2013-07-30T16:55:11" sensor="9" temperature="16.39"/>
+<PfeifferPressure time="2013-07-30T16:55:11" s1="0" p1="3.520e-03" s2="1" p2="5.060e-09"/>
+<HuberTemperature time="2013-07-30T16:55:17" circulator="1" work="15.00" bath="14.92"/>
+<KeithleyTemperature time="2013-07-30T16:55:31" sensor="0" temperature="16.54"/>
+<KeithleyTemperature time="2013-07-30T16:55:31" sensor="1" temperature="17.24"/>
+<KeithleyTemperature time="2013-07-30T16:55:31" sensor="2" temperature="17.63"/>
+<KeithleyTemperature time="2013-07-30T16:55:31" sensor="3" temperature="21.32"/>
+<KeithleyTemperature time="2013-07-30T16:55:31" sensor="4" temperature="16.52"/>
+<KeithleyTemperature time="2013-07-30T16:55:31" sensor="5" temperature="16.76"/>
+<KeithleyTemperature time="2013-07-30T16:55:31" sensor="6" temperature="16.86"/>
+<KeithleyTemperature time="2013-07-30T16:55:31" sensor="7" temperature="16.50"/>
+<KeithleyTemperature time="2013-07-30T16:55:31" sensor="8" temperature="16.58"/>
+<KeithleyTemperature time="2013-07-30T16:55:31" sensor="9" temperature="16.39"/>
+<HuberTemperature time="2013-07-30T16:55:31" circulator="1" work="15.00" bath="14.97"/>
+<PfeifferPressure time="2013-07-30T16:55:35" s1="0" p1="3.510e-03" s2="1" p2="5.060e-09"/>
+<KeithleyTemperature time="2013-07-30T16:55:51" sensor="0" temperature="16.53"/>
+<KeithleyTemperature time="2013-07-30T16:55:51" sensor="1" temperature="17.24"/>
+<KeithleyTemperature time="2013-07-30T16:55:51" sensor="2" temperature="17.62"/>
+<KeithleyTemperature time="2013-07-30T16:55:51" sensor="3" temperature="21.32"/>
+<KeithleyTemperature time="2013-07-30T16:55:51" sensor="4" temperature="16.52"/>
+<KeithleyTemperature time="2013-07-30T16:55:51" sensor="5" temperature="16.76"/>
+<KeithleyTemperature time="2013-07-30T16:55:51" sensor="6" temperature="16.86"/>
+<KeithleyTemperature time="2013-07-30T16:55:51" sensor="7" temperature="16.49"/>
+<KeithleyTemperature time="2013-07-30T16:55:51" sensor="8" temperature="16.57"/>
+<KeithleyTemperature time="2013-07-30T16:55:51" sensor="9" temperature="16.39"/>
+<PfeifferPressure time="2013-07-30T16:55:51" s1="0" p1="3.520e-03" s2="1" p2="5.060e-09"/>
+<HuberTemperature time="2013-07-30T16:55:51" circulator="1" work="15.00" bath="15.07"/>
+<HuberTemperature time="2013-07-30T16:56:02" circulator="1" work="15.00" bath="14.98"/>
+<KeithleyTemperature time="2013-07-30T16:56:11" sensor="0" temperature="16.53"/>
+<KeithleyTemperature time="2013-07-30T16:56:11" sensor="1" temperature="17.24"/>
+<KeithleyTemperature time="2013-07-30T16:56:11" sensor="2" temperature="17.63"/>
+<KeithleyTemperature time="2013-07-30T16:56:11" sensor="3" temperature="21.32"/>
+<KeithleyTemperature time="2013-07-30T16:56:11" sensor="4" temperature="16.52"/>
+<KeithleyTemperature time="2013-07-30T16:56:11" sensor="5" temperature="16.76"/>
+<KeithleyTemperature time="2013-07-30T16:56:11" sensor="6" temperature="16.86"/>
+<KeithleyTemperature time="2013-07-30T16:56:11" sensor="7" temperature="16.49"/>
+<KeithleyTemperature time="2013-07-30T16:56:11" sensor="8" temperature="16.58"/>
+<KeithleyTemperature time="2013-07-30T16:56:11" sensor="9" temperature="16.39"/>
+<PfeifferPressure time="2013-07-30T16:56:11" s1="0" p1="3.510e-03" s2="1" p2="5.060e-09"/>
+<HuberTemperature time="2013-07-30T16:56:17" circulator="1" work="15.00" bath="14.99"/>
+<KeithleyTemperature time="2013-07-30T16:56:31" sensor="0" temperature="16.53"/>
+<KeithleyTemperature time="2013-07-30T16:56:31" sensor="1" temperature="17.24"/>
+<KeithleyTemperature time="2013-07-30T16:56:31" sensor="2" temperature="17.63"/>
+<KeithleyTemperature time="2013-07-30T16:56:31" sensor="3" temperature="21.32"/>
+<KeithleyTemperature time="2013-07-30T16:56:31" sensor="4" temperature="16.52"/>
+<KeithleyTemperature time="2013-07-30T16:56:31" sensor="5" temperature="16.76"/>
+<KeithleyTemperature time="2013-07-30T16:56:31" sensor="6" temperature="16.86"/>
+<KeithleyTemperature time="2013-07-30T16:56:31" sensor="7" temperature="16.49"/>
+<KeithleyTemperature time="2013-07-30T16:56:31" sensor="8" temperature="16.57"/>
+<KeithleyTemperature time="2013-07-30T16:56:31" sensor="9" temperature="16.39"/>
+<HuberTemperature time="2013-07-30T16:56:31" circulator="1" work="15.00" bath="15.00"/>
+<KeithleyTemperature time="2013-07-30T16:56:51" sensor="0" temperature="16.53"/>
+<KeithleyTemperature time="2013-07-30T16:56:51" sensor="1" temperature="17.24"/>
+<KeithleyTemperature time="2013-07-30T16:56:51" sensor="2" temperature="17.63"/>
+<KeithleyTemperature time="2013-07-30T16:56:51" sensor="3" temperature="21.33"/>
+<KeithleyTemperature time="2013-07-30T16:56:51" sensor="4" temperature="16.52"/>
+<KeithleyTemperature time="2013-07-30T16:56:51" sensor="5" temperature="16.75"/>
+<KeithleyTemperature time="2013-07-30T16:56:51" sensor="6" temperature="16.86"/>
+<KeithleyTemperature time="2013-07-30T16:56:51" sensor="7" temperature="16.49"/>
+<KeithleyTemperature time="2013-07-30T16:56:51" sensor="8" temperature="16.57"/>
+<KeithleyTemperature time="2013-07-30T16:56:51" sensor="9" temperature="16.39"/>
+<HuberTemperature time="2013-07-30T16:56:51" circulator="1" work="15.00" bath="14.95"/>
+<HuberTemperature time="2013-07-30T16:57:02" circulator="1" work="15.00" bath="15.00"/>
+<KeithleyTemperature time="2013-07-30T16:57:11" sensor="0" temperature="16.53"/>
+<KeithleyTemperature time="2013-07-30T16:57:11" sensor="1" temperature="17.24"/>
+<KeithleyTemperature time="2013-07-30T16:57:11" sensor="2" temperature="17.63"/>
+<KeithleyTemperature time="2013-07-30T16:57:11" sensor="3" temperature="21.33"/>
+<KeithleyTemperature time="2013-07-30T16:57:11" sensor="4" temperature="16.52"/>
+<KeithleyTemperature time="2013-07-30T16:57:11" sensor="5" temperature="16.76"/>
+<KeithleyTemperature time="2013-07-30T16:57:11" sensor="6" temperature="16.86"/>
+<KeithleyTemperature time="2013-07-30T16:57:11" sensor="7" temperature="16.49"/>
+<KeithleyTemperature time="2013-07-30T16:57:11" sensor="8" temperature="16.57"/>
+<KeithleyTemperature time="2013-07-30T16:57:11" sensor="9" temperature="16.39"/>
+<HuberTemperature time="2013-07-30T16:57:17" circulator="1" work="15.00" bath="14.96"/>
+<KeithleyTemperature time="2013-07-30T16:57:31" sensor="0" temperature="16.53"/>
+<KeithleyTemperature time="2013-07-30T16:57:31" sensor="1" temperature="17.24"/>
+<KeithleyTemperature time="2013-07-30T16:57:31" sensor="2" temperature="17.63"/>
+<KeithleyTemperature time="2013-07-30T16:57:31" sensor="3" temperature="21.33"/>
+<KeithleyTemperature time="2013-07-30T16:57:31" sensor="4" temperature="16.52"/>
+<KeithleyTemperature time="2013-07-30T16:57:31" sensor="5" temperature="16.75"/>
+<KeithleyTemperature time="2013-07-30T16:57:31" sensor="6" temperature="16.86"/>
+<KeithleyTemperature time="2013-07-30T16:57:31" sensor="7" temperature="16.49"/>
+<KeithleyTemperature time="2013-07-30T16:57:31" sensor="8" temperature="16.57"/>
+<KeithleyTemperature time="2013-07-30T16:57:31" sensor="9" temperature="16.39"/>
+<HuberTemperature time="2013-07-30T16:57:31" circulator="1" work="15.00" bath="14.99"/>
+<KeithleyTemperature time="2013-07-30T16:57:51" sensor="0" temperature="16.53"/>
+<KeithleyTemperature time="2013-07-30T16:57:51" sensor="1" temperature="17.24"/>
+<KeithleyTemperature time="2013-07-30T16:57:51" sensor="2" temperature="17.63"/>
+<KeithleyTemperature time="2013-07-30T16:57:51" sensor="3" temperature="21.33"/>
+<KeithleyTemperature time="2013-07-30T16:57:51" sensor="4" temperature="16.52"/>
+<KeithleyTemperature time="2013-07-30T16:57:51" sensor="5" temperature="16.75"/>
+<KeithleyTemperature time="2013-07-30T16:57:51" sensor="6" temperature="16.86"/>
+<KeithleyTemperature time="2013-07-30T16:57:51" sensor="7" temperature="16.49"/>
+<KeithleyTemperature time="2013-07-30T16:57:51" sensor="8" temperature="16.57"/>
+<KeithleyTemperature time="2013-07-30T16:57:51" sensor="9" temperature="16.39"/>
+<HuberTemperature time="2013-07-30T16:57:51" circulator="1" work="15.00" bath="15.01"/>
+<HuberTemperature time="2013-07-30T16:58:02" circulator="1" work="15.00" bath="14.95"/>
+<KeithleyTemperature time="2013-07-30T16:58:11" sensor="0" temperature="16.53"/>
+<KeithleyTemperature time="2013-07-30T16:58:11" sensor="1" temperature="17.24"/>
+<KeithleyTemperature time="2013-07-30T16:58:11" sensor="3" temperature="21.34"/>
+<KeithleyTemperature time="2013-07-30T16:58:11" sensor="4" temperature="16.52"/>
+<KeithleyTemperature time="2013-07-30T16:58:11" sensor="5" temperature="16.75"/>
+<KeithleyTemperature time="2013-07-30T16:58:11" sensor="6" temperature="16.86"/>
+<KeithleyTemperature time="2013-07-30T16:58:11" sensor="7" temperature="16.49"/>
+<KeithleyTemperature time="2013-07-30T16:58:11" sensor="8" temperature="16.57"/>
+<KeithleyTemperature time="2013-07-30T16:58:11" sensor="9" temperature="16.39"/>
+<HuberTemperature time="2013-07-30T16:58:17" circulator="1" work="15.00" bath="14.99"/>
+<KeithleyTemperature time="2013-07-30T16:58:31" sensor="0" temperature="16.53"/>
+<KeithleyTemperature time="2013-07-30T16:58:31" sensor="1" temperature="17.24"/>
+<KeithleyTemperature time="2013-07-30T16:58:31" sensor="2" temperature="17.63"/>
+<KeithleyTemperature time="2013-07-30T16:58:31" sensor="3" temperature="21.34"/>
+<KeithleyTemperature time="2013-07-30T16:58:31" sensor="4" temperature="16.52"/>
+<KeithleyTemperature time="2013-07-30T16:58:31" sensor="5" temperature="16.75"/>
+<KeithleyTemperature time="2013-07-30T16:58:31" sensor="6" temperature="16.86"/>
+<KeithleyTemperature time="2013-07-30T16:58:31" sensor="7" temperature="16.49"/>
+<KeithleyTemperature time="2013-07-30T16:58:31" sensor="8" temperature="16.57"/>
+<KeithleyTemperature time="2013-07-30T16:58:31" sensor="9" temperature="16.39"/>
+<HuberTemperature time="2013-07-30T16:58:31" circulator="1" work="15.00" bath="15.01"/>
+<KeithleyTemperature time="2013-07-30T16:58:51" sensor="0" temperature="16.53"/>
+<KeithleyTemperature time="2013-07-30T16:58:51" sensor="1" temperature="17.24"/>
+<KeithleyTemperature time="2013-07-30T16:58:51" sensor="2" temperature="17.63"/>
+<KeithleyTemperature time="2013-07-30T16:58:51" sensor="3" temperature="21.34"/>
+<KeithleyTemperature time="2013-07-30T16:58:51" sensor="4" temperature="16.51"/>
+<KeithleyTemperature time="2013-07-30T16:58:51" sensor="5" temperature="16.75"/>
+<KeithleyTemperature time="2013-07-30T16:58:51" sensor="6" temperature="16.86"/>
+<KeithleyTemperature time="2013-07-30T16:58:51" sensor="7" temperature="16.49"/>
+<KeithleyTemperature time="2013-07-30T16:58:51" sensor="8" temperature="16.57"/>
+<KeithleyTemperature time="2013-07-30T16:58:51" sensor="9" temperature="16.39"/>
+<HuberTemperature time="2013-07-30T16:58:51" circulator="1" work="15.00" bath="15.04"/>
+<HuberTemperature time="2013-07-30T16:59:02" circulator="1" work="15.00" bath="14.97"/>
+<KeithleyTemperature time="2013-07-30T16:59:11" sensor="0" temperature="16.53"/>
+<KeithleyTemperature time="2013-07-30T16:59:11" sensor="1" temperature="17.24"/>
+<KeithleyTemperature time="2013-07-30T16:59:11" sensor="2" temperature="17.63"/>
+<KeithleyTemperature time="2013-07-30T16:59:11" sensor="3" temperature="21.34"/>
+<KeithleyTemperature time="2013-07-30T16:59:11" sensor="4" temperature="16.51"/>
+<KeithleyTemperature time="2013-07-30T16:59:11" sensor="5" temperature="16.75"/>
+<KeithleyTemperature time="2013-07-30T16:59:11" sensor="6" temperature="16.86"/>
+<KeithleyTemperature time="2013-07-30T16:59:11" sensor="7" temperature="16.49"/>
+<KeithleyTemperature time="2013-07-30T16:59:11" sensor="8" temperature="16.57"/>
+<KeithleyTemperature time="2013-07-30T16:59:11" sensor="9" temperature="16.39"/>
+<HuberTemperature time="2013-07-30T16:59:17" circulator="1" work="15.00" bath="14.98"/>
+<KeithleyTemperature time="2013-07-30T16:59:31" sensor="0" temperature="16.53"/>
+<KeithleyTemperature time="2013-07-30T16:59:31" sensor="1" temperature="17.24"/>
+<KeithleyTemperature time="2013-07-30T16:59:31" sensor="2" temperature="17.63"/>
+<KeithleyTemperature time="2013-07-30T16:59:31" sensor="3" temperature="21.34"/>
+<KeithleyTemperature time="2013-07-30T16:59:31" sensor="4" temperature="16.51"/>
+<KeithleyTemperature time="2013-07-30T16:59:31" sensor="5" temperature="16.75"/>
+<KeithleyTemperature time="2013-07-30T16:59:31" sensor="6" temperature="16.85"/>
+<KeithleyTemperature time="2013-07-30T16:59:31" sensor="7" temperature="16.49"/>
+<KeithleyTemperature time="2013-07-30T16:59:31" sensor="8" temperature="16.57"/>
+<KeithleyTemperature time="2013-07-30T16:59:31" sensor="9" temperature="16.38"/>
+<HuberTemperature time="2013-07-30T16:59:31" circulator="1" work="15.00" bath="14.97"/>
+<KeithleyTemperature time="2013-07-30T16:59:51" sensor="0" temperature="16.53"/>
+<KeithleyTemperature time="2013-07-30T16:59:51" sensor="1" temperature="17.24"/>
+<KeithleyTemperature time="2013-07-30T16:59:51" sensor="2" temperature="17.64"/>
+<KeithleyTemperature time="2013-07-30T16:59:51" sensor="3" temperature="21.35"/>
+<KeithleyTemperature time="2013-07-30T16:59:51" sensor="4" temperature="16.51"/>
+<KeithleyTemperature time="2013-07-30T16:59:51" sensor="5" temperature="16.75"/>
+<KeithleyTemperature time="2013-07-30T16:59:51" sensor="6" temperature="16.86"/>
+<KeithleyTemperature time="2013-07-30T16:59:51" sensor="7" temperature="16.49"/>
+<KeithleyTemperature time="2013-07-30T16:59:51" sensor="8" temperature="16.57"/>
+<KeithleyTemperature time="2013-07-30T16:59:51" sensor="9" temperature="16.38"/>
+<HuberTemperature time="2013-07-30T16:59:51" circulator="1" work="15.00" bath="15.01"/>
+<HuberTemperature time="2013-07-30T17:00:02" circulator="1" work="15.00" bath="15.03"/>
+<KeithleyTemperature time="2013-07-30T17:00:11" sensor="0" temperature="16.53"/>
+<KeithleyTemperature time="2013-07-30T17:00:11" sensor="1" temperature="17.24"/>
+<KeithleyTemperature time="2013-07-30T17:00:11" sensor="2" temperature="17.64"/>
+<KeithleyTemperature time="2013-07-30T17:00:11" sensor="3" temperature="21.35"/>
+<KeithleyTemperature time="2013-07-30T17:00:11" sensor="4" temperature="16.52"/>
+<KeithleyTemperature time="2013-07-30T17:00:11" sensor="5" temperature="16.75"/>
+<KeithleyTemperature time="2013-07-30T17:00:11" sensor="6" temperature="16.85"/>
+<KeithleyTemperature time="2013-07-30T17:00:11" sensor="7" temperature="16.49"/>
+<KeithleyTemperature time="2013-07-30T17:00:11" sensor="8" temperature="16.57"/>
+<KeithleyTemperature time="2013-07-30T17:00:11" sensor="9" temperature="16.38"/>
