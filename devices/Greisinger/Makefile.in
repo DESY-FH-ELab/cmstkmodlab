@@ -1,16 +1,17 @@
-LIBDIR        = ../lib
+ARCHITECTURE=@architecture@
+USEFAKEDEVICES=@usefakedevices@
+
+BASEPATH      = @basepath@
+include $(BASEPATH)/devices/Makefile.common
+
+LIBDIR        = $(BASEPATH)/devices/lib
 
 LIB           = TkModLabGreisinger
-
-USEFAKEDEVICES=@usefakedevices@
 
 MODULES       = GMH3750ComHandler \
                 VGMH3750 \
                 GMH3750Fake \
                 GMH3750
-
-BASEPATH      = @basepath@
-include $(BASEPATH)/devices/Makefile.common
 
 ALLDEPEND = $(addsuffix .d,$(MODULES))
 

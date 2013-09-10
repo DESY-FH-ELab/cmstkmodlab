@@ -1,32 +1,22 @@
 BINDIR        = ../bin
 
 USEFAKEDEVICES=@usefakedevices@
+BASEPATH      = @basepath@
+include $(BASEPATH)/devices/Makefile.common
 
-TARGET 	      = ReadTPG262
+TARGET        = ReadTPG262
 
 SOURCE        = ReadTPG262
 
 ARCHITECTURE := $(shell uname)
 
-CXX           = g++
-CXXFLAGS      = -Wall -fPIC -I../../devices/Pfeiffer
+CXXFLAGS     += -Wall -fPIC -I$(BASEPATH)/devices/Pfeiffer
 
 ifeq ($(USEFAKEDEVICES),1)
 CXXFLAGS     += -DUSE_FAKEIO
 endif
 
-LIBS          = -L/home/tkmodlab/software/cmstkmodlab/trunk/devices/lib -lTkModLabPfeiffer
-
-LD            = g++
-LDFLAGS       = -O2
-
-ifeq ($(ARCHITECTURE),Darwin)
-OSXVERSION    = $(shell sw_vers -productVersion | cut -d . -f 2)
-OSXTARGET     = 10.$(OSXVERSION)
-CXX           = MACOSX_DEPLOYMENT_TARGET=$(OSXTARGET) g++
-LD            = MACOSX_DEPLOYMENT_TARGET=$(OSXTARGET) g++
-LDFLAGS       = -O2
-endif
+LIBS          = -L@basepath@/devices/lib -lTkModLabPfeiffer
 
 all: $(TARGET)
 

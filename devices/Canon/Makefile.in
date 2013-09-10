@@ -1,17 +1,17 @@
-LIBDIR        = ../lib
+ARCHITECTURE=@architecture@
+USEFAKEDEVICES=@usefakedevices@
+
+BASEPATH      = @basepath@
+include $(BASEPATH)/devices/Makefile.common
+
+LIBDIR        = $(BASEPATH)/devices/lib
 
 LIB           = TkModLabCanon
-
-USEFAKEDEVICES=@usefakedevices@
-ARCHITECTURE=@architecture@
 
 MODULES       = CameraComHandler \
                 VEOS550D \
                 EOS550D \
                 EOS550DFake
-
-BASEPATH      = @basepath@
-include $(BASEPATH)/devices/Makefile.common
 
 ifeq ($(ARCHITECTURE),Darwin)
 CXXFLAGS     += -I/opt/local/include

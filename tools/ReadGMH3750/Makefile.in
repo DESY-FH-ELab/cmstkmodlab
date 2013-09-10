@@ -1,6 +1,8 @@
 BINDIR        = ../bin
 
 USEFAKEDEVICES=@usefakedevices@
+BASEPATH      = @basepath@
+include $(BASEPATH)/devices/Makefile.common
 
 TARGET 	      = ReadGMH3750
 
@@ -8,25 +10,13 @@ SOURCE        = ReadGMH3750
 
 ARCHITECTURE := $(shell uname)
 
-CXX           = g++
-CXXFLAGS      = -Wall -fPIC -I../../devices/Greisinger/
+CXXFLAGS      = -Wall -fPIC -I$(BASEPATH)/devices/Greisinger
 
 ifeq ($(USEFAKEDEVICES),1)
 CXXFLAGS     += -DUSE_FAKEIO
 endif
 
-LIBS          = ../../devices/Greisinger/*.o
-
-LD            = g++
-LDFLAGS       = -O2
-
-ifeq ($(ARCHITECTURE),Darwin)
-OSXVERSION    = $(shell sw_vers -productVersion | cut -d . -f 2)
-OSXTARGET     = 10.$(OSXVERSION)
-CXX           = MACOSX_DEPLOYMENT_TARGET=$(OSXTARGET) g++
-LD            = MACOSX_DEPLOYMENT_TARGET=$(OSXTARGET) g++
-LDFLAGS       = -O2
-endif
+LIBS          = -L@basepath@/devices/lib -lTkModLabGreisinger
 
 all: $(BINDIR)/$(TARGET)
 

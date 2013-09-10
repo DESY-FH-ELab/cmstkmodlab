@@ -11,7 +11,7 @@ class VGMH3750
   VGMH3750( ioport_t );
 
   //! Destructor.
-  ~VGMH3750();
+  virtual ~VGMH3750();
 
   virtual bool Read(double & temperature) = 0;
 };

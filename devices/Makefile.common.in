@@ -1,7 +1,7 @@
 CC            = @cc@
 CXX           = @cxx@
 CXXFLAGS      = -fPIC -std=c++0x
-LD            = g++
+LD            = @cxx@
 SOFLAGS       = @soflags@
 
 ifeq ($(USEFAKEDEVICES),1)

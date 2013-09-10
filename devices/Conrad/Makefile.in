@@ -1,17 +1,17 @@
-LIBDIR        = ../lib
+ARCHITECTURE=@architecture@
+USEFAKEDEVICES=@usefakedevices@
+
+BASEPATH      = @basepath@
+include $(BASEPATH)/devices/Makefile.common
+
+LIBDIR        = $(BASEPATH)/devices/lib
 
 LIB           = TkModLabConrad
-
-USEFAKEDEVICES=@usefakedevices@
-ARCHITECTURE=@architecture@
 
 MODULES       = ConradCommunication \
                 VConradController \
                 ConradController \
                 ConradControllerFake
-
-BASEPATH      = @basepath@
-include $(BASEPATH)/devices/Makefile.common
 
 ALLDEPEND = $(addsuffix .d,$(MODULES))
 

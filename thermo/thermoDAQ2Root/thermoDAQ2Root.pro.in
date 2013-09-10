@@ -4,14 +4,8 @@
 #
 #-------------------------------------------------
 
-macx {
-    INCLUDEPATH += @rootincpath@
-    LIBS += @rootlibs@
-}
-else {
-    INCLUDEPATH += @rootincpath@
-    LIBS += @rootlibs@
-}
+INCLUDEPATH += @rootincpath@
+LIBS += @rootlibs@
 
 QMAKE_CXXFLAGS += -std=c++0x
 

@@ -1,16 +1,17 @@
-LIBDIR        = ../lib
+ARCHITECTURE=@architecture@
+USEFAKEDEVICES=@usefakedevices@
+
+BASEPATH      = @basepath@
+include $(BASEPATH)/devices/Makefile.common
+
+LIBDIR        = $(BASEPATH)/devices/lib
 
 LIB           = TkModLabJulabo
-
-USEFAKEDEVICES=@usefakedevices@
 
 MODULES       = FP50ComHandler \
                 VJulaboFP50 \
                 JulaboFP50Fake \
                 JulaboFP50
-
-BASEPATH      = @basepath@
-include $(BASEPATH)/devices/Makefile.common
 
 ALLDEPEND = $(addsuffix .d,$(MODULES))
 

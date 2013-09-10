@@ -1,16 +1,17 @@
-LIBDIR        = ../lib
+ARCHITECTURE=@architecture@
+USEFAKEDEVICES=@usefakedevices@
+
+BASEPATH      = @basepath@
+include $(BASEPATH)/devices/Makefile.common
+
+LIBDIR        = $(BASEPATH)/devices/lib
 
 LIB           = TkModLabKeithley
-
-USEFAKEDEVICES=@usefakedevices@
 
 MODULES       = KMMComHandler \
                 VKeithley2700 \
                 Keithley2700Fake \
                 Keithley2700
-
-BASEPATH      = @basepath@
-include $(BASEPATH)/devices/Makefile.common
 
 ALLDEPEND = $(addsuffix .d,$(MODULES))
 

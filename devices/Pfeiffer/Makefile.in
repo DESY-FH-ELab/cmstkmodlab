@@ -1,16 +1,17 @@
-LIBDIR        = ../lib
+ARCHITECTURE=@architecture@
+USEFAKEDEVICES=@usefakedevices@
+
+BASEPATH      = @basepath@
+include $(BASEPATH)/devices/Makefile.common
+
+LIBDIR        = $(BASEPATH)/devices/lib
 
 LIB           = TkModLabPfeiffer
-
-USEFAKEDEVICES=@usefakedevices@
 
 MODULES       = TPG262ComHandler \
                 VPfeifferTPG262 \
                 PfeifferTPG262Fake \
                 PfeifferTPG262
-
-BASEPATH      = @basepath@
-include $(BASEPATH)/devices/Makefile.common
 
 ALLDEPEND = $(addsuffix .d,$(MODULES))
 
@@ -27,9 +28,6 @@ $(LIBDIR)/lib$(LIB).so: $(addsuffix .o,$(MODULES))
 	@echo "Linking shared library $@"
 	$(LD) $(SOFLAGS) $^ -o $@
 
-test: test.cc $(LIBDIR)/lib$(LIB).so
-	$(CXX) $(CPPFLAGS) $(CXXFLAGS) test.cc -o test -L../lib -lTkModLabPfeiffer
-
 %.d: %.cpp
 	@echo Making dependency for file $< ...
 	@set -e;\
@@ -40,6 +38,9 @@ test: test.cc $(LIBDIR)/lib$(LIB).so
 %.o: %.cpp
 	@echo "Compiling $<"
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $< -o $@
+
+test: test.cc $(LIBDIR)/lib$(LIB).so
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) test.cc -o test -L$(LIBDIR) -lTkModLabPfeiffer
 
 clean:
 	@rm -f $(LIBDIR)/lib$(LIB).so
