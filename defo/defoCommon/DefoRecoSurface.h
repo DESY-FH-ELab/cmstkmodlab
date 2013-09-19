@@ -37,8 +37,11 @@ class DefoRecoSurface : public QObject
   void setPitchX( double p ) { pitchX_ = p; }
   void setPitchY( double p ) { pitchY_ = p; }
   void setFocalLength( double l ) { focalLength_ = l; }
-  std::pair<unsigned int, unsigned int> indexPoints( DefoPointCollection& );
+  //std::pair<unsigned int, unsigned int> indexPoints( DefoPointCollection& );
   std::vector<DefoPoint> const& getIndexedPoints( void ) { return indexedPoints_; }
+  void calculateHelpers(void);
+
+  void dump();
 
  private:
   const DefoSplineField createXYSplines( DefoPointCollection const& );
@@ -53,7 +56,6 @@ class DefoRecoSurface : public QObject
   const std::pair<bool,DefoPointCollection::const_iterator> findPointByIndex( DefoPointCollection const&, std::pair<int,int> const& ) const;
   void removeGlobalOffset( DefoSplineField& ) const;
   void removeTilt( DefoSplineField& ) const;
-  void calculateHelpers( void );
 
 /*   std::pair<unsigned int, unsigned int> refPointIndexRange_; */
 /*   std::pair<unsigned int, unsigned int> recoPointIndexRange_; */
