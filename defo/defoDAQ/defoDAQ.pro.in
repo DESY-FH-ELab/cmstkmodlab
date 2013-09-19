@@ -16,7 +16,13 @@ INCLUDEPATH += /usr/include/exiv2
 LIBS += @qwtlibs@ -lGL -lGLU
 
 QMAKE_CXXFLAGS += -std=c++0x
-QMAKE_LFLAGS   += -stdlib=libc++
+
+macx {
+
+}
+else {
+    QMAKE_LFLAGS   += -stdlib=libc++
+}
 
 INCLUDEPATH += @qwtincludes@
 DEFINES += @configdefines@

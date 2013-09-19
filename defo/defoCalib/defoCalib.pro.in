@@ -17,7 +17,13 @@ LIBS += -lgphoto2 -lexiv2
 LIBS += -lopencv_core -lopencv_imgproc -lopencv_highgui
 
 QMAKE_CXXFLAGS += -std=c++0x
-QMAKE_LFLAGS   += -stdlib=libc++
+
+macx {
+
+}
+else {
+    QMAKE_LFLAGS   += -stdlib=libc++
+}
 
 QT       += core xml
 
