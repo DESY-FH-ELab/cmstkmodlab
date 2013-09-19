@@ -1,3 +1,4 @@
+#include <vector>
 
 #include "DefoSurfacePlot.h"
 
@@ -31,38 +32,46 @@ void DefoSurfacePlot::init( void ) {
 ///
 /// a wrapper for show()
 ///
-void DefoSurfacePlot::draw( void ) {
-
+void DefoSurfacePlot::draw( void )
+{
   if( !isValid_ ) {
     std::cerr << " [DefoSurfacePlot::draw] ** WARNING: no data set" << std::endl;
     return;
   }
-  
-  
+
+  std::vector<Qwt3D::AXIS> Xaxis;
+  Xaxis.push_back(Qwt3D::X1);
+  Xaxis.push_back(Qwt3D::X2);
+  Xaxis.push_back(Qwt3D::X3);
+  Xaxis.push_back(Qwt3D::X4);
+
+  std::vector<Qwt3D::AXIS> Yaxis;
+  Yaxis.push_back(Qwt3D::Y1);
+  Yaxis.push_back(Qwt3D::Y2);
+  Yaxis.push_back(Qwt3D::Y3);
+  Yaxis.push_back(Qwt3D::Y4);
+
+  std::vector<Qwt3D::AXIS> Zaxis;
+  Zaxis.push_back(Qwt3D::Z1);
+  Zaxis.push_back(Qwt3D::Z2);
+  Zaxis.push_back(Qwt3D::Z3);
+  Zaxis.push_back(Qwt3D::Z4);
+
   setTitle( title_ );
 
   // scaling & display geom
-  
+
   // for the scaling we need the z amplitude (in micron)
   const double amplitude = ( amplitudeRange_.second - amplitudeRange_.first ); // this amplitude is already in µm
 
-  zScale_ = 700. * 400.; // starting value (experimental..)
-  xyScale_ = 1600.; // experimental..
+  zScale_ = 1e6; // starting value (experimental..)
+  xyScale_ = 15000.; // experimental..
 
-  scalefactor_ = amplitude / 160. * ( xyScale_ / DEFORSURFACEPLOT_XY_SCALING ); // experimental..
+  scalefactor_ = amplitude / 1500. * ( xyScale_ / DEFORSURFACEPLOT_XY_SCALING ); // experimental..
   //  setScale( scalefactor_, scalefactor_, zScale_ / DEFORSURFACEPLOT_Z_SCALING ); // z-axis is in µm, all others in m
 
   // currently not to be changed
   setBackgroundColor(Qwt3D::RGBA(1,1,1));
-
-
-//   // tick marks
-//   for (unsigned i=0; i!=coordinates()->axes.size(); ++i) {
-//     coordinates()->axes[i].setMajors(7);
-//     coordinates()->axes[i].setMinors(4);
-//     coordinates()->axes[i].setTicLength( 0.001 * DEFORSURFACEPLOT_XY_SCALING, 0.0005 * DEFORSURFACEPLOT_XY_SCALING );
-//   }
-  
 
   // axes
   std::pair<double,double> zAxisRange; // min,max
@@ -70,21 +79,30 @@ void DefoSurfacePlot::draw( void ) {
   legend()->setLimits( zAxisRange.first, zAxisRange.second );
   legend()->setTitleString( QString( "Z / " ) + QChar(0x00B5) + QString( "m" ) );
 
+
   for (unsigned i=0; i!= coordinates()->axes.size(); ++i) {
     coordinates()->axes[i].setTicLength( 0.002 * DEFORSURFACEPLOT_XY_SCALING, 0.001 * DEFORSURFACEPLOT_XY_SCALING );
     coordinates()->axes[i].setMajors(10);
     coordinates()->axes[i].setMinors(5);
   }
 
-  coordinates()->axes[Qwt3D::X1].setLabelString( "X / cm" );
-  coordinates()->axes[Qwt3D::X2].setLabelString( "X / cm" );
-  coordinates()->axes[Qwt3D::X3].setLabelString( "X / cm" );
-  coordinates()->axes[Qwt3D::X4].setLabelString( "X / cm" );
+  for (auto a : Zaxis) {
+      //coordinates()->axes[a].limits(zAxisRange.first, zAxisRange.second);
+      coordinates()->axes[a].setMajors(10);
+      coordinates()->axes[a].setMinors(5);
+      coordinates()->axes[a].setLabelString(QString( "Z / " ) + QChar(0x00B5) + QString( "m" ));
+      coordinates()->axes[a].setLabel(true);
+  }
 
-  coordinates()->axes[Qwt3D::Y1].setLabelString( "Y / cm" );
-  coordinates()->axes[Qwt3D::Y2].setLabelString( "Y / cm" );
-  coordinates()->axes[Qwt3D::Y3].setLabelString( "Y / cm" );
-  coordinates()->axes[Qwt3D::Y4].setLabelString( "Y / cm" );
+  coordinates()->axes[Qwt3D::X1].setLabelString( "X / mm" );
+  coordinates()->axes[Qwt3D::X2].setLabelString( "X / mm" );
+  coordinates()->axes[Qwt3D::X3].setLabelString( "X / mm" );
+  coordinates()->axes[Qwt3D::X4].setLabelString( "X / mm" );
+
+  coordinates()->axes[Qwt3D::Y1].setLabelString( "Y / mm" );
+  coordinates()->axes[Qwt3D::Y2].setLabelString( "Y / mm" );
+  coordinates()->axes[Qwt3D::Y3].setLabelString( "Y / mm" );
+  coordinates()->axes[Qwt3D::Y4].setLabelString( "Y / mm" );
 
   coordinates()->axes[Qwt3D::Z1].setLabelString( QString( "Z / " ) + QChar(0x00B5) + QString( "m" ) ); // QChar makes the µ
   coordinates()->axes[Qwt3D::Z2].setLabelString( QString( "Z / " ) + QChar(0x00B5) + QString( "m" ) );
@@ -105,21 +123,22 @@ void DefoSurfacePlot::draw( void ) {
 
   show();
   toggleView( true ); // true = 3D
-
 }
-
-
 
 ///
 /// import data from a DefoSurface object
 ///
-void DefoSurfacePlot::setData( DefoSurface const& surface ) {
-
+void DefoSurfacePlot::setData(DefoSurface const& surface)
+{
   // for the max defo amplitude in µm
   amplitudeRange_ = std::make_pair<double,double>( 0., 0. );
 
+  std::cout << "blah 1" << std::endl;
+
   // set x or y field, according to what has been chosen
   DefoPointField const& field = POINTS_X==pointSet_ ? surface.getPointFields().first : surface.getPointFields().second;
+
+  std::cout << "blah 2" << std::endl;
 
   // determine its dimensions
   std::pair<unsigned int, unsigned int> indexRange;
@@ -130,44 +149,45 @@ void DefoSurfacePlot::setData( DefoSurface const& surface ) {
     isValid_ = false;
   }
 
+  std::cout << "blah 3" << std::endl;
+
   // look at first column for y size
-  indexRange.second = field.at( 0 ).size();
+  indexRange.second = field.at(0).size();
   if( 0 == indexRange.second ) {
     std::cerr << " [DefoSurfacePlot::setData] ** WARNING: point field has zero column dimension" << std::endl;
     isValid_ = false;
   }
-  
+
+  std::cout << "blah 4" << std::endl;
+
   // Qwt3D::SurfacePlot wants an array:
   // one entry for each point, holding a (x,y,z) tuple
   Qwt3D::Triple **data = new Qwt3D::Triple *[indexRange.first] ;
 
   for( unsigned int i = 0; i < indexRange.first; ++i ) {
-    data[i] = new Qwt3D::Triple[indexRange.second] ;
-    for( unsigned int j = 0; j < field[i].size(); ++j ) { // the rest of the column should be zero!!
+      data[i] = new Qwt3D::Triple[indexRange.second] ;
+      for( unsigned int j = 0; j < field[i].size(); ++j ) { // the rest of the column should be zero!!
 
-      if(field[i][j].isValid() ) {
-	data[i][j] = Qwt3D::Triple( field[i][j].getX() * DEFORSURFACEPLOT_XY_SCALING, 
-				    field[i][j].getY() * DEFORSURFACEPLOT_XY_SCALING,
-				    field[i][j].getHeight() * DEFORSURFACEPLOT_Z_SCALING /* to µm*/ );
+          if(field[i][j].isValid() ) {
+              data[i][j] = Qwt3D::Triple(field[i][j].getX() * DEFORSURFACEPLOT_XY_SCALING,
+                                         field[i][j].getY() * DEFORSURFACEPLOT_XY_SCALING,
+                                         field[i][j].getHeight() * DEFORSURFACEPLOT_Z_SCALING /* to µm*/ );
+          }
+          else { // use valid neighbour
+              DefoPoint const& aNeighbour = neighbour( std::make_pair<unsigned int, unsigned int>( i, j ), field );
+              data[i][j] = Qwt3D::Triple( aNeighbour.getX() * DEFORSURFACEPLOT_XY_SCALING,
+                                          aNeighbour.getY() * DEFORSURFACEPLOT_XY_SCALING,
+                                          aNeighbour.getHeight() * DEFORSURFACEPLOT_Z_SCALING /* to µm*/ );
+          }
+
+          if( data[i][j].z < amplitudeRange_.first )  amplitudeRange_.first  = data[i][j].z;
+          if( data[i][j].z > amplitudeRange_.second ) amplitudeRange_.second = data[i][j].z;
       }
-      else { // use valid neighbour
-	DefoPoint const& aNeighbour = neighbour( std::make_pair<unsigned int, unsigned int>( i, j ), field );
-	data[i][j] = Qwt3D::Triple( aNeighbour.getX() * DEFORSURFACEPLOT_XY_SCALING, 
-				    aNeighbour.getY() * DEFORSURFACEPLOT_XY_SCALING, 
-				    aNeighbour.getHeight() * DEFORSURFACEPLOT_Z_SCALING /* to µm*/ );
-      }
-      
-      if( data[i][j].z < amplitudeRange_.first )  amplitudeRange_.first  = data[i][j].z;
-      if( data[i][j].z > amplitudeRange_.second ) amplitudeRange_.second = data[i][j].z;
+  }
 
-    }
-  }  
+  loadFromData(data, indexRange.first, indexRange.second);
 
-  // import data in mother
-  loadFromData( data, indexRange.first, indexRange.second );
-  
   isValid_ = true;
-
 }
 
 
@@ -326,11 +346,10 @@ void DefoSurfacePlot::setNIsolines( int nIsolines ) {
 /// increase length of z axis by 5%,
 /// keep axis limits
 ///
-void DefoSurfacePlot::increaseZScale( void ) {
+void DefoSurfacePlot::increaseZ_( void ) {
 
   zScale_ *= 1.05;
   repaint();
-  
 }
 
 

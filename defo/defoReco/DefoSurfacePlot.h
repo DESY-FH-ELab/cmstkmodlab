@@ -12,14 +12,12 @@
 #include "DefoSurface.h"
 
 // scaling for the z axis (m -> µm)
-#define DEFORSURFACEPLOT_Z_SCALING 1000000.
+#define DEFORSURFACEPLOT_Z_SCALING 1e6
 
 // scaling for the x,y axes;
 // data come in in m, 
-// we can convert here to cm (100.) or leave it in m (1.)
-#define DEFORSURFACEPLOT_XY_SCALING 100.
-
-
+// we can convert here to mm (1000.) or leave it in m (1.)
+#define DEFORSURFACEPLOT_XY_SCALING 1e3
 
 ///
 /// a container/manager for the QwtPlot3D
