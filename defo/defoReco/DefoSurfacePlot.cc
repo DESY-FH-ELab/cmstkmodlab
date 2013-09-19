@@ -86,12 +86,14 @@ void DefoSurfacePlot::draw( void )
     coordinates()->axes[i].setMinors(5);
   }
 
-  for (auto a : Zaxis) {
+  for (std::vector<Qwt3D::AXIS>::const_iterator it = Zaxis.begin();
+       it!=Zaxis.end();
+       ++it) {
       //coordinates()->axes[a].limits(zAxisRange.first, zAxisRange.second);
-      coordinates()->axes[a].setMajors(10);
-      coordinates()->axes[a].setMinors(5);
-      coordinates()->axes[a].setLabelString(QString( "Z / " ) + QChar(0x00B5) + QString( "m" ));
-      coordinates()->axes[a].setLabel(true);
+      coordinates()->axes[*it].setMajors(10);
+      coordinates()->axes[*it].setMinors(5);
+      coordinates()->axes[*it].setLabelString(QString( "Z / " ) + QChar(0x00B5) + QString( "m" ));
+      coordinates()->axes[*it].setLabel(true);
   }
 
   coordinates()->axes[Qwt3D::X1].setLabelString( "X / mm" );
@@ -131,7 +133,7 @@ void DefoSurfacePlot::draw( void )
 void DefoSurfacePlot::setData(DefoSurface const& surface)
 {
   // for the max defo amplitude in µm
-  amplitudeRange_ = std::make_pair<double,double>( 0., 0. );
+  amplitudeRange_ = std::pair<double,double>( 0., 0. );
 
   std::cout << "blah 1" << std::endl;
 
@@ -174,7 +176,7 @@ void DefoSurfacePlot::setData(DefoSurface const& surface)
                                          field[i][j].getHeight() * DEFORSURFACEPLOT_Z_SCALING /* to µm*/ );
           }
           else { // use valid neighbour
-              DefoPoint const& aNeighbour = neighbour( std::make_pair<unsigned int, unsigned int>( i, j ), field );
+              DefoPoint const& aNeighbour = neighbour( std::pair<unsigned int, unsigned int>( i, j ), field );
               data[i][j] = Qwt3D::Triple( aNeighbour.getX() * DEFORSURFACEPLOT_XY_SCALING,
                                           aNeighbour.getY() * DEFORSURFACEPLOT_XY_SCALING,
                                           aNeighbour.getHeight() * DEFORSURFACEPLOT_Z_SCALING /* to µm*/ );
@@ -245,7 +247,7 @@ void DefoSurfacePlot::toggleView( bool is3D ) {
   // this is neccessary since 2d mode toggles some buttons automatically
 
   if( !is3D && is3D_ ) { // switching from 3d to 2d
-    meshAndShadeCarry_ = std::make_pair<bool,bool>( isMesh_, isShade_ );
+    meshAndShadeCarry_ = std::pair<bool,bool>( isMesh_, isShade_ );
   }
   else if( is3D && !is3D_ ) { // switching from 2d to 3d
     isMesh_ = meshAndShadeCarry_.first;
@@ -346,13 +348,11 @@ void DefoSurfacePlot::setNIsolines( int nIsolines ) {
 /// increase length of z axis by 5%,
 /// keep axis limits
 ///
-void DefoSurfacePlot::increaseZ_( void ) {
+void DefoSurfacePlot::increaseZScale( void ) {
 
   zScale_ *= 1.05;
   repaint();
 }
-
-
 
 ///
 /// decrease length of z axis by 5%,
@@ -362,7 +362,6 @@ void DefoSurfacePlot::decreaseZScale( void ) {
 
   zScale_ *= 0.95;
   repaint();
-
 }
 
 
