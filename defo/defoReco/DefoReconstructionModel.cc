@@ -6,19 +6,17 @@
 #include "DefoPointSaver.h"
 #include "DefoConfig.h"
 
-DefoReconstructionModel::DefoReconstructionModel(
-    DefoMeasurementListModel * listModel
-  , DefoMeasurementSelectionModel* refSelectionModel
-  , DefoMeasurementSelectionModel* defoSelectionModel
-  , DefoAlignmentModel* alignmentModel
-  , DefoPointIndexerModel* pointIndexerModel
-  , DefoColorSelectionModel* refColorModel
-  , DefoColorSelectionModel* defoColorModel
-  , DefoMeasurementPairListModel* pairListModel
-  , DefoMeasurementPairSelectionModel* pairSelectionModel
-  , DefoGeometryModel* geometryModel
-  , QObject *parent
-  ) :
+DefoReconstructionModel::DefoReconstructionModel(DefoMeasurementListModel * listModel,
+                                                 DefoMeasurementSelectionModel* refSelectionModel,
+                                                 DefoMeasurementSelectionModel* defoSelectionModel,
+                                                 DefoAlignmentModel* alignmentModel,
+                                                 DefoPointIndexerModel* pointIndexerModel,
+                                                 DefoColorSelectionModel* refColorModel,
+                                                 DefoColorSelectionModel* defoColorModel,
+                                                 DefoMeasurementPairListModel* pairListModel,
+                                                 DefoMeasurementPairSelectionModel* pairSelectionModel,
+                                                 DefoGeometryModel* geometryModel,
+                                                 QObject *parent) :
     QObject(parent),
     listModel_(listModel),
     pairListModel_(pairListModel),
@@ -30,50 +28,41 @@ DefoReconstructionModel::DefoReconstructionModel(
   defoMeasurement_ = 0;
   pointIndexer_ = 0;
 
-  connect(refSelectionModel,
-          SIGNAL(selectionChanged(DefoMeasurement*)),
-          this,
-          SLOT(refSelectionChanged(DefoMeasurement*)));
+  connect(refSelectionModel, SIGNAL(selectionChanged(DefoMeasurement*)),
+          this, SLOT(refSelectionChanged(DefoMeasurement*)));
 
-  connect(defoSelectionModel,
-          SIGNAL(selectionChanged(DefoMeasurement*)),
-          this,
-          SLOT(defoSelectionChanged(DefoMeasurement*)));
+  connect(defoSelectionModel, SIGNAL(selectionChanged(DefoMeasurement*)),
+          this, SLOT(defoSelectionChanged(DefoMeasurement*)));
 
-  connect(listModel_,
-          SIGNAL(pointsUpdated(const DefoMeasurement*)),
-          this,
-          SLOT(pointsUpdated(const DefoMeasurement*)));
+  connect(listModel_, SIGNAL(pointsUpdated(const DefoMeasurement*)),
+          this, SLOT(pointsUpdated(const DefoMeasurement*)));
 
-  connect(alignmentModel,
-          SIGNAL(alignmentChanged(double)),
-          this,
-          SLOT(alignmentChanged(double)));
+  connect(alignmentModel, SIGNAL(alignmentChanged(double)),
+          this, SLOT(alignmentChanged(double)));
 
-  connect(pointIndexerModel,
-          SIGNAL(pointIndexerChanged(DefoVPointIndexer*)),
-          this,
-          SLOT(pointIndexerChanged(DefoVPointIndexer*)));
+  connect(pointIndexerModel, SIGNAL(pointIndexerChanged(DefoVPointIndexer*)),
+          this, SLOT(pointIndexerChanged(DefoVPointIndexer*)));
 
-  connect(refColorModel,
-          SIGNAL(colorChanged(float,float)),
-          this,
-          SLOT(refColorChanged(float,float)));
+  connect(refColorModel, SIGNAL(colorChanged(float,float)),
+          this, SLOT(refColorChanged(float,float)));
 
-  connect(defoColorModel,
-          SIGNAL(colorChanged(float,float)),
-          this,
-          SLOT(defoColorChanged(float,float)));
+  connect(defoColorModel, SIGNAL(colorChanged(float,float)),
+          this, SLOT(defoColorChanged(float,float)));
+
+  connect(geometryModel_, SIGNAL(geometryChanged()),
+          this, SLOT(geometryChanged()));
 
   reco_ = new DefoRecoSurface(this);
+  
+  reco_->setPitchX(DefoConfig::instance()->getValue<double>("PIXEL_PITCH_X"));
+  reco_->setPitchY(DefoConfig::instance()->getValue<double>("PIXEL_PITCH_Y"));
 
-  reco_->setPitchX(DefoConfig::instance()->getValue<int>("PIXEL_PITCH_X"));
-  reco_->setPitchY(DefoConfig::instance()->getValue<int>("PIXEL_PITCH_Y"));
+  connect(reco_, SIGNAL(incrementRecoProgress()),
+          this, SLOT(incrementRecoProgress()));
+}
 
-  connect(reco_,
-          SIGNAL(incrementRecoProgress()),
-          this,
-          SLOT(incrementRecoProgress()));
+void DefoReconstructionModel::setCurrentDir(QDir& dir) {
+    currentDir_ = dir;
 }
 
 void DefoReconstructionModel::refSelectionChanged(DefoMeasurement* measurement) {
@@ -134,17 +123,20 @@ void DefoReconstructionModel::geometryChanged() {
 
   // viewing distance from camera to surface
   // (assumption: camera is mounted perpendicular to frame)
-  double distanceCamera = heightCameraToSurface / std::sin(angle2Rad);
+  double distanceCamera = heightCameraToSurface / std::cos(angle2Rad);
+
+  reco_->setNominalCameraDistance(distanceCamera / 1e3);
 
   // distance from grid to surface calculated as the shortest distance
   // between grid and the point on the surface under the grid roation axis
   double distanceGrid = (height1 - height2) * std::cos(angle1Rad);
 
-  reco_->setNominalGridDistance(distanceGrid);
-  reco_->setNominalCameraDistance(distanceCamera);
+  reco_->setNominalGridDistance(distanceGrid / 1e3);
 
   // not really sure about this one...
   reco_->setNominalViewingAngle(angle2Rad);
+
+  reco_->calculateHelpers();
 
   emit setupChanged();
 }
@@ -192,21 +184,29 @@ void DefoReconstructionModel::reconstruct() {
   }
   emit incrementProgress();
 
+
+  QString basename = "offlinePoints_%1.xml";
+  QString fileLocation;
+
   pointIndexer_->indexPoints(&refCollection_, refColor_);
+  emit incrementProgress();
+
+  fileLocation = currentDir_.absoluteFilePath(basename.arg(refMeasurement_->getTimeStamp().toString("yyyyMMddhhmmss")));
+  DefoPointSaver refSaver(fileLocation);
+  refSaver.writeXMLPoints(refCollection_);
   emit incrementProgress();
 
   pointIndexer_->indexPoints(&defoCollection_, defoColor_);
   emit incrementProgress();
 
-  DefoPointSaver refSaver("./refPoints.txt");
-  refSaver.writePoints(refCollection_);
-  DefoPointSaver defoSaver("./defoPoints.txt");
-  defoSaver.writePoints(defoCollection_);
-  emit incrementProgress();
+  fileLocation = currentDir_.absoluteFilePath(basename.arg(defoMeasurement_->getTimeStamp().toString("yyyyMMddhhmmss")));
+  DefoPointSaver defoSaver(fileLocation);
+  defoSaver.writeXMLPoints(defoCollection_);
 
   reco_->setFocalLength(refMeasurement_->getFocalLength());
   emit incrementProgress();
 
+  // reco_->dump();
   DefoSurface surface = reco_->reconstruct(defoCollection_, refCollection_);
 
   std::string filename = "defoDump_";

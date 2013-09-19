@@ -71,6 +71,7 @@ DefoRecoMainWindow::DefoRecoMainWindow(QWidget *parent) :
                                                      measurementPairSelectionModel_,
                                                      geometryModel_,
                                                      this);
+  reconstructionModel_->setCurrentDir(currentDir_);
 
   tabWidget_ = new QTabWidget(this);
   tabWidget_->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);
@@ -338,6 +339,7 @@ void DefoRecoMainWindow::loadMeasurementButtonClicked() {
   listModel_->read(filename);
   listModel_->readPoints(currentDir_);
   offlineModel_->setCurrentDir(currentDir_);
+  reconstructionModel_->setCurrentDir(currentDir_);
 }
 
 void DefoRecoMainWindow::saveMeasurementButtonClicked() {

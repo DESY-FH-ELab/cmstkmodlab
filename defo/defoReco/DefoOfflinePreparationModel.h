@@ -19,16 +19,16 @@ class DefoOfflinePreparationModel : public QObject
 {
     Q_OBJECT
 public:
-    explicit DefoOfflinePreparationModel(DefoMeasurementListModel* listModel
-                                         , DefoMeasurementSelectionModel* refSelectionModel
-                                         , DefoMeasurementSelectionModel* defoSelectionModel
-                                         , DefoAlignmentModel* alignmentModel
-                                         , DefoPointIndexerModel* pointIndexerModel
-                                         , DefoColorSelectionModel* refColorModel
-                                         , DefoColorSelectionModel* defoColorModel
-                                         , DefoMeasurementPairListModel* pairListModel
-                                         , DefoMeasurementPairSelectionModel* pairSelectionModel
-                                         , QObject *parent = 0);
+    explicit DefoOfflinePreparationModel(DefoMeasurementListModel* listModel,
+                                         DefoMeasurementSelectionModel* refSelectionModel,
+                                         DefoMeasurementSelectionModel* defoSelectionModel,
+                                         DefoAlignmentModel* alignmentModel,
+                                         DefoPointIndexerModel* pointIndexerModel,
+                                         DefoColorSelectionModel* refColorModel,
+                                         DefoColorSelectionModel* defoColorModel,
+                                         DefoMeasurementPairListModel* pairListModel,
+                                         DefoMeasurementPairSelectionModel* pairSelectionModel,
+                                         QObject *parent = 0);
 
     double getAngle() const { return angle_; }
 

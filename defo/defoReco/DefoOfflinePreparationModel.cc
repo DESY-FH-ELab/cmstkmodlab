@@ -4,18 +4,16 @@
 #include "DefoOfflinePreparationModel.h"
 #include "DefoPointSaver.h"
 
-DefoOfflinePreparationModel::DefoOfflinePreparationModel(
-    DefoMeasurementListModel * listModel
-  , DefoMeasurementSelectionModel* refSelectionModel
-  , DefoMeasurementSelectionModel* defoSelectionModel
-  , DefoAlignmentModel* alignmentModel
-  , DefoPointIndexerModel* pointIndexerModel
-  , DefoColorSelectionModel* refColorModel
-  , DefoColorSelectionModel* defoColorModel
-  , DefoMeasurementPairListModel* pairListModel
-  , DefoMeasurementPairSelectionModel* pairSelectionModel
-  , QObject *parent
-  ) :
+DefoOfflinePreparationModel::DefoOfflinePreparationModel(DefoMeasurementListModel * listModel,
+                                                         DefoMeasurementSelectionModel* refSelectionModel,
+                                                         DefoMeasurementSelectionModel* defoSelectionModel,
+                                                         DefoAlignmentModel* alignmentModel,
+                                                         DefoPointIndexerModel* pointIndexerModel,
+                                                         DefoColorSelectionModel* refColorModel,
+                                                         DefoColorSelectionModel* defoColorModel,
+                                                         DefoMeasurementPairListModel* pairListModel,
+                                                         DefoMeasurementPairSelectionModel* pairSelectionModel,
+                                                         QObject *parent) :
     QObject(parent),
     listModel_(listModel),
     pairListModel_(pairListModel),
@@ -26,40 +24,26 @@ DefoOfflinePreparationModel::DefoOfflinePreparationModel(
   defoMeasurement_ = 0;
   pointIndexer_ = 0;
 
-  connect(refSelectionModel,
-          SIGNAL(selectionChanged(DefoMeasurement*)),
-          this,
-          SLOT(refSelectionChanged(DefoMeasurement*)));
+  connect(refSelectionModel, SIGNAL(selectionChanged(DefoMeasurement*)),
+          this, SLOT(refSelectionChanged(DefoMeasurement*)));
 
-  connect(defoSelectionModel,
-          SIGNAL(selectionChanged(DefoMeasurement*)),
-          this,
-          SLOT(defoSelectionChanged(DefoMeasurement*)));
+  connect(defoSelectionModel, SIGNAL(selectionChanged(DefoMeasurement*)),
+          this, SLOT(defoSelectionChanged(DefoMeasurement*)));
 
-  connect(listModel_,
-          SIGNAL(pointsUpdated(const DefoMeasurement*)),
-          this,
-          SLOT(pointsUpdated(const DefoMeasurement*)));
+  connect(listModel_, SIGNAL(pointsUpdated(const DefoMeasurement*)),
+          this, SLOT(pointsUpdated(const DefoMeasurement*)));
 
-  connect(alignmentModel,
-          SIGNAL(alignmentChanged(double)),
-          this,
-          SLOT(alignmentChanged(double)));
+  connect(alignmentModel, SIGNAL(alignmentChanged(double)),
+          this, SLOT(alignmentChanged(double)));
 
-  connect(pointIndexerModel,
-          SIGNAL(pointIndexerChanged(DefoVPointIndexer*)),
-          this,
-          SLOT(pointIndexerChanged(DefoVPointIndexer*)));
+  connect(pointIndexerModel, SIGNAL(pointIndexerChanged(DefoVPointIndexer*)),
+          this, SLOT(pointIndexerChanged(DefoVPointIndexer*)));
 
-  connect(refColorModel,
-          SIGNAL(colorChanged(float,float)),
-          this,
-          SLOT(refColorChanged(float,float)));
+  connect(refColorModel, SIGNAL(colorChanged(float,float)),
+          this, SLOT(refColorChanged(float,float)));
 
-  connect(defoColorModel,
-          SIGNAL(colorChanged(float,float)),
-          this,
-          SLOT(defoColorChanged(float,float)));
+  connect(defoColorModel, SIGNAL(colorChanged(float,float)),
+          this, SLOT(defoColorChanged(float,float)));
 }
 
 void DefoOfflinePreparationModel::setCurrentDir(QDir& dir) {

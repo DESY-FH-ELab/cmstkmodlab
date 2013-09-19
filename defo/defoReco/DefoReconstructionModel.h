@@ -20,22 +20,23 @@ class DefoReconstructionModel : public QObject
 {
     Q_OBJECT
 public:
-  explicit DefoReconstructionModel(DefoMeasurementListModel* listModel
-                                 , DefoMeasurementSelectionModel* refSelectionModel
-                                 , DefoMeasurementSelectionModel* defoSelectionModel
-                                 , DefoAlignmentModel* alignmentModel
-                                 , DefoPointIndexerModel* pointIndexerModel
-                                 , DefoColorSelectionModel* refColorModel
-                                 , DefoColorSelectionModel* defoColorModel
-                                 , DefoMeasurementPairListModel* pairListModel
-                                 , DefoMeasurementPairSelectionModel* pairSelectionModel
-                                 , DefoGeometryModel* geometryModel
-                                 , QObject *parent = 0);
+  explicit DefoReconstructionModel(DefoMeasurementListModel* listModel,
+                                   DefoMeasurementSelectionModel* refSelectionModel,
+                                   DefoMeasurementSelectionModel* defoSelectionModel,
+                                   DefoAlignmentModel* alignmentModel,
+                                   DefoPointIndexerModel* pointIndexerModel,
+                                   DefoColorSelectionModel* refColorModel,
+                                   DefoColorSelectionModel* defoColorModel,
+                                   DefoMeasurementPairListModel* pairListModel,
+                                   DefoMeasurementPairSelectionModel* pairSelectionModel,
+                                   DefoGeometryModel* geometryModel,
+                                   QObject *parent = 0);
 
   double getAngle() const { return angle_; }
 
 public slots:
 
+  void setCurrentDir(QDir& dir);
   void refSelectionChanged(DefoMeasurement*);
   void defoSelectionChanged(DefoMeasurement*);
   void pointsUpdated(const DefoMeasurement*);
@@ -53,6 +54,7 @@ protected:
   bool alignPoints(const DefoPointCollection* original,
                    DefoPointCollection& aligned);
 
+  QDir currentDir_;
   DefoMeasurementListModel* listModel_;
   DefoMeasurement* refMeasurement_;
   DefoMeasurement* defoMeasurement_;
