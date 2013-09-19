@@ -3,12 +3,10 @@
 
 #include "DefoReconstructionWidget.h"
 
-DefoReconstructionWidget::DefoReconstructionWidget(
-     DefoReconstructionModel* reconstructionModel
-   , QWidget *parent
-) :
-    QWidget(parent)
-  , reconstructionModel_(reconstructionModel)
+DefoReconstructionWidget::DefoReconstructionWidget(DefoReconstructionModel* reconstructionModel,
+                                                   QWidget *parent) :
+    QWidget(parent),
+    reconstructionModel_(reconstructionModel)
 {
   //setMinimumSize(QSize(200, 300));
 
@@ -26,44 +24,32 @@ DefoReconstructionWidget::DefoReconstructionWidget(
   progressBar_->setMaximum(12);
   layout->addWidget(progressBar_);
 
-  connect(
-          reconstructionModel_
-        , SIGNAL(setupChanged())
-        , this
-        , SLOT(setupChanged())
-  	  );
+  connect(reconstructionModel_, SIGNAL(setupChanged()),
+          this, SLOT(setupChanged()));
 
-  connect(
-          reconstructionModel_
-        , SIGNAL(recoProgressChanged(int))
-        , this
-        , SLOT(recoProgressChanged(int))
-          );
+  connect(reconstructionModel_, SIGNAL(recoProgressChanged(int)),
+          this, SLOT(recoProgressChanged(int)));
 
-  connect(
-          reconstructionModel_
-        , SIGNAL(incrementProgress())
-        , this
-        , SLOT(incrementProgress())
-          );
+  connect(reconstructionModel_, SIGNAL(incrementProgress()),
+          this, SLOT(incrementProgress()));
 }
 
-void DefoReconstructionWidget::setupChanged() {
+void DefoReconstructionWidget::setupChanged()
+{
 
 }
 
-void DefoReconstructionWidget::reconstructButtonClicked() {
-
+void DefoReconstructionWidget::reconstructButtonClicked()
+{
   reconstructionModel_->reconstruct();
 }
 
-void DefoReconstructionWidget::recoProgressChanged(int progress) {
-
-  std::cout << progress << std::endl;
+void DefoReconstructionWidget::recoProgressChanged(int progress)
+{
   progressBar_->setValue(progress);
 }
 
-void DefoReconstructionWidget::incrementProgress() {
-
+void DefoReconstructionWidget::incrementProgress()
+{
   recoProgressChanged(progressBar_->value() + 1);
 }
