@@ -15,20 +15,14 @@ DefoMeasurementInfoListTreeWidget::DefoMeasurementInfoListTreeWidget(
   setHeaderItem(headerItem);
   
   // Respond to selection changes
-  connect(
-  	  selectionModel_
-        , SIGNAL(selectionChanged(DefoMeasurement*))
-        , this
-        , SLOT(setSelection(DefoMeasurement*))
-  	  );
+  connect(selectionModel_, SIGNAL(selectionChanged(DefoMeasurement*)),
+          this, SLOT(setSelection(DefoMeasurement*)));
 }
 
 const QString DefoMeasurementInfoListTreeWidget::TIME_FORMAT = "yyyy-MM-dd hh:mm:ss";
 
-void DefoMeasurementInfoListTreeWidget::setSelection(
-    DefoMeasurement *measurement
-) {
-
+void DefoMeasurementInfoListTreeWidget::setSelection(DefoMeasurement *measurement)
+{
   if (!measurement) return;
 
   clear();
@@ -49,6 +43,8 @@ void DefoMeasurementInfoListTreeWidget::setSelection(
   item->setText(0, "amplitude");
   item->setText(1, QString("%1 um").arg(measurement->getCalibAmplitude()));
   calibItem->addChild(item);
+
+  calibItem->setExpanded(true);
 
   item = new QTreeWidgetItem(this);
   item->setText(0, "focal length");
