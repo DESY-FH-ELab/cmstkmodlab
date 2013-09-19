@@ -12,6 +12,7 @@
 #include <QDir>
 
 #include <DefoConfig.h>
+#include <DefoGeometryModel.h>
 #include <DefoPoint.h>
 #include <DefoRecoSurface.h>
 #include <DefoSurface.h>
@@ -219,14 +220,41 @@ int main(int argc, char *argv[])
         return 0;
     }
 
+    DefoGeometryModel geometry;
+    std::string filename = dataPath + "/geometry.xml";
+    geometry.read(filename.c_str());
+
     DefoRecoSurface reco;
 
-    reco.setPitchX(DefoConfig::instance()->getValue<int>("PIXEL_PITCH_X"));
-    reco.setPitchY(DefoConfig::instance()->getValue<int>("PIXEL_PITCH_Y"));
+    reco.setPitchX(DefoConfig::instance()->getValue<double>("PIXEL_PITCH_X"));
+    reco.setPitchY(DefoConfig::instance()->getValue<double>("PIXEL_PITCH_Y"));
 
-    reco.setNominalGridDistance(DefoConfig::instance()->getValue<int>("NOMINAL_GRID_DISTANCE")*1000.);
-    reco.setNominalCameraDistance(DefoConfig::instance()->getValue<int>("NOMINAL_CAMERA_DISTANCE")*1000.);
-    reco.setNominalViewingAngle(DefoConfig::instance()->getValue<int>("NOMINAL_VIEWING_ANGLE")*1000.);
+    double angle1 = geometry.getAngle1();
+    double angle1Rad = angle1 * M_PI / 180.;
+    double angle2 = geometry.getAngle2();
+    double angle2Rad = angle2 * M_PI / 180.;
+    double distance = geometry.getDistance();
+    double height1 = geometry.getHeight1();
+    double height2 = geometry.getHeight2();
+
+    // height of camera rotation point over surface
+    double heightCameraToSurface = height1 - height2 - distance * std::sin(angle2Rad);
+
+    // viewing distance from camera to surface
+    // (assumption: camera is mounted perpendicular to frame)
+    double distanceCamera = heightCameraToSurface / std::cos(angle2Rad);
+
+    // distance from grid to surface calculated as the shortest distance
+    // between grid and the point on the surface under the grid roation axis
+    double distanceGrid = (height1 - height2) * std::cos(angle1Rad);
+
+    reco.setNominalGridDistance(distanceGrid / 1e3);
+    reco.setNominalCameraDistance(distanceCamera / 1e3);
+
+    // not really sure about this one...
+    reco.setNominalViewingAngle(angle2Rad);
+
+    reco.calculateHelpers();
 
     std::cout << "datapath: " << dataPath << std::endl;
     std::cout << "measurements:" << std::endl;
@@ -243,7 +271,8 @@ int main(int argc, char *argv[])
 
         reco.setFocalLength(undeformed.focalLength);
 
-        it->surface = reco.reconstruct(undeformed.points, deformed.points);
+        //reco.dump();
+        it->surface = reco.reconstruct(deformed.points, undeformed.points);
 
         std::string filename = "defoDump_";
         filename += it->undeformed;
