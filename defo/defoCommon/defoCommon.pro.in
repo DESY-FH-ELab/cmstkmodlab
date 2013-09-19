@@ -25,6 +25,9 @@ LIBS += -L@basepath@/devices/lib -lTkModLabCanon
 LIBS += -L@basepath@/devices/lib -lTkModLabHuber
 LIBS += -L@basepath@/common -lCommon
 
+QMAKE_CXXFLAGS += -std=c++0x
+QMAKE_LFLAGS   += -stdlib=libc++
+
 DEFINES += @configdefines@
 QT += core gui opengl script xml
 TARGET = DefoCommon

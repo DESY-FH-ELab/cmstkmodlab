@@ -88,7 +88,7 @@ const DefoSplineField DefoRecoSurface::createZSplines( DefoPointCollection const
 
 
   // x,y correction factors: see Diss. S. Koenig, p. 100;
-  const std::pair<double,double> correctionFactors = std::make_pair<double,double> (
+  const std::pair<double,double> correctionFactors = std::pair<double,double> (
     pitchX_ / focalLength_ * ( nominalGridDistance_ + nominalCameraDistance_ ) / 2. / nominalGridDistance_,
     pitchY_ / focalLength_ * ( nominalGridDistance_ + nominalCameraDistance_ ) / 2. / nominalGridDistance_
   );
@@ -98,8 +98,8 @@ const DefoSplineField DefoRecoSurface::createZSplines( DefoPointCollection const
 
   // determine index ranges in current points
   // (could also take ref points)
-  std::pair<int,int> indexRangeX = std::make_pair<int,int>( 0, 0 );
-  std::pair<int,int> indexRangeY = std::make_pair<int,int>( 0, 0 );
+  std::pair<int,int> indexRangeX = std::pair<int,int>( 0, 0 );
+  std::pair<int,int> indexRangeY = std::pair<int,int>( 0, 0 );
 
   // here we assume that there is at least one point right/left/above/below the blue one, resp., in the image;
   // otherwise the reconstruction will probably crash later
@@ -115,11 +115,11 @@ const DefoSplineField DefoRecoSurface::createZSplines( DefoPointCollection const
 
 
   // we need the blue point (from *ref*) as geom. reference, it always has index 0,0
-  std::pair<bool,DefoPointCollection::const_iterator> bluePointByIndex = findPointByIndex( referencePoints, std::make_pair<int,int>( 0, 0 ) );
+  std::pair<bool,DefoPointCollection::const_iterator> bluePointByIndex = findPointByIndex( referencePoints, std::pair<int,int>( 0, 0 ) );
 
 
   // now attach the points to the spline sets according to their indices
-  std::pair<int,int> index = std::make_pair<int,int>( indexRangeX.first, indexRangeY.first );
+  std::pair<int,int> index = std::pair<int,int>( indexRangeX.first, indexRangeY.first );
 
   // first along-y
   for( ; index.first <= indexRangeX.second; ++index.first ) {
@@ -183,7 +183,7 @@ const DefoSplineField DefoRecoSurface::createZSplines( DefoPointCollection const
 
 
   // then along-x
-  index = std::make_pair<int,int>( indexRangeX.first, indexRangeY.first );
+  index = std::pair<int,int>( indexRangeX.first, indexRangeY.first );
 
   for( ; index.second <= indexRangeY.second; ++index.second ) {
 
@@ -362,7 +362,7 @@ void DefoRecoSurface::mountZSplines( DefoSplineField& splineField ) const {
 
   // the numbers of point rows/columns
   std::pair<unsigned int, unsigned int> nSplines
-    = std::make_pair<unsigned int, unsigned int>( splineField.first.size(), splineField.second.size() );
+    = std::pair<unsigned int, unsigned int>( splineField.first.size(), splineField.second.size() );
   
   // this container stores a double per splineset;
   // used to sum up the relative heights of the splines from different mountings
@@ -503,7 +503,7 @@ void DefoRecoSurface::mountZSplinesOld( DefoSplineField& splineField ) const {
 
   // the numbers of point rows/columns
   std::pair<unsigned int, unsigned int> nSplines
-    = std::make_pair<unsigned int, unsigned int>( splineField.first.size(), splineField.second.size() );
+    = std::pair<unsigned int, unsigned int>( splineField.first.size(), splineField.second.size() );
 
   // this container stores a double per splineset;
   // used to sum up the relative heights of the splines from different mountings
@@ -710,7 +710,7 @@ DefoRecoSurface::groupPointsSorted( DefoPointCollection const& thePoints ) {
     
     // add a point if it complies with the last point in a group
     // according to the searchPathHalfWidth_
-    std::pair<bool,bool> isAssigned = std::make_pair<bool,bool>( false, false );
+    std::pair<bool,bool> isAssigned = std::pair<bool,bool>( false, false );
 
     // first: groups with "~SAME" X
     for( std::vector<DefoPointCollection>::iterator collIt = theOutput.first.begin();
@@ -805,12 +805,12 @@ const std::pair<double,double> DefoRecoSurface::determineAverageSpacing( DefoPoi
   // and average them
   // (assuming iterators are parallel)
   std::pair<double,double> sumOfSpacings;
-  std::pair<unsigned int,unsigned int> nSpacings = std::make_pair<unsigned int,unsigned int>( 0, 0 );
+  std::pair<unsigned int,unsigned int> nSpacings = std::pair<unsigned int,unsigned int>( 0, 0 );
 
   for( std::vector<double>::const_iterator it1 = coordinates.first.begin() + 1, it2 = coordinates.second.begin() + 1;
        it1 < coordinates.first.end(); ++it1, ++it2 ) {
     
-    const std::pair<double,double> aSpacing = std::make_pair<double,double>( fabs( *it1 - *(it1 - 1) ), fabs( *it2 - *(it2 - 1) ) );
+    const std::pair<double,double> aSpacing = std::pair<double,double>( fabs( *it1 - *(it1 - 1) ), fabs( *it2 - *(it2 - 1) ) );
     if( aSpacing.first  > spacingEstimate_ ) { sumOfSpacings.first  += aSpacing.first;  ++nSpacings.first; }
     if( aSpacing.second > spacingEstimate_ ) { sumOfSpacings.second += aSpacing.second; ++nSpacings.second; }
 
@@ -819,520 +819,13 @@ const std::pair<double,double> DefoRecoSurface::determineAverageSpacing( DefoPoi
   if( !( nSpacings.first && nSpacings.second ) ) {
     std::cerr << " [DefoRecoSurface::determineAverageSpacing] ** ERROR: unable to determine spacing, trying default (" 
 	      <<  spacingEstimate_ << " pix)." << std::endl;
-    return std::make_pair<double,double>( spacingEstimate_, spacingEstimate_ );
+    return std::pair<double,double>( spacingEstimate_, spacingEstimate_ );
   }
 
   // average
-  return std::make_pair<double,double>( sumOfSpacings.first / nSpacings.first, sumOfSpacings.second / nSpacings.second );
+  return std::pair<double,double>( sumOfSpacings.first / nSpacings.first, sumOfSpacings.second / nSpacings.second );
 
 }
-
-
-
-/////
-///// determine the indices of the points with respect to the "blue point in the middle",
-///// where the blue point has (0,0);
-///// returns the abs index range along x,y, i.e. the maximum |index|
-///// which is needed for display with QwtPlot3D
-/////
-//std::pair<unsigned int, unsigned int> DefoRecoSurface::indexPoints( DefoPointCollection& points ) {
-
-//  // first, look for "blue points" and make sure there's only one
-//  unsigned int nBluePoints = 0;
-//  DefoPointCollection::iterator bluePointIt;
-
-//  for( DefoPointCollection::iterator pIt = points.begin(); pIt < points.end(); ++pIt ) {
-//    if( pIt->isBlue() ) {
-//      nBluePoints++;
-//      bluePointIt = pIt;
-//    }
-//  }
-
-//  if( 1 != nBluePoints ) {
-//    std::cerr << " [DefoRecoSurface::indexPoints] ** ERROR: illegal number: " << nBluePoints
-//	      << " of blue points found. Returning index 0,0." << std::endl;
-//    return std::make_pair<unsigned int, unsigned int>( 0, 0 );
-//  }
-
-//  else { // debug
-//    if( debugLevel_ >= 1 ) std::cout << " [DefoRecoSurface::indexPoints] =1= Found one blue point: x: "
-//				    << bluePointIt->getX() << " y: " << bluePointIt->getY() << std::endl;
-//  }
-
-//  // determine an average spacing estimate of the points in x,y in pixels,
-//  // this is needed as a clue for where approx. to look for a neighbor of a given point,
-//  const std::pair<double,double> baseSpacing = determineAverageSpacing( points );
-
-//  // this is initialized with baseSpacing and later dynamically updated
-//  // as func of (x,y) when going thru the points
-//  std::pair<double,double> dynamicSpacing( baseSpacing );
-
-//  if( debugLevel_ >= 1 ) std::cout << " [DefoRecoSurface::indexPoints] =1= Determined average spacing: x: "
-//				   << baseSpacing.first << " y: " << baseSpacing.second << std::endl;
-
-//  // also need the full x,y ranges of the PointCollection wrt. to the blue one in the middle
-//  // (these pairs are min,max)
-//  std::pair<double,double> xRange = std::make_pair<double,double>( 0., 0. );
-//  std::pair<double,double> yRange = std::make_pair<double,double>( 0., 0. );
-
-//  // get min/max in a loop
-//  for( DefoPointCollection::const_iterator pIt = points.begin(); pIt < points.end(); ++pIt ) {
-//    if( pIt->getX() - bluePointIt->getX() > xRange.second ) xRange.second = pIt->getX() - bluePointIt->getX();
-//    if( pIt->getX() - bluePointIt->getX() < xRange.first )  xRange.first  = pIt->getX() - bluePointIt->getX();
-//    if( pIt->getY() - bluePointIt->getY() > yRange.second ) yRange.second = pIt->getY() - bluePointIt->getY();
-//    if( pIt->getY() - bluePointIt->getY() < yRange.first )  yRange.first  = pIt->getY() - bluePointIt->getY();
-//  }
-
-
-//  // debug
-//  if( debugLevel_ >= 2 ) std::cout << " [DefoRecoSurface::indexPoints] =2= Point range wrt. blue point is: x: "
-//				   << xRange.first << " .. " << xRange.second
-//				   << " y: " << yRange.first << " .. " << yRange.second << std::endl;
-
-
-
-  
-//  // now start with the blue point;
-//  // estimate position of next one (with spacing) and look which point is closest to that;
-//  // if one is found, it gets the appropriate integer indices.
-//  // If no point is close enough, skip index, because there is obviously no matching point
-
-//  std::pair<int,int> index = std::make_pair<int,int>( 0, 0 );
-//  (*bluePointIt).setIndex( index ); // blue point is indexed <0,0> by definition
-
-
-
-
-
-
-//  // in the first pass (outer loop), we go along the positive y-direction in the middle column,
-//  // then from each of the points start branching along a (x-)row
-
-//  DefoPoint startPointAlongX = *bluePointIt;
-
-//  // go along y, starting from the middle, until we hit the range limits (+ some margin)
-//  while( startPointAlongX.getY() - bluePointIt->getY() < yRange.second + spacingEstimate_ ) {
-
-//    // the new starting point for this (x-)row in the middle (y-)column
-//    DefoPoint thisPoint = startPointAlongX;
-
-//    // reset x index as we're starting from the middle
-//    index.first = 0;
-
-//    // reset dyn spacing to the estimated global value ## NO UPDATE YET!!
-//    dynamicSpacing = baseSpacing;
-
-//    // go along +x until we hit the range limits (+ some margin)
-//    while( thisPoint.getX() - startPointAlongX.getX() < xRange.second + spacingEstimate_ ) {
-      
-//      // estimate the position of the next point along x using the spacing
-//      const DefoPoint nextEstimate = thisPoint + DefoPoint( dynamicSpacing.first, 0. );
-
-//      // break the loop if we exceed the range
-//      // to avoid "not found" messages in debug output
-//      if( nextEstimate.getX() - startPointAlongX.getX() > xRange.second + spacingEstimate_ ) break;
-      
-//      // look for next point around this estimate
-//      if( debugLevel_ >= 3 ) std::cout << " [DefoRecoSurface::indexPoints] =3="
-//				       << " Searching point along-x around estimate: x: "
-//				       << nextEstimate.getX() << " y: " << nextEstimate.getY()
-//				       << " with dynamic spacing: x: " << dynamicSpacing.first << " y: " << dynamicSpacing.second
-//				       << std::endl;
-
-//      const std::pair<bool,DefoPointCollection::iterator> nextPointC = findClosestPointExcluded( nextEstimate, points, thisPoint );
-	
-//      // index is incremented anyway,
-//      // even if no point is found at that position
-//      ++index.first;
-      
-//      // found one?
-//      if( nextPointC.first ) {
-
-//	// need to make sure we don't catch the same point again
-//	// otherwise we get an infinite loop
-//	if( ( fabs( thisPoint.getX() - nextPointC.second->getX() ) < 0.1 ) &&
-//	    ( fabs( thisPoint.getY() - nextPointC.second->getY() ) < 0.1 )    ) {
-
-//	  if( debugLevel_ >= 3 ) std::cout << " [DefoRecoSurface::indexPoints] =3="
-//					   << " break indexing (+y+x) because point: x: " << thisPoint.getX()
-//					   << " y: " << thisPoint.getY() << " already indexed: "
-//					   << index.first - 1 << " " << index.second << std::endl;
-//	  break;
-//	}
-
-//	thisPoint = *(nextPointC.second); // set new current point
-//	nextPointC.second->setIndex( index ); // set the index of the point
-//	if( debugLevel_ > 2 ) std::cout << " [DefoRecoSurface::indexPoints] =3= Found next point along-x: x: "
-//					<< nextPointC.second->getX() << " y: " << nextPointC.second->getY()
-//					<< " indices: " << nextPointC.second->getIndex().first << " " << nextPointC.second->getIndex().second
-//					<< std::endl;
-//      }
-      
-//      // not found? then use estimate for the hop to the next position
-//      else {
-//	if( debugLevel_ >= 2 ) std::cout << " [DefoRecoSurface::indexPoints] =2="
-//					 << " no point along-x found around estimate: x: "
-//					 << nextEstimate.getX() << " y: " << nextEstimate.getY() << std::endl;
-//	thisPoint = nextEstimate;
-//      }
-      
-//    }
-
-    
-//    // now the other direction: -x
-    
-//    // reset the starting point for this (x-)row in the middle (y-)column
-//    thisPoint = startPointAlongX;
-
-//    // reset x index as we're starting from the middle
-//    index.first = 0;
-
-//    // reset dyn spacing to the estimated global value ## NO UPDATE YET!!
-//    dynamicSpacing = baseSpacing;
-
-//    // go along -x until we hit the range limits (+ some margin)
-//    while( thisPoint.getX() - startPointAlongX.getX() > xRange.first - spacingEstimate_ ) {
-      
-//      // estimate the position of the next point along x using the spacing
-//      const DefoPoint nextEstimate = thisPoint - DefoPoint( dynamicSpacing.first, 0. );
-
-//      // break the loop if we exceed the range
-//      // to avoid "not found" messages in debug output
-//      if( nextEstimate.getX() - startPointAlongX.getX() < xRange.first - spacingEstimate_ ) break;
-      
-//      // look for next point around this estimate
-//      if( debugLevel_ >= 3 ) std::cout << " [DefoRecoSurface::indexPoints] =3="
-//				      << " Searching point along-x around estimate: x: "
-//				      << nextEstimate.getX() << " y: " << nextEstimate.getY()
-//				       << " with dynamic spacing: x: " << dynamicSpacing.first << " y: " << dynamicSpacing.second
-//				       << std::endl;
-
-//      const std::pair<bool,DefoPointCollection::iterator> nextPointC = findClosestPointExcluded( nextEstimate, points, thisPoint );
-	
-//      // index is decremented anyway,
-//      // even if no point is found at that position
-//      --index.first;
-      
-//      // found one?
-//      if( nextPointC.first ) {
-
-//	// need to make sure we don't catch the same point again
-//	// otherwise we get an infinite loop
-//	if( ( fabs( thisPoint.getX() - nextPointC.second->getX() ) < 0.1 ) &&
-//	    ( fabs( thisPoint.getY() - nextPointC.second->getY() ) < 0.1 )    ) {
-//	  if( debugLevel_ >= 3 ) std::cout << " [DefoRecoSurface::indexPoints] =3="
-//					   << " break indexing (+y-x) because point: x: " << thisPoint.getX()
-//					   << " y: " << thisPoint.getY() << " already indexed: "
-//					   << index.first + 1 << " " << index.second << std::endl;
-//	  break;
-//	}
-
-//	thisPoint = *(nextPointC.second); // set new current point
-//	nextPointC.second->setIndex( index ); // set the index of the point
-//	if( debugLevel_ > 2 ) std::cout << " [DefoRecoSurface::indexPoints] =3= Found next point along-x: x: "
-//					<< nextPointC.second->getX() << " y: " << nextPointC.second->getY()
-//					<< " indices: " << nextPointC.second->getIndex().first << " " << nextPointC.second->getIndex().second
-//					<< std::endl;
-//      }
-      
-//      // not found? then use estimate for the hop to the next position
-//      else {
-//	if( debugLevel_ >= 2 ) std::cout << " [DefoRecoSurface::indexPoints] =2="
-//					 << " No point along-x found around estimate: x: "
-//					 << nextEstimate.getX() << " y: " << nextEstimate.getY() << std::endl;
-//	thisPoint = nextEstimate;
-//      }
-      
-//    }
-
-
-
-
-//    // this (x-)row is done, increment y now and repeat;
-//    // estimate the position of the next point along y using the spacing
-//    const DefoPoint nextEstimate = startPointAlongX + DefoPoint( 0., baseSpacing.first );
-
-//    // break the loop if we exceed the range
-//    // to avoid "not found" messages in debug output
-//    if( nextEstimate.getY() - bluePointIt->getY() > yRange.second + spacingEstimate_ ) break;
-
-//    // look for next point around this estimate
-//    if( debugLevel_ >= 3 ) std::cout << " [DefoRecoSurface::indexPoints] =3= SEARCH POINT along-y around estimate: x: "
-//				     << nextEstimate.getX() << " y: " << nextEstimate.getY() << std::endl;
-
-//    const std::pair<bool,DefoPointCollection::iterator> nextPointC = findClosestPointExcluded( nextEstimate, points, startPointAlongX );
-
-//    // reset index. it is incremented anyway,
-//    // even if no point is found at that position
-//    index.second++;
-//    index.first = 0;
-
-//    // found one?
-//    if( nextPointC.first ) {
-
-//      // need to make sure we don't catch the same point again
-//      // otherwise we get an infinite loop
-//      if( ( fabs( startPointAlongX.getX() - nextPointC.second->getX() ) < 0.1 ) &&
-//	  ( fabs( startPointAlongX.getY() - nextPointC.second->getY() ) < 0.1 )    ) {
-
-//	if( debugLevel_ >= 3 ) std::cout << " [DefoRecoSurface::indexPoints] =3="
-//					 << " break indexing (y++) because point: x: " << startPointAlongX.getX()
-//					 << " y: " << startPointAlongX.getY() << " already indexed: "
-//					 << index.first << " " << index.second -1 << std::endl;
-//	break;
-//      }
-	
-//      startPointAlongX = *(nextPointC.second); // set new current point
-//      nextPointC.second->setIndex( index ); // set the index of the point
-//      if( debugLevel_ >= 3 ) std::cout << " [DefoRecoSurface::indexPoints] =3= Found next point along-y: x: "
-//				       << nextPointC.second->getX() << " y: " << nextPointC.second->getY()
-//				       << " indices: " << nextPointC.second->getIndex().first << " " << nextPointC.second->getIndex().second
-//				       << std::endl;
-//    }
-    
-//    // not found? then use estimate for the hop to the next position
-//    else {
-//      if( debugLevel_ >= 2 ) std::cout << " [DefoRecoSurface::indexPoints] =2="
-//				       << " No point along-y found around estimate: x: "
-//				       << nextEstimate.getX() << " y: " << nextEstimate.getY() << std::endl;
-//      startPointAlongX = nextEstimate;
-//    }
-
-//  } // y loop
-
-
-
-
-
-//  // in the second pass (outer loop), we go along the negative y-direction in the middle column,
-//  // then from each of the points start branching along a (x-)row
-
-//  startPointAlongX = *bluePointIt;
-//  index = std::make_pair<int,int>( 0, 0 );
-
-//  // go along y, starting from the middle, until we hit the range limits (+ some margin)
-//  while( startPointAlongX.getY() - bluePointIt->getY() > yRange.first - spacingEstimate_ ) {
-
-//    // the new starting point for this (x-)row in the middle (y-)column
-//    DefoPoint thisPoint = startPointAlongX;
-
-//    // reset x index as we're starting from the middle
-//    index.first = 0;
-
-//    // reset dyn spacing to the estimated global value ## NO UPDATE YET!!
-//    dynamicSpacing = baseSpacing;
-
-//    // go along +x until we hit the range limits (+ some margin)
-//    while( thisPoint.getX() - startPointAlongX.getX() < xRange.second + spacingEstimate_ ) {
-      
-//      // estimate the position of the next point along x using the spacing
-//      const DefoPoint nextEstimate = thisPoint + DefoPoint( dynamicSpacing.first, 0. );
-
-//      // break the loop if we exceed the range
-//      // to avoid "not found" messages in debug output
-//      if( nextEstimate.getX() - startPointAlongX.getX() > xRange.second + spacingEstimate_ ) break;
-      
-//      // look for next point around this estimate
-//      if( debugLevel_ >= 3 ) std::cout << " [DefoRecoSurface::indexPoints] =3="
-//				      << " Searching point along-x around estimate: x: "
-//				      << nextEstimate.getX() << " y: " << nextEstimate.getY()
-//				       << " with dynamic spacing: x: " << dynamicSpacing.first << " y: " << dynamicSpacing.second
-//				       << std::endl;
-
-//      const std::pair<bool,DefoPointCollection::iterator> nextPointC = findClosestPointExcluded( nextEstimate, points, thisPoint );
-	
-//      // index is incremented anyway,
-//      // even if no point is found at that position
-//      ++index.first;
-      
-//      // found one?
-//      if( nextPointC.first ) {
-
-//	// need to make sure we don't catch the same point again
-//	// otherwise we get an infinite loop
-//	if( ( fabs( thisPoint.getX() - nextPointC.second->getX() ) < 0.1 ) &&
-//	    ( fabs( thisPoint.getY() - nextPointC.second->getY() ) < 0.1 )    ) {
-
-//	  if( debugLevel_ >= 3 ) std::cout << " [DefoRecoSurface::indexPoints] =3="
-//					   << " break indexing (-y+x) because point: x: " << thisPoint.getX()
-//					   << " y: " << thisPoint.getY() << " already indexed: "
-//					   << index.first - 1 << " " << index.second << std::endl;
-//	  break;
-//	}
-
-//	thisPoint = *(nextPointC.second); // set new current point
-//	nextPointC.second->setIndex( index ); // set the index of the point
-//	if( debugLevel_ > 2 ) std::cout << " [DefoRecoSurface::indexPoints] =3= Found next point along-x: x: "
-//					<< nextPointC.second->getX() << " y: " << nextPointC.second->getY()
-//					<< " indices: " << nextPointC.second->getIndex().first << " " << nextPointC.second->getIndex().second
-//					<< std::endl;
-//      }
-      
-//      // not found? then use estimate for the hop to the next position
-//      else {
-//	if( debugLevel_ >= 2 ) std::cout << " [DefoRecoSurface::indexPoints] =2="
-//					 << " No point along-x found around estimate: x: "
-//					 << nextEstimate.getX() << " y: " << nextEstimate.getY() << std::endl;
-//	thisPoint = nextEstimate;
-//      }
-      
-//    }
-
-    
-//    // now the other direction: -x
-    
-//    // reset the starting point for this (x-)row in the middle (y-)column
-//    thisPoint = startPointAlongX;
-
-//    // reset x index as we're starting from the middle
-//    index.first = 0;
-
-//    // reset dyn spacing to the estimated global value ## NO UPDATE YET!!
-//    dynamicSpacing = baseSpacing;
-
-//    // go along -x until we hit the range limits (+ some margin)
-//    while( thisPoint.getX() - startPointAlongX.getX() > xRange.first - spacingEstimate_ ) {
-      
-//      // estimate the position of the next point along x using the spacing
-//      const DefoPoint nextEstimate = thisPoint - DefoPoint( dynamicSpacing.first, 0. );
-
-//      // break the loop if we exceed the range
-//      // to avoid "not found" messages in debug output
-//      if( nextEstimate.getX() - startPointAlongX.getX() < xRange.first - spacingEstimate_ ) break;
-      
-//      // look for next point around this estimate
-//      if( debugLevel_ >= 3 ) std::cout << " [DefoRecoSurface::indexPoints] =3="
-//				      << " Searching point along-x around estimate: x: "
-//				      << nextEstimate.getX() << " y: " << nextEstimate.getY()
-//				       << " with dynamic spacing: x: " << dynamicSpacing.first << " y: " << dynamicSpacing.second
-//				       << std::endl;
-//      const std::pair<bool,DefoPointCollection::iterator> nextPointC = findClosestPointExcluded( nextEstimate, points, thisPoint );
-	
-//      // index is decremented anyway,
-//      // even if no point is found at that position
-//      --index.first;
-      
-//      // found one?
-//      if( nextPointC.first ) {
-
-//	// need to make sure we don't catch the same point again
-//	// otherwise we get an infinite loop
-//	if( ( fabs( thisPoint.getX() - nextPointC.second->getX() ) < 0.1 ) &&
-//	    ( fabs( thisPoint.getY() - nextPointC.second->getY() ) < 0.1 )    ) {
-
-//	  if( debugLevel_ >= 3 ) std::cout << " [DefoRecoSurface::indexPoints] =3="
-//					   << " break indexing (-y-x) because point: x: " << thisPoint.getX()
-//					   << " y: " << thisPoint.getY() << " already indexed: "
-//					   << index.first + 1 << " " << index.second << std::endl;
-//	  break;
-//	}
-
-//	thisPoint = *(nextPointC.second); // set new current point
-//	nextPointC.second->setIndex( index ); // set the index of the point
-//	if( debugLevel_ > 2 ) std::cout << " [DefoRecoSurface::indexPoints] =3= Found next point along-x: x: "
-//					<< nextPointC.second->getX() << " y: " << nextPointC.second->getY()
-//					<< " indices: " << nextPointC.second->getIndex().first << " " << nextPointC.second->getIndex().second
-//					<< std::endl;
-//      }
-      
-//      // not found? then use estimate for the hop to the next position
-//      else {
-//	if( debugLevel_ >= 2 ) std::cout << " [DefoRecoSurface::indexPoints] =2="
-//					 << " No point along-x found around estimate: x: "
-//					 << nextEstimate.getX() << " y: " << nextEstimate.getY() << std::endl;
-//	thisPoint = nextEstimate;
-//      }
-      
-//    }
-
-
-
-
-//    // this (x-)row is done, increment y now and repeat;
-//    // estimate the position of the next point along y using the spacing
-//    const DefoPoint nextEstimate = startPointAlongX - DefoPoint( 0., baseSpacing.first );
-
-//    // break the loop if we exceed the range
-//    // to avoid "not found" messages in debug output
-//    if( nextEstimate.getY() - bluePointIt->getY() < yRange.first - spacingEstimate_ ) break;
-
-//    // look for next point around this estimate
-//    if( debugLevel_ >= 3 ) std::cout << " [DefoRecoSurface::indexPoints] =3= search point along-y around estimate: x: "
-//				     << nextEstimate.getX() << " y: " << nextEstimate.getY() << std::endl;
-
-//    const std::pair<bool,DefoPointCollection::iterator> nextPointC = findClosestPointExcluded( nextEstimate, points, startPointAlongX );
-
-//    // reset index. it is incremented anyway,
-//    // even if no point is found at that position
-//    index.second--;
-//    index.first = 0;
-
-//    // found one?
-//    if( nextPointC.first ) {
-
-//      // need to make sure we don't catch the same point again
-//      // otherwise we get an infinite loop
-//      if( ( fabs( startPointAlongX.getX() - nextPointC.second->getX() ) < 0.1 ) &&
-//	  ( fabs( startPointAlongX.getY() - nextPointC.second->getY() ) < 0.1 )    ) {
-
-//	if( debugLevel_ >= 3 ) std::cout << " [DefoRecoSurface::indexPoints] =3="
-//					 << " break indexing (x++) because point: x: " << startPointAlongX.getX()
-//					 << " y: " << startPointAlongX.getY() << " already indexed: "
-//					 << index.first << " " << index.second - 1 << std::endl;
-//	break;
-//      }
-
-//      startPointAlongX = *(nextPointC.second); // set new current point
-//      nextPointC.second->setIndex( index ); // set the index of the point
-//      if( debugLevel_ >= 3 ) std::cout << " [DefoRecoSurface::indexPoints] =3= Found next point along-y: x: "
-//				       << nextPointC.second->getX() << " y: " << nextPointC.second->getY()
-//				       << " indices: " << nextPointC.second->getIndex().first << " " << nextPointC.second->getIndex().second
-//				       << std::endl;
-//    }
-    
-//    // not found? then use estimate for the hop to the next position
-//    else {
-//      if( debugLevel_ >= 2 ) std::cout << " [DefoRecoSurface::indexPoints] =2="
-//				       << " no point along-y found around estimate: x: "
-//				       << nextEstimate.getX() << " y: " << nextEstimate.getY() << std::endl;
-//      startPointAlongX = nextEstimate;
-//    }
-
-//  } // x loop
-
-
-
-//  if( debugLevel_ >= 3 ) std::cout << " [DefoRecoSurface::indexPoints] =3= indexing complete." << std::endl;
-
-
-//  // finally, check if all points are indexed
-//  // and fill the output collection
-
-//  // clear the indexed points vector
-//  indexedPoints_.resize( 0 );
-
-//  std::pair<unsigned int, unsigned int> outputRange( 0, 0 );
-
-//  for( DefoPointCollection::iterator it = points.begin(); it < points.end(); ++it ) {
-//    if( abs( it->getIndex().first  ) > (int)outputRange.first  ) outputRange.first  = abs( it->getIndex().first   );
-//    if( abs( it->getIndex().second ) > (int)outputRange.second ) outputRange.second = abs( it->getIndex().second  );
-
-//    if( !it->isIndexed() ) {
-//      std::cerr << " [DefoRecoSurface::indexPoints] ** WARNING: Point not indexed at posistion: x: "
-//		<< it->getX() << " y: " << it->getY() << std::endl;
-//    }
-//    // fill them in a vector (for display purposes)
-//    else indexedPoints_.push_back( *it );
-//  }
-
-//  if( debugLevel_ >= 2 ) std::cout << " [DefoRecoSurface::indexPoints] =2= "
-//				   << "ref point index range is: x: "
-//				   << outputRange.first << " y: "
-//				   << outputRange.second << std::endl;
-//  return outputRange;
-
-//}
-
 
 ///
 /// in the collection "points", find the one which is closest to "aPoint";
@@ -1349,12 +842,12 @@ std::pair<bool,DefoPointCollection::iterator> DefoRecoSurface::findClosestPoint(
   // loop points, compute distance
   for( DefoPointCollection::iterator it = points.begin(); it < points.end(); ++it ) {
     const DefoPoint distance = aPoint - *it;
-    pointsAndDistances.push_back( std::make_pair<DefoPointCollection::iterator,DefoPoint>( it, distance ) );
+    pointsAndDistances.push_back( std::pair<DefoPointCollection::iterator,DefoPoint>( it, distance ) );
   }
 
   // check, sort & get smallest
   DefoPointCollection::iterator result;
-  if( 0 == pointsAndDistances.size() ) return( std::make_pair<bool,DefoPointCollection::iterator>( false, result ) ); // ?
+  if( 0 == pointsAndDistances.size() ) return( std::pair<bool,DefoPointCollection::iterator>( false, result ) ); // ?
   std::sort( pointsAndDistances.begin(), pointsAndDistances.end(), DefoPointPairSecondAbsPredicate );
   result = pointsAndDistances.at( 0 ).first;
 
@@ -1371,7 +864,7 @@ std::pair<bool,DefoPointCollection::iterator> DefoRecoSurface::findClosestPoint(
   bool isFound = false;
   if( *result - aPoint < max ) isFound = true;
 
-  return std::make_pair<bool,DefoPointCollection::iterator>( isFound, result );
+  return std::pair<bool,DefoPointCollection::iterator>( isFound, result );
 
 }
 
@@ -1394,12 +887,12 @@ DefoRecoSurface::findClosestPointExcluded( DefoPoint const& aPoint, DefoPointCol
   // loop points, compute distance
   for( DefoPointCollection::iterator it = points.begin(); it < points.end(); ++it ) {
     const DefoPoint distance = aPoint - *it;
-    pointsAndDistances.push_back( std::make_pair<DefoPointCollection::iterator,DefoPoint>( it, distance ) );
+    pointsAndDistances.push_back( std::pair<DefoPointCollection::iterator,DefoPoint>( it, distance ) );
   }
 
   // check, sort
   DefoPointCollection::iterator result;
-  if( 0 == pointsAndDistances.size() ) return( std::make_pair<bool,DefoPointCollection::iterator>( false, result ) ); // ?
+  if( 0 == pointsAndDistances.size() ) return( std::pair<bool,DefoPointCollection::iterator>( false, result ) ); // ?
   std::sort( pointsAndDistances.begin(), pointsAndDistances.end(), DefoPointPairSecondAbsPredicate );
 
   // get point with smallest distance to aPoint, which is not excludedPoint
@@ -1415,7 +908,7 @@ DefoRecoSurface::findClosestPointExcluded( DefoPoint const& aPoint, DefoPointCol
   bool isFound = false;
   if( *result - aPoint < max ) isFound = true;
 
-  return std::make_pair<bool,DefoPointCollection::iterator>( isFound, result );
+  return std::pair<bool,DefoPointCollection::iterator>( isFound, result );
 
 } 
 
@@ -1434,7 +927,7 @@ DefoRecoSurface::findPointByIndex( DefoPointCollection const& points, std::pair<
     if( index == it->getIndex() ) { isFound = true; break; }
   }
 
-  return std::make_pair<bool,DefoPointCollection::const_iterator>( isFound, it );
+  return std::pair<bool,DefoPointCollection::const_iterator>( isFound, it );
 
 }
 

@@ -10,7 +10,7 @@ DefoPoint::DefoPoint( const DefoPoint& other ) {
   slope_ = other.slope_;
   height_ = other.height_;
   color_ = other.color_;
-  index_ = std::make_pair<int,int>(other.index_.first, other.index_.second);
+  index_ = std::pair<int,int>(other.index_.first, other.index_.second);
   isIndexed_ = other.isIndexed_;
   isValid_ = other.isValid_;
 }

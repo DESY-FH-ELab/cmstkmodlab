@@ -22,7 +22,7 @@ class DefoSpline {
   void setA( double const& a ) { a_ = a; }
   void setB( double const& b ) { b_ = b; }
   void setC( double const& c ) { c_ = c; }
-  void setValidityRange( double const& from, double const& to ) { validityRange_ = std::make_pair<double,double>( from, to ); }
+  void setValidityRange( double const& from, double const& to ) { validityRange_ = std::pair<double,double>( from, to ); }
   std::pair<double,double> const& getValidityRange( void ) const { return validityRange_; }
   bool isInRange( double pos ) const { return( pos >= validityRange_.first && pos <= validityRange_.second ); }
   double const& a() const { return a_; }
