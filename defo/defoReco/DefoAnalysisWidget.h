@@ -1,21 +1,22 @@
 #ifndef DEFOANALYSISWIDGET_H
 #define DEFOANALYSISWIDGET_H
 
+#include <map>
+
 #include <QWidget>
 
 #include "DefoMeasurementListModel.h"
 #include "DefoMeasurementSelectionModel.h"
 #include "DefoSurfacePlot.h"
+#include "DefoSurfacePlotViewSettings.h"
 
 class DefoAnalysisWidget : public QWidget
 {
     Q_OBJECT
 public:
-  explicit DefoAnalysisWidget(
-      DefoMeasurementPairListModel * listModel
-    , DefoMeasurementPairSelectionModel * selectionModel
-    , QWidget *parent = 0
-  );
+  explicit DefoAnalysisWidget(DefoMeasurementPairListModel * listModel,
+                              DefoMeasurementPairSelectionModel * selectionModel,
+                              QWidget *parent = 0);
 
 protected:
 
@@ -23,8 +24,10 @@ protected:
   DefoMeasurementPairSelectionModel* selectionModel_;
 
   DefoSurfacePlot* plot3D_;
+  std::map<DefoMeasurementPair*,DefoSurfacePlotViewSettings*> viewSettings_;
 
 protected slots:
+
   void selectionChanged(DefoMeasurementPair* selection);
 };
 

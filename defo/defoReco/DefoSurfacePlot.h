@@ -1,4 +1,3 @@
-
 #ifndef _DEFOSURFACEPLOT_H
 #define _DEFOSURFACEPLOT_H
 
@@ -9,6 +8,7 @@
 #include <qwt3d_types.h>
 #include <qwt3d_portability.h>
 
+#include "DefoSurfacePlotViewSettings.h"
 #include "DefoSurface.h"
 
 // scaling for the z axis (m -> µm)
@@ -25,62 +25,55 @@
 ///
 class DefoSurfacePlot : public Qwt3D::SurfacePlot {
 
-  Q_OBJECT
+    Q_OBJECT
 
- public:
+public:
 
-  enum PointSet { POINTS_X, POINTS_Y };
+    enum PointSet { POINTS_X, POINTS_Y };
 
-  DefoSurfacePlot( QWidget* parent ) : Qwt3D::SurfacePlot( parent ) { init(); }
-  ~DefoSurfacePlot() {}
-  void setData( DefoSurface const& );
-  void setDisplayTitle( QString const& title ) { title_ = title; }
-  void draw( void );
+    DefoSurfacePlot( QWidget* parent ) : Qwt3D::SurfacePlot( parent ) { init(); }
+    ~DefoSurfacePlot() {}
+    void setData( DefoSurface const& );
+    void setDisplayTitle( QString const& title ) { title_ = title; }
+    void draw( void );
 
- public slots:
+    void setViewSettings(DefoSurfacePlotViewSettings* vs);
 
-  void toggleView( bool );
-  void setIsShade( bool );
-  void setIsMesh( bool );
-  void setIsAxes( bool );
-  void setIsLegend( bool );
-  void setIsIsolines( bool );
-  void setNIsolines( int );
-  void increaseZScale( void );
-  void decreaseZScale( void );
-	
- signals:
+public slots:
 
-  void shadeEnabled( bool );
-  void meshEnabled( bool );
-  void axesEnabled( bool );
-  void legendEnabled( bool );
-  void isolinesEnabled( bool );
-  void nIsolines( int );
+    void toggleView( bool );
+    void setIsShade( bool );
+    void setIsMesh( bool );
+    void setIsAxes( bool );
+    void setIsLegend( bool );
+    void setIsIsolines( bool );
+    void setNIsolines( int );
+    void increaseZScale( void );
+    void decreaseZScale( void );
 
- private:
-  
-  void init( void );
-  DefoPoint const& neighbour( std::pair<unsigned int, unsigned int> const&,  DefoPointField const& );
-  void repaint( void );
-  DefoSurfacePlot::PointSet pointSet_;
-  std::pair<double,double> amplitudeRange_;
-  bool isValid_;
-  QString title_;
-  double scalefactor_;
-  double xyScale_;
-  double zScale_;
-  std::pair<bool,bool> meshAndShadeCarry_;
-  
-  bool is3D_;
-  bool isMesh_;
-  bool isAxes_;
-  bool isShade_;
-  bool isIsolines_;
-  bool isLegend_;
-  int nIsolines_;
+signals:
 
+    void shadeEnabled( bool );
+    void meshEnabled( bool );
+    void axesEnabled( bool );
+    void legendEnabled( bool );
+    void isolinesEnabled( bool );
+    void nIsolines( int );
+
+private:
+
+    void init( void );
+    DefoPoint const& neighbour( std::pair<unsigned int, unsigned int> const&,  DefoPointField const& );
+    void repaint( void );
+    DefoSurfacePlot::PointSet pointSet_;
+    std::pair<double,double> amplitudeRange_;
+    bool isValid_;
+    QString title_;
+    double scalefactor_;
+    std::pair<bool,bool> meshAndShadeCarry_;
+
+    DefoSurfacePlotViewSettings dvs_;
+    DefoSurfacePlotViewSettings* vs_;
 };
-
 
 #endif
