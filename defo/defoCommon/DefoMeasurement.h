@@ -141,7 +141,7 @@ public:
   DefoMeasurementPair(DefoMeasurement* reference,
                       DefoMeasurement* deformed);
 
-  void setSurface(DefoSurface& surface);
+  void setSurface(const DefoSurface& surface);
   const DefoSurface& getSurface() const { return surface_; }
 
 protected:

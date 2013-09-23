@@ -8,7 +8,6 @@
 
 #include "DefoSurface.h"
 
-
 inline bool operator==(const DefoSplineXYPair &lhs, const DefoSplineXYPair &rhs)
 {
   return lhs.x_==rhs.x_ && lhs.y_==rhs.y_;
@@ -22,13 +21,13 @@ inline uint qHash(const DefoSplineXYPair &key)
 ///
 ///
 ///
-DefoSurface::DefoSurface() {
-
+DefoSurface::DefoSurface()
+{
   isSplineField_ = false;
 }
 
-DefoSurface::DefoSurface(const DefoSurface& other) {
-
+DefoSurface::DefoSurface(const DefoSurface& other)
+{
   points_ = other.points_;
   splineField_ = other.splineField_;
   pointFields_ = other.pointFields_;
@@ -36,11 +35,11 @@ DefoSurface::DefoSurface(const DefoSurface& other) {
   isSplineField_ = other.isSplineField_;
   isPoints_ = other.isPoints_;
 
-  makeStats();
+  summary_ = other.summary_;
 }
 
-void DefoSurface::makeStats() {
-
+void DefoSurface::makeSummary()
+{
     typedef QHash<DefoSplineXYPair,DefoSplineXYDefoPair>::iterator it_t;
     DefoSplineXYPair key;
     DefoSplineXYDefoPair value;
@@ -106,8 +105,8 @@ void DefoSurface::makeStats() {
       }
     }
 
-    stats_.maxZFromXSplines = -1e9;
-    stats_.minZFromXSplines = +1e9;
+    summary_.maxZFromXSplines = -1e9;
+    summary_.minZFromXSplines = +1e9;
 
     // "along-x" splines
     DefoSplineSetXCollection const& splinesXminmax = splineField_.first;
@@ -123,21 +122,21 @@ void DefoSurface::makeStats() {
              ++itP ) {
 
             double z = itC->eval(itP->getX());
-            if (z>stats_.maxZFromXSplines) {
-                stats_.maxZFromXSplines = z;
-                stats_.posAtMaxZFromXSplines.first = itP->getX();
-                stats_.posAtMaxZFromXSplines.second = itP->getY();
+            if (z>summary_.maxZFromXSplines) {
+                summary_.maxZFromXSplines = z;
+                summary_.posAtMaxZFromXSplines.first = itP->getX();
+                summary_.posAtMaxZFromXSplines.second = itP->getY();
             }
-            if (z<stats_.minZFromXSplines) {
-                stats_.minZFromXSplines = z;
-                stats_.posAtMinZFromXSplines.first = itP->getX();
-                stats_.posAtMinZFromXSplines.second = itP->getY();
+            if (z<summary_.minZFromXSplines) {
+                summary_.minZFromXSplines = z;
+                summary_.posAtMinZFromXSplines.first = itP->getX();
+                summary_.posAtMinZFromXSplines.second = itP->getY();
             }
         }
     }
 
-    stats_.maxZFromYSplines = -1e9;
-    stats_.minZFromYSplines = +1e9;
+    summary_.maxZFromYSplines = -1e9;
+    summary_.minZFromYSplines = +1e9;
 
     // "along-y" splines
     DefoSplineSetYCollection const& splinesYminmax = splineField_.second;
@@ -153,19 +152,23 @@ void DefoSurface::makeStats() {
              ++itP ) {
 
             double z = itC->eval(itP->getY());
-            if (z>stats_.maxZFromYSplines) {
-                stats_.maxZFromYSplines = z;
-                stats_.posAtMaxZFromYSplines.first = itP->getX();
-                stats_.posAtMaxZFromYSplines.second = itP->getY();
+            if (z>summary_.maxZFromYSplines) {
+                summary_.maxZFromYSplines = z;
+                summary_.posAtMaxZFromYSplines.first = itP->getX();
+                summary_.posAtMaxZFromYSplines.second = itP->getY();
             }
-            if (z<stats_.minZFromYSplines) {
-                stats_.minZFromYSplines = z;
-                stats_.posAtMinZFromYSplines.first = itP->getX();
-                stats_.posAtMinZFromYSplines.second = itP->getY();
+            if (z<summary_.minZFromYSplines) {
+                summary_.minZFromYSplines = z;
+                summary_.posAtMinZFromYSplines.first = itP->getX();
+                summary_.posAtMinZFromYSplines.second = itP->getY();
             }
         }
     }
+}
 
+const DefoSurfaceSummary& DefoSurface::getSummary() const
+{
+    return summary_;
 }
 
 ///
@@ -194,25 +197,25 @@ void DefoSurface::dumpSplineField( std::string& filename ) const {
 ///
 ///
 ///
-void DefoSurface::dumpStats( std::string& filename ) const {
+void DefoSurface::dumpSummary( std::string& filename ) const {
 
     if (filename.length()==0) return;
 
     std::ofstream ofile(filename.c_str());
 
-    ofile << std::setw(8)  << stats_.maxZFromXSplines << " "
-          << std::setw(8)  << stats_.posAtMaxZFromXSplines.first << " "
-          << std::setw(8)  << stats_.posAtMaxZFromXSplines.second << std::endl;
-    ofile << std::setw(8)  << stats_.minZFromXSplines << " "
-          << std::setw(8)  << stats_.posAtMinZFromXSplines.first << " "
-          << std::setw(8)  << stats_.posAtMinZFromXSplines.second << std::endl;
+    ofile << std::setw(8)  << summary_.maxZFromXSplines << " "
+          << std::setw(8)  << summary_.posAtMaxZFromXSplines.first << " "
+          << std::setw(8)  << summary_.posAtMaxZFromXSplines.second << std::endl;
+    ofile << std::setw(8)  << summary_.minZFromXSplines << " "
+          << std::setw(8)  << summary_.posAtMinZFromXSplines.first << " "
+          << std::setw(8)  << summary_.posAtMinZFromXSplines.second << std::endl;
 
-    ofile << std::setw(8)  << stats_.maxZFromYSplines << " "
-          << std::setw(8)  << stats_.posAtMaxZFromYSplines.first << " "
-          << std::setw(8)  << stats_.posAtMaxZFromYSplines.second << std::endl;
-    ofile << std::setw(8)  << stats_.minZFromYSplines << " "
-          << std::setw(8)  << stats_.posAtMinZFromYSplines.first << " "
-          << std::setw(8)  << stats_.posAtMinZFromYSplines.second << std::endl;
+    ofile << std::setw(8)  << summary_.maxZFromYSplines << " "
+          << std::setw(8)  << summary_.posAtMaxZFromYSplines.first << " "
+          << std::setw(8)  << summary_.posAtMaxZFromYSplines.second << std::endl;
+    ofile << std::setw(8)  << summary_.minZFromYSplines << " "
+          << std::setw(8)  << summary_.posAtMinZFromYSplines.first << " "
+          << std::setw(8)  << summary_.posAtMinZFromYSplines.second << std::endl;
 }
 
 ///

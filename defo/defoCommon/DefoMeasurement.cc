@@ -686,6 +686,7 @@ DefoMeasurementPair::DefoMeasurementPair(DefoMeasurement* reference,
 
 }
 
-void DefoMeasurementPair::setSurface(DefoSurface& surface) {
+void DefoMeasurementPair::setSurface(const DefoSurface& surface)
+{
   surface_ = surface;
 }

@@ -26,7 +26,7 @@ public:
   bool hasx_, hasy_;
 };
 
-class DefoSurfaceStats {
+class DefoSurfaceSummary {
 
  public:
     std::pair<double,double> posAtMinZFromXSplines;
@@ -47,7 +47,8 @@ class DefoSurface {
  public:
   DefoSurface();
   DefoSurface(const DefoSurface& other);
-  void makeStats();
+  void makeSummary();
+  const DefoSurfaceSummary& getSummary() const;
 
   void setPoints( DefoPointCollection const& points ) { points_ = points; }
   DefoPointCollection const& getPoints( void ) { return points_; }
@@ -56,10 +57,8 @@ class DefoSurface {
   DefoPointFields const& getPointFields( void ) const { return pointFields_; }
   void setPointFields( DefoPointFields const& fields ) { pointFields_ = fields; isPoints_ = true; }
   void dumpSplineField( std::string& filename ) const;
-  void dumpStats( std::string& filename ) const;
+  void dumpSummary( std::string& filename ) const;
   void createPointFields( void );
-
-  const DefoSurfaceStats& getStats() const { return stats_; }
 
  private:
   DefoPointCollection points_;
@@ -70,7 +69,7 @@ class DefoSurface {
   bool isPoints_;
 
   QHash<DefoSplineXYPair,DefoSplineXYDefoPair> defoPointMap_;
-  DefoSurfaceStats stats_;
+  DefoSurfaceSummary summary_;
 };
 
 #endif

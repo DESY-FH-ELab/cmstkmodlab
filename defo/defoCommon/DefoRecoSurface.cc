@@ -69,7 +69,7 @@ const DefoSurface DefoRecoSurface::reconstruct( DefoPointCollection& currentPoin
   theSurface.createPointFields(); // create matrix of points (internal)
   emit incrementRecoProgress();
 
-  theSurface.makeStats();
+  theSurface.makeSummary();
 
   return theSurface;
 }
