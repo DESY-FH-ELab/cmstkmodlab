@@ -1,4 +1,5 @@
 #include <QBoxLayout>
+#include <QFormLayout>
 #include <QPushButton>
 #include <QCheckBox>
 #include <QGroupBox>
@@ -40,8 +41,13 @@ DefoAnalysisWidget::DefoAnalysisWidget(DefoMeasurementPairListModel * listModel,
   plot3D_->updateData();
   plot3D_->updateGL();
 
-  QGroupBox * gb = new QGroupBox(this);
+  QWidget* tools = new QWidget(this);
+  QVBoxLayout* toolsLayout = new QVBoxLayout();
+  tools->setLayout(toolsLayout);
+
+  QGroupBox * gb = new QGroupBox("View", tools);
   QVBoxLayout *vbox = new QVBoxLayout;
+  gb->setLayout(vbox);
 
   QPushButton * push = new QPushButton("+");
   connect(push, SIGNAL(clicked()),
@@ -54,8 +60,8 @@ DefoAnalysisWidget::DefoAnalysisWidget(DefoMeasurementPairListModel * listModel,
   vbox->addWidget(push);
 
   QSpinBox * spin = new QSpinBox();
-  spin->setRange(5, 20);
-  spin->setValue(10);
+  spin->setRange(5, 40);
+  spin->setValue(20);
   connect(spin, SIGNAL(valueChanged(int)),
           plot3D_, SLOT(setNIsolines(int)));
   vbox->addWidget(spin);
@@ -96,10 +102,36 @@ DefoAnalysisWidget::DefoAnalysisWidget(DefoMeasurementPairListModel * listModel,
           plot3D_, SLOT(setIsLegend(bool)));
   vbox->addWidget(checkbox);
 
-  vbox->addStretch(1);
-  gb->setLayout(vbox);
+  toolsLayout->addWidget(gb);
 
-  layout->addWidget(gb);
+  gb = new QGroupBox("Summary", tools);
+  QFormLayout* formLayout = new QFormLayout;
+  gb->setLayout(formLayout);
+
+  minZLabel_ = new QLabel("      0");
+  minZLabel_->setAlignment(Qt::AlignRight);
+  formLayout->addRow("min Z [um]:", minZLabel_);
+  posXAtMinZLabel_ = new QLabel("      0");
+  posXAtMinZLabel_->setAlignment(Qt::AlignRight);
+  formLayout->addRow("X @ min Z [mm]:", posXAtMinZLabel_);
+  posYAtMinZLabel_ = new QLabel("      0");
+  posYAtMinZLabel_->setAlignment(Qt::AlignRight);
+  formLayout->addRow("Y @ min Z [mm]:", posYAtMinZLabel_);
+  maxZLabel_ = new QLabel("      0");
+  maxZLabel_->setAlignment(Qt::AlignRight);
+  formLayout->addRow("max Z [um]:", maxZLabel_);
+  posXAtMaxZLabel_ = new QLabel("      0");
+  posXAtMaxZLabel_->setAlignment(Qt::AlignRight);
+  formLayout->addRow("X @ max Z [mm]:", posXAtMaxZLabel_);
+  posYAtMaxZLabel_ = new QLabel("      0");
+  posYAtMaxZLabel_->setAlignment(Qt::AlignRight);
+  formLayout->addRow("Y @ max Z [mm]:", posYAtMaxZLabel_);
+
+  toolsLayout->addWidget(gb);
+
+  toolsLayout->addStretch(1);
+
+  layout->addWidget(tools);
 
   connect(selectionModel_, SIGNAL(selectionChanged(DefoMeasurementPair*)),
           this, SLOT(selectionChanged(DefoMeasurementPair*)));
@@ -124,4 +156,13 @@ void DefoAnalysisWidget::selectionChanged(DefoMeasurementPair* selection)
   plot3D_->setViewSettings(vs);
   plot3D_->setData(surface);
   plot3D_->draw();
+
+  const DefoSurfaceSummary& summary = surface.getSummary();
+
+  minZLabel_->setText(QString::number((int)(1e6*summary.minZFromXSplines)));
+  posXAtMinZLabel_->setText(QString::number((int)(1e3*summary.posAtMinZFromXSplines.first)));
+  posYAtMinZLabel_->setText(QString::number((int)(1e3*summary.posAtMinZFromXSplines.second)));
+  maxZLabel_->setText(QString::number((int)(1e6*summary.maxZFromXSplines)));
+  posXAtMaxZLabel_->setText(QString::number((int)(1e3*summary.posAtMaxZFromXSplines.first)));
+  posYAtMaxZLabel_->setText(QString::number((int)(1e3*summary.posAtMaxZFromXSplines.second)));
 }

@@ -125,12 +125,8 @@ void DefoSurfacePlot::setData(DefoSurface const& surface)
     // for the max defo amplitude in µm
     amplitudeRange_ = std::pair<double,double>( 0., 0. );
 
-    std::cout << "blah 1" << std::endl;
-
     // set x or y field, according to what has been chosen
     DefoPointField const& field = POINTS_X==pointSet_ ? surface.getPointFields().first : surface.getPointFields().second;
-
-    std::cout << "blah 2" << std::endl;
 
     // determine its dimensions
     std::pair<unsigned int, unsigned int> indexRange;
@@ -141,16 +137,12 @@ void DefoSurfacePlot::setData(DefoSurface const& surface)
         isValid_ = false;
     }
 
-    std::cout << "blah 3" << std::endl;
-
     // look at first column for y size
     indexRange.second = field.at(0).size();
     if( 0 == indexRange.second ) {
         std::cerr << " [DefoSurfacePlot::setData] ** WARNING: point field has zero column dimension" << std::endl;
         isValid_ = false;
     }
-
-    std::cout << "blah 4" << std::endl;
 
     // Qwt3D::SurfacePlot wants an array:
     // one entry for each point, holding a (x,y,z) tuple

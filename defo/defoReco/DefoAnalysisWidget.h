@@ -4,6 +4,7 @@
 #include <map>
 
 #include <QWidget>
+#include <QLabel>
 
 #include "DefoMeasurementListModel.h"
 #include "DefoMeasurementSelectionModel.h"
@@ -25,6 +26,13 @@ protected:
 
   DefoSurfacePlot* plot3D_;
   std::map<DefoMeasurementPair*,DefoSurfacePlotViewSettings*> viewSettings_;
+
+  QLabel* minZLabel_;
+  QLabel* posXAtMinZLabel_;
+  QLabel* posYAtMinZLabel_;
+  QLabel* maxZLabel_;
+  QLabel* posXAtMaxZLabel_;
+  QLabel* posYAtMaxZLabel_;
 
 protected slots:
 
