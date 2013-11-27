@@ -28,6 +28,50 @@
 #include <qitemdelegate.h>
 #include <qpainter.h>
 
+ThermoDAQPressureScaleDraw::ThermoDAQPressureScaleDraw() :
+    QwtScaleDraw()
+{
+
+}
+
+ThermoDAQPressureScaleDraw::~ThermoDAQPressureScaleDraw()
+{
+
+}
+
+QwtText ThermoDAQPressureScaleDraw::label(double value) const
+{
+    if ( qFuzzyCompare( value + 1.0, 1.0 ) )
+        value = 0.0;
+
+    if (value<1) {
+        return QLocale().toString(value, 'e', 1);
+    } else if (value<10) {
+        return QLocale().toString(value, 'f', 1);
+    } else {
+        return QLocale().toString((int)value);
+    }
+}
+
+ThermoDAQPressureScaleEngine::ThermoDAQPressureScaleEngine(uint base) :
+    QwtLogScaleEngine(base)
+{
+
+}
+
+ThermoDAQPressureScaleEngine::~ThermoDAQPressureScaleEngine()
+{
+
+}
+
+void ThermoDAQPressureScaleEngine::autoScale(int maxNumSteps,
+                                             double &x1, double &x2,
+                                             double &stepSize) const
+{
+    QwtLogScaleEngine::autoScale(maxNumSteps, x1, x2, stepSize);
+    if (x2>2000) x2 = 2000;
+}
+
 static void qwtRenderBackground(QPainter *painter,
                                 const QRectF &rect, const QWidget *widget )
 {
@@ -303,8 +347,9 @@ ThermoDAQDateScaleDraw::ThermoDAQDateScaleDraw(Qt::TimeSpec timeSpec) :
     setDateFormat(QwtDate::Month, "hh:mm:ss\ndd/MM/yyyy");
 }
 
-ThermoDAQTemperaturePicker::ThermoDAQTemperaturePicker(QWidget *parent) :
-    QwtPlotPicker(parent)
+ThermoDAQTemperaturePicker::ThermoDAQTemperaturePicker(QWidget *parent, Qt::TimeSpec spec) :
+    QwtPlotPicker(parent),
+    timeSpec_(spec)
 {
     setRubberBandPen(QColor(Qt::darkGreen));
     setTrackerMode(QwtPlotPicker::AlwaysOn);
@@ -312,7 +357,7 @@ ThermoDAQTemperaturePicker::ThermoDAQTemperaturePicker(QWidget *parent) :
 
 QwtText ThermoDAQTemperaturePicker::trackerTextF(const QPointF &pos) const
 {
-    const QDateTime dt = QwtDate::toDateTime(pos.x());
+    const QDateTime dt = QwtDate::toDateTime(pos.x(), timeSpec_);
 
     QString s;
     s += dt.toString(" hh:mm:ss ");
@@ -331,8 +376,9 @@ QwtText ThermoDAQTemperaturePicker::trackerTextF(const QPointF &pos) const
     return text;
 }
 
-ThermoDAQPressurePicker::ThermoDAQPressurePicker(QWidget *parent) :
-    QwtPlotPicker(parent)
+ThermoDAQPressurePicker::ThermoDAQPressurePicker(QWidget *parent, Qt::TimeSpec spec) :
+    QwtPlotPicker(parent),
+    timeSpec_(spec)
 {
     setRubberBandPen(QColor(Qt::darkGreen));
     setTrackerMode(QwtPlotPicker::AlwaysOn);
@@ -340,67 +386,7 @@ ThermoDAQPressurePicker::ThermoDAQPressurePicker(QWidget *parent) :
 
 QwtText ThermoDAQPressurePicker::trackerTextF(const QPointF &pos) const
 {
-    const QDateTime dt = QwtDate::toDateTime(pos.x());
-
-    QString s;
-    s += dt.toString(" hh:mm:ss ");
-    if (pos.y()<1) {
-        s += QString::number(pos.y(), 'e', 2);
-    } else {
-        s += QString::number((int)pos.y());
-    }
-    s += " mbar ";
-
-    QwtText text(s);
-    text.setColor(Qt::white);
-
-    QColor c = rubberBandPen().color();
-    text.setBorderPen(QPen(c));
-    text.setBorderRadius(0);
-    c.setAlpha(200);
-    text.setBackgroundBrush(c);
-
-    return text;
-}
-
-ThermoDAQTemperatureZoomer::ThermoDAQTemperatureZoomer(QWidget *parent) :
-    QwtPlotZoomer(parent)
-{
-    setRubberBandPen(QColor(Qt::darkGreen));
-    setTrackerMode(QwtPlotPicker::AlwaysOn);
-}
-
-QwtText ThermoDAQTemperatureZoomer::trackerTextF(const QPointF &pos) const
-{
-    const QDateTime dt = QwtDate::toDateTime(pos.x());
-
-    QString s;
-    s += dt.toString(" hh:mm:ss ");
-    s += QString::number(pos.y(), 'f', 2);
-    s += QString::fromUtf8(" °C ");
-
-    QwtText text(s);
-    text.setColor(Qt::white);
-
-    QColor c = rubberBandPen().color();
-    text.setBorderPen(QPen(c));
-    text.setBorderRadius(0);
-    c.setAlpha(200);
-    text.setBackgroundBrush(c);
-
-    return text;
-}
-
-ThermoDAQPressureZoomer::ThermoDAQPressureZoomer(QWidget *parent) :
-    QwtPlotZoomer(parent)
-{
-    setRubberBandPen(QColor(Qt::darkGreen));
-    setTrackerMode(QwtPlotPicker::AlwaysOn);
-}
-
-QwtText ThermoDAQPressureZoomer::trackerTextF(const QPointF &pos) const
-{
-    const QDateTime dt = QwtDate::toDateTime(pos.x());
+    const QDateTime dt = QwtDate::toDateTime(pos.x(), timeSpec_);
 
     QString s;
     s += dt.toString(" hh:mm:ss ");
@@ -429,41 +415,6 @@ ThermoDAQDisplayWidget::ThermoDAQDisplayWidget(QWidget *parent) :
 {
     setCanvasBackground(QBrush(QColor(Qt::black)));
 }
-
-//void ThermoDAQDisplayWidget::updateZoomBase()
-//{
-//    static const double limitMax = std::numeric_limits<double>::max();
-//    static const double limitMin = std::numeric_limits<double>::min();
-
-////    std::cout << zoomer_->zoomBase().left() << std::endl;
-////    std::cout << zoomer_->zoomBase().right() << std::endl;
-////    std::cout << zoomer_->zoomBase().bottom() << std::endl;
-////    std::cout << zoomer_->zoomBase().top() << std::endl;
-
-//    double minX = limitMax;
-//    double maxX = 0;
-//    double minY = limitMax;
-//    double maxY = limitMin;
-
-//    for (QVector<QwtPlotCurve*>::const_iterator it = curves_.begin();
-//         it!=curves_.end();
-//         ++it) {
-
-//        QRectF dr = (*it)->dataRect();
-//        minX = std::min(minX, dr.left());
-//        maxX = std::max(maxX, dr.right());
-//        minY = std::min(minY, dr.bottom());
-//        maxY = std::max(maxY, dr.top());
-//    }
-
-//    QRectF rect;
-//    rect.setLeft(minX);
-//    rect.setRight(maxX);
-//    rect.setBottom(minY);
-//    rect.setTop(maxY);
-
-//    zoomer_->setZoomBase(rect);
-//}
 
 void ThermoDAQDisplayWidget::exportPlot()
 {
@@ -500,12 +451,8 @@ ThermoDAQTemperatureDisplayWidget::ThermoDAQTemperatureDisplayWidget(QWidget *pa
     this->setAxisScaleEngine(QwtPlot::yLeft, yscaleEngine);
     this->setAxisTitle(QwtPlot::yLeft, QString::fromUtf8("T [°C]"));
 
-    ThermoDAQTemperaturePicker * picker = new ThermoDAQTemperaturePicker(this->canvas());
-//    zoomer_ = new ThermoDAQTemperatureZoomer(this->canvas());
-//    zoomer_->setMousePattern(QwtEventPattern::MouseSelect2, Qt::RightButton, Qt::ControlModifier);
-//    zoomer_->setMousePattern(QwtEventPattern::MouseSelect3, Qt::RightButton);
-//    zoomer_->setKeyPattern(QwtEventPattern::KeyHome, Qt::Key_Home);
-//    zoomer_->setMaxStackDepth(0);
+    ThermoDAQTemperaturePicker * picker = new ThermoDAQTemperaturePicker(this->canvas(),
+                                                                         Qt::LocalTime);
 
     internalLegend_ = new ThermoDAQInternalLegend();
     internalLegend_->setMaxColumns(1);
@@ -518,41 +465,6 @@ ThermoDAQTemperatureDisplayWidget::ThermoDAQTemperatureDisplayWidget(QWidget *pa
             this, SLOT(showItem(QwtPlotItem*,bool)));
 }
 
-//void ThermoDAQTemperatureDisplayWidget::updateZoomBase()
-//{
-//    static const double limitMax = std::numeric_limits<double>::max();
-//    static const double limitMin = std::numeric_limits<double>::min();
-
-////    std::cout << zoomer_->zoomBase().left() << std::endl;
-////    std::cout << zoomer_->zoomBase().right() << std::endl;
-////    std::cout << zoomer_->zoomBase().bottom() << std::endl;
-////    std::cout << zoomer_->zoomBase().top() << std::endl;
-
-//    double minX = limitMax;
-//    double maxX = 0;
-//    double minY = limitMax;
-//    double maxY = limitMin;
-
-//    for (QVector<QwtPlotCurve*>::const_iterator it = curves_.begin();
-//         it!=curves_.end();
-//         ++it) {
-
-//        QRectF dr = (*it)->dataRect();
-//        minX = std::min(minX, dr.left());
-//        maxX = std::max(maxX, dr.right());
-//        minY = std::min(minY, dr.bottom());
-//        maxY = std::max(maxY, dr.top());
-//    }
-
-//    QRectF rect;
-//    rect.setLeft(minX);
-//    rect.setRight(maxX);
-//    rect.setBottom(minY-2);
-//    rect.setTop(maxY+2);
-
-//    zoomer_->setZoomBase(rect);
-//}
-
 ThermoDAQPressureDisplayWidget::ThermoDAQPressureDisplayWidget(QWidget *parent) :
     ThermoDAQDisplayWidget(parent)
 {
@@ -564,16 +476,16 @@ ThermoDAQPressureDisplayWidget::ThermoDAQPressureDisplayWidget(QWidget *parent) 
     this->setAxisLabelRotation(QwtPlot::xBottom, -45.0);
     this->setAxisLabelAlignment(QwtPlot::xBottom, Qt::AlignLeft | Qt::AlignBottom);
 
-    QwtLogScaleEngine * yscaleEngine = new QwtLogScaleEngine();
-    yscaleEngine->setMargins(1, 1);
+    QwtLogScaleEngine * yscaleEngine = new ThermoDAQPressureScaleEngine();
+    yscaleEngine->setMargins(1, 0);
     this->setAxisScaleEngine(QwtPlot::yLeft, yscaleEngine);
     this->setAxisTitle(QwtPlot::yLeft, QString::fromUtf8("p [mbar]"));
 
-    ThermoDAQPressurePicker * picker = new ThermoDAQPressurePicker(this->canvas());
-//    zoomer_ = new ThermoDAQPressureZoomer(this->canvas());
-//    zoomer_->setMousePattern(QwtEventPattern::MouseSelect2, Qt::RightButton, Qt::ControlModifier);
-//    zoomer_->setMousePattern(QwtEventPattern::MouseSelect3, Qt::RightButton);
-//    zoomer_->setKeyPattern(QwtEventPattern::KeyHome, Qt::Key_Home);
+    ThermoDAQPressureScaleDraw* pscaleDraw = new ThermoDAQPressureScaleDraw();
+    this->setAxisScaleDraw(QwtPlot::yLeft, pscaleDraw);
+
+    ThermoDAQPressurePicker * picker = new ThermoDAQPressurePicker(this->canvas(),
+                                                                   Qt::LocalTime);
 
     internalLegend_ = new ThermoDAQInternalLegend();
     internalLegend_->setMaxColumns(1);

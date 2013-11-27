@@ -15,6 +15,8 @@
 #include <qwt_legend.h>
 #include <qwt_plot_legenditem.h>
 #include <qwt_abstract_legend.h>
+#include <qwt_scale_engine.h>
+#include <qwt_scale_draw.h>
 
 #include "ThermoDAQValueVector.h"
 
@@ -23,17 +25,35 @@ class QStandardItem;
 class QModelIndex;
 class QwtPlotItem;
 
+class ThermoDAQPressureScaleDraw : public QwtScaleDraw
+{
+public:
+    ThermoDAQPressureScaleDraw();
+    virtual ~ThermoDAQPressureScaleDraw();
+    virtual QwtText label (double) const;
+};
+
+class ThermoDAQPressureScaleEngine : public QwtLogScaleEngine
+{
+public:
+    ThermoDAQPressureScaleEngine(uint base = 10);
+    virtual ~ThermoDAQPressureScaleEngine();
+    virtual void autoScale(int maxSteps,
+                           double &x1, double &x2,
+                           double &stepSize) const;
+};
+
 class ThermoDAQInternalLegend : public QwtPlotLegendItem
 {
 public:
     ThermoDAQInternalLegend() {
-        setRenderHint( QwtPlotItem::RenderAntialiased );
-        QColor color( Qt::white );
-        setTextPen( color );
-        setBorderPen( color );
-        QColor c( Qt::gray );
-        c.setAlpha( 200 );
-        setBackgroundBrush( c );
+        setRenderHint(QwtPlotItem::RenderAntialiased);
+        QColor color(Qt::white);
+        setTextPen(color);
+        setBorderPen(color);
+        QColor c(Qt::lightGray);
+        c.setAlpha(200);
+        setBackgroundBrush(c);
     }
 };
 
@@ -75,33 +95,19 @@ public:
 class ThermoDAQTemperaturePicker : public QwtPlotPicker
 {
 public:
-    ThermoDAQTemperaturePicker(QWidget *parent);
+    ThermoDAQTemperaturePicker(QWidget *parent, Qt::TimeSpec spec = Qt::LocalTime);
 protected:
     virtual QwtText trackerTextF(const QPointF &) const;
+    Qt::TimeSpec timeSpec_;
 };
 
 class ThermoDAQPressurePicker : public QwtPlotPicker
 {
 public:
-    ThermoDAQPressurePicker(QWidget *parent);
+    ThermoDAQPressurePicker(QWidget *parent, Qt::TimeSpec spec = Qt::LocalTime);
 protected:
     virtual QwtText trackerTextF(const QPointF &) const;
-};
-
-class ThermoDAQTemperatureZoomer : public QwtPlotZoomer
-{
-public:
-    ThermoDAQTemperatureZoomer(QWidget *parent);
-protected:
-    virtual QwtText trackerTextF(const QPointF &) const;
-};
-
-class ThermoDAQPressureZoomer : public QwtPlotZoomer
-{
-public:
-    ThermoDAQPressureZoomer(QWidget *parent);
-protected:
-    virtual QwtText trackerTextF(const QPointF &) const;
+    Qt::TimeSpec timeSpec_;
 };
 
 class ThermoDAQDisplayWidget : public QwtPlot

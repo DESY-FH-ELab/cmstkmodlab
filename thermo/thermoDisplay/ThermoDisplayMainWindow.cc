@@ -125,6 +125,13 @@ void ThermoDisplayMainWindow::exportPlot()
 void ThermoDisplayMainWindow::clearData()
 {
     bathTemperature_.clearData();
+    workingTemperature_.clearData();
+
+    for (int i=0;i<10;++i) {
+        temperature_[i].clearData();
+    }
+    pressure1_.clearData();
+    pressure2_.clearData();
 }
 
 void ThermoDisplayMainWindow::requestData()
@@ -148,14 +155,12 @@ void ThermoDisplayMainWindow::updateInfo()
         if (m.channelActive[i]) {
             if (temperaturePlot_[i]->isEnabled()==false) updateLegend = true;
             temperaturePlot_[i]->setEnabled(true);
-            if (!temperaturePlot_[i]->isVisible())
-                temperaturePlot_[i]->setVisible(true);
+            // if (!temperaturePlot_[i]->isVisible()) temperaturePlot_[i]->setVisible(true);
         }
         if (!m.channelActive[i]) {
             if (temperaturePlot_[i]->isEnabled()==true) updateLegend = true;
             temperaturePlot_[i]->setEnabled(false);
-            if (temperaturePlot_[i]->isVisible())
-                temperaturePlot_[i]->setVisible(false);
+            // if (temperaturePlot_[i]->isVisible()) temperaturePlot_[i]->setVisible(false);
         }
         if (m.channelActive[i]) {
             if (temperature_[i].push(m.dt, m.temperature[i])) temperaturePlot_[i]->refresh();
@@ -164,11 +169,9 @@ void ThermoDisplayMainWindow::updateInfo()
 
     if (updateLegend) tempDisplay_->updateLegend();
     tempDisplay_->replot();
-    //tempDisplay_->updateZoomBase();
 
     if (pressure1_.push(m.dt, m.gaugePressure1)) pressure1Plot_->refresh();
     if (pressure2_.push(m.dt, m.gaugePressure2)) pressure2Plot_->refresh();
 
     pDisplay_->replot();
-    //pDisplay_->updateZoomBase();
 }
