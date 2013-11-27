@@ -17,7 +17,7 @@ const QString JulaboModel::JULABO_PORT = QString("/dev/ttyS5");
   \arg parent Pointer to the parent QObject.
   */
 JulaboModel::JulaboModel(float updateInterval, QObject *parent) :
-    QObject(parent)
+    QObject()
   , AbstractDeviceModel<JulaboFP50_t>()
   , updateInterval_(updateInterval)
   , proportional_(0.1, 99.9, 1)

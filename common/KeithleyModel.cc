@@ -3,7 +3,7 @@
 KeithleyModel::KeithleyModel(const char* port,
                              double updateInterval,
                              QObject *parent) :
-    QObject(parent),
+    QObject(),
     AbstractDeviceModel<Keithley2700_t>(),
     port_(port),
     updateInterval_(updateInterval),
