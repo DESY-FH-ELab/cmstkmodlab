@@ -1,3 +1,5 @@
+#include <QApplication>
+
 #include "HuberPetiteFleurModel.h"
 
 /*
@@ -6,7 +8,7 @@
 const QString HuberPetiteFleurModel::HuberPetiteFleur_PORT = QString("/dev/ttyACM0");
 
 HuberPetiteFleurModel::HuberPetiteFleurModel(float updateInterval, QObject *parent) :
-    QObject(parent)
+    QObject()
 //  , state_(OFF) // Initialize all fields to prevent random values
 //  , controller_(NULL)
   , AbstractDeviceModel<HuberPetiteFleur_t>()
@@ -40,7 +42,6 @@ float HuberPetiteFleurModel::getBathTemperature() const {
   settings and read-outs.
   */
 void HuberPetiteFleurModel::initialize() {
-
 
     std::cout << "void HuberPetiteFleurModel::initialize()" << std::endl;
 
@@ -83,28 +84,30 @@ void HuberPetiteFleurModel::setDeviceState( State state ) {
   */
 void HuberPetiteFleurModel::updateInformation() {
 
-    std::cout << "HuberPetiteFleurModel::updateInformation()" << std::endl;
+    std::cout << "HuberPetiteFleurModel::updateInformation()";
+    if (thread()==QApplication::instance()->thread()) {
+        std::cout << " running in main application thread" << std::endl;
+    } else {
+        std::cout << " running in dedicated DAQ thread" << std::endl;
+    }
 
-  if ( state_ == READY ) {
+    if ( state_ == READY ) {
 
-      float newBathTemp = controller_->GetBathTemperature();
-      float newWorkingTemp = controller_->GetWorkingTemperature();
-      bool newCirculatorStatus = controller_->GetCirculatorStatus();
+        float newBathTemp = controller_->GetBathTemperature();
+        float newWorkingTemp = controller_->GetWorkingTemperature();
+        bool newCirculatorStatus = controller_->GetCirculatorStatus();
 
-      if (   newBathTemp != bathTemperature_
-          || newWorkingTemp != workingTemperature_.getValue()
-          || newCirculatorStatus != circulatorEnabled_
-      ) {
+        if (newBathTemp != bathTemperature_ ||
+            newWorkingTemp != workingTemperature_.getValue() ||
+            newCirculatorStatus != circulatorEnabled_) {
 
-        bathTemperature_ = newBathTemp;
-        workingTemperature_.setValue(newWorkingTemp);
-        circulatorEnabled_ = newCirculatorStatus;
+            bathTemperature_ = newBathTemp;
+            workingTemperature_.setValue(newWorkingTemp);
+            circulatorEnabled_ = newCirculatorStatus;
 
-        emit informationChanged();
-      }
-
-      emit informationChanged();
-  }
+            emit informationChanged();
+        }
+    }
 }
 
 /**
