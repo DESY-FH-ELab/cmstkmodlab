@@ -1,0 +1,3 @@
+example scripts:
+
+root -l "plotPressure.C(\"~/Desktop/measurements/20130722/20130722-1.root\")"

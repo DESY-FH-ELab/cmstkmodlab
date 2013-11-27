@@ -9,9 +9,11 @@
 
 #include <TFile.h>
 #include <TTree.h>
+#include <TDatime.h>
 
 typedef struct {
     unsigned int   uTime;
+    TDatime        datime;
 
     float          bathTemperature;
     float          workingTemperature;
@@ -41,6 +43,8 @@ typedef struct {
 
 typedef struct {
     unsigned int   uTime;
+    TDatime        datime;
+
     std::string    message;
 } Log_t;
 

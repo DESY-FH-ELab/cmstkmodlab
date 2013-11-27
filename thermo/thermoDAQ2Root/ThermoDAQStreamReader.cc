@@ -6,6 +6,8 @@
 #include <QDir>
 #include <QFileInfo>
 
+#include <TDatime.h>
+
 #include "ThermoDAQStreamReader.h"
 
 ThermoDAQStreamReader::ThermoDAQStreamReader(QStringList arguments,
@@ -28,6 +30,7 @@ void ThermoDAQStreamReader::processHuberTemperature(QXmlStreamReader& xml)
     QString time = xml.attributes().value("time").toString();
     QDateTime dt = QDateTime::fromString(time, Qt::ISODate);
     measurement_.uTime = dt.toTime_t();
+    measurement_.datime = TDatime(measurement_.uTime);
 
     measurement_.bathTemperature = xml.attributes().value("bath").toString().toFloat();
     measurement_.workingTemperature = xml.attributes().value("work").toString().toFloat();
@@ -39,6 +42,7 @@ void ThermoDAQStreamReader::processKeithleyState(QXmlStreamReader& xml)
     QString time = xml.attributes().value("time").toString();
     QDateTime dt = QDateTime::fromString(time, Qt::ISODate);
     measurement_.uTime = dt.toTime_t();
+    measurement_.datime = TDatime(measurement_.uTime);
 
     int idx = xml.attributes().value("sensor").toString().toInt();
     measurement_.channelActive[idx] = xml.attributes().value("state").toString().toInt();
@@ -49,6 +53,7 @@ void ThermoDAQStreamReader::processKeithleyTemperature(QXmlStreamReader& xml)
     QString time = xml.attributes().value("time").toString();
     QDateTime dt = QDateTime::fromString(time, Qt::ISODate);
     measurement_.uTime = dt.toTime_t();
+    measurement_.datime = TDatime(measurement_.uTime);
 
     int idx = xml.attributes().value("sensor").toString().toInt();
     measurement_.temperature[idx] = xml.attributes().value("temperature").toString().toFloat();
@@ -59,6 +64,7 @@ void ThermoDAQStreamReader::processPfeifferPressure(QXmlStreamReader& xml)
     QString time = xml.attributes().value("time").toString();
     QDateTime dt = QDateTime::fromString(time, Qt::ISODate);
     measurement_.uTime = dt.toTime_t();
+    measurement_.datime = TDatime(measurement_.uTime);
 
     measurement_.gaugeStatus1 = xml.attributes().value("s1").toString().toInt();
     measurement_.gaugePressure1 = xml.attributes().value("p1").toString().toFloat();
@@ -71,6 +77,7 @@ void ThermoDAQStreamReader::processHamegSetup(QXmlStreamReader& xml)
     QString time = xml.attributes().value("time").toString();
     QDateTime dt = QDateTime::fromString(time, Qt::ISODate);
     measurement_.uTime = dt.toTime_t();
+    measurement_.datime = TDatime(measurement_.uTime);
 
     measurement_.powerRemote = xml.attributes().value("remote").toString().toInt();
     measurement_.powerOn = xml.attributes().value("outputs").toString().toInt();
@@ -83,6 +90,7 @@ void ThermoDAQStreamReader::processHamegSetvalues(QXmlStreamReader& xml)
     QString time = xml.attributes().value("time").toString();
     QDateTime dt = QDateTime::fromString(time, Qt::ISODate);
     measurement_.uTime = dt.toTime_t();
+    measurement_.datime = TDatime(measurement_.uTime);
 
     measurement_.setVoltage1 = xml.attributes().value("V1").toString().toFloat();
     measurement_.setCurrent1 = xml.attributes().value("C1").toString().toFloat();
@@ -95,6 +103,7 @@ void ThermoDAQStreamReader::processHamegValues(QXmlStreamReader& xml)
     QString time = xml.attributes().value("time").toString();
     QDateTime dt = QDateTime::fromString(time, Qt::ISODate);
     measurement_.uTime = dt.toTime_t();
+    measurement_.datime = TDatime(measurement_.uTime);
 
     measurement_.voltage1 = xml.attributes().value("V1").toString().toFloat();
     measurement_.current1 = xml.attributes().value("C1").toString().toFloat();
@@ -107,6 +116,8 @@ void ThermoDAQStreamReader::processLog(QXmlStreamReader& xml)
     QString time = xml.attributes().value("time").toString();
     QDateTime dt = QDateTime::fromString(time, Qt::ISODate);
     log_.uTime = dt.toTime_t();
+    log_.datime = TDatime(measurement_.uTime);
+
     log_.message = xml.text().toString().toStdString();
 
     ologtree_->Fill();
@@ -117,6 +128,7 @@ void ThermoDAQStreamReader::processDAQStarted(QXmlStreamReader& xml)
     QString time = xml.attributes().value("time").toString();
     QDateTime dt = QDateTime::fromString(time, Qt::ISODate);
     measurement_.uTime = dt.toTime_t();
+    measurement_.datime = TDatime(measurement_.uTime);
 
     measurementValid_ = true;
 }
@@ -176,7 +188,8 @@ void ThermoDAQStreamReader::process()
 
     otree_ = new TTree("thermoDAQ", "thermoDAQ");
 
-    otree_->Branch("uTime", &measurement_.uTime, "uTime/I");
+    otree_->Branch("uTime", &measurement_.uTime, "uTime/i");
+    otree_->Branch("datime", &measurement_.datime);
 
     otree_->Branch("bathTemperature", &measurement_.bathTemperature, "bathTemperature/F");
     otree_->Branch("workingTemperature", &measurement_.workingTemperature, "workingTemperature/F");
@@ -216,7 +229,8 @@ void ThermoDAQStreamReader::process()
     otree_->Branch("current2", &measurement_.current2, "current2/F");
 
     ologtree_ = new TTree("thermoLog", "thermoLog");
-    ologtree_->Branch("uTime", &log_.uTime, "uTime/I");
+    ologtree_->Branch("uTime", &log_.uTime, "uTime/i");
+    ologtree_->Branch("datime", &log_.datime);
     ologtree_->Branch("message", &log_.message);
 
     QString line;
