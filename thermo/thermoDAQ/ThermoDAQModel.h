@@ -4,6 +4,9 @@
 #include <QObject>
 #include <QVector>
 #include <QDateTime>
+#include <QThread>
+#include <QMutex>
+#include <QMutexLocker>
 
 #include <qwt_date.h>
 
@@ -83,6 +86,8 @@ public:
     void customDAQMessage(const QString & message);
     void createDAQStatusMessage(QString & buffer);
 
+    void myMoveToThread(QThread *thread);
+
 protected slots:
     void huberInfoChanged();
     void keithleySensorStateChanged(unsigned int sensor, State newState);
@@ -95,10 +100,13 @@ protected slots:
     void clearHistory();
 
 protected:
+
   HuberPetiteFleurModel* huberModel_;
   KeithleyModel* keithleyModel_;
   HamegModel* hamegModel_;
   PfeifferModel* pfeifferModel_;
+
+  QMutex mutex_;
 
   QDateTime currentTime_;
 

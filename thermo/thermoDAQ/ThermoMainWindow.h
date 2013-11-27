@@ -26,6 +26,7 @@
 #include "ThermoScriptWidget.h"
 
 #include "ThermoDAQModel.h"
+#include "ThermoDAQThread.h"
 #include "ThermoDAQStreamer.h"
 #include "ThermoDAQServer.h"
 
@@ -36,6 +37,8 @@ public:
   explicit ThermoMainWindow(QWidget *parent = 0);
 
 public slots:
+
+  void quit();
 
 protected:
 
@@ -51,6 +54,7 @@ protected:
   ThermoScriptModel* scriptModel_;
 
   ThermoDAQModel* daqModel_;
+  ThermoDAQThread* daqThread_;
   ThermoDAQStreamer* daqStreamer_;
   ThermoDAQServer* daqServer_;
 };

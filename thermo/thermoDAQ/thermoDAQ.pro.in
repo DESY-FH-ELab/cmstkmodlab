@@ -31,6 +31,7 @@ HEADERS += TestWindow.h \
            ThermoScriptThread.h \
            ThermoScriptWidget.h \
            ThermoScriptableGlobals.h \
+           ThermoDAQThread.h \
            ThermoDAQModel.h \
            ThermoDAQStreamer.h \
            ThermoDAQWidget.h \
@@ -44,6 +45,7 @@ SOURCES += thermoDAQ.cc \
            ThermoScriptThread.cc \
            ThermoScriptWidget.cc \
            ThermoScriptableGlobals.cc \
+           ThermoDAQThread.cc \
            ThermoDAQModel.cc \
            ThermoDAQStreamer.cc \
            ThermoDAQWidget.cc \

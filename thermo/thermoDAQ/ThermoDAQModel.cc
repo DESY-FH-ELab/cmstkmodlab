@@ -1,5 +1,6 @@
 #include <iostream>
 
+#include <QApplication>
 #include <QDateTime>
 #include <QXmlStreamWriter>
 
@@ -12,7 +13,7 @@ ThermoDAQModel::ThermoDAQModel(HuberPetiteFleurModel* huberModel,
                                HamegModel* hamegModel,
                                PfeifferModel* pfeifferModel,
                                QObject *parent) :
-    QObject(parent),
+    QObject(),
     huberModel_(huberModel),
     keithleyModel_(keithleyModel),
     hamegModel_(hamegModel),
@@ -31,6 +32,15 @@ ThermoDAQModel::ThermoDAQModel(HuberPetiteFleurModel* huberModel,
 
     connect(hamegModel_, SIGNAL(informationChanged()),
             this, SLOT(hamegInfoChanged()));
+}
+
+void ThermoDAQModel::myMoveToThread(QThread *thread)
+{
+    huberModel_->moveToThread(thread);
+    keithleyModel_->moveToThread(thread);
+    pfeifferModel_->moveToThread(thread);
+    hamegModel_->moveToThread(thread);
+    this->moveToThread(thread);
 }
 
 void ThermoDAQModel::startMeasurement()
@@ -132,7 +142,13 @@ void ThermoDAQModel::customDAQMessage(const QString & message)
 
 void ThermoDAQModel::huberInfoChanged()
 {
-    std::cout << "ThermoDAQModel::huberInfoChanged()" << std::endl;
+    std::cout << "ThermoDAQModel::huberInfoChanged()";
+    if (thread()==QApplication::instance()->thread()) {
+        std::cout << " running in main application thread" << std::endl;
+    } else {
+        std::cout << " running in dedicated DAQ thread" << std::endl;
+    }
+    QMutexLocker locker(&mutex_);
 
     QDateTime utime = currentTime();
 
@@ -161,7 +177,13 @@ void ThermoDAQModel::huberInfoChanged()
 
 void ThermoDAQModel::keithleySensorStateChanged(unsigned int sensor, State newState)
 {
-    std::cout << "ThermoDAQModel::keithleySensorStateChanged(unsigned int sensor, State newState)" << std::endl;
+    std::cout << "ThermoDAQModel::keithleySensorStateChanged()";
+    if (thread()==QApplication::instance()->thread()) {
+        std::cout << " running in main application thread" << std::endl;
+    } else {
+        std::cout << " running in dedicated DAQ thread" << std::endl;
+    }
+    QMutexLocker locker(&mutex_);
 
     QDateTime& utime = currentTime();
 
@@ -183,7 +205,13 @@ void ThermoDAQModel::keithleySensorStateChanged(unsigned int sensor, State newSt
 
 void ThermoDAQModel::keithleyTemperatureChanged(unsigned int sensor, double temperature)
 {
-    std::cout << "ThermoDAQModel::keithleyInfoChanged(unsigned int sensor, double temperature)" << std::endl;
+    std::cout << "ThermoDAQModel::keithleyInfoChanged()";
+    if (thread()==QApplication::instance()->thread()) {
+        std::cout << " running in main application thread" << std::endl;
+    } else {
+        std::cout << " running in dedicated DAQ thread" << std::endl;
+    }
+    QMutexLocker locker(&mutex_);
 
     QDateTime& utime = currentTime();
 
@@ -206,6 +234,14 @@ void ThermoDAQModel::keithleyTemperatureChanged(unsigned int sensor, double temp
 
 void ThermoDAQModel::pfeifferInfoChanged()
 {
+    std::cout << "ThermoDAQModel::pfeifferInfoChanged()";
+    if (thread()==QApplication::instance()->thread()) {
+        std::cout << " running in main application thread" << std::endl;
+    } else {
+        std::cout << " running in dedicated DAQ thread" << std::endl;
+    }
+    QMutexLocker locker(&mutex_);
+
     QDateTime utime = currentTime();
 
     bool changed = false;
@@ -234,6 +270,14 @@ void ThermoDAQModel::pfeifferInfoChanged()
 
 void ThermoDAQModel::hamegInfoChanged()
 {
+    std::cout << "ThermoDAQModel::hamegInfoChanged()";
+    if (thread()==QApplication::instance()->thread()) {
+        std::cout << " running in main application thread" << std::endl;
+    } else {
+        std::cout << " running in dedicated DAQ thread" << std::endl;
+    }
+    QMutexLocker locker(&mutex_);
+
     QDateTime utime = currentTime();
 
     QString buffer;

@@ -77,4 +77,6 @@ void ThermoDAQWidget::logButtonClicked()
     xml.writeEndElement();
 
     daqModel_->customDAQMessage(buffer);
+
+    logEdit_->setPlainText("");
 }

@@ -1,7 +1,9 @@
 #include <string>
+#include <iostream>
 
 #include <QGroupBox>
 #include <QFileDialog>
+#include <QApplication>
 
 #include "ApplicationConfig.h"
 #include "ThermoDAQWidget.h"
@@ -10,13 +12,14 @@
 #include "ThermoMainWindow.h"
 
 ThermoMainWindow::ThermoMainWindow(QWidget *parent) :
-    QMainWindow(parent)
+    QMainWindow(parent),
+    daqThread_(0)
 {
     // HUBER MODEL
-    huberModel_ = new HuberPetiteFleurModel(15, this);
+    huberModel_ = new HuberPetiteFleurModel(5, this);
 
     // KEITHLEY MODEL
-    keithleyModel_ = new KeithleyModel("/dev/ttyS5", 30, this);
+    keithleyModel_ = new KeithleyModel("/dev/ttyS5", 20, this);
 
     // HAMEG MODEL
     hamegModel_ = new HamegModel(10, this);
@@ -37,11 +40,18 @@ ThermoMainWindow::ThermoMainWindow(QWidget *parent) :
                                    pfeifferModel_,
                                    this);
 
+
     daqStreamer_ = new ThermoDAQStreamer(daqModel_, this);
 
     daqServer_ = new ThermoDAQServer(daqModel_, this);
     daqServer_->listen(QHostAddress::LocalHost, 55555);
     //std::cout << daqServer_->serverPort() << std::endl;
+
+    daqThread_ = new ThermoDAQThread(daqModel_, this);
+    connect(QApplication::instance(), SIGNAL(aboutToQuit()),
+            this, SLOT(quit()));
+    daqThread_->start();
+    daqModel_->myMoveToThread(daqThread_);
 
     //  connect(scriptModel_, SIGNAL(prepareNewMeasurement()),
     //	  this, SLOT(prepareNewMeasurement()));
@@ -104,4 +114,13 @@ ThermoMainWindow::ThermoMainWindow(QWidget *parent) :
 
     setCentralWidget(tabWidget_);
     updateGeometry();
+}
+
+void ThermoMainWindow::quit()
+{
+    std::cout << "void ThermoMainWindow::quit()" << std::endl;
+    if (daqThread_) {
+      daqThread_->quit();
+      daqThread_->wait();
+    }
 }
