@@ -1,3 +1,5 @@
+#include <iostream>
+
 #include <QtCore/QCoreApplication>
 #include <QTimer>
 
@@ -5,13 +7,17 @@
 
 int main(int argc, char *argv[])
 {
-    QCoreApplication a(argc, argv);
+  if (argc!=2) {
+    std::cout << "usage: thermoDAQ2ROOT <xml data file>" << std::endl;
+    return -1;
+  }
 
-    ThermoDAQStreamReader *reader = new ThermoDAQStreamReader(a.arguments(),
-                                                              &a);
-    QObject::connect(reader, SIGNAL(finished()), &a, SLOT(quit()));
-
-    QTimer::singleShot(0, reader, SLOT(run()));
-
-    return a.exec();
+  QCoreApplication a(argc, argv);
+  
+  ThermoDAQStreamReader *reader = new ThermoDAQStreamReader(a.arguments(), &a);
+  QObject::connect(reader, SIGNAL(finished()), &a, SLOT(quit()));
+  
+  QTimer::singleShot(0, reader, SLOT(run()));
+  
+  return a.exec();
 }
