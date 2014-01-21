@@ -1,7 +1,10 @@
-#include "EOS550DFake.h"
+#include <unistd.h>
+
 #include <iostream>
 #include <sstream>
 #include <ctime>
+
+#include "EOS550DFake.h"
 
 using namespace std;
 using namespace cv;
@@ -174,7 +177,11 @@ string EOS550DFake::renderPicture(bool preview)
   lines.push_back(string(settings.str()));
 
   // Font settings
+#ifndef USE_FAKEIO
   int fontFace = CV_FONT_HERSHEY_SIMPLEX;
+#else
+  int fontFace = FONT_HERSHEY_SIMPLEX;
+#endif
   int thickness = 4;
   Scalar white = Scalar::all(255);
 
@@ -274,7 +281,11 @@ string EOS550DFake::renderPicture(bool preview)
   }
 
   vector<int> options;
+#ifndef USE_FAKEIO
   options.push_back(CV_IMWRITE_JPEG_QUALITY);
+#else
+  options.push_back(IMWRITE_JPEG_QUALITY);
+#endif
   options.push_back(90);
   imwrite(fileName, image, options);
 
