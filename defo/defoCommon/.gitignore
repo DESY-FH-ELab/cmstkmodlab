@@ -2,3 +2,6 @@ defoCommon.pro
 Makefile
 DefoConfig.h
 DefoConfig.cc
+*.d
+*.o
+moc_*
