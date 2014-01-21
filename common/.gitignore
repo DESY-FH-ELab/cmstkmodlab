@@ -1,4 +1,5 @@
 common.pro
+common.pro.user
 ApplicationConfig.h
 ApplicationConfig.cc
 Makefile
