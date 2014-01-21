@@ -1,3 +1,5 @@
+#include <unistd.h>
+
 #include "DefoKeithleyModel.h"
 
 const QString DefoKeithleyModel::KEITHLEY_PORT = QString("/dev/ttyS4");

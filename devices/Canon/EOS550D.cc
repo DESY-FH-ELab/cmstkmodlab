@@ -1,3 +1,4 @@
+#include <unistd.h>
 
 #include "EOS550D.h"
 

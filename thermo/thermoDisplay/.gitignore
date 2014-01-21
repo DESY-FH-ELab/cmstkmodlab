@@ -1,2 +1,8 @@
 thermoDisplay.pro
 Makefile
+*.d
+*.o
+moc_*
+thermoDisplay
+thermoDisplay.app
+

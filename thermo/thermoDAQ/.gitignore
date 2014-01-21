@@ -1,2 +1,7 @@
 thermoDAQ.pro
 Makefile
+*.d
+*.o
+moc_*
+thermoDAQ
+thermoDAQ.app
