@@ -1,4 +1,5 @@
 defoDAQ.pro
+defoDAQ.pro.user
 Makefile
 startDefoDAQ.sh
 *.d

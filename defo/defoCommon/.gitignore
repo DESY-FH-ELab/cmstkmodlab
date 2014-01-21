@@ -1,4 +1,5 @@
 defoCommon.pro
+defoCommon.pro.user
 Makefile
 DefoConfig.h
 DefoConfig.cc
