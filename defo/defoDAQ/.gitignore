@@ -1,3 +1,8 @@
 defoDAQ.pro
 Makefile
 startDefoDAQ.sh
+*.d
+*.o
+moc_*
+defoDAQ
+defoDAQ.app
