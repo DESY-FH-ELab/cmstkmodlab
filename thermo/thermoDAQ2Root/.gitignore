@@ -1,2 +1,6 @@
 thermoDAQ2Root.pro
 Makefile
+*.d
+*.o
+moc_*
+thermoDAQ2Root
