@@ -29,3 +29,12 @@ QScriptValue ScriptableKeithley::temperature(unsigned int channel) {
 
   return QScriptValue(keithleyModel_->getTemperature(channel));
 }
+
+QScriptValue ScriptableKeithley::temperatureAsString(unsigned int channel)
+{
+    QMutexLocker locker(&mutex_);
+
+    if (channel>9) return QScriptValue("-99");
+
+    return QScriptValue(QString::number(keithleyModel_->getTemperature(channel), 'f', 2));
+}

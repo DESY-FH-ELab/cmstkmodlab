@@ -10,6 +10,7 @@ LIBS += -L@basepath@/devices/lib -lTkModLabPfeiffer
 LIBS += -L@basepath@/devices/lib -lTkModLabHuber
 LIBS += -L@basepath@/common -lCommon
 LIBS += @qwtlibs@ -lGL -lGLU
+LIBS += -lcurl -ltwitcurl
 
 QMAKE_CXXFLAGS += -std=c++0x
 
