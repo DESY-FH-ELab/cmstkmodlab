@@ -1,4 +1,5 @@
 thermoDisplay.pro
+thermoDisplay.pro.user
 Makefile
 *.d
 *.o

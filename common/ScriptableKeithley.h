@@ -17,6 +17,7 @@ public slots:
 
   QScriptValue state(unsigned int channel);
   QScriptValue temperature(unsigned int channel);
+  QScriptValue temperatureAsString(unsigned int channel);
 
 protected:
   KeithleyModel* keithleyModel_;

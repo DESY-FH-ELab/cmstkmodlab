@@ -27,6 +27,9 @@ public slots:
   QScriptValue mkUTime(int year, int month, int day,
                        int hour, int minute, int second) const;
 
+  void tweet(const QString& user, const QString& pw,
+             const QString& message);
+
 protected:
 
   ThermoScriptModel* scriptModel_;
