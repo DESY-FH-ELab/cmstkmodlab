@@ -1,0 +1,7 @@
+Makefile
+ui_ConradControl.h
+*.d
+*.o
+moc_*
+conrad
+conrad.app

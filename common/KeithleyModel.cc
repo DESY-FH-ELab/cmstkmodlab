@@ -1,3 +1,5 @@
+#include <unistd.h>
+
 #include "KeithleyModel.h"
 
 KeithleyModel::KeithleyModel(const char* port,

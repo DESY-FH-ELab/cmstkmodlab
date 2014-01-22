@@ -1,8 +1,12 @@
+#include <unistd.h>
+
 #include <iostream>
 #include <fstream>
 #include <string>
 
+#ifndef NO_TWITTER
 #include <twitcurl.h>
+#endif
 
 #include <QMutexLocker>
 #include <QDateTime>

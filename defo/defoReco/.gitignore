@@ -2,3 +2,8 @@ defoReco.pro
 defoReco.pro.user
 Makefile
 startDefoReco.sh
+*.d
+*.o
+moc_*
+defoReco
+defoReco.app

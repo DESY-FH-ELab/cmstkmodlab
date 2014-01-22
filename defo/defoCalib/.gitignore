@@ -1,3 +1,6 @@
 defoCalib.pro
 defoCalib.pro.user
 Makefile
+*.d
+*.o
+defoCalib

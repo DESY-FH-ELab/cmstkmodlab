@@ -288,7 +288,7 @@ int main(int argc, char *argv[])
         filename += it->deformed;
         filename += ".txt";
 
-        it->surface.dumpStats(filename);
+        //it->surface.dumpStats(filename);
     }
 
     return 0;

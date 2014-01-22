@@ -6,3 +6,4 @@ DefoConfig.cc
 *.d
 *.o
 moc_*
+libDefoCommon*
