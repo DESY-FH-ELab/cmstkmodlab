@@ -31,6 +31,7 @@ public slots:
   QScriptValue getCurrent(int channel);
 
 signals:
+
   void changeRemoteMode(bool);
   void changeOutputState(bool);
   void changeSetVoltage(int, float);
