@@ -19,6 +19,13 @@ public slots:
   QScriptValue temperature(unsigned int channel);
   QScriptValue temperatureAsString(unsigned int channel);
 
+  void waitForTemperatureAbove(unsigned int channel,
+                               float temperature,
+                               int timeout);
+  void waitForTemperatureBelow(unsigned int channel,
+                               float temperature,
+                               int timeout);
+
 protected:
   KeithleyModel* keithleyModel_;
 
