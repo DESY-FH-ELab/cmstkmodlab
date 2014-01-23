@@ -14,6 +14,7 @@ ThermoDAQModel::ThermoDAQModel(HuberPetiteFleurModel* huberModel,
                                PfeifferModel* pfeifferModel,
                                QObject *parent) :
     QObject(),
+    daqState_(false),
     huberModel_(huberModel),
     keithleyModel_(keithleyModel),
     hamegModel_(hamegModel),
@@ -45,6 +46,7 @@ void ThermoDAQModel::myMoveToThread(QThread *thread)
 
 void ThermoDAQModel::startMeasurement()
 {
+    daqState_ = true;
     emit daqStateChanged(true);
 
     QString buffer;
@@ -120,6 +122,7 @@ void ThermoDAQModel::createDAQStatusMessage(QString &buffer)
 
 void ThermoDAQModel::stopMeasurement()
 {
+    daqState_ = false;
     emit daqStateChanged(false);
 }
 

@@ -34,6 +34,8 @@ public:
   void abortScript();
   int executionTime() const { return executionTime_; }
 
+  void startDAQ();
+  void stopDAQ();
   void message(int value);
   void message(uint value);
   void message(double value);

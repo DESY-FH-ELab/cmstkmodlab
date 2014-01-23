@@ -98,6 +98,15 @@ void ThermoScriptModel::executionFinished() {
 
     emit setControlsEnabled(true);
 }
+void ThermoScriptModel::startDAQ() {
+
+  if (daqModel_->daqState()==false) daqModel_->startMeasurement();
+}
+
+void ThermoScriptModel::stopDAQ() {
+
+  if (daqModel_->daqState()==true) daqModel_->stopMeasurement();
+}
 
 void ThermoScriptModel::message(int value) {
 
