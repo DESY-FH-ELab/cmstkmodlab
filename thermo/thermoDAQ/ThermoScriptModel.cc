@@ -3,15 +3,18 @@
 #include <QPlainTextDocumentLayout>
 #include <QFont>
 #include <QDateTime>
+#include <QXmlStreamWriter>
 
 #include "ThermoScriptModel.h"
 
-ThermoScriptModel::ThermoScriptModel(HuberPetiteFleurModel* huberModel,
+ThermoScriptModel::ThermoScriptModel(ThermoDAQModel* daqModel,
+                                     HuberPetiteFleurModel* huberModel,
                                      KeithleyModel* keithleyModel,
                                      HamegModel* hamegModel,
                                      PfeifferModel* pfeifferModel,
                                      QObject *parent) :
     QObject(parent),
+    daqModel_(daqModel),
     huberModel_(huberModel),
     keithleyModel_(keithleyModel),
     hamegModel_(hamegModel),
@@ -122,6 +125,21 @@ void ThermoScriptModel::message(const QString & text) {
     QString message = QString("%1")
             .arg(text);
     this->doAppendMessageText(message);
+}
+
+void ThermoScriptModel::log(const QString & text) {
+
+  QDateTime& utime = daqModel_->currentTime();
+
+  QString buffer;
+  QXmlStreamWriter xml(&buffer);
+
+  xml.writeStartElement("Log");
+  xml.writeAttribute("time", utime.toString());
+  xml.writeCharacters(text);
+  xml.writeEndElement();
+
+  daqModel_->customDAQMessage(buffer);
 }
 
 void ThermoScriptModel::doClearMessageText() {

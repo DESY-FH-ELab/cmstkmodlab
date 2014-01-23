@@ -59,6 +59,12 @@ void ThermoScriptableGlobals::message(const QString & text) {
   scriptModel_->message(text);
 }
 
+void ThermoScriptableGlobals::log(const QString & text) {
+
+  QMutexLocker locker(&mutex_);
+  scriptModel_->log(text);
+}
+
 QScriptValue ThermoScriptableGlobals::uTime() const
 {
   uint utime = QDateTime::currentDateTimeUtc().toTime_t();
