@@ -1,3 +1,5 @@
+#include <unistd.h>
+
 #include <iostream>
 
 #include <QMutexLocker>
@@ -12,21 +14,79 @@ ScriptableHuberPetiteFleur::ScriptableHuberPetiteFleur(HuberPetiteFleurModel* hu
 
 }
 
-//QScriptValue ScriptableHuberPetiteFleur::state(unsigned int channel) {
+void ScriptableHuberPetiteFleur::switchCirculatorOn() {
 
-//  QMutexLocker locker(&mutex_);
+  QMutexLocker locker(&mutex_);
+  huberPetiteFleurModel_->setCirculatorEnabled(true);
+}
 
-//  if (channel>9) return QScriptValue(0);
+void ScriptableHuberPetiteFleur::switchCirculatorOff() {
 
-//  int state = static_cast<int>(huberPetiteFleurModel_->getSensorState(channel));
-//  return QScriptValue(state);
-//}
+  QMutexLocker locker(&mutex_);
+  huberPetiteFleurModel_->setCirculatorEnabled(false);
+}
 
-//QScriptValue ScriptableHuberPetiteFleur::temperature(unsigned int channel) {
+void ScriptableHuberPetiteFleur::setWorkingTemperature(double temperature) {
 
-//  QMutexLocker locker(&mutex_);
+ QMutexLocker locker(&mutex_);
+ huberPetiteFleurModel_->setWorkingTemperatureValue(temperature);
+}
 
-//  if (channel>9) return QScriptValue(-99);
+QScriptValue ScriptableHuberPetiteFleur::isCirculatorOn() {
 
-//  return QScriptValue(huberPetiteFleurModel_->getTemperature(channel));
-//}
+  QMutexLocker locker(&mutex_);
+  return QScriptValue(huberPetiteFleurModel_->isCirculatorEnabled());
+}
+
+QScriptValue ScriptableHuberPetiteFleur::getWorkingTemperature() {
+
+  QMutexLocker locker(&mutex_);
+  return QScriptValue(huberPetiteFleurModel_->getWorkingTemperatureParameter().getValue());
+}
+
+QScriptValue ScriptableHuberPetiteFleur::getBathTemperature() {
+
+  QMutexLocker locker(&mutex_);
+  return QScriptValue(huberPetiteFleurModel_->getBathTemperature());
+}
+
+void ScriptableHuberPetiteFleur::waitForTemperatureAbove(float temperature,
+                                                         int timeout) {
+
+  for (int m=0;m<=timeout;++m) {
+    QMutexLocker locker(&mutex_);
+    double temp = huberPetiteFleurModel_->getBathTemperature();
+    locker.unlock();
+    if (temp>temperature) break;
+    sleep(60);
+  }
+}
+
+void ScriptableHuberPetiteFleur::waitForTemperatureBelow(float temperature,
+                                                         int timeout) {
+
+  for (int m=0;m<=timeout;++m) {
+    QMutexLocker locker(&mutex_);
+    double temp = huberPetiteFleurModel_->getBathTemperature();
+    locker.unlock();
+    if (temp<temperature) break;
+    sleep(60);
+  }
+}
+
+void ScriptableHuberPetiteFleur::waitForStableTemperature(float deltaT,
+                                                          int delay,
+                                                          int timeout) {
+  int count = 0;
+  double oldTemp = -999;
+  for (int m=0;m<=timeout;++m) {
+    QMutexLocker locker(&mutex_);
+    double temp = huberPetiteFleurModel_->getBathTemperature();
+    locker.unlock();
+    if (fabs(oldTemp-temp)<=deltaT) count++;
+    oldTemp = temp;
+    if (count>=delay) break;
+    sleep(60);
+  }
+}
+
