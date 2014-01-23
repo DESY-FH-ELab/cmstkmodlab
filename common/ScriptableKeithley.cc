@@ -46,7 +46,9 @@ void ScriptableKeithley::waitForTemperatureAbove(unsigned int channel,
                                                  int timeout) {
 
   for (int m=0;m<=timeout;++m) {
+    QMutexLocker locker(&mutex_);
     double temp = keithleyModel_->getTemperature(channel);
+    locker.unlock();
     if (temp>temperature) break;
     sleep(60);
   }
@@ -57,7 +59,9 @@ void ScriptableKeithley::waitForTemperatureBelow(unsigned int channel,
                                                  int timeout) {
 
   for (int m=0;m<=timeout;++m) {
+    QMutexLocker locker(&mutex_);
     double temp = keithleyModel_->getTemperature(channel);
+    locker.unlock();
     if (temp<temperature) break;
     sleep(60);
   }
