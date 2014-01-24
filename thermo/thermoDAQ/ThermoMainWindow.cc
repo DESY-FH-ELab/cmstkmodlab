@@ -27,19 +27,19 @@ ThermoMainWindow::ThermoMainWindow(QWidget *parent) :
     // PFEIFFER MODEL
     pfeifferModel_ = new PfeifferModel(10, this);
 
-    // SCRIPT MODEL
-    scriptModel_ = new ThermoScriptModel(huberModel_,
-                                         keithleyModel_,
-                                         hamegModel_,
-                                         pfeifferModel_,
-                                         this);
-
     daqModel_ = new ThermoDAQModel(huberModel_,
                                    keithleyModel_,
                                    hamegModel_,
                                    pfeifferModel_,
                                    this);
 
+    // SCRIPT MODEL
+    scriptModel_ = new ThermoScriptModel(daqModel_,
+                                         huberModel_,
+                                         keithleyModel_,
+                                         hamegModel_,
+                                         pfeifferModel_,
+                                         this);
 
     daqStreamer_ = new ThermoDAQStreamer(daqModel_, this);
 

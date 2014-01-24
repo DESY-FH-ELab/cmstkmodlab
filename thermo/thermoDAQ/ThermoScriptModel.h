@@ -5,6 +5,7 @@
 #include <QTimer>
 #include <QTextDocument>
 
+#include "ThermoDAQModel.h"
 #include "HuberPetiteFleurModel.h"
 #include "KeithleyModel.h"
 #include "HamegModel.h"
@@ -17,7 +18,8 @@ class ThermoScriptModel : public QObject
     Q_OBJECT
 public:
 
-  explicit ThermoScriptModel(HuberPetiteFleurModel* huberModel,
+  explicit ThermoScriptModel(ThermoDAQModel* daqModel,
+                             HuberPetiteFleurModel* huberModel,
                              KeithleyModel* keithleyModel,
                              HamegModel* hamegModel,
                              PfeifferModel* pfeifferModel,
@@ -32,10 +34,13 @@ public:
   void abortScript();
   int executionTime() const { return executionTime_; }
 
+  void startDAQ();
+  void stopDAQ();
   void message(int value);
   void message(uint value);
   void message(double value);
   void message(const QString & text);
+  void log(const QString & text);
 
 public slots:
   void executionStarted();
@@ -53,6 +58,7 @@ protected:
 
   QTimer executionTimer_;
   int executionTime_;
+  ThermoDAQModel* daqModel_;
   HuberPetiteFleurModel* huberModel_;
   KeithleyModel* keithleyModel_;
   HamegModel* hamegModel_;

@@ -16,8 +16,21 @@ public:
 
 public slots:
 
-//  QScriptValue state(unsigned int channel);
-//  QScriptValue temperature(unsigned int channel);
+  void switchCirculatorOn();
+  void switchCirculatorOff();
+  void setWorkingTemperature(double temperature);
+
+  QScriptValue isCirculatorOn();
+  QScriptValue getWorkingTemperature();
+  QScriptValue getBathTemperature();
+
+  void waitForTemperatureAbove(float temperature,
+                               int timeout);
+  void waitForTemperatureBelow(float temperature,
+                               int timeout);
+  void waitForStableTemperature(float deltaT,
+                                int delay,
+                                int timeout);
 
 protected:
   HuberPetiteFleurModel* huberPetiteFleurModel_;

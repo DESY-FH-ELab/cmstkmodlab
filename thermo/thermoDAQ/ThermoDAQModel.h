@@ -88,18 +88,26 @@ public:
 
     void myMoveToThread(QThread *thread);
 
+    bool daqState() const { return daqState_; }
+
+public slots:
+
+    void startMeasurement();
+    void stopMeasurement();
+
 protected slots:
+
     void huberInfoChanged();
     void keithleySensorStateChanged(unsigned int sensor, State newState);
     void keithleyTemperatureChanged(unsigned int sensor, double temperature);
     void pfeifferInfoChanged();
     void hamegInfoChanged();
 
-    void startMeasurement();
-    void stopMeasurement();
     void clearHistory();
 
 protected:
+
+  bool daqState_;
 
   HuberPetiteFleurModel* huberModel_;
   KeithleyModel* keithleyModel_;

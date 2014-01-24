@@ -16,12 +16,16 @@ public:
   explicit ThermoScriptableGlobals(ThermoScriptModel* scriptModel, QObject *parent = 0);
 
 public slots:
-  //void newMeasurement();
+
+  void startDAQ();
+  void stopDAQ();
+
   void wait(int seconds);
   void message(int value);
   void message(uint value);
   void message(double value);
   void message(const QString & text);
+  void log(const QString & text);
   QScriptValue uTime() const;
   QScriptValue eTime();
   QScriptValue mkUTime(int year, int month, int day,

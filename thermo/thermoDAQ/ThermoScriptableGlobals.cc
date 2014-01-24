@@ -21,11 +21,17 @@ ThermoScriptableGlobals::ThermoScriptableGlobals(ThermoScriptModel* scriptModel,
 
 }
 
-//void ThermoScriptableGlobals::newMeasurement() {
+void ThermoScriptableGlobals::startDAQ() {
 
-//  QMutexLocker locker(&mutex_);
-//  scriptModel_->doPrepareNewMeasurement();
-//}
+  QMutexLocker locker(&mutex_);
+  scriptModel_->startDAQ();
+}
+
+void ThermoScriptableGlobals::stopDAQ() {
+
+  QMutexLocker locker(&mutex_);
+  scriptModel_->stopDAQ();
+}
 
 void ThermoScriptableGlobals::wait(int seconds) {
 
@@ -57,6 +63,12 @@ void ThermoScriptableGlobals::message(const QString & text) {
 
   QMutexLocker locker(&mutex_);
   scriptModel_->message(text);
+}
+
+void ThermoScriptableGlobals::log(const QString & text) {
+
+  QMutexLocker locker(&mutex_);
+  scriptModel_->log(text);
 }
 
 QScriptValue ThermoScriptableGlobals::uTime() const
