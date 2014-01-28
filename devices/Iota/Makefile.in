@@ -4,7 +4,7 @@ LIB           = TkModLabIota
 
 USEFAKEDEVICES=@usefakedevices@
 
-MODULES       = IotaComHandler \
+MODULES       = Iota300ComHandler \
                 VIota300 \
                 Iota300Fake \
                 Iota300
@@ -16,7 +16,7 @@ ALLDEPEND = $(addsuffix .d,$(MODULES))
 
 EXISTDEPEND = $(shell find . -name \*.d -type f -print)
 
-all: depend lib
+all: depend lib test
 
 depend: $(ALLDEPEND)
 
@@ -37,6 +37,9 @@ $(LIBDIR)/lib$(LIB).so: $(addsuffix .o,$(MODULES))
 %.o: %.cpp
 	@echo "Compiling $<"
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $< -o $@
+
+test: test.cc $(LIBDIR)/lib$(LIB).so
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) test.cc -o test -L$(LIBDIR) -lTkModLabIota
 
 clean:
 	@rm -f $(LIBDIR)/lib$(LIB).so

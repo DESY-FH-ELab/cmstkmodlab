@@ -16,17 +16,22 @@ class Iota300Fake : public VIota300
 
   Iota300Fake( ioport_t );
 
+  bool SetFlow( const float ) const;
+  bool SetPressure( const float ) const;
+  bool SetStatus( const float ) const;
+  //bool SetControlParameters( float, int, int ) const;
 
-  unsigned int GetPumpPressure( void ) const;
-
-
+  bool IsCommunication( void ) const { return true; }
+  float GetFlow( void ) const;
+  float GetPressure( void ) const;
+  float GetStatus( void ) const;
+ 
  private:
 
-  float parameterProp_;
-  int parameterIntl_;
-  int parameterDiff_;
+  mutable float status_;
+  mutable float flow_;
+  mutable float pressure_;  
   void Device_Init( void );
-  bool circulatorStatus;
 };
 
 #endif

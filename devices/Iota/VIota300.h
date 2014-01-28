@@ -8,8 +8,11 @@
 #include <utility>
 #include <fstream>
 
-#define __IOTA_LOWER_TEMP_LIMIT -50
-#define __IOTA_UPPER_TEMP_LIMIT  30
+#define __IOTA300_LOWER_FLOW_LIMIT 0
+#define __IOTA300_UPPER_FLOW_LIMIT 300
+
+#define __IOTA300_LOWER_PRESSURE_LIMIT 0
+#define __IOTA300_UPPER_PRESSURE_LIMIT 70
 
 typedef const char* ioport_t;
 
@@ -20,9 +23,15 @@ class VIota300
   VIota300( ioport_t );
   virtual ~VIota300() {}
   
+  virtual bool SetFlow( const float ) const = 0;
+  virtual bool SetPressure( const float ) const = 0;
+  virtual bool SetStatus( const float ) const = 0;  
+  //virtual bool SetControlParameters( float, int, int ) const = 0;
 
-  virtual unsigned int GetPumpPressure( void ) const = 0;
- 
+  virtual bool IsCommunication( void ) const = 0;
+  virtual float GetFlow( void ) const = 0;
+  virtual float GetPressure( void ) const = 0;
+  virtual float GetStatus( void ) const = 0;
 };
 
 #endif

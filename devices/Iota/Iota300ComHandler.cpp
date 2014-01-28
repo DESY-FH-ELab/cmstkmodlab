@@ -1,5 +1,4 @@
-
-#include "IotaComHandler.h"
+#include "Iota300ComHandler.h"
 
 
 // SETTINGS ON THE DEVICE:
@@ -10,19 +9,14 @@
 // PARITY: none (8N1)
 // TX TERM: NL
 
-
-
-
-
-
-
 /*!
   The serial port &lt;ioPort&gt; may be specified in several ways:<br><br>
   COM1 ... COM4<br>
   ttyS0 ... ttyS3<br>
   "/dev/ttyS1" ... "/dev/ttyS3"
+  "/dev/ttyACM0"
 */
-IotaComHandler::IotaComHandler( const ioport_t ioPort ) {
+Iota300ComHandler::Iota300ComHandler( const ioport_t ioPort ) {
 
   // save ioport 
   fIoPort = ioPort;
@@ -30,32 +24,22 @@ IotaComHandler::IotaComHandler( const ioport_t ioPort ) {
   // initialize
   OpenIoPort();
   InitializeIoPort();
-
 }
 
-
-
-
 ///
 ///
 ///
-IotaComHandler::~IotaComHandler( void ) {
+Iota300ComHandler::~Iota300ComHandler( void ) {
 
   // restore ioport options as they were
   RestoreIoPort();
   
   // close device file
   CloseIoPort();
-
 }
 
-
-
-
-
 //! Send the command string &lt;commandString&gt; to device.
-void IotaComHandler::SendCommand( const char *commandString ) {
-
+void Iota300ComHandler::SendCommand( const char *commandString ) {
 
   char singleCharacter = 0; 
 
@@ -64,17 +48,13 @@ void IotaComHandler::SendCommand( const char *commandString ) {
     // scan command string character wise & write
     singleCharacter = commandString[i];
     write( fIoPortFileDescriptor, &singleCharacter, 1 );
-
   }
+
+  //std::cout << "write: " << commandString << std::endl;
 
   // send feed characters
   SendFeedString();
-  
 }
-
-
-
-
 
 //! Read a string from device.
 /*!
@@ -86,70 +66,59 @@ void IotaComHandler::SendCommand( const char *commandString ) {
 
   See example program in class description.
 */
-void IotaComHandler::ReceiveString( char *receiveString ) {
-
+void Iota300ComHandler::ReceiveString( char *receiveString ) {
 
   usleep( _COMHANDLER_DELAY );
 
   int timeout = 0, readResult = 0;
 
-  while ( timeout < 100000 )  {
+  while ( timeout < 10 )  {
+
+    usleep( 100000 );
 
     readResult = read( fIoPortFileDescriptor, receiveString, 1024 );
 
-    if ( readResult > 0 )   {
+    if ( readResult > 0 ) {
       receiveString[readResult] = 0;
-      break;
+      //std::cout << "read: " << readResult << " " << receiveString << std::endl;
+      return;
     }
-    
     timeout++;
-
   }
 
+  //std::cout << "timeout" << std::endl;
 }
-
-
-
-
 
 //! Open I/O port.
 /*!
   \internal
 */
-
-void IotaComHandler::OpenIoPort( void ) throw (int) {
-
+void Iota300ComHandler::OpenIoPort( void ) throw (int) {
 
   // open io port ( read/write | no term control | no DCD line check )
   fIoPortFileDescriptor = open( fIoPort, O_RDWR | O_NOCTTY  | O_NDELAY );
 
   // check if successful
   if ( fIoPortFileDescriptor == -1 ) {
-    std::cerr << "[FP50ComHandler::OpenIoPort] ** ERROR: could not open device file " << fIoPort << "." << endl;
+    std::cerr << "[Iota300ComHandler::OpenIoPort] ** ERROR: could not open device file "
+	      << fIoPort << "." << endl;
     std::cerr << "                               (probably it's not user-writable)." << std::endl;
     throw int(-1);
-  }
-
-  else {
+  } else {
     // configure port with no delay
     fcntl( fIoPortFileDescriptor, F_SETFL, FNDELAY );
   }
-
 }
-
-
-
-
 
 //! Initialize I/O port.
 /*!
   \internal
 */
-
-void IotaComHandler::InitializeIoPort( void ) {
+void Iota300ComHandler::InitializeIoPort( void ) {
 
 #ifndef USE_FAKEIO
 
+ 
   // get and save current ioport settings for later restoring
   tcgetattr( fIoPortFileDescriptor, &fCurrentTermios );
 
@@ -161,8 +130,8 @@ void IotaComHandler::InitializeIoPort( void ) {
   // all these settings copied from stty output..
 
   // baud rate
-  cfsetispeed( &fThisTermios, B9600 );  // input speed
-  cfsetospeed( &fThisTermios, B9600 );  // output speed
+  cfsetispeed( &fThisTermios, B19200 );  // input speed
+  cfsetospeed( &fThisTermios, B19200 );  // output speed
 
   // various settings, 8N1 (no parity, 1 stopbit)
   fThisTermios.c_cflag   &= ~PARENB;
@@ -224,52 +193,30 @@ void IotaComHandler::InitializeIoPort( void ) {
 #endif
 }
 
-
-
-
-
 //! Restore former I/O port settings.
 /*!
   \internal
 */
-
-void IotaComHandler::RestoreIoPort( void ) {
+void Iota300ComHandler::RestoreIoPort( void ) {
 
   // restore old com port settings
   tcsetattr( fIoPortFileDescriptor, TCSANOW, &fCurrentTermios );
-
 }
-
-
-
-
 
 //! Close I/O port.
 /*!
   \internal
 */
-void IotaComHandler::CloseIoPort( void ) {
+void Iota300ComHandler::CloseIoPort( void ) {
 
   close( fIoPortFileDescriptor );
-
 }
-
-
-
-
 
 //! Send command termination string (<CR><NL>).
 /*!
   \internal
 */
-void IotaComHandler::SendFeedString( void ) {
-
-  // feed string is <NL>
-  char feedString = 10;
-
-  // write <CR> and get echo
-  write( fIoPortFileDescriptor, &feedString, 1 );
-
+void Iota300ComHandler::SendFeedString( void )
+{
+  write( fIoPortFileDescriptor, "\n", 2 ); // /r nicht noetig?
 }
-
-
