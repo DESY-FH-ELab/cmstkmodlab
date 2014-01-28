@@ -9,7 +9,8 @@ subdirs	      = Julabo \
                 Greisinger \
 		Hameg \
 		Conrad \
-		Pfeiffer
+		Pfeiffer \
+                Iota
 
 ifeq ($(NOTHERMAL),0)
 subdirs      += 
