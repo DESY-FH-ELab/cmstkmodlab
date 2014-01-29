@@ -208,6 +208,26 @@ float Iota300::GetPressure( void ) const {
   return ToFloat(buffer);
 }
 
+float Iota300::GetStatus( void ) const {
+
+#ifdef __IOTA300_DEBUG
+  std::cout << "[Iota300::GetStatus] -- DEBUG: Called." << std::endl;
+#endif
+
+  char buffer[1000];
+
+  usleep( uDelay_ );
+  comHandler_->SendCommand( "#STr" );
+
+  usleep( uDelay_ );
+  comHandler_->ReceiveString( buffer );
+  StripBuffer( buffer );
+
+  //std::cout << buffer << std::endl;
+
+  return ToFloat(buffer);
+}
+
 ///
 /// strip trailing newlines & stuff
 /// from machine answer
