@@ -71,12 +71,14 @@ bool Iota300Fake::SetPressure( const float pressure ) const {
 ///
 bool Iota300Fake::SetStatus( const float status ) const {
 
+  /*
   if( status > __IOTA300_UPPER_STATUS_LIMIT || status < __IOTA300_LOWER_STATUS_LIMIT ) {
     std::cerr << " [Iota300Fake::SetStatus] ** ERROR: Status ="
 	      << status << " exceeds soft limits." << std::endl;
     std::cerr << "  > (s. Iota300Fake class definition)" << std::endl;
     return false;
   }
+  */
 
   std::cout << " [Iota300Fake::SetStatus] -- FAKE: Setting Status = " 
 	    << status << "." << std::endl;
