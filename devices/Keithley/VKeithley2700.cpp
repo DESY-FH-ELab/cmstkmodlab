@@ -125,7 +125,6 @@ const range_t VKeithley2700::EvaluateRangeToken( const std::string& string ) con
     if( ! (range.first > range.second || range.second > RangeMax ) ) {
       return range;
     }
-
   }
 
   std::cerr << " [VKeithley2700::EvaluateRangeToken] ** ERROR: Limit violation or malformed range: \""

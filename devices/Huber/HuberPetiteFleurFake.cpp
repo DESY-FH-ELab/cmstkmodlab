@@ -27,7 +27,7 @@ bool HuberPetiteFleurFake::SetWorkingTemperature( const float workingTemp ) cons
 
   if( workingTemp > PetiteFleurUpperTempLimit || workingTemp < PetiteFleurLowerTempLimit ) {
     std::cerr << " [HuberPetiteFleurFake::SetWorkingTemp] ** ERROR: working temp T="
-	      << workingTemp << " exceeds soft limits." << std::endl;
+	          << workingTemp << " exceeds soft limits." << std::endl;
     std::cerr << "  > (s. HuberPetiteFleurFake class definition)" << std::endl;
     return false;
   }

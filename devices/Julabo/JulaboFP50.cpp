@@ -54,7 +54,8 @@ bool JulaboFP50::SetWorkingTemperature( const float workingTemp ) const {
 
   if( fabs( workingTemp - atof( buffer ) ) > 1.e-3 ) {
     std::cerr << " [JulaboFP50::SetWorkingTemp] ** ERROR: check failed." << std::endl;
-    std::cerr << "  > Expected: T=" << workingTemp << " but received (string):" << buffer << "." << std::endl;
+    std::cerr << "  > Expected: T=" << workingTemp << " but received (string):"
+              << buffer << "." << std::endl;
     return false;
   }
 
@@ -468,7 +469,8 @@ bool JulaboFP50::SaveControlParameters( const std::string& filepath ) const {
 
   std::ofstream file( filepath.c_str() );
   if ( file.bad() ) {
-    std::cerr << " [JulaboFP50::SaveControlParameters] ** ERROR: Could not save to file:" << std::endl;
+    std::cerr << " [JulaboFP50::SaveControlParameters] ** ERROR: Could not save to file:"
+              << std::endl;
     std::cerr << "  > \"" << filepath.c_str() << "\"." << std::endl;
     return false;
   }

@@ -31,7 +31,8 @@ class VKeithley2700
  protected:
 
   const channels_t ParseChannelString( const std::string& ) const;
-  void Tokenize( const std::string&, std::vector<std::string>&, const std::string& ) const;
+  void Tokenize( const std::string&, std::vector<std::string>&,
+                 const std::string& ) const;
   unsigned int EvaluateChannelToken( const std::string& ) const;
   const range_t EvaluateRangeToken( const std::string& ) const;
 

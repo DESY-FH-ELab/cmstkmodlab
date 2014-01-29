@@ -116,14 +116,18 @@ const reading_t Keithley2700::Scan( void ) {
   Tokenize( std::string( buffer ), tokens, "," );
 
   if( isDebug_ ) {
-    std::cout << " [Keithley2700::Scan] -- DEBUG: Received " <<  tokens.size() / 3 << " reading(s)" << std::endl;
+    std::cout << " [Keithley2700::Scan] -- DEBUG: Received "
+              <<  tokens.size() / 3 << " reading(s)" << std::endl;
     std::string bufferStr( buffer );
     bufferStr.erase( std::remove( bufferStr.begin(), bufferStr.end(), '\n' ), bufferStr.end() );
-    std::cout << " [Keithley2700::Scan] -- DEBUG: <RAWOUTPUT.BEGIN> " << bufferStr << " <RAWOUTPUT.END>" << std::endl;;
+    std::cout << " [Keithley2700::Scan] -- DEBUG: <RAWOUTPUT.BEGIN> "
+              << bufferStr << " <RAWOUTPUT.END>" << std::endl;;
   }
 
   if( tokens.size() / 3 != enabledChannels_.size() ) {
-    std::cerr << " [Keithley2700::Scan] ** ERROR: expect " << enabledChannels_.size() << " reading(s) but received " << tokens.size() / 3 << "." << std::endl;
+    std::cerr << " [Keithley2700::Scan] ** ERROR: expect "
+              << enabledChannels_.size() << " reading(s) but received "
+              << tokens.size() / 3 << "." << std::endl;
     std::cerr << "                         Probably a timing problem.." << std::endl;
     isScanOk_ = false;
     if( isDebug_ ) throw;
