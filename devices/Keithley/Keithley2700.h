@@ -15,7 +15,7 @@ class Keithley2700 : public VKeithley2700
   void DisableActiveChannels( std::string );
   const reading_t Scan( void );
   void Dump( void ) const;
-  bool IsScanOk( void );
+  bool IsScanOk( void ) { return isScanOk_; }
 
   // delay time constants (usec)
   // delay for 1 channel scan -- delay for 10 channel scan
