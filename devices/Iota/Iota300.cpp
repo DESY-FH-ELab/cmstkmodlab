@@ -43,7 +43,7 @@ bool Iota300::SetFlow( const float flow ) const {
     return false;
   }
 
-  char buffer[1000];
+  char buffer[10];
 
   int iFlow = flow;// * 100.;
   sprintf(buffer, "%03d", iFlow);
@@ -87,7 +87,7 @@ bool Iota300::SetPressure( const float pressure ) const {
     return false;
   }
 
-  char buffer[1000];
+  char buffer[10];
 
   int iPressure = pressure;// * 100.;
   sprintf(buffer, "%03d", iPressure);
@@ -134,7 +134,7 @@ bool Iota300::SetStatus( const float status ) const {
   }
   */
 
-  char buffer[1000];
+  char buffer[100];
 
   int iStatus = status;// * 0.1;// * 100.;
   sprintf(buffer, "%d", iStatus);
