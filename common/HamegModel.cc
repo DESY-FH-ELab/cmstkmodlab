@@ -7,7 +7,7 @@
   */
 const QString HamegModel::Hameg_PORT = QString("/dev/ttyUSB0");
 
-HamegModel::HamegModel(float updateInterval, QObject *parent) :
+HamegModel::HamegModel(float updateInterval, QObject * /*parent*/) :
     QObject(),
     AbstractDeviceModel<Hameg8143_t>(),
     updateInterval_(updateInterval),

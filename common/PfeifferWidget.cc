@@ -65,7 +65,7 @@ void PfeifferWidget::controlStateChanged(bool enabled) {
   
   pfeifferCheckBox_->setEnabled(enabled);
   if (enabled) {
-    State state = model_->getDeviceState();
+    //State state = model_->getDeviceState();
   }
 }
 
@@ -136,8 +136,9 @@ void PfeifferGaugeWidget::updateDeviceState(State /*state*/)
 void PfeifferGaugeWidget::controlStateChanged(bool enabled)
 {
   if (enabled) {
-    State state = model_->getDeviceState();
+    //State state = model_->getDeviceState();
   } else {
+
   }
 }
 

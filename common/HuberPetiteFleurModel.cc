@@ -7,7 +7,7 @@
   */
 const QString HuberPetiteFleurModel::HuberPetiteFleur_PORT = QString("/dev/ttyACM0");
 
-HuberPetiteFleurModel::HuberPetiteFleurModel(float updateInterval, QObject *parent) :
+HuberPetiteFleurModel::HuberPetiteFleurModel(float updateInterval, QObject * /*parent*/) :
     QObject()
 //  , state_(OFF) // Initialize all fields to prevent random values
 //  , controller_(NULL)
