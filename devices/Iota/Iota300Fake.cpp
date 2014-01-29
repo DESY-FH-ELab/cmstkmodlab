@@ -18,10 +18,12 @@
 ///
 ///
 Iota300Fake::Iota300Fake( const ioport_t ioPort )
-    :VIota300(ioPort)
+    :VIota300(ioPort),
+     status_(0),
+     flow_(20),
+     pressure_(10)
 {
-  circulatorStatus_ = 0;
-  flow_ = 20;
+
 }
 
 ///
@@ -42,7 +44,6 @@ bool Iota300Fake::SetFlow( const float flow ) const {
   flow_ = flow;
 
   return true;
-
 }
 
 ///
@@ -63,8 +64,8 @@ bool Iota300Fake::SetPressure( const float pressure ) const {
   pressure_ = pressure;
 
   return true;
-
 }
+
 ///
 /// returns success flag
 ///
@@ -85,7 +86,6 @@ bool Iota300Fake::SetStatus( const float status ) const {
   return true;
 
 }
-
 
 ///
 ///
