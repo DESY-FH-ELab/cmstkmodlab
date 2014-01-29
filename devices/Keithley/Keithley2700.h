@@ -23,6 +23,7 @@ class Keithley2700 : public VKeithley2700
   static constexpr int DelayMax = 7000000;
 
  private:
+
   KMMComHandler* comHandler_;
   bool isDebug_;
   bool isScanOk_;
