@@ -117,7 +117,6 @@ void PetiteFleurComHandler::OpenIoPort( void ) throw (int) {
 void PetiteFleurComHandler::InitializeIoPort( void ) {
 
 #ifndef USE_FAKEIO
-
  
   // get and save current ioport settings for later restoring
   tcgetattr( fIoPortFileDescriptor, &fCurrentTermios );

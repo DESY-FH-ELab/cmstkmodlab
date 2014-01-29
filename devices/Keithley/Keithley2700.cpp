@@ -16,7 +16,6 @@ Keithley2700::Keithley2700( ioport_t port )
   #endif
  
   Device_Init();
-
 }
 
 ///
@@ -31,12 +30,7 @@ void Keithley2700::SetActiveChannels( string channelString ) {
   CalculateDelay();
 
   Device_SetChannels();
-
 }
-
-
-
-
 
 ///
 /// adds the channels given by string to the list of enabled ones
@@ -55,12 +49,7 @@ void Keithley2700::AddActiveChannels( string channelString ) {
   CalculateDelay();
 
   Device_SetChannels();
-
 }
-
-
-
-
 
 ///
 /// removes the channels given by string from the list of enabled ones
@@ -75,9 +64,9 @@ void Keithley2700::DisableActiveChannels( string channelString ) {
     channels_t::iterator pos = find( enabledChannels_.begin(), enabledChannels_.end(), *it );
     if( enabledChannels_.end() == pos ) {
       std::cerr << " [Keithley2700::DisableActiveChannels] ** WARNING:" << std::endl;
-      std::cerr << "  Request to disable channel: " << *it << " which is currently inactive. Skipping." << std::endl;
-    }
-    else {
+      std::cerr << "  Request to disable channel: " << *it
+                << " which is currently inactive. Skipping." << std::endl;
+    } else {
       enabledChannels_.erase( pos );
     }
 
@@ -86,12 +75,7 @@ void Keithley2700::DisableActiveChannels( string channelString ) {
   CalculateDelay();
 
   Device_SetChannels();
-
 }
-
-
-
-
 
 ///
 ///
@@ -145,27 +129,7 @@ const reading_t Keithley2700::Scan( void ) {
   }
 
   return theReading;
-
 }
-
-
-
-
-
-///
-///
-///
-bool Keithley2700::IsScanOk( void ) {
-  return isScanOk_;
-}
-
-
-
-
-
-
-
-
 
 ///
 ///
@@ -174,16 +138,13 @@ void Keithley2700::Dump( void ) const {
 
   std::cout << " [Keithley2700::Dump] -- Channels enabled in scan: \n ";
 
-  for( channels_t::const_iterator it = enabledChannels_.begin(); it < enabledChannels_.end(); ++it ) {
+  for( channels_t::const_iterator it = enabledChannels_.begin();
+      it < enabledChannels_.end();
+      ++it ) {
     std::cout << " " << *it;
   }
   std::cout << std::endl;
-
 }
-
-
-
-
 
 ///
 /// communicate the currently active channels
@@ -205,13 +166,13 @@ void Keithley2700::Device_SetChannels( void ) const {
 
   // send
   if( isDebug_ ) {
-    std::cout << " [Keithley2700::Device_SetChannels] -- DEBUG: Sent: \"" << theCommand.str() << "\"" << std::endl;
+    std::cout << " [Keithley2700::Device_SetChannels] -- DEBUG: Sent: \""
+              << theCommand.str() << "\"" << std::endl;
   }
   comHandler_->SendCommand( theCommand.str().c_str() );
 
   // cleanup
   theCommand.str("");
-
 
   // build samp:coun command
   
@@ -220,15 +181,11 @@ void Keithley2700::Device_SetChannels( void ) const {
   
   // send
   if( isDebug_ ) {
-    std::cout << " [Keithley2700::Device_SetChannels] -- DEBUG: Sent: \"" << theCommand.str() << "\"" << std::endl;
+    std::cout << " [Keithley2700::Device_SetChannels] -- DEBUG: Sent: \""
+              << theCommand.str() << "\"" << std::endl;
   }
   comHandler_->SendCommand( theCommand.str().c_str() );
-  
 }
-
-
-
-
 
 ///
 /// all initialization of device
@@ -272,7 +229,6 @@ void Keithley2700::Device_Init( void ) const {
 
   // open all channels
   //  comHandler_->SendCommand( "ROUT:OPEN:ALL" );
-
 }
 
 ///
@@ -283,7 +239,7 @@ void Keithley2700::CalculateDelay( void ) {
   uSecDelay_ = __DELAY_MIN + ( __DELAY_MAX - __DELAY_MIN) / 10 * enabledChannels_.size();
 
   if( isDebug_ ) {
-    std::cout << " [Keithley2700::CalculateDelay] -- DEBUG: Delay is now: " << uSecDelay_ << " usec." << std::endl;
+    std::cout << " [Keithley2700::CalculateDelay] -- DEBUG: Delay is now: "
+              << uSecDelay_ << " usec." << std::endl;
   }
-
 }

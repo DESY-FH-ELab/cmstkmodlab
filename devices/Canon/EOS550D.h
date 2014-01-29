@@ -15,6 +15,7 @@
 class EOS550D : public VEOS550D {
 
 public:
+
   explicit EOS550D(const char* port);
   ~EOS550D();
 
@@ -34,6 +35,7 @@ public:
   virtual bool stopPreviewMode();
 
 protected:
+
   CameraComHandler* handler_;
 
   std::vector<std::string> optionNames_;

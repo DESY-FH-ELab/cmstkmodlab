@@ -17,6 +17,7 @@
 class EOS550DFake : public VEOS550D
 {
 public:
+
   EOS550DFake(const char* port);
   ~EOS550DFake();
 
@@ -34,6 +35,7 @@ public:
   virtual bool stopPreviewMode();
 
 protected:
+
   /**
     \brief Renders a fake picture and returns the location of the file.
     The picture will be rendered displaying a small dot grid and showing some
@@ -54,6 +56,7 @@ protected:
   void registerTempFileName(const std::string& fileName);
 
 private:
+
   /// File name of the preview picture
   static const std::string PREVIEW_FILE_NAME;
   static const int PICTURE_WIDTH;
@@ -71,8 +74,6 @@ private:
 
   /// List of currently stored temporary files.
   std::queue<std::string> tempFiles_;
-
-
 };
 
 #endif // EOS550DFAKE_H

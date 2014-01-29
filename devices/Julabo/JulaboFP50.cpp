@@ -21,8 +21,6 @@ JulaboFP50::JulaboFP50( const ioport_t ioPort )
   Device_Init();
 }
 
-
-
 ///
 /// returns success flag
 ///
@@ -56,10 +54,7 @@ bool JulaboFP50::SetWorkingTemperature( const float workingTemp ) const {
   }
 
   return true;
-
 }
-
-
 
 ///
 /// return success flag
@@ -72,7 +67,8 @@ bool JulaboFP50::SetPumpPressure( const unsigned int pressureStage ) const {
   #endif
 
   if( pressureStage < 1 || pressureStage > 4 ) {
-    std::cerr << " [JulaboFP50::SetPumpPressure] ** ERROR: Invalid pressure stage: " << pressureStage << "." << std::endl;
+    std::cerr << " [JulaboFP50::SetPumpPressure] ** ERROR: Invalid pressure stage: "
+              << pressureStage << "." << std::endl;
     return false;
   }
   
@@ -89,15 +85,13 @@ bool JulaboFP50::SetPumpPressure( const unsigned int pressureStage ) const {
 
   if( static_cast<unsigned int>( atoi( buffer ) ) != pressureStage ) {
     std::cerr << " [JulaboFP50::SetPumpPressure] ** ERROR: check failed." << std::endl;
-    std::cerr << "  > Expected: P=" << pressureStage << " but received (string):" << buffer << "." << std::endl;
+    std::cerr << "  > Expected: P=" << pressureStage << " but received (string):"
+              << buffer << "." << std::endl;
     return false;
   }
 
   return true;
-
 }
-
-
 
 ///
 /// return success flag
@@ -124,10 +118,7 @@ bool JulaboFP50::SetCirculatorOn( void ) const {
   }
 
   return true;
-
 }
-
-
 
 ///
 /// return success flag
@@ -154,10 +145,7 @@ bool JulaboFP50::SetCirculatorOff( void ) const {
   }
 
   return true;
-
 }
-
-
 
 ///
 /// pass pid parameters to machine;
@@ -171,17 +159,20 @@ bool JulaboFP50::SetControlParameters( float xp, int tn, int tv ) const {
   #endif
 
   if( xp < 0.1f || xp > 99.9f ) {
-    std::cerr << " [JulaboFP50::SetControlParameters] ** ERROR: Invalid proportional parameter xp: " << xp << "." << std::endl;
+    std::cerr << " [JulaboFP50::SetControlParameters] ** ERROR: Invalid proportional parameter xp: "
+              << xp << "." << std::endl;
     return false;
   }
   
   if( tn < 3 || tn > 9999 ) {
-    std::cerr << " [JulaboFP50::SetControlParameters] ** ERROR: Invalid integral parameter tn: " << tn << "." << std::endl;
+    std::cerr << " [JulaboFP50::SetControlParameters] ** ERROR: Invalid integral parameter tn: "
+              << tn << "." << std::endl;
     return false;
   }
   
   if( tv < 0 || tv > 999 ) {
-    std::cerr << " [JulaboFP50::SetControlParameters] ** ERROR: Invalid differential parameter tv: " << tv << "." << std::endl;
+    std::cerr << " [JulaboFP50::SetControlParameters] ** ERROR: Invalid differential parameter tv: "
+              << tv << "." << std::endl;
     return false;
   }
 
@@ -201,7 +192,8 @@ bool JulaboFP50::SetControlParameters( float xp, int tn, int tv ) const {
 
   if( fabs( atof( buffer ) - xp ) > 1.e-3 ) {
     std::cerr << " [JulaboFP50::SetControlParameters] ** ERROR: check failed." << std::endl;
-    std::cerr << "  > Expected: xp=" << xp << " but received (string):" << buffer << "." << std::endl;
+    std::cerr << "  > Expected: xp=" << xp << " but received (string):"
+              << buffer << "." << std::endl;
     return false;
   }
 
@@ -219,7 +211,8 @@ bool JulaboFP50::SetControlParameters( float xp, int tn, int tv ) const {
 
   if( atoi( buffer ) !=  tn ) {
     std::cerr << " [JulaboFP50::SetControlParameters] ** ERROR: check failed." << std::endl;
-    std::cerr << "  > Expected: tn=" << tn << " but received (string):" << buffer << "." << std::endl;
+    std::cerr << "  > Expected: tn=" << tn << " but received (string):"
+              << buffer << "." << std::endl;
     return false;
   }
 
@@ -237,15 +230,13 @@ bool JulaboFP50::SetControlParameters( float xp, int tn, int tv ) const {
 
   if( atoi( buffer ) !=  tv ) {
     std::cerr << " [JulaboFP50::SetControlParameters] ** ERROR: check failed." << std::endl;
-    std::cerr << "  > Expected: tv=" << tv << " but received (string):" << buffer << "." << std::endl;
+    std::cerr << "  > Expected: tv=" << tv << " but received (string):"
+              << buffer << "." << std::endl;
     return false;
   }
   
   return true;
-
 }
-
-
 
 ///
 ///
@@ -263,10 +254,7 @@ float JulaboFP50::GetBathTemperature( void ) const {
   comHandler_->ReceiveString( buffer );
   StripBuffer( buffer );
   return( atof( buffer ) );
-
 }
-
-
 
 ///
 ///
@@ -285,10 +273,7 @@ float JulaboFP50::GetSafetySensorTemperature( void ) const {
   StripBuffer( buffer );
 
   return( atof( buffer ) );
-
 }
-
-
 
 ///
 ///
@@ -307,11 +292,7 @@ float JulaboFP50::GetWorkingTemperature( void ) const {
   StripBuffer( buffer );
 
   return( atof( buffer ) );
-
-
 }
-
-
 
 ///
 ///
@@ -332,8 +313,6 @@ int JulaboFP50::GetHeatingPower( void ) const
   return( atoi( buffer ) );
 }
 
-
-
 ///
 ///
 ///
@@ -351,10 +330,7 @@ unsigned int JulaboFP50::GetPumpPressure( void ) const {
   StripBuffer( buffer );
 
   return( atoi( buffer ) );
-  
 }
-
-
 
 ///
 /// true = on / false = off
@@ -376,10 +352,7 @@ bool JulaboFP50::GetCirculatorStatus( void ) const {
 
   if( status ) return true;
   else return false;
-
 }
-
-
 
 ///
 /// get status message &
@@ -419,10 +392,7 @@ std::pair<int,std::string> JulaboFP50::GetStatus( void ) const {
   }
 
   return returnValue;
-
 }
-
-
 
 ///
 ///
@@ -430,7 +400,8 @@ std::pair<int,std::string> JulaboFP50::GetStatus( void ) const {
 float JulaboFP50::GetProportionalParameter( void ) const {
 
   #ifdef __JULABOFP50_DEBUG
-  std::cout << "[JulaboFP50::GetProportionalParameter] -- DEBUG: Called." << std::endl;
+  std::cout << "[JulaboFP50::GetProportionalParameter] -- DEBUG: Called."
+            << std::endl;
   #endif
 
   char buffer[1000];
@@ -440,10 +411,7 @@ float JulaboFP50::GetProportionalParameter( void ) const {
   comHandler_->ReceiveString( buffer );
   StripBuffer( buffer );
   return( atof( buffer ) );
-
 }
-
-
 
 ///
 ///
@@ -462,10 +430,7 @@ int JulaboFP50::GetIntegralParameter( void ) const {
   StripBuffer( buffer );
 
   return( atoi( buffer ) );
-
 }
-
-
 
 ///
 ///
@@ -484,10 +449,7 @@ int JulaboFP50::GetDifferentialParameter( void ) const {
   StripBuffer( buffer );
 
   return( atoi( buffer ) );
-
 }
-
-
 
 ///
 /// save pid parameters to file
@@ -511,10 +473,7 @@ bool JulaboFP50::SaveControlParameters( const std::string& filepath ) const {
   
   file.close();
   return true;
-
 }
-
-
 
 ///
 /// load pid parameters from file & pass to the machine;
@@ -523,12 +482,14 @@ bool JulaboFP50::SaveControlParameters( const std::string& filepath ) const {
 bool JulaboFP50::LoadControlParametersAndApply( const std::string& filepath ) const {
 
   #ifdef __JULABOFP50_DEBUG
-  std::cout << "[JulaboFP50::LoadControlParametersAndApply] -- DEBUG: Called." << std::endl;
+  std::cout << "[JulaboFP50::LoadControlParametersAndApply] -- DEBUG: Called."
+            << std::endl;
   #endif
 
   std::ifstream file( filepath.c_str(), std::ios::in );
   if ( file.bad() ) {
-    std::cerr << " [JulaboFP50::LoadControlParametersAndApply] ** ERROR: Could not read from file:" << std::endl;
+    std::cerr << " [JulaboFP50::LoadControlParametersAndApply] ** ERROR: Could not read from file:"
+              << std::endl;
     std::cerr << "  > \"" << filepath.c_str() << "\"." << std::endl;
     return false;
   }
@@ -566,14 +527,12 @@ bool JulaboFP50::LoadControlParametersAndApply( const std::string& filepath ) co
     return true;
   } 
   else {
-    std::cerr << " [LoadControlParametersAndApply] ** ERROR: could not parse input file: " << std::endl;
+    std::cerr << " [LoadControlParametersAndApply] ** ERROR: could not parse input file: "
+              << std::endl;
     std::cerr << "  > " << filepath.c_str() << "." << std::endl;
     return false;
   }
-
 }
-
-
 
 ///
 /// strip trailing newlines & stuff
@@ -593,10 +552,7 @@ void JulaboFP50::StripBuffer( char* buffer ) const {
       break;
     }
   }
-  
 }
-
-
 
 ///
 /// read back software version
@@ -615,13 +571,13 @@ void JulaboFP50::Device_Init( void ) {
 
   std::cout << buffer << std::endl;
 
-  if( std::string::npos == std::string( buffer ).find( "JULABO TOPTECH-SERIES MC-2 VERSION 3.0" ) ) {
-    std::cerr << " [JulaboFP50::Device_Init] ** ERROR: Device communication problem." << std::endl;
+  if (std::string::npos==std::string(buffer).find( "JULABO TOPTECH-SERIES MC-2 VERSION 3.0")) {
+    std::cerr << " [JulaboFP50::Device_Init] ** ERROR: Device communication problem."
+              << std::endl;
     std::cerr << "  > (could not read software version string)" << std::endl;
     isCommunication_ = false;
     return;
   }
 
   isCommunication_ = true;
-
 }

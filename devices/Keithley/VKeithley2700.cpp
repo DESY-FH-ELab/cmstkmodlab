@@ -8,6 +8,9 @@ VKeithley2700::VKeithley2700( ioport_t port )
 
 }
 
+///
+///
+///
 VKeithley2700::~VKeithley2700()
 {
 
@@ -24,7 +27,8 @@ const channels_t VKeithley2700::ParseChannelString( const std::string& channelSt
   channels.resize( 0 );
 
   if( 0 == channelString.size() ) {
-    std::cerr << " [VKeithley2700::ParseChannelString] ** DEBUG: Received empty string." << std::endl;
+    std::cerr << " [VKeithley2700::ParseChannelString] ** DEBUG: Received empty string."
+              << std::endl;
     return channels;
   }
 
@@ -83,7 +87,6 @@ void VKeithley2700::Tokenize(const std::string& string,
     pos = string.find_first_of( delimiters, lastPos );
 
   }
-
 }
 
 ///
@@ -122,6 +125,5 @@ const range_t VKeithley2700::EvaluateRangeToken( const std::string& string ) con
   std::cerr << " [VKeithley2700::EvaluateRangeToken] ** ERROR: Limit violation or malformed range: \""
             << string << "\"." << std::endl;
   throw;
-
 }
 

@@ -9,7 +9,6 @@
 // PARITY: none (8N1)
 // TX TERM: NL
 
-
 /*!
   The serial port &lt;ioPort&gt; may be specified in several ways:<br><br>
   COM1 ... COM4<br>
@@ -48,7 +47,6 @@ void TPG262ComHandler::SendCommand( const char *commandString )
     // scan command string character wise & write
     singleCharacter = commandString[i];
     write( fIoPortFileDescriptor, &singleCharacter, 1 );
-
   }
 
   // send feed characters
@@ -105,8 +103,10 @@ void TPG262ComHandler::OpenIoPort( void )
 
   // check if successful
   if ( fIoPortFileDescriptor == -1 ) {
-    std::cerr << "[TPG262ComHandler::OpenIoPort] ** ERROR: could not open device file " << fIoPort << "." << endl;
-    std::cerr << "                               (probably it's not user-writable)." << std::endl;
+    std::cerr << "[TPG262ComHandler::OpenIoPort] ** ERROR: could not open device file "
+        << fIoPort << "." << std::endl;
+    std::cerr << "                               (probably it's not user-writable)."
+        << std::endl;
     throw;
   }
   else {

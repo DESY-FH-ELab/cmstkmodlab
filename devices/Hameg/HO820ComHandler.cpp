@@ -88,9 +88,7 @@ void HO820ComHandler::OpenIoPort( void )
     std::cerr << "                               (probably it's not user-writable)." << std::endl;
     fDeviceAvailable = false;
     return;
-  }
-
-  else {
+  } else {
     // configure port with no delay
     fcntl( fIoPortFileDescriptor, F_SETFL, FNDELAY );
   }

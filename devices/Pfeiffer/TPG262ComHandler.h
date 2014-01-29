@@ -54,16 +54,13 @@ class TPG262ComHandler {
   void InitializeIoPort( void );
   void RestoreIoPort( void );
   void CloseIoPort( void );
- void SendFeedString( void );
+  void SendFeedString( void );
 
   int fIoPortFileDescriptor;
 
   ioport_t fIoPort;
   termios_t fCurrentTermios, fThisTermios;
-
 };
-
-
 
 #endif
 

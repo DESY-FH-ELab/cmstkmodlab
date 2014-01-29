@@ -51,7 +51,6 @@ using namespace std;
 
 */
 
-
 //!  A class for handling raw communication with the prema KMM 5017 digital multimeter
 /*!
   This class handles basic serial communication with KMM 5017 digital multimeter devices
@@ -97,12 +96,9 @@ using namespace std;
   \attention <br>
   Make sure the I/O port device files are human readable.<br>
   Device must be set to RTS/CTS handshake mode manually.<br><br>
-  
-
- */
+*/
 
 class KMMComHandler {
-
 
  public:
   
@@ -118,7 +114,6 @@ class KMMComHandler {
   void SendCommand( const char *commandString );
   void ReceiveString( char *receiveString );
 
-
  private:
 
   void OpenIoPort( void )  throw (int) ;
@@ -131,10 +126,7 @@ class KMMComHandler {
 
   ioport_t fIoPort;
   termios_t fCurrentTermios, fThisTermios;
-
 };
-
-
 
 #endif
 

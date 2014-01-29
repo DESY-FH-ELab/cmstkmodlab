@@ -12,11 +12,11 @@ using namespace cv;
 const string EOS550DFake::PREVIEW_FILE_NAME = "/tmp/canon-fake-preview.jpg";
 const int EOS550DFake::PICTURE_WIDTH = 3000;
 
-EOS550DFake::EOS550DFake(const char* port) :
-    VEOS550D(port)
-  , maxTempFileCount_(20) // If bigger than 25, see TMP_MAX
-  , initialized_(false)
-  , inPreviewMode_(false)
+EOS550DFake::EOS550DFake(const char* port)
+  : VEOS550D(port),
+    maxTempFileCount_(20), // If bigger than 25, see TMP_MAX
+    initialized_(false),
+    inPreviewMode_(false)
 {
   // Set all supported selections to -1, i.e. no selection
   optionSelections_[APERTURE] = -1;
@@ -66,10 +66,9 @@ bool EOS550DFake::initialize()
   optionLists_[SHUTTER_SPEED] = shutterSpeeds;
 
   // Set all selections to default
-  for (map<Option,int>::iterator it = optionSelections_.begin()
-       ; it != optionSelections_.end()
-       ; ++it
-  )
+  for (map<Option,int>::iterator it = optionSelections_.begin();
+      it != optionSelections_.end();
+      ++it)
     it->second = 0;
 
   // Always return true
@@ -170,9 +169,9 @@ string EOS550DFake::renderPicture(bool preview)
   // Camera settings
   stringstream settings;
   settings << "ISO" << readOptionStringValue(ISO)
-           << "; F" << readOptionStringValue(APERTURE)
-           << "; " << readOptionStringValue(SHUTTER_SPEED)
-           << "; WB " << readOptionStringValue(WHITE_BALANCE);
+               << "; F" << readOptionStringValue(APERTURE)
+               << "; " << readOptionStringValue(SHUTTER_SPEED)
+               << "; WB " << readOptionStringValue(WHITE_BALANCE);
   // copy string to avoid segmentation errors
   lines.push_back(string(settings.str()));
 
@@ -210,11 +209,9 @@ string EOS550DFake::renderPicture(bool preview)
   }
 
   // Copy text block
-  Mat textBlock(
-        image
-      , cv::Range(0, blockHeight*fontScale)
-      , cv::Range(0, textOrigin.x + lineWidth*fontScale)
-  );
+  Mat textBlock(image,
+                cv::Range(0, blockHeight*fontScale),
+                cv::Range(0, textOrigin.x + lineWidth*fontScale));
 
   // Rotate block
   Point rotationCentre(0,0); // top left
@@ -229,10 +226,7 @@ string EOS550DFake::renderPicture(bool preview)
   int width = rotatedText.cols;
   int height = rotatedText.rows;
   // Will contain region-of-interest in image, data is not copied!
-  Mat imageRotatedText(
-        image
-      , Rect(0, image.rows-height, width, height)
-  );
+  Mat imageRotatedText(image, Rect(0, image.rows-height, width, height));
   rotatedText.copyTo(imageRotatedText);
 
   // Draw raster of dots
@@ -243,14 +237,11 @@ string EOS550DFake::renderPicture(bool preview)
   Scalar green = Scalar::all(0);
   green[1] = 255;
 
-  Point dot(
-        image.cols/2 - (rasterHalfWidth+1)*dotSeparation
-      , image.rows/2
-  );
+  Point dot(image.cols/2 - (rasterHalfWidth+1)*dotSeparation,
+            image.rows/2);
   const Point ySeparation(0, dotSeparation);
 
-  for (int i=1-rasterHalfWidth; i<rasterHalfWidth; ++i)
-  {
+  for (int i=1-rasterHalfWidth; i<rasterHalfWidth; ++i) {
     // Draw middle dot
     if (i==0)
       circle(image, dot, dotRadius, green, dotLineWidth);
@@ -258,8 +249,7 @@ string EOS550DFake::renderPicture(bool preview)
       circle(image, dot, dotRadius, white, dotLineWidth);
 
     // Draw one dot above, one dot below
-    for (int j=1; j<rasterHalfWidth; ++j)
-    {
+    for (int j=1; j<rasterHalfWidth; ++j) {
       circle(image, dot+j*ySeparation, dotRadius, white, dotLineWidth);
       circle(image, dot-j*ySeparation, dotRadius, white, dotLineWidth);
     }
@@ -304,7 +294,7 @@ string EOS550DFake::renderPicture(bool preview)
   // Add some timing information
   exifData["Exif.Image.DateTime"] = dateTime.c_str();
   exifData["Exif.Photo.DateTimeOriginal"] = dateTime.c_str();
-//  exifData["Exif.Photo.DateTimeDigitized"] = dateTime.c_str();
+  //  exifData["Exif.Photo.DateTimeDigitized"] = dateTime.c_str();
 
   // For options, see EOS550DFake::initialize
   if (readOption(ISO) != 2)

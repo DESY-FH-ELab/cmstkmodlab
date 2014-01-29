@@ -5,7 +5,6 @@
 // query error codes
 //#####################
 
-
 #include "PetiteFleurComHandler.h"
 
 #include "HuberPetiteFleur.h"

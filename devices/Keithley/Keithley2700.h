@@ -36,7 +36,6 @@ class Keithley2700 : public VKeithley2700
   bool isScanOk_;
   unsigned int uSecDelay_;
   
-
   void Device_SetChannels( void ) const;
   void Device_Init( void ) const;
   void CalculateDelay( void );

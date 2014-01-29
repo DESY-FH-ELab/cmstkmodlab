@@ -30,12 +30,11 @@ bool HuberPetiteFleurFake::SetWorkingTemperature( const float workingTemp ) cons
   }
 
   std::cout << " [HuberPetiteFleurFake::SetWorkingTemp] -- FAKE: Setting workingTemp = " 
-	    << workingTemp << "." << std::endl;
+	        << workingTemp << "." << std::endl;
 
   workingTemp_ = workingTemp;
 
   return true;
-
 }
 
 ///
@@ -43,7 +42,8 @@ bool HuberPetiteFleurFake::SetWorkingTemperature( const float workingTemp ) cons
 ///
 bool HuberPetiteFleurFake::SetCirculatorOn( void ) const
 {
-  std::cout << " [HuberPetiteFleurFake::SetCirculatorOn] -- FAKE: Setting circulator ON " << std::endl;
+  std::cout << " [HuberPetiteFleurFake::SetCirculatorOn] -- FAKE: Setting circulator ON "
+            << std::endl;
 
   circulatorStatus_ = true;
 
@@ -57,7 +57,8 @@ bool HuberPetiteFleurFake::SetCirculatorOn( void ) const
 ///
 bool HuberPetiteFleurFake::SetCirculatorOff( void ) const
 {
-  std::cout << " [HuberPetiteFleurFake::SetCirculatorOff] -- FAKE: Setting circulator OFF" << std::endl;
+  std::cout << " [HuberPetiteFleurFake::SetCirculatorOff] -- FAKE: Setting circulator OFF"
+            << std::endl;
 
   circulatorStatus_ = false;
 
@@ -70,7 +71,7 @@ bool HuberPetiteFleurFake::SetCirculatorOff( void ) const
 float HuberPetiteFleurFake::GetBathTemperature( void ) const
 {
   std::cout << " [HuberPetiteFleurFake::GetBathTemperature] -- FAKE: Returning T = "
-	    << workingTemp_ << std::endl;
+	        << workingTemp_ << std::endl;
   usleep( 10000 );
   return workingTemp_ + (double)rand() / RAND_MAX;
 }
@@ -81,7 +82,7 @@ float HuberPetiteFleurFake::GetBathTemperature( void ) const
 float HuberPetiteFleurFake::GetWorkingTemperature( void ) const
 {
   std::cout << " [HuberPetiteFleurFake::GetWorkingTemperature] -- FAKE: Returning T = "
-	    << workingTemp_ << std::endl;
+	        << workingTemp_ << std::endl;
   usleep( 10000 );
   return workingTemp_;
 }
@@ -92,10 +93,9 @@ float HuberPetiteFleurFake::GetWorkingTemperature( void ) const
 bool HuberPetiteFleurFake::GetCirculatorStatus( void ) const {
 
   std::cout << " [HuberPetiteFleurFake::GetCirculatorStatus] -- FAKE: Returning: " 
-	    << (circulatorStatus_?"TRUE":"FALSE") << std::endl;
+	        << (circulatorStatus_?"TRUE":"FALSE") << std::endl;
   usleep( 10000 );
   return circulatorStatus_;
-
 }
 
 ///
@@ -103,5 +103,4 @@ bool HuberPetiteFleurFake::GetCirculatorStatus( void ) const {
 ///
 void HuberPetiteFleurFake::Device_Init( void ) {
 
-  
 }

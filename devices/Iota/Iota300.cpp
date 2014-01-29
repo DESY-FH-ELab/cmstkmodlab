@@ -5,7 +5,6 @@
 // query error codes
 //#####################
 
-
 #include "Iota300ComHandler.h"
 
 #include "Iota300.h"
@@ -69,7 +68,6 @@ bool Iota300::SetFlow( const float flow ) const {
 ///
 /// return success flag
 ///
-
 bool Iota300::SetPressure( const float pressure ) const {
 
   #ifdef __IOTA300_DEBUG
@@ -159,8 +157,6 @@ bool Iota300::SetStatus( const float status ) const {
 ///
 /// return success flag
 ///
-
-
 float Iota300::GetFlow( void ) const {
 
   #ifdef __IOTA300_DEBUG
@@ -201,7 +197,6 @@ float Iota300::GetPressure( void ) const {
 
   return ToFloat(buffer);
 }
-
 
 ///
 /// strip trailing newlines & stuff
