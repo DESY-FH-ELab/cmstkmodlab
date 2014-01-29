@@ -82,7 +82,7 @@ bool Iota300::SetPressure( const float pressure ) const {
 
   if( pressure > Iota300UpperPressureLimit || pressure < Iota300LowerPressureLimit ) {
     std::cerr << " [Iota300::SetFlow] ** ERROR: p =" 
-	      << Pressure << " exceeds soft limits." << std::endl;
+	      << pressure << " exceeds soft limits." << std::endl;
     std::cerr << "  > (s. Iota300 class definition)" << std::endl;
     return false;
   }
@@ -125,12 +125,14 @@ bool Iota300::SetStatus( const float status ) const {
   std::cout << "[Iota300::SetStatus] -- DEBUG: Called." << std::endl;
   #endif
 
+  /*
   if( Flow > __IOTA300_UPPER_STATUS_LIMIT || status < __IOTA300_LOWER_STATUS_LIMIT ) {
     std::cerr << " [Iota300::SetStatus] ** ERROR: status =" 
 	      << status << " exceeds soft limits." << std::endl;
     std::cerr << "  > (s. Iota300 class definition)" << std::endl;
     return false;
   }
+  */
 
   char buffer[1000];
 
