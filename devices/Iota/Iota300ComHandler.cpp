@@ -1,5 +1,6 @@
-#include "Iota300ComHandler.h"
+#include <string.h>
 
+#include "Iota300ComHandler.h"
 
 // SETTINGS ON THE DEVICE:
 // (MENU RS-232)

@@ -1,3 +1,5 @@
+#include <string.h>
+
 #include <cstdlib>
 #include <iostream>
 #include <string>
