@@ -1,14 +1,6 @@
 #ifndef __KEITHLEY2700_H
 #define __KEITHLEY2700_H
 
-#include <iostream>
-#include <vector>
-#include <utility>
-#include <string>
-#include <cstdlib>
-#include <algorithm>
-#include <sstream>
-
 #include "VKeithley2700.h"
 
 #include "KMMComHandler.h"

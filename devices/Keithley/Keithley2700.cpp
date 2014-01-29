@@ -1,3 +1,11 @@
+#include <iostream>
+#include <vector>
+#include <utility>
+#include <string>
+#include <cstdlib>
+#include <algorithm>
+#include <sstream>
+
 #include "Keithley2700.h"
 
 ///

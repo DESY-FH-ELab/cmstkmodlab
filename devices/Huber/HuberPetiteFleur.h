@@ -1,13 +1,6 @@
 #ifndef __HUBERPETITEFLEUR_H
 #define __HUBERPETITEFLEUR_H
 
-#include <iostream>
-#include <string>
-#include <sstream>
-#include <cstdlib>
-#include <utility>
-#include <fstream>
-
 #include "VHuberPetiteFleur.h"
 
 class PetiteFleurComHandler;

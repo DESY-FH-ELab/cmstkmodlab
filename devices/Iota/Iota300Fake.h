@@ -1,13 +1,6 @@
 #ifndef __IOTA300FAKE_H
 #define __IOTA300FAKE_H
 
-#include <iostream>
-#include <string>
-#include <sstream>
-#include <cstdlib>
-#include <utility>
-#include <fstream>
-
 #include "VIota300.h"
 
 class Iota300Fake : public VIota300

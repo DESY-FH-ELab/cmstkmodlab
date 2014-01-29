@@ -1,13 +1,6 @@
 #ifndef __IOTA300_H
 #define __IOTA300_H
 
-#include <iostream>
-#include <string>
-#include <sstream>
-#include <cstdlib>
-#include <utility>
-#include <fstream>
-
 #include "VIota300.h"
 
 class Iota300ComHandler;

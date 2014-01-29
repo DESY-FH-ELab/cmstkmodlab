@@ -1,13 +1,6 @@
 #ifndef __JULABOFP50_H
 #define __JULABOFP50_H
 
-#include <iostream>
-#include <string>
-#include <sstream>
-#include <cstdlib>
-#include <utility>
-#include <fstream>
-
 #include "VJulaboFP50.h"
 
 class FP50ComHandler;

@@ -1,5 +1,6 @@
 #include <sys/ioctl.h>
 
+#include <string>
 #include <iostream>
 
 #include "GMH3750ComHandler.h"

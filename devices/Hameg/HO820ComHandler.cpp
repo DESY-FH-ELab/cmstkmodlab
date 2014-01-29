@@ -1,3 +1,6 @@
+#include <string>
+#include <iostream>
+
 #include "HO820ComHandler.h"
 
 /*!

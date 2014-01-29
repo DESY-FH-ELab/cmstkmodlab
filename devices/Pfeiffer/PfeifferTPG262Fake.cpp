@@ -1,5 +1,10 @@
 #include <unistd.h>
 
+#include <iostream>
+#include <string>
+#include <sstream>
+#include <cstdlib>
+
 #include "PfeifferTPG262Fake.h"
 
 ///

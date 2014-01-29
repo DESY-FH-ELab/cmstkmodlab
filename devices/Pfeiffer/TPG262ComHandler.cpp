@@ -1,5 +1,7 @@
-#include "TPG262ComHandler.h"
+#include <string>
+#include <iostream>
 
+#include "TPG262ComHandler.h"
 
 // SETTINGS ON THE DEVICE:
 // (MENU RS-232)

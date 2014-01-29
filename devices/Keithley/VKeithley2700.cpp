@@ -1,3 +1,9 @@
+#include <iostream>
+#include <utility>
+#include <cstdlib>
+#include <algorithm>
+#include <sstream>
+
 #include "VKeithley2700.h"
 
 ///

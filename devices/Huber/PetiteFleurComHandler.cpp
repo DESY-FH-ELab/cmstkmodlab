@@ -1,5 +1,7 @@
-#include "PetiteFleurComHandler.h"
+#include <string>
+#include <iostream>
 
+#include "PetiteFleurComHandler.h"
 
 // SETTINGS ON THE DEVICE:
 // (MENU RS-232)

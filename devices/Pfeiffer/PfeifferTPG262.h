@@ -1,13 +1,6 @@
 #ifndef __PFEIFFERTPG262_H
 #define __PFEIFFERTPG262_H
 
-#include <iostream>
-#include <string>
-#include <sstream>
-#include <cstdlib>
-#include <utility>
-#include <fstream>
-
 #include "VPfeifferTPG262.h"
 
 class TPG262ComHandler;

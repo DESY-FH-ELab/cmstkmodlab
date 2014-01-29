@@ -2,8 +2,6 @@
 #define _GMH3750COMHANDLER_H_
 
 #include <termios.h>
-#include <string.h>
-#include <iostream>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>

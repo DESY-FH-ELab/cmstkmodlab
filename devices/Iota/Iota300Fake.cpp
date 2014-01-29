@@ -1,5 +1,12 @@
 #include <unistd.h>
 
+#include <iostream>
+#include <string>
+#include <sstream>
+#include <cstdlib>
+#include <utility>
+#include <fstream>
+
 //#####################
 // TODO:
 // query error codes

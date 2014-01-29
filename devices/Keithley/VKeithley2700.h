@@ -1,13 +1,7 @@
 #ifndef __VKEITHLEY2700_H
 #define __VKEITHLEY2700_H
 
-#include <iostream>
-#include <vector>
-#include <utility>
 #include <string>
-#include <cstdlib>
-#include <algorithm>
-#include <sstream>
 
 // the number of channels available to the device,
 // for range checking purposes

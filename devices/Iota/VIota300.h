@@ -1,13 +1,6 @@
 #ifndef __VIOTA300_H
 #define __VIOTA300_H
 
-#include <iostream>
-#include <string>
-#include <sstream>
-#include <cstdlib>
-#include <utility>
-#include <fstream>
-
 #define __IOTA300_LOWER_FLOW_LIMIT 0
 #define __IOTA300_UPPER_FLOW_LIMIT 300
 

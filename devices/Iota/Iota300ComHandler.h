@@ -2,7 +2,7 @@
 #define _IOTA300COMHANDLER_H_
 
 #include <termios.h>
-#include <string.h>
+#include <string>
 #include <iostream>
 #include <sys/types.h>
 #include <sys/stat.h>
