@@ -24,8 +24,9 @@ JulaboFP50Fake::JulaboFP50Fake( const ioport_t ioPort )
 ///
 bool JulaboFP50Fake::SetWorkingTemperature( const float workingTemp ) const {
 
-  if( workingTemp > __FP50_UPPER_TEMP_LIMIT || workingTemp < __FP50_LOWER_TEMP_LIMIT ) {
-    std::cerr << " [JulaboFP50Fake::SetWorkingTemp] ** ERROR: working temp T=" << workingTemp << " exceeds soft limits." << std::endl;
+  if( workingTemp > FP50UpperTempLimit || workingTemp < FP50LowerTempLimit ) {
+    std::cerr << " [JulaboFP50Fake::SetWorkingTemp] ** ERROR: working temp T="
+              << workingTemp << " exceeds soft limits." << std::endl;
     std::cerr << "  > (s. JulaboFP50Fake class definition)" << std::endl;
     return false;
   }

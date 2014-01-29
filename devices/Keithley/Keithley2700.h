@@ -5,11 +5,6 @@
 
 #include "KMMComHandler.h"
 
-// delay time constants (usec)
-// delay for 1 channel scan -- delay for 10 channel scan
-#define __DELAY_MIN 1400000 // 1400000
-#define __DELAY_MAX 7000000
-
 class Keithley2700 : public VKeithley2700
 {
  public:
@@ -21,6 +16,11 @@ class Keithley2700 : public VKeithley2700
   const reading_t Scan( void );
   void Dump( void ) const;
   bool IsScanOk( void );
+
+  // delay time constants (usec)
+  // delay for 1 channel scan -- delay for 10 channel scan
+  static constexpr int DelayMin = 1400000;
+  static constexpr int DelayMax = 7000000;
 
  private:
   KMMComHandler* comHandler_;

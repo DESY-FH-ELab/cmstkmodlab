@@ -24,8 +24,6 @@
 
 #define ttyACM0 "/dev/ttyACM0"
 
-#define _COMHANDLER_DELAY 1000
-
 typedef const char* ioport_t;
 typedef struct termios termios_t;
 
@@ -44,6 +42,8 @@ class Iota300ComHandler {
 
   void SendCommand( const char* );
   void ReceiveString( char* );
+
+  static constexpr int ComHandlerDelay = 1000;
 
  private:
 

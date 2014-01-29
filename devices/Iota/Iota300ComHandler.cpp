@@ -68,7 +68,7 @@ void Iota300ComHandler::SendCommand( const char *commandString ) {
 */
 void Iota300ComHandler::ReceiveString( char *receiveString ) {
 
-  usleep( _COMHANDLER_DELAY );
+  usleep( ComHandlerDelay );
 
   int timeout = 0, readResult = 0;
 

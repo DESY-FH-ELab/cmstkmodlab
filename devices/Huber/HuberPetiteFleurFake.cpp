@@ -25,7 +25,7 @@ HuberPetiteFleurFake::HuberPetiteFleurFake( const ioport_t ioPort )
 ///
 bool HuberPetiteFleurFake::SetWorkingTemperature( const float workingTemp ) const {
 
-  if( workingTemp > __PETITEFLEUR_UPPER_TEMP_LIMIT || workingTemp < __PETITEFLEUR_LOWER_TEMP_LIMIT ) {
+  if( workingTemp > PetiteFleurUpperTempLimit || workingTemp < PetiteFleurLowerTempLimit ) {
     std::cerr << " [HuberPetiteFleurFake::SetWorkingTemp] ** ERROR: working temp T="
 	      << workingTemp << " exceeds soft limits." << std::endl;
     std::cerr << "  > (s. HuberPetiteFleurFake class definition)" << std::endl;

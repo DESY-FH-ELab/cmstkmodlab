@@ -2,11 +2,7 @@
 #define __VKEITHLEY2700_H
 
 #include <string>
-
-// the number of channels available to the device,
-// for range checking purposes
-#define __RANGE_MIN 0
-#define __RANGE_MAX 9
+#include <vector>
 
 typedef std::vector<std::pair<unsigned int, double> > reading_t;
 typedef std::vector<unsigned int> channels_t;
@@ -26,6 +22,11 @@ class VKeithley2700
   virtual const reading_t Scan( void ) = 0;
   virtual void Dump( void ) const = 0;
   virtual bool IsScanOk( void ) = 0;
+
+  // the number of channels available to the device,
+  // for range checking purposes
+  static constexpr unsigned int RangeMin = 0;
+  static constexpr unsigned int RangeMax = 9;
 
  protected:
 

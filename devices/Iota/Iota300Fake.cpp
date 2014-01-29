@@ -29,7 +29,7 @@ Iota300Fake::Iota300Fake( const ioport_t ioPort )
 ///
 bool Iota300Fake::SetFlow( const float flow ) const {
 
-  if( flow > __IOTA300_UPPER_FLOW_LIMIT || flow < __IOTA300_LOWER_FLOW_LIMIT ) {
+  if( flow > Iota300UpperFlowLimit || flow < Iota300LowerFlowLimit ) {
     std::cerr << " [Iota300Fake::SetFlow] ** ERROR: Flow Q="
 	      << flow << " exceeds soft limits." << std::endl;
     std::cerr << "  > (s. Iota300Fake class definition)" << std::endl;
@@ -50,7 +50,7 @@ bool Iota300Fake::SetFlow( const float flow ) const {
 ///
 bool Iota300Fake::SetPressure( const float pressure ) const {
 
-  if( pressure > __IOTA300_UPPER_PRESSURE_LIMIT || pressure < __IOTA300_LOWER_PRESSURE_LIMIT ) {
+  if( pressure > Iota300UpperPressureLimit || pressure < Iota300LowerPressureLimit ) {
     std::cerr << " [Iota300Fake::SetPressure] ** ERROR: p="
 	      << pressure << " exceeds soft limits." << std::endl;
     std::cerr << "  > (s. Iota300Fake class definition)" << std::endl;

@@ -65,7 +65,7 @@ void FP50ComHandler::SendCommand( const char *commandString ) {
 */
 void FP50ComHandler::ReceiveString( char *receiveString ) {
 
-  usleep( _COMHANDLER_DELAY );
+  usleep( ComHandlerDelay );
 
   int timeout = 0, readResult = 0;
 

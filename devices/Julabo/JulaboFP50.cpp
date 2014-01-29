@@ -34,8 +34,9 @@ bool JulaboFP50::SetWorkingTemperature( const float workingTemp ) const {
   std::cout << "[JulaboFP50::SetWorkingTemp] -- DEBUG: Called." << std::endl;
   #endif
 
-  if( workingTemp > __FP50_UPPER_TEMP_LIMIT || workingTemp < __FP50_LOWER_TEMP_LIMIT ) {
-    std::cerr << " [JulaboFP50::SetWorkingTemp] ** ERROR: working temp T=" << workingTemp << " exceeds soft limits." << std::endl;
+  if( workingTemp > FP50UpperTempLimit || workingTemp < FP50LowerTempLimit ) {
+    std::cerr << " [JulaboFP50::SetWorkingTemp] ** ERROR: working temp T="
+              << workingTemp << " exceeds soft limits." << std::endl;
     std::cerr << "  > (s. JulaboFP50 class definition)" << std::endl;
     return false;
   }

@@ -20,8 +20,6 @@
 #define ttyS3 "/dev/ttyS3"
 #define ttys4 "/dev/ttyS3"
 
-#define _COMHANDLER_DELAY 1000
-
 typedef const char* ioport_t;
 typedef struct termios termios_t;
 
@@ -43,6 +41,7 @@ class TPG262ComHandler {
   void ReceiveString( char* );
   void SendResetInterface ();
 
+  static constexpr int ComHandlerDelay = 1000;
 
  private:
 

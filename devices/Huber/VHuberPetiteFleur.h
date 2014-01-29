@@ -8,9 +8,6 @@
 #include <utility>
 #include <fstream>
 
-#define __PETITEFLEUR_LOWER_TEMP_LIMIT -40
-#define __PETITEFLEUR_UPPER_TEMP_LIMIT  40
-
 typedef const char* ioport_t;
 
 class VHuberPetiteFleur
@@ -29,6 +26,9 @@ class VHuberPetiteFleur
   virtual float GetBathTemperature( void ) const = 0;
   virtual float GetWorkingTemperature( void ) const = 0;
   virtual bool GetCirculatorStatus( void ) const = 0;
+
+  static constexpr int PetiteFleurLowerTempLimit = -40;
+  static constexpr int PetiteFleurUpperTempLimit = -40;
 };
 
 #endif

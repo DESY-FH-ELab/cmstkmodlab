@@ -244,7 +244,7 @@ void Keithley2700::Device_Init( void ) const {
 ///
 void Keithley2700::CalculateDelay( void ) {
 
-  uSecDelay_ = __DELAY_MIN + ( __DELAY_MAX - __DELAY_MIN) / 10 * enabledChannels_.size();
+  uSecDelay_ = DelayMin + ( DelayMax - DelayMin) / 10 * enabledChannels_.size();
 
   if( isDebug_ ) {
     std::cout << " [Keithley2700::CalculateDelay] -- DEBUG: Delay is now: "

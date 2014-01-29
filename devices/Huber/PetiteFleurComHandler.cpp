@@ -70,7 +70,7 @@ void PetiteFleurComHandler::SendCommand( const char *commandString ) {
 */
 void PetiteFleurComHandler::ReceiveString( char *receiveString ) {
 
-  usleep( _COMHANDLER_DELAY );
+  usleep( ComHandlerDelay );
 
   int timeout = 0, readResult = 0;
 

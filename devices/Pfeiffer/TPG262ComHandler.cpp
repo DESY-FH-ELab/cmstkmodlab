@@ -77,7 +77,7 @@ void TPG262ComHandler::SendEnquiry( )
 */
 void TPG262ComHandler::ReceiveString( char *receiveString )
 {
-  usleep( _COMHANDLER_DELAY );
+  usleep( ComHandlerDelay );
 
   int timeout = 0, readResult = 0;
 

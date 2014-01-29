@@ -32,7 +32,7 @@ bool HuberPetiteFleur::SetWorkingTemperature( const float workingTemp ) const {
   std::cout << "[HuberPetiteFleur::SetWorkingTemp] -- DEBUG: Called." << std::endl;
   #endif
 
-  if( workingTemp > __PETITEFLEUR_UPPER_TEMP_LIMIT || workingTemp < __PETITEFLEUR_LOWER_TEMP_LIMIT ) {
+  if( workingTemp > PetiteFleurUpperTempLimit || workingTemp < PetiteFleurLowerTempLimit ) {
     std::cerr << " [HuberPetiteFleur::SetWorkingTemp] ** ERROR: working temp T=" 
 	      << workingTemp << " exceeds soft limits." << std::endl;
     std::cerr << "  > (s. HuberPetiteFleur class definition)" << std::endl;
