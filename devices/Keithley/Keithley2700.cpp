@@ -22,7 +22,7 @@ Keithley2700::Keithley2700( ioport_t port )
 /// enables the channels given by string
 /// format: see ::ParseChannelString
 ///
-void Keithley2700::SetActiveChannels( string channelString ) {
+void Keithley2700::SetActiveChannels( std::string channelString ) {
   
   enabledChannels_.resize( 0 );
   enabledChannels_ = ParseChannelString( channelString );
@@ -36,7 +36,7 @@ void Keithley2700::SetActiveChannels( string channelString ) {
 /// adds the channels given by string to the list of enabled ones
 /// format: see ParseChannelString
 ///
-void Keithley2700::AddActiveChannels( string channelString ) {
+void Keithley2700::AddActiveChannels( std::string channelString ) {
 
   // append new channels
   const channels_t& newChannels = ParseChannelString( channelString );
@@ -55,7 +55,7 @@ void Keithley2700::AddActiveChannels( string channelString ) {
 /// removes the channels given by string from the list of enabled ones
 /// format: see ParseChannelString
 ///
-void Keithley2700::DisableActiveChannels( string channelString ) {
+void Keithley2700::DisableActiveChannels( std::string channelString ) {
 
   const channels_t& newChannels = ParseChannelString( channelString );
 
@@ -105,7 +105,7 @@ const reading_t Keithley2700::Scan( void ) {
 
   // tokenize output
   std::vector<std::string> tokens(0);
-  Tokenize( string( buffer ), tokens, "," );
+  Tokenize( std::string( buffer ), tokens, "," );
 
   if( isDebug_ ) {
     std::cout << " [Keithley2700::Scan] -- DEBUG: Received " <<  tokens.size() / 3 << " reading(s)" << std::endl;
@@ -152,7 +152,7 @@ void Keithley2700::Dump( void ) const {
 ///
 void Keithley2700::Device_SetChannels( void ) const {
 
-  stringstream theCommand;
+  std::stringstream theCommand;
 
   // build rout:scan command
   theCommand << "ROUT:SCAN (@";

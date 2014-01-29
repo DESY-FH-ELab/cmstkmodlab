@@ -126,8 +126,10 @@ void KMMComHandler::OpenIoPort( void ) throw (int) {
 
   // check if successful
   if ( fIoPortFileDescriptor == -1 ) {
-    std::cerr << "[KMMComHandler::OpenIoPort] ** ERROR: could not open device file " << fIoPort << "." << endl;
-    std::cerr << "                               (probably it's not user-writable)." << std::endl;
+    std::cerr << "[KMMComHandler::OpenIoPort] ** ERROR: could not open device file "
+              << fIoPort << "." << std::endl;
+    std::cerr << "                               (probably it's not user-writable)."
+              << std::endl;
     throw 1;
   }
 

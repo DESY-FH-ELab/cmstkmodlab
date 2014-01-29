@@ -199,10 +199,10 @@ bool PfeifferTPG262::GetPressures(reading_t & reading1, reading_t & reading2)
 
   std::vector<std::string> v;
   size_t start = 0, end = 0;
-  while (end != string::npos) {
+  while (end != std::string::npos) {
     end = s.find(",", start);
-    v.push_back(s.substr(start, (end==string::npos) ? string::npos : end - start));
-    start = ( ( end > (string::npos - 1) ) ? string::npos : end + 1);
+    v.push_back(s.substr(start, (end==std::string::npos) ? std::string::npos : end - start));
+    start = ( ( end > (std::string::npos - 1) ) ? std::string::npos : end + 1);
   }
 
   if (v.size()!=4) return false;
@@ -296,7 +296,7 @@ void PfeifferTPG262::Device_Init( void )
 ///
 int PfeifferTPG262::SetPressureUnit(void) const
 {
-  std::cout << "PfeifferTPG262: set pressure unit to mbar"<<endl;
+  std::cout << "PfeifferTPG262: set pressure unit to mbar" << std::endl;
 
   char buffer[1000];
 
@@ -336,7 +336,7 @@ int PfeifferTPG262::SetPressureUnit(void) const
 bool PfeifferTPG262::SetBRate(void)
 {
   int rate = 10;
-  std::cout << "PfeifferTPG262: set baud rate to 9600"<<endl;
+  std::cout << "PfeifferTPG262: set baud rate to 9600" << std::endl;
 
   char buffer[1000];
 

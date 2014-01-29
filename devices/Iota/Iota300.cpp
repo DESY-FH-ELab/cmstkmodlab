@@ -42,7 +42,7 @@ bool Iota300::SetFlow( const float flow ) const {
   int iFlow = flow;// * 100.;
   sprintf(buffer, "%03d", iFlow);
 
-  stringstream theCommand;
+  std::stringstream theCommand;
   theCommand << "#FSw" << buffer;
 
   comHandler_->SendCommand( theCommand.str().c_str() );
@@ -86,7 +86,7 @@ bool Iota300::SetPressure( const float pressure ) const {
   int iPressure = pressure;// * 100.;
   sprintf(buffer, "%03d", iPressure);
 
-  stringstream theCommand;
+  std::stringstream theCommand;
   theCommand << "#PSw" << buffer;
 
   comHandler_->SendCommand( theCommand.str().c_str() );
@@ -131,7 +131,7 @@ bool Iota300::SetStatus( const float status ) const {
   int iStatus = status;// * 0.1;// * 100.;
   sprintf(buffer, "%d", iStatus);
 
-  stringstream theCommand;
+  std::stringstream theCommand;
   theCommand << "#STw" << buffer;
 
   comHandler_->SendCommand( theCommand.str().c_str() );

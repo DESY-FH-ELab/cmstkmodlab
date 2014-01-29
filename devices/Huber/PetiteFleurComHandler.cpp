@@ -101,8 +101,9 @@ void PetiteFleurComHandler::OpenIoPort( void ) throw (int) {
   // check if successful
   if ( fIoPortFileDescriptor == -1 ) {
     std::cerr << "[PetiteFleurComHandler::OpenIoPort] ** ERROR: could not open device file "
-	      << fIoPort << "." << endl;
-    std::cerr << "                               (probably it's not user-writable)." << std::endl;
+	          << fIoPort << "." << std::endl;
+    std::cerr << "                               (probably it's not user-writable)."
+              << std::endl;
     throw int(-1);
   } else {
     // configure port with no delay

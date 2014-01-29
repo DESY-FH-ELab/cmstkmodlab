@@ -38,7 +38,7 @@ bool JulaboFP50::SetWorkingTemperature( const float workingTemp ) const {
 
   char buffer[1000];
 
-  stringstream theCommand;
+  std::stringstream theCommand;
   theCommand << "out_sp_00 " << workingTemp;
   comHandler_->SendCommand( theCommand.str().c_str() );
   usleep( 20000 );
@@ -74,7 +74,7 @@ bool JulaboFP50::SetPumpPressure( const unsigned int pressureStage ) const {
   
   char buffer[1000];
 
-  stringstream theCommand;
+  std::stringstream theCommand;
   theCommand << "out_sp_07 " << pressureStage;
   comHandler_->SendCommand( theCommand.str().c_str() );
   usleep( 20000 );
@@ -176,7 +176,7 @@ bool JulaboFP50::SetControlParameters( float xp, int tn, int tv ) const {
     return false;
   }
 
-  stringstream theCommand;
+  std::stringstream theCommand;
   char buffer[200];
 
   // proportional
@@ -372,15 +372,16 @@ std::pair<int,std::string> JulaboFP50::GetStatus( void ) const {
   comHandler_->ReceiveString( buffer );
   StripBuffer( buffer );
 
-  string message( buffer );
+  std::string message( buffer );
 
   if( 0 == message.size() ) {
-    std::cerr << " [JulaboFP50::GetStatus] ** WARNING: Machine returned empty message." << std::endl;
-    return std::pair<int,std::string>( 0, string( "---" ) );
+    std::cerr << " [JulaboFP50::GetStatus] ** WARNING: Machine returned empty message."
+              << std::endl;
+    return std::pair<int,std::string>( 0, std::string( "---" ) );
   }
 
   // error type messages begin with "-" (negative number)
-  if( string( "-" ) == message.substr( 0, 1 ) ) {
+  if( std::string( "-" ) == message.substr( 0, 1 ) ) {
     returnValue.first  = atoi( message.substr( 0, 3 ).c_str() );
     returnValue.second = message.substr( 4, 100 );
   }
@@ -460,7 +461,7 @@ bool JulaboFP50::SaveControlParameters( const std::string& filepath ) const {
   std::cout << "[JulaboFP50::SaveControlParameters] -- DEBUG: Called." << std::endl;
   #endif
 
-  ofstream file( filepath.c_str() );
+  std::ofstream file( filepath.c_str() );
   if ( file.bad() ) {
     std::cerr << " [JulaboFP50::SaveControlParameters] ** ERROR: Could not save to file:" << std::endl;
     std::cerr << "  > \"" << filepath.c_str() << "\"." << std::endl;

@@ -29,8 +29,6 @@
 typedef const char* ioport_t;
 typedef struct termios termios_t;
 
-using namespace std;
-
 class Iota300ComHandler {
 
  public:
