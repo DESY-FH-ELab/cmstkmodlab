@@ -2,8 +2,6 @@
 #define _HO820COMHANDLER_H_
 
 #include <termios.h>
-#include <string.h>
-#include <iostream>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
@@ -16,8 +14,6 @@
 
 typedef const char* ioport_t;
 typedef struct termios termios_t;
-
-using namespace std;
 
 class HO820ComHandler {
 

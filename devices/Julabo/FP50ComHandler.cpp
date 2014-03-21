@@ -1,6 +1,4 @@
-
 #include "FP50ComHandler.h"
-
 
 // SETTINGS ON THE DEVICE:
 // (MENU RS-232)
@@ -9,12 +7,6 @@
 // HARDW HANDSHAKE: on
 // PARITY: none (8N1)
 // TX TERM: NL
-
-
-
-
-
-
 
 /*!
   The serial port &lt;ioPort&gt; may be specified in several ways:<br><br>
@@ -30,11 +22,7 @@ FP50ComHandler::FP50ComHandler( const ioport_t ioPort ) {
   // initialize
   OpenIoPort();
   InitializeIoPort();
-
 }
-
-
-
 
 ///
 ///
@@ -46,16 +34,10 @@ FP50ComHandler::~FP50ComHandler( void ) {
   
   // close device file
   CloseIoPort();
-
 }
-
-
-
-
 
 //! Send the command string &lt;commandString&gt; to device.
 void FP50ComHandler::SendCommand( const char *commandString ) {
-
 
   char singleCharacter = 0; 
 
@@ -69,12 +51,7 @@ void FP50ComHandler::SendCommand( const char *commandString ) {
 
   // send feed characters
   SendFeedString();
-  
 }
-
-
-
-
 
 //! Read a string from device.
 /*!
@@ -88,8 +65,7 @@ void FP50ComHandler::SendCommand( const char *commandString ) {
 */
 void FP50ComHandler::ReceiveString( char *receiveString ) {
 
-
-  usleep( _COMHANDLER_DELAY );
+  usleep( ComHandlerDelay );
 
   int timeout = 0, readResult = 0;
 
@@ -105,47 +81,35 @@ void FP50ComHandler::ReceiveString( char *receiveString ) {
     timeout++;
 
   }
-
 }
-
-
-
-
 
 //! Open I/O port.
 /*!
   \internal
 */
-
 void FP50ComHandler::OpenIoPort( void ) throw (int) {
-
 
   // open io port ( read/write | no term control | no DCD line check )
   fIoPortFileDescriptor = open( fIoPort, O_RDWR | O_NOCTTY  | O_NDELAY );
 
   // check if successful
   if ( fIoPortFileDescriptor == -1 ) {
-    std::cerr << "[FP50ComHandler::OpenIoPort] ** ERROR: could not open device file " << fIoPort << "." << endl;
-    std::cerr << "                               (probably it's not user-writable)." << std::endl;
+    std::cerr << "[FP50ComHandler::OpenIoPort] ** ERROR: could not open device file "
+              << fIoPort << "." << std::endl;
+    std::cerr << "                               (probably it's not user-writable)."
+              << std::endl;
     throw int(-1);
-  }
 
-  else {
+  } else {
     // configure port with no delay
     fcntl( fIoPortFileDescriptor, F_SETFL, FNDELAY );
   }
-
 }
-
-
-
-
 
 //! Initialize I/O port.
 /*!
   \internal
 */
-
 void FP50ComHandler::InitializeIoPort( void ) {
 
 #ifndef USE_FAKEIO
@@ -224,25 +188,15 @@ void FP50ComHandler::InitializeIoPort( void ) {
 #endif
 }
 
-
-
-
-
 //! Restore former I/O port settings.
 /*!
   \internal
 */
-
 void FP50ComHandler::RestoreIoPort( void ) {
 
   // restore old com port settings
   tcsetattr( fIoPortFileDescriptor, TCSANOW, &fCurrentTermios );
-
 }
-
-
-
-
 
 //! Close I/O port.
 /*!
@@ -251,12 +205,7 @@ void FP50ComHandler::RestoreIoPort( void ) {
 void FP50ComHandler::CloseIoPort( void ) {
 
   close( fIoPortFileDescriptor );
-
 }
-
-
-
-
 
 //! Send command termination string (<CR><NL>).
 /*!
@@ -269,7 +218,6 @@ void FP50ComHandler::SendFeedString( void ) {
 
   // write <CR> and get echo
   write( fIoPortFileDescriptor, &feedString, 1 );
-
 }
 
 

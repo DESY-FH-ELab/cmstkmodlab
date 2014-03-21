@@ -1,6 +1,8 @@
+#include <string.h>
+
+#include <iostream>
 
 #include "KMMComHandler.h"
-
 
 // SETTINGS ON THE DEVICE:
 // (MENU RS-232)
@@ -9,12 +11,6 @@
 // BAUD: 19200
 // FLOW: NONE
 // TX TERM: LF
-
-
-
-
-
-
 
 /*!
   The serial port &lt;ioPort&gt; may be specified in several ways:<br><br>
@@ -30,11 +26,7 @@ KMMComHandler::KMMComHandler( ioport_t ioPort ) {
   // initialize
   OpenIoPort();
   InitializeIoPort();
-
 }
-
-
-
 
 ///
 ///
@@ -46,16 +38,10 @@ KMMComHandler::~KMMComHandler( void ) {
   
   // close device file
   CloseIoPort();
-
 }
-
-
-
-
 
 //! Send the command string &lt;commandString&gt; to device.
 void KMMComHandler::SendCommand( const char *commandString ) {
-
 
   char singleCharacter = 0; 
 
@@ -64,18 +50,11 @@ void KMMComHandler::SendCommand( const char *commandString ) {
     // scan command string character wise & write
     singleCharacter = commandString[i];
     write( fIoPortFileDescriptor, &singleCharacter, 1 );
-
   }
-
 
   // send feed characters ( <CR> <LF> )
   SendFeedString();
-  
 }
-
-
-
-
 
 //! Read a string from device.
 /*!
@@ -88,7 +67,6 @@ void KMMComHandler::SendCommand( const char *commandString ) {
   See example program in class description.
 */
 void KMMComHandler::ReceiveString( char *receiveString ) {
-
 
   usleep( 1000000 );
 
@@ -106,52 +84,39 @@ void KMMComHandler::ReceiveString( char *receiveString ) {
     timeout++;
 
   }
-
 }
-
-
-
-
 
 //! Open I/O port.
 /*!
   \internal
 */
-
 void KMMComHandler::OpenIoPort( void ) throw (int) {
-
 
   // open io port ( read/write | no term control | no DCD line check )
   fIoPortFileDescriptor = open( fIoPort, O_RDWR | O_NOCTTY  | O_NDELAY );
 
   // check if successful
   if ( fIoPortFileDescriptor == -1 ) {
-    std::cerr << "[KMMComHandler::OpenIoPort] ** ERROR: could not open device file " << fIoPort << "." << endl;
-    std::cerr << "                               (probably it's not user-writable)." << std::endl;
+    std::cerr << "[KMMComHandler::OpenIoPort] ** ERROR: could not open device file "
+              << fIoPort << "." << std::endl;
+    std::cerr << "                               (probably it's not user-writable)."
+              << std::endl;
     throw 1;
-  }
 
-  else {
+  } else {
     // configure port with no delay
     fcntl( fIoPortFileDescriptor, F_SETFL, FNDELAY );
   }
-
 }
-
-
-
-
 
 //! Initialize I/O port.
 /*!
   \internal
 */
-
 void KMMComHandler::InitializeIoPort( void ) {
 
   // get and save current ioport settings for later restoring
   tcgetattr( fIoPortFileDescriptor, &fCurrentTermios );
-
 
   // CONFIGURE NEW SETTINGS
 
@@ -178,28 +143,17 @@ void KMMComHandler::InitializeIoPort( void ) {
 
   // commit changes
   tcsetattr( fIoPortFileDescriptor, TCSANOW, &fThisTermios );
-
 }
-
-
-
-
 
 //! Restore former I/O port settings.
 /*!
   \internal
 */
-
 void KMMComHandler::RestoreIoPort( void ) {
 
   // restore old com port settings
   tcsetattr( fIoPortFileDescriptor, TCSANOW, &fCurrentTermios );
-
 }
-
-
-
-
 
 //! Close I/O port.
 /*!
@@ -208,12 +162,7 @@ void KMMComHandler::RestoreIoPort( void ) {
 void KMMComHandler::CloseIoPort( void ) {
 
   close( fIoPortFileDescriptor );
-
 }
-
-
-
-
 
 //! Send command termination string (<CR><NL>).
 /*!
@@ -226,7 +175,4 @@ void KMMComHandler::SendFeedString( void ) {
 
   // write <CR> and get echo
   write( fIoPortFileDescriptor, &feedString, 1 );
-
 }
-
-

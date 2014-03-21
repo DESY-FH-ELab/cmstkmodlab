@@ -1,10 +1,17 @@
+#include <string.h>
+
 #include <cstdlib>
+#include <iostream>
+#include <string>
+#include <sstream>
+#include <cstdlib>
+#include <utility>
+#include <fstream>
 
 //#####################
 // TODO:
 // query error codes
 //#####################
-
 
 #include "Iota300ComHandler.h"
 
@@ -31,19 +38,19 @@ bool Iota300::SetFlow( const float flow ) const {
   std::cout << "[Iota300::SetFlow] -- DEBUG: Called." << std::endl;
   #endif
 
-  if( Flow > __IOTA300_UPPER_FLOW_LIMIT || flow < __IOTA300_LOWER_FLOW_LIMIT ) {
+  if( flow > Iota300UpperFlowLimit || flow < Iota300LowerFlowLimit ) {
     std::cerr << " [Iota300::SetFlow] ** ERROR: Flow in ml/min =" 
 	      << flow << " exceeds soft limits." << std::endl;
     std::cerr << "  > (s. Iota300 class definition)" << std::endl;
     return false;
   }
 
-  char buffer[1000];
+  char buffer[10];
 
   int iFlow = flow;// * 100.;
   sprintf(buffer, "%03d", iFlow);
 
-  stringstream theCommand;
+  std::stringstream theCommand;
   theCommand << "#FSw" << buffer;
 
   comHandler_->SendCommand( theCommand.str().c_str() );
@@ -69,26 +76,25 @@ bool Iota300::SetFlow( const float flow ) const {
 ///
 /// return success flag
 ///
-
 bool Iota300::SetPressure( const float pressure ) const {
 
   #ifdef __IOTA300_DEBUG
   std::cout << "[Iota300::SetPressure] -- DEBUG: Called." << std::endl;
   #endif
 
-  if( Flow > __IOTA300_UPPER_PRESSURE_LIMIT || pressure < __IOTA300_LOWER_PRESSURE_LIMIT ) {
+  if( pressure > Iota300UpperPressureLimit || pressure < Iota300LowerPressureLimit ) {
     std::cerr << " [Iota300::SetFlow] ** ERROR: p =" 
-	      << Pressure << " exceeds soft limits." << std::endl;
+	      << pressure << " exceeds soft limits." << std::endl;
     std::cerr << "  > (s. Iota300 class definition)" << std::endl;
     return false;
   }
 
-  char buffer[1000];
+  char buffer[10];
 
   int iPressure = pressure;// * 100.;
   sprintf(buffer, "%03d", iPressure);
 
-  stringstream theCommand;
+  std::stringstream theCommand;
   theCommand << "#PSw" << buffer;
 
   comHandler_->SendCommand( theCommand.str().c_str() );
@@ -121,19 +127,21 @@ bool Iota300::SetStatus( const float status ) const {
   std::cout << "[Iota300::SetStatus] -- DEBUG: Called." << std::endl;
   #endif
 
+  /*
   if( Flow > __IOTA300_UPPER_STATUS_LIMIT || status < __IOTA300_LOWER_STATUS_LIMIT ) {
     std::cerr << " [Iota300::SetStatus] ** ERROR: status =" 
 	      << status << " exceeds soft limits." << std::endl;
     std::cerr << "  > (s. Iota300 class definition)" << std::endl;
     return false;
   }
+  */
 
-  char buffer[1000];
+  char buffer[100];
 
   int iStatus = status;// * 0.1;// * 100.;
   sprintf(buffer, "%d", iStatus);
 
-  stringstream theCommand;
+  std::stringstream theCommand;
   theCommand << "#STw" << buffer;
 
   comHandler_->SendCommand( theCommand.str().c_str() );
@@ -159,8 +167,6 @@ bool Iota300::SetStatus( const float status ) const {
 ///
 /// return success flag
 ///
-
-
 float Iota300::GetFlow( void ) const {
 
   #ifdef __IOTA300_DEBUG
@@ -202,6 +208,25 @@ float Iota300::GetPressure( void ) const {
   return ToFloat(buffer);
 }
 
+float Iota300::GetStatus( void ) const {
+
+#ifdef __IOTA300_DEBUG
+  std::cout << "[Iota300::GetStatus] -- DEBUG: Called." << std::endl;
+#endif
+
+  char buffer[1000];
+
+  usleep( uDelay_ );
+  comHandler_->SendCommand( "#STr" );
+
+  usleep( uDelay_ );
+  comHandler_->ReceiveString( buffer );
+  StripBuffer( buffer );
+
+  //std::cout << buffer << std::endl;
+
+  return ToFloat(buffer);
+}
 
 ///
 /// strip trailing newlines & stuff

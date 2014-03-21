@@ -1,13 +1,6 @@
 #ifndef __HUBERPETITEFLEURFAKE_H
 #define __HUBERPETITEFLEURFAKE_H
 
-#include <iostream>
-#include <string>
-#include <sstream>
-#include <cstdlib>
-#include <utility>
-#include <fstream>
-
 #include "VHuberPetiteFleur.h"
 
 class HuberPetiteFleurFake : public VHuberPetiteFleur

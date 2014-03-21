@@ -1,4 +1,5 @@
 #include <sys/ioctl.h>
+#include <string.h>
 
 #include <iostream>
 
@@ -38,7 +39,6 @@ GMH3750ComHandler::~GMH3750ComHandler( void )
   
   // close device file
   CloseIoPort();
-
 }
 
 //! Send the command string &lt;commandString&gt; to device.
@@ -59,8 +59,6 @@ void GMH3750ComHandler::SendCommand( const char *commandString, int length )
   // send feed characters
   //SendFeedString();
 }
-
-
 
 //! Read a string from device.
 /*!
@@ -92,7 +90,6 @@ void GMH3750ComHandler::ReceiveString( char *receiveString )
   }
   
   std::cout << "TO: " << timeout << std::endl; /////////////////////////////////
-
 }
 
 //! Open I/O port.

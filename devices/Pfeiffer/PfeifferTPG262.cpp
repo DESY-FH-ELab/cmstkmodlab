@@ -1,3 +1,5 @@
+#include <string.h>
+
 #include <iostream>
 #include <vector>
 
@@ -54,7 +56,8 @@ int PfeifferTPG262::GetErrorStatus( void ) const
   StripBuffer( buffer );
 
   if (buffer[0]!=0x06) {
-    std::cout << "PfeifferTPG262: negative acknowledgement of a recieved message" << std::endl;
+    std::cout << "PfeifferTPG262: negative acknowledgement of a recieved message"
+         << std::endl;
     return -1;
   }
 
@@ -65,8 +68,8 @@ int PfeifferTPG262::GetErrorStatus( void ) const
   comHandler_->ReceiveString( buffer );
   StripBuffer( buffer );
 
-  buffer[4]='\0'; //In order for the strcmp function to compare buffer to a char array of 4 elements
-
+  //In order for the strcmp function to compare buffer to a char array of 4 elements
+  buffer[4]='\0';
   int ec = std::atoi(buffer);
 
   usleep( 100000 );
@@ -91,7 +94,8 @@ bool PfeifferTPG262::GetPressure1(reading_t & reading)
   StripBuffer( buffer );
 
   if (buffer[0]!=0x06) {
-    std::cout << "PfeifferTPG262: negative acknowledgement of a recieved message" << std::endl;
+    std::cout << "PfeifferTPG262: negative acknowledgement of a recieved message"
+        << std::endl;
     return false;
   }
 
@@ -135,7 +139,8 @@ bool PfeifferTPG262::GetPressure2(reading_t &reading)
   StripBuffer( buffer );
 
   if (buffer[0]!=0x06) {
-    std::cout << "PfeifferTPG262: negative acknowledgement of a recieved message" << std::endl;
+    std::cout << "PfeifferTPG262: negative acknowledgement of a recieved message"
+        << std::endl;
     return false;
   }
 
@@ -180,7 +185,8 @@ bool PfeifferTPG262::GetPressures(reading_t & reading1, reading_t & reading2)
   StripBuffer( buffer );
 
   if (buffer[0]!=0x06) {
-    std::cout << "PfeifferTPG262: negative acknowledgement of a recieved message" << std::endl;
+    std::cout << "PfeifferTPG262: negative acknowledgement of a recieved message"
+        << std::endl;
     return false;
   }
 
@@ -195,10 +201,10 @@ bool PfeifferTPG262::GetPressures(reading_t & reading1, reading_t & reading2)
 
   std::vector<std::string> v;
   size_t start = 0, end = 0;
-  while (end != string::npos) {
+  while (end != std::string::npos) {
     end = s.find(",", start);
-    v.push_back(s.substr(start, (end==string::npos) ? string::npos : end - start));
-    start = ( ( end > (string::npos - 1) ) ? string::npos : end + 1);
+    v.push_back(s.substr(start, (end==std::string::npos) ? std::string::npos : end - start));
+    start = ( ( end > (std::string::npos - 1) ) ? std::string::npos : end + 1);
   }
 
   if (v.size()!=4) return false;
@@ -206,12 +212,14 @@ bool PfeifferTPG262::GetPressures(reading_t & reading1, reading_t & reading2)
   reading1.first = static_cast<GaugeStatus>(std::atoi(v[0].c_str()));
   reading1.second = std::atof(v[1].c_str());
   std::cout <<"PfeifferTPG262: the measured pressure of guage1 is: "
-	    << std::scientific << reading1.second << " mbar (" << (int)reading1.first << ")" << std::endl;
+	    << std::scientific << reading1.second << " mbar (" << (int)reading1.first << ")"
+	    << std::endl;
 
   reading2.first = static_cast<GaugeStatus>(std::atoi(v[2].c_str()));
   reading2.second = std::atof(v[3].c_str());
   std::cout <<"PfeifferTPG262: the measured pressure of guage2 is: "
-	    << std::scientific << reading2.second << " mbar (" << (int)reading2.first << ")" << std::endl;
+	    << std::scientific << reading2.second << " mbar (" << (int)reading2.first << ")"
+	    << std::endl;
 
   usleep( 500000 );
 
@@ -257,7 +265,8 @@ void PfeifferTPG262::Device_Init( void )
   StripBuffer( buffer );
 
   if (buffer[0]!=0x06) {
-    std::cout << "PfeifferTPG262: negative acknowledgement of a recieved message" << std::endl;
+    std::cout << "PfeifferTPG262: negative acknowledgement of a recieved message"
+        << std::endl;
     isCommunication_ = false;
     return;
   }
@@ -289,7 +298,7 @@ void PfeifferTPG262::Device_Init( void )
 ///
 int PfeifferTPG262::SetPressureUnit(void) const
 {
-  std::cout << "PfeifferTPG262: set pressure unit to mbar"<<endl;
+  std::cout << "PfeifferTPG262: set pressure unit to mbar" << std::endl;
 
   char buffer[1000];
 
@@ -301,7 +310,8 @@ int PfeifferTPG262::SetPressureUnit(void) const
   StripBuffer( buffer );
 
   if (buffer[0]!=0x06) {
-    std::cout << "PfeifferTPG262: negative acknowledgement of a recieved message" << std::endl;
+    std::cout << "PfeifferTPG262: negative acknowledgement of a recieved message"
+        << std::endl;
     return -1;
   }
 
@@ -328,7 +338,7 @@ int PfeifferTPG262::SetPressureUnit(void) const
 bool PfeifferTPG262::SetBRate(void)
 {
   int rate = 10;
-  std::cout << "PfeifferTPG262: set baud rate to 9600"<<endl;
+  std::cout << "PfeifferTPG262: set baud rate to 9600" << std::endl;
 
   char buffer[1000];
 
@@ -340,7 +350,8 @@ bool PfeifferTPG262::SetBRate(void)
   StripBuffer( buffer );
 
   if (buffer[0]!=0x06) {
-    std::cout << "PfeifferTPG262: negative acknowledgement of a recieved message" << std::endl;
+    std::cout << "PfeifferTPG262: negative acknowledgement of a recieved message"
+        << std::endl;
     return -1;
   }
 

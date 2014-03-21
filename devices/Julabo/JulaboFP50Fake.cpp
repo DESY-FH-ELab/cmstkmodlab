@@ -5,8 +5,6 @@
 // query error codes
 //#####################
 
-
-
 #include "JulaboFP50Fake.h"
 
 ///
@@ -26,13 +24,15 @@ JulaboFP50Fake::JulaboFP50Fake( const ioport_t ioPort )
 ///
 bool JulaboFP50Fake::SetWorkingTemperature( const float workingTemp ) const {
 
-  if( workingTemp > __FP50_UPPER_TEMP_LIMIT || workingTemp < __FP50_LOWER_TEMP_LIMIT ) {
-    std::cerr << " [JulaboFP50Fake::SetWorkingTemp] ** ERROR: working temp T=" << workingTemp << " exceeds soft limits." << std::endl;
+  if( workingTemp > FP50UpperTempLimit || workingTemp < FP50LowerTempLimit ) {
+    std::cerr << " [JulaboFP50Fake::SetWorkingTemp] ** ERROR: working temp T="
+              << workingTemp << " exceeds soft limits." << std::endl;
     std::cerr << "  > (s. JulaboFP50Fake class definition)" << std::endl;
     return false;
   }
 
-  std::cout << " [JulaboFP50Fake::SetWorkingTemp] -- FAKE: Setting workingTemp = " << workingTemp << "." << std::endl;
+  std::cout << " [JulaboFP50Fake::SetWorkingTemp] -- FAKE: Setting workingTemp = "
+            << workingTemp << "." << std::endl;
 
   return true;
 
@@ -45,11 +45,13 @@ bool JulaboFP50Fake::SetWorkingTemperature( const float workingTemp ) const {
 bool JulaboFP50Fake::SetPumpPressure( const unsigned int pressureStage ) const {
 
   if( pressureStage < 1 || pressureStage > 4 ) {
-    std::cerr << " [JulaboFP50Fake::SetPumpPressure] ** ERROR: Invalid pressure stage: " << pressureStage << "." << std::endl;
+    std::cerr << " [JulaboFP50Fake::SetPumpPressure] ** ERROR: Invalid pressure stage: "
+              << pressureStage << "." << std::endl;
     return false;
   }
 
-  std::cout << " [JulaboFP50Fake::SetPumpPressure] -- FAKE: Setting pressureStage = " << pressureStage << "." << std::endl;
+  std::cout << " [JulaboFP50Fake::SetPumpPressure] -- FAKE: Setting pressureStage = "
+            << pressureStage << "." << std::endl;
 
   return true;
 
@@ -60,24 +62,22 @@ bool JulaboFP50Fake::SetPumpPressure( const unsigned int pressureStage ) const {
 ///
 bool JulaboFP50Fake::SetCirculatorOn( void ) const
 {
-  std::cout << " [JulaboFP50Fake::SetCirculatorOn] -- FAKE: Setting circulator ON " << std::endl;
+  std::cout << " [JulaboFP50Fake::SetCirculatorOn] -- FAKE: Setting circulator ON "
+            << std::endl;
 
   return true;
 }
-
-
 
 ///
 /// return success flag
 ///
 bool JulaboFP50Fake::SetCirculatorOff( void ) const
 {
-  std::cout << " [JulaboFP50Fake::SetCirculatorOff] -- FAKE: Setting circulator OFF" << std::endl;
+  std::cout << " [JulaboFP50Fake::SetCirculatorOff] -- FAKE: Setting circulator OFF"
+            << std::endl;
 
   return true;
 }
-
-
 
 ///
 /// return success flag
@@ -96,7 +96,8 @@ bool JulaboFP50Fake::SetControlParameters( float xp, int tn, int tv ) const
 ///
 float JulaboFP50Fake::GetBathTemperature( void ) const
 {
-  std::cout << " [JulaboFP50Fake::GetBathTemperature] -- FAKE: Returning T = -23.5" << std::endl;
+  std::cout << " [JulaboFP50Fake::GetBathTemperature] -- FAKE: Returning T = -23.5"
+            << std::endl;
   usleep( 10000 );
   return -23.5;
 }
@@ -106,7 +107,8 @@ float JulaboFP50Fake::GetBathTemperature( void ) const
 ///
 float JulaboFP50Fake::GetSafetySensorTemperature( void ) const
 {
-  std::cout << " [JulaboFP50Fake::GetSafetySensorTemperature] -- FAKE: Returning T = -21.0" << std::endl;
+  std::cout << " [JulaboFP50Fake::GetSafetySensorTemperature] -- FAKE: Returning T = -21.0"
+            << std::endl;
   usleep( 10000 );
   return -21.0;
 
@@ -117,7 +119,8 @@ float JulaboFP50Fake::GetSafetySensorTemperature( void ) const
 ///
 float JulaboFP50Fake::GetWorkingTemperature( void ) const
 {
-  std::cout << " [JulaboFP50Fake::GetWorkingTemperature] -- FAKE: Returning T = -23.5" << std::endl;
+  std::cout << " [JulaboFP50Fake::GetWorkingTemperature] -- FAKE: Returning T = -23.5"
+            << std::endl;
   usleep( 10000 );
   return -23.5;
 }
@@ -127,7 +130,8 @@ float JulaboFP50Fake::GetWorkingTemperature( void ) const
 ///
 int JulaboFP50Fake::GetHeatingPower( void ) const
 {
-  std::cout << " [JulaboFP50Fake::GetHeatingPower] -- FAKE: Returning P = 34 %" << std::endl;
+  std::cout << " [JulaboFP50Fake::GetHeatingPower] -- FAKE: Returning P = 34 %"
+            << std::endl;
   usleep( 10000 );
   return 34;
 }
@@ -137,26 +141,24 @@ int JulaboFP50Fake::GetHeatingPower( void ) const
 ///
 unsigned int JulaboFP50Fake::GetPumpPressure( void ) const {
   
-  std::cout << " [JulaboFP50Fake::GetPumpPressure] -- FAKE: Returning: 2" << std::endl;
+  std::cout << " [JulaboFP50Fake::GetPumpPressure] -- FAKE: Returning: 2"
+            << std::endl;
   usleep( 10000 );
   return 2;
 
 }
-
-
 
 ///
 /// true = on / false = off
 ///
 bool JulaboFP50Fake::GetCirculatorStatus( void ) const {
 
-  std::cout << " [JulaboFP50Fake::GetCirculatorStatus] -- FAKE: Returning: " << (circulatorStatus?"TRUE":"FALSE") << std::endl;
+  std::cout << " [JulaboFP50Fake::GetCirculatorStatus] -- FAKE: Returning: "
+            << (circulatorStatus?"TRUE":"FALSE") << std::endl;
   usleep( 10000 );
   return circulatorStatus;
 
 }
-
-
 
 ///
 ///
@@ -175,46 +177,38 @@ std::pair<int,std::string> JulaboFP50Fake::GetStatus( void ) const {
 
 }
 
-
-
 ///
 ///
 ///
 float JulaboFP50Fake::GetProportionalParameter( void ) const {
 
-  std::cout << " [JulaboFP50Fake::GetProportionalParameter] -- FAKE: returning: " << parameterProp_ << std::endl;
+  std::cout << " [JulaboFP50Fake::GetProportionalParameter] -- FAKE: returning: "
+            << parameterProp_ << std::endl;
   usleep( 10000 );
   return( parameterProp_ );
-
 }
-
-
 
 ///
 ///
 ///
 int JulaboFP50Fake::GetIntegralParameter( void ) const {
 
-  std::cout << " [JulaboFP50Fake::GetIntegralParameter] -- FAKE: returning: " <<  parameterIntl_ << std::endl;
+  std::cout << " [JulaboFP50Fake::GetIntegralParameter] -- FAKE: returning: "
+            <<  parameterIntl_ << std::endl;
   usleep( 10000 );
   return( parameterIntl_ );
-
 }
-
-
 
 ///
 ///
 ///
 int JulaboFP50Fake::GetDifferentialParameter( void ) const {
 
-  std::cout << " [JulaboFP50Fake::GetDifferentialParameter] -- FAKE: returning: " << parameterDiff_ << std::endl;
+  std::cout << " [JulaboFP50Fake::GetDifferentialParameter] -- FAKE: returning: "
+            << parameterDiff_ << std::endl;
   usleep( 10000 );
   return( parameterDiff_ );
-
 }
-
-
 
 ///
 ///
@@ -223,7 +217,8 @@ bool JulaboFP50Fake::SaveControlParameters( const std::string& filepath ) const 
 
   std::ofstream file( filepath.c_str() );
   if ( file.bad() ) {
-    std::cerr << " [JulaboFP50Fake::SaveControlParameters] ** ERROR: Could not save to file:" << std::endl;
+    std::cerr << " [JulaboFP50Fake::SaveControlParameters] ** ERROR: Could not save to file:"
+              << std::endl;
     std::cerr << "  > \"" << filepath.c_str() << "\"." << std::endl;
     return false;
   }
@@ -234,10 +229,7 @@ bool JulaboFP50Fake::SaveControlParameters( const std::string& filepath ) const 
   
   file.close();
   return true;
-
 }
-
-
 
 ///
 /// return success flag
@@ -247,7 +239,8 @@ bool JulaboFP50Fake::LoadControlParametersAndApply( const std::string& filepath 
 
   std::ifstream file( filepath.c_str(), std::ios::in );
   if ( file.bad() ) {
-    std::cerr << " [JulaboFP50Fake::LoadControlParametersAndApply] ** ERROR: Could not read from file:" << std::endl;
+    std::cerr << " [JulaboFP50Fake::LoadControlParametersAndApply] ** ERROR: Could not read from file:"
+              << std::endl;
     std::cerr << "  > \"" << filepath.c_str() << "\"." << std::endl;
     return false;
   }
@@ -260,24 +253,24 @@ bool JulaboFP50Fake::LoadControlParametersAndApply( const std::string& filepath 
   while( ! ( ( isProp && isIntl && isDiff ) || file.eof() ) ) {
 
     file >> item;
-    std::cout << "##########: " << item << std::endl; /////////////////////////////////
+    std::cout << "##########: " << item << std::endl;
 
     if( std::string::npos != item.find( "<PID_PROP>" ) ) {
       file >> propP;
       isProp = true;
-      std::cout << "FOUND PROP " << propP << std::endl; /////////////////////////////////
+      std::cout << "FOUND PROP " << propP << std::endl;
     }
 
     if( std::string::npos != item.find( "<PID_INTL>" ) ) {
       file >> intlP;
       isIntl = true;
-      std::cout << "FOUND INTL " << intlP <<  std::endl; /////////////////////////////////
+      std::cout << "FOUND INTL " << intlP <<  std::endl;
     }
 
     if( std::string::npos != item.find( "<PID_DIFF>" ) ) {
       file >> diffP;
       isDiff = true;
-      std::cout << "FOUND DIFF " << diffP << std::endl; /////////////////////////////////
+      std::cout << "FOUND DIFF " << diffP << std::endl;
     }
 
   }
@@ -289,19 +282,16 @@ bool JulaboFP50Fake::LoadControlParametersAndApply( const std::string& filepath 
     return true;
   } 
   else {
-    std::cerr << " [LoadControlParametersAndApply] ** ERROR: could not parse input file: " << std::endl;
+    std::cerr << " [LoadControlParametersAndApply] ** ERROR: could not parse input file: "
+              << std::endl;
     std::cerr << "  > " << filepath.c_str() << "." << std::endl;
     return false;
   }
-
 }
-
-
 
 ///
 ///
 ///
 void JulaboFP50Fake::Device_Init( void ) {
 
-  
 }

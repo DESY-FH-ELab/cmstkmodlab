@@ -1,3 +1,11 @@
+#include <iostream>
+#include <vector>
+#include <utility>
+#include <string>
+#include <cstdlib>
+#include <algorithm>
+#include <sstream>
+
 #include "Keithley2700.h"
 
 ///
@@ -16,14 +24,13 @@ Keithley2700::Keithley2700( ioport_t port )
   #endif
  
   Device_Init();
-
 }
 
 ///
 /// enables the channels given by string
 /// format: see ::ParseChannelString
 ///
-void Keithley2700::SetActiveChannels( string channelString ) {
+void Keithley2700::SetActiveChannels( std::string channelString ) {
   
   enabledChannels_.resize( 0 );
   enabledChannels_ = ParseChannelString( channelString );
@@ -31,18 +38,13 @@ void Keithley2700::SetActiveChannels( string channelString ) {
   CalculateDelay();
 
   Device_SetChannels();
-
 }
-
-
-
-
 
 ///
 /// adds the channels given by string to the list of enabled ones
 /// format: see ParseChannelString
 ///
-void Keithley2700::AddActiveChannels( string channelString ) {
+void Keithley2700::AddActiveChannels( std::string channelString ) {
 
   // append new channels
   const channels_t& newChannels = ParseChannelString( channelString );
@@ -55,18 +57,13 @@ void Keithley2700::AddActiveChannels( string channelString ) {
   CalculateDelay();
 
   Device_SetChannels();
-
 }
-
-
-
-
 
 ///
 /// removes the channels given by string from the list of enabled ones
 /// format: see ParseChannelString
 ///
-void Keithley2700::DisableActiveChannels( string channelString ) {
+void Keithley2700::DisableActiveChannels( std::string channelString ) {
 
   const channels_t& newChannels = ParseChannelString( channelString );
 
@@ -75,9 +72,9 @@ void Keithley2700::DisableActiveChannels( string channelString ) {
     channels_t::iterator pos = find( enabledChannels_.begin(), enabledChannels_.end(), *it );
     if( enabledChannels_.end() == pos ) {
       std::cerr << " [Keithley2700::DisableActiveChannels] ** WARNING:" << std::endl;
-      std::cerr << "  Request to disable channel: " << *it << " which is currently inactive. Skipping." << std::endl;
-    }
-    else {
+      std::cerr << "  Request to disable channel: " << *it
+                << " which is currently inactive. Skipping." << std::endl;
+    } else {
       enabledChannels_.erase( pos );
     }
 
@@ -86,12 +83,7 @@ void Keithley2700::DisableActiveChannels( string channelString ) {
   CalculateDelay();
 
   Device_SetChannels();
-
 }
-
-
-
-
 
 ///
 ///
@@ -121,17 +113,21 @@ const reading_t Keithley2700::Scan( void ) {
 
   // tokenize output
   std::vector<std::string> tokens(0);
-  Tokenize( string( buffer ), tokens, "," );
+  Tokenize( std::string( buffer ), tokens, "," );
 
   if( isDebug_ ) {
-    std::cout << " [Keithley2700::Scan] -- DEBUG: Received " <<  tokens.size() / 3 << " reading(s)" << std::endl;
+    std::cout << " [Keithley2700::Scan] -- DEBUG: Received "
+              <<  tokens.size() / 3 << " reading(s)" << std::endl;
     std::string bufferStr( buffer );
     bufferStr.erase( std::remove( bufferStr.begin(), bufferStr.end(), '\n' ), bufferStr.end() );
-    std::cout << " [Keithley2700::Scan] -- DEBUG: <RAWOUTPUT.BEGIN> " << bufferStr << " <RAWOUTPUT.END>" << std::endl;;
+    std::cout << " [Keithley2700::Scan] -- DEBUG: <RAWOUTPUT.BEGIN> "
+              << bufferStr << " <RAWOUTPUT.END>" << std::endl;;
   }
 
   if( tokens.size() / 3 != enabledChannels_.size() ) {
-    std::cerr << " [Keithley2700::Scan] ** ERROR: expect " << enabledChannels_.size() << " reading(s) but received " << tokens.size() / 3 << "." << std::endl;
+    std::cerr << " [Keithley2700::Scan] ** ERROR: expect "
+              << enabledChannels_.size() << " reading(s) but received "
+              << tokens.size() / 3 << "." << std::endl;
     std::cerr << "                         Probably a timing problem.." << std::endl;
     isScanOk_ = false;
     if( isDebug_ ) throw;
@@ -145,27 +141,7 @@ const reading_t Keithley2700::Scan( void ) {
   }
 
   return theReading;
-
 }
-
-
-
-
-
-///
-///
-///
-bool Keithley2700::IsScanOk( void ) {
-  return isScanOk_;
-}
-
-
-
-
-
-
-
-
 
 ///
 ///
@@ -174,16 +150,13 @@ void Keithley2700::Dump( void ) const {
 
   std::cout << " [Keithley2700::Dump] -- Channels enabled in scan: \n ";
 
-  for( channels_t::const_iterator it = enabledChannels_.begin(); it < enabledChannels_.end(); ++it ) {
+  for( channels_t::const_iterator it = enabledChannels_.begin();
+      it < enabledChannels_.end();
+      ++it ) {
     std::cout << " " << *it;
   }
   std::cout << std::endl;
-
 }
-
-
-
-
 
 ///
 /// communicate the currently active channels
@@ -191,7 +164,7 @@ void Keithley2700::Dump( void ) const {
 ///
 void Keithley2700::Device_SetChannels( void ) const {
 
-  stringstream theCommand;
+  std::stringstream theCommand;
 
   // build rout:scan command
   theCommand << "ROUT:SCAN (@";
@@ -205,13 +178,13 @@ void Keithley2700::Device_SetChannels( void ) const {
 
   // send
   if( isDebug_ ) {
-    std::cout << " [Keithley2700::Device_SetChannels] -- DEBUG: Sent: \"" << theCommand.str() << "\"" << std::endl;
+    std::cout << " [Keithley2700::Device_SetChannels] -- DEBUG: Sent: \""
+              << theCommand.str() << "\"" << std::endl;
   }
   comHandler_->SendCommand( theCommand.str().c_str() );
 
   // cleanup
   theCommand.str("");
-
 
   // build samp:coun command
   
@@ -220,15 +193,11 @@ void Keithley2700::Device_SetChannels( void ) const {
   
   // send
   if( isDebug_ ) {
-    std::cout << " [Keithley2700::Device_SetChannels] -- DEBUG: Sent: \"" << theCommand.str() << "\"" << std::endl;
+    std::cout << " [Keithley2700::Device_SetChannels] -- DEBUG: Sent: \""
+              << theCommand.str() << "\"" << std::endl;
   }
   comHandler_->SendCommand( theCommand.str().c_str() );
-  
 }
-
-
-
-
 
 ///
 /// all initialization of device
@@ -272,7 +241,6 @@ void Keithley2700::Device_Init( void ) const {
 
   // open all channels
   //  comHandler_->SendCommand( "ROUT:OPEN:ALL" );
-
 }
 
 ///
@@ -280,10 +248,10 @@ void Keithley2700::Device_Init( void ) const {
 ///
 void Keithley2700::CalculateDelay( void ) {
 
-  uSecDelay_ = __DELAY_MIN + ( __DELAY_MAX - __DELAY_MIN) / 10 * enabledChannels_.size();
+  uSecDelay_ = DelayMin + ( DelayMax - DelayMin) / 10 * enabledChannels_.size();
 
   if( isDebug_ ) {
-    std::cout << " [Keithley2700::CalculateDelay] -- DEBUG: Delay is now: " << uSecDelay_ << " usec." << std::endl;
+    std::cout << " [Keithley2700::CalculateDelay] -- DEBUG: Delay is now: "
+              << uSecDelay_ << " usec." << std::endl;
   }
-
 }

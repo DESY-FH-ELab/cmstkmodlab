@@ -5,7 +5,7 @@
   */
 const QString PfeifferModel::Pfeiffer_PORT = QString("/dev/ttyS4");
 
-PfeifferModel::PfeifferModel(float updateInterval, QObject *parent) :
+PfeifferModel::PfeifferModel(float updateInterval, QObject * /*parent*/) :
     QObject(),
     AbstractDeviceModel<PfeifferTPG262_t>(),
     status1_(VPfeifferTPG262::tpg262GaugeInvalidStatus),

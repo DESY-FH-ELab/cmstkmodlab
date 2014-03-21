@@ -8,9 +8,6 @@
 #include <utility>
 #include <fstream>
 
-#define __FP50_LOWER_TEMP_LIMIT -50
-#define __FP50_UPPER_TEMP_LIMIT  30
-
 typedef const char* ioport_t;
 
 class VJulaboFP50
@@ -40,6 +37,9 @@ class VJulaboFP50
 
   virtual bool SaveControlParameters( const std::string& ) const = 0;
   virtual bool LoadControlParametersAndApply( const std::string& ) const = 0;
+  
+  static constexpr int FP50LowerTempLimit = -50;
+  static constexpr int FP50UpperTempLimit =  30;
 };
 
 #endif

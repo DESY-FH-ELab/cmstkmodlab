@@ -26,7 +26,7 @@ int main()
     float pressure = iota.GetPressure();
     std::cout << "pressure = " << pressure << std::endl;
     std::cout << "status = " << (int)iota.GetStatus() << std::endl;
-    if (fabs(work-12.34)>0.01) break;
+    if (fabs(pressure-12.34)>0.01) break;
     std::cout << std::endl;
     usleep(500000);
 

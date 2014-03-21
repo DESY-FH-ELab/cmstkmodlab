@@ -11,6 +11,14 @@ KeithleyWidget::KeithleyWidget(KeithleyModel* model,
   keithleyCheckBox_ = new QCheckBox("Enable Multimeter", this);
   layout->addWidget(keithleyCheckBox_);
 
+  updateIntervalSlider_ = new QSlider(Qt::Horizontal, this);
+  updateIntervalSlider_->setMinimum(15);
+  updateIntervalSlider_->setMaximum(5*60);
+  updateIntervalSlider_->setSingleStep(15);
+  updateIntervalSlider_->setTickInterval(15);
+  updateIntervalSlider_->setValue(model_->getUpdateInterval());
+  layout->addWidget(updateIntervalSlider_);
+
   sensorControlWidget_= new QWidget(this);
   layout->addWidget(sensorControlWidget_);
 
@@ -27,6 +35,11 @@ KeithleyWidget::KeithleyWidget(KeithleyModel* model,
           SIGNAL(toggled(bool)),
           model_,
           SLOT(setDeviceEnabled(bool)));
+
+  connect(updateIntervalSlider_,
+          SIGNAL(valueChanged(int)),
+          model_,
+          SLOT(setUpdateInterval(int)));
 
   connect(model_,
           SIGNAL(deviceStateChanged(State)),

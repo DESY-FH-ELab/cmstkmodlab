@@ -1,10 +1,12 @@
+#include <string.h>
+
 #include <cstdlib>
+#include <iostream>
 
 //#####################
 // TODO:
 // query error codes
 //#####################
-
 
 #include "PetiteFleurComHandler.h"
 
@@ -31,7 +33,7 @@ bool HuberPetiteFleur::SetWorkingTemperature( const float workingTemp ) const {
   std::cout << "[HuberPetiteFleur::SetWorkingTemp] -- DEBUG: Called." << std::endl;
   #endif
 
-  if( workingTemp > __PETITEFLEUR_UPPER_TEMP_LIMIT || workingTemp < __PETITEFLEUR_LOWER_TEMP_LIMIT ) {
+  if( workingTemp > PetiteFleurUpperTempLimit || workingTemp < PetiteFleurLowerTempLimit ) {
     std::cerr << " [HuberPetiteFleur::SetWorkingTemp] ** ERROR: working temp T=" 
 	      << workingTemp << " exceeds soft limits." << std::endl;
     std::cerr << "  > (s. HuberPetiteFleur class definition)" << std::endl;
@@ -43,7 +45,7 @@ bool HuberPetiteFleur::SetWorkingTemperature( const float workingTemp ) const {
   int iTemp = workingTemp * 100.;
   sprintf(buffer, "%+06d", iTemp);
 
-  stringstream theCommand;
+  std::stringstream theCommand;
   theCommand << "SP! " << buffer;
 
   comHandler_->SendCommand( theCommand.str().c_str() );
@@ -57,7 +59,8 @@ bool HuberPetiteFleur::SetWorkingTemperature( const float workingTemp ) const {
   StripBuffer( buffer );
 
   if( std::fabs( iTemp - ToInteger(buffer) ) > 1 ) {
-    std::cerr << " [HuberPetiteFleur::SetWorkingTemp] ** ERROR: check failed." << std::endl;
+    std::cerr << " [HuberPetiteFleur::SetWorkingTemp] ** ERROR: check failed."
+        << std::endl;
     std::cerr << "  > Expected: T=" << workingTemp << " but received (string):"
 	      << buffer << "." << std::endl;
     return false;
@@ -87,8 +90,10 @@ bool HuberPetiteFleur::SetCirculatorOn( void ) const {
   int status = ToInteger(buffer);
 
   if( status != 1 ) {
-    std::cerr << " [HuberPetiteFleur::SetCirculatorOn] ** ERROR: check failed." << std::endl;
-    std::cerr << "  > Expected: ON (1) but received (string):" << buffer << "." << std::endl;
+    std::cerr << " [HuberPetiteFleur::SetCirculatorOn] ** ERROR: check failed."
+        << std::endl;
+    std::cerr << "  > Expected: ON (1) but received (string):"
+        << buffer << "." << std::endl;
     return false;
   }
 
@@ -116,8 +121,10 @@ bool HuberPetiteFleur::SetCirculatorOff( void ) const {
   int status = ToInteger(buffer);
 
   if( status != 0 ) {
-    std::cerr << " [HuberPetiteFleur::SetCirculatorOn] ** ERROR: check failed." << std::endl;
-    std::cerr << "  > Expected: OFF (0) but received (string):" << buffer << "." << std::endl;
+    std::cerr << " [HuberPetiteFleur::SetCirculatorOn] ** ERROR: check failed."
+        << std::endl;
+    std::cerr << "  > Expected: OFF (0) but received (string):"
+        << buffer << "." << std::endl;
     return false;
   }
 
@@ -250,7 +257,8 @@ void HuberPetiteFleur::Device_Init( void ) {
   std::string temp(buffer);
 
   if (temp.compare(0, 2, "CA")!=0) {
-    std::cerr << " [HuberPetiteFleur::Device_Init] ** ERROR: Device communication problem." << std::endl;
+    std::cerr << " [HuberPetiteFleur::Device_Init] ** ERROR: Device communication problem."
+        << std::endl;
     isCommunication_ = false;
     return;
   }

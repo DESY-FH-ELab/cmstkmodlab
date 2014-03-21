@@ -1,18 +1,8 @@
 #ifndef __VKEITHLEY2700_H
 #define __VKEITHLEY2700_H
 
-#include <iostream>
-#include <vector>
-#include <utility>
 #include <string>
-#include <cstdlib>
-#include <algorithm>
-#include <sstream>
-
-// the number of channels available to the device,
-// for range checking purposes
-#define __RANGE_MIN 0
-#define __RANGE_MAX 9
+#include <vector>
 
 typedef std::vector<std::pair<unsigned int, double> > reading_t;
 typedef std::vector<unsigned int> channels_t;
@@ -33,10 +23,16 @@ class VKeithley2700
   virtual void Dump( void ) const = 0;
   virtual bool IsScanOk( void ) = 0;
 
+  // the number of channels available to the device,
+  // for range checking purposes
+  static constexpr unsigned int RangeMin = 0;
+  static constexpr unsigned int RangeMax = 9;
+
  protected:
 
   const channels_t ParseChannelString( const std::string& ) const;
-  void Tokenize( const std::string&, std::vector<std::string>&, const std::string& ) const;
+  void Tokenize( const std::string&, std::vector<std::string>&,
+                 const std::string& ) const;
   unsigned int EvaluateChannelToken( const std::string& ) const;
   const range_t EvaluateRangeToken( const std::string& ) const;
 

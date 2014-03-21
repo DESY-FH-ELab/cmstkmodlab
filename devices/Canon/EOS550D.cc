@@ -4,17 +4,15 @@
 
 // DEVICE CONTROLLER CLASS
 
-EOS550D::EOS550D(const char* port) :
-    VEOS550D(port)
-  , handler_(NULL)
-  , optionNames_(4) //create room for the total number of support options
-  , optionLists_(4)
-  , tempPictureFiles_()
-  , previewFileName_("/tmp/canon-preview.jpg")
-  , isInPreviewMode_(false)
-
+EOS550D::EOS550D(const char* port)
+  : VEOS550D(port),
+    handler_(NULL),
+    optionNames_(4), //create room for the total number of support options
+    optionLists_(4),
+    tempPictureFiles_(),
+    previewFileName_("/tmp/canon-preview.jpg"),
+    isInPreviewMode_(false)
 {
-
   // Save names for supported options
   optionNames_[APERTURE] = "aperture";
   optionNames_[SHUTTER_SPEED] = "shutterspeed";
@@ -22,7 +20,6 @@ EOS550D::EOS550D(const char* port) :
   optionNames_[WHITE_BALANCE] = "whitebalance";
 
   handler_ = new CameraComHandler("Canon EOS 550D", port);
-
 }
 
 EOS550D::~EOS550D() {
@@ -31,14 +28,12 @@ EOS550D::~EOS550D() {
   delete handler_;
 
   // Clear all temporary files
-  for ( std::deque<std::string>::const_iterator it = tempPictureFiles_.begin()
-      ; it < tempPictureFiles_.end()
-      ; ++it
-  ) {
+  for ( std::deque<std::string>::const_iterator it = tempPictureFiles_.begin();
+      it < tempPictureFiles_.end();
+      ++it ) {
     // TODO log success/failure
     remove( it->c_str() );
   }
-
 }
 
 bool EOS550D::initialize() {
@@ -54,30 +49,28 @@ bool EOS550D::initialize() {
   }
 
   return success;
-
 }
 
-std::vector<std::string> EOS550D::readOptions(
-    const EOS550D::Option &option
-) const {
+std::vector<std::string> EOS550D::readOptions(const EOS550D::Option &option) const {
+
   return optionLists_[option];
 }
 
 int EOS550D::readOption(const VEOS550D::Option &option) {
+
   std::string value = handler_->readConfigValue(optionNames_[option].c_str());
   return indexOf(optionLists_[option], value);
 }
 
 bool EOS550D::writeOption(const VEOS550D::Option &option, int value) {
-//  if ( value > -1) {
-    return handler_->writeConfigValue(
-          optionNames_[option].c_str()
-        , optionLists_[option][value].c_str()
-    );
-//  }
-//  else {
-//    return false;
-//  }
+
+  //  if ( value > -1) {
+  return handler_->writeConfigValue(optionNames_[option].c_str(),
+                                    optionLists_[option][value].c_str());
+  //  }
+  //  else {
+  //    return false;
+  //  }
 }
 
 /**
@@ -85,7 +78,7 @@ bool EOS550D::writeOption(const VEOS550D::Option &option, int value) {
   The camera is instructed to take a picture with the current settings. After
   acquisition, the picture is downloaded to a temporary file and removed from
   the camera. The location of the temporary file is then returned.
-  */
+ */
 std::string EOS550D::acquirePhoto() {
 
   // Create temporary file
@@ -98,16 +91,15 @@ std::string EOS550D::acquirePhoto() {
 
   std::string fnCopy(tempFileName);
   tempPictureFiles_.push_back(fnCopy);
-//  std::cout << "Created " << fnCopy << std::endl;
+  //  std::cout << "Created " << fnCopy << std::endl;
 
   return fnCopy;
-
 }
 
 /**
   \brief Captures a preview image with the camera and returns the download
   location.
-  */
+ */
 std::string EOS550D::acquirePreview() {
 
   handler_->acquirePreview(previewFileName_.c_str());
@@ -122,7 +114,7 @@ bool EOS550D::isInPreviewMode() {
 
 /**
   \brief Switches the camera into preview mode (a.k.a. live view).
-  */
+ */
 bool EOS550D::startPreviewMode() {
 
   if (isInPreviewMode_) return false;
@@ -137,16 +129,16 @@ bool EOS550D::startPreviewMode() {
 /**
   \brief Switches off preview mode (a.k.a. live view). The file
   with the preview image is deleted.
-  */
+ */
 bool EOS550D::stopPreviewMode() {
 
   if (!isInPreviewMode_) return false;
- 
+
   handler_->stopPreviewMode();
 
   remove(previewFileName_.c_str());
 
   isInPreviewMode_ = false;
- 
+
   return true;
 }

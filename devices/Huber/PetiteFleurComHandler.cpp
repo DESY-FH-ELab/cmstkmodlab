@@ -1,5 +1,8 @@
-#include "PetiteFleurComHandler.h"
+#include <string.h>
 
+#include <iostream>
+
+#include "PetiteFleurComHandler.h"
 
 // SETTINGS ON THE DEVICE:
 // (MENU RS-232)
@@ -68,7 +71,7 @@ void PetiteFleurComHandler::SendCommand( const char *commandString ) {
 */
 void PetiteFleurComHandler::ReceiveString( char *receiveString ) {
 
-  usleep( _COMHANDLER_DELAY );
+  usleep( ComHandlerDelay );
 
   int timeout = 0, readResult = 0;
 
@@ -101,8 +104,9 @@ void PetiteFleurComHandler::OpenIoPort( void ) throw (int) {
   // check if successful
   if ( fIoPortFileDescriptor == -1 ) {
     std::cerr << "[PetiteFleurComHandler::OpenIoPort] ** ERROR: could not open device file "
-	      << fIoPort << "." << endl;
-    std::cerr << "                               (probably it's not user-writable)." << std::endl;
+	          << fIoPort << "." << std::endl;
+    std::cerr << "                               (probably it's not user-writable)."
+              << std::endl;
     throw int(-1);
   } else {
     // configure port with no delay
@@ -117,7 +121,6 @@ void PetiteFleurComHandler::OpenIoPort( void ) throw (int) {
 void PetiteFleurComHandler::InitializeIoPort( void ) {
 
 #ifndef USE_FAKEIO
-
  
   // get and save current ioport settings for later restoring
   tcgetattr( fIoPortFileDescriptor, &fCurrentTermios );

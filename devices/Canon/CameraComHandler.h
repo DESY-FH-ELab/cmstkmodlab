@@ -32,7 +32,6 @@ protected:
 
   CameraAbilities abilities_;
   GPPortInfo info_;
-
 };
 
 #endif // CAMERACOMHANDLER_H

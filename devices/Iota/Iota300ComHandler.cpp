@@ -1,5 +1,6 @@
-#include "Iota300ComHandler.h"
+#include <string.h>
 
+#include "Iota300ComHandler.h"
 
 // SETTINGS ON THE DEVICE:
 // (MENU RS-232)
@@ -68,7 +69,7 @@ void Iota300ComHandler::SendCommand( const char *commandString ) {
 */
 void Iota300ComHandler::ReceiveString( char *receiveString ) {
 
-  usleep( _COMHANDLER_DELAY );
+  usleep( ComHandlerDelay );
 
   int timeout = 0, readResult = 0;
 
@@ -101,8 +102,9 @@ void Iota300ComHandler::OpenIoPort( void ) throw (int) {
   // check if successful
   if ( fIoPortFileDescriptor == -1 ) {
     std::cerr << "[Iota300ComHandler::OpenIoPort] ** ERROR: could not open device file "
-	      << fIoPort << "." << endl;
-    std::cerr << "                               (probably it's not user-writable)." << std::endl;
+	      << fIoPort << "." << std::endl;
+    std::cerr << "                               (probably it's not user-writable)."
+          << std::endl;
     throw int(-1);
   } else {
     // configure port with no delay
@@ -118,7 +120,6 @@ void Iota300ComHandler::InitializeIoPort( void ) {
 
 #ifndef USE_FAKEIO
 
- 
   // get and save current ioport settings for later restoring
   tcgetattr( fIoPortFileDescriptor, &fCurrentTermios );
 

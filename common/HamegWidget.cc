@@ -107,12 +107,12 @@ void HamegChannelWidget::currentSpinnerChanged(double voltage)
     model_->setCurrent(channel_, voltage);
 }
 
-void HamegChannelWidget::updateDeviceState(State)
+void HamegChannelWidget::updateDeviceState(State /*state*/)
 {
 
 }
 
-void HamegChannelWidget::controlStateChanged(bool state)
+void HamegChannelWidget::controlStateChanged(bool /*state*/)
 {
 
 }
@@ -226,7 +226,7 @@ void HamegWidget::controlStateChanged(bool enabled) {
   
   hamegCheckBox_->setEnabled(enabled);
   if (enabled) {
-    State state = model_->getDeviceState();
+    //State state = model_->getDeviceState();
   }
 }
 

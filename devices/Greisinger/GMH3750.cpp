@@ -1,3 +1,5 @@
+#include <string.h>
+
 #include <cmath>
 
 #include <iostream>

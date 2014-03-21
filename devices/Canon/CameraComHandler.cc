@@ -6,12 +6,10 @@
   \arg modelName Full camera model name (e.g. "Canon EOS 550D")
   \arg port Name of the port the camera is connected to (e.g. "usb:001")
   */
-CameraComHandler::CameraComHandler(
-    const char* modelName
-  , const char* port
-) :
-    context_(NULL)
-  , camera_(NULL)
+CameraComHandler::CameraComHandler(const char* modelName,
+                                   const char* port)
+  : context_(NULL),
+    camera_(NULL)
 {
   // TODO error checking
   // TODO set context callback functions
@@ -19,50 +17,46 @@ CameraComHandler::CameraComHandler(
   context_ = gp_context_new();
 
   // require given model name
-//  CameraAbilities abilities_;
+  //  CameraAbilities abilities_;
   CameraAbilitiesList* list;
   gp_abilities_list_new(&list);
   // Load list of known devices, look for camera, get and set abilities
   gp_abilities_list_load(list, context_);
-  gp_abilities_list_get_abilities(
-          list
-        , gp_abilities_list_lookup_model(list, modelName)
-        , &abilities_
-  );
+  gp_abilities_list_get_abilities(list,
+                                  gp_abilities_list_lookup_model(list, modelName),
+                                  &abilities_);
   gp_abilities_list_free(list);
 
   // Require it to be on the requested port
-//  GPPortInfo info_;
+  //  GPPortInfo info_;
   GPPortInfoList* infoList;
   // Load list of known ports, look for camera, get and set abilities
   gp_port_info_list_new(&infoList);
   gp_port_info_list_load(infoList);
-  gp_port_info_list_get_info(
-          infoList
-        , gp_port_info_list_lookup_path(infoList, port)
-        , &info_
-  );
+  gp_port_info_list_get_info(infoList,
+                             gp_port_info_list_lookup_path(infoList, port),
+                             &info_);
   gp_port_info_list_free(infoList);
 
   /*
     Create camera now, otherwise an invalid conversion from Camera* const*
     to Camera** arises in initialize.
-    */
+   */
   gp_camera_new(&camera_);
-
 }
 
 /// Closes the communication and frees the associated objects.
 CameraComHandler::~CameraComHandler() {
+
   gp_camera_exit(camera_, context_);
   gp_camera_free(camera_);
-//  delete context_;
+  //  delete context_;
 }
 
 /// Whether communication with the camera is possible.
 bool CameraComHandler::initialize() {
 
-//  gp_camera_new(&camera_);
+  //  gp_camera_new(&camera_);
 
   // Set the retrieved (supported) requirements
   gp_camera_set_abilities(camera_, abilities_);
@@ -76,8 +70,7 @@ bool CameraComHandler::initialize() {
     gp_camera_free(camera_);
     camera_ = NULL;
     success = false;
-  }
-  else {
+  } else {
     // Test if really connected (by asking for information)
     CameraText text;
     error = gp_camera_get_summary(camera_, &text, context_);
@@ -92,17 +85,14 @@ bool CameraComHandler::initialize() {
   //  }
 
   return success;
-
 }
 
 /**
   \brief Returns a list of allowed options for the given setting name.
   \arg name Name of the setting for which the options should be retrieved.
   \return List of allowed options.
-  */
-std::vector<std::string> CameraComHandler::readConfigOptions(
-    const char* name
-) const {
+ */
+std::vector<std::string> CameraComHandler::readConfigOptions(const char* name) const {
 
   // FIXME Error checking!
 
@@ -113,11 +103,11 @@ std::vector<std::string> CameraComHandler::readConfigOptions(
   gp_camera_get_config(camera_, &window, context_);
   gp_widget_get_child_by_name(window, name, &child);
 
-//  TODO if ( type != GP_WIDGET_RADIO)
-//  CameraWidgetType type;
-//  gp_widget_get_type(child, &type);
-//  if ( type != GP_WIDGET_RADIO )
-//    std::cout << "radio" << std::endl;
+  //  TODO if ( type != GP_WIDGET_RADIO)
+  //  CameraWidgetType type;
+  //  gp_widget_get_type(child, &type);
+  //  if ( type != GP_WIDGET_RADIO )
+  //    std::cout << "radio" << std::endl;
 
   // Create vector of available options, using acquired size
   int count = gp_widget_count_choices(child);
@@ -135,7 +125,6 @@ std::vector<std::string> CameraComHandler::readConfigOptions(
   gp_widget_free(window);
 
   return options;
-
 }
 
 /**
@@ -144,7 +133,7 @@ std::vector<std::string> CameraComHandler::readConfigOptions(
   \return The current value of the setting.
   \see CameraComHandler::readConfigOptions
   \see CameraComHandler::writeConfigValue
-  */
+ */
 std::string CameraComHandler::readConfigValue(const char *name) const {
 
   CameraWidget* window;
@@ -157,8 +146,8 @@ std::string CameraComHandler::readConfigValue(const char *name) const {
   CameraWidgetType type;
   gp_widget_get_type(child, &type);
 
-//  if ( type == GP_WIDGET_RADIO )
-//    std::cout << "Type is radio" << std::endl;
+  //  if ( type == GP_WIDGET_RADIO )
+  //    std::cout << "Type is radio" << std::endl;
 
   /*
     Please pass
@@ -166,7 +155,7 @@ std::string CameraComHandler::readConfigValue(const char *name) const {
     (float) for GP_WIDGET_RANGE,
     (int) for GP_WIDGET_DATE, GP_WIDGET_TOGGLE, GP_WIDGET_RADIO, and
     (CameraWidgetCallback) for GP_WIDGET_BUTTON.
-    */
+   */
   char* value;
   gp_widget_get_value(child, &value);
 
@@ -176,7 +165,6 @@ std::string CameraComHandler::readConfigValue(const char *name) const {
   gp_widget_free(window);
 
   return copy;
-
 }
 
 /**
@@ -189,7 +177,7 @@ std::string CameraComHandler::readConfigValue(const char *name) const {
   \return true if setting was changed, false otherwise.
   \see CameraComHandler::readConfigOptions
   \see CameraComHandler::writeConfigValue
-  */
+ */
 bool CameraComHandler::writeConfigValue(const char *name, const char *value) {
 
   // FIXME full length error checking
@@ -201,14 +189,13 @@ bool CameraComHandler::writeConfigValue(const char *name, const char *value) {
   gp_widget_get_child_by_name(window, name, &child);
 
   // Updates with the new value
-//  std::cout << value << std::endl;
+  //  std::cout << value << std::endl;
   gp_widget_set_value(child, value);
   int error = gp_camera_set_config(camera_, window, context_);
 
   gp_widget_free(window);
 
   return (error == GP_OK);
-
 }
 
 /**
@@ -219,7 +206,7 @@ bool CameraComHandler::writeConfigValue(const char *name, const char *value) {
   \arg filedescriptor File descriptor of a file that is writable by the current
   user.
   \return true if picture was acquired and saved, false otherwise.
-  */
+ */
 bool CameraComHandler::acquireAndDownloadPicture(int filedescriptor) const {
 
   // FIXME decent error checking
@@ -229,14 +216,12 @@ bool CameraComHandler::acquireAndDownloadPicture(int filedescriptor) const {
   // Take and store the picture
   CameraFilePath path;
   int error = gp_camera_capture(camera_, GP_CAPTURE_IMAGE, &path, context_);
-  gp_camera_file_get(
-        camera_
-      , path.folder
-      , path.name
-      , GP_FILE_TYPE_NORMAL
-      , file
-      , context_
-  );
+  gp_camera_file_get(camera_,
+                     path.folder,
+                     path.name,
+                     GP_FILE_TYPE_NORMAL,
+                     file,
+                     context_);
 
   // Remove from camera
   gp_camera_file_delete(camera_, path.folder, path.name, context_);
@@ -244,7 +229,6 @@ bool CameraComHandler::acquireAndDownloadPicture(int filedescriptor) const {
   gp_file_free(file);
 
   return (error == GP_OK);
-
 }
 
 /**
@@ -253,7 +237,7 @@ bool CameraComHandler::acquireAndDownloadPicture(int filedescriptor) const {
   at least write permissions for the current user.
   \arg filename name of a file that is writable by the current user.
   \return true if picture was acquired and saved, false otherwise.
-  */
+ */
 bool CameraComHandler::acquirePreview(const char* filename) const {
 
   // FIXME decent error checking
@@ -272,7 +256,7 @@ bool CameraComHandler::acquirePreview(const char* filename) const {
 /**
   \brief Switches camera into preview mode.
   \return true if operation was successful, false otherwise.
-  */
+ */
 bool CameraComHandler::startPreviewMode() const {
 
   // FIXME decent error checking
@@ -281,7 +265,7 @@ bool CameraComHandler::startPreviewMode() const {
 
   // Take and store the picture
   int error = gp_camera_capture_preview(camera_, file, context_);
- 
+
   gp_file_unref(file);
   
   return (error == GP_OK);
@@ -290,7 +274,7 @@ bool CameraComHandler::startPreviewMode() const {
 /**
   \brief Switches off camera preview mode.
   \return true if operation was successful, false otherwise.
-  */
+ */
 bool CameraComHandler::stopPreviewMode() const {
 
   int error = gp_camera_exit(camera_, context_);

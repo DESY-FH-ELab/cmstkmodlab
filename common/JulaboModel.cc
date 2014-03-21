@@ -16,7 +16,7 @@ const QString JulaboModel::JULABO_PORT = QString("/dev/ttyS5");
   \arg updateInterval Time between read-out cache refreshes; in seconds.
   \arg parent Pointer to the parent QObject.
   */
-JulaboModel::JulaboModel(float updateInterval, QObject *parent) :
+JulaboModel::JulaboModel(float updateInterval, QObject * /*parent*/) :
     QObject()
   , AbstractDeviceModel<JulaboFP50_t>()
   , updateInterval_(updateInterval)

@@ -1,3 +1,9 @@
+#include <iostream>
+#include <utility>
+#include <cstdlib>
+#include <algorithm>
+#include <sstream>
+
 #include "VKeithley2700.h"
 
 ///
@@ -8,6 +14,9 @@ VKeithley2700::VKeithley2700( ioport_t port )
 
 }
 
+///
+///
+///
 VKeithley2700::~VKeithley2700()
 {
 
@@ -24,7 +33,8 @@ const channels_t VKeithley2700::ParseChannelString( const std::string& channelSt
   channels.resize( 0 );
 
   if( 0 == channelString.size() ) {
-    std::cerr << " [VKeithley2700::ParseChannelString] ** DEBUG: Received empty string." << std::endl;
+    std::cerr << " [VKeithley2700::ParseChannelString] ** DEBUG: Received empty string."
+              << std::endl;
     return channels;
   }
 
@@ -83,7 +93,6 @@ void VKeithley2700::Tokenize(const std::string& string,
     pos = string.find_first_of( delimiters, lastPos );
 
   }
-
 }
 
 ///
@@ -92,7 +101,7 @@ void VKeithley2700::Tokenize(const std::string& string,
 unsigned int VKeithley2700::EvaluateChannelToken( const std::string& string) const
 {
   int channel = atoi( string.c_str() );
-  if( channel < __RANGE_MIN || channel > __RANGE_MAX ) {
+  if( channel < RangeMin || channel > RangeMax ) {
     std::cerr << " [VKeithley2700::EvaluateChannelToken] ** ERROR: Limit violation or malformed string: \""
               << string << "\"." << std::endl;
     throw;
@@ -113,15 +122,13 @@ const range_t VKeithley2700::EvaluateRangeToken( const std::string& string ) con
   if( tokens.size() == 2 ) {
     range = range_t( atoi( tokens.at( 0 ).c_str() ), atoi( tokens.at( 1 ).c_str() ) );
 
-    if( ! (range.first > range.second || range.first < __RANGE_MIN || range.second > __RANGE_MAX ) ) {
+    if( ! (range.first > range.second || range.second > RangeMax ) ) {
       return range;
     }
-
   }
 
   std::cerr << " [VKeithley2700::EvaluateRangeToken] ** ERROR: Limit violation or malformed range: \""
             << string << "\"." << std::endl;
   throw;
-
 }
 

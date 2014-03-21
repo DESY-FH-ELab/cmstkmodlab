@@ -1,5 +1,8 @@
-#include "TPG262ComHandler.h"
+#include <string.h>
 
+#include <iostream>
+
+#include "TPG262ComHandler.h"
 
 // SETTINGS ON THE DEVICE:
 // (MENU RS-232)
@@ -8,7 +11,6 @@
 // HARDW HANDSHAKE: on
 // PARITY: none (8N1)
 // TX TERM: NL
-
 
 /*!
   The serial port &lt;ioPort&gt; may be specified in several ways:<br><br>
@@ -48,7 +50,6 @@ void TPG262ComHandler::SendCommand( const char *commandString )
     // scan command string character wise & write
     singleCharacter = commandString[i];
     write( fIoPortFileDescriptor, &singleCharacter, 1 );
-
   }
 
   // send feed characters
@@ -77,7 +78,7 @@ void TPG262ComHandler::SendEnquiry( )
 */
 void TPG262ComHandler::ReceiveString( char *receiveString )
 {
-  usleep( _COMHANDLER_DELAY );
+  usleep( ComHandlerDelay );
 
   int timeout = 0, readResult = 0;
 
@@ -105,8 +106,10 @@ void TPG262ComHandler::OpenIoPort( void )
 
   // check if successful
   if ( fIoPortFileDescriptor == -1 ) {
-    std::cerr << "[TPG262ComHandler::OpenIoPort] ** ERROR: could not open device file " << fIoPort << "." << endl;
-    std::cerr << "                               (probably it's not user-writable)." << std::endl;
+    std::cerr << "[TPG262ComHandler::OpenIoPort] ** ERROR: could not open device file "
+        << fIoPort << "." << std::endl;
+    std::cerr << "                               (probably it's not user-writable)."
+        << std::endl;
     throw;
   }
   else {

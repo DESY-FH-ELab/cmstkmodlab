@@ -13,10 +13,10 @@ class VEOS550D {
 
   /// Enumeration of currently supported settings.
   enum Option {
-      APERTURE
-    , SHUTTER_SPEED
-    , ISO
-    , WHITE_BALANCE
+    APERTURE,
+    SHUTTER_SPEED,
+    ISO,
+    WHITE_BALANCE
   };
 
   VEOS550D(const char* port);
@@ -45,9 +45,9 @@ class VEOS550D {
   virtual bool stopPreviewMode() = 0;
 
 protected:
+
   typedef std::vector<std::string> OptionList;
   static int indexOf(const OptionList& list, const std::string& value);
-
 };
 
 #endif

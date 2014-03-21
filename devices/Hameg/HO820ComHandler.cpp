@@ -1,3 +1,7 @@
+#include <string.h>
+
+#include <iostream>
+
 #include "HO820ComHandler.h"
 
 /*!
@@ -84,13 +88,13 @@ void HO820ComHandler::OpenIoPort( void )
 
   // check if successful
   if ( fIoPortFileDescriptor == -1 ) {
-    std::cerr << "[HO820ComHandler::OpenIoPort] ** ERROR: could not open device file " << fIoPort << "." << endl;
-    std::cerr << "                               (probably it's not user-writable)." << std::endl;
+    std::cerr << "[HO820ComHandler::OpenIoPort] ** ERROR: could not open device file "
+              << fIoPort << "." << std::endl;
+    std::cerr << "                               (probably it's not user-writable)."
+              << std::endl;
     fDeviceAvailable = false;
     return;
-  }
-
-  else {
+  } else {
     // configure port with no delay
     fcntl( fIoPortFileDescriptor, F_SETFL, FNDELAY );
   }

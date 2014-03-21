@@ -3,8 +3,8 @@
 #include "KeithleyModel.h"
 
 KeithleyModel::KeithleyModel(const char* port,
-                             double updateInterval,
-                             QObject *parent) :
+                             int updateInterval,
+                             QObject * /*parent*/) :
     QObject(),
     AbstractDeviceModel<Keithley2700_t>(),
     port_(port),
@@ -119,6 +119,13 @@ void KeithleyModel::setSensorEnabled(unsigned int sensor, bool enabled) {
 
 void KeithleyModel::setControlsEnabled(bool enabled) {
   emit controlStateChanged(enabled);
+}
+
+void KeithleyModel::setUpdateInterval(int updateInterval) {
+
+  if (updateInterval<15) return;
+  updateInterval_ = updateInterval;
+  timer_->setInterval(updateInterval_ * 1000);
 }
 
 /// Returns the current cached state of the requested sensor.

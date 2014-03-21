@@ -7,19 +7,21 @@
 
 /// \brief Class handling readout of Conrad multimeter
 class ConradControllerFake : public VConradController {
+
 public:
-    ConradControllerFake(const char* comPort);
-    virtual ~ConradControllerFake();
 
-    bool initialize();
+  ConradControllerFake(const char* comPort);
+  virtual ~ConradControllerFake();
 
-    std::vector<bool> queryStatus() const;
-    bool setChannel(unsigned channel, bool value) const;
-    bool setSingleChannel(unsigned channel, bool value) const;
+  bool initialize();
+
+  std::vector<bool> queryStatus() const;
+  bool setChannel(unsigned channel, bool value) const;
+  bool setSingleChannel(unsigned channel, bool value) const;
 
 private:
 
-    mutable bool status_[8];
+  mutable bool status_[8];
 };
 
 #endif

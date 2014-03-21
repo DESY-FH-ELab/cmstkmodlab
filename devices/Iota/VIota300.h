@@ -1,19 +1,6 @@
 #ifndef __VIOTA300_H
 #define __VIOTA300_H
 
-#include <iostream>
-#include <string>
-#include <sstream>
-#include <cstdlib>
-#include <utility>
-#include <fstream>
-
-#define __IOTA300_LOWER_FLOW_LIMIT 0
-#define __IOTA300_UPPER_FLOW_LIMIT 300
-
-#define __IOTA300_LOWER_PRESSURE_LIMIT 0
-#define __IOTA300_UPPER_PRESSURE_LIMIT 70
-
 typedef const char* ioport_t;
 
 class VIota300
@@ -32,6 +19,12 @@ class VIota300
   virtual float GetFlow( void ) const = 0;
   virtual float GetPressure( void ) const = 0;
   virtual float GetStatus( void ) const = 0;
+
+  static constexpr int Iota300LowerFlowLimit =   0;
+  static constexpr int Iota300UpperFlowLimit = 300;
+
+  static constexpr int Iota300LowerPressureLimit =  0;
+  static constexpr int Iota300UpperPressureLimit = 70;
 };
 
 #endif

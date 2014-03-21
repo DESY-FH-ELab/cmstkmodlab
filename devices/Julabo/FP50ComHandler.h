@@ -20,12 +20,8 @@
 #define ttyS2 "/dev/ttyS2"
 #define ttyS3 "/dev/ttyS3"
 
-#define _COMHANDLER_DELAY 1000
-
 typedef const char* ioport_t;
 typedef struct termios termios_t;
-
-using namespace std;
 
 class FP50ComHandler {
 
@@ -43,6 +39,7 @@ class FP50ComHandler {
   void SendCommand( const char* );
   void ReceiveString( char* );
 
+  static constexpr int ComHandlerDelay = 1000;
 
  private:
 

@@ -2,8 +2,6 @@
 #define _PETITEFLEURCOMHANDLER_H_
 
 #include <termios.h>
-#include <string.h>
-#include <iostream>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
@@ -22,12 +20,8 @@
 
 #define ttyACM0 "/dev/ttyACM0"
 
-#define _COMHANDLER_DELAY 1000
-
 typedef const char* ioport_t;
 typedef struct termios termios_t;
-
-using namespace std;
 
 class PetiteFleurComHandler {
 
@@ -44,6 +38,8 @@ class PetiteFleurComHandler {
 
   void SendCommand( const char* );
   void ReceiveString( char* );
+
+  static constexpr int ComHandlerDelay = 1000;
 
  private:
 

@@ -9,20 +9,22 @@ class ConradCommunication;
 
 /// \brief Class handling readout of Conrad multimeter
 class ConradController : public VConradController {
+
 public:
-    ConradController(const char* comPort);
-    ~ConradController();
 
-    bool initialize();
+  ConradController(const char* comPort);
+  ~ConradController();
 
-    std::vector<bool> queryStatus() const;
-    bool setChannel(unsigned channel, bool value) const;
-    bool setSingleChannel(unsigned channel, bool value) const;
+  bool initialize();
+
+  std::vector<bool> queryStatus() const;
+  bool setChannel(unsigned channel, bool value) const;
+  bool setSingleChannel(unsigned channel, bool value) const;
 
 private:
-    bool queryRawStatus(unsigned char& status) const;
+  bool queryRawStatus(unsigned char& status) const;
 
-    ConradCommunication* m_communication;
+  ConradCommunication* m_communication;
 };
 
 #endif

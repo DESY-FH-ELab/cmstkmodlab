@@ -77,7 +77,7 @@ void HuberPetiteFleurWidget::controlStateChanged(bool enabled) {
   
   huberPetiteFleurCheckBox_->setEnabled(enabled);
   if (enabled) {
-    State state = model_->getDeviceState();
+    //State state = model_->getDeviceState();
   }
 }
 
