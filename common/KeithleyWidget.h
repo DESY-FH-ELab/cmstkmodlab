@@ -8,6 +8,7 @@
 #include <QGridLayout>
 #include <QLCDNumber>
 #include <QVBoxLayout>
+#include <QSlider>
 #include <QWidget>
 
 #include "KeithleyModel.h"
@@ -22,6 +23,7 @@ public:
 protected:
   KeithleyModel* model_;
   QCheckBox* keithleyCheckBox_;
+  QSlider* updateIntervalSlider_;
   QWidget* sensorControlWidget_;
 
 public slots:
