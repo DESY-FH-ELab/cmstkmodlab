@@ -123,7 +123,7 @@ void KeithleyModel::setControlsEnabled(bool enabled) {
 
 void KeithleyModel::setUpdateInterval(int updateInterval) {
 
-  if (updateInterval<15) return;
+  if (updateInterval<10) return;
   updateInterval_ = updateInterval;
   timer_->setInterval(updateInterval_ * 1000);
 }

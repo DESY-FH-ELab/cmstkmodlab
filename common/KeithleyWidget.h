@@ -8,10 +8,27 @@
 #include <QGridLayout>
 #include <QLCDNumber>
 #include <QVBoxLayout>
-#include <QSlider>
+#include <QComboBox>
 #include <QWidget>
 
 #include "KeithleyModel.h"
+
+class KeithleyUpdateIntervalBox : public QComboBox
+{
+  Q_OBJECT
+
+public:
+    explicit KeithleyUpdateIntervalBox(KeithleyModel* model, QWidget *parent = 0);
+
+protected slots:
+    void currentItemChanged(int);
+
+protected:
+    KeithleyModel* model_;
+
+signals:
+    void valueChanged(int);
+};
 
 class KeithleyWidget : public QWidget
 {
@@ -23,7 +40,7 @@ public:
 protected:
   KeithleyModel* model_;
   QCheckBox* keithleyCheckBox_;
-  QSlider* updateIntervalSlider_;
+  KeithleyUpdateIntervalBox* updateIntervalBox_;
   QWidget* sensorControlWidget_;
 
 public slots:
