@@ -1,5 +1,38 @@
 #include "KeithleyWidget.h"
 
+KeithleyUpdateIntervalBox::KeithleyUpdateIntervalBox(KeithleyModel* model,
+                                                     QWidget *parent) :
+    QComboBox(parent),
+    model_(model)
+{
+    addItem("20 seconds", 20);
+    addItem("30 seconds", 30);
+    addItem("45 seconds", 45);
+    addItem("1 minute", 60*1);
+    addItem("2 minutes", 60*2);
+    addItem("3 minutes", 60*3);
+    addItem("4 minutes", 60*4);
+    addItem("5 minutes", 60*5);
+
+    int idx = findData(model_->getUpdateInterval());
+    if (idx!=-1) setCurrentIndex(idx);
+
+    connect(this,
+            SIGNAL(currentIndexChanged(int)),
+            this,
+            SLOT(currentItemChanged(int)));
+
+    connect(this,
+            SIGNAL(valueChanged(int)),
+            model_,
+            SLOT(setUpdateInterval(int)));
+}
+
+void KeithleyUpdateIntervalBox::currentItemChanged(int idx)
+{
+    emit(valueChanged(itemData(idx).toInt()));
+}
+
 KeithleyWidget::KeithleyWidget(KeithleyModel* model,
                                        QWidget *parent) :
     QWidget(parent),
@@ -11,13 +44,8 @@ KeithleyWidget::KeithleyWidget(KeithleyModel* model,
   keithleyCheckBox_ = new QCheckBox("Enable Multimeter", this);
   layout->addWidget(keithleyCheckBox_);
 
-  updateIntervalSlider_ = new QSlider(Qt::Horizontal, this);
-  updateIntervalSlider_->setMinimum(15);
-  updateIntervalSlider_->setMaximum(5*60);
-  updateIntervalSlider_->setSingleStep(15);
-  updateIntervalSlider_->setTickInterval(15);
-  updateIntervalSlider_->setValue(model_->getUpdateInterval());
-  layout->addWidget(updateIntervalSlider_);
+  updateIntervalBox_ = new KeithleyUpdateIntervalBox(model_, this);
+  layout->addWidget(updateIntervalBox_);
 
   sensorControlWidget_= new QWidget(this);
   layout->addWidget(sensorControlWidget_);
@@ -35,11 +63,6 @@ KeithleyWidget::KeithleyWidget(KeithleyModel* model,
           SIGNAL(toggled(bool)),
           model_,
           SLOT(setDeviceEnabled(bool)));
-
-  connect(updateIntervalSlider_,
-          SIGNAL(valueChanged(int)),
-          model_,
-          SLOT(setUpdateInterval(int)));
 
   connect(model_,
           SIGNAL(deviceStateChanged(State)),
