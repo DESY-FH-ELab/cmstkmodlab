@@ -5,3 +5,6 @@ ui_ConradControl.h
 moc_*
 conrad
 conrad.app
+ConradControl.pro
+*~
+
