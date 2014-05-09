@@ -114,11 +114,11 @@ void ThermoDAQStreamReader::processHamegValues(QXmlStreamReader& xml)
 void ThermoDAQStreamReader::processLog(QXmlStreamReader& xml)
 {
     QString time = xml.attributes().value("time").toString();
-    QDateTime dt = QDateTime::fromString(time, Qt::ISODate);
+    QDateTime dt = QDateTime::fromString(time, Qt::TextDate);
     log_.uTime = dt.toTime_t();
     log_.datime = TDatime(measurement_.uTime);
 
-    log_.message = xml.text().toString().toStdString();
+    log_.message = xml.readElementText(QXmlStreamReader::IncludeChildElements).toStdString();
 
     ologtree_->Fill();
 }
