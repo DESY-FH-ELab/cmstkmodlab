@@ -7,11 +7,6 @@
 #include <fcntl.h>
 #include <unistd.h>
 
-#define ttyUSB0 "/dev/ttyUSB0"
-#define ttyUSB1 "/dev/ttyUSB1"
-#define ttyUSB2 "/dev/ttyUSB2"
-#define ttyUSB3 "/dev/ttyUSB3"
-
 typedef const char* ioport_t;
 typedef struct termios termios_t;
 
