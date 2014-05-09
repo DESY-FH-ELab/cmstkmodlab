@@ -73,7 +73,12 @@ void ThermoDAQWidget::logButtonClicked()
 
     xml.writeStartElement("Log");
     xml.writeAttribute("time", utime.toString());
-    xml.writeCharacters(logEdit_->toPlainText());
+    
+    QString message = logEdit_->toPlainText();
+    message.replace('\n', "&#xA;");
+    message.replace('\r', "&#xD;");
+    xml.writeCharacters(message);
+    
     xml.writeEndElement();
 
     daqModel_->customDAQMessage(buffer);
