@@ -58,7 +58,7 @@ public:
 
   // TODO Add initialisation parameters
   explicit DefoConradModel(QObject *parent = 0);
-  ~DefoConradModel();
+  virtual ~DefoConradModel();
 
   // Methods for power control and status querying of the devices connected to
   // the switch
