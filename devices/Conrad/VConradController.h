@@ -9,7 +9,7 @@ class VConradController {
 public:
 
   VConradController(const char* comPort);
-  ~VConradController();
+  virtual ~VConradController();
 
   virtual bool initialize() = 0;
 
