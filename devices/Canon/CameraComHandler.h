@@ -31,6 +31,7 @@ protected:
   Camera* camera_;
 
   CameraAbilities abilities_;
+  GPPortInfoList* infoList_;
   GPPortInfo info_;
 };
 

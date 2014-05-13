@@ -28,15 +28,12 @@ CameraComHandler::CameraComHandler(const char* modelName,
   gp_abilities_list_free(list);
 
   // Require it to be on the requested port
-  //  GPPortInfo info_;
-  GPPortInfoList* infoList;
   // Load list of known ports, look for camera, get and set abilities
-  gp_port_info_list_new(&infoList);
-  gp_port_info_list_load(infoList);
-  gp_port_info_list_get_info(infoList,
-                             gp_port_info_list_lookup_path(infoList, port),
+  gp_port_info_list_new(&infoList_);
+  gp_port_info_list_load(infoList_);
+  gp_port_info_list_get_info(infoList_,
+                             gp_port_info_list_lookup_path(infoList_, port),
                              &info_);
-  gp_port_info_list_free(infoList);
 
   /*
     Create camera now, otherwise an invalid conversion from Camera* const*
@@ -50,6 +47,7 @@ CameraComHandler::~CameraComHandler() {
 
   gp_camera_exit(camera_, context_);
   gp_camera_free(camera_);
+  gp_port_info_list_free(infoList_);
   //  delete context_;
 }
 
