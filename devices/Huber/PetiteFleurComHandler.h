@@ -8,18 +8,6 @@
 #include <unistd.h>
 #include <cmath>
 
-#define COM1 "/dev/ttyS0"
-#define COM2 "/dev/ttyS1"
-#define COM3 "/dev/ttyS2"
-#define COM4 "/dev/ttyS3"
-
-#define ttyS0 "/dev/ttyS0"
-#define ttyS1 "/dev/ttyS1"
-#define ttyS2 "/dev/ttyS2"
-#define ttyS3 "/dev/ttyS3"
-
-#define ttyACM0 "/dev/ttyACM0"
-
 typedef const char* ioport_t;
 typedef struct termios termios_t;
 

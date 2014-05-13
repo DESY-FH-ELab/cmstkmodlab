@@ -5,17 +5,17 @@
 /*
   HuberPetiteFleurModel implementation
   */
-const QString HuberPetiteFleurModel::HuberPetiteFleur_PORT = QString("/dev/ttyACM0");
+const QString HuberPetiteFleurModel::HuberPetiteFleur_PORT = QString("/dev/ttyHuberPetiteFleur");
 
-HuberPetiteFleurModel::HuberPetiteFleurModel(float updateInterval, QObject * /*parent*/) :
-    QObject()
-//  , state_(OFF) // Initialize all fields to prevent random values
-//  , controller_(NULL)
-  , AbstractDeviceModel<HuberPetiteFleur_t>()
-  , updateInterval_(updateInterval)
-  , circulatorEnabled_(false)
-  , workingTemperature_(-40, 40, 2)
-  , bathTemperature_(0)
+HuberPetiteFleurModel::HuberPetiteFleurModel(float updateInterval, QObject * /*parent*/)
+  : QObject(),
+    // state_(OFF), // Initialize all fields to prevent random values
+    // controller_(NULL),
+    AbstractDeviceModel<HuberPetiteFleur_t>(),
+    updateInterval_(updateInterval),
+    circulatorEnabled_(false),
+    workingTemperature_(-40, 40, 2),
+    bathTemperature_(0)
 {
     timer_ = new QTimer(this);
     timer_->setInterval(updateInterval_ * 1000);

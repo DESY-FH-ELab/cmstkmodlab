@@ -28,7 +28,7 @@ class VHuberPetiteFleur
   virtual bool GetCirculatorStatus( void ) const = 0;
 
   static constexpr int PetiteFleurLowerTempLimit = -40;
-  static constexpr int PetiteFleurUpperTempLimit = -40;
+  static constexpr int PetiteFleurUpperTempLimit = 40;
 };
 
 #endif

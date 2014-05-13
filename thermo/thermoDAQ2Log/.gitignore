@@ -1,0 +1,7 @@
+thermoDAQ2Log.pro
+thermoDAQ2Log.pro.user
+Makefile
+*.d
+*.o
+moc_*
+thermoDAQ2Log

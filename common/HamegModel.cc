@@ -5,7 +5,7 @@
 /*
   HamegModel implementation
   */
-const QString HamegModel::Hameg_PORT = QString("/dev/ttyUSB0");
+const QString HamegModel::Hameg_PORT = QString("/dev/ttyHameg8143");
 
 HamegModel::HamegModel(float updateInterval, QObject * /*parent*/) :
     QObject(),
