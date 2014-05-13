@@ -30,13 +30,12 @@ DefoMainWindow::DefoMainWindow(QWidget *parent) :
   pointModel_ = new DefoPointRecognitionModel(this);
 
   // SCRIPT MODEL
-  scriptModel_ = new DefoScriptModel(
-        conradModel_
-      , cameraModel_
-      , julaboModel_
-      , keithleyModel_
-      , this
-  );
+  scriptModel_ = new DefoScriptModel(conradModel_,
+				     cameraModel_,
+				     julaboModel_,
+				     keithleyModel_,
+				     this);
+
   connect(scriptModel_, SIGNAL(prepareNewMeasurement()),
 	  this, SLOT(prepareNewMeasurement()));
   connect(scriptModel_, SIGNAL(setControlsEnabled(bool)),

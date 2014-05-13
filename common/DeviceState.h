@@ -22,9 +22,9 @@ enum State {
   , CLOSING       /**< Device transitioning to OFF state */
 };
 
-template <class Controller> class AbstractDeviceModel {
-
-public:
+template <class Controller> class AbstractDeviceModel
+{
+ public:
   explicit AbstractDeviceModel() : controller_(NULL), state_(OFF) {}
   virtual ~AbstractDeviceModel() { destroyController(); }
 
@@ -34,10 +34,10 @@ public:
   /// Attempts to enable/disable the (communication with) the device.
   virtual void setDeviceEnabled( bool enabled ) {
      // To be enabled and off
-    if ( enabled && state_ == OFF )
+    if (enabled && state_ == OFF)
       initialize();
     // To be disabled and on
-    else if ( !enabled && state_ == READY )
+    else if (!enabled && state_ == READY)
       close();
 
     /*
@@ -47,6 +47,7 @@ public:
   }
 
 protected:
+
   Controller* controller_; ///< Current device controller or NULL if not active.
 
   /// Renews the current Controller* for the given port.

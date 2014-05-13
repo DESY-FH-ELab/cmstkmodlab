@@ -3,16 +3,17 @@
 DefoMeasurementSelectionModel::DefoMeasurementSelectionModel(QObject *parent) :
     QObject(parent)
   , selection_(NULL)
-{}
+{
 
-DefoMeasurement * DefoMeasurementSelectionModel::getSelection() const {
+}
+
+DefoMeasurement * DefoMeasurementSelectionModel::getSelection() const
+{
   return selection_;
 }
 
-void DefoMeasurementSelectionModel::setSelection(
-    DefoMeasurement *selection
-) {
-
+void DefoMeasurementSelectionModel::setSelection(DefoMeasurement *selection)
+{
   if (selection_ != selection) {
     selection_ = selection;
     emit selectionChanged(selection_);
@@ -20,12 +21,15 @@ void DefoMeasurementSelectionModel::setSelection(
 
 }
 
-DefoMeasurementPairSelectionModel::DefoMeasurementPairSelectionModel(QObject *parent) :
-    QObject(parent)
-  , selection_(NULL)
-{}
+DefoMeasurementPairSelectionModel::DefoMeasurementPairSelectionModel(QObject *parent)
+  : QObject(parent),
+    selection_(NULL)
+{
 
-DefoMeasurementPair * DefoMeasurementPairSelectionModel::getSelection() const {
+}
+
+DefoMeasurementPair * DefoMeasurementPairSelectionModel::getSelection() const
+{
   return selection_;
 }
 
