@@ -13,7 +13,7 @@ endif
 
 qtsubdirs     = common
 ifeq ($(NOTHERMAL),0)
-qtsubdirs    += thermo/thermoDAQ thermo/thermoDAQ2Root thermo/thermoDisplay
+qtsubdirs    += thermo/thermoDAQ thermo/thermoDAQ2Root thermo/thermoDisplay thermo/thermoDAQ2Log
 endif
 ifeq ($(NODEFO),0)
 qtsubdirs    += defo/defoCommon defo/defoDAQ defo/defoReco defo/defoCalib conradControl
