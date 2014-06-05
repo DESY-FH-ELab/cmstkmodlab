@@ -8,6 +8,8 @@ LIBS += -L@basepath@/devices/lib -lTkModLabJulabo
 LIBS += -L@basepath@/devices/lib -lTkModLabHameg
 LIBS += -L@basepath@/devices/lib -lTkModLabConrad
 LIBS += -L@basepath@/devices/lib -lTkModLabCanon
+LIBS += -L@basepath@/devices/lib -lTkModLabHuber
+LIBS += -L@basepath@/devices/lib -lTkModLabPfeiffer
 LIBS += -L@basepath@/common -lCommon
 LIBS += -L@basepath@/defo/defoCommon -lDefoCommon
 LIBS += -lgphoto2 -lexiv2
@@ -15,13 +17,14 @@ LIBS += -lopencv_core -lopencv_imgproc -lopencv_highgui
 INCLUDEPATH += /usr/include/exiv2
 LIBS += @qwtlibs@ -lGL -lGLU
 
+QMAKE = @qmake@
 QMAKE_CXXFLAGS += -std=c++0x
 
 macx {
 
 }
 else {
-    QMAKE_LFLAGS   += -stdlib=libc++
+
 }
 
 INCLUDEPATH += @qwtincludes@

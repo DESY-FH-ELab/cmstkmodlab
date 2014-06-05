@@ -16,13 +16,14 @@ LIBS += -L@basepath@/defo/defoCommon -lDefoCommon
 LIBS += -lgphoto2 -lexiv2
 LIBS += -lopencv_core -lopencv_imgproc -lopencv_highgui
 
+QMAKE = @qmake@
 QMAKE_CXXFLAGS += -std=c++0x
 
 macx {
 
 }
 else {
-    QMAKE_LFLAGS   += -stdlib=libc++
+
 }
 
 QT       += core xml

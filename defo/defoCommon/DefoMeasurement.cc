@@ -7,10 +7,10 @@
 
 #include "DefoMeasurement.h"
 
-DefoMeasurement::DefoMeasurement(const QString& imageLocation, bool preview) :
-    timestamp_(QDateTime::currentDateTimeUtc())
-  , imageLocation_(imageLocation)
-  , previewImage_(preview)
+DefoMeasurement::DefoMeasurement(const QString& imageLocation, bool preview)
+  : timestamp_(QDateTime::currentDateTime().toUTC()),
+    imageLocation_(imageLocation),
+    previewImage_(preview)
 {
   if (image_.isNull()) {
     QImage temp(imageLocation_);
@@ -39,14 +39,12 @@ QImage DefoMeasurement::getImage() const {
   image may be provided. In the case this points to NULL, the whole image is
   searched for suitable points.
   */
-const DefoPointCollection* DefoMeasurement::findPoints(
-    const QRect* searchArea
-  , const QPolygonF* roi
-  , int step1Threshold
-  , int step2Threshold
-  , int step3Threshold
-  , int halfSquareWidth
-) const {
+const DefoPointCollection* DefoMeasurement::findPoints(const QRect* searchArea,
+						       const QPolygonF* roi,
+						       int step1Threshold,
+						       int step2Threshold,
+						       int step3Threshold,
+						       int halfSquareWidth) const {
 
   DefoPointCollection* points = new DefoPointCollection();
 
@@ -109,29 +107,23 @@ const DefoPointCollection* DefoMeasurement::findPoints(
           // do this recursively 3 times for improving the coordinates
 
           DefoPoint intermediate( x, y );
-          QRect searchRect(
-                intermediate.getPixX() - halfSquareWidth
-              , intermediate.getPixY() - halfSquareWidth
-              , 2 * halfSquareWidth
-              , 2 * halfSquareWidth
-          );
+          QRect searchRect(intermediate.getPixX() - halfSquareWidth,
+			   intermediate.getPixY() - halfSquareWidth,
+			   2 * halfSquareWidth,
+			   2 * halfSquareWidth);
 
           int i = 0;
 
           // check if this point is still in the area, otherwise drop it
           // FIXME DefoSquare intersections
           while ( i < 4 && imageArea.contains( searchRect ) ) {
-            intermediate = getCenterOfGravity(
-                  image
-                , searchRect
-                , step3Threshold
-            );
-            searchRect.setCoords(
-                  intermediate.getPixX() - halfSquareWidth
-                , intermediate.getPixY() - halfSquareWidth
-                , intermediate.getPixX() + halfSquareWidth
-                , intermediate.getPixY() + halfSquareWidth
-            );
+            intermediate = getCenterOfGravity(image,
+					      searchRect,
+					      step3Threshold);
+            searchRect.setCoords(intermediate.getPixX() - halfSquareWidth,
+				 intermediate.getPixY() - halfSquareWidth,
+				 intermediate.getPixX() + halfSquareWidth,
+				 intermediate.getPixY() + halfSquareWidth);
 
 //            std::cout << "i=" << i << ": " << intermediate << std::endl;
 
@@ -142,10 +134,8 @@ const DefoPointCollection* DefoMeasurement::findPoints(
 
             // check again since the point can be reconstructed at a distance
             // from the seed
-            if (
-                area.contains(intermediate.getPixX(), intermediate.getPixY())
-                && !forbiddenAreas.isInside(intermediate)
-            ) {
+            if (area.contains(intermediate.getPixX(), intermediate.getPixY()) &&
+		!forbiddenAreas.isInside(intermediate)) {
               // FIXME implement point/brightness isolation
 
               // Create DefoSquare around last found COG
@@ -207,7 +197,6 @@ const DefoPointCollection* DefoMeasurement::findPoints(
   determinePointColors(image, points, halfSquareWidth, step3Threshold);
 
   return points;
-
 }
 
 /**
@@ -215,29 +204,24 @@ const DefoPointCollection* DefoMeasurement::findPoints(
   * of the DefoPoint. Please remark that this function does not check if there
   * is only one blue point, but tags all points exceeding the threshold!
   */
-void DefoMeasurement::determinePointColors(
-    const QImage& image
-  , DefoPointCollection* points
-  , int halfSquareWidth
-  , int threshold
-) const {
+void DefoMeasurement::determinePointColors(const QImage& image,
+					   DefoPointCollection* points,
+					   int halfSquareWidth,
+					   int threshold) const {
 
   QRect area;
   QColor color;
 //  double yellow;
 //  double blue;
 
-  for ( DefoPointCollection::iterator it = points->begin();
-        it < points->end();
-        ++it
-  ) {
+  for (DefoPointCollection::iterator it = points->begin();
+       it != points->end();
+       ++it) {
 
-    area.setCoords(
-        it->getPixX() - halfSquareWidth
-      , it->getPixY() - halfSquareWidth
-      , it->getPixX() + halfSquareWidth
-      , it->getPixY() + halfSquareWidth
-    );
+    area.setCoords(it->getPixX() - halfSquareWidth,
+		   it->getPixY() - halfSquareWidth,
+		   it->getPixX() + halfSquareWidth,
+		   it->getPixY() + halfSquareWidth);
 
     /*
      * FIXME "Blueishness" is ill-defined.
@@ -262,11 +246,9 @@ void DefoMeasurement::determinePointColors(
   * image are taken into account. Otherwise a point at (0,0) is returned.
   */
 // FIXME DefoSquare <> QRect
-DefoPoint DefoMeasurement::getCenterOfGravity(
-    const QImage& image
-  , const QRect &area
-  , int threshold
-) const {
+DefoPoint DefoMeasurement::getCenterOfGravity(const QImage& image,
+					      const QRect &area,
+					      int threshold) const {
 
   // Ensure complete overlap of the area, everything outside is undefined
 //  QRect area = area & image_.rect();
@@ -317,11 +299,9 @@ DefoPoint DefoMeasurement::getCenterOfGravity(
   * outside image, only the pixels inside image are taken into account.
   * If the overlap of area and image is empty, rgb(0,0,0) is returned.
   */
-const QColor DefoMeasurement::getAverageColor(
-    const QImage& image
-  , const QRect &area
-  , int threshold
-) const {
+const QColor DefoMeasurement::getAverageColor(const QImage& image,
+					      const QRect &area,
+					      int threshold) const {
 
   // Ensure complete overlap of the area, everything outside is undefined
   QRect realArea = area & image.rect();
@@ -354,11 +334,9 @@ const QColor DefoMeasurement::getAverageColor(
       }
     }
 
-    average.setRgb(
-          red/totalBrightness
-        , green/totalBrightness
-        , blue/totalBrightness
-    );
+    average.setRgb(red/totalBrightness,
+		   green/totalBrightness,
+		   blue/totalBrightness);
   }
 
   return average;

@@ -12,7 +12,6 @@ macx {
 }
 else {
     INCLUDEPATH += /usr/include/exiv2
-    QMAKE_LFLAGS   += -stdlib=libc++
 }
 
 INCLUDEPATH += @qwtincludes@
@@ -26,6 +25,7 @@ LIBS += -L@basepath@/devices/lib -lTkModLabCanon
 LIBS += -L@basepath@/devices/lib -lTkModLabHuber
 LIBS += -L@basepath@/common -lCommon
 
+QMAKE = @qmake@
 QMAKE_CXXFLAGS += -std=c++0x
 
 DEFINES += @configdefines@

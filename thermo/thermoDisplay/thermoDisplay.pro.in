@@ -11,6 +11,7 @@ LIBS += -L@basepath@/devices/lib -lTkModLabHuber
 LIBS += -L@basepath@/common -lCommon
 LIBS += @qwtlibs@ -lGL -lGLU
 
+QMAKE = @qmake@
 QMAKE_CXXFLAGS += -std=c++0x
 
 INCLUDEPATH += @qwtincludes@

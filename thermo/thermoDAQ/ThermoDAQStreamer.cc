@@ -30,7 +30,7 @@ void ThermoDAQStreamer::handleDAQMessage(const QString& message)
 void ThermoDAQStreamer::daqStateChanged(bool state)
 {
     if (state==true) {
-        QDateTime dt = QDateTime::currentDateTimeUtc();
+        QDateTime dt = QDateTime::currentDateTime().toUTC();
 
         QString measurementDirPath(QDir::homePath() + "/Desktop/measurements/%1");
         currentDir_.setPath(measurementDirPath.arg(dt.toString("yyyyMMdd")));

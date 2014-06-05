@@ -6,7 +6,7 @@ TestWindow::TestWindow(QWidget *parent) :
 {
 
   // Set up current directory for saving images
-  QDateTime dt = QDateTime::currentDateTimeUtc();
+  QDateTime dt = QDateTime::currentDateTime().toUTC();
   QString measurementDirPath("/home/tkmodlab/Desktop/measurements/%1-%2/");
   measurementDirPath = measurementDirPath.arg(dt.toString("yyyyMMdd"));
   
