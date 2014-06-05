@@ -31,6 +31,15 @@ class ApplicationConfig {
     return returnValue;
   }
 
+  std::string getValue(std::string const& key) const {
+    std::map<std::string,std::string>::const_iterator it = keyvalueMap_.find(key);
+    if (it!=keyvalueMap_.end()) {
+      return it->second;
+    } else {
+      return std::string();
+    }
+  }
+
   template <class aType> void setValue(std::string const& key, aType value) {
     QVariant variant(value);
     keyvalueMap_[key] = variant.toString().toStdString();
