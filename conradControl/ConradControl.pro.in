@@ -4,6 +4,9 @@
 
 LIBS += -L@basepath@/devices/lib -lTkModLabConrad
 
+QMAKE = qmake-qt4
+QMAKE_CXXFLAGS += -std=c++0x
+
 macx { 
     INCLUDEPATH += /opt/local/include/GL
     LIBS += -L/opt/local/lib
