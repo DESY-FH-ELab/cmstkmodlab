@@ -8,7 +8,7 @@
 #include "DefoMeasurement.h"
 
 DefoMeasurement::DefoMeasurement(const QString& imageLocation, bool preview) :
-    timestamp_(QDateTime::currentDateTimeUtc())
+    timestamp_(QDateTime::currentDateTime().toUTC())
   , imageLocation_(imageLocation)
   , previewImage_(preview)
 {
