@@ -2,6 +2,7 @@ BASEPATH      = @basepath@
 NOTHERMAL     = @nothermal@
 NODEFO        = @nodefo@
 USEFAKEDEVICES= @usefakedevices@
+QMAKE         = @qmake@
 
 subdirs	      = devices tools common
 ifeq ($(NOTHERMAL),0)
@@ -23,7 +24,7 @@ all: qt
 	@for dir in $(subdirs); do (cd $$dir; make); done
 
 qt:
-	@for dir in $(qtsubdirs); do (cd $$dir; qmake); done
+	@for dir in $(qtsubdirs); do (cd $$dir; @qmake@); done
 
 Makefile: Makefile.in @basepath@/config.status
 	@basepath@/config.status Makefile.in
