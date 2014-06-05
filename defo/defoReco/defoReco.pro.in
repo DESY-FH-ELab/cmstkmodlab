@@ -22,7 +22,7 @@ macx {
 
 }
 else {
-    QMAKE_LFLAGS   += -stdlib=libc++
+
 }
 
 INCLUDEPATH += @qwtincludes@

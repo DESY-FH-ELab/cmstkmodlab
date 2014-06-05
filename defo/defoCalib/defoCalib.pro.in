@@ -23,7 +23,7 @@ macx {
 
 }
 else {
-    QMAKE_LFLAGS   += -stdlib=libc++
+
 }
 
 QT       += core xml

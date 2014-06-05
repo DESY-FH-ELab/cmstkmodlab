@@ -12,7 +12,6 @@ macx {
 }
 else {
     INCLUDEPATH += /usr/include/exiv2
-    QMAKE_LFLAGS   += -stdlib=libc++
 }
 
 INCLUDEPATH += @qwtincludes@
