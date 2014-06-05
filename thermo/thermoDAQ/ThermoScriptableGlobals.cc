@@ -73,7 +73,7 @@ void ThermoScriptableGlobals::log(const QString & text) {
 
 QScriptValue ThermoScriptableGlobals::uTime() const
 {
-  uint utime = QDateTime::currentDateTimeUtc().toTime_t();
+  uint utime = QDateTime::currentDateTime().toUTC().toTime_t();
   return QScriptValue(utime);
 }
 
