@@ -1,3 +1,4 @@
+#include <ApplicationConfig.h>
 #include <HuberPetiteFleurWidget.h>
 #include <HamegWidget.h>
 #include <KeithleyWidget.h>
@@ -12,8 +13,11 @@ TestWindow::TestWindow(QWidget *parent) :
     QWidget *central = new QWidget();
     central->setLayout(layout);
 
+    ApplicationConfig* config = ApplicationConfig::instance();
+    
     // HUBER MODEL
-    huberModel_ = new HuberPetiteFleurModel(15, this);
+    huberModel_ = new HuberPetiteFleurModel(config->getValue("HuberPetiteFleurDevice").c_str(),
+					    15, this);
     HuberPetiteFleurWidget* huberWidget = new HuberPetiteFleurWidget(huberModel_, central);
     huberWidget->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);
     layout->addWidget(huberWidget);

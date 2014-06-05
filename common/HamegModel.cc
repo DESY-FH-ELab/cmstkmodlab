@@ -5,11 +5,12 @@
 /*
   HamegModel implementation
   */
-const QString HamegModel::Hameg_PORT = QString("/dev/ttyHameg8143");
-
-HamegModel::HamegModel(float updateInterval, QObject * /*parent*/) :
+HamegModel::HamegModel(const char* port,
+		       float updateInterval,
+		       QObject * /*parent*/) :
     QObject(),
     AbstractDeviceModel<Hameg8143_t>(),
+    Hameg_PORT(port),
     updateInterval_(updateInterval),
     forceRemoteMode_(false),
     voltage1Parameter_(0, 30.000, 2),

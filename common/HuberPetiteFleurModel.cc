@@ -5,13 +5,14 @@
 /*
   HuberPetiteFleurModel implementation
   */
-const QString HuberPetiteFleurModel::HuberPetiteFleur_PORT = QString("/dev/ttyHuberPetiteFleur");
-
-HuberPetiteFleurModel::HuberPetiteFleurModel(float updateInterval, QObject * /*parent*/)
+HuberPetiteFleurModel::HuberPetiteFleurModel(const char* port,
+					     float updateInterval,
+					     QObject * /*parent*/)
   : QObject(),
+    AbstractDeviceModel<HuberPetiteFleur_t>(),
+    HuberPetiteFleur_PORT(port),
     // state_(OFF), // Initialize all fields to prevent random values
     // controller_(NULL),
-    AbstractDeviceModel<HuberPetiteFleur_t>(),
     updateInterval_(updateInterval),
     circulatorEnabled_(false),
     workingTemperature_(-40, 40, 2),
