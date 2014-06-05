@@ -198,7 +198,7 @@ void DefoMainWindow::exportMeasurement() {
 void DefoMainWindow::prepareNewMeasurement() {
 
   // Set up current directory for saving images
-  QDateTime dt = QDateTime::currentDateTimeUtc();
+  QDateTime dt = QDateTime::currentDateTime().toUTC();
   QString measurementDirPath(QDir::homePath() + "/Desktop/measurements/%1-%2/");
   measurementDirPath = measurementDirPath.arg(dt.toString("yyyyMMdd"));
   
