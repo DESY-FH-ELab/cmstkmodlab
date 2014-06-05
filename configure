@@ -16,8 +16,9 @@ WITHTWITTERSUPPORT=1
 TWITTERLIBS="-lcurl -ltwitcurl"
 CONFIGDEFINES=""
 
-ROOTINCPATH=`root-config --incdir`
+ROOTCFLAGS=`root-config --cflags`
 ROOTLIBS=`root-config --libs`
+ROOTGLIBS=`root-config --glibs`
 
 while test $# -gt 0; do 
   case $1 in
@@ -44,6 +45,8 @@ while test $# -gt 0; do
   shift
 done
 
+QMAKE="qmake"
+
 if test $ARCHITECTURE = "Darwin"; then
     echo Darwin architecture: fake device support forced
     USEFAKEDEVICES=1
@@ -64,6 +67,15 @@ if test $ARCHITECTURE = "Linux" && test $KERNELMINOR -lt 6; then
 fi
 if test $ARCHITECTURE = "Linux"; then
     SOFLAGS="-shared"
+    # Support multiple distros (e.g. Ubuntu (Debian), openSUSE)
+    if [ -n "`which qmake 2> /dev/null`" ]; then
+        echo Using qmake.
+        QMAKE="qmake"
+    fi
+    if [ -n "`which qmake-qt4 2> /dev/null`" ]; then
+        echo Using qmake-qt4
+         QMAKE="qmake-qt4"
+    fi
     CC="gcc"
     CXX="g++"
     LD="g++"
@@ -99,7 +111,7 @@ else
     echo build with THERMAL support
 fi
 
-SED_VARIABLES="BASEPATH ARCHITECTURE KERNELMAJOR KERNELMINOR CXX CC LD NODEFO NOTHERMAL USEFAKEDEVICES WITHTWITTERSUPPORT TWITTERLIBS SOFLAGS CONFIGDEFINES QWTDEFINES QWTINCLUDES QWTLIBS ROOTINCPATH ROOTLIBS"
+SED_VARIABLES="BASEPATH ARCHITECTURE KERNELMAJOR KERNELMINOR QMAKE CXX CC LD NODEFO NOTHERMAL USEFAKEDEVICES WITHTWITTERSUPPORT TWITTERLIBS SOFLAGS CONFIGDEFINES QWTDEFINES QWTINCLUDES QWTLIBS ROOTCFLAGS ROOTLIBS ROOTGLIBS"
 
 echo "#!/bin/sh
 dest=\`basename \$1 .in\`
