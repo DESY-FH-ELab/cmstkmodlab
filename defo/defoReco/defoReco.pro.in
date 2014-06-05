@@ -15,7 +15,7 @@ INCLUDEPATH += /usr/include/exiv2
 DEFINES += 
 LIBS += @qwtlibs@ -lGL -lGLU
 
-QMAKE = qmake-qt4
+QMAKE = @qmake@
 QMAKE_CXXFLAGS += -std=c++0x
 
 macx {

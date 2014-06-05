@@ -4,7 +4,7 @@
 
 LIBS += -L@basepath@/devices/lib -lTkModLabConrad
 
-QMAKE = qmake-qt4
+QMAKE = @qmake@
 QMAKE_CXXFLAGS += -std=c++0x
 
 macx { 

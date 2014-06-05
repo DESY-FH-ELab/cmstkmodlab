@@ -7,7 +7,7 @@
 QMAKE_CXXFLAGS += @rootcflags@
 LIBS += @rootlibs@
 
-QMAKE = qmake-qt4
+QMAKE = @qmake@
 QMAKE_CXXFLAGS += -std=c++0x
 
 QT       += core xml

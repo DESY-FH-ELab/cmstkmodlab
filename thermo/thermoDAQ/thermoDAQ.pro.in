@@ -8,7 +8,7 @@ LIBS += -L@basepath@/common -lCommon
 LIBS += @qwtlibs@ -lGL -lGLU
 LIBS += @twitterlibs@
 
-QMAKE = qmake-qt4
+QMAKE = @qmake@
 QMAKE_CXXFLAGS += -std=c++0x
 
 INCLUDEPATH += @qwtincludes@
