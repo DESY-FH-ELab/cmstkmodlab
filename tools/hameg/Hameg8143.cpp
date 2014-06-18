@@ -1,14 +1,11 @@
 #include <cmath>
-#include <sstream>
 
 #include "Hameg8143.h"
 
 Hameg8143::Hameg8143( const ioport_t ioPort )
-  :VHameg8143(ioPort),
-   isDeviceAvailable_(false)
 {
   comHandler_ = new HO820ComHandler( ioPort );
-  DeviceInit();
+  //  Device_Init();
 }
 
 Hameg8143::~Hameg8143()
@@ -16,33 +13,13 @@ Hameg8143::~Hameg8143()
   delete comHandler_;
 }
 
-bool Hameg8143::DeviceAvailable() const
-{
-  return isDeviceAvailable_;
-}
-
-unsigned int Hameg8143::GetStatus() const
+void Hameg8143::GetStatus() const
 {
   comHandler_->SendCommand("STA");
   char buffer[1000];
   comHandler_->ReceiveString(buffer);
   StripBuffer(buffer);
-
-  std::istringstream iss(buffer);
-  std::string temp;
-  unsigned int status = 0;
-  while (iss >> temp) {
-	  if (temp=="OP0") status |= hmOP0;
-	  if (temp=="OP1") status |= hmOP1;
-	  if (temp=="CV1") status |= hmCV1;
-	  if (temp=="CC1") status |= hmCC1;
-	  if (temp=="CV2") status |= hmCV2;
-	  if (temp=="CC2") status |= hmCC2;
-	  if (temp=="RM1") status |= hmRM1;
-	  if (temp=="RM0") status |= hmRM0;
-  }
-
-  return status;
+  std::cout << buffer << std::endl;
 }
 
 bool Hameg8143::SetRemoteMode(bool remote) const
@@ -174,7 +151,7 @@ float Hameg8143::GetCurrent(int channel) const
   comHandler_->ReceiveString(buffer);
   StripBuffer(buffer);
   std::string buf = buffer;
-  buf = buf.substr(buf.find(':')+1);
+  buf = buf.substr(buf.find('=')+1);
   buf = buf.substr(0, buf.find('A'));
 
   float current = std::atof(buf.c_str());
@@ -229,27 +206,6 @@ void Hameg8143::StripBuffer(char* buffer) const
     if(buffer[c]=='\n') {
       buffer[c] = 0;
       break;
-    }
-  }
-}
-
-void Hameg8143::DeviceInit()
-{
-  isDeviceAvailable_ = false;
-
-  if (comHandler_->DeviceAvailable()) {
-    
-    comHandler_->SendCommand("ID?");
-
-    char buffer[1000];
-    comHandler_->ReceiveString(buffer);
-    StripBuffer(buffer);
-    std::string buf = buffer;
-    
-    if (buf.find("HAMEG Instruments,HM8143", 0)==0) {
-      isDeviceAvailable_ = true;
-    } else {
-      isDeviceAvailable_ = false;
     }
   }
 }

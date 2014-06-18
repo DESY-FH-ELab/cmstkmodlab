@@ -41,19 +41,22 @@ KMMComHandler::~KMMComHandler( void ) {
 }
 
 //! Send the command string &lt;commandString&gt; to device.
-void KMMComHandler::SendCommand( const char *commandString ) {
+void KMMComHandler::SendCommand( const char *commandString )
+{
+  if (fIoPortFileDescriptor != -1 ) {
 
-  char singleCharacter = 0; 
-
-  for ( unsigned int i = 0; i < strlen( commandString ); i++ ) {
+    char singleCharacter = 0; 
     
-    // scan command string character wise & write
-    singleCharacter = commandString[i];
-    write( fIoPortFileDescriptor, &singleCharacter, 1 );
+    for ( unsigned int i = 0; i < strlen( commandString ); i++ ) {
+      
+      // scan command string character wise & write
+      singleCharacter = commandString[i];
+      write( fIoPortFileDescriptor, &singleCharacter, 1 );
+    }
+    
+    // send feed characters ( <CR> <LF> )
+    SendFeedString();
   }
-
-  // send feed characters ( <CR> <LF> )
-  SendFeedString();
 }
 
 //! Read a string from device.
@@ -70,19 +73,22 @@ void KMMComHandler::ReceiveString( char *receiveString ) {
 
   usleep( 1000000 );
 
-  int timeout = 0, readResult = 0;
-
-  while ( timeout < 100000 )  {
-
-    readResult = read( fIoPortFileDescriptor, receiveString, 1024 );
-
-    if ( readResult > 0 )   {
-      receiveString[readResult] = 0;
-      break;
-    }
+  if (fIoPortFileDescriptor != -1 ) {
+    int timeout = 0, readResult = 0;
     
-    timeout++;
-
+    while ( timeout < 100000 )  {
+      
+      readResult = read( fIoPortFileDescriptor, receiveString, 1024 );
+      
+      if ( readResult > 0 )   {
+	receiveString[readResult] = 0;
+	break;
+      }
+      
+      timeout++;
+    }
+  } else {
+    receiveString[0] = '0';
   }
 }
 
@@ -90,7 +96,8 @@ void KMMComHandler::ReceiveString( char *receiveString ) {
 /*!
   \internal
 */
-void KMMComHandler::OpenIoPort( void ) throw (int) {
+void KMMComHandler::OpenIoPort( void ) throw (int)
+{
 
   // open io port ( read/write | no term control | no DCD line check )
   fIoPortFileDescriptor = open( fIoPort, O_RDWR | O_NOCTTY  | O_NDELAY );
@@ -101,7 +108,7 @@ void KMMComHandler::OpenIoPort( void ) throw (int) {
               << fIoPort << "." << std::endl;
     std::cerr << "                               (probably it's not user-writable)."
               << std::endl;
-    throw 1;
+    //throw 1;
 
   } else {
     // configure port with no delay
@@ -113,66 +120,73 @@ void KMMComHandler::OpenIoPort( void ) throw (int) {
 /*!
   \internal
 */
-void KMMComHandler::InitializeIoPort( void ) {
+void KMMComHandler::InitializeIoPort( void )
+{
+  if (fIoPortFileDescriptor != -1 ) {
 
-  // get and save current ioport settings for later restoring
-  tcgetattr( fIoPortFileDescriptor, &fCurrentTermios );
+    // get and save current ioport settings for later restoring
+    tcgetattr( fIoPortFileDescriptor, &fCurrentTermios );
 
-  // CONFIGURE NEW SETTINGS
-
-  // clear new settings struct
-  bzero( &fThisTermios, sizeof( fThisTermios ) );
-
-  // baud rate
-  cfsetispeed( &fThisTermios, B19200 );  // input speed
-  cfsetospeed( &fThisTermios, B19200 );  // output speed
-
-  // enable the receiver and disable modem control signals
-  fThisTermios.c_cflag   |=  CREAD;
-  fThisTermios.c_cflag   |=  CLOCAL;
-  
-  // set 8 bits per character, no parity, 1 stop bit (8N1)
-  fThisTermios.c_cflag   &=  ~PARENB;
-  fThisTermios.c_cflag   &=  ~CSTOPB;
-  fThisTermios.c_cflag   &=  ~CSIZE; 
-  fThisTermios.c_cflag   |=  CS8;    
-
-  // enable hardware flow control (RTS/CTS)
-  // DOCU !!
-  //  fThisTermios.c_cflag        |=  CRTSCTS;
-
-  // commit changes
-  tcsetattr( fIoPortFileDescriptor, TCSANOW, &fThisTermios );
+    // CONFIGURE NEW SETTINGS
+    
+    // clear new settings struct
+    bzero( &fThisTermios, sizeof( fThisTermios ) );
+    
+    // baud rate
+    cfsetispeed( &fThisTermios, B19200 );  // input speed
+    cfsetospeed( &fThisTermios, B19200 );  // output speed
+    
+    // enable the receiver and disable modem control signals
+    fThisTermios.c_cflag   |=  CREAD;
+    fThisTermios.c_cflag   |=  CLOCAL;
+    
+    // set 8 bits per character, no parity, 1 stop bit (8N1)
+    fThisTermios.c_cflag   &=  ~PARENB;
+    fThisTermios.c_cflag   &=  ~CSTOPB;
+    fThisTermios.c_cflag   &=  ~CSIZE; 
+    fThisTermios.c_cflag   |=  CS8;    
+    
+    // enable hardware flow control (RTS/CTS)
+    // DOCU !!
+    //  fThisTermios.c_cflag        |=  CRTSCTS;
+    
+    // commit changes
+    tcsetattr( fIoPortFileDescriptor, TCSANOW, &fThisTermios );
+  }
 }
 
 //! Restore former I/O port settings.
 /*!
   \internal
 */
-void KMMComHandler::RestoreIoPort( void ) {
-
-  // restore old com port settings
-  tcsetattr( fIoPortFileDescriptor, TCSANOW, &fCurrentTermios );
+void KMMComHandler::RestoreIoPort( void )
+{
+  if (fIoPortFileDescriptor != -1 ) {
+    // restore old com port settings
+    tcsetattr( fIoPortFileDescriptor, TCSANOW, &fCurrentTermios );
+  }
 }
 
 //! Close I/O port.
 /*!
   \internal
 */
-void KMMComHandler::CloseIoPort( void ) {
-
-  close( fIoPortFileDescriptor );
+void KMMComHandler::CloseIoPort( void )
+{
+  if (fIoPortFileDescriptor != -1 ) {
+    close( fIoPortFileDescriptor );
+  }
 }
 
 //! Send command termination string (<CR><NL>).
 /*!
   \internal
 */
-void KMMComHandler::SendFeedString( void ) {
-
+void KMMComHandler::SendFeedString( void )
+{
   // feed string is <NL>
   char feedString = 10;
-
+  
   // write <CR> and get echo
   write( fIoPortFileDescriptor, &feedString, 1 );
 }

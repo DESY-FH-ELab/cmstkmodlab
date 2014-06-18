@@ -20,20 +20,21 @@ typedef HuberPetiteFleur HuberPetiteFleur_t;
 /**
   Command and control model of the petiteFleur chiller.
   */
-class HuberPetiteFleurModel :
-    public QObject
-  , public AbstractDeviceModel<HuberPetiteFleur_t>
+class HuberPetiteFleurModel : public QObject,
+                              public AbstractDeviceModel<HuberPetiteFleur_t>
 {
-
   Q_OBJECT
 public:
-  explicit HuberPetiteFleurModel(float updateInterval = 5, QObject *parent = 0);
+  explicit HuberPetiteFleurModel(const char* port,
+				 float updateInterval = 5,
+				 QObject *parent = 0);
 
     bool isCirculatorEnabled() const;
     const DeviceParameterFloat& getWorkingTemperatureParameter() const;
     float getBathTemperature() const;
 
 public slots:
+
   void setDeviceEnabled(bool enabled);
   void setControlsEnabled(bool enabled);
 
@@ -43,7 +44,7 @@ public slots:
 
 protected:
 
-  static const QString HuberPetiteFleur_PORT;
+  const QString HuberPetiteFleur_PORT;
 
   void initialize();
 
@@ -53,19 +54,19 @@ protected:
 
   void setDeviceState( State state );
 
-  template <class T> void updateParameterCache(
-      DeviceParameter<T>& parameter
-    , const T& value
-  );
+  template <class T> void updateParameterCache(DeviceParameter<T>& parameter,
+					       const T& value);
 
   bool circulatorEnabled_;
   DeviceParameterFloat workingTemperature_; ///< Working temperature; units °C
   float bathTemperature_; ///< Current cooling bath temperature; units °C
 
 protected slots:
+
   void updateInformation();
 
 signals:
+
   void deviceStateChanged( State newState );
   void informationChanged();
   void message(const QString & text);

@@ -3,11 +3,12 @@
 /*
   PfeifferModel implementation
   */
-const QString PfeifferModel::Pfeiffer_PORT = QString("/dev/ttyS4");
-
-PfeifferModel::PfeifferModel(float updateInterval, QObject * /*parent*/) :
+PfeifferModel::PfeifferModel(const char* port,
+			     float updateInterval,
+			     QObject * /*parent*/) :
     QObject(),
     AbstractDeviceModel<PfeifferTPG262_t>(),
+    Pfeiffer_PORT(port),
     status1_(VPfeifferTPG262::tpg262GaugeInvalidStatus),
     pressure1_(1013),
     status2_(VPfeifferTPG262::tpg262GaugeInvalidStatus),

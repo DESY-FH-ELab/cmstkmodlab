@@ -15,17 +15,23 @@ ThermoMainWindow::ThermoMainWindow(QWidget *parent) :
     QMainWindow(parent),
     daqThread_(0)
 {
+    ApplicationConfig* config = ApplicationConfig::instance();
+
     // HUBER MODEL
-    huberModel_ = new HuberPetiteFleurModel(5, this);
+    huberModel_ = new HuberPetiteFleurModel(config->getValue("HuberPetiteFleurDevice").c_str(),
+					    5, this);
 
     // KEITHLEY MODEL
-    keithleyModel_ = new KeithleyModel("/dev/ttyS5", 20, this);
+    keithleyModel_ = new KeithleyModel(config->getValue("KeithleyDevice").c_str(),
+				       20, this);
 
     // HAMEG MODEL
-    hamegModel_ = new HamegModel(10, this);
+    hamegModel_ = new HamegModel(config->getValue("HamegDevice").c_str(),
+				 10, this);
 
     // PFEIFFER MODEL
-    pfeifferModel_ = new PfeifferModel(10, this);
+    pfeifferModel_ = new PfeifferModel(config->getValue("PfeifferDevice").c_str(),
+				       10, this);
 
     daqModel_ = new ThermoDAQModel(huberModel_,
                                    keithleyModel_,

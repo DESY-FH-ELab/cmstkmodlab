@@ -58,7 +58,10 @@ void HO820ComHandler::SendCommand( const char *commandString )
 */
 void HO820ComHandler::ReceiveString( char *receiveString )
 {
-  if (!fDeviceAvailable) return;
+  if (!fDeviceAvailable) {
+    receiveString[0] = 0;
+    return;
+  }
 
   usleep( 10000 );
 

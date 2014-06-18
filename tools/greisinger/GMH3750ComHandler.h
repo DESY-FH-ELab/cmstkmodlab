@@ -1,7 +1,9 @@
-#ifndef _TPG262COMHANDLER_H_
-#define _TPG262COMHANDLER_H_
+#ifndef _GMH3750COMHANDLER_H_
+#define _GMH3750COMHANDLER_H_
 
 #include <termios.h>
+#include <string.h>
+#include <iostream>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
@@ -12,38 +14,35 @@
 #define COM2 "/dev/ttyS1"
 #define COM3 "/dev/ttyS2"
 #define COM4 "/dev/ttyS3"
-#define COM5 "/dev/ttyS3"
 
 #define ttyS0 "/dev/ttyS0"
 #define ttyS1 "/dev/ttyS1"
 #define ttyS2 "/dev/ttyS2"
 #define ttyS3 "/dev/ttyS3"
-#define ttys4 "/dev/ttyS3"
+
+#define _COMHANDLER_DELAY 1000
 
 typedef const char* ioport_t;
 typedef struct termios termios_t;
 
-class TPG262ComHandler {
+using namespace std;
 
+class GMH3750ComHandler
+{
  public:
   
   //! Constructor.
-  TPG262ComHandler( ioport_t );
+  GMH3750ComHandler( ioport_t );
 
   //! Destructor.
-  ~TPG262ComHandler();
+  ~GMH3750ComHandler();
 
   //! Default bitwise copy constructor.
-  TPG262ComHandler( const TPG262ComHandler & );
+  GMH3750ComHandler( const GMH3750ComHandler& );
 
-  void SendCommand( const char* );
-  void SendEnquiry();
+  void SendCommand( const char*, int length = -1);
   void ReceiveString( char* );
-  void SendResetInterface ();
 
-  bool DeviceAvailable();
-
-  static constexpr int ComHandlerDelay = 1000;
 
  private:
 
@@ -53,14 +52,11 @@ class TPG262ComHandler {
   void CloseIoPort( void );
   void SendFeedString( void );
 
-  bool fDeviceAvailable;
   int fIoPortFileDescriptor;
 
   ioport_t fIoPort;
   termios_t fCurrentTermios, fThisTermios;
+
 };
 
 #endif
-
-
-

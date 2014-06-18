@@ -27,7 +27,9 @@ class PfeifferModel :
 
   Q_OBJECT
 public:
-  explicit PfeifferModel(float updateInterval = 5, QObject *parent = 0);
+  explicit PfeifferModel(const char* port,
+			 float updateInterval = 5,
+			 QObject *parent = 0);
 
     VPfeifferTPG262::GaugeStatus getStatus1() const;
     double getPressure1() const;
@@ -40,7 +42,7 @@ public slots:
 
 protected:
 
-  static const QString Pfeiffer_PORT;
+  const QString Pfeiffer_PORT;
 
   void initialize();
 

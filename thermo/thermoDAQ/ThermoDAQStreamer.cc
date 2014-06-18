@@ -2,6 +2,7 @@
 
 #include <QDateTime>
 
+#include "ApplicationConfig.h"
 #include "ThermoDAQStreamer.h"
 #include "ThermoDAQModel.h"
 
@@ -32,7 +33,10 @@ void ThermoDAQStreamer::daqStateChanged(bool state)
     if (state==true) {
         QDateTime dt = QDateTime::currentDateTime().toUTC();
 
-        QString measurementDirPath(QDir::homePath() + "/Desktop/measurements/%1");
+	ApplicationConfig* config = ApplicationConfig::instance();
+	QString dataPath(config->getValue("DataPath").c_str());
+
+        QString measurementDirPath(dataPath + "/%1");
         currentDir_.setPath(measurementDirPath.arg(dt.toString("yyyyMMdd")));
         if (!currentDir_.exists())
             currentDir_.mkpath(currentDir_.absolutePath());

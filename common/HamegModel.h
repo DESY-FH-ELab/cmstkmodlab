@@ -27,7 +27,9 @@ class HamegModel :
 
   Q_OBJECT
 public:
-  explicit HamegModel(float updateInterval = 5, QObject *parent = 0);
+  explicit HamegModel(const char* port,
+		      float updateInterval = 5,
+		      QObject *parent = 0);
 
   unsigned int getStatus() const { return status_; }
   bool isRemoteMode() const { return status_&VHameg8143::hmRM1; }
@@ -51,7 +53,7 @@ public slots:
 
 protected:
 
-  static const QString Hameg_PORT;
+  const QString Hameg_PORT;
 
   void initialize();
 
