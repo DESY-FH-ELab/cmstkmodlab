@@ -41,6 +41,8 @@ class TPG262ComHandler {
   void ReceiveString( char* );
   void SendResetInterface ();
 
+  bool DeviceAvailable();
+
   static constexpr int ComHandlerDelay = 1000;
 
  private:
@@ -51,6 +53,7 @@ class TPG262ComHandler {
   void CloseIoPort( void );
   void SendFeedString( void );
 
+  bool fDeviceAvailable;
   int fIoPortFileDescriptor;
 
   ioport_t fIoPort;

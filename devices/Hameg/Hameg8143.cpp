@@ -235,16 +235,21 @@ void Hameg8143::StripBuffer(char* buffer) const
 
 void Hameg8143::DeviceInit()
 {
-  comHandler_->SendCommand("ID?");
+  isDeviceAvailable_ = false;
 
-  char buffer[1000];
-  comHandler_->ReceiveString(buffer);
-  StripBuffer(buffer);
-  std::string buf = buffer;
+  if (comHandler_->DeviceAvailable()) {
+    
+    comHandler_->SendCommand("ID?");
 
-  if (buf.find("HAMEG Instruments,HM8143", 0)==0) {
-    isDeviceAvailable_ = true;
-  } else {
-    isDeviceAvailable_ = false;
+    char buffer[1000];
+    comHandler_->ReceiveString(buffer);
+    StripBuffer(buffer);
+    std::string buf = buffer;
+    
+    if (buf.find("HAMEG Instruments,HM8143", 0)==0) {
+      isDeviceAvailable_ = true;
+    } else {
+      isDeviceAvailable_ = false;
+    }
   }
 }

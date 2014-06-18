@@ -255,41 +255,48 @@ void PfeifferTPG262::StripBuffer( char* buffer ) const {
 ///
 void PfeifferTPG262::Device_Init( void )
 {
-  char buffer[1000];
+  isCommunication_ = false;
 
-  usleep( 100000 );
-  comHandler_->SendCommand( "PNR" );
+  if (comHandler_->DeviceAvailable()) {
 
-  usleep( 100000 );
-  comHandler_->ReceiveString( buffer );
-  StripBuffer( buffer );
+    char buffer[1000];
 
-  if (buffer[0]!=0x06) {
-    std::cout << "PfeifferTPG262: negative acknowledgement of a recieved message"
-        << std::endl;
-    isCommunication_ = false;
-    return;
+    std::cout << " PfeifferTPG262::Device_Init( void )" << std::endl;
+    
+    usleep( 100000 );
+    comHandler_->SendCommand( "PNR" );
+    
+    usleep( 100000 );
+    comHandler_->ReceiveString( buffer );
+    StripBuffer( buffer );
+    
+    if (buffer[0]!=0x06) {
+      std::cout << "PfeifferTPG262: negative acknowledgement of a recieved message"
+		<< std::endl;
+      isCommunication_ = false;
+      return;
+    }
+
+    usleep( 100000);
+    comHandler_->SendEnquiry();
+    
+    usleep( 100000 );
+    comHandler_->ReceiveString( buffer );
+    StripBuffer( buffer );
+    
+    std::string s(buffer);
+    
+    if (s.find("302-510", 0)!=0) {
+      isCommunication_ = false;
+      return;
+    }
+    
+    usleep( 500000 );
+    comHandler_->ReceiveString( buffer );
+    StripBuffer( buffer );
+    
+    isCommunication_ = true;
   }
-
-  usleep( 100000);
-  comHandler_->SendEnquiry();
-
-  usleep( 100000 );
-  comHandler_->ReceiveString( buffer );
-  StripBuffer( buffer );
-
-  std::string s(buffer);
-
-  if (s.find("302-510", 0)!=0) {
-    isCommunication_ = false;
-    return;
-  }
-  
-  usleep( 500000 );
-  comHandler_->ReceiveString( buffer );
-  StripBuffer( buffer );
-
-  isCommunication_ = true;
 }
 
 ///

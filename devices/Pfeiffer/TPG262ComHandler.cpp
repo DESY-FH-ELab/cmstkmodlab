@@ -43,32 +43,31 @@ TPG262ComHandler::~TPG262ComHandler( void )
 //! Send the command string &lt;commandString&gt; to device.
 void TPG262ComHandler::SendCommand( const char *commandString )
 {
-  if (fIoPortFileDescriptor != -1 ) {
+  if (!fDeviceAvailable) return;
 
-    char singleCharacter = 0; 
+  char singleCharacter = 0; 
 
-    for ( unsigned int i = 0; i < strlen( commandString ); i++ ) {
-      
-      // scan command string character wise & write
-      singleCharacter = commandString[i];
-      write( fIoPortFileDescriptor, &singleCharacter, 1 );
-    }
+  for ( unsigned int i = 0; i < strlen( commandString ); i++ ) {
     
-    // send feed characters
-    SendFeedString();
+    // scan command string character wise & write
+    singleCharacter = commandString[i];
+    write( fIoPortFileDescriptor, &singleCharacter, 1 );
   }
+
+  // send feed characters
+  SendFeedString();
 }
 
 void TPG262ComHandler::SendEnquiry( )
 {
-  if (fIoPortFileDescriptor != -1 ) {
-    char singleCharacter = 0x05; 
-    
-    write( fIoPortFileDescriptor, &singleCharacter, 1 );
-    
-    // send feed characters
-    SendFeedString();
-  }
+  if (!fDeviceAvailable) return;
+
+  char singleCharacter = 0x05; 
+
+  write( fIoPortFileDescriptor, &singleCharacter, 1 );
+
+  // send feed characters
+  SendFeedString();
 }
 
 //! Read a string from device.
@@ -83,24 +82,25 @@ void TPG262ComHandler::SendEnquiry( )
 */
 void TPG262ComHandler::ReceiveString( char *receiveString )
 {
+  if (!fDeviceAvailable) {
+    receiveString[0] = 0;
+    return;
+  }
+
   usleep( ComHandlerDelay );
 
-  if (fIoPortFileDescriptor != -1 ) {
-    int timeout = 0, readResult = 0;
-    
-    while ( timeout < 100000 )  {
-      
-      readResult = read( fIoPortFileDescriptor, receiveString, 1000 );
-      
-      if ( readResult > 0 )   {
-	receiveString[readResult] = 0;
-	break;
-      }
-      
-      timeout++;
+  int timeout = 0, readResult = 0;
+
+  while ( timeout < 100000 )  {
+
+    readResult = read( fIoPortFileDescriptor, receiveString, 1000 );
+
+    if ( readResult > 0 )   {
+      receiveString[readResult] = 0;
+      break;
     }
-  } else {
-    receiveString[0] = '0';
+    
+    timeout++;
   }
 }
 
@@ -119,13 +119,15 @@ void TPG262ComHandler::OpenIoPort( void )
         << fIoPort << "." << std::endl;
     std::cerr << "                               (probably it's not user-writable)."
         << std::endl;
-   
-    // throw;
+    fDeviceAvailable = false;
+    return;
   }
   else {
     // configure port with no delay
     fcntl( fIoPortFileDescriptor, F_SETFL, FNDELAY );
   }
+
+  fDeviceAvailable = true;
 }
 
 //! Initialize I/O port.
@@ -136,79 +138,77 @@ void TPG262ComHandler::InitializeIoPort( void )
 {
 #ifndef USE_FAKEIO
 
-  if (fIoPortFileDescriptor != -1 ) {
+  // get and save current ioport settings for later restoring
+  tcgetattr( fIoPortFileDescriptor, &fCurrentTermios );
 
-    // get and save current ioport settings for later restoring
-    tcgetattr( fIoPortFileDescriptor, &fCurrentTermios );
-    
-    // CONFIGURE NEW SETTINGS
-    
-    // clear new settings struct
-    bzero( &fThisTermios, sizeof( fThisTermios ) );
-    
-    // all these settings copied from stty output..
-    
-    // baud rate
-    cfsetispeed( &fThisTermios, B9600 );  // input speed
-    cfsetospeed( &fThisTermios, B9600 );  // output speed
-    
-    // various settings, 8N1 (no parity, 1 stopbit)
-    fThisTermios.c_cflag   &= ~PARENB;
-    fThisTermios.c_cflag   &= ~PARODD;
-    fThisTermios.c_cflag   |=  CS8;
-    fThisTermios.c_cflag   |=  HUPCL;
-    fThisTermios.c_cflag   &= ~CSTOPB;
-    fThisTermios.c_cflag   |=  CREAD;
-    fThisTermios.c_cflag   |=  CLOCAL;
-    fThisTermios.c_cflag   &= ~CRTSCTS;
-    
-    fThisTermios.c_lflag   |=  ISIG;
-    fThisTermios.c_lflag   |=  ICANON;
-    fThisTermios.c_lflag   |=  ECHO;
-    fThisTermios.c_lflag   |=  ECHOE;
-    fThisTermios.c_lflag   |=  ECHOK;
-    fThisTermios.c_lflag   &= ~ECHONL;
-    fThisTermios.c_lflag   |=  IEXTEN;
-    
-    fThisTermios.c_iflag   &= ~IGNBRK;
-    fThisTermios.c_iflag   &= ~BRKINT;
-    fThisTermios.c_iflag   &= ~IGNPAR;
-    fThisTermios.c_iflag   &= ~PARMRK;
-    fThisTermios.c_iflag   &= ~INPCK;
-    
-    // right i/o/l flags ??
-    fThisTermios.c_iflag   &= ~ISTRIP;
-    fThisTermios.c_iflag   &= ~INLCR;
-    fThisTermios.c_iflag   &= ~IGNCR;
-    //  fThisTermios.c_iflag   |=  ICRNL; // DO NOT ENABLE!!
-    fThisTermios.c_iflag   |=  IXON;
-    fThisTermios.c_iflag   &= ~IXOFF;
-    fThisTermios.c_iflag   &= ~IUCLC;
-    fThisTermios.c_iflag   &= ~IXANY;
-    fThisTermios.c_iflag   &= ~IMAXBEL;
-    
-    fThisTermios.c_iflag   &= ~IUTF8;
-    
-    // right i/o/l flags?
-    fThisTermios.c_oflag   |=  OPOST;
-    fThisTermios.c_oflag   &= ~OLCUC;
-    fThisTermios.c_oflag   &= ~OCRNL;
-    fThisTermios.c_oflag   |=  ONLCR;
-    fThisTermios.c_oflag   &= ~ONOCR;
-    fThisTermios.c_oflag   &= ~ONLRET;
-    fThisTermios.c_oflag   &= ~OFILL;
-    fThisTermios.c_oflag   &= ~OFDEL;
-    
-    //   fThisTermios.c_cflag   |=  NL0;
-    //   fThisTermios.c_cflag   |=  CR0;
-    //   fThisTermios.c_cflag   |=  TAB0;
-    //   fThisTermios.c_cflag   |=  BS0;
-    //   fThisTermios.c_cflag   |=  VT0;
-    //   fThisTermios.c_cflag   |=  FF0;
-    
-    // commit changes
-    tcsetattr( fIoPortFileDescriptor, TCSANOW, &fThisTermios );
-  }
+  // CONFIGURE NEW SETTINGS
+
+  // clear new settings struct
+  bzero( &fThisTermios, sizeof( fThisTermios ) );
+
+  // all these settings copied from stty output..
+
+  // baud rate
+  cfsetispeed( &fThisTermios, B9600 );  // input speed
+  cfsetospeed( &fThisTermios, B9600 );  // output speed
+
+  // various settings, 8N1 (no parity, 1 stopbit)
+  fThisTermios.c_cflag   &= ~PARENB;
+  fThisTermios.c_cflag   &= ~PARODD;
+  fThisTermios.c_cflag   |=  CS8;
+  fThisTermios.c_cflag   |=  HUPCL;
+  fThisTermios.c_cflag   &= ~CSTOPB;
+  fThisTermios.c_cflag   |=  CREAD;
+  fThisTermios.c_cflag   |=  CLOCAL;
+  fThisTermios.c_cflag   &= ~CRTSCTS;
+
+  fThisTermios.c_lflag   |=  ISIG;
+  fThisTermios.c_lflag   |=  ICANON;
+  fThisTermios.c_lflag   |=  ECHO;
+  fThisTermios.c_lflag   |=  ECHOE;
+  fThisTermios.c_lflag   |=  ECHOK;
+  fThisTermios.c_lflag   &= ~ECHONL;
+  fThisTermios.c_lflag   |=  IEXTEN;
+
+  fThisTermios.c_iflag   &= ~IGNBRK;
+  fThisTermios.c_iflag   &= ~BRKINT;
+  fThisTermios.c_iflag   &= ~IGNPAR;
+  fThisTermios.c_iflag   &= ~PARMRK;
+  fThisTermios.c_iflag   &= ~INPCK;
+
+  // right i/o/l flags ??
+  fThisTermios.c_iflag   &= ~ISTRIP;
+  fThisTermios.c_iflag   &= ~INLCR;
+  fThisTermios.c_iflag   &= ~IGNCR;
+  //  fThisTermios.c_iflag   |=  ICRNL; // DO NOT ENABLE!!
+  fThisTermios.c_iflag   |=  IXON;
+  fThisTermios.c_iflag   &= ~IXOFF;
+  fThisTermios.c_iflag   &= ~IUCLC;
+  fThisTermios.c_iflag   &= ~IXANY;
+  fThisTermios.c_iflag   &= ~IMAXBEL;
+  
+  fThisTermios.c_iflag   &= ~IUTF8;
+
+  // right i/o/l flags?
+  fThisTermios.c_oflag   |=  OPOST;
+  fThisTermios.c_oflag   &= ~OLCUC;
+  fThisTermios.c_oflag   &= ~OCRNL;
+  fThisTermios.c_oflag   |=  ONLCR;
+  fThisTermios.c_oflag   &= ~ONOCR;
+  fThisTermios.c_oflag   &= ~ONLRET;
+  fThisTermios.c_oflag   &= ~OFILL;
+  fThisTermios.c_oflag   &= ~OFDEL;
+
+//   fThisTermios.c_cflag   |=  NL0;
+//   fThisTermios.c_cflag   |=  CR0;
+//   fThisTermios.c_cflag   |=  TAB0;
+//   fThisTermios.c_cflag   |=  BS0;
+//   fThisTermios.c_cflag   |=  VT0;
+//   fThisTermios.c_cflag   |=  FF0;
+
+  // commit changes
+  tcsetattr( fIoPortFileDescriptor, TCSANOW, &fThisTermios );
+
 #endif
 }
 
@@ -219,10 +219,8 @@ void TPG262ComHandler::InitializeIoPort( void )
 
 void TPG262ComHandler::RestoreIoPort( void )
 {
-  if (fIoPortFileDescriptor != -1 ) {
-    // restore old com port settings
-    tcsetattr( fIoPortFileDescriptor, TCSANOW, &fCurrentTermios );
-  }
+  // restore old com port settings
+  tcsetattr( fIoPortFileDescriptor, TCSANOW, &fCurrentTermios );
 }
 
 //! Close I/O port.
@@ -231,9 +229,7 @@ void TPG262ComHandler::RestoreIoPort( void )
 */
 void TPG262ComHandler::CloseIoPort( void )
 {
-  if (fIoPortFileDescriptor != -1 ) {
-    close( fIoPortFileDescriptor );
-  }
+  close( fIoPortFileDescriptor );
 }
 
 //! Send command termination string (<CR><NL>).
@@ -254,6 +250,7 @@ void TPG262ComHandler::SendFeedString( void )
   write( fIoPortFileDescriptor, &feedString, 1 );
 
 }
+
 void TPG262ComHandler::SendResetInterface()
 {
   char singleCharacter=0x03;
@@ -261,4 +258,9 @@ void TPG262ComHandler::SendResetInterface()
   
   // send feed characters
   SendFeedString();
+}
+
+bool TPG262ComHandler::DeviceAvailable()
+{
+  return fDeviceAvailable;
 }
