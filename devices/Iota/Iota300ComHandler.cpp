@@ -51,10 +51,22 @@ void Iota300ComHandler::SendCommand( const char *commandString ) {
     write( fIoPortFileDescriptor, &singleCharacter, 1 );
   }
 
-  //std::cout << "write: " << commandString << std::endl;
+//   std::cout << "write: " << commandString << std::endl;
 
   // send feed characters
   SendFeedString();
+}
+
+//! flush the IO memory
+void Iota300ComHandler::flush(void) {
+
+  sleep(2);
+  if(tcflush(fIoPortFileDescriptor, TCIOFLUSH)==0)
+    printf("The input and output queues have been flushed\n\n");
+    else{
+      perror("tcflush error");
+    }
+    sleep(1);
 }
 
 //! Read a string from device.
@@ -81,7 +93,7 @@ void Iota300ComHandler::ReceiveString( char *receiveString ) {
 
     if ( readResult > 0 ) {
       receiveString[readResult] = 0;
-      //std::cout << "read: " << readResult << " " << receiveString << std::endl;
+//       std::cout << "read: " << readResult << " " << receiveString << std::endl;
       return;
     }
     timeout++;
@@ -134,59 +146,19 @@ void Iota300ComHandler::InitializeIoPort( void ) {
   cfsetispeed( &fThisTermios, B19200 );  // input speed
   cfsetospeed( &fThisTermios, B19200 );  // output speed
 
-  // various settings, 8N1 (no parity, 1 stopbit)
+    // Enable the receiver and set local mode...
+  fThisTermios.c_cflag |= (CLOCAL | CREAD);
+
   fThisTermios.c_cflag   &= ~PARENB;
   fThisTermios.c_cflag   &= ~PARODD;
-  fThisTermios.c_cflag   |=  CS8;
-  fThisTermios.c_cflag   |=  HUPCL;
   fThisTermios.c_cflag   &= ~CSTOPB;
-  fThisTermios.c_cflag   |=  CREAD;
-  fThisTermios.c_cflag   |=  CLOCAL;
-  fThisTermios.c_cflag   &= ~CRTSCTS;
+  fThisTermios.c_cflag   &= ~CSIZE;
+  fThisTermios.c_cflag   |=  CS8;
 
-  fThisTermios.c_lflag   |=  ISIG;
-  fThisTermios.c_lflag   |=  ICANON;
-  fThisTermios.c_lflag   |=  ECHO;
-  fThisTermios.c_lflag   |=  ECHOE;
-  fThisTermios.c_lflag   |=  ECHOK;
-  fThisTermios.c_lflag   &= ~ECHONL;
-  fThisTermios.c_lflag   |=  IEXTEN;
+  fThisTermios.c_cflag &= ~CRTSCTS;                     /* enable hardware flow control */
+  fThisTermios.c_lflag &= ~(ICANON | ECHO | ISIG);
 
-  fThisTermios.c_iflag   &= ~IGNBRK;
-  fThisTermios.c_iflag   &= ~BRKINT;
-  fThisTermios.c_iflag   &= ~IGNPAR;
-  fThisTermios.c_iflag   &= ~PARMRK;
-  fThisTermios.c_iflag   &= ~INPCK;
 
-  // right i/o/l flags ??
-  fThisTermios.c_iflag   &= ~ISTRIP;
-  fThisTermios.c_iflag   &= ~INLCR;
-  fThisTermios.c_iflag   &= ~IGNCR;
-  //  fThisTermios.c_iflag   |=  ICRNL; // DO NOT ENABLE!!
-  fThisTermios.c_iflag   |=  IXON;
-  fThisTermios.c_iflag   &= ~IXOFF;
-  fThisTermios.c_iflag   &= ~IUCLC;
-  fThisTermios.c_iflag   &= ~IXANY;
-  fThisTermios.c_iflag   &= ~IMAXBEL;
-  
-  fThisTermios.c_iflag   &= ~IUTF8;
-
-  // right i/o/l flags?
-  fThisTermios.c_oflag   |=  OPOST;
-  fThisTermios.c_oflag   &= ~OLCUC;
-  fThisTermios.c_oflag   &= ~OCRNL;
-  fThisTermios.c_oflag   |=  ONLCR;
-  fThisTermios.c_oflag   &= ~ONOCR;
-  fThisTermios.c_oflag   &= ~ONLRET;
-  fThisTermios.c_oflag   &= ~OFILL;
-  fThisTermios.c_oflag   &= ~OFDEL;
-
-//   fThisTermios.c_cflag   |=  NL0;
-//   fThisTermios.c_cflag   |=  CR0;
-//   fThisTermios.c_cflag   |=  TAB0;
-//   fThisTermios.c_cflag   |=  BS0;
-//   fThisTermios.c_cflag   |=  VT0;
-//   fThisTermios.c_cflag   |=  FF0;
 
   // commit changes
   tcsetattr( fIoPortFileDescriptor, TCSANOW, &fThisTermios );

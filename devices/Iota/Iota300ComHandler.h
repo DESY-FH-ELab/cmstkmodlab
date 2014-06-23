@@ -43,6 +43,8 @@ class Iota300ComHandler {
   void SendCommand( const char* );
   void ReceiveString( char* );
 
+  void flush( void);
+
   static constexpr int ComHandlerDelay = 1000;
 
  private:
@@ -52,6 +54,7 @@ class Iota300ComHandler {
   void RestoreIoPort( void );
   void CloseIoPort( void );
   void SendFeedString( void );
+
 
   int fIoPortFileDescriptor;
 
