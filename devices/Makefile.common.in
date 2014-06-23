@@ -1,6 +1,6 @@
 CC            = @cc@
 CXX           = @cxx@
-CXXFLAGS      = -fPIC -std=c++0x
+CXXFLAGS      = -fPIC -std=c++11
 LD            = @cxx@
 SOFLAGS       = @soflags@
 
