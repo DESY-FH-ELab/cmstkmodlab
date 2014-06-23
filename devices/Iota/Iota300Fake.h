@@ -23,7 +23,8 @@ class Iota300Fake : public VIota300
 
   mutable float status_;
   mutable float flow_;
-  mutable float pressure_;  
+  mutable float pressure_;
+
   void Device_Init( void );
 };
 

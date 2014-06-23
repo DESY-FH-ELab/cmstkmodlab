@@ -49,9 +49,11 @@ bool Iota300::SetFlow( const float flow ) const {
 
   int iFlow = flow;// * 100.;
   sprintf(buffer, "%03d", iFlow);
+  // std::cout<<"flow = "<<iFlow<<std::endl;
 
   std::stringstream theCommand;
   theCommand << "#FSw" << buffer;
+  // std::cout<<"buffer = "<<buffer<<std::endl;
 
   comHandler_->SendCommand( theCommand.str().c_str() );
   usleep( uDelay_ );
@@ -62,6 +64,7 @@ bool Iota300::SetFlow( const float flow ) const {
   comHandler_->ReceiveString( buffer );
   usleep( uDelay_ );
   StripBuffer( buffer );
+  // std::cout<<"buffer = "<<buffer<<std::endl;
 
   if( std::fabs( iFlow - ToInteger(buffer) ) > 1 ) {
     std::cerr << " [Iota300::SetFlow] ** ERROR: check failed." << std::endl;
@@ -120,7 +123,6 @@ bool Iota300::SetPressure( const float pressure ) const {
 ///
 /// return success flag
 ///
-
 bool Iota300::SetStatus( const float status ) const {
 
   #ifdef __IOTA300_DEBUG
@@ -167,7 +169,31 @@ bool Iota300::SetStatus( const float status ) const {
 ///
 /// return success flag
 ///
-float Iota300::GetFlow( void ) const {
+float Iota300::GetSetFlow( void ) const {
+
+  #ifdef __IOTA300_DEBUG
+  std::cout << "[Iota300::GetFlow] -- DEBUG: Called." << std::endl;
+  #endif
+
+  char buffer[1000];
+
+  usleep( uDelay_ );
+  // comHandler_->flush();
+  comHandler_->SendCommand( "#FSr" );
+
+  usleep( uDelay_ );
+  comHandler_->ReceiveString( buffer );
+  StripBuffer( buffer );
+//   std::cout<<"getflow buffer = "<< buffer <<std::endl;
+  
+
+  return ToFloat(buffer);
+}
+
+///
+///
+///
+float Iota300::GetActFlow( void ) const {
 
   #ifdef __IOTA300_DEBUG
   std::cout << "[Iota300::GetFlow] -- DEBUG: Called." << std::endl;
@@ -180,15 +206,38 @@ float Iota300::GetFlow( void ) const {
 
   usleep( uDelay_ );
   comHandler_->ReceiveString( buffer );
+  // std::cout<<"getflow buffer = "<< buffer <<std::endl;
   StripBuffer( buffer );
-
+  
   return ToFloat(buffer);
 }
 
 ///
 ///
 ///
-float Iota300::GetPressure( void ) const {
+float Iota300::GetSetPressure( void ) const {
+
+  #ifdef __IOTA300_DEBUG
+  std::cout << "[Iota300::GetPressure] -- DEBUG: Called." << std::endl;
+  #endif
+
+  char buffer[1000];
+
+  usleep( uDelay_ );
+  comHandler_->SendCommand( "#PSr" );
+
+  usleep( uDelay_ );
+  comHandler_->ReceiveString( buffer );
+  StripBuffer( buffer );
+
+  //std::cout << buffer << std::endl;
+
+  return ToFloat(buffer);
+}
+///
+///
+///
+float Iota300::GetActPressure( void ) const {
 
   #ifdef __IOTA300_DEBUG
   std::cout << "[Iota300::GetPressure] -- DEBUG: Called." << std::endl;
@@ -207,7 +256,9 @@ float Iota300::GetPressure( void ) const {
 
   return ToFloat(buffer);
 }
-
+///
+///
+///
 float Iota300::GetStatus( void ) const {
 
 #ifdef __IOTA300_DEBUG
@@ -280,10 +331,11 @@ void Iota300::Device_Init( void ) {
   usleep( uDelay_ );
 
   comHandler_->ReceiveString( buffer );
+
   usleep( uDelay_ );
   StripBuffer( buffer );
   std::string temp(buffer);
-
+  // std::cout<<"status = "<<buffer<<std::endl;
   if (temp.compare(0, 2, "ST")!=0) {
     std::cerr << " [Iota300::Device_Init] ** ERROR: Device communication problem." << std::endl;
     isCommunication_ = false;

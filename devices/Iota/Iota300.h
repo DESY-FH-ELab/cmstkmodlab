@@ -17,8 +17,10 @@ class Iota300 : public VIota300
   //bool SetControlParameters( float, int, int ) const; //not included yet -> switch external/internal mode?
 
   bool IsCommunication( void ) const { return isCommunication_; }
-  float GetFlow( void ) const; //#FSr
-  float GetPressure( void ) const; //#PAr
+  float GetSetFlow( void ) const; //#FSr
+  float GetActFlow( void ) const; //#FAr
+  float GetSetPressure( void ) const; //#PSr
+  float GetActPressure( void ) const; //#PAr
   float GetStatus( void ) const; //#STr
 
  private:

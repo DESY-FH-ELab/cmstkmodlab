@@ -16,8 +16,11 @@ class VIota300
   //virtual bool SetControlParameters( float, int, int ) const = 0;
 
   virtual bool IsCommunication( void ) const = 0;
-  virtual float GetFlow( void ) const = 0;
-  virtual float GetPressure( void ) const = 0;
+
+  virtual float GetSetFlow( void ) const = 0;
+  virtual float GetActFlow( void ) const = 0;
+  virtual float GetSetPressure( void ) const = 0;
+  virtual float GetActPressure( void ) const = 0;
   virtual float GetStatus( void ) const = 0;
 
   static constexpr int Iota300LowerFlowLimit =   0;
