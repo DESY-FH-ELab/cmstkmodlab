@@ -15,9 +15,11 @@ class Iota300Fake : public VIota300
   //bool SetControlParameters( float, int, int ) const;
 
   bool IsCommunication( void ) const { return true; }
-  float GetFlow( void ) const;
-  float GetPressure( void ) const;
-  float GetStatus( void ) const;
+  virtual float GetSetFlow( void ) const;
+  virtual float GetActFlow( void ) const;
+  virtual float GetSetPressure( void ) const;
+  virtual float GetActPressure( void ) const;
+  virtual float GetStatus( void ) const;
  
  private:
 

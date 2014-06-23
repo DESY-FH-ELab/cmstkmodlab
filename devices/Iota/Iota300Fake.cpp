@@ -92,21 +92,41 @@ bool Iota300Fake::SetStatus( const float status ) const {
 ///
 ///
 ///
-float Iota300Fake::GetFlow( void ) const
+float Iota300Fake::GetSetFlow( void ) const
 {
-  std::cout << " [Iota300Fake::GetFlow] -- FAKE: Returning Q = "
-	    << flow_ << std::endl;
+  std::cout << " [Iota300Fake::GetSetFlow] -- FAKE: Returning Q = "
+        << flow_ << std::endl;
   usleep( 10000 );
-  return flow_ + (double)rand() / RAND_MAX;
+  return flow_;
+}
+///
+///
+///
+float Iota300Fake::GetActFlow( void ) const
+{
+  std::cout << " [Iota300Fake::GetActFlow] -- FAKE: Returning Q = "
+        << flow_ << std::endl;
+  usleep( 10000 );
+  return flow_;
 }
 
 ///
 ///
 ///
-float Iota300Fake::GetPressure( void ) const
+float Iota300Fake::GetSetPressure( void ) const
 {
-  std::cout << " [Iota300Fake::GetPressure] -- FAKE: Returning Q = "
-	    << pressure_ << std::endl;
+  std::cout << " [Iota300Fake::GetSetPressure] -- FAKE: Returning Q = "
+        << pressure_ << std::endl;
+  usleep( 10000 );
+  return pressure_;
+}
+///
+///
+///
+float Iota300Fake::GetActPressure( void ) const
+{
+  std::cout << " [Iota300Fake::GetActPressure] -- FAKE: Returning Q = "
+        << pressure_ << std::endl;
   usleep( 10000 );
   return pressure_;
 }
