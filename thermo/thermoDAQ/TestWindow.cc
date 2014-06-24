@@ -16,7 +16,7 @@ TestWindow::TestWindow(QWidget *parent) :
     ApplicationConfig* config = ApplicationConfig::instance();
     
     // HUBER MODEL
-    huberModel_ = new HuberPetiteFleurModel(config->getValue("HuberPetiteFleurDevice").c_str(),
+    huberModel_ = new HuberPetiteFleurModel(config->getValue<std::string>("HuberPetiteFleurDevice").c_str(),
 					    15, this);
     HuberPetiteFleurWidget* huberWidget = new HuberPetiteFleurWidget(huberModel_, central);
     huberWidget->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);

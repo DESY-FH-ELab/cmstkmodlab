@@ -18,20 +18,20 @@ ThermoMainWindow::ThermoMainWindow(QWidget *parent) :
     ApplicationConfig* config = ApplicationConfig::instance();
 
     // HUBER MODEL
-    huberModel_ = new HuberPetiteFleurModel(config->getValue("HuberPetiteFleurDevice").c_str(),
-					    5, this);
+    huberModel_ = new HuberPetiteFleurModel(config->getValue<std::string>("HuberPetiteFleurDevice").c_str(),
+                                            5, this);
 
     // KEITHLEY MODEL
-    keithleyModel_ = new KeithleyModel(config->getValue("KeithleyDevice").c_str(),
-				       20, this);
+    keithleyModel_ = new KeithleyModel(config->getValue<std::string>("KeithleyDevice").c_str(),
+                                       20, this);
 
     // HAMEG MODEL
-    hamegModel_ = new HamegModel(config->getValue("HamegDevice").c_str(),
-				 10, this);
+    hamegModel_ = new HamegModel(config->getValue<std::string>("HamegDevice").c_str(),
+                                 10, this);
 
     // PFEIFFER MODEL
-    pfeifferModel_ = new PfeifferModel(config->getValue("PfeifferDevice").c_str(),
-				       10, this);
+    pfeifferModel_ = new PfeifferModel(config->getValue<std::string>("PfeifferDevice").c_str(),
+                                       10, this);
 
     daqModel_ = new ThermoDAQModel(huberModel_,
                                    keithleyModel_,
