@@ -14,11 +14,11 @@ namespace Config {
 }
 
 class ApplicationConfig {
-
- public:
-
+  
+public:
+  
   static ApplicationConfig* instance(const std::string filename = std::string());
-
+  
   template <class aType> aType getValue(std::string const& key) const {
     aType returnValue = 0;
     std::map<std::string,std::string>::const_iterator it = keyvalueMap_.find(key);
@@ -30,7 +30,7 @@ class ApplicationConfig {
     }
     return returnValue;
   }
-
+  
   std::string getValue(std::string const& key) const {
     std::map<std::string,std::string>::const_iterator it = keyvalueMap_.find(key);
     if (it!=keyvalueMap_.end()) {
@@ -39,21 +39,21 @@ class ApplicationConfig {
       return std::string();
     }
   }
-
+  
   template <class aType> void setValue(std::string const& key, aType value) {
     QVariant variant(value);
     keyvalueMap_[key] = variant.toString().toStdString();
   }
-
+  
   void safe(const std::string filename);
-
- protected:
-
+  
+protected:
+  
   ApplicationConfig(const std::string filename);
   static ApplicationConfig* instance_;
-
+  
   void issueKeyError(const std::string&) const;
-
+  
   std::map<std::string,std::string> keyvalueMap_;
 };
 
