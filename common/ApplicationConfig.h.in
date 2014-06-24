@@ -57,4 +57,6 @@ protected:
   std::map<std::string,std::string> keyvalueMap_;
 };
 
+template <> std::string ApplicationConfig::getValue(std::string const& key) const;
+
 #endif // APPLICATIONCONFIG_H

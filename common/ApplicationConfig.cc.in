@@ -39,4 +39,14 @@ void ApplicationConfig::issueKeyError(std::string const& key) const {
                         QMessageBox::Ok); 
 }
 
+template <> std::string ApplicationConfig::getValue(std::string const& key) const {
+  std::string returnValue = 0;
+  std::map<std::string,std::string>::const_iterator it = keyvalueMap_.find(key);
+  if (it!=keyvalueMap_.end()) {
+    std::istringstream iss(it->second.c_str(), std::istringstream::in);
+    iss >> returnValue;
+  } else {
+    issueKeyError(key);
+  }
+  return returnValue;
 }
