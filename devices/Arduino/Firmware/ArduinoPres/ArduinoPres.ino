@@ -1,42 +1,67 @@
-byte byteRead;
+#include <Arduino.h>
 
-int firstSensor = 0;    // first analog sensor
-int secondSensor = 0;   // second analog sensor
-const int num = 4;            // number of times pressure should be checked
-int averageFirst = 0;
-int averageSecond = 0;
+String inputString = "";
+boolean stringComplete = false;
 
+const int channelA = A0; // first analog sensor
+const int channelB = A1; // second analog sensor
+const int num = 4;       // number of times pressure should be checked
+int average;
 
-void setup() {                
-// Turn the Serial Protocol ON
-  Serial.begin(9600);
+void readSensor(const char * prefix, int channel)
+{
+  average = 0;
+  for (int i=0; i<num; ++i) {
+    average += analogRead(channel);
+    delay(10);
+  }
+  Serial.print(prefix);
+  Serial.println(average/num);
 }
 
+void setup()
+{
+  // set reference for ADC; should be changed to EXTERNAL eventually
+  analogReference(DEFAULT);
 
-void loop() {
-   /*  check if data has been sent from the computer: */
-  if (Serial.available()) {
-    /* read the most recent byte */
-    byteRead = Serial.read();
-    
-    /*Listen for a comma which equals byte code # 44 */
-    if(byteRead==97){
-      for(int i=0; i<num; i++){
-        averageFirst += analogRead(A0);
-        delay(10);
-      }
-      Serial.println(averageFirst/num);
-    }else if(byteRead==98){
-      for(int i=0; i<num; i++){
-        averageSecond += analogRead(A1);
-        delay(10);
-      }
-      Serial.println(averageSecond/num);
-    }else if(byteRead==63){
-      Serial.write("1\n");
-    }else{
-      /*ECHO the value that was read, back to the serial port. */
-      Serial.write("Error\n");
+  // this line is for Leonardo's, it delays the serial interface
+  // until the terminal window is opened
+  while (!Serial);
+  Serial.begin(9600);
+
+  inputString.reserve(32);
+}
+
+void loop()
+{
+  if (stringComplete) {
+
+    if (inputString.startsWith("PA")) {
+      readSensor("PA,", channelA);
+    } else if (inputString.startsWith("PB")) {
+      readSensor("PB,", channelB);
+    } else if (inputString.startsWith("ID")) {
+      Serial.println("ID,ArduinoPres");
+    } else {
+      Serial.println("ERROR");
+    }
+
+    inputString = "";
+    stringComplete = false;
+  }
+}
+
+void serialEvent()
+{
+  while (Serial.available()) {
+    // get the new byte:
+    char inChar = (char)Serial.read();
+    // add it to the inputString:
+    inputString += inChar;
+    // if the incoming character is a newline, set a flag
+    // so the main loop can do something about it:
+    if (inChar == '\n') {
+      stringComplete = true;
     }
   }
 }
