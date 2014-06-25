@@ -37,15 +37,23 @@ float ArduinoPres::GetPressureA( void ) const
   char buffer[1000];
 
   usleep( uDelay_ );
-  comHandler_->SendCommand( "a" );
+  comHandler_->SendCommand( "PA" );
 
   usleep( uDelay_ );
   comHandler_->ReceiveString( buffer );
 //   std::cout<<"bufferA = "<<buffer<<std::endl;
   StripBuffer( buffer );
 
-  return ToInteger(buffer);
-    std::cout<<"bufferA = "<<ToInteger(buffer)<<std::endl;
+  std::string buf = buffer;
+  if (buf.substr(0, buf.find(','))!="PA") {
+    std::cerr << " [ArduinoPres::GetPressureA] ** ERROR: Device communication problem. "
+              << buf << std::endl;
+    throw;
+  }
+  buf = buf.substr(buf.find(',')+1);
+
+  int value = std::atoi(buf.c_str());
+  return ToPressure(value);
 }
 
 ///
@@ -60,15 +68,23 @@ float ArduinoPres::GetPressureB( void ) const
   char buffer[1000];
 
   usleep( uDelay_ );
-  comHandler_->SendCommand( "b" );
+  comHandler_->SendCommand( "PB" );
 
   usleep( uDelay_ );
   comHandler_->ReceiveString( buffer );
 //   std::cout<<"bufferA = "<<buffer<<std::endl;
   StripBuffer( buffer );
 
-  return ToInteger(buffer);
-  std::cout<<"bufferA = "<<ToInteger(buffer)<<std::endl;
+  std::string buf = buffer;
+  if (buf.substr(0, buf.find(','))!="PB") {
+    std::cerr << " [ArduinoPres::GetPressureB] ** ERROR: Device communication problem. "
+              << buf << std::endl;
+    throw;
+  }
+  buf = buf.substr(buf.find(',')+1);
+
+  int value = std::atoi(buf.c_str());
+  return ToPressure(value);
 }
 
 ///
@@ -119,7 +135,7 @@ void ArduinoPres::Device_Init( void ) {
 
   char buffer[1000];
   
-  comHandler_->SendCommand( "?" );
+  comHandler_->SendCommand( "ID" );
   usleep( uDelay_ );
 
   comHandler_->ReceiveString( buffer );
@@ -127,7 +143,7 @@ void ArduinoPres::Device_Init( void ) {
   StripBuffer( buffer );
   std::string temp(buffer);
 
-  if (!temp.compare("1")) {
+  if (!temp.compare("ID,ArduinoPres")) {
     std::cerr << " [ArduinoPres::Device_Init] ** ERROR: Device communication problem."
         << std::endl;
     isCommunication_ = false;

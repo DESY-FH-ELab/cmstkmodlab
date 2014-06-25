@@ -1,6 +1,7 @@
 #include <unistd.h>
 
 #include <iostream>
+#include <sstream>
 #include <string>
 
 //#####################
@@ -16,8 +17,8 @@
 ArduinoPresFake::ArduinoPresFake( const ioport_t ioPort )
     :VArduinoPres(ioPort)
 {
-  pressureA_ = -11;
-  pressureB_ = -15;
+  pressureA_ = 435;
+  pressureB_ = 168;
 }
 
 ///
@@ -27,8 +28,23 @@ float ArduinoPresFake::GetPressureA( void ) const
 {
   std::cout << " [ArduinoPresFake::GetPressureA] -- FAKE: Returning p(a) = "
 	        << pressureA_ << std::endl;
+
   usleep( 10000 );
-  return pressureA_ + (double)rand() / RAND_MAX;
+
+  std::ostringstream oss;
+  oss << "PA,";
+  oss << pressureA_;
+  std::string buf = oss.str();
+
+  if (buf.substr(0, buf.find(','))!="PA") {
+    std::cerr << " [ArduinoPres::GetPressureA] ** ERROR: Device communication problem. "
+              << buf << std::endl;
+    throw;
+  }
+  buf = buf.substr(buf.find(',')+1);
+
+  int value = std::atoi(buf.c_str());
+  return ToPressure(value);
 }
 
 ///
@@ -38,8 +54,23 @@ float ArduinoPresFake::GetPressureB( void ) const
 {
   std::cout << " [ArduinoPresFake::GetPressureA] -- FAKE: Returning p(b) = "
             << pressureB_ << std::endl;
+
   usleep( 10000 );
-  return pressureB_ + (double)rand() / RAND_MAX;
+
+  std::ostringstream oss;
+  oss << "PB,";
+  oss << pressureB_;
+  std::string buf = oss.str();
+
+  if (buf.substr(0, buf.find(','))!="PB") {
+    std::cerr << " [ArduinoPres::GetPressureB] ** ERROR: Device communication problem. "
+              << buf << std::endl;
+    throw;
+  }
+  buf = buf.substr(buf.find(',')+1);
+
+  int value = std::atoi(buf.c_str());
+  return ToPressure(value);
 }
 
 ///
