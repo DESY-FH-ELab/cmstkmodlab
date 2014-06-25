@@ -28,8 +28,8 @@ ArduinoPres::ArduinoPres( const ioport_t ioPort )
 ///
 ///
 ///
-float ArduinoPres::GetPressureA( void ) const {
-
+float ArduinoPres::GetPressureA( void ) const
+{
   #ifdef __ARDUINO_DEBUG
   std::cout << "[ArduinoPres::GetPressureA] -- DEBUG: Called." << std::endl;
   #endif
@@ -51,8 +51,8 @@ float ArduinoPres::GetPressureA( void ) const {
 ///
 ///
 ///
-float ArduinoPres::GetPressureB( void ) const {
-
+float ArduinoPres::GetPressureB( void ) const
+{
   #ifdef __ARDUINO_DEBUG
   std::cout << "[ArduinoPres::GetPressureB] -- DEBUG: Called." << std::endl;
   #endif
