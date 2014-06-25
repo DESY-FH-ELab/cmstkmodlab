@@ -1,5 +1,5 @@
-#ifndef _ARDUINOPRESCOMHANDLER_H_
-#define _ARDUINOPRESCOMHANDLER_H_
+#ifndef _ARDUINOCOMHANDLER_H_
+#define _ARDUINOCOMHANDLER_H_
 
 #include <termios.h>
 #include <sys/types.h>
@@ -11,18 +11,18 @@
 typedef const char* ioport_t;
 typedef struct termios termios_t;
 
-class ArduinoPresComHandler {
+class ArduinoComHandler {
 
  public:
   
   //! Constructor.
-  ArduinoPresComHandler( ioport_t );
+  ArduinoComHandler( ioport_t );
 
   //! Destructor.
-  ~ArduinoPresComHandler();
+  ~ArduinoComHandler();
 
   //! Default bitwise copy constructor.
-  ArduinoPresComHandler( const ArduinoPresComHandler& );
+  ArduinoComHandler( const ArduinoComHandler& );
 
   void SendCommand( const char* );
   void ReceiveString( char* );

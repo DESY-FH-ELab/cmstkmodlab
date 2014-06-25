@@ -2,7 +2,7 @@
 
 #include <iostream>
 
-#include "ArduinoPresComHandler.h"
+#include "ArduinoComHandler.h"
 
 // SETTINGS ON THE DEVICE:
 // (MENU RS-232)
@@ -19,7 +19,7 @@
   "/dev/ttyS1" ... "/dev/ttyS3"
   "/dev/ttyACM0"
 */
-ArduinoPresComHandler::ArduinoPresComHandler( const ioport_t ioPort ) {
+ArduinoComHandler::ArduinoComHandler( const ioport_t ioPort ) {
 
   // save ioport 
   fIoPort = ioPort;
@@ -32,7 +32,7 @@ ArduinoPresComHandler::ArduinoPresComHandler( const ioport_t ioPort ) {
 ///
 ///
 ///
-ArduinoPresComHandler::~ArduinoPresComHandler( void ) {
+ArduinoComHandler::~ArduinoComHandler( void ) {
 
   // restore ioport options as they were
   RestoreIoPort();
@@ -42,7 +42,7 @@ ArduinoPresComHandler::~ArduinoPresComHandler( void ) {
 }
 
 //! Send the command string &lt;commandString&gt; to device.
-void ArduinoPresComHandler::SendCommand( const char *commandString ) {
+void ArduinoComHandler::SendCommand( const char *commandString ) {
 
   char singleCharacter = 0; 
 
@@ -69,7 +69,7 @@ void ArduinoPresComHandler::SendCommand( const char *commandString ) {
 
   See example program in class description.
 */
-void ArduinoPresComHandler::ReceiveString( char *receiveString ) {
+void ArduinoComHandler::ReceiveString( char *receiveString ) {
 
   usleep( ComHandlerDelay );
 
@@ -96,14 +96,14 @@ void ArduinoPresComHandler::ReceiveString( char *receiveString ) {
 /*!
   \internal
 */
-void ArduinoPresComHandler::OpenIoPort( void ) throw (int) {
+void ArduinoComHandler::OpenIoPort( void ) throw (int) {
 
   // open io port ( read/write | no term control | no DCD line check )
   fIoPortFileDescriptor = open( fIoPort, O_RDWR | O_NOCTTY  | O_NDELAY );
 
   // check if successful
   if ( fIoPortFileDescriptor == -1 ) {
-    std::cerr << "[ArduinoPresComHandler::OpenIoPort] ** ERROR: could not open device file "
+    std::cerr << "[ArduinoComHandler::OpenIoPort] ** ERROR: could not open device file "
 	          << fIoPort << "." << std::endl;
     std::cerr << "                               (probably it's not user-writable)."
               << std::endl;
@@ -118,7 +118,7 @@ void ArduinoPresComHandler::OpenIoPort( void ) throw (int) {
 /*!
   \internal
 */
-void ArduinoPresComHandler::InitializeIoPort( void ) {
+void ArduinoComHandler::InitializeIoPort( void ) {
 
 #ifndef USE_FAKEIO
  
@@ -175,7 +175,7 @@ void ArduinoPresComHandler::InitializeIoPort( void ) {
 /*!
   \internal
 */
-void ArduinoPresComHandler::RestoreIoPort( void ) {
+void ArduinoComHandler::RestoreIoPort( void ) {
 
   // restore old com port settings
   tcsetattr( fIoPortFileDescriptor, TCSANOW, &fCurrentTermios );
@@ -185,16 +185,16 @@ void ArduinoPresComHandler::RestoreIoPort( void ) {
 /*!
   \internal
 */
-void ArduinoPresComHandler::CloseIoPort( void ) {
+void ArduinoComHandler::CloseIoPort( void ) {
 
   close( fIoPortFileDescriptor );
 }
 
-//! Send command termination string (<CR><NL>).
+//! Send command termination string (<NL>).
 /*!
   \internal
 */
-void ArduinoPresComHandler::SendFeedString( void )
+void ArduinoComHandler::SendFeedString( void )
 {
-  write( fIoPortFileDescriptor, "", 0 );
+  write( fIoPortFileDescriptor, "\n", 0 );
 }
