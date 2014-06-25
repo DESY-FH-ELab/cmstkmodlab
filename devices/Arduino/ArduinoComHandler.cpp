@@ -190,11 +190,11 @@ void ArduinoComHandler::CloseIoPort( void ) {
   close( fIoPortFileDescriptor );
 }
 
-//! Send command termination string (<CR><NL>).
+//! Send command termination string (<NL>).
 /*!
   \internal
 */
 void ArduinoComHandler::SendFeedString( void )
 {
-  write( fIoPortFileDescriptor, "", 0 );
+  write( fIoPortFileDescriptor, "\n", 0 );
 }
