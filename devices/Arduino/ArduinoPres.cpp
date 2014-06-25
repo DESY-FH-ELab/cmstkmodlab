@@ -8,10 +8,11 @@
 // query error codes
 //#####################
 
-#include "ArduinoPresComHandler.h"
+#include "ArduinoComHandler.h"
 
 #include "ArduinoPres.h"
 
+#define __ARDUINO_DEBUG
 ///
 ///
 ///
@@ -19,21 +20,17 @@ ArduinoPres::ArduinoPres( const ioport_t ioPort )
   : VArduinoPres(ioPort),
     uDelay_(250000)
 {
-  comHandler_ = new ArduinoPresComHandler( ioPort );
+  comHandler_ = new ArduinoComHandler( ioPort );
   isCommunication_ = false;
   Device_Init();
 }
-
-
-
-
 
 ///
 ///
 ///
 float ArduinoPres::GetPressureA( void ) const {
 
-  #ifdef __HUBERPETITEFLEUR_DEBUG
+  #ifdef __ARDUINO_DEBUG
   std::cout << "[ArduinoPres::GetPressureA] -- DEBUG: Called." << std::endl;
   #endif
 
@@ -56,7 +53,7 @@ float ArduinoPres::GetPressureA( void ) const {
 ///
 float ArduinoPres::GetPressureB( void ) const {
 
-  #ifdef __HUBERPETITEFLEUR_DEBUG
+  #ifdef __ARDUINO_DEBUG
   std::cout << "[ArduinoPres::GetPressureB] -- DEBUG: Called." << std::endl;
   #endif
 
@@ -74,14 +71,13 @@ float ArduinoPres::GetPressureB( void ) const {
   std::cout<<"bufferA = "<<ToInteger(buffer)<<std::endl;
 }
 
-
 ///
 /// strip trailing newlines & stuff
 /// from machine answer
 ///
 void ArduinoPres::StripBuffer( char* buffer ) const {
 
-  #ifdef __HUBERPETITEFLEUR_DEBUG
+  #ifdef __ARDUINO_DEBUG
   std::cout << "[ArduinoPres::StripBuffer] -- DEBUG: Called." << std::endl;
   std::cout << "[ArduinoPres::StripBuffer] -- DEBUG: Buffer is:" << std::endl;
   std::cout << " > " << buffer << std::endl;
@@ -117,7 +113,7 @@ float ArduinoPres::ToFloat(const char* buffer) const
 ///
 void ArduinoPres::Device_Init( void ) {
 
-  #ifdef __HUBERPETITEFLEUR_DEBUG
+  #ifdef __ARDUINO_DEBUG
   std::cout << "[ArduinoPres::Device_Init] -- DEBUG: Called." << std::endl;
   #endif
 

@@ -3,7 +3,7 @@
 
 #include "VArduinoPres.h"
 
-class ArduinoPresComHandler;
+class ArduinoComHandler;
 
 class ArduinoPres : public VArduinoPres
 {
@@ -11,11 +11,9 @@ class ArduinoPres : public VArduinoPres
 
   ArduinoPres( ioport_t );
 
-
   bool IsCommunication( void ) const { return isCommunication_; }
   float GetPressureA( void ) const; //a
   float GetPressureB( void ) const; //b
-
 
  private:
 
@@ -25,7 +23,7 @@ class ArduinoPres : public VArduinoPres
   float ToFloat(const char*) const;
 
   void Device_Init( void );
-  ArduinoPresComHandler* comHandler_;
+  ArduinoComHandler* comHandler_;
   bool isCommunication_;
 };
 

@@ -20,8 +20,6 @@ ArduinoPresFake::ArduinoPresFake( const ioport_t ioPort )
   pressureB_ = -15;
 }
 
-
-
 ///
 ///
 ///
@@ -44,11 +42,10 @@ float ArduinoPresFake::GetPressureB( void ) const
   return pressureB_ + (double)rand() / RAND_MAX;
 }
 
-
-
 ///
 ///
 ///
-void ArduinoPresFake::Device_Init( void ) {
+void ArduinoPresFake::Device_Init( void )
+{
 
 }
