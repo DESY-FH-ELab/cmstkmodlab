@@ -19,8 +19,6 @@ class ArduinoPres : public VArduinoPres
 
   const int uDelay_;
   void StripBuffer( char* ) const;
-  int ToInteger(const char*) const;
-  float ToFloat(const char*) const;
 
   void Device_Init( void );
   ArduinoComHandler* comHandler_;

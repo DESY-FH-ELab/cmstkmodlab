@@ -107,22 +107,6 @@ void ArduinoPres::StripBuffer( char* buffer ) const {
   }
 }
 
-int ArduinoPres::ToInteger(const char* buffer) const
-{
-  std::string temp(buffer);
-  temp.erase(0, 0);
-
-  return std::atoi( temp.c_str() );
-}
-
-float ArduinoPres::ToFloat(const char* buffer) const
-{
-  std::string temp(buffer);
-  temp.erase(0, 0);
-
-  return std::atof( temp.c_str() )/100.;
-}
-
 ///
 /// read back software version
 /// to check communication with device
