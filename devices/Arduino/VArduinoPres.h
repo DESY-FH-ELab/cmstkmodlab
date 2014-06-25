@@ -21,6 +21,9 @@ class VArduinoPres
   virtual float GetPressureA( void ) const = 0;
   virtual float GetPressureB( void ) const = 0;
 
+ protected:
+
+  float ToPressure(int) const;
 };
 
 #endif
