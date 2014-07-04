@@ -28,7 +28,7 @@ class TPG262ComHandler {
  public:
   
   //! Constructor.
-  TPG262ComHandler( ioport_t );
+  TPG262ComHandler(ioport_t);
 
   //! Destructor.
   ~TPG262ComHandler();

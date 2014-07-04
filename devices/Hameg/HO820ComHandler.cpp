@@ -9,7 +9,7 @@
   ttyUSB0 ... ttyUSB3<br>
   "/dev/ttyUSB0" ... "/dev/ttyUSB3"
 */
-HO820ComHandler::HO820ComHandler( ioport_t ioPort )
+HO820ComHandler::HO820ComHandler(ioport_t ioPort)
 {
   // save ioport 
   fIoPort = ioPort;

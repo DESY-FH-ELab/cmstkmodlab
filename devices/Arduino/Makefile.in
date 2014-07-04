@@ -6,9 +6,9 @@ include $(BASEPATH)/devices/Makefile.common
 
 LIBDIR        = $(BASEPATH)/devices/lib
 
-LIB           = TkModLabArduinoPres
+LIB           = TkModLabArduino
 
-MODULES       = ArduinoPresComHandler \
+MODULES       = ArduinoComHandler \
                 VArduinoPres \
                 ArduinoPresFake \
                 ArduinoPres
@@ -17,7 +17,7 @@ ALLDEPEND = $(addsuffix .d,$(MODULES))
 
 EXISTDEPEND = $(shell find . -name \*.d -type f -print)
 
-all: depend lib test
+all: depend lib testPres
 
 depend: $(ALLDEPEND)
 
@@ -28,8 +28,8 @@ $(LIBDIR)/lib$(LIB).so: $(addsuffix .o,$(MODULES))
 	@echo "Linking shared library $@"
 	$(LD) $(SOFLAGS) $^ -o $@
 
-test: test.cc $(LIBDIR)/lib$(LIB).so
-	$(CXX) $(CPPFLAGS) $(CXXFLAGS) test.cc -o test -L../lib -lTkModLabArduinoPres
+testPres: testPres.cc $(LIBDIR)/lib$(LIB).so
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) testPres.cc -o testPres -L../lib -lTkModLabArduino
 
 %.d: %.cpp
 	@echo Making dependency for file $< ...
@@ -47,7 +47,7 @@ clean:
 	@rm -f $(addsuffix .o,$(MODULES))
 	@rm -f *.d
 	@rm -f *~
-	@rm -f test
+	@rm -f testPres
 
 ifeq ($(findstring clean,$(MAKECMDGOALS)),)
 ifneq ($(EXISTDEPEND),)

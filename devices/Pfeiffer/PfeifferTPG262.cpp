@@ -12,13 +12,13 @@
 ///
 ///
 /// Constructor
-PfeifferTPG262::PfeifferTPG262( const ioport_t ioPort )
+PfeifferTPG262::PfeifferTPG262(const ioport_t ioPort)
   : VPfeifferTPG262(ioPort)
 {
-  comHandler_ = new TPG262ComHandler( ioPort );
+  comHandler_ = new TPG262ComHandler(ioPort);
   isCommunication_ = false;
   Device_Init();
-
+  
   if (isCommunication_) {
     //setting bit-rate to 9600
     SetBRate();
@@ -84,6 +84,8 @@ int PfeifferTPG262::GetErrorStatus( void ) const
 /// Getting the pressure measurement results for gauge 1
 bool PfeifferTPG262::GetPressure1(reading_t & reading)
 {
+  if (!isCommunication_) return false;
+
   char buffer[1000];
 
   usleep( 100000 );
@@ -129,12 +131,14 @@ bool PfeifferTPG262::GetPressure1(reading_t & reading)
 /// Getting the pressure measurement results for guage 2
 bool PfeifferTPG262::GetPressure2(reading_t &reading)
 {
+  if (!isCommunication_) return false;
+
   char buffer[1000];
 
-  usleep( 100000 );
+  usleep(100000);
   comHandler_->SendCommand( "PR2" );
 
-  usleep( 100000 );
+  usleep(100000);
   comHandler_->ReceiveString( buffer );
   StripBuffer( buffer );
 
@@ -175,6 +179,8 @@ bool PfeifferTPG262::GetPressure2(reading_t &reading)
 ///
 bool PfeifferTPG262::GetPressures(reading_t & reading1, reading_t & reading2)
 {
+  if (!isCommunication_) return false;
+
   char buffer[1000];
 
   usleep( 100000 );
@@ -253,15 +259,15 @@ void PfeifferTPG262::StripBuffer( char* buffer ) const {
 /// read back software version
 /// to check communication with device
 ///
-void PfeifferTPG262::Device_Init( void )
+void PfeifferTPG262::Device_Init()
 {
   isCommunication_ = false;
 
   if (comHandler_->DeviceAvailable()) {
 
     char buffer[1000];
-
-    std::cout << " PfeifferTPG262::Device_Init( void )" << std::endl;
+    
+    std::cout << " PfeifferTPG262::Device_Init()" << std::endl;
     
     usleep( 100000 );
     comHandler_->SendCommand( "PNR" );
@@ -330,7 +336,6 @@ int PfeifferTPG262::SetPressureUnit(void) const
   StripBuffer( buffer );
 
   int returnCode = std::atoi(buffer);
-
 
   usleep( 100000 );
   comHandler_->SendResetInterface();
