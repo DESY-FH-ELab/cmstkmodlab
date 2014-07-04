@@ -7,3 +7,4 @@ Makefile
 *.o
 moc_*
 libCommon.*
+*~
