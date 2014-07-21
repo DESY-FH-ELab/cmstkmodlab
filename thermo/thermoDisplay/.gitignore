@@ -6,4 +6,4 @@ Makefile
 moc_*
 thermoDisplay
 thermoDisplay.app
-
+startThermoDisplay.sh

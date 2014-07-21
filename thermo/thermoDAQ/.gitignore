@@ -6,3 +6,5 @@ Makefile
 moc_*
 thermoDAQ
 thermoDAQ.app
+startThermoDAQ.sh
+
