@@ -12,7 +12,9 @@ class VIota300
   
   virtual bool SetFlow( const float ) const = 0;
   virtual bool SetPressure( const float ) const = 0;
-  virtual bool SetStatus( const float ) const = 0;  
+  virtual bool SetStatus( const float ) const = 0;
+  virtual bool SetPumpOn( void ) const = 0;
+  virtual bool SetPumpOff( void ) const = 0;
   //virtual bool SetControlParameters( float, int, int ) const = 0;
 
   virtual bool IsCommunication( void ) const = 0;

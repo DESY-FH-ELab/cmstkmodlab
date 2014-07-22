@@ -1,18 +1,13 @@
 #ifndef __PFEIFFERTPG262FAKE_H
 #define __PFEIFFERTPG262FAKE_H
 
-#include <utility>
-
 #include "VPfeifferTPG262.h"
-
-typedef const char* ioport_t;
-typedef std::pair<int,int> stat_t;
 
 class PfeifferTPG262Fake : public VPfeifferTPG262
 {
  public:
 
-  PfeifferTPG262Fake( ioport_t );
+  PfeifferTPG262Fake(ioport_t);
 
   virtual bool IsCommunication( void ) const { return true; }
   virtual int GetErrorStatus( void ) const;

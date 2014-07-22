@@ -1,0 +1,4 @@
+#!/bin/bash
+source @basepath@/tkmodlabenv.sh
+cd @basepath@/thermo/thermoDAQ
+./thermoDAQ

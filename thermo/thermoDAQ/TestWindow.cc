@@ -3,6 +3,8 @@
 #include <HamegWidget.h>
 #include <KeithleyWidget.h>
 #include <PfeifferWidget.h>
+#include <IotaWidget.h>
+#include <ArduinoPresWidget.h>
 
 #include "TestWindow.h"
 
@@ -15,12 +17,12 @@ TestWindow::TestWindow(QWidget *parent) :
 
     ApplicationConfig* config = ApplicationConfig::instance();
     
-    // HUBER MODEL
-    huberModel_ = new HuberPetiteFleurModel(config->getValue<std::string>("HuberPetiteFleurDevice").c_str(),
-					    15, this);
-    HuberPetiteFleurWidget* huberWidget = new HuberPetiteFleurWidget(huberModel_, central);
-    huberWidget->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);
-    layout->addWidget(huberWidget);
+//    // HUBER MODEL
+//    huberModel_ = new HuberPetiteFleurModel(config->getValue<std::string>("HuberPetiteFleurDevice").c_str(),
+//					    15, this);
+//    HuberPetiteFleurWidget* huberWidget = new HuberPetiteFleurWidget(huberModel_, central);
+//    huberWidget->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);
+//    layout->addWidget(huberWidget);
 
 //    // HAMEG MODEL
 //    hamegModel_ = new HamegModel(2, this);
@@ -39,6 +41,20 @@ TestWindow::TestWindow(QWidget *parent) :
 //    PfeifferWidget* pfeifferWidget = new PfeifferWidget(pfeifferModel_, central);
 //    pfeifferWidget->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);
 //    layout->addWidget(pfeifferWidget);
+
+    // IOTA MODEL
+    iotaModel_ = new IotaModel(config->getValue<std::string>("IotaDevice").c_str(),
+                               5, this);
+    IotaWidget* iotaWidget = new IotaWidget(iotaModel_, central);
+    iotaWidget->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);
+    layout->addWidget(iotaWidget);
+
+    // ARDUINOPRES MODEL
+    arduinoPresModel_ = new ArduinoPresModel(config->getValue<std::string>("ArduinoPresDevice").c_str(),
+                                             10, this);
+    ArduinoPresWidget* arduinoPresWidget = new ArduinoPresWidget(arduinoPresModel_, central);
+    arduinoPresWidget->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);
+    layout->addWidget(arduinoPresWidget);
 
     setCentralWidget(central);
 }
