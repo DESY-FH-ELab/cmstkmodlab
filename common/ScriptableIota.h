@@ -12,9 +12,9 @@ class ScriptableIota : public QObject
   Q_OBJECT
 public:
   explicit ScriptableIota(IotaModel* petiteFleurModel,
-                                      QObject *parent = 0);
+                          QObject *parent = 0);
 
-public slots:
+  public slots:
 
   void switchPumpOn();
   void switchPumpOff();
@@ -28,21 +28,21 @@ public slots:
   QScriptValue getSetFlow();
 
   void waitForPressureAbove(float pressure,
-                               int timeout);
+                            int timeout);
   void waitForPressureBelow(float pressure,
-                               int timeout);
+                            int timeout);
   void waitForStablePressure(float deltaP,
-                                int delay,
-                                int timeout);
+                             int delay,
+                             int timeout);
   void waitForFlowAbove(float flow,
-                               int timeout);
+                        int timeout);
   void waitForFlowBelow(float flow,
-                               int timeout);
+                        int timeout);
   void waitForStableFlow(float deltaF,
-                                int delay,
-                                int timeout);
+                         int delay,
+                         int timeout);
 
-protected:
+  protected:
   IotaModel* IotaModel_;
 
   // For thread safety

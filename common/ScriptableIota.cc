@@ -7,7 +7,7 @@
 #include "ScriptableIota.h"
 
 ScriptableIota::ScriptableIota(IotaModel* IotaModel,
-                                                       QObject *parent) :
+                               QObject *parent) :
     QObject(parent),
     IotaModel_(IotaModel)
 {
@@ -28,14 +28,14 @@ void ScriptableIota::switchPumpOff() {
 
 void ScriptableIota::setPressure(float pressure) {
 
- QMutexLocker locker(&mutex_);
- IotaModel_->setPressureValue(pressure);
+  QMutexLocker locker(&mutex_);
+  IotaModel_->setPressureValue(pressure);
 }
 
 void ScriptableIota::setFlow(float flow) {
 
- QMutexLocker locker(&mutex_);
- IotaModel_->setFlowValue(flow);
+  QMutexLocker locker(&mutex_);
+  IotaModel_->setFlowValue(flow);
 }
 
 QScriptValue ScriptableIota::isPumpOn() {
@@ -69,7 +69,7 @@ QScriptValue ScriptableIota::getSetFlow() {
 }
 
 void ScriptableIota::waitForPressureAbove(float pressure,
-                                                         int timeout) {
+                                          int timeout) {
 
   for (int m=0;m<=timeout;++m) {
     QMutexLocker locker(&mutex_);
@@ -81,7 +81,7 @@ void ScriptableIota::waitForPressureAbove(float pressure,
 }
 
 void ScriptableIota::waitForFlowAbove(float flow,
-                                                         int timeout) {
+                                      int timeout) {
 
   for (int m=0;m<=timeout;++m) {
     QMutexLocker locker(&mutex_);
@@ -93,7 +93,7 @@ void ScriptableIota::waitForFlowAbove(float flow,
 }
 
 void ScriptableIota::waitForPressureBelow(float pressure,
-                                                         int timeout) {
+                                          int timeout) {
 
   for (int m=0;m<=timeout;++m) {
     QMutexLocker locker(&mutex_);
@@ -105,7 +105,7 @@ void ScriptableIota::waitForPressureBelow(float pressure,
 }
 
 void ScriptableIota::waitForFlowBelow(float flow,
-                                                         int timeout) {
+                                      int timeout) {
 
   for (int m=0;m<=timeout;++m) {
     QMutexLocker locker(&mutex_);
@@ -117,8 +117,8 @@ void ScriptableIota::waitForFlowBelow(float flow,
 }
 
 void ScriptableIota::waitForStablePressure(float deltaP,
-                                                          int delay,
-                                                          int timeout) {
+                                           int delay,
+                                           int timeout) {
   int count = 0;
   double oldTemp = -999;
   for (int m=0;m<=timeout;++m) {
@@ -133,8 +133,8 @@ void ScriptableIota::waitForStablePressure(float deltaP,
 }
 
 void ScriptableIota::waitForStableFlow(float deltaF,
-                                                          int delay,
-                                                          int timeout) {
+                                       int delay,
+                                       int timeout) {
   int count = 0;
   double oldTemp = -999;
   for (int m=0;m<=timeout;++m) {
