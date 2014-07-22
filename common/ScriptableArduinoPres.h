@@ -12,9 +12,9 @@ class ScriptableArduinoPres : public QObject
   Q_OBJECT
 public:
   explicit ScriptableArduinoPres(ArduinoPresModel* arduinoPresModel,
-                                      QObject *parent = 0);
+                                 QObject *parent = 0);
 
-public slots:
+  public slots:
 
   QScriptValue getPressureA();
   QScriptValue getPressureB();

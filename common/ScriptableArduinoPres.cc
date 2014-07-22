@@ -7,7 +7,7 @@
 #include "ScriptableArduinoPres.h"
 
 ScriptableArduinoPres::ScriptableArduinoPres(ArduinoPresModel* ArduinoPresModel,
-                                                       QObject *parent) :
+                                             QObject *parent) :
     QObject(parent),
     ArduinoPresModel_(ArduinoPresModel)
 {
@@ -27,7 +27,7 @@ QScriptValue ScriptableArduinoPres::getPressureB() {
 }
 
 void ScriptableArduinoPres::waitForPressureAAbove(float pressure,
-                                                         int timeout) {
+                                                  int timeout) {
 
   for (int m=0;m<=timeout;++m) {
     QMutexLocker locker(&mutex_);
@@ -39,7 +39,7 @@ void ScriptableArduinoPres::waitForPressureAAbove(float pressure,
 }
 
 void ScriptableArduinoPres::waitForPressureBAbove(float pressure,
-                                                         int timeout) {
+                                                  int timeout) {
 
   for (int m=0;m<=timeout;++m) {
     QMutexLocker locker(&mutex_);
@@ -50,9 +50,8 @@ void ScriptableArduinoPres::waitForPressureBAbove(float pressure,
   }
 }
 
-
 void ScriptableArduinoPres::waitForPressureABelow(float pressure,
-                                                         int timeout) {
+                                                  int timeout) {
 
   for (int m=0;m<=timeout;++m) {
     QMutexLocker locker(&mutex_);
@@ -64,7 +63,7 @@ void ScriptableArduinoPres::waitForPressureABelow(float pressure,
 }
 
 void ScriptableArduinoPres::waitForPressureBBelow(float pressure,
-                                                         int timeout) {
+                                                  int timeout) {
 
   for (int m=0;m<=timeout;++m) {
     QMutexLocker locker(&mutex_);
@@ -75,11 +74,9 @@ void ScriptableArduinoPres::waitForPressureBBelow(float pressure,
   }
 }
 
-
-
 void ScriptableArduinoPres::waitForStablePressureA(float deltaP,
-                                                          int delay,
-                                                          int timeout) {
+                                                   int delay,
+                                                   int timeout) {
   int count = 0;
   double oldTemp = -999;
   for (int m=0;m<=timeout;++m) {
@@ -94,8 +91,8 @@ void ScriptableArduinoPres::waitForStablePressureA(float deltaP,
 }
 
 void ScriptableArduinoPres::waitForStablePressureB(float deltaP,
-                                                          int delay,
-                                                          int timeout) {
+                                                   int delay,
+                                                   int timeout) {
   int count = 0;
   double oldTemp = -999;
   for (int m=0;m<=timeout;++m) {
