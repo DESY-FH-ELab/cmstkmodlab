@@ -3,6 +3,7 @@
 #include <HamegWidget.h>
 #include <KeithleyWidget.h>
 #include <PfeifferWidget.h>
+#include <IotaWidget.h>
 
 #include "TestWindow.h"
 
@@ -39,6 +40,13 @@ TestWindow::TestWindow(QWidget *parent) :
 //    PfeifferWidget* pfeifferWidget = new PfeifferWidget(pfeifferModel_, central);
 //    pfeifferWidget->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);
 //    layout->addWidget(pfeifferWidget);
+
+    // IOTA MODEL
+    iotaModel_ = new IotaModel(config->getValue<std::string>("IotaDevice").c_str(),
+                               5, this);
+    IotaWidget* iotaWidget = new IotaWidget(iotaModel_, central);
+    iotaWidget->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);
+    layout->addWidget(iotaWidget);
 
     setCentralWidget(central);
 }

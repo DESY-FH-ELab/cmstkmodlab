@@ -7,6 +7,7 @@
 #include <HamegModel.h>
 #include <KeithleyModel.h>
 #include <PfeifferModel.h>
+#include <IotaModel.h>
 
 class TestWindow : public QMainWindow
 {
@@ -21,6 +22,7 @@ protected:
   HamegModel* hamegModel_;
   KeithleyModel* keithleyModel_;
   PfeifferModel* pfeifferModel_;
+  IotaModel* iotaModel_;
 };
 
 #endif // TESTWINDOW_H
