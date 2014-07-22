@@ -18,12 +18,12 @@
 ///
 ///
 Iota300Fake::Iota300Fake( const ioport_t ioPort )
-    :VIota300(ioPort),
-     status_(0),
-     flow_(20),
-     pressure_(10)
+    :VIota300(ioPort)
 {
-
+     pumpStatus_ = false;
+     status_ = 0;
+     flow_ = 20;
+     pressure_ = 10;
 }
 
 ///
@@ -64,6 +64,32 @@ bool Iota300Fake::SetPressure( const float pressure ) const {
   pressure_ = pressure;
 
   return true;
+}
+
+///
+/// return success flag
+///
+bool Iota300Fake::SetPumpOn( void ) const
+{
+  std::cout << " [IotaFake::SetCirculatorOn] -- FAKE: Setting pump ON "
+            << std::endl;
+
+  pumpStatus_ = true;
+
+  return true;
+}
+
+///
+/// return success flag
+///
+bool Iota300Fake::SetPumpOff( void ) const
+{
+  std::cout << " [IotaFake::SetCirculatorOn] -- FAKE: Setting pump OFF "
+            << std::endl;
+
+  pumpStatus_ = false;
+
+  return false;
 }
 
 ///
