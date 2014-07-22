@@ -19,15 +19,24 @@ public:
   QScriptValue getPressureA();
   QScriptValue getPressureB();
 
-  void waitForPressureAbove(float pressure,
-                               int timeout);
-  void waitForPressureBelow(float pressure,
-                               int timeout);
-  void waitForStablePressure(float deltaP,
-                                int delay,
-                                int timeout);
+  void waitForPressureAAbove(float pressure,
+                             int timeout);
+  void waitForPressureBAbove(float pressure,
+                             int timeout);
 
-protected:
+  void waitForPressureABelow(float pressure,
+                             int timeout);
+  void waitForPressureBBelow(float pressure,
+                             int timeout);
+
+  void waitForStablePressureA(float deltaP,
+                              int delay,
+                              int timeout);
+  void waitForStablePressureB(float deltaP,
+                              int delay,
+                              int timeout);
+
+  protected:
   ArduinoPresModel* ArduinoPresModel_;
 
   // For thread safety
