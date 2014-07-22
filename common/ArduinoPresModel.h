@@ -21,23 +21,23 @@ typedef ArduinoPres ArduinoPres_t;
   Command and control model of the petiteFleur chiller.
   */
 class ArduinoPresModel : public QObject,
-                              public AbstractDeviceModel<ArduinoPres_t>
+                         public AbstractDeviceModel<ArduinoPres_t>
 {
   Q_OBJECT
 public:
   explicit ArduinoPresModel(const char* port,
-				 float updateInterval = 5,
-				 QObject *parent = 0);
+                            float updateInterval = 5,
+                            QObject *parent = 0);
 
-    float getPressureA() const;
-    float getPressureB() const;
+  float getPressureA() const;
+  float getPressureB() const;
 
-public slots:
+  public slots:
 
   void setDeviceEnabled(bool enabled);
   void setControlsEnabled(bool enabled);
   
-protected:
+  protected:
 
   const QString ArduinoPres_PORT;
 
@@ -50,16 +50,16 @@ protected:
   void setDeviceState( State state );
 
   template <class T> void updateParameterCache(DeviceParameter<T>& parameter,
-					       const T& value);
+                                               const T& value);
 
   float PressureA_;
   float PressureB_;
 
-protected slots:
+  protected slots:
 
   void updateInformation();
 
-signals:
+  signals:
 
   void deviceStateChanged( State newState );
   void informationChanged();

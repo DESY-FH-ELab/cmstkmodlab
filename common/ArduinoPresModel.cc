@@ -6,9 +6,9 @@
   ArduinoPresModel implementation
   */
 ArduinoPresModel::ArduinoPresModel(const char* port,
-					     float updateInterval,
-					     QObject * /*parent*/)
-  : QObject(),
+                                   float updateInterval,
+                                   QObject * /*parent*/) :
+    QObject(),
     AbstractDeviceModel<ArduinoPres_t>(),
     ArduinoPres_PORT(port),
     // state_(OFF), // Initialize all fields to prevent random values
@@ -16,18 +16,14 @@ ArduinoPresModel::ArduinoPresModel(const char* port,
     updateInterval_(updateInterval),
     PressureA_(0),
     PressureB_(0)
-
 {
-    timer_ = new QTimer(this);
-    timer_->setInterval(updateInterval_ * 1000);
-    connect( timer_, SIGNAL(timeout()), this, SLOT(updateInformation()) );
+  timer_ = new QTimer(this);
+  timer_->setInterval(updateInterval_ * 1000);
+  connect( timer_, SIGNAL(timeout()), this, SLOT(updateInformation()) );
 
-    setDeviceEnabled(true);
-    setControlsEnabled(true);
+  setDeviceEnabled(true);
+  setControlsEnabled(true);
 }
-
-
-
 
 float ArduinoPresModel::getPressureA() const {
   return PressureA_;
@@ -40,10 +36,10 @@ float ArduinoPresModel::getPressureB() const {
 /**
   Sets up the communication with the ArduinoPres pump and retrieves the
   settings and read-outs.
-  */
+ */
 void ArduinoPresModel::initialize() {
 
-    std::cout << "void ArduinoPresModel::initialize()" << std::endl;
+  std::cout << "void ArduinoPresModel::initialize()" << std::endl;
 
   setDeviceState(INITIALIZING);
 
@@ -81,41 +77,39 @@ void ArduinoPresModel::setDeviceState( State state ) {
 /**
   Updates the cached information about the ArduinoPres and signals any
   changes.
-  */
+ */
 void ArduinoPresModel::updateInformation() {
 
-    std::cout << "ArduinoPresModel::updateInformation()";
-    if (thread()==QApplication::instance()->thread()) {
-        std::cout << " running in main application thread" << std::endl;
-    } else {
-        std::cout << " running in dedicated DAQ thread" << std::endl;
+  std::cout << "ArduinoPresModel::updateInformation()";
+  if (thread()==QApplication::instance()->thread()) {
+    std::cout << " running in main application thread" << std::endl;
+  } else {
+    std::cout << " running in dedicated DAQ thread" << std::endl;
+  }
+
+  if ( state_ == READY ) {
+
+    float newGetPressureA = controller_->GetPressureA();
+    float newGetPressureB = controller_->GetPressureB();
+
+    if (newGetPressureA != PressureA_ ||
+        newGetPressureB != PressureB_) {
+
+      PressureA_ = newGetPressureA;
+      PressureB_ = newGetPressureB;
+
+      emit informationChanged();
     }
-
-    if ( state_ == READY ) {
-
-        float newGetPressureA = controller_->GetPressureA();
-        float newGetPressureB = controller_->GetPressureB();
-
-        if (newGetPressureA != PressureA_ ||
-            newGetPressureB != PressureB_) {
-
-            PressureA_ = newGetPressureA;
-            PressureB_ = newGetPressureB;
-
-            emit informationChanged();
-        }
-    }
+  }
 }
 
 /**
   Tries to update the given parameter by setting the value on the pump.
   Will signal upon succes and failure, such that GUI induced request can be
   denied.
-  */
-template <class T> void ArduinoPresModel::updateParameterCache(
-    DeviceParameter<T>& parameter
-  , const T& value
-) {
+ */
+template <class T> void ArduinoPresModel::updateParameterCache(DeviceParameter<T>& parameter,
+                                                               const T& value) {
 
   if ( parameter.getValue() != value ) {
     // Store old value
@@ -124,7 +118,6 @@ template <class T> void ArduinoPresModel::updateParameterCache(
     // Emit signal to notify (reverted) changes
     emit informationChanged();
   }
-
 }
 
 
