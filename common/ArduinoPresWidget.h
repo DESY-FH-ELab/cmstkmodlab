@@ -15,10 +15,10 @@
 
 class ArduinoPresWidget : public QWidget
 {
-    Q_OBJECT
+  Q_OBJECT
 public:
   explicit ArduinoPresWidget(ArduinoPresModel* model,
-                                  QWidget *parent = 0);
+                             QWidget *parent = 0);
 
 protected:
   const static int LCD_SIZE = 5;
@@ -29,10 +29,10 @@ protected:
 
   QWidget* operationPanel_;
 
-    QLCDNumber* PressureALCD_;
-    QLCDNumber* PressureBLCD_;
+  QLCDNumber* PressureALCD_;
+  QLCDNumber* PressureBLCD_;
 
-public slots:
+  public slots:
   void updateDeviceState( State newState );
   void controlStateChanged(bool);
   void updateInfo();

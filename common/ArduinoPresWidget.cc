@@ -4,7 +4,8 @@
   \brief Creates a new panel with all the controls and read-outs for the Arduino.
   */
 ArduinoPresWidget::ArduinoPresWidget(ArduinoPresModel* model, QWidget *parent) :
-    QWidget(parent), model_(model)
+    QWidget(parent),
+    model_(model)
 {
   QVBoxLayout* layout = new QVBoxLayout(this);
   setLayout(layout);
@@ -49,7 +50,7 @@ ArduinoPresWidget::ArduinoPresWidget(ArduinoPresModel* model, QWidget *parent) :
 
 /**
   Updates the GUI according to the new state of the pump.
-  */
+ */
 void ArduinoPresWidget::updateDeviceState(State newState) {
 
   bool ready = (newState == READY);
@@ -69,14 +70,14 @@ void ArduinoPresWidget::controlStateChanged(bool enabled) {
 /**
   Sets the values of all the subelements (except the global enablement)
   according to the model.
-  */
+ */
 void ArduinoPresWidget::updateInfo() {
 
- char bufferPA[10];
- sprintf(bufferPA, "%.02f", model_->getPressureA());
- PressureALCD_->display(bufferPA);
+  char bufferPA[10];
+  sprintf(bufferPA, "%.02f", model_->getPressureA());
+  PressureALCD_->display(bufferPA);
 
- char bufferPB[10];
- sprintf(bufferPB, "%.02f", model_->getPressureB());
- PressureBLCD_->display(bufferPB);
+  char bufferPB[10];
+  sprintf(bufferPB, "%.02f", model_->getPressureB());
+  PressureBLCD_->display(bufferPB);
 }
