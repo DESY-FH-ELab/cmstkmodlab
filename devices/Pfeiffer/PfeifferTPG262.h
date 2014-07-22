@@ -1,15 +1,14 @@
 #ifndef __PFEIFFERTPG262_H
 #define __PFEIFFERTPG262_H
 
+#include "TPG262ComHandler.h"
 #include "VPfeifferTPG262.h"
-
-class TPG262ComHandler;
 
 class PfeifferTPG262 : public VPfeifferTPG262
 {
  public:
 
-  PfeifferTPG262( ioport_t );
+  PfeifferTPG262(ioport_t);
   ~PfeifferTPG262();
 
   virtual bool IsCommunication( void ) const { return isCommunication_; }
@@ -24,7 +23,7 @@ class PfeifferTPG262 : public VPfeifferTPG262
   virtual int KeyLock( void ) const;
   virtual void SetContinuous( void ) const;
   virtual stat_t Readout( float & pressure1, float & pressure2 ) const;
-  virtual int GuageIdentification (void) const;
+  virtual int GaugeIdentification (void) const;
 */
 
  private:
