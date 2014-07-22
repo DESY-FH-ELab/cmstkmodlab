@@ -79,7 +79,8 @@ void ArduinoComHandler::ReceiveString( char *receiveString ) {
 
     usleep( 100000 );
 
-    readResult = read( fIoPortFileDescriptor, receiveString, 1024 );
+    readResult = read( fIoPortFileDescriptor, receiveString, 12 );
+//     std::cout << "read: -" << readResult << "- -" << receiveString <<"-"<< std::endl;
 
     if ( readResult > 0 ) {
       receiveString[readResult] = 0;
@@ -130,7 +131,6 @@ void ArduinoComHandler::InitializeIoPort( void ) {
   // clear new settings struct
   bzero( &fThisTermios, sizeof( fThisTermios ) );
 
-  // all these settings copied from stty output..
 
 /* 9600 baud */
  cfsetispeed(&fThisTermios, B9600);
@@ -154,16 +154,9 @@ void ArduinoComHandler::InitializeIoPort( void ) {
  fThisTermios.c_oflag &= ~OPOST;
 
 /* wait for 24 characters to come in before read returns */
- fThisTermios.c_cc[VMIN] = 12;
+ fThisTermios.c_cc[VMIN] = 24;
  /* no minimum time to wait before read returns */
  fThisTermios.c_cc[VTIME] = 0;
-
-//   fThisTermios.c_cflag   |=  NL0;
-//   fThisTermios.c_cflag   |=  CR0;
-//   fThisTermios.c_cflag   |=  TAB0;
-//   fThisTermios.c_cflag   |=  BS0;
-//   fThisTermios.c_cflag   |=  VT0;
-//   fThisTermios.c_cflag   |=  FF0;
 
   // commit changes
   tcsetattr( fIoPortFileDescriptor, TCSANOW, &fThisTermios );
@@ -196,5 +189,5 @@ void ArduinoComHandler::CloseIoPort( void ) {
 */
 void ArduinoComHandler::SendFeedString( void )
 {
-  write( fIoPortFileDescriptor, "\n", 0 );
+  write( fIoPortFileDescriptor, "\n", 1 );
 }
