@@ -4,6 +4,7 @@
 #include <KeithleyWidget.h>
 #include <PfeifferWidget.h>
 #include <IotaWidget.h>
+#include <ArduinoPresWidget.h>
 
 #include "TestWindow.h"
 
@@ -47,6 +48,13 @@ TestWindow::TestWindow(QWidget *parent) :
     IotaWidget* iotaWidget = new IotaWidget(iotaModel_, central);
     iotaWidget->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);
     layout->addWidget(iotaWidget);
+
+    // ARDUINOPRES MODEL
+    arduinoPresModel_ = new ArduinoPresModel(config->getValue<std::string>("ArduinoPresDevice").c_str(),
+                                             10, this);
+    ArduinoPresWidget* arduinoPresWidget = new ArduinoPresWidget(arduinoPresModel_, central);
+    arduinoPresWidget->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);
+    layout->addWidget(arduinoPresWidget);
 
     setCentralWidget(central);
 }
