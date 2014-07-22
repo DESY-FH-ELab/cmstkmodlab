@@ -4,8 +4,9 @@
   \brief Creates a new panel with all the controls and read-outs for the Iota
   pump.
   */
-IotaWidget::IotaWidget(IotaModel* model, QWidget *parent) :
-    QWidget(parent), model_(model)
+IotaWidget::IotaWidget(IotaModel* model, QWidget *parent)
+  : QWidget(parent),
+    model_(model)
 {
   QVBoxLayout* layout = new QVBoxLayout(this);
   setLayout(layout);
@@ -20,7 +21,6 @@ IotaWidget::IotaWidget(IotaModel* model, QWidget *parent) :
 
   pumpCheckBox_ = new QCheckBox("Start run", operationPanel_);
   operationLayout->addRow(pumpCheckBox_);
-
 
   DeviceParameterFloat sPressure = model_->getSetPressureParameter();
   sPressureSpinner_ = new QDoubleSpinBox(operationPanel_);
@@ -37,8 +37,8 @@ IotaWidget::IotaWidget(IotaModel* model, QWidget *parent) :
   aPressureLCD_->setSegmentStyle(QLCDNumber::Flat);
   aPressureLCD_->setSmallDecimalPoint(true);
   operationLayout->addRow(QString::fromUtf8("act pressure (bar)"),
-                             aPressureLCD_);
-                          
+                          aPressureLCD_);
+
   DeviceParameterFloat sFlow = model_->getSetFlowParameter();
   sFlowSpinner_ = new QDoubleSpinBox(operationPanel_);
   sFlowSpinner_->setSingleStep(1);
@@ -54,7 +54,7 @@ IotaWidget::IotaWidget(IotaModel* model, QWidget *parent) :
   aFlowLCD_->setSegmentStyle(QLCDNumber::Flat);
   aFlowLCD_->setSmallDecimalPoint(true);
   operationLayout->addRow(QString::fromUtf8("act flow (ml/min)"),
-                             aFlowLCD_);
+                          aFlowLCD_);
 
   // Connect all the signals
   connect(model_, SIGNAL(deviceStateChanged(State)),
@@ -71,7 +71,7 @@ IotaWidget::IotaWidget(IotaModel* model, QWidget *parent) :
 
   connect(pumpCheckBox_, SIGNAL(toggled(bool)),
           model, SLOT(setPumpEnabled(bool)));
-          
+
   connect(sPressureSpinner_, SIGNAL(valueChanged(double)),
           model_, SLOT(setPressureValue(double)));
 
@@ -85,7 +85,7 @@ IotaWidget::IotaWidget(IotaModel* model, QWidget *parent) :
 
 /**
   Updates the GUI according to the new state of the pump.
-  */
+ */
 void IotaWidget::updateDeviceState(State newState) {
 
   bool ready = (newState == READY);
@@ -105,20 +105,20 @@ void IotaWidget::controlStateChanged(bool enabled) {
 /**
   Sets the values of all the subelements (except the global enablement)
   according to the model.
-  */
+ */
 void IotaWidget::updateInfo() {
 
- pumpCheckBox_->setChecked(model_->isPumpEnabled());
+  pumpCheckBox_->setChecked(model_->isPumpEnabled());
 
- char bufferP[10];
- sprintf(bufferP, "%.02f", model_->getActPressure());
- aPressureLCD_->display(bufferP);
+  char bufferP[10];
+  sprintf(bufferP, "%.02f", model_->getActPressure());
+  aPressureLCD_->display(bufferP);
 
- char bufferF[10];
- sprintf(bufferF, "%.02f", model_->getActFlow());
- aFlowLCD_->display(bufferF);
+  char bufferF[10];
+  sprintf(bufferF, "%.02f", model_->getActFlow());
+  aFlowLCD_->display(bufferF);
 
 
- sPressureSpinner_->setValue(model_->getSetPressureParameter().getValue());
- sFlowSpinner_->setValue(model_->getSetFlowParameter().getValue());
+  sPressureSpinner_->setValue(model_->getSetPressureParameter().getValue());
+  sFlowSpinner_->setValue(model_->getSetFlowParameter().getValue());
 }

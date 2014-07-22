@@ -15,10 +15,10 @@
 
 class IotaWidget : public QWidget
 {
-    Q_OBJECT
+  Q_OBJECT
 public:
   explicit IotaWidget(IotaModel* model,
-                                  QWidget *parent = 0);
+                      QWidget *parent = 0);
 
 protected:
   const static int LCD_SIZE = 5;
@@ -29,13 +29,13 @@ protected:
 
   QWidget* operationPanel_;
 
-    QCheckBox* pumpCheckBox_;
-    QLCDNumber* aPressureLCD_;
-    QLCDNumber* aFlowLCD_;
-    QDoubleSpinBox* sPressureSpinner_;
-    QDoubleSpinBox* sFlowSpinner_;
+  QCheckBox* pumpCheckBox_;
+  QLCDNumber* aPressureLCD_;
+  QLCDNumber* aFlowLCD_;
+  QDoubleSpinBox* sPressureSpinner_;
+  QDoubleSpinBox* sFlowSpinner_;
 
-public slots:
+  public slots:
   void updateDeviceState( State newState );
   void controlStateChanged(bool);
   void updateInfo();
