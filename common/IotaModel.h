@@ -21,22 +21,22 @@ typedef Iota300 Iota_t;
   Command and control model of the petiteFleur chiller.
   */
 class IotaModel : public QObject,
-                              public AbstractDeviceModel<Iota_t>
+public AbstractDeviceModel<Iota_t>
 {
   Q_OBJECT
 public:
   explicit IotaModel(const char* port,
-				 float updateInterval = 5,
-				 QObject *parent = 0);
+                     float updateInterval = 5,
+                     QObject *parent = 0);
 
-    bool isPumpEnabled() const;
-    const DeviceParameterFloat& getStatusParameter() const;
-    float getActPressure() const;
-    float getActFlow() const;
-    const DeviceParameterFloat& getSetPressureParameter() const;
-    const DeviceParameterFloat& getSetFlowParameter() const;
+  bool isPumpEnabled() const;
+  const DeviceParameterFloat& getStatusParameter() const;
+  float getActPressure() const;
+  float getActFlow() const;
+  const DeviceParameterFloat& getSetPressureParameter() const;
+  const DeviceParameterFloat& getSetFlowParameter() const;
 
-public slots:
+  public slots:
 
   void setDeviceEnabled(bool enabled);
   void setControlsEnabled(bool enabled);
@@ -46,7 +46,7 @@ public slots:
   void setPressureValue( double pressure );
   void setFlowValue( double flow );
 
-protected:
+  protected:
 
   const QString Iota_PORT;
 
@@ -59,7 +59,7 @@ protected:
   void setDeviceState( State state );
 
   template <class T> void updateParameterCache(DeviceParameter<T>& parameter,
-					       const T& value);
+                                               const T& value);
 
   bool pumpEnabled_;
   float actPressure_;
@@ -67,11 +67,11 @@ protected:
   float actFlow_;
   DeviceParameterFloat setFlow_;
 
-protected slots:
+  protected slots:
 
   void updateInformation();
 
-signals:
+  signals:
 
   void deviceStateChanged( State newState );
   void informationChanged();
