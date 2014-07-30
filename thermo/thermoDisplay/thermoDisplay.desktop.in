@@ -1,13 +1,13 @@
 [Desktop Entry]
 Comment[en_US]=
 Comment=
-Exec=@basepath@/thermo/thermoDAQ/startThermoDAQ.sh
+Exec=@basepath@/thermo/thermoDisplay/startThermoDisplay.sh
 GenericName[en_US]=
 GenericName=
 Icon=@basepath@/share/snowflake.png
 MimeType=
-Name[en_US]=thermoDAQ
-Name=thermoDAQ
+Name[en_US]=thermoDisplay
+Name=thermoDisplay
 Path=/scratch/measurements
 StartupNotify=false
 Terminal=true
