@@ -58,7 +58,7 @@ HamegChannelWidget::HamegChannelWidget(HamegModel* model, int channel, QWidget *
 
     currentSpinner_ = new QDoubleSpinBox(voltageGroup);
     currentSpinner_->setMinimum(0.0);
-    currentSpinner_->setMaximum(0.25);
+    currentSpinner_->setMaximum(0.31);
     currentSpinner_->setSingleStep(0.001);
     currentSpinner_->setDecimals(3);
     currentSpinner_->setKeyboardTracking(false);
