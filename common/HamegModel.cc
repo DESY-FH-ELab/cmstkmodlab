@@ -14,9 +14,9 @@ HamegModel::HamegModel(const char* port,
     updateInterval_(updateInterval),
     forceRemoteMode_(false),
     voltage1Parameter_(0, 30.000, 2),
-    current1Parameter_(0, 0.250, 3),
+    current1Parameter_(0, 0.310, 3),
     voltage2Parameter_(0, 30.000, 2),
-    current2Parameter_(0, 0.250, 3)
+    current2Parameter_(0, 0.310, 3)
 {
     timer_ = new QTimer(this);
     timer_->setInterval(updateInterval_ * 1000);
