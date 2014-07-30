@@ -188,7 +188,7 @@ void TempVsTime::Terminate()
   TCanvas *c;
   TH1F* frame;
   
-  c = new TCanvas("c2", "c2", 700, 500);
+  c = new TCanvas("c1", "c1", 700, 500);
   frame = c->DrawFrame(0, -0.2,
                        maxUTime, 0.8);
   frame->GetXaxis()->SetTitle("Time [s]");
@@ -198,7 +198,7 @@ void TempVsTime::Terminate()
   
   c->Print("CurrentVsTime.png");
   
-  c = new TCanvas("c3", "c3", 700, 500);
+  c = new TCanvas("c2", "c2", 700, 500);
   frame = c->DrawFrame(0, 0.0,
                        maxUTime, 20.0);
   frame->GetXaxis()->SetTitle("Time [s]");
@@ -208,7 +208,7 @@ void TempVsTime::Terminate()
   
   c->Print("BathVsTime.png");
 
-  c = new TCanvas("c1", "c1", 700, 500);
+  c = new TCanvas("c3", "c3", 700, 500);
   
   frame = c->DrawFrame(0, Tmin-0.2*(Tmax-Tmin),
                        maxUTime, Tmax+0.2*(Tmax-Tmin));

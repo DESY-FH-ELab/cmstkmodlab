@@ -217,7 +217,7 @@ void CalTempVsTime::Terminate()
   
   TCanvas *c;
   
-  c = new TCanvas("c1", "c1", 700, 500);
+  c = new TCanvas("c4", "c4", 700, 500);
   
   std::cout << Tmin << " " << Tmax << std::endl;
   

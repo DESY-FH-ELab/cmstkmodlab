@@ -102,6 +102,8 @@ void Analysis::Begin(TTree * /*tree*/)
   
   std::cout << options << std::endl;
   std::istringstream iss(options.Data());
+  iss >> fitBottom_;
+  iss >> fitTop_;
   iss >> calidx_;
   calset_ = (CalibrationSet*)calibrationSets_.At(calidx_);
   iss >> minTime_;
@@ -226,17 +228,20 @@ void Analysis::Terminate()
   grTop->SetMarkerStyle(21);
   TGraphErrors * grBottom = new TGraphErrors();
   grBottom->SetMarkerStyle(21);
+  int bit = 1;
   for (int i=1;i<=4;++i) {
-    if (i<4) {
-      pushPoint(grTop, positionTop[i], dataTop[i], 0.5, 0.025);
-    } else {
+    if (fitTop_&bit) {
       pushPoint(grTop, positionTop[i], dataTop[i], 0.5, 0.025);
     }
+    bit <<= 1;
   }
+  bit = 1;
   for (int i=1;i<=4;++i) {
-    pushPoint(grBottom, positionBottom[i], dataBottom[i], 0.5, 0.025);
+    if (fitBottom_&bit) {
+      pushPoint(grBottom, positionBottom[i], dataBottom[i], 0.5, 0.025);
+    }
   }
-
+  
   TCanvas *c = new TCanvas("c", "c", 700, 500);
   
   grBottom->Draw("AP");
@@ -285,9 +290,20 @@ void Analysis::Terminate()
   Float_t dT = TTopFace - TBottomFace;
   Float_t ddT = dTTopFace + dTBottomFace;
   std::cout << ddT << std::endl;
-  TLatex* tex = new TLatex(positionTopFace+4, TBottomFace,
+  TLatex* tex = new TLatex(positionTopFace+4, dataBottom[1],
                            Form("#DeltaT = %.3f K", dT));
   tex->SetTextAlign(13);
+  tex->Draw("same");
+
+  tex = new TLatex(positionBottom[1], dataBottom[4],
+                   Form("%.3f K/m", 1000.*fitBottom->GetParameter(1)));
+  tex->SetTextAlign(33);
+  tex->Draw("same");
+
+
+  tex = new TLatex(positionTop[1], dataTop[4],
+                   Form("%.3f K/m", 1000.*fitTop->GetParameter(1)));
+  tex->SetTextAlign(11);
   tex->Draw("same");
 
   c->Print(Form("Analysis_%02d.png", calidx_));

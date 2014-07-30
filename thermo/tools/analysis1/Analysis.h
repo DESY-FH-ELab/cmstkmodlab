@@ -176,6 +176,9 @@ public :
   UInt_t minTime_;
   UInt_t maxTime_;
   
+  int fitBottom_;
+  int fitTop_;
+  
   ClassDef(Analysis,0);
 };
 
