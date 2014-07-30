@@ -36,6 +36,24 @@
 #include <TF1.h>
 #include <TLatex.h>
 
+Double_t myfunction(Double_t *x, Double_t *par)
+{
+  double xx =x[0];
+  double p0 = par[0];
+  double p1 = par[1];
+  double p2 = par[2];
+  double p3 = par[3];
+  
+  double f = 0;
+  if (xx<=p3) {
+    f = p0 + p1*xx;
+  } else {
+    f = p0 + p1*xx + p2;
+  }
+  
+  return f;
+}
+   
 CalibrationSet::CalibrationSet()
 {
   minTime_ = 0;
@@ -228,10 +246,14 @@ void Analysis::Terminate()
   grTop->SetMarkerStyle(21);
   TGraphErrors * grBottom = new TGraphErrors();
   grBottom->SetMarkerStyle(21);
+  TGraphErrors * grCombined = new TGraphErrors();
+  grCombined->SetMarkerStyle(21);
+  
   int bit = 1;
   for (int i=1;i<=4;++i) {
     if (fitTop_&bit) {
       pushPoint(grTop, positionTop[i], dataTop[i], 0.5, 0.025);
+      pushPoint(grCombined, positionTop[i], dataTop[i], 0.5, 0.025);
     }
     bit <<= 1;
   }
@@ -239,6 +261,7 @@ void Analysis::Terminate()
   for (int i=1;i<=4;++i) {
     if (fitBottom_&bit) {
       pushPoint(grBottom, positionBottom[i], dataBottom[i], 0.5, 0.025);
+      pushPoint(grCombined, positionBottom[i], dataBottom[i], 0.5, 0.025);
     }
   }
   
@@ -273,6 +296,11 @@ void Analysis::Terminate()
   fitBottom->Draw("same");
   std::cout << fitBottom->GetParameter(1) << std::endl;
   
+  TF1 * fitCombined = new TF1("fitCombined", myfunction, 0.0, positionTop[4]+8.0, 4);
+  fitCombined->FixParameter(3, positionBottomFace);
+  grCombined->Fit(fitCombined, "NR");
+  //fitCombined->Draw("same");
+  
   Float_t TTopFace = fitTop->Eval(positionTopFace);
   Float_t dTTopFace = positionTopFace * fitTop->GetParError(1) + fitTop->GetParError(0);
   std::cout << dTTopFace << std::endl;
@@ -293,6 +321,14 @@ void Analysis::Terminate()
   TLatex* tex = new TLatex(positionTopFace+4, dataBottom[1],
                            Form("#DeltaT = %.3f K", dT));
   tex->SetTextAlign(13);
+  tex->Draw("same");
+
+  tex = new TLatex(positionBottomFace-4, dataTop[1],
+                   Form("#DeltaT_{c} = %.3f K (%.3f K/m)",
+                        fitCombined->GetParameter(2),
+                        1000.*fitCombined->GetParameter(1)));
+  tex->SetTextSize(0.04);
+  tex->SetTextAlign(31);
   tex->Draw("same");
 
   tex = new TLatex(positionBottom[1], dataBottom[4],
