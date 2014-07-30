@@ -1,0 +1,6 @@
+*.so
+*.d
+*.xml
+*.root
+*.png
+calibration.txt
