@@ -12,6 +12,8 @@ class Iota300Fake : public VIota300
   bool SetFlow( const float ) const;
   bool SetPressure( const float ) const;
   bool SetStatus( const float ) const;
+  bool SetPumpOn( void ) const;
+  bool SetPumpOff( void ) const;
   //bool SetControlParameters( float, int, int ) const;
 
   bool IsCommunication( void ) const { return true; }
@@ -23,7 +25,8 @@ class Iota300Fake : public VIota300
  
  private:
 
-  mutable float status_;
+  mutable bool pumpStatus_;
+  mutable int status_;
   mutable float flow_;
   mutable float pressure_;
 
