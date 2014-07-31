@@ -40,7 +40,7 @@ void ThermoScriptableGlobals::wait(int seconds) {
   QString message;
   QDateTime dt = QDateTime::currentDateTime().addSecs(seconds);
 
-  message = QString("wait for %1 second(s) ...").arg(seconds);
+  message = QString("wait for %1 second(s)").arg(seconds);
   this->message(message);
 
   message = QString("estimated time of completion: %1 ...").arg(dt.toString(TIME_FORMAT));
