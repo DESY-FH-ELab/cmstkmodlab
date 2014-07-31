@@ -7,5 +7,5 @@ Makefile
 moc_*
 thermoDisplay
 thermoDisplay.app
-thermoDAQ.desktop
+thermoDisplay.desktop
 startThermoDisplay.sh

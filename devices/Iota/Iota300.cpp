@@ -91,7 +91,9 @@ bool Iota300::SetPressure( const float pressure ) const {
     std::cerr << "  > (s. Iota300 class definition)" << std::endl;
     return false;
   }
-
+///
+/// return success flag
+///
   char buffer[10];
 
   int iPressure = pressure;// * 100.;
@@ -117,6 +119,67 @@ bool Iota300::SetPressure( const float pressure ) const {
     return false;
   }
   
+  return true;
+}
+
+///
+/// return success flag
+///
+bool Iota300::SetPumpOn( void ) const {
+
+  #ifdef __IOTA300_DEBUG
+  std::cout << "[Iota300::SetPumpOn] -- DEBUG: Called." << std::endl;
+  #endif
+
+  char buffer[100];
+
+  usleep( uDelay_ );
+  comHandler_->SendCommand( "#STw2" );
+
+  usleep( uDelay_ );
+  comHandler_->ReceiveString( buffer );
+  StripBuffer( buffer );
+
+  int status = ToInteger(buffer);
+
+  if( status != 2 ) {
+    std::cerr << " [Iota300::SetPumpOn] ** ERROR: check failed."
+        << std::endl;
+    std::cerr << "  > Expected: ON (2) but received (string):"
+        << buffer << "." << std::endl;
+    return false;
+  }
+
+  return true;
+}
+///
+/// return success flag
+///
+bool Iota300::SetPumpOff( void ) const {
+
+  #ifdef __IOTA300_DEBUG
+  std::cout << "[Iota300::SetPumpOff] -- DEBUG: Called." << std::endl;
+  #endif
+
+  char buffer[100];
+
+  usleep( uDelay_ );
+  comHandler_->SendCommand( "#STw0" );
+
+  usleep( uDelay_ );
+  comHandler_->ReceiveString( buffer );
+  StripBuffer( buffer );
+
+  int status = ToInteger(buffer);
+
+  if( status != 0 ) {
+    std::cerr << " [Iota300::SetPumpOff] ** ERROR: check failed."
+        << std::endl;
+    std::cerr << "  > Expected: Off (0) but received (string):"
+        << buffer << "." << std::endl;
+    return false;
+  }
+
   return true;
 }
 

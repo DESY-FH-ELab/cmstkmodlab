@@ -12,6 +12,8 @@ LIBS += -L@basepath@/devices/lib -lTkModLabJulabo
 LIBS += -L@basepath@/devices/lib -lTkModLabHameg
 LIBS += -L@basepath@/devices/lib -lTkModLabPfeiffer
 LIBS += -L@basepath@/devices/lib -lTkModLabHuber
+LIBS += -L@basepath@/devices/lib -lTkModLabIota
+LIBS += -L@basepath@/devices/lib -lTkModLabArduino
 
 QMAKE = @qmake@
 QMAKE_CXXFLAGS += -std=c++0x
@@ -46,7 +48,13 @@ HEADERS += nqlogger.h \
            HamegWidget.h \
            PfeifferModel.h \
            ScriptablePfeiffer.h \
-           PfeifferWidget.h
+           PfeifferWidget.h \
+           IotaModel.h \
+           ScriptableIota.h \
+           IotaWidget.h \
+           ArduinoPresWidget.h \
+	   ScriptableArduinoPres.h \
+           ArduinoPresModel.h
            
 SOURCES += nqlogger.cpp \
            SingletonApplication.cc \
@@ -67,4 +75,10 @@ SOURCES += nqlogger.cpp \
            HamegWidget.cc \
            PfeifferModel.cc \
            ScriptablePfeiffer.cc \
-           PfeifferWidget.cc
+           PfeifferWidget.cc \
+           IotaModel.cc \
+           ScriptableIota.cc \
+           IotaWidget.cc \
+           ArduinoPresWidget.cc \
+           ScriptableArduinoPres.cc \
+           ArduinoPresModel.cc
