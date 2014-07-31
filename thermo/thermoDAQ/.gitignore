@@ -3,8 +3,10 @@ thermoDAQ.pro.user
 Makefile
 *.d
 *.o
+*~
 moc_*
 thermoDAQ
 thermoDAQ.app
+thermoDAQ.desktop
 startThermoDAQ.sh
 

@@ -35,9 +35,19 @@ void ThermoScriptableGlobals::stopDAQ() {
 
 void ThermoScriptableGlobals::wait(int seconds) {
 
-  QString message = QString("wait for %1 second(s) ...").arg(seconds);
+  static QString TIME_FORMAT = "yyyy-MM-dd hh:mm:ss";
+
+  QString message;
+  QDateTime dt = QDateTime::currentDateTime().addSecs(seconds);
+
+  message = QString("wait for %1 second(s) ...").arg(seconds);
   this->message(message);
+
+  message = QString("estimated time of completion: %1 ...").arg(dt.toString(TIME_FORMAT));
+  this->message(message);
+
   sleep(seconds);
+
   this->message("done");
 }
 
