@@ -22,6 +22,7 @@
 #define NQLOGGER_H
 
 #include <vector>
+#include <set>
 #include <string>
 
 #include <QObject>
@@ -95,6 +96,8 @@ public:
 
     void write(const QString& module, NQLog::LogLevel level, const QString&buffer);
 
+    void addActiveModule(const QString& module);
+
     void addDestiniation(QIODevice * device, NQLog::LogLevel level = NQLog::Message);
     void addDestiniation(FILE * fileHandle, NQLog::LogLevel level = NQLog::Message);
 
@@ -103,6 +106,7 @@ protected:
     explicit NQLogger(QObject *parent = 0);
     static NQLogger* instance_;
 
+    std::set<std::pair<QString,bool> > activeModules_;
     std::vector<std::pair<NQLog::LogLevel,QTextStream*> > destinations_;
 };
 

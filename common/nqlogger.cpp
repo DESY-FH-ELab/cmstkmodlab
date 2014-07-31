@@ -56,9 +56,30 @@ NQLogger* NQLogger::instance(QObject *parent)
 
 void NQLogger::write(const QString& module, NQLog::LogLevel level, const QString& buffer)
 {
+    if (activeModules_.empty()) return;
+
+    bool filtered = true;
+    for (std::set<std::pair<QString,bool> >::iterator it = activeModules_.begin();
+         it!=activeModules_.end();
+         ++it) {
+        if (it->second==false) {
+            if (module==it->first) {
+                filtered = false;
+                break;
+            }
+        } else {
+            if (it->first.length()==0 || module.startsWith(it->first)) {
+                filtered = false;
+                break;
+            }
+        }
+    }
+    if (filtered) return;
+
     QString dateString = QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss.zzz");
 
     QString message = dateString;
+
     switch (level) {
     case NQLog::Spam: message += " S"; break;
     case NQLog::Message: message += " M"; break;
@@ -82,6 +103,16 @@ void NQLogger::write(const QString& module, NQLog::LogLevel level, const QString
         stream->flush();
         }
     }
+}
+
+void NQLogger::addActiveModule(const QString& module)
+{
+    if (module.endsWith("*")) {
+        QString temp = module;
+        temp.remove(temp.indexOf("*"), temp.length()-temp.indexOf("*"));
+        activeModules_.insert(std::pair<QString,bool>(temp,true));
+    }
+    activeModules_.insert(std::pair<QString,bool>(module,false));
 }
 
 void NQLogger::addDestiniation(QIODevice * device, NQLog::LogLevel level)
