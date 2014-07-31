@@ -63,8 +63,8 @@ int main( int argc, char** argv )
 
   ApplicationConfig::instance(std::string(Config::CMSTkModLabBasePath) + "/thermo/thermo.cfg");
 
-  //ThermoMainWindow mainWindow;
-  TestWindow mainWindow;
+  ThermoMainWindow mainWindow;
+  //TestWindow mainWindow;
 
   mainWindow.show();
 
