@@ -24,7 +24,8 @@ DEPENDPATH += .
 INCLUDEPATH += .
 INCLUDEPATH += @basepath@
 
-HEADERS += DeviceState.h \
+HEADERS += nqlogger.h \
+           DeviceState.h \
            DeviceParameter.h \
            Ringbuffer.h \
            SingletonApplication.h \
@@ -47,7 +48,8 @@ HEADERS += DeviceState.h \
            ScriptablePfeiffer.h \
            PfeifferWidget.h
            
-SOURCES += SingletonApplication.cc \
+SOURCES += nqlogger.cpp \
+           SingletonApplication.cc \
            ApplicationConfig.cc \
            ApplicationConfigReader.cc \
            ApplicationConfigWriter.cc \
