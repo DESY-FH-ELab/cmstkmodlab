@@ -19,6 +19,9 @@ public slots:
   QScriptValue temperature(unsigned int channel);
   QScriptValue temperatureAsString(unsigned int channel);
 
+  void waitForStableTemperature(const QString & channels,
+                                int timeout);
+
   void waitForTemperatureAbove(unsigned int channel,
                                float temperature,
                                int timeout);

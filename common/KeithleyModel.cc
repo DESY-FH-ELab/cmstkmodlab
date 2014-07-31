@@ -14,8 +14,7 @@ KeithleyModel::KeithleyModel(const char* port,
     gradients_(SENSOR_COUNT, 0.0),
 //    timeBuffer_(1+(60*5)/updateInterval),
 //    temperatureBuffer_(1+(60*5)/updateInterval, temperatures_),
-    timeBuffer_(4),
-    temperatureBuffer_(4, temperatures_),
+    temperatureBuffer_(temperatures_),
     absoluteTime_(0)
 {
   timer_ = new QTimer(this);
@@ -216,4 +215,9 @@ std::string KeithleyModel::constructString(unsigned int sensor)
 {
   // Construct string of length 1 using ASCII offset of '0'
   return std::string( 1, static_cast<char>( sensor + '0' ) );
+}
+
+void KeithleyModel::statusMessage(const QString & text)
+{
+  emit message(text);
 }

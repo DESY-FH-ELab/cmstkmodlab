@@ -12,6 +12,8 @@
 #include <QDateTime>
 #include <QDir>
 
+#include <nqlogger.h>
+
 #include "ThermoScriptableGlobals.h"
 
 ThermoScriptableGlobals::ThermoScriptableGlobals(ThermoScriptModel* scriptModel, QObject *parent) :
@@ -42,13 +44,16 @@ void ThermoScriptableGlobals::wait(int seconds) {
 
   message = QString("wait for %1 second(s)").arg(seconds);
   this->message(message);
+  NQLog("thermoDAQ") << message;
 
   message = QString("estimated time of completion: %1 ...").arg(dt.toString(TIME_FORMAT));
   this->message(message);
+  NQLog("thermoDAQ") << message;
 
   sleep(seconds);
 
   this->message("done");
+  NQLog("thermoDAQ") << "done";
 }
 
 void ThermoScriptableGlobals::message(int value) {
