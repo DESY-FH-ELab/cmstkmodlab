@@ -35,6 +35,8 @@ public:
   double getTemperature( unsigned int sensor ) const;
   int getUpdateInterval() const { return updateInterval_; }
 
+  void statusMessage(const QString & text);
+
 public slots:
 
   void setDeviceEnabled( bool enabled );
@@ -58,8 +60,8 @@ protected:
   std::vector<double> temperatures_;
   std::vector<double> gradients_;
 
-  Ringbuffer<double> timeBuffer_;
-  Ringbuffer<std::vector<double> > temperatureBuffer_;
+  Ringbuffer<double,4> timeBuffer_;
+  Ringbuffer<std::vector<double>,4> temperatureBuffer_;
   double absoluteTime_;
 
   void setDeviceState( State state );

@@ -3,16 +3,16 @@
 
 #include <iostream>
 
-template <class T> class Ringbuffer
+template <class T,size_t N=5> class Ringbuffer
 {
 public:
 
     typedef T      value_type;
 
-    explicit Ringbuffer(size_t n, const T& value = value_type()) {
-        size_ = n;
-        buffer_ = new T[n];
-        for (size_t i=0;i<n;++i) buffer_[i] = value;
+    explicit Ringbuffer(const T& value = value_type()) {
+        size_ = N;
+        buffer_ = new T[size_];
+        for (size_t i=0;i<size_;++i) buffer_[i] = value;
         currentWritePointer_ = 0;
         currentReadPointer_ = size_ - 1;
     }
