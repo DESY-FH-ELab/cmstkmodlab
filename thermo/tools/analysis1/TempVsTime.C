@@ -120,6 +120,7 @@ Bool_t TempVsTime::Process(Long64_t entry)
   static bool firstEntry = true;
   if (firstEntry) {
     minUTime = uTime;
+    lastCurrent = current1;
     firstEntry = false;
   }
   
@@ -165,7 +166,11 @@ Bool_t TempVsTime::Process(Long64_t entry)
   pushPoint(grTBottom[4], uTime, TBottom4);
 
   pushPoint(grCurrent, uTime, current1);
-  
+  if (current1!=lastCurrent) {
+    std::cout << "current changed to " << current1 << " A @ " << uTime << std::endl;
+  }
+  lastCurrent = current1;
+
   pushPoint(grBath, uTime, bathTemperature);
   
   return kTRUE;
