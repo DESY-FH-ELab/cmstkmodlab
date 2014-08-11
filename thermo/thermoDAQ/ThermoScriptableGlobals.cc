@@ -137,8 +137,11 @@ void ThermoScriptableGlobals::tweet(const QString& user, const QString& pw,
         m += " #TkModLab";
         if (twitterObj.statusUpdate(m)) {
             twitterObj.getLastWebResponse(replyMsg);
-            printf("\ntwitterClient:: twitCurl::statusUpdate web response:\n%s\n", replyMsg.c_str() );
+            //printf("\ntwitterClient:: twitCurl::statusUpdate web response:\n%s\n", replyMsg.c_str() );
+	    NQLog("thermoDAQ") << "tweet: " << m;
         }
+    } else {
+      NQLog("thermoDAQ") << "cannot log into twitter account";
     }
 
 #endif
