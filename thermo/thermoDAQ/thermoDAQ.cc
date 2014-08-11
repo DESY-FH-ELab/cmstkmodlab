@@ -32,7 +32,7 @@ int main( int argc, char** argv )
 #endif
     QDir dir(logdir);
     if (!dir.exists()) dir.mkpath(".");
-    QString logfilename = logdir + "/MatDB.log";
+    QString logfilename = logdir + "/thermoDAQ.log";
 
     NQLog("thermoDAQ") << "using " << logfilename << " for logging";
 
@@ -63,8 +63,8 @@ int main( int argc, char** argv )
 
   ApplicationConfig::instance(std::string(Config::CMSTkModLabBasePath) + "/thermo/thermo.cfg");
 
-  //ThermoMainWindow mainWindow;
-  TestWindow mainWindow;
+  ThermoMainWindow mainWindow;
+  //TestWindow mainWindow;
 
   mainWindow.show();
 

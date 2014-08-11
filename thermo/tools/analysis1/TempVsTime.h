@@ -146,7 +146,9 @@ public :
   TGraph* grTTop[5];
   TGraph* grTBottom[5];
   
+  Float_t lastCurrent;
   TGraph* grCurrent;
+  TGraph* grVoltage;
   TGraph* grBath;
   
   ClassDef(TempVsTime,0);
