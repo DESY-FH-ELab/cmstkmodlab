@@ -77,6 +77,7 @@ void TempVsTime::Begin(TTree * /*tree*/)
   }
   
   grCurrent = new TGraph();
+  grVoltage = new TGraph();
   grBath = new TGraph();
   
   nCalEntries = 0;
@@ -166,8 +167,9 @@ Bool_t TempVsTime::Process(Long64_t entry)
   pushPoint(grTBottom[4], uTime, TBottom4);
 
   pushPoint(grCurrent, uTime, current1);
+  pushPoint(grVoltage, uTime, voltage1);
   if (current1!=lastCurrent) {
-    std::cout << "current changed to " << current1 << " A @ " << uTime << std::endl;
+    std::cout << "current changed to " << current1 << " A (" << voltage1 << " V) @ " << uTime << std::endl;
   }
   lastCurrent = current1;
 
@@ -202,8 +204,18 @@ void TempVsTime::Terminate()
   grCurrent->Draw("L");
   
   c->Print("CurrentVsTime.png");
-  
+
   c = new TCanvas("c2", "c2", 700, 500);
+  frame = c->DrawFrame(0, -0.2,
+                       maxUTime, 8.2);
+  frame->GetXaxis()->SetTitle("Time [s]");
+  frame->GetYaxis()->SetTitle("Voltage [V]");
+
+  grVoltage->Draw("L");
+  
+  c->Print("VoltageVsTime.png");
+  
+  c = new TCanvas("c3", "c3", 700, 500);
   frame = c->DrawFrame(0, 0.0,
                        maxUTime, 20.0);
   frame->GetXaxis()->SetTitle("Time [s]");
@@ -213,7 +225,7 @@ void TempVsTime::Terminate()
   
   c->Print("BathVsTime.png");
 
-  c = new TCanvas("c3", "c3", 700, 500);
+  c = new TCanvas("c4", "c4", 700, 500);
   
   frame = c->DrawFrame(0, Tmin-0.2*(Tmax-Tmin),
                        maxUTime, Tmax+0.2*(Tmax-Tmin));

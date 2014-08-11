@@ -148,6 +148,7 @@ public :
   
   Float_t lastCurrent;
   TGraph* grCurrent;
+  TGraph* grVoltage;
   TGraph* grBath;
   
   ClassDef(TempVsTime,0);
