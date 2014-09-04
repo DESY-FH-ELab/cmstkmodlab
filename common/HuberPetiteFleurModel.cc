@@ -1,5 +1,7 @@
 #include <QApplication>
 
+#include <nqlogger.h>
+
 #include "HuberPetiteFleurModel.h"
 
 /*
@@ -44,7 +46,7 @@ float HuberPetiteFleurModel::getBathTemperature() const {
   */
 void HuberPetiteFleurModel::initialize() {
 
-    std::cout << "void HuberPetiteFleurModel::initialize()" << std::endl;
+  NQLog("HuberPetiteFleurModel", NQLog::Message) << "initialize()";
 
   setDeviceState(INITIALIZING);
 
@@ -85,11 +87,12 @@ void HuberPetiteFleurModel::setDeviceState( State state ) {
   */
 void HuberPetiteFleurModel::updateInformation() {
 
-    std::cout << "HuberPetiteFleurModel::updateInformation()";
+    NQLog("HuberPetiteFleurModel", NQLog::Debug) << "updateInformation()";
+
     if (thread()==QApplication::instance()->thread()) {
-        std::cout << " running in main application thread" << std::endl;
+        NQLog("HuberPetiteFleurModel", NQLog::Debug) << " running in main application thread";
     } else {
-        std::cout << " running in dedicated DAQ thread" << std::endl;
+        NQLog("HuberPetiteFleurModel", NQLog::Debug) << " running in dedicated DAQ thread";
     }
 
     if ( state_ == READY ) {
@@ -105,6 +108,8 @@ void HuberPetiteFleurModel::updateInformation() {
             bathTemperature_ = newBathTemp;
             workingTemperature_.setValue(newWorkingTemp);
             circulatorEnabled_ = newCirculatorStatus;
+
+            NQLog("HuberPetiteFleurModel", NQLog::Spam) << "information changed";
 
             emit informationChanged();
         }

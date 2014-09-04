@@ -2,6 +2,8 @@
 
 #include <QtNetwork>
 
+#include <nqlogger.h>
+
 #include "ThermoDAQClient.h"
 
 ThermoDAQClient::ThermoDAQClient(int socket, QObject *parent)
@@ -14,20 +16,18 @@ ThermoDAQClient::ThermoDAQClient(int socket, QObject *parent)
 
 void ThermoDAQClient::readDAQStatus()
 {
-    std::cout << "ThermoDAQClient::readDAQStatus()" << std::endl;
+    NQLog("ThermoDAQClient", NQLog::Spam) << "readDAQStatus()";
 
     blockSize_ = 0;
     tcpSocket_->connectToHost(QHostAddress::LocalHost, socket_);
     if (!tcpSocket_->waitForConnected(2000)) {
         tcpSocket_->abort();
-        std::cout << "connection timeout" << std::endl;
+        NQLog("ThermoDAQClient", NQLog::Fatal) << "connection timeout";
     }
 }
 
 void ThermoDAQClient::read()
 {
-    // std::cout << "ThermoDAQClient::read()" << std::endl;
-
     QByteArray in = tcpSocket_->readAll();
     QString buffer(in.data());
 

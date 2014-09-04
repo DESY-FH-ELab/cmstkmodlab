@@ -51,7 +51,6 @@ ThermoMainWindow::ThermoMainWindow(QWidget *parent) :
 
     daqServer_ = new ThermoDAQServer(daqModel_, this);
     daqServer_->listen(QHostAddress::LocalHost, 55555);
-    //std::cout << daqServer_->serverPort() << std::endl;
 
     daqThread_ = new ThermoDAQThread(daqModel_, this);
     connect(QApplication::instance(), SIGNAL(aboutToQuit()),
@@ -124,7 +123,6 @@ ThermoMainWindow::ThermoMainWindow(QWidget *parent) :
 
 void ThermoMainWindow::quit()
 {
-    std::cout << "void ThermoMainWindow::quit()" << std::endl;
     if (daqThread_) {
       daqThread_->quit();
       daqThread_->wait();

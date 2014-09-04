@@ -1,5 +1,7 @@
 #include <QDebug>
 
+#include <nqlogger.h>
+
 #include "ThermoScriptThread.h"
 #include "ThermoScriptableGlobals.h"
 #include "ScriptableHuberPetiteFleur.h"
@@ -54,9 +56,9 @@ void ThermoScriptThread::executeScript(const QString & script)
 }
 
 void ThermoScriptThread::abortScript() {
-  std::cout << "abort" << std::endl;
+  NQLog("ThermoScriptThread") << "abort";
   if (engine_) {
-    std::cout << "abort " << (int)engine_->isEvaluating() << std::endl;
+    NQLog("ThermoScriptThread") << "abort " << (int)engine_->isEvaluating();
     engine_->abortEvaluation();
     //delete engine_;
     //engine_ = 0;

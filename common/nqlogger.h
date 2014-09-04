@@ -34,11 +34,12 @@ class NQLog
 public:
 
     enum LogLevel {
-        Spam        = 0,
-        Message     = 1,
-        Warning     = 2,
-        Critical    = 3,
-        Fatal       = 4
+        Debug       = 0,
+        Spam        = 1,
+        Message     = 2,
+        Warning     = 3,
+        Critical    = 4,
+        Fatal       = 5
     };
 
     NQLog(const QString& module, LogLevel level = Message);

@@ -1,4 +1,6 @@
-#include <iostream>
+#include <QApplication>
+
+#include <nqlogger.h>
 
 #include "HamegModel.h"
 
@@ -37,8 +39,6 @@ void HamegModel::initialize() {
 
   bool enabled = ( controller_ != NULL ) && ( controller_->DeviceAvailable() );
 
-  std::cout << "init " << (int)enabled << std::endl;
-
   if ( enabled ) {
     setDeviceState(READY);
     updateInformation();
@@ -71,6 +71,14 @@ void HamegModel::setDeviceState( State state ) {
   changes.
   */
 void HamegModel::updateInformation() {
+
+  NQLog("HamegModel", NQLog::Debug) << "updateInformation()";
+
+  if (thread()==QApplication::instance()->thread()) {
+      NQLog("HamegModel", NQLog::Debug) << " running in main application thread";
+  } else {
+      NQLog("HamegModel", NQLog::Debug) << " running in dedicated DAQ thread";
+  }
 
   if ( state_ == READY ) {
 
@@ -108,7 +116,7 @@ void HamegModel::updateInformation() {
           voltage_[1] = newVoltage2;
           current_[1] = newCurrent2;
 
-          std::cout << "emit informationChanged()" << std::endl;
+          NQLog("HamegModel", NQLog::Spam) << "information changed";
 
           emit informationChanged();
       }

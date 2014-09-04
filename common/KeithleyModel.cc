@@ -1,5 +1,9 @@
 #include <unistd.h>
 
+#include <QApplication>
+
+#include <nqlogger.h>
+
 #include "KeithleyModel.h"
 
 KeithleyModel::KeithleyModel(const char* port,
@@ -36,9 +40,6 @@ void KeithleyModel::initialize() {
 
     renewController(port_);
 
-    //std::cout << std::numeric_limits<float>::max() << ", "
-    //          << std::numeric_limits<float>::infinity << std::endl;
-
     // Give the device some time to process befor spamming it with upcoming
     // commands
     sleep(1);
@@ -61,7 +62,6 @@ void KeithleyModel::initialize() {
     // TODO log failure
     setDeviceState(OFF);
   }
-
 }
 
 void KeithleyModel::setDeviceEnabled(bool enabled) {
@@ -83,7 +83,6 @@ void KeithleyModel::setDeviceState(State state) {
     emit deviceStateChanged(state);
   }
 }
-
 
 /* SENSOR CONTROL */
 
@@ -113,7 +112,6 @@ void KeithleyModel::setSensorEnabled(unsigned int sensor, bool enabled) {
     controller_->DisableActiveChannels( channel );
     setSensorState( sensor, OFF );
   }
-
 }
 
 void KeithleyModel::setControlsEnabled(bool enabled) {
@@ -149,7 +147,7 @@ void KeithleyModel::scanTemperatures() {
   // Good scan, cache the retrieved temperatures
   if ( controller_->IsScanOk() ) {
 
-    std::cout << reading.size() << " temperature readings" << std::endl;
+    NQLog("KeithleyModel", NQLog::Debug) << reading.size() << " temperature readings";
 
     for (reading_t::const_iterator it = reading.begin();
          it < reading.end();
@@ -166,12 +164,11 @@ void KeithleyModel::scanTemperatures() {
 
       // Check for OVERFLOW readings, i.e. disconnected or malfunction
       // TODO log OVERFLOW readings
-      std::cout << sensor << " : " << temperature << std::endl;
-//      if ( temperature == std::numeric_limits<float>::infinity() )
-//        setSensorEnabled(sensor, false);
+      NQLog("KeithleyModel", NQLog::Debug) << sensor << " : " << temperature;
+      // if ( temperature == std::numeric_limits<float>::infinity() )
+      //   setSensorEnabled(sensor, false);
 
     }
-
   }
 
   timeBuffer_.push_back(absoluteTime_);
@@ -180,10 +177,6 @@ void KeithleyModel::scanTemperatures() {
   double lastTime = timeBuffer_.get();
   const std::vector<double> &lastTemperatures = temperatureBuffer_.get();
   double dt = absoluteTime_ - lastTime;
-
-  std::cout << "lastTime: " << lastTime << std::endl;
-  std::cout << "absoluteTime: " << absoluteTime_ << std::endl;
-  std::cout << "dt: " << dt << std::endl;
 
   if (dt>=30) {
       for (unsigned int i=0;i<SENSOR_COUNT;++i) {
@@ -195,11 +188,6 @@ void KeithleyModel::scanTemperatures() {
               emit temperatureGradientChanged(i, gradient);
           }
       }
-      std::cout << "dT/dt: "
-                << temperatures_[0] << " "
-                << lastTemperatures[0] << " "
-                << dt/60 << " = "
-                << gradients_[0] << std::endl;
   }
 
   absoluteTime_ += updateInterval_;
