@@ -1,3 +1,5 @@
+#include <nqlogger.h>
+
 #include "JulaboModel.h"
 
 /*
@@ -123,6 +125,8 @@ void JulaboModel::setDeviceState( State state ) {
   */
 void JulaboModel::updateInformation() {
 
+  NQLog("HuberPetiteFleurModel", NQLog::Debug) << "updateInformation()";
+
   // NOTE Julabo status messages in manual §12.4
   if ( state_ == READY ) {
     float newBathTemp = controller_->GetBathTemperature();
@@ -147,6 +151,8 @@ void JulaboModel::updateInformation() {
       power_ = newHeatingPower;
       pumpPressure_.setValue(newPumpPressure);
       circulatorEnabled_ = newCirculatorStatus;
+
+      NQLog("JulaboModel", NQLog::Spam) << "information changed";
 
       emit informationChanged();
     }
