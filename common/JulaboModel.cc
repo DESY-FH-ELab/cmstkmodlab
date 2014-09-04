@@ -18,24 +18,24 @@ const QString JulaboModel::JULABO_PORT = QString("/dev/ttyS5");
   \arg updateInterval Time between read-out cache refreshes; in seconds.
   \arg parent Pointer to the parent QObject.
   */
-JulaboModel::JulaboModel(float updateInterval, QObject * /*parent*/) :
-    QObject()
-  , AbstractDeviceModel<JulaboFP50_t>()
-  , updateInterval_(updateInterval)
-  , proportional_(0.1, 99.9, 1)
-  , integral_(3, 9999, 0)
-  , differential_(0, 999, 0)
-  , circulatorEnabled_(false)
-  , pumpPressure_(1, 4, 0)
-  , workingTemperature_(-94.99, 300.00, 2)
-  , bathTemperature_(0)
-  , safetySensorTemperature_(0)
-  , power_(0)
+JulaboModel::JulaboModel(float updateInterval, QObject * /*parent*/)
+  : QObject(),
+    AbstractDeviceModel<JulaboFP50_t>(),
+    updateInterval_(updateInterval),
+    proportional_(0.1, 99.9, 1),
+    integral_(3, 9999, 0),
+    differential_(0, 999, 0),
+    circulatorEnabled_(false),
+    pumpPressure_(1, 4, 0),
+    workingTemperature_(-94.99, 300.00, 2),
+    bathTemperature_(0),
+    safetySensorTemperature_(0),
+    power_(0)
 {
 
   timer_ = new QTimer(this);
   timer_->setInterval(updateInterval_ * 1000);
-  connect( timer_, SIGNAL(timeout()), this, SLOT(updateInformation()) );
+  connect(timer_, SIGNAL(timeout()), this, SLOT(updateInformation()));
 
   setDeviceEnabled(true);
 }
@@ -99,7 +99,6 @@ void JulaboModel::initialize() {
     delete controller_;
     controller_ = NULL;
   }
-
 }
 
 /// \see AbstractDeviceModel::setDeviceState
@@ -139,12 +138,11 @@ void JulaboModel::updateInformation() {
     // NOTE virtual std::pair<int,std::string> GetStatus( void ) const = 0;
 //    std::pair<int,std::string> status = controller_->GetStatus();
 
-    if (   newBathTemp != bathTemperature_
-        || newWorkingTemp != workingTemperature_.getValue()
-        || newHeatingPower != power_
-        || newPumpPressure != pumpPressure_.getValue()
-        || newCirculatorStatus != circulatorEnabled_
-    ) {
+    if (newBathTemp != bathTemperature_ ||
+        newWorkingTemp != workingTemperature_.getValue() ||
+        newHeatingPower != power_ ||
+        newPumpPressure != pumpPressure_.getValue() ||
+        newCirculatorStatus != circulatorEnabled_) {
 
       bathTemperature_ = newBathTemp;
       workingTemperature_.setValue(newWorkingTemp);
@@ -156,7 +154,6 @@ void JulaboModel::updateInformation() {
 
       emit informationChanged();
     }
-
   }
 
 }
@@ -168,27 +165,23 @@ void JulaboModel::updateInformation() {
   Will signal upon succes and failure, such that GUI induced request can be
   denied.
   */
-template <class T> void JulaboModel::updateParameterCache(
-    DeviceParameter<T>& parameter
-  , const T& value
-) {
+template <class T> void JulaboModel::updateParameterCache(DeviceParameter<T>& parameter,
+                                                          const T& value) {
 
   if ( parameter.getValue() != value ) {
     // Store old value
     T oldValue = parameter.getValue();
 
     // Attempt to set new value (in cache and on device), revert on failure
-    if (  parameter.setValue(value) && !controller_->SetControlParameters(
-            proportional_.getValue()
-          , integral_.getValue()
-          , differential_.getValue()
-    ) )
+    if (parameter.setValue(value) &&
+        !controller_->SetControlParameters(proportional_.getValue(),
+                                           integral_.getValue(),
+                                           differential_.getValue()))
       parameter.setValue(oldValue);
 
     // Emit signal to notify (reverted) changes
     emit informationChanged();
   }
-
 }
 
 // Device control
@@ -250,15 +243,12 @@ void JulaboModel::setPumpPressureValue(int pressure) {
 
     unsigned int oldValue = pumpPressure_.getValue();
 
-    if (   pumpPressure_.setValue(static_cast<unsigned int>(pressure))
-        && !controller_->SetPumpPressure(pressure)
-    )
+    if (pumpPressure_.setValue(static_cast<unsigned int>(pressure)) &&
+        !controller_->SetPumpPressure(pressure))
       pumpPressure_.setValue(oldValue);
 
     emit informationChanged();
-
   }
-
 }
 
 void JulaboModel::setWorkingTemperatureValue(double value) {
@@ -269,9 +259,8 @@ void JulaboModel::setWorkingTemperatureValue(double value) {
 
       float oldValue = workingTemperature_.getValue();
 
-      if (   workingTemperature_.setValue(static_cast<float>(value))
-          && !controller_->SetWorkingTemperature(value)
-          )
+      if (workingTemperature_.setValue(static_cast<float>(value)) &&
+          !controller_->SetWorkingTemperature(value))
         workingTemperature_.setValue(oldValue);
 
       emit informationChanged();
