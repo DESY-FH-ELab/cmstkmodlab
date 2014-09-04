@@ -2,6 +2,8 @@
 
 #include <QGridLayout>
 
+#include <nqlogger.h>
+
 #include "HamegWidget.h"
 
 HamegChannelWidget::HamegChannelWidget(HamegModel* model, int channel, QWidget *parent) :
@@ -119,7 +121,7 @@ void HamegChannelWidget::controlStateChanged(bool /*state*/)
 
 void HamegChannelWidget::updateInfo()
 {
-    std::cout << "HamegChannelWidget::updateInfo()" << std::endl;
+    NQLog("HamegChannelWidget", NQLog::Debug) << "updateInfo()";
 
     unsigned int status = model_->getStatus();
 
@@ -150,7 +152,6 @@ void HamegChannelWidget::updateInfo()
     currentSpinner_->setValue(setCurrent);
     float current = model_->getCurrent(channel_);
     sprintf(dummy, "%.03f", current);
-    std::cout << dummy << " " << current << std::endl;
     currentDisplay_->display(dummy);
 }
 
@@ -236,7 +237,7 @@ void HamegWidget::controlStateChanged(bool enabled) {
   */
 void HamegWidget::updateInfo()
 {
-	std::cout << "HamegWidget::updateInfo()" << std::endl;
+    NQLog("HamegWidget", NQLog::Debug) << "updateInfo()";
 
     unsigned int status = model_->getStatus();
 

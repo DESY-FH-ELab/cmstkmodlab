@@ -1,3 +1,7 @@
+#include <QApplication>
+
+#include <nqlogger.h>
+
 #include "PfeifferModel.h"
 
 /*
@@ -87,7 +91,13 @@ void PfeifferModel::setDeviceState( State state ) {
   */
 void PfeifferModel::updateInformation() {
 
-    std::cout << "-----> PfeifferModel::updateInformation()" << std::endl;
+    NQLog("PfeifferModel", NQLog::Debug) << "updateInformation()";
+
+    if (thread()==QApplication::instance()->thread()) {
+        NQLog("PfeifferModel", NQLog::Debug) << " running in main application thread";
+    } else {
+        NQLog("PfeifferModel", NQLog::Debug) << " running in dedicated DAQ thread";
+    }
 
     if ( state_ == READY ) {
 
@@ -105,7 +115,7 @@ void PfeifferModel::updateInformation() {
                 status2_ = reading2.first;
                 pressure2_ = reading2.second;
 
-                std::cout << "##### PfeifferModel::updateInformation()" << std::endl;
+                NQLog("PfeifferModel", NQLog::Spam) << "information changed";
 
                 emit informationChanged();
             }

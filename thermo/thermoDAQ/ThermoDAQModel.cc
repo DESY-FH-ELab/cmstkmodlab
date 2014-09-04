@@ -151,15 +151,13 @@ void ThermoDAQModel::customDAQMessage(const QString & message)
 
 void ThermoDAQModel::huberInfoChanged()
 {
-    NQLog("ThermoDAQModel", NQLog::Spam) << "huberInfoChanged()";
+    NQLog("ThermoDAQModel", NQLog::Debug) << "huberInfoChanged()";
 
-    /*
     if (thread()==QApplication::instance()->thread()) {
-        NQLog("ThermoDAQModel", NQLog::Spam) << " running in main application thread";
+        NQLog("ThermoDAQModel", NQLog::Debug) << " running in main application thread";
     } else {
-        NQLog("ThermoDAQModel", NQLog::Spam) << " running in dedicated DAQ thread";
+        NQLog("ThermoDAQModel", NQLog::Debug) << " running in dedicated DAQ thread";
     }
-    */
 
     QMutexLocker locker(&mutex_);
 
@@ -192,13 +190,11 @@ void ThermoDAQModel::keithleySensorStateChanged(unsigned int sensor, State newSt
 {
     NQLog("ThermoDAQModel", NQLog::Message) << "keithleySensorStateChanged()";
 
-    /*
     if (thread()==QApplication::instance()->thread()) {
-        NQLog("ThermoDAQModel", NQLog::Spam) << " running in main application thread";
+        NQLog("ThermoDAQModel", NQLog::Debug) << " running in main application thread";
     } else {
-        NQLog("ThermoDAQModel", NQLog::Spam) << " running in dedicated DAQ thread";
+        NQLog("ThermoDAQModel", NQLog::Debug) << " running in dedicated DAQ thread";
     }
-    */
 
     QMutexLocker locker(&mutex_);
 
@@ -222,15 +218,13 @@ void ThermoDAQModel::keithleySensorStateChanged(unsigned int sensor, State newSt
 
 void ThermoDAQModel::keithleyTemperatureChanged(unsigned int sensor, double temperature)
 {
-    NQLog("ThermoDAQModel", NQLog::Spam) << "keithleyInfoChanged()";
+    NQLog("ThermoDAQModel", NQLog::Debug) << "keithleyInfoChanged()";
 
-    /*
     if (thread()==QApplication::instance()->thread()) {
-        NQLog("ThermoDAQModel", NQLog::Spam) << " running in main application thread";
+        NQLog("ThermoDAQModel", NQLog::Debug) << " running in main application thread";
     } else {
-        NQLog("ThermoDAQModel", NQLog::Spam) << " running in dedicated DAQ thread";
+        NQLog("ThermoDAQModel", NQLog::Debug) << " running in dedicated DAQ thread";
     }
-    */
 
     QMutexLocker locker(&mutex_);
 
@@ -255,15 +249,13 @@ void ThermoDAQModel::keithleyTemperatureChanged(unsigned int sensor, double temp
 
 void ThermoDAQModel::pfeifferInfoChanged()
 {
-    NQLog("ThermoDAQModel", NQLog::Spam) << "pfeifferInfoChanged()";
+    NQLog("ThermoDAQModel", NQLog::Debug) << "pfeifferInfoChanged()";
 
-    /*
     if (thread()==QApplication::instance()->thread()) {
-        NQLog("ThermoDAQModel", NQLog::Spam) << " running in main application thread";
+        NQLog("ThermoDAQModel", NQLog::Debug) << " running in main application thread";
     } else {
-        NQLog("ThermoDAQModel", NQLog::Spam) << " running in dedicated DAQ thread";
+        NQLog("ThermoDAQModel", NQLog::Debug) << " running in dedicated DAQ thread";
     }
-    */
 
     QMutexLocker locker(&mutex_);
 
@@ -295,15 +287,13 @@ void ThermoDAQModel::pfeifferInfoChanged()
 
 void ThermoDAQModel::hamegInfoChanged()
 {
-    NQLog("ThermoDAQModel", NQLog::Spam) << "hamegInfoChanged()";
+    NQLog("ThermoDAQModel", NQLog::Debug) << "hamegInfoChanged()";
 
-    /*
     if (thread()==QApplication::instance()->thread()) {
-        NQLog("ThermoDAQModel", NQLog::Spam) << " running in main application thread";
+        NQLog("ThermoDAQModel", NQLog::Debug) << " running in main application thread";
     } else {
-        NQLog("ThermoDAQModel", NQLog::Spam) << " running in dedicated DAQ thread";
+        NQLog("ThermoDAQModel", NQLog::Debug) << " running in dedicated DAQ thread";
     }
-    */
 
     QMutexLocker locker(&mutex_);
 
