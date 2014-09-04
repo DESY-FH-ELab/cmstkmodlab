@@ -17,8 +17,10 @@ public:
 
 public slots:
 
-  void startDAQ();
-  void stopDAQ();
+  void startMeasurement();
+  void startDAQ() { startMeasurement(); }
+  void stopMeasurement();
+  void stopDAQ() { stopMeasurement(); }
 
   void wait(int seconds);
   void message(int value);

@@ -6,6 +6,8 @@
 
 #include <qwt_date.h>
 
+#include <nqlogger.h>
+
 #include "ThermoDAQModel.h"
 
 ThermoDAQModel::ThermoDAQModel(HuberPetiteFleurModel* huberModel,
@@ -52,6 +54,8 @@ void ThermoDAQModel::startMeasurement()
     QString buffer;
     createDAQStatusMessage(buffer);
     emit daqMessage(buffer);
+
+    NQLog("thermoDAQ") << "measurement started";
 }
 
 void ThermoDAQModel::createDAQStatusMessage(QString &buffer)
@@ -124,6 +128,8 @@ void ThermoDAQModel::stopMeasurement()
 {
     daqState_ = false;
     emit daqStateChanged(false);
+
+    NQLog("thermoDAQ") << "measurement stopped";
 }
 
 void ThermoDAQModel::clearHistory()

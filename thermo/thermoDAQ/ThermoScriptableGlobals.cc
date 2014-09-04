@@ -23,18 +23,14 @@ ThermoScriptableGlobals::ThermoScriptableGlobals(ThermoScriptModel* scriptModel,
 
 }
 
-void ThermoScriptableGlobals::startDAQ() {
+void ThermoScriptableGlobals::startMeasurement() {
 
-  QMutexLocker locker(&mutex_);
-  this->message("start DAQ");
-  scriptModel_->startDAQ();
+  scriptModel_->startMeasurement();
 }
 
-void ThermoScriptableGlobals::stopDAQ() {
+void ThermoScriptableGlobals::stopMeasurement() {
 
-  QMutexLocker locker(&mutex_);
-  this->message("stop DAQ");
-  scriptModel_->stopDAQ();
+  scriptModel_->stopMeasurement();
 }
 
 void ThermoScriptableGlobals::wait(int seconds) {
