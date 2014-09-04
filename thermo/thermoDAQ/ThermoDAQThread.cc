@@ -1,5 +1,7 @@
 #include <QMutex>
 
+#include <nqlogger.h>
+
 #include "ThermoDAQThread.h"
 
 ThermoDAQThread::ThermoDAQThread(ThermoDAQModel* daqModel,
@@ -12,6 +14,6 @@ ThermoDAQThread::ThermoDAQThread(ThermoDAQModel* daqModel,
 
 void ThermoDAQThread::run()
 {
-    std::cout << "DAQ thread started" << std::endl;
+    NQLog("ThermoDAQThread", NQLog::Spam) << "started";
     exec();
 }

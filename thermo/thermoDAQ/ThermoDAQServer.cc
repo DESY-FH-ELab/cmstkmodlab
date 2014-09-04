@@ -2,6 +2,8 @@
 
 #include <QtNetwork>
 
+#include <nqlogger.h>
+
 #include "ThermoDAQServer.h"
 
 ThermoDAQServer::ThermoDAQServer(ThermoDAQModel* model, QObject *parent)
@@ -13,7 +15,7 @@ ThermoDAQServer::ThermoDAQServer(ThermoDAQModel* model, QObject *parent)
 
 void ThermoDAQServer::incomingConnection(int socketDescriptor)
 {
-    std::cout << "ThermoDAQServer::incomingConnection(int socketDescriptor)" << std::endl;
+    NQLog("ThermoDAQServer") << "incomingConnection(int socketDescriptor)";
 
     ThermoDAQServerThread *thread = new ThermoDAQServerThread(socketDescriptor, model_, this);
     connect(thread, SIGNAL(finished()), thread, SLOT(deleteLater()));
