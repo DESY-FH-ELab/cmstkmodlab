@@ -8,6 +8,8 @@
 
 #include <qwt_symbol.h>
 
+#include <nqlogger.h>
+
 #include "ApplicationConfig.h"
 
 #include "ThermoDisplayMainWindow.h"
@@ -136,14 +138,13 @@ void ThermoDisplayMainWindow::clearData()
 
 void ThermoDisplayMainWindow::requestData()
 {
-    // std::cout << "void ThermoDisplayMainWindow::requestData()" << std::endl;
-
+    NQLog("ThermoDisplayMainWindow", NQLog::Debug) << "requestData()";
     client_->readDAQStatus();
 }
 
 void ThermoDisplayMainWindow::updateInfo()
 {
-    // std::cout << "void ThermoDisplayMainWindow::updateInfo()" << std::endl;
+    NQLog("ThermoDisplayMainWindow", NQLog::Debug) << "updateInfo()";
 
     const Measurement_t& m = reader_->getMeasurement();
 

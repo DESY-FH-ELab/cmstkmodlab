@@ -3,6 +3,8 @@
 #include <QDateTime>
 #include <QTextStream>
 
+#include <nqlogger.h>
+
 #include "ThermoDAQNetworkReader.h"
 
 ThermoDAQNetworkReader::ThermoDAQNetworkReader(QObject* parent) :
@@ -14,8 +16,7 @@ ThermoDAQNetworkReader::ThermoDAQNetworkReader(QObject* parent) :
 void ThermoDAQNetworkReader::run(QString& buffer)
 {
     process(buffer);
-    std::cout << "ThermoDAQNetworkReader::run(QString& buffer): finished" << std::endl;
-    //std::cout << buffer.toStdString() << std::endl;
+    NQLog("ThermoDAQNetworkReader", NQLog::Debug) << "run(QString& buffer)";
     emit finished();
 }
 

@@ -1,5 +1,15 @@
 #include <QApplication>
 #include <QTcpSocket>
+#include <QProcess>
+#include <QFile>
+#include <QDir>
+#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
+#include <QDesktopServices>
+#else
+#include <QStandardPaths>
+#endif
+
+#include <nqlogger.h>
 
 #include "SingletonApplication.h"
 #include "ApplicationConfig.h"
@@ -11,12 +21,31 @@
 static const char* thermoDisplayGUID = "{413A4B5E-EEAD-44E5-8195-4106D8C1A2DD}";
 #define SINGLETON 1
 
-int main( int argc, char** argv ) {
+int main( int argc, char** argv )
+{
+  NQLogger::instance()->addActiveModule("*");
+  NQLogger::instance()->addDestiniation(stdout, NQLog::Spam);
+
+#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
+    QString logdir = QDesktopServices::storageLocation(QDesktopServices::CacheLocation);
+#else
+    QString logdir = QStandardPaths::writableLocation(QStandardPaths::CacheLocation);
+#endif
+    QDir dir(logdir);
+    if (!dir.exists()) dir.mkpath(".");
+    QString logfilename = logdir + "/thermoDisplay.log";
+
+    NQLog("thermoDisplay") << "using " << logfilename << " for logging";
+
+    QFile * logfile = new QFile(logfilename);
+    if (logfile->open(QIODevice::WriteOnly | QIODevice::Append | QIODevice::Text)) {
+        NQLogger::instance()->addDestiniation(logfile, NQLog::Message);
+    }
 
 #ifdef SINGLETON
     SingletonApplication app(argc, argv, thermoDisplayGUID);
     if(!app.lock()){
-        std::cout << "Application instance already running!" << std::endl;
+        NQLog("thermoDisplay") << "Application instance already running!";
         exit(1);
     }
 #else
@@ -28,7 +57,7 @@ int main( int argc, char** argv ) {
     ApplicationConfig::instance(std::string(Config::CMSTkModLabBasePath) + "/thermo/thermo.cfg");
 
     if (app.arguments().size()==2 &&
-            app.arguments().at(1)=="--nogui") {
+        app.arguments().at(1)=="--nogui") {
 
         ThermoDAQClient * client = new ThermoDAQClient(55555);
         ThermoDAQNetworkReader * reader = new ThermoDAQNetworkReader(&app);
