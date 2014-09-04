@@ -26,12 +26,14 @@ ThermoScriptableGlobals::ThermoScriptableGlobals(ThermoScriptModel* scriptModel,
 void ThermoScriptableGlobals::startDAQ() {
 
   QMutexLocker locker(&mutex_);
+  this->message("start DAQ");
   scriptModel_->startDAQ();
 }
 
 void ThermoScriptableGlobals::stopDAQ() {
 
   QMutexLocker locker(&mutex_);
+  this->message("stop DAQ");
   scriptModel_->stopDAQ();
 }
 

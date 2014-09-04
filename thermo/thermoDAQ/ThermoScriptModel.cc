@@ -88,6 +88,18 @@ void ThermoScriptModel::executionStarted() {
     emit setControlsEnabled(false);
     emit clearMessageText();
 
+    QDateTime& utime = daqModel_->currentTime();
+
+    QString buffer;
+    QXmlStreamWriter xml(&buffer);
+
+    xml.writeStartElement("Log");
+    xml.writeAttribute("time", utime.toString());
+    xml.writeCharacters("script execution started");
+    xml.writeEndElement();
+
+    daqModel_->customDAQMessage(buffer);
+
     executionTime_ = 0;
     executionTimer_.start(1000);
 }
@@ -96,16 +108,35 @@ void ThermoScriptModel::executionFinished() {
 
     executionTimer_.stop();
 
+    QDateTime& utime = daqModel_->currentTime();
+
+    QString buffer;
+    QXmlStreamWriter xml(&buffer);
+
+    xml.writeStartElement("Log");
+    xml.writeAttribute("time", utime.toString());
+    xml.writeCharacters("script execution finished");
+    xml.writeEndElement();
+
+    daqModel_->customDAQMessage(buffer);
+
+
     emit setControlsEnabled(true);
 }
 void ThermoScriptModel::startDAQ() {
 
-  if (daqModel_->daqState()==false) daqModel_->startMeasurement();
+  if (daqModel_->daqState()==false) {
+    this->message("start DAQ");
+    daqModel_->startMeasurement();
+  }
 }
 
 void ThermoScriptModel::stopDAQ() {
 
-  if (daqModel_->daqState()==true) daqModel_->stopMeasurement();
+  if (daqModel_->daqState()==true) {
+    this->message("stop DAQ");
+    daqModel_->stopMeasurement();
+  }
 }
 
 void ThermoScriptModel::message(int value) {
