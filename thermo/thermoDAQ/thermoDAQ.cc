@@ -46,7 +46,7 @@ int main( int argc, char** argv )
 #ifdef SINGLETON
     SingletonApplication app(argc, argv, thermoDAQGUID);
     if(!app.lock()){
-        std::cout << "Application instance already running!" << std::endl;
+        NQLog("thermoDAQ") << "Application instance already running!";
         exit(1);
     }
 #else
