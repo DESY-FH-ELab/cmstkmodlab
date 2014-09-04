@@ -81,6 +81,7 @@ void NQLogger::write(const QString& module, NQLog::LogLevel level, const QString
     QString message = dateString;
 
     switch (level) {
+    case NQLog::Debug: message += " D"; break;
     case NQLog::Spam: message += " S"; break;
     case NQLog::Message: message += " M"; break;
     case NQLog::Warning: message += " W"; break;
