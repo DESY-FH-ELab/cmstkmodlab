@@ -16,8 +16,6 @@
 #include <qwt_legend_label.h>
 #include <qwt_plot_renderer.h>
 
-#include "ThermoDAQDisplayWidget.h"
-
 #include <qwt_legend_data.h>
 #include <qwt_text.h>
 #include <qwt_plot_item.h>
@@ -27,6 +25,8 @@
 #include <qstandarditemmodel.h>
 #include <qitemdelegate.h>
 #include <qpainter.h>
+
+#include "ThermoDAQDisplayWidget.h"
 
 ThermoDAQPressureScaleDraw::ThermoDAQPressureScaleDraw() :
     QwtScaleDraw()
@@ -201,8 +201,6 @@ ThermoDAQLegend::~ThermoDAQLegend()
 void ThermoDAQLegend::renderLegend( QPainter *painter,
     const QRectF &rect, bool fillBackground ) const
 {
-    // std::cout << "ThermoDAQLegend::renderLegend" << std::endl;
-
     if (fillBackground) {
         if (autoFillBackground() || testAttribute( Qt::WA_StyledBackground)) {
             qwtRenderBackground(painter, rect, d_listView);
@@ -243,7 +241,6 @@ int ThermoDAQLegend::scrollExtent( Qt::Orientation orientation ) const
 void ThermoDAQLegend::updateLegend(const QVariant &itemInfo,
                                    const QList<QwtLegendData> &data)
 {
-    // std::cout << "ThermoDAQLegend::updateLegend " << data.size() << std::endl;
     QStandardItemModel *mdl = qobject_cast<QStandardItemModel*>(d_listView->model());
 
     QwtPlotItem *plotItem = qvariant_cast<QwtPlotItem *>(itemInfo);
@@ -278,14 +275,9 @@ void ThermoDAQLegend::updateLegend(const QVariant &itemInfo,
 
 void ThermoDAQLegend::updateItem(QStandardItem *item, const QwtLegendData &data)
 {
-    // std::cout << "ThermoDAQLegend::updateItem" << std::endl;
-
     const QVariant key = item->data();
     const qlonglong ptr = key.value<qlonglong>();
     ThermoDAQDisplayPlotItem* titem = (ThermoDAQDisplayPlotItem*)ptr;
-
-    // std::cout << titem->title().text().toStdString() << std::endl;
-    // std::cout << (int)titem->isEnabled() << std::endl;
 
     item->setCheckable(titem->isEnabled());
     if (titem->isEnabled()==false) {
