@@ -44,6 +44,8 @@ ArduinoComHandler::~ArduinoComHandler( void ) {
 //! Send the command string &lt;commandString&gt; to device.
 void ArduinoComHandler::SendCommand( const char *commandString ) {
 
+  if (!fDeviceAvailable) return;
+
   char singleCharacter = 0; 
 
   for ( unsigned int i = 0; i < strlen( commandString ); i++ ) {
@@ -70,6 +72,11 @@ void ArduinoComHandler::SendCommand( const char *commandString ) {
   See example program in class description.
 */
 void ArduinoComHandler::ReceiveString( char *receiveString ) {
+
+  if (!fDeviceAvailable) {
+    receiveString[0] = 0;
+    return;
+  }
 
   usleep( ComHandlerDelay );
 
@@ -108,11 +115,14 @@ void ArduinoComHandler::OpenIoPort( void ) throw (int) {
 	          << fIoPort << "." << std::endl;
     std::cerr << "                               (probably it's not user-writable)."
               << std::endl;
-    throw int(-1);
+    fDeviceAvailable = false;
+    return;
   } else {
     // configure port with no delay
     fcntl( fIoPortFileDescriptor, F_SETFL, FNDELAY );
   }
+
+  fDeviceAvailable = true;
 }
 
 //! Initialize I/O port.
@@ -120,6 +130,8 @@ void ArduinoComHandler::OpenIoPort( void ) throw (int) {
   \internal
 */
 void ArduinoComHandler::InitializeIoPort( void ) {
+
+  if (!fDeviceAvailable) return;
 
 #ifndef USE_FAKEIO
  
@@ -131,32 +143,31 @@ void ArduinoComHandler::InitializeIoPort( void ) {
   // clear new settings struct
   bzero( &fThisTermios, sizeof( fThisTermios ) );
 
+  /* 9600 baud */
+  cfsetispeed(&fThisTermios, B9600);
+  cfsetospeed(&fThisTermios, B9600);
+  /* 8 bits, no parity, no stop bits */
+  fThisTermios.c_cflag &= ~PARENB;
+  fThisTermios.c_cflag &= ~CSTOPB;
+  fThisTermios.c_cflag &= ~CSIZE;
+  fThisTermios.c_cflag |= CS8;
+  /* no hardware flow control */
+  fThisTermios.c_cflag &= ~CRTSCTS;
+  /* enable receiver, ignore status lines */
+  fThisTermios.c_cflag |= CREAD | CLOCAL;
+  /* disable input/output flow control, disable restart chars */
+  fThisTermios.c_iflag &= ~(IXON | IXOFF | IXANY);
+  /* disable canonical input, disable echo,
+     disable visually erase chars,
+     disable terminal-generated signals */
+  fThisTermios.c_iflag &= ~(ICANON | ECHO | ECHOE | ISIG);
+  /* disable output processing */
+  fThisTermios.c_oflag &= ~OPOST;
 
-/* 9600 baud */
- cfsetispeed(&fThisTermios, B9600);
- cfsetospeed(&fThisTermios, B9600);
- /* 8 bits, no parity, no stop bits */
- fThisTermios.c_cflag &= ~PARENB;
- fThisTermios.c_cflag &= ~CSTOPB;
- fThisTermios.c_cflag &= ~CSIZE;
- fThisTermios.c_cflag |= CS8;
- /* no hardware flow control */
- fThisTermios.c_cflag &= ~CRTSCTS;
- /* enable receiver, ignore status lines */
- fThisTermios.c_cflag |= CREAD | CLOCAL;
- /* disable input/output flow control, disable restart chars */
- fThisTermios.c_iflag &= ~(IXON | IXOFF | IXANY);
- /* disable canonical input, disable echo,
- disable visually erase chars,
- disable terminal-generated signals */
- fThisTermios.c_iflag &= ~(ICANON | ECHO | ECHOE | ISIG);
- /* disable output processing */
- fThisTermios.c_oflag &= ~OPOST;
-
-/* wait for 24 characters to come in before read returns */
- fThisTermios.c_cc[VMIN] = 24;
- /* no minimum time to wait before read returns */
- fThisTermios.c_cc[VTIME] = 0;
+  /* wait for 24 characters to come in before read returns */
+  fThisTermios.c_cc[VMIN] = 24;
+  /* no minimum time to wait before read returns */
+  fThisTermios.c_cc[VTIME] = 0;
 
   // commit changes
   tcsetattr( fIoPortFileDescriptor, TCSANOW, &fThisTermios );
@@ -170,6 +181,8 @@ void ArduinoComHandler::InitializeIoPort( void ) {
 */
 void ArduinoComHandler::RestoreIoPort( void ) {
 
+  if (!fDeviceAvailable) return;
+
   // restore old com port settings
   tcsetattr( fIoPortFileDescriptor, TCSANOW, &fCurrentTermios );
 }
@@ -179,6 +192,8 @@ void ArduinoComHandler::RestoreIoPort( void ) {
   \internal
 */
 void ArduinoComHandler::CloseIoPort( void ) {
+
+  if (!fDeviceAvailable) return;
 
   close( fIoPortFileDescriptor );
 }
@@ -190,4 +205,9 @@ void ArduinoComHandler::CloseIoPort( void ) {
 void ArduinoComHandler::SendFeedString( void )
 {
   write( fIoPortFileDescriptor, "\n", 1 );
+}
+
+bool ArduinoComHandler::DeviceAvailable()
+{
+  return fDeviceAvailable;
 }

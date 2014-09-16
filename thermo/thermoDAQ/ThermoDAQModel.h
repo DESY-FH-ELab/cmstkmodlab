@@ -14,6 +14,8 @@
 #include "KeithleyModel.h"
 #include "HamegModel.h"
 #include "PfeifferModel.h"
+#include "IotaModel.h"
+#include "ArduinoPresModel.h"
 
 //template <typename value_type> class ThermoDAQValue
 //{
@@ -79,6 +81,8 @@ public:
                             KeithleyModel* keithleyModel,
                             HamegModel* hamegModel,
                             PfeifferModel* pfeifferModel,
+			    IotaModel* iotaModel,
+			    ArduinoPresModel* arduinoPresModel,
                             QObject *parent = 0);
 
     QDateTime& currentTime();
@@ -100,8 +104,10 @@ protected slots:
     void huberInfoChanged();
     void keithleySensorStateChanged(unsigned int sensor, State newState);
     void keithleyTemperatureChanged(unsigned int sensor, double temperature);
-    void pfeifferInfoChanged();
     void hamegInfoChanged();
+    void pfeifferInfoChanged();
+    void iotaInfoChanged();
+    void arduinoPresInfoChanged();
 
     void clearHistory();
 
@@ -113,6 +119,8 @@ protected:
   KeithleyModel* keithleyModel_;
   HamegModel* hamegModel_;
   PfeifferModel* pfeifferModel_;
+  IotaModel* iotaModel_;
+  ArduinoPresModel* arduinoPresModel_;
 
   QMutex mutex_;
 
@@ -133,12 +141,6 @@ protected:
   State keithleySensorState_[10];
   double keithleyTemperature_[10];
 
-  // PFEIFFER DATA
-  int pfeifferStatus1_;
-  double pfeifferPressure1_;
-  int pfeifferStatus2_;
-  double pfeifferPressure2_;
-
   // HAMEG DATA
   bool hamegRemoteMode_;
   bool hamegOutputsEnabled_;
@@ -148,6 +150,23 @@ protected:
   float hamegVoltage_[2];
   float hamegCurrent_[2];
 
+  // PFEIFFER DATA
+  int pfeifferStatus1_;
+  double pfeifferPressure1_;
+  int pfeifferStatus2_;
+  double pfeifferPressure2_;
+
+  // IOTA DATA
+  bool iotaPumpEnabled_;
+  float iotaActPressure_;
+  float iotaSetPressure_;
+  float iotaActFlow_;
+  float iotaSetFlow_;
+  
+  // ARDUINO PRES DATA
+  float arduinoPressureA_;
+  float arduinoPressureB_;
+  
 signals:
 
   void daqMessage(const QString & message);

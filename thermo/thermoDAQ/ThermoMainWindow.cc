@@ -33,10 +33,20 @@ ThermoMainWindow::ThermoMainWindow(QWidget *parent) :
     pfeifferModel_ = new PfeifferModel(config->getValue<std::string>("PfeifferDevice").c_str(),
                                        10, this);
 
+    // IOTA MODEL
+    iotaModel_ = new IotaModel(config->getValue<std::string>("IotaDevice").c_str(),
+			       10, this);
+
+    // ARDUINO PRES MODEL
+    arduinoPresModel_ = new ArduinoPresModel(config->getValue<std::string>("ArduinoPresDevice").c_str(),
+					     1, this);
+    
     daqModel_ = new ThermoDAQModel(huberModel_,
                                    keithleyModel_,
                                    hamegModel_,
                                    pfeifferModel_,
+				   iotaModel_,
+				   arduinoPresModel_,
                                    this);
 
     // SCRIPT MODEL
@@ -100,6 +110,22 @@ ThermoMainWindow::ThermoMainWindow(QWidget *parent) :
     KeithleyWidget* keithleyWidget = new KeithleyWidget(keithleyModel_);
     keithleyWidget->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);
     tabWidget_->addTab(keithleyWidget, "Multimeter");
+
+    widget = new QWidget();
+    wlayout = new QHBoxLayout();
+    widget->setLayout(wlayout);
+
+    // IOTA MODEL
+    IotaWidget* iotaWidget = new IotaWidget(iotaModel_, widget);
+    iotaWidget->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);
+    wlayout->addWidget(iotaWidget);
+
+    // ARDUINO PRES MODEL
+    ArduinoPresWidget* arduinoPresWidget = new ArduinoPresWidget(arduinoPresModel_, widget);
+    arduinoPresWidget->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);
+    wlayout->addWidget(arduinoPresWidget);
+
+    tabWidget_->addTab(widget, "Microchannel");
 
     widget = new QWidget();
     wlayout = new QVBoxLayout();

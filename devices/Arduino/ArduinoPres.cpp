@@ -48,7 +48,7 @@ float ArduinoPres::GetPressureA( void ) const
   if (buf.substr(0, buf.find(','))!="PA") {
     std::cerr << " [ArduinoPres::GetPressureA] ** ERROR: Device communication problem. "
               << buf << std::endl;
-    throw;
+    //throw;
   }
   buf = buf.substr(buf.find(',')+1);
 
@@ -79,7 +79,7 @@ float ArduinoPres::GetPressureB( void ) const
   if (buf.substr(0, buf.find(','))!="PB") {
     std::cerr << " [ArduinoPres::GetPressureB] ** ERROR: Device communication problem. "
               << buf << std::endl;
-    throw;
+    //throw;
   }
   buf = buf.substr(buf.find(',')+1);
 
