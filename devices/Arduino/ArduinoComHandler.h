@@ -27,6 +27,8 @@ class ArduinoComHandler {
   void SendCommand( const char* );
   void ReceiveString( char* );
 
+  bool DeviceAvailable();
+
   static constexpr int ComHandlerDelay = 1000;
 
  private:
@@ -37,6 +39,7 @@ class ArduinoComHandler {
   void CloseIoPort( void );
   void SendFeedString( void );
 
+  bool fDeviceAvailable;
   int fIoPortFileDescriptor;
 
   ioport_t fIoPort;

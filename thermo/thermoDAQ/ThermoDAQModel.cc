@@ -14,13 +14,17 @@ ThermoDAQModel::ThermoDAQModel(HuberPetiteFleurModel* huberModel,
                                KeithleyModel* keithleyModel,
                                HamegModel* hamegModel,
                                PfeifferModel* pfeifferModel,
+			       IotaModel* iotaModel,
+			       ArduinoPresModel* arduinoPresModel,
                                QObject *parent) :
     QObject(),
     daqState_(false),
     huberModel_(huberModel),
     keithleyModel_(keithleyModel),
     hamegModel_(hamegModel),
-    pfeifferModel_(pfeifferModel)
+    pfeifferModel_(pfeifferModel),
+    iotaModel_(iotaModel),
+    arduinoPresModel_(arduinoPresModel)
 {
     connect(huberModel_, SIGNAL(informationChanged()),
             this, SLOT(huberInfoChanged()));
@@ -30,19 +34,27 @@ ThermoDAQModel::ThermoDAQModel(HuberPetiteFleurModel* huberModel,
     connect(keithleyModel_, SIGNAL(temperatureChanged(uint,double)),
             this, SLOT(keithleyTemperatureChanged(uint,double)));
 
+    connect(hamegModel_, SIGNAL(informationChanged()),
+            this, SLOT(hamegInfoChanged()));
+
     connect(pfeifferModel_, SIGNAL(informationChanged()),
             this, SLOT(pfeifferInfoChanged()));
 
-    connect(hamegModel_, SIGNAL(informationChanged()),
-            this, SLOT(hamegInfoChanged()));
+    connect(iotaModel_, SIGNAL(informationChanged()),
+	    this, SLOT(iotaInfoChanged()));
+
+    connect(arduinoPresModel_, SIGNAL(informationChanged()),
+	    this, SLOT(arduinoPresInfoChanged()));
 }
 
 void ThermoDAQModel::myMoveToThread(QThread *thread)
 {
     huberModel_->moveToThread(thread);
     keithleyModel_->moveToThread(thread);
-    pfeifferModel_->moveToThread(thread);
     hamegModel_->moveToThread(thread);
+    pfeifferModel_->moveToThread(thread);
+    iotaModel_->moveToThread(thread);
+    arduinoPresModel_->moveToThread(thread);
     this->moveToThread(thread);
 }
 
@@ -87,14 +99,6 @@ void ThermoDAQModel::createDAQStatusMessage(QString &buffer)
         xml.writeEndElement();
     }
 
-    xml.writeStartElement("PfeifferPressure");
-    xml.writeAttribute("time", utime.toString(Qt::ISODate));
-    xml.writeAttribute("s1", QString::number((int)pfeifferModel_->getStatus1()));
-    xml.writeAttribute("p1", QString::number(pfeifferModel_->getPressure1(), 'e', 2));
-    xml.writeAttribute("s2", QString::number((int)pfeifferModel_->getStatus2()));
-    xml.writeAttribute("p2", QString::number(pfeifferModel_->getPressure2(), 'e', 2));
-    xml.writeEndElement();
-
     xml.writeStartElement("HamegSetup");
     xml.writeAttribute("time", utime.toString(Qt::ISODate));
     xml.writeAttribute("remote", hamegRemoteMode_==true ? "1" : "0");
@@ -117,6 +121,33 @@ void ThermoDAQModel::createDAQStatusMessage(QString &buffer)
     xml.writeAttribute("C1", QString::number(hamegCurrent_[0]));
     xml.writeAttribute("V2", QString::number(hamegVoltage_[1]));
     xml.writeAttribute("C2", QString::number(hamegCurrent_[1]));
+    xml.writeEndElement();
+
+    xml.writeStartElement("PfeifferPressure");
+    xml.writeAttribute("time", utime.toString(Qt::ISODate));
+    xml.writeAttribute("s1", QString::number((int)pfeifferModel_->getStatus1()));
+    xml.writeAttribute("p1", QString::number(pfeifferModel_->getPressure1(), 'e', 2));
+    xml.writeAttribute("s2", QString::number((int)pfeifferModel_->getStatus2()));
+    xml.writeAttribute("p2", QString::number(pfeifferModel_->getPressure2(), 'e', 2));
+    xml.writeEndElement();
+
+    xml.writeStartElement("IotaSetup");
+    xml.writeAttribute("time", utime.toString(Qt::ISODate));
+    xml.writeAttribute("enabled", iotaPumpEnabled_==true ? "1" : "0");
+    xml.writeAttribute("pressure", QString::number(iotaSetPressure_, 'e', 3));
+    xml.writeAttribute("flow", QString::number(iotaSetFlow_, 'e', 3));
+    xml.writeEndElement();
+
+    xml.writeStartElement("IotaValues");
+    xml.writeAttribute("time", utime.toString(Qt::ISODate));
+    xml.writeAttribute("pressure", QString::number(iotaActPressure_, 'e', 3));
+    xml.writeAttribute("flow", QString::number(iotaActFlow_, 'e', 3));
+    xml.writeEndElement();
+
+    xml.writeStartElement("ArduinoPressure");
+    xml.writeAttribute("time", utime.toString(Qt::ISODate));
+    xml.writeAttribute("pA", QString::number(arduinoPressureA_, 'e', 3));
+    xml.writeAttribute("pB", QString::number(arduinoPressureB_, 'e', 3));
     xml.writeEndElement();
 
     xml.writeStartElement("DAQStarted");
@@ -182,8 +213,8 @@ void ThermoDAQModel::huberInfoChanged()
         xml.writeEndElement();
 
         emit daqMessage(buffer);
+	emit newDataAvailable();
     }
-    emit newDataAvailable();
 }
 
 void ThermoDAQModel::keithleySensorStateChanged(unsigned int sensor, State newState)
@@ -245,44 +276,6 @@ void ThermoDAQModel::keithleyTemperatureChanged(unsigned int sensor, double temp
         emit daqMessage(buffer);
         emit newDataAvailable();
     }
-}
-
-void ThermoDAQModel::pfeifferInfoChanged()
-{
-    NQLog("ThermoDAQModel", NQLog::Debug) << "pfeifferInfoChanged()";
-
-    if (thread()==QApplication::instance()->thread()) {
-        NQLog("ThermoDAQModel", NQLog::Debug) << " running in main application thread";
-    } else {
-        NQLog("ThermoDAQModel", NQLog::Debug) << " running in dedicated DAQ thread";
-    }
-
-    QMutexLocker locker(&mutex_);
-
-    QDateTime utime = currentTime();
-
-    bool changed = false;
-    changed |= updateIfChanged<int>(pfeifferStatus1_, (int)pfeifferModel_->getStatus1());
-    changed |= updateIfChanged<double>(pfeifferPressure1_, pfeifferModel_->getPressure1());
-    changed |= updateIfChanged<int>(pfeifferStatus2_, (int)pfeifferModel_->getStatus2());
-    changed |= updateIfChanged<double>(pfeifferPressure2_, pfeifferModel_->getPressure2());
-
-    if (changed) {
-        QString buffer;
-        QXmlStreamWriter xml(&buffer);
-
-        xml.writeStartElement("PfeifferPressure");
-        xml.writeAttribute("time", utime.toString(Qt::ISODate));
-        xml.writeAttribute("s1", QString::number(pfeifferStatus1_));
-        xml.writeAttribute("p1", QString::number(pfeifferPressure1_, 'e', 3));
-        xml.writeAttribute("s2", QString::number(pfeifferStatus2_));
-        xml.writeAttribute("p2", QString::number(pfeifferPressure2_, 'e', 3));
-        xml.writeEndElement();
-
-        emit daqMessage(buffer);
-    }
-
-    emit newDataAvailable();
 }
 
 void ThermoDAQModel::hamegInfoChanged()
@@ -351,5 +344,127 @@ void ThermoDAQModel::hamegInfoChanged()
         xml.writeEndElement();
     }
 
-    if (buffer.length()>0) emit daqMessage(buffer);
+    if (buffer.length()>0) {
+      emit daqMessage(buffer);
+      emit newDataAvailable();
+    }
 }
+
+void ThermoDAQModel::pfeifferInfoChanged()
+{
+    NQLog("ThermoDAQModel", NQLog::Debug) << "pfeifferInfoChanged()";
+
+    if (thread()==QApplication::instance()->thread()) {
+        NQLog("ThermoDAQModel", NQLog::Debug) << " running in main application thread";
+    } else {
+        NQLog("ThermoDAQModel", NQLog::Debug) << " running in dedicated DAQ thread";
+    }
+
+    QMutexLocker locker(&mutex_);
+
+    QDateTime utime = currentTime();
+
+    bool changed = false;
+    changed |= updateIfChanged<int>(pfeifferStatus1_, (int)pfeifferModel_->getStatus1());
+    changed |= updateIfChanged<double>(pfeifferPressure1_, pfeifferModel_->getPressure1());
+    changed |= updateIfChanged<int>(pfeifferStatus2_, (int)pfeifferModel_->getStatus2());
+    changed |= updateIfChanged<double>(pfeifferPressure2_, pfeifferModel_->getPressure2());
+
+    if (changed) {
+        QString buffer;
+        QXmlStreamWriter xml(&buffer);
+
+        xml.writeStartElement("PfeifferPressure");
+        xml.writeAttribute("time", utime.toString(Qt::ISODate));
+        xml.writeAttribute("s1", QString::number(pfeifferStatus1_));
+        xml.writeAttribute("p1", QString::number(pfeifferPressure1_, 'e', 3));
+        xml.writeAttribute("s2", QString::number(pfeifferStatus2_));
+        xml.writeAttribute("p2", QString::number(pfeifferPressure2_, 'e', 3));
+        xml.writeEndElement();
+
+        emit daqMessage(buffer);
+	emit newDataAvailable();
+    }
+}
+
+void ThermoDAQModel::iotaInfoChanged()
+{
+    NQLog("ThermoDAQModel", NQLog::Debug) << "iotaInfoChanged()";
+
+    if (thread()==QApplication::instance()->thread()) {
+        NQLog("ThermoDAQModel", NQLog::Debug) << " running in main application thread";
+    } else {
+        NQLog("ThermoDAQModel", NQLog::Debug) << " running in dedicated DAQ thread";
+    }
+
+    QMutexLocker locker(&mutex_);
+
+    QDateTime utime = currentTime();
+
+    QString buffer;
+    QXmlStreamWriter xml(&buffer);
+    xml.setAutoFormatting(true);
+
+    // set values
+    bool changed = false;
+    changed |= updateIfChanged<bool>(iotaPumpEnabled_, iotaModel_->isPumpEnabled());
+    changed |= updateIfChanged<float>(iotaSetPressure_, iotaModel_->getSetPressureParameter().getValue());
+    changed |= updateIfChanged<float>(iotaSetFlow_, iotaModel_->getSetFlowParameter().getValue());
+    if (changed) {
+        xml.writeStartElement("IotaSetup");
+        xml.writeAttribute("time", utime.toString(Qt::ISODate));
+        xml.writeAttribute("enabled", iotaPumpEnabled_==true ? "1" : "0");
+        xml.writeAttribute("pressure", QString::number(iotaSetPressure_, 'e', 3));
+        xml.writeAttribute("flow", QString::number(iotaSetFlow_, 'e', 3));
+        xml.writeEndElement();
+    }
+
+    changed = false;
+    changed |= updateIfChanged<float>(iotaActPressure_, iotaModel_->getActPressure());
+    changed |= updateIfChanged<float>(iotaActFlow_, iotaModel_->getActFlow());
+    if (changed) {
+        xml.writeStartElement("IotaValues");
+        xml.writeAttribute("time", utime.toString(Qt::ISODate));
+        xml.writeAttribute("pressure", QString::number(iotaActPressure_, 'e', 3));
+        xml.writeAttribute("flow", QString::number(iotaActFlow_, 'e', 3));
+        xml.writeEndElement();
+    }
+    
+    if (buffer.length()>0) {
+      emit daqMessage(buffer);
+      emit newDataAvailable();
+    }
+}
+
+void ThermoDAQModel::arduinoPresInfoChanged()
+{
+    NQLog("ThermoDAQModel", NQLog::Debug) << "arduinoPresInfoChanged()";
+
+    if (thread()==QApplication::instance()->thread()) {
+        NQLog("ThermoDAQModel", NQLog::Debug) << " running in main application thread";
+    } else {
+        NQLog("ThermoDAQModel", NQLog::Debug) << " running in dedicated DAQ thread";
+    }
+
+    QMutexLocker locker(&mutex_);
+
+    QDateTime utime = currentTime();
+
+    bool changed = false;
+    changed |= updateIfChanged<float>(arduinoPressureA_, arduinoPresModel_->getPressureA());
+    changed |= updateIfChanged<float>(arduinoPressureB_, arduinoPresModel_->getPressureB());
+
+    if (changed) {
+        QString buffer;
+        QXmlStreamWriter xml(&buffer);
+
+        xml.writeStartElement("ArduinoPressure");
+        xml.writeAttribute("time", utime.toString(Qt::ISODate));
+        xml.writeAttribute("pA", QString::number(arduinoPressureA_, 'e', 3));
+        xml.writeAttribute("pB", QString::number(arduinoPressureB_, 'e', 3));
+        xml.writeEndElement();
+
+        emit daqMessage(buffer);
+	emit newDataAvailable();
+    }
+ }

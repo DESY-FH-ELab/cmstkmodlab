@@ -22,6 +22,12 @@
 #include "PfeifferWidget.h"
 #include "ThermoPfeifferWidget.h"
 
+#include "IotaModel.h"
+#include "IotaWidget.h"
+
+#include "ArduinoPresModel.h"
+#include "ArduinoPresWidget.h"
+
 #include "ThermoScriptModel.h"
 #include "ThermoScriptWidget.h"
 
@@ -50,6 +56,8 @@ protected:
   HamegModel* hamegModel_;
   KeithleyModel* keithleyModel_;
   PfeifferModel* pfeifferModel_;
+  IotaModel* iotaModel_;
+  ArduinoPresModel* arduinoPresModel_;
 
   ThermoScriptModel* scriptModel_;
 
