@@ -35,7 +35,7 @@ ThermoMainWindow::ThermoMainWindow(QWidget *parent) :
 
     // IOTA MODEL
     iotaModel_ = new IotaModel(config->getValue<std::string>("IotaDevice").c_str(),
-			       10, this);
+			       5, this);
 
     // ARDUINO PRES MODEL
     arduinoPresModel_ = new ArduinoPresModel(config->getValue<std::string>("ArduinoPresDevice").c_str(),
