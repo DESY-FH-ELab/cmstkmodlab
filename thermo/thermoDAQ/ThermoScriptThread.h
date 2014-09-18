@@ -11,6 +11,8 @@ class ThermoScriptModel;
 #include "KeithleyModel.h"
 #include "HamegModel.h"
 #include "PfeifferModel.h"
+#include "IotaModel.h"
+#include "ArduinoPresModel.h"
 
 class ThermoScriptThread : public QThread
 {
@@ -20,6 +22,8 @@ public:
                               KeithleyModel* keithleyModel,
                               HamegModel* hamegModel,
                               PfeifferModel* pfeifferModel,
+                              IotaModel* iotaModel,
+                              ArduinoPresModel* arduinoPresModel,
                               QObject *parent = 0);
 
   void executeScript(const QString & script);
@@ -36,6 +40,8 @@ protected:
   KeithleyModel* keithleyModel_;
   HamegModel* hamegModel_;
   PfeifferModel* pfeifferModel_;
+  IotaModel* iotaModel_;
+  ArduinoPresModel* arduinoPresModel_;
 };
 
 #endif // THERMOSCRIPTTHREAD_H

@@ -10,6 +10,8 @@
 #include "KeithleyModel.h"
 #include "HamegModel.h"
 #include "PfeifferModel.h"
+#include "IotaModel.h"
+#include "ArduinoPresModel.h"
 
 #include "ThermoScriptThread.h"
 
@@ -23,6 +25,8 @@ public:
                              KeithleyModel* keithleyModel,
                              HamegModel* hamegModel,
                              PfeifferModel* pfeifferModel,
+                             IotaModel* iotaModel,
+                             ArduinoPresModel* arduinoPresModel,
                              QObject *parent = 0);
 
   QTextDocument* scriptDocument() { return script_; }
@@ -63,6 +67,8 @@ protected:
   KeithleyModel* keithleyModel_;
   HamegModel* hamegModel_;
   PfeifferModel* pfeifferModel_;
+  IotaModel* iotaModel_;
+  ArduinoPresModel* arduinoPresModel_;
   ThermoScriptThread* scriptThread_;
 
 signals:

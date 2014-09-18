@@ -12,13 +12,17 @@ ThermoScriptModel::ThermoScriptModel(ThermoDAQModel* daqModel,
                                      KeithleyModel* keithleyModel,
                                      HamegModel* hamegModel,
                                      PfeifferModel* pfeifferModel,
+                                     IotaModel* iotaModel,
+                                     ArduinoPresModel* arduinoPresModel,
                                      QObject *parent) :
     QObject(parent),
     daqModel_(daqModel),
     huberModel_(huberModel),
     keithleyModel_(keithleyModel),
     hamegModel_(hamegModel),
-    pfeifferModel_(pfeifferModel)
+    pfeifferModel_(pfeifferModel),
+    iotaModel_(iotaModel),
+    arduinoPresModel_(arduinoPresModel)
 {
     script_ = new QTextDocument(this);
     script_->setDocumentLayout(new QPlainTextDocumentLayout(script_));
@@ -31,6 +35,8 @@ ThermoScriptModel::ThermoScriptModel(ThermoDAQModel* daqModel,
                                            keithleyModel_,
                                            hamegModel_,
                                            pfeifferModel_,
+                                           iotaModel_,
+                                           arduinoPresModel_,
                                            this);
     connect(scriptThread_, SIGNAL(started()), this, SLOT(executionStarted()));
     connect(scriptThread_, SIGNAL(finished()), this, SLOT(executionFinished()));
@@ -45,6 +51,12 @@ ThermoScriptModel::ThermoScriptModel(ThermoDAQModel* daqModel,
             this, SLOT(doAppendMessageText(const QString &)));
 
     connect(pfeifferModel_, SIGNAL(message(const QString &)),
+            this, SLOT(doAppendMessageText(const QString &)));
+
+    connect(iotaModel_, SIGNAL(message(const QString &)),
+            this, SLOT(doAppendMessageText(const QString &)));
+
+    connect(arduinoPresModel_, SIGNAL(message(const QString &)),
             this, SLOT(doAppendMessageText(const QString &)));
 
     connect(&executionTimer_, SIGNAL(timeout()), this, SLOT(executionHeartBeat()));

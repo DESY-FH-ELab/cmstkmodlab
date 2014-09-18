@@ -8,19 +8,25 @@
 #include "ScriptableKeithley.h"
 #include "ScriptableHameg.h"
 #include "ScriptablePfeiffer.h"
+#include "ScriptableIota.h"
+#include "ScriptableArduinoPres.h"
 
 ThermoScriptThread::ThermoScriptThread(ThermoScriptModel* scriptModel,
                                        HuberPetiteFleurModel* huberModel,
                                        KeithleyModel* keithleyModel,
                                        HamegModel* hamegModel,
                                        PfeifferModel* pfeifferModel,
+                                       IotaModel* iotaModel,
+                                       ArduinoPresModel* arduinoPresModel,
                                        QObject *parent) :
     QThread(parent),
     scriptModel_(scriptModel),
     huberModel_(huberModel),
     keithleyModel_(keithleyModel),
     hamegModel_(hamegModel),
-    pfeifferModel_(pfeifferModel)
+    pfeifferModel_(pfeifferModel),
+    iotaModel_(iotaModel),
+    arduinoPresModel_(arduinoPresModel)
 {
 
 }
@@ -51,6 +57,14 @@ void ThermoScriptThread::executeScript(const QString & script)
   ScriptablePfeiffer *pfeifferObj = new ScriptablePfeiffer(pfeifferModel_, this);
   QScriptValue pfeifferValue = engine_->newQObject(pfeifferObj);
   engine_->globalObject().setProperty("pfeiffer", pfeifferValue);
+
+  ScriptableIota *iotaObj = new ScriptableIota(iotaModel_, this);
+  QScriptValue iotaValue = engine_->newQObject(iotaObj);
+  engine_->globalObject().setProperty("iota", iotaValue);
+
+  ScriptableArduinoPres *arduinoPresObj = new ScriptableArduinoPres(arduinoPresModel_, this);
+  QScriptValue arduinoPresValue = engine_->newQObject(arduinoPresObj);
+  engine_->globalObject().setProperty("arduino", arduinoPresValue);
 
   start();
 }
