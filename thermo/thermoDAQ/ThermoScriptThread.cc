@@ -55,7 +55,8 @@ void ThermoScriptThread::executeScript(const QString & script)
   start();
 }
 
-void ThermoScriptThread::abortScript() {
+void ThermoScriptThread::abortScript()
+{
   NQLog("ThermoScriptThread") << "abort";
   if (engine_) {
     NQLog("ThermoScriptThread") << "abort " << (int)engine_->isEvaluating();
@@ -66,8 +67,8 @@ void ThermoScriptThread::abortScript() {
   }
 }
 
-void ThermoScriptThread::run() {
-
+void ThermoScriptThread::run()
+{
   if (engine_->canEvaluate(script_)) {
     QScriptValue fun = engine_->evaluate(script_);
     //QScriptContext * context = engine_->pushContext();
