@@ -1,0 +1,47 @@
+LIBS += -L@basepath@/devices/lib -lTkModLabKeithley
+LIBS += -L@basepath@/devices/lib -lTkModLabGreisinger
+LIBS += -L@basepath@/devices/lib -lTkModLabJulabo
+LIBS += -L@basepath@/devices/lib -lTkModLabHameg
+LIBS += -L@basepath@/devices/lib -lTkModLabPfeiffer
+LIBS += -L@basepath@/devices/lib -lTkModLabHuber
+LIBS += -L@basepath@/common -lCommon
+LIBS += @qwtlibs@ -lGL -lGLU
+LIBS += @twitterlibs@
+
+QMAKE = @qmake@
+QMAKE_CXXFLAGS += -std=c++0x
+
+INCLUDEPATH += @qwtincludes@
+DEFINES += @configdefines@
+QT += core gui opengl script xml network svg
+TEMPLATE = app
+TARGET = microDAQ
+DEPENDPATH += @basepath@/common
+INCLUDEPATH += .
+INCLUDEPATH += ..
+INCLUDEPATH += @basepath@
+INCLUDEPATH += @basepath@/common
+
+# Input
+HEADERS += MicroMainWindow.h \
+           MicroScriptModel.h \
+           MicroScriptThread.h \
+           MicroScriptWidget.h \
+           MicroScriptableGlobals.h \
+           MicroDAQThread.h \
+           MicroDAQModel.h \
+           MicroDAQStreamer.h \
+           MicroDAQWidget.h \
+           MicroDAQServer.h
+
+SOURCES += microDAQ.cc \
+           MicroMainWindow.cc \
+           MicroScriptModel.cc \
+           MicroScriptThread.cc \
+           MicroScriptWidget.cc \
+           MicroScriptableGlobals.cc \
+           MicroDAQThread.cc \
+           MicroDAQModel.cc \
+           MicroDAQStreamer.cc \
+           MicroDAQWidget.cc \
+           MicroDAQServer.cc

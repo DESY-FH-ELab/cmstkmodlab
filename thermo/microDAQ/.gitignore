@@ -1,0 +1,11 @@
+microDAQ.pro
+microDAQ.pro.user
+Makefile
+*.d
+*.o
+*~
+moc_*
+microDAQ
+microDAQ.app
+microDAQ.desktop
+startMicroDAQ.sh
