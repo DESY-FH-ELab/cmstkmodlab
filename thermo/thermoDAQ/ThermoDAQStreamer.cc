@@ -32,8 +32,8 @@ void ThermoDAQStreamer::daqStateChanged(bool state)
     if (state==true) {
         QDateTime dt = QDateTime::currentDateTime().toUTC();
 
-	ApplicationConfig* config = ApplicationConfig::instance();
-	QString dataPath(config->getValue<std::string>("DataPath").c_str());
+        ApplicationConfig* config = ApplicationConfig::instance();
+        QString dataPath(config->getValue<std::string>("DataPath").c_str());
 
         QString measurementDirPath(dataPath + "/%1");
         currentDir_.setPath(measurementDirPath.arg(dt.toString("yyyyMMdd")));
