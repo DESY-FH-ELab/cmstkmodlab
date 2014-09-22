@@ -28,7 +28,7 @@ void MicroScriptThread::executeScript(const QString & script)
 
     MicroScriptableGlobals *globalsObj = new MicroScriptableGlobals(scriptModel_, this);
     QScriptValue globalsValue = engine_->newQObject(globalsObj);
-    engine_->globalObject().setProperty("Micro", globalsValue);
+    engine_->globalObject().setProperty("micro", globalsValue);
 
     ScriptableIota *iotaObj = new ScriptableIota(iotaModel_, this);
     QScriptValue iotaValue = engine_->newQObject(iotaObj);
