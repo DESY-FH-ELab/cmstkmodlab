@@ -19,11 +19,11 @@ MicroMainWindow::MicroMainWindow(QWidget *parent) :
 
     // IOTA MODEL
     iotaModel_ = new IotaModel(config->getValue<std::string>("IotaDevice").c_str(),
-                               5, this);
+                               2, this);
 
     // ARDUINO PRES MODEL
     arduinoPresModel_ = new ArduinoPresModel(config->getValue<std::string>("ArduinoPresDevice").c_str(),
-                                             1, this);
+                                             2, this);
     
     daqModel_ = new MicroDAQModel(iotaModel_,
                                   arduinoPresModel_,
