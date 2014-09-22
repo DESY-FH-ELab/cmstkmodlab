@@ -45,8 +45,8 @@ ThermoMainWindow::ThermoMainWindow(QWidget *parent) :
                                    keithleyModel_,
                                    hamegModel_,
                                    pfeifferModel_,
-				   iotaModel_,
-				   arduinoPresModel_,
+                                   iotaModel_,
+                                   arduinoPresModel_,
                                    this);
 
     // SCRIPT MODEL
@@ -55,6 +55,8 @@ ThermoMainWindow::ThermoMainWindow(QWidget *parent) :
                                          keithleyModel_,
                                          hamegModel_,
                                          pfeifferModel_,
+                                         iotaModel_,
+                                         arduinoPresModel_,
                                          this);
 
     daqStreamer_ = new ThermoDAQStreamer(daqModel_, this);

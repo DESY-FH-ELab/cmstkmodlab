@@ -3,10 +3,10 @@
 #include <QDateTime>
 
 #include "ApplicationConfig.h"
-#include "ThermoDAQStreamer.h"
-#include "ThermoDAQModel.h"
+#include "MicroDAQStreamer.h"
+#include "MicroDAQModel.h"
 
-ThermoDAQStreamer::ThermoDAQStreamer(ThermoDAQModel* model, QObject* parent) :
+MicroDAQStreamer::MicroDAQStreamer(MicroDAQModel* model, QObject* parent) :
     QObject(parent),
     model_(model),
     isStreaming_(false),
@@ -19,7 +19,7 @@ ThermoDAQStreamer::ThermoDAQStreamer(ThermoDAQModel* model, QObject* parent) :
             this, SLOT(handleDAQMessage(QString)));
 }
 
-void ThermoDAQStreamer::handleDAQMessage(const QString& message)
+void MicroDAQStreamer::handleDAQMessage(const QString& message)
 {
     if (isStreaming_ && message.length()>0) {
         *stream_ << message << "\n";
@@ -27,7 +27,7 @@ void ThermoDAQStreamer::handleDAQMessage(const QString& message)
     }
 }
 
-void ThermoDAQStreamer::daqStateChanged(bool state)
+void MicroDAQStreamer::daqStateChanged(bool state)
 {
     if (state==true) {
         QDateTime dt = QDateTime::currentDateTime().toUTC();

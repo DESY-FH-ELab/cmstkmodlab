@@ -5,22 +5,14 @@
 #include <QDateTime>
 #include <QXmlStreamWriter>
 
-#include "ThermoScriptModel.h"
+#include "MicroScriptModel.h"
 
-ThermoScriptModel::ThermoScriptModel(ThermoDAQModel* daqModel,
-                                     HuberPetiteFleurModel* huberModel,
-                                     KeithleyModel* keithleyModel,
-                                     HamegModel* hamegModel,
-                                     PfeifferModel* pfeifferModel,
-                                     IotaModel* iotaModel,
-                                     ArduinoPresModel* arduinoPresModel,
-                                     QObject *parent) :
+MicroScriptModel::MicroScriptModel(MicroDAQModel* daqModel,
+                                   IotaModel* iotaModel,
+                                   ArduinoPresModel* arduinoPresModel,
+                                   QObject *parent) :
     QObject(parent),
     daqModel_(daqModel),
-    huberModel_(huberModel),
-    keithleyModel_(keithleyModel),
-    hamegModel_(hamegModel),
-    pfeifferModel_(pfeifferModel),
     iotaModel_(iotaModel),
     arduinoPresModel_(arduinoPresModel)
 {
@@ -30,28 +22,12 @@ ThermoScriptModel::ThermoScriptModel(ThermoDAQModel* daqModel,
 
     currentScriptFilename_ = QString();
 
-    scriptThread_ = new ThermoScriptThread(this,
-                                           huberModel_,
-                                           keithleyModel_,
-                                           hamegModel_,
-                                           pfeifferModel_,
-                                           iotaModel_,
-                                           arduinoPresModel_,
-                                           this);
+    scriptThread_ = new MicroScriptThread(this,
+                                          iotaModel_,
+                                          arduinoPresModel_,
+                                          this);
     connect(scriptThread_, SIGNAL(started()), this, SLOT(executionStarted()));
     connect(scriptThread_, SIGNAL(finished()), this, SLOT(executionFinished()));
-
-    connect(huberModel_, SIGNAL(message(const QString &)),
-            this, SLOT(doAppendMessageText(const QString &)));
-
-    connect(keithleyModel_, SIGNAL(message(const QString &)),
-            this, SLOT(doAppendMessageText(const QString &)));
-
-    connect(hamegModel_, SIGNAL(message(const QString &)),
-            this, SLOT(doAppendMessageText(const QString &)));
-
-    connect(pfeifferModel_, SIGNAL(message(const QString &)),
-            this, SLOT(doAppendMessageText(const QString &)));
 
     connect(iotaModel_, SIGNAL(message(const QString &)),
             this, SLOT(doAppendMessageText(const QString &)));
@@ -62,7 +38,7 @@ ThermoScriptModel::ThermoScriptModel(ThermoDAQModel* daqModel,
     connect(&executionTimer_, SIGNAL(timeout()), this, SLOT(executionHeartBeat()));
 }
 
-void ThermoScriptModel::openScript(const QString filename) {
+void MicroScriptModel::openScript(const QString filename) {
 
     QFile file(filename);
     if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
@@ -73,7 +49,7 @@ void ThermoScriptModel::openScript(const QString filename) {
     currentScriptFilename_ = filename;
 }
 
-void ThermoScriptModel::saveScript(const QString filename) {
+void MicroScriptModel::saveScript(const QString filename) {
 
     QFile file(filename);
     if (!file.open(QIODevice::WriteOnly | QIODevice::Text | QIODevice::Truncate))
@@ -85,17 +61,17 @@ void ThermoScriptModel::saveScript(const QString filename) {
     currentScriptFilename_ = filename;
 }
 
-void ThermoScriptModel::executeScript() {
+void MicroScriptModel::executeScript() {
 
     scriptThread_->executeScript(script_->toPlainText());
 }
 
-void ThermoScriptModel::abortScript() {
+void MicroScriptModel::abortScript() {
 
     scriptThread_->abortScript();
 }
 
-void ThermoScriptModel::executionStarted() {
+void MicroScriptModel::executionStarted() {
 
     emit setControlsEnabled(false);
     emit clearMessageText();
@@ -116,7 +92,7 @@ void ThermoScriptModel::executionStarted() {
     executionTimer_.start(1000);
 }
 
-void ThermoScriptModel::executionFinished() {
+void MicroScriptModel::executionFinished() {
 
     executionTimer_.stop();
 
@@ -135,71 +111,71 @@ void ThermoScriptModel::executionFinished() {
 
     emit setControlsEnabled(true);
 }
-void ThermoScriptModel::startMeasurement() {
+void MicroScriptModel::startMeasurement() {
 
-  if (daqModel_->daqState()==false) {
-    this->message("start Measurement");
-    daqModel_->startMeasurement();
-  }
+    if (daqModel_->daqState()==false) {
+        this->message("start Measurement");
+        daqModel_->startMeasurement();
+    }
 }
 
-void ThermoScriptModel::stopMeasurement() {
+void MicroScriptModel::stopMeasurement() {
 
-  if (daqModel_->daqState()==true) {
-    this->message("stop Measurement");
-    daqModel_->stopMeasurement();
-  }
+    if (daqModel_->daqState()==true) {
+        this->message("stop Measurement");
+        daqModel_->stopMeasurement();
+    }
 }
 
-void ThermoScriptModel::message(int value) {
+void MicroScriptModel::message(int value) {
 
     QString message = QString("%1")
             .arg(value);
     this->doAppendMessageText(message);
 }
 
-void ThermoScriptModel::message(uint value) {
+void MicroScriptModel::message(uint value) {
 
     QString message = QString("%1")
             .arg(value);
     this->doAppendMessageText(message);
 }
 
-void ThermoScriptModel::message(double value) {
+void MicroScriptModel::message(double value) {
 
     QString message = QString("%1")
             .arg(value);
     this->doAppendMessageText(message);
 }
 
-void ThermoScriptModel::message(const QString & text) {
+void MicroScriptModel::message(const QString & text) {
 
     QString message = QString("%1")
             .arg(text);
     this->doAppendMessageText(message);
 }
 
-void ThermoScriptModel::log(const QString & text) {
+void MicroScriptModel::log(const QString & text) {
 
-  QDateTime& utime = daqModel_->currentTime();
+    QDateTime& utime = daqModel_->currentTime();
 
-  QString buffer;
-  QXmlStreamWriter xml(&buffer);
+    QString buffer;
+    QXmlStreamWriter xml(&buffer);
 
-  xml.writeStartElement("Log");
-  xml.writeAttribute("time", utime.toString());
-  xml.writeCharacters(text);
-  xml.writeEndElement();
+    xml.writeStartElement("Log");
+    xml.writeAttribute("time", utime.toString());
+    xml.writeCharacters(text);
+    xml.writeEndElement();
 
-  daqModel_->customDAQMessage(buffer);
+    daqModel_->customDAQMessage(buffer);
 }
 
-void ThermoScriptModel::doClearMessageText() {
+void MicroScriptModel::doClearMessageText() {
 
     emit clearMessageText();
 }
 
-void ThermoScriptModel::doAppendMessageText(const QString & text) {
+void MicroScriptModel::doAppendMessageText(const QString & text) {
 
     if (!executionTimer_.isActive()) return;
 
@@ -211,7 +187,7 @@ void ThermoScriptModel::doAppendMessageText(const QString & text) {
     emit appendMessageText(message);
 }
 
-void ThermoScriptModel::executionHeartBeat() {
+void MicroScriptModel::executionHeartBeat() {
 
     executionTime_++;
 }

@@ -24,8 +24,36 @@ ThermoDAQModel::ThermoDAQModel(HuberPetiteFleurModel* huberModel,
     hamegModel_(hamegModel),
     pfeifferModel_(pfeifferModel),
     iotaModel_(iotaModel),
-    arduinoPresModel_(arduinoPresModel)
+    arduinoPresModel_(arduinoPresModel),
+    huberCirculator_(false),
+    huberWorkingTemperature_(0.0),
+    huberBathTemperature_(0.0),
+    hamegRemoteMode_(false),
+    hamegOutputsEnabled_(false),
+    pfeifferStatus1_(0),
+    pfeifferPressure1_(0.0),
+    pfeifferStatus2_(0),
+    pfeifferPressure2_(0.0),
+    iotaPumpEnabled_(false),
+    iotaActPressure_(0.0),
+    iotaSetPressure_(0.0),
+    iotaActFlow_(0.0),
+    iotaSetFlow_(0.0),
+    arduinoPressureA_(0.0),
+    arduinoPressureB_(0.0)
 {
+    for (int i=0;i<10;++i) {
+      keithleySensorState_[i] = OFF;
+      keithleyTemperature_[i] = 0;
+    }
+    for (int i=0;i<2;++i) {
+      hamegCVMode_[i] = OFF;
+      hamegSetVoltage_[i] = 0;
+      hamegSetCurrent_[i] = 0;
+      hamegVoltage_[i] = 0;
+      hamegCurrent_[i] = 0;
+    }
+
     connect(huberModel_, SIGNAL(informationChanged()),
             this, SLOT(huberInfoChanged()));
 

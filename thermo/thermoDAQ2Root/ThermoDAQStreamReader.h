@@ -39,6 +39,15 @@ typedef struct {
     float          current1;
     float          voltage2;
     float          current2;
+
+    int            iotaPumpEnabled;
+    float          iotaSetPressure;
+    float          iotaSetFlow;
+    float          iotaActPressure;
+    float          iotaActFlow;
+
+    float          arduinoPressureA;
+    float          arduinoPressureB;
 } Measurement_t;
 
 typedef struct {
@@ -74,6 +83,9 @@ protected:
     void processHamegValues(QXmlStreamReader& xml);
     void processLog(QXmlStreamReader& xml);
     void processDAQStarted(QXmlStreamReader& xml);
+    void processIotaSetup(QXmlStreamReader& xml);
+    void processIotaValues(QXmlStreamReader& xml);
+    void processArduinoPressure(QXmlStreamReader& xml);
 
     bool measurementValid_;
     Measurement_t measurement_;

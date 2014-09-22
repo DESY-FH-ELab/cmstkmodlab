@@ -41,7 +41,7 @@ void ScriptableIota::setFlow(float flow) {
 QScriptValue ScriptableIota::isPumpOn() {
 
   QMutexLocker locker(&mutex_);
-  return QScriptValue(IotaModel_->isPumpEnabled());
+  return QScriptValue((int)IotaModel_->isPumpEnabled());
 }
 
 QScriptValue ScriptableIota::getActPressure() {

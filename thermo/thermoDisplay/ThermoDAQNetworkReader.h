@@ -35,6 +35,15 @@ typedef struct {
     float          current1;
     float          voltage2;
     float          current2;
+
+    bool           iotaPumpEnabled;
+    float          iotaActPressure;
+    float          iotaSetPressure;
+    float          iotaActFlow;
+    float          iotaSetFlow;
+
+    float          arduinoPressureA;
+    float          arduinoPressureB;
 } Measurement_t;
 
 class ThermoDAQNetworkReader : public QObject
@@ -62,6 +71,9 @@ protected:
     void processHamegSetup(QXmlStreamReader& xml);
     void processHamegSetvalues(QXmlStreamReader& xml);
     void processHamegValues(QXmlStreamReader& xml);
+    void processIotaSetup(QXmlStreamReader& xml);
+    void processIotaValues(QXmlStreamReader& xml);
+    void processArduinoPressure(QXmlStreamReader& xml);
 
     Measurement_t measurement_;
 };

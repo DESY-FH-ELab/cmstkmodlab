@@ -91,6 +91,33 @@ void ThermoDAQNetworkReader::processHamegValues(QXmlStreamReader& xml)
     measurement_.voltage2 = xml.attributes().value("V2").toString().toFloat();
     measurement_.current2 = xml.attributes().value("C2").toString().toFloat();
 }
+void ThermoDAQNetworkReader::processIotaSetup(QXmlStreamReader& xml)
+{
+    QString time = xml.attributes().value("time").toString();
+    measurement_.dt = QDateTime::fromString(time, Qt::ISODate);
+
+    measurement_.iotaPumpEnabled = xml.attributes().value("enabled").toString().toInt();
+    measurement_.iotaSetPressure = xml.attributes().value("pressure").toString().toFloat();
+    measurement_.iotaSetFlow = xml.attributes().value("flow").toString().toFloat();
+}
+
+void ThermoDAQNetworkReader::processIotaValues(QXmlStreamReader& xml)
+{
+    QString time = xml.attributes().value("time").toString();
+    measurement_.dt = QDateTime::fromString(time, Qt::ISODate);
+
+    measurement_.iotaActPressure = xml.attributes().value("pressure").toString().toFloat();
+    measurement_.iotaActFlow = xml.attributes().value("flow").toString().toFloat();
+}
+
+void ThermoDAQNetworkReader::processArduinoPressure(QXmlStreamReader& xml)
+{
+    QString time = xml.attributes().value("time").toString();
+    measurement_.dt = QDateTime::fromString(time, Qt::ISODate);
+
+    measurement_.arduinoPressureA = xml.attributes().value("pA").toString().toFloat();
+    measurement_.arduinoPressureB = xml.attributes().value("pB").toString().toFloat();
+}
 
 void ThermoDAQNetworkReader::processLine(QString& line)
 {
@@ -119,7 +146,16 @@ void ThermoDAQNetworkReader::processLine(QString& line)
             if (xml.name()=="HamegValues") {
                 processHamegValues(xml);
             }
-         }
+            if (xml.name()=="IotaSetup") {
+                processIotaSetup(xml);
+            }
+            if (xml.name()=="IotaValues") {
+                processIotaValues(xml);
+            }
+            if (xml.name()=="ArduinoPressure") {
+                processArduinoPressure(xml);
+            }
+        }
     }
 }
 

@@ -111,6 +111,40 @@ void ThermoDAQStreamReader::processHamegValues(QXmlStreamReader& xml)
     measurement_.current2 = xml.attributes().value("C2").toString().toFloat();
 }
 
+void ThermoDAQStreamReader::processIotaSetup(QXmlStreamReader& xml)
+{
+    QString time = xml.attributes().value("time").toString();
+    QDateTime dt = QDateTime::fromString(time, Qt::ISODate);
+    measurement_.uTime = dt.toTime_t();
+    measurement_.datime = TDatime(measurement_.uTime);
+
+    measurement_.iotaPumpEnabled = xml.attributes().value("enabled").toString().toInt();
+    measurement_.iotaSetPressure = xml.attributes().value("pressure").toString().toFloat();
+    measurement_.iotaSetFlow = xml.attributes().value("flow").toString().toFloat();
+}
+
+void ThermoDAQStreamReader::processIotaValues(QXmlStreamReader& xml)
+{
+    QString time = xml.attributes().value("time").toString();
+    QDateTime dt = QDateTime::fromString(time, Qt::ISODate);
+    measurement_.uTime = dt.toTime_t();
+    measurement_.datime = TDatime(measurement_.uTime);
+
+    measurement_.iotaActPressure = xml.attributes().value("pressure").toString().toFloat();
+    measurement_.iotaActFlow = xml.attributes().value("flow").toString().toFloat();
+}
+
+void ThermoDAQStreamReader::processArduinoPressure(QXmlStreamReader& xml)
+{
+    QString time = xml.attributes().value("time").toString();
+    QDateTime dt = QDateTime::fromString(time, Qt::ISODate);
+    measurement_.uTime = dt.toTime_t();
+    measurement_.datime = TDatime(measurement_.uTime);
+
+    measurement_.arduinoPressureA = xml.attributes().value("pA").toString().toFloat();
+    measurement_.arduinoPressureB = xml.attributes().value("pB").toString().toFloat();
+}
+
 void ThermoDAQStreamReader::processLog(QXmlStreamReader& xml)
 {
     QString time = xml.attributes().value("time").toString();
@@ -159,6 +193,15 @@ void ThermoDAQStreamReader::processLine(QString& line)
             }
             if (xml.name()=="HamegValues") {
                 processHamegValues(xml);
+            }
+            if (xml.name()=="IotaSetup") {
+                processIotaSetup(xml);
+            }
+            if (xml.name()=="IotaValues") {
+                processIotaValues(xml);
+            }
+            if (xml.name()=="ArduinoPressure") {
+                processArduinoPressure(xml);
             }
             if (xml.name()=="Log") {
                 processLog(xml);
@@ -227,6 +270,15 @@ void ThermoDAQStreamReader::process()
     otree_->Branch("current1", &measurement_.current1, "current1/F");
     otree_->Branch("voltage2", &measurement_.voltage2, "voltage2/F");
     otree_->Branch("current2", &measurement_.current2, "current2/F");
+
+    otree_->Branch("iotaPumpEnabled", &measurement_.iotaPumpEnabled, "iotaPumpEnabled/I");
+    otree_->Branch("iotaSetPressure", &measurement_.iotaSetPressure, "iotaSetPressure/F");
+    otree_->Branch("iotaSetFlow", &measurement_.iotaSetFlow, "iotaSetFlow/F");
+    otree_->Branch("iotaActPressure", &measurement_.iotaActPressure, "iotaActPressure/F");
+    otree_->Branch("iotaActFlow", &measurement_.iotaActFlow, "iotaActFlow/F");
+
+    otree_->Branch("arduinoPressureA", &measurement_.arduinoPressureA, "arduinoPressureA/F");
+    otree_->Branch("arduinoPressureB", &measurement_.arduinoPressureB, "arduinoPressureB/F");
 
     ologtree_ = new TTree("thermoLog", "thermoLog");
     ologtree_->Branch("uTime", &log_.uTime, "uTime/i");
