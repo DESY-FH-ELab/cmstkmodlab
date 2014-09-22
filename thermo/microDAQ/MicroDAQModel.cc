@@ -16,7 +16,14 @@ MicroDAQModel::MicroDAQModel(IotaModel* iotaModel,
     QObject(),
     daqState_(false),
     iotaModel_(iotaModel),
-    arduinoPresModel_(arduinoPresModel)
+    arduinoPresModel_(arduinoPresModel),
+    iotaPumpEnabled_(false),
+    iotaActPressure_(0.0),
+    iotaSetPressure_(0.0),
+    iotaActFlow_(0.0),
+    iotaSetFlow_(0.0),
+    arduinoPressureA_(0.0),
+    arduinoPressureB_(0.0)
 {
     connect(iotaModel_, SIGNAL(informationChanged()),
             this, SLOT(iotaInfoChanged()));
