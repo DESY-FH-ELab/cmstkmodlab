@@ -110,6 +110,15 @@ protected:
     Qt::TimeSpec timeSpec_;
 };
 
+class ThermoDAQOverPressurePicker : public QwtPlotPicker
+{
+public:
+    ThermoDAQOverPressurePicker(QWidget *parent, Qt::TimeSpec spec = Qt::LocalTime);
+protected:
+    virtual QwtText trackerTextF(const QPointF &) const;
+    Qt::TimeSpec timeSpec_;
+};
+
 class ThermoDAQDisplayWidget : public QwtPlot
 {
   Q_OBJECT
@@ -138,6 +147,13 @@ class ThermoDAQPressureDisplayWidget : public ThermoDAQDisplayWidget
   Q_OBJECT
 public:
   explicit ThermoDAQPressureDisplayWidget(QWidget *parent = 0);
+};
+
+class ThermoDAQMicroPressureDisplayWidget : public ThermoDAQDisplayWidget
+{
+  Q_OBJECT
+public:
+  explicit ThermoDAQMicroPressureDisplayWidget(QWidget *parent = 0);
 };
 
 class ThermoDAQDisplayPlotItem : public QwtPlotCurve

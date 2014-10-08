@@ -401,6 +401,39 @@ QwtText ThermoDAQPressurePicker::trackerTextF(const QPointF &pos) const
     return text;
 }
 
+ThermoDAQOverPressurePicker::ThermoDAQOverPressurePicker(QWidget *parent, Qt::TimeSpec spec) :
+    QwtPlotPicker(parent),
+    timeSpec_(spec)
+{
+    setRubberBandPen(QColor(Qt::darkGreen));
+    setTrackerMode(QwtPlotPicker::AlwaysOn);
+}
+
+QwtText ThermoDAQOverPressurePicker::trackerTextF(const QPointF &pos) const
+{
+    const QDateTime dt = QwtDate::toDateTime(pos.x(), timeSpec_);
+
+    QString s;
+    s += dt.toString(" hh:mm:ss ");
+    if (pos.y()<1) {
+        s += QString::number(pos.y(), 'f', 2);
+    } else {
+        s += QString::number((int)pos.y());
+    }
+    s += " bar ";
+
+    QwtText text(s);
+    text.setColor(Qt::white);
+
+    QColor c = rubberBandPen().color();
+    text.setBorderPen(QPen(c));
+    text.setBorderRadius(0);
+    c.setAlpha(200);
+    text.setBackgroundBrush(c);
+
+    return text;
+}
+
 ThermoDAQDisplayWidget::ThermoDAQDisplayWidget(QWidget *parent) :
     QwtPlot(parent),
     zoomer_(0)
@@ -478,6 +511,39 @@ ThermoDAQPressureDisplayWidget::ThermoDAQPressureDisplayWidget(QWidget *parent) 
 
     ThermoDAQPressurePicker * picker = new ThermoDAQPressurePicker(this->canvas(),
                                                                    Qt::LocalTime);
+
+    internalLegend_ = new ThermoDAQInternalLegend();
+    internalLegend_->setMaxColumns(1);
+    internalLegend_->setAlignment(Qt::AlignLeft | Qt::AlignVCenter);
+    internalLegend_->attach(this);
+
+    ThermoDAQLegend *legend = new ThermoDAQLegend(this);
+    this->insertLegend(legend, QwtPlot::RightLegend);
+    connect(legend, SIGNAL(checked(QwtPlotItem*,bool,int)),
+            this, SLOT(showItem(QwtPlotItem*,bool)));
+}
+
+ThermoDAQMicroPressureDisplayWidget::ThermoDAQMicroPressureDisplayWidget(QWidget *parent) :
+    ThermoDAQDisplayWidget(parent)
+{
+    ThermoDAQDateScaleDraw* scaleDraw = new ThermoDAQDateScaleDraw(Qt::LocalTime);
+    QwtDateScaleEngine* scaleEngine = new QwtDateScaleEngine(Qt::LocalTime);
+
+    this->setAxisScaleDraw(QwtPlot::xBottom, scaleDraw);
+    this->setAxisScaleEngine(QwtPlot::xBottom, scaleEngine);
+    this->setAxisLabelRotation(QwtPlot::xBottom, -45.0);
+    this->setAxisLabelAlignment(QwtPlot::xBottom, Qt::AlignLeft | Qt::AlignBottom);
+
+    QwtLinearScaleEngine * yscaleEngine = new QwtLinearScaleEngine();
+    yscaleEngine->setMargins(1.5, 1.5);
+    this->setAxisScaleEngine(QwtPlot::yLeft, yscaleEngine);
+    this->setAxisTitle(QwtPlot::yLeft, QString::fromUtf8("p [bar]"));
+
+    ThermoDAQPressureScaleDraw* pscaleDraw = new ThermoDAQPressureScaleDraw();
+    this->setAxisScaleDraw(QwtPlot::yLeft, pscaleDraw);
+
+    ThermoDAQOverPressurePicker * picker = new ThermoDAQOverPressurePicker(this->canvas(),
+								       Qt::LocalTime);
 
     internalLegend_ = new ThermoDAQInternalLegend();
     internalLegend_->setMaxColumns(1);
