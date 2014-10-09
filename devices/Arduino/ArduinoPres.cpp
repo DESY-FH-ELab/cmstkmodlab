@@ -12,17 +12,28 @@
 
 #include "ArduinoPres.h"
 
-#define __ARDUINO_DEBUG
+//#define __ARDUINO_DEBUG
+
 ///
 ///
 ///
 ArduinoPres::ArduinoPres( const ioport_t ioPort )
   : VArduinoPres(ioPort),
+    isCommunication_(false),
     uDelay_(250000)
 {
   comHandler_ = new ArduinoComHandler( ioPort );
-  isCommunication_ = false;
   Device_Init();
+}
+
+ArduinoPres::~ArduinoPres()
+{
+  delete comHandler_;
+}
+
+bool ArduinoPres::IsCommunication( void ) const
+{
+  return isCommunication_; 
 }
 
 ///
@@ -117,22 +128,26 @@ void ArduinoPres::Device_Init( void ) {
   std::cout << "[ArduinoPres::Device_Init] -- DEBUG: Called." << std::endl;
   #endif
 
-  char buffer[1000];
+  isCommunication_ = false;
+  if (comHandler_->DeviceAvailable()) {
+
+    char buffer[1000];
   
-  comHandler_->SendCommand( "ID" );
-  usleep( uDelay_ );
+    comHandler_->SendCommand( "ID" );
+    usleep( uDelay_ );
+    
+    comHandler_->ReceiveString( buffer );
+    usleep( uDelay_ );
+    StripBuffer( buffer );
+    std::string temp(buffer);
+    
+    if (!temp.compare("ID,ArduinoPres")) {
+      std::cerr << " [ArduinoPres::Device_Init] ** ERROR: Device communication problem."
+		<< std::endl;
+      isCommunication_ = false;
+      return;
+    }
 
-  comHandler_->ReceiveString( buffer );
-  usleep( uDelay_ );
-  StripBuffer( buffer );
-  std::string temp(buffer);
-
-  if (!temp.compare("ID,ArduinoPres")) {
-    std::cerr << " [ArduinoPres::Device_Init] ** ERROR: Device communication problem."
-        << std::endl;
-    isCommunication_ = false;
-    return;
+    isCommunication_ = true;
   }
-
-  isCommunication_ = true;
 }

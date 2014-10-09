@@ -36,11 +36,13 @@ ThermoMainWindow::ThermoMainWindow(QWidget *parent) :
     // IOTA MODEL
     iotaModel_ = new IotaModel(config->getValue<std::string>("IotaDevice").c_str(),
 			       5, this);
+    iotaModel_->setDeviceEnabled(false);
 
     // ARDUINO PRES MODEL
     arduinoPresModel_ = new ArduinoPresModel(config->getValue<std::string>("ArduinoPresDevice").c_str(),
 					     1, this);
-    
+    arduinoPresModel_->setDeviceEnabled(false);
+
     daqModel_ = new ThermoDAQModel(huberModel_,
                                    keithleyModel_,
                                    hamegModel_,

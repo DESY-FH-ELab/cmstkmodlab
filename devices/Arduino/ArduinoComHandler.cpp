@@ -87,11 +87,11 @@ void ArduinoComHandler::ReceiveString( char *receiveString ) {
     usleep( 100000 );
 
     readResult = read( fIoPortFileDescriptor, receiveString, 12 );
-//     std::cout << "read: -" << readResult << "- -" << receiveString <<"-"<< std::endl;
+    // std::cout << "read: -" << readResult << "- -" << receiveString <<"-"<< std::endl;
 
     if ( readResult > 0 ) {
       receiveString[readResult] = 0;
-//       std::cout << "read: -" << readResult << "- -" << receiveString <<"-"<< std::endl;
+      // std::cout << "read: -" << readResult << "- -" << receiveString <<"-"<< std::endl;
       return;
     }
     timeout++;
