@@ -10,8 +10,9 @@ class ArduinoPres : public VArduinoPres
  public:
 
   ArduinoPres( ioport_t );
+  ~ArduinoPres();
 
-  bool IsCommunication( void ) const { return isCommunication_; }
+  bool IsCommunication( void ) const;
   float GetPressureA( void ) const; //a
   float GetPressureB( void ) const; //b
 
