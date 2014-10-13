@@ -21,10 +21,15 @@ MicroDAQStreamer::MicroDAQStreamer(MicroDAQModel* model, QObject* parent) :
 
 void MicroDAQStreamer::handleDAQMessage(const QString& message)
 {
-    if (isStreaming_ && message.length()>0) {
-        *stream_ << message << "\n";
-        stream_->flush();
-    }
+  QString buffer = message;
+  if (buffer.startsWith("\n")) {
+    buffer.remove(0, 1);
+  }
+
+  if (isStreaming_ && buffer.length()>0) {
+    *stream_ << buffer << "\n";
+    stream_->flush();
+  }
 }
 
 void MicroDAQStreamer::daqStateChanged(bool state)
