@@ -3,7 +3,7 @@ NOTHERMAL     = @nothermal@
 NODEFO        = @nodefo@
 USEFAKEDEVICES= @usefakedevices@
 
-subdirs	      = thermoDAQ microDAQ thermoDisplay thermoDAQ2Root thermoDAQ2Log
+subdirs	      = thermoDAQ microDAQ thermoDisplay microDisplay thermoDAQ2Root thermoDAQ2Log
 
 all:
 	@for dir in $(subdirs); do (cd $$dir; make); done

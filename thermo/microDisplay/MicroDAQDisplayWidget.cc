@@ -26,20 +26,20 @@
 #include <qitemdelegate.h>
 #include <qpainter.h>
 
-#include "ThermoDAQDisplayWidget.h"
+#include "MicroDAQDisplayWidget.h"
 
-ThermoDAQPressureScaleDraw::ThermoDAQPressureScaleDraw() :
+MicroDAQPressureScaleDraw::MicroDAQPressureScaleDraw() :
     QwtScaleDraw()
 {
 
 }
 
-ThermoDAQPressureScaleDraw::~ThermoDAQPressureScaleDraw()
+MicroDAQPressureScaleDraw::~MicroDAQPressureScaleDraw()
 {
 
 }
 
-QwtText ThermoDAQPressureScaleDraw::label(double value) const
+QwtText MicroDAQPressureScaleDraw::label(double value) const
 {
     if ( qFuzzyCompare( value + 1.0, 1.0 ) )
         value = 0.0;
@@ -53,18 +53,18 @@ QwtText ThermoDAQPressureScaleDraw::label(double value) const
     }
 }
 
-ThermoDAQPressureScaleEngine::ThermoDAQPressureScaleEngine(uint base) :
+MicroDAQPressureScaleEngine::MicroDAQPressureScaleEngine(uint base) :
     QwtLogScaleEngine(base)
 {
 
 }
 
-ThermoDAQPressureScaleEngine::~ThermoDAQPressureScaleEngine()
+MicroDAQPressureScaleEngine::~MicroDAQPressureScaleEngine()
 {
 
 }
 
-void ThermoDAQPressureScaleEngine::autoScale(int maxNumSteps,
+void MicroDAQPressureScaleEngine::autoScale(int maxNumSteps,
                                              double &x1, double &x2,
                                              double &stepSize) const
 {
@@ -91,7 +91,7 @@ static void qwtRenderBackground(QPainter *painter,
 class LegendListView: public QListView
 {
 public:
-    LegendListView(ThermoDAQLegend *);
+    LegendListView(MicroDAQLegend *);
 
     QList<QStandardItem *> itemList(const QwtPlotItem *);
 
@@ -99,7 +99,7 @@ public:
     virtual QSize minimumSizeHint() const;
 };
 
-LegendListView::LegendListView(ThermoDAQLegend *legend) :
+LegendListView::LegendListView(MicroDAQLegend *legend) :
     QListView(legend)
 {
     setFrameStyle(NoFrame);
@@ -181,7 +181,7 @@ QSize LegendListView::sizeHint() const
     return QSize( w, h );
 }
 
-ThermoDAQLegend::ThermoDAQLegend(QWidget *parent):
+MicroDAQLegend::MicroDAQLegend(QWidget *parent):
     QwtAbstractLegend(parent)
 {
     d_listView = new LegendListView(this);
@@ -194,11 +194,11 @@ ThermoDAQLegend::ThermoDAQLegend(QWidget *parent):
             this, SLOT(handleClick(const QModelIndex &)));
 }
 
-ThermoDAQLegend::~ThermoDAQLegend()
+MicroDAQLegend::~MicroDAQLegend()
 {
 }
 
-void ThermoDAQLegend::renderLegend( QPainter *painter,
+void MicroDAQLegend::renderLegend( QPainter *painter,
     const QRectF &rect, bool fillBackground ) const
 {
     if (fillBackground) {
@@ -231,14 +231,14 @@ void ThermoDAQLegend::renderLegend( QPainter *painter,
     painter->restore();
 }
 
-int ThermoDAQLegend::scrollExtent( Qt::Orientation orientation ) const
+int MicroDAQLegend::scrollExtent( Qt::Orientation orientation ) const
 {
     Q_UNUSED( orientation );
 
     return style()->pixelMetric( QStyle::PM_ScrollBarExtent );
 }
 
-void ThermoDAQLegend::updateLegend(const QVariant &itemInfo,
+void MicroDAQLegend::updateLegend(const QVariant &itemInfo,
                                    const QList<QwtLegendData> &data)
 {
     QStandardItemModel *mdl = qobject_cast<QStandardItemModel*>(d_listView->model());
@@ -258,7 +258,7 @@ void ThermoDAQLegend::updateLegend(const QVariant &itemInfo,
             QStandardItem *item = new QStandardItem();
             item->setEditable(false);
             item->setData(qlonglong(plotItem));
-            ThermoDAQDisplayPlotItem* titem = (ThermoDAQDisplayPlotItem*)plotItem;
+            MicroDAQDisplayPlotItem* titem = (MicroDAQDisplayPlotItem*)plotItem;
             item->setCheckable(titem->isEnabled());
             item->setCheckState(plotItem->isVisible() ? Qt::Checked : Qt::Unchecked );
 
@@ -273,11 +273,11 @@ void ThermoDAQLegend::updateLegend(const QVariant &itemInfo,
     d_listView->updateGeometry();
 }
 
-void ThermoDAQLegend::updateItem(QStandardItem *item, const QwtLegendData &data)
+void MicroDAQLegend::updateItem(QStandardItem *item, const QwtLegendData &data)
 {
     const QVariant key = item->data();
     const qlonglong ptr = key.value<qlonglong>();
-    ThermoDAQDisplayPlotItem* titem = (ThermoDAQDisplayPlotItem*)ptr;
+    MicroDAQDisplayPlotItem* titem = (MicroDAQDisplayPlotItem*)ptr;
 
     item->setCheckable(titem->isEnabled());
     if (titem->isEnabled()==false) {
@@ -308,7 +308,7 @@ void ThermoDAQLegend::updateItem(QStandardItem *item, const QwtLegendData &data)
     item->setData(pm, Qt::DecorationRole);
 }
 
-void ThermoDAQLegend::handleClick( const QModelIndex &index )
+void MicroDAQLegend::handleClick( const QModelIndex &index )
 {
     const QStandardItemModel *model =
         qobject_cast<QStandardItemModel *>( d_listView->model() );
@@ -322,13 +322,13 @@ void ThermoDAQLegend::handleClick( const QModelIndex &index )
     }
 }
 
-bool ThermoDAQLegend::isEmpty() const
+bool MicroDAQLegend::isEmpty() const
 {
     return d_listView->model()->rowCount() == 0;
 }
 
 
-ThermoDAQDateScaleDraw::ThermoDAQDateScaleDraw(Qt::TimeSpec timeSpec) :
+MicroDAQDateScaleDraw::MicroDAQDateScaleDraw(Qt::TimeSpec timeSpec) :
     QwtDateScaleDraw(timeSpec)
 {
     setDateFormat(QwtDate::Second, "hh:mm:ss");
@@ -339,7 +339,7 @@ ThermoDAQDateScaleDraw::ThermoDAQDateScaleDraw(Qt::TimeSpec timeSpec) :
     setDateFormat(QwtDate::Month, "hh:mm:ss\ndd/MM/yyyy");
 }
 
-ThermoDAQTemperaturePicker::ThermoDAQTemperaturePicker(QWidget *parent, Qt::TimeSpec spec) :
+MicroDAQTemperaturePicker::MicroDAQTemperaturePicker(QWidget *parent, Qt::TimeSpec spec) :
     QwtPlotPicker(parent),
     timeSpec_(spec)
 {
@@ -347,7 +347,7 @@ ThermoDAQTemperaturePicker::ThermoDAQTemperaturePicker(QWidget *parent, Qt::Time
     setTrackerMode(QwtPlotPicker::AlwaysOn);
 }
 
-QwtText ThermoDAQTemperaturePicker::trackerTextF(const QPointF &pos) const
+QwtText MicroDAQTemperaturePicker::trackerTextF(const QPointF &pos) const
 {
     const QDateTime dt = QwtDate::toDateTime(pos.x(), timeSpec_);
 
@@ -368,7 +368,7 @@ QwtText ThermoDAQTemperaturePicker::trackerTextF(const QPointF &pos) const
     return text;
 }
 
-ThermoDAQPressurePicker::ThermoDAQPressurePicker(QWidget *parent, Qt::TimeSpec spec) :
+MicroDAQPressurePicker::MicroDAQPressurePicker(QWidget *parent, Qt::TimeSpec spec) :
     QwtPlotPicker(parent),
     timeSpec_(spec)
 {
@@ -376,7 +376,7 @@ ThermoDAQPressurePicker::ThermoDAQPressurePicker(QWidget *parent, Qt::TimeSpec s
     setTrackerMode(QwtPlotPicker::AlwaysOn);
 }
 
-QwtText ThermoDAQPressurePicker::trackerTextF(const QPointF &pos) const
+QwtText MicroDAQPressurePicker::trackerTextF(const QPointF &pos) const
 {
     const QDateTime dt = QwtDate::toDateTime(pos.x(), timeSpec_);
 
@@ -401,7 +401,7 @@ QwtText ThermoDAQPressurePicker::trackerTextF(const QPointF &pos) const
     return text;
 }
 
-ThermoDAQOverPressurePicker::ThermoDAQOverPressurePicker(QWidget *parent, Qt::TimeSpec spec) :
+MicroDAQOverPressurePicker::MicroDAQOverPressurePicker(QWidget *parent, Qt::TimeSpec spec) :
     QwtPlotPicker(parent),
     timeSpec_(spec)
 {
@@ -409,7 +409,7 @@ ThermoDAQOverPressurePicker::ThermoDAQOverPressurePicker(QWidget *parent, Qt::Ti
     setTrackerMode(QwtPlotPicker::AlwaysOn);
 }
 
-QwtText ThermoDAQOverPressurePicker::trackerTextF(const QPointF &pos) const
+QwtText MicroDAQOverPressurePicker::trackerTextF(const QPointF &pos) const
 {
     const QDateTime dt = QwtDate::toDateTime(pos.x(), timeSpec_);
 
@@ -434,36 +434,36 @@ QwtText ThermoDAQOverPressurePicker::trackerTextF(const QPointF &pos) const
     return text;
 }
 
-ThermoDAQDisplayWidget::ThermoDAQDisplayWidget(QWidget *parent) :
+MicroDAQDisplayWidget::MicroDAQDisplayWidget(QWidget *parent) :
     QwtPlot(parent),
     zoomer_(0)
 {
     setCanvasBackground(QBrush(QColor(Qt::black)));
 }
 
-void ThermoDAQDisplayWidget::exportPlot()
+void MicroDAQDisplayWidget::exportPlot()
 {
     QwtPlotRenderer renderer;
     renderer.setDiscardFlag(QwtPlotRenderer::DiscardBackground, true);
     renderer.setDiscardFlag(QwtPlotRenderer::DiscardCanvasBackground, true);
     renderer.setDiscardFlag(QwtPlotRenderer::DiscardCanvasFrame, true);
     renderer.setDiscardFlag(QwtPlotRenderer::DiscardLegend, true);
-    renderer.exportTo(this, "thermoDisplay", QSizeF(300, 200), 300);
+    renderer.exportTo(this, "MicroDisplay", QSizeF(300, 200), 300);
 }
 
-void ThermoDAQDisplayWidget::showItem(QwtPlotItem* item, bool on)
+void MicroDAQDisplayWidget::showItem(QwtPlotItem* item, bool on)
 {
-    ThermoDAQDisplayPlotItem* titem = static_cast<ThermoDAQDisplayPlotItem*>(item);
+    MicroDAQDisplayPlotItem* titem = static_cast<MicroDAQDisplayPlotItem*>(item);
     if (titem->isEnabled()) {
         titem->setVisible(on);
         replot();
     }
 }
 
-ThermoDAQTemperatureDisplayWidget::ThermoDAQTemperatureDisplayWidget(QWidget *parent) :
-    ThermoDAQDisplayWidget(parent)
+MicroDAQTemperatureDisplayWidget::MicroDAQTemperatureDisplayWidget(QWidget *parent) :
+    MicroDAQDisplayWidget(parent)
 {
-    ThermoDAQDateScaleDraw* scaleDraw = new ThermoDAQDateScaleDraw(Qt::LocalTime);
+    MicroDAQDateScaleDraw* scaleDraw = new MicroDAQDateScaleDraw(Qt::LocalTime);
     QwtDateScaleEngine* scaleEngine = new QwtDateScaleEngine(Qt::LocalTime);
 
     this->setAxisScaleDraw(QwtPlot::xBottom, scaleDraw);
@@ -476,24 +476,24 @@ ThermoDAQTemperatureDisplayWidget::ThermoDAQTemperatureDisplayWidget(QWidget *pa
     this->setAxisScaleEngine(QwtPlot::yLeft, yscaleEngine);
     this->setAxisTitle(QwtPlot::yLeft, QString::fromUtf8("T [°C]"));
 
-    ThermoDAQTemperaturePicker * picker = new ThermoDAQTemperaturePicker(this->canvas(),
+    MicroDAQTemperaturePicker * picker = new MicroDAQTemperaturePicker(this->canvas(),
                                                                          Qt::LocalTime);
 
-    internalLegend_ = new ThermoDAQInternalLegend();
+    internalLegend_ = new MicroDAQInternalLegend();
     internalLegend_->setMaxColumns(1);
     internalLegend_->setAlignment(Qt::AlignLeft | Qt::AlignVCenter);
     internalLegend_->attach(this);
 
-    ThermoDAQLegend *legend = new ThermoDAQLegend(this);
+    MicroDAQLegend *legend = new MicroDAQLegend(this);
     this->insertLegend(legend, QwtPlot::RightLegend);
     connect(legend, SIGNAL(checked(QwtPlotItem*,bool,int)),
             this, SLOT(showItem(QwtPlotItem*,bool)));
 }
 
-ThermoDAQPressureDisplayWidget::ThermoDAQPressureDisplayWidget(QWidget *parent) :
-    ThermoDAQDisplayWidget(parent)
+MicroDAQPressureDisplayWidget::MicroDAQPressureDisplayWidget(QWidget *parent) :
+    MicroDAQDisplayWidget(parent)
 {
-    ThermoDAQDateScaleDraw* scaleDraw = new ThermoDAQDateScaleDraw(Qt::LocalTime);
+    MicroDAQDateScaleDraw* scaleDraw = new MicroDAQDateScaleDraw(Qt::LocalTime);
     QwtDateScaleEngine* scaleEngine = new QwtDateScaleEngine(Qt::LocalTime);
 
     this->setAxisScaleDraw(QwtPlot::xBottom, scaleDraw);
@@ -501,32 +501,32 @@ ThermoDAQPressureDisplayWidget::ThermoDAQPressureDisplayWidget(QWidget *parent) 
     this->setAxisLabelRotation(QwtPlot::xBottom, -45.0);
     this->setAxisLabelAlignment(QwtPlot::xBottom, Qt::AlignLeft | Qt::AlignBottom);
 
-    QwtLogScaleEngine * yscaleEngine = new ThermoDAQPressureScaleEngine();
+    QwtLogScaleEngine * yscaleEngine = new MicroDAQPressureScaleEngine();
     yscaleEngine->setMargins(1, 0);
     this->setAxisScaleEngine(QwtPlot::yLeft, yscaleEngine);
     this->setAxisTitle(QwtPlot::yLeft, QString::fromUtf8("p [mbar]"));
 
-    ThermoDAQPressureScaleDraw* pscaleDraw = new ThermoDAQPressureScaleDraw();
+    MicroDAQPressureScaleDraw* pscaleDraw = new MicroDAQPressureScaleDraw();
     this->setAxisScaleDraw(QwtPlot::yLeft, pscaleDraw);
 
-    ThermoDAQPressurePicker * picker = new ThermoDAQPressurePicker(this->canvas(),
+    MicroDAQPressurePicker * picker = new MicroDAQPressurePicker(this->canvas(),
                                                                    Qt::LocalTime);
 
-    internalLegend_ = new ThermoDAQInternalLegend();
+    internalLegend_ = new MicroDAQInternalLegend();
     internalLegend_->setMaxColumns(1);
     internalLegend_->setAlignment(Qt::AlignLeft | Qt::AlignVCenter);
     internalLegend_->attach(this);
 
-    ThermoDAQLegend *legend = new ThermoDAQLegend(this);
+    MicroDAQLegend *legend = new MicroDAQLegend(this);
     this->insertLegend(legend, QwtPlot::RightLegend);
     connect(legend, SIGNAL(checked(QwtPlotItem*,bool,int)),
             this, SLOT(showItem(QwtPlotItem*,bool)));
 }
 
-ThermoDAQMicroPressureDisplayWidget::ThermoDAQMicroPressureDisplayWidget(QWidget *parent) :
-    ThermoDAQDisplayWidget(parent)
+MicroDAQMicroPressureDisplayWidget::MicroDAQMicroPressureDisplayWidget(QWidget *parent) :
+    MicroDAQDisplayWidget(parent)
 {
-    ThermoDAQDateScaleDraw* scaleDraw = new ThermoDAQDateScaleDraw(Qt::LocalTime);
+    MicroDAQDateScaleDraw* scaleDraw = new MicroDAQDateScaleDraw(Qt::LocalTime);
     QwtDateScaleEngine* scaleEngine = new QwtDateScaleEngine(Qt::LocalTime);
 
     this->setAxisScaleDraw(QwtPlot::xBottom, scaleDraw);
@@ -539,18 +539,18 @@ ThermoDAQMicroPressureDisplayWidget::ThermoDAQMicroPressureDisplayWidget(QWidget
     this->setAxisScaleEngine(QwtPlot::yLeft, yscaleEngine);
     this->setAxisTitle(QwtPlot::yLeft, QString::fromUtf8("p [bar]"));
 
-    ThermoDAQPressureScaleDraw* pscaleDraw = new ThermoDAQPressureScaleDraw();
+    MicroDAQPressureScaleDraw* pscaleDraw = new MicroDAQPressureScaleDraw();
     this->setAxisScaleDraw(QwtPlot::yLeft, pscaleDraw);
 
-    ThermoDAQOverPressurePicker * picker = new ThermoDAQOverPressurePicker(this->canvas(),
+    MicroDAQOverPressurePicker * picker = new MicroDAQOverPressurePicker(this->canvas(),
 								       Qt::LocalTime);
 
-    internalLegend_ = new ThermoDAQInternalLegend();
+    internalLegend_ = new MicroDAQInternalLegend();
     internalLegend_->setMaxColumns(1);
     internalLegend_->setAlignment(Qt::AlignLeft | Qt::AlignVCenter);
     internalLegend_->attach(this);
 
-    ThermoDAQLegend *legend = new ThermoDAQLegend(this);
+    MicroDAQLegend *legend = new MicroDAQLegend(this);
     this->insertLegend(legend, QwtPlot::RightLegend);
     connect(legend, SIGNAL(checked(QwtPlotItem*,bool,int)),
             this, SLOT(showItem(QwtPlotItem*,bool)));

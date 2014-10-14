@@ -38,7 +38,7 @@ MicroMainWindow::MicroMainWindow(QWidget *parent) :
     daqStreamer_ = new MicroDAQStreamer(daqModel_, this);
 
     daqServer_ = new MicroDAQServer(daqModel_, this);
-    daqServer_->listen(QHostAddress::LocalHost, 55555);
+    daqServer_->listen(QHostAddress::LocalHost, 55556);
 
     daqThread_ = new MicroDAQThread(daqModel_, this);
     connect(QApplication::instance(), SIGNAL(aboutToQuit()),

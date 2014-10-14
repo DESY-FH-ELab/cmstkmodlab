@@ -97,6 +97,36 @@ ThermoDisplayMainWindow::ThermoDisplayMainWindow(QWidget *parent) :
                                             QPen(Qt::cyan), QSize(5,5)));
     pressure2Plot_->attachToPlot(pDisplay_);
 
+    microPressureDisplay_ = new ThermoDAQMicroPressureDisplayWidget(tabWidget_);
+    microPressureDisplay_->setMinimumWidth(600);
+    microPressureDisplay_->setMinimumHeight(400);
+    tabWidget_->addTab(microPressureDisplay_, "Microchannel Pressure");
+
+    arduinoAPlot_ = new ThermoDAQDisplayPlotItem(QwtText("arduino A"), &arduinoA_);
+    arduinoAPlot_->setPen(Qt::green, 2);
+    arduinoAPlot_->setStyle(QwtPlotCurve::Lines);
+    arduinoAPlot_->setSymbol(new QwtSymbol(QwtSymbol::Cross, Qt::NoBrush,
+                                            QPen(Qt::green), QSize(5,5)));
+    arduinoAPlot_->attachToPlot(microPressureDisplay_);
+    arduinoBPlot_ = new ThermoDAQDisplayPlotItem(QwtText("arduino B"), &arduinoB_);
+    arduinoBPlot_->setPen(Qt::cyan, 2);
+    arduinoBPlot_->setStyle(QwtPlotCurve::Lines);
+    arduinoBPlot_->setSymbol(new QwtSymbol(QwtSymbol::Cross, Qt::NoBrush,
+					   QPen(Qt::cyan), QSize(5,5)));
+    arduinoBPlot_->attachToPlot(microPressureDisplay_);
+    iotaActPressurePlot_ = new ThermoDAQDisplayPlotItem(QwtText("iota measured"), &iotaActPressure_);
+    iotaActPressurePlot_->setPen(Qt::red, 2);
+    iotaActPressurePlot_->setStyle(QwtPlotCurve::Lines);
+    iotaActPressurePlot_->setSymbol(new QwtSymbol(QwtSymbol::Cross, Qt::NoBrush,
+						  QPen(Qt::red), QSize(5,5)));
+    iotaActPressurePlot_->attachToPlot(microPressureDisplay_);
+    iotaSetPressurePlot_ = new ThermoDAQDisplayPlotItem(QwtText("iota set"), &iotaSetPressure_);
+    iotaSetPressurePlot_->setPen(Qt::blue, 2);
+    iotaSetPressurePlot_->setStyle(QwtPlotCurve::Lines);
+    iotaSetPressurePlot_->setSymbol(new QwtSymbol(QwtSymbol::Cross, Qt::NoBrush,
+						  QPen(Qt::blue), QSize(5,5)));
+    iotaSetPressurePlot_->attachToPlot(microPressureDisplay_);
+
     client_ = new ThermoDAQClient(55555);
     reader_ = new ThermoDAQNetworkReader(this);
 
@@ -122,6 +152,7 @@ void ThermoDisplayMainWindow::exportPlot()
 
     if (tabIndex==0) tempDisplay_->exportPlot();
     if (tabIndex==1) pDisplay_->exportPlot();
+    if (tabIndex==2) microPressureDisplay_->exportPlot();
 }
 
 void ThermoDisplayMainWindow::clearData()
@@ -134,6 +165,11 @@ void ThermoDisplayMainWindow::clearData()
     }
     pressure1_.clearData();
     pressure2_.clearData();
+
+    arduinoA_.clearData();
+    arduinoB_.clearData();
+    iotaActPressure_.clearData();
+    iotaSetPressure_.clearData();
 }
 
 void ThermoDisplayMainWindow::requestData()
@@ -173,6 +209,11 @@ void ThermoDisplayMainWindow::updateInfo()
 
     if (pressure1_.push(m.dt, m.gaugePressure1)) pressure1Plot_->refresh();
     if (pressure2_.push(m.dt, m.gaugePressure2)) pressure2Plot_->refresh();
-
     pDisplay_->replot();
+
+    if (arduinoA_.push(m.dt, m.arduinoPressureA)) arduinoAPlot_->refresh();
+    if (arduinoB_.push(m.dt, m.arduinoPressureB)) arduinoBPlot_->refresh();
+    if (iotaActPressure_.push(m.dt, m.iotaActPressure)) iotaActPressurePlot_->refresh();
+    if (iotaSetPressure_.push(m.dt, m.iotaSetPressure)) iotaSetPressurePlot_->refresh();
+    microPressureDisplay_->replot();
 }
