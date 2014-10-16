@@ -45,8 +45,18 @@ protected:
     ThermoDAQValueVector<double> pressure2_;
     ThermoDAQDisplayPlotItem* pressure2Plot_;
 
+    ThermoDAQValueVector<double> arduinoA_;
+    ThermoDAQDisplayPlotItem* arduinoAPlot_;
+    ThermoDAQValueVector<double> arduinoB_;
+    ThermoDAQDisplayPlotItem* arduinoBPlot_;
+    ThermoDAQValueVector<double> iotaActPressure_;
+    ThermoDAQDisplayPlotItem* iotaActPressurePlot_;
+    ThermoDAQValueVector<double> iotaSetPressure_;
+    ThermoDAQDisplayPlotItem* iotaSetPressurePlot_;
+
     ThermoDAQTemperatureDisplayWidget* tempDisplay_;
     ThermoDAQPressureDisplayWidget* pDisplay_;
+    ThermoDAQMicroPressureDisplayWidget* microPressureDisplay_;
 };
 
 #endif // THERMODISPLAYMAINWINDOW_H

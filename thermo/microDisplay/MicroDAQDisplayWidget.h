@@ -1,5 +1,5 @@
-#ifndef THERMODAQDISPLAYWIDGET_H
-#define THERMODAQDISPLAYWIDGET_H
+#ifndef MICRODAQDISPLAYWIDGET_H
+#define MICRODAQDISPLAYWIDGET_H
 
 #include <iostream>
 #include <vector>
@@ -18,35 +18,35 @@
 #include <qwt_scale_engine.h>
 #include <qwt_scale_draw.h>
 
-#include "ThermoDAQValueVector.h"
+#include "MicroDAQValueVector.h"
 
 class LegendListView;
 class QStandardItem;
 class QModelIndex;
 class QwtPlotItem;
 
-class ThermoDAQPressureScaleDraw : public QwtScaleDraw
+class MicroDAQPressureScaleDraw : public QwtScaleDraw
 {
 public:
-    ThermoDAQPressureScaleDraw();
-    virtual ~ThermoDAQPressureScaleDraw();
+    MicroDAQPressureScaleDraw();
+    virtual ~MicroDAQPressureScaleDraw();
     virtual QwtText label (double) const;
 };
 
-class ThermoDAQPressureScaleEngine : public QwtLogScaleEngine
+class MicroDAQPressureScaleEngine : public QwtLogScaleEngine
 {
 public:
-    ThermoDAQPressureScaleEngine(uint base = 10);
-    virtual ~ThermoDAQPressureScaleEngine();
+    MicroDAQPressureScaleEngine(uint base = 10);
+    virtual ~MicroDAQPressureScaleEngine();
     virtual void autoScale(int maxSteps,
                            double &x1, double &x2,
                            double &stepSize) const;
 };
 
-class ThermoDAQInternalLegend : public QwtPlotLegendItem
+class MicroDAQInternalLegend : public QwtPlotLegendItem
 {
 public:
-    ThermoDAQInternalLegend() {
+    MicroDAQInternalLegend() {
         setRenderHint(QwtPlotItem::RenderAntialiased);
         QColor color(Qt::white);
         setTextPen(color);
@@ -57,13 +57,13 @@ public:
     }
 };
 
-class ThermoDAQLegend : public QwtAbstractLegend
+class MicroDAQLegend : public QwtAbstractLegend
 {
     Q_OBJECT
 
 public:
-    explicit ThermoDAQLegend(QWidget *parent = NULL );
-    virtual ~ThermoDAQLegend();
+    explicit MicroDAQLegend(QWidget *parent = NULL );
+    virtual ~MicroDAQLegend();
 
     virtual void renderLegend(QPainter *painter,
                               const QRectF &, bool fillBackground ) const;
@@ -86,44 +86,44 @@ private:
     LegendListView *d_listView;
 };
 
-class ThermoDAQDateScaleDraw : public QwtDateScaleDraw
+class MicroDAQDateScaleDraw : public QwtDateScaleDraw
 {
 public:
-    ThermoDAQDateScaleDraw(Qt::TimeSpec timeSpec);
+    MicroDAQDateScaleDraw(Qt::TimeSpec timeSpec);
 };
 
-class ThermoDAQTemperaturePicker : public QwtPlotPicker
+class MicroDAQTemperaturePicker : public QwtPlotPicker
 {
 public:
-    ThermoDAQTemperaturePicker(QWidget *parent, Qt::TimeSpec spec = Qt::LocalTime);
+    MicroDAQTemperaturePicker(QWidget *parent, Qt::TimeSpec spec = Qt::LocalTime);
 protected:
     virtual QwtText trackerTextF(const QPointF &) const;
     Qt::TimeSpec timeSpec_;
 };
 
-class ThermoDAQPressurePicker : public QwtPlotPicker
+class MicroDAQPressurePicker : public QwtPlotPicker
 {
 public:
-    ThermoDAQPressurePicker(QWidget *parent, Qt::TimeSpec spec = Qt::LocalTime);
+    MicroDAQPressurePicker(QWidget *parent, Qt::TimeSpec spec = Qt::LocalTime);
 protected:
     virtual QwtText trackerTextF(const QPointF &) const;
     Qt::TimeSpec timeSpec_;
 };
 
-class ThermoDAQOverPressurePicker : public QwtPlotPicker
+class MicroDAQOverPressurePicker : public QwtPlotPicker
 {
 public:
-    ThermoDAQOverPressurePicker(QWidget *parent, Qt::TimeSpec spec = Qt::LocalTime);
+    MicroDAQOverPressurePicker(QWidget *parent, Qt::TimeSpec spec = Qt::LocalTime);
 protected:
     virtual QwtText trackerTextF(const QPointF &) const;
     Qt::TimeSpec timeSpec_;
 };
 
-class ThermoDAQDisplayWidget : public QwtPlot
+class MicroDAQDisplayWidget : public QwtPlot
 {
   Q_OBJECT
 public:
-  explicit ThermoDAQDisplayWidget(QWidget *parent = 0);
+  explicit MicroDAQDisplayWidget(QWidget *parent = 0);
 
     void exportPlot();
 
@@ -132,34 +132,34 @@ protected slots:
 
 protected:
   QwtPlotZoomer* zoomer_;
-  ThermoDAQInternalLegend* internalLegend_;
+  MicroDAQInternalLegend* internalLegend_;
 };
 
-class ThermoDAQTemperatureDisplayWidget : public ThermoDAQDisplayWidget
+class MicroDAQTemperatureDisplayWidget : public MicroDAQDisplayWidget
 {
   Q_OBJECT
 public:
-  explicit ThermoDAQTemperatureDisplayWidget(QWidget *parent = 0);
+  explicit MicroDAQTemperatureDisplayWidget(QWidget *parent = 0);
 };
 
-class ThermoDAQPressureDisplayWidget : public ThermoDAQDisplayWidget
+class MicroDAQPressureDisplayWidget : public MicroDAQDisplayWidget
 {
   Q_OBJECT
 public:
-  explicit ThermoDAQPressureDisplayWidget(QWidget *parent = 0);
+  explicit MicroDAQPressureDisplayWidget(QWidget *parent = 0);
 };
 
-class ThermoDAQMicroPressureDisplayWidget : public ThermoDAQDisplayWidget
+class MicroDAQMicroPressureDisplayWidget : public MicroDAQDisplayWidget
 {
   Q_OBJECT
 public:
-  explicit ThermoDAQMicroPressureDisplayWidget(QWidget *parent = 0);
+  explicit MicroDAQMicroPressureDisplayWidget(QWidget *parent = 0);
 };
 
-class ThermoDAQDisplayPlotItem : public QwtPlotCurve
+class MicroDAQDisplayPlotItem : public QwtPlotCurve
 {
 public:
-    ThermoDAQDisplayPlotItem(const QwtText &title, const ThermoDAQValueVector<double>* dataSource) :
+    MicroDAQDisplayPlotItem(const QwtText &title, const MicroDAQValueVector<double>* dataSource) :
         QwtPlotCurve(title),
         dataSource_(dataSource),
         enabled_(true)
@@ -172,17 +172,17 @@ public:
         QwtPlotCurve::setRawSamples(dataSource_->constTimes(), dataSource_->constValues(),
                                     dataSource_->size());
     }
-    const ThermoDAQValueVector<double>* dataSource() const { return dataSource_; }
-    void attachToPlot(ThermoDAQDisplayWidget *plot) {
+    const MicroDAQValueVector<double>* dataSource() const { return dataSource_; }
+    void attachToPlot(MicroDAQDisplayWidget *plot) {
         QwtPlotCurve::attach(plot);
     }
-    void detachFromPlot(ThermoDAQDisplayWidget *plot) {
+    void detachFromPlot(MicroDAQDisplayWidget *plot) {
         QwtPlotCurve::detach();
     }
 
 protected:
-    const ThermoDAQValueVector<double>* dataSource_;
+    const MicroDAQValueVector<double>* dataSource_;
     bool enabled_;
 };
 
-#endif // THERMODAQDISPLAYWIDGET_H
+#endif // MICRODAQDISPLAYWIDGET_H

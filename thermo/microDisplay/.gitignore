@@ -1,0 +1,11 @@
+thermoDisplay.pro
+thermoDisplay.pro.user
+Makefile
+*.d
+*.o
+*~
+moc_*
+thermoDisplay
+thermoDisplay.app
+thermoDisplay.desktop
+startThermoDisplay.sh
