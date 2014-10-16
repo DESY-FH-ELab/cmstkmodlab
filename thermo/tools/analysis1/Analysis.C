@@ -299,6 +299,7 @@ void Analysis::Terminate()
   TF1 * fitCombined = new TF1("fitCombined", myfunction, 0.0, positionTop[4]+8.0, 4);
   fitCombined->FixParameter(3, positionBottomFace);
   grCombined->Fit(fitCombined, "NR");
+  
   //fitCombined->Draw("same");
   
   Float_t TTopFace = fitTop->Eval(positionTopFace);
@@ -318,17 +319,23 @@ void Analysis::Terminate()
   Float_t dT = TTopFace - TBottomFace;
   Float_t ddT = dTTopFace + dTBottomFace;
   std::cout << ddT << std::endl;
-  TLatex* tex = new TLatex(positionTopFace+4, dataBottom[1],
-                           Form("#DeltaT = %.3f K", dT));
-  tex->SetTextAlign(13);
-  tex->Draw("same");
+  TLatex* tex;
+  //tex = new TLatex(positionTopFace+4, dataBottom[1],
+  //                 Form("#DeltaT = %.3f K", dT));
+  //tex->SetTextAlign(13);
+  //tex->Draw("same");
 
-  tex = new TLatex(positionBottomFace-4, dataTop[1],
+  tex = new TLatex(positionBottomFace+1, dataBottom[1],
                    Form("#DeltaT_{c} = %.3f K (%.3f K/m)",
                         fitCombined->GetParameter(2),
                         1000.*fitCombined->GetParameter(1)));
-  tex->SetTextSize(0.04);
-  tex->SetTextAlign(31);
+  tex->SetTextAlign(13);
+  tex->Draw("same");
+
+  tex = new TLatex(positionBottomFace+1, dataBottom[3],
+                   Form("#Delta#DeltaT_{c} = %.6f K",
+                        fitCombined->GetParError(2)));
+  tex->SetTextAlign(13);
   tex->Draw("same");
 
   tex = new TLatex(positionBottom[1], dataBottom[4],
