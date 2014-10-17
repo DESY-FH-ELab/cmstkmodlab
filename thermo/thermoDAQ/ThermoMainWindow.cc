@@ -1,3 +1,5 @@
+#include <stdlib.h>
+
 #include <string>
 #include <iostream>
 
@@ -63,6 +65,11 @@ ThermoMainWindow::ThermoMainWindow(QWidget *parent) :
 
     daqStreamer_ = new ThermoDAQStreamer(daqModel_, this);
 
+    QString webuser(config->getValue<std::string>("ArduinoPresDevice").c_str());
+    if (webuser==getenv("USER")) {
+      daqWebInfo_ = new ThermoDAQWebInfo(daqModel_, this);
+    }
+
     daqServer_ = new ThermoDAQServer(daqModel_, this);
     daqServer_->listen(QHostAddress::LocalHost, 55555);
 
@@ -71,19 +78,6 @@ ThermoMainWindow::ThermoMainWindow(QWidget *parent) :
             this, SLOT(quit()));
     daqThread_->start();
     daqModel_->myMoveToThread(daqThread_);
-
-    //  connect(scriptModel_, SIGNAL(prepareNewMeasurement()),
-    //	  this, SLOT(prepareNewMeasurement()));
-    //  connect(scriptModel_, SIGNAL(setControlsEnabled(bool)),
-    //	  conradModel_, SLOT(setControlsEnabled(bool)));
-    //  connect(scriptModel_, SIGNAL(setControlsEnabled(bool)),
-    //	  cameraModel_, SLOT(setControlsEnabled(bool)));
-    //  connect(scriptModel_, SIGNAL(setControlsEnabled(bool)),
-    //	  julaboModel_, SLOT(setControlsEnabled(bool)));
-    //  connect(scriptModel_, SIGNAL(setControlsEnabled(bool)),
-    //	  keithleyModel_, SLOT(setControlsEnabled(bool)));
-    //  connect(scriptModel_, SIGNAL(setControlsEnabled(bool)),
-    //	  pointModel_, SLOT(setControlsEnabled(bool)));
 
     tabWidget_ = new QTabWidget(this);
     tabWidget_->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);

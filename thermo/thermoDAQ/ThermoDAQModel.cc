@@ -98,6 +98,30 @@ void ThermoDAQModel::startMeasurement()
     NQLog("thermoDAQ") << "measurement started";
 }
 
+const Measurement_t& ThermoDAQModel::getMeasurement()
+{
+  measurement_.dt = currentTime();
+  measurement_.daqState = daqState();
+  
+  /*
+  valueMap_["@DAQSTATE@"] = daqState();
+
+  // valueMap_["@@"] = ;
+  valueMap_["@HUBERCIRCULATOR@"] = huberCirculator_;
+  valueMap_["@HUBERWORKINGTEMPERATURE@"] = huberWorkingTemperature_;
+  valueMap_["@HUBERBATHTEMPERATURE@"] = huberBathTemperature_;
+  
+  for (int i=0;i<10;++i) {
+    valueMap_[QString("@KEITHLEYSENSORSTATE%02d@").arg(i)] = (int)keithleySensorState_[i];
+    valueMap_[QString("@KEITHLEYTEMPERATURE%02d@").arg(i)] = keithleyTemperature_[i];
+  }
+
+  return valueMap_;
+  */
+
+  return measurement_;
+}
+
 void ThermoDAQModel::createDAQStatusMessage(QString &buffer)
 {
     QDateTime& utime = currentTime();
