@@ -263,6 +263,7 @@ void Analysis::Terminate()
       pushPoint(grBottom, positionBottom[i], dataBottom[i], 0.5, 0.025);
       pushPoint(grCombined, positionBottom[i], dataBottom[i], 0.5, 0.025);
     }
+    bit <<= 1;
   }
   
   TCanvas *c = new TCanvas("c", "c", 700, 500);
