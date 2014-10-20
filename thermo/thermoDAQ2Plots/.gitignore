@@ -1,7 +1,7 @@
-thermoDAQ2Root.pro
-thermoDAQ2Root.pro.user
+thermoDAQ2Plots.pro
+thermoDAQ2Plots.pro.user
 Makefile
 *.d
 *.o
 moc_*
-thermoDAQ2Root
+thermoDAQ2Plots
