@@ -7,8 +7,8 @@
 
 int main(int argc, char *argv[])
 {
-  if (argc!=2) {
-    std::cout << "usage: thermoDAQ2ROOT <xml data file>" << std::endl;
+  if (argc!=3) {
+    std::cout << "usage: thermoDAQ2ROOT <xml data file> <output file>" << std::endl;
     return -1;
   }
 

@@ -1,61 +1,15 @@
 #ifndef THERMODAQSTREAMREADER_H
 #define THERMODAQSTREAMREADER_H
 
+#include <vector>
 #include <string>
 
 #include <QObject>
 #include <QStringList>
 #include <QXmlStreamReader>
 
-#include <TFile.h>
-#include <TTree.h>
+#include <TGraph.h>
 #include <TDatime.h>
-
-typedef struct {
-    unsigned int   uTime;
-    TDatime        datime;
-
-    float          bathTemperature;
-    float          workingTemperature;
-    int            circulator;
-
-    int            channelActive[10];
-    float          temperature[10];
-
-    int            gaugeStatus1;
-    float          gaugePressure1;
-    int            gaugeStatus2;
-    float          gaugePressure2;
-
-    int            powerRemote;
-    int            powerOn;
-    int            cv1;
-    int            cv2;
-    float          setVoltage1;
-    float          setCurrent1;
-    float          setVoltage2;
-    float          setCurrent2;
-    float          voltage1;
-    float          current1;
-    float          voltage2;
-    float          current2;
-
-    int            iotaPumpEnabled;
-    float          iotaSetPressure;
-    float          iotaSetFlow;
-    float          iotaActPressure;
-    float          iotaActFlow;
-
-    float          arduinoPressureA;
-    float          arduinoPressureB;
-} Measurement_t;
-
-typedef struct {
-    unsigned int   uTime;
-    TDatime        datime;
-
-    std::string    message;
-} Log_t;
 
 class ThermoDAQStreamReader : public QObject
 {
@@ -87,13 +41,15 @@ protected:
     void processIotaValues(QXmlStreamReader& xml);
     void processArduinoPressure(QXmlStreamReader& xml);
 
-    bool measurementValid_;
-    Measurement_t measurement_;
-    Log_t         log_;
-
-    TFile *ofile_;
-    TTree *otree_;
-    TTree *ologtree_;
+    int activeT[10];
+    std::vector<TGraph*> graphsT[10];
+    TGraph * graphT[10];
+    int graphTn[10];
+    
+    uint minUTime;
+    uint maxUTime;
+    float minT;
+    float maxT;
 };
 
 #endif // THERMODAQSTREAMREADER_H
