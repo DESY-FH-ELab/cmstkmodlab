@@ -14,7 +14,7 @@ QT       += core xml
 
 QT       -= gui
 
-TARGET = thermoDAQ2Root
+TARGET = thermoDAQ2Plots
 CONFIG   += console
 CONFIG   -= app_bundle
 
