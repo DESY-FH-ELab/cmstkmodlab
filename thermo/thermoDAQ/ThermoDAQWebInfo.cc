@@ -45,7 +45,20 @@ void ThermoDAQWebInfo::updateWebInfo()
   QString htmlTemp = htmlSource_;
 
   htmlTemp.replace("@DATETIME@", m.dt.toString(Qt::ISODate));
-  
+
+  htmlTemp.replace("@DAQSTATE@", QString::number((int)m.daqState));
+
+  htmlTemp.replace("@HUBERCIRCULATOR@", QString::number(m.circulator));
+  htmlTemp.replace("@HUBERWORKINGTEMPERATURE@", QString::number(m.workingTemperature, 'f', 2));
+  htmlTemp.replace("@HUBERBATHTEMPERATURE@", QString::number(m.bathTemperature, 'f', 2));
+
+  for (int i=0;i<10;++i) {
+    htmlTemp.replace(QString("@KEITHLEYSENSORSTATE%01d@").arg(i), QString::number(m.channelActive[i]));
+    htmlTemp.replace(QString("@KEITHLEYTEMPERATURE%01d@").arg(i), QString::number(m.temperature[i], 'f', 2));
+  }
+
+  // htmlTemp.replace("@@", m.);
+
   QFile file(htmlFile_);
   if (file.open(QIODevice::WriteOnly | QIODevice::Truncate | QIODevice::Text)) {
     QTextStream stream(&file);

@@ -1,2 +1,61 @@
-last updated: @DATETIME@
-
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="chrome=1,IE=edge" />
+    <meta name="viewport" content="user-scalable=yes, width=800" />
+    <title>.: thermoDAQ :.</title>
+    <style type="text/css">
+      body {
+        background-color: #FFFFFF;
+        margin: 0px;
+        font-family: Verdana;
+        font-size: 12px;
+      }
+      td {
+        font-size: 12px;
+      }
+      #centered {
+        position:absolute;
+        top: 0%;
+        left: 50%;
+        width:30em;
+        height:18em;
+        background-color:#FFFFFF;
+        margin-top: 10px; /*set to a negative number 1/2 of your height*/
+        margin-left: -350px; /*set to a negative number 1/2 of your width*/
+      }
+    </style>
+  </head>
+  <body>
+    <div id="centered">
+      <div style ="margin:auto;width:700px;background-color:#FFFFFF;">
+        <div style="position:relative;margin:auto;width:700px;background-color:grey;">
+          <div style="position:absolute;width:150px;margin-top:10px;">
+             <div align="center"><img src="http://www.desy.de/++resource++desy/images/logo_desy.gif"/></div>
+          </div>
+          <div style="position:absolute;margin-left:160px;width:540px;margin-top:10px;">
+            <h1>thermoDAQ</h1>
+            <table>
+             <tr><td>DAQ status</td><td colspan="2" align="right">@DAQSTATE@</td></tr>
+             <tr><td>Huber circulator</td><td colspan="2" align="right">@HUBERCIRCULATOR@</td></tr>
+             <tr><td>Huber working point</td><td colspan="2" align="right">@HUBERWORKINGTEMPERATURE@</td></tr>
+             <tr><td>Huber temperature</td><td colspan="2" align="right">@HUBERBATHTEMPERATURE@</td></tr>
+             <tr><td>T0</td><td align="right">@KEITHLEYSENSORSTATE0@</td><td align="right">@KEITHLEYTEMPERATURE0</td></tr>
+             <tr><td>T1</td><td align="right">@KEITHLEYSENSORSTATE1@</td><td align="right">@KEITHLEYTEMPERATURE1</td></tr>
+             <tr><td>T2</td><td align="right">@KEITHLEYSENSORSTATE2@</td><td align="right">@KEITHLEYTEMPERATURE2</td></tr>
+             <tr><td>T3</td><td align="right">@KEITHLEYSENSORSTATE3@</td><td align="right">@KEITHLEYTEMPERATURE3</td></tr>
+             <tr><td>T4</td><td align="right">@KEITHLEYSENSORSTATE4@</td><td align="right">@KEITHLEYTEMPERATURE4</td></tr>
+             <tr><td>T5</td><td align="right">@KEITHLEYSENSORSTATE5@</td><td align="right">@KEITHLEYTEMPERATURE5</td></tr>
+             <tr><td>T6</td><td align="right">@KEITHLEYSENSORSTATE6@</td><td align="right">@KEITHLEYTEMPERATURE6</td></tr>
+             <tr><td>T7</td><td align="right">@KEITHLEYSENSORSTATE7@</td><td align="right">@KEITHLEYTEMPERATURE7</td></tr>
+             <tr><td>T8</td><td align="right">@KEITHLEYSENSORSTATE8@</td><td align="right">@KEITHLEYTEMPERATURE8</td></tr>
+             <tr><td>T9</td><td align="right">@KEITHLEYSENSORSTATE9@</td><td align="right">@KEITHLEYTEMPERATURE9</td></tr>
+            </table>
+            last updated: @DATETIME@
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
