@@ -38,8 +38,12 @@ void ThermoDAQStreamReader::processHuberTemperature(QXmlStreamReader& xml)
     QString time = xml.attributes().value("time").toString();
     QDateTime dt = QDateTime::fromString(time, Qt::ISODate);
 
-    if (minUTime==0) minUTime = dt.toTime_t();
-    maxUTime = std::max(maxUTime, dt.toTime_t());
+    if (minUTime==0) {
+      minUTime = dt.toTime_t();
+      offset.Set(minUTime);
+    }
+    uint utime = dt.toTime_t()-minUTime;
+    maxUTime = std::max(maxUTime, utime);
 
     /*
     measurement_.uTime = dt.toTime_t();
@@ -57,8 +61,12 @@ void ThermoDAQStreamReader::processKeithleyState(QXmlStreamReader& xml)
     QDateTime dt = QDateTime::fromString(time, Qt::ISODate);
     int idx = xml.attributes().value("sensor").toString().toInt();
 
-    if (minUTime==0) minUTime = dt.toTime_t();
-    maxUTime = std::max(maxUTime, dt.toTime_t());
+    if (minUTime==0) {
+      minUTime = dt.toTime_t();
+      offset.Set(minUTime);
+    }
+    uint utime = dt.toTime_t()-minUTime;
+    maxUTime = std::max(maxUTime, utime);
 
     activeT[idx] = xml.attributes().value("state").toString().toInt();
     
@@ -75,14 +83,18 @@ void ThermoDAQStreamReader::processKeithleyTemperature(QXmlStreamReader& xml)
     QDateTime dt = QDateTime::fromString(time, Qt::ISODate);
     int idx = xml.attributes().value("sensor").toString().toInt();
 
-    if (minUTime==0) minUTime = dt.toTime_t();
-    maxUTime = std::max(maxUTime, dt.toTime_t());
+    if (minUTime==0) {
+      minUTime = dt.toTime_t();
+      offset.Set(minUTime);
+    }
+    uint utime = dt.toTime_t()-minUTime;
+    maxUTime = std::max(maxUTime, utime);
 
     if (activeT[idx]==1) {
        float t = xml.attributes().value("temperature").toString().toFloat();
        minT = std::min(minT, t);
        maxT = std::max(maxT, t);
-       graphT[idx]->SetPoint(graphTn[idx]++, dt.toTime_t(), t);
+       graphT[idx]->SetPoint(graphTn[idx]++, utime, t);
     }
 }
 
@@ -291,7 +303,12 @@ void ThermoDAQStreamReader::process()
     }
     
     TCanvas * c = new TCanvas("c", "c", 700, 500);
-    TH1F* frame = c->DrawFrame(minUTime, minT-1, maxUTime, maxT+1);
+    TH1F* frame = c->DrawFrame(0, minT-1, maxUTime, maxT+1);
+    frame->GetXaxis()->SetTimeDisplay(1);
+    frame->GetXaxis()->SetTimeFormat("#splitline{%H:%M}{%d/%m/%y}");
+    frame->GetXaxis()->SetLabelOffset(0.025);
+    frame->GetXaxis()->SetNdivisions(505);
+    frame->GetXaxis()->SetTimeOffset(offset.Convert());
     mgr->Draw("LP");
     c->Print(arguments_.at(2).toStdString().c_str());
 }

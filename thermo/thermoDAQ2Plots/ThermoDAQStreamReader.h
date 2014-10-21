@@ -46,6 +46,7 @@ protected:
     TGraph * graphT[10];
     int graphTn[10];
     
+    TDatime offset;
     uint minUTime;
     uint maxUTime;
     float minT;
