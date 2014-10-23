@@ -65,7 +65,7 @@ ThermoMainWindow::ThermoMainWindow(QWidget *parent) :
 
     daqStreamer_ = new ThermoDAQStreamer(daqModel_, this);
 
-    QString webuser(config->getValue<std::string>("ArduinoPresDevice").c_str());
+    QString webuser(config->getValue<std::string>("Webuser").c_str());
     if (webuser==getenv("USER")) {
       daqWebInfo_ = new ThermoDAQWebInfo(daqModel_, this);
     }
