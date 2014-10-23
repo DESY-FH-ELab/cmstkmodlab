@@ -28,6 +28,8 @@ ThermoDAQWebInfo::ThermoDAQWebInfo(ThermoDAQModel* model, QObject* parent) :
   ApplicationConfig* config = ApplicationConfig::instance();
   htmlFile_ = config->getValue<std::string>("HTMLFile").c_str();
 
+  NQLog("ThermoDAQWebInfo") << "writing to file " << htmlFile_;
+
   connect(model_, SIGNAL(daqStateChanged(bool)),
 	  this, SLOT(daqStateChanged(bool)));
   connect(&executionTimer_, SIGNAL(timeout()), 
@@ -38,7 +40,7 @@ ThermoDAQWebInfo::ThermoDAQWebInfo(ThermoDAQModel* model, QObject* parent) :
 
 void ThermoDAQWebInfo::updateWebInfo()
 {
-  NQLog("ThermoDAQWebInfo") << "updateWebInfo";
+  NQLog("ThermoDAQWebInfo", NQLog::Spam) << "updateWebInfo";
 
   const Measurement_t& m = model_->getMeasurement();
 
@@ -53,8 +55,8 @@ void ThermoDAQWebInfo::updateWebInfo()
   htmlTemp.replace("@HUBERBATHTEMPERATURE@", QString::number(m.bathTemperature, 'f', 2));
 
   for (int i=0;i<10;++i) {
-    htmlTemp.replace(QString("@KEITHLEYSENSORSTATE%01d@").arg(i), QString::number(m.channelActive[i]));
-    htmlTemp.replace(QString("@KEITHLEYTEMPERATURE%01d@").arg(i), QString::number(m.temperature[i], 'f', 2));
+    htmlTemp.replace(QString("@KEITHLEYSENSORSTATE%1@").arg(i), QString::number(m.channelActive[i]));
+    htmlTemp.replace(QString("@KEITHLEYTEMPERATURE%1@").arg(i), QString::number(m.temperature[i], 'f', 2));
   }
 
   // htmlTemp.replace("@@", m.);
