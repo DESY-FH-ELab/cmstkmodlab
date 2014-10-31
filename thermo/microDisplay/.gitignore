@@ -1,11 +1,11 @@
-thermoDisplay.pro
-thermoDisplay.pro.user
+microDisplay.pro
+microDisplay.pro.user
 Makefile
 *.d
 *.o
 *~
 moc_*
-thermoDisplay
-thermoDisplay.app
-thermoDisplay.desktop
-startThermoDisplay.sh
+microDisplay
+microDisplay.app
+microDisplay.desktop
+startMicroDisplay.sh

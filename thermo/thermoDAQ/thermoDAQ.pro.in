@@ -32,6 +32,7 @@ HEADERS += TestWindow.h \
            ThermoDAQThread.h \
            ThermoDAQModel.h \
            ThermoDAQStreamer.h \
+           ThermoDAQWebInfo.h \
            ThermoDAQWidget.h \
 	   ThermoDAQServer.h \
            ThermoPfeifferWidget.h
@@ -46,6 +47,7 @@ SOURCES += thermoDAQ.cc \
            ThermoDAQThread.cc \
            ThermoDAQModel.cc \
            ThermoDAQStreamer.cc \
+           ThermoDAQWebInfo.cc \
            ThermoDAQWidget.cc \
            ThermoDAQServer.cc \
            ThermoPfeifferWidget.cc
