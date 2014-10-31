@@ -1,0 +1,7 @@
+thermoDAQ2Plots.pro
+thermoDAQ2Plots.pro.user
+Makefile
+*.d
+*.o
+moc_*
+thermoDAQ2Plots
