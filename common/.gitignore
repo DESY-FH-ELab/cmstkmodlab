@@ -2,6 +2,7 @@ common.pro
 common.pro.user
 ApplicationConfig.h
 ApplicationConfig.cc
+ApplicationVersion.h
 Makefile
 *.d
 *.o
