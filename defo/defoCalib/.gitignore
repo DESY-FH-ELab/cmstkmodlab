@@ -1,5 +1,6 @@
 defoCalib.pro
 defoCalib.pro.user
+.qmake.stash
 Makefile
 *.d
 *.o
