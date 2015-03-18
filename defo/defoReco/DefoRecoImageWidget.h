@@ -44,7 +44,7 @@ class DefoRecoRawImageContentWidget : public DefoRecoImageContentWidget
 public:
 
   explicit DefoRecoRawImageContentWidget(DefoMeasurementSelectionModel* model,
-                                         DefoRecoImageZoomModel* zoomModel,
+                                         DefoImageZoomModel* zoomModel,
                                          QWidget *parent = 0);
 };
 
@@ -55,7 +55,7 @@ class DefoRecoROIImageContentWidget : public DefoRecoImageContentWidget
 public:
 
   explicit DefoRecoROIImageContentWidget(DefoMeasurementSelectionModel* model,
-                                         DefoRecoImageZoomModel* zoomModel,
+                                         DefoImageZoomModel* zoomModel,
                                          DefoROIModel* roiModel,
                                          QWidget *parent = 0);
   
@@ -73,7 +73,7 @@ class DefoRecoImageThresholdsContentWidget : public DefoRecoImageContentWidget
 public:
 
   explicit DefoRecoImageThresholdsContentWidget(DefoMeasurementSelectionModel* model,
-                                                DefoRecoImageZoomModel* zoomModel,
+                                                DefoImageZoomModel* zoomModel,
                                                 DefoPointRecognitionModel* recognitionModel,
                                                 DefoROIModel* roiModel,
                                                 QWidget *parent = 0);
@@ -106,7 +106,7 @@ public:
 
   explicit DefoRecoImagePointsContentWidget(DefoMeasurementListModel* listModel,
                                             DefoMeasurementSelectionModel* selectionModel,
-                                            DefoRecoImageZoomModel* zoomModel,
+                                            DefoImageZoomModel* zoomModel,
                                             QWidget *parent = 0);
 
   void paintEvent(QPaintEvent *event);
@@ -127,7 +127,7 @@ class DefoRecoAlignmentImageContentWidget : public DefoRecoImageContentWidget
 public:
 
   explicit DefoRecoAlignmentImageContentWidget(DefoMeasurementSelectionModel* model,
-                                               DefoRecoImageZoomModel* zoomModel,
+                                               DefoImageZoomModel* zoomModel,
                                                DefoAlignmentModel* alignmentModel,
                                                QWidget *parent = 0);
 
@@ -158,7 +158,7 @@ public slots:
 protected:
 
   DefoMeasurementSelectionModel* selectionModel_;
-  DefoRecoImageZoomModel* zoomModel_;
+  DefoImageZoomModel* zoomModel_;
   static const QSize MINIMUM_SIZE;
 };
 
