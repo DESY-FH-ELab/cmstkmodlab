@@ -1,5 +1,6 @@
 thermoDAQ2Log.pro
 thermoDAQ2Log.pro.user
+.qmake.stash
 Makefile
 *.d
 *.o

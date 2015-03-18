@@ -7,6 +7,9 @@
 macx {
     INCLUDEPATH += /opt/local/include/GL
     INCLUDEPATH += /opt/local/include/exiv2
+    INCLUDEPATH += /opt/local/include
+    INCLUDEPATH += /opt/local/include/opencv
+    INCLUDEPATH += /opt/local/include/opencv2
     LIBS += -lgphoto2_port
     LIBS += -L/opt/local/lib
 }
@@ -54,6 +57,7 @@ HEADERS += DefoConfig.h \
            DefoThresholdSpinBox.h \
            DefoHalfSquareWidthSpinBox.h \
            DefoImageWidget.h \
+           DefoImageZoomModel.h \
            DefoPoint.h \
            DefoPointBin.h \
            DefoSquare.h \
@@ -89,6 +93,7 @@ SOURCES += DefoConfig.cc \
            DefoThresholdSpinBox.cc \
            DefoHalfSquareWidthSpinBox.cc \
            DefoImageWidget.cc \
+           DefoImageZoomModel.cc \
            DefoPoint.cc \
            DefoPointBin.cc \
            DefoSquare.cc \
