@@ -897,8 +897,10 @@ DefoRecoSurface::findClosestPointExcluded( DefoPoint const& aPoint, DefoPointCol
 
   // get point with smallest distance to aPoint, which is not excludedPoint
   std::vector<std::pair<DefoPointCollection::iterator,DefoPoint> >::const_iterator it = pointsAndDistances.begin();
-  while( it < pointsAndDistances.end() ) {
-    if( ! ( *(it->first) - excludedPoint ).abs() < 0.01 ) { result = it->first; break; }
+  while (it < pointsAndDistances.end()) {
+    if ( !(( *(it->first) - excludedPoint ).abs() < 0.01)) {
+      result = it->first; break;
+    }
     ++it;
   }
 
