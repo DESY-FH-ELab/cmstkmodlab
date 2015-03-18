@@ -1,15 +1,15 @@
 #include <iostream>
 
-#include "DefoRecoImageZoomModel.h"
+#include "DefoImageZoomModel.h"
 
-DefoRecoImageZoomModel::DefoRecoImageZoomModel(QObject *parent) :
-    QObject(parent)
+DefoImageZoomModel::DefoImageZoomModel(QObject *parent)
+  : QObject(parent)
 {
   zoomFactor_ = 0.0;
 }
 
-QSize DefoRecoImageZoomModel::getZoomedSize(const QSize& size, const QImage& image) {
-
+QSize DefoImageZoomModel::getZoomedSize(const QSize& size, const QImage& image)
+{
   float width = image.width();
   float height = image.height();    
 
@@ -33,12 +33,11 @@ QSize DefoRecoImageZoomModel::getZoomedSize(const QSize& size, const QImage& ima
 
   scaling_ = zoomFactor_;
 
-  return QSize(width*zoomFactor_,
-	       height*zoomFactor_);
+  return QSize(width*zoomFactor_, height*zoomFactor_);
 }
 
-void DefoRecoImageZoomModel::setZoomFactor(float factor) {
-
+void DefoImageZoomModel::setZoomFactor(float factor)
+{
   if (factor<0.0 || factor>1.0) return;
 
   if (zoomFactor_!=factor) {
@@ -49,8 +48,8 @@ void DefoRecoImageZoomModel::setZoomFactor(float factor) {
   }
 }
 
-void DefoRecoImageZoomModel::increaseZoomFactor() {
-  
+void DefoImageZoomModel::increaseZoomFactor()
+{
   if (zoomFactor_==1.0) return;
   zoomFactor_ += 0.25;
   float oldScaling = scaling_;
@@ -58,8 +57,8 @@ void DefoRecoImageZoomModel::increaseZoomFactor() {
   emit zoomFactorChanged(scaling_, oldScaling);
 }
 
-void DefoRecoImageZoomModel::decreaseZoomFactor() {
-
+void DefoImageZoomModel::decreaseZoomFactor()
+{
   if (zoomFactor_==0.0) return;
   zoomFactor_ -= 0.25;
   float oldScaling = scaling_;

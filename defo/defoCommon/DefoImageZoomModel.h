@@ -1,15 +1,15 @@
-#ifndef DEFORECOIMAGEZOOMMODEL_H
-#define DEFORECOIMAGEZOOMMODEL_H
+#ifndef DEFOIMAGEZOOMMODEL_H
+#define DEFOIMAGEZOOMMODEL_H
 
 #include <QObject>
 #include <QImage>
 #include <QSize>
 
-class DefoRecoImageZoomModel : public QObject
+class DefoImageZoomModel : public QObject
 {
     Q_OBJECT
 public:
-  explicit DefoRecoImageZoomModel(QObject *parent = 0);
+  explicit DefoImageZoomModel(QObject *parent = 0);
   QSize getZoomedSize(const QSize& size, const QImage& image);
   float getScaling() const { return scaling_; }
 
@@ -26,4 +26,4 @@ signals:
   void zoomFactorChanged(float newScaling, float oldScaling);
 };
 
-#endif // DEFORECOIMAGEZOOMMODEL_H
+#endif // DEFOIMAGEZOOMMODEL_H

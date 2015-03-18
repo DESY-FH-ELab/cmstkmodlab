@@ -6,36 +6,32 @@
 
 #include "DefoRecoImageWidget.h"
 
-DefoRecoImageContentWidget::DefoRecoImageContentWidget(
-    DefoMeasurementSelectionModel* model
-  , DefoRecoImageZoomModel* zoomModel
-  , QWidget* parent
-) : 
-    QWidget(parent)
-  , selectionModel_(model)
-  , zoomModel_(zoomModel)
+DefoRecoImageContentWidget::DefoRecoImageContentWidget(DefoMeasurementSelectionModel* model,
+                                                       DefoImageZoomModel* zoomModel,
+                                                       QWidget* parent)
+  : QWidget(parent),
+    selectionModel_(model),
+    zoomModel_(zoomModel)
 {
   setMinimumSize(parent->size());
 
-  connect(
-        selectionModel_
-      , SIGNAL(selectionChanged(DefoMeasurement*))
-      , this
-      , SLOT(selectionChanged(DefoMeasurement*))
-  );
+  connect(selectionModel_, SIGNAL(selectionChanged(DefoMeasurement*)),
+          this, SLOT(selectionChanged(DefoMeasurement*)));
 }
 
 /// Returns the prefered size of the image to be drawn.
-QSize DefoRecoImageContentWidget::getImageDrawingSize(const QImage& image) const {
+QSize DefoRecoImageContentWidget::getImageDrawingSize(const QImage& image) const
+{
   return zoomModel_->getZoomedSize(size(), image);
 }
 
-QImage DefoRecoImageContentWidget::prepareImage(const QImage& image) const {
+QImage DefoRecoImageContentWidget::prepareImage(const QImage& image) const
+{
   return image.scaled(getImageDrawingSize(image) /*, Qt::KeepAspectRatio */);
 }
 
-void DefoRecoImageContentWidget::paintEvent(QPaintEvent *event) {
-
+void DefoRecoImageContentWidget::paintEvent(QPaintEvent *event)
+{
   // std::cout << "DefoRecoRawImageContentWidget::paintEvent(QPaintEvent *event)" << std::endl;
 
   // std::cout << event->rect().x() << ", "  << event->rect().y() << ", "  << event->rect().width() << ", "  << event->rect().height() << std::endl;
@@ -64,7 +60,6 @@ void DefoRecoImageContentWidget::paintEvent(QPaintEvent *event) {
 
     // Restore own state.
     painter.restore();
-
   }
 }
 
@@ -73,30 +68,26 @@ void DefoRecoImageContentWidget::selectionChanged(DefoMeasurement* /*measurement
   update();
 }
 
-DefoRecoRawImageContentWidget::DefoRecoRawImageContentWidget(
-    DefoMeasurementSelectionModel* model
-  , DefoRecoImageZoomModel* zoomModel
-  , QWidget* parent
-) : 
-  DefoRecoImageContentWidget(model, zoomModel, parent)
+DefoRecoRawImageContentWidget::DefoRecoRawImageContentWidget(DefoMeasurementSelectionModel* model,
+                                                             DefoRecoImageZoomModel* zoomModel,
+                                                             QWidget* parent)
+  : DefoRecoImageContentWidget(model, zoomModel, parent)
 {
 
 }
 
-DefoRecoROIImageContentWidget::DefoRecoROIImageContentWidget(
-    DefoMeasurementSelectionModel* model
-  , DefoRecoImageZoomModel* zoomModel
-  , DefoROIModel* roiModel
-  , QWidget* parent
-) : 
-    DefoRecoImageContentWidget(model, zoomModel, parent)
-  , roiModel_(roiModel)
+DefoRecoROIImageContentWidget::DefoRecoROIImageContentWidget(DefoMeasurementSelectionModel* model,
+                                                             DefoRecoImageZoomModel* zoomModel,
+                                                             DefoROIModel* roiModel,
+                                                             QWidget* parent)
+  : DefoRecoImageContentWidget(model, zoomModel, parent),
+    roiModel_(roiModel)
 {
 
 }
 
-void DefoRecoROIImageContentWidget::paintEvent(QPaintEvent *event) {
-
+void DefoRecoROIImageContentWidget::paintEvent(QPaintEvent *event)
+{
   // std::cout << "DefoRecoROIImageContentWidget::paintEvent(QPaintEvent *event)" << std::endl;
 
   // std::cout << event->rect().x() << ", "  << event->rect().y() << ", "  << event->rect().width() << ", "  << event->rect().height() << std::endl;
@@ -160,77 +151,64 @@ void DefoRecoROIImageContentWidget::paintEvent(QPaintEvent *event) {
   }
 }
 
-DefoRecoImageThresholdsContentWidget::DefoRecoImageThresholdsContentWidget(
-    DefoMeasurementSelectionModel* model
-  , DefoRecoImageZoomModel* zoomModel
-  , DefoPointRecognitionModel* recognitionModel
-  , DefoROIModel* roiModel
-  , QWidget* parent
-) :
-    DefoRecoImageContentWidget(model, zoomModel, parent)
-  , roiModel_(roiModel)
-  , recognitionModel_(recognitionModel)
+DefoRecoImageThresholdsContentWidget::DefoRecoImageThresholdsContentWidget(DefoMeasurementSelectionModel* model,
+                                                                           DefoRecoImageZoomModel* zoomModel,
+                                                                           DefoPointRecognitionModel* recognitionModel,
+                                                                           DefoROIModel* roiModel,
+                                                                           QWidget* parent)
+  : DefoRecoImageContentWidget(model, zoomModel, parent),
+    roiModel_(roiModel),
+    recognitionModel_(recognitionModel)
 {
-  connect(
-        recognitionModel_
-      , SIGNAL(thresholdValueChanged(DefoPointRecognitionModel::Threshold,int))
-      , this
-      , SLOT(thresholdChanged(DefoPointRecognitionModel::Threshold,int))
-  );
+  connect(recognitionModel_, SIGNAL(thresholdValueChanged(DefoPointRecognitionModel::Threshold,int)),
+          this, SLOT(thresholdChanged(DefoPointRecognitionModel::Threshold,int)));
 
-  connect(
-        roiModel_
-      , SIGNAL(roiChanged())
-      , this
-      , SLOT(roiChanged())
-  );
+  connect(roiModel_, SIGNAL(roiChanged()),
+          this, SLOT(roiChanged()));
 
   needsUpdate_ = false;
 }
 
-bool DefoRecoImageThresholdsContentWidget::event(QEvent* event) {
-
+bool DefoRecoImageThresholdsContentWidget::event(QEvent* event)
+{
   if (event->type()==QEvent::Show) updateCache();
   return QWidget::event(event);
 }
 
-QImage DefoRecoImageThresholdsContentWidget::prepareImage(const QImage& /*image*/) const {
-
+QImage DefoRecoImageThresholdsContentWidget::prepareImage(const QImage& /*image*/) const
+{
   if ( !imageCache_.isNull() )
-    return imageCache_.scaled(
-            getImageDrawingSize(imageCache_)
-          , Qt::KeepAspectRatio
-    );
+    return imageCache_.scaled(getImageDrawingSize(imageCache_),
+                              Qt::KeepAspectRatio);
   else
     return QImage();
 }
 
-void DefoRecoImageThresholdsContentWidget::thresholdChanged(
-    DefoPointRecognitionModel::Threshold /* threshold */
-  , int /* value */
-) {
+void DefoRecoImageThresholdsContentWidget::thresholdChanged(DefoPointRecognitionModel::Threshold /* threshold */,
+                                                            int /* value */)
+{
   // Don't care about which thresholds or what value, needs to be redone anyway
   needsUpdate_ = true;
   updateCache();
   update();
 }
 
-void DefoRecoImageThresholdsContentWidget::selectionChanged(
-    DefoMeasurement* measurement
-) {
+void DefoRecoImageThresholdsContentWidget::selectionChanged(DefoMeasurement* measurement)
+{
   needsUpdate_ = true;
   updateCache();
   DefoRecoImageContentWidget::selectionChanged(measurement);
 }
 
-void DefoRecoImageThresholdsContentWidget::roiChanged() {
+void DefoRecoImageThresholdsContentWidget::roiChanged()
+{
   needsUpdate_ = true;
   updateCache();
 }
 
 /// Updates the current image cache.
-void DefoRecoImageThresholdsContentWidget::updateCache() {
-
+void DefoRecoImageThresholdsContentWidget::updateCache()
+{
   if (!isVisible() || !needsUpdate_) return;
 
   needsUpdate_ = false;
@@ -239,15 +217,9 @@ void DefoRecoImageThresholdsContentWidget::updateCache() {
 
   if (measurement != NULL) {
     imageCache_ = QImage(selectionModel_->getSelection()->getImage());
-    int thres1 = recognitionModel_->getThresholdValue(
-            DefoPointRecognitionModel::THRESHOLD_1
-    );
-    int thres2 = recognitionModel_->getThresholdValue(
-            DefoPointRecognitionModel::THRESHOLD_2
-    );
-    int thres3 = recognitionModel_->getThresholdValue(
-            DefoPointRecognitionModel::THRESHOLD_3
-    );
+    int thres1 = recognitionModel_->getThresholdValue(DefoPointRecognitionModel::THRESHOLD_1);
+    int thres2 = recognitionModel_->getThresholdValue(DefoPointRecognitionModel::THRESHOLD_2);
+    int thres3 = recognitionModel_->getThresholdValue(DefoPointRecognitionModel::THRESHOLD_3);
 
     QRectF bounds = roiModel_->boundingRect();
     int xmin = bounds.x()*imageCache_.width();
@@ -273,37 +245,30 @@ void DefoRecoImageThresholdsContentWidget::updateCache() {
         }
       }
     }
-  }
-  else
+  } else
     imageCache_ = QImage();
 }
 
-DefoRecoImagePointsContentWidget::DefoRecoImagePointsContentWidget(
-      DefoMeasurementListModel* listModel
-    , DefoMeasurementSelectionModel* selectionModel
-    , DefoRecoImageZoomModel* zoomModel
-    , QWidget *parent
-) :
-    DefoRecoImageContentWidget(selectionModel, zoomModel, parent)
-  , listModel_(listModel)
+DefoRecoImagePointsContentWidget::DefoRecoImagePointsContentWidget(DefoMeasurementListModel* listModel,
+                                                                   DefoMeasurementSelectionModel* selectionModel,
+                                                                   DefoRecoImageZoomModel* zoomModel,
+                                                                   QWidget *parent)
+  : DefoRecoImageContentWidget(selectionModel, zoomModel, parent),
+    listModel_(listModel)
 {
-  connect(
-        listModel_
-      , SIGNAL(pointsUpdated(const DefoMeasurement*))
-      , SLOT(pointsUpdated(const DefoMeasurement*))
-  );
+  connect(listModel_, SIGNAL(pointsUpdated(const DefoMeasurement*))
+          this, SLOT(pointsUpdated(const DefoMeasurement*)));
 }
 
-void DefoRecoImagePointsContentWidget::paintEvent(QPaintEvent *event) {
-
+void DefoRecoImagePointsContentWidget::paintEvent(QPaintEvent *event)
+{
   DefoRecoImageContentWidget::paintEvent(event);
 
   DefoMeasurement* measurement = selectionModel_->getSelection();
 
-  if ( measurement != NULL
-    && listModel_->getMeasurementPoints(measurement) != NULL
-    && listModel_->getMeasurementPoints(measurement)->size() > 0
-  ) {
+  if (measurement != NULL &&
+      listModel_->getMeasurementPoints(measurement) != NULL &&
+      listModel_->getMeasurementPoints(measurement)->size() > 0) {
 
     const DefoPointCollection* points =
         listModel_->getMeasurementPoints(measurement);
@@ -323,10 +288,9 @@ void DefoRecoImagePointsContentWidget::paintEvent(QPaintEvent *event) {
     //double scaling = ((double) drawingSize.height()) / ((double) image.height());
     const int width = 8;
 
-    for ( DefoPointCollection::const_iterator it = points->begin()
-        ; it < points->end()
-        ; ++it
-    ) {
+    for (DefoPointCollection::const_iterator it = points->begin();
+         it < points->end();
+         ++it) {
 
       QColor c = it->getColor();
       c.setHsv( c.hue(), 255, 255 );
@@ -347,29 +311,26 @@ void DefoRecoImagePointsContentWidget::paintEvent(QPaintEvent *event) {
     }
 
     painter.restore();
-
   }
-
 }
 
-void DefoRecoImagePointsContentWidget::pointsUpdated(const DefoMeasurement* /*measurement*/) {
+void DefoRecoImagePointsContentWidget::pointsUpdated(const DefoMeasurement* /*measurement*/)
+{
   update();
 }
 
-DefoRecoAlignmentImageContentWidget::DefoRecoAlignmentImageContentWidget(
-    DefoMeasurementSelectionModel* model
-  , DefoRecoImageZoomModel* zoomModel
-  , DefoAlignmentModel* alignmentModel
-  , QWidget* parent
-) :
-    DefoRecoImageContentWidget(model, zoomModel, parent)
-  , alignmentModel_(alignmentModel)
+DefoRecoAlignmentImageContentWidget::DefoRecoAlignmentImageContentWidget(DefoMeasurementSelectionModel* model,
+                                                                         DefoRecoImageZoomModel* zoomModel,
+                                                                         DefoAlignmentModel* alignmentModel,
+                                                                         QWidget* parent)
+  : DefoRecoImageContentWidget(model, zoomModel, parent),
+    alignmentModel_(alignmentModel)
 {
 
 }
 
-void DefoRecoAlignmentImageContentWidget::paintEvent(QPaintEvent *event) {
-
+void DefoRecoAlignmentImageContentWidget::paintEvent(QPaintEvent *event)
+{
   // TODO repaint only certain rectangle
   QWidget::paintEvent(event);
 
@@ -433,33 +394,24 @@ void DefoRecoAlignmentImageContentWidget::paintEvent(QPaintEvent *event) {
 /// Minimum size of the widget displaying the currently selected measurement.
 const QSize DefoRecoImageWidget::MINIMUM_SIZE = QSize(300,400);
 
-DefoRecoImageWidget::DefoRecoImageWidget(
-    DefoMeasurementSelectionModel* model
-  , QWidget* parent
-) :
-    QScrollArea(parent)
-  , selectionModel_(model)
+DefoRecoImageWidget::DefoRecoImageWidget(DefoMeasurementSelectionModel* model,
+                                         QWidget* parent)
+  : QScrollArea(parent),
+    selectionModel_(model)
 {
   setMinimumSize(MINIMUM_SIZE);
   setBackgroundRole(QPalette::Dark);
   zoomModel_ = new DefoRecoImageZoomModel(this);
   
-  connect(
-          model
-        , SIGNAL(selectionChanged(DefoMeasurement*))
-        , this
-        , SLOT(selectionChanged(DefoMeasurement*))
-  );
+  connect(model, SIGNAL(selectionChanged(DefoMeasurement*)),
+          this, SLOT(selectionChanged(DefoMeasurement*)));
 
-  connect(
-          zoomModel_
-        , SIGNAL(zoomFactorChanged(float, float))
-        , this
-        , SLOT(zoomFactorChanged(float, float))
-  );
+  connect(zoomModel_, SIGNAL(zoomFactorChanged(float, float)),
+          this, SLOT(zoomFactorChanged(float, float)));
 }
 
-void DefoRecoImageWidget::resizeEvent(QResizeEvent *event) {
+void DefoRecoImageWidget::resizeEvent(QResizeEvent *event)
+{
   if (selectionModel_->getSelection() != NULL) {
     const DefoMeasurement* measurement = selectionModel_->getSelection();
     QSize newSize = zoomModel_->getZoomedSize(event->size(), measurement->getImage());
@@ -470,8 +422,8 @@ void DefoRecoImageWidget::resizeEvent(QResizeEvent *event) {
   QScrollArea::resizeEvent(event);
 }
 
-void DefoRecoImageWidget::keyReleaseEvent(QKeyEvent * event) {
-
+void DefoRecoImageWidget::keyReleaseEvent(QKeyEvent * event)
+{
   if (!(event->modifiers() & Qt::ShiftModifier)) {
     switch (event->key()) {
     case Qt::Key_0:
@@ -496,13 +448,14 @@ void DefoRecoImageWidget::keyReleaseEvent(QKeyEvent * event) {
   }
 }
 
-void DefoRecoImageWidget::selectionChanged(DefoMeasurement* /* measurement */) {
+void DefoRecoImageWidget::selectionChanged(DefoMeasurement* /* measurement */)
+{
   update();
   widget()->update();
 }
 
-void DefoRecoImageWidget::zoomFactorChanged(float newScaling, float oldScaling) {
-
+void DefoRecoImageWidget::zoomFactorChanged(float newScaling, float oldScaling)
+{
   int width = std::min(size().width(), widget()->size().width());
   int height = std::min(size().height(), widget()->size().height());
   int x = newScaling*(horizontalScrollBar()->value() + width/2)/oldScaling;
@@ -520,39 +473,32 @@ void DefoRecoImageWidget::zoomFactorChanged(float newScaling, float oldScaling) 
   ensureVisible(x, y, width/2, height/2);
 }
 
-DefoRecoRawImageWidget::DefoRecoRawImageWidget(
-    DefoMeasurementSelectionModel* model
-  , QWidget* parent
-) :
-    DefoRecoImageWidget(model, parent)
+DefoRecoRawImageWidget::DefoRecoRawImageWidget(DefoMeasurementSelectionModel* model,
+                                               QWidget* parent)
+  : DefoRecoImageWidget(model, parent)
 {
   setWidget(new DefoRecoRawImageContentWidget(model, zoomModel_, this));
 }
 
-DefoRecoROIImageWidget::DefoRecoROIImageWidget(
-    DefoMeasurementSelectionModel* model
-  , DefoROIModel* roiModel
-  , QWidget* parent
-) :
-    DefoRecoImageWidget(model, parent)
-  , roiModel_(roiModel)
+DefoRecoROIImageWidget::DefoRecoROIImageWidget(DefoMeasurementSelectionModel* model,
+                                               DefoROIModel* roiModel,
+                                               QWidget* parent)
+  : DefoRecoImageWidget(model, parent),
+    roiModel_(roiModel)
 {
   setWidget(new DefoRecoROIImageContentWidget(model, zoomModel_, roiModel_, this));
 
-  connect(
-          roiModel_
-	, SIGNAL(roiChanged())
-        , this
-        , SLOT(roiChanged())
-  );
+  connect(roiModel_, SIGNAL(roiChanged()),
+          this, SLOT(roiChanged()));
 
   setContextMenuPolicy(Qt::CustomContextMenu);
+
   connect(this, SIGNAL(customContextMenuRequested(const QPoint&)),
           this, SLOT(showContextMenu(const QPoint&)));
 }
 
-void DefoRecoROIImageWidget::showContextMenu(const QPoint& p) {
-
+void DefoRecoROIImageWidget::showContextMenu(const QPoint& p)
+{
   QPoint globalPos = this->viewport()->mapToGlobal(p);
 
   QMenu myMenu;
@@ -614,52 +560,44 @@ void DefoRecoROIImageWidget::mousePressEvent(QMouseEvent * e)
   widget()->update();
 }
 
-void DefoRecoROIImageWidget::mouseReleaseEvent(QMouseEvent * /*e*/) {
+void DefoRecoROIImageWidget::mouseReleaseEvent(QMouseEvent * /*e*/)
+{
   roiModel_->selectPoint(-1);
   widget()->update();
 }
 
-void DefoRecoROIImageWidget::roiChanged() {
+void DefoRecoROIImageWidget::roiChanged()
+{
   widget()->update();
 }
 
-DefoRecoImageThresholdsWidget::DefoRecoImageThresholdsWidget(
-    DefoMeasurementSelectionModel* model
-  , DefoPointRecognitionModel* recognitionModel
-  , DefoROIModel* roiModel
-  , QWidget* parent
-) :
-    DefoRecoImageWidget(model, parent)
+DefoRecoImageThresholdsWidget::DefoRecoImageThresholdsWidget(DefoMeasurementSelectionModel* model,
+                                                             DefoPointRecognitionModel* recognitionModel,
+                                                             DefoROIModel* roiModel,
+                                                             QWidget* parent)
+  : DefoRecoImageWidget(model, parent)
 {
   setWidget(new DefoRecoImageThresholdsContentWidget(model, zoomModel_, recognitionModel, roiModel, this));
 }
 
-DefoRecoImagePointsWidget::DefoRecoImagePointsWidget(
-    DefoMeasurementListModel *listModel
-  , DefoMeasurementSelectionModel *selectionModel
-  , QWidget *parent
-) :
-  DefoRecoImageWidget(selectionModel, parent)
+DefoRecoImagePointsWidget::DefoRecoImagePointsWidget(DefoMeasurementListModel *listModel,
+                                                     DefoMeasurementSelectionModel *selectionModel,
+                                                     QWidget *parent)
+  : DefoRecoImageWidget(selectionModel, parent)
 {
   setWidget(new DefoRecoImagePointsContentWidget(listModel, selectionModel, zoomModel_, this));
 }
 
-DefoRecoAlignmentImageWidget::DefoRecoAlignmentImageWidget(
-    DefoMeasurementSelectionModel* model
-  , DefoAlignmentModel* alignmentModel
-  , QWidget* parent
-) :
-    DefoRecoImageWidget(model, parent)
-  , alignmentModel_(alignmentModel)
+DefoRecoAlignmentImageWidget::DefoRecoAlignmentImageWidget(DefoMeasurementSelectionModel* model,
+                                                           DefoAlignmentModel* alignmentModel,
+                                                           QWidget* parent)
+  : DefoRecoImageWidget(model, parent),
+    alignmentModel_(alignmentModel)
 {
   setWidget(new DefoRecoAlignmentImageContentWidget(model, zoomModel_, alignmentModel_, this));
 
-  connect(
-          alignmentModel_
-        , SIGNAL(alignmentChanged(double))
-        , this
-        , SLOT(alignmentChanged(double))
-  );
+  connect(alignmentModel_, SIGNAL(alignmentChanged(double)),
+          this, SLOT(alignmentChanged(double)));
 }
 
 void DefoRecoAlignmentImageWidget::mouseMoveEvent(QMouseEvent * e)
@@ -689,8 +627,8 @@ void DefoRecoAlignmentImageWidget::mousePressEvent(QMouseEvent * e)
 
   DefoAlignmentModel::AlignmentPoint point;
   float distance = alignmentModel_->getClosestPoint(point,
-                                              width, height,
-                                              x, y);
+                                                    width, height,
+                                                    x, y);
 
   if (distance>5) return;
 
@@ -699,14 +637,15 @@ void DefoRecoAlignmentImageWidget::mousePressEvent(QMouseEvent * e)
   widget()->update();
 }
 
-void DefoRecoAlignmentImageWidget::mouseReleaseEvent(QMouseEvent * /*e*/) {
+void DefoRecoAlignmentImageWidget::mouseReleaseEvent(QMouseEvent * /*e*/)
+{
   DefoAlignmentModel::AlignmentPoint currentSelectedPoint = alignmentModel_->getSelectedPoint();
   alignmentModel_->selectPoint(DefoAlignmentModel::None);
   if (currentSelectedPoint!=DefoAlignmentModel::None) widget()->update();
 }
 
-void DefoRecoAlignmentImageWidget::keyReleaseEvent(QKeyEvent * event) {
-
+void DefoRecoAlignmentImageWidget::keyReleaseEvent(QKeyEvent * event)
+{
   switch (event->key()) {
     case Qt::Key_R:
       alignmentModel_->reset();
@@ -719,6 +658,7 @@ void DefoRecoAlignmentImageWidget::keyReleaseEvent(QKeyEvent * event) {
   DefoRecoImageWidget::keyReleaseEvent(event);
 }
 
-void DefoRecoAlignmentImageWidget::alignmentChanged(double /*angle*/) {
+void DefoRecoAlignmentImageWidget::alignmentChanged(double /*angle*/)
+{
   widget()->update();
 }

@@ -57,6 +57,7 @@ HEADERS += DefoConfig.h \
            DefoThresholdSpinBox.h \
            DefoHalfSquareWidthSpinBox.h \
            DefoImageWidget.h \
+           DefoImageZoomModel.h \
            DefoPoint.h \
            DefoPointBin.h \
            DefoSquare.h \
@@ -92,6 +93,7 @@ SOURCES += DefoConfig.cc \
            DefoThresholdSpinBox.cc \
            DefoHalfSquareWidthSpinBox.cc \
            DefoImageWidget.cc \
+           DefoImageZoomModel.cc \
            DefoPoint.cc \
            DefoPointBin.cc \
            DefoSquare.cc \

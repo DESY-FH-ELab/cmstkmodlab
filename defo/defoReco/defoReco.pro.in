@@ -19,7 +19,7 @@ QMAKE = @qmake@
 QMAKE_CXXFLAGS += -std=c++0x
 
 macx {
-
+  INCLUDEPATH += /opt/local/include
 }
 else {
 
@@ -45,7 +45,6 @@ HEADERS += DefoRecoMainWindow.h \
            DefoMeasurementCommentTextView.h \
            DefoRecoPointRecognitionWidget.h \
            DefoRecoImageWidget.h \
-           DefoRecoImageZoomModel.h \
            DefoReconstructionModel.h \
            DefoReconstructionWidget.h \
            DefoRecoColorHistoWidget.h \
@@ -64,7 +63,6 @@ SOURCES += defoReco.cc \
            DefoMeasurementCommentTextView.cc \
            DefoRecoPointRecognitionWidget.cc \
            DefoRecoImageWidget.cc \
-           DefoRecoImageZoomModel.cc \
            DefoReconstructionModel.cc \
            DefoReconstructionWidget.cc \
            DefoRecoColorHistoWidget.cc \
