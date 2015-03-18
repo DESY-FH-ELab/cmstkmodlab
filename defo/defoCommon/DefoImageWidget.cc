@@ -1,61 +1,46 @@
 #include <QKeyEvent>
+#include <QScrollBar>
 
 #include "DefoImageWidget.h"
-
-///
-/// DefoImageBaseWidget
-///
 
 /// Minimum size of the widget displaying the currently selected measurement.
 const QSize DefoImageBaseWidget::MINIMUM_SIZE = QSize(300,400);
 
-DefoImageBaseWidget::DefoImageBaseWidget(
-    QWidget* parent
-) :
-    QWidget(parent)
+DefoImageBaseWidget::DefoImageBaseWidget(QWidget* parent)
+  : QWidget(parent)
 {
   setMinimumSize(MINIMUM_SIZE);
 }
 
 /// Returns the prefered size of the image to be drawn.
-QSize DefoImageBaseWidget::getImageDrawingSize(const QImage& image) const {
-
+QSize DefoImageBaseWidget::getImageDrawingSize(const QImage& image) const
+{
   QSize currentMax = size();
   currentMax.transpose();
 
-  return QSize(
-          std::min(currentMax.width(), image.width())
-        , std::min(currentMax.height(), image.height())
-  );
-
+  return QSize(std::min(currentMax.width(), image.width()),
+               std::min(currentMax.height(), image.height()));
 }
 
 ///
 /// DefoImageWidget
 ///
-DefoImageWidget::DefoImageWidget(
-    DefoMeasurementSelectionModel* model
-  , QWidget* parent
-) :
-    DefoImageBaseWidget(parent)
-  , selectionModel_(model)
+DefoImageWidget::DefoImageWidget(DefoMeasurementSelectionModel* model,
+                                 QWidget* parent)
+  : DefoImageBaseWidget(parent),
+    selectionModel_(model)
 {
-
-  connect(
-          selectionModel_
-        , SIGNAL(selectionChanged(DefoMeasurement*))
-        , this
-        , SLOT(selectionChanged(DefoMeasurement*))
-  );
-
+  connect(selectionModel_, SIGNAL(selectionChanged(DefoMeasurement*)),
+          this, SLOT(selectionChanged(DefoMeasurement*)));
 }
 
-void DefoImageWidget::selectionChanged(DefoMeasurement* /* measurement */) {
+void DefoImageWidget::selectionChanged(DefoMeasurement* /* measurement */)
+{
   update();
 }
 
-void DefoImageWidget::paintEvent(QPaintEvent *event) {
-
+void DefoImageWidget::paintEvent(QPaintEvent *event)
+{
   // TODO repaint only certain rectangle
   QWidget::paintEvent(event);
 
@@ -80,38 +65,31 @@ void DefoImageWidget::paintEvent(QPaintEvent *event) {
 
     // Restore own state.
     painter.restore();
-
   }
 }
 
 ///
 /// DefoLiveViewImageWidget
 ///
-DefoLiveViewImageWidget::DefoLiveViewImageWidget(
-    DefoCameraModel* model
-  , QWidget* parent
-) :
-    DefoImageBaseWidget(parent)
-  , cameraModel_(model)
-  , markerMode_(Boxed)
+DefoLiveViewImageWidget::DefoLiveViewImageWidget(DefoCameraModel* model,
+                                                 QWidget* parent)
+  : DefoImageBaseWidget(parent),
+    cameraModel_(model),
+    markerMode_(Boxed)
 {
+  connect(cameraModel_, SIGNAL(newLiveViewImage(QString)),
+          this, SLOT(newLiveViewImage(QString)));
 
-  connect(
-          cameraModel_
-	, SIGNAL(newLiveViewImage(QString))
-        , this
-        , SLOT(newLiveViewImage(QString))
-  );
   setMinimumSize(MINIMUM_SIZE);
-
 }
 
-void DefoLiveViewImageWidget::newLiveViewImage(QString /* location */) {
+void DefoLiveViewImageWidget::newLiveViewImage(QString /* location */)
+{
   update();
 }
 
-void DefoLiveViewImageWidget::keyReleaseEvent(QKeyEvent * event) {
-
+void DefoLiveViewImageWidget::keyReleaseEvent(QKeyEvent * event)
+{
   switch (event->key()) {
     case Qt::Key_Space:
       {
@@ -126,8 +104,8 @@ void DefoLiveViewImageWidget::keyReleaseEvent(QKeyEvent * event) {
   }
 }
 
-void DefoLiveViewImageWidget::paintEvent(QPaintEvent *event) {
-
+void DefoLiveViewImageWidget::paintEvent(QPaintEvent *event)
+{
   // TODO repaint only certain rectangle
   QWidget::paintEvent(event);
 
@@ -207,100 +185,76 @@ void DefoLiveViewImageWidget::paintEvent(QPaintEvent *event) {
   painter.restore();
 }
 
-QImage DefoLiveViewImageWidget::prepareImage(const QImage& image) const {
+QImage DefoLiveViewImageWidget::prepareImage(const QImage& image) const
+{
   return image.scaled(getImageDrawingSize(image), Qt::KeepAspectRatio);
 }
 
-/*
-  CHILD CLASSES
-  */
-
 /* RAW IMAGE DISPLAY */
-DefoRawImageWidget::DefoRawImageWidget(
-    DefoMeasurementSelectionModel *model
-  , QWidget *parent
-) :
-    DefoImageWidget(model, parent)
-{}
+DefoRawImageWidget::DefoRawImageWidget(DefoMeasurementSelectionModel *model,
+                                       QWidget *parent)
+  : DefoImageWidget(model, parent)
+{
 
-QImage DefoRawImageWidget::prepareImage(const QImage& image) const {
+}
+
+QImage DefoRawImageWidget::prepareImage(const QImage& image) const
+{
   return image.scaled(getImageDrawingSize(image), Qt::KeepAspectRatio);
 }
 
 /* IMAGE THRESHOLDS VISUALISATION */
-DefoImageThresholdsWidget::DefoImageThresholdsWidget(
-    DefoMeasurementSelectionModel *selectionModel
-  , DefoPointRecognitionModel *recognitionModel
-  , QWidget *parent
-) :
-    DefoImageWidget(selectionModel, parent)
-  , recognitionModel_(recognitionModel)
+DefoImageThresholdsWidget::DefoImageThresholdsWidget(DefoMeasurementSelectionModel *selectionModel,
+                                                     DefoPointRecognitionModel *recognitionModel,
+                                                     QWidget *parent)
+  : DefoImageWidget(selectionModel, parent),
+    recognitionModel_(recognitionModel)
 {
-  connect(
-        recognitionModel_
-      , SIGNAL(thresholdValueChanged(DefoPointRecognitionModel::Threshold,int))
-      , this
-      , SLOT(thresholdChanged(DefoPointRecognitionModel::Threshold,int))
-  );
+  connect(recognitionModel_, SIGNAL(thresholdValueChanged(DefoPointRecognitionModel::Threshold,int)),
+          this, SLOT(thresholdChanged(DefoPointRecognitionModel::Threshold,int)));
 
-  connect(
-        recognitionModel_
-      , SIGNAL(controlStateChanged(bool))
-      , this
-      , SLOT(controlStateChanged(bool))
-  );
-
+  connect(recognitionModel_, SIGNAL(controlStateChanged(bool)),
+          this, SLOT(controlStateChanged(bool)));
 }
 
-QImage DefoImageThresholdsWidget::prepareImage(const QImage& /* image */) const {
-
+QImage DefoImageThresholdsWidget::prepareImage(const QImage& /* image */) const
+{
   // Used cache image instead of rescanning the picture
   if ( !imageCache_.isNull() )
-    return imageCache_.scaled(
-            getImageDrawingSize(imageCache_)
-          , Qt::KeepAspectRatio
-    );
+    return imageCache_.scaled(getImageDrawingSize(imageCache_), Qt::KeepAspectRatio);
   else
     return QImage();
-
 }
 
-void DefoImageThresholdsWidget::thresholdChanged(
-    DefoPointRecognitionModel::Threshold /* threshold */
-  , int /* value */
-) {
+void DefoImageThresholdsWidget::thresholdChanged(DefoPointRecognitionModel::Threshold /* threshold */,
+                                                 int /* value */)
+{
   // Don't care about which thresholds or what value, needs to be redone anyway
   updateCache();
   update();
 }
 
-void DefoImageThresholdsWidget::selectionChanged(
-    DefoMeasurement* measurement
-) {
+void DefoImageThresholdsWidget::selectionChanged(DefoMeasurement* measurement)
+{
   updateCache();
   DefoImageWidget::selectionChanged(measurement);
 }
 
-void DefoImageThresholdsWidget::controlStateChanged(bool) {
+void DefoImageThresholdsWidget::controlStateChanged(bool)
+{
 
 }
 
 /// Updates the current image cache.
-void DefoImageThresholdsWidget::updateCache() {
-
+void DefoImageThresholdsWidget::updateCache()
+{
   const DefoMeasurement* measurement = selectionModel_->getSelection();
 
   if (measurement != NULL) {
     imageCache_ = QImage(selectionModel_->getSelection()->getImage());
-    int thres1 = recognitionModel_->getThresholdValue(
-            DefoPointRecognitionModel::THRESHOLD_1
-    );
-    int thres2 = recognitionModel_->getThresholdValue(
-            DefoPointRecognitionModel::THRESHOLD_2
-    );
-    int thres3 = recognitionModel_->getThresholdValue(
-            DefoPointRecognitionModel::THRESHOLD_3
-    );
+    int thres1 = recognitionModel_->getThresholdValue(DefoPointRecognitionModel::THRESHOLD_1);
+    int thres2 = recognitionModel_->getThresholdValue(DefoPointRecognitionModel::THRESHOLD_2);
+    int thres3 = recognitionModel_->getThresholdValue(DefoPointRecognitionModel::THRESHOLD_3);
 
     for (int x=0; x<imageCache_.width(); ++x) {
       for (int y=0; y<imageCache_.height(); ++y) {
@@ -317,43 +271,36 @@ void DefoImageThresholdsWidget::updateCache() {
           imageCache_.setPixel(x, y, 0);
       }
     }
-  }
-  else
+  } else
     imageCache_ = QImage();
-
 }
 
 
 /* IMAGE POINT RECOGNITION DISPLAY */
-DefoImagePointsWidget::DefoImagePointsWidget(
-    DefoMeasurementListModel *listModel
-  , DefoMeasurementSelectionModel *selectionModel
-  , QWidget *parent
-) :
-    DefoRawImageWidget(selectionModel, parent)
-  , listModel_(listModel)
+DefoImagePointsWidget::DefoImagePointsWidget(DefoMeasurementListModel *listModel,
+                                             DefoMeasurementSelectionModel *selectionModel,
+                                             QWidget *parent)
+  : DefoRawImageWidget(selectionModel, parent),
+    listModel_(listModel)
 {
-  connect(
-        listModel_
-      , SIGNAL(pointsUpdated(const DefoMeasurement*))
-      , SLOT(pointsUpdated(const DefoMeasurement*))
-  );
+  connect(listModel_, SIGNAL(pointsUpdated(const DefoMeasurement*)),
+          this, SLOT(pointsUpdated(const DefoMeasurement*)));
 }
 
-void DefoImagePointsWidget::pointsUpdated(const DefoMeasurement * /* measurement */) {
+void DefoImagePointsWidget::pointsUpdated(const DefoMeasurement * /* measurement */)
+{
   update();
 }
 
-void DefoImagePointsWidget::paintEvent(QPaintEvent *event) {
-
+void DefoImagePointsWidget::paintEvent(QPaintEvent *event)
+{
   DefoRawImageWidget::paintEvent(event);
 
   DefoMeasurement* measurement = selectionModel_->getSelection();
 
-  if ( measurement != NULL
-    && listModel_->getMeasurementPoints(measurement) != NULL
-    && listModel_->getMeasurementPoints(measurement)->size() > 0
-  ) {
+  if ( measurement != NULL &&
+      listModel_->getMeasurementPoints(measurement) != NULL &&
+      listModel_->getMeasurementPoints(measurement)->size() > 0) {
 
     const DefoPointCollection* points =
         listModel_->getMeasurementPoints(measurement);
@@ -381,10 +328,9 @@ void DefoImagePointsWidget::paintEvent(QPaintEvent *event) {
     double scaling = ((double) drawingSize.height()) / ((double) image.height());
     const int width = 8;
 
-    for ( DefoPointCollection::const_iterator it = points->begin()
-        ; it < points->end()
-        ; ++it
-    ) {
+    for (DefoPointCollection::const_iterator it = points->begin();
+         it < points->end();
+         ++it) {
 
       QColor c = it->getColor();
       c.setHsv( c.hue(), 255, 255 );
@@ -405,9 +351,7 @@ void DefoImagePointsWidget::paintEvent(QPaintEvent *event) {
     }
 
     painter.restore();
-
   }
-
 }
 
 

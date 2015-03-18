@@ -8,7 +8,6 @@
 DefoRecoSurface::DefoRecoSurface(QObject *parent)
   :QObject(parent)
 {
-
   // read parameters
   spacingEstimate_ = DefoConfig::instance()->getValue<int>( "SPACING_ESTIMATE" );
   searchPathHalfWidth_ = DefoConfig::instance()->getValue<int>( "SEARCH_PATH_HALF_WIDTH" );
@@ -27,15 +26,14 @@ DefoRecoSurface::DefoRecoSurface(QObject *parent)
 ///
 /// calculate some helper variables
 ///
-void DefoRecoSurface::calculateHelpers( void ) {
-
+void DefoRecoSurface::calculateHelpers( void )
+{
   heightAboveSensor_ = nominalCameraDistance_ * sin( nominalViewingAngle_ );
   if( tan( nominalViewingAngle_ ) != 0. ) horizontalDistanceToSensor_ = heightAboveSensor_ / tan( nominalViewingAngle_ );
   else {
     std::cerr << " [DefoRecoSurface::calculateHelpers] ** ERROR: tan(delta) is zero, no chance for proper reconstruction. Check parameters in configuration file. Abort." << std::endl;
     throw;
   }
-
 }
 
 ///
@@ -43,8 +41,9 @@ void DefoRecoSurface::calculateHelpers( void ) {
 /// a) reconstructed points of current image
 /// b) reconstructed points of reference image
 ///
-const DefoSurface DefoRecoSurface::reconstruct( DefoPointCollection& currentPoints, DefoPointCollection& referencePoints ) {
-
+const DefoSurface DefoRecoSurface::reconstruct(DefoPointCollection& currentPoints,
+                                               DefoPointCollection& referencePoints)
+{
   DefoSurface theSurface;
 
   // create raw z splines for surface reconstruction
@@ -74,18 +73,16 @@ const DefoSurface DefoRecoSurface::reconstruct( DefoPointCollection& currentPoin
   return theSurface;
 }
 
-
-
 ///
 /// create z splines from difference in point positions
 /// NEW VERSION based on indexed points
 ///
-const DefoSplineField DefoRecoSurface::createZSplines( DefoPointCollection const& currentPoints, DefoPointCollection const& referencePoints ) {
-
+const DefoSplineField DefoRecoSurface::createZSplines(DefoPointCollection const& currentPoints,
+                                                      DefoPointCollection const& referencePoints)
+{
   if( debugLevel_ >= 3 ) std::cout << " [DefoRecoSurface::createZSplines] =3= Starting" << std::endl;
 
   DefoSplineField theOutput;
-
 
   // x,y correction factors: see Diss. S. Koenig, p. 100;
   const std::pair<double,double> correctionFactors = std::pair<double,double> (
@@ -93,8 +90,9 @@ const DefoSplineField DefoRecoSurface::createZSplines( DefoPointCollection const
     pitchY_ / focalLength_ * ( nominalGridDistance_ + nominalCameraDistance_ ) / 2. / nominalGridDistance_
   );
 
-  if( debugLevel_ >= 2 ) std::cout << " [DefoRecoSurface::createZSplines] =2= Will apply nominal correction factors: "
-				   << correctionFactors.first << " , " << correctionFactors.second << std::endl;
+  if( debugLevel_ >= 2 )
+    std::cout << " [DefoRecoSurface::createZSplines] =2= Will apply nominal correction factors: "
+		      << correctionFactors.first << " , " << correctionFactors.second << std::endl;
 
   // determine index ranges in current points
   // (could also take ref points)
@@ -904,17 +902,12 @@ DefoRecoSurface::findClosestPointExcluded( DefoPoint const& aPoint, DefoPointCol
     ++it;
   }
 
-
-
   // point not too far away from requested position aPoint?
   bool isFound = false;
   if( *result - aPoint < max ) isFound = true;
 
   return std::pair<bool,DefoPointCollection::iterator>( isFound, result );
-
 } 
-
-
 
 ///
 ///
