@@ -4,6 +4,7 @@
 #include <QWidget>
 #include "DefoConradModel.h"
 #include "DefoConradCheckbox.h"
+#include "DefoConradButton.h"
 
 class DefoConradWidget : public QWidget
 {
