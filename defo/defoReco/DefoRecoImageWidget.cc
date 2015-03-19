@@ -69,7 +69,7 @@ void DefoRecoImageContentWidget::selectionChanged(DefoMeasurement* /*measurement
 }
 
 DefoRecoRawImageContentWidget::DefoRecoRawImageContentWidget(DefoMeasurementSelectionModel* model,
-                                                             DefoRecoImageZoomModel* zoomModel,
+                                                             DefoImageZoomModel* zoomModel,
                                                              QWidget* parent)
   : DefoRecoImageContentWidget(model, zoomModel, parent)
 {
@@ -77,7 +77,7 @@ DefoRecoRawImageContentWidget::DefoRecoRawImageContentWidget(DefoMeasurementSele
 }
 
 DefoRecoROIImageContentWidget::DefoRecoROIImageContentWidget(DefoMeasurementSelectionModel* model,
-                                                             DefoRecoImageZoomModel* zoomModel,
+                                                             DefoImageZoomModel* zoomModel,
                                                              DefoROIModel* roiModel,
                                                              QWidget* parent)
   : DefoRecoImageContentWidget(model, zoomModel, parent),
@@ -152,7 +152,7 @@ void DefoRecoROIImageContentWidget::paintEvent(QPaintEvent *event)
 }
 
 DefoRecoImageThresholdsContentWidget::DefoRecoImageThresholdsContentWidget(DefoMeasurementSelectionModel* model,
-                                                                           DefoRecoImageZoomModel* zoomModel,
+                                                                           DefoImageZoomModel* zoomModel,
                                                                            DefoPointRecognitionModel* recognitionModel,
                                                                            DefoROIModel* roiModel,
                                                                            QWidget* parent)
@@ -251,12 +251,12 @@ void DefoRecoImageThresholdsContentWidget::updateCache()
 
 DefoRecoImagePointsContentWidget::DefoRecoImagePointsContentWidget(DefoMeasurementListModel* listModel,
                                                                    DefoMeasurementSelectionModel* selectionModel,
-                                                                   DefoRecoImageZoomModel* zoomModel,
+                                                                   DefoImageZoomModel* zoomModel,
                                                                    QWidget *parent)
   : DefoRecoImageContentWidget(selectionModel, zoomModel, parent),
     listModel_(listModel)
 {
-  connect(listModel_, SIGNAL(pointsUpdated(const DefoMeasurement*))
+  connect(listModel_, SIGNAL(pointsUpdated(const DefoMeasurement*)),
           this, SLOT(pointsUpdated(const DefoMeasurement*)));
 }
 
@@ -320,7 +320,7 @@ void DefoRecoImagePointsContentWidget::pointsUpdated(const DefoMeasurement* /*me
 }
 
 DefoRecoAlignmentImageContentWidget::DefoRecoAlignmentImageContentWidget(DefoMeasurementSelectionModel* model,
-                                                                         DefoRecoImageZoomModel* zoomModel,
+                                                                         DefoImageZoomModel* zoomModel,
                                                                          DefoAlignmentModel* alignmentModel,
                                                                          QWidget* parent)
   : DefoRecoImageContentWidget(model, zoomModel, parent),
@@ -401,7 +401,7 @@ DefoRecoImageWidget::DefoRecoImageWidget(DefoMeasurementSelectionModel* model,
 {
   setMinimumSize(MINIMUM_SIZE);
   setBackgroundRole(QPalette::Dark);
-  zoomModel_ = new DefoRecoImageZoomModel(this);
+  zoomModel_ = new DefoImageZoomModel(this);
   
   connect(model, SIGNAL(selectionChanged(DefoMeasurement*)),
           this, SLOT(selectionChanged(DefoMeasurement*)));
