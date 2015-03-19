@@ -12,17 +12,15 @@
 
 #include "Keithley2700.h"
 
-
-
 ///
-/// usage: ./readTemp [channelString]
+/// usage: ./readTemp port [channelString]
 /// where channelString = e.g. "1,2,3-5,8"
 ///
 int main( int argc, char** argv ) {
 
-  if( argc > 2 ) {
+  if( argc < 2 || argc > 3  ) {
     std::cerr << " [" << argv[0] << "] ** ERROR: unrecognized command line options" << std::endl;
-    std::cerr << "   Usage: readTemp [channelString]" << std::endl;
+    std::cerr << "   Usage: readTemp port [channelString]" << std::endl;
     std::cerr << "   (where [channelString] e.g. = 1,2,3-5,8)" << std::endl;
     exit( -1 );
   }
@@ -40,14 +38,14 @@ int main( int argc, char** argv ) {
   
 
   // init device anf give it some time
-  Keithley2700 keithley( "/dev/ttyS3" );
+  Keithley2700 keithley(argv[1]);
   sleep( 1 );
 
   // no channels specified, read all
-  if( argc == 1 ) keithley.SetActiveChannels( "0-9" );
+  if (argc == 2) keithley.SetActiveChannels("0-9");
 
   // pass selected channels to device
-  else keithley.SetActiveChannels( argv[1] );
+  if (argc == 3) keithley.SetActiveChannels( argv[1] );
   
   // log info
   dualOut << std::endl;
@@ -55,10 +53,8 @@ int main( int argc, char** argv ) {
   dualOut << " Logging to: " << outputFileName.str() << std::endl;
   dualOut << std::endl;
 
-
-
   // loop forever
-  while( true ) {
+  while (true) {
 
     // scan and fill theReading
     reading_t theReading = keithley.Scan();

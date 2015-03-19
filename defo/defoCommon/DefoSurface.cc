@@ -174,7 +174,7 @@ const DefoSurfaceSummary& DefoSurface::getSummary() const
 ///
 ///
 ///
-void DefoSurface::dumpSplineField( std::string& filename ) const {
+void DefoSurface::dumpSplineField( std::string filename ) const {
 
     typedef QHash<DefoSplineXYPair,DefoSplineXYDefoPair>::const_iterator it_t;
 

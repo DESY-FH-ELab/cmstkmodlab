@@ -7,7 +7,7 @@
 #include "TestWindow.h"
 
 static const char* defoDAQGUID = "{94E678B7-AD8C-4027-971D-5F49E0FFC647}";
-#define SINGLETON 1
+//#define SINGLETON 1
 
 int main( int argc, char** argv ) {
 

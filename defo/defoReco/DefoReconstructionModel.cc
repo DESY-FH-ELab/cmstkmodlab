@@ -209,12 +209,12 @@ void DefoReconstructionModel::reconstruct() {
   // reco_->dump();
   DefoSurface surface = reco_->reconstruct(defoCollection_, refCollection_);
 
-  std::string filename = "defoDump_";
-  filename += refMeasurement_->getTimeStamp().toString("yyyyMMddhhmmss").toStdString();
+  QString filename = "defoReco_";
+  filename += refMeasurement_->getTimeStamp().toString("yyyyMMddhhmmss");
   filename += "_";
-  filename += defoMeasurement_->getTimeStamp().toString("yyyyMMddhhmmss").toStdString();
+  filename += defoMeasurement_->getTimeStamp().toString("yyyyMMddhhmmss");
   filename += ".txt";
-  surface.dumpSplineField(filename);
+  surface.dumpSplineField(currentDir_.absoluteFilePath(filename).toStdString());
 
   bool newPair = false;
   DefoMeasurementPair * measurementPair = pairListModel_->findMeasurementPair(refMeasurement_,
