@@ -9,10 +9,11 @@
 #include <QColor>
 #include <QDir>
 
+#include "DeviceState.h"
+
 #include "DefoSurface.h"
 #include "DefoSquare.h"
 #include "DefoPoint.h"
-#include "DefoState.h"
 
 #include "DefoCameraModel.h"
 #include "DefoPointRecognitionModel.h"

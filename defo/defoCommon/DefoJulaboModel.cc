@@ -20,7 +20,7 @@ DefoJulaboModel::DefoJulaboModel(float updateInterval, QObject *parent) :
     QObject(parent)
 //  , state_(OFF) // Initialize all fields to prevent random values
 //  , controller_(NULL)
-  , DefoAbstractDeviceModel()
+  , AbstractDeviceModel()
   , updateInterval_(updateInterval)
   , proportional_(0.1, 99.9, 1)
   , integral_(3, 9999, 0)
@@ -194,7 +194,7 @@ template <class T> void DefoJulaboModel::updateParameterCache(
 
 /// Attempts to enable/disable the (communication with) the Julabo FP50 chiller.
 void DefoJulaboModel::setDeviceEnabled(bool enabled) {
-  DefoAbstractDeviceModel::setDeviceEnabled(enabled);
+  AbstractDeviceModel::setDeviceEnabled(enabled);
 }
 
 void DefoJulaboModel::setControlsEnabled(bool enabled) {

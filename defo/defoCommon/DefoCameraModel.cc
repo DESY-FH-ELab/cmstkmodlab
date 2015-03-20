@@ -4,7 +4,7 @@
 
 DefoCameraModel::DefoCameraModel(QObject *parent)
   : QObject(parent),
-    DefoAbstractDeviceModel()
+    AbstractDeviceModel()
 {
   comment_ = new QTextDocument(this);
   comment_->setDocumentLayout(new QPlainTextDocumentLayout(comment_));
@@ -36,7 +36,7 @@ void DefoCameraModel::resetParameterCache()
 /// Trivial reimplementation as a slot.
 void DefoCameraModel::setDeviceEnabled(bool enabled)
 {
-  DefoAbstractDeviceModel::setDeviceEnabled(enabled);
+  AbstractDeviceModel::setDeviceEnabled(enabled);
 }
 
 void DefoCameraModel::setControlsEnabled(bool enabled)

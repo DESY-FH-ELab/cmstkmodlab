@@ -41,8 +41,6 @@ INCLUDEPATH += @basepath@
 INCLUDEPATH += @basepath@/common
 
 HEADERS += DefoExifReader.h \
-           DefoState.h \
-           DefoKeithleyModel.h \
            DefoJulaboModel.h \
            DefoCameraModel.h \
            DefoConradModel.h \
@@ -75,7 +73,6 @@ HEADERS += DefoExifReader.h \
            DefoPropagationPointIndexer.h
 
 SOURCES += DefoExifReader.cc \
-           DefoKeithleyModel.cc \
            DefoJulaboModel.cc \
            DefoCameraModel.cc \
            DefoConradModel.cc \

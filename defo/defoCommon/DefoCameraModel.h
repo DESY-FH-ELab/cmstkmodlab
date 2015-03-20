@@ -17,12 +17,13 @@ typedef EOS550DFake EOS550D_t;
 typedef EOS550D EOS550D_t;
 #endif
 
+#include "DeviceState.h"
+
 #include <QImage>
-#include "DefoState.h"
 
 class DefoCameraModel :
       public QObject
-    , public DefoAbstractDeviceModel<EOS550D_t>
+    , public AbstractDeviceModel<EOS550D_t>
 {
     Q_OBJECT
 public:
