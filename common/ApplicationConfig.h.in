@@ -13,8 +13,8 @@ namespace Config {
   extern const std::string CMSTkModLabBasePath;
 }
 
-class ApplicationConfig {
-  
+class ApplicationConfig
+{  
 public:
   
   static ApplicationConfig* instance(const std::string filename = std::string());

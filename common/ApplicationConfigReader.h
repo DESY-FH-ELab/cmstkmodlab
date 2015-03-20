@@ -7,7 +7,8 @@
 
 #include <QObject>
 
-class ApplicationConfigReader : public QObject {
+class ApplicationConfigReader : public QObject
+{
 
   Q_OBJECT
 
@@ -19,6 +20,7 @@ class ApplicationConfigReader : public QObject {
   std::string getFileName( void ) { return inputFileName_; }
 
  private:
+
   std::string inputFileName_;
 };
 

@@ -5,17 +5,18 @@
 
 #include "ApplicationConfigWriter.h"
 
-ApplicationConfigWriter::ApplicationConfigWriter( const std::string & outputFileName ) {
-
+ApplicationConfigWriter::ApplicationConfigWriter( const std::string & outputFileName )
+{
   outputFileName_ = std::string( outputFileName );
 }
 
-ApplicationConfigWriter::~ApplicationConfigWriter() {
+ApplicationConfigWriter::~ApplicationConfigWriter()
+{
 
 }
 
-void ApplicationConfigWriter::write(std::map<std::string,std::string> &keyvalueMap) {
-
+void ApplicationConfigWriter::write(std::map<std::string,std::string> &keyvalueMap)
+{
   std::ifstream file( outputFileName_.c_str(), std::ios::in );
   if (file.good()) {
     file.close();
@@ -25,8 +26,8 @@ void ApplicationConfigWriter::write(std::map<std::string,std::string> &keyvalueM
   }
 }
 
-void ApplicationConfigWriter::writeMerge(std::map<std::string,std::string> &keyvalueMap) {
-
+void ApplicationConfigWriter::writeMerge(std::map<std::string,std::string> &keyvalueMap)
+{
   std::map<std::string,std::string> tmap = keyvalueMap;
   std::ostringstream ostream;
   
@@ -82,8 +83,8 @@ void ApplicationConfigWriter::writeMerge(std::map<std::string,std::string> &keyv
   ofile.close();
 }
 
-void ApplicationConfigWriter::writeNew(std::map<std::string,std::string> &keyvalueMap) {
-
+void ApplicationConfigWriter::writeNew(std::map<std::string,std::string> &keyvalueMap)
+{
   std::ofstream file( outputFileName_.c_str(), std::ios::out );
   for (std::map<std::string,std::string>::iterator it = keyvalueMap.begin();
        it!=keyvalueMap.end();
