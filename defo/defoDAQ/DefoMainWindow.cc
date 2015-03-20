@@ -11,6 +11,11 @@
 DefoMainWindow::DefoMainWindow(QWidget *parent) :
     QMainWindow(parent)
 {
+  ApplicationConfig* config = ApplicationConfig::instance();
+
+  connect(QApplication::instance(), SIGNAL(aboutToQuit()),
+          this, SLOT(quit()));
+
   // CONRAD MODEL
   conradModel_ = new DefoConradModel(this);
 
@@ -182,6 +187,12 @@ DefoMainWindow::DefoMainWindow(QWidget *parent) :
   tabWidget_->addTab(temperatureWidget, "Temperature");
 
   setCentralWidget(tabWidget_);
+}
+
+void DefoMainWindow::quit()
+{
+  ApplicationConfig* config = ApplicationConfig::instance();
+  config->safe(std::string(Config::CMSTkModLabBasePath) + "/defo/defo.cfg");
 }
 
 void DefoMainWindow::exportMeasurement() {
