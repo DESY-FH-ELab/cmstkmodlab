@@ -18,7 +18,7 @@
 #include "DefoPointRecognitionModel.h"
 #include "DefoConradModel.h"
 #include "DefoJulaboModel.h"
-#include "DefoKeithleyModel.h"
+#include "KeithleyModel.h"
 
 class DefoMeasurement {
 public:
@@ -66,7 +66,7 @@ public:
   void acquireData(const DefoPointRecognitionModel* model);
   void acquireData(const DefoConradModel* model);
   void acquireData(const DefoJulaboModel* model);
-  void acquireData(const DefoKeithleyModel* model);
+  void acquireData(const KeithleyModel* model);
 
   virtual void write(const QDir& path);
   virtual void read(const QDir&path);

@@ -404,7 +404,7 @@ void DefoMeasurement::acquireData(const DefoJulaboModel* model) {
   bathTemperature_ = model->getBathTemperature();
 }
 
-void DefoMeasurement::acquireData(const DefoKeithleyModel* model) {
+void DefoMeasurement::acquireData(const KeithleyModel* model) {
 
   keithleyState_ = model->getDeviceState();
   if (keithleyState_ != READY) return;

@@ -23,8 +23,8 @@ DefoMainWindow::DefoMainWindow(QWidget *parent) :
   julaboModel_ = new DefoJulaboModel(5);
 
   // KEITHLEY MODEL
-  keithleyModel_ = new DefoKeithleyModel(config->getValue<std::string>("KeithleyDevice").c_str(),
-                                         20, this);
+  keithleyModel_ = new KeithleyModel(config->getValue<std::string>("KeithleyDevice").c_str(),
+                                     20, this);
 
   // MEASUREMENT MODEL
   listModel_ = new DefoMeasurementListModel();
