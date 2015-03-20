@@ -24,31 +24,46 @@ DefoGeometryModel::DefoGeometryModel(
 void DefoGeometryModel::setAngle1(double v) {
   bool valueChanged = (v==angle1_);
   angle1_ = v;
-  if (valueChanged) emit geometryChanged();
+  if (valueChanged) {
+    ApplicationConfig::instance()->setValue<double>("ANGLE1", angle1_);
+    emit geometryChanged();
+  }
 }
 
 void DefoGeometryModel::setAngle2(double v) {
   bool valueChanged = (v==angle2_);
   angle2_ = v;
-  if (valueChanged) emit geometryChanged();
+  if (valueChanged) {
+    ApplicationConfig::instance()->setValue<double>("ANGLE2", angle2_);
+    emit geometryChanged();
+  }
 }
 
 void DefoGeometryModel::setDistance(double v) {
   bool valueChanged = (v==distance_);
   distance_ = v;
-  if (valueChanged) emit geometryChanged();
+  if (valueChanged) {
+    ApplicationConfig::instance()->setValue<double>("DISTANCE", distance_);
+    emit geometryChanged();
+  }
 }
 
 void DefoGeometryModel::setHeight1(double v) {
   bool valueChanged = (v==height1_);
   height1_ = v;
-  if (valueChanged) emit geometryChanged();
+  if (valueChanged) {
+    ApplicationConfig::instance()->setValue<double>("HEIGHT1", height1_);
+    emit geometryChanged();
+  }
 }
 
 void DefoGeometryModel::setHeight2(double v) {
   bool valueChanged = (v==height2_);
   height2_ = v;
-  if (valueChanged) emit geometryChanged();
+  if (valueChanged) {
+    ApplicationConfig::instance()->setValue<double>("HEIGHT2", height2_);
+    emit geometryChanged();
+  }
 }
 
 void DefoGeometryModel::write(const QString& filename)
