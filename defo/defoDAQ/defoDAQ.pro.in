@@ -21,7 +21,9 @@ QMAKE = @qmake@
 QMAKE_CXXFLAGS += -std=c++0x
 
 macx {
-
+  INCLUDEPATH += /opt/local/include
+  INCLUDEPATH += /opt/local/include/opencv
+  INCLUDEPATH += /opt/local/include/opencv2
 }
 else {
 
