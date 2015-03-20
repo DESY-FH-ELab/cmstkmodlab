@@ -32,17 +32,15 @@ QMAKE = @qmake@
 QMAKE_CXXFLAGS += -std=c++0x
 
 DEFINES += @configdefines@
-QT += core gui opengl script xml
+QT += core gui widgets opengl script xml
 TARGET = DefoCommon
 TEMPLATE = lib
 DEPENDPATH += .
 INCLUDEPATH += .
 INCLUDEPATH += @basepath@
+INCLUDEPATH += @basepath@/common
 
-HEADERS += DefoConfig.h \
-           DefoConfigReader.h \
-           DefoConfigWriter.h \
-           DefoExifReader.h \
+HEADERS += DefoExifReader.h \
            DefoState.h \
            DefoKeithleyModel.h \
            DefoJulaboModel.h \
@@ -76,10 +74,7 @@ HEADERS += DefoConfig.h \
            DefoPointIndexer.h \
            DefoPropagationPointIndexer.h
 
-SOURCES += DefoConfig.cc \
-           DefoConfigReader.cc \
-           DefoConfigWriter.cc \
-           DefoExifReader.cc \
+SOURCES += DefoExifReader.cc \
            DefoKeithleyModel.cc \
            DefoJulaboModel.cc \
            DefoCameraModel.cc \
