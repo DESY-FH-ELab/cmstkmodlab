@@ -3,8 +3,10 @@
 #include <QGroupBox>
 #include <QFileDialog>
 #include <QProcess>
+#include <QApplication>
 
-#include "DefoConfig.h"
+#include "ApplicationConfig.h"
+
 #include "DefoImageWidget.h"
 #include "DefoRecoImageWidget.h"
 
@@ -20,6 +22,11 @@
 DefoRecoMainWindow::DefoRecoMainWindow(QWidget *parent) :
     QMainWindow(parent)
 {
+  ApplicationConfig* config = ApplicationConfig::instance();
+
+  connect(QApplication::instance(), SIGNAL(aboutToQuit()),
+          this, SLOT(quit()));
+
   currentDir_ = "/home/tkmodlab/Desktop/measurements";
 
   // MEASUREMENT MODEL
@@ -158,18 +165,18 @@ DefoRecoMainWindow::DefoRecoMainWindow(QWidget *parent) :
                                              refPointWidget);
   refPointModel_->setThresholdValue(
               DefoPointRecognitionModel::THRESHOLD_1
-              , DefoConfig::instance()->getValue<int>( "STEP1_THRESHOLD" )
+              , ApplicationConfig::instance()->getValue<int>( "STEP1_THRESHOLD" )
               );
   refPointModel_->setThresholdValue(
               DefoPointRecognitionModel::THRESHOLD_2
-              , DefoConfig::instance()->getValue<int>( "STEP2_THRESHOLD" )
+              , ApplicationConfig::instance()->getValue<int>( "STEP2_THRESHOLD" )
               );
   refPointModel_->setThresholdValue(
               DefoPointRecognitionModel::THRESHOLD_3
-              , DefoConfig::instance()->getValue<int>( "STEP3_THRESHOLD" )
+              , ApplicationConfig::instance()->getValue<int>( "STEP3_THRESHOLD" )
               );
   refPointModel_->setHalfSquareWidth(
-              DefoConfig::instance()->getValue<int>( "HALF_SQUARE_WIDTH" )
+              ApplicationConfig::instance()->getValue<int>( "HALF_SQUARE_WIDTH" )
               );
   vbox->addWidget(refPointRecognitionWidget);
 
@@ -190,18 +197,18 @@ DefoRecoMainWindow::DefoRecoMainWindow(QWidget *parent) :
                                              defoPointWidget);
   defoPointModel_->setThresholdValue(
               DefoPointRecognitionModel::THRESHOLD_1
-              , DefoConfig::instance()->getValue<int>( "STEP1_THRESHOLD" )
+              , ApplicationConfig::instance()->getValue<int>( "STEP1_THRESHOLD" )
               );
   defoPointModel_->setThresholdValue(
               DefoPointRecognitionModel::THRESHOLD_2
-              , DefoConfig::instance()->getValue<int>( "STEP2_THRESHOLD" )
+              , ApplicationConfig::instance()->getValue<int>( "STEP2_THRESHOLD" )
               );
   defoPointModel_->setThresholdValue(
               DefoPointRecognitionModel::THRESHOLD_3
-              , DefoConfig::instance()->getValue<int>( "STEP3_THRESHOLD" )
+              , ApplicationConfig::instance()->getValue<int>( "STEP3_THRESHOLD" )
               );
   defoPointModel_->setHalfSquareWidth(
-              DefoConfig::instance()->getValue<int>( "HALF_SQUARE_WIDTH" )
+              ApplicationConfig::instance()->getValue<int>( "HALF_SQUARE_WIDTH" )
               );
   vbox->addWidget(defoPointRecognitionWidget);
 
@@ -294,6 +301,12 @@ DefoRecoMainWindow::DefoRecoMainWindow(QWidget *parent) :
   setCentralWidget(tabWidget_);
 
   pointIndexerModel_->setSelectedIndexer(pointIndexerModel_->getIndexer(0));
+}
+
+void DefoRecoMainWindow::quit()
+{
+  ApplicationConfig* config = ApplicationConfig::instance();
+  config->safe(std::string(Config::CMSTkModLabBasePath) + "/defo/defo.cfg");
 }
 
 void DefoRecoMainWindow::loadMeasurementButtonClicked() {

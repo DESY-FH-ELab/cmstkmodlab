@@ -2,9 +2,10 @@
 #include <fstream>
 #include <cmath>
 
+#include "ApplicationConfig.h"
+
 #include "DefoReconstructionModel.h"
 #include "DefoPointSaver.h"
-#include "DefoConfig.h"
 
 DefoReconstructionModel::DefoReconstructionModel(DefoMeasurementListModel * listModel,
                                                  DefoMeasurementSelectionModel* refSelectionModel,
@@ -54,8 +55,8 @@ DefoReconstructionModel::DefoReconstructionModel(DefoMeasurementListModel * list
 
   reco_ = new DefoRecoSurface(this);
   
-  reco_->setPitchX(DefoConfig::instance()->getValue<double>("PIXEL_PITCH_X"));
-  reco_->setPitchY(DefoConfig::instance()->getValue<double>("PIXEL_PITCH_Y"));
+  reco_->setPitchX(ApplicationConfig::instance()->getValue<double>("PIXEL_PITCH_X"));
+  reco_->setPitchY(ApplicationConfig::instance()->getValue<double>("PIXEL_PITCH_Y"));
 
   connect(reco_, SIGNAL(incrementRecoProgress()),
           this, SLOT(incrementRecoProgress()));

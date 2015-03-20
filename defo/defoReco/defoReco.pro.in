@@ -30,10 +30,11 @@ DEFINES += @configdefines@
 QT += core gui opengl xml svg
 TEMPLATE = app
 TARGET = defoReco
-DEPENDPATH += ../defoCommon
+DEPENDPATH += ../../common ../defoCommon
 INCLUDEPATH += .
 INCLUDEPATH += ..
 INCLUDEPATH += @basepath@
+INCLUDEPATH += @basepath@/common
 INCLUDEPATH += @basepath@/defo/defoCommon
 
 # Input
