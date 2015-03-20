@@ -5,20 +5,20 @@
 #include <QFile>
 #include <QXmlStreamWriter>
 
-#include "DefoConfig.h"
+#include "ApplicationConfig.h"
+
 #include "DefoGeometryModel.h"
-#include "DefoConfigReader.h"
 
 DefoGeometryModel::DefoGeometryModel(
     QObject *parent
   ) :
     QObject(parent)
 {
-  angle1_ = DefoConfig::instance()->getValue<double>( "ANGLE1" );
-  angle2_ = DefoConfig::instance()->getValue<double>( "ANGLE2" );
-  distance_ = DefoConfig::instance()->getValue<double>( "DISTANCE" );
-  height1_ = DefoConfig::instance()->getValue<double>( "HEIGHT1" );
-  height2_ = DefoConfig::instance()->getValue<double>( "HEIGHT2" );
+  angle1_ = ApplicationConfig::instance()->getValue<double>( "ANGLE1" );
+  angle2_ = ApplicationConfig::instance()->getValue<double>( "ANGLE2" );
+  distance_ = ApplicationConfig::instance()->getValue<double>( "DISTANCE" );
+  height1_ = ApplicationConfig::instance()->getValue<double>( "HEIGHT1" );
+  height2_ = ApplicationConfig::instance()->getValue<double>( "HEIGHT2" );
 }
 
 void DefoGeometryModel::setAngle1(double v) {

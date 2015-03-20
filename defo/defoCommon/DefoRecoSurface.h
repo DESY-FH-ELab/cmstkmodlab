@@ -13,8 +13,6 @@
 #include "DefoPoint.h"
 #include "DefoSurface.h"
 #include "DefoSpline.h"
-#include "DefoConfigReader.h"
-
 
 ///
 /// perform surface reconstruction

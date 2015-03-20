@@ -1,6 +1,6 @@
-#include "DefoConfig.h"
-#include "DefoRecoSurface.h"
+#include "ApplicationConfig.h"
 
+#include "DefoRecoSurface.h"
 
 ///
 ///
@@ -9,15 +9,15 @@ DefoRecoSurface::DefoRecoSurface(QObject *parent)
   :QObject(parent)
 {
   // read parameters
-  spacingEstimate_ = DefoConfig::instance()->getValue<int>( "SPACING_ESTIMATE" );
-  searchPathHalfWidth_ = DefoConfig::instance()->getValue<int>( "SEARCH_PATH_HALF_WIDTH" );
-  nominalGridDistance_ = DefoConfig::instance()->getValue<double>( "NOMINAL_GRID_DISTANCE" );
-  nominalCameraDistance_ = DefoConfig::instance()->getValue<double>( "NOMINAL_CAMERA_DISTANCE" );
-  nominalViewingAngle_ = DefoConfig::instance()->getValue<double>( "NOMINAL_VIEWING_ANGLE" );
-  pitchX_= DefoConfig::instance()->getValue<double>( "PIXEL_PITCH_X" );
-  pitchY_= DefoConfig::instance()->getValue<double>( "PIXEL_PITCH_Y" );
-  focalLength_= DefoConfig::instance()->getValue<double>( "LENS_FOCAL_LENGTH" );
-  debugLevel_ = DefoConfig::instance()->getValue<unsigned int>( "DEBUG_LEVEL" );
+  spacingEstimate_ = ApplicationConfig::instance()->getValue<int>( "SPACING_ESTIMATE" );
+  searchPathHalfWidth_ = ApplicationConfig::instance()->getValue<int>( "SEARCH_PATH_HALF_WIDTH" );
+  nominalGridDistance_ = ApplicationConfig::instance()->getValue<double>( "NOMINAL_GRID_DISTANCE" );
+  nominalCameraDistance_ = ApplicationConfig::instance()->getValue<double>( "NOMINAL_CAMERA_DISTANCE" );
+  nominalViewingAngle_ = ApplicationConfig::instance()->getValue<double>( "NOMINAL_VIEWING_ANGLE" );
+  pitchX_= ApplicationConfig::instance()->getValue<double>( "PIXEL_PITCH_X" );
+  pitchY_= ApplicationConfig::instance()->getValue<double>( "PIXEL_PITCH_Y" );
+  focalLength_= ApplicationConfig::instance()->getValue<double>( "LENS_FOCAL_LENGTH" );
+  debugLevel_ = ApplicationConfig::instance()->getValue<unsigned int>( "DEBUG_LEVEL" );
 
   // to be called after cfg reading
   calculateHelpers();

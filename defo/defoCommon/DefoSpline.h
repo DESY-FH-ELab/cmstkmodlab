@@ -7,7 +7,6 @@
 #include <cmath>
 
 #include "DefoPoint.h"
-#include "DefoConfigReader.h"
 
 ///
 /// class for holding a single spline

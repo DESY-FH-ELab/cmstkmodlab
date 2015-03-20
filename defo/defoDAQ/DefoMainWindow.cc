@@ -2,7 +2,9 @@
 
 #include <QGroupBox>
 #include <QFileDialog>
+#include <QApplication>
 
+#include "ApplicationConfig.h"
 #include "DefoConfig.h"
 #include "DefoMainWindow.h"
 
@@ -16,7 +18,8 @@ DefoMainWindow::DefoMainWindow(QWidget *parent) :
   julaboModel_ = new DefoJulaboModel(5);
 
   // KEITHLEY MODEL
-  keithleyModel_ = new DefoKeithleyModel(10);
+  keithleyModel_ = new DefoKeithleyModel(config->getValue<std::string>("KeithleyDevice").c_str(),
+                                         20, this);
 
   // MEASUREMENT MODEL
   listModel_ = new DefoMeasurementListModel();
