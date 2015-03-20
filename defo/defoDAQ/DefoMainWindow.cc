@@ -5,7 +5,7 @@
 #include <QApplication>
 
 #include "ApplicationConfig.h"
-#include "DefoConfig.h"
+
 #include "DefoMainWindow.h"
 
 DefoMainWindow::DefoMainWindow(QWidget *parent) :
@@ -150,18 +150,18 @@ DefoMainWindow::DefoMainWindow(QWidget *parent) :
   // read default settings
   pointModel_->setThresholdValue(
         DefoPointRecognitionModel::THRESHOLD_1
-        , DefoConfig::instance()->getValue<int>( "STEP1_THRESHOLD" )
+        , ApplicationConfig::instance()->getValue<int>( "STEP1_THRESHOLD" )
         );
   pointModel_->setThresholdValue(
         DefoPointRecognitionModel::THRESHOLD_2
-        , DefoConfig::instance()->getValue<int>( "STEP2_THRESHOLD" )
+        , ApplicationConfig::instance()->getValue<int>( "STEP2_THRESHOLD" )
         );
   pointModel_->setThresholdValue(
         DefoPointRecognitionModel::THRESHOLD_3
-        , DefoConfig::instance()->getValue<int>( "STEP3_THRESHOLD" )
+        , ApplicationConfig::instance()->getValue<int>( "STEP3_THRESHOLD" )
         );
   pointModel_->setHalfSquareWidth(
-        DefoConfig::instance()->getValue<int>( "HALF_SQUARE_WIDTH" )
+        ApplicationConfig::instance()->getValue<int>( "HALF_SQUARE_WIDTH" )
         );
 
   DefoPointRecognitionWidget * pointWidget =
