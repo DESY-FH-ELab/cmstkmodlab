@@ -249,7 +249,7 @@ void CoordinateSaver::writePoint(const DefoPoint& point)
       .arg(hue)
       .arg(saturation)
       .arg(value);
-  write(line.toAscii());
+  write(line.toStdString().c_str());
 }
 
 void TestWindow::writePoints()
