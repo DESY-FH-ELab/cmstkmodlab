@@ -46,7 +46,9 @@ HEADERS += DefoMainWindow.h \
            DefoCameraWidget.h \
            DefoCameraOptionComboBox.h \
            DefoConradWidget.h \
+           DefoConradPanelWidget.h \
            DefoConradCheckbox.h \
+           DefoConradButton.h \
            DefoScriptModel.h \
            DefoScriptThread.h \
            DefoScriptWidget.h \
@@ -66,7 +68,9 @@ SOURCES += defoDAQ.cc \
            DefoCameraWidget.cc \
            DefoCameraOptionComboBox.cc \
            DefoConradWidget.cc \
+           DefoConradPanelWidget.cc \
            DefoConradCheckbox.cc \
+           DefoConradButton.cc \
            DefoScriptModel.cc \
            DefoScriptThread.cc \
            DefoScriptWidget.cc \
