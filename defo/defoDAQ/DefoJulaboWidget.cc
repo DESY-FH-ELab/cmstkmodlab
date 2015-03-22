@@ -4,8 +4,10 @@
   \brief Creates a new panel with all the controls and read-outs for the Julabo
   chiller.
   */
-DefoJulaboWidget::DefoJulaboWidget(DefoJulaboModel* model, QWidget *parent) :
-    QWidget(parent), model_(model)
+DefoJulaboWidget::DefoJulaboWidget(DefoJulaboModel* model,
+                                   QWidget *parent)
+  : QWidget(parent),
+    model_(model)
 {
   // Create all the nescessary widgets
   chillerCheckBox_ = new QCheckBox("Enable chiller", this);

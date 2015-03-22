@@ -40,6 +40,7 @@ protected:
   QLCDNumber* powerLCD_;
 
 public slots:
+
   void updateDeviceState( State newState );
   void controlStateChanged(bool);
   void updateChillerInfo();
