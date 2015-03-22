@@ -135,6 +135,7 @@ const DefoSplineField DefoRecoSurface::createZSplines(DefoPointCollection const&
 
   // we need the blue point (from *ref*) as geom. reference, it always has index 0,0
   std::pair<bool,DefoPointCollection::const_iterator> bluePointByIndex =
+      findPointByIndex(referencePoints, std::pair<int,int>( 0, 0 ));
 
   // now attach the points to the spline sets according to their indices
   std::pair<int,int> index = std::pair<int,int>( indexRangeX.first, indexRangeY.first );
@@ -148,31 +149,39 @@ const DefoSplineField DefoRecoSurface::createZSplines(DefoPointCollection const&
 
     for( ; index.second <= indexRangeY.second; ++index.second ) {
       
-      std::pair<bool,DefoPointCollection::const_iterator> currentPointByIndex   = findPointByIndex( currentPoints, index );
-      std::pair<bool,DefoPointCollection::const_iterator> referencePointByIndex = findPointByIndex( referencePoints, index );
+      std::pair<bool,DefoPointCollection::const_iterator> currentPointByIndex =
+          findPointByIndex(currentPoints, index);
+
+      std::pair<bool,DefoPointCollection::const_iterator> referencePointByIndex =
+          findPointByIndex(referencePoints, index);
       
       // check if a point with that index exists in both images
       // (it should then have been a reflection from the same source)
-      if( currentPointByIndex.first && referencePointByIndex.first ) {
+      if (currentPointByIndex.first && referencePointByIndex.first) {
 
-	// this point is abstract and lives where the *ref* point is on the module
-	// (make a copy)
-	DefoPoint aPoint = DefoPoint( *(referencePointByIndex.second) );
+        // this point is abstract and lives where the *ref* point is on the module
+        // (make a copy)
+        DefoPoint aPoint = DefoPoint(*(referencePointByIndex.second));
 
-	// the attached slope (= tan(alpha)) is derived from the difference in y position
-	aPoint.setSlope( correctionFactors.second * ( *(currentPointByIndex.second) - *(referencePointByIndex.second) ).getY() ); // ##### check
+        // the attached slope (= tan(alpha)) is derived from the difference in y position
+        double dY = (*(currentPointByIndex.second)).getY() - (*(referencePointByIndex.second)).getY();
+        aPoint.setSlope( correctionFactors.second * dY); // ##### check
 
-	// convert from pixel units to real units on module
+        // convert from pixel units to real units on module
 
-	// set blue point at x=0,y=0
-	aPoint.setPosition( ( aPoint.getX() - bluePointByIndex.second->getX() ) * pitchX_ * nominalCameraDistance_ / focalLength_ ,
-		      ( aPoint.getY() - bluePointByIndex.second->getY() ) * pitchY_ * nominalCameraDistance_ / focalLength_ );
+        // set blue point at x=0,y=0
+        double x = (aPoint.getX() - bluePointByIndex.second->getX()) * pitchX_ * nominalCameraDistance_ / focalLength_;
+        double y = (aPoint.getY() - bluePointByIndex.second->getY()) * pitchY_ * nominalCameraDistance_ / focalLength_;
+        aPoint.setPosition(x, y);
 
-// 	aPoint.setXY( aPoint.getX() * pitchX_ * nominalCameraDistance_ / focalLength_ , // old version
-// 		      aPoint.getY() * pitchY_ * nominalCameraDistance_ / focalLength_ );
+        // old version
+        /*
+        double x = aPoint.getX() * pitchX_ * nominalCameraDistance_ / focalLength_;
+        double y = aPoint.getY() * pitchY_ * nominalCameraDistance_ / focalLength_;
+        aPoint.setPosition(x, y);
+         */
 
-
-	aSplineSet.addPoint( aPoint );
+        aSplineSet.addPoint( aPoint );
 
         NQLog("DefoRecoSurface", NQLog::Spam) << "found shared point along y with indices: "
             << index.first << " , " << index.second;
@@ -190,8 +199,7 @@ const DefoSplineField DefoRecoSurface::createZSplines(DefoPointCollection const&
     aSplineSet.doFitZ();
     
     // attach to output field (as *second*!!)
-    theOutput.second.push_back( aSplineSet );
-
+    theOutput.second.push_back(aSplineSet);
   }
 
   // then along-x
@@ -205,30 +213,38 @@ const DefoSplineField DefoRecoSurface::createZSplines(DefoPointCollection const&
 
     for( ; index.first <= indexRangeX.second; ++index.first ) {
       
-      std::pair<bool,DefoPointCollection::const_iterator> currentPointByIndex   = findPointByIndex( currentPoints, index );
-      std::pair<bool,DefoPointCollection::const_iterator> referencePointByIndex = findPointByIndex( referencePoints, index );
+      std::pair<bool,DefoPointCollection::const_iterator> currentPointByIndex =
+          findPointByIndex( currentPoints, index );
+
+      std::pair<bool,DefoPointCollection::const_iterator> referencePointByIndex =
+          findPointByIndex( referencePoints, index );
       
       // check if a point with that index exists in both images
       // (it should then have been a reflection from the same source)
-      if( currentPointByIndex.first && referencePointByIndex.first ) {
+      if (currentPointByIndex.first && referencePointByIndex.first) {
 
-	// this point is abstract and lives where the ref point is on the module
-	// (make a copy)
-	DefoPoint aPoint = DefoPoint( *(referencePointByIndex.second) );
+        // this point is abstract and lives where the ref point is on the module
+        // (make a copy)
+        DefoPoint aPoint = DefoPoint( *(referencePointByIndex.second) );
 
-	// the attached slope (= tan(alpha)) is derived from the difference in y position
-	aPoint.setSlope( correctionFactors.first * ( *(currentPointByIndex.second) - *(referencePointByIndex.second) ).getX() ); // ##### check
+
+        // the attached slope (= tan(alpha)) is derived from the difference in x position
+        double dX = (*(currentPointByIndex.second)).getX() - (*(referencePointByIndex.second)).getX();
+        aPoint.setSlope( correctionFactors.first * dX); // ##### check
 	
-	// convert from pixel units to real units on module
+        // convert from pixel units to real units on module
 
-	// 	aPoint.setXY( aPoint.getX() * pitchX_ * nominalCameraDistance_ / focalLength_ , // old version
-	// 		      aPoint.getY() * pitchY_ * nominalCameraDistance_ / focalLength_ );
+        // set blue point at x=0,y=0
+        double x = (aPoint.getX() - bluePointByIndex.second->getX()) * pitchX_ * nominalCameraDistance_ / focalLength_;
+        double y = (aPoint.getY() - bluePointByIndex.second->getY()) * pitchY_ * nominalCameraDistance_ / focalLength_;
+        aPoint.setPosition(x, y);
 
-	// blue point at x=0,y=0
-	aPoint.setPosition( ( aPoint.getX() - bluePointByIndex.second->getX() ) * pitchX_ * nominalCameraDistance_ / focalLength_ ,
-		      ( aPoint.getY() - bluePointByIndex.second->getY() ) * pitchY_ * nominalCameraDistance_ / focalLength_ );
-
-	aSplineSet.addPoint( aPoint );
+        // old version
+        /*
+        double x = aPoint.getX() * pitchX_ * nominalCameraDistance_ / focalLength_;
+        double y = aPoint.getY() * pitchY_ * nominalCameraDistance_ / focalLength_;
+        aPoint.setPosition(x, y);
+         */
 
         aSplineSet.addPoint( aPoint );
 
@@ -239,7 +255,6 @@ const DefoSplineField DefoRecoSurface::createZSplines(DefoPointCollection const&
         NQLog("DefoRecoSurface", NQLog::Warning) << "Non-shared point along x in current image with indices: "
             << index.first << " , " << index.second;
       }
-
     }
 
     // check if there are enought points attached to the set (min 2)
@@ -256,6 +271,7 @@ const DefoSplineField DefoRecoSurface::createZSplines(DefoPointCollection const&
   // c'est tout
   NQLog("DefoRecoSurface", NQLog::Message) << "createZSplines done";
 
+  return theOutput;
 }
 
 
