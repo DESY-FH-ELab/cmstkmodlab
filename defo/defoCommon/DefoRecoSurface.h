@@ -35,7 +35,7 @@ class DefoRecoSurface : public QObject
   void setPitchX( double p ) { pitchX_ = p; }
   void setPitchY( double p ) { pitchY_ = p; }
   void setFocalLength( double l ) { focalLength_ = l; }
-  void setImageSize(std::pair<double, double>& imageSize) { imageSize_ = imageSize; }
+  void setImageSize(std::pair<double, double> imageSize) { imageSize_ = imageSize; }
   std::vector<DefoPoint> const& getIndexedPoints( void ) { return indexedPoints_; }
   void calculateHelpers(void);
 
