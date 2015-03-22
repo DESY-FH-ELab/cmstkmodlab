@@ -1,4 +1,5 @@
 #include "ApplicationConfig.h"
+#include "nqlogger.h"
 
 #include "DefoRecoSurface.h"
 
@@ -80,7 +81,7 @@ const DefoSurface DefoRecoSurface::reconstruct(DefoPointCollection& currentPoint
 const DefoSplineField DefoRecoSurface::createZSplines(DefoPointCollection const& currentPoints,
                                                       DefoPointCollection const& referencePoints)
 {
-  if( debugLevel_ >= 3 ) std::cout << " [DefoRecoSurface::createZSplines] =3= Starting" << std::endl;
+  NQLog("DefoRecoSurface", NQLog::Message) << "createZSplines starting";
 
   DefoSplineField theOutput;
 
@@ -90,9 +91,8 @@ const DefoSplineField DefoRecoSurface::createZSplines(DefoPointCollection const&
     pitchY_ / focalLength_ * ( nominalGridDistance_ + nominalCameraDistance_ ) / 2. / nominalGridDistance_
   );
 
-  if( debugLevel_ >= 2 )
-    std::cout << " [DefoRecoSurface::createZSplines] =2= Will apply nominal correction factors: "
-		      << correctionFactors.first << " , " << correctionFactors.second << std::endl;
+  NQLog("DefoRecoSurface", NQLog::Message) << "nominal correction factors: "
+      << correctionFactors.first << " , " << correctionFactors.second;
 
   // determine index ranges in current points
   // (could also take ref points)
@@ -108,13 +108,13 @@ const DefoSplineField DefoRecoSurface::createZSplines(DefoPointCollection const&
     if( it->getIndex().second > indexRangeY.second ) indexRangeY.second = it->getIndex().second;
   }
   
-  if( debugLevel_ >= 2 ) std::cout << " [DefoRecoSurface::createZSplines] =2= Found index range: x: " << indexRangeX.first
-				   << " .. " << indexRangeX.second << " y: " << indexRangeY.first << " .. " << indexRangeY.second << std::endl;
 
+  NQLog("DefoRecoSurface", NQLog::Message) << "found index range:";
+  NQLog("DefoRecoSurface", NQLog::Message) << " x: " << indexRangeX.first << " .. " << indexRangeX.second;
+  NQLog("DefoRecoSurface", NQLog::Message) << " y: " << indexRangeY.first << " .. " << indexRangeY.second;
 
   // we need the blue point (from *ref*) as geom. reference, it always has index 0,0
-  std::pair<bool,DefoPointCollection::const_iterator> bluePointByIndex = findPointByIndex( referencePoints, std::pair<int,int>( 0, 0 ) );
-
+  std::pair<bool,DefoPointCollection::const_iterator> bluePointByIndex =
 
   // now attach the points to the spline sets according to their indices
   std::pair<int,int> index = std::pair<int,int>( indexRangeX.first, indexRangeY.first );
@@ -154,16 +154,13 @@ const DefoSplineField DefoRecoSurface::createZSplines(DefoPointCollection const&
 
 	aSplineSet.addPoint( aPoint );
 
-	if( debugLevel_ >= 3 ) std::cout << " [DefoRecoSurface::createZSplines] =3= Found shared point along-y with indices: "
-					 << index.first << " , " << index.second << std::endl;
+        NQLog("DefoRecoSurface", NQLog::Spam) << "found shared point along y with indices: "
+            << index.first << " , " << index.second;
 
+      } else {
+        NQLog("DefoRecoSurface", NQLog::Warning) << "Non-shared point along y in current image with indices: "
+            << index.first << " , " << index.second;
       }
-
-      else {
-	if( debugLevel_ >= 2 ) std::cout << " [DefoRecoSurface::createZSplines] =2= Non-shared point along-y in current image with indices: "
-					 << index.first << " , " << index.second << std::endl;
-      }
-
     }
     
     // check if there are enough points attached to the set (min 2)
@@ -213,14 +210,14 @@ const DefoSplineField DefoRecoSurface::createZSplines(DefoPointCollection const&
 
 	aSplineSet.addPoint( aPoint );
 
-	if( debugLevel_ >= 3 ) std::cout << " [DefoRecoSurface::createZSplines] =3= Found shared point along-x with indices: "
-					 << index.first << " , " << index.second << std::endl;
+        aSplineSet.addPoint( aPoint );
 
-      }
+        NQLog("DefoRecoSurface", NQLog::Spam) << "found shared point along x with indices: "
+            << index.first << " , " << index.second;
 
-      else {
-	if( debugLevel_ >= 2 ) std::cout << " [DefoRecoSurface::createZSplines] =2= non-shared point along-x in current image with indices: "
-					 << index.first << " , " << index.second << std::endl;
+      } else {
+        NQLog("DefoRecoSurface", NQLog::Warning) << "Non-shared point along x in current image with indices: "
+            << index.first << " , " << index.second;
       }
 
     }
@@ -237,8 +234,7 @@ const DefoSplineField DefoRecoSurface::createZSplines(DefoPointCollection const&
 
 
   // c'est tout
-  if( debugLevel_ >= 3 ) std::cout << " [DefoRecoSurface::createZSplines] =3= Done" << std::endl;
-  return theOutput;
+  NQLog("DefoRecoSurface", NQLog::Message) << "createZSplines done";
 
 }
 
