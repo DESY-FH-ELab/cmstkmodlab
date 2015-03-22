@@ -181,7 +181,7 @@ DefoMainWindow::DefoMainWindow(QWidget *parent) :
   temperatureWidget->setLayout(layout);
 
   // KEITHLEY MODEL
-  DefoKeithleyWidget *keithleyWidget = new DefoKeithleyWidget(keithleyModel_);
+  KeithleyWidget *keithleyWidget = new KeithleyWidget(keithleyModel_);
   layout->addWidget( keithleyWidget );
 
   tabWidget_->addTab(temperatureWidget, "Temperature");

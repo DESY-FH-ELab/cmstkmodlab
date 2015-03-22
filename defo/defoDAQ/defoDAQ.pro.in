@@ -43,7 +43,6 @@ INCLUDEPATH += @basepath@/defo/defoCommon
 
 # Input
 HEADERS += DefoMainWindow.h \
-           DefoKeithleyWidget.h \
            DefoJulaboWidget.h \
            DefoCameraWidget.h \
            DefoCameraOptionComboBox.h \
@@ -58,14 +57,12 @@ HEADERS += DefoMainWindow.h \
            DefoScriptableConrad.h \
            DefoScriptableCamera.h \
            DefoScriptableJulabo.h \
-           DefoScriptableKeithley.h \
            ../TestWindow.h \
            DefoTemperatureHistoryModel.h \
            DefoTemperatureHistoryWidget.h
     
 SOURCES += defoDAQ.cc \
            DefoMainWindow.cc \
-           DefoKeithleyWidget.cc \
            DefoJulaboWidget.cc \
            DefoCameraWidget.cc \
            DefoCameraOptionComboBox.cc \
@@ -80,7 +77,6 @@ SOURCES += defoDAQ.cc \
            DefoScriptableConrad.cc \
            DefoScriptableCamera.cc \
            DefoScriptableJulabo.cc \
-           DefoScriptableKeithley.cc \
            ../TestWindow.cc \
            DefoTemperatureHistoryModel.cc \
            DefoTemperatureHistoryWidget.cc

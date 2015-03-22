@@ -10,7 +10,7 @@ DefoScriptModel::DefoScriptModel(
     DefoConradModel* conradModel
   , DefoCameraModel* cameraModel
   , DefoJulaboModel* julaboModel
-  , DefoKeithleyModel* keithleyModel
+  , KeithleyModel* keithleyModel
   , QObject *parent
 ) :
     QObject(parent)
