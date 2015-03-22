@@ -10,7 +10,13 @@
 #include <boost/iostreams/tee.hpp>
 #include <boost/iostreams/stream.hpp>
 
+#ifdef USE_FAKEIO
+#include "Keithley2700Fake.h"
+typedef Keithley2700Fake Keithley2700_t;
+#else
 #include "Keithley2700.h"
+typedef Keithley2700 Keithley2700_t;
+#endif
 
 ///
 /// usage: ./readTemp port [channelString]
@@ -28,17 +34,17 @@ int main( int argc, char** argv ) {
   unsigned int readingCounter = 0;
   const time_t startingTime = time( NULL );
 
-  stringstream outputFileName;
+  std::stringstream outputFileName;
   outputFileName << "readTemp_output_" << startingTime << ".dat";
 
   // dual stream, writing to cout and outputFile simultaneously
-  ofstream outFile( outputFileName.str().c_str() );
-  boost::iostreams::tee_device<std::ostream, std::ofstream> teeDevice( cout, outFile );
-  boost::iostreams::stream<boost::iostreams::tee_device<ostream, ofstream> > dualOut( teeDevice );
+  std::ofstream outFile( outputFileName.str().c_str() );
+  boost::iostreams::tee_device<std::ostream, std::ofstream> teeDevice( std::cout, outFile );
+  boost::iostreams::stream<boost::iostreams::tee_device<std::ostream, std::ofstream> > dualOut( teeDevice );
   
 
   // init device anf give it some time
-  Keithley2700 keithley(argv[1]);
+  Keithley2700_t keithley(argv[1]);
   sleep( 1 );
 
   // no channels specified, read all
@@ -62,24 +68,24 @@ int main( int argc, char** argv ) {
 
     // pretty print header, every ten lines
     if( 0 ==  readingCounter % 10 ) {
-      dualOut << setw( 8 ) << setfill( ' ' ) << left << "";
-      dualOut << setw( 8 ) << setfill( ' ' ) << right << "seconds";
-      dualOut << setw( 2 ) << setfill( ' ' ) << right << "";
+      dualOut << std::setw( 8 ) << std::setfill( ' ' ) << std::left << "";
+      dualOut << std::setw( 8 ) << std::setfill( ' ' ) << std::right << "seconds";
+      dualOut << std::setw( 2 ) << std::setfill( ' ' ) << std::right << "";
       for( reading_t::const_iterator it = theReading.begin(); it < theReading.end(); ++it ) {
-	dualOut << setw( 12 ) << right <<  setfill( '.' ) << it->first;
+        dualOut << std::setw( 12 ) << std::right <<  std::setfill( '.' ) << it->first;
       }
-      dualOut << endl << flush;
+      dualOut << std::endl << std::flush;
     }
     
     // print readings
     time_t currentTime = time( NULL );
-    dualOut << setw( 8 ) << setfill( ' ' ) << left << " <DATA>";
-    dualOut << setw( 8 ) << setfill( ' ' ) << right << currentTime - startingTime;
-    dualOut << setw( 2 ) << setfill( ' ' ) << right << "";
+    dualOut << std::setw( 8 ) << std::setfill( ' ' ) << std::left << " <DATA>";
+    dualOut << std::setw( 8 ) << std::setfill( ' ' ) << std::right << currentTime - startingTime;
+    dualOut << std::setw( 2 ) << std::setfill( ' ' ) << std::right << "";
     for( reading_t::const_iterator it = theReading.begin(); it < theReading.end(); ++it ) {
-      dualOut << setw( 12 ) << right << setfill( ' ' ) << it->second;
+      dualOut << std::setw( 12 ) << std::right << std::setfill( ' ' ) << it->second;
     }
-    dualOut << endl;
+    dualOut << std::endl;
     
     // need to explicitly flush stream
     dualOut.flush();
@@ -88,8 +94,5 @@ int main( int argc, char** argv ) {
 
     sleep(5);
   }
-   
-
- 
 }
     

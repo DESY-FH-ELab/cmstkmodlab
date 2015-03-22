@@ -16,7 +16,7 @@ QMAKE_CXXFLAGS += -std=c++0x
 
 INCLUDEPATH += @qwtincludes@
 DEFINES += @configdefines@
-QT += core gui xml network script
+QT += core gui widgets xml network script
 TEMPLATE = app
 TARGET = microDisplay
 DEPENDPATH += @basepath@/common
