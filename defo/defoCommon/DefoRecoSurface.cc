@@ -106,8 +106,28 @@ const DefoSplineField DefoRecoSurface::createZSplines(DefoPointCollection const&
     if( it->getIndex().first  > indexRangeX.second ) indexRangeX.second = it->getIndex().first;
     if( it->getIndex().second < indexRangeY.first )  indexRangeY.first  = it->getIndex().second;
     if( it->getIndex().second > indexRangeY.second ) indexRangeY.second = it->getIndex().second;
+    /*
+    indexRangeXref.first = std::min(it->getIndex().first, indexRangeXref.first);
+    indexRangeXref.second = std::max(it->getIndex().first, indexRangeXref.second);
+    indexRangeYref.first = std::min(it->getIndex().first, indexRangeYref.first);
+    indexRangeYref.second = std::max(it->getIndex().first, indexRangeYref.second);
+     */
   }
   
+  /*
+  std::pair<int,int> indexRangeXref = std::pair<int,int>( 0, 0 );
+  std::pair<int,int> indexRangeYref = std::pair<int,int>( 0, 0 );
+  for( DefoPointCollection::const_iterator it = referencePoints.begin(); it < referencePoints.end(); ++it ) {
+    indexRangeXref.first = std::min(it->getIndex().first, indexRangeXref.first);
+    indexRangeXref.second = std::max(it->getIndex().first, indexRangeXref.second);
+    indexRangeYref.first = std::min(it->getIndex().first, indexRangeYref.first);
+    indexRangeYref.second = std::max(it->getIndex().first, indexRangeYref.second);
+  }
+  indexRangeX.first = std::max(indexRangeXref.first, indexRangeX.first);
+  indexRangeX.second = std::min(indexRangeXref.second, indexRangeX.second);
+  indexRangeY.first = std::max(indexRangeYref.first, indexRangeY.first);
+  indexRangeY.second = std::min(indexRangeYref.second, indexRangeY.second);
+   */
 
   NQLog("DefoRecoSurface", NQLog::Message) << "found index range:";
   NQLog("DefoRecoSurface", NQLog::Message) << " x: " << indexRangeX.first << " .. " << indexRangeX.second;
