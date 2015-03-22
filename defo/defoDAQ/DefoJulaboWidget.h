@@ -11,7 +11,7 @@
 #include <QWidget>
 
 #include "DefoJulaboModel.h"
-#include "DefoState.h"
+#include "DeviceState.h"
 
 class DefoJulaboWidget : public QWidget
 {
