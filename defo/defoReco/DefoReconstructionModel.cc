@@ -174,6 +174,8 @@ void DefoReconstructionModel::reconstruct()
     return;
   }
 
+  reco_->setImageSize(refMeasurement_->getWidth(), refMeasurement_->getHeight());
+
   if (!alignPoints(refPoints, refCollection_)) {
     std::cout << "reco: reference points could not be aligned" << std::endl;
     return;
