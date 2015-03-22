@@ -37,6 +37,9 @@ public:
   float getAperture() const { return exifAperture_; }
   int getISO() const { return exifISO_; }
 
+  int getWidth() const;
+  int getHeight() const;
+
   State getConradState() const { return conradState_; }
   State getPanelState(unsigned int panel) const { return panelStates_[panel]; }
   State getLEDState() const { return ledState_; }
@@ -71,6 +74,7 @@ public:
   virtual void read(const QDir&path);
 
 protected:
+
   /// (Local) date and time of measurement.
   QDateTime timestamp_;
   /// Image of the actual 'raw' measurement.
@@ -124,6 +128,7 @@ protected:
 
   const QColor getAverageColor(const QImage& image,
                                const QRect& area,
+                               int threshold) const;
 };
 
 class DefoMeasurementPair : public std::pair<DefoMeasurement*,DefoMeasurement*> {

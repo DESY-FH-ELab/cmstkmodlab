@@ -33,6 +33,16 @@ QImage DefoMeasurement::getImage() const
   return image_;
 }
 
+int DefoMeasurement::getWidth() const
+{
+  return image_.width();
+}
+
+int DefoMeasurement::getHeight() const
+{
+  return image_.height();
+}
+
 /**
   Image recognition algorithm that searches for the reflection of grid dots
   in the measurement picture. An QRect area that defines a subregion of the
