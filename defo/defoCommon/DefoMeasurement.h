@@ -52,14 +52,12 @@ public:
   const QString& getComment() const { return comment_; }
   int getCalibAmplitude() const { return calibAmplitude_; }
 
-  const DefoPointCollection* findPoints(
-      const QRect* searchArea
-    , const QPolygonF* roi
-    , int step1Threshold
-    , int step2Threshold
-    , int step3Threshold
-    , int halfSquareWidth
-  ) const;
+  const DefoPointCollection* findPoints(const QRect* searchArea,
+                                        const QPolygonF* roi,
+                                        int step1Threshold,
+                                        int step2Threshold,
+                                        int step3Threshold,
+                                        int halfSquareWidth) const;
 
   void setImageLocation(const QString& imageLocation);
   void readExifData();
@@ -111,29 +109,21 @@ protected:
   int calibAmplitude_;
 
   /*
-    Analysis depentent information, does not belong in 'measurement' class.
+    Analysis dependent information, does not belong in 'measurement' class.
     Processing can happen here, but storing it is not the purpose of this
     object.
     */
-  DefoPoint getCenterOfGravity(
-      const QImage& image
-    , const QRect &area
-    , int threshold
-  ) const;
+  DefoPoint getCenterOfGravity(const QImage& image,
+                               const QRect &area,
+                               int threshold) const;
 
-  void determinePointColors(
-      const QImage& image
-    , DefoPointCollection* points
-    , int halfSquareWidth
-    , int threshold
-  ) const;
+  void determinePointColors(const QImage& image,
+                            DefoPointCollection* points,
+                            int halfSquareWidth,
+                            int threshold) const;
 
-  const QColor getAverageColor(
-      const QImage& image
-    , const QRect& area
-    , int threshold
-  ) const;
-
+  const QColor getAverageColor(const QImage& image,
+                               const QRect& area,
 };
 
 class DefoMeasurementPair : public std::pair<DefoMeasurement*,DefoMeasurement*> {

@@ -146,7 +146,8 @@ void DefoReconstructionModel::incrementRecoProgress() {
   emit incrementProgress();
 }
 
-void DefoReconstructionModel::reconstruct() {
+void DefoReconstructionModel::reconstruct()
+{
   std::cout << "void DefoReconstructionModel::reconstruct()" << std::endl;
 
   emit recoProgressChanged(0);

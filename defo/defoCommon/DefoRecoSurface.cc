@@ -177,9 +177,6 @@ const DefoSplineField DefoRecoSurface::createZSplines(DefoPointCollection const&
 
   }
 
-
-
-
   // then along-x
   index = std::pair<int,int>( indexRangeX.first, indexRangeY.first );
 
@@ -235,8 +232,7 @@ const DefoSplineField DefoRecoSurface::createZSplines(DefoPointCollection const&
     aSplineSet.doFitZ();
     
     // attach to output field (as *second*!!)
-    theOutput.first.push_back( aSplineSet );
-
+    theOutput.first.push_back(aSplineSet);
   }
 
 
@@ -909,24 +905,22 @@ DefoRecoSurface::findClosestPointExcluded( DefoPoint const& aPoint, DefoPointCol
   return std::pair<bool,DefoPointCollection::iterator>( isFound, result );
 } 
 
-///
-///
-///  
 const std::pair<bool,DefoPointCollection::const_iterator> 
-DefoRecoSurface::findPointByIndex( DefoPointCollection const& points, std::pair<int,int> const& index ) const {
-
+DefoRecoSurface::findPointByIndex(DefoPointCollection const& points,
+                                  std::pair<int,int> const& index ) const
+{
   DefoPointCollection::const_iterator it = points.begin();
   bool isFound = false;
 
-  for( ; it < points.end(); ++it ) {
-    if( index == it->getIndex() ) { isFound = true; break; }
+  for( ; it < points.end(); ++it) {
+    if (index == it->getIndex()) {
+      isFound = true;
+      break;
+    }
   }
 
-  return std::pair<bool,DefoPointCollection::const_iterator>( isFound, it );
-
+  return std::pair<bool,DefoPointCollection::const_iterator>(isFound, it);
 }
-
-
 
 ///
 /// determine and apply a common offset to all spline sets in the field

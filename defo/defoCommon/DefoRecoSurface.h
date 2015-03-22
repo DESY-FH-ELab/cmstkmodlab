@@ -41,6 +41,7 @@ class DefoRecoSurface : public QObject
   void dump();
 
  private:
+
   const DefoSplineField createXYSplines( DefoPointCollection const& );
   const DefoSplineField createZSplines( DefoPointCollection const&, DefoPointCollection const& );
   const DefoSplineField createZSplinesOld( DefoPointCollection const&, DefoPointCollection const& );

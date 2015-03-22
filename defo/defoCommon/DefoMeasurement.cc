@@ -28,8 +28,8 @@ const QDateTime & DefoMeasurement::getTimeStamp() const {
   return timestamp_;
 }
 
-QImage DefoMeasurement::getImage() const {
-
+QImage DefoMeasurement::getImage() const
+{
   return image_;
 }
 
@@ -369,15 +369,9 @@ void DefoMeasurement::acquireData(const DefoPointRecognitionModel* model) {
 
   pointRecognitionThresholds_.clear();
 
-  pointRecognitionThresholds_.push_back(
-     model->getThresholdValue(DefoPointRecognitionModel::THRESHOLD_1)
-  );
-  pointRecognitionThresholds_.push_back(
-     model->getThresholdValue(DefoPointRecognitionModel::THRESHOLD_2)
-  );
-  pointRecognitionThresholds_.push_back(
-     model->getThresholdValue(DefoPointRecognitionModel::THRESHOLD_3)
-  );
+  pointRecognitionThresholds_.push_back(model->getThresholdValue(DefoPointRecognitionModel::THRESHOLD_1));
+  pointRecognitionThresholds_.push_back(model->getThresholdValue(DefoPointRecognitionModel::THRESHOLD_2));
+  pointRecognitionThresholds_.push_back(model->getThresholdValue(DefoPointRecognitionModel::THRESHOLD_3));
   
   pointRecognitionHalfSquareWidth_ = model->getHalfSquareWidth();
 }
