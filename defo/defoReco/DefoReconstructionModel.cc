@@ -3,6 +3,7 @@
 #include <cmath>
 
 #include "ApplicationConfig.h"
+#include "nqlogger.h"
 
 #include "DefoReconstructionModel.h"
 #include "DefoPointSaver.h"
@@ -108,7 +109,10 @@ void DefoReconstructionModel::defoColorChanged(float hue, float saturation) {
   emit setupChanged();
 }
 
-void DefoReconstructionModel::geometryChanged() {
+void DefoReconstructionModel::geometryChanged()
+{
+  NQLog("DefoReconstructionModel::geometryChanged()", NQLog::Message) << "start";
+
   std::cout << "void DefoReconstructionModel::geometryChanged()" << std::endl;
 
   double angle1 = geometryModel_->getAngle1();
@@ -119,25 +123,39 @@ void DefoReconstructionModel::geometryChanged() {
   double height1 = geometryModel_->getHeight1();
   double height2 = geometryModel_->getHeight2();
 
+  NQLog("DefoReconstructionModel", NQLog::Message) << "angle1 [deg]  = " << angle1;
+  NQLog("DefoReconstructionModel", NQLog::Message) << "angle1 [rad]  = " << angle1Rad;
+  NQLog("DefoReconstructionModel", NQLog::Message) << "angle2 [deg]  = " << angle2;
+  NQLog("DefoReconstructionModel", NQLog::Message) << "angle2 [rad]  = " << angle2Rad;
+  NQLog("DefoReconstructionModel", NQLog::Message) << "distance [mm] = " << distance;
+  NQLog("DefoReconstructionModel", NQLog::Message) << "height1 [mm]   = " << height1;
+  NQLog("DefoReconstructionModel", NQLog::Message) << "height2 [mm]   = " << height2;
+
   // height of camera rotation point over surface
   double heightCameraToSurface = height1 - height2 - distance * std::sin(angle2Rad);
+  NQLog("DefoReconstructionModel", NQLog::Message) << "heightCameraToSurface [mm] = " << heightCameraToSurface;
 
   // viewing distance from camera to surface
   // (assumption: camera is mounted perpendicular to frame)
   double distanceCamera = heightCameraToSurface / std::cos(angle2Rad);
+  NQLog("DefoReconstructionModel", NQLog::Message) << "distanceCamera [mm] = " << distanceCamera;
 
   reco_->setNominalCameraDistance(distanceCamera / 1e3);
 
   // distance from grid to surface calculated as the shortest distance
   // between grid and the point on the surface under the grid roation axis
   double distanceGrid = (height1 - height2) * std::cos(angle1Rad);
+  NQLog("DefoReconstructionModel", NQLog::Message) << "distanceGrid [mm] = " << distanceGrid;
 
   reco_->setNominalGridDistance(distanceGrid / 1e3);
 
   // not really sure about this one...
   reco_->setNominalViewingAngle(angle2Rad);
+  NQLog("DefoReconstructionModel", NQLog::Message) << "viewing angle [rad] = " << angle2Rad;
 
   reco_->calculateHelpers();
+
+  NQLog("DefoReconstructionModel::geometryChanged()", NQLog::Message) << "end";
 
   emit setupChanged();
 }

@@ -29,12 +29,20 @@ DefoRecoSurface::DefoRecoSurface(QObject *parent)
 ///
 void DefoRecoSurface::calculateHelpers( void )
 {
-  heightAboveSensor_ = nominalCameraDistance_ * sin( nominalViewingAngle_ );
-  if( tan( nominalViewingAngle_ ) != 0. ) horizontalDistanceToSensor_ = heightAboveSensor_ / tan( nominalViewingAngle_ );
-  else {
+  NQLog("DefoRecoSurface::calculateHelpers()", NQLog::Message) << "start";
+
+  heightAboveSensor_ = nominalCameraDistance_ * std::sin(nominalViewingAngle_);
+  NQLog("DefoRecoSurface", NQLog::Message) << "nominalCameraDistance [mm] = " << nominalCameraDistance_;
+  
+  if (tan( nominalViewingAngle_) != 0.) {
+    horizontalDistanceToSensor_ = heightAboveSensor_ / tan( nominalViewingAngle_ );
+    NQLog("DefoRecoSurface", NQLog::Message) << "horizontalDistanceToSensor [mm] = " << horizontalDistanceToSensor_;
+  } else {
     std::cerr << " [DefoRecoSurface::calculateHelpers] ** ERROR: tan(delta) is zero, no chance for proper reconstruction. Check parameters in configuration file. Abort." << std::endl;
     throw;
   }
+
+  NQLog("DefoRecoSurface::calculateHelpers()", NQLog::Message) << "end";
 }
 
 ///
@@ -169,7 +177,17 @@ const DefoSplineField DefoRecoSurface::createZSplines(DefoPointCollection const&
 
         // convert from pixel units to real units on module
 
-        // set blue point at x=0,y=0
+	// new version
+	double px = aPoint.getX() - 0.5 * imageSize_.first;
+	double py = aPoint.getY() - 0.5 * imageSize_.second;
+	double alphaX = std::atan2(px * pitchX_, focalLength_);
+	double alphaY = std::atan2(py * pitchY_, focalLength_);
+	double betaX = M_PI/2.0;
+	double betaY = M_PI/2.0 - nominalViewingAngle_;
+	//double x = nominalCameraDistance_ * std::sin(alphaX) / std::sin(betaX - alphaX);
+	//double y = nominalCameraDistance_ * std::sin(alphaY) / std::sin(betaY - alphaY);
+
+	// set blue point at x=0,y=0
         double x = (aPoint.getX() - bluePointByIndex.second->getX()) * pitchX_ * nominalCameraDistance_ / focalLength_;
         double y = (aPoint.getY() - bluePointByIndex.second->getY()) * pitchY_ * nominalCameraDistance_ / focalLength_;
         aPoint.setPosition(x, y);
