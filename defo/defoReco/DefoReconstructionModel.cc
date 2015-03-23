@@ -227,6 +227,8 @@ void DefoReconstructionModel::reconstruct()
   defoSaver.writeXMLPoints(defoCollection_);
 
   reco_->setFocalLength(refMeasurement_->getFocalLength());
+  NQLog("DefoReconstructionModel::reconstruct()", NQLog::Message) << "focalLength [mm]   = " << refMeasurement_->getFocalLength();
+
   emit incrementProgress();
 
   // reco_->dump();
