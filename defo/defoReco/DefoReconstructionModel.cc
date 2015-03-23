@@ -140,14 +140,14 @@ void DefoReconstructionModel::geometryChanged()
   double distanceCamera = heightCameraToSurface / std::cos(angle2Rad);
   NQLog("DefoReconstructionModel", NQLog::Message) << "distanceCamera [mm] = " << distanceCamera;
 
-  reco_->setNominalCameraDistance(distanceCamera / 1e3);
+  reco_->setNominalCameraDistance(distanceCamera);
 
   // distance from grid to surface calculated as the shortest distance
   // between grid and the point on the surface under the grid roation axis
   double distanceGrid = (height1 - height2) * std::cos(angle1Rad);
   NQLog("DefoReconstructionModel", NQLog::Message) << "distanceGrid [mm] = " << distanceGrid;
 
-  reco_->setNominalGridDistance(distanceGrid / 1e3);
+  reco_->setNominalGridDistance(distanceGrid);
 
   // not really sure about this one...
   reco_->setNominalViewingAngle(angle2Rad);
