@@ -1,14 +1,13 @@
-#include "DefoConfig.h"
+#include "ApplicationConfig.h"
 
 #include "DefoSpline.h"
-
 
 ///
 ///
 ///
 DefoSplineSetBase::DefoSplineSetBase( DefoPoint::Axis axis ) {
 
-  debugLevel_ = DefoConfig::instance()->getValue<unsigned int>( "DEBUG_LEVEL" );
+  debugLevel_ = ApplicationConfig::instance()->getValue<unsigned int>( "DEBUG_LEVEL" );
   axis_ = axis;
 
 }

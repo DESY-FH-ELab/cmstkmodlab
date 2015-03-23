@@ -14,8 +14,8 @@
 #include "DefoJulaboModel.h"
 #include "DefoJulaboWidget.h"
 
-#include "DefoKeithleyModel.h"
-#include "DefoKeithleyWidget.h"
+#include "KeithleyModel.h"
+#include "KeithleyWidget.h"
 
 #include "DefoCameraModel.h"
 #include "DefoCameraWidget.h"

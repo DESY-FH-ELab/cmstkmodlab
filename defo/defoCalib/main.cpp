@@ -11,7 +11,8 @@
 #include <QString>
 #include <QDir>
 
-#include <DefoConfig.h>
+#include <ApplicationConfig.h>
+
 #include <DefoGeometryModel.h>
 #include <DefoPoint.h>
 #include <DefoRecoSurface.h>
@@ -203,9 +204,9 @@ int main(int argc, char *argv[])
     }
  
     if (cfgFile.empty()) {
-      DefoConfig::instance(std::string(Defo::CMSTkModLabBasePath) + "/defo/defo.cfg");
+      ApplicationConfig::instance(std::string(Config::CMSTkModLabBasePath) + "/defo/defo.cfg");
     } else {
-      DefoConfig::instance(cfgFile);
+      ApplicationConfig::instance(cfgFile);
     }
 
     if (!parseODMX(dataPath, images)) {
@@ -226,8 +227,8 @@ int main(int argc, char *argv[])
 
     DefoRecoSurface reco;
 
-    reco.setPitchX(DefoConfig::instance()->getValue<double>("PIXEL_PITCH_X"));
-    reco.setPitchY(DefoConfig::instance()->getValue<double>("PIXEL_PITCH_Y"));
+    reco.setPitchX(ApplicationConfig::instance()->getValue<double>("PIXEL_PITCH_X"));
+    reco.setPitchY(ApplicationConfig::instance()->getValue<double>("PIXEL_PITCH_Y"));
 
     double angle1 = geometry.getAngle1();
     double angle1Rad = angle1 * M_PI / 180.;

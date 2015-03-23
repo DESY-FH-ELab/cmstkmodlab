@@ -6,7 +6,7 @@
 #include <QString>
 #include <QTimer>
 
-#include "DefoState.h"
+#include "DeviceState.h"
 
 #ifdef USE_FAKEIO
 #include "devices/Julabo/JulaboFP50Fake.h"
@@ -83,7 +83,7 @@ typedef Parameter<unsigned int> ParameterUInt;
   */
 class DefoJulaboModel :
     public QObject
-  , public DefoAbstractDeviceModel<JulaboFP50_t>
+  , public AbstractDeviceModel<JulaboFP50_t>
 {
 
   Q_OBJECT

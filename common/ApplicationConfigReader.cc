@@ -5,17 +5,18 @@
 
 #include "ApplicationConfigReader.h"
 
-ApplicationConfigReader::ApplicationConfigReader( const std::string & inputFileName ) {
-
+ApplicationConfigReader::ApplicationConfigReader( const std::string & inputFileName )
+{
   inputFileName_ = std::string( inputFileName );
 }
 
-ApplicationConfigReader::~ApplicationConfigReader() {
+ApplicationConfigReader::~ApplicationConfigReader()
+{
 
 }
 
-void ApplicationConfigReader::fill(std::map<std::string,std::string> &keyvalueMap) {
-
+void ApplicationConfigReader::fill(std::map<std::string,std::string> &keyvalueMap)
+{
   std::ifstream file( inputFileName_.c_str(), std::ios::in );
   if( !file.good() ) {
     std::cerr << " [ApplicationConfigReader::openAndCheckFile] ** ERROR: failed to open file: "

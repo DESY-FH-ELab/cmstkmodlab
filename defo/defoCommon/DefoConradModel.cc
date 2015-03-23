@@ -2,7 +2,7 @@
 
 DefoConradModel::DefoConradModel(QObject *parent) :
     QObject(parent)
-  , DefoAbstractDeviceModel()
+  , AbstractDeviceModel()
   , switchStates_(8, OFF)
 {
 
@@ -22,7 +22,7 @@ DefoConradModel::~DefoConradModel() {
   Will try to enable communication with the switch.
   */
 void DefoConradModel::setDeviceEnabled(bool enabled) {
-  DefoAbstractDeviceModel::setDeviceEnabled(enabled);
+  AbstractDeviceModel::setDeviceEnabled(enabled);
 }
 
 void DefoConradModel::enableSwitch( DefoConradModel::DeviceSwitch device ) {

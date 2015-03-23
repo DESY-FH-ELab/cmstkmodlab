@@ -7,7 +7,7 @@
 #include <QFile>
 #include <QTextStream>
 
-#include "DefoConfig.h"
+#include "ApplicationConfig.h"
 
 #include "DefoGeometryWidget.h"
 
@@ -125,7 +125,7 @@ DefoGeometryWidget::DefoGeometryWidget(
           SLOT(geometryChanged()));
 
   sketchSource_ = "";
-  QString filename(Defo::CMSTkModLabBasePath.c_str());
+  QString filename(Config::CMSTkModLabBasePath.c_str());
   QFile file(filename + "/share/ODMSketch.svg");
   if (file.open(QIODevice::ReadOnly | QIODevice::Text)) {
     QTextStream stream(&file);

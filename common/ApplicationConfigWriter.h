@@ -7,11 +7,12 @@
 
 #include <QObject>
 
-class ApplicationConfigWriter : public QObject {
-
+class ApplicationConfigWriter : public QObject
+{
   Q_OBJECT
 
  public:
+
   ApplicationConfigWriter( const std::string & filename );
   ~ApplicationConfigWriter();
 
@@ -19,6 +20,7 @@ class ApplicationConfigWriter : public QObject {
   std::string getFileName( void ) { return outputFileName_; }
 
  private:
+
   std::string outputFileName_;
   
   void writeMerge(std::map<std::string,std::string> &keyvalueMap);

@@ -2,13 +2,20 @@
 
 #include <QGroupBox>
 #include <QFileDialog>
+#include <QApplication>
 
-#include "DefoConfig.h"
+#include "ApplicationConfig.h"
+
 #include "DefoMainWindow.h"
 
 DefoMainWindow::DefoMainWindow(QWidget *parent) :
     QMainWindow(parent)
 {
+  ApplicationConfig* config = ApplicationConfig::instance();
+
+  connect(QApplication::instance(), SIGNAL(aboutToQuit()),
+          this, SLOT(quit()));
+
   // CONRAD MODEL
   conradModel_ = new DefoConradModel(this);
 
@@ -16,7 +23,8 @@ DefoMainWindow::DefoMainWindow(QWidget *parent) :
   julaboModel_ = new DefoJulaboModel(5);
 
   // KEITHLEY MODEL
-  keithleyModel_ = new DefoKeithleyModel(10);
+  keithleyModel_ = new KeithleyModel(config->getValue<std::string>("KeithleyDevice").c_str(),
+                                     20, this);
 
   // MEASUREMENT MODEL
   listModel_ = new DefoMeasurementListModel();
@@ -142,18 +150,18 @@ DefoMainWindow::DefoMainWindow(QWidget *parent) :
   // read default settings
   pointModel_->setThresholdValue(
         DefoPointRecognitionModel::THRESHOLD_1
-        , DefoConfig::instance()->getValue<int>( "STEP1_THRESHOLD" )
+        , ApplicationConfig::instance()->getValue<int>( "STEP1_THRESHOLD" )
         );
   pointModel_->setThresholdValue(
         DefoPointRecognitionModel::THRESHOLD_2
-        , DefoConfig::instance()->getValue<int>( "STEP2_THRESHOLD" )
+        , ApplicationConfig::instance()->getValue<int>( "STEP2_THRESHOLD" )
         );
   pointModel_->setThresholdValue(
         DefoPointRecognitionModel::THRESHOLD_3
-        , DefoConfig::instance()->getValue<int>( "STEP3_THRESHOLD" )
+        , ApplicationConfig::instance()->getValue<int>( "STEP3_THRESHOLD" )
         );
   pointModel_->setHalfSquareWidth(
-        DefoConfig::instance()->getValue<int>( "HALF_SQUARE_WIDTH" )
+        ApplicationConfig::instance()->getValue<int>( "HALF_SQUARE_WIDTH" )
         );
 
   DefoPointRecognitionWidget * pointWidget =
@@ -173,12 +181,18 @@ DefoMainWindow::DefoMainWindow(QWidget *parent) :
   temperatureWidget->setLayout(layout);
 
   // KEITHLEY MODEL
-  DefoKeithleyWidget *keithleyWidget = new DefoKeithleyWidget(keithleyModel_);
+  KeithleyWidget *keithleyWidget = new KeithleyWidget(keithleyModel_);
   layout->addWidget( keithleyWidget );
 
   tabWidget_->addTab(temperatureWidget, "Temperature");
 
   setCentralWidget(tabWidget_);
+}
+
+void DefoMainWindow::quit()
+{
+  ApplicationConfig* config = ApplicationConfig::instance();
+  config->safe(std::string(Config::CMSTkModLabBasePath) + "/defo/defo.cfg");
 }
 
 void DefoMainWindow::exportMeasurement() {

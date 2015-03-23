@@ -13,8 +13,6 @@
 #include "DefoPoint.h"
 #include "DefoSurface.h"
 #include "DefoSpline.h"
-#include "DefoConfigReader.h"
-
 
 ///
 /// perform surface reconstruction
@@ -37,12 +35,14 @@ class DefoRecoSurface : public QObject
   void setPitchX( double p ) { pitchX_ = p; }
   void setPitchY( double p ) { pitchY_ = p; }
   void setFocalLength( double l ) { focalLength_ = l; }
+  void setImageSize(std::pair<double, double> imageSize) { imageSize_ = imageSize; }
   std::vector<DefoPoint> const& getIndexedPoints( void ) { return indexedPoints_; }
   void calculateHelpers(void);
 
   void dump();
 
  private:
+
   const DefoSplineField createXYSplines( DefoPointCollection const& );
   const DefoSplineField createZSplines( DefoPointCollection const&, DefoPointCollection const& );
   const DefoSplineField createZSplinesOld( DefoPointCollection const&, DefoPointCollection const& );
@@ -67,6 +67,7 @@ class DefoRecoSurface : public QObject
   double pitchY_;
   double focalLength_;
   unsigned int debugLevel_;
+  std::pair<double, double> imageSize_;
   std::vector<DefoPoint> indexedPoints_;
 
 signals:

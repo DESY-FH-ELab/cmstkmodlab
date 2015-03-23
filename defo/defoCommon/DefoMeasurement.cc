@@ -28,9 +28,19 @@ const QDateTime & DefoMeasurement::getTimeStamp() const {
   return timestamp_;
 }
 
-QImage DefoMeasurement::getImage() const {
-
+QImage DefoMeasurement::getImage() const
+{
   return image_;
+}
+
+int DefoMeasurement::getWidth() const
+{
+  return image_.width();
+}
+
+int DefoMeasurement::getHeight() const
+{
+  return image_.height();
 }
 
 /**
@@ -369,15 +379,9 @@ void DefoMeasurement::acquireData(const DefoPointRecognitionModel* model) {
 
   pointRecognitionThresholds_.clear();
 
-  pointRecognitionThresholds_.push_back(
-     model->getThresholdValue(DefoPointRecognitionModel::THRESHOLD_1)
-  );
-  pointRecognitionThresholds_.push_back(
-     model->getThresholdValue(DefoPointRecognitionModel::THRESHOLD_2)
-  );
-  pointRecognitionThresholds_.push_back(
-     model->getThresholdValue(DefoPointRecognitionModel::THRESHOLD_3)
-  );
+  pointRecognitionThresholds_.push_back(model->getThresholdValue(DefoPointRecognitionModel::THRESHOLD_1));
+  pointRecognitionThresholds_.push_back(model->getThresholdValue(DefoPointRecognitionModel::THRESHOLD_2));
+  pointRecognitionThresholds_.push_back(model->getThresholdValue(DefoPointRecognitionModel::THRESHOLD_3));
   
   pointRecognitionHalfSquareWidth_ = model->getHalfSquareWidth();
 }
@@ -404,7 +408,7 @@ void DefoMeasurement::acquireData(const DefoJulaboModel* model) {
   bathTemperature_ = model->getBathTemperature();
 }
 
-void DefoMeasurement::acquireData(const DefoKeithleyModel* model) {
+void DefoMeasurement::acquireData(const KeithleyModel* model) {
 
   keithleyState_ = model->getDeviceState();
   if (keithleyState_ != READY) return;

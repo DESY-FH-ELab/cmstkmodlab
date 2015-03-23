@@ -8,12 +8,16 @@ TARGET 	      = ReadKeithley2700
 
 SOURCE        = ReadKeithley2700
 
-ARCHITECTURE := $(shell uname)
+ARCHITECTURE := @architecture@
 
-CXXFLAGS      = -Wall -fPIC -I$(BASEPATH)/devices/keithley
+CXXFLAGS      = -Wall -fPIC -std=c++0x -I$(BASEPATH)/devices/keithley
 
 ifeq ($(USEFAKEDEVICES),1)
 CXXFLAGS     += -DUSE_FAKEIO
+endif
+
+ifeq ($(ARCHITECTURE),Darwin)
+CXXFLAGS     += -I/opt/local/include
 endif
 
 LIBS          = -L@basepath@/devices/lib -lTkModLabKeithley

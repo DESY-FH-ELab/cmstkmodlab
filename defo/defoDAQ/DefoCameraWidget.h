@@ -13,7 +13,7 @@
 #include <QPlainTextEdit>
 #include <QSpinBox>
 
-#include "DefoState.h"
+#include "DeviceState.h"
 #include "DefoCameraModel.h"
 #include "DefoCameraOptionComboBox.h"
 

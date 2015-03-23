@@ -41,8 +41,6 @@ class DefoRecoMainWindow : public QMainWindow
 public:
   explicit DefoRecoMainWindow(QWidget *parent = 0);
 
-public slots:
-
 protected:
 
   QDir currentDir_;
@@ -78,6 +76,8 @@ protected:
   DefoReconstructionModel* reconstructionModel_;
 
 protected slots:
+
+  void quit();
   void loadMeasurementButtonClicked();
   void saveMeasurementButtonClicked();
   void exportMeasurementButtonClicked();

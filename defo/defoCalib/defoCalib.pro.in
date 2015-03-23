@@ -26,14 +26,16 @@ else {
 
 }
 
-QT       += core xml
+QT       += core widgets xml
 
 TARGET = defoCalib
-DEPENDPATH += ../defoCommon
+DEPENDPATH += ../../common ../defoCommon
 INCLUDEPATH += .
 INCLUDEPATH += ..
 INCLUDEPATH += @basepath@
+INCLUDEPATH += @basepath@/common
 INCLUDEPATH += @basepath@/defo/defoCommon
+
 CONFIG   += console
 CONFIG   -= app_bundle
 

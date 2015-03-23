@@ -1,6 +1,7 @@
-#include "DefoConfig.h"
-#include "DefoRecoSurface.h"
+#include "ApplicationConfig.h"
+#include "nqlogger.h"
 
+#include "DefoRecoSurface.h"
 
 ///
 ///
@@ -9,15 +10,15 @@ DefoRecoSurface::DefoRecoSurface(QObject *parent)
   :QObject(parent)
 {
   // read parameters
-  spacingEstimate_ = DefoConfig::instance()->getValue<int>( "SPACING_ESTIMATE" );
-  searchPathHalfWidth_ = DefoConfig::instance()->getValue<int>( "SEARCH_PATH_HALF_WIDTH" );
-  nominalGridDistance_ = DefoConfig::instance()->getValue<double>( "NOMINAL_GRID_DISTANCE" );
-  nominalCameraDistance_ = DefoConfig::instance()->getValue<double>( "NOMINAL_CAMERA_DISTANCE" );
-  nominalViewingAngle_ = DefoConfig::instance()->getValue<double>( "NOMINAL_VIEWING_ANGLE" );
-  pitchX_= DefoConfig::instance()->getValue<double>( "PIXEL_PITCH_X" );
-  pitchY_= DefoConfig::instance()->getValue<double>( "PIXEL_PITCH_Y" );
-  focalLength_= DefoConfig::instance()->getValue<double>( "LENS_FOCAL_LENGTH" );
-  debugLevel_ = DefoConfig::instance()->getValue<unsigned int>( "DEBUG_LEVEL" );
+  spacingEstimate_ = ApplicationConfig::instance()->getValue<int>( "SPACING_ESTIMATE" );
+  searchPathHalfWidth_ = ApplicationConfig::instance()->getValue<int>( "SEARCH_PATH_HALF_WIDTH" );
+  nominalGridDistance_ = ApplicationConfig::instance()->getValue<double>( "NOMINAL_GRID_DISTANCE" );
+  nominalCameraDistance_ = ApplicationConfig::instance()->getValue<double>( "NOMINAL_CAMERA_DISTANCE" );
+  nominalViewingAngle_ = ApplicationConfig::instance()->getValue<double>( "NOMINAL_VIEWING_ANGLE" );
+  pitchX_= ApplicationConfig::instance()->getValue<double>( "PIXEL_PITCH_X" );
+  pitchY_= ApplicationConfig::instance()->getValue<double>( "PIXEL_PITCH_Y" );
+  focalLength_= ApplicationConfig::instance()->getValue<double>( "LENS_FOCAL_LENGTH" );
+  debugLevel_ = ApplicationConfig::instance()->getValue<unsigned int>( "DEBUG_LEVEL" );
 
   // to be called after cfg reading
   calculateHelpers();
@@ -80,7 +81,7 @@ const DefoSurface DefoRecoSurface::reconstruct(DefoPointCollection& currentPoint
 const DefoSplineField DefoRecoSurface::createZSplines(DefoPointCollection const& currentPoints,
                                                       DefoPointCollection const& referencePoints)
 {
-  if( debugLevel_ >= 3 ) std::cout << " [DefoRecoSurface::createZSplines] =3= Starting" << std::endl;
+  NQLog("DefoRecoSurface", NQLog::Message) << "createZSplines starting";
 
   DefoSplineField theOutput;
 
@@ -90,9 +91,8 @@ const DefoSplineField DefoRecoSurface::createZSplines(DefoPointCollection const&
     pitchY_ / focalLength_ * ( nominalGridDistance_ + nominalCameraDistance_ ) / 2. / nominalGridDistance_
   );
 
-  if( debugLevel_ >= 2 )
-    std::cout << " [DefoRecoSurface::createZSplines] =2= Will apply nominal correction factors: "
-		      << correctionFactors.first << " , " << correctionFactors.second << std::endl;
+  NQLog("DefoRecoSurface", NQLog::Message) << "nominal correction factors: "
+      << correctionFactors.first << " , " << correctionFactors.second;
 
   // determine index ranges in current points
   // (could also take ref points)
@@ -106,15 +106,36 @@ const DefoSplineField DefoRecoSurface::createZSplines(DefoPointCollection const&
     if( it->getIndex().first  > indexRangeX.second ) indexRangeX.second = it->getIndex().first;
     if( it->getIndex().second < indexRangeY.first )  indexRangeY.first  = it->getIndex().second;
     if( it->getIndex().second > indexRangeY.second ) indexRangeY.second = it->getIndex().second;
+    /*
+    indexRangeXref.first = std::min(it->getIndex().first, indexRangeXref.first);
+    indexRangeXref.second = std::max(it->getIndex().first, indexRangeXref.second);
+    indexRangeYref.first = std::min(it->getIndex().first, indexRangeYref.first);
+    indexRangeYref.second = std::max(it->getIndex().first, indexRangeYref.second);
+     */
   }
   
-  if( debugLevel_ >= 2 ) std::cout << " [DefoRecoSurface::createZSplines] =2= Found index range: x: " << indexRangeX.first
-				   << " .. " << indexRangeX.second << " y: " << indexRangeY.first << " .. " << indexRangeY.second << std::endl;
+  /*
+  std::pair<int,int> indexRangeXref = std::pair<int,int>( 0, 0 );
+  std::pair<int,int> indexRangeYref = std::pair<int,int>( 0, 0 );
+  for( DefoPointCollection::const_iterator it = referencePoints.begin(); it < referencePoints.end(); ++it ) {
+    indexRangeXref.first = std::min(it->getIndex().first, indexRangeXref.first);
+    indexRangeXref.second = std::max(it->getIndex().first, indexRangeXref.second);
+    indexRangeYref.first = std::min(it->getIndex().first, indexRangeYref.first);
+    indexRangeYref.second = std::max(it->getIndex().first, indexRangeYref.second);
+  }
+  indexRangeX.first = std::max(indexRangeXref.first, indexRangeX.first);
+  indexRangeX.second = std::min(indexRangeXref.second, indexRangeX.second);
+  indexRangeY.first = std::max(indexRangeYref.first, indexRangeY.first);
+  indexRangeY.second = std::min(indexRangeYref.second, indexRangeY.second);
+   */
 
+  NQLog("DefoRecoSurface", NQLog::Message) << "found index range:";
+  NQLog("DefoRecoSurface", NQLog::Message) << " x: " << indexRangeX.first << " .. " << indexRangeX.second;
+  NQLog("DefoRecoSurface", NQLog::Message) << " y: " << indexRangeY.first << " .. " << indexRangeY.second;
 
   // we need the blue point (from *ref*) as geom. reference, it always has index 0,0
-  std::pair<bool,DefoPointCollection::const_iterator> bluePointByIndex = findPointByIndex( referencePoints, std::pair<int,int>( 0, 0 ) );
-
+  std::pair<bool,DefoPointCollection::const_iterator> bluePointByIndex =
+      findPointByIndex(referencePoints, std::pair<int,int>( 0, 0 ));
 
   // now attach the points to the spline sets according to their indices
   std::pair<int,int> index = std::pair<int,int>( indexRangeX.first, indexRangeY.first );
@@ -128,42 +149,47 @@ const DefoSplineField DefoRecoSurface::createZSplines(DefoPointCollection const&
 
     for( ; index.second <= indexRangeY.second; ++index.second ) {
       
-      std::pair<bool,DefoPointCollection::const_iterator> currentPointByIndex   = findPointByIndex( currentPoints, index );
-      std::pair<bool,DefoPointCollection::const_iterator> referencePointByIndex = findPointByIndex( referencePoints, index );
+      std::pair<bool,DefoPointCollection::const_iterator> currentPointByIndex =
+          findPointByIndex(currentPoints, index);
+
+      std::pair<bool,DefoPointCollection::const_iterator> referencePointByIndex =
+          findPointByIndex(referencePoints, index);
       
       // check if a point with that index exists in both images
       // (it should then have been a reflection from the same source)
-      if( currentPointByIndex.first && referencePointByIndex.first ) {
+      if (currentPointByIndex.first && referencePointByIndex.first) {
 
-	// this point is abstract and lives where the *ref* point is on the module
-	// (make a copy)
-	DefoPoint aPoint = DefoPoint( *(referencePointByIndex.second) );
+        // this point is abstract and lives where the *ref* point is on the module
+        // (make a copy)
+        DefoPoint aPoint = DefoPoint(*(referencePointByIndex.second));
 
-	// the attached slope (= tan(alpha)) is derived from the difference in y position
-	aPoint.setSlope( correctionFactors.second * ( *(currentPointByIndex.second) - *(referencePointByIndex.second) ).getY() ); // ##### check
+        // the attached slope (= tan(alpha)) is derived from the difference in y position
+        double dY = (*(currentPointByIndex.second)).getY() - (*(referencePointByIndex.second)).getY();
+        aPoint.setSlope( correctionFactors.second * dY); // ##### check
 
-	// convert from pixel units to real units on module
+        // convert from pixel units to real units on module
 
-	// set blue point at x=0,y=0
-	aPoint.setPosition( ( aPoint.getX() - bluePointByIndex.second->getX() ) * pitchX_ * nominalCameraDistance_ / focalLength_ ,
-		      ( aPoint.getY() - bluePointByIndex.second->getY() ) * pitchY_ * nominalCameraDistance_ / focalLength_ );
+        // set blue point at x=0,y=0
+        double x = (aPoint.getX() - bluePointByIndex.second->getX()) * pitchX_ * nominalCameraDistance_ / focalLength_;
+        double y = (aPoint.getY() - bluePointByIndex.second->getY()) * pitchY_ * nominalCameraDistance_ / focalLength_;
+        aPoint.setPosition(x, y);
 
-// 	aPoint.setXY( aPoint.getX() * pitchX_ * nominalCameraDistance_ / focalLength_ , // old version
-// 		      aPoint.getY() * pitchY_ * nominalCameraDistance_ / focalLength_ );
+        // old version
+        /*
+        double x = aPoint.getX() * pitchX_ * nominalCameraDistance_ / focalLength_;
+        double y = aPoint.getY() * pitchY_ * nominalCameraDistance_ / focalLength_;
+        aPoint.setPosition(x, y);
+         */
 
+        aSplineSet.addPoint( aPoint );
 
-	aSplineSet.addPoint( aPoint );
+        NQLog("DefoRecoSurface", NQLog::Spam) << "found shared point along y with indices: "
+            << index.first << " , " << index.second;
 
-	if( debugLevel_ >= 3 ) std::cout << " [DefoRecoSurface::createZSplines] =3= Found shared point along-y with indices: "
-					 << index.first << " , " << index.second << std::endl;
-
+      } else {
+        NQLog("DefoRecoSurface", NQLog::Warning) << "Non-shared point along y in current image with indices: "
+            << index.first << " , " << index.second;
       }
-
-      else {
-	if( debugLevel_ >= 2 ) std::cout << " [DefoRecoSurface::createZSplines] =2= Non-shared point along-y in current image with indices: "
-					 << index.first << " , " << index.second << std::endl;
-      }
-
     }
     
     // check if there are enough points attached to the set (min 2)
@@ -173,12 +199,8 @@ const DefoSplineField DefoRecoSurface::createZSplines(DefoPointCollection const&
     aSplineSet.doFitZ();
     
     // attach to output field (as *second*!!)
-    theOutput.second.push_back( aSplineSet );
-
+    theOutput.second.push_back(aSplineSet);
   }
-
-
-
 
   // then along-x
   index = std::pair<int,int>( indexRangeX.first, indexRangeY.first );
@@ -191,41 +213,48 @@ const DefoSplineField DefoRecoSurface::createZSplines(DefoPointCollection const&
 
     for( ; index.first <= indexRangeX.second; ++index.first ) {
       
-      std::pair<bool,DefoPointCollection::const_iterator> currentPointByIndex   = findPointByIndex( currentPoints, index );
-      std::pair<bool,DefoPointCollection::const_iterator> referencePointByIndex = findPointByIndex( referencePoints, index );
+      std::pair<bool,DefoPointCollection::const_iterator> currentPointByIndex =
+          findPointByIndex( currentPoints, index );
+
+      std::pair<bool,DefoPointCollection::const_iterator> referencePointByIndex =
+          findPointByIndex( referencePoints, index );
       
       // check if a point with that index exists in both images
       // (it should then have been a reflection from the same source)
-      if( currentPointByIndex.first && referencePointByIndex.first ) {
+      if (currentPointByIndex.first && referencePointByIndex.first) {
 
-	// this point is abstract and lives where the ref point is on the module
-	// (make a copy)
-	DefoPoint aPoint = DefoPoint( *(referencePointByIndex.second) );
+        // this point is abstract and lives where the ref point is on the module
+        // (make a copy)
+        DefoPoint aPoint = DefoPoint( *(referencePointByIndex.second) );
 
-	// the attached slope (= tan(alpha)) is derived from the difference in y position
-	aPoint.setSlope( correctionFactors.first * ( *(currentPointByIndex.second) - *(referencePointByIndex.second) ).getX() ); // ##### check
+
+        // the attached slope (= tan(alpha)) is derived from the difference in x position
+        double dX = (*(currentPointByIndex.second)).getX() - (*(referencePointByIndex.second)).getX();
+        aPoint.setSlope( correctionFactors.first * dX); // ##### check
 	
-	// convert from pixel units to real units on module
+        // convert from pixel units to real units on module
 
-	// 	aPoint.setXY( aPoint.getX() * pitchX_ * nominalCameraDistance_ / focalLength_ , // old version
-	// 		      aPoint.getY() * pitchY_ * nominalCameraDistance_ / focalLength_ );
+        // set blue point at x=0,y=0
+        double x = (aPoint.getX() - bluePointByIndex.second->getX()) * pitchX_ * nominalCameraDistance_ / focalLength_;
+        double y = (aPoint.getY() - bluePointByIndex.second->getY()) * pitchY_ * nominalCameraDistance_ / focalLength_;
+        aPoint.setPosition(x, y);
 
-	// blue point at x=0,y=0
-	aPoint.setPosition( ( aPoint.getX() - bluePointByIndex.second->getX() ) * pitchX_ * nominalCameraDistance_ / focalLength_ ,
-		      ( aPoint.getY() - bluePointByIndex.second->getY() ) * pitchY_ * nominalCameraDistance_ / focalLength_ );
+        // old version
+        /*
+        double x = aPoint.getX() * pitchX_ * nominalCameraDistance_ / focalLength_;
+        double y = aPoint.getY() * pitchY_ * nominalCameraDistance_ / focalLength_;
+        aPoint.setPosition(x, y);
+         */
 
-	aSplineSet.addPoint( aPoint );
+        aSplineSet.addPoint( aPoint );
 
-	if( debugLevel_ >= 3 ) std::cout << " [DefoRecoSurface::createZSplines] =3= Found shared point along-x with indices: "
-					 << index.first << " , " << index.second << std::endl;
+        NQLog("DefoRecoSurface", NQLog::Spam) << "found shared point along x with indices: "
+            << index.first << " , " << index.second;
 
+      } else {
+        NQLog("DefoRecoSurface", NQLog::Warning) << "Non-shared point along x in current image with indices: "
+            << index.first << " , " << index.second;
       }
-
-      else {
-	if( debugLevel_ >= 2 ) std::cout << " [DefoRecoSurface::createZSplines] =2= non-shared point along-x in current image with indices: "
-					 << index.first << " , " << index.second << std::endl;
-      }
-
     }
 
     // check if there are enought points attached to the set (min 2)
@@ -235,15 +264,14 @@ const DefoSplineField DefoRecoSurface::createZSplines(DefoPointCollection const&
     aSplineSet.doFitZ();
     
     // attach to output field (as *second*!!)
-    theOutput.first.push_back( aSplineSet );
-
+    theOutput.first.push_back(aSplineSet);
   }
 
 
   // c'est tout
-  if( debugLevel_ >= 3 ) std::cout << " [DefoRecoSurface::createZSplines] =3= Done" << std::endl;
-  return theOutput;
+  NQLog("DefoRecoSurface", NQLog::Message) << "createZSplines done";
 
+  return theOutput;
 }
 
 
@@ -909,24 +937,22 @@ DefoRecoSurface::findClosestPointExcluded( DefoPoint const& aPoint, DefoPointCol
   return std::pair<bool,DefoPointCollection::iterator>( isFound, result );
 } 
 
-///
-///
-///  
 const std::pair<bool,DefoPointCollection::const_iterator> 
-DefoRecoSurface::findPointByIndex( DefoPointCollection const& points, std::pair<int,int> const& index ) const {
-
+DefoRecoSurface::findPointByIndex(DefoPointCollection const& points,
+                                  std::pair<int,int> const& index ) const
+{
   DefoPointCollection::const_iterator it = points.begin();
   bool isFound = false;
 
-  for( ; it < points.end(); ++it ) {
-    if( index == it->getIndex() ) { isFound = true; break; }
+  for( ; it < points.end(); ++it) {
+    if (index == it->getIndex()) {
+      isFound = true;
+      break;
+    }
   }
 
-  return std::pair<bool,DefoPointCollection::const_iterator>( isFound, it );
-
+  return std::pair<bool,DefoPointCollection::const_iterator>(isFound, it);
 }
-
-
 
 ///
 /// determine and apply a common offset to all spline sets in the field
