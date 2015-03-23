@@ -53,7 +53,7 @@ HEADERS += nqlogger.h \
            ScriptableIota.h \
            IotaWidget.h \
            ArduinoPresWidget.h \
-	   ScriptableArduinoPres.h \
+           ScriptableArduinoPres.h \
            ArduinoPresModel.h
            
 SOURCES += nqlogger.cpp \
