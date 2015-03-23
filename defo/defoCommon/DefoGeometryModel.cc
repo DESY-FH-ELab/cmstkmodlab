@@ -22,7 +22,7 @@ DefoGeometryModel::DefoGeometryModel(
 }
 
 void DefoGeometryModel::setAngle1(double v) {
-  bool valueChanged = (v==angle1_);
+  bool valueChanged = !(v==angle1_);
   angle1_ = v;
   if (valueChanged) {
     ApplicationConfig::instance()->setValue<double>("ANGLE1", angle1_);
@@ -31,7 +31,7 @@ void DefoGeometryModel::setAngle1(double v) {
 }
 
 void DefoGeometryModel::setAngle2(double v) {
-  bool valueChanged = (v==angle2_);
+  bool valueChanged = !(v==angle2_);
   angle2_ = v;
   if (valueChanged) {
     ApplicationConfig::instance()->setValue<double>("ANGLE2", angle2_);
@@ -40,7 +40,7 @@ void DefoGeometryModel::setAngle2(double v) {
 }
 
 void DefoGeometryModel::setDistance(double v) {
-  bool valueChanged = (v==distance_);
+  bool valueChanged = !(v==distance_);
   distance_ = v;
   if (valueChanged) {
     ApplicationConfig::instance()->setValue<double>("DISTANCE", distance_);
@@ -49,7 +49,7 @@ void DefoGeometryModel::setDistance(double v) {
 }
 
 void DefoGeometryModel::setHeight1(double v) {
-  bool valueChanged = (v==height1_);
+  bool valueChanged = !(v==height1_);
   height1_ = v;
   if (valueChanged) {
     ApplicationConfig::instance()->setValue<double>("HEIGHT1", height1_);
@@ -58,7 +58,7 @@ void DefoGeometryModel::setHeight1(double v) {
 }
 
 void DefoGeometryModel::setHeight2(double v) {
-  bool valueChanged = (v==height2_);
+  bool valueChanged = !(v==height2_);
   height2_ = v;
   if (valueChanged) {
     ApplicationConfig::instance()->setValue<double>("HEIGHT2", height2_);
