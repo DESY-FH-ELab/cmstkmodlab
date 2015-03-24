@@ -16,9 +16,13 @@ DefoGeometryModel::DefoGeometryModel(
 {
   angle1_ = ApplicationConfig::instance()->getValue<double>( "ANGLE1" );
   angle2_ = ApplicationConfig::instance()->getValue<double>( "ANGLE2" );
+  angle3_ = ApplicationConfig::instance()->getValue<double>( "ANGLE3" );
   distance_ = ApplicationConfig::instance()->getValue<double>( "DISTANCE" );
   height1_ = ApplicationConfig::instance()->getValue<double>( "HEIGHT1" );
   height2_ = ApplicationConfig::instance()->getValue<double>( "HEIGHT2" );
+
+  calibX_ = ApplicationConfig::instance()->getValue<double>( "CALIBX" );
+  calibY_ = ApplicationConfig::instance()->getValue<double>( "CALIBY" );
 }
 
 void DefoGeometryModel::setAngle1(double v) {
@@ -35,6 +39,15 @@ void DefoGeometryModel::setAngle2(double v) {
   angle2_ = v;
   if (valueChanged) {
     ApplicationConfig::instance()->setValue<double>("ANGLE2", angle2_);
+    emit geometryChanged();
+  }
+}
+
+void DefoGeometryModel::setAngle3(double v) {
+  bool valueChanged = !(v==angle3_);
+  angle3_ = v;
+  if (valueChanged) {
+    ApplicationConfig::instance()->setValue<double>("ANGLE3", angle3_);
     emit geometryChanged();
   }
 }
@@ -66,6 +79,24 @@ void DefoGeometryModel::setHeight2(double v) {
   }
 }
 
+void DefoGeometryModel::setCalibX(double v) {
+  bool valueChanged = !(v==calibX_);
+  calibX_ = v;
+  if (valueChanged) {
+    ApplicationConfig::instance()->setValue<double>("CALIBX", calibX_);
+    emit geometryChanged();
+  }
+}
+
+void DefoGeometryModel::setCalibY(double v) {
+  bool valueChanged = !(v==calibY_);
+  calibY_ = v;
+  if (valueChanged) {
+    ApplicationConfig::instance()->setValue<double>("CALIBY", calibY_);
+    emit geometryChanged();
+  }
+}
+
 void DefoGeometryModel::write(const QString& filename)
 {
   QFile file(filename);
@@ -80,9 +111,17 @@ void DefoGeometryModel::write(const QString& filename)
 
   stream.writeAttribute("angle1", QString().setNum(angle1_, 'e', 6));
   stream.writeAttribute("angle2", QString().setNum(angle2_, 'e', 6));
+  stream.writeAttribute("angle3", QString().setNum(angle3_, 'e', 6));
   stream.writeAttribute("distance", QString().setNum(distance_, 'e', 6));
   stream.writeAttribute("height1", QString().setNum(height1_, 'e', 6));
   stream.writeAttribute("height2", QString().setNum(height2_, 'e', 6));
+
+  stream.writeEndElement();
+
+  stream.writeStartElement("DefoCalib");
+
+  stream.writeAttribute("x", QString().setNum(calibX_, 'e', 6));
+  stream.writeAttribute("y", QString().setNum(calibY_, 'e', 6));
 
   stream.writeEndElement();
 
@@ -103,9 +142,18 @@ void DefoGeometryModel::read(const QString& filename) {
     if (stream.isStartElement() && stream.name()=="DefoGeometry") {
       angle1_ = stream.attributes().value("angle1").toString().toDouble();
       angle2_ = stream.attributes().value("angle2").toString().toDouble();
+      if (stream.attributes().hasAttribute("angle2")) {
+	angle3_ = stream.attributes().value("angle3").toString().toDouble();
+      } else {
+	angle3_ = 0;
+      }
       distance_ = stream.attributes().value("distance").toString().toDouble();
       height1_ = stream.attributes().value("height1").toString().toDouble();
       height2_ = stream.attributes().value("height2").toString().toDouble();
+    }
+    if (stream.isStartElement() && stream.name()=="DefoCalib") {
+      calibX_ = stream.attributes().value("x").toString().toDouble();
+      calibY_ = stream.attributes().value("y").toString().toDouble();
     }
   }
 

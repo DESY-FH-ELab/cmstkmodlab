@@ -68,8 +68,8 @@ DefoGeometryWidget::DefoGeometryWidget(
   angle1SpinBox_->setPrefix("a1 = ");
   angle1SpinBox_->setSuffix(" deg");
   angle1SpinBox_->setRange(10.0, 45.0);
-  angle1SpinBox_->setDecimals(1);
-  angle1SpinBox_->setSingleStep(0.1);
+  angle1SpinBox_->setDecimals(2);
+  angle1SpinBox_->setSingleStep(0.01);
   grid->addWidget(angle1SpinBox_, 0, 0);
   angle1SpinBox_->setValue(geometryModel_->getAngle1());
   connect(angle1SpinBox_, SIGNAL(valueChanged(double)),
@@ -79,12 +79,23 @@ DefoGeometryWidget::DefoGeometryWidget(
   angle2SpinBox_->setPrefix("a2 = ");
   angle2SpinBox_->setSuffix(" deg");
   angle2SpinBox_->setRange(10.0, 45.0);
-  angle2SpinBox_->setDecimals(1);
-  angle2SpinBox_->setSingleStep(0.1);
+  angle2SpinBox_->setDecimals(2);
+  angle2SpinBox_->setSingleStep(0.01);
   grid->addWidget(angle2SpinBox_, 0, 1);
   angle2SpinBox_->setValue(geometryModel_->getAngle2());
   connect(angle2SpinBox_, SIGNAL(valueChanged(double)),
           this, SLOT(angle2Changed(double)));
+
+  angle3SpinBox_ = new QDoubleSpinBox(inputs);
+  angle3SpinBox_->setPrefix("a2 = ");
+  angle3SpinBox_->setSuffix(" deg");
+  angle3SpinBox_->setRange(-10.0, 10.0);
+  angle3SpinBox_->setDecimals(2);
+  angle3SpinBox_->setSingleStep(0.01);
+  grid->addWidget(angle3SpinBox_, 0, 2);
+  angle3SpinBox_->setValue(geometryModel_->getAngle3());
+  connect(angle3SpinBox_, SIGNAL(valueChanged(double)),
+          this, SLOT(angle3Changed(double)));
 
   distanceSpinBox_ = new QDoubleSpinBox(inputs);
   distanceSpinBox_->setPrefix("d = ");
@@ -119,6 +130,26 @@ DefoGeometryWidget::DefoGeometryWidget(
   connect(height2SpinBox_, SIGNAL(valueChanged(double)),
           this, SLOT(height2Changed(double)));
 
+  calibXSpinBox_ = new QDoubleSpinBox(inputs);
+  calibXSpinBox_->setPrefix("cx = ");
+  calibXSpinBox_->setRange(0.75, 1.25);
+  calibXSpinBox_->setDecimals(6);
+  calibXSpinBox_->setSingleStep(0.001);
+  grid->addWidget(calibXSpinBox_, 2, 0);
+  calibXSpinBox_->setValue(geometryModel_->getCalibX());
+  connect(calibXSpinBox_, SIGNAL(valueChanged(double)),
+          this, SLOT(calibXChanged(double)));
+
+  calibYSpinBox_ = new QDoubleSpinBox(inputs);
+  calibYSpinBox_->setPrefix("cy = ");
+  calibYSpinBox_->setRange(0.75, 1.25);
+  calibYSpinBox_->setDecimals(6);
+  calibYSpinBox_->setSingleStep(0.001);
+  grid->addWidget(calibYSpinBox_, 2, 1);
+  calibYSpinBox_->setValue(geometryModel_->getCalibY());
+  connect(calibYSpinBox_, SIGNAL(valueChanged(double)),
+          this, SLOT(calibYChanged(double)));
+
   connect(geometryModel_,
           SIGNAL(geometryChanged()),
           this,
@@ -145,6 +176,9 @@ void DefoGeometryWidget::updateSketch() {
   value = QString("a2 = %1 deg").arg(QString().setNum(geometryModel_->getAngle2()));
   tempSketch.replace("@A2@", value);
 
+  value = QString("a3 = %1 deg").arg(QString().setNum(geometryModel_->getAngle3()));
+  tempSketch.replace("@A3@", value);
+
   value = QString("d = %1 mm").arg(QString().setNum(geometryModel_->getDistance()));
   tempSketch.replace("@D@", value);
 
@@ -167,6 +201,11 @@ void DefoGeometryWidget::angle2Changed(double v) {
   updateSketch();
 }
 
+void DefoGeometryWidget::angle3Changed(double v) {
+  geometryModel_->setAngle3(v);
+  updateSketch();
+}
+
 void DefoGeometryWidget::distanceChanged(double v) {
   geometryModel_->setDistance(v);
   updateSketch();
@@ -182,9 +221,20 @@ void DefoGeometryWidget::height2Changed(double v) {
   updateSketch();
 }
 
+void DefoGeometryWidget::calibXChanged(double v) {
+  geometryModel_->setCalibX(v);
+  updateSketch();
+}
+
+void DefoGeometryWidget::calibYChanged(double v) {
+  geometryModel_->setCalibY(v);
+  updateSketch();
+}
+
 void DefoGeometryWidget::geometryChanged() {
   angle1SpinBox_->setValue(geometryModel_->getAngle1());
   angle2SpinBox_->setValue(geometryModel_->getAngle2());
+  angle3SpinBox_->setValue(geometryModel_->getAngle3());
   distanceSpinBox_->setValue(geometryModel_->getDistance());
   height1SpinBox_->setValue(geometryModel_->getHeight1());
   height2SpinBox_->setValue(geometryModel_->getHeight2());
