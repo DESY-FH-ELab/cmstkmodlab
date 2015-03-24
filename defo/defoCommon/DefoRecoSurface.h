@@ -39,6 +39,9 @@ class DefoRecoSurface : public QObject
   std::vector<DefoPoint> const& getIndexedPoints( void ) { return indexedPoints_; }
   void calculateHelpers(void);
 
+  void setCalibX( double v) { calibX_ = v; }
+  void setCalibY( double v) { calibY_ = v; }
+
   void dump();
 
  private:
@@ -69,6 +72,9 @@ class DefoRecoSurface : public QObject
   unsigned int debugLevel_;
   std::pair<double, double> imageSize_;
   std::vector<DefoPoint> indexedPoints_;
+
+  double calibX_;
+  double calibY_;
 
 signals:
 

@@ -281,6 +281,7 @@ DefoRecoMainWindow::DefoRecoMainWindow(QWidget *parent) :
 
   tabWidget_->addTab(recoWidget, "Reconstruction");
 
+  /*
   vbox = new QVBoxLayout();
   QWidget * analysisWidget = new QWidget(tabWidget_);
   analysisWidget->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);
@@ -291,12 +292,13 @@ DefoRecoMainWindow::DefoRecoMainWindow(QWidget *parent) :
                                                                                         analysisWidget);
   vbox->addWidget(analysisSelect);
 
-  DefoAnalysisWidget *analysisDisplay = new DefoAnalysisWidget(measurementPairListModel_,
+    DefoAnalysisWidget *analysisDisplay = new DefoAnalysisWidget(measurementPairListModel_,
                                                                measurementPairSelectionModel_,
                                                                analysisWidget);
   vbox->addWidget(analysisDisplay);
 
   tabWidget_->addTab(analysisWidget, "Analysis");
+  */
 
   setCentralWidget(tabWidget_);
 

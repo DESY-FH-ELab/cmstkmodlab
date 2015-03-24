@@ -1,6 +1,11 @@
 #include "ApplicationConfig.h"
 #include "nqlogger.h"
 
+#include "npoint.h"
+#include "ndirection.h"
+#include "nline.h"
+#include "nplane.h"
+
 #include "DefoRecoSurface.h"
 
 ///
@@ -19,6 +24,9 @@ DefoRecoSurface::DefoRecoSurface(QObject *parent)
   pitchY_= ApplicationConfig::instance()->getValue<double>( "PIXEL_PITCH_Y" );
   focalLength_= ApplicationConfig::instance()->getValue<double>( "LENS_FOCAL_LENGTH" );
   debugLevel_ = ApplicationConfig::instance()->getValue<unsigned int>( "DEBUG_LEVEL" );
+
+  calibX_ = ApplicationConfig::instance()->getValue<double>("CALIBX");
+  calibY_ = ApplicationConfig::instance()->getValue<double>("CALIBY");
 
   // to be called after cfg reading
   calculateHelpers();
@@ -141,6 +149,15 @@ const DefoSplineField DefoRecoSurface::createZSplines(DefoPointCollection const&
   NQLog("DefoRecoSurface", NQLog::Message) << " x: " << indexRangeX.first << " .. " << indexRangeX.second;
   NQLog("DefoRecoSurface", NQLog::Message) << " y: " << indexRangeY.first << " .. " << indexRangeY.second;
 
+  NPoint cameraPoint(0., 0., 0.);
+  
+  NPoint surfacePoint(0., 0., nominalCameraDistance_);
+  NDirection surfaceNormal(0., 0., 1.);
+  surfaceNormal.rotateX(-nominalViewingAngle_);
+  NPlane surface(surfacePoint, surfaceNormal);
+
+  NPoint intersectionPoint;
+
   // we need the blue point (from *ref*) as geom. reference, it always has index 0,0
   std::pair<bool,DefoPointCollection::const_iterator> bluePointByIndex =
       findPointByIndex(referencePoints, std::pair<int,int>( 0, 0 ));
@@ -177,28 +194,19 @@ const DefoSplineField DefoRecoSurface::createZSplines(DefoPointCollection const&
 
         // convert from pixel units to real units on module
 
-        // new version
-        double px = aPoint.getX() - 0.5 * imageSize_.first;
-        double py = aPoint.getY() - 0.5 * imageSize_.second;
-        double alphaX = std::atan2(px * pitchX_, focalLength_);
-        double alphaY = std::atan2(py * pitchY_, focalLength_);
-        double betaX = M_PI/2.0;
-        double betaY = M_PI/2.0 - nominalViewingAngle_;
-        double x = nominalCameraDistance_ * std::sin(alphaX) / std::sin(betaX - alphaX);
-        double y = nominalCameraDistance_ * std::sin(alphaY) / std::sin(betaY - alphaY);
+	// new new version
+	NDirection beamDirection((aPoint.getX() - 0.5 * imageSize_.first) * pitchX_,
+				 (aPoint.getY() - 0.5 * imageSize_.second) * pitchY_,
+				 focalLength_);
+	NLine beam(cameraPoint, beamDirection);
+	beam.intersection(surface, intersectionPoint);
+	double x = intersectionPoint.x() * calibX_;
+	double y = intersectionPoint.y() * calibY_;
+	double z = intersectionPoint.z();
 
-        // set blue point at x=0,y=0
-        //x = (aPoint.getX() - 0.5 * imageSize_.first) * pitchX_ * nominalCameraDistance_ / focalLength_;
-        //y = (aPoint.getY() - 0.5 * imageSize_.second) * pitchY_ * nominalCameraDistance_ / focalLength_;
-        
-        aPoint.setPosition(x, y);
+	NQLog("DefoRecoSurface", NQLog::Spam) << "intersection: " << x << " " << y << " " << z;
 
-        // old version
-        /*
-        double x = aPoint.getX() * pitchX_ * nominalCameraDistance_ / focalLength_;
-        double y = aPoint.getY() * pitchY_ * nominalCameraDistance_ / focalLength_;
-        aPoint.setPosition(x, y);
-         */
+	aPoint.setPosition(x, y);
 
         aSplineSet.addPoint( aPoint );
 
@@ -253,28 +261,19 @@ const DefoSplineField DefoRecoSurface::createZSplines(DefoPointCollection const&
 	
         // convert from pixel units to real units on module
 
-	// new version
-	double px = aPoint.getX() - 0.5 * imageSize_.first;
-	double py = aPoint.getY() - 0.5 * imageSize_.second;
-	double alphaX = std::atan2(px * pitchX_, focalLength_);
-	double alphaY = std::atan2(py * pitchY_, focalLength_);
-	double betaX = M_PI/2.0;
-	double betaY = M_PI/2.0 - nominalViewingAngle_;
-	double x = nominalCameraDistance_ * std::sin(alphaX) / std::sin(betaX - alphaX);
-	double y = nominalCameraDistance_ * std::sin(alphaY) / std::sin(betaY - alphaY);
+	// new new version
+	NDirection beamDirection((aPoint.getX() - 0.5 * imageSize_.first) * pitchX_,
+				 (aPoint.getY() - 0.5 * imageSize_.second) * pitchY_,
+				 focalLength_);
+	NLine beam(cameraPoint, beamDirection);
+	beam.intersection(surface, intersectionPoint);
+	double x = intersectionPoint.x() * calibX_;
+	double y = intersectionPoint.y() * calibY_;
+	double z = intersectionPoint.z();
 
-        // set blue point at x=0,y=0
-        //x = (aPoint.getX() - 0.5 * imageSize_.first) * pitchX_ * nominalCameraDistance_ / focalLength_;
-        //y = (aPoint.getY() - 0.5 * imageSize_.second) * pitchY_ * nominalCameraDistance_ / focalLength_;
+	NQLog("DefoRecoSurface", NQLog::Spam) << "intersection: " << x << " " << y << " " << z;
 
 	aPoint.setPosition(x, y);
-
-        // old version
-        /*
-        double x = aPoint.getX() * pitchX_ * nominalCameraDistance_ / focalLength_;
-        double y = aPoint.getY() * pitchY_ * nominalCameraDistance_ / focalLength_;
-        aPoint.setPosition(x, y);
-         */
 
         aSplineSet.addPoint( aPoint );
 
