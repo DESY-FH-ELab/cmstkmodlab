@@ -18,42 +18,38 @@
  **
  ****************************************************************************/
 
-#ifndef NPOINT_H
-#define NPOINT_H
+#ifndef NVECTOR3D_H
+#define NVECTOR3D_H
 
 #include <iostream>
 
-class NVector;
-class NLine;
-class NPlane;
+class NPoint3D;
 
-class NPoint
+class NVector3D
 {
 public:
 
-  NPoint();
-  NPoint(double x, double y, double z);
-  NPoint(const NPoint& other);
-  ~NPoint();
+  NVector3D();
+  NVector3D(double x, double y, double z);
+  NVector3D(const NPoint3D& a, const NPoint3D& b);
+  NVector3D(const NVector3D& other);
+  ~NVector3D();
 
   double x() const { return x_; }
   double y() const { return y_; }
   double z() const { return z_; }
 
-  void move(double dx, double dy, double dz);
-  void move(const NVector& v);
-  void move(const NVector& v, double scale);
+  void rotateX(double angle);
+  void rotateY(double angle);
+  void rotateZ(double angle);
 
-  double distanceTo(const NPoint& other);
-  double distanceTo(const NLine& line);
-  double distanceTo(const NPlane& plane);
-
-  bool isCoincident(const NLine& line);
-  bool isCoincident(const NPlane& plane);
+  double length() const;
+  double dot(const NVector3D& other) const;
+  NVector3D cross(const NVector3D& other);
 
 protected:
 
   double x_, y_, z_;
 };
 
-#endif // NPOINT_H
+#endif // NVECTOR3D_H

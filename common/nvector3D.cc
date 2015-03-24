@@ -20,10 +20,10 @@
 
 #include <cmath>
 
-#include "npoint.h"
-#include "nvector.h"
+#include "npoint3D.h"
+#include "nvector3D.h"
 
-NVector::NVector()
+NVector3D::NVector3D()
 : x_(0.),
   y_(0.),
   z_(0.)
@@ -31,7 +31,7 @@ NVector::NVector()
 
 }
 
-NVector::NVector(double x, double y, double z)
+NVector3D::NVector3D(double x, double y, double z)
 : x_(x),
   y_(y),
   z_(z)
@@ -39,7 +39,7 @@ NVector::NVector(double x, double y, double z)
 
 }
 
-NVector::NVector(const NPoint& a, const NPoint& b)
+NVector3D::NVector3D(const NPoint3D& a, const NPoint3D& b)
 : x_(b.x() - a.x()),
   y_(b.y() - a.y()),
   z_(b.z() - a.z())
@@ -47,7 +47,7 @@ NVector::NVector(const NPoint& a, const NPoint& b)
 
 }
 
-NVector::NVector(const NVector& other)
+NVector3D::NVector3D(const NVector3D& other)
 : x_(other.x()),
   y_(other.y()),
   z_(other.z())
@@ -55,12 +55,12 @@ NVector::NVector(const NVector& other)
 
 }
 
-NVector::~NVector()
+NVector3D::~NVector3D()
 {
 
 }
 
-void NVector::rotateX(double angle)
+void NVector3D::rotateX(double angle)
 {
   double yn =  1.0*y()*std::cos(angle) - 1.0*z()*std::sin(angle);
   double zn =  1.0*y()*std::sin(angle) + 1.0*z()*std::cos(angle);
@@ -68,7 +68,7 @@ void NVector::rotateX(double angle)
   z_ = zn;
 }
 
-void NVector::rotateY(double angle)
+void NVector3D::rotateY(double angle)
 {
   double xn =  1.0*x()*std::cos(angle) + 1.0*z()*std::sin(angle);
   double zn = -1.0*x()*std::sin(angle) + 1.0*z()*std::cos(angle);
@@ -76,7 +76,7 @@ void NVector::rotateY(double angle)
   z_ = zn;
 }
 
-void NVector::rotateZ(double angle)
+void NVector3D::rotateZ(double angle)
 {
   double xn = 1.0*x()*std::cos(angle) - 1.0*y()*std::sin(angle);
   double yn = 1.0*x()*std::sin(angle) + 1.0*y()*std::cos(angle);
@@ -84,19 +84,19 @@ void NVector::rotateZ(double angle)
   y_ = yn;
 }
 
-double NVector::length() const
+double NVector3D::length() const
 {
   return std::sqrt(x_*x_ + y_*y_ + z_*z_);
 }
 
-double NVector::dot(const NVector& other) const
+double NVector3D::dot(const NVector3D& other) const
 {
   return x()*other.x() + y()*other.y() + z()*other.z();
 }
 
-NVector NVector::cross(const NVector& other)
+NVector3D NVector3D::cross(const NVector3D& other)
 {
-  return NVector(y()*other.z() - z()*other.y(),
-                 z()*other.x() - x()*other.z(),
-                 x()*other.y() - y()*other.x());
+  return NVector3D(y()*other.z() - z()*other.y(),
+                   z()*other.x() - x()*other.z(),
+                   x()*other.y() - y()*other.x());
 }

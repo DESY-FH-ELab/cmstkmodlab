@@ -18,44 +18,43 @@
  **
  ****************************************************************************/
 
-#include <cmath>
+#ifndef NPOINT3D_H
+#define NPOINT3D_H
 
-#include "npoint.h"
-#include "ndirection.h"
+#include <iostream>
 
-NDirection::NDirection()
-: NVector(0., 0., 1.)
+class NVector3D;
+class NLine3D;
+class NPlane3D;
+
+class NPoint3D
 {
+public:
 
-}
+  NPoint3D();
+  NPoint3D(double x, double y, double z);
+  NPoint3D(const NPoint3D& other);
+  ~NPoint3D();
 
-NDirection::NDirection(double x, double y, double z)
-: NVector(x, y, z)
-{
-  normalize();
-}
+  double x() const { return x_; }
+  double y() const { return y_; }
+  double z() const { return z_; }
 
-NDirection::NDirection(const NPoint& a, const NPoint& b)
-: NVector(a, b)
-{
-  normalize();
-}
+  void move(double dx, double dy, double dz);
+  void move(const NVector3D& v);
+  void move(const NVector3D& v, double scale);
 
-NDirection::NDirection(const NVector& other)
-: NVector(other)
-{
-  normalize();
-}
+  double distanceTo(const NPoint3D& other);
+  double distanceTo(const NLine3D& line);
+  double distanceTo(const NPlane3D& plane);
+  double signedDistanceTo(const NPlane3D& plane);
 
-NDirection::~NDirection()
-{
+  bool isCoincident(const NLine3D& line);
+  bool isCoincident(const NPlane3D& plane);
 
-}
+protected:
 
-void NDirection::normalize()
-{
-  double l = length();
-  x_ /= l;
-  y_ /= l;
-  z_ /= l;
-}
+  double x_, y_, z_;
+};
+
+#endif // NPOINT3D_H

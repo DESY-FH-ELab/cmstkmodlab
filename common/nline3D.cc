@@ -18,35 +18,46 @@
  **
  ****************************************************************************/
 
-#ifndef NLINE_H
-#define NLINE_H
+#include "nplane3D.h"
+#include "nline3D.h"
 
-#include <iostream>
-
-#include <npoint.h>
-#include <ndirection.h>
-
-class NPlane;
-
-class NLine
+NLine3D::NLine3D(const NPoint3D& point, const NDirection3D& direction)
+: point_(point),
+  direction_(direction)
 {
-public:
 
-  NLine(const NPoint& point, const NDirection& direction);
-  NLine(const NLine& other);
-  ~NLine();
+}
 
-  const NPoint& point() const { return point_; }
-  const NDirection& direction() const { return direction_; }
+NLine3D::NLine3D(const NLine3D& other)
+: point_(other.point()),
+  direction_(other.direction())
+{
 
-  NPoint pointAt(double s);
+}
 
-  bool intersection(const NPlane& plane, NPoint& point);
+NLine3D::~NLine3D()
+{
 
-protected:
+}
 
-  NPoint point_;
-  NDirection direction_;
-};
+NPoint3D NLine3D::pointAt(double s)
+{
+  NPoint3D p(point());
+  p.move(direction().x()*s,
+         direction().y()*s,
+         direction().z()*s);
+  return p;
+}
 
-#endif // NLINE_H
+bool NLine3D::intersection(const NPlane3D& plane, NPoint3D& p)
+{
+  NVector3D u = plane.normal();
+  if (u.dot(direction())==0.) return false;
+
+  NVector3D w(point(), plane.point());
+  double s = plane.normal().dot(w)/plane.normal().dot(direction());
+
+  p = pointAt(s);
+
+  return true;
+}

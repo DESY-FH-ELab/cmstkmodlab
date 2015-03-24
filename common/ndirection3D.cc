@@ -18,38 +18,44 @@
  **
  ****************************************************************************/
 
-#ifndef NVECTOR_H
-#define NVECTOR_H
+#include <cmath>
 
-#include <iostream>
+#include "npoint3D.h"
+#include "ndirection3D.h"
 
-class NPoint;
-
-class NVector
+NDirection3D::NDirection3D()
+: NVector3D(0., 0., 1.)
 {
-public:
 
-  NVector();
-  NVector(double x, double y, double z);
-  NVector(const NPoint& a, const NPoint& b);
-  NVector(const NVector& other);
-  ~NVector();
+}
 
-  double x() const { return x_; }
-  double y() const { return y_; }
-  double z() const { return z_; }
+NDirection3D::NDirection3D(double x, double y, double z)
+: NVector3D(x, y, z)
+{
+  normalize();
+}
 
-  void rotateX(double angle);
-  void rotateY(double angle);
-  void rotateZ(double angle);
+NDirection3D::NDirection3D(const NPoint3D& a, const NPoint3D& b)
+: NVector3D(a, b)
+{
+  normalize();
+}
 
-  double length() const;
-  double dot(const NVector& other) const;
-  NVector cross(const NVector& other);
+NDirection3D::NDirection3D(const NVector3D& other)
+: NVector3D(other)
+{
+  normalize();
+}
 
-protected:
+NDirection3D::~NDirection3D()
+{
 
-  double x_, y_, z_;
-};
+}
 
-#endif // NVECTOR_H
+void NDirection3D::normalize()
+{
+  double l = length();
+  x_ /= l;
+  y_ /= l;
+  z_ /= l;
+}

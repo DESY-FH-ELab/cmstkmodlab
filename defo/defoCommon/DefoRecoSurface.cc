@@ -2,10 +2,10 @@
 
 #include "nqlogger.h"
 
-#include "npoint.h"
-#include "ndirection.h"
-#include "nline.h"
-#include "nplane.h"
+#include "npoint3D.h"
+#include "ndirection3D.h"
+#include "nline3D.h"
+#include "nplane3D.h"
 
 #include "DefoRecoSurface.h"
 
@@ -154,14 +154,14 @@ const DefoSplineField DefoRecoSurface::createZSplines(DefoPointCollection const&
   NQLog("DefoRecoSurface", NQLog::Message) << " x: " << indexRangeX.first << " .. " << indexRangeX.second;
   NQLog("DefoRecoSurface", NQLog::Message) << " y: " << indexRangeY.first << " .. " << indexRangeY.second;
 
-  NPoint cameraPoint(0., 0., 0.);
+  NPoint3D cameraPoint(0., 0., 0.);
   
-  NPoint surfacePoint(0., 0., nominalCameraDistance_);
-  NDirection surfaceNormal(0., 0., 1.);
+  NPoint3D surfacePoint(0., 0., nominalCameraDistance_);
+  NDirection3D surfaceNormal(0., 0., 1.);
   surfaceNormal.rotateX(-nominalViewingAngle_);
-  NPlane surface(surfacePoint, surfaceNormal);
+  NPlane3D surface(surfacePoint, surfaceNormal);
 
-  NPoint intersectionPoint;
+  NPoint3D intersectionPoint;
 
   // we need the blue point (from *ref*) as geom. reference, it always has index 0,0
   std::pair<bool,DefoPointCollection::const_iterator> bluePointByIndex =
@@ -199,19 +199,19 @@ const DefoSplineField DefoRecoSurface::createZSplines(DefoPointCollection const&
 
         // convert from pixel units to real units on module
 
-	// new new version
-	NDirection beamDirection((aPoint.getX() - 0.5 * imageSize_.first) * pitchX_,
-				 (aPoint.getY() - 0.5 * imageSize_.second) * pitchY_,
-				 focalLength_);
-	NLine beam(cameraPoint, beamDirection);
-	beam.intersection(surface, intersectionPoint);
-	double x = intersectionPoint.x() * calibX_;
-	double y = intersectionPoint.y() * calibY_;
-	double z = intersectionPoint.z();
+        // new new version
+        NDirection3D beamDirection((aPoint.getX() - 0.5 * imageSize_.first) * pitchX_,
+                                   (aPoint.getY() - 0.5 * imageSize_.second) * pitchY_,
+                                   focalLength_);
+        NLine3D beam(cameraPoint, beamDirection);
+        beam.intersection(surface, intersectionPoint);
+        double x = intersectionPoint.x() * calibX_;
+        double y = intersectionPoint.y() * calibY_;
+        double z = intersectionPoint.z();
 
-	NQLog("DefoRecoSurface", NQLog::Spam) << "intersection: " << x << " " << y << " " << z;
+        NQLog("DefoRecoSurface", NQLog::Spam) << "intersection: " << x << " " << y << " " << z;
 
-	aPoint.setPosition(x, y);
+        aPoint.setPosition(x, y);
 
         aSplineSet.addPoint( aPoint );
 
@@ -266,19 +266,19 @@ const DefoSplineField DefoRecoSurface::createZSplines(DefoPointCollection const&
 	
         // convert from pixel units to real units on module
 
-	// new new version
-	NDirection beamDirection((aPoint.getX() - 0.5 * imageSize_.first) * pitchX_,
-				 (aPoint.getY() - 0.5 * imageSize_.second) * pitchY_,
-				 focalLength_);
-	NLine beam(cameraPoint, beamDirection);
-	beam.intersection(surface, intersectionPoint);
-	double x = intersectionPoint.x() * calibX_;
-	double y = intersectionPoint.y() * calibY_;
-	double z = intersectionPoint.z();
+        // new new version
+        NDirection3D beamDirection((aPoint.getX() - 0.5 * imageSize_.first) * pitchX_,
+                                   (aPoint.getY() - 0.5 * imageSize_.second) * pitchY_,
+                                   focalLength_);
+        NLine3D beam(cameraPoint, beamDirection);
+        beam.intersection(surface, intersectionPoint);
+        double x = intersectionPoint.x() * calibX_;
+        double y = intersectionPoint.y() * calibY_;
+        double z = intersectionPoint.z();
 
-	NQLog("DefoRecoSurface", NQLog::Spam) << "intersection: " << x << " " << y << " " << z;
+        NQLog("DefoRecoSurface", NQLog::Spam) << "intersection: " << x << " " << y << " " << z;
 
-	aPoint.setPosition(x, y);
+        aPoint.setPosition(x, y);
 
         aSplineSet.addPoint( aPoint );
 
@@ -300,7 +300,6 @@ const DefoSplineField DefoRecoSurface::createZSplines(DefoPointCollection const&
     // attach to output field (as *second*!!)
     theOutput.first.push_back(aSplineSet);
   }
-
 
   // c'est tout
   NQLog("DefoRecoSurface", NQLog::Message) << "createZSplines done";

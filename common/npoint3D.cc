@@ -20,12 +20,12 @@
 
 #include <cmath>
 
-#include "nvector.h"
-#include "nline.h"
-#include "nplane.h"
-#include "npoint.h"
+#include "nvector3D.h"
+#include "nline3D.h"
+#include "nplane3D.h"
+#include "npoint3D.h"
 
-NPoint::NPoint()
+NPoint3D::NPoint3D()
 : x_(0.),
   y_(0.),
   z_(0.)
@@ -33,7 +33,7 @@ NPoint::NPoint()
 
 }
 
-NPoint::NPoint(double x, double y, double z)
+NPoint3D::NPoint3D(double x, double y, double z)
 : x_(x),
   y_(y),
   z_(z)
@@ -41,7 +41,7 @@ NPoint::NPoint(double x, double y, double z)
 
 }
 
-NPoint::NPoint(const NPoint& other)
+NPoint3D::NPoint3D(const NPoint3D& other)
 : x_(other.x()),
   y_(other.y()),
   z_(other.z())
@@ -49,65 +49,71 @@ NPoint::NPoint(const NPoint& other)
 
 }
 
-NPoint::~NPoint()
+NPoint3D::~NPoint3D()
 {
 
 }
 
-void NPoint::move(double dx, double dy, double dz)
+void NPoint3D::move(double dx, double dy, double dz)
 {
   x_ += dx;
   y_ += dy;
   z_ += dz;
 }
 
-void NPoint::move(const NVector& v)
+void NPoint3D::move(const NVector3D& v)
 {
   x_ += v.x();
   y_ += v.y();
   z_ += v.z();
 }
 
-void NPoint::move(const NVector& v, double scale)
+void NPoint3D::move(const NVector3D& v, double scale)
 {
   x_ += v.x() * scale;
   y_ += v.y() * scale;
   z_ += v.z() * scale;
 }
 
-double NPoint::distanceTo(const NPoint& other)
+double NPoint3D::distanceTo(const NPoint3D& other)
 {
-  NVector v(other, *this);
+  NVector3D v(other, *this);
   return v.length();
 }
 
-double NPoint::distanceTo(const NLine& line)
+double NPoint3D::distanceTo(const NLine3D& line)
 {
-  NPoint x1 = line.point();
-  NPoint x2 = line.point();
+  NPoint3D x1 = line.point();
+  NPoint3D x2 = line.point();
   x2.move(line.direction());
   double d = line.direction().length();
-  NVector v1(x1, *this);
-  NVector v2(x2, *this);
-  NVector cross = v1.cross(v2);
+  NVector3D v1(x1, *this);
+  NVector3D v2(x2, *this);
+  NVector3D cross = v1.cross(v2);
 
   return cross.length()/d;
 }
 
-double NPoint::distanceTo(const NPlane& plane)
+double NPoint3D::distanceTo(const NPlane3D& plane)
 {
-  NVector w(*this, plane.point());
+  NVector3D w(*this, plane.point());
   return std::fabs(w.dot(plane.normal()));
 }
 
-bool NPoint::isCoincident(const NLine& line)
+double NPoint3D::signedDistanceTo(const NPlane3D& plane)
+{
+  NVector3D w(*this, plane.point());
+  return w.dot(plane.normal());
+}
+
+bool NPoint3D::isCoincident(const NLine3D& line)
 {
   double d = distanceTo(line);
   if (d==0.) return true;
   return false;
 }
 
-bool NPoint::isCoincident(const NPlane& plane)
+bool NPoint3D::isCoincident(const NPlane3D& plane)
 {
   double d = distanceTo(plane);
   if (d==0.) return true;

@@ -18,23 +18,23 @@
  **
  ****************************************************************************/
 
-#include "nplane.h"
+#include "nplane3D.h"
 
-NPlane::NPlane(const NPoint& point, const NDirection& normal)
+NPlane3D::NPlane3D(const NPoint3D& point, const NDirection3D& normal)
 : point_(point),
   normal_(normal)
 {
 
 }
 
-NPlane::NPlane(const NPlane& other)
+NPlane3D::NPlane3D(const NPlane3D& other)
 : point_(other.point()),
   normal_(other.normal())
 {
 
 }
 
-NPlane::~NPlane()
+NPlane3D::~NPlane3D()
 {
 
 }
