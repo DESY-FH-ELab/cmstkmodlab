@@ -119,6 +119,8 @@ void DefoReconstructionModel::geometryChanged()
   double angle1Rad = angle1 * M_PI / 180.;
   double angle2 = geometryModel_->getAngle2();
   double angle2Rad = angle2 * M_PI / 180.;
+  double angle3 = geometryModel_->getAngle3();
+  double angle3Rad = angle3 * M_PI / 180.;
   double distance = geometryModel_->getDistance();
   double height1 = geometryModel_->getHeight1();
   double height2 = geometryModel_->getHeight2();
@@ -127,9 +129,11 @@ void DefoReconstructionModel::geometryChanged()
   NQLog("DefoReconstructionModel", NQLog::Message) << "angle1 [rad]  = " << angle1Rad;
   NQLog("DefoReconstructionModel", NQLog::Message) << "angle2 [deg]  = " << angle2;
   NQLog("DefoReconstructionModel", NQLog::Message) << "angle2 [rad]  = " << angle2Rad;
+  NQLog("DefoReconstructionModel", NQLog::Message) << "angle3 [deg]  = " << angle3;
+  NQLog("DefoReconstructionModel", NQLog::Message) << "angle3 [rad]  = " << angle3Rad;
   NQLog("DefoReconstructionModel", NQLog::Message) << "distance [mm] = " << distance;
-  NQLog("DefoReconstructionModel", NQLog::Message) << "height1 [mm]   = " << height1;
-  NQLog("DefoReconstructionModel", NQLog::Message) << "height2 [mm]   = " << height2;
+  NQLog("DefoReconstructionModel", NQLog::Message) << "height1 [mm]  = " << height1;
+  NQLog("DefoReconstructionModel", NQLog::Message) << "height2 [mm]  = " << height2;
 
   // height of camera rotation point over surface
   double heightCameraToSurface = height1 - height2 - distance * std::sin(angle2Rad);
@@ -137,7 +141,7 @@ void DefoReconstructionModel::geometryChanged()
 
   // viewing distance from camera to surface
   // (assumption: camera is mounted perpendicular to frame)
-  double distanceCamera = heightCameraToSurface / std::cos(angle2Rad);
+  double distanceCamera = heightCameraToSurface / std::cos(angle2Rad + angle3Rad);
   NQLog("DefoReconstructionModel", NQLog::Message) << "distanceCamera [mm] = " << distanceCamera;
 
   reco_->setNominalCameraDistance(distanceCamera);
@@ -150,8 +154,13 @@ void DefoReconstructionModel::geometryChanged()
   reco_->setNominalGridDistance(distanceGrid);
 
   // not really sure about this one...
-  reco_->setNominalViewingAngle(angle2Rad);
-  NQLog("DefoReconstructionModel", NQLog::Message) << "viewing angle [rad] = " << angle2Rad;
+  reco_->setNominalViewingAngle(angle2Rad + angle3Rad);
+  NQLog("DefoReconstructionModel", NQLog::Message) << "viewing angle [rad] = " << angle2Rad + angle3Rad;
+
+  reco_->setCalibX(geometryModel_->getCalibX());
+  reco_->setCalibY(geometryModel_->getCalibY());
+  NQLog("DefoReconstructionModel", NQLog::Message) << "calibX        = " << geometryModel_->getCalibX();
+  NQLog("DefoReconstructionModel", NQLog::Message) << "calibY        = " << geometryModel_->getCalibY();
 
   reco_->calculateHelpers();
 
