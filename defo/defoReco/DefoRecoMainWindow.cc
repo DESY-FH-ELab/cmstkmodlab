@@ -154,7 +154,9 @@ DefoRecoMainWindow::DefoRecoMainWindow(QWidget *parent) :
   QWidget * refPointWidget = new QWidget(pointsWidget);
   refPointWidget->setLayout(vbox);
 
-  DefoMeasurementListComboBox *refSelect = new DefoMeasurementListComboBox(listModel_, refSelectionModel_, refPointWidget);
+  DefoMeasurementListComboBox *refSelect = new DefoMeasurementListComboBox(listModel_,
+                                                                           refSelectionModel_,
+                                                                           refPointWidget);
   vbox->addWidget(refSelect);
 
   DefoRecoPointRecognitionWidget * refPointRecognitionWidget =
@@ -186,7 +188,9 @@ DefoRecoMainWindow::DefoRecoMainWindow(QWidget *parent) :
   QWidget * defoPointWidget = new QWidget(pointsWidget);
   defoPointWidget->setLayout(vbox);
   
-  DefoMeasurementListComboBox *defoSelect = new DefoMeasurementListComboBox(listModel_, defoSelectionModel_, defoPointWidget);
+  DefoMeasurementListComboBox *defoSelect = new DefoMeasurementListComboBox(listModel_,
+                                                                            defoSelectionModel_,
+                                                                            defoPointWidget);
   vbox->addWidget(defoSelect);
 
   DefoRecoPointRecognitionWidget * defoPointRecognitionWidget =

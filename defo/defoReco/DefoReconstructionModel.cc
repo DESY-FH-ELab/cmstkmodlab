@@ -113,8 +113,6 @@ void DefoReconstructionModel::geometryChanged()
 {
   NQLog("DefoReconstructionModel::geometryChanged()", NQLog::Message) << "start";
 
-  std::cout << "void DefoReconstructionModel::geometryChanged()" << std::endl;
-
   double angle1 = geometryModel_->getAngle1();
   double angle1Rad = angle1 * M_PI / 180.;
   double angle2 = geometryModel_->getAngle2();
