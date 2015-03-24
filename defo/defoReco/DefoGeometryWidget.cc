@@ -49,13 +49,6 @@ DefoGeometryWidget::DefoGeometryWidget(
   QBoxLayout *layout = new QVBoxLayout();
   setLayout(layout);
 
-  connect(
-          geometryModel_
-        , SIGNAL(geometryChanged())
-        , this
-        , SLOT(geometryChanged())
-  	  );
-
   sketch_ = new DefoSvgWidget(this);
   layout->addWidget(sketch_);
 
