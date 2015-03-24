@@ -27,6 +27,11 @@ INCLUDEPATH += .
 INCLUDEPATH += @basepath@
 
 HEADERS += nqlogger.h \
+           npoint.h \
+           nvector.h \
+           ndirection.h \
+           nline.h \
+           nplane.cpp \
            DeviceState.h \
            DeviceParameter.h \
            Ringbuffer.h \
@@ -53,10 +58,15 @@ HEADERS += nqlogger.h \
            ScriptableIota.h \
            IotaWidget.h \
            ArduinoPresWidget.h \
-	   ScriptableArduinoPres.h \
+           ScriptableArduinoPres.h \
            ArduinoPresModel.h
            
 SOURCES += nqlogger.cpp \
+           npoint.cpp \
+           nvector.cpp \
+           ndirection.cpp \
+           nline.cpp \
+           nplane.cpp \
            SingletonApplication.cc \
            ApplicationConfig.cc \
            ApplicationConfigReader.cc \
