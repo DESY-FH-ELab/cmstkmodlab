@@ -123,26 +123,6 @@ DefoGeometryWidget::DefoGeometryWidget(
   connect(height2SpinBox_, SIGNAL(valueChanged(double)),
           this, SLOT(height2Changed(double)));
 
-  calibXSpinBox_ = new QDoubleSpinBox(inputs);
-  calibXSpinBox_->setPrefix("cx = ");
-  calibXSpinBox_->setRange(0.75, 1.25);
-  calibXSpinBox_->setDecimals(6);
-  calibXSpinBox_->setSingleStep(0.001);
-  grid->addWidget(calibXSpinBox_, 2, 0);
-  calibXSpinBox_->setValue(geometryModel_->getCalibX());
-  connect(calibXSpinBox_, SIGNAL(valueChanged(double)),
-          this, SLOT(calibXChanged(double)));
-
-  calibYSpinBox_ = new QDoubleSpinBox(inputs);
-  calibYSpinBox_->setPrefix("cy = ");
-  calibYSpinBox_->setRange(0.75, 1.25);
-  calibYSpinBox_->setDecimals(6);
-  calibYSpinBox_->setSingleStep(0.001);
-  grid->addWidget(calibYSpinBox_, 2, 1);
-  calibYSpinBox_->setValue(geometryModel_->getCalibY());
-  connect(calibYSpinBox_, SIGNAL(valueChanged(double)),
-          this, SLOT(calibYChanged(double)));
-
   connect(geometryModel_,
           SIGNAL(geometryChanged()),
           this,
@@ -211,16 +191,6 @@ void DefoGeometryWidget::height1Changed(double v) {
 
 void DefoGeometryWidget::height2Changed(double v) {
   geometryModel_->setHeight2(v);
-  updateSketch();
-}
-
-void DefoGeometryWidget::calibXChanged(double v) {
-  geometryModel_->setCalibX(v);
-  updateSketch();
-}
-
-void DefoGeometryWidget::calibYChanged(double v) {
-  geometryModel_->setCalibY(v);
   updateSketch();
 }
 
