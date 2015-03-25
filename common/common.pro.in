@@ -27,9 +27,13 @@ INCLUDEPATH += .
 INCLUDEPATH += @basepath@
 
 HEADERS += nqlogger.h \
+           npoint2D.h \
            npoint3D.h \
+           nvector2D.h \
            nvector3D.h \
+           ndirection2D.h \
            ndirection3D.h \
+           nline2D.h \
            nline3D.h \
            nplane3D.h \
            DeviceState.h \
@@ -62,9 +66,13 @@ HEADERS += nqlogger.h \
            ArduinoPresModel.h
            
 SOURCES += nqlogger.cc \
+           npoint2D.cc \
            npoint3D.cc \
+           nvector2D.cc \
            nvector3D.cc \
+           ndirection2D.cc \
            ndirection3D.cc \
+           nline2D.cc \
            nline3D.cc \
            nplane3D.cc \
            SingletonApplication.cc \

@@ -96,8 +96,7 @@ double NPoint3D::distanceTo(const NLine3D& line)
 
 double NPoint3D::distanceTo(const NPlane3D& plane)
 {
-  NVector3D w(*this, plane.point());
-  return std::fabs(w.dot(plane.normal()));
+  return std::fabs(signedDistanceTo(plane));
 }
 
 double NPoint3D::signedDistanceTo(const NPlane3D& plane)
