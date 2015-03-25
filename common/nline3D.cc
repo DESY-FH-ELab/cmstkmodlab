@@ -18,23 +18,46 @@
  **
  ****************************************************************************/
 
-#include "nplane.h"
+#include "nplane3D.h"
+#include "nline3D.h"
 
-NPlane::NPlane(const NPoint& point, const NDirection& normal)
+NLine3D::NLine3D(const NPoint3D& point, const NDirection3D& direction)
 : point_(point),
-  normal_(normal)
+  direction_(direction)
 {
 
 }
 
-NPlane::NPlane(const NPlane& other)
+NLine3D::NLine3D(const NLine3D& other)
 : point_(other.point()),
-  normal_(other.normal())
+  direction_(other.direction())
 {
 
 }
 
-NPlane::~NPlane()
+NLine3D::~NLine3D()
 {
 
+}
+
+NPoint3D NLine3D::pointAt(double s)
+{
+  NPoint3D p(point());
+  p.move(direction().x()*s,
+         direction().y()*s,
+         direction().z()*s);
+  return p;
+}
+
+bool NLine3D::intersection(const NPlane3D& plane, NPoint3D& p)
+{
+  NVector3D u = plane.normal();
+  if (u.dot(direction())==0.) return false;
+
+  NVector3D w(point(), plane.point());
+  double s = plane.normal().dot(w)/plane.normal().dot(direction());
+
+  p = pointAt(s);
+
+  return true;
 }

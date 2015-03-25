@@ -1,5 +1,6 @@
 #include <cmath>
-#include <iostream>
+
+#include <nqlogger.h>
 
 #include "DefoPoint.h"
 
@@ -160,7 +161,8 @@ bool DefoPointCollectionAverageXPredicate( DefoPointCollection const& one, DefoP
   for( DefoPointCollection::const_iterator it = another.begin(); it < another.end(); ++it ) average.second += it->getX(), ++nPoints.second;
   
   if( !( nPoints.first && nPoints.second ) ) {
-    std::cerr << " [DefoPointCollectionAverageXPredicate] ** ERROR: Empty input collection, sorting will fail." << std::endl;
+    NQLogCritical("DefoPointCollectionAverageXPredicate")
+        << "Empty input collection, sorting will fail.";
     return false;
   }
 
@@ -182,7 +184,8 @@ bool DefoPointCollectionAverageYPredicate( DefoPointCollection const& one, DefoP
   
   // TO BE FIXED LATER IF IT OCCURS!!
   if( !( nPoints.first && nPoints.second ) ) {
-    std::cerr << " [DefoPointCollectionAverageYPredicate] ** ERROR: Empty input collection, sorting will fail." << std::endl;
+    NQLogCritical("DefoPointCollectionAverageYPredicate")
+        << "Empty input collection, sorting will fail.";
     return false;
   }
 

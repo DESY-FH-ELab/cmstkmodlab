@@ -18,44 +18,26 @@
  **
  ****************************************************************************/
 
-#include <cmath>
+#ifndef NDIRECTION3D_H
+#define NDIRECTION3D_H
 
-#include "npoint.h"
-#include "ndirection.h"
+#include <iostream>
 
-NDirection::NDirection()
-: NVector(0., 0., 1.)
+#include <nvector3D.h>
+
+class NDirection3D : public NVector3D
 {
+public:
 
-}
+  NDirection3D();
+  NDirection3D(double x, double y, double z);
+  NDirection3D(const NPoint3D& a, const NPoint3D& b);
+  NDirection3D(const NVector3D& other);
+  ~NDirection3D();
 
-NDirection::NDirection(double x, double y, double z)
-: NVector(x, y, z)
-{
-  normalize();
-}
+protected:
 
-NDirection::NDirection(const NPoint& a, const NPoint& b)
-: NVector(a, b)
-{
-  normalize();
-}
+  void normalize();
+};
 
-NDirection::NDirection(const NVector& other)
-: NVector(other)
-{
-  normalize();
-}
-
-NDirection::~NDirection()
-{
-
-}
-
-void NDirection::normalize()
-{
-  double l = length();
-  x_ /= l;
-  y_ /= l;
-  z_ /= l;
-}
+#endif // NDIRECTION3D_H

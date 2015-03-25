@@ -18,38 +18,31 @@
  **
  ****************************************************************************/
 
-#ifndef NVECTOR_H
-#define NVECTOR_H
+#include "nline2D.h"
 
-#include <iostream>
-
-class NPoint;
-
-class NVector
+NLine2D::NLine2D(const NPoint2D& point, const NDirection2D& direction)
+: point_(point),
+  direction_(direction)
 {
-public:
 
-  NVector();
-  NVector(double x, double y, double z);
-  NVector(const NPoint& a, const NPoint& b);
-  NVector(const NVector& other);
-  ~NVector();
+}
 
-  double x() const { return x_; }
-  double y() const { return y_; }
-  double z() const { return z_; }
+NLine2D::NLine2D(const NLine2D& other)
+: point_(other.point()),
+  direction_(other.direction())
+{
 
-  void rotateX(double angle);
-  void rotateY(double angle);
-  void rotateZ(double angle);
+}
 
-  double length() const;
-  double dot(const NVector& other) const;
-  NVector cross(const NVector& other);
+NLine2D::~NLine2D()
+{
 
-protected:
+}
 
-  double x_, y_, z_;
-};
-
-#endif // NVECTOR_H
+NPoint2D NLine2D::pointAt(double s)
+{
+  NPoint2D p(point());
+  p.move(direction().x()*s,
+         direction().y()*s);
+  return p;
+}

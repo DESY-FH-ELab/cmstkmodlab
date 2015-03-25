@@ -88,6 +88,48 @@ protected:
     QTextStream stream_;
 };
 
+class NQLogDebug : public NQLog
+{
+public:
+  NQLogDebug(const QString& module) : NQLog(module, NQLog::Debug) { }
+  ~NQLogDebug() {}
+};
+
+class NQLogSpam : public NQLog
+{
+public:
+  NQLogSpam(const QString& module) : NQLog(module, NQLog::Spam) { }
+  ~NQLogSpam() {}
+};
+
+class NQLogMessage : public NQLog
+{
+public:
+  NQLogMessage(const QString& module) : NQLog(module, NQLog::Message) { }
+  ~NQLogMessage() {}
+};
+
+class NQLogWarning : public NQLog
+{
+public:
+  NQLogWarning(const QString& module) : NQLog(module, NQLog::Warning) { }
+  ~NQLogWarning() {}
+};
+
+class NQLogCritical : public NQLog
+{
+public:
+  NQLogCritical(const QString& module) : NQLog(module, NQLog::Critical) { }
+  ~NQLogCritical() {}
+};
+
+class NQLogFatal : public NQLog
+{
+public:
+  NQLogFatal(const QString& module) : NQLog(module, NQLog::Fatal) { }
+  ~NQLogFatal() {}
+};
+
 class NQLogger : public QObject
 {
     Q_OBJECT

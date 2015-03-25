@@ -1,10 +1,11 @@
 #include "ApplicationConfig.h"
+
 #include "nqlogger.h"
 
-#include "npoint.h"
-#include "ndirection.h"
-#include "nline.h"
-#include "nplane.h"
+#include "npoint3D.h"
+#include "ndirection3D.h"
+#include "nline3D.h"
+#include "nplane3D.h"
 
 #include "DefoRecoSurface.h"
 
@@ -40,13 +41,17 @@ void DefoRecoSurface::calculateHelpers( void )
   NQLog("DefoRecoSurface::calculateHelpers()", NQLog::Message) << "start";
 
   heightAboveSensor_ = nominalCameraDistance_ * std::sin(nominalViewingAngle_);
-  NQLog("DefoRecoSurface", NQLog::Message) << "nominalCameraDistance [mm] = " << nominalCameraDistance_;
+  NQLog("DefoRecoSurface", NQLog::Message)
+      << "nominalCameraDistance [mm] = " << nominalCameraDistance_;
   
   if (tan( nominalViewingAngle_) != 0.) {
     horizontalDistanceToSensor_ = heightAboveSensor_ / tan( nominalViewingAngle_ );
-    NQLog("DefoRecoSurface", NQLog::Message) << "horizontalDistanceToSensor [mm] = " << horizontalDistanceToSensor_;
+    NQLog("DefoRecoSurface", NQLog::Message)
+        << "horizontalDistanceToSensor [mm] = " << horizontalDistanceToSensor_;
   } else {
-    std::cerr << " [DefoRecoSurface::calculateHelpers] ** ERROR: tan(delta) is zero, no chance for proper reconstruction. Check parameters in configuration file. Abort." << std::endl;
+    NQLogFatal("DefoRecoSurface")
+        << "tan(delta) is zero, no chance for proper reconstruction. "
+        << "Check parameters in configuration file. Abort.";
     throw;
   }
 
@@ -149,14 +154,14 @@ const DefoSplineField DefoRecoSurface::createZSplines(DefoPointCollection const&
   NQLog("DefoRecoSurface", NQLog::Message) << " x: " << indexRangeX.first << " .. " << indexRangeX.second;
   NQLog("DefoRecoSurface", NQLog::Message) << " y: " << indexRangeY.first << " .. " << indexRangeY.second;
 
-  NPoint cameraPoint(0., 0., 0.);
+  NPoint3D cameraPoint(0., 0., 0.);
   
-  NPoint surfacePoint(0., 0., nominalCameraDistance_);
-  NDirection surfaceNormal(0., 0., 1.);
+  NPoint3D surfacePoint(0., 0., nominalCameraDistance_);
+  NDirection3D surfaceNormal(0., 0., 1.);
   surfaceNormal.rotateX(-nominalViewingAngle_);
-  NPlane surface(surfacePoint, surfaceNormal);
+  NPlane3D surface(surfacePoint, surfaceNormal);
 
-  NPoint intersectionPoint;
+  NPoint3D intersectionPoint;
 
   // we need the blue point (from *ref*) as geom. reference, it always has index 0,0
   std::pair<bool,DefoPointCollection::const_iterator> bluePointByIndex =
@@ -194,19 +199,19 @@ const DefoSplineField DefoRecoSurface::createZSplines(DefoPointCollection const&
 
         // convert from pixel units to real units on module
 
-	// new new version
-	NDirection beamDirection((aPoint.getX() - 0.5 * imageSize_.first) * pitchX_,
-				 (aPoint.getY() - 0.5 * imageSize_.second) * pitchY_,
-				 focalLength_);
-	NLine beam(cameraPoint, beamDirection);
-	beam.intersection(surface, intersectionPoint);
-	double x = intersectionPoint.x() * calibX_;
-	double y = intersectionPoint.y() * calibY_;
-	double z = intersectionPoint.z();
+        // new new version
+        NDirection3D beamDirection((aPoint.getX() - 0.5 * imageSize_.first) * pitchX_,
+                                   (aPoint.getY() - 0.5 * imageSize_.second) * pitchY_,
+                                   focalLength_);
+        NLine3D beam(cameraPoint, beamDirection);
+        beam.intersection(surface, intersectionPoint);
+        double x = intersectionPoint.x() * calibX_;
+        double y = intersectionPoint.y() * calibY_;
+        double z = intersectionPoint.z();
 
-	NQLog("DefoRecoSurface", NQLog::Spam) << "intersection: " << x << " " << y << " " << z;
+        NQLog("DefoRecoSurface", NQLog::Spam) << "intersection: " << x << " " << y << " " << z;
 
-	aPoint.setPosition(x, y);
+        aPoint.setPosition(x, y);
 
         aSplineSet.addPoint( aPoint );
 
@@ -261,19 +266,19 @@ const DefoSplineField DefoRecoSurface::createZSplines(DefoPointCollection const&
 	
         // convert from pixel units to real units on module
 
-	// new new version
-	NDirection beamDirection((aPoint.getX() - 0.5 * imageSize_.first) * pitchX_,
-				 (aPoint.getY() - 0.5 * imageSize_.second) * pitchY_,
-				 focalLength_);
-	NLine beam(cameraPoint, beamDirection);
-	beam.intersection(surface, intersectionPoint);
-	double x = intersectionPoint.x() * calibX_;
-	double y = intersectionPoint.y() * calibY_;
-	double z = intersectionPoint.z();
+        // new new version
+        NDirection3D beamDirection((aPoint.getX() - 0.5 * imageSize_.first) * pitchX_,
+                                   (aPoint.getY() - 0.5 * imageSize_.second) * pitchY_,
+                                   focalLength_);
+        NLine3D beam(cameraPoint, beamDirection);
+        beam.intersection(surface, intersectionPoint);
+        double x = intersectionPoint.x() * calibX_;
+        double y = intersectionPoint.y() * calibY_;
+        double z = intersectionPoint.z();
 
-	NQLog("DefoRecoSurface", NQLog::Spam) << "intersection: " << x << " " << y << " " << z;
+        NQLog("DefoRecoSurface", NQLog::Spam) << "intersection: " << x << " " << y << " " << z;
 
-	aPoint.setPosition(x, y);
+        aPoint.setPosition(x, y);
 
         aSplineSet.addPoint( aPoint );
 
@@ -295,7 +300,6 @@ const DefoSplineField DefoRecoSurface::createZSplines(DefoPointCollection const&
     // attach to output field (as *second*!!)
     theOutput.first.push_back(aSplineSet);
   }
-
 
   // c'est tout
   NQLog("DefoRecoSurface", NQLog::Message) << "createZSplines done";
@@ -323,7 +327,8 @@ const DefoSplineField DefoRecoSurface::createZSplinesOld( DefoPointCollection co
   // in current image and reference image
   if( currentGroups.first.size() != referenceGroups.first.size()   ||
       currentGroups.second.size() != referenceGroups.second.size()    ) {
-    std::cerr << " [DefoRecoSurface::createZSplinesOld] ** ERROR: Size mismatch in sorted point groups, empty output." << std::endl;
+    NQLogCritical("DefoRecoSurface::createZSplinesOld()")
+        << "Size mismatch in sorted point groups, empty output.";
     return theOutput;
   }
 
@@ -706,7 +711,8 @@ const DefoSplineField DefoRecoSurface::createXYSplines( DefoPointCollection cons
 
     // fit the splineset
     if( !aSplineSet.doFitXY() ) {
-      std::cerr << " [DefoRecoSurface::createXYSplines] ** ERROR: Failed to fit splineset along Y, return empty output." << std::endl;
+      NQLogCritical("DefoRecoSurface::createXYSplines()")
+          << "Failed to fit splineset along Y, return empty output.";
       return theOutput;
     }
 
@@ -730,20 +736,17 @@ const DefoSplineField DefoRecoSurface::createXYSplines( DefoPointCollection cons
 
     // fit the splineset
     if( !aSplineSet.doFitXY() ) {
-      std::cerr << " [DefoRecoSurface::createXYSplines] ** ERROR: Failed to fit splineset along X, return empty output." << std::endl;
+      NQLogCritical("DefoRecoSurface::createXYSplines()")
+          << "Failed to fit splineset along X, return empty output.";
       return theOutput;
     }
 
     // attach to output field (as *first*!!)
     theOutput.first.push_back( aSplineSet );
-
   }
 
   return theOutput;
-    
 }
-
-
 
 ///
 /// group points in two sets of PointCollections (1 for x and 1 for y),
@@ -872,14 +875,14 @@ const std::pair<double,double> DefoRecoSurface::determineAverageSpacing( DefoPoi
   }
 
   if( !( nSpacings.first && nSpacings.second ) ) {
-    std::cerr << " [DefoRecoSurface::determineAverageSpacing] ** ERROR: unable to determine spacing, trying default (" 
-	      <<  spacingEstimate_ << " pix)." << std::endl;
+    NQLogWarning("DefoRecoSurface::determineAverageSpacing()")
+        << "unable to determine spacing, trying default ("
+        <<  spacingEstimate_ << " pix).";
     return std::pair<double,double>( spacingEstimate_, spacingEstimate_ );
   }
 
   // average
   return std::pair<double,double>( sumOfSpacings.first / nSpacings.first, sumOfSpacings.second / nSpacings.second );
-
 }
 
 ///
@@ -887,43 +890,35 @@ const std::pair<double,double> DefoRecoSurface::determineAverageSpacing( DefoPoi
 /// this closest point must not be further away from aPoint than (SPACING_ESTIMATE,SPACING_ESTIMATE),
 /// otherwise return false.
 ///
-std::pair<bool,DefoPointCollection::iterator> DefoRecoSurface::findClosestPoint( DefoPoint const& aPoint, DefoPointCollection& points ) const {
-  
-  DefoPoint ref( std::numeric_limits<double>::max(), std::numeric_limits<double>::max() );
-  DefoPoint max( spacingEstimate_, spacingEstimate_ );
+std::pair<bool,DefoPointCollection::iterator> DefoRecoSurface::findClosestPoint(DefoPoint const& aPoint,
+                                                                                DefoPointCollection& points ) const
+{
+  DefoPoint ref(std::numeric_limits<double>::max(),
+                std::numeric_limits<double>::max());
+  DefoPoint max(spacingEstimate_, spacingEstimate_ );
 
   std::vector<std::pair<DefoPointCollection::iterator,DefoPoint> > pointsAndDistances;
 
   // loop points, compute distance
-  for( DefoPointCollection::iterator it = points.begin(); it < points.end(); ++it ) {
+  for (DefoPointCollection::iterator it = points.begin();
+       it < points.end();
+       ++it) {
     const DefoPoint distance = aPoint - *it;
-    pointsAndDistances.push_back( std::pair<DefoPointCollection::iterator,DefoPoint>( it, distance ) );
+    pointsAndDistances.push_back(std::pair<DefoPointCollection::iterator,DefoPoint>(it, distance));
   }
 
   // check, sort & get smallest
   DefoPointCollection::iterator result;
-  if( 0 == pointsAndDistances.size() ) return( std::pair<bool,DefoPointCollection::iterator>( false, result ) ); // ?
-  std::sort( pointsAndDistances.begin(), pointsAndDistances.end(), DefoPointPairSecondAbsPredicate );
-  result = pointsAndDistances.at( 0 ).first;
-
-  ///////////////////////////////////////////////////////
-//   std::cout << "~~~~~~~~~~~~~~~~~~~~~" << std::endl;
-//   for( unsigned int i = 0; i < 5 && i < pointsAndDistances.size(); ++i ) {
-//     std::cout << "PPP: " << i << " " << pointsAndDistances.at( i ).first->getX() << " " 
-// 	      << pointsAndDistances.at( i ).first->getY() << " " << pointsAndDistances.at( i ).second.abs() << std::endl;
-//   }
-//   std::cout << "~~~~~~~~~~~~~~~~~~~~~" << std::endl;
-  ///////////////////////////////////////////////////////
+  if (0 == pointsAndDistances.size()) return (std::pair<bool,DefoPointCollection::iterator>(false, result)); // ?
+  std::sort(pointsAndDistances.begin(), pointsAndDistances.end(), DefoPointPairSecondAbsPredicate);
+  result = pointsAndDistances.at(0).first;
 
   // point not too far away from requested position aPoint?
   bool isFound = false;
-  if( *result - aPoint < max ) isFound = true;
+  if (*result - aPoint < max) isFound = true;
 
-  return std::pair<bool,DefoPointCollection::iterator>( isFound, result );
-
+  return std::pair<bool,DefoPointCollection::iterator>(isFound, result);
 }
-
-
 
 ///
 /// in the collection "points", find the one which is closest to "aPoint"
@@ -932,28 +927,32 @@ std::pair<bool,DefoPointCollection::iterator> DefoRecoSurface::findClosestPoint(
 /// otherwise return false.
 ///
 std::pair<bool,DefoPointCollection::iterator> 
-DefoRecoSurface::findClosestPointExcluded( DefoPoint const& aPoint, DefoPointCollection& points, DefoPoint const& excludedPoint ) const {
-  
+DefoRecoSurface::findClosestPointExcluded(DefoPoint const& aPoint,
+                                          DefoPointCollection& points,
+                                          DefoPoint const& excludedPoint ) const
+{
   DefoPoint ref( std::numeric_limits<double>::max(), std::numeric_limits<double>::max() );
   DefoPoint max( spacingEstimate_, spacingEstimate_ );
 
   std::vector<std::pair<DefoPointCollection::iterator,DefoPoint> > pointsAndDistances;
 
   // loop points, compute distance
-  for( DefoPointCollection::iterator it = points.begin(); it < points.end(); ++it ) {
+  for (DefoPointCollection::iterator it = points.begin();
+       it < points.end();
+       ++it) {
     const DefoPoint distance = aPoint - *it;
-    pointsAndDistances.push_back( std::pair<DefoPointCollection::iterator,DefoPoint>( it, distance ) );
+    pointsAndDistances.push_back(std::pair<DefoPointCollection::iterator,DefoPoint>(it, distance));
   }
 
   // check, sort
   DefoPointCollection::iterator result;
-  if( 0 == pointsAndDistances.size() ) return( std::pair<bool,DefoPointCollection::iterator>( false, result ) ); // ?
-  std::sort( pointsAndDistances.begin(), pointsAndDistances.end(), DefoPointPairSecondAbsPredicate );
+  if (0 == pointsAndDistances.size()) return (std::pair<bool,DefoPointCollection::iterator>(false, result)); // ?
+  std::sort(pointsAndDistances.begin(), pointsAndDistances.end(), DefoPointPairSecondAbsPredicate);
 
   // get point with smallest distance to aPoint, which is not excludedPoint
   std::vector<std::pair<DefoPointCollection::iterator,DefoPoint> >::const_iterator it = pointsAndDistances.begin();
   while (it < pointsAndDistances.end()) {
-    if ( !(( *(it->first) - excludedPoint ).abs() < 0.01)) {
+    if (!(( *(it->first) - excludedPoint).abs() < 0.01)) {
       result = it->first; break;
     }
     ++it;
@@ -987,62 +986,52 @@ DefoRecoSurface::findPointByIndex(DefoPointCollection const& points,
 /// determine and apply a common offset to all spline sets in the field
 /// such that the lowermost point has height zero in the end
 ///
-void DefoRecoSurface::removeGlobalOffset( DefoSplineField& splineField ) const {
-  
+void DefoRecoSurface::removeGlobalOffset( DefoSplineField& splineField ) const
+{
   double minimalHeight = std::numeric_limits<double>::max();
 
   // first determine the height of the lowermost point
-  for( DefoSplineSetXCollection::const_iterator itX = splineField.first.begin(); itX < splineField.first.end(); ++itX ) {
-    for( DefoPointCollection::const_iterator itPX = itX->getPoints().begin(); itPX < itX->getPoints().end(); ++itPX ) {
-      if( itX->eval( itPX->getX() ) < minimalHeight ) minimalHeight = itX->eval( itPX->getX() );
+  for (DefoSplineSetXCollection::const_iterator itX = splineField.first.begin();
+       itX < splineField.first.end();
+       ++itX ) {
+    for (DefoPointCollection::const_iterator itPX = itX->getPoints().begin();
+         itPX < itX->getPoints().end();
+         ++itPX ) {
+      if (itX->eval(itPX->getX()) < minimalHeight) minimalHeight = itX->eval(itPX->getX());
     }
   }
 
   // now adjust all the splinesets
-  for( DefoSplineSetXCollection::iterator itX = splineField.first.begin(); itX < splineField.first.end(); ++itX ) {
-    itX->offset( -1. * minimalHeight );
+  for (DefoSplineSetXCollection::iterator itX = splineField.first.begin();
+       itX < splineField.first.end();
+       ++itX) {
+    itX->offset(-1. * minimalHeight);
   }
-
 
   minimalHeight = std::numeric_limits<double>::max();
   
   // first determine the height of the lowermost point
-  for( DefoSplineSetYCollection::const_iterator itY = splineField.second.begin(); itY < splineField.second.end(); ++itY ) {
-    for( DefoPointCollection::const_iterator itPY = itY->getPoints().begin(); itPY < itY->getPoints().end(); ++itPY ) {
-      if( itY->eval( itPY->getY() ) < minimalHeight ) minimalHeight = itY->eval( itPY->getY() );
+  for (DefoSplineSetYCollection::const_iterator itY = splineField.second.begin();
+       itY < splineField.second.end();
+       ++itY) {
+    for (DefoPointCollection::const_iterator itPY = itY->getPoints().begin();
+         itPY < itY->getPoints().end();
+         ++itPY) {
+      if (itY->eval(itPY->getY()) < minimalHeight) minimalHeight = itY->eval(itPY->getY());
     }
   }
 
-
-  for( DefoSplineSetYCollection::iterator itY = splineField.second.begin(); itY < splineField.second.end(); ++itY ) {
-    itY->offset( -1. * minimalHeight );
+  for (DefoSplineSetYCollection::iterator itY = splineField.second.begin();
+       itY < splineField.second.end();
+       ++itY) {
+    itY->offset(-1. * minimalHeight);
   }
-  
-
 }
-
-
 
 ///
 /// remove a global tilt (along x or y) of the spline field
 ///
-void DefoRecoSurface::removeTilt( DefoSplineField& ) const {
-}
-
-
-void DefoRecoSurface::dump()
+void DefoRecoSurface::removeTilt( DefoSplineField& ) const
 {
-    std::cout << std::endl;
-    std::cout << "spacingEstimate_ = " << spacingEstimate_ << std::endl;
-    std::cout << "searchPathHalfWidth_ = " << searchPathHalfWidth_ << std::endl;
-    std::cout << "nominalGridDistance_ = " << nominalGridDistance_ << std::endl;
-    std::cout << "nominalCameraDistance_ = " << nominalCameraDistance_ << std::endl;
-    std::cout << "nominalViewingAngle_ = " << nominalViewingAngle_ << std::endl;
-    std::cout << "heightAboveSensor_ = " << heightAboveSensor_ << std::endl;
-    std::cout << "horizontalDistanceToSensor_ = " << horizontalDistanceToSensor_ << std::endl;
-    std::cout << "pitchX_ = " << pitchX_ << std::endl;
-    std::cout << "pitchY_ = " << pitchY_ << std::endl;
-    std::cout << "focalLength_ = " << focalLength_ << std::endl;
-    std::cout << "debugLevel_ = " << debugLevel_ << std::endl;
-    std::cout << "indexedPoints_ = " << indexedPoints_.size() << std::endl;
+
 }

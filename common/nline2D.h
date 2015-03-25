@@ -18,42 +18,31 @@
  **
  ****************************************************************************/
 
-#ifndef NPOINT_H
-#define NPOINT_H
+#ifndef NLINE2D_H
+#define NLINE2D_H
 
 #include <iostream>
 
-class NVector;
-class NLine;
-class NPlane;
+#include <npoint2D.h>
+#include <ndirection2D.h>
 
-class NPoint
+class NLine2D
 {
 public:
 
-  NPoint();
-  NPoint(double x, double y, double z);
-  NPoint(const NPoint& other);
-  ~NPoint();
+  NLine2D(const NPoint2D& point, const NDirection2D& direction);
+  NLine2D(const NLine2D& other);
+  ~NLine2D();
 
-  double x() const { return x_; }
-  double y() const { return y_; }
-  double z() const { return z_; }
+  const NPoint2D& point() const { return point_; }
+  const NDirection2D& direction() const { return direction_; }
 
-  void move(double dx, double dy, double dz);
-  void move(const NVector& v);
-  void move(const NVector& v, double scale);
-
-  double distanceTo(const NPoint& other);
-  double distanceTo(const NLine& line);
-  double distanceTo(const NPlane& plane);
-
-  bool isCoincident(const NLine& line);
-  bool isCoincident(const NPlane& plane);
+  NPoint2D pointAt(double s);
 
 protected:
 
-  double x_, y_, z_;
+  NPoint2D point_;
+  NDirection2D direction_;
 };
 
-#endif // NPOINT_H
+#endif // NLINE2D_H

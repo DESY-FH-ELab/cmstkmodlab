@@ -20,96 +20,81 @@
 
 #include <cmath>
 
-#include "nvector.h"
-#include "nline.h"
-#include "nplane.h"
-#include "npoint.h"
+#include "nvector2D.h"
+#include "nline2D.h"
+#include "npoint2D.h"
 
-NPoint::NPoint()
+NPoint2D::NPoint2D()
 : x_(0.),
-  y_(0.),
-  z_(0.)
+  y_(0.)
 {
 
 }
 
-NPoint::NPoint(double x, double y, double z)
+NPoint2D::NPoint2D(double x, double y)
 : x_(x),
-  y_(y),
-  z_(z)
+  y_(y)
 {
 
 }
 
-NPoint::NPoint(const NPoint& other)
+NPoint2D::NPoint2D(const NPoint2D& other)
 : x_(other.x()),
-  y_(other.y()),
-  z_(other.z())
+  y_(other.y())
 {
 
 }
 
-NPoint::~NPoint()
+NPoint2D::~NPoint2D()
 {
 
 }
 
-void NPoint::move(double dx, double dy, double dz)
+void NPoint2D::move(double dx, double dy)
 {
   x_ += dx;
   y_ += dy;
-  z_ += dz;
 }
 
-void NPoint::move(const NVector& v)
+void NPoint2D::move(const NVector2D& v)
 {
   x_ += v.x();
   y_ += v.y();
-  z_ += v.z();
 }
 
-void NPoint::move(const NVector& v, double scale)
+void NPoint2D::move(const NVector2D& v, double scale)
 {
   x_ += v.x() * scale;
   y_ += v.y() * scale;
-  z_ += v.z() * scale;
 }
 
-double NPoint::distanceTo(const NPoint& other)
+double NPoint2D::distanceTo(const NPoint2D& other)
 {
-  NVector v(other, *this);
+  NVector2D v(other, *this);
   return v.length();
 }
 
-double NPoint::distanceTo(const NLine& line)
+double NPoint2D::distanceTo(const NLine2D& line)
 {
-  NPoint x1 = line.point();
-  NPoint x2 = line.point();
-  x2.move(line.direction());
-  double d = line.direction().length();
-  NVector v1(x1, *this);
-  NVector v2(x2, *this);
-  NVector cross = v1.cross(v2);
-
-  return cross.length()/d;
+  return std::fabs(signedDistanceTo(line));
 }
 
-double NPoint::distanceTo(const NPlane& plane)
+double NPoint2D::signedDistanceTo(const NLine2D& line)
 {
-  NVector w(*this, plane.point());
-  return std::fabs(w.dot(plane.normal()));
+  NPoint2D p1 = line.point();
+  NPoint2D p2 = line.point();
+  p2.move(line.direction());
+
+  NDirection2D v(p2.y() - p1.y(),
+                 -1.0*(p2.x()-p1.x()));
+  NVector2D r(*this, p1);
+
+  return v.dot(r);
 }
 
-bool NPoint::isCoincident(const NLine& line)
+bool NPoint2D::isCoincident(const NLine2D& line)
 {
   double d = distanceTo(line);
-  if (d==0.) return true;
-  return false;
-}
-
-bool NPoint::isCoincident(const NPlane& plane)
-{
-  double d = distanceTo(plane);
   if (d==0.) return true;
   return false;
 }

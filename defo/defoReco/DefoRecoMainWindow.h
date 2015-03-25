@@ -35,6 +35,9 @@
 #include "DefoGeometryModel.h"
 #include "DefoGeometryWidget.h"
 
+#include "DefoCalibrationModel.h"
+#include "DefoCalibrationWidget.h"
+
 class DefoRecoMainWindow : public QMainWindow
 {
   Q_OBJECT
@@ -68,6 +71,7 @@ protected:
   DefoColorSelectionModel* defoColorModel_;
 
   DefoGeometryModel* geometryModel_;
+  DefoCalibrationModel* calibrationModel_;
 
   DefoMeasurementPairListModel* measurementPairListModel_;
   DefoMeasurementPairSelectionModel* measurementPairSelectionModel_;

@@ -6,6 +6,8 @@
 
 #include <QHash>
 
+#include <nqlogger.h>
+
 #include "DefoSurface.h"
 
 inline bool operator==(const DefoSplineXYPair &lhs, const DefoSplineXYPair &rhs)
@@ -174,48 +176,48 @@ const DefoSurfaceSummary& DefoSurface::getSummary() const
 ///
 ///
 ///
-void DefoSurface::dumpSplineField( std::string filename ) const {
+void DefoSurface::dumpSplineField(std::string filename) const
+{
+  typedef QHash<DefoSplineXYPair,DefoSplineXYDefoPair>::const_iterator it_t;
 
-    typedef QHash<DefoSplineXYPair,DefoSplineXYDefoPair>::const_iterator it_t;
+  if (filename.length()==0) return;
 
-    if (filename.length()==0) return;
-
-    std::ofstream ofile(filename.c_str());
-    for (it_t it = defoPointMap_.begin();it!=defoPointMap_.end();++it) {
-        ofile << std::setw(8)  << it.key().ix_ << " "
-              << std::setw(8)  << it.key().iy_ << " "
-              << std::setw(14) << it.key().x_ << " "
-              << std::setw(14) << it.key().y_ << " "
-              << std::setw(14) << it.value().x_ << " "
-              << std::setw(3)  << (int)it.value().hasx_ << " "
-              << std::setw(14) << it.value().y_ << " "
-              << std::setw(3)  << (int)it.value().hasy_
-              << std::endl;
-    }
+  std::ofstream ofile(filename.c_str());
+  for (it_t it = defoPointMap_.begin();it!=defoPointMap_.end();++it) {
+    ofile << std::setw(8)  << it.key().ix_ << " "
+          << std::setw(8)  << it.key().iy_ << " "
+          << std::setw(14) << it.key().x_ << " "
+          << std::setw(14) << it.key().y_ << " "
+          << std::setw(14) << it.value().x_ << " "
+          << std::setw(3)  << (int)it.value().hasx_ << " "
+          << std::setw(14) << it.value().y_ << " "
+          << std::setw(3)  << (int)it.value().hasy_
+          << std::endl;
+  }
 }
 
 ///
 ///
 ///
-void DefoSurface::dumpSummary( std::string& filename ) const {
+void DefoSurface::dumpSummary(std::string& filename) const
+{
+  if (filename.length()==0) return;
 
-    if (filename.length()==0) return;
+  std::ofstream ofile(filename.c_str());
 
-    std::ofstream ofile(filename.c_str());
+  ofile << std::setw(8)  << summary_.maxZFromXSplines << " "
+        << std::setw(8)  << summary_.posAtMaxZFromXSplines.first << " "
+        << std::setw(8)  << summary_.posAtMaxZFromXSplines.second << std::endl;
+  ofile << std::setw(8)  << summary_.minZFromXSplines << " "
+        << std::setw(8)  << summary_.posAtMinZFromXSplines.first << " "
+        << std::setw(8)  << summary_.posAtMinZFromXSplines.second << std::endl;
 
-    ofile << std::setw(8)  << summary_.maxZFromXSplines << " "
-          << std::setw(8)  << summary_.posAtMaxZFromXSplines.first << " "
-          << std::setw(8)  << summary_.posAtMaxZFromXSplines.second << std::endl;
-    ofile << std::setw(8)  << summary_.minZFromXSplines << " "
-          << std::setw(8)  << summary_.posAtMinZFromXSplines.first << " "
-          << std::setw(8)  << summary_.posAtMinZFromXSplines.second << std::endl;
-
-    ofile << std::setw(8)  << summary_.maxZFromYSplines << " "
-          << std::setw(8)  << summary_.posAtMaxZFromYSplines.first << " "
-          << std::setw(8)  << summary_.posAtMaxZFromYSplines.second << std::endl;
-    ofile << std::setw(8)  << summary_.minZFromYSplines << " "
-          << std::setw(8)  << summary_.posAtMinZFromYSplines.first << " "
-          << std::setw(8)  << summary_.posAtMinZFromYSplines.second << std::endl;
+  ofile << std::setw(8)  << summary_.maxZFromYSplines << " "
+        << std::setw(8)  << summary_.posAtMaxZFromYSplines.first << " "
+        << std::setw(8)  << summary_.posAtMaxZFromYSplines.second << std::endl;
+  ofile << std::setw(8)  << summary_.minZFromYSplines << " "
+        << std::setw(8)  << summary_.posAtMinZFromYSplines.first << " "
+        << std::setw(8)  << summary_.posAtMinZFromYSplines.second << std::endl;
 }
 
 ///
@@ -225,7 +227,8 @@ void DefoSurface::dumpSummary( std::string& filename ) const {
 void DefoSurface::createPointFields( void ) {
 
   if( !isSplineField_ ) {
-    std::cerr << " [DefoSurface::createPointFields] ** ERROR: Spline field not set. Doing nothing." << std::endl;
+    NQLogCritical("DefoSurface::createPointFields()")
+        << "Spline field not set. Doing nothing.";
     return;
   }
 
@@ -236,10 +239,10 @@ void DefoSurface::createPointFields( void ) {
     if( abs( it->getIndex().second ) > (int)indexRange.second ) indexRange.second = abs( it->getIndex().second  );
 
     if( !it->isIndexed() ) {
-      std::cerr << " [DefoSurface::createPointFields] ** WARNING: Point not indexed at position: x: " 
-		<< it->getX() << " y: " << it->getY() << std::endl;
+      NQLogWarning("DefoSurface::createPointFields()")
+          << "Point not indexed at position: x: "
+		  << it->getX() << " y: " << it->getY();
     }
-
   }
 
 
@@ -248,10 +251,6 @@ void DefoSurface::createPointFields( void ) {
   for( DefoPointField::iterator it = pointFields_.first.begin(); it != pointFields_.first.end(); ++it ) {
     it->resize( indexRange.second * 2 + 1 );
   }
-
-  //  std::cout << " [DefoSurface::createPointFields] =2= matrix dimensions: x: " << indexRange.first << " y: " << indexRange.second << std::endl;
-
-  
 
   // first "along-x" splines
   DefoSplineSetXCollection const& splinesX = splineField_.first;
@@ -270,11 +269,8 @@ void DefoSurface::createPointFields( void ) {
       absIndex.second += indexRange.second;
 
       pointFields_.first.at( absIndex.first ).at( absIndex.second ) = aPoint; // uuaargh..
-
     }
-
   }
-
 
   /////////////////////////////////
   /////////////////////////////////
@@ -282,7 +278,5 @@ void DefoSurface::createPointFields( void ) {
   // CLONE FOR THE MOMENT
 
   pointFields_.second = pointFields_.first; ////////////////////////////////////////////
-
-
 }
 

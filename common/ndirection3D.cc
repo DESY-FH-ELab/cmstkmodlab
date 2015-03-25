@@ -18,29 +18,44 @@
  **
  ****************************************************************************/
 
-#ifndef NPLANE_H
-#define NPLANE_H
+#include <cmath>
 
-#include <iostream>
+#include "npoint3D.h"
+#include "ndirection3D.h"
 
-#include <npoint.h>
-#include <ndirection.h>
-
-class NPlane
+NDirection3D::NDirection3D()
+: NVector3D(0., 0., 1.)
 {
-public:
 
-  NPlane(const NPoint& point, const NDirection& normal);
-  NPlane(const NPlane& other);
-  ~NPlane();
+}
 
-  const NPoint& point() const { return point_; }
-  const NDirection& normal() const { return normal_; }
+NDirection3D::NDirection3D(double x, double y, double z)
+: NVector3D(x, y, z)
+{
+  normalize();
+}
 
-protected:
+NDirection3D::NDirection3D(const NPoint3D& a, const NPoint3D& b)
+: NVector3D(a, b)
+{
+  normalize();
+}
 
-  NPoint point_;
-  NDirection normal_;
-};
+NDirection3D::NDirection3D(const NVector3D& other)
+: NVector3D(other)
+{
+  normalize();
+}
 
-#endif // NLINE_H
+NDirection3D::~NDirection3D()
+{
+
+}
+
+void NDirection3D::normalize()
+{
+  double l = length();
+  x_ /= l;
+  y_ /= l;
+  z_ /= l;
+}

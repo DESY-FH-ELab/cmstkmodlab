@@ -65,6 +65,7 @@ HEADERS += DefoExifReader.h \
            DefoROIModel.h \
            DefoAlignmentModel.h \
            DefoGeometryModel.h \
+           DefoCalibrationModel.h \
            DefoColorSelectionModel.h \
            DefoPointIndexerModel.h \
            DefoPointIndexerListComboBox.h \
@@ -97,6 +98,7 @@ SOURCES += DefoExifReader.cc \
            DefoROIModel.cc \
            DefoAlignmentModel.cc \
            DefoGeometryModel.cc \
+           DefoCalibrationModel.cc \
            DefoColorSelectionModel.cc \
            DefoPointIndexerModel.cc \
            DefoPointIndexerListComboBox.cc \

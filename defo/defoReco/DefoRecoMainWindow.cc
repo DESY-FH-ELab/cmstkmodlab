@@ -51,6 +51,7 @@ DefoRecoMainWindow::DefoRecoMainWindow(QWidget *parent) :
   defoColorModel_ = new DefoColorSelectionModel(this);
 
   geometryModel_ = new DefoGeometryModel(this);
+  calibrationModel_ = new DefoCalibrationModel(this);
 
   measurementPairListModel_ = new DefoMeasurementPairListModel(this);
   measurementPairSelectionModel_ = new DefoMeasurementPairSelectionModel(this);
@@ -77,6 +78,7 @@ DefoRecoMainWindow::DefoRecoMainWindow(QWidget *parent) :
                                                      measurementPairListModel_,
                                                      measurementPairSelectionModel_,
                                                      geometryModel_,
+                                                     calibrationModel_,
                                                      this);
   reconstructionModel_->setCurrentDir(currentDir_);
 
@@ -154,7 +156,9 @@ DefoRecoMainWindow::DefoRecoMainWindow(QWidget *parent) :
   QWidget * refPointWidget = new QWidget(pointsWidget);
   refPointWidget->setLayout(vbox);
 
-  DefoMeasurementListComboBox *refSelect = new DefoMeasurementListComboBox(listModel_, refSelectionModel_, refPointWidget);
+  DefoMeasurementListComboBox *refSelect = new DefoMeasurementListComboBox(listModel_,
+                                                                           refSelectionModel_,
+                                                                           refPointWidget);
   vbox->addWidget(refSelect);
 
   DefoRecoPointRecognitionWidget * refPointRecognitionWidget =
@@ -186,7 +190,9 @@ DefoRecoMainWindow::DefoRecoMainWindow(QWidget *parent) :
   QWidget * defoPointWidget = new QWidget(pointsWidget);
   defoPointWidget->setLayout(vbox);
   
-  DefoMeasurementListComboBox *defoSelect = new DefoMeasurementListComboBox(listModel_, defoSelectionModel_, defoPointWidget);
+  DefoMeasurementListComboBox *defoSelect = new DefoMeasurementListComboBox(listModel_,
+                                                                            defoSelectionModel_,
+                                                                            defoPointWidget);
   vbox->addWidget(defoSelect);
 
   DefoRecoPointRecognitionWidget * defoPointRecognitionWidget =
@@ -278,6 +284,10 @@ DefoRecoMainWindow::DefoRecoMainWindow(QWidget *parent) :
   DefoGeometryWidget *geometryWidget = new DefoGeometryWidget(geometryModel_,
                                                               recoWidget);
   vbox->addWidget(geometryWidget);
+
+  DefoCalibrationWidget *calibrationWidget = new DefoCalibrationWidget(calibrationModel_,
+                                                                       recoWidget);
+  vbox->addWidget(calibrationWidget);
 
   tabWidget_->addTab(recoWidget, "Reconstruction");
 
