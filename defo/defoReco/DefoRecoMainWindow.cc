@@ -19,6 +19,8 @@
 #include "DefoRecoColorHistoWidget.h"
 #include "DefoAnalysisWidget.h"
 
+//#define ANALYSISWIDGET
+
 DefoRecoMainWindow::DefoRecoMainWindow(QWidget *parent) :
     QMainWindow(parent)
 {
@@ -281,7 +283,7 @@ DefoRecoMainWindow::DefoRecoMainWindow(QWidget *parent) :
 
   tabWidget_->addTab(recoWidget, "Reconstruction");
 
-  /*
+#ifdef ANALYSISWIDGET
   vbox = new QVBoxLayout();
   QWidget * analysisWidget = new QWidget(tabWidget_);
   analysisWidget->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);
@@ -298,7 +300,7 @@ DefoRecoMainWindow::DefoRecoMainWindow(QWidget *parent) :
   vbox->addWidget(analysisDisplay);
 
   tabWidget_->addTab(analysisWidget, "Analysis");
-  */
+#endif
 
   setCentralWidget(tabWidget_);
 
