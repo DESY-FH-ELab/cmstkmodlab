@@ -18,26 +18,58 @@
  **
  ****************************************************************************/
 
-#ifndef NDIRECTION_H
-#define NDIRECTION_H
+#include <cmath>
 
-#include <iostream>
+#include "npoint2D.h"
+#include "nvector2D.h"
 
-#include <nvector.h>
-
-class NDirection : public NVector
+NVector2D::NVector2D()
+: x_(0.),
+  y_(0.)
 {
-public:
 
-  NDirection();
-  NDirection(double x, double y, double z);
-  NDirection(const NPoint& a, const NPoint& b);
-  NDirection(const NVector& other);
-  ~NDirection();
+}
 
-protected:
+NVector2D::NVector2D(double x, double y)
+: x_(x),
+  y_(y)
+{
 
-  void normalize();
-};
+}
 
-#endif // NDIRECTION_H
+NVector2D::NVector2D(const NPoint2D& a, const NPoint2D& b)
+: x_(b.x() - a.x()),
+  y_(b.y() - a.y())
+{
+
+}
+
+NVector2D::NVector2D(const NVector2D& other)
+: x_(other.x()),
+  y_(other.y())
+{
+
+}
+
+NVector2D::~NVector2D()
+{
+
+}
+
+void NVector2D::rotate(double angle)
+{
+  double xn =  1.0*x()*std::cos(angle) - 1.0*y()*std::sin(angle);
+  double yn =  1.0*x()*std::sin(angle) + 1.0*y()*std::cos(angle);
+  x_ = xn;
+  y_ = yn;
+}
+
+double NVector2D::length() const
+{
+  return std::sqrt(x_*x_ + y_*y_);
+}
+
+double NVector2D::dot(const NVector2D& other) const
+{
+  return x()*other.x() + y()*other.y();
+}

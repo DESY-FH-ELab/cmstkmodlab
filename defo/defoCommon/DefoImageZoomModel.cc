@@ -1,5 +1,3 @@
-#include <iostream>
-
 #include "DefoImageZoomModel.h"
 
 DefoImageZoomModel::DefoImageZoomModel(QObject *parent)
@@ -15,16 +13,12 @@ QSize DefoImageZoomModel::getZoomedSize(const QSize& size, const QImage& image)
 
   if (zoomFactor_==0.0) {
     float aspectRatio = width/height;
-    //std::cout << width << ", " << height << ", " << aspectRatio << std::endl;
-    //std::cout << size.width() << ", " << size.height() << ", " << size.width()/aspectRatio << std::endl;
     
     if (size.width()/aspectRatio > size.height()) {
-      //std::cout << "1 " << size.height()*aspectRatio << ", " << size.height() << std::endl;
       scaling_ = size.height()*aspectRatio/width;
       return QSize(size.height()*aspectRatio,
 		   size.height());
     } else {
-      //std::cout << "2 "  << size.width() << ", " << size.width()/aspectRatio << std::endl;
       scaling_ = size.width()/width;
       return QSize(size.width(),
 		   size.width()/aspectRatio);

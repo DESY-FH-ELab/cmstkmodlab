@@ -18,12 +18,14 @@ DefoReconstructionModel::DefoReconstructionModel(DefoMeasurementListModel * list
                                                  DefoMeasurementPairListModel* pairListModel,
                                                  DefoMeasurementPairSelectionModel* pairSelectionModel,
                                                  DefoGeometryModel* geometryModel,
+                                                 DefoCalibrationModel* calibrationModel,
                                                  QObject *parent) :
     QObject(parent),
     listModel_(listModel),
     pairListModel_(pairListModel),
     pairSelectionModel_(pairSelectionModel),
-    geometryModel_(geometryModel)
+    geometryModel_(geometryModel),
+    calibrationModel_(calibrationModel)
 {
   angle_ = 0.0;
   refMeasurement_ = 0;
@@ -53,6 +55,9 @@ DefoReconstructionModel::DefoReconstructionModel(DefoMeasurementListModel * list
 
   connect(geometryModel_, SIGNAL(geometryChanged()),
           this, SLOT(geometryChanged()));
+
+  connect(calibrationModel_, SIGNAL(calibrationChanged()),
+          this, SLOT(calibrationChanged()));
 
   reco_ = new DefoRecoSurface(this);
   
@@ -113,8 +118,6 @@ void DefoReconstructionModel::geometryChanged()
 {
   NQLog("DefoReconstructionModel::geometryChanged()", NQLog::Message) << "start";
 
-  std::cout << "void DefoReconstructionModel::geometryChanged()" << std::endl;
-
   double angle1 = geometryModel_->getAngle1();
   double angle1Rad = angle1 * M_PI / 180.;
   double angle2 = geometryModel_->getAngle2();
@@ -157,16 +160,23 @@ void DefoReconstructionModel::geometryChanged()
   reco_->setNominalViewingAngle(angle2Rad + angle3Rad);
   NQLog("DefoReconstructionModel", NQLog::Message) << "viewing angle [rad] = " << angle2Rad + angle3Rad;
 
-  reco_->setCalibX(geometryModel_->getCalibX());
-  reco_->setCalibY(geometryModel_->getCalibY());
-  NQLog("DefoReconstructionModel", NQLog::Message) << "calibX        = " << geometryModel_->getCalibX();
-  NQLog("DefoReconstructionModel", NQLog::Message) << "calibY        = " << geometryModel_->getCalibY();
-
   reco_->calculateHelpers();
 
   NQLog("DefoReconstructionModel::geometryChanged()", NQLog::Message) << "end";
 
   emit setupChanged();
+}
+
+void DefoReconstructionModel::calibrationChanged()
+{
+  NQLog("DefoReconstructionModel::calibrationChanged()", NQLog::Message) << "start";
+
+  reco_->setCalibX(calibrationModel_->getCalibX());
+  reco_->setCalibY(calibrationModel_->getCalibY());
+  NQLog("DefoReconstructionModel", NQLog::Message) << "calibX = " << calibrationModel_->getCalibX();
+  NQLog("DefoReconstructionModel", NQLog::Message) << "calibY = " << calibrationModel_->getCalibY();
+
+  NQLog("DefoReconstructionModel::calibrationChanged()", NQLog::Message) << "end";
 }
 
 void DefoReconstructionModel::incrementRecoProgress() {

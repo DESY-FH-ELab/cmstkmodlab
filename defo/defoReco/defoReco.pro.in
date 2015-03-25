@@ -51,6 +51,7 @@ HEADERS += DefoRecoMainWindow.h \
            DefoReconstructionWidget.h \
            DefoRecoColorHistoWidget.h \
            DefoGeometryWidget.h \
+           DefoCalibrationWidget.h \
            DefoAnalysisWidget.h \
            DefoOfflinePreparationModel.h \
            DefoSurfacePlot.h \
@@ -69,6 +70,7 @@ SOURCES += defoReco.cc \
            DefoReconstructionWidget.cc \
            DefoRecoColorHistoWidget.cc \
            DefoGeometryWidget.cc \
+           DefoCalibrationWidget.cc \
            DefoAnalysisWidget.cc \
            DefoOfflinePreparationModel.cc \
            DefoSurfacePlot.cc \

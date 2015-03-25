@@ -18,35 +18,35 @@
  **
  ****************************************************************************/
 
-#ifndef NLINE_H
-#define NLINE_H
+#ifndef NLINE3D_H
+#define NLINE3D_H
 
 #include <iostream>
 
-#include <npoint.h>
-#include <ndirection.h>
+#include <npoint3D.h>
+#include <ndirection3D.h>
 
-class NPlane;
+class NPlane3D;
 
-class NLine
+class NLine3D
 {
 public:
 
-  NLine(const NPoint& point, const NDirection& direction);
-  NLine(const NLine& other);
-  ~NLine();
+  NLine3D(const NPoint3D& point, const NDirection3D& direction);
+  NLine3D(const NLine3D& other);
+  ~NLine3D();
 
-  const NPoint& point() const { return point_; }
-  const NDirection& direction() const { return direction_; }
+  const NPoint3D& point() const { return point_; }
+  const NDirection3D& direction() const { return direction_; }
 
-  NPoint pointAt(double s);
+  NPoint3D pointAt(double s);
 
-  bool intersection(const NPlane& plane, NPoint& point);
+  bool intersection(const NPlane3D& plane, NPoint3D& point);
 
 protected:
 
-  NPoint point_;
-  NDirection direction_;
+  NPoint3D point_;
+  NDirection3D direction_;
 };
 
-#endif // NLINE_H
+#endif // NLINE3D_H

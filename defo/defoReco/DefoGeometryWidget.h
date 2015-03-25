@@ -43,9 +43,6 @@ protected:
   QDoubleSpinBox * height1SpinBox_;
   QDoubleSpinBox * height2SpinBox_;
 
-  QDoubleSpinBox * calibXSpinBox_;
-  QDoubleSpinBox * calibYSpinBox_;
-
 protected slots:
 
   void angle1Changed(double);
@@ -54,8 +51,6 @@ protected slots:
   void distanceChanged(double);
   void height1Changed(double);
   void height2Changed(double);
-  void calibXChanged(double);
-  void calibYChanged(double);
   void geometryChanged();
 };
 

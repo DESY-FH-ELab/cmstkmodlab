@@ -18,46 +18,26 @@
  **
  ****************************************************************************/
 
-#include "nplane.h"
-#include "nline.h"
+#ifndef NDIRECTION2D_H
+#define NDIRECTION2D_H
 
-NLine::NLine(const NPoint& point, const NDirection& direction)
-: point_(point),
-  direction_(direction)
+#include <iostream>
+
+#include <nvector2D.h>
+
+class NDirection2D : public NVector2D
 {
+public:
 
-}
+  NDirection2D();
+  NDirection2D(double x, double y);
+  NDirection2D(const NPoint2D& a, const NPoint2D& b);
+  NDirection2D(const NVector2D& other);
+  ~NDirection2D();
 
-NLine::NLine(const NLine& other)
-: point_(other.point()),
-  direction_(other.direction())
-{
+protected:
 
-}
+  void normalize();
+};
 
-NLine::~NLine()
-{
-
-}
-
-NPoint NLine::pointAt(double s)
-{
-  NPoint p(point());
-  p.move(direction().x()*s,
-         direction().y()*s,
-         direction().z()*s);
-  return p;
-}
-
-bool NLine::intersection(const NPlane& plane, NPoint& p)
-{
-  NVector u = plane.normal();
-  if (u.dot(direction())==0.) return false;
-
-  NVector w(point(), plane.point());
-  double s = plane.normal().dot(w)/plane.normal().dot(direction());
-
-  p = pointAt(s);
-
-  return true;
-}
+#endif // NDIRECTION2D_H

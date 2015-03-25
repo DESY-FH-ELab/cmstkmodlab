@@ -1,4 +1,4 @@
-#include <iostream>
+#include <nqlogger.h>
 
 #include <QFile>
 #include <QXmlStreamWriter>
@@ -48,26 +48,24 @@ int DefoMeasurement::getHeight() const
   in the measurement picture. An QRect area that defines a subregion of the
   image may be provided. In the case this points to NULL, the whole image is
   searched for suitable points.
-  */
+ */
 const DefoPointCollection* DefoMeasurement::findPoints(const QRect* searchArea,
-						       const QPolygonF* roi,
-						       int step1Threshold,
-						       int step2Threshold,
-						       int step3Threshold,
-						       int halfSquareWidth) const {
+                                                       const QPolygonF* roi,
+                                                       int step1Threshold,
+                                                       int step2Threshold,
+                                                       int step3Threshold,
+                                                       int halfSquareWidth) const {
 
   DefoPointCollection* points = new DefoPointCollection();
 
   DefoSquareCollection forbiddenAreas;
   const int step2TotalThreshold = 4 * step2Threshold;
 
-//  const int width = image_.width();
-//  const int height = image_.height();
+  const int width = image_.width();
+  const int height = image_.height();
 
-  // FIXME central logging
-//  if( debugLevel_ >= 2 )
-//    std::cout << " [DefoMeasurement::findPoints] =2= Image has: "
-//              << width << " x " << height << " pixels" << std::endl;
+  NQLogMessage("DefoMeasurement::findPoints()")
+      << "Image has: " << width << " x " << height << " pixels";
 
   QImage image = getImage();
 
@@ -80,10 +78,9 @@ const DefoPointCollection* DefoMeasurement::findPoints(const QRect* searchArea,
     area = imageArea & *searchArea;
 
   // FIXME central logging
-//  if( debugLevel_ >= 2 )
-//    std::cout <<  " [DefoMeasurement::findPoints] =2= Scanning area ("
-//              <<  area.x() << ',' <<  area.y() << ';'
-//              <<  area.width() << ',' <<  area.height() << ')' << std::endl;
+  NQLogSpam("DefoMeasurement::findPoints()")
+      <<  "Scanning area (" <<  area.x() << ',' <<  area.y() << ';'
+      <<  area.width() << ',' <<  area.height() << ')';
 
   // Scan x-line per x-line
   int y = area.y();
@@ -95,10 +92,9 @@ const DefoPointCollection* DefoMeasurement::findPoints(const QRect* searchArea,
       // Check if the point is in the allowed area AND bright enough
       // FIXME leap over forbidden areas instead of having to skip every pixel
 
-      if (!forbiddenAreas.isInside( DefoPoint( x, y ) )
-           && qGray( image.pixel(x,y) ) > step1Threshold
-           && imageArea.contains( x+3, y+3 )
-      ) {
+      if (!forbiddenAreas.isInside(DefoPoint(x, y)) &&
+          qGray( image.pixel(x,y) ) > step1Threshold &&
+          imageArea.contains(x+3, y+3)) {
 
         // We now have an initial seed. Check average amplitude
         // of some more pixels ahead
@@ -135,8 +131,6 @@ const DefoPointCollection* DefoMeasurement::findPoints(const QRect* searchArea,
 				 intermediate.getPixX() + halfSquareWidth,
 				 intermediate.getPixY() + halfSquareWidth);
 
-//            std::cout << "i=" << i << ": " << intermediate << std::endl;
-
             ++i;
           }
 
@@ -151,11 +145,9 @@ const DefoPointCollection* DefoMeasurement::findPoints(const QRect* searchArea,
               // Create DefoSquare around last found COG
               DefoSquare searchSquare( intermediate, halfSquareWidth );
 
-              // FIXME central logging
-//              if( debugLevel_ >= 3 )
-//                std::cout << " [DefoMeasurement::findPoints] =3= Reconstructed "
-//                          << "point at: x: " << intermediate.getX()
-//                          << " y: " << intermediate.getY() << std::endl;
+              NQLogDebug("DefoMeasurement::findPoints()")
+                  << "Reconstructed point at: x: " << intermediate.getX()
+                  << " y: " << intermediate.getY();
 
               // save square around this point as already tagged
               forbiddenAreas.push_back( searchSquare );
@@ -172,15 +164,11 @@ const DefoPointCollection* DefoMeasurement::findPoints(const QRect* searchArea,
               }
             }
           }
-          // FIXME central logging
-//          else if ( debugLevel_ >= 3 ) { // Log if point drifted away
 
-//            std::cout << " [DefoMeasurement::findPoints] =3= (Pos1) Point: x: "
-//                      << x << " y: " << y << " jumped to: x: "
-//                      << intermediate.getX() << " y: " << intermediate.getY()
-//                      << " . Dropping it. " << std::endl;
-
-//          }
+          NQLogDebug("DefoMeasurement::findPoints()")
+              << "Point: x: " << x << " y: " << y << " jumped to: x: "
+              << intermediate.getX() << " y: " << intermediate.getY()
+              << " -> Dropping it.";
 
         }
 
@@ -199,9 +187,7 @@ const DefoPointCollection* DefoMeasurement::findPoints(const QRect* searchArea,
 
   }
 
-//  if( debugLevel_ >= 2 )
-//    std::cout << " [DefoMeasurement::findPoints] =2= "
-//              << points.size() << " points found." << std::endl;
+  NQLogSpam("DefoMeasurement::findPoints()") << points->size() << " points found.";
 
   // Now that all points have been found, determine their color
   determinePointColors(image, points, halfSquareWidth, step3Threshold);
@@ -288,15 +274,8 @@ DefoPoint DefoMeasurement::getCenterOfGravity(const QImage& image,
       }
     }
 
-//    std::cout << weightedX << ','
-//              << weightedY << ','
-//              << totalGray << ','
-//              << (totalGray > 0) << std::endl;
     if ( totalGray > 0 )
       weightedSum.setPosition( weightedX/totalGray, weightedY/totalGray );
-
-//    std::cout << weightedSum << std::endl;
-    // otherwise position is (0,0) anyway
   }
 
   return weightedSum;
