@@ -58,6 +58,7 @@ class DefoRecoSurface : public QObject
   const std::pair<bool,DefoPointCollection::const_iterator> findPointByIndex( DefoPointCollection const&, std::pair<int,int> const& ) const;
   void removeGlobalOffset( DefoSplineField& ) const;
   void removeTilt( DefoSplineField& ) const;
+  double imageScale(double focalLength) const;
 
   int spacingEstimate_;
   int searchPathHalfWidth_;
