@@ -19,6 +19,8 @@
 #include "DefoRecoColorHistoWidget.h"
 #include "DefoAnalysisWidget.h"
 
+//#define ANALYSISWIDGET
+
 DefoRecoMainWindow::DefoRecoMainWindow(QWidget *parent) :
     QMainWindow(parent)
 {
@@ -291,7 +293,7 @@ DefoRecoMainWindow::DefoRecoMainWindow(QWidget *parent) :
 
   tabWidget_->addTab(recoWidget, "Reconstruction");
 
-  /*
+#ifdef ANALYSISWIDGET
   vbox = new QVBoxLayout();
   QWidget * analysisWidget = new QWidget(tabWidget_);
   analysisWidget->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);
@@ -308,7 +310,7 @@ DefoRecoMainWindow::DefoRecoMainWindow(QWidget *parent) :
   vbox->addWidget(analysisDisplay);
 
   tabWidget_->addTab(analysisWidget, "Analysis");
-  */
+#endif
 
   setCentralWidget(tabWidget_);
 
@@ -359,6 +361,7 @@ void DefoRecoMainWindow::loadMeasurementButtonClicked() {
   refColorModel_->read(currentDir_.absoluteFilePath("refcolor.xml"));
   defoColorModel_->read(currentDir_.absoluteFilePath("defocolor.xml"));
   geometryModel_->read(currentDir_.absoluteFilePath("geometry.xml"));
+  calibrationModel_->read(currentDir_.absoluteFilePath("calibration.xml"));
 
   listModel_->clear();
   listModel_->read(filename);
@@ -374,6 +377,7 @@ void DefoRecoMainWindow::saveMeasurementButtonClicked() {
   refColorModel_->write(currentDir_.absoluteFilePath("refcolor.xml"));
   defoColorModel_->write(currentDir_.absoluteFilePath("defocolor.xml"));
   geometryModel_->write(currentDir_.absoluteFilePath("geometry.xml"));
+  calibrationModel_->write(currentDir_.absoluteFilePath("calibration.xml"));
 
   listModel_->write(currentDir_);
   listModel_->writePoints(currentDir_);

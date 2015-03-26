@@ -115,6 +115,10 @@ const DefoSplineField DefoRecoSurface::createZSplines(DefoPointCollection const&
   NQLog("DefoRecoSurface", NQLog::Message) << "nominal correction factors: "
       << correctionFactors.first << " , " << correctionFactors.second;
 
+
+  NQLog("DefoRecoSurface", NQLog::Message) << "image size: ("
+      << imageSize_.first << ", " << imageSize_.second << ")";
+
   // determine index ranges in current points
   // (could also take ref points)
   std::pair<int,int> indexRangeX = std::pair<int,int>( 0, 0 );
@@ -150,13 +154,26 @@ const DefoSplineField DefoRecoSurface::createZSplines(DefoPointCollection const&
   indexRangeY.second = std::min(indexRangeYref.second, indexRangeY.second);
    */
 
-  NQLog("DefoRecoSurface", NQLog::Message) << "found index range:";
-  NQLog("DefoRecoSurface", NQLog::Message) << " x: " << indexRangeX.first << " .. " << indexRangeX.second;
-  NQLog("DefoRecoSurface", NQLog::Message) << " y: " << indexRangeY.first << " .. " << indexRangeY.second;
 
   NPoint3D cameraPoint(0., 0., 0.);
   
-  NPoint3D surfacePoint(0., 0., nominalCameraDistance_);
+
+  double n = nominalCameraDistance_;
+  double f = focalLength_;
+  double gamma = imageScale(f);
+  double imageDistance = f * (gamma + 1.0);
+  double objectDistance = imageDistance / gamma;
+
+  NQLog("DefoRecoSurface", NQLog::Message) << "found index range:";
+  NQLog("DefoRecoSurface", NQLog::Message) << "  x: " << indexRangeX.first << " .. " << indexRangeX.second;
+  NQLog("DefoRecoSurface", NQLog::Message) << "  y: " << indexRangeY.first << " .. " << indexRangeY.second;
+  NQLog("DefoRecoSurface", NQLog::Message) << "nominal camera distance: " << nominalCameraDistance_;
+  NQLog("DefoRecoSurface", NQLog::Message) << "focal length:            " << focalLength_;
+  NQLog("DefoRecoSurface", NQLog::Message) << "image scale:             " << gamma;
+  NQLog("DefoRecoSurface", NQLog::Message) << "image distance:          " << imageDistance;
+  NQLog("DefoRecoSurface", NQLog::Message) << "object distance:         " << objectDistance;
+
+  NPoint3D surfacePoint(0., 0., objectDistance);
   NDirection3D surfaceNormal(0., 0., 1.);
   surfaceNormal.rotateX(-nominalViewingAngle_);
   NPlane3D surface(surfacePoint, surfaceNormal);
@@ -202,21 +219,21 @@ const DefoSplineField DefoRecoSurface::createZSplines(DefoPointCollection const&
         // new new version
         NDirection3D beamDirection((aPoint.getX() - 0.5 * imageSize_.first) * pitchX_,
                                    (aPoint.getY() - 0.5 * imageSize_.second) * pitchY_,
-                                   focalLength_);
+                                   imageDistance);
         NLine3D beam(cameraPoint, beamDirection);
         beam.intersection(surface, intersectionPoint);
         double x = intersectionPoint.x() * calibX_;
         double y = intersectionPoint.y() * calibY_;
         double z = intersectionPoint.z();
 
-        NQLog("DefoRecoSurface", NQLog::Spam) << "intersection: " << x << " " << y << " " << z;
+        // NQLog("DefoRecoSurface", NQLog::Spam) << "intersection: " << x << " " << y << " " << z;
 
         aPoint.setPosition(x, y);
 
         aSplineSet.addPoint( aPoint );
 
-        NQLog("DefoRecoSurface", NQLog::Spam) << "found shared point along y with indices: "
-            << index.first << " , " << index.second;
+        //NQLog("DefoRecoSurface", NQLog::Spam) << "found shared point along y with indices: "
+        //    << index.first << " , " << index.second;
 
       } else {
         NQLog("DefoRecoSurface", NQLog::Warning) << "Non-shared point along y in current image with indices: "
@@ -269,21 +286,21 @@ const DefoSplineField DefoRecoSurface::createZSplines(DefoPointCollection const&
         // new new version
         NDirection3D beamDirection((aPoint.getX() - 0.5 * imageSize_.first) * pitchX_,
                                    (aPoint.getY() - 0.5 * imageSize_.second) * pitchY_,
-                                   focalLength_);
+                                   imageDistance);
         NLine3D beam(cameraPoint, beamDirection);
         beam.intersection(surface, intersectionPoint);
         double x = intersectionPoint.x() * calibX_;
         double y = intersectionPoint.y() * calibY_;
         double z = intersectionPoint.z();
 
-        NQLog("DefoRecoSurface", NQLog::Spam) << "intersection: " << x << " " << y << " " << z;
+        //NQLog("DefoRecoSurface", NQLog::Spam) << "intersection: " << x << " " << y << " " << z;
 
         aPoint.setPosition(x, y);
 
         aSplineSet.addPoint( aPoint );
 
-        NQLog("DefoRecoSurface", NQLog::Spam) << "found shared point along x with indices: "
-            << index.first << " , " << index.second;
+        //NQLog("DefoRecoSurface", NQLog::Spam) << "found shared point along x with indices: "
+        //    << index.first << " , " << index.second;
 
       } else {
         NQLog("DefoRecoSurface", NQLog::Warning) << "Non-shared point along x in current image with indices: "
@@ -1034,4 +1051,13 @@ void DefoRecoSurface::removeGlobalOffset( DefoSplineField& splineField ) const
 void DefoRecoSurface::removeTilt( DefoSplineField& ) const
 {
 
+}
+
+double DefoRecoSurface::imageScale(double focalLength) const
+{
+  double p0 = -0.0240888;
+  double p1 = 0.00148648;
+  double p2 = -6.91494e-06;
+
+  return p0 + p1 * focalLength + p2 * focalLength * focalLength;
 }
