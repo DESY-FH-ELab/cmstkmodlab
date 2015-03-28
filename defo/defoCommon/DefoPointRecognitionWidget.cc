@@ -11,16 +11,14 @@
 
 #include "DefoPointRecognitionWidget.h"
 
-DefoPointRecognitionWidget::DefoPointRecognitionWidget(
-    DefoMeasurementListModel* listModel
-  , DefoMeasurementSelectionModel* selectionModel
-  , DefoPointRecognitionModel* pointModel
-  , QWidget *parent
-) :
-    QTabWidget(parent)
-  , listModel_(listModel)
-  , selectionModel_(selectionModel)
-  , pointModel_(pointModel)
+DefoPointRecognitionWidget::DefoPointRecognitionWidget(DefoMeasurementListModel* listModel,
+						       DefoMeasurementSelectionModel* selectionModel,
+						       DefoPointRecognitionModel* pointModel,
+						       QWidget *parent)
+  : QTabWidget(parent),
+    listModel_(listModel),
+    selectionModel_(selectionModel),
+    pointModel_(pointModel)
 {
   // THRESHOLDS
   QWidget* thresholds = new QWidget(this);
@@ -28,9 +26,9 @@ DefoPointRecognitionWidget::DefoPointRecognitionWidget(
   thresholds->setLayout(thresholdsLayout);
   addTab(thresholds, "Thresholds");
 
-  thresholdsLayout->addWidget(
-      new DefoImageThresholdsWidget(selectionModel_, pointModel_, thresholds)
-  );
+  thresholdsLayout->addWidget(new DefoImageThresholdsWidget(selectionModel_,
+							    pointModel_,
+							    thresholds));
 
   QWidget* thresholdSpinners = new QWidget(thresholds);
   thresholdsLayout->addWidget(thresholdSpinners);
@@ -42,15 +40,11 @@ DefoPointRecognitionWidget::DefoPointRecognitionWidget(
   QString format("Thr %1");
   for (int i=0; i<3; i++) {
     thresholdLayout->addWidget(new QLabel(format.arg(i+1)));
-    thresholdLayout->addWidget(new DefoThresholdSpinBox(
-                                 pointModel_
-                               , static_cast<DefoPointRecognitionModel::Threshold>(i)
-                                 ));
+    thresholdLayout->addWidget(new DefoThresholdSpinBox(pointModel_,
+							static_cast<DefoPointRecognitionModel::Threshold>(i)));
   }
   thresholdLayout->addWidget(new QLabel("HSW"));
-  thresholdLayout->addWidget(new DefoHalfSquareWidthSpinBox(
-                                 pointModel_
-                            ));
+  thresholdLayout->addWidget(new DefoHalfSquareWidthSpinBox(pointModel_));
 
   // POINT FINDING
   QWidget* points = new QWidget(this);
@@ -58,7 +52,9 @@ DefoPointRecognitionWidget::DefoPointRecognitionWidget(
   points->setLayout(pointsLayout);
   addTab(points, "Points");
 
-  DefoImagePointsWidget * pointsImage = new DefoImagePointsWidget(listModel_, selectionModel_, points);
+  DefoImagePointsWidget * pointsImage = new DefoImagePointsWidget(listModel_,
+								  selectionModel_,
+								  points);
   pointsLayout->addWidget(pointsImage);
 
   QPushButton* findPoints_ = new QPushButton("Find &points", points);
@@ -69,16 +65,12 @@ DefoPointRecognitionWidget::DefoPointRecognitionWidget(
   pointsLayout->addWidget(savePoints_);
   connect(savePoints_, SIGNAL(clicked()), SLOT(savePointsButtonClicked()));
 
-  connect(
-        pointModel_
-      , SIGNAL(controlStateChanged(bool))
-      , this
-      , SLOT(controlStateChanged(bool))
-  );
+  connect(pointModel_, SIGNAL(controlStateChanged(bool)),
+	  this, SLOT(controlStateChanged(bool)));
 }
 
-void DefoPointRecognitionWidget::findPointsButtonClicked() {
-
+void DefoPointRecognitionWidget::findPointsButtonClicked()
+{
   DefoMeasurement* measurement = selectionModel_->getSelection();
   listModel_->setMeasurementPoints(measurement, NULL);
 
@@ -103,12 +95,15 @@ void DefoPointRecognitionWidget::findPointsButtonClicked() {
     searchArea.setLeft( i/blocks * width );
     searchArea.setRight( (i+1)/blocks * width - 1 );
 
-    finder = new DefoPointFinder(
-        listModel_
-      , pointModel_
-      , measurement
-      , searchArea
-    );
+    finder = new DefoPointFinder(i,
+				 &mutex_,
+				 listModel_,
+				 pointModel_,
+				 measurement,
+				 searchArea);
+    
+    connect(finder, SIGNAL(finished()),
+	    finder, SLOT(deleteLater()));
 
     finder->start();
   }
