@@ -14,6 +14,18 @@ calPoints data[] = {
   { -1.0, 0.0 }
 };
 
+double funcObjectDistance(double* x, double* p)
+{
+  double f = x[0];
+  double p0 = p[0];
+  double p1 = p[1];
+  double p2 = p[2];
+
+  double gamma = p0 + p1 * f + p2 * f * f;
+
+  return f * (gamma + 1.0) / gamma;
+}
+
 void CameraCalibration()
 {
   TGraph * grGammaVsF = new TGraph();
@@ -58,6 +70,8 @@ void CameraCalibration()
   TF1 * pol2 = new TF1("GammaVsF", "pol2");
   grGammaVsF->Fit(pol2);
 
+  c->Print("CameraCalibration_GammaVsFocalLength.pdf");
+
   std::cout << "p0 = " << pol2->GetParameter(0) << std::endl;
   std::cout << "p1 = " << pol2->GetParameter(1) << std::endl;
   std::cout << "p2 = " << pol2->GetParameter(2) << std::endl;
@@ -87,8 +101,12 @@ void CameraCalibration()
     nPointsBVsF++;
   }
   grBVsF2->Draw("AP");
-  grBVsF->Draw("P");
-  grBVsF->Fit(pol1);
+  //grBVsF->Draw("P");
+  grBVsF2->Fit(pol1);
+
+  grBVsF2->GetHistogram()->GetXaxis()->SetTitle("focal length [mm]");
+  grBVsF2->GetHistogram()->GetYaxis()->SetTitle("image distance [mm]");
+  c->Print("CameraCalibration_ImageDistanceVsFocalLength.pdf");
 
   while (data[nPointsGVsF].focalLength!=-1.0) {
     grGVsF->SetPoint(nPointsGVsF, 
@@ -100,5 +118,18 @@ void CameraCalibration()
     nPointsGVsF++;
   }
   grGVsF2->Draw("AP");
-  grGVsF->Draw("P");
+
+  TF1 * odf = new TF1("odf", funcObjectDistance, 45, 95, 3);
+  odf->SetParameter(0, pol2->GetParameter(0));
+  odf->SetParameter(1, pol2->GetParameter(1));
+  odf->SetParameter(2, pol2->GetParameter(2));
+
+  grGVsF2->Fit(odf);
+  std::cout << "p0 = " << odf->GetParameter(0) << std::endl;
+  std::cout << "p1 = " << odf->GetParameter(1) << std::endl;
+  std::cout << "p2 = " << odf->GetParameter(2) << std::endl;
+
+  grBVsF2->GetHistogram()->GetXaxis()->SetTitle("focal length [mm]");
+  grBVsF2->GetHistogram()->GetYaxis()->SetTitle("object distance [mm]");
+  c->Print("CameraCalibration_ObjectDistanceVsFocalLength.pdf");
 }
