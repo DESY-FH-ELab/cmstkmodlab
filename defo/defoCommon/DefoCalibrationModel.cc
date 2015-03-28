@@ -12,8 +12,9 @@
 DefoCalibrationModel::DefoCalibrationModel(QObject *parent)
 : QObject(parent)
 {
-  calibX_ = ApplicationConfig::instance()->getValue<double>( "CALIBX" );
-  calibY_ = ApplicationConfig::instance()->getValue<double>( "CALIBY" );
+  calibX_ = ApplicationConfig::instance()->getValue<double>("CALIBX", 1.0);
+  calibY_ = ApplicationConfig::instance()->getValue<double>("CALIBY", 1.0);
+  calibZ_ = ApplicationConfig::instance()->getValue<double>("CALIBZ", 1.0);
 }
 
 void DefoCalibrationModel::setCalibX(double v) {
@@ -34,6 +35,15 @@ void DefoCalibrationModel::setCalibY(double v) {
   }
 }
 
+void DefoCalibrationModel::setCalibZ(double v) {
+  bool valueChanged = !(v==calibZ_);
+  calibZ_ = v;
+  if (valueChanged) {
+    ApplicationConfig::instance()->setValue<double>("CALIBZ", calibZ_);
+    emit calibrationChanged();
+  }
+}
+
 void DefoCalibrationModel::write(const QString& filename)
 {
   QFile file(filename);
@@ -48,6 +58,7 @@ void DefoCalibrationModel::write(const QString& filename)
 
   stream.writeAttribute("x", QString().setNum(calibX_, 'e', 6));
   stream.writeAttribute("y", QString().setNum(calibY_, 'e', 6));
+  stream.writeAttribute("z", QString().setNum(calibZ_, 'e', 6));
 
   stream.writeEndElement();
 
@@ -68,6 +79,7 @@ void DefoCalibrationModel::read(const QString& filename)
     if (stream.isStartElement() && stream.name()=="DefoCalibration") {
       calibX_ = stream.attributes().value("x").toString().toDouble();
       calibY_ = stream.attributes().value("y").toString().toDouble();
+      calibZ_ = stream.attributes().value("z").toString().toDouble();
     }
   }
 
