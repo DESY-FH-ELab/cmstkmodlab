@@ -141,6 +141,16 @@ void DefoOfflinePreparationModel::prepare()
   fileLocation = currentDir_.absoluteFilePath(filename.arg(defoMeasurement_->getTimeStamp().toString("yyyyMMddhhmmss")));
   DefoPointSaver defoSaver(fileLocation);
   defoSaver.writeXMLPoints(defoCollection_);
+
+  filename = "offlinePoints_%1.txt";
+
+  fileLocation = currentDir_.absoluteFilePath(filename.arg(refMeasurement_->getTimeStamp().toString("yyyyMMddhhmmss")));
+  DefoPointSaver refSaverTxt(fileLocation);
+  refSaverTxt.writePoints(refCollection_);
+
+  fileLocation = currentDir_.absoluteFilePath(filename.arg(defoMeasurement_->getTimeStamp().toString("yyyyMMddhhmmss")));
+  DefoPointSaver defoSaverTxt(fileLocation);
+  defoSaverTxt.writePoints(defoCollection_);
 }
 
 bool DefoOfflinePreparationModel::alignPoints(const DefoPointCollection* original,
