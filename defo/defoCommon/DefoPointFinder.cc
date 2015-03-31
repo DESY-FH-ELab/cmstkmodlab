@@ -19,6 +19,9 @@ DefoPointFinder::DefoPointFinder(int block,
 {
   image_ = measurement_->getImage();
 
+  connect(this, SIGNAL(pointsFound(DefoMeasurement*, const DefoPointCollection*)),
+	  listModel_, SLOT(appendMeasurementPoints(DefoMeasurement*, const DefoPointCollection*)));
+  
   NQLogMessage("DefoPointFinder") << "DefoPointerFinder for block "
 				  << block_ << " constructed";
 }
@@ -48,9 +51,7 @@ void DefoPointFinder::run()
 						 pointModel_->getThresholdValue(DefoPointRecognitionModel::THRESHOLD_3),
 						 pointModel_->getHalfSquareWidth());
 
-  mutex_->lock();
-  listModel_->appendMeasurementPoints(measurement_, points);
-  mutex_->unlock();
+  emit pointsFound(measurement_, points);
 }
 
 /**

@@ -56,6 +56,10 @@ protected:
 
   const QColor getAverageColor(const QRect& area,
                                int threshold) const;
+
+signals:
+
+  void pointsFound(DefoMeasurement*, const DefoPointCollection*);
 };
 
 #endif // DEFOPOINTFINDER_H
