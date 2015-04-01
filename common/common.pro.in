@@ -4,8 +4,8 @@
 #
 #-------------------------------------------------
 
-INCLUDEPATH += @qwtincludes@
-LIBS += @qwtlibs@ -lGL -lGLU
+#INCLUDEPATH += @qwtincludes@
+#LIBS += @qwtlibs@ -lGL -lGLU
 LIBS += -L@basepath@/devices/lib -lTkModLabKeithley
 LIBS += -L@basepath@/devices/lib -lTkModLabGreisinger
 LIBS += -L@basepath@/devices/lib -lTkModLabJulabo
@@ -14,6 +14,7 @@ LIBS += -L@basepath@/devices/lib -lTkModLabPfeiffer
 LIBS += -L@basepath@/devices/lib -lTkModLabHuber
 LIBS += -L@basepath@/devices/lib -lTkModLabIota
 LIBS += -L@basepath@/devices/lib -lTkModLabArduino
+LIBS += -L@basepath@/external/ddierckx -lddierckx
 
 QMAKE = @qmake@
 QMAKE_CXXFLAGS += -std=c++0x
@@ -36,6 +37,7 @@ HEADERS += nqlogger.h \
            nline2D.h \
            nline3D.h \
            nplane3D.h \
+           nspline2D.h \
            DeviceState.h \
            DeviceParameter.h \
            Ringbuffer.h \
@@ -75,6 +77,7 @@ SOURCES += nqlogger.cc \
            nline2D.cc \
            nline3D.cc \
            nplane3D.cc \
+           nspline2D.cc \
            SingletonApplication.cc \
            ApplicationConfig.cc \
            ApplicationConfigReader.cc \

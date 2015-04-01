@@ -1,0 +1,40 @@
+#-------------------------------------------------
+#
+# Project created by QtCreator 2013-05-28T10:50:39
+#
+#-------------------------------------------------
+
+LIBS += -L@basepath@/devices/lib -lTkModLabKeithley
+LIBS += -L@basepath@/devices/lib -lTkModLabGreisinger
+LIBS += -L@basepath@/devices/lib -lTkModLabJulabo
+LIBS += -L@basepath@/devices/lib -lTkModLabHameg
+LIBS += -L@basepath@/devices/lib -lTkModLabConrad
+LIBS += -L@basepath@/devices/lib -lTkModLabCanon
+LIBS += -L@basepath@/external/ddierckx -lddierckx
+LIBS += -L@basepath@/common -lCommon
+
+QMAKE = @qmake@
+QMAKE_CXXFLAGS += -std=c++0x
+
+macx {
+
+}
+else {
+
+}
+
+QT       += core widgets xml
+
+TARGET = common_test
+DEPENDPATH += ../common
+INCLUDEPATH += .
+INCLUDEPATH += ..
+INCLUDEPATH += @basepath@
+INCLUDEPATH += @basepath@/common
+
+CONFIG   += console
+CONFIG   -= app_bundle
+
+TEMPLATE = app
+
+SOURCES += main.cpp
