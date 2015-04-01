@@ -1,7 +1,4 @@
-defoCalib.pro
-defoCalib.pro.user
-.qmake.stash
-Makefile
-*.d
+common_test
+common_test.pro
 *.o
-defoCalib
+.qmake.stash
