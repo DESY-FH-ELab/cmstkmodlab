@@ -155,6 +155,8 @@ void TestWindow::pointButtonClicked() {
     */
   const int blocks = 6;
 
+  QMutex mutex;
+
   for (double i = 0; i < blocks; ++i) {
 
     /*
@@ -166,12 +168,12 @@ void TestWindow::pointButtonClicked() {
     searchArea.setLeft( i/blocks * width );
     searchArea.setRight( (i+1)/blocks * width - 1 );
 
-    finder = new DefoPointFinder(
-        listModel_
-      , pointModel_
-      , measurement
-      , searchArea
-    );
+    finder = new DefoPointFinder(i,
+				 &mutex,
+				 listModel_,
+				 pointModel_,
+				 measurement,
+				 searchArea);
 
     finder->start();
 

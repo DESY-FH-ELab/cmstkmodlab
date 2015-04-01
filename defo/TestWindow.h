@@ -8,6 +8,8 @@
 #include <QImage>
 #include <QTimer>
 
+#include <QMutex>
+
 #include "DefoConradModel.h"
 #include "DefoConradWidget.h"
 

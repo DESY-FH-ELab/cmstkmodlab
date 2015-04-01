@@ -211,7 +211,7 @@ const DefoSplineField DefoRecoSurface::createZSplines(DefoPointCollection const&
         DefoPoint aPoint = DefoPoint(*(referencePointByIndex.second));
 
         // the attached slope (= tan(alpha)) is derived from the difference in y position
-        double dY = (*(currentPointByIndex.second)).getY() - (*(referencePointByIndex.second)).getY();
+        double dY = -1.0*((*(currentPointByIndex.second)).getY() - (*(referencePointByIndex.second)).getY());
         aPoint.setSlope( correctionFactors.second * dY); // ##### check
 
         // convert from pixel units to real units on module
@@ -223,7 +223,7 @@ const DefoSplineField DefoRecoSurface::createZSplines(DefoPointCollection const&
         NLine3D beam(cameraPoint, beamDirection);
         beam.intersection(surface, intersectionPoint);
         double x = intersectionPoint.x() * calibX_;
-        double y = intersectionPoint.y() * calibY_;
+        double y = -1.0*intersectionPoint.y() * calibY_;
         double z = intersectionPoint.z();
 
         // NQLog("DefoRecoSurface", NQLog::Spam) << "intersection: " << x << " " << y << " " << z;
@@ -276,9 +276,8 @@ const DefoSplineField DefoRecoSurface::createZSplines(DefoPointCollection const&
         // (make a copy)
         DefoPoint aPoint = DefoPoint( *(referencePointByIndex.second) );
 
-
         // the attached slope (= tan(alpha)) is derived from the difference in x position
-        double dX = (*(currentPointByIndex.second)).getX() - (*(referencePointByIndex.second)).getX();
+        double dX = 1.0*((*(currentPointByIndex.second)).getX() - (*(referencePointByIndex.second)).getX());
         aPoint.setSlope( correctionFactors.first * dX); // ##### check
 	
         // convert from pixel units to real units on module
@@ -290,7 +289,7 @@ const DefoSplineField DefoRecoSurface::createZSplines(DefoPointCollection const&
         NLine3D beam(cameraPoint, beamDirection);
         beam.intersection(surface, intersectionPoint);
         double x = intersectionPoint.x() * calibX_;
-        double y = intersectionPoint.y() * calibY_;
+        double y = -1.0*intersectionPoint.y() * calibY_;
         double z = intersectionPoint.z();
 
         //NQLog("DefoRecoSurface", NQLog::Spam) << "intersection: " << x << " " << y << " " << z;

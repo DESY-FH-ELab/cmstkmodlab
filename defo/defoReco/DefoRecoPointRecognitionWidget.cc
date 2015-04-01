@@ -12,18 +12,16 @@
 
 #include "DefoRecoPointRecognitionWidget.h"
 
-DefoRecoPointRecognitionWidget::DefoRecoPointRecognitionWidget(
-    DefoMeasurementListModel* listModel
-  , DefoMeasurementSelectionModel* selectionModel
-  , DefoPointRecognitionModel* pointModel
-  , DefoROIModel* roiModel
-  , QWidget *parent
-) :
-    QTabWidget(parent)
-  , listModel_(listModel)
-  , selectionModel_(selectionModel)
-  , pointModel_(pointModel)
-  , roiModel_(roiModel)
+DefoRecoPointRecognitionWidget::DefoRecoPointRecognitionWidget(DefoMeasurementListModel* listModel,
+							       DefoMeasurementSelectionModel* selectionModel,
+							       DefoPointRecognitionModel* pointModel,
+							       DefoROIModel* roiModel,
+							       QWidget *parent)
+  : QTabWidget(parent),
+    listModel_(listModel),
+    selectionModel_(selectionModel),
+    pointModel_(pointModel),
+    roiModel_(roiModel)
 {
   // THRESHOLDS
   QWidget* thresholds = new QWidget(this);
@@ -31,9 +29,10 @@ DefoRecoPointRecognitionWidget::DefoRecoPointRecognitionWidget(
   thresholds->setLayout(thresholdsLayout);
   addTab(thresholds, "Thresholds");
 
-  thresholdsLayout->addWidget(
-      new DefoRecoImageThresholdsWidget(selectionModel_, pointModel_, roiModel_, thresholds)
-  );
+  thresholdsLayout->addWidget(new DefoRecoImageThresholdsWidget(selectionModel_,
+								pointModel_,
+								roiModel_,
+								thresholds));
 
   QWidget* thresholdSpinners = new QWidget(thresholds);
   thresholdsLayout->addWidget(thresholdSpinners);
@@ -45,15 +44,11 @@ DefoRecoPointRecognitionWidget::DefoRecoPointRecognitionWidget(
   QString format("Thr %1");
   for (int i=0; i<3; i++) {
     thresholdLayout->addWidget(new QLabel(format.arg(i+1)));
-    thresholdLayout->addWidget(new DefoThresholdSpinBox(
-                                 pointModel_
-                               , static_cast<DefoPointRecognitionModel::Threshold>(i)
-                                 ));
+    thresholdLayout->addWidget(new DefoThresholdSpinBox(pointModel_,
+							static_cast<DefoPointRecognitionModel::Threshold>(i)));
   }
   thresholdLayout->addWidget(new QLabel("HSW"));
-  thresholdLayout->addWidget(new DefoHalfSquareWidthSpinBox(
-                                 pointModel_
-                            ));
+  thresholdLayout->addWidget(new DefoHalfSquareWidthSpinBox(pointModel_));
 
   // POINT FINDING
   QWidget* points = new QWidget(this);
@@ -61,7 +56,9 @@ DefoRecoPointRecognitionWidget::DefoRecoPointRecognitionWidget(
   points->setLayout(pointsLayout);
   addTab(points, "Points");
 
-  DefoRecoImagePointsWidget * pointsImage = new DefoRecoImagePointsWidget(listModel_, selectionModel_, points);
+  DefoRecoImagePointsWidget * pointsImage = new DefoRecoImagePointsWidget(listModel_,
+									  selectionModel_,
+									  points);
   pointsLayout->addWidget(pointsImage);
 
   QPushButton* findPoints_ = new QPushButton("Find &points", points);
@@ -75,30 +72,18 @@ DefoRecoPointRecognitionWidget::DefoRecoPointRecognitionWidget(
   connect(selectionModel_, SIGNAL(selectionChanged(DefoMeasurement*)),
           this, SLOT(selectionChanged(DefoMeasurement*)));
 
-  connect(
-        pointModel_
-      , SIGNAL(controlStateChanged(bool))
-      , this
-      , SLOT(controlStateChanged(bool))
-  );
+  connect(pointModel_, SIGNAL(controlStateChanged(bool)),
+	  this, SLOT(controlStateChanged(bool)));
 
-  connect(
-        pointModel_
-      , SIGNAL(thresholdValueChanged(DefoPointRecognitionModel::Threshold,int))
-      , this
-      , SLOT(thresholdValueChanged(DefoPointRecognitionModel::Threshold,int))
-  );
+  connect(pointModel_, SIGNAL(thresholdValueChanged(DefoPointRecognitionModel::Threshold,int)),
+	  this, SLOT(thresholdValueChanged(DefoPointRecognitionModel::Threshold,int)));
 
-  connect(
-        pointModel_
-      , SIGNAL(halfSquareWidthChanged(int))
-      , this
-      , SLOT(halfSquareWidthChanged(int))
-  );
+  connect(pointModel_, SIGNAL(halfSquareWidthChanged(int)),
+	  this, SLOT(halfSquareWidthChanged(int)));
 }
 
-void DefoRecoPointRecognitionWidget::selectionChanged(DefoMeasurement* measurement) {
-
+void DefoRecoPointRecognitionWidget::selectionChanged(DefoMeasurement* measurement)
+{
   DefoRecoMeasurement* rm = dynamic_cast<DefoRecoMeasurement*>(measurement);
   if (!rm) return;
   pointModel_->setThresholdValue(DefoPointRecognitionModel::THRESHOLD_1,
@@ -111,22 +96,22 @@ void DefoRecoPointRecognitionWidget::selectionChanged(DefoMeasurement* measureme
 }
 
 void DefoRecoPointRecognitionWidget::thresholdValueChanged(DefoPointRecognitionModel::Threshold threshold,
-                                                           int value) {
-
+                                                           int value)
+{
   DefoRecoMeasurement* rm = dynamic_cast<DefoRecoMeasurement*>(selectionModel_->getSelection());
   if (!rm) return;
   rm->setRecoThresholdValue(threshold, value);
 }
 
-void DefoRecoPointRecognitionWidget::halfSquareWidthChanged(int value) {
-
+void DefoRecoPointRecognitionWidget::halfSquareWidthChanged(int value)
+{
   DefoRecoMeasurement* rm = dynamic_cast<DefoRecoMeasurement*>(selectionModel_->getSelection());
   if (!rm) return;
   rm->setRecoHalfSquareWidthValue(value);
 }
 
-void DefoRecoPointRecognitionWidget::findPointsButtonClicked() {
-
+void DefoRecoPointRecognitionWidget::findPointsButtonClicked()
+{
   DefoMeasurement* measurement = selectionModel_->getSelection();
   listModel_->setMeasurementPoints(measurement, NULL);
 
@@ -163,13 +148,16 @@ void DefoRecoPointRecognitionWidget::findPointsButtonClicked() {
     area.setX(searchArea.x()+i*width - pointModel_->getHalfSquareWidth());
     area.setWidth(width + 2 * pointModel_->getHalfSquareWidth());
 
-    finder = new DefoPointFinder(
-        listModel_
-      , pointModel_
-      , measurement
-      , area
-      , roiModel_
-    );
+    finder = new DefoPointFinder(i,
+				 &mutex_,
+				 listModel_,
+				 pointModel_,
+				 measurement,
+				 area,
+				 roiModel_);
+    
+    connect(finder, SIGNAL(finished()),
+	    finder, SLOT(deleteLater()));
 
     finder->start();
   }
@@ -188,8 +176,8 @@ void DefoRecoPointRecognitionWidget::savePointsButtonClicked()
   }
 }
 
-void DefoRecoPointRecognitionWidget::controlStateChanged(bool enabled) {
-
+void DefoRecoPointRecognitionWidget::controlStateChanged(bool enabled)
+{
   findPoints_->setEnabled(enabled);
   savePoints_->setEnabled(enabled);
 }

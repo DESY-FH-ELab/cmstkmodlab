@@ -4,6 +4,7 @@
 #include <QTabWidget>
 #include <QPushButton>
 #include <QString>
+#include <QMutex>
 
 #include "DefoMeasurementSelectionModel.h"
 #include "DefoPointRecognitionModel.h"
@@ -14,22 +15,24 @@
 class DefoRecoPointRecognitionWidget : public QTabWidget
 {
   Q_OBJECT
+
 public:
-  explicit DefoRecoPointRecognitionWidget(
-      DefoMeasurementListModel* listModel
-    , DefoMeasurementSelectionModel* selectionModel
-    , DefoPointRecognitionModel* pointModel
-    , DefoROIModel* roiModel
-    , QWidget *parent = 0
-  );
+
+  explicit DefoRecoPointRecognitionWidget(DefoMeasurementListModel* listModel,
+					  DefoMeasurementSelectionModel* selectionModel,
+					  DefoPointRecognitionModel* pointModel,
+					  DefoROIModel* roiModel,
+					  QWidget *parent = 0);
 
 public slots:
+
   virtual void selectionChanged(DefoMeasurement* measurement);
   void thresholdValueChanged(DefoPointRecognitionModel::Threshold threshold,
                              int value);
   void halfSquareWidthChanged(int value);
 
 protected:
+
   // Models
   DefoMeasurementListModel* listModel_;
   DefoMeasurementSelectionModel* selectionModel_;
@@ -42,7 +45,10 @@ protected:
   QPushButton* findPoints_;
   QPushButton* savePoints_;
 
+  QMutex mutex_;
+
 protected slots:
+
   void findPointsButtonClicked();
   void savePointsButtonClicked();
   void controlStateChanged(bool);
