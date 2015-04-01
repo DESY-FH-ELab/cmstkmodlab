@@ -1,5 +1,6 @@
-#include <iostream>
 #include <fstream>
+
+#include <nqlogger.h>
 
 #include "DefoOfflinePreparationModel.h"
 #include "DefoPointSaver.h"
@@ -46,76 +47,83 @@ DefoOfflinePreparationModel::DefoOfflinePreparationModel(DefoMeasurementListMode
           this, SLOT(defoColorChanged(float,float)));
 }
 
-void DefoOfflinePreparationModel::setCurrentDir(QDir& dir) {
+void DefoOfflinePreparationModel::setCurrentDir(QDir& dir)
+{
     currentDir_ = dir;
 }
 
-void DefoOfflinePreparationModel::refSelectionChanged(DefoMeasurement* measurement) {
-  std::cout << "void DefoOfflinePreparationModel::referenceSelectionChanged(DefoMeasurement* measurement)" << std::endl;
+void DefoOfflinePreparationModel::refSelectionChanged(DefoMeasurement* measurement)
+{
   refMeasurement_ = measurement;
 }
 
-void DefoOfflinePreparationModel::defoSelectionChanged(DefoMeasurement* measurement) {
-  std::cout << "void DefoOfflinePreparationModel::defoSelectionChanged(DefoMeasurement* measurement)" << std::endl;
+void DefoOfflinePreparationModel::defoSelectionChanged(DefoMeasurement* measurement)
+{
   defoMeasurement_ = measurement;
 }
 
-void DefoOfflinePreparationModel::pointsUpdated(const DefoMeasurement* measurement) {
-  std::cout << "void DefoOfflinePreparationModel::pointsUpdated(const DefoMeasurement* measurement)" << std::endl;
+void DefoOfflinePreparationModel::pointsUpdated(const DefoMeasurement* /*measurement*/)
+{
+
 }
 
-void DefoOfflinePreparationModel::alignmentChanged(double angle) {
-  std::cout << "void DefoOfflinePreparationModel::alignmentChanged(double angle)" << std::endl;
+void DefoOfflinePreparationModel::alignmentChanged(double angle)
+{
   angle_ = angle;
 }
 
-void DefoOfflinePreparationModel::pointIndexerChanged(DefoVPointIndexer * indexer) {
-  std::cout << "void DefoOfflinePreparationModel::pointIndexerChanged(DefoVPointIndexer * indexer)" << std::endl;
+void DefoOfflinePreparationModel::pointIndexerChanged(DefoVPointIndexer * indexer)
+{
   pointIndexer_ = indexer;
 }
 
-void DefoOfflinePreparationModel::refColorChanged(float hue, float saturation) {
-  std::cout << "void DefoOfflinePreparationModel::refColorChanged(float hue, float saturation)" << std::endl;
+void DefoOfflinePreparationModel::refColorChanged(float hue, float saturation)
+{
   refColor_.setHsvF(hue, saturation, 1.0, 1.0);
 }
 
-void DefoOfflinePreparationModel::defoColorChanged(float hue, float saturation) {
-  std::cout << "void DefoOfflinePreparationModel::defoColorChanged(float hue, float saturation)" << std::endl;
+void DefoOfflinePreparationModel::defoColorChanged(float hue, float saturation)
+{
   defoColor_.setHsvF(hue, saturation, 1.0, 1.0);
 }
 
-void DefoOfflinePreparationModel::prepare() {
-  std::cout << "void DefoOfflinePreparationModel::reconstruct()" << std::endl;
-
+void DefoOfflinePreparationModel::prepare()
+{
   if (refMeasurement_==0 || defoMeasurement_==0) {
-    std::cout << "reco: reference and deformed measurements not selected" << std::endl;
+    NQLogWarning("DefoOfflinePreparationModel") 
+      << "reco: reference and deformed measurements not selected";
     return;
   }
 
   if (pointIndexer_==0) {
-    std::cout << "reco: point indexer not available" << std::endl;
+    NQLogWarning("DefoOfflinePreparationModel") 
+      << "reco: point indexer not available";
     return;
   }
 
   const DefoPointCollection* refPoints = listModel_->getMeasurementPoints(refMeasurement_);
   if (!refPoints || refPoints->size()==0) {
-    std::cout << "reco: reference measurement does not contain points" << std::endl;
+     NQLogWarning("DefoOfflinePreparationModel") 
+       << "reco: reference measurement does not contain points";
     return;
   }
 
   const DefoPointCollection* defoPoints = listModel_->getMeasurementPoints(defoMeasurement_);
   if (!defoPoints || defoPoints->size()==0) {
-    std::cout << "reco: deformed measurement does not contain points" << std::endl;
+    NQLogWarning("DefoOfflinePreparationModel") 
+      << "reco: deformed measurement does not contain points";
     return;
   }
 
   if (!alignPoints(refPoints, refCollection_)) {
-    std::cout << "reco: reference points could not be aligned" << std::endl;
+    NQLogWarning("DefoOfflinePreparationModel") 
+      << "reco: reference points could not be aligned";
     return;
   }
 
   if (!alignPoints(defoPoints, defoCollection_)) {
-    std::cout << "reco: deformed points could not be aligned" << std::endl;
+     NQLogWarning("DefoOfflinePreparationModel") 
+       << "reco: deformed points could not be aligned";
     return;
   }
 
@@ -133,11 +141,21 @@ void DefoOfflinePreparationModel::prepare() {
   fileLocation = currentDir_.absoluteFilePath(filename.arg(defoMeasurement_->getTimeStamp().toString("yyyyMMddhhmmss")));
   DefoPointSaver defoSaver(fileLocation);
   defoSaver.writeXMLPoints(defoCollection_);
+
+  filename = "offlinePoints_%1.txt";
+
+  fileLocation = currentDir_.absoluteFilePath(filename.arg(refMeasurement_->getTimeStamp().toString("yyyyMMddhhmmss")));
+  DefoPointSaver refSaverTxt(fileLocation);
+  refSaverTxt.writePoints(refCollection_);
+
+  fileLocation = currentDir_.absoluteFilePath(filename.arg(defoMeasurement_->getTimeStamp().toString("yyyyMMddhhmmss")));
+  DefoPointSaver defoSaverTxt(fileLocation);
+  defoSaverTxt.writePoints(defoCollection_);
 }
 
 bool DefoOfflinePreparationModel::alignPoints(const DefoPointCollection* original,
-                                              DefoPointCollection& aligned) {
-
+                                              DefoPointCollection& aligned)
+{
   aligned.clear();
 
   if (angle_==0.0) {

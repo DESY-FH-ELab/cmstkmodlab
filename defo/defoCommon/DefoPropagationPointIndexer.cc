@@ -55,7 +55,7 @@ void DefoPropagationPointIndexer::indexPoints(DefoPointCollection *points, const
         currentPoint = *it;
         nextPoint = findNeighbour(points, currentPoint, Y, Forward, dx/2.0);
         while (nextPoint) {
-            nextPoint->setIndex(currentPoint->getIndex().first, currentPoint->getIndex().second+1);
+            nextPoint->setIndex(currentPoint->getIndex().first, currentPoint->getIndex().second-1);
             currentPoint = nextPoint;
             nextPoint = findNeighbour(points, currentPoint, Y, Forward, dx/2.0);
         }
@@ -63,7 +63,7 @@ void DefoPropagationPointIndexer::indexPoints(DefoPointCollection *points, const
         currentPoint = *it;
         nextPoint = findNeighbour(points, currentPoint, Y, Backward, dx/2.0);
         while (nextPoint) {
-            nextPoint->setIndex(currentPoint->getIndex().first, currentPoint->getIndex().second-1);
+            nextPoint->setIndex(currentPoint->getIndex().first, currentPoint->getIndex().second+1);
             currentPoint = nextPoint;
             nextPoint = findNeighbour(points, currentPoint, Y, Backward, dx/2.0);
         }
