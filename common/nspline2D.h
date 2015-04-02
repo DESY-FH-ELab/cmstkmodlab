@@ -1,11 +1,7 @@
-
 #ifndef NSPLINE2D_H
 #define NSPLINE2D_H
 
 #include <vector>
-
-#include <npoint2D.h>
-#include <npoint3D.h>
 
 class NSpline2D
 {

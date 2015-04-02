@@ -1,8 +1,6 @@
 #include <cmath>
 #include <algorithm>
 
-#include <nqlogger.h>
-
 #include "nspline2D.h"
 
 extern "C" {
@@ -270,8 +268,8 @@ bool NSpline2D::evaluate(double x, double y, double& z)
   int nx = tx_.size();
   int ny = ty_.size();
 
-  bispeu_(tx_.data(), &ny,
-          ty_.data(), &nx,
+  bispeu_(ty_.data(), &ny,
+          tx_.data(), &nx,
           c_.data(),
           &ky_, &kx_,
           &y, &x, &rz,
@@ -296,10 +294,10 @@ bool NSpline2D::evaluate(const std::vector<double>& x,
   int ier;
   int lwrk = kx_ + ky_ + 2;
   std::vector<double> wrk(lwrk);
-  std::vector<double> rz(m);
 
   std::vector<double> rx(m);
   std::vector<double> ry(m);
+  std::vector<double> rz(m);
 
   int i = 0;
   for (std::vector<double>::const_iterator it = x.begin();
@@ -315,7 +313,7 @@ bool NSpline2D::evaluate(const std::vector<double>& x,
   int ny = ty_.size();
 
   bispeu_(ty_.data(), &ny,
-          ty_.data(), &nx,
+          tx_.data(), &nx,
           c_.data(),
           &ky_, &kx_,
           ry.data(), rx.data(), rz.data(),
@@ -324,8 +322,8 @@ bool NSpline2D::evaluate(const std::vector<double>& x,
 
   i = 0;
   for (std::vector<double>::iterator it = rz.begin();
-         it!=rz.end();
-         ++it) {
+       it!=rz.end();
+       ++it) {
     z[i] = rz[i];
     i++;
   }
