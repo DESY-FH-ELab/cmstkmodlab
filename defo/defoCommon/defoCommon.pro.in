@@ -26,6 +26,7 @@ LIBS += -L@basepath@/devices/lib -lTkModLabJulabo
 LIBS += -L@basepath@/devices/lib -lTkModLabConrad
 LIBS += -L@basepath@/devices/lib -lTkModLabCanon
 LIBS += -L@basepath@/devices/lib -lTkModLabHuber
+LIBS += -L@basepath@/external/ddierckx -lddierckx
 LIBS += -L@basepath@/common -lCommon
 
 QMAKE = @qmake@
