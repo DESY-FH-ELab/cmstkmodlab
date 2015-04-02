@@ -4,7 +4,7 @@ NODEFO        = @nodefo@
 USEFAKEDEVICES= @usefakedevices@
 QMAKE         = @qmake@
 
-subdirs	      = devices tools external common
+subdirs	      = devices tools external common common_test
 ifeq ($(NOTHERMAL),0)
 subdirs      += thermo
 endif
@@ -12,7 +12,7 @@ ifeq ($(NODEFO),0)
 subdirs      += defo conradControl
 endif
 
-qtsubdirs     = common
+qtsubdirs     = common common_test
 ifeq ($(NOTHERMAL),0)
 qtsubdirs    += thermo/thermoDAQ thermo/microDAQ thermo/thermoDAQ2Root thermo/thermoDisplay thermo/microDisplay thermo/thermoDAQ2Log
 endif

@@ -12,6 +12,7 @@ LIBS += -L@basepath@/devices/lib -lTkModLabConrad
 LIBS += -L@basepath@/devices/lib -lTkModLabCanon
 LIBS += -L@basepath@/external/ddierckx -lddierckx
 LIBS += -L@basepath@/common -lCommon
+LIBS += -lgphoto2 -lexiv2
 
 QMAKE = @qmake@
 QMAKE_CXXFLAGS += -std=c++0x

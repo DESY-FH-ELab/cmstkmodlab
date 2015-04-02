@@ -25,14 +25,20 @@ int main(int argc, char *argv[])
      spline.surfit(x, y, z, 1, 1, sizeof(ax)/sizeof(double));
 
      double r;
-     std::cout << (int)spline.evaluate(2.0, 1.5, r) << " " << r << std::endl;
-
-     std::cout << (int)spline.evaluate(1.0, 1.0, r) << " " << r << std::endl;
-     std::cout << (int)spline.evaluate(1.0, 1.5, r) << " " << r << std::endl;
-     std::cout << (int)spline.evaluate(1.5, 1.0, r) << " " << r << std::endl;
-     std::cout << (int)spline.evaluate(1.5, 1.5, r) << " " << r << std::endl;
-     std::cout << (int)spline.evaluate(2.0, 1.0, r) << " " << r << std::endl;
-     std::cout << (int)spline.evaluate(2.0, 1.5, r) << " " << r << std::endl;
+     std::cout << (int)spline.evaluate(2.0, 1.5, r);
+     std::cout << " " << r << std::endl;
+     std::cout << (int)spline.evaluate(1.0, 1.0, r);
+     std::cout << " " << r << std::endl;
+     std::cout << (int)spline.evaluate(1.0, 1.5, r);
+     std::cout << " " << r << std::endl;
+     std::cout << (int)spline.evaluate(1.5, 1.0, r);
+     std::cout << " " << r << std::endl;
+     std::cout << (int)spline.evaluate(1.5, 1.5, r);
+     std::cout << " " << r << std::endl;
+     std::cout << (int)spline.evaluate(2.0, 1.0, r);
+     std::cout << " " << r << std::endl;
+     std::cout << (int)spline.evaluate(2.0, 1.5, r);
+     std::cout << " " << r << std::endl;
   }
   std::cout << std::endl;
 
@@ -52,7 +58,8 @@ int main(int argc, char *argv[])
     spline.surfit(x, y, z, 3, 3, 20);
 
     double r;
-    std::cout << (int)spline.evaluate(1.0, 1.0, r) << " " << r << std::endl;
+    std::cout << (int)spline.evaluate(1.0, 1.0, r);
+    std::cout << " " << r << std::endl;
   }
   std::cout << std::endl;
 
@@ -73,10 +80,14 @@ int main(int argc, char *argv[])
     spline.surfit(x, y, z, 3, 3, 20);
 
     double r, rx, ry;
-    rx = 0.5; ry = 0.5; std::cout << (int)spline.evaluate(rx, ry, r) << " " << r << " " << std::sin(rx)*std::sin(ry) << " " << 100.*(1.0-r/(std::sin(rx)*std::sin(ry))) << std::endl;
-    rx = 0.2; ry = 0.5; std::cout << (int)spline.evaluate(rx, ry, r) << " " << r << " " << std::sin(rx)*std::sin(ry) << " " << 100.*(1.0-r/(std::sin(rx)*std::sin(ry))) << std::endl;
-    rx = 0.5; ry = 0.2; std::cout << (int)spline.evaluate(rx, ry, r) << " " << r << " " << std::sin(rx)*std::sin(ry) << " " << 100.*(1.0-r/(std::sin(rx)*std::sin(ry))) << std::endl;
-    rx = 0.2; ry = 0.1; std::cout << (int)spline.evaluate(rx, ry, r) << " " << r << " " << std::sin(rx)*std::sin(ry) << " " << 100.*(1.0-r/(std::sin(rx)*std::sin(ry))) << std::endl;
+    rx = 0.5; ry = 0.5; std::cout << (int)spline.evaluate(rx, ry, r);
+    std::cout << " " << r << " " << std::sin(rx)*std::sin(ry) << " " << 100.*(1.0-r/(std::sin(rx)*std::sin(ry))) << std::endl;
+    rx = 0.2; ry = 0.5; std::cout << (int)spline.evaluate(rx, ry, r);
+    std::cout << " " << r << " " << std::sin(rx)*std::sin(ry) << " " << 100.*(1.0-r/(std::sin(rx)*std::sin(ry))) << std::endl;
+    rx = 0.5; ry = 0.2; std::cout << (int)spline.evaluate(rx, ry, r);
+    std::cout << " " << r << " " << std::sin(rx)*std::sin(ry) << " " << 100.*(1.0-r/(std::sin(rx)*std::sin(ry))) << std::endl;
+    rx = 0.2; ry = 0.1; std::cout << (int)spline.evaluate(rx, ry, r);
+    std::cout << " " << r << " " << std::sin(rx)*std::sin(ry) << " " << 100.*(1.0-r/(std::sin(rx)*std::sin(ry))) << std::endl;
   }
   std::cout << std::endl;
 
