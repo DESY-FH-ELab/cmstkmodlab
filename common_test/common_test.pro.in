@@ -17,10 +17,10 @@ QMAKE = @qmake@
 QMAKE_CXXFLAGS += -std=c++0x
 
 macx {
-
+  LIBS += -L/opt/local/lib -lopencv_core -lopencv_imgproc -lopencv_highgui
 }
 else {
-
+  LIBS += -lopencv_core -lopencv_imgproc -lopencv_highgui
 }
 
 QT       += core widgets xml
