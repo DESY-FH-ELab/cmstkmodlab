@@ -97,8 +97,8 @@ void NSpline2D::surfit(const std::vector<double>& x,
 
     xb = std::min(xb, x[i]);
     xe = std::max(xe, x[i]);
-    yb = std::min(xb, y[i]);
-    ye = std::max(xe, y[i]);
+    yb = std::min(yb, y[i]);
+    ye = std::max(ye, y[i]);
   }
 
   int nx;
