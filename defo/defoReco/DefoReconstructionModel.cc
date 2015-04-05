@@ -188,10 +188,12 @@ void DefoReconstructionModel::calibrationChanged()
 
   reco_->setCalibX(calibrationModel_->getCalibX());
   reco_->setCalibY(calibrationModel_->getCalibY());
-  reco_->setCalibZ(calibrationModel_->getCalibZ());
-  NQLog("DefoReconstructionModel", NQLog::Message) << "calibX = " << calibrationModel_->getCalibX();
-  NQLog("DefoReconstructionModel", NQLog::Message) << "calibY = " << calibrationModel_->getCalibY();
-  NQLog("DefoReconstructionModel", NQLog::Message) << "calibZ = " << calibrationModel_->getCalibZ();
+  reco_->setCalibZx(calibrationModel_->getCalibZx());
+  reco_->setCalibZy(calibrationModel_->getCalibZy());
+  NQLog("DefoReconstructionModel", NQLog::Message) << "calibX  = " << calibrationModel_->getCalibX();
+  NQLog("DefoReconstructionModel", NQLog::Message) << "calibY  = " << calibrationModel_->getCalibY();
+  NQLog("DefoReconstructionModel", NQLog::Message) << "calibZx = " << calibrationModel_->getCalibZx();
+  NQLog("DefoReconstructionModel", NQLog::Message) << "calibZy = " << calibrationModel_->getCalibZy();
 
   NQLog("DefoReconstructionModel::calibrationChanged()", NQLog::Message) << "end";
 }

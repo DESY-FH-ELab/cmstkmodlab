@@ -41,7 +41,8 @@ class DefoRecoSurface : public QObject
 
   void setCalibX( double v) { calibX_ = v; }
   void setCalibY( double v) { calibY_ = v; }
-  void setCalibZ( double v) { calibZ_ = v; }
+  void setCalibZx( double v) { calibZx_ = v; }
+  void setCalibZy( double v) { calibZy_ = v; }
 
   void dump();
 
@@ -77,7 +78,8 @@ class DefoRecoSurface : public QObject
 
   double calibX_;
   double calibY_;
-  double calibZ_;
+  double calibZx_;
+  double calibZy_;
 
 signals:
 

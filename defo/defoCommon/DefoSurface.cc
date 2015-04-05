@@ -342,14 +342,14 @@ void DefoSurface::createPointFields( void ) {
   pointFields_.second = pointFields_.first; ////////////////////////////////////////////
 }
 
-void DefoSurface::calibrateZ(double calibZ)
+void DefoSurface::calibrateZ(double calibZx, double calibZy)
 {
   typedef QHash<DefoSplineXYPair,DefoSplineXYDefoPair>::iterator it_t;
 
   for (it_t it = defoPointMap_.begin();it!=defoPointMap_.end();++it) {
     if (it.value().hasx_ && it.value().hasy_) {
-      it.value().x_ = it.value().x_ * calibZ;
-      it.value().y_ = it.value().y_ * calibZ;
+      it.value().x_ = it.value().x_ * calibZx;
+      it.value().y_ = it.value().y_ * calibZy;
     }
   }
 }
