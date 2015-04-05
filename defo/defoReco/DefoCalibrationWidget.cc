@@ -44,9 +44,6 @@ DefoCalibrationWidget::DefoCalibrationWidget(DefoCalibrationModel* calibrationMo
   connect(calibYSpinBox_, SIGNAL(valueChanged(double)),
           this, SLOT(calibYChanged(double)));
 
-  connect(calibrationModel_, SIGNAL(calibrationChanged()),
-          this, SLOT(calibrationChanged()));
-
   calibZSpinBox_ = new QDoubleSpinBox(inputs);
   calibZSpinBox_->setPrefix("cz = ");
   calibZSpinBox_->setRange(0.75, 1.25);
