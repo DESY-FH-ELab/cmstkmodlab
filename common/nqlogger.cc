@@ -59,20 +59,17 @@ void NQLogger::write(const QString& module, NQLog::LogLevel level, const QString
     if (activeModules_.empty()) return;
 
     bool filtered = true;
-    for (std::set<std::pair<QString,bool> >::iterator it = activeModules_.begin();
-         it!=activeModules_.end();
-         ++it) {
-        if (it->second==false) {
-            if (module==it->first) {
-                filtered = false;
-                break;
-            }
-        } else {
-            if (it->first.length()==0 || module.startsWith(it->first)) {
-                filtered = false;
-                break;
-            }
-        }
+  for (std::pair<QString,bool> v : activeModules_) {
+    if (v.second==false) {
+      if (module==v.first) {
+        filtered = false;
+        break;
+      }
+    } else {
+      if (v.first.length()==0 || module.startsWith(v.first)) {
+        filtered = false;
+        break;
+      }
     }
     if (filtered) return;
 
@@ -95,15 +92,13 @@ void NQLogger::write(const QString& module, NQLog::LogLevel level, const QString
     message += buffer;
     message += "\n";
 
-    for (std::vector<std::pair<NQLog::LogLevel,QTextStream*> >::iterator it = destinations_.begin();
-         it!=destinations_.end();
-         ++it) {
-        if (level>=it->first) {
-        QTextStream* stream = it->second;
-        stream->operator <<(message);
-        stream->flush();
-        }
+  for (std::pair<NQLog::LogLevel,QTextStream*> v : destinations_) {
+    if (level>=v.first) {
+      QTextStream* stream = v.second;
+      stream->operator <<(message);
+      stream->flush();
     }
+  }
 }
 
 void NQLogger::addActiveModule(const QString& module)
