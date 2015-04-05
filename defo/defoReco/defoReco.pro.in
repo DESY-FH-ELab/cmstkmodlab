@@ -21,7 +21,7 @@ DEFINES +=
 LIBS += @qwtlibs@ -lGL -lGLU
 
 QMAKE = @qmake@
-QMAKE_CXXFLAGS += -std=c++0x
+QMAKE_CXXFLAGS += -std=c++11
 
 macx {
   INCLUDEPATH += /opt/local/include
