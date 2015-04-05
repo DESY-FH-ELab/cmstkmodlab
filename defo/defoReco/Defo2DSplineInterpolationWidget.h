@@ -21,12 +21,16 @@ protected:
   QSpinBox * kXSpinBox_;
   QSpinBox * kYSpinBox_;
   QDoubleSpinBox * smoothingSpinBox_;
+  QDoubleSpinBox * dXSpinBox_;
+  QDoubleSpinBox * dYSpinBox_;
 
   protected slots:
 
   void kXChanged(int);
   void kYChanged(int);
   void smoothingChanged(double);
+  void dXChanged(int);
+  void dYChanged(int);
   void parametersChanged();
 };
 

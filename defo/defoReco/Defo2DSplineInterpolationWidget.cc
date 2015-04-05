@@ -44,11 +44,31 @@ Defo2DSplineInterpolationWidget::Defo2DSplineInterpolationWidget(Defo2DSplineInt
   smoothingSpinBox_->setPrefix("s = ");
   smoothingSpinBox_->setRange(0.0, 10.0);
   smoothingSpinBox_->setDecimals(1);
-  smoothingSpinBox_->setSingleStep(0.11);
+  smoothingSpinBox_->setSingleStep(0.1);
   grid->addWidget(smoothingSpinBox_, 0, 2);
   smoothingSpinBox_->setValue(interpolationModel_->getSmoothing());
   connect(smoothingSpinBox_, SIGNAL(valueChanged(double)),
           this, SLOT(calibZChanged(double)));
+
+  dXSpinBox_ = new QDoubleSpinBox(inputs);
+  dXSpinBox_->setPrefix("dx = ");
+  dXSpinBox_->setRange(1.0, 20.0);
+  dXSpinBox_->setDecimals(1);
+  dXSpinBox_->setSingleStep(0.1);
+  grid->addWidget(dXSpinBox_, 1, 0);
+  dXSpinBox_->setValue(interpolationModel_->getDX());
+  connect(dXSpinBox_, SIGNAL(valueChanged(double)),
+          this, SLOT(dXChanged(double)));
+
+  dYSpinBox_ = new QDoubleSpinBox(inputs);
+  dYSpinBox_->setPrefix("ky = ");
+  dYSpinBox_->setRange(1.0, 20.0);
+  dYSpinBox_->setDecimals(1);
+  dYSpinBox_->setSingleStep(0.1);
+  grid->addWidget(dYSpinBox_, 1, 1);
+  dYSpinBox_->setValue(interpolationModel_->getDY());
+  connect(dYSpinBox_, SIGNAL(valueChanged(double)),
+          this, SLOT(dYChanged(double)));
 
   connect(interpolationModel_, SIGNAL(interpolationParametersChanged()),
           this, SLOT(parametersChanged()));
@@ -69,9 +89,21 @@ void Defo2DSplineInterpolationWidget::smoothingChanged(double v)
   interpolationModel_->setSmoothing(v);
 }
 
+void Defo2DSplineInterpolationWidget::dXChanged(int v)
+{
+  interpolationModel_->setDX(v);
+}
+
+void Defo2DSplineInterpolationWidget::dYChanged(int v)
+{
+  interpolationModel_->setDY(v);
+}
+
 void Defo2DSplineInterpolationWidget::parametersChanged()
 {
   kXSpinBox_->setValue(interpolationModel_->getKX());
   kYSpinBox_->setValue(interpolationModel_->getKY());
   smoothingSpinBox_->setValue(interpolationModel_->getSmoothing());
+  dXSpinBox_->setValue(interpolationModel_->getDX());
+  dYSpinBox_->setValue(interpolationModel_->getDY());
 }

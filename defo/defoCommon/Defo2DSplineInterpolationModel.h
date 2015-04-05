@@ -13,9 +13,14 @@ public:
   void setKY(int v);
   void setSmoothing(double v);
 
+  void setDX(int v);
+  void setDY(int v);
+
   int getKX() const { return kX_; }
   int getKY() const { return kY_; }
   double getSmoothing() const { return smoothing_; }
+  int getDX() const { return dX_; }
+  int getDY() const { return dY_; }
 
   void write(const QString& filename);
   void read(const QString& filename);
@@ -27,6 +32,9 @@ protected:
   double kX_;
   double kY_;
   double smoothing_;
+
+  double dX_;
+  double dY_;
 
 signals:
 

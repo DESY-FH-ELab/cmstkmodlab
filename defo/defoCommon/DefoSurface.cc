@@ -199,7 +199,8 @@ void DefoSurface::dumpSplineField(std::string filename) const
 ///
 ///
 ///
-void DefoSurface::dumpSpline2DField(std::string filename)
+void DefoSurface::dumpSpline2DField(std::string filename,
+                                    double dx, double dy)
 {
   typedef QHash<DefoSplineXYPair,DefoSplineXYDefoPair>::const_iterator it_t;
 
@@ -229,10 +230,16 @@ void DefoSurface::dumpSpline2DField(std::string filename)
     if (it.key().iy_==iymax) ymax = std::min(ymax, it.key().y_);
   }
   
+  int stepsX = std::ceil((xmax-xmin)/dx);
+  int stepsY = std::ceil((ymax-ymin)/dy);
+
+  double theDX = (xmax-xmin)/stepsX;
+  double theDY = (ymax-ymin)/stepsY;
+
   std::vector<double> x, y, zx, zy;
 
-  for (int rx=xmin;rx<=xmax;rx+=5.0) {
-    for (int ry=ymin;ry<=ymax;ry+=5.0) {
+  for (int rx=xmin;rx<=xmax;rx+=theDX) {
+    for (int ry=ymin;ry<=ymax;ry+=theDY) {
       x.push_back(rx);
       y.push_back(ry);
       zx.push_back(0.0);

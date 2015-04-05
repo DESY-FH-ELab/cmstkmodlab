@@ -304,7 +304,9 @@ void DefoReconstructionModel::reconstruct()
   filename += "_";
   filename += defoMeasurement_->getTimeStamp().toString("yyyyMMddhhmmss");
   filename += ".txt";
-  surface.dumpSpline2DField(currentDir_.absoluteFilePath(filename).toStdString());
+  surface.dumpSpline2DField(currentDir_.absoluteFilePath(filename).toStdString(),
+                            interpolationModel_->getDX(),
+                            interpolationModel_->getDY());
 
   bool newPair = false;
   DefoMeasurementPair * measurementPair = pairListModel_->findMeasurementPair(refMeasurement_,
