@@ -12,6 +12,7 @@
 
 #include "SingletonApplication.h"
 #include "ApplicationConfig.h"
+#include "ApplicationVersion.h"
 
 #include "ThermoMainWindow.h"
 #include "TestWindow.h"
@@ -33,6 +34,8 @@ int main( int argc, char** argv )
     QDir dir(logdir);
     if (!dir.exists()) dir.mkpath(".");
     QString logfilename = logdir + "/thermoDAQ.log";
+
+    NQLog("thermoDAQ") << "version " << APPLICATIONVERSIONSTR;
 
     NQLog("thermoDAQ") << "using " << logfilename << " for logging";
 

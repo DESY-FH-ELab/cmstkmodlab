@@ -20,6 +20,8 @@ ROOTCFLAGS=`root-config --cflags`
 ROOTLIBS=`root-config --libs`
 ROOTGLIBS=`root-config --glibs`
 
+APPLICATIONVERSIONSTR=`git describe --tags`
+
 while test $# -gt 0; do 
   case $1 in
     --nodefo)
@@ -59,7 +61,7 @@ if test $ARCHITECTURE = "Darwin"; then
     LD="clang++"
     QWTDEFINES=""
     QWTINCLUDES="/opt/local/include/qwtplot3d /opt/local/include/qwt"
-    QWTLIBS="-lqwtplot3d -lqwt"
+    QWTLIBS="-L/opt/local/lib -lqwtplot3d -lqwt"
 fi
 if test $ARCHITECTURE = "Linux" && test $KERNELMINOR -lt 6; then
     echo Linux kernel minor version < 6: fake device support forced
@@ -111,7 +113,7 @@ else
     echo build with THERMAL support
 fi
 
-SED_VARIABLES="BASEPATH ARCHITECTURE KERNELMAJOR KERNELMINOR QMAKE CXX CC LD NODEFO NOTHERMAL USEFAKEDEVICES WITHTWITTERSUPPORT TWITTERLIBS SOFLAGS CONFIGDEFINES QWTDEFINES QWTINCLUDES QWTLIBS ROOTCFLAGS ROOTLIBS ROOTGLIBS"
+SED_VARIABLES="BASEPATH ARCHITECTURE KERNELMAJOR KERNELMINOR QMAKE CXX CC LD NODEFO NOTHERMAL APPLICATIONVERSIONSTR USEFAKEDEVICES WITHTWITTERSUPPORT TWITTERLIBS SOFLAGS CONFIGDEFINES QWTDEFINES QWTINCLUDES QWTLIBS ROOTCFLAGS ROOTLIBS ROOTGLIBS"
 
 echo "#!/bin/sh
 dest=\`basename \$1 .in\`

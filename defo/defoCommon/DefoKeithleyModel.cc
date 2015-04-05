@@ -35,9 +35,6 @@ void DefoKeithleyModel::initialize() {
 
     renewController(KEITHLEY_PORT);
 
-    std::cout << std::numeric_limits<float>::max() << ", "
-              << std::numeric_limits<float>::infinity << std::endl;
-
     // Give the device some time to process befor spamming it with upcoming
     // commands
     sleep(1);
