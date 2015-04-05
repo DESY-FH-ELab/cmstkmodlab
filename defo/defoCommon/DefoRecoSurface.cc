@@ -157,10 +157,8 @@ const DefoSplineField DefoRecoSurface::createZSplines(DefoPointCollection const&
   indexRangeY.second = std::min(indexRangeYref.second, indexRangeY.second);
    */
 
-
   NPoint3D cameraPoint(0., 0., 0.);
   
-
   double n = nominalCameraDistance_;
   double f = focalLength_;
   double gamma = imageScale(f);
