@@ -58,7 +58,7 @@ all:  depend lib$(TARGET).so lib$(TARGET).rootmap
 
 lib$(TARGET).so: $(addsuffix .o,$(MODULES)) $(TARGET)Dict.o
 	@echo "Linking shared library $@"
-	$(LD) $(SOFLAGS) $^ -o $@ $(ELIBS) -lgfortran
+	@$(LD) $(SOFLAGS) $^ -o $@ $(ELIBS) -lgfortran
 
 lib$(TARGET).rootmap: lib$(TARGET).so LinkDef.h
 	@echo "Creating library rootmap $@"
