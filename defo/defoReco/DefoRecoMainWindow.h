@@ -38,6 +38,9 @@
 #include "DefoCalibrationModel.h"
 #include "DefoCalibrationWidget.h"
 
+#include "Defo2DSplineInterpolationModel.h"
+#include "Defo2DSplineInterpolationWidget.h"
+
 class DefoRecoMainWindow : public QMainWindow
 {
   Q_OBJECT
@@ -72,6 +75,7 @@ protected:
 
   DefoGeometryModel* geometryModel_;
   DefoCalibrationModel* calibrationModel_;
+  Defo2DSplineInterpolationModel* interpolationModel_;
 
   DefoMeasurementPairListModel* measurementPairListModel_;
   DefoMeasurementPairSelectionModel* measurementPairSelectionModel_;

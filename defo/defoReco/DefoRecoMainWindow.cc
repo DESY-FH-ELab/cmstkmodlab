@@ -54,6 +54,7 @@ DefoRecoMainWindow::DefoRecoMainWindow(QWidget *parent) :
 
   geometryModel_ = new DefoGeometryModel(this);
   calibrationModel_ = new DefoCalibrationModel(this);
+  interpolationModel_ = new Defo2DSplineInterpolationModel(this);
 
   measurementPairListModel_ = new DefoMeasurementPairListModel(this);
   measurementPairSelectionModel_ = new DefoMeasurementPairSelectionModel(this);
@@ -81,6 +82,7 @@ DefoRecoMainWindow::DefoRecoMainWindow(QWidget *parent) :
                                                      measurementPairSelectionModel_,
                                                      geometryModel_,
                                                      calibrationModel_,
+                                                     interpolationModel_,
                                                      this);
   reconstructionModel_->setCurrentDir(currentDir_);
 
@@ -291,6 +293,10 @@ DefoRecoMainWindow::DefoRecoMainWindow(QWidget *parent) :
                                                                        recoWidget);
   vbox->addWidget(calibrationWidget);
 
+  Defo2DSplineInterpolationWidget *interpolationWidget = new Defo2DSplineInterpolationWidget(interpolationModel_,
+                                                                                             recoWidget);
+  vbox->addWidget(interpolationWidget);
+
   tabWidget_->addTab(recoWidget, "Reconstruction");
 
 #ifdef ANALYSISWIDGET
@@ -362,6 +368,7 @@ void DefoRecoMainWindow::loadMeasurementButtonClicked() {
   defoColorModel_->read(currentDir_.absoluteFilePath("defocolor.xml"));
   geometryModel_->read(currentDir_.absoluteFilePath("geometry.xml"));
   calibrationModel_->read(currentDir_.absoluteFilePath("calibration.xml"));
+  interpolationModel_->read(currentDir_.absoluteFilePath("interpolation.xml"));
 
   listModel_->clear();
   listModel_->read(filename);
@@ -378,6 +385,7 @@ void DefoRecoMainWindow::saveMeasurementButtonClicked() {
   defoColorModel_->write(currentDir_.absoluteFilePath("defocolor.xml"));
   geometryModel_->write(currentDir_.absoluteFilePath("geometry.xml"));
   calibrationModel_->write(currentDir_.absoluteFilePath("calibration.xml"));
+  interpolationModel_->write(currentDir_.absoluteFilePath("interpolation.xml"));
 
   listModel_->write(currentDir_);
   listModel_->writePoints(currentDir_);

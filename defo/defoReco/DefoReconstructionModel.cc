@@ -18,13 +18,15 @@ DefoReconstructionModel::DefoReconstructionModel(DefoMeasurementListModel * list
                                                  DefoMeasurementPairSelectionModel* pairSelectionModel,
                                                  DefoGeometryModel* geometryModel,
                                                  DefoCalibrationModel* calibrationModel,
+                                                 Defo2DSplineInterpolationModel* interpolationModel,
                                                  QObject *parent)
 : QObject(parent),
   listModel_(listModel),
   pairListModel_(pairListModel),
   pairSelectionModel_(pairSelectionModel),
   geometryModel_(geometryModel),
-  calibrationModel_(calibrationModel)
+  calibrationModel_(calibrationModel),
+  interpolationModel_(interpolationModel)
 {
   angle_ = 0.0;
   refMeasurement_ = 0;
@@ -57,6 +59,9 @@ DefoReconstructionModel::DefoReconstructionModel(DefoMeasurementListModel * list
 
   connect(calibrationModel_, SIGNAL(calibrationChanged()),
           this, SLOT(calibrationChanged()));
+
+  connect(interpolationModel_, SIGNAL(interpolationParametersChanged()),
+          this, SLOT(interpolationParametersChanged()));
 
   reco_ = new DefoRecoSurface(this);
   
@@ -183,10 +188,25 @@ void DefoReconstructionModel::calibrationChanged()
 
   reco_->setCalibX(calibrationModel_->getCalibX());
   reco_->setCalibY(calibrationModel_->getCalibY());
-  NQLog("DefoReconstructionModel", NQLog::Message) << "calibX = " << calibrationModel_->getCalibX();
-  NQLog("DefoReconstructionModel", NQLog::Message) << "calibY = " << calibrationModel_->getCalibY();
+  reco_->setCalibZx(calibrationModel_->getCalibZx());
+  reco_->setCalibZy(calibrationModel_->getCalibZy());
+  NQLog("DefoReconstructionModel", NQLog::Message) << "calibX  = " << calibrationModel_->getCalibX();
+  NQLog("DefoReconstructionModel", NQLog::Message) << "calibY  = " << calibrationModel_->getCalibY();
+  NQLog("DefoReconstructionModel", NQLog::Message) << "calibZx = " << calibrationModel_->getCalibZx();
+  NQLog("DefoReconstructionModel", NQLog::Message) << "calibZy = " << calibrationModel_->getCalibZy();
 
   NQLog("DefoReconstructionModel::calibrationChanged()", NQLog::Message) << "end";
+}
+
+void DefoReconstructionModel::interpolationParametersChanged()
+{
+  NQLog("DefoReconstructionModel::interpolationParametersChanged()", NQLog::Message) << "start";
+
+  NQLog("DefoReconstructionModel", NQLog::Message) << "kX = " << interpolationModel_->getKX();
+  NQLog("DefoReconstructionModel", NQLog::Message) << "kY = " << interpolationModel_->getKY();
+  NQLog("DefoReconstructionModel", NQLog::Message) << "s  = " << interpolationModel_->getSmoothing();
+
+  NQLog("DefoReconstructionModel::interpolationParametersChanged()", NQLog::Message) << "end";
 }
 
 void DefoReconstructionModel::incrementRecoProgress() {
@@ -268,7 +288,9 @@ void DefoReconstructionModel::reconstruct()
   // reco_->dump();
   DefoSurface surface = reco_->reconstruct(defoCollection_, refCollection_);
 
-  surface.fitSpline2D();
+  surface.fitSpline2D(interpolationModel_->getKX(),
+                      interpolationModel_->getKY(),
+                      interpolationModel_->getSmoothing());
 
   QString filename = "defoReco_";
   filename += refMeasurement_->getTimeStamp().toString("yyyyMMddhhmmss");
@@ -282,7 +304,9 @@ void DefoReconstructionModel::reconstruct()
   filename += "_";
   filename += defoMeasurement_->getTimeStamp().toString("yyyyMMddhhmmss");
   filename += ".txt";
-  surface.dumpSpline2DField(currentDir_.absoluteFilePath(filename).toStdString());
+  surface.dumpSpline2DField(currentDir_.absoluteFilePath(filename).toStdString(),
+                            interpolationModel_->getDX(),
+                            interpolationModel_->getDY());
 
   bool newPair = false;
   DefoMeasurementPair * measurementPair = pairListModel_->findMeasurementPair(refMeasurement_,

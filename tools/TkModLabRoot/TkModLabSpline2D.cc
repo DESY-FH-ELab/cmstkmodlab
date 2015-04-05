@@ -1,7 +1,7 @@
 #include <cmath>
 #include <algorithm>
 
-#include "nspline2D.h"
+#include "TkModLabSpline2D.h"
 
 extern "C" {
   void surfit_(int *iopt, int *m,
@@ -44,12 +44,14 @@ extern "C" {
                int *ier);
 }
 
-NSpline2D::NSpline2D()
+ClassImp(TkModLabSpline2D);
+
+TkModLabSpline2D::TkModLabSpline2D()
 {
 
 }
 
-void NSpline2D::surfit(const std::vector<double>& x,
+void TkModLabSpline2D::Surfit(const std::vector<double>& x,
                        const std::vector<double>& y,
                        const std::vector<double>& z,
                        const std::vector<double>& w,
@@ -94,7 +96,7 @@ void NSpline2D::surfit(const std::vector<double>& x,
   double fp;
   int ier;
 
-  int lwrk1 = calcSurfitLwrk1(m, ky, kx, nyest, nxest);
+  int lwrk1 = CalcSurfitLwrk1(m, ky, kx, nyest, nxest);
   int lwrk2 = 1;
   int kwrk = m + (nxest - 2*kx - 1) * (nyest - 2*ky - 1);
 
@@ -141,17 +143,7 @@ void NSpline2D::surfit(const std::vector<double>& x,
   if (ier == 0 || ier == -1 || ier == -2) {
     // good
   } else if (ier < -2) {
-    /*
-          warn("""
-          The coefficients of the spline returned have been
-          computed as the minimal norm least-squares solution of a
-          (numerically) rank deficient system. The rank is $(-ier[1]).
-          The rank deficiency is $((nx[1]-kx-1)*(ny[1]-ky-1)+ier[1]).
-          Especially if the rank deficiency is large the results may
-          be inaccurate.""") 
-          # "The results could also seriously depend on the value of
-          # eps" (not in message because eps is currently not an input)
-          */
+
   } else {
     // error
   }
@@ -164,17 +156,31 @@ void NSpline2D::surfit(const std::vector<double>& x,
   fp_ = fp;
 }
 
-void NSpline2D::surfit(const std::vector<double>& x,
+void TkModLabSpline2D::Surfit(const std::vector<double>& x,
                        const std::vector<double>& y,
                        const std::vector<double>& z,
                        int kx, int ky, double s)
 {
   std::vector<double> w(x.size(), 1.0);
 
-  surfit(x, y, z, w, kx, ky, s);
+  this->Surfit(x, y, z, w, kx, ky, s);
 }
 
-void NSpline2D::regrid(const std::vector<double>& x,
+void TkModLabSpline2D::Surfit(int n,
+                              const double *x,
+                              const double *y,
+                              const double *z,
+                              int kx, int ky, double s)
+{
+  std::vector<double> vx(x, x + n);
+  std::vector<double> vy(y, y + n);
+  std::vector<double> vz(z, z + n);
+  std::vector<double> w(n, 1.0);
+
+  this->Surfit(vx, vy, vz, w, kx, ky, s);
+}
+
+void TkModLabSpline2D::Regrid(const std::vector<double>& x,
                        const std::vector<double>& y,
                        const std::vector<double>& z,
                        int kx, int ky, double s)
@@ -241,7 +247,7 @@ void NSpline2D::regrid(const std::vector<double>& x,
   fp_ = fp;
 }
 
-bool NSpline2D::evaluate(double x, double y, double& z)
+bool TkModLabSpline2D::Evaluate(double x, double y, double& z)
 {
   int m = 1;
 
@@ -270,9 +276,9 @@ bool NSpline2D::evaluate(double x, double y, double& z)
   return true;
 }
 
-bool NSpline2D::evaluate(const std::vector<double>& x,
-                         const std::vector<double>& y,
-                         std::vector<double>& z)
+bool TkModLabSpline2D::Evaluate(const std::vector<double>& x,
+                                const std::vector<double>& y,
+                                std::vector<double>& z)
 {
   int m = x.size();
 
@@ -304,7 +310,7 @@ bool NSpline2D::evaluate(const std::vector<double>& x,
   return true;
 }
 
-int NSpline2D::calcSurfitLwrk1(int m,
+int TkModLabSpline2D::CalcSurfitLwrk1(int m,
                                int ky, int kx,
                                int nyest, int nxest)
 {
@@ -330,4 +336,3 @@ int NSpline2D::calcSurfitLwrk1(int m,
 
   return u*v*(2 + b1 + b2) + 2*(u+v+km*(m+ne)+ne-kx-ky) + b2 + 1;
 }
-

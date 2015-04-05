@@ -19,13 +19,15 @@ protected:
 
   QDoubleSpinBox * calibXSpinBox_;
   QDoubleSpinBox * calibYSpinBox_;
-  QDoubleSpinBox * calibZSpinBox_;
+  QDoubleSpinBox * calibZxSpinBox_;
+  QDoubleSpinBox * calibZySpinBox_;
 
 protected slots:
 
   void calibXChanged(double);
   void calibYChanged(double);
-  void calibZChanged(double);
+  void calibZxChanged(double);
+  void calibZyChanged(double);
   void calibrationChanged();
 };
 

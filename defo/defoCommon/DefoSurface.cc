@@ -199,7 +199,8 @@ void DefoSurface::dumpSplineField(std::string filename) const
 ///
 ///
 ///
-void DefoSurface::dumpSpline2DField(std::string filename)
+void DefoSurface::dumpSpline2DField(std::string filename,
+                                    double dx, double dy)
 {
   typedef QHash<DefoSplineXYPair,DefoSplineXYDefoPair>::const_iterator it_t;
 
@@ -229,10 +230,16 @@ void DefoSurface::dumpSpline2DField(std::string filename)
     if (it.key().iy_==iymax) ymax = std::min(ymax, it.key().y_);
   }
   
+  int stepsX = std::ceil((xmax-xmin)/dx);
+  int stepsY = std::ceil((ymax-ymin)/dy);
+
+  double theDX = (xmax-xmin)/stepsX;
+  double theDY = (ymax-ymin)/stepsY;
+
   std::vector<double> x, y, zx, zy;
 
-  for (int rx=xmin;rx<=xmax;rx+=5.0) {
-    for (int ry=ymin;ry<=ymax;ry+=5.0) {
+  for (int rx=xmin;rx<=xmax;rx+=theDX) {
+    for (int ry=ymin;ry<=ymax;ry+=theDY) {
       x.push_back(rx);
       y.push_back(ry);
       zx.push_back(0.0);
@@ -342,7 +349,19 @@ void DefoSurface::createPointFields( void ) {
   pointFields_.second = pointFields_.first; ////////////////////////////////////////////
 }
 
-void DefoSurface::fitSpline2D()
+void DefoSurface::calibrateZ(double calibZx, double calibZy)
+{
+  typedef QHash<DefoSplineXYPair,DefoSplineXYDefoPair>::iterator it_t;
+
+  for (it_t it = defoPointMap_.begin();it!=defoPointMap_.end();++it) {
+    if (it.value().hasx_ && it.value().hasy_) {
+      it.value().x_ = it.value().x_ * calibZx;
+      it.value().y_ = it.value().y_ * calibZy;
+    }
+  }
+}
+
+void DefoSurface::fitSpline2D(int kx, int ky, double s)
 {
   typedef QHash<DefoSplineXYPair,DefoSplineXYDefoPair>::const_iterator it_t;
 
@@ -357,6 +376,6 @@ void DefoSurface::fitSpline2D()
     }
   }
 
-  spline2Dx_.surfit(x, y, zx, 3, 3, x.size());
-  spline2Dy_.surfit(x, y, zy, 3, 3, x.size());
+  spline2Dx_.surfit(x, y, zx, kx, ky, s);
+  spline2Dy_.surfit(x, y, zy, kx, ky, s);
 }
