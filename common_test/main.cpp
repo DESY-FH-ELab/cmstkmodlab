@@ -1,14 +1,129 @@
 #include <string>
 #include <iostream>
 #include <fstream>
+#include <iomanip>
 #include <sstream>
 #include <vector>
+#include <map>
 #include <cmath>
 
 #include <nspline2D.h>
 
 int main(int argc, char *argv[])
 {
+  int ix, iy;
+  double x, y, zx, zy;
+  double hx, hy;
+
+  std::map<std::pair<int,int>, std::pair<double,double>> ri;
+  std::vector<double> rx, ry, rzx, rzy;
+
+  int ixmin = 10000, ixmax = -10000, iymin = 10000, iymax = -10000;
+
+  std::ifstream ifile("defoReco_20150401074552_20150401074653.txt");
+  while (ifile >> ix >> iy >> x >> y >> zx >> hx >> zy >> hy) {
+
+    ixmin = std::min(ixmin, ix);
+    ixmax = std::max(ixmax, ix);
+    iymin = std::min(iymin, iy);
+    iymax = std::max(iymax, iy);
+
+    ri[std::pair<int,int>(ix, iy)] = std::pair<double,double>(x, y);
+    rx.push_back(x);
+    ry.push_back(y);
+    rzx.push_back(zx);
+    rzy.push_back(zy);
+  }
+
+  double s = 0.0; // no smoothing
+
+  NSpline2D splineX;
+  splineX.surfit(rx, ry, rzx, 3, 3, s);
+
+  NSpline2D splineY;
+  splineY.surfit(rx, ry, rzy, 3, 3, s);
+
+  double xmin = -10000, xmax = 10000, ymin = -10000, ymax = 10000;
+  for (auto i : ri) {
+    if (i.first.first == ixmin) {
+      xmin = std::max(xmin, i.second.first);
+    }
+    if (i.first.first == ixmax) {
+      xmax = std::min(xmax, i.second.first);
+    }
+    if (i.first.second == iymin) {
+      ymin = std::max(ymin, i.second.second);
+    }
+    if (i.first.second == iymax) {
+      ymax = std::min(ymax, i.second.second);
+    }
+  }
+
+  std::cout << xmin << std::endl;
+  std::cout << xmax << std::endl;
+  std::cout << ymin << std::endl;
+  std::cout << ymax << std::endl << std::endl;
+
+  std::vector<double> rgx, rgy, rgzx, rgzy;
+
+  double dx = (xmax - xmin)/19.0;
+  double dy = (ymax - ymin)/19.0;
+  for (double gx=xmin;gx<=xmax;gx+=dx) {
+    for (double gy=ymin;gy<=ymax;gy+=dy) {
+      rgx.push_back(gx);
+      rgy.push_back(gy);
+      rgzx.push_back(0.0);
+      rgzy.push_back(0.0);
+    }
+  }
+
+  splineX.evaluate(rgx, rgy, rgzx);
+  splineY.evaluate(rgx, rgy, rgzy);
+
+  std::ofstream ofile1("defoSpline_20150401074552_20150401074653.txt");
+  auto ity = rgy.begin();
+  auto itzx = rgzx.begin();
+  auto itzy = rgzy.begin();
+  for (auto x : rgx) {
+    ofile1  << std::setw(14) << std::scientific << x << " "
+        << std::setw(14) << std::scientific << *ity << " "
+        << std::setw(14) << std::scientific << *itzx << " "
+        << std::setw(14) << std::scientific << *itzy << std::endl;
+    ++ity;
+    ++itzx;
+    ++itzy;
+  }
+
+  rgx.resize(rx.size());
+  rgy.resize(ry.size());
+  rgzx.resize(rzx.size());
+  rgzy.resize(rzy.size());
+
+  rgx.assign(rx.begin(), rx.end());
+  rgy.assign(ry.begin(), ry.end());
+
+  splineX.evaluate(rgx, rgy, rgzx);
+  splineY.evaluate(rgx, rgy, rgzy);
+
+  std::ofstream ofile2("defoDiff_20150401074552_20150401074653.txt");
+  ity = rgy.begin();
+  auto izx = rzx.begin();
+  auto izy = rzy.begin();
+  itzx = rgzx.begin();
+  itzy = rgzy.begin();
+  for (auto x : rgx) {
+    ofile2  << std::setw(14) << std::scientific << x << " "
+        << std::setw(14) << std::scientific << *ity << " "
+        << std::setw(14) << std::scientific << (*itzx)-(*izx) << " "
+        << std::setw(14) << std::scientific << (*itzy)-(*izy) << std::endl;
+    ++ity;
+    ++izx;
+    ++izy;
+    ++itzx;
+    ++itzy;
+  }
+
+  /*
   std::cout << "test NSpline2D 1" << std::endl;
   {
      NSpline2D spline;
@@ -90,5 +205,5 @@ int main(int argc, char *argv[])
     std::cout << " " << r << " " << std::sin(rx)*std::sin(ry) << " " << 100.*(1.0-r/(std::sin(rx)*std::sin(ry))) << std::endl;
   }
   std::cout << std::endl;
-
+  */
 }
