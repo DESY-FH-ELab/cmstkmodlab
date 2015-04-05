@@ -25,40 +25,40 @@
 #include "nqlogger.h"
 
 NQLog::NQLog(const QString& module, LogLevel level)
-    : module_(module),
-      level_(level),
-      stream_(&buffer_)
+: module_(module),
+  level_(level),
+  stream_(&buffer_)
 {
 
 }
 
 NQLog::~NQLog()
 {
-    NQLogger::instance()->write(module_, level_, buffer_);
+  NQLogger::instance()->write(module_, level_, buffer_);
 }
 
 NQLogger* NQLogger::instance_ = NULL;
 
 NQLogger::NQLogger(QObject *parent) :
-    QObject(parent)
+        QObject(parent)
 {
 
 }
 
 NQLogger* NQLogger::instance(QObject *parent)
 {
-    if (instance_==NULL) {
-        instance_ = new NQLogger(parent);
-    }
+  if (instance_==NULL) {
+    instance_ = new NQLogger(parent);
+  }
 
-    return instance_;
+  return instance_;
 }
 
 void NQLogger::write(const QString& module, NQLog::LogLevel level, const QString& buffer)
 {
-    if (activeModules_.empty()) return;
+  if (activeModules_.empty()) return;
 
-    bool filtered = true;
+  bool filtered = true;
   for (std::pair<QString,bool> v : activeModules_) {
     if (v.second==false) {
       if (module==v.first) {
@@ -71,26 +71,28 @@ void NQLogger::write(const QString& module, NQLog::LogLevel level, const QString
         break;
       }
     }
-    if (filtered) return;
+  }
 
-    QString dateString = QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss.zzz");
+  if (filtered) return;
 
-    QString message = dateString;
+  QString dateString = QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss.zzz");
 
-    switch (level) {
-    case NQLog::Debug: message += " D"; break;
-    case NQLog::Spam: message += " S"; break;
-    case NQLog::Message: message += " M"; break;
-    case NQLog::Warning: message += " W"; break;
-    case NQLog::Critical: message += " C"; break;
-    case NQLog::Fatal: message += " F"; break;
-    }
+  QString message = dateString;
 
-    message += " [";
-    message += module;
-    message += "] ";
-    message += buffer;
-    message += "\n";
+  switch (level) {
+  case NQLog::Debug: message += " D"; break;
+  case NQLog::Spam: message += " S"; break;
+  case NQLog::Message: message += " M"; break;
+  case NQLog::Warning: message += " W"; break;
+  case NQLog::Critical: message += " C"; break;
+  case NQLog::Fatal: message += " F"; break;
+  }
+
+  message += " [";
+  message += module;
+  message += "] ";
+  message += buffer;
+  message += "\n";
 
   for (std::pair<NQLog::LogLevel,QTextStream*> v : destinations_) {
     if (level>=v.first) {
@@ -103,22 +105,22 @@ void NQLogger::write(const QString& module, NQLog::LogLevel level, const QString
 
 void NQLogger::addActiveModule(const QString& module)
 {
-    if (module.endsWith("*")) {
-        QString temp = module;
-        temp.remove(temp.indexOf("*"), temp.length()-temp.indexOf("*"));
-        activeModules_.insert(std::pair<QString,bool>(temp,true));
-    }
-    activeModules_.insert(std::pair<QString,bool>(module,false));
+  if (module.endsWith("*")) {
+    QString temp = module;
+    temp.remove(temp.indexOf("*"), temp.length()-temp.indexOf("*"));
+    activeModules_.insert(std::pair<QString,bool>(temp,true));
+  }
+  activeModules_.insert(std::pair<QString,bool>(module,false));
 }
 
 void NQLogger::addDestiniation(QIODevice * device, NQLog::LogLevel level)
 {
-    QTextStream* stream = new QTextStream(device);
-    destinations_.push_back(std::pair<NQLog::LogLevel,QTextStream*>(level,stream));
+  QTextStream* stream = new QTextStream(device);
+  destinations_.push_back(std::pair<NQLog::LogLevel,QTextStream*>(level,stream));
 }
 
 void NQLogger::addDestiniation(FILE * fileHandle, NQLog::LogLevel level)
 {
-    QTextStream* stream = new QTextStream(fileHandle);
-    destinations_.push_back(std::pair<NQLog::LogLevel,QTextStream*>(level,stream));
+  QTextStream* stream = new QTextStream(fileHandle);
+  destinations_.push_back(std::pair<NQLog::LogLevel,QTextStream*>(level,stream));
 }
