@@ -72,33 +72,18 @@ void NSpline2D::surfit(const std::vector<double>& x,
   double yb = y[0];
   double ye = yb;
 
-  /*
   std::vector<double> rx(x.begin(), x.end());
   std::vector<double> ry(y.begin(), y.end());
   std::vector<double> rz(z.begin(), z.end());
   std::vector<double> rw(w.begin(), w.end());
-  */
 
-  std::vector<double> rx(m);
-  std::vector<double> ry(m);
-  std::vector<double> rz(m);
-  std::vector<double> rw(m);
-
-  int i=0;
-  for (std::vector<double>::const_iterator it = x.begin();
-       it!=x.end();
-       ++it) {
-
-    rx[i] = x[i];
-    ry[i] = y[i];
-    rz[i] = z[i];
-    rw[i] = w[i];
-    i++;
-
-    xb = std::min(xb, x[i]);
-    xe = std::max(xe, x[i]);
-    yb = std::min(yb, y[i]);
-    ye = std::max(ye, y[i]);
+  for (double xv : rx) {
+    xb = std::min(xb, xv);
+    xe = std::max(xe, xv);
+  }
+  for (double yv : ry) {
+    yb = std::min(yb, yv);
+    ye = std::max(ye, yv);
   }
 
   int nx;
@@ -206,10 +191,10 @@ void NSpline2D::regrid(const std::vector<double>& x,
   std::vector<double> ry(y.begin(), y.end());
   std::vector<double> rz(z.begin(), z.end());
 
-  double xb = x.front();
-  double xe = x.back();
-  double yb = y.front();
-  double ye = y.back();
+  double xb = rx.front();
+  double xe = rx.back();
+  double yb = ry.front();
+  double ye = ry.back();
 
   int nxest = mx + kx + 1;
   int nyest = my + ky + 1;
@@ -295,19 +280,9 @@ bool NSpline2D::evaluate(const std::vector<double>& x,
   int lwrk = kx_ + ky_ + 2;
   std::vector<double> wrk(lwrk);
 
-  std::vector<double> rx(m);
-  std::vector<double> ry(m);
+  std::vector<double> rx(x.begin(), x.end());
+  std::vector<double> ry(y.begin(), y.end());
   std::vector<double> rz(m);
-
-  int i = 0;
-  for (std::vector<double>::const_iterator it = x.begin();
-       it!=x.end();
-       ++it) {
-
-    rx[i] = x[i];
-    ry[i] = y[i];
-    i++;
-  }
 
   int nx = tx_.size();
   int ny = ty_.size();
@@ -320,13 +295,7 @@ bool NSpline2D::evaluate(const std::vector<double>& x,
           &m,
           wrk.data(), &lwrk, &ier);
 
-  i = 0;
-  for (std::vector<double>::iterator it = rz.begin();
-       it!=rz.end();
-       ++it) {
-    z[i] = rz[i];
-    i++;
-  }
+  z.assign(rz.begin(), rz.end());
 
   if (ier==0) {
     return false;
