@@ -28,6 +28,7 @@ DefoRecoSurface::DefoRecoSurface(QObject *parent)
 
   calibX_ = ApplicationConfig::instance()->getValue<double>("CALIBX");
   calibY_ = ApplicationConfig::instance()->getValue<double>("CALIBY");
+  calibZ_ = ApplicationConfig::instance()->getValue<double>("CALIBZ");
 
   // to be called after cfg reading
   calculateHelpers();
@@ -91,6 +92,8 @@ const DefoSurface DefoRecoSurface::reconstruct(DefoPointCollection& currentPoint
   emit incrementRecoProgress();
 
   theSurface.makeSummary();
+
+  theSurface.calibrateZ(calibZ_);
 
   return theSurface;
 }

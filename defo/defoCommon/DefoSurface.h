@@ -66,6 +66,7 @@ class DefoSurface {
   void createPointFields( void );
 
   void fitSpline2D();
+  void calibrateZ(double calibZ);
 
  private:
   DefoPointCollection points_;
