@@ -7,6 +7,9 @@
 macx {
     INCLUDEPATH += /opt/local/include/GL
     INCLUDEPATH += /opt/local/include/exiv2
+    INCLUDEPATH += /opt/local/include
+    INCLUDEPATH += /opt/local/include/opencv
+    INCLUDEPATH += /opt/local/include/opencv2
     LIBS += -lgphoto2_port
     LIBS += -L/opt/local/lib
 }

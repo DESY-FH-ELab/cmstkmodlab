@@ -36,6 +36,45 @@
 //    value_type value_;
 //};
 
+typedef struct {
+    QDateTime      dt;
+    bool           daqState;
+
+    float          bathTemperature;
+    float          workingTemperature;
+    int            circulator;
+
+    int            channelActive[10];
+    float          temperature[10];
+
+    int            gaugeStatus1;
+    float          gaugePressure1;
+    int            gaugeStatus2;
+    float          gaugePressure2;
+
+    int            powerRemote;
+    int            powerOn;
+    int            cv1;
+    int            cv2;
+    float          setVoltage1;
+    float          setCurrent1;
+    float          setVoltage2;
+    float          setCurrent2;
+    float          voltage1;
+    float          current1;
+    float          voltage2;
+    float          current2;
+
+    bool           iotaPumpEnabled;
+    float          iotaActPressure;
+    float          iotaSetPressure;
+    float          iotaActFlow;
+    float          iotaSetFlow;
+
+    float          arduinoPressureA;
+    float          arduinoPressureB;
+} Measurement_t;
+
 template <typename value_type> class ThermoDAQValueVector : public QVector<double>
 {
 public:
@@ -94,6 +133,8 @@ public:
 
     bool daqState() const { return daqState_; }
 
+    const Measurement_t& getMeasurement();
+
 public slots:
 
     void startMeasurement();
@@ -125,6 +166,8 @@ protected:
   QMutex mutex_;
 
   QDateTime currentTime_;
+
+  Measurement_t measurement_;
 
   template <typename T> bool updateIfChanged(T &variable, T newValue) {
       if (variable==newValue) return false;

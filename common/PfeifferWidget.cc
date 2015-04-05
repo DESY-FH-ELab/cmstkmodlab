@@ -102,7 +102,7 @@ PfeifferGaugeWidget::PfeifferGaugeWidget(PfeifferModel* model,
   pressureDisplay_ = new QLCDNumber(LCD_SIZE, this);
   pressureDisplay_->setSegmentStyle(QLCDNumber::Flat);
   pressureDisplay_->setSmallDecimalPoint(true);
-  pressureDisplay_->setNumDigits(10);
+  pressureDisplay_->setDigitCount(10);
 
   layout->addRow("p [mbar]", pressureDisplay_);
 

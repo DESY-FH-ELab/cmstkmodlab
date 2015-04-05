@@ -51,7 +51,8 @@ void ThermoDAQStreamer::daqStateChanged(bool state)
         while (currentDir_.exists(filename.arg(i))) ++i;
         filename = filename.arg(i);
 
-        ofile_ = new QFile(currentDir_.absoluteFilePath(filename));
+        ofilename_ = currentDir_.absoluteFilePath(filename);
+        ofile_ = new QFile(ofilename_);
         if (ofile_->open(QFile::WriteOnly | QFile::Truncate)) {
             stream_ = new QTextStream(ofile_);
         }
