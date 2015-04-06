@@ -20,11 +20,8 @@ ifeq ($(NODEFO),0)
 qtsubdirs    += defo/defoCommon defo/defoDAQ defo/defoReco defo/defoCalib conradControl
 endif
 
-all: version qt
+all: qt
 	@for dir in $(subdirs); do (cd $$dir; make); done
-
-version:
-	cd common; ./../config.status ApplicationVersion.h.in; cd -
 
 qt:
 	@for dir in $(qtsubdirs); do (cd $$dir; @qmake@); done
