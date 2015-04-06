@@ -29,8 +29,8 @@ protected:
   void kXChanged(int);
   void kYChanged(int);
   void smoothingChanged(double);
-  void dXChanged(int);
-  void dYChanged(int);
+  void dXChanged(double);
+  void dYChanged(double);
   void parametersChanged();
 };
 

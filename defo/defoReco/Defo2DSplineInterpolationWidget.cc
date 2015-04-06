@@ -29,16 +29,16 @@ Defo2DSplineInterpolationWidget::Defo2DSplineInterpolationWidget(Defo2DSplineInt
   kXSpinBox_->setRange(1, 5);
   grid->addWidget(kXSpinBox_, 0, 0);
   kXSpinBox_->setValue(interpolationModel_->getKX());
-  connect(kXSpinBox_, SIGNAL(valueChanged(double)),
-          this, SLOT(kXChanged(double)));
+  connect(kXSpinBox_, SIGNAL(valueChanged(int)),
+          this, SLOT(kXChanged(int)));
 
   kYSpinBox_ = new QSpinBox(inputs);
   kYSpinBox_->setPrefix("ky = ");
   kYSpinBox_->setRange(1, 5);
   grid->addWidget(kYSpinBox_, 0, 1);
   kYSpinBox_->setValue(interpolationModel_->getKY());
-  connect(kYSpinBox_, SIGNAL(valueChanged(double)),
-          this, SLOT(kYChanged(double)));
+  connect(kYSpinBox_, SIGNAL(valueChanged(int)),
+          this, SLOT(kYChanged(int)));
 
   smoothingSpinBox_ = new QDoubleSpinBox(inputs);
   smoothingSpinBox_->setPrefix("s = ");
@@ -48,7 +48,7 @@ Defo2DSplineInterpolationWidget::Defo2DSplineInterpolationWidget(Defo2DSplineInt
   grid->addWidget(smoothingSpinBox_, 0, 2);
   smoothingSpinBox_->setValue(interpolationModel_->getSmoothing());
   connect(smoothingSpinBox_, SIGNAL(valueChanged(double)),
-          this, SLOT(calibZChanged(double)));
+          this, SLOT(smoothingChanged(double)));
 
   dXSpinBox_ = new QDoubleSpinBox(inputs);
   dXSpinBox_->setPrefix("dx = ");
@@ -61,7 +61,7 @@ Defo2DSplineInterpolationWidget::Defo2DSplineInterpolationWidget(Defo2DSplineInt
           this, SLOT(dXChanged(double)));
 
   dYSpinBox_ = new QDoubleSpinBox(inputs);
-  dYSpinBox_->setPrefix("ky = ");
+  dYSpinBox_->setPrefix("dy = ");
   dYSpinBox_->setRange(1.0, 20.0);
   dYSpinBox_->setDecimals(1);
   dYSpinBox_->setSingleStep(0.1);
@@ -89,12 +89,12 @@ void Defo2DSplineInterpolationWidget::smoothingChanged(double v)
   interpolationModel_->setSmoothing(v);
 }
 
-void Defo2DSplineInterpolationWidget::dXChanged(int v)
+void Defo2DSplineInterpolationWidget::dXChanged(double v)
 {
   interpolationModel_->setDX(v);
 }
 
-void Defo2DSplineInterpolationWidget::dYChanged(int v)
+void Defo2DSplineInterpolationWidget::dYChanged(double v)
 {
   interpolationModel_->setDY(v);
 }
