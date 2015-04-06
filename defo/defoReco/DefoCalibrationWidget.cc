@@ -49,7 +49,7 @@ DefoCalibrationWidget::DefoCalibrationWidget(DefoCalibrationModel* calibrationMo
   calibZxSpinBox_->setRange(0.75, 1.25);
   calibZxSpinBox_->setDecimals(9);
   calibZxSpinBox_->setSingleStep(0.001);
-  grid->addWidget(calibZxSpinBox_, 0, 2);
+  grid->addWidget(calibZxSpinBox_, 1, 0);
   calibZxSpinBox_->setValue(calibrationModel_->getCalibZx());
   connect(calibZxSpinBox_, SIGNAL(valueChanged(double)),
           this, SLOT(calibZxChanged(double)));
@@ -59,9 +59,9 @@ DefoCalibrationWidget::DefoCalibrationWidget(DefoCalibrationModel* calibrationMo
   calibZySpinBox_->setRange(0.75, 1.25);
   calibZySpinBox_->setDecimals(9);
   calibZySpinBox_->setSingleStep(0.001);
-  grid->addWidget(calibZySpinBox_, 0, 3);
+  grid->addWidget(calibZySpinBox_, 1, 1);
   calibZySpinBox_->setValue(calibrationModel_->getCalibZy());
-  connect(calibZxSpinBox_, SIGNAL(valueChanged(double)),
+  connect(calibZySpinBox_, SIGNAL(valueChanged(double)),
           this, SLOT(calibZyChanged(double)));
 
   connect(calibrationModel_, SIGNAL(calibrationChanged()),
