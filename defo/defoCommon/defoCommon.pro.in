@@ -30,7 +30,9 @@ LIBS += -L@basepath@/external/ddierckx -lddierckx
 LIBS += -L@basepath@/common -lCommon
 
 QMAKE = @qmake@
-QMAKE_CXXFLAGS += -std=c++0x
+
+QMAKE_CXXFLAGS += -std=c++11
+QMAKE_CXXFLAGS += -DAPPLICATIONVERSIONSTR=\\\"`git describe --dirty --always --tags`\\\"
 
 DEFINES += @configdefines@
 QT += core gui widgets opengl script xml

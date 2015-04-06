@@ -12,7 +12,6 @@
 
 #include "SingletonApplication.h"
 #include "ApplicationConfig.h"
-#include "ApplicationVersion.h"
 
 #include "ThermoMainWindow.h"
 #include "TestWindow.h"
