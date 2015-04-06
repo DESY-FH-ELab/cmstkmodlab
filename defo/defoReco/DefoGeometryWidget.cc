@@ -47,12 +47,14 @@ DefoGeometryWidget::DefoGeometryWidget(
   , geometryModel_(geometryModel)
 {
   QBoxLayout *layout = new QVBoxLayout();
+  layout->setContentsMargins(3, 3, 3, 3);
   setLayout(layout);
 
   sketch_ = new DefoSvgWidget(this);
   layout->addWidget(sketch_);
 
   QGridLayout *grid = new QGridLayout();
+  grid->setContentsMargins(0, 0, 0, 0);
   QWidget * inputs = new QWidget(this);
   inputs->setLayout(grid);
   layout->addWidget(inputs);
@@ -80,7 +82,7 @@ DefoGeometryWidget::DefoGeometryWidget(
           this, SLOT(angle2Changed(double)));
 
   angle3SpinBox_ = new QDoubleSpinBox(inputs);
-  angle3SpinBox_->setPrefix("a2 = ");
+  angle3SpinBox_->setPrefix("a3 = ");
   angle3SpinBox_->setSuffix(" deg");
   angle3SpinBox_->setRange(-10.0, 10.0);
   angle3SpinBox_->setDecimals(2);
@@ -122,6 +124,9 @@ DefoGeometryWidget::DefoGeometryWidget(
   height2SpinBox_->setValue(geometryModel_->getHeight2());
   connect(height2SpinBox_, SIGNAL(valueChanged(double)),
           this, SLOT(height2Changed(double)));
+
+  grid->addWidget(new QWidget(inputs), 1, 3);
+  grid->addWidget(new QWidget(inputs), 1, 4);
 
   connect(geometryModel_,
           SIGNAL(geometryChanged()),
