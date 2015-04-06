@@ -26,10 +26,10 @@ DefoRecoSurface::DefoRecoSurface(QObject *parent)
   focalLength_= ApplicationConfig::instance()->getValue<double>( "LENS_FOCAL_LENGTH" );
   debugLevel_ = ApplicationConfig::instance()->getValue<unsigned int>( "DEBUG_LEVEL" );
 
-  calibX_ = ApplicationConfig::instance()->getValue<double>("CALIBX");
-  calibY_ = ApplicationConfig::instance()->getValue<double>("CALIBY");
-  calibZx_ = ApplicationConfig::instance()->getValue<double>("CALIBZX");
-  calibZy_ = ApplicationConfig::instance()->getValue<double>("CALIBZY");
+  calibX_ = ApplicationConfig::instance()->getValue<double>("CALIBX", 1.0);
+  calibY_ = ApplicationConfig::instance()->getValue<double>("CALIBY", 1.0);
+  calibZx_ = ApplicationConfig::instance()->getValue<double>("CALIBZX", 1.0);
+  calibZy_ = ApplicationConfig::instance()->getValue<double>("CALIBZY", 1.0);
 
   // to be called after cfg reading
   calculateHelpers();
