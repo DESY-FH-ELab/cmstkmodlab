@@ -5,8 +5,8 @@
 
 #include "DefoRecoMeasurement.h"
 
-DefoRecoMeasurement::DefoRecoMeasurement(const QString& imageLocation, bool preview) :
-    DefoMeasurement(imageLocation, preview)
+DefoRecoMeasurement::DefoRecoMeasurement(const QDateTime& timestamp) :
+    DefoMeasurement(timestamp)
 {
   recoPointRecognitionThresholds_.resize(DefoPointRecognitionModel::MAXTHRESHOLDS);
 }

@@ -36,12 +36,10 @@ void DefoRecoMeasurementListModel::read(const QString& filename) {
       QString timestamp = stream.attributes().value("timestamp").toString();
       QDateTime dt = QDateTime::fromString(timestamp, "yyyyMMddhhmmss");
 
-      QString imageLocation = basepath.absoluteFilePath("%1.jpg");
-      imageLocation = imageLocation.arg(dt.toString("yyyyMMddhhmmss"));
-      measurement = new DefoRecoMeasurement(imageLocation, false);
-      measurement->setTimeStamp(dt);
-
+      measurement = new DefoRecoMeasurement(dt);
       measurement->read(basepath);
+
+      measurement->readImages();
 
       addMeasurement(measurement);
     }

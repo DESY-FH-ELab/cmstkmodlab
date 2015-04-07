@@ -44,6 +44,7 @@ public:
 
   const QImage& getLastPicture() const;
   const QString& getLastPictureLocation() const;
+  const QStringList& getLastPictureLocations() const;
   const QImage& getLastLiveViewPicture() const;
   // TODO getLastPictureExif()
 
@@ -55,6 +56,7 @@ public slots:
   void setControlsEnabled(bool enabled);
   virtual void setLiveViewEnabled( bool enabled );
   void acquirePicture(bool keep);
+  void acquirePictures(int count);
   void acquireLiveViewPicture();
   void setComment(const QString&);
   void setCalibAmplitude(int amplitude);
@@ -69,17 +71,18 @@ protected:
 
   // image cache
   QString location_;
+  QStringList locations_;
   QImage image_;
   QImage liveViewImage_;
   QTimer liveViewTimer_;
   QTextDocument* comment_;
   int calibAmplitude_;
 
-
 signals:
   void deviceStateChanged(State newState);
   void deviceOptionChanged(DefoCameraModel::Option option, int newValue);
   void newImage(QString location, bool keep);
+  void newImages(QStringList locations);
   void liveViewModeChanged(bool state);
   void newLiveViewImage(QString location);
   void defoMessage(const QString & text);

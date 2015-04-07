@@ -4,9 +4,10 @@
 #include "DefoMeasurement.h"
 #include "DefoPointRecognitionModel.h"
 
-class DefoRecoMeasurement : public DefoMeasurement {
+class DefoRecoMeasurement : public DefoMeasurement
+{
 public:
-  DefoRecoMeasurement(const QString& imageLocation, bool preview);
+  DefoRecoMeasurement(const QDateTime& timestamp);
 
   void setRecoThresholdValue(DefoPointRecognitionModel::Threshold threshold, int value);
   int getRecoThresholdValue(DefoPointRecognitionModel::Threshold threshold);

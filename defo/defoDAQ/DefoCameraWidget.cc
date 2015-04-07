@@ -85,6 +85,10 @@ DefoCameraWidget::DefoCameraWidget(
         , SLOT(pictureButtonClicked())
   );
 
+  QSpinBox* imageCountSpinBox_ = new QSpinBox(this);
+  imageCountSpinBox_->setRange(1, 5);
+  layout->addWidget(imageCountSpinBox_);
+
   // Switching into preview mode
   liveviewCheckBox_ = new QCheckBox("Live", this);
   connect(liveviewCheckBox_
@@ -223,7 +227,11 @@ void DefoCameraWidget::previewButtonClicked() {
   cameraModel_->acquirePicture(false);
 }
 
-void DefoCameraWidget::pictureButtonClicked() {
-
-  cameraModel_->acquirePicture(true);
+void DefoCameraWidget::pictureButtonClicked()
+{
+  if (imageCountSpinBox_->value()==1) {
+    cameraModel_->acquirePicture(true);
+  } else {
+    cameraModel_->acquirePictures(imageCountSpinBox_->value());
+  }
 }
