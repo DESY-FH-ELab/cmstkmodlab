@@ -1,5 +1,7 @@
 void plot()
 {
+  TCanvas * c = new TCanvas("c", "c", 700, 500);
+
   int ix, iy;
   double x, y, zx, zy;
   double hx, hy;
@@ -18,6 +20,8 @@ void plot()
 
   gr1->Draw("SURF1Z");
 
+  c->Print("defoReco.png");
+
   TkModLabSpline2D spline;
 
   spline.Surfit(gr1->GetN(),
@@ -35,6 +39,8 @@ void plot()
 
   gr2->Draw("SURF1Z");
 
+  c->Print("defoRecoSpline2D.png");
+
   TGraph2D *gr3 = new TGraph2D();
   int nPoints3 = 0;
 
@@ -45,4 +51,6 @@ void plot()
   }
 
   gr3->Draw("SURF1Z");
+
+  c->Print("defoRecoSpline2DMinusReco.png");
 }
