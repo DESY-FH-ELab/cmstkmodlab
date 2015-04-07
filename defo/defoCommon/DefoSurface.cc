@@ -237,30 +237,41 @@ void DefoSurface::dumpSpline2DField(std::string filename,
   double theDY = (ymax-ymin)/stepsY;
 
   std::vector<double> x, y, zx, zy;
+  std::vector<int> vix, viy;
 
+  int ix = 0, iy = 0;
   for (int rx=xmin;rx<=xmax;rx+=theDX) {
+    iy = 0;
     for (int ry=ymin;ry<=ymax;ry+=theDY) {
+      vix.push_back(ix);
+      viy.push_back(iy);
       x.push_back(rx);
       y.push_back(ry);
       zx.push_back(0.0);
       zy.push_back(0.0);
+      iy++;
     }
+    ix++;
   }
 
   spline2Dx_.evaluate(x, y, zx);
   spline2Dy_.evaluate(x, y, zy);
 
   std::ofstream ofile(filename.c_str());
+  std::vector<int>::iterator itix = vix.begin();
+  std::vector<int>::iterator itiy = viy.begin();
   std::vector<double>::iterator itx = x.begin();
   std::vector<double>::iterator ity = y.begin();
   std::vector<double>::iterator itzx = zx.begin();
   std::vector<double>::iterator itzy = zy.begin();
   
-  for (;itx!=x.end();++itx,++ity,++itzx, ++itzy) {
-    ofile << std::setw(14) << std::scientific << *itx << " "
+  for (;itx!=x.end();++itix,++itiy,++itx,++ity,++itzx,++itzy) {
+    ofile << std::setw(8)  << *itix << " "
+          << std::setw(8)  << *itiy  << " "
+	  << std::setw(14) << std::scientific << *itx << " "
           << std::setw(14) << std::scientific << *ity << " "
-          << std::setw(14) << std::scientific << *itzx << " "
-          << std::setw(14) << std::scientific << *itzy
+          << std::setw(14) << std::scientific << *itzx << "   1 "
+          << std::setw(14) << std::scientific << *itzy << "   1"
           << std::endl;
   }
 }
