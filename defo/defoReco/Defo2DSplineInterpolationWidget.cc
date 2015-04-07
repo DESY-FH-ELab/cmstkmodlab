@@ -48,6 +48,7 @@ Defo2DSplineInterpolationWidget::Defo2DSplineInterpolationWidget(Defo2DSplineInt
 
   dXSpinBox_ = new QDoubleSpinBox(this);
   dXSpinBox_->setPrefix("dx = ");
+  dXSpinBox_->setSuffix(" mm");
   dXSpinBox_->setRange(1.0, 20.0);
   dXSpinBox_->setDecimals(1);
   dXSpinBox_->setSingleStep(0.1);
@@ -58,6 +59,7 @@ Defo2DSplineInterpolationWidget::Defo2DSplineInterpolationWidget(Defo2DSplineInt
 
   dYSpinBox_ = new QDoubleSpinBox(this);
   dYSpinBox_->setPrefix("dy = ");
+  dYSpinBox_->setSuffix(" mm");
   dYSpinBox_->setRange(1.0, 20.0);
   dYSpinBox_->setDecimals(1);
   dYSpinBox_->setSingleStep(0.1);
