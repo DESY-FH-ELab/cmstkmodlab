@@ -44,6 +44,7 @@ public slots:
   void exportMeasurement();
   void prepareNewMeasurement();
   void newCameraImage(QString location, bool keep);
+  void newCameraImages(QStringList locations);
 
 protected:
 

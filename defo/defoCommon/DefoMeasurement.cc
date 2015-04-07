@@ -4,19 +4,58 @@
 #include <QXmlStreamWriter>
 
 #include "DefoExifReader.h"
+#include "DefoImageAverager.h"
 
 #include "DefoMeasurement.h"
 
+DefoMeasurement::DefoMeasurement(const QDateTime& timestamp)
+  : timestamp_(timestamp),
+    previewImage_(false)
+{
+
+}
+
 DefoMeasurement::DefoMeasurement(const QString& imageLocation, bool preview)
   : timestamp_(QDateTime::currentDateTime().toUTC()),
-    imageLocation_(imageLocation),
     previewImage_(preview)
 {
-  if (image_.isNull()) {
-    QImage temp(imageLocation_);
-    QMatrix matrix;
-    matrix.rotate(90);
-    image_ = temp.transformed(matrix);
+  imageLocations_.append(imageLocation);
+  readImages();
+}
+
+DefoMeasurement::DefoMeasurement(const QStringList& imageLocations)
+  : timestamp_(QDateTime::currentDateTime().toUTC()),
+    imageLocations_(imageLocations),
+    previewImage_(false)
+{
+  readImages();
+}
+
+void DefoMeasurement::readImages()
+{
+  if (imageLocations_.size()==0) {
+
+    return;
+
+  } else if (imageLocations_.size()==1) {
+
+    if (image_.isNull()) {
+      QImage temp(imageLocations_.front());
+      QMatrix matrix;
+      matrix.rotate(90);
+      image_ = temp.transformed(matrix);
+    }
+
+  } else {
+
+    if (image_.isNull()) {
+      DefoImageAverager averager(imageLocations_);
+      QImage temp(averager.getAveragedImage());
+      QMatrix matrix;
+      matrix.rotate(90);
+      image_ = temp.transformed(matrix);
+    }
+
   }
 }
 
@@ -47,12 +86,18 @@ int DefoMeasurement::getHeight() const
 
 void DefoMeasurement::setImageLocation(const QString& imageLocation)
 {
-  imageLocation_ = imageLocation;
+  imageLocations_.clear();
+  imageLocations_.append(imageLocation);
 }
-  
+
+void DefoMeasurement::setImageLocations(const QStringList& imageLocations)
+{
+  imageLocations_ = imageLocations;
+}
+
 void DefoMeasurement::readExifData()
 {
-  DefoExifReader reader(imageLocation_);
+  DefoExifReader reader(imageLocations_.front());
   reader.read();
 
   exifFocalLength_ = reader.getFloatValue("Exif.Photo.FocalLength");
@@ -137,6 +182,10 @@ void DefoMeasurement::write(const QDir& path)
 
   stream.writeStartElement("Comment");
   stream.writeCharacters(comment_);
+  stream.writeEndElement();
+
+  stream.writeStartElement("Images");
+  stream.writeAttribute("count", QString().setNum(imageLocations_.size()));
   stream.writeEndElement();
 
   stream.writeStartElement("Calibration");
@@ -252,6 +301,19 @@ void DefoMeasurement::read(const QDir&path)
       comment_ = stream.readElementText();
     }
 
+    if (stream.isStartElement() && stream.name()=="Images") {
+      int nImages = stream.attributes().value("count").toInt();
+
+      QStringList imageLocations;
+      for (int i=1;i<=nImages;i++) {
+        QString imageLocation = path.absoluteFilePath("%1_%2.jpg");
+        imageLocation = imageLocation.arg(getTimeStamp().toString("yyyyMMddhhmmss")).arg(QString::number(i));
+        imageLocations.append(imageLocation);
+      }
+
+      setImageLocations(imageLocations);
+    }
+
     if (stream.isStartElement() && stream.name()=="Calibration") {
       calibAmplitude_ = stream.attributes().value("amplitude").toString().toInt();
     }
@@ -289,13 +351,13 @@ void DefoMeasurement::read(const QDir&path)
       bool state = stream.attributes().value("available").toString().toInt();
       panelStates_.resize(5);
       for (unsigned int idx = 0;idx<5;++idx) {
-	panelStates_[idx] = OFF;
+        panelStates_[idx] = OFF;
       }
       ledState_ = OFF;
       if (state) {
-	conradState_ = READY;
+        conradState_ = READY;
       } else {
-	conradState_ = OFF;
+        conradState_ = OFF;
       }
     }
     if (stream.isStartElement() && stream.name().toString().startsWith("Panel")) {

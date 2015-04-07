@@ -33,6 +33,7 @@ DefoMainWindow::DefoMainWindow(QWidget *parent) :
   // CANON CAMERA MODEL
   cameraModel_ = new DefoCameraModel(this);
   connect(cameraModel_, SIGNAL(newImage(QString,bool)), SLOT(newCameraImage(QString,bool)));
+  connect(cameraModel_, SIGNAL(newImages(QStringList)), SLOT(newCameraImages(QStringList)));
 
   // POINT MODEL
   pointModel_ = new DefoPointRecognitionModel(this);
@@ -245,7 +246,7 @@ void DefoMainWindow::newCameraImage(QString location, bool keep) {
     if (!currentDir_.exists())
       currentDir_.mkpath(currentDir_.absolutePath());
 
-    QString imageLocation = currentDir_.absoluteFilePath("%1.jpg");
+    QString imageLocation = currentDir_.absoluteFilePath("%1_1.jpg");
     imageLocation = imageLocation.arg(dt.toString("yyyyMMddhhmmss"));
 
     measurement->setImageLocation(imageLocation);
@@ -269,4 +270,47 @@ void DefoMainWindow::newCameraImage(QString location, bool keep) {
 
     listModel_->write(currentDir_.absolutePath());
   }
+}
+
+void DefoMainWindow::newCameraImages(QStringList locations)
+{
+  DefoMeasurement * measurement = new DefoMeasurement(locations);
+
+  // TODO save when needed, i.e. always from now on
+  QDateTime dt = measurement->getTimeStamp();
+
+  // Create with first picture taken
+  if (!currentDir_.exists())
+    currentDir_.mkpath(currentDir_.absolutePath());
+
+  int i = 1;
+  QStringList newLocations;
+  for (QString location : locations) {
+    QString imageLocation = currentDir_.absoluteFilePath("%1_%2.jpg");
+    imageLocation = imageLocation.arg(dt.toString("yyyyMMddhhmmss")).arg(QString::number(i));
+    newLocations.append(imageLocation);
+
+    QFile file(location);
+    file.copy(imageLocation);
+    file.close();
+
+    i++;
+  }
+
+  measurement->setImageLocations(newLocations);
+
+  // acquire status information and store in measurement
+  measurement->readExifData();
+  measurement->acquireData(cameraModel_);
+  measurement->acquireData(pointModel_);
+  measurement->acquireData(conradModel_);
+  measurement->acquireData(julaboModel_);
+  measurement->acquireData(keithleyModel_);
+
+  measurement->write(currentDir_.absolutePath());
+
+  listModel_->addMeasurement(measurement);
+  selectionModel_->setSelection(measurement);
+
+  listModel_->write(currentDir_.absolutePath());
 }

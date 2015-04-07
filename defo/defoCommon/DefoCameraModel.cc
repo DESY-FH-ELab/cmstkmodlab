@@ -133,6 +133,25 @@ void DefoCameraModel::acquirePicture(bool keep)
   emit defoMessage("new image aquired");
 }
 
+void DefoCameraModel::acquirePictures(int count)
+{
+  if (count==1) {
+    acquirePicture(true);
+    return;
+  }
+
+  locations_.clear();
+  QStringList list;
+  for (int i=0;i<count;i++) {
+    location_ = controller_->acquirePhoto().c_str();
+    image_ = QImage(location_);
+    locations_.append(location_);
+    list.append(location_);
+  }
+  emit newImages(list);
+  emit defoMessage("new images aquired");
+}
+
 /// Instruct the camera to take a picture and cache the file in a QImage.
 void DefoCameraModel::acquireLiveViewPicture()
 {
@@ -169,4 +188,9 @@ int DefoCameraModel::getOptionValue(const Option &option) const
 const QString & DefoCameraModel::getLastPictureLocation() const
 {
   return location_;
+}
+
+const QStringList & DefoCameraModel::getLastPictureLocations() const
+{
+  return locations_;
 }
