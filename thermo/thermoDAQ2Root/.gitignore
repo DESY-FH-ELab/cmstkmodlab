@@ -1,5 +1,6 @@
 thermoDAQ2Root.pro
 thermoDAQ2Root.pro.user
+.qmake.stash
 Makefile
 *.d
 *.o

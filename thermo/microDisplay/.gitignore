@@ -1,5 +1,6 @@
 microDisplay.pro
 microDisplay.pro.user
+.qmake.stash
 Makefile
 *.d
 *.o
