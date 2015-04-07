@@ -40,6 +40,7 @@ HEADERS += nqlogger.h \
            nline3D.h \
            nplane3D.h \
            nspline2D.h \
+           nmatrix.h \
            DeviceState.h \
            DeviceParameter.h \
            Ringbuffer.h \
