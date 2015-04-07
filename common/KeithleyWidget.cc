@@ -110,12 +110,12 @@ KeithleyTemperatureWidget::KeithleyTemperatureWidget(KeithleyModel* model,
   currentTempDisplay_ = new QLCDNumber(LCD_SIZE, this);
   currentTempDisplay_->setSegmentStyle(QLCDNumber::Flat);
   currentTempDisplay_->setSmallDecimalPoint(true);
-  currentTempDisplay_->setNumDigits(5);
+  currentTempDisplay_->setDigitCount(5);
 
   currentGradientDisplay_ = new QLCDNumber(LCD_SIZE/2, this);
   currentGradientDisplay_->setSegmentStyle(QLCDNumber::Flat);
   currentGradientDisplay_->setSmallDecimalPoint(true);
-  currentGradientDisplay_->setNumDigits(8);
+  currentGradientDisplay_->setDigitCount(8);
 
   connect(model_,
           SIGNAL(sensorStateChanged(uint,State)),
