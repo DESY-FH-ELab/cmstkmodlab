@@ -33,6 +33,8 @@ DefoMeasurement::DefoMeasurement(const QStringList& imageLocations)
 
 void DefoMeasurement::readImages()
 {
+  NQLogMessage("DefoMeasurement") << "readImages " << imageLocations_.size();
+
   if (imageLocations_.size()==0) {
 
     return;
@@ -302,7 +304,7 @@ void DefoMeasurement::read(const QDir&path)
     }
 
     if (stream.isStartElement() && stream.name()=="Images") {
-      int nImages = stream.attributes().value("count").toInt();
+      int nImages = stream.attributes().value("count").toString().toInt();
 
       QStringList imageLocations;
       for (int i=1;i<=nImages;i++) {
