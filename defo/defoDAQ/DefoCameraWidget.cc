@@ -36,7 +36,7 @@ DefoCameraWidget::DefoCameraWidget(
   );
   // TODO connect camera model state change
   enableCheckBox_->setChecked(cameraModel_->getDeviceState() == READY);
-  buttonLayout->addWidget(enableCheckBox_, 0, 4);
+  buttonLayout->addWidget(enableCheckBox_, 0, 5);
 
   connect(
         cameraModel_
@@ -74,9 +74,13 @@ DefoCameraWidget::DefoCameraWidget(
         , SLOT(previewButtonClicked())
   );
 
+  imageCountSpinBox_ = new QSpinBox(buttons_);
+  imageCountSpinBox_->setRange(1, 5);
+  buttonLayout->addWidget(imageCountSpinBox_, 0, 2);
+
   // Taking a picture
   pictureButton_ = new QPushButton("&Take picture", buttons_);
-  buttonLayout->addWidget(pictureButton_, 0, 2);
+  buttonLayout->addWidget(pictureButton_, 0, 3);
 
   connect(
           pictureButton_
@@ -85,10 +89,6 @@ DefoCameraWidget::DefoCameraWidget(
         , SLOT(pictureButtonClicked())
   );
 
-  QSpinBox* imageCountSpinBox_ = new QSpinBox(this);
-  imageCountSpinBox_->setRange(1, 5);
-  layout->addWidget(imageCountSpinBox_);
-
   // Switching into preview mode
   liveviewCheckBox_ = new QCheckBox("Live", this);
   connect(liveviewCheckBox_
@@ -96,7 +96,7 @@ DefoCameraWidget::DefoCameraWidget(
         , cameraModel_
         , SLOT(setLiveViewEnabled(bool))
   );
-  buttonLayout->addWidget(liveviewCheckBox_, 0, 3);
+  buttonLayout->addWidget(liveviewCheckBox_, 0, 4);
 
   commentEditor_ = new DefoImageCommentEdit(this);
   commentEditor_->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);
