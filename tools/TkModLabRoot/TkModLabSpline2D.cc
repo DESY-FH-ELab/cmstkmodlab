@@ -63,11 +63,11 @@ int TkModLabSpline2D::Surfit(const std::vector<double>& x,
 
   int m = x.size();
 
-  int nxest = std::max(kx+1+std::ceil(std::sqrt(m/2)), 2.0*(kx+1));
-  int nyest = std::max(ky+1+std::ceil(std::sqrt(m/2)), 2.0*(ky+1));
+  int nxest = 1.5*std::max(kx+1+std::ceil(std::sqrt(m/2)), 2.0*(kx+1));
+  int nyest = 1.5*std::max(ky+1+std::ceil(std::sqrt(m/2)), 2.0*(ky+1));
   int nmax = std::max(nxest, nyest);
 
-  double eps = 1.0e-16;
+  double eps = 1.0e-12;
 
   double xb = x[0];
   double xe = xb;
