@@ -6,6 +6,7 @@
 #include <QFile>
 #include <QTimer>
 #include <QTextDocument>
+#include <QStringList>
 
 #include <map>
 
