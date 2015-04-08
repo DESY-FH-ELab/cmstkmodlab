@@ -2,6 +2,7 @@
 
 #include <QColor>
 
+#include <nqlogger.h>
 #include <nmatrix.h>
 
 #include "DefoImageAverager.h"
@@ -9,7 +10,9 @@
 DefoImageAverager::DefoImageAverager(const QStringList& filenames)
 :filenames_(filenames)
 {
-
+  for (auto filename : filenames_) {
+    NQLogMessage("DefoImageAverager") << filename;
+  }
 }
 
 DefoImageAverager::~DefoImageAverager()
