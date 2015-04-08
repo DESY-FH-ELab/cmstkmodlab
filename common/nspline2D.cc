@@ -49,11 +49,11 @@ NSpline2D::NSpline2D()
 
 }
 
-void NSpline2D::surfit(const std::vector<double>& x,
-                       const std::vector<double>& y,
-                       const std::vector<double>& z,
-                       const std::vector<double>& w,
-                       int kx, int ky, double s)
+int NSpline2D::surfit(const std::vector<double>& x,
+                      const std::vector<double>& y,
+                      const std::vector<double>& z,
+                      const std::vector<double>& w,
+                      int kx, int ky, double s)
 {
   if (x.size()!=w.size()) {
 
@@ -162,16 +162,18 @@ void NSpline2D::surfit(const std::vector<double>& x,
   kx_ = kx;
   ky_ = ky;
   fp_ = fp;
+
+  return ier;
 }
 
-void NSpline2D::surfit(const std::vector<double>& x,
-                       const std::vector<double>& y,
-                       const std::vector<double>& z,
-                       int kx, int ky, double s)
+int NSpline2D::surfit(const std::vector<double>& x,
+                      const std::vector<double>& y,
+                      const std::vector<double>& z,
+                      int kx, int ky, double s)
 {
   std::vector<double> w(x.size(), 1.0);
 
-  surfit(x, y, z, w, kx, ky, s);
+  return this->surfit(x, y, z, w, kx, ky, s);
 }
 
 void NSpline2D::regrid(const std::vector<double>& x,
