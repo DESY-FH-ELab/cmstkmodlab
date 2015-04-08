@@ -1,3 +1,7 @@
+#include <chrono>
+#include <thread>
+
+#include <QCoreApplication>
 #include <QPlainTextDocumentLayout>
 
 #include <nqlogger.h>
@@ -147,6 +151,9 @@ void DefoCameraModel::acquirePictures(int count)
     image_ = QImage(location_);
     locations_.append(location_);
     list.append(location_);
+
+    QCoreApplication::processEvents();
+    std::this_thread::sleep_for(std::chrono::milliseconds(100));
   }
   emit newImages(list);
   emit defoMessage("new images aquired");
