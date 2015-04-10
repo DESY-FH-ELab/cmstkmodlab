@@ -287,10 +287,14 @@ void DefoReconstructionModel::reconstruct()
   // reco_->dump();
   DefoSurface surface = reco_->reconstruct(defoCollection_, refCollection_);
 
+  emit incrementProgress();
+
   surface.fitSpline2D(interpolationModel_->getKX(),
                       interpolationModel_->getKY(),
                       interpolationModel_->getSmoothing(),
                       interpolationModel_->getNXY());
+
+  emit incrementProgress();
 
   QString filename = "defoReco_";
   filename += refMeasurement_->getTimeStamp().toString("yyyyMMddhhmmss");
@@ -298,6 +302,8 @@ void DefoReconstructionModel::reconstruct()
   filename += defoMeasurement_->getTimeStamp().toString("yyyyMMddhhmmss");
   filename += ".txt";
   surface.dumpSplineField(currentDir_.absoluteFilePath(filename).toStdString());
+
+  emit incrementProgress();
 
   filename = "defoRecoSpline2D_";
   filename += refMeasurement_->getTimeStamp().toString("yyyyMMddhhmmss");
@@ -307,6 +313,8 @@ void DefoReconstructionModel::reconstruct()
   surface.dumpSpline2DField(currentDir_.absoluteFilePath(filename).toStdString(),
                             interpolationModel_->getDX(),
                             interpolationModel_->getDY());
+
+  emit incrementProgress();
 
   bool newPair = false;
   DefoMeasurementPair * measurementPair = pairListModel_->findMeasurementPair(refMeasurement_,
