@@ -261,7 +261,6 @@ void DefoReconstructionModel::reconstruct()
   }
   emit incrementProgress();
 
-
   QString basename = "offlinePoints_%1.xml";
   QString fileLocation;
 
