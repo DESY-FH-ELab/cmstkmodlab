@@ -55,7 +55,8 @@ int TkModLabSpline2D::Surfit(const std::vector<double>& x,
                        const std::vector<double>& y,
                        const std::vector<double>& z,
                        const std::vector<double>& w,
-                       int kx, int ky, double s)
+                       int kx, int ky, double s,
+                       double nxy)
 {
   if (x.size()!=w.size()) {
 
@@ -63,11 +64,11 @@ int TkModLabSpline2D::Surfit(const std::vector<double>& x,
 
   int m = x.size();
 
-  int nxest = 1.5*std::max(kx+1+std::ceil(std::sqrt(m/2)), 2.0*(kx+1));
-  int nyest = 1.5*std::max(ky+1+std::ceil(std::sqrt(m/2)), 2.0*(ky+1));
+  int nxest = std::max(nxy*(kx+1+std::ceil(std::sqrt(m/2))), 2.0*(kx+1));
+  int nyest = std::max(nxy*(ky+1+std::ceil(std::sqrt(m/2))), 2.0*(ky+1));
   int nmax = std::max(nxest, nyest);
 
-  double eps = 1.0e-12;
+  double eps = 1.0e-16;
 
   double xb = x[0];
   double xe = xb;
@@ -161,25 +162,27 @@ int TkModLabSpline2D::Surfit(const std::vector<double>& x,
 int TkModLabSpline2D::Surfit(const std::vector<double>& x,
                        const std::vector<double>& y,
                        const std::vector<double>& z,
-                       int kx, int ky, double s)
+                       int kx, int ky, double s,
+                       double nxy)
 {
   std::vector<double> w(x.size(), 1.0);
 
-  return this->Surfit(x, y, z, w, kx, ky, s);
+  return this->Surfit(x, y, z, w, kx, ky, s, nxy);
 }
 
 int TkModLabSpline2D::Surfit(int n,
                               const double *x,
                               const double *y,
                               const double *z,
-                              int kx, int ky, double s)
+                              int kx, int ky, double s,
+                              double nxy)
 {
   std::vector<double> vx(x, x + n);
   std::vector<double> vy(y, y + n);
   std::vector<double> vz(z, z + n);
   std::vector<double> w(n, 1.0);
 
-  return this->Surfit(vx, vy, vz, w, kx, ky, s);
+  return this->Surfit(vx, vy, vz, w, kx, ky, s, nxy);
 }
 
 void TkModLabSpline2D::Regrid(const std::vector<double>& x,
