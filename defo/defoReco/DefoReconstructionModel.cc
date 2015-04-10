@@ -290,7 +290,8 @@ void DefoReconstructionModel::reconstruct()
 
   surface.fitSpline2D(interpolationModel_->getKX(),
                       interpolationModel_->getKY(),
-                      interpolationModel_->getSmoothing());
+                      interpolationModel_->getSmoothing(),
+                      interpolationModel_->getNXY());
 
   QString filename = "defoReco_";
   filename += refMeasurement_->getTimeStamp().toString("yyyyMMddhhmmss");

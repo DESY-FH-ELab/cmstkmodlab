@@ -372,7 +372,7 @@ void DefoSurface::calibrateZ(double calibZx, double calibZy)
   }
 }
 
-void DefoSurface::fitSpline2D(int kx, int ky, double s)
+void DefoSurface::fitSpline2D(int kx, int ky, double s, double nxy)
 {
   typedef QHash<DefoSplineXYPair,DefoSplineXYDefoPair>::const_iterator it_t;
 
@@ -387,6 +387,6 @@ void DefoSurface::fitSpline2D(int kx, int ky, double s)
     }
   }
 
-  spline2Dx_.surfit(x, y, zx, kx, ky, s);
-  spline2Dy_.surfit(x, y, zy, kx, ky, s);
+  spline2Dx_.surfit(x, y, zx, kx, ky, s, nxy);
+  spline2Dy_.surfit(x, y, zy, kx, ky, s, nxy);
 }

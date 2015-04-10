@@ -46,13 +46,23 @@ Defo2DSplineInterpolationWidget::Defo2DSplineInterpolationWidget(Defo2DSplineInt
   connect(smoothingSpinBox_, SIGNAL(valueChanged(double)),
           this, SLOT(smoothingChanged(double)));
 
+  nxySpinBox_ = new QDoubleSpinBox(this);
+  nxySpinBox_->setPrefix("nxy = ");
+  nxySpinBox_->setRange(0.5, 1.5);
+  nxySpinBox_->setDecimals(2);
+  nxySpinBox_->setSingleStep(0.05);
+  grid->addWidget(nxySpinBox_, 0, 3);
+  nxySpinBox_->setValue(interpolationModel_->getNXY());
+  connect(nxySpinBox_, SIGNAL(valueChanged(double)),
+          this, SLOT(nxyChanged(double)));
+
   dXSpinBox_ = new QDoubleSpinBox(this);
   dXSpinBox_->setPrefix("dx = ");
   dXSpinBox_->setSuffix(" mm");
   dXSpinBox_->setRange(1.0, 20.0);
   dXSpinBox_->setDecimals(1);
   dXSpinBox_->setSingleStep(0.1);
-  grid->addWidget(dXSpinBox_, 0, 3);
+  grid->addWidget(dXSpinBox_, 1, 0);
   dXSpinBox_->setValue(interpolationModel_->getDX());
   connect(dXSpinBox_, SIGNAL(valueChanged(double)),
           this, SLOT(dXChanged(double)));
@@ -63,7 +73,7 @@ Defo2DSplineInterpolationWidget::Defo2DSplineInterpolationWidget(Defo2DSplineInt
   dYSpinBox_->setRange(1.0, 20.0);
   dYSpinBox_->setDecimals(1);
   dYSpinBox_->setSingleStep(0.1);
-  grid->addWidget(dYSpinBox_, 0, 4);
+  grid->addWidget(dYSpinBox_, 1, 1);
   dYSpinBox_->setValue(interpolationModel_->getDY());
   connect(dYSpinBox_, SIGNAL(valueChanged(double)),
           this, SLOT(dYChanged(double)));
@@ -87,6 +97,11 @@ void Defo2DSplineInterpolationWidget::smoothingChanged(double v)
   interpolationModel_->setSmoothing(v);
 }
 
+void Defo2DSplineInterpolationWidget::nxyChanged(double v)
+{
+  interpolationModel_->setNXY(v);
+}
+
 void Defo2DSplineInterpolationWidget::dXChanged(double v)
 {
   interpolationModel_->setDX(v);
@@ -102,6 +117,7 @@ void Defo2DSplineInterpolationWidget::parametersChanged()
   kXSpinBox_->setValue(interpolationModel_->getKX());
   kYSpinBox_->setValue(interpolationModel_->getKY());
   smoothingSpinBox_->setValue(interpolationModel_->getSmoothing());
+  nxySpinBox_->setValue(interpolationModel_->getNXY());
   dXSpinBox_->setValue(interpolationModel_->getDX());
   dYSpinBox_->setValue(interpolationModel_->getDY());
 }
