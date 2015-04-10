@@ -35,7 +35,7 @@ protected:
   int kX_;
   int kY_;
   double smoothing_;
-  double nxy_
+  double nxy_;
 
   double dX_;
   double dY_;
