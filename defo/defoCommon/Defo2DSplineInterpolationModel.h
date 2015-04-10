@@ -12,6 +12,7 @@ public:
   void setKX(int v);
   void setKY(int v);
   void setSmoothing(double v);
+  void setNXY(double v);
 
   void setDX(int v);
   void setDY(int v);
@@ -19,6 +20,8 @@ public:
   int getKX() const { return kX_; }
   int getKY() const { return kY_; }
   double getSmoothing() const { return smoothing_; }
+  double getNXY() const { return nxy_; }
+
   int getDX() const { return dX_; }
   int getDY() const { return dY_; }
 
@@ -29,9 +32,10 @@ public slots:
 
 protected:
 
-  double kX_;
-  double kY_;
+  int kX_;
+  int kY_;
   double smoothing_;
+  double nxy_;
 
   double dX_;
   double dY_;

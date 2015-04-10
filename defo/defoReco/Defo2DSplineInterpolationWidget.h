@@ -21,6 +21,7 @@ protected:
   QSpinBox * kXSpinBox_;
   QSpinBox * kYSpinBox_;
   QDoubleSpinBox * smoothingSpinBox_;
+  QDoubleSpinBox * nxySpinBox_;
   QDoubleSpinBox * dXSpinBox_;
   QDoubleSpinBox * dYSpinBox_;
 
@@ -29,6 +30,7 @@ protected:
   void kXChanged(int);
   void kYChanged(int);
   void smoothingChanged(double);
+  void nxyChanged(double);
   void dXChanged(double);
   void dYChanged(double);
   void parametersChanged();

@@ -12,9 +12,10 @@
 Defo2DSplineInterpolationModel::Defo2DSplineInterpolationModel(QObject *parent)
 : QObject(parent)
 {
-  kX_ = ApplicationConfig::instance()->getValue<int>("KX", 3);
-  kY_ = ApplicationConfig::instance()->getValue<int>("KY", 3);
-  smoothing_ = ApplicationConfig::instance()->getValue<double>("SMOOTHING", 1.0);
+  kX_ = ApplicationConfig::instance()->getValue<int>("KX", 2);
+  kY_ = ApplicationConfig::instance()->getValue<int>("KY", 2);
+  smoothing_ = ApplicationConfig::instance()->getValue<double>("SMOOTHING", 0.0);
+  nxy_ = ApplicationConfig::instance()->getValue<double>("NXY", 0.75);
   dX_ = ApplicationConfig::instance()->getValue<int>("DX", 5.0);
   dY_ = ApplicationConfig::instance()->getValue<int>("DY", 5.0);
 }
@@ -42,6 +43,15 @@ void Defo2DSplineInterpolationModel::setSmoothing(double v) {
   smoothing_ = v;
   if (valueChanged) {
     ApplicationConfig::instance()->setValue<double>("SMOOTHING", smoothing_);
+    emit interpolationParametersChanged();
+  }
+}
+
+void Defo2DSplineInterpolationModel::setNXY(double v) {
+  bool valueChanged = !(v==nxy_);
+  nxy_ = v;
+  if (valueChanged) {
+    ApplicationConfig::instance()->setValue<double>("NXY", nxy_);
     emit interpolationParametersChanged();
   }
 }
@@ -79,6 +89,7 @@ void Defo2DSplineInterpolationModel::write(const QString& filename)
   stream.writeAttribute("kx", QString().setNum(kX_));
   stream.writeAttribute("ky", QString().setNum(kY_));
   stream.writeAttribute("s", QString().setNum(smoothing_, 'e', 6));
+  stream.writeAttribute("nxy", QString().setNum(nxy_, 'e', 6));
   stream.writeAttribute("dx", QString().setNum(dX_));
   stream.writeAttribute("dy", QString().setNum(dY_));
 
@@ -102,6 +113,7 @@ void Defo2DSplineInterpolationModel::read(const QString& filename)
       kX_ = stream.attributes().value("kx").toString().toInt();
       kY_ = stream.attributes().value("ky").toString().toInt();
       smoothing_ = stream.attributes().value("s").toString().toDouble();
+      nxy_ = stream.attributes().value("nxy").toString().toDouble();
       dX_ = stream.attributes().value("dx").toString().toInt();
       dY_ = stream.attributes().value("dy").toString().toInt();
      }
