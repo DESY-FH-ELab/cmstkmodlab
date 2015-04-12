@@ -24,10 +24,17 @@ MicroMainWindow::MicroMainWindow(QWidget *parent) :
     // ARDUINO PRES MODEL
     arduinoPresModel_ = new ArduinoPresModel(config->getValue<std::string>("ArduinoPresDevice").c_str(),
                                              2, this);
-    
+
+    // CoriFlow MODEL
+    coriModel_ = new CoriFlowModel(config->getValue<std::string>("CoriFlowDevice").c_str(),
+                                             2, this);
+
+                                         
     daqModel_ = new MicroDAQModel(iotaModel_,
                                   arduinoPresModel_,
+                                  coriModel_,
                                   this);
+
 
     // SCRIPT MODEL
     scriptModel_ = new MicroScriptModel(daqModel_,
@@ -66,6 +73,11 @@ MicroMainWindow::MicroMainWindow(QWidget *parent) :
     ArduinoPresWidget* arduinoPresWidget = new ArduinoPresWidget(arduinoPresModel_, widget);
     arduinoPresWidget->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);
     wlayout->addWidget(arduinoPresWidget);
+
+    // CORI MODEL
+    CoriFlowWidget* coriWidget = new CoriFlowWidget(coriModel_, widget);
+    coriWidget->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);
+    wlayout->addWidget(coriWidget);
 
     tabWidget_->addTab(widget, "Microchannel");
 

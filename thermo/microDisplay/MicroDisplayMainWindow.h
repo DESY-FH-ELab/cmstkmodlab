@@ -37,10 +37,18 @@ protected:
     MicroDAQDisplayPlotItem* arduinoAPlot_;
     MicroDAQValueVector<double> arduinoB_;
     MicroDAQDisplayPlotItem* arduinoBPlot_;
+    MicroDAQValueVector<double> arduinoFlow_;
+    MicroDAQDisplayPlotItem* arduinoFlowPlot_;
     MicroDAQValueVector<double> iotaActPressure_;
     MicroDAQDisplayPlotItem* iotaActPressurePlot_;
     MicroDAQValueVector<double> iotaSetPressure_;
     MicroDAQDisplayPlotItem* iotaSetPressurePlot_;
+    MicroDAQValueVector<double> coriTemp_;
+    MicroDAQDisplayPlotItem* coriTempPlot_;
+    MicroDAQValueVector<double> coriPres_;
+    MicroDAQDisplayPlotItem* coriPresPlot_;
+    MicroDAQValueVector<double> coriMeasure_;
+    MicroDAQDisplayPlotItem* coriMeasurePlot_;
 
     MicroDAQMicroPressureDisplayWidget* microPressureDisplay_;
 };

@@ -12,6 +12,7 @@
 
 #include "IotaModel.h"
 #include "ArduinoPresModel.h"
+#include "CoriFlowModel.h"
 
 template <typename value_type> class MicroDAQValueVector : public QVector<double>
 {
@@ -56,6 +57,7 @@ class MicroDAQModel : public QObject
 public:
     explicit MicroDAQModel(IotaModel* iotaModel,
                            ArduinoPresModel* arduinoPresModel,
+                           CoriFlowModel* coriModel,
                            QObject *parent = 0);
 
     QDateTime& currentTime();
@@ -76,6 +78,7 @@ protected slots:
 
     void iotaInfoChanged();
     void arduinoPresInfoChanged();
+    void coriInfoChanged();
 
     void clearHistory();
 
@@ -85,6 +88,7 @@ protected:
 
     IotaModel* iotaModel_;
     ArduinoPresModel* arduinoPresModel_;
+    CoriFlowModel* coriModel_;
 
     QMutex mutex_;
 
@@ -106,6 +110,12 @@ protected:
     // ARDUINO PRES DATA
     float arduinoPressureA_;
     float arduinoPressureB_;
+    float arduinoFlow_;
+
+    // CoriFlow DATA
+    float coriTemp_;
+    float coriPres_;
+    float coriMeasure_;
 
 signals:
 

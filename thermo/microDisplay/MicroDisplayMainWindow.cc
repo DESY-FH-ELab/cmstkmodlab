@@ -52,6 +52,29 @@ MicroDisplayMainWindow::MicroDisplayMainWindow(QWidget *parent) :
     arduinoBPlot_->setSymbol(new QwtSymbol(QwtSymbol::Cross, Qt::NoBrush,
 					   QPen(Qt::cyan), QSize(5,5)));
     arduinoBPlot_->attachToPlot(microPressureDisplay_);
+    arduinoFlowPlot_ = new MicroDAQDisplayPlotItem(QwtText("arduino Flow"), &arduinoFlow_);
+    arduinoFlowPlot_->setPen(Qt::cyan, 2);
+    arduinoFlowPlot_->setStyle(QwtPlotCurve::Lines);
+    arduinoFlowPlot_->setSymbol(new QwtSymbol(QwtSymbol::Cross, Qt::NoBrush,
+                       QPen(Qt::cyan), QSize(5,5)));
+    arduinoFlowPlot_->attachToPlot(microPressureDisplay_);
+
+    coriTempPlot_ = new MicroDAQDisplayPlotItem(QwtText("cori temp"), &coriTemp_);
+    coriTempPlot_->setPen(Qt::blue, 2);
+    coriTempPlot_->setStyle(QwtPlotCurve::Lines);
+    coriTempPlot_->setSymbol(new QwtSymbol(QwtSymbol::Cross, Qt::NoBrush,
+                                            QPen(Qt::green), QSize(5,5)));
+    coriPresPlot_ = new MicroDAQDisplayPlotItem(QwtText("cori pres"), &coriPres_);
+    coriPresPlot_->setPen(Qt::blue, 2);
+    coriPresPlot_->setStyle(QwtPlotCurve::Lines);
+    coriPresPlot_->setSymbol(new QwtSymbol(QwtSymbol::Cross, Qt::NoBrush,
+                                            QPen(Qt::green), QSize(5,5)));
+    coriMeasurePlot_ = new MicroDAQDisplayPlotItem(QwtText("cori flow"), &coriMeasure_);
+    coriMeasurePlot_->setPen(Qt::blue, 2);
+    coriMeasurePlot_->setStyle(QwtPlotCurve::Lines);
+    coriMeasurePlot_->setSymbol(new QwtSymbol(QwtSymbol::Cross, Qt::NoBrush,
+                                            QPen(Qt::green), QSize(5,5)));
+                                            
     iotaActPressurePlot_ = new MicroDAQDisplayPlotItem(QwtText("iota measured"), &iotaActPressure_);
     iotaActPressurePlot_->setPen(Qt::red, 2);
     iotaActPressurePlot_->setStyle(QwtPlotCurve::Lines);
@@ -95,8 +118,12 @@ void MicroDisplayMainWindow::clearData()
 {
     arduinoA_.clearData();
     arduinoB_.clearData();
+    arduinoFlow_.clearData();
     iotaActPressure_.clearData();
     iotaSetPressure_.clearData();
+    coriTemp_.clearData();
+    coriPres_.clearData();
+    coriMeasure_.clearData();
 }
 
 void MicroDisplayMainWindow::requestData()
@@ -113,6 +140,10 @@ void MicroDisplayMainWindow::updateInfo()
 
     if (arduinoA_.push(m.dt, m.arduinoPressureA)) arduinoAPlot_->refresh();
     if (arduinoB_.push(m.dt, m.arduinoPressureB)) arduinoBPlot_->refresh();
+    if (arduinoFlow_.push(m.dt, m.arduinoFlow)) arduinoFlowPlot_->refresh();
+    if (coriTemp_.push(m.dt, m.coriTemp)) coriTempPlot_->refresh();
+    if (coriPres_.push(m.dt, m.coriPres)) coriPresPlot_->refresh();
+    if (coriMeasure_.push(m.dt, m.coriMeasure)) coriMeasurePlot_->refresh();
     if (iotaActPressure_.push(m.dt, m.iotaActPressure)) iotaActPressurePlot_->refresh();
     if (iotaSetPressure_.push(m.dt, m.iotaSetPressure)) iotaSetPressurePlot_->refresh();
     microPressureDisplay_->replot();
