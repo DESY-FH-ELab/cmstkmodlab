@@ -15,7 +15,8 @@ ArduinoPresModel::ArduinoPresModel(const char* port,
     // controller_(NULL),
     updateInterval_(updateInterval),
     PressureA_(0),
-    PressureB_(0)
+    PressureB_(0),
+    Flow_(0)
 {
   timer_ = new QTimer(this);
   timer_->setInterval(updateInterval_ * 1000);
@@ -31,6 +32,10 @@ float ArduinoPresModel::getPressureA() const {
 
 float ArduinoPresModel::getPressureB() const {
   return PressureB_;
+}
+
+float ArduinoPresModel::getFlow() const {
+  return Flow_;
 }
 
 /**
@@ -91,12 +96,15 @@ void ArduinoPresModel::updateInformation() {
 
     float newGetPressureA = controller_->GetPressureA();
     float newGetPressureB = controller_->GetPressureB();
+    float newGetFlow = controller_->GetFlow();
 
     if (newGetPressureA != PressureA_ ||
-        newGetPressureB != PressureB_) {
+        newGetPressureB != PressureB_ ||
+        newGetFlow != Flow_) {
 
       PressureA_ = newGetPressureA;
       PressureB_ = newGetPressureB;
+      Flow_ = newGetFlow;
 
       emit informationChanged();
     }

@@ -31,6 +31,7 @@ public:
 
   float getPressureA() const;
   float getPressureB() const;
+  float getFlow() const;
 
   public slots:
 
@@ -54,6 +55,7 @@ public:
 
   float PressureA_;
   float PressureB_;
+  float Flow_;
 
   protected slots:
 
