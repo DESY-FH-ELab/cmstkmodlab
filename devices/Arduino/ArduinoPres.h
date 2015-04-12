@@ -15,6 +15,7 @@ class ArduinoPres : public VArduinoPres
   bool IsCommunication( void ) const;
   float GetPressureA( void ) const; //a
   float GetPressureB( void ) const; //b
+  float GetFlow( void ) const; //c
 
  private:
 

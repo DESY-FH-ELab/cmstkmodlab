@@ -19,6 +19,7 @@ ArduinoPresFake::ArduinoPresFake( const ioport_t ioPort )
 {
   pressureA_ = 435;
   pressureB_ = 168;
+  flow_ = 205;
 }
 
 ///
@@ -52,7 +53,7 @@ float ArduinoPresFake::GetPressureA( void ) const
 ///
 float ArduinoPresFake::GetPressureB( void ) const
 {
-  std::cout << " [ArduinoPresFake::GetPressureA] -- FAKE: Returning p(b) = "
+  std::cout << " [ArduinoPresFake::GetPressureB] -- FAKE: Returning p(b) = "
             << pressureB_ << std::endl;
 
   usleep( 10000 );
@@ -71,6 +72,32 @@ float ArduinoPresFake::GetPressureB( void ) const
 
   int value = std::atoi(buf.c_str());
   return ToPressure(value);
+}
+
+///
+///
+///
+float ArduinoPresFake::GetFlow( void ) const
+{
+  std::cout << " [ArduinoPresFake::GetFlow] -- FAKE: Returning f(c) = "
+            << flow_ << std::endl;
+
+  usleep( 10000 );
+
+  std::ostringstream oss;
+  oss << "PC,";
+  oss << flow_;
+  std::string buf = oss.str();
+
+  if (buf.substr(0, buf.find(','))!="PC") {
+    std::cerr << " [ArduinoPres::GetFlow] ** ERROR: Device communication problem. "
+              << buf << std::endl;
+    throw;
+  }
+  buf = buf.substr(buf.find(',')+1);
+
+  int value = std::atoi(buf.c_str());
+  return ToFlow(value);
 }
 
 ///

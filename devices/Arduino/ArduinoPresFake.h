@@ -12,11 +12,13 @@ class ArduinoPresFake : public VArduinoPres
   bool IsCommunication( void ) const { return true; }
   float GetPressureA( void ) const;
   float GetPressureB( void ) const;
+  float GetFlow( void ) const;
  
  private:
 
   mutable float pressureA_; 
   mutable float pressureB_;
+  mutable float flow_;
   void Device_Init( void );
 };
 
