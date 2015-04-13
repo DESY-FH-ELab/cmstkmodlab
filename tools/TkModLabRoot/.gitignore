@@ -2,3 +2,5 @@
 TkModLabRootDict*
 *.d
 libTkModLabRoot.*
+
+*.png
