@@ -46,12 +46,14 @@ Defo2DSplineInterpolationWidget::Defo2DSplineInterpolationWidget(Defo2DSplineInt
   connect(smoothingSpinBox_, SIGNAL(valueChanged(double)),
           this, SLOT(smoothingChanged(double)));
 
+  grid->addWidget(new QWidget(this), 0, 3);
+
   nxySpinBox_ = new QDoubleSpinBox(this);
   nxySpinBox_->setPrefix("nxy = ");
   nxySpinBox_->setRange(0.5, 1.5);
   nxySpinBox_->setDecimals(2);
   nxySpinBox_->setSingleStep(0.05);
-  grid->addWidget(nxySpinBox_, 0, 3);
+  grid->addWidget(nxySpinBox_, 0, 4);
   nxySpinBox_->setValue(interpolationModel_->getNXY());
   connect(nxySpinBox_, SIGNAL(valueChanged(double)),
           this, SLOT(nxyChanged(double)));
