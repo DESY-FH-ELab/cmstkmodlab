@@ -28,36 +28,20 @@ DefoCameraWidget::DefoCameraWidget(
   buttons_->setLayout(buttonLayout);
 
   enableCheckBox_ = new QCheckBox("Enable camera", this);
-  connect(
-          enableCheckBox_
-        , SIGNAL(toggled(bool))
-        , cameraModel_
-        , SLOT(setDeviceEnabled(bool))
-  );
+  connect(enableCheckBox_, SIGNAL(toggled(bool)),
+	  cameraModel_, SLOT(setDeviceEnabled(bool)));
   // TODO connect camera model state change
   enableCheckBox_->setChecked(cameraModel_->getDeviceState() == READY);
   buttonLayout->addWidget(enableCheckBox_, 0, 5);
+  
+  connect(cameraModel_, SIGNAL(deviceStateChanged(State)),
+	  this, SLOT(deviceStateChanged(State)));
 
-  connect(
-        cameraModel_
-      , SIGNAL(deviceStateChanged(State))
-      , this
-      , SLOT(deviceStateChanged(State))
-  );
-
-  connect(
-        cameraModel_
-      , SIGNAL(controlStateChanged(bool))
-      , this
-      , SLOT(controlStateChanged(bool))
-  );
-
-  connect(
-        cameraModel_
-      , SIGNAL(liveViewModeChanged(bool))
-      , this
-      , SLOT(liveViewModeChanged(bool))
-  );
+  connect(cameraModel_, SIGNAL(controlStateChanged(bool)),
+	  this, SLOT(controlStateChanged(bool)));
+  
+  connect(cameraModel_, SIGNAL(liveViewModeChanged(bool)),
+	  this, SLOT(liveViewModeChanged(bool)));
 
   // Taking a preview picture
   previewButton_ = new QPushButton("&Take preview", buttons_);
@@ -67,14 +51,11 @@ DefoCameraWidget::DefoCameraWidget(
 //  connect(saveFileButton, SIGNAL(clicked()), this, SLOT(saveButtonClicked()));
 //  buttonLayout->addWidget(saveFileButton, 0, 2);
 
-  connect(
-          previewButton_
-        , SIGNAL(clicked())
-        , this
-        , SLOT(previewButtonClicked())
-  );
+  connect(previewButton_, SIGNAL(clicked()),
+	  this, SLOT(previewButtonClicked()));
 
   imageCountSpinBox_ = new QSpinBox(buttons_);
+  imageCountSpinBox_->setPrefix("n = ");
   imageCountSpinBox_->setRange(1, 5);
   buttonLayout->addWidget(imageCountSpinBox_, 0, 2);
 
@@ -82,20 +63,13 @@ DefoCameraWidget::DefoCameraWidget(
   pictureButton_ = new QPushButton("&Take picture", buttons_);
   buttonLayout->addWidget(pictureButton_, 0, 3);
 
-  connect(
-          pictureButton_
-        , SIGNAL(clicked())
-        , this
-        , SLOT(pictureButtonClicked())
-  );
+  connect(pictureButton_, SIGNAL(clicked()),
+	  this, SLOT(pictureButtonClicked()));
 
   // Switching into preview mode
   liveviewCheckBox_ = new QCheckBox("Live", this);
-  connect(liveviewCheckBox_
-        , SIGNAL(toggled(bool))
-        , cameraModel_
-        , SLOT(setLiveViewEnabled(bool))
-  );
+  connect(liveviewCheckBox_, SIGNAL(toggled(bool)),
+	  cameraModel_, SLOT(setLiveViewEnabled(bool)));
   buttonLayout->addWidget(liveviewCheckBox_, 0, 4);
 
   commentEditor_ = new DefoImageCommentEdit(this);
@@ -126,38 +100,26 @@ DefoCameraWidget::DefoCameraWidget(
   buttonsCamera_->setLayout(buttonLayout);
 
   // Camera options
-  buttonLayout->addWidget( new QLabel("Aperture", buttonsCamera_), 0, 0 );
-  buttonLayout->addWidget(new DefoCameraOptionComboBox(
-        cameraModel_
-      , DefoCameraModel::APERTURE
-      , this
-  ), 1, 0);
-  buttonLayout->addWidget( new QLabel("ISO", buttonsCamera_), 0, 1 );
-  buttonLayout->addWidget(new DefoCameraOptionComboBox(
-        cameraModel_
-      , DefoCameraModel::ISO
-      , this
-  ), 1, 1);
-  buttonLayout->addWidget( new QLabel("Shutter speed", buttonsCamera_), 0, 2 );
-  buttonLayout->addWidget(new DefoCameraOptionComboBox(
-        cameraModel_
-      , DefoCameraModel::SHUTTER_SPEED
-      , this
-  ), 1, 2);
-  buttonLayout->addWidget( new QLabel("White balance", buttonsCamera_), 0, 3 );
-  buttonLayout->addWidget(new DefoCameraOptionComboBox(
-        cameraModel_
-      , DefoCameraModel::WHITE_BALANCE
-      , this
-  ), 1, 3);
-
-  buttonLayout->addWidget(
-        new DefoMeasurementListComboBox(listModel_, selectionModel_, this)
-      , 2
-      , 0
-      , 1
-      , 4
-  );
+  buttonLayout->addWidget(new QLabel("Aperture", buttonsCamera_), 0, 0);
+  buttonLayout->addWidget(new DefoCameraOptionComboBox(cameraModel_,
+						       DefoCameraModel::APERTURE,
+						       this), 1, 0);
+  buttonLayout->addWidget(new QLabel("ISO", buttonsCamera_), 0, 1);
+  buttonLayout->addWidget(new DefoCameraOptionComboBox(cameraModel_,
+						       DefoCameraModel::ISO,
+						       this), 1, 1);
+  buttonLayout->addWidget(new QLabel("Shutter speed", buttonsCamera_), 0, 2);
+  buttonLayout->addWidget(new DefoCameraOptionComboBox(cameraModel_,
+						       DefoCameraModel::SHUTTER_SPEED,
+						       this), 1, 2);
+  buttonLayout->addWidget(new QLabel("White balance", buttonsCamera_), 0, 3);
+  buttonLayout->addWidget(new DefoCameraOptionComboBox(cameraModel_,
+						       DefoCameraModel::WHITE_BALANCE,
+						       this), 1, 3);
+  buttonLayout->addWidget(new DefoMeasurementListComboBox(listModel_,
+							  selectionModel_,
+							  this),
+			  2, 0, 1, 4);
 
   frameLayout->addWidget(buttonsCamera_);
 
@@ -183,16 +145,16 @@ DefoCameraWidget::DefoCameraWidget(
   
 }
 
-void DefoCameraWidget::deviceStateChanged(State newState) {
-
+void DefoCameraWidget::deviceStateChanged(State newState)
+{
   enableCheckBox_->setChecked( newState == INITIALIZING || newState == READY );
   previewButton_->setEnabled( newState == READY );
   pictureButton_->setEnabled( newState == READY );
   liveviewCheckBox_->setEnabled( newState == READY );
 }
 
-void DefoCameraWidget::controlStateChanged(bool enabled) {
-
+void DefoCameraWidget::controlStateChanged(bool enabled)
+{
   if (enabled) {
     enableCheckBox_->setEnabled(true);
     deviceStateChanged(cameraModel_->getDeviceState());
@@ -204,8 +166,8 @@ void DefoCameraWidget::controlStateChanged(bool enabled) {
   }
 }
 
-void DefoCameraWidget::liveViewModeChanged( bool enabled ) {
-
+void DefoCameraWidget::liveViewModeChanged(bool enabled)
+{
   if (enabled) {
     imageStack_->setCurrentWidget(liveImageFrame_);
 
@@ -222,8 +184,8 @@ void DefoCameraWidget::liveViewModeChanged( bool enabled ) {
   }
 }
 
-void DefoCameraWidget::previewButtonClicked() {
-
+void DefoCameraWidget::previewButtonClicked()
+{
   cameraModel_->acquirePicture(false);
 }
 
