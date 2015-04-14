@@ -267,13 +267,17 @@ DefoRecoMainWindow::DefoRecoMainWindow(QWidget *parent) :
 
   vbox = new QVBoxLayout();
   QWidget * recoWidget = new QWidget(tabWidget_);
-  //recoWidget->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);
   recoWidget->setLayout(vbox);
 
   DefoReconstructionWidget *recoControllerWidget = new DefoReconstructionWidget(reconstructionModel_,
                                                                                 recoWidget);
   vbox->addWidget(recoControllerWidget);
 
+  DefoGeometryWidget *geometryWidget = new DefoGeometryWidget(geometryModel_,
+                                                              recoWidget);
+  vbox->addWidget(geometryWidget);
+
+  /*
   hbox = new QHBoxLayout();
   hbox->setContentsMargins(0, 0, 0, 0);
   QWidget * parameterWidget = new QWidget(recoWidget);
@@ -290,10 +294,10 @@ DefoRecoMainWindow::DefoRecoMainWindow(QWidget *parent) :
   hbox->addWidget(recoParameter);
 
   vbox->addWidget(parameterWidget);
+  */
 
   QTabWidget * parameterTabs = new QTabWidget(recoWidget);
-  parameterTabs->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Minimum);
-  //parameterTabs->setMaximumHeight(60);
+  parameterTabs->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Minimum);
 
   DefoGeometryParameterWidget *geometryParameterWidget = new DefoGeometryParameterWidget(geometryModel_,
 											 parameterTabs);

@@ -17,17 +17,11 @@ DefoGeometryParameterWidget::DefoGeometryParameterWidget(DefoGeometryModel* geom
  : QWidget(parent),
    geometryModel_(geometryModel)
 {
-  QBoxLayout *layout = new QVBoxLayout();
-  layout->setContentsMargins(3, 3, 3, 3);
-  setLayout(layout);
-
   QGridLayout *grid = new QGridLayout();
-  grid->setContentsMargins(0, 0, 0, 0);
-  QWidget * inputs = new QWidget(this);
-  inputs->setLayout(grid);
-  layout->addWidget(inputs);
+  grid->setContentsMargins(3, 3, 3, 3);
+  setLayout(grid);
 
-  angle1SpinBox_ = new QDoubleSpinBox(inputs);
+  angle1SpinBox_ = new QDoubleSpinBox(this);
   angle1SpinBox_->setPrefix("a1 = ");
   angle1SpinBox_->setSuffix(" deg");
   angle1SpinBox_->setRange(10.0, 45.0);
@@ -38,7 +32,7 @@ DefoGeometryParameterWidget::DefoGeometryParameterWidget(DefoGeometryModel* geom
   connect(angle1SpinBox_, SIGNAL(valueChanged(double)),
           this, SLOT(angle1Changed(double)));
 
-  angle2SpinBox_ = new QDoubleSpinBox(inputs);
+  angle2SpinBox_ = new QDoubleSpinBox(this);
   angle2SpinBox_->setPrefix("a2 = ");
   angle2SpinBox_->setSuffix(" deg");
   angle2SpinBox_->setRange(10.0, 45.0);
@@ -49,7 +43,7 @@ DefoGeometryParameterWidget::DefoGeometryParameterWidget(DefoGeometryModel* geom
   connect(angle2SpinBox_, SIGNAL(valueChanged(double)),
           this, SLOT(angle2Changed(double)));
 
-  angle3SpinBox_ = new QDoubleSpinBox(inputs);
+  angle3SpinBox_ = new QDoubleSpinBox(this);
   angle3SpinBox_->setPrefix("a3 = ");
   angle3SpinBox_->setSuffix(" deg");
   angle3SpinBox_->setRange(-10.0, 10.0);
@@ -60,7 +54,7 @@ DefoGeometryParameterWidget::DefoGeometryParameterWidget(DefoGeometryModel* geom
   connect(angle3SpinBox_, SIGNAL(valueChanged(double)),
           this, SLOT(angle3Changed(double)));
 
-  distanceSpinBox_ = new QDoubleSpinBox(inputs);
+  distanceSpinBox_ = new QDoubleSpinBox(this);
   distanceSpinBox_->setPrefix("d = ");
   distanceSpinBox_->setSuffix(" mm");
   distanceSpinBox_->setRange(100.0, 999.0);
@@ -71,7 +65,7 @@ DefoGeometryParameterWidget::DefoGeometryParameterWidget(DefoGeometryModel* geom
   connect(distanceSpinBox_, SIGNAL(valueChanged(double)),
           this, SLOT(distanceChanged(double)));
 
-  height1SpinBox_ = new QDoubleSpinBox(inputs);
+  height1SpinBox_ = new QDoubleSpinBox(this);
   height1SpinBox_->setPrefix("h1 = ");
   height1SpinBox_->setSuffix(" mm");
   height1SpinBox_->setRange(1000.0, 2000.0);
@@ -82,7 +76,7 @@ DefoGeometryParameterWidget::DefoGeometryParameterWidget(DefoGeometryModel* geom
   connect(height1SpinBox_, SIGNAL(valueChanged(double)),
           this, SLOT(height1Changed(double)));
 
-  height2SpinBox_ = new QDoubleSpinBox(inputs);
+  height2SpinBox_ = new QDoubleSpinBox(this);
   height2SpinBox_->setPrefix("h2 = ");
   height2SpinBox_->setSuffix(" mm");
   height2SpinBox_->setRange(0.0, 500.0);
@@ -92,9 +86,6 @@ DefoGeometryParameterWidget::DefoGeometryParameterWidget(DefoGeometryModel* geom
   height2SpinBox_->setValue(geometryModel_->getHeight2());
   connect(height2SpinBox_, SIGNAL(valueChanged(double)),
           this, SLOT(height2Changed(double)));
-
-  //grid->addWidget(new QWidget(inputs), 1, 3);
-  //grid->addWidget(new QWidget(inputs), 1, 4);
 
   connect(geometryModel_, SIGNAL(geometryChanged()),
           this, SLOT(geometryChanged()));

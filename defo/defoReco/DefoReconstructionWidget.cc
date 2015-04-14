@@ -8,11 +8,8 @@ DefoReconstructionWidget::DefoReconstructionWidget(DefoReconstructionModel* reco
   : QWidget(parent),
     reconstructionModel_(reconstructionModel)
 {
-  //setMinimumSize(QSize(200, 300));
-
   QBoxLayout *layout = new QHBoxLayout();
   layout->setContentsMargins(0, 0, 0, 0);
-  //setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Minimum);
   setLayout(layout);
 
   QPushButton * reconstructButton = new QPushButton("&Reconstruct", this);
