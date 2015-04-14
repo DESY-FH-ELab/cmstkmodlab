@@ -12,8 +12,8 @@
 Defo2DSplineInterpolationModel::Defo2DSplineInterpolationModel(QObject *parent)
 : QObject(parent)
 {
-  kX_ = ApplicationConfig::instance()->getValue<int>("KX", 2);
-  kY_ = ApplicationConfig::instance()->getValue<int>("KY", 2);
+  kX_ = ApplicationConfig::instance()->getValue<int>("KX", 3);
+  kY_ = ApplicationConfig::instance()->getValue<int>("KY", 3);
   smoothing_ = ApplicationConfig::instance()->getValue<double>("SMOOTHING", 0.0);
   nxy_ = ApplicationConfig::instance()->getValue<double>("NXY", 0.75);
   dX_ = ApplicationConfig::instance()->getValue<int>("DX", 5.0);
