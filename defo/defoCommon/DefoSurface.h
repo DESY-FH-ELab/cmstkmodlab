@@ -60,6 +60,8 @@ class DefoSurface {
   void setPointFields( DefoPointFields const& fields ) { pointFields_ = fields; isPoints_ = true; }
 
   void dumpSplineField(std::string filename) const;
+  void dumpSpline1DFieldX(std::string filename,
+                          double dx);
   void dumpSpline2DField(std::string filename,
                          double dx, double dy);
   void dumpSummary( std::string& filename ) const;
@@ -67,7 +69,7 @@ class DefoSurface {
   void createPointFields( void );
 
   void calibrateZ(double calibZx, double calibZy);
-  void fitSpline2D(int kx, int ky, double s);
+  void fitSpline2D(int kx, int ky, double s, double nxy);
 
  private:
   DefoPointCollection points_;

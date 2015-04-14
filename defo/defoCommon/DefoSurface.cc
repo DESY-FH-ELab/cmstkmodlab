@@ -196,6 +196,102 @@ void DefoSurface::dumpSplineField(std::string filename) const
   }
 }
 
+
+///
+///
+///
+void DefoSurface::dumpSpline1DFieldX(std::string filename, double dx)
+{
+  typedef QHash<DefoSplineXYPair,DefoSplineXYDefoPair>::const_iterator it_t;
+
+  if (filename.length()==0) return;
+
+  int ixmin = defoPointMap_.begin().key().ix_;
+  int ixmax = ixmin;
+  int iymin = defoPointMap_.begin().key().iy_;
+  int iymax = iymin;
+
+  for (it_t it = defoPointMap_.begin();it!=defoPointMap_.end();++it) {
+    ixmin = std::min(ixmin, it.key().ix_);
+    ixmax = std::max(ixmax, it.key().ix_);
+    iymin = std::min(iymin, it.key().iy_);
+    iymax = std::max(iymax, it.key().iy_);
+  }
+
+  double xmin = -1e9;
+  double xmax = 1e9;
+  double ymin = -1e9;
+  double ymax = 1e9;
+
+  for (it_t it = defoPointMap_.begin();it!=defoPointMap_.end();++it) {
+    if (it.key().ix_==ixmin) xmin = std::max(xmin, it.key().x_);
+    if (it.key().ix_==ixmax) xmax = std::min(xmax, it.key().x_);
+    if (it.key().iy_==iymin) ymin = std::max(ymin, it.key().y_);
+    if (it.key().iy_==iymax) ymax = std::min(ymax, it.key().y_);
+  }
+
+  int stepsX = std::ceil((xmax-xmin)/dx);
+
+  double theDX = (xmax-xmin)/stepsX;
+
+  const DefoSplineSetXCollection& splineSets = splineField_.first;
+
+  for (auto splineSet : splineSets) {
+
+    for (auto point : splineSet.getPoints()) {
+
+    }
+
+    break;
+  }
+
+  /*
+  typedef QHash<DefoSplineXYPair,DefoSplineXYDefoPair>::const_iterator it_t;
+
+  if (filename.length()==0) return;
+
+
+  std::vector<double> x, y, zx, zy;
+  std::vector<int> vix, viy;
+
+  int ix = 0, iy = 0;
+  for (int rx=xmin;rx<=xmax;rx+=theDX) {
+    iy = 0;
+    for (int ry=ymin;ry<=ymax;ry+=theDY) {
+      vix.push_back(ix);
+      viy.push_back(iy);
+      x.push_back(rx);
+      y.push_back(ry);
+      zx.push_back(0.0);
+      zy.push_back(0.0);
+      iy++;
+    }
+    ix++;
+  }
+
+  spline2Dx_.evaluate(x, y, zx);
+  spline2Dy_.evaluate(x, y, zy);
+
+  std::ofstream ofile(filename.c_str());
+  std::vector<int>::iterator itix = vix.begin();
+  std::vector<int>::iterator itiy = viy.begin();
+  std::vector<double>::iterator itx = x.begin();
+  std::vector<double>::iterator ity = y.begin();
+  std::vector<double>::iterator itzx = zx.begin();
+  std::vector<double>::iterator itzy = zy.begin();
+
+  for (;itx!=x.end();++itix,++itiy,++itx,++ity,++itzx,++itzy) {
+    ofile << std::setw(8)  << *itix << " "
+          << std::setw(8)  << *itiy  << " "
+      << std::setw(14) << std::scientific << *itx << " "
+          << std::setw(14) << std::scientific << *ity << " "
+          << std::setw(14) << std::scientific << *itzx << "   1 "
+          << std::setw(14) << std::scientific << *itzy << "   1"
+          << std::endl;
+  }
+  */
+}
+
 ///
 ///
 ///
@@ -372,7 +468,7 @@ void DefoSurface::calibrateZ(double calibZx, double calibZy)
   }
 }
 
-void DefoSurface::fitSpline2D(int kx, int ky, double s)
+void DefoSurface::fitSpline2D(int kx, int ky, double s, double nxy)
 {
   typedef QHash<DefoSplineXYPair,DefoSplineXYDefoPair>::const_iterator it_t;
 
@@ -387,6 +483,6 @@ void DefoSurface::fitSpline2D(int kx, int ky, double s)
     }
   }
 
-  spline2Dx_.surfit(x, y, zx, kx, ky, s);
-  spline2Dy_.surfit(x, y, zy, kx, ky, s);
+  spline2Dx_.surfit(x, y, zx, kx, ky, s, nxy);
+  spline2Dy_.surfit(x, y, zy, kx, ky, s, nxy);
 }
