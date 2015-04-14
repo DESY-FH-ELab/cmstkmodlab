@@ -20,7 +20,8 @@ Defo2DSplineInterpolationModel::Defo2DSplineInterpolationModel(QObject *parent)
   dY_ = ApplicationConfig::instance()->getValue<int>("DY", 5.0);
 }
 
-void Defo2DSplineInterpolationModel::setKX(int v) {
+void Defo2DSplineInterpolationModel::setKX(int v) 
+{
   bool valueChanged = !(v==kX_);
   kX_ = v;
   if (valueChanged) {
@@ -38,7 +39,8 @@ void Defo2DSplineInterpolationModel::setKY(int v) {
   }
 }
 
-void Defo2DSplineInterpolationModel::setSmoothing(double v) {
+void Defo2DSplineInterpolationModel::setSmoothing(double v)
+{
   bool valueChanged = !(v==smoothing_);
   smoothing_ = v;
   if (valueChanged) {
@@ -47,7 +49,8 @@ void Defo2DSplineInterpolationModel::setSmoothing(double v) {
   }
 }
 
-void Defo2DSplineInterpolationModel::setNXY(double v) {
+void Defo2DSplineInterpolationModel::setNXY(double v)
+{
   bool valueChanged = !(v==nxy_);
   nxy_ = v;
   if (valueChanged) {
@@ -56,7 +59,8 @@ void Defo2DSplineInterpolationModel::setNXY(double v) {
   }
 }
 
-void Defo2DSplineInterpolationModel::setDX(int v) {
+void Defo2DSplineInterpolationModel::setDX(int v)
+{
   bool valueChanged = !(v==dX_);
   dX_ = v;
   if (valueChanged) {
@@ -65,7 +69,8 @@ void Defo2DSplineInterpolationModel::setDX(int v) {
   }
 }
 
-void Defo2DSplineInterpolationModel::setDY(int v) {
+void Defo2DSplineInterpolationModel::setDY(int v)
+{
   bool valueChanged = !(v==dY_);
   dY_ = v;
   if (valueChanged) {
