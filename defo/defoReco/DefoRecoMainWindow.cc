@@ -95,12 +95,14 @@ DefoRecoMainWindow::DefoRecoMainWindow(QWidget *parent) :
   measurementWidget->setLayout(layout);
 
   QBoxLayout *vbox = new QVBoxLayout();
+  vbox->setContentsMargins(0, 0, 0, 0);
   QWidget * measurementInfoWidget = new QWidget(measurementWidget);
   measurementInfoWidget->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);
   measurementInfoWidget->setLayout(vbox);
   layout->addWidget(measurementInfoWidget);
 
   QBoxLayout *hbox = new QHBoxLayout();
+  hbox->setContentsMargins(0, 0, 0, 0);
   QWidget * measurementButtonWidget = new QWidget(measurementInfoWidget);
   measurementButtonWidget->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);
   measurementButtonWidget->setLayout(hbox);
@@ -157,6 +159,7 @@ DefoRecoMainWindow::DefoRecoMainWindow(QWidget *parent) :
   pointsWidget->setLayout(layout);
 
   vbox = new QVBoxLayout();
+  vbox->setContentsMargins(0, 0, 0, 0);
   QWidget * refPointWidget = new QWidget(pointsWidget);
   refPointWidget->setLayout(vbox);
 
@@ -183,6 +186,7 @@ DefoRecoMainWindow::DefoRecoMainWindow(QWidget *parent) :
   layout->addWidget(refPointWidget);
 
   vbox = new QVBoxLayout();
+  vbox->setContentsMargins(0, 0, 0, 0);
   QWidget * defoPointWidget = new QWidget(pointsWidget);
   defoPointWidget->setLayout(vbox);
   
