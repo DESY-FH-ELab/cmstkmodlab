@@ -93,9 +93,6 @@ DefoGeometryParameterWidget::DefoGeometryParameterWidget(DefoGeometryModel* geom
   connect(height2SpinBox_, SIGNAL(valueChanged(double)),
           this, SLOT(height2Changed(double)));
 
-  //grid->addWidget(new QWidget(inputs), 1, 3);
-  //grid->addWidget(new QWidget(inputs), 1, 4);
-
   connect(geometryModel_, SIGNAL(geometryChanged()),
           this, SLOT(geometryChanged()));
 }
