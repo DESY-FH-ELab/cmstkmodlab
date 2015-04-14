@@ -4,6 +4,7 @@
 #include <QFileDialog>
 #include <QProcess>
 #include <QApplication>
+#include <QTabWidget>
 
 #include "ApplicationConfig.h"
 
@@ -273,17 +274,40 @@ DefoRecoMainWindow::DefoRecoMainWindow(QWidget *parent) :
                                                                                 recoWidget);
   vbox->addWidget(recoControllerWidget);
 
+  hbox = new QHBoxLayout();
+  hbox->setContentsMargins(0, 0, 0, 0);
+  QWidget * parameterWidget = new QWidget(recoWidget);
+  parameterWidget->setLayout(hbox);
+
   DefoGeometryWidget *geometryWidget = new DefoGeometryWidget(geometryModel_,
-                                                              recoWidget);
-  vbox->addWidget(geometryWidget);
+                                                              parameterWidget);
+  hbox->addWidget(geometryWidget);
+
+  DefoReconstructionParameterWidget *recoParameter = new DefoReconstructionParameterWidget(geometryModel_,
+											   calibrationModel_,
+											   interpolationModel_,
+											   parameterWidget);
+  hbox->addWidget(recoParameter);
+
+  vbox->addWidget(parameterWidget);
+
+  QTabWidget * parameterTabs = new QTabWidget(recoWidget);
+  parameterTabs->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Minimum);
+  //parameterTabs->setMaximumHeight(60);
+
+  DefoGeometryParameterWidget *geometryParameterWidget = new DefoGeometryParameterWidget(geometryModel_,
+											 parameterTabs);
+  parameterTabs->addTab(geometryParameterWidget, "Geometry");
 
   DefoCalibrationWidget *calibrationWidget = new DefoCalibrationWidget(calibrationModel_,
-                                                                       recoWidget);
-  vbox->addWidget(calibrationWidget);
+                                                                       parameterTabs);
+  parameterTabs->addTab(calibrationWidget, "Calibration");
 
   Defo2DSplineInterpolationWidget *interpolationWidget = new Defo2DSplineInterpolationWidget(interpolationModel_,
-                                                                                             recoWidget);
-  vbox->addWidget(interpolationWidget);
+                                                                                             parameterTabs);
+  parameterTabs->addTab(interpolationWidget, "Interpolation");
+
+  vbox->addWidget(parameterTabs);
 
   tabWidget_->addTab(recoWidget, "Reconstruction");
 

@@ -60,6 +60,7 @@ HEADERS += DefoRecoMainWindow.h \
            DefoGeometryParameterWidget.h \
            DefoCalibrationWidget.h \
            Defo2DSplineInterpolationWidget.h \
+           DefoReconstructionParameterWidget.h \
            DefoAnalysisWidget.h \
            DefoOfflinePreparationModel.h \
            DefoSurfacePlot.h \
@@ -81,6 +82,7 @@ SOURCES += defoReco.cc \
            DefoGeometryParameterWidget.cc \
            DefoCalibrationWidget.cc \
            Defo2DSplineInterpolationWidget.cc \
+           DefoReconstructionParameterWidget.cc \
            DefoAnalysisWidget.cc \
            DefoOfflinePreparationModel.cc \
            DefoSurfacePlot.cc \

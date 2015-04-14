@@ -31,9 +31,11 @@
 
 #include "DefoReconstructionModel.h"
 #include "DefoReconstructionWidget.h"
+#include "DefoReconstructionParameterWidget.h"
 
 #include "DefoGeometryModel.h"
 #include "DefoGeometryWidget.h"
+#include "DefoGeometryParameterWidget.h"
 
 #include "DefoCalibrationModel.h"
 #include "DefoCalibrationWidget.h"
