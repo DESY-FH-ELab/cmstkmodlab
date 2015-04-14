@@ -20,7 +20,8 @@ DefoMainWindow::DefoMainWindow(QWidget *parent) :
   conradModel_ = new DefoConradModel(this);
 
   // JULABO MODEL
-  julaboModel_ = new DefoJulaboModel(5);
+  julaboModel_ = new DefoJulaboModel(config->getValue<std::string>("JulaboDevice").c_str(),
+				     5, this);
 
   // KEITHLEY MODEL
   keithleyModel_ = new KeithleyModel(config->getValue<std::string>("KeithleyDevice").c_str(),

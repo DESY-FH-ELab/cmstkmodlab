@@ -10,16 +10,18 @@ class NSpline2D
 
   NSpline2D();
 
-  void surfit(const std::vector<double>& x,
-              const std::vector<double>& y,
-              const std::vector<double>& z,
-              const std::vector<double>& w,
-              int kx = 3, int ky = 3, double s = 0);
+  int surfit(const std::vector<double>& x,
+             const std::vector<double>& y,
+             const std::vector<double>& z,
+             const std::vector<double>& w,
+             int kx = 3, int ky = 3, double s = 0,
+             double nxy = 1.0);
 
-  void surfit(const std::vector<double>& x,
-              const std::vector<double>& y,
-              const std::vector<double>& z,
-              int kx = 3, int ky = 3, double s = 0);
+  int surfit(const std::vector<double>& x,
+             const std::vector<double>& y,
+             const std::vector<double>& z,
+             int kx = 3, int ky = 3, double s = 0,
+             double nxy = 1.0);
 
   void regrid(const std::vector<double>& x,
               const std::vector<double>& y,

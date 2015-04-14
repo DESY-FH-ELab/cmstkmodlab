@@ -11,22 +11,25 @@ class TkModLabSpline2D : public TObject
 
   TkModLabSpline2D();
 
-  void Surfit(const std::vector<double>& x,
+  int Surfit(const std::vector<double>& x,
               const std::vector<double>& y,
               const std::vector<double>& z,
               const std::vector<double>& w,
-              int kx = 3, int ky = 3, double s = 0);
+              int kx = 3, int ky = 3, double s = 0,
+              double nxy = 1.0);
 
-  void Surfit(const std::vector<double>& x,
+  int Surfit(const std::vector<double>& x,
               const std::vector<double>& y,
               const std::vector<double>& z,
-              int kx = 3, int ky = 3, double s = 0);
+              int kx = 3, int ky = 3, double s = 0,
+              double nxy = 1.0);
 
-  void Surfit(int n,
+  int Surfit(int n,
               const double *x,
               const double *y,
               const double *z,
-              int kx = 3, int ky = 3, double s = 0);
+              int kx = 3, int ky = 3, double s = 0,
+              double nxy = 1.0);
 
 
   void Regrid(const std::vector<double>& x,
