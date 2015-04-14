@@ -20,12 +20,10 @@ DefoCalibrationWidget::DefoCalibrationWidget(DefoCalibrationModel* calibrationMo
   grid->setContentsMargins(3, 3, 3, 3);
   setLayout(grid);
 
-  grid->addWidget(new QWidget(this), 0, 2);
-
   calibXSpinBox_ = new QDoubleSpinBox(this);
   calibXSpinBox_->setPrefix("cx = ");
   calibXSpinBox_->setRange(0.75, 1.25);
-  calibXSpinBox_->setDecimals(9);
+  calibXSpinBox_->setDecimals(6);
   calibXSpinBox_->setSingleStep(0.001);
   grid->addWidget(calibXSpinBox_, 0, 0);
   calibXSpinBox_->setValue(calibrationModel_->getCalibX());
@@ -35,7 +33,7 @@ DefoCalibrationWidget::DefoCalibrationWidget(DefoCalibrationModel* calibrationMo
   calibYSpinBox_ = new QDoubleSpinBox(this);
   calibYSpinBox_->setPrefix("cy = ");
   calibYSpinBox_->setRange(0.75, 1.25);
-  calibYSpinBox_->setDecimals(9);
+  calibYSpinBox_->setDecimals(6);
   calibYSpinBox_->setSingleStep(0.001);
   grid->addWidget(calibYSpinBox_, 0, 1);
   calibYSpinBox_->setValue(calibrationModel_->getCalibY());
@@ -45,9 +43,9 @@ DefoCalibrationWidget::DefoCalibrationWidget(DefoCalibrationModel* calibrationMo
   calibZxSpinBox_ = new QDoubleSpinBox(this);
   calibZxSpinBox_->setPrefix("czx = ");
   calibZxSpinBox_->setRange(0.75, 1.25);
-  calibZxSpinBox_->setDecimals(9);
+  calibZxSpinBox_->setDecimals(6);
   calibZxSpinBox_->setSingleStep(0.001);
-  grid->addWidget(calibZxSpinBox_, 0, 3);
+  grid->addWidget(calibZxSpinBox_, 0, 2);
   calibZxSpinBox_->setValue(calibrationModel_->getCalibZx());
   connect(calibZxSpinBox_, SIGNAL(valueChanged(double)),
           this, SLOT(calibZxChanged(double)));
@@ -55,12 +53,15 @@ DefoCalibrationWidget::DefoCalibrationWidget(DefoCalibrationModel* calibrationMo
   calibZySpinBox_ = new QDoubleSpinBox(this);
   calibZySpinBox_->setPrefix("czy = ");
   calibZySpinBox_->setRange(0.75, 1.25);
-  calibZySpinBox_->setDecimals(9);
+  calibZySpinBox_->setDecimals(6);
   calibZySpinBox_->setSingleStep(0.001);
-  grid->addWidget(calibZySpinBox_, 0, 4);
+  grid->addWidget(calibZySpinBox_, 0, 3);
   calibZySpinBox_->setValue(calibrationModel_->getCalibZy());
   connect(calibZySpinBox_, SIGNAL(valueChanged(double)),
           this, SLOT(calibZyChanged(double)));
+
+  grid->addWidget(new QWidget(this), 0, 4);
+  grid->addWidget(new QWidget(this), 0, 5);
 
   connect(calibrationModel_, SIGNAL(calibrationChanged()),
           this, SLOT(calibrationChanged()));

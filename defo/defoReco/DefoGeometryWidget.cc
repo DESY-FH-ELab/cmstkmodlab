@@ -98,7 +98,7 @@ DefoGeometryWidget::DefoGeometryWidget(
   distanceSpinBox_->setRange(100.0, 999.0);
   distanceSpinBox_->setDecimals(0);
   distanceSpinBox_->setSingleStep(1.0);
-  grid->addWidget(distanceSpinBox_, 1, 0);
+  grid->addWidget(distanceSpinBox_, 0, 3);
   distanceSpinBox_->setValue(geometryModel_->getDistance());
   connect(distanceSpinBox_, SIGNAL(valueChanged(double)),
           this, SLOT(distanceChanged(double)));
@@ -109,7 +109,7 @@ DefoGeometryWidget::DefoGeometryWidget(
   height1SpinBox_->setRange(1000.0, 2000.0);
   height1SpinBox_->setDecimals(0);
   height1SpinBox_->setSingleStep(1.0);
-  grid->addWidget(height1SpinBox_, 1, 1);
+  grid->addWidget(height1SpinBox_, 0, 4);
   height1SpinBox_->setValue(geometryModel_->getHeight1());
   connect(height1SpinBox_, SIGNAL(valueChanged(double)),
           this, SLOT(height1Changed(double)));
@@ -120,13 +120,13 @@ DefoGeometryWidget::DefoGeometryWidget(
   height2SpinBox_->setRange(0.0, 500.0);
   height2SpinBox_->setDecimals(0);
   height2SpinBox_->setSingleStep(1.0);
-  grid->addWidget(height2SpinBox_, 1, 2);
+  grid->addWidget(height2SpinBox_, 0, 5);
   height2SpinBox_->setValue(geometryModel_->getHeight2());
   connect(height2SpinBox_, SIGNAL(valueChanged(double)),
           this, SLOT(height2Changed(double)));
 
-  grid->addWidget(new QWidget(inputs), 1, 3);
-  grid->addWidget(new QWidget(inputs), 1, 4);
+  //grid->addWidget(new QWidget(inputs), 1, 3);
+  //grid->addWidget(new QWidget(inputs), 1, 4);
 
   connect(geometryModel_,
           SIGNAL(geometryChanged()),
