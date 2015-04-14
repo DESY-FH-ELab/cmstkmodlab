@@ -10,10 +10,8 @@ class DefoReconstructionWidget : public QWidget
 {
     Q_OBJECT
 public:
-  explicit DefoReconstructionWidget(
-      DefoReconstructionModel* reconstructionModel
-    , QWidget *parent = 0
-  );
+    explicit DefoReconstructionWidget(DefoReconstructionModel* reconstructionModel,
+				      QWidget *parent = 0);
 
 protected:
 

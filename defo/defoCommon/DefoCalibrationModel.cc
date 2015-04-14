@@ -14,7 +14,8 @@ DefoCalibrationModel::DefoCalibrationModel(QObject *parent)
 {
   calibX_ = ApplicationConfig::instance()->getValue<double>("CALIBX", 1.0);
   calibY_ = ApplicationConfig::instance()->getValue<double>("CALIBY", 1.0);
-  calibZ_ = ApplicationConfig::instance()->getValue<double>("CALIBZ", 1.0);
+  calibZx_ = ApplicationConfig::instance()->getValue<double>("CALIBZX", 1.0);
+  calibZy_ = ApplicationConfig::instance()->getValue<double>("CALIBZY", 1.0);
 }
 
 void DefoCalibrationModel::setCalibX(double v) {
@@ -35,11 +36,20 @@ void DefoCalibrationModel::setCalibY(double v) {
   }
 }
 
-void DefoCalibrationModel::setCalibZ(double v) {
-  bool valueChanged = !(v==calibZ_);
-  calibZ_ = v;
+void DefoCalibrationModel::setCalibZx(double v) {
+  bool valueChanged = !(v==calibZx_);
+  calibZx_ = v;
   if (valueChanged) {
-    ApplicationConfig::instance()->setValue<double>("CALIBZ", calibZ_);
+    ApplicationConfig::instance()->setValue<double>("CALIBZX", calibZx_);
+    emit calibrationChanged();
+  }
+}
+
+void DefoCalibrationModel::setCalibZy(double v) {
+  bool valueChanged = !(v==calibZy_);
+  calibZy_ = v;
+  if (valueChanged) {
+    ApplicationConfig::instance()->setValue<double>("CALIBZY", calibZy_);
     emit calibrationChanged();
   }
 }
@@ -58,7 +68,8 @@ void DefoCalibrationModel::write(const QString& filename)
 
   stream.writeAttribute("x", QString().setNum(calibX_, 'e', 6));
   stream.writeAttribute("y", QString().setNum(calibY_, 'e', 6));
-  stream.writeAttribute("z", QString().setNum(calibZ_, 'e', 6));
+  stream.writeAttribute("zx", QString().setNum(calibZx_, 'e', 6));
+  stream.writeAttribute("zy", QString().setNum(calibZy_, 'e', 6));
 
   stream.writeEndElement();
 
@@ -79,7 +90,8 @@ void DefoCalibrationModel::read(const QString& filename)
     if (stream.isStartElement() && stream.name()=="DefoCalibration") {
       calibX_ = stream.attributes().value("x").toString().toDouble();
       calibY_ = stream.attributes().value("y").toString().toDouble();
-      calibZ_ = stream.attributes().value("z").toString().toDouble();
+      calibZx_ = stream.attributes().value("zx").toString().toDouble();
+      calibZy_ = stream.attributes().value("zy").toString().toDouble();
     }
   }
 

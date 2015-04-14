@@ -3,6 +3,8 @@
 
 #include <QHash>
 
+#include <nspline2D.h>
+
 #include "DefoSpline.h"
 #include "DefoPoint.h"
 
@@ -58,9 +60,16 @@ class DefoSurface {
   void setPointFields( DefoPointFields const& fields ) { pointFields_ = fields; isPoints_ = true; }
 
   void dumpSplineField(std::string filename) const;
+  void dumpSpline1DFieldX(std::string filename,
+                          double dx);
+  void dumpSpline2DField(std::string filename,
+                         double dx, double dy);
   void dumpSummary( std::string& filename ) const;
 
   void createPointFields( void );
+
+  void calibrateZ(double calibZx, double calibZy);
+  void fitSpline2D(int kx, int ky, double s, double nxy);
 
  private:
   DefoPointCollection points_;
@@ -72,6 +81,9 @@ class DefoSurface {
 
   QHash<DefoSplineXYPair,DefoSplineXYDefoPair> defoPointMap_;
   DefoSurfaceSummary summary_;
+
+  NSpline2D spline2Dx_;
+  NSpline2D spline2Dy_;
 };
 
 #endif

@@ -31,12 +31,17 @@
 
 #include "DefoReconstructionModel.h"
 #include "DefoReconstructionWidget.h"
+#include "DefoReconstructionParameterWidget.h"
 
 #include "DefoGeometryModel.h"
 #include "DefoGeometryWidget.h"
+#include "DefoGeometryParameterWidget.h"
 
 #include "DefoCalibrationModel.h"
 #include "DefoCalibrationWidget.h"
+
+#include "Defo2DSplineInterpolationModel.h"
+#include "Defo2DSplineInterpolationWidget.h"
 
 class DefoRecoMainWindow : public QMainWindow
 {
@@ -72,6 +77,7 @@ protected:
 
   DefoGeometryModel* geometryModel_;
   DefoCalibrationModel* calibrationModel_;
+  Defo2DSplineInterpolationModel* interpolationModel_;
 
   DefoMeasurementPairListModel* measurementPairListModel_;
   DefoMeasurementPairSelectionModel* measurementPairSelectionModel_;

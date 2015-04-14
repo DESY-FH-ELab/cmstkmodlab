@@ -26,8 +26,10 @@ DefoRecoSurface::DefoRecoSurface(QObject *parent)
   focalLength_= ApplicationConfig::instance()->getValue<double>( "LENS_FOCAL_LENGTH" );
   debugLevel_ = ApplicationConfig::instance()->getValue<unsigned int>( "DEBUG_LEVEL" );
 
-  calibX_ = ApplicationConfig::instance()->getValue<double>("CALIBX");
-  calibY_ = ApplicationConfig::instance()->getValue<double>("CALIBY");
+  calibX_ = ApplicationConfig::instance()->getValue<double>("CALIBX", 1.0);
+  calibY_ = ApplicationConfig::instance()->getValue<double>("CALIBY", 1.0);
+  calibZx_ = ApplicationConfig::instance()->getValue<double>("CALIBZX", 1.0);
+  calibZy_ = ApplicationConfig::instance()->getValue<double>("CALIBZY", 1.0);
 
   // to be called after cfg reading
   calculateHelpers();
@@ -92,6 +94,8 @@ const DefoSurface DefoRecoSurface::reconstruct(DefoPointCollection& currentPoint
 
   theSurface.makeSummary();
 
+  theSurface.calibrateZ(calibZx_, calibZy_);
+
   return theSurface;
 }
 
@@ -154,10 +158,8 @@ const DefoSplineField DefoRecoSurface::createZSplines(DefoPointCollection const&
   indexRangeY.second = std::min(indexRangeYref.second, indexRangeY.second);
    */
 
-
   NPoint3D cameraPoint(0., 0., 0.);
   
-
   double n = nominalCameraDistance_;
   double f = focalLength_;
   double gamma = imageScale(f);

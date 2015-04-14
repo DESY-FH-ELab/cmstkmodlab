@@ -15,6 +15,7 @@
 #include "DefoColorSelectionModel.h"
 #include "DefoGeometryModel.h"
 #include "DefoCalibrationModel.h"
+#include "Defo2DSplineInterpolationModel.h"
 #include "DefoRecoSurface.h"
 
 class DefoReconstructionModel : public QObject
@@ -32,6 +33,7 @@ public:
                                    DefoMeasurementPairSelectionModel* pairSelectionModel,
                                    DefoGeometryModel* geometryModel,
                                    DefoCalibrationModel* calibrationModel,
+                                   Defo2DSplineInterpolationModel* interpolationModel,
                                    QObject *parent = 0);
 
   double getAngle() const { return angle_; }
@@ -48,6 +50,7 @@ public slots:
   void defoColorChanged(float hue, float saturation);
   void geometryChanged();
   void calibrationChanged();
+  void interpolationParametersChanged();
 
   void reconstruct();
   void incrementRecoProgress();
@@ -65,6 +68,7 @@ protected:
   DefoMeasurementPairSelectionModel* pairSelectionModel_;
   DefoGeometryModel* geometryModel_;
   DefoCalibrationModel* calibrationModel_;
+  Defo2DSplineInterpolationModel* interpolationModel_;
   float angle_;
   DefoPointCollection refCollection_;
   DefoPointCollection defoCollection_;

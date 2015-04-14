@@ -13,7 +13,6 @@
 
 #include "SingletonApplication.h"
 #include "ApplicationConfig.h"
-#include "ApplicationVersion.h"
 
 #include "ThermoDisplayMainWindow.h"
 #include "ThermoDAQNetworkReader.h"

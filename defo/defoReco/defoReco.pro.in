@@ -21,7 +21,9 @@ DEFINES +=
 LIBS += @qwtlibs@ -lGL -lGLU
 
 QMAKE = @qmake@
-QMAKE_CXXFLAGS += -std=c++0x
+
+QMAKE_CXXFLAGS += -std=c++11
+QMAKE_CXXFLAGS += -DAPPLICATIONVERSIONSTR=\\\"`git describe --dirty --always --tags`\\\"
 
 macx {
   INCLUDEPATH += /opt/local/include
@@ -55,7 +57,10 @@ HEADERS += DefoRecoMainWindow.h \
            DefoReconstructionWidget.h \
            DefoRecoColorHistoWidget.h \
            DefoGeometryWidget.h \
+           DefoGeometryParameterWidget.h \
            DefoCalibrationWidget.h \
+           Defo2DSplineInterpolationWidget.h \
+           DefoReconstructionParameterWidget.h \
            DefoAnalysisWidget.h \
            DefoOfflinePreparationModel.h \
            DefoSurfacePlot.h \
@@ -74,7 +79,10 @@ SOURCES += defoReco.cc \
            DefoReconstructionWidget.cc \
            DefoRecoColorHistoWidget.cc \
            DefoGeometryWidget.cc \
+           DefoGeometryParameterWidget.cc \
            DefoCalibrationWidget.cc \
+           Defo2DSplineInterpolationWidget.cc \
+           DefoReconstructionParameterWidget.cc \
            DefoAnalysisWidget.cc \
            DefoOfflinePreparationModel.cc \
            DefoSurfacePlot.cc \
