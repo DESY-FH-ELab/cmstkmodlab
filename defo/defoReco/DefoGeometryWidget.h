@@ -23,10 +23,8 @@ class DefoGeometryWidget : public QWidget
 {
     Q_OBJECT
 public:
-  explicit DefoGeometryWidget(
-      DefoGeometryModel* geometryModel
-    , QWidget *parent = 0
-  );
+  explicit DefoGeometryWidget(DefoGeometryModel* geometryModel,
+			      QWidget *parent = 0);
 
 protected:
 

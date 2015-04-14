@@ -171,21 +171,13 @@ DefoRecoMainWindow::DefoRecoMainWindow(QWidget *parent) :
                                              refPointModel_,
                                              roiModel_,
                                              refPointWidget);
-  refPointModel_->setThresholdValue(
-              DefoPointRecognitionModel::THRESHOLD_1
-              , ApplicationConfig::instance()->getValue<int>( "STEP1_THRESHOLD" )
-              );
-  refPointModel_->setThresholdValue(
-              DefoPointRecognitionModel::THRESHOLD_2
-              , ApplicationConfig::instance()->getValue<int>( "STEP2_THRESHOLD" )
-              );
-  refPointModel_->setThresholdValue(
-              DefoPointRecognitionModel::THRESHOLD_3
-              , ApplicationConfig::instance()->getValue<int>( "STEP3_THRESHOLD" )
-              );
-  refPointModel_->setHalfSquareWidth(
-              ApplicationConfig::instance()->getValue<int>( "HALF_SQUARE_WIDTH" )
-              );
+  refPointModel_->setThresholdValue(DefoPointRecognitionModel::THRESHOLD_1,
+				    ApplicationConfig::instance()->getValue<int>("STEP1_THRESHOLD"));
+  refPointModel_->setThresholdValue(DefoPointRecognitionModel::THRESHOLD_2,
+				    ApplicationConfig::instance()->getValue<int>("STEP2_THRESHOLD"));
+  refPointModel_->setThresholdValue(DefoPointRecognitionModel::THRESHOLD_3, 
+				    ApplicationConfig::instance()->getValue<int>("STEP3_THRESHOLD"));
+  refPointModel_->setHalfSquareWidth(ApplicationConfig::instance()->getValue<int>("HALF_SQUARE_WIDTH"));
   vbox->addWidget(refPointRecognitionWidget);
 
   layout->addWidget(refPointWidget);
@@ -205,21 +197,13 @@ DefoRecoMainWindow::DefoRecoMainWindow(QWidget *parent) :
                                              defoPointModel_,
                                              roiModel_,
                                              defoPointWidget);
-  defoPointModel_->setThresholdValue(
-              DefoPointRecognitionModel::THRESHOLD_1
-              , ApplicationConfig::instance()->getValue<int>( "STEP1_THRESHOLD" )
-              );
-  defoPointModel_->setThresholdValue(
-              DefoPointRecognitionModel::THRESHOLD_2
-              , ApplicationConfig::instance()->getValue<int>( "STEP2_THRESHOLD" )
-              );
-  defoPointModel_->setThresholdValue(
-              DefoPointRecognitionModel::THRESHOLD_3
-              , ApplicationConfig::instance()->getValue<int>( "STEP3_THRESHOLD" )
-              );
-  defoPointModel_->setHalfSquareWidth(
-              ApplicationConfig::instance()->getValue<int>( "HALF_SQUARE_WIDTH" )
-              );
+  defoPointModel_->setThresholdValue(DefoPointRecognitionModel::THRESHOLD_1,
+				     ApplicationConfig::instance()->getValue<int>("STEP1_THRESHOLD"));
+  defoPointModel_->setThresholdValue(DefoPointRecognitionModel::THRESHOLD_2,
+				     ApplicationConfig::instance()->getValue<int>("STEP2_THRESHOLD"));
+  defoPointModel_->setThresholdValue(DefoPointRecognitionModel::THRESHOLD_3, 
+				     ApplicationConfig::instance()->getValue<int>("STEP3_THRESHOLD"));
+  defoPointModel_->setHalfSquareWidth(ApplicationConfig::instance()->getValue<int>("HALF_SQUARE_WIDTH"));
   vbox->addWidget(defoPointRecognitionWidget);
 
   layout->addWidget(defoPointWidget);

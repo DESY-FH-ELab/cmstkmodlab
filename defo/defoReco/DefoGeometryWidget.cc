@@ -1,6 +1,7 @@
+#include <iostream>
+
 #include <QBoxLayout>
 #include <QGridLayout>
-#include <iostream>
 
 #include <QPushButton>
 #include <QLabel>
@@ -12,22 +13,26 @@
 #include "DefoGeometryWidget.h"
 
 DefoSvgWidget::DefoSvgWidget(QWidget* parent)
-    :QSvgWidget(parent) {
-   setSizePolicy(QSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding));
-   sizePolicy().setHeightForWidth(true);
+  : QSvgWidget(parent)
+{
+  setSizePolicy(QSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding));
+  sizePolicy().setHeightForWidth(true);
 }
 
-int DefoSvgWidget::heightForWidth(int w) const {
+int DefoSvgWidget::heightForWidth(int w) const
+{
   //std::cout << w << "\t" << w*410/530 << std::endl;
   return w*410/530;
 }
 
-int DefoSvgWidget::widthForHeight(int h) const {
+int DefoSvgWidget::widthForHeight(int h) const
+{
   //std::cout << h << "\t" << h*530/410 << std::endl;
   return h*530/410;
 }
 
-void DefoSvgWidget::resizeEvent(QResizeEvent *event) {
+void DefoSvgWidget::resizeEvent(QResizeEvent *event)
+{
   QSize s = event->size();
   //std::cout << s.width() << "\t" << s.height() << std::endl;
   int h = heightForWidth(s.width());
@@ -39,12 +44,10 @@ void DefoSvgWidget::resizeEvent(QResizeEvent *event) {
   }
 }
 
-DefoGeometryWidget::DefoGeometryWidget(
-     DefoGeometryModel* geometryModel
-   , QWidget *parent
-) :
-    QWidget(parent)
-  , geometryModel_(geometryModel)
+DefoGeometryWidget::DefoGeometryWidget(DefoGeometryModel* geometryModel,
+				       QWidget *parent)
+ : QWidget(parent),
+   geometryModel_(geometryModel)
 {
   QBoxLayout *layout = new QVBoxLayout();
   layout->setContentsMargins(3, 3, 3, 3);

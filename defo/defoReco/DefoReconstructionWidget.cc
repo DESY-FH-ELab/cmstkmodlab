@@ -4,8 +4,8 @@
 #include "DefoReconstructionWidget.h"
 
 DefoReconstructionWidget::DefoReconstructionWidget(DefoReconstructionModel* reconstructionModel,
-                                                   QWidget *parent) :
-    QWidget(parent),
+                                                   QWidget *parent)
+  : QWidget(parent),
     reconstructionModel_(reconstructionModel)
 {
   //setMinimumSize(QSize(200, 300));
