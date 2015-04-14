@@ -11,11 +11,13 @@ public:
 
   void setCalibX(double v);
   void setCalibY(double v);
-  void setCalibZ(double v);
+  void setCalibZx(double v);
+  void setCalibZy(double v);
 
   double getCalibX() const { return calibX_; }
   double getCalibY() const { return calibY_; }
-  double getCalibZ() const { return calibZ_; }
+  double getCalibZx() const { return calibZx_; }
+  double getCalibZy() const { return calibZy_; }
 
   void write(const QString& filename);
   void read(const QString& filename);
@@ -26,7 +28,8 @@ protected:
 
   double calibX_;
   double calibY_;
-  double calibZ_;
+  double calibZx_;
+  double calibZy_;
 
 signals:
 

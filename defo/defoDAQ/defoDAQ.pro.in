@@ -20,7 +20,9 @@ INCLUDEPATH += /usr/include/exiv2
 LIBS += @qwtlibs@ -lGL -lGLU
 
 QMAKE = @qmake@
-QMAKE_CXXFLAGS += -std=c++0x
+
+QMAKE_CXXFLAGS += -std=c++11
+QMAKE_CXXFLAGS += -DAPPLICATIONVERSIONSTR=\\\"`git describe --dirty --always --tags`\\\"
 
 macx {
   INCLUDEPATH += /opt/local/include

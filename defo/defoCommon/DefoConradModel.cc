@@ -91,7 +91,7 @@ void DefoConradModel::initialize( void )
 
         // FIXME Redirect to central logger
         //    if( debugLevel_ >= 1 )
-        NQLog("DefoConradModel::initialize()", NQLog::Fatal)
+        NQLog("DefoConradModel::initialize()", NQLog::Message)
             << "connection to conrad via: "
             << port.toStdString() << ".";
 
