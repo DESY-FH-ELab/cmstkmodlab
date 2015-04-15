@@ -286,7 +286,7 @@ void DefoMeasurement::read(const QDir&path)
     return;
 
   QXmlStreamReader stream(&file);
-
+  int nImages = 0;
   while (!stream.atEnd()) {
     stream.readNextStartElement();
 
@@ -297,6 +297,7 @@ void DefoMeasurement::read(const QDir&path)
       if (dt!=getTimeStamp()) {
         // do something
       }
+      nImages = 0;
     }
 
     if (stream.isStartElement() && stream.name()=="Comment") {
@@ -304,7 +305,7 @@ void DefoMeasurement::read(const QDir&path)
     }
 
     if (stream.isStartElement() && stream.name()=="Images") {
-      int nImages = stream.attributes().value("count").toString().toInt();
+      nImages = stream.attributes().value("count").toString().toInt();
 
       QStringList imageLocations;
       for (int i=1;i<=nImages;i++) {
@@ -416,6 +417,14 @@ void DefoMeasurement::read(const QDir&path)
       temperatureSensorStates_[idx] = READY;
       temperatures_[idx] = stream.attributes().value("threshold").toString().toFloat();
     }
+  }
+
+  if (nImages==0) {
+    QStringList imageLocations;
+    QString imageLocation = path.absoluteFilePath("%1.jpg");
+    imageLocation = imageLocation.arg(getTimeStamp().toString("yyyyMMddhhmmss"));
+    imageLocations.append(imageLocation);
+    setImageLocations(imageLocations);
   }
 }
 
