@@ -33,7 +33,7 @@ CoriFlowWidget::CoriFlowWidget(CoriFlowModel* model, QWidget *parent)
   MeasureLCD_ = new QLCDNumber(LCD_SIZE, operationPanel_);
   MeasureLCD_->setSegmentStyle(QLCDNumber::Flat);
   MeasureLCD_->setSmallDecimalPoint(true);
-  operationLayout->addRow(QString::fromUtf8("Flow (g/h)"),
+  operationLayout->addRow(QString::fromUtf8("Flow (g/min)"),
                           MeasureLCD_);
 
 
