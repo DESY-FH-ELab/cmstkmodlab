@@ -87,7 +87,7 @@ float CoriFlow::getMeasure( void ) const {
   comHandler_->ReceiveString( buffer );
   StripBuffer( buffer );
 
-  return ToInt(buffer);
+  return ToInt(buffer)*4000/41942/60;  // capacity(g/h)/range of measure (unipolar)/60(to get from g/h to g/min)
 }
 
 
