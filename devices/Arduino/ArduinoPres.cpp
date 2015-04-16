@@ -20,7 +20,7 @@
 ArduinoPres::ArduinoPres( const ioport_t ioPort )
   : VArduinoPres(ioPort),
     isCommunication_(false),
-    uDelay_(250000)
+    uDelay_(25000)
 {
   comHandler_ = new ArduinoComHandler( ioPort );
   Device_Init();

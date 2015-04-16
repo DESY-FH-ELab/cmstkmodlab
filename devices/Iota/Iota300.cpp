@@ -22,7 +22,7 @@
 ///
 Iota300::Iota300( const ioport_t ioPort )
   : VIota300(ioPort),
-    uDelay_(250000)
+    uDelay_(25000)
 {
   comHandler_ = new Iota300ComHandler( ioPort );
   isCommunication_ = false;

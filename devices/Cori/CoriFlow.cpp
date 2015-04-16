@@ -17,7 +17,7 @@
 ///
 CoriFlow::CoriFlow( const ioport_t ioPort )
   : VCoriFlow(ioPort),
-    uDelay_(250000)
+    uDelay_(25000)
 {
   comHandler_ = new CoriFlowComHandler( ioPort );
   Device_Init();
