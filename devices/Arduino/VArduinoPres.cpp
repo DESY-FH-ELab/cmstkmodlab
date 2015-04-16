@@ -19,9 +19,9 @@ float VArduinoPres::ToPressure(int value) const
 
 float VArduinoPres::ToFlow(int value) const
 {
-  // 5V = 1023 = 50 ml/min
+  // 5V = 1023 = 4000 g/h
 
   if (value>1023) return 50.;
   float ret = value;
-  return 50.*ret/1023.;
+  return 4000*ret/1023./60; //(/60 to get to g/min)
 }
