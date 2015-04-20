@@ -15,7 +15,6 @@ CoriFlowModel::CoriFlowModel(const char* port,
     // controller_(NULL),
     updateInterval_(updateInterval),
     Temp_(0),
-    Pres_(0),
     Measure_(0)
 {
   timer_ = new QTimer(this);
@@ -29,10 +28,6 @@ CoriFlowModel::CoriFlowModel(const char* port,
 
 float CoriFlowModel::getTemp() const {
   return Temp_;
-}
-
-float CoriFlowModel::getPres() const {
-  return Pres_;
 }
 
 float CoriFlowModel::getMeasure() const {
@@ -96,15 +91,12 @@ void CoriFlowModel::updateInformation() {
   if ( state_ == READY ) {
 
     float newGetTemp = controller_->getTemp();
-    float newGetPres = controller_->getPres();
     float newGetMeasure = controller_->getMeasure();
 
     if (newGetTemp != Temp_ ||
-        newGetPres != Pres_ ||
         newGetMeasure != Measure_) {
 
       Temp_ = newGetTemp;
-      Pres_ = newGetPres;
       Measure_ = newGetMeasure;
 
       emit informationChanged();

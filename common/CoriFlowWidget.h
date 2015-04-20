@@ -30,7 +30,6 @@ protected:
   QWidget* operationPanel_;
 
   QLCDNumber* TempLCD_;
-  QLCDNumber* PresLCD_;
   QLCDNumber* MeasureLCD_;
 
   public slots:

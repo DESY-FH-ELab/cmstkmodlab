@@ -24,12 +24,6 @@ CoriFlowWidget::CoriFlowWidget(CoriFlowModel* model, QWidget *parent)
   operationLayout->addRow(QString::fromUtf8("Temperature (C)"),
                           TempLCD_);
 
-  PresLCD_ = new QLCDNumber(LCD_SIZE, operationPanel_);
-  PresLCD_->setSegmentStyle(QLCDNumber::Flat);
-  PresLCD_->setSmallDecimalPoint(true);
-  operationLayout->addRow(QString::fromUtf8("Pressure (mBar)"),
-                          PresLCD_);
-
   MeasureLCD_ = new QLCDNumber(LCD_SIZE, operationPanel_);
   MeasureLCD_->setSegmentStyle(QLCDNumber::Flat);
   MeasureLCD_->setSmallDecimalPoint(true);
@@ -86,9 +80,6 @@ void CoriFlowWidget::updateInfo() {
   char bufferP[10];
   sprintf(bufferP, "%.02f", model_->getTemp());
   TempLCD_->display(bufferP);
-
-  sprintf(bufferP, "%.02f", model_->getPres());
-  PresLCD_->display(bufferP);
 
   sprintf(bufferP, "%.02f", model_->getMeasure());
   MeasureLCD_->display(bufferP);

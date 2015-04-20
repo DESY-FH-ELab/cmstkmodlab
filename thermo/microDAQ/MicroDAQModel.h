@@ -114,7 +114,6 @@ protected:
 
     // CoriFlow DATA
     float coriTemp_;
-    float coriPres_;
     float coriMeasure_;
 
 signals:

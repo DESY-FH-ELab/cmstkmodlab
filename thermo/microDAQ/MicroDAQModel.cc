@@ -28,7 +28,6 @@ MicroDAQModel::MicroDAQModel(IotaModel* iotaModel,
     arduinoPressureB_(0.0),
     arduinoFlow_(0.0),
     coriTemp_(0.0),
-    coriPres_(0.0),
     coriMeasure_(0.0)
 {
     connect(iotaModel_, SIGNAL(informationChanged()),
@@ -92,7 +91,6 @@ void MicroDAQModel::createDAQStatusMessage(QString &buffer)
     xml.writeStartElement("CoriFlow");
     xml.writeAttribute("time", utime.toString(Qt::ISODate));
     xml.writeAttribute("Temp", QString::number(coriTemp_, 'e', 3));
-    xml.writeAttribute("Pres", QString::number(coriPres_, 'e', 3));
     xml.writeAttribute("Flow", QString::number(coriMeasure_, 'e', 3));
     xml.writeEndElement();
 
@@ -226,7 +224,6 @@ void MicroDAQModel::coriInfoChanged()
 
     bool changed = false;
     changed |= updateIfChanged<float>(coriTemp_, coriModel_->getTemp());
-    changed |= updateIfChanged<float>(coriPres_, coriModel_->getPres());
     changed |= updateIfChanged<float>(coriMeasure_, coriModel_->getMeasure());
 
     if (changed) {
@@ -236,7 +233,6 @@ void MicroDAQModel::coriInfoChanged()
         xml.writeStartElement("CoriFlow");
         xml.writeAttribute("time", utime.toString(Qt::ISODate));
         xml.writeAttribute("Temp", QString::number(coriTemp_, 'e', 3));
-        xml.writeAttribute("Pres", QString::number(coriPres_, 'e', 3));
         xml.writeAttribute("Flow", QString::number(coriMeasure_, 'e', 3));
         xml.writeEndElement();
 

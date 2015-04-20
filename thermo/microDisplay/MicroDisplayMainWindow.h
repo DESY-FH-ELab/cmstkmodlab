@@ -45,8 +45,6 @@ protected:
     MicroDAQDisplayPlotItem* iotaSetPressurePlot_;
     MicroDAQValueVector<double> coriTemp_;
     MicroDAQDisplayPlotItem* coriTempPlot_;
-    MicroDAQValueVector<double> coriPres_;
-    MicroDAQDisplayPlotItem* coriPresPlot_;
     MicroDAQValueVector<double> coriMeasure_;
     MicroDAQDisplayPlotItem* coriMeasurePlot_;
 

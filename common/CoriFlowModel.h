@@ -30,7 +30,6 @@ public:
                      QObject *parent = 0);
 
   float getTemp() const;
-  float getPres() const;
   float getMeasure() const;
 
   public slots:
@@ -54,7 +53,6 @@ public:
                                                const T& value);
 
   float Temp_;
-  float Pres_;
   float Measure_;
 
   protected slots:
