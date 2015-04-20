@@ -20,13 +20,14 @@ int main()
   std::cout << "Flow = " << cori.getMeasure() << std::endl;
 //   std::cout << "Pressure = " << cori.getPres() << std::endl;
 //   std::cout << "Capacity 100% = " << cori.getCapacity() << std::endl;
-//   std::cout << "Density = " << cori.getDensity() << std::endl;
+  std::cout << "Density = " << cori.getDensity() << std::endl;
 //   std::cout << "Unit = " << cori.getUnit() << std::endl;
 //   std::cout << "Fluid = " << cori.getFluid() << std::endl;
 //   std::cout << "User Tag = " << cori.getTag() << std::endl;
 //   std::cout << "Init status = " << cori.getInit() << std::endl;
 //   std::cout << "set Capacity 100% = " << cori.setCapacity() << std::endl;
 //   std::cout << "Capacity 100% = " << cori.getCapacity() << std::endl;
+//   std::cout << "Unit Index = " << cori.getUnitIndex() << std::endl;
 
   return 0;
 }
