@@ -27,6 +27,7 @@ class CoriFlow : public VCoriFlow
   std::string setTag( void ) const;
   std::string setCapacity( void ) const;
   std::string setInit( void ) const;
+  int getUnitIndex( void ) const;
 
  private:
 

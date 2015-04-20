@@ -17,7 +17,7 @@
 ///
 CoriFlow::CoriFlow( const ioport_t ioPort )
   : VCoriFlow(ioPort),
-    uDelay_(25000)
+    uDelay_(100000)
 {
   comHandler_ = new CoriFlowComHandler( ioPort );
   Device_Init();
@@ -87,7 +87,7 @@ float CoriFlow::getMeasure( void ) const {
   comHandler_->ReceiveString( buffer );
   StripBuffer( buffer );
 
-  return ToInt(buffer)*4000/41942/60;  // capacity(g/h)/range of measure (unipolar)/60(to get from g/h to g/min)
+  return ToInt(buffer)*getCapacity()/32000/60/(getDensity()*0.001);
 }
 
 
@@ -198,7 +198,7 @@ float CoriFlow::getDensity( void ) const {
   char buffer[1000];
 
   usleep( uDelay_ );
-  comHandler_->SendCommand( ":06030474417404F" );
+  comHandler_->SendCommand( ":0603047441744F" );
 
   usleep( uDelay_ );
   comHandler_->ReceiveString( buffer );
@@ -216,7 +216,8 @@ std::string CoriFlow::setCapacity( void ) const {
   char buffer[1000];
 
   usleep( uDelay_ );
-  comHandler_->SendCommand( ":080301014D457A0000" ); //set to 4000 must set INIT first
+//   comHandler_->SendCommand( ":080301014D457A0000" ); //set to 4000 must set INIT first
+  comHandler_->SendCommand( ":080301014D457A0000" ); //set to 4200 = 70 ml/min must set INIT first
 
   usleep( uDelay_ );
   comHandler_->ReceiveString( buffer );
@@ -243,6 +244,25 @@ std::string CoriFlow::setTag( void ) const {
 
   return buffer;
 }
+
+int CoriFlow::getUnitIndex( void ) const {
+  
+  #ifdef __CORIFLOW_DEBUG
+  std::cout << "[CoriFlow::test] -- DEBUG: Called." << std::endl;
+  #endif
+  
+  char buffer[1000];
+  
+  usleep( uDelay_ );
+  comHandler_->SendCommand( ":0603040101010E" );
+  
+  usleep( uDelay_ );
+  comHandler_->ReceiveString( buffer );
+  StripBuffer( buffer );
+  
+  return ToInt(buffer);
+}
+
 /// //////////////////////////////////////////////////////////////////////////////
 /// //////////////////////////////////////////////////////////////////////////////
 
