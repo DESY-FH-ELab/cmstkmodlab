@@ -32,9 +32,7 @@ class CoriFlow : public VCoriFlow
 
   const int uDelay_;
   void StripBuffer( char* ) const;
-  float ToFloat(const char*) const;
-  float ToInt(const char*) const;
-  std::string ToUnit(const char*) const;
+
 
   void Device_Init( void );
   CoriFlowComHandler* comHandler_;
