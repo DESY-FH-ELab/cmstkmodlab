@@ -93,5 +93,6 @@ void HuberPetiteFleurWidget::updateInfo()
   sprintf(buffer, "%.02f", model_->getBathTemperature());
   bathTempLCD_->display(buffer);
 
-  workingTempSpinner_->setValue(model_->getWorkingTemperatureParameter().getValue());
+  if (!workingTempSpinner_->hasFocus())
+    workingTempSpinner_->setValue(model_->getWorkingTemperatureParameter().getValue());
 }
