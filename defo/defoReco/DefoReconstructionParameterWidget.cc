@@ -36,6 +36,7 @@ DefoReconstructionParameterWidget::DefoReconstructionParameterWidget(DefoGeometr
   angle1SpinBox_->setRange(10.0, 45.0);
   angle1SpinBox_->setDecimals(2);
   angle1SpinBox_->setSingleStep(0.01);
+  angle1SpinBox_->setKeyboardTracking(false);
   vbox->addWidget(angle1SpinBox_);
   angle1SpinBox_->setValue(geometryModel_->getAngle1());
   connect(angle1SpinBox_, SIGNAL(valueChanged(double)),
@@ -47,6 +48,7 @@ DefoReconstructionParameterWidget::DefoReconstructionParameterWidget(DefoGeometr
   angle2SpinBox_->setRange(10.0, 45.0);
   angle2SpinBox_->setDecimals(2);
   angle2SpinBox_->setSingleStep(0.01);
+  angle2SpinBox_->setKeyboardTracking(false);
   vbox->addWidget(angle2SpinBox_);
   angle2SpinBox_->setValue(geometryModel_->getAngle2());
   connect(angle2SpinBox_, SIGNAL(valueChanged(double)),
@@ -58,6 +60,7 @@ DefoReconstructionParameterWidget::DefoReconstructionParameterWidget(DefoGeometr
   angle3SpinBox_->setRange(-10.0, 10.0);
   angle3SpinBox_->setDecimals(2);
   angle3SpinBox_->setSingleStep(0.01);
+  angle3SpinBox_->setKeyboardTracking(false);
   vbox->addWidget(angle3SpinBox_);
   angle3SpinBox_->setValue(geometryModel_->getAngle3());
   connect(angle3SpinBox_, SIGNAL(valueChanged(double)),
@@ -69,6 +72,7 @@ DefoReconstructionParameterWidget::DefoReconstructionParameterWidget(DefoGeometr
   distanceSpinBox_->setRange(100.0, 999.0);
   distanceSpinBox_->setDecimals(0);
   distanceSpinBox_->setSingleStep(1.0);
+  distanceSpinBox_->setKeyboardTracking(false);
   vbox->addWidget(distanceSpinBox_);
   distanceSpinBox_->setValue(geometryModel_->getDistance());
   connect(distanceSpinBox_, SIGNAL(valueChanged(double)),
@@ -80,6 +84,7 @@ DefoReconstructionParameterWidget::DefoReconstructionParameterWidget(DefoGeometr
   height1SpinBox_->setRange(1000.0, 2000.0);
   height1SpinBox_->setDecimals(0);
   height1SpinBox_->setSingleStep(1.0);
+  height1SpinBox_->setKeyboardTracking(false);
   vbox->addWidget(height1SpinBox_);
   height1SpinBox_->setValue(geometryModel_->getHeight1());
   connect(height1SpinBox_, SIGNAL(valueChanged(double)),
@@ -91,6 +96,7 @@ DefoReconstructionParameterWidget::DefoReconstructionParameterWidget(DefoGeometr
   height2SpinBox_->setRange(0.0, 500.0);
   height2SpinBox_->setDecimals(0);
   height2SpinBox_->setSingleStep(1.0);
+  height2SpinBox_->setKeyboardTracking(false);
   vbox->addWidget(height2SpinBox_);
   height2SpinBox_->setValue(geometryModel_->getHeight2());
   connect(height2SpinBox_, SIGNAL(valueChanged(double)),
@@ -109,6 +115,7 @@ DefoReconstructionParameterWidget::DefoReconstructionParameterWidget(DefoGeometr
   calibXSpinBox_->setRange(0.75, 1.25);
   calibXSpinBox_->setDecimals(6);
   calibXSpinBox_->setSingleStep(0.001);
+  calibXSpinBox_->setKeyboardTracking(false);
   vbox->addWidget(calibXSpinBox_);
   calibXSpinBox_->setValue(calibrationModel_->getCalibX());
   connect(calibXSpinBox_, SIGNAL(valueChanged(double)),
@@ -119,6 +126,7 @@ DefoReconstructionParameterWidget::DefoReconstructionParameterWidget(DefoGeometr
   calibYSpinBox_->setRange(0.75, 1.25);
   calibYSpinBox_->setDecimals(6);
   calibYSpinBox_->setSingleStep(0.001);
+  calibYSpinBox_->setKeyboardTracking(false);
   vbox->addWidget(calibYSpinBox_);
   calibYSpinBox_->setValue(calibrationModel_->getCalibY());
   connect(calibYSpinBox_, SIGNAL(valueChanged(double)),
@@ -129,6 +137,7 @@ DefoReconstructionParameterWidget::DefoReconstructionParameterWidget(DefoGeometr
   calibZxSpinBox_->setRange(0.75, 1.25);
   calibZxSpinBox_->setDecimals(6);
   calibZxSpinBox_->setSingleStep(0.001);
+  calibZxSpinBox_->setKeyboardTracking(false);
   vbox->addWidget(calibZxSpinBox_);
   calibZxSpinBox_->setValue(calibrationModel_->getCalibZx());
   connect(calibZxSpinBox_, SIGNAL(valueChanged(double)),
@@ -145,6 +154,7 @@ DefoReconstructionParameterWidget::DefoReconstructionParameterWidget(DefoGeometr
   kXSpinBox_ = new QSpinBox(item);
   kXSpinBox_->setPrefix("kx = ");
   kXSpinBox_->setRange(1, 5);
+  kXSpinBox_->setKeyboardTracking(false);
   vbox->addWidget(kXSpinBox_);
   kXSpinBox_->setValue(interpolationModel_->getKX());
   connect(kXSpinBox_, SIGNAL(valueChanged(int)),
@@ -153,6 +163,7 @@ DefoReconstructionParameterWidget::DefoReconstructionParameterWidget(DefoGeometr
   kYSpinBox_ = new QSpinBox(item);
   kYSpinBox_->setPrefix("ky = ");
   kYSpinBox_->setRange(1, 5);
+  kYSpinBox_->setKeyboardTracking(false);
   vbox->addWidget(kYSpinBox_);
   kYSpinBox_->setValue(interpolationModel_->getKY());
   connect(kYSpinBox_, SIGNAL(valueChanged(int)),
@@ -163,6 +174,7 @@ DefoReconstructionParameterWidget::DefoReconstructionParameterWidget(DefoGeometr
   smoothingSpinBox_->setRange(0.0, 10.0);
   smoothingSpinBox_->setDecimals(1);
   smoothingSpinBox_->setSingleStep(0.1);
+  smoothingSpinBox_->setKeyboardTracking(false);
   vbox->addWidget(smoothingSpinBox_);
   smoothingSpinBox_->setValue(interpolationModel_->getSmoothing());
   connect(smoothingSpinBox_, SIGNAL(valueChanged(double)),
@@ -173,6 +185,7 @@ DefoReconstructionParameterWidget::DefoReconstructionParameterWidget(DefoGeometr
   nxySpinBox_->setRange(0.5, 1.5);
   nxySpinBox_->setDecimals(2);
   nxySpinBox_->setSingleStep(0.05);
+  nxySpinBox_->setKeyboardTracking(false);
   vbox->addWidget(nxySpinBox_);
   nxySpinBox_->setValue(interpolationModel_->getNXY());
   connect(nxySpinBox_, SIGNAL(valueChanged(double)),
@@ -184,6 +197,7 @@ DefoReconstructionParameterWidget::DefoReconstructionParameterWidget(DefoGeometr
   dXSpinBox_->setRange(1.0, 20.0);
   dXSpinBox_->setDecimals(1);
   dXSpinBox_->setSingleStep(0.1);
+  dXSpinBox_->setKeyboardTracking(false);
   vbox->addWidget(dXSpinBox_);
   dXSpinBox_->setValue(interpolationModel_->getDX());
   connect(dXSpinBox_, SIGNAL(valueChanged(double)),
@@ -195,6 +209,7 @@ DefoReconstructionParameterWidget::DefoReconstructionParameterWidget(DefoGeometr
   dYSpinBox_->setRange(1.0, 20.0);
   dYSpinBox_->setDecimals(1);
   dYSpinBox_->setSingleStep(0.1);
+  dYSpinBox_->setKeyboardTracking(false);
   vbox->addWidget(dYSpinBox_);
   dYSpinBox_->setValue(interpolationModel_->getDY());
   connect(dYSpinBox_, SIGNAL(valueChanged(double)),
