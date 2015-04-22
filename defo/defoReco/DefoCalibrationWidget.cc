@@ -25,6 +25,7 @@ DefoCalibrationWidget::DefoCalibrationWidget(DefoCalibrationModel* calibrationMo
   calibXSpinBox_->setRange(0.75, 1.25);
   calibXSpinBox_->setDecimals(6);
   calibXSpinBox_->setSingleStep(0.001);
+  calibXSpinBox_->setKeyboardTracking(false);
   grid->addWidget(calibXSpinBox_, 0, 0);
   calibXSpinBox_->setValue(calibrationModel_->getCalibX());
   connect(calibXSpinBox_, SIGNAL(valueChanged(double)),
@@ -35,6 +36,7 @@ DefoCalibrationWidget::DefoCalibrationWidget(DefoCalibrationModel* calibrationMo
   calibYSpinBox_->setRange(0.75, 1.25);
   calibYSpinBox_->setDecimals(6);
   calibYSpinBox_->setSingleStep(0.001);
+  calibYSpinBox_->setKeyboardTracking(false);
   grid->addWidget(calibYSpinBox_, 0, 1);
   calibYSpinBox_->setValue(calibrationModel_->getCalibY());
   connect(calibYSpinBox_, SIGNAL(valueChanged(double)),
@@ -45,6 +47,7 @@ DefoCalibrationWidget::DefoCalibrationWidget(DefoCalibrationModel* calibrationMo
   calibZxSpinBox_->setRange(0.75, 1.25);
   calibZxSpinBox_->setDecimals(6);
   calibZxSpinBox_->setSingleStep(0.001);
+  calibZxSpinBox_->setKeyboardTracking(false);
   grid->addWidget(calibZxSpinBox_, 0, 2);
   calibZxSpinBox_->setValue(calibrationModel_->getCalibZx());
   connect(calibZxSpinBox_, SIGNAL(valueChanged(double)),
@@ -55,6 +58,7 @@ DefoCalibrationWidget::DefoCalibrationWidget(DefoCalibrationModel* calibrationMo
   calibZySpinBox_->setRange(0.75, 1.25);
   calibZySpinBox_->setDecimals(6);
   calibZySpinBox_->setSingleStep(0.001);
+  calibZySpinBox_->setKeyboardTracking(false);
   grid->addWidget(calibZySpinBox_, 0, 3);
   calibZySpinBox_->setValue(calibrationModel_->getCalibZy());
   connect(calibZySpinBox_, SIGNAL(valueChanged(double)),

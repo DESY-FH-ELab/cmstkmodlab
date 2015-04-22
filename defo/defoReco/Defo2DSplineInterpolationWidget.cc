@@ -23,6 +23,7 @@ Defo2DSplineInterpolationWidget::Defo2DSplineInterpolationWidget(Defo2DSplineInt
   kXSpinBox_ = new QSpinBox(this);
   kXSpinBox_->setPrefix("kx = ");
   kXSpinBox_->setRange(1, 5);
+  kXSpinBox_->setKeyboardTracking(false);
   grid->addWidget(kXSpinBox_, 0, 0);
   kXSpinBox_->setValue(interpolationModel_->getKX());
   connect(kXSpinBox_, SIGNAL(valueChanged(int)),
@@ -31,6 +32,7 @@ Defo2DSplineInterpolationWidget::Defo2DSplineInterpolationWidget(Defo2DSplineInt
   kYSpinBox_ = new QSpinBox(this);
   kYSpinBox_->setPrefix("ky = ");
   kYSpinBox_->setRange(1, 5);
+  kYSpinBox_->setKeyboardTracking(false);
   grid->addWidget(kYSpinBox_, 0, 1);
   kYSpinBox_->setValue(interpolationModel_->getKY());
   connect(kYSpinBox_, SIGNAL(valueChanged(int)),
@@ -41,6 +43,7 @@ Defo2DSplineInterpolationWidget::Defo2DSplineInterpolationWidget(Defo2DSplineInt
   smoothingSpinBox_->setRange(0.0, 10.0);
   smoothingSpinBox_->setDecimals(1);
   smoothingSpinBox_->setSingleStep(0.1);
+  smoothingSpinBox_->setKeyboardTracking(false);
   grid->addWidget(smoothingSpinBox_, 0, 2);
   smoothingSpinBox_->setValue(interpolationModel_->getSmoothing());
   connect(smoothingSpinBox_, SIGNAL(valueChanged(double)),
@@ -51,6 +54,7 @@ Defo2DSplineInterpolationWidget::Defo2DSplineInterpolationWidget(Defo2DSplineInt
   nxySpinBox_->setRange(0.5, 1.5);
   nxySpinBox_->setDecimals(2);
   nxySpinBox_->setSingleStep(0.05);
+  nxySpinBox_->setKeyboardTracking(false);
   grid->addWidget(nxySpinBox_, 0, 3);
   nxySpinBox_->setValue(interpolationModel_->getNXY());
   connect(nxySpinBox_, SIGNAL(valueChanged(double)),
@@ -62,6 +66,7 @@ Defo2DSplineInterpolationWidget::Defo2DSplineInterpolationWidget(Defo2DSplineInt
   dXSpinBox_->setRange(1.0, 20.0);
   dXSpinBox_->setDecimals(1);
   dXSpinBox_->setSingleStep(0.1);
+  dXSpinBox_->setKeyboardTracking(false);
   grid->addWidget(dXSpinBox_, 0, 4);
   dXSpinBox_->setValue(interpolationModel_->getDX());
   connect(dXSpinBox_, SIGNAL(valueChanged(double)),
@@ -73,6 +78,7 @@ Defo2DSplineInterpolationWidget::Defo2DSplineInterpolationWidget(Defo2DSplineInt
   dYSpinBox_->setRange(1.0, 20.0);
   dYSpinBox_->setDecimals(1);
   dYSpinBox_->setSingleStep(0.1);
+  dYSpinBox_->setKeyboardTracking(false);
   grid->addWidget(dYSpinBox_, 0, 5);
   dYSpinBox_->setValue(interpolationModel_->getDY());
   connect(dYSpinBox_, SIGNAL(valueChanged(double)),
