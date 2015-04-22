@@ -182,18 +182,24 @@ void DefoJulaboWidget::controlStateChanged(bool enabled) {
   */
 void DefoJulaboWidget::updateChillerInfo() {
 
-  proportionalSpinner_->setValue(model_->getProportionalParameter().getValue());
-  integralSpinner_->setValue(model_->getIntegralParameter().getValue());
-  differentialSpinner_->setValue(model_->getDifferentialParameter().getValue());
+  if (!proportionalSpinner_->hasFocus())
+    proportionalSpinner_->setValue(model_->getProportionalParameter().getValue());
+
+  if (!integralSpinner_->hasFocus())
+    integralSpinner_->setValue(model_->getIntegralParameter().getValue());
+
+  if (!differentialSpinner_->hasFocus())
+    differentialSpinner_->setValue(model_->getDifferentialParameter().getValue());
 
   circulatorCheckBox_->setChecked(model_->isCirculatorEnabled());
 
-  pumpSpinner_->setValue(model_->getPumpPressureParameter().getValue());
+  if (!pumpSpinner_->hasFocus())
+    pumpSpinner_->setValue(model_->getPumpPressureParameter().getValue());
 
   bathTempLCD_->display(model_->getBathTemperature());
-  workingTempSpinner_->setValue(
-        model_->getWorkingTemperatureParameter().getValue()
-  );
-  powerLCD_->display( static_cast<int>(model_->getPower()) );
 
+  if (!workingTempSpinner_->hasFocus())
+    workingTempSpinner_->setValue(model_->getWorkingTemperatureParameter().getValue());
+
+  powerLCD_->display( static_cast<int>(model_->getPower()) );
 }
