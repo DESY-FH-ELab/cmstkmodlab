@@ -27,6 +27,7 @@ DefoGeometryParameterWidget::DefoGeometryParameterWidget(DefoGeometryModel* geom
   angle1SpinBox_->setRange(10.0, 45.0);
   angle1SpinBox_->setDecimals(2);
   angle1SpinBox_->setSingleStep(0.01);
+  angle1SpinBox_->setKeyboardTracking(false);
   grid->addWidget(angle1SpinBox_, 0, 0);
   angle1SpinBox_->setValue(geometryModel_->getAngle1());
   connect(angle1SpinBox_, SIGNAL(valueChanged(double)),
@@ -38,6 +39,7 @@ DefoGeometryParameterWidget::DefoGeometryParameterWidget(DefoGeometryModel* geom
   angle2SpinBox_->setRange(10.0, 45.0);
   angle2SpinBox_->setDecimals(2);
   angle2SpinBox_->setSingleStep(0.01);
+  angle2SpinBox_->setKeyboardTracking(false);
   grid->addWidget(angle2SpinBox_, 0, 1);
   angle2SpinBox_->setValue(geometryModel_->getAngle2());
   connect(angle2SpinBox_, SIGNAL(valueChanged(double)),
@@ -49,6 +51,7 @@ DefoGeometryParameterWidget::DefoGeometryParameterWidget(DefoGeometryModel* geom
   angle3SpinBox_->setRange(-10.0, 10.0);
   angle3SpinBox_->setDecimals(2);
   angle3SpinBox_->setSingleStep(0.01);
+  angle3SpinBox_->setKeyboardTracking(false);
   grid->addWidget(angle3SpinBox_, 0, 2);
   angle3SpinBox_->setValue(geometryModel_->getAngle3());
   connect(angle3SpinBox_, SIGNAL(valueChanged(double)),
@@ -60,6 +63,7 @@ DefoGeometryParameterWidget::DefoGeometryParameterWidget(DefoGeometryModel* geom
   distanceSpinBox_->setRange(100.0, 999.0);
   distanceSpinBox_->setDecimals(0);
   distanceSpinBox_->setSingleStep(1.0);
+  distanceSpinBox_->setKeyboardTracking(false);
   grid->addWidget(distanceSpinBox_, 0, 3);
   distanceSpinBox_->setValue(geometryModel_->getDistance());
   connect(distanceSpinBox_, SIGNAL(valueChanged(double)),
@@ -71,6 +75,7 @@ DefoGeometryParameterWidget::DefoGeometryParameterWidget(DefoGeometryModel* geom
   height1SpinBox_->setRange(1000.0, 2000.0);
   height1SpinBox_->setDecimals(0);
   height1SpinBox_->setSingleStep(1.0);
+  height1SpinBox_->setKeyboardTracking(false);
   grid->addWidget(height1SpinBox_, 0, 4);
   height1SpinBox_->setValue(geometryModel_->getHeight1());
   connect(height1SpinBox_, SIGNAL(valueChanged(double)),
@@ -82,6 +87,7 @@ DefoGeometryParameterWidget::DefoGeometryParameterWidget(DefoGeometryModel* geom
   height2SpinBox_->setRange(0.0, 500.0);
   height2SpinBox_->setDecimals(0);
   height2SpinBox_->setSingleStep(1.0);
+  height2SpinBox_->setKeyboardTracking(false);
   grid->addWidget(height2SpinBox_, 0, 5);
   height2SpinBox_->setValue(geometryModel_->getHeight2());
   connect(height2SpinBox_, SIGNAL(valueChanged(double)),
