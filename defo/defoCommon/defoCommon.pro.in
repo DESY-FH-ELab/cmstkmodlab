@@ -7,6 +7,9 @@
 macx {
     INCLUDEPATH += /opt/local/include/GL
     INCLUDEPATH += /opt/local/include/exiv2
+    INCLUDEPATH += /opt/local/include
+    INCLUDEPATH += /opt/local/include/opencv
+    INCLUDEPATH += /opt/local/include/opencv2
     LIBS += -lgphoto2_port
     LIBS += -L/opt/local/lib
 }
@@ -29,7 +32,9 @@ QMAKE = @qmake@
 QMAKE_CXXFLAGS += -std=c++0x
 
 DEFINES += @configdefines@
+
 QT += core gui opengl script xml
+
 TARGET = DefoCommon
 TEMPLATE = lib
 DEPENDPATH += .

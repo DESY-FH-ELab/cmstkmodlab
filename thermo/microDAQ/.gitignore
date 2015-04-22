@@ -1,5 +1,6 @@
 microDAQ.pro
 microDAQ.pro.user
+.qmake.stash
 Makefile
 *.d
 *.o

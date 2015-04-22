@@ -18,7 +18,7 @@ bool DefoExifReader::read() {
 
   try {
 
-    Exiv2::Image::AutoPtr image = Exiv2::ImageFactory::open(filename_.toAscii().constData());
+    Exiv2::Image::AutoPtr image = Exiv2::ImageFactory::open(filename_.toStdString().c_str());
 
     image->readMetadata();
 
