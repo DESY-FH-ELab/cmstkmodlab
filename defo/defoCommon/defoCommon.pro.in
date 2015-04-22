@@ -32,7 +32,9 @@ QMAKE = @qmake@
 QMAKE_CXXFLAGS += -std=c++0x
 
 DEFINES += @configdefines@
+
 QT += core gui opengl script xml
+
 TARGET = DefoCommon
 TEMPLATE = lib
 DEPENDPATH += .
