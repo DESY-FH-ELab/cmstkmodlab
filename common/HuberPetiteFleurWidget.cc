@@ -65,16 +65,16 @@ HuberPetiteFleurWidget::HuberPetiteFleurWidget(HuberPetiteFleurModel* model, QWi
 /**
   Updates the GUI according to the new state of the chiller chiller.
   */
-void HuberPetiteFleurWidget::updateDeviceState(State newState) {
-
+void HuberPetiteFleurWidget::updateDeviceState(State newState)
+{
   bool ready = (newState == READY);
   huberPetiteFleurCheckBox_->setChecked( ready );
   operationPanel_->setEnabled( ready );
 }
 
 /// Updates the GUI when the Keithley multimeter is enabled/disabled.
-void HuberPetiteFleurWidget::controlStateChanged(bool enabled) {
-  
+void HuberPetiteFleurWidget::controlStateChanged(bool enabled)
+{
   huberPetiteFleurCheckBox_->setEnabled(enabled);
   if (enabled) {
     //State state = model_->getDeviceState();
@@ -82,16 +82,16 @@ void HuberPetiteFleurWidget::controlStateChanged(bool enabled) {
 }
 
 /**
-  Sets the values of all the subelements (except the global enablement)
-  according to the model.
-  */
-void HuberPetiteFleurWidget::updateInfo() {
+   Sets the values of all the subelements (except the global enablement)
+   according to the model.
+*/
+void HuberPetiteFleurWidget::updateInfo()
+{
+  circulatorCheckBox_->setChecked(model_->isCirculatorEnabled());
 
- circulatorCheckBox_->setChecked(model_->isCirculatorEnabled());
+  char buffer[10];
+  sprintf(buffer, "%.02f", model_->getBathTemperature());
+  bathTempLCD_->display(buffer);
 
- char buffer[10];
- sprintf(buffer, "%.02f", model_->getBathTemperature());
- bathTempLCD_->display(buffer);
-
- workingTempSpinner_->setValue(model_->getWorkingTemperatureParameter().getValue());
+  workingTempSpinner_->setValue(model_->getWorkingTemperatureParameter().getValue());
 }

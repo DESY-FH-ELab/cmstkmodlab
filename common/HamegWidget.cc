@@ -159,9 +159,9 @@ void HamegChannelWidget::updateInfo()
   \brief Creates a new panel with all the controls and read-outs for the Hameg
   chiller.
   */
-HamegWidget::HamegWidget(HamegModel* model, QWidget *parent) :
-    QWidget(parent),
-    model_(model)
+HamegWidget::HamegWidget(HamegModel* model, QWidget *parent)
+ : QWidget(parent),
+   model_(model)
 {
     QVBoxLayout* layout = new QVBoxLayout();
     setLayout(layout);
