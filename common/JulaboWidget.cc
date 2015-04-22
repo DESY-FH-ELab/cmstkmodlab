@@ -138,8 +138,8 @@ void JulaboWidget::controlStateChanged(bool enabled)
   Sets the values of all the subelements (except the global enablement)
   according to the model.
  */
-void JulaboWidget::updateChillerInfo() {
-
+void JulaboWidget::updateChillerInfo()
+{
   if (!proportionalSpinner_->hasFocus())
     proportionalSpinner_->setValue(model_->getProportionalParameter().getValue());
 

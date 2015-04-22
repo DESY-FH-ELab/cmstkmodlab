@@ -4,8 +4,9 @@
   \brief Creates a new panel with all the controls and read-outs for the Julabo
   chiller.
   */
-DefoJulaboWidget::DefoJulaboWidget(DefoJulaboModel* model, QWidget *parent) :
-    QWidget(parent), model_(model)
+DefoJulaboWidget::DefoJulaboWidget(DefoJulaboModel* model, QWidget *parent)
+: QWidget(parent),
+  model_(model)
 {
   // Create all the nescessary widgets
   chillerCheckBox_ = new QCheckBox("Enable chiller", this);
@@ -74,83 +75,41 @@ DefoJulaboWidget::DefoJulaboWidget(DefoJulaboModel* model, QWidget *parent) :
 
   tempLayout->addRow(circulatorCheckBox_);
   tempLayout->addRow("Pump pressure", pumpSpinner_);
-  tempLayout->addRow(
-        QString::fromUtf8("Bath temperature (°C)")
-      , bathTempLCD_);
-  tempLayout->addRow(
-        QString::fromUtf8("Working temperature (°C)")
-      , workingTempSpinner_
-  );
+  tempLayout->addRow(QString::fromUtf8("Bath temperature (°C)"), bathTempLCD_);
+  tempLayout->addRow(QString::fromUtf8("Working temperature (°C)"), workingTempSpinner_);
   tempLayout->addRow("Power (%)", powerLCD_);
 
   // Connect all the signals
-  connect(
-          model_
-        , SIGNAL(deviceStateChanged(State))
-        , this
-        , SLOT(updateDeviceState(State))
-  );
+  connect(model_, SIGNAL(deviceStateChanged(State)),
+          this, SLOT(updateDeviceState(State)));
 
-  connect(
-          model_
-        , SIGNAL(controlStateChanged(bool))
-        , this
-        , SLOT(controlStateChanged(bool))
-  );
+  connect(model_, SIGNAL(controlStateChanged(bool)),
+          this, SLOT(controlStateChanged(bool)));
 
-  connect(
-          model_
-        , SIGNAL(informationChanged())
-        , this
-        , SLOT(updateChillerInfo())
-  );
+  connect(model_, SIGNAL(informationChanged()),
+          this, SLOT(updateChillerInfo()));
 
-  connect(
-          chillerCheckBox_
-        , SIGNAL(toggled(bool))
-        , model
-        , SLOT(setDeviceEnabled(bool))
-  );
+  connect(chillerCheckBox_, SIGNAL(toggled(bool)),
+          model, SLOT(setDeviceEnabled(bool)));
 
-  connect(
-          proportionalSpinner_
-        , SIGNAL(valueChanged(double))
-        , model_
-        , SLOT(setProportionalValue(double))
-  );
+  connect(proportionalSpinner_, SIGNAL(valueChanged(double)),
+          model_, SLOT(setProportionalValue(double)));
 
-  connect(
-          differentialSpinner_
-        , SIGNAL(valueChanged(int))
-        , model_
-        , SLOT(setDifferentialValue(int))
-  );
+  connect(differentialSpinner_, SIGNAL(valueChanged(int)),
+          model_, SLOT(setDifferentialValue(int)));
 
-  connect(
-          circulatorCheckBox_
-        , SIGNAL(toggled(bool))
-        , model_
-        , SLOT(setCirculatorEnabled(bool))
-  );
+  connect(circulatorCheckBox_, SIGNAL(toggled(bool)),
+          model_, SLOT(setCirculatorEnabled(bool)));
 
-  connect(
-          pumpSpinner_
-        , SIGNAL(valueChanged(int))
-        , model_
-        , SLOT(setPumpPressureValue(int))
-  );
+  connect(pumpSpinner_, SIGNAL(valueChanged(int)),
+          model_, SLOT(setPumpPressureValue(int)));
 
-  connect(
-        workingTempSpinner_
-        , SIGNAL(valueChanged(double))
-        , model_
-        , SLOT(setWorkingTemperatureValue(double))
-  );
+  connect(workingTempSpinner_, SIGNAL(valueChanged(double)),
+          model_, SLOT(setWorkingTemperatureValue(double)));
 
   // Set GUI according to the current chiller state
   updateDeviceState( model_->getDeviceState() );
   updateChillerInfo();
-
 }
 
 /**
@@ -180,8 +139,8 @@ void DefoJulaboWidget::controlStateChanged(bool enabled) {
   Sets the values of all the subelements (except the global enablement)
   according to the model.
   */
-void DefoJulaboWidget::updateChillerInfo() {
-
+void DefoJulaboWidget::updateChillerInfo()
+{
   if (!proportionalSpinner_->hasFocus())
     proportionalSpinner_->setValue(model_->getProportionalParameter().getValue());
 
