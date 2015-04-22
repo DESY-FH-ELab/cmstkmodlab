@@ -18,16 +18,19 @@ JulaboWidget::JulaboWidget(JulaboModel* model, QWidget *parent)
   proportionalSpinner_->setDecimals(prop.getPrecision());
   proportionalSpinner_->setMinimum(prop.getMinimum());
   proportionalSpinner_->setMaximum(prop.getMaximum());
+  proportionalSpinner_->setKeyboardTracking(false);
 
   DeviceParameterUInt integral = model_->getIntegralParameter();
   integralSpinner_ = new QSpinBox(operationPanel_);
   integralSpinner_->setMinimum(integral.getMinimum());
   integralSpinner_->setMaximum(integral.getMaximum());
+  integralSpinner_->setKeyboardTracking(false);
 
   DeviceParameterUInt differential = model_->getDifferentialParameter();
   differentialSpinner_ = new QSpinBox(operationPanel_);
   differentialSpinner_->setMinimum(differential.getMinimum());
   differentialSpinner_->setMaximum(differential.getMaximum());
+  differentialSpinner_->setKeyboardTracking(false);
 
   circulatorCheckBox_ = new QCheckBox("Enable circulator", operationPanel_);
 
@@ -35,6 +38,7 @@ JulaboWidget::JulaboWidget(JulaboModel* model, QWidget *parent)
   pumpSpinner_ = new QSpinBox(operationPanel_);
   pumpSpinner_->setMinimum(pump.getMinimum());
   pumpSpinner_->setMaximum(pump.getMaximum());
+  pumpSpinner_->setKeyboardTracking(false);
 
   bathTempLCD_ = new QLCDNumber(LCD_SIZE, operationPanel_);
   bathTempLCD_->setSegmentStyle(QLCDNumber::Flat);
@@ -45,6 +49,7 @@ JulaboWidget::JulaboWidget(JulaboModel* model, QWidget *parent)
   workingTempSpinner_->setDecimals(working.getPrecision());
   workingTempSpinner_->setMinimum(working.getMinimum());
   workingTempSpinner_->setMaximum(working.getMaximum());
+  workingTempSpinner_->setKeyboardTracking(false);
 
   powerLCD_ = new QLCDNumber(LCD_SIZE, operationPanel_);
   powerLCD_->setSegmentStyle(QLCDNumber::Flat);
