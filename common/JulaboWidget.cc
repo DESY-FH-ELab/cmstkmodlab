@@ -4,8 +4,9 @@
   \brief Creates a new panel with all the controls and read-outs for the Julabo
   chiller.
   */
-JulaboWidget::JulaboWidget(JulaboModel* model, QWidget *parent) :
-    QWidget(parent), model_(model)
+JulaboWidget::JulaboWidget(JulaboModel* model, QWidget *parent)
+: QWidget(parent),
+  model_(model)
 {
   // Create all the nescessary widgets
   chillerCheckBox_ = new QCheckBox("Enable chiller", this);
@@ -74,99 +75,56 @@ JulaboWidget::JulaboWidget(JulaboModel* model, QWidget *parent) :
 
   tempLayout->addRow(circulatorCheckBox_);
   tempLayout->addRow("Pump pressure", pumpSpinner_);
-  tempLayout->addRow(
-        QString::fromUtf8("Bath temperature (°C)")
-      , bathTempLCD_);
-  tempLayout->addRow(
-        QString::fromUtf8("Working temperature (°C)")
-      , workingTempSpinner_
-  );
+  tempLayout->addRow(QString::fromUtf8("Bath temperature (°C)"), bathTempLCD_);
+  tempLayout->addRow(QString::fromUtf8("Working temperature (°C)"), workingTempSpinner_);
   tempLayout->addRow("Power (%)", powerLCD_);
 
   // Connect all the signals
-  connect(
-          model_
-        , SIGNAL(deviceStateChanged(State))
-        , this
-        , SLOT(updateDeviceState(State))
-  );
+  connect(model_, SIGNAL(deviceStateChanged(State)),
+          this, SLOT(updateDeviceState(State)));
 
-  connect(
-          model_
-        , SIGNAL(controlStateChanged(bool))
-        , this
-        , SLOT(controlStateChanged(bool))
-  );
+  connect(model_, SIGNAL(controlStateChanged(bool)),
+          this, SLOT(controlStateChanged(bool)));
 
-  connect(
-          model_
-        , SIGNAL(informationChanged())
-        , this
-        , SLOT(updateChillerInfo())
-  );
+  connect(model_, SIGNAL(informationChanged()),
+          this, SLOT(updateChillerInfo()));
 
-  connect(
-          chillerCheckBox_
-        , SIGNAL(toggled(bool))
-        , model
-        , SLOT(setDeviceEnabled(bool))
-  );
+  connect(chillerCheckBox_, SIGNAL(toggled(bool)),
+          model, SLOT(setDeviceEnabled(bool)));
 
-  connect(
-          proportionalSpinner_
-        , SIGNAL(valueChanged(double))
-        , model_
-        , SLOT(setProportionalValue(double))
-  );
+  connect(proportionalSpinner_, SIGNAL(valueChanged(double)),
+          model_, SLOT(setProportionalValue(double)));
 
-  connect(
-          differentialSpinner_
-        , SIGNAL(valueChanged(int))
-        , model_
-        , SLOT(setDifferentialValue(int))
-  );
+  connect(differentialSpinner_, SIGNAL(valueChanged(int)),
+          model_, SLOT(setDifferentialValue(int)));
 
-  connect(
-          circulatorCheckBox_
-        , SIGNAL(toggled(bool))
-        , model_
-        , SLOT(setCirculatorEnabled(bool))
-  );
+  connect(circulatorCheckBox_, SIGNAL(toggled(bool)),
+          model_, SLOT(setCirculatorEnabled(bool)));
 
-  connect(
-          pumpSpinner_
-        , SIGNAL(valueChanged(int))
-        , model_
-        , SLOT(setPumpPressureValue(int))
-  );
+  connect(pumpSpinner_, SIGNAL(valueChanged(int)),
+          model_, SLOT(setPumpPressureValue(int)));
 
-  connect(
-        workingTempSpinner_
-        , SIGNAL(valueChanged(double))
-        , model_
-        , SLOT(setWorkingTemperatureValue(double))
-  );
+  connect(workingTempSpinner_, SIGNAL(valueChanged(double)),
+          model_, SLOT(setWorkingTemperatureValue(double)));
 
   // Set GUI according to the current chiller state
   updateDeviceState( model_->getDeviceState() );
   updateChillerInfo();
-
 }
 
 /**
   Updates the GUI according to the new state of the chiller chiller.
-  */
-void JulaboWidget::updateDeviceState(State newState) {
-
+ */
+void JulaboWidget::updateDeviceState(State newState)
+{
   bool ready = (newState == READY);
   chillerCheckBox_->setChecked( ready );
   operationPanel_->setEnabled( ready );
-
 }
 
 /// Updates the GUI when the Keithley multimeter is enabled/disabled.
-void JulaboWidget::controlStateChanged(bool enabled) {
-  
+void JulaboWidget::controlStateChanged(bool enabled)
+{
   chillerCheckBox_->setEnabled(enabled);
   if (enabled) {
     State state = model_->getDeviceState();
@@ -179,7 +137,7 @@ void JulaboWidget::controlStateChanged(bool enabled) {
 /**
   Sets the values of all the subelements (except the global enablement)
   according to the model.
-  */
+ */
 void JulaboWidget::updateChillerInfo() {
 
   if (!proportionalSpinner_->hasFocus())
@@ -193,16 +151,13 @@ void JulaboWidget::updateChillerInfo() {
 
   circulatorCheckBox_->setChecked(model_->isCirculatorEnabled());
 
-
   if (!pumpSpinner_->hasFocus())
     pumpSpinner_->setValue(model_->getPumpPressureParameter().getValue());
 
   bathTempLCD_->display(model_->getBathTemperature());
 
   if (!workingTempSpinner_->hasFocus())
-    workingTempSpinner_->setValue(
-        model_->getWorkingTemperatureParameter().getValue()
-    );
+    workingTempSpinner_->setValue(model_->getWorkingTemperatureParameter().getValue());
 
   powerLCD_->display( static_cast<int>(model_->getPower()) );
 }

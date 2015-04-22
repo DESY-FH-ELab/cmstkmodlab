@@ -5,8 +5,8 @@
   pump.
   */
 IotaWidget::IotaWidget(IotaModel* model, QWidget *parent)
-  : QWidget(parent),
-    model_(model)
+: QWidget(parent),
+  model_(model)
 {
   QVBoxLayout* layout = new QVBoxLayout(this);
   setLayout(layout);
