@@ -5,7 +5,8 @@
 #include "DefoROI.h"
 #include "DefoPointRecognitionModel.h"
 
-class DefoRecoMeasurement : public DefoMeasurement {
+class DefoRecoMeasurement : public DefoMeasurement
+{
 public:
   DefoRecoMeasurement(const QString& imageLocation, bool preview);
 
