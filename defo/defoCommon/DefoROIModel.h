@@ -2,10 +2,7 @@
 #define DEFOROIMODEL_H
 
 #include <QObject>
-#include <QDir>
 #include <QPolygonF>
-#include <QImage>
-#include <QRect>
 
 class DefoROIModel : public QObject, public QPolygonF
 {
