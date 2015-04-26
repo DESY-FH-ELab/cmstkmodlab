@@ -55,6 +55,10 @@ void DefoRecoMeasurement::write(const QDir& path)
 
   stream.writeEndDocument();
 
+  fileLocation = path.absoluteFilePath("%1roi.xml");
+  fileLocation = fileLocation.arg(timestamp_.toString("yyyyMMddhhmmss"));
+  roi_.write(fileLocation);
+}
 
 void DefoRecoMeasurement::read(const QDir& path)
 {
@@ -102,4 +106,8 @@ void DefoRecoMeasurement::read(const QDir& path)
       recoPointRecognitionHalfSquareWidth_ = hsw;
     }
   }
+
+  fileLocation = path.absoluteFilePath("%1roi.xml");
+  fileLocation = fileLocation.arg(timestamp_.toString("yyyyMMddhhmmss"));
+  roi_.read(fileLocation);
 }
