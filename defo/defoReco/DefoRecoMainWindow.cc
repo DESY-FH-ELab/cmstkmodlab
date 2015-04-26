@@ -383,7 +383,6 @@ void DefoRecoMainWindow::loadMeasurementButtonClicked()
   currentDir_ = fi.absolutePath();
   std::cout << currentDir_.absolutePath().toStdString() << std::endl;
 
-  roiModel_->read(currentDir_.absoluteFilePath("roi.xml"));
   alignmentModel_->read(currentDir_.absoluteFilePath("alignment.xml"));
   refColorModel_->read(currentDir_.absoluteFilePath("refcolor.xml"));
   defoColorModel_->read(currentDir_.absoluteFilePath("defocolor.xml"));
@@ -398,9 +397,8 @@ void DefoRecoMainWindow::loadMeasurementButtonClicked()
   reconstructionModel_->setCurrentDir(currentDir_);
 }
 
-void DefoRecoMainWindow::saveMeasurementButtonClicked() {
-
-  roiModel_->write(currentDir_.absoluteFilePath("roi.xml"));
+void DefoRecoMainWindow::saveMeasurementButtonClicked()
+{
   alignmentModel_->write(currentDir_.absoluteFilePath("alignment.xml"));
   refColorModel_->write(currentDir_.absoluteFilePath("refcolor.xml"));
   defoColorModel_->write(currentDir_.absoluteFilePath("defocolor.xml"));
