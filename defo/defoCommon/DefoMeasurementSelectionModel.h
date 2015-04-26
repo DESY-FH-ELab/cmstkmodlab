@@ -10,6 +10,7 @@ class DefoMeasurementSelectionModel : public QObject
 public:
 
   explicit DefoMeasurementSelectionModel(QObject *parent = 0);
+  DefoMeasurement* getSelection();
   DefoMeasurement* getSelection() const;
 
 public slots:

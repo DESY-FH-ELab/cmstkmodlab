@@ -12,6 +12,11 @@ DefoMeasurement * DefoMeasurementSelectionModel::getSelection() const
   return selection_;
 }
 
+DefoMeasurement * DefoMeasurementSelectionModel::getSelection()
+{
+  return selection_;
+}
+
 void DefoMeasurementSelectionModel::setSelection(DefoMeasurement *selection)
 {
   if (selection_ != selection) {
