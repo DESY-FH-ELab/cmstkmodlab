@@ -36,6 +36,7 @@ public:
                      float x, float y);
 
   void assignFrom(DefoROI* roi);
+  void assignTo(DefoROI* roi);
 
 protected:
 

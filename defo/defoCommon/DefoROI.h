@@ -28,6 +28,7 @@ public:
   void read(const QString& filename);
 
   bool assignFrom(DefoROI* other);
+  bool assignTo(DefoROI* other);
 
 protected:
 

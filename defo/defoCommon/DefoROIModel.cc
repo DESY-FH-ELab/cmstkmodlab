@@ -104,4 +104,9 @@ void DefoROIModel::assignFrom(DefoROI* roi)
   if (!roi_ || !roi) return;
   if (roi_->assignFrom(roi)) emit roiChanged();
 }
+
+void DefoROIModel::assignTo(DefoROI* roi)
+{
+  if (!roi_ || !roi) return;
+  roi_->assignTo(roi);
 }

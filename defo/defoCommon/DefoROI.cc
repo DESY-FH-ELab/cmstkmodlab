@@ -184,4 +184,8 @@ bool DefoROI::assignFrom(DefoROI* other)
 
   return true;
 }
+
+bool DefoROI::assignTo(DefoROI* other)
+{
+  return other->assignFrom(this);
 }
