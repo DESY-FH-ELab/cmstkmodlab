@@ -2,9 +2,11 @@
 #define _DEFORECOMEASUREMENT_H
 
 #include "DefoMeasurement.h"
+#include "DefoROI.h"
 #include "DefoPointRecognitionModel.h"
 
-class DefoRecoMeasurement : public DefoMeasurement {
+class DefoRecoMeasurement : public DefoMeasurement
+{
 public:
   DefoRecoMeasurement(const QString& imageLocation, bool preview);
 
@@ -16,8 +18,11 @@ public:
   void write(const QDir& path);
   void read(const QDir& path);
 
+  DefoROI* roi() { return &roi_; }
+
 protected:
 
+  DefoROI roi_;
   std::vector<int> recoPointRecognitionThresholds_;
   int recoPointRecognitionHalfSquareWidth_;
 };
