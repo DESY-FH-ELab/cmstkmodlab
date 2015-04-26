@@ -36,9 +36,6 @@ DefoROICopyFromWidget::DefoROICopyFromWidget(DefoRecoMeasurementListModel *listM
   layout->addWidget(copyFromButton_);
   connect(copyFromButton_, SIGNAL(clicked()),
           this, SLOT(copyFromButtonClicked()));
-
-  //connect(geometryModel_, SIGNAL(geometryChanged()),
-  //        this, SLOT(geometryChanged()));
 }
 
 void DefoROICopyFromWidget::copyFromButtonClicked()

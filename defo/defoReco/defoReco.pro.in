@@ -50,6 +50,7 @@ HEADERS += DefoRecoMainWindow.h \
            DefoRecoMeasurementListModel.h \
            DefoRecoROIModel.h \
            DefoROICopyFromWidget.h \
+           DefoROICopyToWidget.h \
            DefoMeasurementListTreeWidget.h \
            DefoMeasurementInfoListTreeWidget.h \
            DefoMeasurementCommentTextView.h \
@@ -74,6 +75,7 @@ SOURCES += defoReco.cc \
            DefoRecoMeasurementListModel.cc \
            DefoRecoROIModel.cc \
            DefoROICopyFromWidget.cc \
+           DefoROICopyToWidget.cc \
            DefoMeasurementListTreeWidget.cc \
            DefoMeasurementInfoListTreeWidget.cc \
            DefoMeasurementCommentTextView.cc \
