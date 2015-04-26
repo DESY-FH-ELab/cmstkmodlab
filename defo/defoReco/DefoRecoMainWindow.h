@@ -66,7 +66,9 @@ protected:
   DefoAlignmentModel *alignmentModel_;
 
   DefoMeasurementSelectionModel *refSelectionModel_;
+  DefoRecoROIModel *refROIModel_;
   DefoMeasurementSelectionModel *defoSelectionModel_;
+  DefoRecoROIModel *defoROIModel_;
 
   DefoPointRecognitionModel* refPointModel_;
   DefoPointRecognitionModel* defoPointModel_;

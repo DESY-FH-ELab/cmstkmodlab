@@ -44,8 +44,10 @@ DefoRecoMainWindow::DefoRecoMainWindow(QWidget *parent)
 
   // POINT MODEL
   refSelectionModel_ = new DefoMeasurementSelectionModel(this);
+  refROIModel_ = new DefoRecoROIModel(refSelectionModel_, this);
   refPointModel_ = new DefoPointRecognitionModel(this);
   defoSelectionModel_ = new DefoMeasurementSelectionModel(this);
+  defoROIModel_ = new DefoRecoROIModel(defoSelectionModel_, this);
   defoPointModel_ = new DefoPointRecognitionModel(this);
 
   pointIndexerModel_ = new DefoPointIndexerModel(this);
@@ -173,11 +175,11 @@ DefoRecoMainWindow::DefoRecoMainWindow(QWidget *parent)
   vbox->addWidget(refSelect);
 
   DefoRecoPointRecognitionWidget * refPointRecognitionWidget =
-          new DefoRecoPointRecognitionWidget(listModel_,
-                                             refSelectionModel_,
-                                             refPointModel_,
-                                             roiModel_,
-                                             refPointWidget);
+      new DefoRecoPointRecognitionWidget(listModel_,
+                                         refSelectionModel_,
+                                         refPointModel_,
+                                         refROIModel_,
+                                         refPointWidget);
   refPointModel_->setThresholdValue(DefoPointRecognitionModel::THRESHOLD_1,
 				    ApplicationConfig::instance()->getValue<int>("STEP1_THRESHOLD"));
   refPointModel_->setThresholdValue(DefoPointRecognitionModel::THRESHOLD_2,
@@ -203,7 +205,7 @@ DefoRecoMainWindow::DefoRecoMainWindow(QWidget *parent)
           new DefoRecoPointRecognitionWidget(listModel_,
                                              defoSelectionModel_,
                                              defoPointModel_,
-                                             roiModel_,
+                                             defoROIModel_,
                                              defoPointWidget);
   defoPointModel_->setThresholdValue(DefoPointRecognitionModel::THRESHOLD_1,
 				     ApplicationConfig::instance()->getValue<int>("STEP1_THRESHOLD"));
