@@ -25,7 +25,7 @@
 DefoRecoMainWindow::DefoRecoMainWindow(QWidget *parent)
 : QMainWindow(parent)
 {
-  ApplicationConfig* config = ApplicationConfig::instance();
+  ApplicationConfig::instance();
 
   connect(QApplication::instance(), SIGNAL(aboutToQuit()),
           this, SLOT(quit()));
@@ -303,7 +303,7 @@ DefoRecoMainWindow::DefoRecoMainWindow(QWidget *parent)
   parameterTabs->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Minimum);
 
   DefoGeometryParameterWidget *geometryParameterWidget = new DefoGeometryParameterWidget(geometryModel_,
-											 parameterTabs);
+                                                                                         parameterTabs);
   parameterTabs->addTab(geometryParameterWidget, "Geometry");
 
   DefoCalibrationWidget *calibrationWidget = new DefoCalibrationWidget(calibrationModel_,
@@ -329,7 +329,7 @@ DefoRecoMainWindow::DefoRecoMainWindow(QWidget *parent)
                                                                                         analysisWidget);
   vbox->addWidget(analysisSelect);
 
-    DefoAnalysisWidget *analysisDisplay = new DefoAnalysisWidget(measurementPairListModel_,
+  DefoAnalysisWidget *analysisDisplay = new DefoAnalysisWidget(measurementPairListModel_,
                                                                measurementPairSelectionModel_,
                                                                analysisWidget);
   vbox->addWidget(analysisDisplay);
@@ -348,12 +348,12 @@ void DefoRecoMainWindow::quit()
   config->safe(std::string(Config::CMSTkModLabBasePath) + "/defo/defo.cfg");
 }
 
-void DefoRecoMainWindow::loadMeasurementButtonClicked() {
-  
+void DefoRecoMainWindow::loadMeasurementButtonClicked()
+{
   QString filename = QFileDialog::getOpenFileName(this,
-						  QString("Load Measurement"),
+                                                  QString("Load Measurement"),
                                                   currentDir_.absolutePath(),
-                          QString("ODM Measurement Files (*.odmx);;ODM Measurement Archive (*.odma)"));
+                                                  QString("ODM Measurement Files (*.odmx);;ODM Measurement Archive (*.odma)"));
   if (filename.isNull()) return;
 
   if (filename.endsWith(".odma")) {
@@ -410,16 +410,16 @@ void DefoRecoMainWindow::saveMeasurementButtonClicked() {
   listModel_->writePoints(currentDir_);
 }
 
-void DefoRecoMainWindow::exportMeasurementButtonClicked() {
-
+void DefoRecoMainWindow::exportMeasurementButtonClicked()
+{
   saveMeasurementButtonClicked();
 
-  QString filename = QFileDialog::getSaveFileName(this
-                                                , "export measurement"
-                                                , "./"
-                                                , "ODM Measurement Archive (*.odma)"
-                                                , 0
-                                                , 0);
+  QString filename = QFileDialog::getSaveFileName(this,
+                                                  "export measurement",
+                                                  "./",
+                                                  "ODM Measurement Archive (*.odma)",
+                                                  0,
+                                                  0);
   if (filename.isNull()) return;
   if (!filename.endsWith(".odma")) filename += ".odma";
 
