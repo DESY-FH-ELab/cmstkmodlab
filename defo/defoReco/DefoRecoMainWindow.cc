@@ -22,8 +22,8 @@
 
 //#define ANALYSISWIDGET
 
-DefoRecoMainWindow::DefoRecoMainWindow(QWidget *parent) :
-    QMainWindow(parent)
+DefoRecoMainWindow::DefoRecoMainWindow(QWidget *parent)
+: QMainWindow(parent)
 {
   ApplicationConfig* config = ApplicationConfig::instance();
 
@@ -125,8 +125,8 @@ DefoRecoMainWindow::DefoRecoMainWindow(QWidget *parent) :
   hbox->addWidget(exportMeasurementButton);
 
   DefoMeasurementListTreeWidget * treeWidget = new DefoMeasurementListTreeWidget(listModel_,
-										 selectionModel_,
-										 measurementInfoWidget);
+                                                                                 selectionModel_,
+                                                                                 measurementInfoWidget);
   vbox->addWidget(treeWidget);
 
   DefoMeasurementCommentTextView * commentView = new DefoMeasurementCommentTextView(selectionModel_,
@@ -137,7 +137,8 @@ DefoRecoMainWindow::DefoRecoMainWindow(QWidget *parent) :
                                                                                              measurementInfoWidget);
   vbox->addWidget(infoTreeWidget);
 
-  DefoRecoRawImageWidget *rawImage = new DefoRecoRawImageWidget(selectionModel_, measurementInfoWidget);
+  DefoRecoRawImageWidget *rawImage = new DefoRecoRawImageWidget(selectionModel_,
+                                                                measurementInfoWidget);
   layout->addWidget(rawImage);
 
   tabWidget_->addTab(measurementWidget, "Measurement");
@@ -150,7 +151,9 @@ DefoRecoMainWindow::DefoRecoMainWindow(QWidget *parent) :
   DefoMeasurementListComboBox *roiSelect = new DefoMeasurementListComboBox(listModel_, roiSelectionModel_, roiWidget);
   vbox->addWidget(roiSelect);
 
-  DefoRecoROIImageWidget *roiImage = new DefoRecoROIImageWidget(roiSelectionModel_, roiModel_, roiWidget);
+  DefoRecoROIImageWidget *roiImage = new DefoRecoROIImageWidget(roiSelectionModel_,
+                                                                roiModel_,
+                                                                roiWidget);
   vbox->addWidget(roiImage);
 
   tabWidget_->addTab(roiWidget, "ROI");
