@@ -150,7 +150,9 @@ DefoRecoMainWindow::DefoRecoMainWindow(QWidget *parent)
   roiWidget->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);
   roiWidget->setLayout(vbox);
 
-  DefoMeasurementListComboBox *roiSelect = new DefoMeasurementListComboBox(listModel_, roiSelectionModel_, roiWidget);
+  DefoMeasurementListComboBox *roiSelect = new DefoMeasurementListComboBox(listModel_,
+                                                                           roiSelectionModel_,
+                                                                           roiWidget);
   vbox->addWidget(roiSelect);
 
   DefoRecoROIImageWidget *roiImage = new DefoRecoROIImageWidget(roiSelectionModel_,
