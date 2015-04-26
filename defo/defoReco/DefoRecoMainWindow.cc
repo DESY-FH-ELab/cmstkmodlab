@@ -37,7 +37,7 @@ DefoRecoMainWindow::DefoRecoMainWindow(QWidget *parent)
   selectionModel_ = new DefoMeasurementSelectionModel(this);
 
   roiSelectionModel_ = new DefoMeasurementSelectionModel(this);
-  roiModel_ = new DefoROIModel(this);
+  roiModel_ = new DefoRecoROIModel(roiSelectionModel_, this);
 
   alignmentSelectionModel_ = new DefoMeasurementSelectionModel(this);
   alignmentModel_ = new DefoAlignmentModel(this);

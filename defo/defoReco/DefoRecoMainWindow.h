@@ -13,7 +13,7 @@
 
 #include "DefoRecoMeasurementListModel.h"
 #include "DefoMeasurementSelectionModel.h"
-#include "DefoROIModel.h"
+#include "DefoRecoROIModel.h"
 #include "DefoAlignmentModel.h"
 
 #include "DefoMeasurementListTreeWidget.h"
@@ -60,7 +60,7 @@ protected:
   DefoMeasurementSelectionModel *selectionModel_;
 
   DefoMeasurementSelectionModel *roiSelectionModel_;
-  DefoROIModel *roiModel_;
+  DefoRecoROIModel *roiModel_;
 
   DefoMeasurementSelectionModel *alignmentSelectionModel_;
   DefoAlignmentModel *alignmentModel_;

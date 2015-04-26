@@ -48,6 +48,7 @@ INCLUDEPATH += @basepath@/defo/defoCommon
 HEADERS += DefoRecoMainWindow.h \
            DefoRecoMeasurement.h \
            DefoRecoMeasurementListModel.h \
+           DefoRecoROIModel.h \
            DefoMeasurementListTreeWidget.h \
            DefoMeasurementInfoListTreeWidget.h \
            DefoMeasurementCommentTextView.h \
@@ -70,6 +71,7 @@ SOURCES += defoReco.cc \
            DefoRecoMainWindow.cc \
            DefoRecoMeasurement.cc \
            DefoRecoMeasurementListModel.cc \
+           DefoRecoROIModel.cc \
            DefoMeasurementListTreeWidget.cc \
            DefoMeasurementInfoListTreeWidget.cc \
            DefoMeasurementCommentTextView.cc \
