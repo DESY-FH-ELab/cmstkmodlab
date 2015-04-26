@@ -27,7 +27,7 @@ public:
   void write(const QString& filename);
   void read(const QString& filename);
 
-  void assignFrom(DefoROI* other);
+  bool assignFrom(DefoROI* other);
 
 protected:
 

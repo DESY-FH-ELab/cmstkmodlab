@@ -101,7 +101,7 @@ void DefoROIModel::removePoint()
 
 void DefoROIModel::assignFrom(DefoROI* roi)
 {
-  if (!roi_) return;
-  roi_->assignFrom(roi);
-  emit roiChanged();
+  if (!roi_ || !roi) return;
+  if (roi_->assignFrom(roi)) emit roiChanged();
+}
 }

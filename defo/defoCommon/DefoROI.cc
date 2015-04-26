@@ -172,11 +172,16 @@ void DefoROI::read(const QString& filename)
   }
 }
 
-void DefoROI::assignFrom(DefoROI* other)
+bool DefoROI::assignFrom(DefoROI* other)
 {
+  if (other==this) return false;
+
   clear();
 
   for (int i=0;i<other->size();++i) {
     append(other->at(i));
   }
+
+  return true;
+}
 }
