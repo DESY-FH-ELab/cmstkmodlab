@@ -1,5 +1,5 @@
-#ifndef ARDUINOPRESMODEL_H
-#define ARDUINOPRESMODEL_H
+#ifndef CORIFLOWMODEL_H
+#define CORIFLOWMODEL_H
 
 #include <cmath>
 
@@ -10,27 +10,27 @@
 #include "DeviceParameter.h"
 
 #ifdef USE_FAKEIO
-#include "devices/Arduino/ArduinoPresFake.h"
-typedef ArduinoPresFake ArduinoPres_t;
+#include "devices/Cori/CoriFlowFake.h"
+typedef CoriFlowFake CoriFlow_t;
 #else
-#include "devices/Arduino/ArduinoPres.h"
-typedef ArduinoPres ArduinoPres_t;
+#include "devices/Cori/CoriFlow.h"
+typedef CoriFlow CoriFlow_t;
 #endif
 
 /**
-  Command and control model of the petiteFleur chiller.
+  Command and control model of the Cori flow.
   */
-class ArduinoPresModel : public QObject,
-                         public AbstractDeviceModel<ArduinoPres_t>
+class CoriFlowModel : public QObject,
+public AbstractDeviceModel<CoriFlow_t>
 {
   Q_OBJECT
 public:
-  explicit ArduinoPresModel(const char* port,
-                            float updateInterval = 2,
-                            QObject *parent = 0);
+  explicit CoriFlowModel(const char* port,
+                     float updateInterval = 2,
+                     QObject *parent = 0);
 
-  float getPressureA() const;
-  float getPressureB() const;
+  float getTemp() const;
+  float getMeasure() const;
 
   public slots:
 
@@ -39,7 +39,7 @@ public:
   
   protected:
 
-  const QString ArduinoPres_PORT;
+  const QString CoriFlow_PORT;
 
   void initialize();
 
@@ -52,8 +52,8 @@ public:
   template <class T> void updateParameterCache(DeviceParameter<T>& parameter,
                                                const T& value);
 
-  float PressureA_;
-  float PressureB_;
+  float Temp_;
+  float Measure_;
 
   protected slots:
 
@@ -67,4 +67,4 @@ public:
   void controlStateChanged(bool);
 };
 
-#endif // ARDUINOPRESMODEL_H
+#endif // CORIFLOWMODEL_H

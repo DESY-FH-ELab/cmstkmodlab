@@ -80,4 +80,5 @@ void ArduinoPresWidget::updateInfo() {
   char bufferPB[10];
   sprintf(bufferPB, "%.02f", model_->getPressureB());
   PressureBLCD_->display(bufferPB);
+
 }

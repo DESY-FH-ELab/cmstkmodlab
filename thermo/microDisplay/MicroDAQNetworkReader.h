@@ -44,6 +44,11 @@ typedef struct {
 
     float          arduinoPressureA;
     float          arduinoPressureB;
+    float          arduinoFlow;
+
+    float          coriTemp;
+    float          coriPres;
+    float          coriMeasure;
 } Measurement_t;
 
 class MicroDAQNetworkReader : public QObject
@@ -74,6 +79,7 @@ protected:
     void processIotaSetup(QXmlStreamReader& xml);
     void processIotaValues(QXmlStreamReader& xml);
     void processArduinoPressure(QXmlStreamReader& xml);
+    void processCoriFlow(QXmlStreamReader& xml);
 
     Measurement_t measurement_;
 };

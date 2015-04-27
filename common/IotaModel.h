@@ -26,7 +26,7 @@ public AbstractDeviceModel<Iota_t>
   Q_OBJECT
 public:
   explicit IotaModel(const char* port,
-                     float updateInterval = 5,
+                     float updateInterval = 2,
                      QObject *parent = 0);
 
   bool isPumpEnabled() const;
