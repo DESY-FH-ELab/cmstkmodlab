@@ -11,11 +11,7 @@ class CoriFlowFake : public VCoriFlow
 
  
   bool IsCommunication( void ) const { return true; }
-  virtual float test( void ) const;
 
- 
- private:
-  float test_;
 
   void Device_Init( void );
 };

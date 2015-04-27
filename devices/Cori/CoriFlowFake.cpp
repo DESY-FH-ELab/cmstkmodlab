@@ -20,15 +20,9 @@
 CoriFlowFake::CoriFlowFake( const ioport_t ioPort )
     :VCoriFlow(ioPort)
 {
-     test_ = 0;
 }
 
-float CoriFlowFake::test( void ) const
 {
-  std::cout << " [CoriFlowFake::test] -- FAKE: Returning test = "
-        << test_ << std::endl;
-  usleep( 10000 );
-  return test_;
 }
 
 
