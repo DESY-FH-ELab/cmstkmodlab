@@ -26,7 +26,7 @@ public AbstractDeviceModel<CoriFlow_t>
   Q_OBJECT
 public:
   explicit CoriFlowModel(const char* port,
-                     float updateInterval = 5,
+                     float updateInterval = 2,
                      QObject *parent = 0);
 
   float getTemp() const;

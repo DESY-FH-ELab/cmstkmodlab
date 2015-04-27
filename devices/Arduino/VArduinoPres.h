@@ -20,12 +20,10 @@ class VArduinoPres
   virtual bool IsCommunication( void ) const = 0;
   virtual float GetPressureA( void ) const = 0;
   virtual float GetPressureB( void ) const = 0;
-  virtual float GetFlow( void ) const = 0;
 
  protected:
 
   float ToPressure(int) const;
-  float ToFlow(int) const;
 };
 
 #endif

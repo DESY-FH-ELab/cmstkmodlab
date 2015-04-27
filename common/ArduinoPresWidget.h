@@ -31,7 +31,6 @@ protected:
 
   QLCDNumber* PressureALCD_;
   QLCDNumber* PressureBLCD_;
-  QLCDNumber* FlowLCD_;
 
   public slots:
   void updateDeviceState( State newState );

@@ -20,7 +20,7 @@
 ArduinoPres::ArduinoPres( const ioport_t ioPort )
   : VArduinoPres(ioPort),
     isCommunication_(false),
-    uDelay_(100000)
+    uDelay_(250000)
 {
   comHandler_ = new ArduinoComHandler( ioPort );
   Device_Init();
@@ -97,35 +97,7 @@ float ArduinoPres::GetPressureB( void ) const
   int value = std::atoi(buf.c_str());
   return ToPressure(value);
 }
-///
-///
-///
-float ArduinoPres::GetFlow( void ) const
-{
-  #ifdef __ARDUINO_DEBUG
-  std::cout << "[ArduinoPres::GetFlow] -- DEBUG: Called." << std::endl;
-  #endif
 
-  char buffer[1000];
-
-  usleep( uDelay_ );
-  comHandler_->SendCommand( "PC" );
-
-  usleep( uDelay_ );
-  comHandler_->ReceiveString( buffer );
-  StripBuffer( buffer );
-
-  std::string buf = buffer;
-  if (buf.substr(0, buf.find(','))!="PC") {
-    std::cerr << " [ArduinoPres::GetFlow] ** ERROR: Device communication problem. "
-              << buf << std::endl;
-    //throw;
-  }
-  buf = buf.substr(buf.find(',')+1);
-
-  int value = std::atoi(buf.c_str());
-  return ToFlow(value);
-}
 ///
 /// strip trailing newlines & stuff
 /// from machine answer

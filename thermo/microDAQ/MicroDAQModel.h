@@ -110,7 +110,6 @@ protected:
     // ARDUINO PRES DATA
     float arduinoPressureA_;
     float arduinoPressureB_;
-    float arduinoFlow_;
 
     // CoriFlow DATA
     float coriTemp_;

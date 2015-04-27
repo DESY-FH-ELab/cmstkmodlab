@@ -26,12 +26,11 @@ class ArduinoPresModel : public QObject,
   Q_OBJECT
 public:
   explicit ArduinoPresModel(const char* port,
-                            float updateInterval = 5,
+                            float updateInterval = 2,
                             QObject *parent = 0);
 
   float getPressureA() const;
   float getPressureB() const;
-  float getFlow() const;
 
   public slots:
 
@@ -55,7 +54,6 @@ public:
 
   float PressureA_;
   float PressureB_;
-  float Flow_;
 
   protected slots:
 

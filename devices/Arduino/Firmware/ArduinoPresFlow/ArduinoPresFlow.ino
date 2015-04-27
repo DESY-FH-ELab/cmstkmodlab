@@ -6,7 +6,7 @@ boolean stringComplete = false;
 const int channelA = A0; // first analog sensor
 const int channelB = A1; // second analog sensor
 const int channelC = A2; // third analog sensor
-const int num = 4;       // number of times pressure should be checked
+const int num = 10;       // number of times pressure should be checked
 int average;
 
 void readSensor(const char * prefix, int channel)
@@ -41,8 +41,6 @@ void loop()
       readSensor("PA,", channelA);
     } else if (inputString.startsWith("PB")) {
       readSensor("PB,", channelB);
-    } else if (inputString.startsWith("PC")) {
-      readSensor("PC,", channelC);
     } else if (inputString.startsWith("ID")) {
       Serial.println("ID,ArduinoPres");
     } else {

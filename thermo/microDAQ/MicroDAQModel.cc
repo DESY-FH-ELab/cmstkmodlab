@@ -26,7 +26,6 @@ MicroDAQModel::MicroDAQModel(IotaModel* iotaModel,
     iotaSetFlow_(0.0),
     arduinoPressureA_(0.0),
     arduinoPressureB_(0.0),
-    arduinoFlow_(0.0),
     coriTemp_(0.0),
     coriMeasure_(0.0)
 {
@@ -84,7 +83,6 @@ void MicroDAQModel::createDAQStatusMessage(QString &buffer)
     xml.writeAttribute("time", utime.toString(Qt::ISODate));
     xml.writeAttribute("pA", QString::number(arduinoPressureA_, 'e', 3));
     xml.writeAttribute("pB", QString::number(arduinoPressureB_, 'e', 3));
-    xml.writeAttribute("flow", QString::number(arduinoFlow_, 'e', 3));
     xml.writeEndElement();
 
 
@@ -190,7 +188,6 @@ void MicroDAQModel::arduinoPresInfoChanged()
     bool changed = false;
     changed |= updateIfChanged<float>(arduinoPressureA_, arduinoPresModel_->getPressureA());
     changed |= updateIfChanged<float>(arduinoPressureB_, arduinoPresModel_->getPressureB());
-    changed |= updateIfChanged<float>(arduinoFlow_, arduinoPresModel_->getFlow());
 
     if (changed) {
         QString buffer;
@@ -200,7 +197,6 @@ void MicroDAQModel::arduinoPresInfoChanged()
         xml.writeAttribute("time", utime.toString(Qt::ISODate));
         xml.writeAttribute("pA", QString::number(arduinoPressureA_, 'e', 3));
         xml.writeAttribute("pB", QString::number(arduinoPressureB_, 'e', 3));
-        xml.writeAttribute("flow", QString::number(arduinoFlow_, 'e', 3));
         xml.writeEndElement();
 
         emit daqMessage(buffer);

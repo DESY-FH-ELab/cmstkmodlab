@@ -30,12 +30,6 @@ ArduinoPresWidget::ArduinoPresWidget(ArduinoPresModel* model, QWidget *parent) :
   operationLayout->addRow(QString::fromUtf8("pressure on sensor B (bar)"),
                              PressureBLCD_);
 
-  FlowLCD_ = new QLCDNumber(LCD_SIZE, operationPanel_);
-  FlowLCD_->setSegmentStyle(QLCDNumber::Flat);
-  FlowLCD_->setSmallDecimalPoint(true);
-  operationLayout->addRow(QString::fromUtf8("flow on sensor C (ml/min)"),
-                             FlowLCD_);
-
   // Connect all the signals
   connect(model_, SIGNAL(deviceStateChanged(State)),
           this, SLOT(updateDeviceState(State)));
@@ -87,7 +81,4 @@ void ArduinoPresWidget::updateInfo() {
   sprintf(bufferPB, "%.02f", model_->getPressureB());
   PressureBLCD_->display(bufferPB);
 
-  char bufferFlow[10];
-  sprintf(bufferFlow, "%.02f", model_->getFlow());
-  FlowLCD_->display(bufferFlow);
 }
