@@ -1,5 +1,5 @@
 #ifndef CORIFLOWWIDGET_H
-#define CORIDLOWWIDGET_H
+#define CORIFLOWWIDGET_H
 
 #include <QCheckBox>
 #include <QDoubleSpinBox>
