@@ -24,7 +24,10 @@ else {
   LIBS += -lopencv_core -lopencv_imgproc -lopencv_highgui
 }
 
-QT       += core widgets xml
+QT += core xml
+greaterThan(QT_MAJOR_VERSION, 4) {
+  QT += widgets
+} 
 
 TARGET = common_test
 DEPENDPATH += ../common
