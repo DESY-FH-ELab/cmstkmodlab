@@ -1,11 +1,13 @@
 #include "HuberPetiteFleurWidget.h"
 
 /**
-  \brief Creates a new panel with all the controls and read-outs for the HuberPetiteFleur
-  chiller.
-  */
-HuberPetiteFleurWidget::HuberPetiteFleurWidget(HuberPetiteFleurModel* model, QWidget *parent) :
-    QWidget(parent), model_(model)
+   \brief Creates a new panel with all the controls and read-outs for the HuberPetiteFleur
+   chiller.
+*/
+HuberPetiteFleurWidget::HuberPetiteFleurWidget(HuberPetiteFleurModel* model,
+                                               QWidget *parent)
+  : QWidget(parent),
+    model_(model)
 {
   QVBoxLayout* layout = new QVBoxLayout(this);
   setLayout(layout);
@@ -25,7 +27,7 @@ HuberPetiteFleurWidget::HuberPetiteFleurWidget(HuberPetiteFleurModel* model, QWi
   bathTempLCD_->setSegmentStyle(QLCDNumber::Flat);
   bathTempLCD_->setSmallDecimalPoint(true);
   operationLayout->addRow(QString::fromUtf8("Bath temperature (°C)"),
-                             bathTempLCD_);
+                          bathTempLCD_);
 
   DeviceParameterFloat working = model_->getWorkingTemperatureParameter();
   workingTempSpinner_ = new QDoubleSpinBox(operationPanel_);
@@ -63,8 +65,8 @@ HuberPetiteFleurWidget::HuberPetiteFleurWidget(HuberPetiteFleurModel* model, QWi
 }
 
 /**
-  Updates the GUI according to the new state of the chiller chiller.
-  */
+   Updates the GUI according to the new state of the chiller chiller.
+*/
 void HuberPetiteFleurWidget::updateDeviceState(State newState)
 {
   bool ready = (newState == READY);
@@ -82,9 +84,9 @@ void HuberPetiteFleurWidget::controlStateChanged(bool enabled)
 }
 
 /**
-  Sets the values of all the subelements (except the global enablement)
-  according to the model.
-  */
+   Sets the values of all the subelements (except the global enablement)
+   according to the model.
+*/
 void HuberPetiteFleurWidget::updateInfo()
 {
   circulatorCheckBox_->setChecked(model_->isCirculatorEnabled());
@@ -93,5 +95,6 @@ void HuberPetiteFleurWidget::updateInfo()
   sprintf(buffer, "%.02f", model_->getBathTemperature());
   bathTempLCD_->display(buffer);
 
-  workingTempSpinner_->setValue(model_->getWorkingTemperatureParameter().getValue());
+  if (!workingTempSpinner_->hasFocus())
+    workingTempSpinner_->setValue(model_->getWorkingTemperatureParameter().getValue());
 }

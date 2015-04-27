@@ -14,6 +14,7 @@ LIBS += -L@basepath@/devices/lib -lTkModLabPfeiffer
 LIBS += -L@basepath@/devices/lib -lTkModLabHuber
 LIBS += -L@basepath@/devices/lib -lTkModLabIota
 LIBS += -L@basepath@/devices/lib -lTkModLabArduino
+LIBS += -L@basepath@/devices/lib -lTkModLabCori
 LIBS += -L@basepath@/external/ddierckx -lddierckx
 
 QMAKE = @qmake@
@@ -66,8 +67,11 @@ HEADERS += nqlogger.h \
            ScriptableIota.h \
            IotaWidget.h \
            ArduinoPresWidget.h \
-           ScriptableArduinoPres.h \
-           ArduinoPresModel.h
+	   ScriptableArduinoPres.h \
+           ArduinoPresModel.h \
+           CoriFlowWidget.h \
+           ScriptableCoriFlow.h \
+           CoriFlowModel.h
            
 SOURCES += nqlogger.cc \
            npoint2D.cc \
@@ -104,4 +108,7 @@ SOURCES += nqlogger.cc \
            IotaWidget.cc \
            ArduinoPresWidget.cc \
            ScriptableArduinoPres.cc \
-           ArduinoPresModel.cc
+           ArduinoPresModel.cc \
+           CoriFlowWidget.cc \
+           ScriptableCoriFlow.cc \
+           CoriFlowModel.cc

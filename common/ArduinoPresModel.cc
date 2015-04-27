@@ -93,7 +93,7 @@ void ArduinoPresModel::updateInformation() {
     float newGetPressureB = controller_->GetPressureB();
 
     if (newGetPressureA != PressureA_ ||
-        newGetPressureB != PressureB_) {
+        newGetPressureB != PressureB_ ){
 
       PressureA_ = newGetPressureA;
       PressureB_ = newGetPressureB;

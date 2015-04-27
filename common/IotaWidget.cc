@@ -5,8 +5,8 @@
   pump.
   */
 IotaWidget::IotaWidget(IotaModel* model, QWidget *parent)
-  : QWidget(parent),
-    model_(model)
+: QWidget(parent),
+  model_(model)
 {
   QVBoxLayout* layout = new QVBoxLayout(this);
   setLayout(layout);
@@ -118,7 +118,9 @@ void IotaWidget::updateInfo() {
   sprintf(bufferF, "%.02f", model_->getActFlow());
   aFlowLCD_->display(bufferF);
 
+  if (!sPressureSpinner_->hasFocus())
+    sPressureSpinner_->setValue(model_->getSetPressureParameter().getValue());
 
-  sPressureSpinner_->setValue(model_->getSetPressureParameter().getValue());
-  sFlowSpinner_->setValue(model_->getSetFlowParameter().getValue());
+  if (!sFlowSpinner_->hasFocus())
+    sFlowSpinner_->setValue(model_->getSetFlowParameter().getValue());
 }

@@ -11,6 +11,7 @@ subdirs	      = Julabo \
 		Conrad \
 		Pfeiffer \
                 Iota \
+                Cori \
                 Arduino
 
 ifeq ($(NOTHERMAL),0)

@@ -16,3 +16,4 @@ float VArduinoPres::ToPressure(int value) const
   float ret = value;
   return 100.*ret/1023.;
 }
+

@@ -15,7 +15,12 @@ QMAKE_CXXFLAGS += -DAPPLICATIONVERSIONSTR=\\\"`git describe --dirty --always --t
 
 INCLUDEPATH += @qwtincludes@
 DEFINES += @configdefines@
-QT += core gui opengl script xml network svg
+
+QT += core gui xml network script svg
+greaterThan(QT_MAJOR_VERSION, 4) {
+  QT += widgets
+} 
+
 TEMPLATE = app
 TARGET = thermoDAQ
 DEPENDPATH += @basepath@/common

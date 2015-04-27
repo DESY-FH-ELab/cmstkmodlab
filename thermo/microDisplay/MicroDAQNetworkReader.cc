@@ -117,6 +117,17 @@ void MicroDAQNetworkReader::processArduinoPressure(QXmlStreamReader& xml)
 
     measurement_.arduinoPressureA = xml.attributes().value("pA").toString().toFloat();
     measurement_.arduinoPressureB = xml.attributes().value("pB").toString().toFloat();
+    measurement_.arduinoFlow = xml.attributes().value("pC").toString().toFloat();
+}
+
+void MicroDAQNetworkReader::processCoriFlow(QXmlStreamReader& xml)
+{
+    QString time = xml.attributes().value("time").toString();
+    measurement_.dt = QDateTime::fromString(time, Qt::ISODate);
+
+    measurement_.coriTemp = xml.attributes().value(":06030421412147").toString().toFloat();
+    measurement_.coriPres = xml.attributes().value(":06030421412148").toString().toFloat();
+    measurement_.coriMeasure = xml.attributes().value(":06030401210120").toString().toFloat();
 }
 
 void MicroDAQNetworkReader::processLine(QString& line)
@@ -154,6 +165,9 @@ void MicroDAQNetworkReader::processLine(QString& line)
             }
             if (xml.name()=="ArduinoPressure") {
                 processArduinoPressure(xml);
+            }
+            if (xml.name()=="CoriFlow") {
+                processCoriFlow(xml);
             }
         }
     }
