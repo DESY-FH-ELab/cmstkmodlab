@@ -4,7 +4,7 @@ NODEFO        = @nodefo@
 USEFAKEDEVICES= @usefakedevices@
 QMAKE         = @qmake@
 
-subdirs	      = devices tools common
+subdirs	      = devices external tools common common_test
 ifeq ($(NOTHERMAL),0)
 subdirs      += thermo
 endif
@@ -12,7 +12,7 @@ ifeq ($(NODEFO),0)
 subdirs      += defo conradControl
 endif
 
-qtsubdirs     = common
+qtsubdirs     = common common_test
 ifeq ($(NOTHERMAL),0)
 qtsubdirs    += thermo/thermoDAQ thermo/microDAQ thermo/thermoDAQ2Root thermo/thermoDisplay thermo/microDisplay thermo/thermoDAQ2Log
 endif
@@ -20,11 +20,8 @@ ifeq ($(NODEFO),0)
 qtsubdirs    += defo/defoCommon defo/defoDAQ defo/defoReco defo/defoCalib conradControl
 endif
 
-all: version qt
+all: qt
 	@for dir in $(subdirs); do (cd $$dir; make); done
-
-version:
-	cd common; ./../config.status ApplicationVersion.h.in; cd -
 
 qt:
 	@for dir in $(qtsubdirs); do (cd $$dir; @qmake@); done

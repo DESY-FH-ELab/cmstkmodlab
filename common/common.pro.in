@@ -4,8 +4,8 @@
 #
 #-------------------------------------------------
 
-INCLUDEPATH += @qwtincludes@
-LIBS += @qwtlibs@ -lGL -lGLU
+#INCLUDEPATH += @qwtincludes@
+#LIBS += @qwtlibs@ -lGL -lGLU
 LIBS += -L@basepath@/devices/lib -lTkModLabKeithley
 LIBS += -L@basepath@/devices/lib -lTkModLabGreisinger
 LIBS += -L@basepath@/devices/lib -lTkModLabJulabo
@@ -15,9 +15,12 @@ LIBS += -L@basepath@/devices/lib -lTkModLabHuber
 LIBS += -L@basepath@/devices/lib -lTkModLabIota
 LIBS += -L@basepath@/devices/lib -lTkModLabArduino
 LIBS += -L@basepath@/devices/lib -lTkModLabCori
+LIBS += -L@basepath@/external/ddierckx -lddierckx
 
 QMAKE = @qmake@
-QMAKE_CXXFLAGS += -std=c++0x
+
+QMAKE_CXXFLAGS += -std=c++11
+QMAKE_CXXFLAGS += -DAPPLICATIONVERSIONSTR=\\\"`git describe --dirty --always --tags`\\\"
 
 DEFINES += @configdefines@
 QT += core gui opengl script xml
@@ -28,6 +31,16 @@ INCLUDEPATH += .
 INCLUDEPATH += @basepath@
 
 HEADERS += nqlogger.h \
+           npoint2D.h \
+           npoint3D.h \
+           nvector2D.h \
+           nvector3D.h \
+           ndirection2D.h \
+           ndirection3D.h \
+           nline2D.h \
+           nline3D.h \
+           nplane3D.h \
+           nspline2D.h \
            DeviceState.h \
            DeviceParameter.h \
            Ringbuffer.h \
@@ -60,7 +73,17 @@ HEADERS += nqlogger.h \
            ScriptableCoriFlow.h \
            CoriFlowModel.h
            
-SOURCES += nqlogger.cpp \
+SOURCES += nqlogger.cc \
+           npoint2D.cc \
+           npoint3D.cc \
+           nvector2D.cc \
+           nvector3D.cc \
+           ndirection2D.cc \
+           ndirection3D.cc \
+           nline2D.cc \
+           nline3D.cc \
+           nplane3D.cc \
+           nspline2D.cc \
            SingletonApplication.cc \
            ApplicationConfig.cc \
            ApplicationConfigReader.cc \

@@ -6,7 +6,7 @@
 #include <QString>
 #include <QTimer>
 
-#include "DefoState.h"
+#include "DeviceState.h"
 
 #ifdef USE_FAKEIO
 #include "devices/Julabo/JulaboFP50Fake.h"
@@ -81,14 +81,16 @@ typedef Parameter<unsigned int> ParameterUInt;
 /**
   Command and control model of the Julabo chiller.
   */
-class DefoJulaboModel :
-    public QObject
-  , public DefoAbstractDeviceModel<JulaboFP50_t>
+class DefoJulaboModel : public QObject, 
+                        public AbstractDeviceModel<JulaboFP50_t>
 {
 
   Q_OBJECT
+
 public:
-  explicit DefoJulaboModel(float updateInterval = 5, QObject *parent = 0);
+
+  explicit DefoJulaboModel(const char* port,
+			   float updateInterval = 5, QObject *parent = 0);
 
   const ParameterFloat& getProportionalParameter() const;
   const ParameterUInt& getIntegralParameter() const;
@@ -118,14 +120,14 @@ public slots:
 
 
 protected:
-  static const QString JULABO_PORT;
 
-//  VJulaboFP50* controller_;
-//  void renewController( const QString& port );
+  // VJulaboFP50* controller_;
+  // void renewController( const QString& port );
   void initialize();
-//  void close();
+  // void close();
 
   /// Time interval between cache refreshes; in seconds.
+  QString port_;
   const float updateInterval_;
   QTimer* timer_;
 

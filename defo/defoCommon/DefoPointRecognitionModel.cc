@@ -1,4 +1,4 @@
-#include "DefoConfig.h"
+#include "ApplicationConfig.h"
 
 #include "DefoPointRecognitionModel.h"
 

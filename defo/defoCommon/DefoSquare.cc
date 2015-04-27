@@ -2,7 +2,6 @@
 
 #include "DefoSquare.h"
 
-
 ///
 ///
 ///
@@ -130,16 +129,6 @@ void DefoSquareIterator::operator++() {
 ///
 ///
 bool DefoSquareCollection::isInside( const DefoPoint& aPoint ) const {
-
-//  for( DefoSquareCollection::const_iterator it = this->begin(); it < this->end(); ++it ) {
-//    if( it->isInside( aPoint ) ) {
-////       std::cout << "REJ: " << aPoint.getX() << " " << aPoint.getY() << " " << it->getCenter().getX() << " " << it->getCenter().getY()
-////       		<< " " << it->getHalfWidth() << std::endl;
-//      return true;
-//    }
-//  }
-
-//  return false;
 
   DefoSquareCollection::const_iterator it = this->begin();
 

@@ -1,10 +1,12 @@
 #include <QPlainTextDocumentLayout>
 
+#include <nqlogger.h>
+
 #include "DefoCameraModel.h"
 
 DefoCameraModel::DefoCameraModel(QObject *parent)
   : QObject(parent),
-    DefoAbstractDeviceModel()
+    AbstractDeviceModel()
 {
   comment_ = new QTextDocument(this);
   comment_->setDocumentLayout(new QPlainTextDocumentLayout(comment_));
@@ -19,7 +21,9 @@ DefoCameraModel::DefoCameraModel(QObject *parent)
   parameters_[WHITE_BALANCE] = initValue;
  
   liveViewTimer_.setInterval(1000);
-  connect(&liveViewTimer_, SIGNAL(timeout()), this, SLOT(acquireLiveViewPicture()));
+
+  connect(&liveViewTimer_, SIGNAL(timeout()),
+          this, SLOT(acquireLiveViewPicture()));
  
   setDeviceEnabled(true);
 }
@@ -36,7 +40,7 @@ void DefoCameraModel::resetParameterCache()
 /// Trivial reimplementation as a slot.
 void DefoCameraModel::setDeviceEnabled(bool enabled)
 {
-  DefoAbstractDeviceModel::setDeviceEnabled(enabled);
+  AbstractDeviceModel::setDeviceEnabled(enabled);
 }
 
 void DefoCameraModel::setControlsEnabled(bool enabled)
@@ -66,15 +70,9 @@ void DefoCameraModel::initialize()
 {
   setDeviceState(INITIALIZING);
 
-  std::cout << "test 1" << std::endl;
-
   renewController("usb:");
 
-  std::cout << "test 2" << std::endl;
-
   if (controller_->initialize()) {
-
-    std::cout << "test 3" << std::endl;
 
     setOptionSelection(APERTURE,
 		       controller_->readOption(VEOS550D::APERTURE));
@@ -108,13 +106,10 @@ void DefoCameraModel::setOptionSelection(const Option &option, int value)
     // int oldValue = parameters_[option];
     bool success = controller_->writeOption(static_cast<VEOS550D::Option>(option),
 					    value);
-    // std::cout << success << std::endl;
 
     if (success)
       parameters_[option] = value;
     // else don't change
-
-    // std::cout << parameters_[option] << std::endl;
 
     emit deviceOptionChanged(option, parameters_[option]);
   }

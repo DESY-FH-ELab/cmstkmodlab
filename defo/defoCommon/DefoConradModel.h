@@ -6,7 +6,7 @@
 #include <QDir>
 #include <iostream>
 
-#include "DefoState.h"
+#include "DeviceState.h"
 
 #ifdef USE_FAKEIO
 #include "devices/Conrad/ConradControllerFake.h"
@@ -35,7 +35,7 @@ typedef ConradController ConradController_t;
   */
 class DefoConradModel :
     public QObject
-  , public DefoAbstractDeviceModel<ConradController_t>
+  , public AbstractDeviceModel<ConradController_t>
 {
   Q_OBJECT
 

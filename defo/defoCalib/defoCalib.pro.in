@@ -12,12 +12,15 @@ LIBS += -L@basepath@/devices/lib -lTkModLabJulabo
 LIBS += -L@basepath@/devices/lib -lTkModLabHameg
 LIBS += -L@basepath@/devices/lib -lTkModLabConrad
 LIBS += -L@basepath@/devices/lib -lTkModLabCanon
+LIBS += -L@basepath@/common -lCommon
 LIBS += -L@basepath@/defo/defoCommon -lDefoCommon
 LIBS += -lgphoto2 -lexiv2
 LIBS += -lopencv_core -lopencv_imgproc -lopencv_highgui
 
 QMAKE = @qmake@
-QMAKE_CXXFLAGS += -std=c++0x
+
+QMAKE_CXXFLAGS += -std=c++11
+QMAKE_CXXFLAGS += -DAPPLICATIONVERSIONSTR=\\\"`git describe --dirty --always --tags`\\\"
 
 macx {
 
@@ -26,14 +29,16 @@ else {
 
 }
 
-QT       += core xml
+QT       += core widgets xml
 
 TARGET = defoCalib
-DEPENDPATH += ../defoCommon
+DEPENDPATH += ../../common ../defoCommon
 INCLUDEPATH += .
 INCLUDEPATH += ..
 INCLUDEPATH += @basepath@
+INCLUDEPATH += @basepath@/common
 INCLUDEPATH += @basepath@/defo/defoCommon
+
 CONFIG   += console
 CONFIG   -= app_bundle
 

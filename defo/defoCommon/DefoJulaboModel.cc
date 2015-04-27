@@ -1,10 +1,10 @@
+#include <iostream>
+
 #include "DefoJulaboModel.h"
 
 /*
   DefoJulaboModel implementation
   */
-
-const QString DefoJulaboModel::JULABO_PORT = QString("/dev/ttyS5");
 
 /**
   \brief Creates a new DefoJulaboModel for command and control of the chiller.
@@ -16,66 +16,74 @@ const QString DefoJulaboModel::JULABO_PORT = QString("/dev/ttyS5");
   \arg updateInterval Time between read-out cache refreshes; in seconds.
   \arg parent Pointer to the parent QObject.
   */
-DefoJulaboModel::DefoJulaboModel(float updateInterval, QObject *parent) :
-    QObject(parent)
-//  , state_(OFF) // Initialize all fields to prevent random values
-//  , controller_(NULL)
-  , DefoAbstractDeviceModel()
-  , updateInterval_(updateInterval)
-  , proportional_(0.1, 99.9, 1)
-  , integral_(3, 9999, 0)
-  , differential_(0, 999, 0)
-  , circulatorEnabled_(false)
-  , pumpPressure_(1, 4, 0)
-  , workingTemperature_(-94.99, 300.00, 2)
-  , bathTemperature_(0)
-  , safetySensorTemperature_(0)
-  , power_(0)
+DefoJulaboModel::DefoJulaboModel(const char* port,
+				 float updateInterval, QObject *parent) :
+  QObject(parent),
+  AbstractDeviceModel<JulaboFP50_t>(),
+  port_(port),
+  updateInterval_(updateInterval),
+  proportional_(0.1, 99.9, 1),
+  integral_(3, 9999, 0),
+  differential_(0, 999, 0),
+  circulatorEnabled_(false),
+  pumpPressure_(1, 4, 0),
+  workingTemperature_(-94.99, 300.00, 2),
+  bathTemperature_(0),
+  safetySensorTemperature_(0),
+  power_(0)
 {
-
   timer_ = new QTimer(this);
   timer_->setInterval(updateInterval_ * 1000);
   connect( timer_, SIGNAL(timeout()), this, SLOT(updateInformation()) );
 
-  setDeviceEnabled(true);
-
+  setDeviceEnabled(false);
+  setControlsEnabled(true);
 }
 
 // Getter functions for (cached) Julabo state information
 
-const ParameterFloat& DefoJulaboModel::getProportionalParameter() const {
+const ParameterFloat& DefoJulaboModel::getProportionalParameter() const
+{
   return proportional_;
 }
 
-const ParameterUInt& DefoJulaboModel::getIntegralParameter() const {
+const ParameterUInt& DefoJulaboModel::getIntegralParameter() const
+{
   return integral_;
 }
 
-const ParameterUInt& DefoJulaboModel::getDifferentialParameter() const {
+const ParameterUInt& DefoJulaboModel::getDifferentialParameter() const
+{
   return differential_;
 }
 
-bool DefoJulaboModel::isCirculatorEnabled() const {
+bool DefoJulaboModel::isCirculatorEnabled() const
+{
   return circulatorEnabled_;
 }
 
-const ParameterUInt& DefoJulaboModel::getPumpPressureParameter() const {
+const ParameterUInt& DefoJulaboModel::getPumpPressureParameter() const
+{
   return pumpPressure_;
 }
 
-const ParameterFloat& DefoJulaboModel::getWorkingTemperatureParameter() const {
+const ParameterFloat& DefoJulaboModel::getWorkingTemperatureParameter() const
+{
   return workingTemperature_;
 }
 
-float DefoJulaboModel::getBathTemperature() const {
+float DefoJulaboModel::getBathTemperature() const
+{
   return bathTemperature_;
 }
 
-float DefoJulaboModel::getSafetySensorTemperature() const {
+float DefoJulaboModel::getSafetySensorTemperature() const
+{
   return safetySensorTemperature_;
 }
 
-unsigned int DefoJulaboModel::getPower() const {
+unsigned int DefoJulaboModel::getPower() const
+{
   return power_;
 }
 
@@ -83,29 +91,29 @@ unsigned int DefoJulaboModel::getPower() const {
   Sets up the communication with the Julabo FP50 chiller and retrieves the
   settings and read-outs.
   */
-void DefoJulaboModel::initialize() {
+void DefoJulaboModel::initialize()
+{
+  std::cout << "void DefoJulaboModel::initialize()" << std::endl;
 
   setDeviceState(INITIALIZING);
 
-  renewController(JULABO_PORT);
+  renewController(port_);
 
   bool enabled = ( controller_ != NULL ) && ( controller_->IsCommunication() );
 
   if ( enabled ) {
     setDeviceState(READY);
     updateInformation();
-  }
-  else {
+  } else {
     setDeviceState( OFF );
     delete controller_;
     controller_ = NULL;
   }
-
 }
 
 /// \see DefoAbstractDeviceModel::setDeviceState
-void DefoJulaboModel::setDeviceState( State state ) {
-
+void DefoJulaboModel::setDeviceState( State state )
+{
   if ( state_ != state ) {
     state_ = state;
 
@@ -117,26 +125,25 @@ void DefoJulaboModel::setDeviceState( State state ) {
 
     emit deviceStateChanged(state);
   }
-
 }
 
 /**
   Updates the cached information about the Julabo chiller and signals any
   changes.
   */
-void DefoJulaboModel::updateInformation() {
-
+void DefoJulaboModel::updateInformation()
+{
   // NOTE Julabo status messages in manual §12.4
   if ( state_ == READY ) {
     float newBathTemp = controller_->GetBathTemperature();
-//    float newSafetySensorTemp = controller_->GetSafetySensorTemperature();
+    // float newSafetySensorTemp = controller_->GetSafetySensorTemperature();
     float newWorkingTemp = controller_->GetWorkingTemperature();
     unsigned int newHeatingPower = controller_->GetHeatingPower();
     unsigned int newPumpPressure = controller_->GetPumpPressure();
     bool newCirculatorStatus = controller_->GetCirculatorStatus();
 
     // NOTE virtual std::pair<int,std::string> GetStatus( void ) const = 0;
-//    std::pair<int,std::string> status = controller_->GetStatus();
+    // std::pair<int,std::string> status = controller_->GetStatus();
 
     if (   newBathTemp != bathTemperature_
         || newWorkingTemp != workingTemperature_.getValue()
@@ -154,11 +161,8 @@ void DefoJulaboModel::updateInformation() {
       emit informationChanged();
 
     }
-
   }
-
 }
-
 
 /* CONTROL FUNCTIONS */
 
@@ -167,11 +171,9 @@ void DefoJulaboModel::updateInformation() {
   Will signal upon succes and failure, such that GUI induced request can be
   denied.
   */
-template <class T> void DefoJulaboModel::updateParameterCache(
-    Parameter<T>& parameter
-  , const T& value
-) {
-
+template <class T> void DefoJulaboModel::updateParameterCache(Parameter<T>& parameter,
+							      const T& value)
+{
   if ( parameter.getValue() != value ) {
     // Store old value
     T oldValue = parameter.getValue();
@@ -193,35 +195,39 @@ template <class T> void DefoJulaboModel::updateParameterCache(
 // Device control
 
 /// Attempts to enable/disable the (communication with) the Julabo FP50 chiller.
-void DefoJulaboModel::setDeviceEnabled(bool enabled) {
-  DefoAbstractDeviceModel::setDeviceEnabled(enabled);
+void DefoJulaboModel::setDeviceEnabled(bool enabled)
+{
+  AbstractDeviceModel::setDeviceEnabled(enabled);
 }
 
-void DefoJulaboModel::setControlsEnabled(bool enabled) {
+void DefoJulaboModel::setControlsEnabled(bool enabled)
+{
   emit controlStateChanged(enabled);
 }
 
 // Cooling parameters
 
 /// Attempts to set the proportional parameter (Xp) to the given value.
-void DefoJulaboModel::setProportionalValue(double value) {
+void DefoJulaboModel::setProportionalValue(double value)
+{
   updateParameterCache( proportional_, static_cast<float>(value) );
 }
 
 /// Attempts to set the integral parameter (Tn) to the given value.
-void DefoJulaboModel::setIntegralValue(int value) {
+void DefoJulaboModel::setIntegralValue(int value)
+{
   updateParameterCache( integral_, static_cast<unsigned int>(value) );
 }
 
 /// Attempts to set the differential parameter (Tv) to the given value.
-void DefoJulaboModel::setDifferentialValue(int value) {
+void DefoJulaboModel::setDifferentialValue(int value)
+{
   updateParameterCache( differential_, static_cast<unsigned int>(value) );
 }
 
-
 /// Attempts to enable or disable the circulator.
-void DefoJulaboModel::setCirculatorEnabled(bool enabled) {
-
+void DefoJulaboModel::setCirculatorEnabled(bool enabled)
+{
   if ( circulatorEnabled_ != enabled ) {
 
     // Store new value
@@ -237,14 +243,12 @@ void DefoJulaboModel::setCirculatorEnabled(bool enabled) {
       circulatorEnabled_ = !enabled;
 
     emit informationChanged();
-
   }
-
 }
 
 /// Attempts to set the pump pressure stage.
-void DefoJulaboModel::setPumpPressureValue(int pressure) {
-
+void DefoJulaboModel::setPumpPressureValue(int pressure)
+{
   if ( (int)pumpPressure_.getValue() != pressure ) {
 
     unsigned int oldValue = pumpPressure_.getValue();
@@ -255,13 +259,11 @@ void DefoJulaboModel::setPumpPressureValue(int pressure) {
       pumpPressure_.setValue(oldValue);
 
     emit informationChanged();
-
   }
-
 }
 
-void DefoJulaboModel::setWorkingTemperatureValue(double value) {
-
+void DefoJulaboModel::setWorkingTemperatureValue(double value)
+{
   if ( state_ == READY ) {
 
     if ( workingTemperature_.getValue() != value ) {

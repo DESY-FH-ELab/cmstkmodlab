@@ -10,7 +10,7 @@ DefoScriptModel::DefoScriptModel(
     DefoConradModel* conradModel
   , DefoCameraModel* cameraModel
   , DefoJulaboModel* julaboModel
-  , DefoKeithleyModel* keithleyModel
+  , KeithleyModel* keithleyModel
   , QObject *parent
 ) :
     QObject(parent)
@@ -45,7 +45,7 @@ DefoScriptModel::DefoScriptModel(
   connect(julaboModel_, SIGNAL(defoMessage(const QString &)),
 	  this, SLOT(doAppendMessageText(const QString &)));
 
-  connect(keithleyModel_, SIGNAL(defoMessage(const QString &)),
+  connect(keithleyModel_, SIGNAL(message(const QString &)),
 	  this, SLOT(doAppendMessageText(const QString &)));
 
   connect(&executionTimer_, SIGNAL(timeout()), this, SLOT(executionHeartBeat()));

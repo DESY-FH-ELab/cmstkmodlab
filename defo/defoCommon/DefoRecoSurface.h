@@ -13,8 +13,6 @@
 #include "DefoPoint.h"
 #include "DefoSurface.h"
 #include "DefoSpline.h"
-#include "DefoConfigReader.h"
-
 
 ///
 /// perform surface reconstruction
@@ -37,12 +35,19 @@ class DefoRecoSurface : public QObject
   void setPitchX( double p ) { pitchX_ = p; }
   void setPitchY( double p ) { pitchY_ = p; }
   void setFocalLength( double l ) { focalLength_ = l; }
+  void setImageSize(std::pair<double, double> imageSize) { imageSize_ = imageSize; }
   std::vector<DefoPoint> const& getIndexedPoints( void ) { return indexedPoints_; }
   void calculateHelpers(void);
+
+  void setCalibX( double v) { calibX_ = v; }
+  void setCalibY( double v) { calibY_ = v; }
+  void setCalibZx( double v) { calibZx_ = v; }
+  void setCalibZy( double v) { calibZy_ = v; }
 
   void dump();
 
  private:
+
   const DefoSplineField createXYSplines( DefoPointCollection const& );
   const DefoSplineField createZSplines( DefoPointCollection const&, DefoPointCollection const& );
   const DefoSplineField createZSplinesOld( DefoPointCollection const&, DefoPointCollection const& );
@@ -55,6 +60,7 @@ class DefoRecoSurface : public QObject
   const std::pair<bool,DefoPointCollection::const_iterator> findPointByIndex( DefoPointCollection const&, std::pair<int,int> const& ) const;
   void removeGlobalOffset( DefoSplineField& ) const;
   void removeTilt( DefoSplineField& ) const;
+  double imageScale(double focalLength) const;
 
   int spacingEstimate_;
   int searchPathHalfWidth_;
@@ -67,7 +73,13 @@ class DefoRecoSurface : public QObject
   double pitchY_;
   double focalLength_;
   unsigned int debugLevel_;
+  std::pair<double, double> imageSize_;
   std::vector<DefoPoint> indexedPoints_;
+
+  double calibX_;
+  double calibY_;
+  double calibZx_;
+  double calibZy_;
 
 signals:
 

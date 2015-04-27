@@ -9,7 +9,9 @@ LIBS += @qwtlibs@ -lGL -lGLU
 LIBS += @twitterlibs@
 
 QMAKE = @qmake@
-QMAKE_CXXFLAGS += -std=c++0x
+
+QMAKE_CXXFLAGS += -std=c++11
+QMAKE_CXXFLAGS += -DAPPLICATIONVERSIONSTR=\\\"`git describe --dirty --always --tags`\\\"
 
 INCLUDEPATH += @qwtincludes@
 DEFINES += @configdefines@
@@ -32,7 +34,7 @@ HEADERS += ThermoDAQClient.h \
            ThermoDAQNetworkReader.h \
            ThermoDisplayMainWindow.h \
            ThermoDAQDisplayWidget.h \
-	       ThermoDAQValueVector.h
+	   ThermoDAQValueVector.h
     
 SOURCES += thermoDisplay.cc \
            ThermoDAQClient.cc \

@@ -11,7 +11,7 @@
 #include <QWidget>
 
 #include "DefoJulaboModel.h"
-#include "DefoState.h"
+#include "DeviceState.h"
 
 class DefoJulaboWidget : public QWidget
 {
@@ -40,6 +40,7 @@ protected:
   QLCDNumber* powerLCD_;
 
 public slots:
+
   void updateDeviceState( State newState );
   void controlStateChanged(bool);
   void updateChillerInfo();

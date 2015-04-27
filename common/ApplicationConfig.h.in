@@ -13,8 +13,8 @@ namespace Config {
   extern const std::string CMSTkModLabBasePath;
 }
 
-class ApplicationConfig {
-  
+class ApplicationConfig
+{  
 public:
   
   static ApplicationConfig* instance(const std::string filename = std::string());
@@ -31,12 +31,34 @@ public:
     return returnValue;
   }
   
+  template <class aType> aType getValue(std::string const& key, aType defaultValue) const {
+    aType returnValue = 0;
+    std::map<std::string,std::string>::const_iterator it = keyvalueMap_.find(key);
+    if (it!=keyvalueMap_.end()) {
+      std::istringstream iss(it->second.c_str(), std::istringstream::in);
+      iss >> returnValue;
+    } else {
+      returnValue = defaultValue;
+    }
+    return returnValue;
+  }
+  
   std::string getValue(std::string const& key) const {
     std::map<std::string,std::string>::const_iterator it = keyvalueMap_.find(key);
     if (it!=keyvalueMap_.end()) {
       return it->second;
     } else {
-      return std::string();
+      issueKeyError(key);
+    }
+    return std::string();
+  }
+  
+  std::string getValue(std::string const& key, std::string defaultValue) const {
+    std::map<std::string,std::string>::const_iterator it = keyvalueMap_.find(key);
+    if (it!=keyvalueMap_.end()) {
+      return it->second;
+    } else {
+      return defaultValue;
     }
   }
   
@@ -58,5 +80,6 @@ protected:
 };
 
 template <> std::string ApplicationConfig::getValue(std::string const& key) const;
+template <> std::string ApplicationConfig::getValue(std::string const& key, std::string defaultValue) const;
 
 #endif // APPLICATIONCONFIG_H

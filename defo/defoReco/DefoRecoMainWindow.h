@@ -31,17 +31,23 @@
 
 #include "DefoReconstructionModel.h"
 #include "DefoReconstructionWidget.h"
+#include "DefoReconstructionParameterWidget.h"
 
 #include "DefoGeometryModel.h"
 #include "DefoGeometryWidget.h"
+#include "DefoGeometryParameterWidget.h"
+
+#include "DefoCalibrationModel.h"
+#include "DefoCalibrationWidget.h"
+
+#include "Defo2DSplineInterpolationModel.h"
+#include "Defo2DSplineInterpolationWidget.h"
 
 class DefoRecoMainWindow : public QMainWindow
 {
   Q_OBJECT
 public:
   explicit DefoRecoMainWindow(QWidget *parent = 0);
-
-public slots:
 
 protected:
 
@@ -70,6 +76,8 @@ protected:
   DefoColorSelectionModel* defoColorModel_;
 
   DefoGeometryModel* geometryModel_;
+  DefoCalibrationModel* calibrationModel_;
+  Defo2DSplineInterpolationModel* interpolationModel_;
 
   DefoMeasurementPairListModel* measurementPairListModel_;
   DefoMeasurementPairSelectionModel* measurementPairSelectionModel_;
@@ -78,6 +86,8 @@ protected:
   DefoReconstructionModel* reconstructionModel_;
 
 protected slots:
+
+  void quit();
   void loadMeasurementButtonClicked();
   void saveMeasurementButtonClicked();
   void exportMeasurementButtonClicked();

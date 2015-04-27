@@ -1,0 +1,115 @@
+ARCHITECTURE=@architecture@
+BASEPATH      = @basepath@
+
+LIBDIR        = $(BASEPATH)/external/ddierckx
+
+LIB           = ddierckx
+
+MODULES       = bispeu \
+				fourco \
+				fpchep \
+				fpdisc \
+				fpopsp \
+				fprota \
+				insert \
+				spgrid \
+				bispev \
+				fpader \
+				fpclos \
+				fpfrno \
+				fporde \
+				fprppo \
+				parcur \
+				sphere \
+				clocur \
+				fpadno \
+				fpcoco \
+				fpgivs \
+				fppara \
+				fprpsp \
+				parder \
+				splder \
+				cocosp \
+				fpadpo \
+				fpcons \
+				fpgrdi \
+				fppasu \
+				fpseno \
+				pardeu \
+				splev \
+				concon \
+				fpback \
+				fpcosp \
+				fpgrpa \
+				fpperi \
+				fpspgr \
+				parsur \
+				splint \
+				concur \
+				fpbacp \
+				fpcsin \
+				fpgrre \
+				fppocu \
+				fpsphe \
+				percur \
+				sproot \
+				cualde \
+				fpbfout \
+				fpcurf \
+				fpgrsp \
+				fppogr \
+				fpsuev \
+				pogrid \
+				surev \
+				curev \
+				fpbisp \
+				fpcuro \
+				fpinst \
+				fppola \
+				fpsurf \
+				polar \
+				surfit \
+				curfit \
+				fpbspl \
+				fpcyt1 \
+				fpintb \
+				fprank \
+				fpsysy \
+				profil \
+				testF \
+				dblint \
+				fpchec \
+				fpcyt2 \
+				fpknot \
+				fprati \
+				fptrnp \
+				regrid \
+				evapol \
+				fpched \
+				fpdeno \
+				fpopdi \
+				fpregr \
+				fptrpe \
+				spalde
+
+FC      = gfortran
+FFLAGS  = -fPIC -O3
+SOFLAGS = -shared
+
+all: lib
+
+lib: $(LIBDIR)/lib$(LIB).so
+
+$(LIBDIR)/lib$(LIB).so: $(addsuffix .o,$(MODULES))
+	@(test -e $(LIBDIR) || mkdir $(LIBDIR))
+	@echo "Linking shared library $@"
+	$(FC) $(SOFLAGS) $^ -o $@
+
+%.o: %.f
+	@echo "Compiling $<"
+	@$(FC) $(FFLAGS) -c $< -o $@
+
+clean:
+	@rm -f $(LIBDIR)/lib$(LIB).so
+	@rm -f $(addsuffix .o,$(MODULES))
+	@rm -f *~
