@@ -19,7 +19,7 @@ int main()
   
   std::cout<<"Pressure on Sensor a = "<<ArduinoPres.GetPressureA()<<"\n"<<std::endl;
   std::cout<<"Pressure on Sensor b = "<<ArduinoPres.GetPressureB()<<"\n"<<std::endl;
-  std::cout<<"Flow on Sensor c = "<<ArduinoPres.GetFlow()<<"\n"<<std::endl;
+  // std::cout<<"Flow on Sensor c = "<<ArduinoPres.GetFlow()<<"\n"<<std::endl;
   
   long suffering = 0;
 
