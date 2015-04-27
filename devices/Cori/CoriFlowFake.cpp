@@ -20,20 +20,62 @@
 CoriFlowFake::CoriFlowFake( const ioport_t ioPort )
     :VCoriFlow(ioPort)
 {
-     test_ = 0;
+
 }
 
-float CoriFlowFake::test( void ) const
+float CoriFlowFake::getTemp( void ) const
 {
-  std::cout << " [CoriFlowFake::test] -- FAKE: Returning test = "
-        << test_ << std::endl;
-  usleep( 10000 );
-  return test_;
+  return 0.;
 }
 
-
-
-void CoriFlowFake::Device_Init( void ) {
-
-  
+float CoriFlowFake::getPres( void ) const
+{
+  return 0.;
 }
+
+float CoriFlowFake::getMeasure( void ) const
+{
+  return 0.;
+}
+
+/// additional stuff
+float CoriFlowFake::getCapacity( void ) const
+{
+  return 0.;
+}
+
+std::string CoriFlowFake::getUnit( void ) const
+{
+  return std::string();
+}
+
+std::string CoriFlowFake::getFluid( void ) const
+{
+  return std::string();
+}
+
+std::string CoriFlowFake::getTag( void ) const
+{
+  return std::string();
+}
+
+std::string CoriFlowFake::setInit( void ) const
+{
+  return std::string();
+}
+
+std::string CoriFlowFake::setTag( void ) const
+{
+  return std::string();
+}
+
+float CoriFlowFake::getDensity( void ) const
+{
+  return 0.;
+}
+
+std::string CoriFlowFake::setCapacity( void ) const
+{
+  return std::string();
+}
+

@@ -1,9 +1,9 @@
 #ifndef __CORIFLOW_H
 #define __CORIFLOW_H
 
-#include "VCoriFlow.h"
 #include <string>
-using std::string;
+
+#include "VCoriFlow.h"
 
 class CoriFlowComHandler;
 
@@ -33,7 +33,6 @@ class CoriFlow : public VCoriFlow
 
   const int uDelay_;
   void StripBuffer( char* ) const;
-
 
   void Device_Init( void );
   CoriFlowComHandler* comHandler_;

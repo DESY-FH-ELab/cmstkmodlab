@@ -4,7 +4,7 @@
 #include <cmath>
 
 #ifdef USE_FAKEIO
-#include "CoriFlow.h"
+#include "CoriFlowFake.h"
 typedef CoriFlowFake CoriFlow_t;
 #else
 #include "CoriFlow.h"
