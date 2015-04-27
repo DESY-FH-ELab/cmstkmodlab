@@ -1,5 +1,6 @@
 defoDAQ.pro
 defoDAQ.pro.user
+.qmake.stash
 Makefile
 startDefoDAQ.sh
 *.d

@@ -44,7 +44,7 @@ void DefoPointSaver::writePoint(const DefoPoint& point)
       .arg(point.getIndex().second, 5)
       .arg((int)point.isValid());
   
-  write(line.toAscii());
+  write(line.toStdString().c_str());
 }
 
 void DefoPointSaver::writeXMLPoints(const DefoPointCollection &points)
