@@ -4,7 +4,7 @@ NODEFO        = @nodefo@
 USEFAKEDEVICES= @usefakedevices@
 QMAKE         = @qmake@
 
-subdirs	      = devices tools external common common_test
+subdirs	      = devices external tools common common_test
 ifeq ($(NOTHERMAL),0)
 subdirs      += thermo
 endif
