@@ -12,17 +12,18 @@ DefoRecoMeasurement::DefoRecoMeasurement(const QDateTime& timestamp) :
 }
 
 void DefoRecoMeasurement::setRecoThresholdValue(DefoPointRecognitionModel::Threshold threshold,
-                                       int value) {
+                                       int value)
+{
   recoPointRecognitionThresholds_[threshold] = value;
 }
 
-int DefoRecoMeasurement::getRecoThresholdValue(DefoPointRecognitionModel::Threshold threshold) {
-
+int DefoRecoMeasurement::getRecoThresholdValue(DefoPointRecognitionModel::Threshold threshold)
+{
   return recoPointRecognitionThresholds_[threshold];
 }
 
-void DefoRecoMeasurement::write(const QDir& path) {
-
+void DefoRecoMeasurement::write(const QDir& path)
+{
   QString fileLocation = path.absoluteFilePath("%1reco.xml");
   fileLocation = fileLocation.arg(timestamp_.toString("yyyyMMddhhmmss"));
 
@@ -53,10 +54,14 @@ void DefoRecoMeasurement::write(const QDir& path) {
   stream.writeEndElement();
 
   stream.writeEndDocument();
+
+  fileLocation = path.absoluteFilePath("%1roi.xml");
+  fileLocation = fileLocation.arg(timestamp_.toString("yyyyMMddhhmmss"));
+  roi_.write(fileLocation);
 }
 
-void DefoRecoMeasurement::read(const QDir& path) {
-
+void DefoRecoMeasurement::read(const QDir& path)
+{
   DefoMeasurement::read(path);
 
   recoPointRecognitionThresholds_.resize(pointRecognitionThresholds_.size());
@@ -101,4 +106,8 @@ void DefoRecoMeasurement::read(const QDir& path) {
       recoPointRecognitionHalfSquareWidth_ = hsw;
     }
   }
+
+  fileLocation = path.absoluteFilePath("%1roi.xml");
+  fileLocation = fileLocation.arg(timestamp_.toString("yyyyMMddhhmmss"));
+  roi_.read(fileLocation);
 }
