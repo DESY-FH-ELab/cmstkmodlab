@@ -52,7 +52,7 @@ float ArduinoPresFake::GetPressureA( void ) const
 ///
 float ArduinoPresFake::GetPressureB( void ) const
 {
-  std::cout << " [ArduinoPresFake::GetPressureA] -- FAKE: Returning p(b) = "
+  std::cout << " [ArduinoPresFake::GetPressureB] -- FAKE: Returning p(b) = "
             << pressureB_ << std::endl;
 
   usleep( 10000 );

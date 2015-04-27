@@ -15,6 +15,9 @@
 #include "ArduinoPresModel.h"
 #include "ArduinoPresWidget.h"
 
+#include "CoriFlowModel.h"
+#include "CoriFlowWidget.h"
+
 #include "MicroScriptModel.h"
 #include "MicroScriptWidget.h"
 
@@ -41,6 +44,7 @@ protected:
 
   IotaModel* iotaModel_;
   ArduinoPresModel* arduinoPresModel_;
+  CoriFlowModel* coriModel_;
 
   MicroScriptModel* scriptModel_;
 
