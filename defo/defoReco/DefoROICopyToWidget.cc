@@ -22,6 +22,7 @@ DefoROICopyToWidget::DefoROICopyToWidget(DefoRecoMeasurementListModel *listModel
   roiModel_(roiModel)
 {
   QHBoxLayout * layout = new QHBoxLayout();
+  layout->setContentsMargins(0, 0, 0, 0);
   setLayout(layout);
 
   layout->addWidget(new QLabel("Copy ROI to", this));
