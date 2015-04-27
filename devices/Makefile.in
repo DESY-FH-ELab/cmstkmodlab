@@ -8,6 +8,7 @@ subdirs	      = Julabo \
 		Keithley \
                 Greisinger \
 		Hameg \
+                Canon \
 		Conrad \
 		Pfeiffer \
                 Iota \
@@ -18,7 +19,7 @@ ifeq ($(NOTHERMAL),0)
 subdirs      += 
 endif
 ifeq ($(NODEFO),0)
-subdirs      += Canon
+subdirs      += 
 endif
 
 all:
