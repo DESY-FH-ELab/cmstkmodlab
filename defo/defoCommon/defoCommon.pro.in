@@ -36,6 +36,7 @@ QMAKE_CXXFLAGS += -DAPPLICATIONVERSIONSTR=\\\"`git describe --dirty --always --t
 
 DEFINES += @configdefines@
 QT += core gui widgets opengl script xml
+
 TARGET = DefoCommon
 TEMPLATE = lib
 DEPENDPATH += .
