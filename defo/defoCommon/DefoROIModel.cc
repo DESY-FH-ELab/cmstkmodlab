@@ -4,6 +4,8 @@
 #include <QFile>
 #include <QXmlStreamWriter>
 
+#include <nqlogger.h>
+
 #include "DefoROIModel.h"
 
 DefoROIModel::DefoROIModel(QObject *parent)
@@ -54,7 +56,10 @@ float DefoROIModel::getClosestPoint(int & index,
 void DefoROIModel::setPoint(int index, float newX, float newY)
 {
   if (!roi_) return;
-  if (roi_->setPoint(index, newX, newY)) emit roiChanged();
+  if (roi_->setPoint(index, newX, newY)) {
+    // NQLogMessage("DefoROIModel") << "roiChanged(false) " << roi_;
+    emit roiChanged(false);
+  }
 }
 
 int DefoROIModel::getSelectedPoint() const
@@ -65,7 +70,13 @@ int DefoROIModel::getSelectedPoint() const
 
 void DefoROIModel::selectPoint(int index)
 {
-  if (roi_) roi_->selectPoint(index);
+  if (roi_) {
+    if (roi_->getSelectedPoint()!=-1) {
+      // NQLogMessage("DefoROIModel") << "roiChanged(true) " << roi_;
+      emit roiChanged(true);
+    }
+    roi_->selectPoint(index);
+  }
 }
 
 int DefoROIModel::numberOfPoints() const
@@ -84,29 +95,36 @@ bool DefoROIModel::containsPoint(float width, float height,
 void DefoROIModel::insertPointBefore()
 {
   if (!roi_) return;
-  if (roi_->insertPointBefore()) emit roiChanged();
+  if (roi_->insertPointBefore()) emit roiChanged(true);
 }
 
 void DefoROIModel::insertPointAfter()
 {
   if (!roi_) return;
-  if (roi_->insertPointAfter()) emit roiChanged();
+  if (roi_->insertPointAfter()) emit roiChanged(true);
 }
 
 void DefoROIModel::removePoint()
 {
   if (!roi_) return;
-  if (roi_->removePoint()) emit roiChanged();
+  if (roi_->removePoint()) emit roiChanged(true);
 }
 
 void DefoROIModel::assignFrom(DefoROI* roi)
 {
   if (!roi_ || !roi) return;
-  if (roi_->assignFrom(roi)) emit roiChanged();
+  if (roi_->assignFrom(roi)) emit roiChanged(true);
 }
 
 void DefoROIModel::assignTo(DefoROI* roi)
 {
   if (!roi_ || !roi) return;
   roi_->assignTo(roi);
+}
+
+bool DefoROIModel::isEqualTo(DefoROIModel* other)
+{
+  if (!this->roi_) return false;
+  if (this->roi_==other->roi_) return true;
+  return false;
 }

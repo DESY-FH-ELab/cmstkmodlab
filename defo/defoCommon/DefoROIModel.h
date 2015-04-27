@@ -38,6 +38,8 @@ public:
   void assignFrom(DefoROI* roi);
   void assignTo(DefoROI* roi);
 
+  bool isEqualTo(DefoROIModel* other);
+
 protected:
 
   DefoROI *roi_;
@@ -46,7 +48,7 @@ protected slots:
 
 signals:
 
-  void roiChanged();
+  void roiChanged(bool);
 };
 
 #endif // DEFOROIMODEL_H

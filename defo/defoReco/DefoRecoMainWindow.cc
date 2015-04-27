@@ -46,10 +46,10 @@ DefoRecoMainWindow::DefoRecoMainWindow(QWidget *parent)
 
   // POINT MODEL
   refSelectionModel_ = new DefoMeasurementSelectionModel(this);
-  refROIModel_ = new DefoRecoROIModel(refSelectionModel_, this);
+  refROIModel_ = new DefoRecoROIModel(refSelectionModel_, roiModel_, this);
   refPointModel_ = new DefoPointRecognitionModel(this);
   defoSelectionModel_ = new DefoMeasurementSelectionModel(this);
-  defoROIModel_ = new DefoRecoROIModel(defoSelectionModel_, this);
+  defoROIModel_ = new DefoRecoROIModel(defoSelectionModel_, roiModel_, this);
   defoPointModel_ = new DefoPointRecognitionModel(this);
 
   pointIndexerModel_ = new DefoPointIndexerModel(this);

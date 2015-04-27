@@ -4,6 +4,8 @@
 #include <QScrollBar>
 #include <QMenu>
 
+#include <nqlogger.h>
+
 #include "DefoRecoImageWidget.h"
 
 DefoRecoImageContentWidget::DefoRecoImageContentWidget(DefoMeasurementSelectionModel* model,
@@ -163,8 +165,8 @@ DefoRecoImageThresholdsContentWidget::DefoRecoImageThresholdsContentWidget(DefoM
   connect(recognitionModel_, SIGNAL(thresholdValueChanged(DefoPointRecognitionModel::Threshold,int)),
           this, SLOT(thresholdChanged(DefoPointRecognitionModel::Threshold,int)));
 
-  connect(roiModel_, SIGNAL(roiChanged()),
-          this, SLOT(roiChanged()));
+  connect(roiModel_, SIGNAL(roiChanged(bool)),
+          this, SLOT(roiChanged(bool)));
 
   needsUpdate_ = false;
 }
@@ -200,8 +202,9 @@ void DefoRecoImageThresholdsContentWidget::selectionChanged(DefoMeasurement* mea
   DefoRecoImageContentWidget::selectionChanged(measurement);
 }
 
-void DefoRecoImageThresholdsContentWidget::roiChanged()
+void DefoRecoImageThresholdsContentWidget::roiChanged(bool nu)
 {
+  // NQLogMessage("DefoRecoImageThresholdsContentWidget") << "roiChanged(" << (int)nu << ")";
   needsUpdate_ = true;
   updateCache();
 }
@@ -488,8 +491,8 @@ DefoRecoROIImageWidget::DefoRecoROIImageWidget(DefoMeasurementSelectionModel* mo
 {
   setWidget(new DefoRecoROIImageContentWidget(model, zoomModel_, roiModel_, this));
 
-  connect(roiModel_, SIGNAL(roiChanged()),
-          this, SLOT(roiChanged()));
+  connect(roiModel_, SIGNAL(roiChanged(bool)),
+          this, SLOT(roiChanged(bool)));
 
   setContextMenuPolicy(Qt::CustomContextMenu);
 
@@ -566,8 +569,9 @@ void DefoRecoROIImageWidget::mouseReleaseEvent(QMouseEvent * /*e*/)
   widget()->update();
 }
 
-void DefoRecoROIImageWidget::roiChanged()
+void DefoRecoROIImageWidget::roiChanged(bool nu)
 {
+  // NQLogMessage("DefoRecoROIImageWidget") << "roiChanged(" << (int)nu << ")";
   widget()->update();
 }
 
