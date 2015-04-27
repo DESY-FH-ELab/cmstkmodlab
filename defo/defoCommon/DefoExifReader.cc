@@ -8,14 +8,14 @@
 
 #include "DefoExifReader.h"
 
-DefoExifReader::DefoExifReader(
-    const QString& filename
-) :
-  filename_(filename)
-{}
+DefoExifReader::DefoExifReader(const QString& filename)
+  : filename_(filename)
+{
 
-bool DefoExifReader::read() {
+}
 
+bool DefoExifReader::read()
+{
   try {
 
     Exiv2::Image::AutoPtr image = Exiv2::ImageFactory::open(filename_.toStdString().c_str());

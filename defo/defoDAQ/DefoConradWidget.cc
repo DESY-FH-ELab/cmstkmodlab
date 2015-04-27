@@ -4,43 +4,32 @@
 
 #include  <sstream>
 
-
-DefoConradWidget::DefoConradWidget(DefoConradModel* model, QWidget *parent) :
-    QWidget(parent)
+DefoConradWidget::DefoConradWidget(DefoConradModel* model,
+				   QWidget *parent)
+  : QWidget(parent)
 {
-
-  QLayout* layout = new QVBoxLayout(this);
+  QVBoxLayout* layout = new QVBoxLayout(this);
 
   layout->addWidget(new DefoConradDeviceCheckbox(model, "Enable switch", this));
 
+  DefoConradPanelWidget* panels = new DefoConradPanelWidget(model, this);
+  layout->addWidget(panels);
+
   for ( int i = 0; i < 5; ++i)
-    layout->addWidget(
-        new DefoConradSwitchCheckbox(
-              model
-            , static_cast<DefoConradModel::DeviceSwitch>(i)
-            , QString("Power panel ") + QString::number(i+1)
-            , this
-        )
-    );
+    layout->addWidget(new DefoConradSwitchCheckbox(model,
+						   static_cast<DefoConradModel::DeviceSwitch>(i),
+						   QString("Power panel ") + QString::number(i+1),
+						   this));
 
-  layout->addWidget(
-      new DefoConradSwitchCheckbox(
-            model
-          , DefoConradModel::CALIBRATION_LEDS
-          , "Power calibration leds"
-          , this
-      )
-  );
+  layout->addWidget(new DefoConradSwitchCheckbox(model,
+						 DefoConradModel::CALIBRATION_LEDS,
+						 "Power calibration leds",
+						 this));
 
-  layout->addWidget(
-      new DefoConradSwitchCheckbox(
-            model
-          , DefoConradModel::CAMERA
-          , "Power camera"
-          , this
-      )
-  );
+  layout->addWidget(new DefoConradSwitchCheckbox(model,
+						 DefoConradModel::CAMERA,
+						 "Power camera",
+						 this));
 
   setLayout(layout);
-
 }

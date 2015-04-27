@@ -8,14 +8,16 @@
 #include <QImage>
 #include <QTimer>
 
+#include <QMutex>
+
 #include "DefoConradModel.h"
 #include "DefoConradWidget.h"
 
 #include "DefoJulaboModel.h"
 #include "DefoJulaboWidget.h"
 
-#include "DefoKeithleyModel.h"
-#include "DefoKeithleyWidget.h"
+#include "KeithleyModel.h"
+#include "KeithleyWidget.h"
 
 #include "DefoCameraModel.h"
 #include "DefoCameraWidget.h"

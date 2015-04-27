@@ -1,16 +1,13 @@
-#include "DefoConfig.h"
+#include <nqlogger.h>
 
 #include "DefoSpline.h"
-
 
 ///
 ///
 ///
 DefoSplineSetBase::DefoSplineSetBase( DefoPoint::Axis axis ) {
 
-  debugLevel_ = DefoConfig::instance()->getValue<unsigned int>( "DEBUG_LEVEL" );
   axis_ = axis;
-
 }
 
 ///
@@ -39,10 +36,12 @@ double DefoSplineSetBase::eval( double pos ) const {
   }
 
   // no spline with matching range?
-  std::cerr << " [DefoSplineSetBase::eval] ** ERROR: failed to evaluate spline at pos: " << pos 
-	    << " (range: [ " << validityRange().first << " , " << validityRange().second << " ]. Returning 0." << std::endl << std::flush;
-  return 0.;
+  NQLogCritical("DefoSplineSetBase::eval()")
+      << "failed to evaluate spline at pos: " << pos
+      << " (range: [ " << validityRange().first << " , "
+      << validityRange().second << " ]. Returning 0.";
   
+  return 0.;
 }
 
 
@@ -140,7 +139,8 @@ bool DefoSplineSetBase::doFitZ( void ) {
 
   // avoid crash when np = 0, seems to be related to  "points_.end() - 1"
   if( 0 == points_.size() ) {
-    std::cout << " [DefoSplineSetX::doFitZ] ** WARNING: number of Points is zero." << std::endl;
+    NQLogWarning("DefoSplineSetBase::doFitZ")
+        << "number of Points is zero.";
     return false;
   }
 

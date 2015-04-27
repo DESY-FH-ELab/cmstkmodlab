@@ -9,19 +9,22 @@
 #include <QColor>
 #include <QDir>
 
+#include "DeviceState.h"
+
 #include "DefoSurface.h"
 #include "DefoSquare.h"
 #include "DefoPoint.h"
-#include "DefoState.h"
 
 #include "DefoCameraModel.h"
 #include "DefoPointRecognitionModel.h"
 #include "DefoConradModel.h"
 #include "DefoJulaboModel.h"
-#include "DefoKeithleyModel.h"
+#include "KeithleyModel.h"
 
-class DefoMeasurement {
+class DefoMeasurement
+{
 public:
+
   DefoMeasurement(const QString& imageLocation, bool preview);
 
   bool isPreview() const { return previewImage_; }
@@ -35,6 +38,9 @@ public:
   const QString& getExposureTimeString() const { return exifExposureTimeString_; }
   float getAperture() const { return exifAperture_; }
   int getISO() const { return exifISO_; }
+
+  int getWidth() const;
+  int getHeight() const;
 
   State getConradState() const { return conradState_; }
   State getPanelState(unsigned int panel) const { return panelStates_[panel]; }
@@ -51,27 +57,19 @@ public:
   const QString& getComment() const { return comment_; }
   int getCalibAmplitude() const { return calibAmplitude_; }
 
-  const DefoPointCollection* findPoints(
-      const QRect* searchArea
-    , const QPolygonF* roi
-    , int step1Threshold
-    , int step2Threshold
-    , int step3Threshold
-    , int halfSquareWidth
-  ) const;
-
   void setImageLocation(const QString& imageLocation);
   void readExifData();
   void acquireData(const DefoCameraModel* model);
   void acquireData(const DefoPointRecognitionModel* model);
   void acquireData(const DefoConradModel* model);
   void acquireData(const DefoJulaboModel* model);
-  void acquireData(const DefoKeithleyModel* model);
+  void acquireData(const KeithleyModel* model);
 
   virtual void write(const QDir& path);
   virtual void read(const QDir&path);
 
 protected:
+
   /// (Local) date and time of measurement.
   QDateTime timestamp_;
   /// Image of the actual 'raw' measurement.
@@ -108,31 +106,6 @@ protected:
 
   QString comment_;
   int calibAmplitude_;
-
-  /*
-    Analysis depentent information, does not belong in 'measurement' class.
-    Processing can happen here, but storing it is not the purpose of this
-    object.
-    */
-  DefoPoint getCenterOfGravity(
-      const QImage& image
-    , const QRect &area
-    , int threshold
-  ) const;
-
-  void determinePointColors(
-      const QImage& image
-    , DefoPointCollection* points
-    , int halfSquareWidth
-    , int threshold
-  ) const;
-
-  const QColor getAverageColor(
-      const QImage& image
-    , const QRect& area
-    , int threshold
-  ) const;
-
 };
 
 class DefoMeasurementPair : public std::pair<DefoMeasurement*,DefoMeasurement*> {

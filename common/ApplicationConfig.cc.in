@@ -23,13 +23,14 @@ ApplicationConfig* ApplicationConfig::instance(const std::string filename)
   return instance_;
 }
 
-void ApplicationConfig::safe(const std::string filename) {
+void ApplicationConfig::safe(const std::string filename)
+{
   ApplicationConfigWriter writer(filename);
   writer.write(keyvalueMap_);
 }
 
-void ApplicationConfig::issueKeyError(std::string const& key) const {
-  
+void ApplicationConfig::issueKeyError(std::string const& key) const
+{  
   std::cerr << " [issueKeyError::getValue] ** ERROR: failed to get value for key: "
       << key << "." << std::endl;
   
@@ -39,12 +40,25 @@ void ApplicationConfig::issueKeyError(std::string const& key) const {
                         QMessageBox::Ok); 
 }
 
-template <> std::string ApplicationConfig::getValue(std::string const& key) const {
+template <> std::string ApplicationConfig::getValue(std::string const& key) const
+{
   std::map<std::string,std::string>::const_iterator it = keyvalueMap_.find(key);
   if (it!=keyvalueMap_.end()) {
     return it->second;
   } else {
     issueKeyError(key);
+  }
+  return std::string();
+}
+
+template <> std::string ApplicationConfig::getValue(std::string const& key,
+                                                    std::string defaultValue) const
+{
+  std::map<std::string,std::string>::const_iterator it = keyvalueMap_.find(key);
+  if (it!=keyvalueMap_.end()) {
+    return it->second;
+  } else {
+    return defaultValue;
   }
   return std::string();
 }

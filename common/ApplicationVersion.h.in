@@ -1,6 +1,0 @@
-#ifndef APPLICATIONVERSION_H
-#define APPLICATIONVERSION_H
-
-#define APPLICATIONVERSIONSTR "@applicationversionstr@"
-
-#endif // APPLICATIONVERSION_H

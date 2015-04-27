@@ -1,6 +1,8 @@
 #ifndef DEFOPOINTRECOGNICTIONWIDGET_H
 #define DEFOPOINTRECOGNICTIONWIDGET_H
 
+#include <QMutex>
+
 #include <QTabWidget>
 #include <QPushButton>
 
@@ -12,14 +14,13 @@ class DefoPointRecognitionWidget : public QTabWidget
 {
   Q_OBJECT
 public:
-  explicit DefoPointRecognitionWidget(
-      DefoMeasurementListModel* listModel
-    , DefoMeasurementSelectionModel* selectionModel
-    , DefoPointRecognitionModel* pointModel
-    , QWidget *parent = 0
-  );
+  explicit DefoPointRecognitionWidget(DefoMeasurementListModel* listModel,
+				      DefoMeasurementSelectionModel* selectionModel,
+				      DefoPointRecognitionModel* pointModel,
+				      QWidget *parent = 0);
 
 protected:
+
   // Models
   DefoMeasurementListModel* listModel_;
   DefoMeasurementSelectionModel* selectionModel_;
@@ -31,10 +32,13 @@ protected:
   QPushButton* findPoints_;
   QPushButton* savePoints_;
 
+  QMutex mutex_;
+
 protected slots:
+
   void findPointsButtonClicked();
   void savePointsButtonClicked();
   void controlStateChanged(bool);
 };
 
-#endif // DEFOCAMERAWIDGET_H
+#endif // DEFOPOINTRECOGNICTIONWIDGET_H

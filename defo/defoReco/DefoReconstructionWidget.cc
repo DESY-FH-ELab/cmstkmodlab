@@ -4,14 +4,12 @@
 #include "DefoReconstructionWidget.h"
 
 DefoReconstructionWidget::DefoReconstructionWidget(DefoReconstructionModel* reconstructionModel,
-                                                   QWidget *parent) :
-    QWidget(parent),
+                                                   QWidget *parent)
+  : QWidget(parent),
     reconstructionModel_(reconstructionModel)
 {
-  //setMinimumSize(QSize(200, 300));
-
   QBoxLayout *layout = new QHBoxLayout();
-  //setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Minimum);
+  layout->setContentsMargins(0, 0, 0, 0);
   setLayout(layout);
 
   QPushButton * reconstructButton = new QPushButton("&Reconstruct", this);

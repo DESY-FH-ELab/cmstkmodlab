@@ -1,4 +1,4 @@
-#include "DefoConfig.h"
+#include "ApplicationConfig.h"
 #include "TestWindow.h"
 
 TestWindow::TestWindow(QWidget *parent) :
@@ -67,18 +67,18 @@ TestWindow::TestWindow(QWidget *parent) :
   // read default settings
   pointModel_->setThresholdValue(
           DefoPointRecognitionModel::THRESHOLD_1
-        , DefoConfig::instance()->getValue<int>( "STEP1_THRESHOLD" )
+        , ApplicationConfig::instance()->getValue<int>( "STEP1_THRESHOLD" )
   );
   pointModel_->setThresholdValue(
           DefoPointRecognitionModel::THRESHOLD_2
-        , DefoConfig::instance()->getValue<int>( "STEP2_THRESHOLD" )
+        , ApplicationConfig::instance()->getValue<int>( "STEP2_THRESHOLD" )
   );
   pointModel_->setThresholdValue(
           DefoPointRecognitionModel::THRESHOLD_3
-        , DefoConfig::instance()->getValue<int>( "STEP3_THRESHOLD" )
+        , ApplicationConfig::instance()->getValue<int>( "STEP3_THRESHOLD" )
   );
   pointModel_->setHalfSquareWidth(
-        DefoConfig::instance()->getValue<int>( "HALF_SQUARE_WIDTH" )
+        ApplicationConfig::instance()->getValue<int>( "HALF_SQUARE_WIDTH" )
   );
 
 
@@ -155,6 +155,8 @@ void TestWindow::pointButtonClicked() {
     */
   const int blocks = 6;
 
+  QMutex mutex;
+
   for (double i = 0; i < blocks; ++i) {
 
     /*
@@ -166,12 +168,12 @@ void TestWindow::pointButtonClicked() {
     searchArea.setLeft( i/blocks * width );
     searchArea.setRight( (i+1)/blocks * width - 1 );
 
-    finder = new DefoPointFinder(
-        listModel_
-      , pointModel_
-      , measurement
-      , searchArea
-    );
+    finder = new DefoPointFinder(i,
+				 &mutex,
+				 listModel_,
+				 pointModel_,
+				 measurement,
+				 searchArea);
 
     finder->start();
 
@@ -249,7 +251,7 @@ void CoordinateSaver::writePoint(const DefoPoint& point)
       .arg(hue)
       .arg(saturation)
       .arg(value);
-  write(line.toAscii());
+  write(line.toStdString().c_str());
 }
 
 void TestWindow::writePoints()

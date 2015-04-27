@@ -3,8 +3,11 @@
 #include <QGroupBox>
 #include <QFileDialog>
 #include <QProcess>
+#include <QApplication>
+#include <QTabWidget>
 
-#include "DefoConfig.h"
+#include "ApplicationConfig.h"
+
 #include "DefoImageWidget.h"
 #include "DefoRecoImageWidget.h"
 
@@ -17,9 +20,16 @@
 #include "DefoRecoColorHistoWidget.h"
 #include "DefoAnalysisWidget.h"
 
+//#define ANALYSISWIDGET
+
 DefoRecoMainWindow::DefoRecoMainWindow(QWidget *parent) :
     QMainWindow(parent)
 {
+  ApplicationConfig* config = ApplicationConfig::instance();
+
+  connect(QApplication::instance(), SIGNAL(aboutToQuit()),
+          this, SLOT(quit()));
+
   currentDir_ = "/home/tkmodlab/Desktop/measurements";
 
   // MEASUREMENT MODEL
@@ -44,6 +54,8 @@ DefoRecoMainWindow::DefoRecoMainWindow(QWidget *parent) :
   defoColorModel_ = new DefoColorSelectionModel(this);
 
   geometryModel_ = new DefoGeometryModel(this);
+  calibrationModel_ = new DefoCalibrationModel(this);
+  interpolationModel_ = new Defo2DSplineInterpolationModel(this);
 
   measurementPairListModel_ = new DefoMeasurementPairListModel(this);
   measurementPairSelectionModel_ = new DefoMeasurementPairSelectionModel(this);
@@ -70,6 +82,8 @@ DefoRecoMainWindow::DefoRecoMainWindow(QWidget *parent) :
                                                      measurementPairListModel_,
                                                      measurementPairSelectionModel_,
                                                      geometryModel_,
+                                                     calibrationModel_,
+                                                     interpolationModel_,
                                                      this);
   reconstructionModel_->setCurrentDir(currentDir_);
 
@@ -82,12 +96,14 @@ DefoRecoMainWindow::DefoRecoMainWindow(QWidget *parent) :
   measurementWidget->setLayout(layout);
 
   QBoxLayout *vbox = new QVBoxLayout();
+  vbox->setContentsMargins(0, 0, 0, 0);
   QWidget * measurementInfoWidget = new QWidget(measurementWidget);
   measurementInfoWidget->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);
   measurementInfoWidget->setLayout(vbox);
   layout->addWidget(measurementInfoWidget);
 
   QBoxLayout *hbox = new QHBoxLayout();
+  hbox->setContentsMargins(0, 0, 0, 0);
   QWidget * measurementButtonWidget = new QWidget(measurementInfoWidget);
   measurementButtonWidget->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);
   measurementButtonWidget->setLayout(hbox);
@@ -144,10 +160,13 @@ DefoRecoMainWindow::DefoRecoMainWindow(QWidget *parent) :
   pointsWidget->setLayout(layout);
 
   vbox = new QVBoxLayout();
+  vbox->setContentsMargins(0, 0, 0, 0);
   QWidget * refPointWidget = new QWidget(pointsWidget);
   refPointWidget->setLayout(vbox);
 
-  DefoMeasurementListComboBox *refSelect = new DefoMeasurementListComboBox(listModel_, refSelectionModel_, refPointWidget);
+  DefoMeasurementListComboBox *refSelect = new DefoMeasurementListComboBox(listModel_,
+                                                                           refSelectionModel_,
+                                                                           refPointWidget);
   vbox->addWidget(refSelect);
 
   DefoRecoPointRecognitionWidget * refPointRecognitionWidget =
@@ -156,30 +175,25 @@ DefoRecoMainWindow::DefoRecoMainWindow(QWidget *parent) :
                                              refPointModel_,
                                              roiModel_,
                                              refPointWidget);
-  refPointModel_->setThresholdValue(
-              DefoPointRecognitionModel::THRESHOLD_1
-              , DefoConfig::instance()->getValue<int>( "STEP1_THRESHOLD" )
-              );
-  refPointModel_->setThresholdValue(
-              DefoPointRecognitionModel::THRESHOLD_2
-              , DefoConfig::instance()->getValue<int>( "STEP2_THRESHOLD" )
-              );
-  refPointModel_->setThresholdValue(
-              DefoPointRecognitionModel::THRESHOLD_3
-              , DefoConfig::instance()->getValue<int>( "STEP3_THRESHOLD" )
-              );
-  refPointModel_->setHalfSquareWidth(
-              DefoConfig::instance()->getValue<int>( "HALF_SQUARE_WIDTH" )
-              );
+  refPointModel_->setThresholdValue(DefoPointRecognitionModel::THRESHOLD_1,
+				    ApplicationConfig::instance()->getValue<int>("STEP1_THRESHOLD"));
+  refPointModel_->setThresholdValue(DefoPointRecognitionModel::THRESHOLD_2,
+				    ApplicationConfig::instance()->getValue<int>("STEP2_THRESHOLD"));
+  refPointModel_->setThresholdValue(DefoPointRecognitionModel::THRESHOLD_3, 
+				    ApplicationConfig::instance()->getValue<int>("STEP3_THRESHOLD"));
+  refPointModel_->setHalfSquareWidth(ApplicationConfig::instance()->getValue<int>("HALF_SQUARE_WIDTH"));
   vbox->addWidget(refPointRecognitionWidget);
 
   layout->addWidget(refPointWidget);
 
   vbox = new QVBoxLayout();
+  vbox->setContentsMargins(0, 0, 0, 0);
   QWidget * defoPointWidget = new QWidget(pointsWidget);
   defoPointWidget->setLayout(vbox);
   
-  DefoMeasurementListComboBox *defoSelect = new DefoMeasurementListComboBox(listModel_, defoSelectionModel_, defoPointWidget);
+  DefoMeasurementListComboBox *defoSelect = new DefoMeasurementListComboBox(listModel_,
+                                                                            defoSelectionModel_,
+                                                                            defoPointWidget);
   vbox->addWidget(defoSelect);
 
   DefoRecoPointRecognitionWidget * defoPointRecognitionWidget =
@@ -188,21 +202,13 @@ DefoRecoMainWindow::DefoRecoMainWindow(QWidget *parent) :
                                              defoPointModel_,
                                              roiModel_,
                                              defoPointWidget);
-  defoPointModel_->setThresholdValue(
-              DefoPointRecognitionModel::THRESHOLD_1
-              , DefoConfig::instance()->getValue<int>( "STEP1_THRESHOLD" )
-              );
-  defoPointModel_->setThresholdValue(
-              DefoPointRecognitionModel::THRESHOLD_2
-              , DefoConfig::instance()->getValue<int>( "STEP2_THRESHOLD" )
-              );
-  defoPointModel_->setThresholdValue(
-              DefoPointRecognitionModel::THRESHOLD_3
-              , DefoConfig::instance()->getValue<int>( "STEP3_THRESHOLD" )
-              );
-  defoPointModel_->setHalfSquareWidth(
-              DefoConfig::instance()->getValue<int>( "HALF_SQUARE_WIDTH" )
-              );
+  defoPointModel_->setThresholdValue(DefoPointRecognitionModel::THRESHOLD_1,
+				     ApplicationConfig::instance()->getValue<int>("STEP1_THRESHOLD"));
+  defoPointModel_->setThresholdValue(DefoPointRecognitionModel::THRESHOLD_2,
+				     ApplicationConfig::instance()->getValue<int>("STEP2_THRESHOLD"));
+  defoPointModel_->setThresholdValue(DefoPointRecognitionModel::THRESHOLD_3, 
+				     ApplicationConfig::instance()->getValue<int>("STEP3_THRESHOLD"));
+  defoPointModel_->setHalfSquareWidth(ApplicationConfig::instance()->getValue<int>("HALF_SQUARE_WIDTH"));
   vbox->addWidget(defoPointRecognitionWidget);
 
   layout->addWidget(defoPointWidget);
@@ -261,7 +267,6 @@ DefoRecoMainWindow::DefoRecoMainWindow(QWidget *parent) :
 
   vbox = new QVBoxLayout();
   QWidget * recoWidget = new QWidget(tabWidget_);
-  //recoWidget->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);
   recoWidget->setLayout(vbox);
 
   DefoReconstructionWidget *recoControllerWidget = new DefoReconstructionWidget(reconstructionModel_,
@@ -272,8 +277,45 @@ DefoRecoMainWindow::DefoRecoMainWindow(QWidget *parent) :
                                                               recoWidget);
   vbox->addWidget(geometryWidget);
 
+  /*
+  hbox = new QHBoxLayout();
+  hbox->setContentsMargins(0, 0, 0, 0);
+  QWidget * parameterWidget = new QWidget(recoWidget);
+  parameterWidget->setLayout(hbox);
+
+  DefoGeometryWidget *geometryWidget = new DefoGeometryWidget(geometryModel_,
+                                                              parameterWidget);
+  hbox->addWidget(geometryWidget);
+
+  DefoReconstructionParameterWidget *recoParameter = new DefoReconstructionParameterWidget(geometryModel_,
+											   calibrationModel_,
+											   interpolationModel_,
+											   parameterWidget);
+  hbox->addWidget(recoParameter);
+
+  vbox->addWidget(parameterWidget);
+  */
+
+  QTabWidget * parameterTabs = new QTabWidget(recoWidget);
+  parameterTabs->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Minimum);
+
+  DefoGeometryParameterWidget *geometryParameterWidget = new DefoGeometryParameterWidget(geometryModel_,
+											 parameterTabs);
+  parameterTabs->addTab(geometryParameterWidget, "Geometry");
+
+  DefoCalibrationWidget *calibrationWidget = new DefoCalibrationWidget(calibrationModel_,
+                                                                       parameterTabs);
+  parameterTabs->addTab(calibrationWidget, "Calibration");
+
+  Defo2DSplineInterpolationWidget *interpolationWidget = new Defo2DSplineInterpolationWidget(interpolationModel_,
+                                                                                             parameterTabs);
+  parameterTabs->addTab(interpolationWidget, "Interpolation");
+
+  vbox->addWidget(parameterTabs);
+
   tabWidget_->addTab(recoWidget, "Reconstruction");
 
+#ifdef ANALYSISWIDGET
   vbox = new QVBoxLayout();
   QWidget * analysisWidget = new QWidget(tabWidget_);
   analysisWidget->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);
@@ -284,16 +326,23 @@ DefoRecoMainWindow::DefoRecoMainWindow(QWidget *parent) :
                                                                                         analysisWidget);
   vbox->addWidget(analysisSelect);
 
-  DefoAnalysisWidget *analysisDisplay = new DefoAnalysisWidget(measurementPairListModel_,
+    DefoAnalysisWidget *analysisDisplay = new DefoAnalysisWidget(measurementPairListModel_,
                                                                measurementPairSelectionModel_,
                                                                analysisWidget);
   vbox->addWidget(analysisDisplay);
 
   tabWidget_->addTab(analysisWidget, "Analysis");
+#endif
 
   setCentralWidget(tabWidget_);
 
   pointIndexerModel_->setSelectedIndexer(pointIndexerModel_->getIndexer(0));
+}
+
+void DefoRecoMainWindow::quit()
+{
+  ApplicationConfig* config = ApplicationConfig::instance();
+  config->safe(std::string(Config::CMSTkModLabBasePath) + "/defo/defo.cfg");
 }
 
 void DefoRecoMainWindow::loadMeasurementButtonClicked() {
@@ -334,6 +383,8 @@ void DefoRecoMainWindow::loadMeasurementButtonClicked() {
   refColorModel_->read(currentDir_.absoluteFilePath("refcolor.xml"));
   defoColorModel_->read(currentDir_.absoluteFilePath("defocolor.xml"));
   geometryModel_->read(currentDir_.absoluteFilePath("geometry.xml"));
+  calibrationModel_->read(currentDir_.absoluteFilePath("calibration.xml"));
+  interpolationModel_->read(currentDir_.absoluteFilePath("interpolation.xml"));
 
   listModel_->clear();
   listModel_->read(filename);
@@ -349,6 +400,8 @@ void DefoRecoMainWindow::saveMeasurementButtonClicked() {
   refColorModel_->write(currentDir_.absoluteFilePath("refcolor.xml"));
   defoColorModel_->write(currentDir_.absoluteFilePath("defocolor.xml"));
   geometryModel_->write(currentDir_.absoluteFilePath("geometry.xml"));
+  calibrationModel_->write(currentDir_.absoluteFilePath("calibration.xml"));
+  interpolationModel_->write(currentDir_.absoluteFilePath("interpolation.xml"));
 
   listModel_->write(currentDir_);
   listModel_->writePoints(currentDir_);

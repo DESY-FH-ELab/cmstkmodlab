@@ -5,17 +5,18 @@
 
 #include "ApplicationConfigWriter.h"
 
-ApplicationConfigWriter::ApplicationConfigWriter( const std::string & outputFileName ) {
-
+ApplicationConfigWriter::ApplicationConfigWriter( const std::string & outputFileName )
+{
   outputFileName_ = std::string( outputFileName );
 }
 
-ApplicationConfigWriter::~ApplicationConfigWriter() {
+ApplicationConfigWriter::~ApplicationConfigWriter()
+{
 
 }
 
-void ApplicationConfigWriter::write(std::map<std::string,std::string> &keyvalueMap) {
-
+void ApplicationConfigWriter::write(std::map<std::string,std::string> &keyvalueMap)
+{
   std::ifstream file( outputFileName_.c_str(), std::ios::in );
   if (file.good()) {
     file.close();
@@ -25,8 +26,8 @@ void ApplicationConfigWriter::write(std::map<std::string,std::string> &keyvalueM
   }
 }
 
-void ApplicationConfigWriter::writeMerge(std::map<std::string,std::string> &keyvalueMap) {
-
+void ApplicationConfigWriter::writeMerge(std::map<std::string,std::string> &keyvalueMap)
+{
   std::map<std::string,std::string> tmap = keyvalueMap;
   std::ostringstream ostream;
   
@@ -66,31 +67,27 @@ void ApplicationConfigWriter::writeMerge(std::map<std::string,std::string> &keyv
     ostream << Value << std::endl;
   }
   
-  for (std::map<std::string,std::string>::iterator it = tmap.begin();
-       it!=tmap.end();
-       ++it) {
+  for (auto v : tmap) {
      ostream.fill(' ');
      ostream.width(25);
-     ostream << std::left << it->first;
-     ostream << it->second << std::endl;
+     ostream << std::left << v.first;
+     ostream << v.second << std::endl;
   }  
   
   file.close();
   
-  std::ofstream ofile( outputFileName_.c_str(), std::ios::trunc );
+  std::ofstream ofile(outputFileName_.c_str(), std::ios::trunc);
   ofile << ostream.str() << std::endl;
   ofile.close();
 }
 
-void ApplicationConfigWriter::writeNew(std::map<std::string,std::string> &keyvalueMap) {
-
-  std::ofstream file( outputFileName_.c_str(), std::ios::out );
-  for (std::map<std::string,std::string>::iterator it = keyvalueMap.begin();
-       it!=keyvalueMap.end();
-       ++it) {
+void ApplicationConfigWriter::writeNew(std::map<std::string,std::string> &keyvalueMap)
+{
+  std::ofstream file(outputFileName_.c_str(), std::ios::out);
+  for (auto v : keyvalueMap) {
      file.fill(' ');
      file.width(25);
-     file << std::left << it->first;
-     file << it->second << std::endl;
+     file << std::left << v.first;
+     file << v.second << std::endl;
   }
 }

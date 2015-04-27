@@ -1,3 +1,4 @@
+*~
 defoReco.pro
 defoReco.pro.user
 .qmake.stash
@@ -8,3 +9,4 @@ startDefoReco.sh
 moc_*
 defoReco
 defoReco.app
+*.pdf

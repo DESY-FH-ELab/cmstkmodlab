@@ -30,10 +30,6 @@ public:
       DefoMeasurement* measurement
     , const DefoPointCollection* points
   );
-  void appendMeasurementPoints(
-      DefoMeasurement* measurement
-    , const DefoPointCollection* points
-  );
 
   void write(const QDir& path);
   void exportMeasurement(const QDir& path, const QString& filename);
@@ -41,6 +37,13 @@ public:
   void clear();
   void read(const QString& filename);
   void readPoints(const QDir& path);
+
+public slots:
+
+  void appendMeasurementPoints(
+      DefoMeasurement* measurement
+    , const DefoPointCollection* points
+  );
 
 protected:
   std::vector<DefoMeasurement*> measurementList_;

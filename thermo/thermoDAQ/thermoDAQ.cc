@@ -12,7 +12,6 @@
 
 #include "SingletonApplication.h"
 #include "ApplicationConfig.h"
-#include "ApplicationVersion.h"
 
 #include "ThermoMainWindow.h"
 #include "TestWindow.h"
@@ -72,5 +71,4 @@ int main( int argc, char** argv )
   mainWindow.show();
 
   return app.exec();
-
 }

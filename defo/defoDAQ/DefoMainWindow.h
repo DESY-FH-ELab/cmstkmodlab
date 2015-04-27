@@ -15,8 +15,8 @@
 #include "DefoJulaboModel.h"
 #include "DefoJulaboWidget.h"
 
-#include "DefoKeithleyModel.h"
-#include "DefoKeithleyWidget.h"
+#include "KeithleyModel.h"
+#include "KeithleyWidget.h"
 
 #include "DefoCameraModel.h"
 #include "DefoCameraWidget.h"
@@ -39,6 +39,8 @@ public:
   explicit DefoMainWindow(QWidget *parent = 0);
 
 public slots:
+
+  void quit();
   void exportMeasurement();
   void prepareNewMeasurement();
   void newCameraImage(QString location, bool keep);
@@ -51,7 +53,7 @@ protected:
 
   DefoConradModel* conradModel_;
   DefoJulaboModel* julaboModel_;
-  DefoKeithleyModel* keithleyModel_;
+  KeithleyModel* keithleyModel_;
   DefoMeasurementListModel* listModel_;
   DefoMeasurementSelectionModel* selectionModel_;
   DefoCameraModel* cameraModel_;

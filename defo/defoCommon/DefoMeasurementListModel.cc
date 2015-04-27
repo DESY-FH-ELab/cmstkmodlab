@@ -25,11 +25,8 @@ void DefoMeasurementListModel::addMeasurement(
   measurementList_.push_back(measurement);
   // Set initial point collection to NULL, i.e. non existant
   points_[measurement] = NULL;
-//  std::cout << "Measurement on "
-//            << measurementList_.back().getTimeStamp().toString().toStdString()
-//            << std::endl;
-  emit measurementCountChanged( getMeasurementCount() );
 
+  emit measurementCountChanged( getMeasurementCount() );
 }
 
 
