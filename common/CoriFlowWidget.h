@@ -18,7 +18,7 @@ class CoriFlowWidget : public QWidget
   Q_OBJECT
 public:
   explicit CoriFlowWidget(CoriFlowModel* model,
-                             QWidget *parent = 0);
+                          QWidget *parent = 0);
 
 protected:
   const static int LCD_SIZE = 5;
