@@ -18,6 +18,7 @@ typedef struct {
     QDateTime      dt;
     bool           daqState;
 
+    int            chillerState;
     float          bathTemperature;
     float          workingTemperature;
     int            circulator;

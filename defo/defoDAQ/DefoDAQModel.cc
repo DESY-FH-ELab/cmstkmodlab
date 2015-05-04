@@ -68,6 +68,7 @@ const Measurement_t& DefoDAQModel::getMeasurement()
   measurement_.dt = currentTime();
   measurement_.daqState = daqState();
   
+  measurement_.chillerState = julaboState_;
   measurement_.circulator = julaboCirculator_;
   measurement_.workingTemperature = julaboWorkingTemperature_;
   measurement_.bathTemperature = julaboBathTemperature_;
@@ -181,7 +182,7 @@ void DefoDAQModel::julaboInfoChanged()
 
         xml.writeStartElement("JulaboTemperature");
         xml.writeAttribute("time", utime.toString(Qt::ISODate));
-	xml.writeAttribute("state", QString::number(julaboState_));
+        xml.writeAttribute("state", QString::number(julaboState_));
         xml.writeAttribute("circulator", julaboCirculator_==true ? "1" : "0");
         xml.writeAttribute("work", QString::number(julaboWorkingTemperature_, 'f', 6));
         xml.writeAttribute("bath", QString::number(julaboBathTemperature_, 'f', 6));
