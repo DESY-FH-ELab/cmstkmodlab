@@ -134,8 +134,6 @@ const reading_t Keithley2700::Scan( void ) {
     std::cerr << "                         Probably a timing problem.." << std::endl;
     isScanOk_ = false;
     if( isDebug_ ) throw;
-
-    return Scan();
   }
   
   std::vector<std::string>::const_iterator tokensIt = tokens.begin();
