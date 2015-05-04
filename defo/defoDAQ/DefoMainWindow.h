@@ -32,6 +32,11 @@
 #include "DefoPointRecognitionModel.h"
 #include "DefoPointRecognitionWidget.h"
 
+#include "DefoDAQModel.h"
+#include "DefoDAQThread.h"
+#include "DefoDAQServer.h"
+#include "DefoDAQStreamer.h"
+
 class DefoMainWindow : public QMainWindow
 {
   Q_OBJECT
@@ -61,6 +66,11 @@ protected:
   DefoPointRecognitionModel* pointModel_;
 
   DefoScriptModel* scriptModel_;
+
+  DefoDAQModel* daqModel_;
+  DefoDAQThread* daqThread_;
+  DefoDAQServer* daqServer_;
+  DefoDAQStreamer* daqStreamer_;
 };
 
 #endif // DEFOMAINWINDOW_H
