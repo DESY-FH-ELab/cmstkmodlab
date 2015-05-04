@@ -1,0 +1,8 @@
+defoDAQ2Root.pro
+defoDAQ2Root.pro.user
+.qmake.stash
+Makefile
+*.d
+*.o
+moc_*
+defoDAQ2Root
