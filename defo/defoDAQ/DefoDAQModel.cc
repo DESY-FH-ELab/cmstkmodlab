@@ -19,6 +19,7 @@ DefoDAQModel::DefoDAQModel(DefoConradModel* conradModel,
     conradModel_(conradModel),
     julaboModel_(julaboModel),
     keithleyModel_(keithleyModel),
+    julaboState_(OFF),
     julaboCirculator_(false),
     julaboWorkingTemperature_(0.0),
     julaboBathTemperature_(0.0)
@@ -26,6 +27,9 @@ DefoDAQModel::DefoDAQModel(DefoConradModel* conradModel,
     for (int i=0;i<10;++i) {
       keithleySensorState_[i] = OFF;
       keithleyTemperature_[i] = 0;
+    }
+    for (int i=0;i<8;++i) {
+      conradSwitchState_[i] = OFF;
     }
 
     connect(keithleyModel_, SIGNAL(sensorStateChanged(uint,State)),
@@ -35,6 +39,9 @@ DefoDAQModel::DefoDAQModel(DefoConradModel* conradModel,
 
     connect(julaboModel_, SIGNAL(informationChanged()),
             this, SLOT(julaboInfoChanged()));
+
+    connect(conradModel_, SIGNAL(switchStateChanged(DefoConradModel::DeviceSwitch, State)),
+	    this, SLOT(conradSwitchStateChanged(DefoConradModel::DeviceSwitch, State)));
 }
 
 void DefoDAQModel::myMoveToThread(QThread *thread)
@@ -70,6 +77,10 @@ const Measurement_t& DefoDAQModel::getMeasurement()
     measurement_.temperature[i] = keithleyTemperature_[i];
   }
 
+  for (int i=0;i<8;++i) {
+    measurement_.conradState[i] = (int)conradSwitchState_[i];
+  }
+  
   return measurement_;
 }
 
@@ -82,6 +93,7 @@ void DefoDAQModel::createDAQStatusMessage(QString &buffer)
 
     xml.writeStartElement("JulaboTemperature");
     xml.writeAttribute("time", utime.toString(Qt::ISODate));
+    xml.writeAttribute("state", QString::number(julaboModel_->getDeviceState()));
     xml.writeAttribute("circulator", julaboModel_->isCirculatorEnabled()==true ? "1" : "0");
     xml.writeAttribute("work", QString::number(julaboModel_->getWorkingTemperatureParameter().getValue(), 'f', 6));
     xml.writeAttribute("bath", QString::number(julaboModel_->getBathTemperature(), 'f', 6));
@@ -100,6 +112,14 @@ void DefoDAQModel::createDAQStatusMessage(QString &buffer)
         xml.writeAttribute("sensor", QString::number(sensor));
         xml.writeAttribute("temperature", QString::number(keithleyModel_->getTemperature(sensor), 'f', 6));
         xml.writeEndElement();
+    }
+
+    for (int i=0;i<8;++i) {
+      xml.writeStartElement("ConradSwitchState");
+      xml.writeAttribute("time", utime.toString(Qt::ISODate));
+      xml.writeAttribute("switch", QString::number(i));
+      xml.writeAttribute("state", QString::number(conradModel_->getSwitchState(i)));
+      xml.writeEndElement();
     }
 
     xml.writeStartElement("DAQStarted");
@@ -148,6 +168,8 @@ void DefoDAQModel::julaboInfoChanged()
 
     bool changed = false;
 
+    changed |= updateIfChanged<State>(julaboState_,
+				      julaboModel_->getDeviceState());
     changed |= updateIfChanged<float>(julaboWorkingTemperature_,
                                       julaboModel_->getWorkingTemperatureParameter().getValue());
     changed |= updateIfChanged<float>(julaboBathTemperature_, julaboModel_->getBathTemperature());
@@ -159,6 +181,7 @@ void DefoDAQModel::julaboInfoChanged()
 
         xml.writeStartElement("JulaboTemperature");
         xml.writeAttribute("time", utime.toString(Qt::ISODate));
+	xml.writeAttribute("state", QString::number(julaboState_));
         xml.writeAttribute("circulator", julaboCirculator_==true ? "1" : "0");
         xml.writeAttribute("work", QString::number(julaboWorkingTemperature_, 'f', 6));
         xml.writeAttribute("bath", QString::number(julaboBathTemperature_, 'f', 6));
@@ -228,4 +251,35 @@ void DefoDAQModel::keithleyTemperatureChanged(unsigned int sensor, double temper
         emit daqMessage(buffer);
         emit newDataAvailable();
     }
+}
+
+void DefoDAQModel::conradSwitchStateChanged(DefoConradModel::DeviceSwitch device, State newState)
+{
+  NQLog("DefoDAQModel", NQLog::Debug) << "conradSwitchStateChanged()";
+
+  if (thread()==QApplication::instance()->thread()) {
+    NQLog("DefoDAQModel", NQLog::Debug) << " running in main application thread";
+  } else {
+    NQLog("DefoDAQModel", NQLog::Debug) << " running in dedicated DAQ thread";
+  }
+
+  QMutexLocker locker(&mutex_);
+  
+  QDateTime& utime = currentTime();
+  
+  bool changed = updateIfChanged<State>(conradSwitchState_[device], newState);
+  
+  if (changed) {
+    QString buffer;
+    QXmlStreamWriter xml(&buffer);
+    
+    xml.writeStartElement("ConradSwitchState");
+    xml.writeAttribute("time", utime.toString(Qt::ISODate));
+    xml.writeAttribute("switch", QString::number(device));
+    xml.writeAttribute("state", QString::number(newState));
+    xml.writeEndElement();
+    
+    emit daqMessage(buffer);
+    emit newDataAvailable();
+  }
 }

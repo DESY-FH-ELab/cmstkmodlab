@@ -48,4 +48,8 @@ void DefoDAQStreamer::startDAQ(const QDir& dir)
   }
   
   isStreaming_ = true;
+
+  QString statusMessage;
+  model_->createDAQStatusMessage(statusMessage);
+  handleDAQMessage(statusMessage);
 }

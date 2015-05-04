@@ -24,6 +24,8 @@ typedef struct {
 
     int            channelActive[10];
     float          temperature[10];
+
+    int            conradState[8];
 } Measurement_t;
 
 template <typename value_type> class DefoDAQValueVector : public QVector<double>
@@ -93,6 +95,7 @@ protected slots:
     void julaboInfoChanged();
     void keithleySensorStateChanged(unsigned int sensor, State newState);
     void keithleyTemperatureChanged(unsigned int sensor, double temperature);
+    void conradSwitchStateChanged(DefoConradModel::DeviceSwitch device, State newState);
 
     void clearHistory();
 
@@ -117,6 +120,7 @@ protected:
   }
 
   // JULABO DATA
+  State julaboState_;
   bool julaboCirculator_;
   float julaboWorkingTemperature_;
   float julaboBathTemperature_;
@@ -125,6 +129,9 @@ protected:
   State keithleySensorState_[10];
   double keithleyTemperature_[10];
   
+  // CONRAD DATA
+  State conradSwitchState_[8];
+
 signals:
 
   void daqMessage(const QString & message);
