@@ -14,7 +14,7 @@ DefoDAQModel::DefoDAQModel(DefoConradModel* conradModel,
 			   DefoJulaboModel* julaboModel,
 			   KeithleyModel* keithleyModel,
 			   QObject *parent)
-  : QObject(),
+  : QObject(parent),
     daqState_(false),
     conradModel_(conradModel),
     julaboModel_(julaboModel),
