@@ -8,6 +8,7 @@
 #include <QComboBox>
 #include <QImage>
 #include <QTimer>
+#include <QMutex>
 
 #include "DefoConradModel.h"
 #include "DefoConradWidget.h"
@@ -31,6 +32,11 @@
 
 #include "DefoPointRecognitionModel.h"
 #include "DefoPointRecognitionWidget.h"
+
+#include "DefoDAQModel.h"
+#include "DefoDAQThread.h"
+#include "DefoDAQServer.h"
+#include "DefoDAQStreamer.h"
 
 class DefoMainWindow : public QMainWindow
 {
@@ -61,6 +67,13 @@ protected:
   DefoPointRecognitionModel* pointModel_;
 
   DefoScriptModel* scriptModel_;
+
+  DefoDAQModel* daqModel_;
+  DefoDAQThread* daqThread_;
+  DefoDAQServer* daqServer_;
+  DefoDAQStreamer* daqStreamer_;
+
+  QMutex mutex_;
 };
 
 #endif // DEFOMAINWINDOW_H

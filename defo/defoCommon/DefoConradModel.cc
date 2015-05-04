@@ -200,6 +200,12 @@ const State& DefoConradModel::getSwitchState(DefoConradModel::DeviceSwitch devic
   return switchStates_.at( device );
 }
 
+/// Returns whether the requested device is currently enabled.
+const State& DefoConradModel::getSwitchState( int device) const
+{
+  return switchStates_.at( device );
+}
+
 /// Sets the current state for a device and emits a signal if necessary.
 void DefoConradModel::setSwitchState(DefoConradModel::DeviceSwitch device,
                                      State state)

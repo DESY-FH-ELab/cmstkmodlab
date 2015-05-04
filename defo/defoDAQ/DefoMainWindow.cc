@@ -3,6 +3,7 @@
 #include <QGroupBox>
 #include <QFileDialog>
 #include <QApplication>
+#include <QMutexLocker>
 
 #include "ApplicationConfig.h"
 
@@ -17,15 +18,30 @@ DefoMainWindow::DefoMainWindow(QWidget *parent) :
           this, SLOT(quit()));
 
   // CONRAD MODEL
-  conradModel_ = new DefoConradModel(this);
+  conradModel_ = new DefoConradModel();
 
   // JULABO MODEL
   julaboModel_ = new DefoJulaboModel(config->getValue<std::string>("JulaboDevice").c_str(),
-				     5, this);
+				     5);
 
   // KEITHLEY MODEL
   keithleyModel_ = new KeithleyModel(config->getValue<std::string>("KeithleyDevice").c_str(),
-                                     20, this);
+                                     20);
+
+  daqModel_ = new DefoDAQModel(conradModel_,
+			       julaboModel_,
+			       keithleyModel_,
+			       this);
+  daqServer_ = new DefoDAQServer(daqModel_, this);
+  daqServer_->listen(QHostAddress::LocalHost, 55556);
+
+  daqThread_ = new DefoDAQThread(daqModel_, this);
+  connect(QApplication::instance(), SIGNAL(aboutToQuit()),
+	  this, SLOT(quit()));
+  daqThread_->start();
+  daqModel_->myMoveToThread(daqThread_);
+  
+  daqStreamer_ = new DefoDAQStreamer(daqModel_, this);
 
   // MEASUREMENT MODEL
   listModel_ = new DefoMeasurementListModel();
@@ -211,11 +227,14 @@ void DefoMainWindow::exportMeasurement() {
   listModel_->exportMeasurement(currentDir_.absolutePath(), filename);
 }
 
-void DefoMainWindow::prepareNewMeasurement() {
+void DefoMainWindow::prepareNewMeasurement()
+{
+  ApplicationConfig* config = ApplicationConfig::instance();
+  QString dataPath(config->getValue<std::string>("DataPath").c_str());
 
   // Set up current directory for saving images
   QDateTime dt = QDateTime::currentDateTime().toUTC();
-  QString measurementDirPath(QDir::homePath() + "/Desktop/measurements/%1-%2/");
+  QString measurementDirPath(dataPath + "/%1-%2/");
   measurementDirPath = measurementDirPath.arg(dt.toString("yyyyMMdd"));
   
   int i = 1;
@@ -224,11 +243,17 @@ void DefoMainWindow::prepareNewMeasurement() {
     ++i;
   } while ( currentDir_.exists() );
 
+  currentDir_.mkpath(".");
+
+  daqStreamer_->startDAQ(currentDir_);
+
   listModel_->clear();
 }
 
-void DefoMainWindow::newCameraImage(QString location, bool keep) {
-
+void DefoMainWindow::newCameraImage(QString location, bool keep)
+{
+  QMutexLocker locker(&mutex_);
+  
   if (!keep) {
 
     DefoMeasurement * measurement = new DefoMeasurement(location, true);

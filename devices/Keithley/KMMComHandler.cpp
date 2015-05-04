@@ -88,7 +88,7 @@ void KMMComHandler::ReceiveString( char *receiveString ) {
       timeout++;
     }
   } else {
-    receiveString[0] = '0';
+    receiveString[0] = 0;
   }
 }
 

@@ -19,7 +19,7 @@ class Keithley2700 : public VKeithley2700
 
   // delay time constants (usec)
   // delay for 1 channel scan -- delay for 10 channel scan
-  static constexpr int DelayMin = 1400000;
+  static constexpr int DelayMin = 1700000;
   static constexpr int DelayMax = 7000000;
 
  private:

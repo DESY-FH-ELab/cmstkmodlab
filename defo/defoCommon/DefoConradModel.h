@@ -64,6 +64,7 @@ public:
   // the switch
   void setSwitchEnabled( DeviceSwitch device, bool enabled );
   const State& getSwitchState( DeviceSwitch device ) const;
+  const State& getSwitchState( int device ) const;
 
 public slots:
   // Methods for control and status querying of the device itself, as specified

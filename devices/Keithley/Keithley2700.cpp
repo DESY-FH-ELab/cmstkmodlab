@@ -96,6 +96,9 @@ const reading_t Keithley2700::Scan( void ) {
   // presume that it will work..
   isScanOk_ = true;
 
+  // clear buffer
+  comHandler_->SendCommand( "TRAC:CLE" );
+
   // enable scan
   comHandler_->SendCommand( "ROUT:SCAN:LSEL INT" );
   
@@ -107,7 +110,7 @@ const reading_t Keithley2700::Scan( void ) {
 
   // get output
   comHandler_->ReceiveString( buffer );
-  
+
   // disable scan
   comHandler_->SendCommand( "ROUT:SCAN:LSEL NONE" );
 
@@ -203,6 +206,9 @@ void Keithley2700::Device_SetChannels( void ) const {
 /// all initialization of device
 ///
 void Keithley2700::Device_Init( void ) const {
+
+  // enable buffer auto clear
+  comHandler_->SendCommand( "TRAC:CLE:AUTO ON" );
 
   // disable scan
   // in case still enabled from previous (aborted) scan call

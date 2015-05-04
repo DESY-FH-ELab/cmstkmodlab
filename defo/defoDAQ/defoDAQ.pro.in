@@ -64,7 +64,11 @@ HEADERS += DefoMainWindow.h \
            DefoScriptableJulabo.h \
            ../TestWindow.h \
            DefoTemperatureHistoryModel.h \
-           DefoTemperatureHistoryWidget.h
+           DefoTemperatureHistoryWidget.h \
+           DefoDAQModel.h \
+           DefoDAQThread.h \
+           DefoDAQStreamer.h \
+           DefoDAQServer.h
     
 SOURCES += defoDAQ.cc \
            DefoMainWindow.cc \
@@ -84,4 +88,8 @@ SOURCES += defoDAQ.cc \
            DefoScriptableJulabo.cc \
            ../TestWindow.cc \
            DefoTemperatureHistoryModel.cc \
-           DefoTemperatureHistoryWidget.cc
+           DefoTemperatureHistoryWidget.cc \
+           DefoDAQModel.cc \
+           DefoDAQThread.cc \
+           DefoDAQStreamer.cc \
+           DefoDAQServer.cc
