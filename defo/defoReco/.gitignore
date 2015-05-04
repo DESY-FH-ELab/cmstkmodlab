@@ -9,4 +9,5 @@ startDefoReco.sh
 moc_*
 defoReco
 defoReco.app
+defoReco.desktop
 *.pdf
