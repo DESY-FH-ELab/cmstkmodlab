@@ -4,7 +4,6 @@
 #include <QObject>
 #include <QTextStream>
 #include <QFile>
-#include <QDir>
 
 #include <DefoDAQModel.h>
 
@@ -16,7 +15,7 @@ public:
     explicit DefoDAQStreamer(DefoDAQModel* model, QObject* parent=0);
 
     const QString& getFilename() const { return ofilename_; }
-    void startDAQ(const QDir& dir);
+    void startDAQ(const QString& ofilename);
     
 protected slots:
 
@@ -29,7 +28,6 @@ protected:
   QString ofilename_;
   QFile* ofile_;
   QTextStream* stream_;
-  QDir currentDir_;
 };
 
 #endif // DEFODAQSTREAMER_H
