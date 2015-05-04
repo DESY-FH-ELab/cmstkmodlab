@@ -125,7 +125,7 @@ void DefoDAQStreamReader::process()
   otree_ = new TTree("thermoDAQ", "thermoDAQ");
 
   otree_->Branch("uTime", &measurement_.uTime, "uTime/i");
-  otree_->Branch("datime", &measurement_.datime);
+  otree_->Branch("datime", &measurement_.datime, 1024, 2);
 
   otree_->Branch("chillerState", &measurement_.chillerState, "chillerState/I");
   otree_->Branch("bathTemperature", &measurement_.bathTemperature, "bathTemperature/F");
