@@ -235,7 +235,9 @@ void DefoMainWindow::prepareNewMeasurement()
 
   currentDir_.mkpath(".");
 
-  daqStreamer_->startDAQ(currentDir_);
+  QString daqFilename("daq-%1-%2.xml");
+  daqFilename = daqFilename.arg(dt.toString("yyyyMMdd")).arg(1);
+  daqStreamer_->startDAQ(currentDir_.absoluteFilePath(daqFilename));
 
   listModel_->clear();
 }
