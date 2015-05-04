@@ -122,7 +122,7 @@ void DefoDAQStreamReader::process()
 
   ofile_ = new TFile(rootname.c_str(), "RECREATE");
 
-  otree_ = new TTree("thermoDAQ", "thermoDAQ");
+  otree_ = new TTree("defoDAQ", "defoDAQ");
 
   otree_->Branch("uTime", &measurement_.uTime, "uTime/i");
   otree_->Branch("datime", &measurement_.datime, 1024, 2);

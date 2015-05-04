@@ -30,18 +30,15 @@ void DefoDAQStreamer::handleDAQMessage(const QString& message)
   }
 }
 
-void DefoDAQStreamer::startDAQ(const QDir& dir)
+void DefoDAQStreamer::startDAQ(const QString& ofilename)
 {
   if (isStreaming_) {
     stream_->device()->close();
     delete ofile_;
     delete stream_;
   }
-
-  currentDir_ = dir;
   
-  QString filename("daq.xml");
-  ofilename_ = currentDir_.absoluteFilePath(filename);
+  ofilename_ = ofilename;
   ofile_ = new QFile(ofilename_);
   if (ofile_->open(QFile::WriteOnly | QFile::Truncate)) {
     stream_ = new QTextStream(ofile_);

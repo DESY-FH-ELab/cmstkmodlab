@@ -130,13 +130,11 @@ DefoMainWindow::DefoMainWindow(QWidget *parent) :
   measurementWidget->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);
   measurementWidget->setLayout(layout);
 
-  layout->addWidget(new DefoCameraWidget(
-					 cameraModel_
-                   , conradModel_
-                   , listModel_
-                   , selectionModel_
-                   , this
-					 ));
+  layout->addWidget(new DefoCameraWidget(cameraModel_,
+                                         conradModel_,
+                                         listModel_,
+                                         selectionModel_,
+                                         this));
 
   if (cameraModel_->getDeviceState() == READY) {
     cameraModel_->setOptionSelection(DefoCameraModel::APERTURE, 6);
@@ -166,21 +164,13 @@ DefoMainWindow::DefoMainWindow(QWidget *parent) :
   buttonLayout->addWidget(newMeasurementButton, 0, 1);
 
   // read default settings
-  pointModel_->setThresholdValue(
-        DefoPointRecognitionModel::THRESHOLD_1
-        , ApplicationConfig::instance()->getValue<int>( "STEP1_THRESHOLD" )
-        );
-  pointModel_->setThresholdValue(
-        DefoPointRecognitionModel::THRESHOLD_2
-        , ApplicationConfig::instance()->getValue<int>( "STEP2_THRESHOLD" )
-        );
-  pointModel_->setThresholdValue(
-        DefoPointRecognitionModel::THRESHOLD_3
-        , ApplicationConfig::instance()->getValue<int>( "STEP3_THRESHOLD" )
-        );
-  pointModel_->setHalfSquareWidth(
-        ApplicationConfig::instance()->getValue<int>( "HALF_SQUARE_WIDTH" )
-        );
+  pointModel_->setThresholdValue(DefoPointRecognitionModel::THRESHOLD_1,
+                                 ApplicationConfig::instance()->getValue<int>("STEP1_THRESHOLD"));
+  pointModel_->setThresholdValue(DefoPointRecognitionModel::THRESHOLD_2,
+                                 ApplicationConfig::instance()->getValue<int>("STEP2_THRESHOLD"));
+  pointModel_->setThresholdValue(DefoPointRecognitionModel::THRESHOLD_3,
+                                 ApplicationConfig::instance()->getValue<int>("STEP3_THRESHOLD"));
+  pointModel_->setHalfSquareWidth(ApplicationConfig::instance()->getValue<int>("HALF_SQUARE_WIDTH"));
 
   DefoPointRecognitionWidget * pointWidget =
       new DefoPointRecognitionWidget(listModel_,
@@ -215,12 +205,12 @@ void DefoMainWindow::quit()
 
 void DefoMainWindow::exportMeasurement() {
 
-  QString filename = QFileDialog::getSaveFileName(this
-                                                , "export measurement"
-                                                , "./"
-                                                , "ODM Measurement Archive (*.odma)"
-                                                , 0
-                                                , 0);
+  QString filename = QFileDialog::getSaveFileName(this,
+                                                  "export measurement",
+                                                  "./",
+                                                  "ODM Measurement Archive (*.odma)",
+                                                  0,
+                                                  0);
   if (filename.isNull()) return;
   if (!filename.endsWith(".odma")) filename += ".odma";
 
@@ -245,7 +235,9 @@ void DefoMainWindow::prepareNewMeasurement()
 
   currentDir_.mkpath(".");
 
-  daqStreamer_->startDAQ(currentDir_);
+  QString daqFilename("daq-%1-%2.xml");
+  daqFilename = daqFilename.arg(dt.toString("yyyyMMdd")).arg(1);
+  daqStreamer_->startDAQ(currentDir_.absoluteFilePath(daqFilename));
 
   listModel_->clear();
 }
