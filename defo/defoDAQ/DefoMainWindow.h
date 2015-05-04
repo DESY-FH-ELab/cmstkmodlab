@@ -8,6 +8,7 @@
 #include <QComboBox>
 #include <QImage>
 #include <QTimer>
+#include <QMutex>
 
 #include "DefoConradModel.h"
 #include "DefoConradWidget.h"
@@ -71,6 +72,8 @@ protected:
   DefoDAQThread* daqThread_;
   DefoDAQServer* daqServer_;
   DefoDAQStreamer* daqStreamer_;
+
+  QMutex mutex_;
 };
 
 #endif // DEFOMAINWINDOW_H

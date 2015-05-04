@@ -3,6 +3,7 @@
 #include <QGroupBox>
 #include <QFileDialog>
 #include <QApplication>
+#include <QMutexLocker>
 
 #include "ApplicationConfig.h"
 
@@ -249,8 +250,10 @@ void DefoMainWindow::prepareNewMeasurement()
   listModel_->clear();
 }
 
-void DefoMainWindow::newCameraImage(QString location, bool keep) {
-
+void DefoMainWindow::newCameraImage(QString location, bool keep)
+{
+  QMutexLocker locker(&mutex_);
+  
   if (!keep) {
 
     DefoMeasurement * measurement = new DefoMeasurement(location, true);
