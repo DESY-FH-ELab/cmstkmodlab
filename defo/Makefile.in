@@ -5,6 +5,7 @@ USEFAKEDEVICES= @usefakedevices@
 
 subdirs	      = defoCommon \
 		defoDAQ \
+                defoDisplay \
                 defoReco \
 		defoCalib
 
