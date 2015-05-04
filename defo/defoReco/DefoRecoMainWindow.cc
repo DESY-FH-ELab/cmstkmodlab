@@ -27,12 +27,12 @@
 DefoRecoMainWindow::DefoRecoMainWindow(QWidget *parent)
 : QMainWindow(parent)
 {
-  ApplicationConfig::instance();
+  ApplicationConfig* config = ApplicationConfig::instance();
 
   connect(QApplication::instance(), SIGNAL(aboutToQuit()),
           this, SLOT(quit()));
 
-  currentDir_ = "/home/tkmodlab/Desktop/measurements";
+  currentDir_ = config->getValue<std::string>("DataPath").c_str();
 
   // MEASUREMENT MODEL
   listModel_ = new DefoRecoMeasurementListModel(this);

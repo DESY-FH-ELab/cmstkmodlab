@@ -226,11 +226,14 @@ void DefoMainWindow::exportMeasurement() {
   listModel_->exportMeasurement(currentDir_.absolutePath(), filename);
 }
 
-void DefoMainWindow::prepareNewMeasurement() {
+void DefoMainWindow::prepareNewMeasurement()
+{
+  ApplicationConfig* config = ApplicationConfig::instance();
+  QString dataPath(config->getValue<std::string>("DataPath").c_str());
 
   // Set up current directory for saving images
   QDateTime dt = QDateTime::currentDateTime().toUTC();
-  QString measurementDirPath(QDir::homePath() + "/Desktop/measurements/%1-%2/");
+  QString measurementDirPath(dataPath + "/%1-%2/");
   measurementDirPath = measurementDirPath.arg(dt.toString("yyyyMMdd"));
   
   int i = 1;
