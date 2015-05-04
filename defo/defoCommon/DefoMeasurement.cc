@@ -230,7 +230,7 @@ void DefoMeasurement::write(const QDir& path)
       QString name = "Panel";
       name += QString().setNum(idx+1);
       stream.writeStartElement(name);
-      stream.writeAttribute("on", QString().setNum(panelStates_[0]==READY));
+      stream.writeAttribute("on", QString().setNum(panelStates_[idx]==READY));
       stream.writeEndElement();
     }
     stream.writeStartElement("LEDs");
