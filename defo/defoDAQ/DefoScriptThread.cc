@@ -70,12 +70,7 @@ void DefoScriptThread::abortScript() {
 
 void DefoScriptThread::run() {
 
-  std::cout << script_.toStdString() << " " << engine_ << std::endl;
-
   if (engine_->canEvaluate(script_)) {
-
-    std::cout << script_.toStdString() << " " << engine_ << std::endl;
-    
     QScriptValue fun = engine_->evaluate(script_);
     //QScriptContext * context = engine_->pushContext();
     //QScriptValue v = context->activationObject();
