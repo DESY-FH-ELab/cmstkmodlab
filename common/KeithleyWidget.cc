@@ -194,8 +194,8 @@ void KeithleyTemperatureWidget::controlStateChanged(bool enabled) {
 }
 
 /// Updates the GUI according to the current sensor state.
-void KeithleyTemperatureWidget::sensorStateChagned(unsigned int sensor,
-                                                       State /* state */)
+void KeithleyTemperatureWidget::sensorStateChanged(unsigned int sensor,
+                                                   State /* state */)
 {
   if ( sensor_ == sensor )
       updateWidgets();
