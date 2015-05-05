@@ -2,8 +2,8 @@
 
 #include "DefoConradModel.h"
 
-DefoConradModel::DefoConradModel(QObject *parent)
-: QObject(parent),
+DefoConradModel::DefoConradModel(QObject * /* parent */)
+: QObject(),
   AbstractDeviceModel(),
   switchStates_(8, OFF)
 {

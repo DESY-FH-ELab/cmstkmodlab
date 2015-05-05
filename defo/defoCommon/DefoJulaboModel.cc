@@ -17,8 +17,9 @@
   \arg parent Pointer to the parent QObject.
   */
 DefoJulaboModel::DefoJulaboModel(const char* port,
-				 float updateInterval, QObject *parent) :
-  QObject(parent),
+				 float updateInterval,
+				 QObject * /* parent */)
+: QObject(),
   AbstractDeviceModel<JulaboFP50_t>(),
   port_(port),
   updateInterval_(updateInterval),

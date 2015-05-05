@@ -18,20 +18,20 @@ DefoMainWindow::DefoMainWindow(QWidget *parent) :
           this, SLOT(quit()));
 
   // CONRAD MODEL
-  conradModel_ = new DefoConradModel();
+  conradModel_ = new DefoConradModel(this);
 
   // JULABO MODEL
   julaboModel_ = new DefoJulaboModel(config->getValue<std::string>("JulaboDevice").c_str(),
-				     5);
+				     5, this);
 
   // KEITHLEY MODEL
   keithleyModel_ = new KeithleyModel(config->getValue<std::string>("KeithleyDevice").c_str(),
-                                     20);
+                                     20, this);
 
   daqModel_ = new DefoDAQModel(conradModel_,
 			       julaboModel_,
-			       keithleyModel_,
-			       this);
+			       keithleyModel_, this);
+
   daqServer_ = new DefoDAQServer(daqModel_, this);
   daqServer_->listen(QHostAddress::LocalHost, 55556);
 
