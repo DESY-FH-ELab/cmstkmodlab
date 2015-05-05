@@ -122,7 +122,7 @@ JulaboWidget::JulaboWidget(JulaboModel* model, QWidget *parent)
  */
 void JulaboWidget::updateDeviceState(State newState)
 {
-  bool ready = (newState == READY);
+  bool ready = (newState == READY || newState == INITIALIZING);
   chillerCheckBox_->setChecked( ready );
   operationPanel_->setEnabled( ready );
 }

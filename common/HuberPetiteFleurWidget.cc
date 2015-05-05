@@ -69,7 +69,7 @@ HuberPetiteFleurWidget::HuberPetiteFleurWidget(HuberPetiteFleurModel* model,
 */
 void HuberPetiteFleurWidget::updateDeviceState(State newState)
 {
-  bool ready = (newState == READY);
+  bool ready = (newState == READY || newState == INITIALIZING);
   huberPetiteFleurCheckBox_->setChecked( ready );
   operationPanel_->setEnabled( ready );
 }

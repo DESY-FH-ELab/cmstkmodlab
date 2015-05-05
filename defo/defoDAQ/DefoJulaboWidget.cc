@@ -122,10 +122,9 @@ DefoJulaboWidget::DefoJulaboWidget(DefoJulaboModel* model, QWidget *parent)
   */
 void DefoJulaboWidget::updateDeviceState(State newState) {
 
-  bool ready = (newState == READY);
+  bool ready = (newState == READY || newState == INITIALIZING);
   chillerCheckBox_->setChecked( ready );
   operationPanel_->setEnabled( ready );
-
 }
 
 /// Updates the GUI when the Keithley multimeter is enabled/disabled.
