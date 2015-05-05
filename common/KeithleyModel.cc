@@ -1,4 +1,5 @@
 #include <unistd.h>
+#include <thread>
 
 #include <QApplication>
 
@@ -167,10 +168,9 @@ void KeithleyModel::scanTemperatures()
       //   setSensorEnabled(sensor, false);
 
     }
-  timeBuffer_.push_back(absoluteTime_);
-  temperatureBuffer_.push_back(temperatures_);
 
     timeBuffer_.push_back(absoluteTime_);
+    temperatureBuffer_.push_back(temperatures_);
 
     std::chrono::time_point<std::chrono::system_clock> lastTime = timeBuffer_.get();
     const std::vector<double> &lastTemperatures = temperatureBuffer_.get();
@@ -178,15 +178,15 @@ void KeithleyModel::scanTemperatures()
     
     if (dt.count()>=30) {
       for (unsigned int i=0;i<SENSOR_COUNT;++i) {
-          if (sensorStates_[i] != READY) continue;
-
-              gradients_[i] = gradient;
-              emit temperatureGradientChanged(i, gradient);
-          }
+	if (sensorStates_[i] != READY) continue;
+	
 	double gradient = (temperatures_[i] - lastTemperatures[i]) / (dt.count()/60.);
 	if ( gradients_.at(i) != gradient ) {
+	  gradients_[i] = gradient;
+	  emit temperatureGradientChanged(i, gradient);
+	}
       }
-  }
+    }
   } else {
     
     channels_t activeChannels = controller_->GetActiveChannels();
@@ -199,6 +199,8 @@ void KeithleyModel::scanTemperatures()
 
     std::this_thread::sleep_for(std::chrono::milliseconds(500));
   }
+  
+  absoluteTime_ = std::chrono::system_clock::now();
 }
 
 /// Creates a string from sensor number.
