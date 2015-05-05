@@ -37,7 +37,7 @@ DefoJulaboModel::DefoJulaboModel(const char* port,
   timer_->setInterval(updateInterval_ * 1000);
   connect( timer_, SIGNAL(timeout()), this, SLOT(updateInformation()) );
 
-  setDeviceEnabled(false);
+  setDeviceEnabled(true);
   setControlsEnabled(true);
 }
 
