@@ -1,6 +1,7 @@
 thermoDisplay.pro
 thermoDisplay.pro.user
 .qmake.stash
+.qmake.cache
 Makefile
 *.d
 *.o
