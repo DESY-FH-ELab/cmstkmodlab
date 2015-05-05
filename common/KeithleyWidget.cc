@@ -169,27 +169,29 @@ void KeithleyTemperatureWidget::updateWidgets() {
 
   State sensorState = model_->getSensorState(sensor_);
 
-  enabledCheckBox_->setChecked(
-       sensorState == READY
-    || sensorState == INITIALIZING
-  );
+  enabledCheckBox_->setChecked(sensorState == READY || sensorState == INITIALIZING);
 
-  currentTempDisplay_->setEnabled( sensorState == READY );
+  currentTempDisplay_->setEnabled(sensorState == READY);
+  currentGradientDisplay_->setEnabled(sensorState == READY);
 }
 
 /// Updates the GUI according to the current device state.
-void KeithleyTemperatureWidget::keithleyStateChanged(State /*state*/) {
+void KeithleyTemperatureWidget::keithleyStateChanged(State newState) {
+
+  enabledCheckBox_->setEnabled(newState == READY || newState == INITIALIZING);
+
   updateWidgets();
 }
 
 /// Updates the GUI when the Keithley multimeter is enabled/disabled.
 void KeithleyTemperatureWidget::controlStateChanged(bool enabled) {
+
   if (enabled) {
-    State state = model_->getDeviceState();
-    enabledCheckBox_->setEnabled(state == READY
-			      || state == INITIALIZING);
+    keithleyStateChanged(model_->getDeviceState());
   } else {
     enabledCheckBox_->setEnabled(false);
+    currentTempDisplay_->setEnabled(false);
+    currentGradientDisplay_->setEnabled(false);
   }
 }
 
