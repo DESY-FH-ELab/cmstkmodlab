@@ -51,7 +51,7 @@ HuberPetiteFleurWidget::HuberPetiteFleurWidget(HuberPetiteFleurModel* model,
           this, SLOT(updateInfo()));
 
   connect(huberPetiteFleurCheckBox_, SIGNAL(toggled(bool)),
-          model, SLOT(setDeviceEnabled(bool)));
+          model_, SLOT(setDeviceEnabled(bool)));
 
   connect(circulatorCheckBox_, SIGNAL(toggled(bool)),
           model_, SLOT(setCirculatorEnabled(bool)));

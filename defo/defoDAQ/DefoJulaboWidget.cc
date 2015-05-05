@@ -95,7 +95,7 @@ DefoJulaboWidget::DefoJulaboWidget(DefoJulaboModel* model, QWidget *parent)
           this, SLOT(updateChillerInfo()));
 
   connect(chillerCheckBox_, SIGNAL(toggled(bool)),
-          model, SLOT(setDeviceEnabled(bool)));
+          model_, SLOT(setDeviceEnabled(bool)));
 
   connect(proportionalSpinner_, SIGNAL(valueChanged(double)),
           model_, SLOT(setProportionalValue(double)));
