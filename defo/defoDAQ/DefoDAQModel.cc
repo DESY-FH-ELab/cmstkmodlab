@@ -46,6 +46,7 @@ DefoDAQModel::DefoDAQModel(DefoConradModel* conradModel,
 
 void DefoDAQModel::myMoveToThread(QThread *thread)
 {
+    conradModel_->moveToThread(thread);
     julaboModel_->moveToThread(thread);
     keithleyModel_->moveToThread(thread);
     this->moveToThread(thread);
