@@ -199,6 +199,11 @@ DefoMainWindow::DefoMainWindow(QWidget *parent) :
 
 void DefoMainWindow::quit()
 {
+  if (daqThread_) {
+    daqThread_->quit();
+    daqThread_->wait();
+  }
+  
   ApplicationConfig* config = ApplicationConfig::instance();
   config->safe(std::string(Config::CMSTkModLabBasePath) + "/defo/defo.cfg");
 }
