@@ -124,6 +124,5 @@ void DefoPointRecognitionWidget::savePointsButtonClicked()
 
 void DefoPointRecognitionWidget::controlStateChanged(bool enabled) {
 
-  findPoints_->setEnabled(enabled);
-  savePoints_->setEnabled(enabled);
+  setEnabled(enabled);
 }
