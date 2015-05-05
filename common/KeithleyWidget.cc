@@ -81,13 +81,21 @@ KeithleyWidget::KeithleyWidget(KeithleyModel* model,
 void KeithleyWidget::keithleyStateChanged(State newState) {
 
   keithleyCheckBox_->setChecked(newState == READY || newState == INITIALIZING);
+  updateIntervalBox_->setEnabled(newState == READY);
   sensorControlWidget_->setEnabled(newState == READY);
-
 }
 
 /// Updates the GUI when the Keithley multimeter is enabled/disabled.
 void KeithleyWidget::controlStateChanged(bool enabled) {
-  keithleyCheckBox_->setEnabled(enabled);
+
+  if (enabled) {
+    keithleyCheckBox_->setEnabled(true);
+    keithleyStateChanged(model_->getDeviceState());
+  } else {
+    keithleyCheckBox_->setEnabled(false);
+    updateIntervalBox_->setEnabled(false);
+    sensorControlWidget_->setEnabled(false);
+  }
 }
 
 /* TemperatureWidget implementation */
