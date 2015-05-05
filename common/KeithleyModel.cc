@@ -169,8 +169,6 @@ void KeithleyModel::scanTemperatures() {
       //   setSensorEnabled(sensor, false);
 
     }
-  }
-
   timeBuffer_.push_back(absoluteTime_);
   temperatureBuffer_.push_back(temperatures_);
 
@@ -189,13 +187,18 @@ void KeithleyModel::scanTemperatures() {
           }
       }
   }
+  } else {
+    
+    channels_t activeChannels = controller_->GetActiveChannels();
 
-  absoluteTime_ += updateInterval_;
+    controller_->Reset();
 
-  // FIXME If bad scans don't normally happen, close(), otherwise ignore.
-//  else
-//    close();
+    std::this_thread::sleep_for(std::chrono::milliseconds(500));
+    
+    controller_->SetActiveChannels(activeChannels);
 
+    std::this_thread::sleep_for(std::chrono::milliseconds(500));
+  }
 }
 
 /// Creates a string from sensor number.

@@ -30,10 +30,19 @@ Keithley2700::Keithley2700( ioport_t port )
 /// enables the channels given by string
 /// format: see ::ParseChannelString
 ///
-void Keithley2700::SetActiveChannels( std::string channelString ) {
-  
+void Keithley2700::SetActiveChannels( std::string channelString )
+{
   enabledChannels_.resize( 0 );
   enabledChannels_ = ParseChannelString( channelString );
+
+  CalculateDelay();
+
+  Device_SetChannels();
+}
+
+void Keithley2700::SetActiveChannels( channels_t channels )
+{
+  enabledChannels_ = channels;
 
   CalculateDelay();
 
@@ -200,6 +209,15 @@ void Keithley2700::Device_SetChannels( void ) const {
               << theCommand.str() << "\"" << std::endl;
   }
   comHandler_->SendCommand( theCommand.str().c_str() );
+}
+  
+void Keithley2700::Reset()
+{
+  comHandler_->SendCommand( "ROUT:SCAN:LSEL NONE" );
+  comHandler_->SendCommand( "TRAC:CLE" );
+  comHandler_->SendCommand( "ROUT:OPEN:ALL" );
+
+  Device_Init();
 }
 
 ///

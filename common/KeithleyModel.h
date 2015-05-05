@@ -3,6 +3,7 @@
 
 #include <vector>
 #include <limits>
+#include <chrono>
 
 #include <QObject>
 #include <QString>

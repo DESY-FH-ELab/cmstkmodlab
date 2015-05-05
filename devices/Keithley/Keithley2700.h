@@ -11,11 +11,13 @@ class Keithley2700 : public VKeithley2700
   Keithley2700( ioport_t );
 
   void SetActiveChannels( std::string );
+  void SetActiveChannels( channels_t );
   void AddActiveChannels( std::string );
   void DisableActiveChannels( std::string );
   const reading_t Scan( void );
   void Dump( void ) const;
   bool IsScanOk( void ) { return isScanOk_; }
+  void Reset();
 
   // delay time constants (usec)
   // delay for 1 channel scan -- delay for 10 channel scan
