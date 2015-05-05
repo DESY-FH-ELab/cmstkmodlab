@@ -95,7 +95,7 @@ DefoJulaboWidget::DefoJulaboWidget(DefoJulaboModel* model, QWidget *parent)
           this, SLOT(updateChillerInfo()));
 
   connect(chillerCheckBox_, SIGNAL(toggled(bool)),
-          model, SLOT(setDeviceEnabled(bool)));
+          model_, SLOT(setDeviceEnabled(bool)));
 
   connect(proportionalSpinner_, SIGNAL(valueChanged(double)),
           model_, SLOT(setProportionalValue(double)));
@@ -122,11 +122,9 @@ DefoJulaboWidget::DefoJulaboWidget(DefoJulaboModel* model, QWidget *parent)
   */
 void DefoJulaboWidget::updateDeviceState(State newState) {
 
-  bool ready = (newState == READY);
-  std::cout << "void DefoJulaboWidget::updateDeviceState(State newState) " << (int)ready << std::endl;
+  bool ready = (newState == READY || newState == INITIALIZING);
   chillerCheckBox_->setChecked( ready );
   operationPanel_->setEnabled( ready );
-
 }
 
 /// Updates the GUI when the Keithley multimeter is enabled/disabled.
