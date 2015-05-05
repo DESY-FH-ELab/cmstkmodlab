@@ -36,6 +36,7 @@ void DefoScriptThread::executeScript(const QString & script)
   QScriptValue globalsValue = engine_->newQObject(globalsObj);
   engine_->globalObject().setProperty("defo", globalsValue);
 
+  /*
   DefoScriptableConrad *conradObj = new DefoScriptableConrad(scriptModel_, conradModel_, this);
   QScriptValue conradValue = engine_->newQObject(conradObj);
   engine_->globalObject().setProperty("conrad", conradValue);
@@ -51,6 +52,7 @@ void DefoScriptThread::executeScript(const QString & script)
   ScriptableKeithley *keithleyObj = new ScriptableKeithley(keithleyModel_, this);
   QScriptValue keithleyValue = engine_->newQObject(keithleyObj);
   engine_->globalObject().setProperty("keithley", keithleyValue);
+  */
 
   start();
 }
@@ -68,7 +70,12 @@ void DefoScriptThread::abortScript() {
 
 void DefoScriptThread::run() {
 
+  std::cout << script_.toStdString() << " " << engine_ << std::endl;
+
   if (engine_->canEvaluate(script_)) {
+
+    std::cout << script_.toStdString() << " " << engine_ << std::endl;
+    
     QScriptValue fun = engine_->evaluate(script_);
     //QScriptContext * context = engine_->pushContext();
     //QScriptValue v = context->activationObject();

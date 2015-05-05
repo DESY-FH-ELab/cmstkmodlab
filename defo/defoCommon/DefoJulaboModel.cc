@@ -38,7 +38,7 @@ DefoJulaboModel::DefoJulaboModel(const char* port,
   connect( timer_, SIGNAL(timeout()), this, SLOT(updateInformation()) );
 
   setDeviceEnabled(false);
-  setControlsEnabled(true);
+  setControlsEnabled(false);
 }
 
 // Getter functions for (cached) Julabo state information
@@ -102,6 +102,8 @@ void DefoJulaboModel::initialize()
 
   bool enabled = ( controller_ != NULL ) && ( controller_->IsCommunication() );
 
+  std::cout << "void DefoJulaboModel::initialize() " << (int)enabled << std::endl;
+
   if ( enabled ) {
     setDeviceState(READY);
     updateInformation();
@@ -115,6 +117,7 @@ void DefoJulaboModel::initialize()
 /// \see DefoAbstractDeviceModel::setDeviceState
 void DefoJulaboModel::setDeviceState( State state )
 {
+  std::cout << "void DefoJulaboModel::setDeviceState( State state ) " << (int)state << std::endl;
   if ( state_ != state ) {
     state_ = state;
 

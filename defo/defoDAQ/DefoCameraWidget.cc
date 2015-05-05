@@ -151,6 +151,7 @@ void DefoCameraWidget::deviceStateChanged(State newState)
   previewButton_->setEnabled( newState == READY );
   pictureButton_->setEnabled( newState == READY );
   liveviewCheckBox_->setEnabled( newState == READY );
+  imageCountSpinBox_->setEnabled( newState == READY );
 }
 
 void DefoCameraWidget::controlStateChanged(bool enabled)
@@ -163,6 +164,7 @@ void DefoCameraWidget::controlStateChanged(bool enabled)
     previewButton_->setEnabled(false);
     pictureButton_->setEnabled(false);
     liveviewCheckBox_->setEnabled(false);
+    imageCountSpinBox_->setEnabled(false);
   }
 }
 

@@ -64,16 +64,19 @@ DefoMainWindow::DefoMainWindow(QWidget *parent) :
 
   connect(scriptModel_, SIGNAL(prepareNewMeasurement()),
 	  this, SLOT(prepareNewMeasurement()));
+
   connect(scriptModel_, SIGNAL(setControlsEnabled(bool)),
 	  conradModel_, SLOT(setControlsEnabled(bool)));
   connect(scriptModel_, SIGNAL(setControlsEnabled(bool)),
 	  cameraModel_, SLOT(setControlsEnabled(bool)));
+  /*
   connect(scriptModel_, SIGNAL(setControlsEnabled(bool)),
 	  julaboModel_, SLOT(setControlsEnabled(bool)));
   connect(scriptModel_, SIGNAL(setControlsEnabled(bool)),
 	  keithleyModel_, SLOT(setControlsEnabled(bool)));
   connect(scriptModel_, SIGNAL(setControlsEnabled(bool)),
 	  pointModel_, SLOT(setControlsEnabled(bool)));
+  */
 
   prepareNewMeasurement();
 

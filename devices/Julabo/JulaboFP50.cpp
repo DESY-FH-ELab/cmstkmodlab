@@ -14,6 +14,8 @@
 // query error codes
 //#####################
 
+#define __JULABOFP50_DEBUG
+
 ///
 ///
 ///

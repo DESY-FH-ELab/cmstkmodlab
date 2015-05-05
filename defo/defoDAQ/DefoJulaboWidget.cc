@@ -123,6 +123,7 @@ DefoJulaboWidget::DefoJulaboWidget(DefoJulaboModel* model, QWidget *parent)
 void DefoJulaboWidget::updateDeviceState(State newState) {
 
   bool ready = (newState == READY);
+  std::cout << "void DefoJulaboWidget::updateDeviceState(State newState) " << (int)ready << std::endl;
   chillerCheckBox_->setChecked( ready );
   operationPanel_->setEnabled( ready );
 
