@@ -140,12 +140,12 @@ double KeithleyModel::getTemperature(unsigned int sensor) const
   Calls the Keithley controller to get the current reading on the temperatures.
   These are then cached and signals are emitted upon changes.
   */
-void KeithleyModel::scanTemperatures() {
-
+void KeithleyModel::scanTemperatures()
+{
   reading_t reading = controller_->Scan();
 
   // Good scan, cache the retrieved temperatures
-  if ( controller_->IsScanOk() ) {
+  if (controller_->IsScanOk()) {
 
     NQLog("KeithleyModel", NQLog::Debug) << reading.size() << " temperature readings";
 
