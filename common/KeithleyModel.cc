@@ -19,7 +19,7 @@ KeithleyModel::KeithleyModel(const char* port,
 //    timeBuffer_(1+(60*5)/updateInterval),
 //    temperatureBuffer_(1+(60*5)/updateInterval, temperatures_),
     temperatureBuffer_(temperatures_),
-    absoluteTime_(0)
+    absoluteTime_(std::chrono::system_clock::now())
 {
   timer_ = new QTimer(this);
   timer_->setInterval(updateInterval_ * 1000);
@@ -172,19 +172,21 @@ void KeithleyModel::scanTemperatures() {
   timeBuffer_.push_back(absoluteTime_);
   temperatureBuffer_.push_back(temperatures_);
 
-  double lastTime = timeBuffer_.get();
-  const std::vector<double> &lastTemperatures = temperatureBuffer_.get();
-  double dt = absoluteTime_ - lastTime;
+    timeBuffer_.push_back(absoluteTime_);
 
-  if (dt>=30) {
+    std::chrono::time_point<std::chrono::system_clock> lastTime = timeBuffer_.get();
+    const std::vector<double> &lastTemperatures = temperatureBuffer_.get();
+    std::chrono::duration<double> dt = absoluteTime_ - lastTime;
+    
+    if (dt.count()>=30) {
       for (unsigned int i=0;i<SENSOR_COUNT;++i) {
           if (sensorStates_[i] != READY) continue;
 
-          double gradient = (temperatures_[i] - lastTemperatures[i]) / (dt/60.);
-          if ( gradients_.at(i) != gradient ) {
               gradients_[i] = gradient;
               emit temperatureGradientChanged(i, gradient);
           }
+	double gradient = (temperatures_[i] - lastTemperatures[i]) / (dt.count()/60.);
+	if ( gradients_.at(i) != gradient ) {
       }
   }
   } else {

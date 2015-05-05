@@ -61,9 +61,9 @@ protected:
   std::vector<double> temperatures_;
   std::vector<double> gradients_;
 
-  Ringbuffer<double,4> timeBuffer_;
+  Ringbuffer<std::chrono::time_point<std::chrono::system_clock>,4> timeBuffer_;
   Ringbuffer<std::vector<double>,4> temperatureBuffer_;
-  double absoluteTime_;
+  std::chrono::time_point<std::chrono::system_clock> absoluteTime_;
 
   void setDeviceState( State state );
   void setSensorState( unsigned int sensor, State state );
