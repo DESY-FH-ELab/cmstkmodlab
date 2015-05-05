@@ -16,8 +16,6 @@ KeithleyModel::KeithleyModel(const char* port,
     sensorStates_(SENSOR_COUNT, OFF),
     temperatures_(SENSOR_COUNT, 0.0),
     gradients_(SENSOR_COUNT, 0.0),
-//    timeBuffer_(1+(60*5)/updateInterval),
-//    temperatureBuffer_(1+(60*5)/updateInterval, temperatures_),
     temperatureBuffer_(temperatures_),
     absoluteTime_(std::chrono::system_clock::now())
 {
