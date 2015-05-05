@@ -17,7 +17,7 @@ DefoScriptableCamera::DefoScriptableCamera(
 {
   connect(this, SIGNAL(acquirePicture(bool)),
           cameraModel_, SLOT(acquirePicture(bool)));
-  connect(this, SIGNAL(comment(QString)),
+  connect(this, SIGNAL(setComment(QString)),
           cameraModel_, SLOT(setComment(QString)));
 }
 
