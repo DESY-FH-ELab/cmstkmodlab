@@ -18,6 +18,8 @@ DefoJulaboWidget::DefoJulaboWidget(DefoJulaboModel* model, QWidget *parent)
   proportionalSpinner_->setDecimals(prop.getPrecision());
   proportionalSpinner_->setMinimum(prop.getMinimum());
   proportionalSpinner_->setMaximum(prop.getMaximum());
+  proportionalSpinner_->setSingleStep(0.1);
+  proportionalSpinner_->setKeyboardTracking(true);
   proportionalSpinner_->setKeyboardTracking(false);
 
   ParameterUInt integral = model_->getIntegralParameter();
