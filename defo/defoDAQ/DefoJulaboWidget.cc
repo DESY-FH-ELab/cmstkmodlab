@@ -102,6 +102,9 @@ DefoJulaboWidget::DefoJulaboWidget(DefoJulaboModel* model, QWidget *parent)
   connect(proportionalSpinner_, SIGNAL(valueChanged(double)),
           model_, SLOT(setProportionalValue(double)));
 
+  connect(integralSpinner_, SIGNAL(valueChanged(int)),
+          model_, SLOT(setIntegralValue(int)));
+
   connect(differentialSpinner_, SIGNAL(valueChanged(int)),
           model_, SLOT(setDifferentialValue(int)));
 
