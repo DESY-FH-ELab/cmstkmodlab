@@ -104,8 +104,8 @@ const unsigned int KeithleyTemperatureWidget::LCD_SIZE = 5;
 const QString KeithleyTemperatureWidget::LABEL_FORMAT = QString("Sensor %1");
 
 KeithleyTemperatureWidget::KeithleyTemperatureWidget(KeithleyModel* model,
-                                                             unsigned int sensor,
-                                                             QWidget *parent) :
+						     unsigned int sensor,
+						     QWidget *parent) :
     QWidget(parent),
     model_(model),
     sensor_(sensor)
