@@ -40,6 +40,9 @@ public:
 
   bool isEqualTo(DefoROIModel* other);
 
+  bool write(const QString& filename);
+  bool read(const QString& filename);
+
 protected:
 
   DefoROI *roi_;
