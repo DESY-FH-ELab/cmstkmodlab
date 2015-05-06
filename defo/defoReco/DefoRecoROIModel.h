@@ -17,7 +17,7 @@ public:
                             QObject *parent = 0);
 
   explicit DefoRecoROIModel(DefoMeasurementSelectionModel *selectionModel,
-			    DefoRecoROIModel *other,
+                            DefoRecoROIModel *other,
                             QObject *parent = 0);
 
 protected:
