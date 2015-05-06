@@ -104,14 +104,14 @@ const unsigned int KeithleyTemperatureWidget::LCD_SIZE = 5;
 const QString KeithleyTemperatureWidget::LABEL_FORMAT = QString("Sensor %1");
 
 KeithleyTemperatureWidget::KeithleyTemperatureWidget(KeithleyModel* model,
-                                                             unsigned int sensor,
-                                                             QWidget *parent) :
+						     unsigned int sensor,
+						     QWidget *parent) :
     QWidget(parent),
     model_(model),
     sensor_(sensor)
 {
-  QFormLayout* layout = new QFormLayout(this);
-  setLayout(layout);
+  layout_ = new QFormLayout(this);
+  setLayout(layout_);
 
   enabledCheckBox_ = new QCheckBox(LABEL_FORMAT.arg(sensor), this);
 
@@ -128,7 +128,7 @@ KeithleyTemperatureWidget::KeithleyTemperatureWidget(KeithleyModel* model,
   connect(model_,
           SIGNAL(sensorStateChanged(uint,State)),
           this,
-          SLOT(sensorStateChagned(uint,State)));
+          SLOT(sensorStateChanged(uint,State)));
 
   connect(model_,
           SIGNAL(temperatureChanged(uint,double)),
@@ -155,9 +155,11 @@ KeithleyTemperatureWidget::KeithleyTemperatureWidget(KeithleyModel* model,
           this,
           SLOT(controlStateChanged(bool)));
 
-  layout->addRow(enabledCheckBox_);
-  layout->addRow(QString::fromUtf8("T"), currentTempDisplay_);
-  layout->addRow(QString::fromUtf8("dT/dt") ,currentGradientDisplay_);
+  layout_->addRow(enabledCheckBox_);
+  currentTempLabel_ = new QLabel(QString::fromUtf8("T"));
+  layout_->addRow(currentTempLabel_, currentTempDisplay_);
+  currentGradientLabel_ = new QLabel(QString::fromUtf8("dT/dt"));
+  layout_->addRow(currentGradientLabel_, currentGradientDisplay_);
   //layout->addRow(QString::fromUtf8("T (°C)"), currentTempDisplay_);
   //layout->addRow(QString::fromUtf8("dT/dt (°C/min)") ,currentGradientDisplay_);
 
@@ -171,8 +173,17 @@ void KeithleyTemperatureWidget::updateWidgets() {
 
   enabledCheckBox_->setChecked(sensorState == READY || sensorState == INITIALIZING);
 
-  currentTempDisplay_->setEnabled(sensorState == READY);
-  currentGradientDisplay_->setEnabled(sensorState == READY);
+  if (sensorState == READY) {
+    currentTempLabel_->setEnabled( true );
+    currentTempDisplay_->setEnabled( true );
+    currentGradientLabel_->setEnabled( true );
+    currentGradientDisplay_->setEnabled( true );
+  } else {
+    currentTempLabel_->setEnabled( false );
+    currentTempDisplay_->setEnabled( false );
+    currentGradientLabel_->setEnabled( false );
+    currentGradientDisplay_->setEnabled( false );
+  }
 }
 
 /// Updates the GUI according to the current device state.
@@ -187,10 +198,15 @@ void KeithleyTemperatureWidget::keithleyStateChanged(State newState) {
 void KeithleyTemperatureWidget::controlStateChanged(bool enabled) {
 
   if (enabled) {
-    keithleyStateChanged(model_->getDeviceState());
+    State state = model_->getDeviceState();
+    enabledCheckBox_->setEnabled(state == READY
+			      || state == INITIALIZING);
+    updateWidgets();
   } else {
     enabledCheckBox_->setEnabled(false);
+    currentTempLabel_->setEnabled( false );
     currentTempDisplay_->setEnabled(false);
+    currentGradientLabel_->setEnabled( false );
     currentGradientDisplay_->setEnabled(false);
   }
 }

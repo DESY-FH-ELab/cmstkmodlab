@@ -17,12 +17,6 @@ DefoScriptableGlobals::DefoScriptableGlobals(
   , scriptModel_(scriptModel)
 { }
 
-void DefoScriptableGlobals::newMeasurement() {
-
-  QMutexLocker locker(&mutex_);
-  scriptModel_->doPrepareNewMeasurement();
-}
-
 void DefoScriptableGlobals::wait(int seconds) {
 
   static QString TIME_FORMAT = "yyyy-MM-dd hh:mm:ss";
@@ -66,6 +60,12 @@ void DefoScriptableGlobals::message(const QString & text) {
 
   QMutexLocker locker(&mutex_);
   scriptModel_->message(text);
+}
+
+void DefoScriptableGlobals::newMeasurement() {
+
+  QMutexLocker locker(&mutex_);
+  scriptModel_->doPrepareNewMeasurement();
 }
 
 QScriptValue DefoScriptableGlobals::uTime() const

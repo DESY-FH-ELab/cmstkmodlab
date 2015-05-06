@@ -66,6 +66,8 @@ DefoMainWindow::DefoMainWindow(QWidget *parent) :
 	  this, SLOT(prepareNewMeasurement()));
 
   connect(scriptModel_, SIGNAL(setControlsEnabled(bool)),
+	  this, SLOT(setControlsEnabled(bool)));
+  connect(scriptModel_, SIGNAL(setControlsEnabled(bool)),
 	  conradModel_, SLOT(setControlsEnabled(bool)));
   connect(scriptModel_, SIGNAL(setControlsEnabled(bool)),
 	  cameraModel_, SLOT(setControlsEnabled(bool)));
@@ -156,13 +158,13 @@ DefoMainWindow::DefoMainWindow(QWidget *parent) :
   QGridLayout *buttonLayout = new QGridLayout();
   buttons->setLayout(buttonLayout);
 
-  QPushButton *exportMeasurementButton = new QPushButton("&Export Measurement", buttons);
-  connect(exportMeasurementButton, SIGNAL(clicked()), this, SLOT(exportMeasurement()));
-  buttonLayout->addWidget(exportMeasurementButton, 0, 0);
+  exportMeasurementButton_ = new QPushButton("&Export Measurement", buttons);
+  connect(exportMeasurementButton_, SIGNAL(clicked()), this, SLOT(exportMeasurement()));
+  buttonLayout->addWidget(exportMeasurementButton_, 0, 0);
 
-  QPushButton *newMeasurementButton = new QPushButton("&New Measurement", buttons);
-  connect(newMeasurementButton, SIGNAL(clicked()), this, SLOT(prepareNewMeasurement()));
-  buttonLayout->addWidget(newMeasurementButton, 0, 1);
+  newMeasurementButton_ = new QPushButton("&New Measurement", buttons);
+  connect(newMeasurementButton_, SIGNAL(clicked()), this, SLOT(prepareNewMeasurement()));
+  buttonLayout->addWidget(newMeasurementButton_, 0, 1);
 
   // read default settings
   pointModel_->setThresholdValue(DefoPointRecognitionModel::THRESHOLD_1,
@@ -337,4 +339,10 @@ void DefoMainWindow::newCameraImages(QStringList locations)
   selectionModel_->setSelection(measurement);
 
   listModel_->write(currentDir_.absolutePath());
+}
+
+void DefoMainWindow::setControlsEnabled(bool enabled)
+{
+  exportMeasurementButton_->setEnabled(enabled);
+  newMeasurementButton_->setEnabled(enabled);
 }

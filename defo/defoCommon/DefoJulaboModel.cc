@@ -134,6 +134,9 @@ void DefoJulaboModel::updateInformation()
 {
   // NOTE Julabo status messages in manual §12.4
   if ( state_ == READY ) {
+    float newProportionalParameter = controller_->GetProportionalParameter();
+    unsigned int newIntegralParameter = controller_->GetIntegralParameter();
+    unsigned int newDifferentialParameter = controller_->GetDifferentialParameter();
     float newBathTemp = controller_->GetBathTemperature();
     // float newSafetySensorTemp = controller_->GetSafetySensorTemperature();
     float newWorkingTemp = controller_->GetWorkingTemperature();
@@ -144,13 +147,19 @@ void DefoJulaboModel::updateInformation()
     // NOTE virtual std::pair<int,std::string> GetStatus( void ) const = 0;
     // std::pair<int,std::string> status = controller_->GetStatus();
 
-    if (   newBathTemp != bathTemperature_
+    if (   newProportionalParameter != proportional_.getValue()
+	|| newIntegralParameter != integral_.getValue()
+	|| newDifferentialParameter != differential_.getValue()
+	|| newBathTemp != bathTemperature_
         || newWorkingTemp != workingTemperature_.getValue()
         || newHeatingPower != power_
         || newPumpPressure != pumpPressure_.getValue()
         || newCirculatorStatus != circulatorEnabled_
     ) {
 
+      proportional_.setValue(newProportionalParameter);
+      integral_.setValue(newIntegralParameter);
+      differential_.setValue(newDifferentialParameter);
       bathTemperature_ = newBathTemp;
       workingTemperature_.setValue(newWorkingTemp);
       power_ = newHeatingPower;

@@ -51,12 +51,16 @@ public slots:
   void prepareNewMeasurement();
   void newCameraImage(QString location, bool keep);
   void newCameraImages(QStringList locations);
+  void setControlsEnabled(bool);
 
 protected:
 
   QDir currentDir_;
 
   QTabWidget* tabWidget_;
+
+  QPushButton *exportMeasurementButton_;
+  QPushButton *newMeasurementButton_;
 
   DefoConradModel* conradModel_;
   DefoJulaboModel* julaboModel_;
