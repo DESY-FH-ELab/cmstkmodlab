@@ -51,6 +51,7 @@ DefoJulaboWidget::DefoJulaboWidget(DefoJulaboModel* model, QWidget *parent)
   workingTempSpinner_->setDecimals(working.getPrecision());
   workingTempSpinner_->setMinimum(working.getMinimum());
   workingTempSpinner_->setMaximum(working.getMaximum());
+  workingTempSpinner_->setSingleStep(0.1);
   workingTempSpinner_->setKeyboardTracking(false);
 
   powerLCD_ = new QLCDNumber(LCD_SIZE, operationPanel_);
