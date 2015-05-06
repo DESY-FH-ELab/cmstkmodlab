@@ -1,3 +1,6 @@
+#include <chrono>
+#include <thread>
+
 #include <QDebug>
 
 #include "DefoScriptThread.h"
@@ -67,6 +70,8 @@ void DefoScriptThread::abortScript() {
 }
 
 void DefoScriptThread::run() {
+
+  std::this_thread::sleep_for(std::chrono::milliseconds(1000));
 
   if (engine_->canEvaluate(script_)) {
     QScriptValue fun = engine_->evaluate(script_);
