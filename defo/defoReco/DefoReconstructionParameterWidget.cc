@@ -134,7 +134,7 @@ DefoReconstructionParameterWidget::DefoReconstructionParameterWidget(DefoGeometr
 
   calibZxSpinBox_ = new QDoubleSpinBox(item);
   calibZxSpinBox_->setPrefix("czx = ");
-  calibZxSpinBox_->setRange(0.75, 1.25);
+  calibZxSpinBox_->setRange(0.75, 1.5);
   calibZxSpinBox_->setDecimals(6);
   calibZxSpinBox_->setSingleStep(0.001);
   calibZxSpinBox_->setKeyboardTracking(false);
