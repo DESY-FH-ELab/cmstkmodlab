@@ -110,8 +110,8 @@ KeithleyTemperatureWidget::KeithleyTemperatureWidget(KeithleyModel* model,
     model_(model),
     sensor_(sensor)
 {
-  QFormLayout* layout = new QFormLayout(this);
-  setLayout(layout);
+  layout_ = new QFormLayout(this);
+  setLayout(layout_);
 
   enabledCheckBox_ = new QCheckBox(LABEL_FORMAT.arg(sensor), this);
 
@@ -155,9 +155,11 @@ KeithleyTemperatureWidget::KeithleyTemperatureWidget(KeithleyModel* model,
           this,
           SLOT(controlStateChanged(bool)));
 
-  layout->addRow(enabledCheckBox_);
-  layout->addRow(QString::fromUtf8("T"), currentTempDisplay_);
-  layout->addRow(QString::fromUtf8("dT/dt") ,currentGradientDisplay_);
+  layout_->addRow(enabledCheckBox_);
+  currentTempLabel_ = new QLabel(QString::fromUtf8("T"));
+  layout_->addRow(currentTempLabel_, currentTempDisplay_);
+  currentGradientLabel_ = new QLabel(QString::fromUtf8("dT/dt"));
+  layout_->addRow(currentGradientLabel_, currentGradientDisplay_);
   //layout->addRow(QString::fromUtf8("T (°C)"), currentTempDisplay_);
   //layout->addRow(QString::fromUtf8("dT/dt (°C/min)") ,currentGradientDisplay_);
 
@@ -174,7 +176,17 @@ void KeithleyTemperatureWidget::updateWidgets() {
     || sensorState == INITIALIZING
   );
 
-  currentTempDisplay_->setEnabled( sensorState == READY );
+  if (sensorState == READY) {
+    currentTempLabel_->setEnabled( true );
+    currentTempDisplay_->setEnabled( true );
+    currentGradientLabel_->setEnabled( true );
+    currentGradientDisplay_->setEnabled( true );
+  } else {
+    currentTempLabel_->setEnabled( false );
+    currentTempDisplay_->setEnabled( false );
+    currentGradientLabel_->setEnabled( false );
+    currentGradientDisplay_->setEnabled( false );
+  }
 }
 
 /// Updates the GUI according to the current device state.
@@ -188,8 +200,13 @@ void KeithleyTemperatureWidget::controlStateChanged(bool enabled) {
     State state = model_->getDeviceState();
     enabledCheckBox_->setEnabled(state == READY
 			      || state == INITIALIZING);
+    updateWidgets();
   } else {
     enabledCheckBox_->setEnabled(false);
+    currentTempLabel_->setEnabled( false );
+    currentTempDisplay_->setEnabled(false);
+    currentGradientLabel_->setEnabled( false );
+    currentGradientDisplay_->setEnabled(false);
   }
 }
 
