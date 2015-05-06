@@ -128,7 +128,7 @@ KeithleyTemperatureWidget::KeithleyTemperatureWidget(KeithleyModel* model,
   connect(model_,
           SIGNAL(sensorStateChanged(uint,State)),
           this,
-          SLOT(sensorStateChagned(uint,State)));
+          SLOT(sensorStateChanged(uint,State)));
 
   connect(model_,
           SIGNAL(temperatureChanged(uint,double)),
@@ -194,8 +194,8 @@ void KeithleyTemperatureWidget::controlStateChanged(bool enabled) {
 }
 
 /// Updates the GUI according to the current sensor state.
-void KeithleyTemperatureWidget::sensorStateChagned(unsigned int sensor,
-                                                       State /* state */)
+void KeithleyTemperatureWidget::sensorStateChanged(unsigned int sensor,
+						   State /* state */)
 {
   if ( sensor_ == sensor )
       updateWidgets();
