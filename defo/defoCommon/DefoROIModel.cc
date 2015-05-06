@@ -128,3 +128,18 @@ bool DefoROIModel::isEqualTo(DefoROIModel* other)
   if (this->roi_==other->roi_) return true;
   return false;
 }
+
+bool DefoROIModel::write(const QString& filename)
+{
+  if (!this->roi_) return false;
+  this->roi_->write(filename);
+  return true;
+}
+
+bool DefoROIModel::read(const QString& filename)
+{
+  if (!this->roi_) return false;
+  this->roi_->read(filename);
+  emit roiChanged(true);
+  return true;
+}

@@ -1,6 +1,7 @@
 defoCommon.pro
 defoCommon.pro.user
 .qmake.stash
+.qmake.cache
 Makefile
 DefoConfig.h
 DefoConfig.cc

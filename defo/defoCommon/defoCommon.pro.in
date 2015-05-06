@@ -31,8 +31,13 @@ LIBS += -L@basepath@/common -lCommon
 
 QMAKE = @qmake@
 
+CONFIG+=c++11
 QMAKE_CXXFLAGS += -std=c++11
-QMAKE_CXXFLAGS += -DAPPLICATIONVERSIONSTR=\\\"`git describe --dirty --always --tags`\\\"
+macx {
+  QMAKE_CXXFLAGS += -DAPPLICATIONVERSIONSTR=\\\"unknown\\\"
+} else {
+  QMAKE_CXXFLAGS += -DAPPLICATIONVERSIONSTR=\\\"`git describe --dirty --always --tags`\\\"
+}
 
 DEFINES += @configdefines@
 QT += core gui widgets opengl script xml
@@ -43,6 +48,14 @@ DEPENDPATH += .
 INCLUDEPATH += .
 INCLUDEPATH += @basepath@
 INCLUDEPATH += @basepath@/common
+
+macx {
+  QMAKE_MACOSX_DEPLOYMENT_TARGET=10.9
+}
+
+greaterThan(QT_MAJOR_VERSION, 4){
+  cache()
+}
 
 HEADERS += DefoExifReader.h \
            DefoJulaboModel.h \

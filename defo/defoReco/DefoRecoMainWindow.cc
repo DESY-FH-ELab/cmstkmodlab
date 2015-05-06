@@ -15,6 +15,7 @@
 
 #include "DefoROICopyFromWidget.h"
 #include "DefoROICopyToWidget.h"
+#include "DefoROIIOWidget.h"
 #include "DefoPointRecognitionModel.h"
 #include "DefoRecoPointRecognitionWidget.h"
 #include "DefoMeasurementListComboBox.h"
@@ -171,6 +172,11 @@ DefoRecoMainWindow::DefoRecoMainWindow(QWidget *parent)
                                                            roiModel_,
                                                            roiWidget);
   vbox->addWidget(roiCopyTo);
+
+  DefoROIIOWidget *roiIO = new DefoROIIOWidget(listModel_,
+                                               roiModel_,
+                                               roiWidget);
+  vbox->addWidget(roiIO);
 
   tabWidget_->addTab(roiWidget, "ROI");
 

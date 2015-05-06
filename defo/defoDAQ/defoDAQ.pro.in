@@ -17,16 +17,18 @@ LIBS += @qwtlibs@ -lGL -lGLU
 
 QMAKE = @qmake@
 
+CONFIG+=c++11
 QMAKE_CXXFLAGS += -std=c++11
-QMAKE_CXXFLAGS += -DAPPLICATIONVERSIONSTR=\\\"`git describe --dirty --always --tags`\\\"
+macx {
+  QMAKE_CXXFLAGS += -DAPPLICATIONVERSIONSTR=\\\"unknown\\\"
+} else {
+  QMAKE_CXXFLAGS += -DAPPLICATIONVERSIONSTR=\\\"`git describe --dirty --always --tags`\\\"
+}
 
 macx {
   INCLUDEPATH += /opt/local/include
   INCLUDEPATH += /opt/local/include/opencv
   INCLUDEPATH += /opt/local/include/opencv2
-}
-else {
-
 }
 
 INCLUDEPATH += @qwtincludes@
@@ -45,6 +47,14 @@ INCLUDEPATH += ..
 INCLUDEPATH += @basepath@
 INCLUDEPATH += @basepath@/common
 INCLUDEPATH += @basepath@/defo/defoCommon
+
+macx {
+  QMAKE_MACOSX_DEPLOYMENT_TARGET=10.9
+}
+
+greaterThan(QT_MAJOR_VERSION, 4){
+  cache()
+}
 
 # Input
 HEADERS += DefoMainWindow.h \
