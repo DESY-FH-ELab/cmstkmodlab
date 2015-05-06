@@ -23,10 +23,10 @@ public:
 public slots:
   void enablePanel(unsigned int panel);
   void disablePanel(unsigned int panel);
-  QScriptValue panel(unsigned int panel);
+  QScriptValue panelState(unsigned int panel);
   void enableCalibrationLEDs();
   void disableCalibrationLEDs();
-  QScriptValue calibrationLEDs();
+  QScriptValue calibrationLEDsState();
 
 signals:
   void enableSwitch( DefoConradModel::DeviceSwitch device );

@@ -257,7 +257,13 @@ void DefoJulaboModel::setCirculatorEnabled(bool enabled)
 /// Attempts to set the pump pressure stage.
 void DefoJulaboModel::setPumpPressureValue(int pressure)
 {
-  if ( (int)pumpPressure_.getValue() != pressure ) {
+  setPumpPressureValue((unsigned int)pressure);
+}
+
+/// Attempts to set the pump pressure stage.
+void DefoJulaboModel::setPumpPressureValue(unsigned int pressure)
+{
+  if ( pumpPressure_.getValue() != pressure ) {
 
     unsigned int oldValue = pumpPressure_.getValue();
 
