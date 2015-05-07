@@ -58,6 +58,8 @@ DefoCameraWidget::DefoCameraWidget(
   imageCountSpinBox_->setPrefix("n = ");
   imageCountSpinBox_->setRange(1, 5);
   buttonLayout->addWidget(imageCountSpinBox_, 0, 2);
+  connect(imageCountSpinBox_, SIGNAL(valueChanged(int)),
+          cameraModel_, SLOT(setNumberOfImages(int)));
 
   // Taking a picture
   pictureButton_ = new QPushButton("&Take picture", buttons_);
@@ -197,9 +199,5 @@ void DefoCameraWidget::previewButtonClicked()
 
 void DefoCameraWidget::pictureButtonClicked()
 {
-  if (imageCountSpinBox_->value()==1) {
-    cameraModel_->acquirePicture(true);
-  } else {
-    cameraModel_->acquirePictures(imageCountSpinBox_->value());
-  }
+  cameraModel_->acquirePicture(true);
 }
