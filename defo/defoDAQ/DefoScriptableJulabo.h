@@ -19,10 +19,10 @@ public:
 
 public slots:
 
-  void setP( double p );
-  void setI( int tv );
-  void setD( int td );
-  void setPID( double p, int tv, int td );
+  void setP( double xp );
+  void setI( int tn );
+  void setD( int tv );
+  void setPID( double xp, int tn, int tv );
   QScriptValue getP();
   QScriptValue getI();
   QScriptValue getD();
@@ -41,9 +41,9 @@ public slots:
   QScriptValue pumpPressure();
 
 signals:
-  void changeP( double p );
+  void changeXp( double xp );
+  void changeTn( int tn );
   void changeTv( int tv );
-  void changeTd( int td );
   void switchCirculator( bool );
   void changeWorkingTemperature( double temperature );
   void changePumpPressure( unsigned int pressure );

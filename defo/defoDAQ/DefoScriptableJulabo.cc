@@ -11,11 +11,11 @@ DefoScriptableJulabo::DefoScriptableJulabo(
     QObject(parent)
   , julaboModel_(julaboModel)
 {
-  connect(this, SIGNAL(changeP(double)),
+  connect(this, SIGNAL(changXp(double)),
           julaboModel_,SLOT(setProportionalValue(double)));
-  connect(this, SIGNAL(changeTv(int)),
+  connect(this, SIGNAL(changeTn(int)),
           julaboModel_,SLOT(setIntegralValue(int)));
-  connect(this, SIGNAL(changeTd(int)),
+  connect(this, SIGNAL(changeTv(int)),
           julaboModel_,SLOT(setDifferentialValue(int)));
   
   connect(this, SIGNAL(switchCirculator(bool)),
@@ -28,34 +28,34 @@ DefoScriptableJulabo::DefoScriptableJulabo(
           julaboModel_, SLOT(setPumpPressureValue(unsigned int)));
 }
 
-void DefoScriptableJulabo::setP( double p ) {
+void DefoScriptableJulabo::setP( double xp ) {
   
   QMutexLocker locker(&mutex_);
   
-  emit changeP(p);
+  emit changeXp(xp);
 }
 
-void DefoScriptableJulabo::setI( int tv ) {
+void DefoScriptableJulabo::setI( int tn ) {
   
+  QMutexLocker locker(&mutex_);
+  
+  emit changeTn(tn);
+}
+
+void DefoScriptableJulabo::setD( int tv ) {
+
   QMutexLocker locker(&mutex_);
   
   emit changeTv(tv);
 }
 
-void DefoScriptableJulabo::setD( int td ) {
+void DefoScriptableJulabo::setPID( double xp, int tn, int tv ) {
 
   QMutexLocker locker(&mutex_);
   
-  emit changeTd(td);
-}
-
-void DefoScriptableJulabo::setPID( double p, int tv, int td ) {
-
-  QMutexLocker locker(&mutex_);
-  
-  emit changeP(p);
+  emit changeXp(xp);
+  emit changeTn(tn);
   emit changeTv(tv);
-  emit changeTd(td);
 }
 
 QScriptValue DefoScriptableJulabo::getP() {
