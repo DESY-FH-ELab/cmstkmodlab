@@ -26,12 +26,12 @@ void DefoScriptableCamera::takePicture() {
 
   scriptModel_->message("take picture");
 
-  emit(acquirePicture(true));
+  emit acquirePicture(true);
   sleep(2);
 }
 
 void DefoScriptableCamera::comment(const QString & text) {
   QMutexLocker locker(&mutex_);
 
-  emit(setComment(text));
+  return QScriptValue(cameraModel_->getNumberOfImages());
 }
