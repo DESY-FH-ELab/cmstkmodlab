@@ -126,13 +126,13 @@ void DefoRecoSurface::calibrateXYPoints(DefoPointCollection & points)
 
   NVector3D height1(0., 0., height1_);
   NVector3D height2(0., 0., height2_);
-  NVector3D distance(distance_, 0., 0.);
+  NVector3D distance(0., distance_, 0.);
 
   double a1 = angle1_ * M_PI / 180.;
   double a2 = angle2_ * M_PI / 180.;
   double a3 = angle3_ * M_PI / 180.;
 
-  distance.rotateY(a2);
+  distance.rotateX(a2);
 
   NPoint3D cameraPoint(0., 0., 0.);
   cameraPoint.move(height1);
@@ -144,7 +144,7 @@ void DefoRecoSurface::calibrateXYPoints(DefoPointCollection & points)
   NPlane3D objectPlane(objectPoint, objectNormal);
 
   NDirection3D centerRayDirection(0., 0., -1.);
-  centerRayDirection.rotateY(a2 + a3);
+  centerRayDirection.rotateX(a2 + a3);
 
   NLine3D centerRay(cameraPoint, centerRayDirection);
   centerRay.intersection(objectPlane, objectPoint);
@@ -159,7 +159,7 @@ void DefoRecoSurface::calibrateXYPoints(DefoPointCollection & points)
   gridPoint.move(height1);
 
   NDirection3D gridNormal(0., 0., -1.);
-  gridNormal.rotateY(-a1);
+  gridNormal.rotateX(-a1);
 
   NPlane3D gridPlane(gridPoint, gridNormal);
 
@@ -170,15 +170,15 @@ void DefoRecoSurface::calibrateXYPoints(DefoPointCollection & points)
   std::cout << imageSize_.second << std::endl;
 
   for( DefoPointCollection::iterator it = points.begin();
-      it < points.end();
+      it != points.end();
       ++it ) {
 
     DefoPoint& aPoint = *it;
 
-    NDirection3D imageRayDirection((aPoint.getY() - 0.5 * imageSize_.second) * pitchY_,
-                                   (aPoint.getX() - 0.5 * imageSize_.first) * pitchX_,
+    NDirection3D imageRayDirection((aPoint.getX() - 0.5 * imageSize_.first) * pitchX_,
+                                   (aPoint.getY() - 0.5 * imageSize_.second) * pitchY_,
                                    imageDistance);
-    imageRayDirection.rotateY(a2 + a3);
+    imageRayDirection.rotateX(a2 + a3);
     NLine3D imageRay(imagePoint, imageRayDirection);
     imageRay.intersection(objectPlane, objectIntersection);
 
@@ -194,7 +194,7 @@ void DefoRecoSurface::calibrateXYPoints(DefoPointCollection & points)
     double x = objectIntersection.x() * calibX_;
     double y = -1.0 * objectIntersection.y() * calibY_;
 
-    aPoint.setPosition(y, x);
+    aPoint.setPosition(x, y);
 
     aPoint.setImageDistance(imageDistance.length());
     aPoint.setGridDistance(gridDistance.length());
@@ -203,7 +203,9 @@ void DefoRecoSurface::calibrateXYPoints(DefoPointCollection & points)
 	      << aPoint.getIndex().first << ", "
 	      << aPoint.getIndex().second << ") -> ("
 	      << aPoint.getX() << ", "
-	      << aPoint.getY() << ")"
+	      << aPoint.getY() << ") -> ("
+	      << aPoint.getImageDistance() << ", "
+	      << aPoint.getGridDistance() << ")"
 	      << std::endl;
   }
 }
