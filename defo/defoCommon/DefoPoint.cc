@@ -64,7 +64,7 @@ const double & DefoPoint::getPosition( const DefoPoint::Axis& coordinate ) const
   }
 }
 
-double const& DefoPoint::getCorrectionFactor( void ) const
+double DefoPoint::getCorrectionFactor( void ) const
 {
   return (getGridDistance()+getImageDistance())/(2.0*getGridDistance());
 }

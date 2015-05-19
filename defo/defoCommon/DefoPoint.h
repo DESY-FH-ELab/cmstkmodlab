@@ -52,7 +52,7 @@ class DefoPoint {
   double const& getHeight( void ) const { return height_; }
   double const& getImageDistance( void ) const { return imageDistance_; }
   double const& getGridDistance( void ) const { return gridDistance_; }
-  double const& getCorrectionFactor( void ) const;
+  double getCorrectionFactor( void ) const;
   double abs( void ) const { return sqrt( pow( x_, 2. ) + pow( y_, 2. ) ); }
   const std::pair<int,int> getIndex( void ) const { return index_; }
   unsigned int getPixX( void ) const { return static_cast<int>( round( x_ ) ); }
