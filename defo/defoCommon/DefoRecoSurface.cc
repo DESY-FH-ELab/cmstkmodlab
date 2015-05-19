@@ -191,8 +191,8 @@ void DefoRecoSurface::calibrateXYPoints(DefoPointCollection & points)
 
     NVector3D gridDistance(objectIntersection, gridIntersection);
 
-    double x = 1.0 * objectIntersection.x() * calibX_;
-    double y = 1.0 * objectIntersection.y() * calibY_;
+    double x = -1.0 * objectIntersection.x() * calibX_;
+    double y =  1.0 * objectIntersection.y() * calibY_;
 
     aPoint.setPosition(x, y);
 
@@ -205,7 +205,8 @@ void DefoRecoSurface::calibrateXYPoints(DefoPointCollection & points)
 	      << aPoint.getX() << ", "
 	      << aPoint.getY() << ") -> ("
 	      << aPoint.getImageDistance() << ", "
-	      << aPoint.getGridDistance() << ")"
+	      << aPoint.getGridDistance() << ") -> "
+              << (aPoint.getGridDistance()+aPoint.getImageDistance())/(2.0*aPoint.getGridDistance())
 	      << std::endl;
   }
 }
