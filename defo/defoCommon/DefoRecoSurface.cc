@@ -126,7 +126,7 @@ void DefoRecoSurface::calibrateXYPoints(DefoPointCollection & points)
 
   NVector3D height1(0., 0., height1_);
   NVector3D height2(0., 0., height2_);
-  NVector3D distance(0., distance_, 0.);
+  NVector3D distance(0., -1.0*distance_, 0.);
 
   double a1 = angle1_ * M_PI / 180.;
   double a2 = angle2_ * M_PI / 180.;
@@ -191,8 +191,8 @@ void DefoRecoSurface::calibrateXYPoints(DefoPointCollection & points)
 
     NVector3D gridDistance(objectIntersection, gridIntersection);
 
-    double x = objectIntersection.x() * calibX_;
-    double y = -1.0 * objectIntersection.y() * calibY_;
+    double x = 1.0 * objectIntersection.x() * calibX_;
+    double y = 1.0 * objectIntersection.y() * calibY_;
 
     aPoint.setPosition(x, y);
 
