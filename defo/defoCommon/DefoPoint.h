@@ -31,6 +31,9 @@ class DefoPoint {
   void setX( double x ) { x_ = x; }
   void setY( double y ) { y_ = y; }
   void setPosition( double x, double y ) { x_ = x; y_ = y; }
+  void setCalibratedX( double x ) { cx_ = x; }
+  void setCalibratedY( double y ) { cy_ = y; }
+  void setCalibratedPosition( double x, double y ) { cx_ = x; cy_ = y; }
   void setSlope( double slope ) { slope_ = slope; }
   void setHeight( double height ) { height_ = height; }
   void setImageDistance(double v) { imageDistance_ = v; }
@@ -44,7 +47,9 @@ class DefoPoint {
   void unindex() { isIndexed_ = false; }
   bool isIndexed( void ) const { return isIndexed_; }
   double const& getX( void ) const { return x_; }
+  double const& getCalibratedX( void ) const { return cx_; }
   double const& getY( void ) const { return y_; }
+  double const& getCalibratedY( void ) const { return cy_; }
   double getDistance(const DefoPoint& other) const;
   double getDistanceXY(const DefoPoint& other, double& dx, double& dy) const;
   double const& getPosition( const DefoPoint::Axis& ) const;
@@ -78,7 +83,9 @@ class DefoPoint {
  protected:
   void init( void );
   double x_;
+  double cx_;
   double y_;
+  double cy_;
   double slope_;
   double height_;
   QColor color_;
