@@ -33,6 +33,9 @@ class DefoPoint {
   void setPosition( double x, double y ) { x_ = x; y_ = y; }
   void setSlope( double slope ) { slope_ = slope; }
   void setHeight( double height ) { height_ = height; }
+  void setImageDistance(double v) { imageDistance_ = v; }
+  void setGridDistance(double v) { gridDistance_ = v; }
+
   // TODO setIndex(Axis, int)
   void setIndex( std::pair<int,int>& index ) { index_ = index; isIndexed_ = true; }
   void setIndex( int indexX, int indexY ) { index_.first = indexX; index_.second = indexY; isIndexed_ = true; }
@@ -47,6 +50,8 @@ class DefoPoint {
   double const& getPosition( const DefoPoint::Axis& ) const;
   double const& getSlope( void ) const { return slope_; }
   double const& getHeight( void ) const { return height_; }
+  double const& getImageDistance( void ) const { return imageDistance_; }
+  double const& getGridDistance( void ) const { return gridDistance_; }
   double abs( void ) const { return sqrt( pow( x_, 2. ) + pow( y_, 2. ) ); }
   const std::pair<int,int> getIndex( void ) const { return index_; }
   unsigned int getPixX( void ) const { return static_cast<int>( round( x_ ) ); }
@@ -80,6 +85,8 @@ class DefoPoint {
   bool isIndexed_;
   bool isValid_; // contains valid height data? for use with DefoSurfacePlot..
 
+  double imageDistance_;
+  double gridDistance_;
 };
 
 

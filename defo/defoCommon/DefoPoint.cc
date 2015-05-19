@@ -14,6 +14,8 @@ DefoPoint::DefoPoint( const DefoPoint& other ) {
   index_ = std::pair<int,int>(other.index_.first, other.index_.second);
   isIndexed_ = other.isIndexed_;
   isValid_ = other.isValid_;
+  imageDistance_ = other.imageDistance_;
+  gridDistance_ = other.gridDistance_;
 }
 
 ///
@@ -27,7 +29,8 @@ void DefoPoint::init( void ) {
   height_ = 0.;
   isValid_ = false;
   index_ = std::make_pair<int,int>( 0, 0 );
-
+  imageDistance_ = 0.;
+  gridDistance_ = 0.;
 }
 
 double DefoPoint::getDistance(const DefoPoint& other) const {

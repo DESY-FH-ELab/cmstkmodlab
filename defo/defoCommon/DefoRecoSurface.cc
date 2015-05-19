@@ -2,6 +2,7 @@
 
 #include "nqlogger.h"
 
+#include "nvector3D.h"
 #include "npoint3D.h"
 #include "ndirection3D.h"
 #include "nline3D.h"
@@ -30,6 +31,13 @@ DefoRecoSurface::DefoRecoSurface(QObject *parent)
   calibY_ = ApplicationConfig::instance()->getValue<double>("CALIBY", 1.0);
   calibZx_ = ApplicationConfig::instance()->getValue<double>("CALIBZX", 1.0);
   calibZy_ = ApplicationConfig::instance()->getValue<double>("CALIBZY", 1.0);
+
+  angle1_ = ApplicationConfig::instance()->getValue<double>( "ANGLE1" );
+  angle2_ = ApplicationConfig::instance()->getValue<double>( "ANGLE2" );
+  angle3_ = ApplicationConfig::instance()->getValue<double>( "ANGLE3" );
+  distance_ = ApplicationConfig::instance()->getValue<double>( "DISTANCE" );
+  height1_ = ApplicationConfig::instance()->getValue<double>( "HEIGHT1" );
+  height2_ = ApplicationConfig::instance()->getValue<double>( "HEIGHT2" );
 
   // to be called after cfg reading
   calculateHelpers();
@@ -70,6 +78,14 @@ const DefoSurface DefoRecoSurface::reconstruct(DefoPointCollection& currentPoint
 {
   DefoSurface theSurface;
 
+  // calibrate XY coordinates of currentPoints
+  calibrateXYPoints(currentPoints);
+  emit incrementRecoProgress();
+
+  // calibrate XY coordinates of referencePoints
+  calibrateXYPoints(referencePoints);
+  emit incrementRecoProgress();
+
   // create raw z splines for surface reconstruction
   DefoSplineField currentZSplineField = createZSplines( currentPoints, referencePoints );
   emit incrementRecoProgress();
@@ -99,6 +115,87 @@ const DefoSurface DefoRecoSurface::reconstruct(DefoPointCollection& currentPoint
   return theSurface;
 }
 
+void DefoRecoSurface::calibrateXYPoints(DefoPointCollection & points)
+{
+  double f = focalLength_;
+  double gamma = imageScale(f);
+  double imageDistance = f * (gamma + 1.0);
+  double objectDistance = imageDistance / gamma;
+
+  NVector3D height1(0., 0., height1_);
+  NVector3D height2(0., 0., height2_);
+  NVector3D distance(distance_, 0., 0.);
+
+  double a1 = angle1_ * M_PI / 180.;
+  double a2 = angle2_ * M_PI / 180.;
+  double a3 = angle3_ * M_PI / 180.;
+
+  distance.rotateY(a2);
+
+  NPoint3D cameraPoint(0., 0., 0.);
+  cameraPoint.move(height1);
+  cameraPoint.move(distance);
+
+  NPoint3D objectPoint(0., 0., 0.);
+  objectPoint.move(height2);
+  NDirection3D objectNormal(0., 0., 1.);
+  NPlane3D objectPlane(objectPoint, objectNormal);
+
+  NDirection3D centerRayDirection(0., 0., -1.);
+  centerRayDirection.rotateY(a2 + a3);
+
+  NLine3D centerRay(cameraPoint, centerRayDirection);
+  centerRay.intersection(objectPlane, objectPoint);
+
+  NVector3D imageDistanceVector(objectPoint, cameraPoint);
+  imageDistanceVector *= objectDistance / imageDistanceVector.length();
+
+  NPoint3D imagePoint(objectPoint);
+  imagePoint.move(imageDistanceVector);
+
+  NPoint3D gridPoint(0., 0., 0.);
+  gridPoint.move(height1);
+
+  NDirection3D gridNormal(0., 0., -1.);
+  gridNormal.rotateY(-a1);
+
+  NPlane3D gridPlane(gridPoint, gridNormal);
+
+  NPoint3D objectIntersection;
+  NPoint3D gridIntersection;
+
+  for( DefoPointCollection::iterator it = points.begin();
+      it < points.end();
+      ++it ) {
+
+    DefoPoint& aPoint = *it;
+
+    NDirection3D imageRayDirection((aPoint.getX() - 0.5 * imageSize_.first) * pitchX_,
+                                   (aPoint.getY() - 0.5 * imageSize_.second) * pitchY_,
+                                   imageDistance);
+    imageRayDirection.rotateY(a2 + a3);
+    NLine3D imageRay(imagePoint, imageRayDirection);
+    imageRay.intersection(objectPlane, objectIntersection);
+
+    NVector3D imageDistance(objectIntersection, imagePoint);
+
+    NDirection3D gridRayDirection(imageRayDirection);
+    gridRayDirection.rotateZ(M_PI);
+    NLine3D gridRay(objectIntersection, gridRayDirection);
+    gridRay.intersection(gridPlane, gridIntersection);
+
+    NVector3D gridDistance(objectIntersection, gridIntersection);
+
+    double x = objectIntersection.x() * calibX_;
+    double y = -1.0 * objectIntersection.y() * calibY_;
+
+    aPoint.setPosition(x, y);
+
+    aPoint.setImageDistance(imageDistance.length());
+    aPoint.setGridDistance(gridDistance.length());
+  }
+}
+
 ///
 /// create z splines from difference in point positions
 /// NEW VERSION based on indexed points
@@ -110,6 +207,7 @@ const DefoSplineField DefoRecoSurface::createZSplines(DefoPointCollection const&
 
   DefoSplineField theOutput;
 
+  /*
   // x,y correction factors: see Diss. S. Koenig, p. 100;
   const std::pair<double,double> correctionFactors = std::pair<double,double> (
     pitchX_ / focalLength_ * ( nominalGridDistance_ + nominalCameraDistance_ ) / 2. / nominalGridDistance_,
@@ -118,7 +216,7 @@ const DefoSplineField DefoRecoSurface::createZSplines(DefoPointCollection const&
 
   NQLog("DefoRecoSurface", NQLog::Message) << "nominal correction factors: "
       << correctionFactors.first << " , " << correctionFactors.second;
-
+  */
 
   NQLog("DefoRecoSurface", NQLog::Message) << "image size: ("
       << imageSize_.first << ", " << imageSize_.second << ")";
@@ -136,10 +234,10 @@ const DefoSplineField DefoRecoSurface::createZSplines(DefoPointCollection const&
     if( it->getIndex().second < indexRangeY.first )  indexRangeY.first  = it->getIndex().second;
     if( it->getIndex().second > indexRangeY.second ) indexRangeY.second = it->getIndex().second;
     /*
-    indexRangeXref.first = std::min(it->getIndex().first, indexRangeXref.first);
-    indexRangeXref.second = std::max(it->getIndex().first, indexRangeXref.second);
-    indexRangeYref.first = std::min(it->getIndex().first, indexRangeYref.first);
-    indexRangeYref.second = std::max(it->getIndex().first, indexRangeYref.second);
+    indexRangeX.first = std::min(it->getIndex().first, indexRangeX.first);
+    indexRangeX.second = std::max(it->getIndex().first, indexRangeX.second);
+    indexRangeY.first = std::min(it->getIndex().first, indexRangeY.first);
+    indexRangeY.second = std::max(it->getIndex().first, indexRangeY.second);
      */
   }
   
@@ -157,30 +255,6 @@ const DefoSplineField DefoRecoSurface::createZSplines(DefoPointCollection const&
   indexRangeY.first = std::max(indexRangeYref.first, indexRangeY.first);
   indexRangeY.second = std::min(indexRangeYref.second, indexRangeY.second);
    */
-
-  NPoint3D cameraPoint(0., 0., 0.);
-  
-  double n = nominalCameraDistance_;
-  double f = focalLength_;
-  double gamma = imageScale(f);
-  double imageDistance = f * (gamma + 1.0);
-  double objectDistance = imageDistance / gamma;
-
-  NQLog("DefoRecoSurface", NQLog::Message) << "found index range:";
-  NQLog("DefoRecoSurface", NQLog::Message) << "  x: " << indexRangeX.first << " .. " << indexRangeX.second;
-  NQLog("DefoRecoSurface", NQLog::Message) << "  y: " << indexRangeY.first << " .. " << indexRangeY.second;
-  NQLog("DefoRecoSurface", NQLog::Message) << "nominal camera distance: " << nominalCameraDistance_;
-  NQLog("DefoRecoSurface", NQLog::Message) << "focal length:            " << focalLength_;
-  NQLog("DefoRecoSurface", NQLog::Message) << "image scale:             " << gamma;
-  NQLog("DefoRecoSurface", NQLog::Message) << "image distance:          " << imageDistance;
-  NQLog("DefoRecoSurface", NQLog::Message) << "object distance:         " << objectDistance;
-
-  NPoint3D surfacePoint(0., 0., objectDistance);
-  NDirection3D surfaceNormal(0., 0., 1.);
-  surfaceNormal.rotateX(-nominalViewingAngle_);
-  NPlane3D surface(surfacePoint, surfaceNormal);
-
-  NPoint3D intersectionPoint;
 
   // we need the blue point (from *ref*) as geom. reference, it always has index 0,0
   std::pair<bool,DefoPointCollection::const_iterator> bluePointByIndex =
@@ -213,24 +287,8 @@ const DefoSplineField DefoRecoSurface::createZSplines(DefoPointCollection const&
         DefoPoint aPoint = DefoPoint(*(referencePointByIndex.second));
 
         // the attached slope (= tan(alpha)) is derived from the difference in y position
-        double dY = -1.0*((*(currentPointByIndex.second)).getY() - (*(referencePointByIndex.second)).getY());
-        aPoint.setSlope( correctionFactors.second * dY); // ##### check
-
-        // convert from pixel units to real units on module
-
-        // new new version
-        NDirection3D beamDirection((aPoint.getX() - 0.5 * imageSize_.first) * pitchX_,
-                                   (aPoint.getY() - 0.5 * imageSize_.second) * pitchY_,
-                                   imageDistance);
-        NLine3D beam(cameraPoint, beamDirection);
-        beam.intersection(surface, intersectionPoint);
-        double x = intersectionPoint.x() * calibX_;
-        double y = -1.0*intersectionPoint.y() * calibY_;
-        double z = intersectionPoint.z();
-
-        // NQLog("DefoRecoSurface", NQLog::Spam) << "intersection: " << x << " " << y << " " << z;
-
-        aPoint.setPosition(x, y);
+        double dY = 1.0*((*(currentPointByIndex.second)).getY() - (*(referencePointByIndex.second)).getY());
+        aPoint.setSlope( /*correctionFactors.second * */ dY);
 
         aSplineSet.addPoint( aPoint );
 
@@ -277,26 +335,11 @@ const DefoSplineField DefoRecoSurface::createZSplines(DefoPointCollection const&
         // this point is abstract and lives where the ref point is on the module
         // (make a copy)
         DefoPoint aPoint = DefoPoint( *(referencePointByIndex.second) );
+        // convert from pixel units to real units on module
 
         // the attached slope (= tan(alpha)) is derived from the difference in x position
         double dX = 1.0*((*(currentPointByIndex.second)).getX() - (*(referencePointByIndex.second)).getX());
-        aPoint.setSlope( correctionFactors.first * dX); // ##### check
-	
-        // convert from pixel units to real units on module
-
-        // new new version
-        NDirection3D beamDirection((aPoint.getX() - 0.5 * imageSize_.first) * pitchX_,
-                                   (aPoint.getY() - 0.5 * imageSize_.second) * pitchY_,
-                                   imageDistance);
-        NLine3D beam(cameraPoint, beamDirection);
-        beam.intersection(surface, intersectionPoint);
-        double x = intersectionPoint.x() * calibX_;
-        double y = -1.0*intersectionPoint.y() * calibY_;
-        double z = intersectionPoint.z();
-
-        //NQLog("DefoRecoSurface", NQLog::Spam) << "intersection: " << x << " " << y << " " << z;
-
-        aPoint.setPosition(x, y);
+        aPoint.setSlope( /* correctionFactors.first * */ dX);
 
         aSplineSet.addPoint( aPoint );
 
@@ -461,31 +504,38 @@ void DefoRecoSurface::mountZSplines( DefoSplineField& splineField ) const {
 
 
   // loop all "along-x" splinesets as height reference for the orthogonal "along-y" splines
-  for( DefoSplineSetXCollection::const_iterator itX = cSplineField.first.begin(); itX < cSplineField.first.end(); ++itX ) {
+  for( DefoSplineSetXCollection::const_iterator itX = cSplineField.first.begin();
+       itX < cSplineField.first.end();
+       ++itX ) {
 
     // loop all the points in this reference
-    for( DefoPointCollection::const_iterator itPX = itX->getPoints().begin(); itPX < itX->getPoints().end(); ++itPX ) {
+    for( DefoPointCollection::const_iterator itPX = itX->getPoints().begin();
+         itPX < itX->getPoints().end();
+         ++itPX ) {
       
       // find the corresponding along-y spline which itX shares this point with
-      for( DefoSplineSetYCollection::iterator itY = cSplineField.second.begin(); itY < cSplineField.second.end(); ++itY ) {
-	for( DefoPointCollection::const_iterator itPY = itY->getPoints().begin(); itPY < itY->getPoints().end(); ++itPY ) {
+      for( DefoSplineSetYCollection::iterator itY = cSplineField.second.begin();
+           itY < cSplineField.second.end();
+           ++itY ) {
 
-	  if( itPX->getIndex() == itPY->getIndex() ) { // sharing?
+        for( DefoPointCollection::const_iterator itPY = itY->getPoints().begin();
+             itPY < itY->getPoints().end();
+             ++itPY ) {
 
-	    // evaluate the height of the splineset at the corresponding point
-	    const double heightOfSpline = itY->eval( itPY->getY() );
-	    
-	    // evaluate the height of the reference splineset at that point
-	    const double heightOfReference = itX->eval( itPX->getX() );
-	    
-	    // determine the offset and apply
-	    itY->offset( heightOfReference - heightOfSpline );
+          if( itPX->getIndex() == itPY->getIndex() ) { // sharing?
 
-	  }
+            // evaluate the height of the splineset at the corresponding point
+            const double heightOfSpline = itY->eval( itPY->getY() );
 
-	} // itPY
+            // evaluate the height of the reference splineset at that point
+            const double heightOfReference = itX->eval( itPX->getX() );
+
+            // determine the offset and apply
+            itY->offset( heightOfReference - heightOfSpline );
+          }
+
+        } // itPY
       } // itY
-
     } // itPX
     
     // now fill the offset container with the results
@@ -497,40 +547,45 @@ void DefoRecoSurface::mountZSplines( DefoSplineField& splineField ) const {
     
   } // itX
 
-
   // now "backpropagate" this to the "along-x" splines
   // using the first "along-y" spline as reference
 
   // fresh working copy
   cSplineField = DefoSplineField( splineField );
   
-
   // loop all "along-y" splinesets as height reference for the orthogonal "along-x" splines
-  for( DefoSplineSetYCollection::const_iterator itY = cSplineField.second.begin(); itY < cSplineField.second.end(); ++itY ) {
+  for( DefoSplineSetYCollection::const_iterator itY = cSplineField.second.begin();
+      itY < cSplineField.second.end();
+      ++itY ) {
 
     // loop all the points in this reference
-    for( DefoPointCollection::const_iterator itPY = itY->getPoints().begin(); itPY < itY->getPoints().end(); ++itPY ) {
+    for( DefoPointCollection::const_iterator itPY = itY->getPoints().begin();
+        itPY < itY->getPoints().end();
+        ++itPY ) {
       
       // find the corresponding along-y spline which itX shares this point with
-      for( DefoSplineSetXCollection::iterator itX = cSplineField.first.begin(); itX < cSplineField.first.end(); ++itX ) {
-	for( DefoPointCollection::const_iterator itPX = itX->getPoints().begin(); itPX < itX->getPoints().end(); ++itPX ) {
+      for( DefoSplineSetXCollection::iterator itX = cSplineField.first.begin();
+          itX < cSplineField.first.end();
+          ++itX ) {
 
-	  if( itPY->getIndex() == itPX->getIndex() ) { // sharing?
+        for( DefoPointCollection::const_iterator itPX = itX->getPoints().begin();
+             itPX < itX->getPoints().end();
+             ++itPX ) {
 
-	    // evaluate the height of the splineset at the corresponding point
-	    const double heightOfSpline = itX->eval( itPX->getX() );
+          if( itPY->getIndex() == itPX->getIndex() ) { // sharing?
 
-	    // evaluate the height of the reference splineset at that point
-	    const double heightOfReference = itY->eval( itPY->getY() );
-	    
-	    // determine the offset and apply
-	    itX->offset( heightOfReference - heightOfSpline );
+            // evaluate the height of the splineset at the corresponding point
+            const double heightOfSpline = itX->eval( itPX->getX() );
 
-	  }
+            // evaluate the height of the reference splineset at that point
+            const double heightOfReference = itY->eval( itPY->getY() );
 
-	} // itPX
+            // determine the offset and apply
+            itX->offset( heightOfReference - heightOfSpline );
+          }
+
+        } // itPX
       } // itX
-
     } // itPY
 
     // now fill the offset container with the results
@@ -539,20 +594,19 @@ void DefoRecoSurface::mountZSplines( DefoSplineField& splineField ) const {
     for( ; itX2 < cSplineField.first.end(); ++itX2, ++itOX ) {
       *itOX += itX2->eval( itX2->getPoints().front().getX() );
     }
-
   } // itY
   
-
-
-
   // average the offsets
-  for( std::vector<double>::iterator itX = theOffsets.first.begin(); itX < theOffsets.first.end(); ++itX ) {
+  for( std::vector<double>::iterator itX = theOffsets.first.begin();
+       itX < theOffsets.first.end();
+       ++itX ) {
     *itX /= nSplines.first;
   }
-  for( std::vector<double>::iterator itY = theOffsets.second.begin(); itY < theOffsets.second.end(); ++itY ) {
+  for( std::vector<double>::iterator itY = theOffsets.second.begin();
+       itY < theOffsets.second.end();
+       ++itY ) {
     *itY /= nSplines.second;
   }
-  
   
   // apply the average to the original input spline field
   DefoSplineSetXCollection::iterator itX = splineField.first.begin();
@@ -567,10 +621,7 @@ void DefoRecoSurface::mountZSplines( DefoSplineField& splineField ) const {
   for( ; itY < splineField.second.end(); ++itY, ++itOY ) {
     itY->offset( *itOY - itY->eval( itY->getPoints().front().getY() ) );
   }
-
 }
-
-
 
 ///
 /// combine z-splines along x and y
@@ -590,8 +641,6 @@ void DefoRecoSurface::mountZSplinesOld( DefoSplineField& splineField ) const {
   theOffsets.first.resize( nSplines.first, 0. );
   theOffsets.second.resize( nSplines.second, 0. );
 
-
-  
   // loop all "along-x" splinesets as reference
   for( DefoSplineSetXCollection::const_iterator itX = splineField.first.begin(); itX < splineField.first.end(); ++itX ) {
 
@@ -697,7 +746,6 @@ void DefoRecoSurface::mountZSplinesOld( DefoSplineField& splineField ) const {
   for( ; itY < splineField.second.end(); ++itY, ++itOY ) {
     itY->offset( *itOY - itY->eval( itY->getPoints().front().getY() ) );
   }
-    
 }
 
 
