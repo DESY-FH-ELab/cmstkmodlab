@@ -95,10 +95,31 @@ namespace TkML {
 
       initialize();
 
+      T oc;
+      int i = 0;
+      for (;;) {
+        oc = ochisq_;
+
+        MarquartMinimization();
+
+        //std::cout << oc << "\t" << parameter().chisq() << std::endl;
+
+        if (parameter().chisq() > oc) {
+          i = 0;
+        } else if (fabs(oc-parameter().chisq())/parameter().chisq() < 1e-32) {
+          //std::cout << fabs(oc-parameter().chisq())/parameter().chisq() << std::endl;
+          i++;
+        }
+        iterations++;
+        if (i==10) break;
+      }
+
+      /*
       while (alambda()>convergence) {
         MarquartMinimization();
         iterations++;
       }
+      */
 
       return iterations;
     }
@@ -117,6 +138,7 @@ namespace TkML {
 
       for (size_t i=0;i<parameter_.ia().size();++i) {
         atry_[i] = parameter_.a()[i];
+        // std::cout << "try " << atry_[i] << std::endl;
       }
     }
 
@@ -237,8 +259,8 @@ namespace TkML {
 
       arg = (x - a[1])/a[2];
       ex = std::exp(-arg*arg);
-      fac = a[0] * ex * 2.0 * arg;
       zfit = a[0] * ex;
+      fac = a[0] * ex * 2.0 * arg;
       dzdp[0] = ex;
       dzdp[1] = fac / a[2];
       dzdp[2] = fac * arg / a[2];
@@ -256,15 +278,20 @@ namespace TkML {
     void eval(const double x, const double y,
               Vector<double> & a,
               double & zfit, Vector<double> & dzdp) {
-      double fac, ex, arg;
+      double facx, facy, exx, exy, argx, argy;
 
-      arg = (x - a[1])/a[2];
-      ex = std::exp(-arg*arg);
-      fac = a[0] * ex * 2.0 * arg;
-      zfit = a[0] * ex;
-      dzdp[0] = ex;
-      dzdp[1] = fac / a[2];
-      dzdp[2] = fac * arg / a[2];
+      argx = (x - a[1])/a[2];
+      argy = (y - a[3])/a[4];
+      exx = std::exp(-argx*argx);
+      exy = std::exp(-argy*argy);
+      zfit = a[0] * exx * exy;
+      facx = a[0] * exx * exy * 2.0 * argx;
+      facy = a[0] * exx * exy * 2.0 * argy;
+      dzdp[0] = exx * exy;
+      dzdp[1] = facx / a[2];
+      dzdp[2] = facx * argx / a[2];
+      dzdp[3] = facy / a[4];
+      dzdp[4] = facy * argy / a[4];
     }
   };
 

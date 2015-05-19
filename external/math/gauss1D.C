@@ -8,7 +8,6 @@ void gauss1D()
 
   h->Draw();
 
-
   std::ofstream ofile("gauss1Ddump.txt");
 
   for (int bx=1;bx<=41;++bx) {

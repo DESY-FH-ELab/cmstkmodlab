@@ -59,36 +59,67 @@ int main(int argc, char * argv[])
     }
 
     parameter.a()[0] = maxz;
-    parameter.a()[1] = 0.0;
+    parameter.a()[1] = -5.0;
     parameter.a()[2] = 1.0;
-
-    /*
-    fitter.initialize();
-
-    std::cout << fitter.alambda() << std::endl;
-    std::cout << parameter.a()[0] << std::endl;
-    std::cout << parameter.a()[1] << std::endl;
-    std::cout << parameter.a()[2] << std::endl;
-    std::cout << std::endl;
-
-    int iterations = 0;
-    while (fitter.alambda()>1e-9) {
-      fitter.MarquartMinimization();
-      std::cout << fitter.alambda() << std::endl;
-      std::cout << parameter.a()[0] << std::endl;
-      std::cout << parameter.a()[1] << std::endl;
-      std::cout << parameter.a()[2] << std::endl;
-      std::cout << std::endl;
-
-      iterations++;
-    }
-    */
 
     std::cout << fitter.run() << std::endl;
     std::cout << parameter.a()[0] << std::endl;
     std::cout << parameter.a()[1] << std::endl;
     std::cout << parameter.a()[2] << std::endl;
     std::cout << std::endl;
+  }
+
+  {
+    TkML::Gauss2DFitter fitter(1681);
+
+    TkML::Gauss2DFitter::FitterData& data = fitter.data();
+    TkML::Gauss2DFitter::FitterParameter& parameter = fitter.parameter();
+
+    double x, y, z, maxz = 0;
+    int nData = 0;
+    std::ifstream ifile("gauss2Ddump.txt");
+    while (ifile >> x >> y >> z) {
+      data.x()[nData] = x;
+      data.y()[nData] = y;
+      data.z()[nData] = z;
+      maxz = std::max(z, maxz);
+      nData++;
+    }
+
+    parameter.a()[0] = maxz;
+    parameter.a()[1] = -0.5;
+    parameter.a()[2] = 1.0;
+    parameter.a()[3] = 0.5;
+    parameter.a()[4] = 2.0;
+
+    fitter.run();
+
+    /*
+    fitter.initialize();
+     */
+    std::cout << parameter.a()[0] << std::endl;
+    std::cout << parameter.a()[1] << std::endl;
+    std::cout << parameter.a()[2] << std::endl;
+    std::cout << parameter.a()[3] << std::endl;
+    std::cout << parameter.a()[4] << std::endl;
+    std::cout << std::endl;
+
+    /*
+    int iterations = 0;
+    for (int i=0;i<5;++i) {
+    //while (fitter.alambda()>1e-9) {
+      fitter.MarquartMinimization();
+      std::cout << fitter.alambda() << std::endl;
+      std::cout << parameter.a()[0] << std::endl;
+      std::cout << parameter.a()[1] << std::endl;
+      std::cout << parameter.a()[2] << std::endl;
+      std::cout << parameter.a()[3] << std::endl;
+      std::cout << parameter.a()[4] << std::endl;
+      std::cout << std::endl;
+
+      iterations++;
+    }
+    */
   }
 
   return 0;
