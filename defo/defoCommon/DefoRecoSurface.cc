@@ -307,7 +307,7 @@ const DefoSplineField DefoRecoSurface::createZSplines(DefoPointCollection const&
 
         // the attached slope (= tan(alpha)) is derived from the difference in y position
         double dY = 1.0*((*(currentPointByIndex.second)).getY() - (*(referencePointByIndex.second)).getY());
-        aPoint.setSlope( /*correctionFactors.second * */ dY);
+        aPoint.setSlope( aPoint.getCorrectionFactor() * dY);
 
         aSplineSet.addPoint( aPoint );
 
@@ -358,7 +358,7 @@ const DefoSplineField DefoRecoSurface::createZSplines(DefoPointCollection const&
 
         // the attached slope (= tan(alpha)) is derived from the difference in x position
         double dX = 1.0*((*(currentPointByIndex.second)).getX() - (*(referencePointByIndex.second)).getX());
-        aPoint.setSlope( /* correctionFactors.first * */ dX);
+        aPoint.setSlope( aPoint.getCorrectionFactor() * dX);
 
         aSplineSet.addPoint( aPoint );
 
