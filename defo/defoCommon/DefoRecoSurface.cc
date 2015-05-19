@@ -82,8 +82,6 @@ const DefoSurface DefoRecoSurface::reconstruct(DefoPointCollection& currentPoint
   calibrateXYPoints(currentPoints);
   emit incrementRecoProgress();
 
-  //return theSurface;
-
   // calibrate XY coordinates of referencePoints
   calibrateXYPoints(referencePoints);
   emit incrementRecoProgress();
@@ -196,7 +194,7 @@ void DefoRecoSurface::calibrateXYPoints(DefoPointCollection & points)
     double x = -1.0 * objectIntersection.x() * calibX_;
     double y =  1.0 * objectIntersection.y() * calibY_;
 
-    aPoint.setPosition(x, y);
+    aPoint.setCalibratedPosition(x, y);
 
     aPoint.setImageDistance(imageDistance.length());
     aPoint.setGridDistance(gridDistance.length());
@@ -306,7 +304,9 @@ const DefoSplineField DefoRecoSurface::createZSplines(DefoPointCollection const&
         DefoPoint aPoint = DefoPoint(*(referencePointByIndex.second));
 
         // the attached slope (= tan(alpha)) is derived from the difference in y position
-        double dY = 1.0*((*(currentPointByIndex.second)).getY() - (*(referencePointByIndex.second)).getY());
+        double currentY = (*(currentPointByIndex.second)).getCalibratedY();
+        double referenceY = (*(referencePointByIndex.second)).getCalibratedY();
+        double dY = 1.0*(currentY - referenceY);
         aPoint.setSlope( aPoint.getCorrectionFactor() * dY);
 
         aSplineSet.addPoint( aPoint );
@@ -357,7 +357,9 @@ const DefoSplineField DefoRecoSurface::createZSplines(DefoPointCollection const&
         // convert from pixel units to real units on module
 
         // the attached slope (= tan(alpha)) is derived from the difference in x position
-        double dX = 1.0*((*(currentPointByIndex.second)).getX() - (*(referencePointByIndex.second)).getX());
+        double currentX = (*(currentPointByIndex.second)).getCalibratedX();
+        double referenceX = (*(referencePointByIndex.second)).getCalibratedX();
+        double dX = 1.0*(currentX - referenceX);
         aPoint.setSlope( aPoint.getCorrectionFactor() * dX);
 
         aSplineSet.addPoint( aPoint );
