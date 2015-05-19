@@ -174,6 +174,7 @@ void DefoRecoSurface::calibrateXYPoints(DefoPointCollection & points)
       ++it ) {
 
     DefoPoint& aPoint = *it;
+    aPoint.setPosition(aPoint.getPixelX(), aPoint.getPixelY());
 
     NDirection3D imageRayDirection((aPoint.getX() - 0.5 * imageSize_.first) * pitchX_,
                                    (aPoint.getY() - 0.5 * imageSize_.second) * pitchY_,
@@ -194,7 +195,7 @@ void DefoRecoSurface::calibrateXYPoints(DefoPointCollection & points)
     double x = -1.0 * objectIntersection.x() * calibX_;
     double y =  1.0 * objectIntersection.y() * calibY_;
 
-    aPoint.setCalibratedPosition(x, y);
+    aPoint.setPosition(x, y);
 
     aPoint.setImageDistance(imageDistance.length());
     aPoint.setGridDistance(gridDistance.length());
@@ -304,8 +305,8 @@ const DefoSplineField DefoRecoSurface::createZSplines(DefoPointCollection const&
         DefoPoint aPoint = DefoPoint(*(referencePointByIndex.second));
 
         // the attached slope (= tan(alpha)) is derived from the difference in y position
-        double currentY = (*(currentPointByIndex.second)).getCalibratedY();
-        double referenceY = (*(referencePointByIndex.second)).getCalibratedY();
+        double currentY = (*(currentPointByIndex.second)).getY();
+        double referenceY = (*(referencePointByIndex.second)).getY();
         double dY = 1.0*(currentY - referenceY);
         aPoint.setSlope( aPoint.getCorrectionFactor() * dY);
 
@@ -357,8 +358,8 @@ const DefoSplineField DefoRecoSurface::createZSplines(DefoPointCollection const&
         // convert from pixel units to real units on module
 
         // the attached slope (= tan(alpha)) is derived from the difference in x position
-        double currentX = (*(currentPointByIndex.second)).getCalibratedX();
-        double referenceX = (*(referencePointByIndex.second)).getCalibratedX();
+        double currentX = (*(currentPointByIndex.second)).getX();
+        double referenceX = (*(referencePointByIndex.second)).getX();
         double dX = 1.0*(currentX - referenceX);
         aPoint.setSlope( aPoint.getCorrectionFactor() * dX);
 
