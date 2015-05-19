@@ -64,6 +64,11 @@ const double & DefoPoint::getPosition( const DefoPoint::Axis& coordinate ) const
   }
 }
 
+double const& DefoPoint::getCorrectionFactor( void ) const
+{
+  return (getGridDistance()+getImageDistance())/(2.0*getGridDistance());
+}
+
 /**
   Sets the color of the point.
   */
