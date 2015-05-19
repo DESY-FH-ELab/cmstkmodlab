@@ -166,8 +166,10 @@ void DefoRecoSurface::calibrateXYPoints(DefoPointCollection & points)
   NPoint3D objectIntersection;
   NPoint3D gridIntersection;
 
+  /*
   std::cout << imageSize_.first << std::endl;
   std::cout << imageSize_.second << std::endl;
+  */
 
   for( DefoPointCollection::iterator it = points.begin();
       it != points.end();
@@ -199,6 +201,7 @@ void DefoRecoSurface::calibrateXYPoints(DefoPointCollection & points)
     aPoint.setImageDistance(imageDistance.length());
     aPoint.setGridDistance(gridDistance.length());
 
+    /*
     std::cout << "("
 	      << aPoint.getIndex().first << ", "
 	      << aPoint.getIndex().second << ") -> ("
@@ -208,6 +211,7 @@ void DefoRecoSurface::calibrateXYPoints(DefoPointCollection & points)
 	      << aPoint.getGridDistance() << ") -> "
               << (aPoint.getGridDistance()+aPoint.getImageDistance())/(2.0*aPoint.getGridDistance())
 	      << std::endl;
+	*/
   }
 }
 
