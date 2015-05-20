@@ -7,9 +7,9 @@
 DefoPoint::DefoPoint( const DefoPoint& other ) {
 
   x_ = other.x_;
-  px_ = other.px_;
+  cx_ = other.cx_;
   y_ = other.y_;
-  py_ = other.py_;
+  cy_ = other.cy_;
   slope_ = other.slope_;
   height_ = other.height_;
   color_ = other.color_;
@@ -18,6 +18,7 @@ DefoPoint::DefoPoint( const DefoPoint& other ) {
   isValid_ = other.isValid_;
   imageDistance_ = other.imageDistance_;
   gridDistance_ = other.gridDistance_;
+  isCalibrated_ = other.isCalibrated_;
 }
 
 ///
@@ -26,15 +27,16 @@ DefoPoint::DefoPoint( const DefoPoint& other ) {
 void DefoPoint::init( void ) {
 
   x_ = 0.;
-  px_ = 0.;
+  cx_ = 0.;
   y_ = 0.;
-  py_ = 0.;
+  cy_ = 0.;
   slope_ = 0.;
   height_ = 0.;
   isValid_ = false;
   index_ = std::make_pair<int,int>( 0, 0 );
   imageDistance_ = 0.;
   gridDistance_ = 0.;
+  isCalibrated_ = false;
 }
 
 double DefoPoint::getDistance(const DefoPoint& other) const {

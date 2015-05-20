@@ -81,17 +81,17 @@ bool DefoSplineSetBase::doFitXY( void ) {
     // select values according to coordinate
     if ( axis_ == DefoPoint::X ) { // SAME-Y = ALONG-X
 
-      current.first = it->getX();
-      current.second = it->getY();
-      next.first = (it+1)->getX();
-      next.second = (it+1)->getY();
+      current.first = it->getCalibratedX();
+      current.second = it->getCalibratedY();
+      next.first = (it+1)->getCalibratedX();
+      next.second = (it+1)->getCalibratedY();
 
     } else { // SAME-X = ALONG-Y
 
-      current.first = it->getY();
-      current.second = it->getX();
-      next.first = (it+1)->getY();
-      next.second = (it+1)->getX();
+      current.first = it->getCalibratedY();
+      current.second = it->getCalibratedX();
+      next.first = (it+1)->getCalibratedY();
+      next.second = (it+1)->getCalibratedX();
 
     }
 

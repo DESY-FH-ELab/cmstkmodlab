@@ -25,15 +25,15 @@ class DefoPoint {
   };
 
   DefoPoint() { init(); }
-  DefoPoint( double x, double y ) { init(); x_ = px_ = x; y_ = py_ = y; }
-  DefoPoint( double x, double y, double slope ) { init(); x_ = px_ = x; y_ = py_ = y; slope_ = slope; }
+  DefoPoint( double x, double y ) { init(); x_ = x; y_ = y; }
+  DefoPoint( double x, double y, double slope ) { init(); x_ = x; y_ = y; slope_ = slope; }
   DefoPoint( const DefoPoint& other );
   void setX( double x ) { x_ = x; }
   void setY( double y ) { y_ = y; }
   void setPosition( double x, double y ) { x_ = x; y_ = y; }
-  void setPixelX( double x ) { px_ = x; }
-  void setPixelY( double y ) { py_ = y; }
-  void setPixelPosition( double x, double y ) { px_ = x; py_ = y; }
+  void setCalibratedX( double x ) { cx_ = x; isCalibrated_ = true; }
+  void setCalibratedY( double y ) { cy_ = y; isCalibrated_ = true; }
+  void setCalibratedPosition( double x, double y ) { cx_ = x; cy_ = y; isCalibrated_ = true; }
   void setSlope( double slope ) { slope_ = slope; }
   void setHeight( double height ) { height_ = height; }
   void setImageDistance(double v) { imageDistance_ = v; }
@@ -47,9 +47,10 @@ class DefoPoint {
   void unindex() { isIndexed_ = false; }
   bool isIndexed( void ) const { return isIndexed_; }
   double const& getX( void ) const { return x_; }
-  double const& getPixelX( void ) const { return px_; }
+  double const& getCalibratedX( void ) const { return cx_; }
   double const& getY( void ) const { return y_; }
-  double const& getPixelY( void ) const { return py_; }
+  double const& getCalibratedY( void ) const { return cy_; }
+  bool isCalibrated( void ) const { return isCalibrated_; }
   double getDistance(const DefoPoint& other) const;
   double getDistanceXY(const DefoPoint& other, double& dx, double& dy) const;
   double const& getPosition( const DefoPoint::Axis& ) const;
@@ -60,8 +61,8 @@ class DefoPoint {
   double getCorrectionFactor( void ) const;
   double abs( void ) const { return sqrt( pow( x_, 2. ) + pow( y_, 2. ) ); }
   const std::pair<int,int> getIndex( void ) const { return index_; }
-  unsigned int getPixX( void ) const { return static_cast<int>( round( px_ ) ); }
-  unsigned int getPixY( void ) const { return static_cast<int>( round( py_ ) ); }
+  unsigned int getPixX( void ) const { return static_cast<int>( round( x_ ) ); }
+  unsigned int getPixY( void ) const { return static_cast<int>( round( y_ ) ); }
   void setColor( const QColor& color );
   const QColor& getColor( void ) const;
   bool hasReferenceColor(const QColor& seedColor) const;
@@ -83,15 +84,16 @@ class DefoPoint {
  protected:
   void init( void );
   double x_;
-  double px_;
+  double cx_;
   double y_;
-  double py_;
+  double cy_;
   double slope_;
   double height_;
   QColor color_;
   std::pair<int,int> index_;
   bool isIndexed_;
   bool isValid_; // contains valid height data? for use with DefoSurfacePlot..
+  bool isCalibrated_;
 
   double imageDistance_;
   double gridDistance_;
