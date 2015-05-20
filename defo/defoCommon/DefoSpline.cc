@@ -151,8 +151,8 @@ bool DefoSplineSetBase::doFitZ( void ) {
     DefoSpline aSpline;
     // use known coordinate to request the correct value
     // FIXME Slower than seperate, but duplicate implementation.
-    const double thisValue = it->getPosition(axis_);
-    const double nextValue = (it+1)->getPosition(axis_);
+    const double thisValue = it->getCalibratedPosition(axis_);
+    const double nextValue = (it+1)->getCalibratedPosition(axis_);
 
     const double thisSlope = it->getSlope();
     const double nextSlope = (it+1)->getSlope();
