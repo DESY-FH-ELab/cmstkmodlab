@@ -54,6 +54,7 @@ class DefoPoint {
   double getDistance(const DefoPoint& other) const;
   double getDistanceXY(const DefoPoint& other, double& dx, double& dy) const;
   double const& getPosition( const DefoPoint::Axis& ) const;
+  double const& getCalibratedPosition( const DefoPoint::Axis& ) const;
   double const& getSlope( void ) const { return slope_; }
   double const& getHeight( void ) const { return height_; }
   double const& getImageDistance( void ) const { return imageDistance_; }

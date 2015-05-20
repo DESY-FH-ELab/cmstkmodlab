@@ -70,6 +70,26 @@ const double & DefoPoint::getPosition( const DefoPoint::Axis& coordinate ) const
   }
 }
 
+///
+/// Allows for non-hardcoded selection of coordinate
+///
+const double & DefoPoint::getCalibratedPosition( const DefoPoint::Axis& coordinate ) const
+{
+//  if (coordinate == DefoPoint::X)
+//    return x_;
+//  else //if (coordinate == DefoPoint::Y)
+//    return y_;
+////  else // Should not happen
+////    return 0.;
+  switch ( coordinate ) {
+    case DefoPoint::X:
+      return cx_;
+      break;
+    default: // DefoPoint::Y
+      return cy_;
+  }
+}
+
 double DefoPoint::getCorrectionFactor( void ) const
 {
   return (getGridDistance()+getImageDistance())/(2.0*getGridDistance());
