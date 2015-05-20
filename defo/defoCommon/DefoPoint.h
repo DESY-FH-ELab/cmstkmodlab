@@ -72,8 +72,13 @@ class DefoPoint {
   DefoPoint operator/=( const double& aFactor ) { x_ /= aFactor; y_ /= aFactor; return *this; }
   DefoPoint operator+=( const DefoPoint& another ) { x_ += another.getX(); y_ += another.getY(); return *this; }
   DefoPoint operator-=( const DefoPoint& another ) { x_ -= another.getX(); y_ -= another.getY(); return *this; }
-  bool operator<( const DefoPoint& another ) const { return( sqrt( pow( x_, 2. ) + pow( y_, 2. ) ) < 
-							    sqrt( pow( another.getX(), 2. ) + pow( another.getY(), 2. ) ) ); }
+  bool operator<( const DefoPoint& another ) const { 
+    if (index_.first == another.index_.first) {
+      return index_.second < another.index_.second;
+    } else {
+      return index_.first < another.index_.first;
+    }
+  }
   bool operator<=( const DefoPoint& another ) const { return( sqrt( pow( x_, 2. ) + pow( y_, 2. ) ) <=
 							    sqrt( pow( another.getX(), 2. ) + pow( another.getY(), 2. ) ) ); }
   bool operator>( const DefoPoint& another ) const { return( sqrt( pow( x_, 2. ) + pow( y_, 2. ) ) > 
