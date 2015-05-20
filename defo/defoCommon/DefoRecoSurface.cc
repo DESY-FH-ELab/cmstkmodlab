@@ -568,7 +568,7 @@ void DefoRecoSurface::removeGlobalOffset( DefoSplineField& splineField ) const
     for (DefoPointCollection::const_iterator itPX = itX->getPoints().begin();
          itPX < itX->getPoints().end();
          ++itPX ) {
-      if (itX->eval(itPX->getX()) < minimalHeight) minimalHeight = itX->eval(itPX->getX());
+      if (itX->eval(itPX->getCalibratedX()) < minimalHeight) minimalHeight = itX->eval(itPX->getCalibratedX());
     }
   }
 
@@ -588,7 +588,7 @@ void DefoRecoSurface::removeGlobalOffset( DefoSplineField& splineField ) const
     for (DefoPointCollection::const_iterator itPY = itY->getPoints().begin();
          itPY < itY->getPoints().end();
          ++itPY) {
-      if (itY->eval(itPY->getY()) < minimalHeight) minimalHeight = itY->eval(itPY->getY());
+      if (itY->eval(itPY->getCalibratedY()) < minimalHeight) minimalHeight = itY->eval(itPY->getCalibratedY());
     }
   }
 

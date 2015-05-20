@@ -60,10 +60,10 @@ void DefoSurface::makeSummary()
            ++itP ) {
 
         key.ix_ = itP->getIndex().first;
-        key.x_ = itP->getX();
+        key.x_ = itP->getCalibratedX();
         key.iy_ = itP->getIndex().second;
-        key.y_ = itP->getY();
-        value.setX(itC->eval(itP->getX()));
+        key.y_ = itP->getCalibratedY();
+        value.setX(itC->eval(itP->getCalibratedX()));
 
         it_t it = defoPointMap_.find(key);
         if (it==defoPointMap_.end()) {
@@ -71,7 +71,7 @@ void DefoSurface::makeSummary()
           value.hasy_ = false;
           defoPointMap_.insert(key, value);
         } else {
-          it.value().setX(itC->eval(itP->getX()));
+          it.value().setX(itC->eval(itP->getCalibratedX()));
         }
       }
     }
@@ -90,10 +90,10 @@ void DefoSurface::makeSummary()
            ++itP ) {
 
         key.ix_ = itP->getIndex().first;
-        key.x_ = itP->getX();
+        key.x_ = itP->getCalibratedX();
         key.iy_ = itP->getIndex().second;
-        key.y_ = itP->getY();
-        value.setY(itC->eval(itP->getY()));
+        key.y_ = itP->getCalibratedY();
+        value.setY(itC->eval(itP->getCalibratedY()));
 
         it_t it = defoPointMap_.find(key);
         if (it==defoPointMap_.end()) {
@@ -101,7 +101,7 @@ void DefoSurface::makeSummary()
           value.hasx_ = false;
           defoPointMap_.insert(key, value);
         } else {
-          it.value().setY(itC->eval(itP->getY()));
+          it.value().setY(itC->eval(itP->getCalibratedY()));
         }
 
       }
@@ -123,16 +123,16 @@ void DefoSurface::makeSummary()
              itP < itC->getPoints().end();
              ++itP ) {
 
-            double z = itC->eval(itP->getX());
+            double z = itC->eval(itP->getCalibratedX());
             if (z>summary_.maxZFromXSplines) {
                 summary_.maxZFromXSplines = z;
-                summary_.posAtMaxZFromXSplines.first = itP->getX();
-                summary_.posAtMaxZFromXSplines.second = itP->getY();
+                summary_.posAtMaxZFromXSplines.first = itP->getCalibratedX();
+                summary_.posAtMaxZFromXSplines.second = itP->getCalibratedY();
             }
             if (z<summary_.minZFromXSplines) {
                 summary_.minZFromXSplines = z;
-                summary_.posAtMinZFromXSplines.first = itP->getX();
-                summary_.posAtMinZFromXSplines.second = itP->getY();
+                summary_.posAtMinZFromXSplines.first = itP->getCalibratedX();
+                summary_.posAtMinZFromXSplines.second = itP->getCalibratedY();
             }
         }
     }
@@ -153,16 +153,16 @@ void DefoSurface::makeSummary()
              itP < itC->getPoints().end();
              ++itP ) {
 
-            double z = itC->eval(itP->getY());
+            double z = itC->eval(itP->getCalibratedY());
             if (z>summary_.maxZFromYSplines) {
                 summary_.maxZFromYSplines = z;
-                summary_.posAtMaxZFromYSplines.first = itP->getX();
-                summary_.posAtMaxZFromYSplines.second = itP->getY();
+                summary_.posAtMaxZFromYSplines.first = itP->getCalibratedX();
+                summary_.posAtMaxZFromYSplines.second = itP->getCalibratedY();
             }
             if (z<summary_.minZFromYSplines) {
                 summary_.minZFromYSplines = z;
-                summary_.posAtMinZFromYSplines.first = itP->getX();
-                summary_.posAtMinZFromYSplines.second = itP->getY();
+                summary_.posAtMinZFromYSplines.first = itP->getCalibratedX();
+                summary_.posAtMinZFromYSplines.second = itP->getCalibratedY();
             }
         }
     }
@@ -417,7 +417,7 @@ void DefoSurface::createPointFields( void ) {
     if( !it->isIndexed() ) {
       NQLogWarning("DefoSurface::createPointFields()")
           << "Point not indexed at position: x: "
-		  << it->getX() << " y: " << it->getY();
+		  << it->getCalibratedX() << " y: " << it->getCalibratedY();
     }
   }
 
@@ -438,7 +438,7 @@ void DefoSurface::createPointFields( void ) {
     std::vector<DefoPoint> aColumn;
     for( DefoPointCollection::const_iterator itP = itC->getPoints().begin(); itP < itC->getPoints().end(); ++itP ) {
       DefoPoint aPoint( *itP ); // make copy to preserve constness
-      aPoint.setHeight( itC->eval( itP->getX() ) );
+      aPoint.setHeight( itC->eval( itP->getCalibratedX() ) );
       aPoint.setValid( true ); // sign for the DefoSurfacePlot to take it
       std::pair<int,int> absIndex = aPoint.getIndex();
       absIndex.first += indexRange.first;
