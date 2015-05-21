@@ -307,7 +307,8 @@ const DefoSplineField DefoRecoSurface::createZSplines(DefoPointCollection const&
         double currentY = (*(currentPointByIndex.second)).getCalibratedY();
         double referenceY = (*(referencePointByIndex.second)).getCalibratedY();
         double dY = 1.0*(currentY - referenceY);
-        aPoint.setSlope( aPoint.getCorrectionFactor() * dY);
+
+        aPoint.setSlope( /* aPoint.getCorrectionFactor() * */ dY);
 
         aSplineSet.addPoint( aPoint );
 
@@ -360,7 +361,8 @@ const DefoSplineField DefoRecoSurface::createZSplines(DefoPointCollection const&
         double currentX = (*(currentPointByIndex.second)).getCalibratedX();
         double referenceX = (*(referencePointByIndex.second)).getCalibratedX();
         double dX = 1.0*(currentX - referenceX);
-        aPoint.setSlope( aPoint.getCorrectionFactor() * dX);
+
+        aPoint.setSlope( /* aPoint.getCorrectionFactor() * */ dX);
 
         aSplineSet.addPoint( aPoint );
 
