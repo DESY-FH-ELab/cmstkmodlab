@@ -66,6 +66,9 @@ void DefoSurface::makeSummary()
 
         value.setX(itC->eval(itP->getCalibratedX()));
 
+        value.setCorrX(itP->getCorrectionFactor(DefoPoint::X));
+        value.setCorrY(itP->getCorrectionFactor(DefoPoint::Y));
+
         it_t it = defoPointMap_.find(key);
         if (it==defoPointMap_.end()) {
           value.y_ = 0;
@@ -96,6 +99,9 @@ void DefoSurface::makeSummary()
         key.y_ = itP->getCalibratedY();
 
         value.setY(itC->eval(itP->getCalibratedY()));
+
+        value.setCorrX(itP->getCorrectionFactor(DefoPoint::X));
+        value.setCorrY(itP->getCorrectionFactor(DefoPoint::Y));
 
         it_t it = defoPointMap_.find(key);
         if (it==defoPointMap_.end()) {
@@ -194,6 +200,8 @@ void DefoSurface::dumpSplineField(std::string filename) const
           << std::setw(3)  << (int)it.value().hasx_ << " "
           << std::setw(14) << std::scientific << it.value().y_ << " "
           << std::setw(3)  << (int)it.value().hasy_
+          << std::setw(14) << std::scientific << it.value().corrx_ << " "
+          << std::setw(14) << std::scientific << it.value().corry_ << " "
           << std::endl;
   }
 }

@@ -24,8 +24,11 @@ public:
     :x_(0), y_(0), hasx_(false), hasy_(false) {}
   void setX(const double &x) { x_ = x; hasx_ = true; }
   void setY(const double &y) { y_ = y; hasy_ = true; }
+  void setCorrX(const double &corrx) { corrx_ = corrx; }
+  void setCorrY(const double &corry) { corry_ = corry; }
   double x_, y_;
   bool hasx_, hasy_;
+  double corrx_, corry_;
 };
 
 class DefoSurfaceSummary {
