@@ -44,19 +44,21 @@ class DefoRecoSurface : public QObject
   void setCalibZx( double v) { calibZx_ = v; }
   void setCalibZy( double v) { calibZy_ = v; }
 
+  void setAngle1(double v) { angle1_ = v; }
+  void setAngle2(double v) { angle2_ = v; }
+  void setAngle3(double v) { angle3_ = v; }
+  void setDistance(double v) { distance_ = v; }
+  void setHeight1(double v) { height1_ = v; }
+  void setHeight2(double v) { height2_ = v; }
+
   void dump();
 
  private:
 
-  const DefoSplineField createXYSplines( DefoPointCollection const& );
+  void calibrateXYPoints(DefoPointCollection & points);
+
   const DefoSplineField createZSplines( DefoPointCollection const&, DefoPointCollection const& );
-  const DefoSplineField createZSplinesOld( DefoPointCollection const&, DefoPointCollection const& );
-  const std::pair<std::vector<DefoPointCollection>,std::vector<DefoPointCollection> > groupPointsSorted( DefoPointCollection const& );
   void mountZSplines( DefoSplineField& ) const;
-  void mountZSplinesOld( DefoSplineField& ) const;
-  const std::pair<double,double> determineAverageSpacing( DefoPointCollection const& ) const;
-  std::pair<bool,DefoPointCollection::iterator> findClosestPoint( DefoPoint const&, DefoPointCollection& ) const;
-  std::pair<bool,DefoPointCollection::iterator> findClosestPointExcluded( DefoPoint const&, DefoPointCollection&, DefoPoint const& ) const;
   const std::pair<bool,DefoPointCollection::const_iterator> findPointByIndex( DefoPointCollection const&, std::pair<int,int> const& ) const;
   void removeGlobalOffset( DefoSplineField& ) const;
   void removeTilt( DefoSplineField& ) const;
@@ -80,6 +82,13 @@ class DefoRecoSurface : public QObject
   double calibY_;
   double calibZx_;
   double calibZy_;
+
+  double angle1_;
+  double angle2_;
+  double angle3_;
+  double distance_;
+  double height1_;
+  double height2_;
 
 signals:
 

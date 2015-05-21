@@ -2,10 +2,12 @@
 
 #include "nqlogger.h"
 
+#include "nvector3D.h"
 #include "npoint3D.h"
 #include "ndirection3D.h"
 #include "nline3D.h"
 #include "nplane3D.h"
+#include "nvector2D.h"
 
 #include "DefoRecoSurface.h"
 
@@ -30,6 +32,13 @@ DefoRecoSurface::DefoRecoSurface(QObject *parent)
   calibY_ = ApplicationConfig::instance()->getValue<double>("CALIBY", 1.0);
   calibZx_ = ApplicationConfig::instance()->getValue<double>("CALIBZX", 1.0);
   calibZy_ = ApplicationConfig::instance()->getValue<double>("CALIBZY", 1.0);
+
+  angle1_ = ApplicationConfig::instance()->getValue<double>( "ANGLE1" );
+  angle2_ = ApplicationConfig::instance()->getValue<double>( "ANGLE2" );
+  angle3_ = ApplicationConfig::instance()->getValue<double>( "ANGLE3" );
+  distance_ = ApplicationConfig::instance()->getValue<double>( "DISTANCE" );
+  height1_ = ApplicationConfig::instance()->getValue<double>( "HEIGHT1" );
+  height2_ = ApplicationConfig::instance()->getValue<double>( "HEIGHT2" );
 
   // to be called after cfg reading
   calculateHelpers();
@@ -70,6 +79,14 @@ const DefoSurface DefoRecoSurface::reconstruct(DefoPointCollection& currentPoint
 {
   DefoSurface theSurface;
 
+  // calibrate XY coordinates of currentPoints
+  calibrateXYPoints(currentPoints);
+  emit incrementRecoProgress();
+
+  // calibrate XY coordinates of referencePoints
+  calibrateXYPoints(referencePoints);
+  emit incrementRecoProgress();
+
   // create raw z splines for surface reconstruction
   DefoSplineField currentZSplineField = createZSplines( currentPoints, referencePoints );
   emit incrementRecoProgress();
@@ -99,6 +116,113 @@ const DefoSurface DefoRecoSurface::reconstruct(DefoPointCollection& currentPoint
   return theSurface;
 }
 
+void DefoRecoSurface::calibrateXYPoints(DefoPointCollection & points)
+{
+  double f = focalLength_;
+  double gamma = imageScale(f);
+  double imageDistance = f * (gamma + 1.0);
+  double objectDistance = imageDistance / gamma;
+
+  NVector3D height1(0., 0., height1_);
+  NVector3D height2(0., 0., height2_);
+  NVector3D distance(0., -1.0*distance_, 0.);
+
+  double a1 = angle1_ * M_PI / 180.;
+  double a2 = angle2_ * M_PI / 180.;
+  double a3 = angle3_ * M_PI / 180.;
+
+  distance.rotateX(a2);
+
+  NPoint3D cameraPoint(0., 0., 0.);
+  cameraPoint.move(height1);
+  cameraPoint.move(distance);
+
+  NPoint3D objectPoint(0., 0., 0.);
+  objectPoint.move(height2);
+  NDirection3D objectNormal(0., 0., 1.);
+  NPlane3D objectPlane(objectPoint, objectNormal);
+
+  NDirection3D centerRayDirection(0., 0., -1.);
+  centerRayDirection.rotateX(a2 + a3);
+
+  NLine3D centerRay(cameraPoint, centerRayDirection);
+  centerRay.intersection(objectPlane, objectPoint);
+
+  NVector3D imageDistanceVector(objectPoint, cameraPoint);
+  imageDistanceVector *= objectDistance / imageDistanceVector.length();
+
+  NPoint3D imagePoint(objectPoint);
+  imagePoint.move(imageDistanceVector);
+
+  NPoint3D gridPoint(0., 0., 0.);
+  gridPoint.move(height1);
+
+  NDirection3D gridNormal(0., 0., -1.);
+  gridNormal.rotateX(-a1);
+
+  NPlane3D gridPlane(gridPoint, gridNormal);
+
+  NPoint3D objectIntersection;
+  NPoint3D gridIntersection;
+
+  /*
+  std::cout << imageSize_.first << std::endl;
+  std::cout << imageSize_.second << std::endl;
+  */
+
+  for( DefoPointCollection::iterator it = points.begin();
+      it != points.end();
+      ++it ) {
+
+    DefoPoint& aPoint = *it;
+
+    NDirection3D imageRayDirection((aPoint.getX() - 0.5 * imageSize_.first) * pitchX_,
+                                   (aPoint.getY() - 0.5 * imageSize_.second) * pitchY_,
+                                   imageDistance);
+    imageRayDirection.rotateX(a2 + a3);
+    NLine3D imageRay(imagePoint, imageRayDirection);
+    imageRay.intersection(objectPlane, objectIntersection);
+
+    NVector3D imageDistance(objectIntersection, imagePoint);
+
+    NDirection3D gridRayDirection(imageRayDirection);
+    gridRayDirection.rotateZ(M_PI);
+    NLine3D gridRay(objectIntersection, gridRayDirection);
+    gridRay.intersection(gridPlane, gridIntersection);
+
+    NVector3D gridDistance(objectIntersection, gridIntersection);
+
+    double x = -1.0 * objectIntersection.x() * calibX_;
+    double y =  1.0 * objectIntersection.y() * calibY_;
+
+    aPoint.setCalibratedPosition(x, y);
+
+    NVector2D imageDistanceX(imageDistance.x(), imageDistance.z());
+    NVector2D gridDistanceX(gridDistance.x(), gridDistance.z());
+
+    aPoint.setImageDistanceX(imageDistanceX.length());
+    aPoint.setGridDistanceX(gridDistanceX.length());
+
+    NVector2D imageDistanceY(imageDistance.y(), imageDistance.z());
+    NVector2D gridDistanceY(gridDistance.y(), gridDistance.z());
+
+    aPoint.setImageDistanceY(imageDistanceY.length());
+    aPoint.setGridDistanceY(gridDistanceY.length());
+
+    /*
+    std::cout << "("
+	      << aPoint.getIndex().first << ", "
+	      << aPoint.getIndex().second << ") -> ("
+	      << aPoint.getCalibratedX() << ", "
+	      << aPoint.getCalibratedY() << ") -> ("
+	      << aPoint.getImageDistance() << ", "
+	      << aPoint.getGridDistance() << ") -> "
+              << (aPoint.getGridDistance()+aPoint.getImageDistance())/(2.0*aPoint.getGridDistance())
+	      << std::endl;
+	*/
+  }
+}
+
 ///
 /// create z splines from difference in point positions
 /// NEW VERSION based on indexed points
@@ -110,6 +234,7 @@ const DefoSplineField DefoRecoSurface::createZSplines(DefoPointCollection const&
 
   DefoSplineField theOutput;
 
+  /*
   // x,y correction factors: see Diss. S. Koenig, p. 100;
   const std::pair<double,double> correctionFactors = std::pair<double,double> (
     pitchX_ / focalLength_ * ( nominalGridDistance_ + nominalCameraDistance_ ) / 2. / nominalGridDistance_,
@@ -118,7 +243,7 @@ const DefoSplineField DefoRecoSurface::createZSplines(DefoPointCollection const&
 
   NQLog("DefoRecoSurface", NQLog::Message) << "nominal correction factors: "
       << correctionFactors.first << " , " << correctionFactors.second;
-
+  */
 
   NQLog("DefoRecoSurface", NQLog::Message) << "image size: ("
       << imageSize_.first << ", " << imageSize_.second << ")";
@@ -136,10 +261,10 @@ const DefoSplineField DefoRecoSurface::createZSplines(DefoPointCollection const&
     if( it->getIndex().second < indexRangeY.first )  indexRangeY.first  = it->getIndex().second;
     if( it->getIndex().second > indexRangeY.second ) indexRangeY.second = it->getIndex().second;
     /*
-    indexRangeXref.first = std::min(it->getIndex().first, indexRangeXref.first);
-    indexRangeXref.second = std::max(it->getIndex().first, indexRangeXref.second);
-    indexRangeYref.first = std::min(it->getIndex().first, indexRangeYref.first);
-    indexRangeYref.second = std::max(it->getIndex().first, indexRangeYref.second);
+    indexRangeX.first = std::min(it->getIndex().first, indexRangeX.first);
+    indexRangeX.second = std::max(it->getIndex().first, indexRangeX.second);
+    indexRangeY.first = std::min(it->getIndex().first, indexRangeY.first);
+    indexRangeY.second = std::max(it->getIndex().first, indexRangeY.second);
      */
   }
   
@@ -157,30 +282,6 @@ const DefoSplineField DefoRecoSurface::createZSplines(DefoPointCollection const&
   indexRangeY.first = std::max(indexRangeYref.first, indexRangeY.first);
   indexRangeY.second = std::min(indexRangeYref.second, indexRangeY.second);
    */
-
-  NPoint3D cameraPoint(0., 0., 0.);
-  
-  double n = nominalCameraDistance_;
-  double f = focalLength_;
-  double gamma = imageScale(f);
-  double imageDistance = f * (gamma + 1.0);
-  double objectDistance = imageDistance / gamma;
-
-  NQLog("DefoRecoSurface", NQLog::Message) << "found index range:";
-  NQLog("DefoRecoSurface", NQLog::Message) << "  x: " << indexRangeX.first << " .. " << indexRangeX.second;
-  NQLog("DefoRecoSurface", NQLog::Message) << "  y: " << indexRangeY.first << " .. " << indexRangeY.second;
-  NQLog("DefoRecoSurface", NQLog::Message) << "nominal camera distance: " << nominalCameraDistance_;
-  NQLog("DefoRecoSurface", NQLog::Message) << "focal length:            " << focalLength_;
-  NQLog("DefoRecoSurface", NQLog::Message) << "image scale:             " << gamma;
-  NQLog("DefoRecoSurface", NQLog::Message) << "image distance:          " << imageDistance;
-  NQLog("DefoRecoSurface", NQLog::Message) << "object distance:         " << objectDistance;
-
-  NPoint3D surfacePoint(0., 0., objectDistance);
-  NDirection3D surfaceNormal(0., 0., 1.);
-  surfaceNormal.rotateX(-nominalViewingAngle_);
-  NPlane3D surface(surfacePoint, surfaceNormal);
-
-  NPoint3D intersectionPoint;
 
   // we need the blue point (from *ref*) as geom. reference, it always has index 0,0
   std::pair<bool,DefoPointCollection::const_iterator> bluePointByIndex =
@@ -213,24 +314,11 @@ const DefoSplineField DefoRecoSurface::createZSplines(DefoPointCollection const&
         DefoPoint aPoint = DefoPoint(*(referencePointByIndex.second));
 
         // the attached slope (= tan(alpha)) is derived from the difference in y position
-        double dY = -1.0*((*(currentPointByIndex.second)).getY() - (*(referencePointByIndex.second)).getY());
-        aPoint.setSlope( correctionFactors.second * dY); // ##### check
+        double currentY = (*(currentPointByIndex.second)).getCalibratedY();
+        double referenceY = (*(referencePointByIndex.second)).getCalibratedY();
+        double dY = 1.0*(currentY - referenceY);
 
-        // convert from pixel units to real units on module
-
-        // new new version
-        NDirection3D beamDirection((aPoint.getX() - 0.5 * imageSize_.first) * pitchX_,
-                                   (aPoint.getY() - 0.5 * imageSize_.second) * pitchY_,
-                                   imageDistance);
-        NLine3D beam(cameraPoint, beamDirection);
-        beam.intersection(surface, intersectionPoint);
-        double x = intersectionPoint.x() * calibX_;
-        double y = -1.0*intersectionPoint.y() * calibY_;
-        double z = intersectionPoint.z();
-
-        // NQLog("DefoRecoSurface", NQLog::Spam) << "intersection: " << x << " " << y << " " << z;
-
-        aPoint.setPosition(x, y);
+        aPoint.setSlope( aPoint.getCorrectionFactor(DefoPoint::Y) * dY);
 
         aSplineSet.addPoint( aPoint );
 
@@ -277,26 +365,14 @@ const DefoSplineField DefoRecoSurface::createZSplines(DefoPointCollection const&
         // this point is abstract and lives where the ref point is on the module
         // (make a copy)
         DefoPoint aPoint = DefoPoint( *(referencePointByIndex.second) );
-
-        // the attached slope (= tan(alpha)) is derived from the difference in x position
-        double dX = 1.0*((*(currentPointByIndex.second)).getX() - (*(referencePointByIndex.second)).getX());
-        aPoint.setSlope( correctionFactors.first * dX); // ##### check
-	
         // convert from pixel units to real units on module
 
-        // new new version
-        NDirection3D beamDirection((aPoint.getX() - 0.5 * imageSize_.first) * pitchX_,
-                                   (aPoint.getY() - 0.5 * imageSize_.second) * pitchY_,
-                                   imageDistance);
-        NLine3D beam(cameraPoint, beamDirection);
-        beam.intersection(surface, intersectionPoint);
-        double x = intersectionPoint.x() * calibX_;
-        double y = -1.0*intersectionPoint.y() * calibY_;
-        double z = intersectionPoint.z();
+        // the attached slope (= tan(alpha)) is derived from the difference in x position
+        double currentX = (*(currentPointByIndex.second)).getCalibratedX();
+        double referenceX = (*(referencePointByIndex.second)).getCalibratedX();
+        double dX = 1.0*(currentX - referenceX);
 
-        //NQLog("DefoRecoSurface", NQLog::Spam) << "intersection: " << x << " " << y << " " << z;
-
-        aPoint.setPosition(x, y);
+        aPoint.setSlope( aPoint.getCorrectionFactor(DefoPoint::Y) * dX);
 
         aSplineSet.addPoint( aPoint );
 
@@ -324,114 +400,6 @@ const DefoSplineField DefoRecoSurface::createZSplines(DefoPointCollection const&
 
   return theOutput;
 }
-
-
-
-///
-/// create z splines from difference of point positions
-/// OLD symmetric version, to be deprecated
-///
-const DefoSplineField DefoRecoSurface::createZSplinesOld( DefoPointCollection const& currentPoints, DefoPointCollection const& referencePoints ) {
-
-  DefoSplineField theOutput;
-
-  // group & sort the points.
-  // these are supposed to match 1<>1 in structure,
-  // so no points must "vanish" from the DUT by deformation..
-  const std::pair<std::vector<DefoPointCollection>,std::vector<DefoPointCollection> > currentGroups = groupPointsSorted( currentPoints );
-  const std::pair<std::vector<DefoPointCollection>,std::vector<DefoPointCollection> > referenceGroups = groupPointsSorted( referencePoints );
-
-  // check if we have the same number of rows & columns
-  // in current image and reference image
-  if( currentGroups.first.size() != referenceGroups.first.size()   ||
-      currentGroups.second.size() != referenceGroups.second.size()    ) {
-    NQLogCritical("DefoRecoSurface::createZSplinesOld()")
-        << "Size mismatch in sorted point groups, empty output.";
-    return theOutput;
-  }
-
-  // x,y correction factors: see Diss. S. Koenig, p. 100
-  const std::pair<double,double> correctionFactors (
-    pitchX_ / focalLength_ * ( nominalGridDistance_ + nominalCameraDistance_ ) / 2. / nominalGridDistance_,
-    pitchY_ / focalLength_ * ( nominalGridDistance_ + nominalCameraDistance_ ) / 2. / nominalGridDistance_
-  );
-
-  // first along y = SAME-X = pointGroups.first
-  std::vector<DefoPointCollection>::const_iterator currentCollIt, referenceCollIt;
-  for( currentCollIt = currentGroups.first.begin(), referenceCollIt = referenceGroups.first.begin();
-       currentCollIt < currentGroups.first.end(); ++currentCollIt, ++referenceCollIt ) {
-    
-    // create a spline set (a "column") .. 
-    DefoSplineSetY aSplineSet;
-
-    // .. and attach the points
-    DefoPointCollection::const_iterator currentPointIt, referencePointIt;
-    for( currentPointIt = currentCollIt->begin(), referencePointIt = referenceCollIt->begin();
-	 currentPointIt < currentCollIt->end(); ++currentPointIt, ++referencePointIt ) {
-
-      // this point is abstract and lives where the ref point is on the module
-      // (make a copy)
-      DefoPoint aPoint = DefoPoint( *referencePointIt );
-
-      // the attached slope (= tan(alpha)) is derived from the difference in x position
-      aPoint.setSlope( correctionFactors.first * (*currentPointIt - *referencePointIt).getY() );
-
-      // convert from pixel units to real units on module
-      aPoint.setPosition( aPoint.getX() * pitchX_ * nominalCameraDistance_ / focalLength_ , 
- 		    aPoint.getY() * pitchY_ * nominalCameraDistance_ / focalLength_ );
-
-      aSplineSet.addPoint( aPoint );
-
-    }
-
-    // do the fit
-    aSplineSet.doFitZ();
-
-    // attach to output field (as *second*!!)
-    theOutput.second.push_back( aSplineSet );
-
-  }
-
-
-  // then along x = SAME-Y = pointGroups.second
-  for( currentCollIt = currentGroups.second.begin(), referenceCollIt = referenceGroups.second.begin();
-       currentCollIt < currentGroups.second.end(); ++currentCollIt, ++referenceCollIt ) {
-    
-    // create a spline set (a "row") .. 
-    DefoSplineSetX aSplineSet;
-    
-    // .. and attach the points
-    DefoPointCollection::const_iterator currentPointIt, referencePointIt;
-    for( currentPointIt = currentCollIt->begin(), referencePointIt = referenceCollIt->begin();
-	 currentPointIt < currentCollIt->end(); ++currentPointIt, ++referencePointIt ) {
-
-      // this point is abstract and lives where the ref point is
-      // (make a copy)
-      DefoPoint aPoint = DefoPoint( *referencePointIt );
-
-      // the attached slope (= tan(alpha)) is derived from the difference in x position
-      aPoint.setSlope( correctionFactors.first * (*currentPointIt - *referencePointIt).getX() );
-
-      // convert from pixel units to real units
-      aPoint.setPosition( aPoint.getX() * pitchX_ * nominalCameraDistance_ / focalLength_ , 
- 		    aPoint.getY() * pitchY_ * nominalCameraDistance_ / focalLength_   );
-
-      aSplineSet.addPoint( aPoint );
-
-    }
-
-    // do the fit
-    aSplineSet.doFitZ();
-
-    // attach to output field (as *first*!!)
-    theOutput.first.push_back( aSplineSet );
-  }
-
-  return theOutput;
-
-}
-
-
 
 ///
 ///
@@ -461,42 +429,48 @@ void DefoRecoSurface::mountZSplines( DefoSplineField& splineField ) const {
 
 
   // loop all "along-x" splinesets as height reference for the orthogonal "along-y" splines
-  for( DefoSplineSetXCollection::const_iterator itX = cSplineField.first.begin(); itX < cSplineField.first.end(); ++itX ) {
+  for( DefoSplineSetXCollection::const_iterator itX = cSplineField.first.begin();
+       itX < cSplineField.first.end();
+       ++itX ) {
 
     // loop all the points in this reference
-    for( DefoPointCollection::const_iterator itPX = itX->getPoints().begin(); itPX < itX->getPoints().end(); ++itPX ) {
+    for( DefoPointCollection::const_iterator itPX = itX->getPoints().begin();
+         itPX < itX->getPoints().end();
+         ++itPX ) {
       
       // find the corresponding along-y spline which itX shares this point with
-      for( DefoSplineSetYCollection::iterator itY = cSplineField.second.begin(); itY < cSplineField.second.end(); ++itY ) {
-	for( DefoPointCollection::const_iterator itPY = itY->getPoints().begin(); itPY < itY->getPoints().end(); ++itPY ) {
+      for( DefoSplineSetYCollection::iterator itY = cSplineField.second.begin();
+           itY < cSplineField.second.end();
+           ++itY ) {
 
-	  if( itPX->getIndex() == itPY->getIndex() ) { // sharing?
+        for( DefoPointCollection::const_iterator itPY = itY->getPoints().begin();
+             itPY < itY->getPoints().end();
+             ++itPY ) {
 
-	    // evaluate the height of the splineset at the corresponding point
-	    const double heightOfSpline = itY->eval( itPY->getY() );
-	    
-	    // evaluate the height of the reference splineset at that point
-	    const double heightOfReference = itX->eval( itPX->getX() );
-	    
-	    // determine the offset and apply
-	    itY->offset( heightOfReference - heightOfSpline );
+          if( itPX->getIndex() == itPY->getIndex() ) { // sharing?
 
-	  }
+            // evaluate the height of the splineset at the corresponding point
+            const double heightOfSpline = itY->eval( itPY->getCalibratedY() );
 
-	} // itPY
+            // evaluate the height of the reference splineset at that point
+            const double heightOfReference = itX->eval( itPX->getCalibratedX() );
+
+            // determine the offset and apply
+            itY->offset( heightOfReference - heightOfSpline );
+          }
+
+        } // itPY
       } // itY
-
     } // itPX
     
     // now fill the offset container with the results
     DefoSplineSetYCollection::const_iterator itY2 = cSplineField.second.begin();
     std::vector<double>::iterator itOY = theOffsets.second.begin();
     for( ; itY2 < cSplineField.second.end(); ++itY2, ++itOY ) {
-      *itOY += itY2->eval( itY2->getPoints().front().getY() );
+      *itOY += itY2->eval( itY2->getPoints().front().getCalibratedY() );
     }
     
   } // itX
-
 
   // now "backpropagate" this to the "along-x" splines
   // using the first "along-y" spline as reference
@@ -504,55 +478,60 @@ void DefoRecoSurface::mountZSplines( DefoSplineField& splineField ) const {
   // fresh working copy
   cSplineField = DefoSplineField( splineField );
   
-
   // loop all "along-y" splinesets as height reference for the orthogonal "along-x" splines
-  for( DefoSplineSetYCollection::const_iterator itY = cSplineField.second.begin(); itY < cSplineField.second.end(); ++itY ) {
+  for( DefoSplineSetYCollection::const_iterator itY = cSplineField.second.begin();
+      itY < cSplineField.second.end();
+      ++itY ) {
 
     // loop all the points in this reference
-    for( DefoPointCollection::const_iterator itPY = itY->getPoints().begin(); itPY < itY->getPoints().end(); ++itPY ) {
+    for( DefoPointCollection::const_iterator itPY = itY->getPoints().begin();
+        itPY < itY->getPoints().end();
+        ++itPY ) {
       
       // find the corresponding along-y spline which itX shares this point with
-      for( DefoSplineSetXCollection::iterator itX = cSplineField.first.begin(); itX < cSplineField.first.end(); ++itX ) {
-	for( DefoPointCollection::const_iterator itPX = itX->getPoints().begin(); itPX < itX->getPoints().end(); ++itPX ) {
+      for( DefoSplineSetXCollection::iterator itX = cSplineField.first.begin();
+          itX < cSplineField.first.end();
+          ++itX ) {
 
-	  if( itPY->getIndex() == itPX->getIndex() ) { // sharing?
+        for( DefoPointCollection::const_iterator itPX = itX->getPoints().begin();
+             itPX < itX->getPoints().end();
+             ++itPX ) {
 
-	    // evaluate the height of the splineset at the corresponding point
-	    const double heightOfSpline = itX->eval( itPX->getX() );
+          if( itPY->getIndex() == itPX->getIndex() ) { // sharing?
 
-	    // evaluate the height of the reference splineset at that point
-	    const double heightOfReference = itY->eval( itPY->getY() );
-	    
-	    // determine the offset and apply
-	    itX->offset( heightOfReference - heightOfSpline );
+            // evaluate the height of the splineset at the corresponding point
+            const double heightOfSpline = itX->eval( itPX->getCalibratedX() );
 
-	  }
+            // evaluate the height of the reference splineset at that point
+            const double heightOfReference = itY->eval( itPY->getCalibratedY() );
 
-	} // itPX
+            // determine the offset and apply
+            itX->offset( heightOfReference - heightOfSpline );
+          }
+
+        } // itPX
       } // itX
-
     } // itPY
 
     // now fill the offset container with the results
     DefoSplineSetXCollection::const_iterator itX2 = cSplineField.first.begin();
     std::vector<double>::iterator itOX = theOffsets.first.begin();
     for( ; itX2 < cSplineField.first.end(); ++itX2, ++itOX ) {
-      *itOX += itX2->eval( itX2->getPoints().front().getX() );
+      *itOX += itX2->eval( itX2->getPoints().front().getCalibratedX() );
     }
-
   } // itY
   
-
-
-
   // average the offsets
-  for( std::vector<double>::iterator itX = theOffsets.first.begin(); itX < theOffsets.first.end(); ++itX ) {
+  for( std::vector<double>::iterator itX = theOffsets.first.begin();
+       itX < theOffsets.first.end();
+       ++itX ) {
     *itX /= nSplines.first;
   }
-  for( std::vector<double>::iterator itY = theOffsets.second.begin(); itY < theOffsets.second.end(); ++itY ) {
+  for( std::vector<double>::iterator itY = theOffsets.second.begin();
+       itY < theOffsets.second.end();
+       ++itY ) {
     *itY /= nSplines.second;
   }
-  
   
   // apply the average to the original input spline field
   DefoSplineSetXCollection::iterator itX = splineField.first.begin();
@@ -561,427 +540,13 @@ void DefoRecoSurface::mountZSplines( DefoSplineField& splineField ) const {
   std::vector<double>::const_iterator itOY = theOffsets.second.begin();
   
   for( ; itX < splineField.first.end(); ++itX, ++itOX ) {
-    itX->offset( *itOX - itX->eval( itX->getPoints().front().getX() ) );
+    itX->offset( *itOX - itX->eval( itX->getPoints().front().getCalibratedX() ) );
   }
   
   for( ; itY < splineField.second.end(); ++itY, ++itOY ) {
-    itY->offset( *itOY - itY->eval( itY->getPoints().front().getY() ) );
+    itY->offset( *itOY - itY->eval( itY->getPoints().front().getCalibratedY() ) );
   }
-
 }
-
-
-
-///
-/// combine z-splines along x and y
-/// by mounting them on each other
-/// OLD symmetric version, to be deprecated
-///
-void DefoRecoSurface::mountZSplinesOld( DefoSplineField& splineField ) const {
-
-  // the numbers of point rows/columns
-  std::pair<unsigned int, unsigned int> nSplines
-    = std::pair<unsigned int, unsigned int>( splineField.first.size(), splineField.second.size() );
-
-  // this container stores a double per splineset;
-  // used to sum up the relative heights of the splines from different mountings
-  // for later averaging
-  DefoSplineFieldOffsets theOffsets;
-  theOffsets.first.resize( nSplines.first, 0. );
-  theOffsets.second.resize( nSplines.second, 0. );
-
-
-  
-  // loop all "along-x" splinesets as reference
-  for( DefoSplineSetXCollection::const_iterator itX = splineField.first.begin(); itX < splineField.first.end(); ++itX ) {
-
-    // make a working copy
-    DefoSplineField cSplineField( splineField );
-    
-    // the current reference "along-x" spline
-    // on which the along-y splines are mounted
-    DefoSplineSetX const& theReferenceSplineSetX = *itX;
-    
-    // all the "along-y" splines
-    // and the corresponding points that are shared with the reference "along-x" spline
-    DefoPointCollection::const_iterator pIt = theReferenceSplineSetX.getPoints().begin();
-    for( DefoSplineSetYCollection::iterator itY = cSplineField.second.begin();
-	 itY < cSplineField.second.end(); ++itY, ++pIt ) {
-      
-      // evaluate the height of the splineset at the corresponding point
-      const double heightOfSpline = itY->eval( pIt->getY() );
-
-      // evaluate the height of the reference splineset at that point
-      const double heightOfReference = theReferenceSplineSetX.eval( pIt->getX() );
-
-      // determine the offset and apply
-      itY->offset( heightOfReference - heightOfSpline );
-
-    }
-
-    // now fill the offset container with the results
-    DefoSplineSetYCollection::const_iterator itY2 = cSplineField.second.begin();
-    std::vector<double>::iterator itOY = theOffsets.second.begin();
-    for( ; itY2 < cSplineField.second.end(); ++itY2, ++itOY ) {
-      *itOY += itY2->eval( itY2->getPoints().front().getY() );
-    }
-
-
-  }
-
-  
-
-  // now "backpropagate" this to the "along-x" splines
-  // using the first "along-y" spline as reference
-
-
-  // loop all "along-y" splinesets as reference
-  for( DefoSplineSetYCollection::const_iterator itY = splineField.second.begin(); itY < splineField.second.end(); ++itY ) {
-
-    // make a working copy
-    DefoSplineField cSplineField( splineField );
-
-    // the reference "along-y" spline
-    // on which the along-x splines are mounted
-    DefoSplineSetY const& theReferenceSplineSetY = *itY;
-
-    // all the "along-x" splines
-    // and the corresponding points that are shared with the reference "along-y" spline
-    DefoPointCollection::const_iterator pIt = theReferenceSplineSetY.getPoints().begin();
-    for( DefoSplineSetXCollection::iterator itX = cSplineField.first.begin();
-	 itX < cSplineField.first.end(); ++itX, ++pIt ) {
-      
-      // evaluate the height of the splineset at the first point
-      const double heightOfSpline = itX->eval( pIt->getX() );
-      
-      // evaluate the height of the reference splineset at that point
-      const double heightOfReference = theReferenceSplineSetY.eval( pIt->getY() );
-      
-      // determine the offset and apply
-      itX->offset( heightOfReference - heightOfSpline );
-      
-    }
-    
-    
-    // now fill the offset container with the results
-    DefoSplineSetXCollection::const_iterator itX2 = cSplineField.first.begin();
-    std::vector<double>::iterator itOX = theOffsets.first.begin();
-    
-    for( ; itX2 < cSplineField.first.end(); ++itX2, ++itOX ) {
-      *itOX += itX2->eval( itX2->getPoints().front().getX() );
-    }
-    
-  }
-
-
-
-  // average the offsets
-  for( std::vector<double>::iterator itX = theOffsets.first.begin(); itX < theOffsets.first.end(); ++itX ) {
-    *itX /= nSplines.first;
-  }
-  for( std::vector<double>::iterator itY = theOffsets.second.begin(); itY < theOffsets.second.end(); ++itY ) {
-    *itY /= nSplines.second;
-  }
-
-
-  // apply the average to the original input spline field
-  DefoSplineSetXCollection::iterator itX = splineField.first.begin();
-  DefoSplineSetYCollection::iterator itY = splineField.second.begin();
-  std::vector<double>::const_iterator itOX = theOffsets.first.begin();
-  std::vector<double>::const_iterator itOY = theOffsets.second.begin();
-
-  for( ; itX < splineField.first.end(); ++itX, ++itOX ) {
-    itX->offset( *itOX - itX->eval( itX->getPoints().front().getX() ) );
-  }
-
-  for( ; itY < splineField.second.end(); ++itY, ++itOY ) {
-    itY->offset( *itOY - itY->eval( itY->getPoints().front().getY() ) );
-  }
-    
-}
-
-
-
-///
-/// create x(y) and y(x) spline field from the points
-/// this is for displaying the point grouping results only,
-/// and has no effect on surface reco
-///
-const DefoSplineField DefoRecoSurface::createXYSplines( DefoPointCollection const& points ) {
-
-  DefoSplineField theOutput;
-
-  // group & sort the points
-  const std::pair<std::vector<DefoPointCollection>,std::vector<DefoPointCollection> > pointGroups = groupPointsSorted( points );
-
-
-  // first along y = SAME-X = pointGroups.first
-  for( std::vector<DefoPointCollection>::const_iterator collIt = pointGroups.first.begin();
-       collIt < pointGroups.first.end(); ++collIt ) {
-
-    // create a spline set (a "row") .. 
-    DefoSplineSetY aSplineSet;
-
-    // .. and attach the points
-    for( DefoPointCollection::const_iterator pointIt = collIt->begin(); pointIt < collIt->end(); ++pointIt ) {
-      aSplineSet.addPoint( *pointIt );
-    }
-
-    // fit the splineset
-    if( !aSplineSet.doFitXY() ) {
-      NQLogCritical("DefoRecoSurface::createXYSplines()")
-          << "Failed to fit splineset along Y, return empty output.";
-      return theOutput;
-    }
-
-    // attach to output field (as *second*!!)
-    theOutput.second.push_back( aSplineSet );
-
-  }
-
-
-  // then along x = SAME-Y = pointGroups.second
-  for( std::vector<DefoPointCollection>::const_iterator collIt = pointGroups.second.begin();
-       collIt < pointGroups.second.end(); ++collIt ) {
-
-    // create a spline set (a "row") .. 
-    DefoSplineSetX aSplineSet;
-
-    // .. and attach the points
-    for( DefoPointCollection::const_iterator pointIt = collIt->begin(); pointIt < collIt->end(); ++pointIt ) {
-      aSplineSet.addPoint( *pointIt );
-    }
-
-    // fit the splineset
-    if( !aSplineSet.doFitXY() ) {
-      NQLogCritical("DefoRecoSurface::createXYSplines()")
-          << "Failed to fit splineset along X, return empty output.";
-      return theOutput;
-    }
-
-    // attach to output field (as *first*!!)
-    theOutput.first.push_back( aSplineSet );
-  }
-
-  return theOutput;
-}
-
-///
-/// group points in two sets of PointCollections (1 for x and 1 for y),
-/// such that points in each collection are within a search path
-/// according to x,y coordinates
-/// the pair<> is for groups with "~SAME" x and y, resp.:
-/// first = "~SAME" X, second = "~SAME" Y
-///
-const std::pair<std::vector<DefoPointCollection>,std::vector<DefoPointCollection> >
-DefoRecoSurface::groupPointsSorted( DefoPointCollection const& thePoints ) {
-
-  // group the points according to their x,y coordinates,
-  // assuming they are lined up within a path of
-  // +- searchPathHalfWidth_ pixels
-  std::pair<std::vector<DefoPointCollection>, std::vector<DefoPointCollection> >  theOutput;
-
-  // loop all points and group simultaneously
-  for( DefoPointCollection::const_iterator it = thePoints.begin(); it < thePoints.end(); ++it ) {
-    
-    // add a point if it complies with the last point in a group
-    // according to the searchPathHalfWidth_
-    std::pair<bool,bool> isAssigned = std::pair<bool,bool>( false, false );
-
-    // first: groups with "~SAME" X
-    for( std::vector<DefoPointCollection>::iterator collIt = theOutput.first.begin();
-	 collIt < theOutput.first.end(); ++collIt ) {
-
-      if( fabs( it->getX() - collIt->back().getX() ) < searchPathHalfWidth_ ) { 
-	collIt->push_back( *it );
-	isAssigned.first = true;
-      }
-      
-    }
-    
-    // if there is no match, create a new point group
-    // (applies also for the very first point)
-    if( !isAssigned.first ) {
-      DefoPointCollection aPointCollection;
-      aPointCollection.push_back( *it );
-      theOutput.first.push_back( aPointCollection );
-    }
-
-    // then groups with "~SAME" Y
-    for( std::vector<DefoPointCollection>::iterator collIt = theOutput.second.begin();
-	 collIt < theOutput.second.end(); ++collIt ) {
-      
-      if( fabs( it->getY() - collIt->back().getY() ) < searchPathHalfWidth_ ) { 
-	collIt->push_back( *it );
-	isAssigned.second = true;
-      }
-      
-    }
-    
-    // if there is no match, create a new point group
-    // (applies also for the very first point)
-    if( !isAssigned.second ) {
-      DefoPointCollection aPointCollection;
-      aPointCollection.push_back( *it );
-      theOutput.second.push_back( aPointCollection );
-    }
-    
-  } // point loop
-
-
-  // sort the output
-
-  // first: points with "~SAME" X are sorted according to Y
-  for( std::vector<DefoPointCollection>::iterator collIt = theOutput.first.begin();
-       collIt < theOutput.first.end(); ++collIt ) {
-    std::sort( collIt->begin(), collIt->end(), DefoPointYPredicate );
-  }
-
-  // first: points with "~SAME" Y are sorted according to X
-  for( std::vector<DefoPointCollection>::iterator collIt = theOutput.second.begin();
-       collIt < theOutput.second.end(); ++collIt ) {
-    std::sort( collIt->begin(), collIt->end(), DefoPointXPredicate );
-  }
-
-  // then sort the vectors of groups, the "~SAME X" groups according to their average X ..
-  std::sort( theOutput.first.begin(), theOutput.first.end(), DefoPointCollectionAverageXPredicate );
-  
-  // .. and the "~SAME Y" groups according to their average Y
-  std::sort( theOutput.second.begin(), theOutput.second.end(), DefoPointCollectionAverageYPredicate );
-
-  return theOutput;
-
-}
-
-
-
-///
-/// find an estimate for the spacing between the points
-/// along x and y, resp.
-/// from averaging
-///
-const std::pair<double,double> DefoRecoSurface::determineAverageSpacing( DefoPointCollection const& points ) const {
-
-  // refill coordinates separately for x,y
-  // into vectors container
-  std::pair<std::vector<double>,std::vector<double> > coordinates;
-
-  // fill the container
-  for( DefoPointCollection::const_iterator it = points.begin(); it < points.end(); ++it ) {
-    coordinates.first.push_back(  it->getX() );
-    coordinates.second.push_back( it->getY() );
-  }
-
-  // sort the vectors
-  sort( coordinates.first.begin(),  coordinates.first.end() );
-  sort( coordinates.second.begin(), coordinates.second.end() );
-
-    
-  // walk along, look for spacings > spacingEstimate_
-  // and average them
-  // (assuming iterators are parallel)
-  std::pair<double,double> sumOfSpacings;
-  std::pair<unsigned int,unsigned int> nSpacings = std::pair<unsigned int,unsigned int>( 0, 0 );
-
-  for( std::vector<double>::const_iterator it1 = coordinates.first.begin() + 1, it2 = coordinates.second.begin() + 1;
-       it1 < coordinates.first.end(); ++it1, ++it2 ) {
-    
-    const std::pair<double,double> aSpacing = std::pair<double,double>( fabs( *it1 - *(it1 - 1) ), fabs( *it2 - *(it2 - 1) ) );
-    if( aSpacing.first  > spacingEstimate_ ) { sumOfSpacings.first  += aSpacing.first;  ++nSpacings.first; }
-    if( aSpacing.second > spacingEstimate_ ) { sumOfSpacings.second += aSpacing.second; ++nSpacings.second; }
-
-  }
-
-  if( !( nSpacings.first && nSpacings.second ) ) {
-    NQLogWarning("DefoRecoSurface::determineAverageSpacing()")
-        << "unable to determine spacing, trying default ("
-        <<  spacingEstimate_ << " pix).";
-    return std::pair<double,double>( spacingEstimate_, spacingEstimate_ );
-  }
-
-  // average
-  return std::pair<double,double>( sumOfSpacings.first / nSpacings.first, sumOfSpacings.second / nSpacings.second );
-}
-
-///
-/// in the collection "points", find the one which is closest to "aPoint";
-/// this closest point must not be further away from aPoint than (SPACING_ESTIMATE,SPACING_ESTIMATE),
-/// otherwise return false.
-///
-std::pair<bool,DefoPointCollection::iterator> DefoRecoSurface::findClosestPoint(DefoPoint const& aPoint,
-                                                                                DefoPointCollection& points ) const
-{
-  DefoPoint ref(std::numeric_limits<double>::max(),
-                std::numeric_limits<double>::max());
-  DefoPoint max(spacingEstimate_, spacingEstimate_ );
-
-  std::vector<std::pair<DefoPointCollection::iterator,DefoPoint> > pointsAndDistances;
-
-  // loop points, compute distance
-  for (DefoPointCollection::iterator it = points.begin();
-       it < points.end();
-       ++it) {
-    const DefoPoint distance = aPoint - *it;
-    pointsAndDistances.push_back(std::pair<DefoPointCollection::iterator,DefoPoint>(it, distance));
-  }
-
-  // check, sort & get smallest
-  DefoPointCollection::iterator result;
-  if (0 == pointsAndDistances.size()) return (std::pair<bool,DefoPointCollection::iterator>(false, result)); // ?
-  std::sort(pointsAndDistances.begin(), pointsAndDistances.end(), DefoPointPairSecondAbsPredicate);
-  result = pointsAndDistances.at(0).first;
-
-  // point not too far away from requested position aPoint?
-  bool isFound = false;
-  if (*result - aPoint < max) isFound = true;
-
-  return std::pair<bool,DefoPointCollection::iterator>(isFound, result);
-}
-
-///
-/// in the collection "points", find the one which is closest to "aPoint"
-/// but is different from excludedPoint;
-/// this closest point must not be further away from aPoint than (SPACING_ESTIMATE,SPACING_ESTIMATE),
-/// otherwise return false.
-///
-std::pair<bool,DefoPointCollection::iterator> 
-DefoRecoSurface::findClosestPointExcluded(DefoPoint const& aPoint,
-                                          DefoPointCollection& points,
-                                          DefoPoint const& excludedPoint ) const
-{
-  DefoPoint ref( std::numeric_limits<double>::max(), std::numeric_limits<double>::max() );
-  DefoPoint max( spacingEstimate_, spacingEstimate_ );
-
-  std::vector<std::pair<DefoPointCollection::iterator,DefoPoint> > pointsAndDistances;
-
-  // loop points, compute distance
-  for (DefoPointCollection::iterator it = points.begin();
-       it < points.end();
-       ++it) {
-    const DefoPoint distance = aPoint - *it;
-    pointsAndDistances.push_back(std::pair<DefoPointCollection::iterator,DefoPoint>(it, distance));
-  }
-
-  // check, sort
-  DefoPointCollection::iterator result;
-  if (0 == pointsAndDistances.size()) return (std::pair<bool,DefoPointCollection::iterator>(false, result)); // ?
-  std::sort(pointsAndDistances.begin(), pointsAndDistances.end(), DefoPointPairSecondAbsPredicate);
-
-  // get point with smallest distance to aPoint, which is not excludedPoint
-  std::vector<std::pair<DefoPointCollection::iterator,DefoPoint> >::const_iterator it = pointsAndDistances.begin();
-  while (it < pointsAndDistances.end()) {
-    if (!(( *(it->first) - excludedPoint).abs() < 0.01)) {
-      result = it->first; break;
-    }
-    ++it;
-  }
-
-  // point not too far away from requested position aPoint?
-  bool isFound = false;
-  if( *result - aPoint < max ) isFound = true;
-
-  return std::pair<bool,DefoPointCollection::iterator>( isFound, result );
-} 
 
 const std::pair<bool,DefoPointCollection::const_iterator> 
 DefoRecoSurface::findPointByIndex(DefoPointCollection const& points,
@@ -1015,7 +580,7 @@ void DefoRecoSurface::removeGlobalOffset( DefoSplineField& splineField ) const
     for (DefoPointCollection::const_iterator itPX = itX->getPoints().begin();
          itPX < itX->getPoints().end();
          ++itPX ) {
-      if (itX->eval(itPX->getX()) < minimalHeight) minimalHeight = itX->eval(itPX->getX());
+      if (itX->eval(itPX->getCalibratedX()) < minimalHeight) minimalHeight = itX->eval(itPX->getCalibratedX());
     }
   }
 
@@ -1035,7 +600,7 @@ void DefoRecoSurface::removeGlobalOffset( DefoSplineField& splineField ) const
     for (DefoPointCollection::const_iterator itPY = itY->getPoints().begin();
          itPY < itY->getPoints().end();
          ++itPY) {
-      if (itY->eval(itPY->getY()) < minimalHeight) minimalHeight = itY->eval(itPY->getY());
+      if (itY->eval(itPY->getCalibratedY()) < minimalHeight) minimalHeight = itY->eval(itPY->getCalibratedY());
     }
   }
 

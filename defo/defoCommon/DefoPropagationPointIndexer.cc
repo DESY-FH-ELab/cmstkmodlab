@@ -68,6 +68,10 @@ void DefoPropagationPointIndexer::indexPoints(DefoPointCollection *points, const
             nextPoint = findNeighbour(points, currentPoint, Y, Backward, dx/2.0);
         }
     }
+
+    DefoPointCollection& pointsRef = *points;
+    std::sort(pointsRef.begin(), pointsRef.end());
+    
 }
 
 DefoPoint * DefoPropagationPointIndexer::findSeed(DefoPointCollection* points, const QColor& seedColor) {

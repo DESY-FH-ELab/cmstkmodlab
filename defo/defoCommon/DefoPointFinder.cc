@@ -233,20 +233,9 @@ void DefoPointFinder::determinePointColors(DefoPointCollection* points,
        ++it) {
 
     area.setCoords(it->getPixX() - halfSquareWidth,
-		   it->getPixY() - halfSquareWidth,
-		   it->getPixX() + halfSquareWidth,
-		   it->getPixY() + halfSquareWidth);
-
-    /*
-     * FIXME "Blueishness" is ill-defined.
-     * Pixels that are perfectly white (r=g=b=1) will validate as blue.
-     *    isBlue = ( 2*b / (r+g) ) > threshold (< 1)
-     * A HSV-scheme with restrictions on the value and saturation might be
-     * better
-     */
-    // Determine blue - yellow ratio
-    // yellow = ( color.red() + color.green() ) / 2.0 ;
-    // blue = color.blue();
+                   it->getPixY() - halfSquareWidth,
+                   it->getPixX() + halfSquareWidth,
+                   it->getPixY() + halfSquareWidth);
 
     color = getAverageColor(area, threshold); //.toHsv();
     it->setColor( color );
