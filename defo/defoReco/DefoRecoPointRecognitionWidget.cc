@@ -61,7 +61,11 @@ DefoRecoPointRecognitionWidget::DefoRecoPointRecognitionWidget(DefoMeasurementLi
 									  points);
   pointsLayout->addWidget(pointsImage);
 
-  QPushButton* findPoints_ = new QPushButton("Find &points", points);
+  fitPoints_ = new QCheckBox("Fit", points);
+  pointsLayout->addWidget(fitPoints_);
+  fitPoints_->setChecked(false);
+
+  findPoints_ = new QPushButton("Find &points", points);
   pointsLayout->addWidget(findPoints_);
   connect(findPoints_, SIGNAL(clicked()), SLOT(findPointsButtonClicked()));
 

@@ -16,19 +16,21 @@ double twoDgauss(double *x, double *par)
 }
 
 DefoPointFinder::DefoPointFinder(int block,
-				 QMutex* mutex,
-				 DefoMeasurementListModel *listModel,
-				 DefoPointRecognitionModel *pointModel,
-				 DefoMeasurement *measurement,
-				 const QRect &searchRectangle,
-				 DefoROIModel * roiModel)
-  : block_(block),
-    mutex_(mutex),
-    listModel_(listModel),
-    pointModel_(pointModel),
-    measurement_(measurement),
-    searchArea_(searchRectangle),
-    roiModel_(roiModel)
+                                 QMutex* mutex,
+                                 DefoMeasurementListModel *listModel,
+                                 DefoPointRecognitionModel *pointModel,
+                                 DefoMeasurement *measurement,
+                                 const QRect &searchRectangle,
+                                 bool do2Dfit,
+                                 DefoROIModel * roiModel)
+: block_(block),
+  mutex_(mutex),
+  listModel_(listModel),
+  pointModel_(pointModel),
+  measurement_(measurement),
+  searchArea_(searchRectangle),
+  do2Dfit_(do2Dfit),
+  roiModel_(roiModel)
 {
   image_ = measurement_->getImage();
 
@@ -157,9 +159,11 @@ const DefoPointCollection* DefoPointFinder::findPoints(const QRect* searchArea,
 
           if ( i == 4 ) { // Iterated without drifting
 
-            intermediate = getFitPosition(intermediate,
-                                          searchRect,
-                                          halfSquareWidth);
+            if (do2Dfit_) {
+              intermediate = getFitPosition(intermediate,
+                                            searchRect,
+                                            halfSquareWidth);
+            }
 
             // check again since the point can be reconstructed at a distance
             // from the seed

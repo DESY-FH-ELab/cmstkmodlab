@@ -3,6 +3,7 @@
 
 #include <QTabWidget>
 #include <QPushButton>
+#include <QCheckBox>
 #include <QString>
 #include <QMutex>
 
@@ -42,6 +43,7 @@ protected:
   // Widgets
   DefoImageThresholdsWidget* thresholdImage_;
   DefoImagePointsWidget * pointsImage_;
+  QCheckBox* fitPoints_;
   QPushButton* findPoints_;
   QPushButton* savePoints_;
 
