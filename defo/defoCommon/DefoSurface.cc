@@ -191,6 +191,10 @@ void DefoSurface::dumpSplineField(std::string filename) const
   if (filename.length()==0) return;
 
   std::ofstream ofile(filename.c_str());
+  ofile << "# "
+        << "(int)ix (int)iy (double)x (double)y (double)zx (int)has_zx "
+        << "(double)zy (int)has_zy (double)zxy (double)corrx (double)corry"
+        << std::endl;
   for (it_t it = defoPointMap_.begin();it!=defoPointMap_.end();++it) {
     ofile << std::setw(8)  << it.key().ix_ << " "
           << std::setw(8)  << it.key().iy_ << " "
@@ -365,18 +369,24 @@ void DefoSurface::dumpSpline2DField(std::string filename,
   spline2Dy_.evaluate(x, y, zy);
   spline2Dxy_.evaluate(x, y, zxy);
 
-  std::ofstream ofile(filename.c_str());
   std::vector<int>::iterator itix = vix.begin();
   std::vector<int>::iterator itiy = viy.begin();
   std::vector<double>::iterator itx = x.begin();
   std::vector<double>::iterator ity = y.begin();
   std::vector<double>::iterator itzx = zx.begin();
   std::vector<double>::iterator itzy = zy.begin();
-  
+  std::vector<double>::iterator itzxy = zxy.begin();
+
+  std::ofstream ofile(filename.c_str());
+  ofile << "# "
+        << "(int)ix (int)iy (double)x (double)y (double)zx (int)has_zx "
+        << "(double)zy (int)has_zy (double)zxy"
+        << std::endl;
+
   for (;itx!=x.end();++itix,++itiy,++itx,++ity,++itzx,++itzy) {
     ofile << std::setw(8)  << *itix << " "
           << std::setw(8)  << *itiy  << " "
-	  << std::setw(14) << std::scientific << *itx << " "
+	      << std::setw(14) << std::scientific << *itx << " "
           << std::setw(14) << std::scientific << *ity << " "
           << std::setw(14) << std::scientific << *itzx << "   1 "
           << std::setw(14) << std::scientific << *itzy << "   1"
