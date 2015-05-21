@@ -72,7 +72,6 @@ class DefoPoint {
   void setColor( const QColor& color );
   const QColor& getColor( void ) const;
   bool hasReferenceColor(const QColor& seedColor) const;
-  bool isBlue( void ) const;
   void setValid( bool isValid ) { isValid_ = isValid; }
   bool isValid( void ) const { return isValid_; }
   DefoPoint operator/=( const double& aFactor ) { x_ /= aFactor; y_ /= aFactor; return *this; }

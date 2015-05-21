@@ -58,13 +58,8 @@ double DefoPoint::getDistanceXY(const DefoPoint& other, double& dx, double& dy) 
 ///
 /// Allows for non-hardcoded selection of coordinate
 ///
-const double & DefoPoint::getPosition( const DefoPoint::Axis& coordinate ) const {
-//  if (coordinate == DefoPoint::X)
-//    return x_;
-//  else //if (coordinate == DefoPoint::Y)
-//    return y_;
-////  else // Should not happen
-////    return 0.;
+const double & DefoPoint::getPosition( const DefoPoint::Axis& coordinate ) const
+{
   switch ( coordinate ) {
     case DefoPoint::X:
       return x_;
@@ -79,12 +74,6 @@ const double & DefoPoint::getPosition( const DefoPoint::Axis& coordinate ) const
 ///
 const double & DefoPoint::getCalibratedPosition( const DefoPoint::Axis& coordinate ) const
 {
-//  if (coordinate == DefoPoint::X)
-//    return x_;
-//  else //if (coordinate == DefoPoint::Y)
-//    return y_;
-////  else // Should not happen
-////    return 0.;
   switch ( coordinate ) {
     case DefoPoint::X:
       return cx_;
@@ -114,7 +103,8 @@ double DefoPoint::getCorrectionFactor( const DefoPoint::Axis& coordinate ) const
 /**
   Sets the color of the point.
   */
-void DefoPoint::setColor( const QColor& color ) {
+void DefoPoint::setColor( const QColor& color )
+{
   color_ = color;
 }
 
@@ -122,11 +112,13 @@ void DefoPoint::setColor( const QColor& color ) {
   Returns the currently set color of the point or an invalid QColor (black)
   if none has been set.
   */
-const QColor& DefoPoint::getColor( void ) const {
+const QColor& DefoPoint::getColor( void ) const
+{
   return color_;
 }
 
-bool DefoPoint::hasReferenceColor(const QColor& seedColor) const {
+bool DefoPoint::hasReferenceColor(const QColor& seedColor) const
+{
   float dhue = color_.hsvHueF() - seedColor.hsvHueF();
   if (std::fabs(dhue) > 0.5)
     dhue = 1 - std::fabs(dhue);
@@ -138,18 +130,8 @@ bool DefoPoint::hasReferenceColor(const QColor& seedColor) const {
   return false;
 }
 
-/**
-  Determines and returns whether the point's color can be considere blue.
-  */
-bool DefoPoint::isBlue( void ) const {
-  return /*color_.hsvSaturation() > 100  // Saturated enough,
-      && color_.value() > 100          // far enough from black,
-      &&*/ color_.hsvHue() < 300        // not quite magenta...
-      && color_.hsvHue() > 180;       // ... nor cyan.
-}
-
-
-std::ostream& operator<<(std::ostream& out, const DefoPoint& p) {
+std::ostream& operator<<(std::ostream& out, const DefoPoint& p)
+{
   out << '(' << p.getX() << ',' << p.getY() << ')';
   return out;
 }
@@ -158,7 +140,8 @@ std::ostream& operator<<(std::ostream& out, const DefoPoint& p) {
 ///
 ///
 ///
-DefoPoint operator*( DefoPoint const& point, double const& scalar ) {
+DefoPoint operator*( DefoPoint const& point, double const& scalar )
+{
   return DefoPoint( point.getX() * scalar, point.getY() * scalar );
 }
 
@@ -167,7 +150,8 @@ DefoPoint operator*( DefoPoint const& point, double const& scalar ) {
 ///
 ///
 ///
-DefoPoint operator-( DefoPoint const& point, DefoPoint const& another ) {
+DefoPoint operator-( DefoPoint const& point, DefoPoint const& another )
+{
   return DefoPoint( point.getX() - another.getX(), point.getY() - another.getY() );
 }
 
@@ -176,7 +160,8 @@ DefoPoint operator-( DefoPoint const& point, DefoPoint const& another ) {
 ///
 ///
 ///
-DefoPoint operator+( DefoPoint const& point, DefoPoint const& another ) {
+DefoPoint operator+( DefoPoint const& point, DefoPoint const& another )
+{
   return DefoPoint( point.getX() + another.getX(), point.getY() + another.getY() );
 }
 
@@ -185,7 +170,8 @@ DefoPoint operator+( DefoPoint const& point, DefoPoint const& another ) {
 ///
 /// for sorting DefoPoints according to increasing X
 ///
-bool DefoPointXPredicate( DefoPoint const& one, DefoPoint const& another ) {
+bool DefoPointXPredicate( DefoPoint const& one, DefoPoint const& another )
+{
   return( one.getX() < another.getX() );
 }
 
@@ -194,7 +180,8 @@ bool DefoPointXPredicate( DefoPoint const& one, DefoPoint const& another ) {
 ///
 ///for sorting DefoPoints according to increasing Y
 ///
-bool DefoPointYPredicate( DefoPoint const& one, DefoPoint const& another ) {
+bool DefoPointYPredicate( DefoPoint const& one, DefoPoint const& another )
+{
   return( one.getY() < another.getY() );
 }
 
@@ -203,8 +190,9 @@ bool DefoPointYPredicate( DefoPoint const& one, DefoPoint const& another ) {
 ///
 /// for sorting DefoPointCollections according to the average X of their points
 ///
-bool DefoPointCollectionAverageXPredicate( DefoPointCollection const& one, DefoPointCollection const& another ) {
-
+bool DefoPointCollectionAverageXPredicate( DefoPointCollection const& one,
+                                           DefoPointCollection const& another )
+{
   std::pair<double,double> average = std::make_pair<double,double>( 0., 0. );
   std::pair<unsigned int,unsigned int> nPoints = std::make_pair<unsigned int,unsigned int>( 0, 0 );
   for( DefoPointCollection::const_iterator it = one.begin(); it < one.end(); ++it ) average.first += it->getX(), ++nPoints.first;
@@ -217,7 +205,6 @@ bool DefoPointCollectionAverageXPredicate( DefoPointCollection const& one, DefoP
   }
 
   return ( average.first / nPoints.first ) < ( average.second / nPoints.second );
-  
 }
 
 
@@ -225,8 +212,9 @@ bool DefoPointCollectionAverageXPredicate( DefoPointCollection const& one, DefoP
 ///
 /// for sorting DefoPointCollections according to the average Y of their points
 ///
-bool DefoPointCollectionAverageYPredicate( DefoPointCollection const& one, DefoPointCollection const& another ) {
-
+bool DefoPointCollectionAverageYPredicate( DefoPointCollection const& one,
+                                           DefoPointCollection const& another )
+{
   std::pair<double,double> average = std::make_pair<double,double>( 0., 0. );
   std::pair<unsigned int,unsigned int> nPoints = std::make_pair<unsigned int,unsigned int>( 0, 0 );
   for( DefoPointCollection::const_iterator it = one.begin(); it < one.end(); ++it ) average.first += it->getY(), ++nPoints.first;
@@ -240,18 +228,14 @@ bool DefoPointCollectionAverageYPredicate( DefoPointCollection const& one, DefoP
   }
 
   return ( average.first / nPoints.first ) < ( average.second / nPoints.second );
-
 }
-
-
 
 ///
 /// for sorting std::pair<DefoPoint,DefoPoint> according to second.abs();
 /// (for use e.g. when the second is a difference)
 /// 
 bool DefoPointPairSecondAbsPredicate( std::pair<DefoPointCollection::iterator,DefoPoint> const& one, 
-				      std::pair<DefoPointCollection::iterator,DefoPoint> const& another ) {
-
-    return( one.second.abs() < another.second.abs() );
-
+                                      std::pair<DefoPointCollection::iterator,DefoPoint> const& another )
+{
+  return( one.second.abs() < another.second.abs() );
 }
