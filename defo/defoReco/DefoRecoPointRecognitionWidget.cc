@@ -61,7 +61,7 @@ DefoRecoPointRecognitionWidget::DefoRecoPointRecognitionWidget(DefoMeasurementLi
                                                                           points);
   pointsLayout->addWidget(pointsImage);
 
-  fitPoints_ = new QCheckBox("Fit", points);
+  fitPoints_ = new QCheckBox("Fit 2D gaussian over found points", points);
   pointsLayout->addWidget(fitPoints_);
   fitPoints_->setChecked(false);
 
