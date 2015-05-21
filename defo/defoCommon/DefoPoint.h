@@ -36,8 +36,11 @@ class DefoPoint {
   void setCalibratedPosition( double x, double y ) { cx_ = x; cy_ = y; isCalibrated_ = true; }
   void setSlope( double slope ) { slope_ = slope; }
   void setHeight( double height ) { height_ = height; }
-  void setImageDistance(double v) { imageDistance_ = v; }
-  void setGridDistance(double v) { gridDistance_ = v; }
+
+  void setImageDistanceX(double v) { imageDistanceX_ = v; }
+  void setGridDistanceX(double v) { gridDistanceX_ = v; }
+  void setImageDistanceY(double v) { imageDistanceY_ = v; }
+  void setGridDistanceY(double v) { gridDistanceY_ = v; }
 
   // TODO setIndex(Axis, int)
   void setIndex( std::pair<int,int>& index ) { index_ = index; isIndexed_ = true; }
@@ -57,9 +60,11 @@ class DefoPoint {
   double const& getCalibratedPosition( const DefoPoint::Axis& ) const;
   double const& getSlope( void ) const { return slope_; }
   double const& getHeight( void ) const { return height_; }
-  double const& getImageDistance( void ) const { return imageDistance_; }
-  double const& getGridDistance( void ) const { return gridDistance_; }
-  double getCorrectionFactor( void ) const;
+  double const& getImageDistanceX( void ) const { return imageDistanceX_; }
+  double const& getGridDistanceX( void ) const { return gridDistanceX_; }
+  double const& getImageDistanceY( void ) const { return imageDistanceY_; }
+  double const& getGridDistanceY( void ) const { return gridDistanceY_; }
+  double getCorrectionFactor( const DefoPoint::Axis& ) const;
   double abs( void ) const { return sqrt( pow( x_, 2. ) + pow( y_, 2. ) ); }
   const std::pair<int,int> getIndex( void ) const { return index_; }
   unsigned int getPixX( void ) const { return static_cast<int>( round( x_ ) ); }
@@ -101,8 +106,10 @@ class DefoPoint {
   bool isValid_; // contains valid height data? for use with DefoSurfacePlot..
   bool isCalibrated_;
 
-  double imageDistance_;
-  double gridDistance_;
+  double imageDistanceX_;
+  double gridDistanceX_;
+  double imageDistanceY_;
+  double gridDistanceY_;
 };
 
 

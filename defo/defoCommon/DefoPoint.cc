@@ -16,8 +16,10 @@ DefoPoint::DefoPoint( const DefoPoint& other ) {
   index_ = std::pair<int,int>(other.index_.first, other.index_.second);
   isIndexed_ = other.isIndexed_;
   isValid_ = other.isValid_;
-  imageDistance_ = other.imageDistance_;
-  gridDistance_ = other.gridDistance_;
+  imageDistanceX_ = other.imageDistanceX_;
+  gridDistanceX_ = other.gridDistanceX_;
+  imageDistanceY_ = other.imageDistanceY_;
+  gridDistanceY_ = other.gridDistanceY_;
   isCalibrated_ = other.isCalibrated_;
 }
 
@@ -34,8 +36,10 @@ void DefoPoint::init( void ) {
   height_ = 0.;
   isValid_ = false;
   index_ = std::make_pair<int,int>( 0, 0 );
-  imageDistance_ = 0.;
-  gridDistance_ = 0.;
+  imageDistanceX_ = 0.;
+  gridDistanceX_ = 0.;
+  imageDistanceY_ = 0.;
+  gridDistanceY_ = 0.;
   isCalibrated_ = false;
 }
 
@@ -90,9 +94,21 @@ const double & DefoPoint::getCalibratedPosition( const DefoPoint::Axis& coordina
   }
 }
 
-double DefoPoint::getCorrectionFactor( void ) const
+double DefoPoint::getCorrectionFactor( const DefoPoint::Axis& coordinate ) const
 {
-  return (getGridDistance()+getImageDistance())/(2.0*getGridDistance());
+  double correction;
+
+  switch ( coordinate ) {
+    case DefoPoint::X:
+      correction = (getGridDistanceX()+getImageDistanceX())/(2.0*getGridDistanceX());
+      break;
+    default: // DefoPoint::Y
+      correction = (getGridDistanceY()+getImageDistanceY())/(2.0*getGridDistanceY());
+  }
+
+  correction = 1.0;
+
+  return correction;
 }
 
 /**

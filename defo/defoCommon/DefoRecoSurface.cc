@@ -7,6 +7,7 @@
 #include "ndirection3D.h"
 #include "nline3D.h"
 #include "nplane3D.h"
+#include "nvector2D.h"
 
 #include "DefoRecoSurface.h"
 
@@ -196,8 +197,17 @@ void DefoRecoSurface::calibrateXYPoints(DefoPointCollection & points)
 
     aPoint.setCalibratedPosition(x, y);
 
-    aPoint.setImageDistance(imageDistance.length());
-    aPoint.setGridDistance(gridDistance.length());
+    NVector2D imageDistanceX(imageDistance.x(), imageDistance.z());
+    NVector2D gridDistanceX(gridDistance.x(), gridDistance.z());
+
+    aPoint.setImageDistanceX(imageDistanceX.length());
+    aPoint.setGridDistanceX(gridDistanceX.length());
+
+    NVector2D imageDistanceY(imageDistance.y(), imageDistance.z());
+    NVector2D gridDistanceY(gridDistance.y(), gridDistance.z());
+
+    aPoint.setImageDistanceY(imageDistanceY.length());
+    aPoint.setGridDistanceY(gridDistanceY.length());
 
     /*
     std::cout << "("
@@ -308,7 +318,7 @@ const DefoSplineField DefoRecoSurface::createZSplines(DefoPointCollection const&
         double referenceY = (*(referencePointByIndex.second)).getCalibratedY();
         double dY = 1.0*(currentY - referenceY);
 
-        aPoint.setSlope( /* aPoint.getCorrectionFactor() * */ dY);
+        aPoint.setSlope( aPoint.getCorrectionFactor(DefoPoint::Y) * dY);
 
         aSplineSet.addPoint( aPoint );
 
@@ -362,7 +372,7 @@ const DefoSplineField DefoRecoSurface::createZSplines(DefoPointCollection const&
         double referenceX = (*(referencePointByIndex.second)).getCalibratedX();
         double dX = 1.0*(currentX - referenceX);
 
-        aPoint.setSlope( /* aPoint.getCorrectionFactor() * */ dX);
+        aPoint.setSlope( aPoint.getCorrectionFactor(DefoPoint::Y) * dX);
 
         aSplineSet.addPoint( aPoint );
 
