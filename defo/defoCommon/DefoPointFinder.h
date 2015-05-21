@@ -26,6 +26,8 @@ public:
 			   DefoROIModel * roiModel = 0);
   ~DefoPointFinder();
 
+  void run();
+
 protected:
 
   int block_;
@@ -38,7 +40,6 @@ protected:
 
   QImage image_;
 
-  void run();
 
   const DefoPointCollection* findPoints(const QRect* searchArea,
                                         const QPolygonF* roi,
