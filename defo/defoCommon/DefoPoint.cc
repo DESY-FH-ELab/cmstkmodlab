@@ -95,7 +95,7 @@ double DefoPoint::getCorrectionFactor( const DefoPoint::Axis& coordinate ) const
       correction = (getGridDistanceY()+getImageDistanceY())/(2.0*getGridDistanceY());
   }
 
-  //correction = 1.0;
+  correction = 1.0;
 
   return correction;
 }
