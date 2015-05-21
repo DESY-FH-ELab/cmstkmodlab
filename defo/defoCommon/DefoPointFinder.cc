@@ -1,6 +1,19 @@
+#include <cmath>
+#include <iostream>
+
+#include <TString.h>
+
 #include <nqlogger.h>
 
 #include "DefoPointFinder.h"
+
+double twoDgauss(double *x, double *par)
+{
+  double r1 = (x[0]-par[1])/par[2];
+  double r2 = (x[1]-par[3])/par[4];
+
+  return par[0]*std::exp(-0.5*(r1*r1+r2*r2));
+}
 
 DefoPointFinder::DefoPointFinder(int block,
 				 QMutex* mutex,
@@ -284,6 +297,52 @@ DefoPoint DefoPointFinder::getCenterOfGravity(const QRect &area,
   }
 
   return weightedSum;
+}
+
+DefoPoint DefoPointFinder::getFitPosition(const DefoPoint& intermediate,
+                                          const QRect &area,
+                                          int threshold) const
+{
+  const int right = area.x() + area.width();
+  const int bottom = area.y() + area.height();
+
+  DefoPoint newPoint = intermediate;
+
+  QRgb rgb;
+  double value;
+  int nPoints = 0;
+
+  mutex_->lock();
+
+  std::cout << intermediate.getX() << std::endl;
+  std::cout << intermediate.getY() << std::endl;
+
+  for (int x = area.x(); x < right; ++x) {
+    for (int y = area.y(); y < bottom; ++y) {
+
+      rgb = image_.pixel(x, y);
+      value = QColor::fromRgb(rgb).toHsv().valueF();
+
+      gr2D_->SetPoint(nPoints, x, y, value);
+
+      nPoints++;
+    }
+  }
+
+  fitFunc_->SetParameter(0, 1);
+  fitFunc_->SetParameter(1, intermediate.getX());
+  fitFunc_->SetParameter(2, 1);
+  fitFunc_->SetParameter(3, intermediate.getY());
+  fitFunc_->SetParameter(4, 1);
+
+  gr2D_->Fit(fitFunc_, "QNC");
+
+  mutex_->unlock();
+
+  newPoint.setX(fitFunc_->GetParameter(1));
+  newPoint.setY(fitFunc_->GetParameter(3));
+
+  return newPoint;
 }
 
 /**

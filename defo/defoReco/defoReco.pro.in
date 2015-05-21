@@ -26,6 +26,9 @@ macx {
   QMAKE_CXXFLAGS += -DAPPLICATIONVERSIONSTR=\\\"`git describe --dirty --always --tags`\\\"
 }
 
+QMAKE_CXXFLAGS += @rootcflags@
+LIBS += @rootlibs@
+
 macx {
   INCLUDEPATH += /opt/local/include
 }

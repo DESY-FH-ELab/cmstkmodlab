@@ -6,6 +6,9 @@
 #include <QImage>
 #include <QPolygonF>
 
+#include <TGraph2D.h>
+#include <TF2.h>
+
 #include "DefoMeasurement.h"
 #include "DefoMeasurementListModel.h"
 #include "DefoPointRecognitionModel.h"
@@ -38,8 +41,10 @@ protected:
   const QRect searchArea_;
   DefoROIModel* roiModel_;
 
-  QImage image_;
+  TGraph2D *gr2D_;
+  TF2* fitFunc_;
 
+  QImage image_;
 
   const DefoPointCollection* findPoints(const QRect* searchArea,
                                         const QPolygonF* roi,
@@ -50,6 +55,10 @@ protected:
  
   DefoPoint getCenterOfGravity(const QRect &area,
                                int threshold) const;
+ 
+  DefoPoint getFitPosition(const DefoPoint& intermediate,
+			   const QRect &area,
+			   int threshold) const;
 
   void determinePointColors(DefoPointCollection* points,
                             int halfSquareWidth,
