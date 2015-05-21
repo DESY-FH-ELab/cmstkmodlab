@@ -12,13 +12,13 @@
 #include "DefoPointRecognitionWidget.h"
 
 DefoPointRecognitionWidget::DefoPointRecognitionWidget(DefoMeasurementListModel* listModel,
-						       DefoMeasurementSelectionModel* selectionModel,
-						       DefoPointRecognitionModel* pointModel,
-						       QWidget *parent)
-  : QTabWidget(parent),
-    listModel_(listModel),
-    selectionModel_(selectionModel),
-    pointModel_(pointModel)
+                                                       DefoMeasurementSelectionModel* selectionModel,
+                                                       DefoPointRecognitionModel* pointModel,
+                                                       QWidget *parent)
+: QTabWidget(parent),
+  listModel_(listModel),
+  selectionModel_(selectionModel),
+  pointModel_(pointModel)
 {
   // THRESHOLDS
   QWidget* thresholds = new QWidget(this);
@@ -27,8 +27,8 @@ DefoPointRecognitionWidget::DefoPointRecognitionWidget(DefoMeasurementListModel*
   addTab(thresholds, "Thresholds");
 
   thresholdsLayout->addWidget(new DefoImageThresholdsWidget(selectionModel_,
-							    pointModel_,
-							    thresholds));
+                                                            pointModel_,
+                                                            thresholds));
 
   QWidget* thresholdSpinners = new QWidget(thresholds);
   thresholdsLayout->addWidget(thresholdSpinners);
@@ -41,7 +41,7 @@ DefoPointRecognitionWidget::DefoPointRecognitionWidget(DefoMeasurementListModel*
   for (int i=0; i<3; i++) {
     thresholdLayout->addWidget(new QLabel(format.arg(i+1)));
     thresholdLayout->addWidget(new DefoThresholdSpinBox(pointModel_,
-							static_cast<DefoPointRecognitionModel::Threshold>(i)));
+                                                        static_cast<DefoPointRecognitionModel::Threshold>(i)));
   }
   thresholdLayout->addWidget(new QLabel("HSW"));
   thresholdLayout->addWidget(new DefoHalfSquareWidthSpinBox(pointModel_));
@@ -53,8 +53,8 @@ DefoPointRecognitionWidget::DefoPointRecognitionWidget(DefoMeasurementListModel*
   addTab(points, "Points");
 
   DefoImagePointsWidget * pointsImage = new DefoImagePointsWidget(listModel_,
-								  selectionModel_,
-								  points);
+                                                                  selectionModel_,
+                                                                  points);
   pointsLayout->addWidget(pointsImage);
 
   fitPoints_ = new QCheckBox("Fit", points);
@@ -65,12 +65,12 @@ DefoPointRecognitionWidget::DefoPointRecognitionWidget(DefoMeasurementListModel*
   pointsLayout->addWidget(findPoints_);
   connect(findPoints_, SIGNAL(clicked()), SLOT(findPointsButtonClicked()));
 
-  QPushButton* savePoints_ = new QPushButton("Save points", points);
+  savePoints_ = new QPushButton("Save points", points);
   pointsLayout->addWidget(savePoints_);
   connect(savePoints_, SIGNAL(clicked()), SLOT(savePointsButtonClicked()));
 
   connect(pointModel_, SIGNAL(controlStateChanged(bool)),
-	  this, SLOT(controlStateChanged(bool)));
+          this, SLOT(controlStateChanged(bool)));
 }
 
 void DefoPointRecognitionWidget::findPointsButtonClicked()
@@ -82,10 +82,12 @@ void DefoPointRecognitionWidget::findPointsButtonClicked()
   QRect searchArea = measurement->getImage().rect();
   const int width = searchArea.width();
 
+  bool do2Dfit = fitPoints_->isChecked();
+
   /*
     The number of blocks depends on the number of cores available and the
     number of cores you want to be available for other tasks.
-    */
+   */
   const int blocks = 6;
 
   for (double i = 0; i < blocks; ++i) {
@@ -95,19 +97,20 @@ void DefoPointRecognitionWidget::findPointsButtonClicked()
       Swing where they are in between the pixels.
       As a consequence, the right-side border has to be one pixel to the left in
       order to avoid overlapping rectangles.
-      */
+     */
     searchArea.setLeft( i/blocks * width );
     searchArea.setRight( (i+1)/blocks * width - 1 );
 
     finder = new DefoPointFinder(i,
-				 &mutex_,
-				 listModel_,
-				 pointModel_,
-				 measurement,
-				 searchArea);
+                                 &mutex_,
+                                 listModel_,
+                                 pointModel_,
+                                 measurement,
+                                 searchArea,
+                                 do2Dfit);
     
     connect(finder, SIGNAL(finished()),
-	    finder, SLOT(deleteLater()));
+            finder, SLOT(deleteLater()));
 
     finder->start();
   }

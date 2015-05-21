@@ -14,11 +14,13 @@
 class DefoPointRecognitionWidget : public QTabWidget
 {
   Q_OBJECT
+
 public:
+
   explicit DefoPointRecognitionWidget(DefoMeasurementListModel* listModel,
-				      DefoMeasurementSelectionModel* selectionModel,
-				      DefoPointRecognitionModel* pointModel,
-				      QWidget *parent = 0);
+                                      DefoMeasurementSelectionModel* selectionModel,
+                                      DefoPointRecognitionModel* pointModel,
+                                      QWidget *parent = 0);
 
 protected:
 

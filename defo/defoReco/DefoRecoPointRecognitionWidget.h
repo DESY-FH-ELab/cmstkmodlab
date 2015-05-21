@@ -20,10 +20,10 @@ class DefoRecoPointRecognitionWidget : public QTabWidget
 public:
 
   explicit DefoRecoPointRecognitionWidget(DefoMeasurementListModel* listModel,
-					  DefoMeasurementSelectionModel* selectionModel,
-					  DefoPointRecognitionModel* pointModel,
-					  DefoROIModel* roiModel,
-					  QWidget *parent = 0);
+                                          DefoMeasurementSelectionModel* selectionModel,
+                                          DefoPointRecognitionModel* pointModel,
+                                          DefoROIModel* roiModel,
+                                          QWidget *parent = 0);
 
 public slots:
 
