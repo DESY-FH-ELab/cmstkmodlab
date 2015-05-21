@@ -63,6 +63,7 @@ void DefoSurface::makeSummary()
         key.x_ = itP->getCalibratedX();
         key.iy_ = itP->getIndex().second;
         key.y_ = itP->getCalibratedY();
+
         value.setX(itC->eval(itP->getCalibratedX()));
 
         it_t it = defoPointMap_.find(key);
@@ -93,6 +94,7 @@ void DefoSurface::makeSummary()
         key.x_ = itP->getCalibratedX();
         key.iy_ = itP->getIndex().second;
         key.y_ = itP->getCalibratedY();
+
         value.setY(itC->eval(itP->getCalibratedY()));
 
         it_t it = defoPointMap_.find(key);
@@ -195,7 +197,6 @@ void DefoSurface::dumpSplineField(std::string filename) const
           << std::endl;
   }
 }
-
 
 ///
 ///
