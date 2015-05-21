@@ -157,6 +157,10 @@ const DefoPointCollection* DefoPointFinder::findPoints(const QRect* searchArea,
 
           if ( i == 4 ) { // Iterated without drifting
 
+            intermediate = getFitPosition(intermediate,
+                                          searchRect,
+                                          halfSquareWidth);
+
             // check again since the point can be reconstructed at a distance
             // from the seed
             if (area.contains(intermediate.getPixX(), intermediate.getPixY()) &&
