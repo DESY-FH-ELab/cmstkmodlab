@@ -24,9 +24,10 @@ public:
     :x_(0), y_(0), hasx_(false), hasy_(false) {}
   void setX(const double &x) { x_ = x; hasx_ = true; }
   void setY(const double &y) { y_ = y; hasy_ = true; }
+  void setXY(const double &xy) { xy_ = xy; }
   void setCorrX(const double &corrx) { corrx_ = corrx; }
   void setCorrY(const double &corry) { corry_ = corry; }
-  double x_, y_;
+  double x_, y_, xy_;
   bool hasx_, hasy_;
   double corrx_, corry_;
 };
@@ -87,6 +88,7 @@ class DefoSurface {
 
   NSpline2D spline2Dx_;
   NSpline2D spline2Dy_;
+  NSpline2D spline2Dxy_;
 };
 
 #endif
