@@ -335,8 +335,8 @@ DefoPoint DefoPointFinder::getFitPosition(const DefoPoint& intermediate,
 
   mutex_->lock();
 
-  std::cout << intermediate.getX() << std::endl;
-  std::cout << intermediate.getY() << std::endl;
+  //std::cout << intermediate.getX() << std::endl;
+  //std::cout << intermediate.getY() << std::endl;
 
   for (int x = area.x(); x < right; ++x) {
     for (int y = area.y(); y < bottom; ++y) {
