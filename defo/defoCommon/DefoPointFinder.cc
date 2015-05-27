@@ -43,6 +43,9 @@ DefoPointFinder::DefoPointFinder(int block,
 
 DefoPointFinder::~DefoPointFinder()
 {
+  delete gr2D_;
+  delete fitFunc_;
+
   NQLogMessage("DefoPointFinder") << "DefoPointerFinder for block "
       << block_ << " destructed";
 }
@@ -58,6 +61,16 @@ void DefoPointFinder::run()
       roi.push_back(np);
     }
   }
+
+  double x[4*pointModel_->getHalfSquareWidth()*pointModel_->getHalfSquareWidth()];
+  double y[4*pointModel_->getHalfSquareWidth()*pointModel_->getHalfSquareWidth()];
+  double z[4*pointModel_->getHalfSquareWidth()*pointModel_->getHalfSquareWidth()];
+  
+  gr2D_ = new TGraph2D(Form("gr2D_%d", block_), Form("gr2D_%d", block_),
+                       4*pointModel_->getHalfSquareWidth()*pointModel_->getHalfSquareWidth(),
+                       &x[0], &y[0], &z[0]);
+  gr2D_->SetDirectory(0);
+  fitFunc_ = new TF2(Form("fitFunc_%d", block_), twoDgauss, 0, 0, image_.width(), image_.height(), 5);
 
   const DefoPointCollection* points = findPoints(&searchArea_,
                                                  &roi,
