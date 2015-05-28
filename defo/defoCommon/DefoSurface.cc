@@ -380,7 +380,7 @@ void DefoSurface::dumpSpline2DField(std::string filename,
   std::ofstream ofile(filename.c_str());
   ofile << "# "
         << "(int)ix (int)iy (double)x (double)y (double)zx (int)has_zx "
-        << "(double)zy (int)has_zy (double)zxy"
+        << "(double)zy (int)has_zy (double)zxy (double)corrx (double)corry"
         << std::endl;
 
   for (;itx!=x.end();++itix,++itiy,++itx,++ity,++itzx,++itzy) {
@@ -391,6 +391,8 @@ void DefoSurface::dumpSpline2DField(std::string filename,
           << std::setw(14) << std::scientific << *itzx << "   1 "
           << std::setw(14) << std::scientific << *itzy << "   1"
           << std::setw(14) << std::scientific << *itzxy
+          << std::setw(14) << std::scientific << 1.0 << " "
+          << std::setw(14) << std::scientific << 1.0
           << std::endl;
   }
 }
