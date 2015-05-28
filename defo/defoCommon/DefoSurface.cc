@@ -195,6 +195,7 @@ void DefoSurface::dumpSplineField(std::string filename) const
         << "(int)ix (int)iy (double)x (double)y (double)zx (int)has_zx "
         << "(double)zy (int)has_zy (double)zxy (double)corrx (double)corry"
         << std::endl;
+
   for (it_t it = defoPointMap_.begin();it!=defoPointMap_.end();++it) {
     ofile << std::setw(8)  << it.key().ix_ << " "
           << std::setw(8)  << it.key().iy_ << " "
