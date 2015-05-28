@@ -195,6 +195,7 @@ void DefoSurface::dumpSplineField(std::string filename) const
         << "(int)ix (int)iy (double)x (double)y (double)zx (int)has_zx "
         << "(double)zy (int)has_zy (double)zxy (double)corrx (double)corry"
         << std::endl;
+
   for (it_t it = defoPointMap_.begin();it!=defoPointMap_.end();++it) {
     ofile << std::setw(8)  << it.key().ix_ << " "
           << std::setw(8)  << it.key().iy_ << " "
@@ -206,7 +207,7 @@ void DefoSurface::dumpSplineField(std::string filename) const
           << std::setw(3)  << (int)it.value().hasy_
           << std::setw(14) << std::scientific << it.value().xy_ << " "
           << std::setw(14) << std::scientific << it.value().corrx_ << " "
-          << std::setw(14) << std::scientific << it.value().corry_ << " "
+          << std::setw(14) << std::scientific << it.value().corry_
           << std::endl;
   }
 }
@@ -380,7 +381,7 @@ void DefoSurface::dumpSpline2DField(std::string filename,
   std::ofstream ofile(filename.c_str());
   ofile << "# "
         << "(int)ix (int)iy (double)x (double)y (double)zx (int)has_zx "
-        << "(double)zy (int)has_zy (double)zxy"
+        << "(double)zy (int)has_zy (double)zxy (double)corrx (double)corry"
         << std::endl;
 
   for (;itx!=x.end();++itix,++itiy,++itx,++ity,++itzx,++itzy) {
@@ -391,6 +392,8 @@ void DefoSurface::dumpSpline2DField(std::string filename,
           << std::setw(14) << std::scientific << *itzx << "   1 "
           << std::setw(14) << std::scientific << *itzy << "   1"
           << std::setw(14) << std::scientific << *itzxy
+          << std::setw(14) << std::scientific << 1.0 << " "
+          << std::setw(14) << std::scientific << 1.0
           << std::endl;
   }
 }
