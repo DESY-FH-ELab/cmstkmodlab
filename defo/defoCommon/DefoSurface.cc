@@ -206,7 +206,7 @@ void DefoSurface::dumpSplineField(std::string filename) const
           << std::setw(3)  << (int)it.value().hasy_
           << std::setw(14) << std::scientific << it.value().xy_ << " "
           << std::setw(14) << std::scientific << it.value().corrx_ << " "
-          << std::setw(14) << std::scientific << it.value().corry_ << " "
+          << std::setw(14) << std::scientific << it.value().corry_
           << std::endl;
   }
 }
