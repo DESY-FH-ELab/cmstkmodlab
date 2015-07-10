@@ -415,7 +415,7 @@ void DefoMeasurement::read(const QDir&path)
     if (stream.isStartElement() && stream.name()=="TemperatureSensor") {
       unsigned int idx = stream.attributes().value("index").toString().toUInt();
       temperatureSensorStates_[idx] = READY;
-      temperatures_[idx] = stream.attributes().value("threshold").toString().toFloat();
+      temperatures_[idx] = stream.attributes().value("temperature").toString().toFloat();
     }
   }
 
