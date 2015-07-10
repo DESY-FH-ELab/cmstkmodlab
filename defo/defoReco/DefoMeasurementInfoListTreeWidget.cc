@@ -118,7 +118,8 @@ void DefoMeasurementInfoListTreeWidget::setSelection(DefoMeasurement *measuremen
 
   item = new QTreeWidgetItem(julabo);
   item->setText(0, "bath");
-  item->setText(1, measurement->getJulaboState()==READY ? QString("%1 C").arg(measurement->getBathTemperature()) : "Off");
+  item->setText(1, measurement->getJulaboState()==READY ?
+                   QString::fromUtf8("%1 °C").arg(measurement->getBathTemperature()) : "Off");
   julabo->addChild(item);
 
   if (measurement->getJulaboState()==READY) {
@@ -145,7 +146,7 @@ void DefoMeasurementInfoListTreeWidget::setSelection(DefoMeasurement *measuremen
       item = new QTreeWidgetItem(keithley);
       item->setText(0, QString("T%1").arg(s+1));
       item->setText(1, measurement->getKeithleyState()==READY && measurement->getTemperatureSensorState(s)==READY ?
-		       QString("%1 C").arg(measurement->getTemperature(s)) : "Off");
+		       QString::fromUtf8("%1 °C").arg(measurement->getTemperature(s)) : "Off");
       keithley->addChild(item);
   }
 
