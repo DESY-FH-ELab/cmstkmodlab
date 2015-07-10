@@ -102,7 +102,7 @@ const DefoPointCollection* DefoPointFinder::findPoints(const QRect* searchArea,
 					     <<  area.x() << ',' <<  area.y() << " -> "
 					     <<  area.width() << ',' <<  area.height() << ')';
   mutex_->unlock();
-  */
+   */
 
   // Scan x-line per x-line
   int y = area.y();
@@ -136,9 +136,9 @@ const DefoPointCollection* DefoPointFinder::findPoints(const QRect* searchArea,
 
           DefoPoint intermediate( x, y );
           QRect searchRect(intermediate.getPixX() - halfSquareWidth,
-			   intermediate.getPixY() - halfSquareWidth,
-			   2 * halfSquareWidth,
-			   2 * halfSquareWidth);
+                           intermediate.getPixY() - halfSquareWidth,
+                           2 * halfSquareWidth,
+                           2 * halfSquareWidth);
 
           int i = 0;
 
@@ -146,11 +146,11 @@ const DefoPointCollection* DefoPointFinder::findPoints(const QRect* searchArea,
           // FIXME DefoSquare intersections
           while ( i < 4 && imageArea.contains( searchRect ) ) {
             intermediate = getCenterOfGravity(searchRect,
-					      step3Threshold);
+                                              step3Threshold);
             searchRect.setCoords(intermediate.getPixX() - halfSquareWidth,
-				 intermediate.getPixY() - halfSquareWidth,
-				 intermediate.getPixX() + halfSquareWidth,
-				 intermediate.getPixY() + halfSquareWidth);
+                                 intermediate.getPixY() - halfSquareWidth,
+                                 intermediate.getPixX() + halfSquareWidth,
+                                 intermediate.getPixY() + halfSquareWidth);
 
             ++i;
           }
@@ -160,19 +160,19 @@ const DefoPointCollection* DefoPointFinder::findPoints(const QRect* searchArea,
             // check again since the point can be reconstructed at a distance
             // from the seed
             if (area.contains(intermediate.getPixX(), intermediate.getPixY()) &&
-		!forbiddenAreas.isInside(intermediate)) {
+                !forbiddenAreas.isInside(intermediate)) {
               // FIXME implement point/brightness isolation
 
               // Create DefoSquare around last found COG
               DefoSquare searchSquare( intermediate, halfSquareWidth );
 
-	      /*
+              /*
 	      mutex_->lock();
               NQLogDebug("DefoMeasurement::findPoints()") << "block=" << block_
                   << " Reconstructed point at: x: " << intermediate.getX()
                   << " y: " << intermediate.getY();
 	      mutex_->unlock();
-	      */
+               */
 
               // save square around this point as already tagged
               forbiddenAreas.push_back( searchSquare );
@@ -190,23 +190,23 @@ const DefoPointCollection* DefoPointFinder::findPoints(const QRect* searchArea,
             }
           }
 
-	  /*
+          /*
 	  mutex_->lock();
           NQLogDebug("DefoMeasurement::findPoints()") << "block=" << block_ << " Point: x: "
 						      << x << " y: " << y << " jumped to: x: "
 						      << intermediate.getX() << " y: " << intermediate.getY()
 						      << " -> Dropping it.";
 	  mutex_->unlock();
-	  */
+           */
         }
 
         ++x;
 
       }
       else {
-	// inside forbidden areas
+        // inside forbidden areas
         // TODO find area, skip it
-	// x += 2*halfSquareWidth;
+        // x += 2*halfSquareWidth;
         ++x;
       }
     }
@@ -219,7 +219,7 @@ const DefoPointCollection* DefoPointFinder::findPoints(const QRect* searchArea,
   NQLogSpam("DefoMeasurement::findPoints()") << "[block=" << block_ << "] "
 					     << points->size() << " points found.";
   mutex_->unlock();
-  */
+   */
 
   // Now that all points have been found, determine their color
   determinePointColors(points, halfSquareWidth, step3Threshold);
@@ -228,13 +228,13 @@ const DefoPointCollection* DefoPointFinder::findPoints(const QRect* searchArea,
 }
 
 /**
-  * Loops over all the points retrieved by calling findPoints and calls setBlue
-  * of the DefoPoint. Please remark that this function does not check if there
-  * is only one blue point, but tags all points exceeding the threshold!
-  */
+ * Loops over all the points retrieved by calling findPoints and calls setBlue
+ * of the DefoPoint. Please remark that this function does not check if there
+ * is only one blue point, but tags all points exceeding the threshold!
+ */
 void DefoPointFinder::determinePointColors(DefoPointCollection* points,
-					   int halfSquareWidth,
-					   int threshold) const
+                                           int halfSquareWidth,
+                                           int threshold) const
 {
   QRect area;
   QColor color;
@@ -242,8 +242,8 @@ void DefoPointFinder::determinePointColors(DefoPointCollection* points,
   // double blue;
 
   for (DefoPointCollection::iterator it = points->begin();
-       it != points->end();
-       ++it) {
+      it != points->end();
+      ++it) {
 
     area.setCoords(it->getPixX() - halfSquareWidth,
                    it->getPixY() - halfSquareWidth,
@@ -256,13 +256,13 @@ void DefoPointFinder::determinePointColors(DefoPointCollection* points,
 }
 
 /**
-  * Returns the grayscale weighted center of gravity of a certain image region
-  * defined by area. If area is (partially) outside image, only pixels inside
-  * image are taken into account. Otherwise a point at (0,0) is returned.
-  */
+ * Returns the grayscale weighted center of gravity of a certain image region
+ * defined by area. If area is (partially) outside image, only pixels inside
+ * image are taken into account. Otherwise a point at (0,0) is returned.
+ */
 // FIXME DefoSquare <> QRect
 DefoPoint DefoPointFinder::getCenterOfGravity(const QRect &area,
-					      int threshold) const
+                                              int threshold) const
 {
   // Ensure complete overlap of the area, everything outside is undefined
   //  QRect area = area & image_.rect();
@@ -346,12 +346,12 @@ DefoPoint DefoPointFinder::getFitPosition(const DefoPoint& intermediate,
 }
 
 /**
-  * Returns the average color of an area the image. If area is (partially)
-  * outside image, only the pixels inside image are taken into account.
-  * If the overlap of area and image is empty, rgb(0,0,0) is returned.
-  */
+ * Returns the average color of an area the image. If area is (partially)
+ * outside image, only the pixels inside image are taken into account.
+ * If the overlap of area and image is empty, rgb(0,0,0) is returned.
+ */
 const QColor DefoPointFinder::getAverageColor(const QRect &area,
-					      int threshold) const
+                                              int threshold) const
 {
   // Ensure complete overlap of the area, everything outside is undefined
   QRect realArea = area & image_.rect();
@@ -385,8 +385,8 @@ const QColor DefoPointFinder::getAverageColor(const QRect &area,
     }
 
     average.setRgb(red/totalBrightness,
-		   green/totalBrightness,
-		   blue/totalBrightness);
+                   green/totalBrightness,
+                   blue/totalBrightness);
   }
 
   return average;
