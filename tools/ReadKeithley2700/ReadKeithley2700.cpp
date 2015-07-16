@@ -51,7 +51,7 @@ int main( int argc, char** argv ) {
   if (argc == 2) keithley.SetActiveChannels("0-9");
 
   // pass selected channels to device
-  if (argc == 3) keithley.SetActiveChannels( argv[1] );
+  if (argc == 3) keithley.SetActiveChannels( argv[2] );
   
   // log info
   dualOut << std::endl;
@@ -92,7 +92,7 @@ int main( int argc, char** argv ) {
 
     ++readingCounter;
 
-    sleep(5);
+    sleep(10);
   }
 }
     
