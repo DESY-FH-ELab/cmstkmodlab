@@ -122,20 +122,19 @@ JulaboWidget::JulaboWidget(JulaboModel* model, QWidget *parent)
  */
 void JulaboWidget::updateDeviceState(State newState)
 {
-  bool ready = (newState == READY);
-  chillerCheckBox_->setChecked( ready );
-  operationPanel_->setEnabled( ready );
+  chillerCheckBox_->setChecked( newState == INITIALIZING || newState == READY );
+  operationPanel_->setEnabled( newState == READY );
 }
 
 /// Updates the GUI when the Keithley multimeter is enabled/disabled.
 void JulaboWidget::controlStateChanged(bool enabled)
 {
-  chillerCheckBox_->setEnabled(enabled);
   if (enabled) {
-    State state = model_->getDeviceState();
-    proportionalSpinner_->setEnabled(state == READY);
+    chillerCheckBox_->setEnabled(true);
+    updateDeviceState(model_->getDeviceState());
   } else {
-    proportionalSpinner_->setEnabled(false);
+    chillerCheckBox_->setEnabled(false);
+    operationPanel_->setEnabled(false);
   }
 }
 

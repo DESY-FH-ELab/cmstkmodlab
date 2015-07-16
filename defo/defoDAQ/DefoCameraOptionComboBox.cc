@@ -24,6 +24,9 @@ DefoCameraOptionComboBox::DefoCameraOptionComboBox(
         , SLOT(deviceStateChanged(State))
   );
 
+  connect(model_, SIGNAL(controlStateChanged(bool)),
+	  this, SLOT(controlStateChanged(bool)));
+
   connect(
           this
         , SIGNAL(currentIndexChanged(int))
@@ -60,6 +63,15 @@ void DefoCameraOptionComboBox::deviceStateChanged(State newState)
     }
   }
 
+}
+
+void DefoCameraOptionComboBox::controlStateChanged(bool enabled)
+{
+  if (enabled && model_->getDeviceState()==READY) {
+    setEnabled(true);
+  } else {
+    setEnabled(false);
+  }
 }
 
 /// Propagates GUI setting to model

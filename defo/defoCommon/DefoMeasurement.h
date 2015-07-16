@@ -25,7 +25,9 @@ class DefoMeasurement
 {
 public:
 
+  DefoMeasurement(const QDateTime& timestamp);
   DefoMeasurement(const QString& imageLocation, bool preview);
+  DefoMeasurement(const QStringList& imageLocations);
 
   bool isPreview() const { return previewImage_; }
 
@@ -58,6 +60,7 @@ public:
   int getCalibAmplitude() const { return calibAmplitude_; }
 
   void setImageLocation(const QString& imageLocation);
+  void setImageLocations(const QStringList& imageLocations);
   void readExifData();
   void acquireData(const DefoCameraModel* model);
   void acquireData(const DefoPointRecognitionModel* model);
@@ -68,12 +71,14 @@ public:
   virtual void write(const QDir& path);
   virtual void read(const QDir&path);
 
+  void readImages();
+
 protected:
 
   /// (Local) date and time of measurement.
   QDateTime timestamp_;
   /// Image of the actual 'raw' measurement.
-  QString imageLocation_;
+  QStringList imageLocations_;
 
   QImage image_;
 

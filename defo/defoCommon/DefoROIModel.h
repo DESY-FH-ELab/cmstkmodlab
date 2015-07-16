@@ -2,24 +2,31 @@
 #define DEFOROIMODEL_H
 
 #include <QObject>
-#include <QDir>
 #include <QPolygonF>
-#include <QImage>
-#include <QRect>
 
-class DefoROIModel : public QObject, public QPolygonF
+#include <DefoROI.h>
+
+class DefoROIModel : public QObject
 {
     Q_OBJECT
+
 public:
+
   explicit DefoROIModel(QObject *parent = 0);
+
+  QRectF boundingRect() const;
+  int size() const;
+  const QPointF at(int i) const;
+  const QPointF first() const;
+  const QPointF last() const;
 
   float getClosestPoint(int & index,
                         float width, float height,
                         float x, float y);
   void setPoint(int index, float newX, float newY);
-  int getSelectedPoint() const { return selectedPoint_; }
-  void selectPoint(int index) { selectedPoint_ = index; }
-  int numberOfPoints() const { return size(); }
+  int getSelectedPoint() const;
+  void selectPoint(int index);
+  int numberOfPoints() const;
 
   void insertPointBefore();
   void insertPointAfter();
@@ -28,14 +35,23 @@ public:
   bool containsPoint(float width, float height,
                      float x, float y);
 
-  void write(const QString& filename);
-  void read(const QString& filename);
+  void assignFrom(DefoROI* roi);
+  void assignTo(DefoROI* roi);
+
+  bool isEqualTo(DefoROIModel* other);
+
+  bool write(const QString& filename);
+  bool read(const QString& filename);
 
 protected:
-  int selectedPoint_;
+
+  DefoROI *roi_;
+
+protected slots:
 
 signals:
-  void roiChanged();
+
+  void roiChanged(bool);
 };
 
 #endif // DEFOROIMODEL_H

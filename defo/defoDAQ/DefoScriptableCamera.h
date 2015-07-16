@@ -3,6 +3,7 @@
 
 #include <QObject>
 #include <QMutex>
+#include <QScriptValue>
 
 #include <DefoScriptModel.h>
 
@@ -22,9 +23,13 @@ public slots:
   void takePicture();
   void comment(const QString& text);
 
+  void setNumberOfPictures(int count);
+  QScriptValue numberOfPictures();
+
 signals:
   void acquirePicture(bool);
   void setComment(const QString&);
+  void changeNumberOfPictures(int);
 
 protected:
   DefoScriptModel* scriptModel_;

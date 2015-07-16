@@ -19,8 +19,13 @@ LIBS += -L@basepath@/external/ddierckx -lddierckx
 
 QMAKE = @qmake@
 
+CONFIG+=c++11
 QMAKE_CXXFLAGS += -std=c++11
-QMAKE_CXXFLAGS += -DAPPLICATIONVERSIONSTR=\\\"`git describe --dirty --always --tags`\\\"
+macx {
+  QMAKE_CXXFLAGS += -DAPPLICATIONVERSIONSTR=\\\"unknown\\\"
+} else {
+  QMAKE_CXXFLAGS += -DAPPLICATIONVERSIONSTR=\\\"`git describe --dirty --always --tags`\\\"
+}
 
 DEFINES += @configdefines@
 QT += core gui opengl script xml
@@ -29,6 +34,14 @@ TEMPLATE = lib
 DEPENDPATH += .
 INCLUDEPATH += .
 INCLUDEPATH += @basepath@
+
+macx {
+  QMAKE_MACOSX_DEPLOYMENT_TARGET=10.9
+}
+
+greaterThan(QT_MAJOR_VERSION, 4){
+  cache()
+}
 
 HEADERS += nqlogger.h \
            npoint2D.h \
@@ -41,6 +54,7 @@ HEADERS += nqlogger.h \
            nline3D.h \
            nplane3D.h \
            nspline2D.h \
+           nmatrix.h \
            DeviceState.h \
            DeviceParameter.h \
            Ringbuffer.h \

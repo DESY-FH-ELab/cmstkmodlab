@@ -2,6 +2,7 @@
 defoDAQ.pro
 defoDAQ.pro.user
 .qmake.stash
+.qmake.cache
 Makefile
 startDefoDAQ.sh
 *.d
@@ -9,3 +10,4 @@ startDefoDAQ.sh
 moc_*
 defoDAQ
 defoDAQ.app
+defoDAQ.desktop
