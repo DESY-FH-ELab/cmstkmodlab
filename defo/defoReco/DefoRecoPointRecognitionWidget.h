@@ -3,6 +3,7 @@
 
 #include <QTabWidget>
 #include <QPushButton>
+#include <QCheckBox>
 #include <QString>
 #include <QMutex>
 
@@ -19,10 +20,10 @@ class DefoRecoPointRecognitionWidget : public QTabWidget
 public:
 
   explicit DefoRecoPointRecognitionWidget(DefoMeasurementListModel* listModel,
-					  DefoMeasurementSelectionModel* selectionModel,
-					  DefoPointRecognitionModel* pointModel,
-					  DefoROIModel* roiModel,
-					  QWidget *parent = 0);
+                                          DefoMeasurementSelectionModel* selectionModel,
+                                          DefoPointRecognitionModel* pointModel,
+                                          DefoROIModel* roiModel,
+                                          QWidget *parent = 0);
 
 public slots:
 
@@ -42,6 +43,7 @@ protected:
   // Widgets
   DefoImageThresholdsWidget* thresholdImage_;
   DefoImagePointsWidget * pointsImage_;
+  QCheckBox* fitPoints_;
   QPushButton* findPoints_;
   QPushButton* savePoints_;
 

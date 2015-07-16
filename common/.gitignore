@@ -5,6 +5,7 @@ ApplicationConfig.cc
 ApplicationVersion.h
 Makefile
 .qmake.stash
+.qmake.cache
 *.d
 *.o
 moc_*

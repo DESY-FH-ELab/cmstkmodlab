@@ -13,6 +13,9 @@
 
 #include "DefoRecoMainWindow.h"
 
+#include "DefoROICopyFromWidget.h"
+#include "DefoROICopyToWidget.h"
+#include "DefoROIIOWidget.h"
 #include "DefoPointRecognitionModel.h"
 #include "DefoRecoPointRecognitionWidget.h"
 #include "DefoMeasurementListComboBox.h"
@@ -22,30 +25,32 @@
 
 //#define ANALYSISWIDGET
 
-DefoRecoMainWindow::DefoRecoMainWindow(QWidget *parent) :
-    QMainWindow(parent)
+DefoRecoMainWindow::DefoRecoMainWindow(QWidget *parent)
+: QMainWindow(parent)
 {
   ApplicationConfig* config = ApplicationConfig::instance();
 
   connect(QApplication::instance(), SIGNAL(aboutToQuit()),
           this, SLOT(quit()));
 
-  currentDir_ = "/home/tkmodlab/Desktop/measurements";
+  currentDir_ = config->getValue<std::string>("DataPath").c_str();
 
   // MEASUREMENT MODEL
   listModel_ = new DefoRecoMeasurementListModel(this);
   selectionModel_ = new DefoMeasurementSelectionModel(this);
 
   roiSelectionModel_ = new DefoMeasurementSelectionModel(this);
-  roiModel_ = new DefoROIModel(this);
+  roiModel_ = new DefoRecoROIModel(roiSelectionModel_, this);
 
   alignmentSelectionModel_ = new DefoMeasurementSelectionModel(this);
   alignmentModel_ = new DefoAlignmentModel(this);
 
   // POINT MODEL
   refSelectionModel_ = new DefoMeasurementSelectionModel(this);
+  refROIModel_ = new DefoRecoROIModel(refSelectionModel_, roiModel_, this);
   refPointModel_ = new DefoPointRecognitionModel(this);
   defoSelectionModel_ = new DefoMeasurementSelectionModel(this);
+  defoROIModel_ = new DefoRecoROIModel(defoSelectionModel_, roiModel_, this);
   defoPointModel_ = new DefoPointRecognitionModel(this);
 
   pointIndexerModel_ = new DefoPointIndexerModel(this);
@@ -125,8 +130,8 @@ DefoRecoMainWindow::DefoRecoMainWindow(QWidget *parent) :
   hbox->addWidget(exportMeasurementButton);
 
   DefoMeasurementListTreeWidget * treeWidget = new DefoMeasurementListTreeWidget(listModel_,
-										 selectionModel_,
-										 measurementInfoWidget);
+                                                                                 selectionModel_,
+                                                                                 measurementInfoWidget);
   vbox->addWidget(treeWidget);
 
   DefoMeasurementCommentTextView * commentView = new DefoMeasurementCommentTextView(selectionModel_,
@@ -137,7 +142,8 @@ DefoRecoMainWindow::DefoRecoMainWindow(QWidget *parent) :
                                                                                              measurementInfoWidget);
   vbox->addWidget(infoTreeWidget);
 
-  DefoRecoRawImageWidget *rawImage = new DefoRecoRawImageWidget(selectionModel_, measurementInfoWidget);
+  DefoRecoRawImageWidget *rawImage = new DefoRecoRawImageWidget(selectionModel_,
+                                                                measurementInfoWidget);
   layout->addWidget(rawImage);
 
   tabWidget_->addTab(measurementWidget, "Measurement");
@@ -147,11 +153,30 @@ DefoRecoMainWindow::DefoRecoMainWindow(QWidget *parent) :
   roiWidget->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);
   roiWidget->setLayout(vbox);
 
-  DefoMeasurementListComboBox *roiSelect = new DefoMeasurementListComboBox(listModel_, roiSelectionModel_, roiWidget);
+  DefoMeasurementListComboBox *roiSelect = new DefoMeasurementListComboBox(listModel_,
+                                                                           roiSelectionModel_,
+                                                                           roiWidget);
   vbox->addWidget(roiSelect);
 
-  DefoRecoROIImageWidget *roiImage = new DefoRecoROIImageWidget(roiSelectionModel_, roiModel_, roiWidget);
+  DefoRecoROIImageWidget *roiImage = new DefoRecoROIImageWidget(roiSelectionModel_,
+                                                                roiModel_,
+                                                                roiWidget);
   vbox->addWidget(roiImage);
+
+  DefoROICopyFromWidget *roiCopyFrom = new DefoROICopyFromWidget(listModel_,
+                                                                 roiModel_,
+                                                                 roiWidget);
+  vbox->addWidget(roiCopyFrom);
+
+  DefoROICopyToWidget *roiCopyTo = new DefoROICopyToWidget(listModel_,
+                                                           roiModel_,
+                                                           roiWidget);
+  vbox->addWidget(roiCopyTo);
+
+  DefoROIIOWidget *roiIO = new DefoROIIOWidget(listModel_,
+                                               roiModel_,
+                                               roiWidget);
+  vbox->addWidget(roiIO);
 
   tabWidget_->addTab(roiWidget, "ROI");
 
@@ -170,11 +195,11 @@ DefoRecoMainWindow::DefoRecoMainWindow(QWidget *parent) :
   vbox->addWidget(refSelect);
 
   DefoRecoPointRecognitionWidget * refPointRecognitionWidget =
-          new DefoRecoPointRecognitionWidget(listModel_,
-                                             refSelectionModel_,
-                                             refPointModel_,
-                                             roiModel_,
-                                             refPointWidget);
+      new DefoRecoPointRecognitionWidget(listModel_,
+                                         refSelectionModel_,
+                                         refPointModel_,
+                                         refROIModel_,
+                                         refPointWidget);
   refPointModel_->setThresholdValue(DefoPointRecognitionModel::THRESHOLD_1,
 				    ApplicationConfig::instance()->getValue<int>("STEP1_THRESHOLD"));
   refPointModel_->setThresholdValue(DefoPointRecognitionModel::THRESHOLD_2,
@@ -200,7 +225,7 @@ DefoRecoMainWindow::DefoRecoMainWindow(QWidget *parent) :
           new DefoRecoPointRecognitionWidget(listModel_,
                                              defoSelectionModel_,
                                              defoPointModel_,
-                                             roiModel_,
+                                             defoROIModel_,
                                              defoPointWidget);
   defoPointModel_->setThresholdValue(DefoPointRecognitionModel::THRESHOLD_1,
 				     ApplicationConfig::instance()->getValue<int>("STEP1_THRESHOLD"));
@@ -300,7 +325,7 @@ DefoRecoMainWindow::DefoRecoMainWindow(QWidget *parent) :
   parameterTabs->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Minimum);
 
   DefoGeometryParameterWidget *geometryParameterWidget = new DefoGeometryParameterWidget(geometryModel_,
-											 parameterTabs);
+                                                                                         parameterTabs);
   parameterTabs->addTab(geometryParameterWidget, "Geometry");
 
   DefoCalibrationWidget *calibrationWidget = new DefoCalibrationWidget(calibrationModel_,
@@ -326,7 +351,7 @@ DefoRecoMainWindow::DefoRecoMainWindow(QWidget *parent) :
                                                                                         analysisWidget);
   vbox->addWidget(analysisSelect);
 
-    DefoAnalysisWidget *analysisDisplay = new DefoAnalysisWidget(measurementPairListModel_,
+  DefoAnalysisWidget *analysisDisplay = new DefoAnalysisWidget(measurementPairListModel_,
                                                                measurementPairSelectionModel_,
                                                                analysisWidget);
   vbox->addWidget(analysisDisplay);
@@ -345,12 +370,12 @@ void DefoRecoMainWindow::quit()
   config->safe(std::string(Config::CMSTkModLabBasePath) + "/defo/defo.cfg");
 }
 
-void DefoRecoMainWindow::loadMeasurementButtonClicked() {
-  
+void DefoRecoMainWindow::loadMeasurementButtonClicked()
+{
   QString filename = QFileDialog::getOpenFileName(this,
-						  QString("Load Measurement"),
+                                                  QString("Load Measurement"),
                                                   currentDir_.absolutePath(),
-                          QString("ODM Measurement Files (*.odmx);;ODM Measurement Archive (*.odma)"));
+                                                  QString("ODM Measurement Files (*.odmx);;ODM Measurement Archive (*.odma)"));
   if (filename.isNull()) return;
 
   if (filename.endsWith(".odma")) {
@@ -378,7 +403,6 @@ void DefoRecoMainWindow::loadMeasurementButtonClicked() {
   currentDir_ = fi.absolutePath();
   std::cout << currentDir_.absolutePath().toStdString() << std::endl;
 
-  roiModel_->read(currentDir_.absoluteFilePath("roi.xml"));
   alignmentModel_->read(currentDir_.absoluteFilePath("alignment.xml"));
   refColorModel_->read(currentDir_.absoluteFilePath("refcolor.xml"));
   defoColorModel_->read(currentDir_.absoluteFilePath("defocolor.xml"));
@@ -393,9 +417,8 @@ void DefoRecoMainWindow::loadMeasurementButtonClicked() {
   reconstructionModel_->setCurrentDir(currentDir_);
 }
 
-void DefoRecoMainWindow::saveMeasurementButtonClicked() {
-
-  roiModel_->write(currentDir_.absoluteFilePath("roi.xml"));
+void DefoRecoMainWindow::saveMeasurementButtonClicked()
+{
   alignmentModel_->write(currentDir_.absoluteFilePath("alignment.xml"));
   refColorModel_->write(currentDir_.absoluteFilePath("refcolor.xml"));
   defoColorModel_->write(currentDir_.absoluteFilePath("defocolor.xml"));
@@ -407,16 +430,16 @@ void DefoRecoMainWindow::saveMeasurementButtonClicked() {
   listModel_->writePoints(currentDir_);
 }
 
-void DefoRecoMainWindow::exportMeasurementButtonClicked() {
-
+void DefoRecoMainWindow::exportMeasurementButtonClicked()
+{
   saveMeasurementButtonClicked();
 
-  QString filename = QFileDialog::getSaveFileName(this
-                                                , "export measurement"
-                                                , "./"
-                                                , "ODM Measurement Archive (*.odma)"
-                                                , 0
-                                                , 0);
+  QString filename = QFileDialog::getSaveFileName(this,
+                                                  "export measurement",
+                                                  "./",
+                                                  "ODM Measurement Archive (*.odma)",
+                                                  0,
+                                                  0);
   if (filename.isNull()) return;
   if (!filename.endsWith(".odma")) filename += ".odma";
 

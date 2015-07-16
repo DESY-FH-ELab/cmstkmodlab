@@ -118,3 +118,8 @@ bool NPoint3D::isCoincident(const NPlane3D& plane)
   if (d==0.) return true;
   return false;
 }
+
+void NPoint3D::print()
+{
+  std::cout << "(" << x() << ", " << y() << ", " << z() << ")" << std::endl;
+}

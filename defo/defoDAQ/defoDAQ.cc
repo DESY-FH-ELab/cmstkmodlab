@@ -1,3 +1,5 @@
+#include <iostream>
+
 #include <QApplication>
 #include <QProcess>
 #include <QFile>
@@ -7,6 +9,8 @@
 #else
 #include <QStandardPaths>
 #endif
+
+#include <TROOT.h>
 
 #include <nqlogger.h>
 
@@ -21,6 +25,8 @@ static const char* defoDAQGUID = "{94E678B7-AD8C-4027-971D-5F49E0FFC647}";
 
 int main( int argc, char** argv )
 {
+  std::cout << TROOT::Initialized() << std::endl;
+
   qRegisterMetaType<DefoConradModel::DeviceSwitch>("DefoConradModel::DeviceSwitch");
   qRegisterMetaType<State>("State");
 

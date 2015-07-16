@@ -23,6 +23,11 @@ void Keithley2700Fake::SetActiveChannels( string channelString )
   enabledChannels_ = ParseChannelString( channelString );
 }
 
+void Keithley2700Fake::SetActiveChannels( channels_t channels )
+{
+  enabledChannels_ = channels;
+}
+
 ///
 /// adds the channels given by string to the list of enabled ones
 /// format: see ParseChannelString

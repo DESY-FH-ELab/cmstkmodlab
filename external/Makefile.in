@@ -3,7 +3,7 @@ NOTHERMAL     = @nothermal@
 NODEFO        = @nodefo@
 USEFAKEDEVICES= @usefakedevices@
 
-subdirs	      = ddierckx
+subdirs	      = ddierckx math
 
 all:
 	@for dir in $(subdirs); do (cd $$dir; make); done

@@ -31,8 +31,16 @@ LIBS += -L@basepath@/common -lCommon
 
 QMAKE = @qmake@
 
+CONFIG+=c++11
 QMAKE_CXXFLAGS += -std=c++11
-QMAKE_CXXFLAGS += -DAPPLICATIONVERSIONSTR=\\\"`git describe --dirty --always --tags`\\\"
+macx {
+  QMAKE_CXXFLAGS += -DAPPLICATIONVERSIONSTR=\\\"unknown\\\"
+} else {
+  QMAKE_CXXFLAGS += -DAPPLICATIONVERSIONSTR=\\\"`git describe --dirty --always --tags`\\\"
+}
+
+QMAKE_CXXFLAGS += @rootcflags@
+LIBS += @rootlibs@
 
 DEFINES += @configdefines@
 QT += core gui widgets opengl script xml
@@ -44,14 +52,24 @@ INCLUDEPATH += .
 INCLUDEPATH += @basepath@
 INCLUDEPATH += @basepath@/common
 
+macx {
+  QMAKE_MACOSX_DEPLOYMENT_TARGET=10.9
+}
+
+greaterThan(QT_MAJOR_VERSION, 4){
+  cache()
+}
+
 HEADERS += DefoExifReader.h \
            DefoJulaboModel.h \
+           DefoKeithleyModel.h \
            DefoCameraModel.h \
            DefoConradModel.h \
            DefoMeasurement.h \
            DefoMeasurementListModel.h \
            DefoMeasurementSelectionModel.h \
            DefoMeasurementListComboBox.h \
+           DefoImageAverager.h \
            DefoPointRecognitionModel.h \
            DefoPointRecognitionWidget.h \
            DefoThresholdSpinBox.h \
@@ -66,6 +84,7 @@ HEADERS += DefoExifReader.h \
            DefoSurface.h \
            DefoPointFinder.h \
            DefoPointSaver.h \
+           DefoROI.h \
            DefoROIModel.h \
            DefoAlignmentModel.h \
            DefoGeometryModel.h \
@@ -80,12 +99,14 @@ HEADERS += DefoExifReader.h \
 
 SOURCES += DefoExifReader.cc \
            DefoJulaboModel.cc \
+           DefoKeithleyModel.cc \
            DefoCameraModel.cc \
            DefoConradModel.cc \
            DefoMeasurement.cc \
            DefoMeasurementListModel.cc \
            DefoMeasurementSelectionModel.cc \
            DefoMeasurementListComboBox.cc \
+           DefoImageAverager.cc \
            DefoPointRecognitionModel.cc \
            DefoPointRecognitionWidget.cc \
            DefoThresholdSpinBox.cc \
@@ -100,6 +121,7 @@ SOURCES += DefoExifReader.cc \
            DefoSurface.cc \
            DefoPointFinder.cc \
            DefoPointSaver.cc \
+           DefoROI.cc \
            DefoROIModel.cc \
            DefoAlignmentModel.cc \
            DefoGeometryModel.cc \
