@@ -1,0 +1,57 @@
+ARCHITECTURE=@architecture@
+BASEPATH      = @basepath@
+
+LIBDIR        = $(BASEPATH)/external/math
+
+LIB           = TkModLabMath
+
+MODULES       = TkMLVector \
+                TkMLMatrix \
+                TkMLFitter
+
+CC            = @cc@
+CXX           = @cxx@
+CXXFLAGS      = -fPIC -std=c++11 -I.
+LD            = @cxx@
+SOFLAGS       = @soflags@
+
+ALLDEPEND = $(addsuffix .d,$(MODULES))
+
+EXISTDEPEND = $(shell find . -name \*.d -type f -print)
+
+all: test
+
+depend: $(ALLDEPEND)
+
+lib: $(LIBDIR)/lib$(LIB).so
+
+test: test.cc $(addsuffix .h,$(MODULES))
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -o test test.cc
+
+$(LIBDIR)/lib$(LIB).so: $(addsuffix .o,$(MODULES))
+	@(test -e $(LIBDIR) || mkdir $(LIBDIR))
+	@echo "Linking shared library $@"
+	$(LD) $(SOFLAGS) $^ -o $@
+
+%.d: %.cc
+	@echo Making dependency for file $< ...
+	@set -e;\
+	$(CXX) -M $(CPPFLAGS) $(CXXFLAGS)  $< |\
+	sed 's!$*\.o!& $@!' >$@;\
+	[ -s $@ ] || rm -f $@
+
+%.o: %.cc
+	@echo "Compiling $<"
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $< -o $@
+
+clean:
+	@rm -f $(LIBDIR)/lib$(LIB).so
+	@rm -f $(addsuffix .o,$(MODULES))
+	@rm -f *.d
+	@rm -f *~
+
+ifeq ($(findstring clean,$(MAKECMDGOALS)),)
+ifneq ($(EXISTDEPEND),)
+-include $(EXISTDEPEND)
+endif
+endif

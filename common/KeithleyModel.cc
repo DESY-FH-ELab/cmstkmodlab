@@ -189,6 +189,9 @@ void KeithleyModel::scanTemperatures()
     }
   } else {
     
+    NQLog("KeithleyModel", NQLog::Message) << " scanTemperatures failed";
+
+    /*
     channels_t activeChannels = controller_->GetActiveChannels();
 
     controller_->Reset();
@@ -198,8 +201,24 @@ void KeithleyModel::scanTemperatures()
     controller_->SetActiveChannels(activeChannels);
 
     std::this_thread::sleep_for(std::chrono::milliseconds(500));
+
+    */
   }
+
+  std::this_thread::sleep_for(std::chrono::milliseconds(500));
+
+  channels_t activeChannels = controller_->GetActiveChannels();
+  for (channels_t::iterator it=activeChannels.begin();it!=activeChannels.end();++it) {
+    NQLog("KeithleyModel", NQLog::Message) << " scanTemperatures active channel: " << *it;
+  }
+  controller_->Reset();
   
+  std::this_thread::sleep_for(std::chrono::milliseconds(500));
+  
+  controller_->SetActiveChannels(activeChannels);
+  
+  std::this_thread::sleep_for(std::chrono::milliseconds(500));
+
   absoluteTime_ = std::chrono::system_clock::now();
 }
 

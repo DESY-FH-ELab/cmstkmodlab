@@ -25,8 +25,8 @@ DefoMainWindow::DefoMainWindow(QWidget *parent) :
 				     5, this);
 
   // KEITHLEY MODEL
-  keithleyModel_ = new KeithleyModel(config->getValue<std::string>("KeithleyDevice").c_str(),
-                                     20, this);
+  keithleyModel_ = new DefoKeithleyModel(config->getValue<std::string>("KeithleyDevice").c_str(),
+					 20, this);
 
   daqModel_ = new DefoDAQModel(conradModel_,
 			       julaboModel_,

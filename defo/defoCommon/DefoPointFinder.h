@@ -21,12 +21,13 @@ class DefoPointFinder : public QThread
 public:
 
   explicit DefoPointFinder(int block,
-			   QMutex* mutex,
-			   DefoMeasurementListModel *listModel,
-			   DefoPointRecognitionModel *pointModel,
-			   DefoMeasurement *measurement,
-			   const QRect& searchRectangle,
-			   DefoROIModel * roiModel = 0);
+                           QMutex* mutex,
+                           DefoMeasurementListModel *listModel,
+                           DefoPointRecognitionModel *pointModel,
+                           DefoMeasurement *measurement,
+                           const QRect& searchRectangle,
+                           bool do2Dfit = false,
+                           DefoROIModel * roiModel = 0);
   ~DefoPointFinder();
 
   void run();
@@ -39,6 +40,7 @@ protected:
   DefoPointRecognitionModel* pointModel_;
   DefoMeasurement* measurement_;
   const QRect searchArea_;
+  bool do2Dfit_;
   DefoROIModel* roiModel_;
 
   TGraph2D *gr2D_;

@@ -44,7 +44,7 @@ DefoCalibrationWidget::DefoCalibrationWidget(DefoCalibrationModel* calibrationMo
 
   calibZxSpinBox_ = new QDoubleSpinBox(this);
   calibZxSpinBox_->setPrefix("czx = ");
-  calibZxSpinBox_->setRange(0.75, 1.50);
+  calibZxSpinBox_->setRange(0.6, 1.50);
   calibZxSpinBox_->setDecimals(6);
   calibZxSpinBox_->setSingleStep(0.001);
   calibZxSpinBox_->setKeyboardTracking(false);
@@ -55,7 +55,7 @@ DefoCalibrationWidget::DefoCalibrationWidget(DefoCalibrationModel* calibrationMo
 
   calibZySpinBox_ = new QDoubleSpinBox(this);
   calibZySpinBox_->setPrefix("czy = ");
-  calibZySpinBox_->setRange(0.75, 1.50);
+  calibZySpinBox_->setRange(0.6, 1.50);
   calibZySpinBox_->setDecimals(6);
   calibZySpinBox_->setSingleStep(0.001);
   calibZySpinBox_->setKeyboardTracking(false);

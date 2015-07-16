@@ -16,7 +16,7 @@
 #include "DefoJulaboModel.h"
 #include "DefoJulaboWidget.h"
 
-#include "KeithleyModel.h"
+#include "DefoKeithleyModel.h"
 #include "KeithleyWidget.h"
 
 #include "DefoCameraModel.h"
@@ -64,7 +64,7 @@ protected:
 
   DefoConradModel* conradModel_;
   DefoJulaboModel* julaboModel_;
-  KeithleyModel* keithleyModel_;
+  DefoKeithleyModel* keithleyModel_;
   DefoMeasurementListModel* listModel_;
   DefoMeasurementSelectionModel* selectionModel_;
   DefoCameraModel* cameraModel_;

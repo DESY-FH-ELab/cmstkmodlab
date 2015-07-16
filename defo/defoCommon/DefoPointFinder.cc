@@ -16,33 +16,38 @@ double twoDgauss(double *x, double *par)
 }
 
 DefoPointFinder::DefoPointFinder(int block,
-				 QMutex* mutex,
-				 DefoMeasurementListModel *listModel,
-				 DefoPointRecognitionModel *pointModel,
-				 DefoMeasurement *measurement,
-				 const QRect &searchRectangle,
-				 DefoROIModel * roiModel)
-  : block_(block),
-    mutex_(mutex),
-    listModel_(listModel),
-    pointModel_(pointModel),
-    measurement_(measurement),
-    searchArea_(searchRectangle),
-    roiModel_(roiModel)
+                                 QMutex* mutex,
+                                 DefoMeasurementListModel *listModel,
+                                 DefoPointRecognitionModel *pointModel,
+                                 DefoMeasurement *measurement,
+                                 const QRect &searchRectangle,
+                                 bool do2Dfit,
+                                 DefoROIModel * roiModel)
+: block_(block),
+  mutex_(mutex),
+  listModel_(listModel),
+  pointModel_(pointModel),
+  measurement_(measurement),
+  searchArea_(searchRectangle),
+  do2Dfit_(do2Dfit),
+  roiModel_(roiModel)
 {
   image_ = measurement_->getImage();
 
   connect(this, SIGNAL(pointsFound(DefoMeasurement*, const DefoPointCollection*)),
-	  listModel_, SLOT(appendMeasurementPoints(DefoMeasurement*, const DefoPointCollection*)));
+          listModel_, SLOT(appendMeasurementPoints(DefoMeasurement*, const DefoPointCollection*)));
   
   NQLogMessage("DefoPointFinder") << "DefoPointerFinder for block "
-				  << block_ << " constructed";
+      << block_ << " constructed";
 }
 
 DefoPointFinder::~DefoPointFinder()
 {
+  delete gr2D_;
+  delete fitFunc_;
+
   NQLogMessage("DefoPointFinder") << "DefoPointerFinder for block "
-				  << block_ << " destructed";  
+      << block_ << " destructed";
 }
 
 void DefoPointFinder::run()
@@ -57,12 +62,22 @@ void DefoPointFinder::run()
     }
   }
 
+  double x[4*pointModel_->getHalfSquareWidth()*pointModel_->getHalfSquareWidth()];
+  double y[4*pointModel_->getHalfSquareWidth()*pointModel_->getHalfSquareWidth()];
+  double z[4*pointModel_->getHalfSquareWidth()*pointModel_->getHalfSquareWidth()];
+  
+  gr2D_ = new TGraph2D(Form("gr2D_%d", block_), Form("gr2D_%d", block_),
+                       4*pointModel_->getHalfSquareWidth()*pointModel_->getHalfSquareWidth(),
+                       &x[0], &y[0], &z[0]);
+  gr2D_->SetDirectory(0);
+  fitFunc_ = new TF2(Form("fitFunc_%d", block_), twoDgauss, 0, 0, image_.width(), image_.height(), 5);
+
   const DefoPointCollection* points = findPoints(&searchArea_,
-						 &roi,
-						 pointModel_->getThresholdValue(DefoPointRecognitionModel::THRESHOLD_1),
-						 pointModel_->getThresholdValue(DefoPointRecognitionModel::THRESHOLD_2),
-						 pointModel_->getThresholdValue(DefoPointRecognitionModel::THRESHOLD_3),
-						 pointModel_->getHalfSquareWidth());
+                                                 &roi,
+                                                 pointModel_->getThresholdValue(DefoPointRecognitionModel::THRESHOLD_1),
+                                                 pointModel_->getThresholdValue(DefoPointRecognitionModel::THRESHOLD_2),
+                                                 pointModel_->getThresholdValue(DefoPointRecognitionModel::THRESHOLD_3),
+                                                 pointModel_->getHalfSquareWidth());
 
   emit pointsFound(measurement_, points);
 }
@@ -157,9 +172,11 @@ const DefoPointCollection* DefoPointFinder::findPoints(const QRect* searchArea,
 
           if ( i == 4 ) { // Iterated without drifting
 
-            intermediate = getFitPosition(intermediate,
-                                          searchRect,
-                                          halfSquareWidth);
+            if (do2Dfit_) {
+              intermediate = getFitPosition(intermediate,
+                                            searchRect,
+                                            halfSquareWidth);
+            }
 
             // check again since the point can be reconstructed at a distance
             // from the seed
@@ -318,8 +335,8 @@ DefoPoint DefoPointFinder::getFitPosition(const DefoPoint& intermediate,
 
   mutex_->lock();
 
-  std::cout << intermediate.getX() << std::endl;
-  std::cout << intermediate.getY() << std::endl;
+  //std::cout << intermediate.getX() << std::endl;
+  //std::cout << intermediate.getY() << std::endl;
 
   for (int x = area.x(); x < right; ++x) {
     for (int y = area.y(); y < bottom; ++y) {

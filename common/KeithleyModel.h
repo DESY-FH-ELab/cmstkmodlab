@@ -71,7 +71,8 @@ protected:
   static std::string constructString( unsigned int sensor );
 
 protected slots:
-  void scanTemperatures();
+
+  virtual void scanTemperatures();
 
 signals:
   void deviceStateChanged(State newState);

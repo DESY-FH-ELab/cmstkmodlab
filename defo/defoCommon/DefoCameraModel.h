@@ -51,6 +51,7 @@ public:
 
   QTextDocument* commentDocument() const { return comment_; }
   int getCalibAmplitude() const { return calibAmplitude_; }
+  int getNumberOfImages() const { return numberOfImages_; }
 
 public slots:
   virtual void setDeviceEnabled( bool enabled );
@@ -61,6 +62,7 @@ public slots:
   void acquireLiveViewPicture();
   void setComment(const QString&);
   void setCalibAmplitude(int amplitude);
+  void setNumberOfImages(int number);
 
 protected:
   virtual void initialize();
@@ -78,6 +80,7 @@ protected:
   QTimer liveViewTimer_;
   QTextDocument* comment_;
   int calibAmplitude_;
+  int numberOfImages_;
 
 signals:
   void deviceStateChanged(State newState);
