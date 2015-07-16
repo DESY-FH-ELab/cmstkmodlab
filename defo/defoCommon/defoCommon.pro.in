@@ -62,6 +62,7 @@ greaterThan(QT_MAJOR_VERSION, 4){
 
 HEADERS += DefoExifReader.h \
            DefoJulaboModel.h \
+           DefoKeithleyModel.h \
            DefoCameraModel.h \
            DefoConradModel.h \
            DefoMeasurement.h \
@@ -98,6 +99,7 @@ HEADERS += DefoExifReader.h \
 
 SOURCES += DefoExifReader.cc \
            DefoJulaboModel.cc \
+           DefoKeithleyModel.cc \
            DefoCameraModel.cc \
            DefoConradModel.cc \
            DefoMeasurement.cc \
