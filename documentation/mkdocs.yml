@@ -1,0 +1,15 @@
+site_name: TkModLab
+site_url: http://desy-fh-elab.github.io/cmstkmodlab
+site_description: Documentation for DESY FH-E-Lab Software
+site_author: Andreas Mussgiller
+
+repo_url: https://github.com/DESY-FH-ELab/cmstkmodlab
+
+pages:
+- Home: index.md
+- Thermo:
+    - thermoDAQ: thermo/thermoDAQ.md
+- Defo:
+    - defoDAQ: defo/defoDAQ.md
+
+theme: flatly
