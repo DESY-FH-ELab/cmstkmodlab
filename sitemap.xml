@@ -27,6 +27,12 @@
      <changefreq>daily</changefreq>
     </url>
         
+    <url>
+     <loc>http://desy-fh-elab.github.io/cmstkmodlab/defo/defoDAQScripting/</loc>
+     <lastmod>2015-07-17</lastmod>
+     <changefreq>daily</changefreq>
+    </url>
+        
     
 
 </urlset>
