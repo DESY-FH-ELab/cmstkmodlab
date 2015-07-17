@@ -11,5 +11,6 @@ pages:
     - thermoDAQ: thermo/thermoDAQ.md
 - Defo:
     - defoDAQ: defo/defoDAQ.md
+    - defoDAQ Scripting: defo/defoDAQScripting.md
 
 theme: flatly
