@@ -1,0 +1,19 @@
+{
+    "docs": [
+        {
+            "location": "/", 
+            "text": "", 
+            "title": "Home"
+        }, 
+        {
+            "location": "/thermo/thermoDAQ/", 
+            "text": "", 
+            "title": "thermoDAQ"
+        }, 
+        {
+            "location": "/defo/defoDAQ/", 
+            "text": "", 
+            "title": "defoDAQ"
+        }
+    ]
+}
