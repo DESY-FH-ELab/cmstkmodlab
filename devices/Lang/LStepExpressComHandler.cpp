@@ -216,8 +216,8 @@ void LStepExpressComHandler::SendFeedString( void )
 {
   if (!fDeviceAvailable) return;
 
-  // feed string is <NL>
-  char feedString = 10;
+  // feed string is <CR> ; see documentation page 4.1
+  char feedString = 13;
 
   // write <CR> and get echo
   write( fIoPortFileDescriptor, &feedString, 1 );
