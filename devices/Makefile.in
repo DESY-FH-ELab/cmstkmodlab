@@ -1,6 +1,9 @@
 BASEPATH      = @basepath@
-NOTHERMAL     = @nothermal@
+
 NODEFO        = @nodefo@
+NOTHERMAL     = @nothermal@
+NOASSEMBLY    = @noassembly@
+
 USEFAKEDEVICES= @usefakedevices@
 
 subdirs	      = Julabo \
@@ -13,7 +16,8 @@ subdirs	      = Julabo \
 		Pfeiffer \
                 Iota \
                 Cori \
-                Arduino
+                Arduino \
+		Lang
 
 ifeq ($(NOTHERMAL),0)
 subdirs      += 
