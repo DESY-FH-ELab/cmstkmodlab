@@ -65,7 +65,8 @@ void LStepExpress::DeviceInit()
 
   if (comHandler_->DeviceAvailable()) {
     
-    comHandler_->SendCommand("ID?");
+    comHandler_->SendCommand("?ver"); // read version
+    comHandler_->SendCommand("?readsn"); // read serial number
 
     char buffer[1000];
     comHandler_->ReceiveString(buffer);
