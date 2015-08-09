@@ -116,6 +116,8 @@ void LStepExpressComHandler::InitializeIoPort( void )
   // get and save current ioport settings for later restoring
   tcgetattr( fIoPortFileDescriptor, &fCurrentTermios );
 
+#ifndef USE_FAKEIO
+
   // CONFIGURE NEW SETTINGS
 
   // clear new settings struct
@@ -183,6 +185,8 @@ void LStepExpressComHandler::InitializeIoPort( void )
 
   // commit changes
   tcsetattr( fIoPortFileDescriptor, TCSANOW, &fThisTermios );
+  
+#endif
 }
 
 //! Restore former I/O port settings.
