@@ -25,6 +25,10 @@ class LStepExpress : public VLStepExpress
 
   unsigned int GetStatus() const;
 
+  // low level debugging methods
+  void SendCommand(const std::string &);
+  void ReceiveString(std::string &);
+
  private:
 
   void StripBuffer( char* ) const;
