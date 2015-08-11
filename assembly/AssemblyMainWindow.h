@@ -5,6 +5,8 @@
 #include <QTabWidget>
 #include <QDir>
 
+#include "AssemblyUEyeModel.h"
+
 class AssemblyMainWindow : public QMainWindow
 {
   Q_OBJECT
@@ -20,6 +22,8 @@ protected:
   QDir currentDir_;
 
   QTabWidget* tabWidget_;
+
+  AssemblyUEyeModel* uEyeModel_;
 };
 
 #endif // ASSEMBLYMAINWINDOW_H

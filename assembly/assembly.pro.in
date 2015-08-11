@@ -22,7 +22,9 @@ INCLUDEPATH += @basepath@
 INCLUDEPATH += @basepath@/common
 
 # Input
-HEADERS += AssemblyMainWindow.h
+HEADERS += AssemblyMainWindow.h \
+           AssemblyUEyeModel.h
     
 SOURCES += assembly.cc \
-           AssemblyMainWindow.cc
+           AssemblyMainWindow.cc \
+           AssemblyUEyeModel.cc
