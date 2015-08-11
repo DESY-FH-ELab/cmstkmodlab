@@ -6,6 +6,7 @@
 #include <QDir>
 
 #include "AssemblyUEyeModel.h"
+#include "AssemblyUEyeWidget.h"
 
 class AssemblyMainWindow : public QMainWindow
 {
@@ -24,6 +25,7 @@ protected:
   QTabWidget* tabWidget_;
 
   AssemblyUEyeModel* uEyeModel_;
+  AssemblyUEyeWidget* uEyeWidget_;
 };
 
 #endif // ASSEMBLYMAINWINDOW_H

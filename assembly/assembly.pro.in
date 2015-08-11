@@ -1,5 +1,6 @@
 LIBS += -L@basepath@/devices/lib -lTkModLabLang
 LIBS += -L@basepath@/common -lCommon
+LIBS += -lueye_api
 
 QMAKE = @qmake@
 
@@ -23,8 +24,10 @@ INCLUDEPATH += @basepath@/common
 
 # Input
 HEADERS += AssemblyMainWindow.h \
-           AssemblyUEyeModel.h
+           AssemblyUEyeModel.h \
+           AssemblyUEyeWidget.h
     
 SOURCES += assembly.cc \
            AssemblyMainWindow.cc \
-           AssemblyUEyeModel.cc
+           AssemblyUEyeModel.cc \
+           AssemblyUEyeWidget.cc

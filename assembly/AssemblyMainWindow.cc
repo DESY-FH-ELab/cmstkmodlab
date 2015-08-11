@@ -21,17 +21,24 @@ AssemblyMainWindow::AssemblyMainWindow(QWidget *parent) :
     tabWidget_->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);
 
     uEyeModel_ = new AssemblyUEyeModel(10, this);
+    uEyeWidget_ = new AssemblyUEyeWidget(uEyeModel_, this);
+
+    tabWidget_->addTab(uEyeWidget_, "uEye");
 
     connect(QApplication::instance(), SIGNAL(aboutToQuit()),
-                this, SLOT(quit()));
+            this, SLOT(quit()));
 
     setCentralWidget(tabWidget_);
     updateGeometry();
 
     NQLog("AssemblyMainWindow") << "main window constructed";
+
+    uEyeModel_->updateInformation();
 }
 
 void AssemblyMainWindow::quit()
 {
     NQLog("AssemblyMainWindow") << "quit";
+
+    delete uEyeModel_;
 }
