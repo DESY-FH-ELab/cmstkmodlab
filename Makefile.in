@@ -1,6 +1,7 @@
 BASEPATH      = @basepath@
 NOTHERMAL     = @nothermal@
 NODEFO        = @nodefo@
+NOASSEMBLY    = @noassembly@
 USEFAKEDEVICES= @usefakedevices@
 QMAKE         = @qmake@
 
@@ -11,6 +12,9 @@ endif
 ifeq ($(NODEFO),0)
 subdirs      += defo conradControl
 endif
+ifeq ($(NOASSEMBLY),0)
+subdirs      += assembly
+endif
 
 qtsubdirs     = common common_test
 ifeq ($(NOTHERMAL),0)
@@ -19,6 +23,10 @@ endif
 ifeq ($(NODEFO),0)
 qtsubdirs    += defo/defoCommon defo/defoDAQ defo/defoReco defo/defoCalib conradControl
 endif
+ifeq ($(NOASSEMBLY),0)
+qtsubdirs    += assembly
+endif
+
 
 all: qt
 	@for dir in $(subdirs); do (cd $$dir; make); done

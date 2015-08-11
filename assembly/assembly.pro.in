@@ -1,0 +1,28 @@
+LIBS += -L@basepath@/devices/lib -lTkModLabLang
+LIBS += -L@basepath@/common -lCommon
+
+QMAKE = @qmake@
+
+QMAKE_CXXFLAGS += -std=c++11
+QMAKE_CXXFLAGS += -DAPPLICATIONVERSIONSTR=\\\"`git describe --dirty --always --tags`\\\"
+
+DEFINES += @configdefines@
+
+QT += core gui xml network script svg
+greaterThan(QT_MAJOR_VERSION, 4) {
+  QT += widgets
+} 
+
+TEMPLATE = app
+TARGET = assembly
+DEPENDPATH += @basepath@/common
+INCLUDEPATH += .
+INCLUDEPATH += ..
+INCLUDEPATH += @basepath@
+INCLUDEPATH += @basepath@/common
+
+# Input
+HEADERS += AssemblyMainWindow.h
+    
+SOURCES += assembly.cc \
+           AssemblyMainWindow.cc
