@@ -5,7 +5,14 @@
 #include <QTabWidget>
 #include <QDir>
 
+#ifdef USE_FAKEIO
+#include "AssemblyUEyeFakeModel.h"
+typedef AssemblyUEyeFakeModel AssemblyUEyeModel_t;
+#else
 #include "AssemblyUEyeModel.h"
+typedef AssemblyUEyeModel AssemblyUEyeModel_t;
+#endif
+
 #include "AssemblyUEyeWidget.h"
 
 class AssemblyMainWindow : public QMainWindow
@@ -24,7 +31,7 @@ protected:
 
   QTabWidget* tabWidget_;
 
-  AssemblyUEyeModel* uEyeModel_;
+  AssemblyUEyeModel_t* uEyeModel_;
   AssemblyUEyeWidget* uEyeWidget_;
 };
 

@@ -20,7 +20,7 @@ AssemblyMainWindow::AssemblyMainWindow(QWidget *parent) :
     tabWidget_ = new QTabWidget(this);
     tabWidget_->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);
 
-    uEyeModel_ = new AssemblyUEyeModel(10, this);
+    uEyeModel_ = new AssemblyUEyeModel_t(10, this);
     uEyeWidget_ = new AssemblyUEyeWidget(uEyeModel_, this);
 
     tabWidget_->addTab(uEyeWidget_, "uEye");

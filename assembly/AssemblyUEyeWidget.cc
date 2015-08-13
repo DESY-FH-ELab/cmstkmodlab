@@ -1,14 +1,10 @@
-#include <uEye.h>
+//#include <uEye.h>
 
 #include <nqlogger.h>
 
 #include "AssemblyUEyeWidget.h"
 
-/**
-  \brief Creates a new panel with all the controls and read-outs for the Julabo
-  chiller.
-  */
-AssemblyUEyeWidget::AssemblyUEyeWidget(AssemblyUEyeModel* model,
+AssemblyUEyeWidget::AssemblyUEyeWidget(AssemblyUEyeModel_t* model,
                                        QWidget *parent)
 : QWidget(parent),
   model_(model)
@@ -25,6 +21,8 @@ void AssemblyUEyeWidget::updateCameraInformation(unsigned int cameraCount)
     NQLog("AssemblyUEyeWidget") << "update information for " << cameraCount << " camera(s)";
 
     for (unsigned int i=0;i<cameraCount;++i) {
+
+        /*
         const UEYE_CAMERA_INFO* info = model_->getCameraInfo(i);
 
         NQLog("AssemblyUEyeWidget") << "dwCameraID      " << info->dwCameraID;
@@ -37,5 +35,7 @@ void AssemblyUEyeWidget::updateCameraInformation(unsigned int cameraCount)
 
         //HIDS cameraHandle = info->dwDeviceID;
         //is_InitCamera (&cameraHandle, 0);
+
+        */
     }
 }

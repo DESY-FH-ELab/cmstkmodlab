@@ -1,6 +1,12 @@
+ARCHITECTURE=@architecture@
+USEFAKEDEVICES="X@usefakedevices@"
+
 LIBS += -L@basepath@/devices/lib -lTkModLabLang
 LIBS += -L@basepath@/common -lCommon
+
+equals(USEFAKEDEVICES,"X0") {
 LIBS += -lueye_api
+}
 
 QMAKE = @qmake@
 
@@ -24,10 +30,28 @@ INCLUDEPATH += @basepath@/common
 
 # Input
 HEADERS += AssemblyMainWindow.h \
-           AssemblyUEyeModel.h \
+           AssemblyVUEyeCamera.h \
+           AssemblyVUEyeModel.h \
            AssemblyUEyeWidget.h
-    
+
+equals(USEFAKEDEVICES,"X0") {
+HEADERS += AssemblyUEyeCamera.h \
+           AssemblyUEyeModel.h
+} else {
+HEADERS += AssemblyUEyeFakeCamera.h \
+           AssemblyUEyeFakeModel.h
+}
+
 SOURCES += assembly.cc \
            AssemblyMainWindow.cc \
-           AssemblyUEyeModel.cc \
+           AssemblyVUEyeCamera.cc \
+           AssemblyVUEyeModel.cc \
            AssemblyUEyeWidget.cc
+
+equals(USEFAKEDEVICES,"X0") {
+SOURCES += AssemblyUEyeCamera.cc \
+           AssemblyUEyeModel.cc
+} else {
+SOURCES += AssemblyUEyeFakeCamera.cc \
+           AssemblyUEyeFakeModel.cc
+}
