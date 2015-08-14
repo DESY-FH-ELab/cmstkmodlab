@@ -4,7 +4,7 @@
 
 #include <nqlogger.h>
 
-#include "AssemblyUEyeModel.h"
+#include "AssemblyVUEyeCamera.h"
 
 AssemblyVUEyeCamera::AssemblyVUEyeCamera(QObject *parent)
     : QObject(parent)
