@@ -42,9 +42,8 @@ void AssemblyMainWindow::quit()
 {
     NQLog("AssemblyMainWindow") << "quit";
 
-    //cameraThread_->exit();
-    //delete cameraThread_;
-
-    //uEyeModel_->moveToThread(QThread::currentThread());
-    //delete uEyeModel_;
+    if (cameraThread_) {
+        cameraThread_->quit();
+        cameraThread_->wait();
+    }
 }
