@@ -1,26 +1,23 @@
 #ifndef ASSEMBLYUEYEWIDGET_H
 #define ASSEMBLYUEYEWIDGET_H
 
-#include <QCheckBox>
-#include <QDoubleSpinBox>
-#include <QFormLayout>
-#include <QHBoxLayout>
-#include <QLCDNumber>
-#include <QSpinBox>
-#include <QVBoxLayout>
-#include <QWidget>
+#include <QTabWidget>
 
 #include <DeviceState.h>
 
 #ifdef USE_FAKEIO
 #include "AssemblyUEyeFakeModel.h"
 typedef AssemblyUEyeFakeModel AssemblyUEyeModel_t;
+#include "AssemblyUEyeFakeCamera.h"
+typedef AssemblyUEyeFakeCamera AssemblyUEyeCamera_t;
 #else
 #include "AssemblyUEyeModel.h"
 typedef AssemblyUEyeModel AssemblyUEyeModel_t;
+#include "AssemblyUEyeCamera.h"
+typedef AssemblyUEyeCamera AssemblyUEyeCamera_t;
 #endif
 
-class AssemblyUEyeWidget : public QWidget
+class AssemblyUEyeWidget : public QTabWidget
 {
     Q_OBJECT
 public:
@@ -33,7 +30,7 @@ protected:
 
 public slots:
 
-  void updateCameraInformation(unsigned int);
+  void cameraCountChanged(unsigned int);
 };
 
-#endif // JULABOWIDGET_H
+#endif // ASSEMBLYUEYEWIDGET_H
