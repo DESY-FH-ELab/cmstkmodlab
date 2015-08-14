@@ -22,6 +22,9 @@ void AssemblyUEyeFakeModel::updateInformation()
 {
     NQLog("AssemblyUEyeFakeModel") << "updateInformation";
 
+    static bool infoUpdated = false;
+    if (infoUpdated) return;
+
     clear();
 
     AssemblyUEyeCamera_t* camera = new AssemblyUEyeCamera_t(0);
@@ -61,6 +64,10 @@ void AssemblyUEyeFakeModel::updateInformation()
     NQLog("AssemblyUEyeModel") << "sensor ID:       " << camera->getSensorID();
     NQLog("AssemblyUEyeModel") << "status:          " << camera->getStatus();
 
+    camera->initialize();
+    camera->updateInformation();
+    camera->exit();
+
     NQLog("AssemblyUEyeModel") << "id:              " << camera->getID();
     NQLog("AssemblyUEyeModel") << "version:         " << camera->getVersion();
     NQLog("AssemblyUEyeModel") << "date:            " << camera->getDate();
@@ -76,4 +83,5 @@ void AssemblyUEyeFakeModel::updateInformation()
     NQLog("AssemblyUEyeModel") << "global shutter:  " << camera->getGlobalShutter();
     NQLog("AssemblyUEyeModel") << "pixel size:      " << camera->getPixelSize();
 
+    infoUpdated = true;
 }
