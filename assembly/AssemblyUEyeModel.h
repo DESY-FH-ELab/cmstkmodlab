@@ -3,7 +3,6 @@
 
 #include <uEye.h>
 
-
 #include <QObject>
 #include <QTimer>
 #include <QThread>
