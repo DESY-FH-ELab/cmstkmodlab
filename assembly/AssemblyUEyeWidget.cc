@@ -22,20 +22,8 @@ void AssemblyUEyeWidget::updateCameraInformation(unsigned int cameraCount)
 
     for (unsigned int i=0;i<cameraCount;++i) {
 
-        /*
-        const UEYE_CAMERA_INFO* info = model_->getCameraInfo(i);
-
-        NQLog("AssemblyUEyeWidget") << "dwCameraID      " << info->dwCameraID;
-        NQLog("AssemblyUEyeWidget") << "dwDeviceID      " << info->dwDeviceID;
-        NQLog("AssemblyUEyeWidget") << "dwSensorID      " << info->dwSensorID;
-        NQLog("AssemblyUEyeWidget") << "SerNo           " << info->SerNo;
-        NQLog("AssemblyUEyeWidget") << "Model           " << info->Model;
-        NQLog("AssemblyUEyeWidget") << "FullModelName   " << info->FullModelName;
-        NQLog("AssemblyUEyeWidget") << "dwStatus        " << info->dwStatus;
-
         //HIDS cameraHandle = info->dwDeviceID;
         //is_InitCamera (&cameraHandle, 0);
 
-        */
     }
 }

@@ -21,32 +21,6 @@ AssemblyUEyeModel::~AssemblyUEyeModel()
     if (uEyeCameraList_) delete uEyeCameraList_;
 }
 
-/*
-unsigned int AssemblyUEyeModel::getCameraCount() const
-{
-    return (unsigned int)uEyeCameraList_->dwCount;
-}
-
-UEYE_CAMERA_INFO* AssemblyUEyeModel::getCameraInfo(unsigned int idx) const
-{
-    if (idx >= this->getCameraCount()) return 0;
-    return &(uEyeCameraList_->uci[idx]);
-}
-
-unsigned int AssemblyUEyeModel::getCameraStatus(unsigned int idx) const
-{
-    if (idx >= this->getCameraCount()) return 0x20;
-    return uEyeCameraList_->uci[idx].dwStatus;
-}
-
-bool AssemblyUEyeModel::isCameraAvailable(unsigned int idx) const
-{
-    if (idx >= this->getCameraCount()) return false;
-    return (bool) IS_CAMERA_AVAILABLE(uEyeCameraList_->uci[idx].dwStatus);
-}
-
-*/
-
 void AssemblyUEyeModel::updateInformation()
 {
     NQLog("AssemblyUEyeModel") << "updateInformation";
@@ -74,14 +48,25 @@ void AssemblyUEyeModel::updateInformation()
                 dw = 0;
             }
 
-            cameras_.clear();
+            clear();
 
             for (unsigned int idx=0;idx<dw;idx++) {
-                UEYE_CAMERA_INFO* info = &(uEyeCameraList_->uci[idx]);
+
+                const UEYE_CAMERA_INFO* info = &(uEyeCameraList_->uci[idx]);
 
                 AssemblyUEyeCamera_t* camera = new AssemblyUEyeCamera_t(this);
                 cameras_.push_back(camera);
                 // fill cameras
+
+                camera->setCameraID(info->dwCameraID);
+                camera->setDeviceID(info->dwDeviceID);
+                camera->setSensorID(info->dwSensorID);
+                camera->setSerialNumber(QString(info->SerNo).toLong());
+                camera->setModelName(info->Model);
+                camera->setFullModelName(info->FullModelName);
+                camera->setStatus(info->dwStatus);
+
+                camera->updateInformation();
             }
 
             emit cameraCountChanged((unsigned int)dw);

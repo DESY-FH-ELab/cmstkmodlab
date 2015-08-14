@@ -42,6 +42,7 @@ protected:
     QMutex mutex_;
 
     QVector<AssemblyUEyeCamera_t*> cameras_;
+    void clear();
 
 signals:
 

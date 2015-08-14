@@ -1,6 +1,8 @@
 #ifndef ASSEMBLYUEYECAMERA_H
 #define ASSEMBLYUEYECAMERA_H
 
+#include <uEye.h>
+
 #include "AssemblyVUEyeCamera.h"
 
 class AssemblyUEyeCamera : public AssemblyVUEyeCamera
@@ -9,6 +11,12 @@ class AssemblyUEyeCamera : public AssemblyVUEyeCamera
 public:
     explicit AssemblyUEyeCamera(QObject *parent);
     ~AssemblyUEyeCamera();
+
+    void updateInformation();
+    bool isAvailable() const;
+
+    bool initialize();
+    bool exit();
 
 public slots:
 
@@ -22,6 +30,7 @@ signals:
 
 private:
 
+    HIDS cameraHandle_;
 };
 
 #endif // ASSEMBLYUEYECAMERA_H
