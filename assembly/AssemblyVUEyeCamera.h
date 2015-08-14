@@ -96,6 +96,8 @@ protected:
 
 signals:
 
+    void cameraInformationChanged();
+
 private:
 
 };
