@@ -31,12 +31,35 @@ bool AssemblyUEyeCamera::exit()
 void AssemblyUEyeCamera::updateInformation()
 {
     CAMINFO* cameraInfo = new CAMINFO;
-    is_GetCameraInfo(cameraHandle_, cameraInfo);
+    if (!is_GetCameraInfo(cameraHandle_, cameraInfo)) {
+
+        setID(cameraInfo->ID);
+        setVersion(cameraInfo->Version);
+        setDate(cameraInfo->Date);
+
+    } else {
+        NQLog("AssemblyUEyeCamera", NQLog::Fatal) << "cannot read camera information";
+    }
 
     delete cameraInfo;
 
     SENSORINFO* sensorInfo = new SENSORINFO;
-    is_GetSensorInfo(cameraHandle_, sensorInfo);
+    if (!is_GetSensorInfo(cameraHandle_, sensorInfo)) {
+
+        setSensorName(sensorInfo->strSensorName);
+        setColorMode(sensorInfo->nColorMode);
+        setMaxWidth(sensorInfo->nMaxWidth);
+        setMaxHeight(sensorInfo->nMaxHeight);
+        setMasterGain(sensorInfo->bMasterGain);
+        setRedGain(sensorInfo->bRGain);
+        setGreenGain(sensorInfo->bGGain);
+        setBlueGain(sensorInfo->bBGain);
+        setGlobalShutter(sensorInfo->bGlobShutter);
+        setPixelSize(sensorInfo->wPixelSize);
+
+    } else {
+        NQLog("AssemblyUEyeCamera", NQLog::Fatal) << "cannot read sensor information";
+    }
 
     delete sensorInfo;
 }

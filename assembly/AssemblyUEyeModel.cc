@@ -54,7 +54,7 @@ void AssemblyUEyeModel::updateInformation()
 
                 const UEYE_CAMERA_INFO* info = &(uEyeCameraList_->uci[idx]);
 
-                AssemblyUEyeCamera_t* camera = new AssemblyUEyeCamera_t(this);
+                AssemblyUEyeCamera_t* camera = new AssemblyUEyeCamera_t(0);
                 cameras_.push_back(camera);
                 // fill cameras
 
@@ -66,7 +66,33 @@ void AssemblyUEyeModel::updateInformation()
                 camera->setFullModelName(info->FullModelName);
                 camera->setStatus(info->dwStatus);
 
+                NQLog("AssemblyUEyeModel") << "camera " << idx;
+                NQLog("AssemblyUEyeModel") << "model name:      " << camera->getModelName();
+                NQLog("AssemblyUEyeModel") << "full model name: " << camera->getFullModelName();
+                NQLog("AssemblyUEyeModel") << "serial number:   " << camera->getSerialNumber();
+                NQLog("AssemblyUEyeModel") << "camera ID:       " << camera->getCameraID();
+                NQLog("AssemblyUEyeModel") << "device ID:       " << camera->getDeviceID();
+                NQLog("AssemblyUEyeModel") << "sensor ID:       " << camera->getSensorID();
+                NQLog("AssemblyUEyeModel") << "status:          " << camera->getStatus();
+
+                camera->initialize();
                 camera->updateInformation();
+                camera->exit();
+
+                NQLog("AssemblyUEyeModel") << "id:              " << camera->getID();
+                NQLog("AssemblyUEyeModel") << "version:         " << camera->getVersion();
+                NQLog("AssemblyUEyeModel") << "date:            " << camera->getDate();
+
+                NQLog("AssemblyUEyeModel") << "sensor name:     " << camera->getSensorName();
+                NQLog("AssemblyUEyeModel") << "color mode:      " << camera->getColorMode();
+                NQLog("AssemblyUEyeModel") << "max. resolution: " << camera->getMaxWidth() << " x "
+                                                                  << camera->getMaxHeight();
+                NQLog("AssemblyUEyeModel") << "master gain:     " << camera->getMasterGain();
+                NQLog("AssemblyUEyeModel") << "RGB gain:        " << camera->getRedGain() << " "
+                                                                  << camera->getGreenGain() << " "
+                                                                  << camera->getBlueGain();
+                NQLog("AssemblyUEyeModel") << "global shutter:  " << camera->getGlobalShutter();
+                NQLog("AssemblyUEyeModel") << "pixel size:      " << camera->getPixelSize();
             }
 
             emit cameraCountChanged((unsigned int)dw);
