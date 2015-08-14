@@ -31,5 +31,5 @@ size_t AssemblyVUEyeModel::getCameraCount() const
 AssemblyUEyeCamera_t * AssemblyVUEyeModel::getCamera(size_t idx)
 {
     if (idx >= this->getCameraCount()) return 0;
-    return &(cameras_[idx]);
+    return cameras_.at(idx);
 }

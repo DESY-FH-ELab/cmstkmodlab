@@ -8,6 +8,7 @@
 #include <QThread>
 #include <QMutex>
 #include <QMutexLocker>
+#include <QVector>
 
 #ifdef USE_FAKEIO
 #include "AssemblyUEyeFakeCamera.h"
@@ -40,7 +41,7 @@ protected:
 
     QMutex mutex_;
 
-    std::vector<AssemblyUEyeCamera_t> cameras_;
+    QVector<AssemblyUEyeCamera_t*> cameras_;
 
 signals:
 
