@@ -83,5 +83,7 @@ void AssemblyUEyeFakeModel::updateInformation()
     NQLog("AssemblyUEyeModel") << "global shutter:  " << camera->getGlobalShutter();
     NQLog("AssemblyUEyeModel") << "pixel size:      " << camera->getPixelSize();
 
+    emit cameraCountChanged((unsigned int)cameras_.size());
+
     infoUpdated = true;
 }
