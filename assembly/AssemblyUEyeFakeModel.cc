@@ -37,9 +37,9 @@ void AssemblyUEyeFakeModel::updateInformation()
     camera->setFullModelName("UI348xCP-M");
     camera->setStatus(0);
 
-    camera->setID(cameraInfo->ID);
-    camera->setVersion(cameraInfo->Version);
-    camera->setDate(cameraInfo->Date);
+    camera->setID("UI348xCP-M");
+    camera->setVersion("");
+    camera->setDate("13.04.2015");
 
     camera->setSensorName("UI348xCP-M");
     camera->setColorMode(1);
