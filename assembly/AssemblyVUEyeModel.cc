@@ -15,7 +15,6 @@ AssemblyVUEyeModel::AssemblyVUEyeModel(int updateInterval,
     timer_->setInterval(updateInterval_ * 1000);
     connect(timer_, SIGNAL(timeout()), this, SLOT(updateInformation()));
 
-    timer_->singleShot(100, this, SLOT(updateInformation()));
     timer_->start();
 }
 

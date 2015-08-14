@@ -13,6 +13,7 @@ typedef AssemblyUEyeFakeModel AssemblyUEyeModel_t;
 typedef AssemblyUEyeModel AssemblyUEyeModel_t;
 #endif
 
+#include "AssemblyUEyeCameraThread.h"
 #include "AssemblyUEyeWidget.h"
 
 class AssemblyMainWindow : public QMainWindow
@@ -32,6 +33,7 @@ protected:
   QTabWidget* tabWidget_;
 
   AssemblyUEyeModel_t* uEyeModel_;
+  AssemblyUEyeCameraThread* cameraThread_;
   AssemblyUEyeWidget* uEyeWidget_;
 };
 

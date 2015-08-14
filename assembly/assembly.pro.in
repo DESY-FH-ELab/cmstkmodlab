@@ -32,6 +32,7 @@ INCLUDEPATH += @basepath@/common
 HEADERS += AssemblyMainWindow.h \
            AssemblyVUEyeCamera.h \
            AssemblyVUEyeModel.h \
+           AssemblyUEyeCameraThread.h \
            AssemblyUEyeWidget.h
 
 equals(USEFAKEDEVICES,"X0") {
@@ -46,6 +47,7 @@ SOURCES += assembly.cc \
            AssemblyMainWindow.cc \
            AssemblyVUEyeCamera.cc \
            AssemblyVUEyeModel.cc \
+           AssemblyUEyeCameraThread.cc \
            AssemblyUEyeWidget.cc
 
 equals(USEFAKEDEVICES,"X0") {
