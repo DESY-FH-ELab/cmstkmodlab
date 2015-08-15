@@ -10,6 +10,7 @@ AssemblyUEyeCameraWidget::AssemblyUEyeCameraWidget(AssemblyUEyeCamera_t* camera,
       camera_(camera)
 {
     addItem(new AssemblyUEyeCameraGeneralWidget(camera, this), "general information");
+    addItem(new AssemblyUEyeCameraSensorWidget(camera, this), "sensor information");
 
     // Connect all the signals
     connect(camera_, SIGNAL(cameraInformationChanged()),
@@ -81,4 +82,52 @@ void AssemblyUEyeCameraGeneralWidget::cameraInformationChanged()
     idLabel_->setText(camera_->getID());
     versionLabel_->setText(camera_->getVersion());
     dateLabel_->setText(camera_->getDate());
+}
+
+AssemblyUEyeCameraSensorWidget::AssemblyUEyeCameraSensorWidget(AssemblyUEyeCamera_t* camera,
+                                                                 QWidget *parent)
+    : QWidget(parent),
+      camera_(camera)
+{
+    QFormLayout * layout = new QFormLayout(this);
+
+    sensorNameLabel_ = new QLabel("sensor name", this);
+    layout->addRow("sensor name:", sensorNameLabel_);
+
+    colorModeLabel_ = new QLabel("color mode", this);
+    layout->addRow("color mode:", colorModeLabel_);
+
+    maxResolutionLabel_ = new QLabel("maximum resolution", this);
+    layout->addRow("maximum resolution:", maxResolutionLabel_);
+
+    masterGainLabel_ = new QLabel("master gain", this);
+    layout->addRow("master gain:", masterGainLabel_);
+
+    rgbGainLabel_ = new QLabel("rgb gain", this);
+    layout->addRow("rgb gain:", rgbGainLabel_);
+
+    globalShutterLabel_ = new QLabel("global shutter", this);
+    layout->addRow("global shutter:", globalShutterLabel_);
+
+    pixelSizeLabel_ = new QLabel("pixel size", this);
+    layout->addRow("pixel size:", pixelSizeLabel_);
+
+    setLayout(layout);
+
+    // Connect all the signals
+    connect(camera_, SIGNAL(cameraInformationChanged()),
+            this, SLOT(cameraInformationChanged()));
+
+    cameraInformationChanged();
+}
+
+void AssemblyUEyeCameraSensorWidget::cameraInformationChanged()
+{
+    sensorNameLabel_->setText(camera_->getSensorName());
+    colorModeLabel_->setText(QString::number(camera_->getColorMode()));
+    maxResolutionLabel_->setText(QString("%1 x %2").arg(camera_->getMaxWidth()).arg(camera_->getMaxHeight()));
+    masterGainLabel_->setText(QString::number(camera_->getMasterGain()));
+    rgbGainLabel_->setText(QString("%1 %2 %3").arg(camera_->getRedGain()).arg(camera_->getGreenGain()).arg(camera_->getBlueGain()));
+    globalShutterLabel_->setText(QString::number(camera_->getGlobalShutter()));
+    pixelSizeLabel_->setText(QString::number(camera_->getPixelSize()));
 }

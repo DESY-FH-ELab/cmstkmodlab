@@ -60,6 +60,29 @@ protected:
     QLabel* versionLabel_;
     QLabel* dateLabel_;
 
+public slots:
+
+    void cameraInformationChanged();
+};
+
+class AssemblyUEyeCameraSensorWidget : public QWidget
+{
+    Q_OBJECT
+public:
+    explicit AssemblyUEyeCameraSensorWidget(AssemblyUEyeCamera_t* camera,
+                                            QWidget *parent = 0);
+
+protected:
+
+    AssemblyUEyeCamera_t* camera_;
+
+    QLabel* sensorNameLabel_;
+    QLabel* colorModeLabel_;
+    QLabel* maxResolutionLabel_;
+    QLabel* masterGainLabel_;
+    QLabel* rgbGainLabel_;
+    QLabel* globalShutterLabel_;
+    QLabel* pixelSizeLabel_;
 
 public slots:
 
