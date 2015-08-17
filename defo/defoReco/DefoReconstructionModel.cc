@@ -16,6 +16,7 @@ DefoReconstructionModel::DefoReconstructionModel(DefoMeasurementListModel * list
                                                  DefoColorSelectionModel* defoColorModel,
                                                  DefoMeasurementPairListModel* pairListModel,
                                                  DefoMeasurementPairSelectionModel* pairSelectionModel,
+						 DefoLensModel* lensModel,
                                                  DefoGeometryModel* geometryModel,
                                                  DefoCalibrationModel* calibrationModel,
                                                  Defo2DSplineInterpolationModel* interpolationModel,
@@ -24,6 +25,7 @@ DefoReconstructionModel::DefoReconstructionModel(DefoMeasurementListModel * list
   listModel_(listModel),
   pairListModel_(pairListModel),
   pairSelectionModel_(pairSelectionModel),
+  lensModel_(lensModel),
   geometryModel_(geometryModel),
   calibrationModel_(calibrationModel),
   interpolationModel_(interpolationModel)
@@ -53,6 +55,9 @@ DefoReconstructionModel::DefoReconstructionModel(DefoMeasurementListModel * list
 
   connect(defoColorModel, SIGNAL(colorChanged(float,float)),
           this, SLOT(defoColorChanged(float,float)));
+
+  connect(lensModel_, SIGNAL(lensChanged()),
+          this, SLOT(lensChanged()));
 
   connect(geometryModel_, SIGNAL(geometryChanged()),
           this, SLOT(geometryChanged()));
@@ -127,6 +132,21 @@ void DefoReconstructionModel::defoColorChanged(float hue, float saturation) {
     << "defo color changed";
   defoColor_.setHsvF(hue, saturation, 1.0, 1.0);
   emit setupChanged();
+}
+
+void DefoReconstructionModel::lensChanged()
+{
+  NQLogMessage("DefoReconstructionModel::lensChanged()") << lensModel_->getCurrentName();
+
+  double p0, p1, p2, p3;
+  lensModel_->getCurrentParameters(p0, p1, p2, p3);
+  reco_->setLensParameters(p0, p1, p2 ,p3);
+
+  NQLogMessage("DefoReconstructionModel::lensChanged()") << "Parameters set to:";
+  NQLogMessage("DefoReconstructionModel::lensChanged()") << "p0 = " << p0;
+  NQLogMessage("DefoReconstructionModel::lensChanged()") << "p1 = " << p1;
+  NQLogMessage("DefoReconstructionModel::lensChanged()") << "p2 = " << p2;
+  NQLogMessage("DefoReconstructionModel::lensChanged()") << "p3 = " << p3;
 }
 
 void DefoReconstructionModel::geometryChanged()

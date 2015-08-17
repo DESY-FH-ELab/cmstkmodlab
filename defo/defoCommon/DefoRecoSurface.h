@@ -39,6 +39,8 @@ class DefoRecoSurface : public QObject
   std::vector<DefoPoint> const& getIndexedPoints( void ) { return indexedPoints_; }
   void calculateHelpers(void);
 
+  void setLensParameters(double p0, double p1, double p2, double p3);
+
   void setCalibX( double v) { calibX_ = v; }
   void setCalibY( double v) { calibY_ = v; }
   void setCalibZx( double v) { calibZx_ = v; }
@@ -78,6 +80,8 @@ class DefoRecoSurface : public QObject
   std::pair<double, double> imageSize_;
   std::vector<DefoPoint> indexedPoints_;
 
+  double lensP0_, lensP1_, lensP2_, lensP3_;
+ 
   double calibX_;
   double calibY_;
   double calibZx_;

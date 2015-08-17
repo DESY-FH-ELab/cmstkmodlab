@@ -58,6 +58,7 @@ DefoRecoMainWindow::DefoRecoMainWindow(QWidget *parent)
   refColorModel_ = new DefoColorSelectionModel(this);
   defoColorModel_ = new DefoColorSelectionModel(this);
 
+  lensModel_ = new DefoLensModel(this);
   geometryModel_ = new DefoGeometryModel(this);
   calibrationModel_ = new DefoCalibrationModel(this);
   interpolationModel_ = new Defo2DSplineInterpolationModel(this);
@@ -86,6 +87,7 @@ DefoRecoMainWindow::DefoRecoMainWindow(QWidget *parent)
                                                      defoColorModel_,
                                                      measurementPairListModel_,
                                                      measurementPairSelectionModel_,
+						     lensModel_,
                                                      geometryModel_,
                                                      calibrationModel_,
                                                      interpolationModel_,
@@ -324,6 +326,10 @@ DefoRecoMainWindow::DefoRecoMainWindow(QWidget *parent)
   QTabWidget * parameterTabs = new QTabWidget(recoWidget);
   parameterTabs->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Minimum);
 
+  DefoLensComboBox *lensWidget = new DefoLensComboBox(lensModel_,
+						  parameterTabs);
+  parameterTabs->addTab(lensWidget, "Lens");
+
   DefoGeometryParameterWidget *geometryParameterWidget = new DefoGeometryParameterWidget(geometryModel_,
                                                                                          parameterTabs);
   parameterTabs->addTab(geometryParameterWidget, "Geometry");
@@ -406,6 +412,7 @@ void DefoRecoMainWindow::loadMeasurementButtonClicked()
   alignmentModel_->read(currentDir_.absoluteFilePath("alignment.xml"));
   refColorModel_->read(currentDir_.absoluteFilePath("refcolor.xml"));
   defoColorModel_->read(currentDir_.absoluteFilePath("defocolor.xml"));
+  lensModel_->read(currentDir_.absoluteFilePath("lens.xml"));
   geometryModel_->read(currentDir_.absoluteFilePath("geometry.xml"));
   calibrationModel_->read(currentDir_.absoluteFilePath("calibration.xml"));
   interpolationModel_->read(currentDir_.absoluteFilePath("interpolation.xml"));
@@ -422,6 +429,7 @@ void DefoRecoMainWindow::saveMeasurementButtonClicked()
   alignmentModel_->write(currentDir_.absoluteFilePath("alignment.xml"));
   refColorModel_->write(currentDir_.absoluteFilePath("refcolor.xml"));
   defoColorModel_->write(currentDir_.absoluteFilePath("defocolor.xml"));
+  lensModel_->write(currentDir_.absoluteFilePath("lens.xml"));
   geometryModel_->write(currentDir_.absoluteFilePath("geometry.xml"));
   calibrationModel_->write(currentDir_.absoluteFilePath("calibration.xml"));
   interpolationModel_->write(currentDir_.absoluteFilePath("interpolation.xml"));

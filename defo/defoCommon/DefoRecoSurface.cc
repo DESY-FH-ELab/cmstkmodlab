@@ -619,6 +619,14 @@ void DefoRecoSurface::removeTilt( DefoSplineField& ) const
 
 }
 
+void DefoRecoSurface::setLensParameters(double p0, double p1, double p2, double p3)
+{
+  lensP0_ = p0;
+  lensP1_ = p1;
+  lensP2_ = p2;
+  lensP3_ = p3;
+}
+
 double DefoRecoSurface::imageScale(double focalLength) const
 {
   /*
