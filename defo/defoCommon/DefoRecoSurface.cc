@@ -621,9 +621,17 @@ void DefoRecoSurface::removeTilt( DefoSplineField& ) const
 
 double DefoRecoSurface::imageScale(double focalLength) const
 {
+  /*
+  // zoom lens
   double p0 = -0.0240888;
   double p1 = 0.00148648;
   double p2 = -6.91494e-06;
+  */
 
+  // 50 mm lens
+  double p0 = 0.0366916;
+  double p1 = 0.0;
+  double p2 = 0.0;
+  
   return p0 + p1 * focalLength + p2 * focalLength * focalLength;
 }
