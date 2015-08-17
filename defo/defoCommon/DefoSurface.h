@@ -11,10 +11,26 @@
 class DefoSplineXYPair
 {
 public:
-  DefoSplineXYPair(const double& x = 0, const double& y = 0)
-    :x_(x), y_(y) {}
+ DefoSplineXYPair(const double& x = 0, const double& y = 0, 
+		  const double& px = 0, const double& py = 0)
+   :x_(x), y_(y),px_(px), py_(py) {}
+  
+  void setIndex(int ix, int iy) { ix_ = ix; iy_ = iy; }
+  void setPosition(double x, double y) { x_ = x; y_ = y; }
+  void setPixelPosition(double px, double py) { px_ = px; py_ = py; }
+
+  int getIX() const { return ix_; }
+  int getIY() const { return iy_; }
+  double getX() const { return x_; }
+  double getY() const { return y_; }
+  double getPX() const { return px_; }
+  double getPY() const { return py_; }
+  
+ protected:
+
   int ix_, iy_;
   double x_, y_;
+  double px_, py_;
 };
 
 class DefoSplineXYDefoPair
