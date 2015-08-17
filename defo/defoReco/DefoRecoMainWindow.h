@@ -33,6 +33,9 @@
 #include "DefoReconstructionWidget.h"
 #include "DefoReconstructionParameterWidget.h"
 
+#include "DefoLensModel.h"
+#include "DefoLensComboBox.h"
+
 #include "DefoGeometryModel.h"
 #include "DefoGeometryWidget.h"
 #include "DefoGeometryParameterWidget.h"
@@ -77,6 +80,7 @@ protected:
   DefoColorSelectionModel* refColorModel_;
   DefoColorSelectionModel* defoColorModel_;
 
+  DefoLensModel* lensModel_;
   DefoGeometryModel* geometryModel_;
   DefoCalibrationModel* calibrationModel_;
   Defo2DSplineInterpolationModel* interpolationModel_;

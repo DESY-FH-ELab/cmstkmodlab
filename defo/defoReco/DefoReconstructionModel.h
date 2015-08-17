@@ -13,6 +13,7 @@
 #include "DefoAlignmentModel.h"
 #include "DefoPointIndexerModel.h"
 #include "DefoColorSelectionModel.h"
+#include "DefoLensModel.h"
 #include "DefoGeometryModel.h"
 #include "DefoCalibrationModel.h"
 #include "Defo2DSplineInterpolationModel.h"
@@ -31,7 +32,8 @@ public:
                                    DefoColorSelectionModel* defoColorModel,
                                    DefoMeasurementPairListModel* pairListModel,
                                    DefoMeasurementPairSelectionModel* pairSelectionModel,
-                                   DefoGeometryModel* geometryModel,
+				   DefoLensModel* lensModel,
+				   DefoGeometryModel* geometryModel,
                                    DefoCalibrationModel* calibrationModel,
                                    Defo2DSplineInterpolationModel* interpolationModel,
                                    QObject *parent = 0);
@@ -48,6 +50,7 @@ public slots:
   void pointIndexerChanged(DefoVPointIndexer *);
   void refColorChanged(float hue, float saturation);
   void defoColorChanged(float hue, float saturation);
+  void lensChanged();
   void geometryChanged();
   void calibrationChanged();
   void interpolationParametersChanged();
@@ -66,6 +69,7 @@ protected:
   DefoMeasurement* defoMeasurement_;
   DefoMeasurementPairListModel* pairListModel_;
   DefoMeasurementPairSelectionModel* pairSelectionModel_;
+  DefoLensModel* lensModel_;
   DefoGeometryModel* geometryModel_;
   DefoCalibrationModel* calibrationModel_;
   Defo2DSplineInterpolationModel* interpolationModel_;
