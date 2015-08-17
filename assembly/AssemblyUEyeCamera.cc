@@ -9,7 +9,18 @@
 AssemblyUEyeCamera::AssemblyUEyeCamera(QObject *parent)
     : AssemblyVUEyeCamera(parent)
 {
+    bufferProps_.width = 0;
+    bufferProps_.height = 0;
+    bufferProps_.bitspp = 8;
+    bufferProps_.colorformat = IS_CM_MONO8;
+    bufferProps_.imgformat = QImage::Format_Invalid;
+    bufferProps_.pRgbTable = NULL;
+    bufferProps_.tableentries = 0;
 
+    for (int i = 0; i < 256; i++)
+        table_[i] = qRgb (i, i, i);
+
+    ZeroMemory(images_, sizeof(images_));
 }
 
 AssemblyUEyeCamera::~AssemblyUEyeCamera()
@@ -20,12 +31,34 @@ AssemblyUEyeCamera::~AssemblyUEyeCamera()
 bool AssemblyUEyeCamera::initialize()
 {
     cameraHandle_ = getDeviceID();
-    return (bool)is_InitCamera(&cameraHandle_, 0);
+    unsigned int ret = is_InitCamera(&cameraHandle_, 0);
+    NQLog("AssemblyUEyeCamera::initialize()", NQLog::Message) << "is_InitCamera " << ret;
+
+    ret = is_EnableEvent(cameraHandle_, IS_SET_EVENT_FRAME);
+    NQLog("AssemblyUEyeCamera::initialize()", NQLog::Message) << "is_EnableEvent " << ret;
+
+    return (bool)ret;
 }
 
 bool AssemblyUEyeCamera::exit()
 {
-    return (bool)is_ExitCamera(cameraHandle_);
+    unsigned int ret = is_ExitCamera(cameraHandle_);
+    NQLog("AssemblyUEyeCamera::exit()", NQLog::Message) << "is_ExitCamera "  << ret;
+
+    ret = is_DisableEvent(cameraHandle_, IS_SET_EVENT_FRAME);
+    NQLog("AssemblyUEyeCamera::exit()", NQLog::Message) << "is_DisableEvent "  << ret;
+
+    return (bool)ret;
+}
+
+bool AssemblyUEyeCamera::startLiveVideo()
+{
+    return (bool)is_CaptureVideo (cameraHandle_, IS_DONT_WAIT);
+}
+
+bool AssemblyUEyeCamera::stopLiveVideo()
+{
+    return (bool)is_StopLiveVideo(cameraHandle_, IS_WAIT);
 }
 
 void AssemblyUEyeCamera::updateInformation()
@@ -66,10 +99,11 @@ void AssemblyUEyeCamera::updateInformation()
 
 bool AssemblyUEyeCamera::isAvailable() const
 {
-    return (bool) IS_CAMERA_AVAILABLE(getStatus());
+    return (bool)IS_CAMERA_AVAILABLE(getStatus());
 }
 
 void AssemblyUEyeCamera::aquireImage()
 {
-
+    unsigned int ret = is_FreezeVideo(cameraHandle_, IS_DONT_WAIT);
+    NQLog("AssemblyUEyeCamera::aquireImage()", NQLog::Message) << "is_FreezeVideo " << ret;
 }

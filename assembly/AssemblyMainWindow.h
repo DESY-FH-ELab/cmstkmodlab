@@ -26,6 +26,8 @@ public slots:
 
   void quit();
 
+  void test();
+
 protected:
 
   QDir currentDir_;

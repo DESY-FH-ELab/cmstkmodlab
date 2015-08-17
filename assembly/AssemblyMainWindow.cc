@@ -36,6 +36,19 @@ AssemblyMainWindow::AssemblyMainWindow(QWidget *parent) :
 
     uEyeModel_->updateInformation();
     cameraThread_->start();
+
+    QTimer::singleShot(5000, this, SLOT(test()));
+}
+
+void AssemblyMainWindow::test()
+{
+    AssemblyUEyeCamera_t * camera = uEyeModel_->getCamera(0);
+
+    NQLog("AssemblyMainWindow") << "initialize " << camera->initialize();
+
+    camera->aquireImage();
+
+    NQLog("AssemblyMainWindow") << "exit " << camera->exit();
 }
 
 void AssemblyMainWindow::quit()
