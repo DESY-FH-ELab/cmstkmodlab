@@ -41,9 +41,9 @@ void AssemblyUEyeFakeModel::updateInformation()
         camera->setFullModelName("UI348xCP-M");
         camera->setStatus(0);
 
-        camera->setID("UI348xCP-M");
+        camera->setID("IDS GmbH");
         camera->setVersion("");
-        camera->setDate("13.04.2015");
+        camera->setDate("17.04.2015");
 
         camera->setSensorName("UI348xCP-M");
         camera->setColorMode(1);
@@ -97,9 +97,9 @@ void AssemblyUEyeFakeModel::updateInformation()
         camera->setFullModelName("UI348xCP-M");
         camera->setStatus(0);
 
-        camera->setID("UI348xCP-M");
+        camera->setID("IDS GmbH");
         camera->setVersion("");
-        camera->setDate("13.04.2015");
+        camera->setDate("17.04.2015");
 
         camera->setSensorName("UI348xCP-M");
         camera->setColorMode(1);
