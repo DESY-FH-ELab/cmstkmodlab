@@ -98,7 +98,10 @@ protected:
 signals:
 
     void cameraInformationChanged();
-    void cameraInitialized();
+
+    void cameraOpened();
+    void cameraClosed();
+
     void imageAcquired(const QImage*);
 
 private:
