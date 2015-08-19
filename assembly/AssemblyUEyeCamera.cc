@@ -72,7 +72,7 @@ AssemblyUEyeCamera::~AssemblyUEyeCamera()
 
 }
 
-void AssemblyUEyeCamera::initialize()
+void AssemblyUEyeCamera::open()
 {
     cameraHandle_ = getDeviceID();
     unsigned int ret = is_InitCamera(&cameraHandle_, 0);
@@ -172,7 +172,7 @@ void AssemblyUEyeCamera::initialize()
     emit(cameraInitialized());
 }
 
-void AssemblyUEyeCamera::exit()
+void AssemblyUEyeCamera::close()
 {
     eventThread_->stop();
 

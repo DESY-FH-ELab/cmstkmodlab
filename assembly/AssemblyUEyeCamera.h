@@ -57,8 +57,8 @@ public:
 
 public slots:
 
-    void initialize();
-    void exit();
+    void open();
+    void close();
 
     void acquireImage();
 

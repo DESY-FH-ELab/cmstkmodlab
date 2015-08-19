@@ -62,8 +62,8 @@ public:
 
 public slots:
 
-    virtual void initialize() = 0;
-    virtual void exit() = 0;
+    virtual void open() = 0;
+    virtual void close() = 0;
 
     virtual void acquireImage() = 0;
 

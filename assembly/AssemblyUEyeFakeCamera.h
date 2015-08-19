@@ -13,12 +13,12 @@ public:
     void updateInformation();
     bool isAvailable() const { return true; }
 
-    bool initialize();
-    bool exit();
-
 public slots:
 
     void aquireImage();
+    void open();
+    void close();
+
 
 protected slots:
 

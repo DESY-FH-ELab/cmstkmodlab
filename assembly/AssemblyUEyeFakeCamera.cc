@@ -22,12 +22,12 @@ void AssemblyUEyeFakeCamera::updateInformation()
 
 }
 
-bool AssemblyUEyeFakeCamera::initialize()
+void AssemblyUEyeFakeCamera::open()
 {
     return true;
 }
 
-bool AssemblyUEyeFakeCamera::exit()
+void AssemblyUEyeFakeCamera::close()
 {
     return true;
 }
