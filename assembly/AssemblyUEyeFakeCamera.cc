@@ -1,3 +1,5 @@
+#include <unistd.h>
+
 #include <iostream>
 
 #include <QApplication>
@@ -29,10 +31,14 @@ void AssemblyUEyeFakeCamera::open()
 
 void AssemblyUEyeFakeCamera::close()
 {
+    usleep(1000);
+
     emit cameraClosed();
 }
 
 void AssemblyUEyeFakeCamera::acquireImage()
 {
+    usleep(300);
 
+    emit imageAcquired(&image_);
 }

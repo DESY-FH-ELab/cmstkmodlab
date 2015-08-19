@@ -28,6 +28,7 @@ signals:
 
 private:
 
+    QImage image_;
 };
 
 #endif // ASSEMBLYUEYEFAKECAMERA_H
