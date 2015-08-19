@@ -46,21 +46,6 @@ void AssemblyUEyeFakeModel::updateInformation()
         camera->setFullModelName("UI348xCP-M");
         camera->setStatus(0);
 
-        camera->setID("IDS GmbH");
-        camera->setVersion("");
-        camera->setDate("17.04.2015");
-
-        camera->setSensorName("UI348xCP-M");
-        camera->setColorMode(1);
-        camera->setMaxWidth(2560);
-        camera->setMaxHeight(1920);
-        camera->setMasterGain(true);
-        camera->setRedGain(false);
-        camera->setGreenGain(false);
-        camera->setBlueGain(false);
-        camera->setGlobalShutter(false);
-        camera->setPixelSize(220);
-
         NQLog("AssemblyUEyeModel") << "camera 0";
         NQLog("AssemblyUEyeModel") << "model name:      " << camera->getModelName();
         NQLog("AssemblyUEyeModel") << "full model name: " << camera->getFullModelName();
@@ -69,26 +54,6 @@ void AssemblyUEyeFakeModel::updateInformation()
         NQLog("AssemblyUEyeModel") << "device ID:       " << camera->getDeviceID();
         NQLog("AssemblyUEyeModel") << "sensor ID:       " << camera->getSensorID();
         NQLog("AssemblyUEyeModel") << "status:          " << camera->getStatus();
-
-        camera->initialize();
-        camera->updateInformation();
-        camera->exit();
-
-        NQLog("AssemblyUEyeModel") << "id:              " << camera->getID();
-        NQLog("AssemblyUEyeModel") << "version:         " << camera->getVersion();
-        NQLog("AssemblyUEyeModel") << "date:            " << camera->getDate();
-
-        NQLog("AssemblyUEyeModel") << "sensor name:     " << camera->getSensorName();
-        NQLog("AssemblyUEyeModel") << "color mode:      " << camera->getColorMode();
-        NQLog("AssemblyUEyeModel") << "max. resolution: " << camera->getMaxWidth() << " x "
-                                   << camera->getMaxHeight();
-        NQLog("AssemblyUEyeModel") << "master gain:     " << camera->getMasterGain();
-        NQLog("AssemblyUEyeModel") << "RGB gain:        " << camera->getRedGain() << " "
-                                   << camera->getGreenGain() << " "
-                                   << camera->getBlueGain();
-        NQLog("AssemblyUEyeModel") << "global shutter:  " << camera->getGlobalShutter();
-        NQLog("AssemblyUEyeModel") << "pixel size:      " << camera->getPixelSize();
-
     }
 
     {
@@ -108,21 +73,6 @@ void AssemblyUEyeFakeModel::updateInformation()
         camera->setFullModelName("UI348xCP-M");
         camera->setStatus(0);
 
-        camera->setID("IDS GmbH");
-        camera->setVersion("");
-        camera->setDate("17.04.2015");
-
-        camera->setSensorName("UI348xCP-M");
-        camera->setColorMode(1);
-        camera->setMaxWidth(2560);
-        camera->setMaxHeight(1920);
-        camera->setMasterGain(true);
-        camera->setRedGain(false);
-        camera->setGreenGain(false);
-        camera->setBlueGain(false);
-        camera->setGlobalShutter(false);
-        camera->setPixelSize(220);
-
         NQLog("AssemblyUEyeModel") << "camera 1";
         NQLog("AssemblyUEyeModel") << "model name:      " << camera->getModelName();
         NQLog("AssemblyUEyeModel") << "full model name: " << camera->getFullModelName();
@@ -131,25 +81,6 @@ void AssemblyUEyeFakeModel::updateInformation()
         NQLog("AssemblyUEyeModel") << "device ID:       " << camera->getDeviceID();
         NQLog("AssemblyUEyeModel") << "sensor ID:       " << camera->getSensorID();
         NQLog("AssemblyUEyeModel") << "status:          " << camera->getStatus();
-
-        camera->initialize();
-        camera->updateInformation();
-        camera->exit();
-
-        NQLog("AssemblyUEyeModel") << "id:              " << camera->getID();
-        NQLog("AssemblyUEyeModel") << "version:         " << camera->getVersion();
-        NQLog("AssemblyUEyeModel") << "date:            " << camera->getDate();
-
-        NQLog("AssemblyUEyeModel") << "sensor name:     " << camera->getSensorName();
-        NQLog("AssemblyUEyeModel") << "color mode:      " << camera->getColorMode();
-        NQLog("AssemblyUEyeModel") << "max. resolution: " << camera->getMaxWidth() << " x "
-                                   << camera->getMaxHeight();
-        NQLog("AssemblyUEyeModel") << "master gain:     " << camera->getMasterGain();
-        NQLog("AssemblyUEyeModel") << "RGB gain:        " << camera->getRedGain() << " "
-                                   << camera->getGreenGain() << " "
-                                   << camera->getBlueGain();
-        NQLog("AssemblyUEyeModel") << "global shutter:  " << camera->getGlobalShutter();
-        NQLog("AssemblyUEyeModel") << "pixel size:      " << camera->getPixelSize();
     }
 
     emit cameraCountChanged((unsigned int)cameras_.size());

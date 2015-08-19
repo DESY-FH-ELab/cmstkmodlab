@@ -26,6 +26,27 @@ void AssemblyUEyeFakeCamera::updateInformation()
 
 void AssemblyUEyeFakeCamera::open()
 {
+    setID("IDS GmbH");
+    setVersion("");
+    setDate("17.04.2015");
+
+    emit cameraInformationChanged();
+
+    setSensorName("UI348xCP-M");
+    setColorMode(1);
+    setMaxWidth(2560);
+    setMaxHeight(1920);
+    setMasterGain(true);
+    setRedGain(false);
+    setGreenGain(false);
+    setBlueGain(false);
+    setGlobalShutter(false);
+    setPixelSize(220);
+
+    emit cameraInformationChanged();
+
+    usleep(1000);
+
     emit cameraOpened();
 }
 
