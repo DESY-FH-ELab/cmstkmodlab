@@ -55,28 +55,33 @@ void AssemblyMainWindow::test()
 {
     camera_ = uEyeModel_->getCamera(0);
 
-    connect(this, SIGNAL(initializeCamera()),
-            camera_, SLOT(initialize()));
+    connect(this, SIGNAL(openCamera()),
+            camera_, SLOT(open()));
     connect(this, SIGNAL(acquireImage()),
             camera_, SLOT(acquireImage()));
-    connect(camera_, SIGNAL(cameraInitialized()),
-            this, SLOT(cameraInitialized()));
+    connect(camera_, SIGNAL(cameraOpened()),
+            this, SLOT(cameraOpened()));
     connect(camera_, SIGNAL(imageAcquired(const QImage*)),
             this, SLOT(imageAcquired(const QImage*)));
 
-    emit initializeCamera();
+    emit openCamera();
 }
 
-void AssemblyMainWindow::cameraInitialized()
+void AssemblyMainWindow::cameraOpened()
 {
-    NQLog("AssemblyMainWindow") << "cameraInitialized";
+    NQLog("AssemblyMainWindow") << "camera opened";
 
     emit acquireImage();
 }
 
+void AssemblyMainWindow::cameraClosed()
+{
+    NQLog("AssemblyMainWindow") << "camera closed";
+}
+
 void AssemblyMainWindow::imageAcquired(const QImage* image)
 {
-    NQLog("AssemblyMainWindow") << "imageAcquired";
+    NQLog("AssemblyMainWindow") << "image acquired";
 
     image->save("test.jpg");
 }
@@ -84,8 +89,6 @@ void AssemblyMainWindow::imageAcquired(const QImage* image)
 void AssemblyMainWindow::quit()
 {
     NQLog("AssemblyMainWindow") << "quit";
-
-    camera_->exit();
 
     if (cameraThread_) {
         if (cameraThread_->wait(2000) == false)

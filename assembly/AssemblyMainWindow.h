@@ -31,12 +31,13 @@ public slots:
 
   void test();
 
-  void cameraInitialized();
+  void cameraOpened();
+  void cameraClosed();
   void imageAcquired(const QImage*);
 
 signals:
 
-  void initializeCamera();
+  void openCamera();
   void acquireImage();
 
 protected:
