@@ -169,7 +169,7 @@ void AssemblyUEyeCamera::open()
             this, SLOT(eventHappend()));
     eventThread_->start(cameraHandle_);
 
-    emit(cameraInitialized());
+    emit cameraOpened();
 }
 
 void AssemblyUEyeCamera::close()

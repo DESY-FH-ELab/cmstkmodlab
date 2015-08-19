@@ -24,12 +24,12 @@ void AssemblyUEyeFakeCamera::updateInformation()
 
 void AssemblyUEyeFakeCamera::open()
 {
-    return true;
+    emit cameraOpened();
 }
 
 void AssemblyUEyeFakeCamera::close()
 {
-    return true;
+    emit cameraClosed();
 }
 
 void AssemblyUEyeFakeCamera::aquireImage()
