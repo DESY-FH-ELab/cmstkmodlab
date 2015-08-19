@@ -181,20 +181,10 @@ void AssemblyUEyeCamera::close()
     if (eventThread_->wait(2000) == FALSE)
         eventThread_->terminate();
 
-
-
     unsigned int ret = is_ExitCamera(cameraHandle_);
     NQLog("AssemblyUEyeCamera::exit()", NQLog::Message) << "is_ExitCamera "  << ret;
-}
 
-bool AssemblyUEyeCamera::startLiveVideo()
-{
-    return (bool)is_CaptureVideo (cameraHandle_, IS_DONT_WAIT);
-}
-
-bool AssemblyUEyeCamera::stopLiveVideo()
-{
-    return (bool)is_StopLiveVideo(cameraHandle_, IS_WAIT);
+    emit cameraClosed();
 }
 
 void AssemblyUEyeCamera::updateInformation()

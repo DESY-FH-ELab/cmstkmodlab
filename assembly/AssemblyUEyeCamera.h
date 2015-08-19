@@ -52,9 +52,6 @@ public:
     void updateInformation();
     bool isAvailable() const;
 
-    bool startLiveVideo();
-    bool stopLiveVideo();
-
 public slots:
 
     void open();
