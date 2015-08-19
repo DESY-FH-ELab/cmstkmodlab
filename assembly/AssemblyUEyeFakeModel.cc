@@ -30,8 +30,13 @@ void AssemblyUEyeFakeModel::updateInformation()
     // fill cameras
 
     {
+        QThread * thread = new QThread();
+        threads_.push_back(thread);
+
         AssemblyUEyeCamera_t* camera = new AssemblyUEyeCamera_t(0);
+        camera->moveToThread(thread);
         cameras_.push_back(camera);
+        thread->start();
 
         camera->setCameraID(1);
         camera->setDeviceID(1);
@@ -83,11 +88,17 @@ void AssemblyUEyeFakeModel::updateInformation()
                                    << camera->getBlueGain();
         NQLog("AssemblyUEyeModel") << "global shutter:  " << camera->getGlobalShutter();
         NQLog("AssemblyUEyeModel") << "pixel size:      " << camera->getPixelSize();
+
     }
 
     {
+        QThread * thread = new QThread();
+        threads_.push_back(thread);
+
         AssemblyUEyeCamera_t* camera = new AssemblyUEyeCamera_t(0);
+        camera->moveToThread(thread);
         cameras_.push_back(camera);
+        thread->start();
 
         camera->setCameraID(2);
         camera->setDeviceID(2);

@@ -2,6 +2,7 @@
 #define ASSEMBLYVUEYECAMERA_H
 
 #include <QObject>
+#include <QImage>
 
 class AssemblyVUEyeCamera : public QObject
 {
@@ -59,12 +60,12 @@ public:
     virtual void updateInformation() = 0;
     virtual bool isAvailable() const = 0;
 
-    virtual bool initialize() = 0;
-    virtual bool exit() = 0;
-
 public slots:
 
-    virtual void aquireImage() = 0;
+    virtual void initialize() = 0;
+    virtual void exit() = 0;
+
+    virtual void acquireImage() = 0;
 
 protected slots:
 
@@ -97,6 +98,8 @@ protected:
 signals:
 
     void cameraInformationChanged();
+    void cameraInitialized();
+    void imageAcquired(const QImage*);
 
 private:
 

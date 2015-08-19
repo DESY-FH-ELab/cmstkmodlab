@@ -4,6 +4,7 @@
 #include <QMainWindow>
 #include <QTabWidget>
 #include <QDir>
+#include <QTimer>
 
 #ifdef USE_FAKEIO
 #include "AssemblyUEyeFakeModel.h"
@@ -26,7 +27,17 @@ public slots:
 
   void quit();
 
+  void testTimer();
+
   void test();
+
+  void cameraInitialized();
+  void imageAcquired(const QImage*);
+
+signals:
+
+  void initializeCamera();
+  void acquireImage();
 
 protected:
 
@@ -37,6 +48,11 @@ protected:
   AssemblyUEyeModel_t* uEyeModel_;
   AssemblyUEyeCameraThread* cameraThread_;
   AssemblyUEyeWidget* uEyeWidget_;
+
+  AssemblyUEyeCamera_t * camera_;
+
+  double testTimerCount_;
+  QTimer *testTimer_;
 };
 
 #endif // ASSEMBLYMAINWINDOW_H

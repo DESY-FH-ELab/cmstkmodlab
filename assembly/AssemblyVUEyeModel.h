@@ -41,6 +41,7 @@ protected:
 
     QMutex mutex_;
 
+    QVector<QThread*> threads_;
     QVector<AssemblyUEyeCamera_t*> cameras_;
     void clear();
 

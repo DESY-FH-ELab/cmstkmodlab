@@ -54,8 +54,14 @@ void AssemblyUEyeModel::updateInformation()
 
                 const UEYE_CAMERA_INFO* info = &(uEyeCameraList_->uci[idx]);
 
+                QThread * thread = new QThread();
+                threads_.push_back(thread);
+
                 AssemblyUEyeCamera_t* camera = new AssemblyUEyeCamera_t(0);
+                camera->moveToThread(thread);
                 cameras_.push_back(camera);
+                thread->start();
+
                 // fill cameras
 
                 camera->setCameraID(info->dwCameraID);
@@ -75,6 +81,7 @@ void AssemblyUEyeModel::updateInformation()
                 NQLog("AssemblyUEyeModel") << "sensor ID:       " << camera->getSensorID();
                 NQLog("AssemblyUEyeModel") << "status:          " << camera->getStatus();
 
+                /*
                 camera->initialize();
                 camera->updateInformation();
                 camera->exit();
@@ -93,6 +100,8 @@ void AssemblyUEyeModel::updateInformation()
                                                                   << camera->getBlueGain();
                 NQLog("AssemblyUEyeModel") << "global shutter:  " << camera->getGlobalShutter();
                 NQLog("AssemblyUEyeModel") << "pixel size:      " << camera->getPixelSize();
+
+                */
             }
 
             emit cameraCountChanged((unsigned int)dw);

@@ -42,5 +42,14 @@ void AssemblyVUEyeModel::clear()
         delete *it;
     }
     cameras_.clear();
+
+    for (QVector<QThread*>::iterator it = threads_.begin();
+         it != threads_.end();
+         ++it) {
+        (*it)->wait(1000);
+        delete *it;
+    }
+    threads_.clear();
+
 }
 
