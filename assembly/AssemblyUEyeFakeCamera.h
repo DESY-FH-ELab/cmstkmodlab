@@ -15,10 +15,10 @@ public:
 
 public slots:
 
-    void aquireImage();
     void open();
     void close();
 
+    void acquireImage();
 
 protected slots:
 

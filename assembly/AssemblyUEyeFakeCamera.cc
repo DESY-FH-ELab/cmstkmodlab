@@ -32,7 +32,7 @@ void AssemblyUEyeFakeCamera::close()
     emit cameraClosed();
 }
 
-void AssemblyUEyeFakeCamera::aquireImage()
+void AssemblyUEyeFakeCamera::acquireImage()
 {
 
 }
