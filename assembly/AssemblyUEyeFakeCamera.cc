@@ -5,13 +5,15 @@
 #include <QApplication>
 
 #include <nqlogger.h>
+#include <ApplicationConfig.h>
 
 #include "AssemblyUEyeFakeCamera.h"
 
 AssemblyUEyeFakeCamera::AssemblyUEyeFakeCamera(QObject *parent)
     : AssemblyVUEyeCamera(parent)
 {
-
+    QString filename(Config::CMSTkModLabBasePath.c_str());
+    image_ = QImage(filename +  + "/share/assembly/SensorMarker1.png");
 }
 
 AssemblyUEyeFakeCamera::~AssemblyUEyeFakeCamera()
