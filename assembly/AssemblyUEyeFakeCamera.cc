@@ -10,12 +10,15 @@
 #include "AssemblyUEyeFakeCamera.h"
 
 AssemblyUEyeFakeCamera::AssemblyUEyeFakeCamera(QObject *parent)
-    : AssemblyVUEyeCamera(parent)
+    : AssemblyVUEyeCamera(parent),
+      imageIndex_(0)
 {
     cameraOpen_ = false;
 
     QString filename(Config::CMSTkModLabBasePath.c_str());
-    image_ = QImage(filename +  + "/share/assembly/SensorMarker1.png");
+    image_[0] = QImage(filename +  + "/share/assembly/SensorMarker1.png");
+    image_[1] = QImage(filename +  + "/share/assembly/SensorMarker2.png");
+    image_[2] = QImage(filename +  + "/share/assembly/SensorMarker3.png");
 }
 
 AssemblyUEyeFakeCamera::~AssemblyUEyeFakeCamera()
@@ -81,5 +84,7 @@ void AssemblyUEyeFakeCamera::acquireImage()
 
     usleep(300000);
 
-    emit imageAcquired(&image_);
+    emit imageAcquired(image_[imageIndex_++]);
+
+    if (imageIndex_==3) imageIndex_ = 0;
 }

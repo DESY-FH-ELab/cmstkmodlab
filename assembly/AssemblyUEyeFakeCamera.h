@@ -24,11 +24,12 @@ protected slots:
 
 protected:
 
+    QImage image_[3];
+    unsigned int imageIndex_;
+
 signals:
 
 private:
-
-    QImage image_;
 };
 
 #endif // ASSEMBLYUEYEFAKECAMERA_H
