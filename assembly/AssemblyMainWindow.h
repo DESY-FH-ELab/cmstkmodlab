@@ -40,7 +40,7 @@ public slots:
 
   void cameraOpened();
   void cameraClosed();
-  void imageAcquired(const QImage*);
+  void imageAcquired(const QImage&);
 
 signals:
 
