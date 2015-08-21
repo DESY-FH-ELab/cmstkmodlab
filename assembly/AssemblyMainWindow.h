@@ -45,6 +45,7 @@ public slots:
 signals:
 
   void openCamera();
+  void closeCamera();
   void acquireImage();
 
 protected:
