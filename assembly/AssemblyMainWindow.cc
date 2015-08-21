@@ -18,6 +18,11 @@ AssemblyMainWindow::AssemblyMainWindow(QWidget *parent) :
 {
     ApplicationConfig* config = ApplicationConfig::instance();
 
+    toolBar_ = addToolBar("Tools");
+    toolBar_->addAction("open", this, SLOT(onOpenCamera()));
+    toolBar_->addAction("close", this, SLOT(onCloseCamera()));
+    toolBar_->addAction("snapshot", this, SLOT(onSnapShot()));
+
     tabWidget_ = new QTabWidget(this);
     tabWidget_->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);
 
