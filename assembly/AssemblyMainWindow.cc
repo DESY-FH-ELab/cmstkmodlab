@@ -165,6 +165,10 @@ void AssemblyMainWindow::quit()
     NQLog("AssemblyMainWindow") << "quit";
 
     if (camera_) {
+        emit closeCamera();
+        camera_ = 0;
+    }
+
     if (cameraThread_) {
         if (cameraThread_->wait(2000) == false)
             cameraThread_->terminate();
