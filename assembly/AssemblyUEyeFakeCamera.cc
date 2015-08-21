@@ -12,13 +12,15 @@
 AssemblyUEyeFakeCamera::AssemblyUEyeFakeCamera(QObject *parent)
     : AssemblyVUEyeCamera(parent)
 {
+    cameraOpen_ = false;
+
     QString filename(Config::CMSTkModLabBasePath.c_str());
     image_ = QImage(filename +  + "/share/assembly/SensorMarker1.png");
 }
 
 AssemblyUEyeFakeCamera::~AssemblyUEyeFakeCamera()
 {
-
+    if (cameraOpen_) close();
 }
 
 void AssemblyUEyeFakeCamera::updateInformation()
@@ -28,6 +30,10 @@ void AssemblyUEyeFakeCamera::updateInformation()
 
 void AssemblyUEyeFakeCamera::open()
 {
+    if (cameraOpen_) return;
+
+    NQLog("AssemblyUEyeFakeCamera") << ":open()";
+
     setID("IDS GmbH");
     setVersion("");
     setDate("17.04.2015");
@@ -49,19 +55,31 @@ void AssemblyUEyeFakeCamera::open()
 
     usleep(1000);
 
+    cameraOpen_ = true;
+
     emit cameraOpened();
 }
 
 void AssemblyUEyeFakeCamera::close()
 {
-    usleep(1000);
+    if (!cameraOpen_) return;
+
+    NQLog("AssemblyUEyeFakeCamera") << ":close()";
+
+    usleep(500000);
+
+    cameraOpen_ = false;
 
     emit cameraClosed();
 }
 
 void AssemblyUEyeFakeCamera::acquireImage()
 {
-    usleep(300);
+    if (!cameraOpen_) return;
+
+    NQLog("AssemblyUEyeFakeCamera") << ":acquireImage()";
+
+    usleep(300000);
 
     emit imageAcquired(&image_);
 }

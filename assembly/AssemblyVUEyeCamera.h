@@ -59,6 +59,7 @@ public:
 
     virtual void updateInformation() = 0;
     virtual bool isAvailable() const = 0;
+    virtual bool isOpen() const { return cameraOpen_; }
 
 public slots:
 
@@ -94,6 +95,8 @@ protected:
     bool blueGain_;
     bool globalShutter_;
     unsigned int pixelSize_;
+
+    bool cameraOpen_;
 
 signals:
 

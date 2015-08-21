@@ -53,6 +53,8 @@ void AssemblyUEyeCameraEventThread::run ()
 AssemblyUEyeCamera::AssemblyUEyeCamera(QObject *parent)
     : AssemblyVUEyeCamera(parent)
 {
+    cameraOpen_ = false;
+
     bufferProps_.width = 0;
     bufferProps_.height = 0;
     bufferProps_.bitspp = 8;
@@ -69,11 +71,13 @@ AssemblyUEyeCamera::AssemblyUEyeCamera(QObject *parent)
 
 AssemblyUEyeCamera::~AssemblyUEyeCamera()
 {
-
+    if (cameraOpen_) close();
 }
 
 void AssemblyUEyeCamera::open()
 {
+    if (cameraOpen_) return;
+
     cameraHandle_ = getDeviceID();
     unsigned int ret = is_InitCamera(&cameraHandle_, 0);
     NQLog("AssemblyUEyeCamera::initialize()", NQLog::Message) << "is_InitCamera " << ret;
@@ -169,11 +173,15 @@ void AssemblyUEyeCamera::open()
             this, SLOT(eventHappend()));
     eventThread_->start(cameraHandle_);
 
+    cameraOpen_ = true;
+
     emit cameraOpened();
 }
 
 void AssemblyUEyeCamera::close()
 {
+    if (!cameraOpen_) return;
+
     eventThread_->stop();
 
     freeImages();
@@ -184,11 +192,15 @@ void AssemblyUEyeCamera::close()
     unsigned int ret = is_ExitCamera(cameraHandle_);
     NQLog("AssemblyUEyeCamera::exit()", NQLog::Message) << "is_ExitCamera "  << ret;
 
+    cameraOpen_ = false;
+
     emit cameraClosed();
 }
 
 void AssemblyUEyeCamera::updateInformation()
 {
+    if (!cameraOpen_) return;
+
     CAMINFO* cameraInfo = new CAMINFO;
     if (!is_GetCameraInfo(cameraHandle_, cameraInfo)) {
 
@@ -278,6 +290,8 @@ void AssemblyUEyeCamera::eventHappend()
 
 void AssemblyUEyeCamera::acquireImage()
 {
+    if (!cameraOpen_) return;
+
     NQLog("AssemblyUEyeCamera::aquireImage()", NQLog::Message) << "is_FreezeVideo";
     unsigned int ret = is_FreezeVideo(cameraHandle_, IS_DONT_WAIT);
     NQLog("AssemblyUEyeCamera::aquireImage()", NQLog::Message) << "is_FreezeVideo " << ret;

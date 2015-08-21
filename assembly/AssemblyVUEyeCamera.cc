@@ -7,7 +7,8 @@
 #include "AssemblyVUEyeCamera.h"
 
 AssemblyVUEyeCamera::AssemblyVUEyeCamera(QObject *parent)
-    : QObject(parent)
+    : QObject(parent),
+      cameraOpen_(false)
 {
 
 }
