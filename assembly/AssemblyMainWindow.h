@@ -5,6 +5,7 @@
 #include <QTabWidget>
 #include <QDir>
 #include <QTimer>
+#include <QScrollArea>
 
 #ifdef USE_FAKEIO
 #include "AssemblyUEyeFakeModel.h"
@@ -16,6 +17,7 @@ typedef AssemblyUEyeModel AssemblyUEyeModel_t;
 
 #include "AssemblyUEyeCameraThread.h"
 #include "AssemblyUEyeWidget.h"
+#include "AssemblyUEyeView.h"
 
 class AssemblyMainWindow : public QMainWindow
 {
@@ -45,6 +47,9 @@ protected:
   QDir currentDir_;
 
   QTabWidget* tabWidget_;
+
+  QScrollArea* scrollArea_;
+  AssemblyUEyeView* imageView_;
 
   AssemblyUEyeModel_t* uEyeModel_;
   AssemblyUEyeCameraThread* cameraThread_;

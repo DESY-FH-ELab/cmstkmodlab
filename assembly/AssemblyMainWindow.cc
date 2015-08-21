@@ -6,6 +6,7 @@
 #include <QGroupBox>
 #include <QFileDialog>
 #include <QApplication>
+#include <QPalette>
 
 #include <nqlogger.h>
 #include <ApplicationConfig.h>
@@ -19,6 +20,26 @@ AssemblyMainWindow::AssemblyMainWindow(QWidget *parent) :
 
     tabWidget_ = new QTabWidget(this);
     tabWidget_->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);
+
+    QPalette palette;
+    palette.setColor(QPalette::Background, QColor(220, 220, 220));
+
+    imageView_ = new AssemblyUEyeView();
+    imageView_->setMinimumSize(500, 500);
+    imageView_->setPalette(palette);
+    imageView_->setBackgroundRole(QPalette::Background);
+    //imageView_->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
+    imageView_->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+    imageView_->setScaledContents(true);
+    imageView_->setAlignment(Qt::AlignCenter);
+
+    scrollArea_ = new QScrollArea(tabWidget_);
+    scrollArea_->setPalette(palette);
+    scrollArea_->setBackgroundRole(QPalette::Background);
+    scrollArea_->setAlignment(Qt::AlignCenter);
+    scrollArea_->setWidget(imageView_);
+
+    tabWidget_->addTab(scrollArea_, "image");
 
     uEyeModel_ = new AssemblyUEyeModel_t(10);
     cameraThread_ = new AssemblyUEyeCameraThread(uEyeModel_, this);
