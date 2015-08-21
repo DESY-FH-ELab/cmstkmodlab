@@ -285,7 +285,7 @@ void AssemblyUEyeCamera::eventHappend()
 
     is_UnlockSeqBuf(cameraHandle_, nNum, lastBuffer_);
 
-    emit imageAcquired(&image_);
+    emit imageAcquired(image_);
 }
 
 void AssemblyUEyeCamera::acquireImage()
