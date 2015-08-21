@@ -19,33 +19,11 @@ AssemblyMainWindow::AssemblyMainWindow(QWidget *parent) :
 {
     ApplicationConfig* config = ApplicationConfig::instance();
 
-    toolBar_ = addToolBar("Tools");
-    toolBar_->addAction("open", this, SLOT(onOpenCamera()));
-    toolBar_->addAction("close", this, SLOT(onCloseCamera()));
-    toolBar_->addAction("snapshot", this, SLOT(onSnapShot()));
-
     tabWidget_ = new QTabWidget(this);
     tabWidget_->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);
 
-    QPalette palette;
-    palette.setColor(QPalette::Background, QColor(220, 220, 220));
-
-    imageView_ = new AssemblyUEyeView();
-    imageView_->setMinimumSize(500, 500);
-    imageView_->setPalette(palette);
-    imageView_->setBackgroundRole(QPalette::Background);
-    //imageView_->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
-    imageView_->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-    imageView_->setScaledContents(true);
-    imageView_->setAlignment(Qt::AlignCenter);
-
-    scrollArea_ = new QScrollArea(tabWidget_);
-    scrollArea_->setPalette(palette);
-    scrollArea_->setBackgroundRole(QPalette::Background);
-    scrollArea_->setAlignment(Qt::AlignCenter);
-    scrollArea_->setWidget(imageView_);
-
-    tabWidget_->addTab(scrollArea_, "image");
+    snapShooter_ = new AssemblyUEyeSnapShooter(tabWidget_);
+    tabWidget_->addTab(snapShooter_, "snapshot");
 
     uEyeModel_ = new AssemblyUEyeModel_t(10);
     cameraThread_ = new AssemblyUEyeCameraThread(uEyeModel_, this);
@@ -58,6 +36,11 @@ AssemblyMainWindow::AssemblyMainWindow(QWidget *parent) :
     connect(QApplication::instance(), SIGNAL(aboutToQuit()),
             this, SLOT(quit()));
 
+    toolBar_ = addToolBar("Tools");
+    toolBar_->addAction("open", this, SLOT(onOpenCamera()));
+    toolBar_->addAction("close", this, SLOT(onCloseCamera()));
+    toolBar_->addAction("snapshot", snapShooter_, SLOT(snapShot()));
+
     setCentralWidget(tabWidget_);
     updateGeometry();
 
@@ -68,12 +51,19 @@ AssemblyMainWindow::AssemblyMainWindow(QWidget *parent) :
     testTimer_ = new QTimer(this);
     connect(testTimer_, SIGNAL(timeout()), this, SLOT(testTimer()));
     testTimer_->start(100);
-
-    QTimer::singleShot(1, uEyeModel_, SLOT(updateInformation()));
-    QTimer::singleShot(2000, this, SLOT(test()));
     */
 
+    liveTimer_ = new QTimer(this);
+    connect(liveTimer_, SIGNAL(timeout()), this, SLOT(liveUpdate()));
+
     QTimer::singleShot(1, uEyeModel_, SLOT(updateInformation()));
+}
+
+void AssemblyMainWindow::liveUpdate()
+{
+    NQLog("AssemblyMainWindow") << ":liveUpdate()";
+
+    emit acquireImage();
 }
 
 void AssemblyMainWindow::onOpenCamera()
@@ -92,8 +82,11 @@ void AssemblyMainWindow::onOpenCamera()
             this, SLOT(cameraOpened()));
     connect(camera_, SIGNAL(cameraClosed()),
             this, SLOT(cameraClosed()));
+
+    /*
     connect(camera_, SIGNAL(imageAcquired(const QImage&)),
             this, SLOT(imageAcquired(const QImage&)));
+    */
 
     emit openCamera();
 }
@@ -105,59 +98,26 @@ void AssemblyMainWindow::onCloseCamera()
     emit closeCamera();
 }
 
-void AssemblyMainWindow::onSnapShot()
-{
-    NQLog("AssemblyMainWindow") << ":onSnapShot()";
-
-    emit acquireImage();
-}
-
 void AssemblyMainWindow::testTimer()
 {
     NQLog("AssemblyMainWindow") << "timeOut = " << testTimerCount_;
     testTimerCount_ += 0.1;
 }
 
-void AssemblyMainWindow::test()
-{
-    camera_ = uEyeModel_->getCamera(0);
-
-    connect(this, SIGNAL(openCamera()),
-            camera_, SLOT(open()));
-    connect(this, SIGNAL(closeCamera()),
-            camera_, SLOT(close()));
-    connect(this, SIGNAL(acquireImage()),
-            camera_, SLOT(acquireImage()));
-    connect(camera_, SIGNAL(cameraOpened()),
-            this, SLOT(cameraOpened()));
-    connect(camera_, SIGNAL(cameraClosed()),
-            this, SLOT(cameraClosed()));
-    connect(camera_, SIGNAL(imageAcquired(const QImage&)),
-            this, SLOT(imageAcquired(const QImage&)));
-
-    emit openCamera();
-}
-
 void AssemblyMainWindow::cameraOpened()
 {
     NQLog("AssemblyMainWindow") << ":cameraOpened()";
 
-    /*
-    emit acquireImage();
-    */
+    snapShooter_->connectCamera(camera_);
+    liveTimer_->start(1000);
 }
 
 void AssemblyMainWindow::cameraClosed()
 {
     NQLog("AssemblyMainWindow") << ":cameraClosed()";
-}
 
-void AssemblyMainWindow::imageAcquired(const QImage& image)
-{
-    NQLog("AssemblyMainWindow") << "image acquired";
-
-    imageView_->setImage(image);
-    //image->save("test.jpg");
+    snapShooter_->disconnectCamera(camera_);
+    liveTimer_->stop();
 }
 
 void AssemblyMainWindow::quit()

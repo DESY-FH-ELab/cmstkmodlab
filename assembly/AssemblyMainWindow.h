@@ -19,6 +19,7 @@ typedef AssemblyUEyeModel AssemblyUEyeModel_t;
 #include "AssemblyUEyeCameraThread.h"
 #include "AssemblyUEyeWidget.h"
 #include "AssemblyUEyeView.h"
+#include "AssemblyUEyeSnapShooter.h"
 
 class AssemblyMainWindow : public QMainWindow
 {
@@ -31,21 +32,22 @@ public slots:
   void quit();
 
   void testTimer();
-  void test();
 
   void onOpenCamera();
   void onCloseCamera();
-  void onSnapShot();
 
   void cameraOpened();
   void cameraClosed();
-  void imageAcquired(const QImage&);
 
 signals:
 
   void openCamera();
   void closeCamera();
   void acquireImage();
+
+protected slots:
+
+  void liveUpdate();
 
 protected:
 
@@ -55,8 +57,7 @@ protected:
 
   QTabWidget* tabWidget_;
 
-  QScrollArea* scrollArea_;
-  AssemblyUEyeView* imageView_;
+  AssemblyUEyeSnapShooter* snapShooter_;
 
   AssemblyUEyeModel_t* uEyeModel_;
   AssemblyUEyeCameraThread* cameraThread_;
@@ -66,6 +67,8 @@ protected:
 
   double testTimerCount_;
   QTimer *testTimer_;
+
+  QTimer *liveTimer_;
 };
 
 #endif // ASSEMBLYMAINWINDOW_H

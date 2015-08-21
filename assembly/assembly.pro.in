@@ -35,7 +35,8 @@ HEADERS += AssemblyMainWindow.h \
            AssemblyUEyeCameraThread.h \
            AssemblyUEyeWidget.h \
            AssemblyUEyeCameraWidget.h \
-           AssemblyUEyeView.h
+           AssemblyUEyeView.h \
+           AssemblyUEyeSnapShooter.h
 
 equals(USEFAKEDEVICES,"X0") {
 HEADERS += AssemblyUEyeCamera.h \
@@ -52,7 +53,8 @@ SOURCES += assembly.cc \
            AssemblyUEyeCameraThread.cc \
            AssemblyUEyeWidget.cc \
            AssemblyUEyeCameraWidget.cc \
-           AssemblyUEyeView.cc
+           AssemblyUEyeView.cc \
+           AssemblyUEyeSnapShooter.cc
 
 equals(USEFAKEDEVICES,"X0") {
 SOURCES += AssemblyUEyeCamera.cc \

@@ -7,8 +7,24 @@
 #include "AssemblyUEyeView.h"
 
 AssemblyUEyeView::AssemblyUEyeView(QWidget *parent)
-    : QLabel(parent)
+    : QLabel(parent),
+      camera_(0)
 {
+
+}
+
+void AssemblyUEyeView::connectCamera(AssemblyUEyeCamera_t* camera)
+{
+    camera_ = camera;
+
+    connect(camera_, SIGNAL(imageAcquired(const QImage&)),
+            this, SLOT(setImage(const QImage&)));
+}
+
+void AssemblyUEyeView::disconnectCamera(AssemblyUEyeCamera_t* camera)
+{
+    disconnect(SIGNAL(imageAcquired(const QImage&)),
+               this, SLOT(setImage(const QImage&)));
 
 }
 
