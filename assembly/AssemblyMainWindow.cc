@@ -14,7 +14,8 @@
 #include "AssemblyMainWindow.h"
 
 AssemblyMainWindow::AssemblyMainWindow(QWidget *parent) :
-    QMainWindow(parent)
+    QMainWindow(parent),
+    camera_(0)
 {
     ApplicationConfig* config = ApplicationConfig::instance();
 
@@ -62,6 +63,7 @@ AssemblyMainWindow::AssemblyMainWindow(QWidget *parent) :
 
     NQLog("AssemblyMainWindow") << "main window constructed";
 
+    /*
     testTimerCount_ = 0;
     testTimer_ = new QTimer(this);
     connect(testTimer_, SIGNAL(timeout()), this, SLOT(testTimer()));
@@ -69,6 +71,11 @@ AssemblyMainWindow::AssemblyMainWindow(QWidget *parent) :
 
     QTimer::singleShot(1, uEyeModel_, SLOT(updateInformation()));
     QTimer::singleShot(2000, this, SLOT(test()));
+    */
+
+    QTimer::singleShot(1, uEyeModel_, SLOT(updateInformation()));
+}
+
 void AssemblyMainWindow::onOpenCamera()
 {
     NQLog("AssemblyMainWindow") << ":onOpenCamera()";
