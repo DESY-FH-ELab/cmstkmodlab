@@ -64,6 +64,40 @@ AssemblyMainWindow::AssemblyMainWindow(QWidget *parent) :
 
     QTimer::singleShot(1, uEyeModel_, SLOT(updateInformation()));
     QTimer::singleShot(2000, this, SLOT(test()));
+void AssemblyMainWindow::onOpenCamera()
+{
+    NQLog("AssemblyMainWindow") << ":onOpenCamera()";
+
+    camera_ = uEyeModel_->getCamera(0);
+
+    connect(this, SIGNAL(openCamera()),
+            camera_, SLOT(open()));
+    connect(this, SIGNAL(closeCamera()),
+            camera_, SLOT(close()));
+    connect(this, SIGNAL(acquireImage()),
+            camera_, SLOT(acquireImage()));
+    connect(camera_, SIGNAL(cameraOpened()),
+            this, SLOT(cameraOpened()));
+    connect(camera_, SIGNAL(cameraClosed()),
+            this, SLOT(cameraClosed()));
+    connect(camera_, SIGNAL(imageAcquired(const QImage&)),
+            this, SLOT(imageAcquired(const QImage&)));
+
+    emit openCamera();
+}
+
+void AssemblyMainWindow::onCloseCamera()
+{
+    NQLog("AssemblyMainWindow") << ":onCloseCamera()";
+
+    emit closeCamera();
+}
+
+void AssemblyMainWindow::onSnapShot()
+{
+    NQLog("AssemblyMainWindow") << ":onSnapShot()";
+
+    emit acquireImage();
 }
 
 void AssemblyMainWindow::testTimer()

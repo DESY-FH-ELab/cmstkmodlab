@@ -5,6 +5,7 @@
 #include <QTabWidget>
 #include <QDir>
 #include <QTimer>
+#include <QToolBar>
 #include <QScrollArea>
 
 #ifdef USE_FAKEIO
@@ -33,6 +34,10 @@ public slots:
 
   void test();
 
+  void onOpenCamera();
+  void onCloseCamera();
+  void onSnapShot();
+
   void cameraOpened();
   void cameraClosed();
   void imageAcquired(const QImage*);
@@ -45,6 +50,8 @@ signals:
 protected:
 
   QDir currentDir_;
+
+  QToolBar* toolBar_;
 
   QTabWidget* tabWidget_;
 
