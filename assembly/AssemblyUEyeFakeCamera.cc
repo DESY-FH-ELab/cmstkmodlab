@@ -53,7 +53,7 @@ void AssemblyUEyeFakeCamera::open()
 
     emit cameraInformationChanged();
 
-    usleep(1000);
+    usleep(500000);
 
     cameraOpen_ = true;
 
