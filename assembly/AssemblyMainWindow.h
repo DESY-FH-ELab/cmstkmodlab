@@ -31,7 +31,6 @@ public slots:
   void quit();
 
   void testTimer();
-
   void test();
 
   void onOpenCamera();

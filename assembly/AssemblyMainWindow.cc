@@ -124,39 +124,47 @@ void AssemblyMainWindow::test()
 
     connect(this, SIGNAL(openCamera()),
             camera_, SLOT(open()));
+    connect(this, SIGNAL(closeCamera()),
+            camera_, SLOT(close()));
     connect(this, SIGNAL(acquireImage()),
             camera_, SLOT(acquireImage()));
     connect(camera_, SIGNAL(cameraOpened()),
             this, SLOT(cameraOpened()));
-    connect(camera_, SIGNAL(imageAcquired(const QImage*)),
-            this, SLOT(imageAcquired(const QImage*)));
+    connect(camera_, SIGNAL(cameraClosed()),
+            this, SLOT(cameraClosed()));
+    connect(camera_, SIGNAL(imageAcquired(const QImage&)),
+            this, SLOT(imageAcquired(const QImage&)));
 
     emit openCamera();
 }
 
 void AssemblyMainWindow::cameraOpened()
 {
-    NQLog("AssemblyMainWindow") << "camera opened";
+    NQLog("AssemblyMainWindow") << ":cameraOpened()";
 
+    /*
     emit acquireImage();
+    */
 }
 
 void AssemblyMainWindow::cameraClosed()
 {
-    NQLog("AssemblyMainWindow") << "camera closed";
+    NQLog("AssemblyMainWindow") << ":cameraClosed()";
 }
 
-void AssemblyMainWindow::imageAcquired(const QImage* image)
+void AssemblyMainWindow::imageAcquired(const QImage& image)
 {
     NQLog("AssemblyMainWindow") << "image acquired";
 
-    image->save("test.jpg");
+    imageView_->setImage(image);
+    //image->save("test.jpg");
 }
 
 void AssemblyMainWindow::quit()
 {
     NQLog("AssemblyMainWindow") << "quit";
 
+    if (camera_) {
     if (cameraThread_) {
         if (cameraThread_->wait(2000) == false)
             cameraThread_->terminate();
