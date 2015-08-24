@@ -50,6 +50,5 @@ void AssemblyVUEyeModel::clear()
         delete *it;
     }
     threads_.clear();
-
 }
 
