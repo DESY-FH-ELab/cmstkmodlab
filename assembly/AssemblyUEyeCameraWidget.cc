@@ -4,7 +4,7 @@
 
 #include "AssemblyUEyeCameraWidget.h"
 
-AssemblyUEyeCameraWidget::AssemblyUEyeCameraWidget(AssemblyUEyeCamera_t* camera,
+AssemblyUEyeCameraWidget::AssemblyUEyeCameraWidget(AssemblyVUEyeCamera* camera,
                                                    QWidget *parent)
     : QToolBox(parent),
       camera_(camera)
@@ -24,7 +24,7 @@ void AssemblyUEyeCameraWidget::cameraInformationChanged()
     NQLog("AssemblyUEyeCameraWidget") << "update information";
 }
 
-AssemblyUEyeCameraGeneralWidget::AssemblyUEyeCameraGeneralWidget(AssemblyUEyeCamera_t* camera,
+AssemblyUEyeCameraGeneralWidget::AssemblyUEyeCameraGeneralWidget(AssemblyVUEyeCamera* camera,
                                                                  QWidget *parent)
     : QWidget(parent),
       camera_(camera)
@@ -84,7 +84,7 @@ void AssemblyUEyeCameraGeneralWidget::cameraInformationChanged()
     dateLabel_->setText(camera_->getDate());
 }
 
-AssemblyUEyeCameraSensorWidget::AssemblyUEyeCameraSensorWidget(AssemblyUEyeCamera_t* camera,
+AssemblyUEyeCameraSensorWidget::AssemblyUEyeCameraSensorWidget(AssemblyVUEyeCamera* camera,
                                                                  QWidget *parent)
     : QWidget(parent),
       camera_(camera)
