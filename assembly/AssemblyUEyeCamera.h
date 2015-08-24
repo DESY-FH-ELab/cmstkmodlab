@@ -50,6 +50,8 @@ public:
     ~AssemblyUEyeCamera();
 
     void updateInformation();
+    void updatePixelClock();
+
     bool isAvailable() const;
 
 public slots:
@@ -71,6 +73,7 @@ protected:
     bool allocImages();
     bool freeImages();
     int getImageNumber(char * pBuffer);
+    unsigned int readPixelClock(unsigned int);
 
 signals:
 

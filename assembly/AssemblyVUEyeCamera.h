@@ -57,7 +57,13 @@ public:
     bool getGlobalShutter() const { return globalShutter_; }
     unsigned int getPixelSize() const { return pixelSize_; }
 
+    size_t getNumberOfPixelClocks() const { return pixelClocks_.size(); }
+    const std::vector<unsigned int>& getPixelClockList() const { return pixelClocks_; }
+    unsigned int getCurrentPixelClock() const { return currentPixelClock_; }
+
     virtual void updateInformation() = 0;
+    virtual void updatePixelClock() = 0;
+
     virtual bool isAvailable() const = 0;
     virtual bool isOpen() const { return cameraOpen_; }
 
@@ -96,6 +102,10 @@ protected:
     bool globalShutter_;
     unsigned int pixelSize_;
 
+    std::vector<unsigned int> pixelClocks_;
+    unsigned int currentPixelClock_;
+    size_t getCurrentPixelClockIndex() const;
+
     bool cameraOpen_;
 
 signals:
@@ -104,6 +114,9 @@ signals:
 
     void cameraOpened();
     void cameraClosed();
+
+    void pixelClockChanged();
+    void pixelClockListChanged();
 
     void imageAcquired(const QImage&);
 

@@ -233,6 +233,100 @@ void AssemblyUEyeCamera::updateInformation()
     }
 
     delete sensorInfo;
+
+    updatePixelClock();
+}
+
+void AssemblyUEyeCamera::updatePixelClock()
+{
+    UINT nRange[3];
+
+    ZeroMemory(nRange, sizeof(nRange));
+
+    UINT nMin = 0;
+    UINT nMax = 0;
+    UINT nInc = 0;
+
+    INT nRet = is_PixelClock(handle, IS_PIXELCLOCK_CMD_GET_RANGE, (void*)nRange, sizeof(nRange));
+
+    if (nRet == IS_SUCCESS) {
+      nMin = nRange[0];
+      nMax = nRange[1];
+      nInc = nRange[2];
+    }
+
+    if (nMin!=0) {
+
+        bool listChanged = false;
+        bool valueChanged = false;
+
+        std::vector<unsigned int> newPixelClocks;
+        unsigned int newPixelClock;
+
+        for (UINT f=nMin;f<=nMax;f+=nInc) newPixelClocks.push_back(f);
+        newPixelClock = readPixelClock(handle);
+
+        if (newPixelClocks!=pixelClocks_) listChanged = true;
+        if (newPixelClock!=currentPixelClock_) valueChanged = true;
+
+        pixelClocks_ = newPixelClocks;
+        currentPixelClock_ = newPixelClock;
+
+        if (listChanged) emit pixelClockListChanged();
+        if (valueChanged) emit pixelClockChanged();
+
+    } else {
+
+        UINT nNumberOfSupportedPixelClocks = 0;
+
+        INT nRet = is_PixelClock(handle, IS_PIXELCLOCK_CMD_GET_NUMBER,
+                                 (void*)&nNumberOfSupportedPixelClocks,
+                                 sizeof(nNumberOfSupportedPixelClocks));
+
+        if ((nRet == IS_SUCCESS) && (nNumberOfSupportedPixelClocks > 0)) {
+
+            // No camera has more than 150 different pixel clocks.
+            // Of course, the list can be allocated dynamically
+
+            UINT nPixelClockList[150];
+
+            ZeroMemory(&nPixelClockList, sizeof(nPixelClockList));
+
+            nRet = is_PixelClock(handle, IS_PIXELCLOCK_CMD_GET_LIST,
+                                 (void*)nPixelClockList,
+                                 nNumberOfSupportedPixelClocks * sizeof(UINT));
+
+            if ((nRet == IS_SUCCESS)) {
+
+                bool listChanged = false;
+                bool valueChanged = false;
+
+                std::vector<unsigned int> newPixelClocks;
+                unsigned int newPixelClock;
+
+                for (unsigned int idx=0;idx<nNumberOfSupportedPixelClocks;idx++)
+                    newPixelClocks.push_back(nPixelClockList[idx]);
+                newPixelClock = readPixelClock(handle);
+
+                if (newPixelClocks!=pixelClocks_) listChanged = true;
+                if (newPixelClock!=currentPixelClock_) valueChanged = true;
+
+                pixelClocks_ = newPixelClocks;
+                currentPixelClock_ = newPixelClock;
+
+                if (listChanged) emit pixelClockListChanged();
+                if (valueChanged) emit pixelClockChanged();
+
+            } else {
+                pixelClocks_.clear();
+                pixelClocks_.push_back(0);
+                currentPixelClockIndex_ = 0;
+
+                emit pixelClockListChanged();
+                emit pixelClockChanged();
+            }
+        }
+    }
 }
 
 bool AssemblyUEyeCamera::isAvailable() const
@@ -412,6 +506,16 @@ int AssemblyUEyeCamera::getBitsPerPixel(int colormode)
     case IS_CM_BGR10_PACKED:
         return 32;
     }
+}
+
+unsigned int AssemblyUEyeCamera::readPixelClock(unsigned int handle)
+{
+    UINT nPixelClock;
+
+    // Get current pixel clock
+    nRet = is_PixelClock(handle, IS_PIXELCLOCK_CMD_GET, (void*)&nPixelClock, sizeof(nPixelClock));
+
+    return nPixelClock;
 }
 
 bool AssemblyUEyeCamera::allocImages()

@@ -56,11 +56,23 @@ void AssemblyUEyeFakeCamera::open()
 
     emit cameraInformationChanged();
 
+    updatePixelClock();
+
     usleep(500000);
 
     cameraOpen_ = true;
 
     emit cameraOpened();
+}
+
+void AssemblyUEyeFakeCamera::updatePixelClock()
+{
+    pixelClocks_.clear();
+    for (unsigned int f=12;f<54;f+=2) {
+        pixelClocks_.push_back(f);
+    }
+    currentPixelClock_ = pixelClocks_[getNumberOfPixelClocks() / 2];
+
 }
 
 void AssemblyUEyeFakeCamera::close()

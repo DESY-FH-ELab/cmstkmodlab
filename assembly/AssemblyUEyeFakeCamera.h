@@ -11,6 +11,8 @@ public:
     ~AssemblyUEyeFakeCamera();
 
     void updateInformation();
+    void updatePixelClock();
+
     bool isAvailable() const { return true; }
 
 public slots:
