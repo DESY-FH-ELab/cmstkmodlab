@@ -8,6 +8,8 @@
 #include <QToolBar>
 #include <QScrollArea>
 
+#include "AssemblyVUEyeCamera.h"
+
 #ifdef USE_FAKEIO
 #include "AssemblyUEyeFakeModel.h"
 typedef AssemblyUEyeFakeModel AssemblyUEyeModel_t;
@@ -63,7 +65,7 @@ protected:
   AssemblyUEyeCameraThread* cameraThread_;
   AssemblyUEyeWidget* uEyeWidget_;
 
-  AssemblyUEyeCamera_t * camera_;
+  AssemblyVUEyeCamera * camera_;
 
   double testTimerCount_;
   QTimer *testTimer_;

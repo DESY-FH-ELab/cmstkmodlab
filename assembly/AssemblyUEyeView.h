@@ -4,13 +4,7 @@
 #include <QLabel>
 #include <QImage>
 
-#ifdef USE_FAKEIO
-#include "AssemblyUEyeFakeCamera.h"
-typedef AssemblyUEyeFakeCamera AssemblyUEyeCamera_t;
-#else
-#include "AssemblyUEyeCamera.h"
-typedef AssemblyUEyeCamera AssemblyUEyeCamera_t;
-#endif
+#include "AssemblyVUEyeCamera.h"
 
 class AssemblyUEyeView : public QLabel
 {
@@ -18,14 +12,14 @@ class AssemblyUEyeView : public QLabel
 public:
   explicit AssemblyUEyeView(QWidget *parent = 0);
 
-    void connectCamera(AssemblyUEyeCamera_t* camera);
-    void disconnectCamera(AssemblyUEyeCamera_t* camera);
+    void connectCamera(AssemblyVUEyeCamera* camera);
+    void disconnectCamera(AssemblyVUEyeCamera* camera);
 
 protected:
 
     void paintEvent(QPaintEvent*);
 
-  AssemblyUEyeCamera_t* camera_;
+  AssemblyVUEyeCamera *camera_;
 
   QImage image_;
 

@@ -4,13 +4,7 @@
 #include <QWidget>
 #include <QScrollArea>
 
-#ifdef USE_FAKEIO
-#include "AssemblyUEyeFakeCamera.h"
-typedef AssemblyUEyeFakeCamera AssemblyUEyeCamera_t;
-#else
-#include "AssemblyUEyeCamera.h"
-typedef AssemblyUEyeCamera AssemblyUEyeCamera_t;
-#endif
+#include "AssemblyVUEyeCamera.h"
 
 #include <AssemblyUEyeView.h>
 
@@ -21,12 +15,12 @@ public:
 
   explicit AssemblyUEyeSnapShooter(QWidget *parent = 0);
 
-    void connectCamera(AssemblyUEyeCamera_t* camera);
-    void disconnectCamera(AssemblyUEyeCamera_t* camera);
+    void connectCamera(AssemblyVUEyeCamera *camera);
+    void disconnectCamera(AssemblyVUEyeCamera *camera);
 
 protected:
 
-  AssemblyUEyeCamera_t* camera_;
+  AssemblyVUEyeCamera* camera_;
 
   QScrollArea *scrollArea_;
   AssemblyUEyeView *imageView_;

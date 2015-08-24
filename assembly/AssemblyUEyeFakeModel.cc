@@ -4,6 +4,7 @@
 
 #include <nqlogger.h>
 
+#include "AssemblyUEyeFakeCamera.h"
 #include "AssemblyUEyeFakeModel.h"
 
 AssemblyUEyeFakeModel::AssemblyUEyeFakeModel(int updateInterval, QObject *parent)
@@ -60,7 +61,7 @@ void AssemblyUEyeFakeModel::updateInformation()
         QThread * thread = new QThread();
         threads_.push_back(thread);
 
-        AssemblyUEyeCamera_t* camera = new AssemblyUEyeCamera_t(0);
+        AssemblyUEyeFakeCamera* camera = new AssemblyUEyeFakeCamera(0);
         camera->moveToThread(thread);
         cameras_.push_back(camera);
         thread->start();

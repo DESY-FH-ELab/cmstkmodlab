@@ -5,7 +5,7 @@
 #include "AssemblyUEyeCameraWidget.h"
 #include "AssemblyUEyeWidget.h"
 
-AssemblyUEyeWidget::AssemblyUEyeWidget(AssemblyUEyeModel_t* model,
+AssemblyUEyeWidget::AssemblyUEyeWidget(AssemblyVUEyeModel *model,
                                        QWidget *parent)
     : QTabWidget(parent),
       model_(model)
@@ -31,7 +31,7 @@ void AssemblyUEyeWidget::cameraCountChanged(unsigned int cameraCount)
     }
 
     for (unsigned int i=0;i<cameraCount;++i) {
-        AssemblyUEyeCamera_t * camera = model_->getCamera(i);
+        AssemblyVUEyeCamera *camera = model_->getCamera(i);
         AssemblyUEyeCameraWidget* cameraWidget = new AssemblyUEyeCameraWidget(camera, this);
         addTab(cameraWidget, QString("%1 - %2").arg(camera->getModelName()).arg(camera->getCameraID()));
     }

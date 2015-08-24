@@ -13,7 +13,7 @@ AssemblyUEyeView::AssemblyUEyeView(QWidget *parent)
 
 }
 
-void AssemblyUEyeView::connectCamera(AssemblyUEyeCamera_t* camera)
+void AssemblyUEyeView::connectCamera(AssemblyVUEyeCamera *camera)
 {
     camera_ = camera;
 
@@ -21,7 +21,7 @@ void AssemblyUEyeView::connectCamera(AssemblyUEyeCamera_t* camera)
             this, SLOT(setImage(const QImage&)));
 }
 
-void AssemblyUEyeView::disconnectCamera(AssemblyUEyeCamera_t* camera)
+void AssemblyUEyeView::disconnectCamera(AssemblyVUEyeCamera *camera)
 {
     disconnect(SIGNAL(imageAcquired(const QImage&)),
                this, SLOT(setImage(const QImage&)));

@@ -14,24 +14,18 @@
 
 #include <DeviceState.h>
 
-#ifdef USE_FAKEIO
-#include "AssemblyUEyeFakeCamera.h"
-typedef AssemblyUEyeFakeCamera AssemblyUEyeCamera_t;
-#else
-#include "AssemblyUEyeCamera.h"
-typedef AssemblyUEyeCamera AssemblyUEyeCamera_t;
-#endif
+#include "AssemblyVUEyeCamera.h"
 
 class AssemblyUEyeCameraWidget : public QToolBox
 {
     Q_OBJECT
 public:
-    explicit AssemblyUEyeCameraWidget(AssemblyUEyeCamera_t* camera,
+    explicit AssemblyUEyeCameraWidget(AssemblyVUEyeCamera *camera,
                                       QWidget *parent = 0);
 
 protected:
 
-    AssemblyUEyeCamera_t* camera_;
+    AssemblyVUEyeCamera* camera_;
 
 public slots:
 
@@ -42,12 +36,12 @@ class AssemblyUEyeCameraGeneralWidget : public QWidget
 {
     Q_OBJECT
 public:
-    explicit AssemblyUEyeCameraGeneralWidget(AssemblyUEyeCamera_t* camera,
+    explicit AssemblyUEyeCameraGeneralWidget(AssemblyVUEyeCamera* camera,
                                              QWidget *parent = 0);
 
 protected:
 
-    AssemblyUEyeCamera_t* camera_;
+    AssemblyVUEyeCamera* camera_;
 
     QLabel* nameLabel_;
     QLabel* fullNameLabel_;
@@ -69,12 +63,12 @@ class AssemblyUEyeCameraSensorWidget : public QWidget
 {
     Q_OBJECT
 public:
-    explicit AssemblyUEyeCameraSensorWidget(AssemblyUEyeCamera_t* camera,
+    explicit AssemblyUEyeCameraSensorWidget(AssemblyVUEyeCamera* camera,
                                             QWidget *parent = 0);
 
 protected:
 
-    AssemblyUEyeCamera_t* camera_;
+    AssemblyVUEyeCamera* camera_;
 
     QLabel* sensorNameLabel_;
     QLabel* colorModeLabel_;

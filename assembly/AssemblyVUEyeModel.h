@@ -10,13 +10,7 @@
 #include <QMutexLocker>
 #include <QVector>
 
-#ifdef USE_FAKEIO
-#include "AssemblyUEyeFakeCamera.h"
-typedef AssemblyUEyeFakeCamera AssemblyUEyeCamera_t;
-#else
-#include "AssemblyUEyeCamera.h"
-typedef AssemblyUEyeCamera AssemblyUEyeCamera_t;
-#endif
+#include "AssemblyVUEyeCamera.h"
 
 class AssemblyVUEyeModel : public QObject
 {
@@ -26,7 +20,7 @@ public:
     ~AssemblyVUEyeModel();
 
     size_t getCameraCount() const;
-    AssemblyUEyeCamera_t * getCamera(size_t idx);
+    AssemblyVUEyeCamera * getCamera(size_t idx);
 
 public slots:
 
@@ -42,7 +36,7 @@ protected:
     QMutex mutex_;
 
     QVector<QThread*> threads_;
-    QVector<AssemblyUEyeCamera_t*> cameras_;
+    QVector<AssemblyVUEyeCamera*> cameras_;
     void clear();
 
 signals:

@@ -28,7 +28,7 @@ size_t AssemblyVUEyeModel::getCameraCount() const
     return cameras_.size();
 }
 
-AssemblyUEyeCamera_t * AssemblyVUEyeModel::getCamera(size_t idx)
+AssemblyVUEyeCamera * AssemblyVUEyeModel::getCamera(size_t idx)
 {
     if (idx >= this->getCameraCount()) return 0;
     return cameras_.at(idx);
@@ -36,7 +36,7 @@ AssemblyUEyeCamera_t * AssemblyVUEyeModel::getCamera(size_t idx)
 
 void AssemblyVUEyeModel::clear()
 {
-    for (QVector<AssemblyUEyeCamera_t*>::iterator it = cameras_.begin();
+    for (QVector<AssemblyVUEyeCamera*>::iterator it = cameras_.begin();
          it != cameras_.end();
          ++it) {
         delete *it;

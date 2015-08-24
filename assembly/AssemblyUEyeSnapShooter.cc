@@ -38,9 +38,9 @@ AssemblyUEyeSnapShooter::AssemblyUEyeSnapShooter(QWidget *parent)
     setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 }
 
-void AssemblyUEyeSnapShooter::connectCamera(AssemblyUEyeCamera_t* camera)
+void AssemblyUEyeSnapShooter::connectCamera(AssemblyVUEyeCamera *camera)
 {
-    NQLog("AssemblyMainWindow") << ":connectCamera(AssemblyUEyeCamera_t* camera)";
+    NQLog("AssemblyMainWindow") << ":connectCamera(AssemblyVUEyeCamera *camera)";
 
     camera_ = camera;
     if (camera_) imageView_->connectCamera(camera);
@@ -49,9 +49,9 @@ void AssemblyUEyeSnapShooter::connectCamera(AssemblyUEyeCamera_t* camera)
             this, SLOT(imageAcquired(const QImage&)));
 }
 
-void AssemblyUEyeSnapShooter::disconnectCamera(AssemblyUEyeCamera_t* /* camera */)
+void AssemblyUEyeSnapShooter::disconnectCamera(AssemblyVUEyeCamera * /* camera */)
 {
-    NQLog("AssemblyMainWindow") << ":disconnectCamera(AssemblyUEyeCamera_t* camera)";
+    NQLog("AssemblyMainWindow") << ":disconnectCamera(AssemblyVUEyeCamera * camera)";
 
     disconnect(SIGNAL(imageAcquired(const QImage&)),
                this, SLOT(imageAcquired(const QImage&)));
