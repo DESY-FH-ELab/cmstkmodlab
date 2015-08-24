@@ -47,14 +47,16 @@ void AssemblyUEyeFakeModel::updateInformation()
         camera->setFullModelName("UI348xCP-M");
         camera->setStatus(0);
 
-        NQLog("AssemblyUEyeModel") << "camera 0";
-        NQLog("AssemblyUEyeModel") << "model name:      " << camera->getModelName();
-        NQLog("AssemblyUEyeModel") << "full model name: " << camera->getFullModelName();
-        NQLog("AssemblyUEyeModel") << "serial number:   " << camera->getSerialNumber();
-        NQLog("AssemblyUEyeModel") << "camera ID:       " << camera->getCameraID();
-        NQLog("AssemblyUEyeModel") << "device ID:       " << camera->getDeviceID();
-        NQLog("AssemblyUEyeModel") << "sensor ID:       " << camera->getSensorID();
-        NQLog("AssemblyUEyeModel") << "status:          " << camera->getStatus();
+        NQLog("AssemblyUEyeFakeModel") << "camera 0";
+        NQLog("AssemblyUEyeFakeModel") << "model name:      " << camera->getModelName();
+        NQLog("AssemblyUEyeFakeModel") << "full model name: " << camera->getFullModelName();
+        NQLog("AssemblyUEyeFakeModel") << "serial number:   " << camera->getSerialNumber();
+        NQLog("AssemblyUEyeFakeModel") << "camera ID:       " << camera->getCameraID();
+        NQLog("AssemblyUEyeFakeModel") << "device ID:       " << camera->getDeviceID();
+        NQLog("AssemblyUEyeFakeModel") << "sensor ID:       " << camera->getSensorID();
+        NQLog("AssemblyUEyeFakeModel") << "status:          " << camera->getStatus();
+
+        camera->updateInformation();
     }
 
     {
@@ -74,14 +76,16 @@ void AssemblyUEyeFakeModel::updateInformation()
         camera->setFullModelName("UI348xCP-M");
         camera->setStatus(0);
 
-        NQLog("AssemblyUEyeModel") << "camera 1";
-        NQLog("AssemblyUEyeModel") << "model name:      " << camera->getModelName();
-        NQLog("AssemblyUEyeModel") << "full model name: " << camera->getFullModelName();
-        NQLog("AssemblyUEyeModel") << "serial number:   " << camera->getSerialNumber();
-        NQLog("AssemblyUEyeModel") << "camera ID:       " << camera->getCameraID();
-        NQLog("AssemblyUEyeModel") << "device ID:       " << camera->getDeviceID();
-        NQLog("AssemblyUEyeModel") << "sensor ID:       " << camera->getSensorID();
-        NQLog("AssemblyUEyeModel") << "status:          " << camera->getStatus();
+        NQLog("AssemblyUEyeFakeModel") << "camera 0";
+        NQLog("AssemblyUEyeFakeModel") << "model name:      " << camera->getModelName();
+        NQLog("AssemblyUEyeFakeModel") << "full model name: " << camera->getFullModelName();
+        NQLog("AssemblyUEyeFakeModel") << "serial number:   " << camera->getSerialNumber();
+        NQLog("AssemblyUEyeFakeModel") << "camera ID:       " << camera->getCameraID();
+        NQLog("AssemblyUEyeFakeModel") << "device ID:       " << camera->getDeviceID();
+        NQLog("AssemblyUEyeFakeModel") << "sensor ID:       " << camera->getSensorID();
+        NQLog("AssemblyUEyeFakeModel") << "status:          " << camera->getStatus();
+
+        camera->updateInformation();
     }
 
     emit cameraCountChanged((unsigned int)cameras_.size());

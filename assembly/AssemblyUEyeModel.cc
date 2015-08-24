@@ -80,28 +80,6 @@ void AssemblyUEyeModel::updateInformation()
                 NQLog("AssemblyUEyeModel") << "device ID:       " << camera->getDeviceID();
                 NQLog("AssemblyUEyeModel") << "sensor ID:       " << camera->getSensorID();
                 NQLog("AssemblyUEyeModel") << "status:          " << camera->getStatus();
-
-                /*
-                camera->initialize();
-                camera->updateInformation();
-                camera->exit();
-
-                NQLog("AssemblyUEyeModel") << "id:              " << camera->getID();
-                NQLog("AssemblyUEyeModel") << "version:         " << camera->getVersion();
-                NQLog("AssemblyUEyeModel") << "date:            " << camera->getDate();
-
-                NQLog("AssemblyUEyeModel") << "sensor name:     " << camera->getSensorName();
-                NQLog("AssemblyUEyeModel") << "color mode:      " << camera->getColorMode();
-                NQLog("AssemblyUEyeModel") << "max. resolution: " << camera->getMaxWidth() << " x "
-                                                                  << camera->getMaxHeight();
-                NQLog("AssemblyUEyeModel") << "master gain:     " << camera->getMasterGain();
-                NQLog("AssemblyUEyeModel") << "RGB gain:        " << camera->getRedGain() << " "
-                                                                  << camera->getGreenGain() << " "
-                                                                  << camera->getBlueGain();
-                NQLog("AssemblyUEyeModel") << "global shutter:  " << camera->getGlobalShutter();
-                NQLog("AssemblyUEyeModel") << "pixel size:      " << camera->getPixelSize();
-
-                */
             }
 
             emit cameraCountChanged((unsigned int)dw);
@@ -109,4 +87,10 @@ void AssemblyUEyeModel::updateInformation()
     }
 
     delete uEyeCameraList;
+
+    for (QVector<AssemblyVUEyeCamera*>::iterator it = cameras_.begin();
+         it != cameras_.end();
+         ++it) {
+        (*it)->updateInformation();
+    }
 }
