@@ -37,6 +37,7 @@ public slots:
 
   void onOpenCamera();
   void onCloseCamera();
+  void onSnapShot();
 
   void cameraOpened();
   void cameraClosed();

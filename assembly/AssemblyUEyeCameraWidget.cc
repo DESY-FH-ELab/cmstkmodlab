@@ -11,6 +11,7 @@ AssemblyUEyeCameraWidget::AssemblyUEyeCameraWidget(AssemblyVUEyeCamera* camera,
 {
     addItem(new AssemblyUEyeCameraGeneralWidget(camera, this), "general information");
     addItem(new AssemblyUEyeCameraSensorWidget(camera, this), "sensor information");
+    addItem(new AssemblyUEyeCameraSettingsWidget(camera, this), "settings");
 
     // Connect all the signals
     connect(camera_, SIGNAL(cameraInformationChanged()),
@@ -130,4 +131,142 @@ void AssemblyUEyeCameraSensorWidget::cameraInformationChanged()
     rgbGainLabel_->setText(QString("%1 %2 %3").arg(camera_->getRedGain()).arg(camera_->getGreenGain()).arg(camera_->getBlueGain()));
     globalShutterLabel_->setText(QString::number(camera_->getGlobalShutter()));
     pixelSizeLabel_->setText(QString::number(camera_->getPixelSize()));
+}
+
+AssemblyUEyeCameraPixelClockWidget::AssemblyUEyeCameraPixelClockWidget(AssemblyVUEyeCamera* camera,
+                                        QWidget *parent)
+    : QComboBox(parent),
+      camera_(camera)
+{
+    connect(camera_, SIGNAL(pixelClockListChanged(unsigned int)),
+            this, SLOT(pixelClockListChanged(unsigned int)));
+
+    connect(camera_, SIGNAL(pixelClockChanged(unsigned int)),
+            this, SLOT(pixelClockChanged(unsigned int)));
+
+    connect(this, SIGNAL(changePixelClock(uint)),
+            camera_, SLOT(setPixelClock(uint)));
+
+    connect(this, SIGNAL(currentIndexChanged(int)),
+            this, SLOT(currentItemChanged(int)));
+}
+
+void AssemblyUEyeCameraPixelClockWidget::currentItemChanged(int idx)
+{
+    unsigned int pixelClock = itemData(idx, Qt::UserRole).toUInt();
+
+    NQLog("AssemblyUEyeCameraPixelClockWidget") << ":currentItemChanged(int idx) " << pixelClock;
+
+    emit changePixelClock(pixelClock);
+}
+
+void AssemblyUEyeCameraPixelClockWidget::pixelClockListChanged(unsigned int current)
+{
+    NQLog("AssemblyUEyeCameraPixelClockWidget") << ":pixelClockListChanged()";
+
+    disconnect(this, SIGNAL(currentIndexChanged(int)),
+               this, SLOT(currentItemChanged(int)));
+
+    clear();
+
+    const std::vector<unsigned int> &pixelClocks = camera_->getPixelClockList();
+    for (std::vector<unsigned int>::const_iterator it = pixelClocks.begin();
+         it != pixelClocks.end();
+         ++it) {
+        addItem(QString("%1 MHz").arg(*it), QVariant(*it));
+    }
+
+    pixelClockChanged(current);
+
+    connect(this, SIGNAL(currentIndexChanged(int)),
+            this, SLOT(currentItemChanged(int)));
+}
+
+void AssemblyUEyeCameraPixelClockWidget::pixelClockChanged(unsigned int current)
+{
+    NQLog("AssemblyUEyeCameraPixelClockWidget") << ":pixelClockChanged() " << current;
+
+    int idx = findData(QVariant(current), Qt::UserRole);
+
+    if (idx!=-1) {
+        setCurrentIndex(idx);
+    }
+}
+
+AssemblyUEyeCameraExposureTimeWidget::AssemblyUEyeCameraExposureTimeWidget(AssemblyVUEyeCamera* camera,
+                                        QWidget *parent)
+    : QSlider(parent),
+      camera_(camera)
+{
+    setTracking(false);
+    setOrientation(Qt::Horizontal);
+
+    connect(camera_, SIGNAL(exposureTimeRangeChanged(double)),
+            this, SLOT(exposureTimeRangeChanged(double)));
+
+    connect(camera_, SIGNAL(exposureTimeChanged(double)),
+            this, SLOT(exposureTimeChanged(double)));
+
+    connect(this, SIGNAL(changeExposureTime(double)),
+            camera_, SLOT(setExposureTime(double)));
+
+    connect(this, SIGNAL(valueChanged(int)),
+            this, SLOT(currentValueChanged(int)));
+}
+
+void AssemblyUEyeCameraExposureTimeWidget::currentValueChanged(int value)
+{
+    double exposureTime = camera_->getExposureTimeMin() + camera_->getExposureTimeInc() * value;
+
+    NQLog("AssemblyUEyeCameraExposureTimeWidget") << ":currentValueChanged(int value) " << exposureTime;
+
+    emit changeExposureTime(exposureTime);
+}
+
+void AssemblyUEyeCameraExposureTimeWidget::exposureTimeRangeChanged(double current)
+{
+    NQLog("AssemblyUEyeCameraExposureTimeWidget") << ":exposureTimeRangeChanged()";
+
+    disconnect(this, SIGNAL(valueChanged(int)),
+               this, SLOT(currentValueChanged(int)));
+
+    setMinimum(0);
+    setMaximum(1+(camera_->getExposureTimeMax()-camera_->getExposureTimeMin())/camera_->getExposureTimeInc());
+    setSingleStep(1);
+
+    exposureTimeChanged(current);
+
+    connect(this, SIGNAL(valueChanged(int)),
+            this, SLOT(currentValueChanged(int)));
+}
+
+void AssemblyUEyeCameraExposureTimeWidget::exposureTimeChanged(double current)
+{
+    NQLog("AssemblyUEyeCameraExposureTimeWidget") << ":exposureTimeChanged() " << current;
+
+    setValue((current - camera_->getExposureTimeMin()) / camera_->getExposureTimeInc());
+}
+
+AssemblyUEyeCameraSettingsWidget::AssemblyUEyeCameraSettingsWidget(AssemblyVUEyeCamera* camera,
+                                                                 QWidget *parent)
+    : QWidget(parent),
+      camera_(camera)
+{
+    QFormLayout * layout = new QFormLayout(this);
+
+    layout->addRow("pixel clock", new AssemblyUEyeCameraPixelClockWidget(camera_, this));
+    layout->addRow("exposure time", new AssemblyUEyeCameraExposureTimeWidget(camera_, this));
+
+    setLayout(layout);
+
+    // Connect all the signals
+    connect(camera_, SIGNAL(cameraInformationChanged()),
+            this, SLOT(cameraInformationChanged()));
+
+    cameraInformationChanged();
+}
+
+void AssemblyUEyeCameraSettingsWidget::cameraInformationChanged()
+{
+
 }

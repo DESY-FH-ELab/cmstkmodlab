@@ -40,7 +40,7 @@ AssemblyUEyeSnapShooter::AssemblyUEyeSnapShooter(QWidget *parent)
 
 void AssemblyUEyeSnapShooter::connectCamera(AssemblyVUEyeCamera *camera)
 {
-    NQLog("AssemblyMainWindow") << ":connectCamera(AssemblyVUEyeCamera *camera)";
+    NQLog("AssemblyUEyeSnapShooter") << ":connectCamera(AssemblyVUEyeCamera *camera)";
 
     camera_ = camera;
     if (camera_) imageView_->connectCamera(camera);
@@ -49,12 +49,12 @@ void AssemblyUEyeSnapShooter::connectCamera(AssemblyVUEyeCamera *camera)
             this, SLOT(imageAcquired(const QImage&)));
 }
 
-void AssemblyUEyeSnapShooter::disconnectCamera(AssemblyVUEyeCamera * /* camera */)
+void AssemblyUEyeSnapShooter::disconnectCamera(AssemblyVUEyeCamera * camera)
 {
-    NQLog("AssemblyMainWindow") << ":disconnectCamera(AssemblyVUEyeCamera * camera)";
+    NQLog("AssemblyUEyeSnapShooter") << ":disconnectCamera(AssemblyVUEyeCamera * camera)";
 
-    disconnect(SIGNAL(imageAcquired(const QImage&)),
-               this, SLOT(imageAcquired(const QImage&)));
+    camera->disconnect(SIGNAL(imageAcquired(const QImage&)),
+                       this, SLOT(imageAcquired(const QImage&)));
 }
 
 void AssemblyUEyeSnapShooter::snapShot()

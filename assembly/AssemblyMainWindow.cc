@@ -39,7 +39,8 @@ AssemblyMainWindow::AssemblyMainWindow(QWidget *parent) :
     toolBar_ = addToolBar("Tools");
     toolBar_->addAction("open", this, SLOT(onOpenCamera()));
     toolBar_->addAction("close", this, SLOT(onCloseCamera()));
-    toolBar_->addAction("snapshot", snapShooter_, SLOT(snapShot()));
+    toolBar_->addAction("snapshot", this, SLOT(onSnapShot()));
+    toolBar_->addAction("save", snapShooter_, SLOT(snapShot()));
 
     setCentralWidget(tabWidget_);
     updateGeometry();
@@ -98,6 +99,11 @@ void AssemblyMainWindow::onCloseCamera()
     emit closeCamera();
 }
 
+void AssemblyMainWindow::onSnapShot()
+{
+emit acquireImage();
+}
+
 void AssemblyMainWindow::testTimer()
 {
     NQLog("AssemblyMainWindow") << "timeOut = " << testTimerCount_;
@@ -109,7 +115,7 @@ void AssemblyMainWindow::cameraOpened()
     NQLog("AssemblyMainWindow") << ":cameraOpened()";
 
     snapShooter_->connectCamera(camera_);
-    liveTimer_->start(1000);
+    liveTimer_->start(2000);
 }
 
 void AssemblyMainWindow::cameraClosed()

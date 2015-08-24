@@ -8,7 +8,7 @@
 
 AssemblyVUEyeCamera::AssemblyVUEyeCamera(QObject *parent)
     : QObject(parent),
-      cameraOpen_(false)
+      cameraState_(State::OFF)
 {
 
 }

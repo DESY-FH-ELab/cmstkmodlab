@@ -7,7 +7,6 @@
 
 #include "AssemblyVUEyeModel.h"
 #include "AssemblyVUEyeCamera.h"
-#include "AssemblyVUEyePixelClock.h"
 
 class AssemblyUEyeWidget : public QTabWidget
 {

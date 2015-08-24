@@ -51,6 +51,7 @@ public:
 
     void updateInformation();
     void updatePixelClock();
+    void updateExposureTime();
 
     bool isAvailable() const;
 
@@ -60,6 +61,9 @@ public slots:
     void close();
 
     void acquireImage();
+
+    void setPixelClock(unsigned int);
+    void setExposureTime(double);
 
 protected slots:
 
@@ -73,7 +77,8 @@ protected:
     bool allocImages();
     bool freeImages();
     int getImageNumber(char * pBuffer);
-    unsigned int readPixelClock(unsigned int);
+    unsigned int readPixelClock();
+    double readExposureTime();
 
 signals:
 

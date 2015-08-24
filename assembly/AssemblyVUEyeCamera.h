@@ -4,6 +4,8 @@
 #include <QObject>
 #include <QImage>
 
+#include <DeviceState.h>
+
 class AssemblyVUEyeCamera : public QObject
 {
     Q_OBJECT
@@ -61,11 +63,18 @@ public:
     const std::vector<unsigned int>& getPixelClockList() const { return pixelClocks_; }
     unsigned int getCurrentPixelClock() const { return currentPixelClock_; }
 
+    double getExposureTimeMin() const { return exposureTimeMin_; }
+    double getExposureTimeMax() const { return exposureTimeMax_; }
+    double getExposureTimeInc() const { return exposureTimeInc_; }
+    double getCurrentExposureTime() const { return currentExposureTime_; }
+
     virtual void updateInformation() = 0;
     virtual void updatePixelClock() = 0;
+    virtual void updateExposureTime() = 0;
 
     virtual bool isAvailable() const = 0;
-    virtual bool isOpen() const { return cameraOpen_; }
+    virtual bool isOpen() const { return (cameraState_==State::READY); }
+    State getDeviceState() const { return cameraState_; }
 
 public slots:
 
@@ -73,6 +82,9 @@ public slots:
     virtual void close() = 0;
 
     virtual void acquireImage() = 0;
+
+    virtual void setPixelClock(unsigned int) = 0;
+    virtual void setExposureTime(double) = 0;
 
 protected slots:
 
@@ -106,7 +118,13 @@ protected:
     unsigned int currentPixelClock_;
     size_t getCurrentPixelClockIndex() const;
 
-    bool cameraOpen_;
+
+    double exposureTimeMin_;
+    double exposureTimeMax_;
+    double exposureTimeInc_;
+    double currentExposureTime_;
+
+    State cameraState_;
 
 signals:
 
@@ -115,8 +133,11 @@ signals:
     void cameraOpened();
     void cameraClosed();
 
-    void pixelClockChanged();
-    void pixelClockListChanged();
+    void pixelClockChanged(unsigned int);
+    void pixelClockListChanged(unsigned int);
+
+    void exposureTimeChanged(double);
+    void exposureTimeRangeChanged(double);
 
     void imageAcquired(const QImage&);
 
