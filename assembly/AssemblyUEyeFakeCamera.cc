@@ -13,7 +13,7 @@ AssemblyUEyeFakeCamera::AssemblyUEyeFakeCamera(QObject *parent)
     : AssemblyVUEyeCamera(parent),
       imageIndex_(0)
 {
-    cameraOpen_ = false;
+    cameraState_ = State::OFF;
 
     QString filename(Config::CMSTkModLabBasePath.c_str());
     image_[0] = QImage(filename +  + "/share/assembly/SensorMarker1.png");
@@ -23,17 +23,14 @@ AssemblyUEyeFakeCamera::AssemblyUEyeFakeCamera(QObject *parent)
 
 AssemblyUEyeFakeCamera::~AssemblyUEyeFakeCamera()
 {
-    if (cameraOpen_) close();
-}
-
-void AssemblyUEyeFakeCamera::updateInformation()
-{
-
+    if (cameraState_==READY) close();
 }
 
 void AssemblyUEyeFakeCamera::open()
 {
-    if (cameraOpen_) return;
+    if (cameraState_==State::READY || cameraState_==State::INITIALIZING) return;
+
+    cameraState_ = State::INITIALIZING;
 
     NQLog("AssemblyUEyeFakeCamera") << ":open()";
 
@@ -57,40 +54,90 @@ void AssemblyUEyeFakeCamera::open()
     emit cameraInformationChanged();
 
     updatePixelClock();
+    updateExposureTime();
 
     usleep(500000);
 
-    cameraOpen_ = true;
+    cameraState_ = State::READY;
 
     emit cameraOpened();
 }
 
-void AssemblyUEyeFakeCamera::updatePixelClock()
-{
-    pixelClocks_.clear();
-    for (unsigned int f=12;f<54;f+=2) {
-        pixelClocks_.push_back(f);
-    }
-    currentPixelClock_ = pixelClocks_[getNumberOfPixelClocks() / 2];
-
-}
-
 void AssemblyUEyeFakeCamera::close()
 {
-    if (!cameraOpen_) return;
+    if (cameraState_!=State::READY) return;
 
     NQLog("AssemblyUEyeFakeCamera") << ":close()";
 
+    cameraState_ = State::CLOSING;
+
     usleep(500000);
 
-    cameraOpen_ = false;
+    cameraState_ = State::OFF;
 
     emit cameraClosed();
 }
 
+void AssemblyUEyeFakeCamera::updateInformation()
+{
+    if (cameraState_!=State::READY) return;
+}
+
+void AssemblyUEyeFakeCamera::updatePixelClock()
+{
+    if (cameraState_!=State::READY && cameraState_!=State::INITIALIZING) return;
+
+    std::vector<unsigned int> pixelClocks;
+    for (unsigned int f=5;f<44;f+=1) {
+        pixelClocks.push_back(f);
+    }
+
+    bool listChanged = false;
+    bool valueChanged = false;
+
+    if (pixelClocks!=pixelClocks_) {
+        pixelClocks_ = pixelClocks;
+        currentPixelClock_ = pixelClocks_[getNumberOfPixelClocks() / 2];
+        listChanged = true;
+        valueChanged = true;
+    }
+
+    if (listChanged) emit pixelClockListChanged(currentPixelClock_);
+    if (valueChanged) emit pixelClockChanged(currentPixelClock_);
+}
+
+void AssemblyUEyeFakeCamera::updateExposureTime()
+{
+    if (cameraState_!=State::READY && cameraState_!=State::INITIALIZING) return;
+
+    double nMin = 0.1;
+    double nMax = 322.0;
+    double nInc = 0.1;
+
+    bool listChanged = false;
+    bool valueChanged = false;
+
+    if (nMin != exposureTimeMin_ ||
+        nMax != exposureTimeMax_ ||
+        nInc != exposureTimeInc_) {
+
+        exposureTimeMin_ = nMin;
+        exposureTimeMax_ = nMax;
+        exposureTimeInc_ = nInc;
+
+        currentExposureTime_ = 100.0;
+
+        listChanged = true;
+        valueChanged = true;
+    }
+
+    if (listChanged) emit exposureTimeRangeChanged(currentExposureTime_);
+    if (valueChanged) emit exposureTimeChanged(currentExposureTime_);
+}
+
 void AssemblyUEyeFakeCamera::acquireImage()
 {
-    if (!cameraOpen_) return;
+    if (cameraState_!=State::READY) return;
 
     NQLog("AssemblyUEyeFakeCamera") << ":acquireImage()";
 

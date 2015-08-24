@@ -12,6 +12,7 @@ public:
 
     void updateInformation();
     void updatePixelClock();
+    void updateExposureTime();
 
     bool isAvailable() const { return true; }
 
@@ -21,6 +22,9 @@ public slots:
     void close();
 
     void acquireImage();
+
+    void setPixelClock(unsigned int pc) { currentPixelClock_ = pc; }
+    void setExposureTime(double et) { currentExposureTime_ = et; }
 
 protected slots:
 
