@@ -31,6 +31,7 @@ INCLUDEPATH += @basepath@/common
 # Input
 HEADERS += AssemblyMainWindow.h \
            AssemblyVUEyeCamera.h \
+           AssemblyVUEyePixelClock.h \
            AssemblyVUEyeModel.h \
            AssemblyUEyeCameraThread.h \
            AssemblyUEyeWidget.h \
@@ -40,15 +41,18 @@ HEADERS += AssemblyMainWindow.h \
 
 equals(USEFAKEDEVICES,"X0") {
 HEADERS += AssemblyUEyeCamera.h \
+           AssemblyUEyePixelClock.h \
            AssemblyUEyeModel.h
 } else {
 HEADERS += AssemblyUEyeFakeCamera.h \
+           AssemblyUEyeFakePixelClock.h \
            AssemblyUEyeFakeModel.h
 }
 
 SOURCES += assembly.cc \
            AssemblyMainWindow.cc \
            AssemblyVUEyeCamera.cc \
+           AssemblyVUEyePixelClock.cc \
            AssemblyVUEyeModel.cc \
            AssemblyUEyeCameraThread.cc \
            AssemblyUEyeWidget.cc \
@@ -58,8 +62,10 @@ SOURCES += assembly.cc \
 
 equals(USEFAKEDEVICES,"X0") {
 SOURCES += AssemblyUEyeCamera.cc \
+           AssemblyUEyePixelClock.cc \
            AssemblyUEyeModel.cc
 } else {
 SOURCES += AssemblyUEyeFakeCamera.cc \
+           AssemblyUEyeFakePixelClock.cc \
            AssemblyUEyeFakeModel.cc
 }
