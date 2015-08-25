@@ -71,7 +71,7 @@ void AssemblyMainWindow::onOpenCamera()
 {
     NQLog("AssemblyMainWindow") << ":onOpenCamera()";
 
-    camera_ = uEyeModel_->getCamera(0);
+    camera_ = uEyeModel_->getCameraByID(10);
 
     connect(this, SIGNAL(openCamera()),
             camera_, SLOT(open()));
