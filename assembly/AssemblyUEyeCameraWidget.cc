@@ -193,11 +193,12 @@ void AssemblyUEyeCameraPixelClockWidget::pixelClockChanged(unsigned int current)
     }
 }
 
-AssemblyUEyeCameraExposureTimeWidget::AssemblyUEyeCameraExposureTimeWidget(AssemblyVUEyeCamera* camera,
+AssemblyUEyeCameraExposureTimeSlider::AssemblyUEyeCameraExposureTimeSlider(AssemblyVUEyeCamera* camera,
                                         QWidget *parent)
     : QSlider(parent),
       camera_(camera)
 {
+    setMinimumWidth(200);
     setTracking(false);
     setOrientation(Qt::Horizontal);
 
@@ -214,18 +215,18 @@ AssemblyUEyeCameraExposureTimeWidget::AssemblyUEyeCameraExposureTimeWidget(Assem
             this, SLOT(currentValueChanged(int)));
 }
 
-void AssemblyUEyeCameraExposureTimeWidget::currentValueChanged(int value)
+void AssemblyUEyeCameraExposureTimeSlider::currentValueChanged(int value)
 {
     double exposureTime = camera_->getExposureTimeMin() + camera_->getExposureTimeInc() * value;
 
-    NQLog("AssemblyUEyeCameraExposureTimeWidget") << ":currentValueChanged(int value) " << exposureTime;
+    NQLog("AssemblyUEyeCameraExposureTimeSlider") << ":currentValueChanged(int value) " << exposureTime;
 
     emit changeExposureTime(exposureTime);
 }
 
-void AssemblyUEyeCameraExposureTimeWidget::exposureTimeRangeChanged(double current)
+void AssemblyUEyeCameraExposureTimeSlider::exposureTimeRangeChanged(double current)
 {
-    NQLog("AssemblyUEyeCameraExposureTimeWidget") << ":exposureTimeRangeChanged()";
+    NQLog("AssemblyUEyeCameraExposureTimeSlider") << ":exposureTimeRangeChanged()";
 
     disconnect(this, SIGNAL(valueChanged(int)),
                this, SLOT(currentValueChanged(int)));
@@ -240,11 +241,56 @@ void AssemblyUEyeCameraExposureTimeWidget::exposureTimeRangeChanged(double curre
             this, SLOT(currentValueChanged(int)));
 }
 
+void AssemblyUEyeCameraExposureTimeSlider::exposureTimeChanged(double current)
+{
+    NQLog("AssemblyUEyeCameraExposureTimeSlider") << ":exposureTimeChanged() " << current;
+
+    setValue((current - camera_->getExposureTimeMin()) / camera_->getExposureTimeInc());
+}
+
+AssemblyUEyeCameraExposureTimeWidget::AssemblyUEyeCameraExposureTimeWidget(AssemblyVUEyeCamera* camera,
+                                        QWidget *parent)
+    : QWidget(parent),
+      camera_(camera)
+{
+    setMinimumHeight(40);
+
+    QGridLayout* layout = new QGridLayout(this);
+
+    minLabel_ = new QLabel("min", this);
+    layout->addWidget(minLabel_, 0, 0, 1, 1);
+
+    layout->addWidget(new AssemblyUEyeCameraExposureTimeSlider(camera_, this), 0, 1, 1, 1);
+
+    maxLabel_ = new QLabel("max", this);
+    layout->addWidget(maxLabel_, 0, 2, 1, 1);
+
+    currentLabel_ = new QLabel("current", this);
+    layout->addWidget(currentLabel_, 1, 1, 1, 1, Qt::AlignHCenter);
+
+    setLayout(layout);
+
+    connect(camera_, SIGNAL(exposureTimeRangeChanged(double)),
+            this, SLOT(exposureTimeRangeChanged(double)));
+
+    connect(camera_, SIGNAL(exposureTimeChanged(double)),
+            this, SLOT(exposureTimeChanged(double)));
+}
+
+void AssemblyUEyeCameraExposureTimeWidget::exposureTimeRangeChanged(double current)
+{
+    NQLog("AssemblyUEyeCameraExposureTimeWidget") << ":exposureTimeRangeChanged()";
+
+    minLabel_->setText(QString("%1 ms").arg(camera_->getExposureTimeMin()));
+    maxLabel_->setText(QString("%1 ms").arg(camera_->getExposureTimeMax()));
+    currentLabel_->setText(QString("%1 ms").arg(current));
+}
+
 void AssemblyUEyeCameraExposureTimeWidget::exposureTimeChanged(double current)
 {
     NQLog("AssemblyUEyeCameraExposureTimeWidget") << ":exposureTimeChanged() " << current;
 
-    setValue((current - camera_->getExposureTimeMin()) / camera_->getExposureTimeInc());
+    currentLabel_->setText(QString("%1 ms").arg(current));
 }
 
 AssemblyUEyeCameraSettingsWidget::AssemblyUEyeCameraSettingsWidget(AssemblyVUEyeCamera* camera,

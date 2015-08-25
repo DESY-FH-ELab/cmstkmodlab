@@ -107,11 +107,11 @@ signals:
     void changePixelClock(unsigned int);
 };
 
-class AssemblyUEyeCameraExposureTimeWidget : public QSlider
+class AssemblyUEyeCameraExposureTimeSlider : public QSlider
 {
     Q_OBJECT
 public:
-    explicit AssemblyUEyeCameraExposureTimeWidget(AssemblyVUEyeCamera* camera,
+    explicit AssemblyUEyeCameraExposureTimeSlider(AssemblyVUEyeCamera* camera,
                                             QWidget *parent = 0);
 
 public slots:
@@ -123,6 +123,32 @@ public slots:
 protected:
 
     AssemblyVUEyeCamera* camera_;
+
+signals:
+
+    void changeExposureTime(double);
+};
+
+class AssemblyUEyeCameraExposureTimeWidget : public QWidget
+{
+    Q_OBJECT
+public:
+    explicit AssemblyUEyeCameraExposureTimeWidget(AssemblyVUEyeCamera* camera,
+                                            QWidget *parent = 0);
+
+public slots:
+
+    void exposureTimeRangeChanged(double);
+    void exposureTimeChanged(double);
+
+protected:
+
+    AssemblyVUEyeCamera* camera_;
+
+    AssemblyUEyeCameraExposureTimeSlider* slider_;
+    QLabel* minLabel_;
+    QLabel* maxLabel_;
+    QLabel* currentLabel_;
 
 signals:
 
