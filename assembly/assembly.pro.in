@@ -8,6 +8,9 @@ equals(USEFAKEDEVICES,"X0") {
 LIBS += -lueye_api
 }
 
+CONFIG += link_pkgconfig
+PKGCONFIG += opencv
+
 QMAKE = @qmake@
 
 QMAKE_CXXFLAGS += -std=c++11
