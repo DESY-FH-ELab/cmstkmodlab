@@ -39,7 +39,7 @@ void AssemblyUEyeFakeModel::updateInformation()
         cameras_.push_back(camera);
         thread->start();
 
-        camera->setCameraID(1);
+        camera->setCameraID(10);
         camera->setDeviceID(1);
         camera->setSensorID(11);
         camera->setSerialNumber(4102844803);
@@ -68,7 +68,7 @@ void AssemblyUEyeFakeModel::updateInformation()
         cameras_.push_back(camera);
         thread->start();
 
-        camera->setCameraID(2);
+        camera->setCameraID(20);
         camera->setDeviceID(2);
         camera->setSensorID(11);
         camera->setSerialNumber(4102844803);
