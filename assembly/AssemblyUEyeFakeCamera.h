@@ -23,8 +23,8 @@ public slots:
 
     void acquireImage();
 
-    void setExposureTime(double et) { currentExposureTime_ = et; }
     void setPixelClock(unsigned int pc);
+    void setExposureTime(double et);
 
 protected slots:
 

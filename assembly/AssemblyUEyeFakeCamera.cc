@@ -54,6 +54,8 @@ void AssemblyUEyeFakeCamera::open()
     emit cameraInformationChanged();
 
     updatePixelClock();
+
+    currentExposureTime_ = 200.0;
     updateExposureTime();
 
     usleep(500000);
@@ -114,7 +116,7 @@ void AssemblyUEyeFakeCamera::updateExposureTime()
     if (cameraState_!=State::READY && cameraState_!=State::INITIALIZING) return;
 
     double nMin = 0.1;
-    double nMax = 322.0;
+    double nMax = 100.0 + currentPixelClock_ * 222.0/19.;
     double nInc = 0.1;
 
     bool listChanged = false;
@@ -128,9 +130,15 @@ void AssemblyUEyeFakeCamera::updateExposureTime()
         exposureTimeMax_ = nMax;
         exposureTimeInc_ = nInc;
 
-        currentExposureTime_ = 100.0;
-
         listChanged = true;
+    }
+
+    if (currentExposureTime_<exposureTimeMin_) {
+        currentExposureTime_ = exposureTimeMin_;
+        valueChanged = true;
+    }
+    if (currentExposureTime_>exposureTimeMax_) {
+        currentExposureTime_ = exposureTimeMax_;
         valueChanged = true;
     }
 
@@ -144,6 +152,14 @@ void AssemblyUEyeFakeCamera::setPixelClock(unsigned int pc)
         currentPixelClock_ = pc;
         emit pixelClockChanged(currentPixelClock_);
         updateExposureTime();
+    }
+}
+
+void AssemblyUEyeFakeCamera::setExposureTime(double et)
+{
+    if (currentExposureTime_!=et) {
+        currentExposureTime_ = et;
+        emit exposureTimeChanged(currentExposureTime_);
     }
 }
 
