@@ -407,7 +407,7 @@ void AssemblyUEyeCamera::eventHappend()
         return;
 
     nNum = getImageNumber(lastBuffer_);
-    ret = is_LockSeqBuf (cameraHandle_, nNum, lastBuffer_);
+    ret = is_LockSeqBuf(cameraHandle_, nNum, lastBuffer_);
     image_ = QImage((uchar*)lastBuffer_,
                     bufferProps_.width,
                     bufferProps_.height,

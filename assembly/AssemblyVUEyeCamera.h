@@ -118,7 +118,6 @@ protected:
     unsigned int currentPixelClock_;
     size_t getCurrentPixelClockIndex() const;
 
-
     double exposureTimeMin_;
     double exposureTimeMax_;
     double exposureTimeInc_;
