@@ -101,7 +101,7 @@ void AssemblyMainWindow::onCloseCamera()
 
 void AssemblyMainWindow::onSnapShot()
 {
-emit acquireImage();
+    emit acquireImage();
 }
 
 void AssemblyMainWindow::testTimer()
@@ -115,7 +115,7 @@ void AssemblyMainWindow::cameraOpened()
     NQLog("AssemblyMainWindow") << ":cameraOpened()";
 
     snapShooter_->connectCamera(camera_);
-    liveTimer_->start(2000);
+    //liveTimer_->start(2000);
 }
 
 void AssemblyMainWindow::cameraClosed()
