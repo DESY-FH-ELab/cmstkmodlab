@@ -81,7 +81,7 @@ void AssemblyUEyeCamera::open()
 
     cameraState_ = State::INITIALIZING;
 
-    cameraHandle_ = getDeviceID();
+    cameraHandle_ = getCameraID();
     unsigned int ret = is_InitCamera(&cameraHandle_, 0);
     NQLog("AssemblyUEyeCamera::initialize()", NQLog::Message) << "is_InitCamera " << ret;
 
