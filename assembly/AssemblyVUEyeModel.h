@@ -21,6 +21,7 @@ public:
 
     size_t getCameraCount() const;
     AssemblyVUEyeCamera * getCamera(size_t idx);
+    AssemblyVUEyeCamera * getCameraByID(unsigned int id);
 
 public slots:
 

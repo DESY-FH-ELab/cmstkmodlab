@@ -34,6 +34,17 @@ AssemblyVUEyeCamera * AssemblyVUEyeModel::getCamera(size_t idx)
     return cameras_.at(idx);
 }
 
+AssemblyVUEyeCamera * AssemblyVUEyeModel::getCameraByID(unsigned int id)
+{
+    for (QVector<AssemblyVUEyeCamera*>::iterator it = cameras_.begin();
+         it != cameras_.end();
+         ++it) {
+        if ((*it)->getCameraID()==id) return *it;
+    }
+
+    return 0;
+}
+
 void AssemblyVUEyeModel::clear()
 {
     for (QVector<AssemblyVUEyeCamera*>::iterator it = cameras_.begin();
