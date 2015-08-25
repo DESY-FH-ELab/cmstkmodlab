@@ -88,7 +88,7 @@ void AssemblyUEyeFakeCamera::updatePixelClock()
     if (cameraState_!=State::READY && cameraState_!=State::INITIALIZING) return;
 
     std::vector<unsigned int> pixelClocks;
-    for (unsigned int f=5;f<44;f+=1) {
+    for (unsigned int f=5;f<=44;f+=1) {
         pixelClocks.push_back(f);
     }
 
@@ -97,13 +97,16 @@ void AssemblyUEyeFakeCamera::updatePixelClock()
 
     if (pixelClocks!=pixelClocks_) {
         pixelClocks_ = pixelClocks;
-        currentPixelClock_ = pixelClocks_[getNumberOfPixelClocks() / 2];
+        currentPixelClock_ = 24;
         listChanged = true;
         valueChanged = true;
     }
 
     if (listChanged) emit pixelClockListChanged(currentPixelClock_);
-    if (valueChanged) emit pixelClockChanged(currentPixelClock_);
+    if (valueChanged) {
+        emit pixelClockChanged(currentPixelClock_);
+        updateExposureTime();
+    }
 }
 
 void AssemblyUEyeFakeCamera::updateExposureTime()
@@ -133,6 +136,15 @@ void AssemblyUEyeFakeCamera::updateExposureTime()
 
     if (listChanged) emit exposureTimeRangeChanged(currentExposureTime_);
     if (valueChanged) emit exposureTimeChanged(currentExposureTime_);
+}
+
+void AssemblyUEyeFakeCamera::setPixelClock(unsigned int pc)
+{
+    if (currentPixelClock_!=pc) {
+        currentPixelClock_ = pc;
+        emit pixelClockChanged(currentPixelClock_);
+        updateExposureTime();
+    }
 }
 
 void AssemblyUEyeFakeCamera::acquireImage()
