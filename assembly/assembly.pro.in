@@ -8,13 +8,30 @@ equals(USEFAKEDEVICES,"X0") {
 LIBS += -lueye_api
 }
 
+macx {
+	CONFIG+=x86_64
+	QMAKE_CXXFLAGS += -stdlib=libc++
+	LIBS += -framework AppKit
+	LIBS += -framework QuartzCore
+	LIBS += -framework QTKit
+	LIBS += -framework Cocoa
+	LIBS += -L/opt/local/lib -ltiff
+	QMAKE_MACOSX_DEPLOYMENT_TARGET = 10.9
+}
+
 CONFIG += link_pkgconfig
 PKGCONFIG += opencv
 
 QMAKE = @qmake@
 
 QMAKE_CXXFLAGS += -std=c++11
-QMAKE_CXXFLAGS += -DAPPLICATIONVERSIONSTR=\\\"`git describe --dirty --always --tags`\\\"
+
+macx {
+	QMAKE_CXXFLAGS += -DAPPLICATIONVERSIONSTR=\\\"unknown\\\"
+}
+else {
+	QMAKE_CXXFLAGS += -DAPPLICATIONVERSIONSTR=\\\"`git describe --dirty --always --tags`\\\"
+}
 
 DEFINES += @configdefines@
 
