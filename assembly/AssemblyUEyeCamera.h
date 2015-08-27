@@ -1,6 +1,8 @@
 #ifndef ASSEMBLYUEYECAMERA_H
 #define ASSEMBLYUEYECAMERA_H
 
+#include <opencv2/opencv.hpp>
+
 #include <uEye.h>
 
 #include <QThread>
@@ -101,17 +103,17 @@ private:
         int height;
         int colorformat;
         int bitspp;
-        QImage::Format imgformat;
-        QRgb *pRgbTable;
-        int tableentries;
+        int cvimgformat;
+        //QRgb *pRgbTable;
+        //int tableentries;
         int imageformat;
     } bufferProps_;
-    QRgb table_[256];
+    //QRgb table_[256];
 
     char *lastBuffer_;
     UEYE_IMAGE images_[5];
 
-    QImage image_;
+    cv::Mat image_;
 };
 
 #endif // ASSEMBLYUEYECAMERA_H

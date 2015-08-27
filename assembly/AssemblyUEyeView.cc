@@ -9,7 +9,7 @@
 AssemblyUEyeView::AssemblyUEyeView(QWidget *parent)
     : QLabel(parent),
       camera_(0),
-      image_(0)
+      image_(QImage())
 {
 
 }

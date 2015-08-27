@@ -57,12 +57,12 @@ AssemblyUEyeCamera::AssemblyUEyeCamera(QObject *parent)
     bufferProps_.height = 0;
     bufferProps_.bitspp = 8;
     bufferProps_.colorformat = IS_CM_MONO8;
-    bufferProps_.imgformat = QImage::Format_Invalid;
-    bufferProps_.pRgbTable = NULL;
-    bufferProps_.tableentries = 0;
+    //bufferProps_.imgformat = QImage::Format_Invalid;
+    //bufferProps_.pRgbTable = NULL;
+    //bufferProps_.tableentries = 0;
 
-    for (int i = 0; i < 256; i++)
-        table_[i] = qRgb (i, i, i);
+    //for (int i = 0; i < 256; i++)
+    //    table_[i] = qRgb (i, i, i);
 
     ZeroMemory(images_, sizeof(images_));
 
@@ -408,28 +408,8 @@ void AssemblyUEyeCamera::eventHappend()
 
     nNum = getImageNumber(lastBuffer_);
     ret = is_LockSeqBuf(cameraHandle_, nNum, lastBuffer_);
-    image_ = QImage((uchar*)lastBuffer_,
-                    bufferProps_.width,
-                    bufferProps_.height,
-                    bufferProps_.imgformat);
-    QVector<QRgb> rgbTable;
-    for (int i=0;i<bufferProps_.tableentries;++i) {
-        rgbTable.push_back(bufferProps_.pRgbTable[i]);
-    }
-    image_.setColorCount(bufferProps_.tableentries);
-    image_.setColorTable(rgbTable);
 
-    // get current colormode
-    int colormode = is_SetColorMode(cameraHandle_, IS_GET_COLOR_MODE);
-    switch (colormode)
-    {
-    default:
-        break;
-    case IS_CM_BGR8_PACKED:
-        //swap the R and B color parts, cause QImage::Format_RGB888 takes order RGB
-        image_ = image_.rgbSwapped();
-        break;
-    }
+    memcpy(image_.ptr(), (uchar*)lastBuffer_, bufferProps_.width * bufferProps_.height * 1);
 
     is_UnlockSeqBuf(cameraHandle_, nNum, lastBuffer_);
 
@@ -500,33 +480,38 @@ void AssemblyUEyeCamera::setupCapture()
             colormode = IS_CM_BGR565_PACKED;
         }
 
+        NQLog("AssemblyUEyeCamera::setupCapture()", NQLog::Message) << "color mode = " << colormode;
+
         ZeroMemory(&bufferProps_, sizeof(bufferProps_));
         bufferProps_.width  = width;
         bufferProps_.height = height;
         bufferProps_.colorformat = colormode;
         bufferProps_.bitspp = getBitsPerPixel(colormode);
+        bufferProps_.cvimgformat = CV_8UC1;
 
         switch (colormode)
         {
         default:
         case IS_CM_MONO8:
         case IS_CM_SENSOR_RAW8:
-            bufferProps_.pRgbTable = table_;
-            bufferProps_.tableentries = 256;
-            bufferProps_.imgformat = QImage::Format_Indexed8;
+            //bufferProps_.pRgbTable = table_;
+            //bufferProps_.tableentries = 256;
+            bufferProps_.cvimgformat = CV_8UC1;
             break;
         case IS_CM_BGR565_PACKED:
-            bufferProps_.imgformat = QImage::Format_RGB16;
+            bufferProps_.cvimgformat = CV_8UC1;
             break;
         case IS_CM_RGB8_PACKED:
         case IS_CM_BGR8_PACKED:
-            bufferProps_.imgformat = QImage::Format_RGB888;
+            bufferProps_.cvimgformat = CV_8UC1;
             break;
         case IS_CM_RGBA8_PACKED:
         case IS_CM_BGRA8_PACKED:
-            bufferProps_.imgformat = QImage::Format_RGB32;
+            bufferProps_.cvimgformat = CV_8UC1;
             break;
         }
+
+        image_.create(bufferProps_.height, bufferProps_.width, bufferProps_.cvimgformat);
 
         allocImages();
     }
