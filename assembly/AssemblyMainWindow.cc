@@ -84,11 +84,6 @@ void AssemblyMainWindow::onOpenCamera()
     connect(camera_, SIGNAL(cameraClosed()),
             this, SLOT(cameraClosed()));
 
-    /*
-    connect(camera_, SIGNAL(imageAcquired(const QImage&)),
-            this, SLOT(imageAcquired(const QImage&)));
-    */
-
     emit openCamera();
 }
 
