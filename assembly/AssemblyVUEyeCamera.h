@@ -1,8 +1,9 @@
 #ifndef ASSEMBLYVUEYECAMERA_H
 #define ASSEMBLYVUEYECAMERA_H
 
+#include <opencv2/opencv.hpp>
+
 #include <QObject>
-#include <QImage>
 
 #include <DeviceState.h>
 
@@ -138,7 +139,7 @@ signals:
     void exposureTimeChanged(double);
     void exposureTimeRangeChanged(double);
 
-    void imageAcquired(const QImage&);
+    void imageAcquired(const cv::Mat&);
 
 private:
 

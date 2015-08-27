@@ -45,16 +45,16 @@ void AssemblyUEyeSnapShooter::connectCamera(AssemblyVUEyeCamera *camera)
     camera_ = camera;
     if (camera_) imageView_->connectCamera(camera);
 
-    connect(camera_, SIGNAL(imageAcquired(const QImage&)),
-            this, SLOT(imageAcquired(const QImage&)));
+    connect(camera_, SIGNAL(imageAcquired(const cv::Mat&)),
+            this, SLOT(imageAcquired(const cv::Mat&)));
 }
 
 void AssemblyUEyeSnapShooter::disconnectCamera(AssemblyVUEyeCamera * camera)
 {
     NQLog("AssemblyUEyeSnapShooter") << ":disconnectCamera(AssemblyVUEyeCamera * camera)";
 
-    camera->disconnect(SIGNAL(imageAcquired(const QImage&)),
-                       this, SLOT(imageAcquired(const QImage&)));
+    camera->disconnect(SIGNAL(imageAcquired(const cv::Mat&)),
+                       this, SLOT(imageAcquired(const cv::Mat&)));
 }
 
 void AssemblyUEyeSnapShooter::snapShot()
@@ -64,20 +64,20 @@ void AssemblyUEyeSnapShooter::snapShot()
     takeSnapShot_ = true;
 }
 
-void AssemblyUEyeSnapShooter::imageAcquired(const QImage& newImage)
+void AssemblyUEyeSnapShooter::imageAcquired(const cv::Mat& newImage)
 {
-    NQLog("AssemblyUEyeSnapShooter") << ":imageAcquired(const QImage& newImage)";
+    NQLog("AssemblyUEyeSnapShooter") << ":imageAcquired(const cv::Mat& newImage)";
 
     if (takeSnapShot_) {
         takeSnapShot_ = false;
 
-        QImage image = newImage;
+        cv::Mat image = newImage;
 
         QString filename = QFileDialog::getSaveFileName(this, "save image", ".", "*.jpg");
         if (filename.isNull() || filename.isEmpty()) return;
 
         if (!filename.endsWith(".jpg")) filename += ".jpg";
 
-        image.save(filename);
+        cv::imwrite(filename.toStdString(), image);
     }
 }

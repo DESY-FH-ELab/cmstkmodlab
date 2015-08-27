@@ -1,6 +1,8 @@
 #ifndef ASSEMBLYUEYEVIEW_H
 #define ASSEMBLYUEYEVIEW_H
 
+#include <opencv2/opencv.hpp>
+
 #include <QLabel>
 #include <QImage>
 #include <QMutex>
@@ -28,7 +30,7 @@ protected:
 
 public slots:
 
-  void setImage(const QImage&);
+  void setImage(const cv::Mat&);
 };
 
 #endif // ASSEMBLYUEYEWIDGET_H

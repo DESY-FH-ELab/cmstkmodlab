@@ -16,9 +16,12 @@ AssemblyUEyeFakeCamera::AssemblyUEyeFakeCamera(QObject *parent)
     cameraState_ = State::OFF;
 
     QString filename(Config::CMSTkModLabBasePath.c_str());
-    image_[0] = QImage(filename + "/share/assembly/SensorMarker1.png");
-    image_[1] = QImage(filename + "/share/assembly/SensorMarker2.png");
-    image_[2] = QImage(filename + "/share/assembly/SensorMarker3.png");
+    image_[0] = cv::imread(QString(filename + "/share/assembly/SensorMarker1.png").toStdString(),
+                           CV_LOAD_IMAGE_GRAYSCALE);
+    image_[1] = cv::imread(QString(filename + "/share/assembly/SensorMarker2.png").toStdString(),
+                           CV_LOAD_IMAGE_GRAYSCALE);
+    image_[2] = cv::imread(QString(filename + "/share/assembly/SensorMarker3.png").toStdString(),
+                           CV_LOAD_IMAGE_GRAYSCALE);
 }
 
 AssemblyUEyeFakeCamera::~AssemblyUEyeFakeCamera()

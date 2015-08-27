@@ -1,6 +1,8 @@
 #ifndef ASSEMBLYUEYESNAPSHOOTER_H
 #define ASSEMBLYUEYESNAPSHOOTER_H
 
+#include <opencv2/opencv.hpp>
+
 #include <QWidget>
 #include <QScrollArea>
 
@@ -30,7 +32,7 @@ protected:
 public slots:
 
   void snapShot();
-  void imageAcquired(const QImage&);
+  void imageAcquired(const cv::Mat&);
 };
 
 #endif // ASSEMBLYUEYEWIDGET_H

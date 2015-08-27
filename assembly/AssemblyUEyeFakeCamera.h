@@ -1,6 +1,8 @@
 #ifndef ASSEMBLYUEYEFAKECAMERA_H
 #define ASSEMBLYUEYEFAKECAMERA_H
 
+#include <opencv2/opencv.hpp>
+
 #include "AssemblyVUEyeCamera.h"
 
 class AssemblyUEyeFakeCamera : public AssemblyVUEyeCamera
@@ -30,7 +32,7 @@ protected slots:
 
 protected:
 
-    QImage image_[3];
+    cv::Mat image_[3];
     unsigned int imageIndex_;
 
 signals:

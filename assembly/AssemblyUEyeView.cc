@@ -8,7 +8,8 @@
 
 AssemblyUEyeView::AssemblyUEyeView(QWidget *parent)
     : QLabel(parent),
-      camera_(0)
+      camera_(0),
+      image_(0)
 {
 
 }
@@ -17,24 +18,32 @@ void AssemblyUEyeView::connectCamera(AssemblyVUEyeCamera *camera)
 {
     camera_ = camera;
 
-    connect(camera_, SIGNAL(imageAcquired(const QImage&)),
-            this, SLOT(setImage(const QImage&)));
+    connect(camera_, SIGNAL(imageAcquired(const cv::Mat&)),
+            this, SLOT(setImage(const cv::Mat&)));
 }
 
 void AssemblyUEyeView::disconnectCamera(AssemblyVUEyeCamera *camera)
 {
-    disconnect(SIGNAL(imageAcquired(const QImage&)),
-               this, SLOT(setImage(const QImage&)));
+    disconnect(SIGNAL(imageAcquired(const cv::Mat&)),
+               this, SLOT(setImage(const cv::Mat&)));
 
 }
 
-void AssemblyUEyeView::setImage(const QImage& newImage)
+void AssemblyUEyeView::setImage(const cv::Mat& newImage)
 {
     QMutexLocker lock(&mutex_);
 
     NQLog("AssemblyUEyeView") << "set image";
 
-    image_ = newImage.scaled(this->width(), this->height(), Qt::KeepAspectRatio);
+    cv::Mat temp;
+    cvtColor(newImage, temp, CV_GRAY2RGB);
+
+    image_ = QImage((const uchar *) temp.data,
+                    temp.cols, temp.rows,
+                    temp.step, QImage::Format_RGB888).scaled(this->width(),
+                                                             this->height(),
+                                                             Qt::KeepAspectRatio);
+    image_.bits();
 
     update();
 }
