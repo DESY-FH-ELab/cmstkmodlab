@@ -30,6 +30,8 @@ void AssemblyUEyeView::disconnectCamera(AssemblyVUEyeCamera *camera)
 
 void AssemblyUEyeView::setImage(const QImage& newImage)
 {
+    QMutexLocker lock(&mutex_);
+
     NQLog("AssemblyUEyeView") << "set image";
 
     image_ = newImage.scaled(this->width(), this->height(), Qt::KeepAspectRatio);

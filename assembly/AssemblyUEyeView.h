@@ -3,6 +3,7 @@
 
 #include <QLabel>
 #include <QImage>
+#include <QMutex>
 
 #include "AssemblyVUEyeCamera.h"
 
@@ -22,6 +23,8 @@ protected:
   AssemblyVUEyeCamera *camera_;
 
   QImage image_;
+
+  QMutex mutex_;
 
 public slots:
 
