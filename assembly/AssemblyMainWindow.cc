@@ -22,8 +22,11 @@ AssemblyMainWindow::AssemblyMainWindow(QWidget *parent) :
     tabWidget_ = new QTabWidget(this);
     tabWidget_->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);
 
-    snapShooter_ = new AssemblyUEyeSnapShooter(tabWidget_);
-    tabWidget_->addTab(snapShooter_, "snapshot");
+    finderView_ = new AssemblyUEyeSnapShooter(tabWidget_);
+    tabWidget_->addTab(finderView_, "finder");
+
+    rawView_ = new AssemblyUEyeSnapShooter(tabWidget_);
+    tabWidget_->addTab(rawView_, "raw");
 
     uEyeModel_ = new AssemblyUEyeModel_t(10);
     cameraThread_ = new AssemblyUEyeCameraThread(uEyeModel_, this);
@@ -108,7 +111,13 @@ void AssemblyMainWindow::cameraOpened()
 {
     NQLog("AssemblyMainWindow") << ":cameraOpened()";
 
-    snapShooter_->connectCamera(camera_);
+    finderView_->connectMarkerFinder(finder_);
+
+    rawView_->connectCamera(camera_);
+
+    connect(camera_, SIGNAL(imageAcquired(const cv::Mat&)),
+            finder_, SLOT(findMarker(const cv::Mat&)));
+
     //liveTimer_->start(2000);
 }
 
@@ -116,7 +125,13 @@ void AssemblyMainWindow::cameraClosed()
 {
     NQLog("AssemblyMainWindow") << ":cameraClosed()";
 
-    snapShooter_->disconnectCamera(camera_);
+    finderView_->disconnectMarkerFinder(finder_);
+
+    rawView_->disconnectCamera(camera_);
+
+    disconnect(camera_, SIGNAL(imageAcquired(const cv::Mat&)),
+               finder_, SLOT(findMarker(const cv::Mat&)));
+
     liveTimer_->stop();
 }
 
