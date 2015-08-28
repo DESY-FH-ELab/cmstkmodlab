@@ -56,7 +56,10 @@ HEADERS += AssemblyMainWindow.h \
            AssemblyUEyeWidget.h \
            AssemblyUEyeCameraWidget.h \
            AssemblyUEyeView.h \
-           AssemblyUEyeSnapShooter.h
+           AssemblyUEyeSnapShooter.h \
+           AssemblyMarkerFinderThread.h \
+           AssemblyVMarkerFinder.h \
+           AssemblySensorMarkerFinder.h
 
 equals(USEFAKEDEVICES,"X0") {
 HEADERS += AssemblyUEyeCamera.h \
@@ -74,7 +77,10 @@ SOURCES += assembly.cc \
            AssemblyUEyeWidget.cc \
            AssemblyUEyeCameraWidget.cc \
            AssemblyUEyeView.cc \
-           AssemblyUEyeSnapShooter.cc
+           AssemblyUEyeSnapShooter.cc \
+           AssemblyMarkerFinderThread.cc \
+           AssemblyVMarkerFinder.cc \
+           AssemblySensorMarkerFinder.cc
 
 equals(USEFAKEDEVICES,"X0") {
 SOURCES += AssemblyUEyeCamera.cc \
