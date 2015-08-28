@@ -32,7 +32,7 @@ protected:
 
 public slots:
 
-  void setImage(const cv::Mat&);
+    void setImage(const cv::Mat&);
 };
 
 #endif // ASSEMBLYUEYEWIDGET_H
