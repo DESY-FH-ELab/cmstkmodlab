@@ -32,6 +32,10 @@ AssemblyMainWindow::AssemblyMainWindow(QWidget *parent) :
     cameraThread_ = new AssemblyUEyeCameraThread(uEyeModel_, this);
     cameraThread_->start();
 
+    finder_ = new AssemblySensorMarkerFinder();
+    finderThread_ = new AssemblyMarkerFinderThread(finder_, this);
+    finderThread_->start();
+
     uEyeWidget_ = new AssemblyUEyeWidget(uEyeModel_, this);
 
     tabWidget_->addTab(uEyeWidget_, "uEye");
