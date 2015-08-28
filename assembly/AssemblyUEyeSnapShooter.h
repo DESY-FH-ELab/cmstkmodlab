@@ -5,6 +5,7 @@
 
 #include <QWidget>
 #include <QScrollArea>
+#include <QKeyEvent>
 
 #include <AssemblyVUEyeCamera.h>
 #include <AssemblyVMarkerFinder.h>
@@ -25,6 +26,7 @@ public:
 
 protected:
 
+    void keyReleaseEvent(QKeyEvent *event);
 
     QScrollArea *scrollArea_;
     AssemblyUEyeView *imageView_;

@@ -22,11 +22,16 @@ public:
     void disconnectCamera(AssemblyVUEyeCamera* camera);
     void disconnectMarkerFinder(AssemblyVMarkerFinder* finder);
 
+    void setZoomFactor(float zoomFactor);
+    void increaseZoomFactor();
+    void decreaseZoomFactor();
+
 protected:
 
     void paintEvent(QPaintEvent*);
 
     QImage image_;
+    float zoomFactor_;
 
     QMutex mutex_;
 

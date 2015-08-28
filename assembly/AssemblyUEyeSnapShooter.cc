@@ -102,5 +102,28 @@ void AssemblyUEyeSnapShooter::imageAcquired(const cv::Mat& newImage)
     newImage.copyTo(image_);
 }
 
+void AssemblyUEyeSnapShooter::keyReleaseEvent(QKeyEvent * event)
+{
+    if (!(event->modifiers() & Qt::ShiftModifier)) {
+        switch (event->key()) {
+        case Qt::Key_0:
+            imageView_->setZoomFactor(0.25);
+            event->accept();
+            break;
+        case Qt::Key_1:
+            imageView_->setZoomFactor(1.00);
+            event->accept();
+            break;
+        case Qt::Key_Plus:
+            imageView_->increaseZoomFactor();
+            event->accept();
+            break;
+        case Qt::Key_Minus:
+            imageView_->decreaseZoomFactor();
+            event->accept();
+            break;
+        default:
+            break;
+        }
     }
 }
