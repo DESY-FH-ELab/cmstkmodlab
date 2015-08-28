@@ -15,7 +15,7 @@ class AssemblyUEyeSnapShooter : public QWidget
     Q_OBJECT
 public:
 
-  explicit AssemblyUEyeSnapShooter(QWidget *parent = 0);
+    explicit AssemblyUEyeSnapShooter(QWidget *parent = 0);
 
     void connectCamera(AssemblyVUEyeCamera *camera);
     void disconnectCamera(AssemblyVUEyeCamera *camera);
@@ -24,15 +24,15 @@ protected:
 
   AssemblyVUEyeCamera* camera_;
 
-  QScrollArea *scrollArea_;
-  AssemblyUEyeView *imageView_;
+    QScrollArea *scrollArea_;
+    AssemblyUEyeView *imageView_;
 
   bool takeSnapShot_;
 
 public slots:
 
-  void snapShot();
-  void imageAcquired(const cv::Mat&);
+    void snapShot();
+    void imageAcquired(const cv::Mat&);
 };
 
 #endif // ASSEMBLYUEYEWIDGET_H

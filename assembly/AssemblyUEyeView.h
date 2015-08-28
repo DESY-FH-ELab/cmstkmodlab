@@ -13,7 +13,7 @@ class AssemblyUEyeView : public QLabel
 {
     Q_OBJECT
 public:
-  explicit AssemblyUEyeView(QWidget *parent = 0);
+    explicit AssemblyUEyeView(QWidget *parent = 0);
 
     void connectCamera(AssemblyVUEyeCamera* camera);
     void disconnectCamera(AssemblyVUEyeCamera* camera);
@@ -24,9 +24,9 @@ protected:
 
   AssemblyVUEyeCamera *camera_;
 
-  QImage image_;
+    QImage image_;
 
-  QMutex mutex_;
+    QMutex mutex_;
 
 public slots:
 
