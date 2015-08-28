@@ -49,13 +49,6 @@ AssemblyMainWindow::AssemblyMainWindow(QWidget *parent) :
 
     NQLog("AssemblyMainWindow") << "main window constructed";
 
-    /*
-    testTimerCount_ = 0;
-    testTimer_ = new QTimer(this);
-    connect(testTimer_, SIGNAL(timeout()), this, SLOT(testTimer()));
-    testTimer_->start(100);
-    */
-
     liveTimer_ = new QTimer(this);
     connect(liveTimer_, SIGNAL(timeout()), this, SLOT(liveUpdate()));
 

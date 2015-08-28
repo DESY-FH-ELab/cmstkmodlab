@@ -70,7 +70,6 @@ protected:
   AssemblyVUEyeCamera * camera_;
 
   double testTimerCount_;
-  QTimer *testTimer_;
 
   QTimer *liveTimer_;
 };
