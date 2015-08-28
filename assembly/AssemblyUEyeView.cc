@@ -8,7 +8,6 @@
 
 AssemblyUEyeView::AssemblyUEyeView(QWidget *parent)
     : QLabel(parent),
-      camera_(0),
       image_(QImage())
 {
 
@@ -16,17 +15,26 @@ AssemblyUEyeView::AssemblyUEyeView(QWidget *parent)
 
 void AssemblyUEyeView::connectCamera(AssemblyVUEyeCamera *camera)
 {
-    camera_ = camera;
+    connect(camera, SIGNAL(imageAcquired(const cv::Mat&)),
+            this, SLOT(setImage(const cv::Mat&)));
+}
 
-    connect(camera_, SIGNAL(imageAcquired(const cv::Mat&)),
+void AssemblyUEyeView::connectMarkerFinder(AssemblyVMarkerFinder* finder)
+{
+    connect(finder, SIGNAL(markerFound(const cv::Mat&)),
             this, SLOT(setImage(const cv::Mat&)));
 }
 
 void AssemblyUEyeView::disconnectCamera(AssemblyVUEyeCamera *camera)
 {
-    disconnect(SIGNAL(imageAcquired(const cv::Mat&)),
+    disconnect(camera, SIGNAL(imageAcquired(const cv::Mat&)),
                this, SLOT(setImage(const cv::Mat&)));
+}
 
+void AssemblyUEyeView::disconnectMarkerFinder(AssemblyVMarkerFinder* finder)
+{
+    disconnect(finder, SIGNAL(markerFound(const cv::Mat&)),
+               this, SLOT(setImage(const cv::Mat&)));
 }
 
 void AssemblyUEyeView::setImage(const cv::Mat& newImage)

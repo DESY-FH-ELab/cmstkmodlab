@@ -6,8 +6,8 @@
 #include <QWidget>
 #include <QScrollArea>
 
-#include "AssemblyVUEyeCamera.h"
-
+#include <AssemblyVUEyeCamera.h>
+#include <AssemblyVMarkerFinder.h>
 #include <AssemblyUEyeView.h>
 
 class AssemblyUEyeSnapShooter : public QWidget
@@ -17,12 +17,14 @@ public:
 
     explicit AssemblyUEyeSnapShooter(QWidget *parent = 0);
 
-    void connectCamera(AssemblyVUEyeCamera *camera);
-    void disconnectCamera(AssemblyVUEyeCamera *camera);
+    void connectCamera(AssemblyVUEyeCamera* camera);
+    void connectMarkerFinder(AssemblyVMarkerFinder* finder);
+
+    void disconnectCamera(AssemblyVUEyeCamera* camera);
+    void disconnectMarkerFinder(AssemblyVMarkerFinder* finder);
 
 protected:
 
-  AssemblyVUEyeCamera* camera_;
 
     QScrollArea *scrollArea_;
     AssemblyUEyeView *imageView_;

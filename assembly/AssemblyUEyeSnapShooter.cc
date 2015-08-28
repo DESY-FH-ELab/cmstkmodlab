@@ -9,7 +9,6 @@
 
 AssemblyUEyeSnapShooter::AssemblyUEyeSnapShooter(QWidget *parent)
     : QWidget(parent),
-      camera_(0),
       takeSnapShot_(false)
 {
     QVBoxLayout *l = new QVBoxLayout(this);
@@ -42,10 +41,19 @@ void AssemblyUEyeSnapShooter::connectCamera(AssemblyVUEyeCamera *camera)
 {
     NQLog("AssemblyUEyeSnapShooter") << ":connectCamera(AssemblyVUEyeCamera *camera)";
 
-    camera_ = camera;
-    if (camera_) imageView_->connectCamera(camera);
+    imageView_->connectCamera(camera);
 
-    connect(camera_, SIGNAL(imageAcquired(const cv::Mat&)),
+    connect(camera, SIGNAL(imageAcquired(const cv::Mat&)),
+            this, SLOT(imageAcquired(const cv::Mat&)));
+}
+
+void AssemblyUEyeSnapShooter::connectMarkerFinder(AssemblyVMarkerFinder* finder)
+{
+    NQLog("AssemblyUEyeSnapShooter") << ":connectMarkerFinder(AssemblyVMarkerFinder* finder)";
+
+    imageView_->connectMarkerFinder(finder);
+
+    connect(finder, SIGNAL(markerFound(const cv::Mat&)),
             this, SLOT(imageAcquired(const cv::Mat&)));
 }
 
@@ -53,15 +61,20 @@ void AssemblyUEyeSnapShooter::disconnectCamera(AssemblyVUEyeCamera * camera)
 {
     NQLog("AssemblyUEyeSnapShooter") << ":disconnectCamera(AssemblyVUEyeCamera * camera)";
 
-    camera->disconnect(SIGNAL(imageAcquired(const cv::Mat&)),
+    imageView_->disconnectCamera(camera);
+
+    camera->disconnect(camera, SIGNAL(imageAcquired(const cv::Mat&)),
                        this, SLOT(imageAcquired(const cv::Mat&)));
 }
 
-void AssemblyUEyeSnapShooter::snapShot()
+void AssemblyUEyeSnapShooter::disconnectMarkerFinder(AssemblyVMarkerFinder* finder)
 {
-    NQLog("AssemblyUEyeSnapShooter") << ":snapShot()";
+    NQLog("AssemblyUEyeSnapShooter") << ":connectMarkerFinder(AssemblyVMarkerFinder* finder)";
 
-    takeSnapShot_ = true;
+    imageView_->disconnectMarkerFinder(finder);
+
+    disconnect(finder, SIGNAL(markerFound(const cv::Mat&)),
+               this, SLOT(imageAcquired(const cv::Mat&)));
 }
 
 void AssemblyUEyeSnapShooter::imageAcquired(const cv::Mat& newImage)

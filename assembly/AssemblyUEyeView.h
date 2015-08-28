@@ -7,7 +7,8 @@
 #include <QImage>
 #include <QMutex>
 
-#include "AssemblyVUEyeCamera.h"
+#include <AssemblyVUEyeCamera.h>
+#include <AssemblyVMarkerFinder.h>
 
 class AssemblyUEyeView : public QLabel
 {
@@ -16,13 +17,14 @@ public:
     explicit AssemblyUEyeView(QWidget *parent = 0);
 
     void connectCamera(AssemblyVUEyeCamera* camera);
+    void connectMarkerFinder(AssemblyVMarkerFinder* finder);
+
     void disconnectCamera(AssemblyVUEyeCamera* camera);
+    void disconnectMarkerFinder(AssemblyVMarkerFinder* finder);
 
 protected:
 
     void paintEvent(QPaintEvent*);
-
-  AssemblyVUEyeCamera *camera_;
 
     QImage image_;
 
