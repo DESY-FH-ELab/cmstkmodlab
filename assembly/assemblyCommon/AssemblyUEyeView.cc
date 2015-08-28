@@ -51,13 +51,13 @@ void AssemblyUEyeView::setImage(const cv::Mat& newImage)
         image_ = QImage((const uchar *) temp.data,
                         temp.cols, temp.rows,
                         temp.step, QImage::Format_RGB888);
+        image_.bits();
     } else {
         image_ = QImage((const uchar *) newImage.data,
                         newImage.cols, newImage.rows,
                         newImage.step, QImage::Format_RGB888);
+        image_.bits();
     }
-
-    image_.bits();
 
     lock.unlock();
 
