@@ -31,6 +31,11 @@ protected:
     bool intersection(cv::Point2f o1, cv::Point2f p1,
                       cv::Point2f o2, cv::Point2f p2,
                       cv::Point2f &r, float distance);
+    void mergeIntersections(std::vector<cv::Point2f>& intersections);
+    void drawIntersections();
+
+    void determineOrientation();
+    void drawOrientation();
 
     cv::Mat image_;
     cv::Mat imageRGB_;
@@ -43,8 +48,12 @@ protected:
     float circleRadius_;
     float circleQuality_;
 
+    float orientation_;
+
     std::vector<std::pair<cv::Point2f,cv::Point2f> > lines_;
     std::vector<std::pair<cv::Point2f,cv::Point2f> > goodLines_;
+    std::vector<cv::Point2f> intersections_;
+    std::vector<cv::Point2f> goodIntersections_;
 };
 
 #endif // ASSEMBLYSENSORMARKERFINDER_H
