@@ -2,17 +2,22 @@
 
 #include <QVBoxLayout>
 #include <QFileDialog>
+#include <QPushButton>
 
 #include <nqlogger.h>
 
 #include "AssemblyUEyeSnapShooter.h"
 
 AssemblyUEyeSnapShooter::AssemblyUEyeSnapShooter(QWidget *parent)
-    : QWidget(parent),
-      takeSnapShot_(false)
+    : QWidget(parent)
 {
     QVBoxLayout *l = new QVBoxLayout(this);
     setLayout(l);
+
+    QPushButton * button = new QPushButton("save", this);
+    connect(button, SIGNAL(clicked(bool)),
+            this, SLOT(snapShot()));
+    l->addWidget(button);
 
     QPalette palette;
     palette.setColor(QPalette::Background, QColor(220, 220, 220));
@@ -31,6 +36,7 @@ AssemblyUEyeSnapShooter::AssemblyUEyeSnapShooter(QWidget *parent)
     scrollArea_->setBackgroundRole(QPalette::Background);
     scrollArea_->setAlignment(Qt::AlignCenter);
     scrollArea_->setWidget(imageView_);
+    scrollArea_->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 
     l->addWidget(scrollArea_);
 
@@ -77,20 +83,24 @@ void AssemblyUEyeSnapShooter::disconnectMarkerFinder(AssemblyVMarkerFinder* find
                this, SLOT(imageAcquired(const cv::Mat&)));
 }
 
+void AssemblyUEyeSnapShooter::snapShot()
+{
+    // NQLog("AssemblyUEyeSnapShooter") << ":snapShot()";
+
+    if (image_.rows==0) return;
+
+    QString filename = QFileDialog::getSaveFileName(this, "save image", ".", "*.jpg");
+    if (filename.isNull() || filename.isEmpty()) return;
+
+    if (!filename.endsWith(".jpg")) filename += ".jpg";
+
+    cv::imwrite(filename.toStdString(), image_);
+}
+
 void AssemblyUEyeSnapShooter::imageAcquired(const cv::Mat& newImage)
 {
-    NQLog("AssemblyUEyeSnapShooter") << ":imageAcquired(const cv::Mat& newImage)";
+    newImage.copyTo(image_);
+}
 
-    if (takeSnapShot_) {
-        takeSnapShot_ = false;
-
-        cv::Mat image = newImage;
-
-        QString filename = QFileDialog::getSaveFileName(this, "save image", ".", "*.jpg");
-        if (filename.isNull() || filename.isEmpty()) return;
-
-        if (!filename.endsWith(".jpg")) filename += ".jpg";
-
-        cv::imwrite(filename.toStdString(), image);
     }
 }

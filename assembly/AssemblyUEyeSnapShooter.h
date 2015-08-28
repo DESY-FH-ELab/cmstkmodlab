@@ -29,7 +29,7 @@ protected:
     QScrollArea *scrollArea_;
     AssemblyUEyeView *imageView_;
 
-  bool takeSnapShot_;
+    cv::Mat image_;
 
 public slots:
 

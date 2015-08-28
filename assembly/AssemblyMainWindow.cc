@@ -40,7 +40,6 @@ AssemblyMainWindow::AssemblyMainWindow(QWidget *parent) :
     toolBar_->addAction("open", this, SLOT(onOpenCamera()));
     toolBar_->addAction("close", this, SLOT(onCloseCamera()));
     toolBar_->addAction("snapshot", this, SLOT(onSnapShot()));
-    toolBar_->addAction("save", snapShooter_, SLOT(snapShot()));
 
     setCentralWidget(tabWidget_);
     updateGeometry();
