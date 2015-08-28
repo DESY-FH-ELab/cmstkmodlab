@@ -118,7 +118,7 @@ size_t AssemblySensorMarkerFinder::findCircle()
 void AssemblySensorMarkerFinder::drawCircle()
 {
     cv::Point2f center(cvRound(circleCenter_.x),
-                   cvRound(circleCenter_.y));
+                       cvRound(circleCenter_.y));
     // circle center
     cv::circle(imageRGB_, center, 4, cv::Scalar(0, 255, 0), -1, CV_AA, 0);
     // circle outline
