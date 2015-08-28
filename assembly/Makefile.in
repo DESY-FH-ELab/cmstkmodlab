@@ -1,0 +1,15 @@
+BASEPATH      = @basepath@
+NOTHERMAL     = @nothermal@
+NODEFO        = @nodefo@
+USEFAKEDEVICES= @usefakedevices@
+
+subdirs	      = assemblyCommon \
+		assembly
+
+all:
+	@for dir in $(subdirs); do (cd $$dir; make); done
+
+clean:
+	@rm -f *~
+	@for dir in $(subdirs); do (cd $$dir; make clean); done
+	@rm -rf lib

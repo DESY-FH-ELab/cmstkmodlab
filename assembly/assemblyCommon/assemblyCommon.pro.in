@@ -40,8 +40,8 @@ greaterThan(QT_MAJOR_VERSION, 4) {
   QT += widgets
 } 
 
-TEMPLATE = app
-TARGET = assembly
+TEMPLATE = lib
+TARGET = AssemblyCommon
 DEPENDPATH += @basepath@/common
 INCLUDEPATH += .
 INCLUDEPATH += ..
@@ -49,8 +49,7 @@ INCLUDEPATH += @basepath@
 INCLUDEPATH += @basepath@/common
 
 # Input
-HEADERS += AssemblyMainWindow.h \
-           AssemblyVUEyeCamera.h \
+HEADERS += AssemblyVUEyeCamera.h \
            AssemblyVUEyeModel.h \
            AssemblyUEyeCameraThread.h \
            AssemblyUEyeWidget.h \
@@ -69,9 +68,7 @@ HEADERS += AssemblyUEyeFakeCamera.h \
            AssemblyUEyeFakeModel.h
 }
 
-SOURCES += assembly.cc \
-           AssemblyMainWindow.cc \
-           AssemblyVUEyeCamera.cc \
+SOURCES += AssemblyVUEyeCamera.cc \
            AssemblyVUEyeModel.cc \
            AssemblyUEyeCameraThread.cc \
            AssemblyUEyeWidget.cc \

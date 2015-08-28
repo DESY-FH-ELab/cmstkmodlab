@@ -1,0 +1,69 @@
+ARCHITECTURE=@architecture@
+USEFAKEDEVICES="X@usefakedevices@"
+
+LIBS += -L@basepath@/devices/lib -lTkModLabLang
+LIBS += -L@basepath@/common -lCommon
+LIBS += -L@basepath@/assembly/assemblyCommon -lAssemblyCommon
+
+equals(USEFAKEDEVICES,"X0") {
+LIBS += -lueye_api
+}
+
+macx {
+	CONFIG+=x86_64
+	QMAKE_CXXFLAGS += -stdlib=libc++
+	LIBS += -framework AppKit
+	LIBS += -framework QuartzCore
+	LIBS += -framework QTKit
+	LIBS += -framework Cocoa
+	LIBS += -L/opt/local/lib -ltiff
+	QMAKE_MACOSX_DEPLOYMENT_TARGET = 10.9
+}
+
+CONFIG += link_pkgconfig
+PKGCONFIG += opencv
+
+QMAKE = @qmake@
+
+QMAKE_CXXFLAGS += -std=c++11
+
+macx {
+	QMAKE_CXXFLAGS += -DAPPLICATIONVERSIONSTR=\\\"unknown\\\"
+}
+else {
+	QMAKE_CXXFLAGS += -DAPPLICATIONVERSIONSTR=\\\"`git describe --dirty --always --tags`\\\"
+}
+
+DEFINES += @configdefines@
+
+QT += core gui xml network script svg
+greaterThan(QT_MAJOR_VERSION, 4) {
+  QT += widgets
+} 
+
+TEMPLATE = app
+TARGET = assembly
+DEPENDPATH += @basepath@/common @basepath@/assembly/assemblyCommon
+INCLUDEPATH += .
+INCLUDEPATH += ..
+INCLUDEPATH += @basepath@
+INCLUDEPATH += @basepath@/common
+INCLUDEPATH += @basepath@/assembly/assemblyCommon
+
+# Input
+HEADERS += AssemblyMainWindow.h
+
+equals(USEFAKEDEVICES,"X0") {
+HEADERS += 
+} else {
+HEADERS += 
+}
+
+SOURCES += assembly.cc \
+           AssemblyMainWindow.cc
+
+equals(USEFAKEDEVICES,"X0") {
+SOURCES += 
+} else {
+SOURCES += 
+}
