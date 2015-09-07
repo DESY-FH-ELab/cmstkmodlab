@@ -1,6 +1,8 @@
 #ifndef ASSEMBLYUEYEFAKECAMERA_H
 #define ASSEMBLYUEYEFAKECAMERA_H
 
+#include <vector>
+
 #include <opencv2/opencv.hpp>
 
 #include "AssemblyVUEyeCamera.h"
@@ -32,8 +34,8 @@ protected slots:
 
 protected:
 
-    cv::Mat image_[3];
-    unsigned int imageIndex_;
+    std::vector<cv::Mat> images_;
+    size_t imageIndex_;
 
 signals:
 
