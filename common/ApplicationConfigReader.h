@@ -16,7 +16,7 @@ class ApplicationConfigReader : public QObject
   ApplicationConfigReader( const std::string & filename );
   ~ApplicationConfigReader();
 
-  void fill(std::map<std::string,std::string> &keyvalueMap);
+  void fill(std::multimap<std::string,std::string> &keyvalueMap);
   std::string getFileName( void ) { return inputFileName_; }
 
  private:
