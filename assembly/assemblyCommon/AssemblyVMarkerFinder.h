@@ -7,6 +7,22 @@
 #include <QMutex>
 #include <QMutexLocker>
 
+class AssemblyMarkerCircle
+{
+public:
+
+    AssemblyMarkerCircle(float x, float y, float r, float q);
+
+    float x() const { return x_; }
+    float y() const { return y_; }
+    float r() const { return r_; }
+    float q() const { return q_; }
+
+protected:
+
+    float x_, y_, r_, q_;
+};
+
 class AssemblyVMarkerFinder : public QObject
 {
     Q_OBJECT
