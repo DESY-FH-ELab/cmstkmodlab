@@ -71,7 +71,7 @@ size_t AssemblySensorMarkerFinder::findCircle(const cv::Mat& image)
     /// Apply the Hough Transform to find the circles
     cv::HoughCircles(image, circles, CV_HOUGH_GRADIENT,
                      1, 20,
-                     80, 20,
+                     circleEdgeDetectionThreshold_, circleCenterDetectionThreshold_,
                      expectedCircleRadius_ - 15., expectedCircleRadius_ + 15.);
 
     lock.unlock();
