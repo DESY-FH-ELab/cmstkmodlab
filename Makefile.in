@@ -24,7 +24,7 @@ ifeq ($(NODEFO),0)
 qtsubdirs    += defo/defoCommon defo/defoDAQ defo/defoReco defo/defoCalib
 endif
 ifeq ($(NOASSEMBLY),0)
-qtsubdirs    += assembly/assemblyCommon assembly/assembly
+qtsubdirs    += assembly/assemblyCommon assembly/vision/circleCalibration assembly/assembly
 endif
 
 
