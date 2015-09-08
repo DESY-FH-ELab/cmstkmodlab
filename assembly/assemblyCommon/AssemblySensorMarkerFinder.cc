@@ -48,6 +48,7 @@ void AssemblySensorMarkerFinder::findMarker(const cv::Mat& image)
     }
     drawCircle();
 
+    /*
     ret = findLines();
     drawLines();
 
@@ -56,6 +57,7 @@ void AssemblySensorMarkerFinder::findMarker(const cv::Mat& image)
 
     determineOrientation();
     drawOrientation();
+    */
 
     emit markerFound(imageRGB_);
 }
