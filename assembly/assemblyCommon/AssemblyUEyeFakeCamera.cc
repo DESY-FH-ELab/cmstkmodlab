@@ -16,12 +16,50 @@ AssemblyUEyeFakeCamera::AssemblyUEyeFakeCamera(QObject *parent)
     cameraState_ = State::OFF;
 
     QString filename(Config::CMSTkModLabBasePath.c_str());
+
+    images_.push_back(cv::imread(QString(filename + "/share/assembly/sensor_12MHz_200ms_0_0.png").toStdString(),
+                           CV_LOAD_IMAGE_GRAYSCALE));
+    images_.push_back(cv::imread(QString(filename + "/share/assembly/sensor_12MHz_200ms_0_10.png").toStdString(),
+                           CV_LOAD_IMAGE_GRAYSCALE));
+    images_.push_back(cv::imread(QString(filename + "/share/assembly/sensor_12MHz_200ms_0_15.png").toStdString(),
+                           CV_LOAD_IMAGE_GRAYSCALE));
+    images_.push_back(cv::imread(QString(filename + "/share/assembly/sensor_12MHz_200ms_0_20.png").toStdString(),
+                           CV_LOAD_IMAGE_GRAYSCALE));
+
+    /*
     images_.push_back(cv::imread(QString(filename + "/share/assembly/SensorMarker1.png").toStdString(),
                            CV_LOAD_IMAGE_GRAYSCALE));
     images_.push_back(cv::imread(QString(filename + "/share/assembly/SensorMarker2.png").toStdString(),
                            CV_LOAD_IMAGE_GRAYSCALE));
     images_.push_back(cv::imread(QString(filename + "/share/assembly/SensorMarker3.png").toStdString(),
                            CV_LOAD_IMAGE_GRAYSCALE));
+
+    images_.push_back(cv::imread(QString(filename + "/share/assembly/first_real_image.png").toStdString(),
+                      CV_LOAD_IMAGE_GRAYSCALE));
+    */
+
+    images_.push_back(cv::imread(QString(filename + "/share/assembly/sensor_24MHz_333ms_0_0.png").toStdString(),
+                                 CV_LOAD_IMAGE_GRAYSCALE));
+    images_.push_back(cv::imread(QString(filename + "/share/assembly/sensor_24MHz_333ms_0_1.png").toStdString(),
+                                 CV_LOAD_IMAGE_GRAYSCALE));
+    images_.push_back(cv::imread(QString(filename + "/share/assembly/sensor_24MHz_333ms_0_2.png").toStdString(),
+                                 CV_LOAD_IMAGE_GRAYSCALE));
+    images_.push_back(cv::imread(QString(filename + "/share/assembly/sensor_24MHz_333ms_0_3.png").toStdString(),
+                                 CV_LOAD_IMAGE_GRAYSCALE));
+    images_.push_back(cv::imread(QString(filename + "/share/assembly/sensor_24MHz_333ms_0_4.png").toStdString(),
+                                 CV_LOAD_IMAGE_GRAYSCALE));
+    images_.push_back(cv::imread(QString(filename + "/share/assembly/sensor_24MHz_333ms_0_5.png").toStdString(),
+                                 CV_LOAD_IMAGE_GRAYSCALE));
+    images_.push_back(cv::imread(QString(filename + "/share/assembly/sensor_24MHz_333ms_0_6.png").toStdString(),
+                                 CV_LOAD_IMAGE_GRAYSCALE));
+    images_.push_back(cv::imread(QString(filename + "/share/assembly/sensor_24MHz_333ms_0_7.png").toStdString(),
+                                 CV_LOAD_IMAGE_GRAYSCALE));
+    images_.push_back(cv::imread(QString(filename + "/share/assembly/sensor_24MHz_333ms_0_8.png").toStdString(),
+                                 CV_LOAD_IMAGE_GRAYSCALE));
+    images_.push_back(cv::imread(QString(filename + "/share/assembly/sensor_24MHz_333ms_0_9.png").toStdString(),
+                                 CV_LOAD_IMAGE_GRAYSCALE));
+    images_.push_back(cv::imread(QString(filename + "/share/assembly/sensor_24MHz_333ms_0_10.png").toStdString(),
+                                 CV_LOAD_IMAGE_GRAYSCALE));
 }
 
 AssemblyUEyeFakeCamera::~AssemblyUEyeFakeCamera()
