@@ -62,6 +62,8 @@ void AssemblySensorMarkerFinder::findMarker(const cv::Mat& image)
 
 size_t AssemblySensorMarkerFinder::findCircle(const cv::Mat& image)
 {
+    circles_.clear();
+
     circleQuality_ = 1.0;
 
     std::vector<cv::Vec3f> circles;
@@ -86,8 +88,12 @@ size_t AssemblySensorMarkerFinder::findCircle(const cv::Mat& image)
         circleCenter_.y = circles[0][1];
         circleRadius_ = circles[0][2];
 
-        circleQuality_ = 1.0;
-        circleQuality_ *= 1.0 - std::fabs(circleRadius_-expectedCircleRadius_)/expectedCircleRadius_;
+        circleQuality_ = 1.0 - std::fabs(circleRadius_-expectedCircleRadius_)/expectedCircleRadius_;
+
+        circles_.push_back(AssemblyMarkerCircle(circleCenter_.x,
+                                                circleCenter_.y,
+                                                circleRadius_,
+                                                circleQuality_));
 
         return 1;
     }
@@ -111,6 +117,12 @@ size_t AssemblySensorMarkerFinder::findCircle(const cv::Mat& image)
     for (;it!=radiusMap.end();++it) {
         float distance = cv::norm(circleCenter_ - cv::Point2f(it->second[0], it->second[1]));
         if (distance < minDistance) minDistance = distance;
+
+        circles_.push_back(AssemblyMarkerCircle(it->second[0],
+                                                it->second[1],
+                                                it->second[2],
+                                                1.0-std::fabs(circleRadius_-expectedCircleRadius_)/expectedCircleRadius_));
+
     }
     if (minDistance==0) {
         circleQuality_ = 0.0;

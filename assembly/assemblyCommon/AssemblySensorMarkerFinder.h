@@ -21,6 +21,8 @@ public:
     void setCircleCenterDetectionThreshold(int value) { circleCenterDetectionThreshold_ = value; }
 
     size_t findCircle(const cv::Mat&);
+    const std::vector<AssemblyMarkerCircle>& getCircles() { return circles_; }
+
 public slots:
 
     virtual void findMarker(const cv::Mat&);
@@ -59,6 +61,8 @@ protected:
     float circleQuality_;
 
     float orientation_;
+
+    std::vector<AssemblyMarkerCircle> circles_;
 
     std::vector<std::pair<cv::Point2f,cv::Point2f> > lines_;
     std::vector<std::pair<cv::Point2f,cv::Point2f> > goodLines_;
