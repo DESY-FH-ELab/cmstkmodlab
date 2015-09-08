@@ -11,6 +11,8 @@ AssemblySensorMarkerFinder::AssemblySensorMarkerFinder(QObject *parent)
     : AssemblyVMarkerFinder(parent),
       gaussianBlurKernelSize_(9),
       gaussianBlurSigma_(2),
+      circleEdgeDetectionThreshold_(80),
+      circleCenterDetectionThreshold_(35),
       expectedCircleRadius_(82.0)
 {
 
