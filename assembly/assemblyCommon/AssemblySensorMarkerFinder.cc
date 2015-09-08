@@ -39,7 +39,7 @@ void AssemblySensorMarkerFinder::findMarker(const cv::Mat& image)
                      cv::Size(gaussianBlurKernelSize_, gaussianBlurKernelSize_),
                      gaussianBlurSigma_, gaussianBlurSigma_);
 
-    size_t ret = findCircle();
+    size_t ret = findCircle(image_);
     if (ret==0) {
         emit markerFound(imageRGB_);
         return;
@@ -58,7 +58,7 @@ void AssemblySensorMarkerFinder::findMarker(const cv::Mat& image)
     emit markerFound(imageRGB_);
 }
 
-size_t AssemblySensorMarkerFinder::findCircle()
+size_t AssemblySensorMarkerFinder::findCircle(const cv::Mat& image)
 {
     circleQuality_ = 1.0;
 
@@ -67,7 +67,7 @@ size_t AssemblySensorMarkerFinder::findCircle()
     QMutexLocker lock(&mutex_);
 
     /// Apply the Hough Transform to find the circles
-    cv::HoughCircles(image_, circles, CV_HOUGH_GRADIENT,
+    cv::HoughCircles(image, circles, CV_HOUGH_GRADIENT,
                      1, 20,
                      80, 20,
                      expectedCircleRadius_ - 15., expectedCircleRadius_ + 15.);

@@ -13,6 +13,7 @@ public:
     explicit AssemblySensorMarkerFinder(QObject *parent = 0);
     ~AssemblySensorMarkerFinder();
 
+    size_t findCircle(const cv::Mat&);
 public slots:
 
     virtual void findMarker(const cv::Mat&);
@@ -21,7 +22,6 @@ protected slots:
 
 protected:
 
-    size_t findCircle();
     void drawCircle();
 
     size_t findLines();
