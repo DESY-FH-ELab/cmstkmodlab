@@ -36,8 +36,8 @@ AssemblyMainWindow::AssemblyMainWindow(QWidget *parent) :
     finderThread_ = new AssemblyMarkerFinderThread(finder_, this);
     finderThread_->start();
 
-    uEyeWidget_ = new AssemblyUEyeWidget(uEyeModel_, this);
 
+    uEyeWidget_ = new AssemblyUEyeWidget(uEyeModel_, this);
     tabWidget_->addTab(uEyeWidget_, "uEye");
 
     connect(QApplication::instance(), SIGNAL(aboutToQuit()),
