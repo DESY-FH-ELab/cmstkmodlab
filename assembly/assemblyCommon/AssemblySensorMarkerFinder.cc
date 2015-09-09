@@ -100,12 +100,12 @@ size_t AssemblySensorMarkerFinder::findCircle(const cv::Mat& image)
         return 1;
     }
 
-    std::map<float,cv::Vec3f> radiusMap;
+    std::map<double,cv::Vec3f> radiusMap;
     for(size_t i = 0; i < circles.size(); i++ ) {
         radiusMap[std::fabs(circles[i][2]-expectedCircleRadius_)] = circles[i];
     }
 
-    std::map<float,cv::Vec3f>::iterator it = radiusMap.begin();
+    std::map<double,cv::Vec3f>::iterator it = radiusMap.begin();
 
     circleCenter_.x = it->second[0];
     circleCenter_.y = it->second[1];
@@ -115,9 +115,9 @@ size_t AssemblySensorMarkerFinder::findCircle(const cv::Mat& image)
     circleQuality_ *= 1.0-std::fabs(circleRadius_-expectedCircleRadius_)/expectedCircleRadius_;
 
     ++it;
-    float minDistance = 1.e9;
+    double minDistance = 1.e9;
     for (;it!=radiusMap.end();++it) {
-        float distance = cv::norm(circleCenter_ - cv::Point2f(it->second[0], it->second[1]));
+        double distance = cv::norm(circleCenter_ - cv::Point2f(it->second[0], it->second[1]));
         if (distance < minDistance) minDistance = distance;
 
         circles_.push_back(AssemblyMarkerCircle(it->second[0],
@@ -162,7 +162,7 @@ size_t AssemblySensorMarkerFinder::findLines()
                                                             cv::Point2f(tempLines[i][2],tempLines[i][3])));
     }
 
-    float distance;
+    double distance;
     for (size_t i = 0; i < lines_.size(); i++ ) {
         distance = std::sqrt(std::pow(circleCenter_.x - lines_[i].first.x, 2.0) +
                              std::pow(circleCenter_.y - lines_[i].first.y, 2.0));
@@ -194,13 +194,13 @@ void AssemblySensorMarkerFinder::drawLines()
 
 bool AssemblySensorMarkerFinder::intersection(cv::Point2f o1, cv::Point2f p1,
                                               cv::Point2f o2, cv::Point2f p2,
-                                              cv::Point2f &r, float distance)
+                                              cv::Point2f &r, double distance)
 {
   cv::Point2f x = o2 - o1;
   cv::Point2f d1 = p1 - o1;
   cv::Point2f d2 = p2 - o2;
 
-  float cross = d1.x*d2.y - d1.y*d2.x;
+  double cross = d1.x*d2.y - d1.y*d2.x;
   if (std::abs(cross) < 1.e-8)
     return false;
 
@@ -227,7 +227,7 @@ void AssemblySensorMarkerFinder::mergeIntersections(std::vector<cv::Point2f>& in
 
         if (intersectionFlag[i]) continue;
 
-        float sx = 0, sy = 0;
+        double sx = 0, sy = 0;
         int n = 0;
 
         sx += intersections[i].x;
@@ -336,7 +336,7 @@ void AssemblySensorMarkerFinder::determineOrientation()
     const cv::Point2f vg = igp - ogp;
     cv::Point2f il1, ol1;
     cv::Point2f il2, ol2;
-    float avg = 180.0*std::atan2(vg.y, vg.x)/CV_PI;
+    double avg = 180.0*std::atan2(vg.y, vg.x)/CV_PI;
     if (avg<0) avg += 360.0;
     double angle, dot, dv;
 
@@ -416,10 +416,10 @@ void AssemblySensorMarkerFinder::determineOrientation()
 
 void AssemblySensorMarkerFinder::drawOrientation()
 {
-    float dx1 = circleRadius_/4 * std::cos(orientation_);
-    float dy1 = circleRadius_/4 * std::sin(orientation_);
-    float dx2 = 3*circleRadius_ * std::cos(orientation_);
-    float dy2 = 3*circleRadius_ * std::sin(orientation_);
+    double dx1 = circleRadius_/4 * std::cos(orientation_);
+    double dy1 = circleRadius_/4 * std::sin(orientation_);
+    double dx2 = 3*circleRadius_ * std::cos(orientation_);
+    double dy2 = 3*circleRadius_ * std::sin(orientation_);
 
     cv::line(imageRGB_,
              cv::Point(cvRound(circleCenter_.x - dx1), cvRound(circleCenter_.y - dy1)),

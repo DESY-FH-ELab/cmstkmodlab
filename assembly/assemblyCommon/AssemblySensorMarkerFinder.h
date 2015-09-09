@@ -16,15 +16,16 @@ public:
     void setGaussianBlurKernelSize(int value) { gaussianBlurKernelSize_ = value; }
     void setGaussianBlurSigma(int value) { gaussianBlurSigma_ = value;}
 
-    void setExpectedCircleSize(float value) { expectedCircleRadius_ = value; }
     void setCircleEdgeDetectionThreshold(int value) { circleEdgeDetectionThreshold_ = value; }
     void setCircleCenterDetectionThreshold(int value) { circleCenterDetectionThreshold_ = value; }
+    double expectedCircleRadius() const { return expectedCircleRadius_; }
 
     size_t findCircle(const cv::Mat&);
     const std::vector<AssemblyMarkerCircle>& getCircles() { return circles_; }
 
 public slots:
 
+    void setExpectedCircleSize(double value) { expectedCircleRadius_ = value; }
     virtual void findMarker(const cv::Mat&);
 
 protected slots:
@@ -39,7 +40,7 @@ protected:
     size_t findIntersections();
     bool intersection(cv::Point2f o1, cv::Point2f p1,
                       cv::Point2f o2, cv::Point2f p2,
-                      cv::Point2f &r, float distance);
+                      cv::Point2f &r, double distance);
     void mergeIntersections(std::vector<cv::Point2f>& intersections);
     void drawIntersections();
 
@@ -54,13 +55,13 @@ protected:
 
     int circleEdgeDetectionThreshold_;
     int circleCenterDetectionThreshold_;
-    float expectedCircleRadius_;
+    double expectedCircleRadius_;
 
     cv::Point2f circleCenter_;
-    float circleRadius_;
-    float circleQuality_;
+    double circleRadius_;
+    double circleQuality_;
 
-    float orientation_;
+    double orientation_;
 
     std::vector<AssemblyMarkerCircle> circles_;
 
