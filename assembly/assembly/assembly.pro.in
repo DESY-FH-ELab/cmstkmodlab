@@ -28,7 +28,7 @@ QMAKE = @qmake@
 QMAKE_CXXFLAGS += -std=c++11
 
 macx {
-	QMAKE_CXXFLAGS += -DAPPLICATIONVERSIONSTR=\\\"unknown\\\"
+	QMAKE_CXXFLAGS += -DAPPLICATIONVERSIONSTR=\\\"unknown\ version\\\"
 }
 else {
 	QMAKE_CXXFLAGS += -DAPPLICATIONVERSIONSTR=\\\"`git describe --dirty --always --tags`\\\"

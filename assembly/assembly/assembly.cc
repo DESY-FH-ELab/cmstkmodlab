@@ -64,6 +64,7 @@ int main( int argc, char** argv )
 
   AssemblyMainWindow mainWindow;
 
+  mainWindow.setWindowTitle(QString("assembly - ") + APPLICATIONVERSIONSTR);
   mainWindow.show();
 
   return app.exec();
