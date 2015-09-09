@@ -4,18 +4,21 @@
 #include <QApplication>
 
 #include <nqlogger.h>
+#include <ApplicationConfig.h>
 
 #include "AssemblySensorMarkerFinder.h"
 
 AssemblySensorMarkerFinder::AssemblySensorMarkerFinder(QObject *parent)
-    : AssemblyVMarkerFinder(parent),
-      gaussianBlurKernelSize_(9),
-      gaussianBlurSigma_(2),
-      circleEdgeDetectionThreshold_(80),
-      circleCenterDetectionThreshold_(35),
-      expectedCircleRadius_(82.0)
+    : AssemblyVMarkerFinder(parent)
 {
+    ApplicationConfig* config = ApplicationConfig::instance();
 
+    gaussianBlurKernelSize_ = config->getValue<int>("SensorMarkerGaussianBlurKernelSize", 9);
+    gaussianBlurSigma_ = config->getValue<int>("SensorMarkerGaussianBlurSigma", 2);
+
+    circleEdgeDetectionThreshold_ = config->getValue<int>("SensorMarkerCircleEdgeDetectionThreshold", 70);
+    circleCenterDetectionThreshold_ = config->getValue<int>("SensorMarkerCircleCenterDetectionThreshold", 40);
+    expectedCircleRadius_ = config->getValue<double>("SensorMarkerExpectedCircleRadius", 82.0);
 }
 
 AssemblySensorMarkerFinder::~AssemblySensorMarkerFinder()
