@@ -13,19 +13,25 @@ public:
     explicit AssemblySensorMarkerFinder(QObject *parent = 0);
     ~AssemblySensorMarkerFinder();
 
-    void setGaussianBlurKernelSize(int value) { gaussianBlurKernelSize_ = value; }
-    void setGaussianBlurSigma(int value) { gaussianBlurSigma_ = value;}
+    int gaussianBlurKernelSize() const { return gaussianBlurKernelSize_; }
+    int gaussianBlurSigma() const { return gaussianBlurSigma_; }
 
-    void setCircleEdgeDetectionThreshold(int value) { circleEdgeDetectionThreshold_ = value; }
-    void setCircleCenterDetectionThreshold(int value) { circleCenterDetectionThreshold_ = value; }
     double expectedCircleRadius() const { return expectedCircleRadius_; }
+    int circleEdgeDetectionThreshold() const { return circleEdgeDetectionThreshold_; }
+    int circleCenterDetectionThreshold() const { return circleCenterDetectionThreshold_; }
 
     size_t findCircle(const cv::Mat&);
     const std::vector<AssemblyMarkerCircle>& getCircles() { return circles_; }
 
 public slots:
 
+    void setGaussianBlurKernelSize(int value) { gaussianBlurKernelSize_ = value; }
+    void setGaussianBlurSigma(int value) { gaussianBlurSigma_ = value;}
+
     void setExpectedCircleSize(double value) { expectedCircleRadius_ = value; }
+    void setCircleEdgeDetectionThreshold(int value) { circleEdgeDetectionThreshold_ = value; }
+    void setCircleCenterDetectionThreshold(int value) { circleCenterDetectionThreshold_ = value; }
+
     virtual void findMarker(const cv::Mat&);
 
 protected slots:
