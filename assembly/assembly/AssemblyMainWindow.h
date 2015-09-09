@@ -25,6 +25,7 @@ typedef AssemblyUEyeModel AssemblyUEyeModel_t;
 
 #include "AssemblyMarkerFinderThread.h"
 #include "AssemblySensorMarkerFinder.h"
+#include "AssemblySensorMarkerFinderWidget.h"
 
 class AssemblyMainWindow : public QMainWindow
 {
@@ -74,6 +75,7 @@ protected:
 
   AssemblyMarkerFinderThread* finderThread_;
   AssemblySensorMarkerFinder* finder_;
+  AssemblySensorMarkerFinderWidget* finderWidget_;
 
   double testTimerCount_;
 
