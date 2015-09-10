@@ -12,17 +12,20 @@ LIBS += -L@basepath@/devices/lib -lTkModLabConrad
 LIBS += -L@basepath@/devices/lib -lTkModLabCanon
 LIBS += -L@basepath@/external/ddierckx -lddierckx
 LIBS += -L@basepath@/common -lCommon
-LIBS += -lgphoto2 -lexiv2
 
 QMAKE = @qmake@
 QMAKE_CXXFLAGS += -std=c++11
 
 macx {
-  LIBS += -L/opt/local/lib -lopencv_core -lopencv_imgproc -lopencv_highgui
+        CONFIG+=x86_64
+        QMAKE_CXXFLAGS += -stdlib=libc++
+        QMAKE_MACOSX_DEPLOYMENT_TARGET = 10.9
 }
-else {
-  LIBS += -lopencv_core -lopencv_imgproc -lopencv_highgui
-}
+
+CONFIG += link_pkgconfig
+PKGCONFIG += opencv
+PKGCONFIG += libgphoto2
+PKGCONFIG += exiv2
 
 QT += core xml
 greaterThan(QT_MAJOR_VERSION, 4) {
