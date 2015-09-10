@@ -24,6 +24,12 @@ AssemblySensorMarkerFinder::AssemblySensorMarkerFinder(QObject *parent)
     linesCannyEdgeDetectionThreshold2_ = config->getValue<int>("SensorMarkerCannyEdgeDetectionThreshold2", 200);
     linesCannyEdgeDetectionApertureSize_ = config->getValue<int>("SensorMarkerCannyEdgeDetectionApertureSize", 3);
     linesCannyEdgeDetectionL2Gradient_ = (bool)config->getValue<int>("SensorMarkerCannyEdgeDetectionL2Gradient", 1);
+
+    linesHoughDistanceResolution_ = config->getValue<double>("SensorMarkerLinesHoughDistanceResolution", 1.0);
+    linesHoughAngleResolution_ = config->getValue<double>("SensorMarkerLinesHoughAngleResolution", 0.1);
+    linesHoughThreshold_ = config->getValue<int>("SensorMarkerLinesHoughThreshold", 75);
+    linesHoughMinLineLength_ = config->getValue<double>("SensorMarkerLinesHoughMinLineLength", 50);
+    linesHoughMaxLineGap_ = config->getValue<double>("SensorMarkerLinesHoughMaxLineGap", 25);
 }
 
 AssemblySensorMarkerFinder::~AssemblySensorMarkerFinder()
@@ -39,15 +45,15 @@ void AssemblySensorMarkerFinder::findMarker(const cv::Mat& image)
 
     lock.unlock();
 
+    cv::GaussianBlur(image_, image_,
+                     cv::Size(gaussianBlurKernelSize_, gaussianBlurKernelSize_),
+                     gaussianBlurSigma_, gaussianBlurSigma_);
+
     if (image_.channels()==1) {
         cvtColor(image_, imageRGB_, CV_GRAY2RGB);
     } else {
         image_.copyTo(imageRGB_);
     }
-
-    cv::GaussianBlur(image_, image_,
-                     cv::Size(gaussianBlurKernelSize_, gaussianBlurKernelSize_),
-                     gaussianBlurSigma_, gaussianBlurSigma_);
 
     size_t ret = findCircle(image_);
     if (ret==0) {
@@ -56,13 +62,13 @@ void AssemblySensorMarkerFinder::findMarker(const cv::Mat& image)
     }
     drawCircle();
 
-    /*
     ret = findLines();
     drawLines();
 
     ret = findIntersections();
     drawIntersections();
 
+    /*
     determineOrientation();
     drawOrientation();
     */
@@ -168,7 +174,12 @@ size_t AssemblySensorMarkerFinder::findLines()
     lines_.clear();
     goodLines_.clear();
 
-    cv::HoughLinesP(imageEdges, tempLines, 1, 0.1*CV_PI/180, 75, 50, 25);
+    cv::HoughLinesP(imageEdges_, tempLines,
+                    linesHoughDistanceResolution_,
+                    linesHoughAngleResolution_*CV_PI/180,
+                    linesHoughThreshold_,
+                    linesHoughMinLineLength_,
+                    linesHoughMaxLineGap_);
 
     for (size_t i = 0; i < tempLines.size(); i++ ) {
         lines_.push_back(std::pair<cv::Point2f,cv::Point2f>(cv::Point2f(tempLines[i][0],tempLines[i][1]),

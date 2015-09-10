@@ -25,6 +25,12 @@ public:
     int linesCannyEdgeDetectionApertureSize() const { return linesCannyEdgeDetectionApertureSize_; }
     bool linesCannyEdgeDetectionL2Gradient() const { return linesCannyEdgeDetectionL2Gradient_; }
 
+    double linesHoughDistanceResolution() const { return linesHoughDistanceResolution_; }
+    double linesHoughAngleResolution() const { return linesHoughAngleResolution_; }
+    int linesHoughThreshold() const { return linesHoughThreshold_; }
+    double linesHoughMinLineLength() const { return linesHoughMinLineLength_; }
+    double linesHoughMaxLineGap() const { return linesHoughMaxLineGap_; }
+
     size_t findCircle(const cv::Mat&);
     const std::vector<AssemblyMarkerCircle>& getCircles() { return circles_; }
 
@@ -41,6 +47,12 @@ public slots:
     void setLinesCannyEdgeDetectionThreshold2(int value) { linesCannyEdgeDetectionThreshold2_ = value; }
     void setLinesCannyEdgeDetectionApertureSize(int value) { linesCannyEdgeDetectionApertureSize_ = value; }
     void setLinesCannyEdgeDetectionL2Gradient(bool value) { linesCannyEdgeDetectionL2Gradient_ = value; }
+
+    void setLinesHoughDistanceResolution(double value) { linesHoughDistanceResolution_ = value; }
+    void setLinesHoughAngleResolution(double value) { linesHoughAngleResolution_ = value; }
+    void setLinesHoughThreshold(int value) { linesHoughThreshold_ = value; }
+    void setLinesHoughMinLineLength(double value) { linesHoughMinLineLength_ = value; }
+    void setLinesHoughMaxLineGap(double value) { linesHoughMaxLineGap_ = value; }
 
     virtual void findMarker(const cv::Mat&);
 
@@ -78,6 +90,12 @@ protected:
     int linesCannyEdgeDetectionThreshold2_;
     int linesCannyEdgeDetectionApertureSize_;
     bool linesCannyEdgeDetectionL2Gradient_;
+
+    double linesHoughDistanceResolution_;
+    double linesHoughAngleResolution_;
+    int linesHoughThreshold_;
+    double linesHoughMinLineLength_;
+    double linesHoughMaxLineGap_;
 
     cv::Point2f circleCenter_;
     double circleRadius_;
