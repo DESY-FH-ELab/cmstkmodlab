@@ -25,6 +25,9 @@ AssemblyMainWindow::AssemblyMainWindow(QWidget *parent) :
     finderView_ = new AssemblyUEyeSnapShooter(tabWidget_);
     tabWidget_->addTab(finderView_, "finder");
 
+    edgeView_ = new AssemblyUEyeSnapShooter(tabWidget_);
+    tabWidget_->addTab(edgeView_, "edges");
+
     rawView_ = new AssemblyUEyeSnapShooter(tabWidget_);
     tabWidget_->addTab(rawView_, "raw");
 

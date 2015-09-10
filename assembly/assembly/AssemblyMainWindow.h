@@ -65,6 +65,7 @@ protected:
   QTabWidget* tabWidget_;
 
   AssemblyUEyeSnapShooter* finderView_;
+  AssemblyUEyeSnapShooter* edgeView_;
   AssemblyUEyeSnapShooter* rawView_;
 
   AssemblyUEyeModel_t* uEyeModel_;
