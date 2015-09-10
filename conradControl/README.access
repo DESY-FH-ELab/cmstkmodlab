@@ -1,3 +1,0 @@
-To access the comm port system files /dev/ttyUSB* 
-you must be MEMBER OF USER GROUP "uucp"
-(or the program must be run as root which is not a good idea..)
