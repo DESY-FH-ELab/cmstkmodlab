@@ -11,11 +11,24 @@ LIBS += -L@basepath@/devices/lib -lTkModLabIota
 LIBS += -L@basepath@/common -lCommon
 LIBS += -L@basepath@/defo/defoCommon -lDefoCommon
 LIBS += -lgphoto2 -lexiv2
-LIBS += -lopencv_core -lopencv_imgproc -lopencv_highgui
 INCLUDEPATH += /usr/include/exiv2
 LIBS += @qwtlibs@ -lGL -lGLU
 
 QMAKE = @qmake@
+
+macx {
+	CONFIG+=x86_64
+	QMAKE_CXXFLAGS += -stdlib=libc++
+	LIBS += -framework AppKit
+	LIBS += -framework QuartzCore
+	LIBS += -framework QTKit
+	LIBS += -framework Cocoa
+	LIBS += -L/opt/local/lib -ltiff
+	QMAKE_MACOSX_DEPLOYMENT_TARGET = 10.9
+}
+
+CONFIG += link_pkgconfig
+PKGCONFIG += opencv
 
 CONFIG+=c++11
 QMAKE_CXXFLAGS += -std=c++11
@@ -50,10 +63,6 @@ INCLUDEPATH += ..
 INCLUDEPATH += @basepath@
 INCLUDEPATH += @basepath@/common
 INCLUDEPATH += @basepath@/defo/defoCommon
-
-macx {
-  QMAKE_MACOSX_DEPLOYMENT_TARGET=10.9
-}
 
 greaterThan(QT_MAJOR_VERSION, 4){
   cache()
