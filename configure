@@ -35,11 +35,11 @@ while test $# -gt 0; do
     --notwitter)
       WITHTWITTERSUPPORT=0
       TWITTERLIBS=""
-      CONFIGDEFINES+="NO_TWITTER"
+      CONFIGDEFINES="$CONFIGDEFINES NO_TWITTER"
       ;;
     --fake)
       USEFAKEDEVICES=1
-      CONFIGDEFINES+="USE_FAKEIO"
+      CONFIGDEFINES="$CONFIGDEFINES USE_FAKEIO"
       ;;
   *)
     # Call standard parser
@@ -64,6 +64,7 @@ if test $ARCHITECTURE = "Darwin"; then
     QWTDEFINES=""
     QWTINCLUDES="/opt/local/include/qwtplot3d /opt/local/include/qwt"
     QWTLIBS="-L/opt/local/lib -lqwtplot3d -lqwt"
+    QMAKE="/opt/local/libexec/qt5-mac/bin/qmake"
 fi
 if test $ARCHITECTURE = "Linux" && test $KERNELMINOR -lt 6; then
     echo Linux kernel minor version < 6: fake device support forced
@@ -95,8 +96,8 @@ if test $ARCHITECTURE = "Linux"; then
         QWTINCLUDES="/usr/include/qwtplot3d"
         QWTLIBS="-lqwtplot3d"
     fi
-    QWTINCLUDES+=" /usr/include/qwt"
-    QWTLIBS+=" -lqwt"
+    QWTINCLUDES="$QWTINCLUDES /usr/include/qwt"
+    QWTLIBS="$QWTLIBS -lqwt"
 fi
 
 if test $USEFAKEDEVICES = 1; then

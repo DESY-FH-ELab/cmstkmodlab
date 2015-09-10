@@ -23,36 +23,35 @@ bool LStepExpress::DeviceAvailable() const
 
 unsigned int LStepExpress::GetStatus() const
 {
-  /*
-  comHandler_->SendCommand("STA");
+  comHandler_->SendCommand("?status"); // read status
+
   char buffer[1000];
   comHandler_->ReceiveString(buffer);
   StripBuffer(buffer);
 
-  std::istringstream iss(buffer);
-  std::string temp;
-  unsigned int status = 0;
-  while (iss >> temp) {
-	  if (temp=="OP0") status |= hmOP0;
-	  if (temp=="OP1") status |= hmOP1;
-	  if (temp=="CV1") status |= hmCV1;
-	  if (temp=="CC1") status |= hmCC1;
-	  if (temp=="CV2") status |= hmCV2;
-	  if (temp=="CC2") status |= hmCC2;
-	  if (temp=="RM1") status |= hmRM1;
-	  if (temp=="RM0") status |= hmRM0;
-  }
+  unsigned int status = std::atoi(buffer);
 
   return status;
-  */
+}
 
-  return 0;
+// low level debugging methods
+void LStepExpress::SendCommand(const std::string & command)
+{
+  comHandler_->SendCommand(command.c_str());
+}
+
+void LStepExpress::ReceiveString(std::string & buffer)
+{
+  char buf[1000];
+  comHandler_->ReceiveString(buf);
+  StripBuffer(buf);
+  buffer = buf;
 }
 
 void LStepExpress::StripBuffer(char* buffer) const
 {
   for (unsigned int c=0; c<sizeof(buffer);++c) {
-    if(buffer[c]=='\n') {
+    if(buffer[c]=='\r') {
       buffer[c] = 0;
       break;
     }
@@ -65,18 +64,39 @@ void LStepExpress::DeviceInit()
 
   if (comHandler_->DeviceAvailable()) {
     
-    comHandler_->SendCommand("?ver"); // read version
-    comHandler_->SendCommand("?readsn"); // read serial number
+    isDeviceAvailable_ = true;
 
     char buffer[1000];
+    std::string buf;
+
+    comHandler_->SendCommand("?ver"); // read version
     comHandler_->ReceiveString(buffer);
     StripBuffer(buffer);
-    std::string buf = buffer;
-    
-    if (buf.find("HAMEG Instruments,HM8143", 0)==0) {
-      isDeviceAvailable_ = true;
-    } else {
+    buf = buffer;
+
+    if (buf.find("PE43 1.00.01", 0)!=0) {
       isDeviceAvailable_ = false;
+      return;
+    }
+
+    comHandler_->SendCommand("?iver"); // read internal version
+    comHandler_->ReceiveString(buffer);
+    StripBuffer(buffer);
+    buf = buffer;
+
+    if (buf.find("E2015.02.27-3012", 0)!=0) {
+      isDeviceAvailable_ = false;
+      return;
+    }
+
+    comHandler_->SendCommand("?readsn"); // read serial number
+    comHandler_->ReceiveString(buffer);
+    StripBuffer(buffer);
+    unsigned long serialNumber = std::atol(buffer);
+
+    if (serialNumber != 40051635759) {
+      isDeviceAvailable_ = false;
+      return;
     }
   }
 }

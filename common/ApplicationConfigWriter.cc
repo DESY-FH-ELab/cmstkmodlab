@@ -15,7 +15,7 @@ ApplicationConfigWriter::~ApplicationConfigWriter()
 
 }
 
-void ApplicationConfigWriter::write(std::map<std::string,std::string> &keyvalueMap)
+void ApplicationConfigWriter::write(std::multimap<std::string,std::string> &keyvalueMap)
 {
   std::ifstream file( outputFileName_.c_str(), std::ios::in );
   if (file.good()) {
@@ -26,9 +26,9 @@ void ApplicationConfigWriter::write(std::map<std::string,std::string> &keyvalueM
   }
 }
 
-void ApplicationConfigWriter::writeMerge(std::map<std::string,std::string> &keyvalueMap)
+void ApplicationConfigWriter::writeMerge(std::multimap<std::string,std::string> &keyvalueMap)
 {
-  std::map<std::string,std::string> tmap = keyvalueMap;
+  std::multimap<std::string,std::string> tmap = keyvalueMap;
   std::ostringstream ostream;
   
   std::ifstream file( outputFileName_.c_str(), std::ios::in );
@@ -81,7 +81,7 @@ void ApplicationConfigWriter::writeMerge(std::map<std::string,std::string> &keyv
   ofile.close();
 }
 
-void ApplicationConfigWriter::writeNew(std::map<std::string,std::string> &keyvalueMap)
+void ApplicationConfigWriter::writeNew(std::multimap<std::string,std::string> &keyvalueMap)
 {
   std::ofstream file(outputFileName_.c_str(), std::ios::out);
   for (auto v : keyvalueMap) {

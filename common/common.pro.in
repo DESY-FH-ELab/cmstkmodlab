@@ -17,10 +17,22 @@ LIBS += -L@basepath@/devices/lib -lTkModLabArduino
 LIBS += -L@basepath@/devices/lib -lTkModLabCori
 LIBS += -L@basepath@/external/ddierckx -lddierckx
 
+macx {
+	CONFIG+=x86_64
+	QMAKE_CXXFLAGS += -stdlib=libc++
+	QMAKE_MACOSX_DEPLOYMENT_TARGET = 10.9
+}
+
 QMAKE = @qmake@
 
 QMAKE_CXXFLAGS += -std=c++11
-QMAKE_CXXFLAGS += -DAPPLICATIONVERSIONSTR=\\\"`git describe --dirty --always --tags`\\\"
+
+macx {
+	QMAKE_CXXFLAGS += -DAPPLICATIONVERSIONSTR=\\\"unknown\\\"
+}
+else {
+	QMAKE_CXXFLAGS += -DAPPLICATIONVERSIONSTR=\\\"`git describe --dirty --always --tags`\\\"
+}
 
 DEFINES += @configdefines@
 QT += core gui opengl script xml
@@ -67,11 +79,12 @@ HEADERS += nqlogger.h \
            ScriptableIota.h \
            IotaWidget.h \
            ArduinoPresWidget.h \
-	   ScriptableArduinoPres.h \
+           ScriptableArduinoPres.h \
            ArduinoPresModel.h \
            CoriFlowWidget.h \
            ScriptableCoriFlow.h \
-           CoriFlowModel.h
+           CoriFlowModel.h \
+           IntegerComboBox.h
            
 SOURCES += nqlogger.cc \
            npoint2D.cc \
@@ -111,4 +124,5 @@ SOURCES += nqlogger.cc \
            ArduinoPresModel.cc \
            CoriFlowWidget.cc \
            ScriptableCoriFlow.cc \
-           CoriFlowModel.cc
+           CoriFlowModel.cc \
+           IntegerComboBox.cc

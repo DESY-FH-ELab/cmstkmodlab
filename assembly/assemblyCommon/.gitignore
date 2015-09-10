@@ -1,0 +1,10 @@
+assemblyCommon.pro
+assemblyCommon.pro.user
+.qmake.stash
+Makefile
+*.d
+*.o
+*~
+moc_*
+o
+libAssemblyCommon*
