@@ -18,14 +18,19 @@ LIBS += @qwtlibs@ -lGL -lGLU
 
 QMAKE = @qmake@
 
+CONFIG+=c++11
 QMAKE_CXXFLAGS += -std=c++11
-QMAKE_CXXFLAGS += -DAPPLICATIONVERSIONSTR=\\\"`git describe --dirty --always --tags`\\\"
+macx {
+  QMAKE_CXXFLAGS += -DAPPLICATIONVERSIONSTR=\\\"unknown\\\"
+} else {
+  QMAKE_CXXFLAGS += -DAPPLICATIONVERSIONSTR=\\\"`git describe --dirty --always --tags`\\\"
+}
+
+QMAKE_CXXFLAGS += @rootcflags@
+LIBS += @rootlibs@
 
 macx {
   INCLUDEPATH += /opt/local/include
-}
-else {
-
 }
 
 INCLUDEPATH += @qwtincludes@
@@ -45,10 +50,22 @@ INCLUDEPATH += @basepath@
 INCLUDEPATH += @basepath@/common
 INCLUDEPATH += @basepath@/defo/defoCommon
 
+macx {
+  QMAKE_MACOSX_DEPLOYMENT_TARGET=10.9
+}
+
+greaterThan(QT_MAJOR_VERSION, 4){
+  cache()
+}
+
 # Input
 HEADERS += DefoRecoMainWindow.h \
            DefoRecoMeasurement.h \
            DefoRecoMeasurementListModel.h \
+           DefoRecoROIModel.h \
+           DefoROICopyFromWidget.h \
+           DefoROICopyToWidget.h \
+           DefoROIIOWidget.h \
            DefoMeasurementListTreeWidget.h \
            DefoMeasurementInfoListTreeWidget.h \
            DefoMeasurementCommentTextView.h \
@@ -71,6 +88,10 @@ SOURCES += defoReco.cc \
            DefoRecoMainWindow.cc \
            DefoRecoMeasurement.cc \
            DefoRecoMeasurementListModel.cc \
+           DefoRecoROIModel.cc \
+           DefoROICopyFromWidget.cc \
+           DefoROICopyToWidget.cc \
+           DefoROIIOWidget.cc \
            DefoMeasurementListTreeWidget.cc \
            DefoMeasurementInfoListTreeWidget.cc \
            DefoMeasurementCommentTextView.cc \

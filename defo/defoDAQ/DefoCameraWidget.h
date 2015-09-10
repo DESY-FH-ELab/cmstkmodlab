@@ -54,6 +54,7 @@ protected:
   QCheckBox* enableCheckBox_;
   QPushButton* previewButton_;
   QPushButton* pictureButton_;
+  QSpinBox* imageCountSpinBox_;
   QCheckBox* liveviewCheckBox_;
   QWidget* buttons_;
   DefoImageCommentEdit* commentEditor_;

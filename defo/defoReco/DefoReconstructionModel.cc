@@ -16,6 +16,7 @@ DefoReconstructionModel::DefoReconstructionModel(DefoMeasurementListModel * list
                                                  DefoColorSelectionModel* defoColorModel,
                                                  DefoMeasurementPairListModel* pairListModel,
                                                  DefoMeasurementPairSelectionModel* pairSelectionModel,
+						 DefoLensModel* lensModel,
                                                  DefoGeometryModel* geometryModel,
                                                  DefoCalibrationModel* calibrationModel,
                                                  Defo2DSplineInterpolationModel* interpolationModel,
@@ -24,6 +25,7 @@ DefoReconstructionModel::DefoReconstructionModel(DefoMeasurementListModel * list
   listModel_(listModel),
   pairListModel_(pairListModel),
   pairSelectionModel_(pairSelectionModel),
+  lensModel_(lensModel),
   geometryModel_(geometryModel),
   calibrationModel_(calibrationModel),
   interpolationModel_(interpolationModel)
@@ -53,6 +55,9 @@ DefoReconstructionModel::DefoReconstructionModel(DefoMeasurementListModel * list
 
   connect(defoColorModel, SIGNAL(colorChanged(float,float)),
           this, SLOT(defoColorChanged(float,float)));
+
+  connect(lensModel_, SIGNAL(lensChanged()),
+          this, SLOT(lensChanged()));
 
   connect(geometryModel_, SIGNAL(geometryChanged()),
           this, SLOT(geometryChanged()));
@@ -129,16 +134,34 @@ void DefoReconstructionModel::defoColorChanged(float hue, float saturation) {
   emit setupChanged();
 }
 
+void DefoReconstructionModel::lensChanged()
+{
+  NQLogMessage("DefoReconstructionModel::lensChanged()") << lensModel_->getCurrentName();
+
+  double p0, p1, p2, p3;
+  lensModel_->getCurrentParameters(p0, p1, p2, p3);
+  reco_->setLensParameters(p0, p1, p2 ,p3);
+
+  NQLogMessage("DefoReconstructionModel::lensChanged()") << "Parameters set to:";
+  NQLogMessage("DefoReconstructionModel::lensChanged()") << "p0 = " << p0;
+  NQLogMessage("DefoReconstructionModel::lensChanged()") << "p1 = " << p1;
+  NQLogMessage("DefoReconstructionModel::lensChanged()") << "p2 = " << p2;
+  NQLogMessage("DefoReconstructionModel::lensChanged()") << "p3 = " << p3;
+}
+
 void DefoReconstructionModel::geometryChanged()
 {
   NQLogMessage("DefoReconstructionModel::geometryChanged()") << "start";
 
-  double angle1 = geometryModel_->getAngle1();
+  double angle1 = geometryModel_->getAngle1(); // angle of the dot grid wrt. the horizontal plane [degree]
   double angle1Rad = angle1 * M_PI / 180.;
-  double angle2 = geometryModel_->getAngle2();
+
+  double angle2 = geometryModel_->getAngle2(); // angle of the camera frame wrt. the horizontal plane [degree]
   double angle2Rad = angle2 * M_PI / 180.;
-  double angle3 = geometryModel_->getAngle3();
+
+  double angle3 = geometryModel_->getAngle3(); // angle of the camera wrt. to the camera arm [degree]
   double angle3Rad = angle3 * M_PI / 180.;
+
   double distance = geometryModel_->getDistance();
   double height1 = geometryModel_->getHeight1();
   double height2 = geometryModel_->getHeight2();
@@ -165,7 +188,7 @@ void DefoReconstructionModel::geometryChanged()
   reco_->setNominalCameraDistance(distanceCamera);
 
   // distance from grid to surface calculated as the shortest distance
-  // between grid and the point on the surface under the grid roation axis
+  // between grid and the point on the surface under the grid rotaion axis
   double distanceGrid = (height1 - height2) * std::cos(angle1Rad);
   NQLog("DefoReconstructionModel", NQLog::Message) << "distanceGrid [mm] = " << distanceGrid;
 
@@ -176,6 +199,13 @@ void DefoReconstructionModel::geometryChanged()
   NQLog("DefoReconstructionModel", NQLog::Message) << "viewing angle [rad] = " << angle2Rad + angle3Rad;
 
   reco_->calculateHelpers();
+
+  reco_->setAngle1(angle1);
+  reco_->setAngle2(angle2);
+  reco_->setAngle3(angle3);
+  reco_->setDistance(distance);
+  reco_->setHeight1(height1);
+  reco_->setHeight2(height2);
 
   NQLog("DefoReconstructionModel::geometryChanged()", NQLog::Message) << "end";
 

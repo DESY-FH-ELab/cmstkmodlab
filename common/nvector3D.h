@@ -47,6 +47,16 @@ public:
   double dot(const NVector3D& other) const;
   NVector3D cross(const NVector3D& other);
 
+  NVector3D operator+(const NVector3D& other);
+  NVector3D operator-(const NVector3D& other);
+
+  NVector3D& operator+=(const NVector3D& other);
+  NVector3D& operator-=(const NVector3D& other);
+
+  NVector3D& operator*=(const double scale);
+
+  void print();
+
 protected:
 
   double x_, y_, z_;

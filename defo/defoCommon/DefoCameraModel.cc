@@ -1,6 +1,12 @@
+#include <chrono>
+#include <thread>
+
+#include <QCoreApplication>
 #include <QPlainTextDocumentLayout>
 
 #include <nqlogger.h>
+
+#include <ApplicationConfig.h>
 
 #include "DefoCameraModel.h"
 
@@ -14,6 +20,8 @@ DefoCameraModel::DefoCameraModel(QObject *parent)
 
   calibAmplitude_ = 0;
   
+  numberOfImages_ = ApplicationConfig::instance()->getValue<int>("NUMBEROFIMAGES", 1);
+
   int initValue = 0;
   parameters_[APERTURE] = initValue;
   parameters_[ISO] = initValue;
@@ -127,10 +135,31 @@ void DefoCameraModel::setDeviceState(State state)
 /// Instruct the camera to take a picture and cache the file in a QImage.
 void DefoCameraModel::acquirePicture(bool keep)
 {
-  location_ = controller_->acquirePhoto().c_str();
-  image_ = QImage(location_);
-  emit newImage(location_, keep);
-  emit defoMessage("new image aquired");
+  if (numberOfImages_==1) {
+    location_ = controller_->acquirePhoto().c_str();
+    image_ = QImage(location_);
+    emit newImage(location_, keep);
+    emit defoMessage("new image aquired");
+  } else {
+    acquirePictures(numberOfImages_);
+  }
+}
+
+void DefoCameraModel::acquirePictures(int count)
+{
+  locations_.clear();
+  QStringList list;
+  for (int i=0;i<count;i++) {
+    location_ = controller_->acquirePhoto().c_str();
+    image_ = QImage(location_);
+    locations_.append(location_);
+    list.append(location_);
+
+    QCoreApplication::processEvents();
+    std::this_thread::sleep_for(std::chrono::milliseconds(100));
+  }
+  emit newImages(list);
+  emit defoMessage("new images aquired");
 }
 
 /// Instruct the camera to take a picture and cache the file in a QImage.
@@ -151,6 +180,11 @@ void DefoCameraModel::setCalibAmplitude(int amplitude)
   calibAmplitude_ = amplitude;
 }
 
+void DefoCameraModel::setNumberOfImages(int number)
+{
+  numberOfImages_ = number;
+}
+
 const QImage & DefoCameraModel::getLastPicture() const
 {
   return image_;
@@ -169,4 +203,9 @@ int DefoCameraModel::getOptionValue(const Option &option) const
 const QString & DefoCameraModel::getLastPictureLocation() const
 {
   return location_;
+}
+
+const QStringList & DefoCameraModel::getLastPictureLocations() const
+{
+  return locations_;
 }

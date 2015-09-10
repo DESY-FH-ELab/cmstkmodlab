@@ -81,17 +81,17 @@ bool DefoSplineSetBase::doFitXY( void ) {
     // select values according to coordinate
     if ( axis_ == DefoPoint::X ) { // SAME-Y = ALONG-X
 
-      current.first = it->getX();
-      current.second = it->getY();
-      next.first = (it+1)->getX();
-      next.second = (it+1)->getY();
+      current.first = it->getCalibratedX();
+      current.second = it->getCalibratedY();
+      next.first = (it+1)->getCalibratedX();
+      next.second = (it+1)->getCalibratedY();
 
     } else { // SAME-X = ALONG-Y
 
-      current.first = it->getY();
-      current.second = it->getX();
-      next.first = (it+1)->getY();
-      next.second = (it+1)->getX();
+      current.first = it->getCalibratedY();
+      current.second = it->getCalibratedX();
+      next.first = (it+1)->getCalibratedY();
+      next.second = (it+1)->getCalibratedX();
 
     }
 
@@ -151,8 +151,8 @@ bool DefoSplineSetBase::doFitZ( void ) {
     DefoSpline aSpline;
     // use known coordinate to request the correct value
     // FIXME Slower than seperate, but duplicate implementation.
-    const double thisValue = it->getPosition(axis_);
-    const double nextValue = (it+1)->getPosition(axis_);
+    const double thisValue = it->getCalibratedPosition(axis_);
+    const double nextValue = (it+1)->getCalibratedPosition(axis_);
 
     const double thisSlope = it->getSlope();
     const double nextSlope = (it+1)->getSlope();
