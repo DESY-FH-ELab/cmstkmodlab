@@ -270,6 +270,8 @@ size_t AssemblySensorMarkerFinder::findIntersections()
     intersections_.clear();
     goodIntersections_.clear();
 
+    if (goodLines_.size()<2) return 0;
+
     for (size_t i = 0; i < goodLines_.size()-1; i++) {
         for (size_t j = i+1; j < goodLines_.size(); j++) {
 
