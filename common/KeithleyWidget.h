@@ -10,6 +10,7 @@
 #include <QVBoxLayout>
 #include <QComboBox>
 #include <QWidget>
+#include <QLabel>
 
 #include "KeithleyModel.h"
 
@@ -64,8 +65,11 @@ protected:
   static const unsigned int LCD_SIZE;
   static const QString LABEL_FORMAT;
 
+  QFormLayout* layout_;
   QCheckBox* enabledCheckBox_;
+  QLabel* currentTempLabel_;
   QLCDNumber* currentTempDisplay_;
+  QLabel* currentGradientLabel_;
   QLCDNumber* currentGradientDisplay_;
 
   void updateWidgets();
@@ -73,7 +77,7 @@ protected:
 public slots:
   void keithleyStateChanged( State state );
   void controlStateChanged(bool);
-  void sensorStateChagned(uint sensor, State state );
+  void sensorStateChanged(uint sensor, State state );
   void sensorTemperatureChanged(uint sensor, double temperature);
   void sensorTemperatureGradientChanged(uint sensor, double temperature);
 

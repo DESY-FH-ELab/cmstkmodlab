@@ -1,13 +1,18 @@
 #include "DefoMeasurementSelectionModel.h"
 
-DefoMeasurementSelectionModel::DefoMeasurementSelectionModel(QObject *parent) :
-    QObject(parent)
-  , selection_(NULL)
+DefoMeasurementSelectionModel::DefoMeasurementSelectionModel(QObject *parent)
+: QObject(parent),
+  selection_(NULL)
 {
 
 }
 
 DefoMeasurement * DefoMeasurementSelectionModel::getSelection() const
+{
+  return selection_;
+}
+
+DefoMeasurement * DefoMeasurementSelectionModel::getSelection()
 {
   return selection_;
 }

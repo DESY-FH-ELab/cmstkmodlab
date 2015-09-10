@@ -11,10 +11,26 @@
 class DefoSplineXYPair
 {
 public:
-  DefoSplineXYPair(const double& x = 0, const double& y = 0)
-    :x_(x), y_(y) {}
+ DefoSplineXYPair(const double& x = 0, const double& y = 0, 
+		  const double& px = 0, const double& py = 0)
+   :x_(x), y_(y),px_(px), py_(py) {}
+  
+  void setIndex(int ix, int iy) { ix_ = ix; iy_ = iy; }
+  void setPosition(double x, double y) { x_ = x; y_ = y; }
+  void setPixelPosition(double px, double py) { px_ = px; py_ = py; }
+
+  int getIX() const { return ix_; }
+  int getIY() const { return iy_; }
+  double getX() const { return x_; }
+  double getY() const { return y_; }
+  double getPX() const { return px_; }
+  double getPY() const { return py_; }
+  
+ protected:
+
   int ix_, iy_;
   double x_, y_;
+  double px_, py_;
 };
 
 class DefoSplineXYDefoPair
@@ -24,8 +40,12 @@ public:
     :x_(0), y_(0), hasx_(false), hasy_(false) {}
   void setX(const double &x) { x_ = x; hasx_ = true; }
   void setY(const double &y) { y_ = y; hasy_ = true; }
-  double x_, y_;
+  void setXY(const double &xy) { xy_ = xy; }
+  void setCorrX(const double &corrx) { corrx_ = corrx; }
+  void setCorrY(const double &corry) { corry_ = corry; }
+  double x_, y_, xy_;
   bool hasx_, hasy_;
+  double corrx_, corry_;
 };
 
 class DefoSurfaceSummary {
@@ -84,6 +104,7 @@ class DefoSurface {
 
   NSpline2D spline2Dx_;
   NSpline2D spline2Dy_;
+  NSpline2D spline2Dxy_;
 };
 
 #endif

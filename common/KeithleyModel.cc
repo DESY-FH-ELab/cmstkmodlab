@@ -1,4 +1,5 @@
 #include <unistd.h>
+#include <thread>
 
 #include <QApplication>
 
@@ -16,10 +17,8 @@ KeithleyModel::KeithleyModel(const char* port,
     sensorStates_(SENSOR_COUNT, OFF),
     temperatures_(SENSOR_COUNT, 0.0),
     gradients_(SENSOR_COUNT, 0.0),
-//    timeBuffer_(1+(60*5)/updateInterval),
-//    temperatureBuffer_(1+(60*5)/updateInterval, temperatures_),
     temperatureBuffer_(temperatures_),
-    absoluteTime_(0)
+    absoluteTime_(std::chrono::system_clock::now())
 {
   timer_ = new QTimer(this);
   timer_->setInterval(updateInterval_ * 1000);
@@ -140,12 +139,12 @@ double KeithleyModel::getTemperature(unsigned int sensor) const
   Calls the Keithley controller to get the current reading on the temperatures.
   These are then cached and signals are emitted upon changes.
   */
-void KeithleyModel::scanTemperatures() {
-
+void KeithleyModel::scanTemperatures()
+{
   reading_t reading = controller_->Scan();
 
   // Good scan, cache the retrieved temperatures
-  if ( controller_->IsScanOk() ) {
+  if (controller_->IsScanOk()) {
 
     NQLog("KeithleyModel", NQLog::Debug) << reading.size() << " temperature readings";
 
@@ -169,33 +168,58 @@ void KeithleyModel::scanTemperatures() {
       //   setSensorEnabled(sensor, false);
 
     }
-  }
 
-  timeBuffer_.push_back(absoluteTime_);
-  temperatureBuffer_.push_back(temperatures_);
+    timeBuffer_.push_back(absoluteTime_);
+    temperatureBuffer_.push_back(temperatures_);
 
-  double lastTime = timeBuffer_.get();
-  const std::vector<double> &lastTemperatures = temperatureBuffer_.get();
-  double dt = absoluteTime_ - lastTime;
-
-  if (dt>=30) {
+    std::chrono::time_point<std::chrono::system_clock> lastTime = timeBuffer_.get();
+    const std::vector<double> &lastTemperatures = temperatureBuffer_.get();
+    std::chrono::duration<double> dt = absoluteTime_ - lastTime;
+    
+    if (dt.count()>=30) {
       for (unsigned int i=0;i<SENSOR_COUNT;++i) {
-          if (sensorStates_[i] != READY) continue;
-
-          double gradient = (temperatures_[i] - lastTemperatures[i]) / (dt/60.);
-          if ( gradients_.at(i) != gradient ) {
-              gradients_[i] = gradient;
-              emit temperatureGradientChanged(i, gradient);
-          }
+	if (sensorStates_[i] != READY) continue;
+	
+	double gradient = (temperatures_[i] - lastTemperatures[i]) / (dt.count()/60.);
+	if ( gradients_.at(i) != gradient ) {
+	  gradients_[i] = gradient;
+	  emit temperatureGradientChanged(i, gradient);
+	}
       }
+    }
+  } else {
+    
+    NQLog("KeithleyModel", NQLog::Message) << " scanTemperatures failed";
+
+    /*
+    channels_t activeChannels = controller_->GetActiveChannels();
+
+    controller_->Reset();
+
+    std::this_thread::sleep_for(std::chrono::milliseconds(500));
+    
+    controller_->SetActiveChannels(activeChannels);
+
+    std::this_thread::sleep_for(std::chrono::milliseconds(500));
+
+    */
   }
 
-  absoluteTime_ += updateInterval_;
+  std::this_thread::sleep_for(std::chrono::milliseconds(500));
 
-  // FIXME If bad scans don't normally happen, close(), otherwise ignore.
-//  else
-//    close();
+  channels_t activeChannels = controller_->GetActiveChannels();
+  for (channels_t::iterator it=activeChannels.begin();it!=activeChannels.end();++it) {
+    NQLog("KeithleyModel", NQLog::Message) << " scanTemperatures active channel: " << *it;
+  }
+  controller_->Reset();
+  
+  std::this_thread::sleep_for(std::chrono::milliseconds(500));
+  
+  controller_->SetActiveChannels(activeChannels);
+  
+  std::this_thread::sleep_for(std::chrono::milliseconds(500));
 
+  absoluteTime_ = std::chrono::system_clock::now();
 }
 
 /// Creates a string from sensor number.

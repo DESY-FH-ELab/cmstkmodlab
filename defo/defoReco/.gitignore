@@ -2,6 +2,7 @@
 defoReco.pro
 defoReco.pro.user
 .qmake.stash
+.qmake.cache
 Makefile
 startDefoReco.sh
 *.d
@@ -9,4 +10,5 @@ startDefoReco.sh
 moc_*
 defoReco
 defoReco.app
+defoReco.desktop
 *.pdf

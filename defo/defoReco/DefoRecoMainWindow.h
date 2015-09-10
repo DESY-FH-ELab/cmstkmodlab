@@ -13,7 +13,7 @@
 
 #include "DefoRecoMeasurementListModel.h"
 #include "DefoMeasurementSelectionModel.h"
-#include "DefoROIModel.h"
+#include "DefoRecoROIModel.h"
 #include "DefoAlignmentModel.h"
 
 #include "DefoMeasurementListTreeWidget.h"
@@ -32,6 +32,9 @@
 #include "DefoReconstructionModel.h"
 #include "DefoReconstructionWidget.h"
 #include "DefoReconstructionParameterWidget.h"
+
+#include "DefoLensModel.h"
+#include "DefoLensComboBox.h"
 
 #include "DefoGeometryModel.h"
 #include "DefoGeometryWidget.h"
@@ -60,13 +63,15 @@ protected:
   DefoMeasurementSelectionModel *selectionModel_;
 
   DefoMeasurementSelectionModel *roiSelectionModel_;
-  DefoROIModel *roiModel_;
+  DefoRecoROIModel *roiModel_;
 
   DefoMeasurementSelectionModel *alignmentSelectionModel_;
   DefoAlignmentModel *alignmentModel_;
 
   DefoMeasurementSelectionModel *refSelectionModel_;
+  DefoRecoROIModel *refROIModel_;
   DefoMeasurementSelectionModel *defoSelectionModel_;
+  DefoRecoROIModel *defoROIModel_;
 
   DefoPointRecognitionModel* refPointModel_;
   DefoPointRecognitionModel* defoPointModel_;
@@ -75,6 +80,7 @@ protected:
   DefoColorSelectionModel* refColorModel_;
   DefoColorSelectionModel* defoColorModel_;
 
+  DefoLensModel* lensModel_;
   DefoGeometryModel* geometryModel_;
   DefoCalibrationModel* calibrationModel_;
   Defo2DSplineInterpolationModel* interpolationModel_;

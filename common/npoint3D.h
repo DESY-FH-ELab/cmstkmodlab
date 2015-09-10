@@ -52,6 +52,8 @@ public:
   bool isCoincident(const NLine3D& line);
   bool isCoincident(const NPlane3D& plane);
 
+  void print();
+
 protected:
 
   double x_, y_, z_;

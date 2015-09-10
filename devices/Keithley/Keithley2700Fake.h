@@ -17,11 +17,13 @@ class Keithley2700Fake : public VKeithley2700
   Keithley2700Fake( ioport_t );
 
   void SetActiveChannels( std::string );
+  void SetActiveChannels( channels_t );
   void AddActiveChannels( std::string );
   void DisableActiveChannels( std::string );
   const reading_t Scan( void );
   void Dump( void ) const;
   bool IsScanOk( void );
+  void Reset() { }
 
 protected:
 
