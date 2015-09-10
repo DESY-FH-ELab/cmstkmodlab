@@ -18,19 +18,20 @@ DefoJulaboWidget::DefoJulaboWidget(DefoJulaboModel* model, QWidget *parent)
   proportionalSpinner_->setDecimals(prop.getPrecision());
   proportionalSpinner_->setMinimum(prop.getMinimum());
   proportionalSpinner_->setMaximum(prop.getMaximum());
-  proportionalSpinner_->setKeyboardTracking(false);
+  proportionalSpinner_->setSingleStep(0.1);
+  proportionalSpinner_->setKeyboardTracking(true);
 
   ParameterUInt integral = model_->getIntegralParameter();
   integralSpinner_ = new QSpinBox(operationPanel_);
   integralSpinner_->setMinimum(integral.getMinimum());
   integralSpinner_->setMaximum(integral.getMaximum());
-  integralSpinner_->setKeyboardTracking(false);
+  integralSpinner_->setKeyboardTracking(true);
 
   ParameterUInt differential = model_->getDifferentialParameter();
   differentialSpinner_ = new QSpinBox(operationPanel_);
   differentialSpinner_->setMinimum(differential.getMinimum());
   differentialSpinner_->setMaximum(differential.getMaximum());
-  differentialSpinner_->setKeyboardTracking(false);
+  differentialSpinner_->setKeyboardTracking(true);
 
   circulatorCheckBox_ = new QCheckBox("Enable circulator", operationPanel_);
 
@@ -38,7 +39,7 @@ DefoJulaboWidget::DefoJulaboWidget(DefoJulaboModel* model, QWidget *parent)
   pumpSpinner_ = new QSpinBox(operationPanel_);
   pumpSpinner_->setMinimum(pump.getMinimum());
   pumpSpinner_->setMaximum(pump.getMaximum());
-  pumpSpinner_->setKeyboardTracking(false);
+  pumpSpinner_->setKeyboardTracking(true);
 
   bathTempLCD_ = new QLCDNumber(LCD_SIZE, operationPanel_);
   bathTempLCD_->setSegmentStyle(QLCDNumber::Flat);
@@ -49,7 +50,8 @@ DefoJulaboWidget::DefoJulaboWidget(DefoJulaboModel* model, QWidget *parent)
   workingTempSpinner_->setDecimals(working.getPrecision());
   workingTempSpinner_->setMinimum(working.getMinimum());
   workingTempSpinner_->setMaximum(working.getMaximum());
-  workingTempSpinner_->setKeyboardTracking(false);
+  workingTempSpinner_->setSingleStep(0.1);
+  workingTempSpinner_->setKeyboardTracking(true);
 
   powerLCD_ = new QLCDNumber(LCD_SIZE, operationPanel_);
   powerLCD_->setSegmentStyle(QLCDNumber::Flat);
@@ -95,10 +97,13 @@ DefoJulaboWidget::DefoJulaboWidget(DefoJulaboModel* model, QWidget *parent)
           this, SLOT(updateChillerInfo()));
 
   connect(chillerCheckBox_, SIGNAL(toggled(bool)),
-          model, SLOT(setDeviceEnabled(bool)));
+          model_, SLOT(setDeviceEnabled(bool)));
 
   connect(proportionalSpinner_, SIGNAL(valueChanged(double)),
           model_, SLOT(setProportionalValue(double)));
+
+  connect(integralSpinner_, SIGNAL(valueChanged(int)),
+          model_, SLOT(setIntegralValue(int)));
 
   connect(differentialSpinner_, SIGNAL(valueChanged(int)),
           model_, SLOT(setDifferentialValue(int)));
@@ -122,21 +127,19 @@ DefoJulaboWidget::DefoJulaboWidget(DefoJulaboModel* model, QWidget *parent)
   */
 void DefoJulaboWidget::updateDeviceState(State newState) {
 
-  bool ready = (newState == READY);
-  chillerCheckBox_->setChecked( ready );
-  operationPanel_->setEnabled( ready );
-
+  chillerCheckBox_->setChecked( newState == INITIALIZING || newState == READY );
+  operationPanel_->setEnabled( newState == READY );
 }
 
 /// Updates the GUI when the Keithley multimeter is enabled/disabled.
 void DefoJulaboWidget::controlStateChanged(bool enabled) {
   
-  chillerCheckBox_->setEnabled(enabled);
   if (enabled) {
-    State state = model_->getDeviceState();
-    proportionalSpinner_->setEnabled(state == READY);
+    chillerCheckBox_->setEnabled(true);
+    updateDeviceState(model_->getDeviceState());
   } else {
-    proportionalSpinner_->setEnabled(false);
+    chillerCheckBox_->setEnabled(false);
+    operationPanel_->setEnabled(false);
   }
 }
 

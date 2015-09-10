@@ -19,22 +19,34 @@ public:
 
 public slots:
 
-  void setPID( double p, int tv, int td );
+  void setP( double xp );
+  void setI( int tn );
+  void setD( int tv );
+  void setPID( double xp, int tn, int tv );
+  QScriptValue getP();
+  QScriptValue getI();
+  QScriptValue getD();
+
   void enableCirculator();
   void disableCirculator();
+  QScriptValue circulatorState();
+
   void setWorkingTemperature( double temperature );
 
-  QScriptValue circulator();
   QScriptValue workingTemperature();
   QScriptValue bath();
   QScriptValue safety();
 
+  void setPumpPressure(unsigned int pressure);
+  QScriptValue pumpPressure();
+
 signals:
-  void changeP( double p );
+  void changeXp( double xp );
+  void changeTn( int tn );
   void changeTv( int tv );
-  void changeTd( int td );
   void switchCirculator( bool );
   void changeWorkingTemperature( double temperature );
+  void changePumpPressure( unsigned int pressure );
 
 protected:
   DefoJulaboModel* julaboModel_;

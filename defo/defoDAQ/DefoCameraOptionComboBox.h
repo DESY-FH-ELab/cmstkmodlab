@@ -22,6 +22,7 @@ protected:
 protected slots:
   void selectionChanged(int index);
   void deviceStateChanged(State newState);
+  void controlStateChanged(bool);
   void deviceOptionChanged(DefoCameraModel::Option option, int value);
 
 };

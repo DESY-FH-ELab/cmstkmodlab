@@ -1,5 +1,6 @@
 thermoDAQ.pro
 thermoDAQ.pro.user
+.qmake.cache
 .qmake.stash
 Makefile
 *.d

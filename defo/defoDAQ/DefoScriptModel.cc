@@ -4,6 +4,8 @@
 #include <QFont>
 #include <QDateTime>
 
+#include <nqlogger.h>
+
 #include "DefoScriptModel.h"
 
 DefoScriptModel::DefoScriptModel(
@@ -86,6 +88,8 @@ void DefoScriptModel::abortScript() {
 
 void DefoScriptModel::executionStarted() {
 
+  NQLogMessage("DefoScriptModel") << " execution started";
+
   emit setControlsEnabled(false);
   emit clearMessageText();
 
@@ -94,6 +98,8 @@ void DefoScriptModel::executionStarted() {
 }
 
 void DefoScriptModel::executionFinished() {
+
+  NQLogMessage("DefoScriptModel") << " execution finished";
 
   executionTimer_.stop();  
 

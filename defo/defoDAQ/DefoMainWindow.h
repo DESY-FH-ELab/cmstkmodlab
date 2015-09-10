@@ -8,6 +8,7 @@
 #include <QComboBox>
 #include <QImage>
 #include <QTimer>
+#include <QMutex>
 
 #include "DefoConradModel.h"
 #include "DefoConradWidget.h"
@@ -15,7 +16,7 @@
 #include "DefoJulaboModel.h"
 #include "DefoJulaboWidget.h"
 
-#include "KeithleyModel.h"
+#include "DefoKeithleyModel.h"
 #include "KeithleyWidget.h"
 
 #include "DefoCameraModel.h"
@@ -32,6 +33,11 @@
 #include "DefoPointRecognitionModel.h"
 #include "DefoPointRecognitionWidget.h"
 
+#include "DefoDAQModel.h"
+#include "DefoDAQThread.h"
+#include "DefoDAQServer.h"
+#include "DefoDAQStreamer.h"
+
 class DefoMainWindow : public QMainWindow
 {
   Q_OBJECT
@@ -44,6 +50,8 @@ public slots:
   void exportMeasurement();
   void prepareNewMeasurement();
   void newCameraImage(QString location, bool keep);
+  void newCameraImages(QStringList locations);
+  void setControlsEnabled(bool);
 
 protected:
 
@@ -51,15 +59,25 @@ protected:
 
   QTabWidget* tabWidget_;
 
+  QPushButton *exportMeasurementButton_;
+  QPushButton *newMeasurementButton_;
+
   DefoConradModel* conradModel_;
   DefoJulaboModel* julaboModel_;
-  KeithleyModel* keithleyModel_;
+  DefoKeithleyModel* keithleyModel_;
   DefoMeasurementListModel* listModel_;
   DefoMeasurementSelectionModel* selectionModel_;
   DefoCameraModel* cameraModel_;
   DefoPointRecognitionModel* pointModel_;
 
   DefoScriptModel* scriptModel_;
+
+  DefoDAQModel* daqModel_;
+  DefoDAQThread* daqThread_;
+  DefoDAQServer* daqServer_;
+  DefoDAQStreamer* daqStreamer_;
+
+  QMutex mutex_;
 };
 
 #endif // DEFOMAINWINDOW_H

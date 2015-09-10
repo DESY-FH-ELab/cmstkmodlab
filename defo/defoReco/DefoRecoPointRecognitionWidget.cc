@@ -13,15 +13,15 @@
 #include "DefoRecoPointRecognitionWidget.h"
 
 DefoRecoPointRecognitionWidget::DefoRecoPointRecognitionWidget(DefoMeasurementListModel* listModel,
-							       DefoMeasurementSelectionModel* selectionModel,
-							       DefoPointRecognitionModel* pointModel,
-							       DefoROIModel* roiModel,
-							       QWidget *parent)
-  : QTabWidget(parent),
-    listModel_(listModel),
-    selectionModel_(selectionModel),
-    pointModel_(pointModel),
-    roiModel_(roiModel)
+                                                               DefoMeasurementSelectionModel* selectionModel,
+                                                               DefoPointRecognitionModel* pointModel,
+                                                               DefoROIModel* roiModel,
+                                                               QWidget *parent)
+: QTabWidget(parent),
+  listModel_(listModel),
+  selectionModel_(selectionModel),
+  pointModel_(pointModel),
+  roiModel_(roiModel)
 {
   // THRESHOLDS
   QWidget* thresholds = new QWidget(this);
@@ -30,9 +30,9 @@ DefoRecoPointRecognitionWidget::DefoRecoPointRecognitionWidget(DefoMeasurementLi
   addTab(thresholds, "Thresholds");
 
   thresholdsLayout->addWidget(new DefoRecoImageThresholdsWidget(selectionModel_,
-								pointModel_,
-								roiModel_,
-								thresholds));
+                                                                pointModel_,
+                                                                roiModel_,
+                                                                thresholds));
 
   QWidget* thresholdSpinners = new QWidget(thresholds);
   thresholdsLayout->addWidget(thresholdSpinners);
@@ -45,7 +45,7 @@ DefoRecoPointRecognitionWidget::DefoRecoPointRecognitionWidget(DefoMeasurementLi
   for (int i=0; i<3; i++) {
     thresholdLayout->addWidget(new QLabel(format.arg(i+1)));
     thresholdLayout->addWidget(new DefoThresholdSpinBox(pointModel_,
-							static_cast<DefoPointRecognitionModel::Threshold>(i)));
+                                                        static_cast<DefoPointRecognitionModel::Threshold>(i)));
   }
   thresholdLayout->addWidget(new QLabel("HSW"));
   thresholdLayout->addWidget(new DefoHalfSquareWidthSpinBox(pointModel_));
@@ -57,15 +57,19 @@ DefoRecoPointRecognitionWidget::DefoRecoPointRecognitionWidget(DefoMeasurementLi
   addTab(points, "Points");
 
   DefoRecoImagePointsWidget * pointsImage = new DefoRecoImagePointsWidget(listModel_,
-									  selectionModel_,
-									  points);
+                                                                          selectionModel_,
+                                                                          points);
   pointsLayout->addWidget(pointsImage);
 
-  QPushButton* findPoints_ = new QPushButton("Find &points", points);
+  fitPoints_ = new QCheckBox("Fit 2D gaussian over found points", points);
+  pointsLayout->addWidget(fitPoints_);
+  fitPoints_->setChecked(false);
+
+  findPoints_ = new QPushButton("Find &points", points);
   pointsLayout->addWidget(findPoints_);
   connect(findPoints_, SIGNAL(clicked()), SLOT(findPointsButtonClicked()));
 
-  QPushButton* savePoints_ = new QPushButton("Save points", points);
+  savePoints_ = new QPushButton("Save points", points);
   pointsLayout->addWidget(savePoints_);
   connect(savePoints_, SIGNAL(clicked()), SLOT(savePointsButtonClicked()));
 
@@ -73,13 +77,13 @@ DefoRecoPointRecognitionWidget::DefoRecoPointRecognitionWidget(DefoMeasurementLi
           this, SLOT(selectionChanged(DefoMeasurement*)));
 
   connect(pointModel_, SIGNAL(controlStateChanged(bool)),
-	  this, SLOT(controlStateChanged(bool)));
+          this, SLOT(controlStateChanged(bool)));
 
   connect(pointModel_, SIGNAL(thresholdValueChanged(DefoPointRecognitionModel::Threshold,int)),
-	  this, SLOT(thresholdValueChanged(DefoPointRecognitionModel::Threshold,int)));
+          this, SLOT(thresholdValueChanged(DefoPointRecognitionModel::Threshold,int)));
 
   connect(pointModel_, SIGNAL(halfSquareWidthChanged(int)),
-	  this, SLOT(halfSquareWidthChanged(int)));
+          this, SLOT(halfSquareWidthChanged(int)));
 }
 
 void DefoRecoPointRecognitionWidget::selectionChanged(DefoMeasurement* measurement)
@@ -132,9 +136,11 @@ void DefoRecoPointRecognitionWidget::findPointsButtonClicked()
   /*
     The number of blocks depends on the number of cores available and the
     number of cores you want to be available for other tasks.
-    */
+   */
   const int blocks = 6;
   const int width = searchArea.width() / blocks;
+
+  bool do2Dfit = fitPoints_->isChecked();
 
   for (double i = 0; i < blocks; ++i) {
 
@@ -143,21 +149,22 @@ void DefoRecoPointRecognitionWidget::findPointsButtonClicked()
       Swing where they are in between the pixels.
       As a consequence, the right-side border has to be one pixel to the left in
       order to avoid overlapping rectangles.
-      */
+     */
     QRect area = searchArea;
     area.setX(searchArea.x()+i*width - pointModel_->getHalfSquareWidth());
     area.setWidth(width + 2 * pointModel_->getHalfSquareWidth());
 
     finder = new DefoPointFinder(i,
-				 &mutex_,
-				 listModel_,
-				 pointModel_,
-				 measurement,
-				 area,
-				 roiModel_);
+                                 &mutex_,
+                                 listModel_,
+                                 pointModel_,
+                                 measurement,
+                                 area,
+                                 do2Dfit,
+                                 roiModel_);
     
     connect(finder, SIGNAL(finished()),
-	    finder, SLOT(deleteLater()));
+            finder, SLOT(deleteLater()));
 
     finder->start();
   }

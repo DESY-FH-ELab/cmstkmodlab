@@ -44,7 +44,7 @@ public slots:
   void executionFinished();
   void doPrepareNewMeasurement();
   void doClearMessageText();
-  void doAppendMessageText(const QString & text);
+  void doAppendMessageText(const QString &);
 
 protected slots:
   void executionHeartBeat();
@@ -65,9 +65,9 @@ protected:
 signals:
   void prepareNewMeasurement();
   void scriptLoaded();
-  void setControlsEnabled(bool enabled);
+  void setControlsEnabled(bool);
   void clearMessageText();
-  void appendMessageText(const QString & text);
+  void appendMessageText(const QString &);
 };
 
 #endif // DEFOSCRIPTMODEL_H

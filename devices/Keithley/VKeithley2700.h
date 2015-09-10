@@ -17,11 +17,15 @@ class VKeithley2700
   virtual ~VKeithley2700();
   
   virtual void SetActiveChannels( std::string ) = 0;
+  virtual void SetActiveChannels( channels_t ) = 0;
   virtual void AddActiveChannels( std::string ) = 0;
   virtual void DisableActiveChannels( std::string ) = 0;
   virtual const reading_t Scan( void ) = 0;
   virtual void Dump( void ) const = 0;
   virtual bool IsScanOk( void ) = 0;
+  virtual void Reset() = 0;
+
+  const channels_t GetActiveChannels() { return enabledChannels_; }
 
   // the number of channels available to the device,
   // for range checking purposes
