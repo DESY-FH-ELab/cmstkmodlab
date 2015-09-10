@@ -79,7 +79,7 @@ HEADERS += nqlogger.h \
            ScriptableIota.h \
            IotaWidget.h \
            ArduinoPresWidget.h \
-	   ScriptableArduinoPres.h \
+           ScriptableArduinoPres.h \
            ArduinoPresModel.h \
            CoriFlowWidget.h \
            ScriptableCoriFlow.h \
