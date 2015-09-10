@@ -170,7 +170,12 @@ void Keithley2700::Device_SetChannels( void ) const {
   theCommand << "ROUT:SCAN (@";
   
   for( unsigned int channel = 0; channel < enabledChannels_.size(); ++channel ) {
-    theCommand << enabledChannels_.at( channel ) + 101;
+    unsigned int theChannel = enabledChannels_.at( channel );
+    if (theChannel<10) {
+      theCommand << enabledChannels_.at( channel ) + 101;
+    } else {
+      theCommand << enabledChannels_.at( channel ) + 201 - 10;
+    }
     if( channel < enabledChannels_.size() - 1 ) theCommand << ",";
   }
 
