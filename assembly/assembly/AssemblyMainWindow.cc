@@ -113,9 +113,11 @@ void AssemblyMainWindow::cameraOpened()
 {
     NQLog("AssemblyMainWindow") << ":cameraOpened()";
 
-    finderView_->connectMarkerFinder(finder_);
+    finderView_->connectImageProducer(finder_, SIGNAL(markerFound(const cv::Mat&)));
 
-    rawView_->connectCamera(camera_);
+    edgeView_->connectImageProducer(finder_, SIGNAL(edgesDetected(const cv::Mat&)));
+
+    rawView_->connectImageProducer(camera_, SIGNAL(imageAcquired(const cv::Mat&)));
 
     connect(camera_, SIGNAL(imageAcquired(const cv::Mat&)),
             finder_, SLOT(findMarker(const cv::Mat&)));
@@ -127,9 +129,11 @@ void AssemblyMainWindow::cameraClosed()
 {
     NQLog("AssemblyMainWindow") << ":cameraClosed()";
 
-    finderView_->disconnectMarkerFinder(finder_);
+    finderView_->disconnectImageProducer(finder_, SIGNAL(markerFound(const cv::Mat&)));
 
-    rawView_->disconnectCamera(camera_);
+    edgeView_->disconnectImageProducer(finder_, SIGNAL(edgesDetected(const cv::Mat&)));
+
+    rawView_->disconnectImageProducer(camera_, SIGNAL(imageAcquired(const cv::Mat&)));
 
     disconnect(camera_, SIGNAL(imageAcquired(const cv::Mat&)),
                finder_, SLOT(findMarker(const cv::Mat&)));
