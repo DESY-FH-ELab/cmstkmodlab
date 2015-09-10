@@ -83,7 +83,8 @@ HEADERS += nqlogger.h \
            ArduinoPresModel.h \
            CoriFlowWidget.h \
            ScriptableCoriFlow.h \
-           CoriFlowModel.h
+           CoriFlowModel.h \
+           IntegerComboBox.h
            
 SOURCES += nqlogger.cc \
            npoint2D.cc \
@@ -123,4 +124,5 @@ SOURCES += nqlogger.cc \
            ArduinoPresModel.cc \
            CoriFlowWidget.cc \
            ScriptableCoriFlow.cc \
-           CoriFlowModel.cc
+           CoriFlowModel.cc \
+           IntegerComboBox.cc
