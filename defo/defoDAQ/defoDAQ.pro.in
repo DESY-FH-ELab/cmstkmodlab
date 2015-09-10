@@ -11,22 +11,40 @@ LIBS += -L@basepath@/devices/lib -lTkModLabIota
 LIBS += -L@basepath@/common -lCommon
 LIBS += -L@basepath@/defo/defoCommon -lDefoCommon
 LIBS += -lgphoto2 -lexiv2
-LIBS += -lopencv_core -lopencv_imgproc -lopencv_highgui
 INCLUDEPATH += /usr/include/exiv2
 LIBS += @qwtlibs@ -lGL -lGLU
 
 QMAKE = @qmake@
 
+macx {
+	CONFIG+=x86_64
+	QMAKE_CXXFLAGS += -stdlib=libc++
+	LIBS += -framework AppKit
+	LIBS += -framework QuartzCore
+	LIBS += -framework QTKit
+	LIBS += -framework Cocoa
+	LIBS += -L/opt/local/lib -ltiff
+	QMAKE_MACOSX_DEPLOYMENT_TARGET = 10.9
+}
+
+CONFIG += link_pkgconfig
+PKGCONFIG += opencv
+
+CONFIG+=c++11
 QMAKE_CXXFLAGS += -std=c++11
-QMAKE_CXXFLAGS += -DAPPLICATIONVERSIONSTR=\\\"`git describe --dirty --always --tags`\\\"
+macx {
+  QMAKE_CXXFLAGS += -DAPPLICATIONVERSIONSTR=\\\"unknown\\\"
+} else {
+  QMAKE_CXXFLAGS += -DAPPLICATIONVERSIONSTR=\\\"`git describe --dirty --always --tags`\\\"
+}
+
+QMAKE_CXXFLAGS += @rootcflags@
+LIBS += @rootlibs@
 
 macx {
   INCLUDEPATH += /opt/local/include
   INCLUDEPATH += /opt/local/include/opencv
   INCLUDEPATH += /opt/local/include/opencv2
-}
-else {
-
 }
 
 INCLUDEPATH += @qwtincludes@
@@ -46,6 +64,10 @@ INCLUDEPATH += @basepath@
 INCLUDEPATH += @basepath@/common
 INCLUDEPATH += @basepath@/defo/defoCommon
 
+greaterThan(QT_MAJOR_VERSION, 4){
+  cache()
+}
+
 # Input
 HEADERS += DefoMainWindow.h \
            DefoJulaboWidget.h \
@@ -64,7 +86,11 @@ HEADERS += DefoMainWindow.h \
            DefoScriptableJulabo.h \
            ../TestWindow.h \
            DefoTemperatureHistoryModel.h \
-           DefoTemperatureHistoryWidget.h
+           DefoTemperatureHistoryWidget.h \
+           DefoDAQModel.h \
+           DefoDAQThread.h \
+           DefoDAQStreamer.h \
+           DefoDAQServer.h
     
 SOURCES += defoDAQ.cc \
            DefoMainWindow.cc \
@@ -84,4 +110,8 @@ SOURCES += defoDAQ.cc \
            DefoScriptableJulabo.cc \
            ../TestWindow.cc \
            DefoTemperatureHistoryModel.cc \
-           DefoTemperatureHistoryWidget.cc
+           DefoTemperatureHistoryWidget.cc \
+           DefoDAQModel.cc \
+           DefoDAQThread.cc \
+           DefoDAQStreamer.cc \
+           DefoDAQServer.cc

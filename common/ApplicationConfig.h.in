@@ -4,6 +4,7 @@
 #include <string>
 #include <sstream>
 #include <map>
+#include <vector>
 
 #include <QObject>
 #include <QVariant>
@@ -21,7 +22,7 @@ public:
   
   template <class aType> aType getValue(std::string const& key) const {
     aType returnValue = 0;
-    std::map<std::string,std::string>::const_iterator it = keyvalueMap_.find(key);
+    std::multimap<std::string,std::string>::const_iterator it = keyvalueMap_.find(key);
     if (it!=keyvalueMap_.end()) {
       std::istringstream iss(it->second.c_str(), std::istringstream::in);
       iss >> returnValue;
@@ -30,10 +31,24 @@ public:
     }
     return returnValue;
   }
-  
+
+  template <class aType> std::vector<aType> getValueVector(std::string const& key) const {
+    aType returnValue = 0;
+    std::vector<aType> returnVector;
+    std::pair<std::multimap<std::string,std::string>::const_iterator,
+              std::multimap<std::string,std::string>::const_iterator> ret;
+    ret = keyvalueMap_.equal_range(key);
+    for (std::multimap<std::string,std::string>::const_iterator it=ret.first; it!=ret.second; ++it) {
+      std::istringstream iss(it->second.c_str(), std::istringstream::in);
+      iss >> returnValue;
+      returnVector.push_back(returnValue);
+    }
+    return returnVector;
+  }
+
   template <class aType> aType getValue(std::string const& key, aType defaultValue) const {
     aType returnValue = 0;
-    std::map<std::string,std::string>::const_iterator it = keyvalueMap_.find(key);
+    std::multimap<std::string,std::string>::const_iterator it = keyvalueMap_.find(key);
     if (it!=keyvalueMap_.end()) {
       std::istringstream iss(it->second.c_str(), std::istringstream::in);
       iss >> returnValue;
@@ -44,7 +59,7 @@ public:
   }
   
   std::string getValue(std::string const& key) const {
-    std::map<std::string,std::string>::const_iterator it = keyvalueMap_.find(key);
+    std::multimap<std::string,std::string>::const_iterator it = keyvalueMap_.find(key);
     if (it!=keyvalueMap_.end()) {
       return it->second;
     } else {
@@ -53,8 +68,20 @@ public:
     return std::string();
   }
   
+  std::vector<std::string> getValueVector(std::string const& key) const {
+    std::vector<std::string> returnVector;
+    std::pair<std::multimap<std::string,std::string>::const_iterator,
+              std::multimap<std::string,std::string>::const_iterator> ret;
+    ret = keyvalueMap_.equal_range(key);
+    for (std::multimap<std::string,std::string>::const_iterator it=ret.first; it!=ret.second; ++it) {
+      returnVector.push_back(it->second);
+    }
+    return returnVector;
+  }
+
+  
   std::string getValue(std::string const& key, std::string defaultValue) const {
-    std::map<std::string,std::string>::const_iterator it = keyvalueMap_.find(key);
+    std::multimap<std::string,std::string>::const_iterator it = keyvalueMap_.find(key);
     if (it!=keyvalueMap_.end()) {
       return it->second;
     } else {
@@ -64,7 +91,7 @@ public:
   
   template <class aType> void setValue(std::string const& key, aType value) {
     QVariant variant(value);
-    keyvalueMap_[key] = variant.toString().toStdString();
+    keyvalueMap_.insert(std::make_pair(key, variant.toString().toStdString()));
   }
   
   void safe(const std::string filename);
@@ -76,10 +103,11 @@ protected:
   
   void issueKeyError(const std::string&) const;
   
-  std::map<std::string,std::string> keyvalueMap_;
+  std::multimap<std::string,std::string> keyvalueMap_;
 };
 
 template <> std::string ApplicationConfig::getValue(std::string const& key) const;
+template <> std::vector<std::string> ApplicationConfig::getValueVector(std::string const& key) const;
 template <> std::string ApplicationConfig::getValue(std::string const& key, std::string defaultValue) const;
 
 #endif // APPLICATIONCONFIG_H

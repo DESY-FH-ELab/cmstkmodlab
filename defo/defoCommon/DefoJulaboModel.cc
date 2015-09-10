@@ -17,8 +17,9 @@
   \arg parent Pointer to the parent QObject.
   */
 DefoJulaboModel::DefoJulaboModel(const char* port,
-				 float updateInterval, QObject *parent) :
-  QObject(parent),
+				 float updateInterval,
+				 QObject * /* parent */)
+: QObject(),
   AbstractDeviceModel<JulaboFP50_t>(),
   port_(port),
   updateInterval_(updateInterval),
@@ -36,7 +37,7 @@ DefoJulaboModel::DefoJulaboModel(const char* port,
   timer_->setInterval(updateInterval_ * 1000);
   connect( timer_, SIGNAL(timeout()), this, SLOT(updateInformation()) );
 
-  setDeviceEnabled(false);
+  setDeviceEnabled(true);
   setControlsEnabled(true);
 }
 
@@ -93,8 +94,6 @@ unsigned int DefoJulaboModel::getPower() const
   */
 void DefoJulaboModel::initialize()
 {
-  std::cout << "void DefoJulaboModel::initialize()" << std::endl;
-
   setDeviceState(INITIALIZING);
 
   renewController(port_);
@@ -135,6 +134,9 @@ void DefoJulaboModel::updateInformation()
 {
   // NOTE Julabo status messages in manual §12.4
   if ( state_ == READY ) {
+    float newProportionalParameter = controller_->GetProportionalParameter();
+    unsigned int newIntegralParameter = controller_->GetIntegralParameter();
+    unsigned int newDifferentialParameter = controller_->GetDifferentialParameter();
     float newBathTemp = controller_->GetBathTemperature();
     // float newSafetySensorTemp = controller_->GetSafetySensorTemperature();
     float newWorkingTemp = controller_->GetWorkingTemperature();
@@ -145,13 +147,19 @@ void DefoJulaboModel::updateInformation()
     // NOTE virtual std::pair<int,std::string> GetStatus( void ) const = 0;
     // std::pair<int,std::string> status = controller_->GetStatus();
 
-    if (   newBathTemp != bathTemperature_
+    if (   newProportionalParameter != proportional_.getValue()
+	|| newIntegralParameter != integral_.getValue()
+	|| newDifferentialParameter != differential_.getValue()
+	|| newBathTemp != bathTemperature_
         || newWorkingTemp != workingTemperature_.getValue()
         || newHeatingPower != power_
         || newPumpPressure != pumpPressure_.getValue()
         || newCirculatorStatus != circulatorEnabled_
     ) {
 
+      proportional_.setValue(newProportionalParameter);
+      integral_.setValue(newIntegralParameter);
+      differential_.setValue(newDifferentialParameter);
       bathTemperature_ = newBathTemp;
       workingTemperature_.setValue(newWorkingTemp);
       power_ = newHeatingPower;
@@ -249,7 +257,13 @@ void DefoJulaboModel::setCirculatorEnabled(bool enabled)
 /// Attempts to set the pump pressure stage.
 void DefoJulaboModel::setPumpPressureValue(int pressure)
 {
-  if ( (int)pumpPressure_.getValue() != pressure ) {
+  setPumpPressureValue((unsigned int)pressure);
+}
+
+/// Attempts to set the pump pressure stage.
+void DefoJulaboModel::setPumpPressureValue(unsigned int pressure)
+{
+  if ( pumpPressure_.getValue() != pressure ) {
 
     unsigned int oldValue = pumpPressure_.getValue();
 

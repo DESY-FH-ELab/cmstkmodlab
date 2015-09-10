@@ -3,6 +3,7 @@
 
 #include <vector>
 #include <limits>
+#include <chrono>
 
 #include <QObject>
 #include <QString>
@@ -60,9 +61,9 @@ protected:
   std::vector<double> temperatures_;
   std::vector<double> gradients_;
 
-  Ringbuffer<double,4> timeBuffer_;
+  Ringbuffer<std::chrono::time_point<std::chrono::system_clock>,4> timeBuffer_;
   Ringbuffer<std::vector<double>,4> temperatureBuffer_;
-  double absoluteTime_;
+  std::chrono::time_point<std::chrono::system_clock> absoluteTime_;
 
   void setDeviceState( State state );
   void setSensorState( unsigned int sensor, State state );
@@ -70,7 +71,8 @@ protected:
   static std::string constructString( unsigned int sensor );
 
 protected slots:
-  void scanTemperatures();
+
+  virtual void scanTemperatures();
 
 signals:
   void deviceStateChanged(State newState);

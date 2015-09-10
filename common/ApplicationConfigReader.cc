@@ -15,7 +15,7 @@ ApplicationConfigReader::~ApplicationConfigReader()
 
 }
 
-void ApplicationConfigReader::fill(std::map<std::string,std::string> &keyvalueMap)
+void ApplicationConfigReader::fill(std::multimap<std::string,std::string> &keyvalueMap)
 {
   std::ifstream file( inputFileName_.c_str(), std::ios::in );
   if( !file.good() ) {
@@ -40,7 +40,7 @@ void ApplicationConfigReader::fill(std::map<std::string,std::string> &keyvalueMa
     iss >> Key;
     iss >> Value;
 
-    keyvalueMap[Key] = Value;
+    keyvalueMap.insert(std::make_pair(Key, Value));
   }
   
   file.close();

@@ -25,6 +25,7 @@ macx {
 
 QMAKE = @qmake@
 
+CONFIG+=c++11
 QMAKE_CXXFLAGS += -std=c++11
 
 macx {
@@ -42,6 +43,14 @@ DEPENDPATH += .
 INCLUDEPATH += .
 INCLUDEPATH += @basepath@
 
+macx {
+  QMAKE_MACOSX_DEPLOYMENT_TARGET=10.9
+}
+
+greaterThan(QT_MAJOR_VERSION, 4){
+  cache()
+}
+
 HEADERS += nqlogger.h \
            npoint2D.h \
            npoint3D.h \
@@ -53,6 +62,7 @@ HEADERS += nqlogger.h \
            nline3D.h \
            nplane3D.h \
            nspline2D.h \
+           nmatrix.h \
            DeviceState.h \
            DeviceParameter.h \
            Ringbuffer.h \
@@ -79,11 +89,12 @@ HEADERS += nqlogger.h \
            ScriptableIota.h \
            IotaWidget.h \
            ArduinoPresWidget.h \
-	   ScriptableArduinoPres.h \
+           ScriptableArduinoPres.h \
            ArduinoPresModel.h \
            CoriFlowWidget.h \
            ScriptableCoriFlow.h \
-           CoriFlowModel.h
+           CoriFlowModel.h \
+           IntegerComboBox.h
            
 SOURCES += nqlogger.cc \
            npoint2D.cc \
@@ -123,4 +134,5 @@ SOURCES += nqlogger.cc \
            ArduinoPresModel.cc \
            CoriFlowWidget.cc \
            ScriptableCoriFlow.cc \
-           CoriFlowModel.cc
+           CoriFlowModel.cc \
+           IntegerComboBox.cc

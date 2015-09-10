@@ -5,6 +5,7 @@
 
 #include <QTabWidget>
 #include <QPushButton>
+#include <QCheckBox>
 
 #include "DefoMeasurementSelectionModel.h"
 #include "DefoPointRecognitionModel.h"
@@ -13,11 +14,13 @@
 class DefoPointRecognitionWidget : public QTabWidget
 {
   Q_OBJECT
+
 public:
+
   explicit DefoPointRecognitionWidget(DefoMeasurementListModel* listModel,
-				      DefoMeasurementSelectionModel* selectionModel,
-				      DefoPointRecognitionModel* pointModel,
-				      QWidget *parent = 0);
+                                      DefoMeasurementSelectionModel* selectionModel,
+                                      DefoPointRecognitionModel* pointModel,
+                                      QWidget *parent = 0);
 
 protected:
 
@@ -29,6 +32,7 @@ protected:
   // Widgets
   DefoImageThresholdsWidget* thresholdImage_;
   DefoImagePointsWidget * pointsImage_;
+  QCheckBox* fitPoints_;
   QPushButton* findPoints_;
   QPushButton* savePoints_;
 

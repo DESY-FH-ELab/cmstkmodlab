@@ -30,10 +30,19 @@ Keithley2700::Keithley2700( ioport_t port )
 /// enables the channels given by string
 /// format: see ::ParseChannelString
 ///
-void Keithley2700::SetActiveChannels( std::string channelString ) {
-  
+void Keithley2700::SetActiveChannels( std::string channelString )
+{
   enabledChannels_.resize( 0 );
   enabledChannels_ = ParseChannelString( channelString );
+
+  CalculateDelay();
+
+  Device_SetChannels();
+}
+
+void Keithley2700::SetActiveChannels( channels_t channels )
+{
+  enabledChannels_ = channels;
 
   CalculateDelay();
 
@@ -96,6 +105,9 @@ const reading_t Keithley2700::Scan( void ) {
   // presume that it will work..
   isScanOk_ = true;
 
+  // clear buffer
+  comHandler_->SendCommand( "TRAC:CLE" );
+
   // enable scan
   comHandler_->SendCommand( "ROUT:SCAN:LSEL INT" );
   
@@ -107,7 +119,7 @@ const reading_t Keithley2700::Scan( void ) {
 
   // get output
   comHandler_->ReceiveString( buffer );
-  
+
   // disable scan
   comHandler_->SendCommand( "ROUT:SCAN:LSEL NONE" );
 
@@ -203,11 +215,23 @@ void Keithley2700::Device_SetChannels( void ) const {
   }
   comHandler_->SendCommand( theCommand.str().c_str() );
 }
+  
+void Keithley2700::Reset()
+{
+  comHandler_->SendCommand( "ROUT:SCAN:LSEL NONE" );
+  comHandler_->SendCommand( "TRAC:CLE" );
+  comHandler_->SendCommand( "ROUT:OPEN:ALL" );
+
+  Device_Init();
+}
 
 ///
 /// all initialization of device
 ///
 void Keithley2700::Device_Init( void ) const {
+
+  // enable buffer auto clear
+  comHandler_->SendCommand( "TRAC:CLE:AUTO ON" );
 
   // disable scan
   // in case still enabled from previous (aborted) scan call

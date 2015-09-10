@@ -1,0 +1,62 @@
+LIBS += -L@basepath@/devices/lib -lTkModLabKeithley
+LIBS += -L@basepath@/devices/lib -lTkModLabGreisinger
+LIBS += -L@basepath@/devices/lib -lTkModLabJulabo
+LIBS += -L@basepath@/devices/lib -lTkModLabHameg
+LIBS += -L@basepath@/devices/lib -lTkModLabPfeiffer
+LIBS += -L@basepath@/devices/lib -lTkModLabHuber
+LIBS += -L@basepath@/common -lCommon
+LIBS += @qwtlibs@ -lGL -lGLU
+
+QMAKE = @qmake@
+
+macx {
+	CONFIG+=x86_64
+	QMAKE_CXXFLAGS += -stdlib=libc++
+	LIBS += -framework AppKit
+	LIBS += -framework QuartzCore
+	LIBS += -framework QTKit
+	LIBS += -framework Cocoa
+	LIBS += -L/opt/local/lib -ltiff
+	QMAKE_MACOSX_DEPLOYMENT_TARGET = 10.9
+}
+
+CONFIG+=c++11
+QMAKE_CXXFLAGS += -std=c++11
+macx {
+  QMAKE_CXXFLAGS += -DAPPLICATIONVERSIONSTR=\\\"unknown\\\"
+} else {
+  QMAKE_CXXFLAGS += -DAPPLICATIONVERSIONSTR=\\\"`git describe --dirty --always --tags`\\\"
+}
+
+INCLUDEPATH += @qwtincludes@
+DEFINES += @configdefines@
+
+QT += core gui xml network
+greaterThan(QT_MAJOR_VERSION, 4) {
+  QT += widgets
+} 
+
+TEMPLATE = app
+TARGET = defoDisplay
+DEPENDPATH += @basepath@/common
+INCLUDEPATH += .
+INCLUDEPATH += ..
+INCLUDEPATH += @basepath@
+INCLUDEPATH += @basepath@/common
+
+greaterThan(QT_MAJOR_VERSION, 4){
+  cache()
+}
+
+# Input
+HEADERS += DefoDAQClient.h \
+           DefoDAQNetworkReader.h \
+           DefoDisplayMainWindow.h \
+           DefoDAQDisplayWidget.h \
+	   DefoDAQValueVector.h
+    
+SOURCES += defoDisplay.cc \
+           DefoDAQClient.cc \
+           DefoDAQNetworkReader.cc \
+           DefoDisplayMainWindow.cc \
+           DefoDAQDisplayWidget.cc

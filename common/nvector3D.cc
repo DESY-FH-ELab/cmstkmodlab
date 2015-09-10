@@ -100,3 +100,51 @@ NVector3D NVector3D::cross(const NVector3D& other)
                    z()*other.x() - x()*other.z(),
                    x()*other.y() - y()*other.x());
 }
+
+NVector3D NVector3D::operator+(const NVector3D& other)
+{
+  NVector3D v(*this);
+  v += other;
+
+  return v;
+}
+
+NVector3D NVector3D::operator-(const NVector3D& other)
+{
+  NVector3D v(*this);
+  v -= other;
+
+  return v;
+}
+
+NVector3D& NVector3D::operator+=(const NVector3D& other)
+{
+  x_ += other.x();
+  y_ += other.y();
+  y_ += other.z();
+
+  return *this;
+}
+
+NVector3D& NVector3D::operator-=(const NVector3D& other)
+{
+  x_ -= other.x();
+  y_ -= other.y();
+  y_ -= other.z();
+
+  return *this;
+}
+
+NVector3D& NVector3D::operator*=(const double scale)
+{
+  x_ *= scale;
+  y_ *= scale;
+  z_ *= scale;
+
+  return *this;
+}
+
+void NVector3D::print()
+{
+  std::cout << "(" << x() << ", " << y() << ", " << z() << ")" << std::endl;
+}

@@ -85,7 +85,7 @@ public slots:
   void thresholdChanged(DefoPointRecognitionModel::Threshold threshold,
                         int value);
   void selectionChanged(DefoMeasurement* measurement);
-  void roiChanged();
+  void roiChanged(bool);
 
 protected:
 
@@ -188,7 +188,7 @@ public:
 
 public slots:
 
-  void roiChanged();
+  void roiChanged(bool);
   void showContextMenu(const QPoint&);
 
 protected:

@@ -10,8 +10,20 @@ LIBS += @twitterlibs@
 
 QMAKE = @qmake@
 
+macx {
+	CONFIG+=x86_64
+	QMAKE_CXXFLAGS += -stdlib=libc++
+	QMAKE_MACOSX_DEPLOYMENT_TARGET = 10.9
+}
+
+CONFIG+=c++11
 QMAKE_CXXFLAGS += -std=c++11
-QMAKE_CXXFLAGS += -DAPPLICATIONVERSIONSTR=\\\"`git describe --dirty --always --tags`\\\"
+
+macx {
+  QMAKE_CXXFLAGS += -DAPPLICATIONVERSIONSTR=\\\"unknown\\\"
+} else {
+  QMAKE_CXXFLAGS += -DAPPLICATIONVERSIONSTR=\\\"`git describe --dirty --always --tags`\\\"
+}
 
 INCLUDEPATH += @qwtincludes@
 DEFINES += @configdefines@
@@ -28,6 +40,10 @@ INCLUDEPATH += .
 INCLUDEPATH += ..
 INCLUDEPATH += @basepath@
 INCLUDEPATH += @basepath@/common
+
+greaterThan(QT_MAJOR_VERSION, 4){
+  cache()
+}
 
 # Input
 HEADERS += TestWindow.h \
