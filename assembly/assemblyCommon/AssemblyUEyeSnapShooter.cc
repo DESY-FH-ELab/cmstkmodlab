@@ -43,43 +43,25 @@ AssemblyUEyeSnapShooter::AssemblyUEyeSnapShooter(QWidget *parent)
     setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 }
 
-void AssemblyUEyeSnapShooter::connectCamera(AssemblyVUEyeCamera *camera)
+void AssemblyUEyeSnapShooter::connectImageProducer(const QObject* sender,
+                                                   const char* signal)
 {
-    NQLog("AssemblyUEyeSnapShooter") << ":connectCamera(AssemblyVUEyeCamera *camera)";
+    NQLog("AssemblyUEyeSnapShooter") << ":connectImageProducer";
 
-    imageView_->connectCamera(camera);
+    imageView_->connectImageProducer(sender, signal);
 
-    connect(camera, SIGNAL(imageAcquired(const cv::Mat&)),
+    connect(sender, signal,
             this, SLOT(imageAcquired(const cv::Mat&)));
 }
 
-void AssemblyUEyeSnapShooter::connectMarkerFinder(AssemblyVMarkerFinder* finder)
+void AssemblyUEyeSnapShooter::disconnectImageProducer(const QObject* sender,
+                                                      const char* signal)
 {
-    NQLog("AssemblyUEyeSnapShooter") << ":connectMarkerFinder(AssemblyVMarkerFinder* finder)";
+    NQLog("AssemblyUEyeSnapShooter") << ":disconnectImageProducer";
 
-    imageView_->connectMarkerFinder(finder);
+    imageView_->disconnectImageProducer(sender, signal);
 
-    connect(finder, SIGNAL(markerFound(const cv::Mat&)),
-            this, SLOT(imageAcquired(const cv::Mat&)));
-}
-
-void AssemblyUEyeSnapShooter::disconnectCamera(AssemblyVUEyeCamera * camera)
-{
-    NQLog("AssemblyUEyeSnapShooter") << ":disconnectCamera(AssemblyVUEyeCamera * camera)";
-
-    imageView_->disconnectCamera(camera);
-
-    camera->disconnect(camera, SIGNAL(imageAcquired(const cv::Mat&)),
-                       this, SLOT(imageAcquired(const cv::Mat&)));
-}
-
-void AssemblyUEyeSnapShooter::disconnectMarkerFinder(AssemblyVMarkerFinder* finder)
-{
-    NQLog("AssemblyUEyeSnapShooter") << ":connectMarkerFinder(AssemblyVMarkerFinder* finder)";
-
-    imageView_->disconnectMarkerFinder(finder);
-
-    disconnect(finder, SIGNAL(markerFound(const cv::Mat&)),
+    disconnect(sender, signal,
                this, SLOT(imageAcquired(const cv::Mat&)));
 }
 

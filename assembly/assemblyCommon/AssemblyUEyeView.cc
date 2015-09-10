@@ -14,27 +14,17 @@ AssemblyUEyeView::AssemblyUEyeView(QWidget *parent)
 
 }
 
-void AssemblyUEyeView::connectCamera(AssemblyVUEyeCamera *camera)
+void AssemblyUEyeView::connectImageProducer(const QObject* sender,
+                                            const char* signal)
 {
-    connect(camera, SIGNAL(imageAcquired(const cv::Mat&)),
+    connect(sender, signal,
             this, SLOT(setImage(const cv::Mat&)));
 }
 
-void AssemblyUEyeView::connectMarkerFinder(AssemblyVMarkerFinder* finder)
+void AssemblyUEyeView::disconnectImageProducer(const QObject* sender,
+                                               const char* signal)
 {
-    connect(finder, SIGNAL(markerFound(const cv::Mat&)),
-            this, SLOT(setImage(const cv::Mat&)));
-}
-
-void AssemblyUEyeView::disconnectCamera(AssemblyVUEyeCamera *camera)
-{
-    disconnect(camera, SIGNAL(imageAcquired(const cv::Mat&)),
-               this, SLOT(setImage(const cv::Mat&)));
-}
-
-void AssemblyUEyeView::disconnectMarkerFinder(AssemblyVMarkerFinder* finder)
-{
-    disconnect(finder, SIGNAL(markerFound(const cv::Mat&)),
+    disconnect(sender, signal,
                this, SLOT(setImage(const cv::Mat&)));
 }
 

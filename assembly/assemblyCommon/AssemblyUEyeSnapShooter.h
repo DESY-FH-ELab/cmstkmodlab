@@ -18,11 +18,8 @@ public:
 
     explicit AssemblyUEyeSnapShooter(QWidget *parent = 0);
 
-    void connectCamera(AssemblyVUEyeCamera* camera);
-    void connectMarkerFinder(AssemblyVMarkerFinder* finder);
-
-    void disconnectCamera(AssemblyVUEyeCamera* camera);
-    void disconnectMarkerFinder(AssemblyVMarkerFinder* finder);
+    void connectImageProducer(const QObject* sender, const char* signal);
+    void disconnectImageProducer(const QObject* sender, const char* signal);
 
 protected:
 
