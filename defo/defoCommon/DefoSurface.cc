@@ -12,12 +12,12 @@
 
 inline bool operator==(const DefoSplineXYPair &lhs, const DefoSplineXYPair &rhs)
 {
-  return lhs.x_==rhs.x_ && lhs.y_==rhs.y_;
+  return lhs.getX()==rhs.getX() && lhs.getY()==rhs.getY();
 }
 
 inline uint qHash(const DefoSplineXYPair &key)
 {
-  return (qHash((uint)key.x_) ^ (qHash((uint)key.y_)<<1));
+  return (qHash((uint)key.getX()) ^ (qHash((uint)key.getY())<<1));
 }
 
 ///
@@ -59,11 +59,14 @@ void DefoSurface::makeSummary()
            itP < itC->getPoints().end();
            ++itP ) {
 
-        key.ix_ = itP->getIndex().first;
-        key.x_ = itP->getX();
-        key.iy_ = itP->getIndex().second;
-        key.y_ = itP->getY();
-        value.setX(itC->eval(itP->getX()));
+	key.setIndex(itP->getIndex().first, itP->getIndex().second);
+	key.setPosition(itP->getCalibratedX(), itP->getCalibratedY());
+	key.setPixelPosition(itP->getX(), itP->getY());
+	
+        value.setX(itC->eval(itP->getCalibratedX()));
+
+        value.setCorrX(itP->getCorrectionFactor(DefoPoint::X));
+        value.setCorrY(itP->getCorrectionFactor(DefoPoint::Y));
 
         it_t it = defoPointMap_.find(key);
         if (it==defoPointMap_.end()) {
@@ -71,7 +74,7 @@ void DefoSurface::makeSummary()
           value.hasy_ = false;
           defoPointMap_.insert(key, value);
         } else {
-          it.value().setX(itC->eval(itP->getX()));
+          it.value().setX(itC->eval(itP->getCalibratedX()));
         }
       }
     }
@@ -89,11 +92,14 @@ void DefoSurface::makeSummary()
            itP < itC->getPoints().end();
            ++itP ) {
 
-        key.ix_ = itP->getIndex().first;
-        key.x_ = itP->getX();
-        key.iy_ = itP->getIndex().second;
-        key.y_ = itP->getY();
-        value.setY(itC->eval(itP->getY()));
+	key.setIndex(itP->getIndex().first, itP->getIndex().second);
+	key.setPosition(itP->getCalibratedX(), itP->getCalibratedY());
+	key.setPixelPosition(itP->getX(), itP->getY());
+
+        value.setY(itC->eval(itP->getCalibratedY()));
+
+        value.setCorrX(itP->getCorrectionFactor(DefoPoint::X));
+        value.setCorrY(itP->getCorrectionFactor(DefoPoint::Y));
 
         it_t it = defoPointMap_.find(key);
         if (it==defoPointMap_.end()) {
@@ -101,7 +107,7 @@ void DefoSurface::makeSummary()
           value.hasx_ = false;
           defoPointMap_.insert(key, value);
         } else {
-          it.value().setY(itC->eval(itP->getY()));
+          it.value().setY(itC->eval(itP->getCalibratedY()));
         }
 
       }
@@ -123,16 +129,16 @@ void DefoSurface::makeSummary()
              itP < itC->getPoints().end();
              ++itP ) {
 
-            double z = itC->eval(itP->getX());
+            double z = itC->eval(itP->getCalibratedX());
             if (z>summary_.maxZFromXSplines) {
                 summary_.maxZFromXSplines = z;
-                summary_.posAtMaxZFromXSplines.first = itP->getX();
-                summary_.posAtMaxZFromXSplines.second = itP->getY();
+                summary_.posAtMaxZFromXSplines.first = itP->getCalibratedX();
+                summary_.posAtMaxZFromXSplines.second = itP->getCalibratedY();
             }
             if (z<summary_.minZFromXSplines) {
                 summary_.minZFromXSplines = z;
-                summary_.posAtMinZFromXSplines.first = itP->getX();
-                summary_.posAtMinZFromXSplines.second = itP->getY();
+                summary_.posAtMinZFromXSplines.first = itP->getCalibratedX();
+                summary_.posAtMinZFromXSplines.second = itP->getCalibratedY();
             }
         }
     }
@@ -153,16 +159,16 @@ void DefoSurface::makeSummary()
              itP < itC->getPoints().end();
              ++itP ) {
 
-            double z = itC->eval(itP->getY());
+            double z = itC->eval(itP->getCalibratedY());
             if (z>summary_.maxZFromYSplines) {
                 summary_.maxZFromYSplines = z;
-                summary_.posAtMaxZFromYSplines.first = itP->getX();
-                summary_.posAtMaxZFromYSplines.second = itP->getY();
+                summary_.posAtMaxZFromYSplines.first = itP->getCalibratedX();
+                summary_.posAtMaxZFromYSplines.second = itP->getCalibratedY();
             }
             if (z<summary_.minZFromYSplines) {
                 summary_.minZFromYSplines = z;
-                summary_.posAtMinZFromYSplines.first = itP->getX();
-                summary_.posAtMinZFromYSplines.second = itP->getY();
+                summary_.posAtMinZFromYSplines.first = itP->getCalibratedX();
+                summary_.posAtMinZFromYSplines.second = itP->getCalibratedY();
             }
         }
     }
@@ -183,19 +189,28 @@ void DefoSurface::dumpSplineField(std::string filename) const
   if (filename.length()==0) return;
 
   std::ofstream ofile(filename.c_str());
+  ofile << "# "
+        << "(int)ix (int)iy (double)x (double)y (double)px (double)py (double)zx (int)has_zx "
+        << "(double)zy (int)has_zy (double)zxy (double)corrx (double)corry"
+        << std::endl;
+
   for (it_t it = defoPointMap_.begin();it!=defoPointMap_.end();++it) {
-    ofile << std::setw(8)  << it.key().ix_ << " "
-          << std::setw(8)  << it.key().iy_ << " "
-          << std::setw(14) << std::scientific << it.key().x_ << " "
-          << std::setw(14) << std::scientific << it.key().y_ << " "
+    ofile << std::setw(8)  << it.key().getIX() << " "
+          << std::setw(8)  << it.key().getIY() << " "
+          << std::setw(14) << std::scientific << it.key().getX() << " "
+          << std::setw(14) << std::scientific << it.key().getY() << " "
+          << std::setw(14) << std::scientific << it.key().getPX() << " "
+          << std::setw(14) << std::scientific << it.key().getPY() << " "
           << std::setw(14) << std::scientific << it.value().x_ << " "
           << std::setw(3)  << (int)it.value().hasx_ << " "
           << std::setw(14) << std::scientific << it.value().y_ << " "
           << std::setw(3)  << (int)it.value().hasy_
+          << std::setw(14) << std::scientific << it.value().xy_ << " "
+          << std::setw(14) << std::scientific << it.value().corrx_ << " "
+          << std::setw(14) << std::scientific << it.value().corry_
           << std::endl;
   }
 }
-
 
 ///
 ///
@@ -206,16 +221,16 @@ void DefoSurface::dumpSpline1DFieldX(std::string filename, double dx)
 
   if (filename.length()==0) return;
 
-  int ixmin = defoPointMap_.begin().key().ix_;
+  int ixmin = defoPointMap_.begin().key().getIX();
   int ixmax = ixmin;
-  int iymin = defoPointMap_.begin().key().iy_;
+  int iymin = defoPointMap_.begin().key().getIY();
   int iymax = iymin;
 
   for (it_t it = defoPointMap_.begin();it!=defoPointMap_.end();++it) {
-    ixmin = std::min(ixmin, it.key().ix_);
-    ixmax = std::max(ixmax, it.key().ix_);
-    iymin = std::min(iymin, it.key().iy_);
-    iymax = std::max(iymax, it.key().iy_);
+    ixmin = std::min(ixmin, it.key().getIX());
+    ixmax = std::max(ixmax, it.key().getIX());
+    iymin = std::min(iymin, it.key().getIY());
+    iymax = std::max(iymax, it.key().getIY());
   }
 
   double xmin = -1e9;
@@ -224,10 +239,10 @@ void DefoSurface::dumpSpline1DFieldX(std::string filename, double dx)
   double ymax = 1e9;
 
   for (it_t it = defoPointMap_.begin();it!=defoPointMap_.end();++it) {
-    if (it.key().ix_==ixmin) xmin = std::max(xmin, it.key().x_);
-    if (it.key().ix_==ixmax) xmax = std::min(xmax, it.key().x_);
-    if (it.key().iy_==iymin) ymin = std::max(ymin, it.key().y_);
-    if (it.key().iy_==iymax) ymax = std::min(ymax, it.key().y_);
+    if (it.key().getIX()==ixmin) xmin = std::max(xmin, it.key().getX());
+    if (it.key().getIX()==ixmax) xmax = std::min(xmax, it.key().getX());
+    if (it.key().getIY()==iymin) ymin = std::max(ymin, it.key().getY());
+    if (it.key().getIY()==iymax) ymax = std::min(ymax, it.key().getY());
   }
 
   int stepsX = std::ceil((xmax-xmin)/dx);
@@ -302,16 +317,16 @@ void DefoSurface::dumpSpline2DField(std::string filename,
 
   if (filename.length()==0) return;
 
-  int ixmin = defoPointMap_.begin().key().ix_;
+  int ixmin = defoPointMap_.begin().key().getIX();
   int ixmax = ixmin;
-  int iymin = defoPointMap_.begin().key().iy_;
+  int iymin = defoPointMap_.begin().key().getIY();
   int iymax = iymin;
-  
+
   for (it_t it = defoPointMap_.begin();it!=defoPointMap_.end();++it) {
-    ixmin = std::min(ixmin, it.key().ix_);
-    ixmax = std::max(ixmax, it.key().ix_);
-    iymin = std::min(iymin, it.key().iy_);
-    iymax = std::max(iymax, it.key().iy_);
+    ixmin = std::min(ixmin, it.key().getIX());
+    ixmax = std::max(ixmax, it.key().getIX());
+    iymin = std::min(iymin, it.key().getIY());
+    iymax = std::max(iymax, it.key().getIY());
   }
 
   double xmin = -1e9;
@@ -320,19 +335,19 @@ void DefoSurface::dumpSpline2DField(std::string filename,
   double ymax = 1e9;
   
   for (it_t it = defoPointMap_.begin();it!=defoPointMap_.end();++it) {
-    if (it.key().ix_==ixmin) xmin = std::max(xmin, it.key().x_);
-    if (it.key().ix_==ixmax) xmax = std::min(xmax, it.key().x_);
-    if (it.key().iy_==iymin) ymin = std::max(ymin, it.key().y_);
-    if (it.key().iy_==iymax) ymax = std::min(ymax, it.key().y_);
+    if (it.key().getIX()==ixmin) xmin = std::max(xmin, it.key().getX());
+    if (it.key().getIX()==ixmax) xmax = std::min(xmax, it.key().getX());
+    if (it.key().getIY()==iymin) ymin = std::max(ymin, it.key().getY());
+    if (it.key().getIY()==iymax) ymax = std::min(ymax, it.key().getY());
   }
-  
+
   int stepsX = std::ceil((xmax-xmin)/dx);
   int stepsY = std::ceil((ymax-ymin)/dy);
 
   double theDX = (xmax-xmin)/stepsX;
   double theDY = (ymax-ymin)/stepsY;
 
-  std::vector<double> x, y, zx, zy;
+  std::vector<double> x, y, zx, zy, zxy;
   std::vector<int> vix, viy;
 
   int ix = 0, iy = 0;
@@ -345,6 +360,7 @@ void DefoSurface::dumpSpline2DField(std::string filename,
       y.push_back(ry);
       zx.push_back(0.0);
       zy.push_back(0.0);
+      zxy.push_back(0.0);
       iy++;
     }
     ix++;
@@ -352,22 +368,34 @@ void DefoSurface::dumpSpline2DField(std::string filename,
 
   spline2Dx_.evaluate(x, y, zx);
   spline2Dy_.evaluate(x, y, zy);
+  spline2Dxy_.evaluate(x, y, zxy);
 
-  std::ofstream ofile(filename.c_str());
   std::vector<int>::iterator itix = vix.begin();
   std::vector<int>::iterator itiy = viy.begin();
   std::vector<double>::iterator itx = x.begin();
   std::vector<double>::iterator ity = y.begin();
   std::vector<double>::iterator itzx = zx.begin();
   std::vector<double>::iterator itzy = zy.begin();
-  
+  std::vector<double>::iterator itzxy = zxy.begin();
+
+  std::ofstream ofile(filename.c_str());
+  ofile << "# "
+        << "(int)ix (int)iy (double)x (double)y (double)px (double)py (double)zx (int)has_zx "
+        << "(double)zy (int)has_zy (double)zxy (double)corrx (double)corry"
+        << std::endl;
+
   for (;itx!=x.end();++itix,++itiy,++itx,++ity,++itzx,++itzy) {
     ofile << std::setw(8)  << *itix << " "
           << std::setw(8)  << *itiy  << " "
 	  << std::setw(14) << std::scientific << *itx << " "
           << std::setw(14) << std::scientific << *ity << " "
+	  << std::setw(14) << std::scientific << 0.0 << " "
+          << std::setw(14) << std::scientific << 0.0 << " "
           << std::setw(14) << std::scientific << *itzx << "   1 "
           << std::setw(14) << std::scientific << *itzy << "   1"
+          << std::setw(14) << std::scientific << *itzxy
+          << std::setw(14) << std::scientific << 1.0 << " "
+          << std::setw(14) << std::scientific << 1.0
           << std::endl;
   }
 }
@@ -417,7 +445,7 @@ void DefoSurface::createPointFields( void ) {
     if( !it->isIndexed() ) {
       NQLogWarning("DefoSurface::createPointFields()")
           << "Point not indexed at position: x: "
-		  << it->getX() << " y: " << it->getY();
+		  << it->getCalibratedX() << " y: " << it->getCalibratedY();
     }
   }
 
@@ -438,7 +466,7 @@ void DefoSurface::createPointFields( void ) {
     std::vector<DefoPoint> aColumn;
     for( DefoPointCollection::const_iterator itP = itC->getPoints().begin(); itP < itC->getPoints().end(); ++itP ) {
       DefoPoint aPoint( *itP ); // make copy to preserve constness
-      aPoint.setHeight( itC->eval( itP->getX() ) );
+      aPoint.setHeight( itC->eval( itP->getCalibratedX() ) );
       aPoint.setValid( true ); // sign for the DefoSurfacePlot to take it
       std::pair<int,int> absIndex = aPoint.getIndex();
       absIndex.first += indexRange.first;
@@ -464,6 +492,7 @@ void DefoSurface::calibrateZ(double calibZx, double calibZy)
     if (it.value().hasx_ && it.value().hasy_) {
       it.value().x_ = it.value().x_ * calibZx;
       it.value().y_ = it.value().y_ * calibZy;
+      it.value().xy_ = 0.5*(it.value().x_ + it.value().y_);
     }
   }
 }
@@ -472,17 +501,19 @@ void DefoSurface::fitSpline2D(int kx, int ky, double s, double nxy)
 {
   typedef QHash<DefoSplineXYPair,DefoSplineXYDefoPair>::const_iterator it_t;
 
-  std::vector<double> x, y, zx, zy;
+  std::vector<double> x, y, zx, zy, zxy;
 
   for (it_t it = defoPointMap_.begin();it!=defoPointMap_.end();++it) {
     if (it.value().hasx_ && it.value().hasy_) {
-      x.push_back(it.key().x_);
-      y.push_back(it.key().y_);
+      x.push_back(it.key().getX());
+      y.push_back(it.key().getY());
       zx.push_back(it.value().x_);
       zy.push_back(it.value().y_);
+      zxy.push_back(it.value().xy_);
     }
   }
 
   spline2Dx_.surfit(x, y, zx, kx, ky, s, nxy);
   spline2Dy_.surfit(x, y, zy, kx, ky, s, nxy);
+  spline2Dxy_.surfit(x, y, zxy, kx, ky, s, nxy);
 }

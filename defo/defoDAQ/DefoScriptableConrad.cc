@@ -43,7 +43,7 @@ void DefoScriptableConrad::disablePanel(unsigned int panel) {
   emit disableSwitch(static_cast<DefoConradModel::DeviceSwitch>(panel-1));
 }
 
-QScriptValue DefoScriptableConrad::panel(unsigned int panel) {
+QScriptValue DefoScriptableConrad::panelState(unsigned int panel) {
 
   QMutexLocker locker(&mutex_);
 
@@ -75,7 +75,7 @@ void DefoScriptableConrad::disableCalibrationLEDs() {
   emit disableSwitch(DefoConradModel::CALIBRATION_LEDS);
 }
 
-QScriptValue DefoScriptableConrad::calibrationLEDs() {
+QScriptValue DefoScriptableConrad::calibrationLEDsState() {
 
   QMutexLocker locker(&mutex_);
 

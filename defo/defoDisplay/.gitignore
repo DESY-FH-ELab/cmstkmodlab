@@ -1,0 +1,13 @@
+*~
+defoDisplay.pro
+defoDisplay.pro.user
+.qmake.stash
+.qmake.cache
+Makefile
+startDefoDisplay.sh
+*.d
+*.o
+moc_*
+defoDisplay
+defoDisplay.app
+defoDisplay.desktop

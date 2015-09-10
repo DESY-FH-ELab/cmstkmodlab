@@ -2,8 +2,8 @@
 
 #include "DefoConradModel.h"
 
-DefoConradModel::DefoConradModel(QObject *parent)
-: QObject(parent),
+DefoConradModel::DefoConradModel(QObject * /* parent */)
+: QObject(),
   AbstractDeviceModel(),
   switchStates_(8, OFF)
 {
@@ -196,6 +196,12 @@ void DefoConradModel::setSwitchEnabled(DefoConradModel::DeviceSwitch device,
 
 /// Returns whether the requested device is currently enabled.
 const State& DefoConradModel::getSwitchState(DefoConradModel::DeviceSwitch device) const
+{
+  return switchStates_.at( device );
+}
+
+/// Returns whether the requested device is currently enabled.
+const State& DefoConradModel::getSwitchState( int device) const
 {
   return switchStates_.at( device );
 }

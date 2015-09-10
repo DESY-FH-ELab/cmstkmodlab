@@ -64,33 +64,34 @@ int main( int argc, char** argv ) {
 
     // scan and fill theReading
     reading_t theReading = keithley.Scan();
-    if( ! keithley.IsScanOk() ) continue;
-
-    // pretty print header, every ten lines
-    if( 0 ==  readingCounter % 10 ) {
-      dualOut << std::setw( 8 ) << std::setfill( ' ' ) << std::left << "";
-      dualOut << std::setw( 8 ) << std::setfill( ' ' ) << std::right << "seconds";
+    if (keithley.IsScanOk()) {
+      
+      // pretty print header, every ten lines
+      if( 0 ==  readingCounter % 10 ) {
+	dualOut << std::setw( 8 ) << std::setfill( ' ' ) << std::left << "";
+	dualOut << std::setw( 8 ) << std::setfill( ' ' ) << std::right << "seconds";
+	dualOut << std::setw( 2 ) << std::setfill( ' ' ) << std::right << "";
+	for( reading_t::const_iterator it = theReading.begin(); it < theReading.end(); ++it ) {
+	  dualOut << std::setw( 12 ) << std::right <<  std::setfill( '.' ) << it->first;
+	}
+	dualOut << std::endl << std::flush;
+      }
+      
+      // print readings
+      time_t currentTime = time( NULL );
+      dualOut << std::setw( 8 ) << std::setfill( ' ' ) << std::left << " <DATA>";
+      dualOut << std::setw( 8 ) << std::setfill( ' ' ) << std::right << currentTime - startingTime;
       dualOut << std::setw( 2 ) << std::setfill( ' ' ) << std::right << "";
       for( reading_t::const_iterator it = theReading.begin(); it < theReading.end(); ++it ) {
-        dualOut << std::setw( 12 ) << std::right <<  std::setfill( '.' ) << it->first;
+	dualOut << std::setw( 12 ) << std::right << std::setfill( ' ' ) << it->second;
       }
-      dualOut << std::endl << std::flush;
+      dualOut << std::endl;
+      
+      // need to explicitly flush stream
+      dualOut.flush();
+      
+      ++readingCounter;
     }
-    
-    // print readings
-    time_t currentTime = time( NULL );
-    dualOut << std::setw( 8 ) << std::setfill( ' ' ) << std::left << " <DATA>";
-    dualOut << std::setw( 8 ) << std::setfill( ' ' ) << std::right << currentTime - startingTime;
-    dualOut << std::setw( 2 ) << std::setfill( ' ' ) << std::right << "";
-    for( reading_t::const_iterator it = theReading.begin(); it < theReading.end(); ++it ) {
-      dualOut << std::setw( 12 ) << std::right << std::setfill( ' ' ) << it->second;
-    }
-    dualOut << std::endl;
-    
-    // need to explicitly flush stream
-    dualOut.flush();
-
-    ++readingCounter;
 
     sleep(10);
   }

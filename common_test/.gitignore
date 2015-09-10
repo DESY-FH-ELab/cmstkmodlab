@@ -2,3 +2,4 @@ common_test
 common_test.pro
 *.o
 .qmake.stash
+.qmake.cache
