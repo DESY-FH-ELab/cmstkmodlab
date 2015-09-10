@@ -5,6 +5,8 @@
 #include <QMutexLocker>
 #include <QDateTime>
 
+#include <nqlogger.h>
+
 #include "DefoScriptableGlobals.h"
 
 DefoScriptableGlobals::DefoScriptableGlobals(
@@ -15,18 +17,25 @@ DefoScriptableGlobals::DefoScriptableGlobals(
   , scriptModel_(scriptModel)
 { }
 
-void DefoScriptableGlobals::newMeasurement() {
-
-  QMutexLocker locker(&mutex_);
-  scriptModel_->doPrepareNewMeasurement();
-}
-
 void DefoScriptableGlobals::wait(int seconds) {
 
-  QString message = QString("wait for %1 second(s) ...").arg(seconds);
+  static QString TIME_FORMAT = "yyyy-MM-dd hh:mm:ss";
+
+  QString message;
+  QDateTime dt = QDateTime::currentDateTime().addSecs(seconds);
+
+  message = QString("wait for %1 second(s)").arg(seconds);
   this->message(message);
+  NQLog("defoDAQ") << message;
+
+  message = QString("estimated time of completion: %1 ...").arg(dt.toString(TIME_FORMAT));
+  this->message(message);
+  NQLog("defoDAQ") << message;
+
   sleep(seconds);
+
   this->message("done");
+  NQLog("defoDAQ") << "done";
 }
 
 void DefoScriptableGlobals::message(int value) {
@@ -51,6 +60,12 @@ void DefoScriptableGlobals::message(const QString & text) {
 
   QMutexLocker locker(&mutex_);
   scriptModel_->message(text);
+}
+
+void DefoScriptableGlobals::newMeasurement() {
+
+  QMutexLocker locker(&mutex_);
+  scriptModel_->doPrepareNewMeasurement();
 }
 
 QScriptValue DefoScriptableGlobals::uTime() const

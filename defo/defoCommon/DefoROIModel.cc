@@ -4,163 +4,142 @@
 #include <QFile>
 #include <QXmlStreamWriter>
 
+#include <nqlogger.h>
+
 #include "DefoROIModel.h"
 
-DefoROIModel::DefoROIModel(QObject *parent) :
-    QObject(parent)
+DefoROIModel::DefoROIModel(QObject *parent)
+: QObject(parent),
+  roi_(0)
 {
-  push_back(QPointF(0.05, 0.05));
-  push_back(QPointF(0.95, 0.05));
-  push_back(QPointF(0.95, 0.95));
-  push_back(QPointF(0.05, 0.95));
-  selectedPoint_ = -1;
+
+}
+
+QRectF DefoROIModel::boundingRect() const
+{
+  if (!roi_) return QRectF(0.05, 0.05, 0.90, 0.90);
+  return roi_->boundingRect();
+}
+
+int DefoROIModel::size() const
+{
+  if (!roi_) return 0;
+  return roi_->size();
+}
+
+const QPointF DefoROIModel::at(int i) const
+{
+  if (!roi_) return QPointF();
+  return roi_->at(i);
+}
+
+const QPointF DefoROIModel::first() const
+{
+  if (!roi_) return QPointF();
+  return roi_->first();
+}
+
+const QPointF DefoROIModel::last() const
+{
+  if (!roi_) return QPointF();
+  return roi_->last();
 }
 
 float DefoROIModel::getClosestPoint(int & index,
-                                        float width, float height,
-                                        float x, float y) {
-
-  index = -1;
-  float distance = 1.e9;
-  float temp;
-  for (int j=0;j<size();++j) {
-    const QPointF & p =at(j);
-    float xp = p.x()*width;
-    float yp = p.y()*height;
-
-    temp = std::sqrt((x-xp)*(x-xp) + (y-yp)*(y-yp));
-    if (temp<distance) {
-      distance = temp;
-      index = j;
-    }
-  }
-  return distance;
+                                    float width, float height,
+                                    float x, float y)
+{
+  if (!roi_) return 1.e9;
+  return roi_->getClosestPoint(index, width, height, x, y);
 }
 
 void DefoROIModel::setPoint(int index, float newX, float newY)
 {
-  if (newX<0.025 || newX>0.975 || newY<0.025 || newY>0.975) return;
+  if (!roi_) return;
+  if (roi_->setPoint(index, newX, newY)) {
+    // NQLogMessage("DefoROIModel") << "roiChanged(false) " << roi_;
+    emit roiChanged(false);
+  }
+}
 
-  QPointF & p = this->operator[](index);
+int DefoROIModel::getSelectedPoint() const
+{
+  if (!roi_) return -1;
+  return roi_->getSelectedPoint();
+}
 
-  bool needUpdate = (newX!=p.x()) || (newY!=p.y());
+void DefoROIModel::selectPoint(int index)
+{
+  if (roi_) {
+    if (roi_->getSelectedPoint()!=-1) {
+      // NQLogMessage("DefoROIModel") << "roiChanged(true) " << roi_;
+      emit roiChanged(true);
+    }
+    roi_->selectPoint(index);
+  }
+}
 
-  p.setX(newX);
-  p.setY(newY);
-
-  if (needUpdate) emit roiChanged();
+int DefoROIModel::numberOfPoints() const
+{
+  if (!roi_) return -1;
+  return roi_->numberOfPoints();
 }
 
 bool DefoROIModel::containsPoint(float width, float height,
-                                 float x, float y) {
-
-  QPointF p(x/width, y/height);
-  return QPolygonF::containsPoint(p, Qt::OddEvenFill);
-}
-
-void DefoROIModel::insertPointBefore() {
-  if (selectedPoint_==-1) return;
-
-  if (selectedPoint_==0) {
-    const QPointF & lastP = last();
-    const QPointF & firstP = first();
-    QPointF np((lastP.x()+firstP.x())/2,
-               (lastP.y()+firstP.y())/2);
-    insert(0, np);
-    emit roiChanged();
-  } else {
-      const QPointF & lastP = at(selectedPoint_-1);
-      const QPointF & firstP = at(selectedPoint_);
-      QPointF np((lastP.x()+firstP.x())/2,
-                 (lastP.y()+firstP.y())/2);
-      insert(selectedPoint_, np);
-      emit roiChanged();
-  }
-}
-
-void DefoROIModel::insertPointAfter() {
-  if (selectedPoint_==-1) return;
-
-  if (selectedPoint_==size()-1) {
-    const QPointF & lastP = last();
-    const QPointF & firstP = first();
-    QPointF np((lastP.x()+firstP.x())/2,
-               (lastP.y()+firstP.y())/2);
-    push_back(np);
-    emit roiChanged();
-  } else {
-      const QPointF & lastP = at(selectedPoint_);
-      const QPointF & firstP = at(selectedPoint_+1);
-      QPointF np((lastP.x()+firstP.x())/2,
-                 (lastP.y()+firstP.y())/2);
-      insert(selectedPoint_+1, np);
-      emit roiChanged();
-  }
-
-}
-
-void DefoROIModel::removePoint() {
-  if (selectedPoint_==-1) return;
-  if (size()>3) {
-    remove(selectedPoint_);
-    emit roiChanged();
-  }
-}
-
-void DefoROIModel::write(const QString& filename)
+                                 float x, float y)
 {
-  QFile file(filename);
-  if (!file.open(QIODevice::WriteOnly | QIODevice::Text | QIODevice::Truncate))
-    return;
-
-  QXmlStreamWriter stream(&file);
-  stream.setAutoFormatting(true);
-  stream.writeStartDocument();
-
-  stream.writeStartElement("DefoROI");
-
-  stream.writeStartElement("Points");
-  stream.writeAttribute("count", QString().setNum(size()));
-  for (int i=0;i<size();++i) {
-    stream.writeStartElement("Point");
-    stream.writeAttribute("index", QString().setNum(i));
-    const QPointF &p = at(i);
-    stream.writeAttribute("x", QString().setNum(p.x(), 'e', 6));
-    stream.writeAttribute("y", QString().setNum(p.y(), 'e', 6));
-    stream.writeEndElement();
-  }
-  stream.writeEndElement();
-
-  stream.writeEndDocument();
+  if (!roi_) return false;
+  return roi_->containsPoint(width, height, x, y);
 }
 
-void DefoROIModel::read(const QString& filename) {
+void DefoROIModel::insertPointBefore()
+{
+  if (!roi_) return;
+  if (roi_->insertPointBefore()) emit roiChanged(true);
+}
 
-  QFile file(filename);
-  if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
-    return;
+void DefoROIModel::insertPointAfter()
+{
+  if (!roi_) return;
+  if (roi_->insertPointAfter()) emit roiChanged(true);
+}
 
-  QXmlStreamReader stream(&file);
+void DefoROIModel::removePoint()
+{
+  if (!roi_) return;
+  if (roi_->removePoint()) emit roiChanged(true);
+}
 
-  while (!stream.atEnd()) {
-    stream.readNextStartElement();
+void DefoROIModel::assignFrom(DefoROI* roi)
+{
+  if (!roi_ || !roi) return;
+  if (roi_->assignFrom(roi)) emit roiChanged(true);
+}
 
-    if (stream.isStartElement() && stream.name()=="DefoROI") {
-      // do something
-    }
+void DefoROIModel::assignTo(DefoROI* roi)
+{
+  if (!roi_ || !roi) return;
+  roi_->assignTo(roi);
+}
 
-    if (stream.isStartElement() && stream.name()=="Points") {
-      int count = stream.attributes().value("count").toString().toInt();
-      resize(count);
-    }
+bool DefoROIModel::isEqualTo(DefoROIModel* other)
+{
+  if (!this->roi_) return false;
+  if (this->roi_==other->roi_) return true;
+  return false;
+}
 
-    if (stream.isStartElement() && stream.name()=="Point") {
-      int index = stream.attributes().value("index").toString().toInt();
-      QPointF & p = this->operator[](index);
-      double x = stream.attributes().value("x").toString().toDouble();
-      double y = stream.attributes().value("y").toString().toDouble();
-      p.setX(x);
-      p.setY(y);
-    }
-  }
+bool DefoROIModel::write(const QString& filename)
+{
+  if (!this->roi_) return false;
+  this->roi_->write(filename);
+  return true;
+}
+
+bool DefoROIModel::read(const QString& filename)
+{
+  if (!this->roi_) return false;
+  this->roi_->read(filename);
+  emit roiChanged(true);
+  return true;
 }

@@ -115,6 +115,7 @@ public slots:
   void setCirculatorEnabled( bool enabled );
 
   void setPumpPressureValue( int pressure );
+  void setPumpPressureValue( unsigned int pressure );
 
   void setWorkingTemperatureValue( double temperature );
 

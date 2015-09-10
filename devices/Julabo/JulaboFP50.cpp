@@ -577,7 +577,7 @@ void JulaboFP50::Device_Init( void ) {
   usleep( 200000 );
   comHandler_->ReceiveString( buffer );
 
-  std::cout << buffer << std::endl;
+  // std::cout << buffer << std::endl;
 
   if (std::string::npos==std::string(buffer).find( "JULABO TOPTECH-SERIES MC-2 VERSION 3.0")) {
     std::cerr << " [JulaboFP50::Device_Init] ** ERROR: Device communication problem."

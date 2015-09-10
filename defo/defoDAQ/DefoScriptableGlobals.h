@@ -13,18 +13,18 @@ class DefoScriptableGlobals :
   Q_OBJECT
 
 public:
-  explicit DefoScriptableGlobals(
-      DefoScriptModel* scriptModel
-    , QObject *parent = 0
-  );
+  explicit DefoScriptableGlobals(DefoScriptModel* scriptModel,
+				 QObject *parent = 0);
 
 public slots:
-  void newMeasurement();
+
   void wait(int seconds);
   void message(int value);
   void message(uint value);
   void message(double value);
   void message(const QString & text);
+  void newMeasurement();
+
   QScriptValue uTime() const;
   QScriptValue eTime();
   QScriptValue mkUTime(int year, int month, int day,

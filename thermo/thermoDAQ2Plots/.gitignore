@@ -1,5 +1,7 @@
 thermoDAQ2Plots.pro
 thermoDAQ2Plots.pro.user
+.qmake.stash
+.qmake.cache
 Makefile
 *.d
 *.o

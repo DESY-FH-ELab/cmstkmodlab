@@ -5,8 +5,10 @@ USEFAKEDEVICES= @usefakedevices@
 
 subdirs	      = defoCommon \
 		defoDAQ \
+                defoDisplay \
                 defoReco \
-		defoCalib
+		defoCalib \
+                defoDAQ2Root
 
 all:
 	@for dir in $(subdirs); do (cd $$dir; make); done
