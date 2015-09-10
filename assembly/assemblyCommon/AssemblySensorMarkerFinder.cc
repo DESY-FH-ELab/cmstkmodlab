@@ -19,6 +19,11 @@ AssemblySensorMarkerFinder::AssemblySensorMarkerFinder(QObject *parent)
     circleEdgeDetectionThreshold_ = config->getValue<int>("SensorMarkerCircleEdgeDetectionThreshold", 70);
     circleCenterDetectionThreshold_ = config->getValue<int>("SensorMarkerCircleCenterDetectionThreshold", 40);
     expectedCircleRadius_ = config->getValue<double>("SensorMarkerExpectedCircleRadius", 82.0);
+
+    linesCannyEdgeDetectionThreshold1_ = config->getValue<int>("SensorMarkerCannyEdgeDetectionThreshold1", 50);
+    linesCannyEdgeDetectionThreshold2_ = config->getValue<int>("SensorMarkerCannyEdgeDetectionThreshold2", 200);
+    linesCannyEdgeDetectionApertureSize_ = config->getValue<int>("SensorMarkerCannyEdgeDetectionApertureSize", 3);
+    linesCannyEdgeDetectionL2Gradient_ = (bool)config->getValue<int>("SensorMarkerCannyEdgeDetectionL2Gradient", 1);
 }
 
 AssemblySensorMarkerFinder::~AssemblySensorMarkerFinder()
@@ -150,8 +155,13 @@ void AssemblySensorMarkerFinder::drawCircle()
 
 size_t AssemblySensorMarkerFinder::findLines()
 {
-    cv::Mat imageEdges;
-    cv::Canny(image_, imageEdges, 50, 200, 3);
+    cv::Canny(image_, imageEdges_,
+              linesCannyEdgeDetectionThreshold1_,
+              linesCannyEdgeDetectionThreshold2_,
+              linesCannyEdgeDetectionApertureSize_,
+              linesCannyEdgeDetectionL2Gradient_);
+
+    emit edgesDetected(imageEdges_);
 
     std::vector<cv::Vec4i> tempLines;
 

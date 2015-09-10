@@ -20,6 +20,11 @@ public:
     int circleEdgeDetectionThreshold() const { return circleEdgeDetectionThreshold_; }
     int circleCenterDetectionThreshold() const { return circleCenterDetectionThreshold_; }
 
+    int linesCannyEdgeDetectionThreshold1() const { return linesCannyEdgeDetectionThreshold1_; }
+    int linesCannyEdgeDetectionThreshold2() const { return linesCannyEdgeDetectionThreshold2_; }
+    int linesCannyEdgeDetectionApertureSize() const { return linesCannyEdgeDetectionApertureSize_; }
+    bool linesCannyEdgeDetectionL2Gradient() const { return linesCannyEdgeDetectionL2Gradient_; }
+
     size_t findCircle(const cv::Mat&);
     const std::vector<AssemblyMarkerCircle>& getCircles() { return circles_; }
 
@@ -31,6 +36,11 @@ public slots:
     void setExpectedCircleSize(double value) { expectedCircleRadius_ = value; }
     void setCircleEdgeDetectionThreshold(int value) { circleEdgeDetectionThreshold_ = value; }
     void setCircleCenterDetectionThreshold(int value) { circleCenterDetectionThreshold_ = value; }
+
+    void setLinesCannyEdgeDetectionThreshold1(int value) { linesCannyEdgeDetectionThreshold1_ = value; }
+    void setLinesCannyEdgeDetectionThreshold2(int value) { linesCannyEdgeDetectionThreshold2_ = value; }
+    void setLinesCannyEdgeDetectionApertureSize(int value) { linesCannyEdgeDetectionApertureSize_ = value; }
+    void setLinesCannyEdgeDetectionL2Gradient(bool value) { linesCannyEdgeDetectionL2Gradient_ = value; }
 
     virtual void findMarker(const cv::Mat&);
 
@@ -54,6 +64,7 @@ protected:
     void drawOrientation();
 
     cv::Mat image_;
+    cv::Mat imageEdges_;
     cv::Mat imageRGB_;
 
     int gaussianBlurKernelSize_;
@@ -62,6 +73,11 @@ protected:
     int circleEdgeDetectionThreshold_;
     int circleCenterDetectionThreshold_;
     double expectedCircleRadius_;
+
+    int linesCannyEdgeDetectionThreshold1_;
+    int linesCannyEdgeDetectionThreshold2_;
+    int linesCannyEdgeDetectionApertureSize_;
+    bool linesCannyEdgeDetectionL2Gradient_;
 
     cv::Point2f circleCenter_;
     double circleRadius_;
@@ -75,6 +91,10 @@ protected:
     std::vector<std::pair<cv::Point2f,cv::Point2f> > goodLines_;
     std::vector<cv::Point2f> intersections_;
     std::vector<cv::Point2f> goodIntersections_;
+
+signals:
+
+    void edgesDetected(const cv::Mat&);
 };
 
 #endif // ASSEMBLYSENSORMARKERFINDER_H
