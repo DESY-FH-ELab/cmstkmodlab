@@ -1,6 +1,7 @@
 #ifndef ASSEMBLYUEYEFAKECAMERA_H
 #define ASSEMBLYUEYEFAKECAMERA_H
 
+#include <map>
 #include <vector>
 
 #include <opencv2/opencv.hpp>
@@ -34,8 +35,11 @@ protected slots:
 
 protected:
 
-    std::vector<cv::Mat> images_;
+    cv::Mat image_;
+    std::vector<std::string> imageFilenames_;
     size_t imageIndex_;
+
+    std::map<unsigned int, std::vector<std::string> > imageFilenamesForPixelClock_;
 
 signals:
 
