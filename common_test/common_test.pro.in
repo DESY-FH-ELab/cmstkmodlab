@@ -46,10 +46,6 @@ INCLUDEPATH += ..
 INCLUDEPATH += @basepath@
 INCLUDEPATH += @basepath@/common
 
-macx {
-  QMAKE_MACOSX_DEPLOYMENT_TARGET=10.9
-}
-
 greaterThan(QT_MAJOR_VERSION, 4){
   cache()
 }
