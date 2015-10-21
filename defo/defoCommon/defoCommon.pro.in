@@ -36,8 +36,8 @@ macx {
   QMAKE_CXXFLAGS += -DAPPLICATIONVERSIONSTR=\\\"`git describe --dirty --always --tags`\\\"
 }
 
-QMAKE_CXXFLAGS += @rootcflags@
-LIBS += @rootlibs@
+#QMAKE_CXXFLAGS += @rootcflags@
+#LIBS += @rootlibs@
 
 DEFINES += @configdefines@
 QT += core gui widgets opengl script xml
