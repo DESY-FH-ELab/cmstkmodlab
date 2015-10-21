@@ -4,8 +4,6 @@
 #
 #-------------------------------------------------
 
-#INCLUDEPATH += @qwtincludes@
-#LIBS += @qwtlibs@ -lGL -lGLU
 LIBS += -L@basepath@/devices/lib -lTkModLabKeithley
 LIBS += -L@basepath@/devices/lib -lTkModLabGreisinger
 LIBS += -L@basepath@/devices/lib -lTkModLabJulabo
@@ -29,16 +27,17 @@ CONFIG+=c++11
 QMAKE_CXXFLAGS += -std=c++11
 
 macx {
-	QMAKE_CXXFLAGS += -DAPPLICATIONVERSIONSTR=\\\"unknown\\\"
+  QMAKE_CXXFLAGS += -DAPPLICATIONVERSIONSTR=\\\"unknown\\\"
 }
 else {
-	QMAKE_CXXFLAGS += -DAPPLICATIONVERSIONSTR=\\\"`git describe --dirty --always --tags`\\\"
+  QMAKE_CXXFLAGS += -DAPPLICATIONVERSIONSTR=\\\"`git describe --dirty --always --tags`\\\"
 }
 
 DEFINES += @configdefines@
 QT += core gui opengl script xml
 TARGET = Common
 TEMPLATE = lib
+
 DEPENDPATH += .
 INCLUDEPATH += .
 INCLUDEPATH += @basepath@
@@ -47,7 +46,7 @@ macx {
   QMAKE_MACOSX_DEPLOYMENT_TARGET=10.9
 }
 
-greaterThan(QT_MAJOR_VERSION, 4){
+greaterThan(QT_MAJOR_VERSION, 4) {
   cache()
 }
 

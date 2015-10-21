@@ -24,9 +24,9 @@ macx {
 }
 
 macx {
-        CONFIG+=x86_64
-        QMAKE_CXXFLAGS += -stdlib=libc++
-        QMAKE_MACOSX_DEPLOYMENT_TARGET = 10.9
+  CONFIG+=x86_64
+  QMAKE_CXXFLAGS += -stdlib=libc++
+  QMAKE_MACOSX_DEPLOYMENT_TARGET = 10.9
 }
 
 CONFIG += link_pkgconfig
@@ -40,7 +40,7 @@ greaterThan(QT_MAJOR_VERSION, 4) {
 } 
 
 TARGET = common_test
-DEPENDPATH += ../common
+DEPENDPATH += @basepath@/common
 INCLUDEPATH += .
 INCLUDEPATH += ..
 INCLUDEPATH += @basepath@
