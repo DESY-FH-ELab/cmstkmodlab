@@ -35,10 +35,6 @@ macx {
   QMAKE_CXXFLAGS += -DAPPLICATIONVERSIONSTR=\\\"`git describe --dirty --always --tags`\\\"
 }
 
-
-macx {
-  INCLUDEPATH += /opt/local/include
-}
 #QMAKE_CXXFLAGS += @rootcflags@
 #LIBS += @rootlibs@
 
@@ -52,16 +48,18 @@ greaterThan(QT_MAJOR_VERSION, 4) {
 
 TARGET = defoReco
 TEMPLATE = app
+
+macx {
+  QMAKE_POST_LINK = install_name_tool -change libCommon.1.dylib @basepath@/common/libCommon.1.dylib $(TARGET)
+  QMAKE_POST_LINK += && install_name_tool -change libDefoCommon.1.dylib @basepath@/defo/defoCommon/libDefoCommon.1.dylib $(TARGET)
+}
+
 DEPENDPATH += ../../common ../defoCommon
 INCLUDEPATH += .
 INCLUDEPATH += ..
 INCLUDEPATH += @basepath@
 INCLUDEPATH += @basepath@/common
 INCLUDEPATH += @basepath@/defo/defoCommon
-
-macx {
-  QMAKE_MACOSX_DEPLOYMENT_TARGET=10.9
-}
 
 greaterThan(QT_MAJOR_VERSION, 4) {
   cache()
