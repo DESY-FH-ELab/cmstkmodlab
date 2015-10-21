@@ -49,8 +49,8 @@ greaterThan(QT_MAJOR_VERSION, 4) {
   QT += widgets
 } 
 
-TEMPLATE = app
 TARGET = defoDAQ
+TEMPLATE = app
 DEPENDPATH += ../../common ../defoCommon
 INCLUDEPATH += .
 INCLUDEPATH += ..
@@ -58,7 +58,7 @@ INCLUDEPATH += @basepath@
 INCLUDEPATH += @basepath@/common
 INCLUDEPATH += @basepath@/defo/defoCommon
 
-greaterThan(QT_MAJOR_VERSION, 4){
+greaterThan(QT_MAJOR_VERSION, 4) {
   cache()
 }
 

@@ -27,10 +27,10 @@ QMAKE = @qmake@
 QMAKE_CXXFLAGS += -std=c++11
 
 macx {
-	QMAKE_CXXFLAGS += -DAPPLICATIONVERSIONSTR=\\\"unknown\\\"
+  QMAKE_CXXFLAGS += -DAPPLICATIONVERSIONSTR=\\\"unknown\\\"
 }
 else {
-	QMAKE_CXXFLAGS += -DAPPLICATIONVERSIONSTR=\\\"`git describe --dirty --always --tags`\\\"
+  QMAKE_CXXFLAGS += -DAPPLICATIONVERSIONSTR=\\\"`git describe --dirty --always --tags`\\\"
 }
 
 DEFINES += @configdefines@
@@ -40,13 +40,17 @@ greaterThan(QT_MAJOR_VERSION, 4) {
   QT += widgets
 } 
 
-TEMPLATE = lib
 TARGET = AssemblyCommon
+TEMPLATE = lib
 DEPENDPATH += @basepath@/common
 INCLUDEPATH += .
 INCLUDEPATH += ..
 INCLUDEPATH += @basepath@
 INCLUDEPATH += @basepath@/common
+
+greaterThan(QT_MAJOR_VERSION, 4) {
+  cache()
+}
 
 # Input
 HEADERS += AssemblyVUEyeCamera.h \

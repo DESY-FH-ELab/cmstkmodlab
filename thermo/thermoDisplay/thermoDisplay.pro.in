@@ -33,15 +33,15 @@ greaterThan(QT_MAJOR_VERSION, 4) {
   QT += widgets
 } 
 
-TEMPLATE = app
 TARGET = thermoDisplay
+TEMPLATE = app
 DEPENDPATH += @basepath@/common
 INCLUDEPATH += .
 INCLUDEPATH += ..
 INCLUDEPATH += @basepath@
 INCLUDEPATH += @basepath@/common
 
-greaterThan(QT_MAJOR_VERSION, 4){
+greaterThan(QT_MAJOR_VERSION, 4) {
   cache()
 }
 
@@ -50,7 +50,7 @@ HEADERS += ThermoDAQClient.h \
            ThermoDAQNetworkReader.h \
            ThermoDisplayMainWindow.h \
            ThermoDAQDisplayWidget.h \
-	   ThermoDAQValueVector.h
+           ThermoDAQValueVector.h
     
 SOURCES += thermoDisplay.cc \
            ThermoDAQClient.cc \

@@ -14,6 +14,7 @@ QMAKE = @qmake@
 
 CONFIG+=c++11
 QMAKE_CXXFLAGS += -std=c++11
+
 macx {
   QMAKE_CXXFLAGS += -DAPPLICATIONVERSIONSTR=\\\"unknown\\\"
 } else {
@@ -28,8 +29,8 @@ greaterThan(QT_MAJOR_VERSION, 4) {
   QT += widgets
 } 
 
-TEMPLATE = app
 TARGET = microDAQ
+TEMPLATE = app
 DEPENDPATH += @basepath@/common
 INCLUDEPATH += .
 INCLUDEPATH += ..
@@ -40,7 +41,7 @@ macx {
   QMAKE_MACOSX_DEPLOYMENT_TARGET=10.9
 }
 
-greaterThan(QT_MAJOR_VERSION, 4){
+greaterThan(QT_MAJOR_VERSION, 4) {
   cache()
 }
 

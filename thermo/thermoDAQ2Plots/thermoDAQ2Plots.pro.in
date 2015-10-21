@@ -18,20 +18,20 @@ macx {
 }
 
 QT       += core xml
-
 QT       -= gui
 
 TARGET = thermoDAQ2Plots
-CONFIG   += console
-CONFIG   -= app_bundle
-
 TEMPLATE = app
 
 macx {
   QMAKE_MACOSX_DEPLOYMENT_TARGET=10.9
 }
 
-greaterThan(QT_MAJOR_VERSION, 4){
+CONFIG   += console
+CONFIG   -= app_bundle
+
+
+greaterThan(QT_MAJOR_VERSION, 4) {
   cache()
 }
 

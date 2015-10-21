@@ -44,8 +44,9 @@ greaterThan(QT_MAJOR_VERSION, 4) {
 CONFIG   += console
 CONFIG   -= app_bundle
 
-TEMPLATE = app
 TARGET = circleCalibration
+TEMPLATE = app
+
 DEPENDPATH += @basepath@/common @basepath@/assembly/assemblyCommon
 INCLUDEPATH += .
 INCLUDEPATH += ..

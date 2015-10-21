@@ -40,6 +40,8 @@ greaterThan(QT_MAJOR_VERSION, 4) {
 } 
 
 TARGET = common_test
+TEMPLATE = app
+
 DEPENDPATH += @basepath@/common
 INCLUDEPATH += .
 INCLUDEPATH += ..
@@ -52,7 +54,5 @@ greaterThan(QT_MAJOR_VERSION, 4) {
 
 CONFIG   += console
 CONFIG   -= app_bundle
-
-TEMPLATE = app
 
 SOURCES += main.cpp

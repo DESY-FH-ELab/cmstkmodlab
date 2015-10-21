@@ -30,6 +30,7 @@ macx {
 QT       += core widgets xml
 
 TARGET = defoCalib
+
 DEPENDPATH += ../../common ../defoCommon
 INCLUDEPATH += .
 INCLUDEPATH += ..
@@ -41,7 +42,7 @@ macx {
   QMAKE_MACOSX_DEPLOYMENT_TARGET=10.9
 }
 
-greaterThan(QT_MAJOR_VERSION, 4){
+greaterThan(QT_MAJOR_VERSION, 4) {
   cache()
 }
 

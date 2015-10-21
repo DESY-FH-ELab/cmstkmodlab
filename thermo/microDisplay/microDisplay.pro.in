@@ -26,8 +26,8 @@ greaterThan(QT_MAJOR_VERSION, 4) {
   QT += widgets
 } 
 
-TEMPLATE = app
 TARGET = microDisplay
+TEMPLATE = app
 DEPENDPATH += @basepath@/common
 INCLUDEPATH += .
 INCLUDEPATH += ..
@@ -38,7 +38,7 @@ macx {
   QMAKE_MACOSX_DEPLOYMENT_TARGET=10.9
 }
 
-greaterThan(QT_MAJOR_VERSION, 4){
+greaterThan(QT_MAJOR_VERSION, 4) {
   cache()
 }
 
@@ -47,7 +47,7 @@ HEADERS += MicroDAQClient.h \
            MicroDAQNetworkReader.h \
            MicroDisplayMainWindow.h \
            MicroDAQDisplayWidget.h \
-	   MicroDAQValueVector.h
+           MicroDAQValueVector.h
     
 SOURCES += microDisplay.cc \
            MicroDAQClient.cc \

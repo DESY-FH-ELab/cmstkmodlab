@@ -41,14 +41,18 @@ greaterThan(QT_MAJOR_VERSION, 4) {
   QT += widgets
 } 
 
-TEMPLATE = app
 TARGET = assembly
+TEMPLATE = app
 DEPENDPATH += @basepath@/common @basepath@/assembly/assemblyCommon
 INCLUDEPATH += .
 INCLUDEPATH += ..
 INCLUDEPATH += @basepath@
 INCLUDEPATH += @basepath@/common
 INCLUDEPATH += @basepath@/assembly/assemblyCommon
+
+greaterThan(QT_MAJOR_VERSION, 4) {
+  cache()
+}
 
 # Input
 HEADERS += AssemblyMainWindow.h

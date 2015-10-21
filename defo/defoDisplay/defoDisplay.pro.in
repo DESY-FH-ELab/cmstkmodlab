@@ -36,15 +36,15 @@ greaterThan(QT_MAJOR_VERSION, 4) {
   QT += widgets
 } 
 
-TEMPLATE = app
 TARGET = defoDisplay
+TEMPLATE = app
 DEPENDPATH += @basepath@/common
 INCLUDEPATH += .
 INCLUDEPATH += ..
 INCLUDEPATH += @basepath@
 INCLUDEPATH += @basepath@/common
 
-greaterThan(QT_MAJOR_VERSION, 4){
+greaterThan(QT_MAJOR_VERSION, 4) {
   cache()
 }
 
@@ -53,7 +53,7 @@ HEADERS += DefoDAQClient.h \
            DefoDAQNetworkReader.h \
            DefoDisplayMainWindow.h \
            DefoDAQDisplayWidget.h \
-	   DefoDAQValueVector.h
+           DefoDAQValueVector.h
     
 SOURCES += defoDisplay.cc \
            DefoDAQClient.cc \
