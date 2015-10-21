@@ -16,9 +16,10 @@ LIBS += -L@basepath@/devices/lib -lTkModLabCori
 LIBS += -L@basepath@/external/ddierckx -lddierckx
 
 macx {
-	CONFIG+=x86_64
-	QMAKE_CXXFLAGS += -stdlib=libc++
-	QMAKE_MACOSX_DEPLOYMENT_TARGET = 10.9
+  CONFIG+=x86_64
+  QMAKE_CXXFLAGS += -stdlib=libc++
+  #QMAKE_MAC_SDK = macosx10.11
+  QMAKE_MACOSX_DEPLOYMENT_TARGET = 10.11
 }
 
 QMAKE = @qmake@
@@ -41,10 +42,6 @@ TEMPLATE = lib
 DEPENDPATH += .
 INCLUDEPATH += .
 INCLUDEPATH += @basepath@
-
-macx {
-  QMAKE_MACOSX_DEPLOYMENT_TARGET=10.9
-}
 
 greaterThan(QT_MAJOR_VERSION, 4) {
   cache()

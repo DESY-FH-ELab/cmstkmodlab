@@ -10,25 +10,22 @@ LIBS += -L@basepath@/devices/lib -lTkModLabArduino
 LIBS += -L@basepath@/devices/lib -lTkModLabIota
 LIBS += -L@basepath@/common -lCommon
 LIBS += -L@basepath@/defo/defoCommon -lDefoCommon
-LIBS += -lgphoto2 -lexiv2
-INCLUDEPATH += /usr/include/exiv2
-LIBS += @qwtlibs@ -lGL -lGLU
 
 QMAKE = @qmake@
 
 macx {
-	CONFIG+=x86_64
-	QMAKE_CXXFLAGS += -stdlib=libc++
-	LIBS += -framework AppKit
-	LIBS += -framework QuartzCore
-	LIBS += -framework QTKit
-	LIBS += -framework Cocoa
-	LIBS += -L/opt/local/lib -ltiff
-	QMAKE_MACOSX_DEPLOYMENT_TARGET = 10.9
+  CONFIG+=x86_64
+  QMAKE_CXXFLAGS += -stdlib=libc++
+  #QMAKE_MAC_SDK = macosx10.11
+  QMAKE_MACOSX_DEPLOYMENT_TARGET = 10.11
+  LIBS += -framework AppKit
+  LIBS += -framework QuartzCore
+  LIBS += -framework QTKit
+  LIBS += -framework Cocoa
 }
 
 CONFIG += link_pkgconfig
-PKGCONFIG += opencv
+PKGCONFIG += opencv exiv2 libgphoto2
 
 CONFIG+=c++11
 QMAKE_CXXFLAGS += -std=c++11
@@ -51,6 +48,12 @@ greaterThan(QT_MAJOR_VERSION, 4) {
 
 TARGET = defoDAQ
 TEMPLATE = app
+
+macx {
+  QMAKE_POST_LINK = install_name_tool -change libCommon.1.dylib @basepath@/common/libCommon.1.dylib $(TARGET)
+  QMAKE_POST_LINK += && install_name_tool -change libDefoCommon.1.dylib @basepath@/defo/defoCommon/libDefoCommon.1.dylib $(TARGET)
+}
+
 DEPENDPATH += ../../common ../defoCommon
 INCLUDEPATH += .
 INCLUDEPATH += ..
