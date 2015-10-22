@@ -23,8 +23,6 @@ class LStepExpress : public VLStepExpress
 
   bool DeviceAvailable() const;
 
-  unsigned int GetStatus() const;
-
   // low level debugging methods
   void SendCommand(const std::string &);
   void ReceiveString(std::string &);

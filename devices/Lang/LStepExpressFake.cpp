@@ -1,4 +1,4 @@
-#include <cmath>
+#include <iostream>
 
 #include "LStepExpressFake.h"
 
@@ -13,7 +13,7 @@ LStepExpressFake::~LStepExpressFake()
 
 }
 
-unsigned int LStepExpressFake::GetStatus() const
+void LStepExpressFake::SendCommand(const std::string & command)
 {
-  return 0;
+  std::cout << "SendCommand: " << command << std::endl;
 }

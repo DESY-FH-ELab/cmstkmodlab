@@ -22,24 +22,10 @@ bool LStepExpress::DeviceAvailable() const
   return isDeviceAvailable_;
 }
 
-unsigned int LStepExpress::GetStatus() const
-{
-  comHandler_->SendCommand("status"); // read status
-
-  char buffer[1000];
-  comHandler_->ReceiveString(buffer);
-  StripBuffer(buffer);
-
-  std::cout << "|" << buffer << "|" << std::endl;
-
-  unsigned int status = std::atoi(buffer);
-
-  return status;
-}
-
 // low level debugging methods
 void LStepExpress::SendCommand(const std::string & command)
 {
+  std::cout << "SendCommand: " << command << std::endl;
   comHandler_->SendCommand(command.c_str());
 }
 
@@ -66,8 +52,6 @@ void LStepExpress::DeviceInit()
   isDeviceAvailable_ = false;
 
   if (comHandler_->DeviceAvailable()) {
-    
-    std::cout << "available" << std::endl;
 
     isDeviceAvailable_ = true;
 
@@ -85,7 +69,7 @@ void LStepExpress::DeviceInit()
       return;
     }
 
-    comHandler_->SendCommand("?iver"); // read internal version
+    comHandler_->SendCommand("iver"); // read internal version
     comHandler_->ReceiveString(buffer);
     StripBuffer(buffer);
     buf = buffer;
@@ -95,7 +79,7 @@ void LStepExpress::DeviceInit()
       return;
     }
 
-    comHandler_->SendCommand("?readsn"); // read serial number
+    comHandler_->SendCommand("readsn"); // read serial number
     comHandler_->ReceiveString(buffer);
     StripBuffer(buffer);
     unsigned long serialNumber = std::atol(buffer);

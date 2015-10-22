@@ -14,10 +14,8 @@ class LStepExpressFake : public VLStepExpress
 
   bool DeviceAvailable() const { return true; }
 
-  unsigned int GetStatus() const;
-
   // low level debugging methods
-  void SendCommand(const std::string &) { }
+  void SendCommand(const std::string & command);
   void ReceiveString(std::string &) { }
 
   private:

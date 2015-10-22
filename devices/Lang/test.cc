@@ -10,11 +10,11 @@ typedef LStepExpress LStepExpress_t;
 
 int main()
 {
-  std::cout << "test" << std::endl;
-
   LStepExpress_t lstep("/dev/ttyUSB0");
 
-  std::cout << lstep.GetStatus() << std::endl;
+  lstep.SendCommand("!reset");
+  lstep.SetValue("!axisdir", VLStepExpress::X, 1);
+  lstep.SetValue("!axisdir", VLStepExpress::A, 0);
 
   return 0;
 }
