@@ -20,6 +20,13 @@ AssemblyUEyeFakeCamera::AssemblyUEyeFakeCamera(QObject *parent)
     std::vector<std::string> filenames;
 
     filenames.clear();
+    filenames.push_back(QString(filename + "/share/assembly/first_real_image.png").toStdString());
+    //filenames.push_back(QString(filename + "/share/assembly/SensorMarker1.png").toStdString());
+    //filenames.push_back(QString(filename + "/share/assembly/SensorMarker2.png").toStdString());
+    //filenames.push_back(QString(filename + "/share/assembly/SensorMarker3.png").toStdString());
+    imageFilenamesForPixelClock_[5] = filenames;
+
+    filenames.clear();
     filenames.push_back(QString(filename + "/share/assembly/sensor_24MHz_333ms_1.png").toStdString());
     filenames.push_back(QString(filename + "/share/assembly/sensor_24MHz_333ms_2.png").toStdString());
     filenames.push_back(QString(filename + "/share/assembly/sensor_24MHz_333ms_3.png").toStdString());
@@ -190,7 +197,9 @@ void AssemblyUEyeFakeCamera::setPixelClock(unsigned int pc)
     if (currentPixelClock_!=pc) {
         currentPixelClock_ = pc;
 
-        if (currentPixelClock_>36) {
+        if (currentPixelClock_==5) {
+            imageFilenames_ = imageFilenamesForPixelClock_[5];
+        } else if (currentPixelClock_>36) {
             imageFilenames_ = imageFilenamesForPixelClock_[43];
         } else if (currentPixelClock_>24) {
             imageFilenames_ = imageFilenamesForPixelClock_[36];
