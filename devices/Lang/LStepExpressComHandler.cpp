@@ -63,21 +63,26 @@ void LStepExpressComHandler::ReceiveString( char *receiveString )
     return;
   }
 
-  usleep( 10000 );
+  receiveString[0] = 0;
 
-  int timeout = 0, readResult = 0;
+  usleep( 20000 );
+
+  int timeout = 0;
+  size_t readResult = 0;
 
   while ( timeout < 100000 )  {
 
     readResult = read( fIoPortFileDescriptor, receiveString, 1024 );
 
     if ( readResult > 0 ) {
-      receiveString[readResult] = 0;
+      receiveString[readResult-1] = '\0';
       break;
     }
     
     timeout++;
   }
+
+  std::cout << readResult << " |" << receiveString << "|" << std::endl;
 }
 
 //! Open I/O port.
@@ -99,7 +104,7 @@ void LStepExpressComHandler::OpenIoPort( void )
     return;
   } else {
     // configure port with no delay
-    fcntl( fIoPortFileDescriptor, F_SETFL, FNDELAY );
+    // fcntl( fIoPortFileDescriptor, F_SETFL, FNDELAY );
   }
 
   fDeviceAvailable = true;
@@ -116,7 +121,11 @@ void LStepExpressComHandler::InitializeIoPort( void )
   // get and save current ioport settings for later restoring
   tcgetattr( fIoPortFileDescriptor, &fCurrentTermios );
 
+  
+
 #ifndef USE_FAKEIO
+
+  std::cout << "initialize port" << std::endl;
 
   // CONFIGURE NEW SETTINGS
 
@@ -139,6 +148,7 @@ void LStepExpressComHandler::InitializeIoPort( void )
   fThisTermios.c_cflag   |=  CLOCAL;
   fThisTermios.c_cflag   &= ~CRTSCTS;
 
+  /*
   fThisTermios.c_lflag   |=  ISIG;
   fThisTermios.c_lflag   |=  ICANON;
   fThisTermios.c_lflag   |=  ECHO;
@@ -182,6 +192,8 @@ void LStepExpressComHandler::InitializeIoPort( void )
   //   fThisTermios.c_cflag   |=  BS0;
   //   fThisTermios.c_cflag   |=  VT0;
   //   fThisTermios.c_cflag   |=  FF0;
+
+  */
 
   // commit changes
   tcsetattr( fIoPortFileDescriptor, TCSANOW, &fThisTermios );

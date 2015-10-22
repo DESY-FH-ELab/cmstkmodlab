@@ -1,5 +1,6 @@
 #include <cmath>
 #include <sstream>
+#include <iostream>
 
 #include "LStepExpress.h"
 
@@ -23,11 +24,13 @@ bool LStepExpress::DeviceAvailable() const
 
 unsigned int LStepExpress::GetStatus() const
 {
-  comHandler_->SendCommand("?status"); // read status
+  comHandler_->SendCommand("status"); // read status
 
   char buffer[1000];
   comHandler_->ReceiveString(buffer);
   StripBuffer(buffer);
+
+  std::cout << "|" << buffer << "|" << std::endl;
 
   unsigned int status = std::atoi(buffer);
 
@@ -52,7 +55,7 @@ void LStepExpress::StripBuffer(char* buffer) const
 {
   for (unsigned int c=0; c<sizeof(buffer);++c) {
     if(buffer[c]=='\r') {
-      buffer[c] = 0;
+      buffer[c] = '\0';
       break;
     }
   }
@@ -64,12 +67,15 @@ void LStepExpress::DeviceInit()
 
   if (comHandler_->DeviceAvailable()) {
     
+    std::cout << "available" << std::endl;
+
     isDeviceAvailable_ = true;
 
     char buffer[1000];
     std::string buf;
 
-    comHandler_->SendCommand("?ver"); // read version
+    comHandler_->SendCommand("ver"); // read version
+
     comHandler_->ReceiveString(buffer);
     StripBuffer(buffer);
     buf = buffer;
