@@ -71,10 +71,10 @@ void AssemblyUEyeSnapShooter::snapShot()
 
     if (image_.rows==0) return;
 
-    QString filename = QFileDialog::getSaveFileName(this, "save image", ".", "*.jpg");
+    QString filename = QFileDialog::getSaveFileName(this, "save image", ".", "*.png");
     if (filename.isNull() || filename.isEmpty()) return;
 
-    if (!filename.endsWith(".jpg")) filename += ".jpg";
+    if (!filename.endsWith(".png")) filename += ".png";
 
     cv::imwrite(filename.toStdString(), image_);
 }
