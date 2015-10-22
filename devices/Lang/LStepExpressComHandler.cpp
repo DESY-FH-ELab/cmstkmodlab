@@ -102,7 +102,10 @@ void LStepExpressComHandler::OpenIoPort( void )
     return;
   } else {
     // configure port with no delay
-    // fcntl( fIoPortFileDescriptor, F_SETFL, FNDELAY );
+    int flags = fcntl(fIoPortFileDescriptor, F_GETFL, 0);
+    flags |= O_NONBLOCK;
+    flags |= FNDELAY;
+    fcntl( fIoPortFileDescriptor, F_SETFL, flags );
   }
 
   fDeviceAvailable = true;
