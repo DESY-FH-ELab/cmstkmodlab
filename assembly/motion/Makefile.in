@@ -3,10 +3,7 @@ NOTHERMAL     = @nothermal@
 NODEFO        = @nodefo@
 USEFAKEDEVICES= @usefakedevices@
 
-subdirs	      = assemblyCommon \
-		vision \
-                motion \
-		assembly
+subdirs       = motionCommander
 
 all:
 	@for dir in $(subdirs); do (cd $$dir; make); done
