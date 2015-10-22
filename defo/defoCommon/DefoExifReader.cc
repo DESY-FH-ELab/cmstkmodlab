@@ -1,10 +1,10 @@
 #include <iostream>
 #include <iomanip>
 
-#include <image.hpp>
-#include <exif.hpp>
-#include <error.hpp>
-#include <tags.hpp>
+#include <exiv2/image.hpp>
+#include <exiv2/exif.hpp>
+#include <exiv2/error.hpp>
+#include <exiv2/tags.hpp>
 
 #include "DefoExifReader.h"
 

@@ -11,9 +11,14 @@ LIBS += @twitterlibs@
 QMAKE = @qmake@
 
 macx {
-	CONFIG+=x86_64
-	QMAKE_CXXFLAGS += -stdlib=libc++
-	QMAKE_MACOSX_DEPLOYMENT_TARGET = 10.9
+  CONFIG+=x86_64
+  QMAKE_CXXFLAGS += -stdlib=libc++
+  #QMAKE_MAC_SDK = macosx10.11
+  QMAKE_MACOSX_DEPLOYMENT_TARGET = 10.11
+  #LIBS += -framework AppKit
+  #LIBS += -framework QuartzCore
+  #LIBS += -framework QTKit
+  #LIBS += -framework Cocoa
 }
 
 CONFIG+=c++11
@@ -33,15 +38,20 @@ greaterThan(QT_MAJOR_VERSION, 4) {
   QT += widgets
 } 
 
-TEMPLATE = app
 TARGET = thermoDisplay
+TEMPLATE = app
+
+macx {
+  QMAKE_POST_LINK = install_name_tool -change libCommon.1.dylib @basepath@/common/libCommon.1.dylib $(TARGET)
+}
+
 DEPENDPATH += @basepath@/common
 INCLUDEPATH += .
 INCLUDEPATH += ..
 INCLUDEPATH += @basepath@
 INCLUDEPATH += @basepath@/common
 
-greaterThan(QT_MAJOR_VERSION, 4){
+greaterThan(QT_MAJOR_VERSION, 4) {
   cache()
 }
 
@@ -50,7 +60,7 @@ HEADERS += ThermoDAQClient.h \
            ThermoDAQNetworkReader.h \
            ThermoDisplayMainWindow.h \
            ThermoDAQDisplayWidget.h \
-	   ThermoDAQValueVector.h
+           ThermoDAQValueVector.h
     
 SOURCES += thermoDisplay.cc \
            ThermoDAQClient.cc \

@@ -10,13 +10,22 @@ LIBS += -L@basepath@/devices/lib -lTkModLabArduino
 LIBS += -L@basepath@/devices/lib -lTkModLabIota
 LIBS += -L@basepath@/common -lCommon
 LIBS += -L@basepath@/defo/defoCommon -lDefoCommon
-LIBS += -lgphoto2 -lexiv2
-LIBS += -lopencv_core -lopencv_imgproc -lopencv_highgui
-INCLUDEPATH += /usr/include/exiv2
-DEFINES += 
-LIBS += @qwtlibs@ -lGL -lGLU
 
 QMAKE = @qmake@
+
+macx {
+  CONFIG+=x86_64
+  QMAKE_CXXFLAGS += -stdlib=libc++
+  #QMAKE_MAC_SDK = macosx10.11
+  QMAKE_MACOSX_DEPLOYMENT_TARGET = 10.11
+  LIBS += -framework AppKit
+  LIBS += -framework QuartzCore
+  LIBS += -framework QTKit
+  LIBS += -framework Cocoa
+}
+
+CONFIG += link_pkgconfig
+PKGCONFIG += opencv exiv2 libgphoto2
 
 CONFIG+=c++11
 QMAKE_CXXFLAGS += -std=c++11
@@ -26,12 +35,8 @@ macx {
   QMAKE_CXXFLAGS += -DAPPLICATIONVERSIONSTR=\\\"`git describe --dirty --always --tags`\\\"
 }
 
-QMAKE_CXXFLAGS += @rootcflags@
-LIBS += @rootlibs@
-
-macx {
-  INCLUDEPATH += /opt/local/include
-}
+#QMAKE_CXXFLAGS += @rootcflags@
+#LIBS += @rootlibs@
 
 INCLUDEPATH += @qwtincludes@
 DEFINES += @configdefines@
@@ -41,8 +46,14 @@ greaterThan(QT_MAJOR_VERSION, 4) {
   QT += widgets
 } 
 
-TEMPLATE = app
 TARGET = defoReco
+TEMPLATE = app
+
+macx {
+  QMAKE_POST_LINK = install_name_tool -change libCommon.1.dylib @basepath@/common/libCommon.1.dylib $(TARGET)
+  QMAKE_POST_LINK += && install_name_tool -change libDefoCommon.1.dylib @basepath@/defo/defoCommon/libDefoCommon.1.dylib $(TARGET)
+}
+
 DEPENDPATH += ../../common ../defoCommon
 INCLUDEPATH += .
 INCLUDEPATH += ..
@@ -50,11 +61,7 @@ INCLUDEPATH += @basepath@
 INCLUDEPATH += @basepath@/common
 INCLUDEPATH += @basepath@/defo/defoCommon
 
-macx {
-  QMAKE_MACOSX_DEPLOYMENT_TARGET=10.9
-}
-
-greaterThan(QT_MAJOR_VERSION, 4){
+greaterThan(QT_MAJOR_VERSION, 4) {
   cache()
 }
 
@@ -79,10 +86,10 @@ HEADERS += DefoRecoMainWindow.h \
            DefoCalibrationWidget.h \
            Defo2DSplineInterpolationWidget.h \
            DefoReconstructionParameterWidget.h \
-           DefoAnalysisWidget.h \
-           DefoOfflinePreparationModel.h \
-           DefoSurfacePlot.h \
-           DefoSurfacePlotViewSettings.h
+           #DefoAnalysisWidget.h \
+           #DefoSurfacePlot.h \
+           #DefoSurfacePlotViewSettings.h \
+           DefoOfflinePreparationModel.h
 
 SOURCES += defoReco.cc \
            DefoRecoMainWindow.cc \
@@ -105,8 +112,8 @@ SOURCES += defoReco.cc \
            DefoCalibrationWidget.cc \
            Defo2DSplineInterpolationWidget.cc \
            DefoReconstructionParameterWidget.cc \
-           DefoAnalysisWidget.cc \
-           DefoOfflinePreparationModel.cc \
-           DefoSurfacePlot.cc \
-           DefoSurfacePlotViewSettings.cc
+           #DefoAnalysisWidget.cc \
+           #DefoSurfacePlot.cc \
+           #DefoSurfacePlotViewSettings.cc \
+           DefoOfflinePreparationModel.cc
 

@@ -13,11 +13,9 @@ MODULES       = CameraComHandler \
                 EOS550D \
                 EOS550DFake
 
-ifeq ($(ARCHITECTURE),Darwin)
-CXXFLAGS     += -I/opt/local/include
-CXXFLAGS     += -I/opt/local/include/opencv
-CXXFLAGS     += -I/opt/local/include/opencv2
-endif
+CXXFLAGS     += `pkg-config --cflags libgphoto2`
+CXXFLAGS     += `pkg-config --cflags opencv`
+CXXFLAGS     += `pkg-config --cflags exiv2`
 
 ALLDEPEND = $(addsuffix .d,$(MODULES))
 

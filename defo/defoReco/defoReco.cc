@@ -10,7 +10,7 @@
 #include <QStandardPaths>
 #endif
 
-#include <TROOT.h>
+//#include <TROOT.h>
 
 #include <nqlogger.h>
 
@@ -23,7 +23,7 @@ static const char* defoRecoGUID = "{94E678B7-AD8C-4027-971D-5F49E0FFC647}";
 
 int main( int argc, char** argv )
 {
-  std::cout << TROOT::Initialized() << std::endl;
+  //std::cout << TROOT::Initialized() << std::endl;
 
   NQLogger::instance()->addActiveModule("*");
   NQLogger::instance()->addDestiniation(stdout, NQLog::Spam);
