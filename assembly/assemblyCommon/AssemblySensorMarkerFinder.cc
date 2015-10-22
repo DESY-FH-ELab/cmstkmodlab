@@ -45,33 +45,33 @@ void AssemblySensorMarkerFinder::findMarker(const cv::Mat& image)
 
     lock.unlock();
 
-    cv::GaussianBlur(image_, image_,
-                     cv::Size(gaussianBlurKernelSize_, gaussianBlurKernelSize_),
-                     gaussianBlurSigma_, gaussianBlurSigma_);
-
     if (image_.channels()==1) {
         cvtColor(image_, imageRGB_, CV_GRAY2RGB);
     } else {
         image_.copyTo(imageRGB_);
     }
 
+    cv::GaussianBlur(image_, image_,
+                     cv::Size(gaussianBlurKernelSize_, gaussianBlurKernelSize_),
+                     gaussianBlurSigma_, gaussianBlurSigma_);
+
     size_t ret = findCircle(image_);
     if (ret==0) {
         emit markerFound(imageRGB_);
         return;
     }
-    drawCircle();
 
     ret = findLines();
-    drawLines();
 
     ret = findIntersections();
-    drawIntersections();
 
-    /*
     determineOrientation();
+
+    drawCircle();
+    drawLines();
+    drawOutline();
+    drawIntersections();
     drawOrientation();
-    */
 
     emit markerFound(imageRGB_);
 }
@@ -154,7 +154,7 @@ void AssemblySensorMarkerFinder::drawCircle()
     cv::Point2f center(cvRound(circleCenter_.x),
                        cvRound(circleCenter_.y));
     // circle center
-    cv::circle(imageRGB_, center, 4, cv::Scalar(0, 255, 0), -1, CV_AA, 0);
+    cv::circle(imageRGB_, center, 8, cv::Scalar(0, 255, 0), -1, CV_AA, 0);
     // circle outline
     cv::circle(imageRGB_, center, circleRadius_, cv::Scalar(0, 0, 255), 4, CV_AA, 0);
 }
@@ -214,7 +214,7 @@ void AssemblySensorMarkerFinder::drawLines()
                  cv::Point(cvRound(goodLines_[i].second.x), cvRound(goodLines_[i].second.y)),
                  cv::Scalar(255, 0, 255), 4, CV_AA);
     }
-}
+ }
 
 bool AssemblySensorMarkerFinder::intersection(cv::Point2f o1, cv::Point2f p1,
                                               cv::Point2f o2, cv::Point2f p2,
@@ -330,12 +330,12 @@ void AssemblySensorMarkerFinder::drawIntersections()
 {
     for(size_t i = 0; i < intersections_.size(); i++ ) {
         cv::Point center(cvRound(intersections_[i].x), cvRound(intersections_[i].y));
-      circle(imageRGB_, center, 6, cv::Scalar(0, 0, 255), -1, CV_AA, 0 );
+      circle(imageRGB_, center, 8, cv::Scalar(0, 0, 255), -1, CV_AA, 0 );
     }
 
     for(size_t i = 0; i < goodIntersections_.size(); i++ ) {
         cv::Point center(cvRound(goodIntersections_[i].x), cvRound(goodIntersections_[i].y));
-      circle(imageRGB_, center, 6, cv::Scalar(0, 255, 0), -1, CV_AA, 0 );
+      circle(imageRGB_, center, 8, cv::Scalar(0, 255, 0), -1, CV_AA, 0 );
     }
 }
 
@@ -344,8 +344,8 @@ void AssemblySensorMarkerFinder::determineOrientation()
     if (goodIntersections_.size()!=2 && intersections_.size()!=4) return;
 
     const cv::Point2f& cp = circleCenter_;
-    const cv::Point2f& gp0 = goodIntersections_[0];
-    const cv::Point2f& gp1 = goodIntersections_[1];
+    cv::Point2f gp0 = goodIntersections_[0];
+    cv::Point2f gp1 = goodIntersections_[1];
 
     cv::Point2f igp, ogp;
 
@@ -438,6 +438,28 @@ void AssemblySensorMarkerFinder::determineOrientation()
     orientation_ += angle;
 
     orientation_ /= 4.;
+}
+
+void AssemblySensorMarkerFinder::drawOutline()
+{
+    cv::line(imageRGB_,
+             goodIntersections_[0], intersections_[0],
+             cv::Scalar(0, 255, 255), 4, CV_AA);
+    cv::line(imageRGB_,
+             intersections_[0], intersections_[1],
+             cv::Scalar(0, 255, 255), 4, CV_AA);
+    cv::line(imageRGB_,
+             intersections_[1], goodIntersections_[1],
+             cv::Scalar(0, 255, 255), 4, CV_AA);
+    cv::line(imageRGB_,
+             goodIntersections_[1], intersections_[2],
+             cv::Scalar(0, 255, 255), 4, CV_AA);
+    cv::line(imageRGB_,
+             intersections_[2], intersections_[3],
+             cv::Scalar(0, 255, 255), 4, CV_AA);
+    cv::line(imageRGB_,
+             intersections_[3], goodIntersections_[0],
+             cv::Scalar(0, 255, 255), 4, CV_AA);
 }
 
 void AssemblySensorMarkerFinder::drawOrientation()
