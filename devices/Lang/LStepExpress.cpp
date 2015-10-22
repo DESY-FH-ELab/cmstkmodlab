@@ -90,3 +90,437 @@ void LStepExpress::DeviceInit()
     }
   }
 }
+
+void LStepExpress::GetAutoStatus(int & value)
+{
+  GetValue("autostatus", value);
+}
+
+void LStepExpress::SetAutoStatus(int value)
+{
+  SetValue("!autostatus", value);
+}
+
+void LStepExpress::GetAxisStatus(std::vector<int> & values)
+{
+  std::string line;
+  GetValue("statusaxis", line);
+  std::istringstream is(line);
+  std::string token;
+
+  values.clear();
+
+  while (is >> token) {
+    char t = token[0];
+
+    switch (t) {
+    case '@': {
+      values.push_back(AXISREADY);
+      break;
+    }
+    case 'M': {
+      values.push_back(AXISREADY);
+      break;
+    }
+    case 'J': {
+      values.push_back(AXISJOYSTICK);
+      break;
+    }
+    case 'C': {
+      values.push_back(AXISINCONTROL);
+      break;
+    }
+    case 'S': {
+      values.push_back(AXISLIMITSWITCHTRIPPED);
+      break;
+    }
+    case '-': {
+      values.push_back(AXISDISABLED);
+      break;
+    }
+    default:
+      values.push_back(AXISSTATEUNKNOWN);
+    }
+  }
+}
+
+void LStepExpress::GetAxisEnabled(std::vector<int> & values)
+{
+  GetValue("axis", values);
+}
+
+void LStepExpress::GetAxisEnabled(VLStepExpress::Axis axis, int & value)
+{
+  GetValue("axis", axis, value);
+}
+
+void LStepExpress::SetAxisEnabled(std::vector<int> & values)
+{
+  SetValue("!axis", values);
+}
+
+void LStepExpress::SetAxisEnabled(VLStepExpress::Axis axis, int value)
+{
+  SetValue("!axis", axis, value);
+}
+
+void LStepExpress::GetAxisDirection(std::vector<int> & values)
+{
+  GetValue("axisdir", values);
+}
+
+void LStepExpress::GetAxisDirection(VLStepExpress::Axis axis, int & value)
+{
+  GetValue("axisdir", axis, value);
+}
+
+void LStepExpress::SetAxisDirection(std::vector<int> & values)
+{
+  SetValue("!axisdir", values);
+}
+
+void LStepExpress::SetAxisDirection(VLStepExpress::Axis axis, int value)
+{
+  SetValue("!axisdir", axis, value);
+}
+
+void LStepExpress::GetDimension(std::vector<int> & values)
+{
+  GetValue("dim", values);
+}
+
+void LStepExpress::GetDimension(VLStepExpress::Axis axis, int & value)
+{
+  GetValue("dim", axis, value);
+}
+
+void LStepExpress::SetDimension(std::vector<int> & values)
+{
+  SetValue("!dim", values);
+}
+
+void LStepExpress::SetDimension(VLStepExpress::Axis axis, int value)
+{
+  SetValue("!dim", axis, value);
+}
+
+void LStepExpress::GetPowerAmplifierStatus(std::vector<int> & values)
+{
+  GetValue("pa", values);
+}
+
+void LStepExpress::GetPowerAmplifierStatus(VLStepExpress::Axis axis, int & value)
+{
+  GetValue("pa", axis, value);
+}
+
+void LStepExpress::SetPowerAmplifierStatus(std::vector<int> & values)
+{
+  SetValue("!pa", values);
+}
+
+void LStepExpress::SetPowerAmplifierStatus(VLStepExpress::Axis axis, int value)
+{
+  SetValue("!pa", axis, value);
+}
+
+void LStepExpress::GetPosition(std::vector<double> & values)
+{
+  GetValue("pos", values);
+}
+
+void LStepExpress::GetPosition(VLStepExpress::Axis axis, double & value)
+{
+  GetValue("pos", axis, value);
+}
+
+void LStepExpress::SetPosition(std::vector<double> & values)
+{
+  SetValue("!pos", values);
+}
+
+void LStepExpress::SetPosition(VLStepExpress::Axis axis, double value)
+{
+  SetValue("!pos", axis, value);
+}
+
+void LStepExpress::MoveAbsolute(std::vector<double> & values)
+{
+  SetValue("!moa", values);
+}
+
+void LStepExpress::MoveAbsolute(double x, double y, double z, double a)
+{
+  SetValue("!moa", x, y, z, a);
+}
+
+void LStepExpress::MoveAbsolute(VLStepExpress::Axis axis, double value)
+{
+  SetValue("!moa", axis, value);
+}
+
+void LStepExpress::MoveRelative(std::vector<double> & values)
+{
+  SetValue("!mor", values);
+}
+
+void LStepExpress::MoveRelative(double x, double y, double z, double a)
+{
+  SetValue("!mor", x, y, z, a);
+}
+
+void LStepExpress::MoveRelative(VLStepExpress::Axis axis, double value)
+{
+  SetValue("!mor", axis, value);
+}
+
+void LStepExpress::MoveRelative()
+{
+  this->SendCommand("!m");
+}
+
+void LStepExpress::Reset()
+{
+  this->SendCommand("!Reset");
+}
+
+void LStepExpress::ConfirmErrorRectification()
+{
+  this->SendCommand("!quit");
+}
+
+void LStepExpress::ValidConfig()
+{
+  this->SendCommand("!validconfig");
+}
+
+void LStepExpress::ValidParameter()
+{
+  this->SendCommand("!validpar");
+}
+
+void LStepExpress::SetValue(const std::string & command,
+                             const std::string & value)
+{
+  std::ostringstream os;
+  os << command << " " << value;
+  this->SendCommand(os.str());
+}
+
+void LStepExpress::SetValue(const std::string & command,
+                            LStepExpress::Axis axis, const std::string & value)
+{
+  std::ostringstream os;
+  os << command << " " << GetAxisName(axis) << " " << value;
+  this->SendCommand(os.str());
+}
+
+void LStepExpress::SetValue(const std::string & command,
+                             int value1)
+{
+  std::ostringstream os;
+  os << command << " " << value1;
+  this->SendCommand(os.str());
+}
+
+void LStepExpress::SetValue(const std::string & command,
+                             int value1, int value2)
+{
+  std::ostringstream os;
+  os << command << " " << value1 << " " << value2;
+  this->SendCommand(os.str());
+}
+
+void LStepExpress::SetValue(const std::string & command,
+                             int value1, int value2, int value3)
+{
+  std::ostringstream os;
+  os << command << " " << value1 << " " << value2 << " " << value3;
+  this->SendCommand(os.str());
+}
+
+void LStepExpress::SetValue(const std::string & command,
+                             int value1, int value2, int value3, int value4)
+{
+  std::ostringstream os;
+  os << command << " " << value1 << " " << value2 << " " << value3 << " " << value4;
+  this->SendCommand(os.str());
+}
+
+void LStepExpress::SetValue(const std::string & command,
+                             LStepExpress::Axis axis, int value)
+{
+  std::ostringstream os;
+  os << command << " " << GetAxisName(axis) << " " << value;
+  this->SendCommand(os.str());
+}
+
+void LStepExpress::SetValue(const std::string & command,
+                             double value1)
+{
+  std::ostringstream os;
+  os << command << " " << value1;
+  this->SendCommand(os.str());
+}
+
+void LStepExpress::SetValue(const std::string & command,
+                             double value1, double value2)
+{
+  std::ostringstream os;
+  os << command << " " << value1 << " " << value2;
+  this->SendCommand(os.str());
+}
+
+void LStepExpress::SetValue(const std::string & command,
+                             double value1, double value2, double value3)
+{
+  std::ostringstream os;
+  os << command << " " << value1 << " " << value2 << " " << value3;
+  this->SendCommand(os.str());
+}
+
+void LStepExpress::SetValue(const std::string & command,
+                             double value1, double value2, double value3, double value4)
+{
+  std::ostringstream os;
+  os << command << " " << value1 << " " << value2 << " " << value3 << " " << value4;
+  this->SendCommand(os.str());
+}
+
+void LStepExpress::SetValue(const std::string & command,
+                             LStepExpress::Axis axis, double value)
+{
+  std::ostringstream os;
+  os << command << " " << GetAxisName(axis) << " " << value;
+  this->SendCommand(os.str());
+}
+
+void LStepExpress::SetValue(const std::string & command,
+                             const std::vector<int> & values)
+{
+  std::ostringstream os;
+  os << command;
+  for (std::vector<int>::const_iterator it = values.begin();
+       it!=values.end();
+       ++it) {
+    os << " " << *it;
+  }
+  this->SendCommand(os.str());
+}
+
+void LStepExpress::SetValue(const std::string & command,
+                             const std::vector<double> & values)
+{
+  std::ostringstream os;
+  os << command;
+  for (std::vector<double>::const_iterator it = values.begin();
+       it!=values.end();
+       ++it) {
+    os << " " << *it;
+  }
+  this->SendCommand(os.str());
+}
+
+void LStepExpress::GetValue(const std::string & command,
+                             std::string & value)
+{
+  this->SendCommand(command);
+  this->ReceiveString(value);
+}
+
+void LStepExpress::GetValue(const std::string & command,
+                             int & value)
+{
+  this->SendCommand(command);
+
+  std::string buffer;
+  int temp;
+  this->ReceiveString(buffer);
+  std::istringstream is(buffer);
+  is >> temp;
+  value = temp;
+}
+
+void LStepExpress::GetValue(const std::string & command,
+                             double & value)
+{
+  this->SendCommand(command);
+
+  std::string buffer;
+  double temp;
+  this->ReceiveString(buffer);
+  std::istringstream is(buffer);
+  is >> temp;
+  value = temp;
+}
+
+void LStepExpress::GetValue(const std::string & command, LStepExpress::Axis axis,
+                             std::string & value)
+{
+  std::ostringstream os;
+  os << command << " " << GetAxisName(axis);
+  this->SendCommand(os.str());
+  this->ReceiveString(value);
+}
+
+void LStepExpress::GetValue(const std::string & command,
+                             std::vector<int> & values)
+{
+  this->SendCommand(command);
+
+  std::string buffer;
+  int temp;
+  this->ReceiveString(buffer);
+
+  values.clear();
+  std::istringstream is(buffer);
+  while (is >> temp) {
+    values.push_back(temp);
+  }
+}
+
+void LStepExpress::GetValue(const std::string & command,
+                             LStepExpress::Axis axis, int & value)
+{
+  std::ostringstream os;
+  os << command << " " << GetAxisName(axis);
+  this->SendCommand(os.str());
+
+  std::string buffer;
+  int temp;
+  this->ReceiveString(buffer);
+  std::istringstream is(buffer);
+  is >> temp;
+  value = temp;
+}
+
+void LStepExpress::GetValue(const std::string & command,
+                             std::vector<double> & values)
+{
+  this->SendCommand(command);
+
+  std::string buffer;
+  double temp;
+  this->ReceiveString(buffer);
+
+  values.clear();
+  std::istringstream is(buffer);
+  while (is >> temp) {
+    values.push_back(temp);
+  }
+}
+
+void LStepExpress::GetValue(const std::string & command, LStepExpress::Axis axis,
+                             double & value)
+{
+  std::ostringstream os;
+  os << command << " " << GetAxisName(axis);
+  this->SendCommand(os.str());
+
+  std::string buffer;
+  double temp;
+  this->ReceiveString(buffer);
+  std::istringstream is(buffer);
+  is >> temp;
+  value = temp;
+}

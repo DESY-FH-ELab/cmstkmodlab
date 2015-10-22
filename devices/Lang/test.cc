@@ -24,10 +24,6 @@ int main()
 {
   LStepExpress_t lstep("/dev/ttyUSB0");
 
-  //lstep.SendCommand("!reset");
-  //lstep.SetValue("!axisdir", VLStepExpress::X, 1);
-  //lstep.SetValue("!axisdir", VLStepExpress::A, 0);
-
   std::string svalue;
   int ivalue;
   double dvalue;
@@ -53,6 +49,14 @@ int main()
   lstep.GetPowerAmplifierStatus(VLStepExpress::Y, ivalue);
   std::cout << ivalue << std::endl;
 
+  lstep.GetPosition(dvalues);
+  dumpVector(dvalues);
+
+  lstep.MoveRelative(1, 2, 3, 4);
+  lstep.GetPosition(dvalues);
+  dumpVector(dvalues);
+
+  lstep.MoveRelative();
   lstep.GetPosition(dvalues);
   dumpVector(dvalues);
 

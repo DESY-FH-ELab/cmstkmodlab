@@ -42,73 +42,49 @@ class VLStepExpress {
 
   virtual bool DeviceAvailable() const = 0;
 
-  void GetAutoStatus(int & value);
-  void SetAutoStatus(int value);
+  virtual void GetAutoStatus(int & value) = 0;
+  virtual void SetAutoStatus(int value) = 0;
 
-  void GetAxisStatus(std::vector<int> & values);
+  virtual void GetAxisStatus(std::vector<int> & values) = 0;
 
-  void GetAxisEnabled(std::vector<int> & values);
-  void GetAxisEnabled(VLStepExpress::Axis axis, int & value);
-  void SetAxisEnabled(std::vector<int> & values);
-  void SetAxisEnabled(VLStepExpress::Axis axis, int value);
+  virtual void GetAxisEnabled(std::vector<int> & values) = 0;
+  virtual void GetAxisEnabled(VLStepExpress::Axis axis, int & value) = 0;
+  virtual void SetAxisEnabled(std::vector<int> & values) = 0;
+  virtual void SetAxisEnabled(VLStepExpress::Axis axis, int value) = 0;
 
-  void GetAxisDirection(std::vector<int> & values);
-  void GetAxisDirection(VLStepExpress::Axis axis, int & value);
-  void SetAxisDirection(std::vector<int> & values);
-  void SetAxisDirection(VLStepExpress::Axis axis, int value);
+  virtual void GetAxisDirection(std::vector<int> & values) = 0;
+  virtual void GetAxisDirection(VLStepExpress::Axis axis, int & value) = 0;
+  virtual void SetAxisDirection(std::vector<int> & values) = 0;
+  virtual void SetAxisDirection(VLStepExpress::Axis axis, int value) = 0;
 
-  void GetDimension(std::vector<int> & values);
-  void GetDimension(VLStepExpress::Axis axis, int & value);
-  void SetDimension(std::vector<int> & values);
-  void SetDimension(VLStepExpress::Axis axis, int value);
+  virtual void GetDimension(std::vector<int> & values) = 0;
+  virtual void GetDimension(VLStepExpress::Axis axis, int & value) = 0;
+  virtual void SetDimension(std::vector<int> & values) = 0;
+  virtual void SetDimension(VLStepExpress::Axis axis, int value) = 0;
 
-  void GetPowerAmplifierStatus(std::vector<int> & values);
-  void GetPowerAmplifierStatus(VLStepExpress::Axis axis, int & value);
-  void SetPowerAmplifierStatus(std::vector<int> & values);
-  void SetPowerAmplifierStatus(VLStepExpress::Axis axis, int value);
+  virtual void GetPowerAmplifierStatus(std::vector<int> & values) = 0;
+  virtual void GetPowerAmplifierStatus(VLStepExpress::Axis axis, int & value) = 0;
+  virtual void SetPowerAmplifierStatus(std::vector<int> & values) = 0;
+  virtual void SetPowerAmplifierStatus(VLStepExpress::Axis axis, int value) = 0;
 
-  void GetPosition(std::vector<double> & values);
-  void GetPosition(VLStepExpress::Axis axis, double & value);
-  void SetPosition(std::vector<double> & values);
-  void SetPosition(VLStepExpress::Axis axis, double value);
+  virtual void GetPosition(std::vector<double> & values) = 0;
+  virtual void GetPosition(VLStepExpress::Axis axis, double & value) = 0;
+  virtual void SetPosition(std::vector<double> & values) = 0;
+  virtual void SetPosition(VLStepExpress::Axis axis, double value) = 0;
 
-  void MoveAbsolute(std::vector<double> & values);
-  void MoveAbsolute(double x, double y, double z, double a);
-  void MoveAbsolute(VLStepExpress::Axis axis, double value);
+  virtual void MoveAbsolute(std::vector<double> & values) = 0;
+  virtual void MoveAbsolute(double x, double y, double z, double a) = 0;
+  virtual void MoveAbsolute(VLStepExpress::Axis axis, double value) = 0;
 
-  void MoveRelative(std::vector<double> & values);
-  void MoveRelative(double x, double y, double z, double a);
-  void MoveRelative(VLStepExpress::Axis axis, double value);
-  void MoveRelative();
+  virtual void MoveRelative(std::vector<double> & values) = 0;
+  virtual void MoveRelative(double x, double y, double z, double a) = 0;
+  virtual void MoveRelative(VLStepExpress::Axis axis, double value) = 0;
+  virtual void MoveRelative() = 0;
 
-  void Reset();
-  void ConfirmErrorRectification();
-  void ValidConfig();
-  void ValidParameter();
-
-  void SetValue(const std::string & command, const std::string & value);
-  void SetValue(const std::string & command, VLStepExpress::Axis axis, const std::string & value);
-  void SetValue(const std::string & command, int value1);
-  void SetValue(const std::string & command, int value1, int value2);
-  void SetValue(const std::string & command, int value1, int value2, int value3);
-  void SetValue(const std::string & command, int value1, int value2, int value3, int value4);
-  void SetValue(const std::string & command, VLStepExpress::Axis axis, int value);
-  void SetValue(const std::string & command, double value1);
-  void SetValue(const std::string & command, double value1, double value2);
-  void SetValue(const std::string & command, double value1, double value2, double value3);
-  void SetValue(const std::string & command, double value1, double value2, double value3, double value4);
-  void SetValue(const std::string & command, VLStepExpress::Axis axis, double value);
-  void SetValue(const std::string & command, const std::vector<int> & values);
-  void SetValue(const std::string & command, const std::vector<double> & values);
-
-  void GetValue(const std::string & command, std::string & value);
-  void GetValue(const std::string & command, int & value);
-  void GetValue(const std::string & command, double & value);
-  void GetValue(const std::string & command, VLStepExpress::Axis axis, std::string & value);
-  void GetValue(const std::string & command, std::vector<int> & values);
-  void GetValue(const std::string & command, VLStepExpress::Axis axis, int & value);
-  void GetValue(const std::string & command, std::vector<double> & values);
-  void GetValue(const std::string & command, VLStepExpress::Axis axis, double & value);
+  virtual void Reset() = 0;
+  virtual void ConfirmErrorRectification() = 0;
+  virtual void ValidConfig() = 0;
+  virtual void ValidParameter() = 0;
 
   // low level methods
   virtual void SendCommand(const std::string &) = 0;
