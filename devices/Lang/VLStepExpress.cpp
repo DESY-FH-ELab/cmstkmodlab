@@ -11,6 +11,66 @@ VLStepExpress::~VLStepExpress()
 {
 
 }
+  
+void VLStepExpress::GetDimension(std::vector<int> & values)
+{
+  GetValue("dim", values);
+}
+
+void VLStepExpress::GetDimension(VLStepExpress::Axis axis, int & value)
+{
+  GetValue("dim", axis, value);
+}
+
+void VLStepExpress::GetPowerAmplifierStatus(std::vector<int> & values)
+{
+  GetValue("pa", values);
+}
+
+void VLStepExpress::GetPowerAmplifierStatus(VLStepExpress::Axis axis, int & value)
+{
+  GetValue("pa", axis, value);
+}
+
+void VLStepExpress::GetPosition(std::vector<double> & values)
+{
+  GetValue("pos", values);
+}
+
+void VLStepExpress::GetPosition(VLStepExpress::Axis axis, double & value)
+{
+  GetValue("pos", axis, value);
+}
+
+void VLStepExpress::SetDimension(std::vector<int> & values)
+{
+  SetValue("!dim", values);
+}
+
+void VLStepExpress::SetDimension(VLStepExpress::Axis axis, int value)
+{
+  SetValue("!dim", axis, value);
+}
+
+void VLStepExpress::SetPowerAmplifierStatus(std::vector<int> & values)
+{
+  SetValue("!pa", values);
+}
+
+void VLStepExpress::SetPowerAmplifierStatus(VLStepExpress::Axis axis, int value)
+{
+  SetValue("!pa", axis, value);
+}
+
+void VLStepExpress::SetPosition(std::vector<double> & values)
+{
+  SetValue("!pos", values);
+}
+
+void VLStepExpress::SetPosition(VLStepExpress::Axis axis, double value)
+{
+  SetValue("!pos", axis, value);
+}
 
 void VLStepExpress::SetValue(const std::string & command,
                              const std::string & value)
@@ -24,7 +84,7 @@ void VLStepExpress::SetValue(const std::string & command,
                              VLStepExpress::Axis axis, const std::string & value)
 {
   std::ostringstream os;
-  os << command << " " << (char)axis << " " << value;
+  os << command << " " << GetAxisName(axis) << " " << value;
   this->SendCommand(os.str());
 }
 
@@ -64,7 +124,7 @@ void VLStepExpress::SetValue(const std::string & command,
                              VLStepExpress::Axis axis, int value)
 {
   std::ostringstream os;
-  os << command << " " << (char)axis << " " << value;
+  os << command << " " << GetAxisName(axis) << " " << value;
   this->SendCommand(os.str());
 }
 
@@ -104,7 +164,7 @@ void VLStepExpress::SetValue(const std::string & command,
                              VLStepExpress::Axis axis, double value)
 {
   std::ostringstream os;
-  os << command << " " << (char)axis << " " << value;
+  os << command << " " << GetAxisName(axis) << " " << value;
   this->SendCommand(os.str());
 }
 
@@ -145,7 +205,7 @@ void VLStepExpress::GetValue(const std::string & command, VLStepExpress::Axis ax
                              std::string & value)
 {
   std::ostringstream os;
-  os << command << " " << (char)axis;
+  os << command << " " << GetAxisName(axis);
   this->SendCommand(os.str());
   this->ReceiveString(value);
 }
@@ -170,7 +230,7 @@ void VLStepExpress::GetValue(const std::string & command,
                              VLStepExpress::Axis axis, int & value)
 {
   std::ostringstream os;
-  os << command << " " << (char)axis;
+  os << command << " " << GetAxisName(axis);
   this->SendCommand(os.str());
 
   std::string buffer;
@@ -201,7 +261,7 @@ void VLStepExpress::GetValue(const std::string & command, VLStepExpress::Axis ax
                              double & value)
 {
   std::ostringstream os;
-  os << command << " " << (char)axis;
+  os << command << " " << GetAxisName(axis);
   this->SendCommand(os.str());
 
   std::string buffer;
@@ -210,4 +270,19 @@ void VLStepExpress::GetValue(const std::string & command, VLStepExpress::Axis ax
   std::istringstream is(buffer);
   is >> temp;
   value = temp;
+}
+
+char VLStepExpress::GetAxisName(VLStepExpress::Axis axis)
+{
+  switch (axis) {
+  case 0:
+    return 'x';
+  case 1:
+    return 'y';
+  case 2:
+    return 'z';
+  case 3:
+    return 'a';
+  }
+  return 'x';
 }

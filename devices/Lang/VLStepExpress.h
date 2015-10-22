@@ -11,10 +11,18 @@ class VLStepExpress {
  public:
 
   enum Axis {
-    A = 'a',
-    X = 'x',
-    Y = 'y',
-    Z = 'z'
+    X = 0,
+    Y = 1,
+    Z = 2,
+    A = 3
+  };
+
+  enum Dimension {
+    MICROSTEPS = 0,
+    MICROMETER = 1,
+    MILLIMETER = 2,
+    DEGREE     = 3,
+    ROTATIONS  = 4
   };
 
   VLStepExpress( const ioport_t );
@@ -24,14 +32,19 @@ class VLStepExpress {
 
   virtual bool DeviceAvailable() const = 0;
 
-  /*
-  virtual void Reset() const = 0;
+  void GetDimension(std::vector<int> & values);
+  void GetDimension(VLStepExpress::Axis axis, int & value);
+  void GetPowerAmplifierStatus(std::vector<int> & values);
+  void GetPowerAmplifierStatus(VLStepExpress::Axis axis, int & value);
+  void GetPosition(std::vector<double> & values);
+  void GetPosition(VLStepExpress::Axis axis, double & value);
 
-  virtual unsigned int GetErrorCode() const = 0;
-  virtual unsigned int GetSystemStatus() const = 0;
-  virtual unsigned int GetAxisSystemStatus(VLStepExpress::Axis axis) const = 0;
-  virtual unsigned int GetAxisStatus(VLStepExpress::Axis axis) const = 0;
-  */
+  void SetDimension(std::vector<int> & values);
+  void SetDimension(VLStepExpress::Axis axis, int value);
+  void SetPowerAmplifierStatus(std::vector<int> & values);
+  void SetPowerAmplifierStatus(VLStepExpress::Axis axis, int value);
+  void SetPosition(std::vector<double> & values);
+  void SetPosition(VLStepExpress::Axis axis, double value);
 
   void SetValue(const std::string & command, const std::string & value);
   void SetValue(const std::string & command, VLStepExpress::Axis axis, const std::string & value);
@@ -58,6 +71,10 @@ class VLStepExpress {
   // low level methods
   virtual void SendCommand(const std::string &) = 0;
   virtual void ReceiveString(std::string &) = 0;
+
+ protected:
+
+  char GetAxisName(VLStepExpress::Axis axis);
 };
 
 #endif
