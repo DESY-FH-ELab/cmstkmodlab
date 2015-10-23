@@ -206,6 +206,16 @@ void LStepExpressFake::MoveRelative()
   }
 }
 
+void GetSystemStatus(std::vector<int>& values)
+{
+  values.resize(4, 5);
+}
+
+void GetSystemStatus(VLStepExpress::Axis axis, int & value)
+{
+  value = 5;
+}
+
 void LStepExpressFake::SendCommand(const std::string & command)
 {
   std::cout << "SendCommand: " << command << std::endl;

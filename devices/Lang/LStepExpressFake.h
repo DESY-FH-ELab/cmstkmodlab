@@ -56,6 +56,11 @@ class LStepExpressFake : public VLStepExpress
   void MoveRelative(VLStepExpress::Axis axis, double value);
   void MoveRelative();
 
+  bool GetStatus() { return true; }
+  void GetSystemStatus(std::vector<int>& values);
+  void GetSystemStatus(VLStepExpress::Axis axis, int & value);
+  int GetError() { return 0; }
+
   void Reset() {}
   void ConfirmErrorRectification() {}
   void ValidConfig() {}

@@ -83,6 +83,7 @@ class VLStepExpress {
 
   virtual bool GetStatus() = 0;
   virtual void GetSystemStatus(std::vector<int>& values) = 0;
+  virtual void GetSystemStatus(VLStepExpress::Axis axis, int & value) = 0;
   virtual int GetError() = 0;
 
   virtual void Reset() = 0;

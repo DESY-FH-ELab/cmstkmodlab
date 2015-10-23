@@ -64,6 +64,7 @@ class LStepExpress : public VLStepExpress
 
   bool GetStatus();
   void GetSystemStatus(std::vector<int>& values);
+  void GetSystemStatus(VLStepExpress::Axis axis, int & value);
   int GetError();
 
   void Reset();

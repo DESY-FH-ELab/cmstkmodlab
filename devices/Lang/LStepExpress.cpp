@@ -293,6 +293,11 @@ void LStepExpress::GetSystemStatus(std::vector<int>& values)
   this->GetValue("?sysstatus", values);
 }
 
+void LStepExpress::GetSystemStatus(VLStepExpress::Axis axis, int & value)
+{
+  this->GetValue("?sysstatus", axis, value);
+}
+
 int LStepExpress::GetError()
 {
   int value;
