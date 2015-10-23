@@ -105,15 +105,15 @@ void LStepExpress::GetAxisStatus(std::vector<int> & values)
 {
   std::string line;
   GetValue("statusaxis", line);
-  std::istringstream is(line);
+  
   std::string token;
 
   values.clear();
 
-  while (is >> token) {
-    char t = token[0];
-
-    switch (t) {
+  for (unsigned int i=0;i<4;++i) {
+    char token = line[i];
+  
+    switch (token) {
     case '@': {
       values.push_back(AXISREADY);
       break;
@@ -277,6 +277,27 @@ void LStepExpress::MoveRelative(VLStepExpress::Axis axis, double value)
 void LStepExpress::MoveRelative()
 {
   this->SendCommand("!m");
+}
+
+bool LStepExpress::GetStatus()
+{
+  std::string value;
+  this->GetValue("status", value);
+
+  if (value.compare("OK...")==0) return true;
+  return false;
+}
+
+void LStepExpress::GetSystemStatus(std::vector<int>& values)
+{
+  this->GetValue("?sysstatus", values);
+}
+
+int LStepExpress::GetError()
+{
+  int value;
+  this->GetValue("err", value);
+  return value;
 }
 
 void LStepExpress::Reset()

@@ -81,6 +81,10 @@ class VLStepExpress {
   virtual void MoveRelative(VLStepExpress::Axis axis, double value) = 0;
   virtual void MoveRelative() = 0;
 
+  virtual bool GetStatus() = 0;
+  virtual void GetSystemStatus(std::vector<int>& values) = 0;
+  virtual int GetError() = 0;
+
   virtual void Reset() = 0;
   virtual void ConfirmErrorRectification() = 0;
   virtual void ValidConfig() = 0;

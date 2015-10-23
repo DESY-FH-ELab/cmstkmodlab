@@ -30,35 +30,34 @@ int main()
   std::vector<int> ivalues;
   std::vector<double> dvalues;
 
-  lstep.GetDimension(ivalues);
-  dumpVector(ivalues);
-  lstep.GetDimension(VLStepExpress::Z, ivalue);
-  std::cout << ivalue << std::endl;
+  lstep.GetDimension(ivalues); dumpVector(ivalues);
+  lstep.GetDimension(VLStepExpress::Z, ivalue); std::cout << ivalue << std::endl;
   
   ivalues[VLStepExpress::Y] = 1;
   lstep.SetDimension(ivalues);
-  lstep.GetDimension(ivalues);
-  dumpVector(ivalues);
+  lstep.GetDimension(ivalues); dumpVector(ivalues);
   
   lstep.SetDimension(VLStepExpress::Y, 2);
-  lstep.GetDimension(ivalues);
-  dumpVector(ivalues);
+  lstep.GetDimension(ivalues); dumpVector(ivalues);
 
-  lstep.GetPowerAmplifierStatus(ivalues);
-  dumpVector(ivalues);
-  lstep.GetPowerAmplifierStatus(VLStepExpress::Y, ivalue);
-  std::cout << ivalue << std::endl;
+  lstep.GetPowerAmplifierStatus(ivalues); dumpVector(ivalues);
+  lstep.GetPowerAmplifierStatus(VLStepExpress::Y, ivalue); std::cout << ivalue << std::endl;
 
-  lstep.GetPosition(dvalues);
-  dumpVector(dvalues);
+  lstep.GetPosition(dvalues); dumpVector(dvalues);
+
+  lstep.SetAutoStatus(0);
+
+  lstep.GetAxisStatus(ivalues); dumpVector(ivalues);
 
   lstep.MoveRelative(1, 2, 3, 4);
-  lstep.GetPosition(dvalues);
-  dumpVector(dvalues);
+  lstep.GetAxisStatus(ivalues); dumpVector(ivalues);
+
+  lstep.GetPosition(dvalues); dumpVector(dvalues);
 
   lstep.MoveRelative();
-  lstep.GetPosition(dvalues);
-  dumpVector(dvalues);
+  lstep.GetAxisStatus(ivalues); dumpVector(ivalues);
+
+  lstep.GetPosition(dvalues); dumpVector(dvalues);
 
   return 0;
 }
