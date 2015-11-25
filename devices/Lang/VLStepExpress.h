@@ -38,8 +38,6 @@ class VLStepExpress {
   VLStepExpress( const ioport_t );
   virtual ~VLStepExpress();
 
- public:
-
   virtual bool DeviceAvailable() const = 0;
 
   virtual void GetAutoStatus(int & value) = 0;
