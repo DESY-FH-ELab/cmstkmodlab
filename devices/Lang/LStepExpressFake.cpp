@@ -206,12 +206,12 @@ void LStepExpressFake::MoveRelative()
   }
 }
 
-void GetSystemStatus(std::vector<int>& values)
+void LStepExpressFake::GetSystemStatus(std::vector<int> & values)
 {
   values.resize(4, 5);
 }
 
-void GetSystemStatus(VLStepExpress::Axis axis, int & value)
+void LStepExpressFake::GetSystemStatus(VLStepExpress::Axis axis, int & value)
 {
   value = 5;
 }
