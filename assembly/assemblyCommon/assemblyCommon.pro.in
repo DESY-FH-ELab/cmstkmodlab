@@ -69,7 +69,9 @@ HEADERS += AssemblyVUEyeCamera.h \
            AssemblyVMarkerFinder.h \
            AssemblySensorMarkerFinder.h \
            AssemblySensorMarkerFinderWidget.h \
-           LStepExpressModel.h
+           LStepExpressModel.h \
+           LStepExpressWidget.h \
+           LStepExpressJoystickWidget.h
 
 equals(USEFAKEDEVICES,"X0") {
 HEADERS += AssemblyUEyeCamera.h \
@@ -90,7 +92,9 @@ SOURCES += AssemblyVUEyeCamera.cc \
            AssemblyVMarkerFinder.cc \
            AssemblySensorMarkerFinder.cc \
            AssemblySensorMarkerFinderWidget.cc \
-           LStepExpressModel.cc
+           LStepExpressModel.cc \
+           LStepExpressWidget.cc \
+           LStepExpressJoystickWidget.cc
 
 equals(USEFAKEDEVICES,"X0") {
 SOURCES += AssemblyUEyeCamera.cc \
