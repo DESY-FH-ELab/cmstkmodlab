@@ -22,7 +22,7 @@ MCommanderMainWindow::MCommanderMainWindow(QWidget *parent)
           this, SLOT(quit()));
 
   lStepExpressModel_ = new LStepExpressModel(config->getValue<std::string>("LStepExpressDevice").c_str(),
-                                             5, this);
+                                             500, this);
 
   QTimer::singleShot(2000, lStepExpressModel_, SLOT(setDeviceEnabled()));
 
