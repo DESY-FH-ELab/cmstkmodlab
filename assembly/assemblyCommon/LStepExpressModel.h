@@ -25,7 +25,7 @@ class LStepExpressModel : public QObject, public AbstractDeviceModel<LStepExpres
 public:
 
   explicit LStepExpressModel(const char* port,
-                             float updateInterval = 5,
+                             int updateInterval = 500,
                              QObject *parent = 0);
 
 public slots:
@@ -39,8 +39,8 @@ protected:
 
   void initialize();
 
-  /// Time interval between cache refreshes; in seconds.
-  const double updateInterval_;
+  /// Time interval between cache refreshes; in milliseconds.
+  const int updateInterval_;
   QTimer* timer_;
 
   void setDeviceState( State state );

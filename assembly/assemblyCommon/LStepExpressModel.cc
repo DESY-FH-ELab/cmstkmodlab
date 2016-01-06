@@ -5,7 +5,7 @@
 #include "LStepExpressModel.h"
 
 LStepExpressModel::LStepExpressModel(const char* port,
-                                     float updateInterval,
+                                     int updateInterval,
                                      QObject * /*parent*/)
 : QObject(),
   AbstractDeviceModel<LStepExpress_t>(),
@@ -13,7 +13,7 @@ LStepExpressModel::LStepExpressModel(const char* port,
   updateInterval_(updateInterval)
 {
   timer_ = new QTimer(this);
-  timer_->setInterval(updateInterval_ * 1000);
+  timer_->setInterval(updateInterval_);
   connect(timer_, SIGNAL(timeout()), this, SLOT(updateInformation()));
 }
 
