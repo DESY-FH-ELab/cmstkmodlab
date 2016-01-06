@@ -6,10 +6,10 @@ LStepExpressFake::LStepExpressFake( const ioport_t ioPort )
   :VLStepExpress(ioPort),
    autoStatus_(1)
 {
-  axisStatus_ = std::vector<int>{ VLStepExpress::AXISREADY,
-                                  VLStepExpress::AXISREADY,
-                                  VLStepExpress::AXISREADY,
-                                  VLStepExpress::AXISREADY };
+  axisStatus_ = std::vector<int>{ VLStepExpress::AXISSTANDSANDREADY,
+                                  VLStepExpress::AXISSTANDSANDREADY,
+                                  VLStepExpress::AXISSTANDSANDREADY,
+                                  VLStepExpress::AXISSTANDSANDREADY };
   axis_ = std::vector<int>{ 1, 1, 1, 1 };
   axisDirection_ = std::vector<int>{ 0, 0, 0, 0 };
   dim_ = std::vector<int>{ 2, 2, 2, 3 };

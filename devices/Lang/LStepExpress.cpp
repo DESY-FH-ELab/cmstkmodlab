@@ -105,6 +105,8 @@ void LStepExpress::GetAxisStatus(std::vector<int> & values)
 {
   std::string line;
   GetValue("statusaxis", line);
+
+  std::cout << line << std::endl;
   
   std::string token;
 
@@ -115,11 +117,11 @@ void LStepExpress::GetAxisStatus(std::vector<int> & values)
   
     switch (token) {
     case '@': {
-      values.push_back(AXISREADY);
+      values.push_back(AXISSTANDSANDREADY);
       break;
     }
     case 'M': {
-      values.push_back(AXISREADY);
+      values.push_back(AXISMOVING);
       break;
     }
     case 'J': {
@@ -132,6 +134,30 @@ void LStepExpress::GetAxisStatus(std::vector<int> & values)
     }
     case 'S': {
       values.push_back(AXISLIMITSWITCHTRIPPED);
+      break;
+    }
+    case 'A': {
+      values.push_back(AXISACKAFTERCALIBRATION);
+      break;
+    }
+    case 'E': {
+      values.push_back(AXISERRACKAFTERCALIBRATION);
+      break;
+    }
+    case 'D': {
+      values.push_back(AXISACKAFTERTBLSTROKEMSR);
+      break;
+    }
+    case 'U': {
+      values.push_back(AXISINSETUP);
+      break;
+    }
+    case 'T': {
+      values.push_back(AXISTIMEOUT);
+      break;
+    }
+    case 'F': {
+      values.push_back(AXISERROR);
       break;
     }
     case '-': {

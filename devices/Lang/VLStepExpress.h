@@ -26,13 +26,19 @@ class VLStepExpress {
   };
 
   enum AxisStatus {
-    AXISREADY               = 0,
-    AXISMOVING              = 1,
-    AXISJOYSTICK            = 2,
-    AXISINCONTROL           = 3,
-    AXISLIMITSWITCHTRIPPED  = 4,
-    AXISDISABLED            = 5,
-    AXISSTATEUNKNOWN        = 99
+    AXISSTANDSANDREADY         = 0x00,
+    AXISMOVING                 = 0x01,
+    AXISJOYSTICK               = 0x02,
+    AXISINCONTROL              = 0x03,
+    AXISLIMITSWITCHTRIPPED     = 0x04,
+    AXISACKAFTERCALIBRATION    = 0x05,
+    AXISERRACKAFTERCALIBRATION = 0x06,
+    AXISACKAFTERTBLSTROKEMSR   = 0x07,
+    AXISINSETUP                = 0x08,
+    AXISTIMEOUT                = 0x09,
+    AXISERROR                  = 0x0a,
+    AXISDISABLED               = 0x0b,
+    AXISSTATEUNKNOWN           = 0xff
   };
 
   VLStepExpress( const ioport_t );
