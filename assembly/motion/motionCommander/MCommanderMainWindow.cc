@@ -22,9 +22,22 @@ MCommanderMainWindow::MCommanderMainWindow(QWidget *parent)
           this, SLOT(quit()));
 
   lStepExpressModel_ = new LStepExpressModel(config->getValue<std::string>("LStepExpressDevice").c_str(),
-                                             500, this);
+                                             5000, 1000, this);
 
-  QTimer::singleShot(2000, lStepExpressModel_, SLOT(setDeviceEnabled()));
+  QWidget * widget = new QWidget(this);
+
+  QVBoxLayout * layout = new QVBoxLayout(widget);
+  widget->setLayout(layout);
+
+  LStepExpressWidget *lStepExpressWidget = new LStepExpressWidget(lStepExpressModel_, widget);
+  layout->addWidget(lStepExpressWidget);
+
+  LStepExpressJoystickWidget *lStepJoystick = new LStepExpressJoystickWidget(lStepExpressModel_, widget);
+  layout->addWidget(lStepJoystick);
+
+  setCentralWidget(widget);
+
+  QTimer::singleShot(100, lStepExpressModel_, SLOT(setDeviceEnabled()));
 
   NQLog("MCommanderMainWindow") << "main window constructed";
 }

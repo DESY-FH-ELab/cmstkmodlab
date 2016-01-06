@@ -9,6 +9,8 @@
 #include <QScrollArea>
 
 #include "LStepExpressModel.h"
+#include "LStepExpressWidget.h"
+#include "LStepExpressJoystickWidget.h"
 
 class MCommanderMainWindow : public QMainWindow
 {
