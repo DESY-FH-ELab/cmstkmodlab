@@ -1,5 +1,3 @@
-#include <opencv2/opencv.hpp>
-
 #include <QApplication>
 #include <QProcess>
 #include <QFile>
@@ -23,8 +21,6 @@ static const char* assemblyGUID = "{5F9DC7D7-54C2-4625-A7C6-2EBE4C37C8F5}";
 
 int main( int argc, char** argv )
 {
-    qRegisterMetaType<cv::Mat>("cv::Mat");
-
     NQLogger::instance()->addActiveModule("*");
     NQLogger::instance()->addDestiniation(stdout, NQLog::Spam);
 
@@ -58,14 +54,14 @@ int main( int argc, char** argv )
     QApplication app( argc, argv );
 #endif
 
-  app.setStyle("cleanlooks");
+    app.setStyle("cleanlooks");
 
-  ApplicationConfig::instance(std::string(Config::CMSTkModLabBasePath) + "/assembly/assembly.cfg");
+    ApplicationConfig::instance(std::string(Config::CMSTkModLabBasePath) + "/assembly/assembly.cfg");
 
-  MCommanderMainWindow mainWindow;
+    MCommanderMainWindow mainWindow;
 
-  mainWindow.setWindowTitle(QString("motionCommander - ") + APPLICATIONVERSIONSTR);
-  mainWindow.show();
+    mainWindow.setWindowTitle(QString("motionCommander - ") + APPLICATIONVERSIONSTR);
+    mainWindow.show();
 
-  return app.exec();
+    return app.exec();
 }
