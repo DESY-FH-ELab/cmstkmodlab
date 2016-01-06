@@ -99,8 +99,6 @@ class VLStepExpress {
   virtual void SendCommand(const std::string &) = 0;
   virtual void ReceiveString(std::string &) = 0;
 
- protected:
-
   char GetAxisName(VLStepExpress::Axis axis);
 };
 
