@@ -21,6 +21,8 @@ LStepExpressModel::LStepExpressModel(const char* port,
     axisDirection_ = allZerosI;
     dim_ = allZerosI;
     pa_ = allZerosI;
+    joystickEnabled_ = false;
+    joystickAxisEnabled = allZerosI;
 
     axisStatus_ = std::vector<int>{ -1, -1, -1, -1 };
     position_ = allZerosD;
@@ -137,6 +139,18 @@ void LStepExpressModel::updateInformation()
         controller_->GetAxisEnabled(ivalues);
         if (ivalues!=axis_) {
             axis_ = ivalues;
+            changed = true;
+        }
+
+        bool joystick = controller_->GetJoystickEnabled();
+        if (joystick!=joystickEnabled_) {
+            joystickEnabled_ = joystick;
+            changed = true;
+        }
+
+        controller_->GetJoystickAxisEnabled(ivalues);
+        if (ivalues!=joystickAxisEnabled) {
+            joystickAxisEnabled = ivalues;
             changed = true;
         }
 

@@ -60,6 +60,8 @@ protected:
     std::vector<int> axisDirection_;
     std::vector<int> dim_;
     std::vector<int> pa_;
+    bool joystickEnabled_;
+    std::vector<int> joystickAxisEnabled;
 
     std::vector<int> axisStatus_;
     std::vector<double> position_;
