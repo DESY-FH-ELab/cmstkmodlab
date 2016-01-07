@@ -120,7 +120,7 @@ void LStepExpressModel::updateInformation()
 {
     if ( state_ == READY ) {
 
-        // NQLog("LStepExpressModel", NQLog::Debug) << "updateInformation()";
+      NQLog("LStepExpressModel", NQLog::Debug) << "updateInformation()";
 
         /*
     if (thread()==QApplication::instance()->thread()) {
