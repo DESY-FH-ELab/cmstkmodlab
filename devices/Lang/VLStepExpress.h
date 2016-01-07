@@ -93,6 +93,11 @@ class VLStepExpress {
   virtual bool GetJoystickEnabled() = 0;
   virtual void SetJoystickEnabled(bool enabled) = 0;
 
+  virtual void GetJoystickAxisEnabled(std::vector<int> & values) = 0;
+  virtual void GetJoystickAxisEnabled(VLStepExpress::Axis axis, int & value) = 0;
+  virtual void SetJoystickAxisEnabled(std::vector<int> & values) = 0;
+  virtual void SetJoystickAxisEnabled(VLStepExpress::Axis axis, int value) = 0;
+
   virtual void Reset() = 0;
   virtual void ConfirmErrorRectification() = 0;
   virtual void ValidConfig() = 0;

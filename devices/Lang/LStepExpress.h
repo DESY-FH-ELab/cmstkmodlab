@@ -70,6 +70,11 @@ class LStepExpress : public VLStepExpress
   bool GetJoystickEnabled();
   void SetJoystickEnabled(bool enabled);
 
+  void GetJoystickAxisEnabled(std::vector<int> & values);
+  void GetJoystickAxisEnabled(VLStepExpress::Axis axis, int & value);
+  void SetJoystickAxisEnabled(std::vector<int> & values);
+  void SetJoystickAxisEnabled(VLStepExpress::Axis axis, int value);
+
   void Reset();
   void ConfirmErrorRectification();
   void ValidConfig();

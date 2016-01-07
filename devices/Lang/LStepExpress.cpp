@@ -343,6 +343,26 @@ void LStepExpress::SetJoystickEnabled(bool enabled)
   }
 }
 
+void LStepExpress::GetJoystickAxisEnabled(std::vector<int> & values)
+{
+  GetValue("joyenable", values);
+}
+
+void LStepExpress::GetJoystickAxisEnabled(VLStepExpress::Axis axis, int & value)
+{
+  GetValue("joyenable", axis, value);
+}
+
+void LStepExpress::SetJoystickAxisEnabled(std::vector<int> & values)
+{
+  SetValue("!joyenable", values);
+}
+
+void LStepExpress::SetJoystickAxisEnabled(VLStepExpress::Axis axis, int value)
+{
+  SetValue("!joyenable", axis, value);
+}
+
 int LStepExpress::GetError()
 {
   int value;
