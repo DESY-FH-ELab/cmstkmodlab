@@ -27,6 +27,8 @@ LStepExpressModel::LStepExpressModel(const char* port,
     axisStatus_ = std::vector<int>{ -1, -1, -1, -1 };
     position_ = allZerosD;
 
+    inMotion_ = false;
+
     timer_ = new QTimer(this);
     timer_->setInterval(updateInterval_);
     connect(timer_, SIGNAL(timeout()), this, SLOT(updateInformation()));
@@ -66,6 +68,8 @@ double LStepExpressModel::getPosition(unsigned int axis)
 void LStepExpressModel::moveRelative(std::vector<double> & values)
 {
     controller_->MoveRelative(values);
+    inMotion_ = true;
+    emit movementStarted();
 }
 
 bool LStepExpressModel::getJoystickEnabled()
@@ -210,6 +214,13 @@ void LStepExpressModel::updateMotionInformation()
         if (ivalues!=axisStatus_) {
             axisStatus_ = ivalues;
             changed = true;
+        }
+        if (inMotion_) {
+            if (std::all_of(ivalues.begin(), ivalues.end(),
+                            [](int i){return i==LStepExpress_t::AXISSTANDSANDREADY;})) {
+                inMotion_ = false;
+                emit movementFinished();
+            }
         }
 
         controller_->GetPosition(dvalues);

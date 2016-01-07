@@ -71,6 +71,8 @@ protected:
     std::vector<int> axisStatus_;
     std::vector<double> position_;
 
+    bool inMotion_;
+
 protected slots:
 
     void updateInformation();
@@ -83,6 +85,9 @@ signals:
     void motionInformationChanged();
     void message(const QString & text);
     void controlStateChanged(bool);
+
+    void movementStarted();
+    void movementFinished();
 };
 
 #endif // LSTEPEXPRESSMODEL_H
