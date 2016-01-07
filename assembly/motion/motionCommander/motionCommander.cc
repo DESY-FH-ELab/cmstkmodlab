@@ -22,7 +22,7 @@ static const char* assemblyGUID = "{5F9DC7D7-54C2-4625-A7C6-2EBE4C37C8F5}";
 int main( int argc, char** argv )
 {
     NQLogger::instance()->addActiveModule("*");
-    NQLogger::instance()->addDestiniation(stdout, NQLog::Spam);
+    NQLogger::instance()->addDestiniation(stdout, NQLog::Debug);
 
 #if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
     QString logdir = QDesktopServices::storageLocation(QDesktopServices::CacheLocation);
