@@ -51,11 +51,28 @@ void LStepExpressFake::GetAxisEnabled(VLStepExpress::Axis axis, int & value)
 void LStepExpressFake::SetAxisEnabled(std::vector<int> & values)
 {
   axis_ = values;
+
+  std::vector<int>::iterator itaxis = axis_.begin();
+  for (std::vector<int>::iterator it = axisStatus_.begin();
+      it!=axisStatus_.end();
+      ++it, ++itaxis) {
+    if ((*itaxis)==0) {
+      *it = VLStepExpress::AXISDISABLED;
+    } else {
+      *it = VLStepExpress::AXISSTANDSANDREADY;
+    }
+  }
 }
 
 void LStepExpressFake::SetAxisEnabled(VLStepExpress::Axis axis, int value)
 {
   axis_[axis] = value;
+
+  if (axis_[axis]==0) {
+    axisStatus_[axis] = VLStepExpress::AXISDISABLED;
+  } else {
+    axisStatus_[axis] = VLStepExpress::AXISSTANDSANDREADY;
+  }
 }
 
 void LStepExpressFake::GetAxisDirection(std::vector<int> & values)
