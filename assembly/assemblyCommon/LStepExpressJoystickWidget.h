@@ -51,6 +51,7 @@ public slots:
     void lStepStateChanged( State state );
     void controlStateChanged(bool);
     void updateWidgets();
+    void updateMotionWidgets();
     void upButtonClicked();
     void downButtonClicked();
 };

@@ -82,6 +82,9 @@ LStepExpressJoystickAxisWidget::LStepExpressJoystickAxisWidget(LStepExpressModel
 
     connect(model_, SIGNAL(informationChanged()),
             this, SLOT(updateWidgets()));
+
+    connect(model_, SIGNAL(motionInformationChanged()),
+            this, SLOT(updateMotionWidgets()));
 }
 
 void LStepExpressJoystickAxisWidget::updateWidgets()
@@ -97,6 +100,11 @@ void LStepExpressJoystickAxisWidget::updateWidgets()
         upButton_->setEnabled(false);
         downButton_->setEnabled(false);
     }
+}
+
+void LStepExpressJoystickAxisWidget::updateMotionWidgets()
+{
+    // NQLog("LStepExpressJoystickAxisWidget", NQLog::Debug) << "updateMotionWidgets()";
 }
 
 void LStepExpressJoystickAxisWidget::lStepStateChanged(State newState)
