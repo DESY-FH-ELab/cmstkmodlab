@@ -30,6 +30,7 @@ public:
                                QObject *parent = 0);
 
     QString getAxisName(unsigned int axis);
+    QString getAxisStatusText(unsigned int axis);
     bool getAxisEnabled(unsigned int axis);
     bool getAxisState(unsigned int axis);
     double getPosition(unsigned int axis);

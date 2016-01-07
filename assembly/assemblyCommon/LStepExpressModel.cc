@@ -40,6 +40,12 @@ QString LStepExpressModel::getAxisName(unsigned int axis)
     return temp;
 }
 
+QString LStepExpressModel::getAxisStatusText(unsigned int axis)
+{
+    QString temp(controller_->GetAxisStatusText((VLStepExpress::AxisStatus)axisStatus_[axis]));
+    return temp;
+}
+
 bool LStepExpressModel::getAxisState(unsigned int axis)
 {
     return (axisStatus_[axis]!=VLStepExpress::AXISDISABLED);
