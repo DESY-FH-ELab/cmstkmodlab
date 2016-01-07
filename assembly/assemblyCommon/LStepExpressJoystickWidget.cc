@@ -62,6 +62,13 @@ LStepExpressJoystickAxisWidget::LStepExpressJoystickAxisWidget(LStepExpressModel
     layout_ = new QVBoxLayout(this);
     setLayout(layout_);
 
+    stepBox_ = new QDoubleSpinBox(this);
+    stepBox_->setSuffix(" mm");
+    stepBox_->setMinimum(0.0000);
+    stepBox_->setMaximum(10.0000);
+    stepBox_->setValue(1.0);
+    layout_->addWidget(stepBox_);
+
     upButton_ = new QPushButton(QIcon(QString(Config::CMSTkModLabBasePath.c_str())+"/share/icon_UP.png"),
                                 "", this);
     layout_->addWidget(upButton_);
@@ -143,7 +150,7 @@ void LStepExpressJoystickAxisWidget::upButtonClicked()
     NQLog("LStepExpressJoystickAxisWidget", NQLog::Debug) << "upButtonClicked()";
 
     std::vector<double> values{ 0.0, 0.0, 0.0, 0.0 };
-    values[axis_] = 10.0;
+    values[axis_] = stepBox_->value();
 
     model_->moveRelative(values);
 }
@@ -153,7 +160,7 @@ void LStepExpressJoystickAxisWidget::downButtonClicked()
     NQLog("LStepExpressJoystickAxisWidget", NQLog::Debug) << "downButtonClicked()";
 
     std::vector<double> values{ 0.0, 0.0, 0.0, 0.0 };
-    values[axis_] = -10.0;
+    values[axis_] = -stepBox_->value();
 
     model_->moveRelative(values);
 }

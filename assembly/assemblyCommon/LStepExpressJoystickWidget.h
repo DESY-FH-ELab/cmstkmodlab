@@ -11,6 +11,7 @@
 #include <QComboBox>
 #include <QWidget>
 #include <QLabel>
+#include <QDoubleSpinBox>
 
 #include "LStepExpressModel.h"
 
@@ -46,6 +47,7 @@ protected:
     QVBoxLayout* layout_;
     QPushButton *upButton_;
     QPushButton *downButton_;
+    QDoubleSpinBox *stepBox_;
 
 public slots:
     void lStepStateChanged( State state );
