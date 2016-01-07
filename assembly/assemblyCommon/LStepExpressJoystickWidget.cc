@@ -1,5 +1,7 @@
 #include <nqlogger.h>
 
+#include "ApplicationConfig.h"
+
 #include "LStepExpressJoystickWidget.h"
 
 LStepExpressJoystickWidget::LStepExpressJoystickWidget(LStepExpressModel* model,
@@ -60,12 +62,14 @@ LStepExpressJoystickAxisWidget::LStepExpressJoystickAxisWidget(LStepExpressModel
     layout_ = new QVBoxLayout(this);
     setLayout(layout_);
 
-    upButton_ = new QPushButton("up", this);
+    upButton_ = new QPushButton(QIcon(QString(Config::CMSTkModLabBasePath.c_str())+"/share/icon_UP.png"),
+                                "", this);
     layout_->addWidget(upButton_);
     connect(upButton_, SIGNAL(clicked()),
             this, SLOT(upButtonClicked()));
 
-    downButton_ = new QPushButton("down", this);
+    downButton_ = new QPushButton(QIcon(QString(Config::CMSTkModLabBasePath.c_str())+"/share/icon_DOWN.png"),
+                                  "", this);
     layout_->addWidget(downButton_);
     connect(downButton_, SIGNAL(clicked()),
             this, SLOT(downButtonClicked()));
