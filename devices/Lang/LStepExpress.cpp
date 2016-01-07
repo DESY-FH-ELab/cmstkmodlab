@@ -4,6 +4,8 @@
 
 #include "LStepExpress.h"
 
+// #define LSTEPDEBUG 1
+
 LStepExpress::LStepExpress( const ioport_t ioPort )
   :VLStepExpress(ioPort),
    isDeviceAvailable_(false)
@@ -25,7 +27,9 @@ bool LStepExpress::DeviceAvailable() const
 // low level debugging methods
 void LStepExpress::SendCommand(const std::string & command)
 {
+#ifdef LSTEPDEBUG
   std::cout << "SendCommand: " << command << std::endl;
+#endif
   comHandler_->SendCommand(command.c_str());
 }
 
@@ -105,8 +109,6 @@ void LStepExpress::GetAxisStatus(std::vector<int> & values)
 {
   std::string line;
   GetValue("statusaxis", line);
-
-  std::cout << line << std::endl;
   
   std::string token;
 
