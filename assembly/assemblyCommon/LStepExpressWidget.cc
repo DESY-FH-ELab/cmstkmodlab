@@ -49,7 +49,7 @@ LStepExpressWidget::LStepExpressWidget(LStepExpressModel* model,
 /// Updates the GUI when the Keithley multimeter is enabled/disabled.
 void LStepExpressWidget::lstepStateChanged(State newState)
 {
-    // NQLog("LStepExpressWidget", NQLog::Debug) << "lStepStateChanged(State newState) " << newState;
+    NQLog("LStepExpressWidget", NQLog::Debug) << "lStepStateChanged(State newState) " << newState;
 
     lstepCheckBox_->setChecked(newState == READY || newState == INITIALIZING);
 
@@ -62,7 +62,7 @@ void LStepExpressWidget::lstepStateChanged(State newState)
 /// Updates the GUI when the controler is enabled/disabled.
 void LStepExpressWidget::controlStateChanged(bool enabled)
 {
-    // NQLog("LStepExpressWidget", NQLog::Debug) << "controlStateChanged(bool enabled) " << enabled;
+    NQLog("LStepExpressWidget", NQLog::Debug) << "controlStateChanged(bool enabled) " << enabled;
 
     if (enabled) {
         lstepStateChanged(model_->getDeviceState());
@@ -134,7 +134,7 @@ void LStepExpressAxisWidget::updateWidgets()
 
 void LStepExpressAxisWidget::updateMotionWidgets()
 {
-    // NQLog("LStepExpressAxisWidget", NQLog::Debug) << "updateMotionWidgets()";
+    NQLog("LStepExpressAxisWidget", NQLog::Debug) << "updateMotionWidgets()";
 
     statusLabel_->setText(model_->getAxisStatusText(axis_));
     positionLabel_->setText(QString::number(model_->getPosition(axis_), 'f', 4));
@@ -156,7 +156,7 @@ void LStepExpressAxisWidget::lStepStateChanged(State newState)
 
 void LStepExpressAxisWidget::controlStateChanged(bool enabled)
 {
-    // NQLog("LStepExpressAxisWidget", NQLog::Debug) << "controlStateChanged(bool enabled) " << enabled;
+    NQLog("LStepExpressAxisWidget", NQLog::Debug) << "controlStateChanged(bool enabled) " << enabled;
 
     if (enabled) {
         lStepStateChanged(model_->getDeviceState());

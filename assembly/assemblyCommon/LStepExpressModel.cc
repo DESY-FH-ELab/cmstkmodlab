@@ -152,15 +152,13 @@ void LStepExpressModel::updateInformation()
 {
     if ( state_ == READY ) {
 
-      NQLog("LStepExpressModel", NQLog::Debug) << "updateInformation()";
+        NQLog("LStepExpressModel", NQLog::Debug) << "updateInformation()";
 
-        /*
-    if (thread()==QApplication::instance()->thread()) {
-      NQLog("LStepExpressModel", NQLog::Debug) << " running in main application thread";
-    } else {
-      NQLog("LStepExpressModel", NQLog::Debug) << " running in dedicated thread";
-    }
-*/
+        if (thread()==QApplication::instance()->thread()) {
+            NQLog("LStepExpressModel", NQLog::Debug) << " running in main application thread";
+        } else {
+            NQLog("LStepExpressModel", NQLog::Debug) << " running in dedicated thread";
+        }
 
         bool changed = false;
 
@@ -195,15 +193,13 @@ void LStepExpressModel::updateMotionInformation()
 {
     if ( state_ == READY ) {
 
-        // NQLog("LStepExpressModel", NQLog::Debug) << "updateMotionInformation()";
+        NQLog("LStepExpressModel", NQLog::Debug) << "updateMotionInformation()";
 
-        /*
-    if (thread()==QApplication::instance()->thread()) {
-      NQLog("LStepExpressModel", NQLog::Debug) << " running in main application thread";
-    } else {
-      NQLog("LStepExpressModel", NQLog::Debug) << " running in dedicated thread";
-    }
-*/
+        if (thread()==QApplication::instance()->thread()) {
+            NQLog("LStepExpressModel", NQLog::Debug) << " running in main application thread";
+        } else {
+            NQLog("LStepExpressModel", NQLog::Debug) << " running in dedicated thread";
+        }
 
         bool changed = false;
 
@@ -223,7 +219,7 @@ void LStepExpressModel::updateMotionInformation()
         }
 
         if (changed) {
-            // NQLog("LStepExpressModel", NQLog::Spam) << "motion information changed";
+            NQLog("LStepExpressModel", NQLog::Spam) << "motion information changed";
             emit motionInformationChanged();
         }
     }
@@ -231,7 +227,7 @@ void LStepExpressModel::updateMotionInformation()
 
 void LStepExpressModel::setDeviceEnabled(bool enabled)
 {
-    // NQLog("LStepExpressModel", NQLog::Debug) << "setDeviceEnabled(bool enabled)";
+    NQLog("LStepExpressModel", NQLog::Debug) << "setDeviceEnabled(bool enabled)";
 
     if (state_ == READY && !enabled) {
         //std::vector<int> allZeros{ 0, 0, 0, 0 };
