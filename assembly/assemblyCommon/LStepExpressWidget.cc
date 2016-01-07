@@ -90,10 +90,14 @@ LStepExpressAxisWidget::LStepExpressAxisWidget(LStepExpressModel* model,
     layout_->addRow(joystickCheckBox_);
 
     statusLabel_ = new QLabel("-", this);
+    statusLabel_->setAlignment(Qt::AlignHCenter);
+    statusLabel_->setFont(QFont("Helvetica", 24));
     layout_->addRow(statusLabel_);
 
-    positionLabel_ = new QLabel("0.0000", this);
-    layout_->addRow("position", positionLabel_);
+    positionLabel_ = new QLabel("0.0000 mm", this);
+    positionLabel_->setAlignment(Qt::AlignHCenter);
+    positionLabel_->setFont(QFont("Helvetica", 18));
+    layout_->addRow(positionLabel_);
 
     connect(enabledCheckBox_, SIGNAL(clicked(bool)),
             this, SLOT(enabledCheckBoxToggled(bool)));
@@ -137,7 +141,7 @@ void LStepExpressAxisWidget::updateMotionWidgets()
     NQLog("LStepExpressAxisWidget", NQLog::Debug) << "updateMotionWidgets()";
 
     statusLabel_->setText(model_->getAxisStatusText(axis_));
-    positionLabel_->setText(QString::number(model_->getPosition(axis_), 'f', 4));
+    positionLabel_->setText(QString::number(model_->getPosition(axis_), 'f', 4) + " mm");
 }
 
 void LStepExpressAxisWidget::lStepStateChanged(State newState)
