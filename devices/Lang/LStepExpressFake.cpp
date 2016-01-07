@@ -35,7 +35,7 @@ void LStepExpressFake::SetAutoStatus(int value)
 
 void LStepExpressFake::GetAxisStatus(std::vector<int> & values)
 {
-  values = axis_;
+  values = axisStatus_;
 }
 
 void LStepExpressFake::GetAxisEnabled(std::vector<int> & values)
