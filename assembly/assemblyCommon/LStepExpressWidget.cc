@@ -72,6 +72,9 @@ LStepExpressAxisWidget::LStepExpressAxisWidget(LStepExpressModel* model,
     enabledCheckBox_ = new QCheckBox(model_->getAxisName(axis), this);
     layout_->addRow(enabledCheckBox_);
 
+    statusLabel_ = new QLabel("-", this);
+    layout_->addRow(statusLabel_);
+
     positionLabel_ = new QLabel("0.0000", this);
     layout_->addRow("position", positionLabel_);
 
@@ -104,6 +107,7 @@ void LStepExpressAxisWidget::updateMotionWidgets()
 {
     // NQLog("LStepExpressAxisWidget", NQLog::Debug) << "updateMotionWidgets()";
 
+    statusLabel_->setText(model_->getAxisStatusText(axis_));
     positionLabel_->setText(QString::number(model_->getPosition(axis_), 'f', 4));
 }
 

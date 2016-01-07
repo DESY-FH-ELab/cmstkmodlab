@@ -46,6 +46,7 @@ protected:
 
     QFormLayout* layout_;
     QCheckBox* enabledCheckBox_;
+    QLabel* statusLabel_;
     QLabel* positionLabel_;
 
 public slots:
