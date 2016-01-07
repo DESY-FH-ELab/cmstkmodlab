@@ -22,7 +22,7 @@ LStepExpressModel::LStepExpressModel(const char* port,
     dim_ = allZerosI;
     pa_ = allZerosI;
 
-    axisStatus_ = allZerosI;
+    axisStatus_ = std::vector<int>{ -1, -1, -1, -1 };
     position_ = allZerosD;
 
     timer_ = new QTimer(this);
