@@ -100,6 +100,7 @@ class VLStepExpress {
   virtual void ReceiveString(std::string &) = 0;
 
   char GetAxisName(VLStepExpress::Axis axis);
+  const char * GetAxisDimensionName(VLStepExpress::Dimension dimension);
   char GetAxisStatusText(VLStepExpress::AxisStatus status);
 };
 
