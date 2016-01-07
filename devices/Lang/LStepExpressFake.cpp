@@ -16,6 +16,8 @@ LStepExpressFake::LStepExpressFake( const ioport_t ioPort )
   pa_ = std::vector<int>{ 0, 0, 0, 0 };
   position_ = std::vector<double>{ 0.0, 0.0, 0.0, 0.0 };
   moverel_ = std::vector<double>{ 0.0, 0.0, 0.0, 0.0 };
+
+  joystickEnabled_ = false;
 }
 
 LStepExpressFake::~LStepExpressFake()
@@ -231,6 +233,16 @@ void LStepExpressFake::GetSystemStatus(std::vector<int> & values)
 void LStepExpressFake::GetSystemStatus(VLStepExpress::Axis axis, int & value)
 {
   value = 5;
+}
+
+bool LStepExpressFake::GetJoystickEnabled()
+{
+  return joystickEnabled_;
+}
+
+void LStepExpressFake::SetJoystickEnabled(bool enabled)
+{
+  joystickEnabled_ = enabled;
 }
 
 void LStepExpressFake::SendCommand(const std::string & command)

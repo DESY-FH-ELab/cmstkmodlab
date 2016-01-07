@@ -61,6 +61,9 @@ class LStepExpressFake : public VLStepExpress
   void GetSystemStatus(VLStepExpress::Axis axis, int & value);
   int GetError() { return 0; }
 
+  bool GetJoystickEnabled();
+  void SetJoystickEnabled(bool enabled);
+
   void Reset() {}
   void ConfirmErrorRectification() {}
   void ValidConfig() {}
@@ -80,6 +83,8 @@ class LStepExpressFake : public VLStepExpress
   std::vector<int> pa_;
   std::vector<double> position_;
   std::vector<double> moverel_;
+
+  bool joystickEnabled_;
 };
 
 #endif

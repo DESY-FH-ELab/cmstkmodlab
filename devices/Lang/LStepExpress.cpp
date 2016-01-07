@@ -326,6 +326,23 @@ void LStepExpress::GetSystemStatus(VLStepExpress::Axis axis, int & value)
   this->GetValue("?sysstatus", axis, value);
 }
 
+bool LStepExpress::GetJoystickEnabled()
+{
+  int value;
+  this->GetValue("joy", value);
+  if (value==1) return true;
+  return false;
+}
+
+void LStepExpress::SetJoystickEnabled(bool enabled)
+{
+  if (enabled) {
+    this->SendCommand("!joy 1");
+  } else {
+    this->SendCommand("!joy 0");
+  }
+}
+
 int LStepExpress::GetError()
 {
   int value;

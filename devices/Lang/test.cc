@@ -82,5 +82,10 @@ int main()
 
   lstep.GetSystemStatus(ivalues); dumpVectorHex(ivalues);
 
+  std::cout << lstep.GetJoystickEnabled() << std::endl;
+  lstep.SetJoystickEnabled(true);
+  std::cout << lstep.GetJoystickEnabled() << std::endl;
+
+
   return 0;
 }

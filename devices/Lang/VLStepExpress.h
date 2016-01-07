@@ -90,6 +90,9 @@ class VLStepExpress {
   virtual void GetSystemStatus(VLStepExpress::Axis axis, int & value) = 0;
   virtual int GetError() = 0;
 
+  virtual bool GetJoystickEnabled() = 0;
+  virtual void SetJoystickEnabled(bool enabled) = 0;
+
   virtual void Reset() = 0;
   virtual void ConfirmErrorRectification() = 0;
   virtual void ValidConfig() = 0;
