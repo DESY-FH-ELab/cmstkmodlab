@@ -36,11 +36,16 @@ public:
     double getPosition(unsigned int axis);
     void moveRelative(std::vector<double> & values);
 
+    bool getJoystickEnabled();
+    bool getJoystickAxisEnabled(unsigned int axis);
+
 public slots:
 
     void setDeviceEnabled(bool enabled = true);
     void setControlsEnabled(bool enabled);
     void setAxisEnabled(unsigned int axis, bool enabled);
+    void setJoystickEnabled(bool enabled);
+    void setJoystickAxisEnabled(unsigned int axis, bool enabled);
 
 protected:
 
@@ -61,7 +66,7 @@ protected:
     std::vector<int> dim_;
     std::vector<int> pa_;
     bool joystickEnabled_;
-    std::vector<int> joystickAxisEnabled;
+    std::vector<int> joystickAxisEnabled_;
 
     std::vector<int> axisStatus_;
     std::vector<double> position_;

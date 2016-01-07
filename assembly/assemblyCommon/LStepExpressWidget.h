@@ -24,6 +24,7 @@ public:
 protected:
     LStepExpressModel* model_;
     QCheckBox* lstepCheckBox_;
+    QCheckBox* joystickCheckBox_;
     QWidget* axisControlWidget_;
 
 public slots:
@@ -46,6 +47,7 @@ protected:
 
     QFormLayout* layout_;
     QCheckBox* enabledCheckBox_;
+    QCheckBox* joystickCheckBox_;
     QLabel* statusLabel_;
     QLabel* positionLabel_;
 
@@ -55,6 +57,7 @@ public slots:
     void updateWidgets();
     void updateMotionWidgets();
     void enabledCheckBoxToggled(bool enabled);
+    void joystickCheckBoxToggled(bool enabled);
 };
 
 #endif // LSTEPEXPRESSWIDGET_H

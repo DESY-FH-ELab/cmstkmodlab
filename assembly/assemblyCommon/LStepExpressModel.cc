@@ -22,7 +22,7 @@ LStepExpressModel::LStepExpressModel(const char* port,
     dim_ = allZerosI;
     pa_ = allZerosI;
     joystickEnabled_ = false;
-    joystickAxisEnabled = allZerosI;
+    joystickAxisEnabled_ = std::vector<int>{ -1, -1, -1, -1 };
 
     axisStatus_ = std::vector<int>{ -1, -1, -1, -1 };
     position_ = allZerosD;
@@ -68,6 +68,16 @@ void LStepExpressModel::moveRelative(std::vector<double> & values)
     controller_->MoveRelative(values);
 }
 
+bool LStepExpressModel::getJoystickEnabled()
+{
+    return joystickEnabled_;
+}
+
+bool LStepExpressModel::getJoystickAxisEnabled(unsigned int axis)
+{
+    return joystickAxisEnabled_[axis];
+}
+
 void LStepExpressModel::setAxisEnabled(unsigned int axis, bool enabled)
 {
     int temp = (int)enabled;
@@ -78,6 +88,26 @@ void LStepExpressModel::setAxisEnabled(unsigned int axis, bool enabled)
         controller_->SetAxisEnabled((VLStepExpress::Axis)axis, temp);
         axis_[axis] = temp;
         emit deviceStateChanged(state_);
+    }
+}
+
+void LStepExpressModel::setJoystickEnabled(bool enabled)
+{
+    if (joystickEnabled_!=enabled) {
+        controller_->SetJoystickEnabled(enabled);
+        joystickEnabled_ = enabled;
+        emit deviceStateChanged(state_);
+    }
+}
+
+void LStepExpressModel::setJoystickAxisEnabled(unsigned int axis, bool enabled)
+{
+    int temp = (enabled == true)?1:0;
+
+    if (joystickAxisEnabled_[axis]!=temp) {
+        NQLog("LStepExpressModel", NQLog::Debug) << "setJoystickAxisEnabled " << axis << " " << temp;
+        controller_->SetJoystickAxisEnabled((VLStepExpress::Axis)axis, temp);
+        joystickAxisEnabled_[axis] = temp;
     }
 }
 
@@ -149,8 +179,8 @@ void LStepExpressModel::updateInformation()
         }
 
         controller_->GetJoystickAxisEnabled(ivalues);
-        if (ivalues!=joystickAxisEnabled) {
-            joystickAxisEnabled = ivalues;
+        if (ivalues!=joystickAxisEnabled_) {
+            joystickAxisEnabled_ = ivalues;
             changed = true;
         }
 
