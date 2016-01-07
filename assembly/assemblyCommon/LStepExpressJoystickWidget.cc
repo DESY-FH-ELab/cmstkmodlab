@@ -135,7 +135,7 @@ void LStepExpressJoystickAxisWidget::upButtonClicked()
     NQLog("LStepExpressJoystickAxisWidget", NQLog::Debug) << "upButtonClicked()";
 
     std::vector<double> values{ 0.0, 0.0, 0.0, 0.0 };
-    values[axis_] = 1.0;
+    values[axis_] = 10.0;
 
     model_->moveRelative(values);
 }
@@ -145,7 +145,7 @@ void LStepExpressJoystickAxisWidget::downButtonClicked()
     NQLog("LStepExpressJoystickAxisWidget", NQLog::Debug) << "downButtonClicked()";
 
     std::vector<double> values{ 0.0, 0.0, 0.0, 0.0 };
-    values[axis_] = -1.0;
+    values[axis_] = -10.0;
 
     model_->moveRelative(values);
 }
