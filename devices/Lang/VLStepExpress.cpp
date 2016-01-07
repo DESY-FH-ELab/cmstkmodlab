@@ -26,3 +26,36 @@ char VLStepExpress::GetAxisName(VLStepExpress::Axis axis)
   }
   return 'x';
 }
+
+char VLStepExpress::GetAxisStatusText(VLStepExpress::AxisStatus status)
+{
+  switch (status) {
+  case AXISSTANDSANDREADY:
+    return '@';
+  case AXISMOVING:
+    return 'M';
+  case AXISJOYSTICK:
+    return 'J';
+  case AXISINCONTROL:
+    return 'C';
+  case AXISLIMITSWITCHTRIPPED:
+    return 'S';
+  case AXISACKAFTERCALIBRATION:
+    return 'A';
+  case AXISERRACKAFTERCALIBRATION:
+   return 'E';
+  case AXISACKAFTERTBLSTROKEMSR:
+  return 'D';
+  case AXISINSETUP:
+    return 'U';
+  case AXISTIMEOUT:
+    return 'T';
+  case AXISERROR:
+    return 'F';
+  case AXISDISABLED:
+    return '-';
+  case AXISSTATEUNKNOWN:
+    return 'X';
+  }
+  return 'X';
+}
