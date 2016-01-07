@@ -18,6 +18,7 @@ LStepExpressFake::LStepExpressFake( const ioport_t ioPort )
   moverel_ = std::vector<double>{ 0.0, 0.0, 0.0, 0.0 };
 
   joystickEnabled_ = false;
+  joystickAxisEnabled_ = std::vector<int>{ 1, 1, 1, 1 };
 }
 
 LStepExpressFake::~LStepExpressFake()
@@ -243,6 +244,26 @@ bool LStepExpressFake::GetJoystickEnabled()
 void LStepExpressFake::SetJoystickEnabled(bool enabled)
 {
   joystickEnabled_ = enabled;
+}
+
+void LStepExpressFake::GetJoystickAxisEnabled(std::vector<int> & values)
+{
+  values = joystickAxisEnabled_;
+}
+
+void LStepExpressFake::GetJoystickAxisEnabled(VLStepExpress::Axis axis, int & value)
+{
+  value = joystickAxisEnabled_[axis];
+}
+
+void LStepExpressFake::SetJoystickAxisEnabled(std::vector<int> & values)
+{
+  joystickAxisEnabled_ = values;
+}
+
+void LStepExpressFake::SetJoystickAxisEnabled(VLStepExpress::Axis axis, int value)
+{
+  joystickAxisEnabled_[axis] = value;
 }
 
 void LStepExpressFake::SendCommand(const std::string & command)
