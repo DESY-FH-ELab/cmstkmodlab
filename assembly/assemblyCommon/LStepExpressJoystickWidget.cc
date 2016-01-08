@@ -30,6 +30,12 @@ LStepExpressJoystickWidget::LStepExpressJoystickWidget(LStepExpressModel* model,
     connect(model_, SIGNAL(controlStateChanged(bool)),
             this, SLOT(controlStateChanged(bool)));
 
+    connect(model_, SIGNAL(motionStarted()),
+            this, SLOT(motionStarted()));
+
+    connect(model_, SIGNAL(motionFinished()),
+            this, SLOT(motionFinished()));
+
     lstepStateChanged(model_->getDeviceState());
 }
 
@@ -50,6 +56,16 @@ void LStepExpressJoystickWidget::controlStateChanged(bool enabled)
     } else {
         axisControlWidget_->setEnabled(false);
     }
+}
+
+void LStepExpressJoystickWidget::motionStarted()
+{
+    NQLog("LStepExpressJoystickWidget", NQLog::Debug) << "motionStarted()";
+}
+
+void LStepExpressJoystickWidget::motionFinished()
+{
+    NQLog("LStepExpressJoystickWidget", NQLog::Debug) << "motionFinished()";
 }
 
 LStepExpressJoystickAxisWidget::LStepExpressJoystickAxisWidget(LStepExpressModel* model,
@@ -92,6 +108,12 @@ LStepExpressJoystickAxisWidget::LStepExpressJoystickAxisWidget(LStepExpressModel
 
     connect(model_, SIGNAL(motionInformationChanged()),
             this, SLOT(updateMotionWidgets()));
+
+    connect(model_, SIGNAL(motionStarted()),
+            this, SLOT(motionStarted()));
+
+    connect(model_, SIGNAL(motionFinished()),
+            this, SLOT(motionFinished()));
 }
 
 void LStepExpressJoystickAxisWidget::updateWidgets()
@@ -101,9 +123,11 @@ void LStepExpressJoystickAxisWidget::updateWidgets()
     NQLog("LStepExpressJoystickAxisWidget", NQLog::Debug) << "updateWidgets() " << axis;
 
     if (model_->getAxisEnabled(axis_)) {
+        stepBox_->setEnabled(true);
         upButton_->setEnabled(true);
         downButton_->setEnabled(true);
     } else {
+        stepBox_->setEnabled(false);
         upButton_->setEnabled(false);
         downButton_->setEnabled(false);
     }
@@ -121,13 +145,16 @@ void LStepExpressJoystickAxisWidget::lStepStateChanged(State newState)
 
     if (newState == READY || newState == INITIALIZING) {
         if (model_->getAxisEnabled(axis_)) {
+            stepBox_->setEnabled(true);
             upButton_->setEnabled(true);
             downButton_->setEnabled(true);
         } else {
+            stepBox_->setEnabled(false);
             upButton_->setEnabled(false);
             downButton_->setEnabled(false);
         }
     } else {
+        stepBox_->setEnabled(false);
         upButton_->setEnabled(false);
         downButton_->setEnabled(false);
     }
@@ -163,4 +190,14 @@ void LStepExpressJoystickAxisWidget::downButtonClicked()
     values[axis_] = -stepBox_->value();
 
     model_->moveRelative(values);
+}
+
+void LStepExpressJoystickAxisWidget::motionStarted()
+{
+    NQLog("LStepExpressJoystickAxisWidget", NQLog::Debug) << "motionStarted()";
+}
+
+void LStepExpressJoystickAxisWidget::motionFinished()
+{
+    NQLog("LStepExpressJoystickAxisWidget", NQLog::Debug) << "motionFinished()";
 }

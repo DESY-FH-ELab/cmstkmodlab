@@ -29,6 +29,8 @@ protected:
 public slots:
     void lstepStateChanged(State newState);
     void controlStateChanged(bool);
+    void motionStarted();
+    void motionFinished();
 };
 
 class LStepExpressJoystickAxisWidget : public QWidget
@@ -56,6 +58,8 @@ public slots:
     void updateMotionWidgets();
     void upButtonClicked();
     void downButtonClicked();
+    void motionStarted();
+    void motionFinished();
 };
 
 #endif // LSTEPEXPRESSJOYSTICKWIDGET_H

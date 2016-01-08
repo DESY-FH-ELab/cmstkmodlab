@@ -43,6 +43,12 @@ LStepExpressWidget::LStepExpressWidget(LStepExpressModel* model,
     connect(model_, SIGNAL(controlStateChanged(bool)),
             this, SLOT(controlStateChanged(bool)));
 
+    connect(model_, SIGNAL(motionStarted()),
+            this, SLOT(motionStarted()));
+
+    connect(model_, SIGNAL(motionFinished()),
+            this, SLOT(motionFinished()));
+
     lstepStateChanged(model_->getDeviceState());
 }
 
@@ -71,6 +77,16 @@ void LStepExpressWidget::controlStateChanged(bool enabled)
         joystickCheckBox_->setEnabled(false);
         axisControlWidget_->setEnabled(false);
     }
+}
+
+void LStepExpressWidget::motionStarted()
+{
+    NQLog("LStepExpressWidget", NQLog::Debug) << "motionStarted()";
+}
+
+void LStepExpressWidget::motionFinished()
+{
+    NQLog("LStepExpressWidget", NQLog::Debug) << "motionFinished()";
 }
 
 LStepExpressAxisWidget::LStepExpressAxisWidget(LStepExpressModel* model,
@@ -116,6 +132,12 @@ LStepExpressAxisWidget::LStepExpressAxisWidget(LStepExpressModel* model,
 
     connect(model_, SIGNAL(motionInformationChanged()),
             this, SLOT(updateMotionWidgets()));
+
+    connect(model_, SIGNAL(motionStarted()),
+            this, SLOT(motionStarted()));
+
+    connect(model_, SIGNAL(motionFinished()),
+            this, SLOT(motionFinished()));
 }
 
 void LStepExpressAxisWidget::updateWidgets()
@@ -181,4 +203,14 @@ void LStepExpressAxisWidget::joystickCheckBoxToggled(bool enabled)
     NQLog("LStepExpressAxisWidget", NQLog::Spam) << "joystickCheckBoxToggled(bool enabled) " << enabled;
 
     model_->setJoystickAxisEnabled(axis_, enabled);
+}
+
+void LStepExpressAxisWidget::motionStarted()
+{
+    NQLog("LStepExpressAxisWidget", NQLog::Debug) << "motionStarted()";
+}
+
+void LStepExpressAxisWidget::motionFinished()
+{
+    NQLog("LStepExpressAxisWidget", NQLog::Debug) << "motionFinished()";
 }
