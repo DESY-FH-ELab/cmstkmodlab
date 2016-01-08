@@ -37,14 +37,6 @@ public:
 
     bool isInMotion() const { return inMotion_; }
 
-    void moveRelative(std::vector<double> & values);
-    void moveRelative(double x, double y, double z, double a);
-    void moveRelative(unsigned int axis, double value);
-    void moveRelative();
-    void moveAbsolute(std::vector<double> & values);
-    void moveAbsolute(double x = 0.0, double y = 0.0, double z = 0.0, double a = 0.0);
-    void moveAbsolute(unsigned int axis, double value);
-
     bool getJoystickEnabled();
     bool getJoystickAxisEnabled(unsigned int axis);
 
@@ -55,6 +47,14 @@ public slots:
     void setAxisEnabled(unsigned int axis, bool enabled);
     void setJoystickEnabled(bool enabled);
     void setJoystickAxisEnabled(unsigned int axis, bool enabled);
+
+    void moveRelative(std::vector<double> & values);
+    void moveRelative(double x, double y, double z, double a);
+    void moveRelative(unsigned int axis, double value);
+    void moveRelative();
+    void moveAbsolute(std::vector<double> & values);
+    void moveAbsolute(double x = 0.0, double y = 0.0, double z = 0.0, double a = 0.0);
+    void moveAbsolute(unsigned int axis, double value);
 
 protected:
 
