@@ -86,13 +86,6 @@ void LStepExpressModel::moveRelative(unsigned int axis, double value)
     emit motionStarted();
 }
 
-void LStepExpressModel::moveRelative()
-{
-    controller_->MoveRelative();
-    inMotion_ = true;
-    emit motionStarted();
-}
-
 void LStepExpressModel::moveAbsolute(std::vector<double> & values)
 {
     controller_->MoveAbsolute(values);
