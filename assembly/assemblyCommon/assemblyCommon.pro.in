@@ -70,6 +70,7 @@ HEADERS += AssemblyVUEyeCamera.h \
            AssemblySensorMarkerFinder.h \
            AssemblySensorMarkerFinderWidget.h \
            LStepExpressModel.h \
+           LStepExpressMotionManager.h \
            LStepExpressWidget.h \
            LStepExpressJoystickWidget.h
 
@@ -93,6 +94,7 @@ SOURCES += AssemblyVUEyeCamera.cc \
            AssemblySensorMarkerFinder.cc \
            AssemblySensorMarkerFinderWidget.cc \
            LStepExpressModel.cc \
+           LStepExpressMotionManager.cc \
            LStepExpressWidget.cc \
            LStepExpressJoystickWidget.cc
 
