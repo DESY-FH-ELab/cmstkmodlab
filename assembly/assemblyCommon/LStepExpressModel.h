@@ -34,6 +34,9 @@ public:
     bool getAxisEnabled(unsigned int axis);
     bool getAxisState(unsigned int axis);
     double getPosition(unsigned int axis);
+
+    bool isInMotion() const { return inMotion_; }
+
     void moveRelative(std::vector<double> & values);
 
     bool getJoystickEnabled();
@@ -86,8 +89,8 @@ signals:
     void message(const QString & text);
     void controlStateChanged(bool);
 
-    void movementStarted();
-    void movementFinished();
+    void motionStarted();
+    void motionFinished();
 };
 
 #endif // LSTEPEXPRESSMODEL_H

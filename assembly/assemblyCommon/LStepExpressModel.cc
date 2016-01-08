@@ -69,7 +69,7 @@ void LStepExpressModel::moveRelative(std::vector<double> & values)
 {
     controller_->MoveRelative(values);
     inMotion_ = true;
-    emit movementStarted();
+    emit motionStarted();
 }
 
 bool LStepExpressModel::getJoystickEnabled()
@@ -219,7 +219,7 @@ void LStepExpressModel::updateMotionInformation()
             if (std::all_of(ivalues.begin(), ivalues.end(),
                             [](int i){return i==LStepExpress_t::AXISSTANDSANDREADY;})) {
                 inMotion_ = false;
-                emit movementFinished();
+                emit motionFinished();
             }
         }
 
