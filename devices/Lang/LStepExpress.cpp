@@ -356,11 +356,19 @@ void LStepExpress::GetJoystickAxisEnabled(VLStepExpress::Axis axis, int & value)
 void LStepExpress::SetJoystickAxisEnabled(std::vector<int> & values)
 {
   SetValue("!joyenable", values);
+  usleep(100000);
+  this->SendCommand("!joy 0");
+  usleep(100000);
+  this->SendCommand("!joy 1");
 }
 
 void LStepExpress::SetJoystickAxisEnabled(VLStepExpress::Axis axis, int value)
 {
   SetValue("!joyenable", axis, value);
+  usleep(100000);
+  this->SendCommand("!joy 0");
+  usleep(100000);
+  this->SendCommand("!joy 1");
 }
 
 int LStepExpress::GetError()
