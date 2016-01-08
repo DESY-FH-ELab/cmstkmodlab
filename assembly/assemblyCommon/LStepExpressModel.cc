@@ -72,6 +72,48 @@ void LStepExpressModel::moveRelative(std::vector<double> & values)
     emit motionStarted();
 }
 
+void LStepExpressModel::moveRelative(double x, double y, double z, double a)
+{
+    controller_->MoveRelative(x, y, z, a);
+    inMotion_ = true;
+    emit motionStarted();
+}
+
+void LStepExpressModel::moveRelative(unsigned int axis, double value)
+{
+    controller_->MoveRelative((VLStepExpress::Axis)axis, value);
+    inMotion_ = true;
+    emit motionStarted();
+}
+
+void LStepExpressModel::moveRelative()
+{
+    controller_->MoveRelative();
+    inMotion_ = true;
+    emit motionStarted();
+}
+
+void LStepExpressModel::moveAbsolute(std::vector<double> & values)
+{
+    controller_->MoveAbsolute(values);
+    inMotion_ = true;
+    emit motionStarted();
+}
+
+void LStepExpressModel::moveAbsolute(double x, double y, double z, double a)
+{
+    controller_->MoveAbsolute(x, y, z, a);
+    inMotion_ = true;
+    emit motionStarted();
+}
+
+void LStepExpressModel::moveAbsolute(unsigned int axis, double value)
+{
+    controller_->MoveAbsolute((VLStepExpress::Axis)axis, value);
+    inMotion_ = true;
+    emit motionStarted();
+}
+
 bool LStepExpressModel::getJoystickEnabled()
 {
     return (joystickEnabled_==1);
