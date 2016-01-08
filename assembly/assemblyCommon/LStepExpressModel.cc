@@ -21,7 +21,7 @@ LStepExpressModel::LStepExpressModel(const char* port,
     axisDirection_ = allZerosI;
     dim_ = allZerosI;
     pa_ = allZerosI;
-    joystickEnabled_ = false;
+    joystickEnabled_ = -1;
     joystickAxisEnabled_ = std::vector<int>{ -1, -1, -1, -1 };
 
     axisStatus_ = std::vector<int>{ -1, -1, -1, -1 };
@@ -74,12 +74,12 @@ void LStepExpressModel::moveRelative(std::vector<double> & values)
 
 bool LStepExpressModel::getJoystickEnabled()
 {
-    return joystickEnabled_;
+    return (joystickEnabled_==1);
 }
 
 bool LStepExpressModel::getJoystickAxisEnabled(unsigned int axis)
 {
-    return joystickAxisEnabled_[axis];
+    return (joystickAxisEnabled_[axis]==1);
 }
 
 void LStepExpressModel::setAxisEnabled(unsigned int axis, bool enabled)
@@ -97,9 +97,11 @@ void LStepExpressModel::setAxisEnabled(unsigned int axis, bool enabled)
 
 void LStepExpressModel::setJoystickEnabled(bool enabled)
 {
-    if (joystickEnabled_!=enabled) {
+    int temp = (int)enabled;
+
+    if (joystickEnabled_!=temp) {
         controller_->SetJoystickEnabled(enabled);
-        joystickEnabled_ = enabled;
+        joystickEnabled_ = temp;
         emit deviceStateChanged(state_);
     }
 }
@@ -108,10 +110,10 @@ void LStepExpressModel::setJoystickAxisEnabled(unsigned int axis, bool enabled)
 {
     int temp = (enabled == true)?1:0;
 
-    if (joystickAxisEnabled_[axis]!=temp) {
-        NQLog("LStepExpressModel", NQLog::Debug) << "setJoystickAxisEnabled " << axis << " " << temp;
-        controller_->SetJoystickAxisEnabled((VLStepExpress::Axis)axis, temp);
+    if (joystickEnabled_ && joystickAxisEnabled_[axis]!=temp) {
         joystickAxisEnabled_[axis] = temp;
+        NQLog("LStepExpressModel", NQLog::Debug) << "setJoystickAxisEnabled " << axis << " " << temp;
+        controller_->SetJoystickAxisEnabled((VLStepExpress::Axis)axis, temp);   
     }
 }
 
@@ -174,7 +176,7 @@ void LStepExpressModel::updateInformation()
             changed = true;
         }
 
-        bool joystick = controller_->GetJoystickEnabled();
+        int joystick = controller_->GetJoystickEnabled();
         if (joystick!=joystickEnabled_) {
             joystickEnabled_ = joystick;
             changed = true;
