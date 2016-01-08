@@ -30,6 +30,7 @@ protected:
 public slots:
     void lstepStateChanged(State newState);
     void controlStateChanged(bool);
+    void updateWidgets();
     void motionStarted();
     void motionFinished();
 };

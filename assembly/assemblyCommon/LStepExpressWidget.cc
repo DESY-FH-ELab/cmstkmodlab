@@ -43,6 +43,9 @@ LStepExpressWidget::LStepExpressWidget(LStepExpressModel* model,
     connect(model_, SIGNAL(controlStateChanged(bool)),
             this, SLOT(controlStateChanged(bool)));
 
+    connect(model_, SIGNAL(informationChanged()),
+            this, SLOT(updateWidgets()));
+
     connect(model_, SIGNAL(motionStarted()),
             this, SLOT(motionStarted()));
 
@@ -50,6 +53,11 @@ LStepExpressWidget::LStepExpressWidget(LStepExpressModel* model,
             this, SLOT(motionFinished()));
 
     lstepStateChanged(model_->getDeviceState());
+}
+
+void LStepExpressWidget::updateWidgets()
+{
+    joystickCheckBox_->setChecked(model_->getJoystickEnabled());
 }
 
 /// Updates the GUI when the Keithley multimeter is enabled/disabled.
@@ -152,10 +160,10 @@ void LStepExpressAxisWidget::updateWidgets()
         joystickCheckBox_->setEnabled(false);
     }
 
-    NQLog("LStepExpressAxisWidget", NQLog::Debug) << "updateWidgets() " << model_->getJoystickAxisEnabled(axis);
+    NQLog("LStepExpressAxisWidget", NQLog::Debug) << "updateWidgets() JOYstick ----------->" << model_->getJoystickAxisEnabled(axis_);
 
     enabledCheckBox_->setChecked(axis);
-    joystickCheckBox_->setChecked(model_->getJoystickAxisEnabled(axis));
+    joystickCheckBox_->setChecked(model_->getJoystickAxisEnabled(axis_));
 }
 
 void LStepExpressAxisWidget::updateMotionWidgets()
