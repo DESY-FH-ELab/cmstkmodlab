@@ -11,6 +11,7 @@
 #include <QComboBox>
 #include <QWidget>
 #include <QLabel>
+#include <QPushButton>
 
 #include "LStepExpressModel.h"
 
@@ -25,6 +26,7 @@ protected:
     LStepExpressModel* model_;
     QCheckBox* lstepCheckBox_;
     QCheckBox* joystickCheckBox_;
+    QPushButton* buttonOrigin_;
     QWidget* axisControlWidget_;
 
 public slots:

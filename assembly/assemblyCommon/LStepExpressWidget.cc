@@ -19,6 +19,9 @@ LStepExpressWidget::LStepExpressWidget(LStepExpressModel* model,
     joystickCheckBox_ = new QCheckBox("Enable Joystick", this);
     hlayout->addWidget(joystickCheckBox_);
 
+    buttonOrigin_ = new QPushButton("Origin", this);
+    hlayout->addWidget(buttonOrigin_);
+
     axisControlWidget_= new QWidget(this);
     layout->addWidget(axisControlWidget_);
 
@@ -36,6 +39,9 @@ LStepExpressWidget::LStepExpressWidget(LStepExpressModel* model,
 
     connect(joystickCheckBox_, SIGNAL(toggled(bool)),
             model_, SLOT(setJoystickEnabled(bool)));
+
+    connect(buttonOrigin_, SIGNAL(clicked()),
+            model_, SLOT(moveAbsolute()));
 
     connect(model_, SIGNAL(deviceStateChanged(State)),
             this, SLOT(lstepStateChanged(State)));
@@ -70,6 +76,8 @@ void LStepExpressWidget::lstepStateChanged(State newState)
     joystickCheckBox_->setEnabled(newState == READY);
     if (newState == READY) joystickCheckBox_->setChecked(model_->getJoystickEnabled());
 
+    buttonOrigin_->setEnabled(newState == READY);
+
     axisControlWidget_->setEnabled(newState == READY);
 }
 
@@ -83,6 +91,7 @@ void LStepExpressWidget::controlStateChanged(bool enabled)
     } else {
         lstepCheckBox_->setEnabled(false);
         joystickCheckBox_->setEnabled(false);
+        buttonOrigin_->setEnabled(false);
         axisControlWidget_->setEnabled(false);
     }
 }
