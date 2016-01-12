@@ -79,7 +79,7 @@ LStepExpressJoystickAxisWidget::LStepExpressJoystickAxisWidget(LStepExpressModel
     setLayout(layout_);
 
     stepBox_ = new QDoubleSpinBox(this);
-    stepBox_->setSuffix(" mm");
+    stepBox_->setSuffix(" usteps");
     stepBox_->setMinimum(0.0000);
     stepBox_->setMaximum(10.0000);
     stepBox_->setValue(1.0);
@@ -121,6 +121,8 @@ void LStepExpressJoystickAxisWidget::updateWidgets()
     bool axis = model_->getAxisEnabled(axis_);
 
     NQLog("LStepExpressJoystickAxisWidget", NQLog::Debug) << "updateWidgets() " << axis;
+
+    stepBox_->setSuffix(QString(" ") + model_->getAxisDimensionShortName(axis_));
 
     if (model_->getAxisEnabled(axis_)) {
         stepBox_->setEnabled(true);
