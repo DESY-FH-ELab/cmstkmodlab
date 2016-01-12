@@ -22,7 +22,7 @@ MCommanderMainWindow::MCommanderMainWindow(QWidget *parent)
           this, SLOT(quit()));
 
   lStepExpressModel_ = new LStepExpressModel(config->getValue<std::string>("LStepExpressDevice").c_str(),
-                                             5000, 1000, this);
+                                             1000, 100, this);
 
   motionManager_ = new LStepExpressMotionManager(lStepExpressModel_, this);
 
