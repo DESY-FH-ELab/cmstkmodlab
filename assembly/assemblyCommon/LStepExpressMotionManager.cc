@@ -39,8 +39,6 @@ void LStepExpressMotionManager::run()
     } else {
         emit signalMoveRelative(motion.getX(), motion.getY(), motion.getZ(), motion.getA());
     }
-
-    sleep(2);
 }
 
 void LStepExpressMotionManager::myMoveToThread(QThread *thread)
