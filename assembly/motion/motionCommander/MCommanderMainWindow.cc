@@ -80,7 +80,9 @@ void MCommanderMainWindow::quit()
 
 void MCommanderMainWindow::testManager()
 {
+    /*
     emit moveAbsolute(20, 10, 5, 2);
     emit moveRelative(3, 5, 6, -2);
     emit moveRelative(0, 40, -40, 80);
+    */
 }
