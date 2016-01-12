@@ -40,28 +40,38 @@ LStepExpressModel::LStepExpressModel(const char* port,
 
 QString LStepExpressModel::getAxisName(unsigned int axis)
 {
+    QMutexLocker locker(&mutex_);
+
     QString temp(controller_->GetAxisName((VLStepExpress::Axis)axis));
     return temp;
 }
 
 QString LStepExpressModel::getAxisStatusText(unsigned int axis)
 {
+    QMutexLocker locker(&mutex_);
+
     QString temp(controller_->GetAxisStatusText((VLStepExpress::AxisStatus)axisStatus_[axis]));
     return temp;
 }
 
 bool LStepExpressModel::getAxisState(unsigned int axis)
 {
+    QMutexLocker locker(&mutex_);
+
     return (axisStatus_[axis]!=VLStepExpress::AXISDISABLED);
 }
 
 bool LStepExpressModel::getAxisEnabled(unsigned int axis)
 {
+    QMutexLocker locker(&mutex_);
+
     return axis_[axis];
 }
 
 double LStepExpressModel::getPosition(unsigned int axis)
 {
+    QMutexLocker locker(&mutex_);
+
     return position_[axis];
 }
 
@@ -109,11 +119,15 @@ void LStepExpressModel::moveAbsolute(unsigned int axis, double value)
 
 bool LStepExpressModel::getJoystickEnabled()
 {
+    QMutexLocker locker(&mutex_);
+
     return (joystickEnabled_==1);
 }
 
 bool LStepExpressModel::getJoystickAxisEnabled(unsigned int axis)
 {
+    QMutexLocker locker(&mutex_);
+
     return (joystickAxisEnabled_[axis]==1);
 }
 
@@ -193,6 +207,8 @@ void LStepExpressModel::updateInformation()
 {
     if ( state_ == READY ) {
 
+        QMutexLocker locker(&mutex_);
+
         NQLog("LStepExpressModel", NQLog::Debug) << "updateInformation()";
 
         if (thread()==QApplication::instance()->thread()) {
@@ -233,6 +249,8 @@ void LStepExpressModel::updateInformation()
 void LStepExpressModel::updateMotionInformation()
 {
     if ( state_ == READY ) {
+
+        QMutexLocker locker(&mutex_);
 
         NQLog("LStepExpressModel", NQLog::Debug) << "updateMotionInformation()";
 

@@ -6,6 +6,8 @@
 
 #include <QString>
 #include <QTimer>
+#include <QMutex>
+#include <QMutexLocker>
 
 #include "DeviceState.h"
 #include "DeviceParameter.h"
@@ -60,6 +62,8 @@ protected:
     const QString LStepExpress_PORT;
 
     void initialize();
+
+    QMutex mutex_;
 
     /// Time interval between cache refreshes; in milliseconds.
     const int updateInterval_;
