@@ -29,6 +29,8 @@ signals:
 
 protected slots:
 
+    void testManager();
+
 protected:
 
     LStepExpressModel* lStepExpressModel_;
@@ -36,6 +38,11 @@ protected:
     LStepExpressMotionThread* motionThread_;
 
     QTabWidget* tabWidget_;
+
+signals:
+
+    void moveAbsolute(double x, double y, double z, double a);
+    void moveRelative(double x, double y, double z, double a);
 };
 
 #endif // MCOMMANDERMAINWINDOW_H

@@ -54,7 +54,14 @@ MCommanderMainWindow::MCommanderMainWindow(QWidget *parent)
 
   setCentralWidget(tabWidget_);
 
+  connect(this, SIGNAL(moveAbsolute(double,double,double,double)),
+          motionManager_, SLOT(moveAbsolute(double,double,double,double)));
+  connect(this, SIGNAL(moveRelative(double,double,double,double)),
+          motionManager_, SLOT(moveRelative(double,double,double,double)));
+
   QTimer::singleShot(100, lStepExpressModel_, SLOT(setDeviceEnabled()));
+
+  QTimer::singleShot(2000, this, SLOT(testManager()));
 
   NQLog("MCommanderMainWindow") << "main window constructed";
 }
@@ -69,4 +76,11 @@ void MCommanderMainWindow::quit()
   }
 
   lStepExpressModel_->setDeviceEnabled(false);
+}
+
+void MCommanderMainWindow::testManager()
+{
+    emit moveAbsolute(20, 10, 5, 2);
+    emit moveRelative(3, 5, 6, -2);
+    emit moveRelative(0, 40, -40, 80);
 }
