@@ -33,9 +33,9 @@ public:
 
     explicit LStepExpressMotionManager(LStepExpressModel* model, QObject *parent = 0);
 
-public slots:
+    void myMoveToThread(QThread *thread);
 
-    void start();
+public slots:
 
     void moveRelative(std::vector<double> & values);
     void moveRelative(double x, double y, double z, double a);

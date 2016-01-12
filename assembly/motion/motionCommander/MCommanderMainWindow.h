@@ -9,6 +9,9 @@
 #include <QScrollArea>
 
 #include "LStepExpressModel.h"
+#include "LStepExpressMotionManager.h"
+#include "LStepExpressMotionThread.h"
+
 #include "LStepExpressWidget.h"
 #include "LStepExpressJoystickWidget.h"
 
@@ -28,7 +31,11 @@ protected slots:
 
 protected:
 
-  LStepExpressModel* lStepExpressModel_;
+    LStepExpressModel* lStepExpressModel_;
+    LStepExpressMotionManager* motionManager_;
+    LStepExpressMotionThread* motionThread_;
+
+    QTabWidget* tabWidget_;
 };
 
 #endif // MCOMMANDERMAINWINDOW_H

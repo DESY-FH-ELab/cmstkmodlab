@@ -24,7 +24,12 @@ MCommanderMainWindow::MCommanderMainWindow(QWidget *parent)
   lStepExpressModel_ = new LStepExpressModel(config->getValue<std::string>("LStepExpressDevice").c_str(),
                                              5000, 1000, this);
 
-  QWidget * widget = new QWidget(this);
+  motionManager_ = new LStepExpressMotionManager(lStepExpressModel_, this);
+
+  motionThread_ = new LStepExpressMotionThread(this);
+  motionThread_->start();
+
+  motionManager_->myMoveToThread(motionThread_);
 
   QVBoxLayout * layout = new QVBoxLayout(widget);
   widget->setLayout(layout);

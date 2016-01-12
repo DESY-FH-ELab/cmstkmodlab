@@ -54,6 +54,10 @@ LStepExpressMotionManager::LStepExpressMotionManager(LStepExpressModel* model, Q
 void LStepExpressMotionManager::start()
 {
 
+void LStepExpressMotionManager::myMoveToThread(QThread *thread)
+{
+    model_->moveToThread(thread);
+    this->moveToThread(thread);
 }
 
 void LStepExpressMotionManager::moveRelative(std::vector<double> & values)
