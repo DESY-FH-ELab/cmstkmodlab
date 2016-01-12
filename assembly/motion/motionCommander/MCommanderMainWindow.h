@@ -17,13 +17,13 @@
 
 class MCommanderMainWindow : public QMainWindow
 {
-  Q_OBJECT
+    Q_OBJECT
 public:
-  explicit MCommanderMainWindow(QWidget *parent = 0);
+    explicit MCommanderMainWindow(QWidget *parent = 0);
 
 public slots:
 
-  void quit();
+    void quit();
 
 signals:
 
