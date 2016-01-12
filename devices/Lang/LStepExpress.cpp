@@ -88,7 +88,7 @@ void LStepExpress::DeviceInit()
     StripBuffer(buffer);
     unsigned long serialNumber = std::atol(buffer);
 
-    if (serialNumber != 40052435759) {
+    if (serialNumber != 40051635759) {
       isDeviceAvailable_ = false;
       return;
     }
