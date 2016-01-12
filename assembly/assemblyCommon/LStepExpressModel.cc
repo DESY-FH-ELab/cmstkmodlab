@@ -218,6 +218,7 @@ void LStepExpressModel::updateInformation()
 
         QMutexLocker locker(&mutex_);
 
+        /*
         NQLog("LStepExpressModel", NQLog::Debug) << "updateInformation()";
 
         if (thread()==QApplication::instance()->thread()) {
@@ -225,6 +226,7 @@ void LStepExpressModel::updateInformation()
         } else {
             NQLog("LStepExpressModel", NQLog::Debug) << " running in dedicated thread";
         }
+        */
 
         bool changed = false;
 
@@ -255,7 +257,7 @@ void LStepExpressModel::updateInformation()
         }
 
         if (changed) {
-            NQLog("LStepExpressModel", NQLog::Spam) << "information changed";
+            // NQLog("LStepExpressModel", NQLog::Spam) << "information changed";
             emit informationChanged();
         }
     }
@@ -267,6 +269,7 @@ void LStepExpressModel::updateMotionInformation()
 
         QMutexLocker locker(&mutex_);
 
+        /*
         NQLog("LStepExpressModel", NQLog::Debug) << "updateMotionInformation()";
 
         if (thread()==QApplication::instance()->thread()) {
@@ -274,6 +277,7 @@ void LStepExpressModel::updateMotionInformation()
         } else {
             NQLog("LStepExpressModel", NQLog::Debug) << " running in dedicated thread";
         }
+        */
 
         bool changed = false;
 
@@ -300,7 +304,7 @@ void LStepExpressModel::updateMotionInformation()
         }
 
         if (changed) {
-            NQLog("LStepExpressModel", NQLog::Spam) << "motion information changed";
+            // NQLog("LStepExpressModel", NQLog::Spam) << "motion information changed";
             emit motionInformationChanged();
         }
     }
