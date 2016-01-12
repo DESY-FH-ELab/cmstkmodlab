@@ -46,6 +46,15 @@ QString LStepExpressModel::getAxisName(unsigned int axis)
     return temp;
 }
 
+QString LStepExpressModel::getAxisDimensionName(unsigned int axis)
+{
+    QMutexLocker locker(&mutex_);
+
+
+    QString temp(controller_->GetAxisDimensionShortName((VLStepExpress::Dimension)dim_[axis]));
+    return temp;
+}
+
 QString LStepExpressModel::getAxisStatusText(unsigned int axis)
 {
     QMutexLocker locker(&mutex_);
@@ -224,6 +233,12 @@ void LStepExpressModel::updateInformation()
         controller_->GetAxisEnabled(ivalues);
         if (ivalues!=axis_) {
             axis_ = ivalues;
+            changed = true;
+        }
+
+        controller_->GetDimension(ivalues);
+        if (ivalues!=dim_) {
+            dim_ = ivalues;
             changed = true;
         }
 

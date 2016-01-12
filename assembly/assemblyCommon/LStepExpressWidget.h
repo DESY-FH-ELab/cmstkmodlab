@@ -55,6 +55,7 @@ protected:
     QCheckBox* joystickCheckBox_;
     QLabel* statusLabel_;
     QLabel* positionLabel_;
+    QString axisDimensionName_;
 
 public slots:
     void lStepStateChanged( State state );

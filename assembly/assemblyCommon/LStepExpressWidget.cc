@@ -111,7 +111,8 @@ LStepExpressAxisWidget::LStepExpressAxisWidget(LStepExpressModel* model,
                                                QWidget *parent)
     : QWidget(parent),
       model_(model),
-      axis_(axis)
+      axis_(axis),
+      axisDimensionName_("usteps")
 {
     layout_ = new QFormLayout(this);
     setLayout(layout_);
@@ -124,12 +125,12 @@ LStepExpressAxisWidget::LStepExpressAxisWidget(LStepExpressModel* model,
 
     statusLabel_ = new QLabel("-", this);
     statusLabel_->setAlignment(Qt::AlignHCenter);
-    statusLabel_->setFont(QFont("Helvetica", 24));
+    statusLabel_->setFont(QFont("Helvetica", 32));
     layout_->addRow(statusLabel_);
 
-    positionLabel_ = new QLabel("0.0000 mm", this);
+    positionLabel_ = new QLabel("0000.0000 usteps", this);
     positionLabel_->setAlignment(Qt::AlignHCenter);
-    positionLabel_->setFont(QFont("Helvetica", 18));
+    positionLabel_->setFont(QFont("Helvetica", 16));
     layout_->addRow(positionLabel_);
 
     connect(enabledCheckBox_, SIGNAL(clicked(bool)),
@@ -173,6 +174,8 @@ void LStepExpressAxisWidget::updateWidgets()
 
     enabledCheckBox_->setChecked(axis);
     joystickCheckBox_->setChecked(model_->getJoystickAxisEnabled(axis_));
+
+    axisDimensionName_ = model_->getAxisDimensionName(axis_);
 }
 
 void LStepExpressAxisWidget::updateMotionWidgets()
@@ -180,7 +183,7 @@ void LStepExpressAxisWidget::updateMotionWidgets()
     NQLog("LStepExpressAxisWidget", NQLog::Debug) << "updateMotionWidgets()";
 
     statusLabel_->setText(model_->getAxisStatusText(axis_));
-    positionLabel_->setText(QString::number(model_->getPosition(axis_), 'f', 4) + " mm");
+    positionLabel_->setText(QString::number(model_->getPosition(axis_), 'f', 4) + " " + axisDimensionName_);
 }
 
 void LStepExpressAxisWidget::lStepStateChanged(State newState)
