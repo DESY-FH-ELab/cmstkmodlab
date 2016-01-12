@@ -46,7 +46,7 @@ QString LStepExpressModel::getAxisName(unsigned int axis)
     return temp;
 }
 
-QString LStepExpressModel::getAxisDimensionName(unsigned int axis)
+QString LStepExpressModel::getAxisDimensionShortName(unsigned int axis)
 {
     QMutexLocker locker(&mutex_);
 
