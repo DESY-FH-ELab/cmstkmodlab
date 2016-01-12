@@ -18,6 +18,8 @@ public:
 
 public slots:
 
+    void appendMotion(const LStepExpressMotion& motion);
+    void appendMotions(const QQueue<LStepExpressMotion>& motions);
     void moveRelative(std::vector<double> & values);
     void moveRelative(double x, double y, double z, double a);
     void moveRelative(unsigned int axis, double value);

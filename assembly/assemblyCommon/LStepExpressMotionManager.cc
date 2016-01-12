@@ -47,6 +47,18 @@ void LStepExpressMotionManager::myMoveToThread(QThread *thread)
     this->moveToThread(thread);
 }
 
+void LStepExpressMotionManager::appendMotion(const LStepExpressMotion& motion)
+{
+    motions_.enqueue(motion);
+    run();
+}
+
+void LStepExpressMotionManager::appendMotions(const QQueue<LStepExpressMotion>& motions)
+{
+    motions_.append(motions);
+    run();
+}
+
 void LStepExpressMotionManager::moveRelative(std::vector<double> & values)
 {
     motions_.enqueue(LStepExpressMotion(values, false));
