@@ -27,6 +27,23 @@ char VLStepExpress::GetAxisName(VLStepExpress::Axis axis)
   return 'x';
 }
 
+const char * VLStepExpress::GetAxisDimensionShortName(VLStepExpress::Dimension dimension)
+{
+  switch (dimension) {
+  case MICROSTEPS:
+    return "usteps";
+  case MICROMETER:
+    return "um";
+  case MILLIMETER:
+    return "mm";
+  case DEGREE:
+    return "deg";
+  case ROTATIONS:
+    return "rot";
+  }
+  return "usteps";
+}
+
 const char * VLStepExpress::GetAxisDimensionName(VLStepExpress::Dimension dimension)
 {
   switch (dimension) {
