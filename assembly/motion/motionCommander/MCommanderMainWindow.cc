@@ -31,6 +31,16 @@ MCommanderMainWindow::MCommanderMainWindow(QWidget *parent)
 
   motionManager_->myMoveToThread(motionThread_);
 
+  tabWidget_ = new QTabWidget(this);
+
+  QWidget * widget;
+
+  widget= new QWidget(tabWidget_);
+
+  tabWidget_->addTab(widget, "Motion Manager");
+
+  widget = new QWidget(tabWidget_);
+
   QVBoxLayout * layout = new QVBoxLayout(widget);
   widget->setLayout(layout);
 
@@ -40,7 +50,9 @@ MCommanderMainWindow::MCommanderMainWindow(QWidget *parent)
   LStepExpressJoystickWidget *lStepJoystick = new LStepExpressJoystickWidget(lStepExpressModel_, widget);
   layout->addWidget(lStepJoystick);
 
-  setCentralWidget(widget);
+  tabWidget_->addTab(widget, "LStep Express");
+
+  setCentralWidget(tabWidget_);
 
   QTimer::singleShot(100, lStepExpressModel_, SLOT(setDeviceEnabled()));
 
@@ -50,6 +62,11 @@ MCommanderMainWindow::MCommanderMainWindow(QWidget *parent)
 void MCommanderMainWindow::quit()
 {
   NQLog("MCommanderMainWindow") << "quit";
+
+  if (motionThread_) {
+      motionThread_->quit();
+      motionThread_->wait();
+  }
 
   lStepExpressModel_->setDeviceEnabled(false);
 }
