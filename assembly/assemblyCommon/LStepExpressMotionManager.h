@@ -46,6 +46,8 @@ public slots:
 
 protected:
 
+    void run();
+
     LStepExpressModel* model_;
     QQueue<LStepExpressMotion> motions_;
     bool inMotion_;
@@ -54,6 +56,11 @@ protected slots:
 
     void motionStarted();
     void motionFinished();
+
+signals:
+
+    void signalMoveRelative(double x, double y, double z, double a);
+    void signalMoveAbsolute(double x, double y, double z, double a);
 };
 
 #endif // LSTEPEXPRESSMOTIONMANAGER_H
