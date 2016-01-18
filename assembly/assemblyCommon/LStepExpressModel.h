@@ -43,6 +43,9 @@ public:
     bool getJoystickEnabled();
     bool getJoystickAxisEnabled(unsigned int axis);
 
+    void setValue(const QString & command, const QString & value);
+    void getValue(const QString & command, QString & value);
+
 public slots:
 
     void setDeviceEnabled(bool enabled = true);

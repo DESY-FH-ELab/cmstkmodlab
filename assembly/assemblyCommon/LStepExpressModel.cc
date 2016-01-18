@@ -175,6 +175,19 @@ void LStepExpressModel::setJoystickAxisEnabled(unsigned int axis, bool enabled)
     }
 }
 
+void LStepExpressModel::setValue(const QString & command, const QString & value)
+{
+    std::string temp;
+    controller_->SetValue(command.toStdString(), value.toStdString());
+}
+
+void LStepExpressModel::getValue(const QString & command, QString & value)
+{
+    std::string temp;
+    controller_->GetValue(command.toStdString(), temp);
+    value = temp.c_str();
+}
+
 void LStepExpressModel::initialize()
 {
     setDeviceState(INITIALIZING);
