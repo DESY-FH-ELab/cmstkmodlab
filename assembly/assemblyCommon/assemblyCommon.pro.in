@@ -75,7 +75,8 @@ HEADERS += AssemblyVUEyeCamera.h \
            LStepExpressMotionManager.h \
            LStepExpressMotionThread.h \
            LStepExpressWidget.h \
-           LStepExpressJoystickWidget.h
+           LStepExpressJoystickWidget.h \
+           LStepExpressSettingsWidget.h
 
 equals(USEFAKEDEVICES,"X0") {
 HEADERS += AssemblyUEyeCamera.h \
@@ -102,7 +103,8 @@ SOURCES += AssemblyVUEyeCamera.cc \
            LStepExpressMotionManager.cc \
            LStepExpressMotionThread.cc \
            LStepExpressWidget.cc \
-           LStepExpressJoystickWidget.cc
+           LStepExpressJoystickWidget.cc \
+           LStepExpressSettingsWidget.cc
 
 equals(USEFAKEDEVICES,"X0") {
 SOURCES += AssemblyUEyeCamera.cc \

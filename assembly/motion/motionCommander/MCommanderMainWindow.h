@@ -13,6 +13,7 @@
 #include "LStepExpressMotionManager.h"
 #include "LStepExpressMotionThread.h"
 
+#include "LStepExpressSettingsWidget.h"
 #include "LStepExpressWidget.h"
 #include "LStepExpressJoystickWidget.h"
 

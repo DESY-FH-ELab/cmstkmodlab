@@ -53,6 +53,10 @@ MCommanderMainWindow::MCommanderMainWindow(QWidget *parent)
 
   tabWidget_->addTab(widget, "LStep Express");
 
+  LStepExpressSettingsWidget *lStepExpressSettingsWidget = new LStepExpressSettingsWidget(lStepExpressSettings_,
+                                                                                          tabWidget_);
+  tabWidget_->addTab(lStepExpressSettingsWidget, "LStep Express Settings");
+
   setCentralWidget(tabWidget_);
 
   connect(this, SIGNAL(moveAbsolute(double,double,double,double)),
