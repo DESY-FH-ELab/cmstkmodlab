@@ -66,7 +66,7 @@ MCommanderMainWindow::MCommanderMainWindow(QWidget *parent)
 
   QTimer::singleShot(100, lStepExpressModel_, SLOT(setDeviceEnabled()));
 
-  QTimer::singleShot(2000, this, SLOT(testManager()));
+  //QTimer::singleShot(2000, this, SLOT(testManager()));
 
   NQLog("MCommanderMainWindow") << "main window constructed";
 }
