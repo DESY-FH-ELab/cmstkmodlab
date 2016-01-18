@@ -9,6 +9,7 @@
 #include <QScrollArea>
 
 #include "LStepExpressModel.h"
+#include "LStepExpressSettings.h"
 #include "LStepExpressMotionManager.h"
 #include "LStepExpressMotionThread.h"
 
@@ -34,6 +35,7 @@ protected slots:
 protected:
 
     LStepExpressModel* lStepExpressModel_;
+    LStepExpressSettings* lStepExpressSettings_;
     LStepExpressMotionManager* motionManager_;
     LStepExpressMotionThread* motionThread_;
 
