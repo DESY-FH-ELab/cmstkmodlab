@@ -31,10 +31,9 @@ LStepExpressSettingsInstructionB::LStepExpressSettingsInstructionB(const QString
 
 }
 
-const QString LStepExpressSettingsInstructionB::setter()
+const QString LStepExpressSettingsInstructionB::value()
 {
-    QString temp = setter_ + " " + (value_==true?"1":"0");
-    return temp;
+    return QString(value_==true?"1":"0");
 }
 
 void LStepExpressSettingsInstructionB::setValue(const QString& value)
@@ -62,10 +61,9 @@ LStepExpressSettingsInstructionI::LStepExpressSettingsInstructionI(const QString
 
 }
 
-const QString LStepExpressSettingsInstructionI::setter()
+const QString LStepExpressSettingsInstructionI::value()
 {
-    QString temp = setter_ + " " + QString::number(value_);
-    return temp;
+    return QString::number(value_);
 }
 
 void LStepExpressSettingsInstructionI::setValue(const QString& value)
@@ -90,13 +88,13 @@ LStepExpressSettingsInstructionVI::LStepExpressSettingsInstructionVI(const QStri
     value_.resize(size_, 0);
 }
 
-const QString LStepExpressSettingsInstructionVI::setter()
+const QString LStepExpressSettingsInstructionVI::value()
 {
-    QString temp = setter_;
+    QString temp;
     for (std::vector<int>::iterator it = value_.begin();
          it!=value_.end();
          ++it) {
-        temp += " ";
+        if (it!=value_.begin()) temp += " ";
         temp += QString::number(*it);
     }
     return temp;
@@ -160,10 +158,9 @@ LStepExpressSettingsInstructionD::LStepExpressSettingsInstructionD(const QString
 
 }
 
-const QString LStepExpressSettingsInstructionD::setter()
+const QString LStepExpressSettingsInstructionD::value()
 {
-    QString temp = setter_ + " " + QString::number(value_);
-    return temp;
+    return QString::number(value_);
 }
 
 void LStepExpressSettingsInstructionD::setValue(const QString& value)
@@ -297,11 +294,15 @@ void LStepExpressSettings::readSettingsFromFile(const QString& filename)
 
 void LStepExpressSettings::writeSettingsToDevice()
 {
+    QMutexLocker locker(&mutex_);
+
     for (QList<LStepExpressSettingsInstruction*>::iterator it = parameters_.begin();
          it!=parameters_.end();
          ++it) {
         LStepExpressSettingsInstruction* setting = *it;
-        // NQLog("LStepExpressSettings", NQLog::Spam) << setting->setter();
+
+        model_->setValue(setting->setter(), setting->value());
+        NQLog("LStepExpressSettings", NQLog::Spam) << setting->setter() << " <- " << setting->value();
     }
 }
 
