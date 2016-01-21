@@ -140,7 +140,8 @@ LStepExpressSettingsWidget::LStepExpressSettingsWidget(LStepExpressSettings* set
     motorToolBox_ = new QToolBox(mainToolBox_);
     mainToolBox_->addItem(motorToolBox_, "Motor");
 
-    encoderToolBox_ = new QToolBox(mainToolBox_);
+    encoderToolBox_ = new QWidget(mainToolBox_);
+    fillEncoderToolBox();
     mainToolBox_->addItem(encoderToolBox_, "Encoder");
 
     QWidget * buttons = new QWidget(this);
@@ -275,6 +276,66 @@ void LStepExpressSettingsWidget::fillAxisToolBox()
     layout->addWidget(new LStepExpressSettingsDoubleSpinBox(settings_, "Y-Velocity", 0.0, 100.0, axisToolBox_), 11, 2);
     layout->addWidget(new LStepExpressSettingsDoubleSpinBox(settings_, "Z-Velocity", 0.0, 100.0, axisToolBox_), 11, 3);
     layout->addWidget(new LStepExpressSettingsDoubleSpinBox(settings_, "A-Velocity", 0.0, 100.0, axisToolBox_), 11, 4);
+void LStepExpressSettingsWidget::fillEncoderToolBox()
+{
+    QGridLayout *layout = new QGridLayout(encoderToolBox_);
+    encoderToolBox_->setLayout(layout);
+
+    layout->addWidget(new QLabel("X", encoderToolBox_), 0, 1);
+    layout->addWidget(new QLabel("Y", encoderToolBox_), 0, 2);
+    layout->addWidget(new QLabel("Z", encoderToolBox_), 0, 3);
+    layout->addWidget(new QLabel("A", encoderToolBox_), 0, 4);
+
+    layout->addWidget(new QLabel("Direction", encoderToolBox_), 1, 0);
+    layout->addWidget(new LStepExpressSettingsCheckBox(settings_, "X-EncoderDirection", encoderToolBox_), 1, 1);
+    layout->addWidget(new LStepExpressSettingsCheckBox(settings_, "Y-EncoderDirection", encoderToolBox_), 1, 2);
+    layout->addWidget(new LStepExpressSettingsCheckBox(settings_, "Z-EncoderDirection", encoderToolBox_), 1, 3);
+    layout->addWidget(new LStepExpressSettingsCheckBox(settings_, "A-EncoderDirection", encoderToolBox_), 1, 4);
+
+    layout->addWidget(new QLabel("Period", encoderToolBox_), 2, 0);
+    layout->addWidget(new LStepExpressSettingsDoubleSpinBox(settings_, "X-EncoderPeriod", 0.0, 20.0, encoderToolBox_), 2, 1);
+    layout->addWidget(new LStepExpressSettingsDoubleSpinBox(settings_, "Y-EncoderPeriod", 0.0, 20.0, encoderToolBox_), 2, 2);
+    layout->addWidget(new LStepExpressSettingsDoubleSpinBox(settings_, "Z-EncoderPeriod", 0.0, 20.0, encoderToolBox_), 2, 3);
+    layout->addWidget(new LStepExpressSettingsDoubleSpinBox(settings_, "A-EncoderPeriod", 0.0, 20.0, encoderToolBox_), 2, 4);
+
+    layout->addWidget(new QLabel("Pole Pairs", encoderToolBox_), 3, 0);
+    layout->addWidget(new LStepExpressSettingsIntSpinBox(settings_, "X-EncoderPolePairs", 1, 1000000, encoderToolBox_), 3, 1);
+    layout->addWidget(new LStepExpressSettingsIntSpinBox(settings_, "Y-EncoderPolePairs", 1, 1000000, encoderToolBox_), 3, 2);
+    layout->addWidget(new LStepExpressSettingsIntSpinBox(settings_, "Z-EncoderPolePairs", 1, 1000000, encoderToolBox_), 3, 3);
+    layout->addWidget(new LStepExpressSettingsIntSpinBox(settings_, "A-EncoderPolePairs", 1, 1000000, encoderToolBox_), 3, 4);
+
+    layout->addWidget(new QLabel("Assignment", encoderToolBox_), 4, 0);
+    layout->addWidget(new LStepExpressSettingsIntSpinBox(settings_, "X-EncoderToAxis", 0, 14, encoderToolBox_), 4, 1);
+    layout->addWidget(new LStepExpressSettingsIntSpinBox(settings_, "Y-EncoderToAxis", 0, 14, encoderToolBox_), 4, 2);
+    layout->addWidget(new LStepExpressSettingsIntSpinBox(settings_, "Z-EncoderToAxis", 0, 14, encoderToolBox_), 4, 3);
+    layout->addWidget(new LStepExpressSettingsIntSpinBox(settings_, "A-EncoderToAxis", 0, 14, encoderToolBox_), 4, 4);
+
+    layout->addWidget(new QLabel("Type", encoderToolBox_), 5, 0);
+    layout->addWidget(new LStepExpressSettingsIntSpinBox(settings_, "X-EncoderType", 0, 12, encoderToolBox_), 5, 1);
+    layout->addWidget(new LStepExpressSettingsIntSpinBox(settings_, "Y-EncoderType", 0, 12, encoderToolBox_), 5, 2);
+    layout->addWidget(new LStepExpressSettingsIntSpinBox(settings_, "Z-EncoderType", 0, 12, encoderToolBox_), 5, 3);
+    layout->addWidget(new LStepExpressSettingsIntSpinBox(settings_, "A-EncoderType", 0, 12, encoderToolBox_), 5, 4);
+
+    layout->addWidget(new QLabel("Position", encoderToolBox_), 6, 0);
+    layout->addWidget(new LStepExpressSettingsCheckBox(settings_, "X-EncoderPosition", encoderToolBox_), 6, 1);
+    layout->addWidget(new LStepExpressSettingsCheckBox(settings_, "Y-EncoderPosition", encoderToolBox_), 6, 2);
+    layout->addWidget(new LStepExpressSettingsCheckBox(settings_, "Z-EncoderPosition", encoderToolBox_), 6, 3);
+    layout->addWidget(new LStepExpressSettingsCheckBox(settings_, "A-EncoderPosition", encoderToolBox_), 6, 4);
+
+    layout->addWidget(new QLabel("Reference", encoderToolBox_), 7, 0);
+    layout->addWidget(new LStepExpressSettingsCheckBox(settings_, "X-EncoderReference", encoderToolBox_), 7, 1);
+    layout->addWidget(new LStepExpressSettingsCheckBox(settings_, "Y-EncoderReference", encoderToolBox_), 7, 2);
+    layout->addWidget(new LStepExpressSettingsCheckBox(settings_, "Z-EncoderReference", encoderToolBox_), 7, 3);
+    layout->addWidget(new LStepExpressSettingsCheckBox(settings_, "A-EncoderReference", encoderToolBox_), 7, 4);
+
+    layout->addWidget(new QLabel("Reference Polarity", encoderToolBox_), 8, 0);
+    layout->addWidget(new LStepExpressSettingsCheckBox(settings_, "X-EncoderReferencePolarity", encoderToolBox_), 8, 1);
+    layout->addWidget(new LStepExpressSettingsCheckBox(settings_, "Y-EncoderReferencePolarity", encoderToolBox_), 8, 2);
+    layout->addWidget(new LStepExpressSettingsCheckBox(settings_, "Z-EncoderReferencePolarity", encoderToolBox_), 8, 3);
+    layout->addWidget(new LStepExpressSettingsCheckBox(settings_, "A-EncoderReferencePolarity", encoderToolBox_), 8, 4);
+
+    layout->addWidget(new QWidget(generalToolBox_), 9, 0);
+    layout->setRowStretch(9, 100);
 }
 
 void LStepExpressSettingsWidget::readFromDeviceClicked()
