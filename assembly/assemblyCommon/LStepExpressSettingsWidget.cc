@@ -165,7 +165,7 @@ LStepExpressSettingsWidget::LStepExpressSettingsWidget(LStepExpressSettings* set
     hlayout->addWidget(writeToFileButton_);
 
     vlayout->addWidget(buttons);
- }
+}
 
 void LStepExpressSettingsWidget::fillAxisToolBox()
 {
