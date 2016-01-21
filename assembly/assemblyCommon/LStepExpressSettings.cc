@@ -206,7 +206,7 @@ LStepExpressSettings::LStepExpressSettings(LStepExpressModel* model, QObject* pa
     addIA("MotorPolePairs", "!motorpolepairs", "motorpolepairs", true, false);
     addIA("MotorPolePairResolution", "!motorpolepairres", "motorpolepairres", true, false); // 500, 1000, 2000, 32768
     addBA("MotorFieldDirection", "!motorfielddir", "motorfielddir", true, false);
-    addIA("MotorMaxVelocity", "!motormaxvel", "motormaxvel", true, false);
+    addDA("MotorMaxVelocity", "!motormaxvel", "motormaxvel", true, false);
     addIA("MotorBrake", "!motorbrake", "motorbrake", true, false);
     addIA("MotorBrakeSwitchOnDelay", "!motorbrakeswitchondelay", "motorbrakeswitchondelay", true, false); // -5000 - 5000 [ms]
     addIA("MotorBrakeSwitchOffDelay", "!motorbrakeswitchoffdelay", "motorbrakeswitchoffdelay", true, false); // -5000 - 5000 [ms]
