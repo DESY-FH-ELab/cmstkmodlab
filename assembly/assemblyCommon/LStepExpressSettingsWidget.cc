@@ -276,6 +276,9 @@ void LStepExpressSettingsWidget::fillAxisToolBox()
     layout->addWidget(new LStepExpressSettingsDoubleSpinBox(settings_, "Y-Velocity", 0.0, 100.0, axisToolBox_), 11, 2);
     layout->addWidget(new LStepExpressSettingsDoubleSpinBox(settings_, "Z-Velocity", 0.0, 100.0, axisToolBox_), 11, 3);
     layout->addWidget(new LStepExpressSettingsDoubleSpinBox(settings_, "A-Velocity", 0.0, 100.0, axisToolBox_), 11, 4);
+
+    layout->addWidget(new QWidget(generalToolBox_), 12, 0);
+    layout->setRowStretch(12, 100);
 void LStepExpressSettingsWidget::fillEncoderToolBox()
 {
     QGridLayout *layout = new QGridLayout(encoderToolBox_);
