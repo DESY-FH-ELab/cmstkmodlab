@@ -127,6 +127,7 @@ protected:
     LStepExpressSettings* settings_;
 
     QToolBox * mainToolBox_;
+    QWidget * generalToolBox_;
     QWidget * axisToolBox_;
     QToolBox * motorToolBox_;
     QToolBox * encoderToolBox_;
@@ -136,6 +137,7 @@ protected:
     QPushButton * writeToDeviceButton_;
     QPushButton * writeToFileButton_;
 
+    void fillGeneralToolBox();
     void fillAxisToolBox();
 
 public slots:

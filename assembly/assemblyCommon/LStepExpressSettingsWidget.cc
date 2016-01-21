@@ -129,6 +129,10 @@ LStepExpressSettingsWidget::LStepExpressSettingsWidget(LStepExpressSettings* set
     mainToolBox_ = new QToolBox(this);
     vlayout->addWidget(mainToolBox_);
 
+    generalToolBox_ = new QWidget(mainToolBox_);
+    fillGeneralToolBox();
+    mainToolBox_->addItem(generalToolBox_, "General");
+
     axisToolBox_ = new QWidget(mainToolBox_);
     fillAxisToolBox();
     mainToolBox_->addItem(axisToolBox_, "Axis");
@@ -165,6 +169,35 @@ LStepExpressSettingsWidget::LStepExpressSettingsWidget(LStepExpressSettings* set
     hlayout->addWidget(writeToFileButton_);
 
     vlayout->addWidget(buttons);
+}
+
+void LStepExpressSettingsWidget::fillGeneralToolBox()
+{
+    QGridLayout *layout = new QGridLayout(generalToolBox_);
+    generalToolBox_->setLayout(layout);
+
+    layout->addWidget(new QLabel("Axis Count", generalToolBox_), 0, 0);
+    layout->addWidget(new LStepExpressSettingsIntSpinBox(settings_, "AxisCount", 0, 4, generalToolBox_), 0, 1);
+
+    layout->addWidget(new QLabel("eQep Inputs", generalToolBox_), 1, 0);
+    layout->addWidget(new LStepExpressSettingsIntSpinBox(settings_, "EQEP", 0, 5, generalToolBox_), 1, 1);
+
+    layout->addWidget(new QLabel("TTL Outputs", generalToolBox_), 2, 0);
+    layout->addWidget(new LStepExpressSettingsCheckBox(settings_, "TTLOut", generalToolBox_), 2, 1);
+
+    layout->addWidget(new QLabel("X", generalToolBox_), 3, 1);
+    layout->addWidget(new QLabel("Y", generalToolBox_), 3, 2);
+    layout->addWidget(new QLabel("Z", generalToolBox_), 3, 3);
+    layout->addWidget(new QLabel("A", generalToolBox_), 3, 4);
+
+    layout->addWidget(new QLabel("Configured", generalToolBox_), 4, 0);
+    layout->addWidget(new LStepExpressSettingsCheckBox(settings_, "X-Configured", generalToolBox_), 4, 1);
+    layout->addWidget(new LStepExpressSettingsCheckBox(settings_, "Y-Configured", generalToolBox_), 4, 2);
+    layout->addWidget(new LStepExpressSettingsCheckBox(settings_, "Z-Configured", generalToolBox_), 4, 3);
+    layout->addWidget(new LStepExpressSettingsCheckBox(settings_, "A-Configured", generalToolBox_), 4, 4);
+
+    layout->addWidget(new QWidget(generalToolBox_), 5, 0);
+    layout->setRowStretch(5, 100);
 }
 
 void LStepExpressSettingsWidget::fillAxisToolBox()
