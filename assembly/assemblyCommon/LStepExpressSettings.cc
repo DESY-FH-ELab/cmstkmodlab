@@ -213,8 +213,8 @@ LStepExpressSettings::LStepExpressSettings(LStepExpressModel* model, QObject* pa
     addBA("MotorTempSensor", "!motortempsensor", "motortempsensor", true, false);
     addIA("MotorTempSensorLowerLimit", "!motortempsensorminimum", "motortempsensorminimum", true, false);
     addIA("MotorTempSensorUpperLimit", "!motortempsensormaximum", "motortempsensormaximum", true, false);
-    addDA("MotorMomentConstant", "!motormomentconstant", "motormomentconstant", true, true);
-    addDA("MotorMomentOfInertia", "!motormomentofinertia", "motormomentofinertia", true, true);
+    addDA("MotorMomentConstant", "!motormomentconstant", "motormomentconstant", true, true); // 0 - 50.000 [Nm/A]
+    addDA("MotorMomentOfInertia", "!motormomentofinertia", "motormomentofinertia", true, true); // 0 - 100000 [kg cm^2]
     addDA("MotorCurrent", "!motorcurrent", "motorcurrent", true, false); // 0.5 - 5.0 [A]
 
     addBA("EncoderDirection", "!encdir", "encdir", true, false);
