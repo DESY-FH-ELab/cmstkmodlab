@@ -121,7 +121,10 @@ LStepExpressSettingsWidget::LStepExpressSettingsWidget(LStepExpressSettings* set
       settings_(settings)
 {
     QVBoxLayout* vlayout = new QVBoxLayout(this);
+    vlayout->setContentsMargins(4, 4, 4, 4);
     setLayout(vlayout);
+
+    setMinimumWidth(900);
 
     mainToolBox_ = new QToolBox(this);
     vlayout->addWidget(mainToolBox_);
@@ -138,6 +141,7 @@ LStepExpressSettingsWidget::LStepExpressSettingsWidget(LStepExpressSettings* set
 
     QWidget * buttons = new QWidget(this);
     QHBoxLayout* hlayout = new QHBoxLayout(this);
+    hlayout->setContentsMargins(4, 4, 4, 4);
     buttons->setLayout(hlayout);
 
     readFromDeviceButton_ = new QPushButton("Read From Device", buttons);
