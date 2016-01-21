@@ -129,8 +129,8 @@ protected:
     QToolBox * mainToolBox_;
     QWidget * generalToolBox_;
     QWidget * axisToolBox_;
-    QToolBox * motorToolBox_;
-    QToolBox * encoderToolBox_;
+    QWidget * motorToolBox_;
+    QWidget * encoderToolBox_;
 
     QPushButton * readFromDeviceButton_;
     QPushButton * readFromFileButton_;
@@ -139,6 +139,8 @@ protected:
 
     void fillGeneralToolBox();
     void fillAxisToolBox();
+    void fillMotorToolBox();
+    void fillEncoderToolBox();
 
 public slots:
 

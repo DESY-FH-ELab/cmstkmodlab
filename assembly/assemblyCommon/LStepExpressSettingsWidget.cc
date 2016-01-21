@@ -137,7 +137,8 @@ LStepExpressSettingsWidget::LStepExpressSettingsWidget(LStepExpressSettings* set
     fillAxisToolBox();
     mainToolBox_->addItem(axisToolBox_, "Axis");
 
-    motorToolBox_ = new QToolBox(mainToolBox_);
+    motorToolBox_ = new QWidget(mainToolBox_);
+    fillMotorToolBox();
     mainToolBox_->addItem(motorToolBox_, "Motor");
 
     encoderToolBox_ = new QWidget(mainToolBox_);
@@ -279,6 +280,13 @@ void LStepExpressSettingsWidget::fillAxisToolBox()
 
     layout->addWidget(new QWidget(generalToolBox_), 12, 0);
     layout->setRowStretch(12, 100);
+}
+
+void LStepExpressSettingsWidget::fillMotorToolBox()
+{
+
+}
+
 void LStepExpressSettingsWidget::fillEncoderToolBox()
 {
     QGridLayout *layout = new QGridLayout(encoderToolBox_);
