@@ -182,6 +182,8 @@ LStepExpressSettings::LStepExpressSettings(LStepExpressModel* model, QObject* pa
     addI("EQEP", "!eqepconfig", "eqepconfig", true, false);
     addB("TTLOut", "!ttloutconfig", "ttloutconfig", true, false);
 
+    addBA("Configured", "!configurated", "configurated", true, false);
+
     addBA("AxisDirection", "!dir", "dir", true, false);
     addIA("GearDenominator", "!geardenominator", "geardenominator", true, false); // 1 - INF
     addIA("GearNumerator", "!gearnumerator", "gearnumerator", true, false); // 1 - INF
@@ -223,8 +225,6 @@ LStepExpressSettings::LStepExpressSettings(LStepExpressModel* model, QObject* pa
     addBA("EncoderPosition", "!encpos", "encpos", false, false);
     addBA("EncoderReference", "!encref", "encref", false, false);
     addBA("EncoderReferencePolarity", "!encrefpol", "encrefpol", false, false);
-
-    addBA("Configured", "!configurated", "configurated", true, false);
 }
 
 void LStepExpressSettings::valueChanged(QString key, bool value)
