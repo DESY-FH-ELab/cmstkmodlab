@@ -150,6 +150,7 @@ public slots:
 
 protected slots:
 
+    void controlStateChanged(bool);
     void readFromDeviceClicked();
     void readFromFileClicked();
     void writeToDeviceClicked();

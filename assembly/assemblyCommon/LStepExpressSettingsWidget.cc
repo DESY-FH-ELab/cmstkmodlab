@@ -226,6 +226,9 @@ LStepExpressSettingsWidget::LStepExpressSettingsWidget(LStepExpressSettings* set
     hlayout->addWidget(writeToFileButton_);
 
     vlayout->addWidget(buttons);
+
+    connect(settings_, SIGNAL(controlStateChanged(bool)),
+            this, SLOT(controlStateChanged(bool)));
 }
 
 void LStepExpressSettingsWidget::fillGeneralToolBox()
@@ -525,6 +528,17 @@ void LStepExpressSettingsWidget::fillEncoderToolBox()
 
     layout->addWidget(new QWidget(generalToolBox_), 9, 0);
     layout->setRowStretch(9, 100);
+}
+
+void LStepExpressSettingsWidget::controlStateChanged(bool enabled)
+{
+    NQLog("LStepExpressSettingsWidget", NQLog::Debug) << "controlStateChanged(bool enabled) " << enabled;
+
+    if (enabled) {
+        mainToolBox_->setEnabled(settings_->getDeviceState());
+    } else {
+        mainToolBox_->setEnabled(false);
+    }
 }
 
 void LStepExpressSettingsWidget::readFromDeviceClicked()
