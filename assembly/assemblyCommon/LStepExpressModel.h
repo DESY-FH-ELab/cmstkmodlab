@@ -73,7 +73,7 @@ protected:
     const int updateInterval_;
     const int motionUpdateInterval_;
     QTimer* timer_;
-    QTimer* motionTimer_;
+    int updateCount_;
 
     void setDeviceState( State state );
 

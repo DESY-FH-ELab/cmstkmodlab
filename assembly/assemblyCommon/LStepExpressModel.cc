@@ -12,7 +12,8 @@ LStepExpressModel::LStepExpressModel(const char* port,
       AbstractDeviceModel<LStepExpress_t>(),
       LStepExpress_PORT(port),
       updateInterval_(updateInterval),
-      motionUpdateInterval_(motionUpdateInterval)
+      motionUpdateInterval_(motionUpdateInterval),
+      updateCount_(0)
 {
     std::vector<int> allZerosI{ 0, 0, 0, 0 };
     std::vector<double> allZerosD{ 0.0, 0.0, 0.0, 0.0 };
@@ -30,12 +31,8 @@ LStepExpressModel::LStepExpressModel(const char* port,
     inMotion_ = false;
 
     timer_ = new QTimer(this);
-    timer_->setInterval(updateInterval_);
-    connect(timer_, SIGNAL(timeout()), this, SLOT(updateInformation()));
-
-    motionTimer_ = new QTimer(this);
-    motionTimer_->setInterval(motionUpdateInterval);
-    connect(motionTimer_, SIGNAL(timeout()), this, SLOT(updateMotionInformation()));
+    timer_->setInterval(motionUpdateInterval_);
+    connect(timer_, SIGNAL(timeout()), this, SLOT(updateMotionInformation()));
 }
 
 QString LStepExpressModel::getAxisName(unsigned int axis)
@@ -215,10 +212,8 @@ void LStepExpressModel::setDeviceState( State state )
 
         if ( state_ == READY ) {
             timer_->start();
-            motionTimer_->start();
         } else {
             timer_->stop();
-            motionTimer_->stop();
         }
 
         emit deviceStateChanged(state);
@@ -281,6 +276,12 @@ void LStepExpressModel::updateMotionInformation()
     if ( state_ == READY ) {
 
         QMutexLocker locker(&mutex_);
+
+        updateCount_++;
+        if (updateCount_==nUpdates) {
+            updateInformation();
+            updateCount_ = 0;
+        }
 
         /*
         NQLog("LStepExpressModel", NQLog::Debug) << "updateMotionInformation()";
