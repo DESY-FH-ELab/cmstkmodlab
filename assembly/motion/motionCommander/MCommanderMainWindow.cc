@@ -64,7 +64,7 @@ MCommanderMainWindow::MCommanderMainWindow(QWidget *parent)
   connect(this, SIGNAL(moveRelative(double,double,double,double)),
           motionManager_, SLOT(moveRelative(double,double,double,double)));
 
-  QTimer::singleShot(100, lStepExpressModel_, SLOT(setDeviceEnabled()));
+  QTimer::singleShot(1000, lStepExpressModel_, SLOT(setDeviceEnabled()));
 
   //QTimer::singleShot(2000, this, SLOT(testManager()));
 
