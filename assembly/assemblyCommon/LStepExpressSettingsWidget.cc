@@ -14,13 +14,25 @@ LStepExpressSettingsCheckBox::LStepExpressSettingsCheckBox(LStepExpressSettings*
     connect(this, SIGNAL(stateChanged(int)),
             this, SLOT(statusChanged(int)));
 
-    connect(this, SIGNAL(valueChanged(QString,bool)),
-            settings_, SLOT(valueChanged(QString,bool)));
+    connect(this, SIGNAL(valueChanged(QString, bool)),
+            settings_, SLOT(valueChanged(QString, bool)));
+
+    connect(settings_, SIGNAL(settingChanged(QString, QVariant)),
+            this, SLOT(settingChanged(QString, QVariant)));
 }
 
 void LStepExpressSettingsCheckBox::statusChanged(int /* state */)
 {
     emit valueChanged(key_, isChecked());
+}
+
+void LStepExpressSettingsCheckBox::settingChanged(QString key, QVariant value)
+{
+    if (key!=key_) return;
+
+    NQLog("LStepExpressSettingsCheckBox") << "settingChanged(" << key << ")";
+
+    setChecked(value.toBool());
 }
 
 LStepExpressSettingsTripleCheckBox::LStepExpressSettingsTripleCheckBox(LStepExpressSettings* settings,
@@ -49,11 +61,30 @@ LStepExpressSettingsTripleCheckBox::LStepExpressSettingsTripleCheckBox(LStepExpr
 
     connect(this, SIGNAL(valueChanged(QString,bool,bool,bool)),
             settings_, SLOT(valueChanged(QString,bool,bool,bool)));
+
+    connect(settings_, SIGNAL(settingChanged(QString, QVariant)),
+            this, SLOT(settingChanged(QString, QVariant)));
 }
 
 void LStepExpressSettingsTripleCheckBox::statusChanged(int /* state */)
 {
     emit valueChanged(key_, box_[0]->isChecked(), box_[1]->isChecked(), box_[2]->isChecked());
+}
+
+void LStepExpressSettingsTripleCheckBox::settingChanged(QString key, QVariant value)
+{
+    if (key!=key_) return;
+
+    NQLog("LStepExpressSettingsTripleCheckBox") << "settingChanged(" << key << ")";
+
+    QList<QVariant> list = value.toList();
+    int i = 0;
+    for (QList<QVariant>::Iterator it = list.begin();
+         it!=list.end();
+         ++it) {
+        box_[i]->setChecked((*it).toInt());
+        i++;
+    }
 }
 
 LStepExpressSettingsIntSpinBox::LStepExpressSettingsIntSpinBox(LStepExpressSettings* settings,
@@ -71,8 +102,11 @@ LStepExpressSettingsIntSpinBox::LStepExpressSettingsIntSpinBox(LStepExpressSetti
     connect(this, SIGNAL(valueChanged(int)),
             this, SLOT(handleValueChanged(int)));
 
-    connect(this, SIGNAL(valueChanged(QString,int)),
-            settings_, SLOT(valueChanged(QString,int)));
+    connect(this, SIGNAL(valueChanged(QString, int)),
+            settings_, SLOT(valueChanged(QString, int)));
+
+    connect(settings_, SIGNAL(settingChanged(QString, QVariant)),
+            this, SLOT(settingChanged(QString, QVariant)));
 }
 
 void LStepExpressSettingsIntSpinBox::wheelEvent(QWheelEvent * event)
@@ -83,6 +117,15 @@ void LStepExpressSettingsIntSpinBox::wheelEvent(QWheelEvent * event)
 void LStepExpressSettingsIntSpinBox::handleValueChanged(int value)
 {
     emit valueChanged(key_, value);
+}
+
+void LStepExpressSettingsIntSpinBox::settingChanged(QString key, QVariant value)
+{
+    if (key!=key_) return;
+
+    NQLog("LStepExpressSettingsIntSpinBox") << "settingChanged(" << key << ")";
+
+    setValue(value.toInt());
 }
 
 LStepExpressSettingsDoubleSpinBox::LStepExpressSettingsDoubleSpinBox(LStepExpressSettings* settings,
@@ -103,6 +146,9 @@ LStepExpressSettingsDoubleSpinBox::LStepExpressSettingsDoubleSpinBox(LStepExpres
 
     connect(this, SIGNAL(valueChanged(QString,double)),
             settings_, SLOT(valueChanged(QString,double)));
+
+    connect(settings_, SIGNAL(settingChanged(QString, QVariant)),
+            this, SLOT(settingChanged(QString, QVariant)));
 }
 
 void LStepExpressSettingsDoubleSpinBox::wheelEvent(QWheelEvent * event)
@@ -113,6 +159,15 @@ void LStepExpressSettingsDoubleSpinBox::wheelEvent(QWheelEvent * event)
 void LStepExpressSettingsDoubleSpinBox::handleValueChanged(double value)
 {
     emit valueChanged(key_, value);
+}
+
+void LStepExpressSettingsDoubleSpinBox::settingChanged(QString key, QVariant value)
+{
+    if (key!=key_) return;
+
+    NQLog("LStepExpressSettingsIntSpinBox") << "settingChanged(" << key << ")";
+
+    setValue(value.toDouble());
 }
 
 LStepExpressSettingsWidget::LStepExpressSettingsWidget(LStepExpressSettings* settings,

@@ -28,6 +28,7 @@ public:
 
 protected slots:
 
+    void settingChanged(QString key, QVariant value);
     void statusChanged(int /* state */);
 
 protected:
@@ -51,6 +52,7 @@ public:
 
 protected slots:
 
+    void settingChanged(QString key, QVariant value);
     void statusChanged(int /* state */);
 
 protected:
@@ -76,6 +78,7 @@ public:
 
 protected slots:
 
+    void settingChanged(QString key, QVariant value);
     void handleValueChanged(int value);
 
 protected:
@@ -101,6 +104,7 @@ public:
                                       QWidget * parent);
 protected slots:
 
+    void settingChanged(QString key, QVariant value);
     void handleValueChanged(double value);
 
 protected:
