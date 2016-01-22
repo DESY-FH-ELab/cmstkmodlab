@@ -160,10 +160,14 @@ public:
 
     explicit LStepExpressSettings(LStepExpressModel* model, QObject* parent = 0);
 
+    bool getDeviceState() { return model_->getDeviceState(); }
+
     QVariant getValueForKey(const QString& key);
     void setValueForKey(const QString& key, QVariant& value);
 
 public slots:
+
+    void deviceControlStateChanged(bool);
 
     void valueChanged(QString key, bool value);
     void valueChanged(QString key, bool value0, bool value1, bool value2);
@@ -214,6 +218,7 @@ protected slots:
 
 signals:
 
+    void controlStateChanged(bool);
     void settingChanged(QString, QVariant);
 };
 

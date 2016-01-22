@@ -32,8 +32,8 @@ public:
                                QObject *parent = 0);
 
     bool isUpdating() { return isUpdating_; }
-    void pauseUpdate() { isPaused_ = true; }
-    void continueUpdate() { isPaused_ = false; }
+    void pauseUpdate();
+    void continueUpdate();
 
     QString getAxisName(unsigned int axis);
     QString getAxisDimensionShortName(unsigned int axis);

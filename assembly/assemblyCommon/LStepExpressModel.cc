@@ -37,6 +37,18 @@ LStepExpressModel::LStepExpressModel(const char* port,
     connect(timer_, SIGNAL(timeout()), this, SLOT(updateMotionInformation()));
 }
 
+void LStepExpressModel::pauseUpdate()
+{
+    isPaused_ = true;
+    setControlsEnabled(false);
+}
+
+void LStepExpressModel::continueUpdate()
+{
+    isPaused_ = false;
+    setControlsEnabled(true);
+}
+
 QString LStepExpressModel::getAxisName(unsigned int axis)
 {
     QMutexLocker locker(&mutex_);

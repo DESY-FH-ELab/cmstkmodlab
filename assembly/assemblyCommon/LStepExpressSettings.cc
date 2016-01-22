@@ -302,6 +302,15 @@ LStepExpressSettings::LStepExpressSettings(LStepExpressModel* model, QObject* pa
     addBA("EncoderPosition", "!encpos", "encpos", false, false);
     addBA("EncoderReference", "!encref", "encref", false, false);
     addBA("EncoderReferencePolarity", "!encrefpol", "encrefpol", false, false);
+
+
+    connect(model_, SIGNAL(controlStateChanged(bool)),
+            this, SLOT(deviceControlStateChanged(bool)));
+}
+
+void LStepExpressSettings::deviceControlStateChanged(bool enabled)
+{
+    emit controlStateChanged(enabled);
 }
 
 void LStepExpressSettings::valueChanged(QString key, bool value)
