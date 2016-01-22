@@ -87,6 +87,8 @@ void LStepExpress::DeviceInit()
       return;
     }
 
+    /*
+
     comHandler_->SendCommand("readsn"); // read serial number
     comHandler_->ReceiveString(buffer);
 
@@ -97,6 +99,8 @@ void LStepExpress::DeviceInit()
       isDeviceAvailable_ = false;
       return;
     }
+
+    */
   }
 }
 
