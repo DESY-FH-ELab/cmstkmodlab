@@ -182,7 +182,7 @@ LStepExpressSettings::LStepExpressSettings(LStepExpressModel* model, QObject* pa
     addI("EQEP", "!eqepconfig", "eqepconfig", true, false);
     addB("TTLOut", "!ttloutconfig", "ttloutconfig", true, false);
 
-    addBA("AxisDirection", "!dir", "dir", true, false);
+    addBA("AxisDirection", "!axisdir", "axisdir", true, false);
     addIA("GearDenominator", "!geardenominator", "geardenominator", true, false); // 1 - INF
     addIA("GearNumerator", "!gearnumerator", "gearnumerator", true, false); // 1 - INF
     addDA("SpindlePitch", "!pitch", "pitch", true, false); // 0.0001 - 68
