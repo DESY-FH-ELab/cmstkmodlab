@@ -100,8 +100,8 @@ class VLStepExpress {
 
   virtual void Reset() = 0;
   virtual void ConfirmErrorRectification() = 0;
-  virtual void ValidConfig() = 0;
-  virtual void ValidParameter() = 0;
+  void ValidConfig();
+  void ValidParameter();
 
   // low level methods
   virtual void SendCommand(const std::string &) = 0;

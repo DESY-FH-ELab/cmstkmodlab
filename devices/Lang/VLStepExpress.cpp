@@ -12,6 +12,16 @@ VLStepExpress::~VLStepExpress()
 
 }
 
+void VLStepExpress::ValidConfig()
+{
+  this->SendCommand("!validconfig");
+}
+
+void VLStepExpress::ValidParameter()
+{
+  this->SendCommand("!validpar");
+}
+
 void VLStepExpress::SetValue(const std::string & command,
                              const std::string & value)
 {
