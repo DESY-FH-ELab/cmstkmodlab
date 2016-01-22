@@ -402,6 +402,9 @@ void LStepExpressSettings::writeSettingsToDevice()
         model_->setValue(setting->setter(), setting->value());
         NQLog("LStepExpressSettings", NQLog::Spam) << setting->setter() << " <- " << setting->value();
     }
+
+    model_->validConfig();
+    model_->validParameter();
 }
 
 void LStepExpressSettings::writeSettingsToFile(const QString& filename)
