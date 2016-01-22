@@ -41,7 +41,7 @@ LStepExpressJoystickWidget::LStepExpressJoystickWidget(LStepExpressModel* model,
 
 void LStepExpressJoystickWidget::lstepStateChanged(State newState)
 {
-    NQLog("LStepExpressJoystickWidget", NQLog::Debug) << "lStepStateChanged(State newState) " << newState;
+    // NQLog("LStepExpressJoystickWidget", NQLog::Debug) << "lStepStateChanged(State newState) " << newState;
 
     axisControlWidget_->setEnabled(newState == READY);
 }
@@ -49,7 +49,7 @@ void LStepExpressJoystickWidget::lstepStateChanged(State newState)
 /// Updates the GUI when the controler is enabled/disabled.
 void LStepExpressJoystickWidget::controlStateChanged(bool enabled)
 {
-    NQLog("LStepExpressJoystickWidget", NQLog::Debug) << "controlStateChanged(bool enabled) " << enabled;
+    // NQLog("LStepExpressJoystickWidget", NQLog::Debug) << "controlStateChanged(bool enabled) " << enabled;
 
     if (enabled) {
         lstepStateChanged(model_->getDeviceState());
@@ -120,7 +120,7 @@ void LStepExpressJoystickAxisWidget::updateWidgets()
 {
     bool axis = model_->getAxisEnabled(axis_);
 
-    NQLog("LStepExpressJoystickAxisWidget", NQLog::Debug) << "updateWidgets() " << axis;
+    // NQLog("LStepExpressJoystickAxisWidget", NQLog::Debug) << "updateWidgets() " << axis;
 
     stepBox_->setSuffix(QString(" ") + model_->getAxisDimensionShortName(axis_));
 
@@ -142,8 +142,8 @@ void LStepExpressJoystickAxisWidget::updateMotionWidgets()
 
 void LStepExpressJoystickAxisWidget::lStepStateChanged(State newState)
 {
-    NQLog("LStepExpressJoystickAxisWidget", NQLog::Debug) << "lStepStateChanged(State newState) " << newState;
-    NQLog("LStepExpressJoystickAxisWidget", NQLog::Debug) << "                             axis " << model_->getAxisEnabled(axis_);
+    // NQLog("LStepExpressJoystickAxisWidget", NQLog::Debug) << "lStepStateChanged(State newState) " << newState;
+    // NQLog("LStepExpressJoystickAxisWidget", NQLog::Debug) << "                             axis " << model_->getAxisEnabled(axis_);
 
     if (newState == READY || newState == INITIALIZING) {
         if (model_->getAxisEnabled(axis_)) {
@@ -164,7 +164,7 @@ void LStepExpressJoystickAxisWidget::lStepStateChanged(State newState)
 
 void LStepExpressJoystickAxisWidget::controlStateChanged(bool enabled)
 {
-    NQLog("LStepExpressJoystickAxisWidget", NQLog::Debug) << "controlStateChanged(bool enabled) " << enabled;
+    // NQLog("LStepExpressJoystickAxisWidget", NQLog::Debug) << "controlStateChanged(bool enabled) " << enabled;
 
     if (enabled) {
         lStepStateChanged(model_->getDeviceState());
@@ -176,7 +176,7 @@ void LStepExpressJoystickAxisWidget::controlStateChanged(bool enabled)
 
 void LStepExpressJoystickAxisWidget::upButtonClicked()
 {
-    NQLog("LStepExpressJoystickAxisWidget", NQLog::Debug) << "upButtonClicked()";
+    // NQLog("LStepExpressJoystickAxisWidget", NQLog::Debug) << "upButtonClicked()";
 
     std::vector<double> values{ 0.0, 0.0, 0.0, 0.0 };
     values[axis_] = stepBox_->value();
@@ -186,7 +186,7 @@ void LStepExpressJoystickAxisWidget::upButtonClicked()
 
 void LStepExpressJoystickAxisWidget::downButtonClicked()
 {
-    NQLog("LStepExpressJoystickAxisWidget", NQLog::Debug) << "downButtonClicked()";
+    // NQLog("LStepExpressJoystickAxisWidget", NQLog::Debug) << "downButtonClicked()";
 
     std::vector<double> values{ 0.0, 0.0, 0.0, 0.0 };
     values[axis_] = -stepBox_->value();
