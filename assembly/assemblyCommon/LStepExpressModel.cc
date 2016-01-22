@@ -199,6 +199,16 @@ void LStepExpressModel::getValue(const QString & command, QString & value)
     value = temp.c_str();
 }
 
+void LStepExpressModel::validConfig()
+{
+    controller_->ValidConfig();
+}
+
+void LStepExpressModel::validParameter()
+{
+    controller_->ValidParameter();
+}
+
 void LStepExpressModel::initialize()
 {
     setDeviceState(INITIALIZING);

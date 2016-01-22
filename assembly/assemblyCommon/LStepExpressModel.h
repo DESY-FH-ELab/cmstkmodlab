@@ -50,6 +50,9 @@ public:
     void setValue(const QString & command, const QString & value);
     void getValue(const QString & command, QString & value);
 
+    void validConfig();
+    void validParameter();
+
 public slots:
 
     void setDeviceEnabled(bool enabled = true);
