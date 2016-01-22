@@ -33,12 +33,12 @@ public:
     const QString& key() const { return key_; }
     const QString setter() { return setter_; }
     const QString& getter() const { return getter_; }
-    virtual void setValue(const QString& value) = 0;
+    virtual bool setValue(const QString& value) = 0;
     virtual const QString valueAsString() = 0;
 
     virtual const QString value() = 0;
     virtual QVariant getValue() = 0;
-    virtual void setValue(QVariant value) = 0;
+    virtual bool setValue(QVariant value) = 0;
 
     virtual Type type() = 0;
 
@@ -64,12 +64,12 @@ public:
                                               bool needsValidConfig,
                                               bool needsValidPar);
 
-    virtual void setValue(const QString& value);
+    bool setValue(const QString& value);
     const QString valueAsString();
 
     const QString value();
     virtual QVariant getValue() { return QVariant(value_); }
-    void setValue(QVariant value) { value_ = value.toBool(); }
+    bool setValue(QVariant value);
 
     virtual Type type() { return Bool; }
 
@@ -88,12 +88,12 @@ public:
                                               bool needsValidConfig,
                                               bool needsValidPar);
 
-    virtual void setValue(const QString& value);
+    bool setValue(const QString& value);
     const QString valueAsString();
 
     const QString value();
     virtual QVariant getValue() { return QVariant(value_); }
-    void setValue(QVariant value) { value_ = value.toInt(); }
+    bool setValue(QVariant value);
 
     virtual Type type() { return Integer; }
 
@@ -113,12 +113,12 @@ public:
                                                bool needsValidConfig,
                                                bool needsValidPar);
 
-    virtual void setValue(const QString& value);
+    bool setValue(const QString& value);
     const QString valueAsString();
 
     const QString value();
     virtual QVariant getValue();
-    void setValue(QVariant value);
+    bool setValue(QVariant value);
 
     virtual Type type() { return VectorInteger; }
 
@@ -138,12 +138,12 @@ public:
                                               bool needsValidConfig,
                                               bool needsValidPar);
 
-    virtual void setValue(const QString& value);
+    bool setValue(const QString& value);
     const QString valueAsString();
 
     const QString value();
     virtual QVariant getValue() { return QVariant(value_); }
-    void setValue(QVariant value) { value_ = value.toDouble(); }
+    bool setValue(QVariant value);
 
     virtual Type type() { return Double; }
 

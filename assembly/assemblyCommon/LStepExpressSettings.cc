@@ -36,13 +36,34 @@ const QString LStepExpressSettingsInstructionB::value()
     return QString(value_==true?"1":"0");
 }
 
-void LStepExpressSettingsInstructionB::setValue(const QString& value)
+bool LStepExpressSettingsInstructionB::setValue(const QString& value)
 {
+    bool newValue;
+    bool ret = false;
+
     if (value=="1") {
-        value_ = true;
+        newValue = true;
     } else {
-        value_ = false;
+        newValue = false;
     }
+
+    if (newValue!=value_) ret = true;
+    value_ = newValue;
+
+    return ret;
+}
+
+bool LStepExpressSettingsInstructionB::setValue(QVariant value)
+{
+    bool newValue;
+    bool ret = false;
+
+    newValue = value.toBool();
+
+    if (newValue!=value_) ret = true;
+    value_ = newValue;
+
+    return ret;
 }
 
 const QString LStepExpressSettingsInstructionB::valueAsString()
@@ -66,9 +87,30 @@ const QString LStepExpressSettingsInstructionI::value()
     return QString::number(value_);
 }
 
-void LStepExpressSettingsInstructionI::setValue(const QString& value)
+bool LStepExpressSettingsInstructionI::setValue(const QString& value)
 {
-    value_ = value.toInt();
+    int newValue;
+    bool ret = false;
+
+    newValue = value.toInt();
+
+    if (newValue!=value_) ret = true;
+    value_ = newValue;
+
+    return ret;
+}
+
+bool LStepExpressSettingsInstructionI::setValue(QVariant value)
+{
+    int newValue;
+    bool ret = false;
+
+    newValue = value.toInt();
+
+    if (newValue!=value_) ret = true;
+    value_ = newValue;
+
+    return ret;
 }
 
 const QString LStepExpressSettingsInstructionI::valueAsString()
@@ -100,16 +142,42 @@ const QString LStepExpressSettingsInstructionVI::value()
     return temp;
 }
 
-void LStepExpressSettingsInstructionVI::setValue(const QString& value)
+bool LStepExpressSettingsInstructionVI::setValue(const QString& value)
 {
+    int newValue;
+    bool ret = false;
+
     QStringList tokens = value.split(" ", QString::SkipEmptyParts);
     int i = 0;
     for (QStringList::iterator it = tokens.begin();
          it!=tokens.end();
          ++it) {
-        value_[i] = (*it).toInt();
+        newValue = (*it).toInt();
+        if (newValue!=value_[i]) ret = true;
+        value_[i] = newValue;
         i++;
     }
+
+    return ret;
+}
+
+bool LStepExpressSettingsInstructionVI::setValue(QVariant value)
+{
+    int newValue;
+    bool ret = false;
+
+    QList<QVariant> list = value.toList();
+    int i = 0;
+    for (QList<QVariant>::Iterator it = list.begin();
+         it!=list.end();
+         ++it) {
+        newValue = (*it).toInt();
+        if (newValue!=value_[i]) ret = true;
+        value_[i] = newValue;
+        i++;
+    }
+
+    return ret;
 }
 
 const QString LStepExpressSettingsInstructionVI::valueAsString()
@@ -135,18 +203,6 @@ QVariant LStepExpressSettingsInstructionVI::getValue()
     return QVariant(list);
 }
 
-void LStepExpressSettingsInstructionVI::setValue(QVariant value)
-{
-    QList<QVariant> list = value.toList();
-    int i = 0;
-    for (QList<QVariant>::Iterator it = list.begin();
-         it!=list.end();
-         ++it) {
-        value_[i] = (*it).toInt();
-        i++;
-    }
-}
-
 LStepExpressSettingsInstructionD::LStepExpressSettingsInstructionD(const QString& key,
                                                                    const QString& setter,
                                                                    const QString& getter,
@@ -163,9 +219,30 @@ const QString LStepExpressSettingsInstructionD::value()
     return QString::number(value_);
 }
 
-void LStepExpressSettingsInstructionD::setValue(const QString& value)
+bool LStepExpressSettingsInstructionD::setValue(const QString& value)
 {
-    value_ = value.toDouble();
+    double newValue;
+    bool ret = false;
+
+    newValue = value.toDouble();
+
+    if (newValue!=value_) ret = true;
+    value_ = newValue;
+
+    return ret;
+}
+
+bool LStepExpressSettingsInstructionD::setValue(QVariant value)
+{
+    double newValue;
+    bool ret = false;
+
+    newValue = value.toDouble();
+
+    if (newValue!=value_) ret = true;
+    value_ = newValue;
+
+    return ret;
 }
 
 const QString LStepExpressSettingsInstructionD::valueAsString()
