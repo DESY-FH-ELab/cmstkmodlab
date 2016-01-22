@@ -1,6 +1,8 @@
 
 #include <QStringList>
 #include <QApplication>
+#include <QFile>
+#include <QTextStream>
 
 #include <nqlogger.h>
 
@@ -387,7 +389,27 @@ void LStepExpressSettings::readSettingsFromDevice()
 
 void LStepExpressSettings::readSettingsFromFile(const QString& filename)
 {
+    QFile data(filename);
 
+    QString key, value;
+    if (data.open(QIODevice::ReadOnly)) {
+        QTextStream in(&data);
+
+        while (!in.atEnd()) {
+            in >> key;
+            value = in.readLine().simplified();
+
+            QMap<QString,LStepExpressSettingsInstruction*>::iterator it =  parameterMap_.find(key);
+            if (it!=parameterMap_.end()) {
+                LStepExpressSettingsInstruction* setting = *it;
+
+                if (setting->setValue(value)) {
+                    emit settingChanged(setting->key(), setting->getValue());
+                }
+
+            }
+        }
+    }
 }
 
 void LStepExpressSettings::writeSettingsToDevice()
@@ -409,11 +431,18 @@ void LStepExpressSettings::writeSettingsToDevice()
 
 void LStepExpressSettings::writeSettingsToFile(const QString& filename)
 {
-    for (QList<LStepExpressSettingsInstruction*>::iterator it = parameters_.begin();
-         it!=parameters_.end();
-         ++it) {
-        LStepExpressSettingsInstruction* setting = *it;
-        // NQLog("LStepExpressSettings", NQLog::Spam) << setting->key() << "\t" << setting->valueAsString();
+    QFile data(filename);
+    if (data.open(QFile::WriteOnly | QFile::Truncate)) {
+        QTextStream out(&data);
+
+        for (QList<LStepExpressSettingsInstruction*>::iterator it = parameters_.begin();
+             it!=parameters_.end();
+             ++it) {
+            LStepExpressSettingsInstruction* setting = *it;
+
+            out << qSetFieldWidth(40) << left << setting->key()
+                << qSetFieldWidth(20) << right << setting->valueAsString() << "\n";
+        }
     }
 }
 
