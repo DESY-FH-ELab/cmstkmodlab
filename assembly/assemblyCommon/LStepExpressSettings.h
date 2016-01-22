@@ -214,6 +214,7 @@ protected slots:
 
 signals:
 
+    void settingChanged(QString, QVariant);
 };
 
 #endif // LSTEPEXPRESSSETTINGS_H

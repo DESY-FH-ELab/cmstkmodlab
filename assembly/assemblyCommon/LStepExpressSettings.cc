@@ -345,7 +345,9 @@ void LStepExpressSettings::setValueForKey(const QString& key, QVariant& value)
 
     LStepExpressSettingsInstruction* setting = it.value();
 
-    setting->setValue(value);
+    if (setting->setValue(value)) {
+        emit settingChanged(key, value);
+    }
 }
 
 void LStepExpressSettings::readSettingsFromDevice()
@@ -365,6 +367,10 @@ void LStepExpressSettings::readSettingsFromDevice()
         model_->getValue(setting->getter(), value);
 
         NQLog("LStepExpressSettings", NQLog::Spam) << setting->getter() << " -> " << value;
+
+        if (setting->setValue(value)) {
+            emit settingChanged(setting->key(),setting->getValue());
+        }
     }
 
     model_->continueUpdate();
