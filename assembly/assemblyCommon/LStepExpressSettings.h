@@ -158,7 +158,7 @@ Q_OBJECT
 
 public:
 
-    explicit LStepExpressSettings(LStepExpressModel* model, QObject* parent);
+    explicit LStepExpressSettings(LStepExpressModel* model, QObject* parent = 0);
 
     QVariant getValueForKey(const QString& key);
     void setValueForKey(const QString& key, QVariant& value);
