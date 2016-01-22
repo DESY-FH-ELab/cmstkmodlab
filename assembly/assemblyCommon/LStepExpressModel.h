@@ -31,6 +31,10 @@ public:
                                int motionUpdateInterval = 100,
                                QObject *parent = 0);
 
+    bool isUpdating() { return isUpdating_; }
+    void pauseUpdate() { isPaused_ = true; }
+    void continueUpdate() { isPaused_ = false; }
+
     QString getAxisName(unsigned int axis);
     QString getAxisDimensionShortName(unsigned int axis);
     QString getAxisStatusText(unsigned int axis);
@@ -88,6 +92,8 @@ protected:
     std::vector<double> position_;
 
     bool inMotion_;
+    bool isPaused_;
+    bool isUpdating_;
 
 protected slots:
 

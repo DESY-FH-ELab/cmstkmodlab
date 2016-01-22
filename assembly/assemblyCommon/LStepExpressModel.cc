@@ -29,6 +29,8 @@ LStepExpressModel::LStepExpressModel(const char* port,
     position_ = allZerosD;
 
     inMotion_ = false;
+    isUpdating_ = false;
+    isPaused_ = false;
 
     timer_ = new QTimer(this);
     timer_->setInterval(motionUpdateInterval_);
@@ -222,11 +224,8 @@ void LStepExpressModel::setDeviceState( State state )
 
 void LStepExpressModel::updateInformation()
 {
-    if ( state_ == READY ) {
 
-        QMutexLocker locker(&mutex_);
-
-        /*
+    /*
         NQLog("LStepExpressModel", NQLog::Debug) << "updateInformation()";
 
         if (thread()==QApplication::instance()->thread()) {
@@ -236,46 +235,49 @@ void LStepExpressModel::updateInformation()
         }
         */
 
-        bool changed = false;
+    bool changed = false;
 
-        std::vector<int> ivalues;
+    std::vector<int> ivalues;
 
-        controller_->GetAxisEnabled(ivalues);
-        if (ivalues!=axis_) {
-            axis_ = ivalues;
-            changed = true;
-        }
+    controller_->GetAxisEnabled(ivalues);
+    if (ivalues!=axis_) {
+        axis_ = ivalues;
+        changed = true;
+    }
 
-        controller_->GetDimension(ivalues);
-        if (ivalues!=dim_) {
-            dim_ = ivalues;
-            changed = true;
-        }
+    controller_->GetDimension(ivalues);
+    if (ivalues!=dim_) {
+        dim_ = ivalues;
+        changed = true;
+    }
 
-        int joystick = controller_->GetJoystickEnabled();
-        if (joystick!=joystickEnabled_) {
-            joystickEnabled_ = joystick;
-            changed = true;
-        }
+    int joystick = controller_->GetJoystickEnabled();
+    if (joystick!=joystickEnabled_) {
+        joystickEnabled_ = joystick;
+        changed = true;
+    }
 
-        controller_->GetJoystickAxisEnabled(ivalues);
-        if (ivalues!=joystickAxisEnabled_) {
-            joystickAxisEnabled_ = ivalues;
-            changed = true;
-        }
+    controller_->GetJoystickAxisEnabled(ivalues);
+    if (ivalues!=joystickAxisEnabled_) {
+        joystickAxisEnabled_ = ivalues;
+        changed = true;
+    }
 
-        if (changed) {
-            // NQLog("LStepExpressModel", NQLog::Spam) << "information changed";
-            emit informationChanged();
-        }
+    if (changed) {
+        // NQLog("LStepExpressModel", NQLog::Spam) << "information changed";
+        emit informationChanged();
     }
 }
 
 void LStepExpressModel::updateMotionInformation()
 {
-    if ( state_ == READY ) {
+    static const int nUpdates = updateInterval_/motionUpdateInterval_;
+
+    if ( state_ == READY && !isPaused_) {
 
         QMutexLocker locker(&mutex_);
+
+        isUpdating_ = true;
 
         updateCount_++;
         if (updateCount_==nUpdates) {
@@ -321,6 +323,8 @@ void LStepExpressModel::updateMotionInformation()
             // NQLog("LStepExpressModel", NQLog::Spam) << "motion information changed";
             emit motionInformationChanged();
         }
+
+        isUpdating_ = false;
     }
 }
 

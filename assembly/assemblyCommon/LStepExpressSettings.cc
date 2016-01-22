@@ -275,6 +275,10 @@ void LStepExpressSettings::readSettingsFromDevice()
 {
     QMutexLocker locker(&mutex_);
 
+    while (model_->isUpdating()) usleep(100);
+
+    model_->pauseUpdate();
+
     for (QList<LStepExpressSettingsInstruction*>::iterator it = parameters_.begin();
          it!=parameters_.end();
          ++it) {
@@ -285,6 +289,8 @@ void LStepExpressSettings::readSettingsFromDevice()
 
         NQLog("LStepExpressSettings", NQLog::Spam) << setting->getter() << " -> " << value;
     }
+
+    model_->continueUpdate();
 }
 
 void LStepExpressSettings::readSettingsFromFile(const QString& filename)
