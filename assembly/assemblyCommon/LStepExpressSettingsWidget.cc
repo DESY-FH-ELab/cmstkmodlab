@@ -1,3 +1,5 @@
+#include <QFileDialog>
+
 #include <nqlogger.h>
 
 #include "ApplicationConfig.h"
@@ -552,6 +554,10 @@ void LStepExpressSettingsWidget::readFromFileClicked()
 {
     NQLog("LStepExpressSettingsWidget") << "readFromFileClicked()";
 
+    QString filename = QFileDialog::getOpenFileName(this, "Read Settings", "~/", "*.lstep");
+    if (filename.isNull()) return;
+
+    settings_->readSettingsFromFile(filename);
 }
 
 void LStepExpressSettingsWidget::writeToDeviceClicked()
@@ -565,4 +571,8 @@ void LStepExpressSettingsWidget::writeToFileClicked()
 {
     NQLog("LStepExpressSettingsWidget") << "writeToFileClicked()";
 
+    QString filename = QFileDialog::getSaveFileName(this, "Write Settings", "~/", "*.lstep");
+    if (filename.isNull()) return;
+
+    settings_->writeSettingsToFile(filename);
 }
