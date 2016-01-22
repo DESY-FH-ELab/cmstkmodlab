@@ -1,3 +1,5 @@
+#include <unistd.h>
+
 #include <cmath>
 #include <sstream>
 #include <iostream>
@@ -35,6 +37,8 @@ void LStepExpress::SendCommand(const std::string & command)
 
 void LStepExpress::ReceiveString(std::string & buffer)
 {
+  usleep(5000);
+
   char buf[1000];
   comHandler_->ReceiveString(buf);
   StripBuffer(buf);
