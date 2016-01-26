@@ -16,6 +16,7 @@
 #include "LStepExpressSettingsWidget.h"
 #include "LStepExpressWidget.h"
 #include "LStepExpressJoystickWidget.h"
+#include "LStepExpressMeasurementWidget.h"
 
 class MCommanderMainWindow : public QMainWindow
 {
