@@ -47,11 +47,22 @@ LStepExpressMeasurementWidget::LStepExpressMeasurementWidget(LStepExpressModel* 
     layout->addLayout(vlayout);
 
     //initialise the x, y, z positions
-    // fix me!! z position should be obtained from the LStepExpressModel position
-    z_init = model->getPosition(2); //is 2 z-axis?
-    x_init = -150; //take right upper corner of table
-    y_init = -150; //take right upper corner of table
+    z_init = model->getPosition(2); //FIX ME! is 2 z-axis?
+    x_init = -150; //FIX ME! take right upper corner of table
+    y_init = -150; //FIX ME! take right upper corner of table
 
+    //    QTableWidget *tab = new QTableWidget(5,2*2,this);
+    //QStringList tab_header;
+    //tab_header << "#" << "x-pos"<<"y-pos"<<"z-pos"<<"meas";
+    //tab->setHorizontalHeaderLabels(tab_header);
+
+    //test table model/view
+    table_model = new LStepExpressMeasurementTable();
+    // table_model->insertColumns(0,4); //one column already present
+    table_view = new QTableView(this);
+    table_view->setModel(table_model);
+
+    layout->addWidget(table_view);
 }
 
 void LStepExpressMeasurementWidget::setAverageMeasEnabled(bool enabled)
@@ -67,48 +78,53 @@ void LStepExpressMeasurementWidget::setAverageMeasEnabled(bool enabled)
 //generate the x and y positions for the measurement
 void LStepExpressMeasurementWidget::generatePositions()
 {
-  //FIX ME! probably bug here, as when nstepsx_ and nstepsy_ are filled, pushing the button makes the code crash
-  nstepsx = 2;//nstepsx_->text().toInt();
-  nstepsy = 2;//nstepsy_->text().toInt();
+  NQLog("LStepExpressMeasurementWidget", NQLog::Debug) << "in generatePositions ";
 
-  std::vector<double> xpos;
-  std::vector<double> ypos;
+  //read in number of steps, if empty take default 10 steps
+  nstepsx = (nstepsx_->text().isEmpty() == true) ? 10 : nstepsx_->text().toInt();
+  nstepsy = (nstepsy_->text().isEmpty() == true) ? 10 : nstepsy_->text().toInt();
 
-  QTableWidget *tab = new QTableWidget(4,nstepsx*nstepsy,this);
-  QStringList tab_header; 
-  tab_header << "#" << "x-pos"<<"y-pos"<<"meas";
 
-  for(int i = 0; i < nstepsx; i++){
-    xpos[i] = x_init + rangex/nstepsx;
-  }
-  for(int j = 0; j < nstepsy; j++){
-    ypos[j] = y_init + rangey/nstepsy;
-  }
+  NQLog("LStepExpressMeasurementWidget", NQLog::Debug) << "nstepsx = " << nstepsx << " nstepsy = " << nstepsy << " x_init = " << x_init << " y_init = " << y_init << " rangex = " << rangex << " rangey = "<< rangey;
+
+  std::vector<float> xpos;
+  std::vector<float> ypos;
+  std::vector<float> zpos;
+  std::vector<float> pos_number;
+  std::vector<float> meas;
   
   int z = 0;
   for(int i = 0; i < nstepsx; i++){
-    for(int j = 0; j < nstepsy; j++)
-      {
-	tab->setItem(z,0, new QTableWidgetItem(QString::number(z)));
-	tab->setItem(z,1, new QTableWidgetItem(QString::number(xpos[i])));
-	tab->setItem(z,2, new QTableWidgetItem(QString::number(ypos[j])));
-	z++;
-      }
+    for(int j = 0; j < nstepsy; j++){
+      xpos.push_back(x_init + i*rangex/nstepsx);
+      ypos.push_back(y_init + j*rangey/nstepsy);
+      pos_number.push_back(z);
+      zpos.push_back(z_init);
+      meas.push_back(0.0);
+      z++;
+    }
   }
+
+  NQLog("LStepExpressMeasurementWidget", NQLog::Debug) << "size pos_number = "<<pos_number.size()<<" size xpos = "<<xpos.size();
   
+  table_model->insertData(0, pos_number);
+  table_model->insertData(1, xpos);
+  table_model->insertData(2, ypos);
+  table_model->insertData(3, zpos);
+  table_model->insertData(4, meas);
+  table_model->update();
 
+  NQLog("LStepExpressMeasurementWidget", NQLog::Debug) << "filled positions ";
 
-  
-  //open a new window which shows the generated positions and asks for confirmation to start the measurement
-  //MeanderMeasurementDialog *dialog = new MeanderMeasurementDialog();
-  //dialog->show();
+  NQLog("LStepExpressMeasurementWidget", NQLog::Debug) << "filled table ";
 
-  //  QMessageBox::StandardButton reply;
-  //reply = QMessageBox::question(this, "Meander Measurement", "Proceed with measurement?", QMessageBox::Yes | QMessageBox::No);
+  table_view->update();
+  table_view->show();
+  //  buttonStartMeasurement_ = new QPushButton("Start Measurement", this);
+  //layout()->addWidget(buttonStartMeasurement_);
 
-  //  if(reply == QMessageBox::Yes){
-  //  performMeasurement(xpos, ypos);
-  //}
+  // connect(buttonStartMeasurement_, SIGNAL(clicked()),
+  //	  this, SLOT(performMeasurement()));
 
 }
 
