@@ -43,13 +43,13 @@ void LStepExpressMeasurementTable::update()
 
 void LStepExpressMeasurementTable::insertData(int column_index, std::vector<float> values)
 {
-  NQLog("LStepExpressMeasurementTable", NQLog::Debug) << "insert data ";
+  //  NQLog("LStepExpressMeasurementTable", NQLog::Debug) << "insert data ";
 
   //overwrite column
   Columns[column_index] = values;
 
 
-  NQLog("LStepExpressMeasurementTable", NQLog::Debug) << "no. columns = "<< Columns.size() <<" no. rows = "<<Columns[column_index].size();
+  //  NQLog("LStepExpressMeasurementTable", NQLog::Debug) << "no. columns = "<< Columns.size() <<" no. rows = "<<Columns[column_index].size();
 
   QModelIndex in;
   //set the data
@@ -57,7 +57,7 @@ void LStepExpressMeasurementTable::insertData(int column_index, std::vector<floa
     in = createIndex(column_index, i);
     emit dataChanged(in,in);
   }
-  NQLog("LStepExpressMeasurementTable", NQLog::Debug) << "ending insert data ";
+  //  NQLog("LStepExpressMeasurementTable", NQLog::Debug) << "ending insert data ";
 }
 
 QVariant LStepExpressMeasurementTable::headerData(int section, Qt::Orientation orientation, int role) const
@@ -65,18 +65,19 @@ QVariant LStepExpressMeasurementTable::headerData(int section, Qt::Orientation o
  
   if(role == Qt::DisplayRole)
     {
-      std::stringstream ss;
-      if(orientation == Qt::Horizontal)
-	{
-	  ss << "H_" << section;
-	  return QString(ss.str().c_str());
+      if(orientation == Qt::Horizontal){
+	switch (section){
+	case 0: return QString("#");
+	case 1: return QString("x-pos");
+	case 2: return QString("y-pos");
+	case 3: return QString("z-pos");
+	case 4: return QString("meas");
 	}
-      else if(orientation == Qt::Vertical)
-	{
-	  ss << "V_" << section;
-	  return QString(ss.str().c_str());
-	}
- 
+      }else{
+	std::stringstream ss;
+	ss << "V_" << section;
+	return QString(ss.str().c_str());
+      }
     }
  
   return QVariant::Invalid;

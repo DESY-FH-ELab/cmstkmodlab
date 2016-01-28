@@ -19,22 +19,26 @@
 #include <QStringList>
 #include <QTableView>
 #include <QModelIndex>
+#include <QFileDialog>
 
 #include "LStepExpressModel.h"
 #include "LStepExpressMeasurementTable.h"
+#include "LStepExpressMotionManager.h"
 
 class LStepExpressMeasurementWidget : public QWidget
 {
     Q_OBJECT
 
 public:
-    explicit LStepExpressMeasurementWidget(LStepExpressModel* model, QWidget *parent = 0);
+    explicit LStepExpressMeasurementWidget(LStepExpressModel* model, LStepExpressMotionManager* manager, QWidget *parent = 0);
 
 protected:
     LStepExpressModel* model_;
+    LStepExpressMotionManager* manager_;
     QCheckBox* averageMeasCheckBox_;
     QPushButton* buttonGeneratePos_;
     QPushButton *buttonStartMeasurement_;
+    QPushButton *buttonStoreMeasurement_;
     QLineEdit* nstepsx_;
     QLineEdit* nstepsy_;
 
@@ -54,10 +58,14 @@ private:
     std::vector<double> circle_x;
     std::vector<double> circle_y;
     void generateCirclePositions();
-    void performMeasurement(std::vector<double> x, std::vector<double> y);
 
     LStepExpressMeasurementTable *table_model;
     QTableView *table_view;
+
+private slots:
+    void performMeasurement();
+    void storeResults();
+
 };
 
 #endif // LSTEPEXPRESSMEASUREMENTWIDGET_H

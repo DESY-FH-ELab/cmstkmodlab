@@ -2,10 +2,11 @@
 
 #include "LStepExpressMeasurementWidget.h"
 
-LStepExpressMeasurementWidget::LStepExpressMeasurementWidget(LStepExpressModel* model,
+LStepExpressMeasurementWidget::LStepExpressMeasurementWidget(LStepExpressModel* model, LStepExpressMotionManager* manager,
                                        QWidget *parent)
     : QWidget(parent),
-      model_(model)
+      model_(model),
+      manager_(manager)
 {
     QHBoxLayout* layout = new QHBoxLayout(this);
     setLayout(layout);
@@ -47,22 +48,31 @@ LStepExpressMeasurementWidget::LStepExpressMeasurementWidget(LStepExpressModel* 
     layout->addLayout(vlayout);
 
     //initialise the x, y, z positions
-    z_init = model->getPosition(2); //FIX ME! is 2 z-axis?
+    z_init = model_->getPosition(2); //FIX ME! is 2 z-axis?
     x_init = -150; //FIX ME! take right upper corner of table
     y_init = -150; //FIX ME! take right upper corner of table
 
-    //    QTableWidget *tab = new QTableWidget(5,2*2,this);
-    //QStringList tab_header;
-    //tab_header << "#" << "x-pos"<<"y-pos"<<"z-pos"<<"meas";
-    //tab->setHorizontalHeaderLabels(tab_header);
-
-    //test table model/view
+    //table model/view
     table_model = new LStepExpressMeasurementTable();
-    // table_model->insertColumns(0,4); //one column already present
     table_view = new QTableView(this);
     table_view->setModel(table_model);
-
     layout->addWidget(table_view);
+
+    QVBoxLayout *vlayout_buttons = new QVBoxLayout(this);
+    buttonStartMeasurement_ = new QPushButton("Start Measurement", this);
+    buttonStartMeasurement_->setEnabled(false);
+    vlayout_buttons->addWidget(buttonStartMeasurement_);
+
+    connect(buttonStartMeasurement_, SIGNAL(clicked()),
+	    this, SLOT(performMeasurement()));
+
+    buttonStoreMeasurement_ = new QPushButton("Store Results Measurement", this);
+    buttonStoreMeasurement_->setEnabled(false);
+    vlayout_buttons->addWidget(buttonStoreMeasurement_);
+
+    layout->addLayout(vlayout_buttons);
+
+    connect(buttonStoreMeasurement_, SIGNAL(clicked()), this, SLOT(storeResults()));
 }
 
 void LStepExpressMeasurementWidget::setAverageMeasEnabled(bool enabled)
@@ -78,14 +88,14 @@ void LStepExpressMeasurementWidget::setAverageMeasEnabled(bool enabled)
 //generate the x and y positions for the measurement
 void LStepExpressMeasurementWidget::generatePositions()
 {
-  NQLog("LStepExpressMeasurementWidget", NQLog::Debug) << "in generatePositions ";
+  //  NQLog("LStepExpressMeasurementWidget", NQLog::Debug) << "in generatePositions ";
 
   //read in number of steps, if empty take default 10 steps
   nstepsx = (nstepsx_->text().isEmpty() == true) ? 10 : nstepsx_->text().toInt();
   nstepsy = (nstepsy_->text().isEmpty() == true) ? 10 : nstepsy_->text().toInt();
 
 
-  NQLog("LStepExpressMeasurementWidget", NQLog::Debug) << "nstepsx = " << nstepsx << " nstepsy = " << nstepsy << " x_init = " << x_init << " y_init = " << y_init << " rangex = " << rangex << " rangey = "<< rangey;
+  //  NQLog("LStepExpressMeasurementWidget", NQLog::Debug) << "nstepsx = " << nstepsx << " nstepsy = " << nstepsy << " x_init = " << x_init << " y_init = " << y_init << " rangex = " << rangex << " rangey = "<< rangey;
 
   std::vector<float> xpos;
   std::vector<float> ypos;
@@ -105,7 +115,7 @@ void LStepExpressMeasurementWidget::generatePositions()
     }
   }
 
-  NQLog("LStepExpressMeasurementWidget", NQLog::Debug) << "size pos_number = "<<pos_number.size()<<" size xpos = "<<xpos.size();
+  //  NQLog("LStepExpressMeasurementWidget", NQLog::Debug) << "size pos_number = "<<pos_number.size()<<" size xpos = "<<xpos.size();
   
   table_model->insertData(0, pos_number);
   table_model->insertData(1, xpos);
@@ -114,22 +124,72 @@ void LStepExpressMeasurementWidget::generatePositions()
   table_model->insertData(4, meas);
   table_model->update();
 
-  NQLog("LStepExpressMeasurementWidget", NQLog::Debug) << "filled positions ";
+  //  NQLog("LStepExpressMeasurementWidget", NQLog::Debug) << "filled positions ";
 
-  NQLog("LStepExpressMeasurementWidget", NQLog::Debug) << "filled table ";
+  //  NQLog("LStepExpressMeasurementWidget", NQLog::Debug) << "filled table ";
 
-  table_view->update();
-  table_view->show();
-  //  buttonStartMeasurement_ = new QPushButton("Start Measurement", this);
-  //layout()->addWidget(buttonStartMeasurement_);
-
-  // connect(buttonStartMeasurement_, SIGNAL(clicked()),
-  //	  this, SLOT(performMeasurement()));
-
+  buttonStartMeasurement_->setEnabled(true);
+  buttonStoreMeasurement_->setEnabled(false);
 }
 
-void LStepExpressMeasurementWidget::performMeasurement(std::vector<double> x, std::vector<double> y)
+//FIX ME! fill in
+void LStepExpressMeasurementWidget::generateCirclePositions()
 {
 }
 
+//FIX ME! needs to be tested in the lab
+void LStepExpressMeasurementWidget::performMeasurement()
+{
+  NQLog("LStepExpressMeasurementWidget", NQLog::Debug) << "starting scan";
+
+  double x_pos = 0;
+  double y_pos = 0;
+  double z_pos = 0;
+  std::vector<float> meas;
+  //go to all positions, do the measurement, store the measurement data
+  for(int r = 0; r < table_model->rowCount(); r++)
+    {
+      //retrieve position from the model
+      x_pos = table_model->data(table_model->index(r,1), Qt::DisplayRole).toInt();
+      y_pos = table_model->data(table_model->index(r,2), Qt::DisplayRole).toInt();
+      z_pos = table_model->data(table_model->index(r,3), Qt::DisplayRole).toInt();
+
+      //go to position
+      //manager_->moveAbsolute(x_pos, y_pos, z_pos, 0.0);
+
+      //FIX ME! how to ensure the movement has stopped before making measurement with laser?
+
+      //store dummy measurement result
+      meas.push_back(1.0);
+    }
+  table_model->insertData(4,meas);
+  table_model->update();
+
+  NQLog("LStepExpressMeasurementWidget", NQLog::Debug) << "scan finished";
+
+  buttonStoreMeasurement_->setEnabled(true);
+}
+
+//FIX ME! store results in which format? ROOT file, text file, mathematica file?
+//for now use simple text file
+void LStepExpressMeasurementWidget::storeResults()
+{
+  QString filename = QFileDialog::getSaveFileName(this, "Write Settings", "~/", "*.lstep");
+  if (filename.isNull()) return;
+
+  QFile data(filename);
+  if (data.open(QFile::WriteOnly | QFile::Truncate)) {
+    QTextStream out(&data);
+
+    out << "average measurement was performed: " << averageMeasEnabled_ << "\n";
+    out << "# \t x-pos \t y-pos \t z-pos \t measurement\n";
+    for (int r = 0; r < table_model->rowCount(); r++)
+      {
+	out << table_model->data(table_model->index(r,0), Qt::DisplayRole).toInt() << "\t" << table_model->data(table_model->index(r,1), Qt::DisplayRole).toInt() 
+	    << "\t" << table_model->data(table_model->index(r,2), Qt::DisplayRole).toInt() << "\t" << table_model->data(table_model->index(r,3), Qt::DisplayRole).toInt()
+	    << "\t" << table_model->data(table_model->index(r,4), Qt::DisplayRole).toInt() << "\n";
+      }
+    }
+
+}
 

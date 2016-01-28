@@ -68,7 +68,7 @@ MCommanderMainWindow::MCommanderMainWindow(QWidget *parent)
 
   //QTimer::singleShot(2000, this, SLOT(testManager()));
 
-  LStepExpressMeasurementWidget *lStepExpressMeasurementWidget = new LStepExpressMeasurementWidget(lStepExpressModel_, widget);
+  LStepExpressMeasurementWidget *lStepExpressMeasurementWidget = new LStepExpressMeasurementWidget(lStepExpressModel_, motionManager_, widget);
   tabWidget_->addTab(lStepExpressMeasurementWidget, "Measurements");
 
   NQLog("MCommanderMainWindow") << "main window constructed";
