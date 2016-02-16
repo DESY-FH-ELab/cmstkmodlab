@@ -23,6 +23,8 @@ typedef AssemblyUEyeModel AssemblyUEyeModel_t;
 #include "AssemblyUEyeView.h"
 #include "AssemblyUEyeSnapShooter.h"
 
+#include "AssemblyUEyeTracker.h"
+
 #include "AssemblyMarkerFinderThread.h"
 #include "AssemblySensorMarkerFinder.h"
 #include "AssemblySensorMarkerFinderWidget.h"
@@ -67,6 +69,9 @@ protected:
   AssemblyUEyeSnapShooter* finderView_;
   AssemblyUEyeSnapShooter* edgeView_;
   AssemblyUEyeSnapShooter* rawView_;
+    
+  AssemblyUEyeTracker* playView_;
+
 
   AssemblyUEyeModel_t* uEyeModel_;
   AssemblyUEyeCameraThread* cameraThread_;
