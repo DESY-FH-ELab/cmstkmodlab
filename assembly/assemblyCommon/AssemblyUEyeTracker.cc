@@ -135,6 +135,13 @@ void AssemblyUEyeTracker::track(){
     cv:Mat src;
     cv::Mat gray;
     cv::Mat blur;
+    cv::Mat bin_low, bin_high, bin, poly;
+    cv::Mat canny_output;
+
+    int thresh = 100;
+    int max_thresh = 255;
+    vector<vector<Point> > contours, contours_poly;
+    vector<Vec4i> hierarchy;
 
     //cv::Mat circles;
 
@@ -142,15 +149,96 @@ void AssemblyUEyeTracker::track(){
    // src = imread( "/Users/keaveney/Automation/cmstkmodlab//share/assembly/sensor_43MHz_186ms_2.png", 1 );
  
     src = imread( "/Users/keaveney/Automation/cmstkmodlab//share/assembly/sensor_24MHz_333ms_4.png", 1 );
+   // src = imread( "/Users/keaveney/Desktop/hex.png", 1 );
 
     
     int DELAY_CAPTION = 1500;
     int DELAY_BLUR = 100;
     int MAX_KERNEL_LENGTH = 31;
     
-    if (_step == 0 ){
-    imageView_->setImage(src);
-    }else if(_step == 1){
+    
+    if(_step==0){
+        cvtColor( src, gray, CV_BGR2GRAY );
+        GaussianBlur( gray, gray, Size(9, 9), 6, 6 );
+        
+        vector<Vec3f> circles;
+        
+        /// Apply the Hough Transform to find the circles
+        // HoughCircles( gray, circles, CV_HOUGH_GRADIENT, 1, gray.rows/8, 200, 100, 0, 0 );
+        HoughCircles( gray, circles, CV_HOUGH_GRADIENT, 1, 1, 200, 35, 0, 0 );
+        
+        /// Draw the circles detected
+        for( size_t i = 0; i < circles.size(); i++ )
+        {
+            Point center(cvRound(circles[i][0]), cvRound(circles[i][1]));
+            int radius = cvRound(circles[i][2]);
+            // circle center
+            circle( src, center, 3, Scalar(0,255,0), -1, 8, 0 );
+            // circle outline
+            circle( src, center, radius, Scalar(0,0,255), 3, 8, 0 );
+        }
+        
+        NQLog("AssemblyUEyeTracker") << " N Circles detected = " << circles.size();
+        
+        
+        Mat dst, dst_norm, dst_norm_scaled;
+        dst = Mat::zeros( src.size(), CV_32FC1 );
+        
+        /// Detector parameters
+        int blockSize = 5;
+        int apertureSize = 5;
+        double k = 0.04;
+        
+        /// Detecting corners
+        cornerHarris( gray, dst, blockSize, apertureSize, k, BORDER_DEFAULT );
+        
+        /// Normalizing
+             normalize( dst, dst_norm, 0, 255, NORM_MINMAX, CV_32FC1, Mat() );
+             convertScaleAbs( dst_norm, dst_norm_scaled );
+        
+        /// Drawing a circle around corners
+             for( int j = 0; j < dst_norm.rows ; j++ )
+             { for( int i = 0; i < dst_norm.cols; i++ )
+             {
+                 if( (int) dst_norm.at<float>(j,i) > thresh )
+                {
+                    circle( src, Point( i, j ), 5,  Scalar(255, 0,0), 2, 8, 0 );
+                }
+            }
+            }
+        
+        imageView_->setImage(src);
+
+    }
+    
+    
+else if (_step == 1 ){
+        
+        cvtColor(src,gray,CV_BGR2GRAY);
+        cv::threshold(gray,bin,128,255,CV_THRESH_BINARY);
+        
+        CvSeq* result;   //hold sequence of points of a contour
+        
+        /// Detect edges using canny
+        cv::Canny( bin, canny_output, thresh, thresh*2, 3 );
+        /// Find contours
+        findContours( canny_output, contours, hierarchy, CV_RETR_TREE, CV_CHAIN_APPROX_SIMPLE, Point(0, 0) );
+        
+        NQLog("AssemblyUEyeTracker") << ": N countours = "<<  contours.size() ;
+
+        Scalar color = Scalar(255,0,0);
+
+        /// Draw contours
+        Mat drawing = Mat::zeros( canny_output.size(), CV_8UC3 );
+        for( int i = 0; i< contours.size(); i++ )
+                drawContours( drawing, contours, i, color, 2, 8, hierarchy, 0, Point() );
+
+        
+    //imageView_->setZoomFactor(1.5);
+    imageView_->setImage(gray);
+        
+        
+    }else if(_step == 2){
         
 
         VideoCapture cap = VideoCapture(0); // open the video file for reading
@@ -160,8 +248,6 @@ void AssemblyUEyeTracker::track(){
             cout << "Cannot open the video file" << endl;
            
         }
-        
-        //cap.set(CV_CAP_PROP_POS_MSEC, 300); //start the video at 300ms
         
         double fps = cap.get(CV_CAP_PROP_FPS); //get the frames per seconds of the video
         
@@ -188,6 +274,11 @@ void AssemblyUEyeTracker::track(){
             }
              cvtColor( frame, gray, CV_BGR2GRAY );
             GaussianBlur( gray, gray, Size(9, 9), 2, 2 );
+         
+            bool detect_circles = true;
+            bool detect_corners = false;
+
+            if(detect_circles){
             HoughCircles( gray, circles, CV_HOUGH_GRADIENT, 1, 1, 200, 40, 0, 0 );
         
             NQLog("AssemblyUEyeTracker") << " N Circles detected = " << circles.size();
@@ -205,7 +296,6 @@ void AssemblyUEyeTracker::track(){
                 // circle outline
                 circle( frame, center, radius, Scalar(255,0,0), 3, 8, 0 );
             }
-           
            */
             
             //Get the mean circle
@@ -216,26 +306,78 @@ void AssemblyUEyeTracker::track(){
             radius = cvRound(m_circle[2]);
             
             
+            int roi_x1 = x-200;
+            int roi_x2 = x+100;
+            int roi_y1 = y-200;
+            int roi_y2 = y+100;
+
+
+            Scalar color = Scalar(255,0,0);
+
+            NQLog("AssemblyUEyeTracker") << " N Contours detected = " << contours.size();
+
+
+            
             QString rad = QString::number(radius);
             QString x_str = QString::number(x);
             QString y_str = QString::number(y);
+                
+            QString final_string = "Circle found with radius = " + rad + ", x = " + x_str + ", y =  " + y_str ;
+                text->setText(final_string);
+
             
-             Point center(x, y);
+            Point center(x, y);
             // circle center
             circle( frame, center, 3, Scalar(255,0,0), -1, 8, 0 );
             // circle outline
             circle( frame, center, radius, Scalar(255,0,0), 3, 8, 0 );
+         
+            // Setup a rectangle to define your region of interest
+            cv::Rect myROI(roi_x1,roi_y1, roi_x2,roi_y2);
+            
+            //ROI rectangle
+                rectangle(frame, myROI, Scalar(255,0,0), 1, 8, 0 );
+            }
+            
+            if(detect_corners){
+
+   //         cv::Canny( gray, canny_output, thresh, thresh*2, 3 );
+   //         findContours( canny_output, contours, hierarchy, CV_RETR_TREE, CV_CHAIN_APPROX_SIMPLE, Point(0, 0) );
 
             
-
-            QString final_string = "Circle found with radius = " + rad + ", x = " + x_str + ", y =  " + y_str ;
+            Mat dst, dst_norm, dst_norm_scaled;
+            dst = Mat::zeros( src.size(), CV_32FC1 );
             
-           text->setText(final_string);
-           
+            /// Detector parameters
+            int blockSize = 2;
+            int apertureSize = 3;
+            double k = 0.04;
+         
+            
+            /// Detecting corners
+           cornerHarris( gray, dst, blockSize, apertureSize, k, BORDER_DEFAULT );
+            
+            /// Normalizing
+            normalize( dst, dst_norm, 0, 255, NORM_MINMAX, CV_32FC1, Mat() );
+            convertScaleAbs( dst_norm, dst_norm_scaled );
+            
+            /// Drawing a circle around corners
+            for( int j = 0; j < dst_norm.rows ; j++ )
+            { for( int i = 0; i < dst_norm.cols; i++ )
+            {
+                if( (int) dst_norm.at<float>(j,i) > thresh )
+                {
+                    circle( frame, Point( i, j ), 5,  Scalar(255,0,0), 2, 8, 0 );
+                }
+            }
+            }
+            
+            
+            }
+            
+            
             
             imageView_->setImage(frame);
-
-           // imshow("MyVideo", frame); //show the frame in "MyVideo" window
             
             if(waitKey(30) == 27) //wait for 'esc' key press for 30 ms. If 'esc' key is pressed, break loop
             {
@@ -247,21 +389,9 @@ void AssemblyUEyeTracker::track(){
         
         NQLog("AssemblyUEyeTracker") << ":Camera captured";
         
-      //  QList<QCameraInfo> cameras = QCameraInfo::availableCameras();
-      //  foreach (const QCameraInfo &cameraInfo, cameras) {
-         //   if (cameraInfo.deviceName() == "mycamera")
-          //      camera = new QCamera(cameraInfo);
-        //    NQLog("AssemblyUEyeTracker") << cameraInfo.deviceName();
-       // }
-        
-        
-        //cvtColor( src, gray, CV_BGR2GRAY );
-        //GaussianBlur( gray, gray, Size(9, 9), 6, 6 );
-       // threshold( gray, gray, 100, 50,1 );
-       // imageView_->setImage(gray);
 
     }
-    else if(_step == 2){
+    else if(_step == 3){
         
         cvtColor( src, gray, CV_BGR2GRAY );
         GaussianBlur( gray, gray, Size(9, 9), 6, 6 );
@@ -292,25 +422,14 @@ void AssemblyUEyeTracker::track(){
     
     _step++;
     
-    
-    
-    
-   // cvtColor( local, gray, CV_BGR2GRAY );
-    
-    // Reduce the noise so we avoid false circle detection
-    GaussianBlur( gray, gray, Size(1, 1), 1, 1 );
-    
-    
-  //  vector<Vec3f> circles;
-    
-   // imageView_->setImage(gray);
-    
-    // Apply the Hough Transform to find the circles
-    //HoughCircles( gray, circles, CV_HOUGH_GRADIENT, 1, 30, 200, 50, 0, 0 );
-    
-//   cv::Mat src;
- //   src = cv::imread(local, CV_LOAD_IMAGE_GRAYSCALE);
+
 }
+
+
+
+
+
+
 
 
 
@@ -336,12 +455,6 @@ Vec3f AssemblyUEyeTracker::mean(vector<Vec3f> vec_circles){
     
     double sum_y = std::accumulate(std::begin(y), std::end(y), 0.0);
     double m_y =  sum_y / y.size();
-    
-//    double accum = 0.0;
-  //  std::for_each (std::begin(v), std::end(v), [&](const double d) {
-   //     accum += (d - m) * (d - m);
-   // });
-    //double stdev = sqrt(accum / (v.size()-1));
     
     mean_circle = Vec3f(m_x,m_y,m_radii);
     
