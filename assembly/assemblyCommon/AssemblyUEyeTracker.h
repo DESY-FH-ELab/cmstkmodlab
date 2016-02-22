@@ -37,6 +37,10 @@ public slots:
     void track();
 
     void imageAcquired(const cv::Mat&);
+
+signals:
+    void getframe();
+
 };
 
 #endif // ASSEMBLYUEYEWIDGET_H

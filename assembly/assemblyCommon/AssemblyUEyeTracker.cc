@@ -16,10 +16,9 @@
 
 
 #include <nqlogger.h>
-
+#include "AssemblyUEyeCamera.h"
 #include "AssemblyUEyeTracker.h"
-
-
+#include "AssemblySensorMarkerFinder.h"
 
 #include "opencv2/highgui/highgui.hpp"
 #include "opencv2/imgproc/imgproc.hpp"
@@ -28,7 +27,6 @@
 
 using namespace cv;
 using namespace std;
-
 
 
 AssemblyUEyeTracker::AssemblyUEyeTracker(QWidget *parent)
@@ -48,6 +46,9 @@ AssemblyUEyeTracker::AssemblyUEyeTracker(QWidget *parent)
     QPushButton * button_3 = new QPushButton("track", this);
     connect(button_3, SIGNAL(clicked(bool)),
             this, SLOT(track()));
+
+     AssemblyUEyeCamera* cam_ = new AssemblyUEyeCamera(this)  ;
+     connect(this, SIGNAL(getframe()), cam_, SLOT(onSnapShot()));
     
 
     l->addWidget(button);
@@ -148,8 +149,10 @@ void AssemblyUEyeTracker::track(){
     cv::Mat blurgray;
    // src = imread( "/Users/keaveney/Automation/cmstkmodlab//share/assembly/sensor_43MHz_186ms_2.png", 1 );
  
-    src = imread( "/Users/keaveney/Automation/cmstkmodlab//share/assembly/sensor_24MHz_333ms_4.png", 1 );
+    //    src = imread( "/Users/keaveney/Automation/cmstkmodlab//share/assembly/sensor_24MHz_333ms_4.png", 1 );
    // src = imread( "/Users/keaveney/Desktop/hex.png", 1 );
+
+    src = imread( "/home/keaveney/assembly_dev/cmstkmodlab/share/assembly/sensor_24MHz_333ms_4.png", 1 );
 
     
     int DELAY_CAPTION = 1500;
@@ -157,8 +160,8 @@ void AssemblyUEyeTracker::track(){
     int MAX_KERNEL_LENGTH = 31;
     
     
-    if(_step==0){
-        cvtColor( src, gray, CV_BGR2GRAY );
+    if(_step==10){
+      //        cvtColor( src, gray, CV_BGR2GRAY );
         GaussianBlur( gray, gray, Size(9, 9), 6, 6 );
         
         vector<Vec3f> circles;
@@ -212,9 +215,13 @@ void AssemblyUEyeTracker::track(){
     }
     
     
-else if (_step == 1 ){
-        
+else if (_step == 100 ){
+          NQLog("AssemblyUEyeTracker") << ": step 0 " ;
+
+ cv::Mat local = image_;
         cvtColor(src,gray,CV_BGR2GRAY);
+
+	/*
         cv::threshold(gray,bin,128,255,CV_THRESH_BINARY);
         
         CvSeq* result;   //hold sequence of points of a contour
@@ -232,16 +239,19 @@ else if (_step == 1 ){
         Mat drawing = Mat::zeros( canny_output.size(), CV_8UC3 );
         for( int i = 0; i< contours.size(); i++ )
                 drawContours( drawing, contours, i, color, 2, 8, hierarchy, 0, Point() );
+  */
 
+	//  AssemblySensorMarkerFinder * finder = new AssemblySensorMarkerFinder();
+	//finder->findMarker(gray);
         
     //imageView_->setZoomFactor(1.5);
-    imageView_->setImage(gray);
+	emit getframe();
+        imageView_->setImage(image_);
         
         
     }else if(_step == 2){
         
-
-        VideoCapture cap = VideoCapture(0); // open the video file for reading
+        VideoCapture cap = VideoCapture(11); // open the video file for reading
         
         if ( !cap.isOpened() )  // if not success, exit program
         {
@@ -253,8 +263,8 @@ else if (_step == 1 ){
         
         cout << "Frame per seconds : " << fps << endl;
         
-        namedWindow("MyVideo",CV_WINDOW_AUTOSIZE); //create a window called "MyVideo"
-        imageView_->setZoomFactor(1.5);
+        //namedWindow("MyVideo",CV_WINDOW_AUTOSIZE); //create a window called "MyVideo"
+        //imageView_->setZoomFactor(1.5);
         vector<Vec3f> circles;
         
         QTextEdit * text = new QTextEdit();
@@ -264,7 +274,6 @@ else if (_step == 1 ){
         while(1)
         {
             Mat frame;
-            
             bool bSuccess = cap.read(frame); // read a new frame from video
             
             if (!bSuccess) //if not success, break loop
@@ -391,31 +400,58 @@ else if (_step == 1 ){
         
 
     }
-    else if(_step == 3){
-        
-        cvtColor( src, gray, CV_BGR2GRAY );
-        GaussianBlur( gray, gray, Size(9, 9), 6, 6 );
+    else if(_step == 0){
+         cv::Mat local ;
+        NQLog("AssemblyUEyeTracker") << " N channels = " << image_.channels()   ;
+        image_.copyTo(local);
+
+        QTextEdit * text = new QTextEdit();
+        text->show();
+        int radius,x,y  = -1;
+
+
+	//    if (image_.channels()==1) {
+	// cvtColor(image_, image_, CV_GRAY2RGB);
+	//} else {
+	// image_.copyTo(local);
+	// }
+
+    //        cvtColor( src, gray, CV_BGR2GRAY );
+        GaussianBlur( image_, image_, Size(3,3), 0, 0 );
 
         vector<Vec3f> circles;
         
         /// Apply the Hough Transform to find the circles
        // HoughCircles( gray, circles, CV_HOUGH_GRADIENT, 1, gray.rows/8, 200, 100, 0, 0 );
-        HoughCircles( gray, circles, CV_HOUGH_GRADIENT, 1, 1, 200, 35, 0, 0 );
+       // HoughCircles( image_, circles, CV_HOUGH_GRADIENT, 1, 1, 200, 35, 0, 0 );
+        HoughCircles( image_, circles, CV_HOUGH_GRADIENT, 1, 1, 200, 16, 70, 90 );
+
         
         /// Draw the circles detected
         for( size_t i = 0; i < circles.size(); i++ )
         {
             Point center(cvRound(circles[i][0]), cvRound(circles[i][1]));
-            int radius = cvRound(circles[i][2]);
+             radius = cvRound(circles[i][2]);
+             x =  cvRound(circles[i][0]);
+	     y =  cvRound(circles[i][1]);
             // circle center
-            circle( src, center, 3, Scalar(0,255,0), -1, 8, 0 );
+            circle( local, center, 3, Scalar(255,0,0), -1, 8, 0 );
             // circle outline
-            circle( src, center, radius, Scalar(0,0,255), 3, 8, 0 );
+            circle( local, center, radius, Scalar(255,0,0), 3, 8, 0 );
         }
         
+
+            QString rad = QString::number(radius);
+            QString x_str = QString::number(x);
+            QString y_str = QString::number(y);
+                
+            QString final_string = "Circle found with radius = " + rad + ", x = " + x_str + ", y =  " + y_str ;
+                text->setText(final_string);
+
+
         NQLog("AssemblyUEyeTracker") << " N Circles detected = " << circles.size();
 
-        imageView_->setImage(src);
+        imageView_->setImage(local);
         
 
     }
@@ -471,7 +507,7 @@ void AssemblyUEyeTracker::stream()
  //   view->load(url);
  //   view->show();
     
-    NQLog("AssemblyUEyeTracker") << ":stream " <<  signal ;
+  //    NQLog("AssemblyUEyeTracker") << ":stream " <<  signal ;
 
     
    
