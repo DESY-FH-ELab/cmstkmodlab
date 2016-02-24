@@ -12,7 +12,7 @@ AssemblyUEyeCameraWidget::AssemblyUEyeCameraWidget(AssemblyVUEyeCamera* camera,
     addItem(new AssemblyUEyeCameraGeneralWidget(camera, this), "general information");
     addItem(new AssemblyUEyeCameraSensorWidget(camera, this), "sensor information");
     addItem(new AssemblyUEyeCameraSettingsWidget(camera, this), "settings");
-
+  
     // Connect all the signals
     connect(camera_, SIGNAL(cameraInformationChanged()),
             this, SLOT(cameraInformationChanged()));
@@ -243,9 +243,10 @@ void AssemblyUEyeCameraExposureTimeSlider::exposureTimeRangeChanged(double curre
 
 void AssemblyUEyeCameraExposureTimeSlider::exposureTimeChanged(double current)
 {
-    NQLog("AssemblyUEyeCameraExposureTimeSlider") << ":exposureTimeChanged() " << current;
+    NQLog("AssemblyUEyeCameraExposureTimeSlider %%%") << ":exposureTimeChanged() " << current;
 
-    setValue((current - camera_->getExposureTimeMin()) / camera_->getExposureTimeInc());
+     setValue((current - camera_->getExposureTimeMin()) / camera_->getExposureTimeInc());
+
 }
 
 AssemblyUEyeCameraExposureTimeWidget::AssemblyUEyeCameraExposureTimeWidget(AssemblyVUEyeCamera* camera,
@@ -299,9 +300,9 @@ AssemblyUEyeCameraSettingsWidget::AssemblyUEyeCameraSettingsWidget(AssemblyVUEye
       camera_(camera)
 {
     QFormLayout * layout = new QFormLayout(this);
-
     layout->addRow("pixel clock", new AssemblyUEyeCameraPixelClockWidget(camera_, this));
     layout->addRow("exposure time", new AssemblyUEyeCameraExposureTimeWidget(camera_, this));
+    layout->addRow("", new AssemblyUEyeCameraSettingsCalibrater(camera_, this));
 
     setLayout(layout);
 
@@ -315,4 +316,45 @@ AssemblyUEyeCameraSettingsWidget::AssemblyUEyeCameraSettingsWidget(AssemblyVUEye
 void AssemblyUEyeCameraSettingsWidget::cameraInformationChanged()
 {
 
+}
+
+
+AssemblyUEyeCameraSettingsCalibrater::AssemblyUEyeCameraSettingsCalibrater(AssemblyVUEyeCamera* camera,
+                                                                 QWidget *parent)
+    : QPushButton(parent),
+      camera_(camera)
+{
+     this->setText("Calibrate camera");
+     // Connect all the signals
+     //   connect(this, SIGNAL(clicked()),
+     //       this, SLOT(onCalibrate()));
+
+    connect(this, SIGNAL(changeExposureTime(double)),
+          camera_, SLOT(setExposureTime(double)));
+
+    connect(this, SIGNAL(clicked()),
+  	    camera_, SLOT(calibrateSettings()));
+
+
+}
+
+
+
+void AssemblyUEyeCameraSettingsCalibrater::onCalibrate()
+{
+    NQLog("AssemblyUEyeCameraSettingWidget") << ":starting Calibration Routine...";
+    //setValue((current - camera_->getExposureTimeMin()) / camera_->getExposureTimeInc());
+    //  setValue(100.0);
+
+    //connect(this, SIGNAL(changeExposureTime(double)),
+	      //       camera_, SLOT(setExposureTime(double)));
+
+    emit changeExposureTime(50.0);
+    //    emit changeExposureTime(100.0);
+    //emit changeExposureTime(150.0);
+    //emit changeExposureTime(200.0);
+
+
+    // sleep(5);
+    //  emit acquireImage();
 }

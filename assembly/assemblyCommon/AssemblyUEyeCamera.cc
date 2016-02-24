@@ -361,7 +361,7 @@ void AssemblyUEyeCamera::updateExposureTime()
         nMax = nRange[1];
         nInc = nRange[2];
 
-        NQLog("AssemblyUEyeCamera", NQLog::Message) << ":updateExposureTime() " << nMin << " " << nMax << " " << nInc;
+        NQLog("AssemblyUEyeCamera here yes", NQLog::Message) << ":updateExposureTime() " << nMin << " " << nMax << " " << nInc;
 
         bool listChanged = false;
         bool valueChanged = false;

@@ -86,6 +86,7 @@ public slots:
 
     virtual void setPixelClock(unsigned int) = 0;
     virtual void setExposureTime(double) = 0;
+    virtual  void calibrateSettings();
 
 protected slots:
 

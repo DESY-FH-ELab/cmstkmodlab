@@ -13,6 +13,9 @@
 #include <QLabel>
 #include <QComboBox>
 #include <QSlider>
+#include <QPushButton>
+
+
 
 #include <DeviceState.h>
 
@@ -81,9 +84,34 @@ protected:
     QLabel* pixelSizeLabel_;
 
 public slots:
-
     void cameraInformationChanged();
 };
+
+
+
+class AssemblyUEyeCameraSettingsCalibrater : public QPushButton
+{
+    Q_OBJECT
+
+public:
+    explicit AssemblyUEyeCameraSettingsCalibrater(AssemblyVUEyeCamera* camera,
+                                            QWidget *parent = 0);
+
+public slots:
+
+    void onCalibrate();
+
+protected:
+
+    AssemblyVUEyeCamera* camera_;
+
+signals:
+    void changeExposureTime(double);
+    void acquireImage();
+
+};
+
+
 
 class AssemblyUEyeCameraPixelClockWidget : public QComboBox
 {

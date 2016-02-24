@@ -401,7 +401,7 @@ else if (_step == 100 ){
 
     }
     else if(_step == 0){
-         cv::Mat local ;
+        cv::Mat local ;
         NQLog("AssemblyUEyeTracker") << " N channels = " << image_.channels()   ;
         image_.copyTo(local);
 
@@ -446,12 +446,10 @@ else if (_step == 100 ){
             QString y_str = QString::number(y);
                 
             QString final_string = "Circle found with radius = " + rad + ", x = " + x_str + ", y =  " + y_str ;
-                text->setText(final_string);
+            text->setText(final_string);
 
-
-        NQLog("AssemblyUEyeTracker") << " N Circles detected = " << circles.size();
-
-        imageView_->setImage(local);
+            NQLog("AssemblyUEyeTracker") << " N Circles detected = " << circles.size();
+            imageView_->setImage(local);
         
 
     }
