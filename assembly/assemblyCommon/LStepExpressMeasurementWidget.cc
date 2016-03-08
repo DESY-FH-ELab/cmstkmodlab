@@ -52,6 +52,7 @@ LStepExpressMeasurementWidget::LStepExpressMeasurementWidget(LStepExpressModel* 
     x_init = -150; //FIX ME! take right upper corner of table
     y_init = -150; //FIX ME! take right upper corner of table
 
+
     //table model/view
     table_model = new LStepExpressMeasurementTable();
     table_view = new QTableView(this);
@@ -73,6 +74,8 @@ LStepExpressMeasurementWidget::LStepExpressMeasurementWidget(LStepExpressModel* 
     layout->addLayout(vlayout_buttons);
 
     connect(buttonStoreMeasurement_, SIGNAL(clicked()), this, SLOT(storeResults()));
+
+    generateCirclePositions();
 }
 
 void LStepExpressMeasurementWidget::setAverageMeasEnabled(bool enabled)
@@ -80,7 +83,6 @@ void LStepExpressMeasurementWidget::setAverageMeasEnabled(bool enabled)
     if (enabled) {
       averageMeasEnabled_ = true;
     } else {
-      averageMeasCheckBox_->setEnabled(false);
       averageMeasEnabled_ = false;
     }
 }
@@ -104,6 +106,7 @@ void LStepExpressMeasurementWidget::generatePositions()
   std::vector<float> meas;
   
   int z = 0;
+  //generate the positions
   for(int i = 0; i < nstepsx; i++){
     for(int j = 0; j < nstepsy; j++){
       xpos.push_back(x_init + i*rangex/nstepsx);
@@ -116,7 +119,7 @@ void LStepExpressMeasurementWidget::generatePositions()
   }
 
   //  NQLog("LStepExpressMeasurementWidget", NQLog::Debug) << "size pos_number = "<<pos_number.size()<<" size xpos = "<<xpos.size();
-  
+  //store the positions in the table_model as columns
   table_model->insertData(0, pos_number);
   table_model->insertData(1, xpos);
   table_model->insertData(2, ypos);
@@ -135,6 +138,22 @@ void LStepExpressMeasurementWidget::generatePositions()
 //FIX ME! fill in
 void LStepExpressMeasurementWidget::generateCirclePositions()
 {
+  //R^2 = x^2 + y^2
+  double R = 0.5; //circle of diameter 1mm
+  double x = 0.;
+  for(int i = 0; i < 100; i++)
+    {
+      x = -0.5 + i*0.01;
+      circle_x.push_back(x);
+      circle_y.push_back(sqrt(R*R - x*x));
+    }
+  for(int i = 0; i < 100; i++)
+    {
+      x = +0.5 - i*0.01;
+      circle_x.push_back(x);
+      circle_y.push_back(-sqrt(R*R - x*x));
+    }
+
 }
 
 //FIX ME! needs to be tested in the lab
@@ -157,10 +176,30 @@ void LStepExpressMeasurementWidget::performMeasurement()
       //go to position
       //manager_->moveAbsolute(x_pos, y_pos, z_pos, 0.0);
 
+      //if requested average measurement, perform circle at position
+      double meas_atpos = 0.;
+      NQLog("LStepExpressMeasurementWidget", NQLog::Debug) << "averageMeasEnabled_ = " << averageMeasEnabled_;
+      if(averageMeasEnabled_)
+	{
+	  NQLog("LStepExpressMeasurementWidget", NQLog::Debug) << "in average meas, circle_x size = " << circle_x.size();
+	  for(unsigned int c = 0; c < circle_x.size(); c++)
+	    {
+	      //manager_->moveAbsolute(x_pos+(circle_x)[c], y_pos+(circle_y)[c], z_pos, 0.0);
+	      //make laser measurement
+	    }
+	  meas_atpos = 1.;
+	}else{
+	NQLog("LStepExpressMeasurementWidget", NQLog::Debug) << "in standard meas ";
+	//make laser measurement
+	meas_atpos = 1.;
+      }
+      
+
+      NQLog("LStepExpressMeasurementWidget", NQLog::Debug) << "after meas ";
       //FIX ME! how to ensure the movement has stopped before making measurement with laser?
 
       //store dummy measurement result
-      meas.push_back(1.0);
+      meas.push_back(meas_atpos);
     }
   table_model->insertData(4,meas);
   table_model->update();

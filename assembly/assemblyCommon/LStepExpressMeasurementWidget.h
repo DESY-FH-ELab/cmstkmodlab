@@ -50,13 +50,13 @@ private:
     bool averageMeasEnabled_;
     int nstepsx;
     int nstepsy;
-    double rangex = 100;
-    double rangey = 100;
+    double rangex = 100; //FIX ME! take full range of table
+    double rangey = 100; //FIX ME! take full range of table
     double z_init;
     double y_init;
     double x_init;
-    std::vector<double> circle_x;
-    std::vector<double> circle_y;
+    std::vector<float> circle_x;
+    std::vector<float> circle_y;
     void generateCirclePositions();
 
     LStepExpressMeasurementTable *table_model;
