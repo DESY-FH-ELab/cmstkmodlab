@@ -38,6 +38,7 @@ protected:
     QCheckBox* averageMeasCheckBox_;
     QPushButton* buttonGeneratePos_;
     QPushButton *buttonStartMeasurement_;
+    QPushButton *buttonStopMeasurement_;
     QPushButton *buttonStoreMeasurement_;
     QLineEdit* nstepsx_;
     QLineEdit* nstepsy_;
@@ -50,8 +51,8 @@ private:
     bool averageMeasEnabled_;
     int nstepsx;
     int nstepsy;
-    double rangex = 100; //FIX ME! take full range of table
-    double rangey = 100; //FIX ME! take full range of table
+    double rangex = 300; //full range of table
+    double rangey = 300; //full range of table
     double z_init;
     double y_init;
     double x_init;
@@ -61,9 +62,11 @@ private:
 
     LStepExpressMeasurementTable *table_model;
     QTableView *table_view;
+    bool isActive_;
 
 private slots:
     void performMeasurement();
+    void stopMeasurement();
     void storeResults();
 
 };

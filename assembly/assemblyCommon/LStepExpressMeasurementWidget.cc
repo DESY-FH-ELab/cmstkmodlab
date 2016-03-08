@@ -67,6 +67,15 @@ LStepExpressMeasurementWidget::LStepExpressMeasurementWidget(LStepExpressModel* 
     connect(buttonStartMeasurement_, SIGNAL(clicked()),
 	    this, SLOT(performMeasurement()));
 
+
+    buttonStopMeasurement_ = new QPushButton("Stop Measurement", this);
+    buttonStopMeasurement_->setEnabled(false);
+    vlayout_buttons->addWidget(buttonStopMeasurement_);
+
+    connect(buttonStopMeasurement_, SIGNAL(clicked()),
+            this, SLOT(stopMeasurement()));
+
+
     buttonStoreMeasurement_ = new QPushButton("Store Results Measurement", this);
     buttonStoreMeasurement_->setEnabled(false);
     vlayout_buttons->addWidget(buttonStoreMeasurement_);
@@ -93,8 +102,8 @@ void LStepExpressMeasurementWidget::generatePositions()
   //  NQLog("LStepExpressMeasurementWidget", NQLog::Debug) << "in generatePositions ";
 
   //read in number of steps, if empty take default 10 steps
-  nstepsx = (nstepsx_->text().isEmpty() == true) ? 10 : nstepsx_->text().toInt();
-  nstepsy = (nstepsy_->text().isEmpty() == true) ? 10 : nstepsy_->text().toInt();
+  nstepsx = (nstepsx_->text().isEmpty() == true) ? 10 : (nstepsx_->text().toInt());
+  nstepsy = (nstepsy_->text().isEmpty() == true) ? 10 : (nstepsy_->text().toInt());
 
 
   //  NQLog("LStepExpressMeasurementWidget", NQLog::Debug) << "nstepsx = " << nstepsx << " nstepsy = " << nstepsy << " x_init = " << x_init << " y_init = " << y_init << " rangex = " << rangex << " rangey = "<< rangey;
@@ -106,11 +115,29 @@ void LStepExpressMeasurementWidget::generatePositions()
   std::vector<float> meas;
   
   int z = 0;
-  //generate the positions
-  for(int i = 0; i < nstepsx; i++){
-    for(int j = 0; j < nstepsy; j++){
+  /*
+  //generate the positions in zigzag pattern
+  for(int i = 0; i < nstepsx + 1; i++){
+    for(int j = 0; j < nstepsy + 1; j++){
       xpos.push_back(x_init + i*rangex/nstepsx);
       ypos.push_back(y_init + j*rangey/nstepsy);
+      pos_number.push_back(z);
+      zpos.push_back(z_init);
+      meas.push_back(0.0);
+      z++;
+    }
+  }
+  */
+
+  //generate the positions in meander pattern
+  float y_prev = y_init;
+  float y_pres = y_init;
+  for(int i = 0; i < nstepsx + 1; i++){
+    for(int j = 0; j < nstepsy + 1; j++){
+      xpos.push_back(x_init + i*rangex/nstepsx);
+      if(j != 0){y_pres = y_prev + pow(-1,i)*rangey/nstepsy;}
+      ypos.push_back(y_pres);
+      y_prev = y_pres;
       pos_number.push_back(z);
       zpos.push_back(z_init);
       meas.push_back(0.0);
@@ -132,6 +159,8 @@ void LStepExpressMeasurementWidget::generatePositions()
   //  NQLog("LStepExpressMeasurementWidget", NQLog::Debug) << "filled table ";
 
   buttonStartMeasurement_->setEnabled(true);
+  buttonStopMeasurement_->setEnabled(true);
+  isActive_ = true;
   buttonStoreMeasurement_->setEnabled(false);
 }
 
@@ -156,6 +185,11 @@ void LStepExpressMeasurementWidget::generateCirclePositions()
 
 }
 
+void LStepExpressMeasurementWidget::stopMeasurement()
+{
+  isActive_ = false;
+}
+
 //FIX ME! needs to be tested in the lab
 void LStepExpressMeasurementWidget::performMeasurement()
 {
@@ -166,7 +200,9 @@ void LStepExpressMeasurementWidget::performMeasurement()
   double z_pos = 0;
   std::vector<float> meas;
   //go to all positions, do the measurement, store the measurement data
-  for(int r = 0; r < table_model->rowCount(); r++)
+  int r = 0;
+  while(isActive_ && r < table_model->rowCount())
+    //  for(int r = 0; r < table_model->rowCount(); r++)
     {
       //retrieve position from the model
       x_pos = table_model->data(table_model->index(r,1), Qt::DisplayRole).toInt();
@@ -200,6 +236,7 @@ void LStepExpressMeasurementWidget::performMeasurement()
 
       //store dummy measurement result
       meas.push_back(meas_atpos);
+      r++;
     }
   table_model->insertData(4,meas);
   table_model->update();
