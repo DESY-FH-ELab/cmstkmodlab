@@ -104,7 +104,9 @@ protected:
     double circleQuality_;
 
     double orientation_;
-
+    
+    const cv::Mat * global_image_ptr;
+    
     std::vector<AssemblyMarkerCircle> circles_;
 
     std::vector<std::pair<cv::Point2f,cv::Point2f> > lines_;

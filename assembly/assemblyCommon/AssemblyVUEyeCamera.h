@@ -6,6 +6,8 @@
 #include <QObject>
 
 #include <DeviceState.h>
+#include "AssemblySensorMarkerFinder.h"
+
 
 class AssemblyVUEyeCamera : public QObject
 {
@@ -13,7 +15,7 @@ class AssemblyVUEyeCamera : public QObject
 public:
     explicit AssemblyVUEyeCamera(QObject *parent);
     ~AssemblyVUEyeCamera();
-
+    AssemblySensorMarkerFinder* loopFind_;
     void setCameraID(unsigned int id) { cameraID_ = id; }
     void setDeviceID(unsigned int id) { deviceID_ = id; }
     void setSensorID(unsigned int id) { sensorID_ = id; }

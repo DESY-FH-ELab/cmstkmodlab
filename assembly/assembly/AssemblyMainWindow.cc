@@ -55,7 +55,7 @@ AssemblyMainWindow::AssemblyMainWindow(QWidget *parent) :
     toolBar_->addAction("open", this, SLOT(onOpenCamera()));
     toolBar_->addAction("close", this, SLOT(onCloseCamera()));
     toolBar_->addAction("snapshot", this, SLOT(onSnapShot()));
-    toolBar_->addAction("stream", this, SLOT(onStream()));
+  
 
 
     setCentralWidget(tabWidget_);
@@ -110,22 +110,6 @@ void AssemblyMainWindow::onSnapShot()
    NQLog("AssemblyUEyeCamera::onSnapShot", NQLog::Message) << " post ";
 
 }
-
-
-void AssemblyMainWindow::onStream()
-{
-   NQLog("AssemblyUEyeCamera::onStream", NQLog::Message) << "  ";
-      emit acquireImage();
-
-      //any kind of looping here seems to cause a crash
-      //maybe Qt has trouble when it is waiting for a slot to terminate...??
-      for(int i =0; i<10;i++){
-    usleep(10000000);
-     NQLog("AssemblyUEyeCamera::onStream", NQLog::Message) << " sleeping...  ";
-
-    }
-}
-
 
 
 

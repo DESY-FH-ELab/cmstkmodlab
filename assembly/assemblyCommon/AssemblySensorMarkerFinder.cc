@@ -32,54 +32,96 @@ AssemblySensorMarkerFinder::AssemblySensorMarkerFinder(QObject *parent)
     linesHoughMaxLineGap_ = config->getValue<double>("SensorMarkerLinesHoughMaxLineGap", 25);
 }
 
+
+
+
+
 AssemblySensorMarkerFinder::~AssemblySensorMarkerFinder()
 {
     NQLog("AssemblySensorMarkerFinder") << "delete";
 }
 
+
+
+//void AssemblySensorMarkerFinder::overrideCircleConfig(int edge, int centre, int rad)
+//{
+//  circleEdgeDetectionThreshold_ =  edge;
+//  circleCenterDetectionThreshold_ =  centre;
+//  expectedCircleRadius_ =    rad;
+// }
+
+
+
 void AssemblySensorMarkerFinder::findMarker(const cv::Mat& image)
 {
-    QMutexLocker lock(&mutex_);
 
+    NQLog("AssemblySensorMarkerFinder") << "findMarker()";
+
+    QMutexLocker lock(&mutex_);
     image.copyTo(image_);
 
     lock.unlock();
-
+ 
     if (image_.channels()==1) {
-        cvtColor(image_, imageRGB_, CV_GRAY2RGB);
+       cvtColor(image_, imageRGB_, CV_GRAY2RGB);
     } else {
-        image_.copyTo(imageRGB_);
+       image_.copyTo(imageRGB_);
     }
-
-    cv::GaussianBlur(image_, image_,
+  
+    cv::GaussianBlur(image, image_,
                      cv::Size(gaussianBlurKernelSize_, gaussianBlurKernelSize_),
                      gaussianBlurSigma_, gaussianBlurSigma_);
 
     size_t ret = findCircle(image_);
+
+
     if (ret==0) {
         emit markerFound(imageRGB_);
         return;
     }
+    NQLog("AssemblySensorMarkerFinder") << "found circle";
+
 
     ret = findLines();
+    NQLog("AssemblySensorMarkerFinder") << "found lines";
 
     ret = findIntersections();
 
+    NQLog("AssemblySensorMarkerFinder") << "found intersections";
     determineOrientation();
 
+    NQLog("AssemblySensorMarkerFinder") << "orientation determined";
+
     drawCircle();
+    NQLog("AssemblySensorMarkerFinder") << "circles drawn";
+
     drawLines();
-    drawOutline();
-    drawIntersections();
-    drawOrientation();
+    NQLog("AssemblySensorMarkerFinder") << "lines drawn";
+
+    //  drawOutline();
+    NQLog("AssemblySensorMarkerFinder") << "outlines drawn";
+
+    //drawIntersections();
+    NQLog("AssemblySensorMarkerFinder") <<"intersections drawn";
+
+    // drawOrientation();
+
+    NQLog("AssemblySensorMarkerFinder") << "shapes drawn";
+
+    NQLog("   ") ;
+    NQLog("   ") ;
+    NQLog("   ") ;
+
 
     emit markerFound(imageRGB_);
 }
 
 size_t AssemblySensorMarkerFinder::findCircle(const cv::Mat& image)
 {
-    circles_.clear();
 
+    global_image_ptr = &image;
+
+    circles_.clear();
     circleQuality_ = 1.0;
 
     std::vector<cv::Vec3f> circles;
@@ -92,7 +134,10 @@ size_t AssemblySensorMarkerFinder::findCircle(const cv::Mat& image)
                      circleEdgeDetectionThreshold_, circleCenterDetectionThreshold_,
                      expectedCircleRadius_ - 15., expectedCircleRadius_ + 15.);
 
+
     lock.unlock();
+    NQLog("AssemblySensorMarkerFinder") << " N circles = " << circles.size()  ;
+
 
     if (circles.size()==0) {
         circleQuality_ = 0.0;
@@ -103,21 +148,29 @@ size_t AssemblySensorMarkerFinder::findCircle(const cv::Mat& image)
         circleCenter_.x = circles[0][0];
         circleCenter_.y = circles[0][1];
         circleRadius_ = circles[0][2];
+    NQLog("AssemblySensorMarkerFinder") << " getting  circle qual"  ;
+
 
         circleQuality_ = 1.0 - std::fabs(circleRadius_-expectedCircleRadius_)/expectedCircleRadius_;
 
-        circles_.push_back(AssemblyMarkerCircle(circleCenter_.x,
+    NQLog("AssemblySensorMarkerFinder") << " got circle qual"  ;
+
+            circles_.push_back(AssemblyMarkerCircle(circleCenter_.x,
                                                 circleCenter_.y,
-                                                circleRadius_,
-                                                circleQuality_));
+                                               circleRadius_,
+                                               circleQuality_));
+    NQLog("AssemblySensorMarkerFinder") << " got circle qual 2"  ;
 
         return 1;
     }
+
+    NQLog("AssemblySensorMarkerFinder") << " before radius map"  ;
 
     std::map<double,cv::Vec3f> radiusMap;
     for(size_t i = 0; i < circles.size(); i++ ) {
         radiusMap[std::fabs(circles[i][2]-expectedCircleRadius_)] = circles[i];
     }
+    NQLog("AssemblySensorMarkerFinder") << " after radius map"  ;
 
     std::map<double,cv::Vec3f>::iterator it = radiusMap.begin();
 
@@ -145,6 +198,7 @@ size_t AssemblySensorMarkerFinder::findCircle(const cv::Mat& image)
     } else if (minDistance<=2*circleRadius_) {
         circleQuality_ *= 1.0 - minDistance/(2*circleRadius_);
     }
+    NQLog("AssemblySensorMarkerFinder") << " returning circles "  ;
 
     return circles.size();
 }
@@ -153,10 +207,13 @@ void AssemblySensorMarkerFinder::drawCircle()
 {
     cv::Point2f center(cvRound(circleCenter_.x),
                        cvRound(circleCenter_.y));
+
+    cv::Mat local_image = *global_image_ptr;
     // circle center
-    cv::circle(imageRGB_, center, 8, cv::Scalar(0, 255, 0), -1, CV_AA, 0);
+      cv::circle(local_image, center, 8, cv::Scalar(0, 255, 0), -1, CV_AA, 0);
     // circle outline
-    cv::circle(imageRGB_, center, circleRadius_, cv::Scalar(0, 0, 255), 4, CV_AA, 0);
+      cv::circle(local_image, center, circleRadius_, cv::Scalar(0, 0, 255), 4, CV_AA, 0);
+
 }
 
 size_t AssemblySensorMarkerFinder::findLines()
