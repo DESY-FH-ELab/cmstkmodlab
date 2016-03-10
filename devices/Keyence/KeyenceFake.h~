@@ -1,0 +1,64 @@
+#ifndef __KEYENCE_H
+#define __KEYENCE_H
+
+#include <iostream>
+#include <string>
+#include <sstream>
+#include <cstdlib>
+#include <utility>
+#include <fstream>
+#include <cmath>
+
+#include "VKeyence.h"
+#include "KeyenceComHandler.h"
+
+class Keyence : public VKeyence
+{
+ public:
+
+  Keyence( const ioport_t );
+  ~Keyence();
+
+ public:
+
+  bool DeviceAvailable() const = 0;
+
+  bool GetStatus() = 0;
+  int GetError() = 0;
+
+  void Reset() = 0;
+  void ConfirmErrorRectification() = 0;
+  void ValidConfig();
+  void ValidParameter();
+  void ModeChange();
+  void MeasurementValueOutput(int out, double value);
+  void Timing(int out, int status);
+  void AutoZero(int out, bool status);
+  void Reset(int out);
+  void PanelLock(int status);
+  void ProgramChange(int prog_number);
+  void ProgramCheck(int value);
+  void StatResultOutput(int out, string value);
+  void ClearStat(int out);
+  void StartDataStorage();
+  void StopDataStorage();
+  void InitDataStorage();
+  void OutputDataStorage(int out, std::vector<double> values);
+  void DataStorageStatus();
+  void SetSamplingRate(int mode);
+  void SetAveraging(int out, int mode);
+
+  // low level methods                                                                                                                                                                                      
+  virtual void SendCommand(const std::string &) = 0;
+  virtual void ReceiveString(std::string &) = 0;
+
+ private:
+
+  void StripBuffer( char* ) const;
+  void DeviceInit();
+
+  KeyenceComHandler* comHandler_;
+  bool isDeviceAvailable_;
+};
+
+#endif
