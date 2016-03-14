@@ -9,6 +9,7 @@
 #include "AssemblySensorMarkerFinder.h"
 
 
+
 class AssemblyVUEyeCamera : public QObject
 {
     Q_OBJECT
@@ -90,6 +91,7 @@ public slots:
     virtual void setExposureTime(double) = 0;
     virtual  void calibrateSettings();
 
+
 protected slots:
 
 protected:
@@ -130,6 +132,7 @@ protected:
     State cameraState_;
 
 signals:
+    void resultObtained(double,double,double);
 
     void cameraInformationChanged();
 
@@ -143,6 +146,7 @@ signals:
     void exposureTimeRangeChanged(double);
 
     void imageAcquired(const cv::Mat&);
+    
 
 private:
 

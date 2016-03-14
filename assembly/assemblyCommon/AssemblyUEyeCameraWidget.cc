@@ -1,7 +1,6 @@
 #include <QFormLayout>
-
+#include <QString>
 #include <nqlogger.h>
-
 #include "AssemblyUEyeCameraWidget.h"
 
 AssemblyUEyeCameraWidget::AssemblyUEyeCameraWidget(AssemblyVUEyeCamera* camera,
@@ -303,20 +302,51 @@ AssemblyUEyeCameraSettingsWidget::AssemblyUEyeCameraSettingsWidget(AssemblyVUEye
     layout->addRow("pixel clock", new AssemblyUEyeCameraPixelClockWidget(camera_, this));
     layout->addRow("exposure time", new AssemblyUEyeCameraExposureTimeWidget(camera_, this));
     layout->addRow("", new AssemblyUEyeCameraSettingsCalibrater(camera_, this));
-
+    
+    x_coor = new QLineEdit();
+    y_coor = new QLineEdit();
+    ang = new QLineEdit();
+    
+    layout->addRow("X", x_coor);
+    layout->addRow("Y", y_coor);
+    layout->addRow("Angle", ang);
+    
     setLayout(layout);
+    
+//    updateCoordinates(1.0,1.0,1.0);
 
     // Connect all the signals
     connect(camera_, SIGNAL(cameraInformationChanged()),
             this, SLOT(cameraInformationChanged()));
 
+    connect(camera_, SIGNAL(resultObtained(double, double ,double)),
+            this, SLOT(updateResult(double, double, double)));
+    
     cameraInformationChanged();
 }
 
 void AssemblyUEyeCameraSettingsWidget::cameraInformationChanged()
 {
 
+    
+    
 }
+
+
+void AssemblyUEyeCameraSettingsWidget::updateResult(double x, double y, double angle)
+{
+    NQLog("AssemblyUEyeCameraSettingWidget") << ":updateResults";
+
+    QString x_str = QString::number(x);
+    QString y_str = QString::number(y);
+    QString ang_str = QString::number(angle);
+    
+    x_coor->setText(x_str);
+    y_coor->setText(y_str);
+    ang->setText(ang_str);
+    
+}
+
 
 
 AssemblyUEyeCameraSettingsCalibrater::AssemblyUEyeCameraSettingsCalibrater(AssemblyVUEyeCamera* camera,
@@ -324,19 +354,33 @@ AssemblyUEyeCameraSettingsCalibrater::AssemblyUEyeCameraSettingsCalibrater(Assem
     : QPushButton(parent),
       camera_(camera)
 {
-     this->setText("Calibrate camera");
+    
+    // parent->updateCoordinates(1.0,1.0,1.0);
+     this->setText("Calibrate camera / Find marker");
      // Connect all the signals
      //   connect(this, SIGNAL(clicked()),
      //       this, SLOT(onCalibrate()));
+    
 
     connect(this, SIGNAL(changeExposureTime(double)),
           camera_, SLOT(setExposureTime(double)));
 
     connect(this, SIGNAL(clicked()),
   	    camera_, SLOT(calibrateSettings()));
+    
 
 
 }
+
+
+AssemblyUEyeCameraMarkerFinderResult::AssemblyUEyeCameraMarkerFinderResult()
+{
+
+    NQLog("AssemblyUEyeCameraSettingWidget") << ":results";
+}
+
+
+
 
 
 
@@ -357,4 +401,19 @@ void AssemblyUEyeCameraSettingsCalibrater::onCalibrate()
 
     // sleep(5);
     //  emit acquireImage();
+
+   // parent->updateCoordinates(10.0,10.0,10.0);
+
 }
+
+
+
+void AssemblyUEyeCameraSettingsWidget::updateCoordinates(double, double, double)
+{
+    NQLog("AssemblyUEyeCameraSettingWidget") << ":updating coordinates";
+    x_coor->setText("Test");
+    
+}
+
+
+

@@ -4,6 +4,7 @@
 #include <QCheckBox>
 #include <QDoubleSpinBox>
 #include <QFormLayout>
+#include <QLineEdit>
 #include <QHBoxLayout>
 #include <QLCDNumber>
 #include <QSpinBox>
@@ -32,6 +33,7 @@ protected:
 
     AssemblyVUEyeCamera* camera_;
 
+
 public slots:
 
     void cameraInformationChanged();
@@ -44,6 +46,8 @@ public:
     explicit AssemblyUEyeCameraGeneralWidget(AssemblyVUEyeCamera* camera,
                                              QWidget *parent = 0);
 
+
+    
 protected:
 
     AssemblyVUEyeCamera* camera_;
@@ -58,6 +62,8 @@ protected:
     QLabel* idLabel_;
     QLabel* versionLabel_;
     QLabel* dateLabel_;
+    
+
 
 public slots:
 
@@ -88,28 +94,38 @@ public slots:
 };
 
 
-
 class AssemblyUEyeCameraSettingsCalibrater : public QPushButton
 {
     Q_OBJECT
-
+    
 public:
     explicit AssemblyUEyeCameraSettingsCalibrater(AssemblyVUEyeCamera* camera,
-                                            QWidget *parent = 0);
-
+                                                  QWidget *parent = 0);
+    
 public slots:
-
     void onCalibrate();
-
+    
 protected:
-
+    
     AssemblyVUEyeCamera* camera_;
-
+    
 signals:
     void changeExposureTime(double);
     void acquireImage();
-
+    
 };
+
+
+
+class AssemblyUEyeCameraMarkerFinderResult
+{
+    
+public:
+    AssemblyUEyeCameraMarkerFinderResult();
+    double x, y, angle;
+};
+
+
 
 
 
@@ -189,14 +205,22 @@ class AssemblyUEyeCameraSettingsWidget : public QWidget
 public:
     explicit AssemblyUEyeCameraSettingsWidget(AssemblyVUEyeCamera* camera,
                                             QWidget *parent = 0);
+    void updateCoordinates(double, double, double);
+
 
 protected:
 
     AssemblyVUEyeCamera* camera_;
+    
+    QLineEdit* x_coor;
+    QLineEdit* y_coor;
+    QLineEdit* ang;
 
 public slots:
 
     void cameraInformationChanged();
+    void updateResult(double, double, double);
+
 };
 
 #endif // ASSEMBLYUEYECAMERAWIDGET_H
