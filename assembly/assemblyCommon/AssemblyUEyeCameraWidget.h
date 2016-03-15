@@ -117,6 +117,9 @@ signals:
 
 
 
+
+
+
 class AssemblyUEyeCameraMarkerFinderResult
 {
     
@@ -206,6 +209,7 @@ public:
     explicit AssemblyUEyeCameraSettingsWidget(AssemblyVUEyeCamera* camera,
                                             QWidget *parent = 0);
     void updateCoordinates(double, double, double);
+    double x_,y_,angle_;
 
 
 protected:
@@ -222,5 +226,32 @@ public slots:
     void updateResult(double, double, double);
 
 };
+
+
+class AssemblyUEyeCameraSettingsMotionInterface : public QPushButton
+{
+    Q_OBJECT
+    
+public:
+    explicit AssemblyUEyeCameraSettingsMotionInterface(AssemblyVUEyeCamera* camera,
+                                                       QWidget *parent = 0, AssemblyUEyeCameraSettingsWidget * settings =0);
+    AssemblyUEyeCameraSettingsWidget * settings;
+    double local_x, local_y, local_angle;
+    public slots:
+        void returntoOrigin();
+        void catchResult(double, double,double);
+
+protected:
+    AssemblyVUEyeCamera* camera_;
+    
+signals:
+     void moveAbsolute(double, double, double, double);
+    
+};
+
+
+
+
+
 
 #endif // ASSEMBLYUEYECAMERAWIDGET_H

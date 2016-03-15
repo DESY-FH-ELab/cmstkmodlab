@@ -3,6 +3,18 @@
 #include <nqlogger.h>
 #include "AssemblyUEyeCameraWidget.h"
 
+#include <ApplicationConfig.h>
+
+
+//motion
+#include "LStepExpressModel.h"
+#include "LStepExpressSettings.h"
+#include "LStepExpressMotionManager.h"
+#include "LStepExpressMotionThread.h"
+#include "LStepExpressSettingsWidget.h"
+#include "LStepExpressWidget.h"
+#include "LStepExpressJoystickWidget.h"
+
 AssemblyUEyeCameraWidget::AssemblyUEyeCameraWidget(AssemblyVUEyeCamera* camera,
                                                    QWidget *parent)
     : QToolBox(parent),
@@ -303,6 +315,7 @@ AssemblyUEyeCameraSettingsWidget::AssemblyUEyeCameraSettingsWidget(AssemblyVUEye
     layout->addRow("exposure time", new AssemblyUEyeCameraExposureTimeWidget(camera_, this));
     layout->addRow("", new AssemblyUEyeCameraSettingsCalibrater(camera_, this));
     
+    
     x_coor = new QLineEdit();
     y_coor = new QLineEdit();
     ang = new QLineEdit();
@@ -310,6 +323,8 @@ AssemblyUEyeCameraSettingsWidget::AssemblyUEyeCameraSettingsWidget(AssemblyVUEye
     layout->addRow("X", x_coor);
     layout->addRow("Y", y_coor);
     layout->addRow("Angle", ang);
+    layout->addRow("", new AssemblyUEyeCameraSettingsMotionInterface(camera_, this, this));
+
     
     setLayout(layout);
     
@@ -341,9 +356,15 @@ void AssemblyUEyeCameraSettingsWidget::updateResult(double x, double y, double a
     QString y_str = QString::number(y);
     QString ang_str = QString::number(angle);
     
+    x_ = x;
+    y_ = y;
+    angle_ = angle;
+    
     x_coor->setText(x_str);
     y_coor->setText(y_str);
     ang->setText(ang_str);
+    NQLog("AssemblyUEyeCameraSettingWidget") << ":results updated";
+
     
 }
 
@@ -373,15 +394,53 @@ AssemblyUEyeCameraSettingsCalibrater::AssemblyUEyeCameraSettingsCalibrater(Assem
 }
 
 
+AssemblyUEyeCameraSettingsMotionInterface::AssemblyUEyeCameraSettingsMotionInterface(AssemblyVUEyeCamera* camera,
+                                                                           QWidget *parent, AssemblyUEyeCameraSettingsWidget *settings)
+: QPushButton(parent),
+camera_(camera)
+{
+    
+    this->setText("Return marker to origin");
+    
+    NQLog("AssemblyUEyeCameraSettingsMotionInterface") << ": connection to motion"<< settings->x_;
+    
+       connect(this, SIGNAL(clicked()),
+            this, SLOT(returntoOrigin()));
+    
+       connect(camera_, SIGNAL(resultObtained(double, double, double)),
+            this, SLOT(catchResult(double, double, double)));
+    
+}
+
+void AssemblyUEyeCameraSettingsMotionInterface::catchResult(double x, double y , double angle){
+
+    local_x = x;
+    local_y = y;
+    local_angle = angle;
+
+
+}
+
+
+void AssemblyUEyeCameraSettingsMotionInterface::returntoOrigin(){
+    
+    NQLog("AssemblyUEyeCameraSettingsMotionInterface") << ": returning to origin "<< this->local_x<<" "<<this->local_y<<"  "<< this->local_angle;
+
+    ApplicationConfig* config = ApplicationConfig::instance();
+    LStepExpressModel* lStepExpressModel_ = new LStepExpressModel(config->getValue<std::string>("LStepExpressDevice").c_str(),1000, 100);
+    LStepExpressSettings* lStepExpressSettings_ = new LStepExpressSettings(lStepExpressModel_);
+    LStepExpressMotionManager* motionManager_ = new LStepExpressMotionManager(lStepExpressModel_);
+    connect(this, SIGNAL(moveAbsolute(double,double,double,double)), motionManager_, SLOT(moveAbsolute(double,double,double,double)));
+  //  emit moveAbsolute(this->local_x,this->local_y,this->local_angle,1.0);
+
+}
+
+
 AssemblyUEyeCameraMarkerFinderResult::AssemblyUEyeCameraMarkerFinderResult()
 {
 
     NQLog("AssemblyUEyeCameraSettingWidget") << ":results";
 }
-
-
-
-
 
 
 void AssemblyUEyeCameraSettingsCalibrater::onCalibrate()

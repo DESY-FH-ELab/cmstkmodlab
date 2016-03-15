@@ -105,11 +105,11 @@ void AssemblyVUEyeCamera::calibrateSettings()
     NQLog("AssemblyVUEyeCamera") << "  looping";
 
     // for(int lt = 150; lt<300 ; lt=lt+10){
-     for(int lt = 80; lt<100 ; lt=lt+20){
+     for(int lt = 80; lt<90 ; lt=lt+20){
 
          linesCannyEdgeDetectionThreshold2_ =lt;
 
-         for(int p = 55; p< 62; p=p+2){
+         for(int p = 55; p< 56; p=p+2){
              int pp  = p;
              circleEdgeDetectionThreshold_ = pp;
 

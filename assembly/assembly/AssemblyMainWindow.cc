@@ -31,8 +31,8 @@ AssemblyMainWindow::AssemblyMainWindow(QWidget *parent) :
     rawView_ = new AssemblyUEyeSnapShooter(tabWidget_);
     tabWidget_->addTab(rawView_, "raw");
     
-    playView_ = new AssemblyUEyeTracker(tabWidget_);
-    tabWidget_->addTab(playView_, "play");
+    //    playView_ = new AssemblyUEyeTracker(tabWidget_);
+    //tabWidget_->addTab(playView_, "play");
 
     uEyeModel_ = new AssemblyUEyeModel_t(10);
     cameraThread_ = new AssemblyUEyeCameraThread(uEyeModel_, this);
@@ -129,7 +129,7 @@ void AssemblyMainWindow::cameraOpened()
 
     rawView_->connectImageProducer(camera_, SIGNAL(imageAcquired(const cv::Mat&)));
 
-    playView_->connectImageProducer_tracker(camera_, SIGNAL(imageAcquired(const cv::Mat&)));
+    //    playView_->connectImageProducer_tracker(camera_, SIGNAL(imageAcquired(const cv::Mat&)));
 
     
     connect(camera_, SIGNAL(imageAcquired(const cv::Mat&)),
@@ -148,7 +148,7 @@ void AssemblyMainWindow::cameraClosed()
 
     rawView_->disconnectImageProducer(camera_, SIGNAL(imagef(const cv::Mat&)));
 
-    playView_->disconnectImageProducer(camera_, SIGNAL(imageAcquired(const cv::Mat&)));
+    //    playView_->disconnectImageProducer(camera_, SIGNAL(imageAcquired(const cv::Mat&)));
     disconnect(camera_, SIGNAL(imageAcquired(const cv::Mat&)),
                finder_, SLOT(findMarker(const cv::Mat&)));
 
