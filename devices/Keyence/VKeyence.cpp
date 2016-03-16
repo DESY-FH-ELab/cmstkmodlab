@@ -13,16 +13,6 @@ VKeyence::~VKeyence()
 
 }
 
-void VKeyence::ValidConfig()
-{
-  //this->SendCommand("!validconfig");
-}
-
-void VKeyence::ValidParameter()
-{
-  //  this->SendCommand("!validpar");
-}
-
 void VKeyence::SetValue(const std::string & command,
                              const std::string & value)
 {

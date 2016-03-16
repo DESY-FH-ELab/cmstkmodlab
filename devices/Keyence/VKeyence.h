@@ -15,19 +15,19 @@ class VKeyence {
 
   virtual bool DeviceAvailable() const = 0;
 
-  virtual bool GetStatus() = 0;
-  virtual int GetError() = 0;
-
-  virtual void Reset() = 0;
-  virtual void ConfirmErrorRectification() = 0;
-  void ValidConfig();
-  void ValidParameter();
-  virtual void ModeChange() = 0;
+  virtual void SetABLE(bool on, int out) = 0;
+  virtual void SetMaterialMode(int out, int mode) = 0;
+  virtual void SetDiffuseMode(int out, int mode) = 0;
+  virtual void SetSamplingRate(int mode) = 0;
+  virtual void SetAveraging(int out, int mode) = 0;
+  virtual void ChangeToCommunicationMode(bool commOn) = 0;
   virtual void MeasurementValueOutput(int out, double value) = 0;
+  virtual void PanelLock(int status) = 0;
+
+  /*
   virtual void Timing(int out, int status) = 0;
   virtual void AutoZero(int out, bool status) = 0;
   virtual void Reset(int out) = 0;
-  virtual void PanelLock(int status) = 0;
   virtual void ProgramChange(int prog_number) = 0;
   virtual void ProgramCheck(int value) = 0;
   virtual void StatResultOutput(int out, std::string value) = 0;
@@ -37,8 +37,7 @@ class VKeyence {
   virtual void InitDataStorage() = 0;
   virtual void OutputDataStorage(int out, std::vector<double> values) = 0;
   virtual void DataStorageStatus(std::string value) = 0;
-  virtual void SetSamplingRate(int mode) = 0;
-  virtual void SetAveraging(int out, int mode) = 0;
+  */
 
   // low level methods
   virtual void SendCommand(const std::string &) = 0;

@@ -23,19 +23,23 @@ class Keyence : public VKeyence
 
   bool DeviceAvailable() const;
 
-  bool GetStatus();
-  int GetError();
+  //only in communication mode
+  void SetABLE(bool on, int out);
+  void SetMaterialMode(int out, int mode);
+  void SetDiffuseMode(int out, int mode);
+  void SetSamplingRate(int mode);
+  void SetAveraging(int out, int mode);
 
-  void Reset();
-  void ConfirmErrorRectification();
-  void ValidConfig();
-  void ValidParameter();
-  void ModeChange();
+  //in normal mode
+  void ChangeToCommunicationMode(bool commOn);
   void MeasurementValueOutput(int out, double value);
+  void PanelLock(int status);
+
+  /*
+  //probably not necessary
   void Timing(int out, int status);
   void AutoZero(int out, bool status);
   void Reset(int out);
-  void PanelLock(int status);
   void ProgramChange(int prog_number);
   void ProgramCheck(int value);
   void StatResultOutput(int out, std::string value);
@@ -45,8 +49,7 @@ class Keyence : public VKeyence
   void InitDataStorage();
   void OutputDataStorage(int out, std::vector<double> values);
   void DataStorageStatus(std::string value);
-  void SetSamplingRate(int mode);
-  void SetAveraging(int out, int mode);
+  */
 
   // low level methods                                                                                                                                                                                      
   void SendCommand(const std::string &);

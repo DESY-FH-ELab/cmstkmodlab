@@ -46,107 +46,55 @@ void Keyence::ReceiveString(std::string & buffer)
   buffer = buf;
 }
 
-//FIX ME!
-void Keyence::ModeChange()
+//ABLE -> automatic adjustement of light intensity to surface
+//set on head 1 or head 2 -> out
+//on = 0 = AUTO, on = 1 = MANUAL
+//only in communication mode
+void Keyence::SetABLE(bool on, int out)
 {
+  SetValue("SW,HA,M,",out,on);
 }
 
-void Keyence::MeasurementValueOutput(int out, double value)
+/*Set the measurement mode depending on the material of the target sample
+  set on head 1 or head 2 -> out
+ mode = 0 -> normal
+ mode = 1 -> translucent object
+ mode = 2 -> transparent object
+ mode = 3 -> transparent object 2
+ mode = 4 -> multi-reflective object
+*/
+void Keyence::SetMaterialMode(int out, int mode)
 {
-  GetValue("M",out,value);
+  SetValue("SW,HB,",out, mode);
 }
 
-void Keyence::Timing(int out, int status)
+/*Change settings if target sample is a mirror
+set on head 1 or head 2 -> out
+mode = 0 -> diffuse = normal
+mode = 1 -> mirror reflection mode
+*/
+void Keyence::SetDiffuseMode(int out, int mode)
 {
-  SetValue("T", status, out);
+  SetValue("SW,HE,",out,mode);
 }
 
-void Keyence::AutoZero(int out, bool status)
-{
-  if(status){
-    SetValue("V", out);
-  }else{
-    SetValue("W", out);
-  }
-}
-
-void Keyence::Reset(int out)
-{
-  SetValue("VR,", out);
-}
-
-void Keyence::PanelLock(int status)
-{
-  SetValue("KL,", status);
-}
-
-void Keyence::ProgramChange(int prog_number)
-{
-  SetValue("PW,",prog_number);
-}
-
-void Keyence::ProgramCheck(int value)
-{
-  GetValue("PR", value);
-}
-
-void Keyence::StatResultOutput(int out, std::string value)
-{
-  GetValue("DO,", out, value);
-}
-
-void Keyence::ClearStat(int out)
-{
-  SetValue("DQ,", out);
-}
-
-void Keyence::StartDataStorage()
-{
-  SendCommand("AS");
-  //string response; ReceiveString(response);
-  //if(input == response){return 0;}
-  //else{return 1;}
-}
-
-void Keyence::StopDataStorage()
-{
-  SendCommand("AP");
-  //string response; ReceiveString(response);
-}
-
-void Keyence::InitDataStorage()
-{
-  SendCommand("AQ");
-  //string response; ReceiveString(response);
-}
-
-void Keyence::OutputDataStorage(int out, std::vector<double> values)
-{
-  GetValue("AO,",out,values);
-}
-
-//FIX ME!
-void Keyence::DataStorageStatus(std::string value)
-{
-  GetValue("AN",value);
-}
-
-void Keyence::SetSamplingRate(int mode)
-{
-  /*
+/*
+  Frequency of internal measurements
     mode = 0 -> 20 microsec
     mode = 1 -> 50 microsec
     mode = 2 -> 100 microsec
     mode = 3 -> 200 microsec
     mode = 4 -> 500 microsec
     mode = 5 -> 1000 microsec
-  */
+only in communication mode
+*/
+void Keyence::SetSamplingRate(int mode)
+{
   SetValue("SW,CA,",mode);
 }
 
-void Keyence::SetAveraging(int out, int mode)
-{
-  /*
+/*
+  Number of internal measurements to average to output measurement
     mode = 0 -> average over 1
     mode = 1 -> 4
     mode = 2 -> 16
@@ -157,8 +105,34 @@ void Keyence::SetAveraging(int out, int mode)
     mode = 7 -> 16384
     mode = 8 -> 65536
     mode = 9 -> 262144
-  */
+only in communication mode
+*/
+void Keyence::SetAveraging(int out, int mode)
+{
   SetValue("SW,OC,",out,"0",mode);
+}
+
+
+//normal mode (commOn = 0) -> measurements can be received, writing or reading system settings is not accepted
+//communication mode (commOn = 1) -> no measurement possible, writing and reading system settings is possible 
+void Keyence::ChangeToCommunicationMode(bool commOn)
+{
+  if(commOn){
+    SendCommand("Q0");
+  }else{
+    SendCommand("R0");
+  }
+}
+
+void Keyence::MeasurementValueOutput(int out, double value)
+{
+  GetValue("M",out,value);
+}
+
+//lock the panel on the controller to avoid accidental pushing of buttons
+void Keyence::PanelLock(int status)
+{
+  SetValue("KL,", status);
 }
 
 void Keyence::StripBuffer(char* buffer) const
@@ -171,7 +145,7 @@ void Keyence::StripBuffer(char* buffer) const
   }
 }
 
-//FIX ME!!! still for LStepExpress settings
+//No version checking for Keyence laser available
 void Keyence::DeviceInit()
 {
   isDeviceAvailable_ = false;
@@ -180,71 +154,100 @@ void Keyence::DeviceInit()
 
     isDeviceAvailable_ = true;
 
-    char buffer[1000];
-    std::string buf;
-
-    comHandler_->SendCommand("ver"); // read version
-
-    comHandler_->ReceiveString(buffer);
-    StripBuffer(buffer);
-    buf = buffer;
-
-    if (buf.find("PE43 1.00.01", 0)!=0) {
-      isDeviceAvailable_ = false;
-      return;
-    }
-
-    comHandler_->SendCommand("iver"); // read internal version
-    comHandler_->ReceiveString(buffer);
-    StripBuffer(buffer);
-    buf = buffer;
-
-    if (buf.find("E2015.02.27-3012", 0)!=0) {
-      isDeviceAvailable_ = false;
-      return;
-    }
-
   }
 }
 
-//FIX ME!
-bool Keyence::GetStatus()
+/*
+void Keyence::Timing(int out, int status)
 {
-  std::string value;
-  this->GetValue("status", value);
-
-  if (value.compare("OK...")==0) return true;
-  return false;
+  SetValue("T", status, out);
 }
+*/
 
-//FIX ME!
-int Keyence::GetError()
+/*
+void Keyence::AutoZero(int out, bool status)
 {
-  int value;
-  this->GetValue("err", value);
-  return value;
+  if(status){
+    SetValue("V", out);
+  }else{
+    SetValue("W", out);
+  }
 }
+*/
 
-//FIX ME!
-void Keyence::Reset()
+/*
+void Keyence::Reset(int out)
 {
-  this->SendCommand("!Reset");
+  SetValue("VR,", out);
 }
+*/
 
-//FIX ME!
-void Keyence::ValidConfig()
+/*
+void Keyence::ProgramChange(int prog_number)
 {
-  this->SendCommand("!validconfig");
+  SetValue("PW,",prog_number);
 }
+*/
 
-//FIX ME!
-void Keyence::ValidParameter()
+/*
+void Keyence::ProgramCheck(int value)
 {
-  this->SendCommand("!validpar");
+  GetValue("PR", value);
 }
+*/
 
-//FIX ME!
-void Keyence::ConfirmErrorRectification()
+/*
+void Keyence::StatResultOutput(int out, std::string value)
 {
-  this->SendCommand("!quit");
+  GetValue("DO,", out, value);
 }
+*/
+
+/*
+void Keyence::ClearStat(int out)
+{
+  SetValue("DQ,", out);
+}
+*/
+
+/*
+void Keyence::StartDataStorage()
+{
+  SendCommand("AS");
+  //string response; ReceiveString(response);
+  //if(input == response){return 0;}
+  //else{return 1;}
+}
+*/
+
+/*
+void Keyence::StopDataStorage()
+{
+  SendCommand("AP");
+  //string response; ReceiveString(response);
+}
+*/
+
+/*
+void Keyence::InitDataStorage()
+{
+  SendCommand("AQ");
+  //string response; ReceiveString(response);
+}
+*/
+
+/*
+void Keyence::OutputDataStorage(int out, std::vector<double> values)
+{
+  GetValue("AO,",out,values);
+}
+*/
+
+/*
+void Keyence::DataStorageStatus(std::string value)
+{
+  GetValue("AN",value);
+}
+*/
+
+
