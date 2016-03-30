@@ -74,7 +74,7 @@ void AssemblyVUEyeCamera::calibrateSettings()
     double linesHoughMaxLineGap_ =25.0;
     bool  dist1_, dist2_, dist3_, doca_ ;
     double slope_final, ang_final;
-    double distance,doca,x0,x1,x2, y0,y1,y2;
+    double distance,doca,x0,x1,x2, y0,y1,y2, x,y;
     
     std::vector<cv::Vec3f> circles;
     std::vector<std::pair<cv::Point2f,cv::Point2f> > lines_;
@@ -84,14 +84,20 @@ void AssemblyVUEyeCamera::calibrateSettings()
     std::vector<cv::Point2f> intersections_;
     std::vector<cv::Point2f> goodIntersections_;
     std::vector<cv::Point2f> finalIntersections_;
+    std::vector<cv::Point2f> finalIntersectionsUp_;
+    std::vector<cv::Point2f> finalIntersectionsDown_;
 
     
     std::string str_ii, str_p , str_lt, str_pc, str_x, str_y, str_slope_final, str_ang_final;
     ostringstream convert;   // stream used for the conversion
    
     
-   img_gs = cv::imread("/Users/keaveney/assembly_dev/cmstkmodlab/share/assembly/sensor_24MHz_333ms_1.png", CV_LOAD_IMAGE_GRAYSCALE);
+  // img_gs = cv::imread("/Users/keaveney/assembly_dev/cmstkmodlab/share/assembly/sensor_24MHz_333ms_1.png", CV_LOAD_IMAGE_GRAYSCALE);
 
+    
+    img_gs = cv::imread("/Users/keaveney/Downloads/im_scan___Exp10___EdgeThr65___lt160.png", CV_LOAD_IMAGE_GRAYSCALE);
+
+    
 //   img_gs = cv::imread("/Users/keaveney/assembly_dev/cmstkmodlab/share/assembly/sensor_36MHz_222ms_2.png", CV_LOAD_IMAGE_GRAYSCALE);
 
     
@@ -105,11 +111,11 @@ void AssemblyVUEyeCamera::calibrateSettings()
     NQLog("AssemblyVUEyeCamera") << "  looping";
 
     // for(int lt = 150; lt<300 ; lt=lt+10){
-     for(int lt = 80; lt<90 ; lt=lt+20){
+     for(int lt = 110; lt<120 ; lt=lt+20){
 
          linesCannyEdgeDetectionThreshold2_ =lt;
 
-         for(int p = 55; p< 56; p=p+2){
+         for(int p = 145; p< 150; p=p+10){
              int pp  = p;
              circleEdgeDetectionThreshold_ = pp;
 
@@ -149,8 +155,8 @@ void AssemblyVUEyeCamera::calibrateSettings()
             for( size_t i = 0; i < circles.size(); i++ )
                 {
                     cv::Point center(cvRound(circles[i][0]), cvRound(circles[i][1]));
-                    int  x = cvRound(circles[i][0]);
-                    int  y = cvRound(circles[i][1]);
+                    x = cvRound(circles[i][0]);
+                    y = cvRound(circles[i][1]);
                     radius = cvRound(circles[i][2]);
                     // circle center
                     circle( img_rgb, center, 3, cv::Scalar(0,0,255), -1, 8, 0 );
@@ -292,9 +298,13 @@ void AssemblyVUEyeCamera::calibrateSettings()
         double ang1 = atan (slope1) * 180 / 3.14;
         double ang2 = atan (slope2) * 180 / 3.14;
             
-        double ang = (ang2 - ang1);
+        double ang = fabs(ang2) - fabs(ang1);
         
-        if (fabs(ang) < 85.0) continue;
+       //if (fabs(ang) > 89.0  && fabs(ang) < 91.0 ) ;
+            
+       // cout <<" angle between lines: ang1 =  "<<  ang1  <<" ang2 = "<< ang2 <<" ang = "<<  ang<<endl;
+            
+            
           //  if (cv::norm(r - o1) > distance &&
           //      cv::norm(r - p1) > distance) continue;
             
@@ -302,7 +312,7 @@ void AssemblyVUEyeCamera::calibrateSettings()
           //      cv::norm(r - p2) > distance) continue;
           //  std::cout << "ang   " << ang     <<std::endl;
             
-            if (abs(cross) > /*EPS*/1e-7){
+            if ( fabs(ang) > 80.0  && fabs(ang) < 100.0   &&   abs(cross) > /*EPS*/1e-7){
 	    double t1 = (x.x * d2.y - x.y * d2.x)/cross;
 	    r = o1 + d1 * t1;
                 intersections_.push_back(r);
@@ -324,39 +334,113 @@ void AssemblyVUEyeCamera::calibrateSettings()
               
                  double d_start = std::sqrt(std::pow(intersections_[intsec].x - goodLines_[gl].first.x, 2.0) + std::pow(intersections_[intsec].y - goodLines_[gl].first.y, 2.0));
                  double d_end = std::sqrt(std::pow(intersections_[intsec].x - goodLines_[gl].second.x, 2.0) + std::pow(intersections_[intsec].y - goodLines_[gl].second.y, 2.0));
-                 if(d_start< 10.0 || d_end < 10.0) goodIntersection = true;
+                 if(d_start< 5.0 || d_end < 5.0) goodIntersection = true;
              }
                  if(goodIntersection == true) goodIntersections_.push_back(intersections_[intsec]);
              }
              
              
              for (int goodint =0; goodint < goodIntersections_.size(); goodint++){
-                 circle( img_rgb, goodIntersections_[goodint], 10, cv::Scalar(0,255,0), 3, 8, 0 );
+                // circle( img_rgb, goodIntersections_[goodint], 10, cv::Scalar(0,255,0), 3, 8, 0 );
                  
                  //get the crucial two intersections by the circle
                  
-                 if (std::sqrt(std::pow(circleCenter_.x - goodIntersections_[goodint].x, 2.0) + std::pow(circleCenter_.y - goodIntersections_[goodint].y, 2.0)) < expectedCircleRadius_*1.5) finalIntersections_.push_back(goodIntersections_[goodint]);
+                 if (std::sqrt(std::pow(circleCenter_.x - goodIntersections_[goodint].x, 2.0) + std::pow(circleCenter_.y - goodIntersections_[goodint].y, 2.0)) < expectedCircleRadius_*1.6) finalIntersections_.push_back(goodIntersections_[goodint]);
                 // cout <<"distance of intersections ==  "<<  std::sqrt(std::pow(circleCenter_.x - goodIntersections_[goodint].x, 2.0) + std::pow(circleCenter_.y - goodIntersections_[goodint].y, 2.0)) << endl;
              }
              
              cout <<"n final intersection  = = "<< finalIntersections_.size()<< endl;
              
+             
+             //one typically ends up with multiple intersections at each corner due extra, spurious lines/
+             // I divide the collection of final intersections into those abpve the circle's centre "up"
+             // and below "down". I use the avergae of these to define the orientation.
+             double running_total_x  =0;
+             double running_total_y  =0;
+             double av_x_up;
+             double av_x_down;
+             double av_y_up;
+             double av_y_down;
+
+             finalIntersectionsDown_.clear();
+             finalIntersectionsUp_.clear();
+             
              if (finalIntersections_.size() >0){
                  for (int finalint =0; finalint < finalIntersections_.size(); finalint++) {
-                     circle( img_rgb, finalIntersections_[finalint], 10, cv::Scalar(0,255,255), 3, 8, 0 );
-
-
+                     cout <<"  "<<endl;
+                     cout <<" final intersection y =  "<< finalIntersections_[finalint].y   <<   " circles centre = " <<    y  <<endl;
+                     if ( y > finalIntersections_[finalint].y){
+                         cout <<" down"<<endl;
+                     finalIntersectionsDown_.push_back(finalIntersections_[finalint]);
+                     }
+                     
+                     
+                     else if ( y < finalIntersections_[finalint].y){
+                         cout <<" up"<<endl;
+                     finalIntersectionsUp_.push_back(finalIntersections_[finalint]);
+                     }
+                     
                  }
-             
-                 cv::line(img_rgb,
-                          cv::Point(cvRound(finalIntersections_[0].x), cvRound(finalIntersections_[0].y)),
-                          cv::Point(cvRound(finalIntersections_[1].x), cvRound(finalIntersections_[1].y)),
-                          cv::Scalar(0, 255, 255), 4, CV_AA);
+
                  
-                slope_final = (finalIntersections_[0].y - finalIntersections_[1].y) / (finalIntersections_[0].x - finalIntersections_[1].x);
-                ang_final = atan (slope_final) * 180 / 3.14;
+                 for (int finalintup =0; finalintup < finalIntersectionsUp_.size(); finalintup++) {
+                     running_total_x = running_total_x + finalIntersectionsUp_[finalintup].x;
+                     running_total_y = running_total_y + finalIntersectionsUp_[finalintup].y;
+                 }
+                 
+                 av_x_up = running_total_x/finalIntersectionsUp_.size();
+                 av_y_up = running_total_y/finalIntersectionsUp_.size();
+                 
+                 running_total_x  =0;
+                 running_total_y  =0;
+                 
+                 for (int finalintdown =0; finalintdown < finalIntersectionsDown_.size(); finalintdown++) {
+                     running_total_x = running_total_x + finalIntersectionsDown_[finalintdown].x;
+                     running_total_y = running_total_y + finalIntersectionsDown_[finalintdown].y;
+                 }
+                 
+                 av_x_down = running_total_x/finalIntersectionsDown_.size();
+                 av_y_down = running_total_y/finalIntersectionsDown_.size();
+
+             
+             
+//             if (finalIntersections_.size() >0){
+                 for (int finalintup =0; finalintup < finalIntersectionsUp_.size(); finalintup++) {
+                     circle( img_rgb, finalIntersectionsUp_[finalintup], 10, cv::Scalar(0,255,255), 3, 8, 0 );
+                 }
+                 
+                for (int finalintdown =0; finalintdown < finalIntersectionsDown_.size(); finalintdown++) {
+                     circle( img_rgb, finalIntersectionsDown_[finalintdown], 10, cv::Scalar(0,255,0), 3, 8, 0 );
+                 }
+                 
+             
+                // cv::line(img_rgb,
+                //          cv::Point(cvRound(finalIntersections_[0].x), cvRound(finalIntersections_[0].y)),
+                //          cv::Point(cvRound(finalIntersections_[1].x), cvRound(finalIntersections_[1].y)),
+                //          cv::Scalar(0, 255, 255), 4, CV_AA);
+                 
+                  cv::line(img_rgb,
+                           cv::Point(cvRound(av_x_down), cvRound(av_y_down)),
+                           cv::Point(cvRound(av_x_up), cvRound(av_y_up)),
+                           cv::Scalar(0, 255, 255), 4, CV_AA);
+                 
+                 
+                 circle( img_rgb, cv::Point(x,y), 10, cv::Scalar(255,255,0), 3, 8, 0 );
+                 
+                 
+                 slope_final = (av_y_up -  av_y_down) / (av_x_up -  av_x_down);
+                 ang_final = atan (slope_final) * 180 / 3.14;
+                 
+               // slope_final = (finalIntersections_[0].y - finalIntersections_[1].y) / (finalIntersections_[0].x - finalIntersections_[1].x);
+               // ang_final = atan (slope_final) * 180 / 3.14;
 
              }
+             
+             
+             cout <<"n up intersections " << finalIntersectionsUp_.size() <<endl;
+             cout <<"n down intersections " << finalIntersectionsDown_.size() <<endl;
+
+             
              
              convert.str(" ");
              convert.clear();
