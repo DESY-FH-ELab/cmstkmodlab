@@ -15,10 +15,10 @@
 
 
 #include <unistd.h> 
-//#include <ueye.h>
-//#include <uEye.h>
+#include <ueye.h>
+#include <uEye.h>
 //#include <uEye_tools.h>
-//#include <ueye_deprecated.h>
+#include <ueye_deprecated.h>
 
 
 using namespace std;
@@ -56,7 +56,63 @@ void AssemblyVUEyeCamera::calibrateSettings()
    NQLog("AssemblyVUEyeCamera") << "**********************exposure time scan***************************" ;
 
    loopFind_ = new AssemblySensorMarkerFinder();
-   cv::Mat img_gs, img_rgb, img_edges;
+
+   HIDS hCam = getCameraID();
+   char* imgMem;
+   int memId;
+
+      if(is_InitCamera (&hCam, NULL)!= IS_SUCCESS){
+      
+   NQLog("AssemblyVUEyeCamera") << "CANT INIT CAMERA";
+
+     }
+
+   NQLog("AssemblyVUEyeCamera") << " INIT CAMERA";
+
+    int img_width=2650, img_height=1920, img_bpp=24, img_step, img_data_size;
+     is_AllocImageMem(hCam, img_width, img_height, img_bpp, &imgMem, &memId);
+     is_SetImageMem (hCam, imgMem, memId);
+     is_SetDisplayMode (hCam, IS_SET_DM_DIB);
+     is_SetColorMode (hCam, IS_CM_RGB8_PACKED);
+     is_SetImageSize (hCam, img_width, img_height);
+ 
+
+     double enable = 1;
+     double disable = 0;
+     is_SetAutoParameter (hCam, IS_SET_ENABLE_AUTO_GAIN, &enable, 0);
+     is_SetAutoParameter (hCam, IS_SET_ENABLE_AUTO_WHITEBALANCE, &enable, 0);
+     is_SetAutoParameter (hCam, IS_SET_ENABLE_AUTO_FRAMERATE, &disable, 0);
+     is_SetAutoParameter (hCam, IS_SET_ENABLE_AUTO_SHUTTER, &disable, 0);
+     is_SetAutoParameter (hCam, IS_SET_ENABLE_AUTO_SENSOR_GAIN, &enable, 0);
+     is_SetAutoParameter (hCam, IS_SET_ENABLE_AUTO_SENSOR_WHITEBALANCE,&enable,0);
+     is_SetAutoParameter (hCam, IS_SET_ENABLE_AUTO_SENSOR_SHUTTER, &disable, 0);
+
+     double FPS,NEWFPS;
+     FPS = 15;
+     double fps;
+     is_SetFrameRate(hCam,FPS,&NEWFPS);
+
+     UINT uiCaps = 0;
+ 
+     INT nRet = is_Focus (hCam, FDT_CMD_GET_CAPABILITIES, &uiCaps, sizeof (uiCaps) );
+ 
+     if (nRet == IS_SUCCESS && (uiCaps & FOC_CAP_AUTOFOCUS_SUPPORTED))
+     {
+       NQLog("AssemblyVUEyeCamera") << "if supported, enable auto focus";
+
+       //qDebug() << "If supported, enable auto us";
+     nRet = is_Focus (hCam, FOC_CMD_SET_DISABLE_AUTOFOCUS, NULL, 0);
+     }
+    NQLog("AssemblyVUEyeCamera") << "  set focus";
+
+     nRet = is_SetGamma(hCam,600);
+     enable = 2;
+     char filename[512];
+
+
+
+
+    cv::Mat img_gs, img_rgb, img_edges;
     int radius;
     int  expectedCircleRadius_ = 89;
     double circleCenterDetectionThreshold_  = 35.0;
@@ -95,12 +151,12 @@ void AssemblyVUEyeCamera::calibrateSettings()
   // img_gs = cv::imread("/Users/keaveney/assembly_dev/cmstkmodlab/share/assembly/sensor_24MHz_333ms_1.png", CV_LOAD_IMAGE_GRAYSCALE);
 
     
-    img_gs = cv::imread("/Users/keaveney/Downloads/im_scan___Exp10___EdgeThr65___lt160.png", CV_LOAD_IMAGE_GRAYSCALE);
+  //  img_gs = cv::imread("/Users/keaveney/Downloads/im_scan___Exp10___EdgeThr65___lt160.png", CV_LOAD_IMAGE_GRAYSCALE);
 
     
 //   img_gs = cv::imread("/Users/keaveney/assembly_dev/cmstkmodlab/share/assembly/sensor_36MHz_222ms_2.png", CV_LOAD_IMAGE_GRAYSCALE);
 
-    
+  
     
    for(int ii=10.0; ii<15.0; ii=ii+20.0)
    {
@@ -109,6 +165,41 @@ void AssemblyVUEyeCamera::calibrateSettings()
     str_ii = convert.str();
        
     NQLog("AssemblyVUEyeCamera") << "  looping";
+
+       if(is_FreezeVideo(hCam, IS_WAIT) == IS_SUCCESS){
+   NQLog("AssemblyVUEyeCamera") << "  getting frame";
+            void *pMemVoid; //pointer to where the image is stored
+            is_GetImageMem (hCam, &pMemVoid);
+            IplImage * img;
+            img=cvCreateImage(cvSize(img_width, img_height), IPL_DEPTH_8S, 1); 
+            img->nSize=112;
+            img->ID=0;
+            img->nChannels=3;
+            img->alphaChannel=0;
+            img->depth=8;
+            img->dataOrder=0;
+            img->origin=0;
+            img->align=4;
+            img->width=img_width;
+            img->height=img_height;
+            img->roi=NULL;
+            img->maskROI=NULL;
+            img->imageId=NULL;
+            img->tileInfo=NULL;
+	    // img->imageSize=3*img_width*img_height;
+            img->imageData=(char*)pMemVoid;  //the pointer to imagaData
+            img->widthStep=3*img_width;
+            img->imageDataOrigin=(char*)pMemVoid; //and again
+            //now you can use your img just like a normal OpenCV image
+	    //    cvNamedWindow( "A", 1 );
+            //cvShowImage("A",img);
+            //cv::waitKey(1);
+
+	    cv::Mat mat_img(img);
+            cvtColor(mat_img, img_gs, CV_RGB2GRAY);
+       }
+
+
 
     // for(int lt = 150; lt<300 ; lt=lt+10){
      for(int lt = 110; lt<120 ; lt=lt+20){
@@ -124,7 +215,8 @@ void AssemblyVUEyeCamera::calibrateSettings()
              intersections_.clear();
              goodIntersections_.clear();
              finalIntersections_.clear();
-             
+               NQLog("AssemblyVUEyeCamera") << "  running hough circles";
+ 
              cv::HoughCircles(img_gs, circles, CV_HOUGH_GRADIENT, 1, 20,
                      circleEdgeDetectionThreshold_, circleCenterDetectionThreshold_,
                      expectedCircleRadius_ - 15., expectedCircleRadius_ + 15.);
@@ -173,6 +265,7 @@ void AssemblyVUEyeCamera::calibrateSettings()
 
              std::vector<cv::Vec4i> tempLines;
 
+               NQLog("AssemblyVUEyeCamera") << "  running hough lines";
 
              cv::HoughLinesP(img_edges, tempLines,
                     linesHoughDistanceResolution_,
@@ -441,7 +534,6 @@ void AssemblyVUEyeCamera::calibrateSettings()
              cout <<"n down intersections " << finalIntersectionsDown_.size() <<endl;
 
              
-             
              convert.str(" ");
              convert.clear();
              convert << ang_final;
@@ -462,7 +554,7 @@ void AssemblyVUEyeCamera::calibrateSettings()
              
              putText(img_rgb, text_result, cvPoint(30,100),
                      cv::FONT_HERSHEY_COMPLEX_SMALL, 2.8, cvScalar(200,200,250), 1, CV_AA);
-             std::string filename = "/Users/keaveney/Desktop/calibration/im_scan___Exp" + str_ii + "___EdgeThr"  + str_p +"___lt"+str_lt+".png";
+             std::string filename = "/home/keaveney/Desktop/calibration/set_expos/im_scan___Exp" + str_ii + "___EdgeThr"  + str_p +"___lt"+str_lt+".png";
              cv::imwrite(filename, img_rgb);
 
              
