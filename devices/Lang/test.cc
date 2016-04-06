@@ -25,7 +25,7 @@ template<typename T, typename A> void dumpVectorHex(const std::vector<T,A>& v)
   for (typename std::vector<T,A>::const_iterator it = v.begin();
        it!=v.end();
        ++it) {
-    std::cout << "0x" << std::hex << *it << " ";
+    std::cout<<"hex vec  " << "0x" << std::hex << *it << " ";
   }
   std::cout << std::endl;
 }
@@ -41,7 +41,7 @@ int main()
   std::vector<double> dvalues;
 
   lstep.GetDimension(ivalues); dumpVector(ivalues);
-  lstep.GetDimension(VLStepExpress::Z, ivalue); std::cout << ivalue << std::endl;
+  lstep.GetDimension(VLStepExpress::Z, ivalue); std::cout<<"get dimension" << ivalue << std::endl;
   
   //ivalues[VLStepExpress::Y] = VLStepExpress::MICROMETER;
   //lstep.SetDimension(ivalues);
@@ -51,11 +51,23 @@ int main()
   lstep.GetDimension(ivalues); dumpVector(ivalues);
 
   lstep.GetPowerAmplifierStatus(ivalues); dumpVector(ivalues);
-  lstep.GetPowerAmplifierStatus(VLStepExpress::Y, ivalue); std::cout << ivalue << std::endl;
+
+  lstep.SetPowerAmplifierStatus(VLStepExpress::X, 1);
+  lstep.SetPowerAmplifierStatus(VLStepExpress::Y, 1);
+  lstep.SetPowerAmplifierStatus(VLStepExpress::Z, 1);
+  lstep.SetPowerAmplifierStatus(VLStepExpress::A, 1);
+
+
+  std::cout <<"reset  amp statuses  "<< std::endl;
+  lstep.GetPowerAmplifierStatus(VLStepExpress::X, ivalue); std::cout <<" amp status X "<< ivalue << std::endl;
+  lstep.GetPowerAmplifierStatus(VLStepExpress::Y, ivalue); std::cout <<" amp status Y "<< ivalue << std::endl;
+  lstep.GetPowerAmplifierStatus(VLStepExpress::Z, ivalue); std::cout <<" amp status Z "<< ivalue << std::endl;
+  lstep.GetPowerAmplifierStatus(VLStepExpress::A, ivalue); std::cout <<" amp status A "<< ivalue << std::endl;
+
 
   lstep.GetPosition(dvalues); dumpVector(dvalues);
 
-  lstep.SetAutoStatus(0);
+   lstep.SetAutoStatus(0);
 
   lstep.GetAxisStatus(ivalues); dumpVectorHex(ivalues);
 
@@ -68,7 +80,10 @@ int main()
   
 
   //lstep.MoveRelative(10.0000, 0.0000, 0.0000, 0.0000);
-  lstep.MoveAbsolute(0.0000, 0.0000, 0.0000, 0.0000);
+  //  lstep.MoveAbsolute(0.0000, 0.0000, 0.0000, 0.0000);
+  lstep.MoveAbsolute(0.0000, 0.0000, 0.0000, 90.0);
+  //  lstep.MoveAbsolute(VLStepExpress::Y, 50.0000);
+  //lstep.MoveAbsolute(VLStepExpress::X, 15.0000);
 
   lstep.GetAxisStatus(ivalues); dumpVector(ivalues);
   while (ivalues[0]==1) {

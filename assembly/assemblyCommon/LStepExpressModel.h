@@ -35,6 +35,8 @@ public:
     void pauseUpdate();
     void continueUpdate();
 
+    void initialize();
+
     QString getAxisName(unsigned int axis);
     QString getAxisDimensionShortName(unsigned int axis);
     QString getAxisStatusText(unsigned int axis);
@@ -72,7 +74,7 @@ protected:
 
     const QString LStepExpress_PORT;
 
-    void initialize();
+  
 
     QMutex mutex_;
 

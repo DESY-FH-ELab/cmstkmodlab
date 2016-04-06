@@ -15,6 +15,9 @@
 #include "LStepExpressWidget.h"
 #include "LStepExpressJoystickWidget.h"
 
+#include "DeviceState.h"
+
+
 AssemblyUEyeCameraWidget::AssemblyUEyeCameraWidget(AssemblyVUEyeCamera* camera,
                                                    QWidget *parent)
     : QToolBox(parent),
@@ -430,8 +433,27 @@ void AssemblyUEyeCameraSettingsMotionInterface::returntoOrigin(){
     LStepExpressModel* lStepExpressModel_ = new LStepExpressModel(config->getValue<std::string>("LStepExpressDevice").c_str(),1000, 100);
     LStepExpressSettings* lStepExpressSettings_ = new LStepExpressSettings(lStepExpressModel_);
     LStepExpressMotionManager* motionManager_ = new LStepExpressMotionManager(lStepExpressModel_);
-    connect(this, SIGNAL(moveAbsolute(double,double,double,double)), motionManager_, SLOT(moveAbsolute(double,double,double,double)));
-  //  emit moveAbsolute(this->local_x,this->local_y,this->local_angle,1.0);
+    connect(this, SIGNAL(moveAbsolute(double,double,double,double)), motionManager_, SLOT(moveRelative(double,double,double,double)));
+    NQLog("AssemblyUEyeCameraSettingsMotionInterface") <<"interface to Lstep defined, deice is  "<<  config->getValue<std::string>("LStepExpressDevice").c_str()    ;
+
+    //attempt to return sensor to "home" orientation... try my rotating by -(current orientation in degrees)
+    double target_angle = -(this->local_angle);
+    //    emit moveAbsolute(0.0,0.0,0.0,10.0);
+ 
+   std::vector<double> values{ 1.0, 1.0, 0.0, 1.0 };
+   //   values[axis_] = -stepBox_->value();
+     NQLog("AssemblyUEyeCameraSettingsMotionInterface") <<" requesting move... ";
+
+
+   lStepExpressModel_->initialize();
+
+
+   //  if( lStepExpressModel_) lStepExpressModel_->moveRelative( 1.0, 1.0, 0.0, -10.0);
+     NQLog("AssemblyUEyeCameraSettingsMotionInterface") <<"move requested ";
+
+     emit moveAbsolute(0.0,0.0,0.0, target_angle);
+
+    //     emit moveAbsolute(this->local_x,this->local_y,this->local_angle,1.0);
 
 }
 

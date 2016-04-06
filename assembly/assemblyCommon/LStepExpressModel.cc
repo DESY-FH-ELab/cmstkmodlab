@@ -104,9 +104,20 @@ void LStepExpressModel::moveRelative(std::vector<double> & values)
 
 void LStepExpressModel::moveRelative(double x, double y, double z, double a)
 {
+
+    NQLog("LStepExpressModel") << "moveRealtive() 0 ";
+
+    if(!controller_) NQLog("LStepExpressModel") << "moveRealtive() controller_ ptr not defined... ";
     controller_->MoveRelative(x, y, z, a);
+
+    NQLog("LStepExpressModel") << "moveRealtive() 1 ";
+
+
     inMotion_ = true;
     emit motionStarted();
+
+
+
 }
 
 void LStepExpressModel::moveRelative(unsigned int axis, double value)
