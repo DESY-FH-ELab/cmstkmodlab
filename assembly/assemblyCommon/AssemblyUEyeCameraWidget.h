@@ -15,7 +15,7 @@
 #include <QComboBox>
 #include <QSlider>
 #include <QPushButton>
-
+#include <QProgressBar>
 
 
 #include <DeviceState.h>
@@ -117,6 +117,48 @@ signals:
 
 
 
+class AssemblyUEyeCameraSettingsPicker : public QPushButton
+{
+    Q_OBJECT
+    
+public:
+    explicit AssemblyUEyeCameraSettingsPicker(AssemblyVUEyeCamera* camera,
+                                                  QWidget *parent = 0);
+    
+    public slots:
+//    void onCalibrate();
+    
+protected:
+    
+    AssemblyVUEyeCamera* camera_;
+    
+signals:
+//   void updateStatus(QString, double);
+ //   void acquireImage();
+    
+};
+
+
+class AssemblyUEyeCameraSettingsStatus : public QProgressBar
+{
+    Q_OBJECT
+    
+public:
+    explicit AssemblyUEyeCameraSettingsStatus(AssemblyVUEyeCamera* camera,
+                                              QWidget *parent = 0);
+    
+    public slots:
+       void updateStatus(QString, double);
+    
+protected:
+    
+    AssemblyVUEyeCamera* camera_;
+    
+signals:
+    //   void changeExposureTime(double);
+    //   void acquireImage();
+    
+};
 
 
 

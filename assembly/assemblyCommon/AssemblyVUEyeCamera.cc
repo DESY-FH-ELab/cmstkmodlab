@@ -50,13 +50,23 @@ size_t AssemblyVUEyeCamera::getCurrentPixelClockIndex() const
 }
 
 
+
+void AssemblyVUEyeCamera::pickup()
+{
+    NQLog("AssemblyVUEyeCamera") << "Running Pickup Routine" ;
+    emit updateStatus("Moving to pickup area",20.0);
+    
+}
+
+
+
+
 void AssemblyVUEyeCamera::calibrateSettings()
 {
-   NQLog("AssemblyVUEyeCamera") << ":calibrateSettings()";
-   NQLog("AssemblyVUEyeCamera") << "**********************exposure time scan***************************" ;
+    NQLog("AssemblyVUEyeCamera") << "Finding Marker (Circle Seed Algorithm)" ;
 
-   loopFind_ = new AssemblySensorMarkerFinder();
-   cv::Mat img_gs, img_rgb, img_edges;
+    loopFind_ = new AssemblySensorMarkerFinder();
+    cv::Mat img_gs, img_rgb, img_edges;
     int radius;
     int  expectedCircleRadius_ = 89;
     double circleCenterDetectionThreshold_  = 35.0;
@@ -88,7 +98,7 @@ void AssemblyVUEyeCamera::calibrateSettings()
     std::vector<cv::Point2f> finalIntersectionsDown_;
 
     
-    std::string str_ii, str_p , str_lt, str_pc, str_x, str_y, str_slope_final, str_ang_final;
+    std::string str_ii, str_p , str_lt, str_pc, str_x, str_y, str_slope_final,str_ang_final;
     ostringstream convert;   // stream used for the conversion
    
     
