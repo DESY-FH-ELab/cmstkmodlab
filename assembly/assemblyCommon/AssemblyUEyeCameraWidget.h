@@ -15,6 +15,8 @@
 #include <QComboBox>
 #include <QSlider>
 #include <QPushButton>
+#include <QButtonGroup>
+
 #include <QProgressBar>
 
 
@@ -117,7 +119,7 @@ signals:
 
 
 
-class AssemblyUEyeCameraSettingsPicker : public QPushButton
+class AssemblyUEyeCameraSettingsPicker : public QButtonGroup
 {
     Q_OBJECT
     

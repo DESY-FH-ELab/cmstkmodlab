@@ -28,11 +28,11 @@
 
 
 #include <unistd.h> 
+
 #include <ueye.h>
 #include <uEye.h>
-//#include <uEye_tools.h>
+#include <uEye_tools.h>
 #include <ueye_deprecated.h>
-
 
 using namespace std;
 
@@ -76,8 +76,8 @@ void AssemblyVUEyeCamera::pickup()
     LStepExpressMotionManager* motionManager_ = new LStepExpressMotionManager(lStepExpressModel_);
     connect(this, SIGNAL(moveAbsolute(double,double,double,double)), motionManager_, SLOT(moveAbsolute(double,double,double,double)));
 
-    lStepExpressModel_->initialize(); 
-      emit moveAbsolute(0.0,0.0,0.0,0.0);
+    lStepExpressModel_->initialize();
+    emit moveAbsolute(0.0,0.0,0.0,0.0);
     //emit moveAbsolute(175.96,0.0,0.0,0.0);
     // emit moveAbsolute(175.96,0.0,87.4,0.0);
     //emit moveAbsolute(175.96,140.00,87.4,0.0);
