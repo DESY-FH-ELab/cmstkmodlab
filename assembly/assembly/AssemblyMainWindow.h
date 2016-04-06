@@ -22,7 +22,7 @@ typedef AssemblyUEyeModel AssemblyUEyeModel_t;
 #include "AssemblyUEyeWidget.h"
 #include "AssemblyUEyeView.h"
 #include "AssemblyUEyeSnapShooter.h"
-
+#include "AssemblyUEyeAssembler.h"
 
 
 #include "AssemblyMarkerFinderThread.h"
@@ -69,6 +69,7 @@ protected:
   AssemblyUEyeSnapShooter* finderView_;
   AssemblyUEyeSnapShooter* edgeView_;
   AssemblyUEyeSnapShooter* rawView_;
+  AssemblyUEyeAssembler* assembleView_;
     
 
   AssemblyUEyeModel_t* uEyeModel_;

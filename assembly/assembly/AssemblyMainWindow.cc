@@ -31,8 +31,8 @@ AssemblyMainWindow::AssemblyMainWindow(QWidget *parent) :
     rawView_ = new AssemblyUEyeSnapShooter(tabWidget_);
     tabWidget_->addTab(rawView_, "raw");
     
-    //    playView_ = new AssemblyUEyeTracker(tabWidget_);
-    //tabWidget_->addTab(playView_, "play");
+    assembleView_ = new AssemblyUEyeAssembler(tabWidget_);
+    tabWidget_->addTab(assembleView_, "assemble");
 
     uEyeModel_ = new AssemblyUEyeModel_t(10);
     cameraThread_ = new AssemblyUEyeCameraThread(uEyeModel_, this);

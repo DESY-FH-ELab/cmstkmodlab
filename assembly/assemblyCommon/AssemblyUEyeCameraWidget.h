@@ -15,7 +15,6 @@
 #include <QComboBox>
 #include <QSlider>
 #include <QPushButton>
-#include <QButtonGroup>
 
 #include <QProgressBar>
 
@@ -119,7 +118,7 @@ signals:
 
 
 
-class AssemblyUEyeCameraSettingsPicker : public QButtonGroup
+class AssemblyUEyeCameraSettingsPicker : public QPushButton
 {
     Q_OBJECT
     
@@ -284,7 +283,7 @@ public:
     public slots:
         void returntoOrigin();
         void catchResult(double, double,double);
-        void gotoPickup(double, double,double);
+       // void gotoPickup(double, double,double);
 
 
 protected:

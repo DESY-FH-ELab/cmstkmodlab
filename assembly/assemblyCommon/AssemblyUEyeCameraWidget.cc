@@ -409,13 +409,13 @@ AssemblyUEyeCameraSettingsPicker::AssemblyUEyeCameraSettingsPicker(AssemblyVUEye
 : QPushButton(parent),
 camera_(camera)
 {
-    QPushButton* button1 = new QPushButton("Button 1" , parent);
+   // QPushButton* button1 = new QPushButton("Button 1" , parent);
 
-    group->addButton(button1);
+    //this->addButton(button1);
 
-    button1->setText("Pickup routine");
+    this->setText("Pickup routine");
     
-    connect(button1, SIGNAL(clicked()),
+    connect(this, SIGNAL(clicked()),
             camera_, SLOT(pickup()));
     
 }
