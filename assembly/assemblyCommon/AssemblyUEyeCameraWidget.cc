@@ -481,6 +481,7 @@ void AssemblyUEyeCameraSettingsMotionInterface::catchResult(double x, double y ,
 }
 
 
+
 void AssemblyUEyeCameraSettingsMotionInterface::returntoOrigin(){
     
     NQLog("AssemblyUEyeCameraSettingsMotionInterface") << ": returning to origin "<< this->local_x<<" "<<this->local_y<<"  "<< this->local_angle;

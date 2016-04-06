@@ -282,6 +282,8 @@ public:
     public slots:
         void returntoOrigin();
         void catchResult(double, double,double);
+        void gotoPickup(double, double,double);
+
 
 protected:
     AssemblyVUEyeCamera* camera_;

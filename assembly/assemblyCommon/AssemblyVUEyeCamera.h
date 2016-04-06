@@ -134,6 +134,8 @@ protected:
 
 signals:
     void resultObtained(double,double,double);
+    void moveAbsolute(double,double,double,double);
+
 
     void cameraInformationChanged();
 

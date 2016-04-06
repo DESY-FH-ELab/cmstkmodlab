@@ -13,6 +13,19 @@
 #include <iostream>
 #include <cmath>
 
+#include <ApplicationConfig.h>
+
+
+//motion
+#include "LStepExpressModel.h"
+#include "LStepExpressSettings.h"
+#include "LStepExpressMotionManager.h"
+#include "LStepExpressMotionThread.h"
+#include "LStepExpressSettingsWidget.h"
+#include "LStepExpressWidget.h"
+#include "LStepExpressJoystickWidget.h"
+
+
 
 #include <unistd.h> 
 #include <ueye.h>
@@ -55,6 +68,26 @@ void AssemblyVUEyeCamera::pickup()
 {
     NQLog("AssemblyVUEyeCamera") << "Running Pickup Routine" ;
     emit updateStatus("Moving to pickup area",20.0);
+    NQLog("AssemblyVUEyeCamera") << ": going to pickup position ";
+
+    ApplicationConfig* config = ApplicationConfig::instance();
+    LStepExpressModel* lStepExpressModel_ = new LStepExpressModel(config->getValue<std::string>("LStepExpressDevice").c_str(),1000, 100);
+    LStepExpressSettings* lStepExpressSettings_ = new LStepExpressSettings(lStepExpressModel_);
+    LStepExpressMotionManager* motionManager_ = new LStepExpressMotionManager(lStepExpressModel_);
+    connect(this, SIGNAL(moveAbsolute(double,double,double,double)), motionManager_, SLOT(moveAbsolute(double,double,double,double)));
+
+    lStepExpressModel_->initialize(); 
+      emit moveAbsolute(0.0,0.0,0.0,0.0);
+    //emit moveAbsolute(175.96,0.0,0.0,0.0);
+    // emit moveAbsolute(175.96,0.0,87.4,0.0);
+    //emit moveAbsolute(175.96,140.00,87.4,0.0);
+
+
+
+    //emit moveAbsolute(175.96,140.00,87.4,0.0);
+
+
+
     
 }
 
