@@ -317,8 +317,8 @@ AssemblyUEyeCameraSettingsWidget::AssemblyUEyeCameraSettingsWidget(AssemblyVUEye
     layout->addRow("pixel clock", new AssemblyUEyeCameraPixelClockWidget(camera_, this));
     layout->addRow("exposure time", new AssemblyUEyeCameraExposureTimeWidget(camera_, this));
     layout->addRow("", new AssemblyUEyeCameraSettingsCalibrater(camera_, this));
-    
-    
+  
+
     x_coor = new QLineEdit();
     y_coor = new QLineEdit();
     ang = new QLineEdit();
@@ -328,12 +328,21 @@ AssemblyUEyeCameraSettingsWidget::AssemblyUEyeCameraSettingsWidget(AssemblyVUEye
     layout->addRow("Angle", ang);
     layout->addRow("", new AssemblyUEyeCameraSettingsMotionInterface(camera_, this, this));
 
+    AssemblyUEyeCameraSettingsPicker * picker =new AssemblyUEyeCameraSettingsPicker(camera_, this);
+    AssemblyUEyeCameraSettingsStatus * status = new AssemblyUEyeCameraSettingsStatus(camera_, this);
+    layout->addRow("", picker);
+    layout->addRow("Status:",status );
+
     
     setLayout(layout);
     
 //    updateCoordinates(1.0,1.0,1.0);
 
     // Connect all the signals
+    
+    connect(camera_, SIGNAL(updateStatus(QString, double)),
+            status, SLOT(updateStatus(QString, double)));
+    
     connect(camera_, SIGNAL(cameraInformationChanged()),
             this, SLOT(cameraInformationChanged()));
 
@@ -392,9 +401,56 @@ AssemblyUEyeCameraSettingsCalibrater::AssemblyUEyeCameraSettingsCalibrater(Assem
     connect(this, SIGNAL(clicked()),
   	    camera_, SLOT(calibrateSettings()));
     
-
-
 }
+
+
+
+AssemblyUEyeCameraSettingsPicker::AssemblyUEyeCameraSettingsPicker(AssemblyVUEyeCamera* camera, QWidget *parent)
+: QPushButton(parent),
+camera_(camera)
+{
+    this->setText("Pickup routine");
+    
+    connect(this, SIGNAL(clicked()),
+            camera_, SLOT(pickup()));
+    
+}
+
+
+AssemblyUEyeCameraSettingsStatus::AssemblyUEyeCameraSettingsStatus(AssemblyVUEyeCamera* camera, QWidget *parent)
+: QProgressBar(parent),
+camera_(camera)
+{
+    
+    this->setTextVisible(true);
+    double progress = 0.0;
+    this->setValue(progress);
+    
+    this->setFormat("Idle  ("  + QString::number(progress)+"%)");
+   // this->setText("Moving to pickup station");
+    
+   // connect(this, SIGNAL(clicked()),
+   //         camera_, SLOT(pickup()));
+    
+}
+
+
+
+void AssemblyUEyeCameraSettingsStatus::updateStatus(QString step, double progress)
+{
+    
+    this->setValue(progress);
+    this->setFormat( step +"("  + QString::number(progress)+"%)");
+    // this->setText("Moving to pickup station");
+    
+    //   connect(this, SIGNAL(clicked()),
+    //           camera_, SLOT(pickup()));
+    
+}
+
+
+
+
 
 
 AssemblyUEyeCameraSettingsMotionInterface::AssemblyUEyeCameraSettingsMotionInterface(AssemblyVUEyeCamera* camera,

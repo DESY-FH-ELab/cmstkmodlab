@@ -8,7 +8,7 @@
 #include <DeviceState.h>
 #include "AssemblySensorMarkerFinder.h"
 
-
+#include <QString>
 
 class AssemblyVUEyeCamera : public QObject
 {
@@ -89,7 +89,8 @@ public slots:
 
     virtual void setPixelClock(unsigned int) = 0;
     virtual void setExposureTime(double) = 0;
-    virtual  void calibrateSettings();
+    virtual void calibrateSettings();
+    virtual void pickup();
 
 
 protected slots:
@@ -146,6 +147,8 @@ signals:
     void exposureTimeRangeChanged(double);
 
     void imageAcquired(const cv::Mat&);
+    void updateStatus(QString, double);
+
     
 
 private:
