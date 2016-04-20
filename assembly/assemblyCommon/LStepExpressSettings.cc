@@ -365,7 +365,8 @@ void LStepExpressSettings::readSettingsFromDevice()
 {
     QMutexLocker locker(&mutex_);
 
-    while (model_->isUpdating()) usleep(100);
+    //this randomly staryted to cause compilation errors on mac...???
+    //while (model_->isUpdating()) usleep(100);
 
     model_->pauseUpdate();
 

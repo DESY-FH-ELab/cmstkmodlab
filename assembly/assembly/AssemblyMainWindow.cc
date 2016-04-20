@@ -31,7 +31,7 @@ AssemblyMainWindow::AssemblyMainWindow(QWidget *parent) :
     rawView_ = new AssemblyUEyeSnapShooter(tabWidget_);
     tabWidget_->addTab(rawView_, "raw");
     
-    assembleView_ = new AssemblyUEyeAssembler(tabWidget_);
+    assembleView_ = new AssemblyModuleAssembler(tabWidget_);
     tabWidget_->addTab(assembleView_, "assemble");
 
     uEyeModel_ = new AssemblyUEyeModel_t(10);
