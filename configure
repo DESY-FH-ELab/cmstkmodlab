@@ -62,9 +62,9 @@ if test $ARCHITECTURE = "Darwin"; then
     CXX="clang++"
     LD="clang++"
     QWTDEFINES=""
-    QWTINCLUDES="/opt/local/include/qwtplot3d /opt/local/include/qwt"
-    QWTLIBS="-L/opt/local/lib -lqwtplot3d -lqwt"
-    QMAKE="/opt/local/libexec/qt5-mac/bin/qmake"
+    QWTINCLUDES="/usr/local/lib/qwt.framework/Headers"
+    QWTLIBS="-F/usr/local/lib -framework qwt"
+    QMAKE="qmake"
 fi
 if test $ARCHITECTURE = "Linux" && test $KERNELMINOR -lt 6; then
     echo Linux kernel minor version < 6: fake device support forced
@@ -96,8 +96,8 @@ if test $ARCHITECTURE = "Linux"; then
         QWTINCLUDES="/usr/include/qwtplot3d"
         QWTLIBS="-lqwtplot3d"
     fi
-    QWTINCLUDES="$QWTINCLUDES /usr/include/qwt"
-    QWTLIBS="$QWTLIBS -lqwt"
+    QWTINCLUDES+="/usr/include/qwt $QWTINCLUDES"
+    QWTLIBS+="-lqwt $QWTLIBS"
 fi
 
 if test $USEFAKEDEVICES = 1; then

@@ -37,9 +37,11 @@ void loadImage(const std::string& filename,
 
     ii.image_ = cv::imread(filename, CV_LOAD_IMAGE_GRAYSCALE);
 
-    cv::GaussianBlur(ii.image_, ii.image_,
-                     cv::Size(gaussianBlurKernelSize, gaussianBlurKernelSize),
-                     gaussianBlurSigma, gaussianBlurSigma);
+    if (gaussianBlurKernelSize!=0) {
+        cv::GaussianBlur(ii.image_, ii.image_,
+                         cv::Size(gaussianBlurKernelSize, gaussianBlurKernelSize),
+                         gaussianBlurSigma, gaussianBlurSigma);
+    }
 
     ii.circleX_ = x;
     ii.circleY_ = y;

@@ -21,9 +21,12 @@
 #include "DefoMeasurementListComboBox.h"
 #include "DefoPointIndexerListComboBox.h"
 #include "DefoRecoColorHistoWidget.h"
-#include "DefoAnalysisWidget.h"
 
 //#define ANALYSISWIDGET
+
+#ifdef ANALYSISWIDGET
+#include "DefoAnalysisWidget.h"
+#endif
 
 DefoRecoMainWindow::DefoRecoMainWindow(QWidget *parent)
 : QMainWindow(parent)

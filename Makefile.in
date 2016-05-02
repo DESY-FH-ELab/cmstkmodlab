@@ -21,10 +21,10 @@ ifeq ($(NOTHERMAL),0)
 qtsubdirs    += thermo/thermoDAQ thermo/microDAQ thermo/thermoDAQ2Root thermo/thermoDisplay thermo/microDisplay thermo/thermoDAQ2Log
 endif
 ifeq ($(NODEFO),0)
-qtsubdirs    += defo/defoCommon defo/defoDAQ defo/defoReco defo/defoCalib defo/defoDAQ2Root
+qtsubdirs    += defo/defoCommon defo/defoDAQ defo/defoDisplay defo/defoReco defo/defoCalib defo/defoDAQ2Root
 endif
 ifeq ($(NOASSEMBLY),0)
-qtsubdirs    += assembly/assemblyCommon assembly/vision/circleCalibration assembly/assembly
+qtsubdirs    += assembly/assemblyCommon assembly/vision/circleCalibration assembly/motion/motionCommander assembly/assembly
 endif
 
 

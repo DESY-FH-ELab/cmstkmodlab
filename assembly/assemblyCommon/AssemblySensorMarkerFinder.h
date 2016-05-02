@@ -60,19 +60,21 @@ protected slots:
 
 protected:
 
-    void drawCircle();
 
     size_t findLines();
-    void drawLines();
 
     size_t findIntersections();
     bool intersection(cv::Point2f o1, cv::Point2f p1,
                       cv::Point2f o2, cv::Point2f p2,
                       cv::Point2f &r, double distance);
     void mergeIntersections(std::vector<cv::Point2f>& intersections);
-    void drawIntersections();
 
     void determineOrientation();
+
+    void drawCircle();
+    void drawLines();
+    void drawIntersections();
+    void drawOutline();
     void drawOrientation();
 
     cv::Mat image_;

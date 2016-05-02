@@ -24,7 +24,7 @@ void DefoDAQStreamer::handleDAQMessage(const QString& message)
     buffer.remove(0, 1);
   }
 
-  if (isStreaming_ && buffer.length()>0) {
+  if (stream_ && isStreaming_ && buffer.length()>0) {
     *stream_ << buffer << "\n";
     stream_->flush();
   }
@@ -42,9 +42,8 @@ void DefoDAQStreamer::startDAQ(const QString& ofilename)
   ofile_ = new QFile(ofilename_);
   if (ofile_->open(QFile::WriteOnly | QFile::Truncate)) {
     stream_ = new QTextStream(ofile_);
+    if (stream_) isStreaming_ = true;
   }
-  
-  isStreaming_ = true;
 
   QString statusMessage;
   model_->createDAQStatusMessage(statusMessage);

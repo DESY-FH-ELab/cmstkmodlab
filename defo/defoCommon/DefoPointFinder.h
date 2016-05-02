@@ -6,8 +6,8 @@
 #include <QImage>
 #include <QPolygonF>
 
-#include <TGraph2D.h>
-#include <TF2.h>
+//#include <TGraph2D.h>
+//#include <TF2.h>
 
 #include "DefoMeasurement.h"
 #include "DefoMeasurementListModel.h"
@@ -43,8 +43,8 @@ protected:
   bool do2Dfit_;
   DefoROIModel* roiModel_;
 
-  TGraph2D *gr2D_;
-  TF2* fitFunc_;
+  //TGraph2D *gr2D_;
+  //TF2* fitFunc_;
 
   QImage image_;
 

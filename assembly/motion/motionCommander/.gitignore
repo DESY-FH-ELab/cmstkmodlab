@@ -1,0 +1,12 @@
+motionCommander.pro
+motionCommander.pro.user
+.qmake.stash
+Makefile
+*.d
+*.o
+*~
+moc_*
+motionCommander
+motionCommander.app
+motionCommander.desktop
+

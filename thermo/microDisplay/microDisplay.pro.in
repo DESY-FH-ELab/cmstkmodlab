@@ -10,6 +10,17 @@ LIBS += @twitterlibs@
 
 QMAKE = @qmake@
 
+macx {
+  CONFIG+=x86_64
+  QMAKE_CXXFLAGS += -stdlib=libc++
+  #QMAKE_MAC_SDK = macosx10.11
+  QMAKE_MACOSX_DEPLOYMENT_TARGET = 10.11
+  #LIBS += -framework AppKit
+  #LIBS += -framework QuartzCore
+  #LIBS += -framework QTKit
+  #LIBS += -framework Cocoa
+}
+
 CONFIG+=c++11
 QMAKE_CXXFLAGS += -std=c++11
 macx {
@@ -26,19 +37,20 @@ greaterThan(QT_MAJOR_VERSION, 4) {
   QT += widgets
 } 
 
-TEMPLATE = app
 TARGET = microDisplay
+TEMPLATE = app
+
+macx {
+  QMAKE_POST_LINK = install_name_tool -change libCommon.1.dylib @basepath@/common/libCommon.1.dylib $(TARGET)
+}
+
 DEPENDPATH += @basepath@/common
 INCLUDEPATH += .
 INCLUDEPATH += ..
 INCLUDEPATH += @basepath@
 INCLUDEPATH += @basepath@/common
 
-macx {
-  QMAKE_MACOSX_DEPLOYMENT_TARGET=10.9
-}
-
-greaterThan(QT_MAJOR_VERSION, 4){
+greaterThan(QT_MAJOR_VERSION, 4) {
   cache()
 }
 
@@ -47,7 +59,7 @@ HEADERS += MicroDAQClient.h \
            MicroDAQNetworkReader.h \
            MicroDisplayMainWindow.h \
            MicroDAQDisplayWidget.h \
-	   MicroDAQValueVector.h
+           MicroDAQValueVector.h
     
 SOURCES += microDisplay.cc \
            MicroDAQClient.cc \
