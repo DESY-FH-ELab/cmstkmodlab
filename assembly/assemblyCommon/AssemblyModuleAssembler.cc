@@ -11,11 +11,13 @@
 
 
 #include <iostream>
-
-
 #include <nqlogger.h>
 
 #include "AssemblyModuleAssembler.h"
+
+//relay card
+#include "../../devices/Conrad/ConradCommunication.h"
+#include "../../devices/Conrad/ConradController.h"
 
 using namespace std;
 
@@ -46,7 +48,6 @@ AssemblyModuleAssembler::AssemblyModuleAssembler(QWidget *parent)
 
     l->addWidget(scrollArea_,0,0);
     
-
     QGridLayout *g1 = new QGridLayout(this);
     l->addLayout(g1,0,1);
     
@@ -163,7 +164,7 @@ void AssemblyModuleAssembler::gotoPickup()
     //emit updateStatus("Moving to pickup area",20.0);
     ApplicationConfig* config = ApplicationConfig::instance();
     LStepExpressModel* lStepExpressModel_ = new LStepExpressModel(config->getValue<std::string>("LStepExpressDevice").c_str(),1000, 100);
-    LStepExpressSettings* lStepExpressSettings_ = new LStepExpressSettings(lStepExpressModel_);
+  //  LStepExpressSettings* lStepExpressSettings_ = new LStepExpressSettings(lStepExpressModel_);
     LStepExpressMotionManager* motionManager_ = new LStepExpressMotionManager(lStepExpressModel_);
     connect(this, SIGNAL(moveAbsolute(double,double,double,double)), motionManager_, SLOT(moveAbsolute(double,double,double,double)));
     
@@ -247,16 +248,17 @@ void AssemblyModuleAssembler::keyReleaseEvent(QKeyEvent * event)
 
 
 
-
-
-
-
 AssemblyVacuumToggler::AssemblyVacuumToggler(QWidget *parent, std::string string, double a,  int mode)
 : QWidget(parent),local_a(a)
 {
     QGridLayout *l = new QGridLayout(this);
     setLayout(l);
     
+    const char* deviceName = "test";
+    cnrd1 = new ConradController(deviceName);
+    
+    NQLog("AssemblyVacuumToggler") << ":in mode"<< mode;
+
     std::ostringstream strs;
     strs.clear();
     strs << a;
@@ -301,18 +303,22 @@ void AssemblyVacuumToggler::toggleVacuum()
     
   //  ql->setPixmap(pixmap);
     
+    //this slot just needs to be tested with the card connected.
+    
+  //  if (cnrd1->initialize()){
     if (!state){
+   // cnrd1->setChannel(1, true);
     ql->setText("VACUUM ON");
     ql->setStyleSheet("QLabel { background-color : red; color : black; }");
-        state = true;
+    state = true;
     }else if (state){
+   // cnrd1->setChannel(1, false);
     ql->setText("VACUUM OFF");
     ql->setStyleSheet("QLabel { background-color : green; color : black; }");
-        state = false;
-
+    state = false;
     }
+ //   }
     
-        
         
 }
 
@@ -323,6 +329,9 @@ AssemblyAttacher::AssemblyAttacher(QWidget *parent, std::string string, double d
 {
     QFormLayout *l = new QFormLayout(this);
     setLayout(l);
+    
+    NQLog("AssemblyAttacher") << ": in mode" << mode;
+
     
     std::ostringstream strs;
     strs.clear();
@@ -364,7 +373,7 @@ void AssemblyAttacher::dropAttach(){
     
     ApplicationConfig* config = ApplicationConfig::instance();
     LStepExpressModel* lStepExpressModel_ = new LStepExpressModel(config->getValue<std::string>("LStepExpressDevice").c_str(),1000, 100);
-    LStepExpressSettings* lStepExpressSettings_ = new LStepExpressSettings(lStepExpressModel_);
+  //  LStepExpressSettings* lStepExpressSettings_ = new LStepExpressSettings(lStepExpressModel_);
     LStepExpressMotionManager* motionManager_ = new LStepExpressMotionManager(lStepExpressModel_);
     lStepExpressModel_->initialize();
     
@@ -384,16 +393,15 @@ void AssemblyAttacher::dropAttach(){
 
 
 
-
-
-
-
 AssemblyCommander::AssemblyCommander(QWidget *parent, std::string string, double x ,double y, double z,double a,  int mode)
 : QWidget(parent), local_x(x), local_y(y),local_z(z),local_a(a)
 {
      QFormLayout *l = new QFormLayout(this);
      setLayout(l);
 
+    NQLog("AssemblyCommander") << ": in mode" << mode;
+
+    
     std::ostringstream strs;
     strs.clear();
     strs << x;
@@ -448,7 +456,7 @@ void AssemblyCommander::goToTarget(){
     
     ApplicationConfig* config = ApplicationConfig::instance();
     LStepExpressModel* lStepExpressModel_ = new LStepExpressModel(config->getValue<std::string>("LStepExpressDevice").c_str(),1000, 100);
-    LStepExpressSettings* lStepExpressSettings_ = new LStepExpressSettings(lStepExpressModel_);
+   // LStepExpressSettings* lStepExpressSettings_ = new LStepExpressSettings(lStepExpressModel_);
     LStepExpressMotionManager* motionManager_ = new LStepExpressMotionManager(lStepExpressModel_);
     lStepExpressModel_->initialize();
     
@@ -494,6 +502,9 @@ AssemblyAlligner::AssemblyAlligner(QWidget *parent, std::string string, double a
 {
     QFormLayout *l = new QFormLayout(this);
     setLayout(l);
+    
+    NQLog("AssemblyAlligner") << ": in mode" << mode;
+
     
     std::ostringstream strs;
     strs.clear();

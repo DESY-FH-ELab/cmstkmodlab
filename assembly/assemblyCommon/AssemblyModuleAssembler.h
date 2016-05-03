@@ -25,6 +25,9 @@
 #include "LStepExpressWidget.h"
 #include "LStepExpressJoystickWidget.h"
 
+//relay card
+#include "../../devices/Conrad/ConradCommunication.h"
+#include "../../devices/Conrad/ConradController.h"
 
 
 class AssemblyModuleAssembler : public QWidget
@@ -37,8 +40,6 @@ public:
     void disconnectImageProducer(const QObject* sender, const char* signal);
     double pickup_position;
     //QPushButton* button1 =  new QPushButton(qname, this);
-    
-    
     
 protected:
 
@@ -73,8 +74,11 @@ public:
     double local_x, local_y, local_z, local_a;
     QPushButton* button1;
     QLineEdit *lineEdit1;
+    ConradController * cnrd1;
+
     QLabel* ql;
     bool state;
+    
     
 protected:
     
