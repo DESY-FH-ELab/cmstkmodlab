@@ -120,8 +120,8 @@ public:
                             KeithleyModel* keithleyModel,
                             HamegModel* hamegModel,
                             PfeifferModel* pfeifferModel,
-			    IotaModel* iotaModel,
-			    ArduinoPresModel* arduinoPresModel,
+                            IotaModel* iotaModel,
+                            ArduinoPresModel* arduinoPresModel,
                             QObject *parent = 0);
 
     QDateTime& currentTime();
