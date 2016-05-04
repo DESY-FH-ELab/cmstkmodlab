@@ -219,8 +219,8 @@ protected:
   
   // METADATA
   bool metadataValid_;
-  float sampleThickness_;
-  float sampleArea_;
+  double sampleThickness_;
+  double sampleArea_;
 
   void validateMetadata();
 
