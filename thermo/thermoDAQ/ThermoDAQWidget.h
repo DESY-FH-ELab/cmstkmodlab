@@ -14,33 +14,33 @@
 
 class ThermoDAQWidget : public QWidget
 {
-  Q_OBJECT
+    Q_OBJECT
 public:
-  explicit ThermoDAQWidget(ThermoDAQModel* DAQModel, QWidget *parent = 0);
+    explicit ThermoDAQWidget(ThermoDAQModel* DAQModel, QWidget *parent = 0);
 
 protected:
-  // Models
-  ThermoDAQModel* daqModel_;
+    // Models
+    ThermoDAQModel* daqModel_;
 
-  // Widgets
-  QPushButton* startMeasurementButton_;
-  QPushButton* stopMeasurementButton_;
-  QPushButton* clearHistoryButton_;
-  QWidget* buttons_;
+    // Widgets
+    QPushButton* startMeasurementButton_;
+    QPushButton* stopMeasurementButton_;
+    QPushButton* clearHistoryButton_;
+    QWidget* buttons_;
 
-  QDoubleSpinBox* sampleThickness_;
-  QDoubleSpinBox* sampleArea_;
-  QWidget* metadata_;
+    QDoubleSpinBox* sampleThickness_;
+    QDoubleSpinBox* sampleArea_;
+    QWidget* metadata_;
 
-  QPlainTextEdit* logEdit_;
-  QPushButton* logButton_;
+    QPlainTextEdit* logEdit_;
+    QPushButton* logButton_;
 
 protected slots:
-  void daqStateChanged(bool running);
-  void logButtonClicked();
-  void stopMeasurement();
-  void sampleThicknessChanged(double value);
-  void sampleAreaChanged(double value);
+    void daqStateChanged(bool running);
+    void logButtonClicked();
+    void stopMeasurement();
+    void sampleThicknessChanged(double value);
+    void sampleAreaChanged(double value);
 };
 
 #endif // THERMODAQWIDGET_H

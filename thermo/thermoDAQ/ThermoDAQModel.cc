@@ -14,46 +14,46 @@ ThermoDAQModel::ThermoDAQModel(HuberPetiteFleurModel* huberModel,
                                KeithleyModel* keithleyModel,
                                HamegModel* hamegModel,
                                PfeifferModel* pfeifferModel,
-			       IotaModel* iotaModel,
-			       ArduinoPresModel* arduinoPresModel,
+                               IotaModel* iotaModel,
+                               ArduinoPresModel* arduinoPresModel,
                                QObject *parent)
-  : QObject(),
-    daqState_(false),
-    huberModel_(huberModel),
-    keithleyModel_(keithleyModel),
-    hamegModel_(hamegModel),
-    pfeifferModel_(pfeifferModel),
-    iotaModel_(iotaModel),
-    arduinoPresModel_(arduinoPresModel),
-    huberCirculator_(false),
-    huberWorkingTemperature_(0.0),
-    huberBathTemperature_(0.0),
-    hamegRemoteMode_(false),
-    hamegOutputsEnabled_(false),
-    pfeifferStatus1_(0),
-    pfeifferPressure1_(0.0),
-    pfeifferStatus2_(0),
-    pfeifferPressure2_(0.0),
-    iotaPumpEnabled_(false),
-    iotaActPressure_(0.0),
-    iotaSetPressure_(0.0),
-    iotaActFlow_(0.0),
-    iotaSetFlow_(0.0),
-    arduinoPressureA_(0.0),
-    arduinoPressureB_(0.0),
-    sampleThickness_(0.0),
-    sampleArea_(0.0)
+    : QObject(),
+      daqState_(false),
+      huberModel_(huberModel),
+      keithleyModel_(keithleyModel),
+      hamegModel_(hamegModel),
+      pfeifferModel_(pfeifferModel),
+      iotaModel_(iotaModel),
+      arduinoPresModel_(arduinoPresModel),
+      huberCirculator_(false),
+      huberWorkingTemperature_(0.0),
+      huberBathTemperature_(0.0),
+      hamegRemoteMode_(false),
+      hamegOutputsEnabled_(false),
+      pfeifferStatus1_(0),
+      pfeifferPressure1_(0.0),
+      pfeifferStatus2_(0),
+      pfeifferPressure2_(0.0),
+      iotaPumpEnabled_(false),
+      iotaActPressure_(0.0),
+      iotaSetPressure_(0.0),
+      iotaActFlow_(0.0),
+      iotaSetFlow_(0.0),
+      arduinoPressureA_(0.0),
+      arduinoPressureB_(0.0),
+      sampleThickness_(0.0),
+      sampleArea_(0.0)
 {
     for (int i=0;i<10;++i) {
-      keithleySensorState_[i] = OFF;
-      keithleyTemperature_[i] = 0;
+        keithleySensorState_[i] = OFF;
+        keithleyTemperature_[i] = 0;
     }
     for (int i=0;i<2;++i) {
-      hamegCVMode_[i] = OFF;
-      hamegSetVoltage_[i] = 0;
-      hamegSetCurrent_[i] = 0;
-      hamegVoltage_[i] = 0;
-      hamegCurrent_[i] = 0;
+        hamegCVMode_[i] = OFF;
+        hamegSetVoltage_[i] = 0;
+        hamegSetCurrent_[i] = 0;
+        hamegVoltage_[i] = 0;
+        hamegCurrent_[i] = 0;
     }
 
     connect(huberModel_, SIGNAL(informationChanged()),
@@ -71,10 +71,10 @@ ThermoDAQModel::ThermoDAQModel(HuberPetiteFleurModel* huberModel,
             this, SLOT(pfeifferInfoChanged()));
 
     connect(iotaModel_, SIGNAL(informationChanged()),
-	    this, SLOT(iotaInfoChanged()));
+            this, SLOT(iotaInfoChanged()));
 
     connect(arduinoPresModel_, SIGNAL(informationChanged()),
-	    this, SLOT(arduinoPresInfoChanged()));
+            this, SLOT(arduinoPresInfoChanged()));
 }
 
 void ThermoDAQModel::myMoveToThread(QThread *thread)
@@ -108,19 +108,19 @@ void ThermoDAQModel::startMeasurement()
 
 const Measurement_t& ThermoDAQModel::getMeasurement()
 {
-  measurement_.dt = currentTime();
-  measurement_.daqState = daqState();
-  
-  measurement_.circulator = huberCirculator_;
-  measurement_.workingTemperature = huberWorkingTemperature_;
-  measurement_.bathTemperature = huberBathTemperature_;
+    measurement_.dt = currentTime();
+    measurement_.daqState = daqState();
 
-  for (int i=0;i<10;++i) {
-    measurement_.channelActive[i] = (int)keithleySensorState_[i];
-    measurement_.temperature[i] = keithleyTemperature_[i];
-  }
+    measurement_.circulator = huberCirculator_;
+    measurement_.workingTemperature = huberWorkingTemperature_;
+    measurement_.bathTemperature = huberBathTemperature_;
 
-  return measurement_;
+    for (int i=0;i<10;++i) {
+        measurement_.channelActive[i] = (int)keithleySensorState_[i];
+        measurement_.temperature[i] = keithleyTemperature_[i];
+    }
+
+    return measurement_;
 }
 
 void ThermoDAQModel::createDAQStatusMessage(QString &buffer)
@@ -286,7 +286,7 @@ void ThermoDAQModel::huberInfoChanged()
         xml.writeEndElement();
 
         emit daqMessage(buffer);
-	emit newDataAvailable();
+        emit newDataAvailable();
     }
 }
 
@@ -418,8 +418,8 @@ void ThermoDAQModel::hamegInfoChanged()
     }
 
     if (buffer.length()>0) {
-      emit daqMessage(buffer);
-      emit newDataAvailable();
+        emit daqMessage(buffer);
+        emit newDataAvailable();
     }
 }
 
@@ -456,7 +456,7 @@ void ThermoDAQModel::pfeifferInfoChanged()
         xml.writeEndElement();
 
         emit daqMessage(buffer);
-	emit newDataAvailable();
+        emit newDataAvailable();
     }
 }
 
@@ -504,8 +504,8 @@ void ThermoDAQModel::iotaInfoChanged()
     }
     
     if (buffer.length()>0) {
-      emit daqMessage(buffer);
-      emit newDataAvailable();
+        emit daqMessage(buffer);
+        emit newDataAvailable();
     }
 }
 

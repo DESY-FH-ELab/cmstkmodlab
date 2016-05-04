@@ -11,69 +11,69 @@ ThermoDAQWidget::ThermoDAQWidget(ThermoDAQModel* daqModel, QWidget *parent) :
     QWidget(parent),
     daqModel_(daqModel)
 {
-  // Layouts to put everything into place
-  QVBoxLayout* layout = new QVBoxLayout();
-  setLayout(layout);
-  setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);
+    // Layouts to put everything into place
+    QVBoxLayout* layout = new QVBoxLayout();
+    setLayout(layout);
+    setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);
 
-  QHBoxLayout *buttonLayout = new QHBoxLayout();
-  buttons_ = new QWidget(this);
-  //buttons_->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);
-  buttons_->setLayout(buttonLayout);
-  layout->addWidget(buttons_);
+    QHBoxLayout *buttonLayout = new QHBoxLayout();
+    buttons_ = new QWidget(this);
+    //buttons_->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);
+    buttons_->setLayout(buttonLayout);
+    layout->addWidget(buttons_);
 
-  // start a measurement
-  startMeasurementButton_ = new QPushButton("Start Measurement", buttons_);
-  connect(startMeasurementButton_, SIGNAL(clicked()), daqModel_, SLOT(startMeasurement()));
-  buttonLayout->addWidget(startMeasurementButton_);
+    // start a measurement
+    startMeasurementButton_ = new QPushButton("Start Measurement", buttons_);
+    connect(startMeasurementButton_, SIGNAL(clicked()), daqModel_, SLOT(startMeasurement()));
+    buttonLayout->addWidget(startMeasurementButton_);
 
-  // stop a measurement
-  stopMeasurementButton_ = new QPushButton("Stop Measurement", buttons_);
-  connect(stopMeasurementButton_, SIGNAL(clicked()), daqModel_, SLOT(stopMeasurement()));
-  connect(stopMeasurementButton_, SIGNAL(clicked()), this, SLOT(stopMeasurement()));
-  buttonLayout->addWidget(stopMeasurementButton_);
+    // stop a measurement
+    stopMeasurementButton_ = new QPushButton("Stop Measurement", buttons_);
+    connect(stopMeasurementButton_, SIGNAL(clicked()), daqModel_, SLOT(stopMeasurement()));
+    connect(stopMeasurementButton_, SIGNAL(clicked()), this, SLOT(stopMeasurement()));
+    buttonLayout->addWidget(stopMeasurementButton_);
 
-  buttonLayout->addSpacing(200);
+    buttonLayout->addSpacing(200);
 
-  // clear history
-  clearHistoryButton_ = new QPushButton("Clear History", buttons_);
-  connect(clearHistoryButton_, SIGNAL(clicked()), daqModel_, SLOT(clearHistory()));
-  buttonLayout->addWidget(clearHistoryButton_);
+    // clear history
+    clearHistoryButton_ = new QPushButton("Clear History", buttons_);
+    connect(clearHistoryButton_, SIGNAL(clicked()), daqModel_, SLOT(clearHistory()));
+    buttonLayout->addWidget(clearHistoryButton_);
 
-  QFormLayout *metadataLayout = new QFormLayout();
-  metadata_ = new QWidget(this);
-  //metadata_->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);
-  metadata_->setLayout(metadataLayout);
+    QFormLayout *metadataLayout = new QFormLayout();
+    metadata_ = new QWidget(this);
+    //metadata_->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);
+    metadata_->setLayout(metadataLayout);
 
-  sampleThickness_ = new QDoubleSpinBox(metadata_);
-  sampleThickness_->setKeyboardTracking(false);
-  connect(sampleThickness_, SIGNAL(valueChanged(double)),
-          this, SLOT(sampleThicknessChanged(double)));
-  metadataLayout->addRow("sample thickness [mm]", sampleThickness_);
+    sampleThickness_ = new QDoubleSpinBox(metadata_);
+    sampleThickness_->setKeyboardTracking(false);
+    connect(sampleThickness_, SIGNAL(valueChanged(double)),
+            this, SLOT(sampleThicknessChanged(double)));
+    metadataLayout->addRow("sample thickness [mm]", sampleThickness_);
 
-  sampleArea_ = new QDoubleSpinBox(metadata_);
-  sampleArea_->setKeyboardTracking(false);
-  connect(sampleArea_, SIGNAL(valueChanged(double)),
-          this, SLOT(sampleAreaChanged(double)));
-  metadataLayout->addRow("sample area [mm^2]", sampleArea_);
+    sampleArea_ = new QDoubleSpinBox(metadata_);
+    sampleArea_->setKeyboardTracking(false);
+    connect(sampleArea_, SIGNAL(valueChanged(double)),
+            this, SLOT(sampleAreaChanged(double)));
+    metadataLayout->addRow("sample area [mm^2]", sampleArea_);
 
-  layout->addWidget(metadata_);
+    layout->addWidget(metadata_);
 
-  logEdit_ = new QPlainTextEdit(this);
-  logEdit_->setMinimumWidth(600);
-  logEdit_->setMaximumHeight(100);
-  layout->addWidget(logEdit_);
+    logEdit_ = new QPlainTextEdit(this);
+    logEdit_->setMinimumWidth(600);
+    logEdit_->setMaximumHeight(100);
+    layout->addWidget(logEdit_);
 
-  // log button
-  logButton_ = new QPushButton("Add Log Message", this);
-  connect(logButton_, SIGNAL(clicked()), this, SLOT(logButtonClicked()));
-  layout->addWidget(logButton_);
+    // log button
+    logButton_ = new QPushButton("Add Log Message", this);
+    connect(logButton_, SIGNAL(clicked()), this, SLOT(logButtonClicked()));
+    layout->addWidget(logButton_);
 
-  updateGeometry();
+    updateGeometry();
 
-  connect(daqModel_, SIGNAL(daqStateChanged(bool)),
-          this, SLOT(daqStateChanged(bool)));
-  daqStateChanged(false);
+    connect(daqModel_, SIGNAL(daqStateChanged(bool)),
+            this, SLOT(daqStateChanged(bool)));
+    daqStateChanged(false);
 }
 
 void ThermoDAQWidget::daqStateChanged(bool running)
@@ -115,13 +115,13 @@ void ThermoDAQWidget::logButtonClicked()
 
 void ThermoDAQWidget::stopMeasurement()
 {
-  sampleThickness_->setValue(0.0);
-  sampleArea_->setValue(0.0);
+    sampleThickness_->setValue(0.0);
+    sampleArea_->setValue(0.0);
 }
 
 void ThermoDAQWidget::sampleThicknessChanged(double value)
 {
-  daqModel_->sampleThicknessChanged(value);
+    daqModel_->sampleThicknessChanged(value);
     NQLog("ThermoDAQWidget", NQLog::Spam) << " sampleThicknessChanged: " << value;
 
     daqStateChanged(daqModel_->daqState());
@@ -129,7 +129,7 @@ void ThermoDAQWidget::sampleThicknessChanged(double value)
 
 void ThermoDAQWidget::sampleAreaChanged(double value)
 {
-  daqModel_->sampleAreaChanged(value);
+    daqModel_->sampleAreaChanged(value);
     NQLog("ThermoDAQWidget", NQLog::Spam) << " sampleAreaChanged: " << value;
 
     daqStateChanged(daqModel_->daqState());
