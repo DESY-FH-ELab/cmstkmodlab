@@ -1,5 +1,6 @@
 #include <QGroupBox>
 #include <QVBoxLayout>
+#include <QFormLayout>
 #include <QXmlStreamWriter>
 
 #include "ThermoDAQWidget.h"
@@ -36,6 +37,27 @@ ThermoDAQWidget::ThermoDAQWidget(ThermoDAQModel* daqModel, QWidget *parent) :
   connect(clearHistoryButton_, SIGNAL(clicked()), daqModel_, SLOT(clearHistory()));
   buttonLayout->addWidget(clearHistoryButton_);
 
+  QFormLayout *metadataLayout = new QFormLayout();
+  metadata_ = new QWidget(this);
+  //metadata_->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);
+  metadata_->setLayout(metadataLayout);
+
+  sampleThickness_ = new QDoubleSpinBox(metadata_);
+  connect(sampleThickness_, SIGNAL(valueChanged(double)),
+          daqModel_, SLOT(sampleThicknessChanged(double)));
+  connect(sampleThickness_, SIGNAL(valueChanged(QString)),
+          this, SLOT(metadataChanged(QString)));
+  metadataLayout->addRow("sample thickness [mm]", sampleThickness_);
+
+  sampleArea_ = new QDoubleSpinBox(metadata_);
+  connect(sampleArea_, SIGNAL(valueChanged(double)),
+          daqModel_, SLOT(sampleAreaChanged(double)));
+  connect(sampleArea_, SIGNAL(valueChanged(QString)),
+          this, SLOT(metadataChanged(QString)));
+  metadataLayout->addRow("sample area [mm^2]", sampleArea_);
+
+  layout->addWidget(metadata_);
+
   logEdit_ = new QPlainTextEdit(this);
   logEdit_->setMinimumWidth(600);
   logEdit_->setMaximumHeight(100);
@@ -59,7 +81,11 @@ void ThermoDAQWidget::daqStateChanged(bool running)
         startMeasurementButton_->setEnabled(false);
         stopMeasurementButton_->setEnabled(true);
     } else {
-        startMeasurementButton_->setEnabled(true);
+        if (daqModel_->isMetadataValid()) {
+            startMeasurementButton_->setEnabled(true);
+        } else {
+            startMeasurementButton_->setEnabled(false);
+        }
         stopMeasurementButton_->setEnabled(false);
     }
 }
@@ -84,4 +110,15 @@ void ThermoDAQWidget::logButtonClicked()
     daqModel_->customDAQMessage(buffer);
 
     logEdit_->setPlainText("");
+}
+
+void ThermoDAQWidget::metadataChanged(QString /* md */)
+{
+    if (daqModel_->daqState() == false) {
+        if (daqModel_->isMetadataValid()) {
+            startMeasurementButton_->setEnabled(true);
+        } else {
+            startMeasurementButton_->setEnabled(false);
+        }
+    }
 }

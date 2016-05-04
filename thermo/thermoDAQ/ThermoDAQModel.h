@@ -128,6 +128,7 @@ public:
 
     void customDAQMessage(const QString & message);
     void createDAQStatusMessage(QString & buffer);
+    void createDAQMetadataMessage(QString & buffer);
 
     void myMoveToThread(QThread *thread);
 
@@ -135,10 +136,16 @@ public:
 
     const Measurement_t& getMeasurement();
 
+    bool isMetadataValid() { return metadataValid_; }
+
 public slots:
 
     void startMeasurement();
     void stopMeasurement();
+
+    void invalidateMetadata();
+    void sampleThicknessChanged(double value);
+    void sampleAreaChanged(double value);
 
 protected slots:
 
@@ -210,6 +217,13 @@ protected:
   float arduinoPressureA_;
   float arduinoPressureB_;
   
+  // METADATA
+  bool metadataValid_;
+  float sampleThickness_;
+  float sampleArea_;
+
+  void validateMetadata();
+
 signals:
 
   void daqMessage(const QString & message);

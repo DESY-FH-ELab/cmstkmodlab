@@ -88,12 +88,18 @@ void ThermoDAQModel::myMoveToThread(QThread *thread)
 
 void ThermoDAQModel::startMeasurement()
 {
+    if (!metadataValid_) return;
+
     daqState_ = true;
     emit daqStateChanged(true);
 
     QString buffer;
     createDAQStatusMessage(buffer);
     emit daqMessage(buffer);
+
+    QString metadata;
+    createDAQMetadataMessage(metadata);
+    emit daqMessage(metadata);
 
     NQLog("thermoDAQ") << "measurement started";
 }
@@ -200,10 +206,30 @@ void ThermoDAQModel::createDAQStatusMessage(QString &buffer)
     xml.writeEndElement();
 }
 
+void ThermoDAQModel::createDAQMetadataMessage(QString &buffer)
+{
+    QDateTime& utime = currentTime();
+
+    QXmlStreamWriter xml(&buffer);
+    xml.setAutoFormatting(true);
+
+    xml.writeStartElement("Metadata");
+    xml.writeAttribute("time", utime.toString(Qt::ISODate));
+
+    xml.writeStartElement("sample");
+    xml.writeAttribute("thickness", QString::number(sampleThickness_, 'f', 6));
+    xml.writeAttribute("area", QString::number(sampleArea_, 'f', 6));
+    xml.writeEndElement();
+
+    xml.writeEndElement();
+}
+
 void ThermoDAQModel::stopMeasurement()
 {
     daqState_ = false;
     emit daqStateChanged(false);
+
+    invalidateMetadata();
 
     NQLog("thermoDAQ") << "measurement stopped";
 }
@@ -510,6 +536,35 @@ void ThermoDAQModel::arduinoPresInfoChanged()
         xml.writeEndElement();
 
         emit daqMessage(buffer);
-	emit newDataAvailable();
+        emit newDataAvailable();
     }
- }
+}
+
+void ThermoDAQModel::invalidateMetadata()
+{
+    metadataValid_ = false;
+    sampleThickness_ = -1.0;
+    sampleArea_ = -1.0;
+}
+
+void ThermoDAQModel::validateMetadata()
+{
+    metadataValid_ = false;
+
+    if (sampleThickness_<=0.0) return;
+    if (sampleArea_<=0.0) return;
+
+    metadataValid_ = true;
+}
+
+void ThermoDAQModel::sampleThicknessChanged(double value)
+{
+    sampleThickness_ = value;
+    validateMetadata();
+}
+
+void ThermoDAQModel::sampleAreaChanged(double value)
+{
+    sampleArea_ = value;
+    validateMetadata();
+}

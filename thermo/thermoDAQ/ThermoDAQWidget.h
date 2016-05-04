@@ -8,6 +8,7 @@
 #include <QVBoxLayout>
 #include <QFileDialog>
 #include <QPlainTextEdit>
+#include <QDoubleSpinBox>
 
 #include "ThermoDAQModel.h"
 
@@ -27,12 +28,17 @@ protected:
   QPushButton* clearHistoryButton_;
   QWidget* buttons_;
 
+  QDoubleSpinBox* sampleThickness_;
+  QDoubleSpinBox* sampleArea_;
+  QWidget* metadata_;
+
   QPlainTextEdit* logEdit_;
   QPushButton* logButton_;
 
 protected slots:
   void daqStateChanged(bool running);
   void logButtonClicked();
+  void metadataChanged(QString);
 };
 
 #endif // THERMODAQWIDGET_H
