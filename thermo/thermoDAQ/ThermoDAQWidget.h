@@ -38,7 +38,9 @@ protected:
 protected slots:
   void daqStateChanged(bool running);
   void logButtonClicked();
-  void metadataChanged(QString);
+  void stopMeasurement();
+  void sampleThicknessChanged(double value);
+  void sampleAreaChanged(double value);
 };
 
 #endif // THERMODAQWIDGET_H

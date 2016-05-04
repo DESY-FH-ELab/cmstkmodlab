@@ -3,6 +3,8 @@
 #include <QFormLayout>
 #include <QXmlStreamWriter>
 
+#include <nqlogger.h>
+
 #include "ThermoDAQWidget.h"
 
 ThermoDAQWidget::ThermoDAQWidget(ThermoDAQModel* daqModel, QWidget *parent) :
@@ -28,6 +30,7 @@ ThermoDAQWidget::ThermoDAQWidget(ThermoDAQModel* daqModel, QWidget *parent) :
   // stop a measurement
   stopMeasurementButton_ = new QPushButton("Stop Measurement", buttons_);
   connect(stopMeasurementButton_, SIGNAL(clicked()), daqModel_, SLOT(stopMeasurement()));
+  connect(stopMeasurementButton_, SIGNAL(clicked()), this, SLOT(stopMeasurement()));
   buttonLayout->addWidget(stopMeasurementButton_);
 
   buttonLayout->addSpacing(200);
@@ -43,17 +46,15 @@ ThermoDAQWidget::ThermoDAQWidget(ThermoDAQModel* daqModel, QWidget *parent) :
   metadata_->setLayout(metadataLayout);
 
   sampleThickness_ = new QDoubleSpinBox(metadata_);
+  sampleThickness_->setKeyboardTracking(false);
   connect(sampleThickness_, SIGNAL(valueChanged(double)),
-          daqModel_, SLOT(sampleThicknessChanged(double)));
-  connect(sampleThickness_, SIGNAL(valueChanged(QString)),
-          this, SLOT(metadataChanged(QString)));
+          this, SLOT(sampleThicknessChanged(double)));
   metadataLayout->addRow("sample thickness [mm]", sampleThickness_);
 
   sampleArea_ = new QDoubleSpinBox(metadata_);
+  sampleArea_->setKeyboardTracking(false);
   connect(sampleArea_, SIGNAL(valueChanged(double)),
-          daqModel_, SLOT(sampleAreaChanged(double)));
-  connect(sampleArea_, SIGNAL(valueChanged(QString)),
-          this, SLOT(metadataChanged(QString)));
+          this, SLOT(sampleAreaChanged(double)));
   metadataLayout->addRow("sample area [mm^2]", sampleArea_);
 
   layout->addWidget(metadata_);
@@ -112,13 +113,24 @@ void ThermoDAQWidget::logButtonClicked()
     logEdit_->setPlainText("");
 }
 
-void ThermoDAQWidget::metadataChanged(QString /* md */)
+void ThermoDAQWidget::stopMeasurement()
 {
-    if (daqModel_->daqState() == false) {
-        if (daqModel_->isMetadataValid()) {
-            startMeasurementButton_->setEnabled(true);
-        } else {
-            startMeasurementButton_->setEnabled(false);
-        }
-    }
+  sampleThickness_->setValue(0.0);
+  sampleArea_->setValue(0.0);
+}
+
+void ThermoDAQWidget::sampleThicknessChanged(double value)
+{
+  daqModel_->sampleThicknessChanged(value);
+    NQLog("ThermoDAQWidget", NQLog::Spam) << " sampleThicknessChanged: " << value;
+
+    daqStateChanged(daqModel_->daqState());
+}
+
+void ThermoDAQWidget::sampleAreaChanged(double value)
+{
+  daqModel_->sampleAreaChanged(value);
+    NQLog("ThermoDAQWidget", NQLog::Spam) << " sampleAreaChanged: " << value;
+
+    daqStateChanged(daqModel_->daqState());
 }

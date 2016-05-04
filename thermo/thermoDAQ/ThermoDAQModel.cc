@@ -16,8 +16,8 @@ ThermoDAQModel::ThermoDAQModel(HuberPetiteFleurModel* huberModel,
                                PfeifferModel* pfeifferModel,
 			       IotaModel* iotaModel,
 			       ArduinoPresModel* arduinoPresModel,
-                               QObject *parent) :
-    QObject(),
+                               QObject *parent)
+  : QObject(),
     daqState_(false),
     huberModel_(huberModel),
     keithleyModel_(keithleyModel),
@@ -40,7 +40,9 @@ ThermoDAQModel::ThermoDAQModel(HuberPetiteFleurModel* huberModel,
     iotaActFlow_(0.0),
     iotaSetFlow_(0.0),
     arduinoPressureA_(0.0),
-    arduinoPressureB_(0.0)
+    arduinoPressureB_(0.0),
+    sampleThickness_(0.0),
+    sampleArea_(0.0)
 {
     for (int i=0;i<10;++i) {
       keithleySensorState_[i] = OFF;
@@ -543,28 +545,30 @@ void ThermoDAQModel::arduinoPresInfoChanged()
 void ThermoDAQModel::invalidateMetadata()
 {
     metadataValid_ = false;
-    sampleThickness_ = -1.0;
-    sampleArea_ = -1.0;
+    sampleThickness_ = 0.0;
+    sampleArea_ = 0.0;
 }
 
 void ThermoDAQModel::validateMetadata()
 {
     metadataValid_ = false;
 
-    if (sampleThickness_<=0.0) return;
-    if (sampleArea_<=0.0) return;
+    if (sampleThickness_>0.0 &&
+        sampleArea_>0.0) metadataValid_ = true;
 
-    metadataValid_ = true;
+    NQLog("ThermoDAQModel", NQLog::Spam) << " validateMetadata: " << metadataValid_;
 }
 
 void ThermoDAQModel::sampleThicknessChanged(double value)
 {
+    NQLog("ThermoDAQModel", NQLog::Spam) << " sampleThicknessChanged: " << value;
     sampleThickness_ = value;
     validateMetadata();
 }
 
 void ThermoDAQModel::sampleAreaChanged(double value)
 {
+    NQLog("ThermoDAQModel", NQLog::Spam) << " sampleAreaChanged: " << value;
     sampleArea_ = value;
     validateMetadata();
 }
