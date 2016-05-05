@@ -27,26 +27,130 @@ AssemblyModuleAssembler::AssemblyModuleAssembler(QWidget *parent)
     QGridLayout *l = new QGridLayout(this);
     setLayout(l);
 
+    QGridLayout *g0 = new QGridLayout(this);
+    l->addLayout(g0,0,0);
+    
+    
     QPalette palette;
     palette.setColor(QPalette::Background, QColor(220, 220, 220));
+    
+    imageView_1 = new AssemblyUEyeView();
+    imageView_1->setMinimumSize(200,200);
+    imageView_1->setPalette(palette);
+    imageView_1->setBackgroundRole(QPalette::Background);
+    imageView_1->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+    imageView_1->setScaledContents(true);
+    imageView_1->setAlignment(Qt::AlignCenter);
+    imageView_1->setText("Pickup");
+    QApplication::processEvents();
+    
+    scrollArea_1 = new QScrollArea(this);
+    scrollArea_1->setMinimumSize(200, 200);
+    scrollArea_1->setPalette(palette);
+    scrollArea_1->setBackgroundRole(QPalette::Background);
+    scrollArea_1->setAlignment(Qt::AlignCenter);
+    scrollArea_1->setWidget(imageView_1);
+    scrollArea_1->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+    
+    g0->addWidget(scrollArea_1,0,0);
 
-    imageView_ = new AssemblyUEyeView();
-    imageView_->setMinimumSize(400,400);
-    imageView_->setPalette(palette);
-    imageView_->setBackgroundRole(QPalette::Background);
-    imageView_->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-    imageView_->setScaledContents(true);
-    imageView_->setAlignment(Qt::AlignCenter);
+    
+    imageView_2 = new AssemblyUEyeView();
+    imageView_2->setMinimumSize(200,200);
+    imageView_2->setPalette(palette);
+    imageView_2->setBackgroundRole(QPalette::Background);
+    imageView_2->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+    imageView_2->setScaledContents(true);
+    imageView_2->setAlignment(Qt::AlignCenter);
+    
+    scrollArea_2 = new QScrollArea(this);
+    scrollArea_2->setMinimumSize(200, 200);
+    scrollArea_2->setPalette(palette);
+    scrollArea_2->setBackgroundRole(QPalette::Background);
+    scrollArea_2->setAlignment(Qt::AlignCenter);
+    scrollArea_2->setWidget(imageView_2);
+    scrollArea_2->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+    
+    g0->addWidget(scrollArea_2,0,1);
+    
+    
+    imageView_3 = new AssemblyUEyeView();
+    imageView_3->setMinimumSize(200,200);
+    imageView_3->setPalette(palette);
+    imageView_3->setBackgroundRole(QPalette::Background);
+    imageView_3->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+    imageView_3->setScaledContents(true);
+    imageView_3->setAlignment(Qt::AlignCenter);
 
-    scrollArea_ = new QScrollArea(this);
-    scrollArea_->setMinimumSize(200, 200);
-    scrollArea_->setPalette(palette);
-    scrollArea_->setBackgroundRole(QPalette::Background);
-    scrollArea_->setAlignment(Qt::AlignCenter);
-    scrollArea_->setWidget(imageView_);
-    scrollArea_->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-
-    l->addWidget(scrollArea_,0,0);
+    
+    scrollArea_3 = new QScrollArea(this);
+    scrollArea_3->setMinimumSize(200, 200);
+    scrollArea_3->setPalette(palette);
+    scrollArea_3->setBackgroundRole(QPalette::Background);
+    scrollArea_3->setAlignment(Qt::AlignCenter);
+    scrollArea_3->setWidget(imageView_3);
+    scrollArea_3->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+    
+    g0->addWidget(scrollArea_3,0,2);
+    
+    
+    imageView_4 = new AssemblyUEyeView();
+    imageView_4->setMinimumSize(200,200);
+    imageView_4->setPalette(palette);
+    imageView_4->setBackgroundRole(QPalette::Background);
+    imageView_4->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+    imageView_4->setScaledContents(true);
+    imageView_4->setAlignment(Qt::AlignCenter);
+    
+    scrollArea_4 = new QScrollArea(this);
+    scrollArea_4->setMinimumSize(200, 200);
+    scrollArea_4->setPalette(palette);
+    scrollArea_4->setBackgroundRole(QPalette::Background);
+    scrollArea_4->setAlignment(Qt::AlignCenter);
+    scrollArea_4->setWidget(imageView_4);
+    scrollArea_4->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+    
+    g0->addWidget(scrollArea_4,1,0);
+    
+    
+    imageView_5 = new AssemblyUEyeView();
+    imageView_5->setMinimumSize(200,200);
+    imageView_5->setPalette(palette);
+    imageView_5->setBackgroundRole(QPalette::Background);
+    imageView_5->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+    imageView_5->setScaledContents(true);
+    imageView_5->setAlignment(Qt::AlignCenter);
+    
+    scrollArea_5 = new QScrollArea(this);
+    scrollArea_5->setMinimumSize(200, 200);
+    scrollArea_5->setPalette(palette);
+    scrollArea_5->setBackgroundRole(QPalette::Background);
+    scrollArea_5->setAlignment(Qt::AlignCenter);
+    scrollArea_5->setWidget(imageView_5);
+    scrollArea_5->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+    
+    g0->addWidget(scrollArea_5,1,1);
+    
+    imageView_6 = new AssemblyUEyeView();
+    imageView_6->setMinimumSize(200,200);
+    imageView_6->setPalette(palette);
+    imageView_6->setBackgroundRole(QPalette::Background);
+    imageView_6->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+    imageView_6->setScaledContents(true);
+    imageView_6->setAlignment(Qt::AlignCenter);
+    
+    scrollArea_6 = new QScrollArea(this);
+    scrollArea_6->setMinimumSize(200, 200);
+    scrollArea_6->setPalette(palette);
+    scrollArea_6->setBackgroundRole(QPalette::Background);
+    scrollArea_6->setAlignment(Qt::AlignCenter);
+    scrollArea_6->setWidget(imageView_6);
+    scrollArea_6->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+    
+    g0->addWidget(scrollArea_6,1,2);
+    
+    
+    
     
     QGridLayout *g1 = new QGridLayout(this);
     l->addLayout(g1,0,1);
@@ -54,95 +158,53 @@ AssemblyModuleAssembler::AssemblyModuleAssembler(QWidget *parent)
 //    QPushButton * button1 = new QPushButton("Toggle Vacuum", this);
 //    g1->addWidget(button1, 0, 0);
 
-    AssemblyVacuumToggler * toggle1 = new AssemblyVacuumToggler(this, "Toggle vacuum", 0.0, 0);
-    g1->addWidget(toggle1,0,0);
-
-    
+ 
   /*  QGridLayout *g2 = new QGridLayout(this);
     g1->addLayout(g2,0,0);*/
     
 
-    AssemblyCommander * cmdr1 = new AssemblyCommander(this, "Go to pickup station", 100.0,100.0,100.0,100.0, 0);
-    g1->addWidget(cmdr1,1,0);
-    AssemblySensorLocator * lctr1 = new AssemblySensorLocator(this, "Locate sensor", 0.0, 0);
-    g1->addWidget(lctr1,2,0);
+    AssemblyCommander * cmdr1 = new AssemblyCommander(this, "Go to pickup", 100.0,100.0,100.0,100.0, 0);
+    g1->addWidget(cmdr1,0,0);
     
-    connect(lctr1, SIGNAL(updateImage(std::string)), this, SLOT( updateImage(std::string)));
+    AssemblySensorLocator * lctr1 = new AssemblySensorLocator(this, "Locate sensor", 0.0, 0);
+    g1->addWidget(lctr1,1,0);
+    
+    connect(lctr1, SIGNAL(updateImage(int, std::string)), this, SLOT( updateImage(int,std::string)));
     connect(lctr1, SIGNAL(foundSensor(int)), lctr1, SLOT( foundsensor(int)));
 
     AssemblyCommander * cmdr2 = new AssemblyCommander(this, "Correct position", 100.0,100.0,100.0,100.0, 0);
-    g1->addWidget(cmdr2,3,0);
+    g1->addWidget(cmdr2,2,0);
     
     connect(lctr1, SIGNAL(sendPosition(double, double, double)), cmdr2, SLOT(updateText(double, double, double)));
     
     
-    AssemblyAttacher * attacher1 = new AssemblyAttacher(this, "Drop and attach", 10.0,0);
-    g1->addWidget(attacher1,4,0);
+    AssemblyAttacher * attacher1 = new AssemblyAttacher(this, "Drop/Raise", 10.0,0);
+    g1->addWidget(attacher1,3,0);
     
-
-    AssemblyCommander * cmdr4 = new AssemblyCommander(this, "Go to rotation stage", 100.0,100.0,100.0,100.0, 0);
+    AssemblyVacuumToggler * toggle1 = new AssemblyVacuumToggler(this, "Toggle vacuum", 0.0, 0);
+    g1->addWidget(toggle1,4,0);
+    
+    AssemblyCommander * cmdr4 = new AssemblyCommander(this, "Go to stat. camera", 100.0,100.0,100.0,100.0, 0);
     g1->addWidget(cmdr4, 5, 0);
-    AssemblyCommander * cmdr5 = new AssemblyCommander(this, "Drop and detach", 100.0,100.0,100.0,100.0, 0);
+
+    AssemblyMountChecker * cmdr5 = new AssemblyMountChecker(this, "Check mount", 100.0,100.0,100.0,100.0, 0);
     g1->addWidget(cmdr5, 6, 0);
-    AssemblyAlligner * cmdr6 = new AssemblyAlligner(this, "Align", 0.0,0);
+    
+    connect(cmdr5, SIGNAL(locateCorner(int)), lctr1, SLOT( locateSensor(int)));
+    
+    AssemblyCommander * cmdr6 = new AssemblyCommander(this, "Go to rotation stage", 100.0,100.0,100.0,100.0, 0);
     g1->addWidget(cmdr6, 7, 0);
+    AssemblyCommander * cmdr7 = new AssemblyCommander(this, "Drop and detach", 100.0,100.0,100.0,100.0, 0);
+    g1->addWidget(cmdr7, 8, 0);
+    AssemblyAlligner * cmdr8 = new AssemblyAlligner(this, "Align", 0.0,0);
+    g1->addWidget(cmdr8, 9, 0);
     
-    //AssemblySensorLocator
-    
-    
-  /*  QPushButton * button1 = new QPushButton("Go to pickup station (pickup position)", this);
-    QLineEdit *lineEdit1 = new QLineEdit();
-    lineEdit1->setText("100.0,100.0,100.0");
-    l->addRow(button1,lineEdit1);
 
-    QPushButton * button2 = new QPushButton("Drop and attach (drop distance)", this);
-    QLineEdit *lineEdit2 = new QLineEdit();
-    lineEdit2->setText("10.0");
-    l->addRow(button2,lineEdit2);
-    
-    QPushButton * button3 = new QPushButton("Go to rotation stage (RS position)", this);
-    QLineEdit *lineEdit3 = new QLineEdit();
-    lineEdit3->setText("0.0,0.0,0.0");
-    l->addRow(button3,lineEdit3);
-    
-    QPushButton * button4 = new QPushButton("Drop and detach (drop distance)", this);
-    QLineEdit *lineEdit4 = new QLineEdit();
-    lineEdit4->setText("10.0");
-    l->addRow(button4,lineEdit4);
-    
-    QPushButton * button5 = new QPushButton("Align (target orientation)", this);
-    QLineEdit *lineEdit5 = new QLineEdit();
-    lineEdit5->setText("10.0");
-    l->addRow(button5,lineEdit5);
-    
-    connect(button1, SIGNAL(clicked()), this, SLOT(gotoPickup()));
-
-   */
-    
-    cv::Mat img_gs = cv::imread("/Users/keaveney/Desktop/calibration/im_scan___Exp10___EdgeThr145___lt110.png", CV_LOAD_IMAGE_COLOR);
-
-    //imageView_->setImage(img_gs);
-    
-    
-    QPixmap pixmap(100,100);
-    pixmap.fill(QColor("transparent"));
-    
-    QPainter painter(&pixmap);
-    painter.setBrush(QBrush(Qt::red));
-    painter.drawEllipse(0, 0, 30, 30);
-    
-    imageView_->setPixmap(pixmap);
-    imageView_->setStyleSheet("QLabel { background-color : orange; color : black; }");
-    
-    imageView_->setText("No image loaded");
-
-    QApplication::processEvents();
-    setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 }
 
 
 
-void AssemblyModuleAssembler::updateImage(std::string filename)
+void AssemblyModuleAssembler::updateImage(int stage, std::string filename)
 {
 
     NQLog("AssemblyModuleAssembler") << ":updateImage()  " + filename;
@@ -152,7 +214,23 @@ void AssemblyModuleAssembler::updateImage(std::string filename)
     
     cv::Mat img_gs = cv::imread(filename, CV_LOAD_IMAGE_COLOR);
     
-    imageView_->setImage(img_gs);
+    if (stage == 1 ){
+    imageView_1->setImage(img_gs);
+    }else if (stage ==2){
+        imageView_2->setImage(img_gs);
+    }
+    else if (stage ==3){
+        imageView_3->setImage(img_gs);
+    }
+    else if (stage ==4){
+        imageView_4->setImage(img_gs);
+    }
+    else if (stage ==5){
+        imageView_5->setImage(img_gs);
+    }
+    else if (stage ==6){
+        imageView_6->setImage(img_gs);
+    }
 
     
 }
@@ -161,19 +239,16 @@ void AssemblyModuleAssembler::updateImage(std::string filename)
 void AssemblyModuleAssembler::gotoPickup()
 {
     NQLog("AssemblyModuleAssembler") << ":gotoPickup()";
-    //emit updateStatus("Moving to pickup area",20.0);
     ApplicationConfig* config = ApplicationConfig::instance();
     LStepExpressModel* lStepExpressModel_ = new LStepExpressModel(config->getValue<std::string>("LStepExpressDevice").c_str(),1000, 100);
-  //  LStepExpressSettings* lStepExpressSettings_ = new LStepExpressSettings(lStepExpressModel_);
+
     LStepExpressMotionManager* motionManager_ = new LStepExpressMotionManager(lStepExpressModel_);
     connect(this, SIGNAL(moveAbsolute(double,double,double,double)), motionManager_, SLOT(moveAbsolute(double,double,double,double)));
     
     lStepExpressModel_->initialize();
     //emit moveAbsolute(0.0,0.0,0.0,0.0);
     
-
 }
-
 
 
 
@@ -182,7 +257,7 @@ void AssemblyModuleAssembler::connectImageProducer(const QObject* sender,
 {
     NQLog("AssemblyModuleAssembler") << ":connectImageProducer";
 
-    imageView_->connectImageProducer(sender, signal);
+    imageView_1->connectImageProducer(sender, signal);
 
     connect(sender, signal,
             this, SLOT(imageAcquired(const cv::Mat&)));
@@ -193,7 +268,7 @@ void AssemblyModuleAssembler::disconnectImageProducer(const QObject* sender,
 {
     NQLog("AssemblyModuleAssembler") << ":disconnectImageProducer";
 
-    imageView_->disconnectImageProducer(sender, signal);
+    imageView_1->disconnectImageProducer(sender, signal);
 
     disconnect(sender, signal,
                this, SLOT(imageAcquired(const cv::Mat&)));
@@ -225,19 +300,19 @@ void AssemblyModuleAssembler::keyReleaseEvent(QKeyEvent * event)
     if (!(event->modifiers() & Qt::ShiftModifier)) {
         switch (event->key()) {
         case Qt::Key_0:
-            imageView_->setZoomFactor(0.25);
+            imageView_1->setZoomFactor(0.25);
             event->accept();
             break;
         case Qt::Key_1:
-            imageView_->setZoomFactor(1.00);
+            imageView_1->setZoomFactor(1.00);
             event->accept();
             break;
         case Qt::Key_Plus:
-            imageView_->increaseZoomFactor();
+            imageView_1->increaseZoomFactor();
             event->accept();
             break;
         case Qt::Key_Minus:
-            imageView_->decreaseZoomFactor();
+            imageView_1->decreaseZoomFactor();
             event->accept();
             break;
         default:
@@ -269,12 +344,7 @@ AssemblyVacuumToggler::AssemblyVacuumToggler(QWidget *parent, std::string string
     state = false;
     
     button1 = new QPushButton(qname, this);
-    
-    // lineEdit1 = new QLineEdit();
-    // lineEdit1->setText(qstr);
     l->addWidget(button1,0,0);
-    // l->addWidget(lineEdit1,0,1);
-    
     
     ql = new QLabel("", this);
     l->addWidget(ql,0,1);
@@ -300,8 +370,6 @@ void AssemblyVacuumToggler::toggleVacuum()
 {
     
     NQLog("AssemblyVacuumToggler") << ": toggling vacuum voltage";
-    
-  //  ql->setPixmap(pixmap);
     
     //this slot just needs to be tested with the card connected.
     
@@ -332,19 +400,13 @@ AssemblyAttacher::AssemblyAttacher(QWidget *parent, std::string string, double d
     
     NQLog("AssemblyAttacher") << ": in mode" << mode;
 
-    
     std::ostringstream strs;
     strs.clear();
     strs << drop;
-   // strs << ",";
     std::string str = strs.str();
     QString qstr = QString::fromStdString(str);
     QString qname = QString::fromStdString(string);
-    
- //   this->local_x = x;
- //   this->local_y = y;
- //   this->local_z = z;
- //   this->local_a = a;
+
     
     button1 = new QPushButton(qname, this);
     
@@ -390,6 +452,98 @@ void AssemblyAttacher::dropAttach(){
     
     
 }
+
+
+AssemblyMountChecker::AssemblyMountChecker(QWidget *parent, std::string string, double x ,double y, double z,double a,  int mode)
+: QWidget(parent), local_x(x), local_y(y),local_z(z),local_a(a)
+{
+    QFormLayout *l = new QFormLayout(this);
+    setLayout(l);
+    
+    NQLog("AssemblyMountChecker") << ": in mode" << mode;
+    
+    
+    std::ostringstream strs;
+    strs.clear();
+    strs << x;
+    strs << ",";
+    strs << y;
+    strs << ",";
+    strs << z;
+    std::string str = strs.str();
+    QString qstr = QString::fromStdString(str);
+    QString qname = QString::fromStdString(string);
+    
+    this->local_x = x;
+    this->local_y = y;
+    this->local_z = z;
+    this->local_a = a;
+    
+    button1 = new QPushButton(qname, this);
+    
+    lineEdit1 = new QLineEdit();
+    lineEdit1->setText(qstr);
+    l->addRow(button1,lineEdit1);
+    
+    connect(button1, SIGNAL(clicked()),
+            this, SLOT(checkMount()));
+    
+}
+
+
+void AssemblyMountChecker::checkMount(){
+    
+
+    //parse lineEdit text to get target coordinates
+    QString  parent_string = this->lineEdit1->text();
+    
+    QStringList pieces = parent_string.split( "," );
+    QString x = pieces.value( pieces.length() - 3);
+    QString y = pieces.value( pieces.length() - 2);
+    QString z = pieces.value( pieces.length() - 1);
+    QString a = pieces.value( pieces.length() - 1);
+    
+    double x_d = x.toDouble();
+    double y_d = y.toDouble();
+    double z_d = z.toDouble();
+    double a_d = a.toDouble();
+    
+    
+    NQLog("AssemblyMountChecker") << ": going to target (parsed) "<< x_d<<" "<< y_d<<"  "<< z_d;
+    
+    
+    ApplicationConfig* config = ApplicationConfig::instance();
+    LStepExpressModel* lStepExpressModel_ = new LStepExpressModel(config->getValue<std::string>("LStepExpressDevice").c_str(),1000, 100);
+    // LStepExpressSettings* lStepExpressSettings_ = new LStepExpressSettings(lStepExpressModel_);
+    LStepExpressMotionManager* motionManager_ = new LStepExpressMotionManager(lStepExpressModel_);
+    lStepExpressModel_->initialize();
+    
+    connect(this, SIGNAL(moveAbsolute(double,double,double,double)), motionManager_, SLOT(moveAbsolute(double,double,double,double)));
+    
+    
+    NQLog("AssemblyMountChecker") <<" requesting move... ";
+    
+    //  if( lStepExpressModel_) lStepExpressModel_->moveRelative( 1.0, 1.0, 0.0, -10.0);
+    
+    emit moveAbsolute(x_d, y_d, z_d, a_d);// this should bring you to the first corner
+    emit locateCorner(2);
+    emit reportCornerLocation(1);
+    emit moveRelative(0.0, 10.0, 0.0, 0.0);//move to next corner
+    emit locateCorner(3);
+    emit reportCornerLocation(2);
+    emit moveRelative(5.0, 0.0, 0.0, 0.0);//move to next corner
+    emit locateCorner(4);
+    emit reportCornerLocation(3);
+    emit moveRelative(0.0, -10.0, 0.0, 0.0);//move to next corner
+    emit locateCorner(5);
+    emit reportCornerLocation(4);
+    
+    
+    NQLog("AssemblyMountChecker") <<"move requested ";
+    
+    
+}
+
 
 
 
@@ -610,11 +764,21 @@ AssemblySensorLocator::AssemblySensorLocator(QWidget *parent, std::string string
     ql->setStyleSheet("QLabel { background-color : orange; color : black; }");
 
     connect(button1, SIGNAL(clicked()),
-            this, SLOT(locateSensor()));
-    
+            this, SLOT(locatePickup()));
+    connect(this, SIGNAL(locatePickupCorner(int)),
+            this, SLOT(locateSensor(int)));
 }
 
-void AssemblySensorLocator::locateSensor(){
+void AssemblySensorLocator::locatePickup(){
+
+    emit locateSensor(1);
+
+}
+
+
+
+
+void AssemblySensorLocator::locateSensor(int stage){
 
     NQLog("AssemblySensorLocator") << "Finding Marker (Circle Seed Algorithm)" ;
 
@@ -950,7 +1114,7 @@ void AssemblySensorLocator::locateSensor(){
     std::string filename = "/Users/keaveney/Desktop/calibration/PatRec_result.png";
     cv::imwrite(filename, img_rgb);
     
-    emit updateImage(filename);
+    emit updateImage(stage, filename);
     emit foundSensor(1);
     emit sendPosition(circleCenter_.x,circleCenter_.y, ang_final);
     NQLog("AssemblyVUEyeCamera") << "  found marker";

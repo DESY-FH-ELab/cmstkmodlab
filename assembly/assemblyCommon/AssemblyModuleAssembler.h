@@ -45,9 +45,25 @@ protected:
 
     void keyReleaseEvent(QKeyEvent *event);
 
-    QScrollArea *scrollArea_;
-    AssemblyUEyeView *imageView_;
-
+    QScrollArea *scrollArea_1;
+    AssemblyUEyeView *imageView_1;
+    
+    QScrollArea *scrollArea_2;
+    AssemblyUEyeView *imageView_2;
+    
+    QScrollArea *scrollArea_3;
+    AssemblyUEyeView *imageView_3;
+    
+    QScrollArea *scrollArea_4;
+    AssemblyUEyeView *imageView_4;
+    
+    QScrollArea *scrollArea_5;
+    AssemblyUEyeView *imageView_5;
+    
+    QScrollArea *scrollArea_6;
+    AssemblyUEyeView *imageView_6;
+    
+    
     cv::Mat image_;
 
 public slots:
@@ -55,7 +71,7 @@ public slots:
     void snapShot();
     void imageAcquired(const cv::Mat&);
     void gotoPickup();
-    void updateImage(std::string);
+    void updateImage(int,std::string);
     
 signals:
     void moveAbsolute(double,double,double,double);
@@ -117,7 +133,46 @@ signals:
 
 
 
-
+class AssemblyMountChecker : public QWidget
+{
+    Q_OBJECT
+public:
+    
+    explicit AssemblyMountChecker(QWidget *parent = 0, std::string ="test", double x =0.0, double y =0.0, double z  =0.0, double a  =0.0, int =0);
+    double local_x, local_y, local_z, local_a;
+    QPushButton* button1;
+    QLineEdit *lineEdit1;
+    //   void connectImageProducer(const QObject* sender, const char* signal);
+    //  void disconnectImageProducer(const QObject* sender, const char* signal);
+    
+    //  double pickup_position;
+    
+    
+protected:
+    
+    // void keyReleaseEvent(QKeyEvent *event);
+    
+    // QScrollArea *scrollArea_;
+    // AssemblyUEyeView *imageView_;
+    
+    //cv::Mat image_;
+    
+    public slots:
+    
+    //void snapShot();
+    //void imageAcquired(const cv::Mat&);
+   // void goToTarget();
+   // void updateText(double,double,double);
+    void checkMount();
+    
+signals:
+    void moveAbsolute(double,double,double,double);
+    void moveRelative(double,double,double,double);
+    void locateCorner(int);
+    void reportCornerLocation(int);
+    
+    
+};
 
 
 
@@ -233,15 +288,17 @@ protected:
     
     //void snapShot();
     //void imageAcquired(const cv::Mat&);
-    void locateSensor();
+    void locateSensor(int);
     void foundsensor(int);
+    void locatePickup();
+
     
 signals:
  //   void moveRelative(double,double,double,double);
-    void updateImage(std::string);
+    void updateImage(int, std::string);
     void foundSensor(int);
     void sendPosition(double, double, double);
-
+    void locatePickupCorner(int);
     
 };
 
