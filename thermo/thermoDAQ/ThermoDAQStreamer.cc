@@ -24,15 +24,15 @@ ThermoDAQStreamer::ThermoDAQStreamer(ThermoDAQModel* model, QObject* parent) :
 
 void ThermoDAQStreamer::handleDAQMessage(const QString& message)
 {
-  QString buffer = message;
-  if (buffer.startsWith("\n")) {
-    buffer.remove(0, 1);
-  }
+    QString buffer = message;
+    if (buffer.startsWith("\n")) {
+        buffer.remove(0, 1);
+    }
 
-  if (isStreaming_ && buffer.length()>0) {
-    *stream_ << buffer << "\n";
-    stream_->flush();
-  }
+    if (isStreaming_ && buffer.length()>0) {
+        *stream_ << buffer << "\n";
+        stream_->flush();
+    }
 }
 
 void ThermoDAQStreamer::daqStateChanged(bool state)
@@ -52,15 +52,17 @@ void ThermoDAQStreamer::daqStateChanged(bool state)
             args << "fhlabs";
             args << currentDir_.absolutePath();
             if (process.execute("chgrp", args)!=0) {
-              NQLog("ThermoDAQStreamer", NQLog::Fatal) << "could not change group of output directory to 'fhlabs'";           
+                NQLog("ThermoDAQStreamer", NQLog::Fatal)
+                        << "could not change group of output directory to 'fhlabs'";
             } else {
-              args.clear();
-              args << "g+rwx";
-              args << currentDir_.absolutePath();
-              if (process.execute("chmod", args)!=0) {
-                NQLog("ThermoDAQStreamer", NQLog::Fatal) << "could not change write permission of output directory to 'fhlabs'";
-              }
-           }
+                args.clear();
+                args << "g+rwx";
+                args << currentDir_.absolutePath();
+                if (process.execute("chmod", args)!=0) {
+                    NQLog("ThermoDAQStreamer", NQLog::Fatal)
+                            << "could not change write permission of output directory to 'fhlabs'";
+                }
+            }
         }
 
         QString filename("%1-%2.xml");
@@ -77,15 +79,17 @@ void ThermoDAQStreamer::daqStateChanged(bool state)
             args << "fhlabs";
             args << ofilename_;
             if (process.execute("chgrp", args)!=0) {
-              NQLog("ThermoDAQStreamer", NQLog::Fatal) << "could not change group of output file to 'fhlabs'";
+                NQLog("ThermoDAQStreamer", NQLog::Fatal)
+                        << "could not change group of output file to 'fhlabs'";
             } else {
-              args.clear();
-              args << "g+rw";
-              args << ofilename_;
-              if (process.execute("chmod", args)!=0) {
-                NQLog("ThermoDAQStreamer", NQLog::Fatal) << "could not change write permission of output file to 'fhlabs'";
-              }
-           }
+                args.clear();
+                args << "g+rw";
+                args << ofilename_;
+                if (process.execute("chmod", args)!=0) {
+                    NQLog("ThermoDAQStreamer", NQLog::Fatal)
+                            << "could not change write permission of output file to 'fhlabs'";
+                }
+            }
             stream_ = new QTextStream(ofile_);
         }
     } else {
