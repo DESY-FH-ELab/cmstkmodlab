@@ -40,6 +40,12 @@ public:
     void disconnectImageProducer(const QObject* sender, const char* signal);
     double pickup_position;
     //QPushButton* button1 =  new QPushButton(qname, this);
+    QLineEdit * lE1;
+    QLineEdit * lE2;
+    QLineEdit * lE3;
+    QLineEdit * lE4;
+    QLineEdit * lE5;
+    QLineEdit * lE6;
     
 protected:
 
@@ -72,6 +78,8 @@ public slots:
     void imageAcquired(const cv::Mat&);
     void gotoPickup();
     void updateImage(int,std::string);
+    void updateText(int,double, double, double);
+
     
 signals:
     void moveAbsolute(double,double,double,double);
@@ -206,7 +214,7 @@ public slots:
     //void snapShot();
     //void imageAcquired(const cv::Mat&);
     void goToTarget();
-    void updateText(double,double,double);
+   // void updateText(double,double,double);
 
     
 signals:
@@ -247,11 +255,14 @@ protected:
     //void snapShot();
     //void imageAcquired(const cv::Mat&);
     void allign();
+    void setDown();
    // void locateSensor();
     
 signals:
     void moveRelative(double,double,double,double);
-    
+    //void setDown();
+    void locateSetdowncorner(int);
+
     
 };
 
@@ -297,7 +308,7 @@ signals:
  //   void moveRelative(double,double,double,double);
     void updateImage(int, std::string);
     void foundSensor(int);
-    void sendPosition(double, double, double);
+    void sendPosition(int, double, double, double);
     void locatePickupCorner(int);
     
 };
