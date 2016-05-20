@@ -85,7 +85,8 @@ int main()
   std::cout << lstep.GetJoystickEnabled() << std::endl;
   lstep.SetJoystickEnabled(true);
   std::cout << lstep.GetJoystickEnabled() << std::endl;
-
+  
+  lstep.Calibrate();
 
   return 0;
 }

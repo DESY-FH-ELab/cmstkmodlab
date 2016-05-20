@@ -102,6 +102,7 @@ class VLStepExpress {
   virtual void ConfirmErrorRectification() = 0;
   void ValidConfig();
   void ValidParameter();
+  virtual void Calibrate() = 0;
 
   // low level methods
   virtual void SendCommand(const std::string &) = 0;

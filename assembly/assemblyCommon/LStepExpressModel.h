@@ -67,6 +67,7 @@ public slots:
     void moveAbsolute(std::vector<double> & values);
     void moveAbsolute(double x = 0.0, double y = 0.0, double z = 0.0, double a = 0.0);
     void moveAbsolute(unsigned int axis, double value);
+    void calibrate();
 
 protected:
 

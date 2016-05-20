@@ -25,6 +25,9 @@ LStepExpressWidget::LStepExpressWidget(LStepExpressModel* model,
     axisControlWidget_= new QWidget(this);
     layout->addWidget(axisControlWidget_);
 
+    buttonCalibrate_ = new QPushButton("Calibrate", this);
+    hlayout->addWidget(buttonCalibrate_);
+
     QGridLayout* axisLayout = new QGridLayout(axisControlWidget_);
     axisControlWidget_->setLayout(axisLayout);
 
@@ -58,6 +61,9 @@ LStepExpressWidget::LStepExpressWidget(LStepExpressModel* model,
     connect(model_, SIGNAL(motionFinished()),
             this, SLOT(motionFinished()));
 
+    connect(buttonCalibrate_, SIGNAL(clicked()),
+	    model_, SLOT(calibrate()));
+
     lstepStateChanged(model_->getDeviceState());
 }
 
@@ -78,6 +84,8 @@ void LStepExpressWidget::lstepStateChanged(State newState)
 
     buttonOrigin_->setEnabled(newState == READY);
 
+    buttonCalibrate_->setEnabled(newState == READY);
+
     axisControlWidget_->setEnabled(newState == READY);
 }
 
@@ -92,6 +100,7 @@ void LStepExpressWidget::controlStateChanged(bool enabled)
         lstepCheckBox_->setEnabled(false);
         joystickCheckBox_->setEnabled(false);
         buttonOrigin_->setEnabled(false);
+        buttonCalibrate_->setEnabled(false);
         axisControlWidget_->setEnabled(false);
     }
 }

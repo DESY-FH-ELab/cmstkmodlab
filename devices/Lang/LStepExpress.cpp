@@ -406,3 +406,8 @@ void LStepExpress::ValidParameter()
 {
   this->SendCommand("!validpar");
 }
+
+void LStepExpress::Calibrate()
+{
+  this->SendCommand("!cal");
+}

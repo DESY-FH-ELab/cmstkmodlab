@@ -137,6 +137,13 @@ void LStepExpressModel::moveAbsolute(unsigned int axis, double value)
     emit motionStarted();
 }
 
+void LStepExpressModel::calibrate()
+{
+    controller_->Calibrate();
+    inMotion_ = true;
+    emit motionStarted();
+}
+
 bool LStepExpressModel::getJoystickEnabled()
 {
     QMutexLocker locker(&mutex_);
@@ -355,9 +362,10 @@ void LStepExpressModel::setDeviceEnabled(bool enabled)
     NQLog("LStepExpressModel", NQLog::Debug) << "setDeviceEnabled(bool enabled)";
 
     if (state_ == READY && !enabled) {
-        //std::vector<int> allZeros{ 0, 0, 0, 0 };
-        //controller_->SetPowerAmplifierStatus(allZeros);
-        //controller_->SetAxisEnabled(allZeros);
+      //std::vector<int> allZeros{ 0, 0, 0, 0 };
+      std::vector<int> allOn{ 1, 1, 1, 1 };
+      controller_->SetPowerAmplifierStatus(allOn);
+      controller_->SetAxisEnabled(allOn);
     }
 
     AbstractDeviceModel<LStepExpress_t>::setDeviceEnabled(enabled);

@@ -20,10 +20,12 @@
 #include <QTableView>
 #include <QModelIndex>
 #include <QFileDialog>
+#include <QLCDNumber>
 
 #include "LStepExpressModel.h"
 #include "LStepExpressMeasurementTable.h"
 #include "LStepExpressMotionManager.h"
+//#include "LaserModel.h"
 
 class LStepExpressMeasurementWidget : public QWidget
 {
@@ -35,6 +37,7 @@ public:
 protected:
     LStepExpressModel* model_;
     LStepExpressMotionManager* manager_;
+    //    LaserModel* lasermodel_;
     QCheckBox* averageMeasCheckBox_;
     QPushButton* buttonGeneratePos_;
     QPushButton *buttonStartMeasurement_;
@@ -42,6 +45,7 @@ protected:
     QPushButton *buttonStoreMeasurement_;
     QLineEdit* nstepsx_;
     QLineEdit* nstepsy_;
+    //    QLCDNumber* LCDdisplay_;
 
 public slots:
     void generatePositions();

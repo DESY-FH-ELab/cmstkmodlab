@@ -28,6 +28,7 @@ protected:
     QCheckBox* joystickCheckBox_;
     QPushButton* buttonOrigin_;
     QWidget* axisControlWidget_;
+    QPushButton* buttonCalibrate_;
 
 public slots:
     void lstepStateChanged(State newState);

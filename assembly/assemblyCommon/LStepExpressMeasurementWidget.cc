@@ -1,4 +1,4 @@
-#include <nqlogger.h>
+ #include <nqlogger.h>
 
 #include "LStepExpressMeasurementWidget.h"
 
@@ -11,13 +11,10 @@ LStepExpressMeasurementWidget::LStepExpressMeasurementWidget(LStepExpressModel* 
     QHBoxLayout* layout = new QHBoxLayout(this);
     setLayout(layout);
 
-    QVBoxLayout* vlayout = new QVBoxLayout(this);
+    //    QVBoxLayout* vlayout = new QVBoxLayout(this);
 
     averageMeasCheckBox_ = new QCheckBox("Average measurement", this);
-    vlayout->addWidget(averageMeasCheckBox_);
-
     buttonGeneratePos_ = new QPushButton("Generate positions", this);
-    vlayout->addWidget(buttonGeneratePos_);
 
     connect(averageMeasCheckBox_, SIGNAL(toggled(bool)),
             this, SLOT(setAverageMeasEnabled(bool)));
@@ -43,9 +40,11 @@ LStepExpressMeasurementWidget::LStepExpressMeasurementWidget(LStepExpressModel* 
     QVBoxLayout *layout_xy = new QVBoxLayout(this);
     layout_xy->addLayout(hlayout_x);
     layout_xy->addLayout(hlayout_y);
+    layout_xy->addWidget(averageMeasCheckBox_);
+    layout_xy->addWidget(buttonGeneratePos_);
 
     layout->addLayout(layout_xy);
-    layout->addLayout(vlayout);
+    //    layout->addLayout(vlayout);
 
     //initialise the x, y, z positions
     z_init = model_->getPosition(2); //FIX ME! is 2 z-axis?
