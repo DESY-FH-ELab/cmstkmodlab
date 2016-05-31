@@ -24,7 +24,6 @@ AssemblyModuleAssembler::AssemblyModuleAssembler(QWidget *parent)
     : QWidget(parent)
 {
     
-
     
     QGridLayout *l = new QGridLayout(this);
     setLayout(l);
@@ -395,7 +394,7 @@ AssemblyVacuumToggler::AssemblyVacuumToggler(QWidget *parent, std::string string
     QGridLayout *l = new QGridLayout(this);
     setLayout(l);
     
-    const char* deviceName = "test";
+    const char* deviceName = "/dev/ttyUSB0";
     cnrd1 = new ConradController(deviceName);
     
     NQLog("AssemblyVacuumToggler") << ":in mode"<< mode;
@@ -439,19 +438,30 @@ void AssemblyVacuumToggler::toggleVacuum()
     
     //this slot just needs to be tested with the card connected.
     
-  //  if (cnrd1->initialize()){
-    if (!state){
+    if (cnrd1->initialize()){
+
+      for (int i =1; i <9; i++){
+      cnrd1->setChannel(i, true);
+      usleep(3000);
+      }
+
+      for (int p = 1 ; p < 9 ; p++){
+	cnrd1->setChannel(p, false);
+     }
+
+   NQLog("AssemblyVacuumToggler") << ": relay card initialized";
+   //    if (!state){
    // cnrd1->setChannel(1, true);
-    ql->setText("VACUUM ON");
-    ql->setStyleSheet("QLabel { background-color : red; color : black; }");
-    state = true;
-    }else if (state){
+   // ql->setText("VACUUM ON");
+   //ql->setStyleSheet("QLabel { background-color : red; color : black; }");
+   // state = true;
+   // }else if (state){
    // cnrd1->setChannel(1, false);
-    ql->setText("VACUUM OFF");
-    ql->setStyleSheet("QLabel { background-color : green; color : black; }");
-    state = false;
+   // ql->setText("VACUUM OFF");
+   //ql->setStyleSheet("QLabel { background-color : green; color : black; }");
+   // state = false;
+   // }
     }
- //   }
     
         
 }
