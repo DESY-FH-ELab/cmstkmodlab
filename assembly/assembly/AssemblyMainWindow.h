@@ -23,6 +23,7 @@ typedef AssemblyUEyeModel AssemblyUEyeModel_t;
 #include "AssemblyUEyeView.h"
 #include "AssemblyUEyeSnapShooter.h"
 #include "AssemblyModuleAssembler.h"
+#include "AssemblyPlasmaCleaner.h"
 
 
 #include "AssemblyMarkerFinderThread.h"
@@ -70,6 +71,7 @@ protected:
   AssemblyUEyeSnapShooter* edgeView_;
   AssemblyUEyeSnapShooter* rawView_;
   AssemblyModuleAssembler* assembleView_;
+  AssemblyPlasmaCleaner* plasmaView_;
     
 
   AssemblyUEyeModel_t* uEyeModel_;

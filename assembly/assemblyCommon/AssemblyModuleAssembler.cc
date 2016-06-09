@@ -396,7 +396,7 @@ AssemblyVacuumToggler::AssemblyVacuumToggler(QWidget *parent, std::string string
     
     const char* deviceName = "/dev/ttyUSB0";
     cnrd1 = new ConradController(deviceName);
-    
+   cnrd1->initialize();  
     NQLog("AssemblyVacuumToggler") << ":in mode"<< mode;
 
     std::ostringstream strs;
@@ -437,33 +437,45 @@ void AssemblyVacuumToggler::toggleVacuum()
     NQLog("AssemblyVacuumToggler") << ": toggling vacuum voltage";
     
     //this slot just needs to be tested with the card connected.
-    
-    if (cnrd1->initialize()){
+  
+      //      for (int i =1; i <9; i++){
+      //cnrd1->setChannel(i, true);
+      //usleep(3000);
+      // }
 
-      for (int i =1; i <9; i++){
-      cnrd1->setChannel(i, true);
-      usleep(3000);
-      }
-
-      for (int p = 1 ; p < 9 ; p++){
-	cnrd1->setChannel(p, false);
-     }
+      // for (int p = 1 ; p < 9 ; p++){
+      //	cnrd1->setChannel(p, false);
+      // }
 
    NQLog("AssemblyVacuumToggler") << ": relay card initialized";
-   //    if (!state){
-   // cnrd1->setChannel(1, true);
-   // ql->setText("VACUUM ON");
-   //ql->setStyleSheet("QLabel { background-color : red; color : black; }");
-   // state = true;
-   // }else if (state){
-   // cnrd1->setChannel(1, false);
-   // ql->setText("VACUUM OFF");
-   //ql->setStyleSheet("QLabel { background-color : green; color : black; }");
-   // state = false;
-   // }
-    }
-    
-        
+       if (!state){
+    cnrd1->setChannel(1, true);
+    cnrd1->setChannel(2, true);
+    cnrd1->setChannel(3, true);
+    cnrd1->setChannel(4, true);
+    cnrd1->setChannel(5, true);
+    cnrd1->setChannel(6, true);
+    cnrd1->setChannel(7, true);
+    cnrd1->setChannel(8, true);
+
+    ql->setText("VACUUM ON");
+    ql->setStyleSheet("QLabel { background-color : red; color : black; }");
+    state = true;
+    }else if (state){
+    cnrd1->setChannel(1, false);
+    cnrd1->setChannel(2, false);
+    cnrd1->setChannel(3, false);
+    cnrd1->setChannel(4, false);
+    cnrd1->setChannel(5, false);
+    cnrd1->setChannel(6, false);
+    cnrd1->setChannel(7, false);
+    cnrd1->setChannel(8, false);
+
+
+    ql->setText("VACUUM OFF");
+    ql->setStyleSheet("QLabel { background-color : green; color : black; }");
+    state = false;
+    }        
 }
 
 

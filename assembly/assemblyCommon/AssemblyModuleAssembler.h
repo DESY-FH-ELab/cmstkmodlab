@@ -184,7 +184,6 @@ signals:
 
 
 
-
 class AssemblyCommander : public QWidget
 {
     Q_OBJECT
@@ -213,7 +212,7 @@ public slots:
     
     //void snapShot();
     //void imageAcquired(const cv::Mat&);
-    void goToTarget();
+      void goToTarget();
    // void updateText(double,double,double);
 
     
