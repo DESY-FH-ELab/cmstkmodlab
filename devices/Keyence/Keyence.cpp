@@ -12,8 +12,10 @@ Keyence::Keyence( const ioport_t ioPort )
   :VKeyence(ioPort),
    isDeviceAvailable_(false)
 {
-  comHandler_ = new KeyenceComHandler( ioPort );
-  DeviceInit();
+    std::cout<<"[Keyence] begin constructor"<<std::endl;
+    comHandler_ = new KeyenceComHandler( ioPort );
+    DeviceInit();
+    std::cout<<"[Keyence] end constructor"<<std::endl;
 }
 
 Keyence::~Keyence()
@@ -52,7 +54,9 @@ void Keyence::ReceiveString(std::string & buffer)
 //only in communication mode
 void Keyence::SetABLE(bool on, int out)
 {
-  SetValue("SW,HA,M,",out,on);
+    if(!comMode_){ChangeToCommunicationMode(true);}
+    SetValue("SW,HA,M,",out,on);
+    ChangeToCommunicationMode(false);
 }
 
 /*Set the measurement mode depending on the material of the target sample
@@ -65,7 +69,9 @@ void Keyence::SetABLE(bool on, int out)
 */
 void Keyence::SetMaterialMode(int out, int mode)
 {
-  SetValue("SW,HB,",out, mode);
+    if(!comMode_){ChangeToCommunicationMode(true);}
+    SetValue("SW,HB,",out, mode);
+    ChangeToCommunicationMode(false);
 }
 
 /*Change settings if target sample is a mirror
@@ -75,7 +81,9 @@ mode = 1 -> mirror reflection mode
 */
 void Keyence::SetDiffuseMode(int out, int mode)
 {
-  SetValue("SW,HE,",out,mode);
+    if(!comMode_){ChangeToCommunicationMode(true);}
+    SetValue("SW,HE,",out,mode);
+    ChangeToCommunicationMode(false);
 }
 
 /*
@@ -90,7 +98,9 @@ only in communication mode
 */
 void Keyence::SetSamplingRate(int mode)
 {
-  SetValue("SW,CA,",mode);
+    if(!comMode_){ChangeToCommunicationMode(true);}
+    SetValue("SW,CA,",mode);
+    ChangeToCommunicationMode(false);
 }
 
 /*
@@ -109,7 +119,9 @@ only in communication mode
 */
 void Keyence::SetAveraging(int out, int mode)
 {
-  SetValue("SW,OC,",out,"0",mode);
+    if(!comMode_){ChangeToCommunicationMode(true);}
+    SetValue("SW,OC,",out,"0",mode);
+    ChangeToCommunicationMode(false);
 }
 
 
@@ -117,11 +129,15 @@ void Keyence::SetAveraging(int out, int mode)
 //communication mode (commOn = 1) -> no measurement possible, writing and reading system settings is possible 
 void Keyence::ChangeToCommunicationMode(bool commOn)
 {
-  if(commOn){
-    SendCommand("Q0");
-  }else{
-    SendCommand("R0");
-  }
+    std::cout<<"[Keyence] begin ChangeToCommunicationMode"<<std::endl;
+    if(commOn){
+        SendCommand("Q0");
+        comMode_ = true;
+    }else{
+        SendCommand("R0");
+        comMode_ = false;
+    }
+    std::cout<<"[Keyence] end ChangeToCommunicationMode"<<std::endl;
 }
 
 void Keyence::MeasurementValueOutput(int out, double value)
@@ -148,13 +164,17 @@ void Keyence::StripBuffer(char* buffer) const
 //No version checking for Keyence laser available
 void Keyence::DeviceInit()
 {
-  isDeviceAvailable_ = false;
+    std::cout<<"[Keyence] begin device init"<<std::endl;
+    isDeviceAvailable_ = false;
+    
+    if (comHandler_->DeviceAvailable()) {
+        
+        isDeviceAvailable_ = true;
 
-  if (comHandler_->DeviceAvailable()) {
+    }
 
-    isDeviceAvailable_ = true;
-
-  }
+    this->ChangeToCommunicationMode(false);
+    std::cout<<"[Keyence] end device init"<<std::endl;
 }
 
 /*

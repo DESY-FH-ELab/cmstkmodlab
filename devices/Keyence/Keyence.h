@@ -62,6 +62,7 @@ class Keyence : public VKeyence
 
   KeyenceComHandler* comHandler_;
   bool isDeviceAvailable_;
+  bool comMode_;
 };
 
 #endif

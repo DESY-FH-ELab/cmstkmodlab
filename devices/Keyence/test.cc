@@ -9,6 +9,7 @@ int main()
 
   double value = 0;
   std::cout << "MeasurementValueOutput: "; laser.MeasurementValueOutput(1, value);
+  std::cout << "MeasurementValueOutput: "; laser.MeasurementValueOutput(2, value);
   std::cout << "PanelLock: "; laser.PanelLock(0);
   std::cout << "PanelLock: "; laser.PanelLock(1);
   std::cout << "SetSamplingRate: "; laser.SetSamplingRate(0);

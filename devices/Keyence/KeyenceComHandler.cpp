@@ -11,12 +11,14 @@
 */
 KeyenceComHandler::KeyenceComHandler(ioport_t ioPort)
 {
-  // save ioport 
-  fIoPort = ioPort;
-
-  // initialize
-  OpenIoPort();
-  InitializeIoPort();
+    std::cout<<"[KeyenceComHandler] begin constructor"<<std::endl;
+    // save ioport 
+    fIoPort = ioPort;
+    
+    // initialize
+    OpenIoPort();
+    InitializeIoPort();
+  std::cout<<"[KeyenceComHandler] end constructor"<<std::endl;
 }
 
 KeyenceComHandler::~KeyenceComHandler( void )
@@ -90,26 +92,28 @@ void KeyenceComHandler::ReceiveString( char *receiveString )
 */
 void KeyenceComHandler::OpenIoPort( void )
 {
-  // open io port ( read/write | no term control | no DCD line check )
-  fIoPortFileDescriptor = open( fIoPort, O_RDWR | O_NOCTTY  | O_NDELAY );
-
-  // check if successful
-  if ( fIoPortFileDescriptor == -1 ) {
-    std::cerr << "[KeyenceComHandler::OpenIoPort] ** ERROR: could not open device file "
-              << fIoPort << "." << std::endl;
-    std::cerr << "                               (probably it's not user-writable)."
-              << std::endl;
-    fDeviceAvailable = false;
-    return;
-  } else {
-    // configure port with no delay
-    int flags = fcntl(fIoPortFileDescriptor, F_GETFL, 0);
-    flags |= O_NONBLOCK;
-    flags |= FNDELAY;
-    fcntl( fIoPortFileDescriptor, F_SETFL, flags );
-  }
-
-  fDeviceAvailable = true;
+    std::cout<<"[KeyenceComHandler] begin OpenIoPort"<<std::endl;
+    // open io port ( read/write | no term control | no DCD line check )
+    fIoPortFileDescriptor = open( fIoPort, O_RDWR | O_NOCTTY  | O_NDELAY );
+    
+    // check if successful
+    if ( fIoPortFileDescriptor == -1 ) {
+        std::cerr << "[KeyenceComHandler::OpenIoPort] ** ERROR: could not open device file "
+	      << fIoPort << "." << std::endl;
+        std::cerr << "                               (probably it's not user-writable)."
+	      << std::endl;
+        fDeviceAvailable = false;
+        return;
+    } else {
+        // configure port with no delay
+        int flags = fcntl(fIoPortFileDescriptor, F_GETFL, 0);
+        flags |= O_NONBLOCK;
+        flags |= FNDELAY;
+        fcntl( fIoPortFileDescriptor, F_SETFL, flags );
+    }
+    
+    fDeviceAvailable = true;
+    std::cout<<"[KeyenceComHandler] end OpenIoPort"<<std::endl;
 }
 
 //! Initialize I/O port.
@@ -118,38 +122,41 @@ void KeyenceComHandler::OpenIoPort( void )
 */
 void KeyenceComHandler::InitializeIoPort( void )
 {
-  if (!fDeviceAvailable) return;
-
-  // get and save current ioport settings for later restoring
-  tcgetattr( fIoPortFileDescriptor, &fCurrentTermios );
-
+    std::cout<<"[KeyenceComHandler] begin InitializeIoPort"<<std::endl;
+    if (!fDeviceAvailable) return;
+    
+    // get and save current ioport settings for later restoring
+    tcgetattr( fIoPortFileDescriptor, &fCurrentTermios );
+    
 #ifndef USE_FAKEIO
-
-  // CONFIGURE NEW SETTINGS
-
-  // clear new settings struct
-  bzero( &fThisTermios, sizeof( fThisTermios ) );
-
-  // all these settings copied from stty output..
-
-  // baud rate
-  cfsetispeed( &fThisTermios, B115200 );  // input speed
-  cfsetospeed( &fThisTermios, B115200 );  // output speed
-
-  // various settings, 8N1 (no parity, 1 stopbit)
-  fThisTermios.c_cflag   &= ~PARENB;
-  fThisTermios.c_cflag   &= ~PARODD;
-  fThisTermios.c_cflag   |=  CS8;
-  fThisTermios.c_cflag   |=  HUPCL;
-  fThisTermios.c_cflag   &= ~CSTOPB;
-  fThisTermios.c_cflag   |=  CREAD;
-  fThisTermios.c_cflag   |=  CLOCAL;
-  fThisTermios.c_cflag   &= ~CRTSCTS;
-
-  // commit changes
-  tcsetattr( fIoPortFileDescriptor, TCSANOW, &fThisTermios );
-  
+    
+    // CONFIGURE NEW SETTINGS
+    
+    // clear new settings struct
+    bzero( &fThisTermios, sizeof( fThisTermios ) );
+    
+    // all these settings copied from stty output..
+    
+    // baud rate
+    cfsetispeed( &fThisTermios, B115200 );  // input speed
+    cfsetospeed( &fThisTermios, B115200 );  // output speed
+    
+    // various settings, 8N1 (no parity, 1 stopbit)
+    fThisTermios.c_cflag   &= ~PARENB;
+    fThisTermios.c_cflag   &= ~PARODD;
+    fThisTermios.c_cflag   |=  CS8;
+    fThisTermios.c_cflag   |=  HUPCL;
+    fThisTermios.c_cflag   &= ~CSTOPB;
+    fThisTermios.c_cflag   |=  CREAD;
+    fThisTermios.c_cflag   |=  CLOCAL;
+    fThisTermios.c_cflag   &= ~CRTSCTS;
+    
+    // commit changes
+    tcsetattr( fIoPortFileDescriptor, TCSANOW, &fThisTermios );
+    
 #endif
+
+    std::cout<<"[KeyenceComHandler] end InitializeIoPort"<<std::endl;
 }
 
 //! Restore former I/O port settings.
