@@ -11,14 +11,14 @@
 */
 KeyenceComHandler::KeyenceComHandler(ioport_t ioPort)
 {
-    std::cout<<"[KeyenceComHandler] begin constructor"<<std::endl;
+    //    std::cout<<"[KeyenceComHandler] begin constructor"<<std::endl;
     // save ioport 
     fIoPort = ioPort;
     
     // initialize
     OpenIoPort();
     InitializeIoPort();
-  std::cout<<"[KeyenceComHandler] end constructor"<<std::endl;
+    //std::cout<<"[KeyenceComHandler] end constructor"<<std::endl;
 }
 
 KeyenceComHandler::~KeyenceComHandler( void )
@@ -73,12 +73,15 @@ void KeyenceComHandler::ReceiveString( char *receiveString )
   int timeout = 0;
   size_t readResult = 0;
 
+  std::cout << "about to receive"<<std::endl;
   while ( timeout < 100000 )  {
 
     readResult = read( fIoPortFileDescriptor, receiveString, 1024 );
+    std::cout<<"readresult = "<<readResult<<std::endl;
 
     if ( readResult > 0 ) {
       receiveString[readResult-1] = '\0';
+      std::cout<<"receiveString = "<<receiveString<<std::endl;
       break;
     }
     
@@ -92,7 +95,7 @@ void KeyenceComHandler::ReceiveString( char *receiveString )
 */
 void KeyenceComHandler::OpenIoPort( void )
 {
-    std::cout<<"[KeyenceComHandler] begin OpenIoPort"<<std::endl;
+    //    std::cout<<"[KeyenceComHandler] begin OpenIoPort"<<std::endl;
     // open io port ( read/write | no term control | no DCD line check )
     fIoPortFileDescriptor = open( fIoPort, O_RDWR | O_NOCTTY  | O_NDELAY );
     
@@ -113,7 +116,7 @@ void KeyenceComHandler::OpenIoPort( void )
     }
     
     fDeviceAvailable = true;
-    std::cout<<"[KeyenceComHandler] end OpenIoPort"<<std::endl;
+    //    std::cout<<"[KeyenceComHandler] end OpenIoPort"<<std::endl;
 }
 
 //! Initialize I/O port.
@@ -122,7 +125,7 @@ void KeyenceComHandler::OpenIoPort( void )
 */
 void KeyenceComHandler::InitializeIoPort( void )
 {
-    std::cout<<"[KeyenceComHandler] begin InitializeIoPort"<<std::endl;
+    //    std::cout<<"[KeyenceComHandler] begin InitializeIoPort"<<std::endl;
     if (!fDeviceAvailable) return;
     
     // get and save current ioport settings for later restoring
@@ -156,7 +159,7 @@ void KeyenceComHandler::InitializeIoPort( void )
     
 #endif
 
-    std::cout<<"[KeyenceComHandler] end InitializeIoPort"<<std::endl;
+    //    std::cout<<"[KeyenceComHandler] end InitializeIoPort"<<std::endl;
 }
 
 //! Restore former I/O port settings.

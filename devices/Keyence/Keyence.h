@@ -39,9 +39,11 @@ class Keyence : public VKeyence
   //probably not necessary
   void Timing(int out, int status);
   void AutoZero(int out, bool status);
+  */
   void Reset(int out);
   void ProgramChange(int prog_number);
   void ProgramCheck(int value);
+  /*
   void StatResultOutput(int out, std::string value);
   void ClearStat(int out);
   void StartDataStorage();
@@ -50,6 +52,12 @@ class Keyence : public VKeyence
   void OutputDataStorage(int out, std::vector<double> values);
   void DataStorageStatus(std::string value);
   */
+
+  //for initialization
+  //communicationspeed;
+  //type_of_parity;
+  //autotransmission;
+      
 
   // low level methods                                                                                                                                                                                      
   void SendCommand(const std::string &);

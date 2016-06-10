@@ -6,16 +6,16 @@
 
 #include "Keyence.h"
 
-// #define LSTEPDEBUG 1
+#define LSTEPDEBUG 1
 
 Keyence::Keyence( const ioport_t ioPort )
   :VKeyence(ioPort),
    isDeviceAvailable_(false)
 {
-    std::cout<<"[Keyence] begin constructor"<<std::endl;
+    //    std::cout<<"[Keyence] begin constructor"<<std::endl;
     comHandler_ = new KeyenceComHandler( ioPort );
     DeviceInit();
-    std::cout<<"[Keyence] end constructor"<<std::endl;
+    //    std::cout<<"[Keyence] end constructor"<<std::endl;
 }
 
 Keyence::~Keyence()
@@ -34,7 +34,6 @@ void Keyence::SendCommand(const std::string & command)
 #ifdef LSTEPDEBUG
   std::cout << "SendCommand: " << command << std::endl;
 #endif
-  std::cout << command << std::endl;
   comHandler_->SendCommand(command.c_str());
 }
 
@@ -46,6 +45,9 @@ void Keyence::ReceiveString(std::string & buffer)
   comHandler_->ReceiveString(buf);
   StripBuffer(buf);
   buffer = buf;
+#ifdef LSTEPDEBUG
+  std::cout << "ReceiveCommand: " << buffer << std::endl;
+#endif
 }
 
 //ABLE -> automatic adjustement of light intensity to surface
@@ -129,7 +131,7 @@ void Keyence::SetAveraging(int out, int mode)
 //communication mode (commOn = 1) -> no measurement possible, writing and reading system settings is possible 
 void Keyence::ChangeToCommunicationMode(bool commOn)
 {
-    std::cout<<"[Keyence] begin ChangeToCommunicationMode"<<std::endl;
+    //    std::cout<<"[Keyence] begin ChangeToCommunicationMode"<<std::endl;
     if(commOn){
         SendCommand("Q0");
         comMode_ = true;
@@ -137,7 +139,7 @@ void Keyence::ChangeToCommunicationMode(bool commOn)
         SendCommand("R0");
         comMode_ = false;
     }
-    std::cout<<"[Keyence] end ChangeToCommunicationMode"<<std::endl;
+    //    std::cout<<"[Keyence] end ChangeToCommunicationMode"<<std::endl;
 }
 
 void Keyence::MeasurementValueOutput(int out, double value)
@@ -164,7 +166,7 @@ void Keyence::StripBuffer(char* buffer) const
 //No version checking for Keyence laser available
 void Keyence::DeviceInit()
 {
-    std::cout<<"[Keyence] begin device init"<<std::endl;
+    //    std::cout<<"[Keyence] begin device init"<<std::endl;
     isDeviceAvailable_ = false;
     
     if (comHandler_->DeviceAvailable()) {
@@ -174,8 +176,27 @@ void Keyence::DeviceInit()
     }
 
     this->ChangeToCommunicationMode(false);
-    std::cout<<"[Keyence] end device init"<<std::endl;
+    //    std::cout<<"[Keyence] end device init"<<std::endl;
 }
+
+void Keyence::Reset(int out)
+{
+  SetValue("VR,", out);
+}
+
+
+void Keyence::ProgramChange(int prog_number)
+{
+  SetValue("PW,",prog_number);
+}
+
+
+
+void Keyence::ProgramCheck(int value)
+{
+  GetValue("PR", value);
+}
+
 
 /*
 void Keyence::Timing(int out, int status)
@@ -192,27 +213,6 @@ void Keyence::AutoZero(int out, bool status)
   }else{
     SetValue("W", out);
   }
-}
-*/
-
-/*
-void Keyence::Reset(int out)
-{
-  SetValue("VR,", out);
-}
-*/
-
-/*
-void Keyence::ProgramChange(int prog_number)
-{
-  SetValue("PW,",prog_number);
-}
-*/
-
-/*
-void Keyence::ProgramCheck(int value)
-{
-  GetValue("PR", value);
 }
 */
 
