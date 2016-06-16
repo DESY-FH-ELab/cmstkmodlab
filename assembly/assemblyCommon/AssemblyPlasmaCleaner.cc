@@ -91,7 +91,18 @@ CleanerCommander::CleanerCommander(QWidget *parent, std::string string, double x
      setLayout(l);
 
     NQLog("CleanerCommander") << ": in mode";
-    motor = new ArduinoMotor("/dev/ttys002");
+    motor = new ArduinoMotor("/dev/ttyACM1");
+
+
+    bool comm = motor->IsCommunication();
+    cout <<"comms on?"<<  comm<<"   "   <<endl;
+ 
+    // for (int t = 0; t < 20; t++){
+    //     cout << " pressure A " << motor->GetPressureA()  << endl; 
+    // }
+
+
+
 
     std::ostringstream strs;
     strs.clear();
@@ -130,7 +141,13 @@ std::cout << "[CleanerCommander::sendCommand]."   << str <<std::endl;
 //    stringstream convert;
 //   convert << steps;
 //   const char* cmd = convert.str().c_str();
-    motor->SendCommand("100");
+
+
+ std::cout << "[CleanerCommander::checkText]."   << lineEdit1->text().toStdString() <<std::endl;
+
+ str =  lineEdit1->text().toStdString();
+
+ motor->SendCommand(str.c_str());
 
 }
 
