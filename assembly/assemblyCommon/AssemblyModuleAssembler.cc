@@ -394,7 +394,7 @@ AssemblyVacuumToggler::AssemblyVacuumToggler(QWidget *parent, std::string string
     QGridLayout *l = new QGridLayout(this);
     setLayout(l);
     
-    const char* deviceName = "/dev/ttyUSB0";
+    const char* deviceName = "/dev/ttys002";
     cnrd1 = new ConradController(deviceName);
    cnrd1->initialize();  
     NQLog("AssemblyVacuumToggler") << ":in mode"<< mode;

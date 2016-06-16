@@ -19,6 +19,8 @@
 #include "../../devices/Conrad/ConradCommunication.h"
 #include "../../devices/Conrad/ConradController.h"
 
+#include "../../devices/Arduino/ArduinoMotor.h"
+
 
 using namespace std;
 
@@ -37,7 +39,6 @@ AssemblyPlasmaCleaner::AssemblyPlasmaCleaner(QWidget *parent)
 
       //      cout << " pressure A " << motor->GetPressureA()  << endl; 
     //}
-
 
 
       
@@ -90,7 +91,7 @@ CleanerCommander::CleanerCommander(QWidget *parent, std::string string, double x
      setLayout(l);
 
     NQLog("CleanerCommander") << ": in mode";
-    motor = new ArduinoMotor("/dev/ttyACM1");
+    motor = new ArduinoMotor("/dev/ttys002");
 
     std::ostringstream strs;
     strs.clear();
