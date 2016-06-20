@@ -26,6 +26,7 @@ int main()
   int value2= 0;
   std::cout << "ProgramCheck: "; laser.ProgramCheck(value2); std::cout << "value2 = " << value2 << std::endl;
   std::cout << "ProgramChange: "; laser.ProgramChange(3);
+  std::cout << "ProgramCheck: "; laser.ProgramCheck(value2); std::cout << "value2 = " << value2 << std::endl;
   /*
   std::string value3;
   std::cout << "StatResultOutput: "; laser.StatResultOutput(1, value3);

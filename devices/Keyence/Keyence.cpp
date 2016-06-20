@@ -144,7 +144,10 @@ void Keyence::ChangeToCommunicationMode(bool commOn)
 
 void Keyence::MeasurementValueOutput(int out, double value)
 {
-  GetValue("M",out,value);
+    std::cout<<"measurement value test"<<std::endl;
+    GetValue("M",out,value);
+    std::cout<<"measurement value test 2 "<<std::endl;
+    SetValue("M",out);
 }
 
 //lock the panel on the controller to avoid accidental pushing of buttons
