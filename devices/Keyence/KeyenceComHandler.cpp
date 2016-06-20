@@ -74,10 +74,10 @@ void KeyenceComHandler::ReceiveString( char *receiveString )
   size_t readResult = 0;
 
   std::cout << "about to receive"<<std::endl;
-  while ( timeout < 100000 )  {
+  while ( timeout < 9000000 )  {
 
     readResult = read( fIoPortFileDescriptor, receiveString, 1024 );
-    std::cout<<"readresult = "<<readResult<<std::endl;
+    //    std::cout<<"readresult = "<<readResult<<std::endl;
 
     if ( readResult > 0 ) {
       receiveString[readResult-1] = '\0';

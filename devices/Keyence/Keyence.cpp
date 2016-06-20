@@ -35,6 +35,8 @@ void Keyence::SendCommand(const std::string & command)
   std::cout << "SendCommand: " << command << std::endl;
 #endif
   comHandler_->SendCommand(command.c_str());
+  std::string buffer;
+  ReceiveString(buffer);
 }
 
 void Keyence::ReceiveString(std::string & buffer)
@@ -45,6 +47,7 @@ void Keyence::ReceiveString(std::string & buffer)
   comHandler_->ReceiveString(buf);
   StripBuffer(buf);
   buffer = buf;
+  std::cout<< "[Keyence::ReceiveString] buffer = "<<buffer<<std::endl;
 #ifdef LSTEPDEBUG
   std::cout << "ReceiveCommand: " << buffer << std::endl;
 #endif
@@ -146,8 +149,8 @@ void Keyence::MeasurementValueOutput(int out, double value)
 {
     std::cout<<"measurement value test"<<std::endl;
     GetValue("M",out,value);
-    std::cout<<"measurement value test 2 "<<std::endl;
-    SetValue("M",out);
+    //    std::cout<<"measurement value test 2 "<<std::endl;
+    //SetValue("M",out);
 }
 
 //lock the panel on the controller to avoid accidental pushing of buttons
@@ -169,7 +172,7 @@ void Keyence::StripBuffer(char* buffer) const
 //No version checking for Keyence laser available
 void Keyence::DeviceInit()
 {
-    //    std::cout<<"[Keyence] begin device init"<<std::endl;
+  std::cout<<"[Keyence] begin device init"<<std::endl;
     isDeviceAvailable_ = false;
     
     if (comHandler_->DeviceAvailable()) {
@@ -178,8 +181,8 @@ void Keyence::DeviceInit()
 
     }
 
-    this->ChangeToCommunicationMode(false);
-    //    std::cout<<"[Keyence] end device init"<<std::endl;
+    //    this->ChangeToCommunicationMode(false);
+    std::cout<<"[Keyence] end device init"<<std::endl;
 }
 
 void Keyence::Reset(int out)
@@ -222,7 +225,7 @@ void Keyence::AutoZero(int out, bool status)
 /*
 void Keyence::StatResultOutput(int out, std::string value)
 {
-  GetValue("DO,", out, value);
+  SetValue("DO,", out, value);
 }
 */
 
@@ -262,14 +265,14 @@ void Keyence::InitDataStorage()
 /*
 void Keyence::OutputDataStorage(int out, std::vector<double> values)
 {
-  GetValue("AO,",out,values);
+  SetValue("AO,",out,values);
 }
 */
 
 /*
 void Keyence::DataStorageStatus(std::string value)
 {
-  GetValue("AN",value);
+  SetValue("AN",value);
 }
 */
 
