@@ -91,7 +91,7 @@ CleanerCommander::CleanerCommander(QWidget *parent, std::string string, double x
      setLayout(l);
 
     NQLog("CleanerCommander") << ": in mode";
-    motor = new ArduinoMotor("/dev/ttyACM1");
+    motor = new ArduinoMotor("/dev/ttyACM0");
 
 
     bool comm = motor->IsCommunication();
