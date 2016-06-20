@@ -8,13 +8,13 @@ int main()
   Keyence laser("/dev/ttyUSB0");
 
   double value = 0;
-  std::cout << "MeasurementValueOutput: "; laser.MeasurementValueOutput(1, value); std::cout << "value" << value << std::endl;
-  std::cout << "MeasurementValueOutput: "; laser.MeasurementValueOutput(2, value); std::cout << "value" << value << std::endl;
-  std::cout << "PanelLock: "; laser.PanelLock(0);
-  std::cout << "PanelLock: "; laser.PanelLock(1);
-  std::cout << "SetSamplingRate: "; laser.SetSamplingRate(0);
-  std::cout << "SetSamplingRate: "; laser.SetSamplingRate(4);
-  std::cout << "SetAveraging: "; laser.SetAveraging(1, 4);
+  std::cout << "MeasurementValueOutput: \n"; laser.MeasurementValueOutput(1, value); std::cout << "value" << value << std::endl;
+  std::cout << "MeasurementValueOutput: \n"; laser.MeasurementValueOutput(2, value); std::cout << "value" << value << std::endl;
+  std::cout << "PanelLock: \n"; laser.PanelLock(0);
+  std::cout << "PanelLock: \n"; laser.PanelLock(1);
+  std::cout << "SetSamplingRate: \n"; laser.SetSamplingRate(0);
+  std::cout << "SetSamplingRate: \n"; laser.SetSamplingRate(4);
+  std::cout << "SetAveraging: \n"; laser.SetAveraging(1, 4);
 
   /*
   std::cout << "Timing: "; laser.Timing(1, 0);
@@ -22,11 +22,11 @@ int main()
   std::cout << "AutoZero: "; laser.AutoZero(1, 0);
   std::cout << "AutoZero: "; laser.AutoZero(1, 1);
   */
-  std::cout << "Reset: "; laser.Reset(1);
+  std::cout << "Reset: \n"; laser.Reset(1);
   int value2= 0;
-  std::cout << "ProgramCheck: "; laser.ProgramCheck(value2); std::cout << "value2 = " << value2 << std::endl;
-  std::cout << "ProgramChange: "; laser.ProgramChange(3);
-  std::cout << "ProgramCheck: "; laser.ProgramCheck(value2); std::cout << "value2 = " << value2 << std::endl;
+  std::cout << "ProgramCheck: \n"; laser.ProgramCheck(value2); std::cout << "value2 = " << value2 << std::endl;
+  std::cout << "ProgramChange: \n"; laser.ProgramChange(3);
+  std::cout << "ProgramCheck: \n"; laser.ProgramCheck(value2); std::cout << "value2 = " << value2 << std::endl;
   /*
   std::string value3;
   std::cout << "StatResultOutput: "; laser.StatResultOutput(1, value3);
