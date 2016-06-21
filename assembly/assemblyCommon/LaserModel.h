@@ -36,7 +36,7 @@ public:
 
 public slots:
 
-    void getMeasurement(double value);
+    void getMeasurement();
 
 protected:
 

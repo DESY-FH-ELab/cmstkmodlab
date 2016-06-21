@@ -82,12 +82,21 @@ void LaserCommanderMainWindow::testManager()
   //  usleep(5000);
   //laserWidget_->display(11);
 
-  laserModel_->setMeasurement(14);
-  NQLog("LaserCommanderMainWindow") << "widget value = " <<laserWidget_->value();
+  int run = 0;
+  while(run < 10000)
+      {
+          laserModel_->getMeasurement();
+          usleep(2000);
+          std::cout<<"iteration nr = "<<run<<std::endl;
+          run++;
+      }
+
+  //laserModel_->setMeasurement(14);
+  //NQLog("LaserCommanderMainWindow") << "widget value = " <<laserWidget_->value();
   //  this->update();
-  usleep(10000000);
-  laserModel_->setMeasurement(28);
-  NQLog("LaserCommanderMainWindow") << "widget value = " <<laserWidget_->value();
+  //usleep(10000000);
+  //laserModel_->setMeasurement(28);
+  //NQLog("LaserCommanderMainWindow") << "widget value = " <<laserWidget_->value();
   /*
   for(int i = 0; i < 25; i++){
       NQLog("LaserCommanderMainWindow") << "i = "<<i;

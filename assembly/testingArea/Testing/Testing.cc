@@ -33,8 +33,6 @@ int main( int argc, char** argv )
     if (!dir.exists()) dir.mkpath(".");
     QString logfilename = logdir + "/laserCommander.log";
 
-    NQLog("laserCommander") << "version " << APPLICATIONVERSIONSTR;
-
     NQLog("laserCommander") << "using " << logfilename << " for logging";
 
     QFile * logfile = new QFile(logfilename);
@@ -60,7 +58,7 @@ int main( int argc, char** argv )
 
     LaserCommanderMainWindow mainWindow;
 
-    mainWindow.setWindowTitle(QString("laserCommander - ") + APPLICATIONVERSIONSTR);
+    mainWindow.setWindowTitle(QString("laserCommander"));
     mainWindow.show();
 
     return app.exec();

@@ -10,7 +10,7 @@ LaserModel::LaserModel(const char* port,
       AbstractDeviceModel<Keyence_t>(),
       Laser_PORT(port)
 {
-    laserHead_ = 1;
+    laserHead_ = 2; //note: head A = 2
 }
 
 void LaserModel::setLaserHead(int out)
@@ -28,8 +28,9 @@ void LaserModel::setAveraging(int mode)
     controller_->SetAveraging(laserHead_, mode);
 }
 
-void LaserModel::getMeasurement(double value)
+void LaserModel::getMeasurement()
 {
+    double value = 0;
     controller_->MeasurementValueOutput(laserHead_, value);
     emit measurementChanged(value);
 }
