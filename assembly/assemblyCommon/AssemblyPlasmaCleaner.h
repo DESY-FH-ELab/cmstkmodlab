@@ -7,6 +7,8 @@
 #include <QScrollArea>
 #include <QKeyEvent>
 #include <QLineEdit>
+#include <QLabel>
+#include <QProgressBar>
 #include <QPushButton>
 #include <QPainter>
 
@@ -40,13 +42,11 @@ class AssemblyPlasmaCleaner : public QWidget
 public:
 
     explicit AssemblyPlasmaCleaner(QWidget *parent = 0);
-    QLabel * ql;
 
 protected:
 
 
 public slots:
-
     
 signals:
     void moveAbsolute(double,double,double,double);
@@ -61,19 +61,36 @@ class CleanerCommander : public QWidget
     Q_OBJECT
 public:
     
-    explicit CleanerCommander(QWidget *parent = 0, std::string ="test", double x =0.0, double y =0.0);
-    double local_x, local_y, local_z, local_a;
+  explicit CleanerCommander(QWidget *parent = 0, std::string ="test", double target_speed =0.0, double max_accel =0.0, double scan_distance = 0.0, double steps_per_mm = 0.0);
+
     QPushButton* button1;
     QLineEdit *lineEdit1;
+    QLabel *ql_0;
+    QLabel *ql_1;
+    QLabel *ql_2;
+    QLabel *ql_3;
+    QLabel *ql_4;
+    QLineEdit *lineEdit2;
+    QLineEdit *lineEdit3;
+    QLineEdit *lineEdit4;
+    QProgressBar *progressBar;
     ArduinoMotor * motor;
     std::string str;
+    float progress, sec, scan_time;
+
+    std::string target_speed_str;
+    std::string max_accel_str;
+    std::string scan_distance_str;
+    std::string steps_per_mm_str; 
+   
     
 protected:
     
     
 public slots:
   void sendCommand();
-    
+  void update();
+ 
 signals:
    void moveAbsolute(double,double,double,double);
     
