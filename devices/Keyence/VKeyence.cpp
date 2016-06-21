@@ -13,51 +13,75 @@ VKeyence::~VKeyence()
 
 }
 
-void VKeyence::SetValue(const std::string & command,
+std::string VKeyence::SetValue(const std::string & command)
+{
+    this->SendCommand(command);
+    std::string buffer;
+    this->ReceiveString(buffer);
+    return buffer;
+}
+
+std::string VKeyence::SetValue(const std::string & command,
                              const std::string & value)
 {
   std::ostringstream os;
   os << command << value;
   //  std::cout<< os.str() << std::endl; 
   this->SendCommand(os.str());
+  std::string buffer;
+  this->ReceiveString(buffer);
+  return buffer;
 }
 
-void VKeyence::SetValue(const std::string & command,
+std::string VKeyence::SetValue(const std::string & command,
                              int value1)
 {
   std::ostringstream os;
   os << command << value1;
   //std::cout<< os.str() << std::endl; 
   this->SendCommand(os.str());
+  std::string buffer;
+  this->ReceiveString(buffer);
+  return buffer;
 }
 
-void VKeyence::SetValue(const std::string & command,
+std::string VKeyence::SetValue(const std::string & command,
                              int value1, int value2)
 {
   std::ostringstream os;
   os << command << value1 << "," << value2;
   //std::cout<< os.str() << std::endl; 
   this->SendCommand(os.str());
+  std::string buffer;
+  this->ReceiveString(buffer);
+  return buffer;
 }
 
-void VKeyence::SetValue(const std::string & command, 
+std::string VKeyence::SetValue(const std::string & command, 
 int value1, const std::string & value2, int value3)
 {
   std::ostringstream os;
   os << command << value1 << "," << value2 << "," << value3;
   //std::cout<< os.str() << std::endl; 
   this->SendCommand(os.str());
+  std::string buffer;
+  this->ReceiveString(buffer);
+  return buffer;
 }
 
-void VKeyence::SetValue(const std::string & command,
+std::string VKeyence::SetValue(const std::string & command,
                              double value1)
 {
   std::ostringstream os;
   os << command << value1;
   //std::cout<< os.str() << std::endl; 
   this->SendCommand(os.str());
+  std::string buffer;
+  this->ReceiveString(buffer);
+  return buffer;
 }
 
+/*
 void VKeyence::GetValue(const std::string & command,
                              std::string & value)
 {
@@ -128,7 +152,7 @@ void VKeyence::GetValue(const std::string & command,
     value2.push_back(temp);
   }
 }
-
+*/
 
 
 

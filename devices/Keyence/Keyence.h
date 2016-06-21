@@ -32,7 +32,7 @@ class Keyence : public VKeyence
 
   //in normal mode
   void ChangeToCommunicationMode(bool commOn);
-  void MeasurementValueOutput(int out, double value);
+  void MeasurementValueOutput(int out, double & value);
   void PanelLock(int status);
 
   /*
@@ -42,7 +42,7 @@ class Keyence : public VKeyence
   */
   void Reset(int out);
   void ProgramChange(int prog_number);
-  void ProgramCheck(int value);
+  void ProgramCheck(int & value);
   /*
   void StatResultOutput(int out, std::string value);
   void ClearStat(int out);

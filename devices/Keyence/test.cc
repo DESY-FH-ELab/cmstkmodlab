@@ -8,8 +8,8 @@ int main()
   Keyence laser("/dev/ttyUSB1");
 
   double value = 0;
-  std::cout << "MeasurementValueOutput: \n"; laser.MeasurementValueOutput(1, value); std::cout << "value" << value << std::endl;
-  //std::cout << "MeasurementValueOutput: \n"; laser.MeasurementValueOutput(2, value); std::cout << "value" << value << std::endl;
+  //std::cout << "MeasurementValueOutput: \n"; laser.MeasurementValueOutput(1, value); std::cout << "value" << value << std::endl;
+  std::cout << "MeasurementValueOutput: \n"; laser.MeasurementValueOutput(2, value); std::cout << "value" << value << std::endl;
   //std::cout << "PanelLock: \n"; laser.PanelLock(1);
   //std::cout << "PanelLock: \n"; laser.PanelLock(1);
   //std::cout << "SetSamplingRate: \n"; laser.SetSamplingRate(0);

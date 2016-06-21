@@ -35,8 +35,8 @@ void Keyence::SendCommand(const std::string & command)
   std::cout << "SendCommand: " << command << std::endl;
 #endif
   comHandler_->SendCommand(command.c_str());
-  std::string buffer;
-  ReceiveString(buffer);
+  //std::string buffer;
+  //  ReceiveString(buffer);
 }
 
 void Keyence::ReceiveString(std::string & buffer)
@@ -47,7 +47,7 @@ void Keyence::ReceiveString(std::string & buffer)
   comHandler_->ReceiveString(buf);
   StripBuffer(buf);
   buffer = buf;
-  std::cout<< "[Keyence::ReceiveString] buffer = "<<buffer<<std::endl;
+  //  std::cout<< "[Keyence::ReceiveString] buffer = "<<buffer<<std::endl;
 #ifdef LSTEPDEBUG
   std::cout << "ReceiveCommand: " << buffer << std::endl;
 #endif
@@ -60,7 +60,13 @@ void Keyence::ReceiveString(std::string & buffer)
 void Keyence::SetABLE(bool on, int out)
 {
     if(!comMode_){ChangeToCommunicationMode(true);}
-    SetValue("SW,HA,M,",out,on);
+    std::string response = SetValue("SW,HA,M,",out,on);
+    if(response != "SW,HA"){
+        std::cerr << "[Keyence::SetABLE] ** ERROR: could not be executed, response : "
+	      << response 
+	      << std::endl;
+        return;
+    }
     ChangeToCommunicationMode(false);
 }
 
@@ -75,7 +81,13 @@ void Keyence::SetABLE(bool on, int out)
 void Keyence::SetMaterialMode(int out, int mode)
 {
     if(!comMode_){ChangeToCommunicationMode(true);}
-    SetValue("SW,HB,",out, mode);
+    std::string response = SetValue("SW,HB,",out, mode);
+    if(response != "SW,HB"){
+        std::cerr << "[Keyence::SetMaterialMode] ** ERROR: could not be executed, response : "
+	      << response 
+                  << std::endl;
+        return;
+    }
     ChangeToCommunicationMode(false);
 }
 
@@ -87,7 +99,13 @@ mode = 1 -> mirror reflection mode
 void Keyence::SetDiffuseMode(int out, int mode)
 {
     if(!comMode_){ChangeToCommunicationMode(true);}
-    SetValue("SW,HE,",out,mode);
+    std::string response = SetValue("SW,HE,",out,mode);
+    if(response != "SW,HE"){
+        std::cerr << "[Keyence::SetDiffuseMode] ** ERROR: could not be executed, response : "
+	      << response
+                  << std::endl;
+        return;
+    }
     ChangeToCommunicationMode(false);
 }
 
@@ -104,7 +122,13 @@ only in communication mode
 void Keyence::SetSamplingRate(int mode)
 {
     if(!comMode_){ChangeToCommunicationMode(true);}
-    SetValue("SW,CA,",mode);
+    std::string response = SetValue("SW,CA,",mode);
+    if(response != "SW,CA"){
+        std::cerr << "[Keyence::SetSamplingRate] ** ERROR: could not be executed, response : "
+	      << response
+                  << std::endl;
+        return;
+    }
     ChangeToCommunicationMode(false);
 }
 
@@ -125,7 +149,13 @@ only in communication mode
 void Keyence::SetAveraging(int out, int mode)
 {
     if(!comMode_){ChangeToCommunicationMode(true);}
-    SetValue("SW,OC,",out,"0",mode);
+    std::string response = SetValue("SW,OC,",out,"0",mode);
+    if(response != "SW,OC"){
+        std::cerr << "[Keyence::SetAveraging] ** ERROR: could not be executed, response : "
+	      << response
+                  << std::endl;
+        return;
+    }
     ChangeToCommunicationMode(false);
 }
 
@@ -135,20 +165,62 @@ void Keyence::SetAveraging(int out, int mode)
 void Keyence::ChangeToCommunicationMode(bool commOn)
 {
     //    std::cout<<"[Keyence] begin ChangeToCommunicationMode"<<std::endl;
+    std::string response;
     if(commOn){
-        SendCommand("Q0");
+        response = SetValue("Q0");
+        if(response != "Q0"){
+	std::cerr << "[Keyence::ChangeToCommunicationMode] ** ERROR: could not be executed, response : "
+	          << response
+	          << std::endl;
+	return;
+        }
         comMode_ = true;
     }else{
-        SendCommand("R0");
+        response = SetValue("R0");
+        if(response != "R0"){
+	std::cerr << "[Keyence::ChangeToCommunicationMode] ** ERROR: could not be executed, response : "
+	          << response
+	          << std::endl;
+	return;
+        }
         comMode_ = false;
     }
     //    std::cout<<"[Keyence] end ChangeToCommunicationMode"<<std::endl;
 }
 
-void Keyence::MeasurementValueOutput(int out, double value)
+void Keyence::MeasurementValueOutput(int out, double & value)
 {
-    std::cout<<"measurement value test"<<std::endl;
-    GetValue("M",out,value);
+    //    std::cout<<"measurement value test"<<std::endl;
+    std::string response = SetValue("M",out);
+    //response="M2,-00.2133";
+    //std::cout<<"MeasurementValueOutput, response = "<<response<<std::endl;
+    if(response.find("ER") != std::string::npos || response.find("M") == std::string::npos ){
+	std::cerr << "[Keyence::MeasurementValueOutput] ** ERROR: could not be executed, response : "
+	          << response
+	          << std::endl;
+	return;
+    } 
+    //    this->SetValue(command, value1);
+    //std::ostringstream os;
+    //os << "M" << out << ",";
+    //std::cout<< os.str() << std::endl;                                                                                                                                                                    
+    //this->SendCommand(os.str());
+    //std::string buffer;
+    //std::string s_temp = response.substr(3, 8);
+        //this->ReceiveString(buffer);
+    if(response.substr(3,8).find("F") != std::string::npos){
+	std::cerr << "[Keyence::MeasurementValueOutput] ** ERROR: laser out of range, please adjust position "
+	          << std::endl;
+	return;
+    }
+    std::istringstream is(response.substr(3,8));
+    //std::cout<<"substring = "<<response.substr(3,8)<<std::endl;
+    double temp;
+    is >> temp;
+    //std::cout<< "temp = "<<temp<<std::endl;
+    value = temp;
+
+    //std::cout<<"value = "<<value<<std::endl;
     //    std::cout<<"measurement value test 2 "<<std::endl;
     //SetValue("M",out);
 }
@@ -156,7 +228,13 @@ void Keyence::MeasurementValueOutput(int out, double value)
 //lock the panel on the controller to avoid accidental pushing of buttons
 void Keyence::PanelLock(int status)
 {
-  SetValue("KL,", status);
+    std::string response = SetValue("KL,", status);
+    if(response != "KL"){
+        std::cerr << "[Keyence::PanelLock] ** ERROR: could not be executed, response : "
+	      << response
+                  << std::endl;
+        return;
+    }
 }
 
 void Keyence::StripBuffer(char* buffer) const
@@ -187,92 +265,181 @@ void Keyence::DeviceInit()
 
 void Keyence::Reset(int out)
 {
-  SetValue("VR,", out);
+    std::string response = SetValue("VR,", out);
+    if(response != "VR"){
+        std::cerr << "[Keyence::Reset] ** ERROR: could not be executed, response : "
+	      << response
+                  << std::endl;
+        return;
+    }
 }
 
 
 void Keyence::ProgramChange(int prog_number)
 {
-  SetValue("PW,",prog_number);
+    std::string response = SetValue("PW,",prog_number);
+    if(response != "PW"){
+        std::cerr << "[Keyence::ProgramChange] ** ERROR: could not be executed, response : "
+	      << response
+                  << std::endl;
+        return;
+    }
 }
 
 
 
-void Keyence::ProgramCheck(int value)
+void Keyence::ProgramCheck(int & value)
 {
-  GetValue("PR", value);
+    std::string response = SetValue("PR");
+    if(response.find("ER") != std::string::npos || response.find("PR") == std::string::npos ){
+        std::cerr << "[Keyence::ProgramCheck] ** ERROR: could not be executed, response : "
+	      << response
+	      << std::endl;
+        return;
+    }
+    std::istringstream is(response.substr(3,1));
+    int temp;
+    is >> temp;
+    value = temp;
 }
 
 
 /*
 void Keyence::Timing(int out, int status)
 {
-  SetValue("T", status, out);
+  std::string response = SetValue("T", status, out);
+  std::ostringstream os;
+  os << "T" << status;
+    if(response != os.str()){
+    std::cerr << "[Keyence::Timing] ** ERROR: could not be executed, response : "
+    << response
+    << std::endl;
+        return;
+    }
 }
 */
 
 /*
 void Keyence::AutoZero(int out, bool status)
 {
+std::string response;
   if(status){
-    SetValue("V", out);
+    response = SetValue("V", out);
+    std::ostringstream os;
+    os << "V" << out;
+    if(response != os.str()){
+    std::cerr << "[Keyence::AutoZero] ** ERROR: could not be executed, response : "
+    << response
+    << std::endl;
+        return;
+    }
   }else{
-    SetValue("W", out);
+    response = SetValue("W", out);
+    std::ostringstream os;
+    os << "W" << out;
+    if(response != os.str()){
+    std::cerr << "[Keyence::AutoZero] ** ERROR: could not be executed, response : "
+    << response
+    << std::endl;
+        return;
+    }
   }
 }
 */
 
 /*
+//FIX ME!!!
 void Keyence::StatResultOutput(int out, std::string value)
 {
-  SetValue("DO,", out, value);
+  std::string response = SetValue("DO,", out, value);
+    if(response != "PW"){
+    std::cerr << "[Keyence::StatResultOutput] ** ERROR: could not be executed, response : "
+    << response
+    << std::endl;
+        return;
+    }
 }
 */
 
 /*
 void Keyence::ClearStat(int out)
 {
-  SetValue("DQ,", out);
+  std::string response = SetValue("DQ,", out);
+  std::stringstream os;
+  os << "DQ," << out;
+  if(response != os.str()){
+    std::cerr << "[Keyence::ClearStat] ** ERROR: could not be executed, response : "
+    << response
+    << std::endl;
+        return;
+    }
 }
 */
 
 /*
 void Keyence::StartDataStorage()
 {
-  SendCommand("AS");
-  //string response; ReceiveString(response);
-  //if(input == response){return 0;}
-  //else{return 1;}
-}
+  std::string response = SetValue("AS");
+  if(response != "AS"){
+  std::cerr << "[Keyence::StartDataStorage] ** ERROR: could not be executed, response : "
+  << response
+  << std::endl;
+  return;
+  }
+  }
 */
 
 /*
 void Keyence::StopDataStorage()
 {
-  SendCommand("AP");
-  //string response; ReceiveString(response);
-}
+  std::string response = SetValue("AP");
+  if(response != "AP"){
+  std::cerr << "[Keyence::StopDataStorage] ** ERROR: could not be executed, response : "
+  << response
+  << std::endl;
+  return;
+  }
+  }
 */
 
 /*
 void Keyence::InitDataStorage()
 {
-  SendCommand("AQ");
-  //string response; ReceiveString(response);
-}
+  std::string response = SetValue("AQ");
+  if(response != "AQ"){
+  std::cerr << "[Keyence::InitDataStorage] ** ERROR: could not be executed, response : "
+  << response
+  << std::endl;
+  return;
+  }
+  }
 */
 
 /*
+//FIX ME
 void Keyence::OutputDataStorage(int out, std::vector<double> values)
 {
-  SetValue("AO,",out,values);
+  std::string response = SetValue("AO,",out,values);
+    if(response != "PW"){
+    std::cerr << "[Keyence::OutputDataStorage] ** ERROR: could not be executed, response : "
+    << response
+    << std::endl;
+        return;
+    }
 }
 */
 
 /*
+//FIX ME
 void Keyence::DataStorageStatus(std::string value)
 {
-  SetValue("AN",value);
+  std::string response = SetValue("AN",value);
+    if(response != "PW"){
+    std::cerr << "[Keyence::DataStorageStatus] ** ERROR: could not be executed, response : "
+    << response
+    << std::endl;
+        return;
+    }
 }
 */
 
