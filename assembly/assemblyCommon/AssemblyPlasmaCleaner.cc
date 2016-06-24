@@ -81,7 +81,7 @@ CleanerCommander::CleanerCommander(QWidget *parent, std::string string, double t
     setLayout(l);
 
     NQLog("CleanerCommander") << ": in mode";
-    motor = new ArduinoMotor("/dev/cu.usbmodem411");
+    motor = new ArduinoMotor("/dev/cu.usbmodem641");
 
     bool comm = motor->IsCommunication();
     cout <<"comms on?"<<  comm<<"   "   <<endl;
@@ -165,6 +165,11 @@ CleanerCommander::CleanerCommander(QWidget *parent, std::string string, double t
     lineEdit4->setText(steps_per_mm_qstr);
     l->addWidget(lineEdit4,4,1);
 
+    light = new LightWidget(Qt::red);
+    l->addWidget(light,5,0);
+    light->setOn(true);
+
+
     progressBar = new QProgressBar();
     progressBar->setMinimum(0);
     progressBar->setMaximum(99);
@@ -199,7 +204,7 @@ std::cout << "[CleanerCommander::sendCommand]."   << str <<std::endl;
 
  std::cout << "[CleanerCommander::checkText]. "   << comm <<", scan time =   "<< scan_time <<std::endl;
  motor->SendCommand(comm.c_str());
- sec =0;
+ sec = 0;
  progress = 0;
  QTimer *timer = new QTimer(this);
  connect(timer, SIGNAL(timeout()), this, SLOT(update()));

@@ -29,8 +29,7 @@ AssemblyModuleAssembler::AssemblyModuleAssembler(QWidget *parent)
     setLayout(l);
 
     QGridLayout *g0 = new QGridLayout(this);
-    l->addLayout(g0,0,0);
-    
+    l->addLayout(g0,0,0);    
 
     QPalette palette;
     palette.setColor(QPalette::Background, QColor(220, 220, 220));
@@ -171,50 +170,57 @@ AssemblyModuleAssembler::AssemblyModuleAssembler(QWidget *parent)
     QGridLayout *g1 = new QGridLayout(this);
     l->addLayout(g1,0,1);
     
+    QLabel* header_label = new QLabel("Hover mouse over button for info on each step", this);
+    g1->addWidget(header_label,0,0);
+
+    AssemblyCommander * cmdr0 = new AssemblyCommander(this, "Go to origin", 0.0,0.0,0.0,0.0, 0);
+    cmdr0->setToolTip("(1) Returns x,y,z stage to origin (default = (0,0,0) using moveAbsolute(x,y,z) routine)");
+    g1->addWidget(cmdr0,1,0);
 
     AssemblyCommander * cmdr1 = new AssemblyCommander(this, "Go to pickup", 100.0,100.0,100.0,100.0, 0);
-    g1->addWidget(cmdr1,0,0);
-
+    cmdr1->setToolTip("(2) Moves x,y,z stage to pickup position (default = (100,100,100) using moveAbsolute(x,y,z) routine)");
+    g1->addWidget(cmdr1,2,0);
     
     AssemblySensorLocator * lctr1 = new AssemblySensorLocator(this, "Locate sensor", 0.0, 0);
-    g1->addWidget(lctr1,1,0);
-    
+    lctr1->setToolTip("(3) Acquires image from mobile camera, runs PatRec routine to deduce and report sensor (x,y,z,phi) postion");
+    g1->addWidget(lctr1,3,0);   
+ 
     connect(lctr1, SIGNAL(sendPosition(int, double,double,double)), this, SLOT(updateText(int,double,double,double)));
     
     connect(lctr1, SIGNAL(updateImage(int, std::string)), this, SLOT( updateImage(int,std::string)));
     connect(lctr1, SIGNAL(foundSensor(int)), lctr1, SLOT( foundsensor(int)));
 
     AssemblyCommander * cmdr2 = new AssemblyCommander(this, "Correct position", 100.0,100.0,100.0,100.0, 0);
-    g1->addWidget(cmdr2,2,0);
+    cmdr2->setToolTip("(4) Hmmmmm");
+    g1->addWidget(cmdr2,4,0);
     
    // connect(lctr1, SIGNAL(sendPosition(int, double, double, double)), cmdr2, SLOT(updateText(int, double, double, double)));
     
     AssemblyAttacher * attacher1 = new AssemblyAttacher(this, "Drop/Raise", 10.0,0);
-    g1->addWidget(attacher1,3,0);
+    g1->addWidget(attacher1,5,0);
     
     AssemblyVacuumToggler * toggle1 = new AssemblyVacuumToggler(this, "Toggle vacuum", 0.0, 0);
-    g1->addWidget(toggle1,4,0);
+    g1->addWidget(toggle1,6,0);
     
     AssemblyCommander * cmdr4 = new AssemblyCommander(this, "Go to stat. camera", 100.0,100.0,100.0,100.0, 0);
-    g1->addWidget(cmdr4, 5, 0);
+    g1->addWidget(cmdr4, 7, 0);
 
     AssemblyMountChecker * cmdr5 = new AssemblyMountChecker(this, "Check mount", 100.0,100.0,100.0,100.0, 0);
-    g1->addWidget(cmdr5, 6, 0);
+    g1->addWidget(cmdr5, 8, 0);
     
     
     connect(cmdr5, SIGNAL(locateCorner(int)), lctr1, SLOT( locateSensor(int)));
     
     AssemblyCommander * cmdr6 = new AssemblyCommander(this, "Go to rotation stage", 100.0,100.0,100.0,100.0, 0);
-    g1->addWidget(cmdr6, 7, 0);
-    
+    g1->addWidget(cmdr6, 9, 0);
     
     
     AssemblyCommander * cmdr7 = new AssemblyCommander(this, "Drop and detach", 100.0,100.0,100.0,100.0, 0);
-    g1->addWidget(cmdr7, 8, 0);
+    g1->addWidget(cmdr7, 10, 0);
     
     
     AssemblyAlligner * cmdr8 = new AssemblyAlligner(this, "Align", 0.0,0);
-    g1->addWidget(cmdr8, 9, 0);
+    g1->addWidget(cmdr8, 11, 0);
     
     connect(cmdr8, SIGNAL(locateSetdowncorner(int)), lctr1, SLOT( locateSensor(int)));
 
