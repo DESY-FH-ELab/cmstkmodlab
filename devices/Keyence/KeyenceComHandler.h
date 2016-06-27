@@ -28,7 +28,7 @@ class KeyenceComHandler {
   KeyenceComHandler( const KeyenceComHandler & );
 
   void SendCommand( const char* );
-  void ReceiveString( char* );
+  void ReceiveString( std::string* );
 
   bool DeviceAvailable();
 
