@@ -24,6 +24,13 @@ AssemblyModuleAssembler::AssemblyModuleAssembler(QWidget *parent)
     : QWidget(parent)
 {
     
+    ApplicationConfig* config = ApplicationConfig::instance();
+    LStepExpressModel* lStepExpressModel_ = new LStepExpressModel(config->getValue<std::string>("LStepExpressDevice").c_str(),1000, 100);
+    LStepExpressMotionManager* motionManager_ = new LStepExpressMotionManager(lStepExpressModel_);
+    lStepExpressModel_->initialize();
+    
+    
+    
     
     QGridLayout *l = new QGridLayout(this);
     setLayout(l);
@@ -310,15 +317,7 @@ void AssemblyModuleAssembler::updateImage(int stage, std::string filename)
 void AssemblyModuleAssembler::gotoPickup()
 {
     NQLog("AssemblyModuleAssembler") << ":gotoPickup()";
-    ApplicationConfig* config = ApplicationConfig::instance();
-    LStepExpressModel* lStepExpressModel_ = new LStepExpressModel(config->getValue<std::string>("LStepExpressDevice").c_str(),1000, 100);
-
-    LStepExpressMotionManager* motionManager_ = new LStepExpressMotionManager(lStepExpressModel_);
     connect(this, SIGNAL(moveAbsolute(double,double,double,double)), motionManager_, SLOT(moveAbsolute(double,double,double,double)));
-    
-    lStepExpressModel_->initialize();
-    //emit moveAbsolute(0.0,0.0,0.0,0.0);
-    
 }
 
 

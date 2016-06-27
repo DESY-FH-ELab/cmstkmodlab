@@ -47,6 +47,11 @@ public:
     QLineEdit * lE5;
     QLineEdit * lE6;
     
+    ApplicationConfig* config;
+    LStepExpressModel* lStepExpressModel_;
+    LStepExpressMotionManager* motionManager_;
+    
+    
 protected:
 
     void keyReleaseEvent(QKeyEvent *event);
