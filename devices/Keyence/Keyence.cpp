@@ -6,7 +6,7 @@
 
 #include "Keyence.h"
 
-#define LSTEPDEBUG 1
+#define KEYENCEDEBUG 1
 
 Keyence::Keyence( const ioport_t ioPort )
   :VKeyence(ioPort),
@@ -15,6 +15,8 @@ Keyence::Keyence( const ioport_t ioPort )
     //    std::cout<<"[Keyence] begin constructor"<<std::endl;
     comHandler_ = new KeyenceComHandler( ioPort );
     DeviceInit();
+    samplingRate_ = 20;
+    averagingRate_ = 1;
     //    std::cout<<"[Keyence] end constructor"<<std::endl;
 }
 
@@ -31,7 +33,7 @@ bool Keyence::DeviceAvailable() const
 // low level debugging methods
 void Keyence::SendCommand(const std::string & command)
 {
-#ifdef LSTEPDEBUG
+#ifdef KEYENCEDEBUG
   std::cout << "SendCommand: " << command << std::endl;
 #endif
   comHandler_->SendCommand(command.c_str());
@@ -43,12 +45,12 @@ void Keyence::ReceiveString(std::string & buffer)
 {
   usleep(1000);
 
-  char buf[1000];
-  comHandler_->ReceiveString(buf);
-  StripBuffer(buf);
-  buffer = buf;
+  //char buf[1000];
+  comHandler_->ReceiveString(buffer, samplingRate_, averagingRate_);
+  //  StripBuffer(buf);
+  //buffer = buf;
   //  std::cout<< "[Keyence::ReceiveString] buffer = "<<buffer<<std::endl;
-#ifdef LSTEPDEBUG
+#ifdef KEYENCEDEBUG
   std::cout << "ReceiveCommand: " << buffer << std::endl;
 #endif
 }
@@ -128,6 +130,16 @@ void Keyence::SetSamplingRate(int mode)
 	      << response
                   << std::endl;
         return;
+    }else{
+        switch(mode){  
+        case 0 : samplingRate_ = 20; break;
+        case 1 : samplingRate_ = 50; break;
+        case 2 : samplingRate_ = 100; break;
+        case 3 : samplingRate_ = 200; break;
+        case 4 : samplingRate_ = 500; break;
+        case 5 : samplingRate_ = 1000; break;
+        default : samplingRate_ = 20; 
+        }
     }
     ChangeToCommunicationMode(false);
 }
@@ -155,6 +167,20 @@ void Keyence::SetAveraging(int out, int mode)
 	      << response
                   << std::endl;
         return;
+    }else{
+        switch(mode){  
+        case 0 : averagingRate_ = 1;
+        case 1 : averagingRate_ = 4;
+        case 2 : averagingRate_ = 16;
+        case 3 : averagingRate_ = 64;
+        case 4 : averagingRate_ = 256;
+        case 5 : averagingRate_ = 1024;
+        case 6 : averagingRate_ = 4096;
+        case 7 : averagingRate_ = 16384;
+        case 8 : averagingRate_ = 65536;
+        case 9 : averagingRate_ = 262144;
+        default : averagingRate_ = 1;
+        }
     }
     ChangeToCommunicationMode(false);
 }

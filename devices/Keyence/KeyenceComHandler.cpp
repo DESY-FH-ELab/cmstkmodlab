@@ -4,6 +4,8 @@
 
 #include "KeyenceComHandler.h"
 
+#define KEYENCEDEBUG 1
+
 /*!
   The USB serial port &lt;ioPort&gt; may be specified in several ways:<br><br>
   ttyUSB0 ... ttyUSB3<br>
@@ -59,7 +61,7 @@ void KeyenceComHandler::SendCommand( const char *commandString )
 
   See example program in class description.
 */
-void KeyenceComHandler::ReceiveString( std::string *receiveString )
+void KeyenceComHandler::ReceiveString( std::string receiveString, int samplingRate, int averagingRate )
 {
 
   char *temp_output;
@@ -70,45 +72,39 @@ void KeyenceComHandler::ReceiveString( std::string *receiveString )
 
   temp_output[0] = 0;
 
-  std::cout<<"sleep 5000"<<std::endl;
   usleep( 5000 );
 
   int timeout = 0;
   size_t readResult = 0;
+  int limit = 2*samplingRate*averagingRate;
 
-  //  std::cout << "about to receive"<<std::endl;
-  int sample = 1000;
-  //int average = 262144;
-  int average = 1;
-  int test = sample*average;
-  receiveString = "";
-  while ( timeout < test)  {
-  //while ( readResult == 0)  {
+  while ( timeout < limit)  {
 
     readResult = read( fIoPortFileDescriptor, temp_output, 1024 );
-    std::cout<<"readresult = "<<readResult<<std::endl;
 
     if ( readResult > 0 ) {
-      std::cout<<"test"<<std::endl;
-      //      if ( temp_output.Contains("\0") ){std::cout<<"found it"<<std::endl;}
-      //temp_output[readResult-1] = '\0';
-      std::cout<<"temp_output = "<<temp_output<<" waited: "<<timeout<<std::endl;
-      //temp_output[readResult-1] = '\0';
-      //std::cout<<"cleaned temp_output = "<<temp_output<<std::endl;
       receiveString += std::string(temp_output, readResult);
       if(receiveString.find(13) != std::string::npos){
-	//receiveString.erase(receiveString.size() - 1);
-	std::cout<<"finished, string length is "<<receiveString.size()<<std::endl;
+	//received end of command
 	break;
       }
     }
-    usleep ( 1 );
+    usleep ( 5 );
     readResult = 0;
     temp_output[0] = 0;
     timeout++;
   }
-  std::cout<<"waited for "<<timeout<<" microseconds and receiveString output is "<<receiveString<<std::endl;
-  temp_output = receiveString;
+
+#ifdef KEYENCEDEBUG
+  std::cout<<"[KeyenceComHandler::ReceiveString] waited for "<<timeout<<" microseconds"<<std::endl;
+#endif
+
+  if ( timeout == limit ) {
+      std::cerr << "[KeyenceComHandler::ReceiveString] ** ERROR: command timed out! "
+	    << std::endl;
+      return;
+  }
+
 }
 
 //! Open I/O port.
