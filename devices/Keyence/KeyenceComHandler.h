@@ -6,6 +6,7 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 #include <unistd.h>
+#include <string.h>
 
 typedef const char* ioport_t;
 typedef struct termios termios_t;
@@ -28,7 +29,7 @@ class KeyenceComHandler {
   KeyenceComHandler( const KeyenceComHandler & );
 
   void SendCommand( const char* );
-  void ReceiveString( std::string receiveString, int samplingRate, int averagingRate );
+  std::string ReceiveString(int samplingRate, int averagingRate );
 
   bool DeviceAvailable();
 

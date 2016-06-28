@@ -65,7 +65,7 @@ class Keyence : public VKeyence
 
  private:
 
-  void StripBuffer( char* ) const;
+  void StripBuffer( std::string &) const;
   void DeviceInit();
 
   KeyenceComHandler* comHandler_;

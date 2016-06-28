@@ -46,8 +46,8 @@ void Keyence::ReceiveString(std::string & buffer)
   usleep(1000);
 
   //char buf[1000];
-  comHandler_->ReceiveString(buffer, samplingRate_, averagingRate_);
-  //  StripBuffer(buf);
+  buffer = comHandler_->ReceiveString(samplingRate_, averagingRate_);
+  StripBuffer(buffer);
   //buffer = buf;
   //  std::cout<< "[Keyence::ReceiveString] buffer = "<<buffer<<std::endl;
 #ifdef KEYENCEDEBUG
@@ -263,14 +263,9 @@ void Keyence::PanelLock(int status)
     }
 }
 
-void Keyence::StripBuffer(char* buffer) const
+void Keyence::StripBuffer(std::string &buffer) const
 {
-  for (unsigned int c=0; c<sizeof(buffer);++c) {
-    if(buffer[c]=='\r') {
-      buffer[c] = '\0';
-      break;
-    }
-  }
+  if(buffer.at(buffer.size() - 1) == '\r'){buffer.erase(buffer.size() - 1);}
 }
 
 //No version checking for Keyence laser available
@@ -282,10 +277,9 @@ void Keyence::DeviceInit()
     if (comHandler_->DeviceAvailable()) {
         
         isDeviceAvailable_ = true;
-
     }
 
-    //    this->ChangeToCommunicationMode(false);
+    this->ChangeToCommunicationMode(false);
     std::cout<<"[Keyence] end device init"<<std::endl;
 }
 

@@ -35,7 +35,10 @@ KeyenceComHandler::~KeyenceComHandler( void )
 //! Send the command string &lt;commandString&gt; to device.
 void KeyenceComHandler::SendCommand( const char *commandString )
 {
+  //std::cout<<"[KeyenceComHandler::SendCommand] fdeviceavailable = "<<fDeviceAvailable<<std::endl;
   if (!fDeviceAvailable) return;
+
+  // std::cout<<"[KeyenceComHandler::SendCommand] device available"<<std::endl;
 
   char singleCharacter = 0; 
 
@@ -61,28 +64,35 @@ void KeyenceComHandler::SendCommand( const char *commandString )
 
   See example program in class description.
 */
-void KeyenceComHandler::ReceiveString( std::string receiveString, int samplingRate, int averagingRate )
+std::string KeyenceComHandler::ReceiveString( int samplingRate, int averagingRate )
 {
+  std::string receiveString;
+
+  //  std::cout<<"in KeyenceComHandler receive string"<<std::endl;
 
   char *temp_output;
   if (!fDeviceAvailable) {
     temp_output[0] = 0;
-    return;
+    return "";
   }
+
+  //  std::cout<<"in KeyenceComHandler device available"<<std::endl;
 
   temp_output[0] = 0;
 
   usleep( 5000 );
 
+  //  std::cout<<"in KeyenceComHandler after sleep"<<std::endl;
+
   int timeout = 0;
   size_t readResult = 0;
-  int limit = 2*samplingRate*averagingRate;
-
+  int limit = 1000 + 2*samplingRate*averagingRate;
   while ( timeout < limit)  {
 
     readResult = read( fIoPortFileDescriptor, temp_output, 1024 );
-
+    //std::cout<<"readResult = "<<readResult<<std::endl;
     if ( readResult > 0 ) {
+      //std::cout<<"temp_output = "<<temp_output<<std::endl;
       receiveString += std::string(temp_output, readResult);
       if(receiveString.find(13) != std::string::npos){
 	//received end of command
@@ -102,9 +112,10 @@ void KeyenceComHandler::ReceiveString( std::string receiveString, int samplingRa
   if ( timeout == limit ) {
       std::cerr << "[KeyenceComHandler::ReceiveString] ** ERROR: command timed out! "
 	    << std::endl;
-      return;
+      return "";
   }
 
+  return receiveString;
 }
 
 //! Open I/O port.
