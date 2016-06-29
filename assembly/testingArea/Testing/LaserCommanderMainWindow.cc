@@ -17,6 +17,7 @@
 LaserCommanderMainWindow::LaserCommanderMainWindow(QWidget *parent)
 : QMainWindow(parent)
 {
+    NQLog("LaserCommanderMainWindow") << "[LaserCommanderMainWindow]";
   ApplicationConfig* config = ApplicationConfig::instance();
 
   connect(QApplication::instance(), SIGNAL(aboutToQuit()),
@@ -64,6 +65,7 @@ void LaserCommanderMainWindow::quit()
 
 void LaserCommanderMainWindow::updateD()
 {
+    NQLog("LaserCommanderMainWindow") << "[updateD]";
     laserModel_->setMeasurement(value+1);
     value++;
 }

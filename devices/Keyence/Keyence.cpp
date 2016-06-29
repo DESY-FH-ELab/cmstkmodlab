@@ -12,7 +12,7 @@ Keyence::Keyence( const ioport_t ioPort )
   :VKeyence(ioPort),
    isDeviceAvailable_(false)
 {
-    //    std::cout<<"[Keyence] begin constructor"<<std::endl;
+    std::cout<<"[Keyence] begin constructor"<<std::endl;
     comHandler_ = new KeyenceComHandler( ioPort );
     DeviceInit();
     samplingRate_ = 20;

@@ -10,41 +10,48 @@ LaserModel::LaserModel(const char* port,
       AbstractDeviceModel<Keyence_t>(),
       Laser_PORT(port)
 {
+    NQLog("LaserModel") << "[LaserModel::LaserModel]";
     laserHead_ = 2; //note: head A = 2
 }
 
 void LaserModel::setLaserHead(int out)
 {
+    NQLog("LaserModel") << "[LaserModel::setLaserHead]";
     laserHead_ = out;
 }
 
 void LaserModel::setSamplingRate(int mode)
 {
+    NQLog("LaserModel") << "[LaserModel::setSamplingRate]";
     controller_->SetSamplingRate(mode);
 }
 
 void LaserModel::setAveraging(int mode)
 {
+    NQLog("LaserModel") << "[setAveraging]";
     controller_->SetAveraging(laserHead_, mode);
 }
 
 void LaserModel::getMeasurement()
 {
+    NQLog("LaserModel") << "[getMeasurement]";
     double value = 0;
     controller_->MeasurementValueOutput(laserHead_, value);
+    NQLog("LaserModel") << "[getMeasurement] value = " << value;
     emit measurementChanged(value);
 }
 
 //dummy method for testing
 void LaserModel::setMeasurement(double value)
 {
-    NQLog("LaserModel") << "in set measurement";
+    NQLog("LaserModel") << "[setMeasurement]";
 
     emit measurementChanged(value);
 }
 
 void LaserModel::initialize()
 {
+    NQLog("LaserModel") << "[initialize]";
     setDeviceState(INITIALIZING);
 
     renewController(Laser_PORT);
@@ -63,6 +70,7 @@ void LaserModel::initialize()
 
 void LaserModel::setDeviceState( State state )
 {
+    NQLog("LaserModel") << "[setDeviceState]";
     if ( state_ != state ) {
         state_ = state;
 

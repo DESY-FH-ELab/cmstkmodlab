@@ -13,7 +13,7 @@
 */
 KeyenceComHandler::KeyenceComHandler(ioport_t ioPort)
 {
-    //    std::cout<<"[KeyenceComHandler] begin constructor"<<std::endl;
+    std::cout<<"[KeyenceComHandler] begin constructor"<<std::endl;
     // save ioport 
     fIoPort = ioPort;
     
@@ -35,7 +35,7 @@ KeyenceComHandler::~KeyenceComHandler( void )
 //! Send the command string &lt;commandString&gt; to device.
 void KeyenceComHandler::SendCommand( const char *commandString )
 {
-  //std::cout<<"[KeyenceComHandler::SendCommand] fdeviceavailable = "<<fDeviceAvailable<<std::endl;
+    std::cout<<"[KeyenceComHandler::SendCommand] fdeviceavailable = "<<fDeviceAvailable<<std::endl;
   if (!fDeviceAvailable) return;
 
   // std::cout<<"[KeyenceComHandler::SendCommand] device available"<<std::endl;
@@ -68,7 +68,7 @@ std::string KeyenceComHandler::ReceiveString( int samplingRate, int averagingRat
 {
   std::string receiveString;
 
-  //  std::cout<<"in KeyenceComHandler receive string"<<std::endl;
+  std::cout<<"in KeyenceComHandler receive string"<<std::endl;
 
   char *temp_output;
   if (!fDeviceAvailable) {
@@ -124,7 +124,7 @@ std::string KeyenceComHandler::ReceiveString( int samplingRate, int averagingRat
 */
 void KeyenceComHandler::OpenIoPort( void )
 {
-    //    std::cout<<"[KeyenceComHandler] begin OpenIoPort"<<std::endl;
+    std::cout<<"[KeyenceComHandler] begin OpenIoPort"<<std::endl;
     // open io port ( read/write | no term control | no DCD line check )
     fIoPortFileDescriptor = open( fIoPort, O_RDWR | O_NOCTTY  | O_NDELAY );
     
