@@ -10,8 +10,10 @@
 #include <QScrollArea>
 #include <QPushButton>
 #include <QLCDNumber>
+
 #include "LaserModel.h"
 #include "LaserWidget.h"
+#include "LaserThread.h"
 
 class LaserCommanderMainWindow : public QMainWindow
 {
@@ -36,7 +38,7 @@ class LaserCommanderMainWindow : public QMainWindow
      LaserModel* laserModel_;
      QPushButton* testButton_;
      LaserWidget* laserWidget_;
-
+     LaserThread* laserThread_;
      
  private:
      double value;

@@ -23,8 +23,12 @@ LaserCommanderMainWindow::LaserCommanderMainWindow(QWidget *parent)
   connect(QApplication::instance(), SIGNAL(aboutToQuit()),
           this, SLOT(quit()));
 
-  laserModel_ = new LaserModel(config->getValue<std::string>("KeyenceDevice").c_str(), this);
+  laserModel_ = new LaserModel(config->getValue<std::string>("KeyenceDevice").c_str());
   laserWidget_ = new LaserWidget();
+
+  laserThread_ = new LaserThread(this);
+  laserThread_->start();
+  laserModel_->moveToThread(laserThread_);
 
   QWidget *widget = new QWidget(this);
 
@@ -55,12 +59,22 @@ LaserCommanderMainWindow::LaserCommanderMainWindow(QWidget *parent)
   connect(laserWidget_, SIGNAL(finished()),
           this, SLOT(repaint()));
 
+  QTimer::singleShot(1000, laserModel_, SLOT(setDeviceEnabled()));
+
   NQLog("LaserCommanderMainWindow") << "main window constructed";
 }
 
 void LaserCommanderMainWindow::quit()
 {
   NQLog("LaserCommanderMainWindow") << "quit";
+
+  if (laserThread_) {
+      laserThread_->quit();
+      laserThread_->wait();
+  }
+
+  laserModel_->setDeviceEnabled(false);
+
 }
 
 void LaserCommanderMainWindow::updateD()

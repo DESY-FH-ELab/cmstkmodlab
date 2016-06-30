@@ -80,7 +80,8 @@ HEADERS += AssemblyVUEyeCamera.h \
            LStepExpressMeasurementWidget.h \
            LStepExpressMeasurementTable.h \
            LaserModel.h \
-           LaserWidget.h 
+           LaserWidget.h \
+           LaserThread.h
 
 equals(USEFAKEDEVICES,"X0") {
 HEADERS += AssemblyUEyeCamera.h \
@@ -112,7 +113,8 @@ SOURCES += AssemblyVUEyeCamera.cc \
            LStepExpressMeasurementWidget.cc \
            LStepExpressMeasurementTable.cc \
            LaserModel.cc \
-           LaserWidget.cc 
+           LaserWidget.cc \
+           LaserThread.cc
 
 equals(USEFAKEDEVICES,"X0") {
 SOURCES += AssemblyUEyeCamera.cc \

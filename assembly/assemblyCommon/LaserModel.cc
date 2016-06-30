@@ -12,6 +12,11 @@ LaserModel::LaserModel(const char* port,
 {
     NQLog("LaserModel") << "[LaserModel::LaserModel]";
     laserHead_ = 2; //note: head A = 2
+
+    timer_ = new QTimer(this);
+    timer_->setInterval(100);
+    connect(timer_, SIGNAL(timeout()), this, SLOT(updateInformation()));
+    value_ = 0;
 }
 
 void LaserModel::setLaserHead(int out)
@@ -32,13 +37,21 @@ void LaserModel::setAveraging(int mode)
     controller_->SetAveraging(laserHead_, mode);
 }
 
+void LaserModel::updateInformation()
+{
+    getMeasurement();
+}
+
 void LaserModel::getMeasurement()
 {
     NQLog("LaserModel") << "[getMeasurement]";
-    double value = 0;
-    controller_->MeasurementValueOutput(laserHead_, value);
-    NQLog("LaserModel") << "[getMeasurement] value = " << value;
-    emit measurementChanged(value);
+    double ivalue = 0;
+    controller_->MeasurementValueOutput(laserHead_, ivalue);
+    NQLog("LaserModel") << "[getMeasurement] value = " << ivalue;
+    if(ivalue != value_){
+        value_ = ivalue;
+        emit measurementChanged(value_);
+    }
 }
 
 //dummy method for testing
@@ -82,5 +95,12 @@ void LaserModel::setDeviceState( State state )
 
         emit deviceStateChanged(state);
     }
+}
+
+void LaserModel::setDeviceEnabled(bool enabled)
+{
+    NQLog("LaserModel", NQLog::Debug) << "setDeviceEnabled(bool enabled)";
+
+    AbstractDeviceModel<Keyence_t>::setDeviceEnabled(enabled);
 }
 

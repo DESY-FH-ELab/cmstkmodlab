@@ -36,6 +36,7 @@ public:
 
 public slots:
 
+    void setDeviceEnabled(bool enabled = true);
     void getMeasurement();
 
 protected:
@@ -45,12 +46,17 @@ protected:
     void initialize();
     
     QMutex mutex_;
+    QTimer* timer_;
     
     void setDeviceState( State state );
     
     int laserHead_;
 
+    double value_;
+
 protected slots:
+
+    void updateInformation();
         
 signals:
     
