@@ -30,16 +30,17 @@
 #include "../../devices/Conrad/ConradController.h"
 
 
+
 class AssemblyModuleAssembler : public QWidget
 {
     Q_OBJECT
+    
 public:
 
     explicit AssemblyModuleAssembler(QWidget *parent = 0);
     void connectImageProducer(const QObject* sender, const char* signal);
     void disconnectImageProducer(const QObject* sender, const char* signal);
     double pickup_position;
-    //QPushButton* button1 =  new QPushButton(qname, this);
     QLineEdit * lE1;
     QLineEdit * lE2;
     QLineEdit * lE3;
@@ -73,7 +74,6 @@ protected:
     
     QScrollArea *scrollArea_6;
     AssemblyUEyeView *imageView_6;
-    
     
     cv::Mat image_;
 
@@ -121,14 +121,12 @@ signals:
 
 
 
-
-
 class AssemblyAttacher : public QWidget
 {
     Q_OBJECT
 public:
     
-    explicit AssemblyAttacher(QWidget *parent = 0, std::string ="test", double drop =0.0, int =0);
+    explicit AssemblyAttacher(AssemblyModuleAssembler *parent = 0, std::string ="test", double drop =0.0, int =0);
     double local_drop;
     QPushButton* button1;
     QLineEdit *lineEdit1;
@@ -155,35 +153,18 @@ public:
     double local_x, local_y, local_z, local_a;
     QPushButton* button1;
     QLineEdit *lineEdit1;
-    //   void connectImageProducer(const QObject* sender, const char* signal);
-    //  void disconnectImageProducer(const QObject* sender, const char* signal);
-    
-    //  double pickup_position;
     
     
 protected:
     
-    // void keyReleaseEvent(QKeyEvent *event);
-    
-    // QScrollArea *scrollArea_;
-    // AssemblyUEyeView *imageView_;
-    
-    //cv::Mat image_;
-    
     public slots:
-    
-    //void snapShot();
-    //void imageAcquired(const cv::Mat&);
-   // void goToTarget();
-   // void updateText(double,double,double);
-    void checkMount();
+        void checkMount();
     
 signals:
     void moveAbsolute(double,double,double,double);
     void moveRelative(double,double,double,double);
     void locateCorner(int);
     void reportCornerLocation(int);
-    
     
 };
 
@@ -198,36 +179,17 @@ public:
     double local_x, local_y, local_z, local_a;
     QPushButton* button1;
     QLineEdit *lineEdit1;
- //   void connectImageProducer(const QObject* sender, const char* signal);
-  //  void disconnectImageProducer(const QObject* sender, const char* signal);
-    
-  //  double pickup_position;
     
     
 protected:
-    
-   // void keyReleaseEvent(QKeyEvent *event);
-    
-   // QScrollArea *scrollArea_;
-   // AssemblyUEyeView *imageView_;
-    
-    //cv::Mat image_;
-    
-public slots:
-    
-    //void snapShot();
-    //void imageAcquired(const cv::Mat&);
+    public slots:
       void goToTarget();
-   // void updateText(double,double,double);
-
     
 signals:
    void moveAbsolute(double,double,double,double);
     
     
 };
-
-
 
 
 class AssemblyAlligner : public QWidget
@@ -239,34 +201,16 @@ public:
     double local_x, local_y, local_z, local_a;
     QPushButton* button1;
     QLineEdit *lineEdit1;
-    //   void connectImageProducer(const QObject* sender, const char* signal);
-    //  void disconnectImageProducer(const QObject* sender, const char* signal);
-    
-    //  double pickup_position;
-    
-    
+
+
 protected:
-    
-    // void keyReleaseEvent(QKeyEvent *event);
-    
-    // QScrollArea *scrollArea_;
-    // AssemblyUEyeView *imageView_;
-    
-    //cv::Mat image_;
-    
     public slots:
-    
-    //void snapShot();
-    //void imageAcquired(const cv::Mat&);
-    void allign();
-    void setDown();
-   // void locateSensor();
+        void allign();
+        void setDown();
     
 signals:
     void moveRelative(double,double,double,double);
-    //void setDown();
     void locateSetdowncorner(int);
-
     
 };
 
@@ -284,43 +228,21 @@ public:
     QLineEdit *lineEdit1;
     QLabel* ql;
     
-    //   void connectImageProducer(const QObject* sender, const char* signal);
-    //  void disconnectImageProducer(const QObject* sender, const char* signal);
-    
-    //  double pickup_position;
-    
     
 protected:
-    
-    // void keyReleaseEvent(QKeyEvent *event);
-    
-    // QScrollArea *scrollArea_;
-    // AssemblyUEyeView *imageView_;
-    
-    //cv::Mat image_;
-    
     public slots:
-    
-    //void snapShot();
-    //void imageAcquired(const cv::Mat&);
-    void locateSensor(int);
-    void foundsensor(int);
-    void locatePickup();
+        void locateSensor(int);
+        void foundsensor(int);
+        void locatePickup();
 
     
 signals:
- //   void moveRelative(double,double,double,double);
     void updateImage(int, std::string);
     void foundSensor(int);
     void sendPosition(int, double, double, double);
     void locatePickupCorner(int);
     
 };
-
-
-
-
-
 
 
 

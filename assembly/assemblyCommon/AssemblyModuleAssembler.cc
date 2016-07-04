@@ -28,9 +28,7 @@ AssemblyModuleAssembler::AssemblyModuleAssembler(QWidget *parent)
     LStepExpressModel* lStepExpressModel_ = new LStepExpressModel(config->getValue<std::string>("LStepExpressDevice").c_str(),1000, 100);
     LStepExpressMotionManager* motionManager_ = new LStepExpressMotionManager(lStepExpressModel_);
     lStepExpressModel_->initialize();
-    
-    
-    
+
     
     QGridLayout *l = new QGridLayout(this);
     setLayout(l);
@@ -144,12 +142,9 @@ AssemblyModuleAssembler::AssemblyModuleAssembler(QWidget *parent)
     scrollArea_5->setWidget(imageView_5);
     scrollArea_5->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
     
-    //g0->addWidget(scrollArea_5,1,1);
-    
     g0->addWidget(scrollArea_5,2,1);
     lE5 = new QLineEdit("Mntd pos. (cor. 4) = X,X,X");
     g0->addWidget(lE5,3,1);
-    
 
     
     imageView_6 = new AssemblyUEyeView();
@@ -192,16 +187,11 @@ AssemblyModuleAssembler::AssemblyModuleAssembler(QWidget *parent)
     lctr1->setToolTip("(3) Acquires image from mobile camera, runs PatRec routine to deduce and report sensor (x,y,z,phi) postion");
     g1->addWidget(lctr1,3,0);   
  
-    connect(lctr1, SIGNAL(sendPosition(int, double,double,double)), this, SLOT(updateText(int,double,double,double)));
-    
-    connect(lctr1, SIGNAL(updateImage(int, std::string)), this, SLOT( updateImage(int,std::string)));
-    connect(lctr1, SIGNAL(foundSensor(int)), lctr1, SLOT( foundsensor(int)));
 
     AssemblyCommander * cmdr2 = new AssemblyCommander(this, "Correct position", 100.0,100.0,100.0,100.0, 0);
-    cmdr2->setToolTip("(4) Hmmmmm");
+    cmdr2->setToolTip("(4) Corrects arm position using relative displacement using (eventually) pre-calculated displacment from PatRec");
     g1->addWidget(cmdr2,4,0);
     
-   // connect(lctr1, SIGNAL(sendPosition(int, double, double, double)), cmdr2, SLOT(updateText(int, double, double, double)));
     
     AssemblyAttacher * attacher1 = new AssemblyAttacher(this, "Drop/Raise", 10.0,0);
     g1->addWidget(attacher1,5,0);
@@ -229,9 +219,33 @@ AssemblyModuleAssembler::AssemblyModuleAssembler(QWidget *parent)
     AssemblyAlligner * cmdr8 = new AssemblyAlligner(this, "Align", 0.0,0);
     g1->addWidget(cmdr8, 11, 0);
     
-    connect(cmdr8, SIGNAL(locateSetdowncorner(int)), lctr1, SLOT( locateSensor(int)));
-
     
+    //make all the neccessary connections
+   
+    connect(attacher1, SIGNAL(moveRelative(double,double,double,double)),
+            motionManager_, SLOT(moveRelative(double,double,double,double)));
+    connect(cmdr0, SIGNAL(moveAbsolute(double,double,double,double)),
+            motionManager_, SLOT(moveAbsolute(double,double,double,double)));
+    connect(cmdr1, SIGNAL(moveAbsolute(double,double,double,double)),
+            motionManager_, SLOT(moveAbsolute(double,double,double,double)));
+    connect(cmdr2, SIGNAL(moveAbsolute(double,double,double,double)),
+            motionManager_, SLOT(moveRelative(double,double,double,double)));
+    connect(cmdr4, SIGNAL(moveAbsolute(double,double,double,double)),
+            motionManager_, SLOT(moveAbsolute(double,double,double,double)));
+    connect(cmdr5, SIGNAL(moveAbsolute(double,double,double,double)),
+            motionManager_, SLOT(moveAbsolute(double,double,double,double)));
+    connect(cmdr6, SIGNAL(moveAbsolute(double,double,double,double)),
+            motionManager_, SLOT(moveAbsolute(double,double,double,double)));
+    connect(cmdr7, SIGNAL(moveAbsolute(double,double,double,double)),
+            motionManager_, SLOT(moveAbsolute(double,double,double,double)));
+    connect(cmdr8, SIGNAL(moveRelative(double,double,double,double)),
+            motionManager_, SLOT(moveRelative(double,double,double,double)));
+    connect(cmdr8, SIGNAL(locateSetdowncorner(int)), lctr1, SLOT( locateSensor(int)));
+    
+    connect(lctr1, SIGNAL(sendPosition(int, double,double,double)), this, SLOT(updateText(int,double,double,double)));
+    
+    connect(lctr1, SIGNAL(updateImage(int, std::string)), this, SLOT( updateImage(int,std::string)));
+    connect(lctr1, SIGNAL(foundSensor(int)), lctr1, SLOT( foundsensor(int)));
 
     
 
@@ -485,13 +499,14 @@ void AssemblyVacuumToggler::toggleVacuum()
 
 
 
-AssemblyAttacher::AssemblyAttacher(QWidget *parent, std::string string, double drop,  int mode)
-: QWidget(parent), local_drop(drop)
+AssemblyAttacher::AssemblyAttacher(AssemblyModuleAssembler *parent, std::string string, double drop, int mode)
+: local_drop(drop)
 {
+
+    
     QFormLayout *ll = new QFormLayout(this);
     setLayout(ll);
     
-    NQLog("AssemblyAttacher") << ": in mode" << mode;
 
     std::ostringstream strs;
     strs.clear();
@@ -509,8 +524,7 @@ AssemblyAttacher::AssemblyAttacher(QWidget *parent, std::string string, double d
     
     connect(button1, SIGNAL(clicked()),
             this, SLOT(dropAttach()));
-    
-    
+
 }
 
 
@@ -520,24 +534,10 @@ void AssemblyAttacher::dropAttach(){
     //parse lineEdit text to get target coordinates
     QString  parent_string = this->lineEdit1->text();
 
-    
     double d_d = parent_string.toDouble();
-
-    NQLog("AssemblyAttacher::dropAttach") << d_d;
-    
-    
-    ApplicationConfig* config = ApplicationConfig::instance();
-    LStepExpressModel* lStepExpressModel_ = new LStepExpressModel(config->getValue<std::string>("LStepExpressDevice").c_str(),1000, 100);
-  //  LStepExpressSettings* lStepExpressSettings_ = new LStepExpressSettings(lStepExpressModel_);
-    LStepExpressMotionManager* motionManager_ = new LStepExpressMotionManager(lStepExpressModel_);
-    lStepExpressModel_->initialize();
-    
-    connect(this, SIGNAL(moveRelative(double,double,double,double)), motionManager_, SLOT(moveRelative(double,double,double,double)));
     
     
     NQLog("AssemblyUEyeCameraSettingsMotionInterface") <<" requesting move... ";
-    
-    //  if( lStepExpressModel_) lStepExpressModel_->moveRelative( 1.0, 1.0, 0.0, -10.0);
     
     emit moveRelative(0.0,0.0,-d_d, 0.0);
     
@@ -604,14 +604,6 @@ void AssemblyMountChecker::checkMount(){
     
     NQLog("AssemblyMountChecker") << ": going to target (parsed) "<< x_d<<" "<< y_d<<"  "<< z_d;
     
-    
-    ApplicationConfig* config = ApplicationConfig::instance();
-    LStepExpressModel* lStepExpressModel_ = new LStepExpressModel(config->getValue<std::string>("LStepExpressDevice").c_str(),1000, 100);
-    // LStepExpressSettings* lStepExpressSettings_ = new LStepExpressSettings(lStepExpressModel_);
-    LStepExpressMotionManager* motionManager_ = new LStepExpressMotionManager(lStepExpressModel_);
-    lStepExpressModel_->initialize();
-    
-    connect(this, SIGNAL(moveAbsolute(double,double,double,double)), motionManager_, SLOT(moveAbsolute(double,double,double,double)));
     
     
     NQLog("AssemblyMountChecker") <<" requesting move... ";
@@ -681,8 +673,6 @@ AssemblyCommander::AssemblyCommander(QWidget *parent, std::string string, double
 
 void AssemblyCommander::goToTarget(){
     
-
-    
     //parse lineEdit text to get target coordinates
     QString  parent_string = this->lineEdit1->text();
     
@@ -698,25 +688,13 @@ void AssemblyCommander::goToTarget(){
     double a_d = a.toDouble();
 
     
-    NQLog("AssemblyUEyeCameraSettingsMotionInterface") << ": going to target (parsed) "<< x_d<<" "<< y_d<<"  "<< z_d;
+    NQLog("AssemblyCommander:goToTarget") << ": going to target (parsed) "<< x_d<<" "<< y_d<<"  "<< z_d;
     
+    NQLog("AssemblyCommander:goToTarget") <<" requesting move...";
     
-    ApplicationConfig* config = ApplicationConfig::instance();
-    LStepExpressModel* lStepExpressModel_ = new LStepExpressModel(config->getValue<std::string>("LStepExpressDevice").c_str(),1000, 100);
-   // LStepExpressSettings* lStepExpressSettings_ = new LStepExpressSettings(lStepExpressModel_);
-    LStepExpressMotionManager* motionManager_ = new LStepExpressMotionManager(lStepExpressModel_);
-    lStepExpressModel_->initialize();
-    
-    connect(this, SIGNAL(moveAbsolute(double,double,double,double)), motionManager_, SLOT(moveAbsolute(double,double,double,double)));
-   
-
-    NQLog("AssemblyUEyeCameraSettingsMotionInterface") <<" requesting move... ";
-    
-    //  if( lStepExpressModel_) lStepExpressModel_->moveRelative( 1.0, 1.0, 0.0, -10.0);
-
     emit moveAbsolute(x_d, y_d, z_d, a_d);
     
-    NQLog("AssemblyUEyeCameraSettingsMotionInterface") <<"move requested ";
+    NQLog("AssemblyCommander:goToTarget") <<"move requested...";
     
 }
 
@@ -777,21 +755,9 @@ void AssemblyAlligner::allign(){
     double a_d = parent_string.toDouble();
     
     
-    NQLog("AssemblyUEyeCameraSettingsMotionInterface") << ": going to target allignment (parsed) "<< a_d<<" ";
+    NQLog("AssemblyAlligner:allign") << ": going to target allignment (parsed) "<< a_d<<" ";
     
-    
-    ApplicationConfig* config = ApplicationConfig::instance();
-    LStepExpressModel* lStepExpressModel_ = new LStepExpressModel(config->getValue<std::string>("LStepExpressDevice").c_str(),1000, 100);
-    LStepExpressSettings* lStepExpressSettings_ = new LStepExpressSettings(lStepExpressModel_);
-    LStepExpressMotionManager* motionManager_ = new LStepExpressMotionManager(lStepExpressModel_);
-    lStepExpressModel_->initialize();
-    
-    connect(this, SIGNAL(moveRelative(double,double,double,double)), motionManager_, SLOT(moveRelative(double,double,double,double)));
-    
-    
-    NQLog("AssemblyUEyeCameraSettingsMotionInterface") <<" requesting move... ";
-    
-    //  if( lStepExpressModel_) lStepExpressModel_->moveRelative( 1.0, 1.0, 0.0, -10.0);
+    NQLog("AssemblyAlligner:allign") <<" requesting move... ";
     
     emit moveRelative(0.0, 0.0, 0.0, a_d);
     
@@ -799,8 +765,6 @@ void AssemblyAlligner::allign(){
     
     
 }
-
-
 
 
 
