@@ -67,10 +67,10 @@ LaserCommanderMainWindow::LaserCommanderMainWindow(QWidget *parent)
 
 LaserCommanderMainWindow::~LaserCommanderMainWindow()
 {
-    delete laserModel_;
-    delete testButton_;
-    delete laserWidget_;
-    delete laserThread_;
+  if(laserModel_){ delete laserModel_; laserModel_ = NULL;}
+  if(testButton_){ delete testButton_; testButton_ = NULL;}
+  if(laserWidget_){ delete laserWidget_; laserWidget_ = NULL;}
+  if(laserThread_){ delete laserThread_; laserThread_ = NULL;}
 }
 
 void LaserCommanderMainWindow::quit()

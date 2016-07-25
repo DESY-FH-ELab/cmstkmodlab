@@ -25,7 +25,7 @@ Keyence::Keyence( const ioport_t ioPort )
 
 Keyence::~Keyence()
 {
-  delete comHandler_;
+  if(comHandler_) {delete comHandler_; comHandler_ = NULL;}
 }
 
 bool Keyence::DeviceAvailable() const
@@ -235,7 +235,7 @@ void Keyence::MeasurementValueOutput(int out, double & value)
     //    this->SetValue(command, value1);
     //std::ostringstream os;
     //os << "M" << out << ",";
-    //std::cout<< os.str() << std::endl;                                                                                                                                                                    
+    //std::cout<< os.str() << std::endl;                                                                                                                              
     //this->SendCommand(os.str());
     //std::string buffer;
     //std::string s_temp = response.substr(3, 8);

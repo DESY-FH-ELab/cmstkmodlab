@@ -2,6 +2,7 @@
 #define DEVICESTATE_H
 
 #include <QObject>
+#include <iostream>
 
 /**
   \brief Enumeration of possible states the device communication can be in.
@@ -25,14 +26,15 @@ enum State {
 template <class Controller> class AbstractDeviceModel
 {
  public:
-  explicit AbstractDeviceModel() : controller_(NULL), state_(OFF) {}
-  virtual ~AbstractDeviceModel() { destroyController(); }
+  explicit AbstractDeviceModel() : controller_(NULL), state_(OFF) { std::cout<<"[AbstractDeviceModel::constructor]"<<std::endl;}
+  virtual ~AbstractDeviceModel() { std::cout<<"[AbstractDeviceModel::destructor]"<<std::endl; destroyController(); }
 
   /// Returns the current (cached) state of the device.
-  const State& getDeviceState() const { return state_; }
+  const State& getDeviceState() const { std::cout<<"[AbstractDeviceModel::getDeviceState"<<std::endl; return state_; }
 
   /// Attempts to enable/disable the (communication with) the device.
   virtual void setDeviceEnabled( bool enabled ) {
+    std::cout<<"[AbstractDeviceModel::setDeviceEnabled]"<<std::endl;
      // To be enabled and off
     if (enabled && state_ == OFF)
       initialize();
@@ -52,12 +54,14 @@ protected:
 
   /// Renews the current Controller* for the given port.
   virtual void renewController( const QString& port ) {
+    std::cout<<"[AbstractDeviceModel::renewController]"<<std::endl;
     if ( controller_ ) delete controller_;
     controller_ = new Controller( port.toStdString().c_str() );
   }
 
   /// Destroys the current Controller* and sets it to NULL
   virtual void destroyController() {
+    std::cout<<"[AbstractDeviceModel::renewController]"<<std::endl;
     delete controller_;
     controller_ = NULL;
   }
@@ -71,6 +75,7 @@ protected:
     extend this with on-device clean up.
     */
   virtual void close() {
+    std::cout<<"[AbstractDeviceModel::close]"<<std::endl;
     if ( state_ == READY ) {
       setDeviceState( CLOSING );
       destroyController();

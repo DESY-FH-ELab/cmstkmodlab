@@ -130,4 +130,4 @@ Keyence.o Keyence.d: Keyence.cpp /usr/include/stdc-predef.h /usr/include/unistd.
  /usr/include/x86_64-linux-gnu/bits/stat.h /usr/include/fcntl.h \
  /usr/include/x86_64-linux-gnu/bits/fcntl.h \
  /usr/include/x86_64-linux-gnu/bits/fcntl-linux.h \
- /usr/include/x86_64-linux-gnu/bits/uio.h
+ /usr/include/x86_64-linux-gnu/bits/uio.h /usr/include/string.h

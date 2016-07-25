@@ -21,7 +21,7 @@ LaserModel::LaserModel(const char* port,
 
 LaserModel::~LaserModel()
 {
-    delete timer_;
+  if(timer_) {delete timer_; timer_ = NULL;}
 }
 
 void LaserModel::setLaserHead(int out)
@@ -113,5 +113,7 @@ void LaserModel::setDeviceEnabled(bool enabled)
     NQLog("LaserModel", NQLog::Debug) << "setDeviceEnabled(bool enabled)";
 
     AbstractDeviceModel<Keyence_t>::setDeviceEnabled(enabled);
+
+    std::cout<<"after"<<std::endl;
 }
 

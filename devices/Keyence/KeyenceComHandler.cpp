@@ -71,18 +71,22 @@ std::string KeyenceComHandler::ReceiveString( int samplingRate, int averagingRat
   std::cout<<"in KeyenceComHandler receive string"<<std::endl;
 
   char *temp_output;
+
+  std::cout<<"temp_output = "<<*temp_output<<std::endl;
+
   if (!fDeviceAvailable) {
-      //    temp_output[0] = 0;
+    std::cout<<"[KeyenceComHandler::ReceiveString] device not available"<<std::endl;
+    //delete temp_output;
     return "";
   }
 
-  //  std::cout<<"in KeyenceComHandler device available"<<std::endl;
+  std::cout<<"in KeyenceComHandler device available"<<std::endl;
 
-  temp_output[0] = 0;
+  //temp_output[0] = 0;
 
   usleep( 5000 );
 
-  //  std::cout<<"in KeyenceComHandler after sleep"<<std::endl;
+  std::cout<<"in KeyenceComHandler after sleep"<<std::endl;
 
   int timeout = 0;
   size_t readResult = 0;
@@ -90,17 +94,19 @@ std::string KeyenceComHandler::ReceiveString( int samplingRate, int averagingRat
   while ( timeout < limit)  {
 
     readResult = read( fIoPortFileDescriptor, temp_output, 1024 );
-    //std::cout<<"readResult = "<<readResult<<std::endl;
+    std::cout<<"readResult = "<<readResult<<std::endl;
     if ( readResult > 0 ) {
-      //std::cout<<"temp_output = "<<temp_output<<std::endl;
+      std::cout<<"temp_output = "<<temp_output<<std::endl;
       receiveString += std::string(temp_output, readResult);
       if(receiveString.find(13) != std::string::npos){
 	//received end of command
+	std::cout<<"[KeyenceComHandler::ReceiveString] end of command string received = "<<receiveString<<std::endl;
 	break;
       }
     }
     usleep ( 5 );
     readResult = 0;
+    std::cout<<"[KeyenceComHandler::ReceiveString] before clearing temp_output"<<std::endl;
     temp_output[0] = 0;
     timeout++;
   }
@@ -115,7 +121,8 @@ std::string KeyenceComHandler::ReceiveString( int samplingRate, int averagingRat
       return "";
   }
 
-  delete temp_output;
+  //  delete temp_output;
+  //  if(temp_output){ std::cout<<"safely delete"<<std::endl; delete temp_output; std::cout<<"after delete"<<std::endl; temp_output = NULL;}
   return receiveString;
 }
 
