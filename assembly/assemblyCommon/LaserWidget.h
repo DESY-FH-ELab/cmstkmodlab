@@ -20,6 +20,7 @@ class LaserWidget : public QLCDNumber
 
 public:
     LaserWidget(QWidget *parent = 0);
+    ~LaserWidget();
 
 signals:
         void finished();

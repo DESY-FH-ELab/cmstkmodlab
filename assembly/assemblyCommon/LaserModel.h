@@ -28,6 +28,7 @@ public:
 
     explicit LaserModel(const char* port,
                                QObject *parent = 0);
+    ~LaserModel();
 
     void setSamplingRate(int mode);
     void setAveraging(int mode);

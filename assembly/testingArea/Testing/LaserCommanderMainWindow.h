@@ -20,6 +20,7 @@ class LaserCommanderMainWindow : public QMainWindow
     Q_OBJECT
  public:
     explicit LaserCommanderMainWindow(QWidget *parent = 0);
+    ~LaserCommanderMainWindow();
 
     public slots:
 

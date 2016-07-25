@@ -8,6 +8,10 @@ LaserWidget::LaserWidget(QWidget *parent)
     NQLog("LaserWidget") << "[LaserWidget]";
 }
 
+LaserWidget::~LaserWidget()
+{
+}
+
 void LaserWidget::updateDisplay(double value)
 {
     NQLog("LaserWidget") << "[updateDisplay]";

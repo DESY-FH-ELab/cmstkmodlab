@@ -27,8 +27,8 @@ LaserCommanderMainWindow::LaserCommanderMainWindow(QWidget *parent)
   laserWidget_ = new LaserWidget();
 
   laserThread_ = new LaserThread(this);
-  laserThread_->start();
   laserModel_->moveToThread(laserThread_);
+  laserThread_->start();
 
   QWidget *widget = new QWidget(this);
 
@@ -41,9 +41,10 @@ LaserCommanderMainWindow::LaserCommanderMainWindow(QWidget *parent)
 
   setCentralWidget(widget);
 
-  QThread *thread = new QThread();
-  laserModel_->moveToThread(thread);
-  laserWidget_->moveToThread(thread);
+  //QThread *thread = new QThread();
+  //NQLog("LaserCommanderMainWindow") << "QThread current thread = " << thread->currentThread();
+  //laserModel_->moveToThread(thread);
+  //laserWidget_->moveToThread(thread);
 
   connect(testButton_, SIGNAL(clicked()),
           this, SLOT(testManager()));
@@ -62,6 +63,14 @@ LaserCommanderMainWindow::LaserCommanderMainWindow(QWidget *parent)
   QTimer::singleShot(1000, laserModel_, SLOT(setDeviceEnabled()));
 
   NQLog("LaserCommanderMainWindow") << "main window constructed";
+}
+
+LaserCommanderMainWindow::~LaserCommanderMainWindow()
+{
+    delete laserModel_;
+    delete testButton_;
+    delete laserWidget_;
+    delete laserThread_;
 }
 
 void LaserCommanderMainWindow::quit()
@@ -99,7 +108,7 @@ void LaserCommanderMainWindow::testManager()
   //laserWidget_->display(11);
 
   int run = 0;
-  while(run < 10000)
+  while(run < 1000)
       {
           laserModel_->getMeasurement();
           usleep(2000);

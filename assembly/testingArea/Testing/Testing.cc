@@ -57,9 +57,10 @@ int main( int argc, char** argv )
     ApplicationConfig::instance(std::string(Config::CMSTkModLabBasePath) + "/assembly/assembly.cfg");
 
     LaserCommanderMainWindow mainWindow;
-
     mainWindow.setWindowTitle(QString("laserCommander"));
     mainWindow.show();
+
+    delete logfile;
 
     return app.exec();
 }

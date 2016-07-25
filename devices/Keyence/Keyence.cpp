@@ -12,11 +12,14 @@ Keyence::Keyence( const ioport_t ioPort )
   :VKeyence(ioPort),
    isDeviceAvailable_(false)
 {
+    samplingRate_ = 20;
+    averagingRate_ = 1;
+    std::cout<<"[Keyence] sampling rate set to = "<<samplingRate_<<std::endl;
+    std::cout<<"[Keyence] averaging rate set to = "<<averagingRate_<<std::endl;
+
     std::cout<<"[Keyence] begin constructor"<<std::endl;
     comHandler_ = new KeyenceComHandler( ioPort );
     DeviceInit();
-    samplingRate_ = 20;
-    averagingRate_ = 1;
     //    std::cout<<"[Keyence] end constructor"<<std::endl;
 }
 
@@ -141,6 +144,8 @@ void Keyence::SetSamplingRate(int mode)
         default : samplingRate_ = 20; 
         }
     }
+
+    std::cout<<"[Keyence::SetSamplingRate] sampling rate set to = "<<samplingRate_<<std::endl;
     ChangeToCommunicationMode(false);
 }
 
@@ -182,6 +187,7 @@ void Keyence::SetAveraging(int out, int mode)
         default : averagingRate_ = 1;
         }
     }
+    std::cout<<"[Keyence::SetAveraging] averaging rate set to = "<<averagingRate_<<std::endl;
     ChangeToCommunicationMode(false);
 }
 
@@ -265,7 +271,8 @@ void Keyence::PanelLock(int status)
 
 void Keyence::StripBuffer(std::string &buffer) const
 {
-  if(buffer.at(buffer.size() - 1) == '\r'){buffer.erase(buffer.size() - 1);}
+    if(buffer.size() == 0){return;}
+    if(buffer.at(buffer.size() - 1) == '\r'){buffer.erase(buffer.size() - 1);}
 }
 
 //No version checking for Keyence laser available

@@ -72,7 +72,7 @@ std::string KeyenceComHandler::ReceiveString( int samplingRate, int averagingRat
 
   char *temp_output;
   if (!fDeviceAvailable) {
-    temp_output[0] = 0;
+      //    temp_output[0] = 0;
     return "";
   }
 
@@ -115,6 +115,7 @@ std::string KeyenceComHandler::ReceiveString( int samplingRate, int averagingRat
       return "";
   }
 
+  delete temp_output;
   return receiveString;
 }
 

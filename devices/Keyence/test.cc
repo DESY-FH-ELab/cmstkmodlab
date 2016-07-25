@@ -39,5 +39,6 @@ int main()
   std::string value5;
   std::cout << "DataStorageStatus: "; laser.DataStorageStatus(value5);
   */
+
   return 0;
 }

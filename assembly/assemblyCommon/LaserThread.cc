@@ -10,6 +10,10 @@ LaserThread::LaserThread(QObject *parent)
 
 }
 
+LaserThread::~LaserThread()
+{
+}
+
 void LaserThread::run()
 {
     NQLog("LaserThread", NQLog::Debug) << "run";

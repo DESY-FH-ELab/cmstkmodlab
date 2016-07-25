@@ -10,6 +10,7 @@ class LaserThread : public QThread
  public:
 
     explicit LaserThread(QObject *parent = 0);
+    ~LaserThread();
 
     void run();
 };

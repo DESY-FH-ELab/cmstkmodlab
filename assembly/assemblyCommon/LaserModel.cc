@@ -19,6 +19,11 @@ LaserModel::LaserModel(const char* port,
     value_ = 0;
 }
 
+LaserModel::~LaserModel()
+{
+    delete timer_;
+}
+
 void LaserModel::setLaserHead(int out)
 {
     NQLog("LaserModel") << "[LaserModel::setLaserHead]";
@@ -27,12 +32,16 @@ void LaserModel::setLaserHead(int out)
 
 void LaserModel::setSamplingRate(int mode)
 {
+    if(state_ == OFF) return;
+
     NQLog("LaserModel") << "[LaserModel::setSamplingRate]";
     controller_->SetSamplingRate(mode);
 }
 
 void LaserModel::setAveraging(int mode)
 {
+    if(state_ == OFF) return;
+
     NQLog("LaserModel") << "[setAveraging]";
     controller_->SetAveraging(laserHead_, mode);
 }
@@ -44,6 +53,8 @@ void LaserModel::updateInformation()
 
 void LaserModel::getMeasurement()
 {
+    if(state_ == OFF) return;
+
     NQLog("LaserModel") << "[getMeasurement]";
     double ivalue = 0;
     controller_->MeasurementValueOutput(laserHead_, ivalue);
