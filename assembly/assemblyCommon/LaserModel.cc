@@ -17,6 +17,8 @@ LaserModel::LaserModel(const char* port,
     timer_->setInterval(100);
     connect(timer_, SIGNAL(timeout()), this, SLOT(updateInformation()));
     value_ = 0;
+    std::cout<<"[LaserModel::LaserModel] set device enabled"<< std::endl; AbstractDeviceModel<Keyence_t>::setDeviceEnabled(1);
+    std::cout<<"address of controller = "<<&controller_<<std::endl;
 }
 
 LaserModel::~LaserModel()

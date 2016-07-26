@@ -108,7 +108,7 @@ void LaserCommanderMainWindow::testManager()
   //laserWidget_->display(11);
 
   int run = 0;
-  while(run < 1000)
+  while(run < 100)
       {
           laserModel_->getMeasurement();
           usleep(2000);

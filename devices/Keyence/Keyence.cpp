@@ -52,6 +52,7 @@ void Keyence::ReceiveString(std::string & buffer)
   std::cout<<"[Keyence] temp = "<<&temp<<std::endl;
   //buffer = comHandler_->ReceiveString(samplingRate_, averagingRate_);
   comHandler_->ReceiveString(buffer, temp, samplingRate_, averagingRate_);
+  std::cout<<"before strip buffer = "<<buffer<<std::endl;
   StripBuffer(buffer);
   //buffer = buf;
   //  std::cout<< "[Keyence::ReceiveString] buffer = "<<buffer<<std::endl;
@@ -243,18 +244,19 @@ void Keyence::MeasurementValueOutput(int out, double & value)
     //std::string s_temp = response.substr(3, 8);
         //this->ReceiveString(buffer);
     if(response.substr(3,8).find("F") != std::string::npos){
-	std::cerr << "[Keyence::MeasurementValueOutput] ** ERROR: laser out of range, please adjust position "
-	          << std::endl;
-	return;
-    }
+      //std::cerr << "[Keyence::MeasurementValueOutput] ** ERROR: laser out of range, please adjust position "
+      //	          << std::endl;
+	value = 999;
+	//	return;
+    }else{
     std::istringstream is(response.substr(3,8));
     //std::cout<<"substring = "<<response.substr(3,8)<<std::endl;
     double temp;
     is >> temp;
     //std::cout<< "temp = "<<temp<<std::endl;
     value = temp;
-
-    //std::cout<<"value = "<<value<<std::endl;
+    }
+    std::cout<<"[Keyence::MeasurementValueOutput] value = "<<value<<std::endl;
     //    std::cout<<"measurement value test 2 "<<std::endl;
     //SetValue("M",out);
 }

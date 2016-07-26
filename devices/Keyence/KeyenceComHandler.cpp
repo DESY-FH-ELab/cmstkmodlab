@@ -35,7 +35,7 @@ KeyenceComHandler::~KeyenceComHandler( void )
 //! Send the command string &lt;commandString&gt; to device.
 void KeyenceComHandler::SendCommand( const char *commandString )
 {
-    std::cout<<"[KeyenceComHandler::SendCommand] fdeviceavailable = "<<fDeviceAvailable<<std::endl;
+  //    std::cout<<"[KeyenceComHandler::SendCommand] fdeviceavailable = "<<fDeviceAvailable<<std::endl;
   if (!fDeviceAvailable) return;
 
   // std::cout<<"[KeyenceComHandler::SendCommand] device available"<<std::endl;
@@ -64,31 +64,31 @@ void KeyenceComHandler::SendCommand( const char *commandString )
 
   See example program in class description.
 */
-void KeyenceComHandler::ReceiveString(std::string receiveString, char *temp_output, int samplingRate, int averagingRate )
+void KeyenceComHandler::ReceiveString(std::string & receiveString, char *temp_output, int samplingRate, int averagingRate )
 {
     //std::string receiveString;
 
-  std::cout<<"in KeyenceComHandler receive string"<<std::endl;
+  //  std::cout<<"in KeyenceComHandler receive string"<<std::endl;
 
   //  std::unique_ptr<char[]> temp_output;
   //  char *temp_output;
   //  temp_output = NULL;
 
-  std::cout<<"temp_output = "<<&temp_output<<std::endl;
+  //  std::cout<<"temp_output = "<<&temp_output<<std::endl;
 
   if (!fDeviceAvailable) {
-    std::cout<<"[KeyenceComHandler::ReceiveString] device not available"<<std::endl;
+    //std::cout<<"[KeyenceComHandler::ReceiveString] device not available"<<std::endl;
     //    return "";
     return;
   }
 
-  std::cout<<"in KeyenceComHandler device available"<<std::endl;
+  //  std::cout<<"in KeyenceComHandler device available"<<std::endl;
 
   temp_output[0] = 0;
 
   usleep( 5000 );
 
-  std::cout<<"in KeyenceComHandler after sleep"<<std::endl;
+  //  std::cout<<"in KeyenceComHandler after sleep"<<std::endl;
 
   int timeout = 0;
   size_t readResult = 0;
@@ -102,13 +102,13 @@ void KeyenceComHandler::ReceiveString(std::string receiveString, char *temp_outp
       receiveString += std::string(temp_output, readResult);
       if(receiveString.find(13) != std::string::npos){
 	//received end of command
-	std::cout<<"[KeyenceComHandler::ReceiveString] end of command string received = "<<receiveString<<std::endl;
+	//std::cout<<"[KeyenceComHandler::ReceiveString] end of command string received = "<<receiveString<<std::endl;
 	break;
       }
     }
     usleep ( 5 );
     readResult = 0;
-    std::cout<<"[KeyenceComHandler::ReceiveString] before clearing temp_output"<<std::endl;
+    //    std::cout<<"[KeyenceComHandler::ReceiveString] before clearing temp_output"<<std::endl;
     temp_output[0] = 0;
     timeout++;
   }
