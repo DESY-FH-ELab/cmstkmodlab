@@ -10,13 +10,16 @@ int main()
   double value = 0;
   //std::cout << "MeasurementValueOutput: \n"; laser.MeasurementValueOutput(1, value); std::cout << "value" << value << std::endl;
   std::cout << "MeasurementValueOutput 1: \n"; laser.MeasurementValueOutput(2, value); std::cout << "value" << value << std::endl;
+  
+  usleep(5000);
 
   std::cout << "MeasurementValueOutput 2: \n"; laser.MeasurementValueOutput(2, value); std::cout << "value" << value << std::endl;
+  std::cout << "MeasurementValueOutput 3: \n"; laser.MeasurementValueOutput(2, value); std::cout << "value" << value << std::endl;
   //std::cout << "PanelLock: \n"; laser.PanelLock(1);
   //std::cout << "PanelLock: \n"; laser.PanelLock(1);
   //std::cout << "SetSamplingRate: \n"; laser.SetSamplingRate(0);
   //std::cout << "SetSamplingRate: \n"; laser.SetSamplingRate(4);
-  //std::cout << "SetAveraging: \n"; laser.SetAveraging(1, 4);
+  std::cout << "SetAveraging: \n"; laser.SetAveraging(1, 4);
 
   /*
   std::cout << "Timing: "; laser.Timing(1, 0);
@@ -25,7 +28,7 @@ int main()
   std::cout << "AutoZero: "; laser.AutoZero(1, 1);
   */
   //std::cout << "Reset: \n"; laser.Reset(1);
-  int value2= 0;
+  //  int value2= 0;
   //std::cout << "ProgramCheck: \n"; laser.ProgramCheck(value2); std::cout << "value2 = " << value2 << std::endl;
   //std::cout << "ProgramChange: \n"; laser.ProgramChange(3);
   //std::cout << "ProgramCheck: \n"; laser.ProgramCheck(value2); std::cout << "value2 = " << value2 << std::endl;

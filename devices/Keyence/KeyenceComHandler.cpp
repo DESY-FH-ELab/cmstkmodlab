@@ -64,25 +64,27 @@ void KeyenceComHandler::SendCommand( const char *commandString )
 
   See example program in class description.
 */
-std::string KeyenceComHandler::ReceiveString( int samplingRate, int averagingRate )
+void KeyenceComHandler::ReceiveString(std::string receiveString, char *temp_output, int samplingRate, int averagingRate )
 {
-  std::string receiveString;
+    //std::string receiveString;
 
   std::cout<<"in KeyenceComHandler receive string"<<std::endl;
 
-  char *temp_output;
+  //  std::unique_ptr<char[]> temp_output;
+  //  char *temp_output;
+  //  temp_output = NULL;
 
-  std::cout<<"temp_output = "<<*temp_output<<std::endl;
+  std::cout<<"temp_output = "<<&temp_output<<std::endl;
 
   if (!fDeviceAvailable) {
     std::cout<<"[KeyenceComHandler::ReceiveString] device not available"<<std::endl;
-    //delete temp_output;
-    return "";
+    //    return "";
+    return;
   }
 
   std::cout<<"in KeyenceComHandler device available"<<std::endl;
 
-  //temp_output[0] = 0;
+  temp_output[0] = 0;
 
   usleep( 5000 );
 
@@ -118,12 +120,13 @@ std::string KeyenceComHandler::ReceiveString( int samplingRate, int averagingRat
   if ( timeout == limit ) {
       std::cerr << "[KeyenceComHandler::ReceiveString] ** ERROR: command timed out! "
 	    << std::endl;
-      return "";
+      //      return "";
+      return;
   }
 
-  //  delete temp_output;
-  //  if(temp_output){ std::cout<<"safely delete"<<std::endl; delete temp_output; std::cout<<"after delete"<<std::endl; temp_output = NULL;}
-  return receiveString;
+  //delete temp_output;
+  //if(temp_output){ std::cout<<"safely delete"<<std::endl; delete temp_output; std::cout<<"after delete"<<std::endl; temp_output = NULL;}
+  //  return receiveString;
 }
 
 //! Open I/O port.

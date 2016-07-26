@@ -48,8 +48,10 @@ void Keyence::ReceiveString(std::string & buffer)
 {
   usleep(1000);
 
-  //char buf[1000];
-  buffer = comHandler_->ReceiveString(samplingRate_, averagingRate_);
+  char temp[1000];
+  std::cout<<"[Keyence] temp = "<<&temp<<std::endl;
+  //buffer = comHandler_->ReceiveString(samplingRate_, averagingRate_);
+  comHandler_->ReceiveString(buffer, temp, samplingRate_, averagingRate_);
   StripBuffer(buffer);
   //buffer = buf;
   //  std::cout<< "[Keyence::ReceiveString] buffer = "<<buffer<<std::endl;

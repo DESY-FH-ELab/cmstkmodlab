@@ -29,7 +29,8 @@ class KeyenceComHandler {
   KeyenceComHandler( const KeyenceComHandler & );
 
   void SendCommand( const char* );
-  std::string ReceiveString(int samplingRate, int averagingRate );
+  //  std::string ReceiveString(int samplingRate, int averagingRate );
+  void ReceiveString(std::string receiveString, char *temp_output, int samplingRate, int averagingRate );
 
   bool DeviceAvailable();
 
@@ -46,6 +47,7 @@ class KeyenceComHandler {
 
   ioport_t fIoPort;
   termios_t fCurrentTermios, fThisTermios;
+
 };
 
 #endif
