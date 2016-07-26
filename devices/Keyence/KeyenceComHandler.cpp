@@ -13,7 +13,7 @@
 */
 KeyenceComHandler::KeyenceComHandler(ioport_t ioPort)
 {
-    std::cout<<"[KeyenceComHandler] begin constructor"<<std::endl;
+    //    std::cout<<"[KeyenceComHandler] begin constructor"<<std::endl;
     // save ioport 
     fIoPort = ioPort;
     
@@ -96,9 +96,9 @@ void KeyenceComHandler::ReceiveString(std::string & receiveString, char *temp_ou
   while ( timeout < limit)  {
 
     readResult = read( fIoPortFileDescriptor, temp_output, 1024 );
-    std::cout<<"readResult = "<<readResult<<std::endl;
+    //    std::cout<<"readResult = "<<readResult<<std::endl;
     if ( readResult > 0 ) {
-      std::cout<<"temp_output = "<<temp_output<<std::endl;
+        //std::cout<<"temp_output = "<<temp_output<<std::endl;
       receiveString += std::string(temp_output, readResult);
       if(receiveString.find(13) != std::string::npos){
 	//received end of command
@@ -135,7 +135,7 @@ void KeyenceComHandler::ReceiveString(std::string & receiveString, char *temp_ou
 */
 void KeyenceComHandler::OpenIoPort( void )
 {
-    std::cout<<"[KeyenceComHandler] begin OpenIoPort"<<std::endl;
+    //    std::cout<<"[KeyenceComHandler] begin OpenIoPort"<<std::endl;
     // open io port ( read/write | no term control | no DCD line check )
     fIoPortFileDescriptor = open( fIoPort, O_RDWR | O_NOCTTY  | O_NDELAY );
     

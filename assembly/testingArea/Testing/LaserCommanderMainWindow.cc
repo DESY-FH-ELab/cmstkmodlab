@@ -28,7 +28,12 @@ LaserCommanderMainWindow::LaserCommanderMainWindow(QWidget *parent)
 
   laserThread_ = new LaserThread(this);
   laserModel_->moveToThread(laserThread_);
+
+  usleep(500);
+
   laserThread_->start();
+
+  usleep(500);
 
   QWidget *widget = new QWidget(this);
 
@@ -60,7 +65,10 @@ LaserCommanderMainWindow::LaserCommanderMainWindow(QWidget *parent)
   connect(laserWidget_, SIGNAL(finished()),
           this, SLOT(repaint()));
 
-  QTimer::singleShot(1000, laserModel_, SLOT(setDeviceEnabled()));
+  connect(laserModel_, SIGNAL(inRangeStateChanged(bool)),
+          laserWidget_, SLOT(backgroundColorUpdate(bool)));
+
+  QTimer::singleShot(3000, laserModel_, SLOT(setDeviceEnabled()));
 
   NQLog("LaserCommanderMainWindow") << "main window constructed";
 }

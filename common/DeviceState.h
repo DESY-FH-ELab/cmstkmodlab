@@ -30,18 +30,21 @@ template <class Controller> class AbstractDeviceModel
   virtual ~AbstractDeviceModel() { std::cout<<"[AbstractDeviceModel::destructor]"<<std::endl; destroyController(); }
 
   /// Returns the current (cached) state of the device.
-  const State& getDeviceState() const { std::cout<<"[AbstractDeviceModel::getDeviceState"<<std::endl; return state_; }
+  const State& getDeviceState() const { std::cout<<"[AbstractDeviceModel::getDeviceState]"<<std::endl; return state_; }
 
   /// Attempts to enable/disable the (communication with) the device.
   virtual void setDeviceEnabled( bool enabled ) {
     std::cout<<"[AbstractDeviceModel::setDeviceEnabled]"<<std::endl;
      // To be enabled and off
-    if (enabled && state_ == OFF)
+    if (enabled && state_ == OFF){
+        std::cout<<"[AbstractDeviceModel] go to initialize()"<<std::endl;
       initialize();
+    }
     // To be disabled and on
-    else if (!enabled && state_ == READY)
+    else if (!enabled && state_ == READY){
+        std::cout<<"[AbstractDeviceModel] go to close()"<<std::endl;
       close();
-
+    }
     /*
      If in 'busy state', a signal for OFF/READY will follow soon, reverting
      any changes ignored by only checking for steady states (i.e. OFF and READY).
@@ -61,7 +64,7 @@ protected:
 
   /// Destroys the current Controller* and sets it to NULL
   virtual void destroyController() {
-    std::cout<<"[AbstractDeviceModel::renewController]"<<std::endl;
+    std::cout<<"[AbstractDeviceModel::destroyController]"<<std::endl;
     delete controller_;
     controller_ = NULL;
   }

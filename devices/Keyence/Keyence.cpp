@@ -14,10 +14,10 @@ Keyence::Keyence( const ioport_t ioPort )
 {
     samplingRate_ = 20;
     averagingRate_ = 1;
-    std::cout<<"[Keyence] sampling rate set to = "<<samplingRate_<<std::endl;
-    std::cout<<"[Keyence] averaging rate set to = "<<averagingRate_<<std::endl;
+    //    std::cout<<"[Keyence] sampling rate set to = "<<samplingRate_<<std::endl;
+    //std::cout<<"[Keyence] averaging rate set to = "<<averagingRate_<<std::endl;
 
-    std::cout<<"[Keyence] begin constructor"<<std::endl;
+    //    std::cout<<"[Keyence] begin constructor"<<std::endl;
     comHandler_ = new KeyenceComHandler( ioPort );
     DeviceInit();
     //    std::cout<<"[Keyence] end constructor"<<std::endl;
@@ -49,10 +49,10 @@ void Keyence::ReceiveString(std::string & buffer)
   usleep(1000);
 
   char temp[1000];
-  std::cout<<"[Keyence] temp = "<<&temp<<std::endl;
+  //std::cout<<"[Keyence] temp = "<<&temp<<std::endl;
   //buffer = comHandler_->ReceiveString(samplingRate_, averagingRate_);
   comHandler_->ReceiveString(buffer, temp, samplingRate_, averagingRate_);
-  std::cout<<"before strip buffer = "<<buffer<<std::endl;
+  //std::cout<<"before strip buffer = "<<buffer<<std::endl;
   StripBuffer(buffer);
   //buffer = buf;
   //  std::cout<< "[Keyence::ReceiveString] buffer = "<<buffer<<std::endl;
@@ -244,9 +244,10 @@ void Keyence::MeasurementValueOutput(int out, double & value)
     //std::string s_temp = response.substr(3, 8);
         //this->ReceiveString(buffer);
     if(response.substr(3,8).find("F") != std::string::npos){
-      //std::cerr << "[Keyence::MeasurementValueOutput] ** ERROR: laser out of range, please adjust position "
-      //	          << std::endl;
-	value = 999;
+      std::cerr << "[Keyence::MeasurementValueOutput] ** ERROR: laser out of range, please adjust position "
+	    << std::endl;
+      value = 9999;
+      throw response.substr(3,8);
 	//	return;
     }else{
     std::istringstream is(response.substr(3,8));
@@ -256,7 +257,7 @@ void Keyence::MeasurementValueOutput(int out, double & value)
     //std::cout<< "temp = "<<temp<<std::endl;
     value = temp;
     }
-    std::cout<<"[Keyence::MeasurementValueOutput] value = "<<value<<std::endl;
+    //std::cout<<"[Keyence::MeasurementValueOutput] value = "<<value<<std::endl;
     //    std::cout<<"measurement value test 2 "<<std::endl;
     //SetValue("M",out);
 }
@@ -282,7 +283,7 @@ void Keyence::StripBuffer(std::string &buffer) const
 //No version checking for Keyence laser available
 void Keyence::DeviceInit()
 {
-  std::cout<<"[Keyence] begin device init"<<std::endl;
+    //  std::cout<<"[Keyence] begin device init"<<std::endl;
     isDeviceAvailable_ = false;
     
     if (comHandler_->DeviceAvailable()) {
@@ -291,7 +292,7 @@ void Keyence::DeviceInit()
     }
 
     this->ChangeToCommunicationMode(false);
-    std::cout<<"[Keyence] end device init"<<std::endl;
+    //    std::cout<<"[Keyence] end device init"<<std::endl;
 }
 
 void Keyence::Reset(int out)

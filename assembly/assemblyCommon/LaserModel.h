@@ -54,6 +54,7 @@ protected:
     int laserHead_;
 
     double value_;
+    bool isInRange_;
 
 protected slots:
 
@@ -63,6 +64,7 @@ signals:
     
     void deviceStateChanged(State newState);
     void measurementChanged(double value);
+    void inRangeStateChanged(bool inRange);
 };
 
 #endif // LASERMODEL_H
