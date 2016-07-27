@@ -58,17 +58,21 @@ void LaserModel::getMeasurement()
 {
     if(state_ == OFF) return;
 
-    NQLog("LaserModel") << "[getMeasurement]";
+    NQLog("LaserModel") << "[getMeasurement], isInRange_ = "<< isInRange_;
     double ivalue = 0;
     try{
+      NQLog("LaserModel") << "[getMeasurement] try to get measurement";
         controller_->MeasurementValueOutput(laserHead_, ivalue);
-        std::cout<<"does the code reach this point?"<<std::endl;
+        NQLog("LaserModel") << "[getMeasurement] does the code reach this point?";
         if(!isInRange_){
+	  NQLog("LaserModel") <<"[getMeasurement] emit goes back into range";
 	isInRange_ = true;
 	emit inRangeStateChanged(isInRange_);
         }
     }catch (std::string ){
+      NQLog("LaserModel") << "[getMeasurement] exception caught";
         if(isInRange_){ 
+	  NQLog("LaserModel") <<"[getMeasurement] emit goes out of range";
 	isInRange_ = false;
 	emit inRangeStateChanged(isInRange_);
         }
