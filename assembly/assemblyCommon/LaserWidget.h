@@ -29,7 +29,7 @@ protected:
 
 public slots:
     void updateDisplay(double value);
-    void backgroundColorUpdate(bool isOutOfRange);
+    void backgroundColorUpdate(bool isInRange);
 };
 
 #endif // LASERWIDGET_H

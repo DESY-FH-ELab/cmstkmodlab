@@ -22,17 +22,17 @@ void LaserWidget::updateDisplay(double value)
     emit finished();
 }
 
-void LaserWidget::backgroundColorUpdate(bool isOutOfRange)
+void LaserWidget::backgroundColorUpdate(bool isInRange)
 {
-    NQLog("LaserWidget") << "[backgroundColorUpdate] : " << isOutOfRange;
+    NQLog("LaserWidget") << "[backgroundColorUpdate] : " << isInRange;
     QPalette *lcdpalette = new QPalette;
-    if(isOutOfRange){
+    if(!isInRange){
         lcdpalette->setColor(QPalette::WindowText, QColor(255, 0, 0));
     }else{
         lcdpalette->setColor(QPalette::WindowText, QColor(76, 76, 76));
     }
     this->setPalette(*lcdpalette);
     
-    emit updateDisplay(999);
+    //    emit updateDisplay(999);
     delete lcdpalette;
 }
