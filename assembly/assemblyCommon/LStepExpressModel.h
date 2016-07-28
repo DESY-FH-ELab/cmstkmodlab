@@ -52,6 +52,7 @@ public:
 
     void validConfig();
     void validParameter();
+    void saveConfig();
 
 public slots:
 

@@ -1,4 +1,5 @@
 #include <QFileDialog>
+#include <QMessageBox>
 
 #include <nqlogger.h>
 
@@ -201,6 +202,10 @@ LStepExpressSettingsWidget::LStepExpressSettingsWidget(LStepExpressSettings* set
     encoderToolBox_ = new QWidget(mainToolBox_);
     fillEncoderToolBox();
     mainToolBox_->addItem(encoderToolBox_, "Encoder");
+
+    joystickToolBox_ = new QWidget(mainToolBox_);
+    fillJoystickToolBox();
+    mainToolBox_->addItem(joystickToolBox_, "Joystick");
 
     QWidget * buttons = new QWidget(this);
     QHBoxLayout* hlayout = new QHBoxLayout(this);
@@ -532,6 +537,69 @@ void LStepExpressSettingsWidget::fillEncoderToolBox()
     layout->setRowStretch(9, 100);
 }
 
+void LStepExpressSettingsWidget::fillJoystickToolBox()
+{
+    QGridLayout *layout = new QGridLayout(joystickToolBox_);
+    joystickToolBox_->setLayout(layout);
+
+    layout->addWidget(new QLabel("X", joystickToolBox_), 0, 1);
+    layout->addWidget(new QLabel("Y", joystickToolBox_), 0, 2);
+    layout->addWidget(new QLabel("Z", joystickToolBox_), 0, 3);
+    layout->addWidget(new QLabel("A", joystickToolBox_), 0, 4);
+
+    layout->addWidget(new QLabel("Direction", joystickToolBox_), 1, 0);
+    layout->addWidget(new LStepExpressSettingsCheckBox(settings_, "X-EncoderDirection", joystickToolBox_), 1, 1);
+    layout->addWidget(new LStepExpressSettingsCheckBox(settings_, "Y-EncoderDirection", joystickToolBox_), 1, 2);
+    layout->addWidget(new LStepExpressSettingsCheckBox(settings_, "Z-EncoderDirection", joystickToolBox_), 1, 3);
+    layout->addWidget(new LStepExpressSettingsCheckBox(settings_, "A-EncoderDirection", joystickToolBox_), 1, 4);
+
+    layout->addWidget(new QLabel("Period", joystickToolBox_), 2, 0);
+    layout->addWidget(new LStepExpressSettingsDoubleSpinBox(settings_, "X-EncoderPeriod", 0.0, 20.0, joystickToolBox_), 2, 1);
+    layout->addWidget(new LStepExpressSettingsDoubleSpinBox(settings_, "Y-EncoderPeriod", 0.0, 20.0, joystickToolBox_), 2, 2);
+    layout->addWidget(new LStepExpressSettingsDoubleSpinBox(settings_, "Z-EncoderPeriod", 0.0, 20.0, joystickToolBox_), 2, 3);
+    layout->addWidget(new LStepExpressSettingsDoubleSpinBox(settings_, "A-EncoderPeriod", 0.0, 20.0, joystickToolBox_), 2, 4);
+
+    layout->addWidget(new QLabel("Pole Pairs", joystickToolBox_), 3, 0);
+    layout->addWidget(new LStepExpressSettingsIntSpinBox(settings_, "X-EncoderPolePairs", 1, 1000000, joystickToolBox_), 3, 1);
+    layout->addWidget(new LStepExpressSettingsIntSpinBox(settings_, "Y-EncoderPolePairs", 1, 1000000, joystickToolBox_), 3, 2);
+    layout->addWidget(new LStepExpressSettingsIntSpinBox(settings_, "Z-EncoderPolePairs", 1, 1000000, joystickToolBox_), 3, 3);
+    layout->addWidget(new LStepExpressSettingsIntSpinBox(settings_, "A-EncoderPolePairs", 1, 1000000, joystickToolBox_), 3, 4);
+
+    layout->addWidget(new QLabel("Assignment", joystickToolBox_), 4, 0);
+    layout->addWidget(new LStepExpressSettingsIntSpinBox(settings_, "X-EncoderToAxis", 0, 14, joystickToolBox_), 4, 1);
+    layout->addWidget(new LStepExpressSettingsIntSpinBox(settings_, "Y-EncoderToAxis", 0, 14, joystickToolBox_), 4, 2);
+    layout->addWidget(new LStepExpressSettingsIntSpinBox(settings_, "Z-EncoderToAxis", 0, 14, joystickToolBox_), 4, 3);
+    layout->addWidget(new LStepExpressSettingsIntSpinBox(settings_, "A-EncoderToAxis", 0, 14, joystickToolBox_), 4, 4);
+
+    layout->addWidget(new QLabel("Type", joystickToolBox_), 5, 0);
+    layout->addWidget(new LStepExpressSettingsIntSpinBox(settings_, "X-EncoderType", 0, 12, joystickToolBox_), 5, 1);
+    layout->addWidget(new LStepExpressSettingsIntSpinBox(settings_, "Y-EncoderType", 0, 12, joystickToolBox_), 5, 2);
+    layout->addWidget(new LStepExpressSettingsIntSpinBox(settings_, "Z-EncoderType", 0, 12, joystickToolBox_), 5, 3);
+    layout->addWidget(new LStepExpressSettingsIntSpinBox(settings_, "A-EncoderType", 0, 12, joystickToolBox_), 5, 4);
+
+    layout->addWidget(new QLabel("Position", joystickToolBox_), 6, 0);
+    layout->addWidget(new LStepExpressSettingsCheckBox(settings_, "X-EncoderPosition", joystickToolBox_), 6, 1);
+    layout->addWidget(new LStepExpressSettingsCheckBox(settings_, "Y-EncoderPosition", joystickToolBox_), 6, 2);
+    layout->addWidget(new LStepExpressSettingsCheckBox(settings_, "Z-EncoderPosition", joystickToolBox_), 6, 3);
+    layout->addWidget(new LStepExpressSettingsCheckBox(settings_, "A-EncoderPosition", joystickToolBox_), 6, 4);
+
+    layout->addWidget(new QLabel("Reference", joystickToolBox_), 7, 0);
+    layout->addWidget(new LStepExpressSettingsCheckBox(settings_, "X-EncoderReference", joystickToolBox_), 7, 1);
+    layout->addWidget(new LStepExpressSettingsCheckBox(settings_, "Y-EncoderReference", joystickToolBox_), 7, 2);
+    layout->addWidget(new LStepExpressSettingsCheckBox(settings_, "Z-EncoderReference", joystickToolBox_), 7, 3);
+    layout->addWidget(new LStepExpressSettingsCheckBox(settings_, "A-EncoderReference", joystickToolBox_), 7, 4);
+
+    layout->addWidget(new QLabel("Reference Polarity", joystickToolBox_), 8, 0);
+    layout->addWidget(new LStepExpressSettingsCheckBox(settings_, "X-EncoderReferencePolarity", joystickToolBox_), 8, 1);
+    layout->addWidget(new LStepExpressSettingsCheckBox(settings_, "Y-EncoderReferencePolarity", joystickToolBox_), 8, 2);
+    layout->addWidget(new LStepExpressSettingsCheckBox(settings_, "Z-EncoderReferencePolarity", joystickToolBox_), 8, 3);
+    layout->addWidget(new LStepExpressSettingsCheckBox(settings_, "A-EncoderReferencePolarity", joystickToolBox_), 8, 4);
+
+    layout->addWidget(new QWidget(generalToolBox_), 9, 0);
+    layout->setRowStretch(9, 100);
+}
+
+
 void LStepExpressSettingsWidget::controlStateChanged(bool enabled)
 {
     NQLog("LStepExpressSettingsWidget", NQLog::Debug) << "controlStateChanged(bool enabled) " << enabled;
@@ -565,6 +633,18 @@ void LStepExpressSettingsWidget::writeToDeviceClicked()
     NQLog("LStepExpressSettingsWidget") << "writeToDeviceClicked()";
 
     settings_->writeSettingsToDevice();
+
+    NQLog("LStepExpressSettingsWidget") << "ask to save to device";
+
+    QMessageBox::StandardButton reply;
+    reply = QMessageBox::question(this, "Test", "Save the configuration on the controller? (this will make the configuration the default at startup)",
+		          QMessageBox::Yes|QMessageBox::No);
+    if (reply == QMessageBox::Yes) {
+        NQLog("LStepExpressSettingsWidget") << "Yes was clicked";
+        settings_->saveSettingsOnDevice();
+    } else {
+        NQLog("LStepExpressSettingsWidget") << "Yes was *not* clicked";
+    }
 }
 
 void LStepExpressSettingsWidget::writeToFileClicked()

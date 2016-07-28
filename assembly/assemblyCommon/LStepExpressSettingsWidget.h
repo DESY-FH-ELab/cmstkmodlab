@@ -135,6 +135,7 @@ protected:
     QWidget * axisToolBox_;
     QWidget * motorToolBox_;
     QWidget * encoderToolBox_;
+    QWidget * joystickToolBox_;
 
     QPushButton * readFromDeviceButton_;
     QPushButton * readFromFileButton_;
@@ -145,6 +146,7 @@ protected:
     void fillAxisToolBox();
     void fillMotorToolBox();
     void fillEncoderToolBox();
+    void fillJoystickToolBox();
 
 public slots:
 

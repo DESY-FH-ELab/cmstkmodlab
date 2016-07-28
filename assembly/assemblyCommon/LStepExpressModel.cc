@@ -216,6 +216,11 @@ void LStepExpressModel::validParameter()
     controller_->ValidParameter();
 }
 
+void LStepExpressModel::saveConfig()
+{
+    controller_->SaveConfig();
+}
+
 void LStepExpressModel::initialize()
 {
     setDeviceState(INITIALIZING);

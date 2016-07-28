@@ -178,6 +178,7 @@ public slots:
     void readSettingsFromFile(const QString& filename);
     void writeSettingsToDevice();
     void writeSettingsToFile(const QString& filename);
+    void saveSettingsOnDevice();
 
 protected:
 

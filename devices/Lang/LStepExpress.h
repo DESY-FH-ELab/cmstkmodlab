@@ -79,6 +79,7 @@ class LStepExpress : public VLStepExpress
   void ConfirmErrorRectification();
   void ValidConfig();
   void ValidParameter();
+  void SaveConfig();
   void Calibrate();
 
   // low level debugging methods
