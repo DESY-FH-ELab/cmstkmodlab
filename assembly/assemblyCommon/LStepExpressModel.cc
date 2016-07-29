@@ -165,6 +165,7 @@ void LStepExpressModel::setAxisEnabled(unsigned int axis, bool enabled)
     NQLog("LStepExpressModel", NQLog::Debug) << "setAxisEnabled " << axis << " " << temp;
 
     if (axis_[axis]!=temp) {
+        controller_->SetPowerAmplifierStatus((VLStepExpress::Axis)axis, temp);
         controller_->SetAxisEnabled((VLStepExpress::Axis)axis, temp);
         axis_[axis] = temp;
         emit deviceStateChanged(state_);
