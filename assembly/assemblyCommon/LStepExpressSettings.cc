@@ -256,107 +256,127 @@ LStepExpressSettings::LStepExpressSettings(LStepExpressModel* model, QObject* pa
     : QObject(parent),
       model_(model)
 {
+    //General Section
+    addI("BaudRate", "!baud", "baud", false, false); //9600, 19200, 38400, 57600
     addI("AxisCount", "!configmaxaxis", "configmaxaxis", false, false);
-    addI("EQEP", "!eqepconfig", "eqepconfig", true, false);
-    addIA("MotorType", "!motortype", "motortype", true, false);
-    addIA("Dimension", "!dim", "dim", false, false);
-    addIA("MotorBrake", "!motorbrake", "motorbrake", true, false);
-    addIA("MotorBrakeSwitchOnDelay", "!motorbrakeswitchondelay", "motorbrakeswitchondelay", true, false); // -5000 - 5000 [ms]
-    addIA("MotorBrakeSwitchOffDelay", "!motorbrakeswitchoffdelay", "motorbrakeswitchoffdelay", true, false); // -5000 - 5000 [ms]
-    addBA("MotorTempSensor", "!motortempsensor", "motortempsensor", true, false);
-    addIA("MotorTempSensorLowerLimit", "!motortempsensorminimum", "motortempsensorminimum", true, false);
-    addIA("MotorTempSensorUpperLimit", "!motortempsensormaximum", "motortempsensormaximum", true, false);
-    addDA("MotorCurrent", "!motorcurrent", "motorcurrent", true, false); // 0.5 - 5.0 [A]
-    addBA("MotorFieldDirection", "!motorfielddir", "motorfielddir", true, false);
-    addDA("MotorMomentConstant", "!motormomentconstant", "motormomentconstant", true, true); // 0 - 50.000 [Nm/A]
-    addDA("MotorMomentOfInertia", "!motormomentofinertia", "motormomentofinertia", true, true); // 0 - 100000 [kg cm^2]
-    addIA("MotorPolePairs", "!motorpolepairs", "motorpolepairs", true, false);
-    addIA("MotorPolePairResolution", "!motorpolepairres", "motorpolepairres", true, false); // 500, 1000, 2000, 32768
-    addDA("MotorMaxVelocity", "!motormaxvel", "motormaxvel", true, false);
-    //    addBA("SpeedFeedForward", "!speedfeedforward", "speedfeedforward", );//check
-    addBA("PositionControlEnable", "!posconenable", "posconenable", true, true);
-    addDA("PositionControlKPBand", "!posconkp", "posconkp", true, true);//check
-    addIA("PositionControlTimeConstant", "!posconoutpass", "posconoutpass", true, true); //check
-    addDA("EncoderPeriod", "!encperiod", "encperiod", true, false);
-    addBA("EncoderDirection", "!encdir", "encdir", true, false);
-    addIA("EncoderType", "!enctype", "enctype", true, false);
-    addIA("EncoderToAxis", "!enctoaxis", "enctoaxis", true, false);
-    addBA("SwapLimitSwitch", "!swchange", "swchange", true, false);
-    addVIA("LimitSwitchPolarity", "!swpol", "swpol", 3, true, false);
-    addIA("DeviationCheckTimeFrame", "!deviationtime", "deviationtime", true, true); //check
-    addDA("DeviationRange", "!deviationrange", "deviationrange", true, true); //check
-    addBA("DeviationCheck", "!deviationcheck", "deviationcheck", true, true); //check
-    addDA("TargetWindow", "!poswindowrange","poswindowrange", true, true); //check
-    addBA("ModuloAxis", "!modulo", "modulo", true, false);
-    addDA("SpindlePitch", "!pitch", "pitch", true, false); // 0.0001 - 68
-    addIA("GearNumerator", "!gearnumerator", "gearnumerator", true, false); // 1 - INF
-    addIA("GearDenominator", "!geardenominator", "geardenominator", true, false); // 1 - INF
+    //Axis Section
+    //addBA("EnableAxes", "!axis", "axis", false, false);
     addBA("AxisDirection", "!axisdir", "axisdir", true, false);
-    addB("StopInputPolarity", "!stoppol", "stoppol", false, false); //check
-    addBA("EnableAxes", "!axis", "axis", false, false); //check
-    addBA("EncoderReference", "!encref", "encref", false, false);
-    addBA("EncoderReferencePolarity", "!encrefpol", "encrefpol", false, false);
-    addDA("CalibrationVelocity", "!calibrmvel", "calibrmvel", false, false); //check
-    addDA("CalibrationAcceleration", "!calibrmaccel", "calibrmaccel", false, false); //check
-    addIA("CalibrationAdjustJerk", "!calibrmjerk", "calibrmjerk", false, false); //check
-    addDA("CalibrationOffset", "!caliboffset", "caliboffset", false, false); //check
-    addDA("RMOffset", "!rmoffset", "rmoffset", false, false); //check
-    addBA("CalibrationDirection", "!caldir", "caldir", false, false); //check
-    addBA("LimitSwitchOn", "!swact", "swact", true, true); //check
-    addIA("AccelerationJerk", "!acceljerk", "acceljerk", false, false); // 1 - INF [m/s^3]
-    addIA("DecelerationJerk", "!deceljerk", "deceljerk", false, false); // 1 - INF [m/s^3]
+    addIA("GearDenominator", "!geardenominator", "geardenominator", true, false); // 1 - INF
+    addIA("GearNumerator", "!gearnumerator", "gearnumerator", true, false); // 1 - INF
+    addDA("SpindlePitch", "!pitch", "pitch", true, false); // 0.0001 - 68
+    addBA("SwapLimitSwitch", "!swchange", "swchange", true, false);
+    addVIA("LimitSwitchPolarity", "!swpol", "swpol", 3, true, false);//order: E0 REF EE
     addDA("Acceleration", "!accel", "accel", false, false); // 0.01 - 20.0 [m/s^2]
+    addIA("AccelerationJerk", "!acceljerk", "acceljerk", false, false); // 1 - INF [m/s^3]
     addDA("Deceleration", "!decel", "decel", false, false); // 0.01 - 20.0 [m/s^2]
+    addIA("DecelerationJerk", "!deceljerk", "deceljerk", false, false); // 1 - INF [m/s^3]
     addDA("Velocity", "!vel", "vel", false, false); // 0.0 - MAX [R/s]
-    addIA("StopDecelerationJerk", "!stopdeceljerk", "stopdeceljerk", false, false); //check
-    addDA("StopDeceleration", "!stopdecel", "stopdecel", false, false); //check
-    addBA("NoSoftwareLimit", "!nosetlimit", "nosetlimit", false, false); //check
-    addDA("Limit", "!lim", "lim", false, false); //check
-    addBA("RangeMonitoring", "!limctr", "limctr", false, false); //check
-    addBA("JoystickEnabled", "!joyenable", "joyenable", false, false); //check
-    addBA("JoystickDirection", "!joydir", "joydir", false, false); //check
-    addDA("JoystickVelocity", "!joyvel", "joyvel", false, false); //check
-    addDA("JoystickFilterTime", "!joyoutpass", "joyoutpass", false, false); //check
-    addDA("JoystickWindow", "!joywindow", "joywindow", false, false); //check
-    addBA("JoystickCurrentReduction", "!joyredcur", "joyredcur", false, false); //check
-    addIA("JoystickAxisAssignment", "!joytoaxis", "joytoaxis", false, false); //check
-    addBA("JogMode", "!tippenable", "tippenable", false, false); //check
-    addBA("JogModeDirection", "!tippdir", "tippdir", false, false); //check
-    addDA("JogModeVelocity", "!tippvel", "tippvel", false, false); //check
-    addDA("JogModeFilterTime", "!tippoutpass", "tippoutpass", false, false); //check
-    addBA("JogModeCurrentReduction", "!tippredcur", "tippredcur", false, false); //check
-    addBA("TrackBallEnable", "!tbenable", "tbenable", false, false); //check
-    addBA("TrackBallDirection", "!tbdir", "tbdir", false, false); //check
-    addDA("TrackBallVelocity", "!tbvel", "tbvel", false, false); //check
-    addDA("TrackBallFilterTime", "!tboutpass", "tboutpass", false, false); //check
-    addBA("TrackBallCurrentReduction", "!tbredcur", "tbredcur", false, false); //check
-    addIA("TrackBallAxisAssignment", "!tbtoaxis", "tbtoaxis", false, false); //check
-    addBA("ClockForward", "!tvrm", "tvrm", false, false); //check
-    addDA("ClockPulseFactor", "!tvrf", "tvrf", false, false); //check
-    addIA("ClockAxisAssignment", "!tvrtoaxis", "tvrtoaxis", false, false); //check
-    addIA("ModuloAxisMode", "!modulomode", "modulomode", false, false);
+    addIA("Dimension", "!dim", "dim", false, false); //0 = microsteps, 1 = micrometer, 2 = millimeter, 3 = 360 degrees, 4 = number of revolutions
+
+    //Motor Section
     addIA("MotorCurrentReduction", "!reduction", "reduction", false, false); // 0 - 100%
     addIA("MotorCurrentReductionDelay", "!curdelay", "curdelay", false, false); // 0 - 10000 [ms]
-    addI("TriggerAxis", "!triga", "triga", false, false); //check
-    addI("TriggerSignal", "!trigs", "trigs", false, false); //check
-    addI("TriggerDistance", "!trigd", "trigd", false, false); //check
-    addI("TriggerMode", "!trigm", "trigm", false, false); //check
-    addIA("EncoderPolePairs", "!encpolepairs", "encpolepairs", true, false);
+    addIA("MotorType", "!motortype", "motortype", true, false); // 0 = rotary 2-phase stepper motor, 1 = linear 2-phase stepper motor
+    addIA("MotorPolePairs", "!motorpolepairs", "motorpolepairs", true, false);
+    addIA("MotorPolePairResolution", "!motorpolepairres", "motorpolepairres", true, false); // 500, 1000, 2000, 32768
+    addBA("MotorFieldDirection", "!motorfielddir", "motorfielddir", true, false);
+    addDA("MotorMaxVelocity", "!motormaxvel", "motormaxvel", true, false);
+    addIA("MotorBrake", "!motorbrake", "motorbrake", true, false); // 0 = to GND, 1 = dependent on power amplifier, 2 = to +12V
+    addIA("MotorBrakeSwitchOnDelay", "!motorbrakeswitchondelay", "motorbrakeswitchondelay", true, false); // -5000 - 5000 [ms]
+    addIA("MotorBrakeSwitchOffDelay", "!motorbrakeswitchoffdelay", "motorbrakeswitchoffdelay", true, false); // -5000 - 5000 [ms]
+    addDA("MotorCurrent", "!motorcurrent", "motorcurrent", true, false); // 0.5 - 5.0 [A]
+    addB("StopInputPolarity", "!stoppol", "stoppol", false, false); //0 = low active, 1 = high active
+    addDA("StopDeceleration", "!stopdecel", "stopdecel", false, false); // 0.01 - 20.00 [m/s^2]
+    addIA("StopDecelerationJerk", "!stopdeceljerk", "stopdeceljerk", false, false); // 1 - INF [m/s^3]
+    addB("SpeedByPotentioMeter", "!pot", "pot", false, false); //0 = travelling at preset speed (vel), 1 = speed depends on settings potentiometer
 
-    //    addB("TTLOut", "!ttloutconfig", "ttloutconfig", true, false);
+    //Joystick Section
+    addDA("JoystickSpeed", "!speed", "speed", false, false); //not sure if immediate, - MAX - MAX [R/s^2], !speed 0 is joystick mode OFF
+    addBA("JoystickDirection", "!joydir", "joydir", false, false); //0 = normal, 1 = reverse
+    addDA("JoystickVelocity", "!joyvel", "joyvel", false, false); // 0 - 70 [R/s] maximum velocity is set
+    addDA("JoystickFilterTime", "!joyoutpass", "joyoutpass", false, false); // 0 - 500 000 microsec to prevent jerky changes in speed
+    //addBA("JoystickAxesEnabled", "!joyenable", "joyenable", false, false); //enable connected joystick axes
+    addBA("JoystickCurrentReduction", "!joyredcur", "joyredcur", false, false);
+    //    addB("JoystickOn", "!joy", "joy", false, false); //switch joystick ON/OFF
+    addDA("JoystickWindow", "!joywindow", "joywindow", false, false); // 0 - 100 -> joystick only moves if excursion is larger than this set value
+    addIA("JoystickAxisAssignment", "!joytoaxis", "joytoaxis", false, false);
 
-    //    addBA("Configured", "!configurated", "configurated", true, false);
+    //Calibration Section
+    addDA("CalibrationOffset", "!caliboffset", "caliboffset", false, false); // 0 - 32*50000 (32*spindle pitch) depends on dimensions set for axes eg: 1 = 1 mm in Dim 2, zero position will be shifted
+    addBA("CalibrationDirection", "!caldir", "caldir", false, false); //0 = calibrate towards positive software limit
+    addDA("CalibrationSpeedAfterTrip", "!calibrmbspeed", "calibrmbspeed", false, false); // 0.0 - MAX [R/s]
+    addDA("CalibrationAcceleration", "!calibrmaccel", "calibrmaccel", false, false); // 0.01 - 20.00 [m/s^2]
+    addIA("CalibrationAdjustJerk", "!calibrmjerk", "calibrmjerk", false, false); // 1 - INF [m/s^3]
+    addDA("CalibrationVelocity", "!calibrmvel", "calibrmvel", false, false); // 0 - 70 [R/s]
+    addDA("RMOffset", "!rmoffset", "rmoffset", false, false); // 0 - 32*50000 (32*spindle pitch) depends on dimensions set for axes eg: 1 = 1 mm in Dim 2, limit position will be shifted
 
-
-
-
-    
-
-    addIA("MotorPoleScale", "!motorpolescale", "motorpolescale", true, false);
-
-    
+    //Encoder Section
+    addBA("EncoderDirection", "!encdir", "encdir", true, false);
+    addDA("EncoderPeriod", "!encperiod", "encperiod", true, false); // period length of the set dimension
+    addIA("EncoderPolePairs", "!encpolepairs", "encpolepairs", true, false); // 1 - 50000
+    addIA("EncoderToAxis", "!enctoaxis", "enctoaxis", false, false); // 1 - 6
+    addIA("EncoderType", "!enctype", "enctype", true, false); //rotary 1 = 1Vss, 2 =11microA, 3 = MR, 4 = TTL, linear 5 = 1Vss, 6 = 11microA, 7 = MR, 8 = TTL
     addBA("EncoderPosition", "!encpos", "encpos", false, false);
+    addBA("EncoderReference", "!encref", "encref", false, false);
+    addBA("EncoderReferencePolarity", "!encrefpol", "encrefpol", false, false); // 0 = negative, 1 = positive
+    addDA("TargetWindow", "!twi", "twi", true, true); //dependent on dimensions
+    addDA("PositionControlKPBand", "!posconkp", "posconkp", true, true); // 0 - 4000 % 
+    addIA("PositionControlTimeConstant", "!posconoutpass", "posconoutpass", true, true); // 0 - 100 000 microsec 
+    addBA("PositionControlAxisEnable", "!posconenable", "posconenable", true, true);
+    addB("PositionControlOn", "!poscon", "poscon", false, false);
+    addDA("DeviationRange", "!deviationsrange", "deviationsrange", true, true); //depends on dimension
+    addIA("DeviationTime", "!deviationtime", "deviationtime", true, true); // 0 - 10000 millisec
+    addBA("DeviationCheck", "!deviationcheck", "deviationcheck", true, true); 
 
+    //Limit switch
+    addVIA("Limit", "!lim", "lim", 2, false, false); // - MAX - + MAX, dependent on dimensions, always enter in pairs
+    addBA("RangeMonitoring", "!limctr", "limctr", false, false);
+    addBA("NoSoftwareLimit", "!nosetlimit", "nosetlimit", false, false);
+    addVIA("LimitSwitchOn", "!swact", "swact", 3, true, true); //order: E0 REF EE
+
+    //Clock pulse
+    addIA("ClockAxisAssignment", "!tvrtoaxis", "tvrtoaxis", false, false); // 0 = no allocation, 1 = QEP1, 2 = QEP2
+    addBA("ClockPulseOn", "!tvr", "tvr", false, false);
+    addIA("ClockPulseFactor", "!tvrf", "tvrf", false, false); // -10000 - 10000, one clock pulse = x motor increments (MI)
+    addIA("ClockMode", "!tvrm", "tvrm", false, false); // 0 = Clock pulse OFF, 1 = normal (1 clock pulse = 1 MI), 2 = clock pulse with factor, 3 = clock pulse requires external enabling, 4 = combination of 2 and 3
+
+    //Trigger Output
+    addB("TriggerOn", "!trig", "trig", false, false);
+    addI("TriggerAxis", "!triga", "triga", false, false); // check how is done
+    addI("TriggerMode", "!trigm", "trigm", false, false); // 0 - 17 or 99
+    addI("TriggerSignal", "!trigs", "trigs", false, false); // 3 - 120 microsec
+    addD("TriggerDistance", "!trigd", "trigd", false, false); //depends on dimensions
+    addB("TriggerCount", "!trigcount", "trigcount", false, false); //reads trigger count
+
+    //Extra: Trackball, handwheel or jog mode
+    addDA("JogModeVelocity", "!tippvel", "tippvel", false, false); // 0 - 70 [R/s] 
+    addDA("JogModeFilterTime", "!tippoutpass", "tippoutpass", false, false); // 0 - 500 000 microsec to prevent jerky changes in speed
+    addBA("JogModeDirection", "!tippdir", "tippdir", false, false);    
+    addBA("JogModeAxesEnabled", "!tippenable", "tippenable", false, false); //enable connected axes
+    addBA("JogModeCurrentReduction", "!tippredcur", "tippredcur", false, false);
+    addB("JogModeOn", "!tipp", "tipp", false, false);
+    addBA("TrackBallAxesEnable", "!tbenable", "tbenable", false, false);    
+    addIA("TrackBallAxisAssignment", "!tbtoaxis", "tbtoaxis", false, false);
+    addBA("TrackBallDirection", "!tbdir", "tbdir", false, false);
+    addBA("TrackBallCurrentReduction", "!tbredcur", "tbredcur", false, false);
+    addDA("TrackBallVelocity", "!tbvel", "tbvel", false, false);
+    addDA("TrackBallFilterTime", "!tboutpass", "tboutpass", false, false); // 0 - 500 000 microsec
+    addB("TrackBallOn", "!tb", "tb", false, false);
+
+    //not in English manual, maybe in the German one?
+    //addI("EQEP", "!eqepconfig", "eqepconfig", true, false);
+    //addBA("MotorTempSensor", "!motortempsensor", "motortempsensor", true, false);
+    //addIA("MotorTempSensorLowerLimit", "!motortempsensorminimum", "motortempsensorminimum", true, false);
+    //addIA("MotorTempSensorUpperLimit", "!motortempsensormaximum", "motortempsensormaximum", true, false);
+    //addDA("MotorMomentConstant", "!motormomentconstant", "motormomentconstant", true, true); // 0 - 50.000 [Nm/A]
+    //addDA("MotorMomentOfInertia", "!motormomentofinertia", "motormomentofinertia", true, true); // 0 - 100000 [kg cm^2]
+    //    addBA("SpeedFeedForward", "!speedfeedforward", "speedfeedforward", );//check
+    //addBA("ModuloAxis", "!modulo", "modulo", true, false);
+    //addIA("ModuloAxisMode", "!modulomode", "modulomode", false, false);
+    //    addB("TTLOut", "!ttloutconfig", "ttloutconfig", true, false);
+    //    addBA("Configured", "!configurated", "configurated", true, false);
+    //addIA("MotorPoleScale", "!motorpolescale", "motorpolescale", true, false);    
 
     connect(model_, SIGNAL(controlStateChanged(bool)),
             this, SLOT(deviceControlStateChanged(bool)));
