@@ -301,7 +301,7 @@ void LStepExpressSettingsWidget::fillGeneralToolBox()
 
     layout->addWidget(new QLabel("Baud Rate", generalToolBox_), 0, 0);
     LStepExpressSettingsComboBox *combo = new LStepExpressSettingsComboBox(settings_, "BaudRate", generalToolBox_);
-    combo->addItem("9600"); combo->addItem("19200"); combo->addItem("38400"); combo->addItem("57600");
+    combo->addItem("9600"); combo->addItem("19200"); combo->addItem("38400"); combo->addItem("57600"); combo->addItem("115200");
     layout->addWidget(combo, 0, 1);
 
     layout->addWidget(new QLabel("Axis Count", generalToolBox_), 1, 0);
