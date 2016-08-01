@@ -81,6 +81,7 @@ class LStepExpress : public VLStepExpress
   void ValidParameter();
   void SaveConfig();
   void Calibrate();
+  void EmergencyStop();
 
   // low level debugging methods
   void SendCommand(const std::string &);

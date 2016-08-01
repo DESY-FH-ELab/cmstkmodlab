@@ -416,3 +416,8 @@ void LStepExpress::Calibrate()
 {
   this->SendCommand("!cal");
 }
+
+void LStepExpress::EmergencyStop()
+{
+    this->SendCommand("!a");
+}

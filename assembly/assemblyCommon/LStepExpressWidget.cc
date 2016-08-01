@@ -28,6 +28,9 @@ LStepExpressWidget::LStepExpressWidget(LStepExpressModel* model,
     buttonCalibrate_ = new QPushButton("Calibrate", this);
     hlayout->addWidget(buttonCalibrate_);
 
+    buttonEmergencyStop_ = new QPushButton("Emergency stop", this);
+    hlayout->addWidget(buttonEmergencyStop_);
+
     QGridLayout* axisLayout = new QGridLayout(axisControlWidget_);
     axisControlWidget_->setLayout(axisLayout);
 
@@ -63,6 +66,9 @@ LStepExpressWidget::LStepExpressWidget(LStepExpressModel* model,
 
     connect(buttonCalibrate_, SIGNAL(clicked()),
 	    model_, SLOT(calibrate()));
+
+    connect(buttonEmergencyStop_, SIGNAL(clicked()),
+	model_, SLOT(emergencyStop()));
 
     lstepStateChanged(model_->getDeviceState());
 }

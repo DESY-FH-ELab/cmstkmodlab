@@ -144,6 +144,13 @@ void LStepExpressModel::calibrate()
     emit motionStarted();
 }
 
+void LStepExpressModel::emergencyStop()
+{
+    controller_->EmergencyStop();
+    inMotion_ = false;
+    emit motionFinished();
+}
+
 bool LStepExpressModel::getJoystickEnabled()
 {
     QMutexLocker locker(&mutex_);

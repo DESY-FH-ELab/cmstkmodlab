@@ -29,6 +29,7 @@ protected:
     QPushButton* buttonOrigin_;
     QWidget* axisControlWidget_;
     QPushButton* buttonCalibrate_;
+    QPushButton* buttonEmergencyStop_;
 
 public slots:
     void lstepStateChanged(State newState);
