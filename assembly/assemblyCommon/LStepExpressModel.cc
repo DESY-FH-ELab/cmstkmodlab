@@ -219,7 +219,14 @@ void LStepExpressModel::validParameter()
 
 void LStepExpressModel::saveConfig()
 {
-    controller_->SaveConfig();
+    NQLog("LStepExpressModel", NQLog::Debug) << "save config";
+    // controller_->SaveConfig();
+}
+
+void LStepExpressModel::reset()
+{
+    NQLog("LStepExpressModel", NQLog::Debug) << "reset to start-up conditions";
+    controller_->Reset();
 }
 
 void LStepExpressModel::initialize()

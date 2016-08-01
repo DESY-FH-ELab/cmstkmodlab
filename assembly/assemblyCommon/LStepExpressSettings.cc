@@ -505,6 +505,16 @@ void LStepExpressSettings::saveSettingsOnDevice()
 {
     QMutexLocker locker(&mutex_);
     model_->saveConfig();
+
+    NQLog("LStepExpressSettings", NQLog::Spam) << "settings saved on controller";
+}
+
+void LStepExpressSettings::resetSettings()
+{
+    QMutexLocker locker(&mutex_);
+    model_->reset();
+
+    NQLog("LStepExpressSettings", NQLog::Spam) << "reset settings to startup conditions";
 }
 
 void LStepExpressSettings::writeSettingsToFile(const QString& filename)

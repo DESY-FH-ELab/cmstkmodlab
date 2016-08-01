@@ -268,10 +268,15 @@ LStepExpressSettingsWidget::LStepExpressSettingsWidget(LStepExpressSettings* set
             this, SLOT(readFromFileClicked()));
     hlayout->addWidget(readFromFileButton_);
 
-    applyButton_ = new QPushButton("apply", buttons);
+    applyButton_ = new QPushButton("Apply", buttons);
     connect(applyButton_, SIGNAL(clicked(bool)),
 	this, SLOT(applyClicked()));
     hlayout->addWidget(applyButton_);
+
+    resetButton_ = new QPushButton("Reset", buttons);
+    connect(resetButton_, SIGNAL(clicked(bool)),
+	this, SLOT(resetClicked()));
+    hlayout->addWidget(resetButton_);
 
     writeToDeviceButton_ = new QPushButton("Write To Device", buttons);
     connect(writeToDeviceButton_, SIGNAL(clicked(bool)),
@@ -1008,6 +1013,16 @@ void LStepExpressSettingsWidget::readFromFileClicked()
 void LStepExpressSettingsWidget::applyClicked()
 {
     NQLog("LStepExpressSettingsWidget") << "applyClicked()";
+
+    settings_->writeSettingsToDevice();
+
+}
+
+void LStepExpressSettingsWidget::resetClicked()
+{
+    NQLog("LStepExpressSettingsWidget") << "resetClicked()";
+    
+    settings_->resetSettings();
 }
 
 void LStepExpressSettingsWidget::writeToDeviceClicked()
@@ -1019,7 +1034,7 @@ void LStepExpressSettingsWidget::writeToDeviceClicked()
     NQLog("LStepExpressSettingsWidget") << "ask to save to device";
 
     QMessageBox::StandardButton reply;
-    reply = QMessageBox::question(this, "Test", "Save the configuration on the controller? (this will make the configuration the default at startup)",
+    reply = QMessageBox::question(this, "Test", "Are you sure you want to save the configuration on the controller? (this will make the configuration the default at startup)",
 		          QMessageBox::Yes|QMessageBox::No);
     if (reply == QMessageBox::Yes) {
         NQLog("LStepExpressSettingsWidget") << "Yes was clicked";

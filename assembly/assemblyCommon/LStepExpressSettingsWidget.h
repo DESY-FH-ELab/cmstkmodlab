@@ -166,6 +166,7 @@ protected:
     QPushButton * readFromDeviceButton_;
     QPushButton * readFromFileButton_;
     QPushButton * applyButton_;
+    QPushButton * resetButton_;
     QPushButton * writeToDeviceButton_;
     QPushButton * writeToFileButton_;
 
@@ -188,6 +189,7 @@ protected slots:
     void readFromDeviceClicked();
     void readFromFileClicked();
     void applyClicked();
+    void resetClicked();
     void writeToDeviceClicked();
     void writeToFileClicked();
 };
