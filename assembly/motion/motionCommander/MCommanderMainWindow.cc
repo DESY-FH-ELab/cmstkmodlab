@@ -32,6 +32,11 @@ MCommanderMainWindow::MCommanderMainWindow(QWidget *parent)
   lStepExpressSettings_->moveToThread(motionThread_);
   motionManager_->myMoveToThread(motionThread_);
 
+  laserModel_ = new LaserModel(config->getValue<std::string>("KeyenceDevice").c_str());
+  laserThread_ = new LaserThread(this);
+  laserModel_->moveToThread(laserThread_);
+  laserThread_->start();
+
   tabWidget_ = new QTabWidget(this);
 
   QWidget * widget;
@@ -70,7 +75,7 @@ MCommanderMainWindow::MCommanderMainWindow(QWidget *parent)
 
   //QTimer::singleShot(2000, this, SLOT(testManager()));
 
-  LStepExpressMeasurementWidget *lStepExpressMeasurementWidget = new LStepExpressMeasurementWidget(lStepExpressModel_, motionManager_, widget);
+  LStepExpressMeasurementWidget *lStepExpressMeasurementWidget = new LStepExpressMeasurementWidget(lStepExpressModel_, motionManager_, laserModel_, widget);
   tabWidget_->addTab(lStepExpressMeasurementWidget, "Measurements");
 
   NQLog("MCommanderMainWindow") << "main window constructed";
@@ -85,8 +90,16 @@ void MCommanderMainWindow::quit()
       motionThread_->wait();
   }
 
+  if (laserThread_) {
+      laserThread_->quit();
+      laserThread_->wait();
+  }
+
   NQLog("MCommanderMainWindow") << "Disable LStepController";
   lStepExpressModel_->setDeviceEnabled(false);
+
+  NQLog("MCommanderMainWindow") << "Disable Keyence Laser";
+  laserModel_->setDeviceEnabled(false);
 }
 
 /*

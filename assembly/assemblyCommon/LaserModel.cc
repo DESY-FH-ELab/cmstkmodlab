@@ -135,6 +135,5 @@ void LaserModel::setDeviceEnabled(bool enabled)
 
     AbstractDeviceModel<Keyence_t>::setDeviceEnabled(enabled);
 
-    std::cout<<"after"<<std::endl;
 }
 

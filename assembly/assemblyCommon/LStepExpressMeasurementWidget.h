@@ -25,31 +25,37 @@
 #include "LStepExpressModel.h"
 #include "LStepExpressMeasurementTable.h"
 #include "LStepExpressMotionManager.h"
-//#include "LaserModel.h"
+#include "LaserModel.h"
+#include "LaserWidget.h"
+#include "LaserThread.h"
 
 class LStepExpressMeasurementWidget : public QWidget
 {
     Q_OBJECT
 
 public:
-    explicit LStepExpressMeasurementWidget(LStepExpressModel* model, LStepExpressMotionManager* manager, QWidget *parent = 0);
+    explicit LStepExpressMeasurementWidget(LStepExpressModel* model, LStepExpressMotionManager* manager, LaserModel* laserModel, QWidget *parent = 0);
 
 protected:
     LStepExpressModel* model_;
     LStepExpressMotionManager* manager_;
-    //    LaserModel* lasermodel_;
+    LaserModel* laserModel_;
+    LaserWidget* laserWidget_;
+    LaserThread* laserThread_;
     QCheckBox* averageMeasCheckBox_;
     QPushButton* buttonGeneratePos_;
     QPushButton *buttonStartMeasurement_;
     QPushButton *buttonStopMeasurement_;
     QPushButton *buttonStoreMeasurement_;
+    QCheckBox *checkBoxEnableLaser_;
     QLineEdit* nstepsx_;
     QLineEdit* nstepsy_;
-    //    QLCDNumber* LCDdisplay_;
+    
 
 public slots:
     void generatePositions();
     void setAverageMeasEnabled(bool);
+    void laserStateChanged(State newState);
 
 private:
     bool averageMeasEnabled_;

@@ -2,88 +2,112 @@
 
 #include "LStepExpressMeasurementWidget.h"
 
-LStepExpressMeasurementWidget::LStepExpressMeasurementWidget(LStepExpressModel* model, LStepExpressMotionManager* manager,
+LStepExpressMeasurementWidget::LStepExpressMeasurementWidget(LStepExpressModel* model, LStepExpressMotionManager* manager, LaserModel* laserModel,
                                        QWidget *parent)
     : QWidget(parent),
       model_(model),
-      manager_(manager)
+      manager_(manager),
+      laserModel_(laserModel)
 {
     QHBoxLayout* layout = new QHBoxLayout(this);
     setLayout(layout);
-
+    
     //    QVBoxLayout* vlayout = new QVBoxLayout(this);
-
+    
     averageMeasCheckBox_ = new QCheckBox("Average measurement", this);
     buttonGeneratePos_ = new QPushButton("Generate positions", this);
-
-    connect(averageMeasCheckBox_, SIGNAL(toggled(bool)),
-            this, SLOT(setAverageMeasEnabled(bool)));
-
-    connect(buttonGeneratePos_, SIGNAL(clicked()),
-            this, SLOT(generatePositions()));
-
+    
     averageMeasEnabled_ = false;
-
+    
     QLabel* nstepsxLabel = new QLabel("steps x-direction");
     QLabel* nstepsyLabel = new QLabel("steps y-direction");
-
+    
     nstepsx_ = new QLineEdit();
     nstepsy_ = new QLineEdit();
-
+    
     QHBoxLayout *hlayout_x = new QHBoxLayout(this);
     hlayout_x->addWidget(nstepsxLabel);
     hlayout_x->addWidget(nstepsx_);
     QHBoxLayout *hlayout_y = new QHBoxLayout(this);
     hlayout_y->addWidget(nstepsyLabel);
     hlayout_y->addWidget(nstepsy_);
-
+    
     QVBoxLayout *layout_xy = new QVBoxLayout(this);
     layout_xy->addLayout(hlayout_x);
     layout_xy->addLayout(hlayout_y);
     layout_xy->addWidget(averageMeasCheckBox_);
     layout_xy->addWidget(buttonGeneratePos_);
-
+    
     layout->addLayout(layout_xy);
     //    layout->addLayout(vlayout);
-
+    
     //initialise the x, y, z positions
     z_init = model_->getPosition(2); //FIX ME! is 2 z-axis?
     x_init = -150; //FIX ME! take right upper corner of table
     y_init = -150; //FIX ME! take right upper corner of table
-
-
+    
+    
     //table model/view
     table_model = new LStepExpressMeasurementTable();
     table_view = new QTableView(this);
     table_view->setModel(table_model);
     layout->addWidget(table_view);
 
+    QVBoxLayout *vlayout_laser = new QVBoxLayout(this);
+    checkBoxEnableLaser_ = new QCheckBox("Enable Laser", this);
+    vlayout_laser->addWidget(checkBoxEnableLaser_);
+
+    laserWidget_ = new LaserWidget();
+    vlayout_laser->addWidget(laserWidget_);
+
     QVBoxLayout *vlayout_buttons = new QVBoxLayout(this);
     buttonStartMeasurement_ = new QPushButton("Start Measurement", this);
     buttonStartMeasurement_->setEnabled(false);
     vlayout_buttons->addWidget(buttonStartMeasurement_);
-
-    connect(buttonStartMeasurement_, SIGNAL(clicked()),
-	    this, SLOT(performMeasurement()));
-
-
+    
     buttonStopMeasurement_ = new QPushButton("Stop Measurement", this);
     buttonStopMeasurement_->setEnabled(false);
     vlayout_buttons->addWidget(buttonStopMeasurement_);
-
-    connect(buttonStopMeasurement_, SIGNAL(clicked()),
-            this, SLOT(stopMeasurement()));
-
-
+    
     buttonStoreMeasurement_ = new QPushButton("Store Results Measurement", this);
     buttonStoreMeasurement_->setEnabled(false);
     vlayout_buttons->addWidget(buttonStoreMeasurement_);
+    
+    QVBoxLayout *vlayout = new QVBoxLayout(this);
+    vlayout->addLayout(vlayout_laser);
+    vlayout->addLayout(vlayout_buttons);
 
-    layout->addLayout(vlayout_buttons);
-
+    layout->addLayout(vlayout);
+    
+    connect(checkBoxEnableLaser_, SIGNAL(toggled(bool)),
+	laserModel_, SLOT(setDeviceEnabled(bool)));
+    
+    connect(averageMeasCheckBox_, SIGNAL(toggled(bool)),
+            this, SLOT(setAverageMeasEnabled(bool)));
+    
+    connect(buttonGeneratePos_, SIGNAL(clicked()),
+            this, SLOT(generatePositions()));
+    
+    connect(buttonStartMeasurement_, SIGNAL(clicked()),
+	this, SLOT(performMeasurement()));
+    
+    connect(buttonStopMeasurement_, SIGNAL(clicked()),
+            this, SLOT(stopMeasurement()));
+    
     connect(buttonStoreMeasurement_, SIGNAL(clicked()), this, SLOT(storeResults()));
+    
+    connect(laserModel_, SIGNAL(deviceStateChanged(State)),
+	this, SLOT(laserStateChanged(State)));
+
+    laserStateChanged(laserModel_->getDeviceState());
 
     generateCirclePositions();
+}
+    
+void LStepExpressMeasurementWidget::laserStateChanged(State newState)
+{
+    NQLog("LStepExpressMeasurementWidget", NQLog::Debug) << "laserStateChanged(State newState) " << newState;
+    checkBoxEnableLaser_->setChecked(newState == READY || newState == INITIALIZING);
 }
 
 void LStepExpressMeasurementWidget::setAverageMeasEnabled(bool enabled)
@@ -257,11 +281,12 @@ void LStepExpressMeasurementWidget::storeResults()
     QTextStream out(&data);
 
     out << "average measurement was performed: " << averageMeasEnabled_ << "\n";
-    out << "# \t x-pos \t y-pos \t z-pos \t measurement\n";
+    out << "Index \t Timestamp \t X_pos \t Y_pos \t Z_pos \t R_pos \t LaserVal\n";
     for (int r = 0; r < table_model->rowCount(); r++)
       {
-	out << table_model->data(table_model->index(r,0), Qt::DisplayRole).toInt() << "\t" << table_model->data(table_model->index(r,1), Qt::DisplayRole).toInt() 
-	    << "\t" << table_model->data(table_model->index(r,2), Qt::DisplayRole).toInt() << "\t" << table_model->data(table_model->index(r,3), Qt::DisplayRole).toInt()
+          out << table_model->data(table_model->index(r,0), Qt::DisplayRole).toInt() << "\t" << "XXX \t"  << table_model->data(table_model->index(r,1), Qt::DisplayRole).toInt() 
+	    << "\t" << table_model->data(table_model->index(r,2), Qt::DisplayRole).toInt() << "\t" << table_model->data(table_model->index(r,3), Qt::DisplayRole).toInt() 
+	  << "\t 0.000"
 	    << "\t" << table_model->data(table_model->index(r,4), Qt::DisplayRole).toInt() << "\n";
       }
     }

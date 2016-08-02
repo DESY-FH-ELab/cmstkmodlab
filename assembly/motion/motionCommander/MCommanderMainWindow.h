@@ -18,6 +18,9 @@
 #include "LStepExpressJoystickWidget.h"
 #include "LStepExpressMeasurementWidget.h"
 
+#include "LaserModel.h"
+#include "LaserThread.h"
+
 class MCommanderMainWindow : public QMainWindow
 {
     Q_OBJECT
@@ -41,7 +44,9 @@ protected:
     LStepExpressSettings* lStepExpressSettings_;
     LStepExpressMotionManager* motionManager_;
     LStepExpressMotionThread* motionThread_;
-
+    LaserModel* laserModel_;
+    LaserThread* laserThread_;
+    
     QTabWidget* tabWidget_;
 
 signals:
