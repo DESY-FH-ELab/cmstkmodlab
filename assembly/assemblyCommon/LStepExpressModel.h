@@ -101,6 +101,7 @@ protected:
     bool inMotion_;
     bool isPaused_;
     bool isUpdating_;
+    bool finishedCalibrating_;
 
 protected slots:
 

@@ -31,7 +31,8 @@ LStepExpressModel::LStepExpressModel(const char* port,
     inMotion_ = false;
     isUpdating_ = false;
     isPaused_ = false;
-
+    finishedCalibrating_ = false;
+    
     timer_ = new QTimer(this);
     timer_->setInterval(motionUpdateInterval_);
     connect(timer_, SIGNAL(timeout()), this, SLOT(updateMotionInformation()));
@@ -139,10 +140,15 @@ void LStepExpressModel::moveAbsolute(unsigned int axis, double value)
 
 void LStepExpressModel::calibrate()
 {
+    NQLog("LStepExpressModel", NQLog::Debug) << "calibrate: go to calibrate";                                                                 
     controller_->Calibrate();
     inMotion_ = true;
+    finishedCalibrating_ = true;
+    NQLog("LStepExpressModel", NQLog::Debug) << "calibrate: emit motionStarted";                                                                 
     emit motionStarted();
 
+    /*
+    NQLog("LStepExpressModel", NQLog::Debug) << "calibrate: set position to zero";                                                                 
     //set positions to all zeros
     bool changed = false;
     std::vector<double> dvalues{0.0, 0.0, 0.0, 0.0};
@@ -155,7 +161,7 @@ void LStepExpressModel::calibrate()
         // NQLog("LStepExpressModel", NQLog::Spam) << "information changed";                                                                 
         emit informationChanged();
     }
-
+    */
 }
 
 void LStepExpressModel::emergencyStop()
@@ -334,6 +340,8 @@ void LStepExpressModel::updateInformation()
 
 void LStepExpressModel::updateMotionInformation()
 {
+  NQLog("LStepExpressModel", NQLog::Debug) << "updateMotionInformation()";
+
     static const int nUpdates = updateInterval_/motionUpdateInterval_;
 
     if ( state_ == READY && !isPaused_) {
@@ -349,7 +357,7 @@ void LStepExpressModel::updateMotionInformation()
         }
 
         /*
-        NQLog("LStepExpressModel", NQLog::Debug) << "updateMotionInformation()";
+
 
         if (thread()==QApplication::instance()->thread()) {
             NQLog("LStepExpressModel", NQLog::Debug) << " running in main application thread";
@@ -366,11 +374,18 @@ void LStepExpressModel::updateMotionInformation()
         controller_->GetAxisStatus(ivalues);
         if (ivalues!=axisStatus_) {
             axisStatus_ = ivalues;
+	    NQLog("LStepExpressModel", NQLog::Debug) << "updateMotionInformation() received axis status";
+	    for(int i = 0; i < ivalues.size(); i++){
+	      NQLog("LStepExpressModel", NQLog::Debug) << "updateMotionInformation() axis status of "<<i<<" is "<<(ivalues)[i];
+	    }
             changed = true;
         }
         if (inMotion_) {
-            if (std::all_of(ivalues.begin(), ivalues.end(),
-                            [](int i){return i==LStepExpress_t::AXISSTANDSANDREADY;})) {
+	  NQLog("LStepExpressModel", NQLog::Debug) << "updateMotionInformation() inMotion_ = true";
+
+	  if (std::all_of(ivalues.begin(), ivalues.end(),
+                            [](int i){	  NQLog("LStepExpressModel", NQLog::Debug) << "updateMotionInformation() axis status = "<<i; return (i==LStepExpress_t::AXISSTANDSANDREADY || i==LStepExpress_t::AXISACKAFTERCALIBRATION);})) {
+	      NQLog("LStepExpressModel", NQLog::Debug) << "updateMotionInformation() finished moving inMotion_ = false";
                 inMotion_ = false;
                 emit motionFinished();
             }
@@ -378,12 +393,22 @@ void LStepExpressModel::updateMotionInformation()
 
         controller_->GetPosition(dvalues);
         if (dvalues!=position_) {
+	  NQLog("LStepExpressModel", NQLog::Debug) << "updateMotionInformation() get position values";
             position_ = dvalues;
             changed = true;
         }
 
+	if(!inMotion_ && finishedCalibrating_){
+	  NQLog("LStepExpressModel", NQLog::Debug) << "updateMotionInformation() after calibration, setting position values to zero";
+	  std::vector<double> posvalues{0.0, 0.0, 0.0, 0.0};
+	  controller_->SetPosition(posvalues);
+	  position_ = posvalues;
+	  changed = true;
+	  finishedCalibrating_ = false;
+	}
+
         if (changed) {
-            // NQLog("LStepExpressModel", NQLog::Spam) << "motion information changed";
+	  NQLog("LStepExpressModel", NQLog::Debug) << "updateMotionInformation() motion information changed";
             emit motionInformationChanged();
         }
 
