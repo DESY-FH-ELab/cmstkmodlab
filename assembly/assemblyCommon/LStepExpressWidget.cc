@@ -93,6 +93,8 @@ void LStepExpressWidget::lstepStateChanged(State newState)
     buttonCalibrate_->setEnabled(newState == READY);
 
     axisControlWidget_->setEnabled(newState == READY);
+
+    buttonEmergencyStop_->setEnabled(newState == READY);
 }
 
 /// Updates the GUI when the controler is enabled/disabled.
@@ -108,6 +110,7 @@ void LStepExpressWidget::controlStateChanged(bool enabled)
         buttonOrigin_->setEnabled(false);
         buttonCalibrate_->setEnabled(false);
         axisControlWidget_->setEnabled(false);
+        buttonEmergencyStop_->setEnabled(false);
     }
 }
 

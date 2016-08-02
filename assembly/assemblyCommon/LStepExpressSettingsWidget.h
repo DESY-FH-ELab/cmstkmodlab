@@ -184,7 +184,7 @@ protected:
 public slots:
 
 protected slots:
-
+    //    void lStepStateChanged( State state );
     void controlStateChanged(bool);
     void readFromDeviceClicked();
     void readFromFileClicked();

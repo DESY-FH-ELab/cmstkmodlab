@@ -31,8 +31,9 @@ public slots:
 signals:
 
 protected slots:
-
+    /*
     void testManager();
+    */
 
 protected:
 
@@ -44,9 +45,10 @@ protected:
     QTabWidget* tabWidget_;
 
 signals:
-
+    /*
     void moveAbsolute(double x, double y, double z, double a);
     void moveRelative(double x, double y, double z, double a);
+    */
 };
 
 #endif // MCOMMANDERMAINWINDOW_H

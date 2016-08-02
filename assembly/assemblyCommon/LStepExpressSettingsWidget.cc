@@ -292,7 +292,36 @@ LStepExpressSettingsWidget::LStepExpressSettingsWidget(LStepExpressSettings* set
 
     connect(settings_, SIGNAL(controlStateChanged(bool)),
             this, SLOT(controlStateChanged(bool)));
+
+    readFromDeviceButton_->setEnabled(false);
+    applyButton_->setEnabled(false);
+    resetButton_->setEnabled(false);
+    writeToDeviceButton_->setEnabled(false);
+
+    //    connect(model_, SIGNAL(deviceStateChanged(State)),
+    //        this, SLOT(lstepStateChanged(State)));
+
 }
+
+/*
+/// Updates the GUI when the lstepcontroller is enabled/disabled.                                                                                                                                        
+void LStepExpressSettingsWidget::lstepStateChanged(State newState)
+{
+    NQLog("LStepExpressSettingsWidget", NQLog::Debug) << "lStepStateChanged(State newState) " << newState;
+
+    readFromDeviceButton_->setEnabled(newState == READY);
+
+    //readFromFileButton_->setEnabled(newState == READY);
+
+    applyButton_->setEnabled(newState == READY);
+
+    resetButton_->setEnabled(newState == READY);
+
+    writeToDeviceButton_->setEnabled(newState == READY);
+
+    //writeToFileButton_->setEnabled(newState == READY);
+}
+*/
 
 void LStepExpressSettingsWidget::fillGeneralToolBox()
 {
@@ -988,8 +1017,18 @@ void LStepExpressSettingsWidget::controlStateChanged(bool enabled)
 
     if (enabled) {
         mainToolBox_->setEnabled(settings_->getDeviceState());
+        readFromDeviceButton_->setEnabled(settings_->getDeviceState());
+        //readFromFileButton_->setEnabled(settings_->getDeviceState());
+        applyButton_->setEnabled(settings_->getDeviceState());
+        resetButton_->setEnabled(settings_->getDeviceState());                                                                                                                                              
+        writeToDeviceButton_->setEnabled(settings_->getDeviceState());                                                                                                                                       
+        //writeToFileButton_->setEnabled(settings_->getDeviceState());
     } else {
         mainToolBox_->setEnabled(false);
+        readFromDeviceButton_->setEnabled(false);
+        applyButton_->setEnabled(false);
+        resetButton_->setEnabled(false);
+        writeToDeviceButton_->setEnabled(false);
     }
 }
 
