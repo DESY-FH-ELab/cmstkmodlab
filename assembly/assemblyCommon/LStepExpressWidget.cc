@@ -81,7 +81,7 @@ void LStepExpressWidget::updateWidgets()
 /// Updates the GUI when the Keithley multimeter is enabled/disabled.
 void LStepExpressWidget::lstepStateChanged(State newState)
 {
-    // NQLog("LStepExpressWidget", NQLog::Debug) << "lStepStateChanged(State newState) " << newState;
+    NQLog("LStepExpressWidget", NQLog::Debug) << "lStepStateChanged(State newState) " << newState;
 
     lstepCheckBox_->setChecked(newState == READY || newState == INITIALIZING);
 
@@ -98,7 +98,7 @@ void LStepExpressWidget::lstepStateChanged(State newState)
 /// Updates the GUI when the controler is enabled/disabled.
 void LStepExpressWidget::controlStateChanged(bool enabled)
 {
-    // NQLog("LStepExpressWidget", NQLog::Debug) << "controlStateChanged(bool enabled) " << enabled;
+    NQLog("LStepExpressWidget", NQLog::Debug) << "controlStateChanged(bool enabled) " << enabled;
 
     if (enabled) {
         lstepStateChanged(model_->getDeviceState());
@@ -177,7 +177,7 @@ void LStepExpressAxisWidget::updateWidgets()
 {
     bool axis = model_->getAxisEnabled(axis_);
 
-    // NQLog("LStepExpressAxisWidget", NQLog::Debug) << "updateWidgets() " << axis;
+    NQLog("LStepExpressAxisWidget", NQLog::Debug) << "updateWidgets() " << axis;
 
     if (axis && model_->getJoystickEnabled()) {
         joystickCheckBox_->setEnabled(true);
@@ -185,7 +185,7 @@ void LStepExpressAxisWidget::updateWidgets()
         joystickCheckBox_->setEnabled(false);
     }
 
-    // NQLog("LStepExpressAxisWidget", NQLog::Debug) << "updateWidgets() JOYstick ----------->" << model_->getJoystickAxisEnabled(axis_);
+    NQLog("LStepExpressAxisWidget", NQLog::Debug) << "updateWidgets() JOYstick ----------->" << model_->getJoystickAxisEnabled(axis_);
 
     enabledCheckBox_->setChecked(axis);
     joystickCheckBox_->setChecked(model_->getJoystickAxisEnabled(axis_));
@@ -195,7 +195,7 @@ void LStepExpressAxisWidget::updateWidgets()
 
 void LStepExpressAxisWidget::updateMotionWidgets()
 {
-    // NQLog("LStepExpressAxisWidget", NQLog::Debug) << "updateMotionWidgets()";
+    NQLog("LStepExpressAxisWidget", NQLog::Debug) << "updateMotionWidgets()";
 
     statusLabel_->setText(model_->getAxisStatusText(axis_));
     positionLabel_->setText(QString::number(model_->getPosition(axis_), 'f', 4) + " " + axisDimensionName_);
@@ -203,8 +203,8 @@ void LStepExpressAxisWidget::updateMotionWidgets()
 
 void LStepExpressAxisWidget::lStepStateChanged(State newState)
 {
-    // NQLog("LStepExpressAxisWidget", NQLog::Debug) << "lStepStateChanged(State newState) " << newState;
-    // NQLog("LStepExpressAxisWidget", NQLog::Debug) << "                             axis " << model_->getAxisEnabled(axis_);
+    NQLog("LStepExpressAxisWidget", NQLog::Debug) << "lStepStateChanged(State newState) " << newState;
+    NQLog("LStepExpressAxisWidget", NQLog::Debug) << "                             axis " << model_->getAxisEnabled(axis_);
 
     if (newState == READY || newState == INITIALIZING) {
         enabledCheckBox_->setEnabled(true);
@@ -217,7 +217,7 @@ void LStepExpressAxisWidget::lStepStateChanged(State newState)
 
 void LStepExpressAxisWidget::controlStateChanged(bool enabled)
 {
-    // NQLog("LStepExpressAxisWidget", NQLog::Debug) << "controlStateChanged(bool enabled) " << enabled;
+    NQLog("LStepExpressAxisWidget", NQLog::Debug) << "controlStateChanged(bool enabled) " << enabled;
 
     if (enabled) {
         lStepStateChanged(model_->getDeviceState());
@@ -228,14 +228,14 @@ void LStepExpressAxisWidget::controlStateChanged(bool enabled)
 
 void LStepExpressAxisWidget::enabledCheckBoxToggled(bool enabled)
 {
-    // NQLog("LStepExpressAxisWidget", NQLog::Spam) << "enabledCheckBoxToggled(bool enabled) " << enabled;
+    NQLog("LStepExpressAxisWidget", NQLog::Spam) << "enabledCheckBoxToggled(bool enabled) " << enabled;
 
     model_->setAxisEnabled(axis_, enabled);
 }
 
 void LStepExpressAxisWidget::joystickCheckBoxToggled(bool enabled)
 {
-    // NQLog("LStepExpressAxisWidget", NQLog::Spam) << "joystickCheckBoxToggled(bool enabled) " << enabled;
+    NQLog("LStepExpressAxisWidget", NQLog::Spam) << "joystickCheckBoxToggled(bool enabled) " << enabled;
 
     model_->setJoystickAxisEnabled(axis_, enabled);
 }

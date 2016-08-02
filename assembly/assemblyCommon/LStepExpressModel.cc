@@ -142,6 +142,20 @@ void LStepExpressModel::calibrate()
     controller_->Calibrate();
     inMotion_ = true;
     emit motionStarted();
+
+    //set positions to all zeros
+    bool changed = false;
+    std::vector<double> dvalues{0.0, 0.0, 0.0, 0.0};
+    controller_->SetPosition(dvalues);
+    if (dvalues!=position_) {
+        position_ = dvalues;
+        changed = true;
+    }
+    if (changed) {
+        // NQLog("LStepExpressModel", NQLog::Spam) << "information changed";                                                                 
+        emit informationChanged();
+    }
+
 }
 
 void LStepExpressModel::emergencyStop()

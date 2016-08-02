@@ -257,7 +257,7 @@ LStepExpressSettings::LStepExpressSettings(LStepExpressModel* model, QObject* pa
       model_(model)
 {
     //General Section
-    addI("BaudRate", "!baud", "baud", false, false); //9600, 19200, 38400, 57600
+    addI("BaudRate", "!baud", "baud", false, false); //9600, 19200, 38400, 57600, 115200
     addI("AxisCount", "!configmaxaxis", "configmaxaxis", false, false);
     //Axis Section
     //addBA("EnableAxes", "!axis", "axis", false, false);
