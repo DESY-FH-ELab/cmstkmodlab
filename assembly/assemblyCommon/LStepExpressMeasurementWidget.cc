@@ -1,4 +1,6 @@
- #include <nqlogger.h>
+#include <nqlogger.h>
+#include <QString>
+#include <QDateTime>
 
 #include "LStepExpressMeasurementWidget.h"
 
@@ -277,6 +279,7 @@ void LStepExpressMeasurementWidget::storeResults()
   if (filename.isNull()) return;
 
   QFile data(filename);
+  QString dateString;
   if (data.open(QFile::WriteOnly | QFile::Truncate)) {
     QTextStream out(&data);
 
@@ -284,7 +287,8 @@ void LStepExpressMeasurementWidget::storeResults()
     out << "Index \t Timestamp \t X_pos \t Y_pos \t Z_pos \t R_pos \t LaserVal\n";
     for (int r = 0; r < table_model->rowCount(); r++)
       {
-          out << table_model->data(table_model->index(r,0), Qt::DisplayRole).toInt() << "\t" << "XXX \t"  << table_model->data(table_model->index(r,1), Qt::DisplayRole).toInt() 
+          dateString = QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss.zzz");
+          out << table_model->data(table_model->index(r,0), Qt::DisplayRole).toInt() << "\t" << dateString << "\t"  << table_model->data(table_model->index(r,1), Qt::DisplayRole).toInt() 
 	    << "\t" << table_model->data(table_model->index(r,2), Qt::DisplayRole).toInt() << "\t" << table_model->data(table_model->index(r,3), Qt::DisplayRole).toInt() 
 	  << "\t 0.000"
 	    << "\t" << table_model->data(table_model->index(r,4), Qt::DisplayRole).toInt() << "\n";
