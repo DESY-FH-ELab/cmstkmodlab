@@ -73,30 +73,35 @@ void LStepExpressMotionManager::moveRelative(std::vector<double> & values)
 
 void LStepExpressMotionManager::moveRelative(double x, double y, double z, double a)
 {
+    NQLog("LStepExpressMotionManager", NQLog::Debug) << "moveRelative()";
     motions_.enqueue(LStepExpressMotion(x, y, z, a, false));
     run();
 }
 
 void LStepExpressMotionManager::moveRelative(unsigned int axis, double value)
 {
+    NQLog("LStepExpressMotionManager", NQLog::Debug) << "moveRelative()";
     motions_.enqueue(LStepExpressMotion(axis, value, false));
     run();
 }
 
 void LStepExpressMotionManager::moveAbsolute(std::vector<double> & values)
 {
+    NQLog("LStepExpressMotionManager", NQLog::Debug) << "moveAbsolute()";
     motions_.enqueue(LStepExpressMotion(values, true));
     run();
 }
 
 void LStepExpressMotionManager::moveAbsolute(double x, double y, double z, double a)
 {
+    NQLog("LStepExpressMotionManager", NQLog::Debug) << "moveAbsolute()";
     motions_.enqueue(LStepExpressMotion(x, y, z, a, true));
     run();
 }
 
 void LStepExpressMotionManager::moveAbsolute(unsigned int axis, double value)
 {
+  NQLog("LStepExpressMotionManager", NQLog::Debug) << "moveAbsolute()";
     motions_.enqueue(LStepExpressMotion(axis, value, true));
     run();
 }

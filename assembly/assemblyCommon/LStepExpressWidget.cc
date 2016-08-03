@@ -75,6 +75,7 @@ LStepExpressWidget::LStepExpressWidget(LStepExpressModel* model,
 
 void LStepExpressWidget::updateWidgets()
 {
+  NQLog("LStepExpressWidget", NQLog::Debug) << "updateWidgets()"; 
     joystickCheckBox_->setChecked(model_->getJoystickEnabled());
 }
 
@@ -178,9 +179,9 @@ LStepExpressAxisWidget::LStepExpressAxisWidget(LStepExpressModel* model,
 
 void LStepExpressAxisWidget::updateWidgets()
 {
-    bool axis = model_->getAxisEnabled(axis_);
+    NQLog("LStepExpressAxisWidget", NQLog::Debug) << "updateWidgets() ";
 
-    NQLog("LStepExpressAxisWidget", NQLog::Debug) << "updateWidgets() " << axis;
+    bool axis = model_->getAxisEnabled(axis_);
 
     if (axis && model_->getJoystickEnabled()) {
         joystickCheckBox_->setEnabled(true);
