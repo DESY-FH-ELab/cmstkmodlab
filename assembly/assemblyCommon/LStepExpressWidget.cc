@@ -128,8 +128,8 @@ void LStepExpressWidget::printSpyInformation()
 
 void LStepExpressWidget::updateWidgets()
 {
-  NQLog("LStepExpressWidget", NQLog::Debug) << "updateWidgets()"; 
-    joystickCheckBox_->setChecked(model_->getJoystickEnabled());
+  NQLog("LStepExpressWidget", NQLog::Debug) << "updateWidgets() joystickenabled?"<<model_->getJoystickEnabled(); 
+  //  joystickCheckBox_->setChecked(model_->getJoystickEnabled());
 }
 
 /// Updates the GUI when the Keithley multimeter is enabled/disabled.
@@ -137,10 +137,10 @@ void LStepExpressWidget::lstepStateChanged(State newState)
 {
     NQLog("LStepExpressWidget", NQLog::Debug) << "lStepStateChanged(State newState) " << newState;
 
-    lstepCheckBox_->setChecked(newState == READY || newState == INITIALIZING);
+    //lstepCheckBox_->setChecked(newState == READY || newState == INITIALIZING);
 
     joystickCheckBox_->setEnabled(newState == READY);
-    if (newState == READY) joystickCheckBox_->setChecked(model_->getJoystickEnabled());
+    //    if (newState == READY) joystickCheckBox_->setChecked(model_->getJoystickEnabled());
 
     buttonOrigin_->setEnabled(newState == READY);
 
@@ -205,10 +205,18 @@ LStepExpressAxisWidget::LStepExpressAxisWidget(LStepExpressModel* model,
     positionLabel_->setFont(QFont("Helvetica", 16));
     layout_->addRow(positionLabel_);
 
+    /*
     connect(enabledCheckBox_, SIGNAL(clicked(bool)),
             this, SLOT(enabledCheckBoxToggled(bool)));
 
     connect(joystickCheckBox_, SIGNAL(clicked(bool)),
+            this, SLOT(joystickCheckBoxToggled(bool)));
+    */
+
+    connect(enabledCheckBox_, SIGNAL(toggled(bool)),
+            this, SLOT(enabledCheckBoxToggled(bool)));
+
+    connect(joystickCheckBox_, SIGNAL(toggled(bool)),
             this, SLOT(joystickCheckBoxToggled(bool)));
 
     connect(model_, SIGNAL(deviceStateChanged(State)),
@@ -236,10 +244,10 @@ LStepExpressAxisWidget::LStepExpressAxisWidget(LStepExpressModel* model,
     connect(spyTimer_, SIGNAL(timeout()), this, SLOT(printSpyInformation()));
     */
 
-    connect(enabledCheckBox_, SIGNAL(clicked(bool)),
+    connect(enabledCheckBox_, SIGNAL(toggled(bool)),
             this, SLOT(printSpyInformation()));
 
-    connect(joystickCheckBox_, SIGNAL(clicked(bool)),
+    connect(joystickCheckBox_, SIGNAL(toggled(bool)),
             this, SLOT(printSpyInformation()));
 }
 
@@ -258,9 +266,11 @@ void LStepExpressAxisWidget::printSpyInformation()
 
 void LStepExpressAxisWidget::updateWidgets()
 {
-    NQLog("LStepExpressAxisWidget", NQLog::Debug) << "updateWidgets() ";
-
+    NQLog("LStepExpressAxisWidget", NQLog::Debug) << "updateWidgets()";
+    
     bool axis = model_->getAxisEnabled(axis_);
+
+    NQLog("LStepExpressAxisWidget", NQLog::Debug) << "updateWidgets() , axis enabled? "<<axis<<" joystick enabled? = "<<model_->getJoystickEnabled();
 
     if (axis && model_->getJoystickEnabled()) {
         joystickCheckBox_->setEnabled(true);
@@ -270,8 +280,8 @@ void LStepExpressAxisWidget::updateWidgets()
 
     NQLog("LStepExpressAxisWidget", NQLog::Debug) << "updateWidgets() JOYstick ----------->" << model_->getJoystickAxisEnabled(axis_);
 
-    enabledCheckBox_->setChecked(axis);
-    joystickCheckBox_->setChecked(model_->getJoystickAxisEnabled(axis_));
+    //enabledCheckBox_->setChecked(axis);
+    //joystickCheckBox_->setChecked(model_->getJoystickAxisEnabled(axis_));
 
     axisDimensionName_ = model_->getAxisDimensionShortName(axis_);
 }
@@ -290,13 +300,20 @@ void LStepExpressAxisWidget::lStepStateChanged(State newState)
     NQLog("LStepExpressAxisWidget", NQLog::Debug) << "                             axis " << model_->getAxisEnabled(axis_);
 
     if (newState == READY || newState == INITIALIZING) {
-        enabledCheckBox_->setEnabled(true);
-        updateWidgets();
+      //      enabledCheckBoxToggled(false);
+      //enabledCheckBox_->setChecked(false);
+      enabledCheckBox_->setEnabled(true);
+      joystickCheckBox_->setEnabled(true);
+      //joystickCheckBoxToggled(false);
+      updateWidgets();
     } else {
-        enabledCheckBoxToggled(false);
-        enabledCheckBox_->setEnabled(false);
-        joystickCheckBoxToggled(false);
-        joystickCheckBox_->setEnabled(false);
+      //enabledCheckBoxToggled(false);
+      //enabledCheckBox_->setChecked(false);
+      enabledCheckBox_->setEnabled(false);
+      //joystickCheckBoxToggled(false);
+      //joystickCheckBox_->setChecked(false);
+      joystickCheckBox_->setEnabled(false);
+      //joystickCheckBoxToggled(false);
     }
 }
 

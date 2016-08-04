@@ -21,8 +21,8 @@ LStepExpressModel::LStepExpressModel(const char* port,
     axisDirection_ = allZerosI;
     dim_ = allZerosI;
     pa_ = allZerosI;
-    joystickEnabled_ = -1;
-    joystickAxisEnabled_ = std::vector<int>{ -1, -1, -1, -1 };
+    joystickEnabled_ = 0;
+    joystickAxisEnabled_ = std::vector<int>{ 0, 0, 0, 0 };
 
     axisStatus_ = std::vector<int>{ -1, -1, -1, -1 };
     position_ = allZerosD;
@@ -151,9 +151,9 @@ bool LStepExpressModel::getAxisState(unsigned int axis)
 bool LStepExpressModel::getAxisEnabled(unsigned int axis)
 {
   NQLog("LStepExpressModel", NQLog::Debug) << "getAxisEnabled(axis)";                                                                 
-    QMutexLocker locker(&mutex_);
-
-    return axis_[axis];
+  QMutexLocker locker(&mutex_);
+  
+  return axis_[axis];
 }
 
 double LStepExpressModel::getPosition(unsigned int axis)
@@ -248,7 +248,7 @@ void LStepExpressModel::emergencyStop()
 
 bool LStepExpressModel::getJoystickEnabled()
 {
-    NQLog("LStepExpressModel", NQLog::Debug) << "getJoystickEnabled";                                                                 
+  NQLog("LStepExpressModel", NQLog::Debug) << "getJoystickEnabled: "<<joystickEnabled_;                                                                 
     QMutexLocker locker(&mutex_);
 
     return (joystickEnabled_==1);
@@ -256,7 +256,7 @@ bool LStepExpressModel::getJoystickEnabled()
 
 bool LStepExpressModel::getJoystickAxisEnabled(unsigned int axis)
 {
-    NQLog("LStepExpressModel", NQLog::Debug) << "getJoystickAxisEnabled";                                                                 
+  NQLog("LStepExpressModel", NQLog::Debug) << "getJoystickAxisEnabled: "<<joystickAxisEnabled_[axis];                                                                 
     QMutexLocker locker(&mutex_);
 
     return (joystickAxisEnabled_[axis]==1);
@@ -277,7 +277,7 @@ void LStepExpressModel::setAxisEnabled(unsigned int axis, bool enabled)
 
 void LStepExpressModel::setJoystickEnabled(bool enabled)
 {
-  NQLog("LStepExpressModel", NQLog::Debug) << "setJoystickEnabled";
+  NQLog("LStepExpressModel", NQLog::Debug) << "setJoystickEnabled "<<enabled;
 
     int temp = (int)enabled;
 
@@ -291,9 +291,10 @@ void LStepExpressModel::setJoystickEnabled(bool enabled)
 void LStepExpressModel::setJoystickAxisEnabled(unsigned int axis, bool enabled)
 {
     int temp = (enabled == true)?1:0;
-    NQLog("LStepExpressModel", NQLog::Debug) << "setJoystickAxisEnabled " << axis << " " << temp;
+    NQLog("LStepExpressModel", NQLog::Debug) << "setJoystickAxisEnabled " << axis << " " << temp << " joystick enabled? = "<<joystickEnabled_;
 
     if (joystickEnabled_ && joystickAxisEnabled_[axis]!=temp) {
+      NQLog("LStepExpressModel", NQLog::Debug) << "setJoystickAxisEnabled do something";
         joystickAxisEnabled_[axis] = temp;
 
         controller_->SetJoystickAxisEnabled((VLStepExpress::Axis)axis, temp);   
@@ -349,6 +350,11 @@ void LStepExpressModel::initialize()
     bool enabled = (controller_ != NULL) && (controller_->DeviceAvailable());
 
     if ( enabled ) {
+      std::vector<int> allZerosI{ 0, 0, 0, 0 };
+      controller_->SetPowerAmplifierStatus(allZerosI);
+      controller_->SetAxisEnabled(allZerosI);
+      controller_->SetJoystickEnabled(false);
+      controller_->SetJoystickAxisEnabled(allZerosI);
         setDeviceState(READY);
         updateInformation();
         updateMotionInformation();
@@ -407,12 +413,14 @@ void LStepExpressModel::updateInformation()
     }
 
     int joystick = controller_->GetJoystickEnabled();
+    NQLog("LStepExpressModel", NQLog::Debug) << "updateInformation() joystick = "<<joystick;
     if (joystick!=joystickEnabled_) {
         joystickEnabled_ = joystick;
         changed = true;
     }
 
     controller_->GetJoystickAxisEnabled(ivalues);
+    NQLog("LStepExpressModel", NQLog::Debug) << "updateInformation() axis joystick = "<<(ivalues)[0]<<" "<<(ivalues)[1]<<" "<<(ivalues)[2]<<" "<<(ivalues)[3];
     if (ivalues!=joystickAxisEnabled_) {
         joystickAxisEnabled_ = ivalues;
         changed = true;
@@ -438,13 +446,12 @@ void LStepExpressModel::updateMotionInformation()
 
         updateCount_++;
         if (updateCount_==nUpdates) {
+	  NQLog("LStepExpressModel", NQLog::Debug) << "updateMotionInformation(), going to updateInformation()";
             updateInformation();
             updateCount_ = 0;
         }
 
         /*
-
-
         if (thread()==QApplication::instance()->thread()) {
             NQLog("LStepExpressModel", NQLog::Debug) << " running in main application thread";
         } else {
@@ -455,14 +462,24 @@ void LStepExpressModel::updateMotionInformation()
         bool changed = false;
 
         std::vector<int> ivalues;
+	std::vector<int> pavalues;
+	std::vector<int> evalues;
         std::vector<double> dvalues;
 
         controller_->GetAxisStatus(ivalues);
+	controller_->GetPowerAmplifierStatus(pavalues);
+	controller_->GetAxisEnabled(evalues);
+
         NQLog("LStepExpressModel", NQLog::Debug) << "updateMotionInformation() received axis status";
         NQLog("LStepExpressModel", NQLog::Debug) << " x-axis: new status = "<<(ivalues)[0]<<" old status = "<<(axisStatus_)[0];
         NQLog("LStepExpressModel", NQLog::Debug) << " y-axis: new status = "<<(ivalues)[1]<<" old status = "<<(axisStatus_)[1];
         NQLog("LStepExpressModel", NQLog::Debug) << " z-axis: new status = "<<(ivalues)[2]<<" old status = "<<(axisStatus_)[2];
         NQLog("LStepExpressModel", NQLog::Debug) << " a-axis: new status = "<<(ivalues)[3]<<" old status = "<<(axisStatus_)[3];
+        NQLog("LStepExpressModel", NQLog::Debug) << " x-axis: old enabled = "<<(axis_)[0]<<" new enabled = "<<(evalues)[0]<<" pa = "<<(pavalues)[0];
+        NQLog("LStepExpressModel", NQLog::Debug) << " y-axis: old enabled = "<<(axis_)[1]<<" new enabled = "<<(evalues)[1]<<" pa = "<<(pavalues)[1];
+        NQLog("LStepExpressModel", NQLog::Debug) << " z-axis: old enabled = "<<(axis_)[2]<<" new enabled = "<<(evalues)[2]<<" pa = "<<(pavalues)[2];
+        NQLog("LStepExpressModel", NQLog::Debug) << " a-axis: old enabled = "<<(axis_)[3]<<" new enabled = "<<(evalues)[3]<<" pa = "<<(pavalues)[3];
+
         if (ivalues!=axisStatus_) {
             axisStatus_ = ivalues;
             changed = true;
