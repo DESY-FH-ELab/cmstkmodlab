@@ -20,6 +20,7 @@ macx {
 }
 
 CONFIG += link_pkgconfig
+CONFIG += qtestlib
 PKGCONFIG += opencv
 
 QMAKE = @qmake@

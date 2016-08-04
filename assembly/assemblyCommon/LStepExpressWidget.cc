@@ -71,6 +71,59 @@ LStepExpressWidget::LStepExpressWidget(LStepExpressModel* model,
 	model_, SLOT(emergencyStop()));
 
     lstepStateChanged(model_->getDeviceState());
+
+    /*
+    spyTimer_ = new QTimer(this);
+    spyTimer_->setInterval(500);
+    spyTimer_->start();
+    connect(spyTimer_, SIGNAL(timeout()), this, SLOT(printSpyInformation()));
+    */
+
+    spyLstepCheckBox_ = new QSignalSpy(lstepCheckBox_, SIGNAL(toggled(bool)));
+    spyJoystickCheckBox_ = new QSignalSpy(joystickCheckBox_, SIGNAL(toggled(bool)));
+    spyButtonOrigin_ = new QSignalSpy(buttonOrigin_, SIGNAL(clicked()));
+    spyButtonCalibrate_ = new QSignalSpy(buttonCalibrate_, SIGNAL(clicked()));
+    spyButtonEmergencyStop_ = new QSignalSpy(buttonEmergencyStop_, SIGNAL(clicked()));
+
+    connect(lstepCheckBox_, SIGNAL(toggled(bool)),
+            this, SLOT(printSpyInformation()));
+
+    connect(joystickCheckBox_, SIGNAL(toggled(bool)),
+            this, SLOT(printSpyInformation()));
+
+    connect(buttonOrigin_, SIGNAL(clicked()),
+            this, SLOT(printSpyInformation()));
+
+    connect(buttonCalibrate_, SIGNAL(clicked()),
+	this, SLOT(printSpyInformation()));
+
+    connect(buttonEmergencyStop_, SIGNAL(clicked()),
+	this, SLOT(printSpyInformation()));
+}
+
+void LStepExpressWidget::printSpyInformation()
+{
+    //    NQLog("LStepExpressWidget", NQLog::Debug) << "printSpyInformation";
+    for(int i = 0; i < spyLstepCheckBox_->size(); i++){
+        NQLog("SPY LStepExpressWidget", NQLog::Debug) << "lstepCheckBox_, signal toggled("<<(spyLstepCheckBox_->value(i))[0].toBool()<<")";
+    }
+    spyLstepCheckBox_->clear();
+    for(int i = 0; i < spyJoystickCheckBox_->size(); i++){
+        NQLog("SPY LStepExpressWidget", NQLog::Debug) << "joystickCheckBox_, signal toggled("<<(spyJoystickCheckBox_->value(i))[0].toBool()<<")";
+    }
+    spyJoystickCheckBox_->clear();
+    for(int i = 0; i < spyButtonOrigin_->size(); i++){
+        NQLog("SPY LStepExpressWidget", NQLog::Debug) << "ButtonOrigin_, signal clicked()";
+    }
+    spyButtonOrigin_->clear();
+    for(int i = 0; i < spyButtonCalibrate_->size(); i++){
+        NQLog("SPY LStepExpressWidget", NQLog::Debug) << "ButtonCalibrate_, signal clicked()";
+    }
+    spyButtonCalibrate_->clear();
+    for(int i = 0; i < spyButtonEmergencyStop_->size(); i++){
+        NQLog("SPY LStepExpressWidget", NQLog::Debug) << "ButtonEmergencyStop_, signal clicked()";
+    }
+    spyButtonEmergencyStop_->clear();
 }
 
 void LStepExpressWidget::updateWidgets()
@@ -175,6 +228,32 @@ LStepExpressAxisWidget::LStepExpressAxisWidget(LStepExpressModel* model,
 
     connect(model_, SIGNAL(motionFinished()),
             this, SLOT(motionFinished()));
+
+    /*
+    spyTimer_ = new QTimer(this);
+    spyTimer_->setInterval(500);
+    spyTimer_->start();
+    connect(spyTimer_, SIGNAL(timeout()), this, SLOT(printSpyInformation()));
+    */
+
+    connect(enabledCheckBox_, SIGNAL(clicked(bool)),
+            this, SLOT(printSpyInformation()));
+
+    connect(joystickCheckBox_, SIGNAL(clicked(bool)),
+            this, SLOT(printSpyInformation()));
+}
+
+void LStepExpressAxisWidget::printSpyInformation()
+{
+    //    NQLog("LStepExpressAxisWidget", NQLog::Debug) << "printSpyInformation() ";
+    for(int i = 0; i < spyEnabledCheckBox_->size(); i++){
+        NQLog("SPY LStepExpressAxisWidget", NQLog::Debug) << "enabledCheckBox_, signal toggled("<<(spyEnabledCheckBox_->value(i))[0].toBool()<<")";
+    }
+    spyEnabledCheckBox_->clear();
+    for(int i = 0; i < spyJoystickCheckBox_->size(); i++){
+        NQLog("SPY LStepExpressAxisWidget", NQLog::Debug) << "joystickCheckBox_, signal toggled("<<(spyJoystickCheckBox_->value(i))[0].toBool()<<")";
+    }
+    spyJoystickCheckBox_->clear();
 }
 
 void LStepExpressAxisWidget::updateWidgets()
@@ -214,7 +293,9 @@ void LStepExpressAxisWidget::lStepStateChanged(State newState)
         enabledCheckBox_->setEnabled(true);
         updateWidgets();
     } else {
+        enabledCheckBoxToggled(false);
         enabledCheckBox_->setEnabled(false);
+        joystickCheckBoxToggled(false);
         joystickCheckBox_->setEnabled(false);
     }
 }

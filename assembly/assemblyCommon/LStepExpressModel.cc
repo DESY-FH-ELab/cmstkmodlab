@@ -35,6 +35,67 @@ LStepExpressModel::LStepExpressModel(const char* port,
     timer_ = new QTimer(this);
     timer_->setInterval(motionUpdateInterval_);
     connect(timer_, SIGNAL(timeout()), this, SLOT(updateMotionInformation()));
+
+    /*
+    spyTimer_ = new QTimer(this);
+    spyTimer_->setInterval(500);
+    spyTimer_->start();
+    connect(spyTimer_, SIGNAL(timeout()), this, SLOT(printSpyInformation()));
+    */
+    spyTimer = new QSignalSpy(timer_, SIGNAL(timeout()));
+    spyDeviceStateChanged = new QSignalSpy(this, SIGNAL(deviceStateChanged(State)));
+    spyInformationChanged = new QSignalSpy(this, SIGNAL(informationChanged()));
+    spyMotionInformationChanged = new QSignalSpy(this, SIGNAL(motionInformationChanged()));
+    spyMessage = new QSignalSpy(this, SIGNAL(message(QString)));
+    spyControlStateChanged = new QSignalSpy(this, SIGNAL(controlStateChanged(bool)));
+    spyMotionStarted = new QSignalSpy(this, SIGNAL(motionStarted()));
+    spyMotionFinished = new QSignalSpy(this, SIGNAL(motionFinished()));
+
+    connect(timer_, SIGNAL(timeout()), this, SLOT(printSpyInformation()));
+    connect(this, SIGNAL(deviceStateChanged(State)), this, SLOT(printSpyInformation()));
+    connect(this, SIGNAL(informationChanged()), this, SLOT(printSpyInformation()));
+    connect(this, SIGNAL(motionInformationChanged()), this, SLOT(printSpyInformation()));
+    connect(this, SIGNAL(message(QString)), this, SLOT(printSpyInformation()));
+    connect(this, SIGNAL(controlStateChanged(bool)), this, SLOT(printSpyInformation()));
+    connect(this, SIGNAL(motionStarted()), this, SLOT(printSpyInformation()));
+    connect(this, SIGNAL(motionFinished()), this, SLOT(printSpyInformation()));
+}
+
+void LStepExpressModel::printSpyInformation()
+{
+    //    NQLog("LStepExpressModel", NQLog::Debug) << "printSpyInformation";                                                                 
+    for(int i = 0; i < spyTimer->size(); i++){
+        NQLog("SPY LStepExpressModel", NQLog::Debug) << "timer_, signal timeout()";                                                                 
+    } 
+    spyTimer->clear();
+    for(int i = 0; i < spyDeviceStateChanged->size(); i++){
+        NQLog("SPY LStepExpressModel", NQLog::Debug) << "this_, signal deviceStateChanged("<<(spyDeviceStateChanged->value(i))[0].toString().toStdString()<<")";                                                
+    } 
+    spyDeviceStateChanged->clear();
+    for(int i = 0; i < spyInformationChanged->size(); i++){
+        NQLog("SPY LStepExpressModel", NQLog::Debug) << "this_, signal informationChanged()";                                                
+    } 
+    spyInformationChanged->clear();
+    for(int i = 0; i < spyMotionInformationChanged->size(); i++){
+        NQLog("SPY LStepExpressModel", NQLog::Debug) << "this_, signal motionInformationChanged()";                                                
+    } 
+    spyMotionInformationChanged->clear();
+    for(int i = 0; i < spyMessage->size(); i++){
+        NQLog("SPY LStepExpressModel", NQLog::Debug) << "this_, signal message()";                                                
+    } 
+    spyControlStateChanged->clear();
+    for(int i = 0; i < spyMessage->size(); i++){
+        NQLog("SPY LStepExpressModel", NQLog::Debug) << "this_, signal controlStateChanged("<<(spyControlStateChanged->value(i))[0].toBool()<<")";                                                
+    } 
+    spyMessage->clear();
+    for(int i = 0; i < spyMotionStarted->size(); i++){
+        NQLog("SPY LStepExpressModel", NQLog::Debug) << "this_, signal motionStarted()";                                                
+    } 
+    spyMotionStarted->clear();
+    for(int i = 0; i < spyMotionFinished->size(); i++){
+        NQLog("SPY LStepExpressModel", NQLog::Debug) << "this_, signal motionFinished()";                                                
+    } 
+    spyMotionFinished->clear();
 }
 
 void LStepExpressModel::pauseUpdate()
@@ -365,7 +426,7 @@ void LStepExpressModel::updateInformation()
 
 void LStepExpressModel::updateMotionInformation()
 {
-  NQLog("LStepExpressModel", NQLog::Debug) << "updateMotionInformation()";
+    NQLog("LStepExpressModel", NQLog::Debug) << "updateMotionInformation(), state = "<<state_<<" isPaused_ = "<<isPaused_;
 
     static const int nUpdates = updateInterval_/motionUpdateInterval_;
 

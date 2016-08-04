@@ -380,6 +380,27 @@ LStepExpressSettings::LStepExpressSettings(LStepExpressModel* model, QObject* pa
 
     connect(model_, SIGNAL(controlStateChanged(bool)),
             this, SLOT(deviceControlStateChanged(bool)));
+
+
+    connect(this, SIGNAL(controlStateChanged(bool)),
+	this, SLOT(printSpyInformation()));
+    connect(this, SIGNAL(settingChanged(QString, QVariant)),
+	this, SLOT(printSpyInformation()));
+
+    spyControlStateChanged = new QSignalSpy(this, SIGNAL(controlStateChanged(bool)));
+    spySettingChanged = new QSignalSpy(this, SIGNAL(settingChanged(QString, QVariant)));
+}
+
+void LStepExpressSettings::printSpyInformation()
+{
+    for(int i = 0; i < spyControlStateChanged->size(); i++){
+        NQLog("SPY LStepExpressSettings", NQLog::Debug) << "this_, signal controlStateChanged()";
+    }
+    spyControlStateChanged->clear();
+    for(int i = 0; i < spySettingChanged->size(); i++){
+        NQLog("SPY LStepExpressSettings", NQLog::Debug) << "this_, signal settingChanged()";
+    }
+    spySettingChanged->clear();
 }
 
 void LStepExpressSettings::deviceControlStateChanged(bool enabled)

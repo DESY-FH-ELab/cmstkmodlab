@@ -20,6 +20,28 @@ LStepExpressMotionManager::LStepExpressMotionManager(LStepExpressModel* model, Q
 
     connect(this, SIGNAL(signalMoveRelative(double,double,double,double)),
             model_, SLOT(moveRelative(double,double,double,double)));
+
+    connect(this, SIGNAL(signalMoveAbsolute(double,double,double,double)),
+            this, SLOT(printSpyInformation()));
+
+    connect(this, SIGNAL(signalMoveRelative(double,double,double,double)),
+            this, SLOT(printSpyInformation()));
+
+    spySignalMoveAbsolute = new QSignalSpy(this, SIGNAL(signalMoveAbsolute(double,double,double,double)));
+    spySignalMoveRelative = new QSignalSpy(this, SIGNAL(signalMoveRelative(double,double,double,double)));
+    
+}
+
+void LStepExpressMotionManager::printSpyInformation()
+{
+    for(int i = 0; i < spySignalMoveAbsolute->size(); i++){
+        NQLog("SPY LStepExpressMotionManager", NQLog::Debug) << "this_, signal signalMoveAbsolute()";                                        
+    }
+    spySignalMoveAbsolute->clear();
+    for(int i = 0; i < spySignalMoveRelative->size(); i++){
+        NQLog("SPY LStepExpressMotionManager", NQLog::Debug) << "this_, signal signalMoveRelative()";
+    }
+    spySignalMoveRelative->clear();
 }
 
 void LStepExpressMotionManager::run()

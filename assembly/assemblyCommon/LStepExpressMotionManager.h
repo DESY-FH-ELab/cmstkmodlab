@@ -2,6 +2,7 @@
 #define LSTEPEXPRESSMOTIONMANAGER_H
 
 #include <QQueue>
+#include <QSignalSpy>
 
 #include "LStepExpressModel.h"
 #include "LStepExpressMotion.h"
@@ -34,11 +35,14 @@ protected:
     LStepExpressModel* model_;
     QQueue<LStepExpressMotion> motions_;
     bool inMotion_;
+    QSignalSpy *spySignalMoveRelative;
+    QSignalSpy *spySignalMoveAbsolute;
 
 protected slots:
 
     void motionStarted();
     void motionFinished();
+    void printSpyInformation();
 
 signals:
 
