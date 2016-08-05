@@ -114,6 +114,27 @@ LStepExpressJoystickAxisWidget::LStepExpressJoystickAxisWidget(LStepExpressModel
 
     connect(model_, SIGNAL(motionFinished()),
             this, SLOT(motionFinished()));
+
+    spyUpButton_ = new QSignalSpy(upButton_, SIGNAL(clicked()));
+    spyDownButton_ = new QSignalSpy(downButton_, SIGNAL(clicked()));
+
+    connect(downButton_, SIGNAL(clicked()),
+	this, SLOT(printSpyInformation()));
+
+    connect(upButton_, SIGNAL(clicked()),
+	this, SLOT(printSpyInformation()));
+}
+
+void LStepExpressJoystickAxisWidget::printSpyInformation()
+{
+    for(int i = 0; i < spyUpButton_->size(); i++){
+        NQLog("SPY LStepExpressJoystickAxisWidget", NQLog::Debug) << "upButton_, signal clicked()";
+    }
+    spyUpButton_->clear();
+    for(int i = 0; i < spyDownButton_->size(); i++){
+        NQLog("SPY LStepExpressJoystickAxisWidget", NQLog::Debug) << "downButton_, signal clicked()";
+    }
+    spyDownButton_->clear();
 }
 
 void LStepExpressJoystickAxisWidget::updateWidgets()

@@ -12,6 +12,7 @@
 #include <QWidget>
 #include <QLabel>
 #include <QDoubleSpinBox>
+#include <QSignalSpy>
 
 #include "LStepExpressModel.h"
 
@@ -51,6 +52,9 @@ protected:
     QPushButton *downButton_;
     QDoubleSpinBox *stepBox_;
 
+    QSignalSpy *spyUpButton_;
+    QSignalSpy *spyDownButton_;
+
 public slots:
     void lStepStateChanged( State state );
     void controlStateChanged(bool);
@@ -60,6 +64,7 @@ public slots:
     void downButtonClicked();
     void motionStarted();
     void motionFinished();
+    void printSpyInformation();
 };
 
 #endif // LSTEPEXPRESSJOYSTICKWIDGET_H

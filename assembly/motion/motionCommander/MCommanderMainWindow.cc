@@ -47,14 +47,22 @@ MCommanderMainWindow::MCommanderMainWindow(QWidget *parent)
 
   widget = new QWidget(tabWidget_);
 
-  QVBoxLayout * layout = new QVBoxLayout(widget);
+  QHBoxLayout * layout = new QHBoxLayout(widget);
   widget->setLayout(layout);
 
+  QVBoxLayout * layoutv = new QVBoxLayout(widget);
+  //  widget->setLayout(layout);
+
   LStepExpressWidget *lStepExpressWidget = new LStepExpressWidget(lStepExpressModel_, widget);
-  layout->addWidget(lStepExpressWidget);
+  layoutv->addWidget(lStepExpressWidget);
 
   LStepExpressJoystickWidget *lStepJoystick = new LStepExpressJoystickWidget(lStepExpressModel_, widget);
-  layout->addWidget(lStepJoystick);
+  layoutv->addWidget(lStepJoystick);
+  
+  layout->addLayout(layoutv);
+
+  LStepExpressPositionWidget *lStepPosition = new LStepExpressPositionWidget(lStepExpressModel_, widget);
+  layout->addWidget(lStepPosition);
 
   tabWidget_->addTab(widget, "LStep Express");
 
