@@ -137,7 +137,7 @@ void LStepExpressWidget::lstepStateChanged(State newState)
 {
     NQLog("LStepExpressWidget", NQLog::Debug) << "lStepStateChanged(State newState) " << newState;
 
-    //lstepCheckBox_->setChecked(newState == READY || newState == INITIALIZING);
+    lstepCheckBox_->setChecked(newState == READY || newState == INITIALIZING);
 
     joystickCheckBox_->setEnabled(newState == READY);
     //    if (newState == READY) joystickCheckBox_->setChecked(model_->getJoystickEnabled());
