@@ -283,7 +283,7 @@ void LStepExpressAxisWidget::updateWidgets()
     //enabledCheckBox_->setChecked(axis);
     //joystickCheckBox_->setChecked(model_->getJoystickAxisEnabled(axis_));
 
-    axisDimensionName_ = model_->getAxisDimensionShortName(axis_);
+    if(axis){axisDimensionName_ = model_->getAxisDimensionShortName(axis_);}
 }
 
 void LStepExpressAxisWidget::updateMotionWidgets()

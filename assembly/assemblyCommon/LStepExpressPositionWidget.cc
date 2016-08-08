@@ -15,7 +15,7 @@ LStepExpressPositionWidget::LStepExpressPositionWidget(LStepExpressModel* model,
     QLabel *GoToLabel_ = new QLabel("Go To:",this);
     layout->addWidget(GoToLabel_);
 
-    // Add all the axes displays                                                                                                                                                                             
+    // Add all the axes displays                                                                                                                                        
     //    for (unsigned int i=0;i<4;++i) {
     xpos_ = new LStepExpressPositionAxisWidget(model_, 0, this);
     ypos_ = new LStepExpressPositionAxisWidget(model_, 1, this);
