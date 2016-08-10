@@ -23,13 +23,13 @@ MCommanderMainWindow::MCommanderMainWindow(QWidget *parent)
 
   lStepExpressModel_ = new LStepExpressModel(config->getValue<std::string>("LStepExpressDevice").c_str(),
                                              1000, 100);
-  lStepExpressSettings_ = new LStepExpressSettings(lStepExpressModel_);
+  //  lStepExpressSettings_ = new LStepExpressSettings(lStepExpressModel_);
 
   motionManager_ = new LStepExpressMotionManager(lStepExpressModel_);
 
   motionThread_ = new LStepExpressMotionThread(this);
   motionThread_->start();
-  lStepExpressSettings_->moveToThread(motionThread_);
+  //lStepExpressSettings_->moveToThread(motionThread_);
   motionManager_->myMoveToThread(motionThread_);
 
   laserModel_ = new LaserModel(config->getValue<std::string>("KeyenceDevice").c_str());
@@ -56,19 +56,18 @@ MCommanderMainWindow::MCommanderMainWindow(QWidget *parent)
   LStepExpressWidget *lStepExpressWidget = new LStepExpressWidget(lStepExpressModel_, widget);
   layoutv->addWidget(lStepExpressWidget);
 
-  LStepExpressJoystickWidget *lStepJoystick = new LStepExpressJoystickWidget(lStepExpressModel_, widget);
-  layoutv->addWidget(lStepJoystick);
+  //LStepExpressJoystickWidget *lStepJoystick = new LStepExpressJoystickWidget(lStepExpressModel_, widget);
+  //layoutv->addWidget(lStepJoystick);
   
   layout->addLayout(layoutv);
 
-  LStepExpressPositionWidget *lStepPosition = new LStepExpressPositionWidget(lStepExpressModel_, widget);
-  layout->addWidget(lStepPosition);
+  //LStepExpressPositionWidget *lStepPosition = new LStepExpressPositionWidget(lStepExpressModel_, widget);
+  //layout->addWidget(lStepPosition);
 
   tabWidget_->addTab(widget, "LStep Express");
 
-  LStepExpressSettingsWidget *lStepExpressSettingsWidget = new LStepExpressSettingsWidget(lStepExpressSettings_,
-                                                                                          tabWidget_);
-  tabWidget_->addTab(lStepExpressSettingsWidget, "LStep Express Settings");
+  //  LStepExpressSettingsWidget *lStepExpressSettingsWidget = new LStepExpressSettingsWidget(lStepExpressSettings_, tabWidget_);
+// tabWidget_->addTab(lStepExpressSettingsWidget, "LStep Express Settings");
 
   setCentralWidget(tabWidget_);
 
@@ -83,8 +82,8 @@ MCommanderMainWindow::MCommanderMainWindow(QWidget *parent)
 
   //QTimer::singleShot(2000, this, SLOT(testManager()));
 
-  LStepExpressMeasurementWidget *lStepExpressMeasurementWidget = new LStepExpressMeasurementWidget(lStepExpressModel_, motionManager_, laserModel_, widget);
-  tabWidget_->addTab(lStepExpressMeasurementWidget, "Measurements");
+  // LStepExpressMeasurementWidget *lStepExpressMeasurementWidget = new LStepExpressMeasurementWidget(lStepExpressModel_, motionManager_, laserModel_, widget);
+  //tabWidget_->addTab(lStepExpressMeasurementWidget, "Measurements");
 
   NQLog("MCommanderMainWindow") << "main window constructed";
 }

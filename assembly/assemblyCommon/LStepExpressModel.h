@@ -118,6 +118,7 @@ protected slots:
 
     void updateInformation();
     void updateMotionInformation();
+    void updateMotionInformationFromTimer();
     void printSpyInformation();
 
 signals:
