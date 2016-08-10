@@ -264,6 +264,7 @@ void LStepExpressModel::emergencyStop()
     std::cout<<"LStepExpressModel "<< "emergencyStop"  <<std::endl;
     controller_->EmergencyStop();
     inMotion_ = false;
+    finishedCalibrating_ = false;
     emit motionFinished();
 }
 
@@ -498,14 +499,15 @@ void LStepExpressModel::updateInformation()
         changed = true;
     }
 
-    controller_->GetJoystickAxisEnabled(ivalues);
-    std::cout<<"LStepExpressModel "<< "updateInformation() axis joystick =  "<<(ivalues)[0]<<"  "<<(ivalues)[1]<<"  "<<(ivalues)[2]<<"  "<<(ivalues)[3]  <<std::endl;
-    if (ivalues!=joystickAxisEnabled_) {
+    if(joystickEnabled_){
+      controller_->GetJoystickAxisEnabled(ivalues);
+      std::cout<<"LStepExpressModel "<< "updateInformation() axis joystick =  "<<(ivalues)[0]<<"  "<<(ivalues)[1]<<"  "<<(ivalues)[2]<<"  "<<(ivalues)[3]  <<std::endl;
+      if (ivalues!=joystickAxisEnabled_) {
         std::cout<<"LStepExpressModel "<< "updateInformation() axis joystick changed"<<std::endl;
         joystickAxisEnabled_ = ivalues;
         changed = true;
+      }
     }
-
     if (changed) {
         // std::cout<<"LStepExpressModel " << "information changed";
         emit informationChanged();
@@ -573,9 +575,12 @@ void LStepExpressModel::updateMotionInformation()
           
           bool temp = true;
           for(int i = 0; i < 4; i++){
-	  temp = ( (ivalues)[i] == LStepExpress_t::AXISSTANDSANDREADY || (ivalues)[i] == LStepExpress_t::AXISACKAFTERCALIBRATION) && (axis_)[i] == 1;
+	    bool ifaxisenabled = ( (ivalues)[i] == LStepExpress_t::AXISSTANDSANDREADY || (ivalues)[i] == LStepExpress_t::AXISACKAFTERCALIBRATION) && (axis_)[i] == 1;
+	    bool ifaxisnotenabled = (axis_)[i] == 0;
+	    temp = ifaxisenabled || ifaxisnotenabled;
+	    std::cout<<"LStepExpressModel axis status =  "<<(ivalues)[i]<<" axis enabled = "<<(axis_)[i]<<" temp = "<<temp<<std::endl;
           }
-          if(temp){inMotion_ = false; emit motionFinished();}
+	  //          if(temp){inMotion_ = false; std::cout<<"about to emit motionfinished()"<<std::endl; emit motionFinished();}
           
           /*
 	if (std::all_of(ivalues.begin(), ivalues.end(),
@@ -671,14 +676,17 @@ void LStepExpressModel::updateMotionInformationFromTimer()
       }
       
       if (inMotion_) {
-          std::cout<<"LStepExpressModel "<< "updateMotionInformationFromTimer inMotion_ = true"  <<std::endl;
-          
+	std::cout<<"LStepExpressModel "<< "updateMotionInformationFromTimer inMotion_ = true, axisstandsandready = "<<LStepExpress_t::AXISSTANDSANDREADY<<" axisackaftercalibration = "<<LStepExpress_t::AXISACKAFTERCALIBRATION  <<std::endl;
           bool temp = true;
           for(int i = 0; i < 4; i++){
-	  temp = ( (ivalues)[i] == LStepExpress_t::AXISSTANDSANDREADY || (ivalues)[i] == LStepExpress_t::AXISACKAFTERCALIBRATION) && (axis_)[i] == 1;
+	    std::cout<<"LStepExpressModel "<< "updateMotionInformationFromTimer inMotion_ = true, axis nr = "<<i<<std::endl;
+	    bool ifaxisenabled = ( (ivalues)[i] == LStepExpress_t::AXISSTANDSANDREADY || (ivalues)[i] == LStepExpress_t::AXISACKAFTERCALIBRATION) && (axis_)[i] == 1;
+	    bool ifaxisnotenabled = (axis_)[i] == 0;
+	    temp *= (ifaxisenabled || ifaxisnotenabled);
+	    std::cout<<"LStepExpressModel updateMotionInformationFromTimer inMotion_ = true, axis status =  "<<(ivalues)[i]<<" axis enabled = "<<(axis_)[i]<<" ifaxisenabled = "<<ifaxisenabled<<" ifaxisnotenabled = "<<ifaxisnotenabled<<" temp = "<<temp<<std::endl;
           }
-          if(temp){inMotion_ = false; emit motionFinished();}
-          
+	  if(temp){inMotion_ = false; std::cout<<"about to emit motionfinished()"<<std::endl; emit motionFinished();}
+
           /*
 	if (std::all_of(ivalues.begin(), ivalues.end(),
 	[](int i){	  std::cout<<"LStepExpressModel "<< "updateMotionInformationFromTimer axis status =  "<<i; bool temp = (i==LStepExpress_t::AXISSTANDSANDREADY || i==LStepExpress_t::AXISACKAFTERCALIBRATION) && (axis_)[i]==1; return temp;})) {
