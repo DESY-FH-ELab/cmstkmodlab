@@ -85,28 +85,32 @@ MCommanderMainWindow::MCommanderMainWindow(QWidget *parent)
   // LStepExpressMeasurementWidget *lStepExpressMeasurementWidget = new LStepExpressMeasurementWidget(lStepExpressModel_, motionManager_, laserModel_, widget);
   //tabWidget_->addTab(lStepExpressMeasurementWidget, "Measurements");
 
-  NQLog("MCommanderMainWindow") << "main window constructed";
+  std::cout<<"MCommanderMainWindow " << "main window constructed"<<std::endl;
 }
 
 void MCommanderMainWindow::quit()
 {
-  NQLog("MCommanderMainWindow") << "quit";
+    std::cout<<"MCommanderMainWindow " << "quit"<<std::endl;
+    
+    std::cout<<"MCommanderMainWindow " << "Disable LStepController"<<std::endl;
+    if(lStepExpressModel_){ lStepExpressModel_->setDeviceEnabled(false); lStepExpressModel_->deleteLater(); }//delete lStepExpressModel_; lStepExpressModel_ = NULL;}
+    
+    std::cout<<"MCommanderMainWindow " << "Disable Keyence Laser"<<std::endl;
+    if(laserModel_){ laserModel_->setDeviceEnabled(false); laserModel_->deleteLater(); }//delete laserModel_; laserModel_ = NULL;}
+    
+    motionManager_->deleteLater();
+     tabWidget_->deleteLater();
+     
+     if (motionThread_) {
+         motionThread_->quit();
+         motionThread_->wait();
+     }
+     
+     if (laserThread_) {
+         laserThread_->quit();
+         laserThread_->wait();
+     }
 
-  if (motionThread_) {
-      motionThread_->quit();
-      motionThread_->wait();
-  }
-
-  if (laserThread_) {
-      laserThread_->quit();
-      laserThread_->wait();
-  }
-
-  NQLog("MCommanderMainWindow") << "Disable LStepController";
-  lStepExpressModel_->setDeviceEnabled(false);
-
-  NQLog("MCommanderMainWindow") << "Disable Keyence Laser";
-  laserModel_->setDeviceEnabled(false);
 }
 
 /*

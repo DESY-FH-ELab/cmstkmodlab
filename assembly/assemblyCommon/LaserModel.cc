@@ -10,7 +10,7 @@ LaserModel::LaserModel(const char* port,
       AbstractDeviceModel<Keyence_t>(),
       Laser_PORT(port)
 {
-    NQLog("LaserModel") << "[LaserModel::LaserModel]";
+    std::cout<<"LaserModel " << "[LaserModel::LaserModel]";
     laserHead_ = 2; //note: head A = 2
 
     timer_ = new QTimer(this);
@@ -29,7 +29,7 @@ LaserModel::~LaserModel()
 
 void LaserModel::setLaserHead(int out)
 {
-    NQLog("LaserModel") << "[LaserModel::setLaserHead]";
+    std::cout<<"LaserModel " << "[LaserModel::setLaserHead]";
     laserHead_ = out;
 }
 
@@ -37,7 +37,7 @@ void LaserModel::setSamplingRate(int mode)
 {
     if(state_ == OFF) return;
 
-    NQLog("LaserModel") << "[LaserModel::setSamplingRate]";
+    std::cout<<"LaserModel " << "[LaserModel::setSamplingRate]"    <<std::endl;
     controller_->SetSamplingRate(mode);
 }
 
@@ -45,7 +45,7 @@ void LaserModel::setAveraging(int mode)
 {
     if(state_ == OFF) return;
 
-    NQLog("LaserModel") << "[setAveraging]";
+    std::cout<<"LaserModel " << "[setAveraging]"    <<std::endl;
     controller_->SetAveraging(laserHead_, mode);
 }
 
@@ -58,26 +58,26 @@ void LaserModel::getMeasurement()
 {
     if(state_ == OFF) return;
 
-    NQLog("LaserModel") << "[getMeasurement], isInRange_ = "<< isInRange_;
+    std::cout<<"LaserModel " << "[getMeasurement], isInRange_ = "<< isInRange_    <<std::endl;
     double ivalue = 0;
     try{
-      NQLog("LaserModel") << "[getMeasurement] try to get measurement";
+      std::cout<<"LaserModel " << "[getMeasurement] try to get measurement"    <<std::endl;
         controller_->MeasurementValueOutput(laserHead_, ivalue);
-        NQLog("LaserModel") << "[getMeasurement] does the code reach this point?";
+        std::cout<<"LaserModel " << "[getMeasurement] does the code reach this point?"    <<std::endl;
         if(!isInRange_){
-	  NQLog("LaserModel") <<"[getMeasurement] emit goes back into range";
+	  std::cout<<"LaserModel " <<"[getMeasurement] emit goes back into range"    <<std::endl;
 	isInRange_ = true;
 	emit inRangeStateChanged(isInRange_);
         }
     }catch (std::string ){
-      NQLog("LaserModel") << "[getMeasurement] exception caught";
+      std::cout<<"LaserModel " << "[getMeasurement] exception caught"    <<std::endl;
         if(isInRange_){ 
-	  NQLog("LaserModel") <<"[getMeasurement] emit goes out of range";
+	  std::cout<<"LaserModel " <<"[getMeasurement] emit goes out of range"    <<std::endl;
 	isInRange_ = false;
 	emit inRangeStateChanged(isInRange_);
         }
     }
-    NQLog("LaserModel") << "[getMeasurement] value = " << ivalue;
+    std::cout<<"LaserModel " << "[getMeasurement] value = " << ivalue    <<std::endl;
     if(ivalue != value_){
         value_ = ivalue;
         emit measurementChanged(value_);
@@ -87,14 +87,14 @@ void LaserModel::getMeasurement()
 //dummy method for testing
 void LaserModel::setMeasurement(double value)
 {
-    NQLog("LaserModel") << "[setMeasurement]";
+    std::cout<<"LaserModel " << "[setMeasurement]"    <<std::endl;
 
     emit measurementChanged(value);
 }
 
 void LaserModel::initialize()
 {
-    NQLog("LaserModel") << "[initialize]";
+    std::cout<<"LaserModel " << "[initialize]"    <<std::endl;
     setDeviceState(INITIALIZING);
 
     renewController(Laser_PORT);
@@ -113,7 +113,7 @@ void LaserModel::initialize()
 
 void LaserModel::setDeviceState( State state )
 {
-    NQLog("LaserModel") << "[setDeviceState]";
+    std::cout<<"LaserModel " << "[setDeviceState]"    <<std::endl;
     if ( state_ != state ) {
         state_ = state;
 
@@ -129,7 +129,7 @@ void LaserModel::setDeviceState( State state )
 
 void LaserModel::setDeviceEnabled(bool enabled)
 {
-    NQLog("LaserModel", NQLog::Debug) << "setDeviceEnabled(bool enabled)";
+    std::cout<<"LaserModel " << "setDeviceEnabled(bool enabled)"    <<std::endl;
 
     usleep(1000);
 

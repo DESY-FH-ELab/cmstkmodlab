@@ -41,7 +41,8 @@ LStepExpressJoystickWidget::LStepExpressJoystickWidget(LStepExpressModel* model,
 
 void LStepExpressJoystickWidget::lstepStateChanged(State newState)
 {
-  NQLog("LStepExpressJoystickWidget", NQLog::Debug) << "lStepStateChanged(State newState) " << newState;
+
+  std::cout<<"LStepExpressJoystickWidget " << "lStepStateChanged(State newState) " << newState    <<std::endl;
 
     axisControlWidget_->setEnabled(newState == READY);
 }
@@ -49,7 +50,7 @@ void LStepExpressJoystickWidget::lstepStateChanged(State newState)
 /// Updates the GUI when the controler is enabled/disabled.
 void LStepExpressJoystickWidget::controlStateChanged(bool enabled)
 {
-  NQLog("LStepExpressJoystickWidget", NQLog::Debug) << "controlStateChanged(bool enabled) " << enabled;
+  std::cout<<"LStepExpressJoystickWidget " << "controlStateChanged(bool enabled) " << enabled    <<std::endl;
 
     if (enabled) {
         lstepStateChanged(model_->getDeviceState());
@@ -60,12 +61,12 @@ void LStepExpressJoystickWidget::controlStateChanged(bool enabled)
 
 void LStepExpressJoystickWidget::motionStarted()
 {
-    NQLog("LStepExpressJoystickWidget", NQLog::Debug) << "motionStarted()";
+    std::cout<<"LStepExpressJoystickWidget " << "motionStarted()"    <<std::endl;
 }
 
 void LStepExpressJoystickWidget::motionFinished()
 {
-    NQLog("LStepExpressJoystickWidget", NQLog::Debug) << "motionFinished()";
+    std::cout<<"LStepExpressJoystickWidget " << "motionFinished()"    <<std::endl;
 }
 
 LStepExpressJoystickAxisWidget::LStepExpressJoystickAxisWidget(LStepExpressModel* model,
@@ -128,11 +129,11 @@ LStepExpressJoystickAxisWidget::LStepExpressJoystickAxisWidget(LStepExpressModel
 void LStepExpressJoystickAxisWidget::printSpyInformation()
 {
     for(int i = 0; i < spyUpButton_->size(); i++){
-        NQLog("SPY LStepExpressJoystickAxisWidget", NQLog::Debug) << "upButton_, signal clicked()";
+        std::cout<<"SPY LStepExpressJoystickAxisWidget " << "upButton_, signal clicked()"    <<std::endl;
     }
     spyUpButton_->clear();
     for(int i = 0; i < spyDownButton_->size(); i++){
-        NQLog("SPY LStepExpressJoystickAxisWidget", NQLog::Debug) << "downButton_, signal clicked()";
+        std::cout<<"SPY LStepExpressJoystickAxisWidget " << "downButton_, signal clicked()"    <<std::endl;
     }
     spyDownButton_->clear();
 }
@@ -141,12 +142,12 @@ void LStepExpressJoystickAxisWidget::updateWidgets()
 {
     bool axis = model_->getAxisEnabled(axis_);
 
-    NQLog("LStepExpressJoystickAxisWidget", NQLog::Debug) << "updateWidgets() " << axis;
+    std::cout<<"LStepExpressJoystickAxisWidget " << "updateWidgets() " << axis    <<std::endl;
 
     stepBox_->setSuffix(QString(" ") + model_->getAxisDimensionShortName(axis_));
 
     if (model_->getAxisEnabled(axis_)) {
-      NQLog("LStepExpressJoystickAxisWidget", NQLog::Debug) << "updateWidgets() " << axis << "axis is enabled, enable buttons";
+      std::cout<<"LStepExpressJoystickAxisWidget " << "updateWidgets() " << axis << "axis is enabled, enable buttons"    <<std::endl;
         stepBox_->setEnabled(true);
         upButton_->setEnabled(true);
         downButton_->setEnabled(true);
@@ -159,13 +160,13 @@ void LStepExpressJoystickAxisWidget::updateWidgets()
 
 void LStepExpressJoystickAxisWidget::updateMotionWidgets()
 {
-    // NQLog("LStepExpressJoystickAxisWidget", NQLog::Debug) << "updateMotionWidgets()";
+    // std::cout<<"LStepExpressJoystickAxisWidget " << "updateMotionWidgets()"    <<std::endl;
 }
 
 void LStepExpressJoystickAxisWidget::lStepStateChanged(State newState)
 {
-    // NQLog("LStepExpressJoystickAxisWidget", NQLog::Debug) << "lStepStateChanged(State newState) " << newState;
-    // NQLog("LStepExpressJoystickAxisWidget", NQLog::Debug) << "                             axis " << model_->getAxisEnabled(axis_);
+    // std::cout<<"LStepExpressJoystickAxisWidget " << "lStepStateChanged(State newState) " << newState    <<std::endl;
+    // std::cout<<"LStepExpressJoystickAxisWidget " << "                             axis " << model_->getAxisEnabled(axis_)    <<std::endl;
 
     if (newState == READY || newState == INITIALIZING) {
         if (model_->getAxisEnabled(axis_)) {
@@ -186,7 +187,7 @@ void LStepExpressJoystickAxisWidget::lStepStateChanged(State newState)
 
 void LStepExpressJoystickAxisWidget::controlStateChanged(bool enabled)
 {
-    // NQLog("LStepExpressJoystickAxisWidget", NQLog::Debug) << "controlStateChanged(bool enabled) " << enabled;
+    // std::cout<<"LStepExpressJoystickAxisWidget " << "controlStateChanged(bool enabled) " << enabled    <<std::endl;
 
     if (enabled) {
         lStepStateChanged(model_->getDeviceState());
@@ -198,7 +199,7 @@ void LStepExpressJoystickAxisWidget::controlStateChanged(bool enabled)
 
 void LStepExpressJoystickAxisWidget::upButtonClicked()
 {
-    // NQLog("LStepExpressJoystickAxisWidget", NQLog::Debug) << "upButtonClicked()";
+    // std::cout<<"LStepExpressJoystickAxisWidget " << "upButtonClicked()"    <<std::endl;
 
     std::vector<double> values{ 0.0, 0.0, 0.0, 0.0 };
     values[axis_] = stepBox_->value();
@@ -208,7 +209,7 @@ void LStepExpressJoystickAxisWidget::upButtonClicked()
 
 void LStepExpressJoystickAxisWidget::downButtonClicked()
 {
-    // NQLog("LStepExpressJoystickAxisWidget", NQLog::Debug) << "downButtonClicked()";
+    // std::cout<<"LStepExpressJoystickAxisWidget " << "downButtonClicked()"    <<std::endl;
 
     std::vector<double> values{ 0.0, 0.0, 0.0, 0.0 };
     values[axis_] = -stepBox_->value();
@@ -218,10 +219,10 @@ void LStepExpressJoystickAxisWidget::downButtonClicked()
 
 void LStepExpressJoystickAxisWidget::motionStarted()
 {
-    NQLog("LStepExpressJoystickAxisWidget", NQLog::Debug) << "motionStarted()";
+    std::cout<<"LStepExpressJoystickAxisWidget " << "motionStarted()"    <<std::endl;
 }
 
 void LStepExpressJoystickAxisWidget::motionFinished()
 {
-    NQLog("LStepExpressJoystickAxisWidget", NQLog::Debug) << "motionFinished()";
+    std::cout<<"LStepExpressJoystickAxisWidget " << "motionFinished()"    <<std::endl;
 }

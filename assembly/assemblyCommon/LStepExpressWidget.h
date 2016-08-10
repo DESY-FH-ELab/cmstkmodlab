@@ -23,6 +23,7 @@ class LStepExpressWidget : public QWidget
 
 public:
     explicit LStepExpressWidget(LStepExpressModel* model, QWidget *parent = 0);
+    ~LStepExpressWidget();
 
 protected:
     LStepExpressModel* model_;
@@ -33,7 +34,7 @@ protected:
     QPushButton* buttonCalibrate_;
     QPushButton* buttonEmergencyStop_;
 
-    QTimer* spyTimer_;
+    //    QTimer* spyTimer_;
     QSignalSpy* spyLstepCheckBox_;
     QSignalSpy* spyJoystickCheckBox_;
     QSignalSpy* spyButtonOrigin_;
@@ -57,6 +58,8 @@ public:
     explicit LStepExpressAxisWidget(LStepExpressModel* model_,
                                     unsigned int axis,
                                     QWidget *parent = 0);
+
+    ~LStepExpressAxisWidget();
 
 protected:
     LStepExpressModel* model_;

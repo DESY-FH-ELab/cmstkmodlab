@@ -1,5 +1,5 @@
 #include <QApplication>
-
+#include <iostream>
 #include <nqlogger.h>
 
 #include "LaserThread.h"
@@ -16,7 +16,7 @@ LaserThread::~LaserThread()
 
 void LaserThread::run()
 {
-    NQLog("LaserThread", NQLog::Debug) << "run";
+    std::cout<<"LaserThread " << "run"<<std::endl;
     exec();
 }
 

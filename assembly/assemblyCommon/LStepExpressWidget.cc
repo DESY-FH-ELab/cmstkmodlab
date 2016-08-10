@@ -101,6 +101,21 @@ LStepExpressWidget::LStepExpressWidget(LStepExpressModel* model,
 	this, SLOT(printSpyInformation()));
 }
 
+LStepExpressWidget::~LStepExpressWidget()
+{
+    if(spyLstepCheckBox_){delete spyLstepCheckBox_; spyLstepCheckBox_ = NULL;}
+    if(spyJoystickCheckBox_){delete spyJoystickCheckBox_; spyJoystickCheckBox_ = NULL;}
+    if(spyButtonOrigin_){delete spyButtonOrigin_; spyButtonOrigin_ = NULL;}
+    if(spyButtonCalibrate_){delete spyButtonCalibrate_; spyButtonCalibrate_ = NULL;}
+    if(spyButtonEmergencyStop_){delete spyButtonEmergencyStop_; spyButtonEmergencyStop_ = NULL;}
+
+    if(lstepCheckBox_){delete lstepCheckBox_; lstepCheckBox_ = NULL;}
+    if(joystickCheckBox_){delete joystickCheckBox_; joystickCheckBox_ = NULL;}
+    if(buttonOrigin_){delete buttonOrigin_; buttonOrigin_ = NULL;}
+    if(buttonCalibrate_){delete buttonCalibrate_; buttonCalibrate_ = NULL;}
+    if(buttonEmergencyStop_){delete buttonEmergencyStop_; buttonEmergencyStop_ = NULL;}
+}
+
 void LStepExpressWidget::printSpyInformation()
 {
 
@@ -245,6 +260,9 @@ LStepExpressAxisWidget::LStepExpressAxisWidget(LStepExpressModel* model,
     connect(spyTimer_, SIGNAL(timeout()), this, SLOT(printSpyInformation()));
     */
 
+    spyEnabledCheckBox_ = new QSignalSpy(enabledCheckBox_, SIGNAL(toggled(bool)));
+    spyJoystickCheckBox_ = new QSignalSpy(joystickCheckBox_, SIGNAL(toggled(bool)));
+
     connect(enabledCheckBox_, SIGNAL(toggled(bool)),
             this, SLOT(printSpyInformation()));
 
@@ -252,26 +270,37 @@ LStepExpressAxisWidget::LStepExpressAxisWidget(LStepExpressModel* model,
             this, SLOT(printSpyInformation()));
 }
 
+LStepExpressAxisWidget::~LStepExpressAxisWidget()
+{
+    if(layout_){delete layout_; layout_ = NULL;}
+    if(enabledCheckBox_){ delete enabledCheckBox_; enabledCheckBox_ = NULL;}
+    if(joystickCheckBox_){ delete joystickCheckBox_; joystickCheckBox_ = NULL;}
+    if(statusLabel_){ delete statusLabel_; statusLabel_ = NULL;}
+    if(positionLabel_){delete positionLabel_; positionLabel_ = NULL;}
+    if(spyEnabledCheckBox_){delete spyEnabledCheckBox_; spyEnabledCheckBox_ = NULL;}
+    if(spyJoystickCheckBox_){delete spyJoystickCheckBox_; spyJoystickCheckBox_ = NULL;}
+}
+
 void LStepExpressAxisWidget::printSpyInformation()
 {
-    //    std::cout<<"LStepExpressAxisWidget"<< "printSpyInformation() ";
+    //    std::cout<<"LStepExpressAxisWidget "<< "printSpyInformation() ";
     for(int i = 0; i < spyEnabledCheckBox_->size(); i++){
-        std::cout<<"SPY LStepExpressAxisWidget"<< "enabledCheckBox_, signal toggled("<<(spyEnabledCheckBox_->value(i))[0].toBool()<<")"  <<std::endl;
+        std::cout<<"SPY LStepExpressAxisWidget "<< "enabledCheckBox_, signal toggled( "<<(spyEnabledCheckBox_->value(i))[0].toBool()<<")"  <<std::endl;
     }
     spyEnabledCheckBox_->clear();
     for(int i = 0; i < spyJoystickCheckBox_->size(); i++){
-        std::cout<<"SPY LStepExpressAxisWidget"<< "joystickCheckBox_, signal toggled("<<(spyJoystickCheckBox_->value(i))[0].toBool()<<")"  <<std::endl;
+        std::cout<<"SPY LStepExpressAxisWidget "<< "joystickCheckBox_, signal toggled( "<<(spyJoystickCheckBox_->value(i))[0].toBool()<<")"  <<std::endl;
     }
     spyJoystickCheckBox_->clear();
 }
 
 void LStepExpressAxisWidget::updateWidgets()
 {
-    std::cout<<"LStepExpressAxisWidget"<< "updateWidgets()"  <<std::endl;
+    std::cout<<"LStepExpressAxisWidget "<< "updateWidgets()"  <<std::endl;
     
     bool axis = model_->getAxisEnabled(axis_);
 
-    std::cout<<"LStepExpressAxisWidget"<< "updateWidgets() , axis enabled? "<<axis<<" joystick enabled? = "<<model_->getJoystickEnabled()  <<std::endl;
+    std::cout<<"LStepExpressAxisWidget "<< "updateWidgets() , axis enabled?  "<<axis<<" joystick enabled? =  "<<model_->getJoystickEnabled()  <<std::endl;
 
     if (axis && model_->getJoystickEnabled()) {
         joystickCheckBox_->setEnabled(true);
@@ -279,34 +308,34 @@ void LStepExpressAxisWidget::updateWidgets()
         joystickCheckBox_->setEnabled(false);
     }
 
-    std::cout<<"LStepExpressAxisWidget"<< "updateWidgets() JOYstick ----------->" << model_->getJoystickAxisEnabled(axis_)  <<std::endl;
+    std::cout<<"LStepExpressAxisWidget "<< "updateWidgets() JOYstick ----------->" << model_->getJoystickAxisEnabled(axis_)  <<std::endl;
 
     //enabledCheckBox_->setChecked(axis);
     //joystickCheckBox_->setChecked(model_->getJoystickAxisEnabled(axis_));
 
     //if(axis){axisDimensionName_ = model_->getAxisDimensionShortName(axis_);}
 
-    if(axis){QString temp = model_->getAxisDimensionShortName(axis_); if(axisDimensionName_ != temp){axisDimensionName_ = temp; std::cout<<"LStepExpressAxisWidget, in updateWidgets, about to updateMotionWidgets"<<std::endl; updateMotionWidgets();}}
+    if(axis){QString temp = model_->getAxisDimensionShortName(axis_); if(axisDimensionName_ != temp){axisDimensionName_ = temp; std::cout<<"LStepExpressAxisWidget, in updateWidgets, about to updateMotionWidgets "<<std::endl; updateMotionWidgets();}}
 }
 
 void LStepExpressAxisWidget::updateMotionWidgets()
 {
-    std::cout<<"LStepExpressAxisWidget"<< "updateMotionWidgets()"  <<std::endl;
-    std::cout<<"LStepExpressAxisWidget"<< "updateMotionWidgets() status text = "<<model_->getAxisStatusText(axis_).toStdString()<<std::endl;
-    std::cout<<"LStepExpressAxisWidget"<< "updateMotionWidgets() position = "<<model_->getPosition(axis_)  <<std::endl;
+    std::cout<<"LStepExpressAxisWidget "<< "updateMotionWidgets()"  <<std::endl;
+    std::cout<<"LStepExpressAxisWidget "<< "updateMotionWidgets() status text =  "<<model_->getAxisStatusText(axis_).toStdString()<<std::endl;
+    std::cout<<"LStepExpressAxisWidget "<< "updateMotionWidgets() position =  "<<model_->getPosition(axis_)  <<std::endl;
     statusLabel_->setText(model_->getAxisStatusText(axis_));
     positionLabel_->setText(QString::number(model_->getPosition(axis_), 'f', 4) + " " + axisDimensionName_);
 }
 
 void LStepExpressAxisWidget::lStepStateChanged(State newState)
 {
-    std::cout<<"LStepExpressAxisWidget"<< "lStepStateChanged(State newState) " << newState  <<std::endl;
-    std::cout<<"LStepExpressAxisWidget"<< "                             axis " << model_->getAxisEnabled(axis_)  <<std::endl;
+    std::cout<<"LStepExpressAxisWidget "<< "lStepStateChanged(State newState) " << newState  <<std::endl;
+    std::cout<<"LStepExpressAxisWidget "<< "                             axis " << model_->getAxisEnabled(axis_)  <<std::endl;
 
     if (newState == READY || newState == INITIALIZING) {
       //      enabledCheckBoxToggled(false);
       //enabledCheckBox_->setChecked(false);
-      std::cout<<"LStepExpressAxisWidget"<< "lStepStateChanged(State newState) enable axis widgets"  <<std::endl;
+      std::cout<<"LStepExpressAxisWidget "<< "lStepStateChanged(State newState) enable axis widgets"  <<std::endl;
       enabledCheckBox_->setEnabled(true);
       joystickCheckBox_->setEnabled(model_->getJoystickEnabled());
       //joystickCheckBox_->setEnabled(true);
@@ -325,7 +354,7 @@ void LStepExpressAxisWidget::lStepStateChanged(State newState)
 
 void LStepExpressAxisWidget::controlStateChanged(bool enabled)
 {
-    std::cout<<"LStepExpressAxisWidget"<< "controlStateChanged(bool enabled) " << enabled  <<std::endl;
+    std::cout<<"LStepExpressAxisWidget "<< "controlStateChanged(bool enabled) " << enabled  <<std::endl;
 
     if (enabled) {
         lStepStateChanged(model_->getDeviceState());
@@ -336,24 +365,24 @@ void LStepExpressAxisWidget::controlStateChanged(bool enabled)
 
 void LStepExpressAxisWidget::enabledCheckBoxToggled(bool enabled)
 {
-    std::cout<<"LStepExpressAxisWidget"<< "enabledCheckBoxToggled(bool enabled) " << enabled  <<std::endl;
+    std::cout<<"LStepExpressAxisWidget "<< "enabledCheckBoxToggled(bool enabled) " << enabled  <<std::endl;
 
     model_->setAxisEnabled(axis_, enabled);
 }
 
 void LStepExpressAxisWidget::joystickCheckBoxToggled(bool enabled)
 {
-    std::cout<<"LStepExpressAxisWidget"<< "joystickCheckBoxToggled(bool enabled) " << enabled  <<std::endl;
+    std::cout<<"LStepExpressAxisWidget "<< "joystickCheckBoxToggled(bool enabled) " << enabled  <<std::endl;
 
     model_->setJoystickAxisEnabled(axis_, enabled);
 }
 
 void LStepExpressAxisWidget::motionStarted()
 {
-    std::cout<<"LStepExpressAxisWidget"<< "motionStarted()"  <<std::endl;
+    std::cout<<"LStepExpressAxisWidget "<< "motionStarted()"  <<std::endl;
 }
 
 void LStepExpressAxisWidget::motionFinished()
 {
-    std::cout<<"LStepExpressAxisWidget"<< "motionFinished()"  <<std::endl;
+    std::cout<<"LStepExpressAxisWidget "<< "motionFinished()"  <<std::endl;
 }

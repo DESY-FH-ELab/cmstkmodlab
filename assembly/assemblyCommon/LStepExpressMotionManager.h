@@ -14,6 +14,7 @@ class LStepExpressMotionManager : public QObject
 public:
 
     explicit LStepExpressMotionManager(LStepExpressModel* model, QObject *parent = 0);
+    ~LStepExpressMotionManager();
 
     void myMoveToThread(QThread *thread);
 

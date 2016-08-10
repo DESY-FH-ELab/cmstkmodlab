@@ -1,3 +1,4 @@
+#include <iostream>
 #include <nqlogger.h>
 #include "ApplicationConfig.h"
 #include "LStepExpressPositionWidget.h"
@@ -62,25 +63,25 @@ LStepExpressPositionWidget::LStepExpressPositionWidget(LStepExpressModel* model,
 void LStepExpressPositionWidget::printSpyInformation()
 {
     for(int i = 0; i < spyMoveAbsoluteButton_->size(); i++){
-        NQLog("SPY LStepExpressPositionWidget", NQLog::Debug) << "moveAbsoluteBotton_, signal clicked()";
+        std::cout<<"SPY LStepExpressPositionWidget " << "moveAbsoluteBotton_, signal clicked()"<<std::endl;
     }
     spyMoveAbsoluteButton_->clear();
     for(int i = 0; i < spyMoveRelativeButton_->size(); i++){
-        NQLog("SPY LStepExpressPositionWidget", NQLog::Debug) << "moveRelativeBotton_, signal clicked()";
+        std::cout<<"SPY LStepExpressPositionWidget " << "moveRelativeBotton_, signal clicked()"<<std::endl;
     }
     spyMoveRelativeButton_->clear();
 }
 
 void LStepExpressPositionWidget::lStepStateChanged( State newState)
 {
-    NQLog("LStepExpressPositionWidget", NQLog::Debug) << "lStepStateChanged, newstate = "<<newState;
+    std::cout<<"LStepExpressPositionWidget " << "lStepStateChanged, newstate = "<<newState<<std::endl;
     if(newState == READY || newState == INITIALIZING){
         bool enabled = false;
         for(int i = 0; i < 4; i++){ enabled = model_->getAxisEnabled(i); if(enabled) break; }
         moveAbsoluteButton_->setEnabled(enabled);
         moveRelativeButton_->setEnabled(enabled);
     }else{
-        NQLog("LStepExpressPositionWidget", NQLog::Debug) << "lStepStateChanged, set enabled false";
+        std::cout<<"LStepExpressPositionWidget " << "lStepStateChanged, set enabled false"<<std::endl;
         moveAbsoluteButton_->setEnabled(false);
         moveRelativeButton_->setEnabled(false);
     }
@@ -139,11 +140,11 @@ LStepExpressPositionAxisWidget::LStepExpressPositionAxisWidget(LStepExpressModel
 void LStepExpressPositionAxisWidget::printSpyInformation()
 {
     for(int i = 0; i < spyEdit_->size(); i++){
-        NQLog("SPY LStepExpressPositionAxisWidget", NQLog::Debug) << "Edit_, signal textChanged()";
+        std::cout<<"SPY LStepExpressPositionAxisWidget " << "Edit_, signal textChanged()"<<std::endl;
     }
     spyEdit_->clear();
     for(int i = 0; i < spyPositionChanged_->size(); i++){
-        NQLog("SPY LStepExpressPositionAxisWidget", NQLog::Debug) << "this_, signal positionChanged()";
+        std::cout<<"SPY LStepExpressPositionAxisWidget " << "this_, signal positionChanged()"<<std::endl;
     }
     spyPositionChanged_->clear();
 }

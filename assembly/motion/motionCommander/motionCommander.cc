@@ -8,6 +8,7 @@
 #include <QStandardPaths>
 #endif
 
+#include <iostream>
 #include <nqlogger.h>
 #include <DeviceState.h>
 
@@ -34,9 +35,9 @@ int main( int argc, char** argv )
     //    QString logfilename = logdir + "/motionCommander.log";
     QString logfilename = "./Logfile_motionCommander.log";
 
-    NQLog("motionCommander") << "version " << APPLICATIONVERSIONSTR;
+    std::cout<< "motionCommander " << "version " << APPLICATIONVERSIONSTR<<std::endl;
 
-    NQLog("motionCommander") << "using " << logfilename << " for logging";
+    //std::cout<<"motionCommander " << "using " << logfilename << " for logging"<<std::endl;
 
     QFile * logfile = new QFile(logfilename);
     if (logfile->open(QIODevice::WriteOnly | QIODevice::Append | QIODevice::Text)) {
@@ -48,7 +49,7 @@ int main( int argc, char** argv )
 #ifdef SINGLETON
     SingletonApplication app(argc, argv, assemblyGUID);
     if(!app.lock()){
-        NQLog("motionCommander") << "Application instance already running!";
+        std::cout<<"motionCommander " << "Application instance already running!"<<std::endl;
         exit(1);
     }
 #else

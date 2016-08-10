@@ -1,5 +1,5 @@
 #include <nqlogger.h>
-
+#include <iostream>
 #include "LStepExpressMeasurementTable.h"
 
 LStepExpressMeasurementTable::LStepExpressMeasurementTable() : QAbstractTableModel()
@@ -43,13 +43,13 @@ void LStepExpressMeasurementTable::update()
 
 void LStepExpressMeasurementTable::insertData(int column_index, std::vector<float> values)
 {
-  //  NQLog("LStepExpressMeasurementTable", NQLog::Debug) << "insert data ";
+    //  std::cout<<"LStepExpressMeasurementTable " << "insert data "<<std::endl;
 
   //overwrite column
   Columns[column_index] = values;
 
 
-  //  NQLog("LStepExpressMeasurementTable", NQLog::Debug) << "no. columns = "<< Columns.size() <<" no. rows = "<<Columns[column_index].size();
+  //  std::cout<<"LStepExpressMeasurementTable " << "no. columns = "<< Columns.size() <<" no. rows = "<<Columns[column_index].size()<<std::endl;
 
   QModelIndex in;
   //set the data
@@ -57,7 +57,7 @@ void LStepExpressMeasurementTable::insertData(int column_index, std::vector<floa
     in = createIndex(column_index, i);
     emit dataChanged(in,in);
   }
-  //  NQLog("LStepExpressMeasurementTable", NQLog::Debug) << "ending insert data ";
+  //  std::cout<<"LStepExpressMeasurementTable " << "ending insert data "<<std::endl;
 }
 
 QVariant LStepExpressMeasurementTable::headerData(int section, Qt::Orientation orientation, int role) const

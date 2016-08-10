@@ -32,6 +32,8 @@ public:
                                int motionUpdateInterval = 100,
                                QObject *parent = 0);
 
+    ~LStepExpressModel();
+
     bool isUpdating() { return isUpdating_; }
     void pauseUpdate();
     void continueUpdate();

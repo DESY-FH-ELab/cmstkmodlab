@@ -32,39 +32,46 @@ LStepExpressMotionManager::LStepExpressMotionManager(LStepExpressModel* model, Q
     
 }
 
+LStepExpressMotionManager::~LStepExpressMotionManager()
+{
+    if(spySignalMoveAbsolute){delete spySignalMoveAbsolute; spySignalMoveAbsolute = NULL;}
+    if(spySignalMoveRelative){delete spySignalMoveRelative; spySignalMoveRelative = NULL;}
+}
+
 void LStepExpressMotionManager::printSpyInformation()
 {
+
     for(int i = 0; i < spySignalMoveAbsolute->size(); i++){
-        NQLog("SPY LStepExpressMotionManager", NQLog::Debug) << "this_, signal signalMoveAbsolute()";                                        
+        std::cout<<"SPY LStepExpressMotionManager "<< "this_, signal signalMoveAbsolute()"<<std::endl;
     }
     spySignalMoveAbsolute->clear();
     for(int i = 0; i < spySignalMoveRelative->size(); i++){
-        NQLog("SPY LStepExpressMotionManager", NQLog::Debug) << "this_, signal signalMoveRelative()";
+        std::cout<<"SPY LStepExpressMotionManager "<< "this_, signal signalMoveRelative()"<<std::endl;
     }
     spySignalMoveRelative->clear();
 }
 
 void LStepExpressMotionManager::run()
 {
-    NQLog("LStepExpressMotionManager", NQLog::Debug) << "run";
+    std::cout<<"LStepExpressMotionManager "<< "run"<<std::endl;
 
     if (inMotion_) return;
 
-    NQLog("LStepExpressMotionManager", NQLog::Debug) << "run in motion";
+    std::cout<<"LStepExpressMotionManager "<< "run in motion"<<std::endl;
 
     if (motions_.empty()) return;
 
-    NQLog("LStepExpressMotionManager", NQLog::Debug) << "run in motion, not empty";
+    std::cout<<"LStepExpressMotionManager "<< "run in motion, not empty"<<std::endl;
 
     LStepExpressMotion motion = motions_.dequeue();
 
     inMotion_ = true;
 
     if (motion.getMode()==true) {
-        NQLog("LStepExpressMotionManager", NQLog::Debug) << "run, move absolute";
+        std::cout<<"LStepExpressMotionManager "<< "run, move absolute"<<std::endl;
         emit signalMoveAbsolute(motion.getX(), motion.getY(), motion.getZ(), motion.getA());
     } else {
-            NQLog("LStepExpressMotionManager", NQLog::Debug) << "run, move relative";
+            std::cout<<"LStepExpressMotionManager "<< "run, move relative"<<std::endl;
         emit signalMoveRelative(motion.getX(), motion.getY(), motion.getZ(), motion.getA());
     }
 }
@@ -95,48 +102,48 @@ void LStepExpressMotionManager::moveRelative(std::vector<double> & values)
 
 void LStepExpressMotionManager::moveRelative(double x, double y, double z, double a)
 {
-    NQLog("LStepExpressMotionManager", NQLog::Debug) << "moveRelative()";
+    std::cout<<"LStepExpressMotionManager "<< "moveRelative()"<<std::endl;
     motions_.enqueue(LStepExpressMotion(x, y, z, a, false));
     run();
 }
 
 void LStepExpressMotionManager::moveRelative(unsigned int axis, double value)
 {
-    NQLog("LStepExpressMotionManager", NQLog::Debug) << "moveRelative()";
+    std::cout<<"LStepExpressMotionManager "<< "moveRelative()"<<std::endl;
     motions_.enqueue(LStepExpressMotion(axis, value, false));
     run();
 }
 
 void LStepExpressMotionManager::moveAbsolute(std::vector<double> & values)
 {
-    NQLog("LStepExpressMotionManager", NQLog::Debug) << "moveAbsolute()";
+    std::cout<<"LStepExpressMotionManager "<< "moveAbsolute()"<<std::endl;
     motions_.enqueue(LStepExpressMotion(values, true));
     run();
 }
 
 void LStepExpressMotionManager::moveAbsolute(double x, double y, double z, double a)
 {
-    NQLog("LStepExpressMotionManager", NQLog::Debug) << "moveAbsolute()";
+    std::cout<<"LStepExpressMotionManager "<< "moveAbsolute()"<<std::endl;
     motions_.enqueue(LStepExpressMotion(x, y, z, a, true));
     run();
 }
 
 void LStepExpressMotionManager::moveAbsolute(unsigned int axis, double value)
 {
-  NQLog("LStepExpressMotionManager", NQLog::Debug) << "moveAbsolute()";
+  std::cout<<"LStepExpressMotionManager "<< "moveAbsolute()"<<std::endl;
     motions_.enqueue(LStepExpressMotion(axis, value, true));
     run();
 }
 
 void LStepExpressMotionManager::motionStarted()
 {
-    NQLog("LStepExpressMotionManager", NQLog::Debug) << "motionStarted()";
+    std::cout<<"LStepExpressMotionManager "<< "motionStarted()"<<std::endl;
     inMotion_ = true;
 }
 
 void LStepExpressMotionManager::motionFinished()
 {
-    NQLog("LStepExpressMotionManager", NQLog::Debug) << "motionFinished()";
+    std::cout<<"LStepExpressMotionManager "<< "motionFinished()"<<std::endl;
     inMotion_ = false;
 
     this->run();

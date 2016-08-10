@@ -1,7 +1,7 @@
 #include <nqlogger.h>
 #include <QString>
 #include <QDateTime>
-
+#include <iostream>
 #include "LStepExpressMeasurementWidget.h"
 
 LStepExpressMeasurementWidget::LStepExpressMeasurementWidget(LStepExpressModel* model, LStepExpressMotionManager* manager, LaserModel* laserModel,
@@ -108,7 +108,8 @@ LStepExpressMeasurementWidget::LStepExpressMeasurementWidget(LStepExpressModel* 
     
 void LStepExpressMeasurementWidget::laserStateChanged(State newState)
 {
-    NQLog("LStepExpressMeasurementWidget", NQLog::Debug) << "laserStateChanged(State newState) " << newState;
+
+    std::cout<<"LStepExpressMeasurementWidget " << "laserStateChanged(State newState) " << newState    <<std::endl;
     checkBoxEnableLaser_->setChecked(newState == READY || newState == INITIALIZING);
 }
 
@@ -124,14 +125,14 @@ void LStepExpressMeasurementWidget::setAverageMeasEnabled(bool enabled)
 //generate the x and y positions for the measurement
 void LStepExpressMeasurementWidget::generatePositions()
 {
-  //  NQLog("LStepExpressMeasurementWidget", NQLog::Debug) << "in generatePositions ";
+  //  std::cout<<"LStepExpressMeasurementWidget " << "in generatePositions "    <<std::endl;
 
   //read in number of steps, if empty take default 10 steps
   nstepsx = (nstepsx_->text().isEmpty() == true) ? 10 : (nstepsx_->text().toInt());
   nstepsy = (nstepsy_->text().isEmpty() == true) ? 10 : (nstepsy_->text().toInt());
 
 
-  //  NQLog("LStepExpressMeasurementWidget", NQLog::Debug) << "nstepsx = " << nstepsx << " nstepsy = " << nstepsy << " x_init = " << x_init << " y_init = " << y_init << " rangex = " << rangex << " rangey = "<< rangey;
+  //  std::cout<<"LStepExpressMeasurementWidget " << "nstepsx = " << nstepsx << " nstepsy = " << nstepsy << " x_init = " << x_init << " y_init = " << y_init << " rangex = " << rangex << " rangey = "<< rangey    <<std::endl;
 
   std::vector<float> xpos;
   std::vector<float> ypos;
@@ -170,7 +171,7 @@ void LStepExpressMeasurementWidget::generatePositions()
     }
   }
 
-  //  NQLog("LStepExpressMeasurementWidget", NQLog::Debug) << "size pos_number = "<<pos_number.size()<<" size xpos = "<<xpos.size();
+  //  std::cout<<"LStepExpressMeasurementWidget " << "size pos_number = "<<pos_number.size()<<" size xpos = "<<xpos.size()    <<std::endl;
   //store the positions in the table_model as columns
   table_model->insertData(0, pos_number);
   table_model->insertData(1, xpos);
@@ -179,9 +180,9 @@ void LStepExpressMeasurementWidget::generatePositions()
   table_model->insertData(4, meas);
   table_model->update();
 
-  //  NQLog("LStepExpressMeasurementWidget", NQLog::Debug) << "filled positions ";
+  //  std::cout<<"LStepExpressMeasurementWidget " << "filled positions "    <<std::endl;
 
-  //  NQLog("LStepExpressMeasurementWidget", NQLog::Debug) << "filled table ";
+  //  std::cout<<"LStepExpressMeasurementWidget " << "filled table "    <<std::endl;
 
   buttonStartMeasurement_->setEnabled(true);
   buttonStopMeasurement_->setEnabled(true);
@@ -218,7 +219,7 @@ void LStepExpressMeasurementWidget::stopMeasurement()
 //FIX ME! needs to be tested in the lab
 void LStepExpressMeasurementWidget::performMeasurement()
 {
-  NQLog("LStepExpressMeasurementWidget", NQLog::Debug) << "starting scan";
+  std::cout<<"LStepExpressMeasurementWidget " << "starting scan"    <<std::endl;
 
   double x_pos = 0;
   double y_pos = 0;
@@ -239,10 +240,10 @@ void LStepExpressMeasurementWidget::performMeasurement()
 
       //if requested average measurement, perform circle at position
       double meas_atpos = 0.;
-      NQLog("LStepExpressMeasurementWidget", NQLog::Debug) << "averageMeasEnabled_ = " << averageMeasEnabled_;
+      std::cout<<"LStepExpressMeasurementWidget " << "averageMeasEnabled_ = " << averageMeasEnabled_    <<std::endl;
       if(averageMeasEnabled_)
 	{
-	  NQLog("LStepExpressMeasurementWidget", NQLog::Debug) << "in average meas, circle_x size = " << circle_x.size();
+	  std::cout<<"LStepExpressMeasurementWidget " << "in average meas, circle_x size = " << circle_x.size()    <<std::endl;
 	  for(unsigned int c = 0; c < circle_x.size(); c++)
 	    {
 	      //manager_->moveAbsolute(x_pos+(circle_x)[c], y_pos+(circle_y)[c], z_pos, 0.0);
@@ -250,13 +251,13 @@ void LStepExpressMeasurementWidget::performMeasurement()
 	    }
 	  meas_atpos = 1.;
 	}else{
-	NQLog("LStepExpressMeasurementWidget", NQLog::Debug) << "in standard meas ";
+	std::cout<<"LStepExpressMeasurementWidget " << "in standard meas "    <<std::endl;
 	//make laser measurement
 	meas_atpos = 1.;
       }
       
 
-      NQLog("LStepExpressMeasurementWidget", NQLog::Debug) << "after meas ";
+      std::cout<<"LStepExpressMeasurementWidget " << "after meas "    <<std::endl;
       //FIX ME! how to ensure the movement has stopped before making measurement with laser?
 
       //store dummy measurement result
@@ -266,7 +267,7 @@ void LStepExpressMeasurementWidget::performMeasurement()
   table_model->insertData(4,meas);
   table_model->update();
 
-  NQLog("LStepExpressMeasurementWidget", NQLog::Debug) << "scan finished";
+  std::cout<<"LStepExpressMeasurementWidget " << "scan finished"    <<std::endl;
 
   buttonStoreMeasurement_->setEnabled(true);
 }
