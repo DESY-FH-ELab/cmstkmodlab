@@ -119,6 +119,14 @@ void VLStepExpress::SetValue(const std::string & command,
 }
 
 void VLStepExpress::SetValue(const std::string & command,
+                             VLStepExpress::Axis axis, double value1, double value2)
+{
+  std::ostringstream os;
+  os << command << " " << GetAxisName(axis) << " " << value1 << " " << value2;
+  this->SendCommand(os.str());
+}
+
+void VLStepExpress::SetValue(const std::string & command,
                              const std::vector<int> & values)
 {
   std::ostringstream os;
@@ -246,6 +254,24 @@ void VLStepExpress::GetValue(const std::string & command, VLStepExpress::Axis ax
   std::istringstream is(buffer);
   is >> temp;
   value = temp;
+}
+
+void VLStepExpress::GetValue(const std::string & command, VLStepExpress::Axis axis,
+                             std::vector<double> & values)
+{
+  std::ostringstream os;
+  os << command << " " << GetAxisName(axis);
+  this->SendCommand(os.str());
+
+  std::string buffer;
+  double temp;
+  this->ReceiveString(buffer);
+
+  values.clear();
+  std::istringstream is(buffer);
+  while (is >> temp){
+    values.push_back(temp);
+  }
 }
 
 char VLStepExpress::GetAxisName(VLStepExpress::Axis axis)
