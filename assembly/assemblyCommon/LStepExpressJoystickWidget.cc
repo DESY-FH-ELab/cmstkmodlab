@@ -39,6 +39,10 @@ LStepExpressJoystickWidget::LStepExpressJoystickWidget(LStepExpressModel* model,
     lstepStateChanged(model_->getDeviceState());
 }
 
+LStepExpressJoystickWidget::~LStepExpressJoystickWidget()
+{
+}
+
 void LStepExpressJoystickWidget::lstepStateChanged(State newState)
 {
 
@@ -124,6 +128,16 @@ LStepExpressJoystickAxisWidget::LStepExpressJoystickAxisWidget(LStepExpressModel
 
     connect(upButton_, SIGNAL(clicked()),
 	this, SLOT(printSpyInformation()));
+}
+
+LStepExpressJoystickAxisWidget::~LStepExpressJoystickAxisWidget()
+{
+    if(layout_){delete layout_; layout_ = NULL;}
+    if(upButton_){delete upButton_; upButton_ = NULL;}
+    if(downButton_){delete downButton_; downButton_ = NULL;}
+    if(stepBox_){delete stepBox_; stepBox_ = NULL;}
+    if(spyUpButton_){delete spyUpButton_ ; spyUpButton_ = NULL;}
+    if(spyDownButton_){delete spyDownButton_; spyDownButton_ = NULL;}
 }
 
 void LStepExpressJoystickAxisWidget::printSpyInformation()

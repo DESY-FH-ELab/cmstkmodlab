@@ -56,8 +56,8 @@ MCommanderMainWindow::MCommanderMainWindow(QWidget *parent)
   LStepExpressWidget *lStepExpressWidget = new LStepExpressWidget(lStepExpressModel_, widget);
   layoutv->addWidget(lStepExpressWidget);
 
-  //LStepExpressJoystickWidget *lStepJoystick = new LStepExpressJoystickWidget(lStepExpressModel_, widget);
-  //layoutv->addWidget(lStepJoystick);
+  LStepExpressJoystickWidget *lStepJoystick = new LStepExpressJoystickWidget(lStepExpressModel_, widget);
+  layoutv->addWidget(lStepJoystick);
   
   layout->addLayout(layoutv);
 

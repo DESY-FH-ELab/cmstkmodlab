@@ -22,6 +22,7 @@ class LStepExpressJoystickWidget : public QWidget
 
 public:
     explicit LStepExpressJoystickWidget(LStepExpressModel* model, QWidget *parent = 0);
+    ~LStepExpressJoystickWidget();
 
 protected:
     LStepExpressModel* model_;
@@ -42,6 +43,7 @@ public:
     explicit LStepExpressJoystickAxisWidget(LStepExpressModel* model_,
                                             unsigned int axis,
                                             QWidget *parent = 0);
+    ~LStepExpressJoystickAxisWidget();
 
 protected:
     LStepExpressModel* model_;
