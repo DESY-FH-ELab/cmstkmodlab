@@ -81,6 +81,7 @@ HEADERS += AssemblyVUEyeCamera.h \
            LStepExpressMeasurementWidget.h \
            LStepExpressMeasurementTable.h \
            LStepExpressPositionWidget.h \
+           LStepExpressStatusWindow.h \
            LaserModel.h \
            LaserWidget.h \
            LaserThread.h
@@ -115,6 +116,7 @@ SOURCES += AssemblyVUEyeCamera.cc \
            LStepExpressMeasurementWidget.cc \
            LStepExpressMeasurementTable.cc \
            LStepExpressPositionWidget.cc \
+           LStepExpressStatusWindow.cc \
            LaserModel.cc \
            LaserWidget.cc \
            LaserThread.cc

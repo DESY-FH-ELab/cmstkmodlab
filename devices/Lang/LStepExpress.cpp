@@ -327,12 +327,17 @@ bool LStepExpress::GetStatus()
 
 void LStepExpress::GetSystemStatus(std::vector<int>& values)
 {
-  this->GetValue("?sysstatus", values);
+  this->GetValue("?sysstat", values);
+}
+
+void LStepExpress::GetSystemStatusText(std::string& value)
+{
+  this->GetValue("?sysstatus", value);
 }
 
 void LStepExpress::GetSystemStatus(VLStepExpress::Axis axis, int & value)
 {
-  this->GetValue("?sysstatus", axis, value);
+  this->GetValue("?sysstat", axis, value);
 }
 
 bool LStepExpress::GetJoystickEnabled()

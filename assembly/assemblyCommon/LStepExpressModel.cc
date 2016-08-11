@@ -114,6 +114,21 @@ void LStepExpressModel::printSpyInformation()
     spyMotionFinished->clear();
 }
 
+void LStepExpressModel::getStatus(bool& status)
+{
+    status = controller_->GetStatus();
+}
+
+void LStepExpressModel::getError(int& error)
+{
+    error = controller_->GetError();
+}
+
+void LStepExpressModel::getSystemStatus(std::string& value)
+{
+    controller_->GetSystemStatusText(value);
+}
+
 void LStepExpressModel::pauseUpdate()
 {
     std::cout<<"LStepExpressModel "<< "pauseUpdate()"  <<std::endl;
@@ -387,6 +402,7 @@ void LStepExpressModel::initialize()
     bool enabled = (controller_ != NULL) && (controller_->DeviceAvailable());
 
     if ( enabled ) {
+        controller_->SetAutoStatus(2);
       std::cout<<"enabling "<<std::endl;
       std::vector<int> allZerosI{ 0, 0, 0, 0 };
       controller_->SetPowerAmplifierStatus(allZerosI);

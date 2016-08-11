@@ -53,6 +53,10 @@ public:
     void setValue(const QString & command, const QString & value);
     void getValue(const QString & command, QString & value);
 
+    void getStatus(bool& status);
+    void getError(int& error);
+    void getSystemStatus(std::string& value);
+
     void validConfig();
     void validParameter();
     void saveConfig();

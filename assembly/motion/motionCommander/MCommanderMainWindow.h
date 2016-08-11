@@ -18,6 +18,7 @@
 #include "LStepExpressJoystickWidget.h"
 #include "LStepExpressMeasurementWidget.h"
 #include "LStepExpressPositionWidget.h"
+#include "LStepExpressStatusWindow.h"
 
 #include "LaserModel.h"
 #include "LaserThread.h"

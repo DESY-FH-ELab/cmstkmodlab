@@ -94,7 +94,17 @@ int main()
   std::cout<<"get error = "<<lstep.GetError()<<std::endl;
   //  lstep.GetError();
 
+  std::cout<<"get status of limit switches"<<std::endl;
+  std::vector<double> limvalues;
+  lstep.GetValue("swact", VLStepExpress::X, limvalues); dumpVector(limvalues);
+  lstep.GetValue("swact", VLStepExpress::Y, limvalues); dumpVector(limvalues);
+  lstep.GetValue("swact", VLStepExpress::Z, limvalues); dumpVector(limvalues);
+  lstep.GetValue("swact", VLStepExpress::A, limvalues); dumpVector(limvalues);
+  std::cout<<"read all the limit switches"<<std::endl;
   std::string output;
+  lstep.GetValue("readsw", output); std::cout<<output<<std::endl;
+
+  //  std::string output;
   std::vector<double> limits;
   std::cout<<"get limits"<<std::endl;
   //lstep.SetValue("!lim", "x -150 150");

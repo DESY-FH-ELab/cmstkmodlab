@@ -61,8 +61,15 @@ MCommanderMainWindow::MCommanderMainWindow(QWidget *parent)
   
   layout->addLayout(layoutv);
 
+  QVBoxLayout * layoutv2 = new QVBoxLayout(widget);
+
+  LStepExpressStatusWindow *lStepStatusWindow = new LStepExpressStatusWindow(lStepExpressModel_, widget);
+  layoutv2->addWidget(lStepStatusWindow);
+
   //LStepExpressPositionWidget *lStepPosition = new LStepExpressPositionWidget(lStepExpressModel_, widget);
-  //layout->addWidget(lStepPosition);
+  //layoutv2->addWidget(lStepPosition);
+
+  layout->addLayout(layoutv2);
 
   tabWidget_->addTab(widget, "LStep Express");
 
