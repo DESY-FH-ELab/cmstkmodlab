@@ -45,8 +45,9 @@ LStepExpressJoystickWidget::~LStepExpressJoystickWidget()
 
 void LStepExpressJoystickWidget::lstepStateChanged(State newState)
 {
-
-  std::cout<<"LStepExpressJoystickWidget " << "lStepStateChanged(State newState) " << newState    <<std::endl;
+    m_screen.lock();
+  std::cout<<"LStepExpressJoystickWidget lStepStateChanged(State newState) " << newState    <<std::endl;
+    m_screen.unlock();
 
     axisControlWidget_->setEnabled(newState == READY);
 }
@@ -54,7 +55,9 @@ void LStepExpressJoystickWidget::lstepStateChanged(State newState)
 /// Updates the GUI when the controler is enabled/disabled.
 void LStepExpressJoystickWidget::controlStateChanged(bool enabled)
 {
-  std::cout<<"LStepExpressJoystickWidget " << "controlStateChanged(bool enabled) " << enabled    <<std::endl;
+    m_screen.lock();
+  std::cout<<"LStepExpressJoystickWidget controlStateChanged(bool enabled) " << enabled    <<std::endl;
+    m_screen.unlock();
 
     if (enabled) {
         lstepStateChanged(model_->getDeviceState());
@@ -65,12 +68,16 @@ void LStepExpressJoystickWidget::controlStateChanged(bool enabled)
 
 void LStepExpressJoystickWidget::motionStarted()
 {
-    std::cout<<"LStepExpressJoystickWidget " << "motionStarted()"    <<std::endl;
+    m_screen.lock();
+    std::cout<<"LStepExpressJoystickWidget motionStarted()"    <<std::endl;
+    m_screen.unlock();
 }
 
 void LStepExpressJoystickWidget::motionFinished()
 {
-    std::cout<<"LStepExpressJoystickWidget " << "motionFinished()"    <<std::endl;
+    m_screen.lock();
+    std::cout<<"LStepExpressJoystickWidget motionFinished()"    <<std::endl;
+    m_screen.unlock();
 }
 
 LStepExpressJoystickAxisWidget::LStepExpressJoystickAxisWidget(LStepExpressModel* model,
@@ -142,26 +149,32 @@ LStepExpressJoystickAxisWidget::~LStepExpressJoystickAxisWidget()
 
 void LStepExpressJoystickAxisWidget::printSpyInformation()
 {
+    m_screen.lock();
     for(int i = 0; i < spyUpButton_->size(); i++){
-        std::cout<<"SPY LStepExpressJoystickAxisWidget " << "upButton_, signal clicked()"    <<std::endl;
+        std::cout<<"SPY LStepExpressJoystickAxisWidget upButton_, signal clicked()"    <<std::endl;
     }
     spyUpButton_->clear();
     for(int i = 0; i < spyDownButton_->size(); i++){
-        std::cout<<"SPY LStepExpressJoystickAxisWidget " << "downButton_, signal clicked()"    <<std::endl;
+        std::cout<<"SPY LStepExpressJoystickAxisWidget downButton_, signal clicked()"    <<std::endl;
     }
     spyDownButton_->clear();
+    m_screen.unlock();
 }
 
 void LStepExpressJoystickAxisWidget::updateWidgets()
 {
     bool axis = model_->getAxisEnabled(axis_);
 
-    std::cout<<"LStepExpressJoystickAxisWidget " << "updateWidgets() " << axis    <<std::endl;
+    m_screen.lock();
+    std::cout<<"LStepExpressJoystickAxisWidget updateWidgets() " << axis    <<std::endl;
+    m_screen.unlock();
 
     stepBox_->setSuffix(QString(" ") + model_->getAxisDimensionShortName(axis_));
 
     if (model_->getAxisEnabled(axis_)) {
-      std::cout<<"LStepExpressJoystickAxisWidget " << "updateWidgets() " << axis << "axis is enabled, enable buttons"    <<std::endl;
+    m_screen.lock();
+      std::cout<<"LStepExpressJoystickAxisWidget updateWidgets() " << axis << "axis is enabled, enable buttons"    <<std::endl;
+    m_screen.unlock();
         stepBox_->setEnabled(true);
         upButton_->setEnabled(true);
         downButton_->setEnabled(true);
@@ -174,13 +187,13 @@ void LStepExpressJoystickAxisWidget::updateWidgets()
 
 void LStepExpressJoystickAxisWidget::updateMotionWidgets()
 {
-    // std::cout<<"LStepExpressJoystickAxisWidget " << "updateMotionWidgets()"    <<std::endl;
+    // std::cout<<"LStepExpressJoystickAxisWidget updateMotionWidgets()"    <<std::endl;
 }
 
 void LStepExpressJoystickAxisWidget::lStepStateChanged(State newState)
 {
-    // std::cout<<"LStepExpressJoystickAxisWidget " << "lStepStateChanged(State newState) " << newState    <<std::endl;
-    // std::cout<<"LStepExpressJoystickAxisWidget " << "                             axis " << model_->getAxisEnabled(axis_)    <<std::endl;
+    // std::cout<<"LStepExpressJoystickAxisWidget lStepStateChanged(State newState) " << newState    <<std::endl;
+    // std::cout<<"LStepExpressJoystickAxisWidget                              axis " << model_->getAxisEnabled(axis_)    <<std::endl;
 
     if (newState == READY || newState == INITIALIZING) {
         if (model_->getAxisEnabled(axis_)) {
@@ -201,7 +214,7 @@ void LStepExpressJoystickAxisWidget::lStepStateChanged(State newState)
 
 void LStepExpressJoystickAxisWidget::controlStateChanged(bool enabled)
 {
-    // std::cout<<"LStepExpressJoystickAxisWidget " << "controlStateChanged(bool enabled) " << enabled    <<std::endl;
+    // std::cout<<"LStepExpressJoystickAxisWidget controlStateChanged(bool enabled) " << enabled    <<std::endl;
 
     if (enabled) {
         lStepStateChanged(model_->getDeviceState());
@@ -213,30 +226,38 @@ void LStepExpressJoystickAxisWidget::controlStateChanged(bool enabled)
 
 void LStepExpressJoystickAxisWidget::upButtonClicked()
 {
-    // std::cout<<"LStepExpressJoystickAxisWidget " << "upButtonClicked()"    <<std::endl;
+    // std::cout<<"LStepExpressJoystickAxisWidget upButtonClicked()"    <<std::endl;
 
-    std::vector<double> values{ 0.0, 0.0, 0.0, 0.0 };
-    values[axis_] = stepBox_->value();
+    //std::vector<double> values{ 0.0, 0.0, 0.0, 0.0 };
+    //values[axis_] = stepBox_->value();
 
-    model_->moveRelative(values);
+    //    model_->moveRelative(values);
+    double value = stepBox_->value();
+    model_->moveRelative(axis_, value);
 }
 
 void LStepExpressJoystickAxisWidget::downButtonClicked()
 {
-    // std::cout<<"LStepExpressJoystickAxisWidget " << "downButtonClicked()"    <<std::endl;
+    // std::cout<<"LStepExpressJoystickAxisWidget downButtonClicked()"    <<std::endl;
 
-    std::vector<double> values{ 0.0, 0.0, 0.0, 0.0 };
-    values[axis_] = -stepBox_->value();
+    //   std::vector<double> values{ 0.0, 0.0, 0.0, 0.0 };
+    //values[axis_] = -stepBox_->value();
 
-    model_->moveRelative(values);
+    //model_->moveRelative(values);
+    double value = -stepBox_->value();
+    model_->moveRelative(axis_, value);
 }
 
 void LStepExpressJoystickAxisWidget::motionStarted()
 {
-    std::cout<<"LStepExpressJoystickAxisWidget " << "motionStarted()"    <<std::endl;
+    m_screen.lock();
+    std::cout<<"LStepExpressJoystickAxisWidget motionStarted()"    <<std::endl;
+    m_screen.unlock();
 }
 
 void LStepExpressJoystickAxisWidget::motionFinished()
 {
-    std::cout<<"LStepExpressJoystickAxisWidget " << "motionFinished()"    <<std::endl;
+    m_screen.lock();
+    std::cout<<"LStepExpressJoystickAxisWidget motionFinished()"    <<std::endl;
+    m_screen.unlock();
 }
