@@ -1,4 +1,5 @@
 #include <nqlogger.h>
+#include <QDateTime>
 
 #include "LStepExpressStatusWindow.h"
 
@@ -24,6 +25,7 @@ LStepExpressStatusWindow::~LStepExpressStatusWindow()
 void LStepExpressStatusWindow::startTimer(State state)
 {
     if(state == READY){
+      std::cout<<"LStepExpressStatusWindow start timer"<<std::endl;
         timer_->start();
     }else{
         timer_->stop();
@@ -32,12 +34,15 @@ void LStepExpressStatusWindow::startTimer(State state)
 
 void LStepExpressStatusWindow::updateStatus()
 {
-    bool status;
-    model_->getStatus(status);
-    int error;
-    model_->getError(error);
-    std::string value;
-    model_->getSystemStatus(value);
+  std::cout<<"LStepExpressStatusWindow updateStatus"<<std::endl;
+
+
+  bool status = false;
+  //    model_->getStatus(status);
+    int error = 0;
+    //model_->getError(error);
+    std::string value = "test";
+    //model_->getSystemStatus(value);
 
     QString statustext = "Controller status is ";
     if(status){statustext.append("OK");}
@@ -45,8 +50,13 @@ void LStepExpressStatusWindow::updateStatus()
     QString systemstatustext = "System status is ";
     systemstatustext.append(QString::fromStdString(value));
     QString errortext = "Error state is ";
-    errortext.append(error);
+    errortext.append(QString::number(error));
+
+
+    this->appendPlainText(QDateTime::currentDateTime().toString());
     this->appendPlainText(statustext);
+    this->appendPlainText(systemstatustext);
+    this->appendPlainText(errortext);
 
     this->verticalScrollBar()->setValue(this->verticalScrollBar()->maximum());
 }

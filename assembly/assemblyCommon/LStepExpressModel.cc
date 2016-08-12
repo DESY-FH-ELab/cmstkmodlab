@@ -116,16 +116,19 @@ void LStepExpressModel::printSpyInformation()
 
 void LStepExpressModel::getStatus(bool& status)
 {
+  QMutexLocker locker(&mutex_);
     status = controller_->GetStatus();
 }
 
 void LStepExpressModel::getError(int& error)
 {
+  QMutexLocker locker(&mutex_);
     error = controller_->GetError();
 }
 
 void LStepExpressModel::getSystemStatus(std::string& value)
 {
+  QMutexLocker locker(&mutex_);
     controller_->GetSystemStatusText(value);
 }
 
@@ -668,7 +671,7 @@ void LStepExpressModel::updateMotionInformationFromTimer()
     if ( state_ == READY && !isPaused_) {
       
         std::cout<<"LStepExpressModel "<< "updateMotionInformationFromTimer, in if"  <<std::endl;
-        std::cout<<"LStepExpressModel "<< "updateMotionInformationFromTimer, errors?"<<controller_->GetError()  <<std::endl;
+        //std::cout<<"LStepExpressModel "<< "updateMotionInformationFromTimer, errors?"<<controller_->GetError()  <<std::endl;
         
       //QMutexLocker locker(&mutex_);
         
