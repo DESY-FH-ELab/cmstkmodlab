@@ -3,8 +3,12 @@
 #include "ApplicationConfig.h"
 #include "LStepExpressPositionWidget.h"
 
-LStepExpressPositionWidget::LStepExpressPositionWidget(LStepExpressModel* model, QWidget *parent)
+//LStepExpressPositionWidget::LStepExpressPositionWidget(LStepExpressModel* model, QWidget *parent)
+//    : QWidget(parent),
+//      model_(model)
+LStepExpressPositionWidget::LStepExpressPositionWidget(LStepExpressMotionManager* manager, LStepExpressModel* model, QWidget *parent)
     : QWidget(parent),
+      manager_(manager),
       model_(model)
 {
     position_ = std::vector<double>{0.0,0.0,0.0,0.0};
@@ -18,10 +22,10 @@ LStepExpressPositionWidget::LStepExpressPositionWidget(LStepExpressModel* model,
 
     // Add all the axes displays                                                                                                                                        
     //    for (unsigned int i=0;i<4;++i) {
-    xpos_ = new LStepExpressPositionAxisWidget(model_, 0, this);
-    ypos_ = new LStepExpressPositionAxisWidget(model_, 1, this);
-    zpos_ = new LStepExpressPositionAxisWidget(model_, 2, this);
-    apos_ = new LStepExpressPositionAxisWidget(model_, 3, this);
+    xpos_ = new LStepExpressPositionAxisWidget(manager_, model_, 0, this);
+    ypos_ = new LStepExpressPositionAxisWidget(manager_, model_, 1, this);
+    zpos_ = new LStepExpressPositionAxisWidget(manager_, model_, 2, this);
+    apos_ = new LStepExpressPositionAxisWidget(manager_, model_, 3, this);
     layout->addWidget(xpos_);
     layout->addWidget(ypos_);
     layout->addWidget(zpos_);
@@ -76,10 +80,10 @@ void LStepExpressPositionWidget::lStepStateChanged( State newState)
 {
     std::cout<<"LStepExpressPositionWidget " << "lStepStateChanged, newstate = "<<newState<<std::endl;
     if(newState == READY || newState == INITIALIZING){
-        bool enabled = false;
-        for(int i = 0; i < 4; i++){ enabled = model_->getAxisEnabled(i); if(enabled) break; }
-        moveAbsoluteButton_->setEnabled(enabled);
-        moveRelativeButton_->setEnabled(enabled);
+      //bool enabled = false;
+	//        for(int i = 0; i < 4; i++){ enabled = model_->getAxisEnabled(i); if(enabled) break; }
+        moveAbsoluteButton_->setEnabled(true);
+        moveRelativeButton_->setEnabled(true);
     }else{
         std::cout<<"LStepExpressPositionWidget " << "lStepStateChanged, set enabled false"<<std::endl;
         moveAbsoluteButton_->setEnabled(false);
@@ -89,12 +93,14 @@ void LStepExpressPositionWidget::lStepStateChanged( State newState)
 
 void LStepExpressPositionWidget::moveAbsoluteButtonClicked()
 {
-    model_->moveAbsolute(position_);
+  manager_->moveAbsolute(position_);
+  //    model_->moveAbsolute(position_);
 }
 
 void LStepExpressPositionWidget::moveRelativeButtonClicked()
 {
-    model_->moveRelative(position_);
+  //    model_->moveRelative(position_);
+    manager_->moveRelative(position_);
 }
 
 void LStepExpressPositionWidget::positionChanged(double value, unsigned int axis)
@@ -102,8 +108,9 @@ void LStepExpressPositionWidget::positionChanged(double value, unsigned int axis
     (position_)[axis] = value;
 }
 
-LStepExpressPositionAxisWidget::LStepExpressPositionAxisWidget(LStepExpressModel* model, unsigned int axis, QWidget *parent)
+LStepExpressPositionAxisWidget::LStepExpressPositionAxisWidget(LStepExpressMotionManager* manager, LStepExpressModel* model, unsigned int axis, QWidget *parent)
     : QWidget(parent),
+      manager_(manager),
       model_(model),
       axis_(axis),
       axisDimensionName_("usteps")
@@ -129,11 +136,11 @@ LStepExpressPositionAxisWidget::LStepExpressPositionAxisWidget(LStepExpressModel
             this, SLOT(updateWidgets()));
 
     spyEdit_ = new QSignalSpy(Edit_, SIGNAL(textChanged(QString)));
-    spyPositionChanged_ = new QSignalSpy(this, SIGNAL(positionChanged()));
+    spyPositionChanged_ = new QSignalSpy(this, SIGNAL(positionChanged(double, unsigned int)));
     
     connect(Edit_, SIGNAL(textChanged(QString)),
 	this, SLOT(printSpyInformation()));
-    connect(this, SIGNAL(positionChanged()),
+    connect(this, SIGNAL(positionChanged(double, unsigned int)),
 	this, SLOT(printSpyInformation()));
 }
 

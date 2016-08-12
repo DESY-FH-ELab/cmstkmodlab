@@ -202,16 +202,25 @@ double LStepExpressModel::getPosition(unsigned int axis)
 
 void LStepExpressModel::moveRelative(std::vector<double> & values)
 {
-    std::cout<<"LStepExpressModel "<< "moveRelative() v1"  <<std::endl;
-    controller_->MoveRelative(values);
+  std::cout<<"LStepExpressModel "<< "moveRelative() v1 x = "<<(values)[0]<<" y = "<<(values)[1]<<" z = "<<(values)[2]<<" a = "<<(values)[3]  <<std::endl;
+  controller_->MoveRelative(LStepExpress_t::X, (values)[0]);
+  controller_->MoveRelative(LStepExpress_t::Y, (values)[1]);
+  controller_->MoveRelative(LStepExpress_t::Z, (values)[2]);
+  controller_->MoveRelative(LStepExpress_t::A, (values)[3]);
+
+  //controller_->MoveRelative(values);
     inMotion_ = true;
     emit motionStarted();
 }
 
 void LStepExpressModel::moveRelative(double x, double y, double z, double a)
 {
-    std::cout<<"LStepExpressModel "<< "moveRelative() v2"  <<std::endl;
-    controller_->MoveRelative(x, y, z, a);
+  std::cout<<"LStepExpressModel "<< "moveRelative() v2 x = "<<x<<" y = "<<y<<" z = "<<z<<" a = "<<a  <<std::endl;
+  //    controller_->MoveRelative(x, y, z, a);
+  controller_->MoveRelative(LStepExpress_t::X, x);
+  controller_->MoveRelative(LStepExpress_t::Y, y);
+  controller_->MoveRelative(LStepExpress_t::Z, z);
+  controller_->MoveRelative(LStepExpress_t::A, a);
     inMotion_ = true;
     emit motionStarted();
 }
@@ -227,7 +236,11 @@ void LStepExpressModel::moveRelative(unsigned int axis, double value)
 void LStepExpressModel::moveAbsolute(std::vector<double> & values)
 {
     std::cout<<"LStepExpresModel "<< "moveAbsolute v1"  <<std::endl;
-    controller_->MoveAbsolute(values);
+    //    controller_->MoveAbsolute(values);
+    controller_->MoveAbsolute(LStepExpress_t::X, (values)[0]);
+    controller_->MoveAbsolute(LStepExpress_t::Y, (values)[1]);
+    controller_->MoveAbsolute(LStepExpress_t::Z, (values)[2]);
+    controller_->MoveAbsolute(LStepExpress_t::A, (values)[3]);
     inMotion_ = true;
     emit motionStarted();
 }
@@ -235,7 +248,11 @@ void LStepExpressModel::moveAbsolute(std::vector<double> & values)
 void LStepExpressModel::moveAbsolute(double x, double y, double z, double a)
 {
     std::cout<<"LStepExpresModel "<< "moveAbsolute v2, go to " << x << " x,  "<< y <<" y,  "<< z <<" z,  "<< a <<" a"  <<std::endl;
-    controller_->MoveAbsolute(x, y, z, a);
+    //controller_->MoveAbsolute(x, y, z, a);
+    controller_->MoveAbsolute(LStepExpress_t::X, x);
+    controller_->MoveAbsolute(LStepExpress_t::Y, y);
+    controller_->MoveAbsolute(LStepExpress_t::Z, z);
+    controller_->MoveAbsolute(LStepExpress_t::A, a);    
     inMotion_ = true;
     emit motionStarted();
 }
@@ -405,6 +422,8 @@ void LStepExpressModel::initialize()
         controller_->SetAutoStatus(2);
       std::cout<<"enabling "<<std::endl;
       std::vector<int> allZerosI{ 0, 0, 0, 0 };
+      std::vector<int> OnI{1,1,1,1};
+      //      std::vector<int> OnButAI{1,1,1,0};
       controller_->SetPowerAmplifierStatus(allZerosI);
       //std::vector<int> ivalues;
       //controller_->GetPowerAmplifierStatus(ivalues);
@@ -432,7 +451,12 @@ void LStepExpressModel::initialize()
       axis_ = allZerosI;
       joystickEnabled_ = false;
       joystickAxisEnabled_ = allZerosI;
+      //controller_->SetValue("!limctr", OnI); //temporary
+      //controller_->SetValue("!nosetlimit",OnI); //temporary
       std::cout<<"init set device state ready "<<std::endl;
+      //std::cout<<"%%%%%%%%%%%%%%%%%%%MOVING%%%%%%%%%%%%%%%%%"<<std::endl;
+      //std::vector<double> mpos{100,50,50,0};
+      //this->moveRelative(mpos);
       setDeviceState(READY);
       //updateInformation();
       //updateMotionInformation();
@@ -644,6 +668,7 @@ void LStepExpressModel::updateMotionInformationFromTimer()
     if ( state_ == READY && !isPaused_) {
       
         std::cout<<"LStepExpressModel "<< "updateMotionInformationFromTimer, in if"  <<std::endl;
+        std::cout<<"LStepExpressModel "<< "updateMotionInformationFromTimer, errors?"<<controller_->GetError()  <<std::endl;
         
       //QMutexLocker locker(&mutex_);
         

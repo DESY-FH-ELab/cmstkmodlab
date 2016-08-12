@@ -13,16 +13,19 @@
 #include <QString>
 
 #include "LStepExpressModel.h"
+#include "LStepExpressMotionManager.h"
 
 class LStepExpressPositionAxisWidget : public QWidget
 {
     Q_OBJECT
 
  public:
-    explicit LStepExpressPositionAxisWidget(LStepExpressModel* model, unsigned int axis, QWidget * parent = 0);
+//explicit LStepExpressPositionAxisWidget(LStepExpressModel* model, unsigned int axis, QWidget * parent = 0);
+    explicit LStepExpressPositionAxisWidget(LStepExpressMotionManager* manager, LStepExpressModel* model, unsigned int axis, QWidget * parent = 0);
 
  protected:
     LStepExpressModel* model_;
+    LStepExpressMotionManager* manager_;
     unsigned int axis_;
     QHBoxLayout* layout_;
     QString axisDimensionName_;
@@ -45,10 +48,12 @@ class LStepExpressPositionWidget : public QWidget
     Q_OBJECT
 
  public:
-    explicit LStepExpressPositionWidget(LStepExpressModel* model, QWidget *parent = 0);
+//    explicit LStepExpressPositionWidget(LStepExpressModel* model, QWidget *parent = 0);
+    explicit LStepExpressPositionWidget(LStepExpressMotionManager* manager, LStepExpressModel* model, QWidget *parent = 0);
 
  protected:
     LStepExpressModel* model_;
+    LStepExpressMotionManager* manager_;
     QVBoxLayout* layout_;
     QPushButton* moveAbsoluteButton_;
     QPushButton* moveRelativeButton_;
