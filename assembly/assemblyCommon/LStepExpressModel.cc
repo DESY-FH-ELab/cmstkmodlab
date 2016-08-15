@@ -45,9 +45,9 @@ LStepExpressModel::LStepExpressModel(const char* port,
     spyControlStateChanged = new QSignalSpy(this, SIGNAL(controlStateChanged(bool)));
     spyMotionStarted = new QSignalSpy(this, SIGNAL(motionStarted()));
     spyMotionFinished = new QSignalSpy(this, SIGNAL(motionFinished()));
-    connect(timer_, SIGNAL(timeout()), this, SLOT(printSpyInformation()));
 
     /*
+    connect(timer_, SIGNAL(timeout()), this, SLOT(printSpyInformation()));
     connect(this, SIGNAL(deviceStateChanged(State)), this, SLOT(printSpyInformation()));
     connect(this, SIGNAL(informationChanged()), this, SLOT(printSpyInformation()));
     connect(this, SIGNAL(motionInformationChanged()), this, SLOT(printSpyInformation()));
