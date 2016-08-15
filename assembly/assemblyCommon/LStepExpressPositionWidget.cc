@@ -16,12 +16,9 @@ LStepExpressPositionWidget::LStepExpressPositionWidget(LStepExpressMotionManager
     QVBoxLayout* layout = new QVBoxLayout(this);
     setLayout(layout);
 
-    //    QVBoxLayout* layoutLabels = new QVBoxLayout(this);
     QLabel *GoToLabel_ = new QLabel("Go To:",this);
     layout->addWidget(GoToLabel_);
 
-    // Add all the axes displays                                                                                                                                        
-    //    for (unsigned int i=0;i<4;++i) {
     xpos_ = new LStepExpressPositionAxisWidget(manager_, model_, 0, this);
     ypos_ = new LStepExpressPositionAxisWidget(manager_, model_, 1, this);
     zpos_ = new LStepExpressPositionAxisWidget(manager_, model_, 2, this);
@@ -30,7 +27,6 @@ LStepExpressPositionWidget::LStepExpressPositionWidget(LStepExpressMotionManager
     layout->addWidget(ypos_);
     layout->addWidget(zpos_);
     layout->addWidget(apos_);
-        //    }
 
     moveAbsoluteButton_ = new QPushButton("Move Absolute", this);
     layout->addWidget(moveAbsoluteButton_);
@@ -58,34 +54,34 @@ LStepExpressPositionWidget::LStepExpressPositionWidget(LStepExpressMotionManager
 
     spyMoveAbsoluteButton_ = new QSignalSpy(moveAbsoluteButton_, SIGNAL(clicked()));
     spyMoveRelativeButton_ = new QSignalSpy(moveRelativeButton_, SIGNAL(clicked()));
-    connect(moveAbsoluteButton_, SIGNAL(clicked()),
-	this, SLOT(printSpyInformation()));
-    connect(moveRelativeButton_, SIGNAL(clicked()),
-	this, SLOT(printSpyInformation()));
+
+    /*
+      connect(moveAbsoluteButton_, SIGNAL(clicked()),
+      this, SLOT(printSpyInformation()));
+      connect(moveRelativeButton_, SIGNAL(clicked()),
+      this, SLOT(printSpyInformation()));
+    */
 }
 
 void LStepExpressPositionWidget::printSpyInformation()
 {
     for(int i = 0; i < spyMoveAbsoluteButton_->size(); i++){
-        std::cout<<"SPY LStepExpressPositionWidget " << "moveAbsoluteBotton_, signal clicked()"<<std::endl;
+        NQLog("SPY LStepExpressPositionWidget ", NQLog::Debug) << "moveAbsoluteBotton_, signal clicked()";
     }
     spyMoveAbsoluteButton_->clear();
     for(int i = 0; i < spyMoveRelativeButton_->size(); i++){
-        std::cout<<"SPY LStepExpressPositionWidget " << "moveRelativeBotton_, signal clicked()"<<std::endl;
+        NQLog("SPY LStepExpressPositionWidget ", NQLog::Debug) << "moveRelativeBotton_, signal clicked()";
     }
     spyMoveRelativeButton_->clear();
 }
 
 void LStepExpressPositionWidget::lStepStateChanged( State newState)
 {
-    std::cout<<"LStepExpressPositionWidget " << "lStepStateChanged, newstate = "<<newState<<std::endl;
+    NQLog("LStepExpressPositionWidget ", NQLog::Debug) << "lStepStateChanged, newstate = "<<newState;
     if(newState == READY || newState == INITIALIZING){
-      //bool enabled = false;
-	//        for(int i = 0; i < 4; i++){ enabled = model_->getAxisEnabled(i); if(enabled) break; }
         moveAbsoluteButton_->setEnabled(true);
         moveRelativeButton_->setEnabled(true);
     }else{
-        std::cout<<"LStepExpressPositionWidget " << "lStepStateChanged, set enabled false"<<std::endl;
         moveAbsoluteButton_->setEnabled(false);
         moveRelativeButton_->setEnabled(false);
     }
@@ -94,12 +90,10 @@ void LStepExpressPositionWidget::lStepStateChanged( State newState)
 void LStepExpressPositionWidget::moveAbsoluteButtonClicked()
 {
   manager_->moveAbsolute(position_);
-  //    model_->moveAbsolute(position_);
 }
 
 void LStepExpressPositionWidget::moveRelativeButtonClicked()
 {
-  //    model_->moveRelative(position_);
     manager_->moveRelative(position_);
 }
 
@@ -138,20 +132,22 @@ LStepExpressPositionAxisWidget::LStepExpressPositionAxisWidget(LStepExpressMotio
     spyEdit_ = new QSignalSpy(Edit_, SIGNAL(textChanged(QString)));
     spyPositionChanged_ = new QSignalSpy(this, SIGNAL(positionChanged(double, unsigned int)));
     
-    connect(Edit_, SIGNAL(textChanged(QString)),
-	this, SLOT(printSpyInformation()));
-    connect(this, SIGNAL(positionChanged(double, unsigned int)),
-	this, SLOT(printSpyInformation()));
+    /*
+      connect(Edit_, SIGNAL(textChanged(QString)),
+      this, SLOT(printSpyInformation()));
+      connect(this, SIGNAL(positionChanged(double, unsigned int)),
+      this, SLOT(printSpyInformation()));
+    */
 }
 
 void LStepExpressPositionAxisWidget::printSpyInformation()
 {
     for(int i = 0; i < spyEdit_->size(); i++){
-        std::cout<<"SPY LStepExpressPositionAxisWidget " << "Edit_, signal textChanged()"<<std::endl;
+        NQLog("SPY LStepExpressPositionAxisWidget ", NQLog::Debug) << "Edit_, signal textChanged()";
     }
     spyEdit_->clear();
     for(int i = 0; i < spyPositionChanged_->size(); i++){
-        std::cout<<"SPY LStepExpressPositionAxisWidget " << "this_, signal positionChanged()"<<std::endl;
+        NQLog("SPY LStepExpressPositionAxisWidget ", NQLog::Debug) << "this_, signal positionChanged()";
     }
     spyPositionChanged_->clear();
 }

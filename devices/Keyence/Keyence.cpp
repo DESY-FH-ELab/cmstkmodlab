@@ -14,13 +14,8 @@ Keyence::Keyence( const ioport_t ioPort )
 {
     samplingRate_ = 20;
     averagingRate_ = 1;
-    //    std::cout<<"[Keyence] sampling rate set to = "<<samplingRate_<<std::endl;
-    //std::cout<<"[Keyence] averaging rate set to = "<<averagingRate_<<std::endl;
-
-    //    std::cout<<"[Keyence] begin constructor"<<std::endl;
     comHandler_ = new KeyenceComHandler( ioPort );
     DeviceInit();
-    //    std::cout<<"[Keyence] end constructor"<<std::endl;
 }
 
 Keyence::~Keyence()
@@ -40,8 +35,6 @@ void Keyence::SendCommand(const std::string & command)
   std::cout << "SendCommand: " << command << std::endl;
 #endif
   comHandler_->SendCommand(command.c_str());
-  //std::string buffer;
-  //  ReceiveString(buffer);
 }
 
 void Keyence::ReceiveString(std::string & buffer)
@@ -49,13 +42,8 @@ void Keyence::ReceiveString(std::string & buffer)
   usleep(1000);
 
   char temp[1000];
-  //std::cout<<"[Keyence] temp = "<<&temp<<std::endl;
-  //buffer = comHandler_->ReceiveString(samplingRate_, averagingRate_);
   comHandler_->ReceiveString(buffer, temp, samplingRate_, averagingRate_);
-  //std::cout<<"before strip buffer = "<<buffer<<std::endl;
   StripBuffer(buffer);
-  //buffer = buf;
-  //  std::cout<< "[Keyence::ReceiveString] buffer = "<<buffer<<std::endl;
 #ifdef KEYENCEDEBUG
   std::cout << "ReceiveCommand: " << buffer << std::endl;
 #endif
@@ -148,7 +136,6 @@ void Keyence::SetSamplingRate(int mode)
         }
     }
 
-    std::cout<<"[Keyence::SetSamplingRate] sampling rate set to = "<<samplingRate_<<std::endl;
     ChangeToCommunicationMode(false);
 }
 
@@ -190,7 +177,7 @@ void Keyence::SetAveraging(int out, int mode)
         default : averagingRate_ = 1;
         }
     }
-    std::cout<<"[Keyence::SetAveraging] averaging rate set to = "<<averagingRate_<<std::endl;
+
     ChangeToCommunicationMode(false);
 }
 
@@ -199,7 +186,6 @@ void Keyence::SetAveraging(int out, int mode)
 //communication mode (commOn = 1) -> no measurement possible, writing and reading system settings is possible 
 void Keyence::ChangeToCommunicationMode(bool commOn)
 {
-    //    std::cout<<"[Keyence] begin ChangeToCommunicationMode"<<std::endl;
     std::string response;
     if(commOn){
         response = SetValue("Q0");
@@ -220,46 +206,30 @@ void Keyence::ChangeToCommunicationMode(bool commOn)
         }
         comMode_ = false;
     }
-    //    std::cout<<"[Keyence] end ChangeToCommunicationMode"<<std::endl;
 }
 
 void Keyence::MeasurementValueOutput(int out, double & value)
 {
-    //    std::cout<<"measurement value test"<<std::endl;
     std::string response = SetValue("M",out);
-    //response="M2,-00.2133";
-    //std::cout<<"MeasurementValueOutput, response = "<<response<<std::endl;
     if(response.find("ER") != std::string::npos || response.find("M") == std::string::npos ){
 	std::cerr << "[Keyence::MeasurementValueOutput] ** ERROR: could not be executed, response : "
 	          << response
 	          << std::endl;
 	return;
     } 
-    //    this->SetValue(command, value1);
-    //std::ostringstream os;
-    //os << "M" << out << ",";
-    //std::cout<< os.str() << std::endl;                                                                                                                              
-    //this->SendCommand(os.str());
-    //std::string buffer;
-    //std::string s_temp = response.substr(3, 8);
-        //this->ReceiveString(buffer);
+
     if(response.substr(3,8).find("F") != std::string::npos){
       std::cerr << "[Keyence::MeasurementValueOutput] ** ERROR: laser out of range, please adjust position "
 	    << std::endl;
       value = 9999;
       throw response.substr(3,8);
-	//	return;
     }else{
     std::istringstream is(response.substr(3,8));
-    //std::cout<<"substring = "<<response.substr(3,8)<<std::endl;
+
     double temp;
     is >> temp;
-    //std::cout<< "temp = "<<temp<<std::endl;
     value = temp;
     }
-    //std::cout<<"[Keyence::MeasurementValueOutput] value = "<<value<<std::endl;
-    //    std::cout<<"measurement value test 2 "<<std::endl;
-    //SetValue("M",out);
 }
 
 //lock the panel on the controller to avoid accidental pushing of buttons
@@ -283,7 +253,6 @@ void Keyence::StripBuffer(std::string &buffer) const
 //No version checking for Keyence laser available
 void Keyence::DeviceInit()
 {
-    //  std::cout<<"[Keyence] begin device init"<<std::endl;
     isDeviceAvailable_ = false;
     
     if (comHandler_->DeviceAvailable()) {
@@ -292,7 +261,6 @@ void Keyence::DeviceInit()
     }
 
     this->ChangeToCommunicationMode(false);
-    //    std::cout<<"[Keyence] end device init"<<std::endl;
 }
 
 void Keyence::Reset(int out)

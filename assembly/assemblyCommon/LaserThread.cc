@@ -16,7 +16,7 @@ LaserThread::~LaserThread()
 
 void LaserThread::run()
 {
-    std::cout<<"LaserThread " << "run"<<std::endl;
+    NQLog("LaserThread ", NQLog::Debug) << "run";
     exec();
 }
 

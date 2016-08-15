@@ -9,7 +9,6 @@ LStepExpressStatusWindow::LStepExpressStatusWindow(LStepExpressModel* model,
       model_(model)
 {
     this->setReadOnly(true);
-    //    this->setVisible(true);
 
     timer_ = new QTimer(this);
     timer_->setInterval(1000);
@@ -25,7 +24,6 @@ LStepExpressStatusWindow::~LStepExpressStatusWindow()
 void LStepExpressStatusWindow::startTimer(State state)
 {
     if(state == READY){
-      std::cout<<"LStepExpressStatusWindow start timer"<<std::endl;
         timer_->start();
     }else{
         timer_->stop();
@@ -34,9 +32,6 @@ void LStepExpressStatusWindow::startTimer(State state)
 
 void LStepExpressStatusWindow::updateStatus()
 {
-  std::cout<<"LStepExpressStatusWindow updateStatus"<<std::endl;
-
-
   bool status = false;
   //    model_->getStatus(status);
     int error = 0;

@@ -32,12 +32,12 @@ int main( int argc, char** argv )
 #endif
     QDir dir(logdir);
     if (!dir.exists()) dir.mkpath(".");
-    //    QString logfilename = logdir + "/motionCommander.log";
-    QString logfilename = "./Logfile_motionCommander.log";
+    QString logfilename = logdir + "/motionCommander.log";
+    //QString logfilename = "./Logfile_motionCommander.log";
 
-    std::cout<< "motionCommander " << "version " << APPLICATIONVERSIONSTR<<std::endl;
+    NQLog("motionCommander") << "version " << APPLICATIONVERSIONSTR;
 
-    //std::cout<<"motionCommander " << "using " << logfilename << " for logging"<<std::endl;
+    NQLog("motionCommander") << "using " << logfilename << " for logging";
 
     QFile * logfile = new QFile(logfilename);
     if (logfile->open(QIODevice::WriteOnly | QIODevice::Append | QIODevice::Text)) {
@@ -49,7 +49,7 @@ int main( int argc, char** argv )
 #ifdef SINGLETON
     SingletonApplication app(argc, argv, assemblyGUID);
     if(!app.lock()){
-        std::cout<<"motionCommander " << "Application instance already running!"<<std::endl;
+        NQLog("motionCommander") << "Application instance already running!";
         exit(1);
     }
 #else

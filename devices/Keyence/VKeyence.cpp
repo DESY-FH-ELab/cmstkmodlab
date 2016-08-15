@@ -26,7 +26,6 @@ std::string VKeyence::SetValue(const std::string & command,
 {
   std::ostringstream os;
   os << command << value;
-  //  std::cout<< os.str() << std::endl; 
   this->SendCommand(os.str());
   std::string buffer;
   this->ReceiveString(buffer);
@@ -38,7 +37,6 @@ std::string VKeyence::SetValue(const std::string & command,
 {
   std::ostringstream os;
   os << command << value1;
-  //std::cout<< os.str() << std::endl; 
   this->SendCommand(os.str());
   std::string buffer;
   this->ReceiveString(buffer);
@@ -50,7 +48,6 @@ std::string VKeyence::SetValue(const std::string & command,
 {
   std::ostringstream os;
   os << command << value1 << "," << value2;
-  //std::cout<< os.str() << std::endl; 
   this->SendCommand(os.str());
   std::string buffer;
   this->ReceiveString(buffer);
@@ -62,7 +59,6 @@ int value1, const std::string & value2, int value3)
 {
   std::ostringstream os;
   os << command << value1 << "," << value2 << "," << value3;
-  //std::cout<< os.str() << std::endl; 
   this->SendCommand(os.str());
   std::string buffer;
   this->ReceiveString(buffer);
@@ -74,7 +70,6 @@ std::string VKeyence::SetValue(const std::string & command,
 {
   std::ostringstream os;
   os << command << value1;
-  //std::cout<< os.str() << std::endl; 
   this->SendCommand(os.str());
   std::string buffer;
   this->ReceiveString(buffer);

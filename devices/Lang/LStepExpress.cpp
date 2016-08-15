@@ -344,15 +344,12 @@ bool LStepExpress::GetJoystickEnabled()
 {
   int value;
   this->GetValue("joy", value);
-  std::cout<<"DEVICE get joystick enabled = "<<value<<std::endl;
   if (value==1) return true;
   return false;
 }
 
 void LStepExpress::SetJoystickEnabled(bool enabled)
 {
-  std::cout<<"DEVICE set joystick enabled = "<<enabled<<std::endl;
-
   if (enabled) {
     this->SendCommand("!joy 1");
   } else {

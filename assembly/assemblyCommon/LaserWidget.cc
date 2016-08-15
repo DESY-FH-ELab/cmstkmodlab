@@ -9,7 +9,7 @@ LaserWidget::LaserWidget(QWidget *parent)
     : QLCDNumber(parent)
 {
 
-    std::cout<<"LaserWidget " << "[LaserWidget]"    <<std::endl;
+    NQLog("LaserWidget ", NQLog::Debug) << "[LaserWidget]";
 }
 
 LaserWidget::~LaserWidget()
@@ -18,7 +18,7 @@ LaserWidget::~LaserWidget()
 
 void LaserWidget::updateDisplay(double value)
 {
-    std::cout<<"LaserWidget " << "[updateDisplay]"    <<std::endl;
+    NQLog("LaserWidget ", NQLog::Debug) << "[updateDisplay]";
     this->display(value);
     this->repaint();
     emit finished();
@@ -26,7 +26,7 @@ void LaserWidget::updateDisplay(double value)
 
 void LaserWidget::backgroundColorUpdate(bool isInRange)
 {
-    std::cout<<"LaserWidget " << "[backgroundColorUpdate] : " << isInRange    <<std::endl;
+    NQLog("LaserWidget ", NQLog::Debug) << "[backgroundColorUpdate] : " << isInRange;
     QPalette *lcdpalette = new QPalette;
     if(!isInRange){
         lcdpalette->setColor(QPalette::WindowText, QColor(255, 0, 0));
