@@ -12,6 +12,8 @@
 #include <QWidget>
 #include <QLabel>
 #include <QPushButton>
+#include <QSignalSpy>
+#include <QTimer>
 
 #include "LStepExpressModel.h"
 
@@ -21,6 +23,7 @@ class LStepExpressWidget : public QWidget
 
 public:
     explicit LStepExpressWidget(LStepExpressModel* model, QWidget *parent = 0);
+    ~LStepExpressWidget();
 
 protected:
     LStepExpressModel* model_;
@@ -28,6 +31,15 @@ protected:
     QCheckBox* joystickCheckBox_;
     QPushButton* buttonOrigin_;
     QWidget* axisControlWidget_;
+    QPushButton* buttonCalibrate_;
+    QPushButton* buttonEmergencyStop_;
+
+    //    QTimer* spyTimer_;
+    QSignalSpy* spyLstepCheckBox_;
+    QSignalSpy* spyJoystickCheckBox_;
+    QSignalSpy* spyButtonOrigin_;
+    QSignalSpy* spyButtonCalibrate_;
+    QSignalSpy* spyButtonEmergencyStop_;
 
 public slots:
     void lstepStateChanged(State newState);
@@ -35,6 +47,7 @@ public slots:
     void updateWidgets();
     void motionStarted();
     void motionFinished();
+    void printSpyInformation();
 };
 
 class LStepExpressAxisWidget : public QWidget
@@ -45,6 +58,8 @@ public:
     explicit LStepExpressAxisWidget(LStepExpressModel* model_,
                                     unsigned int axis,
                                     QWidget *parent = 0);
+
+    ~LStepExpressAxisWidget();
 
 protected:
     LStepExpressModel* model_;
@@ -57,6 +72,9 @@ protected:
     QLabel* positionLabel_;
     QString axisDimensionName_;
 
+    QSignalSpy* spyEnabledCheckBox_;
+    QSignalSpy* spyJoystickCheckBox_;
+
 public slots:
     void lStepStateChanged( State state );
     void controlStateChanged(bool);
@@ -66,6 +84,7 @@ public slots:
     void joystickCheckBoxToggled(bool enabled);
     void motionStarted();
     void motionFinished();
+    void printSpyInformation();
 };
 
 #endif // LSTEPEXPRESSWIDGET_H

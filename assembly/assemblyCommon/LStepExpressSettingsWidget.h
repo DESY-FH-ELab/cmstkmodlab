@@ -14,8 +14,29 @@
 #include <QLabel>
 #include <QToolBox>
 #include <QWheelEvent>
+#include <QComboBox>
 
 #include "LStepExpressSettings.h"
+
+class LStepExpressSettingsComboBox : public QComboBox
+{
+    Q_OBJECT
+
+ public:
+    LStepExpressSettingsComboBox(LStepExpressSettings* settings, const QString& key, QWidget * parent);
+
+    protected slots:
+
+        void settingChanged(QString key, QVariant value);
+
+ protected:
+        LStepExpressSettings* settings_;
+        QString key_;
+        
+ signals:
+
+        void valueChanged(QString, double);
+};
 
 class LStepExpressSettingsCheckBox : public QCheckBox
 {
@@ -135,9 +156,17 @@ protected:
     QWidget * axisToolBox_;
     QWidget * motorToolBox_;
     QWidget * encoderToolBox_;
+    QWidget * joystickToolBox_;
+    QWidget * calibrationToolBox_;
+    QWidget * limitToolBox_;
+    QWidget * clockPulseToolBox_;
+    QWidget * triggerToolBox_;
+    QWidget * extraToolBox_;
 
     QPushButton * readFromDeviceButton_;
     QPushButton * readFromFileButton_;
+    QPushButton * applyButton_;
+    QPushButton * resetButton_;
     QPushButton * writeToDeviceButton_;
     QPushButton * writeToFileButton_;
 
@@ -145,14 +174,22 @@ protected:
     void fillAxisToolBox();
     void fillMotorToolBox();
     void fillEncoderToolBox();
+    void fillJoystickToolBox();
+    void fillCalibrationToolBox();
+    void fillLimitToolBox();
+    void fillClockPulseToolBox();
+    void fillTriggerToolBox();
+    void fillExtraToolBox();
 
 public slots:
 
 protected slots:
-
+    //    void lStepStateChanged( State state );
     void controlStateChanged(bool);
     void readFromDeviceClicked();
     void readFromFileClicked();
+    void applyClicked();
+    void resetClicked();
     void writeToDeviceClicked();
     void writeToFileClicked();
 };

@@ -20,6 +20,35 @@ LStepExpressMotionManager::LStepExpressMotionManager(LStepExpressModel* model, Q
 
     connect(this, SIGNAL(signalMoveRelative(double,double,double,double)),
             model_, SLOT(moveRelative(double,double,double,double)));
+
+    spySignalMoveAbsolute = new QSignalSpy(this, SIGNAL(signalMoveAbsolute(double,double,double,double)));
+    spySignalMoveRelative = new QSignalSpy(this, SIGNAL(signalMoveRelative(double,double,double,double)));
+
+    /*
+    connect(this, SIGNAL(signalMoveAbsolute(double,double,double,double)),
+            this, SLOT(printSpyInformation()));
+
+    connect(this, SIGNAL(signalMoveRelative(double,double,double,double)),
+            this, SLOT(printSpyInformation()));
+    */
+}
+
+LStepExpressMotionManager::~LStepExpressMotionManager()
+{
+    if(spySignalMoveAbsolute){delete spySignalMoveAbsolute; spySignalMoveAbsolute = NULL;}
+    if(spySignalMoveRelative){delete spySignalMoveRelative; spySignalMoveRelative = NULL;}
+}
+
+void LStepExpressMotionManager::printSpyInformation()
+{
+    for(int i = 0; i < spySignalMoveAbsolute->size(); i++){
+        NQLog("SPY LStepExpressMotionManager ", NQLog::Debug)<< "this_, signal signalMoveAbsolute()";
+    }
+    spySignalMoveAbsolute->clear();
+    for(int i = 0; i < spySignalMoveRelative->size(); i++){
+        NQLog("SPY LStepExpressMotionManager ", NQLog::Debug)<< "this_, signal signalMoveRelative()";
+    }
+    spySignalMoveRelative->clear();
 }
 
 void LStepExpressMotionManager::run()
@@ -97,13 +126,13 @@ void LStepExpressMotionManager::moveAbsolute(unsigned int axis, double value)
 
 void LStepExpressMotionManager::motionStarted()
 {
-    NQLog("LStepExpressWidget", NQLog::Debug) << "motionStarted()";
+    NQLog("LStepExpressMotionManager", NQLog::Debug) << "motionStarted()";
     inMotion_ = true;
 }
 
 void LStepExpressMotionManager::motionFinished()
 {
-    NQLog("LStepExpressWidget", NQLog::Debug) << "motionFinished()";
+    NQLog("LStepExpressMotionManager", NQLog::Debug) << "motionFinished()";
     inMotion_ = false;
 
     this->run();

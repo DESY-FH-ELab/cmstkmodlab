@@ -8,6 +8,7 @@
 #include <QStandardPaths>
 #endif
 
+#include <iostream>
 #include <nqlogger.h>
 #include <DeviceState.h>
 
@@ -32,6 +33,7 @@ int main( int argc, char** argv )
     QDir dir(logdir);
     if (!dir.exists()) dir.mkpath(".");
     QString logfilename = logdir + "/motionCommander.log";
+    //QString logfilename = "./Logfile_motionCommander.log";
 
     NQLog("motionCommander") << "version " << APPLICATIONVERSIONSTR;
 

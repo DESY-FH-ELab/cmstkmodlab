@@ -1,5 +1,5 @@
 #include <QApplication>
-
+#include <iostream>
 #include <nqlogger.h>
 
 #include "LStepExpressMotionThread.h"
@@ -12,6 +12,6 @@ LStepExpressMotionThread::LStepExpressMotionThread(QObject *parent)
 
 void LStepExpressMotionThread::run()
 {
-    NQLog("LStepExpressMotionThread", NQLog::Debug) << "run";
+    NQLog("LStepExpressMotionThread ", NQLog::Debug) << "run";
     exec();
 }

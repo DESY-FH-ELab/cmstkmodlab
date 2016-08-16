@@ -73,6 +73,9 @@ class LStepExpressFake : public VLStepExpress
   void ConfirmErrorRectification() {}
   void ValidConfig() {}
   void ValidParameter() {}
+  void SaveConfig() {}
+  void Calibrate() {}
+  void EmergencyStop() {}
 
   // low level debugging methods
   void SendCommand(const std::string & command);
