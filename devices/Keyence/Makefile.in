@@ -10,7 +10,8 @@ LIB           = TkModLabKeyence
 
 MODULES       = KeyenceComHandler \
 		VKeyence \
-		Keyence
+		Keyence \
+		KeyenceFake
 
 ALLDEPEND = $(addsuffix .d,$(MODULES))
 
