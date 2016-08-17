@@ -1,3 +1,4 @@
+#include <unistd.h>
 
 #include <QStringList>
 #include <QApplication>
