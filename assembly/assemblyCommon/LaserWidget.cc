@@ -15,7 +15,7 @@ LaserWidget::LaserWidget(LaserModel* laserModel, QWidget *parent)
     connect(laserModel_, SIGNAL(measurementChanged(double)),
 	this, SLOT(updateDisplay(double)));
 
-    connect(laserModel_, SIGNAL(isRangeStateChanged(bool)),
+    connect(laserModel_, SIGNAL(inRangeStateChanged(bool)),
 	this, SLOT(backgroundColorUpdate(bool)));
 }
 

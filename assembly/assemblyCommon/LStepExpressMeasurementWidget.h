@@ -21,6 +21,8 @@
 #include <QModelIndex>
 #include <QFileDialog>
 #include <QLCDNumber>
+#include <QMutex>
+#include <QMutexLocker>
 
 #include "LStepExpressModel.h"
 #include "LStepExpressMeasurementTable.h"
@@ -58,6 +60,8 @@ protected:
     QLineEdit* x_stepsize_;
     QLineEdit* y_stepsize_;
 
+    QMutex mutex_;
+
 public slots:
     void generatePositions();
     void setAverageMeasEnabled(bool);
@@ -84,7 +88,7 @@ private:
 
     LStepExpressMeasurementTable *table_model;
     QTableView *table_view;
-    bool isActive_;
+    bool clearedForMotion_;
 
 private slots:
     void performMeasurement();

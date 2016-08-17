@@ -245,7 +245,7 @@ void LStepExpressMeasurementWidget::generatePositions()
 
   buttonStartMeasurement_->setEnabled(true);
   buttonStopMeasurement_->setEnabled(true);
-  isActive_ = true;
+  clearedForMotion_ = true;
   buttonStoreMeasurement_->setEnabled(false);
 }
 
@@ -272,13 +272,18 @@ void LStepExpressMeasurementWidget::generateCirclePositions()
 
 void LStepExpressMeasurementWidget::stopMeasurement()
 {
-  isActive_ = false;
+  NQLog("LStepExpressMeasurementWidget ", NQLog::Debug) << "stop measurement"    ;  
+  QMutexLocker locker(&mutex_);
+  model_->emergencyStop();
+  clearedForMotion_ = false;
 }
 
 //FIX ME! needs to be tested in the lab
 void LStepExpressMeasurementWidget::performMeasurement()
 {
     NQLog("LStepExpressMeasurementWidget ", NQLog::Debug) << "starting scan"    ;
+    
+    clearedForMotion_ = true;
 
   double x_pos = 0;
   double y_pos = 0;
@@ -286,7 +291,7 @@ void LStepExpressMeasurementWidget::performMeasurement()
   std::vector<float> meas;
   //go to all positions, do the measurement, store the measurement data
   int r = 0;
-  while(isActive_ && r < table_model->rowCount())
+  while(clearedForMotion_ && r < table_model->rowCount())
       {
           //retrieve position from the model
           x_pos = table_model->data(table_model->index(r,1), Qt::DisplayRole).toInt();
@@ -321,6 +326,7 @@ void LStepExpressMeasurementWidget::performMeasurement()
           //store dummy measurement result
           meas.push_back(meas_atpos);
           r++;
+	  NQLog("LStepExpressMeasurementWidget ", NQLog::Debug) << "during scan, cleared for motion = " << clearedForMotion_    ;
       }
   table_model->insertData(4,meas);
   table_model->update();
