@@ -67,7 +67,7 @@ if test $ARCHITECTURE = "Darwin"; then
     QMAKE="qmake"
 fi
 if test $ARCHITECTURE = "Linux" && test $KERNELMINOR -lt 6; then
-    echo Linux kernel minor version < 6: fake device support forced
+    echo "Linux kernel minor version < 6: fake device support forced"
     USEFAKEDEVICES=1
 fi
 if test $ARCHITECTURE = "Linux"; then
@@ -96,8 +96,8 @@ if test $ARCHITECTURE = "Linux"; then
         QWTINCLUDES="/usr/include/qwtplot3d"
         QWTLIBS="-lqwtplot3d"
     fi
-    QWTINCLUDES+="/usr/include/qwt $QWTINCLUDES"
-    QWTLIBS+="-lqwt $QWTLIBS"
+    QWTINCLUDES="/usr/include/qwt $QWTINCLUDES"
+    QWTLIBS="-lqwt $QWTLIBS"
 fi
 
 if test $USEFAKEDEVICES = 1; then
