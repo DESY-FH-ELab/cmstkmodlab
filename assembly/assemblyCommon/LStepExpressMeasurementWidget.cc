@@ -18,26 +18,59 @@ LStepExpressMeasurementWidget::LStepExpressMeasurementWidget(LStepExpressModel* 
     
     averageMeasCheckBox_ = new QCheckBox("Average measurement", this);
     buttonGeneratePos_ = new QPushButton("Generate positions", this);
+    zigzagCheckBox_ = new QCheckBox("Zigzag motion (default is meander)", this);
     
     averageMeasEnabled_ = false;
     
-    QLabel* nstepsxLabel = new QLabel("steps x-direction");
-    QLabel* nstepsyLabel = new QLabel("steps y-direction");
+    QLabel* label_x_min = new QLabel("x min");
+    QLabel* label_x_max = new QLabel("x max");
+    QLabel* label_y_min = new QLabel("y min");
+    QLabel* label_y_max = new QLabel("y max");
+    //    QLabel* nstepsxLabel = new QLabel("steps x-direction");
+    //QLabel* nstepsyLabel = new QLabel("steps y-direction");
+    QLabel* label_x_stepsize = new QLabel("stepsize x");
+    QLabel* label_y_stepsize = new QLabel("stepsize y");
     
-    nstepsx_ = new QLineEdit();
-    nstepsy_ = new QLineEdit();
-    
-    QHBoxLayout *hlayout_x = new QHBoxLayout(this);
-    hlayout_x->addWidget(nstepsxLabel);
-    hlayout_x->addWidget(nstepsx_);
-    QHBoxLayout *hlayout_y = new QHBoxLayout(this);
-    hlayout_y->addWidget(nstepsyLabel);
-    hlayout_y->addWidget(nstepsy_);
-    
+    //nstepsx_ = new QLineEdit();
+    //nstepsy_ = new QLineEdit();
+    x_min_ = new QLineEdit();
+    x_max_ = new QLineEdit();
+    y_min_ = new QLineEdit();
+    y_max_ = new QLineEdit();
+    x_stepsize_ = new QLineEdit();
+    y_stepsize_ = new QLineEdit();
+
+    QHBoxLayout *hlayout_x_min = new QHBoxLayout(this);
+    hlayout_x_min->addWidget(label_x_min);
+    hlayout_x_min->addWidget(x_min_);
+    QHBoxLayout *hlayout_y_min = new QHBoxLayout(this);
+    hlayout_y_min->addWidget(label_y_min);
+    hlayout_y_min->addWidget(y_min_);
+    QHBoxLayout *hlayout_x_max = new QHBoxLayout(this);
+    hlayout_x_max->addWidget(label_x_max);
+    hlayout_x_max->addWidget(x_max_);
+    QHBoxLayout *hlayout_y_max = new QHBoxLayout(this);
+    hlayout_y_max->addWidget(label_y_max);
+    hlayout_y_max->addWidget(y_max_);
+    QHBoxLayout *hlayout_x_stepsize = new QHBoxLayout(this);
+    hlayout_x_stepsize->addWidget(label_x_stepsize);
+    hlayout_x_stepsize->addWidget(x_stepsize_);
+    QHBoxLayout *hlayout_y_stepsize = new QHBoxLayout(this);
+    hlayout_y_stepsize->addWidget(label_y_stepsize);
+    hlayout_y_stepsize->addWidget(y_stepsize_);
+
+    QHBoxLayout *hlayout_checkbox = new QHBoxLayout(this);
+    hlayout_checkbox->addWidget(averageMeasCheckBox_);
+    hlayout_checkbox->addWidget(zigzagCheckBox_);
+
     QVBoxLayout *layout_xy = new QVBoxLayout(this);
-    layout_xy->addLayout(hlayout_x);
-    layout_xy->addLayout(hlayout_y);
-    layout_xy->addWidget(averageMeasCheckBox_);
+    layout_xy->addLayout(hlayout_x_min);
+    layout_xy->addLayout(hlayout_x_max);
+    layout_xy->addLayout(hlayout_x_stepsize);
+    layout_xy->addLayout(hlayout_y_min);
+    layout_xy->addLayout(hlayout_y_max);
+    layout_xy->addLayout(hlayout_y_stepsize);
+    layout_xy->addLayout(hlayout_checkbox);
     layout_xy->addWidget(buttonGeneratePos_);
     
     layout->addLayout(layout_xy);
@@ -45,9 +78,13 @@ LStepExpressMeasurementWidget::LStepExpressMeasurementWidget(LStepExpressModel* 
     
     //initialise the x, y, z positions
     z_init = model_->getPosition(2); //FIX ME! is 2 z-axis?
-    x_init = -150; //FIX ME! take right upper corner of table
-    y_init = -150; //FIX ME! take right upper corner of table
-    
+    x_min = -150.0; //FIX ME! take right upper corner of table
+    y_min = -150.0; //FIX ME! take right upper corner of table
+    x_max = -150.0; //FIX ME! take right upper corner of table
+    y_max = -150.0; //FIX ME! take right upper corner of table
+    x_stepsize = 10.0;
+    y_stepsize = 10.0;
+    isZigZag_ = false;
     
     //table model/view
     table_model = new LStepExpressMeasurementTable();
@@ -59,7 +96,7 @@ LStepExpressMeasurementWidget::LStepExpressMeasurementWidget(LStepExpressModel* 
     checkBoxEnableLaser_ = new QCheckBox("Enable Laser", this);
     vlayout_laser->addWidget(checkBoxEnableLaser_);
 
-    laserWidget_ = new LaserWidget();
+    laserWidget_ = new LaserWidget(laserModel_);
     vlayout_laser->addWidget(laserWidget_);
 
     QVBoxLayout *vlayout_buttons = new QVBoxLayout(this);
@@ -101,11 +138,18 @@ LStepExpressMeasurementWidget::LStepExpressMeasurementWidget(LStepExpressModel* 
     connect(laserModel_, SIGNAL(deviceStateChanged(State)),
 	this, SLOT(laserStateChanged(State)));
 
+    connect(zigzagCheckBox_, SIGNAL(toggled(bool)), this, SLOT(setZigZag(bool)));
+
     laserStateChanged(laserModel_->getDeviceState());
 
     generateCirclePositions();
 }
     
+void LStepExpressMeasurementWidget::setZigZag(bool zigzag)
+{
+    isZigZag_ = zigzag;
+}
+
 void LStepExpressMeasurementWidget::laserStateChanged(State newState)
 {
 
@@ -125,11 +169,25 @@ void LStepExpressMeasurementWidget::setAverageMeasEnabled(bool enabled)
 //generate the x and y positions for the measurement
 void LStepExpressMeasurementWidget::generatePositions()
 {
-  //  NQLog("LStepExpressMeasurementWidget ", NQLog::Debug) << "in generatePositions "    ;
+    NQLog("LStepExpressMeasurementWidget ", NQLog::Debug) << "in generatePositions "    ;
 
-  //read in number of steps, if empty take default 10 steps
-  nstepsx = (nstepsx_->text().isEmpty() == true) ? 10 : (nstepsx_->text().toInt());
-  nstepsy = (nstepsy_->text().isEmpty() == true) ? 10 : (nstepsy_->text().toInt());
+    //read in MIN/MAX positions
+    z_init = model_->getPosition(2);
+    x_min = (x_min_->text().isEmpty() == true) ? -150 : (x_min_->text().toDouble());
+    y_min = (y_min_->text().isEmpty() == true) ? -150 : (y_min_->text().toDouble());
+    x_max = (x_max_->text().isEmpty() == true) ? -150 : (x_max_->text().toDouble());
+    y_max = (y_max_->text().isEmpty() == true) ? -150 : (y_max_->text().toDouble());
+
+    //read in the stepsize
+    x_stepsize = (x_stepsize_->text().isEmpty() == true) ? 10 : (x_stepsize_->text().toDouble());
+    y_stepsize = (y_stepsize_->text().isEmpty() == true) ? 10 : (y_stepsize_->text().toDouble());
+
+    //read in number of steps, if empty take default 10 steps
+    //    nstepsx = (nstepsx_->text().isEmpty() == true) ? 10 : (nstepsx_->text().toInt());
+    //nstepsy = (nstepsy_->text().isEmpty() == true) ? 10 : (nstepsy_->text().toInt());
+
+    nstepsx = (int) ((x_max - x_min)/x_stepsize);
+    nstepsy = (int) ((y_max - y_min)/y_stepsize);
 
 
   //  NQLog("LStepExpressMeasurementWidget ", NQLog::Debug) << "nstepsx = " << nstepsx << " nstepsy = " << nstepsy << " x_init = " << x_init << " y_init = " << y_init << " rangex = " << rangex << " rangey = "<< rangey    ;
@@ -141,34 +199,35 @@ void LStepExpressMeasurementWidget::generatePositions()
   std::vector<float> meas;
   
   int z = 0;
-  /*
-  //generate the positions in zigzag pattern
-  for(int i = 0; i < nstepsx + 1; i++){
-    for(int j = 0; j < nstepsy + 1; j++){
-      xpos.push_back(x_init + i*rangex/nstepsx);
-      ypos.push_back(y_init + j*rangey/nstepsy);
-      pos_number.push_back(z);
-      zpos.push_back(z_init);
-      meas.push_back(0.0);
-      z++;
-    }
-  }
-  */
-
-  //generate the positions in meander pattern
-  float y_prev = y_init;
-  float y_pres = y_init;
-  for(int i = 0; i < nstepsx + 1; i++){
-    for(int j = 0; j < nstepsy + 1; j++){
-      xpos.push_back(x_init + i*rangex/nstepsx);
-      if(j != 0){y_pres = y_prev + pow(-1,i)*rangey/nstepsy;}
-      ypos.push_back(y_pres);
-      y_prev = y_pres;
-      pos_number.push_back(z);
-      zpos.push_back(z_init);
-      meas.push_back(0.0);
-      z++;
-    }
+  
+  if(isZigZag_){
+      //generate the positions in zigzag pattern
+      for(int i = 0; i < nstepsx + 1; i++){
+          for(int j = 0; j < nstepsy + 1; j++){
+	  xpos.push_back(x_min + i*x_stepsize);
+	  ypos.push_back(y_min + j*y_stepsize);
+	  pos_number.push_back(z);
+	  zpos.push_back(z_init);
+	  meas.push_back(0.0);
+	  z++;
+          }
+      }
+  }else{  
+      //generate the positions in meander pattern
+      float y_prev = y_min;
+      float y_pres = y_min;
+      for(int i = 0; i < nstepsx + 1; i++){
+          for(int j = 0; j < nstepsy + 1; j++){
+	  xpos.push_back(x_min + i*x_stepsize);
+	  if(j != 0){y_pres = y_prev + pow(-1,i)*y_stepsize;}
+	  ypos.push_back(y_pres);
+	  y_prev = y_pres;
+	  pos_number.push_back(z);
+	  zpos.push_back(z_init);
+	  meas.push_back(0.0);
+	  z++;
+          }
+      }
   }
 
   //  NQLog("LStepExpressMeasurementWidget ", NQLog::Debug) << "size pos_number = "<<pos_number.size()<<" size xpos = "<<xpos.size()    ;
@@ -228,45 +287,44 @@ void LStepExpressMeasurementWidget::performMeasurement()
   //go to all positions, do the measurement, store the measurement data
   int r = 0;
   while(isActive_ && r < table_model->rowCount())
-    //  for(int r = 0; r < table_model->rowCount(); r++)
-    {
-      //retrieve position from the model
-      x_pos = table_model->data(table_model->index(r,1), Qt::DisplayRole).toInt();
-      y_pos = table_model->data(table_model->index(r,2), Qt::DisplayRole).toInt();
-      z_pos = table_model->data(table_model->index(r,3), Qt::DisplayRole).toInt();
-
-      //go to position
-      //manager_->moveAbsolute(x_pos, y_pos, z_pos, 0.0);
-
-      //if requested average measurement, perform circle at position
-      double meas_atpos = 0.;
-      NQLog("LStepExpressMeasurementWidget ", NQLog::Debug) << "averageMeasEnabled_ = " << averageMeasEnabled_    ;
-      if(averageMeasEnabled_)
-	{
-	    NQLog("LStepExpressMeasurementWidget ", NQLog::Debug) << "in average meas, circle_x size = " << circle_x.size()    ;
-	  for(unsigned int c = 0; c < circle_x.size(); c++)
-	    {
-	      //manager_->moveAbsolute(x_pos+(circle_x)[c], y_pos+(circle_y)[c], z_pos, 0.0);
-	      //make laser measurement
-	    }
-	  meas_atpos = 1.;
-	}else{
-          NQLog("LStepExpressMeasurementWidget ", NQLog::Debug) << "in standard meas "    ;
-	//make laser measurement
-	meas_atpos = 1.;
+      {
+          //retrieve position from the model
+          x_pos = table_model->data(table_model->index(r,1), Qt::DisplayRole).toInt();
+          y_pos = table_model->data(table_model->index(r,2), Qt::DisplayRole).toInt();
+          z_pos = table_model->data(table_model->index(r,3), Qt::DisplayRole).toInt();
+          
+          //go to position
+          manager_->moveAbsolute(x_pos, y_pos, z_pos, 0.0);
+          
+          //if requested average measurement, perform circle at position
+          double meas_atpos = 0.;
+          NQLog("LStepExpressMeasurementWidget ", NQLog::Debug) << "averageMeasEnabled_ = " << averageMeasEnabled_    ;
+          if(averageMeasEnabled_)
+	  {
+	      NQLog("LStepExpressMeasurementWidget ", NQLog::Debug) << "in average meas, circle_x size = " << circle_x.size()    ;
+	      for(unsigned int c = 0; c < circle_x.size(); c++)
+	          {
+		  //manager_->moveAbsolute(x_pos+(circle_x)[c], y_pos+(circle_y)[c], z_pos, 0.0);
+		  //make laser measurement
+	          }
+	      meas_atpos = 1.;
+	  }else{
+	  NQLog("LStepExpressMeasurementWidget ", NQLog::Debug) << "in standard meas "    ;
+	  //make laser measurement
+	  laserModel_->getMeasurement(meas_atpos);
+          }
+          
+          
+          NQLog("LStepExpressMeasurementWidget ", NQLog::Debug) << "after meas "    ;
+          //FIX ME! how to ensure the movement has stopped before making measurement with laser?
+          
+          //store dummy measurement result
+          meas.push_back(meas_atpos);
+          r++;
       }
-      
-
-      NQLog("LStepExpressMeasurementWidget ", NQLog::Debug) << "after meas "    ;
-      //FIX ME! how to ensure the movement has stopped before making measurement with laser?
-
-      //store dummy measurement result
-      meas.push_back(meas_atpos);
-      r++;
-    }
   table_model->insertData(4,meas);
   table_model->update();
-
+  
   NQLog("LStepExpressMeasurementWidget ", NQLog::Debug) << "scan finished"    ;
 
   buttonStoreMeasurement_->setEnabled(true);

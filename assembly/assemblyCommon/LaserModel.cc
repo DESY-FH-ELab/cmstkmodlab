@@ -50,18 +50,19 @@ void LaserModel::setAveraging(int mode)
 
 void LaserModel::updateInformation()
 {
-    getMeasurement();
+    double value = 0;
+    getMeasurement(value);
 }
 
-void LaserModel::getMeasurement()
+void LaserModel::getMeasurement(double& value)
 {
     if(state_ == OFF) return;
 
     NQLog("LaserModel ", NQLog::Debug) << "[getMeasurement], isInRange_ = "<< isInRange_    ;
-    double ivalue = 0;
+    //    double ivalue = 0;
     try{
         NQLog("LaserModel ", NQLog::Debug) << "[getMeasurement] try to get measurement"    ;
-        controller_->MeasurementValueOutput(laserHead_, ivalue);
+        controller_->MeasurementValueOutput(laserHead_, value);
         NQLog("LaserModel ", NQLog::Debug) << "[getMeasurement] does the code reach this point?"    ;
         if(!isInRange_){
 	NQLog("LaserModel ", NQLog::Debug) <<"[getMeasurement] emit goes back into range"    ;
@@ -76,9 +77,9 @@ void LaserModel::getMeasurement()
 	emit inRangeStateChanged(isInRange_);
         }
     }
-    NQLog("LaserModel ", NQLog::Debug) << "[getMeasurement] value = " << ivalue    ;
-    if(ivalue != value_){
-        value_ = ivalue;
+    NQLog("LaserModel ", NQLog::Debug) << "[getMeasurement] value = " << value    ;
+    if(value != value_){
+        value_ = value;
         emit measurementChanged(value_);
     }
 }
@@ -101,6 +102,9 @@ void LaserModel::initialize()
     bool enabled = (controller_ != NULL) && (controller_->DeviceAvailable());
 
     if ( enabled ) {
+        setLaserHead(2);
+        setAveraging(0);
+        setSamplingRate(0);
         setDeviceState(READY);
     }
     else {
@@ -116,11 +120,11 @@ void LaserModel::setDeviceState( State state )
     if ( state_ != state ) {
         state_ = state;
 
-        //        if ( state_ == READY ) {
-        //    timer_->start();
-        //} else {
-        //    timer_->stop();
-        //}
+        if ( state_ == READY ) {
+            timer_->start();
+        } else {
+            timer_->stop();
+        }
 
         emit deviceStateChanged(state);
     }

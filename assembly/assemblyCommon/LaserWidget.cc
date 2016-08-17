@@ -5,11 +5,18 @@
 
 #include "LaserWidget.h"
 
-LaserWidget::LaserWidget(QWidget *parent)
-    : QLCDNumber(parent)
+LaserWidget::LaserWidget(LaserModel* laserModel, QWidget *parent)
+    : QLCDNumber(parent),
+      laserModel_(laserModel)
 {
 
     NQLog("LaserWidget ", NQLog::Debug) << "[LaserWidget]";
+
+    connect(laserModel_, SIGNAL(measurementChanged(double)),
+	this, SLOT(updateDisplay(double)));
+
+    connect(laserModel_, SIGNAL(isRangeStateChanged(bool)),
+	this, SLOT(backgroundColorUpdate(bool)));
 }
 
 LaserWidget::~LaserWidget()
