@@ -17,12 +17,12 @@ LStepExpressMeasurementTable::LStepExpressMeasurementTable() : QAbstractTableMod
   Columns.push_back(column5);
 }
  
-int LStepExpressMeasurementTable::rowCount(const QModelIndex& parent) const
+int LStepExpressMeasurementTable::rowCount(const QModelIndex& /* parent */) const
 {
   return Columns[0].size();
 }
  
-int LStepExpressMeasurementTable::columnCount(const QModelIndex& parent) const
+int LStepExpressMeasurementTable::columnCount(const QModelIndex& /* parent */) const
 {
   return Columns.size();
 }

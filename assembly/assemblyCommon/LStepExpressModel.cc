@@ -445,7 +445,7 @@ void LStepExpressModel::updateInformation()
     }
 
     int joystick = controller_->GetJoystickEnabled();
-    int joystick_model = this->getJoystickEnabled();
+    // int joystick_model = this->getJoystickEnabled();
     if (joystick!=joystickEnabled_) {
         joystickEnabled_ = joystick;
         changed = true;

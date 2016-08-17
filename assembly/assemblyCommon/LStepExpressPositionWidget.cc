@@ -8,8 +8,8 @@
 //      model_(model)
 LStepExpressPositionWidget::LStepExpressPositionWidget(LStepExpressMotionManager* manager, LStepExpressModel* model, QWidget *parent)
     : QWidget(parent),
-      manager_(manager),
-      model_(model)
+      model_(model),
+      manager_(manager)
 {
     position_ = std::vector<double>{0.0,0.0,0.0,0.0};
 
@@ -104,8 +104,8 @@ void LStepExpressPositionWidget::positionChanged(double value, unsigned int axis
 
 LStepExpressPositionAxisWidget::LStepExpressPositionAxisWidget(LStepExpressMotionManager* manager, LStepExpressModel* model, unsigned int axis, QWidget *parent)
     : QWidget(parent),
-      manager_(manager),
       model_(model),
+      manager_(manager),
       axis_(axis),
       axisDimensionName_("usteps")
 {

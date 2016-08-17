@@ -364,12 +364,12 @@ void AssemblySensorMarkerFinder::determineOrientation()
     cv::Point2f il2, ol2;
     double avg = 180.0*std::atan2(vg.y, vg.x)/CV_PI;
     if (avg<0) avg += 360.0;
-    double angle, dot, dv;
+    double angle; //, dot, dv;
 
     for(size_t i = 0; i < intersections_.size(); i++ ) {
         cv::Point2f v = intersections_[i] - igp;
-        dot = v.dot(vg);
-        dv = cv::norm(v);
+        // dot = v.dot(vg);
+        // dv = cv::norm(v);
         angle = 180.0*std::atan2(v.y, v.x)/CV_PI;
         if (angle<0) angle += 360.0;
         angle -= avg;
@@ -388,8 +388,8 @@ void AssemblySensorMarkerFinder::determineOrientation()
 
     for(size_t i = 0; i < intersections_.size(); i++ ) {
         cv::Point2f v = intersections_[i] - ogp;
-        dot = v.dot(vg);
-        dv = cv::norm(v);
+        // dot = v.dot(vg);
+        // dv = cv::norm(v);
         angle = 180.0*std::atan2(v.y, v.x)/CV_PI;
         if (angle<0) angle += 360.0;
         angle -= avg;

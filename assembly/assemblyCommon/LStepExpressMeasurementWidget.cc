@@ -221,9 +221,9 @@ void LStepExpressMeasurementWidget::performMeasurement()
 {
     NQLog("LStepExpressMeasurementWidget ", NQLog::Debug) << "starting scan"    ;
 
-  double x_pos = 0;
-  double y_pos = 0;
-  double z_pos = 0;
+  // double x_pos = 0;
+  // double y_pos = 0;
+  // double z_pos = 0;
   std::vector<float> meas;
   //go to all positions, do the measurement, store the measurement data
   int r = 0;
@@ -231,9 +231,9 @@ void LStepExpressMeasurementWidget::performMeasurement()
     //  for(int r = 0; r < table_model->rowCount(); r++)
     {
       //retrieve position from the model
-      x_pos = table_model->data(table_model->index(r,1), Qt::DisplayRole).toInt();
-      y_pos = table_model->data(table_model->index(r,2), Qt::DisplayRole).toInt();
-      z_pos = table_model->data(table_model->index(r,3), Qt::DisplayRole).toInt();
+      // x_pos = table_model->data(table_model->index(r,1), Qt::DisplayRole).toInt();
+      // y_pos = table_model->data(table_model->index(r,2), Qt::DisplayRole).toInt();
+      // z_pos = table_model->data(table_model->index(r,3), Qt::DisplayRole).toInt();
 
       //go to position
       //manager_->moveAbsolute(x_pos, y_pos, z_pos, 0.0);
