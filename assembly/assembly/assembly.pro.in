@@ -35,6 +35,10 @@ else {
 
 DEFINES += @configdefines@
 
+equals(USEFAKEDEVICES,"X1") {
+DEFINES += USE_FAKEIO
+}
+
 QT += core gui xml network script svg
 greaterThan(QT_MAJOR_VERSION, 4) {
   QT += widgets
