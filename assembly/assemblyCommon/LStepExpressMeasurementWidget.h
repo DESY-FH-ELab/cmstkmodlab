@@ -23,6 +23,7 @@
 #include <QLCDNumber>
 #include <QMutex>
 #include <QMutexLocker>
+#include <QSignalSpy>
 
 #include "LStepExpressModel.h"
 #include "LStepExpressMeasurementTable.h"
@@ -37,6 +38,7 @@ class LStepExpressMeasurementWidget : public QWidget
 
 public:
     explicit LStepExpressMeasurementWidget(LStepExpressModel* model, LStepExpressMotionManager* manager, LaserModel* laserModel, QWidget *parent = 0);
+    ~LStepExpressMeasurementWidget();
 
 protected:
     LStepExpressModel* model_;
@@ -62,11 +64,23 @@ protected:
 
     QMutex mutex_;
 
+    QSignalSpy* spyAverageMeasCheckBox_;
+    QSignalSpy* spyButtonGeneratePos_;
+    QSignalSpy* spyButtonStartMeasurement_;
+    QSignalSpy* spyButtonStopMeasurement_;
+    QSignalSpy* spyButtonStoreMeasurement_;
+    QSignalSpy* spyCheckBoxEnableLaser_;
+    QSignalSpy* spyZigzagCheckBox_;
+    QSignalSpy* spyNextScanStep_;
+
+    void FakeMotion();
+
 public slots:
     void generatePositions();
     void setAverageMeasEnabled(bool);
     void laserStateChanged(State newState);
     void setZigZag(bool);
+    void takeMeasurement();
 
 private:
     bool averageMeasEnabled_;
@@ -89,12 +103,18 @@ private:
     LStepExpressMeasurementTable *table_model;
     QTableView *table_view;
     bool clearedForMotion_;
+    int currentIndex_;
 
 private slots:
-    void performMeasurement();
+    void performScan();
     void stopMeasurement();
     void storeResults();
+    void printSpyInformation();
+    void doNextScanStep();
 
+ signals:
+    void nextScanStep();
+    void FakeMotionFinished();
 };
 
 #endif // LSTEPEXPRESSMEASUREMENTWIDGET_H

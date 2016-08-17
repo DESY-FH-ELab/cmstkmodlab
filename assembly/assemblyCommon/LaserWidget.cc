@@ -9,6 +9,7 @@ LaserWidget::LaserWidget(LaserModel* laserModel, QWidget *parent)
     : QLCDNumber(parent),
       laserModel_(laserModel)
 {
+    setDigitCount(5);
 
     NQLog("LaserWidget ", NQLog::Debug) << "[LaserWidget]";
 

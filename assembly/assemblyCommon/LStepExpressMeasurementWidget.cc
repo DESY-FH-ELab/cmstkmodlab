@@ -85,6 +85,7 @@ LStepExpressMeasurementWidget::LStepExpressMeasurementWidget(LStepExpressModel* 
     x_stepsize = 10.0;
     y_stepsize = 10.0;
     isZigZag_ = false;
+    currentIndex_ = -1;
     
     //table model/view
     table_model = new LStepExpressMeasurementTable();
@@ -128,7 +129,7 @@ LStepExpressMeasurementWidget::LStepExpressMeasurementWidget(LStepExpressModel* 
             this, SLOT(generatePositions()));
     
     connect(buttonStartMeasurement_, SIGNAL(clicked()),
-	this, SLOT(performMeasurement()));
+	this, SLOT(performScan()));
     
     connect(buttonStopMeasurement_, SIGNAL(clicked()),
             this, SLOT(stopMeasurement()));
@@ -140,11 +141,113 @@ LStepExpressMeasurementWidget::LStepExpressMeasurementWidget(LStepExpressModel* 
 
     connect(zigzagCheckBox_, SIGNAL(toggled(bool)), this, SLOT(setZigZag(bool)));
 
+    connect(model_, SIGNAL(motionFinished()),
+	this, SLOT(takeMeasurement()));
+    
+    //test
+    connect(this, SIGNAL(FakeMotionFinished()),
+	this, SLOT(takeMeasurement()));
+
+    connect(this, SIGNAL(nextScanStep()),
+	this, SLOT(doNextScanStep()));
+
     laserStateChanged(laserModel_->getDeviceState());
 
     generateCirclePositions();
+
+    spyAverageMeasCheckBox_ = new QSignalSpy(averageMeasCheckBox_, SIGNAL(toggled(bool)));
+    spyButtonGeneratePos_ = new QSignalSpy(buttonGeneratePos_, SIGNAL(clicked()));
+    spyButtonStartMeasurement_ = new QSignalSpy(buttonStartMeasurement_, SIGNAL(clicked()));
+    spyButtonStopMeasurement_ = new QSignalSpy(buttonStopMeasurement_, SIGNAL(clicked()));
+    spyButtonStoreMeasurement_ = new QSignalSpy(buttonStoreMeasurement_, SIGNAL(clicked()));
+    spyCheckBoxEnableLaser_ = new QSignalSpy(checkBoxEnableLaser_, SIGNAL(toggled(bool)));
+    spyZigzagCheckBox_ = new QSignalSpy(zigzagCheckBox_, SIGNAL(toggled(bool)));
+    spyNextScanStep_ = new QSignalSpy(this, SIGNAL(nextScanStep()));
+
+    connect(checkBoxEnableLaser_, SIGNAL(toggled(bool)),
+	this, SLOT(printSpyInformation()));
+    
+    connect(averageMeasCheckBox_, SIGNAL(toggled(bool)),
+            this, SLOT(printSpyInformation()));
+    
+    connect(buttonGeneratePos_, SIGNAL(clicked()),
+            this, SLOT(printSpyInformation()));
+    
+    connect(buttonStartMeasurement_, SIGNAL(clicked()),
+	this, SLOT(printSpyInformation()));
+    
+    connect(buttonStopMeasurement_, SIGNAL(clicked()),
+            this, SLOT(printSpyInformation()));
+    
+    connect(buttonStoreMeasurement_, SIGNAL(clicked()), this, SLOT(printSpyInformation()));
+    
+    connect(zigzagCheckBox_, SIGNAL(toggled(bool)), this, SLOT(printSpyInformation()));
+
+    connect(this, SIGNAL(nextScanStep()), this, SLOT(doNextScanStep()));
 }
     
+LStepExpressMeasurementWidget::~LStepExpressMeasurementWidget()
+{
+    if(spyAverageMeasCheckBox_){delete spyAverageMeasCheckBox_; spyAverageMeasCheckBox_ = NULL;}
+    if(spyButtonGeneratePos_){delete spyButtonGeneratePos_; spyButtonGeneratePos_ = NULL;}
+    if(spyButtonStartMeasurement_){delete spyButtonStartMeasurement_; spyButtonStartMeasurement_ = NULL;}
+    if(spyButtonStopMeasurement_){delete spyButtonStopMeasurement_; spyButtonStopMeasurement_ = NULL;}
+    if(spyButtonStoreMeasurement_){delete spyButtonStoreMeasurement_; spyButtonStoreMeasurement_ = NULL;}
+    if(spyCheckBoxEnableLaser_){delete spyCheckBoxEnableLaser_; spyCheckBoxEnableLaser_ = NULL;}
+    if(spyZigzagCheckBox_){delete spyZigzagCheckBox_; spyZigzagCheckBox_ = NULL;}
+    if(spyNextScanStep_){delete spyNextScanStep_; spyNextScanStep_ = NULL;}
+    if(averageMeasCheckBox_){delete averageMeasCheckBox_; averageMeasCheckBox_ = NULL;}
+    if(buttonGeneratePos_){delete buttonGeneratePos_; buttonGeneratePos_ = NULL;}
+    if(buttonStartMeasurement_){delete buttonStartMeasurement_; buttonStartMeasurement_ = NULL;}
+    if(buttonStopMeasurement_){delete buttonStopMeasurement_; buttonStopMeasurement_ = NULL;}
+    if(buttonStoreMeasurement_){delete buttonStoreMeasurement_; buttonStoreMeasurement_ = NULL;}
+    if(checkBoxEnableLaser_){delete checkBoxEnableLaser_; checkBoxEnableLaser_ = NULL;}
+    if(zigzagCheckBox_){delete zigzagCheckBox_; zigzagCheckBox_ = NULL;}
+}
+
+void LStepExpressMeasurementWidget::printSpyInformation()
+{
+    for(int i = 0; i < spyAverageMeasCheckBox_->size(); i++){
+        NQLog("SPY LStepExpressMeasurementWidget", NQLog::Debug)<< "averageMeasCheckBox_, signal toggled("<<(spyAverageMeasCheckBox_->value(i))[0].toBool()<<")"  ;
+    }
+    spyAverageMeasCheckBox_->clear();
+    for(int i = 0; i < spyButtonGeneratePos_->size(); i++){
+        NQLog("SPY LStepExpressMeasurementWidget", NQLog::Debug)<< "buttonGeneratePos_, signal clicked()";
+    }
+    spyButtonGeneratePos_->clear();
+    for(int i = 0; i < spyButtonStartMeasurement_->size(); i++){
+        NQLog("SPY LStepExpressMeasurementWidget", NQLog::Debug)<< "buttonStartMeasurement_, signal clicked()"  ;
+    }
+    spyButtonStartMeasurement_->clear();
+    for(int i = 0; i < spyButtonStopMeasurement_->size(); i++){
+        NQLog("SPY LStepExpressMeasurementWidget", NQLog::Debug)<< "buttonStopMeasurement_, signal clicked()"  ;
+    }
+    spyButtonStopMeasurement_->clear();
+    for(int i = 0; i < spyButtonStoreMeasurement_->size(); i++){
+        NQLog("SPY LStepExpressMeasurementWidget", NQLog::Debug)<< "buttonStoreMeasurement_, signal clicked()"  ;
+    }
+    spyButtonStoreMeasurement_->clear();
+    for(int i = 0; i < spyCheckBoxEnableLaser_->size(); i++){
+        NQLog("SPY LStepExpressMeasurementWidget", NQLog::Debug)<< "checkBoxEnableLaser_, signal toggled("<<(spyCheckBoxEnableLaser_->value(i))[0].toBool()<<")"  ;
+    }
+    spyCheckBoxEnableLaser_->clear();
+    for(int i = 0; i < spyZigzagCheckBox_->size(); i++){
+        NQLog("SPY LStepExpressMeasurementWidget", NQLog::Debug)<< "zigzagCheckBox_, signal toggled("<<(spyZigzagCheckBox_->value(i))[0].toBool()<<")"  ;
+    }
+    spyZigzagCheckBox_->clear();
+    for(int i = 0; i < spyNextScanStep_->size(); i++){
+        NQLog("SPY LStepExpressMeasurementWidget", NQLog::Debug)<< "this, signal nextScanStep()";
+    }
+    spyNextScanStep_->clear();
+}
+
+void LStepExpressMeasurementWidget::FakeMotion()
+{
+    NQLog("LStepExpressMeasurementWidget ", NQLog::Debug) << "FakeMotion";
+    usleep(100000);
+    emit FakeMotionFinished();
+}
+
 void LStepExpressMeasurementWidget::setZigZag(bool zigzag)
 {
     isZigZag_ = zigzag;
@@ -152,7 +255,6 @@ void LStepExpressMeasurementWidget::setZigZag(bool zigzag)
 
 void LStepExpressMeasurementWidget::laserStateChanged(State newState)
 {
-
     NQLog("LStepExpressMeasurementWidget ", NQLog::Debug) << "laserStateChanged(State newState) " << newState    ;
     checkBoxEnableLaser_->setChecked(newState == READY || newState == INITIALIZING);
 }
@@ -274,17 +376,58 @@ void LStepExpressMeasurementWidget::stopMeasurement()
 {
   NQLog("LStepExpressMeasurementWidget ", NQLog::Debug) << "stop measurement"    ;  
   QMutexLocker locker(&mutex_);
-  model_->emergencyStop();
+  //model_->emergencyStop(); //for test
   clearedForMotion_ = false;
+  currentIndex_ = table_model->rowCount();
+}
+
+void LStepExpressMeasurementWidget::takeMeasurement()
+{
+    NQLog("LStepExpressMeasurementWidget ", NQLog::Debug) << "takeMeasurement"    ;  
+    //QMutexLocker locker(&mutex_);
+    double value = 0;
+    //laserModel_->getMeasurement(value);
+    value = currentIndex_; //test
+    table_model->insertData(4, currentIndex_, value);
+    table_model->update();
+    currentIndex_++;
+
+    usleep(100000);
+    emit nextScanStep();
+}
+
+void LStepExpressMeasurementWidget::doNextScanStep()
+{
+    NQLog("LStepExpressMeasurementWidget ", NQLog::Debug) << "doNextScanStep(), currentIndex = "<<currentIndex_ << " cleared for motion = "<<clearedForMotion_   ;  
+
+    double x_pos;
+    double y_pos;
+    double z_pos;
+
+    if(currentIndex_ < table_model->rowCount() && clearedForMotion_){
+        x_pos = table_model->data(table_model->index(currentIndex_,1), Qt::DisplayRole).toDouble();                                                                                                   
+        y_pos = table_model->data(table_model->index(currentIndex_,2), Qt::DisplayRole).toDouble();                                                                                                   
+        z_pos = table_model->data(table_model->index(currentIndex_,3), Qt::DisplayRole).toDouble();                                                                                                   
+        //manager_->moveAbsolute(x_pos, y_pos, z_pos, 0.0);
+        usleep(100000);
+        this->FakeMotion();
+    }else{
+        NQLog("LStepExpressMeasurementWidget ", NQLog::Debug) << "scan finished"    ;
+        buttonStoreMeasurement_->setEnabled(true);
+    }
 }
 
 //FIX ME! needs to be tested in the lab
-void LStepExpressMeasurementWidget::performMeasurement()
+void LStepExpressMeasurementWidget::performScan()
 {
     NQLog("LStepExpressMeasurementWidget ", NQLog::Debug) << "starting scan"    ;
     
     clearedForMotion_ = true;
+    currentIndex_ = 0;
 
+    emit nextScanStep();
+
+    /*
   double x_pos = 0;
   double y_pos = 0;
   double z_pos = 0;
@@ -293,6 +436,7 @@ void LStepExpressMeasurementWidget::performMeasurement()
   int r = 0;
   while(clearedForMotion_ && r < table_model->rowCount())
       {
+          currentIndex_ = r;
           //retrieve position from the model
           x_pos = table_model->data(table_model->index(r,1), Qt::DisplayRole).toInt();
           y_pos = table_model->data(table_model->index(r,2), Qt::DisplayRole).toInt();
@@ -316,7 +460,7 @@ void LStepExpressMeasurementWidget::performMeasurement()
 	  }else{
 	  NQLog("LStepExpressMeasurementWidget ", NQLog::Debug) << "in standard meas "    ;
 	  //make laser measurement
-	  laserModel_->getMeasurement(meas_atpos);
+	  //laserModel_->getMeasurement(meas_atpos);
           }
           
           
@@ -324,16 +468,18 @@ void LStepExpressMeasurementWidget::performMeasurement()
           //FIX ME! how to ensure the movement has stopped before making measurement with laser?
           
           //store dummy measurement result
-          meas.push_back(meas_atpos);
+          //meas.push_back(meas_atpos);
           r++;
 	  NQLog("LStepExpressMeasurementWidget ", NQLog::Debug) << "during scan, cleared for motion = " << clearedForMotion_    ;
       }
+
   table_model->insertData(4,meas);
   table_model->update();
   
   NQLog("LStepExpressMeasurementWidget ", NQLog::Debug) << "scan finished"    ;
 
   buttonStoreMeasurement_->setEnabled(true);
+    */
 }
 
 //FIX ME! store results in which format? ROOT file, text file, mathematica file?
