@@ -100,6 +100,9 @@ LStepExpressMeasurementWidget_v2::LStepExpressMeasurementWidget_v2(LStepExpressM
     
     connect(checkBoxEnableLaser_, SIGNAL(toggled(bool)),
 	laserModel_, SLOT(setDeviceEnabled(bool)));
+
+    connect(checkBoxEnableLaser_, SIGNAL(toggled(bool)),
+	measurement_model_, SLOT(setLaserEnabled(bool)));
     
     connect(averageMeasCheckBox_, SIGNAL(toggled(bool)),
             measurement_model_, SLOT(setAverageMeasEnabled(bool)));

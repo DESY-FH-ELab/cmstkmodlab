@@ -50,13 +50,14 @@ protected:
 
     QSignalSpy* spyNextScanStep_;
 
-    void FakeMotion();
+    //void FakeMotion();
 
 public slots:
     void generatePositions();
     void setAverageMeasEnabled(bool);
     void setZigZag(bool);
     void takeMeasurement();
+    void setLaserEnabled(bool);
 
 private:
     bool averageMeasEnabled_;
@@ -79,6 +80,8 @@ private:
     LStepExpressMeasurementTable *table_model;
     bool clearedForMotion_;
     int currentIndex_;
+    bool isLaserEnabled_;
+    bool measurementInProgress_;
 
 private slots:
     void performScan();

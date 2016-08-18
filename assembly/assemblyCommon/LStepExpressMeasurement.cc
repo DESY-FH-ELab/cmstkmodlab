@@ -13,6 +13,8 @@ LStepExpressMeasurement::LStepExpressMeasurement(LStepExpressModel* model, LStep
       table_(table)
 {
     averageMeasEnabled_ = false;
+    isLaserEnabled_ = false;
+    measurementInProgress_ = false;
 
     //initialise the x, y, z positions
     z_init = model_->getPosition(2); //FIX ME! is 2 z-axis?
@@ -187,8 +189,15 @@ void LStepExpressMeasurement::stopMeasurement()
   //emit nextScanStep(clearedForMotion_);
 }
 
+void LStepExpressMeasurement::setLaserEnabled(bool enabled)
+{
+  isLaserEnabled_ = enabled;
+}
+
 void LStepExpressMeasurement::takeMeasurement()
 {
+  if(!isLaserEnabled_){return;}
+  if(!measurementInProgress_){return;}
     NQLog("LStepExpressMeasurement ", NQLog::Debug) << "takeMeasurement"    ;  
     //QMutexLocker locker(&mutex_);
     double value = 0;
@@ -216,10 +225,11 @@ void LStepExpressMeasurement::doNextScanStep()
         y_pos = table_->data(table_->index(currentIndex_,2), Qt::DisplayRole).toDouble();                                                                                                   
         z_pos = table_->data(table_->index(currentIndex_,3), Qt::DisplayRole).toDouble();                                                                                                   
         model_->moveAbsolute(x_pos, y_pos, z_pos, 0.0);
-        usleep(100000);
-        this->FakeMotion();
+        //usleep(100000);
+        //this->FakeMotion();
     }else{
         NQLog("LStepExpressMeasurement ", NQLog::Debug) << "scan finished"    ;
+	measurementInProgress_ = false;
         //        buttonStoreMeasurement_->setEnabled(true);
     }
 }
@@ -229,6 +239,7 @@ void LStepExpressMeasurement::performScan()
 {
     NQLog("LStepExpressMeasurement ", NQLog::Debug) << "starting scan"    ;
     
+    measurementInProgress_ = true;
     clearedForMotion_ = true;
     currentIndex_ = 0;
 

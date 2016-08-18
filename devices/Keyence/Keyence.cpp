@@ -221,8 +221,9 @@ void Keyence::MeasurementValueOutput(int out, double & value)
     if(response.substr(3,8).find("F") != std::string::npos){
       std::cerr << "[Keyence::MeasurementValueOutput] ** ERROR: laser out of range, please adjust position "
 	    << std::endl;
-      value = 9999;
-      throw response.substr(3,8);
+      if(response.substr(3,8).find("-") != std::string::npos){value = -9999;}else{value = 9999;}
+      return;
+      //throw response.substr(3,8);
     }else{
     std::istringstream is(response.substr(3,8));
 
