@@ -16,7 +16,10 @@
 #include "LStepExpressSettingsWidget.h"
 #include "LStepExpressWidget.h"
 #include "LStepExpressJoystickWidget.h"
+#include "LStepExpressMeasurementTable.h"
+#include "LStepExpressMeasurement.h"
 #include "LStepExpressMeasurementWidget.h"
+#include "LStepExpressMeasurementWidget_v2.h"
 #include "LStepExpressPositionWidget.h"
 #include "LStepExpressStatusWindow.h"
 
@@ -48,6 +51,8 @@ protected:
     LStepExpressMotionThread* motionThread_;
     LaserModel* laserModel_;
     LaserThread* laserThread_;
+    LStepExpressMeasurement* measurement_;
+    LStepExpressMeasurementTable* measurementTable_;
     
     QTabWidget* tabWidget_;
 

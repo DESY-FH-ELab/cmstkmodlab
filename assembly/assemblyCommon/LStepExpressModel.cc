@@ -265,6 +265,7 @@ void LStepExpressModel::emergencyStop()
     controller_->EmergencyStop();
     inMotion_ = false;
     finishedCalibrating_ = false;
+    emit emergencyStopSignal();
     emit motionFinished();
 }
 

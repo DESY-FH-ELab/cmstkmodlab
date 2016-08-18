@@ -88,7 +88,13 @@ MCommanderMainWindow::MCommanderMainWindow(QWidget *parent)
   
   //QTimer::singleShot(2000, this, SLOT(testManager()));
   
-  LStepExpressMeasurementWidget *lStepExpressMeasurementWidget = new LStepExpressMeasurementWidget(lStepExpressModel_, motionManager_, laserModel_, widget);
+  //LStepExpressMeasurementWidget *lStepExpressMeasurementWidget = new LStepExpressMeasurementWidget(lStepExpressModel_, motionManager_, laserModel_, widget);
+  //tabWidget_->addTab(lStepExpressMeasurementWidget, "Measurements");
+  measurementTable_ = new LStepExpressMeasurementTable();
+  measurement_ = new LStepExpressMeasurement(lStepExpressModel_, motionManager_, laserModel_, measurementTable_);
+  measurement_->moveToThread(motionThread_);
+
+  LStepExpressMeasurementWidget_v2 *lStepExpressMeasurementWidget = new LStepExpressMeasurementWidget_v2(lStepExpressModel_, laserModel_, measurement_, measurementTable_, widget);
   tabWidget_->addTab(lStepExpressMeasurementWidget, "Measurements");
 
 }
