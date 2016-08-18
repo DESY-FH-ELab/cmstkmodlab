@@ -88,8 +88,8 @@ void LStepExpressMeasurement::setInit(double x_min_, double x_max_, double y_min
     x_max = x_max_;
     y_min = y_min_;
     y_max = y_max_;
-    x_stepsize_ = x_stepsize_;
-    y_stepsize_ = y_stepsize_;
+    x_stepsize = x_stepsize_;
+    y_stepsize = y_stepsize_;
 }
 
 //generate the x and y positions for the measurement
