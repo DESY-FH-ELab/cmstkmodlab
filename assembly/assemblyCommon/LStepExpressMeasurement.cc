@@ -70,11 +70,13 @@ void LStepExpressMeasurement::FakeMotion()
 
 void LStepExpressMeasurement::setZigZag(bool zigzag)
 {
+    NQLog("LStepExpressMeasurement ", NQLog::Debug) << "setZigZag";
     isZigZag_ = zigzag;
 }
 
 void LStepExpressMeasurement::setAverageMeasEnabled(bool enabled)
 {
+    NQLog("LStepExpressMeasurement ", NQLog::Debug) << "setAverageMeasEnabled";
     if (enabled) {
       averageMeasEnabled_ = true;
     } else {
@@ -84,6 +86,7 @@ void LStepExpressMeasurement::setAverageMeasEnabled(bool enabled)
 
 void LStepExpressMeasurement::setInit(double x_min_, double x_max_, double y_min_, double y_max_, double x_stepsize_, double y_stepsize_)
 {
+    NQLog("LStepExpressMeasurement ", NQLog::Debug) << "setInit";
     x_min = x_min_;
     x_max = x_max_;
     y_min = y_min_;
@@ -191,7 +194,8 @@ void LStepExpressMeasurement::stopMeasurement()
 
 void LStepExpressMeasurement::setLaserEnabled(bool enabled)
 {
-  isLaserEnabled_ = enabled;
+    NQLog("LStepExpressMeasurement ", NQLog::Debug) << "setLaserEnabled";
+    isLaserEnabled_ = enabled;
 }
 
 void LStepExpressMeasurement::takeMeasurement()
@@ -237,8 +241,10 @@ void LStepExpressMeasurement::doNextScanStep()
 //FIX ME! needs to be tested in the lab
 void LStepExpressMeasurement::performScan()
 {
+    if(!isLaserEnabled_){return;}
+
     NQLog("LStepExpressMeasurement ", NQLog::Debug) << "starting scan"    ;
-    
+
     measurementInProgress_ = true;
     clearedForMotion_ = true;
     currentIndex_ = 0;

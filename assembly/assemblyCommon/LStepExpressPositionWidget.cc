@@ -66,18 +66,18 @@ LStepExpressPositionWidget::LStepExpressPositionWidget(LStepExpressMotionManager
 void LStepExpressPositionWidget::printSpyInformation()
 {
     for(int i = 0; i < spyMoveAbsoluteButton_->size(); i++){
-        NQLog("SPY LStepExpressPositionWidget ", NQLog::Debug) << "moveAbsoluteBotton_, signal clicked()";
+        NQLog("SPY LStepExpressPositionWidget ", NQLog::Spam) << "moveAbsoluteBotton_, signal clicked()";
     }
     spyMoveAbsoluteButton_->clear();
     for(int i = 0; i < spyMoveRelativeButton_->size(); i++){
-        NQLog("SPY LStepExpressPositionWidget ", NQLog::Debug) << "moveRelativeBotton_, signal clicked()";
+        NQLog("SPY LStepExpressPositionWidget ", NQLog::Spam) << "moveRelativeBotton_, signal clicked()";
     }
     spyMoveRelativeButton_->clear();
 }
 
 void LStepExpressPositionWidget::lStepStateChanged( State newState)
 {
-    NQLog("LStepExpressPositionWidget ", NQLog::Debug) << "lStepStateChanged, newstate = "<<newState;
+    NQLog("LStepExpressPositionWidget ", NQLog::Spam) << "lStepStateChanged, newstate = "<<newState;
     if(newState == READY || newState == INITIALIZING){
         moveAbsoluteButton_->setEnabled(true);
         moveRelativeButton_->setEnabled(true);
@@ -143,11 +143,11 @@ LStepExpressPositionAxisWidget::LStepExpressPositionAxisWidget(LStepExpressMotio
 void LStepExpressPositionAxisWidget::printSpyInformation()
 {
     for(int i = 0; i < spyEdit_->size(); i++){
-        NQLog("SPY LStepExpressPositionAxisWidget ", NQLog::Debug) << "Edit_, signal textChanged()";
+        NQLog("SPY LStepExpressPositionAxisWidget ", NQLog::Spam) << "Edit_, signal textChanged()";
     }
     spyEdit_->clear();
     for(int i = 0; i < spyPositionChanged_->size(); i++){
-        NQLog("SPY LStepExpressPositionAxisWidget ", NQLog::Debug) << "this_, signal positionChanged()";
+        NQLog("SPY LStepExpressPositionAxisWidget ", NQLog::Spam) << "this_, signal positionChanged()";
     }
     spyPositionChanged_->clear();
 }

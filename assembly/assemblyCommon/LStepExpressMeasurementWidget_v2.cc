@@ -12,12 +12,24 @@ LStepExpressMeasurementWidget_v2::LStepExpressMeasurementWidget_v2(LStepExpressM
       measurement_model_(measurement),
       table_(table)
 {
-    QHBoxLayout* layout = new QHBoxLayout(this);
-    setLayout(layout);
-
+    //initialize all the widgets
     averageMeasCheckBox_ = new QCheckBox("Average measurement", this);
     buttonGeneratePos_ = new QPushButton("Generate positions", this);
     zigzagCheckBox_ = new QCheckBox("Zigzag motion (default is meander)", this);
+    buttonStartMeasurement_ = new QPushButton("Start Measurement", this);
+    buttonStartMeasurement_->setEnabled(false);
+    checkBoxEnableLaser_ = new QCheckBox("Enable Laser", this);
+    buttonStopMeasurement_ = new QPushButton("Stop Measurement", this);
+    buttonStopMeasurement_->setEnabled(false);
+    buttonStoreMeasurement_ = new QPushButton("Store Results Measurement", this);
+    buttonStoreMeasurement_->setEnabled(false);
+
+    x_min_ = new QLineEdit();
+    x_max_ = new QLineEdit();
+    y_min_ = new QLineEdit();
+    y_max_ = new QLineEdit();
+    x_stepsize_ = new QLineEdit();
+    y_stepsize_ = new QLineEdit();
     
     QLabel* label_x_min = new QLabel("x min");
     QLabel* label_x_max = new QLabel("x max");
@@ -25,14 +37,11 @@ LStepExpressMeasurementWidget_v2::LStepExpressMeasurementWidget_v2(LStepExpressM
     QLabel* label_y_max = new QLabel("y max");
     QLabel* label_x_stepsize = new QLabel("stepsize x");
     QLabel* label_y_stepsize = new QLabel("stepsize y");
-    
-    x_min_ = new QLineEdit();
-    x_max_ = new QLineEdit();
-    y_min_ = new QLineEdit();
-    y_max_ = new QLineEdit();
-    x_stepsize_ = new QLineEdit();
-    y_stepsize_ = new QLineEdit();
 
+    //set the layout
+    QHBoxLayout* layout = new QHBoxLayout(this);
+    setLayout(layout);
+    
     QHBoxLayout *hlayout_x_min = new QHBoxLayout(this);
     hlayout_x_min->addWidget(label_x_min);
     hlayout_x_min->addWidget(x_min_);
@@ -73,23 +82,14 @@ LStepExpressMeasurementWidget_v2::LStepExpressMeasurementWidget_v2(LStepExpressM
     layout->addWidget(table_view);
 
     QVBoxLayout *vlayout_laser = new QVBoxLayout(this);
-    checkBoxEnableLaser_ = new QCheckBox("Enable Laser", this);
     vlayout_laser->addWidget(checkBoxEnableLaser_);
 
     laserWidget_ = new LaserWidget(laserModel_);
     vlayout_laser->addWidget(laserWidget_);
 
     QVBoxLayout *vlayout_buttons = new QVBoxLayout(this);
-    buttonStartMeasurement_ = new QPushButton("Start Measurement", this);
-    //buttonStartMeasurement_->setEnabled(false);
     vlayout_buttons->addWidget(buttonStartMeasurement_);
-    
-    buttonStopMeasurement_ = new QPushButton("Stop Measurement", this);
-    //buttonStopMeasurement_->setEnabled(false);
     vlayout_buttons->addWidget(buttonStopMeasurement_);
-    
-    buttonStoreMeasurement_ = new QPushButton("Store Results Measurement", this);
-    //buttonStoreMeasurement_->setEnabled(false);
     vlayout_buttons->addWidget(buttonStoreMeasurement_);
     
     QVBoxLayout *vlayout = new QVBoxLayout(this);
@@ -98,6 +98,7 @@ LStepExpressMeasurementWidget_v2::LStepExpressMeasurementWidget_v2(LStepExpressM
 
     layout->addLayout(vlayout);
     
+    //make all connections
     connect(checkBoxEnableLaser_, SIGNAL(toggled(bool)),
 	laserModel_, SLOT(setDeviceEnabled(bool)));
 
@@ -116,13 +117,13 @@ LStepExpressMeasurementWidget_v2::LStepExpressMeasurementWidget_v2(LStepExpressM
     connect(buttonStopMeasurement_, SIGNAL(clicked()),
 	model_, SLOT(emergencyStop()));
 
-    //connect(buttonStopMeasurement_, SIGNAL(clicked()),
-    //        measurement_model_, SLOT(doNextScanStep(false)));
-    
     connect(buttonStoreMeasurement_, SIGNAL(clicked()), this, SLOT(storeResults()));
     
     connect(laserModel_, SIGNAL(deviceStateChanged(State)),
 	this, SLOT(laserStateChanged(State)));
+
+    connect(model_, SIGNAL(deviceStateChanged(State)),
+	this, SLOT(lstepStateChanged(State)));
 
     connect(zigzagCheckBox_, SIGNAL(toggled(bool)), measurement_model_, SLOT(setZigZag(bool)));
 
@@ -142,8 +143,7 @@ LStepExpressMeasurementWidget_v2::LStepExpressMeasurementWidget_v2(LStepExpressM
     connect(y_stepsize_, SIGNAL(textChanged(QString)),
 	this, SLOT(setInit()));
 
-    laserStateChanged(laserModel_->getDeviceState());
-
+    //make the signal spies and the connections
     spyAverageMeasCheckBox_ = new QSignalSpy(averageMeasCheckBox_, SIGNAL(toggled(bool)));
     spyButtonGeneratePos_ = new QSignalSpy(buttonGeneratePos_, SIGNAL(clicked()));
     spyButtonStartMeasurement_ = new QSignalSpy(buttonStartMeasurement_, SIGNAL(clicked()));
@@ -171,6 +171,8 @@ LStepExpressMeasurementWidget_v2::LStepExpressMeasurementWidget_v2(LStepExpressM
     
     connect(zigzagCheckBox_, SIGNAL(toggled(bool)), this, SLOT(printSpyInformation()));
 
+    laserStateChanged(laserModel_->getDeviceState());
+    lstepStateChanged(model_->getDeviceState());
 }
     
 LStepExpressMeasurementWidget_v2::~LStepExpressMeasurementWidget_v2()
@@ -229,13 +231,23 @@ void LStepExpressMeasurementWidget_v2::laserStateChanged(State newState)
     checkBoxEnableLaser_->setChecked(newState == READY || newState == INITIALIZING);
 }
 
+void LStepExpressMeasurementWidget_v2::lstepStateChanged(State newState)
+{
+    NQLog("LStepExpressMeasurementWidget_v2 ", NQLog::Debug) << "lstepStateChanged(State newState) " << newState    ;
+    buttonStartMeasurement_->setEnabled(newState == READY || newState == INITIALIZING);
+    buttonStopMeasurement_->setEnabled(newState == READY || newState == INITIALIZING);
+    buttonStoreMeasurement_->setEnabled(newState == READY || newState == INITIALIZING);
+}
+
 void LStepExpressMeasurementWidget_v2::setInit()
 {
+    NQLog("LStepExpressMeasurementWidget_v2 ", NQLog::Debug) << "setInit()";
     measurement_model_->setInit(x_min_->text().toDouble(),x_max_->text().toDouble(),y_min_->text().toDouble(),y_max_->text().toDouble(),x_stepsize_->text().toDouble(),y_stepsize_->text().toDouble());
 }
 
 void LStepExpressMeasurementWidget_v2::updateWidget()
 {
+    NQLog("LStepExpressMeasurementWidget_v2 ", NQLog::Debug) << "updateWidget()";
     table_view->update();
 }
 

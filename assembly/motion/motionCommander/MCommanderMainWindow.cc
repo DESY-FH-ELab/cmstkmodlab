@@ -103,9 +103,11 @@ void MCommanderMainWindow::quit()
 {
     if(lStepExpressModel_){ lStepExpressModel_->setDeviceEnabled(false); lStepExpressModel_->deleteLater(); }
     if(laserModel_){ laserModel_->setDeviceEnabled(false); laserModel_->deleteLater(); }    
-    
-    motionManager_->deleteLater();
-    tabWidget_->deleteLater();
+    if(measurement_){ measurement_->deleteLater();}
+    if(measurementTable_){ measurementTable_->deleteLater();}
+
+    if(motionManager_){motionManager_->deleteLater();}
+    if(tabWidget_){tabWidget_->deleteLater();}
     
     if (motionThread_) {
         motionThread_->quit();

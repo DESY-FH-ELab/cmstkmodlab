@@ -74,6 +74,7 @@ protected:
 
 public slots:
     void laserStateChanged(State newState);
+    void lstepStateChanged(State newState);
     void setInit();
 
 private:

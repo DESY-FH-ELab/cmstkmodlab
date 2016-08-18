@@ -28,7 +28,7 @@ void LStepExpressSettingsComboBox::settingChanged(QString key, QVariant value)
 {
     if (key!=key_) return;
 
-    NQLog("LStepExpressSettingsComboBox", NQLog::Debug) << "settingChanged(" << key.toStdString() << ")"    ;
+    NQLog("LStepExpressSettingsComboBox", NQLog::Spam) << "settingChanged(" << key.toStdString() << ")"    ;
 
     setCurrentIndex(value.toInt());
 }
@@ -59,7 +59,7 @@ void LStepExpressSettingsCheckBox::settingChanged(QString key, QVariant value)
 {
     if (key!=key_) return;
 
-    NQLog("LStepExpressSettingsCheckBox", NQLog::Debug) << "settingChanged(" << key.toStdString() << ")"    ;
+    NQLog("LStepExpressSettingsCheckBox", NQLog::Spam) << "settingChanged(" << key.toStdString() << ")"    ;
 
     setChecked(value.toBool());
 }
@@ -104,7 +104,7 @@ void LStepExpressSettingsTripleCheckBox::settingChanged(QString key, QVariant va
 {
     if (key!=key_) return;
 
-    NQLog("LStepExpressSettingsTripleCheckBox", NQLog::Debug) << "settingChanged(" << key.toStdString() << ")"    ;
+    NQLog("LStepExpressSettingsTripleCheckBox", NQLog::Spam) << "settingChanged(" << key.toStdString() << ")"    ;
 
     QList<QVariant> list = value.toList();
     int i = 0;
@@ -152,7 +152,7 @@ void LStepExpressSettingsIntSpinBox::settingChanged(QString key, QVariant value)
 {
     if (key!=key_) return;
 
-    NQLog("LStepExpressSettingsIntSpinBox", NQLog::Debug) << "settingChanged(" << key.toStdString() << ")"    ;
+    NQLog("LStepExpressSettingsIntSpinBox", NQLog::Spam) << "settingChanged(" << key.toStdString() << ")"    ;
 
     setValue(value.toInt());
 }
@@ -194,7 +194,7 @@ void LStepExpressSettingsDoubleSpinBox::settingChanged(QString key, QVariant val
 {
     if (key!=key_) return;
 
-    NQLog("LStepExpressSettingsIntSpinBox ", NQLog::Debug) << "settingChanged(" << key.toStdString() << ")"    ;
+    NQLog("LStepExpressSettingsIntSpinBox ", NQLog::Spam) << "settingChanged(" << key.toStdString() << ")"    ;
 
     setValue(value.toDouble());
 }
@@ -307,7 +307,7 @@ LStepExpressSettingsWidget::LStepExpressSettingsWidget(LStepExpressSettings* set
 /// Updates the GUI when the lstepcontroller is enabled/disabled.                                                                                                                                        
 void LStepExpressSettingsWidget::lstepStateChanged(State newState)
 {
-    NQLog("LStepExpressSettingsWidget", NQLog::Debug) << "lStepStateChanged(State newState) " << newState;
+    NQLog("LStepExpressSettingsWidget", NQLog::Spam) << "lStepStateChanged(State newState) " << newState;
 
     readFromDeviceButton_->setEnabled(newState == READY);
 
@@ -1013,7 +1013,7 @@ void LStepExpressSettingsWidget::fillExtraToolBox()
 
 void LStepExpressSettingsWidget::controlStateChanged(bool enabled)
 {
-    NQLog("LStepExpressSettingsWidget ", NQLog::Debug) << "controlStateChanged(bool enabled) " << enabled    ;
+    NQLog("LStepExpressSettingsWidget ", NQLog::Spam) << "controlStateChanged(bool enabled) " << enabled    ;
 
     if (enabled) {
         mainToolBox_->setEnabled(settings_->getDeviceState());
@@ -1034,14 +1034,14 @@ void LStepExpressSettingsWidget::controlStateChanged(bool enabled)
 
 void LStepExpressSettingsWidget::readFromDeviceClicked()
 {
-    NQLog("LStepExpressSettingsWidget ", NQLog::Debug) << "readFromDeviceClicked()"    ;
+    NQLog("LStepExpressSettingsWidget ", NQLog::Spam) << "readFromDeviceClicked()"    ;
 
     settings_->readSettingsFromDevice();
 }
 
 void LStepExpressSettingsWidget::readFromFileClicked()
 {
-    NQLog("LStepExpressSettingsWidget ", NQLog::Debug) << "readFromFileClicked()"    ;
+    NQLog("LStepExpressSettingsWidget ", NQLog::Spam) << "readFromFileClicked()"    ;
 
     QString filename = QFileDialog::getOpenFileName(this, "Read Settings", "~/", "*.lstep");
     if (filename.isNull()) return;
@@ -1051,7 +1051,7 @@ void LStepExpressSettingsWidget::readFromFileClicked()
 
 void LStepExpressSettingsWidget::applyClicked()
 {
-    NQLog("LStepExpressSettingsWidget ", NQLog::Debug) << "applyClicked()"    ;
+    NQLog("LStepExpressSettingsWidget ", NQLog::Spam) << "applyClicked()"    ;
 
     settings_->writeSettingsToDevice();
 
@@ -1059,33 +1059,33 @@ void LStepExpressSettingsWidget::applyClicked()
 
 void LStepExpressSettingsWidget::resetClicked()
 {
-    NQLog("LStepExpressSettingsWidget ", NQLog::Debug) << "resetClicked()"    ;
+    NQLog("LStepExpressSettingsWidget ", NQLog::Spam) << "resetClicked()"    ;
     
     settings_->resetSettings();
 }
 
 void LStepExpressSettingsWidget::writeToDeviceClicked()
 {
-    NQLog("LStepExpressSettingsWidget ", NQLog::Debug) << "writeToDeviceClicked()"    ;
+    NQLog("LStepExpressSettingsWidget ", NQLog::Spam) << "writeToDeviceClicked()"    ;
 
     settings_->writeSettingsToDevice();
 
-    NQLog("LStepExpressSettingsWidget ", NQLog::Debug) << "ask to save to device"    ;
+    NQLog("LStepExpressSettingsWidget ", NQLog::Spam) << "ask to save to device"    ;
 
     QMessageBox::StandardButton reply;
     reply = QMessageBox::question(this, "Test", "Are you sure you want to save the configuration on the controller? (this will make the configuration the default at startup)",
 		          QMessageBox::Yes|QMessageBox::No);
     if (reply == QMessageBox::Yes) {
-        NQLog("LStepExpressSettingsWidget ", NQLog::Debug) << "Yes was clicked"    ;
+        NQLog("LStepExpressSettingsWidget ", NQLog::Spam) << "Yes was clicked"    ;
         settings_->saveSettingsOnDevice();
     } else {
-        NQLog("LStepExpressSettingsWidget ", NQLog::Debug) << "Yes was *not* clicked"    ;
+        NQLog("LStepExpressSettingsWidget ", NQLog::Spam) << "Yes was *not* clicked"    ;
     }
 }
 
 void LStepExpressSettingsWidget::writeToFileClicked()
 {
-    NQLog("LStepExpressSettingsWidget ", NQLog::Debug) << "writeToFileClicked()"    ;
+    NQLog("LStepExpressSettingsWidget ", NQLog::Spam) << "writeToFileClicked()"    ;
 
     QString filename = QFileDialog::getSaveFileName(this, "Write Settings", "~/", "*.lstep");
     if (filename.isNull()) return;
