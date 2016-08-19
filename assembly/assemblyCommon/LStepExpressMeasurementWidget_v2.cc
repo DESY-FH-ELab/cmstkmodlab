@@ -143,6 +143,7 @@ LStepExpressMeasurementWidget_v2::LStepExpressMeasurementWidget_v2(LStepExpressM
     connect(y_stepsize_, SIGNAL(textChanged(QString)),
 	this, SLOT(setInit()));
 
+    /*
     //make the signal spies and the connections
     spyAverageMeasCheckBox_ = new QSignalSpy(averageMeasCheckBox_, SIGNAL(toggled(bool)));
     spyButtonGeneratePos_ = new QSignalSpy(buttonGeneratePos_, SIGNAL(clicked()));
@@ -170,6 +171,7 @@ LStepExpressMeasurementWidget_v2::LStepExpressMeasurementWidget_v2(LStepExpressM
     connect(buttonStoreMeasurement_, SIGNAL(clicked()), this, SLOT(printSpyInformation()));
     
     connect(zigzagCheckBox_, SIGNAL(toggled(bool)), this, SLOT(printSpyInformation()));
+    */
 
     laserStateChanged(laserModel_->getDeviceState());
     lstepStateChanged(model_->getDeviceState());
@@ -177,6 +179,7 @@ LStepExpressMeasurementWidget_v2::LStepExpressMeasurementWidget_v2(LStepExpressM
     
 LStepExpressMeasurementWidget_v2::~LStepExpressMeasurementWidget_v2()
 {
+  /*
     if(spyAverageMeasCheckBox_){delete spyAverageMeasCheckBox_; spyAverageMeasCheckBox_ = NULL;}
     if(spyButtonGeneratePos_){delete spyButtonGeneratePos_; spyButtonGeneratePos_ = NULL;}
     if(spyButtonStartMeasurement_){delete spyButtonStartMeasurement_; spyButtonStartMeasurement_ = NULL;}
@@ -184,6 +187,7 @@ LStepExpressMeasurementWidget_v2::~LStepExpressMeasurementWidget_v2()
     if(spyButtonStoreMeasurement_){delete spyButtonStoreMeasurement_; spyButtonStoreMeasurement_ = NULL;}
     if(spyCheckBoxEnableLaser_){delete spyCheckBoxEnableLaser_; spyCheckBoxEnableLaser_ = NULL;}
     if(spyZigzagCheckBox_){delete spyZigzagCheckBox_; spyZigzagCheckBox_ = NULL;}
+  */
     if(averageMeasCheckBox_){delete averageMeasCheckBox_; averageMeasCheckBox_ = NULL;}
     if(buttonGeneratePos_){delete buttonGeneratePos_; buttonGeneratePos_ = NULL;}
     if(buttonStartMeasurement_){delete buttonStartMeasurement_; buttonStartMeasurement_ = NULL;}
@@ -195,6 +199,7 @@ LStepExpressMeasurementWidget_v2::~LStepExpressMeasurementWidget_v2()
 
 void LStepExpressMeasurementWidget_v2::printSpyInformation()
 {
+  /*
     for(int i = 0; i < spyAverageMeasCheckBox_->size(); i++){
         NQLog("SPY LStepExpressMeasurementWidget_v2", NQLog::Debug)<< "averageMeasCheckBox_, signal toggled("<<(spyAverageMeasCheckBox_->value(i))[0].toBool()<<")"  ;
     }
@@ -223,17 +228,18 @@ void LStepExpressMeasurementWidget_v2::printSpyInformation()
         NQLog("SPY LStepExpressMeasurementWidget_v2", NQLog::Debug)<< "zigzagCheckBox_, signal toggled("<<(spyZigzagCheckBox_->value(i))[0].toBool()<<")"  ;
     }
     spyZigzagCheckBox_->clear();
+  */
 }
 
 void LStepExpressMeasurementWidget_v2::laserStateChanged(State newState)
 {
-    NQLog("LStepExpressMeasurementWidget_v2 ", NQLog::Debug) << "laserStateChanged(State newState) " << newState    ;
+  //    NQLog("LStepExpressMeasurementWidget_v2 ", NQLog::Debug) << "laserStateChanged(State newState) " << newState    ;
     checkBoxEnableLaser_->setChecked(newState == READY || newState == INITIALIZING);
 }
 
 void LStepExpressMeasurementWidget_v2::lstepStateChanged(State newState)
 {
-    NQLog("LStepExpressMeasurementWidget_v2 ", NQLog::Debug) << "lstepStateChanged(State newState) " << newState    ;
+  //    NQLog("LStepExpressMeasurementWidget_v2 ", NQLog::Debug) << "lstepStateChanged(State newState) " << newState    ;
     buttonStartMeasurement_->setEnabled(newState == READY || newState == INITIALIZING);
     buttonStopMeasurement_->setEnabled(newState == READY || newState == INITIALIZING);
     buttonStoreMeasurement_->setEnabled(newState == READY || newState == INITIALIZING);
@@ -241,13 +247,13 @@ void LStepExpressMeasurementWidget_v2::lstepStateChanged(State newState)
 
 void LStepExpressMeasurementWidget_v2::setInit()
 {
-    NQLog("LStepExpressMeasurementWidget_v2 ", NQLog::Debug) << "setInit()";
+  //    NQLog("LStepExpressMeasurementWidget_v2 ", NQLog::Debug) << "setInit()";
     measurement_model_->setInit(x_min_->text().toDouble(),x_max_->text().toDouble(),y_min_->text().toDouble(),y_max_->text().toDouble(),x_stepsize_->text().toDouble(),y_stepsize_->text().toDouble());
 }
 
 void LStepExpressMeasurementWidget_v2::updateWidget()
 {
-    NQLog("LStepExpressMeasurementWidget_v2 ", NQLog::Debug) << "updateWidget()";
+  //    NQLog("LStepExpressMeasurementWidget_v2 ", NQLog::Debug) << "updateWidget()";
     table_view->update();
 }
 

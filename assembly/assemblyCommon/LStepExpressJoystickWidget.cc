@@ -229,10 +229,10 @@ void LStepExpressJoystickAxisWidget::downButtonClicked()
 
 void LStepExpressJoystickAxisWidget::motionStarted()
 {
-    NQLog("LStepExpressJoystickAxisWidget", NQLog::Spam)<<" motionStarted()"    ;
+  //    NQLog("LStepExpressJoystickAxisWidget", NQLog::Spam)<<" motionStarted()"    ;
 }
 
 void LStepExpressJoystickAxisWidget::motionFinished()
 {
-    NQLog("LStepExpressJoystickAxisWidget", NQLog::Spam)<<" motionFinished()"    ;
+  //    NQLog("LStepExpressJoystickAxisWidget", NQLog::Spam)<<" motionFinished()"    ;
 }

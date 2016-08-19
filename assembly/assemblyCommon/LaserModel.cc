@@ -28,7 +28,7 @@ LaserModel::~LaserModel()
 
 void LaserModel::setLaserHead(int out)
 {
-    NQLog("LaserModel ", NQLog::Debug) << "[LaserModel::setLaserHead]";
+  //    NQLog("LaserModel ", NQLog::Debug) << "[LaserModel::setLaserHead]";
     laserHead_ = out;
 }
 
@@ -36,7 +36,7 @@ void LaserModel::setSamplingRate(int mode)
 {
     if(state_ == OFF) return;
 
-    NQLog("LaserModel ", NQLog::Debug) << "[LaserModel::setSamplingRate]"    ;
+    //    NQLog("LaserModel ", NQLog::Debug) << "[LaserModel::setSamplingRate]"    ;
     controller_->SetSamplingRate(mode);
 }
 
@@ -44,7 +44,7 @@ void LaserModel::setAveraging(int mode)
 {
     if(state_ == OFF) return;
 
-    NQLog("LaserModel ", NQLog::Debug) << "[setAveraging]"    ;
+    //    NQLog("LaserModel ", NQLog::Debug) << "[setAveraging]"    ;
     controller_->SetAveraging(laserHead_, mode);
 }
 
@@ -58,7 +58,7 @@ void LaserModel::getMeasurement(double& value)
 {
     if(state_ == OFF) return;
 
-    NQLog("LaserModel ", NQLog::Debug) << "[getMeasurement], isInRange_ = "<< isInRange_    ;
+    //    NQLog("LaserModel ", NQLog::Debug) << "[getMeasurement], isInRange_ = "<< isInRange_    ;
     QMutexLocker locker(&mutex_);
     //    double ivalue = 0;
     //    try{
@@ -94,14 +94,14 @@ void LaserModel::getMeasurement(double& value)
 //dummy method for testing
 void LaserModel::setMeasurement(double value)
 {
-    NQLog("LaserModel ", NQLog::Debug) << "[setMeasurement]"    ;
+  //    NQLog("LaserModel ", NQLog::Debug) << "[setMeasurement]"    ;
 
     emit measurementChanged(value);
 }
 
 void LaserModel::initialize()
 {
-    NQLog("LaserModel ", NQLog::Debug) << "[initialize]"    ;
+  //    NQLog("LaserModel ", NQLog::Debug) << "[initialize]"    ;
     setDeviceState(INITIALIZING);
 
     renewController(Laser_PORT);
@@ -123,7 +123,7 @@ void LaserModel::initialize()
 
 void LaserModel::setDeviceState( State state )
 {
-    NQLog("LaserModel ", NQLog::Debug) << "[setDeviceState]"    ;
+  //    NQLog("LaserModel ", NQLog::Debug) << "[setDeviceState]"    ;
     if ( state_ != state ) {
         state_ = state;
 
@@ -139,7 +139,7 @@ void LaserModel::setDeviceState( State state )
 
 void LaserModel::setDeviceEnabled(bool enabled)
 {
-    NQLog("LaserModel ", NQLog::Debug) << "setDeviceEnabled(bool enabled)"    ;
+  //    NQLog("LaserModel ", NQLog::Debug) << "setDeviceEnabled(bool enabled)"    ;
 
     usleep(1000);
 

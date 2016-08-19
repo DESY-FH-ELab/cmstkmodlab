@@ -11,7 +11,7 @@ LaserWidget::LaserWidget(LaserModel* laserModel, QWidget *parent)
 {
     setDigitCount(5);
 
-    NQLog("LaserWidget ", NQLog::Debug) << "[LaserWidget]";
+    //    NQLog("LaserWidget ", NQLog::Debug) << "[LaserWidget]";
 
     connect(laserModel_, SIGNAL(measurementChanged(double)),
 	this, SLOT(updateDisplay(double)));
@@ -26,7 +26,7 @@ LaserWidget::~LaserWidget()
 
 void LaserWidget::updateDisplay(double value)
 {
-    NQLog("LaserWidget ", NQLog::Debug) << "[updateDisplay]";
+  //    NQLog("LaserWidget ", NQLog::Debug) << "[updateDisplay]";
     this->display(value);
     this->repaint();
     emit finished();
@@ -34,7 +34,7 @@ void LaserWidget::updateDisplay(double value)
 
 void LaserWidget::backgroundColorUpdate(bool isInRange)
 {
-    NQLog("LaserWidget ", NQLog::Debug) << "[backgroundColorUpdate] : " << isInRange;
+  //    NQLog("LaserWidget ", NQLog::Debug) << "[backgroundColorUpdate] : " << isInRange;
     QPalette *lcdpalette = new QPalette;
     if(!isInRange){
         lcdpalette->setColor(QPalette::WindowText, QColor(255, 0, 0));

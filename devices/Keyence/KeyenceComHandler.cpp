@@ -4,7 +4,7 @@
 
 #include "KeyenceComHandler.h"
 
-#define KEYENCEDEBUG 1
+//#define KEYENCEDEBUG 1
 
 /*!
   The USB serial port &lt;ioPort&gt; may be specified in several ways:<br><br>

@@ -42,21 +42,23 @@ LStepExpressMeasurement::LStepExpressMeasurement(LStepExpressModel* model, LStep
 
     generateCirclePositions();
 
-    spyNextScanStep_ = new QSignalSpy(this, SIGNAL(nextScanStep()));
+    //spyNextScanStep_ = new QSignalSpy(this, SIGNAL(nextScanStep()));
 
 }
     
 LStepExpressMeasurement::~LStepExpressMeasurement()
 {
-    if(spyNextScanStep_){delete spyNextScanStep_; spyNextScanStep_ = NULL;}
+  //    if(spyNextScanStep_){delete spyNextScanStep_; spyNextScanStep_ = NULL;}
 }
 
 void LStepExpressMeasurement::printSpyInformation()
 {
+  /*
     for(int i = 0; i < spyNextScanStep_->size(); i++){
         NQLog("SPY LStepExpressMeasurement", NQLog::Debug)<< "this, signal nextScanStep()";
     }
     spyNextScanStep_->clear();
+  */
 }
 
 /*
@@ -146,14 +148,15 @@ void LStepExpressMeasurement::generatePositions()
 
   //  NQLog("LStepExpressMeasurement ", NQLog::Debug) << "size pos_number = "<<pos_number.size()<<" size xpos = "<<xpos.size()    ;
   //store the positions in the table_ as columns
+  //  table_->setRowCount(xpos.size()); //test if this line helps prevent seg faults after high amount of iterations
   table_->insertData(0, pos_number);
   table_->insertData(1, xpos);
   table_->insertData(2, ypos);
   table_->insertData(3, zpos);
   table_->insertData(4, meas);
   table_->update();
-
-  //  NQLog("LStepExpressMeasurement ", NQLog::Debug) << "filled positions "    ;
+  
+  NQLog("LStepExpressMeasurement ", NQLog::Debug) << "generate positions, row count = "<<table_->rowCount()    ;
 
   //  NQLog("LStepExpressMeasurement ", NQLog::Debug) << "filled table "    ;
 
@@ -224,17 +227,19 @@ void LStepExpressMeasurement::takeMeasurement()
 
 void LStepExpressMeasurement::doNextScanStep()
 {
-    NQLog("LStepExpressMeasurement ", NQLog::Debug) << "doNextScanStep(), currentIndex = "<<currentIndex_ << " cleared for motion = "<<clearedForMotion_   ;  
+  NQLog("LStepExpressMeasurement ", NQLog::Debug) << "doNextScanStep(), currentIndex = "<<currentIndex_ ;
+  NQLog("LStepExpressMeasurement ", NQLog::Debug) << "doNextScanStep(), cleared for motion = "<<clearedForMotion_;
+  NQLog("LStepExpressMeasurement ", NQLog::Debug) << "doNextScanStep(), rowCount = "<< table_->rowCount()   ;  
 
     double x_pos;
     double y_pos;
     double z_pos;
 
     if(currentIndex_ < table_->rowCount() && clearedForMotion_){
-        x_pos = table_->data(table_->index(currentIndex_,1), Qt::DisplayRole).toDouble();                                                                                                   
-        y_pos = table_->data(table_->index(currentIndex_,2), Qt::DisplayRole).toDouble();                                                                                                   
-        z_pos = table_->data(table_->index(currentIndex_,3), Qt::DisplayRole).toDouble();                                                                                                   
-        model_->moveAbsolute(x_pos, y_pos, z_pos, 0.0);
+        x_pos = table_->data(table_->index(currentIndex_,1), Qt::DisplayRole).toDouble();                                                                                
+        y_pos = table_->data(table_->index(currentIndex_,2), Qt::DisplayRole).toDouble();                                                                               
+	z_pos = table_->data(table_->index(currentIndex_,3), Qt::DisplayRole).toDouble();                                                                               
+	model_->moveAbsolute(x_pos, y_pos, z_pos, 0.0);
         //usleep(100000);
         //this->FakeMotion();
     }else{
