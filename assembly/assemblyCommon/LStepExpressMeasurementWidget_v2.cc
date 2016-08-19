@@ -270,7 +270,7 @@ void LStepExpressMeasurementWidget_v2::storeResults()
           out << table_->data(table_->index(r,0), Qt::DisplayRole).toInt() << "\t" << dateString << "\t"  << table_->data(table_->index(r,1), Qt::DisplayRole).toInt() 
 	    << "\t" << table_->data(table_->index(r,2), Qt::DisplayRole).toInt() << "\t" << table_->data(table_->index(r,3), Qt::DisplayRole).toInt() 
 	  << "\t 0.000"
-	    << "\t" << table_->data(table_->index(r,4), Qt::DisplayRole).toInt() << "\n";
+	    << "\t" << table_->data(table_->index(r,4), Qt::DisplayRole).toFloat() << "\n";
       }
     }
 

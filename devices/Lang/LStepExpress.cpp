@@ -6,7 +6,7 @@
 
 #include "LStepExpress.h"
 
-// #define LSTEPDEBUG 1
+//#define LSTEPDEBUG 0
 
 LStepExpress::LStepExpress( const ioport_t ioPort )
   :VLStepExpress(ioPort),
@@ -30,7 +30,7 @@ bool LStepExpress::DeviceAvailable() const
 void LStepExpress::SendCommand(const std::string & command)
 {
 #ifdef LSTEPDEBUG
-  std::cout << "SendCommand: " << command << std::endl;
+  std::cout << "Device SendCommand: " << command << std::endl;
 #endif
   comHandler_->SendCommand(command.c_str());
 }

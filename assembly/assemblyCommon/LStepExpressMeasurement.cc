@@ -205,13 +205,19 @@ void LStepExpressMeasurement::takeMeasurement()
     NQLog("LStepExpressMeasurement ", NQLog::Debug) << "takeMeasurement"    ;  
     //QMutexLocker locker(&mutex_);
     double value = 0;
+    NQLog("LStepExpressMeasurement ", NQLog::Debug) << "value is zero"    ;  
     laserModel_->getMeasurement(value);
+    NQLog("LStepExpressMeasurement ", NQLog::Debug) << "value after measurement"<<value;  
     //value = currentIndex_; //test
     table_->insertData(4, currentIndex_, value);
+    NQLog("LStepExpressMeasurement ", NQLog::Debug) << "inserting data in table"    ;  
     table_->update();
+    NQLog("LStepExpressMeasurement ", NQLog::Debug) << "update table"    ;  
     currentIndex_++;
+    NQLog("LStepExpressMeasurement ", NQLog::Debug) << "after increment current index"    ;  
 
-    usleep(100000);
+    usleep(1000);
+    NQLog("LStepExpressMeasurement ", NQLog::Debug) << "about to emit informationChanged and nextScanStep"    ;  
     emit informationChanged();
     emit nextScanStep();
 }
