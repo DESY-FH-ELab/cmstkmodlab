@@ -35,6 +35,7 @@ LStepExpressMotionManager::LStepExpressMotionManager(LStepExpressModel* model, Q
 
 LStepExpressMotionManager::~LStepExpressMotionManager()
 {
+  std::cout<<"destructor lstepexpressmotionmanager"<<std::endl;
   //    if(spySignalMoveAbsolute){delete spySignalMoveAbsolute; spySignalMoveAbsolute = NULL;}
   //if(spySignalMoveRelative){delete spySignalMoveRelative; spySignalMoveRelative = NULL;}
 }

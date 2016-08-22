@@ -100,6 +100,7 @@ LStepExpressWidget::LStepExpressWidget(LStepExpressModel* model,
 
 LStepExpressWidget::~LStepExpressWidget()
 {
+  std::cout<<"destructor lstepexpresswidget"<<std::endl;
   /*
     if(spyLstepCheckBox_){delete spyLstepCheckBox_; spyLstepCheckBox_ = NULL;}
     if(spyJoystickCheckBox_){delete spyJoystickCheckBox_; spyJoystickCheckBox_ = NULL;}
@@ -257,6 +258,7 @@ LStepExpressAxisWidget::LStepExpressAxisWidget(LStepExpressModel* model,
 
 LStepExpressAxisWidget::~LStepExpressAxisWidget()
 {
+  std::cout<<"destructor LStepExpressAxisWidget"<<std::endl;
     if(layout_){delete layout_; layout_ = NULL;}
     if(enabledCheckBox_){ delete enabledCheckBox_; enabledCheckBox_ = NULL;}
     if(joystickCheckBox_){ delete joystickCheckBox_; joystickCheckBox_ = NULL;}

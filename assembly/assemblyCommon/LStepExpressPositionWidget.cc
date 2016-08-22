@@ -91,12 +91,14 @@ void LStepExpressPositionWidget::lStepStateChanged( State newState)
 
 void LStepExpressPositionWidget::moveAbsoluteButtonClicked()
 {
-  manager_->moveAbsolute(position_);
+  //manager_->moveAbsolute(position_);
+  model_->moveAbsolute(position_);
 }
 
 void LStepExpressPositionWidget::moveRelativeButtonClicked()
 {
-    manager_->moveRelative(position_);
+  // manager_->moveRelative(position_);
+  model_->moveRelative(position_);
 }
 
 void LStepExpressPositionWidget::positionChanged(double value, unsigned int axis)

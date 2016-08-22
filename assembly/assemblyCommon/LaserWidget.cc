@@ -22,6 +22,7 @@ LaserWidget::LaserWidget(LaserModel* laserModel, QWidget *parent)
 
 LaserWidget::~LaserWidget()
 {
+  std::cout<<"destructor laserwidget"<<std::endl;
 }
 
 void LaserWidget::updateDisplay(double value)

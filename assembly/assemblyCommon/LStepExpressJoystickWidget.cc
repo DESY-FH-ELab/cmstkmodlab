@@ -41,6 +41,7 @@ LStepExpressJoystickWidget::LStepExpressJoystickWidget(LStepExpressModel* model,
 
 LStepExpressJoystickWidget::~LStepExpressJoystickWidget()
 {
+  std::cout<<"destructor lstepexpressjoystickwidget"<<std::endl;
 }
 
 void LStepExpressJoystickWidget::lstepStateChanged(State newState)
@@ -64,12 +65,12 @@ void LStepExpressJoystickWidget::controlStateChanged(bool enabled)
 
 void LStepExpressJoystickWidget::motionStarted()
 {
-  NQLog("LStepExpressJoystickWidget", NQLog::Spam) << " motionStarted()"    ;
+  //  NQLog("LStepExpressJoystickWidget", NQLog::Spam) << " motionStarted()"    ;
 }
 
 void LStepExpressJoystickWidget::motionFinished()
 {
-  NQLog("LStepExpressJoystickWidget", NQLog::Spam)<<" motionFinished()"    ;
+  //  NQLog("LStepExpressJoystickWidget", NQLog::Spam)<<" motionFinished()"    ;
 }
 
 LStepExpressJoystickAxisWidget::LStepExpressJoystickAxisWidget(LStepExpressModel* model,
@@ -133,6 +134,7 @@ LStepExpressJoystickAxisWidget::LStepExpressJoystickAxisWidget(LStepExpressModel
 
 LStepExpressJoystickAxisWidget::~LStepExpressJoystickAxisWidget()
 {
+  std::cout<<"desttructor lstepexpressjoystickwidget"<<std::endl;
     if(layout_){delete layout_; layout_ = NULL;}
     if(upButton_){delete upButton_; upButton_ = NULL;}
     if(downButton_){delete downButton_; downButton_ = NULL;}
@@ -144,11 +146,11 @@ LStepExpressJoystickAxisWidget::~LStepExpressJoystickAxisWidget()
 void LStepExpressJoystickAxisWidget::printSpyInformation()
 {
     for(int i = 0; i < spyUpButton_->size(); i++){
-        NQLog("SPY LStepExpressJoystickAxisWidget", NQLog::Spam)<<" upButton_, signal clicked()"    ;
+      //    NQLog("SPY LStepExpressJoystickAxisWidget", NQLog::Spam)<<" upButton_, signal clicked()"    ;
     }
     spyUpButton_->clear();
     for(int i = 0; i < spyDownButton_->size(); i++){
-        NQLog("SPY LStepExpressJoystickAxisWidget", NQLog::Spam)<<" downButton_, signal clicked()"    ;
+      //NQLog("SPY LStepExpressJoystickAxisWidget", NQLog::Spam)<<" downButton_, signal clicked()"    ;
     }
     spyDownButton_->clear();
 }

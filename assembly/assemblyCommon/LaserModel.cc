@@ -23,6 +23,7 @@ LaserModel::LaserModel(const char* port,
 
 LaserModel::~LaserModel()
 {
+  std::cout<<"destructor lasermodel"<<std::endl;
   if(timer_) {delete timer_; timer_ = NULL;}
 }
 
@@ -63,8 +64,11 @@ void LaserModel::getMeasurement(double& value)
     //    double ivalue = 0;
     //    try{
     //NQLog("LaserModel ", NQLog::Debug) << "[getMeasurement] try to get measurement"    ;
+    //std::cout<<"lasermodel, try to get measurement"<<std::endl;
     controller_->MeasurementValueOutput(laserHead_, value);
+    //value = 99.9;
     //  NQLog("LaserModel ", NQLog::Debug) << "[getMeasurement] does the code reach this point?"    ;
+    //std::cout<<"lasermodel, received measurement, value = "<<value<<std::endl;
     bool inRange = (value != 9999 && value != -9999);
     if(!isInRange_ && inRange){
       //NQLog("LaserModel ", NQLog::Debug) <<"[getMeasurement] emit goes back into range"    ;
@@ -85,6 +89,7 @@ void LaserModel::getMeasurement(double& value)
     //}
     //}
     // NQLog("LaserModel ", NQLog::Debug) << "[getMeasurement] value = " << value    ;
+    //std::cout<<"lasermodel, measurement old value = "<<value_<<std::endl;
     if(value != value_){
       value_ = value;
       emit measurementChanged(value_);

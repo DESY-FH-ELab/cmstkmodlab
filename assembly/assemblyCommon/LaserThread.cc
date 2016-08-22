@@ -12,11 +12,12 @@ LaserThread::LaserThread(QObject *parent)
 
 LaserThread::~LaserThread()
 {
+  std::cout<<"destructor laserthread"<<std::endl;
 }
 
 void LaserThread::run()
 {
-    NQLog("LaserThread ", NQLog::Debug) << "run";
+  //    NQLog("LaserThread ", NQLog::Debug) << "run";
     exec();
 }
 

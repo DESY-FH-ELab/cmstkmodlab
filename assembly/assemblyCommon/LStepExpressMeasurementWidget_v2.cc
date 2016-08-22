@@ -179,6 +179,7 @@ LStepExpressMeasurementWidget_v2::LStepExpressMeasurementWidget_v2(LStepExpressM
     
 LStepExpressMeasurementWidget_v2::~LStepExpressMeasurementWidget_v2()
 {
+  std::cout<<"destructor lstepexpressmeasurementwidget_v2"<<std::endl;
   /*
     if(spyAverageMeasCheckBox_){delete spyAverageMeasCheckBox_; spyAverageMeasCheckBox_ = NULL;}
     if(spyButtonGeneratePos_){delete spyButtonGeneratePos_; spyButtonGeneratePos_ = NULL;}
@@ -253,7 +254,7 @@ void LStepExpressMeasurementWidget_v2::setInit()
 
 void LStepExpressMeasurementWidget_v2::updateWidget()
 {
-  //    NQLog("LStepExpressMeasurementWidget_v2 ", NQLog::Debug) << "updateWidget()";
+  //  NQLog("LStepExpressMeasurementWidget_v2 ", NQLog::Debug) << "updateWidget()";
     table_view->update();
 }
 
@@ -273,8 +274,8 @@ void LStepExpressMeasurementWidget_v2::storeResults()
     for (int r = 0; r < table_->rowCount(); r++)
       {
           dateString = QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss.zzz");
-          out << table_->data(table_->index(r,0), Qt::DisplayRole).toInt() << "\t" << dateString << "\t"  << table_->data(table_->index(r,1), Qt::DisplayRole).toInt() 
-	    << "\t" << table_->data(table_->index(r,2), Qt::DisplayRole).toInt() << "\t" << table_->data(table_->index(r,3), Qt::DisplayRole).toInt() 
+          out << table_->data(table_->index(r,0), Qt::DisplayRole).toInt() << "\t" << dateString << "\t"  << table_->data(table_->index(r,1), Qt::DisplayRole).toFloat() 
+	    << "\t" << table_->data(table_->index(r,2), Qt::DisplayRole).toFloat() << "\t" << table_->data(table_->index(r,3), Qt::DisplayRole).toFloat() 
 	  << "\t 0.000"
 	    << "\t" << table_->data(table_->index(r,4), Qt::DisplayRole).toFloat() << "\n";
       }

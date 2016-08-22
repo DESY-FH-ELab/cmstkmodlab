@@ -18,6 +18,7 @@ LStepExpressStatusWindow::LStepExpressStatusWindow(LStepExpressModel* model,
 
 LStepExpressStatusWindow::~LStepExpressStatusWindow()
 {
+  std::cout<<"destructor lstepexpressstatuswindow"<<std::endl;
     if(timer_){delete timer_; timer_ = NULL;}
 }
 

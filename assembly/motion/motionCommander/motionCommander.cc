@@ -35,14 +35,14 @@ int main( int argc, char** argv )
     QString logfilename = logdir + "/motionCommander.log";
     //QString logfilename = "./Logfile_motionCommander.log";
 
-    NQLog("motionCommander") << "version " << APPLICATIONVERSIONSTR;
+    //NQLog("motionCommander") << "version " << APPLICATIONVERSIONSTR;
 
-    NQLog("motionCommander") << "using " << logfilename << " for logging";
+    //NQLog("motionCommander") << "using " << logfilename << " for logging";
 
     QFile * logfile = new QFile(logfilename);
     //if (logfile->open(QIODevice::WriteOnly | QIODevice::Append | QIODevice::Text)) {
     if (logfile->open(QIODevice::WriteOnly | QIODevice::Truncate | QIODevice::Text)) {
-        NQLogger::instance()->addDestiniation(logfile, NQLog::Debug);
+      NQLogger::instance()->addDestiniation(logfile, NQLog::Debug);
     }
 
     qRegisterMetaType<State>("State");
@@ -50,8 +50,8 @@ int main( int argc, char** argv )
 #ifdef SINGLETON
     SingletonApplication app(argc, argv, assemblyGUID);
     if(!app.lock()){
-        NQLog("motionCommander") << "Application instance already running!";
-        exit(1);
+    //  NQLog("motionCommander") << "Application instance already running!";
+      exit(1);
     }
 #else
     QApplication app( argc, argv );

@@ -33,6 +33,7 @@ LStepExpressModel::LStepExpressModel(const char* port,
     finishedCalibrating_ = false;
 
     timer_ = new QTimer(this);
+    //    std::cout<<"lstepexpressmodel, pointer timer = "<<timer_<<" memory = "<<&timer_<<std::endl;
     timer_->setInterval(motionUpdateInterval_);
     connect(timer_, SIGNAL(timeout()), this, SLOT(updateMotionInformationFromTimer()));
     //    connect(this, SIGNAL(informationChanged()), this, SLOT(updateInformation()));
@@ -44,10 +45,12 @@ LStepExpressModel::LStepExpressModel(const char* port,
     spyMotionInformationChanged = new QSignalSpy(this, SIGNAL(motionInformationChanged()));
     spyMessage = new QSignalSpy(this, SIGNAL(message(QString)));
     spyControlStateChanged = new QSignalSpy(this, SIGNAL(controlStateChanged(bool)));
+    */
     spyMotionStarted = new QSignalSpy(this, SIGNAL(motionStarted()));
     spyMotionFinished = new QSignalSpy(this, SIGNAL(motionFinished()));
-    */
-
+    
+    //std::cout<<"lstepexpressmodel, pointer spymotionstarted = "<<spyMotionStarted<<" memory = "<<&spyMotionStarted<<std::endl;
+    //std::cout<<"lstepexpressmodel, pointer spymotionfinished = "<<spyMotionFinished<<" memory = "<<&spyMotionFinished<<std::endl;
     /*
     connect(timer_, SIGNAL(timeout()), this, SLOT(printSpyInformation()));
     connect(this, SIGNAL(deviceStateChanged(State)), this, SLOT(printSpyInformation()));
@@ -55,13 +58,14 @@ LStepExpressModel::LStepExpressModel(const char* port,
     connect(this, SIGNAL(motionInformationChanged()), this, SLOT(printSpyInformation()));
     connect(this, SIGNAL(message(QString)), this, SLOT(printSpyInformation()));
     connect(this, SIGNAL(controlStateChanged(bool)), this, SLOT(printSpyInformation()));
+    */
     connect(this, SIGNAL(motionStarted()), this, SLOT(printSpyInformation()));
     connect(this, SIGNAL(motionFinished()), this, SLOT(printSpyInformation()));
-    */
 }
 
 LStepExpressModel::~LStepExpressModel()
 {
+  std::cout<<"destructor LStepExpressModel"<<std::endl;
   /*
     if(timer_){delete timer_; timer_ = NULL;}
     if(spyTimer){delete spyTimer; spyTimer = NULL;}
@@ -102,15 +106,15 @@ void LStepExpressModel::printSpyInformation()
         NQLog("SPY LStepExpressModel ", NQLog::Spam)<< "this_, signal controlStateChanged( "<<(spyControlStateChanged->value(i))[0].toBool()<<")"  ;
     }
     spyMessage->clear();
+  */
     for(int i = 0; i < spyMotionStarted->size(); i++){
-        NQLog("SPY LStepExpressModel ", NQLog::Spam)<< "this_, signal motionStarted()"  ;
+      //  NQLog("SPY LStepExpressModel ", NQLog::Spam)<< "this_, signal motionStarted()"  ;
     }
     spyMotionStarted->clear();
     for(int i = 0; i < spyMotionFinished->size(); i++){
-        NQLog("SPY LStepExpressModel ", NQLog::Spam)<< "this_, signal motionFinished()"  ;
+      // NQLog("SPY LStepExpressModel ", NQLog::Spam)<< "this_, signal motionFinished()"  ;
     }
     spyMotionFinished->clear();
-  */
 }
 
 void LStepExpressModel::getStatus(bool& status)
@@ -227,7 +231,7 @@ void LStepExpressModel::moveRelative(unsigned int axis, double value)
 
 void LStepExpressModel::moveAbsolute(std::vector<double> & values)
 {
-    NQLog("LStepExpresModel ", NQLog::Spam)<< "moveAbsolute v1"  ;
+  //    NQLog("LStepExpresModel ", NQLog::Spam)<< "moveAbsolute v1"  ;
     controller_->MoveAbsolute(LStepExpress_t::X, (values)[0]);
     controller_->MoveAbsolute(LStepExpress_t::Y, (values)[1]);
     controller_->MoveAbsolute(LStepExpress_t::Z, (values)[2]);
@@ -238,7 +242,7 @@ void LStepExpressModel::moveAbsolute(std::vector<double> & values)
 
 void LStepExpressModel::moveAbsolute(double x, double y, double z, double a)
 {
-    NQLog("LStepExpresModel ", NQLog::Spam)<< "moveAbsolute v2, go to " << x << " x,  "<< y <<" y,  "<< z <<" z,  "<< a <<" a"  ;
+  //    NQLog("LStepExpresModel ", NQLog::Spam)<< "moveAbsolute v2, go to " << x << " x,  "<< y <<" y,  "<< z <<" z,  "<< a <<" a"  ;
     controller_->MoveAbsolute(LStepExpress_t::X, x);
     controller_->MoveAbsolute(LStepExpress_t::Y, y);
     controller_->MoveAbsolute(LStepExpress_t::Z, z);
@@ -249,7 +253,7 @@ void LStepExpressModel::moveAbsolute(double x, double y, double z, double a)
 
 void LStepExpressModel::moveAbsolute(unsigned int axis, double value)
 {
-    NQLog("LStepExpressModel ", NQLog::Spam)<< "moveAbsolute v3"  ;
+  //    NQLog("LStepExpressModel ", NQLog::Spam)<< "moveAbsolute v3"  ;
     controller_->MoveAbsolute((VLStepExpress::Axis)axis, value);
     inMotion_ = true;
     emit motionStarted();
@@ -267,7 +271,7 @@ void LStepExpressModel::calibrate()
 
 void LStepExpressModel::emergencyStop()
 {
-    NQLog("LStepExpressModel ", NQLog::Spam)<< "emergencyStop"  ;
+  //    NQLog("LStepExpressModel ", NQLog::Spam)<< "emergencyStop"  ;
     controller_->EmergencyStop();
     inMotion_ = false;
     finishedCalibrating_ = false;
