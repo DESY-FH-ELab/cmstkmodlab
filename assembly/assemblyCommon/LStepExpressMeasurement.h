@@ -80,6 +80,7 @@ private:
     LStepExpressMeasurementTable *table_model;
     bool clearedForMotion_;
     int currentIndex_;
+    int tableSize_;
     bool isLaserEnabled_;
     bool measurementInProgress_;
 

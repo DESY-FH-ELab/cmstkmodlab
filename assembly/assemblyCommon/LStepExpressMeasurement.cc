@@ -26,6 +26,7 @@ LStepExpressMeasurement::LStepExpressMeasurement(LStepExpressModel* model, LStep
     y_stepsize = 10.0;
     isZigZag_ = false;
     currentIndex_ = -1;
+    tableSize_ = 0;
 
     connect(model_, SIGNAL(emergencyStopSignal()),
 	this, SLOT(stopMeasurement()));
@@ -155,6 +156,8 @@ void LStepExpressMeasurement::generatePositions()
   table_->insertData(3, zpos);
   table_->insertData(4, meas);
   table_->update();
+
+  tableSize_ = table_->rowCount();
   
   NQLog("LStepExpressMeasurement ", NQLog::Debug) << "generate positions, row count = "<<table_->rowCount()    ;
 
@@ -190,7 +193,7 @@ void LStepExpressMeasurement::stopMeasurement()
   QMutexLocker locker(&mutex_);
   //model_->emergencyStop(); //for test
   clearedForMotion_ = false;
-  currentIndex_ = table_->rowCount();
+  currentIndex_ = tableSize_;//table_->rowCount();
   NQLog("LStepExpressMeasurement ", NQLog::Debug) << "stop measurement, cleared for Motion = "<<clearedForMotion_    ;  
   //emit nextScanStep(clearedForMotion_);
 }
@@ -229,13 +232,13 @@ void LStepExpressMeasurement::doNextScanStep()
 {
   NQLog("LStepExpressMeasurement ", NQLog::Debug) << "doNextScanStep(), currentIndex = "<<currentIndex_ ;
   NQLog("LStepExpressMeasurement ", NQLog::Debug) << "doNextScanStep(), cleared for motion = "<<clearedForMotion_;
-  NQLog("LStepExpressMeasurement ", NQLog::Debug) << "doNextScanStep(), rowCount = "<< table_->rowCount()   ;  
+  NQLog("LStepExpressMeasurement ", NQLog::Debug) << "doNextScanStep(), rowCount = "<< tableSize_   ;  
 
     double x_pos;
     double y_pos;
     double z_pos;
 
-    if(currentIndex_ < table_->rowCount() && clearedForMotion_){
+    if(currentIndex_ < tableSize_ && clearedForMotion_){
         x_pos = table_->data(table_->index(currentIndex_,1), Qt::DisplayRole).toDouble();                                                                                
         y_pos = table_->data(table_->index(currentIndex_,2), Qt::DisplayRole).toDouble();                                                                               
 	z_pos = table_->data(table_->index(currentIndex_,3), Qt::DisplayRole).toDouble();                                                                               

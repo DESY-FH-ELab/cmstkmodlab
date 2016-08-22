@@ -40,7 +40,8 @@ int main( int argc, char** argv )
     NQLog("motionCommander") << "using " << logfilename << " for logging";
 
     QFile * logfile = new QFile(logfilename);
-    if (logfile->open(QIODevice::WriteOnly | QIODevice::Append | QIODevice::Text)) {
+    //if (logfile->open(QIODevice::WriteOnly | QIODevice::Append | QIODevice::Text)) {
+    if (logfile->open(QIODevice::WriteOnly | QIODevice::Truncate | QIODevice::Text)) {
         NQLogger::instance()->addDestiniation(logfile, NQLog::Debug);
     }
 
