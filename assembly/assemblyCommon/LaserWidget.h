@@ -14,18 +14,21 @@
 #include <QPushButton>
 #include <QLCDNumber>
 
+#include "LaserModel.h"
+
 class LaserWidget : public QLCDNumber
 {
     Q_OBJECT
 
 public:
-    LaserWidget(QWidget *parent = 0);
+    explicit LaserWidget(LaserModel* laserModel,  QWidget *parent = 0);
     ~LaserWidget();
 
 signals:
         void finished();
 
 protected:
+        LaserModel* laserModel_;
 
 public slots:
     void updateDisplay(double value);

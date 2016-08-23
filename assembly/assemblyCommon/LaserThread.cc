@@ -16,7 +16,7 @@ LaserThread::~LaserThread()
 
 void LaserThread::run()
 {
-    NQLog("LaserThread ", NQLog::Debug) << "run";
+  //    NQLog("LaserThread ", NQLog::Debug) << "run";
     exec();
 }
 

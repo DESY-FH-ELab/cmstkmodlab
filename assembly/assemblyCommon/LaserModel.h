@@ -38,7 +38,7 @@ public:
 public slots:
 
     void setDeviceEnabled(bool enabled = true);
-    void getMeasurement();
+    void getMeasurement(double& value);
 
 protected:
 

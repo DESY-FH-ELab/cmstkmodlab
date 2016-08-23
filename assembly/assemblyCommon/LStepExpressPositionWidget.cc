@@ -52,8 +52,8 @@ LStepExpressPositionWidget::LStepExpressPositionWidget(LStepExpressMotionManager
 
     lStepStateChanged(model_->getDeviceState());
 
-    spyMoveAbsoluteButton_ = new QSignalSpy(moveAbsoluteButton_, SIGNAL(clicked()));
-    spyMoveRelativeButton_ = new QSignalSpy(moveRelativeButton_, SIGNAL(clicked()));
+    //spyMoveAbsoluteButton_ = new QSignalSpy(moveAbsoluteButton_, SIGNAL(clicked()));
+    //spyMoveRelativeButton_ = new QSignalSpy(moveRelativeButton_, SIGNAL(clicked()));
 
     /*
       connect(moveAbsoluteButton_, SIGNAL(clicked()),
@@ -65,19 +65,21 @@ LStepExpressPositionWidget::LStepExpressPositionWidget(LStepExpressMotionManager
 
 void LStepExpressPositionWidget::printSpyInformation()
 {
+  /*
     for(int i = 0; i < spyMoveAbsoluteButton_->size(); i++){
-        NQLog("SPY LStepExpressPositionWidget ", NQLog::Debug) << "moveAbsoluteBotton_, signal clicked()";
+        NQLog("SPY LStepExpressPositionWidget ", NQLog::Spam) << "moveAbsoluteBotton_, signal clicked()";
     }
     spyMoveAbsoluteButton_->clear();
     for(int i = 0; i < spyMoveRelativeButton_->size(); i++){
-        NQLog("SPY LStepExpressPositionWidget ", NQLog::Debug) << "moveRelativeBotton_, signal clicked()";
+        NQLog("SPY LStepExpressPositionWidget ", NQLog::Spam) << "moveRelativeBotton_, signal clicked()";
     }
     spyMoveRelativeButton_->clear();
+  */
 }
 
 void LStepExpressPositionWidget::lStepStateChanged( State newState)
 {
-    NQLog("LStepExpressPositionWidget ", NQLog::Debug) << "lStepStateChanged, newstate = "<<newState;
+  //    NQLog("LStepExpressPositionWidget ", NQLog::Spam) << "lStepStateChanged, newstate = "<<newState;
     if(newState == READY || newState == INITIALIZING){
         moveAbsoluteButton_->setEnabled(true);
         moveRelativeButton_->setEnabled(true);
@@ -89,12 +91,14 @@ void LStepExpressPositionWidget::lStepStateChanged( State newState)
 
 void LStepExpressPositionWidget::moveAbsoluteButtonClicked()
 {
-  manager_->moveAbsolute(position_);
+  //manager_->moveAbsolute(position_);
+  model_->moveAbsolute(position_);
 }
 
 void LStepExpressPositionWidget::moveRelativeButtonClicked()
 {
-    manager_->moveRelative(position_);
+  // manager_->moveRelative(position_);
+  model_->moveRelative(position_);
 }
 
 void LStepExpressPositionWidget::positionChanged(double value, unsigned int axis)
@@ -129,8 +133,8 @@ LStepExpressPositionAxisWidget::LStepExpressPositionAxisWidget(LStepExpressMotio
     connect(model_, SIGNAL(informationChanged()),
             this, SLOT(updateWidgets()));
 
-    spyEdit_ = new QSignalSpy(Edit_, SIGNAL(textChanged(QString)));
-    spyPositionChanged_ = new QSignalSpy(this, SIGNAL(positionChanged(double, unsigned int)));
+    //spyEdit_ = new QSignalSpy(Edit_, SIGNAL(textChanged(QString)));
+    //spyPositionChanged_ = new QSignalSpy(this, SIGNAL(positionChanged(double, unsigned int)));
     
     /*
       connect(Edit_, SIGNAL(textChanged(QString)),
@@ -142,14 +146,16 @@ LStepExpressPositionAxisWidget::LStepExpressPositionAxisWidget(LStepExpressMotio
 
 void LStepExpressPositionAxisWidget::printSpyInformation()
 {
+  /*
     for(int i = 0; i < spyEdit_->size(); i++){
-        NQLog("SPY LStepExpressPositionAxisWidget ", NQLog::Debug) << "Edit_, signal textChanged()";
+        NQLog("SPY LStepExpressPositionAxisWidget ", NQLog::Spam) << "Edit_, signal textChanged()";
     }
     spyEdit_->clear();
     for(int i = 0; i < spyPositionChanged_->size(); i++){
-        NQLog("SPY LStepExpressPositionAxisWidget ", NQLog::Debug) << "this_, signal positionChanged()";
+        NQLog("SPY LStepExpressPositionAxisWidget ", NQLog::Spam) << "this_, signal positionChanged()";
     }
     spyPositionChanged_->clear();
+  */
 }
 
 void LStepExpressPositionAxisWidget::updateWidgets()

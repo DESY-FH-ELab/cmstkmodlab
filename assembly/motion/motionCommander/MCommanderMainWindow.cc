@@ -23,13 +23,11 @@ MCommanderMainWindow::MCommanderMainWindow(QWidget *parent)
   
   lStepExpressModel_ = new LStepExpressModel(config->getValue<std::string>("LStepExpressDevice").c_str(),
                                              1000, 100);
-  lStepExpressSettings_ = new LStepExpressSettings(lStepExpressModel_);
-  
+  //lStepExpressSettings_ = new LStepExpressSettings(lStepExpressModel_);
   motionManager_ = new LStepExpressMotionManager(lStepExpressModel_);
-  
   motionThread_ = new LStepExpressMotionThread(this);
   motionThread_->start();
-  lStepExpressSettings_->moveToThread(motionThread_);
+  //lStepExpressSettings_->moveToThread(motionThread_);
   motionManager_->myMoveToThread(motionThread_);
   
   laserModel_ = new LaserModel(config->getValue<std::string>("KeyenceDevice").c_str());
@@ -38,14 +36,14 @@ MCommanderMainWindow::MCommanderMainWindow(QWidget *parent)
   laserThread_->start();
   
   tabWidget_ = new QTabWidget(this);
-  
+ 
   QWidget * widget;
   
   widget= new QWidget(tabWidget_);
   
   tabWidget_->addTab(widget, "Motion Manager");
   
-  widget = new QWidget(tabWidget_);
+  // widget = new QWidget(tabWidget_);
   
   QHBoxLayout * layout = new QHBoxLayout(widget);
   widget->setLayout(layout);
@@ -72,8 +70,8 @@ MCommanderMainWindow::MCommanderMainWindow(QWidget *parent)
   
   tabWidget_->addTab(widget, "LStep Express");
   
-  LStepExpressSettingsWidget *lStepExpressSettingsWidget = new LStepExpressSettingsWidget(lStepExpressSettings_, tabWidget_);
-  tabWidget_->addTab(lStepExpressSettingsWidget, "LStep Express Settings");
+  //  LStepExpressSettingsWidget *lStepExpressSettingsWidget = new LStepExpressSettingsWidget(lStepExpressSettings_, tabWidget_);
+  //tabWidget_->addTab(lStepExpressSettingsWidget, "LStep Express Settings");
   
   setCentralWidget(tabWidget_);
   
@@ -88,29 +86,33 @@ MCommanderMainWindow::MCommanderMainWindow(QWidget *parent)
   
   //QTimer::singleShot(2000, this, SLOT(testManager()));
   
-  // LStepExpressMeasurementWidget *lStepExpressMeasurementWidget = new LStepExpressMeasurementWidget(lStepExpressModel_, motionManager_, laserModel_, widget);
-  //tabWidget_->addTab(lStepExpressMeasurementWidget, "Measurements");
+  measurementTable_ = new LStepExpressMeasurementTable();
+  measurement_ = new LStepExpressMeasurement(lStepExpressModel_, motionManager_, laserModel_, measurementTable_);
+  measurement_->moveToThread(motionThread_);
+
+  LStepExpressMeasurementWidget *lStepExpressMeasurementWidget = new LStepExpressMeasurementWidget(lStepExpressModel_, laserModel_, measurement_, measurementTable_, widget);
+    tabWidget_->addTab(lStepExpressMeasurementWidget, "Measurements");
 
 }
 
 void MCommanderMainWindow::quit()
 {
-    if(lStepExpressModel_){ lStepExpressModel_->setDeviceEnabled(false); lStepExpressModel_->deleteLater(); }
-    if(laserModel_){ laserModel_->setDeviceEnabled(false); laserModel_->deleteLater(); }    
-    
-    motionManager_->deleteLater();
-    tabWidget_->deleteLater();
-    
-    if (motionThread_) {
-        motionThread_->quit();
-        motionThread_->wait();
-    }
-    
-    if (laserThread_) {
-        laserThread_->quit();
-        laserThread_->wait();
-    }
-    
+  if (laserThread_) {
+    laserThread_->quit();
+    laserThread_->wait();
+  }
+
+  if (motionThread_) {
+    motionThread_->quit();
+    motionThread_->wait();
+  }    
+
+  if(lStepExpressModel_){ lStepExpressModel_->setDeviceEnabled(false); lStepExpressModel_->deleteLater(); }
+  if(laserModel_){ laserModel_->setDeviceEnabled(false); laserModel_->deleteLater(); }    
+  if(measurement_){ measurement_->deleteLater();}
+  if(measurementTable_){ measurementTable_->deleteLater();}
+  if(motionManager_){motionManager_->deleteLater();}
+  if(tabWidget_){tabWidget_->deleteLater();}
 }
 
 /*
