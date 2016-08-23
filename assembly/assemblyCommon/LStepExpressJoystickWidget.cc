@@ -41,7 +41,6 @@ LStepExpressJoystickWidget::LStepExpressJoystickWidget(LStepExpressModel* model,
 
 LStepExpressJoystickWidget::~LStepExpressJoystickWidget()
 {
-  std::cout<<"destructor lstepexpressjoystickwidget"<<std::endl;
 }
 
 void LStepExpressJoystickWidget::lstepStateChanged(State newState)
@@ -134,7 +133,6 @@ LStepExpressJoystickAxisWidget::LStepExpressJoystickAxisWidget(LStepExpressModel
 
 LStepExpressJoystickAxisWidget::~LStepExpressJoystickAxisWidget()
 {
-  std::cout<<"desttructor lstepexpressjoystickwidget"<<std::endl;
     if(layout_){delete layout_; layout_ = NULL;}
     if(upButton_){delete upButton_; upButton_ = NULL;}
     if(downButton_){delete downButton_; downButton_ = NULL;}

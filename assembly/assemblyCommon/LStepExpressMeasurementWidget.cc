@@ -179,7 +179,6 @@ LStepExpressMeasurementWidget::LStepExpressMeasurementWidget(LStepExpressModel* 
     
 LStepExpressMeasurementWidget::~LStepExpressMeasurementWidget()
 {
-  std::cout<<"destructor lstepexpressmeasurementwidget"<<std::endl;
   /*
     if(spyAverageMeasCheckBox_){delete spyAverageMeasCheckBox_; spyAverageMeasCheckBox_ = NULL;}
     if(spyButtonGeneratePos_){delete spyButtonGeneratePos_; spyButtonGeneratePos_ = NULL;}

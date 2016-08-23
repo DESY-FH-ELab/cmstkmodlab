@@ -92,7 +92,9 @@ void KeyenceComHandler::ReceiveString(std::string & receiveString, char *temp_ou
 #endif
 
   if ( timeout == limit ) {
-      std::cerr << "[KeyenceComHandler::ReceiveString] ** ERROR: command timed out! "
+    //      std::cerr << "[KeyenceComHandler::ReceiveString] ** ERROR: command timed out! "
+    //	    << std::endl;
+      std::cout << "[KeyenceComHandler::ReceiveString] ** ERROR: command timed out! "
 	    << std::endl;
       return;
   }

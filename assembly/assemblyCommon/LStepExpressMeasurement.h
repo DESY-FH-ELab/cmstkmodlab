@@ -50,7 +50,6 @@ protected:
 
     QSignalSpy* spyNextScanStep_;
 
-    //void FakeMotion();
 
 public slots:
     void generatePositions();

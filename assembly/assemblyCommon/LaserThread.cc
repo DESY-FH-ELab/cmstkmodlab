@@ -12,7 +12,6 @@ LaserThread::LaserThread(QObject *parent)
 
 LaserThread::~LaserThread()
 {
-  std::cout<<"destructor laserthread"<<std::endl;
 }
 
 void LaserThread::run()

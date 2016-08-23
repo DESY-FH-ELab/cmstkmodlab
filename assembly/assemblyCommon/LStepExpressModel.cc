@@ -65,7 +65,6 @@ LStepExpressModel::LStepExpressModel(const char* port,
 
 LStepExpressModel::~LStepExpressModel()
 {
-  std::cout<<"destructor LStepExpressModel"<<std::endl;
   /*
     if(timer_){delete timer_; timer_ = NULL;}
     if(spyTimer){delete spyTimer; spyTimer = NULL;}

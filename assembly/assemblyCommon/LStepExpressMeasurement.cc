@@ -17,11 +17,11 @@ LStepExpressMeasurement::LStepExpressMeasurement(LStepExpressModel* model, LStep
     measurementInProgress_ = false;
 
     //initialise the x, y, z positions
-    z_init = model_->getPosition(2); //FIX ME! is 2 z-axis?
-    x_min = -150.0; //FIX ME! take right upper corner of table
-    y_min = -150.0; //FIX ME! take right upper corner of table
-    x_max = -150.0; //FIX ME! take right upper corner of table
-    y_max = -150.0; //FIX ME! take right upper corner of table
+    z_init = model_->getPosition(2); 
+    x_min = -150.0; 
+    y_min = -150.0; 
+    x_max = -150.0; 
+    y_max = -150.0; 
     x_stepsize = 10.0;
     y_stepsize = 10.0;
     isZigZag_ = false;
@@ -34,10 +34,6 @@ LStepExpressMeasurement::LStepExpressMeasurement(LStepExpressModel* model, LStep
     connect(model_, SIGNAL(motionFinished()),
 	this, SLOT(takeMeasurement()));
     
-    //test
-    //connect(this, SIGNAL(FakeMotionFinished()),
-    //	this, SLOT(takeMeasurement()));
-
     connect(this, SIGNAL(nextScanStep()),
 	this, SLOT(doNextScanStep()));
 
@@ -49,7 +45,6 @@ LStepExpressMeasurement::LStepExpressMeasurement(LStepExpressModel* model, LStep
     
 LStepExpressMeasurement::~LStepExpressMeasurement()
 {
-  std::cout<<"destructor lstepexpressmeasurement"<<std::endl;
   //    if(spyNextScanStep_){delete spyNextScanStep_; spyNextScanStep_ = NULL;}
 }
 
@@ -62,15 +57,6 @@ void LStepExpressMeasurement::printSpyInformation()
     spyNextScanStep_->clear();
   */
 }
-
-/*
-void LStepExpressMeasurement::FakeMotion()
-{
-    NQLog("LStepExpressMeasurement ", NQLog::Debug) << "FakeMotion";
-    usleep(100000);
-    emit FakeMotionFinished();
-}
-*/
 
 void LStepExpressMeasurement::setZigZag(bool zigzag)
 {
@@ -192,11 +178,8 @@ void LStepExpressMeasurement::stopMeasurement()
 {
   //  NQLog("LStepExpressMeasurement ", NQLog::Debug) << "stop measurement"    ;  
   QMutexLocker locker(&mutex_);
-  //model_->emergencyStop(); //for test
   clearedForMotion_ = false;
-  currentIndex_ = tableSize_;//table_->rowCount();
-  //NQLog("LStepExpressMeasurement ", NQLog::Debug) << "stop measurement, cleared for Motion = "<<clearedForMotion_    ;  
-  //emit nextScanStep(clearedForMotion_);
+  currentIndex_ = tableSize_;
 }
 
 void LStepExpressMeasurement::setLaserEnabled(bool enabled)
@@ -211,30 +194,18 @@ void LStepExpressMeasurement::takeMeasurement()
     if(!isLaserEnabled_){return;}
     if(!measurementInProgress_){return;}
     
-    //QMutexLocker locker(&mutex_);
     double value = 0;
-    //NQLog("LStepExpressMeasurement ", NQLog::Debug) << "value is zero"    ;  
     laserModel_->getMeasurement(value);
-    //NQLog("LStepExpressMeasurement ", NQLog::Debug) << "value after measurement"<<value;  
-    //value = currentIndex_; //test
     table_->insertData(4, currentIndex_, value);
-    //NQLog("LStepExpressMeasurement ", NQLog::Debug) << "inserting data in table"    ;  
     table_->update();
-    //NQLog("LStepExpressMeasurement ", NQLog::Debug) << "update table"    ;  
     currentIndex_++;
-    //NQLog("LStepExpressMeasurement ", NQLog::Debug) << "after increment current index"    ;  
 
-    usleep(1000);
-    //NQLog("LStepExpressMeasurement ", NQLog::Debug) << "about to emit informationChanged and nextScanStep"    ;  
     emit informationChanged();
     emit nextScanStep();
 }
 
 void LStepExpressMeasurement::doNextScanStep()
 {
-  //  NQLog("LStepExpressMeasurement ", NQLog::Debug) << "doNextScanStep(), currentIndex = "<<currentIndex_ ;
-  //NQLog("LStepExpressMeasurement ", NQLog::Debug) << "doNextScanStep(), cleared for motion = "<<clearedForMotion_;
-  //NQLog("LStepExpressMeasurement ", NQLog::Debug) << "doNextScanStep(), rowCount = "<< tableSize_   ;  
 
     double x_pos;
     double y_pos;
@@ -245,12 +216,8 @@ void LStepExpressMeasurement::doNextScanStep()
         y_pos = table_->data(table_->index(currentIndex_,2), Qt::DisplayRole).toDouble();                                                                               
 	z_pos = table_->data(table_->index(currentIndex_,3), Qt::DisplayRole).toDouble();                                                                               
 	model_->moveAbsolute(x_pos, y_pos, z_pos, 0.0);
-        //usleep(100000);
-        //this->FakeMotion();
     }else{
-      //    NQLog("LStepExpressMeasurement ", NQLog::Debug) << "scan finished"    ;
 	measurementInProgress_ = false;
-        //        buttonStoreMeasurement_->setEnabled(true);
     }
 }
 

@@ -10,7 +10,6 @@ LaserModel::LaserModel(const char* port,
       AbstractDeviceModel<Keyence_t>(),
       Laser_PORT(port)
 {
-    // NQLog("LaserModel ", NQLog::Debug) << "[LaserModel::LaserModel]";
     laserHead_ = 2; //note: head A = 2
 
     timer_ = new QTimer(this);
@@ -18,12 +17,10 @@ LaserModel::LaserModel(const char* port,
     connect(timer_, SIGNAL(timeout()), this, SLOT(updateInformation()));
     value_ = 0;
     isInRange_ = true;
-    //NQLog("LaserModel", NQLog::Debug)<<"[LaserModel::LaserModel] set device enabled"<< std::endl; AbstractDeviceModel<Keyence_t>::setDeviceEnabled(1);
 }
 
 LaserModel::~LaserModel()
 {
-  std::cout<<"destructor lasermodel"<<std::endl;
   if(timer_) {delete timer_; timer_ = NULL;}
 }
 
@@ -61,35 +58,17 @@ void LaserModel::getMeasurement(double& value)
 
     //    NQLog("LaserModel ", NQLog::Debug) << "[getMeasurement], isInRange_ = "<< isInRange_    ;
     QMutexLocker locker(&mutex_);
-    //    double ivalue = 0;
-    //    try{
-    //NQLog("LaserModel ", NQLog::Debug) << "[getMeasurement] try to get measurement"    ;
-    //std::cout<<"lasermodel, try to get measurement"<<std::endl;
     controller_->MeasurementValueOutput(laserHead_, value);
-    //value = 99.9;
-    //  NQLog("LaserModel ", NQLog::Debug) << "[getMeasurement] does the code reach this point?"    ;
-    //std::cout<<"lasermodel, received measurement, value = "<<value<<std::endl;
     bool inRange = (value != 9999 && value != -9999);
     if(!isInRange_ && inRange){
-      //NQLog("LaserModel ", NQLog::Debug) <<"[getMeasurement] emit goes back into range"    ;
       isInRange_ = true;
       emit inRangeStateChanged(isInRange_);
     }
     if(isInRange_ && !inRange){
-      //NQLog("LaserModel ", NQLog::Debug) <<"[getMeasurement] emit goes out of range"    ;
       isInRange_ = false;
       emit inRangeStateChanged(isInRange_);
     }
-    //    }catch (std::string ){
-    //NQLog("LaserModel ", NQLog::Debug) << "[getMeasurement] exception caught"    ;
-    //if(isInRange_){ 
-    //NQLog("LaserModel ", NQLog::Debug) <<"[getMeasurement] emit goes out of range"    ;
-    //isInRange_ = false;
-    //emit inRangeStateChanged(isInRange_);
-    //}
-    //}
-    // NQLog("LaserModel ", NQLog::Debug) << "[getMeasurement] value = " << value    ;
-    //std::cout<<"lasermodel, measurement old value = "<<value_<<std::endl;
+
     if(value != value_){
       value_ = value;
       emit measurementChanged(value_);
