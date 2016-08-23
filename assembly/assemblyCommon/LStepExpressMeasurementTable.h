@@ -37,6 +37,7 @@ class LStepExpressMeasurementTable : public QAbstractTableModel
   QVariant data(const QModelIndex& index, int role) const;
   QVariant headerData(int section, Qt::Orientation orientation, int role) const;
   void insertData(int column_index, std::vector<float> values);
+  void insertData(int column_index, int cell_index, float value);
   void update();
 
  protected:

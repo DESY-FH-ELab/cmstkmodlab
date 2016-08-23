@@ -12,6 +12,6 @@ LStepExpressMotionThread::LStepExpressMotionThread(QObject *parent)
 
 void LStepExpressMotionThread::run()
 {
-    NQLog("LStepExpressMotionThread ", NQLog::Debug) << "run";
+  //    NQLog("LStepExpressMotionThread ", NQLog::Debug) << "run";
     exec();
 }

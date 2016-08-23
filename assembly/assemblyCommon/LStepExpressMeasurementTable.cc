@@ -60,6 +60,25 @@ void LStepExpressMeasurementTable::insertData(int column_index, std::vector<floa
   //  NQLog("LStepExpressMeasurementTable ", NQLog::Debug) << "ending insert data ";
 }
 
+void LStepExpressMeasurementTable::insertData(int column_index, int cell_index, float value)
+{
+    //  NQLog("LStepExpressMeasurementTable ", NQLog::Debug) << "insert data ";
+
+  //overwrite column
+  Columns[column_index][cell_index] = value;
+
+
+  //  NQLog("LStepExpressMeasurementTable ", NQLog::Debug) << "no. columns = "<< Columns.size() <<" no. rows = "<<Columns[column_index].size();
+
+  QModelIndex in;
+  //set the data
+  //  for(unsigned int i = 0; i < values.size(); i++){
+  in = createIndex(column_index, cell_index);
+  emit dataChanged(in,in);
+    //}
+  //  NQLog("LStepExpressMeasurementTable ", NQLog::Debug) << "ending insert data ";
+}
+
 QVariant LStepExpressMeasurementTable::headerData(int section, Qt::Orientation orientation, int role) const
 {
  

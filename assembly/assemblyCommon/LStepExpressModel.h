@@ -137,6 +137,7 @@ signals:
 
     void motionStarted();
     void motionFinished();
+    void emergencyStopSignal();
 };
 
 #endif // LSTEPEXPRESSMODEL_H

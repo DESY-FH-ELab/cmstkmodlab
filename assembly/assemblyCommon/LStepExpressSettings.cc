@@ -396,11 +396,11 @@ void LStepExpressSettings::printSpyInformation()
 {
 
     for(int i = 0; i < spyControlStateChanged->size(); i++){
-        NQLog("SPY LStepExpressSettings ", NQLog::Debug) << "this_, signal controlStateChanged()";    
+        NQLog("SPY LStepExpressSettings ", NQLog::Spam) << "this_, signal controlStateChanged()";    
     }
     spyControlStateChanged->clear();
     for(int i = 0; i < spySettingChanged->size(); i++){
-        NQLog("SPY LStepExpressSettings ", NQLog::Debug) << "this_, signal settingChanged()";    
+        NQLog("SPY LStepExpressSettings ", NQLog::Spam) << "this_, signal settingChanged()";    
     }
     spySettingChanged->clear();
 }
@@ -412,22 +412,22 @@ void LStepExpressSettings::deviceControlStateChanged(bool enabled)
 
 void LStepExpressSettings::valueChanged(QString key, bool value)
 {
-    NQLog("LStepExpressSettings ", NQLog::Debug) << "valueChanged " << key.toStdString() << " " << value;    
+    NQLog("LStepExpressSettings ", NQLog::Spam) << "valueChanged " << key.toStdString() << " " << value;    
 }
 
 void LStepExpressSettings::valueChanged(QString key, bool value0, bool value1, bool value2)
 {
-    NQLog("LStepExpressSettings ", NQLog::Debug) << "valueChanged " << key.toStdString() << " " << value0 << " " << value1 << " " << value2    ;
+    NQLog("LStepExpressSettings ", NQLog::Spam) << "valueChanged " << key.toStdString() << " " << value0 << " " << value1 << " " << value2    ;
 }
 
 void LStepExpressSettings::valueChanged(QString key, int value)
 {
-    NQLog("LStepExpressSettings ", NQLog::Debug) << "valueChanged " << key.toStdString() << " " << value    ;
+    NQLog("LStepExpressSettings ", NQLog::Spam) << "valueChanged " << key.toStdString() << " " << value    ;
 }
 
 void LStepExpressSettings::valueChanged(QString key, double value)
 {
-    NQLog("LStepExpressSettings ", NQLog::Debug) << "valueChanged " << key.toStdString() << " " << value    ;
+    NQLog("LStepExpressSettings ", NQLog::Spam) << "valueChanged " << key.toStdString() << " " << value    ;
 }
 
 QVariant LStepExpressSettings::getValueForKey(const QString& key)
@@ -472,7 +472,7 @@ void LStepExpressSettings::readSettingsFromDevice()
         QString value;
         model_->getValue(setting->getter(), value);
 
-        NQLog("LStepExpressSettings ", NQLog::Debug) << setting->getter().toStdString() << " -> " << value.toStdString()    ;
+        NQLog("LStepExpressSettings ", NQLog::Spam) << setting->getter().toStdString() << " -> " << value.toStdString()    ;
 
         if (setting->setValue(value)) {
             emit settingChanged(setting->key(),setting->getValue());
@@ -517,7 +517,7 @@ void LStepExpressSettings::writeSettingsToDevice()
         LStepExpressSettingsInstruction* setting = *it;
 
         model_->setValue(setting->setter(), setting->value());
-        NQLog("LStepExpressSettings ", NQLog::Debug) << setting->setter().toStdString() << " <- " << setting->value().toStdString()    ;
+        NQLog("LStepExpressSettings ", NQLog::Spam) << setting->setter().toStdString() << " <- " << setting->value().toStdString()    ;
     }
 
     model_->validConfig();
@@ -529,7 +529,7 @@ void LStepExpressSettings::saveSettingsOnDevice()
     QMutexLocker locker(&mutex_);
     model_->saveConfig();
 
-    NQLog("LStepExpressSettings ", NQLog::Debug) << "settings saved on controller"    ;
+    NQLog("LStepExpressSettings ", NQLog::Spam) << "settings saved on controller"    ;
 }
 
 void LStepExpressSettings::resetSettings()
@@ -537,7 +537,7 @@ void LStepExpressSettings::resetSettings()
     QMutexLocker locker(&mutex_);
     model_->reset();
 
-    NQLog("LStepExpressSettings ", NQLog::Debug) << "reset settings to startup conditions"    ;
+    NQLog("LStepExpressSettings ", NQLog::Spam) << "reset settings to startup conditions"    ;
 }
 
 void LStepExpressSettings::writeSettingsToFile(const QString& filename)
