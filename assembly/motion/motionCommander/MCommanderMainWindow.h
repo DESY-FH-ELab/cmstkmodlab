@@ -19,7 +19,6 @@
 #include "LStepExpressMeasurementTable.h"
 #include "LStepExpressMeasurement.h"
 #include "LStepExpressMeasurementWidget.h"
-#include "LStepExpressMeasurementWidget_v2.h"
 #include "LStepExpressPositionWidget.h"
 #include "LStepExpressStatusWindow.h"
 

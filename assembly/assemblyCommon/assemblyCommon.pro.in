@@ -78,6 +78,7 @@ HEADERS += AssemblyVUEyeCamera.h \
            LStepExpressWidget.h \
            LStepExpressJoystickWidget.h \
            LStepExpressSettingsWidget.h \
+           LStepExpressMeasurement.h \
            LStepExpressMeasurementWidget.h \
            LStepExpressMeasurementTable.h \
            LStepExpressPositionWidget.h \
@@ -113,6 +114,7 @@ SOURCES += AssemblyVUEyeCamera.cc \
            LStepExpressWidget.cc \
            LStepExpressJoystickWidget.cc \
            LStepExpressSettingsWidget.cc \
+           LStepExpressMeasurement.cc \
            LStepExpressMeasurementWidget.cc \
            LStepExpressMeasurementTable.cc \
            LStepExpressPositionWidget.cc \

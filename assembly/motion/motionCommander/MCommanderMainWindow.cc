@@ -109,7 +109,7 @@ MCommanderMainWindow::MCommanderMainWindow(QWidget *parent)
   //std::cout<<"pointer measurement_ "<<measurement_<<" memory = "<<&measurement_<<std::endl;
   measurement_->moveToThread(motionThread_);
 
-  LStepExpressMeasurementWidget_v2 *lStepExpressMeasurementWidget = new LStepExpressMeasurementWidget_v2(lStepExpressModel_, laserModel_, measurement_, measurementTable_, widget);
+  LStepExpressMeasurementWidget *lStepExpressMeasurementWidget = new LStepExpressMeasurementWidget(lStepExpressModel_, laserModel_, measurement_, measurementTable_, widget);
   //std::cout<<"pointer lStepExpressMeasurementWidget_ "<<lStepExpressMeasurementWidget<<" memory = "<<&lStepExpressMeasurementWidget<<std::endl;
     tabWidget_->addTab(lStepExpressMeasurementWidget, "Measurements");
 
