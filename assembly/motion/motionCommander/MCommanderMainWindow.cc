@@ -69,6 +69,9 @@ MCommanderMainWindow::MCommanderMainWindow(QWidget *parent)
   layout->addLayout(layoutv2);
   
   tabWidget_->addTab(widget, "LStep Express");
+
+  LaserControlsWidget *laserControlsWidget = new LaserControlsWidget(laserModel_, widget);
+  tabWidget_->addTab(laserControlsWidget, "Laser Control");
   
   //  LStepExpressSettingsWidget *lStepExpressSettingsWidget = new LStepExpressSettingsWidget(lStepExpressSettings_, tabWidget_);
   //tabWidget_->addTab(lStepExpressSettingsWidget, "LStep Express Settings");
