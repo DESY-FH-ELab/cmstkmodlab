@@ -54,7 +54,7 @@ AssemblyPlasmaCleaner::AssemblyPlasmaCleaner(QWidget *parent)
     //btn1->setText("Upload Firmware");
     //g0->addWidget(btn1,0,0);
 
-    CleanerCommander * cmdr1 = new CleanerCommander(this, "Scan",20,5,400,8);
+    CleanerCommander * cmdr1 = new CleanerCommander(this, "Scan",20,50,200,8);
     g0->addWidget(cmdr1,0,0);
 
     //ql = new QLabel("", this);
@@ -129,44 +129,53 @@ CleanerCommander::CleanerCommander(QWidget *parent, std::string string, double t
     painter.setBrush(QBrush(Qt::red));
 
     ql_0->setPixmap(pixmap);
-    ql_0->setText("Arduino communication OFF");
+    ql_0->setText("Controller communication OFF");
     ql_0->setStyleSheet("QLabel { background-color : red; color : black; }");
 
     if (comm == TRUE){
-      ql_0->setText("Arduino communitcation ON");
+      ql_0->setText("Controller communitcation ON");
       ql_0->setStyleSheet("QLabel { background-color : green; color : black; }");
 }
 
-    ql_1 = new QLabel("target speed (mm/s)", this);                                                                                               
-    l->addWidget(ql_1,1,0);
-
+    
+    button2 = new QPushButton("Send free text command", this);
+    l->addWidget(button2,1,0);
+    
     lineEdit1 = new QLineEdit();
-    lineEdit1->setText(target_speed_qstr);
+    lineEdit1->setText("#");
     l->addWidget(lineEdit1,1,1);
-
-    ql_2 = new QLabel("max. acceleration (mm/s^2)", this);
+    
+    
+    ql_2 = new QLabel("target speed (mm/s)", this);
     l->addWidget(ql_2,2,0);
 
     lineEdit2 = new QLineEdit();
-    lineEdit2->setText(max_accel_qstr);
+    lineEdit2->setText(target_speed_qstr);
     l->addWidget(lineEdit2,2,1);
 
-    ql_3 = new QLabel("scan distance (mm)", this);
+    ql_3 = new QLabel("Ramp up/down distance (mm)", this);
     l->addWidget(ql_3,3,0);
 
     lineEdit3 = new QLineEdit();
-    lineEdit3->setText(scan_distance_qstr);
+    lineEdit3->setText(max_accel_qstr);
     l->addWidget(lineEdit3,3,1);
 
-    ql_4 = new QLabel("steps per mm (mm^-1)", this);
+    ql_4 = new QLabel("scan distance (mm)", this);
     l->addWidget(ql_4,4,0);
 
     lineEdit4 = new QLineEdit();
-    lineEdit4->setText(steps_per_mm_qstr);
+    lineEdit4->setText(scan_distance_qstr);
     l->addWidget(lineEdit4,4,1);
 
+    ql_5 = new QLabel("steps per mm (mm^-1)", this);
+    l->addWidget(ql_5,5,0);
+
+    lineEdit5 = new QLineEdit();
+    lineEdit5->setText(steps_per_mm_qstr);
+    l->addWidget(lineEdit5,5,1);
+
     light = new LightWidget(Qt::red);
-    l->addWidget(light,5,0);
+    l->addWidget(light,6,0);
     light->setOn(true);
 
 
@@ -175,10 +184,26 @@ CleanerCommander::CleanerCommander(QWidget *parent, std::string string, double t
     progressBar->setMaximum(99);
     progressBar->setValue(0);
     progressBar->setTextVisible(true);
-    l->addWidget(progressBar,5,1);
+    l->addWidget(progressBar,6,1);
 
     connect(button1, SIGNAL(clicked()),
-          this, SLOT(sendCommand()));    
+          this, SLOT(sendCommand()));
+    
+    connect(button2, SIGNAL(clicked()),
+            this, SLOT(sendFreeCommand()));
+}
+
+
+
+
+
+void CleanerCommander::sendFreeCommand(){
+    
+    std::string str_5 =  lineEdit5->text().toStdString();
+
+    std::cout << "[CleanerCommander::checkText]. "   <<  str_5 <<std::endl;
+    motor->SendCommand(str_5.c_str());
+    
 }
 
 
@@ -189,10 +214,10 @@ std::cout << "[CleanerCommander::sendCommand]."   << str <<std::endl;
 //   convert << steps;
 //   const char* cmd = convert.str().c_str();
 
- std::string str_1 =  lineEdit1->text().toStdString();
- std::string str_2 =  lineEdit2->text().toStdString();
- std::string str_3 =  lineEdit3->text().toStdString();
- std::string str_4 =  lineEdit4->text().toStdString();
+ std::string str_1 =  lineEdit2->text().toStdString();
+ std::string str_2 =  lineEdit3->text().toStdString();
+ std::string str_3 =  lineEdit4->text().toStdString();
+ std::string str_4 =  lineEdit5->text().toStdString();
  std::string comm = str_1 + "," + str_2 + ":" +  str_3 + "," +  str_4;
 
  float fl_1 = stof(str_1);

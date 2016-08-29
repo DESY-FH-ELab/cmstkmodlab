@@ -105,15 +105,21 @@ public:
   explicit CleanerCommander(QWidget *parent = 0, std::string ="test", double target_speed =0.0, double max_accel =0.0, double scan_distance = 0.0, double steps_per_mm = 0.0);
 
     QPushButton* button1;
+    QPushButton* button2;
+
     QLineEdit *lineEdit1;
     QLabel *ql_0;
     QLabel *ql_1;
     QLabel *ql_2;
     QLabel *ql_3;
     QLabel *ql_4;
+    QLabel *ql_5;
+
     QLineEdit *lineEdit2;
     QLineEdit *lineEdit3;
     QLineEdit *lineEdit4;
+    QLineEdit *lineEdit5;
+
     QProgressBar *progressBar;
     LightWidget* light;
     ArduinoMotor * motor;
@@ -131,6 +137,7 @@ protected:
     
 public slots:
   void sendCommand();
+  void sendFreeCommand();
   void update();
  
 signals:

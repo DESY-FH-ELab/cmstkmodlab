@@ -9,6 +9,7 @@
 #include <QLabel>
 #include <QApplication>
 
+
 #include <iostream>
 #include <nqlogger.h>
 
@@ -784,6 +785,8 @@ AssemblySensorLocator::AssemblySensorLocator(QWidget *parent, std::string string
     
     button1 = new QPushButton(qname, this);
     
+    
+    
    // lineEdit1 = new QLineEdit();
    // lineEdit1->setText(qstr);
     l->addWidget(button1,0,0);
@@ -804,10 +807,22 @@ AssemblySensorLocator::AssemblySensorLocator(QWidget *parent, std::string string
     ql->setText("WAITING");
     ql->setStyleSheet("QLabel { background-color : orange; color : black; }");
 
+    groupBox = new QGroupBox(tr("PatRec options"));
+    radio1 = new QRadioButton(tr("&Circle seed algorithm"));
+    radio2 = new QRadioButton(tr("T&emplate matching"));
+    
+    vbox = new QVBoxLayout;
+    vbox->addWidget(radio1);
+    vbox->addWidget(radio2);
+    vbox->addStretch(1);
+    groupBox->setLayout(vbox);
+    
+    l->addWidget(groupBox,1,0);
+    
     connect(button1, SIGNAL(clicked()),
             this, SLOT(locatePickup()));
     connect(this, SIGNAL(locatePickupCorner(int)),
-            this, SLOT(locateSensor(int)));
+            this, SLOT(locateSensor_circleSeed(int)));
 }
 
 void AssemblySensorLocator::locatePickup(){
@@ -819,7 +834,7 @@ void AssemblySensorLocator::locatePickup(){
 
 
 
-void AssemblySensorLocator::locateSensor(int stage){
+void AssemblySensorLocator::locateSensor_circleSeed(int stage){
 
     NQLog("AssemblySensorLocator") << "Finding Marker (Circle Seed Algorithm)" ;
 
