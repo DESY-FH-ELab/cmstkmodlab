@@ -247,8 +247,8 @@ signals:
     void updateImage(int, std::string);
     void foundSensor(int);
     void sendPosition(int, double, double, double);
-    void locatePickupCorner(int);
-    
+    void locatePickupCorner_circleSeed(int);
+    void locatePickupCorner_templateMatching(int);
 };
 
 

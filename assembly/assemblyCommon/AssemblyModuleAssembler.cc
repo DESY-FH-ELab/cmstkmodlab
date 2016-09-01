@@ -308,7 +308,12 @@ void AssemblyModuleAssembler::updateImage(int stage, std::string filename)
     cv::Mat img_gs = cv::imread(filename, CV_LOAD_IMAGE_COLOR);
     
     if (stage == 1 ){
+    imageView_1->setZoomFactor(0.5);
     imageView_1->setImage(img_gs);
+        
+        
+        
+        
     }else if (stage ==2){
         imageView_2->setImage(img_gs);
     }
@@ -821,17 +826,77 @@ AssemblySensorLocator::AssemblySensorLocator(QWidget *parent, std::string string
     
     connect(button1, SIGNAL(clicked()),
             this, SLOT(locatePickup()));
-    connect(this, SIGNAL(locatePickupCorner(int)),
+    connect(this, SIGNAL(locatePickupCorner_circleSeed(int)),
             this, SLOT(locateSensor_circleSeed(int)));
+    connect(this, SIGNAL(locatePickupCorner_templateMatching(int)),
+            this, SLOT(locateSensor_templateMatching(int)));
+
 }
 
 void AssemblySensorLocator::locatePickup(){
 
-    emit locatePickupCorner(1);
+    if (radio1->isChecked()) {
+        NQLog("AssemblySensorLocator") << "Circle seed selected" ;
+        emit locatePickupCorner_circleSeed(1);
+
+    }else if (radio2->isChecked() ){
+        NQLog("AssemblySensorLocator") << "Template matching selected" ;
+
+        emit locatePickupCorner_templateMatching(1);
+
+    }
+    
+    
+
 
 }
 
 
+void AssemblySensorLocator::locateSensor_templateMatching(int stage){
+    NQLog("AssemblySensorLocator") << "Finding Marker (Template Matching Algorithm)" ;
+
+    cv::Mat img_gs, img_clip_gs, img_rgb, result;
+    
+    img_gs = cv::imread("/Users/keaveney/Desktop/calibration/RawSensor.png", CV_LOAD_IMAGE_COLOR);
+    img_clip_gs = cv::imread("/Users/keaveney/Desktop/calibration/rawsensor_clip2.png", CV_LOAD_IMAGE_COLOR);
+
+    //img_gs = cv::imread("/Users/keaveney/Desktop/big2.png", CV_LOAD_IMAGE_COLOR);
+    //img_clip_gs = cv::imread("/Users/keaveney/Desktop/small2.png", CV_LOAD_IMAGE_COLOR);
+    
+    //cvtColor(img_gs, img_gs, CV_RGB2GRAY);
+    //cvtColor(img_clip_gs, img_clip_gs , CV_RGB2GRAY);
+    
+    /// Create the result matrix
+    int result_cols =  img_gs.cols - img_clip_gs.cols + 1;
+    int result_rows = img_gs.rows - img_clip_gs.rows + 1;
+    
+    result.create( result_rows, result_cols, CV_32FC1 );
+
+    
+   matchTemplate( img_gs, img_clip_gs, result, CV_TM_CCOEFF );
+   normalize( result, result, 0, 1, cv::NORM_MINMAX, -1, cv::Mat() );
+
+    double minVal; double maxVal; cv::Point minLoc; cv::Point maxLoc;
+    cv::Point matchLoc;
+    
+    minMaxLoc( result, &minVal, &maxVal, &minLoc, &maxLoc, cv::Mat() );
+    
+    matchLoc = maxLoc;
+    
+    rectangle( img_gs, matchLoc, cv::Point( matchLoc.x + img_clip_gs.cols , matchLoc.y + img_clip_gs.rows ), cv::Scalar::all(0), 2, 8, 0  );
+    rectangle( result, matchLoc, cv::Point( matchLoc.x + img_clip_gs.cols , matchLoc.y + img_clip_gs.rows ), cv::Scalar::all(0), 2, 8, 0  );
+    
+    
+    std::string filename = "/Users/keaveney/Desktop/calibration/PatRec_TM_result.png";
+    cv::imwrite(filename, img_gs);
+    
+    
+    NQLog("AssemblySensorLocator") << "Template Matching Done" ;
+
+    emit updateImage(stage, filename);
+    
+    
+}
 
 
 void AssemblySensorLocator::locateSensor_circleSeed(int stage){
