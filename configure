@@ -97,7 +97,7 @@ if test $ARCHITECTURE = "Linux"; then
         QWTLIBS="-lqwtplot3d"
     fi
     QWTINCLUDES="/usr/include/qwt $QWTINCLUDES"
-    QWTLIBS="-lqwt $QWTLIBS"
+    QWTLIBS="-lqwt $QWTLIBS -lGL -lGLU"
 fi
 
 if test $USEFAKEDEVICES = 1; then
