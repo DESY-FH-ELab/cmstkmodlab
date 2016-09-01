@@ -5,7 +5,7 @@ LIBS += -L@basepath@/devices/lib -lTkModLabHameg
 LIBS += -L@basepath@/devices/lib -lTkModLabPfeiffer
 LIBS += -L@basepath@/devices/lib -lTkModLabHuber
 LIBS += -L@basepath@/common -lCommon
-LIBS += @qwtlibs@ -lGL -lGLU
+LIBS += @qwtlibs@
 LIBS += -L@basepath@/defo/defoCommon -lDefoCommon
 
 QMAKE = @qmake@
