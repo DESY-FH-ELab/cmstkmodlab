@@ -19,7 +19,7 @@ endif
 qtsubdirs     = common common_test
 ifeq ($(NOTHERMAL),0)
 qtsubdirs    += thermo/thermoDAQ thermo/thermoDisplay
-qtsubdirs	 += thermo/microDAQ thermo/microDisplay
+qtsubdirs    += thermo/microDAQ thermo/microDisplay
 qtsubdirs    += thermo/thermoDAQ2Root thermo/thermoDAQ2Log thermo/thermoDAQ2Plots
 endif
 ifeq ($(NODEFO),0)
