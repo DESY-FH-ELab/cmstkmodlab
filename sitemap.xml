@@ -10,11 +10,31 @@
     
 
     
+        
     <url>
-     <loc>http://desy-fh-elab.github.io/cmstkmodlab/build/</loc>
+     <loc>http://desy-fh-elab.github.io/cmstkmodlab/build/configure/</loc>
      <lastmod>2016-09-02</lastmod>
      <changefreq>daily</changefreq>
     </url>
+        
+    <url>
+     <loc>http://desy-fh-elab.github.io/cmstkmodlab/build/UbuntuLinux/</loc>
+     <lastmod>2016-09-02</lastmod>
+     <changefreq>daily</changefreq>
+    </url>
+        
+    <url>
+     <loc>http://desy-fh-elab.github.io/cmstkmodlab/build/RaspbianLinux/</loc>
+     <lastmod>2016-09-02</lastmod>
+     <changefreq>daily</changefreq>
+    </url>
+        
+    <url>
+     <loc>http://desy-fh-elab.github.io/cmstkmodlab/build/OSXElCapitan/</loc>
+     <lastmod>2016-09-02</lastmod>
+     <changefreq>daily</changefreq>
+    </url>
+        
     
 
     
