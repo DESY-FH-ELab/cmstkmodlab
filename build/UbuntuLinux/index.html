@@ -4,17 +4,17 @@
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <meta name="description" content="Documentation for DESY FH-E-Lab Software">
+        
         <meta name="author" content="Andreas Mussgiller">
-        <link rel="canonical" href="http://desy-fh-elab.github.io/cmstkmodlab/">
-        <link rel="shortcut icon" href="./img/favicon.ico">
+        <link rel="canonical" href="http://desy-fh-elab.github.io/cmstkmodlab/build/UbuntuLinux/">
+        <link rel="shortcut icon" href="../../img/favicon.ico">
 
-	<title>TkModLab</title>
+	<title>Ubuntu Linux - TkModLab</title>
 
-        <link href="./css/bootstrap-custom.min.css" rel="stylesheet">
-        <link href="./css/font-awesome-4.0.3.css" rel="stylesheet">
-        <link rel="stylesheet" href="./css/highlight.css">
-        <link href="./css/base.css" rel="stylesheet">
+        <link href="../../css/bootstrap-custom.min.css" rel="stylesheet">
+        <link href="../../css/font-awesome-4.0.3.css" rel="stylesheet">
+        <link rel="stylesheet" href="../../css/highlight.css">
+        <link href="../../css/base.css" rel="stylesheet">
 
         <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
         <!--[if lt IE 9]>
@@ -41,7 +41,7 @@
             </button>
 
             <!-- Main title -->
-            <a class="navbar-brand" href=".">TkModLab</a>
+            <a class="navbar-brand" href="../..">TkModLab</a>
         </div>
 
         <!-- Expanded navigation -->
@@ -51,36 +51,36 @@
             
             
                 <li >
-                    <a href=".">Home</a>
+                    <a href="../..">Home</a>
                 </li>
             
             
             
-                <li class="dropdown">
+                <li class="dropdown active">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">Build <b class="caret"></b></a>
                     <ul class="dropdown-menu">
                     
                         
 <li >
-    <a href="build/configure/">configure</a>
+    <a href="../configure/">configure</a>
+</li>
+
+                    
+                        
+<li class="active">
+    <a href="./">Ubuntu Linux</a>
 </li>
 
                     
                         
 <li >
-    <a href="build/UbuntuLinux/">Ubuntu Linux</a>
+    <a href="../RaspbianLinux/">Raspbian Linux</a>
 </li>
 
                     
                         
 <li >
-    <a href="build/RaspbianLinux/">Raspbian Linux</a>
-</li>
-
-                    
-                        
-<li >
-    <a href="build/OSXElCapitan/">OSX El Capitan</a>
+    <a href="../OSXElCapitan/">OSX El Capitan</a>
 </li>
 
                     
@@ -95,7 +95,7 @@
                     
                         
 <li >
-    <a href="thermo/thermoDAQ/">thermoDAQ</a>
+    <a href="../../thermo/thermoDAQ/">thermoDAQ</a>
 </li>
 
                     
@@ -110,13 +110,13 @@
                     
                         
 <li >
-    <a href="defo/defoDAQ/">defoDAQ</a>
+    <a href="../../defo/defoDAQ/">defoDAQ</a>
 </li>
 
                     
                         
 <li >
-    <a href="defo/defoDAQScripting/">defoDAQ Scripting</a>
+    <a href="../../defo/defoDAQScripting/">defoDAQ Scripting</a>
 </li>
 
                     
@@ -125,8 +125,8 @@
             
             
             
-                <li class="active">
-                    <a href=".">Assembly</a>
+                <li >
+                    <a href="../..">Assembly</a>
                 </li>
             
             
@@ -140,12 +140,12 @@
                     </a>
                 </li>
                 <li >
-                    <a rel="next" href="defo/defoDAQScripting/">
+                    <a rel="next" href="../configure/">
                         <i class="fa fa-arrow-left"></i> Previous
                     </a>
                 </li>
-                <li class="disabled">
-                    <a rel="prev" >
+                <li >
+                    <a rel="prev" href="../RaspbianLinux/">
                         Next <i class="fa fa-arrow-right"></i>
                     </a>
                 </li>
@@ -168,11 +168,28 @@
             <div class="col-md-3"><div class="bs-sidebar hidden-print affix well" role="complementary">
     <ul class="nav bs-sidenav">
     
+        <li class="main active"><a href="#build-instructions-for-ubuntu-linux">Build Instructions for Ubuntu Linux</a></li>
+        
+            <li><a href="#requirements">Requirements</a></li>
+        
+            <li><a href="#building">Building</a></li>
+        
+    
     </ul>
 </div></div>
             <div class="col-md-9" role="main">
 
-</div>
+<h1 id="build-instructions-for-ubuntu-linux">Build Instructions for Ubuntu Linux</h1>
+<h2 id="requirements">Requirements</h2>
+<h2 id="building">Building</h2>
+<p>Go to the directory to which you checked out the source code and run</p>
+<p><code>./configure</code> [options]</p>
+<p>with options as described in the <a href="../configure">documentation</a>.</p>
+<p>Then run</p>
+<p><code>source tkmodlabenv.sh</code></p>
+<p>in case you use <code>bash</code> or add the script to your <code>.bashrc</code>. You should
+now be good to go and build the software by running</p>
+<p><code>make</code></p></div>
         </div>
 
         <footer class="col-md-12">
@@ -181,12 +198,12 @@
             <center>Documentation built with <a href="http://www.mkdocs.org/">MkDocs</a>.</center>
         </footer>
 
-        <script src="./js/jquery-1.10.2.min.js"></script>
-        <script src="./js/bootstrap-3.0.3.min.js"></script>
-        <script src="./js/highlight.pack.js"></script>
-        <script>var base_url = '.';</script>
-        <script data-main="./mkdocs/js/search.js" src="./mkdocs/js/require.js"></script>
-        <script src="./js/base.js"></script>
+        <script src="../../js/jquery-1.10.2.min.js"></script>
+        <script src="../../js/bootstrap-3.0.3.min.js"></script>
+        <script src="../../js/highlight.pack.js"></script>
+        <script>var base_url = '../..';</script>
+        <script data-main="../../mkdocs/js/search.js" src="../../mkdocs/js/require.js"></script>
+        <script src="../../js/base.js"></script>
 
         <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="Search Modal" aria-hidden="true">
             <div class="modal-dialog">
