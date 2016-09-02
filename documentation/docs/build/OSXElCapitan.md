@@ -16,14 +16,23 @@ Installation instruction for homebrew can be found on
 
 Once homebrew is installed, install the following packages
 
-   * `brew install cmake`
-   * `brew install gcc`
-   * `brew install opencv`
-   * `brew install gphoto2`
-   * `brew install pkg-config`
-   * `brew install exiv2`
-   * `brew install qt4`
-   * `brew install boost`
+   `brew install cmake`<br/>
+   `brew install gcc`<br/>
+   `brew install opencv`<br/>
+   `brew install gphoto2`<br/>
+   `brew install pkg-config`<br/>
+   `brew install exiv2`<br/>
+   `brew install qt4`<br/>
+   `brew install boost`
+
+For some extra libraries and tool ROOT is required. ROOT can also be installed using homebrew via
+
+   `brew tap homebrew/science`<br/>
+   `brew install root6`<br/>
+   `source $(brew --prefix root6)/libexec/thisroot.sh`
+
+You should add the last line to your `.bashrc` in order to load the settings for ROOT
+every time a terminal is opened.
 
 ## Building
 
