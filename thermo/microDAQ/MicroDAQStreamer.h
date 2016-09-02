@@ -14,6 +14,8 @@ class MicroDAQStreamer : public QObject
 public:
     explicit MicroDAQStreamer(MicroDAQModel* model, QObject* parent=0);
 
+    const QString& getFilename() const { return ofilename_; }
+
 protected slots:
     void handleDAQMessage(const QString& message);
     void daqStateChanged(bool state);
@@ -21,6 +23,7 @@ protected slots:
 protected:
   MicroDAQModel* model_;
   bool isStreaming_;
+  QString ofilename_;
   QFile* ofile_;
   QTextStream* stream_;
   QDir currentDir_;
