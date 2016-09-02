@@ -6,6 +6,11 @@
             "title": "Home"
         }, 
         {
+            "location": "/build/", 
+            "text": "", 
+            "title": "Build"
+        }, 
+        {
             "location": "/thermo/thermoDAQ/", 
             "text": "", 
             "title": "thermoDAQ"
@@ -49,6 +54,11 @@
             "location": "/defo/defoDAQScripting/#julabo", 
             "text": "julabo.enableCirculator() \nswitches circulator on    julabo.disableCirculator() \nswitches circulator off    int julabo.circulatorState() \nreturns the state of the circulator    julabo.setWorkingTemperature( double temperature = [-50,30] ) \nset the working temperature    julabo.workingTemperature() \nreturns the working temperature    julabo.bath() \nreturns the bath temperature    julabo.safety() \nreturns the safety temperature    julabo.setP( double xp = [0.1,99.9] ) \nset new proportional PID controller parameter    julabo.setI( int tn = [3,9999] ) \nset new integral PID controller parameter    julabo.setD( int tv = [0,999] ) \nset new differential PID controller parameter    julabo.setPID( double xp = [0.1,99.9], int tn = [3,9999], int tv = [0,999] ) \nset new PID controller parameters    double julabo.getP() \nreturns proportional PID controller parameter    int julabo.getI() \nreturns integral PID controller parameter    int julabo.getD() \nreturns differential PID controller parameter    julabo.setPumpPressure( uint pressure = [1,4] ) \nchanges the pump pressure    uint julabo.pumpPressure() \nreturns the pump pressure", 
             "title": "julabo"
+        }, 
+        {
+            "location": "/", 
+            "text": "", 
+            "title": "Assembly"
         }
     ]
 }

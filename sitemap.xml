@@ -4,7 +4,15 @@
     
     <url>
      <loc>http://desy-fh-elab.github.io/cmstkmodlab/</loc>
-     <lastmod>2015-07-17</lastmod>
+     <lastmod>2016-09-02</lastmod>
+     <changefreq>daily</changefreq>
+    </url>
+    
+
+    
+    <url>
+     <loc>http://desy-fh-elab.github.io/cmstkmodlab/build/</loc>
+     <lastmod>2016-09-02</lastmod>
      <changefreq>daily</changefreq>
     </url>
     
@@ -13,7 +21,7 @@
         
     <url>
      <loc>http://desy-fh-elab.github.io/cmstkmodlab/thermo/thermoDAQ/</loc>
-     <lastmod>2015-07-17</lastmod>
+     <lastmod>2016-09-02</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
@@ -23,16 +31,24 @@
         
     <url>
      <loc>http://desy-fh-elab.github.io/cmstkmodlab/defo/defoDAQ/</loc>
-     <lastmod>2015-07-17</lastmod>
+     <lastmod>2016-09-02</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
     <url>
      <loc>http://desy-fh-elab.github.io/cmstkmodlab/defo/defoDAQScripting/</loc>
-     <lastmod>2015-07-17</lastmod>
+     <lastmod>2016-09-02</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
+    
+
+    
+    <url>
+     <loc>http://desy-fh-elab.github.io/cmstkmodlab/</loc>
+     <lastmod>2016-09-02</lastmod>
+     <changefreq>daily</changefreq>
+    </url>
     
 
 </urlset>
