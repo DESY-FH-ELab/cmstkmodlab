@@ -12,9 +12,15 @@ LIBS += -L@basepath@/devices/lib -lTkModLabConrad
 LIBS += -L@basepath@/devices/lib -lTkModLabCanon
 LIBS += -L@basepath@/external/ddierckx -lddierckx
 LIBS += -L@basepath@/common -lCommon
-LIBS += -lgphoto2 -lexiv2
 
 QMAKE = @qmake@
+
+macx {
+  CONFIG+=x86_64
+  QMAKE_CXXFLAGS += -stdlib=libc++
+  #QMAKE_MAC_SDK = macosx10.11
+  QMAKE_MACOSX_DEPLOYMENT_TARGET = 10.11
+}
 
 CONFIG+=c++11
 QMAKE_CXXFLAGS += -std=c++11
@@ -24,11 +30,10 @@ macx {
   QMAKE_CXXFLAGS += -DAPPLICATIONVERSIONSTR=\\\"`git describe --dirty --always --tags`\\\"
 }
 
-macx {
-  LIBS += -L/opt/local/lib -lopencv_core -lopencv_imgproc -lopencv_highgui
-} else {
-  LIBS += -lopencv_core -lopencv_imgproc -lopencv_highgui
-}
+CONFIG += link_pkgconfig
+PKGCONFIG += libgphoto2
+PKGCONFIG += opencv
+PKGCONFIG += exiv2
 
 QT += core xml
 greaterThan(QT_MAJOR_VERSION, 4) {
@@ -36,23 +41,23 @@ greaterThan(QT_MAJOR_VERSION, 4) {
 } 
 
 TARGET = common_test
-DEPENDPATH += ../common
+TEMPLATE = app
+
+macx {
+  QMAKE_POST_LINK = install_name_tool -change libCommon.1.dylib @basepath@/common/libCommon.1.dylib $(TARGET)
+}
+
+DEPENDPATH += @basepath@/common
 INCLUDEPATH += .
 INCLUDEPATH += ..
 INCLUDEPATH += @basepath@
 INCLUDEPATH += @basepath@/common
 
-macx {
-  QMAKE_MACOSX_DEPLOYMENT_TARGET=10.9
-}
-
-greaterThan(QT_MAJOR_VERSION, 4){
+greaterThan(QT_MAJOR_VERSION, 4) {
   cache()
 }
 
 CONFIG   += console
 CONFIG   -= app_bundle
-
-TEMPLATE = app
 
 SOURCES += main.cpp

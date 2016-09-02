@@ -1,7 +1,7 @@
 #ifndef DEFOEXIFREADER_H
 #define DEFOEXIFREADER_H
 
-#include <exif.hpp>
+#include <exiv2/exif.hpp>
 
 #include <QString>
 

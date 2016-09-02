@@ -1,0 +1,11 @@
+circleCalibration
+circleCalibration.pro
+circleCalibration.pro.user
+dump.txt
+.qmake.stash
+Makefile
+*.d
+*.o
+*~
+moc_*
+

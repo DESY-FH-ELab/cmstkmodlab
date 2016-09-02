@@ -16,15 +16,15 @@ class ApplicationConfigWriter : public QObject
   ApplicationConfigWriter( const std::string & filename );
   ~ApplicationConfigWriter();
 
-  void write(std::map<std::string,std::string> &keyvalueMap);
+  void write(std::multimap<std::string,std::string> &keyvalueMap);
   std::string getFileName( void ) { return outputFileName_; }
 
  private:
 
   std::string outputFileName_;
   
-  void writeMerge(std::map<std::string,std::string> &keyvalueMap);
-  void writeNew(std::map<std::string,std::string> &keyvalueMap);
+  void writeMerge(std::multimap<std::string,std::string> &keyvalueMap);
+  void writeNew(std::multimap<std::string,std::string> &keyvalueMap);
 };
 
 #endif // APPLICATIONCONFIGWRITER_H

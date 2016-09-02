@@ -4,8 +4,6 @@
 #
 #-------------------------------------------------
 
-#INCLUDEPATH += @qwtincludes@
-#LIBS += @qwtlibs@ -lGL -lGLU
 LIBS += -L@basepath@/devices/lib -lTkModLabKeithley
 LIBS += -L@basepath@/devices/lib -lTkModLabGreisinger
 LIBS += -L@basepath@/devices/lib -lTkModLabJulabo
@@ -17,13 +15,22 @@ LIBS += -L@basepath@/devices/lib -lTkModLabArduino
 LIBS += -L@basepath@/devices/lib -lTkModLabCori
 LIBS += -L@basepath@/external/ddierckx -lddierckx
 
+macx {
+  CONFIG+=x86_64
+  QMAKE_CXXFLAGS += -stdlib=libc++
+  #QMAKE_MAC_SDK = macosx10.11
+  QMAKE_MACOSX_DEPLOYMENT_TARGET = 10.11
+}
+
 QMAKE = @qmake@
 
 CONFIG+=c++11
 QMAKE_CXXFLAGS += -std=c++11
+
 macx {
   QMAKE_CXXFLAGS += -DAPPLICATIONVERSIONSTR=\\\"unknown\\\"
-} else {
+}
+else {
   QMAKE_CXXFLAGS += -DAPPLICATIONVERSIONSTR=\\\"`git describe --dirty --always --tags`\\\"
 }
 
@@ -31,15 +38,12 @@ DEFINES += @configdefines@
 QT += core gui opengl script xml
 TARGET = Common
 TEMPLATE = lib
+
 DEPENDPATH += .
 INCLUDEPATH += .
 INCLUDEPATH += @basepath@
 
-macx {
-  QMAKE_MACOSX_DEPLOYMENT_TARGET=10.9
-}
-
-greaterThan(QT_MAJOR_VERSION, 4){
+greaterThan(QT_MAJOR_VERSION, 4) {
   cache()
 }
 
@@ -81,11 +85,12 @@ HEADERS += nqlogger.h \
            ScriptableIota.h \
            IotaWidget.h \
            ArduinoPresWidget.h \
-	   ScriptableArduinoPres.h \
+           ScriptableArduinoPres.h \
            ArduinoPresModel.h \
            CoriFlowWidget.h \
            ScriptableCoriFlow.h \
-           CoriFlowModel.h
+           CoriFlowModel.h \
+           IntegerComboBox.h
            
 SOURCES += nqlogger.cc \
            npoint2D.cc \
@@ -125,4 +130,5 @@ SOURCES += nqlogger.cc \
            ArduinoPresModel.cc \
            CoriFlowWidget.cc \
            ScriptableCoriFlow.cc \
-           CoriFlowModel.cc
+           CoriFlowModel.cc \
+           IntegerComboBox.cc

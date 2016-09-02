@@ -1,7 +1,7 @@
 #include <cmath>
 #include <iostream>
 
-#include <TString.h>
+//#include <TString.h>
 
 #include <nqlogger.h>
 
@@ -43,8 +43,8 @@ DefoPointFinder::DefoPointFinder(int block,
 
 DefoPointFinder::~DefoPointFinder()
 {
-  delete gr2D_;
-  delete fitFunc_;
+  //delete gr2D_;
+  //delete fitFunc_;
 
   NQLogMessage("DefoPointFinder") << "DefoPointerFinder for block "
       << block_ << " destructed";
@@ -62,6 +62,7 @@ void DefoPointFinder::run()
     }
   }
 
+  /*
   double x[4*pointModel_->getHalfSquareWidth()*pointModel_->getHalfSquareWidth()];
   double y[4*pointModel_->getHalfSquareWidth()*pointModel_->getHalfSquareWidth()];
   double z[4*pointModel_->getHalfSquareWidth()*pointModel_->getHalfSquareWidth()];
@@ -71,7 +72,8 @@ void DefoPointFinder::run()
                        &x[0], &y[0], &z[0]);
   gr2D_->SetDirectory(0);
   fitFunc_ = new TF2(Form("fitFunc_%d", block_), twoDgauss, 0, 0, image_.width(), image_.height(), 5);
-
+  */
+  
   const DefoPointCollection* points = findPoints(&searchArea_,
                                                  &roi,
                                                  pointModel_->getThresholdValue(DefoPointRecognitionModel::THRESHOLD_1),
@@ -329,6 +331,7 @@ DefoPoint DefoPointFinder::getFitPosition(const DefoPoint& intermediate,
 
   DefoPoint newPoint = intermediate;
 
+  /*
   QRgb rgb;
   double value;
   int nPoints = 0;
@@ -362,7 +365,8 @@ DefoPoint DefoPointFinder::getFitPosition(const DefoPoint& intermediate,
 
   newPoint.setX(fitFunc_->GetParameter(1));
   newPoint.setY(fitFunc_->GetParameter(3));
-
+  */
+  
   return newPoint;
 }
 
