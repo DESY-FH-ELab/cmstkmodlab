@@ -7,7 +7,9 @@ repo_url: https://github.com/DESY-FH-ELab/cmstkmodlab
 
 pages:
 - Home: index.md
-- Build: build.md
+- Build:
+    - configure: build/configure.md
+    - OSX El Capitan: build/OSXElCapitan.md
 - Thermo:
     - thermoDAQ: thermo/thermoDAQ.md
 - Defo:
