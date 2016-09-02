@@ -9,6 +9,7 @@ pages:
 - Home: index.md
 - Build:
     - configure: build/configure.md
+    - Ubuntu Linux: build/UbuntuLinux.md
     - OSX El Capitan: build/OSXElCapitan.md
 - Thermo:
     - thermoDAQ: thermo/thermoDAQ.md
