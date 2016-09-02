@@ -10,6 +10,9 @@ LaserControlsWidget::LaserControlsWidget(LaserModel* model,
     QVBoxLayout *layout = new QVBoxLayout(this);
     setLayout(layout);
 
+    checkBoxEnableLaser_ = new QCheckBox("Enable Laser", this);
+    layout->addWidget(checkBoxEnableLaser_);
+
     QHBoxLayout *samplingLayout = new QHBoxLayout(this);
     layout->addLayout(samplingLayout);
     QHBoxLayout *averagingLayout = new QHBoxLayout(this);
@@ -67,5 +70,15 @@ LaserControlsWidget::LaserControlsWidget(LaserModel* model,
 	laserModel_, SLOT(setMaterialMode(int)));
     connect(diffuseBox_, SIGNAL(currentIndexChanged(int)),
 	laserModel_, SLOT(setDiffuseMode(int)));
-    
+    connect(checkBoxEnableLaser_, SIGNAL(toggled(bool)),
+            laserModel_, SLOT(setDeviceEnabled(bool)));
+
+    connect(laserModel_, SIGNAL(deviceStateChanged(State)),
+	this, SLOT(laserStateChanged(State)));
+
+}
+
+void LaserControlsWidget::laserStateChanged(State newState)
+{
+    checkBoxEnableLaser_->setChecked(newState == READY || newState == INITIALIZING  );
 }

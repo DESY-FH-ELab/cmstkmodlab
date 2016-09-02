@@ -30,6 +30,10 @@ class LaserControlsWidget : public QWidget
     QComboBox* averagingBox_;
     QComboBox* materialBox_;
     QComboBox* diffuseBox_;
+    QCheckBox* checkBoxEnableLaser_;
+
+    public slots:
+        void laserStateChanged(State newState);
 };
 
 #endif // LASERCONTROLSWIDGET_H
