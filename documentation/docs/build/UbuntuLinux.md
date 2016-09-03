@@ -28,7 +28,8 @@ on the command line. You can now install the required packages via
    `sudo apt-get install libopencv-dev`<br/>
    `sudo apt-get install pkg-config`<br/>
    `sudo apt-get install libboost-dev`<br/>
-   `sudo apt-get install libcurl3-nss`
+   `sudo apt-get install arduino`<br/>
+   `sudo apt-get install arduino-mk`
 
 ## Building
 
