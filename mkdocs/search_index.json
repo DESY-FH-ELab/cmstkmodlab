@@ -17,17 +17,17 @@
         }, 
         {
             "location": "/build/UbuntuLinux/", 
-            "text": "Build Instructions for Ubuntu Linux\n\n\nRequirements\n\n\nBuilding\n\n\nGo to the directory to which you checked out the source code and run\n\n\n./configure\n [options]\n\n\nwith options as described in the \ndocumentation\n.\n\n\nThen run\n\n\nsource tkmodlabenv.sh\n\n\nin case you use \nbash\n or add the script to your \n.bashrc\n. You should\nnow be good to go and build the software by running\n\n\nmake", 
+            "text": "Build Instructions for Ubuntu Linux (16.04)\n\n\nRequirements\n\n\nThe software relies on package version not available in a standard Ubuntu installation.\nIn order to get the latest versions of the installed packages edit the file\n\nsudo pico /etc/apt/sources.list\n and add the line\n\n\ndeb http://archive.ubuntu.com/ubuntu/ xenial-proposed restricted main multiverse universe\n\n\nto its end. After that execute\n\n\nsudo apt-get update\n\n   \nsudo apt-get upgrade\n\n\non the command line. You can now install the required packages via\n\n\nsudo apt-get install git\n\n   \nsudo apt-get install cmake\n\n   \nsudo apt-get install root-system\n\n   \nsudo apt-get install gcc\n\n   \nsudo apt-get install locate\n\n   \nsudo apt-get install libqt4-dev\n\n   \nsudo apt-get install libqwt-dev\n\n   \nsudo apt-get install libqwtplot3d-qt4-dev\n\n   \nsudo apt-get install libgphoto2-dev\n\n   \nsudo apt-get install libexiv2-dev\n\n   \nsudo apt-get install libopencv-dev\n\n   \nsudo apt-get install pkg-config\n\n   \nsudo apt-get install libboost-dev\n\n   \nsudo apt-get install arduino\n\n   \nsudo apt-get install arduino-mk\n\n\nBuilding\n\n\nGo to the directory to which you checked out the source code and run\n\n\n./configure\n [options]\n\n\nwith options as described in the \ndocumentation\n.\n\n\nThen run\n\n\nsource tkmodlabenv.sh\n\n\nin case you use \nbash\n or add the script to your \n.bashrc\n. You should\nnow be good to go and build the software by running\n\n\nmake", 
             "title": "Ubuntu Linux"
         }, 
         {
-            "location": "/build/UbuntuLinux/#build-instructions-for-ubuntu-linux", 
+            "location": "/build/UbuntuLinux/#build-instructions-for-ubuntu-linux-1604", 
             "text": "", 
-            "title": "Build Instructions for Ubuntu Linux"
+            "title": "Build Instructions for Ubuntu Linux (16.04)"
         }, 
         {
             "location": "/build/UbuntuLinux/#requirements", 
-            "text": "", 
+            "text": "The software relies on package version not available in a standard Ubuntu installation.\nIn order to get the latest versions of the installed packages edit the file sudo pico /etc/apt/sources.list  and add the line  deb http://archive.ubuntu.com/ubuntu/ xenial-proposed restricted main multiverse universe  to its end. After that execute  sudo apt-get update \n    sudo apt-get upgrade  on the command line. You can now install the required packages via  sudo apt-get install git \n    sudo apt-get install cmake \n    sudo apt-get install root-system \n    sudo apt-get install gcc \n    sudo apt-get install locate \n    sudo apt-get install libqt4-dev \n    sudo apt-get install libqwt-dev \n    sudo apt-get install libqwtplot3d-qt4-dev \n    sudo apt-get install libgphoto2-dev \n    sudo apt-get install libexiv2-dev \n    sudo apt-get install libopencv-dev \n    sudo apt-get install pkg-config \n    sudo apt-get install libboost-dev \n    sudo apt-get install arduino \n    sudo apt-get install arduino-mk", 
             "title": "Requirements"
         }, 
         {
@@ -37,17 +37,17 @@
         }, 
         {
             "location": "/build/RaspbianLinux/", 
-            "text": "Build Instructions for Raspbian Linux\n\n\nRequirements\n\n\nBuilding\n\n\nGo to the directory to which you checked out the source code and run\n\n\n./configure\n [options]\n\n\nwith options as described in the \ndocumentation\n.\n\n\nThen run\n\n\nsource tkmodlabenv.sh\n\n\nin case you use \nbash\n or add the script to your \n.bashrc\n. You should\nnow be good to go and build the software by running\n\n\nmake", 
+            "text": "Build Instructions for Raspbian Linux (Jessie)\n\n\nRequirements\n\n\nThe software relies on package version not available in a standard Ubuntu installation.\nIn order to get the latest versions of the installed packages edit the file\n\nsudo pico /etc/apt/sources.list\n and add the line\n\n\ndeb http://archive.raspbian.org/raspbian/ testing main contrib non-free rpi\n\n\nto its end. After that execute\n\n\nsudo apt-get update\n\n   \nsudo apt-get upgrade\n\n\non the command line. You can now install the required packages via\n\n\nsudo apt-get install git\n\n   \nsudo apt-get install cmake\n\n   \nsudo apt-get install root-system\n\n   \nsudo apt-get install gcc\n\n   \nsudo apt-get install locate\n\n   \nsudo apt-get install libqt4-dev\n\n   \nsudo apt-get install libqwt-dev\n\n   \nsudo apt-get install libqwtplot3d-qt4-dev\n\n   \nsudo apt-get install libgphoto2-dev\n\n   \nsudo apt-get install libexiv2-dev\n\n   \nsudo apt-get install libopencv-dev\n\n   \nsudo apt-get install pkg-config\n\n   \nsudo apt-get install libboost-dev\n\n   \nsudo apt-get install arduino\n\n   \nsudo apt-get install arduino-mk\n\n\nBuilding\n\n\nGo to the directory to which you checked out the source code and run\n\n\n./configure\n [options]\n\n\nwith options as described in the \ndocumentation\n.\n\n\nThen run\n\n\nsource tkmodlabenv.sh\n\n\nin case you use \nbash\n or add the script to your \n.bashrc\n. You should\nnow be good to go and build the software by running\n\n\nmake", 
             "title": "Raspbian Linux"
         }, 
         {
-            "location": "/build/RaspbianLinux/#build-instructions-for-raspbian-linux", 
+            "location": "/build/RaspbianLinux/#build-instructions-for-raspbian-linux-jessie", 
             "text": "", 
-            "title": "Build Instructions for Raspbian Linux"
+            "title": "Build Instructions for Raspbian Linux (Jessie)"
         }, 
         {
             "location": "/build/RaspbianLinux/#requirements", 
-            "text": "", 
+            "text": "The software relies on package version not available in a standard Ubuntu installation.\nIn order to get the latest versions of the installed packages edit the file sudo pico /etc/apt/sources.list  and add the line  deb http://archive.raspbian.org/raspbian/ testing main contrib non-free rpi  to its end. After that execute  sudo apt-get update \n    sudo apt-get upgrade  on the command line. You can now install the required packages via  sudo apt-get install git \n    sudo apt-get install cmake \n    sudo apt-get install root-system \n    sudo apt-get install gcc \n    sudo apt-get install locate \n    sudo apt-get install libqt4-dev \n    sudo apt-get install libqwt-dev \n    sudo apt-get install libqwtplot3d-qt4-dev \n    sudo apt-get install libgphoto2-dev \n    sudo apt-get install libexiv2-dev \n    sudo apt-get install libopencv-dev \n    sudo apt-get install pkg-config \n    sudo apt-get install libboost-dev \n    sudo apt-get install arduino \n    sudo apt-get install arduino-mk", 
             "title": "Requirements"
         }, 
         {
