@@ -7,7 +7,7 @@ LIBS += -L@basepath@/devices/lib -lTkModLabHuber
 LIBS += -L@basepath@/devices/lib -lTkModLabArduino
 LIBS += -L@basepath@/devices/lib -lTkModLabCori
 LIBS += -L@basepath@/common -lCommon
-LIBS += -lcurl -L@basepath@/external/twitcurl -ltwitcurl
+LIBS += -L@basepath@/external/twitcurl -ltwitcurl -lcurl
 LIBS += @qwtlibs@
 
 QMAKE = @qmake@
