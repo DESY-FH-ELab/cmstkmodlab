@@ -62,9 +62,10 @@ if test $ARCHITECTURE = "Darwin"; then
     QWTLIBS="-F/usr/local/lib -framework qwt"
     QMAKE="qmake"
 fi
-if test $ARCHITECTURE = "Linux" && test $KERNELMINOR -lt 6; then
+if test $ARCHITECTURE = "Linux" && test $KERNELMAJOR -lt 2 && test $KERNELMINOR -lt 6; then
     echo "Linux kernel minor version < 6: fake device support forced"
     USEFAKEDEVICES=1
+    CONFIGDEFINES="USE_FAKEIO"
 fi
 if test $ARCHITECTURE = "Linux"; then
     SOFLAGS="-shared"
