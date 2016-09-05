@@ -181,21 +181,13 @@
 
 <h1 id="build-instructions-for-ubuntu-linux-1604">Build Instructions for Ubuntu Linux (16.04)</h1>
 <h2 id="requirements">Requirements</h2>
-<p>The software relies on package version not available in a standard Ubuntu installation.
-In order to get the latest versions of the installed packages edit the file
-<code>sudo pico /etc/apt/sources.list</code> and add the line</p>
-<p><code>deb http://archive.ubuntu.com/ubuntu/ xenial-proposed restricted main multiverse universe</code></p>
-<p>to its end. After that execute</p>
-<p><code>sudo apt-get update</code>
-   <code>sudo apt-get upgrade</code></p>
-<p>on the command line. You can now install the required packages via</p>
+<p>Please install the following packages via</p>
 <p><code>sudo apt-get install git</code><br/>
    <code>sudo apt-get install cmake</code><br/>
    <code>sudo apt-get install root-system</code><br/>
    <code>sudo apt-get install gcc</code><br/>
    <code>sudo apt-get install locate</code><br/>
    <code>sudo apt-get install libqt4-dev</code><br/>
-   <code>sudo apt-get install libqwt-dev</code><br/>
    <code>sudo apt-get install libqwtplot3d-qt4-dev</code><br/>
    <code>sudo apt-get install libgphoto2-dev</code><br/>
    <code>sudo apt-get install libexiv2-dev</code><br/>
@@ -203,7 +195,19 @@ In order to get the latest versions of the installed packages edit the file
    <code>sudo apt-get install pkg-config</code><br/>
    <code>sudo apt-get install libboost-dev</code><br/>
    <code>sudo apt-get install arduino</code><br/>
-   <code>sudo apt-get install arduino-mk</code></p>
+   <code>sudo apt-get install arduino-mk</code>
+   <code>sudo apt-get install libcurl4-openssl-dev</code></p>
+<p>The software relies on a newer version of <code>qwt</code> (&gt;=6.1). In order to install this
+newer version, edit the file
+<code>sudo pico /etc/apt/sources.list</code> and add the line</p>
+<p><code>deb http://archive.raspbian.org/raspbian/ testing main contrib non-free rpi</code></p>
+<p>to its end. After that execute</p>
+<p><code>sudo apt-get update</code></p>
+<p>You can now install <code>qwt</code> via</p>
+<p><code>sudo apt-get install libqt4-dev</code><br/></p>
+<p>You should now comment out the line previously added to <code>/etc/apt/sources.list</code>
+and run </p>
+<p><code>sudo apt-get update</code></p>
 <h2 id="building">Building</h2>
 <p>Go to the directory to which you checked out the source code and run</p>
 <p><code>./configure</code> [options]</p>
