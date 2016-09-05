@@ -22,3 +22,5 @@ setenv DYLD_LIBRARY_PATH "@basepath@/tools/TkModLabRoot:$DYLD_LIBRARY_PATH"
 setenv DYLD_LIBRARY_PATH "@basepath@/common:$DYLD_LIBRARY_PATH"
 setenv DYLD_LIBRARY_PATH "@basepath@/defo/defoCommon:$DYLD_LIBRARY_PATH"
 setenv DYLD_LIBRARY_PATH "@basepath@/assembly/assemblyCommon:$DYLD_LIBRARY_PATH"
+
+setenv PKG_CONFIG_PATH "/usr/lib/pkgconfig:/usr/local/lib/pkgconfig:$PKG_CONFIG_PATH"
