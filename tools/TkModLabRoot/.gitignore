@@ -1,5 +1,6 @@
 *.o
-TkModLabRootDict*
+*Dict.cc
 *.d
+*.pcm
 libTkModLabRoot.*
 
