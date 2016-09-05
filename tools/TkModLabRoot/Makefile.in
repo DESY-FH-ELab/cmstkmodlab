@@ -55,6 +55,7 @@ endif
 
 CXXFLAGS     += $(ROOTCFLAGS)
 
+RLIBMAP	 := rlibmap
 RLIBDEP	 := libSmatrix.so libGraf.so
 RML	     := $(addprefix -rml ,$(RLIBDEP)) $(addprefix -rml ,lib$(TARGET).so)
 
@@ -63,11 +64,21 @@ ELIBS    := $(BASEPATH)/external/ddierckx/*.o
 ALLDEPEND = $(addsuffix .d,$(MODULES))
 EXISTDEPEND = $(shell find . -name \*.d -type f -print)
 
+ifeq ($(ROOTMAJOR),5)
+all:  depend lib$(TARGET).so lib$(TARGET).rootmap
+endif
+
+ifeq ($(ROOTMAJOR),6)
 all:  depend lib$(TARGET).so
+endif
 
 lib$(TARGET).so: $(OBJECTS)
 	@echo "Linking shared library $@"
 	@$(LD) $(SOFLAGS) $^ -o $@ $(ELIBS) -lgfortran
+
+lib$(TARGET).rootmap: lib$(TARGET).so LinkDef.h
+	@echo "Creating library rootmap $@"
+	@$(RLIBMAP) -f -o $@ -d lib$(TARGET).so $(RLIBDEP) -c LinkDef.h
 
 $(TARGET)5Dict.cc: $(addsuffix .h,$(MODULES)) LinkDef.h
 	@echo "Generating dictionary $@"
