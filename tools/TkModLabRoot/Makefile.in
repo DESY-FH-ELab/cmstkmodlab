@@ -86,7 +86,7 @@ $(TARGET)5Dict.cc: $(addsuffix .h,$(MODULES)) LinkDef.h
 
 $(TARGET)6Dict.cc: $(addsuffix .h,$(MODULES)) LinkDef.h
 	@echo "Generating dictionary $@"
-	rootcling -f $(TARGET)6Dict.cc -rmf lib$(TARGET).rootmap $(RML) $(addsuffix .h,$(MODULES)) LinkDef.h
+	@rootcling -f $(TARGET)6Dict.cc -rmf lib$(TARGET).rootmap $(RML) $(addsuffix .h,$(MODULES)) LinkDef.h
 
 %.d: %.cc
 	@echo Making dependency for file $< ...
