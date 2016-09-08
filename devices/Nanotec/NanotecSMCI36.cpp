@@ -187,6 +187,25 @@ int NanotecSMCI36::GetEncoderDirection() const
   return std::atoi(buffer);
 }
 
+void NanotecSMCI36::SetSwingOutTime(int time)
+{
+  if (time<0 || time > 255) return;
+  char command[20];
+  sprintf(command, "O%d", time);
+
+  comHandler_->SendCommand(command);
+}
+
+int NanotecSMCI36::GetSwingOutTime() const
+{
+  comHandler_->SendCommand("ZO");
+  char buffer[1000];
+  comHandler_->ReceiveString(buffer);
+  StripBuffer(buffer);
+
+  return std::atoi(buffer);
+}
+
 void NanotecSMCI36::SetInputPinFunction(int pin, int function)
 {
   if (pin<1 || pin>6) return;

@@ -118,6 +118,9 @@ class VNanotecSMCI36
   virtual void SetEncoderDirection(int direction) = 0;
   virtual int GetEncoderDirection() const = 0;
 
+  virtual void SetSwingOutTime(int time) = 0;
+  virtual int GetSwingOutTime() const = 0;
+
   virtual void SetInputPinFunction(int pin, int function) = 0;
   virtual int GetInputPinFunction(int pin) const = 0;
 

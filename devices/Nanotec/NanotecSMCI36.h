@@ -47,6 +47,9 @@ class NanotecSMCI36 : public VNanotecSMCI36
   void SetEncoderDirection(int direction);
   int GetEncoderDirection() const;
 
+  void SetSwingOutTime(int time);
+  int GetSwingOutTime() const;
+
   void SetInputPinFunction(int pin, int function);
   int GetInputPinFunction(int pin) const;
 
