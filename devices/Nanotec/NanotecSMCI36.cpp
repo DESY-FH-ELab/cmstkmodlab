@@ -31,6 +31,16 @@ std::string NanotecSMCI36::GetFirmwareVersion() const
   return std::string(buffer);
 }
 
+int NanotecSMCI36::GetStatus() const
+{
+  comHandler_->SendCommand("$");
+  char buffer[1000];
+  comHandler_->ReceiveString(buffer);
+  StripBuffer(buffer);
+
+  return std::atoi(buffer);
+}
+
 void NanotecSMCI36::StripBuffer(char* buffer) const
 {
   for (unsigned int c=0; c<sizeof(buffer);++c) {

@@ -14,7 +14,8 @@ int main()
 
   NanotecSMCI36_t smci36("/dev/ttyUSB0");
 
-  std::cout << smci36.GetFirmwareVersion() << std::endl;
+  std::cout << "firmware version:          " << smci36.GetFirmwareVersion() << std::endl;
+  std::cout << "status:                    " << std::hex << smci36.GetStatus() << std::endl;
 
   return 0;
 }

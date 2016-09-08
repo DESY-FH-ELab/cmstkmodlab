@@ -24,6 +24,7 @@ class NanotecSMCI36 : public VNanotecSMCI36
   bool DeviceAvailable() const;
 
   std::string GetFirmwareVersion() const;
+  int GetStatus() const;
 
  private:
 
