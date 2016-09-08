@@ -149,6 +149,25 @@ int NanotecSMCI36::GetMotorID() const
   return std::atoi(buffer);
 }
 
+void NanotecSMCI36::SetErrorCorrectionMode(int mode)
+{
+  if (mode < smciErrCorrectionOff || mode > smciErrCorrectionDuringTravel) return;
+  char command[20];
+  sprintf(command, "U%d", mode);
+
+  comHandler_->SendCommand(command);
+}
+
+int NanotecSMCI36::GetErrorCorrectionMode() const
+{
+  comHandler_->SendCommand("ZU");
+  char buffer[1000];
+  comHandler_->ReceiveString(buffer);
+  StripBuffer(buffer);
+
+  return std::atoi(buffer);
+}
+
 void NanotecSMCI36::SetInputPinFunction(int pin, int function)
 {
   if (pin<1 || pin>6) return;

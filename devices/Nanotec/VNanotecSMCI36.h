@@ -40,6 +40,12 @@ class VNanotecSMCI36
     smciAdaptiveStepMode        = 255,
   };
 
+  enum ErrorCorrectionMode {
+    smciErrCorrectionOff          = 0,
+    smciErrCorrectionAfterTravel  = 1,
+    smciErrCorrectionDuringTravel = 2
+  };
+
   enum InputPinFunction {
     smciIPinUserDefined          =  0,
     smciIStartRecordErrorReset   =  1,
@@ -105,6 +111,9 @@ class VNanotecSMCI36
   virtual int GetMotorID() const = 0;
 
   /* TODO: Limit Switch Behaviour */
+
+  virtual void SetErrorCorrectionMode(int mode) = 0;
+  virtual int GetErrorCorrectionMode() const = 0;
 
   virtual void SetInputPinFunction(int pin, int function) = 0;
   virtual int GetInputPinFunction(int pin) const = 0;

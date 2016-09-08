@@ -32,6 +32,9 @@ class NanotecSMCI36Fake : public VNanotecSMCI36
   void SetMotorID(int ID);
   int GetMotorID() const;
 
+  void SetErrorCorrectionMode(int mode);
+  int GetErrorCorrectionMode() const;
+
   void SetInputPinFunction(int pin, int function);
   int GetInputPinFunction(int pin) const;
 
@@ -48,6 +51,7 @@ class NanotecSMCI36Fake : public VNanotecSMCI36
   int phaseCurrent_;
   int stepMode_;
   int motorID_;
+  int errorCorrectionMode_;
   int standStillPhaseCurrent_;
   int inputPinFunction_[7];
   int outputPinFunction_[4];

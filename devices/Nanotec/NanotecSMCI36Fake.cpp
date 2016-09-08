@@ -15,6 +15,7 @@ NanotecSMCI36Fake::NanotecSMCI36Fake( const ioport_t ioPort )
   stepMode_ = smci02MicroStepsPerFullStep;
 
   motorID_ = 1;
+  errorCorrectionMode_ = smciErrCorrectionAfterTravel;
 
   inputPinFunction_[1] = smciIPinUserDefined;
   inputPinFunction_[2] = smciIPinUserDefined;
@@ -108,6 +109,17 @@ void NanotecSMCI36Fake::SetMotorID(int ID)
 int NanotecSMCI36Fake::GetMotorID() const
 {
   return motorID_;
+}
+
+void NanotecSMCI36Fake::SetErrorCorrectionMode(int mode)
+{
+  if (mode < smciErrCorrectionOff || mode > smciErrCorrectionDuringTravel) return;
+  errorCorrectionMode_ = mode;
+}
+
+int NanotecSMCI36Fake::GetErrorCorrectionMode() const
+{
+  return errorCorrectionMode_;
 }
 
 void NanotecSMCI36Fake::SetInputPinFunction(int pin, int function)

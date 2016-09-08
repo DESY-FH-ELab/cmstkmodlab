@@ -22,6 +22,7 @@ int main()
   std::cout << "standstill phase current:  " << smci36.GetStandStillPhaseCurrent() << std::endl;
   std::cout << "step mode:                 " << smci36.GetStepMode() << std::endl;
   std::cout << "motor ID:                  " << smci36.GetMotorID() << std::endl;
+  std::cout << "error correction mode:     " << smci36.GetErrorCorrectionMode() << std::endl;
 
   std::cout << "input pin function:        ";
   for (int p=1;p<=6;++p) std::cout << smci36.GetInputPinFunction(p) << " ";
