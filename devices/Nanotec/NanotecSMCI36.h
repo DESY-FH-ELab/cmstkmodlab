@@ -91,6 +91,9 @@ class NanotecSMCI36 : public VNanotecSMCI36
   void SetPositioningMode(int mode);
   int GetPositioningMode() const;
 
+  void SetTravelDistance(int distance);
+  int GetTravelDistance() const;
+
  private:
 
   void StripBuffer( char* ) const;

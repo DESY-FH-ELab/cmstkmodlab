@@ -42,6 +42,7 @@ NanotecSMCI36Fake::NanotecSMCI36Fake( const ioport_t ioPort )
   decelerationRamp_ = 0;
 
   positioningMode_ = 1;
+  tracelDistance_ = 400;
 }
 
 NanotecSMCI36Fake::~NanotecSMCI36Fake()
@@ -317,4 +318,14 @@ void NanotecSMCI36Fake::SetPositioningMode(int mode)
 int NanotecSMCI36Fake::GetPositioningMode() const
 {
   return positioningMode_;
+}
+
+void NanotecSMCI36Fake::SetTravelDistance(int distance)
+{
+  tracelDistance_ = distance;
+}
+
+int NanotecSMCI36Fake::GetTravelDistance() const
+{
+  return tracelDistance_;
 }

@@ -82,6 +82,9 @@ class NanotecSMCI36Fake : public VNanotecSMCI36
   void SetPositioningMode(int mode);
   int GetPositioningMode() const;
 
+  void SetTravelDistance(int distance);
+  int GetTravelDistance() const;
+
  private:
 
   int status_;
@@ -104,6 +107,7 @@ class NanotecSMCI36Fake : public VNanotecSMCI36
   int accelerationRamp_;
   int decelerationRamp_;
   int positioningMode_;
+  int tracelDistance_;
 };
 
 #endif

@@ -177,6 +177,9 @@ class VNanotecSMCI36
 
   virtual void SetPositioningMode(int mode) = 0;
   virtual int GetPositioningMode() const = 0;
+
+  virtual void SetTravelDistance(int distance) = 0;
+  virtual int GetTravelDistance() const = 0;
 };
 
 #endif

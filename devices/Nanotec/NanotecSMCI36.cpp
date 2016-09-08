@@ -493,6 +493,25 @@ int NanotecSMCI36::GetPositioningMode() const
   return std::atoi(buffer);
 }
 
+void NanotecSMCI36::SetTravelDistance(int distance)
+{
+  char command[20];
+  sprintf(command, "s%d", distance);
+
+  comHandler_->SendCommand(command);
+}
+
+int NanotecSMCI36::GetTravelDistance() const
+{
+  comHandler_->SendCommand("Zs");
+
+  char buffer[1000];
+  comHandler_->ReceiveString(buffer);
+  StripBuffer(buffer);
+
+  return std::atoi(buffer);
+}
+
 void NanotecSMCI36::StripBuffer(char* buffer) const
 {
   for (unsigned int c=0; c<sizeof(buffer);++c) {
