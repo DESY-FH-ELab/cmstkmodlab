@@ -29,6 +29,12 @@ class NanotecSMCI36 : public VNanotecSMCI36
   void SetMotorType(int type);
   int GetMotorType() const;
 
+  void SetPhaseCurrent(int current);
+  int GetPhaseCurrent() const;
+
+  void SetStandStillPhaseCurrent(int current);
+  int GetStandStillPhaseCurrent() const;
+
  private:
 
   void StripBuffer( char* ) const;

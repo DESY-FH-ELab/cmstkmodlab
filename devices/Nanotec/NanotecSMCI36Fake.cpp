@@ -8,6 +8,8 @@ NanotecSMCI36Fake::NanotecSMCI36Fake( const ioport_t ioPort )
   status_ = smciReady | smciReserved5 | smciReserved7;
 
   motorType_ = smciStepper;
+  phaseCurrent_ = 50;
+  standStillPhaseCurrent_ = 10;
 }
 
 NanotecSMCI36Fake::~NanotecSMCI36Fake()
@@ -34,4 +36,26 @@ void NanotecSMCI36Fake::SetMotorType(int type)
 int NanotecSMCI36Fake::GetMotorType() const
 {
   return motorType_;
+}
+
+void NanotecSMCI36Fake::SetPhaseCurrent(int current)
+{
+  if (current < 0 || current >100) return;
+  phaseCurrent_ = current;
+}
+
+int NanotecSMCI36Fake::GetPhaseCurrent() const
+{
+  return phaseCurrent_;
+}
+
+void NanotecSMCI36Fake::SetStandStillPhaseCurrent(int current)
+{
+  if (current < 0 || current >100) return;
+  standStillPhaseCurrent_ = current;
+}
+
+int NanotecSMCI36Fake::GetStandStillPhaseCurrent() const
+{
+  return standStillPhaseCurrent_;
 }

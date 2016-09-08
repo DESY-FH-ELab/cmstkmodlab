@@ -38,6 +38,12 @@ class VNanotecSMCI36
 
   virtual void SetMotorType(int type) = 0;
   virtual int GetMotorType() const = 0;
+
+  virtual void SetPhaseCurrent(int current) = 0;
+  virtual int GetPhaseCurrent() const = 0;
+
+  virtual void SetStandStillPhaseCurrent(int current) = 0;
+  virtual int GetStandStillPhaseCurrent() const = 0;
 };
 
 #endif

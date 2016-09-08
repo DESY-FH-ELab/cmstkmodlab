@@ -20,9 +20,34 @@ class NanotecSMCI36Fake : public VNanotecSMCI36
   void SetMotorType(int type);
   int GetMotorType() const;
 
+  void SetPhaseCurrent(int current);
+  int GetPhaseCurrent() const;
+
+  void SetStandStillPhaseCurrent(int current);
+  int GetStandStillPhaseCurrent() const;
+
+  void SetStepMode(int mode);
+  int GetStepMode() const;
+
+  void SetInputPinFunction(int pin, int function);
+  int GetInputPinFunction(int pin) const;
+
+  void SetOutputPinFunction(int pin, int function);
+  int GetOutputPinFunction(int pin) const;
+
+  void SetReversePolarityMask(int mask);
+  int GetReversePolarityMask() const;
+
  private:
 
   int status_;
+  int motorType_;
+  int phaseCurrent_;
+  int stepMode_;
+  int standStillPhaseCurrent_;
+  int inputPinFunction_[7];
+  int outputPinFunction_[4];
+  int reversePolarityMask_;
 };
 
 #endif

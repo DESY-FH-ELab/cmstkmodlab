@@ -61,6 +61,46 @@ int NanotecSMCI36::GetMotorType() const
   return std::atoi(buffer);
 }
 
+void NanotecSMCI36::SetPhaseCurrent(int current)
+{
+  if (current < 0 || current >100) return;
+
+  char command[20];
+  sprintf(command, "i%d", current);
+
+  comHandler_->SendCommand(command);
+}
+
+int NanotecSMCI36::GetPhaseCurrent() const
+{
+  comHandler_->SendCommand("Zi");
+  char buffer[1000];
+  comHandler_->ReceiveString(buffer);
+  StripBuffer(buffer);
+
+  return std::atoi(buffer);
+}
+
+void NanotecSMCI36::SetStandStillPhaseCurrent(int current)
+{
+  if (current < 0 || current >100) return;
+
+  char command[20];
+  sprintf(command, "r%d", current);
+
+  comHandler_->SendCommand(command);
+}
+
+int NanotecSMCI36::GetStandStillPhaseCurrent() const
+{
+  comHandler_->SendCommand("Zr");
+  char buffer[1000];
+  comHandler_->ReceiveString(buffer);
+  StripBuffer(buffer);
+
+  return std::atoi(buffer);
+}
+
 void NanotecSMCI36::StripBuffer(char* buffer) const
 {
   for (unsigned int c=0; c<sizeof(buffer);++c) {

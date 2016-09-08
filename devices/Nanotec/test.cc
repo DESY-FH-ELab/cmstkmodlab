@@ -18,6 +18,8 @@ int main()
   std::cout << "status:                    " << std::hex << smci36.GetStatus() << std::endl;
 
   std::cout << "motor type:                " << smci36.GetMotorType() << std::endl;
+  std::cout << "phase current:             " << smci36.GetPhaseCurrent() << std::endl;
+  std::cout << "standstill phase current:  " << smci36.GetStandStillPhaseCurrent() << std::endl;
 
   return 0;
 }
