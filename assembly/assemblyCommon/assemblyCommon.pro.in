@@ -2,6 +2,7 @@ ARCHITECTURE=@architecture@
 USEFAKEDEVICES="X@usefakedevices@"
 
 LIBS += -L@basepath@/devices/lib -lTkModLabLang
+LIBS += -L@basepath@/devices/lib -lTkModLabConrad
 LIBS += -L@basepath@/common -lCommon
 
 equals(USEFAKEDEVICES,"X0") {
