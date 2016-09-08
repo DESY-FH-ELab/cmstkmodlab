@@ -104,6 +104,8 @@ class VNanotecSMCI36
   virtual void SetMotorID(int ID) = 0;
   virtual int GetMotorID() const = 0;
 
+  /* TODO: Limit Switch Behaviour */
+
   virtual void SetInputPinFunction(int pin, int function) = 0;
   virtual int GetInputPinFunction(int pin) const = 0;
 
