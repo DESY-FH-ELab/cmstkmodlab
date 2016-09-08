@@ -39,5 +39,7 @@ int main()
 
   std::cout << "pin polarity mask:         0x" << std::hex << smci36.GetReversePolarityMask() << std::dec << std::endl;
 
+  std::cout << "ramp mode:                 " << smci36.GetRampMode() << std::endl;
+
   return 0;
 }

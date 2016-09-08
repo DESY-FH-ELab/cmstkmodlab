@@ -67,6 +67,9 @@ class NanotecSMCI36 : public VNanotecSMCI36
   void SetReversePolarityMask(int mask);
   int GetReversePolarityMask() const;
 
+  void SetRampMode(int ramp);
+  int GetRampMode() const;
+
  private:
 
   void StripBuffer( char* ) const;

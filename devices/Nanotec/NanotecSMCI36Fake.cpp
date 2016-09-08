@@ -35,6 +35,8 @@ NanotecSMCI36Fake::NanotecSMCI36Fake( const ioport_t ioPort )
   outputPinFunction_[3] = smciOPinUserDefined;
 
   reversePolarityMask_ = 0x0107003F;
+
+  rampMode_ = 0;
 }
 
 NanotecSMCI36Fake::~NanotecSMCI36Fake()
@@ -216,4 +218,15 @@ void NanotecSMCI36Fake::SetReversePolarityMask(int mask)
 int NanotecSMCI36Fake::GetReversePolarityMask() const
 {
   return reversePolarityMask_;
+}
+
+void NanotecSMCI36Fake::SetRampMode(int ramp)
+{
+  if (ramp < smciTrapezoidalRamp || ramp > smciJerkFreeRamp) return;
+  rampMode_ = ramp;
+}
+
+int NanotecSMCI36Fake::GetRampMode() const
+{
+  return rampMode_;
 }

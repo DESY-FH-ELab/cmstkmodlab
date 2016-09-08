@@ -333,6 +333,26 @@ int NanotecSMCI36::GetReversePolarityMask() const
   return std::atoi(buffer);
 }
 
+void NanotecSMCI36::SetRampMode(int ramp)
+{
+  if (ramp < smciTrapezoidalRamp || ramp > smciJerkFreeRamp) return;
+  char command[20];
+  sprintf(command, ":ramp_mode%d", ramp);
+
+  comHandler_->SendCommand(command);
+}
+
+int NanotecSMCI36::GetRampMode() const
+{
+  comHandler_->SendCommand(":ramp_mode");
+
+  char buffer[1000];
+  comHandler_->ReceiveString(buffer);
+  StripBuffer(buffer);
+
+  return std::atoi(buffer);
+}
+
 void NanotecSMCI36::StripBuffer(char* buffer) const
 {
   for (unsigned int c=0; c<sizeof(buffer);++c) {

@@ -85,6 +85,12 @@ class VNanotecSMCI36
     smciBallastResistance = 0x01000000
   };
 
+  enum RampMode {
+    smciTrapezoidalRamp  = 0,
+    smciSinusRamp        = 1,
+    smciJerkFreeRamp     = 2
+  };
+
   VNanotecSMCI36( const ioport_t );
   virtual ~VNanotecSMCI36();
 
@@ -141,6 +147,9 @@ class VNanotecSMCI36
   /* TODO: Debounce time of inputs */
 
   /* TODO: Setting the outputs */
+
+  virtual void SetRampMode(int ramp) = 0;
+  virtual int GetRampMode() const = 0;
 };
 
 #endif
