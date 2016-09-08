@@ -170,6 +170,7 @@ int NanotecSMCI36::GetErrorCorrectionMode() const
 
 void NanotecSMCI36::SetEncoderDirection(int direction)
 {
+  if (direction < 0 || direction > 1) return;
   char command[20];
   sprintf(command, "q%d", direction);
 
