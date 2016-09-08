@@ -2,6 +2,8 @@ ARCHITECTURE=@architecture@
 USEFAKEDEVICES="X@usefakedevices@"
 
 LIBS += -L@basepath@/devices/lib -lTkModLabLang
+LIBS += -L@basepath@/devices/lib -lTkModLabConrad
+LIBS += -L@basepath@/devices/lib -lTkModLabArduino
 LIBS += -L@basepath@/common -lCommon
 
 equals(USEFAKEDEVICES,"X0") {
@@ -66,6 +68,8 @@ HEADERS += AssemblyVUEyeCamera.h \
            AssemblyUEyeView.h \
            AssemblyUEyeSnapShooter.h \
            AssemblyMarkerFinderThread.h \
+           AssemblyPlasmaCleaner.h \
+           AssemblyModuleAssembler.h \
            AssemblyVMarkerFinder.h \
            AssemblySensorMarkerFinder.h \
            AssemblySensorMarkerFinderWidget.h \
@@ -93,6 +97,8 @@ SOURCES += AssemblyVUEyeCamera.cc \
            AssemblyUEyeCameraWidget.cc \
            AssemblyUEyeView.cc \
            AssemblyUEyeSnapShooter.cc \
+           AssemblyPlasmaCleaner.cc \
+           AssemblyModuleAssembler.cc \
            AssemblyMarkerFinderThread.cc \
            AssemblyVMarkerFinder.cc \
            AssemblySensorMarkerFinder.cc \
