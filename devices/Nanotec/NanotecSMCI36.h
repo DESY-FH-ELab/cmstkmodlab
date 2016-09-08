@@ -35,6 +35,9 @@ class NanotecSMCI36 : public VNanotecSMCI36
   void SetStandStillPhaseCurrent(int current);
   int GetStandStillPhaseCurrent() const;
 
+  void SetStepMode(int mode);
+  int GetStepMode() const;
+
  private:
 
   void StripBuffer( char* ) const;

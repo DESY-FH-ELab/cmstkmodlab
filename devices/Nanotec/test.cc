@@ -20,6 +20,7 @@ int main()
   std::cout << "motor type:                " << smci36.GetMotorType() << std::endl;
   std::cout << "phase current:             " << smci36.GetPhaseCurrent() << std::endl;
   std::cout << "standstill phase current:  " << smci36.GetStandStillPhaseCurrent() << std::endl;
+  std::cout << "step mode:                 " << smci36.GetStepMode() << std::endl;
 
   return 0;
 }

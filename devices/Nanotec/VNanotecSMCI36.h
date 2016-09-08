@@ -26,6 +26,20 @@ class VNanotecSMCI36
     smciBLDCEncoder = 2
   };
 
+  enum StepMode {
+    smci01MicroStepsPerFullStep =   1,
+    smci02MicroStepsPerFullStep =   2,
+    smci04MicroStepsPerFullStep =   4,
+    smci05MicroStepsPerFullStep =   5,
+    smci08MicroStepsPerFullStep =   8,
+    smci10MicroStepsPerFullStep =  10,
+    smci16MicroStepsPerFullStep =  16,
+    smci32MicroStepsPerFullStep =  32,
+    smci64MicroStepsPerFullStep =  64,
+    smciFeedRateMode            = 254,
+    smciAdaptiveStepMode        = 255,
+  };
+
   VNanotecSMCI36( const ioport_t );
   virtual ~VNanotecSMCI36();
 
@@ -44,6 +58,9 @@ class VNanotecSMCI36
 
   virtual void SetStandStillPhaseCurrent(int current) = 0;
   virtual int GetStandStillPhaseCurrent() const = 0;
+
+  virtual void SetStepMode(int mode) = 0;
+  virtual int GetStepMode() const = 0;
 };
 
 #endif

@@ -101,6 +101,36 @@ int NanotecSMCI36::GetStandStillPhaseCurrent() const
   return std::atoi(buffer);
 }
 
+void NanotecSMCI36::SetStepMode(int mode)
+{
+  if (mode != smci01MicroStepsPerFullStep &&
+      mode != smci02MicroStepsPerFullStep &&
+      mode != smci04MicroStepsPerFullStep &&
+      mode != smci05MicroStepsPerFullStep &&
+      mode != smci08MicroStepsPerFullStep &&
+      mode != smci10MicroStepsPerFullStep &&
+      mode != smci16MicroStepsPerFullStep &&
+      mode != smci32MicroStepsPerFullStep &&
+      mode != smci64MicroStepsPerFullStep &&
+      mode != smciFeedRateMode &&
+      mode != smciAdaptiveStepMode) return;
+
+  char command[20];
+  sprintf(command, "g%d", mode);
+
+  comHandler_->SendCommand(command);
+}
+
+int NanotecSMCI36::GetStepMode() const
+{
+  comHandler_->SendCommand("Zg");
+  char buffer[1000];
+  comHandler_->ReceiveString(buffer);
+  StripBuffer(buffer);
+
+  return std::atoi(buffer);
+}
+
 void NanotecSMCI36::StripBuffer(char* buffer) const
 {
   for (unsigned int c=0; c<sizeof(buffer);++c) {

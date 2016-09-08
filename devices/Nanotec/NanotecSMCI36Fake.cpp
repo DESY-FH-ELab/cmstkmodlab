@@ -59,3 +59,20 @@ int NanotecSMCI36Fake::GetStandStillPhaseCurrent() const
 {
   return standStillPhaseCurrent_;
 }
+
+void NanotecSMCI36Fake::SetStepMode(int mode)
+{
+  if (mode != smci01MicroStepsPerFullStep &&
+      mode != smci02MicroStepsPerFullStep &&
+      mode != smci04MicroStepsPerFullStep &&
+      mode != smci05MicroStepsPerFullStep &&
+      mode != smci08MicroStepsPerFullStep &&
+      mode != smci10MicroStepsPerFullStep &&
+      mode != smci16MicroStepsPerFullStep &&
+      mode != smci32MicroStepsPerFullStep &&
+      mode != smci64MicroStepsPerFullStep &&
+      mode != smciFeedRateMode &&
+      mode != smciAdaptiveStepMode) return;
+
+  stepMode_ = mode;
+}
