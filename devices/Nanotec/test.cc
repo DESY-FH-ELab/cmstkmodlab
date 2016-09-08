@@ -17,5 +17,7 @@ int main()
   std::cout << "firmware version:          " << smci36.GetFirmwareVersion() << std::endl;
   std::cout << "status:                    " << std::hex << smci36.GetStatus() << std::endl;
 
+  std::cout << "motor type:                " << smci36.GetMotorType() << std::endl;
+
   return 0;
 }

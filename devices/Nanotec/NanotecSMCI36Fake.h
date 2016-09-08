@@ -17,6 +17,9 @@ class NanotecSMCI36Fake : public VNanotecSMCI36
   std::string GetFirmwareVersion() const;
   int GetStatus() const;
 
+  void SetMotorType(int type);
+  int GetMotorType() const;
+
  private:
 
   int status_;

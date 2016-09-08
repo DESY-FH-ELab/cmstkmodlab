@@ -20,6 +20,12 @@ class VNanotecSMCI36
     smciReserved7 = 0x80
   };
 
+  enum MotorType {
+    smciStepper     = 0,
+    smciBLDC        = 1,
+    smciBLDCEncoder = 2
+  };
+
   VNanotecSMCI36( const ioport_t );
   virtual ~VNanotecSMCI36();
 
@@ -29,6 +35,9 @@ class VNanotecSMCI36
 
   virtual std::string GetFirmwareVersion() const = 0;
   virtual int GetStatus() const = 0;
+
+  virtual void SetMotorType(int type) = 0;
+  virtual int GetMotorType() const = 0;
 };
 
 #endif

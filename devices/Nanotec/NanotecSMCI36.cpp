@@ -41,6 +41,26 @@ int NanotecSMCI36::GetStatus() const
   return std::atoi(buffer);
 }
 
+void NanotecSMCI36::SetMotorType(int type)
+{
+  if (type < smciStepper || type > smciBLDCEncoder) return;
+
+  char command[20];
+  sprintf(command, ":CL_motor_type%d", type);
+
+  comHandler_->SendCommand(command);
+}
+
+int NanotecSMCI36::GetMotorType() const
+{
+  comHandler_->SendCommand(":CL_motor_type");
+  char buffer[1000];
+  comHandler_->ReceiveString(buffer);
+  StripBuffer(buffer);
+
+  return std::atoi(buffer);
+}
+
 void NanotecSMCI36::StripBuffer(char* buffer) const
 {
   for (unsigned int c=0; c<sizeof(buffer);++c) {
