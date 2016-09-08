@@ -41,5 +41,12 @@ int main()
 
   std::cout << "ramp mode:                 " << smci36.GetRampMode() << std::endl;
 
+  std::cout << "quickstop ramp:            " << smci36.GetQuickstopRamp() << std::endl;
+  std::cout << "quickstop ramp [Hz/s]:     " << smci36.GetQuickstopRampHzPerSecond() << std::endl;
+  std::cout << "acceleration ramp:         " << smci36.GetAccelerationRamp() << std::endl;
+  std::cout << "acceleration ramp [Hz/s]:  " << smci36.GetAccelerationRampHzPerSecond() << std::endl;
+  std::cout << "deceleration ramp:         " << smci36.GetDecelerationRamp() << std::endl;
+  std::cout << "deceleration ramp [Hz/s]:  " << smci36.GetDecelerationRampHzPerSecond() << std::endl;
+
   return 0;
 }

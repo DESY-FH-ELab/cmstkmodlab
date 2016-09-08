@@ -150,6 +150,24 @@ class VNanotecSMCI36
 
   virtual void SetRampMode(int ramp) = 0;
   virtual int GetRampMode() const = 0;
+
+  virtual void SetQuickstopRamp(int ramp) = 0;
+  virtual int GetQuickstopRamp() const = 0;
+
+  virtual void SetQuickstopRampHzPerSecond(int ramp) = 0;
+  virtual int GetQuickstopRampHzPerSecond() const = 0;
+
+  virtual void SetAccelerationRamp(int ramp) = 0;
+  virtual int GetAccelerationRamp() const = 0;
+
+  virtual void SetAccelerationRampHzPerSecond(int ramp) = 0;
+  virtual int GetAccelerationRampHzPerSecond() const = 0;
+
+  virtual void SetDecelerationRamp(int ramp) = 0;
+  virtual int GetDecelerationRamp() const = 0;
+
+  virtual void SetDecelerationRampHzPerSecond(int ramp) = 0;
+  virtual int GetDecelerationRampHzPerSecond() const = 0;
 };
 
 #endif

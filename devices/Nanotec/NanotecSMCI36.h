@@ -70,6 +70,24 @@ class NanotecSMCI36 : public VNanotecSMCI36
   void SetRampMode(int ramp);
   int GetRampMode() const;
 
+  void SetQuickstopRamp(int ramp);
+  int GetQuickstopRamp() const;
+
+  void SetQuickstopRampHzPerSecond(int ramp);
+  int GetQuickstopRampHzPerSecond() const;
+
+  void SetAccelerationRamp(int ramp);
+  int GetAccelerationRamp() const;
+
+  void SetAccelerationRampHzPerSecond(int ramp);
+  int GetAccelerationRampHzPerSecond() const;
+
+  void SetDecelerationRamp(int ramp);
+  int GetDecelerationRamp() const;
+
+  void SetDecelerationRampHzPerSecond(int ramp);
+  int GetDecelerationRampHzPerSecond() const;
+
  private:
 
   void StripBuffer( char* ) const;

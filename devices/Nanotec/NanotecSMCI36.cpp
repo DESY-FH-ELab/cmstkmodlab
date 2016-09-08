@@ -353,6 +353,126 @@ int NanotecSMCI36::GetRampMode() const
   return std::atoi(buffer);
 }
 
+void NanotecSMCI36::SetQuickstopRamp(int ramp)
+{
+  if (ramp < 0 || ramp > 8000) return;
+  char command[20];
+  sprintf(command, "H%d", ramp);
+
+  comHandler_->SendCommand(command);
+}
+
+int NanotecSMCI36::GetQuickstopRamp() const
+{
+  comHandler_->SendCommand("ZH");
+
+  char buffer[1000];
+  comHandler_->ReceiveString(buffer);
+  StripBuffer(buffer);
+
+  return std::atoi(buffer);
+}
+
+void NanotecSMCI36::SetQuickstopRampHzPerSecond(int ramp)
+{
+  if (ramp < 0 || ramp > 3000000) return;
+  char command[20];
+  sprintf(command, ":decelquick%d", ramp);
+
+  comHandler_->SendCommand(command);
+}
+
+int NanotecSMCI36::GetQuickstopRampHzPerSecond() const
+{
+  comHandler_->SendCommand(":decelquick");
+
+  char buffer[1000];
+  comHandler_->ReceiveString(buffer);
+  StripBuffer(buffer);
+
+  return std::atoi(buffer);
+}
+
+void NanotecSMCI36::SetAccelerationRamp(int ramp)
+{
+  if (ramp < 1 || ramp > 65535) return;
+  char command[20];
+  sprintf(command, "b%d", ramp);
+
+  comHandler_->SendCommand(command);
+}
+
+int NanotecSMCI36::GetAccelerationRamp() const
+{
+  comHandler_->SendCommand("Zb");
+
+  char buffer[1000];
+  comHandler_->ReceiveString(buffer);
+  StripBuffer(buffer);
+
+  return std::atoi(buffer);
+}
+
+void NanotecSMCI36::SetAccelerationRampHzPerSecond(int ramp)
+{
+  if (ramp < 1 || ramp > 3000000) return;
+  char command[20];
+  sprintf(command, ":accel%d", ramp);
+
+  comHandler_->SendCommand(command);
+}
+
+int NanotecSMCI36::GetAccelerationRampHzPerSecond() const
+{
+  comHandler_->SendCommand(":accel");
+
+  char buffer[1000];
+  comHandler_->ReceiveString(buffer);
+  StripBuffer(buffer);
+
+  return std::atoi(buffer);
+}
+
+void NanotecSMCI36::SetDecelerationRamp(int ramp)
+{
+  if (ramp < 0 || ramp > 65535) return;
+  char command[20];
+  sprintf(command, "B%d", ramp);
+
+  comHandler_->SendCommand(command);
+}
+
+int NanotecSMCI36::GetDecelerationRamp() const
+{
+  comHandler_->SendCommand("ZB");
+
+  char buffer[1000];
+  comHandler_->ReceiveString(buffer);
+  StripBuffer(buffer);
+
+  return std::atoi(buffer);
+}
+
+void NanotecSMCI36::SetDecelerationRampHzPerSecond(int ramp)
+{
+  if (ramp < 0 || ramp > 3000000) return;
+  char command[20];
+  sprintf(command, ":decel%d", ramp);
+
+  comHandler_->SendCommand(command);
+}
+
+int NanotecSMCI36::GetDecelerationRampHzPerSecond() const
+{
+  comHandler_->SendCommand(":decel");
+
+  char buffer[1000];
+  comHandler_->ReceiveString(buffer);
+  StripBuffer(buffer);
+
+  return std::atoi(buffer);
+}
+
 void NanotecSMCI36::StripBuffer(char* buffer) const
 {
   for (unsigned int c=0; c<sizeof(buffer);++c) {

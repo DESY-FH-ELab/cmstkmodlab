@@ -37,6 +37,9 @@ NanotecSMCI36Fake::NanotecSMCI36Fake( const ioport_t ioPort )
   reversePolarityMask_ = 0x0107003F;
 
   rampMode_ = 0;
+  quickstopRamp_ = 0;
+  accelerationRamp_ = 2364;
+  decelerationRamp_ = 0;
 }
 
 NanotecSMCI36Fake::~NanotecSMCI36Fake()
@@ -229,4 +232,76 @@ void NanotecSMCI36Fake::SetRampMode(int ramp)
 int NanotecSMCI36Fake::GetRampMode() const
 {
   return rampMode_;
+}
+
+void NanotecSMCI36Fake::SetQuickstopRamp(int ramp)
+{
+  if (ramp < 0 || ramp > 8000) return;
+  quickstopRamp_ = ramp;
+}
+
+int NanotecSMCI36Fake::GetQuickstopRamp() const
+{
+  return quickstopRamp_;
+}
+
+void NanotecSMCI36Fake::SetQuickstopRampHzPerSecond(int ramp)
+{
+  if (ramp < 0 || ramp > 3000000) return;
+  quickstopRamp_ = std::pow(3000.0 / (static_cast<float>(ramp) / 1000 + 11.7), 2.0);
+}
+
+int NanotecSMCI36Fake::GetQuickstopRampHzPerSecond() const
+{
+  if (quickstopRamp_==0) return 3000000;
+  return 1000 * (3000.0 / std::sqrt(static_cast<float>(quickstopRamp_)) - 11.7);
+}
+
+void NanotecSMCI36Fake::SetAccelerationRamp(int ramp)
+{
+  if (ramp < 1 || ramp > 65535) return;
+  accelerationRamp_ = ramp;
+}
+
+int NanotecSMCI36Fake::GetAccelerationRamp() const
+{
+  return accelerationRamp_;
+}
+
+void NanotecSMCI36Fake::SetAccelerationRampHzPerSecond(int ramp)
+{
+  if (ramp < 1 || ramp > 3000000) return;
+  accelerationRamp_ = std::pow(3000.0 / (static_cast<float>(ramp) / 1000 + 11.7), 2.0);
+}
+
+int NanotecSMCI36Fake::GetAccelerationRampHzPerSecond() const
+{
+  return 1000 * (3000.0 / std::sqrt(static_cast<float>(accelerationRamp_)) - 11.7);
+}
+
+void NanotecSMCI36Fake::SetDecelerationRamp(int ramp)
+{
+  if (ramp < 0 || ramp > 65535) return;
+  decelerationRamp_ = ramp;
+}
+
+int NanotecSMCI36Fake::GetDecelerationRamp() const
+{
+  return decelerationRamp_;
+}
+
+void NanotecSMCI36Fake::SetDecelerationRampHzPerSecond(int ramp)
+{
+  if (ramp < 0 || ramp > 3000000) return;
+  if (ramp==0) {
+    decelerationRamp_ = 0;
+  } else {
+    decelerationRamp_ = std::pow(3000.0 / (static_cast<float>(ramp) / 1000 + 11.7), 2.0);
+  }
+}
+
+int NanotecSMCI36Fake::GetDecelerationRampHzPerSecond() const
+{
+  if (decelerationRamp_==0) return 0;
+  return 1000 * (3000.0 / std::sqrt(static_cast<float>(decelerationRamp_)) - 11.7);
 }
