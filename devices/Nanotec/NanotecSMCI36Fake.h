@@ -79,6 +79,9 @@ class NanotecSMCI36Fake : public VNanotecSMCI36
   void SetDecelerationRampHzPerSecond(int ramp);
   int GetDecelerationRampHzPerSecond() const;
 
+  void SetPositioningMode(int mode);
+  int GetPositioningMode() const;
+
  private:
 
   int status_;
@@ -100,6 +103,7 @@ class NanotecSMCI36Fake : public VNanotecSMCI36
   int quickstopRamp_;
   int accelerationRamp_;
   int decelerationRamp_;
+  int positioningMode_;
 };
 
 #endif

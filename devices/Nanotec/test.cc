@@ -48,5 +48,6 @@ int main()
   std::cout << "deceleration ramp:         " << smci36.GetDecelerationRamp() << std::endl;
   std::cout << "deceleration ramp [Hz/s]:  " << smci36.GetDecelerationRampHzPerSecond() << std::endl;
 
+  std::cout << "positioning mode:          " << smci36.GetPositioningMode() << std::endl;
   return 0;
 }

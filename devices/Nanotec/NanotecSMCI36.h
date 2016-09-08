@@ -88,6 +88,9 @@ class NanotecSMCI36 : public VNanotecSMCI36
   void SetDecelerationRampHzPerSecond(int ramp);
   int GetDecelerationRampHzPerSecond() const;
 
+  void SetPositioningMode(int mode);
+  int GetPositioningMode() const;
+
  private:
 
   void StripBuffer( char* ) const;

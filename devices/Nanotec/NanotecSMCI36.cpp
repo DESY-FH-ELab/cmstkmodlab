@@ -473,6 +473,26 @@ int NanotecSMCI36::GetDecelerationRampHzPerSecond() const
   return std::atoi(buffer);
 }
 
+void NanotecSMCI36::SetPositioningMode(int mode)
+{
+  if (mode < smciRelativePositioning || mode >= smciMaxPositioningMode) return;
+  char command[20];
+  sprintf(command, "p%d", mode);
+
+  comHandler_->SendCommand(command);
+}
+
+int NanotecSMCI36::GetPositioningMode() const
+{
+  comHandler_->SendCommand("Zp");
+
+  char buffer[1000];
+  comHandler_->ReceiveString(buffer);
+  StripBuffer(buffer);
+
+  return std::atoi(buffer);
+}
+
 void NanotecSMCI36::StripBuffer(char* buffer) const
 {
   for (unsigned int c=0; c<sizeof(buffer);++c) {

@@ -40,6 +40,8 @@ NanotecSMCI36Fake::NanotecSMCI36Fake( const ioport_t ioPort )
   quickstopRamp_ = 0;
   accelerationRamp_ = 2364;
   decelerationRamp_ = 0;
+
+  positioningMode_ = 1;
 }
 
 NanotecSMCI36Fake::~NanotecSMCI36Fake()
@@ -304,4 +306,15 @@ int NanotecSMCI36Fake::GetDecelerationRampHzPerSecond() const
 {
   if (decelerationRamp_==0) return 0;
   return 1000 * (3000.0 / std::sqrt(static_cast<float>(decelerationRamp_)) - 11.7);
+}
+
+void NanotecSMCI36Fake::SetPositioningMode(int mode)
+{
+  if (mode < smciRelativePositioning || mode >= smciMaxPositioningMode) return;
+  positioningMode_ = mode;
+}
+
+int NanotecSMCI36Fake::GetPositioningMode() const
+{
+  return positioningMode_;
 }

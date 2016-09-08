@@ -91,6 +91,12 @@ class VNanotecSMCI36
     smciJerkFreeRamp     = 2
   };
 
+  enum PositioningMode {
+    smciRelativePositioning  =  1,
+    smciAbsolutePositioning  =  2,
+    smciMaxPositioningMode
+  };
+
   VNanotecSMCI36( const ioport_t );
   virtual ~VNanotecSMCI36();
 
@@ -168,6 +174,9 @@ class VNanotecSMCI36
 
   virtual void SetDecelerationRampHzPerSecond(int ramp) = 0;
   virtual int GetDecelerationRampHzPerSecond() const = 0;
+
+  virtual void SetPositioningMode(int mode) = 0;
+  virtual int GetPositioningMode() const = 0;
 };
 
 #endif
