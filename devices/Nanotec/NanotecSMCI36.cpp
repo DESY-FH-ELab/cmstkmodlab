@@ -512,6 +512,66 @@ int NanotecSMCI36::GetTravelDistance() const
   return std::atoi(buffer);
 }
 
+void NanotecSMCI36::SetMinimumFrequency(int frequency)
+{
+  if (frequency < 1 || frequency > 160000) return;
+  char command[20];
+  sprintf(command, "u%d", frequency);
+
+  comHandler_->SendCommand(command);
+}
+
+int NanotecSMCI36::GetMinimumFrequency() const
+{
+  comHandler_->SendCommand("Zu");
+
+  char buffer[1000];
+  comHandler_->ReceiveString(buffer);
+  StripBuffer(buffer);
+
+  return std::atoi(buffer);
+}
+
+void NanotecSMCI36::SetMaximumFrequency(int frequency)
+{
+  if (frequency < 1 || frequency > 1000000) return;
+  char command[20];
+  sprintf(command, "o%d", frequency);
+
+  comHandler_->SendCommand(command);
+}
+
+int NanotecSMCI36::GetMaximumFrequency() const
+{
+  comHandler_->SendCommand("Zo");
+
+  char buffer[1000];
+  comHandler_->ReceiveString(buffer);
+  StripBuffer(buffer);
+
+  return std::atoi(buffer);
+}
+
+void NanotecSMCI36::SetMaximumFrequency2(int frequency)
+{
+  if (frequency < 1 || frequency > 1000000) return;
+  char command[20];
+  sprintf(command, "n%d", frequency);
+
+  comHandler_->SendCommand(command);
+}
+
+int NanotecSMCI36::GetMaximumFrequency2() const
+{
+  comHandler_->SendCommand("Zn");
+
+  char buffer[1000];
+  comHandler_->ReceiveString(buffer);
+  StripBuffer(buffer);
+
+  return std::atoi(buffer);
+}
+
 void NanotecSMCI36::StripBuffer(char* buffer) const
 {
   for (unsigned int c=0; c<sizeof(buffer);++c) {

@@ -94,6 +94,15 @@ class NanotecSMCI36 : public VNanotecSMCI36
   void SetTravelDistance(int distance);
   int GetTravelDistance() const;
 
+  void SetMinimumFrequency(int frequency);
+  int GetMinimumFrequency() const;
+
+  void SetMaximumFrequency(int frequency);
+  int GetMaximumFrequency() const;
+
+  void SetMaximumFrequency2(int frequency);
+  int GetMaximumFrequency2() const;
+
  private:
 
   void StripBuffer( char* ) const;

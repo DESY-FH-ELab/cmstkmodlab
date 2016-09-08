@@ -50,5 +50,9 @@ int main()
 
   std::cout << "positioning mode:          " << smci36.GetPositioningMode() << std::endl;
   std::cout << "travel distance:           " << smci36.GetTravelDistance() << std::endl;
+  std::cout << "minimum frequency:         " << smci36.GetMinimumFrequency() << std::endl;
+  std::cout << "maximum frequency:         " << smci36.GetMaximumFrequency() << std::endl;
+  std::cout << "maximum frequency 2:       " << smci36.GetMaximumFrequency2() << std::endl;
+
   return 0;
 }

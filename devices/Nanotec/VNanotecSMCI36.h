@@ -180,6 +180,15 @@ class VNanotecSMCI36
 
   virtual void SetTravelDistance(int distance) = 0;
   virtual int GetTravelDistance() const = 0;
+
+  virtual void SetMinimumFrequency(int frequency) = 0;
+  virtual int GetMinimumFrequency() const = 0;
+
+  virtual void SetMaximumFrequency(int frequency) = 0;
+  virtual int GetMaximumFrequency() const = 0;
+
+  virtual void SetMaximumFrequency2(int frequency) = 0;
+  virtual int GetMaximumFrequency2() const = 0;
 };
 
 #endif
