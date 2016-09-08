@@ -20,6 +20,9 @@ NanotecSMCI36Fake::NanotecSMCI36Fake( const ioport_t ioPort )
   swingOutTime_ = 5;
   maxEncoderDeviation_ = 2;
 
+  position_ = 0;
+  encoderPosition_ = 0;
+
   inputPinFunction_[1] = smciIPinUserDefined;
   inputPinFunction_[2] = smciIPinUserDefined;
   inputPinFunction_[3] = smciIPinUserDefined;
@@ -156,6 +159,27 @@ void NanotecSMCI36Fake::SetMaxEncoderDeviation(int deviation)
 int NanotecSMCI36Fake::GetMaxEncoderDeviation() const
 {
   return maxEncoderDeviation_;
+}
+
+int NanotecSMCI36Fake::GetPosition() const
+{
+  return position_;
+}
+
+int NanotecSMCI36Fake::GetEncoderPosition() const
+{
+  return encoderPosition_;
+}
+
+void NanotecSMCI36Fake::ResetPositionError()
+{
+  position_ = encoderPosition_;
+}
+
+void NanotecSMCI36Fake::ResetPositionError(int position)
+{
+  position_ = position;
+  encoderPosition_ = position;
 }
 
 void NanotecSMCI36Fake::SetInputPinFunction(int pin, int function)

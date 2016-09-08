@@ -225,6 +225,39 @@ int NanotecSMCI36::GetMaxEncoderDeviation() const
   return std::atoi(buffer);
 }
 
+int NanotecSMCI36::GetPosition() const
+{
+  comHandler_->SendCommand("C");
+  char buffer[1000];
+  comHandler_->ReceiveString(buffer);
+  StripBuffer(buffer);
+
+  return std::atoi(buffer);
+}
+
+int NanotecSMCI36::GetEncoderPosition() const
+{
+  comHandler_->SendCommand("I");
+  char buffer[1000];
+  comHandler_->ReceiveString(buffer);
+  StripBuffer(buffer);
+
+  return std::atoi(buffer);
+}
+
+void NanotecSMCI36::ResetPositionError()
+{
+  comHandler_->SendCommand("D");
+}
+
+void NanotecSMCI36::ResetPositionError(int position)
+{
+  char command[20];
+  sprintf(command, "D%d", position);
+
+  comHandler_->SendCommand(command);
+}
+
 void NanotecSMCI36::SetInputPinFunction(int pin, int function)
 {
   if (pin<1 || pin>6) return;

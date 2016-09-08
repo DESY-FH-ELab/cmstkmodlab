@@ -53,6 +53,11 @@ class NanotecSMCI36 : public VNanotecSMCI36
   void SetMaxEncoderDeviation(int deviation);
   int GetMaxEncoderDeviation() const;
 
+  int GetPosition() const;
+  int GetEncoderPosition() const;
+  void ResetPositionError();
+  void ResetPositionError(int position);
+
   void SetInputPinFunction(int pin, int function);
   int GetInputPinFunction(int pin) const;
 
