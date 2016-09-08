@@ -44,6 +44,9 @@ class NanotecSMCI36 : public VNanotecSMCI36
   void SetErrorCorrectionMode(int mode);
   int GetErrorCorrectionMode() const;
 
+  void SetEncoderDirection(int direction);
+  int GetEncoderDirection() const;
+
   void SetInputPinFunction(int pin, int function);
   int GetInputPinFunction(int pin) const;
 

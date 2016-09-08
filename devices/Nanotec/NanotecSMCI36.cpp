@@ -168,6 +168,24 @@ int NanotecSMCI36::GetErrorCorrectionMode() const
   return std::atoi(buffer);
 }
 
+void NanotecSMCI36::SetEncoderDirection(int direction)
+{
+  char command[20];
+  sprintf(command, "q%d", direction);
+
+  comHandler_->SendCommand(command);
+}
+
+int NanotecSMCI36::GetEncoderDirection() const
+{
+  comHandler_->SendCommand("Zq");
+  char buffer[1000];
+  comHandler_->ReceiveString(buffer);
+  StripBuffer(buffer);
+
+  return std::atoi(buffer);
+}
+
 void NanotecSMCI36::SetInputPinFunction(int pin, int function)
 {
   if (pin<1 || pin>6) return;
