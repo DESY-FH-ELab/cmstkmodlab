@@ -137,6 +137,10 @@ class VNanotecSMCI36
 
   virtual void SetReversePolarityMask(int mask) = 0;
   virtual int GetReversePolarityMask() const = 0;
+
+  /* TODO: Debounce time of inputs */
+
+  /* TODO: Setting the outputs */
 };
 
 #endif
