@@ -206,6 +206,25 @@ int NanotecSMCI36::GetSwingOutTime() const
   return std::atoi(buffer);
 }
 
+void NanotecSMCI36::SetMaxEncoderDeviation(int deviation)
+{
+  if (deviation < 0 || deviation > 255) return;
+  char command[20];
+  sprintf(command, "X%d", deviation);
+
+  comHandler_->SendCommand(command);
+}
+
+int NanotecSMCI36::GetMaxEncoderDeviation() const
+{
+  comHandler_->SendCommand("ZX");
+  char buffer[1000];
+  comHandler_->ReceiveString(buffer);
+  StripBuffer(buffer);
+
+  return std::atoi(buffer);
+}
+
 void NanotecSMCI36::SetInputPinFunction(int pin, int function)
 {
   if (pin<1 || pin>6) return;

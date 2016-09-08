@@ -121,6 +121,9 @@ class VNanotecSMCI36
   virtual void SetSwingOutTime(int time) = 0;
   virtual int GetSwingOutTime() const = 0;
 
+  virtual void SetMaxEncoderDeviation(int deviation) = 0;
+  virtual int GetMaxEncoderDeviation() const = 0;
+
   virtual void SetInputPinFunction(int pin, int function) = 0;
   virtual int GetInputPinFunction(int pin) const = 0;
 

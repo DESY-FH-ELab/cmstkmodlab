@@ -41,6 +41,9 @@ class NanotecSMCI36Fake : public VNanotecSMCI36
   void SetSwingOutTime(int time);
   int GetSwingOutTime() const;
 
+  void SetMaxEncoderDeviation(int deviation);
+  int GetMaxEncoderDeviation() const;
+
   void SetInputPinFunction(int pin, int function);
   int GetInputPinFunction(int pin) const;
 
@@ -60,6 +63,7 @@ class NanotecSMCI36Fake : public VNanotecSMCI36
   int errorCorrectionMode_;
   int encoderDirection_;
   int swingOutTime_;
+  int maxEncoderDeviation_;
   int standStillPhaseCurrent_;
   int inputPinFunction_[7];
   int outputPinFunction_[4];

@@ -25,6 +25,7 @@ int main()
   std::cout << "error correction mode:     " << smci36.GetErrorCorrectionMode() << std::endl;
   std::cout << "encoder direction:         " << smci36.GetEncoderDirection() << std::endl;
   std::cout << "swing out time:            " << smci36.GetSwingOutTime() << std::endl;
+  std::cout << "maximum encoder deviation: " << smci36.GetMaxEncoderDeviation() << std::endl;
 
   std::cout << "input pin function:        ";
   for (int p=1;p<=6;++p) std::cout << smci36.GetInputPinFunction(p) << " ";

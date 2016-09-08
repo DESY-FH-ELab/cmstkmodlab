@@ -18,6 +18,7 @@ NanotecSMCI36Fake::NanotecSMCI36Fake( const ioport_t ioPort )
   errorCorrectionMode_ = smciErrCorrectionAfterTravel;
   encoderDirection_ = 0;
   swingOutTime_ = 5;
+  maxEncoderDeviation_ = 2;
 
   inputPinFunction_[1] = smciIPinUserDefined;
   inputPinFunction_[2] = smciIPinUserDefined;
@@ -144,6 +145,17 @@ void NanotecSMCI36Fake::SetSwingOutTime(int time)
 int NanotecSMCI36Fake::GetSwingOutTime() const
 {
   return swingOutTime_;
+}
+
+void NanotecSMCI36Fake::SetMaxEncoderDeviation(int deviation)
+{
+  if (deviation < 0 || deviation > 255) return;
+  maxEncoderDeviation_ = deviation;
+}
+
+int NanotecSMCI36Fake::GetMaxEncoderDeviation() const
+{
+  return maxEncoderDeviation_;
 }
 
 void NanotecSMCI36Fake::SetInputPinFunction(int pin, int function)
