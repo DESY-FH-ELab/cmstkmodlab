@@ -38,6 +38,15 @@ class NanotecSMCI36 : public VNanotecSMCI36
   void SetStepMode(int mode);
   int GetStepMode() const;
 
+  void SetInputPinFunction(int pin, int function);
+  int GetInputPinFunction(int pin) const;
+
+  void SetOutputPinFunction(int pin, int function);
+  int GetOutputPinFunction(int pin) const;
+
+  void SetReversePolarityMask(int mask);
+  int GetReversePolarityMask() const;
+
  private:
 
   void StripBuffer( char* ) const;

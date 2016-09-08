@@ -40,6 +40,45 @@ class VNanotecSMCI36
     smciAdaptiveStepMode        = 255,
   };
 
+  enum InputPinFunction {
+    smciIPinUserDefined          =  0,
+    smciIStartRecordErrorReset   =  1,
+    smciIRecordSelect0           =  2,
+    smciIRecordSelect1           =  3,
+    smciIRecordSelect2           =  4,
+    smciIRecordSelect3           =  5,
+    smciIRecordSelect4           =  6,
+    smciIExternalReferenceSwitch =  7,
+    smciITrigger                 =  8,
+    smciIDirection               =  9,
+    smciIEnable                  = 10,
+    smciIClock                   = 11,
+    smciIClockDirectionMode1     = 12,
+    smciIClockDirectionMode2     = 13,
+    smciIInvalid                 = 14
+  };
+
+  enum OutputPinFunction {
+    smciOPinUserDefined          = 0,
+    smciOReady                   = 1,
+    smciORunning                 = 2,
+    smciOError                   = 3,
+    smciOInvalid                 = 4
+  };
+
+  enum ReversePolaryBits {
+    smciInput1            = 0x00000001,
+    smciInput2            = 0x00000002,
+    smciInput3            = 0x00000004,
+    smciInput4            = 0x00000008,
+    smciInput5            = 0x00000010,
+    smciInput6            = 0x00000020,
+    smciOutput1           = 0x00010000,
+    smciOutput2           = 0x00020000,
+    smciOutput3           = 0x00040000,
+    smciBallastResistance = 0x01000000
+  };
+
   VNanotecSMCI36( const ioport_t );
   virtual ~VNanotecSMCI36();
 
@@ -61,6 +100,15 @@ class VNanotecSMCI36
 
   virtual void SetStepMode(int mode) = 0;
   virtual int GetStepMode() const = 0;
+
+  virtual void SetInputPinFunction(int pin, int function) = 0;
+  virtual int GetInputPinFunction(int pin) const = 0;
+
+  virtual void SetOutputPinFunction(int pin, int function) = 0;
+  virtual int GetOutputPinFunction(int pin) const = 0;
+
+  virtual void SetReversePolarityMask(int mask) = 0;
+  virtual int GetReversePolarityMask() const = 0;
 };
 
 #endif

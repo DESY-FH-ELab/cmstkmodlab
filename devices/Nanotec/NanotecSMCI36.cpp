@@ -131,6 +131,81 @@ int NanotecSMCI36::GetStepMode() const
   return std::atoi(buffer);
 }
 
+void NanotecSMCI36::SetInputPinFunction(int pin, int function)
+{
+  if (pin<1 || pin>6) return;
+  if (function<smciIPinUserDefined || function>smciIClockDirectionMode2) return;
+
+  char command[20];
+  sprintf(command, ":port_in_%c%d", 'a'+pin-1, function);
+
+  comHandler_->SendCommand(command);
+}
+
+int NanotecSMCI36::GetInputPinFunction(int pin) const
+{
+  if (pin<1 || pin>6) return smciIInvalid;
+
+  char command[20];
+  sprintf(command, ":port_in_%c", 'a'+pin-1);
+
+  comHandler_->SendCommand(command);
+
+  char buffer[1000];
+  comHandler_->ReceiveString(buffer);
+  StripBuffer(buffer);
+
+  int function = std::atoi(buffer);
+
+  return function;
+}
+
+void NanotecSMCI36::SetOutputPinFunction(int pin, int function)
+{
+  if (pin<1 || pin>3) return;
+  if (function<smciOPinUserDefined || function>smciOError) return;
+
+  char command[20];
+  sprintf(command, ":port_out_%c%d", 'a'+pin-1, function);
+
+  comHandler_->SendCommand(command);
+}
+
+int NanotecSMCI36::GetOutputPinFunction(int pin) const
+{
+  if (pin<1 || pin>3) return smciOInvalid;
+
+  char command[20];
+  sprintf(command, ":port_out_%c", 'a'+pin-1);
+
+  comHandler_->SendCommand(command);
+
+  char buffer[1000];
+  comHandler_->ReceiveString(buffer);
+  StripBuffer(buffer);
+
+  return std::atoi(buffer);
+}
+
+void NanotecSMCI36::SetReversePolarityMask(int mask)
+{
+  char command[20];
+  sprintf(command, "h%d", mask);
+
+  comHandler_->SendCommand(command);
+}
+
+int NanotecSMCI36::GetReversePolarityMask() const
+{
+  comHandler_->SendCommand("h");
+
+  char buffer[1000];
+  comHandler_->ReceiveString(buffer);
+  StripBuffer(buffer);
+
+  return std::atoi(buffer);
+}
+
 void NanotecSMCI36::StripBuffer(char* buffer) const
 {
   for (unsigned int c=0; c<sizeof(buffer);++c) {
