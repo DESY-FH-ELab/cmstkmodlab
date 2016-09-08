@@ -65,6 +65,8 @@ HEADERS += AssemblyVUEyeCamera.h \
            AssemblyUEyeCameraWidget.h \
            AssemblyUEyeView.h \
            AssemblyUEyeSnapShooter.h \
+           AssemblyPlasmaCleaner.h \
+           AssemblyModuleAssembler.h \
            AssemblyMarkerFinderThread.h \
            AssemblyVMarkerFinder.h \
            AssemblySensorMarkerFinder.h \
@@ -93,6 +95,8 @@ SOURCES += AssemblyVUEyeCamera.cc \
            AssemblyUEyeCameraWidget.cc \
            AssemblyUEyeView.cc \
            AssemblyUEyeSnapShooter.cc \
+           AssemblyPlasmaCleaner.cc \
+           AssemblyModuleAssembler.cc \
            AssemblyMarkerFinderThread.cc \
            AssemblyVMarkerFinder.cc \
            AssemblySensorMarkerFinder.cc \
