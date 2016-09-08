@@ -38,6 +38,9 @@ class NanotecSMCI36 : public VNanotecSMCI36
   void SetStepMode(int mode);
   int GetStepMode() const;
 
+  void SetMotorID(int ID);
+  int GetMotorID() const;
+
   void SetInputPinFunction(int pin, int function);
   int GetInputPinFunction(int pin) const;
 

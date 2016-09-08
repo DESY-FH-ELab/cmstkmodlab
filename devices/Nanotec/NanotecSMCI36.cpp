@@ -131,6 +131,24 @@ int NanotecSMCI36::GetStepMode() const
   return std::atoi(buffer);
 }
 
+void NanotecSMCI36::SetMotorID(int ID)
+{
+  char command[20];
+  sprintf(command, ":mt%d", ID);
+
+  comHandler_->SendCommand(command);
+}
+
+int NanotecSMCI36::GetMotorID() const
+{
+  comHandler_->SendCommand(":mt");
+  char buffer[1000];
+  comHandler_->ReceiveString(buffer);
+  StripBuffer(buffer);
+
+  return std::atoi(buffer);
+}
+
 void NanotecSMCI36::SetInputPinFunction(int pin, int function)
 {
   if (pin<1 || pin>6) return;

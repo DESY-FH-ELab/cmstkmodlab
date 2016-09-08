@@ -101,6 +101,9 @@ class VNanotecSMCI36
   virtual void SetStepMode(int mode) = 0;
   virtual int GetStepMode() const = 0;
 
+  virtual void SetMotorID(int ID) = 0;
+  virtual int GetMotorID() const = 0;
+
   virtual void SetInputPinFunction(int pin, int function) = 0;
   virtual int GetInputPinFunction(int pin) const = 0;
 
