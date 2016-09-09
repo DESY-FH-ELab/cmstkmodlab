@@ -857,35 +857,56 @@ void AssemblySensorLocator::locatePickup(){
 void AssemblySensorLocator::locateSensor_templateMatching(int stage){
 
     NQLog("AssemblySensorLocator") << "Finding Marker (Template Matching)" ;
-    cv::Mat img_gs, img_clip_gs, result;
+    cv::Mat img_gs, img_clip_gs_src, img_clip_gs , result;
     int match_method;
     
     img_gs = cv::imread("/Users/keaveney/Desktop/calibration/RawSensor.png", CV_LOAD_IMAGE_COLOR);
     img_clip_gs = cv::imread("/Users/keaveney/Desktop/calibration/RawSensor_clip.png", CV_LOAD_IMAGE_COLOR);
+    Point matchLoc;
 
-    int result_cols =  img_gs.cols - img_clip_gs.cols + 1;
-    int result_rows = img_gs.rows - img_clip_gs.rows + 1;
+    
+    
+    for (float theta = -2.0; theta < 2.0;  theta = theta + 0.1){
+    
+    // apply a rotation transformation to the template image
+    Point2f src_center(img_clip_gs.cols/2.0F, img_clip_gs.rows/2.0F);
+    Mat rot_mat = getRotationMatrix2D(src_center, theta, 1.0);
+    Mat dst;
+    warpAffine(img_clip_gs, dst, rot_mat, img_clip_gs.size());
+
+
+    //create result matrix to hold correlation values
+    int result_cols =  img_gs.cols - dst.cols + 1;
+    int result_rows = img_gs.rows - dst.rows + 1;
     
     result.create( result_rows, result_cols, CV_32FC1 );
     
     
     match_method =0;
-    matchTemplate( img_gs, img_clip_gs, result, match_method );
+    matchTemplate( img_gs, dst, result, match_method );
     normalize( result, result, 0, 1, NORM_MINMAX, -1, Mat() );
 
     
     /// Localizing the best match with minMaxLoc
     double minVal; double maxVal; Point minLoc; Point maxLoc;
-    Point matchLoc;
     
     minMaxLoc( result, &minVal, &maxVal, &minLoc, &maxLoc, Mat() );
     
+    NQLog("AssemblySensorLocator") << " MIN VAL = " << minVal ;
+
+    
     /// For SQDIFF and SQDIFF_NORMED, the best matches are lower values. For all the other methods, the higher the better
     if( match_method  == CV_TM_SQDIFF || match_method == CV_TM_SQDIFF_NORMED )
-    { matchLoc = minLoc; }
+    {
+        matchLoc = minLoc;
+    }
     else
-    { matchLoc = maxLoc; }
+    {
+        matchLoc = maxLoc;
+    }
     
+}
+
     rectangle( img_gs, matchLoc, Point( matchLoc.x + img_clip_gs.cols , matchLoc.y + img_clip_gs.rows ), Scalar(255,0,0), 2, 8, 0 );
     rectangle( result, matchLoc, Point( matchLoc.x + img_clip_gs.cols , matchLoc.y + img_clip_gs.rows ), Scalar(255,0,0), 2, 8, 0 );
     
