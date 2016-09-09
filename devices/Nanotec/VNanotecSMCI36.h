@@ -92,8 +92,16 @@ class VNanotecSMCI36
   };
 
   enum PositioningMode {
-    smciRelativePositioning  =  1,
-    smciAbsolutePositioning  =  2,
+    smciRelativePositioning           =  1,
+    smciAbsolutePositioning           =  2,
+    smciInternalRefRun                =  3,
+    smciExternalRefRun                =  4,
+    smciSpeed                         =  5,
+    smciFlagPositioning               =  6,
+    smciClockDirectionLeft            =  7,
+    smciClockDirectionRight           =  8,
+    smciClockDirectionInternalRefRun  =  9,
+    smciClockDirectionExternalRefRun  = 10,
     smciMaxPositioningMode
   };
 
