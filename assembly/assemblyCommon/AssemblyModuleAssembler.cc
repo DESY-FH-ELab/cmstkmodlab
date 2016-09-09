@@ -829,17 +829,6 @@ AssemblySensorLocator::AssemblySensorLocator(QWidget *parent, std::string string
     ql->setText("WAITING");
     ql->setStyleSheet("QLabel { background-color : orange; color : black; }");
 
-    groupBox = new QGroupBox(tr("PatRec options"));
-    radio1 = new QRadioButton(tr("&Circle seed algorithm"));
-    radio2 = new QRadioButton(tr("T&emplate matching"));
-    
-    vbox = new QVBoxLayout;
-    vbox->addWidget(radio1);
-    vbox->addWidget(radio2);
-    vbox->addStretch(1);
-    groupBox->setLayout(vbox);
-    
-    l->addWidget(groupBox,1,0);
     
     connect(button1, SIGNAL(clicked()),
             this, SLOT(locatePickup()));

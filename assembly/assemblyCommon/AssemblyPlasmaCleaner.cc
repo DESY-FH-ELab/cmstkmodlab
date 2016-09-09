@@ -81,10 +81,9 @@ CleanerCommander::CleanerCommander(QWidget *parent, std::string string, double t
     setLayout(l);
 
     NQLog("CleanerCommander") << ": in mode";
-    // motor = new ArduinoMotor("/dev/cu.usbmodem641");
-
-    //    bool comm = motor->IsCommunication();
-    // cout <<"comms on?"<<  comm<<"   "   <<endl;
+    motor = new ArduinoMotor("/dev/cu.usbmodem641");
+    bool comm = motor->IsCommunication();
+    
  
     
     std::ostringstream strs;
