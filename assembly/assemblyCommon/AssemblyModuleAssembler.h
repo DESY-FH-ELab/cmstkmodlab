@@ -9,6 +9,10 @@
 #include <QLineEdit>
 #include <QPushButton>
 #include <QPainter>
+#include <QGroupBox>
+#include <QVBoxLayout>
+#include <QRadioButton>
+
 
 #include <AssemblyVUEyeCamera.h>
 #include <AssemblyVMarkerFinder.h>
@@ -227,11 +231,16 @@ public:
     QPushButton* button1;
     QLineEdit *lineEdit1;
     QLabel* ql;
+    QGroupBox *groupBox;
+    QRadioButton *radio1;
+    QRadioButton *radio2;
+    QVBoxLayout *vbox;
     
     
 protected:
     public slots:
-        void locateSensor(int);
+        void locateSensor_circleSeed(int);
+        void locateSensor_templateMatching(int);
         void foundsensor(int);
         void locatePickup();
 
@@ -240,7 +249,8 @@ signals:
     void updateImage(int, std::string);
     void foundSensor(int);
     void sendPosition(int, double, double, double);
-    void locatePickupCorner(int);
+    void locatePickupCorner_circleSeed(int);
+    void locatePickupCorner_templateMatching(int);
     
 };
 
