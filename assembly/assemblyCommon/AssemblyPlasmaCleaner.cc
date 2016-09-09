@@ -81,10 +81,10 @@ CleanerCommander::CleanerCommander(QWidget *parent, std::string string, double t
     setLayout(l);
 
     NQLog("CleanerCommander") << ": in mode";
-    motor = new ArduinoMotor("/dev/cu.usbmodem641");
+    // motor = new ArduinoMotor("/dev/cu.usbmodem641");
 
-    bool comm = motor->IsCommunication();
-    cout <<"comms on?"<<  comm<<"   "   <<endl;
+    //    bool comm = motor->IsCommunication();
+    // cout <<"comms on?"<<  comm<<"   "   <<endl;
  
     
     std::ostringstream strs;
@@ -136,6 +136,7 @@ CleanerCommander::CleanerCommander(QWidget *parent, std::string string, double t
       ql_0->setText("Controller communitcation ON");
       ql_0->setStyleSheet("QLabel { background-color : green; color : black; }");
 }
+
 
     
     button2 = new QPushButton("Send free text command", this);
@@ -220,6 +221,8 @@ std::cout << "[CleanerCommander::sendCommand]."   << str <<std::endl;
  std::string str_4 =  lineEdit5->text().toStdString();
  std::string comm = str_1 + "," + str_2 + ":" +  str_3 + "," +  str_4;
 
+
+
  float fl_1 = stof(str_1);
  float fl_2 = stof(str_2);
  float fl_3 = stof(str_3);
@@ -227,8 +230,8 @@ std::cout << "[CleanerCommander::sendCommand]."   << str <<std::endl;
 
  scan_time = fl_3/fl_1;
 
- std::cout << "[CleanerCommander::checkText]. "   << comm <<", scan time =   "<< scan_time <<std::endl;
- motor->SendCommand(comm.c_str());
+ // std::cout << "[CleanerCommander::checkText]. "   << comm <<", scan time =   "<< scan_time <<std::endl;
+ //motor->SendCommand(comm.c_str());
  sec = 0;
  progress = 0;
  QTimer *timer = new QTimer(this);

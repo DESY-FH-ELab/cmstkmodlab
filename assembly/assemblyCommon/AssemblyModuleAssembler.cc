@@ -7,6 +7,8 @@
 #include <QStringList>
 #include <QPixmap>
 #include <QLabel>
+
+
 #include <QApplication>
 
 
@@ -20,6 +22,8 @@
 #include "../../devices/Conrad/ConradController.h"
 
 using namespace std;
+using namespace cv;
+
 
 AssemblyModuleAssembler::AssemblyModuleAssembler(QWidget *parent)
     : QWidget(parent)
@@ -188,7 +192,6 @@ AssemblyModuleAssembler::AssemblyModuleAssembler(QWidget *parent)
     lctr1->setToolTip("(3) Acquires image from mobile camera, runs PatRec routine to deduce and report sensor (x,y,z,phi) postion");
     g1->addWidget(lctr1,3,0);   
  
-
     AssemblyCommander * cmdr2 = new AssemblyCommander(this, "Correct position", 100.0,100.0,100.0,100.0, 0);
     cmdr2->setToolTip("(4) Corrects arm position using relative displacement using (eventually) pre-calculated displacment from PatRec");
     g1->addWidget(cmdr2,4,0);
@@ -310,10 +313,8 @@ void AssemblyModuleAssembler::updateImage(int stage, std::string filename)
     if (stage == 1 ){
     imageView_1->setZoomFactor(0.5);
     imageView_1->setImage(img_gs);
-        
-        
-        
-        
+
+    imageView_1->setZoomFactor(0.75);
     }else if (stage ==2){
         imageView_2->setImage(img_gs);
     }
@@ -797,6 +798,22 @@ AssemblySensorLocator::AssemblySensorLocator(QWidget *parent, std::string string
     l->addWidget(button1,0,0);
    // l->addWidget(lineEdit1,0,1);
     
+    
+    groupBox = new QGroupBox(tr("Pattern Recognition Method"));
+    
+    radio1 = new QRadioButton(tr("&Circle Seed Algorithm"));
+    radio2 = new QRadioButton(tr("T&emplate Matching"));
+    radio2->setChecked(true);
+    
+    vbox = new QVBoxLayout;
+    vbox->addWidget(radio1);
+    vbox->addWidget(radio2);
+    vbox->addStretch(1);
+    groupBox->setLayout(vbox);
+    
+    l->addWidget(groupBox,1,0);
+
+    
 
     ql = new QLabel("", this);
     l->addWidget(ql,0,1);
@@ -846,56 +863,51 @@ void AssemblySensorLocator::locatePickup(){
 
     }
     
-    
-
-
 }
 
-
 void AssemblySensorLocator::locateSensor_templateMatching(int stage){
-    NQLog("AssemblySensorLocator") << "Finding Marker (Template Matching Algorithm)" ;
 
-    cv::Mat img_gs, img_clip_gs, img_rgb, result;
+    NQLog("AssemblySensorLocator") << "Finding Marker (Template Matching)" ;
+    cv::Mat img_gs, img_clip_gs, result;
+    int match_method;
     
     img_gs = cv::imread("/Users/keaveney/Desktop/calibration/RawSensor.png", CV_LOAD_IMAGE_COLOR);
-    img_clip_gs = cv::imread("/Users/keaveney/Desktop/calibration/rawsensor_clip2.png", CV_LOAD_IMAGE_COLOR);
+    img_clip_gs = cv::imread("/Users/keaveney/Desktop/calibration/RawSensor_clip.png", CV_LOAD_IMAGE_COLOR);
 
-    //img_gs = cv::imread("/Users/keaveney/Desktop/big2.png", CV_LOAD_IMAGE_COLOR);
-    //img_clip_gs = cv::imread("/Users/keaveney/Desktop/small2.png", CV_LOAD_IMAGE_COLOR);
-    
-    //cvtColor(img_gs, img_gs, CV_RGB2GRAY);
-    //cvtColor(img_clip_gs, img_clip_gs , CV_RGB2GRAY);
-    
-    /// Create the result matrix
     int result_cols =  img_gs.cols - img_clip_gs.cols + 1;
     int result_rows = img_gs.rows - img_clip_gs.rows + 1;
     
     result.create( result_rows, result_cols, CV_32FC1 );
+    
+    
+    match_method =0;
+    matchTemplate( img_gs, img_clip_gs, result, match_method );
+    normalize( result, result, 0, 1, NORM_MINMAX, -1, Mat() );
 
     
-   matchTemplate( img_gs, img_clip_gs, result, CV_TM_CCOEFF );
-   normalize( result, result, 0, 1, cv::NORM_MINMAX, -1, cv::Mat() );
-
-    double minVal; double maxVal; cv::Point minLoc; cv::Point maxLoc;
-    cv::Point matchLoc;
+    /// Localizing the best match with minMaxLoc
+    double minVal; double maxVal; Point minLoc; Point maxLoc;
+    Point matchLoc;
     
-    minMaxLoc( result, &minVal, &maxVal, &minLoc, &maxLoc, cv::Mat() );
+    minMaxLoc( result, &minVal, &maxVal, &minLoc, &maxLoc, Mat() );
     
-    matchLoc = maxLoc;
+    /// For SQDIFF and SQDIFF_NORMED, the best matches are lower values. For all the other methods, the higher the better
+    if( match_method  == CV_TM_SQDIFF || match_method == CV_TM_SQDIFF_NORMED )
+    { matchLoc = minLoc; }
+    else
+    { matchLoc = maxLoc; }
     
-    rectangle( img_gs, matchLoc, cv::Point( matchLoc.x + img_clip_gs.cols , matchLoc.y + img_clip_gs.rows ), cv::Scalar::all(0), 2, 8, 0  );
-    rectangle( result, matchLoc, cv::Point( matchLoc.x + img_clip_gs.cols , matchLoc.y + img_clip_gs.rows ), cv::Scalar::all(0), 2, 8, 0  );
+    rectangle( img_gs, matchLoc, Point( matchLoc.x + img_clip_gs.cols , matchLoc.y + img_clip_gs.rows ), Scalar(255,0,0), 2, 8, 0 );
+    rectangle( result, matchLoc, Point( matchLoc.x + img_clip_gs.cols , matchLoc.y + img_clip_gs.rows ), Scalar(255,0,0), 2, 8, 0 );
     
     
     std::string filename = "/Users/keaveney/Desktop/calibration/PatRec_TM_result.png";
     cv::imwrite(filename, img_gs);
     
-    
-    NQLog("AssemblySensorLocator") << "Template Matching Done" ;
-
     emit updateImage(stage, filename);
-    
-    
+    emit foundSensor(1);
+
+
 }
 
 
@@ -907,6 +919,7 @@ void AssemblySensorLocator::locateSensor_circleSeed(int stage){
     
     img_gs = cv::imread("/Users/keaveney/Desktop/calibration/im_scan___Exp10___EdgeThr145___lt110.png", CV_LOAD_IMAGE_COLOR);
 
+    
     cvtColor(img_gs, img_gs , CV_RGB2GRAY);
 
     

@@ -233,8 +233,9 @@ public:
     QGroupBox *groupBox;
     QRadioButton *radio1;
     QRadioButton *radio2;
-    QRadioButton *radio3;
     QVBoxLayout *vbox;
+    
+
 protected:
     public slots:
         void locateSensor_circleSeed(int);
@@ -249,6 +250,7 @@ signals:
     void sendPosition(int, double, double, double);
     void locatePickupCorner_circleSeed(int);
     void locatePickupCorner_templateMatching(int);
+    
 };
 
 
