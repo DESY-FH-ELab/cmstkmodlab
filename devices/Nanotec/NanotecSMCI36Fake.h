@@ -94,6 +94,9 @@ class NanotecSMCI36Fake : public VNanotecSMCI36
   void SetMaximumFrequency2(int frequency);
   int GetMaximumFrequency2() const;
 
+  void Start();
+  void Stop(bool quickstop = false);
+
  private:
 
   int status_;

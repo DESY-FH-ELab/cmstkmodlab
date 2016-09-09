@@ -365,3 +365,13 @@ int NanotecSMCI36Fake::GetMaximumFrequency2() const
 {
   return maxFrequency2_;
 }
+
+void NanotecSMCI36Fake::Start()
+{
+
+}
+
+void NanotecSMCI36Fake::Stop(bool /* quickstop */)
+{
+
+}

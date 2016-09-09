@@ -103,6 +103,9 @@ class NanotecSMCI36 : public VNanotecSMCI36
   void SetMaximumFrequency2(int frequency);
   int GetMaximumFrequency2() const;
 
+  void Start();
+  void Stop(bool quickstop = false);
+
  private:
 
   void StripBuffer( char* ) const;

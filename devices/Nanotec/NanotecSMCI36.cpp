@@ -572,6 +572,19 @@ int NanotecSMCI36::GetMaximumFrequency2() const
   return std::atoi(buffer);
 }
 
+void NanotecSMCI36::Start()
+{
+  comHandler_->SendCommand("A");
+}
+
+void NanotecSMCI36::Stop(bool quickstop)
+{
+  char command[20];
+  sprintf(command, "S%d", (int)!quickstop);
+
+  comHandler_->SendCommand(command);
+}
+
 void NanotecSMCI36::StripBuffer(char* buffer) const
 {
   for (unsigned int c=0; c<sizeof(buffer);++c) {

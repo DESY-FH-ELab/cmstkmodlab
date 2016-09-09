@@ -197,6 +197,9 @@ class VNanotecSMCI36
 
   virtual void SetMaximumFrequency2(int frequency) = 0;
   virtual int GetMaximumFrequency2() const = 0;
+
+  virtual void Start() = 0;
+  virtual void Stop(bool quickstop = false) = 0;
 };
 
 #endif
