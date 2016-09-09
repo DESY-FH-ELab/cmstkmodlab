@@ -227,8 +227,11 @@ public:
     QPushButton* button1;
     QLineEdit *lineEdit1;
     QLabel* ql;
-    
-    
+    QGroupBox *groupBox;
+    QRadioButton *radio1;
+    QRadioButton *radio2;
+    QVBoxLayout *vbox;
+
 protected:
     public slots:
         void locateSensor(int);
@@ -240,7 +243,8 @@ signals:
     void updateImage(int, std::string);
     void foundSensor(int);
     void sendPosition(int, double, double, double);
-    void locatePickupCorner(int);
+    void locatePickupCorner_circleSeed(int);
+    void locatePickupCorner_templateMatching(int);
     
 };
 

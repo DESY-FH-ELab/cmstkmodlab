@@ -67,6 +67,8 @@ HEADERS += AssemblyVUEyeCamera.h \
            AssemblyUEyeCameraWidget.h \
            AssemblyUEyeView.h \
            AssemblyUEyeSnapShooter.h \
+           AssemblyPlasmaCleaner.h \
+           AssemblyModuleAssembler.h \
            AssemblyMarkerFinderThread.h \
            AssemblyPlasmaCleaner.h \
            AssemblyModuleAssembler.h \
