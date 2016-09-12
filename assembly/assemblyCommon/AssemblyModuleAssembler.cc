@@ -917,7 +917,7 @@ void AssemblySensorLocator::locateSensor_templateMatching(int stage){
 }
 
 
-void AssemblySensorLocator::locateSensor(int stage){
+void AssemblySensorLocator::locateSensor_circleSeed(int stage){
 
     NQLog("AssemblySensorLocator") << "Finding Marker (Circle Seed Algorithm)" ;
 

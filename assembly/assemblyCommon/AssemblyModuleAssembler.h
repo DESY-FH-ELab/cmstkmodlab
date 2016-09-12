@@ -9,6 +9,10 @@
 #include <QLineEdit>
 #include <QPushButton>
 #include <QPainter>
+#include <QGroupBox>
+#include <QVBoxLayout>
+#include <QRadioButton>
+
 
 #include <AssemblyVUEyeCamera.h>
 #include <AssemblyVMarkerFinder.h>
@@ -234,7 +238,8 @@ public:
 
 protected:
     public slots:
-        void locateSensor(int);
+        void locateSensor_templateMatching(int);
+        void locateSensor_circleSeed(int);
         void foundsensor(int);
         void locatePickup();
 
