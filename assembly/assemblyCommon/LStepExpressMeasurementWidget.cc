@@ -18,7 +18,7 @@ LStepExpressMeasurementWidget::LStepExpressMeasurementWidget(LStepExpressModel* 
     zigzagCheckBox_ = new QCheckBox("Zigzag motion (default is meander)", this);
     buttonStartMeasurement_ = new QPushButton("Start Measurement", this);
     buttonStartMeasurement_->setEnabled(false);
-    checkBoxEnableLaser_ = new QCheckBox("Enable Laser", this);
+    //checkBoxEnableLaser_ = new QCheckBox("Enable Laser", this);
     buttonStopMeasurement_ = new QPushButton("Stop Measurement", this);
     buttonStopMeasurement_->setEnabled(false);
     buttonStoreMeasurement_ = new QPushButton("Store Results Measurement", this);
@@ -82,7 +82,7 @@ LStepExpressMeasurementWidget::LStepExpressMeasurementWidget(LStepExpressModel* 
     layout->addWidget(table_view);
 
     QVBoxLayout *vlayout_laser = new QVBoxLayout(this);
-    vlayout_laser->addWidget(checkBoxEnableLaser_);
+    //vlayout_laser->addWidget(checkBoxEnableLaser_);
 
     laserWidget_ = new LaserWidget(laserModel_);
     vlayout_laser->addWidget(laserWidget_);
@@ -99,11 +99,11 @@ LStepExpressMeasurementWidget::LStepExpressMeasurementWidget(LStepExpressModel* 
     layout->addLayout(vlayout);
     
     //make all connections
-    connect(checkBoxEnableLaser_, SIGNAL(toggled(bool)),
-	laserModel_, SLOT(setDeviceEnabled(bool)));
+    //connect(checkBoxEnableLaser_, SIGNAL(toggled(bool)),
+    //	laserModel_, SLOT(setDeviceEnabled(bool)));
 
-    connect(checkBoxEnableLaser_, SIGNAL(toggled(bool)),
-	measurement_model_, SLOT(setLaserEnabled(bool)));
+    //   connect(checkBoxEnableLaser_, SIGNAL(toggled(bool)),
+    //	measurement_model_, SLOT(setLaserEnabled(bool)));
     
     connect(averageMeasCheckBox_, SIGNAL(toggled(bool)),
             measurement_model_, SLOT(setAverageMeasEnabled(bool)));
@@ -119,9 +119,6 @@ LStepExpressMeasurementWidget::LStepExpressMeasurementWidget(LStepExpressModel* 
 
     connect(buttonStoreMeasurement_, SIGNAL(clicked()), this, SLOT(storeResults()));
     
-    connect(laserModel_, SIGNAL(deviceStateChanged(State)),
-	this, SLOT(laserStateChanged(State)));
-
     connect(model_, SIGNAL(deviceStateChanged(State)),
 	this, SLOT(lstepStateChanged(State)));
 
@@ -193,7 +190,7 @@ LStepExpressMeasurementWidget::~LStepExpressMeasurementWidget()
     if(buttonStartMeasurement_){delete buttonStartMeasurement_; buttonStartMeasurement_ = NULL;}
     if(buttonStopMeasurement_){delete buttonStopMeasurement_; buttonStopMeasurement_ = NULL;}
     if(buttonStoreMeasurement_){delete buttonStoreMeasurement_; buttonStoreMeasurement_ = NULL;}
-    if(checkBoxEnableLaser_){delete checkBoxEnableLaser_; checkBoxEnableLaser_ = NULL;}
+    //if(checkBoxEnableLaser_){delete checkBoxEnableLaser_; checkBoxEnableLaser_ = NULL;}
     if(zigzagCheckBox_){delete zigzagCheckBox_; zigzagCheckBox_ = NULL;}
 }
 
@@ -234,7 +231,7 @@ void LStepExpressMeasurementWidget::printSpyInformation()
 void LStepExpressMeasurementWidget::laserStateChanged(State newState)
 {
   //    NQLog("LStepExpressMeasurementWidget ", NQLog::Debug) << "laserStateChanged(State newState) " << newState    ;
-    checkBoxEnableLaser_->setChecked(newState == READY || newState == INITIALIZING);
+  //  checkBoxEnableLaser_->setChecked(newState == READY || newState == INITIALIZING);
 }
 
 void LStepExpressMeasurementWidget::lstepStateChanged(State newState)

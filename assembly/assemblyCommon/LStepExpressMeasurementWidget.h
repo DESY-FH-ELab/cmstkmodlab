@@ -51,7 +51,7 @@ protected:
     QPushButton *buttonStartMeasurement_;
     QPushButton *buttonStopMeasurement_;
     QPushButton *buttonStoreMeasurement_;
-    QCheckBox *checkBoxEnableLaser_;
+    //    QCheckBox *checkBoxEnableLaser_;
     QCheckBox *zigzagCheckBox_;
     QLineEdit* x_min_;
     QLineEdit* x_max_;
