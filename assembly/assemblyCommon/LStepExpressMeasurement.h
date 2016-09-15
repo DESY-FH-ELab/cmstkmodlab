@@ -56,7 +56,7 @@ public slots:
     void setAverageMeasEnabled(bool);
     void setZigZag(bool);
     void takeMeasurement();
-    void setLaserEnabled(bool);
+    void setLaserEnabled(State newState);
 
 private:
     bool averageMeasEnabled_;
