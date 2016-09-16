@@ -17,83 +17,10 @@ typedef NanotecSMCI36 NanotecSMCI36_t;
 
 int main()
 {
-  /*
-  int fid = open( "/dev/tty.SLAB_USBtoUART", O_RDWR | O_NOCTTY | O_NDELAY );
-
-  struct termios m_termiosInitial;
-  struct termios m_termios;
-
-  // get and save current ioport settings for later restoring
-  tcgetattr(fid, &m_termiosInitial);
-
-  // clear new settions structure
-  bzero(&m_termios, sizeof(m_termios));
-
-  // set input/output baud rate
-  cfsetispeed(&m_termios, B115200);
-  cfsetospeed(&m_termios, B115200);
-
-  // enable the receiver and disable modem control signals
-  m_termios.c_cflag |= CREAD;
-  m_termios.c_cflag |= CLOCAL;
-
-  // set 8 bits per character, no parity, 1 stop bit (8N1)
-  m_termios.c_cflag &= ~PARENB;
-  m_termios.c_cflag &= ~CSTOPB;
-  m_termios.c_cflag &= ~CSIZE;
-  m_termios.c_cflag |= (CLOCAL | CREAD | CS8);
-  m_termios.c_lflag &= ~(ICANON | ECHO | ECHOE | ISIG);
-  m_termios.c_oflag &= ~OPOST;
-  m_termios.c_cc[VMIN] = 0;
-  m_termios.c_cc[VTIME] = 10;
-
-  // commit changes
-  tcflush(fid, TCIOFLUSH);
-
-  if (tcsetattr(fid, TCSAFLUSH, &m_termios) != 0)
-    return 0;
-
-  int modeLines = 0;
-
-  // put card into exclusive mode
-  if (ioctl(fid, TIOCEXCL, &modeLines) == -1)
-    return 0;
-
-  std::string command = "#1v";
-  char buffer[1000];
-  char singleCharacter = 0;
-
-  for ( unsigned int i = 0; i < command.length(); i++ ) {
-
-    // scan command string character wise & write
-    singleCharacter = command[i];
-    write( fid, &singleCharacter, 1 );
-  }
-  command = '\r';
-  write( fid, command.c_str(), 1);
-
-  usleep(10000);
-
-  read( fid, buffer, 1024 );
-
-  std::cout << buffer << std::endl;
-
-  close(fid);
-
-  std::cout << "test" << std::endl;
-*/
   NanotecSMCI36_t smci36("/dev/tty.SLAB_USBtoUART");
 
   std::cout << "firmware version:          " << smci36.GetFirmwareVersion() << std::endl;
   std::cout << "status:                    0x" << std::hex << smci36.GetStatus() << std::dec << std::endl;
-
-  //smci36.SetMotorType(VNanotecSMCI36::smciStepper);
-  //usleep(100000);
-  //smci36.SetRampMode(VNanotecSMCI36::smciTrapezoidalRamp);
-  //smci36.SetRampMode(VNanotecSMCI36::smciJerkFreeRamp);
-  //smci36.SetPositioningMode(VNanotecSMCI36::smciRelativePositioning);
-  //smci36.SetTravelDistance(10000);
-  //usleep(100000);
 
   std::cout << "motor type:                " << smci36.GetMotorType() << std::endl;
   std::cout << "phase current:             " << smci36.GetPhaseCurrent() << std::endl;
