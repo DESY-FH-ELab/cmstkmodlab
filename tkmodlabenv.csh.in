@@ -24,3 +24,5 @@ setenv DYLD_LIBRARY_PATH "@basepath@/defo/defoCommon:$DYLD_LIBRARY_PATH"
 setenv DYLD_LIBRARY_PATH "@basepath@/assembly/assemblyCommon:$DYLD_LIBRARY_PATH"
 
 setenv PKG_CONFIG_PATH "/usr/lib/pkgconfig:/usr/local/lib/pkgconfig:$PKG_CONFIG_PATH"
+
+setenv PYTHONPATH "@basepath@/python:$PYTHONPATH"

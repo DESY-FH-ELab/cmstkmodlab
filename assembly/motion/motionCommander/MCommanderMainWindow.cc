@@ -67,8 +67,14 @@ MCommanderMainWindow::MCommanderMainWindow(QWidget *parent)
   layoutv2->addWidget(lStepPosition);
   
   layout->addLayout(layoutv2);
+  LaserWidget *laserWidget_ = new LaserWidget(laserModel_);
+  laserWidget_->setMinimumWidth(400);
+  layout->addWidget(laserWidget_);
   
   tabWidget_->addTab(widget, "LStep Express");
+
+  LaserControlsWidget *laserControlsWidget = new LaserControlsWidget(laserModel_, widget);
+  tabWidget_->addTab(laserControlsWidget, "Laser Control");
   
   //  LStepExpressSettingsWidget *lStepExpressSettingsWidget = new LStepExpressSettingsWidget(lStepExpressSettings_, tabWidget_);
   //tabWidget_->addTab(lStepExpressSettingsWidget, "LStep Express Settings");
