@@ -12,6 +12,7 @@
 #include <QApplication>
 
 #include <iostream>
+#include <sstream>
 #include <nqlogger.h>
 
 #include "AssemblyModuleAssembler.h"
@@ -857,56 +858,81 @@ void AssemblySensorLocator::locateSensor_templateMatching(int stage){
     int match_method;
     
     img_gs = cv::imread("/Users/keaveney/Desktop/calibration/RawSensor.png", CV_LOAD_IMAGE_COLOR);
-    img_clip_gs = cv::imread("/Users/keaveney/Desktop/calibration/RawSensor_clip.png", CV_LOAD_IMAGE_COLOR);
+    img_clip_gs = cv::imread("/Users/keaveney/Desktop/calibration/rawsensor_clip5.png", CV_LOAD_IMAGE_COLOR);
     Point matchLoc;
-
+   
+    Mat img_gs_copy = img_gs.clone();
     
+    for (float theta = -0.06; theta < 0.06;  theta = theta + 0.003){
     
-    for (float theta = -2.0; theta < 2.0;  theta = theta + 0.1){
-    
+   
     // apply a rotation transformation to the template image
-    Point2f src_center(img_clip_gs.cols/2.0F, img_clip_gs.rows/2.0F);
+    Point2f src_center(img_gs_copy.cols/2.0F, img_gs_copy.rows/2.0F);
     Mat rot_mat = getRotationMatrix2D(src_center, theta, 1.0);
     Mat dst;
-    warpAffine(img_clip_gs, dst, rot_mat, img_clip_gs.size());
 
+    cv::Scalar avgPixelIntensity = cv::mean( img_gs_copy );
+        
+    warpAffine(img_gs_copy, dst, rot_mat, img_gs_copy.size(), cv::INTER_CUBIC,
+                   cv::BORDER_CONSTANT, avgPixelIntensity);
+
+    std::string filename_rotated_base = "/Users/keaveney/Desktop/calibration/Rotation_result_";
+        
+    std::ostringstream ss;
+    ss << theta;
+    
+    std::string theta_str = ss.str();
+
+    std::string filename_rotated = filename_rotated_base + theta_str + ".png";
+        
+    cv::imwrite(filename_rotated, dst);
 
     //create result matrix to hold correlation values
-    int result_cols =  img_gs.cols - dst.cols + 1;
-    int result_rows = img_gs.rows - dst.rows + 1;
+    int result_cols =  dst.cols - img_clip_gs.cols + 1;
+    int result_rows = dst.rows - img_clip_gs.rows + 1;
     
     result.create( result_rows, result_cols, CV_32FC1 );
     
     
-    match_method =0;
-    matchTemplate( img_gs, dst, result, match_method );
-    normalize( result, result, 0, 1, NORM_MINMAX, -1, Mat() );
+    match_method =3;
+    matchTemplate( dst, img_clip_gs, result, match_method );
+   // normalize( result, result, 0, 1, NORM_MINMAX, -1, Mat() );
 
     
     /// Localizing the best match with minMaxLoc
-    double minVal; double maxVal; Point minLoc; Point maxLoc;
+    double FOM, minVal, maxVal; Point minLoc; Point maxLoc;
     
     minMaxLoc( result, &minVal, &maxVal, &minLoc, &maxLoc, Mat() );
     
-    NQLog("AssemblySensorLocator") << " MIN VAL = " << minVal ;
-
     
     /// For SQDIFF and SQDIFF_NORMED, the best matches are lower values. For all the other methods, the higher the better
     if( match_method  == CV_TM_SQDIFF || match_method == CV_TM_SQDIFF_NORMED )
     {
         matchLoc = minLoc;
+        FOM = minVal;
     }
     else
     {
         matchLoc = maxLoc;
+        FOM = maxVal;
+
     }
     
+  //  NQLog("AssemblySensorLocator") << " FOM VAL = " << FOM;
+        cout<<FOM  <<","<<endl;
+        
+        int color = 50 + 200*theta;
+        
+    rectangle( img_gs, matchLoc, Point( matchLoc.x + img_clip_gs.cols , matchLoc.y + img_clip_gs.rows ), Scalar(color,color-50,color+50), 2, 8, 0 );
+    rectangle( result, matchLoc, Point( matchLoc.x + img_clip_gs.cols , matchLoc.y + img_clip_gs.rows ), Scalar(color,color-50,color+50), 2, 8, 0 );
+        
+        //void circle(Mat& img, Point center, int radius, const Scalar& color, int thickness=1, int lineType=8, int shift=0)
+        
+    circle( img_gs, Point( matchLoc.x + (img_clip_gs.cols/2.0) , matchLoc.y + (img_clip_gs.rows/2.0) ), 10, Scalar(255,0,0) );
+        
 }
 
-    rectangle( img_gs, matchLoc, Point( matchLoc.x + img_clip_gs.cols , matchLoc.y + img_clip_gs.rows ), Scalar(255,0,0), 2, 8, 0 );
-    rectangle( result, matchLoc, Point( matchLoc.x + img_clip_gs.cols , matchLoc.y + img_clip_gs.rows ), Scalar(255,0,0), 2, 8, 0 );
-    
-    
+
     std::string filename = "/Users/keaveney/Desktop/calibration/PatRec_TM_result.png";
     cv::imwrite(filename, img_gs);
     
