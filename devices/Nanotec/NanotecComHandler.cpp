@@ -44,6 +44,9 @@ void NanotecComHandler::SendCommand( const char *commandString )
 
   // send feed characters
   SendFeedString();
+
+  usleep(10000);
+  // std::cout << "command: |" << commandString << "|" << std::endl;
 }
 
 //! Read a string from device.
@@ -115,6 +118,39 @@ void NanotecComHandler::InitializeIoPort( void )
 
   // get and save current ioport settings for later restoring
   tcgetattr( fIoPortFileDescriptor, &fCurrentTermios );
+
+  // clear new settings struct
+  bzero( &fThisTermios, sizeof( fThisTermios ) );
+
+  // set input/output baud rate
+  cfsetispeed(&fThisTermios, B115200);
+  cfsetospeed(&fThisTermios, B115200);
+
+  // enable the receiver and disable modem control signals
+  fThisTermios.c_cflag |= CREAD;
+  fThisTermios.c_cflag |= CLOCAL;
+
+  // set 8 bits per character, no parity, 1 stop bit (8N1)
+  fThisTermios.c_cflag &= ~PARENB;
+  fThisTermios.c_cflag &= ~CSTOPB;
+  fThisTermios.c_cflag &= ~CSIZE;
+  fThisTermios.c_cflag |= (CLOCAL | CREAD | CS8);
+  fThisTermios.c_lflag &= ~(ICANON | ECHO | ECHOE | ISIG);
+  fThisTermios.c_oflag &= ~OPOST;
+  fThisTermios.c_cc[VMIN] = 0;
+  fThisTermios.c_cc[VTIME] = 10;
+
+  // commit changes
+  tcflush(fIoPortFileDescriptor, TCIOFLUSH);
+
+  if (tcsetattr(fIoPortFileDescriptor, TCSAFLUSH, &fThisTermios) != 0)
+    return;
+
+  int modeLines = 0;
+
+  // put card into exclusive mode
+  if (ioctl(fIoPortFileDescriptor, TIOCEXCL, &modeLines) == -1)
+    return;
 }
 
 //! Restore former I/O port settings.
@@ -148,8 +184,8 @@ void NanotecComHandler::SendFeedString( void )
 {
   if (!fDeviceAvailable) return;
 
-  // feed string is <NL>
-  char feedString = 10;
+  // feed string is <CR>
+  char feedString = '\r';
 
   // write <CR> and get echo
   write( fIoPortFileDescriptor, &feedString, 1 );
