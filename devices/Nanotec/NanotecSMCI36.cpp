@@ -55,6 +55,8 @@ void NanotecSMCI36::SetMotorType(int type)
   sprintf(command, "#1:CL_motor_type%d", type);
 
   comHandler_->SendCommand(command);
+  char buffer[1000];
+  comHandler_->ReceiveString(buffer);
 }
 
 int NanotecSMCI36::GetMotorType() const
@@ -78,6 +80,8 @@ void NanotecSMCI36::SetPhaseCurrent(int current)
   sprintf(command, "#1i%d", current);
 
   comHandler_->SendCommand(command);
+  char buffer[1000];
+  comHandler_->ReceiveString(buffer);
 }
 
 int NanotecSMCI36::GetPhaseCurrent() const
@@ -101,6 +105,8 @@ void NanotecSMCI36::SetStandStillPhaseCurrent(int current)
   sprintf(command, "#1r%d", current);
 
   comHandler_->SendCommand(command);
+  char buffer[1000];
+  comHandler_->ReceiveString(buffer);
 }
 
 int NanotecSMCI36::GetStandStillPhaseCurrent() const
@@ -134,6 +140,8 @@ void NanotecSMCI36::SetStepMode(int mode)
   sprintf(command, "#1g%d", mode);
 
   comHandler_->SendCommand(command);
+  char buffer[1000];
+  comHandler_->ReceiveString(buffer);
 }
 
 int NanotecSMCI36::GetStepMode() const
@@ -155,6 +163,8 @@ void NanotecSMCI36::SetMotorID(int ID)
   sprintf(command, "#1:mt%d", ID);
 
   comHandler_->SendCommand(command);
+  char buffer[1000];
+  comHandler_->ReceiveString(buffer);
 }
 
 int NanotecSMCI36::GetMotorID() const
@@ -177,6 +187,8 @@ void NanotecSMCI36::SetErrorCorrectionMode(int mode)
   sprintf(command, "#1U%d", mode);
 
   comHandler_->SendCommand(command);
+  char buffer[1000];
+  comHandler_->ReceiveString(buffer);
 }
 
 int NanotecSMCI36::GetErrorCorrectionMode() const
@@ -199,6 +211,8 @@ void NanotecSMCI36::SetEncoderDirection(int direction)
   sprintf(command, "#1q%d", direction);
 
   comHandler_->SendCommand(command);
+  char buffer[1000];
+  comHandler_->ReceiveString(buffer);
 }
 
 int NanotecSMCI36::GetEncoderDirection() const
@@ -221,6 +235,8 @@ void NanotecSMCI36::SetSwingOutTime(int time)
   sprintf(command, "#1O%d", time);
 
   comHandler_->SendCommand(command);
+  char buffer[1000];
+  comHandler_->ReceiveString(buffer);
 }
 
 int NanotecSMCI36::GetSwingOutTime() const
@@ -243,6 +259,8 @@ void NanotecSMCI36::SetMaxEncoderDeviation(int deviation)
   sprintf(command, "#1X%d", deviation);
 
   comHandler_->SendCommand(command);
+  char buffer[1000];
+  comHandler_->ReceiveString(buffer);
 }
 
 int NanotecSMCI36::GetMaxEncoderDeviation() const
@@ -287,6 +305,8 @@ int NanotecSMCI36::GetEncoderPosition() const
 void NanotecSMCI36::ResetPositionError()
 {
   comHandler_->SendCommand("#1D");
+  char buffer[1000];
+  comHandler_->ReceiveString(buffer);
 }
 
 void NanotecSMCI36::ResetPositionError(int position)
@@ -306,6 +326,8 @@ void NanotecSMCI36::SetInputPinFunction(int pin, int function)
   sprintf(command, "#1:port_in_%c%d", 'a'+pin-1, function);
 
   comHandler_->SendCommand(command);
+  char buffer[1000];
+  comHandler_->ReceiveString(buffer);
 }
 
 int NanotecSMCI36::GetInputPinFunction(int pin) const
@@ -336,6 +358,8 @@ void NanotecSMCI36::SetOutputPinFunction(int pin, int function)
   sprintf(command, "#1:port_out_%c%d", 'a'+pin-1, function);
 
   comHandler_->SendCommand(command);
+  char buffer[1000];
+  comHandler_->ReceiveString(buffer);
 }
 
 int NanotecSMCI36::GetOutputPinFunction(int pin) const
@@ -363,6 +387,8 @@ void NanotecSMCI36::SetReversePolarityMask(int mask)
   sprintf(command, "#1h%d", mask);
 
   comHandler_->SendCommand(command);
+  char buffer[1000];
+  comHandler_->ReceiveString(buffer);
 }
 
 int NanotecSMCI36::GetReversePolarityMask() const
@@ -386,6 +412,8 @@ void NanotecSMCI36::SetRampMode(int ramp)
   sprintf(command, "#1:ramp_mode%d", ramp);
 
   comHandler_->SendCommand(command);
+  char buffer[1000];
+  comHandler_->ReceiveString(buffer);
 }
 
 int NanotecSMCI36::GetRampMode() const
@@ -409,6 +437,8 @@ void NanotecSMCI36::SetQuickstopRamp(int ramp)
   sprintf(command, "#1H%d", ramp);
 
   comHandler_->SendCommand(command);
+  char buffer[1000];
+  comHandler_->ReceiveString(buffer);
 }
 
 int NanotecSMCI36::GetQuickstopRamp() const
@@ -432,6 +462,8 @@ void NanotecSMCI36::SetQuickstopRampHzPerSecond(int ramp)
   sprintf(command, "#1:decelquick%d", ramp);
 
   comHandler_->SendCommand(command);
+  char buffer[1000];
+  comHandler_->ReceiveString(buffer);
 }
 
 int NanotecSMCI36::GetQuickstopRampHzPerSecond() const
@@ -455,6 +487,8 @@ void NanotecSMCI36::SetAccelerationRamp(int ramp)
   sprintf(command, "#1b%d", ramp);
 
   comHandler_->SendCommand(command);
+  char buffer[1000];
+  comHandler_->ReceiveString(buffer);
 }
 
 int NanotecSMCI36::GetAccelerationRamp() const
@@ -478,6 +512,8 @@ void NanotecSMCI36::SetAccelerationRampHzPerSecond(int ramp)
   sprintf(command, "#1:accel%d", ramp);
 
   comHandler_->SendCommand(command);
+  char buffer[1000];
+  comHandler_->ReceiveString(buffer);
 }
 
 int NanotecSMCI36::GetAccelerationRampHzPerSecond() const
@@ -501,6 +537,8 @@ void NanotecSMCI36::SetDecelerationRamp(int ramp)
   sprintf(command, "#1B%d", ramp);
 
   comHandler_->SendCommand(command);
+  char buffer[1000];
+  comHandler_->ReceiveString(buffer);
 }
 
 int NanotecSMCI36::GetDecelerationRamp() const
@@ -524,6 +562,8 @@ void NanotecSMCI36::SetDecelerationRampHzPerSecond(int ramp)
   sprintf(command, "#1:decel%d", ramp);
 
   comHandler_->SendCommand(command);
+  char buffer[1000];
+  comHandler_->ReceiveString(buffer);
 }
 
 int NanotecSMCI36::GetDecelerationRampHzPerSecond() const
@@ -547,6 +587,8 @@ void NanotecSMCI36::SetPositioningMode(int mode)
   sprintf(command, "#1p%d", mode);
 
   comHandler_->SendCommand(command);
+  char buffer[1000];
+  comHandler_->ReceiveString(buffer);
 }
 
 int NanotecSMCI36::GetPositioningMode() const
@@ -569,6 +611,8 @@ void NanotecSMCI36::SetTravelDistance(int distance)
   sprintf(command, "#1s%d", distance);
 
   comHandler_->SendCommand(command);
+  char buffer[1000];
+  comHandler_->ReceiveString(buffer);
 }
 
 int NanotecSMCI36::GetTravelDistance() const
@@ -592,6 +636,8 @@ void NanotecSMCI36::SetMinimumFrequency(int frequency)
   sprintf(command, "#1u%d", frequency);
 
   comHandler_->SendCommand(command);
+  char buffer[1000];
+  comHandler_->ReceiveString(buffer);
 }
 
 int NanotecSMCI36::GetMinimumFrequency() const
@@ -615,6 +661,8 @@ void NanotecSMCI36::SetMaximumFrequency(int frequency)
   sprintf(command, "#1o%d", frequency);
 
   comHandler_->SendCommand(command);
+  char buffer[1000];
+  comHandler_->ReceiveString(buffer);
 }
 
 int NanotecSMCI36::GetMaximumFrequency() const
@@ -638,6 +686,8 @@ void NanotecSMCI36::SetMaximumFrequency2(int frequency)
   sprintf(command, "#1n%d", frequency);
 
   comHandler_->SendCommand(command);
+  char buffer[1000];
+  comHandler_->ReceiveString(buffer);
 }
 
 int NanotecSMCI36::GetMaximumFrequency2() const
