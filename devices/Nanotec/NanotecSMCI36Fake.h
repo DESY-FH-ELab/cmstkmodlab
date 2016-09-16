@@ -85,6 +85,9 @@ class NanotecSMCI36Fake : public VNanotecSMCI36
   void SetTravelDistance(int distance);
   int GetTravelDistance() const;
 
+  void SetDirection(bool direction);
+  bool GetDirection() const;
+
   void SetMinimumFrequency(int frequency);
   int GetMinimumFrequency() const;
 
@@ -120,6 +123,7 @@ class NanotecSMCI36Fake : public VNanotecSMCI36
   int decelerationRamp_;
   int positioningMode_;
   int tracelDistance_;
+  bool direction_;
   int minFrequency_;
   int maxFrequency_;
   int maxFrequency2_;

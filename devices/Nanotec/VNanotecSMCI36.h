@@ -190,6 +190,9 @@ class VNanotecSMCI36
   virtual void SetTravelDistance(int distance) = 0;
   virtual int GetTravelDistance() const = 0;
 
+  virtual void SetDirection(bool direction) = 0;
+  virtual bool GetDirection() const = 0;
+
   virtual void SetMinimumFrequency(int frequency) = 0;
   virtual int GetMinimumFrequency() const = 0;
 

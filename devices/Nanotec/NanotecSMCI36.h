@@ -94,6 +94,9 @@ class NanotecSMCI36 : public VNanotecSMCI36
   void SetTravelDistance(int distance);
   int GetTravelDistance() const;
 
+  void SetDirection(bool direction);
+  bool GetDirection() const;
+
   void SetMinimumFrequency(int frequency);
   int GetMinimumFrequency() const;
 

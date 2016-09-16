@@ -43,6 +43,7 @@ NanotecSMCI36Fake::NanotecSMCI36Fake( const ioport_t ioPort )
 
   positioningMode_ = 1;
   tracelDistance_ = 400;
+  direction_ = false;
   minFrequency_ = 400;
   maxFrequency_ = 1000;
   maxFrequency2_ = 1000;
@@ -331,6 +332,16 @@ void NanotecSMCI36Fake::SetTravelDistance(int distance)
 int NanotecSMCI36Fake::GetTravelDistance() const
 {
   return tracelDistance_;
+}
+
+void NanotecSMCI36Fake::SetDirection(bool direction)
+{
+  direction_ = direction;
+}
+
+bool NanotecSMCI36Fake::GetDirection() const
+{
+  return direction_;
 }
 
 void NanotecSMCI36Fake::SetMinimumFrequency(int frequency)

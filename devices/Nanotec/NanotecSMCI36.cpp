@@ -629,6 +629,30 @@ int NanotecSMCI36::GetTravelDistance() const
   return std::atoi(ret.c_str());
 }
 
+void NanotecSMCI36::SetDirection(bool direction)
+{
+  char command[20];
+  sprintf(command, "#1d%d", (int)direction);
+
+  comHandler_->SendCommand(command);
+  char buffer[1000];
+  comHandler_->ReceiveString(buffer);
+}
+
+bool NanotecSMCI36::GetDirection() const
+{
+  comHandler_->SendCommand("#1Zd");
+
+  char buffer[1000];
+  comHandler_->ReceiveString(buffer);
+  StripBuffer(buffer);
+
+  std::string ret = buffer;
+  ret.erase(0, strlen("1Zd"));
+
+  return std::atoi(ret.c_str());
+}
+
 void NanotecSMCI36::SetMinimumFrequency(int frequency)
 {
   if (frequency < 1 || frequency > 160000) return;
