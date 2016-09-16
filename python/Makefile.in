@@ -6,7 +6,7 @@ LIBDIR        = $(BASEPATH)/python
 
 LIB           = PyTkModLab
 
-MODULES       = PyHameg8143
+MODULES       = PyTkModLab
 
 PYTHONINC    := $(shell python-config --cflags)
 
@@ -23,6 +23,7 @@ endif
 CXXFLAGS     += -I$(BASEPATH) -I/usr/local/include $(PYTHONINC)
 SOFLAGS      += -L/usr/local/lib -lboost_python
 SOFLAGS      += -L$(BASEPATH)/devices/lib -lTkModLabHameg
+SOFLAGS      += -L$(BASEPATH)/devices/lib -lTkModLabNanotec
 
 ALLDEPEND = $(addsuffix .d,$(MODULES))
 
