@@ -5,7 +5,7 @@ NOASSEMBLY    = @noassembly@
 USEFAKEDEVICES= @usefakedevices@
 QMAKE         = @qmake@
 
-subdirs	      = devices external tools common common_test
+subdirs	      = devices python external tools common common_test
 ifeq ($(NOTHERMAL),0)
 subdirs      += thermo
 endif
