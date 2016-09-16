@@ -12,6 +12,6 @@ smci36.GetEncoderPosition()
 smci36.GetPosition()
 
 smci36.SetDirection(false)
-smci36.SetMaximumFrequency(4000)
+smci36.SetMaximumFrequency(2000)
 
 smci36.Start()
