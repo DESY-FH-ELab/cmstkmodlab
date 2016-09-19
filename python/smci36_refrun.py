@@ -9,9 +9,6 @@ smci36.GetStatus()
 # set the ramp mode to jerk-free (see VNanotecSMCI36.h)
 smci36.SetRampMode(2)
 
-# set number of steps
-smci36.SetTravelDistance(2000)
-
 # get the position of the encoder 
 smci36.GetEncoderPosition()
 
@@ -25,7 +22,7 @@ smci36.SetDirection(False)
 smci36.SetMaximumFrequency(2000)
 
 # set positioning mode to external reference run (see VNanotecSMCI36.h)
-smci36.SetPositioningMode(1)
+smci36.SetPositioningMode(4)
 
 # start the motor
 smci36.Start()
