@@ -381,6 +381,30 @@ int NanotecSMCI36::GetOutputPinFunction(int pin) const
   return std::atoi(ret.c_str());
 }
 
+void NanotecSMCI36::SetIOMask(int mask)
+{
+  char command[20];
+  sprintf(command, "#1L%d", mask);
+
+  comHandler_->SendCommand(command);
+  char buffer[1000];
+  comHandler_->ReceiveString(buffer);
+}
+
+int NanotecSMCI36::GetIOMask() const
+{
+  comHandler_->SendCommand("#1ZL");
+
+  char buffer[1000];
+  comHandler_->ReceiveString(buffer);
+  StripBuffer(buffer);
+
+  std::string ret = buffer;
+  ret.erase(0, strlen("1ZL"));
+
+  return std::atoi(ret.c_str());
+}
+
 void NanotecSMCI36::SetReversePolarityMask(int mask)
 {
   char command[20];

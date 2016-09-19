@@ -64,6 +64,9 @@ class NanotecSMCI36 : public VNanotecSMCI36
   void SetOutputPinFunction(int pin, int function);
   int GetOutputPinFunction(int pin) const;
 
+  void SetIOMask(int mask);
+  int GetIOMask() const;
+
   void SetReversePolarityMask(int mask);
   int GetReversePolarityMask() const;
 

@@ -156,6 +156,9 @@ class VNanotecSMCI36
   virtual void SetOutputPinFunction(int pin, int function) = 0;
   virtual int GetOutputPinFunction(int pin) const = 0;
 
+  virtual void SetIOMask(int mask) = 0;
+  virtual int GetIOMask() const = 0;
+
   virtual void SetReversePolarityMask(int mask) = 0;
   virtual int GetReversePolarityMask() const = 0;
 

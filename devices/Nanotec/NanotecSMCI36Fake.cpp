@@ -34,6 +34,7 @@ NanotecSMCI36Fake::NanotecSMCI36Fake( const ioport_t ioPort )
   outputPinFunction_[2] = smciOPinUserDefined;
   outputPinFunction_[3] = smciOPinUserDefined;
 
+  ioMask_ = 0x0007003F;
   reversePolarityMask_ = 0x0107003F;
 
   rampMode_ = 0;
@@ -218,6 +219,16 @@ int NanotecSMCI36Fake::GetOutputPinFunction(int pin) const
 {
   if (pin<1 || pin>3) return smciOInvalid;
   return outputPinFunction_[pin];
+}
+
+void NanotecSMCI36Fake::SetIOMask(int mask)
+{
+  ioMask_ = mask;
+}
+
+int NanotecSMCI36Fake::GetIOMask() const
+{
+  return ioMask_;
 }
 
 void NanotecSMCI36Fake::SetReversePolarityMask(int mask)
