@@ -59,5 +59,13 @@ BOOST_PYTHON_MODULE(PyTkModLab)
       .def("GetMaximumFrequency2", &NanotecSMCI36_t::GetMaximumFrequency2)
       .def("Start", &NanotecSMCI36_t::Start)
       .def("Stop", &NanotecSMCI36_t::Stop)
+      .def("SetInputPinFunction", &NanotecSMCI36_t::SetInputPinFunction)
+      .def("GetInputPinFunction", &NanotecSMCI36_t::GetInputPinFunction)
+      .def("SetOutputPinFunction", &NanotecSMCI36_t::SetOutputPinFunction)
+      .def("GetOutputPinFunction", &NanotecSMCI36_t::GetOutputPinFunction)
+      .def("SetIOMask", &NanotecSMCI36_t::SetIOMask)
+      .def("GetIOMask", &NanotecSMCI36_t::GetIOMask)
+      .def("SetIO", &NanotecSMCI36_t::SetIO)
+      .def("GetIO", &NanotecSMCI36_t::GetIO)
     ;
 };
