@@ -1,13 +1,8 @@
 ARCHITECTURE=@architecture@
 USEFAKEDEVICES="X@usefakedevices@"
 
-LIBS += -L@basepath@/devices/lib -lTkModLabLang
+LIBS += -L@basepath@/devices/lib -lTkModLabNanotec
 LIBS += -L@basepath@/common -lCommon
-LIBS += -L@basepath@/assembly/assemblyCommon -lAssemblyCommon
-
-equals(USEFAKEDEVICES,"X0") {
-LIBS += -lueye_api
-}
 
 QMAKE = @qmake@
 
@@ -23,7 +18,7 @@ macx {
 }
 
 CONFIG += link_pkgconfig
-PKGCONFIG += opencv
+PKGCONFIG += 
 
 QMAKE_CXXFLAGS += -std=c++11
 macx {
@@ -44,12 +39,11 @@ greaterThan(QT_MAJOR_VERSION, 4) {
   QT += widgets
 } 
 
-TARGET = assembly
+TARGET = plasmacleaner
 TEMPLATE = app
 
 macx {
   QMAKE_POST_LINK = install_name_tool -change libCommon.1.dylib @basepath@/common/libCommon.1.dylib $(TARGET)
-  QMAKE_POST_LINK += && install_name_tool -change libAssemblyCommon.1.dylib @basepath@/assembly/assemblyCommon/libAssemblyCommon.1.dylib $(TARGET)
 }
 
 DEPENDPATH += @basepath@/common @basepath@/assembly/assemblyCommon
@@ -64,7 +58,7 @@ greaterThan(QT_MAJOR_VERSION, 4) {
 }
 
 # Input
-HEADERS += AssemblyMainWindow.h
+HEADERS += PlasmaMainWindow.h
 
 equals(USEFAKEDEVICES,"X0") {
 HEADERS += 
@@ -72,8 +66,8 @@ HEADERS +=
 HEADERS += 
 }
 
-SOURCES += assembly.cc \
-           AssemblyMainWindow.cc
+SOURCES += plasmacleaner.cc \
+           PlasmaMainWindow.cc
 
 equals(USEFAKEDEVICES,"X0") {
 SOURCES += 
