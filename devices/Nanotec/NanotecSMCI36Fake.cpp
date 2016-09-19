@@ -36,6 +36,7 @@ NanotecSMCI36Fake::NanotecSMCI36Fake( const ioport_t ioPort )
 
   ioMask_ = 0x0007003F;
   reversePolarityMask_ = 0x0107003F;
+  io_ = 0;
 
   rampMode_ = 0;
   quickstopRamp_ = 0;
@@ -239,6 +240,16 @@ void NanotecSMCI36Fake::SetReversePolarityMask(int mask)
 int NanotecSMCI36Fake::GetReversePolarityMask() const
 {
   return reversePolarityMask_;
+}
+
+void NanotecSMCI36Fake::SetIO(int mask)
+{
+  io_ = mask;
+}
+
+int NanotecSMCI36Fake::GetIO() const
+{
+  return io_;
 }
 
 void NanotecSMCI36Fake::SetRampMode(int ramp)

@@ -61,6 +61,9 @@ class NanotecSMCI36Fake : public VNanotecSMCI36
   void SetReversePolarityMask(int mask);
   int GetReversePolarityMask() const;
 
+  void SetIO(int mask);
+  int GetIO() const;
+
   void SetRampMode(int ramp);
   int GetRampMode() const;
 
@@ -121,6 +124,7 @@ class NanotecSMCI36Fake : public VNanotecSMCI36
   int outputPinFunction_[4];
   int ioMask_;
   int reversePolarityMask_;
+  int io_;
   int rampMode_;
   int quickstopRamp_;
   int accelerationRamp_;
