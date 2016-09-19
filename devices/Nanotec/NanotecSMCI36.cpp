@@ -393,14 +393,14 @@ void NanotecSMCI36::SetReversePolarityMask(int mask)
 
 int NanotecSMCI36::GetReversePolarityMask() const
 {
-  comHandler_->SendCommand("#1h");
+  comHandler_->SendCommand("#1Zh");
 
   char buffer[1000];
   comHandler_->ReceiveString(buffer);
   StripBuffer(buffer);
 
   std::string ret = buffer;
-  ret.erase(0, strlen("1h"));
+  ret.erase(0, strlen("1Zh"));
 
   return std::atoi(ret.c_str());
 }
