@@ -1,0 +1,12 @@
+plasmacleaner.pro
+plasmacleaner.pro.user
+.qmake.stash
+Makefile
+*.d
+*.o
+*~
+moc_*
+plasmacleaner
+plasmacleaner.app
+plasmacleaner.desktop
+
