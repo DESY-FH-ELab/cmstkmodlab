@@ -4,17 +4,6 @@
 #include "AssemblyUEyeCameraWidget.h"
 
 #include <ApplicationConfig.h>
-
-
-//motion
-#include "LStepExpressModel.h"
-#include "LStepExpressSettings.h"
-#include "LStepExpressMotionManager.h"
-#include "LStepExpressMotionThread.h"
-#include "LStepExpressSettingsWidget.h"
-#include "LStepExpressWidget.h"
-#include "LStepExpressJoystickWidget.h"
-
 #include "DeviceState.h"
 
 
@@ -316,38 +305,15 @@ AssemblyUEyeCameraSettingsWidget::AssemblyUEyeCameraSettingsWidget(AssemblyVUEye
     QFormLayout * layout = new QFormLayout(this);
     layout->addRow("pixel clock", new AssemblyUEyeCameraPixelClockWidget(camera_, this));
     layout->addRow("exposure time", new AssemblyUEyeCameraExposureTimeWidget(camera_, this));
-    layout->addRow("", new AssemblyUEyeCameraSettingsCalibrater(camera_, this));
-  
-
-    x_coor = new QLineEdit();
-    y_coor = new QLineEdit();
-    ang = new QLineEdit();
-    
-    layout->addRow("X", x_coor);
-    layout->addRow("Y", y_coor);
-    layout->addRow("Angle", ang);
-    layout->addRow("", new AssemblyUEyeCameraSettingsMotionInterface(camera_, this, this));
-
-    AssemblyUEyeCameraSettingsPicker * picker =new AssemblyUEyeCameraSettingsPicker(camera_, this);
-    AssemblyUEyeCameraSettingsStatus * status = new AssemblyUEyeCameraSettingsStatus(camera_, this);
-    layout->addRow("", picker);
-    layout->addRow("Status:",status );
-
+   
     
     setLayout(layout);
     
-//    updateCoordinates(1.0,1.0,1.0);
-
     // Connect all the signals
-    
-    connect(camera_, SIGNAL(updateStatus(QString, double)),
-            status, SLOT(updateStatus(QString, double)));
-    
+ 
     connect(camera_, SIGNAL(cameraInformationChanged()),
             this, SLOT(cameraInformationChanged()));
 
-    connect(camera_, SIGNAL(resultObtained(double, double ,double)),
-            this, SLOT(updateResult(double, double, double)));
     
     cameraInformationChanged();
 }
@@ -360,202 +326,8 @@ void AssemblyUEyeCameraSettingsWidget::cameraInformationChanged()
 }
 
 
-void AssemblyUEyeCameraSettingsWidget::updateResult(double x, double y, double angle)
-{
-    NQLog("AssemblyUEyeCameraSettingWidget") << ":updateResults";
-
-    QString x_str = QString::number(x);
-    QString y_str = QString::number(y);
-    QString ang_str = QString::number(angle);
-    
-    x_ = x;
-    y_ = y;
-    angle_ = angle;
-    
-    x_coor->setText(x_str);
-    y_coor->setText(y_str);
-    ang->setText(ang_str);
-    NQLog("AssemblyUEyeCameraSettingWidget") << ":results updated";
-
-    
-}
 
 
-
-AssemblyUEyeCameraSettingsCalibrater::AssemblyUEyeCameraSettingsCalibrater(AssemblyVUEyeCamera* camera,
-                                                                 QWidget *parent)
-    : QPushButton(parent),
-      camera_(camera)
-{
-    
-    // parent->updateCoordinates(1.0,1.0,1.0);
-     this->setText("Calibrate camera / Find marker");
-     // Connect all the signals
-     //   connect(this, SIGNAL(clicked()),
-     //       this, SLOT(onCalibrate()));
-    
-
-    connect(this, SIGNAL(changeExposureTime(double)),
-          camera_, SLOT(setExposureTime(double)));
-
-    connect(this, SIGNAL(clicked()),
-  	    camera_, SLOT(calibrateSettings()));
-    
-}
-
-
-
-AssemblyUEyeCameraSettingsPicker::AssemblyUEyeCameraSettingsPicker(AssemblyVUEyeCamera* camera, QWidget *parent)
-: QPushButton(parent),
-camera_(camera)
-{
-   // QPushButton* button1 = new QPushButton("Button 1" , parent);
-
-    //this->addButton(button1);
-
-    this->setText("Pickup routine");
-    
-    connect(this, SIGNAL(clicked()),
-            camera_, SLOT(pickup()));
-    
-}
-
-
-AssemblyUEyeCameraSettingsStatus::AssemblyUEyeCameraSettingsStatus(AssemblyVUEyeCamera* camera, QWidget *parent)
-: QProgressBar(parent),
-camera_(camera)
-{
-    
-    this->setTextVisible(true);
-    double progress = 0.0;
-    this->setValue(progress);
-    
-    this->setFormat("Idle  ("  + QString::number(progress)+"%)");
-   // this->setText("Moving to pickup station");
-    
-   // connect(this, SIGNAL(clicked()),
-   //         camera_, SLOT(pickup()));
-    
-}
-
-
-
-void AssemblyUEyeCameraSettingsStatus::updateStatus(QString step, double progress)
-{
-    
-    this->setValue(progress);
-    this->setFormat( step +"("  + QString::number(progress)+"%)");
-    // this->setText("Moving to pickup station");
-    
-    //   connect(this, SIGNAL(clicked()),
-    //           camera_, SLOT(pickup()));
-    
-}
-
-
-
-
-
-
-AssemblyUEyeCameraSettingsMotionInterface::AssemblyUEyeCameraSettingsMotionInterface(AssemblyVUEyeCamera* camera,
-                                                                           QWidget *parent, AssemblyUEyeCameraSettingsWidget *settings)
-: QPushButton(parent),
-camera_(camera)
-{
-    
-    this->setText("Return marker to origin");
-    
-    NQLog("AssemblyUEyeCameraSettingsMotionInterface") << ": connection to motion"<< settings->x_;
-    
-       connect(this, SIGNAL(clicked()),
-            this, SLOT(returntoOrigin()));
-    
-       connect(camera_, SIGNAL(resultObtained(double, double, double)),
-            this, SLOT(catchResult(double, double, double)));
-    
-}
-
-void AssemblyUEyeCameraSettingsMotionInterface::catchResult(double x, double y , double angle){
-
-    local_x = x;
-    local_y = y;
-    local_angle = angle;
-
-
-}
-
-
-
-void AssemblyUEyeCameraSettingsMotionInterface::returntoOrigin(){
-    
-    NQLog("AssemblyUEyeCameraSettingsMotionInterface") << ": returning to origin "<< this->local_x<<" "<<this->local_y<<"  "<< this->local_angle;
-
-    ApplicationConfig* config = ApplicationConfig::instance();
-    LStepExpressModel* lStepExpressModel_ = new LStepExpressModel(config->getValue<std::string>("LStepExpressDevice").c_str(),1000, 100);
-    LStepExpressSettings* lStepExpressSettings_ = new LStepExpressSettings(lStepExpressModel_);
-    LStepExpressMotionManager* motionManager_ = new LStepExpressMotionManager(lStepExpressModel_);
-    connect(this, SIGNAL(moveAbsolute(double,double,double,double)), motionManager_, SLOT(moveRelative(double,double,double,double)));
-    NQLog("AssemblyUEyeCameraSettingsMotionInterface") <<"interface to Lstep defined, deice is  "<<  config->getValue<std::string>("LStepExpressDevice").c_str()    ;
-
-    //attempt to return sensor to "home" orientation... try my rotating by -(current orientation in degrees)
-    double target_angle = -(this->local_angle);
-    //    emit moveAbsolute(0.0,0.0,0.0,10.0);
- 
-   std::vector<double> values{ 1.0, 1.0, 0.0, 1.0 };
-   //   values[axis_] = -stepBox_->value();
-     NQLog("AssemblyUEyeCameraSettingsMotionInterface") <<" requesting move... ";
-
-
-   lStepExpressModel_->initialize();
-
-
-   //  if( lStepExpressModel_) lStepExpressModel_->moveRelative( 1.0, 1.0, 0.0, -10.0);
-     NQLog("AssemblyUEyeCameraSettingsMotionInterface") <<"move requested ";
-
-     emit moveAbsolute(0.0,0.0,0.0, target_angle);
-
-    //     emit moveAbsolute(this->local_x,this->local_y,this->local_angle,1.0);
-
-}
-
-
-AssemblyUEyeCameraMarkerFinderResult::AssemblyUEyeCameraMarkerFinderResult()
-{
-
-    NQLog("AssemblyUEyeCameraSettingWidget") << ":results";
-}
-
-
-void AssemblyUEyeCameraSettingsCalibrater::onCalibrate()
-{
-    NQLog("AssemblyUEyeCameraSettingWidget") << ":starting Calibration Routine...";
-    //setValue((current - camera_->getExposureTimeMin()) / camera_->getExposureTimeInc());
-    //  setValue(100.0);
-
-    //connect(this, SIGNAL(changeExposureTime(double)),
-	      //       camera_, SLOT(setExposureTime(double)));
-
-    emit changeExposureTime(50.0);
-    //    emit changeExposureTime(100.0);
-    //emit changeExposureTime(150.0);
-    //emit changeExposureTime(200.0);
-
-
-    // sleep(5);
-    //  emit acquireImage();
-
-   // parent->updateCoordinates(10.0,10.0,10.0);
-
-}
-
-
-
-void AssemblyUEyeCameraSettingsWidget::updateCoordinates(double, double, double)
-{
-    NQLog("AssemblyUEyeCameraSettingWidget") << ":updating coordinates";
-    x_coor->setText("Test");
-    
-}
 
 
 

@@ -34,8 +34,6 @@ AssemblyMainWindow::AssemblyMainWindow(QWidget *parent) :
     assembleView_ = new AssemblyModuleAssembler(tabWidget_);
     tabWidget_->addTab(assembleView_, "assemble");
 
-    plasmaView_ = new AssemblyPlasmaCleaner(tabWidget_);
-    tabWidget_->addTab(plasmaView_, "plasma");
 
     uEyeModel_ = new AssemblyUEyeModel_t(10);
     cameraThread_ = new AssemblyUEyeCameraThread(uEyeModel_, this);

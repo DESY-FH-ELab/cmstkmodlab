@@ -11,8 +11,14 @@ LIBS += -lueye_api
 }
 
 macx {
+
   CONFIG+=x86_64
-  QMAKE_CXXFLAGS += -stdlib=libc++
+
+  QMAKE_CXXFLAGS += -pthread -stdlib=libc++ -std=c++11 -m64 -I/Users/keaveney/root/root-6.06.04/include
+   LIBS += -L/Users/keaveney/root/root-6.06.04/lib -lCore -lRIO -lNet -lHist -lGraf -lGraf3d -lGpad -lTree -lRint -lPostscript -lMatrix -lPhysics -lMathCore -lThread -lMultiProc -lpthread -Wl,-rpath,/Users/keaveney/root/root-6.06.04/lib -stdlib=libc++ -lm -ldl
+
+  #QMAKE_CXXFLAGS += -stdlib=libc++
+
   #QMAKE_MAC_SDK = macosx10.11
   QMAKE_MACOSX_DEPLOYMENT_TARGET = 10.11
   #LIBS += -framework AppKit

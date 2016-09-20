@@ -95,83 +95,6 @@ public slots:
 };
 
 
-class AssemblyUEyeCameraSettingsCalibrater : public QPushButton
-{
-    Q_OBJECT
-    
-public:
-    explicit AssemblyUEyeCameraSettingsCalibrater(AssemblyVUEyeCamera* camera,
-                                                  QWidget *parent = 0);
-    
-public slots:
-    void onCalibrate();
-    
-protected:
-    
-    AssemblyVUEyeCamera* camera_;
-    
-signals:
-    void changeExposureTime(double);
-    void acquireImage();
-    
-};
-
-
-
-class AssemblyUEyeCameraSettingsPicker : public QPushButton
-{
-    Q_OBJECT
-    
-public:
-    explicit AssemblyUEyeCameraSettingsPicker(AssemblyVUEyeCamera* camera,
-                                                  QWidget *parent = 0);
-    
-    public slots:
-//    void onCalibrate();
-    
-protected:
-    
-    AssemblyVUEyeCamera* camera_;
-    
-signals:
-//   void updateStatus(QString, double);
- //   void acquireImage();
-    
-};
-
-
-class AssemblyUEyeCameraSettingsStatus : public QProgressBar
-{
-    Q_OBJECT
-    
-public:
-    explicit AssemblyUEyeCameraSettingsStatus(AssemblyVUEyeCamera* camera,
-                                              QWidget *parent = 0);
-    
-    public slots:
-       void updateStatus(QString, double);
-    
-protected:
-    
-    AssemblyVUEyeCamera* camera_;
-    
-signals:
-    //   void changeExposureTime(double);
-    //   void acquireImage();
-    
-};
-
-
-
-class AssemblyUEyeCameraMarkerFinderResult
-{
-    
-public:
-    AssemblyUEyeCameraMarkerFinderResult();
-    double x, y, angle;
-};
-
-
 
 
 
@@ -251,49 +174,19 @@ class AssemblyUEyeCameraSettingsWidget : public QWidget
 public:
     explicit AssemblyUEyeCameraSettingsWidget(AssemblyVUEyeCamera* camera,
                                             QWidget *parent = 0);
-    void updateCoordinates(double, double, double);
-    double x_,y_,angle_;
+
 
 
 protected:
 
     AssemblyVUEyeCamera* camera_;
     
-    QLineEdit* x_coor;
-    QLineEdit* y_coor;
-    QLineEdit* ang;
+
 
 public slots:
-
     void cameraInformationChanged();
-    void updateResult(double, double, double);
 
 };
-
-
-class AssemblyUEyeCameraSettingsMotionInterface : public QPushButton
-{
-    Q_OBJECT
-    
-public:
-    explicit AssemblyUEyeCameraSettingsMotionInterface(AssemblyVUEyeCamera* camera,
-                                                       QWidget *parent = 0, AssemblyUEyeCameraSettingsWidget * settings =0);
-    AssemblyUEyeCameraSettingsWidget * settings;
-    double local_x, local_y, local_angle;
-    public slots:
-        void returntoOrigin();
-        void catchResult(double, double,double);
-       // void gotoPickup(double, double,double);
-
-
-protected:
-    AssemblyVUEyeCamera* camera_;
-    
-signals:
-     void moveAbsolute(double, double, double, double);
-    
-};
-
 
 
 
