@@ -144,3 +144,9 @@ void MicroScriptableGlobals::tweet(const QString& user, const QString& pw,
 
 #endif
 }
+
+void MicroScriptableGlobals::slack(const QString& message)
+{
+  SlackBot bot("microDAQ");
+  bot.postMessage(message);
+}
