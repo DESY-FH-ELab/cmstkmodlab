@@ -18,7 +18,6 @@ LIBS += -L@basepath@/external/ddierckx -lddierckx
 macx {
   CONFIG+=x86_64
   QMAKE_CXXFLAGS += -stdlib=libc++
-  #QMAKE_MAC_SDK = macosx10.11
   QMAKE_MACOSX_DEPLOYMENT_TARGET = 10.11
 }
 
