@@ -13,6 +13,7 @@
 #include <QDir>
 
 #include <nqlogger.h>
+#include <SlackBot.h>
 
 #include "MicroScriptableGlobals.h"
 
