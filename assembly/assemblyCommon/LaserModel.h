@@ -30,8 +30,6 @@ public:
                                QObject *parent = 0);
     ~LaserModel();
 
-    void setSamplingRate(int mode);
-    void setAveraging(int mode);
     void setLaserHead(int out);
     void setMeasurement(double value); //dummy method for testing
 
@@ -39,6 +37,10 @@ public slots:
 
     void setDeviceEnabled(bool enabled = true);
     void getMeasurement(double& value);
+    void setSamplingRate(int mode);
+    void setAveraging(int mode);
+    void setDiffuseMode(int mode);
+    void setMaterialMode(int mode);
 
 protected:
 

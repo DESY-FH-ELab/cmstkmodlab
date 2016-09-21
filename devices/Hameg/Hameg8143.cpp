@@ -225,7 +225,7 @@ bool Hameg8143::SwitchOutputOff() const
 
 void Hameg8143::StripBuffer(char* buffer) const
 {
-  for (unsigned int c=0; c<sizeof(buffer);++c) {
+  for (unsigned int c=0; c<strlen(buffer);++c) {
     if(buffer[c]=='\n') {
       buffer[c] = 0;
       break;

@@ -14,11 +14,11 @@ LIBS += -L@basepath@/devices/lib -lTkModLabIota
 LIBS += -L@basepath@/devices/lib -lTkModLabArduino
 LIBS += -L@basepath@/devices/lib -lTkModLabCori
 LIBS += -L@basepath@/external/ddierckx -lddierckx
+LIBS += -lcurl
 
 macx {
   CONFIG+=x86_64
   QMAKE_CXXFLAGS += -stdlib=libc++
-  #QMAKE_MAC_SDK = macosx10.11
   QMAKE_MACOSX_DEPLOYMENT_TARGET = 10.11
 }
 
@@ -66,6 +66,7 @@ HEADERS += nqlogger.h \
            ApplicationConfig.h \
            ApplicationConfigReader.h \
            ApplicationConfigWriter.h \
+           SlackBot.h \
            JulaboModel.h \
            ScriptableJulabo.h \
            JulaboWidget.h \
@@ -107,6 +108,7 @@ SOURCES += nqlogger.cc \
            ApplicationConfig.cc \
            ApplicationConfigReader.cc \
            ApplicationConfigWriter.cc \
+           SlackBot.cc \
            JulaboModel.cc \
            ScriptableJulabo.cc \
            JulaboWidget.cc \

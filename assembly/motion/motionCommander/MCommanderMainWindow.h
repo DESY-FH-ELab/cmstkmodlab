@@ -21,6 +21,7 @@
 #include "LStepExpressMeasurementWidget.h"
 #include "LStepExpressPositionWidget.h"
 #include "LStepExpressStatusWindow.h"
+#include "LaserControlsWidget.h"
 
 #include "LaserModel.h"
 #include "LaserThread.h"

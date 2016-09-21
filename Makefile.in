@@ -2,10 +2,11 @@ BASEPATH      = @basepath@
 NOTHERMAL     = @nothermal@
 NODEFO        = @nodefo@
 NOASSEMBLY    = @noassembly@
+NOPLASMA      = @noplasma@
 USEFAKEDEVICES= @usefakedevices@
 QMAKE         = @qmake@
 
-subdirs	      = devices external tools common common_test
+subdirs	      = devices python external tools common common_test
 ifeq ($(NOTHERMAL),0)
 subdirs      += thermo
 endif
@@ -14,6 +15,9 @@ subdirs      += defo
 endif
 ifeq ($(NOASSEMBLY),0)
 subdirs      += assembly
+endif
+ifeq ($(NOPLASMA),0)
+subdirs      += plasma
 endif
 
 qtsubdirs     = common common_test
@@ -28,7 +32,9 @@ endif
 ifeq ($(NOASSEMBLY),0)
 qtsubdirs    += assembly/assemblyCommon assembly/vision/circleCalibration assembly/motion/motionCommander assembly/assembly
 endif
-
+ifeq ($(NOPLASMA),0)
+qtsubdirs    += plasma
+endif
 
 all: qt
 	@for dir in $(subdirs); do (cd $$dir; make); done
