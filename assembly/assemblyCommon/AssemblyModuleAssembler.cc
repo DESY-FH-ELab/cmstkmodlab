@@ -43,7 +43,7 @@ AssemblyModuleAssembler::AssemblyModuleAssembler(QWidget *parent)
     setLayout(l);
 
     QGridLayout *g0 = new QGridLayout(this);
-    l->addLayout(g0,0,0);    
+    l->addLayout(g0,0,0);
 
     QPalette palette;
     palette.setColor(QPalette::Background, QColor(220, 220, 220));
@@ -427,8 +427,7 @@ AssemblyVacuumToggler::AssemblyVacuumToggler(QWidget *parent, std::string string
     
     const char* deviceName = "/dev/ttyUSB0";
     cnrd1 = new ConradController(deviceName);
-   cnrd1->initialize();  
-    NQLog("AssemblyVacuumToggler") << ":in mode"<< mode;
+    cnrd1->initialize();
 
     std::ostringstream strs;
     strs.clear();
@@ -467,41 +466,14 @@ void AssemblyVacuumToggler::toggleVacuum()
     
     NQLog("AssemblyVacuumToggler") << ": toggling vacuum voltage";
     
-    //this slot just needs to be tested with the card connected.
-  
-      //      for (int i =1; i <9; i++){
-      //cnrd1->setChannel(i, true);
-      //usleep(3000);
-      // }
-
-      // for (int p = 1 ; p < 9 ; p++){
-      //	cnrd1->setChannel(p, false);
-      // }
-
-   NQLog("AssemblyVacuumToggler") << ": relay card initialized";
-       if (!state){
+    if (!state){
     cnrd1->setChannel(1, true);
-    cnrd1->setChannel(2, true);
-    cnrd1->setChannel(3, true);
-    cnrd1->setChannel(4, true);
-    cnrd1->setChannel(5, true);
-    cnrd1->setChannel(6, true);
-    cnrd1->setChannel(7, true);
-    cnrd1->setChannel(8, true);
 
     ql->setText("VACUUM ON");
     ql->setStyleSheet("QLabel { background-color : red; color : black; }");
     state = true;
     }else if (state){
     cnrd1->setChannel(1, false);
-    cnrd1->setChannel(2, false);
-    cnrd1->setChannel(3, false);
-    cnrd1->setChannel(4, false);
-    cnrd1->setChannel(5, false);
-    cnrd1->setChannel(6, false);
-    cnrd1->setChannel(7, false);
-    cnrd1->setChannel(8, false);
-
 
     ql->setText("VACUUM OFF");
     ql->setStyleSheet("QLabel { background-color : green; color : black; }");
@@ -616,12 +588,6 @@ void AssemblyMountChecker::checkMount(){
     
     NQLog("AssemblyMountChecker") << ": going to target (parsed) "<< x_d<<" "<< y_d<<"  "<< z_d;
     
-    
-    
-    NQLog("AssemblyMountChecker") <<" requesting move... ";
-    
-    //  if( lStepExpressModel_) lStepExpressModel_->moveRelative( 1.0, 1.0, 0.0, -10.0);
-    
     emit moveAbsolute(x_d, y_d, z_d, a_d);// this should bring you to the first corner
     emit locateCorner(2);
     emit reportCornerLocation(1);
@@ -635,10 +601,6 @@ void AssemblyMountChecker::checkMount(){
     emit locateCorner(5);
     emit reportCornerLocation(4);
     
-    
-    NQLog("AssemblyMountChecker") <<"move requested ";
-    
-    
 }
 
 
@@ -649,9 +611,6 @@ AssemblyCommander::AssemblyCommander(QWidget *parent, std::string string, double
 {
      QFormLayout *l = new QFormLayout(this);
      setLayout(l);
-
-    NQLog("AssemblyCommander") << ": in mode" << mode;
-
     
     std::ostringstream strs;
     strs.clear();
@@ -717,9 +676,6 @@ AssemblyAlligner::AssemblyAlligner(QWidget *parent, std::string string, double a
     QFormLayout *l = new QFormLayout(this);
     setLayout(l);
     
-    NQLog("AssemblyAlligner") << ": in mode" << mode;
-
-    
     std::ostringstream strs;
     strs.clear();
     strs << a;
@@ -769,11 +725,7 @@ void AssemblyAlligner::allign(){
     
     NQLog("AssemblyAlligner:allign") << ": going to target allignment (parsed) "<< a_d<<" ";
     
-    NQLog("AssemblyAlligner:allign") <<" requesting move... ";
-    
     emit moveRelative(0.0, 0.0, 0.0, a_d);
-    
-    NQLog("AssemblyUEyeCameraSettingsMotionInterface") <<"move requested ";
     
     
 }
@@ -796,11 +748,7 @@ AssemblySensorLocator::AssemblySensorLocator(QWidget *parent, std::string string
     
     button1 = new QPushButton(qname, this);
     
-   // lineEdit1 = new QLineEdit();
-   // lineEdit1->setText(qstr);
     l->addWidget(button1,0,0);
-   // l->addWidget(lineEdit1,0,1);
-    
     
     groupBox = new QGroupBox(tr("Pattern Recognition Method"));
     
@@ -816,7 +764,6 @@ AssemblySensorLocator::AssemblySensorLocator(QWidget *parent, std::string string
     
     l->addWidget(groupBox,1,0);
 
-    
 
     ql = new QLabel("", this);
     l->addWidget(ql,0,1);
@@ -1045,18 +992,7 @@ void AssemblySensorLocator::locateSensor_circleSeed(int stage){
         circleCenter_.y = circles[0][1];
     }
     
-//    std::ostringstream convert;   // stream used for the conversion
-//    convert.str(" ");
-//    convert.clear();
-//    convert << p;
-//    str_p = convert.str();
-//    convert.str(" ");
-//    convert.clear();
-//    convert << lt;
-//    str_lt = convert.str();
-//
-//    convert.str(" ");
-//    convert.clear();
+
     cvtColor(img_gs, img_rgb , CV_GRAY2RGB);
 
     /// Draw the circles detected in blue
@@ -1131,7 +1067,6 @@ void AssemblySensorLocator::locateSensor_circleSeed(int stage){
         if ((doca <expectedCircleRadius_*5.8  && doca >expectedCircleRadius_*5.4)  || (doca <expectedCircleRadius_*1.3  && doca >expectedCircleRadius_*0.7)   ) doca_ = true;
         
         if (dist1_ && dist2_ && doca_ ) goodLines_.push_back(lines_[i]);
-        // if ( doca_ == true) goodLines_.push_back(lines_[i]);
     }
     
     //draw the initial collection of "good" lines in pink (handy for debugging, monitoring of PatRec)
@@ -1169,18 +1104,7 @@ void AssemblySensorLocator::locateSensor_circleSeed(int stage){
             
             double ang = fabs(ang2) - fabs(ang1);
             
-            //if (fabs(ang) > 89.0  && fabs(ang) < 91.0 ) ;
-            
-            // cout <<" angle between lines: ang1 =  "<<  ang1  <<" ang2 = "<< ang2 <<" ang = "<<  ang<<endl;
-            
-            
-            //  if (cv::norm(r - o1) > distance &&
-            //      cv::norm(r - p1) > distance) continue;
-            
-            //  if (cv::norm(r - o2) > distance &&
-            //      cv::norm(r - p2) > distance) continue;
-            //  std::cout << "ang   " << ang     <<std::endl;
-            
+
             if ( fabs(ang) > 80.0  && fabs(ang) < 100.0   &&   abs(cross) > /*EPS*/1e-7){
                 double t1 = (x.x * d2.y - x.y * d2.x)/cross;
                 r = o1 + d1 * t1;
@@ -1212,7 +1136,6 @@ void AssemblySensorLocator::locateSensor_circleSeed(int stage){
     }
     
     for (int goodint =0; goodint < goodIntersections_.size(); goodint++){
-        // circle( img_rgb, goodIntersections_[goodint], 10, cv::Scalar(0,255,0), 3, 8, 0 );
         
         
         // Select the two intersections that are adjacent to the circle.

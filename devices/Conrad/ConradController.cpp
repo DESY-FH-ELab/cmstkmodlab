@@ -14,8 +14,6 @@ ConradController::ConradController(const char* comPort)
     m_communication(new ConradCommunication(comPort))
 {
 
-  std::cout <<"asserting coms  -"<<comPort<<std::endl;
-
 }
 
 //! Default destructor
@@ -29,24 +27,17 @@ ConradController::~ConradController()
 bool ConradController::initialize()
 {
   
-
-  std::cout <<"asserting coms "<<std::endl;
   assert(m_communication);
-
-  std::cout <<"initialising coms"<<std::endl;
-
+
   // Initialize communication
   if (!m_communication->initialize())
     return false;
 
-  std::cout <<"asserting card"<<std::endl;
   // Initialize card
   if (!m_communication->sendCommand(1, 1, 0))
     return false;
 
   // Check wheter initialization was successful
-  std::cout <<"getting answer"<<std::endl;
-
   unsigned char answer, address, status;
   if (!m_communication->receiveAnswer(&answer, &address, &status))
     return false;
