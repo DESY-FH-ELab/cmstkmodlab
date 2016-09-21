@@ -18,6 +18,9 @@ returns the current unix time
 * <b>uint defo.mkUTime( int year, int month, int day, int hour, int minute, int second );</b></br>
 constructs and returns a unix time from the provided parameters.
 
+* <b>defo.slack(message);</b></br>
+post a message to slack.
+
 ## keithley
 
 * <b>int keithley.state( uint channel = [0,9] );</b></br>
