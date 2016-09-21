@@ -57,7 +57,7 @@ QMAKE="qmake"
 if test $ARCHITECTURE = "Darwin"; then
     echo Darwin architecture: fake device support forced
     USEFAKEDEVICES=1
-    CONFIGDEFINES="USE_FAKEIO"
+    CONFIGDEFINES="DARWIN USE_FAKEIO"
     SOFLAGS="-m64 -O2 -dynamiclib -single_module -undefined dynamic_lookup"
     CC="clang"
     CXX="clang++"
