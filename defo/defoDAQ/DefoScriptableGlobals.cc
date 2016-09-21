@@ -6,6 +6,7 @@
 #include <QDateTime>
 
 #include <nqlogger.h>
+#include <SlackBot.h>
 
 #include "DefoScriptableGlobals.h"
 
@@ -84,4 +85,10 @@ QScriptValue DefoScriptableGlobals::mkUTime(int year, int month, int day,
   QDateTime dt(QDate(year, month, day), QTime(hour, minute, second), Qt::UTC);
   uint utime = dt.toTime_t();
   return QScriptValue(utime);
+}
+
+void DefoScriptableGlobals::slack(const QString& message)
+{
+  SlackBot bot("defoDAQ");
+  bot.postMessage(message);
 }
