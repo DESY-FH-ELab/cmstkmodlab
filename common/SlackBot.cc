@@ -10,16 +10,23 @@
 
 SlackBot::SlackBot(QObject *parent)
   : QObject(parent),
-    name_(),
+    username_(),
     webhook_(),
     channel_()
 {
 
 }
 
-SlackBot::SlackBot(QString name, QString webhook, QString channel, QObject *parent)
+SlackBot::SlackBot(QString username, QObject *parent)
   : QObject(parent),
-    name_(name),
+    username_(username)
+{
+
+}
+
+SlackBot::SlackBot(QString username, QString webhook, QString channel, QObject *parent)
+  : QObject(parent),
+    username_(username),
     webhook_(webhook),
     channel_(channel)
 {
@@ -72,10 +79,10 @@ void SlackBot::postMessage(const QString& message)
 
   data += "\", \"username\": \"";
 
-  if (name_.isNull()) {
+  if (username_.isNull()) {
     data += ApplicationConfig::instance()->getValue("slackusername");
   } else {
-    data += name_.toStdString();
+    data += username_.toStdString();
   }
 
   data += "\", \"text\": \"";

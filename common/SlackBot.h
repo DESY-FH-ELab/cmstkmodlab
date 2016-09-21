@@ -10,7 +10,8 @@ class SlackBot : public QObject
   Q_OBJECT
 public:
   explicit SlackBot(QObject *parent = 0);
-  explicit SlackBot(QString name, QString webhook, QString channel, QObject *parent = 0);
+  explicit SlackBot(QString username, QObject *parent = 0);
+  explicit SlackBot(QString username, QString webhook, QString channel, QObject *parent = 0);
   ~SlackBot();
 
 public slots:
@@ -19,7 +20,7 @@ public slots:
 
 protected:
 
-  QString name_;
+  QString username_;
   QString webhook_;
   QString channel_;
   QMutex mutex_;
