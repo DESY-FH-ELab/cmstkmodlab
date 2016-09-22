@@ -130,7 +130,7 @@ class NanotecSMCI36Fake : public VNanotecSMCI36
   int accelerationRamp_;
   int decelerationRamp_;
   int positioningMode_;
-  int tracelDistance_;
+  int travelDistance_;
   bool direction_;
   int minFrequency_;
   int maxFrequency_;
