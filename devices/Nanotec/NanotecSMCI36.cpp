@@ -302,19 +302,14 @@ int NanotecSMCI36::GetEncoderPosition() const
   return std::atoi(ret.c_str());
 }
 
-void NanotecSMCI36::ResetPositionError()
-{
-  comHandler_->SendCommand("#1D");
-  char buffer[1000];
-  comHandler_->ReceiveString(buffer);
-}
-
 void NanotecSMCI36::ResetPositionError(int position)
 {
   char command[20];
   sprintf(command, "#1D%d", position);
 
   comHandler_->SendCommand(command);
+  char buffer[1000];
+  comHandler_->ReceiveString(buffer);
 }
 
 void NanotecSMCI36::SetInputPinFunction(int pin, int function)

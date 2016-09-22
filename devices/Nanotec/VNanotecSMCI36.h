@@ -154,7 +154,6 @@ class VNanotecSMCI36
   virtual int GetPosition() const = 0;
   virtual int GetEncoderPosition() const = 0;
 
-  virtual void ResetPositionError() = 0;
   virtual void ResetPositionError(int position) = 0;
 
   virtual void SetInputPinFunction(int pin, int function) = 0;

@@ -46,7 +46,6 @@ class NanotecSMCI36Fake : public VNanotecSMCI36
 
   int GetPosition() const;
   int GetEncoderPosition() const;
-  void ResetPositionError();
   void ResetPositionError(int position);
 
   void SetInputPinFunction(int pin, int function);

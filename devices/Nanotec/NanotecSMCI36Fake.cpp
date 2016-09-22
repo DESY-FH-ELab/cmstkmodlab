@@ -185,11 +185,6 @@ int NanotecSMCI36Fake::GetEncoderPosition() const
   return encoderPosition_;
 }
 
-void NanotecSMCI36Fake::ResetPositionError()
-{
-  position_ = encoderPosition_;
-}
-
 void NanotecSMCI36Fake::ResetPositionError(int position)
 {
   position_ = position;
