@@ -14,6 +14,10 @@ VNanotecSMCI36::VNanotecSMCI36( const ioport_t ioPort )
   stepModeNames_.push_back(std::pair<int,std::string>(smciFeedRateMode, "Feed Rate Mode"));
   stepModeNames_.push_back(std::pair<int,std::string>(smciAdaptiveStepMode, "Adaptive Step Mode"));
 
+  errorCorrectionModeNames_.push_back(std::pair<int,std::string>(smciErrCorrectionOff, "Off"));
+  errorCorrectionModeNames_.push_back(std::pair<int,std::string>(smciErrCorrectionAfterTravel, "Correction After Travel"));
+  errorCorrectionModeNames_.push_back(std::pair<int,std::string>(smciErrCorrectionDuringTravel, "Correction During Travel"));
+
   rampModeNames_.push_back(std::pair<int,std::string>(smciTrapezoidalRamp, "Trapezoidal Ramp"));
   rampModeNames_.push_back(std::pair<int,std::string>(smciSinusRamp, "Sinus Ramp"));
   rampModeNames_.push_back(std::pair<int,std::string>(smciJerkFreeRamp, "Jerk-Free Ramp"));

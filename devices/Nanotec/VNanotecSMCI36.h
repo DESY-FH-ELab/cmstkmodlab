@@ -138,6 +138,9 @@ class VNanotecSMCI36
 
   virtual void SetErrorCorrectionMode(int mode) = 0;
   virtual int GetErrorCorrectionMode() const = 0;
+  const std::vector<std::pair<int,std::string>>& GetErrorCorrectionModeNames() const {
+    return errorCorrectionModeNames_;
+  }
 
   virtual void SetEncoderDirection(int direction) = 0;
   virtual int GetEncoderDirection() const = 0;
@@ -224,6 +227,7 @@ class VNanotecSMCI36
  protected:
 
   std::vector<std::pair<int,std::string>> stepModeNames_;
+  std::vector<std::pair<int,std::string>> errorCorrectionModeNames_;
   std::vector<std::pair<int,std::string>> rampModeNames_;
   std::vector<std::pair<int,std::string>> positioningModeNames_;
 };
