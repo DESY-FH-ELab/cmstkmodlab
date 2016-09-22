@@ -256,25 +256,29 @@ NanotecSMCI36Widget::NanotecSMCI36Widget(NanotecSMCI36Model* model, QWidget *par
 
   layout->addLayout(formLayout);
 
+  QHBoxLayout* hlayout = new QHBoxLayout();
+
   start_ = new QPushButton("start", this);
   connect(start_, SIGNAL(clicked()),
           model_, SLOT(start()));
-  layout->addWidget(start_);
+  hlayout->addWidget(start_);
 
   stop_ = new QPushButton("stop", this);
   connect(stop_, SIGNAL(clicked()),
           model_, SLOT(stop()));
-  layout->addWidget(stop_);
+  hlayout->addWidget(stop_);
 
   quickstop_ = new QPushButton("quick stop", this);
   connect(quickstop_, SIGNAL(clicked()),
           model_, SLOT(stop()));
-  layout->addWidget(quickstop_);
+  hlayout->addWidget(quickstop_);
 
   resetPositionError_ = new QPushButton("reset position error", this);
   connect(resetPositionError_, SIGNAL(clicked()),
           model_, SLOT(resetPositionError()));
-  layout->addWidget(resetPositionError_);
+  hlayout->addWidget(resetPositionError_);
+
+  layout->addLayout(hlayout);
 
   // Connect all the signals
   connect(model_, SIGNAL(deviceStateChanged(State)),
