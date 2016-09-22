@@ -49,6 +49,18 @@ const std::vector<std::pair<int,std::string>>& NanotecSMCI36Model::getStepModeNa
   return controller_->GetStepModeNames();
 }
 
+void NanotecSMCI36Model::setErrorCorrectionMode(int mode)
+{
+  if (state_!=READY) return;
+
+  controller_->SetErrorCorrectionMode(mode);
+}
+
+const std::vector<std::pair<int,std::string>>& NanotecSMCI36Model::getErrorCorrectionModeNames() const
+{
+  return controller_->GetErrorCorrectionModeNames();
+}
+
 void NanotecSMCI36Model::setRampMode(int mode)
 {
   if (state_!=READY) return;
