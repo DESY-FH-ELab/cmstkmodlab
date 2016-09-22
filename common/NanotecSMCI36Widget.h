@@ -34,4 +34,4 @@ public slots:
   void updateInfo();
 };
 
-#endif // HAMEGWIDGET_H
+#endif // NANOTECSMCI36WIDGET_H
