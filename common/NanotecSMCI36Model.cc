@@ -217,6 +217,7 @@ void NanotecSMCI36Model::updateInformation2()
     int stepMode = controller_->GetStepMode();
     int rampMode = controller_->GetRampMode();
     int positioningMode = controller_->GetPositioningMode();
+    int errorCorrectionMode = controller_->GetErrorCorrectionMode();
     bool direction = controller_->GetDirection();
     double travelDistance = controller_->GetTravelDistance();
 
@@ -224,6 +225,7 @@ void NanotecSMCI36Model::updateInformation2()
         stepMode != stepMode_ ||
         rampMode != rampMode_ ||
         positioningMode != positioningMode_ ||
+        errorCorrectionMode != errorCorrectionMode_ ||
         direction != direction_ ||
         travelDistance != travelDistance_) {
 
@@ -231,6 +233,7 @@ void NanotecSMCI36Model::updateInformation2()
       stepMode_ = stepMode;
       rampMode_ = rampMode;
       positioningMode_ = positioningMode;
+      errorCorrectionMode_ = errorCorrectionMode;
       direction_ = direction;
       travelDistance_ = travelDistance;
 
