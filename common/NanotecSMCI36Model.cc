@@ -49,6 +49,18 @@ const std::vector<std::pair<int,std::string>>& NanotecSMCI36Model::getStepModeNa
   return controller_->GetStepModeNames();
 }
 
+void NanotecSMCI36Model::setRampMode(int mode)
+{
+  if (state_!=READY) return;
+
+  controller_->SetRampMode(mode);
+}
+
+const std::vector<std::pair<int,std::string>>& NanotecSMCI36Model::getRampModeNames() const
+{
+  return controller_->GetRampModeNames();
+}
+
 void NanotecSMCI36Model::setPositioningMode(int mode)
 {
   if (state_!=READY) return;
@@ -184,18 +196,21 @@ void NanotecSMCI36Model::updateInformation2()
 
     int motorID = controller_->GetMotorID();
     int stepMode = controller_->GetStepMode();
+    int rampMode = controller_->GetRampMode();
     int positioningMode = controller_->GetPositioningMode();
     bool direction = controller_->GetDirection();
     double travelDistance = controller_->GetTravelDistance();
 
     if (motorID != motorID_ ||
         stepMode != stepMode_ ||
+        rampMode != rampMode_ ||
         positioningMode != positioningMode_ ||
         direction != direction_ ||
         travelDistance != travelDistance_) {
 
       motorID_ = motorID;
       stepMode_ = stepMode;
+      rampMode_ = rampMode;
       positioningMode_ = positioningMode;
       direction_ = direction;
       travelDistance_ = travelDistance;

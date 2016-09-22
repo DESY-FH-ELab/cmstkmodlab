@@ -37,6 +37,23 @@ protected slots:
   void updateInfo();
 };
 
+class NanotecSMCI36RampModeWidget : public QComboBox
+{
+  Q_OBJECT
+public:
+  explicit NanotecSMCI36RampModeWidget(NanotecSMCI36Model* model,
+                                       QWidget *parent = 0);
+
+protected:
+
+  NanotecSMCI36Model * model_;
+
+protected slots:
+
+  void indexChanged(int);
+  void updateInfo();
+};
+
 class NanotecSMCI36PositioningModeWidget : public QComboBox
 {
   Q_OBJECT
@@ -72,6 +89,7 @@ protected:
 
   NanotecSMCI36PositioningModeWidget* positioningMode_;
   NanotecSMCI36StepModeWidget* stepMode_;
+  NanotecSMCI36RampModeWidget* rampMode_;
 
   QCheckBox* direction_;
   QDoubleSpinBox* travelDistance_;

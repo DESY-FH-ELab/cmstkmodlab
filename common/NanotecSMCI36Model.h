@@ -37,6 +37,9 @@ public:
   int getStepMode() const { return stepMode_; }
   const std::vector<std::pair<int,std::string>>& getStepModeNames() const;
 
+  int getRampMode() const { return rampMode_; }
+  const std::vector<std::pair<int,std::string>>& getRampModeNames() const;
+
   int getControllerSteps() const { return controllerSteps_; }
   int getEncoderSteps() const { return encoderSteps_; }
 
@@ -53,6 +56,7 @@ public slots:
 
   void setMotorID(int motorID);
   void setStepMode(int mode);
+  void setRampMode(int mode);
   void setPositioningMode(int mode);
   void setDirection(bool direction);
   void setTravelDistance(double distance);
@@ -78,6 +82,7 @@ protected:
   unsigned int status_;
   int motorID_;
   int stepMode_;
+  int rampMode_;
   int controllerSteps_;
   int encoderSteps_;
   int positioningMode_;

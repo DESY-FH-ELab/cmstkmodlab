@@ -54,6 +54,53 @@ void NanotecSMCI36StepModeWidget::updateInfo()
   }
 }
 
+NanotecSMCI36RampModeWidget::NanotecSMCI36RampModeWidget(NanotecSMCI36Model* model,
+                                                         QWidget *parent)
+  : QComboBox(parent),
+    model_(model)
+{
+  // No user editable text
+  setEditable(false);
+
+  const std::vector<std::pair<int,std::string>>& modes = model_->getRampModeNames();
+
+  for (std::vector<std::pair<int,std::string>>::const_iterator it = modes.begin();
+       it!=modes.end();
+       ++it) {
+    addItem(it->second.c_str(), QVariant(it->first));
+  }
+
+  connect(model_, SIGNAL(informationChanged()),
+          this, SLOT(updateInfo()));
+
+  connect(this, SIGNAL(currentIndexChanged(int)),
+          this, SLOT(indexChanged(int)));
+
+  updateInfo();
+}
+
+void NanotecSMCI36RampModeWidget::indexChanged(int index)
+{
+  // NQLog("NanotecSMCI36RampModeWidget", NQLog::Debug) << "indexChanged()";
+
+  int userValue = itemData(index).toInt();
+
+  if (model_->getRampMode()!=userValue) {
+    model_->setRampMode(userValue);
+  }
+}
+
+void NanotecSMCI36RampModeWidget::updateInfo()
+{
+  NQLog("NanotecSMCI36RampModeWidget", NQLog::Debug) << "updateInfo()";
+
+  int mode = model_->getRampMode();
+  int index = findData(mode);
+  if (index!=currentIndex()) {
+    setCurrentIndex(index);
+  }
+}
+
 NanotecSMCI36PositioningModeWidget::NanotecSMCI36PositioningModeWidget(NanotecSMCI36Model* model,
                                                                        QWidget *parent)
   : QComboBox(parent),
@@ -125,6 +172,9 @@ NanotecSMCI36Widget::NanotecSMCI36Widget(NanotecSMCI36Model* model, QWidget *par
 
   stepMode_ = new NanotecSMCI36StepModeWidget(model_, this);
   formLayout->addRow("step mode", stepMode_);
+
+  rampMode_ = new NanotecSMCI36RampModeWidget(model_, this);
+  formLayout->addRow("ramp mode", rampMode_);
 
   controllerSteps_ = new QLabel("         ", this);
   formLayout->addRow("controller steps", controllerSteps_);
