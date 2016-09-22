@@ -350,6 +350,7 @@ void NanotecSMCI36Widget::updateInfo()
   status_->setText(QString::number(status));
 
   motorID_->setValue(model_->getMotorID());
+  maxEncoderDeviation_->setValue(model_->getMaxEncoderDeviation());
 
   controllerSteps_->setText(QString::number(model_->getControllerSteps()));
   encoderSteps_->setText(QString::number(model_->getEncoderSteps()));
