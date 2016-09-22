@@ -175,6 +175,9 @@ class VNanotecSMCI36
 
   virtual void SetRampMode(int ramp) = 0;
   virtual int GetRampMode() const = 0;
+  const std::vector<std::pair<int,std::string>>& GetRampModeNames() const {
+    return rampModeNames_;
+  }
 
   virtual void SetQuickstopRamp(int ramp) = 0;
   virtual int GetQuickstopRamp() const = 0;
@@ -221,6 +224,7 @@ class VNanotecSMCI36
  protected:
 
   std::vector<std::pair<int,std::string>> stepModeNames_;
+  std::vector<std::pair<int,std::string>> rampModeNames_;
   std::vector<std::pair<int,std::string>> positioningModeNames_;
 };
 
