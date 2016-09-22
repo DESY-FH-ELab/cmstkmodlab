@@ -69,6 +69,8 @@ NanotecSMCI36Widget::NanotecSMCI36Widget(NanotecSMCI36Model* model, QWidget *par
   formLayout->addRow("status", status_);
 
   motorID_ = new QSpinBox(this);
+  connect(motorID_, SIGNAL(valueChanged(int)),
+          model_, SLOT(setMotorID(int)));
   formLayout->addRow("motor ID", motorID_);
 
   controllerSteps_ = new QLabel("         ", this);
