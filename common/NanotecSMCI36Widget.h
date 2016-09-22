@@ -87,9 +87,9 @@ protected:
   QLabel* controllerSteps_;
   QLabel* encoderSteps_;
 
-  NanotecSMCI36PositioningModeWidget* positioningMode_;
   NanotecSMCI36StepModeWidget* stepMode_;
   NanotecSMCI36RampModeWidget* rampMode_;
+  NanotecSMCI36PositioningModeWidget* positioningMode_;
 
   QCheckBox* direction_;
   QDoubleSpinBox* travelDistance_;
