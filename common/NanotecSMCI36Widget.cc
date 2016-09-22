@@ -52,7 +52,6 @@ void NanotecSMCI36PositioningModeWidget::updateInfo()
   }
 }
 
-
 NanotecSMCI36Widget::NanotecSMCI36Widget(NanotecSMCI36Model* model, QWidget *parent)
   : QWidget(parent),
     model_(model)
@@ -168,5 +167,4 @@ void NanotecSMCI36Widget::updateInfo()
 
   direction_->setChecked(model_->getDirection());
   travelDistance_->setValue(model_->getTravelDistance());
-
 }
