@@ -31,11 +31,34 @@ public:
                               QObject *parent = 0);
 
   unsigned int getStatus() const { return status_; }
+  unsigned int getMotorID() const { return motorID_; }
+
+  unsigned int getStepMode() const { return stepMode_; }
+  const std::vector<std::pair<int,std::string>>& getStepModeNames() const;
+
+  int getControllerSteps() const { return controllerSteps_; }
+  int getEncoderSteps() const { return encoderSteps_; }
+
+  unsigned int getPositioningMode() const { return positioningMode_; }
+  const std::vector<std::pair<int,std::string>>& getPositioningModeNames() const;
+
+  bool getDirection() const { return direction_; }
+  double getTravelDistance() const { return travelDistance_; }
 
 public slots:
 
   void setDeviceEnabled(bool enabled);
   void setControlsEnabled(bool enabled);
+
+  void setMotorID(unsigned int motorID);
+  void setStepMode(unsigned int mode);
+  void setPositioningMode(unsigned int mode);
+  void setDirection(bool direction);
+  void setTravelDistance(double distance);
+
+  void start();
+  void stop();
+  void quickStop();
 
 protected:
 
@@ -50,6 +73,13 @@ protected:
   void setDeviceState( State state );
 
   unsigned int status_;
+  unsigned int motorID_;
+  unsigned int stepMode_;
+  int controllerSteps_;
+  int encoderSteps_;
+  unsigned int positioningMode_;
+  bool direction_;
+  double travelDistance_;
 
 protected slots:
 

@@ -20,6 +20,72 @@ NanotecSMCI36Model::NanotecSMCI36Model(const char* port,
   connect( timer_, SIGNAL(timeout()), this, SLOT(updateInformation()) );
 
   setDeviceEnabled(true);
+void NanotecSMCI36Model::setMotorID(unsigned int motorID)
+{
+  if (state_!=READY) return;
+
+  controller_->SetMotorID(motorID);
+}
+
+void NanotecSMCI36Model::setStepMode(unsigned int mode)
+{
+  if (state_!=READY) return;
+
+  controller_->SetStepMode(mode);
+}
+
+const std::vector<std::pair<int,std::string>>& NanotecSMCI36Model::getStepModeNames() const
+{
+  return controller_->GetStepModeNames();
+}
+
+void NanotecSMCI36Model::setPositioningMode(unsigned int mode)
+{
+  if (state_!=READY) return;
+
+  controller_->SetPositioningMode(mode);
+}
+
+const std::vector<std::pair<int,std::string>>& NanotecSMCI36Model::getPositioningModeNames() const
+{
+  return controller_->GetPositioningModeNames();
+}
+
+void NanotecSMCI36Model::setDirection(bool direction)
+{
+  if (state_!=READY) return;
+
+  controller_->SetDirection(direction);
+}
+
+void NanotecSMCI36Model::setTravelDistance(double distance)
+{
+  if (state_!=READY) return;
+
+  controller_->SetTravelDistance(distance);
+}
+
+void NanotecSMCI36Model::start()
+{
+  if (state_!=READY) return;
+
+  if (status_ & VNanotecSMCI36::smciReady) {
+    controller_->Start();
+  }
+}
+
+void NanotecSMCI36Model::stop()
+{
+  if (state_!=READY) return;
+
+  controller_->Stop(false);
+}
+
+void NanotecSMCI36Model::quickStop()
+{
+  if (state_!=READY) return;
+
+  controller_->Stop(true);
 }
 
 void NanotecSMCI36Model::initialize()
