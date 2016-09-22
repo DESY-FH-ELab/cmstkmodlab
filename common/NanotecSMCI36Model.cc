@@ -15,7 +15,8 @@ NanotecSMCI36Model::NanotecSMCI36Model(const char* port,
     AbstractDeviceModel<NanotecSMCI36_t>(),
     NanotecSMCI36_PORT(port),
     updateInterval1_(updateInterval1),
-    updateInterval2_(updateInterval2)
+    updateInterval2_(updateInterval2),
+    pitch_(1.0)
 {
   timer1_ = new QTimer(this);
   timer1_->setInterval(updateInterval1_ * 1000);
@@ -28,6 +29,13 @@ NanotecSMCI36Model::NanotecSMCI36Model(const char* port,
   setDeviceEnabled(true);
 
   NQLog("NanotecSMCI36Model") << "constructed";
+}
+
+void NanotecSMCI36Model::setPitch(double pitch)
+{
+  if (state_!=READY) return;
+
+  pitch_ = pitch;
 }
 
 void NanotecSMCI36Model::setMotorID(int motorID)

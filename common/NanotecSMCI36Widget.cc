@@ -207,6 +207,13 @@ NanotecSMCI36Widget::NanotecSMCI36Widget(NanotecSMCI36Model* model, QWidget *par
 
   QFormLayout *formLayout = new QFormLayout;
 
+  pitch_ = new QDoubleSpinBox(this);
+  pitch_->setMinimum(1);
+  pitch_->setMaximum(1000000);
+  connect(pitch_, SIGNAL(valueChanged(double)),
+          model_, SLOT(setPitch(double)));
+  formLayout->addRow("pitch [steps/mm]", pitch_);
+
   status_ = new QLabel("         ", this);
   formLayout->addRow("status", status_);
 

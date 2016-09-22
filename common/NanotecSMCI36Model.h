@@ -31,6 +31,8 @@ public:
                               double updateInterval2 = 5,
                               QObject *parent = 0);
 
+  double getPitch() const { return pitch_; }
+
   unsigned int getStatus() const { return status_; }
   int getMotorID() const { return motorID_; }
 
@@ -63,6 +65,7 @@ public slots:
   void setDeviceEnabled(bool enabled);
   void setControlsEnabled(bool enabled);
 
+  void setPitch(double pitch);
   void setMotorID(int motorID);
   void setStepMode(int mode);
   void setRampMode(int mode);
@@ -94,6 +97,7 @@ protected:
 
   void setDeviceState( State state );
 
+  double pitch_;
   unsigned int status_;
   int motorID_;
   int stepMode_;

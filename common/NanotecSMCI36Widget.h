@@ -99,6 +99,7 @@ protected:
 
   QCheckBox* smci36CheckBox_;
 
+  QDoubleSpinBox* pitch_;
   QLabel* status_;
   QSpinBox* motorID_;
   QLabel* controllerSteps_;
