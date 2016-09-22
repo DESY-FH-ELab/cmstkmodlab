@@ -20,6 +20,23 @@
 #include "NanotecSMCI36Model.h"
 #include "DeviceState.h"
 
+class NanotecSMCI36StepModeWidget : public QComboBox
+{
+  Q_OBJECT
+public:
+  explicit NanotecSMCI36StepModeWidget(NanotecSMCI36Model* model,
+                                       QWidget *parent = 0);
+
+protected:
+
+  NanotecSMCI36Model * model_;
+
+protected slots:
+
+  void indexChanged(int);
+  void updateInfo();
+};
+
 class NanotecSMCI36PositioningModeWidget : public QComboBox
 {
   Q_OBJECT
@@ -54,6 +71,7 @@ protected:
   QLabel* encoderSteps_;
 
   NanotecSMCI36PositioningModeWidget* positioningMode_;
+  NanotecSMCI36StepModeWidget* stepMode_;
 
   QCheckBox* direction_;
   QDoubleSpinBox* travelDistance_;

@@ -7,6 +7,51 @@
 
 #include "NanotecSMCI36Widget.h"
 
+NanotecSMCI36StepModeWidget::NanotecSMCI36StepModeWidget(NanotecSMCI36Model* model,
+                                                         QWidget *parent)
+  : QComboBox(parent),
+    model_(model)
+{
+  // No user editable text
+  setEditable(false);
+
+  const std::vector<std::pair<int,std::string>>& modes = model_->getStepModeNames();
+
+  for (std::vector<std::pair<int,std::string>>::const_iterator it = modes.begin();
+       it!=modes.end();
+       ++it) {
+    addItem(it->second.c_str(), QVariant(it->first));
+  }
+
+  connect(model_, SIGNAL(informationChanged()),
+          this, SLOT(updateInfo()));
+
+  connect(this, SIGNAL(currentIndexChanged(int)),
+          this, SLOT(indexChanged(int)));
+}
+
+void NanotecSMCI36StepModeWidget::indexChanged(int index)
+{
+  // NQLog("NanotecSMCI36StepModeWidget", NQLog::Debug) << "indexChanged()";
+
+  int userValue = itemData(index).toInt();
+
+  if (model_->getStepMode()!=userValue) {
+    model_->setStepMode(userValue);
+  }
+}
+
+void NanotecSMCI36StepModeWidget::updateInfo()
+{
+  NQLog("NanotecSMCI36StepModeWidget", NQLog::Debug) << "updateInfo()";
+
+  int mode = model_->getStepMode();
+  int index = findData(mode);
+  if (index!=currentIndex()) {
+    setCurrentIndex(index);
+  }
+}
+
 NanotecSMCI36PositioningModeWidget::NanotecSMCI36PositioningModeWidget(NanotecSMCI36Model* model,
                                                                        QWidget *parent)
   : QComboBox(parent),
@@ -73,6 +118,9 @@ NanotecSMCI36Widget::NanotecSMCI36Widget(NanotecSMCI36Model* model, QWidget *par
   connect(motorID_, SIGNAL(valueChanged(int)),
           model_, SLOT(setMotorID(int)));
   formLayout->addRow("motor ID", motorID_);
+
+  stepMode_ = new NanotecSMCI36StepModeWidget(model_, this);
+  formLayout->addRow("step mode", stepMode_);
 
   controllerSteps_ = new QLabel("         ", this);
   formLayout->addRow("controller steps", controllerSteps_);
