@@ -213,7 +213,7 @@ NanotecSMCI36Widget::NanotecSMCI36Widget(NanotecSMCI36Model* model, QWidget *par
   pitch_->setMaximum(1000000);
   connect(pitch_, SIGNAL(valueChanged(double)),
           model_, SLOT(setPitch(double)));
-  formLayout->addRow("pitch [steps/mm]", pitch_);
+  formLayout->addRow("pitch [full steps/mm]", pitch_);
 
   status_ = new QLabel("         ", this);
   formLayout->addRow("status", status_);
