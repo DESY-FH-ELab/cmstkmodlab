@@ -223,6 +223,13 @@ NanotecSMCI36Widget::NanotecSMCI36Widget(NanotecSMCI36Model* model, QWidget *par
   errorCorrectionMode_ = new NanotecSMCI36ErrorCorrectionModeWidget(model_, this);
   formLayout->addRow("error correction mode", errorCorrectionMode_);
 
+  maxEncoderDeviation_ = new QSpinBox(this);
+  maxEncoderDeviation_->setMinimum(0);
+  maxEncoderDeviation_->setMaximum(250);
+  connect(maxEncoderDeviation_, SIGNAL(valueChanged(int)),
+          model_, SLOT(setMaxEncoderDeviation(int)));
+  formLayout->addRow("max encoder deviation", maxEncoderDeviation_);
+
   rampMode_ = new NanotecSMCI36RampModeWidget(model_, this);
   formLayout->addRow("ramp mode", rampMode_);
 

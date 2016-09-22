@@ -85,6 +85,13 @@ const std::vector<std::pair<int,std::string>>& NanotecSMCI36Model::getPositionin
   return controller_->GetPositioningModeNames();
 }
 
+void NanotecSMCI36Model::setMaxEncoderDeviation(int steps)
+{
+  if (state_!=READY) return;
+
+  controller_->SetMaxEncoderDeviation(steps);
+}
+
 void NanotecSMCI36Model::setDirection(bool direction)
 {
   if (state_!=READY) return;
@@ -218,6 +225,7 @@ void NanotecSMCI36Model::updateInformation2()
     int rampMode = controller_->GetRampMode();
     int positioningMode = controller_->GetPositioningMode();
     int errorCorrectionMode = controller_->GetErrorCorrectionMode();
+    int maxEncoderDeviation = controller_->GetMaxEncoderDeviation();
     bool direction = controller_->GetDirection();
     double travelDistance = controller_->GetTravelDistance();
 
@@ -226,6 +234,7 @@ void NanotecSMCI36Model::updateInformation2()
         rampMode != rampMode_ ||
         positioningMode != positioningMode_ ||
         errorCorrectionMode != errorCorrectionMode_ ||
+        maxEncoderDeviation != maxEncoderDeviation_ ||
         direction != direction_ ||
         travelDistance != travelDistance_) {
 
@@ -234,6 +243,7 @@ void NanotecSMCI36Model::updateInformation2()
       rampMode_ = rampMode;
       positioningMode_ = positioningMode;
       errorCorrectionMode_ = errorCorrectionMode;
+      maxEncoderDeviation_ = maxEncoderDeviation;
       direction_ = direction;
       travelDistance_ = travelDistance;
 

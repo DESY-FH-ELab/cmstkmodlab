@@ -106,6 +106,7 @@ protected:
 
   NanotecSMCI36StepModeWidget* stepMode_;
   NanotecSMCI36ErrorCorrectionModeWidget* errorCorrectionMode_;
+  QSpinBox* maxEncoderDeviation_;
   NanotecSMCI36RampModeWidget* rampMode_;
   NanotecSMCI36PositioningModeWidget* positioningMode_;
 

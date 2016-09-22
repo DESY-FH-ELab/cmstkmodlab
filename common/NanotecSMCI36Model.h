@@ -43,6 +43,8 @@ public:
   int getErrorCorrectionMode() const { return errorCorrectionMode_; }
   const std::vector<std::pair<int,std::string>>& getErrorCorrectionModeNames() const;
 
+  int getMaxEncoderDeviation() const { return maxEncoderDeviation_; }
+
   int getControllerSteps() const { return controllerSteps_; }
   int getEncoderSteps() const { return encoderSteps_; }
 
@@ -61,6 +63,7 @@ public slots:
   void setStepMode(int mode);
   void setRampMode(int mode);
   void setErrorCorrectionMode(int mode);
+  void setMaxEncoderDeviation(int steps);
   void setPositioningMode(int mode);
   void setDirection(bool direction);
   void setTravelDistance(double distance);
@@ -89,6 +92,7 @@ protected:
   int stepMode_;
   int rampMode_;
   int errorCorrectionMode_;
+  int maxEncoderDeviation_;
   int controllerSteps_;
   int encoderSteps_;
   int positioningMode_;
