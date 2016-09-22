@@ -196,6 +196,9 @@ class VNanotecSMCI36
 
   virtual void SetPositioningMode(int mode) = 0;
   virtual int GetPositioningMode() const = 0;
+  const std::vector<std::pair<int,std::string>>& GetPositioningModeNames() const {
+    return positioningModeNames_;
+  }
 
   virtual void SetTravelDistance(int distance) = 0;
   virtual int GetTravelDistance() const = 0;
@@ -218,6 +221,7 @@ class VNanotecSMCI36
  protected:
 
   std::vector<std::pair<int,std::string>> stepModeNames_;
+  std::vector<std::pair<int,std::string>> positioningModeNames_;
 };
 
 #endif

@@ -14,6 +14,9 @@ VNanotecSMCI36::VNanotecSMCI36( const ioport_t ioPort )
   stepModeNames_.push_back(std::pair<int,std::string>(smciFeedRateMode, "Feed Rate Mode"));
   stepModeNames_.push_back(std::pair<int,std::string>(smciAdaptiveStepMode, "Adaptive Step Mode"));
 
+  positioningModeNames_.push_back(std::pair<int,std::string>(smciRelativePositioning, "Relative Positioning"));
+  positioningModeNames_.push_back(std::pair<int,std::string>(smciAbsolutePositioning, "Absolute Positioning"));
+  positioningModeNames_.push_back(std::pair<int,std::string>(smciExternalRefRun, "External Reference Run"));
 }
 
 VNanotecSMCI36::~VNanotecSMCI36()
