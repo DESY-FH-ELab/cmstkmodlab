@@ -254,6 +254,27 @@ NanotecSMCI36Widget::NanotecSMCI36Widget(NanotecSMCI36Model* model, QWidget *par
           model_, SLOT(setTravelDistance(double)));
   formLayout->addRow("travel distance", travelDistance_);
 
+  minFrequency_ = new QDoubleSpinBox(this);
+  minFrequency_->setMinimum(1);
+  minFrequency_->setMaximum(160000);
+  connect(minFrequency_, SIGNAL(valueChanged(double)),
+          model_, SLOT(setMinFrequency(double)));
+  formLayout->addRow("min. frequency", minFrequency_);
+
+  maxFrequency_ = new QDoubleSpinBox(this);
+  maxFrequency_->setMinimum(1);
+  maxFrequency_->setMaximum(512000);
+  connect(maxFrequency_, SIGNAL(valueChanged(double)),
+          model_, SLOT(setMaxFrequency(double)));
+  formLayout->addRow("max. frequency", maxFrequency_);
+
+  maxFrequency2_ = new QDoubleSpinBox(this);
+  maxFrequency2_->setMinimum(1);
+  maxFrequency2_->setMaximum(512000);
+  connect(maxFrequency2_, SIGNAL(valueChanged(double)),
+          model_, SLOT(setMaxFrequency2(double)));
+  formLayout->addRow("max. frequency 2", maxFrequency2_);
+
   layout->addLayout(formLayout);
 
   QHBoxLayout* hlayout = new QHBoxLayout();
@@ -335,4 +356,8 @@ void NanotecSMCI36Widget::updateInfo()
 
   direction_->setChecked(model_->getDirection());
   travelDistance_->setValue(model_->getTravelDistance());
+
+  minFrequency_->setValue(model_->getMinFrequency());
+  maxFrequency_->setValue(model_->getMaxFrequency());
+  maxFrequency2_->setValue(model_->getMaxFrequency2());
 }

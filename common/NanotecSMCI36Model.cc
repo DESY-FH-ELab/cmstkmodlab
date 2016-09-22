@@ -106,6 +106,27 @@ void NanotecSMCI36Model::setTravelDistance(double distance)
   controller_->SetTravelDistance(distance);
 }
 
+void NanotecSMCI36Model::setMinFrequency(double frequency)
+{
+  if (state_!=READY) return;
+
+  controller_->SetMinimumFrequency(frequency);
+}
+
+void NanotecSMCI36Model::setMaxFrequency(double frequency)
+{
+  if (state_!=READY) return;
+
+  controller_->SetMaximumFrequency(stepFrequency);
+}
+
+void NanotecSMCI36Model::setMaxFrequency2(double frequency)
+{
+  if (state_!=READY) return;
+
+  controller_->SetMaximumFrequency2(frequency);
+}
+
 void NanotecSMCI36Model::start()
 {
   if (state_!=READY) return;
@@ -228,6 +249,9 @@ void NanotecSMCI36Model::updateInformation2()
     int maxEncoderDeviation = controller_->GetMaxEncoderDeviation();
     bool direction = controller_->GetDirection();
     double travelDistance = controller_->GetTravelDistance();
+    double minFrequency = controller_->GetMinimumFrequency();
+    double maxFrequency = controller_->GetMaximumFrequency();
+    double maxFrequency2 = controller_->GetMaximumFrequency2();
 
     if (motorID != motorID_ ||
         stepMode != stepMode_ ||
@@ -236,7 +260,10 @@ void NanotecSMCI36Model::updateInformation2()
         errorCorrectionMode != errorCorrectionMode_ ||
         maxEncoderDeviation != maxEncoderDeviation_ ||
         direction != direction_ ||
-        travelDistance != travelDistance_) {
+        travelDistance != travelDistance_ ||
+        minFrequency != minFrequency_ ||
+        maxFrequency != maxFrequency_ ||
+        maxFrequency2 != maxFrequency2_) {
 
       motorID_ = motorID;
       stepMode_ = stepMode;
@@ -246,6 +273,9 @@ void NanotecSMCI36Model::updateInformation2()
       maxEncoderDeviation_ = maxEncoderDeviation;
       direction_ = direction;
       travelDistance_ = travelDistance;
+      minFrequency_ = minFrequency;
+      maxFrequency_ = maxFrequency;
+      maxFrequency2_ = maxFrequency2;
 
       // NQLog("NanotecSMCI36Model", NQLog::Spam) << "information changed";
 

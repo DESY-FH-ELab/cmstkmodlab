@@ -54,6 +54,10 @@ public:
   bool getDirection() const { return direction_; }
   double getTravelDistance() const { return travelDistance_; }
 
+  double getMinFrequency() const { return minFrequency_; }
+  double getMaxFrequency() const { return maxFrequency_; }
+  double getMaxFrequency2() const { return maxFrequency2_; }
+
 public slots:
 
   void setDeviceEnabled(bool enabled);
@@ -67,6 +71,9 @@ public slots:
   void setPositioningMode(int mode);
   void setDirection(bool direction);
   void setTravelDistance(double distance);
+  void setMinFrequency(double frequency);
+  void setMaxFrequency(double frequency);
+  void setMaxFrequency2(double frequency);
 
   void start();
   void stop();
@@ -98,6 +105,9 @@ protected:
   int positioningMode_;
   bool direction_;
   double travelDistance_;
+  double minFrequency_;
+  double maxFrequency_;
+  double maxFrequency2_;
 
 protected slots:
 

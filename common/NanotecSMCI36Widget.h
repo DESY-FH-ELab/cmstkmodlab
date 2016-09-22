@@ -112,6 +112,9 @@ protected:
 
   QCheckBox* direction_;
   QDoubleSpinBox* travelDistance_;
+  QDoubleSpinBox* minFrequency_;
+  QDoubleSpinBox* maxFrequency_;
+  QDoubleSpinBox* maxFrequency2_;
 
   QPushButton* start_;
   QPushButton* stop_;
