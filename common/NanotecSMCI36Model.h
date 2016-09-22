@@ -27,7 +27,8 @@ class NanotecSMCI36Model : public QObject, public AbstractDeviceModel<NanotecSMC
 public:
 
   explicit NanotecSMCI36Model(const char* port,
-                              int updateInterval = 10,
+                              double updateInterval1 = 1,
+                              double updateInterval2 = 5,
                               QObject *parent = 0);
 
   unsigned int getStatus() const { return status_; }
@@ -67,8 +68,10 @@ protected:
   void initialize();
 
   /// Time interval between cache refreshes; in seconds.
-  const double updateInterval_;
-  QTimer* timer_;
+  const double updateInterval1_;
+  QTimer* timer1_;
+  const double updateInterval2_;
+  QTimer* timer2_;
 
   void setDeviceState( State state );
 
@@ -83,7 +86,8 @@ protected:
 
 protected slots:
 
-  void updateInformation();
+  void updateInformation1();
+  void updateInformation2();
 
 signals:
 

@@ -8,16 +8,22 @@
   NanotecSMCI36Model implementation
   */
 NanotecSMCI36Model::NanotecSMCI36Model(const char* port,
-                                       int updateInterval,
+                                       double updateInterval1,
+                                       double updateInterval2,
                                        QObject * /*parent*/)
   : QObject(),
     AbstractDeviceModel<NanotecSMCI36_t>(),
     NanotecSMCI36_PORT(port),
-    updateInterval_(updateInterval)
+    updateInterval1_(updateInterval1),
+    updateInterval2_(updateInterval2)
 {
-  timer_ = new QTimer(this);
-  timer_->setInterval(updateInterval_ * 1000);
-  connect( timer_, SIGNAL(timeout()), this, SLOT(updateInformation()) );
+  timer1_ = new QTimer(this);
+  timer1_->setInterval(updateInterval1_ * 1000);
+  connect( timer1_, SIGNAL(timeout()), this, SLOT(updateInformation1()) );
+
+  timer2_ = new QTimer(this);
+  timer2_->setInterval(updateInterval2_ * 1000);
+  connect( timer2_, SIGNAL(timeout()), this, SLOT(updateInformation2()) );
 
   setDeviceEnabled(true);
 void NanotecSMCI36Model::setMotorID(unsigned int motorID)
@@ -98,7 +104,8 @@ void NanotecSMCI36Model::initialize()
 
   if ( enabled ) {
     setDeviceState(READY);
-    updateInformation();
+    updateInformation1();
+    updateInformation2();
   }
   else {
     setDeviceState( OFF );
@@ -114,38 +121,80 @@ void NanotecSMCI36Model::setDeviceState( State state )
     state_ = state;
 
     // No need to run the timer if the chiller is not ready
-    if ( state_ == READY )
-      timer_->start();
-    else
-      timer_->stop();
+    if ( state_ == READY ) {
+      timer1_->start();
+      timer2_->start();
+    } else {
+      timer1_->stop();
+      timer2_->stop();
+    }
 
     emit deviceStateChanged(state);
   }
 }
 
-/**
-  Updates the cached information about the NanotecSMCI36 chiller and signals any
-  changes.
-  */
-void NanotecSMCI36Model::updateInformation()
+void NanotecSMCI36Model::updateInformation1()
 {
-  NQLog("NanotecSMCI36Model", NQLog::Debug) << "updateInformation()";
+  // NQLog("NanotecSMCI36Model", NQLog::Debug) << "updateInformation()";
 
   if (thread()==QApplication::instance()->thread()) {
-    NQLog("NanotecSMCI36Model", NQLog::Debug) << " running in main application thread";
+    // NQLog("NanotecSMCI36Model", NQLog::Debug) << " running in main application thread";
   } else {
-    NQLog("NanotecSMCI36Model", NQLog::Debug) << " running in dedicated DAQ thread";
+    // NQLog("NanotecSMCI36Model", NQLog::Debug) << " running in dedicated DAQ thread";
   }
 
   if ( state_ == READY ) {
 
-    unsigned int newStatus = controller_->GetStatus();
+    unsigned int status = controller_->GetStatus();
+    int controllerSteps = controller_->GetPosition();
+    int encoderSteps = controller_->GetEncoderPosition();
 
-    if (newStatus != status_) {
+    if (status != status_ ||
+        controllerSteps != controllerSteps_ ||
+        encoderSteps != encoderSteps_) {
 
-      status_ = newStatus;
+      status_ = status;
+      controllerSteps_ = controllerSteps;
+      encoderSteps_ = encoderSteps;
 
-      NQLog("NanotecSMCI36Model", NQLog::Spam) << "information changed";
+      // NQLog("NanotecSMCI36Model", NQLog::Spam) << "information changed";
+
+      emit informationChanged();
+    }
+  }
+}
+
+void NanotecSMCI36Model::updateInformation2()
+{
+  // NQLog("NanotecSMCI36Model", NQLog::Debug) << "updateInformation()";
+
+  if (thread()==QApplication::instance()->thread()) {
+    // NQLog("NanotecSMCI36Model", NQLog::Debug) << " running in main application thread";
+  } else {
+    // NQLog("NanotecSMCI36Model", NQLog::Debug) << " running in dedicated DAQ thread";
+  }
+
+  if ( state_ == READY ) {
+
+    unsigned int motorID = controller_->GetMotorID();
+    unsigned int stepMode = controller_->GetStepMode();
+    unsigned int positioningMode = controller_->GetPositioningMode();
+    bool direction = controller_->GetDirection();
+    double travelDistance = controller_->GetTravelDistance();
+
+    if (motorID != motorID_ ||
+        stepMode != stepMode_ ||
+        positioningMode != positioningMode_ ||
+        direction != direction_ ||
+        travelDistance != travelDistance_) {
+
+      motorID_ = motorID;
+      stepMode_ = stepMode;
+      positioningMode_ = positioningMode;
+      direction_ = direction;
+      travelDistance_ = travelDistance;
+
+      // NQLog("NanotecSMCI36Model", NQLog::Spam) << "information changed";
 
       emit informationChanged();
     }
