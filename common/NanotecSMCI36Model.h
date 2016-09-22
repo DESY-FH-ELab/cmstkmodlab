@@ -54,8 +54,8 @@ public:
   const std::vector<std::pair<int,std::string>>& getPositioningModeNames() const;
 
   bool getDirection() const { return direction_; }
-  double getTravelDistance() const { return travelDistance_; }
 
+  double getTravelDistance() const { return travelDistance_; }
   double getMinFrequency() const { return minFrequency_; }
   double getMaxFrequency() const { return maxFrequency_; }
   double getMaxFrequency2() const { return maxFrequency2_; }
