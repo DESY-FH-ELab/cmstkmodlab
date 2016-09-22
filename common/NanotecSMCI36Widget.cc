@@ -206,6 +206,7 @@ NanotecSMCI36Widget::NanotecSMCI36Widget(NanotecSMCI36Model* model, QWidget *par
   layout->addWidget(smci36CheckBox_);
 
   QFormLayout *formLayout = new QFormLayout;
+  formLayout->setVerticalSpacing(2);
 
   pitch_ = new QDoubleSpinBox(this);
   pitch_->setMinimum(1);
