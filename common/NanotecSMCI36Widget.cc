@@ -45,7 +45,7 @@ void NanotecSMCI36PositioningModeWidget::updateInfo()
 {
   // NQLog("NanotecSMCI36PositioningModeWidget", NQLog::Debug) << "updateInfo()";
 
-  unsigned int mode = model_->getPositioningMode();
+  int mode = model_->getPositioningMode();
   int index = findData(mode);
   if (index!=currentIndex()) {
     setCurrentIndex(index);
