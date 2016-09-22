@@ -125,7 +125,7 @@ void NanotecSMCI36Model::setMaxFrequency(double frequency)
 {
   if (state_!=READY) return;
 
-  controller_->SetMaximumFrequency(stepFrequency);
+  controller_->SetMaximumFrequency(frequency);
 }
 
 void NanotecSMCI36Model::setMaxFrequency2(double frequency)
