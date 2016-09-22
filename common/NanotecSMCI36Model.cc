@@ -26,6 +26,10 @@ NanotecSMCI36Model::NanotecSMCI36Model(const char* port,
   connect( timer2_, SIGNAL(timeout()), this, SLOT(updateInformation2()) );
 
   setDeviceEnabled(true);
+
+  NQLog("NanotecSMCI36Model") << "constructed";
+}
+
 void NanotecSMCI36Model::setMotorID(unsigned int motorID)
 {
   if (state_!=READY) return;
@@ -96,6 +100,8 @@ void NanotecSMCI36Model::quickStop()
 
 void NanotecSMCI36Model::initialize()
 {
+  NQLog("NanotecSMCI36Model") << "initialize() " << NanotecSMCI36_PORT;
+
   setDeviceState(INITIALIZING);
 
   renewController(NanotecSMCI36_PORT);
