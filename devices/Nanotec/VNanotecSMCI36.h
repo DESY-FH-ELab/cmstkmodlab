@@ -2,6 +2,7 @@
 #define __VNANOTECSMCI36_H
 
 #include <string>
+#include <vector>
 
 typedef const char* ioport_t;
 
@@ -126,6 +127,9 @@ class VNanotecSMCI36
 
   virtual void SetStepMode(int mode) = 0;
   virtual int GetStepMode() const = 0;
+  const std::vector<std::pair<int,std::string>>& GetStepModeNames() const {
+    return stepModeNames_;
+  }
 
   virtual void SetMotorID(int ID) = 0;
   virtual int GetMotorID() const = 0;
@@ -210,6 +214,10 @@ class VNanotecSMCI36
 
   virtual void Start() = 0;
   virtual void Stop(bool quickstop = false) = 0;
+
+ protected:
+
+  std::vector<std::pair<int,std::string>> stepModeNames_;
 };
 
 #endif
