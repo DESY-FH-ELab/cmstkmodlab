@@ -260,28 +260,28 @@ NanotecSMCI36Widget::NanotecSMCI36Widget(NanotecSMCI36Model* model, QWidget *par
   travelDistance_->setMaximum(+100000);
   connect(travelDistance_, SIGNAL(valueChanged(double)),
           model_, SLOT(setTravelDistance(double)));
-  formLayout->addRow("travel distance", travelDistance_);
+  formLayout->addRow("travel distance [steps]", travelDistance_);
 
   minFrequency_ = new QDoubleSpinBox(this);
   minFrequency_->setMinimum(1);
   minFrequency_->setMaximum(160000);
   connect(minFrequency_, SIGNAL(valueChanged(double)),
           model_, SLOT(setMinFrequency(double)));
-  formLayout->addRow("min. frequency", minFrequency_);
+  formLayout->addRow("min. speed [steps/s]", minFrequency_);
 
   maxFrequency_ = new QDoubleSpinBox(this);
   maxFrequency_->setMinimum(1);
   maxFrequency_->setMaximum(512000);
   connect(maxFrequency_, SIGNAL(valueChanged(double)),
           model_, SLOT(setMaxFrequency(double)));
-  formLayout->addRow("max. frequency", maxFrequency_);
+  formLayout->addRow("max. speed [steps/s]", maxFrequency_);
 
   maxFrequency2_ = new QDoubleSpinBox(this);
   maxFrequency2_->setMinimum(1);
   maxFrequency2_->setMaximum(512000);
   connect(maxFrequency2_, SIGNAL(valueChanged(double)),
           model_, SLOT(setMaxFrequency2(double)));
-  formLayout->addRow("max. frequency 2", maxFrequency2_);
+  formLayout->addRow("max. speed 2 [steps/s]", maxFrequency2_);
 
   layout->addLayout(formLayout);
 
