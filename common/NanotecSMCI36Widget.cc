@@ -27,7 +27,7 @@ NanotecSMCI36PositioningModeWidget::NanotecSMCI36PositioningModeWidget(NanotecSM
           this, SLOT(updateInfo()));
 
   connect(this, SIGNAL(currentIndexChanged(int)),
-          this, SLOT(currentChanged(int)));
+          this, SLOT(indexChanged(int)));
 }
 
 void NanotecSMCI36PositioningModeWidget::indexChanged(int index)
