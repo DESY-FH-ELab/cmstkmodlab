@@ -264,6 +264,11 @@ NanotecSMCI36Widget::NanotecSMCI36Widget(NanotecSMCI36Model* model, QWidget *par
           model_, SLOT(stop()));
   layout->addWidget(quickstop_);
 
+  resetPositionError_ = new QPushButton("reset position error", this);
+  connect(resetPositionError_, SIGNAL(clicked()),
+          model_, SLOT(resetPositionError()));
+  layout->addWidget(resetPositionError_);
+
   // Connect all the signals
   connect(model_, SIGNAL(deviceStateChanged(State)),
           this, SLOT(updateDeviceState(State)));

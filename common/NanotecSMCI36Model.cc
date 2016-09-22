@@ -122,6 +122,13 @@ void NanotecSMCI36Model::quickStop()
   controller_->Stop(true);
 }
 
+void NanotecSMCI36Model::resetPositionError()
+{
+  if (state_!=READY) return;
+
+  controller_->ResetPositionError(controllerSteps_);
+}
+
 void NanotecSMCI36Model::initialize()
 {
   NQLog("NanotecSMCI36Model") << "initialize() " << NanotecSMCI36_PORT;

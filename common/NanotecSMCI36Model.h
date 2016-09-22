@@ -68,6 +68,7 @@ public slots:
   void start();
   void stop();
   void quickStop();
+  void resetPositionError();
 
 protected:
 

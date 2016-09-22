@@ -115,6 +115,7 @@ protected:
   QPushButton* start_;
   QPushButton* stop_;
   QPushButton* quickstop_;
+  QPushButton* resetPositionError_;
 
 public slots:
 
