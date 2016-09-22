@@ -283,6 +283,34 @@ NanotecSMCI36Widget::NanotecSMCI36Widget(NanotecSMCI36Model* model, QWidget *par
           model_, SLOT(setMaxFrequency2(double)));
   formLayout->addRow("max. speed 2 [steps/s]", maxFrequency2_);
 
+  travelDistanceInMM_ = new QDoubleSpinBox(this);
+  travelDistanceInMM_->setMinimum(-100000);
+  travelDistanceInMM_->setMaximum(+100000);
+  connect(travelDistanceInMM_, SIGNAL(valueChanged(double)),
+          model_, SLOT(setTravelDistanceInMM(double)));
+  formLayout->addRow("travel distance [mm]", travelDistanceInMM_);
+
+  minSpeed_ = new QDoubleSpinBox(this);
+  minSpeed_->setMinimum(1);
+  minSpeed_->setMaximum(160000);
+  connect(minSpeed_, SIGNAL(valueChanged(double)),
+          model_, SLOT(setMinSpeed(double)));
+  formLayout->addRow("min. speed [mm/s]", minSpeed_);
+
+  maxSpeed_ = new QDoubleSpinBox(this);
+  maxSpeed_->setMinimum(1);
+  maxSpeed_->setMaximum(160000);
+  connect(maxSpeed_, SIGNAL(valueChanged(double)),
+          model_, SLOT(setMaxSpeed(double)));
+  formLayout->addRow("max. speed [mm/s]", maxSpeed_);
+
+  maxSpeed2_ = new QDoubleSpinBox(this);
+  maxSpeed2_->setMinimum(1);
+  maxSpeed2_->setMaximum(160000);
+  connect(maxSpeed2_, SIGNAL(valueChanged(double)),
+          model_, SLOT(setMaxSpeed(double)));
+  formLayout->addRow("max. speed 2 [mm/s]", maxSpeed2_);
+
   layout->addLayout(formLayout);
 
   QHBoxLayout* hlayout = new QHBoxLayout();
@@ -364,9 +392,14 @@ void NanotecSMCI36Widget::updateInfo()
   encoderSteps_->setText(QString::number(model_->getEncoderSteps()));
 
   direction_->setChecked(model_->getDirection());
-  travelDistance_->setValue(model_->getTravelDistance());
 
+  travelDistance_->setValue(model_->getTravelDistance());
   minFrequency_->setValue(model_->getMinFrequency());
   maxFrequency_->setValue(model_->getMaxFrequency());
   maxFrequency2_->setValue(model_->getMaxFrequency2());
+
+  travelDistanceInMM_->setValue(model_->getTravelDistanceInMM());
+  minSpeed_->setValue(model_->getMinSpeed());
+  maxSpeed_->setValue(model_->getMaxSpeed());
+  maxSpeed2_->setValue(model_->getMaxSpeed2());
 }

@@ -60,6 +60,11 @@ public:
   double getMaxFrequency() const { return maxFrequency_; }
   double getMaxFrequency2() const { return maxFrequency2_; }
 
+  double getTravelDistanceInMM() const { return getTravelDistance()/getPitch()/getStepMode(); }
+  double getMinSpeed() const { return getMinFrequency()/getPitch()/getStepMode(); }
+  double getMaxSpeed() const { return getMaxFrequency()/getPitch()/getStepMode(); }
+  double getMaxSpeed2() const { return getMaxFrequency2()/getPitch()/getStepMode(); }
+
 public slots:
 
   void setDeviceEnabled(bool enabled);
@@ -77,6 +82,10 @@ public slots:
   void setMinFrequency(double frequency);
   void setMaxFrequency(double frequency);
   void setMaxFrequency2(double frequency);
+  void setTravelDistanceInMM(double distance);
+  void setMinSpeed(double speed);
+  void setMaxSpeed(double speed);
+  void setMaxSpeed2(double speed);
 
   void start();
   void stop();

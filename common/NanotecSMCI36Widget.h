@@ -117,6 +117,11 @@ protected:
   QDoubleSpinBox* maxFrequency_;
   QDoubleSpinBox* maxFrequency2_;
 
+  QDoubleSpinBox* travelDistanceInMM_;
+  QDoubleSpinBox* minSpeed_;
+  QDoubleSpinBox* maxSpeed_;
+  QDoubleSpinBox* maxSpeed2_;
+
   QPushButton* start_;
   QPushButton* stop_;
   QPushButton* quickstop_;
