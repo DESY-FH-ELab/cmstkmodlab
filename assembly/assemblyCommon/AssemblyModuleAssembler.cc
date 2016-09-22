@@ -315,13 +315,12 @@ void AssemblyModuleAssembler::updateImage(int stage, std::string filename)
     cv::Mat img_gs = cv::imread(filename, CV_LOAD_IMAGE_COLOR);
     
     if (stage == 1 ){
-    imageView_1->setZoomFactor(0.5);
+   imageView_1->setZoomFactor(0.2);
     imageView_1->setImage(img_gs);
 
-    imageView_1->setZoomFactor(0.75);
     }else if (stage ==2){
         imageView_2->setImage(img_gs);
-        imageView_2->setZoomFactor(0.75);
+       imageView_2->setZoomFactor(0.75);
     }
     else if (stage ==3){
         imageView_3->setImage(img_gs);
@@ -806,16 +805,66 @@ void AssemblySensorLocator::locatePickup(){
 void AssemblySensorLocator::locateSensor_templateMatching(int stage){
 
     NQLog("AssemblySensorLocator") << "Finding Marker (Template Matching)" ;
-    cv::Mat img_gs, img_clip_gs_src, img_clip_gs, img_clip_gs_2,  dst, result_1, result_2;
+    cv::Mat img, img_clip_A, img_clip_B, result_1, result_2, dst;
     int match_method;
     
-    img_gs = cv::imread("/Users/keaveney/Desktop/calibration/RawSensor.png", CV_LOAD_IMAGE_COLOR);
-    img_clip_gs = cv::imread("/Users/keaveney/Desktop/calibration/rawsensor_clip5.png", CV_LOAD_IMAGE_COLOR);
-    img_clip_gs_2 = cv::imread("/Users/keaveney/Desktop/calibration/rawsensor_clip2.png", CV_LOAD_IMAGE_COLOR);
+    img = cv::imread("/Users/keaveney/Desktop/calibration/RawSensor_2_rotated.png", CV_LOAD_IMAGE_COLOR);
+    img_clip_A = cv::imread("/Users/keaveney/Desktop/calibration/RawSensor_2_clipA.png", CV_LOAD_IMAGE_COLOR);
+    img_clip_B = cv::imread("/Users/keaveney/Desktop/calibration/RawSensor_2_clipB.png", CV_LOAD_IMAGE_COLOR);
 
     Point matchLoc_1, matchLoc_2;
    
-    Mat img_gs_copy = img_gs.clone();
+    Mat img_copy = img.clone();
+    
+    
+    //Greyscale images
+    Mat img_copy_gs(img_copy.size(), img_copy.type());
+    Mat img_clip_A_gs(img_clip_A.size(), img_clip_A.type());
+    Mat img_clip_B_gs(img_clip_B.size(), img_clip_B.type());
+
+    //convert color to GS
+    cvtColor( img_copy,   img_copy_gs,   CV_BGR2GRAY );
+    cvtColor( img_clip_A, img_clip_A_gs, CV_BGR2GRAY );
+    cvtColor( img_clip_B, img_clip_B_gs, CV_BGR2GRAY );
+
+    
+    //Binary images
+    Mat img_copy_bin(img_copy_gs.size(), img_copy_gs.type());
+    Mat img_clip_A_bin(img_clip_A_gs.size(), img_clip_A_gs.type());
+    Mat img_clip_B_bin(img_clip_B_gs.size(), img_clip_B_gs.type());
+
+    
+    
+    //Apply thresholding
+    cv::threshold(img_copy_gs, img_copy_bin, 130, 255, cv::THRESH_BINARY);
+    cv::threshold(img_clip_A_gs, img_clip_A_bin, 130, 255, cv::THRESH_BINARY);
+    cv::threshold(img_clip_B_gs, img_clip_B_bin, 130, 255, cv::THRESH_BINARY);
+    
+    
+   // img_copy_bin = img_copy_gs.clone();
+   // img_clip_A_bin = img_clip_A_gs.clone();
+   // img_clip_B_bin = img_clip_B_gs.clone();
+    
+    
+    std::string filename_img_bin = "/Users/keaveney/Desktop/calibration/Sensor_bin.png";
+    std::string filename_clip_A_bin = "/Users/keaveney/Desktop/calibration/clip_A_bin.png";
+    std::string filename_clip_B_bin = "/Users/keaveney/Desktop/calibration/clip_B_bin.png";
+
+    cv::imwrite(filename_img_bin, img_copy_bin);
+    cv::imwrite(filename_clip_A_bin, img_clip_A_bin);
+    cv::imwrite(filename_clip_B_bin, img_clip_B_bin);
+    
+    emit updateImage(4, filename_img_bin);
+    emit updateImage(5, filename_clip_A_bin);
+    emit updateImage(6, filename_clip_B_bin);
+
+    
+    
+    //GaussianBlur( img_gs_copy, img_gs_copy, Size( 51, 51 ), 0, 0 );
+    //GaussianBlur( img_clip_gs, img_clip_gs, Size( 51, 51 ), 0, 0 );
+    //GaussianBlur( img_clip_gs_2, img_clip_gs_2, Size( 51, 51 ), 0, 0 );
+
+    
     /// Localizing the best match with minMaxLoc
     double FOM, minVal, maxVal; Point minLoc; Point maxLoc;
     double thetas[40], FOMs[40];
@@ -823,13 +872,13 @@ void AssemblySensorLocator::locateSensor_templateMatching(int stage){
     //first find the (x,y) location of the circle within the corner marker
     
     //create result matrix to hold correlation values
-    int result_cols =  img_gs.cols - img_clip_gs.cols + 1;
-    int result_rows = img_gs.rows - img_clip_gs.rows + 1;
+    int result_cols =  img_copy_bin.cols - img_clip_A.cols + 1;
+    int result_rows = img_copy_bin.rows - img_clip_A.rows + 1;
     
     result_1.create( result_rows, result_cols, CV_32FC1 );
     
-    match_method =3;
-    matchTemplate( img_gs_copy, img_clip_gs, result_1, match_method);
+    match_method =1;
+    matchTemplate( img_copy_bin, img_clip_A_bin, result_1, match_method);
     
     minMaxLoc( result_1, &minVal, &maxVal, &minLoc, &maxLoc, Mat() );
 
@@ -848,42 +897,81 @@ void AssemblySensorLocator::locateSensor_templateMatching(int stage){
   
     }
     
-    circle( img_gs, Point( matchLoc_1.x + (img_clip_gs.cols/2.0) , matchLoc_1.y + (img_clip_gs.rows/2.0) ), 10, Scalar(255,0,0) );
+    //circle( img_gs, Point( matchLoc_1.x + (img_clip_gs.cols/2.0) , matchLoc_1.y + (img_clip_gs.rows/2.0) ), 10, Scalar(255,0,0) );
+    
+    circle( img, Point( matchLoc_1.x  , matchLoc_1.y ), 30, Scalar(255,0,0) );
+    rectangle( img, matchLoc_1, Point( matchLoc_1.x + img_clip_A_bin.cols , matchLoc_1.y + img_clip_A_bin.rows ), Scalar(255,0,0), 2, 8, 0 );
+    
+    NQLog("AssemblySensorLocator") <<  matchLoc_1.x<< "   "<< matchLoc_1.y;
 
+    
     int i = 0;
-    
-    for (float theta = -0.06; theta < 0.06;  theta = theta + 0.003){
-    
-    // apply a rotation transformation to the image, centered on the centre of the marker circle
-   // Point2f src_center(img_gs_copy.cols/2.0F, img_gs_copy.rows/2.0F);
-    Mat rot_mat = getRotationMatrix2D(matchLoc_1, theta, 1.0);
+    int color = 200;
 
-    cv::Scalar avgPixelIntensity = cv::mean( img_gs_copy );
-        
-    warpAffine(img_gs_copy, dst, rot_mat, img_gs_copy.size(), cv::INTER_CUBIC,
+    //Optional - currently not preferred.
+    //Precisiely find the circle within the marker
+
+    /*
+    // define location of sub matrices in image
+    Rect roi1( matchLoc_1.x  , matchLoc_1.y, img_clip_A_bin.cols, img_clip_A_bin.rows );
+
+    
+    // define sub matrices in main matrix
+    Mat img_copy_2 = img_copy_gs.clone();
+    Mat sub1( img_copy_2, roi1 );
+    
+    GaussianBlur( sub1, sub1, Size( 9, 9 ), 4,4 );
+    
+    vector<Vec3f> circles;
+    HoughCircles(sub1, circles, CV_HOUGH_GRADIENT, 2, sub1.rows/2, 20, 40 );
+    
+    NQLog("AssemblySensorLocator  ") <<  circles.size() << "  circles detected ";
+
+    
+    for( size_t i = 0; i < circles.size(); i++ )
+    {
+        Point center(cvRound(circles[i][0]) + matchLoc_1.x , cvRound(circles[i][1]) + matchLoc_1.y);
+        int radius = cvRound(circles[i][2]);
+        // draw the circle center
+        circle( img, center, 3, Scalar(0,255,0), -1, 8, 0 );
+        // draw the circle outline
+        circle( img, center, radius, Scalar(0,0,255), 3, 8, 0 );
+    }
+    
+    */
+    
+
+
+   //for (float theta = -0.06; theta < 0.06;  theta = theta + 0.003){
+      for (float theta = -180.0; theta < 180.0;  theta = theta + 9.0){
+
+    // apply a rotation transformation to the image, centered on the centre of the marker circle (NOT PERFECT YET>>> RIGHT NOW IT IS PERFORMING THE ROATAION AROUND THE CENTRE OF the MATCH-BOX ~ circle centre.....)
+     
+     
+   // Point2f src_center(img_gs_copy.cols/2.0F, img_gs_copy.rows/2.0F);
+       Point2f src_center( matchLoc_1.x + (img_clip_A_bin.cols/2) , matchLoc_1.y + (img_clip_A_bin.rows/2) );
+     
+    Mat rot_mat = getRotationMatrix2D(matchLoc_1, theta, 1.0);
+    cv::Scalar avgPixelIntensity = cv::mean( img_copy_bin );
+    warpAffine(img_copy_bin, dst, rot_mat, img_copy_bin.size(), cv::INTER_CUBIC,
                    cv::BORDER_CONSTANT, avgPixelIntensity);
 
-    std::string filename_rotated_base = "/Users/keaveney/Desktop/calibration/Rotation_result_";
-        
+    std::string filename_rotated_base = "/Users/keaveney/Desktop/calibration/RotatedImages/Rotation_result_";
     std::ostringstream ss;
     ss << theta;
-    
     std::string theta_str = ss.str();
-
     std::string filename_rotated = filename_rotated_base + theta_str + ".png";
-        
     cv::imwrite(filename_rotated, dst);
     
     //create result matrix to hold correlation values
-    result_cols =  img_gs.cols - img_clip_gs_2.cols + 1;
-    result_rows = img_gs.rows - img_clip_gs_2.rows + 1;
+    result_cols =  img_copy_bin.cols - img_clip_B_bin.cols + 1;
+    result_rows = img_copy_bin.rows - img_clip_B_bin.rows + 1;
         
     result_2.create( result_rows, result_cols, CV_32FC1 );
-    matchTemplate( dst, img_clip_gs_2, result_2, match_method );
+    matchTemplate( dst, img_clip_B_bin, result_2, match_method );
         
    // normalize( result, result, 0, 1, NORM_MINMAX, -1, Mat() );
     minMaxLoc( result_2, &minVal, &maxVal, &minLoc, &maxLoc, Mat() );
-        
         
    /// For SQDIFF and SQDIFF_NORMED, the best matches are lower values. For all the other methods, the higher the better
     if( match_method  == CV_TM_SQDIFF || match_method == CV_TM_SQDIFF_NORMED )
@@ -904,26 +992,40 @@ void AssemblySensorLocator::locateSensor_templateMatching(int stage){
     FOMs[i] = FOM;
     i++;
         
-    int color = 50 + 200*theta;
+    color = 50 + 200*theta;
         
-    rectangle( img_gs, matchLoc_2, Point( matchLoc_2.x + img_clip_gs_2.cols , matchLoc_2.y + img_clip_gs_2.rows ), Scalar(color,color-50,color+50), 2, 8, 0 );
-    rectangle( result_2, matchLoc_2, Point( matchLoc_2.x + img_clip_gs_2.cols , matchLoc_2.y + img_clip_gs_2.rows ), Scalar(color,color-50,color+50), 2, 8, 0 );
+        NQLog("AssemblySensorLocator") << "Drawing rectangles" ;
+        
+        rectangle( img, matchLoc_2, Point( matchLoc_2.x + img_clip_B_bin.cols , matchLoc_2.y + img_clip_B_bin.rows ), Scalar(color,color-50,color+50), 2, 8, 0 );
+        rectangle( result_2, matchLoc_2, Point( matchLoc_2.x + img_clip_B_bin.cols , matchLoc_2.y + img_clip_B_bin.rows ), Scalar(color,color-50,color+50), 2, 8, 0 );
         
 }
     
+
+  
     TCanvas *c1 = new TCanvas("c1","Rotation extraction",200,10,700,500);
 
+    NQLog("AssemblySensorLocator") << "making graph" ;
+
+    if (thetas && FOMs){
     TGraph *gr = new TGraph(40, thetas, FOMs);
     gr->Draw("AC*");
     const char * filename_canvas = "/Users/keaveney/Desktop/calibration/RotationExtraction.png";
     c1->SaveAs(filename_canvas);
+   
+    NQLog("AssemblySensorLocator") << "updating image 1" ;
     emit updateImage(2, filename_canvas);
-
+    }
  
+    
+    
     std::string filename = "/Users/keaveney/Desktop/calibration/PatRec_TM_result.png";
-    cv::imwrite(filename, img_gs);
+    cv::imwrite(filename, img);
     
     emit updateImage(stage, filename);
+    
+    NQLog("AssemblySensorLocator") << "updating image 2" ;
+    
     emit foundSensor(1);
 
 
