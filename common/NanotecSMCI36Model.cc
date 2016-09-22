@@ -30,14 +30,14 @@ NanotecSMCI36Model::NanotecSMCI36Model(const char* port,
   NQLog("NanotecSMCI36Model") << "constructed";
 }
 
-void NanotecSMCI36Model::setMotorID(unsigned int motorID)
+void NanotecSMCI36Model::setMotorID(int motorID)
 {
   if (state_!=READY) return;
 
   controller_->SetMotorID(motorID);
 }
 
-void NanotecSMCI36Model::setStepMode(unsigned int mode)
+void NanotecSMCI36Model::setStepMode(int mode)
 {
   if (state_!=READY) return;
 
@@ -49,7 +49,7 @@ const std::vector<std::pair<int,std::string>>& NanotecSMCI36Model::getStepModeNa
   return controller_->GetStepModeNames();
 }
 
-void NanotecSMCI36Model::setPositioningMode(unsigned int mode)
+void NanotecSMCI36Model::setPositioningMode(int mode)
 {
   if (state_!=READY) return;
 
@@ -182,9 +182,9 @@ void NanotecSMCI36Model::updateInformation2()
 
   if ( state_ == READY ) {
 
-    unsigned int motorID = controller_->GetMotorID();
-    unsigned int stepMode = controller_->GetStepMode();
-    unsigned int positioningMode = controller_->GetPositioningMode();
+    int motorID = controller_->GetMotorID();
+    int stepMode = controller_->GetStepMode();
+    int positioningMode = controller_->GetPositioningMode();
     bool direction = controller_->GetDirection();
     double travelDistance = controller_->GetTravelDistance();
 

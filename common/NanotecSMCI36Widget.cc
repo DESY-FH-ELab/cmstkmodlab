@@ -34,7 +34,7 @@ void NanotecSMCI36PositioningModeWidget::indexChanged(int index)
 {
   // NQLog("NanotecSMCI36PositioningModeWidget", NQLog::Debug) << "indexChanged()";
 
-  unsigned int userValue = itemData(index).toUInt();
+  int userValue = itemData(index).toInt();
 
   if (model_->getPositioningMode()!=userValue) {
     model_->setPositioningMode(userValue);
