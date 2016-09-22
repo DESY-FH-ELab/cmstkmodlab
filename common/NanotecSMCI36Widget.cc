@@ -28,6 +28,8 @@ NanotecSMCI36StepModeWidget::NanotecSMCI36StepModeWidget(NanotecSMCI36Model* mod
 
   connect(this, SIGNAL(currentIndexChanged(int)),
           this, SLOT(indexChanged(int)));
+
+  updateInfo();
 }
 
 void NanotecSMCI36StepModeWidget::indexChanged(int index)
@@ -73,6 +75,8 @@ NanotecSMCI36PositioningModeWidget::NanotecSMCI36PositioningModeWidget(NanotecSM
 
   connect(this, SIGNAL(currentIndexChanged(int)),
           this, SLOT(indexChanged(int)));
+
+  updateInfo();
 }
 
 void NanotecSMCI36PositioningModeWidget::indexChanged(int index)
