@@ -357,7 +357,7 @@ NanotecSMCI36Widget::NanotecSMCI36Widget(NanotecSMCI36Model* model, QWidget *par
 }
 
 /**
-  Updates the GUI according to the new state of the chiller chiller.
+  Updates the GUI according to the new state of the controller
  */
 void NanotecSMCI36Widget::updateDeviceState(State newState)
 {
@@ -367,7 +367,7 @@ void NanotecSMCI36Widget::updateDeviceState(State newState)
   controlStateChanged(ready);
 }
 
-/// Updates the GUI when the Keithley multimeter is enabled/disabled.
+/// Updates the GUI when the controller is enabled/disabled.
 void NanotecSMCI36Widget::controlStateChanged(bool enabled)
 {
   stageMode_->setEnabled(enabled);
@@ -397,10 +397,6 @@ void NanotecSMCI36Widget::controlStateChanged(bool enabled)
   resetPositionError_->setEnabled(enabled);
 }
 
-/**
-  Sets the values of all the subelements (except the global enablement)
-  according to the model.
- */
 void NanotecSMCI36Widget::updateInfo()
 {
   //NQLog("NanotecSMCI36Widget", NQLog::Debug) << "updateInfo()";
