@@ -1,14 +1,16 @@
 ARCHITECTURE=@architecture@
 USEFAKEDEVICES="X@usefakedevices@"
+USEUEYE="X1"
 
 LIBS += -L@basepath@/devices/lib -lTkModLabLang -lTkModLabKeyence
 LIBS += -L@basepath@/common -lCommon
 
-equals(USEFAKEDEVICES,"X0") {
-LIBS += -lueye_api
+equals(USEFAKEDEVICES,"X1") {
+USEUEYE="X0"
 }
 
 macx {
+  USEUEYE="X0"
   CONFIG+=x86_64
   QMAKE_CXXFLAGS += -stdlib=libc++
   #QMAKE_MAC_SDK = macosx10.11
@@ -17,6 +19,10 @@ macx {
   #LIBS += -framework QuartzCore
   #LIBS += -framework QTKit
   #LIBS += -framework Cocoa
+}
+
+equals(USEUEYE,"X1") {
+LIBS += -lueye_api
 }
 
 CONFIG += link_pkgconfig
@@ -38,6 +44,9 @@ DEFINES += @configdefines@
 
 equals(USEFAKEDEVICES,"X1") {
 DEFINES += USE_FAKEIO
+}
+equals(USEUEYE,"X1") {
+DEFINES += USE_UEYE
 }
 
 QT += core gui xml network script svg
@@ -92,7 +101,7 @@ HEADERS += AssemblyVUEyeCamera.h \
            LaserThread.h \
            LaserControlsWidget.h 
 
-equals(USEFAKEDEVICES,"X0") {
+equals(USEUEYE,"X1") {
 HEADERS += AssemblyUEyeCamera.h \
            AssemblyUEyeModel.h
 } else {
@@ -129,7 +138,7 @@ SOURCES += AssemblyVUEyeCamera.cc \
            LaserThread.cc \ 
            LaserControlsWidget.cc
 
-equals(USEFAKEDEVICES,"X0") {
+equals(USEUEYE,"X1") {
 SOURCES += AssemblyUEyeCamera.cc \
            AssemblyUEyeModel.cc
 } else {
