@@ -13,6 +13,7 @@ LIBS += -L@basepath@/devices/lib -lTkModLabHuber
 LIBS += -L@basepath@/devices/lib -lTkModLabIota
 LIBS += -L@basepath@/devices/lib -lTkModLabArduino
 LIBS += -L@basepath@/devices/lib -lTkModLabCori
+LIBS += -L@basepath@/devices/lib -lTkModLabNanotec
 LIBS += -L@basepath@/external/ddierckx -lddierckx
 LIBS += -lcurl
 
@@ -91,7 +92,9 @@ HEADERS += nqlogger.h \
            CoriFlowWidget.h \
            ScriptableCoriFlow.h \
            CoriFlowModel.h \
-           IntegerComboBox.h
+           IntegerComboBox.h \
+           NanotecSMCI36Model.h \
+           NanotecSMCI36Widget.h
            
 SOURCES += nqlogger.cc \
            npoint2D.cc \
@@ -133,4 +136,6 @@ SOURCES += nqlogger.cc \
            CoriFlowWidget.cc \
            ScriptableCoriFlow.cc \
            CoriFlowModel.cc \
-           IntegerComboBox.cc
+           IntegerComboBox.cc \
+           NanotecSMCI36Model.cc \
+           NanotecSMCI36Widget.cc

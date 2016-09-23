@@ -8,6 +8,9 @@
 #include <QToolBar>
 #include <QScrollArea>
 
+#include <NanotecSMCI36Model.h>
+#include <NanotecSMCI36Widget.h>
+
 class PlasmaMainWindow : public QMainWindow
 {
   Q_OBJECT
@@ -26,9 +29,13 @@ protected:
 
   QDir currentDir_;
 
+  NanotecSMCI36Model *smci36Model_;
+
   QToolBar* toolBar_;
 
   QTabWidget* tabWidget_;
+
+  NanotecSMCI36Widget *smci36Widget_;
 };
 
 #endif // PLASMAMAINWINDOW_H
