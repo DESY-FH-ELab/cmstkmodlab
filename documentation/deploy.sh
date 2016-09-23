@@ -1,3 +1,3 @@
 #!/bin/sh
 
-mkdocs gh-deploy --clean --message "new version"
+mkdocs gh-deploy --clean --message "new documentation version"

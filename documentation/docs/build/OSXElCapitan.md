@@ -23,7 +23,9 @@ Once homebrew is installed, install the following packages
    `brew install pkg-config`<br/>
    `brew install exiv2`<br/>
    `brew install qt4`<br/>
-   `brew install boost`
+   `brew install boost`<br/>
+   `brew install python`<br/>
+   `brew install boost-python`
 
 For some extra libraries and tool ROOT is required. ROOT can also be installed using homebrew via
 
