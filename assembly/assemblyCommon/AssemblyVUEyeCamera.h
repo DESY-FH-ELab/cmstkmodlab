@@ -6,6 +6,9 @@
 #include <QObject>
 
 #include <DeviceState.h>
+#include "AssemblySensorMarkerFinder.h"
+
+#include <QString>
 
 class AssemblyVUEyeCamera : public QObject
 {
@@ -13,7 +16,7 @@ class AssemblyVUEyeCamera : public QObject
 public:
     explicit AssemblyVUEyeCamera(QObject *parent);
     ~AssemblyVUEyeCamera();
-
+    AssemblySensorMarkerFinder* loopFind_;
     void setCameraID(unsigned int id) { cameraID_ = id; }
     void setDeviceID(unsigned int id) { deviceID_ = id; }
     void setSensorID(unsigned int id) { sensorID_ = id; }
@@ -87,6 +90,7 @@ public slots:
     virtual void setPixelClock(unsigned int) = 0;
     virtual void setExposureTime(double) = 0;
 
+
 protected slots:
 
 protected:
@@ -127,6 +131,9 @@ protected:
     State cameraState_;
 
 signals:
+    void resultObtained(double,double,double);
+    void moveAbsolute(double,double,double,double);
+
 
     void cameraInformationChanged();
 
@@ -140,6 +147,9 @@ signals:
     void exposureTimeRangeChanged(double);
 
     void imageAcquired(const cv::Mat&);
+    void updateStatus(QString, double);
+
+    
 
 private:
 

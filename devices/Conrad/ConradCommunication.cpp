@@ -7,6 +7,8 @@
 #include <sys/ioctl.h>
 #include <unistd.h>
 
+#include <iostream>
+
 //! Default constructor
 ConradCommunication::ConradCommunication(const char* comPort)
   : m_comPort(comPort),
@@ -26,8 +28,9 @@ ConradCommunication::~ConradCommunication()
 //! Initialize Conrad IO communication
 bool ConradCommunication::initialize()
 {
-  assert(m_ioPort == -1);
-
+    
+    assert(m_ioPort == -1);
+    
   // open io port (read/write | no term control | no DCD line check)
   m_ioPort = open(m_comPort, O_RDWR | O_NOCTTY  | O_NDELAY);
   if (m_ioPort == -1)

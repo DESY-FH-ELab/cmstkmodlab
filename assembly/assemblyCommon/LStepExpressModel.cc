@@ -211,13 +211,18 @@ void LStepExpressModel::moveRelative(std::vector<double> & values)
 
 void LStepExpressModel::moveRelative(double x, double y, double z, double a)
 {
+
   //    NQLog("LStepExpressModel ", NQLog::Spam)<< "moveRelative() v2 x = "<<x<<" y = "<<y<<" z = "<<z<<" a = "<<a  ;
   controller_->MoveRelative(LStepExpress_t::X, x);
   controller_->MoveRelative(LStepExpress_t::Y, y);
   controller_->MoveRelative(LStepExpress_t::Z, z);
   controller_->MoveRelative(LStepExpress_t::A, a);
+
     inMotion_ = true;
     emit motionStarted();
+
+
+
 }
 
 void LStepExpressModel::moveRelative(unsigned int axis, double value)

@@ -22,6 +22,8 @@ typedef AssemblyUEyeFakeModel AssemblyUEyeModel_t;
 #include "AssemblyUEyeWidget.h"
 #include "AssemblyUEyeView.h"
 #include "AssemblyUEyeSnapShooter.h"
+#include "AssemblyModuleAssembler.h"
+
 
 #include "AssemblyMarkerFinderThread.h"
 #include "AssemblySensorMarkerFinder.h"
@@ -54,7 +56,7 @@ signals:
 
 protected slots:
 
-  void liveUpdate();
+void liveUpdate();
 
 protected:
 
@@ -67,6 +69,8 @@ protected:
   AssemblyUEyeSnapShooter* finderView_;
   AssemblyUEyeSnapShooter* edgeView_;
   AssemblyUEyeSnapShooter* rawView_;
+  AssemblyModuleAssembler* assembleView_;
+    
 
   AssemblyUEyeModel_t* uEyeModel_;
   AssemblyUEyeCameraThread* cameraThread_;
