@@ -1,17 +1,17 @@
 ARCHITECTURE=@architecture@
 USEFAKEDEVICES="X@usefakedevices@"
-USEUEYE="X1"
+NOUEYE="X@noueye@"
 
 LIBS += -L@basepath@/devices/lib -lTkModLabLang
 LIBS += -L@basepath@/common -lCommon
 LIBS += -L@basepath@/assembly/assemblyCommon -lAssemblyCommon
 
 equals(USEFAKEDEVICES,"X1") {
-USEUEYE="X0"
+  NOUEYE="X1"
 }
 
 macx {
-  USEUEYE="X0"
+  NOUEYE="X1"
   CONFIG+=x86_64
   QMAKE_CXXFLAGS += -stdlib=libc++
   #QMAKE_MAC_SDK = macosx10.11
@@ -22,8 +22,8 @@ macx {
   #LIBS += -framework Cocoa
 }
 
-equals(USEUEYE,"X1") {
-LIBS += -lueye_api
+equals(NOUEYE,"X0") {
+  LIBS += -lueye_api
 }
 
 CONFIG += link_pkgconfig
@@ -41,6 +41,9 @@ else {
 }
 
 DEFINES += @configdefines@
+equals(NOUEYE,"X1") {
+  DEFINES += NOUEYE
+}
 
 QT += core gui xml network script svg
 greaterThan(QT_MAJOR_VERSION, 4) {
@@ -69,7 +72,7 @@ greaterThan(QT_MAJOR_VERSION, 4) {
 # Input
 HEADERS += MCommanderMainWindow.h
 
-equals(USEUEYE,"X1") {
+equals(NOUEYE,"X0") {
 HEADERS += 
 } else {
 HEADERS += 
@@ -78,7 +81,7 @@ HEADERS +=
 SOURCES += motionCommander.cc \
            MCommanderMainWindow.cc
 
-equals(USEUEYE,"X1") {
+equals(NOUEYE,"X0") {
 SOURCES += 
 } else {
 SOURCES += 
