@@ -205,6 +205,12 @@ NanotecSMCI36Widget::NanotecSMCI36Widget(NanotecSMCI36Model* model, QWidget *par
   smci36CheckBox_ = new QCheckBox("Enable controller", this);
   layout->addWidget(smci36CheckBox_);
 
+  stageMode_ = new QCheckBox("stage mode", this);
+  layout->addWidget(stageMode_);
+  stageMode_->setChecked(false);
+  connect(stageMode_, SIGNAL(clicked(bool)),
+          this, SLOT(stageModeChanged(bool)));
+
   QFormLayout *formLayout = new QFormLayout;
   formLayout->setVerticalSpacing(2);
 
@@ -356,6 +362,12 @@ NanotecSMCI36Widget::NanotecSMCI36Widget(NanotecSMCI36Model* model, QWidget *par
   updateInfo();
 }
 
+void NanotecSMCI36Widget::stageModeChanged(bool)
+{
+  bool ready = (model_->getDeviceState() == READY);
+  controlStateChanged(ready);
+}
+
 /**
   Updates the GUI according to the new state of the controller
  */
@@ -380,6 +392,7 @@ void NanotecSMCI36Widget::controlStateChanged(bool enabled)
 
   direction_->setEnabled(enabled);
 
+  if (!stageMode_->isChecked()) {
     travelDistance_->setEnabled(enabled);
     minFrequency_->setEnabled(enabled);
     maxFrequency_->setEnabled(enabled);
@@ -389,6 +402,16 @@ void NanotecSMCI36Widget::controlStateChanged(bool enabled)
     minSpeed_->setEnabled(!enabled);
     maxSpeed_->setEnabled(!enabled);
     maxSpeed2_->setEnabled(!enabled);
+  } else {
+    travelDistance_->setEnabled(!enabled);
+    minFrequency_->setEnabled(!enabled);
+    maxFrequency_->setEnabled(!enabled);
+    maxFrequency2_->setEnabled(!enabled);
+
+    travelDistanceInMM_->setEnabled(enabled);
+    minSpeed_->setEnabled(enabled);
+    maxSpeed_->setEnabled(enabled);
+    maxSpeed2_->setEnabled(enabled);
   }
 
   start_->setEnabled(enabled);

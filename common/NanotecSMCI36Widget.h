@@ -99,6 +99,8 @@ protected:
 
   QCheckBox* smci36CheckBox_;
 
+  QCheckBox* stageMode_;
+
   QDoubleSpinBox* pitch_;
   QLabel* status_;
   QSpinBox* motorID_;
@@ -129,6 +131,7 @@ protected:
 
 public slots:
 
+  void stageModeChanged(bool);
   void updateDeviceState( State newState );
   void controlStateChanged(bool);
   void updateInfo();
