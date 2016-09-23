@@ -46,7 +46,6 @@ class NanotecSMCI36Fake : public VNanotecSMCI36
 
   int GetPosition() const;
   int GetEncoderPosition() const;
-  void ResetPositionError();
   void ResetPositionError(int position);
 
   void SetInputPinFunction(int pin, int function);
@@ -55,8 +54,14 @@ class NanotecSMCI36Fake : public VNanotecSMCI36
   void SetOutputPinFunction(int pin, int function);
   int GetOutputPinFunction(int pin) const;
 
+  void SetIOMask(int mask);
+  int GetIOMask() const;
+
   void SetReversePolarityMask(int mask);
   int GetReversePolarityMask() const;
+
+  void SetIO(int mask);
+  int GetIO() const;
 
   void SetRampMode(int ramp);
   int GetRampMode() const;
@@ -116,13 +121,15 @@ class NanotecSMCI36Fake : public VNanotecSMCI36
   int standStillPhaseCurrent_;
   int inputPinFunction_[7];
   int outputPinFunction_[4];
+  int ioMask_;
   int reversePolarityMask_;
+  int io_;
   int rampMode_;
   int quickstopRamp_;
   int accelerationRamp_;
   int decelerationRamp_;
   int positioningMode_;
-  int tracelDistance_;
+  int travelDistance_;
   bool direction_;
   int minFrequency_;
   int maxFrequency_;

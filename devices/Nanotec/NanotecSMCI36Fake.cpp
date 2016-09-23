@@ -34,7 +34,9 @@ NanotecSMCI36Fake::NanotecSMCI36Fake( const ioport_t ioPort )
   outputPinFunction_[2] = smciOPinUserDefined;
   outputPinFunction_[3] = smciOPinUserDefined;
 
+  ioMask_ = 0x0007003F;
   reversePolarityMask_ = 0x0107003F;
+  io_ = 0;
 
   rampMode_ = 0;
   quickstopRamp_ = 0;
@@ -42,7 +44,7 @@ NanotecSMCI36Fake::NanotecSMCI36Fake( const ioport_t ioPort )
   decelerationRamp_ = 0;
 
   positioningMode_ = 1;
-  tracelDistance_ = 400;
+  travelDistance_ = 400;
   direction_ = false;
   minFrequency_ = 400;
   maxFrequency_ = 1000;
@@ -183,11 +185,6 @@ int NanotecSMCI36Fake::GetEncoderPosition() const
   return encoderPosition_;
 }
 
-void NanotecSMCI36Fake::ResetPositionError()
-{
-  position_ = encoderPosition_;
-}
-
 void NanotecSMCI36Fake::ResetPositionError(int position)
 {
   position_ = position;
@@ -220,6 +217,16 @@ int NanotecSMCI36Fake::GetOutputPinFunction(int pin) const
   return outputPinFunction_[pin];
 }
 
+void NanotecSMCI36Fake::SetIOMask(int mask)
+{
+  ioMask_ = mask;
+}
+
+int NanotecSMCI36Fake::GetIOMask() const
+{
+  return ioMask_;
+}
+
 void NanotecSMCI36Fake::SetReversePolarityMask(int mask)
 {
   reversePolarityMask_ = mask;
@@ -228,6 +235,16 @@ void NanotecSMCI36Fake::SetReversePolarityMask(int mask)
 int NanotecSMCI36Fake::GetReversePolarityMask() const
 {
   return reversePolarityMask_;
+}
+
+void NanotecSMCI36Fake::SetIO(int mask)
+{
+  io_ = mask;
+}
+
+int NanotecSMCI36Fake::GetIO() const
+{
+  return io_;
 }
 
 void NanotecSMCI36Fake::SetRampMode(int ramp)
@@ -326,12 +343,12 @@ int NanotecSMCI36Fake::GetPositioningMode() const
 
 void NanotecSMCI36Fake::SetTravelDistance(int distance)
 {
-  tracelDistance_ = distance;
+  travelDistance_ = distance;
 }
 
 int NanotecSMCI36Fake::GetTravelDistance() const
 {
-  return tracelDistance_;
+  return travelDistance_;
 }
 
 void NanotecSMCI36Fake::SetDirection(bool direction)

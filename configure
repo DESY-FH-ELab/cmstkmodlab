@@ -12,6 +12,7 @@ KERNELMINOR=`uname -r | cut -d . -f 2`
 NODEFO=0
 NOTHERMAL=0
 NOASSEMBLY=0
+NOPLASMA=0
 USEFAKEDEVICES=0
 WITHTWITTERSUPPORT=1
 CONFIGDEFINES=""
@@ -32,6 +33,9 @@ while test $# -gt 0; do
     --noassembly)
       NOASSEMBLY=1
       ;;
+    --noplasma)
+      NOPLASMA=1
+      ;;
     --notwitter)
       WITHTWITTERSUPPORT=0
       CONFIGDEFINES="$CONFIGDEFINES NO_TWITTER"
@@ -51,9 +55,9 @@ done
 QMAKE="qmake"
 
 if test $ARCHITECTURE = "Darwin"; then
-    echo Darwin architecture: fake device support forced
-    USEFAKEDEVICES=1
-    CONFIGDEFINES="USE_FAKEIO"
+    #echo Darwin architecture: fake device support forced
+    #USEFAKEDEVICES=1
+    CONFIGDEFINES="DARWIN"
     SOFLAGS="-m64 -O2 -dynamiclib -single_module -undefined dynamic_lookup"
     CC="clang"
     CXX="clang++"
@@ -118,8 +122,13 @@ if test $NOASSEMBLY = 1; then
 else
     echo build with ASSEMBLY support
 fi
+if test $NOPLASMA = 1; then
+    echo build without Plasma Cleaner support
+else
+    echo build with Plasma Cleaner support
+fi
 
-SED_VARIABLES="BASEPATH ARCHITECTURE KERNELMAJOR KERNELMINOR QMAKE CXX CC LD NODEFO NOTHERMAL NOASSEMBLY APPLICATIONVERSIONSTR USEFAKEDEVICES WITHTWITTERSUPPORT SOFLAGS CONFIGDEFINES QWTDEFINES QWTINCLUDES QWTLIBS ROOTCFLAGS ROOTLIBS ROOTGLIBS ROOTMAJOR"
+SED_VARIABLES="BASEPATH ARCHITECTURE KERNELMAJOR KERNELMINOR QMAKE CXX CC LD NODEFO NOTHERMAL NOASSEMBLY NOPLASMA APPLICATIONVERSIONSTR USEFAKEDEVICES WITHTWITTERSUPPORT SOFLAGS CONFIGDEFINES QWTDEFINES QWTINCLUDES QWTLIBS ROOTCFLAGS ROOTLIBS ROOTGLIBS ROOTMAJOR"
 
 echo "#!/bin/sh
 dest=\`basename \$1 .in\`

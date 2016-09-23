@@ -303,19 +303,14 @@ int NanotecSMCI36::GetEncoderPosition() const
   return std::atoi(ret.c_str());
 }
 
-void NanotecSMCI36::ResetPositionError()
-{
-  comHandler_->SendCommand("#1D");
-  char buffer[1000];
-  comHandler_->ReceiveString(buffer);
-}
-
 void NanotecSMCI36::ResetPositionError(int position)
 {
   char command[20];
   sprintf(command, "#1D%d", position);
 
   comHandler_->SendCommand(command);
+  char buffer[1000];
+  comHandler_->ReceiveString(buffer);
 }
 
 void NanotecSMCI36::SetInputPinFunction(int pin, int function)
@@ -382,6 +377,30 @@ int NanotecSMCI36::GetOutputPinFunction(int pin) const
   return std::atoi(ret.c_str());
 }
 
+void NanotecSMCI36::SetIOMask(int mask)
+{
+  char command[20];
+  sprintf(command, "#1L%d", mask);
+
+  comHandler_->SendCommand(command);
+  char buffer[1000];
+  comHandler_->ReceiveString(buffer);
+}
+
+int NanotecSMCI36::GetIOMask() const
+{
+  comHandler_->SendCommand("#1ZL");
+
+  char buffer[1000];
+  comHandler_->ReceiveString(buffer);
+  StripBuffer(buffer);
+
+  std::string ret = buffer;
+  ret.erase(0, strlen("1ZL"));
+
+  return std::atoi(ret.c_str());
+}
+
 void NanotecSMCI36::SetReversePolarityMask(int mask)
 {
   char command[20];
@@ -394,14 +413,38 @@ void NanotecSMCI36::SetReversePolarityMask(int mask)
 
 int NanotecSMCI36::GetReversePolarityMask() const
 {
-  comHandler_->SendCommand("#1h");
+  comHandler_->SendCommand("#1Zh");
 
   char buffer[1000];
   comHandler_->ReceiveString(buffer);
   StripBuffer(buffer);
 
   std::string ret = buffer;
-  ret.erase(0, strlen("1h"));
+  ret.erase(0, strlen("1Zh"));
+
+  return std::atoi(ret.c_str());
+}
+
+void NanotecSMCI36::SetIO(int mask)
+{
+  char command[20];
+  sprintf(command, "#1Y%d", mask);
+
+  comHandler_->SendCommand(command);
+  char buffer[1000];
+  comHandler_->ReceiveString(buffer);
+}
+
+int NanotecSMCI36::GetIO() const
+{
+  comHandler_->SendCommand("#1ZY");
+
+  char buffer[1000];
+  comHandler_->ReceiveString(buffer);
+  StripBuffer(buffer);
+
+  std::string ret = buffer;
+  ret.erase(0, strlen("1ZY"));
 
   return std::atoi(ret.c_str());
 }

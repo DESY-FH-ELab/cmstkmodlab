@@ -2,6 +2,7 @@
 #define __VNANOTECSMCI36_H
 
 #include <string>
+#include <vector>
 
 typedef const char* ioport_t;
 
@@ -72,7 +73,7 @@ class VNanotecSMCI36
     smciOInvalid                 = 4
   };
 
-  enum ReversePolaryBits {
+  enum IOBits {
     smciInput1            = 0x00000001,
     smciInput2            = 0x00000002,
     smciInput3            = 0x00000004,
@@ -126,6 +127,9 @@ class VNanotecSMCI36
 
   virtual void SetStepMode(int mode) = 0;
   virtual int GetStepMode() const = 0;
+  const std::vector<std::pair<int,std::string>>& GetStepModeNames() const {
+    return stepModeNames_;
+  }
 
   virtual void SetMotorID(int ID) = 0;
   virtual int GetMotorID() const = 0;
@@ -134,6 +138,9 @@ class VNanotecSMCI36
 
   virtual void SetErrorCorrectionMode(int mode) = 0;
   virtual int GetErrorCorrectionMode() const = 0;
+  const std::vector<std::pair<int,std::string>>& GetErrorCorrectionModeNames() const {
+    return errorCorrectionModeNames_;
+  }
 
   virtual void SetEncoderDirection(int direction) = 0;
   virtual int GetEncoderDirection() const = 0;
@@ -147,7 +154,6 @@ class VNanotecSMCI36
   virtual int GetPosition() const = 0;
   virtual int GetEncoderPosition() const = 0;
 
-  virtual void ResetPositionError() = 0;
   virtual void ResetPositionError(int position) = 0;
 
   virtual void SetInputPinFunction(int pin, int function) = 0;
@@ -156,8 +162,14 @@ class VNanotecSMCI36
   virtual void SetOutputPinFunction(int pin, int function) = 0;
   virtual int GetOutputPinFunction(int pin) const = 0;
 
+  virtual void SetIOMask(int mask) = 0;
+  virtual int GetIOMask() const = 0;
+
   virtual void SetReversePolarityMask(int mask) = 0;
   virtual int GetReversePolarityMask() const = 0;
+
+  virtual void SetIO(int mask) = 0;
+  virtual int GetIO() const = 0;
 
   /* TODO: Debounce time of inputs */
 
@@ -165,6 +177,9 @@ class VNanotecSMCI36
 
   virtual void SetRampMode(int ramp) = 0;
   virtual int GetRampMode() const = 0;
+  const std::vector<std::pair<int,std::string>>& GetRampModeNames() const {
+    return rampModeNames_;
+  }
 
   virtual void SetQuickstopRamp(int ramp) = 0;
   virtual int GetQuickstopRamp() const = 0;
@@ -186,6 +201,9 @@ class VNanotecSMCI36
 
   virtual void SetPositioningMode(int mode) = 0;
   virtual int GetPositioningMode() const = 0;
+  const std::vector<std::pair<int,std::string>>& GetPositioningModeNames() const {
+    return positioningModeNames_;
+  }
 
   virtual void SetTravelDistance(int distance) = 0;
   virtual int GetTravelDistance() const = 0;
@@ -204,6 +222,13 @@ class VNanotecSMCI36
 
   virtual void Start() = 0;
   virtual void Stop(bool quickstop = false) = 0;
+
+ protected:
+
+  std::vector<std::pair<int,std::string>> stepModeNames_;
+  std::vector<std::pair<int,std::string>> errorCorrectionModeNames_;
+  std::vector<std::pair<int,std::string>> rampModeNames_;
+  std::vector<std::pair<int,std::string>> positioningModeNames_;
 };
 
 #endif
