@@ -47,6 +47,7 @@ while test $# -gt 0; do
       ;;
     --fake)
       USEFAKEDEVICES=1
+      NOUEYE=1
       CONFIGDEFINES="$CONFIGDEFINES USE_FAKEIO NOUEYE"
       ;;
   *)
