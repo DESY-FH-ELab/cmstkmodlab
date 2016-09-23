@@ -6,6 +6,8 @@
 #include "ConradCommunication.h"
 #include "ConradController.h"
 
+#include <iostream>
+
 //! Default constructor
 ConradController::ConradController(const char* comPort)
   : VConradController(comPort),
@@ -24,8 +26,8 @@ ConradController::~ConradController()
 //! Initialize Conrad IO communication
 bool ConradController::initialize()
 {
-  assert(m_communication);
-
+    assert(m_communication);
+    
   // Initialize communication
   if (!m_communication->initialize())
     return false;

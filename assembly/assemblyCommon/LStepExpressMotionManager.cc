@@ -55,19 +55,25 @@ void LStepExpressMotionManager::printSpyInformation()
 
 void LStepExpressMotionManager::run()
 {
+
     if (inMotion_) return;
 
     if (motions_.empty()) return;
 
-    //    NQLog("LStepExpressMotionManager", NQLog::Debug) << "run";
+//    NQLog("LStepExpressMotionManager", NQLog::Debug) << "run";
 
     LStepExpressMotion motion = motions_.dequeue();
 
     inMotion_ = true;
 
     if (motion.getMode()==true) {
+    NQLog("LStepExpressMotionManager") << "run2 mode==true"<< motion.getX()   <<" y "<<  motion.getY()  <<" z "<<motion.getZ()    << " a "<< motion.getA()   ;
+
+
         emit signalMoveAbsolute(motion.getX(), motion.getY(), motion.getZ(), motion.getA());
     } else {
+    NQLog("LStepExpressMotionManager") << "run3 mode==false";
+
         emit signalMoveRelative(motion.getX(), motion.getY(), motion.getZ(), motion.getA());
     }
 }
@@ -110,14 +116,19 @@ void LStepExpressMotionManager::moveRelative(unsigned int axis, double value)
 
 void LStepExpressMotionManager::moveAbsolute(std::vector<double> & values)
 {
+
     motions_.enqueue(LStepExpressMotion(values, true));
     run();
 }
 
 void LStepExpressMotionManager::moveAbsolute(double x, double y, double z, double a)
 {
+  NQLog("LStepExpressMotionManager") << "moveAbsolute";
+
     motions_.enqueue(LStepExpressMotion(x, y, z, a, true));
+    NQLog("LStepExpressMotionManager") << "motionsEnquee x "<<  x  <<" y "<< y<<" z "<< z << " a "<< a;
     run();
+  NQLog("LStepExpressMotionManager") << "run Done";
 }
 
 void LStepExpressMotionManager::moveAbsolute(unsigned int axis, double value)
