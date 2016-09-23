@@ -4,12 +4,12 @@
 #include <QObject>
 #include <QThread>
 
-#ifdef USE_FAKEIO
-#include "AssemblyUEyeFakeModel.h"
-typedef AssemblyUEyeFakeModel AssemblyUEyeModel_t;
-#else
+#ifdef USE_UEYE
 #include "AssemblyUEyeModel.h"
 typedef AssemblyUEyeModel AssemblyUEyeModel_t;
+#else
+#include "AssemblyUEyeFakeModel.h"
+typedef AssemblyUEyeFakeModel AssemblyUEyeModel_t;
 #endif
 
 class AssemblyUEyeCameraThread : public QThread
