@@ -1,5 +1,6 @@
 #include <unistd.h>
 
+#include <cstring>
 #include <cmath>
 #include <sstream>
 #include <iostream>
