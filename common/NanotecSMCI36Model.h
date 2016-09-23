@@ -48,7 +48,10 @@ public:
   int getMaxEncoderDeviation() const { return maxEncoderDeviation_; }
 
   int getControllerSteps() const { return controllerSteps_; }
+  double getControllerPosition() const { return getControllerSteps()/getPitch()/getStepMode(); }
+
   int getEncoderSteps() const { return encoderSteps_; }
+  double getEncoderPosition() const { return getEncoderSteps()/getPitch()/getStepMode(); }
 
   int getPositioningMode() const { return positioningMode_; }
   const std::vector<std::pair<int,std::string>>& getPositioningModeNames() const;
