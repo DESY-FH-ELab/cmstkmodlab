@@ -21,7 +21,7 @@ PlasmaMainWindow::PlasmaMainWindow(QWidget *parent)
     NQLog("PlasmaMainWindow") << "SMCI36PORT: " << config->getValue("SMCI36PORT").c_str();
 
     smci36Model_ = new NanotecSMCI36Model(config->getValue("SMCI36PORT").c_str(),
-                                          0.5, 2.5, this);
+                                          0.5, 1.0, this);
 
     tabWidget_ = new QTabWidget(this);
     tabWidget_->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);
