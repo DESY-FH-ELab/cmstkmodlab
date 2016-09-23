@@ -184,47 +184,45 @@ AssemblyModuleAssembler::AssemblyModuleAssembler(QWidget *parent)
     QLabel* header_label = new QLabel("Hover mouse over button for info on each step", this);
     g1->addWidget(header_label,0,0);
 
-    AssemblyCommander * cmdr0 = new AssemblyCommander(this, "Go to origin", 0.0,0.0,0.0,0.0, 0);
+    AssemblyCommander * cmdr0 = new AssemblyCommander(this, "Go to origin", 0.0,0.0,0.0,0.0);
     cmdr0->setToolTip("(1) Returns x,y,z stage to origin (default = (0,0,0) using moveAbsolute(x,y,z) routine)");
     g1->addWidget(cmdr0,1,0);
 
-    AssemblyCommander * cmdr1 = new AssemblyCommander(this, "Go to pickup", 100.0,100.0,100.0,100.0, 0);
+    AssemblyCommander * cmdr1 = new AssemblyCommander(this, "Go to pickup", 100.0,100.0,100.0,100.0);
     cmdr1->setToolTip("(2) Moves x,y,z stage to pickup position (default = (100,100,100) using moveAbsolute(x,y,z) routine)");
     g1->addWidget(cmdr1,2,0);
     
-    AssemblySensorLocator * lctr1 = new AssemblySensorLocator(this, "Locate sensor", 0.0, 0);
+    AssemblySensorLocator * lctr1 = new AssemblySensorLocator(this, "Locate sensor", 0.0);
     lctr1->setToolTip("(3) Acquires image from mobile camera, runs PatRec routine to deduce and report sensor (x,y,z,phi) postion");
     g1->addWidget(lctr1,3,0);   
  
-    AssemblyCommander * cmdr2 = new AssemblyCommander(this, "Correct position", 100.0,100.0,100.0,100.0, 0);
+    AssemblyCommander * cmdr2 = new AssemblyCommander(this, "Correct position", 100.0,100.0,100.0,100.0);
     cmdr2->setToolTip("(4) Corrects arm position using relative displacement using (eventually) pre-calculated displacment from PatRec");
     g1->addWidget(cmdr2,4,0);
     
     
-    AssemblyAttacher * attacher1 = new AssemblyAttacher(this, "Drop/Raise", 10.0,0);
+    AssemblyAttacher * attacher1 = new AssemblyAttacher("Drop/Raise", 10.0);
     g1->addWidget(attacher1,5,0);
     
-    AssemblyVacuumToggler * toggle1 = new AssemblyVacuumToggler(this, "Toggle vacuum", 0.0, 0);
+    AssemblyVacuumToggler * toggle1 = new AssemblyVacuumToggler(this, "Toggle vacuum", 0.0);
     g1->addWidget(toggle1,6,0);
     
-    AssemblyCommander * cmdr4 = new AssemblyCommander(this, "Go to stat. camera", 100.0,100.0,100.0,100.0, 0);
+    AssemblyCommander * cmdr4 = new AssemblyCommander(this, "Go to stat. camera", 100.0,100.0,100.0,100.0);
     g1->addWidget(cmdr4, 7, 0);
 
     AssemblyMountChecker * cmdr5 = new AssemblyMountChecker(this, "Check mount", 100.0,100.0,100.0,100.0, 0);
     g1->addWidget(cmdr5, 8, 0);
     
     
-    connect(cmdr5, SIGNAL(locateCorner(int)), lctr1, SLOT( locateSensor(int)));
-    
-    AssemblyCommander * cmdr6 = new AssemblyCommander(this, "Go to rotation stage", 100.0,100.0,100.0,100.0, 0);
+    AssemblyCommander * cmdr6 = new AssemblyCommander(this, "Go to rotation stage", 100.0,100.0,100.0,100.0);
     g1->addWidget(cmdr6, 9, 0);
     
     
-    AssemblyCommander * cmdr7 = new AssemblyCommander(this, "Drop and detach", 100.0,100.0,100.0,100.0, 0);
+    AssemblyCommander * cmdr7 = new AssemblyCommander(this, "Drop and detach", 100.0,100.0,100.0,100.0);
     g1->addWidget(cmdr7, 10, 0);
     
     
-    AssemblyAlligner * cmdr8 = new AssemblyAlligner(this, "Align", 0.0,0);
+    AssemblyAligner * cmdr8 = new AssemblyAligner(this, "Align", 0.0);
     g1->addWidget(cmdr8, 11, 0);
     
     
@@ -418,7 +416,7 @@ void AssemblyModuleAssembler::keyReleaseEvent(QKeyEvent * event)
 
 
 
-AssemblyVacuumToggler::AssemblyVacuumToggler(QWidget *parent, std::string string, double a,  int mode)
+AssemblyVacuumToggler::AssemblyVacuumToggler(QWidget *parent, std::string string, double a)
 : QWidget(parent),local_a(a)
 {
     QGridLayout *l = new QGridLayout(this);
@@ -481,8 +479,7 @@ void AssemblyVacuumToggler::toggleVacuum()
 }
 
 
-
-AssemblyAttacher::AssemblyAttacher(AssemblyModuleAssembler *parent, std::string string, double drop, int mode)
+AssemblyAttacher::AssemblyAttacher(std::string string, double drop)
 : local_drop(drop)
 {
 
@@ -605,7 +602,7 @@ void AssemblyMountChecker::checkMount(){
 
 
 
-AssemblyCommander::AssemblyCommander(QWidget *parent, std::string string, double x ,double y, double z,double a,  int mode)
+AssemblyCommander::AssemblyCommander(QWidget *parent, std::string string, double x ,double y, double z,double a)
 : QWidget(parent), local_x(x), local_y(y),local_z(z),local_a(a)
 {
      QFormLayout *l = new QFormLayout(this);
@@ -669,7 +666,7 @@ void AssemblyCommander::goToTarget(){
 }
 
 
-AssemblyAlligner::AssemblyAlligner(QWidget *parent, std::string string, double a,  int mode)
+AssemblyAligner::AssemblyAligner(QWidget *parent, std::string string, double a)
 : QWidget(parent),local_a(a)
 {
     QFormLayout *l = new QFormLayout(this);
@@ -695,7 +692,7 @@ AssemblyAlligner::AssemblyAlligner(QWidget *parent, std::string string, double a
 }
 
 
-void AssemblyAlligner::setDown(){
+void AssemblyAligner::setDown(){
     
     emit locateSetdowncorner(6);
     
@@ -703,7 +700,7 @@ void AssemblyAlligner::setDown(){
 
 
 
-void AssemblyAlligner::allign(){
+void AssemblyAligner::align(){
     
 //     emit locate(6);
     
@@ -722,7 +719,7 @@ void AssemblyAlligner::allign(){
     double a_d = parent_string.toDouble();
     
     
-    NQLog("AssemblyAlligner:allign") << ": going to target allignment (parsed) "<< a_d<<" ";
+    NQLog("AssemblyAligner:align") << ": going to target alignment (parsed) "<< a_d<<" ";
     
     emit moveRelative(0.0, 0.0, 0.0, a_d);
     
@@ -732,7 +729,7 @@ void AssemblyAlligner::allign(){
 
 
 
-AssemblySensorLocator::AssemblySensorLocator(QWidget *parent, std::string string, double a,  int mode)
+AssemblySensorLocator::AssemblySensorLocator(QWidget *parent, std::string string, double a)
 : QWidget(parent),local_a(a)
 {
     QGridLayout *l = new QGridLayout(this);
@@ -808,11 +805,11 @@ void AssemblySensorLocator::locateSensor_templateMatching(int stage){
     cv::Mat img, img_clip_A, img_clip_B, result_1, result_2, dst;
     int match_method;
     
-    img = cv::imread("/Users/keaveney/Desktop/calibration/RawSensor_2_rotated.png", CV_LOAD_IMAGE_COLOR);
-    img_clip_A = cv::imread("/Users/keaveney/Desktop/calibration/RawSensor_2_clipA.png", CV_LOAD_IMAGE_COLOR);
-    img_clip_B = cv::imread("/Users/keaveney/Desktop/calibration/RawSensor_2_clipB.png", CV_LOAD_IMAGE_COLOR);
+    img = cv::imread("/Users/keaveney/Desktop/calibration/RawSensor_4.png", CV_LOAD_IMAGE_COLOR);
+    img_clip_A = cv::imread("/Users/keaveney/Desktop/calibration/RawSensor_3_clipA.png", CV_LOAD_IMAGE_COLOR);
+    img_clip_B = cv::imread("/Users/keaveney/Desktop/calibration/RawSensor_3_clipB.png", CV_LOAD_IMAGE_COLOR);
 
-    Point matchLoc_1, matchLoc_2;
+    Point matchLoc_1, matchLoc_2, matchLoc_final;
    
     Mat img_copy = img.clone();
     
@@ -836,9 +833,9 @@ void AssemblySensorLocator::locateSensor_templateMatching(int stage){
     
     
     //Apply thresholding
-    cv::threshold(img_copy_gs, img_copy_bin, 130, 255, cv::THRESH_BINARY);
-    cv::threshold(img_clip_A_gs, img_clip_A_bin, 130, 255, cv::THRESH_BINARY);
-    cv::threshold(img_clip_B_gs, img_clip_B_bin, 130, 255, cv::THRESH_BINARY);
+    cv::threshold(img_copy_gs, img_copy_bin, 60, 255, cv::THRESH_BINARY);
+    cv::threshold(img_clip_A_gs, img_clip_A_bin, 90, 255, cv::THRESH_BINARY);
+    cv::threshold(img_clip_B_gs, img_clip_B_bin, 90, 255, cv::THRESH_BINARY);
     
     
    // img_copy_bin = img_copy_gs.clone();
@@ -866,7 +863,7 @@ void AssemblySensorLocator::locateSensor_templateMatching(int stage){
 
     
     /// Localizing the best match with minMaxLoc
-    double FOM, minVal, maxVal; Point minLoc; Point maxLoc;
+    double FOM, FOM_inc = 1000.0, minVal, maxVal; Point minLoc; Point maxLoc;
     double thetas[40], FOMs[40];
     
     //first find the (x,y) location of the circle within the corner marker
@@ -942,12 +939,9 @@ void AssemblySensorLocator::locateSensor_templateMatching(int stage){
     
 
 
-   //for (float theta = -0.06; theta < 0.06;  theta = theta + 0.003){
-      for (float theta = -180.0; theta < 180.0;  theta = theta + 9.0){
+   for (float theta = -6.0; theta < 6.0;  theta = theta + 0.3){
+  //    for (float theta = -180.0; theta < 180.0;  theta = theta + 9.0){
 
-    // apply a rotation transformation to the image, centered on the centre of the marker circle (NOT PERFECT YET>>> RIGHT NOW IT IS PERFORMING THE ROATAION AROUND THE CENTRE OF the MATCH-BOX ~ circle centre.....)
-     
-     
    // Point2f src_center(img_gs_copy.cols/2.0F, img_gs_copy.rows/2.0F);
        Point2f src_center( matchLoc_1.x + (img_clip_A_bin.cols/2) , matchLoc_1.y + (img_clip_A_bin.rows/2) );
      
@@ -986,34 +980,38 @@ void AssemblySensorLocator::locateSensor_templateMatching(int stage){
     }
         
     std::cout << std::setprecision(10);
-    cout<< theta<<"  ,  " << FOM  <<endl;
+//    cout<< theta<<"  ,  " << FOM  <<endl;
      
     thetas[i] = theta;
     FOMs[i] = FOM;
     i++;
-        
+       
+       if (FOM < FOM_inc ) {
+       
+           FOM_inc = FOM;
+           matchLoc_final = matchLoc_2;
+       }
+       
+       
     color = 50 + 200*theta;
         
-        NQLog("AssemblySensorLocator") << "Drawing rectangles" ;
-        
-        rectangle( img, matchLoc_2, Point( matchLoc_2.x + img_clip_B_bin.cols , matchLoc_2.y + img_clip_B_bin.rows ), Scalar(color,color-50,color+50), 2, 8, 0 );
-        rectangle( result_2, matchLoc_2, Point( matchLoc_2.x + img_clip_B_bin.cols , matchLoc_2.y + img_clip_B_bin.rows ), Scalar(color,color-50,color+50), 2, 8, 0 );
-        
+       
 }
+ 
     
+    rectangle( img, matchLoc_final, Point( matchLoc_final.x + img_clip_B_bin.cols , matchLoc_final.y + img_clip_B_bin.rows ), Scalar(color,color-50,color+50), 2, 8, 0 );
+   // rectangle( result_2, matchLoc_2, Point( matchLoc_2.x + img_clip_B_bin.cols , matchLoc_2.y + img_clip_B_bin.rows ), Scalar(color,color-50,color+50), 2, 8, 0 );
 
   
     TCanvas *c1 = new TCanvas("c1","Rotation extraction",200,10,700,500);
 
-    NQLog("AssemblySensorLocator") << "making graph" ;
 
-    if (thetas && FOMs){
+    if (thetas[0] && FOMs[0]){
     TGraph *gr = new TGraph(40, thetas, FOMs);
     gr->Draw("AC*");
     const char * filename_canvas = "/Users/keaveney/Desktop/calibration/RotationExtraction.png";
     c1->SaveAs(filename_canvas);
    
-    NQLog("AssemblySensorLocator") << "updating image 1" ;
     emit updateImage(2, filename_canvas);
     }
  
@@ -1024,7 +1022,6 @@ void AssemblySensorLocator::locateSensor_templateMatching(int stage){
     
     emit updateImage(stage, filename);
     
-    NQLog("AssemblySensorLocator") << "updating image 2" ;
     
     emit foundSensor(1);
 
@@ -1059,7 +1056,7 @@ void AssemblySensorLocator::locateSensor_circleSeed(int stage){
     double linesHoughMinLineLength_=  150.0;
     double linesHoughMaxLineGap_ =25.0;
     bool  dist1_, dist2_, dist3_, doca_ ;
-    double slope_final, ang_final;
+    double slope_final = 0.0, ang_final = 0.0;
     double distance,doca,x0,x1,x2, y0,y1,y2, x,y;
     
     
@@ -1226,9 +1223,9 @@ void AssemblySensorLocator::locateSensor_circleSeed(int stage){
     
     // Now select intersections that occur near the start or end point of the intersecting lines. This removes random intersections from sprurious "noise" lines.
     
-    for(int  intsec = 0; intsec < intersections_.size(); intsec++ ){
+    for(unsigned int  intsec = 0; intsec < intersections_.size(); intsec++ ){
         bool goodIntersection = false;
-        for(int  gl = 0; gl < goodLines_.size(); gl++ ){
+        for(unsigned int  gl = 0; gl < goodLines_.size(); gl++ ){
             
             double d_start = std::sqrt(std::pow(intersections_[intsec].x - goodLines_[gl].first.x, 2.0) + std::pow(intersections_[intsec].y - goodLines_[gl].first.y, 2.0));
             double d_end = std::sqrt(std::pow(intersections_[intsec].x - goodLines_[gl].second.x, 2.0) + std::pow(intersections_[intsec].y - goodLines_[gl].second.y, 2.0));
@@ -1237,7 +1234,7 @@ void AssemblySensorLocator::locateSensor_circleSeed(int stage){
         if(goodIntersection == true) goodIntersections_.push_back(intersections_[intsec]);
     }
     
-    for (int goodint =0; goodint < goodIntersections_.size(); goodint++){
+    for (unsigned int goodint =0; goodint < goodIntersections_.size(); goodint++){
         
         
         // Select the two intersections that are adjacent to the circle.
@@ -1263,7 +1260,7 @@ void AssemblySensorLocator::locateSensor_circleSeed(int stage){
     finalIntersectionsUp_.clear();
     
     if (finalIntersections_.size() >0){
-        for (int finalint =0; finalint < finalIntersections_.size(); finalint++) {
+        for (unsigned int finalint =0; finalint < finalIntersections_.size(); finalint++) {
             if ( y > finalIntersections_[finalint].y){
                 finalIntersectionsDown_.push_back(finalIntersections_[finalint]);
             }
@@ -1274,7 +1271,7 @@ void AssemblySensorLocator::locateSensor_circleSeed(int stage){
         }
         
         
-        for (int finalintup =0; finalintup < finalIntersectionsUp_.size(); finalintup++) {
+        for (unsigned int finalintup =0; finalintup < finalIntersectionsUp_.size(); finalintup++) {
             running_total_x = running_total_x + finalIntersectionsUp_[finalintup].x;
             running_total_y = running_total_y + finalIntersectionsUp_[finalintup].y;
         }
@@ -1285,7 +1282,7 @@ void AssemblySensorLocator::locateSensor_circleSeed(int stage){
         running_total_x  =0;
         running_total_y  =0;
         
-        for (int finalintdown =0; finalintdown < finalIntersectionsDown_.size(); finalintdown++) {
+        for (unsigned int finalintdown =0; finalintdown < finalIntersectionsDown_.size(); finalintdown++) {
             running_total_x = running_total_x + finalIntersectionsDown_[finalintdown].x;
             running_total_y = running_total_y + finalIntersectionsDown_[finalintdown].y;
         }
@@ -1293,18 +1290,13 @@ void AssemblySensorLocator::locateSensor_circleSeed(int stage){
         av_x_down = running_total_x/finalIntersectionsDown_.size();
         av_y_down = running_total_y/finalIntersectionsDown_.size();
         
-        
-        
-        //             if (finalIntersections_.size() >0){
-        for (int finalintup =0; finalintup < finalIntersectionsUp_.size(); finalintup++) {
+        for (unsigned int finalintup =0; finalintup < finalIntersectionsUp_.size(); finalintup++) {
             circle( img_rgb, finalIntersectionsUp_[finalintup], 10, cv::Scalar(0,255,255), 3, 8, 0 );
         }
         
-        for (int finalintdown =0; finalintdown < finalIntersectionsDown_.size(); finalintdown++) {
+        for (unsigned int finalintdown =0; finalintdown < finalIntersectionsDown_.size(); finalintdown++) {
             circle( img_rgb, finalIntersectionsDown_[finalintdown], 10, cv::Scalar(0,255,0), 3, 8, 0 );
         }
-        
-        
         
         cv::line(img_rgb,
                  cv::Point(cvRound(av_x_down), cvRound(av_y_down)),
@@ -1318,7 +1310,6 @@ void AssemblySensorLocator::locateSensor_circleSeed(int stage){
         slope_final = (av_y_up -  av_y_down) / (av_x_up -  av_x_down);
         ang_final = atan (slope_final) * 180 / 3.14;
         
-
         
     }
     

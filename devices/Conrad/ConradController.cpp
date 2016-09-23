@@ -26,9 +26,8 @@ ConradController::~ConradController()
 //! Initialize Conrad IO communication
 bool ConradController::initialize()
 {
-  
-  assert(m_communication);
-
+    assert(m_communication);
+    
   // Initialize communication
   if (!m_communication->initialize())
     return false;

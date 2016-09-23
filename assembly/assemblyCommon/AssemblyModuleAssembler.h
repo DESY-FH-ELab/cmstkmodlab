@@ -104,7 +104,7 @@ class AssemblyVacuumToggler : public QWidget
     Q_OBJECT
 public:
     
-    explicit AssemblyVacuumToggler(QWidget *parent = 0, std::string ="test", double a  = 0.0, int =0);
+    explicit AssemblyVacuumToggler(QWidget *parent = 0, std::string ="test", double a  = 0.0);
     double local_x, local_y, local_z, local_a;
     QPushButton* button1;
     QLineEdit *lineEdit1;
@@ -131,7 +131,7 @@ class AssemblyAttacher : public QWidget
     Q_OBJECT
 public:
     
-    explicit AssemblyAttacher(AssemblyModuleAssembler *parent = 0, std::string ="test", double drop =0.0, int =0);
+    explicit AssemblyAttacher(std::string ="test", double drop =0.0);
     double local_drop;
     QPushButton* button1;
     QLineEdit *lineEdit1;
@@ -180,7 +180,7 @@ class AssemblyCommander : public QWidget
     Q_OBJECT
 public:
     
-    explicit AssemblyCommander(QWidget *parent = 0, std::string ="test", double x =0.0, double y =0.0, double z  =0.0, double a  =0.0, int =0);
+    explicit AssemblyCommander(QWidget *parent = 0, std::string ="test", double x =0.0, double y =0.0, double z  =0.0, double a  =0.0);
     double local_x, local_y, local_z, local_a;
     QPushButton* button1;
     QLineEdit *lineEdit1;
@@ -197,12 +197,12 @@ signals:
 };
 
 
-class AssemblyAlligner : public QWidget
+class AssemblyAligner : public QWidget
 {
     Q_OBJECT
 public:
     
-    explicit AssemblyAlligner(QWidget *parent = 0, std::string ="test", double a  = 0.0, int =0);
+    explicit AssemblyAligner(QWidget *parent = 0, std::string ="test", double a  = 0.0);
     double local_x, local_y, local_z, local_a;
     QPushButton* button1;
     QLineEdit *lineEdit1;
@@ -210,7 +210,7 @@ public:
 
 protected:
     public slots:
-        void allign();
+        void align();
         void setDown();
     
 signals:
@@ -227,7 +227,7 @@ class AssemblySensorLocator : public QWidget
     Q_OBJECT
 public:
     
-    explicit AssemblySensorLocator(QWidget *parent = 0, std::string ="test", double a  = 0.0, int =0);
+    explicit AssemblySensorLocator(QWidget *parent = 0, std::string ="test", double a  = 0.0);
     double local_x, local_y, local_z, local_a;
     QPushButton* button1;
     QLineEdit *lineEdit1;

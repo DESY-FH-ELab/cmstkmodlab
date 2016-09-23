@@ -28,17 +28,13 @@ ConradCommunication::~ConradCommunication()
 //! Initialize Conrad IO communication
 bool ConradCommunication::initialize()
 {
-  assert(m_ioPort == -1);
-
-  std::cout <<"ConComm init 1 "<< m_comPort <<std::endl;
-
-
+    
+    assert(m_ioPort == -1);
+    
   // open io port (read/write | no term control | no DCD line check)
   m_ioPort = open(m_comPort, O_RDWR | O_NOCTTY  | O_NDELAY);
   if (m_ioPort == -1)
     return false;
-
-  std::cout <<"ConComm init 2 (opened IO poort) "<<std::endl;
 
   // get and save current ioport settings for later restoring
   tcgetattr(m_ioPort, &m_termiosInitial);
