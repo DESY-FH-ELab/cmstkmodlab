@@ -64,6 +64,7 @@ class LStepExpress : public VLStepExpress
 
   bool GetStatus();
   void GetSystemStatus(std::vector<int>& values);
+  void GetSystemStatusText(std::string& value);
   void GetSystemStatus(VLStepExpress::Axis axis, int & value);
   int GetError();
 
@@ -79,6 +80,9 @@ class LStepExpress : public VLStepExpress
   void ConfirmErrorRectification();
   void ValidConfig();
   void ValidParameter();
+  void SaveConfig();
+  void Calibrate();
+  void EmergencyStop();
 
   // low level debugging methods
   void SendCommand(const std::string &);

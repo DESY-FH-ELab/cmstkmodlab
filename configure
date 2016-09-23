@@ -12,14 +12,15 @@ KERNELMINOR=`uname -r | cut -d . -f 2`
 NODEFO=0
 NOTHERMAL=0
 NOASSEMBLY=0
+NOPLASMA=0
 USEFAKEDEVICES=0
 WITHTWITTERSUPPORT=1
-TWITTERLIBS="-lcurl -ltwitcurl"
 CONFIGDEFINES=""
 
 ROOTCFLAGS=`root-config --cflags`
 ROOTLIBS=`root-config --libs`
 ROOTGLIBS=`root-config --glibs`
+ROOTMAJOR=`root-config --version | cut -d . -f 1`
 
 while test $# -gt 0; do 
   case $1 in
@@ -32,9 +33,11 @@ while test $# -gt 0; do
     --noassembly)
       NOASSEMBLY=1
       ;;
+    --noplasma)
+      NOPLASMA=1
+      ;;
     --notwitter)
       WITHTWITTERSUPPORT=0
-      TWITTERLIBS=""
       CONFIGDEFINES="$CONFIGDEFINES NO_TWITTER"
       ;;
     --fake)
@@ -52,11 +55,9 @@ done
 QMAKE="qmake"
 
 if test $ARCHITECTURE = "Darwin"; then
-    echo Darwin architecture: fake device support forced
-    USEFAKEDEVICES=1
-    WITHTWITTERSUPPORT=0
-    TWITTERLIBS=""
-    CONFIGDEFINES="USE_FAKEIO NO_TWITTER"
+    #echo Darwin architecture: fake device support forced
+    #USEFAKEDEVICES=1
+    CONFIGDEFINES="DARWIN"
     SOFLAGS="-m64 -O2 -dynamiclib -single_module -undefined dynamic_lookup"
     CC="clang"
     CXX="clang++"
@@ -66,9 +67,10 @@ if test $ARCHITECTURE = "Darwin"; then
     QWTLIBS="-F/usr/local/lib -framework qwt"
     QMAKE="qmake"
 fi
-if test $ARCHITECTURE = "Linux" && test $KERNELMINOR -lt 6; then
-    echo Linux kernel minor version < 6: fake device support forced
+if test $ARCHITECTURE = "Linux" && test $KERNELMAJOR -lt 2 && test $KERNELMINOR -lt 6; then
+    echo "Linux kernel minor version < 6: fake device support forced"
     USEFAKEDEVICES=1
+    CONFIGDEFINES="USE_FAKEIO"
 fi
 if test $ARCHITECTURE = "Linux"; then
     SOFLAGS="-shared"
@@ -85,8 +87,19 @@ if test $ARCHITECTURE = "Linux"; then
     CXX="g++"
     LD="g++"
     # Support multiple distros (e.g. Ubuntu (Debian), openSUSE)
-    QWTINCLUDES="/usr/include/qwt"
-    QWTLIBS="-lqwt"
+    if [ -n "`locate qwtplot3d-qt4.so`" ]; then
+        echo Using Qwt libraries with qt4 suffix.
+        QWTDEFINES="QWT_QT4"
+        QWTINCLUDES="/usr/include/qwtplot3d-qt4"
+        QWTLIBS="-lqwtplot3d-qt4"
+    else
+        echo Using Qwt libraries without qt4 suffix.
+        QWTDEFINES=""
+        QWTINCLUDES="/usr/include/qwtplot3d"
+        QWTLIBS="-lqwtplot3d"
+    fi
+    QWTINCLUDES="/usr/include/qwt $QWTINCLUDES"
+    QWTLIBS="-lqwt $QWTLIBS -lGL -lGLU"
 fi
 
 if test $USEFAKEDEVICES = 1; then
@@ -109,8 +122,13 @@ if test $NOASSEMBLY = 1; then
 else
     echo build with ASSEMBLY support
 fi
+if test $NOPLASMA = 1; then
+    echo build without Plasma Cleaner support
+else
+    echo build with Plasma Cleaner support
+fi
 
-SED_VARIABLES="BASEPATH ARCHITECTURE KERNELMAJOR KERNELMINOR QMAKE CXX CC LD NODEFO NOTHERMAL NOASSEMBLY APPLICATIONVERSIONSTR USEFAKEDEVICES WITHTWITTERSUPPORT TWITTERLIBS SOFLAGS CONFIGDEFINES QWTDEFINES QWTINCLUDES QWTLIBS ROOTCFLAGS ROOTLIBS ROOTGLIBS"
+SED_VARIABLES="BASEPATH ARCHITECTURE KERNELMAJOR KERNELMINOR QMAKE CXX CC LD NODEFO NOTHERMAL NOASSEMBLY NOPLASMA APPLICATIONVERSIONSTR USEFAKEDEVICES WITHTWITTERSUPPORT SOFLAGS CONFIGDEFINES QWTDEFINES QWTINCLUDES QWTLIBS ROOTCFLAGS ROOTLIBS ROOTGLIBS ROOTMAJOR"
 
 echo "#!/bin/sh
 dest=\`basename \$1 .in\`

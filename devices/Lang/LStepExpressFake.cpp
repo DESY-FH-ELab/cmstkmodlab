@@ -231,6 +231,11 @@ void LStepExpressFake::GetSystemStatus(std::vector<int> & values)
   values.resize(4, 5);
 }
 
+void LStepExpressFake::GetSystemStatusText(std::string& value)
+{
+  value = "?sysstatus";
+}
+
 void LStepExpressFake::GetSystemStatus(VLStepExpress::Axis axis, int & value)
 {
   value = 5;

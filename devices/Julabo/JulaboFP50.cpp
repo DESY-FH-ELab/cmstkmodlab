@@ -554,7 +554,7 @@ void JulaboFP50::StripBuffer( char* buffer ) const {
   std::cout << " > " << buffer << std::endl;
   #endif
 
-  for( unsigned int c = 0; c < sizeof( buffer ); ++c ) {
+  for( unsigned int c = 0; c < strlen( buffer ); ++c ) {
     if( '\n' == buffer[c] || '\r' == buffer[c] ) {
       buffer[c] = 0;
       break;

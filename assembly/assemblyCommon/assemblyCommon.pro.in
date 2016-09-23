@@ -1,9 +1,11 @@
 ARCHITECTURE=@architecture@
 USEFAKEDEVICES="X@usefakedevices@"
 
+
 LIBS += -L@basepath@/devices/lib -lTkModLabLang
 LIBS += -L@basepath@/devices/lib -lTkModLabConrad
 LIBS += -L@basepath@/devices/lib -lTkModLabArduino
+LIBS += -L@basepath@/devices/lib  -lTkModLabKeyence
 LIBS += -L@basepath@/common -lCommon
 
 equals(USEFAKEDEVICES,"X0") {
@@ -28,6 +30,7 @@ macx {
 }
 
 CONFIG += link_pkgconfig
+CONFIG += qtestlib
 PKGCONFIG += opencv
 
 QMAKE = @qmake@
@@ -42,6 +45,10 @@ else {
 }
 
 DEFINES += @configdefines@
+
+equals(USEFAKEDEVICES,"X1") {
+DEFINES += USE_FAKEIO
+}
 
 QT += core gui xml network script svg
 greaterThan(QT_MAJOR_VERSION, 4) {
@@ -85,7 +92,16 @@ HEADERS += AssemblyVUEyeCamera.h \
            LStepExpressMotionThread.h \
            LStepExpressWidget.h \
            LStepExpressJoystickWidget.h \
-           LStepExpressSettingsWidget.h
+           LStepExpressSettingsWidget.h \
+           LStepExpressMeasurement.h \
+           LStepExpressMeasurementWidget.h \
+           LStepExpressMeasurementTable.h \
+           LStepExpressPositionWidget.h \
+           LStepExpressStatusWindow.h \
+           LaserModel.h \
+           LaserWidget.h \
+           LaserThread.h \
+           LaserControlsWidget.h 
 
 equals(USEFAKEDEVICES,"X0") {
 HEADERS += AssemblyUEyeCamera.h \
@@ -114,7 +130,16 @@ SOURCES += AssemblyVUEyeCamera.cc \
            LStepExpressMotionThread.cc \
            LStepExpressWidget.cc \
            LStepExpressJoystickWidget.cc \
-           LStepExpressSettingsWidget.cc
+           LStepExpressSettingsWidget.cc \
+           LStepExpressMeasurement.cc \
+           LStepExpressMeasurementWidget.cc \
+           LStepExpressMeasurementTable.cc \
+           LStepExpressPositionWidget.cc \
+           LStepExpressStatusWindow.cc \
+           LaserModel.cc \
+           LaserWidget.cc \
+           LaserThread.cc \ 
+           LaserControlsWidget.cc
 
 equals(USEFAKEDEVICES,"X0") {
 SOURCES += AssemblyUEyeCamera.cc \

@@ -87,6 +87,7 @@ class VLStepExpress {
 
   virtual bool GetStatus() = 0;
   virtual void GetSystemStatus(std::vector<int>& values) = 0;
+  virtual void GetSystemStatusText(std::string& value) = 0;
   virtual void GetSystemStatus(VLStepExpress::Axis axis, int & value) = 0;
   virtual int GetError() = 0;
 
@@ -102,6 +103,7 @@ class VLStepExpress {
   virtual void ConfirmErrorRectification() = 0;
   void ValidConfig();
   void ValidParameter();
+  virtual void Calibrate() = 0;
 
   // low level methods
   virtual void SendCommand(const std::string &) = 0;
@@ -119,6 +121,7 @@ class VLStepExpress {
   void SetValue(const std::string & command, double value1, double value2, double value3);
   void SetValue(const std::string & command, double value1, double value2, double value3, double value4);
   void SetValue(const std::string & command, VLStepExpress::Axis axis, double value);
+  void SetValue(const std::string & command, VLStepExpress::Axis axis, double value1, double value2);
   void SetValue(const std::string & command, const std::vector<int> & values);
   void SetValue(const std::string & command, const std::vector<double> & values);
 
@@ -130,6 +133,7 @@ class VLStepExpress {
   void GetValue(const std::string & command, VLStepExpress::Axis axis, int & value);
   void GetValue(const std::string & command, std::vector<double> & values);
   void GetValue(const std::string & command, VLStepExpress::Axis axis, double & value);
+  void GetValue(const std::string & command, VLStepExpress::Axis axis, std::vector<double> & values);
 
   char GetAxisName(VLStepExpress::Axis axis);
   const char * GetAxisDimensionShortName(VLStepExpress::Dimension dimension);

@@ -8,6 +8,7 @@
 #include <QTimer>
 #include <QMutex>
 #include <QMutexLocker>
+#include <QSignalSpy>
 
 #include "DeviceState.h"
 #include "DeviceParameter.h"
@@ -31,6 +32,8 @@ public:
                                int motionUpdateInterval = 100,
                                QObject *parent = 0);
 
+    ~LStepExpressModel();
+
     bool isUpdating() { return isUpdating_; }
     void pauseUpdate();
     void continueUpdate();
@@ -52,8 +55,14 @@ public:
     void setValue(const QString & command, const QString & value);
     void getValue(const QString & command, QString & value);
 
+    void getStatus(bool& status);
+    void getError(int& error);
+    void getSystemStatus(std::string& value);
+
     void validConfig();
     void validParameter();
+    void saveConfig();
+    void reset();
 
 public slots:
 
@@ -69,6 +78,8 @@ public slots:
     void moveAbsolute(std::vector<double> & values);
     void moveAbsolute(double x = 0.0, double y = 0.0, double z = 0.0, double a = 0.0);
     void moveAbsolute(unsigned int axis, double value);
+    void calibrate();
+    void emergencyStop();
 
 protected:
 
@@ -82,6 +93,7 @@ protected:
     const int updateInterval_;
     const int motionUpdateInterval_;
     QTimer* timer_;
+    QTimer* spyTimer_;
     int updateCount_;
 
     void setDeviceState( State state );
@@ -99,11 +111,23 @@ protected:
     bool inMotion_;
     bool isPaused_;
     bool isUpdating_;
+    bool finishedCalibrating_;
+
+    QSignalSpy *spyDeviceStateChanged;
+    QSignalSpy *spyInformationChanged;
+    QSignalSpy *spyMotionInformationChanged;
+    QSignalSpy *spyMessage;
+    QSignalSpy *spyControlStateChanged;
+    QSignalSpy *spyMotionStarted;
+    QSignalSpy *spyMotionFinished;
+    QSignalSpy *spyTimer;
 
 protected slots:
 
     void updateInformation();
     void updateMotionInformation();
+    void updateMotionInformationFromTimer();
+    void printSpyInformation();
 
 signals:
 
@@ -115,6 +139,7 @@ signals:
 
     void motionStarted();
     void motionFinished();
+    void emergencyStopSignal();
 };
 
 #endif // LSTEPEXPRESSMODEL_H

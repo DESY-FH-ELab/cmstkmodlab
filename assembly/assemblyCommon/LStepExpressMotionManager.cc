@@ -20,25 +20,49 @@ LStepExpressMotionManager::LStepExpressMotionManager(LStepExpressModel* model, Q
 
     connect(this, SIGNAL(signalMoveRelative(double,double,double,double)),
             model_, SLOT(moveRelative(double,double,double,double)));
+
+    //spySignalMoveAbsolute = new QSignalSpy(this, SIGNAL(signalMoveAbsolute(double,double,double,double)));
+    //spySignalMoveRelative = new QSignalSpy(this, SIGNAL(signalMoveRelative(double,double,double,double)));
+
+    /*
+    connect(this, SIGNAL(signalMoveAbsolute(double,double,double,double)),
+            this, SLOT(printSpyInformation()));
+
+    connect(this, SIGNAL(signalMoveRelative(double,double,double,double)),
+            this, SLOT(printSpyInformation()));
+    */
+}
+
+LStepExpressMotionManager::~LStepExpressMotionManager()
+{
+  //    if(spySignalMoveAbsolute){delete spySignalMoveAbsolute; spySignalMoveAbsolute = NULL;}
+  //if(spySignalMoveRelative){delete spySignalMoveRelative; spySignalMoveRelative = NULL;}
+}
+
+void LStepExpressMotionManager::printSpyInformation()
+{
+  /*
+    for(int i = 0; i < spySignalMoveAbsolute->size(); i++){
+      NQLog("SPY LStepExpressMotionManager ", NQLog::Debug)<< "this_, signal signalMoveAbsolute()";
+    }
+    spySignalMoveAbsolute->clear();
+    for(int i = 0; i < spySignalMoveRelative->size(); i++){
+        NQLog("SPY LStepExpressMotionManager ", NQLog::Debug)<< "this_, signal signalMoveRelative()";
+    }
+    spySignalMoveRelative->clear();
+  */
 }
 
 void LStepExpressMotionManager::run()
 {
-    NQLog("LStepExpressMotionManager") << "run0";
 
-
-    NQLog("LStepExpressMotionManager", NQLog::Debug) << "run0";
     if (inMotion_) return;
 
-    NQLog("LStepExpressMotionManager") << "run0.5";
     if (motions_.empty()) return;
-    NQLog("LStepExpressMotionManager") << "run0.75";
 
-    NQLog("LStepExpressMotionManager") << "run1";
-    NQLog("LStepExpressMotionManager", NQLog::Debug) << "run";
+//    NQLog("LStepExpressMotionManager", NQLog::Debug) << "run";
 
     LStepExpressMotion motion = motions_.dequeue();
-    NQLog("LStepExpressMotionManager") << "run01.5";
 
     inMotion_ = true;
 
@@ -115,13 +139,13 @@ void LStepExpressMotionManager::moveAbsolute(unsigned int axis, double value)
 
 void LStepExpressMotionManager::motionStarted()
 {
-    NQLog("LStepExpressWidget", NQLog::Debug) << "motionStarted()";
+  // NQLog("LStepExpressMotionManager", NQLog::Debug) << "motionStarted()";
     inMotion_ = true;
 }
 
 void LStepExpressMotionManager::motionFinished()
 {
-    NQLog("LStepExpressWidget", NQLog::Debug) << "motionFinished()";
+  //    NQLog("LStepExpressMotionManager", NQLog::Debug) << "motionFinished()";
     inMotion_ = false;
 
     this->run();

@@ -23,6 +23,7 @@ macx {
 }
 
 CONFIG += link_pkgconfig
+CONFIG += qtestlib
 PKGCONFIG += opencv
 
 QMAKE_CXXFLAGS += -std=c++11

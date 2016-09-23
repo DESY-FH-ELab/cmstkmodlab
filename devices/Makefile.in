@@ -17,7 +17,9 @@ subdirs	      = Julabo \
                 Iota \
                 Cori \
                 Arduino \
-		Lang
+		Lang \
+		Keyence \
+		Nanotec
 
 ifeq ($(NOTHERMAL),0)
 subdirs      += 

@@ -12,6 +12,7 @@
 #include <QWidget>
 #include <QLabel>
 #include <QDoubleSpinBox>
+#include <QSignalSpy>
 
 #include "LStepExpressModel.h"
 
@@ -21,6 +22,7 @@ class LStepExpressJoystickWidget : public QWidget
 
 public:
     explicit LStepExpressJoystickWidget(LStepExpressModel* model, QWidget *parent = 0);
+    ~LStepExpressJoystickWidget();
 
 protected:
     LStepExpressModel* model_;
@@ -41,6 +43,7 @@ public:
     explicit LStepExpressJoystickAxisWidget(LStepExpressModel* model_,
                                             unsigned int axis,
                                             QWidget *parent = 0);
+    ~LStepExpressJoystickAxisWidget();
 
 protected:
     LStepExpressModel* model_;
@@ -51,6 +54,9 @@ protected:
     QPushButton *downButton_;
     QDoubleSpinBox *stepBox_;
 
+    QSignalSpy *spyUpButton_;
+    QSignalSpy *spyDownButton_;
+
 public slots:
     void lStepStateChanged( State state );
     void controlStateChanged(bool);
@@ -60,6 +66,7 @@ public slots:
     void downButtonClicked();
     void motionStarted();
     void motionFinished();
+    void printSpyInformation();
 };
 
 #endif // LSTEPEXPRESSJOYSTICKWIDGET_H

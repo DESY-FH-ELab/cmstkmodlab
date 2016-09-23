@@ -36,6 +36,8 @@ public slots:
   void tweet(const QString& user, const QString& pw,
              const QString& message);
 
+  void slack(const QString& message);
+
 protected:
 
   ThermoScriptModel* scriptModel_;

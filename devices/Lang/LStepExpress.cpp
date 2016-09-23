@@ -6,7 +6,7 @@
 
 #include "LStepExpress.h"
 
-// #define LSTEPDEBUG 1
+//#define LSTEPDEBUG 0
 
 LStepExpress::LStepExpress( const ioport_t ioPort )
   :VLStepExpress(ioPort),
@@ -30,7 +30,7 @@ bool LStepExpress::DeviceAvailable() const
 void LStepExpress::SendCommand(const std::string & command)
 {
 #ifdef LSTEPDEBUG
-  std::cout << "SendCommand: " << command << std::endl;
+  std::cout << "Device SendCommand: " << command << std::endl;
 #endif
   comHandler_->SendCommand(command.c_str());
 }
@@ -47,7 +47,7 @@ void LStepExpress::ReceiveString(std::string & buffer)
 
 void LStepExpress::StripBuffer(char* buffer) const
 {
-  for (unsigned int c=0; c<sizeof(buffer);++c) {
+  for (unsigned int c=0; c<strlen(buffer);++c) {
     if(buffer[c]=='\r') {
       buffer[c] = '\0';
       break;
@@ -327,12 +327,17 @@ bool LStepExpress::GetStatus()
 
 void LStepExpress::GetSystemStatus(std::vector<int>& values)
 {
-  this->GetValue("?sysstatus", values);
+  this->GetValue("?sysstat", values);
+}
+
+void LStepExpress::GetSystemStatusText(std::string& value)
+{
+  this->GetValue("?sysstatus", value);
 }
 
 void LStepExpress::GetSystemStatus(VLStepExpress::Axis axis, int & value)
 {
-  this->GetValue("?sysstatus", axis, value);
+  this->GetValue("?sysstat", axis, value);
 }
 
 bool LStepExpress::GetJoystickEnabled()
@@ -405,4 +410,19 @@ void LStepExpress::ValidConfig()
 void LStepExpress::ValidParameter()
 {
   this->SendCommand("!validpar");
+}
+
+void LStepExpress::SaveConfig()
+{
+    this->SendCommand("Save");
+}
+
+void LStepExpress::Calibrate()
+{
+  this->SendCommand("!cal");
+}
+
+void LStepExpress::EmergencyStop()
+{
+    this->SendCommand("!a");
 }

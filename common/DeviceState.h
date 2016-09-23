@@ -2,6 +2,7 @@
 #define DEVICESTATE_H
 
 #include <QObject>
+#include <iostream>
 
 /**
   \brief Enumeration of possible states the device communication can be in.
@@ -25,21 +26,24 @@ enum State {
 template <class Controller> class AbstractDeviceModel
 {
  public:
-  explicit AbstractDeviceModel() : controller_(NULL), state_(OFF) {}
-  virtual ~AbstractDeviceModel() { destroyController(); }
+    explicit AbstractDeviceModel() : controller_(NULL), state_(OFF) { }
+  virtual ~AbstractDeviceModel() { 
+      destroyController(); }
 
   /// Returns the current (cached) state of the device.
-  const State& getDeviceState() const { return state_; }
+  const State& getDeviceState() const { 
+      return state_; }
 
   /// Attempts to enable/disable the (communication with) the device.
   virtual void setDeviceEnabled( bool enabled ) {
      // To be enabled and off
-    if (enabled && state_ == OFF)
+    if (enabled && state_ == OFF){
       initialize();
+    }
     // To be disabled and on
-    else if (!enabled && state_ == READY)
+    else if (!enabled && state_ == READY){
       close();
-
+    }
     /*
      If in 'busy state', a signal for OFF/READY will follow soon, reverting
      any changes ignored by only checking for steady states (i.e. OFF and READY).
