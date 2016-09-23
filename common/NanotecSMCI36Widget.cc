@@ -430,8 +430,8 @@ void NanotecSMCI36Widget::updateInfo()
   motorID_->setValue(model_->getMotorID());
   maxEncoderDeviation_->setValue(model_->getMaxEncoderDeviation());
 
-  controllerSteps_->setText(QString::number(model_->getControllerSteps()));
-  encoderSteps_->setText(QString::number(model_->getEncoderSteps()));
+  controllerSteps_->setText(QString("%1 mm (%2)").arg(model_->getControllerPosition(), 20, 'f', 3).arg(model_->getControllerSteps()));
+  encoderSteps_->setText(QString("%1 mm (%2)").arg(model_->getEncoderPosition(), 20, 'f', 3).arg(model_->getEncoderSteps()));
 
   direction_->setChecked(model_->getDirection());
 
