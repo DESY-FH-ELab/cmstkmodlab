@@ -363,15 +363,38 @@ void NanotecSMCI36Widget::updateDeviceState(State newState)
 {
   bool ready = (newState == READY);
   smci36CheckBox_->setChecked(ready);
+
+  controlStateChanged(ready);
 }
 
 /// Updates the GUI when the Keithley multimeter is enabled/disabled.
 void NanotecSMCI36Widget::controlStateChanged(bool enabled)
 {
-  smci36CheckBox_->setEnabled(enabled);
-  if (enabled) {
-    //State state = model_->getDeviceState();
+  stageMode_->setEnabled(enabled);
+
+  pitch_->setEnabled(enabled);
+  status_->setEnabled(enabled);
+  motorID_->setEnabled(enabled);
+
+  maxEncoderDeviation_->setEnabled(enabled);
+
+  direction_->setEnabled(enabled);
+
+    travelDistance_->setEnabled(enabled);
+    minFrequency_->setEnabled(enabled);
+    maxFrequency_->setEnabled(enabled);
+    maxFrequency2_->setEnabled(enabled);
+
+    travelDistanceInMM_->setEnabled(!enabled);
+    minSpeed_->setEnabled(!enabled);
+    maxSpeed_->setEnabled(!enabled);
+    maxSpeed2_->setEnabled(!enabled);
   }
+
+  start_->setEnabled(enabled);
+  stop_->setEnabled(enabled);
+  quickstop_->setEnabled(enabled);
+  resetPositionError_->setEnabled(enabled);
 }
 
 /**
