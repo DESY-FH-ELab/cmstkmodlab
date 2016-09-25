@@ -95,6 +95,9 @@ public slots:
   void quickStop();
   void resetPositionError();
 
+  void updateInformation1();
+  void updateInformation2();
+
 protected:
 
   const QString NanotecSMCI36_PORT;
@@ -124,11 +127,6 @@ protected:
   double minFrequency_;
   double maxFrequency_;
   double maxFrequency2_;
-
-protected slots:
-
-  void updateInformation1();
-  void updateInformation2();
 
 signals:
 
