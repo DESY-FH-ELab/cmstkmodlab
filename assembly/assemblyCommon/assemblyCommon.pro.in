@@ -2,11 +2,10 @@ ARCHITECTURE=@architecture@
 USEFAKEDEVICES="X@usefakedevices@"
 NOUEYE="X@noueye@"
 
-
 LIBS += -L@basepath@/devices/lib -lTkModLabLang
 LIBS += -L@basepath@/devices/lib -lTkModLabConrad
 LIBS += -L@basepath@/devices/lib -lTkModLabArduino
-LIBS += -L@basepath@/devices/lib  -lTkModLabKeyence
+LIBS += -L@basepath@/devices/lib -lTkModLabKeyence
 LIBS += -L@basepath@/common -lCommon
 
 equals(USEFAKEDEVICES,"X1") {
