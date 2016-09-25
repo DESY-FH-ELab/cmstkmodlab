@@ -29,7 +29,7 @@ protected:
 
   QDir currentDir_;
 
-  NanotecSMCI36Model *smci36Model_;
+  NanotecSMCI36Model *smci36ModelX_;
 
   QToolBar* toolBar_;
 
