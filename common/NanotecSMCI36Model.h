@@ -18,7 +18,7 @@ typedef NanotecSMCI36 NanotecSMCI36_t;
 #endif
 
 /**
-  Command and control model of the Hameg chiller.
+  Command and control model of the Nanotec SMCI36 controller.
   */
 class NanotecSMCI36Model : public QObject, public AbstractDeviceModel<NanotecSMCI36_t>
 {
