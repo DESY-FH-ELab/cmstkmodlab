@@ -34,6 +34,8 @@ protected:
 protected slots:
 
   void indexChanged(int);
+  void updateDeviceState( State newState );
+  void controlStateChanged(bool);
   void updateInfo();
 };
 
@@ -51,6 +53,8 @@ protected:
 protected slots:
 
   void indexChanged(int);
+  void updateDeviceState( State newState );
+  void controlStateChanged(bool);
   void updateInfo();
 };
 
@@ -68,6 +72,8 @@ protected:
 protected slots:
 
   void indexChanged(int);
+  void updateDeviceState( State newState );
+  void controlStateChanged(bool);
   void updateInfo();
 };
 
@@ -85,32 +91,66 @@ protected:
 protected slots:
 
   void indexChanged(int);
+  void updateDeviceState( State newState );
+  void controlStateChanged(bool);
   void updateInfo();
 };
 
-class NanotecSMCI36Widget : public QWidget
+class NanotecSMCI36StatusWidget : public QWidget
 {
     Q_OBJECT
 public:
-  explicit NanotecSMCI36Widget(NanotecSMCI36Model* model, QWidget *parent = 0);
+  explicit NanotecSMCI36StatusWidget(NanotecSMCI36Model* model, QWidget *parent = 0);
 
 protected:
   NanotecSMCI36Model* model_;
 
-  QCheckBox* smci36CheckBox_;
-
-  QCheckBox* stageMode_;
-
-  QDoubleSpinBox* pitch_;
   QLabel* status_;
-  QSpinBox* motorID_;
   QLabel* controllerSteps_;
   QLabel* encoderSteps_;
+
+public slots:
+
+  void updateDeviceState( State newState );
+  void controlStateChanged(bool);
+  void updateInfo();
+};
+
+class NanotecSMCI36SettingsWidget : public QWidget
+{
+    Q_OBJECT
+public:
+  explicit NanotecSMCI36SettingsWidget(NanotecSMCI36Model* model, QWidget *parent = 0);
+
+protected:
+  NanotecSMCI36Model* model_;
+
+  QDoubleSpinBox* pitch_;
+  QSpinBox* motorID_;
 
   NanotecSMCI36StepModeWidget* stepMode_;
   NanotecSMCI36ErrorCorrectionModeWidget* errorCorrectionMode_;
   QSpinBox* maxEncoderDeviation_;
   NanotecSMCI36RampModeWidget* rampMode_;
+
+public slots:
+
+  void updateDeviceState( State newState );
+  void controlStateChanged(bool);
+  void updateInfo();
+};
+
+class NanotecSMCI36MovementWidget : public QWidget
+{
+    Q_OBJECT
+public:
+  explicit NanotecSMCI36MovementWidget(NanotecSMCI36Model* model, QWidget *parent = 0);
+
+protected:
+  NanotecSMCI36Model* model_;
+
+  QCheckBox* stageMode_;
+
   NanotecSMCI36PositioningModeWidget* positioningMode_;
 
   QCheckBox* direction_;
@@ -132,6 +172,28 @@ protected:
 public slots:
 
   void stageModeChanged(bool);
+  void updateDeviceState( State newState );
+  void controlStateChanged(bool);
+  void updateInfo();
+};
+
+class NanotecSMCI36Widget : public QWidget
+{
+    Q_OBJECT
+public:
+  explicit NanotecSMCI36Widget(NanotecSMCI36Model* model, QWidget *parent = 0);
+
+protected:
+  NanotecSMCI36Model* model_;
+
+  QCheckBox* smci36CheckBox_;
+
+  NanotecSMCI36StatusWidget* scmi36Status_;
+  NanotecSMCI36SettingsWidget* scmi36Settings_;
+  NanotecSMCI36MovementWidget* scmi36Movement_;
+
+public slots:
+
   void updateDeviceState( State newState );
   void controlStateChanged(bool);
   void updateInfo();
