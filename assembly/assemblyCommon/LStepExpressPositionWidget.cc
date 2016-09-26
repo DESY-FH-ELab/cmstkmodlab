@@ -52,29 +52,6 @@ LStepExpressPositionWidget::LStepExpressPositionWidget(LStepExpressMotionManager
 
     lStepStateChanged(model_->getDeviceState());
 
-    //spyMoveAbsoluteButton_ = new QSignalSpy(moveAbsoluteButton_, SIGNAL(clicked()));
-    //spyMoveRelativeButton_ = new QSignalSpy(moveRelativeButton_, SIGNAL(clicked()));
-
-    /*
-      connect(moveAbsoluteButton_, SIGNAL(clicked()),
-      this, SLOT(printSpyInformation()));
-      connect(moveRelativeButton_, SIGNAL(clicked()),
-      this, SLOT(printSpyInformation()));
-    */
-}
-
-void LStepExpressPositionWidget::printSpyInformation()
-{
-  /*
-    for(int i = 0; i < spyMoveAbsoluteButton_->size(); i++){
-        NQLog("SPY LStepExpressPositionWidget ", NQLog::Spam) << "moveAbsoluteBotton_, signal clicked()";
-    }
-    spyMoveAbsoluteButton_->clear();
-    for(int i = 0; i < spyMoveRelativeButton_->size(); i++){
-        NQLog("SPY LStepExpressPositionWidget ", NQLog::Spam) << "moveRelativeBotton_, signal clicked()";
-    }
-    spyMoveRelativeButton_->clear();
-  */
 }
 
 void LStepExpressPositionWidget::lStepStateChanged( State newState)
@@ -133,29 +110,6 @@ LStepExpressPositionAxisWidget::LStepExpressPositionAxisWidget(LStepExpressMotio
     connect(model_, SIGNAL(informationChanged()),
             this, SLOT(updateWidgets()));
 
-    //spyEdit_ = new QSignalSpy(Edit_, SIGNAL(textChanged(QString)));
-    //spyPositionChanged_ = new QSignalSpy(this, SIGNAL(positionChanged(double, unsigned int)));
-    
-    /*
-      connect(Edit_, SIGNAL(textChanged(QString)),
-      this, SLOT(printSpyInformation()));
-      connect(this, SIGNAL(positionChanged(double, unsigned int)),
-      this, SLOT(printSpyInformation()));
-    */
-}
-
-void LStepExpressPositionAxisWidget::printSpyInformation()
-{
-  /*
-    for(int i = 0; i < spyEdit_->size(); i++){
-        NQLog("SPY LStepExpressPositionAxisWidget ", NQLog::Spam) << "Edit_, signal textChanged()";
-    }
-    spyEdit_->clear();
-    for(int i = 0; i < spyPositionChanged_->size(); i++){
-        NQLog("SPY LStepExpressPositionAxisWidget ", NQLog::Spam) << "this_, signal positionChanged()";
-    }
-    spyPositionChanged_->clear();
-  */
 }
 
 void LStepExpressPositionAxisWidget::updateWidgets()
