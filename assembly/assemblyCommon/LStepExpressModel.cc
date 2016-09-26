@@ -33,87 +33,14 @@ LStepExpressModel::LStepExpressModel(const char* port,
     finishedCalibrating_ = false;
 
     timer_ = new QTimer(this);
-    //    std::cout<<"lstepexpressmodel, pointer timer = "<<timer_<<" memory = "<<&timer_<<std::endl;
     timer_->setInterval(motionUpdateInterval_);
     connect(timer_, SIGNAL(timeout()), this, SLOT(updateMotionInformationFromTimer()));
     //    connect(this, SIGNAL(informationChanged()), this, SLOT(updateInformation()));
     
-    /*
-    spyTimer = new QSignalSpy(timer_, SIGNAL(timeout()));
-    spyDeviceStateChanged = new QSignalSpy(this, SIGNAL(deviceStateChanged(State)));
-    spyInformationChanged = new QSignalSpy(this, SIGNAL(informationChanged()));
-    spyMotionInformationChanged = new QSignalSpy(this, SIGNAL(motionInformationChanged()));
-    spyMessage = new QSignalSpy(this, SIGNAL(message(QString)));
-    spyControlStateChanged = new QSignalSpy(this, SIGNAL(controlStateChanged(bool)));
-    */
-    spyMotionStarted = new QSignalSpy(this, SIGNAL(motionStarted()));
-    spyMotionFinished = new QSignalSpy(this, SIGNAL(motionFinished()));
-    
-    //std::cout<<"lstepexpressmodel, pointer spymotionstarted = "<<spyMotionStarted<<" memory = "<<&spyMotionStarted<<std::endl;
-    //std::cout<<"lstepexpressmodel, pointer spymotionfinished = "<<spyMotionFinished<<" memory = "<<&spyMotionFinished<<std::endl;
-    /*
-    connect(timer_, SIGNAL(timeout()), this, SLOT(printSpyInformation()));
-    connect(this, SIGNAL(deviceStateChanged(State)), this, SLOT(printSpyInformation()));
-    connect(this, SIGNAL(informationChanged()), this, SLOT(printSpyInformation()));
-    connect(this, SIGNAL(motionInformationChanged()), this, SLOT(printSpyInformation()));
-    connect(this, SIGNAL(message(QString)), this, SLOT(printSpyInformation()));
-    connect(this, SIGNAL(controlStateChanged(bool)), this, SLOT(printSpyInformation()));
-    */
-    connect(this, SIGNAL(motionStarted()), this, SLOT(printSpyInformation()));
-    connect(this, SIGNAL(motionFinished()), this, SLOT(printSpyInformation()));
 }
 
 LStepExpressModel::~LStepExpressModel()
 {
-  /*
-    if(timer_){delete timer_; timer_ = NULL;}
-    if(spyTimer){delete spyTimer; spyTimer = NULL;}
-    if(spyDeviceStateChanged){delete spyDeviceStateChanged; spyDeviceStateChanged = NULL;}
-    if(spyInformationChanged){delete spyInformationChanged; spyInformationChanged = NULL;}
-    if(spyMotionInformationChanged){delete spyMotionInformationChanged; spyMotionInformationChanged = NULL;}
-    if(spyMessage){delete spyMessage; spyMessage = NULL;}
-    if(spyControlStateChanged){delete spyControlStateChanged; spyControlStateChanged = NULL;}
-    if(spyMotionStarted){delete spyMotionStarted; spyMotionStarted = NULL;}
-    if(spyMotionFinished){delete spyMotionFinished; spyMotionFinished = NULL;}
-  */
-}
-
-void LStepExpressModel::printSpyInformation()
-{
-  /*
-    for(int i = 0; i < spyTimer->size(); i++){
-        NQLog("SPY LStepExpressModel ", NQLog::Spam)<< "timer_, signal timeout() ";
-    }
-    spyTimer->clear();
-    for(int i = 0; i < spyDeviceStateChanged->size(); i++){
-        NQLog("SPY LStepExpressModel ", NQLog::Spam)<< "this_, signal deviceStateChanged( "<<(spyDeviceStateChanged->value(i))[0].toString().toStdString()<<") ";
-    }
-    spyDeviceStateChanged->clear();
-    for(int i = 0; i < spyInformationChanged->size(); i++){
-        NQLog("SPY LStepExpressModel ", NQLog::Spam)<< "this_, signal informationChanged() ";
-    }
-    spyInformationChanged->clear();
-    for(int i = 0; i < spyMotionInformationChanged->size(); i++){
-        NQLog("SPY LStepExpressModel ", NQLog::Spam)<< "this_, signal motionInformationChanged()"  ;
-    }
-    spyMotionInformationChanged->clear();
-    for(int i = 0; i < spyMessage->size(); i++){
-        NQLog("SPY LStepExpressModel ", NQLog::Spam)<< "this_, signal message()"  ;
-    }
-    spyControlStateChanged->clear();
-    for(int i = 0; i < spyMessage->size(); i++){
-        NQLog("SPY LStepExpressModel ", NQLog::Spam)<< "this_, signal controlStateChanged( "<<(spyControlStateChanged->value(i))[0].toBool()<<")"  ;
-    }
-    spyMessage->clear();
-  */
-    for(int i = 0; i < spyMotionStarted->size(); i++){
-      //  NQLog("SPY LStepExpressModel ", NQLog::Spam)<< "this_, signal motionStarted()"  ;
-    }
-    spyMotionStarted->clear();
-    for(int i = 0; i < spyMotionFinished->size(); i++){
-      // NQLog("SPY LStepExpressModel ", NQLog::Spam)<< "this_, signal motionFinished()"  ;
-    }
-    spyMotionFinished->clear();
 }
 
 void LStepExpressModel::getStatus(bool& status)

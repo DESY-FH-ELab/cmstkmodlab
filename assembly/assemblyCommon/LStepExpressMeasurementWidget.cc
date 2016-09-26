@@ -140,51 +140,12 @@ LStepExpressMeasurementWidget::LStepExpressMeasurementWidget(LStepExpressModel* 
     connect(y_stepsize_, SIGNAL(textChanged(QString)),
 	this, SLOT(setInit()));
 
-    /*
-    //make the signal spies and the connections
-    spyAverageMeasCheckBox_ = new QSignalSpy(averageMeasCheckBox_, SIGNAL(toggled(bool)));
-    spyButtonGeneratePos_ = new QSignalSpy(buttonGeneratePos_, SIGNAL(clicked()));
-    spyButtonStartMeasurement_ = new QSignalSpy(buttonStartMeasurement_, SIGNAL(clicked()));
-    spyButtonStopMeasurement_ = new QSignalSpy(buttonStopMeasurement_, SIGNAL(clicked()));
-    spyButtonStoreMeasurement_ = new QSignalSpy(buttonStoreMeasurement_, SIGNAL(clicked()));
-    spyCheckBoxEnableLaser_ = new QSignalSpy(checkBoxEnableLaser_, SIGNAL(toggled(bool)));
-    spyZigzagCheckBox_ = new QSignalSpy(zigzagCheckBox_, SIGNAL(toggled(bool)));
-
-    connect(checkBoxEnableLaser_, SIGNAL(toggled(bool)),
-	this, SLOT(printSpyInformation()));
-    
-    connect(averageMeasCheckBox_, SIGNAL(toggled(bool)),
-            this, SLOT(printSpyInformation()));
-    
-    connect(buttonGeneratePos_, SIGNAL(clicked()),
-            this, SLOT(printSpyInformation()));
-    
-    connect(buttonStartMeasurement_, SIGNAL(clicked()),
-	this, SLOT(printSpyInformation()));
-    
-    connect(buttonStopMeasurement_, SIGNAL(clicked()),
-            this, SLOT(printSpyInformation()));
-    
-    connect(buttonStoreMeasurement_, SIGNAL(clicked()), this, SLOT(printSpyInformation()));
-    
-    connect(zigzagCheckBox_, SIGNAL(toggled(bool)), this, SLOT(printSpyInformation()));
-    */
-
     laserStateChanged(laserModel_->getDeviceState());
     lstepStateChanged(model_->getDeviceState());
 }
     
 LStepExpressMeasurementWidget::~LStepExpressMeasurementWidget()
 {
-  /*
-    if(spyAverageMeasCheckBox_){delete spyAverageMeasCheckBox_; spyAverageMeasCheckBox_ = NULL;}
-    if(spyButtonGeneratePos_){delete spyButtonGeneratePos_; spyButtonGeneratePos_ = NULL;}
-    if(spyButtonStartMeasurement_){delete spyButtonStartMeasurement_; spyButtonStartMeasurement_ = NULL;}
-    if(spyButtonStopMeasurement_){delete spyButtonStopMeasurement_; spyButtonStopMeasurement_ = NULL;}
-    if(spyButtonStoreMeasurement_){delete spyButtonStoreMeasurement_; spyButtonStoreMeasurement_ = NULL;}
-    if(spyCheckBoxEnableLaser_){delete spyCheckBoxEnableLaser_; spyCheckBoxEnableLaser_ = NULL;}
-    if(spyZigzagCheckBox_){delete spyZigzagCheckBox_; spyZigzagCheckBox_ = NULL;}
-  */
     if(averageMeasCheckBox_){delete averageMeasCheckBox_; averageMeasCheckBox_ = NULL;}
     if(buttonGeneratePos_){delete buttonGeneratePos_; buttonGeneratePos_ = NULL;}
     if(buttonStartMeasurement_){delete buttonStartMeasurement_; buttonStartMeasurement_ = NULL;}
@@ -192,40 +153,6 @@ LStepExpressMeasurementWidget::~LStepExpressMeasurementWidget()
     if(buttonStoreMeasurement_){delete buttonStoreMeasurement_; buttonStoreMeasurement_ = NULL;}
     //if(checkBoxEnableLaser_){delete checkBoxEnableLaser_; checkBoxEnableLaser_ = NULL;}
     if(zigzagCheckBox_){delete zigzagCheckBox_; zigzagCheckBox_ = NULL;}
-}
-
-void LStepExpressMeasurementWidget::printSpyInformation()
-{
-  /*
-    for(int i = 0; i < spyAverageMeasCheckBox_->size(); i++){
-        NQLog("SPY LStepExpressMeasurementWidget", NQLog::Debug)<< "averageMeasCheckBox_, signal toggled("<<(spyAverageMeasCheckBox_->value(i))[0].toBool()<<")"  ;
-    }
-    spyAverageMeasCheckBox_->clear();
-    for(int i = 0; i < spyButtonGeneratePos_->size(); i++){
-        NQLog("SPY LStepExpressMeasurementWidget", NQLog::Debug)<< "buttonGeneratePos_, signal clicked()";
-    }
-    spyButtonGeneratePos_->clear();
-    for(int i = 0; i < spyButtonStartMeasurement_->size(); i++){
-        NQLog("SPY LStepExpressMeasurementWidget", NQLog::Debug)<< "buttonStartMeasurement_, signal clicked()"  ;
-    }
-    spyButtonStartMeasurement_->clear();
-    for(int i = 0; i < spyButtonStopMeasurement_->size(); i++){
-        NQLog("SPY LStepExpressMeasurementWidget", NQLog::Debug)<< "buttonStopMeasurement_, signal clicked()"  ;
-    }
-    spyButtonStopMeasurement_->clear();
-    for(int i = 0; i < spyButtonStoreMeasurement_->size(); i++){
-        NQLog("SPY LStepExpressMeasurementWidget", NQLog::Debug)<< "buttonStoreMeasurement_, signal clicked()"  ;
-    }
-    spyButtonStoreMeasurement_->clear();
-    for(int i = 0; i < spyCheckBoxEnableLaser_->size(); i++){
-        NQLog("SPY LStepExpressMeasurementWidget", NQLog::Debug)<< "checkBoxEnableLaser_, signal toggled("<<(spyCheckBoxEnableLaser_->value(i))[0].toBool()<<")"  ;
-    }
-    spyCheckBoxEnableLaser_->clear();
-    for(int i = 0; i < spyZigzagCheckBox_->size(); i++){
-        NQLog("SPY LStepExpressMeasurementWidget", NQLog::Debug)<< "zigzagCheckBox_, signal toggled("<<(spyZigzagCheckBox_->value(i))[0].toBool()<<")"  ;
-    }
-    spyZigzagCheckBox_->clear();
-  */
 }
 
 void LStepExpressMeasurementWidget::laserStateChanged(State newState)

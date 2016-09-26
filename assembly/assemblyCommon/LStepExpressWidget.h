@@ -12,7 +12,6 @@
 #include <QWidget>
 #include <QLabel>
 #include <QPushButton>
-#include <QSignalSpy>
 #include <QTimer>
 
 #include "LStepExpressModel.h"
@@ -34,20 +33,12 @@ protected:
     QPushButton* buttonCalibrate_;
     QPushButton* buttonEmergencyStop_;
 
-    //    QTimer* spyTimer_;
-    QSignalSpy* spyLstepCheckBox_;
-    QSignalSpy* spyJoystickCheckBox_;
-    QSignalSpy* spyButtonOrigin_;
-    QSignalSpy* spyButtonCalibrate_;
-    QSignalSpy* spyButtonEmergencyStop_;
-
 public slots:
     void lstepStateChanged(State newState);
     void controlStateChanged(bool);
     void updateWidgets();
     void motionStarted();
     void motionFinished();
-    void printSpyInformation();
 };
 
 class LStepExpressAxisWidget : public QWidget
@@ -72,9 +63,6 @@ protected:
     QLabel* positionLabel_;
     QString axisDimensionName_;
 
-    QSignalSpy* spyEnabledCheckBox_;
-    QSignalSpy* spyJoystickCheckBox_;
-
 public slots:
     void lStepStateChanged( State state );
     void controlStateChanged(bool);
@@ -84,7 +72,6 @@ public slots:
     void joystickCheckBoxToggled(bool enabled);
     void motionStarted();
     void motionFinished();
-    void printSpyInformation();
 };
 
 #endif // LSTEPEXPRESSWIDGET_H

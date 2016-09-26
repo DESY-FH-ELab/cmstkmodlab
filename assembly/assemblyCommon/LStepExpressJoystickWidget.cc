@@ -119,16 +119,6 @@ LStepExpressJoystickAxisWidget::LStepExpressJoystickAxisWidget(LStepExpressModel
     connect(model_, SIGNAL(motionFinished()),
             this, SLOT(motionFinished()));
 
-    spyUpButton_ = new QSignalSpy(upButton_, SIGNAL(clicked()));
-    spyDownButton_ = new QSignalSpy(downButton_, SIGNAL(clicked()));
-
-    /*
-    connect(downButton_, SIGNAL(clicked()),
-	this, SLOT(printSpyInformation()));
-
-    connect(upButton_, SIGNAL(clicked()),
-	this, SLOT(printSpyInformation()));
-    */
 }
 
 LStepExpressJoystickAxisWidget::~LStepExpressJoystickAxisWidget()
@@ -137,20 +127,6 @@ LStepExpressJoystickAxisWidget::~LStepExpressJoystickAxisWidget()
     if(upButton_){delete upButton_; upButton_ = NULL;}
     if(downButton_){delete downButton_; downButton_ = NULL;}
     if(stepBox_){delete stepBox_; stepBox_ = NULL;}
-    if(spyUpButton_){delete spyUpButton_ ; spyUpButton_ = NULL;}
-    if(spyDownButton_){delete spyDownButton_; spyDownButton_ = NULL;}
-}
-
-void LStepExpressJoystickAxisWidget::printSpyInformation()
-{
-    for(int i = 0; i < spyUpButton_->size(); i++){
-      //    NQLog("SPY LStepExpressJoystickAxisWidget", NQLog::Spam)<<" upButton_, signal clicked()"    ;
-    }
-    spyUpButton_->clear();
-    for(int i = 0; i < spyDownButton_->size(); i++){
-      //NQLog("SPY LStepExpressJoystickAxisWidget", NQLog::Spam)<<" downButton_, signal clicked()"    ;
-    }
-    spyDownButton_->clear();
 }
 
 void LStepExpressJoystickAxisWidget::updateWidgets()
