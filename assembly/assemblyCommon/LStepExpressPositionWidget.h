@@ -2,7 +2,6 @@
 #define LSTEPEXPRESSPOSITIONWIDGET_H
 
 #include <vector>
-#include <QSignalSpy>
 #include <QLabel>
 #include <QLineEdit>
 #include <QPushButton>
@@ -32,12 +31,9 @@ class LStepExpressPositionAxisWidget : public QWidget
     double position_;
     QLineEdit* Edit_;
     QLabel* Unit_;
-    QSignalSpy* spyEdit_;
-    QSignalSpy* spyPositionChanged_;
 
  public slots:
         void updateWidgets();
-        void printSpyInformation();
 
  signals:
         void positionChanged(double value, unsigned int axis);
@@ -62,15 +58,12 @@ class LStepExpressPositionWidget : public QWidget
     LStepExpressPositionAxisWidget* ypos_;
     LStepExpressPositionAxisWidget* zpos_;
     LStepExpressPositionAxisWidget* apos_;
-    QSignalSpy* spyMoveAbsoluteButton_;
-    QSignalSpy* spyMoveRelativeButton_;
 
  public slots:
      void lStepStateChanged( State newState);
      void moveAbsoluteButtonClicked();
      void moveRelativeButtonClicked();
      void positionChanged(double value, unsigned int axis);
-     void printSpyInformation();
 };
 
 #endif //LSTEPEXPRESSPOSITIONWIDGET_H
