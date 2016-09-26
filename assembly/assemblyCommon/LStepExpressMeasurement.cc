@@ -39,23 +39,10 @@ LStepExpressMeasurement::LStepExpressMeasurement(LStepExpressModel* model, LStep
 
     generateCirclePositions();
 
-    //spyNextScanStep_ = new QSignalSpy(this, SIGNAL(nextScanStep()));
-
 }
     
 LStepExpressMeasurement::~LStepExpressMeasurement()
 {
-  //    if(spyNextScanStep_){delete spyNextScanStep_; spyNextScanStep_ = NULL;}
-}
-
-void LStepExpressMeasurement::printSpyInformation()
-{
-  /*
-    for(int i = 0; i < spyNextScanStep_->size(); i++){
-        NQLog("SPY LStepExpressMeasurement", NQLog::Debug)<< "this, signal nextScanStep()";
-    }
-    spyNextScanStep_->clear();
-  */
 }
 
 void LStepExpressMeasurement::setZigZag(bool zigzag)

@@ -23,7 +23,6 @@
 #include <QLCDNumber>
 #include <QMutex>
 #include <QMutexLocker>
-#include <QSignalSpy>
 
 #include "LStepExpressModel.h"
 #include "LStepExpressMeasurementTable.h"
@@ -62,14 +61,6 @@ protected:
 
     QMutex mutex_;
 
-    QSignalSpy* spyAverageMeasCheckBox_;
-    QSignalSpy* spyButtonGeneratePos_;
-    QSignalSpy* spyButtonStartMeasurement_;
-    QSignalSpy* spyButtonStopMeasurement_;
-    QSignalSpy* spyButtonStoreMeasurement_;
-    QSignalSpy* spyCheckBoxEnableLaser_;
-    QSignalSpy* spyZigzagCheckBox_;
-
     void FakeMotion();
 
 public slots:
@@ -82,7 +73,6 @@ private:
 
 private slots:
     void storeResults();
-    void printSpyInformation();
     void updateWidget();
 
  signals:

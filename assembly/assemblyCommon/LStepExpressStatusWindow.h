@@ -12,7 +12,6 @@
 #include <QWidget>
 #include <QLabel>
 #include <QPushButton>
-#include <QSignalSpy>
 #include <QTimer>
 #include <QPlainTextEdit>
 #include <QScrollBar>

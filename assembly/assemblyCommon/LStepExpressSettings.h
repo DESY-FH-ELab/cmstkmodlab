@@ -10,7 +10,6 @@
 #include <QList>
 #include <QMutex>
 #include <QMutexLocker>
-#include <QSignalSpy>
 
 #include <LStepExpressModel.h>
 
@@ -217,11 +216,7 @@ protected:
     QMap<QString,LStepExpressSettingsInstruction*> parameterMap_;
     QList<LStepExpressSettingsInstruction*> parameters_;
 
-    QSignalSpy* spyControlStateChanged;
-    QSignalSpy* spySettingChanged;
-
 protected slots:
-    void printSpyInformation();
 
 signals:
 

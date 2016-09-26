@@ -23,7 +23,6 @@
 #include <QLCDNumber>
 #include <QMutex>
 #include <QMutexLocker>
-#include <QSignalSpy>
 
 #include "LStepExpressModel.h"
 #include "LStepExpressMeasurementTable.h"
@@ -47,8 +46,6 @@ protected:
     LStepExpressMeasurementTable* table_;
 
     QMutex mutex_;
-
-    QSignalSpy* spyNextScanStep_;
 
 
 public slots:
@@ -86,7 +83,6 @@ private:
 private slots:
     void performScan();
     void stopMeasurement();
-    void printSpyInformation();
     void doNextScanStep();
 
  signals:
