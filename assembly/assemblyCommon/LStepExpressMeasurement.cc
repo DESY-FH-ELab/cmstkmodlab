@@ -37,6 +37,9 @@ LStepExpressMeasurement::LStepExpressMeasurement(LStepExpressModel* model, LStep
     connect(this, SIGNAL(nextScanStep()),
 	this, SLOT(doNextScanStep()));
 
+    connect(laserModel_, SIGNAL(deviceStateChanged(State)),
+            this,SLOT(setLaserEnabled(State)));
+
     generateCirclePositions();
 
 }
@@ -169,10 +172,14 @@ void LStepExpressMeasurement::stopMeasurement()
   currentIndex_ = tableSize_;
 }
 
-void LStepExpressMeasurement::setLaserEnabled(bool enabled)
+void LStepExpressMeasurement::setLaserEnabled(State newState)
 {
   //    NQLog("LStepExpressMeasurement ", NQLog::Debug) << "setLaserEnabled";
-    isLaserEnabled_ = enabled;
+    if(newState == READY){
+        isLaserEnabled_ = true;
+    }else{
+        isLaserEnabled_ = false;
+    }
 }
 
 void LStepExpressMeasurement::takeMeasurement()

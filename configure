@@ -12,14 +12,16 @@ KERNELMINOR=`uname -r | cut -d . -f 2`
 NODEFO=0
 NOTHERMAL=0
 NOASSEMBLY=0
+NOPLASMA=0
 USEFAKEDEVICES=0
+NOUEYE=0
 WITHTWITTERSUPPORT=1
-TWITTERLIBS="-lcurl -ltwitcurl"
 CONFIGDEFINES=""
 
 ROOTCFLAGS=`root-config --cflags`
 ROOTLIBS=`root-config --libs`
 ROOTGLIBS=`root-config --glibs`
+ROOTMAJOR=`root-config --version | cut -d . -f 1`
 
 while test $# -gt 0; do 
   case $1 in
@@ -32,14 +34,21 @@ while test $# -gt 0; do
     --noassembly)
       NOASSEMBLY=1
       ;;
+    --noplasma)
+      NOPLASMA=1
+      ;;
     --notwitter)
       WITHTWITTERSUPPORT=0
-      TWITTERLIBS=""
       CONFIGDEFINES="$CONFIGDEFINES NO_TWITTER"
+      ;;
+    --noueye)
+      NOUEYE=1
+      CONFIGDEFINES="$CONFIGDEFINES NOUEYE"
       ;;
     --fake)
       USEFAKEDEVICES=1
-      CONFIGDEFINES="$CONFIGDEFINES USE_FAKEIO"
+      NOUEYE=1
+      CONFIGDEFINES="$CONFIGDEFINES USE_FAKEIO NOUEYE"
       ;;
   *)
     # Call standard parser
@@ -52,11 +61,7 @@ done
 QMAKE="qmake"
 
 if test $ARCHITECTURE = "Darwin"; then
-    echo Darwin architecture: fake device support forced
-    USEFAKEDEVICES=1
-    WITHTWITTERSUPPORT=0
-    TWITTERLIBS=""
-    CONFIGDEFINES="USE_FAKEIO NO_TWITTER"
+    CONFIGDEFINES="$CONFIGDEFINES DARWIN"
     SOFLAGS="-m64 -O2 -dynamiclib -single_module -undefined dynamic_lookup"
     CC="clang"
     CXX="clang++"
@@ -66,9 +71,10 @@ if test $ARCHITECTURE = "Darwin"; then
     QWTLIBS="-F/usr/local/lib -framework qwt"
     QMAKE="qmake"
 fi
-if test $ARCHITECTURE = "Linux" && test $KERNELMINOR -lt 6; then
+if test $ARCHITECTURE = "Linux" && test $KERNELMAJOR -lt 2 && test $KERNELMINOR -lt 6; then
     echo "Linux kernel minor version < 6: fake device support forced"
     USEFAKEDEVICES=1
+    CONFIGDEFINES="USE_FAKEIO NOUEYE"
 fi
 if test $ARCHITECTURE = "Linux"; then
     SOFLAGS="-shared"
@@ -97,13 +103,18 @@ if test $ARCHITECTURE = "Linux"; then
         QWTLIBS="-lqwtplot3d"
     fi
     QWTINCLUDES="/usr/include/qwt $QWTINCLUDES"
-    QWTLIBS="-lqwt $QWTLIBS"
+    QWTLIBS="-lqwt $QWTLIBS -lGL -lGLU"
 fi
 
 if test $USEFAKEDEVICES = 1; then
     echo build with fake device support
 else
     echo build with real device support
+fi
+if test $NOUEYE = 1; then
+    echo build without uEye support
+else
+    echo build with uEye support
 fi
 if test $NODEFO = 1; then
     echo build without DEFO support
@@ -120,8 +131,13 @@ if test $NOASSEMBLY = 1; then
 else
     echo build with ASSEMBLY support
 fi
+if test $NOPLASMA = 1; then
+    echo build without Plasma Cleaner support
+else
+    echo build with Plasma Cleaner support
+fi
 
-SED_VARIABLES="BASEPATH ARCHITECTURE KERNELMAJOR KERNELMINOR QMAKE CXX CC LD NODEFO NOTHERMAL NOASSEMBLY APPLICATIONVERSIONSTR USEFAKEDEVICES WITHTWITTERSUPPORT TWITTERLIBS SOFLAGS CONFIGDEFINES QWTDEFINES QWTINCLUDES QWTLIBS ROOTCFLAGS ROOTLIBS ROOTGLIBS"
+SED_VARIABLES="BASEPATH ARCHITECTURE KERNELMAJOR KERNELMINOR QMAKE CXX CC LD NODEFO NOTHERMAL NOASSEMBLY NOPLASMA APPLICATIONVERSIONSTR USEFAKEDEVICES NOUEYE WITHTWITTERSUPPORT SOFLAGS CONFIGDEFINES QWTDEFINES QWTINCLUDES QWTLIBS ROOTCFLAGS ROOTLIBS ROOTGLIBS ROOTMAJOR"
 
 echo "#!/bin/sh
 dest=\`basename \$1 .in\`

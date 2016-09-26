@@ -46,6 +46,18 @@ void LaserModel::setAveraging(int mode)
     controller_->SetAveraging(laserHead_, mode);
 }
 
+void LaserModel::setMaterialMode(int mode)
+{
+    if(state_ == OFF) return;
+    controller_->SetMaterialMode(laserHead_, mode);
+}
+
+void LaserModel::setDiffuseMode(int mode)
+{
+    if(state_ == OFF) return;
+    controller_->SetDiffuseMode(laserHead_, mode);
+}
+
 void LaserModel::updateInformation()
 {
     double value = 0;

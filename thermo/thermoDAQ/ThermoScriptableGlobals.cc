@@ -13,6 +13,7 @@
 #include <QDir>
 
 #include <nqlogger.h>
+#include <SlackBot.h>
 
 #include "ThermoScriptableGlobals.h"
 
@@ -143,4 +144,10 @@ void ThermoScriptableGlobals::tweet(const QString& user, const QString& pw,
     }
 
 #endif
+}
+
+void ThermoScriptableGlobals::slack(const QString& message)
+{
+  SlackBot bot("thermoDAQ");
+  bot.postMessage(message);
 }

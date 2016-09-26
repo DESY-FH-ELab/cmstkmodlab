@@ -1,5 +1,6 @@
 #include <unistd.h>
 
+#include <cstring>
 #include <cmath>
 #include <sstream>
 #include <iostream>
@@ -47,7 +48,7 @@ void LStepExpress::ReceiveString(std::string & buffer)
 
 void LStepExpress::StripBuffer(char* buffer) const
 {
-  for (unsigned int c=0; c<sizeof(buffer);++c) {
+  for (unsigned int c=0; c<strlen(buffer);++c) {
     if(buffer[c]=='\r') {
       buffer[c] = '\0';
       break;

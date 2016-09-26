@@ -4,6 +4,7 @@
 #include <QCheckBox>
 #include <QDoubleSpinBox>
 #include <QFormLayout>
+#include <QLineEdit>
 #include <QHBoxLayout>
 #include <QLCDNumber>
 #include <QSpinBox>
@@ -13,6 +14,10 @@
 #include <QLabel>
 #include <QComboBox>
 #include <QSlider>
+#include <QPushButton>
+
+#include <QProgressBar>
+
 
 #include <DeviceState.h>
 
@@ -29,6 +34,7 @@ protected:
 
     AssemblyVUEyeCamera* camera_;
 
+
 public slots:
 
     void cameraInformationChanged();
@@ -41,6 +47,8 @@ public:
     explicit AssemblyUEyeCameraGeneralWidget(AssemblyVUEyeCamera* camera,
                                              QWidget *parent = 0);
 
+
+    
 protected:
 
     AssemblyVUEyeCamera* camera_;
@@ -55,6 +63,8 @@ protected:
     QLabel* idLabel_;
     QLabel* versionLabel_;
     QLabel* dateLabel_;
+    
+
 
 public slots:
 
@@ -81,9 +91,12 @@ protected:
     QLabel* pixelSizeLabel_;
 
 public slots:
-
     void cameraInformationChanged();
 };
+
+
+
+
 
 class AssemblyUEyeCameraPixelClockWidget : public QComboBox
 {
@@ -162,13 +175,21 @@ public:
     explicit AssemblyUEyeCameraSettingsWidget(AssemblyVUEyeCamera* camera,
                                             QWidget *parent = 0);
 
+
+
 protected:
 
     AssemblyVUEyeCamera* camera_;
+    
+
 
 public slots:
-
     void cameraInformationChanged();
+
 };
+
+
+
+
 
 #endif // ASSEMBLYUEYECAMERAWIDGET_H

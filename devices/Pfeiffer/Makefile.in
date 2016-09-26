@@ -1,6 +1,10 @@
 ARCHITECTURE=@architecture@
 USEFAKEDEVICES=@usefakedevices@
 
+ifeq ($(ARCHITECTURE),Darwin)
+USEFAKEDEVICES=1
+endif
+
 BASEPATH      = @basepath@
 include $(BASEPATH)/devices/Makefile.common
 

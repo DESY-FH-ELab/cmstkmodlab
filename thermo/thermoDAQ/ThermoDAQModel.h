@@ -120,14 +120,15 @@ public:
                             KeithleyModel* keithleyModel,
                             HamegModel* hamegModel,
                             PfeifferModel* pfeifferModel,
-			    IotaModel* iotaModel,
-			    ArduinoPresModel* arduinoPresModel,
+                            IotaModel* iotaModel,
+                            ArduinoPresModel* arduinoPresModel,
                             QObject *parent = 0);
 
     QDateTime& currentTime();
 
     void customDAQMessage(const QString & message);
     void createDAQStatusMessage(QString & buffer);
+    void createDAQMetadataMessage(QString & buffer);
 
     void myMoveToThread(QThread *thread);
 
@@ -135,10 +136,16 @@ public:
 
     const Measurement_t& getMeasurement();
 
+    bool isMetadataValid() { return metadataValid_; }
+
 public slots:
 
     void startMeasurement();
     void stopMeasurement();
+
+    void invalidateMetadata();
+    void sampleThicknessChanged(double value);
+    void sampleAreaChanged(double value);
 
 protected slots:
 
@@ -154,67 +161,74 @@ protected slots:
 
 protected:
 
-  bool daqState_;
+    bool daqState_;
 
-  HuberPetiteFleurModel* huberModel_;
-  KeithleyModel* keithleyModel_;
-  HamegModel* hamegModel_;
-  PfeifferModel* pfeifferModel_;
-  IotaModel* iotaModel_;
-  ArduinoPresModel* arduinoPresModel_;
+    HuberPetiteFleurModel* huberModel_;
+    KeithleyModel* keithleyModel_;
+    HamegModel* hamegModel_;
+    PfeifferModel* pfeifferModel_;
+    IotaModel* iotaModel_;
+    ArduinoPresModel* arduinoPresModel_;
 
-  QMutex mutex_;
+    QMutex mutex_;
 
-  QDateTime currentTime_;
+    QDateTime currentTime_;
 
-  Measurement_t measurement_;
+    Measurement_t measurement_;
 
-  template <typename T> bool updateIfChanged(T &variable, T newValue) {
-      if (variable==newValue) return false;
-      variable = newValue;
-      return true;
-  }
+    template <typename T> bool updateIfChanged(T &variable, T newValue) {
+        if (variable==newValue) return false;
+        variable = newValue;
+        return true;
+    }
 
-  // HUBER DATA
-  bool huberCirculator_;
-  float huberWorkingTemperature_;
-  float huberBathTemperature_;
+    // HUBER DATA
+    bool huberCirculator_;
+    float huberWorkingTemperature_;
+    float huberBathTemperature_;
 
-  // KEITHLEY DATA
-  State keithleySensorState_[10];
-  double keithleyTemperature_[10];
+    // KEITHLEY DATA
+    State keithleySensorState_[10];
+    double keithleyTemperature_[10];
 
-  // HAMEG DATA
-  bool hamegRemoteMode_;
-  bool hamegOutputsEnabled_;
-  bool hamegCVMode_[2];
-  float hamegSetVoltage_[2];
-  float hamegSetCurrent_[2];
-  float hamegVoltage_[2];
-  float hamegCurrent_[2];
+    // HAMEG DATA
+    bool hamegRemoteMode_;
+    bool hamegOutputsEnabled_;
+    bool hamegCVMode_[2];
+    float hamegSetVoltage_[2];
+    float hamegSetCurrent_[2];
+    float hamegVoltage_[2];
+    float hamegCurrent_[2];
 
-  // PFEIFFER DATA
-  int pfeifferStatus1_;
-  double pfeifferPressure1_;
-  int pfeifferStatus2_;
-  double pfeifferPressure2_;
+    // PFEIFFER DATA
+    int pfeifferStatus1_;
+    double pfeifferPressure1_;
+    int pfeifferStatus2_;
+    double pfeifferPressure2_;
 
-  // IOTA DATA
-  bool iotaPumpEnabled_;
-  float iotaActPressure_;
-  float iotaSetPressure_;
-  float iotaActFlow_;
-  float iotaSetFlow_;
-  
-  // ARDUINO PRES DATA
-  float arduinoPressureA_;
-  float arduinoPressureB_;
-  
+    // IOTA DATA
+    bool iotaPumpEnabled_;
+    float iotaActPressure_;
+    float iotaSetPressure_;
+    float iotaActFlow_;
+    float iotaSetFlow_;
+
+    // ARDUINO PRES DATA
+    float arduinoPressureA_;
+    float arduinoPressureB_;
+
+    // METADATA
+    bool metadataValid_;
+    double sampleThickness_;
+    double sampleArea_;
+
+    void validateMetadata();
+
 signals:
 
-  void daqMessage(const QString & message);
-  void daqStateChanged(bool running);
-  void newDataAvailable();
+    void daqMessage(const QString & message);
+    void daqStateChanged(bool running);
+    void newDataAvailable();
 };
 
 #endif // THERMODAQMODEL_H

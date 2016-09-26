@@ -15,6 +15,8 @@
 
 #include <nspline2D.h>
 
+#include <SlackBot.h>
+
 double imageScale(double focalLength)
 {
   double p0 = -0.0240888;
@@ -311,4 +313,9 @@ int main(int argc, char *argv[])
   }
   std::cout << std::endl;
   */
+
+  SlackBot bot("TestBot", "https://hooks.slack.com/services/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",
+               "#testbot");
+
+  bot.postMessage("message from Qt");
 }

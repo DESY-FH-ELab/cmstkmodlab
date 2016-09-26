@@ -10,18 +10,20 @@
 
 #include "AssemblyVUEyeCamera.h"
 
-#ifdef USE_FAKEIO
-#include "AssemblyUEyeFakeModel.h"
-typedef AssemblyUEyeFakeModel AssemblyUEyeModel_t;
-#else
+#ifdef USE_UEYE
 #include "AssemblyUEyeModel.h"
 typedef AssemblyUEyeModel AssemblyUEyeModel_t;
+#else
+#include "AssemblyUEyeFakeModel.h"
+typedef AssemblyUEyeFakeModel AssemblyUEyeModel_t;
 #endif
 
 #include "AssemblyUEyeCameraThread.h"
 #include "AssemblyUEyeWidget.h"
 #include "AssemblyUEyeView.h"
 #include "AssemblyUEyeSnapShooter.h"
+#include "AssemblyModuleAssembler.h"
+
 
 #include "AssemblyMarkerFinderThread.h"
 #include "AssemblySensorMarkerFinder.h"
@@ -54,7 +56,7 @@ signals:
 
 protected slots:
 
-  void liveUpdate();
+void liveUpdate();
 
 protected:
 
@@ -67,6 +69,8 @@ protected:
   AssemblyUEyeSnapShooter* finderView_;
   AssemblyUEyeSnapShooter* edgeView_;
   AssemblyUEyeSnapShooter* rawView_;
+  AssemblyModuleAssembler* assembleView_;
+    
 
   AssemblyUEyeModel_t* uEyeModel_;
   AssemblyUEyeCameraThread* cameraThread_;

@@ -1,22 +1,37 @@
 ARCHITECTURE=@architecture@
 USEFAKEDEVICES="X@usefakedevices@"
+NOUEYE="X@noueye@"
 
-LIBS += -L@basepath@/devices/lib -lTkModLabLang -lTkModLabKeyence
+
+LIBS += -L@basepath@/devices/lib -lTkModLabLang
+LIBS += -L@basepath@/devices/lib -lTkModLabConrad
+LIBS += -L@basepath@/devices/lib -lTkModLabArduino
+LIBS += -L@basepath@/devices/lib  -lTkModLabKeyence
 LIBS += -L@basepath@/common -lCommon
 
-equals(USEFAKEDEVICES,"X0") {
-LIBS += -lueye_api
+equals(USEFAKEDEVICES,"X1") {
+  NOUEYE="X1"
 }
 
 macx {
+  NOUEYE="X1"
   CONFIG+=x86_64
-  QMAKE_CXXFLAGS += -stdlib=libc++
+
+  QMAKE_CXXFLAGS += -pthread -stdlib=libc++ -std=c++11 -m64 -I/Users/keaveney/root/root-6.06.04/include
+   LIBS += -L/Users/keaveney/root/root-6.06.04/lib -lCore -lRIO -lNet -lHist -lGraf -lGraf3d -lGpad -lTree -lRint -lPostscript -lMatrix -lPhysics -lMathCore -lThread -lMultiProc -lpthread -Wl,-rpath,/Users/keaveney/root/root-6.06.04/lib -stdlib=libc++ -lm -ldl
+
+  #QMAKE_CXXFLAGS += -stdlib=libc++
+
   #QMAKE_MAC_SDK = macosx10.11
   QMAKE_MACOSX_DEPLOYMENT_TARGET = 10.11
   #LIBS += -framework AppKit
   #LIBS += -framework QuartzCore
   #LIBS += -framework QTKit
   #LIBS += -framework Cocoa
+}
+
+equals(NOUEYE,"X0") {
+  LIBS += -lueye_api
 }
 
 CONFIG += link_pkgconfig
@@ -35,9 +50,8 @@ else {
 }
 
 DEFINES += @configdefines@
-
-equals(USEFAKEDEVICES,"X1") {
-DEFINES += USE_FAKEIO
+equals(NOUEYE,"X1") {
+  DEFINES += NOUEYE
 }
 
 QT += core gui xml network script svg
@@ -70,6 +84,7 @@ HEADERS += AssemblyVUEyeCamera.h \
            AssemblyUEyeCameraWidget.h \
            AssemblyUEyeView.h \
            AssemblyUEyeSnapShooter.h \
+           AssemblyModuleAssembler.h \
            AssemblyMarkerFinderThread.h \
            AssemblyVMarkerFinder.h \
            AssemblySensorMarkerFinder.h \
@@ -89,9 +104,10 @@ HEADERS += AssemblyVUEyeCamera.h \
            LStepExpressStatusWindow.h \
            LaserModel.h \
            LaserWidget.h \
-           LaserThread.h
+           LaserThread.h \
+           LaserControlsWidget.h 
 
-equals(USEFAKEDEVICES,"X0") {
+equals(NOUEYE,"X0") {
 HEADERS += AssemblyUEyeCamera.h \
            AssemblyUEyeModel.h
 } else {
@@ -106,6 +122,7 @@ SOURCES += AssemblyVUEyeCamera.cc \
            AssemblyUEyeCameraWidget.cc \
            AssemblyUEyeView.cc \
            AssemblyUEyeSnapShooter.cc \
+           AssemblyModuleAssembler.cc \
            AssemblyMarkerFinderThread.cc \
            AssemblyVMarkerFinder.cc \
            AssemblySensorMarkerFinder.cc \
@@ -125,9 +142,10 @@ SOURCES += AssemblyVUEyeCamera.cc \
            LStepExpressStatusWindow.cc \
            LaserModel.cc \
            LaserWidget.cc \
-           LaserThread.cc
+           LaserThread.cc \ 
+           LaserControlsWidget.cc
 
-equals(USEFAKEDEVICES,"X0") {
+equals(NOUEYE,"X0") {
 SOURCES += AssemblyUEyeCamera.cc \
            AssemblyUEyeModel.cc
 } else {

@@ -4,7 +4,7 @@
 #include <QObject>
 #include <QThread>
 
-#ifdef USE_FAKEIO
+#ifdef NOUEYE
 #include "AssemblyUEyeFakeModel.h"
 typedef AssemblyUEyeFakeModel AssemblyUEyeModel_t;
 #else

@@ -1,6 +1,9 @@
 #include <iostream>
 
 #include <QDateTime>
+#include <QProcess>
+
+#include <nqlogger.h>
 
 #include "ApplicationConfig.h"
 #include "MicroDAQStreamer.h"
@@ -21,15 +24,15 @@ MicroDAQStreamer::MicroDAQStreamer(MicroDAQModel* model, QObject* parent) :
 
 void MicroDAQStreamer::handleDAQMessage(const QString& message)
 {
-  QString buffer = message;
-  if (buffer.startsWith("\n")) {
-    buffer.remove(0, 1);
-  }
+    QString buffer = message;
+    if (buffer.startsWith("\n")) {
+        buffer.remove(0, 1);
+    }
 
-  if (isStreaming_ && buffer.length()>0) {
-    *stream_ << buffer << "\n";
-    stream_->flush();
-  }
+    if (isStreaming_ && buffer.length()>0) {
+        *stream_ << buffer << "\n";
+        stream_->flush();
+    }
 }
 
 void MicroDAQStreamer::daqStateChanged(bool state)
@@ -42,8 +45,25 @@ void MicroDAQStreamer::daqStateChanged(bool state)
 
         QString measurementDirPath(dataPath + "/%1");
         currentDir_.setPath(measurementDirPath.arg(dt.toString("yyyyMMdd")));
-        if (!currentDir_.exists())
+        if (!currentDir_.exists()) {
             currentDir_.mkpath(currentDir_.absolutePath());
+            QProcess process;
+            QStringList args;
+            args << "fhlabs";
+            args << currentDir_.absolutePath();
+            if (process.execute("chgrp", args)!=0) {
+                NQLog("ThermoDAQStreamer", NQLog::Fatal)
+                        << "could not change group of output directory to 'fhlabs'";
+            } else {
+                args.clear();
+                args << "g+rwx";
+                args << currentDir_.absolutePath();
+                if (process.execute("chmod", args)!=0) {
+                    NQLog("ThermoDAQStreamer", NQLog::Fatal)
+                            << "could not change write permission of output directory to 'fhlabs'";
+                }
+            }
+        }
 
         QString filename("%1-%2.xml");
         filename = filename.arg(dt.toString("yyyyMMdd"));
@@ -51,8 +71,25 @@ void MicroDAQStreamer::daqStateChanged(bool state)
         while (currentDir_.exists(filename.arg(i))) ++i;
         filename = filename.arg(i);
 
-        ofile_ = new QFile(currentDir_.absoluteFilePath(filename));
+        ofilename_ = currentDir_.absoluteFilePath(filename);
+        ofile_ = new QFile(ofilename_);
         if (ofile_->open(QFile::WriteOnly | QFile::Truncate)) {
+            QProcess process;
+            QStringList args;
+            args << "fhlabs";
+            args << ofilename_;
+            if (process.execute("chgrp", args)!=0) {
+                NQLog("ThermoDAQStreamer", NQLog::Fatal)
+                        << "could not change group of output file to 'fhlabs'";
+            } else {
+                args.clear();
+                args << "g+rw";
+                args << ofilename_;
+                if (process.execute("chmod", args)!=0) {
+                    NQLog("ThermoDAQStreamer", NQLog::Fatal)
+                            << "could not change write permission of output file to 'fhlabs'";
+                }
+            }
             stream_ = new QTextStream(ofile_);
         }
     } else {

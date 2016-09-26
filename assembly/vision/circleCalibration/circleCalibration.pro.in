@@ -1,17 +1,17 @@
 ARCHITECTURE=@architecture@
 USEFAKEDEVICES="X@usefakedevices@"
+NOUEYE="X@noueye@"
 
 LIBS += -L@basepath@/devices/lib -lTkModLabLang
 LIBS += -L@basepath@/common -lCommon
 LIBS += -L@basepath@/assembly/assemblyCommon -lAssemblyCommon
 
-equals(USEFAKEDEVICES,"X0") {
-LIBS += -lueye_api
+equals(USEFAKEDEVICES,"X1") {
+  NOUEYE="X1"
 }
 
-QMAKE = @qmake@
-
 macx {
+  NOUEYE="X1"
   CONFIG+=x86_64
   QMAKE_CXXFLAGS += -stdlib=libc++
   #QMAKE_MAC_SDK = macosx10.11
@@ -20,6 +20,10 @@ macx {
   #LIBS += -framework QuartzCore
   #LIBS += -framework QTKit
   #LIBS += -framework Cocoa
+}
+
+equals(NOUEYE,"X0") {
+  LIBS += -lueye_api
 }
 
 CONFIG += link_pkgconfig
@@ -36,6 +40,9 @@ else {
 }
 
 DEFINES += @configdefines@
+equals(NOUEYE,"X1") {
+  DEFINES += NOUEYE
+}
 
 QT += core gui xml network script svg
 greaterThan(QT_MAJOR_VERSION, 4) {
@@ -58,7 +65,7 @@ INCLUDEPATH += @basepath@/assembly/assemblyCommon
 # Input
 HEADERS += 
 
-equals(USEFAKEDEVICES,"X0") {
+equals(NOUEYE,"X0") {
 HEADERS += 
 } else {
 HEADERS += 
@@ -66,7 +73,7 @@ HEADERS +=
 
 SOURCES += circleCalibration.cc
 
-equals(USEFAKEDEVICES,"X0") {
+equals(NOUEYE,"X0") {
 SOURCES += 
 } else {
 SOURCES += 
