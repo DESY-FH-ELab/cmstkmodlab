@@ -3,12 +3,14 @@
 
 #include <vector>
 
+typedef const char* ioport_t;
+
 /// \brief Class handling readout of Conrad multimeter
 class VConradController {
 
 public:
 
-  VConradController(const char* comPort);
+  VConradController( const ioport_t );
   virtual ~VConradController();
 
   virtual bool initialize() = 0;

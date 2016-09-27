@@ -10,7 +10,7 @@ class ConradControllerFake : public VConradController {
 
 public:
 
-  ConradControllerFake(const char* comPort);
+  ConradControllerFake( const ioport_t );
   virtual ~ConradControllerFake();
 
   bool initialize();
