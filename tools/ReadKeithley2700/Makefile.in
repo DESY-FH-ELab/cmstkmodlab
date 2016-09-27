@@ -17,7 +17,7 @@ CXXFLAGS     += -DUSE_FAKEIO
 endif
 
 ifeq ($(ARCHITECTURE),Darwin)
-CXXFLAGS     += -I/opt/local/include
+CXXFLAGS     += -I/usr/local/include
 endif
 
 LIBS          = -L@basepath@/devices/lib -lTkModLabKeithley

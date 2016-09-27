@@ -1,7 +1,7 @@
 #include "VConradController.h"
 
 //! Default constructor
-VConradController::VConradController(const char* comPort)
+VConradController::VConradController(const ioport_t)
 {
 
 }

@@ -14,6 +14,7 @@ NOTHERMAL=0
 NOASSEMBLY=0
 NOPLASMA=0
 USEFAKEDEVICES=0
+NOUEYE=0
 WITHTWITTERSUPPORT=1
 CONFIGDEFINES=""
 
@@ -40,9 +41,14 @@ while test $# -gt 0; do
       WITHTWITTERSUPPORT=0
       CONFIGDEFINES="$CONFIGDEFINES NO_TWITTER"
       ;;
+    --noueye)
+      NOUEYE=1
+      CONFIGDEFINES="$CONFIGDEFINES NOUEYE"
+      ;;
     --fake)
       USEFAKEDEVICES=1
-      CONFIGDEFINES="$CONFIGDEFINES USE_FAKEIO"
+      NOUEYE=1
+      CONFIGDEFINES="$CONFIGDEFINES USE_FAKEIO NOUEYE"
       ;;
   *)
     # Call standard parser
@@ -55,9 +61,7 @@ done
 QMAKE="qmake"
 
 if test $ARCHITECTURE = "Darwin"; then
-    #echo Darwin architecture: fake device support forced
-    #USEFAKEDEVICES=1
-    CONFIGDEFINES="DARWIN"
+    CONFIGDEFINES="$CONFIGDEFINES DARWIN"
     SOFLAGS="-m64 -O2 -dynamiclib -single_module -undefined dynamic_lookup"
     CC="clang"
     CXX="clang++"
@@ -70,7 +74,7 @@ fi
 if test $ARCHITECTURE = "Linux" && test $KERNELMAJOR -lt 2 && test $KERNELMINOR -lt 6; then
     echo "Linux kernel minor version < 6: fake device support forced"
     USEFAKEDEVICES=1
-    CONFIGDEFINES="USE_FAKEIO"
+    CONFIGDEFINES="USE_FAKEIO NOUEYE"
 fi
 if test $ARCHITECTURE = "Linux"; then
     SOFLAGS="-shared"
@@ -107,6 +111,11 @@ if test $USEFAKEDEVICES = 1; then
 else
     echo build with real device support
 fi
+if test $NOUEYE = 1; then
+    echo build without uEye support
+else
+    echo build with uEye support
+fi
 if test $NODEFO = 1; then
     echo build without DEFO support
 else
@@ -128,7 +137,7 @@ else
     echo build with Plasma Cleaner support
 fi
 
-SED_VARIABLES="BASEPATH ARCHITECTURE KERNELMAJOR KERNELMINOR QMAKE CXX CC LD NODEFO NOTHERMAL NOASSEMBLY NOPLASMA APPLICATIONVERSIONSTR USEFAKEDEVICES WITHTWITTERSUPPORT SOFLAGS CONFIGDEFINES QWTDEFINES QWTINCLUDES QWTLIBS ROOTCFLAGS ROOTLIBS ROOTGLIBS ROOTMAJOR"
+SED_VARIABLES="BASEPATH ARCHITECTURE KERNELMAJOR KERNELMINOR QMAKE CXX CC LD NODEFO NOTHERMAL NOASSEMBLY NOPLASMA APPLICATIONVERSIONSTR USEFAKEDEVICES NOUEYE WITHTWITTERSUPPORT SOFLAGS CONFIGDEFINES QWTDEFINES QWTINCLUDES QWTLIBS ROOTCFLAGS ROOTLIBS ROOTGLIBS ROOTMAJOR"
 
 echo "#!/bin/sh
 dest=\`basename \$1 .in\`

@@ -1,7 +1,7 @@
-import PyTkModLab
+import PyTkModLabNanotec
 
 # connect to device
-smci36 = PyTkModLab.NanotecSMCI36("/dev/tty.SLAB_USBtoUART")
+smci36 = PyTkModLabNanotec.NanotecSMCI36("/dev/tty.SLAB_USBtoUART")
 
 # set output pin 1 function to user defined
 smci36.SetOutputPinFunction(1, 0)

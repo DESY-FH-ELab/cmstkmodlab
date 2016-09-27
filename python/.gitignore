@@ -2,4 +2,4 @@
 *.o
 *~
 Makefile
-PyTkModLab.so
+PyTkModLab*.so

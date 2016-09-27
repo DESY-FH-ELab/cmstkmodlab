@@ -7,9 +7,9 @@
 #include "ConradController.h"
 
 //! Default constructor
-ConradController::ConradController(const char* comPort)
-  : VConradController(comPort),
-    m_communication(new ConradCommunication(comPort))
+ConradController::ConradController( const ioport_t ioPort)
+  : VConradController(ioPort),
+    m_communication(new ConradCommunication(ioPort))
 {
 
 }

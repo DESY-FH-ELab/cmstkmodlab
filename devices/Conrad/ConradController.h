@@ -12,7 +12,7 @@ class ConradController : public VConradController {
 
 public:
 
-  ConradController(const char* comPort);
+  ConradController( const ioport_t );
   ~ConradController();
 
   bool initialize();

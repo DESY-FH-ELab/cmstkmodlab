@@ -7,8 +7,8 @@
 #include "ConradControllerFake.h"
 
 //! Default constructor
-ConradControllerFake::ConradControllerFake(const char* comPort)
-  : VConradController(comPort)
+ConradControllerFake::ConradControllerFake( const ioport_t ioPort )
+  : VConradController(ioPort)
 {
   for (int c=0;c<8;++c) status_[c] = false;
 }
