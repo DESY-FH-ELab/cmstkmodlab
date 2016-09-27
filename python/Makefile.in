@@ -4,7 +4,8 @@ USEFAKEDEVICES=@usefakedevices@
 BASEPATH      = @basepath@
 
 LIBS          = PyTkModLabNanotec \
-                PyTkModLabHameg
+                PyTkModLabHameg \
+                PyTkModLabConrad
 
 PYTHONINC    := $(shell python-config --cflags)
 
@@ -39,6 +40,10 @@ PyTkModLabNanotec.so: PyTkModLabNanotec.o
 PyTkModLabHameg.so: PyTkModLabHameg.o
 	@echo "Linking shared library $@"
 	$(LD) $^ -o $@ $(SOFLAGS) -L$(BASEPATH)/devices/lib -lTkModLabHameg
+
+PyTkModLabConrad.so: PyTkModLabConrad.o
+	@echo "Linking shared library $@"
+	$(LD) $^ -o $@ $(SOFLAGS) -L$(BASEPATH)/devices/lib -lTkModLabConrad
 
 %.d: %.cc
 	@echo Making dependency for file $< ...
