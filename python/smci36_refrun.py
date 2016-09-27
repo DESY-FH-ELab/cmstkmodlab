@@ -1,7 +1,7 @@
-import PyTkModLab
+import PyTkModLabNanotec
 
 # connect to device
-smci36 = PyTkModLab.NanotecSMCI36("/dev/tty.SLAB_USBtoUART")
+smci36 = PyTkModLabNanotec.NanotecSMCI36("/dev/tty.SLAB_USBtoUART")
 
 # get the status of the controller (see VNanotecSMCI36.h)
 smci36.GetStatus()

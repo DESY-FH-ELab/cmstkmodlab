@@ -2,11 +2,9 @@ ARCHITECTURE=@architecture@
 USEFAKEDEVICES=@usefakedevices@
 
 BASEPATH      = @basepath@
-LIBDIR        = $(BASEPATH)/python
 
-LIB           = PyTkModLab
-
-MODULES       = PyTkModLab
+LIBS          = PyTkModLabNanotec \
+                PyTkModLabHameg
 
 PYTHONINC    := $(shell python-config --cflags)
 
@@ -22,23 +20,25 @@ endif
 
 CXXFLAGS     += -I$(BASEPATH) -I/usr/local/include $(PYTHONINC)
 SOFLAGS      += -L/usr/local/lib -lboost_python
-SOFLAGS      += -L$(BASEPATH)/devices/lib -lTkModLabHameg
-SOFLAGS      += -L$(BASEPATH)/devices/lib -lTkModLabNanotec
 
-ALLDEPEND = $(addsuffix .d,$(MODULES))
+ALLDEPEND     = $(addsuffix .d,$(LIBS))
+ALLLIBS       = $(addsuffix .so,$(LIBS))
 
 EXISTDEPEND = $(shell find . -name \*.d -type f -print)
 
-all: depend lib
+all: depend libs
 
 depend: $(ALLDEPEND)
 
-lib: $(LIBDIR)/$(LIB).so
+libs: $(ALLLIBS)
 
-$(LIBDIR)/$(LIB).so: $(addsuffix .o,$(MODULES))
-	@(test -e $(LIBDIR) || mkdir $(LIBDIR))
+PyTkModLabNanotec.so: PyTkModLabNanotec.o
 	@echo "Linking shared library $@"
-	$(LD) $^ -o $@ $(SOFLAGS) 
+	$(LD) $^ -o $@ $(SOFLAGS) -L$(BASEPATH)/devices/lib -lTkModLabNanotec
+
+PyTkModLabHameg.so: PyTkModLabHameg.o
+	@echo "Linking shared library $@"
+	$(LD) $^ -o $@ $(SOFLAGS) -L$(BASEPATH)/devices/lib -lTkModLabHameg
 
 %.d: %.cc
 	@echo Making dependency for file $< ...
