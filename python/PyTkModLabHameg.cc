@@ -17,8 +17,19 @@ BOOST_PYTHON_MODULE(PyTkModLabHameg)
       .def("DeviceAvailable", &Hameg8143_t::DeviceAvailable)
       .def("GetStatus", &Hameg8143_t::GetStatus)
       .def("SetRemoteMode", &Hameg8143_t::SetRemoteMode)
+      .def("SetMixedMode", &Hameg8143_t::SetMixedMode)
+
       .def("SetVoltage", &Hameg8143_t::SetVoltage)
+      .def("SetTrackingVoltage", &Hameg8143_t::SetTrackingVoltage)
       .def("GetSetVoltage", &Hameg8143_t::GetSetVoltage)
       .def("GetVoltage", &Hameg8143_t::GetVoltage)
-    ;
+
+      .def("SetCurrent", &Hameg8143_t::SetCurrent)
+      .def("SetTrackingCurrent", &Hameg8143_t::SetTrackingCurrent)
+      .def("GetSetCurrent", &Hameg8143_t::GetSetCurrent)
+      .def("GetCurrent", &Hameg8143_t::GetCurrent)
+
+      .def("SwitchOutputOn", &Hameg8143_t::SwitchOutputOn)
+      .def("SwitchOutputOff", &Hameg8143_t::SwitchOutputOff)
+      ;
 };
