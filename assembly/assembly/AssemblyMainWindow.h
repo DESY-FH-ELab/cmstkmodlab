@@ -10,12 +10,12 @@
 
 #include "AssemblyVUEyeCamera.h"
 
-#ifdef USE_UEYE
-#include "AssemblyUEyeModel.h"
-typedef AssemblyUEyeModel AssemblyUEyeModel_t;
-#else
+#ifdef NOUEYE
 #include "AssemblyUEyeFakeModel.h"
 typedef AssemblyUEyeFakeModel AssemblyUEyeModel_t;
+#else
+#include "AssemblyUEyeModel.h"
+typedef AssemblyUEyeModel AssemblyUEyeModel_t;
 #endif
 
 #include "AssemblyUEyeCameraThread.h"
