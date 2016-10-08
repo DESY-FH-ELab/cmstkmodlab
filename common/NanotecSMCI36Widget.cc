@@ -435,7 +435,7 @@ NanotecSMCI36MovementWidget::NanotecSMCI36MovementWidget(NanotecSMCI36Model* mod
 
   stageMode_ = new QCheckBox("stage mode", this);
   layout->addWidget(stageMode_);
-  stageMode_->setChecked(false);
+  stageMode_->setChecked(true);
   connect(stageMode_, SIGNAL(clicked(bool)),
           this, SLOT(stageModeChanged(bool)));
 
