@@ -155,6 +155,24 @@ void NanotecSMCI36Model::setMaxSpeed2(double speed)
   setMaxFrequency2(speed*getPitch()*getStepMode());
 }
 
+void NanotecSMCI36Model::setMinPositionInMM(double position)
+{
+  bool infoChanged = !(minPositionInMM_==position);
+
+  minPositionInMM_ = position;
+
+  if (infoChanged) emit informationChanged();
+}
+
+void NanotecSMCI36Model::setMaxPositionInMM(double position)
+{
+  bool infoChanged = !(maxPositionInMM_==position);
+
+  maxPositionInMM_ = position;
+
+  if (infoChanged) emit informationChanged();
+}
+
 void NanotecSMCI36Model::start()
 {
   if (state_!=READY) return;

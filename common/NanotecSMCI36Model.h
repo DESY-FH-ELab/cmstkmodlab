@@ -68,6 +68,9 @@ public:
   double getMaxSpeed() const { return getMaxFrequency()/getPitch()/getStepMode(); }
   double getMaxSpeed2() const { return getMaxFrequency2()/getPitch()/getStepMode(); }
 
+  double getMinPositionInMM() const { return minPositionInMM_; }
+  double getMaxPositionInMM() const { return maxPositionInMM_; }
+
 public slots:
 
   void setDeviceEnabled(bool enabled);
@@ -89,6 +92,9 @@ public slots:
   void setMinSpeed(double speed);
   void setMaxSpeed(double speed);
   void setMaxSpeed2(double speed);
+
+  void setMinPositionInMM(double position);
+  void setMaxPositionInMM(double position);
 
   void start();
   void stop();
@@ -127,6 +133,9 @@ protected:
   double minFrequency_;
   double maxFrequency_;
   double maxFrequency2_;
+
+  double minPositionInMM_;
+  double maxPositionInMM_;
 
 signals:
 
