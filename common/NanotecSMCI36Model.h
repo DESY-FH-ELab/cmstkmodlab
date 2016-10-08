@@ -137,6 +137,8 @@ protected:
   double minPositionInMM_;
   double maxPositionInMM_;
 
+  void checkPositionLimits();
+
 signals:
 
   void deviceStateChanged(State newState);

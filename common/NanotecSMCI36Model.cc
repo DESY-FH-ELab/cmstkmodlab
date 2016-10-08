@@ -86,6 +86,8 @@ void NanotecSMCI36Model::setPositioningMode(int mode)
   if (state_!=READY) return;
 
   controller_->SetPositioningMode(mode);
+
+  checkPositionLimits();
 }
 
 const std::vector<std::pair<int,std::string>>& NanotecSMCI36Model::getPositioningModeNames() const
@@ -104,12 +106,19 @@ void NanotecSMCI36Model::setDirection(bool direction)
 {
   if (state_!=READY) return;
 
+  direction_ = direction;
   controller_->SetDirection(direction);
+
+  checkPositionLimits();
 }
 
 void NanotecSMCI36Model::setTravelDistance(double distance)
 {
   if (state_!=READY) return;
+
+  travelDistance_ = distance;
+
+  checkPositionLimits();
 
   controller_->SetTravelDistance(distance);
 }
@@ -173,9 +182,46 @@ void NanotecSMCI36Model::setMaxPositionInMM(double position)
   if (infoChanged) emit informationChanged();
 }
 
+void NanotecSMCI36Model::checkPositionLimits()
+{
+  if (getPositioningMode()==VNanotecSMCI36::smciExternalRefRun) return;
+
+  double expectedPosition = getEncoderPosition();
+
+  if (getPositioningMode()==VNanotecSMCI36::smciRelativePositioning) {
+    if (getDirection()) {
+      expectedPosition -= getTravelDistanceInMM();
+
+      if (expectedPosition < getMinPositionInMM()) {
+        setTravelDistanceInMM(getEncoderPosition()-getMinPositionInMM());
+      }
+
+    } else {
+      expectedPosition += getTravelDistanceInMM();
+
+      if (expectedPosition > getMaxPositionInMM()) {
+        setTravelDistanceInMM(getMaxPositionInMM()-getEncoderPosition());
+      }
+
+    }
+  }
+
+  if (getPositioningMode()==VNanotecSMCI36::smciAbsolutePositioning) {
+    expectedPosition = getTravelDistanceInMM();
+
+    if (expectedPosition < getMinPositionInMM()) {
+      setTravelDistanceInMM(getMinPositionInMM());
+    } else if (expectedPosition > getMaxPositionInMM()) {
+      setTravelDistanceInMM(getMaxPositionInMM());
+    }
+  }
+}
+
 void NanotecSMCI36Model::start()
 {
   if (state_!=READY) return;
+
+  checkPositionLimits();
 
   if (status_ & VNanotecSMCI36::smciReady) {
     controller_->Start();
