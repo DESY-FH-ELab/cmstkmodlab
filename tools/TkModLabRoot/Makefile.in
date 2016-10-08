@@ -32,34 +32,19 @@ ifeq ($(ROOTMAJOR),6)
 OBJECTS      := $(addsuffix .o,$(MODULES)) $(TARGET)6Dict.o
 endif
 
-# c-compiler
-CC            = gcc
-CFLAGS        = -Wall
-
-# c++-compiler
-CXX           = g++
-CXXFLAGS      = -Wall -fPIC -std=c++11
-
-LD            = g++
-LDFLAGS       = -O2
-SOFLAGS       = -fPIC -O2 -shared
-
-ifeq ($(ARCHITECTURE),Darwin)
-OSXVERSION    = $(shell sw_vers -productVersion | cut -d . -f 2)
-OSXTARGET     = 10.$(OSXVERSION)
-CXX           = MACOSX_DEPLOYMENT_TARGET=$(OSXTARGET) g++
-LD            = MACOSX_DEPLOYMENT_TARGET=$(OSXTARGET) g++
-LDFLAGS       = -O2
-SOFLAGS       = -dynamiclib -single_module -undefined dynamic_lookup
-endif
+CC            = @cc@
+CXX           = @cxx@
+CXXFLAGS      = -fPIC -std=c++11
+LD            = @cxx@
+SOFLAGS       = @soflags@
 
 CXXFLAGS     += $(ROOTCFLAGS)
 
-RLIBMAP	 := rlibmap
-RLIBDEP	 := libSmatrix.so libGraf.so
-RML	     := $(addprefix -rml ,$(RLIBDEP)) $(addprefix -rml ,lib$(TARGET).so)
+RLIBMAP      := rlibmap
+RLIBDEP      := libSmatrix.so libGraf.so
+RML          := $(addprefix -rml ,$(RLIBDEP)) $(addprefix -rml ,lib$(TARGET).so)
 
-ELIBS    := $(BASEPATH)/external/ddierckx/*.o
+ELIBS        := $(BASEPATH)/external/ddierckx/*.o
 
 ALLDEPEND = $(addsuffix .d,$(MODULES))
 EXISTDEPEND = $(shell find . -name \*.d -type f -print)
@@ -74,19 +59,19 @@ endif
 
 lib$(TARGET).so: $(OBJECTS)
 	@echo "Linking shared library $@"
-	@$(LD) $(SOFLAGS) $^ -o $@ $(ELIBS) -lgfortran
+	$(LD) $(SOFLAGS) $^ -o $@ $(ELIBS) -lgfortran
 
 lib$(TARGET).rootmap: lib$(TARGET).so LinkDef.h
 	@echo "Creating library rootmap $@"
-	@$(RLIBMAP) -f -o $@ -d lib$(TARGET).so $(RLIBDEP) -c LinkDef.h
+	$(RLIBMAP) -f -o $@ -d lib$(TARGET).so $(RLIBDEP) -c LinkDef.h
 
 $(TARGET)5Dict.cc: $(addsuffix .h,$(MODULES)) LinkDef.h
 	@echo "Generating dictionary $@"
-	@rootcint -f $(TARGET)5Dict.cc -c $(CPPFLAGS) -p $(addsuffix .h,$(MODULES)) LinkDef.h
+	rootcint -f $(TARGET)5Dict.cc -c $(CPPFLAGS) -p $(addsuffix .h,$(MODULES)) LinkDef.h
 
 $(TARGET)6Dict.cc: $(addsuffix .h,$(MODULES)) LinkDef.h
 	@echo "Generating dictionary $@"
-	@rootcling -f $(TARGET)6Dict.cc -rmf lib$(TARGET).rootmap $(RML) $(addsuffix .h,$(MODULES)) LinkDef.h
+	rootcling -f $(TARGET)6Dict.cc -rmf lib$(TARGET).rootmap $(RML) $(addsuffix .h,$(MODULES)) LinkDef.h
 
 %.d: %.cc
 	@echo Making dependency for file $< ...
@@ -97,7 +82,7 @@ $(TARGET)6Dict.cc: $(addsuffix .h,$(MODULES)) LinkDef.h
 
 %.o: %.cc
 	@echo "Compiling $<"
-	@$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $< -o $@
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $< -o $@
 
 depend: $(ALLDEPEND)
 
