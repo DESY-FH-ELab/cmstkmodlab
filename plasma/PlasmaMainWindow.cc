@@ -36,11 +36,16 @@ PlasmaMainWindow::PlasmaMainWindow(QWidget *parent)
     }
 
     if (smci36ModelX_) {
-      smci36ModelX_->setPitch(config->getValue("SMCI36_Pitch_X", 1.25));
-      smci36ModelX_->setStepMode(config->getValue("SMCI36_StepMode_X", (int)VNanotecSMCI36::smci04MicroStepsPerFullStep));
-      smci36ModelX_->setRampMode(config->getValue("SMCI36_RampMode_X", (int)VNanotecSMCI36::smciJerkFreeRamp));
-      smci36ModelX_->setErrorCorrectionMode(config->getValue("SMCI36_ErrorCorrectionMode_X", (int)VNanotecSMCI36::smciErrCorrectionAfterTravel));
-      smci36ModelX_->setMaxEncoderDeviation(config->getValue("SMCI36_MaxEncoderDeviation_X", 8));
+      smci36ModelX_->setPitch(config->getValue("SMCI36_Pitch_X",
+                                               1.25));
+      smci36ModelX_->setStepMode(config->getValue("SMCI36_StepMode_X",
+                                                  (int)VNanotecSMCI36::smci04MicroStepsPerFullStep));
+      smci36ModelX_->setRampMode(config->getValue("SMCI36_RampMode_X",
+                                                  (int)VNanotecSMCI36::smciJerkFreeRamp));
+      smci36ModelX_->setErrorCorrectionMode(config->getValue("SMCI36_ErrorCorrectionMode_X",
+                                                             (int)VNanotecSMCI36::smciErrCorrectionAfterTravel));
+      smci36ModelX_->setMaxEncoderDeviation(config->getValue("SMCI36_MaxEncoderDeviation_X",
+                                                             8));
 
       smci36ModelX_->updateInformation2();
     }
