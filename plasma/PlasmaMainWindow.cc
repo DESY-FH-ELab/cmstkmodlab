@@ -42,6 +42,8 @@ PlasmaMainWindow::PlasmaMainWindow(QWidget *parent)
                                                   (int)VNanotecSMCI36::smci04MicroStepsPerFullStep));
       smci36ModelX_->setRampMode(config->getValue("SMCI36_RampMode_X",
                                                   (int)VNanotecSMCI36::smciJerkFreeRamp));
+      smci36ModelX_->setPositioningMode(config->getValue("SMCI36_PositioningMode_X",
+                                                         (int)VNanotecSMCI36::smciAbsolutePositioning));
       smci36ModelX_->setErrorCorrectionMode(config->getValue("SMCI36_ErrorCorrectionMode_X",
                                                              (int)VNanotecSMCI36::smciErrCorrectionAfterTravel));
       smci36ModelX_->setMaxEncoderDeviation(config->getValue("SMCI36_MaxEncoderDeviation_X",
