@@ -164,6 +164,9 @@ protected:
   QDoubleSpinBox* maxSpeed_;
   QDoubleSpinBox* maxSpeed2_;
 
+  QLabel* minPosition_;
+  QLabel* maxPosition_;
+
   QPushButton* start_;
   QPushButton* stop_;
   QPushButton* quickstop_;

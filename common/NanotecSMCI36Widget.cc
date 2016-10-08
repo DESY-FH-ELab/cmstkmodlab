@@ -506,6 +506,12 @@ NanotecSMCI36MovementWidget::NanotecSMCI36MovementWidget(NanotecSMCI36Model* mod
           model_, SLOT(setMaxSpeed(double)));
   formLayout->addRow("max. speed 2 [mm/s]", maxSpeed2_);
 
+  minPosition_ = new QLabel(this);
+  formLayout->addRow("min. position [mm]", minPosition_);
+
+  maxPosition_ = new QLabel(this);
+  formLayout->addRow("max. position [mm]", maxPosition_);
+
   layout->addLayout(formLayout);
 
   QHBoxLayout* hlayout = new QHBoxLayout();
@@ -611,6 +617,9 @@ void NanotecSMCI36MovementWidget::updateInfo()
   minSpeed_->setValue(model_->getMinSpeed());
   maxSpeed_->setValue(model_->getMaxSpeed());
   maxSpeed2_->setValue(model_->getMaxSpeed2());
+
+  minPosition_->setText(QString::number(model_->getMinPositionInMM()));
+  maxPosition_->setText(QString::number(model_->getMaxPositionInMM()));
 }
 
 NanotecSMCI36Widget::NanotecSMCI36Widget(NanotecSMCI36Model* model, QWidget *parent)
