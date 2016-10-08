@@ -396,7 +396,19 @@ int NanotecSMCI36Fake::GetMaximumFrequency2() const
 
 void NanotecSMCI36Fake::Start()
 {
+  if (positioningMode_==smciExternalRefRun) {
+    position_ = 0;
+  } else if (positioningMode_==smciRelativePositioning) {
+    if (direction_) {
+      position_ -= travelDistance_;
+    } else {
+      position_ += travelDistance_;
+    }
+  } else if (positioningMode_==smciAbsolutePositioning) {
+    position_ = travelDistance_;
+  }
 
+  encoderPosition_ = position_;
 }
 
 void NanotecSMCI36Fake::Stop(bool /* quickstop */)
