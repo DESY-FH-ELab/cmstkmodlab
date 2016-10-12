@@ -355,11 +355,12 @@ NanotecSMCI36SettingsWidget::NanotecSMCI36SettingsWidget(NanotecSMCI36Model* mod
   setLayout(formLayout);
 
   pitch_ = new QDoubleSpinBox(this);
-  pitch_->setMinimum(1);
-  pitch_->setMaximum(1000000);
+  pitch_->setDecimals(6);
+  pitch_->setMinimum(0.001);
+  pitch_->setMaximum(1);
   connect(pitch_, SIGNAL(valueChanged(double)),
           model_, SLOT(setPitch(double)));
-  formLayout->addRow("pitch [full steps/mm]", pitch_);
+  formLayout->addRow("pitch [mm/full step]", pitch_);
 
   motorID_ = new QSpinBox(this);
   motorID_->setMinimum(0);

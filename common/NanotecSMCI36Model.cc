@@ -146,22 +146,22 @@ void NanotecSMCI36Model::setMaxFrequency2(double frequency)
 
 void NanotecSMCI36Model::setTravelDistanceInMM(double distance)
 {
-  setTravelDistance(distance*getPitch()*getStepMode());
+  setTravelDistance(distance*getStepMode()/getPitch());
 }
 
 void NanotecSMCI36Model::setMinSpeed(double speed)
 {
-  setMinFrequency(speed*getPitch()*getStepMode());
+  setMinFrequency(speed*getStepMode()/getPitch());
 }
 
 void NanotecSMCI36Model::setMaxSpeed(double speed)
 {
-  setMaxFrequency(speed*getPitch()*getStepMode());
+  setMaxFrequency(speed*getStepMode()/getPitch());
 }
 
 void NanotecSMCI36Model::setMaxSpeed2(double speed)
 {
-  setMaxFrequency2(speed*getPitch()*getStepMode());
+  setMaxFrequency2(speed*getStepMode()/getPitch());
 }
 
 void NanotecSMCI36Model::setMinPositionInMM(double position)

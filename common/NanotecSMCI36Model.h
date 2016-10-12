@@ -31,7 +31,7 @@ public:
                               double updateInterval2 = 5,
                               QObject *parent = 0);
 
-  double getPitch() const { return pitch_; }
+  double getPitch() const { return pitch_; } // unit is [mm / full step]
 
   unsigned int getStatus() const { return status_; }
   int getMotorID() const { return motorID_; }
@@ -48,10 +48,10 @@ public:
   int getMaxEncoderDeviation() const { return maxEncoderDeviation_; }
 
   int getControllerSteps() const { return controllerSteps_; }
-  double getControllerPosition() const { return getControllerSteps()/getPitch()/getStepMode(); }
+  double getControllerPosition() const { return getPitch()*getControllerSteps()/getStepMode(); }
 
   int getEncoderSteps() const { return encoderSteps_; }
-  double getEncoderPosition() const { return getEncoderSteps()/getPitch()/getStepMode(); }
+  double getEncoderPosition() const { return getPitch()*getEncoderSteps()/getStepMode(); }
 
   int getPositioningMode() const { return positioningMode_; }
   const std::vector<std::pair<int,std::string>>& getPositioningModeNames() const;
@@ -63,10 +63,10 @@ public:
   double getMaxFrequency() const { return maxFrequency_; }
   double getMaxFrequency2() const { return maxFrequency2_; }
 
-  double getTravelDistanceInMM() const { return getTravelDistance()/getPitch()/getStepMode(); }
-  double getMinSpeed() const { return getMinFrequency()/getPitch()/getStepMode(); }
-  double getMaxSpeed() const { return getMaxFrequency()/getPitch()/getStepMode(); }
-  double getMaxSpeed2() const { return getMaxFrequency2()/getPitch()/getStepMode(); }
+  double getTravelDistanceInMM() const { return getPitch()*getTravelDistance()/getStepMode(); }
+  double getMinSpeed() const { return getPitch()*getMinFrequency()/getStepMode(); }
+  double getMaxSpeed() const { return getPitch()*getMaxFrequency()/getStepMode(); }
+  double getMaxSpeed2() const { return getPitch()*getMaxFrequency2()/getStepMode(); }
 
   double getMinPositionInMM() const { return minPositionInMM_; }
   double getMaxPositionInMM() const { return maxPositionInMM_; }
