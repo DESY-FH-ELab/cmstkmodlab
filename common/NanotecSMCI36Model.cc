@@ -16,7 +16,7 @@ NanotecSMCI36Model::NanotecSMCI36Model(const char* port,
     NanotecSMCI36_PORT(port),
     updateInterval1_(updateInterval1),
     updateInterval2_(updateInterval2),
-    pitch_(1.0)
+    pitch_(0.35)
 {
   timer1_ = new QTimer(this);
   timer1_->setInterval(updateInterval1_ * 1000);
