@@ -451,69 +451,89 @@ NanotecSMCI36MovementWidget::NanotecSMCI36MovementWidget(NanotecSMCI36Model* mod
           model_, SLOT(setDirection(bool)));
   formLayout->addRow("direction", direction_);
 
-  travelDistance_ = new QDoubleSpinBox(this);
+  layout->addLayout(formLayout);
+
+  modeTabs_ = new QTabWidget(this);
+
+  QWidget * widget = new QWidget(modeTabs_);
+
+  formLayout = new QFormLayout;
+  widget->setLayout(formLayout);
+  formLayout->setVerticalSpacing(2);
+
+  travelDistance_ = new QDoubleSpinBox(widget);
   travelDistance_->setMinimum(-100000);
   travelDistance_->setMaximum(+100000);
   connect(travelDistance_, SIGNAL(valueChanged(double)),
           model_, SLOT(setTravelDistance(double)));
   formLayout->addRow("travel distance [steps]", travelDistance_);
 
-  minFrequency_ = new QDoubleSpinBox(this);
+  minFrequency_ = new QDoubleSpinBox(widget);
   minFrequency_->setMinimum(1);
   minFrequency_->setMaximum(160000);
   connect(minFrequency_, SIGNAL(valueChanged(double)),
           model_, SLOT(setMinFrequency(double)));
   formLayout->addRow("min. speed [steps/s]", minFrequency_);
 
-  maxFrequency_ = new QDoubleSpinBox(this);
+  maxFrequency_ = new QDoubleSpinBox(widget);
   maxFrequency_->setMinimum(1);
   maxFrequency_->setMaximum(512000);
   connect(maxFrequency_, SIGNAL(valueChanged(double)),
           model_, SLOT(setMaxFrequency(double)));
   formLayout->addRow("max. speed [steps/s]", maxFrequency_);
 
-  maxFrequency2_ = new QDoubleSpinBox(this);
+  maxFrequency2_ = new QDoubleSpinBox(widget);
   maxFrequency2_->setMinimum(1);
   maxFrequency2_->setMaximum(512000);
   connect(maxFrequency2_, SIGNAL(valueChanged(double)),
           model_, SLOT(setMaxFrequency2(double)));
   formLayout->addRow("max. speed 2 [steps/s]", maxFrequency2_);
 
-  travelDistanceInMM_ = new QDoubleSpinBox(this);
+  modeTabs_->addTab(widget, "step");
+
+  widget = new QWidget(modeTabs_);
+
+  formLayout = new QFormLayout;
+  widget->setLayout(formLayout);
+  formLayout->setVerticalSpacing(2);
+
+  travelDistanceInMM_ = new QDoubleSpinBox(widget);
   travelDistanceInMM_->setMinimum(-100000);
   travelDistanceInMM_->setMaximum(+100000);
   connect(travelDistanceInMM_, SIGNAL(valueChanged(double)),
           model_, SLOT(setTravelDistanceInMM(double)));
   formLayout->addRow("travel distance [mm]", travelDistanceInMM_);
 
-  minSpeed_ = new QDoubleSpinBox(this);
+  minSpeed_ = new QDoubleSpinBox(widget);
   minSpeed_->setMinimum(1);
   minSpeed_->setMaximum(160000);
   connect(minSpeed_, SIGNAL(valueChanged(double)),
           model_, SLOT(setMinSpeed(double)));
   formLayout->addRow("min. speed [mm/s]", minSpeed_);
 
-  maxSpeed_ = new QDoubleSpinBox(this);
+  maxSpeed_ = new QDoubleSpinBox(widget);
   maxSpeed_->setMinimum(1);
   maxSpeed_->setMaximum(160000);
   connect(maxSpeed_, SIGNAL(valueChanged(double)),
           model_, SLOT(setMaxSpeed(double)));
   formLayout->addRow("max. speed [mm/s]", maxSpeed_);
 
-  maxSpeed2_ = new QDoubleSpinBox(this);
+  maxSpeed2_ = new QDoubleSpinBox(widget);
   maxSpeed2_->setMinimum(1);
   maxSpeed2_->setMaximum(160000);
   connect(maxSpeed2_, SIGNAL(valueChanged(double)),
           model_, SLOT(setMaxSpeed(double)));
   formLayout->addRow("max. speed 2 [mm/s]", maxSpeed2_);
 
-  minPosition_ = new QLabel(this);
+  minPosition_ = new QLabel(widget);
   formLayout->addRow("min. position [mm]", minPosition_);
 
-  maxPosition_ = new QLabel(this);
+  maxPosition_ = new QLabel(widget);
   formLayout->addRow("max. position [mm]", maxPosition_);
 
-  layout->addLayout(formLayout);
+  modeTabs_->addTab(widget, "mm");
+
+  layout->addWidget(modeTabs_);
 
   QHBoxLayout* hlayout = new QHBoxLayout();
 

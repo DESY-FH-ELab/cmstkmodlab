@@ -16,6 +16,7 @@
 #include <QLabel>
 #include <QComboBox>
 #include <QPushButton>
+#include <QTabWidget>
 
 #include "NanotecSMCI36Model.h"
 #include "DeviceState.h"
@@ -152,6 +153,8 @@ protected:
   QCheckBox* stageMode_;
 
   NanotecSMCI36PositioningModeWidget* positioningMode_;
+
+  QTabWidget* modeTabs_;
 
   QCheckBox* direction_;
   QDoubleSpinBox* travelDistance_;
