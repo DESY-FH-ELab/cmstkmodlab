@@ -230,7 +230,10 @@ NanotecSMCI36PositioningModeWidget::NanotecSMCI36PositioningModeWidget(NanotecSM
   for (std::vector<std::pair<int,std::string>>::const_iterator it = modes.begin();
        it!=modes.end();
        ++it) {
+    if (it->first==VNanotecSMCI36::smciAbsolutePositioning ||
+        it->first==VNanotecSMCI36::smciExternalRefRun) {
     addItem(it->second.c_str(), QVariant(it->first));
+    }
   }
 
   // Connect all the signals
