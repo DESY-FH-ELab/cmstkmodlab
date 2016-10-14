@@ -54,7 +54,7 @@ PlasmaMainWindow::PlasmaMainWindow(QWidget *parent)
       smci36ModelX_->setMinPositionInMM(config->getValue("SMCI36_MinPositionInMM_X",
                                                          0));
       smci36ModelX_->setMaxPositionInMM(config->getValue("SMCI36_MaxPositionInMM_X",
-                                                         500));
+                                                         370));
 
       smci36ModelX_->updateInformation2();
     }
