@@ -540,6 +540,8 @@ NanotecSMCI36MovementWidget::NanotecSMCI36MovementWidget(NanotecSMCI36Model* mod
 
   layout->addWidget(modeTabs_);
 
+  modeTabs_->setCurrentIndex(1);
+
   QHBoxLayout* hlayout = new QHBoxLayout();
 
   start_ = new QPushButton("start", this);
