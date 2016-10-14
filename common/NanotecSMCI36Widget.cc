@@ -446,10 +446,12 @@ NanotecSMCI36MovementWidget::NanotecSMCI36MovementWidget(NanotecSMCI36Model* mod
   positioningMode_ = new NanotecSMCI36PositioningModeWidget(model_, this);
   formLayout->addRow("positioning mode", positioningMode_);
 
+  /*
   direction_ = new QCheckBox(this);
   connect(direction_, SIGNAL(clicked(bool)),
           model_, SLOT(setDirection(bool)));
   formLayout->addRow("direction", direction_);
+  */
 
   layout->addLayout(formLayout);
 
@@ -593,7 +595,7 @@ void NanotecSMCI36MovementWidget::controlStateChanged(bool enabled)
 {
   stageMode_->setEnabled(enabled);
 
-  direction_->setEnabled(enabled);
+  // direction_->setEnabled(enabled);
 
   if (!stageMode_->isChecked()) {
     travelDistance_->setEnabled(enabled);
@@ -627,7 +629,7 @@ void NanotecSMCI36MovementWidget::updateInfo()
 {
   //NQLog("NanotecSMCI36Widget", NQLog::Debug) << "updateInfo()";
 
-  direction_->setChecked(model_->getDirection());
+  // direction_->setChecked(model_->getDirection());
 
   travelDistance_->setValue(model_->getTravelDistance());
   minFrequency_->setValue(model_->getMinFrequency());
