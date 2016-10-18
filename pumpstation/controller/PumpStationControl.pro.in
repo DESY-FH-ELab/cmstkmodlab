@@ -1,0 +1,81 @@
+ARCHITECTURE=@architecture@
+USEFAKEDEVICES="X@usefakedevices@"
+
+LIBS += -L@basepath@/devices/lib -lTkModLabNanotec
+LIBS += -L@basepath@/common -lCommon
+
+QMAKE = @qmake@
+
+macx {
+  CONFIG+=x86_64
+  QMAKE_CXXFLAGS += -stdlib=libc++
+  #QMAKE_MAC_SDK = macosx10.11
+  QMAKE_MACOSX_DEPLOYMENT_TARGET = 10.11
+  #LIBS += -framework AppKit
+  #LIBS += -framework QuartzCore
+  #LIBS += -framework QTKit
+  #LIBS += -framework Cocoa
+}
+
+CONFIG += link_pkgconfig
+PKGCONFIG += 
+
+QMAKE_CXXFLAGS += -std=c++11
+macx {
+  QMAKE_CXXFLAGS += -DAPPLICATIONVERSIONSTR=\\\"unknown\\\"
+}
+else {
+  QMAKE_CXXFLAGS += -DAPPLICATIONVERSIONSTR=\\\"`git describe --dirty --always --tags`\\\"
+}
+
+DEFINES += @configdefines@
+
+equals(USEFAKEDEVICES,"X1") {
+DEFINES += USE_FAKEIO
+}
+
+QT += core gui xml network script svg
+greaterThan(QT_MAJOR_VERSION, 4) {
+  QT += widgets
+} 
+
+QT += core network
+QT -= gui
+
+CONFIG   += console
+CONFIG   -= app_bundle
+
+TARGET = PumpStationControl
+TEMPLATE = app
+
+macx {
+  QMAKE_POST_LINK = install_name_tool -change libCommon.1.dylib @basepath@/common/libCommon.1.dylib $(TARGET)
+}
+
+DEPENDPATH += @basepath@/common
+INCLUDEPATH += .
+INCLUDEPATH += ..
+INCLUDEPATH += @basepath@
+INCLUDEPATH += @basepath@/common
+
+greaterThan(QT_MAJOR_VERSION, 4) {
+  cache()
+}
+
+# Input
+HEADERS += controller.h
+
+equals(USEFAKEDEVICES,"X0") {
+HEADERS += 
+} else {
+HEADERS += 
+}
+
+SOURCES += main.cc \
+           controller.cc
+
+equals(USEFAKEDEVICES,"X0") {
+SOURCES += 
+} else {
+SOURCES += 
+}
