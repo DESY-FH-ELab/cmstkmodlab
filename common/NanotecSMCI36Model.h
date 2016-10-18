@@ -71,6 +71,12 @@ public:
   double getMinPositionInMM() const { return minPositionInMM_; }
   double getMaxPositionInMM() const { return maxPositionInMM_; }
 
+  void setMaxSpeedForOperation(double speed)  { maxSpeedForOperation_ = speed; }
+  double getMaxSpeedForOperation() const { return maxSpeedForOperation_; }
+
+  void setMaxSpeedForRefRun(double speed)  { maxSpeedForRefRun_ = speed; }
+  double getMaxSpeedForRefRun() const { return maxSpeedForRefRun_; }
+
 public slots:
 
   void setDeviceEnabled(bool enabled);
@@ -134,6 +140,8 @@ protected:
   double maxFrequency_;
   double maxFrequency2_;
 
+  double maxSpeedForOperation_;
+  double maxSpeedForRefRun_;
   double minPositionInMM_;
   double maxPositionInMM_;
 
@@ -143,6 +151,7 @@ signals:
 
   void deviceStateChanged(State newState);
   void informationChanged();
+  void positionModeChanged(int mode);
   void message(const QString & text);
   void controlStateChanged(bool);
 };

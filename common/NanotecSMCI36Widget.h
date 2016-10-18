@@ -178,6 +178,7 @@ protected:
 public slots:
 
   void stageModeChanged(bool);
+  void positionModeChanged(int);
   void updateDeviceState( State newState );
   void controlStateChanged(bool);
   void updateInfo();

@@ -51,6 +51,11 @@ PlasmaMainWindow::PlasmaMainWindow(QWidget *parent)
       smci36ModelX_->setMaxEncoderDeviation(config->getValue("SMCI36_MaxEncoderDeviation_X",
                                                              8));
 
+      smci36ModelX_->setMaxSpeedForOperation(config->getValue("SMCI36_MaxSpeedForOperation_X",
+                                                              100));
+      smci36ModelX_->setMaxSpeedForRefRun(config->getValue("SMCI36_MaxSpeedForRefRun_X",
+                                                           5));
+
       smci36ModelX_->setMinPositionInMM(config->getValue("SMCI36_MinPositionInMM_X",
                                                          0));
       smci36ModelX_->setMaxPositionInMM(config->getValue("SMCI36_MaxPositionInMM_X",

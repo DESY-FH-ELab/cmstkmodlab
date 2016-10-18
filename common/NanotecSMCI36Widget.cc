@@ -573,6 +573,8 @@ NanotecSMCI36MovementWidget::NanotecSMCI36MovementWidget(NanotecSMCI36Model* mod
           this, SLOT(controlStateChanged(bool)));
   connect(model_, SIGNAL(informationChanged()),
           this, SLOT(updateInfo()));
+  connect(model_, SIGNAL(positionModeChanged(int)),
+          this, SLOT(positionModeChanged(int)));
 
   // Set GUI according to the current chiller state
   updateDeviceState(model_->getDeviceState());
@@ -583,6 +585,17 @@ void NanotecSMCI36MovementWidget::stageModeChanged(bool)
 {
   bool ready = (model_->getDeviceState() == READY);
   controlStateChanged(ready);
+}
+
+void NanotecSMCI36MovementWidget::positionModeChanged(int mode)
+{
+  if (mode==VNanotecSMCI36::smciExternalRefRun) {
+    maxSpeed_->setMaximum(model_->getMaxSpeedForRefRun());
+    maxSpeed2_->setMaximum(model_->getMaxSpeedForRefRun());
+  } else {
+    maxSpeed_->setMaximum(model_->getMaxSpeedForOperation());
+    maxSpeed2_->setMaximum(model_->getMaxSpeedForOperation());
+  }
 }
 
 /**
@@ -602,6 +615,7 @@ void NanotecSMCI36MovementWidget::controlStateChanged(bool enabled)
 
   // direction_->setEnabled(enabled);
 
+  /*
   if (!stageMode_->isChecked()) {
     travelDistance_->setEnabled(enabled);
     minFrequency_->setEnabled(enabled);
@@ -623,6 +637,7 @@ void NanotecSMCI36MovementWidget::controlStateChanged(bool enabled)
     maxSpeed_->setEnabled(enabled);
     maxSpeed2_->setEnabled(enabled);
   }
+  */
 
   start_->setEnabled(enabled);
   stop_->setEnabled(enabled);
