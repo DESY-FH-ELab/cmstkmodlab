@@ -60,7 +60,7 @@ void ConradModel::initialize( void )
   // Announce new states
   if (status.size() == 8) {
 
-    setAllSwitchesReady( status );
+    setAllSwitchesReady(status);
     setDeviceState( READY );
   }
 
@@ -234,7 +234,7 @@ void ConradModel::setAllSwitchesReady(const std::vector<bool>& ready)
 {
   for ( unsigned int i = 0; i < ready.size(); ++i ) {
     // Set device state according to queried state
-    setSwitchState( i, ready.at(i) ? READY : OFF );
+    setSwitchState(i, ready.at(i) ? READY : OFF);
   }
 }
 
