@@ -33,13 +33,10 @@ equals(USEFAKEDEVICES,"X1") {
 DEFINES += USE_FAKEIO
 }
 
-QT += core gui xml network script svg
+QT += core network gui
 greaterThan(QT_MAJOR_VERSION, 4) {
   QT += widgets
 } 
-
-QT += core network
-QT -= gui
 
 CONFIG   += console
 CONFIG   -= app_bundle
