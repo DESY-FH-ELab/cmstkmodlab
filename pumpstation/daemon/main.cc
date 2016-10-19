@@ -51,7 +51,8 @@
 #endif
 
 #include <nqlogger.h>
-#include "ApplicationConfig.h"
+#include <ApplicationConfig.h>
+#include <DeviceState.h>
 
 #include <ConradModel.h>
 
@@ -81,6 +82,8 @@ int main(int argc, char *argv[])
   if (logfile->open(QIODevice::WriteOnly | QIODevice::Append | QIODevice::Text)) {
     NQLogger::instance()->addDestiniation(logfile, NQLog::Message);
   }
+
+  qRegisterMetaType<State>("State");
 
   ApplicationConfig::instance(std::string(Config::CMSTkModLabBasePath) + "/pumpstation/pumpstation.cfg");
 
