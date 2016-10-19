@@ -55,6 +55,7 @@
 #include <DeviceState.h>
 
 #include <ConradModel.h>
+#include <DataLogger.h>
 
 #include "CommunicationThread.h"
 
@@ -88,6 +89,8 @@ int main(int argc, char *argv[])
   ApplicationConfig::instance(std::string(Config::CMSTkModLabBasePath) + "/pumpstation/pumpstation.cfg");
 
   ConradModel conrad(&app);
+
+  DataLogger logger(&conrad, &app);
 
   CommunicationThread commthread(&conrad, &app);
 
