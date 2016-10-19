@@ -59,7 +59,7 @@ greaterThan(QT_MAJOR_VERSION, 4) {
 }
 
 # Input
-HEADERS += controller.h
+HEADERS += Controller.h
 
 equals(USEFAKEDEVICES,"X0") {
 HEADERS += 
@@ -67,8 +67,8 @@ HEADERS +=
 HEADERS += 
 }
 
-SOURCES += main.cc \
-           controller.cc
+SOURCES += PumpStationControl.cc \
+           Controller.cc
 
 equals(USEFAKEDEVICES,"X0") {
 SOURCES += 

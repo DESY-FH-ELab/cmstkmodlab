@@ -45,9 +45,9 @@
 #include <QtNetwork>
 
 #include <nqlogger.h>
-#include "ApplicationConfig.h"
+#include <ApplicationConfig.h>
 
-#include "controller.h"
+#include "Controller.h"
 
 int main(int argc, char *argv[])
 {

@@ -44,9 +44,9 @@
 #include <QtNetwork>
 
 #include <nqlogger.h>
-#include "ApplicationConfig.h"
+#include <ApplicationConfig.h>
 
-#include "controller.h"
+#include "Controller.h"
 
 Controller::Controller(QStringList& arguments)
  : arguments_(arguments)
