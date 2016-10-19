@@ -51,6 +51,7 @@ int main(int argc, char *argv[])
   ConradModel conrad(&app);
 
   DataLogger logger(&conrad, &app);
+  logger.start();
 
   CommunicationThread commthread(&conrad, &app);
 
