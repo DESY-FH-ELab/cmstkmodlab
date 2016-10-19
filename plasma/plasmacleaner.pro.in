@@ -46,12 +46,11 @@ macx {
   QMAKE_POST_LINK = install_name_tool -change libCommon.1.dylib @basepath@/common/libCommon.1.dylib $(TARGET)
 }
 
-DEPENDPATH += @basepath@/common @basepath@/assembly/assemblyCommon
+DEPENDPATH += @basepath@/common
 INCLUDEPATH += .
 INCLUDEPATH += ..
 INCLUDEPATH += @basepath@
 INCLUDEPATH += @basepath@/common
-INCLUDEPATH += @basepath@/assembly/assemblyCommon
 
 greaterThan(QT_MAJOR_VERSION, 4) {
   cache()
