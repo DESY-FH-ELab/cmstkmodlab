@@ -1,7 +1,6 @@
 #include <iostream>
 
 #include <QMutexLocker>
-#include <QDateTime>
 #include <QProcess>
 #include <QXmlStreamWriter>
 
@@ -20,6 +19,10 @@ DataLogger::DataLogger(ConradModel* conradModel,
 {
   connect(conradModel_, SIGNAL(switchStateChanged(int, State)),
           this, SLOT(switchStateChanged(int, State)));
+
+  restartTimer_ = new QTimer();
+  connect(restartTimer_, SIGNAL(timeout()),
+          this, SLOT(checkRestart()));
 }
 
 void DataLogger::start()
@@ -66,12 +69,18 @@ void DataLogger::start()
 
   isStreaming_ = true;
 
+  fileDateTime_ = dt;
+
   writeStatus();
+
+  restartTimer_->start(60000);
 }
 
 void DataLogger::stop()
 {
   if (!isStreaming_) return;
+
+  restartTimer_->stop();
 
   writeStatus();
 
@@ -80,6 +89,18 @@ void DataLogger::stop()
   delete stream_;
 
   isStreaming_ = false;
+}
+
+void DataLogger::checkRestart()
+{
+  if (!isStreaming_) return;
+
+  QDateTime utime = QDateTime::currentDateTime();
+
+  if (fileDateTime_.secsTo(utime)<60*60) return;
+
+  stop();
+  start();
 }
 
 void DataLogger::writeStatus()

@@ -5,6 +5,8 @@
 #include <QTextStream>
 #include <QFile>
 #include <QMutex>
+#include <QTimer>
+#include <QDateTime>
 
 #include <ConradModel.h>
 
@@ -23,6 +25,7 @@ public:
 protected slots:
 
   void switchStateChanged(int device, State newState);
+  void checkRestart();
 
 protected:
 
@@ -34,6 +37,8 @@ protected:
   QFile* ofile_;
   QTextStream* stream_;
   QDir currentDir_;
+  QDateTime fileDateTime_;
+  QTimer* restartTimer_;
 
   void writeToStream(QString& buffer);
   void writeStatus();
