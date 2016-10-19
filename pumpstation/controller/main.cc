@@ -38,24 +38,34 @@
 **
 ****************************************************************************/
 
+#include <iostream>
+
 #include <QCoreApplication>
+#include <QtCore>
+#include <QtNetwork>
+
+#include <nqlogger.h>
+#include "ApplicationConfig.h"
 
 #include "controller.h"
 
 int main(int argc, char *argv[])
 {
-  /*
-  QApplication app(argc, argv);
-
-  Client client;
-  client.show();
-  return client.exec();
-  */
-
   QCoreApplication app(argc, argv);
 
-  Controller controller(&app);
+  QStringList arguments = QCoreApplication::arguments();
+  arguments.removeAt(0);
+
+  if (arguments.contains("--debug")) {
+    NQLogger::instance()->addActiveModule("*");
+    NQLogger::instance()->addDestiniation(stdout, NQLog::Debug);
+
+    arguments.removeOne("--debug");
+  }
+
+  ApplicationConfig::instance(std::string(Config::CMSTkModLabBasePath) + "/pumpstation/pumpstation.cfg");
+
+  Controller controller(arguments);
 
   return app.exec();
 }
-

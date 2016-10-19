@@ -43,11 +43,13 @@
 #include <QtCore>
 #include <QtNetwork>
 
+#include <nqlogger.h>
+#include "ApplicationConfig.h"
+
 #include "controller.h"
 
-Controller::Controller(QObject *parent)
- : QObject(parent),
-   networkSession(0)
+Controller::Controller(QStringList& arguments)
+ : arguments_(arguments)
 {
   // find out which IP to connect to
   QList<QHostAddress> ipAddressesList = QNetworkInterface::allAddresses();
@@ -63,54 +65,37 @@ Controller::Controller(QObject *parent)
   if (ipAddress.isEmpty())
     ipAddress = QHostAddress(QHostAddress::LocalHost).toString();
 
-  tcpSocket = new QTcpSocket(this);
+  socket_ = new QTcpSocket(this);
 
-  connect(tcpSocket, SIGNAL(connected()), this, SLOT(sendCommand()));
-  connect(tcpSocket, SIGNAL(readyRead()), this, SLOT(readFortune()));
-  connect(tcpSocket, SIGNAL(error(QAbstractSocket::SocketError)),
+  connect(socket_, SIGNAL(connected()), this, SLOT(sendCommand()));
+  connect(socket_, SIGNAL(readyRead()), this, SLOT(readResponse()));
+  connect(socket_, SIGNAL(error(QAbstractSocket::SocketError)),
           this, SLOT(reportError(QAbstractSocket::SocketError)));
 
-  QNetworkConfigurationManager manager;
-  if (manager.capabilities() & QNetworkConfigurationManager::NetworkSessionRequired) {
-    // Get saved network configuration
-    QSettings settings(QSettings::UserScope, QLatin1String("TrollTech"));
-    settings.beginGroup(QLatin1String("QtNetwork"));
-    const QString id = settings.value(QLatin1String("DefaultNetworkConfiguration")).toString();
-    settings.endGroup();
-
-    // If the saved network configuration is not currently discovered use the system default
-    QNetworkConfiguration config = manager.configurationFromIdentifier(id);
-    if ((config.state() & QNetworkConfiguration::Discovered) !=
-        QNetworkConfiguration::Discovered) {
-      config = manager.defaultConfiguration();
-    }
-
-    networkSession = new QNetworkSession(config, this);
-    connect(networkSession, SIGNAL(opened()), this, SLOT(sessionOpened()));
-
-
-    std::cout << "network session" << std::endl;
-
-    networkSession->open();
-  }
-
-  requestNewFortune();
+  connectToServer();
 }
 
-void Controller::requestNewFortune()
+void Controller::connectToServer()
 {
-  blockSize = 0;
-  tcpSocket->abort();
-  tcpSocket->connectToHost(ipAddress, 63432);
+  NQLogDebug("controller") << "void Controller::connectToServer()";
+
+  quint16 port = ApplicationConfig::instance()->getValue("SERVERPORT", 63432);
+
+  socket_->abort();
+  socket_->connectToHost(ipAddress, port);
 }
 
 void Controller::sendCommand()
 {
-  std::cout << "connected" << std::endl;
+  NQLogDebug("controller") << "void Controller::sendCommand()";
 
-  QString command = "testCommand";
+  QString command;
+  for (int i=0; i<arguments_.size(); ++i) {
+    if (i>0) command += " ";
+    command += arguments_.at(i);
+  }
 
-  std::cout << "command.length() = " << command.length() << std::endl;
+  NQLogDebug("controller") << "command.length() = " << command.length();
 
   QByteArray block;
   QDataStream out(&block, QIODevice::WriteOnly);
@@ -118,72 +103,46 @@ void Controller::sendCommand()
   out << (quint16)command.length();
   out << command;
 
-  tcpSocket->write(block);
-  tcpSocket->flush();
+  socket_->write(block);
+  socket_->flush();
 }
 
-void Controller::readFortune()
+void Controller::readResponse()
 {
-  QDataStream in(tcpSocket);
+  NQLogDebug("controller") << "void Controller::readResponse()";
+
+  QDataStream in(socket_);
   in.setVersion(QDataStream::Qt_4_0);
 
-  if (blockSize == 0) {
-    if (tcpSocket->bytesAvailable() < (int)sizeof(quint16))
-      return;
+  quint16 blockSize = 0;
+  in >> blockSize;
 
-    in >> blockSize;
-  }
+  NQLogDebug("controller") << "blockSize = " << blockSize;
 
-  if (tcpSocket->bytesAvailable() < blockSize)
-    return;
+  QString response;
+  in >> response;
 
-  QString nextFortune;
-  in >> nextFortune;
+  NQLogDebug("controller") << "response: (" << blockSize << ") |" << response.toStdString() << "|";
 
-  if (nextFortune == currentFortune) {
-    QTimer::singleShot(0, this, SLOT(requestNewFortune()));
-    return;
-  }
+  std::cout << response.toStdString() << std::endl;
 
-  currentFortune = nextFortune;
-
-  std::cout << currentFortune.toStdString() << std::endl;
-
-  tcpSocket->close();
+  socket_->close();
 
   QCoreApplication::quit();
 }
 
 void Controller::reportError(QAbstractSocket::SocketError socketError)
 {
-    switch (socketError) {
-    case QAbstractSocket::RemoteHostClosedError:
-        break;
-    case QAbstractSocket::HostNotFoundError:
-        std::cerr << "The host was not found. Please check the host name and port settings." << std::endl;
-        break;
-    case QAbstractSocket::ConnectionRefusedError:
-      std::cerr << "The connection was refused by the peer. Make sure the fortune server is running, and check that the host name and port settings are correct." << std::endl;
-        break;
-    default:
-      std::cerr << "The following error occurred: " << tcpSocket->errorString().toStdString() << std::endl;
-    }
-}
-
-void Controller::sessionOpened()
-{
-  // Save the used configuration
-  QNetworkConfiguration config = networkSession->configuration();
-  QString id;
-  if (config.type() == QNetworkConfiguration::UserChoice)
-    id = networkSession->sessionProperty(QLatin1String("UserChoiceConfiguration")).toString();
-  else
-    id = config.identifier();
-
-  QSettings settings(QSettings::UserScope, QLatin1String("TrollTech"));
-  settings.beginGroup(QLatin1String("QtNetwork"));
-  settings.setValue(QLatin1String("DefaultNetworkConfiguration"), id);
-  settings.endGroup();
-
-  requestNewFortune();
+  switch (socketError) {
+  case QAbstractSocket::RemoteHostClosedError:
+    break;
+  case QAbstractSocket::HostNotFoundError:
+    NQLogFatal("controller") << "The host was not found. Please check the host name and port settings.";
+    break;
+  case QAbstractSocket::ConnectionRefusedError:
+    NQLogFatal("controller") << "The connection was refused by the peer. Make sure the fortune server is running, and check that the host name and port settings are correct.";
+    break;
+  default:
+    NQLogFatal("controller") << "The following error occurred: " << socket_->errorString().toStdString();
+  }
 }

@@ -41,11 +41,9 @@
 #ifndef CONTROLLER_H
 #define CONTROLLER_H
 
+#include <QStringList>
 #include <QObject>
 #include <QTcpSocket>
-
-class QTcpSocket;
-class QNetworkSession;
 
 class Controller : public QObject
 {
@@ -53,24 +51,20 @@ class Controller : public QObject
 
 public:
 
-  Controller(QObject *parent = 0);
+  Controller(QStringList& arguments);
 
 private slots:
 
-  void requestNewFortune();
+  void connectToServer();
   void sendCommand();
-  void readFortune();
+  void readResponse();
   void reportError(QAbstractSocket::SocketError socketError);
-  void sessionOpened();
 
 private:
 
-  QTcpSocket *tcpSocket;
+  QStringList arguments_;
+  QTcpSocket *socket_;
   QString ipAddress;
-  QString currentFortune;
-  quint16 blockSize;
-
-  QNetworkSession *networkSession;
 };
 
 #endif
