@@ -1,7 +1,7 @@
 ARCHITECTURE=@architecture@
 USEFAKEDEVICES="X@usefakedevices@"
 
-LIBS += -L@basepath@/devices/lib -lTkModLabNanotec
+LIBS += -L@basepath@/devices/lib -lTkModLabConrad
 LIBS += -L@basepath@/common -lCommon
 
 QMAKE = @qmake@
@@ -34,13 +34,10 @@ equals(USEFAKEDEVICES,"X1") {
 DEFINES += USE_FAKEIO
 }
 
-QT += core gui xml network script svg
+QT += core network gui xml
 greaterThan(QT_MAJOR_VERSION, 4) {
   QT += widgets
 } 
-
-QT += core network
-QT -= gui
 
 CONFIG   += console
 CONFIG   -= app_bundle
