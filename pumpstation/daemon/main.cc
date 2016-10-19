@@ -43,40 +43,48 @@
 #include <QCoreApplication>
 #include <QtCore>
 #include <QtNetwork>
+#include <QFile>
+#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
+#include <QDesktopServices>
+#else
+#include <QStandardPaths>
+#endif
 
-#include "communicationserver.h"
+#include <nqlogger.h>
+#include "ApplicationConfig.h"
+
+#include "communicationthread.h"
 
 int main(int argc, char *argv[])
 {
   QCoreApplication app(argc, argv);
 
-  CommunicationServer server(&app);
+  NQLogger::instance()->addActiveModule("*");
+  NQLogger::instance()->addDestiniation(stdout, NQLog::Debug);
 
-  // find out which IP to connect to
-  QString ipAddress;
-  QList<QHostAddress> ipAddressesList = QNetworkInterface::allAddresses();
-  // use the first non-localhost IPv4 address
-  for (int i = 0; i < ipAddressesList.size(); ++i) {
-    if (ipAddressesList.at(i) != QHostAddress::LocalHost &&
-        ipAddressesList.at(i).toIPv4Address()) {
-      ipAddress = ipAddressesList.at(i).toString();
-      break;
-    }
+#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
+  QString logdir = QDesktopServices::storageLocation(QDesktopServices::CacheLocation);
+#else
+  QString logdir = QStandardPaths::writableLocation(QStandardPaths::CacheLocation);
+#endif
+  QDir dir(logdir);
+  if (!dir.exists()) dir.mkpath(".");
+  QString logfilename = logdir + "/pumpstation.log";
+
+  NQLog("pumpstation") << "version " << APPLICATIONVERSIONSTR;
+
+  NQLog("pumpstation") << "using " << logfilename << " for logging";
+
+  QFile * logfile = new QFile(logfilename);
+  if (logfile->open(QIODevice::WriteOnly | QIODevice::Append | QIODevice::Text)) {
+    NQLogger::instance()->addDestiniation(logfile, NQLog::Message);
   }
-  // if we did not find one, use IPv4 localhost
-  if (ipAddress.isEmpty())
-    ipAddress = QHostAddress(QHostAddress::LocalHost).toString();
 
-  if (!server.listen(QHostAddress(ipAddress), 63432)) {
-    std::cerr << "Unable to start the server: " << server.errorString().toStdString() << std::endl;
-    return -1;
-  }
+  ApplicationConfig::instance(std::string(Config::CMSTkModLabBasePath) + "/pumpstation/pumpstation.cfg");
 
-  std::cout << "server listening on "
-            << server.serverAddress().toString().toStdString()
-            << ":"
-            << server.serverPort()
-            << std::endl;
+  CommunicationThread commthread(&app);
+
+  commthread.start();
 
   return app.exec();
 }
