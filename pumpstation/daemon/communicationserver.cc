@@ -38,27 +38,61 @@
 **
 ****************************************************************************/
 
-#include "communicationserver.h"
-#include "communicationthread.h"
+#include <iostream>
 
-#include <stdlib.h>
+#include <nqlogger.h>
+#include "ApplicationConfig.h"
+
+#include "communicationserver.h"
 
 CommunicationServer::CommunicationServer(QObject *parent)
-    : QTcpServer(parent)
+ : QTcpServer(parent)
 {
-    fortunes << tr("You've been leading a dog's life. Stay off the furniture.")
-             << tr("You've got to think about tomorrow.")
-             << tr("You will be surprised by a loud noise.")
-             << tr("You will feel hungry again in another hour.")
-             << tr("You might have mail.")
-             << tr("You cannot kill time without injuring eternity.")
-             << tr("Computers are not intelligent. They only think they are.");
+
 }
 
 void CommunicationServer::incomingConnection(int socketDescriptor)
 {
-  QString fortune = fortunes.at(qrand() % fortunes.size());
-  CommunicationThread *thread = new CommunicationThread(socketDescriptor, fortune, this);
-  connect(thread, SIGNAL(finished()), thread, SLOT(deleteLater()));
-  thread->start();
+  NQLogDebug("server") << "void CommunicationServer::incomingConnection(int socketDescriptor)";
+
+  socket_ = new QTcpSocket();
+
+  connect(socket_, SIGNAL(readyRead()),
+          this, SLOT(handleCommand()));
+  connect(socket_, SIGNAL(disconnected()),
+          socket_, SLOT(deleteLater()));
+
+  if (!socket_->setSocketDescriptor(socketDescriptor)) {
+    // emit error(tcpSocket->error());
+    return;
+  }
+}
+
+void CommunicationServer::handleCommand()
+{
+  NQLogDebug("server") << "void CommunicationServer::handleCommand()";
+
+  QDataStream in(socket_);
+  in.setVersion(QDataStream::Qt_4_0);
+
+  quint16 blockSize = 0;
+  in >> blockSize;
+
+  QString command;
+  in >> command;
+
+  NQLogDebug("server") << "command: (" << blockSize << ") |" << command.toStdString() << "|";
+
+
+  QString response = "testResponse";
+
+  QByteArray block;
+  QDataStream out(&block, QIODevice::WriteOnly);
+  out.setVersion(QDataStream::Qt_4_0);
+  out << (quint16)response.length();
+  out << response;
+
+  socket_->write(block);
+  socket_->disconnectFromHost();
+  socket_->waitForDisconnected();
 }

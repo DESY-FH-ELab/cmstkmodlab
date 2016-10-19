@@ -43,74 +43,47 @@
 #include <QtCore>
 #include <QtNetwork>
 
+#include <nqlogger.h>
+#include "ApplicationConfig.h"
+
 #include "communicationthread.h"
 
-CommunicationThread::CommunicationThread(int socketDescriptor, const QString &fortune, QObject *parent)
-    : QThread(parent), socketDescriptor(socketDescriptor), text(fortune)
+CommunicationThread::CommunicationThread(QObject *parent)
+ : QThread(parent)
 {
 
-}
-
-void CommunicationThread::connected()
-{
-  std::cout << "connected" << std::endl;
 }
 
 void CommunicationThread::run()
 {
-  tcpSocket = new QTcpSocket();
+  server_ = new CommunicationServer();
 
-  connect(tcpSocket, SIGNAL(connected()), this, SLOT(connected()));
-  connect(tcpSocket, SIGNAL(readyRead()), this, SLOT(readCommand()));
+  // find out which IP to connect to
+  QString ipAddress;
+  QList<QHostAddress> ipAddressesList = QNetworkInterface::allAddresses();
+  // use the first non-localhost IPv4 address
+  for (int i = 0; i < ipAddressesList.size(); ++i) {
+    if (ipAddressesList.at(i) != QHostAddress::LocalHost &&
+        ipAddressesList.at(i).toIPv4Address()) {
+      ipAddress = ipAddressesList.at(i).toString();
+      break;
+    }
+  }
+  // if we did not find one, use IPv4 localhost
+  if (ipAddress.isEmpty())
+    ipAddress = QHostAddress(QHostAddress::LocalHost).toString();
 
-  if (!tcpSocket->setSocketDescriptor(socketDescriptor)) {
-    emit error(tcpSocket->error());
+  quint16 port = ApplicationConfig::instance()->getValue("SERVERPORT", 63432);
+
+  if (!server_->listen(QHostAddress(ipAddress), port)) {
+    NQLog("pumpstation") << "Unable to start the server: " << server_->errorString().toStdString();
     return;
   }
+
+  NQLog("pumpstation") << "server listening on "
+                       << server_->serverAddress().toString().toStdString()
+                       << ":"
+                       << server_->serverPort();
 
   exec();
-}
-
-void CommunicationThread::readCommand()
-{
-  std::cout << "readCommand " << tcpSocket->bytesAvailable() << std::endl;
-
-  QDataStream in(tcpSocket);
-  in.setVersion(QDataStream::Qt_4_0);
-
-  quint16 blockSize = 0;
-  in >> blockSize;
-
-  /*
-  if (blockSize == 0) {
-    if (tcpSocket->bytesAvailable() < (int)sizeof(quint16))
-      return;
-  }
-  */
-
-  std::cout << "readCommand " << blockSize << std::endl;
-
-  /*
-  if (tcpSocket->bytesAvailable() < blockSize)
-    return;
-  */
-
-  QString command;
-  in >> command;
-
-  std::cout << command.toStdString() << std::endl;
-
-  QByteArray block;
-  QDataStream out(&block, QIODevice::WriteOnly);
-  out.setVersion(QDataStream::Qt_4_0);
-  out << (quint16)0;
-  out << text;
-  out.device()->seek(0);
-  out << (quint16)(block.size() - sizeof(quint16));
-
-  tcpSocket->write(block);
-  tcpSocket->disconnectFromHost();
-  tcpSocket->waitForDisconnected();
-
-  exit();
 }

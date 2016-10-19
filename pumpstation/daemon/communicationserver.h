@@ -41,22 +41,26 @@
 #ifndef COMMUNICATIONSERVER_H
 #define COMMUNICATIONSERVER_H
 
-#include <QStringList>
 #include <QTcpServer>
+#include <QTcpSocket>
 
 class CommunicationServer : public QTcpServer
 {
   Q_OBJECT
 
 public:
+
   CommunicationServer(QObject *parent = 0);
+
+protected slots:
+
+  void handleCommand();
 
 protected:
 
   void incomingConnection(int socketDescriptor);
 
-private:
-  QStringList fortunes;
+  QTcpSocket* socket_;
 };
 
 #endif // COMMUNICATIONSERVER_H

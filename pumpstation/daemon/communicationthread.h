@@ -44,29 +44,21 @@
 #include <QThread>
 #include <QTcpSocket>
 
+#include "communicationserver.h"
+
 class CommunicationThread : public QThread
 {
   Q_OBJECT
 
 public:
 
-  CommunicationThread(int socketDescriptor, const QString &fortune, QObject *parent);
+  CommunicationThread(QObject *parent);
 
   void run();
 
-signals:
-  void error(QTcpSocket::SocketError socketError);
+protected:
 
-private slots:
-
-void connected();
-void readCommand();
-
-private:
-
-  QTcpSocket *tcpSocket;
-  int socketDescriptor;
-  QString text;
+  CommunicationServer* server_;
 };
 
 #endif // COMMUNICATIONTHREAD_H
