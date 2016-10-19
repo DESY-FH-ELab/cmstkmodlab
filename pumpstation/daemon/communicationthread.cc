@@ -46,7 +46,7 @@
 #include <nqlogger.h>
 #include "ApplicationConfig.h"
 
-#include "communicationthread.h"
+#include "CommunicationThread.h"
 
 CommunicationThread::CommunicationThread(ConradModel* conradModel,
                                          QObject *parent)

@@ -46,7 +46,7 @@
 
 #include <ConradModel.h>
 
-#include "communicationserver.h"
+#include "CommunicationServer.h"
 
 class CommunicationThread : public QThread
 {

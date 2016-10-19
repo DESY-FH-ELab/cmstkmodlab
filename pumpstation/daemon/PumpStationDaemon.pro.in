@@ -60,8 +60,8 @@ greaterThan(QT_MAJOR_VERSION, 4) {
 }
 
 # Input
-HEADERS += communicationthread.h \
-           communicationserver.h
+HEADERS += CommunicationThread.h \
+           CommunicationServer.h
 
 equals(USEFAKEDEVICES,"X0") {
 HEADERS += 
@@ -69,9 +69,9 @@ HEADERS +=
 HEADERS += 
 }
 
-SOURCES += main.cc \
-           communicationthread.cc \
-           communicationserver.cc
+SOURCES += PumpStationDaemon.cc \
+           CommunicationThread.cc \
+           CommunicationServer.cc
 
 equals(USEFAKEDEVICES,"X0") {
 SOURCES += 

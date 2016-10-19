@@ -45,7 +45,7 @@
 #include <nqlogger.h>
 #include "ApplicationConfig.h"
 
-#include "communicationserver.h"
+#include "CommunicationServer.h"
 
 CommunicationServer::CommunicationServer(ConradModel* conradModel,
                                          QObject *parent)

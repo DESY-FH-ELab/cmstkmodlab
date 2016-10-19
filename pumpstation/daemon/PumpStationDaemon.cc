@@ -56,7 +56,7 @@
 
 #include <ConradModel.h>
 
-#include "communicationthread.h"
+#include "CommunicationThread.h"
 
 int main(int argc, char *argv[])
 {
