@@ -83,8 +83,7 @@ void CommunicationServer::handleCommand()
 
   NQLogDebug("server") << "command: (" << blockSize << ") |" << command.toStdString() << "|";
 
-
-  QString response = "testResponse";
+  QString response = command;
 
   QByteArray block;
   QDataStream out(&block, QIODevice::WriteOnly);
