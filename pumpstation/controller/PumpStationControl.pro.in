@@ -1,7 +1,6 @@
 ARCHITECTURE=@architecture@
 USEFAKEDEVICES="X@usefakedevices@"
 
-LIBS += -L@basepath@/devices/lib -lTkModLabNanotec
 LIBS += -L@basepath@/common -lCommon
 
 QMAKE = @qmake@
