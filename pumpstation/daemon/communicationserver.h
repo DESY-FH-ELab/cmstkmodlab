@@ -60,6 +60,10 @@ protected slots:
 
   void handleCommand();
 
+signals:
+
+  void setSwitchEnabled(int channel, bool enabled);
+
 protected:
 
   void incomingConnection(int socketDescriptor);

@@ -52,7 +52,8 @@ CommunicationServer::CommunicationServer(ConradModel* conradModel,
  : QTcpServer(parent),
    conradModel_(conradModel)
 {
-
+  connect(this, SIGNAL(setSwitchEnabled(int, bool)),
+          conradModel_, SLOT(setSwitchEnabled(int, bool)));
 }
 
 void CommunicationServer::incomingConnection(int socketDescriptor)
@@ -102,8 +103,7 @@ void CommunicationServer::handleCommand()
       if (channel<0 || channel>7) {
         response = "ERR";
       } else {
-        QMutexLocker locker(&mutex_);
-        conradModel_->setSwitchEnabled(channel, state);
+        emit setSwitchEnabled(channel, state);
         response = "OK";
       }
     }
