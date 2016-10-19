@@ -48,15 +48,17 @@
 
 #include "communicationthread.h"
 
-CommunicationThread::CommunicationThread(QObject *parent)
- : QThread(parent)
+CommunicationThread::CommunicationThread(ConradModel* conradModel,
+                                         QObject *parent)
+ : QThread(parent),
+   conradModel_(conradModel)
 {
 
 }
 
 void CommunicationThread::run()
 {
-  server_ = new CommunicationServer();
+  server_ = new CommunicationServer(conradModel_);
 
   // find out which IP to connect to
   QString ipAddress;

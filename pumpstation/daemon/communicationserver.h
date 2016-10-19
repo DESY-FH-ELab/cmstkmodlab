@@ -41,8 +41,11 @@
 #ifndef COMMUNICATIONSERVER_H
 #define COMMUNICATIONSERVER_H
 
+#include <QMutex.h>
 #include <QTcpServer>
 #include <QTcpSocket>
+
+#include <ConradModel.h>
 
 class CommunicationServer : public QTcpServer
 {
@@ -50,7 +53,8 @@ class CommunicationServer : public QTcpServer
 
 public:
 
-  CommunicationServer(QObject *parent = 0);
+  CommunicationServer(ConradModel* conradModel,
+                      QObject *parent = 0);
 
 protected slots:
 
@@ -60,7 +64,9 @@ protected:
 
   void incomingConnection(int socketDescriptor);
 
+  ConradModel* conradModel_;
   QTcpSocket* socket_;
+  QMutex mutex_;
 };
 
 #endif // COMMUNICATIONSERVER_H

@@ -44,6 +44,8 @@
 #include <QThread>
 #include <QTcpSocket>
 
+#include <ConradModel.h>
+
 #include "communicationserver.h"
 
 class CommunicationThread : public QThread
@@ -52,12 +54,14 @@ class CommunicationThread : public QThread
 
 public:
 
-  CommunicationThread(QObject *parent);
+  CommunicationThread(ConradModel* conradModel,
+                      QObject *parent = 0);
 
   void run();
 
 protected:
 
+  ConradModel* conradModel_;
   CommunicationServer* server_;
 };
 

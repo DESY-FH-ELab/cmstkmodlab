@@ -53,6 +53,8 @@
 #include <nqlogger.h>
 #include "ApplicationConfig.h"
 
+#include <ConradModel.h>
+
 #include "communicationthread.h"
 
 int main(int argc, char *argv[])
@@ -82,7 +84,9 @@ int main(int argc, char *argv[])
 
   ApplicationConfig::instance(std::string(Config::CMSTkModLabBasePath) + "/pumpstation/pumpstation.cfg");
 
-  CommunicationThread commthread(&app);
+  ConradModel conrad(&app);
+
+  CommunicationThread commthread(&conrad, &app);
 
   commthread.start();
 

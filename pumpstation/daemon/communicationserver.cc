@@ -40,13 +40,17 @@
 
 #include <iostream>
 
+#include <QMutexLocker>
+
 #include <nqlogger.h>
 #include "ApplicationConfig.h"
 
 #include "communicationserver.h"
 
-CommunicationServer::CommunicationServer(QObject *parent)
- : QTcpServer(parent)
+CommunicationServer::CommunicationServer(ConradModel* conradModel,
+                                         QObject *parent)
+ : QTcpServer(parent),
+   conradModel_(conradModel)
 {
 
 }
@@ -83,7 +87,43 @@ void CommunicationServer::handleCommand()
 
   NQLogDebug("server") << "command: (" << blockSize << ") |" << command.toStdString() << "|";
 
-  QString response = command;
+  QStringList args = command.split(" ");
+  QString cmd = args.at(0);
+  args.removeAt(0);
+  QString response;
+
+  if (cmd=="setSwitchState") {
+    if (args.count()!=2) {
+      response = "ERR";
+    } else {
+      int channel = args.at(0).toInt();
+      int state = args.at(1).toInt();
+
+      if (channel<0 || channel>7) {
+        response = "ERR";
+      } else {
+        QMutexLocker locker(&mutex_);
+        conradModel_->setSwitchEnabled(channel, state);
+        response = "OK";
+      }
+    }
+  } else if (cmd=="getSwitchState") {
+    if (args.count()!=1) {
+      response = "ERR";
+    } else {
+      int channel = args.at(0).toInt();
+
+      if (channel<0 || channel>7) {
+        response = "ERR";
+      } else {
+        QMutexLocker locker(&mutex_);
+        State state = conradModel_->getSwitchState(channel);
+        response = QString::number((int)state);
+      }
+    }
+  } else {
+    response = "ERR";
+  }
 
   QByteArray block;
   QDataStream out(&block, QIODevice::WriteOnly);
