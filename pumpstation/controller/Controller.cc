@@ -39,7 +39,7 @@ void Controller::connectToServer()
 {
   NQLogDebug("controller") << "void Controller::connectToServer()";
 
-  quint16 port = ApplicationConfig::instance()->getValue("SERVERPORT", 63432);
+  quint16 port = ApplicationConfig::instance()->getValue("ServerPort", 63432);
 
   socket_->abort();
   socket_->connectToHost(ipAddress, port);
