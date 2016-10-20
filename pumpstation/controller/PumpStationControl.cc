@@ -25,6 +25,7 @@ int main(int argc, char *argv[])
 
   if (arguments.contains("--web")) {
     ApplicationConfig::instance("pumpstation.cfg");
+    arguments.removeOne("--web");
   } else {
     ApplicationConfig::instance(std::string(Config::CMSTkModLabBasePath) + "/pumpstation/pumpstation.cfg");
   }
