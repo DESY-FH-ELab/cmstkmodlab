@@ -7,19 +7,20 @@ NOASSEMBLY    = @noassembly@
 USEFAKEDEVICES= @usefakedevices@
 
 subdirs	      = Julabo \
-		Huber \
-		Keithley \
+		        Huber \
+		        Keithley \
                 Greisinger \
-		Hameg \
+		        Hameg \
                 Canon \
-		Conrad \
-		Pfeiffer \
+		        Conrad \
+		        Pfeiffer \
                 Iota \
                 Cori \
                 Arduino \
-		Lang \
-		Keyence \
-		Nanotec
+		        Lang \
+		        Keyence \
+		        Nanotec \
+		        Leybold
 
 ifeq ($(NOTHERMAL),0)
 subdirs      += 
