@@ -1,8 +1,6 @@
 ARCHITECTURE=@architecture@
 USEFAKEDEVICES="X@usefakedevices@"
 
-LIBS += -L@basepath@/common -lCommon
-
 QMAKE = @qmake@
 
 macx {
@@ -44,10 +42,6 @@ CONFIG   -= app_bundle
 TARGET = PumpStationControl
 TEMPLATE = app
 
-macx {
-  QMAKE_POST_LINK = install_name_tool -change libCommon.1.dylib @basepath@/common/libCommon.1.dylib $(TARGET)
-}
-
 DEPENDPATH += @basepath@/common
 INCLUDEPATH += .
 INCLUDEPATH += ..
@@ -59,7 +53,11 @@ greaterThan(QT_MAJOR_VERSION, 4) {
 }
 
 # Input
-HEADERS += Controller.h
+HEADERS += Controller.h \
+           @basepath@/common/ApplicationConfig.h \
+           @basepath@/common/ApplicationConfigReader.h \
+           @basepath@/common/ApplicationConfigWriter.h \
+           @basepath@/common/nqlogger.h
 
 equals(USEFAKEDEVICES,"X0") {
 HEADERS += 
@@ -68,7 +66,11 @@ HEADERS +=
 }
 
 SOURCES += PumpStationControl.cc \
-           Controller.cc
+           Controller.cc \
+           @basepath@/common/ApplicationConfig.cc \
+           @basepath@/common/ApplicationConfigReader.cc \
+           @basepath@/common/ApplicationConfigWriter.cc \
+           @basepath@/common/nqlogger.cc
 
 equals(USEFAKEDEVICES,"X0") {
 SOURCES += 
