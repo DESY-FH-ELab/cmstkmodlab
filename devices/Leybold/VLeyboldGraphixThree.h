@@ -15,6 +15,7 @@ class VLeyboldGraphixThree
 
   virtual bool DeviceAvailable() const = 0;
 
+  virtual std::string GetVersion() const = 0;
 
   char GetChecksum(const std::string& buffer) const;
 };

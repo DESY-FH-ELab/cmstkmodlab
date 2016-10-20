@@ -17,6 +17,23 @@ LeyboldGraphixThree::~LeyboldGraphixThree()
   delete comHandler_;
 }
 
+std::string LeyboldGraphixThree::GetVersion() const
+{
+  std::string command;
+
+  command += SI;
+  command += "5";
+  command += Separator;
+  command += "1";
+
+  SendCommand(command);
+
+  std::string buffer;
+  bool isACK = ReceiveData(buffer);
+
+  return buffer;
+}
+
 bool LeyboldGraphixThree::DeviceAvailable() const
 {
   return isDeviceAvailable_;

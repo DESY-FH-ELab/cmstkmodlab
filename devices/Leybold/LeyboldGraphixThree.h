@@ -21,6 +21,8 @@ class LeyboldGraphixThree : public VLeyboldGraphixThree
 
   bool DeviceAvailable() const;
 
+  std::string GetVersion() const;
+
  private:
 
   void SendCommand(std::string& command) const;

@@ -12,6 +12,8 @@ class LeyboldGraphixThreeFake : public VLeyboldGraphixThree
 
   bool DeviceAvailable() const { return true; }
 
+  std::string GetVersion() const;
+
  private:
 
 };

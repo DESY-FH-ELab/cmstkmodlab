@@ -13,3 +13,8 @@ LeyboldGraphixThreeFake::~LeyboldGraphixThreeFake()
 {
 
 }
+
+std::string LeyboldGraphixThreeFake::GetVersion() const
+{
+  return std::string("HW:X.XX SW:X.XX");
+}
