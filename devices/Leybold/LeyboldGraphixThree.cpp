@@ -22,6 +22,33 @@ bool LeyboldGraphixThree::DeviceAvailable() const
   return isDeviceAvailable_;
 }
 
+void LeyboldGraphixThree::SendCommand(std::string& command) const
+{
+  char crc = GetChecksum(command);
+  command += crc;
+  command += EOT;
+
+  comHandler_->SendCommand(command.c_str());
+}
+
+bool LeyboldGraphixThree::ReceiveData(std::string& buffer) const
+{
+  char buf[1000];
+  comHandler_->ReceiveString(buf);
+  StripBuffer(buf);
+
+  buffer = buf;
+
+  size_t idxEOT = buffer.find(EOT);
+  char crc = buffer[idxEOT-1];
+
+  buffer.resize(idxEOT-1);
+  bool isACK = (buffer[0]==ACK);
+  buffer.erase(0, 1);
+
+  return isACK;
+}
+
 void LeyboldGraphixThree::StripBuffer(char* buffer) const
 {
   for (unsigned int c=0; c<strlen(buffer);++c) {

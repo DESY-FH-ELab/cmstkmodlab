@@ -23,7 +23,9 @@ class LeyboldGraphixThree : public VLeyboldGraphixThree
 
  private:
 
-  void StripBuffer( char* ) const;
+  void SendCommand(std::string& command) const;
+  bool ReceiveData(std::string& buffer) const;
+  void StripBuffer(char*) const;
   void DeviceInit();
 
   LeyboldComHandler* comHandler_;
