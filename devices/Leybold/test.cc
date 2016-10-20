@@ -19,5 +19,15 @@ int main()
 {
   LeyboldGraphixThree_t gt("/dev/tty.SLAB_USBtoUART");
 
+  std::string buffer;
+
+  /*
+  buffer += (char)0x0E;
+  buffer += "1;5;vacuum ";
+  buffer += (char)0x00;
+
+  gt.GetChecksum(buffer.c_str());
+  */
+
   return 0;
 }

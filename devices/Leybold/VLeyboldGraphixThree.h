@@ -17,6 +17,7 @@ class VLeyboldGraphixThree
 
  protected:
 
+  char GetChecksum(const char * buffer);
 };
 
 #endif // _VLEYBOLDGRAPHIXTHREE_H_
