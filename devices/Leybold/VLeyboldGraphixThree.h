@@ -13,8 +13,6 @@ class VLeyboldGraphixThree
   VLeyboldGraphixThree( const ioport_t );
   virtual ~VLeyboldGraphixThree();
 
- public:
-
   virtual bool DeviceAvailable() const = 0;
 
  protected:
