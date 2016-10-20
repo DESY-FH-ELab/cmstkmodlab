@@ -19,8 +19,6 @@ class LeyboldGraphixThree : public VLeyboldGraphixThree
   LeyboldGraphixThree( const ioport_t );
   ~LeyboldGraphixThree();
 
- public:
-
   bool DeviceAvailable() const;
 
  private:

@@ -10,8 +10,6 @@ class LeyboldGraphixThreeFake : public VLeyboldGraphixThree
   LeyboldGraphixThreeFake( const ioport_t );
   ~LeyboldGraphixThreeFake();
 
- public:
-
   bool DeviceAvailable() const { return true; }
 
  private:
