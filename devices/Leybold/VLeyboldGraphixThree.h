@@ -15,9 +15,8 @@ class VLeyboldGraphixThree
 
   virtual bool DeviceAvailable() const = 0;
 
- protected:
 
-  char GetChecksum(const char * buffer);
+  char GetChecksum(const std::string& buffer) const;
 };
 
 #endif // _VLEYBOLDGRAPHIXTHREE_H_

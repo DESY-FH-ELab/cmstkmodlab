@@ -10,11 +10,11 @@ VLeyboldGraphixThree::~VLeyboldGraphixThree()
 
 }
 
-char VLeyboldGraphixThree::GetChecksum(const char * buffer)
+char VLeyboldGraphixThree::GetChecksum(const std::string& buffer) const
 {
   int sum = 0;
 
-  for (int i=0;i<std::strlen(buffer);++i) {
+  for (int i=0;i<buffer.length();++i) {
     sum += buffer[i];
   }
 

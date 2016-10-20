@@ -21,13 +21,13 @@ int main()
 
   std::string buffer;
 
-  /*
   buffer += (char)0x0E;
   buffer += "1;5;vacuum ";
   buffer += (char)0x00;
 
   gt.GetChecksum(buffer.c_str());
-  */
+
+  std::cout << "checksum = " << (int)gt.GetChecksum(buffer.c_str()) << std::endl;
 
   return 0;
 }
