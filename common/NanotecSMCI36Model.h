@@ -145,6 +145,8 @@ protected:
   double minPositionInMM_;
   double maxPositionInMM_;
 
+  void setTravelDistanceNoCheck(double distance);
+  void setTravelDistanceInMMNoCheck(double distance);
   void checkPositionLimits();
 
 signals:

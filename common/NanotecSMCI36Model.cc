@@ -231,6 +231,22 @@ void NanotecSMCI36Model::setMaxPositionInMM(double position)
   if (infoChanged) emit informationChanged();
 }
 
+void NanotecSMCI36Model::setTravelDistanceNoCheck(double distance)
+{
+  if (state_!=READY) return;
+
+  travelDistance_ = distance;
+
+  controller_->SetTravelDistance(distance);
+
+  updateInformation2();
+}
+
+void NanotecSMCI36Model::setTravelDistanceInMMNoCheck(double distance)
+{
+  setTravelDistanceNoCheck(distance*getStepMode()/getPitch());
+}
+
 void NanotecSMCI36Model::checkPositionLimits()
 {
   if (getPositioningMode()==VNanotecSMCI36::smciExternalRefRun) return;
@@ -242,14 +258,14 @@ void NanotecSMCI36Model::checkPositionLimits()
       expectedPosition -= getTravelDistanceInMM();
 
       if (expectedPosition < getMinPositionInMM()) {
-        setTravelDistanceInMM(getEncoderPosition()-getMinPositionInMM());
+        setTravelDistanceInMMNoCheck(getEncoderPosition()-getMinPositionInMM());
       }
 
     } else {
       expectedPosition += getTravelDistanceInMM();
 
       if (expectedPosition > getMaxPositionInMM()) {
-        setTravelDistanceInMM(getMaxPositionInMM()-getEncoderPosition());
+        setTravelDistanceInMMNoCheck(getMaxPositionInMM()-getEncoderPosition());
       }
 
     }
@@ -259,9 +275,9 @@ void NanotecSMCI36Model::checkPositionLimits()
     expectedPosition = getTravelDistanceInMM();
 
     if (expectedPosition < getMinPositionInMM()) {
-      setTravelDistanceInMM(getMinPositionInMM());
+      setTravelDistanceInMMNoCheck(getMinPositionInMM());
     } else if (expectedPosition > getMaxPositionInMM()) {
-      setTravelDistanceInMM(getMaxPositionInMM());
+      setTravelDistanceInMMNoCheck(getMaxPositionInMM());
     }
   }
 }
