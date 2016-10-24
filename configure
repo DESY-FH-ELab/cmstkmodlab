@@ -141,9 +141,9 @@ else
     echo build with Plasma Cleaner support
 fi
 if test $NOPUMPSTATION = 1; then
-    echo build without pump station support
+    echo build without Pump Station support
 else
-    echo build with pump station support
+    echo build with Pump Station support
 fi
 
 SED_VARIABLES="BASEPATH ARCHITECTURE KERNELMAJOR KERNELMINOR QMAKE CXX CC LD NODEFO NOTHERMAL NOASSEMBLY NOPLASMA NOPUMPSTATION APPLICATIONVERSIONSTR USEFAKEDEVICES NOUEYE WITHTWITTERSUPPORT SOFLAGS CONFIGDEFINES QWTDEFINES QWTINCLUDES QWTLIBS ROOTCFLAGS ROOTLIBS ROOTGLIBS ROOTMAJOR"
