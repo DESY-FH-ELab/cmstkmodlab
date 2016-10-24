@@ -1,7 +1,7 @@
 #ifndef COMMUNICATIONSERVER_H
 #define COMMUNICATIONSERVER_H
 
-#include <QMutex.h>
+#include <QMutex>
 #include <QTcpServer>
 #include <QTcpSocket>
 
