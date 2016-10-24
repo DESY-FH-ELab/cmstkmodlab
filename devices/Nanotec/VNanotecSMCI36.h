@@ -158,9 +158,16 @@ class VNanotecSMCI36
 
   virtual void SetInputPinFunction(int pin, int function) = 0;
   virtual int GetInputPinFunction(int pin) const = 0;
+  const std::vector<std::pair<int,std::string>>& GetInputPinFunctionNames() const {
+    return inputPinFunctionNames_;
+  }
 
   virtual void SetOutputPinFunction(int pin, int function) = 0;
   virtual int GetOutputPinFunction(int pin) const = 0;
+  const std::vector<std::pair<int,std::string>>& GetOutputPinFunctionNames() const {
+    return outputPinFunctionNames_;
+  }
+
 
   virtual void SetIOMask(int mask) = 0;
   virtual int GetIOMask() const = 0;
@@ -170,6 +177,8 @@ class VNanotecSMCI36
 
   virtual void SetIO(int mask) = 0;
   virtual int GetIO() const = 0;
+  unsigned int GetInputBitForPin(int pin) const;
+  unsigned int GetOutputBitForPin(int pin) const;
 
   /* TODO: Debounce time of inputs */
 
@@ -227,6 +236,8 @@ class VNanotecSMCI36
 
   std::vector<std::pair<int,std::string>> stepModeNames_;
   std::vector<std::pair<int,std::string>> errorCorrectionModeNames_;
+  std::vector<std::pair<int,std::string>> inputPinFunctionNames_;
+  std::vector<std::pair<int,std::string>> outputPinFunctionNames_;
   std::vector<std::pair<int,std::string>> rampModeNames_;
   std::vector<std::pair<int,std::string>> positioningModeNames_;
 };
