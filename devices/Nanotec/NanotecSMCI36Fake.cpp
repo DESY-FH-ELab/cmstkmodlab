@@ -217,32 +217,32 @@ int NanotecSMCI36Fake::GetOutputPinFunction(int pin) const
   return outputPinFunction_[pin];
 }
 
-void NanotecSMCI36Fake::SetIOMask(int mask)
+void NanotecSMCI36Fake::SetIOMask(unsigned int mask)
 {
   ioMask_ = mask;
 }
 
-int NanotecSMCI36Fake::GetIOMask() const
+unsigned int NanotecSMCI36Fake::GetIOMask() const
 {
   return ioMask_;
 }
 
-void NanotecSMCI36Fake::SetReversePolarityMask(int mask)
+void NanotecSMCI36Fake::SetReversePolarityMask(unsigned int mask)
 {
   reversePolarityMask_ = mask;
 }
 
-int NanotecSMCI36Fake::GetReversePolarityMask() const
+unsigned int NanotecSMCI36Fake::GetReversePolarityMask() const
 {
   return reversePolarityMask_;
 }
 
-void NanotecSMCI36Fake::SetIO(int mask)
+void NanotecSMCI36Fake::SetIO(unsigned int mask)
 {
   io_ = mask;
 }
 
-int NanotecSMCI36Fake::GetIO() const
+unsigned int NanotecSMCI36Fake::GetIO() const
 {
   return io_;
 }

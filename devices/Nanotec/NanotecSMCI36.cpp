@@ -377,7 +377,7 @@ int NanotecSMCI36::GetOutputPinFunction(int pin) const
   return std::atoi(ret.c_str());
 }
 
-void NanotecSMCI36::SetIOMask(int mask)
+void NanotecSMCI36::SetIOMask(unsigned int mask)
 {
   char command[20];
   sprintf(command, "#1L%d", mask);
@@ -387,7 +387,7 @@ void NanotecSMCI36::SetIOMask(int mask)
   comHandler_->ReceiveString(buffer);
 }
 
-int NanotecSMCI36::GetIOMask() const
+unsigned int NanotecSMCI36::GetIOMask() const
 {
   comHandler_->SendCommand("#1ZL");
 
@@ -398,10 +398,10 @@ int NanotecSMCI36::GetIOMask() const
   std::string ret = buffer;
   ret.erase(0, strlen("1ZL"));
 
-  return std::atoi(ret.c_str());
+  return std::atoll(ret.c_str());
 }
 
-void NanotecSMCI36::SetReversePolarityMask(int mask)
+void NanotecSMCI36::SetReversePolarityMask(unsigned int mask)
 {
   char command[20];
   sprintf(command, "#1h%d", mask);
@@ -411,7 +411,7 @@ void NanotecSMCI36::SetReversePolarityMask(int mask)
   comHandler_->ReceiveString(buffer);
 }
 
-int NanotecSMCI36::GetReversePolarityMask() const
+unsigned int NanotecSMCI36::GetReversePolarityMask() const
 {
   comHandler_->SendCommand("#1Zh");
 
@@ -422,10 +422,10 @@ int NanotecSMCI36::GetReversePolarityMask() const
   std::string ret = buffer;
   ret.erase(0, strlen("1Zh"));
 
-  return std::atoi(ret.c_str());
+  return std::atoll(ret.c_str());
 }
 
-void NanotecSMCI36::SetIO(int mask)
+void NanotecSMCI36::SetIO(unsigned int mask)
 {
   char command[20];
   sprintf(command, "#1Y%d", mask);
@@ -435,7 +435,7 @@ void NanotecSMCI36::SetIO(int mask)
   comHandler_->ReceiveString(buffer);
 }
 
-int NanotecSMCI36::GetIO() const
+unsigned int NanotecSMCI36::GetIO() const
 {
   comHandler_->SendCommand("#1ZY");
 
@@ -446,7 +446,7 @@ int NanotecSMCI36::GetIO() const
   std::string ret = buffer;
   ret.erase(0, strlen("1ZY"));
 
-  return std::atoi(ret.c_str());
+  return std::atoll(ret.c_str());
 }
 
 void NanotecSMCI36::SetRampMode(int ramp)

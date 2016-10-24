@@ -168,15 +168,15 @@ class VNanotecSMCI36
     return outputPinFunctionNames_;
   }
 
+  virtual void SetIOMask(unsigned mask) = 0;
+  virtual unsigned GetIOMask() const = 0;
 
-  virtual void SetIOMask(int mask) = 0;
-  virtual int GetIOMask() const = 0;
+  virtual void SetReversePolarityMask(unsigned mask) = 0;
+  virtual unsigned GetReversePolarityMask() const = 0;
 
-  virtual void SetReversePolarityMask(int mask) = 0;
-  virtual int GetReversePolarityMask() const = 0;
+  virtual void SetIO(unsigned mask) = 0;
+  virtual unsigned int GetIO() const = 0;
 
-  virtual void SetIO(int mask) = 0;
-  virtual int GetIO() const = 0;
   unsigned int GetInputBitForPin(int pin) const;
   unsigned int GetOutputBitForPin(int pin) const;
 
