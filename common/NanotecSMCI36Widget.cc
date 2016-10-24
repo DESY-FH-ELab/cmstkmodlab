@@ -34,15 +34,12 @@ NanotecSMCI36StepModeWidget::NanotecSMCI36StepModeWidget(NanotecSMCI36Model* mod
   connect(this, SIGNAL(currentIndexChanged(int)),
           this, SLOT(indexChanged(int)));
 
-  // Set GUI according to the current chiller state
   updateDeviceState(model_->getDeviceState());
   updateInfo();
 }
 
 void NanotecSMCI36StepModeWidget::indexChanged(int index)
 {
-  // NQLog("NanotecSMCI36StepModeWidget", NQLog::Debug) << "indexChanged()";
-
   int userValue = itemData(index).toInt();
 
   if (model_->getStepMode()!=userValue) {
@@ -104,7 +101,6 @@ NanotecSMCI36ErrorCorrectionModeWidget::NanotecSMCI36ErrorCorrectionModeWidget(N
   connect(this, SIGNAL(currentIndexChanged(int)),
           this, SLOT(indexChanged(int)));
 
-  // Set GUI according to the current chiller state
   updateDeviceState(model_->getDeviceState());
   updateInfo();
 }
@@ -174,7 +170,6 @@ NanotecSMCI36RampModeWidget::NanotecSMCI36RampModeWidget(NanotecSMCI36Model* mod
   connect(this, SIGNAL(currentIndexChanged(int)),
           this, SLOT(indexChanged(int)));
 
-  // Set GUI according to the current chiller state
   updateDeviceState(model_->getDeviceState());
   updateInfo();
 }
@@ -247,7 +242,6 @@ NanotecSMCI36PositioningModeWidget::NanotecSMCI36PositioningModeWidget(NanotecSM
   connect(this, SIGNAL(currentIndexChanged(int)),
           this, SLOT(indexChanged(int)));
 
-  // Set GUI according to the current chiller state
   updateDeviceState(model_->getDeviceState());
   updateInfo();
 }
@@ -315,7 +309,6 @@ NanotecSMCI36StatusWidget::NanotecSMCI36StatusWidget(NanotecSMCI36Model* model, 
   connect(model_, SIGNAL(informationChanged()),
           this, SLOT(updateInfo()));
 
-  // Set GUI according to the current chiller state
   updateDeviceState(model_->getDeviceState());
   updateInfo();
 }
@@ -338,7 +331,7 @@ void NanotecSMCI36StatusWidget::controlStateChanged(bool /* enabled */)
 
 void NanotecSMCI36StatusWidget::updateInfo()
 {
-  //NQLog("NanotecSMCI36Widget", NQLog::Debug) << "updateInfo()";
+  //NQLog("NanotecSMCI36StatusWidget", NQLog::Debug) << "updateInfo()";
 
   unsigned int status = model_->getStatus();
   status_->setText(QString::number(status));
@@ -396,7 +389,6 @@ NanotecSMCI36SettingsWidget::NanotecSMCI36SettingsWidget(NanotecSMCI36Model* mod
   connect(model_, SIGNAL(informationChanged()),
           this, SLOT(updateInfo()));
 
-  // Set GUI according to the current chiller state
   updateDeviceState(model_->getDeviceState());
   updateInfo();
 }
@@ -422,7 +414,7 @@ void NanotecSMCI36SettingsWidget::controlStateChanged(bool enabled)
 
 void NanotecSMCI36SettingsWidget::updateInfo()
 {
-  //NQLog("NanotecSMCI36Widget", NQLog::Debug) << "updateInfo()";
+  //NQLog("NanotecSMCI36SettingsWidget", NQLog::Debug) << "updateInfo()";
 
   pitch_->setValue(model_->getPitch());
   motorID_->setValue(model_->getMotorID());
@@ -576,7 +568,6 @@ NanotecSMCI36MovementWidget::NanotecSMCI36MovementWidget(NanotecSMCI36Model* mod
   connect(model_, SIGNAL(positionModeChanged(int)),
           this, SLOT(positionModeChanged(int)));
 
-  // Set GUI according to the current chiller state
   updateDeviceState(model_->getDeviceState());
   updateInfo();
 }
@@ -696,7 +687,6 @@ NanotecSMCI36Widget::NanotecSMCI36Widget(NanotecSMCI36Model* model, QWidget *par
   connect(smci36CheckBox_, SIGNAL(toggled(bool)),
           model_, SLOT(setDeviceEnabled(bool)));
 
-  // Set GUI according to the current chiller state
   updateDeviceState(model_->getDeviceState());
   updateInfo();
 }
