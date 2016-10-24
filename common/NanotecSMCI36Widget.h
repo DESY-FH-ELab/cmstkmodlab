@@ -206,4 +206,185 @@ public slots:
   void updateInfo();
 };
 
+class NanotecSMCI36InputReversePolarityWidget : public QCheckBox
+{
+  Q_OBJECT
+public:
+  explicit NanotecSMCI36InputReversePolarityWidget(NanotecSMCI36Model* model,
+                                                   int pin,
+                                                   QWidget *parent = 0);
+
+protected:
+
+  NanotecSMCI36Model * model_;
+  int pin_;
+
+protected slots:
+
+  void polarityChanged(int);
+  void updateDeviceState( State newState );
+  void controlStateChanged(bool);
+  void updateInfo();
+};
+
+class NanotecSMCI36OutputReversePolarityWidget : public QCheckBox
+{
+  Q_OBJECT
+public:
+  explicit NanotecSMCI36OutputReversePolarityWidget(NanotecSMCI36Model* model,
+                                                    int pin,
+                                                    QWidget *parent = 0);
+
+protected:
+
+  NanotecSMCI36Model * model_;
+  int pin_;
+
+protected slots:
+
+  void polarityChanged(int);
+  void updateDeviceState( State newState );
+  void controlStateChanged(bool);
+  void updateInfo();
+};
+
+class NanotecSMCI36InputStateWidget : public QLabel
+{
+  Q_OBJECT
+public:
+  explicit NanotecSMCI36InputStateWidget(NanotecSMCI36Model* model,
+                                         int pin,
+                                         QWidget *parent = 0);
+
+protected:
+
+  NanotecSMCI36Model * model_;
+  int pin_;
+
+protected slots:
+
+  void updateDeviceState( State newState );
+  void controlStateChanged(bool);
+  void updateInfo();
+};
+
+class NanotecSMCI36OutputStateWidget : public QCheckBox
+{
+  Q_OBJECT
+public:
+  explicit NanotecSMCI36OutputStateWidget(NanotecSMCI36Model* model,
+                                          int pin,
+                                          QWidget *parent = 0);
+
+protected:
+
+  NanotecSMCI36Model * model_;
+  int pin_;
+
+protected slots:
+
+  void outputChanged(int);
+  void updateDeviceState( State newState );
+  void controlStateChanged(bool);
+  void updateInfo();
+};
+
+class NanotecSMCI36InputFunctionWidget : public QComboBox
+{
+  Q_OBJECT
+public:
+  explicit NanotecSMCI36InputFunctionWidget(NanotecSMCI36Model* model,
+                                            int pin,
+                                            QWidget *parent = 0);
+
+protected:
+
+  NanotecSMCI36Model * model_;
+  int pin_;
+
+protected slots:
+
+  void indexChanged(int);
+  void updateDeviceState( State newState );
+  void controlStateChanged(bool);
+  void updateInfo();
+};
+
+class NanotecSMCI36OutputFunctionWidget : public QComboBox
+{
+  Q_OBJECT
+public:
+  explicit NanotecSMCI36OutputFunctionWidget(NanotecSMCI36Model* model,
+                                             int pin,
+                                             QWidget *parent = 0);
+
+protected:
+
+  NanotecSMCI36Model * model_;
+  int pin_;
+
+protected slots:
+
+  void indexChanged(int);
+  void updateDeviceState( State newState );
+  void controlStateChanged(bool);
+  void updateInfo();
+};
+
+class NanotecSMCI36InputWidget : public QWidget
+{
+  Q_OBJECT
+public:
+  explicit NanotecSMCI36InputWidget(NanotecSMCI36Model* model,
+                                    int pin,
+                                    QWidget *parent = 0);
+
+protected:
+
+  NanotecSMCI36Model * model_;
+  int pin_;
+
+protected slots:
+
+  void updateDeviceState( State newState );
+  void controlStateChanged(bool);
+  void updateInfo();
+};
+
+class NanotecSMCI36OutputWidget : public QWidget
+{
+  Q_OBJECT
+public:
+  explicit NanotecSMCI36OutputWidget(NanotecSMCI36Model* model,
+                                     int pin,
+                                     QWidget *parent = 0);
+
+protected:
+
+  NanotecSMCI36Model * model_;
+  int pin_;
+
+protected slots:
+
+  void updateDeviceState( State newState );
+  void controlStateChanged(bool);
+  void updateInfo();
+};
+
+class NanotecSMCI36IOWidget : public QWidget
+{
+    Q_OBJECT
+public:
+  explicit NanotecSMCI36IOWidget(NanotecSMCI36Model* model, QWidget *parent = 0);
+
+protected:
+  NanotecSMCI36Model* model_;
+
+public slots:
+
+  void updateDeviceState( State newState );
+  void controlStateChanged(bool);
+  void updateInfo();
+};
+
 #endif // NANOTECSMCI36WIDGET_H

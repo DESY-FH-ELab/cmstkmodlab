@@ -67,10 +67,23 @@ PlasmaMainWindow::PlasmaMainWindow(QWidget *parent)
     tabWidget_ = new QTabWidget(this);
     tabWidget_->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);
 
+    QWidget * w;
+
     if (smci36ModelX_) {
-      NanotecSMCI36Widget* smci36Widget_ = new NanotecSMCI36Widget(smci36ModelX_, tabWidget_);
+      smci36Widget_ = new NanotecSMCI36Widget(smci36ModelX_, tabWidget_);
       smci36Widget_->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);
       tabWidget_->addTab(smci36Widget_, "stage");
+
+      w = new QWidget(tabWidget_);
+      QVBoxLayout* l = new QVBoxLayout();
+      l->setSpacing(4);
+      w->setLayout(l);
+
+      smci36IOWidget_ = new NanotecSMCI36IOWidget(smci36ModelX_, w);
+      smci36IOWidget_->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);
+      l->addWidget(smci36IOWidget_);
+      l->addStretch(1);
+      tabWidget_->addTab(w, "stage IO");
     }
 
     setCentralWidget(tabWidget_);
