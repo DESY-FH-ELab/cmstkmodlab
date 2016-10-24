@@ -356,7 +356,7 @@ void NanotecSMCI36Model::setInputPolarity(int pin, bool reverse)
       updateInformation2();
     }
   } else {
-    if (!(ioPolarityMask_&bit)) {
+    if (ioPolarityMask_&bit) {
       controller_->SetReversePolarityMask(ioPolarityMask_ & ~bit);
       updateInformation2();
     }
@@ -409,7 +409,7 @@ void NanotecSMCI36Model::setOutputPolarity(int pin, bool reverse)
       updateInformation2();
     }
   } else {
-    if (!(ioPolarityMask_&bit)) {
+    if (ioPolarityMask_&bit) {
       controller_->SetReversePolarityMask(ioPolarityMask_ & ~bit);
       updateInformation2();
     }
@@ -431,11 +431,13 @@ void NanotecSMCI36Model::setOutputPinState(int pin, bool state)
 
   if (state) {
     if (!(io_&bit)) {
-      controller_->SetIO(io_|bit);
+      controller_->SetIO(io_ | bit);
+      updateInformation1();
     }
   } else {
-    if (!(io_&bit)) {
+    if (io_&bit) {
       controller_->SetIO(io_ & ~bit);
+      updateInformation1();
     }
   }
 }
