@@ -36,6 +36,7 @@ protected:
   QTabWidget* tabWidget_;
 
   NanotecSMCI36Widget *smci36Widget_;
+  NanotecSMCI36IOWidget *smci36IOWidget_;
 };
 
 #endif // PLASMAMAINWINDOW_H

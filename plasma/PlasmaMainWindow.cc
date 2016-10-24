@@ -51,6 +51,11 @@ PlasmaMainWindow::PlasmaMainWindow(QWidget *parent)
       smci36ModelX_->setMaxEncoderDeviation(config->getValue("SMCI36_MaxEncoderDeviation_X",
                                                              8));
 
+      smci36ModelX_->setMaxSpeedForOperation(config->getValue("SMCI36_MaxSpeedForOperation_X",
+                                                              100));
+      smci36ModelX_->setMaxSpeedForRefRun(config->getValue("SMCI36_MaxSpeedForRefRun_X",
+                                                           5));
+
       smci36ModelX_->setMinPositionInMM(config->getValue("SMCI36_MinPositionInMM_X",
                                                          0));
       smci36ModelX_->setMaxPositionInMM(config->getValue("SMCI36_MaxPositionInMM_X",
@@ -62,10 +67,23 @@ PlasmaMainWindow::PlasmaMainWindow(QWidget *parent)
     tabWidget_ = new QTabWidget(this);
     tabWidget_->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);
 
+    QWidget * w;
+
     if (smci36ModelX_) {
-      NanotecSMCI36Widget* smci36Widget_ = new NanotecSMCI36Widget(smci36ModelX_, tabWidget_);
+      smci36Widget_ = new NanotecSMCI36Widget(smci36ModelX_, tabWidget_);
       smci36Widget_->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);
       tabWidget_->addTab(smci36Widget_, "stage");
+
+      w = new QWidget(tabWidget_);
+      QVBoxLayout* l = new QVBoxLayout();
+      l->setSpacing(4);
+      w->setLayout(l);
+
+      smci36IOWidget_ = new NanotecSMCI36IOWidget(smci36ModelX_, w);
+      smci36IOWidget_->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);
+      l->addWidget(smci36IOWidget_);
+      l->addStretch(1);
+      tabWidget_->addTab(w, "stage IO");
     }
 
     setCentralWidget(tabWidget_);
