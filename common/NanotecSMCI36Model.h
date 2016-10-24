@@ -2,6 +2,7 @@
 #define NANOTECSMCI36MODEL_H
 
 #include <cmath>
+#include <array>
 
 #include <QString>
 #include <QTimer>
@@ -77,6 +78,18 @@ public:
   void setMaxSpeedForRefRun(double speed)  { maxSpeedForRefRun_ = speed; }
   double getMaxSpeedForRefRun() const { return maxSpeedForRefRun_; }
 
+  int getInputPinFunction(int pin) const;
+  const std::vector<std::pair<int,std::string>>& getInputPinFunctionNames() const;
+
+  bool getInputPolarity(int pin) const;
+  bool getInputPinState(int pin) const;
+
+  int getOutputPinFunction(int pin) const;
+  const std::vector<std::pair<int,std::string>>& getOutputPinFunctionNames() const;
+
+  bool getOutputPolarity(int pin) const;
+  bool getOutputPinState(int pin) const;
+
 public slots:
 
   void setDeviceEnabled(bool enabled);
@@ -106,6 +119,13 @@ public slots:
   void stop();
   void quickStop();
   void resetPositionError();
+
+  void setInputPinFunction(int pin, int function);
+  void setInputPolarity(int pin, bool reverse);
+
+  void setOutputPinFunction(int pin, int function);
+  void setOutputPolarity(int pin, bool reverse);
+  void setOutputPinState(int pin, bool state);
 
   void updateInformation1();
   void updateInformation2();
@@ -144,6 +164,11 @@ protected:
   double maxSpeedForRefRun_;
   double minPositionInMM_;
   double maxPositionInMM_;
+
+  std::array<int,7> inputPinFunction_;
+  std::array<int,4> outputPinFunction_;
+  unsigned int ioPolarityMask_;
+  unsigned io_;
 
   void setTravelDistanceNoCheck(double distance);
   void setTravelDistanceInMMNoCheck(double distance);
