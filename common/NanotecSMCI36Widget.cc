@@ -766,7 +766,7 @@ void NanotecSMCI36InputReversePolarityWidget::updateInfo()
 {
   // NQLog("NanotecSMCI36InputReversePolarityWidget", NQLog::Debug) << "updateInfo()";
 
-  bool checked = model_->getInputPinFunction(pin_);
+  bool checked = model_->getInputPolarity(pin_);
   if (isChecked()!=checked) {
     setChecked(checked);
   }
@@ -825,7 +825,7 @@ void NanotecSMCI36OutputReversePolarityWidget::updateInfo()
 {
   // NQLog("NanotecSMCI36OutputReversePolarityWidget", NQLog::Debug) << "updateInfo()";
 
-  bool checked = model_->getOutputPinFunction(pin_);
+  bool checked = model_->getOutputPolarity(pin_);
   if (isChecked()!=checked) {
     setChecked(checked);
   }
@@ -931,7 +931,7 @@ void NanotecSMCI36OutputStateWidget::updateInfo()
 {
   // NQLog("NanotecSMCI36OutputStateWidget", NQLog::Debug) << "updateInfo()";
 
-  bool checked = model_->getInputPinFunction(pin_);
+  bool checked = model_->getOutputPinState(pin_);
   if (isChecked()!=checked) {
     setChecked(checked);
   }
