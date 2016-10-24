@@ -18,7 +18,8 @@ NanotecSMCI36Model::NanotecSMCI36Model(const char* port,
     updateInterval2_(updateInterval2),
     pitch_(0.35),
     maxSpeedForOperation_(100),
-    maxSpeedForRefRun_(5)
+    maxSpeedForRefRun_(5),
+    ioPolarityMask_(0x107003F)
 {
   timer1_ = new QTimer(this);
   timer1_->setInterval(updateInterval1_ * 1000);
