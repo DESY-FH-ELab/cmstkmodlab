@@ -246,7 +246,6 @@ public slots:
   void foundsensor(int);
   void locatePickup();
 
-
 signals:
 
   void updateImage(int, std::string);
