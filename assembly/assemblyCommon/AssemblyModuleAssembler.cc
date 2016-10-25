@@ -22,21 +22,18 @@
 #include "AssemblyModuleAssembler.h"
 
 //relay card
-#include "../../devices/Conrad/ConradCommunication.h"
-#include "../../devices/Conrad/ConradController.h"
+#include "ConradModel.h"
 
 using namespace std;
 using namespace cv;
 
 
-AssemblyModuleAssembler::AssemblyModuleAssembler(QWidget *parent)
+AssemblyModuleAssembler::AssemblyModuleAssembler(AssemblyVUEyeModel *uEyeModel_, LStepExpressModel* lStepExpressModel_, LStepExpressMotionManager* manager_, ConradModel * conradModel_, QWidget *parent)
     : QWidget(parent)
 {
     
-    ApplicationConfig* config = ApplicationConfig::instance();
-    LStepExpressModel* lStepExpressModel_ = new LStepExpressModel(config->getValue<std::string>("LStepExpressDevice").c_str(),1000, 100);
-    LStepExpressMotionManager* motionManager_ = new LStepExpressMotionManager(lStepExpressModel_);
-    lStepExpressModel_->initialize();
+LStepExpressMotionManager* motionManager_ = new LStepExpressMotionManager(lStepExpressModel_);
+ //   lStepExpressModel_->initialize();
 
     
     QGridLayout *l = new QGridLayout(this);
@@ -340,7 +337,7 @@ void AssemblyModuleAssembler::updateImage(int stage, std::string filename)
 void AssemblyModuleAssembler::gotoPickup()
 {
     NQLog("AssemblyModuleAssembler") << ":gotoPickup()";
-    connect(this, SIGNAL(moveAbsolute(double,double,double,double)), motionManager_, SLOT(moveAbsolute(double,double,double,double)));
+    //connect(this, SIGNAL(moveAbsolute(double,double,double,double)), motionManager_, SLOT(moveAbsolute(double,double,double,double)));
 }
 
 
@@ -422,9 +419,9 @@ AssemblyVacuumToggler::AssemblyVacuumToggler(QWidget *parent, std::string string
     QGridLayout *l = new QGridLayout(this);
     setLayout(l);
     
-    const char* deviceName = "/dev/ttyUSB0";
-    cnrd1 = new ConradController(deviceName);
-    cnrd1->initialize();
+//    const char* deviceName = "/dev/ttyUSB0";
+    cnrd1 = new ConradModel(parent);
+//    cnrd1->initialize();
 
     std::ostringstream strs;
     strs.clear();
@@ -464,13 +461,13 @@ void AssemblyVacuumToggler::toggleVacuum()
     NQLog("AssemblyVacuumToggler") << ": toggling vacuum voltage";
     
     if (!state){
-    cnrd1->setChannel(1, true);
+    cnrd1->setSwitchEnabled(1, true);
 
     ql->setText("VACUUM ON");
     ql->setStyleSheet("QLabel { background-color : red; color : black; }");
     state = true;
     }else if (state){
-    cnrd1->setChannel(1, false);
+    cnrd1->setSwitchEnabled(1, false);
 
     ql->setText("VACUUM OFF");
     ql->setStyleSheet("QLabel { background-color : green; color : black; }");
@@ -1217,10 +1214,7 @@ void AssemblySensorLocator::locateSensor_circleSeed(int stage){
         }
     }
     
-   
-    cout <<"n intersections  = = "<< intersections_.size()<< endl;
 
-    
     // Now select intersections that occur near the start or end point of the intersecting lines. This removes random intersections from sprurious "noise" lines.
     
     for(unsigned int  intsec = 0; intsec < intersections_.size(); intsec++ ){
