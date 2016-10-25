@@ -1,6 +1,8 @@
 #ifndef ASSEMBLYMODULEASSEMBLER_H
 #define ASSEMBLYMODULEASSEMBLER_H
 
+#include <string>
+
 #include <opencv2/opencv.hpp>
 
 #include <QWidget>
@@ -238,6 +240,9 @@ public:
   QVBoxLayout *vbox;
 
 protected:
+
+  std::string cacheDirectory1_;
+  std::string cacheDirectory2_;
 
 public slots:
 

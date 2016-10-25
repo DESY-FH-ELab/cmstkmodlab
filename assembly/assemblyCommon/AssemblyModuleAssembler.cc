@@ -18,6 +18,12 @@
 #include <nqlogger.h>
 #include <ApplicationConfig.h>
 
+#include <QDir>
+#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
+#include <QDesktopServices>
+#else
+#include <QStandardPaths>
+#endif
 
 #include "AssemblyModuleAssembler.h"
 
@@ -671,6 +677,20 @@ AssemblySensorLocator::AssemblySensorLocator(QWidget *parent, std::string string
   QString qstr = QString::fromStdString(str);
   QString qname = QString::fromStdString(string);
 
+#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
+  QString cachedirTemp = QDesktopServices::storageLocation(QDesktopServices::CacheLocation);
+#else
+  QString cachedirTemp = QStandardPaths::writableLocation(QStandardPaths::CacheLocation);
+#endif
+  cachedirTemp += "/assembly/calibration";
+  QDir dir1(cachedirTemp);
+  if (!dir1.exists()) dir1.mkpath(".");
+  cacheDirectory1_ = cachedirTemp.toStdString();
+  cachedirTemp += "/RotatedImages";
+  QDir dir2(cachedirTemp);
+  if (!dir2.exists()) dir2.mkpath(".");
+  cacheDirectory2_ = cachedirTemp.toStdString();
+
   QGridLayout *l = new QGridLayout(this);
   setLayout(l);
 
@@ -869,7 +889,7 @@ void AssemblySensorLocator::locateSensor_templateMatching(int stage)
     warpAffine(img_copy_bin, dst, rot_mat, img_copy_bin.size(), cv::INTER_CUBIC,
                cv::BORDER_CONSTANT, avgPixelIntensity);
 
-    std::string filename_rotated_base = "/Users/keaveney/Desktop/calibration/RotatedImages/Rotation_result_";
+    std::string filename_rotated_base = cacheDirectory2_ + "/Rotation_result_";
     std::ostringstream ss;
     ss << theta;
     std::string theta_str = ss.str();
@@ -920,13 +940,13 @@ void AssemblySensorLocator::locateSensor_templateMatching(int stage)
   if (thetas[0] && FOMs[0]){
     TGraph *gr = new TGraph(40, thetas, FOMs);
     gr->Draw("AC*");
-    const char * filename_canvas = "/Users/keaveney/Desktop/calibration/RotationExtraction.png";
-    c1->SaveAs(filename_canvas);
+    std::string filename_canvas = cacheDirectory1_ + "/RotationExtraction.png";
+    c1->SaveAs(filename_canvas.c_str());
 
     emit updateImage(2, filename_canvas);
   }
 
-  std::string filename = "/Users/keaveney/Desktop/calibration/PatRec_TM_result.png";
+  std::string filename = cacheDirectory1_ + "/PatRec_TM_result.png";
   cv::imwrite(filename, img);
 
   emit updateImage(stage, filename);
@@ -1233,7 +1253,7 @@ void AssemblySensorLocator::locateSensor_circleSeed(int stage)
 
   putText(img_rgb, text_result, cvPoint(30,100),
           cv::FONT_HERSHEY_COMPLEX_SMALL, 2.8, cvScalar(200,200,250), 1, CV_AA);
-  std::string filename = "/Users/keaveney/Desktop/calibration/PatRec_result.png";
+  std::string filename = cacheDirectory1_ + "/PatRec_result.png";
   cv::imwrite(filename, img_rgb);
 
   emit updateImage(stage, filename);
