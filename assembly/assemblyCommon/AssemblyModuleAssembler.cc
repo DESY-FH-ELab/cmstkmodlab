@@ -1,4 +1,7 @@
 #include <vector>
+#include <iostream>
+#include <sstream>
+#include <iomanip>
 
 #include <QFormLayout>
 #include <QFileDialog>
@@ -7,23 +10,16 @@
 #include <QStringList>
 #include <QPixmap>
 #include <QLabel>
-#include <iomanip>
+#include <QApplication>
 
 #include <TGraph.h>
 #include <TCanvas.h>
 
-
-#include <QApplication>
-
-#include <iostream>
-#include <sstream>
 #include <nqlogger.h>
 #include <ApplicationConfig.h>
 
-#include "AssemblyModuleAssembler.h"
 
-//relay card
-#include "ConradModel.h"
+#include "AssemblyModuleAssembler.h"
 
 using namespace std;
 using namespace cv;
