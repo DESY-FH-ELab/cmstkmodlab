@@ -29,6 +29,28 @@ typedef AssemblyUEyeModel AssemblyUEyeModel_t;
 #include "AssemblySensorMarkerFinder.h"
 #include "AssemblySensorMarkerFinderWidget.h"
 
+
+
+//motion
+#include <ApplicationConfig.h>
+#include "LStepExpressModel.h"
+#include "LStepExpressSettings.h"
+#include "LStepExpressMotionManager.h"
+#include "LStepExpressMotionThread.h"
+#include "LStepExpressSettingsWidget.h"
+#include "LStepExpressWidget.h"
+#include "LStepExpressJoystickWidget.h"
+
+#include "LStepExpressMeasurement.h"
+#include "LStepExpressMeasurementWidget.h"
+#include "LStepExpressPositionWidget.h"
+#include "LStepExpressStatusWindow.h"
+
+//conrad relay card
+#include "ConradModel.h"
+
+
+
 class AssemblyMainWindow : public QMainWindow
 {
   Q_OBJECT
@@ -81,6 +103,14 @@ protected:
   AssemblyMarkerFinderThread* finderThread_;
   AssemblySensorMarkerFinder* finder_;
   AssemblySensorMarkerFinderWidget* finderWidget_;
+    
+    
+  LStepExpressModel* lStepExpressModel_;
+  LStepExpressMotionManager* motionManager_;
+  LStepExpressSettings* lStepExpressSettings_;
+  LStepExpressMotionThread* motionThread_;
+    
+  ConradModel * conradModel_;
 
   double testTimerCount_;
 

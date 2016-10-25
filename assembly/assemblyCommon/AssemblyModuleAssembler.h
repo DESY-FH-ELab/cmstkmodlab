@@ -14,25 +14,28 @@
 #include <QVBoxLayout>
 #include <QRadioButton>
 
-
-#include <AssemblyVUEyeCamera.h>
-#include <AssemblyVMarkerFinder.h>
+//vision
+//#include <AssemblyVUEyeCamera.h>
+//#include <AssemblyVMarkerFinder.h>
 #include <AssemblyUEyeView.h>
+#include "AssemblyVUEyeModel.h"
+//#include "AssemblyVUEyeCamera.h"
 
 
 //motion
-#include <ApplicationConfig.h>
 #include "LStepExpressModel.h"
-#include "LStepExpressSettings.h"
+//#include "LStepExpressSettings.h"
 #include "LStepExpressMotionManager.h"
-#include "LStepExpressMotionThread.h"
-#include "LStepExpressSettingsWidget.h"
-#include "LStepExpressWidget.h"
-#include "LStepExpressJoystickWidget.h"
+//#include "LStepExpressMotionThread.h"
 
-//relay card
-#include "../../devices/Conrad/ConradCommunication.h"
-#include "../../devices/Conrad/ConradController.h"
+//#include "LStepExpressSettingsWidget.h"
+//#include "LStepExpressWidget.h"
+//#include "LStepExpressJoystickWidget.h"
+
+
+//relay card for vacuum control
+#include "ConradModel.h"
+
 
 
 
@@ -42,7 +45,7 @@ class AssemblyModuleAssembler : public QWidget
     
 public:
 
-    explicit AssemblyModuleAssembler(QWidget *parent = 0);
+    explicit AssemblyModuleAssembler(AssemblyVUEyeModel *uEyeModel_, LStepExpressModel* lStepExpressModel_, LStepExpressMotionManager* manager_, ConradModel *conradModel_, QWidget *parent = 0);
     void connectImageProducer(const QObject* sender, const char* signal);
     void disconnectImageProducer(const QObject* sender, const char* signal);
     double pickup_position;
@@ -52,10 +55,6 @@ public:
     QLineEdit * lE4;
     QLineEdit * lE5;
     QLineEdit * lE6;
-    
-    ApplicationConfig* config;
-    LStepExpressModel* lStepExpressModel_;
-    LStepExpressMotionManager* motionManager_;
     
     
 protected:
@@ -108,7 +107,7 @@ public:
     double local_x, local_y, local_z, local_a;
     QPushButton* button1;
     QLineEdit *lineEdit1;
-    ConradController * cnrd1;
+    ConradModel * cnrd1;
 
     QLabel* ql;
     bool state;

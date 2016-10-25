@@ -99,7 +99,7 @@ HEADERS += nqlogger.h \
            IntegerComboBox.h \
            NanotecSMCI36Model.h \
            NanotecSMCI36Widget.h \
-           ConradModel.h
+           ConradModel.h \ 
            
 SOURCES += nqlogger.cc \
            npoint2D.cc \
@@ -144,4 +144,4 @@ SOURCES += nqlogger.cc \
            IntegerComboBox.cc \
            NanotecSMCI36Model.cc \
            NanotecSMCI36Widget.cc \
-           ConradModel.cc
+           ConradModel.cc \
