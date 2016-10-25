@@ -32,9 +32,7 @@ AssemblyModuleAssembler::AssemblyModuleAssembler(AssemblyVUEyeModel *uEyeModel_,
     : QWidget(parent)
 {
     
-LStepExpressMotionManager* motionManager_ = new LStepExpressMotionManager(lStepExpressModel_);
- //   lStepExpressModel_->initialize();
-
+    LStepExpressMotionManager* motionManager_ = new LStepExpressMotionManager(lStepExpressModel_);
     
     QGridLayout *l = new QGridLayout(this);
     setLayout(l);
@@ -419,9 +417,7 @@ AssemblyVacuumToggler::AssemblyVacuumToggler(QWidget *parent, std::string string
     QGridLayout *l = new QGridLayout(this);
     setLayout(l);
     
-//    const char* deviceName = "/dev/ttyUSB0";
     cnrd1 = new ConradModel(parent);
-//    cnrd1->initialize();
 
     std::ostringstream strs;
     strs.clear();
@@ -463,16 +459,20 @@ void AssemblyVacuumToggler::toggleVacuum()
     if (!state){
     cnrd1->setSwitchEnabled(1, true);
 
+        if (cnrd1->getSwitchState(1) == 1){
     ql->setText("VACUUM ON");
     ql->setStyleSheet("QLabel { background-color : red; color : black; }");
     state = true;
+        }
     }else if (state){
     cnrd1->setSwitchEnabled(1, false);
 
+        if (cnrd1->getSwitchState(1) == 0){
     ql->setText("VACUUM OFF");
     ql->setStyleSheet("QLabel { background-color : green; color : black; }");
     state = false;
-    }        
+        }
+    }
 }
 
 
@@ -802,9 +802,9 @@ void AssemblySensorLocator::locateSensor_templateMatching(int stage){
     cv::Mat img, img_clip_A, img_clip_B, result_1, result_2, dst;
     int match_method;
     
-    img = cv::imread("/Users/keaveney/Desktop/calibration/RawSensor_4.png", CV_LOAD_IMAGE_COLOR);
-    img_clip_A = cv::imread("/Users/keaveney/Desktop/calibration/RawSensor_3_clipA.png", CV_LOAD_IMAGE_COLOR);
-    img_clip_B = cv::imread("/Users/keaveney/Desktop/calibration/RawSensor_3_clipB.png", CV_LOAD_IMAGE_COLOR);
+    img = cv::imread("../../share/assembly/RawSensor_4.png", CV_LOAD_IMAGE_COLOR);
+    img_clip_A = cv::imread("../../share/assembly/RawSensor_3_clipA.png", CV_LOAD_IMAGE_COLOR);
+    img_clip_B = cv::imread("../../share/assembly/RawSensor_3_clipB.png", CV_LOAD_IMAGE_COLOR);
 
     Point matchLoc_1, matchLoc_2, matchLoc_final;
    
@@ -840,9 +840,9 @@ void AssemblySensorLocator::locateSensor_templateMatching(int stage){
    // img_clip_B_bin = img_clip_B_gs.clone();
     
     
-    std::string filename_img_bin = "/Users/keaveney/Desktop/calibration/Sensor_bin.png";
-    std::string filename_clip_A_bin = "/Users/keaveney/Desktop/calibration/clip_A_bin.png";
-    std::string filename_clip_B_bin = "/Users/keaveney/Desktop/calibration/clip_B_bin.png";
+    std::string filename_img_bin = "../../share/assembly/Sensor_bin.png";
+    std::string filename_clip_A_bin = "../../share/assembly/clip_A_bin.png";
+    std::string filename_clip_B_bin = "../../share/assembly/clip_B_bin.png";
 
     cv::imwrite(filename_img_bin, img_copy_bin);
     cv::imwrite(filename_clip_A_bin, img_clip_A_bin);
@@ -1032,7 +1032,7 @@ void AssemblySensorLocator::locateSensor_circleSeed(int stage){
 
     cv::Mat img_gs, img_rgb, img_edges;
     
-    img_gs = cv::imread("/Users/keaveney/Desktop/calibration/im_scan___Exp10___EdgeThr145___lt110.png", CV_LOAD_IMAGE_COLOR);
+    img_gs = cv::imread("../../share/assembly/im_scan___Exp10___EdgeThr145___lt110.png", CV_LOAD_IMAGE_COLOR);
 
     
     cvtColor(img_gs, img_gs , CV_RGB2GRAY);
