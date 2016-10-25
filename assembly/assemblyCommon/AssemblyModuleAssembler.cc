@@ -664,15 +664,15 @@ AssemblySensorLocator::AssemblySensorLocator(QWidget *parent, std::string string
                                              double a)
  : QWidget(parent), local_a(a)
 {
-  QGridLayout *l = new QGridLayout(this);
-  setLayout(l);
-
   std::ostringstream strs;
   strs.clear();
   strs << a;
   std::string str = strs.str();
   QString qstr = QString::fromStdString(str);
   QString qname = QString::fromStdString(string);
+
+  QGridLayout *l = new QGridLayout(this);
+  setLayout(l);
 
   button1 = new QPushButton(qname, this);
 
