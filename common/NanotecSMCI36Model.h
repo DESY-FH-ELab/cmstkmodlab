@@ -2,6 +2,7 @@
 #define NANOTECSMCI36MODEL_H
 
 #include <cmath>
+#include <array>
 
 #include <QString>
 #include <QTimer>
@@ -18,7 +19,7 @@ typedef NanotecSMCI36 NanotecSMCI36_t;
 #endif
 
 /**
-  Command and control model of the Hameg chiller.
+  Command and control model of the Nanotec SMCI36 controller.
   */
 class NanotecSMCI36Model : public QObject, public AbstractDeviceModel<NanotecSMCI36_t>
 {
@@ -31,7 +32,7 @@ public:
                               double updateInterval2 = 5,
                               QObject *parent = 0);
 
-  double getPitch() const { return pitch_; }
+  double getPitch() const { return pitch_; } // unit is [mm / full step]
 
   unsigned int getStatus() const { return status_; }
   int getMotorID() const { return motorID_; }
@@ -48,10 +49,10 @@ public:
   int getMaxEncoderDeviation() const { return maxEncoderDeviation_; }
 
   int getControllerSteps() const { return controllerSteps_; }
-  double getControllerPosition() const { return getControllerSteps()/getPitch()/getStepMode(); }
+  double getControllerPosition() const { return getPitch()*getControllerSteps()/getStepMode(); }
 
   int getEncoderSteps() const { return encoderSteps_; }
-  double getEncoderPosition() const { return getEncoderSteps()/getPitch()/getStepMode(); }
+  double getEncoderPosition() const { return getPitch()*getEncoderSteps()/getStepMode(); }
 
   int getPositioningMode() const { return positioningMode_; }
   const std::vector<std::pair<int,std::string>>& getPositioningModeNames() const;
@@ -63,10 +64,31 @@ public:
   double getMaxFrequency() const { return maxFrequency_; }
   double getMaxFrequency2() const { return maxFrequency2_; }
 
-  double getTravelDistanceInMM() const { return getTravelDistance()/getPitch()/getStepMode(); }
-  double getMinSpeed() const { return getMinFrequency()/getPitch()/getStepMode(); }
-  double getMaxSpeed() const { return getMaxFrequency()/getPitch()/getStepMode(); }
-  double getMaxSpeed2() const { return getMaxFrequency2()/getPitch()/getStepMode(); }
+  double getTravelDistanceInMM() const { return getPitch()*getTravelDistance()/getStepMode(); }
+  double getMinSpeed() const { return getPitch()*getMinFrequency()/getStepMode(); }
+  double getMaxSpeed() const { return getPitch()*getMaxFrequency()/getStepMode(); }
+  double getMaxSpeed2() const { return getPitch()*getMaxFrequency2()/getStepMode(); }
+
+  double getMinPositionInMM() const { return minPositionInMM_; }
+  double getMaxPositionInMM() const { return maxPositionInMM_; }
+
+  void setMaxSpeedForOperation(double speed)  { maxSpeedForOperation_ = speed; }
+  double getMaxSpeedForOperation() const { return maxSpeedForOperation_; }
+
+  void setMaxSpeedForRefRun(double speed)  { maxSpeedForRefRun_ = speed; }
+  double getMaxSpeedForRefRun() const { return maxSpeedForRefRun_; }
+
+  int getInputPinFunction(int pin) const;
+  const std::vector<std::pair<int,std::string>>& getInputPinFunctionNames() const;
+
+  bool getInputPolarity(int pin) const;
+  bool getInputPinState(int pin) const;
+
+  int getOutputPinFunction(int pin) const;
+  const std::vector<std::pair<int,std::string>>& getOutputPinFunctionNames() const;
+
+  bool getOutputPolarity(int pin) const;
+  bool getOutputPinState(int pin) const;
 
 public slots:
 
@@ -90,10 +112,23 @@ public slots:
   void setMaxSpeed(double speed);
   void setMaxSpeed2(double speed);
 
+  void setMinPositionInMM(double position);
+  void setMaxPositionInMM(double position);
+
   void start();
   void stop();
   void quickStop();
   void resetPositionError();
+
+  void setInputPinFunction(int pin, int function);
+  void setInputPolarity(int pin, bool reverse);
+
+  void setOutputPinFunction(int pin, int function);
+  void setOutputPolarity(int pin, bool reverse);
+  void setOutputPinState(int pin, bool state);
+
+  void updateInformation1();
+  void updateInformation2();
 
 protected:
 
@@ -125,15 +160,25 @@ protected:
   double maxFrequency_;
   double maxFrequency2_;
 
-protected slots:
+  double maxSpeedForOperation_;
+  double maxSpeedForRefRun_;
+  double minPositionInMM_;
+  double maxPositionInMM_;
 
-  void updateInformation1();
-  void updateInformation2();
+  std::array<int,7> inputPinFunction_;
+  std::array<int,4> outputPinFunction_;
+  unsigned int ioPolarityMask_;
+  unsigned io_;
+
+  void setTravelDistanceNoCheck(double distance);
+  void setTravelDistanceInMMNoCheck(double distance);
+  void checkPositionLimits();
 
 signals:
 
   void deviceStateChanged(State newState);
   void informationChanged();
+  void positionModeChanged(int mode);
   void message(const QString & text);
   void controlStateChanged(bool);
 };

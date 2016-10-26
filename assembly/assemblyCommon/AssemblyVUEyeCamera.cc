@@ -1,10 +1,23 @@
 #include <iostream>
 
 #include <QApplication>
+#include <QString>
+
+#include <QImage>
+#include <QLabel>
+#include <QPainter>
 
 #include <nqlogger.h>
 
 #include "AssemblyVUEyeCamera.h"
+#include <iostream>
+#include <cmath>
+
+#include <unistd.h> 
+
+
+
+using namespace std;
 
 AssemblyVUEyeCamera::AssemblyVUEyeCamera(QObject *parent)
     : QObject(parent),
@@ -31,3 +44,10 @@ size_t AssemblyVUEyeCamera::getCurrentPixelClockIndex() const
     }
     return idx;
 }
+
+
+
+
+
+
+

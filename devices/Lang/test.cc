@@ -27,7 +27,7 @@ template<typename T, typename A> void dumpVectorHex(const std::vector<T,A>& v)
   for (typename std::vector<T,A>::const_iterator it = v.begin();
        it!=v.end();
        ++it) {
-    std::cout << "0x" << std::hex << *it << " ";
+    std::cout<<"hex vec  " << "0x" << std::hex << *it << " ";
   }
   std::cout << std::endl;
 }
@@ -49,6 +49,7 @@ int main()
   std::cout<<"get error = "<<lstep.GetError()<<std::endl;
 
   lstep.GetDimension(ivalues); dumpVector(ivalues);
+
   lstep.GetDimension(VLStepExpress::Z, ivalue); std::cout << ivalue << std::endl;
   std::cout<<"get error = "<<lstep.GetError()<<std::endl;
   
@@ -62,6 +63,7 @@ int main()
 
   std::cout<<"power amplifier status"<<std::endl;
   lstep.GetPowerAmplifierStatus(ivalues); dumpVector(ivalues);
+
   lstep.GetPowerAmplifierStatus(VLStepExpress::Y, ivalue); std::cout << ivalue << std::endl;
   std::cout<<"get error = "<<lstep.GetError()<<std::endl;
 
@@ -78,8 +80,6 @@ int main()
   std::cout<<"get error = "<<lstep.GetError()<<std::endl;
 
   lstep.SetAutoStatus(0);
-
-  std::cout<<"get error = "<<lstep.GetError()<<std::endl;
 
   std::cout<<"get axis status"<<std::endl;
   lstep.GetAxisStatus(ivalues); dumpVectorHex(ivalues);
@@ -129,8 +129,9 @@ int main()
   lstep.SetValue("!nosetlimit", OnI);
   lstep.GetValue("nosetlimit", limiton); dumpVector(limiton);
 
-  std::cout<<"move command"<<std::endl;
+
   //lstep.MoveRelative(10.0000, 0.0000, 0.0000, 0.0000);
+
   lstep.MoveAbsolute(10.0000, 0.0000, 0.0000, 0.0000);
 
   std::cout<<"get error = "<<lstep.GetError()<<std::endl;

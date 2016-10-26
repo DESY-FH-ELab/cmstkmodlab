@@ -8,7 +8,6 @@
 #include <QTimer>
 #include <QMutex>
 #include <QMutexLocker>
-#include <QSignalSpy>
 
 #include "DeviceState.h"
 #include "DeviceParameter.h"
@@ -37,6 +36,8 @@ public:
     bool isUpdating() { return isUpdating_; }
     void pauseUpdate();
     void continueUpdate();
+
+    void initialize();
 
     QString getAxisName(unsigned int axis);
     QString getAxisDimensionShortName(unsigned int axis);
@@ -83,7 +84,7 @@ protected:
 
     const QString LStepExpress_PORT;
 
-    void initialize();
+  
 
     QMutex mutex_;
 
@@ -91,7 +92,6 @@ protected:
     const int updateInterval_;
     const int motionUpdateInterval_;
     QTimer* timer_;
-    QTimer* spyTimer_;
     int updateCount_;
 
     void setDeviceState( State state );
@@ -111,21 +111,11 @@ protected:
     bool isUpdating_;
     bool finishedCalibrating_;
 
-    QSignalSpy *spyDeviceStateChanged;
-    QSignalSpy *spyInformationChanged;
-    QSignalSpy *spyMotionInformationChanged;
-    QSignalSpy *spyMessage;
-    QSignalSpy *spyControlStateChanged;
-    QSignalSpy *spyMotionStarted;
-    QSignalSpy *spyMotionFinished;
-    QSignalSpy *spyTimer;
-
 protected slots:
 
     void updateInformation();
     void updateMotionInformation();
     void updateMotionInformationFromTimer();
-    void printSpyInformation();
 
 signals:
 

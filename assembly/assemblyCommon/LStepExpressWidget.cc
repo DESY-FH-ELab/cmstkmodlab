@@ -72,74 +72,15 @@ LStepExpressWidget::LStepExpressWidget(LStepExpressModel* model,
 
     lstepStateChanged(model_->getDeviceState());
 
-    /*
-    spyLstepCheckBox_ = new QSignalSpy(lstepCheckBox_, SIGNAL(toggled(bool)));
-    spyJoystickCheckBox_ = new QSignalSpy(joystickCheckBox_, SIGNAL(toggled(bool)));
-    spyButtonOrigin_ = new QSignalSpy(buttonOrigin_, SIGNAL(clicked()));
-    spyButtonCalibrate_ = new QSignalSpy(buttonCalibrate_, SIGNAL(clicked()));
-    spyButtonEmergencyStop_ = new QSignalSpy(buttonEmergencyStop_, SIGNAL(clicked()));
-    */
-
-    /*
-      connect(lstepCheckBox_, SIGNAL(toggled(bool)),
-      this, SLOT(printSpyInformation()));
-      
-      connect(joystickCheckBox_, SIGNAL(toggled(bool)),
-      this, SLOT(printSpyInformation()));
-      
-      connect(buttonOrigin_, SIGNAL(clicked()),
-      this, SLOT(printSpyInformation()));
-      
-      connect(buttonCalibrate_, SIGNAL(clicked()),
-      this, SLOT(printSpyInformation()));
-      
-      connect(buttonEmergencyStop_, SIGNAL(clicked()),
-      this, SLOT(printSpyInformation()));
-    */
 }
 
 LStepExpressWidget::~LStepExpressWidget()
 {
-
-  /*
-    if(spyLstepCheckBox_){delete spyLstepCheckBox_; spyLstepCheckBox_ = NULL;}
-    if(spyJoystickCheckBox_){delete spyJoystickCheckBox_; spyJoystickCheckBox_ = NULL;}
-    if(spyButtonOrigin_){delete spyButtonOrigin_; spyButtonOrigin_ = NULL;}
-    if(spyButtonCalibrate_){delete spyButtonCalibrate_; spyButtonCalibrate_ = NULL;}
-    if(spyButtonEmergencyStop_){delete spyButtonEmergencyStop_; spyButtonEmergencyStop_ = NULL;}
-  */
-
     if(lstepCheckBox_){delete lstepCheckBox_; lstepCheckBox_ = NULL;}
     if(joystickCheckBox_){delete joystickCheckBox_; joystickCheckBox_ = NULL;}
     if(buttonOrigin_){delete buttonOrigin_; buttonOrigin_ = NULL;}
     if(buttonCalibrate_){delete buttonCalibrate_; buttonCalibrate_ = NULL;}
     if(buttonEmergencyStop_){delete buttonEmergencyStop_; buttonEmergencyStop_ = NULL;}
-}
-
-void LStepExpressWidget::printSpyInformation()
-{
-  /*
-    for(int i = 0; i < spyLstepCheckBox_->size(); i++){
-        NQLog("SPY LStepExpressWidget", NQLog::Spam)<< "lstepCheckBox_, signal toggled("<<(spyLstepCheckBox_->value(i))[0].toBool()<<")"  ;
-    }
-    spyLstepCheckBox_->clear();
-    for(int i = 0; i < spyJoystickCheckBox_->size(); i++){
-        NQLog("SPY LStepExpressWidget", NQLog::Spam)<< "joystickCheckBox_, signal toggled("<<(spyJoystickCheckBox_->value(i))[0].toBool()<<")"  ;
-    }
-    spyJoystickCheckBox_->clear();
-    for(int i = 0; i < spyButtonOrigin_->size(); i++){
-        NQLog("SPY LStepExpressWidget", NQLog::Spam)<< "ButtonOrigin_, signal clicked()"  ;
-    }
-    spyButtonOrigin_->clear();
-    for(int i = 0; i < spyButtonCalibrate_->size(); i++){
-        NQLog("SPY LStepExpressWidget", NQLog::Spam)<< "ButtonCalibrate_, signal clicked()"  ;
-    }
-    spyButtonCalibrate_->clear();
-    for(int i = 0; i < spyButtonEmergencyStop_->size(); i++){
-        NQLog("SPY LStepExpressWidget", NQLog::Spam)<< "ButtonEmergencyStop_, signal clicked()"  ;
-    }
-    spyButtonEmergencyStop_->clear();
-  */
 }
 
 void LStepExpressWidget::updateWidgets()
@@ -243,17 +184,6 @@ LStepExpressAxisWidget::LStepExpressAxisWidget(LStepExpressModel* model,
     connect(model_, SIGNAL(motionFinished()),
             this, SLOT(motionFinished()));
 
-    /*
-    spyEnabledCheckBox_ = new QSignalSpy(enabledCheckBox_, SIGNAL(toggled(bool)));
-    spyJoystickCheckBox_ = new QSignalSpy(joystickCheckBox_, SIGNAL(toggled(bool)));
-    */
-    /*
-    connect(enabledCheckBox_, SIGNAL(toggled(bool)),
-            this, SLOT(printSpyInformation()));
-
-    connect(joystickCheckBox_, SIGNAL(toggled(bool)),
-            this, SLOT(printSpyInformation()));
-    */
 }
 
 LStepExpressAxisWidget::~LStepExpressAxisWidget()
@@ -263,22 +193,6 @@ LStepExpressAxisWidget::~LStepExpressAxisWidget()
     if(joystickCheckBox_){ delete joystickCheckBox_; joystickCheckBox_ = NULL;}
     if(statusLabel_){ delete statusLabel_; statusLabel_ = NULL;}
     if(positionLabel_){delete positionLabel_; positionLabel_ = NULL;}
-    //if(spyEnabledCheckBox_){delete spyEnabledCheckBox_; spyEnabledCheckBox_ = NULL;}
-    //if(spyJoystickCheckBox_){delete spyJoystickCheckBox_; spyJoystickCheckBox_ = NULL;}
-}
-
-void LStepExpressAxisWidget::printSpyInformation()
-{
-  /*
-    for(int i = 0; i < spyEnabledCheckBox_->size(); i++){
-        NQLog("SPY LStepExpressAxisWidget ", NQLog::Spam)<< "enabledCheckBox_, signal toggled( "<<(spyEnabledCheckBox_->value(i))[0].toBool()<<")"  ;
-    }
-    spyEnabledCheckBox_->clear();
-    for(int i = 0; i < spyJoystickCheckBox_->size(); i++){
-        NQLog("SPY LStepExpressAxisWidget ", NQLog::Spam)<< "joystickCheckBox_, signal toggled( "<<(spyJoystickCheckBox_->value(i))[0].toBool()<<")"  ;
-    }
-    spyJoystickCheckBox_->clear();
-  */
 }
 
 void LStepExpressAxisWidget::updateWidgets()

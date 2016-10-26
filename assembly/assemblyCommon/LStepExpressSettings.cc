@@ -383,26 +383,6 @@ LStepExpressSettings::LStepExpressSettings(LStepExpressModel* model, QObject* pa
             this, SLOT(deviceControlStateChanged(bool)));
 
 
-    connect(this, SIGNAL(controlStateChanged(bool)),
-	this, SLOT(printSpyInformation()));
-    connect(this, SIGNAL(settingChanged(QString, QVariant)),
-	this, SLOT(printSpyInformation()));
-
-    spyControlStateChanged = new QSignalSpy(this, SIGNAL(controlStateChanged(bool)));
-    spySettingChanged = new QSignalSpy(this, SIGNAL(settingChanged(QString, QVariant)));
-}
-
-void LStepExpressSettings::printSpyInformation()
-{
-
-    for(int i = 0; i < spyControlStateChanged->size(); i++){
-        NQLog("SPY LStepExpressSettings ", NQLog::Spam) << "this_, signal controlStateChanged()";    
-    }
-    spyControlStateChanged->clear();
-    for(int i = 0; i < spySettingChanged->size(); i++){
-        NQLog("SPY LStepExpressSettings ", NQLog::Spam) << "this_, signal settingChanged()";    
-    }
-    spySettingChanged->clear();
 }
 
 void LStepExpressSettings::deviceControlStateChanged(bool enabled)
@@ -460,7 +440,8 @@ void LStepExpressSettings::readSettingsFromDevice()
 {
     QMutexLocker locker(&mutex_);
 
-    while (model_->isUpdating()) usleep(100);
+    //this randomly staryted to cause compilation errors on mac...???
+    //while (model_->isUpdating()) usleep(100);
 
     model_->pauseUpdate();
 

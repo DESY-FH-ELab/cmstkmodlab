@@ -18,6 +18,15 @@ AssemblyMainWindow::AssemblyMainWindow(QWidget *parent) :
     camera_(0)
 {
     ApplicationConfig* config = ApplicationConfig::instance();
+    
+    
+    lStepExpressModel_ = new LStepExpressModel(config->getValue<std::string>("LStepExpressDevice").c_str(),
+                                               1000, 100);
+    motionManager_ = new LStepExpressMotionManager(lStepExpressModel_);
+    motionThread_ = new LStepExpressMotionThread(this);
+    motionThread_->start();
+    motionManager_->myMoveToThread(motionThread_);
+    
 
     tabWidget_ = new QTabWidget(this);
     tabWidget_->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);
@@ -30,11 +39,14 @@ AssemblyMainWindow::AssemblyMainWindow(QWidget *parent) :
 
     rawView_ = new AssemblyUEyeSnapShooter(tabWidget_);
     tabWidget_->addTab(rawView_, "raw");
-
+    
     uEyeModel_ = new AssemblyUEyeModel_t(10);
     cameraThread_ = new AssemblyUEyeCameraThread(uEyeModel_, this);
     cameraThread_->start();
 
+    assembleView_ = new AssemblyModuleAssembler(uEyeModel_, lStepExpressModel_, motionManager_, conradModel_, tabWidget_);
+    tabWidget_->addTab(assembleView_, "assemble");
+    
     finder_ = new AssemblySensorMarkerFinder();
     finderThread_ = new AssemblyMarkerFinderThread(finder_, this);
     finderThread_->start();
@@ -44,6 +56,36 @@ AssemblyMainWindow::AssemblyMainWindow(QWidget *parent) :
 
     uEyeWidget_ = new AssemblyUEyeWidget(uEyeModel_, this);
     tabWidget_->addTab(uEyeWidget_, "uEye");
+    
+    
+    QWidget * widget;
+    widget= new QWidget(tabWidget_);
+    tabWidget_->addTab(widget, "Motion Manager");
+
+    
+    QHBoxLayout * layout = new QHBoxLayout(widget);
+    widget->setLayout(layout);
+    
+    QVBoxLayout * layoutv = new QVBoxLayout(widget);
+    
+    LStepExpressWidget *lStepExpressWidget = new LStepExpressWidget(lStepExpressModel_, widget);
+    layoutv->addWidget(lStepExpressWidget);
+    
+    LStepExpressJoystickWidget *lStepJoystick = new LStepExpressJoystickWidget(lStepExpressModel_, widget);
+    layoutv->addWidget(lStepJoystick);
+    
+    layout->addLayout(layoutv);
+    
+    QVBoxLayout * layoutv2 = new QVBoxLayout(widget);
+    
+    //LStepExpressStatusWindow *lStepStatusWindow = new LStepExpressStatusWindow(lStepExpressModel_, widget);
+    //layoutv2->addWidget(lStepStatusWindow);
+    
+    LStepExpressPositionWidget *lStepPosition = new LStepExpressPositionWidget(motionManager_, lStepExpressModel_, widget);
+    layoutv2->addWidget(lStepPosition);
+    
+    
+    
 
     connect(QApplication::instance(), SIGNAL(aboutToQuit()),
             this, SLOT(quit()));
@@ -52,7 +94,7 @@ AssemblyMainWindow::AssemblyMainWindow(QWidget *parent) :
     toolBar_->addAction("open", this, SLOT(onOpenCamera()));
     toolBar_->addAction("close", this, SLOT(onCloseCamera()));
     toolBar_->addAction("snapshot", this, SLOT(onSnapShot()));
-
+  
     setCentralWidget(tabWidget_);
     updateGeometry();
 
@@ -73,7 +115,7 @@ void AssemblyMainWindow::liveUpdate()
 
 void AssemblyMainWindow::onOpenCamera()
 {
-    NQLog("AssemblyMainWindow") << ":onOpenCamera()";
+    NQLog("AssemblyMainWindow") << ":onOpenCamera() ";
 
     camera_ = uEyeModel_->getCameraByID(10);
 
@@ -100,8 +142,13 @@ void AssemblyMainWindow::onCloseCamera()
 
 void AssemblyMainWindow::onSnapShot()
 {
+   NQLog("AssemblyUEyeCamera::onSnapShot", NQLog::Message) << " pre ";
     emit acquireImage();
+   NQLog("AssemblyUEyeCamera::onSnapShot", NQLog::Message) << " post ";
+
 }
+
+
 
 void AssemblyMainWindow::testTimer()
 {
@@ -119,6 +166,9 @@ void AssemblyMainWindow::cameraOpened()
 
     rawView_->connectImageProducer(camera_, SIGNAL(imageAcquired(const cv::Mat&)));
 
+    //    playView_->connectImageProducer_tracker(camera_, SIGNAL(imageAcquired(const cv::Mat&)));
+
+    
     connect(camera_, SIGNAL(imageAcquired(const cv::Mat&)),
             finder_, SLOT(findMarker(const cv::Mat&)));
 
@@ -133,8 +183,9 @@ void AssemblyMainWindow::cameraClosed()
 
     edgeView_->disconnectImageProducer(finder_, SIGNAL(edgesDetected(const cv::Mat&)));
 
-    rawView_->disconnectImageProducer(camera_, SIGNAL(imageAcquired(const cv::Mat&)));
+    rawView_->disconnectImageProducer(camera_, SIGNAL(imagef(const cv::Mat&)));
 
+    //    playView_->disconnectImageProducer(camera_, SIGNAL(imageAcquired(const cv::Mat&)));
     disconnect(camera_, SIGNAL(imageAcquired(const cv::Mat&)),
                finder_, SLOT(findMarker(const cv::Mat&)));
 

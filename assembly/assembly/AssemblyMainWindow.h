@@ -10,22 +10,46 @@
 
 #include "AssemblyVUEyeCamera.h"
 
-#ifdef USE_UEYE
-#include "AssemblyUEyeModel.h"
-typedef AssemblyUEyeModel AssemblyUEyeModel_t;
-#else
+#ifdef NOUEYE
 #include "AssemblyUEyeFakeModel.h"
 typedef AssemblyUEyeFakeModel AssemblyUEyeModel_t;
+#else
+#include "AssemblyUEyeModel.h"
+typedef AssemblyUEyeModel AssemblyUEyeModel_t;
 #endif
 
 #include "AssemblyUEyeCameraThread.h"
 #include "AssemblyUEyeWidget.h"
 #include "AssemblyUEyeView.h"
 #include "AssemblyUEyeSnapShooter.h"
+#include "AssemblyModuleAssembler.h"
+
 
 #include "AssemblyMarkerFinderThread.h"
 #include "AssemblySensorMarkerFinder.h"
 #include "AssemblySensorMarkerFinderWidget.h"
+
+
+
+//motion
+#include <ApplicationConfig.h>
+#include "LStepExpressModel.h"
+#include "LStepExpressSettings.h"
+#include "LStepExpressMotionManager.h"
+#include "LStepExpressMotionThread.h"
+#include "LStepExpressSettingsWidget.h"
+#include "LStepExpressWidget.h"
+#include "LStepExpressJoystickWidget.h"
+
+#include "LStepExpressMeasurement.h"
+#include "LStepExpressMeasurementWidget.h"
+#include "LStepExpressPositionWidget.h"
+#include "LStepExpressStatusWindow.h"
+
+//conrad relay card
+#include "ConradModel.h"
+
+
 
 class AssemblyMainWindow : public QMainWindow
 {
@@ -54,7 +78,7 @@ signals:
 
 protected slots:
 
-  void liveUpdate();
+void liveUpdate();
 
 protected:
 
@@ -67,6 +91,8 @@ protected:
   AssemblyUEyeSnapShooter* finderView_;
   AssemblyUEyeSnapShooter* edgeView_;
   AssemblyUEyeSnapShooter* rawView_;
+  AssemblyModuleAssembler* assembleView_;
+    
 
   AssemblyUEyeModel_t* uEyeModel_;
   AssemblyUEyeCameraThread* cameraThread_;
@@ -77,6 +103,14 @@ protected:
   AssemblyMarkerFinderThread* finderThread_;
   AssemblySensorMarkerFinder* finder_;
   AssemblySensorMarkerFinderWidget* finderWidget_;
+    
+    
+  LStepExpressModel* lStepExpressModel_;
+  LStepExpressMotionManager* motionManager_;
+  LStepExpressSettings* lStepExpressSettings_;
+  LStepExpressMotionThread* motionThread_;
+    
+  ConradModel * conradModel_;
 
   double testTimerCount_;
 

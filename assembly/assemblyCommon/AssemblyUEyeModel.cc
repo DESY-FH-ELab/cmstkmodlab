@@ -72,7 +72,7 @@ void AssemblyUEyeModel::updateInformation()
                 camera->setModelName(info->Model);
                 camera->setFullModelName(info->FullModelName);
                 camera->setStatus(info->dwStatus);
-
+                NQLog("AssemblyUEyeModel") << "Params ";
                 NQLog("AssemblyUEyeModel") << "camera " << idx;
                 NQLog("AssemblyUEyeModel") << "model name:      " << camera->getModelName();
                 NQLog("AssemblyUEyeModel") << "full model name: " << camera->getFullModelName();
