@@ -158,6 +158,22 @@ int NanotecSMCI36::GetStepMode() const
   return std::atoi(ret.c_str());
 }
 
+void NanotecSMCI36::SetDriveAddress(int address)
+{
+  driveAddress_ = address;
+
+  char command[20];
+  sprintf(command, "m%d", driveAddress_);
+
+  comHandler_->SendCommand(command);
+  char buffer[1000];
+  comHandler_->ReceiveString(buffer);
+}
+
+int NanotecSMCI36::GetDriveAddress()
+{
+  comHandler_->SendCommand("#*m");
+  char buffer[1000];
 void NanotecSMCI36::SetMotorID(int ID)
 {
   char command[20];

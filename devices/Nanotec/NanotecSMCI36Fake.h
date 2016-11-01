@@ -29,6 +29,9 @@ class NanotecSMCI36Fake : public VNanotecSMCI36
   void SetStepMode(int mode);
   int GetStepMode() const;
 
+  void SetDriveAddress(int address);
+  int GetDriveAddress();
+
   void SetMotorID(int ID);
   int GetMotorID() const;
 
@@ -111,6 +114,7 @@ class NanotecSMCI36Fake : public VNanotecSMCI36
   int motorType_;
   int phaseCurrent_;
   int stepMode_;
+  int driveAddress_;
   int motorID_;
   int errorCorrectionMode_;
   bool encoderDirection_;

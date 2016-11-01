@@ -15,6 +15,7 @@ NanotecSMCI36Fake::NanotecSMCI36Fake( const ioport_t ioPort )
   stepMode_ = smci02MicroStepsPerFullStep;
 
   motorID_ = 1;
+  driveAddress_ = 1;
   errorCorrectionMode_ = smciErrCorrectionAfterTravel;
   encoderDirection_ = false;
   swingOutTime_ = 5;
@@ -119,6 +120,16 @@ void NanotecSMCI36Fake::SetStepMode(int mode)
 int NanotecSMCI36Fake::GetStepMode() const
 {
   return stepMode_;
+}
+
+void NanotecSMCI36Fake::SetDriveAddress(int address)
+{
+  driveAddress_ = address;
+}
+
+int NanotecSMCI36Fake::GetDriveAddress()
+{
+  return driveAddress_;
 }
 
 void NanotecSMCI36Fake::SetMotorID(int ID)

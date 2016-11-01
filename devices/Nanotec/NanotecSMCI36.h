@@ -38,6 +38,9 @@ class NanotecSMCI36 : public VNanotecSMCI36
   void SetStepMode(int mode);
   int GetStepMode() const;
 
+  void SetDriveAddress(int address);
+  int GetDriveAddress();
+
   void SetMotorID(int ID);
   int GetMotorID() const;
 
@@ -121,6 +124,8 @@ class NanotecSMCI36 : public VNanotecSMCI36
 
   NanotecComHandler* comHandler_;
   bool isDeviceAvailable_;
+
+  int driveAddress_;
 };
 
 #endif

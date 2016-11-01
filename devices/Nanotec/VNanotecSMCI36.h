@@ -131,6 +131,9 @@ class VNanotecSMCI36
     return stepModeNames_;
   }
 
+  virtual void SetDriveAddress(int address) = 0;
+  virtual int GetDriveAddress() = 0;
+
   virtual void SetMotorID(int ID) = 0;
   virtual int GetMotorID() const = 0;
 
