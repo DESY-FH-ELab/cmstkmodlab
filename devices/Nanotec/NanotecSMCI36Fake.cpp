@@ -20,7 +20,7 @@ NanotecSMCI36Fake::NanotecSMCI36Fake( const ioport_t ioPort )
   errorCorrectionMode_ = smciErrCorrectionAfterTravel;
   encoderDirection_ = false;
   swingOutTime_ = 5;
-  maxEncoderDeviation_ = 2;
+  maxEncoderDeviation_ = 4;
 
   position_ = 0;
   encoderPosition_ = 0;
