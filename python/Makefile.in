@@ -33,17 +33,17 @@ depend: $(ALLDEPEND)
 
 libs: $(ALLLIBS)
 
-PyTkModLabNanotec.so: PyTkModLabNanotec.o
+PyTkModLabNanotec.so: PyTkModLabNanotec.o $(BASEPATH)/devices/lib/libTkModLabNanotec.so
 	@echo "Linking shared library $@"
-	$(LD) $^ -o $@ $(SOFLAGS) -L$(BASEPATH)/devices/lib -lTkModLabNanotec
+	$(LD) $(addsuffix .o,$(basename $@)) -o $@ $(SOFLAGS) -L$(BASEPATH)/devices/lib -lTkModLabNanotec
 
-PyTkModLabHameg.so: PyTkModLabHameg.o
+PyTkModLabHameg.so: PyTkModLabHameg.o $(BASEPATH)/devices/lib/libTkModLabHameg.so
 	@echo "Linking shared library $@"
-	$(LD) $^ -o $@ $(SOFLAGS) -L$(BASEPATH)/devices/lib -lTkModLabHameg
+	$(LD) $(addsuffix .o,$(basename $@)) -o $@ $(SOFLAGS) -L$(BASEPATH)/devices/lib -lTkModLabHameg
 
-PyTkModLabConrad.so: PyTkModLabConrad.o
+PyTkModLabConrad.so: PyTkModLabConrad.o $(BASEPATH)/devices/lib/libTkModLabConrad.so
 	@echo "Linking shared library $@"
-	$(LD) $^ -o $@ $(SOFLAGS) -L$(BASEPATH)/devices/lib -lTkModLabConrad
+	$(LD) $(addsuffix .o,$(basename $@)) -o $@ $(SOFLAGS) -L$(BASEPATH)/devices/lib -lTkModLabConrad
 
 %.d: %.cc
 	@echo Making dependency for file $< ...
@@ -57,8 +57,8 @@ PyTkModLabConrad.so: PyTkModLabConrad.o
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $< -o $@
 
 clean:
-	@rm -f $(LIBDIR)/lib$(LIB).so
-	@rm -f $(addsuffix .o,$(MODULES))
+	@rm -f $(ALLLIBS)
+	@rm -f $(addsuffix .o,$(LIBS))
 	@rm -f *.d
 	@rm -f *~
 
