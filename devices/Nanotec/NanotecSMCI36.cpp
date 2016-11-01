@@ -816,13 +816,27 @@ void NanotecSMCI36::DeviceInit()
 
   if (comHandler_->DeviceAvailable()) {
     
-    comHandler_->SendCommand("#1v");
+    // get the drive address
+    comHandler_->SendCommand("#*m");
     char buffer[1000];
     comHandler_->ReceiveString(buffer);
     StripBuffer(buffer);
 
     std::string buf = buffer;
-    if (buf.find("1v SMCI36_RS485", 0)==0) {
+    buf.resize(buf.find('m'));
+
+    driveAddress_ = std::atoi(buf.c_str());
+
+    char command[20];
+    sprintf(command, "#%dv", driveAddress_);
+
+    comHandler_->SendCommand(command);
+    comHandler_->ReceiveString(buffer);
+    StripBuffer(buffer);
+    buf = buffer;
+
+    sprintf(buffer, "%dv SMCI36_RS485", driveAddress_);
+    if (buf.find(buffer, 0)==0) {
       isDeviceAvailable_ = true;
     } else {
       isDeviceAvailable_ = false;
