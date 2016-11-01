@@ -35,8 +35,8 @@ class NanotecSMCI36Fake : public VNanotecSMCI36
   void SetErrorCorrectionMode(int mode);
   int GetErrorCorrectionMode() const;
 
-  void SetEncoderDirection(int direction);
-  int GetEncoderDirection() const;
+  void SetEncoderDirection(bool direction);
+  bool GetEncoderDirection() const;
 
   void SetSwingOutTime(int time);
   int GetSwingOutTime() const;
@@ -113,7 +113,7 @@ class NanotecSMCI36Fake : public VNanotecSMCI36
   int stepMode_;
   int motorID_;
   int errorCorrectionMode_;
-  int encoderDirection_;
+  bool encoderDirection_;
   int swingOutTime_;
   int maxEncoderDeviation_;
   int position_;

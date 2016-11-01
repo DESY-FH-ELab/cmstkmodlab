@@ -205,9 +205,8 @@ int NanotecSMCI36::GetErrorCorrectionMode() const
   return std::atoi(ret.c_str());
 }
 
-void NanotecSMCI36::SetEncoderDirection(int direction)
+void NanotecSMCI36::SetEncoderDirection(bool direction)
 {
-  if (direction < 0 || direction > 1) return;
   char command[20];
   sprintf(command, "#1q%d", direction);
 
@@ -216,7 +215,7 @@ void NanotecSMCI36::SetEncoderDirection(int direction)
   comHandler_->ReceiveString(buffer);
 }
 
-int NanotecSMCI36::GetEncoderDirection() const
+bool NanotecSMCI36::GetEncoderDirection() const
 {
   comHandler_->SendCommand("#1Zq");
   char buffer[1000];

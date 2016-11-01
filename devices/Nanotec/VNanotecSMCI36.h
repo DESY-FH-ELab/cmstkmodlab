@@ -142,8 +142,8 @@ class VNanotecSMCI36
     return errorCorrectionModeNames_;
   }
 
-  virtual void SetEncoderDirection(int direction) = 0;
-  virtual int GetEncoderDirection() const = 0;
+  virtual void SetEncoderDirection(bool direction) = 0;
+  virtual bool GetEncoderDirection() const = 0;
 
   virtual void SetSwingOutTime(int time) = 0;
   virtual int GetSwingOutTime() const = 0;

@@ -16,7 +16,7 @@ NanotecSMCI36Fake::NanotecSMCI36Fake( const ioport_t ioPort )
 
   motorID_ = 1;
   errorCorrectionMode_ = smciErrCorrectionAfterTravel;
-  encoderDirection_ = 0;
+  encoderDirection_ = false;
   swingOutTime_ = 5;
   maxEncoderDeviation_ = 2;
 
@@ -142,13 +142,12 @@ int NanotecSMCI36Fake::GetErrorCorrectionMode() const
   return errorCorrectionMode_;
 }
 
-void NanotecSMCI36Fake::SetEncoderDirection(int direction)
+void NanotecSMCI36Fake::SetEncoderDirection(bool direction)
 {
-  if (direction < 0 || direction > 1) return;
   encoderDirection_ = direction;
 }
 
-int NanotecSMCI36Fake::GetEncoderDirection() const
+bool NanotecSMCI36Fake::GetEncoderDirection() const
 {
   return encoderDirection_;
 }
