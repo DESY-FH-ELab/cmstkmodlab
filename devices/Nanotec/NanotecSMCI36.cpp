@@ -24,26 +24,32 @@ bool NanotecSMCI36::DeviceAvailable() const
 
 std::string NanotecSMCI36::GetFirmwareVersion() const
 {
-  comHandler_->SendCommand("#1v");
+  char command[20];
+  sprintf(command, "#%dv", driveAddress_);
+
+  comHandler_->SendCommand(command);
   char buffer[1000];
   comHandler_->ReceiveString(buffer);
   StripBuffer(buffer);
 
   std::string ret = buffer;
-  ret.erase(0, ret.find("1v")+3);
+  ret.erase(0, ret.find("v")+2);
 
   return ret;
 }
 
 int NanotecSMCI36::GetStatus() const
 {
-  comHandler_->SendCommand("#1$");
+  char command[20];
+  sprintf(command, "#%d$", driveAddress_);
+
+  comHandler_->SendCommand(command);
   char buffer[1000];
   comHandler_->ReceiveString(buffer);
   StripBuffer(buffer);
 
   std::string ret = buffer;
-  ret.erase(0, ret.find("1$")+2);
+  ret.erase(0, ret.find('$')+1);
 
   return std::atoi(ret.c_str());
 }
@@ -53,7 +59,7 @@ void NanotecSMCI36::SetMotorType(int type)
   if (type < smciStepper || type > smciBLDCEncoder) return;
 
   char command[20];
-  sprintf(command, "#1:CL_motor_type%d", type);
+  sprintf(command, "#%d:CL_motor_type%d", driveAddress_, type);
 
   comHandler_->SendCommand(command);
   char buffer[1000];
@@ -62,13 +68,16 @@ void NanotecSMCI36::SetMotorType(int type)
 
 int NanotecSMCI36::GetMotorType() const
 {
-  comHandler_->SendCommand("#1:CL_motor_type");
+  char command[20];
+  sprintf(command, "#%d:CL_motor_type", driveAddress_);
+
+  comHandler_->SendCommand(command);
   char buffer[1000];
   comHandler_->ReceiveString(buffer);
   StripBuffer(buffer);
 
   std::string ret = buffer;
-  ret.erase(0, strlen("1:CL_motor_type"));
+  ret.erase(0, ret.find("type")+4);
 
   return std::atoi(ret.c_str());
 }
@@ -78,7 +87,7 @@ void NanotecSMCI36::SetPhaseCurrent(int current)
   if (current < 0 || current >100) return;
 
   char command[20];
-  sprintf(command, "#1i%d", current);
+  sprintf(command, "#%di%d", driveAddress_, current);
 
   comHandler_->SendCommand(command);
   char buffer[1000];
@@ -87,13 +96,18 @@ void NanotecSMCI36::SetPhaseCurrent(int current)
 
 int NanotecSMCI36::GetPhaseCurrent() const
 {
-  comHandler_->SendCommand("#1Zi");
+  char command[20];
+  sprintf(command, "#%dZi", driveAddress_);
+
+  comHandler_->SendCommand(command);
   char buffer[1000];
   comHandler_->ReceiveString(buffer);
   StripBuffer(buffer);
 
   std::string ret = buffer;
-  ret.erase(0, strlen("1Zi"));
+  ret.erase(0, ret.find('i')+1);
+
+  std::cout << ret << std::endl;
 
   return std::atoi(ret.c_str());
 }
@@ -103,7 +117,7 @@ void NanotecSMCI36::SetStandStillPhaseCurrent(int current)
   if (current < 0 || current >100) return;
 
   char command[20];
-  sprintf(command, "#1r%d", current);
+  sprintf(command, "#%dr%d", driveAddress_, current);
 
   comHandler_->SendCommand(command);
   char buffer[1000];
@@ -112,13 +126,16 @@ void NanotecSMCI36::SetStandStillPhaseCurrent(int current)
 
 int NanotecSMCI36::GetStandStillPhaseCurrent() const
 {
-  comHandler_->SendCommand("#1Zr");
+  char command[20];
+  sprintf(command, "#%dZr", driveAddress_);
+
+  comHandler_->SendCommand(command);
   char buffer[1000];
   comHandler_->ReceiveString(buffer);
   StripBuffer(buffer);
 
   std::string ret = buffer;
-  ret.erase(0, strlen("1Zr"));
+  ret.erase(0, ret.find('r')+1);
 
   return std::atoi(ret.c_str());
 }
@@ -138,7 +155,7 @@ void NanotecSMCI36::SetStepMode(int mode)
       mode != smciAdaptiveStepMode) return;
 
   char command[20];
-  sprintf(command, "#1g%d", mode);
+  sprintf(command, "#%dg%d", driveAddress_, mode);
 
   comHandler_->SendCommand(command);
   char buffer[1000];
@@ -147,13 +164,16 @@ void NanotecSMCI36::SetStepMode(int mode)
 
 int NanotecSMCI36::GetStepMode() const
 {
-  comHandler_->SendCommand("#1Zg");
+  char command[20];
+  sprintf(command, "#%dZg", driveAddress_);
+
+  comHandler_->SendCommand(command);
   char buffer[1000];
   comHandler_->ReceiveString(buffer);
   StripBuffer(buffer);
 
   std::string ret = buffer;
-  ret.erase(0, strlen("1Zg"));
+  ret.erase(0, ret.find('g')+1);
 
   return std::atoi(ret.c_str());
 }
@@ -174,10 +194,20 @@ int NanotecSMCI36::GetDriveAddress()
 {
   comHandler_->SendCommand("#*m");
   char buffer[1000];
+  comHandler_->ReceiveString(buffer);
+  StripBuffer(buffer);
+
+  std::string ret = buffer;
+  ret.erase(0, ret.find('m')+1);
+  driveAddress_ = std::atoi(ret.c_str());
+
+  return driveAddress_;
+}
+
 void NanotecSMCI36::SetMotorID(int ID)
 {
   char command[20];
-  sprintf(command, "#1:mt%d", ID);
+  sprintf(command, "#%d:mt%d", driveAddress_, ID);
 
   comHandler_->SendCommand(command);
   char buffer[1000];
@@ -186,13 +216,16 @@ void NanotecSMCI36::SetMotorID(int ID)
 
 int NanotecSMCI36::GetMotorID() const
 {
-  comHandler_->SendCommand("#1:mt");
+  char command[20];
+  sprintf(command, "#%d:mt", driveAddress_);
+
+  comHandler_->SendCommand(command);
   char buffer[1000];
   comHandler_->ReceiveString(buffer);
   StripBuffer(buffer);
 
   std::string ret = buffer;
-  ret.erase(0, strlen("1:mt"));
+  ret.erase(0, ret.find('t')+1);
 
   return std::atoi(ret.c_str());
 }
@@ -200,8 +233,9 @@ int NanotecSMCI36::GetMotorID() const
 void NanotecSMCI36::SetErrorCorrectionMode(int mode)
 {
   if (mode < smciErrCorrectionOff || mode > smciErrCorrectionDuringTravel) return;
+
   char command[20];
-  sprintf(command, "#1U%d", mode);
+  sprintf(command, "#%dU%d", driveAddress_, mode);
 
   comHandler_->SendCommand(command);
   char buffer[1000];
@@ -210,13 +244,16 @@ void NanotecSMCI36::SetErrorCorrectionMode(int mode)
 
 int NanotecSMCI36::GetErrorCorrectionMode() const
 {
-  comHandler_->SendCommand("#1ZU");
+  char command[20];
+  sprintf(command, "#%dZU", driveAddress_);
+
+  comHandler_->SendCommand(command);
   char buffer[1000];
   comHandler_->ReceiveString(buffer);
   StripBuffer(buffer);
 
   std::string ret = buffer;
-  ret.erase(0, strlen("1ZU"));
+  ret.erase(0, ret.find('U')+1);
 
   return std::atoi(ret.c_str());
 }
@@ -224,7 +261,7 @@ int NanotecSMCI36::GetErrorCorrectionMode() const
 void NanotecSMCI36::SetEncoderDirection(bool direction)
 {
   char command[20];
-  sprintf(command, "#1q%d", direction);
+  sprintf(command, "#%dq%d", driveAddress_, (int)direction);
 
   comHandler_->SendCommand(command);
   char buffer[1000];
@@ -233,13 +270,16 @@ void NanotecSMCI36::SetEncoderDirection(bool direction)
 
 bool NanotecSMCI36::GetEncoderDirection() const
 {
-  comHandler_->SendCommand("#1Zq");
+  char command[20];
+  sprintf(command, "#%dZq", driveAddress_);
+
+  comHandler_->SendCommand(command);
   char buffer[1000];
   comHandler_->ReceiveString(buffer);
   StripBuffer(buffer);
 
   std::string ret = buffer;
-  ret.erase(0, strlen("1Zq"));
+  ret.erase(0, ret.find('q')+1);
 
   return std::atoi(ret.c_str());
 }
@@ -247,8 +287,9 @@ bool NanotecSMCI36::GetEncoderDirection() const
 void NanotecSMCI36::SetSwingOutTime(int time)
 {
   if (time<0 || time > 255) return;
+
   char command[20];
-  sprintf(command, "#1O%d", time);
+  sprintf(command, "#%dO%d", driveAddress_, time);
 
   comHandler_->SendCommand(command);
   char buffer[1000];
@@ -257,13 +298,16 @@ void NanotecSMCI36::SetSwingOutTime(int time)
 
 int NanotecSMCI36::GetSwingOutTime() const
 {
-  comHandler_->SendCommand("#1ZO");
+  char command[20];
+  sprintf(command, "#%dZO", driveAddress_);
+
+  comHandler_->SendCommand(command);
   char buffer[1000];
   comHandler_->ReceiveString(buffer);
   StripBuffer(buffer);
 
   std::string ret = buffer;
-  ret.erase(0, strlen("1ZO"));
+  ret.erase(0, ret.find('O')+1);
 
   return std::atoi(ret.c_str());
 }
@@ -271,8 +315,9 @@ int NanotecSMCI36::GetSwingOutTime() const
 void NanotecSMCI36::SetMaxEncoderDeviation(int deviation)
 {
   if (deviation < 0 || deviation > 255) return;
+
   char command[20];
-  sprintf(command, "#1X%d", deviation);
+  sprintf(command, "#%dX%d", driveAddress_, deviation);
 
   comHandler_->SendCommand(command);
   char buffer[1000];
@@ -281,39 +326,48 @@ void NanotecSMCI36::SetMaxEncoderDeviation(int deviation)
 
 int NanotecSMCI36::GetMaxEncoderDeviation() const
 {
-  comHandler_->SendCommand("#1ZX");
+  char command[20];
+  sprintf(command, "#%dZX", driveAddress_);
+
+  comHandler_->SendCommand(command);
   char buffer[1000];
   comHandler_->ReceiveString(buffer);
   StripBuffer(buffer);
 
   std::string ret = buffer;
-  ret.erase(0, strlen("1ZX"));
+  ret.erase(0, ret.find('X')+1);
 
   return std::atoi(ret.c_str());
 }
 
 int NanotecSMCI36::GetPosition() const
 {
-  comHandler_->SendCommand("#1C");
+  char command[20];
+  sprintf(command, "#%dC", driveAddress_);
+
+  comHandler_->SendCommand(command);
   char buffer[1000];
   comHandler_->ReceiveString(buffer);
   StripBuffer(buffer);
 
   std::string ret = buffer;
-  ret.erase(0, strlen("1C"));
+  ret.erase(0, ret.find('C')+1);
 
   return std::atoi(ret.c_str());
 }
 
 int NanotecSMCI36::GetEncoderPosition() const
 {
-  comHandler_->SendCommand("#1I");
+  char command[20];
+  sprintf(command, "#%dI", driveAddress_);
+
+  comHandler_->SendCommand(command);
   char buffer[1000];
   comHandler_->ReceiveString(buffer);
   StripBuffer(buffer);
 
   std::string ret = buffer;
-  ret.erase(0, strlen("1I"));
+  ret.erase(0, ret.find('I')+1);
 
   return std::atoi(ret.c_str());
 }
@@ -321,7 +375,7 @@ int NanotecSMCI36::GetEncoderPosition() const
 void NanotecSMCI36::ResetPositionError(int position)
 {
   char command[20];
-  sprintf(command, "#1D%d", position);
+  sprintf(command, "#%dD%d", driveAddress_, position);
 
   comHandler_->SendCommand(command);
   char buffer[1000];
@@ -334,7 +388,7 @@ void NanotecSMCI36::SetInputPinFunction(int pin, int function)
   if (function<smciIPinUserDefined || function>smciIClockDirectionMode2) return;
 
   char command[20];
-  sprintf(command, "#1:port_in_%c%d", 'a'+pin-1, function);
+  sprintf(command, "#%d:port_in_%c%d", driveAddress_, 'a'+pin-1, function);
 
   comHandler_->SendCommand(command);
   char buffer[1000];
@@ -346,7 +400,7 @@ int NanotecSMCI36::GetInputPinFunction(int pin) const
   if (pin<1 || pin>6) return smciIInvalid;
 
   char command[20];
-  sprintf(command, "#1:port_in_%c", 'a'+pin-1);
+  sprintf(command, "#%d:port_in_%c", driveAddress_, 'a'+pin-1);
 
   comHandler_->SendCommand(command);
 
@@ -355,7 +409,7 @@ int NanotecSMCI36::GetInputPinFunction(int pin) const
   StripBuffer(buffer);
 
   std::string ret = buffer;
-  ret.erase(0, strlen("1:port_in_X"));
+  ret.erase(0, ret.find("in_")+4);
 
   return std::atoi(ret.c_str());
 }
@@ -366,7 +420,7 @@ void NanotecSMCI36::SetOutputPinFunction(int pin, int function)
   if (function<smciOPinUserDefined || function>smciOError) return;
 
   char command[20];
-  sprintf(command, "#1:port_out_%c%d", 'a'+pin-1, function);
+  sprintf(command, "#%d:port_out_%c%d", driveAddress_, 'a'+pin-1, function);
 
   comHandler_->SendCommand(command);
   char buffer[1000];
@@ -378,7 +432,7 @@ int NanotecSMCI36::GetOutputPinFunction(int pin) const
   if (pin<1 || pin>3) return smciOInvalid;
 
   char command[20];
-  sprintf(command, "#1:port_out_%c", 'a'+pin-1);
+  sprintf(command, "#%d:port_out_%c", driveAddress_, 'a'+pin-1);
 
   comHandler_->SendCommand(command);
 
@@ -387,7 +441,7 @@ int NanotecSMCI36::GetOutputPinFunction(int pin) const
   StripBuffer(buffer);
 
   std::string ret = buffer;
-  ret.erase(0, strlen("1:port_out_X"));
+  ret.erase(0, ret.find("out_")+5);
 
   return std::atoi(ret.c_str());
 }
@@ -395,7 +449,7 @@ int NanotecSMCI36::GetOutputPinFunction(int pin) const
 void NanotecSMCI36::SetIOMask(unsigned int mask)
 {
   char command[20];
-  sprintf(command, "#1L%d", mask);
+  sprintf(command, "#%dL%d", driveAddress_, mask);
 
   comHandler_->SendCommand(command);
   char buffer[1000];
@@ -404,14 +458,17 @@ void NanotecSMCI36::SetIOMask(unsigned int mask)
 
 unsigned int NanotecSMCI36::GetIOMask() const
 {
-  comHandler_->SendCommand("#1ZL");
+  char command[20];
+  sprintf(command, "#%dZL", driveAddress_);
+
+  comHandler_->SendCommand(command);
 
   char buffer[1000];
   comHandler_->ReceiveString(buffer);
   StripBuffer(buffer);
 
   std::string ret = buffer;
-  ret.erase(0, strlen("1ZL"));
+  ret.erase(0, ret.find('L')+1);
 
   return std::atoll(ret.c_str());
 }
@@ -419,7 +476,7 @@ unsigned int NanotecSMCI36::GetIOMask() const
 void NanotecSMCI36::SetReversePolarityMask(unsigned int mask)
 {
   char command[20];
-  sprintf(command, "#1h%d", mask);
+  sprintf(command, "#%dh%d", driveAddress_, mask);
 
   comHandler_->SendCommand(command);
   char buffer[1000];
@@ -428,14 +485,17 @@ void NanotecSMCI36::SetReversePolarityMask(unsigned int mask)
 
 unsigned int NanotecSMCI36::GetReversePolarityMask() const
 {
-  comHandler_->SendCommand("#1Zh");
+  char command[20];
+  sprintf(command, "#%dZh", driveAddress_);
+
+  comHandler_->SendCommand(command);
 
   char buffer[1000];
   comHandler_->ReceiveString(buffer);
   StripBuffer(buffer);
 
   std::string ret = buffer;
-  ret.erase(0, strlen("1Zh"));
+  ret.erase(0, ret.find('h')+1);
 
   return std::atoll(ret.c_str());
 }
@@ -443,7 +503,7 @@ unsigned int NanotecSMCI36::GetReversePolarityMask() const
 void NanotecSMCI36::SetIO(unsigned int mask)
 {
   char command[20];
-  sprintf(command, "#1Y%d", mask);
+  sprintf(command, "#%dY%d", driveAddress_, mask);
 
   comHandler_->SendCommand(command);
   char buffer[1000];
@@ -452,14 +512,17 @@ void NanotecSMCI36::SetIO(unsigned int mask)
 
 unsigned int NanotecSMCI36::GetIO() const
 {
-  comHandler_->SendCommand("#1ZY");
+  char command[20];
+  sprintf(command, "#%dZY", driveAddress_);
+
+  comHandler_->SendCommand(command);
 
   char buffer[1000];
   comHandler_->ReceiveString(buffer);
   StripBuffer(buffer);
 
   std::string ret = buffer;
-  ret.erase(0, strlen("1ZY"));
+  ret.erase(0, ret.find('Y')+1);
 
   return std::atoll(ret.c_str());
 }
@@ -467,8 +530,9 @@ unsigned int NanotecSMCI36::GetIO() const
 void NanotecSMCI36::SetRampMode(int ramp)
 {
   if (ramp < smciTrapezoidalRamp || ramp > smciJerkFreeRamp) return;
+
   char command[20];
-  sprintf(command, "#1:ramp_mode%d", ramp);
+  sprintf(command, "#%d:ramp_mode%d", driveAddress_, ramp);
 
   comHandler_->SendCommand(command);
   char buffer[1000];
@@ -477,14 +541,17 @@ void NanotecSMCI36::SetRampMode(int ramp)
 
 int NanotecSMCI36::GetRampMode() const
 {
-  comHandler_->SendCommand("#1:ramp_mode");
+  char command[20];
+  sprintf(command, "#%d:ramp_mode", driveAddress_);
+
+  comHandler_->SendCommand(command);
 
   char buffer[1000];
   comHandler_->ReceiveString(buffer);
   StripBuffer(buffer);
 
   std::string ret = buffer;
-  ret.erase(0, strlen("1:ramp_mode"));
+  ret.erase(0, ret.find('e')+1);
 
   return std::atoi(ret.c_str());
 }
@@ -492,8 +559,9 @@ int NanotecSMCI36::GetRampMode() const
 void NanotecSMCI36::SetQuickstopRamp(int ramp)
 {
   if (ramp < 0 || ramp > 8000) return;
+
   char command[20];
-  sprintf(command, "#1H%d", ramp);
+  sprintf(command, "#%dH%d", driveAddress_, ramp);
 
   comHandler_->SendCommand(command);
   char buffer[1000];
@@ -502,14 +570,17 @@ void NanotecSMCI36::SetQuickstopRamp(int ramp)
 
 int NanotecSMCI36::GetQuickstopRamp() const
 {
-  comHandler_->SendCommand("#1ZH");
+  char command[20];
+  sprintf(command, "#%dZH", driveAddress_);
+
+  comHandler_->SendCommand(command);
 
   char buffer[1000];
   comHandler_->ReceiveString(buffer);
   StripBuffer(buffer);
 
   std::string ret = buffer;
-  ret.erase(0, strlen("1ZH"));
+  ret.erase(0, ret.find('H')+1);
 
   return std::atoi(ret.c_str());
 }
@@ -517,8 +588,9 @@ int NanotecSMCI36::GetQuickstopRamp() const
 void NanotecSMCI36::SetQuickstopRampHzPerSecond(int ramp)
 {
   if (ramp < 0 || ramp > 3000000) return;
+
   char command[20];
-  sprintf(command, "#1:decelquick%d", ramp);
+  sprintf(command, "#%d:decelquick%d", driveAddress_, ramp);
 
   comHandler_->SendCommand(command);
   char buffer[1000];
@@ -527,14 +599,17 @@ void NanotecSMCI36::SetQuickstopRampHzPerSecond(int ramp)
 
 int NanotecSMCI36::GetQuickstopRampHzPerSecond() const
 {
-  comHandler_->SendCommand("#1:decelquick");
+  char command[20];
+  sprintf(command, "#%d:decelquick", driveAddress_);
+
+  comHandler_->SendCommand(command);
 
   char buffer[1000];
   comHandler_->ReceiveString(buffer);
   StripBuffer(buffer);
 
   std::string ret = buffer;
-  ret.erase(0, strlen("1:decelquick"));
+  ret.erase(0, ret.find('k')+1);
 
   return std::atoi(ret.c_str());
 }
@@ -542,8 +617,9 @@ int NanotecSMCI36::GetQuickstopRampHzPerSecond() const
 void NanotecSMCI36::SetAccelerationRamp(int ramp)
 {
   if (ramp < 1 || ramp > 65535) return;
+
   char command[20];
-  sprintf(command, "#1b%d", ramp);
+  sprintf(command, "#%db%d", driveAddress_, ramp);
 
   comHandler_->SendCommand(command);
   char buffer[1000];
@@ -552,14 +628,17 @@ void NanotecSMCI36::SetAccelerationRamp(int ramp)
 
 int NanotecSMCI36::GetAccelerationRamp() const
 {
-  comHandler_->SendCommand("#1Zb");
+  char command[20];
+  sprintf(command, "#%dZb", driveAddress_);
+
+  comHandler_->SendCommand(command);
 
   char buffer[1000];
   comHandler_->ReceiveString(buffer);
   StripBuffer(buffer);
 
   std::string ret = buffer;
-  ret.erase(0, strlen("1Zb"));
+  ret.erase(0, ret.find('b')+1);
 
   return std::atoi(ret.c_str());
 }
@@ -567,8 +646,9 @@ int NanotecSMCI36::GetAccelerationRamp() const
 void NanotecSMCI36::SetAccelerationRampHzPerSecond(int ramp)
 {
   if (ramp < 1 || ramp > 3000000) return;
+
   char command[20];
-  sprintf(command, "#1:accel%d", ramp);
+  sprintf(command, "#%d:accel%d", driveAddress_, ramp);
 
   comHandler_->SendCommand(command);
   char buffer[1000];
@@ -577,14 +657,17 @@ void NanotecSMCI36::SetAccelerationRampHzPerSecond(int ramp)
 
 int NanotecSMCI36::GetAccelerationRampHzPerSecond() const
 {
-  comHandler_->SendCommand("#1:accel");
+  char command[20];
+  sprintf(command, "#%d:accel", driveAddress_);
+
+  comHandler_->SendCommand(command);
 
   char buffer[1000];
   comHandler_->ReceiveString(buffer);
   StripBuffer(buffer);
 
   std::string ret = buffer;
-  ret.erase(0, strlen("1:accel"));
+  ret.erase(0, ret.find('l')+1);
 
   return std::atoi(ret.c_str());
 }
@@ -592,8 +675,9 @@ int NanotecSMCI36::GetAccelerationRampHzPerSecond() const
 void NanotecSMCI36::SetDecelerationRamp(int ramp)
 {
   if (ramp < 0 || ramp > 65535) return;
+
   char command[20];
-  sprintf(command, "#1B%d", ramp);
+  sprintf(command, "#%dB%d", driveAddress_, ramp);
 
   comHandler_->SendCommand(command);
   char buffer[1000];
@@ -602,14 +686,17 @@ void NanotecSMCI36::SetDecelerationRamp(int ramp)
 
 int NanotecSMCI36::GetDecelerationRamp() const
 {
-  comHandler_->SendCommand("#1ZB");
+  char command[20];
+  sprintf(command, "#%dZB", driveAddress_);
+
+  comHandler_->SendCommand(command);
 
   char buffer[1000];
   comHandler_->ReceiveString(buffer);
   StripBuffer(buffer);
 
   std::string ret = buffer;
-  ret.erase(0, strlen("1ZB"));
+  ret.erase(0, ret.find('B')+1);
 
   return std::atoi(ret.c_str());
 }
@@ -617,8 +704,9 @@ int NanotecSMCI36::GetDecelerationRamp() const
 void NanotecSMCI36::SetDecelerationRampHzPerSecond(int ramp)
 {
   if (ramp < 0 || ramp > 3000000) return;
+
   char command[20];
-  sprintf(command, "#1:decel%d", ramp);
+  sprintf(command, "#%d:decel%d", driveAddress_, ramp);
 
   comHandler_->SendCommand(command);
   char buffer[1000];
@@ -627,14 +715,17 @@ void NanotecSMCI36::SetDecelerationRampHzPerSecond(int ramp)
 
 int NanotecSMCI36::GetDecelerationRampHzPerSecond() const
 {
-  comHandler_->SendCommand("#1:decel");
+  char command[20];
+  sprintf(command, "#%d:decel", driveAddress_);
+
+  comHandler_->SendCommand(command);
 
   char buffer[1000];
   comHandler_->ReceiveString(buffer);
   StripBuffer(buffer);
 
   std::string ret = buffer;
-  ret.erase(0, strlen("1:decel"));
+  ret.erase(0, ret.find('l')+1);
 
   return std::atoi(ret.c_str());
 }
@@ -642,8 +733,9 @@ int NanotecSMCI36::GetDecelerationRampHzPerSecond() const
 void NanotecSMCI36::SetPositioningMode(int mode)
 {
   if (mode < smciRelativePositioning || mode >= smciMaxPositioningMode) return;
+
   char command[20];
-  sprintf(command, "#1p%d", mode);
+  sprintf(command, "#%dp%d", driveAddress_, mode);
 
   comHandler_->SendCommand(command);
   char buffer[1000];
@@ -652,14 +744,17 @@ void NanotecSMCI36::SetPositioningMode(int mode)
 
 int NanotecSMCI36::GetPositioningMode() const
 {
-  comHandler_->SendCommand("#1Zp");
+  char command[20];
+  sprintf(command, "#%dZp", driveAddress_);
+
+  comHandler_->SendCommand(command);
 
   char buffer[1000];
   comHandler_->ReceiveString(buffer);
   StripBuffer(buffer);
 
   std::string ret = buffer;
-  ret.erase(0, strlen("1Zp"));
+  ret.erase(0, ret.find('p')+1);
 
   return std::atoi(ret.c_str());
 }
@@ -667,7 +762,7 @@ int NanotecSMCI36::GetPositioningMode() const
 void NanotecSMCI36::SetTravelDistance(int distance)
 {
   char command[20];
-  sprintf(command, "#1s%d", distance);
+  sprintf(command, "#%ds%d", driveAddress_, distance);
 
   comHandler_->SendCommand(command);
   char buffer[1000];
@@ -676,14 +771,17 @@ void NanotecSMCI36::SetTravelDistance(int distance)
 
 int NanotecSMCI36::GetTravelDistance() const
 {
-  comHandler_->SendCommand("#1Zs");
+  char command[20];
+  sprintf(command, "#%dZs", driveAddress_);
+
+  comHandler_->SendCommand(command);
 
   char buffer[1000];
   comHandler_->ReceiveString(buffer);
   StripBuffer(buffer);
 
   std::string ret = buffer;
-  ret.erase(0, strlen("1Zs"));
+  ret.erase(0, ret.find('s')+1);
 
   return std::atoi(ret.c_str());
 }
@@ -691,7 +789,7 @@ int NanotecSMCI36::GetTravelDistance() const
 void NanotecSMCI36::SetDirection(bool direction)
 {
   char command[20];
-  sprintf(command, "#1d%d", (int)direction);
+  sprintf(command, "#%dd%d", driveAddress_, (int)direction);
 
   comHandler_->SendCommand(command);
   char buffer[1000];
@@ -700,14 +798,17 @@ void NanotecSMCI36::SetDirection(bool direction)
 
 bool NanotecSMCI36::GetDirection() const
 {
-  comHandler_->SendCommand("#1Zd");
+  char command[20];
+  sprintf(command, "#%dZd", driveAddress_);
+
+  comHandler_->SendCommand(command);
 
   char buffer[1000];
   comHandler_->ReceiveString(buffer);
   StripBuffer(buffer);
 
   std::string ret = buffer;
-  ret.erase(0, strlen("1Zd"));
+  ret.erase(0, ret.find('d')+1);
 
   return std::atoi(ret.c_str());
 }
@@ -715,8 +816,9 @@ bool NanotecSMCI36::GetDirection() const
 void NanotecSMCI36::SetMinimumFrequency(int frequency)
 {
   if (frequency < 1 || frequency > 160000) return;
+
   char command[20];
-  sprintf(command, "#1u%d", frequency);
+  sprintf(command, "#%du%d", driveAddress_, frequency);
 
   comHandler_->SendCommand(command);
   char buffer[1000];
@@ -725,14 +827,17 @@ void NanotecSMCI36::SetMinimumFrequency(int frequency)
 
 int NanotecSMCI36::GetMinimumFrequency() const
 {
-  comHandler_->SendCommand("#1Zu");
+  char command[20];
+  sprintf(command, "#%dZu", driveAddress_);
+
+  comHandler_->SendCommand(command);
 
   char buffer[1000];
   comHandler_->ReceiveString(buffer);
   StripBuffer(buffer);
 
   std::string ret = buffer;
-  ret.erase(0, strlen("1Zu"));
+  ret.erase(0, ret.find('u')+1);
 
   return std::atoi(ret.c_str());
 }
@@ -740,8 +845,9 @@ int NanotecSMCI36::GetMinimumFrequency() const
 void NanotecSMCI36::SetMaximumFrequency(int frequency)
 {
   if (frequency < 1 || frequency > 1000000) return;
+
   char command[20];
-  sprintf(command, "#1o%d", frequency);
+  sprintf(command, "#%do%d", driveAddress_, frequency);
 
   comHandler_->SendCommand(command);
   char buffer[1000];
@@ -750,14 +856,17 @@ void NanotecSMCI36::SetMaximumFrequency(int frequency)
 
 int NanotecSMCI36::GetMaximumFrequency() const
 {
-  comHandler_->SendCommand("#1Zo");
+  char command[20];
+  sprintf(command, "#%dZo", driveAddress_);
+
+  comHandler_->SendCommand(command);
 
   char buffer[1000];
   comHandler_->ReceiveString(buffer);
   StripBuffer(buffer);
 
   std::string ret = buffer;
-  ret.erase(0, strlen("1Zo"));
+  ret.erase(0, ret.find('o')+1);
 
   return std::atoi(ret.c_str());
 }
@@ -765,8 +874,9 @@ int NanotecSMCI36::GetMaximumFrequency() const
 void NanotecSMCI36::SetMaximumFrequency2(int frequency)
 {
   if (frequency < 1 || frequency > 1000000) return;
+
   char command[20];
-  sprintf(command, "#1n%d", frequency);
+  sprintf(command, "#%dn%d", driveAddress_, frequency);
 
   comHandler_->SendCommand(command);
   char buffer[1000];
@@ -775,27 +885,33 @@ void NanotecSMCI36::SetMaximumFrequency2(int frequency)
 
 int NanotecSMCI36::GetMaximumFrequency2() const
 {
-  comHandler_->SendCommand("#1Zn");
+  char command[20];
+  sprintf(command, "#%dZn", driveAddress_);
+
+  comHandler_->SendCommand(command);
 
   char buffer[1000];
   comHandler_->ReceiveString(buffer);
   StripBuffer(buffer);
 
   std::string ret = buffer;
-  ret.erase(0, strlen("1Zn"));
+  ret.erase(0, ret.find('n')+1);
 
   return std::atoi(ret.c_str());
 }
 
 void NanotecSMCI36::Start()
 {
-  comHandler_->SendCommand("#1A");
+  char command[20];
+  sprintf(command, "#%dA", driveAddress_);
+
+  comHandler_->SendCommand(command);
 }
 
 void NanotecSMCI36::Stop(bool quickstop)
 {
   char command[20];
-  sprintf(command, "#1S%d", (int)!quickstop);
+  sprintf(command, "#%dS%d", driveAddress_, (int)!quickstop);
 
   comHandler_->SendCommand(command);
 }
