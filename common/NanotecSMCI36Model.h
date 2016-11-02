@@ -108,6 +108,8 @@ public:
 
   void setIOMask(unsigned int mask);
   void setReversePolarityMask(unsigned int mask);
+
+  unsigned int getIO() const { return io_; }
   void setIO(unsigned int mask);
 
   void setInputPinFunction(int pin, int function);
