@@ -73,6 +73,12 @@ void NanotecSMCI36Model::setStepMode(int mode)
   updateInformation2();
 }
 
+const std::string NanotecSMCI36Model::getStepModeName() const
+{
+  if (state_!=READY) return std::string("unknown");
+  return controller_->GetStepModeName(getStepMode());
+}
+
 const std::map<int,std::string>& NanotecSMCI36Model::getStepModeNames() const
 {
   return controller_->GetStepModeNames();
@@ -101,6 +107,12 @@ void NanotecSMCI36Model::setRampMode(int mode)
   updateInformation2();
 }
 
+const std::string NanotecSMCI36Model::getRampModeName() const
+{
+  if (state_!=READY) return std::string("unknown");
+  return controller_->GetRampModeName(getRampMode());
+}
+
 const std::map<int,std::string>& NanotecSMCI36Model::getRampModeNames() const
 {
   return controller_->GetRampModeNames();
@@ -114,6 +126,12 @@ void NanotecSMCI36Model::setPositioningMode(int mode)
   controller_->SetPositioningMode(mode);
 
   updateInformation2();
+}
+
+const std::string NanotecSMCI36Model::getPositioningModeName() const
+{
+  if (state_!=READY) return std::string("unknown");
+  return controller_->GetPositioningModeName(getPositioningMode());
 }
 
 const std::map<int,std::string>& NanotecSMCI36Model::getPositioningModeNames() const
@@ -285,6 +303,12 @@ int NanotecSMCI36Model::getInputPinFunction(int pin) const
   return inputPinFunction_[pin];
 }
 
+const std::string NanotecSMCI36Model::getInputPinFunctionName(int pin) const
+{
+  if (state_!=READY) return std::string("unknown");
+  return controller_->GetInputPinFunctionName(getInputPinFunction(pin));
+}
+
 const std::map<int,std::string>& NanotecSMCI36Model::getInputPinFunctionNames() const
 {
   return controller_->GetInputPinFunctionNames();
@@ -336,6 +360,12 @@ bool NanotecSMCI36Model::getInputPinState(int pin) const
 int NanotecSMCI36Model::getOutputPinFunction(int pin) const
 {
   return outputPinFunction_[pin];
+}
+
+const std::string NanotecSMCI36Model::getOutputPinFunctionName(int pin) const
+{
+  if (state_!=READY) return std::string("unknown");
+  return controller_->GetOutputPinFunctionName(getOutputPinFunction(pin));
 }
 
 const std::map<int,std::string>& NanotecSMCI36Model::getOutputPinFunctionNames() const

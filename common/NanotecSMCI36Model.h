@@ -43,9 +43,11 @@ public:
   int getStandStillPhaseCurrent() const { return standStillPhaseCurrent_; }
 
   int getStepMode() const { return stepMode_; }
+  const std::string getStepModeName() const;
   const std::map<int,std::string>& getStepModeNames() const;
 
   int getRampMode() const { return rampMode_; }
+  const std::string getRampModeName() const;
   const std::map<int,std::string>& getRampModeNames() const;
 
   int getErrorCorrectionMode() const { return errorCorrectionMode_; }
@@ -58,6 +60,7 @@ public:
   int getEncoderPosition() const { return encoderSteps_; }
 
   int getPositioningMode() const { return positioningMode_; }
+  const std::string getPositioningModeName() const;
   const std::map<int,std::string>& getPositioningModeNames() const;
 
   bool getDirection() const { return direction_; }
@@ -73,12 +76,14 @@ public:
   int getDecelerationRampHzPerSecond() const { return decelRamp_; }
 
   int getInputPinFunction(int pin) const;
+  const std::string getInputPinFunctionName(int pin) const;
   const std::map<int,std::string>& getInputPinFunctionNames() const;
 
   bool getInputPolarity(int pin) const;
   bool getInputPinState(int pin) const;
 
   int getOutputPinFunction(int pin) const;
+  const std::string getOutputPinFunctionName(int pin) const;
   const std::map<int,std::string>& getOutputPinFunctionNames() const;
 
   bool getOutputPolarity(int pin) const;
