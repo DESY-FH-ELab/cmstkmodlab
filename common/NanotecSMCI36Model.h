@@ -38,13 +38,13 @@ public:
   int getMotorID() const { return motorID_; }
 
   int getStepMode() const { return stepMode_; }
-  const std::vector<std::pair<int,std::string>>& getStepModeNames() const;
+  const std::map<int,std::string>& getStepModeNames() const;
 
   int getRampMode() const { return rampMode_; }
-  const std::vector<std::pair<int,std::string>>& getRampModeNames() const;
+  const std::map<int,std::string>& getRampModeNames() const;
 
   int getErrorCorrectionMode() const { return errorCorrectionMode_; }
-  const std::vector<std::pair<int,std::string>>& getErrorCorrectionModeNames() const;
+  const std::map<int,std::string>& getErrorCorrectionModeNames() const;
 
   int getMaxEncoderDeviation() const { return maxEncoderDeviation_; }
 
@@ -55,7 +55,7 @@ public:
   double getEncoderPosition() const { return getPitch()*getEncoderSteps()/getStepMode(); }
 
   int getPositioningMode() const { return positioningMode_; }
-  const std::vector<std::pair<int,std::string>>& getPositioningModeNames() const;
+  const std::map<int,std::string>& getPositioningModeNames() const;
 
   bool getDirection() const { return direction_; }
 
@@ -79,13 +79,13 @@ public:
   double getMaxSpeedForRefRun() const { return maxSpeedForRefRun_; }
 
   int getInputPinFunction(int pin) const;
-  const std::vector<std::pair<int,std::string>>& getInputPinFunctionNames() const;
+  const std::map<int,std::string>& getInputPinFunctionNames() const;
 
   bool getInputPolarity(int pin) const;
   bool getInputPinState(int pin) const;
 
   int getOutputPinFunction(int pin) const;
-  const std::vector<std::pair<int,std::string>>& getOutputPinFunctionNames() const;
+  const std::map<int,std::string>& getOutputPinFunctionNames() const;
 
   bool getOutputPolarity(int pin) const;
   bool getOutputPinState(int pin) const;

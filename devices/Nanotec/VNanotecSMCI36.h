@@ -2,7 +2,7 @@
 #define __VNANOTECSMCI36_H
 
 #include <string>
-#include <vector>
+#include <map>
 
 typedef const char* ioport_t;
 
@@ -127,7 +127,8 @@ class VNanotecSMCI36
 
   virtual void SetStepMode(int mode) = 0;
   virtual int GetStepMode() const = 0;
-  const std::vector<std::pair<int,std::string>>& GetStepModeNames() const {
+  const std::string GetStepModeName(int mode) const;
+  const std::map<int,std::string>& GetStepModeNames() const {
     return stepModeNames_;
   }
 
@@ -141,7 +142,8 @@ class VNanotecSMCI36
 
   virtual void SetErrorCorrectionMode(int mode) = 0;
   virtual int GetErrorCorrectionMode() const = 0;
-  const std::vector<std::pair<int,std::string>>& GetErrorCorrectionModeNames() const {
+  const std::string GetErrorCorrectionModeName(int mode) const;
+  const std::map<int,std::string>& GetErrorCorrectionModeNames() const {
     return errorCorrectionModeNames_;
   }
 
@@ -161,13 +163,15 @@ class VNanotecSMCI36
 
   virtual void SetInputPinFunction(int pin, int function) = 0;
   virtual int GetInputPinFunction(int pin) const = 0;
-  const std::vector<std::pair<int,std::string>>& GetInputPinFunctionNames() const {
+  const std::string GetInputPinFunctionName(int function) const;
+  const std::map<int,std::string>& GetInputPinFunctionNames() const {
     return inputPinFunctionNames_;
   }
 
   virtual void SetOutputPinFunction(int pin, int function) = 0;
   virtual int GetOutputPinFunction(int pin) const = 0;
-  const std::vector<std::pair<int,std::string>>& GetOutputPinFunctionNames() const {
+  const std::string GetOutputPinFunctionName(int function) const;
+  const std::map<int,std::string>& GetOutputPinFunctionNames() const {
     return outputPinFunctionNames_;
   }
 
@@ -189,7 +193,8 @@ class VNanotecSMCI36
 
   virtual void SetRampMode(int ramp) = 0;
   virtual int GetRampMode() const = 0;
-  const std::vector<std::pair<int,std::string>>& GetRampModeNames() const {
+  const std::string GetRampModeName(int mode) const;
+  const std::map<int,std::string>& GetRampModeNames() const {
     return rampModeNames_;
   }
 
@@ -213,7 +218,8 @@ class VNanotecSMCI36
 
   virtual void SetPositioningMode(int mode) = 0;
   virtual int GetPositioningMode() const = 0;
-  const std::vector<std::pair<int,std::string>>& GetPositioningModeNames() const {
+  const std::string GetPositioningModeName(int mode) const;
+  const std::map<int,std::string>& GetPositioningModeNames() const {
     return positioningModeNames_;
   }
 
@@ -237,12 +243,12 @@ class VNanotecSMCI36
 
  protected:
 
-  std::vector<std::pair<int,std::string>> stepModeNames_;
-  std::vector<std::pair<int,std::string>> errorCorrectionModeNames_;
-  std::vector<std::pair<int,std::string>> inputPinFunctionNames_;
-  std::vector<std::pair<int,std::string>> outputPinFunctionNames_;
-  std::vector<std::pair<int,std::string>> rampModeNames_;
-  std::vector<std::pair<int,std::string>> positioningModeNames_;
+  std::map<int,std::string> stepModeNames_;
+  std::map<int,std::string> errorCorrectionModeNames_;
+  std::map<int,std::string> inputPinFunctionNames_;
+  std::map<int,std::string> outputPinFunctionNames_;
+  std::map<int,std::string> rampModeNames_;
+  std::map<int,std::string> positioningModeNames_;
 };
 
 #endif

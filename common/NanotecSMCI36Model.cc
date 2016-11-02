@@ -60,7 +60,7 @@ void NanotecSMCI36Model::setStepMode(int mode)
   updateInformation2();
 }
 
-const std::vector<std::pair<int,std::string>>& NanotecSMCI36Model::getStepModeNames() const
+const std::map<int,std::string>& NanotecSMCI36Model::getStepModeNames() const
 {
   return controller_->GetStepModeNames();
 }
@@ -74,7 +74,7 @@ void NanotecSMCI36Model::setErrorCorrectionMode(int mode)
   updateInformation2();
 }
 
-const std::vector<std::pair<int,std::string>>& NanotecSMCI36Model::getErrorCorrectionModeNames() const
+const std::map<int,std::string>& NanotecSMCI36Model::getErrorCorrectionModeNames() const
 {
   return controller_->GetErrorCorrectionModeNames();
 }
@@ -88,7 +88,7 @@ void NanotecSMCI36Model::setRampMode(int mode)
   updateInformation2();
 }
 
-const std::vector<std::pair<int,std::string>>& NanotecSMCI36Model::getRampModeNames() const
+const std::map<int,std::string>& NanotecSMCI36Model::getRampModeNames() const
 {
   return controller_->GetRampModeNames();
 }
@@ -113,7 +113,7 @@ void NanotecSMCI36Model::setPositioningMode(int mode)
   updateInformation2();
 }
 
-const std::vector<std::pair<int,std::string>>& NanotecSMCI36Model::getPositioningModeNames() const
+const std::map<int,std::string>& NanotecSMCI36Model::getPositioningModeNames() const
 {
   return controller_->GetPositioningModeNames();
 }
@@ -323,7 +323,7 @@ int NanotecSMCI36Model::getInputPinFunction(int pin) const
   return inputPinFunction_[pin];
 }
 
-const std::vector<std::pair<int,std::string>>& NanotecSMCI36Model::getInputPinFunctionNames() const
+const std::map<int,std::string>& NanotecSMCI36Model::getInputPinFunctionNames() const
 {
   return controller_->GetInputPinFunctionNames();
 }
@@ -376,7 +376,7 @@ int NanotecSMCI36Model::getOutputPinFunction(int pin) const
   return outputPinFunction_[pin];
 }
 
-const std::vector<std::pair<int,std::string>>& NanotecSMCI36Model::getOutputPinFunctionNames() const
+const std::map<int,std::string>& NanotecSMCI36Model::getOutputPinFunctionNames() const
 {
   return controller_->GetOutputPinFunctionNames();
 }
