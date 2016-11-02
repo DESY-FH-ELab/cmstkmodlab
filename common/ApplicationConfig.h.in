@@ -78,7 +78,6 @@ public:
     }
     return returnVector;
   }
-
   
   std::string getValue(std::string const& key, std::string defaultValue) const {
     std::multimap<std::string,std::string>::const_iterator it = keyvalueMap_.find(key);
