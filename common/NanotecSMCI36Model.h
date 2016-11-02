@@ -93,14 +93,9 @@ public:
   void setRampMode(int mode);
   void setErrorCorrectionMode(int mode);
   void setMaxEncoderDeviation(int steps);
-  void setPositioningMode(int mode);
   void setDirection(bool direction);
   void setEncoderDirection(bool direction);
 
-  void start();
-  void stop();
-  void quickStop();
-  void resetPositionError();
   void setQuickstopRampHzPerSecond(int ramp);
   void setAccelerationRampHzPerSecond(int ramp);
   void setDecelerationRampHzPerSecond(int ramp);
@@ -124,6 +119,12 @@ public slots:
   void setMinFrequency(int frequency);
   void setMaxFrequency(int frequency);
   void setMaxFrequency2(int frequency);
+
+  void start();
+  void stop();
+  void quickStop();
+  void resetPositionError();
+
   void setOutputPinState(int pin, bool state);
 
   void updateInformation1();
