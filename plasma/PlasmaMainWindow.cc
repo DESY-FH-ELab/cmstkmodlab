@@ -19,47 +19,91 @@ PlasmaMainWindow::PlasmaMainWindow(QWidget *parent)
 {
     ApplicationConfig* config = ApplicationConfig::instance();
 
-    int motorID_X = config->getValue("SMCI36_MotorID_X", 1);
+    int driveAddress_X = config->getValue("SMCI36_DriveAddress_X", 1);
 
-    std::vector<std::string> ports = config->getValueVector("SMCI36_Ports");
+    std::vector<std::string> ports = config->getValueVector<std::string>("SMCI36_Ports");
     for (std::vector<std::string>::const_iterator it = ports.begin();
          it != ports.end();
          ++it) {
       NQLog("PlasmaMainWindow") << "SMCI36 PORT: " << *it;
 
       NanotecSMCI36Model * model = new NanotecSMCI36Model(it->c_str(),
-                                                          0.5, 1.0, this);
+                                                          0.1, 5.0, this);
 
-      if (model->getMotorID()==motorID_X) {
+      if (model->getDriveAddress()==driveAddress_X) {
         smci36ModelX_ = model;
       }
     }
 
     if (smci36ModelX_) {
-      smci36ModelX_->setPitch(config->getValue("SMCI36_Pitch_X",
-                                               1.25));
-      smci36ModelX_->setStepMode(config->getValue("SMCI36_StepMode_X",
-                                                  (int)VNanotecSMCI36::smci04MicroStepsPerFullStep));
-      smci36ModelX_->setRampMode(config->getValue("SMCI36_RampMode_X",
-                                                  (int)VNanotecSMCI36::smciJerkFreeRamp));
-      smci36ModelX_->setPositioningMode(config->getValue("SMCI36_PositioningMode_X",
-                                                         (int)VNanotecSMCI36::smciAbsolutePositioning));
-      smci36ModelX_->setDirection(config->getValue("SMCI36_Direction_X",
-                                                   0));
-      smci36ModelX_->setErrorCorrectionMode(config->getValue("SMCI36_ErrorCorrectionMode_X",
-                                                             (int)VNanotecSMCI36::smciErrCorrectionAfterTravel));
-      smci36ModelX_->setMaxEncoderDeviation(config->getValue("SMCI36_MaxEncoderDeviation_X",
-                                                             8));
+      smci36ModelX_->setMotorID(
+          config->getValue("SMCI36_MotorID_X",
+                           0)
+      );
+      smci36ModelX_->setPhaseCurrent(
+          config->getValue("SMCI36_PhaseCurrent_X",
+                           50)
+      );
+      smci36ModelX_->setStandStillPhaseCurrent(
+          config->getValue("SMCI36_StandStillPhaseCurrent_X",
+                           10)
+      );
+      smci36ModelX_->setStepMode(
+          config->getValue("SMCI36_StepMode_X",
+                           (int)VNanotecSMCI36::smci04MicroStepsPerFullStep)
+      );
+      smci36ModelX_->setRampMode(
+          config->getValue("SMCI36_RampMode_X",
+                           (int)VNanotecSMCI36::smciJerkFreeRamp)
+      );
+      smci36ModelX_->setErrorCorrectionMode(
+          config->getValue("SMCI36_ErrorCorrectionMode_X",
+                           (int)VNanotecSMCI36::smciErrCorrectionAfterTravel)
+      );
+      smci36ModelX_->setMaxEncoderDeviation(
+          config->getValue("SMCI36_MaxEncoderDeviation_X",
+                           4)
+      );
+      smci36ModelX_->setDirection(
+          config->getValue("SMCI36_Direction_X",
+                           0)
+      );
+      smci36ModelX_->setEncoderDirection(
+          config->getValue("SMCI36_EncoderDirection_X",
+                           0)
+      );
+      smci36ModelX_->setQuickstopRampHzPerSecond(
+          config->getValue("SMCI36_QuickstopRampHzPerSecond_X",
+                           3000000)
+      );
+      smci36ModelX_->setAccelerationRampHzPerSecond(
+          config->getValue("SMCI36_AccelerationRampHzPerSecond_X",
+                           50000)
+      );
+      smci36ModelX_->setDecelerationRampHzPerSecond(
+          config->getValue("SMCI36_DecelerationRampHzPerSecond_X",
+                           50000)
+      );
 
-      smci36ModelX_->setMaxSpeedForOperation(config->getValue("SMCI36_MaxSpeedForOperation_X",
-                                                              100));
-      smci36ModelX_->setMaxSpeedForRefRun(config->getValue("SMCI36_MaxSpeedForRefRun_X",
-                                                           5));
+      smci36ModelX_->setInputPinFunction(1, config->getValue<int>("SMCI36_InputPin1Function_X", 1));
+      smci36ModelX_->setInputPinFunction(2, config->getValue<int>("SMCI36_InputPin2Function_X", 2));
+      smci36ModelX_->setInputPinFunction(3, config->getValue<int>("SMCI36_InputPin3Function_X", 3));
+      smci36ModelX_->setInputPinFunction(4, config->getValue<int>("SMCI36_InputPin4Function_X", 4));
+      smci36ModelX_->setInputPinFunction(5, config->getValue<int>("SMCI36_InputPin5Function_X", 5));
+      smci36ModelX_->setInputPinFunction(6, config->getValue<int>("SMCI36_InputPin6Function_X", 7));
 
-      smci36ModelX_->setMinPositionInMM(config->getValue("SMCI36_MinPositionInMM_X",
-                                                         0));
-      smci36ModelX_->setMaxPositionInMM(config->getValue("SMCI36_MaxPositionInMM_X",
-                                                         370));
+      smci36ModelX_->setOutputPinFunction(1, config->getValue<int>("SMCI36_OutputPin1Function_X", 1));
+      smci36ModelX_->setOutputPinFunction(2, config->getValue<int>("SMCI36_OutputPin2Function_X", 2));
+      smci36ModelX_->setOutputPinFunction(3, config->getValue<int>("SMCI36_OutputPin3Function_X", 3));
+
+      smci36ModelX_->setIOMask(
+          config->getValue<unsigned int>("SMCI36_IOMask_X",
+                           0x107003F)
+      );
+      smci36ModelX_->setReversePolarityMask(
+          config->getValue<unsigned int>("SMCI36_ReversePolarityMask_X",
+                           0x107003F)
+      );
 
       smci36ModelX_->updateInformation2();
     }
