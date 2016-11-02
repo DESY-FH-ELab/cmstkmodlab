@@ -4,9 +4,6 @@
 
 #include "NanotecSMCI36Model.h"
 
-/*
-  NanotecSMCI36Model implementation
-  */
 NanotecSMCI36Model::NanotecSMCI36Model(const char* port,
                                        double updateInterval1,
                                        double updateInterval2,
@@ -114,6 +111,7 @@ void NanotecSMCI36Model::setPositioningMode(int mode)
   if (state_!=READY) return;
 
 
+  controller_->SetPositioningMode(mode);
 
   updateInformation2();
 }
@@ -497,12 +495,15 @@ void NanotecSMCI36Model::updateInformation2()
 
     int driveAddress = controller_->GetDriveAddress();
     int motorID = controller_->GetMotorID();
+    int phaseCurrent = controller_->GetPhaseCurrent();
+    int standStillPhaseCurrent = controller_->GetStandStillPhaseCurrent();
     int stepMode = controller_->GetStepMode();
     int rampMode = controller_->GetRampMode();
     int positioningMode = controller_->GetPositioningMode();
     int errorCorrectionMode = controller_->GetErrorCorrectionMode();
     int maxEncoderDeviation = controller_->GetMaxEncoderDeviation();
     bool direction = controller_->GetDirection();
+    bool encoderDirection = controller_->GetEncoderDirection();
     int travelDistance = controller_->GetTravelDistance();
     int minFrequency = controller_->GetMinimumFrequency();
     int maxFrequency = controller_->GetMaximumFrequency();
@@ -528,12 +529,15 @@ void NanotecSMCI36Model::updateInformation2()
 
     if (driveAddress != driveAddress_ ||
         motorID != motorID_ ||
+        phaseCurrent != phaseCurrent_ ||
+        standStillPhaseCurrent != standStillPhaseCurrent_ ||
         stepMode != stepMode_ ||
         rampMode != rampMode_ ||
         positioningMode != positioningMode_ ||
         errorCorrectionMode != errorCorrectionMode_ ||
         maxEncoderDeviation != maxEncoderDeviation_ ||
         direction != direction_ ||
+        encoderDirection != encoderDirection_ ||
         travelDistance != travelDistance_ ||
         minFrequency != minFrequency_ ||
         maxFrequency != maxFrequency_ ||
@@ -548,12 +552,15 @@ void NanotecSMCI36Model::updateInformation2()
 
       driveAddress_ = driveAddress;
       motorID_ = motorID;
+      phaseCurrent_ = phaseCurrent;
+      standStillPhaseCurrent_ = standStillPhaseCurrent;
       stepMode_ = stepMode;
       rampMode_ = rampMode;
       positioningMode_ = positioningMode;
       errorCorrectionMode_ = errorCorrectionMode;
       maxEncoderDeviation_ = maxEncoderDeviation;
       direction_ = direction;
+      encoderDirection_ = encoderDirection;
       travelDistance_ = travelDistance;
       minFrequency_ = minFrequency;
       maxFrequency_ = maxFrequency;

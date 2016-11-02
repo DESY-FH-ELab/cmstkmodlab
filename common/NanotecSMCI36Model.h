@@ -2,6 +2,7 @@
 #define NANOTECSMCI36MODEL_H
 
 #include <cmath>
+#include <map>
 #include <array>
 
 #include <QString>
@@ -35,6 +36,7 @@ public:
   int getDriveAddress() const { return driveAddress_; }
 
   unsigned int getStatus() const { return status_; }
+
   int getMotorID() const { return motorID_; }
 
   int getPhaseCurrent() const { return phaseCurrent_; }
@@ -173,8 +175,6 @@ signals:
 
   void deviceStateChanged(State newState);
   void informationChanged();
-  void positionModeChanged(int mode);
-  void message(const QString & text);
   void controlStateChanged(bool);
 };
 
