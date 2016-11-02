@@ -32,10 +32,11 @@ PlasmaMainWindow::PlasmaMainWindow(QWidget *parent)
 
       if (model->getDriveAddress()==driveAddress_X) {
         smci36ModelX_ = model;
+        stageX_ = new NanotecSMCI36LinearStageModel(smci36ModelX_, this);
       }
     }
 
-    if (smci36ModelX_) {
+    if (smci36ModelX_ && stageX_) {
       smci36ModelX_->setMotorID(
           config->getValue("SMCI36_MotorID_X",
                            0)
@@ -98,25 +99,37 @@ PlasmaMainWindow::PlasmaMainWindow(QWidget *parent)
 
       smci36ModelX_->setIOMask(
           config->getValue<unsigned int>("SMCI36_IOMask_X",
-                           0x107003F)
+                                         0x107003F)
       );
       smci36ModelX_->setReversePolarityMask(
           config->getValue<unsigned int>("SMCI36_ReversePolarityMask_X",
-                           0x107003F)
+                                         0x107003F)
+      );
+
+      stageX_->setPitch(config->getValue<double>("Stage_Pitch_X",
+                                                 0.35)
+      );
+      stageX_->setMinimumPosition(config->getValue<double>("Stage_MinPosition_X",
+                                                           0.0)
+      );
+      stageX_->setMaximumPosition(config->getValue<double>("Stage_MaxPosition_X",
+                                                           370.0)
       );
 
       smci36ModelX_->updateInformation2();
+      stageX_->updateInformation();
     }
 
     tabWidget_ = new QTabWidget(this);
-    tabWidget_->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);
 
     QWidget * w;
 
     if (smci36ModelX_) {
-      smci36Widget_ = new NanotecSMCI36Widget(smci36ModelX_, tabWidget_);
-      smci36Widget_->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);
-      tabWidget_->addTab(smci36Widget_, "controller");
+      stageWidgetX_ = new NanotecSMCI36LinearStageWidget(stageX_, tabWidget_);
+      tabWidget_->addTab(stageWidgetX_, "stage X");
+
+      smci36WidgetX_ = new NanotecSMCI36Widget(smci36ModelX_, tabWidget_);
+      tabWidget_->addTab(smci36WidgetX_, "controller X");
     }
 
     setCentralWidget(tabWidget_);

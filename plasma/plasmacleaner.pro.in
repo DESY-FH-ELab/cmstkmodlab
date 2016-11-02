@@ -57,7 +57,9 @@ greaterThan(QT_MAJOR_VERSION, 4) {
 }
 
 # Input
-HEADERS += PlasmaMainWindow.h
+HEADERS += PlasmaMainWindow.h \
+           NanotecSMCI36LinearStageModel.h \
+           NanotecSMCI36LinearStageWidget.h
 
 equals(USEFAKEDEVICES,"X0") {
 HEADERS += 
@@ -66,7 +68,9 @@ HEADERS +=
 }
 
 SOURCES += plasmacleaner.cc \
-           PlasmaMainWindow.cc
+           PlasmaMainWindow.cc \
+           NanotecSMCI36LinearStageModel.cc \
+           NanotecSMCI36LinearStageWidget.cc
 
 equals(USEFAKEDEVICES,"X0") {
 SOURCES += 
