@@ -56,7 +56,6 @@ public:
   int getMaxEncoderDeviation() const { return maxEncoderDeviation_; }
 
   int getControllerPosition() const { return controllerSteps_; }
-
   int getEncoderPosition() const { return encoderSteps_; }
 
   int getPositioningMode() const { return positioningMode_; }
@@ -98,7 +97,6 @@ public:
   void setRampMode(int mode);
   void setErrorCorrectionMode(int mode);
   void setMaxEncoderDeviation(int steps);
-  void setDirection(bool direction);
   void setEncoderDirection(bool direction);
 
   void setQuickstopRampHzPerSecond(int ramp);
