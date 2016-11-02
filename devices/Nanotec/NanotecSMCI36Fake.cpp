@@ -391,7 +391,7 @@ void NanotecSMCI36Fake::SetMaximumFrequency(int frequency)
 
 int NanotecSMCI36Fake::GetMaximumFrequency() const
 {
-  return maxFrequency2_;
+  return maxFrequency_;
 }
 
 void NanotecSMCI36Fake::SetMaximumFrequency2(int frequency)
