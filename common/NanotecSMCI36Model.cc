@@ -16,8 +16,6 @@ NanotecSMCI36Model::NanotecSMCI36Model(const char* port,
     NanotecSMCI36_PORT(port),
     updateInterval1_(updateInterval1),
     updateInterval2_(updateInterval2),
-    maxSpeedForOperation_(100),
-    maxSpeedForRefRun_(5),
     ioPolarityMask_(0x107003F)
     driveAddress_(0)
 {
@@ -116,18 +114,7 @@ void NanotecSMCI36Model::setPositioningMode(int mode)
 {
   if (state_!=READY) return;
 
-  controller_->SetPositioningMode(mode);
 
-  if (mode==VNanotecSMCI36::smciExternalRefRun &&
-      (getMaxSpeed()>getMaxSpeedForRefRun() ||
-       getMaxSpeed2()>getMaxSpeedForRefRun())) {
-    setMaxSpeed(getMaxSpeedForRefRun());
-    setMaxSpeed2(getMaxSpeedForRefRun());
-  }
-
-  checkPositionLimits();
-
-  emit positionModeChanged(mode);
 
   updateInformation2();
 }
@@ -150,10 +137,8 @@ void NanotecSMCI36Model::setDirection(bool direction)
 {
   if (state_!=READY) return;
 
-  direction_ = direction;
-  controller_->SetDirection(direction);
 
-  checkPositionLimits();
+  controller_->SetDirection(direction);
 
   updateInformation2();
 }
@@ -219,62 +204,23 @@ void NanotecSMCI36Model::setMaxFrequency2(int frequency)
 
 }
 
-void NanotecSMCI36Model::setTravelDistanceNoCheck(double distance)
 {
   if (state_!=READY) return;
 
-  travelDistance_ = distance;
 
-  controller_->SetTravelDistance(distance);
 
   updateInformation2();
 }
 
-void NanotecSMCI36Model::setTravelDistanceInMMNoCheck(double distance)
 {
-  setTravelDistanceNoCheck(distance*getStepMode()/getPitch());
-}
 
-void NanotecSMCI36Model::checkPositionLimits()
-{
-  if (getPositioningMode()==VNanotecSMCI36::smciExternalRefRun) return;
 
-  double expectedPosition = getEncoderPosition();
 
-  if (getPositioningMode()==VNanotecSMCI36::smciRelativePositioning) {
-    if (getDirection()) {
-      expectedPosition -= getTravelDistanceInMM();
-
-      if (expectedPosition < getMinPositionInMM()) {
-        setTravelDistanceInMMNoCheck(getEncoderPosition()-getMinPositionInMM());
-      }
-
-    } else {
-      expectedPosition += getTravelDistanceInMM();
-
-      if (expectedPosition > getMaxPositionInMM()) {
-        setTravelDistanceInMMNoCheck(getMaxPositionInMM()-getEncoderPosition());
-      }
-
-    }
-  }
-
-  if (getPositioningMode()==VNanotecSMCI36::smciAbsolutePositioning) {
-    expectedPosition = getTravelDistanceInMM();
-
-    if (expectedPosition < getMinPositionInMM()) {
-      setTravelDistanceInMMNoCheck(getMinPositionInMM());
-    } else if (expectedPosition > getMaxPositionInMM()) {
-      setTravelDistanceInMMNoCheck(getMaxPositionInMM());
-    }
-  }
 }
 
 void NanotecSMCI36Model::start()
 {
   if (state_!=READY) return;
-
-  checkPositionLimits();
 
   if (status_ & VNanotecSMCI36::smciReady) {
     controller_->Start();

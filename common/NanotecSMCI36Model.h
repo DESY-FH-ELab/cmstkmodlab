@@ -61,24 +61,11 @@ public:
   bool getDirection() const { return direction_; }
   bool getEncoderDirection() const { return encoderDirection_; }
 
-
-  double getTravelDistanceInMM() const { return getPitch()*getTravelDistance()/getStepMode(); }
-  double getMinSpeed() const { return getPitch()*getMinFrequency()/getStepMode(); }
-  double getMaxSpeed() const { return getPitch()*getMaxFrequency()/getStepMode(); }
-  double getMaxSpeed2() const { return getPitch()*getMaxFrequency2()/getStepMode(); }
-
-  double getMinPositionInMM() const { return minPositionInMM_; }
-  double getMaxPositionInMM() const { return maxPositionInMM_; }
   int getTravelDistance() const { return travelDistance_; }
   int getMinFrequency() const { return minFrequency_; }
   int getMaxFrequency() const { return maxFrequency_; }
   int getMaxFrequency2() const { return maxFrequency2_; }
 
-  void setMaxSpeedForOperation(double speed)  { maxSpeedForOperation_ = speed; }
-  double getMaxSpeedForOperation() const { return maxSpeedForOperation_; }
-
-  void setMaxSpeedForRefRun(double speed)  { maxSpeedForRefRun_ = speed; }
-  double getMaxSpeedForRefRun() const { return maxSpeedForRefRun_; }
 
   int getInputPinFunction(int pin) const;
   const std::map<int,std::string>& getInputPinFunctionNames() const;
@@ -103,13 +90,6 @@ public:
   void setMaxEncoderDeviation(int steps);
   void setPositioningMode(int mode);
   void setDirection(bool direction);
-  void setTravelDistanceInMM(double distance);
-  void setMinSpeed(double speed);
-  void setMaxSpeed(double speed);
-  void setMaxSpeed2(double speed);
-
-  void setMinPositionInMM(double position);
-  void setMaxPositionInMM(double position);
   void setEncoderDirection(bool direction);
 
   void start();
@@ -165,11 +145,6 @@ protected:
   int encoderSteps_;
   int positioningMode_;
   bool direction_;
-
-  double maxSpeedForOperation_;
-  double maxSpeedForRefRun_;
-  double minPositionInMM_;
-  double maxPositionInMM_;
   bool encoderDirection_;
   int travelDistance_;
   int minFrequency_;
@@ -180,10 +155,6 @@ protected:
   std::array<int,4> outputPinFunction_;
   unsigned int ioPolarityMask_;
   unsigned io_;
-
-  void setTravelDistanceNoCheck(double distance);
-  void setTravelDistanceInMMNoCheck(double distance);
-  void checkPositionLimits();
 
 signals:
 
