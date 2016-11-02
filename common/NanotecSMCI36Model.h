@@ -120,6 +120,7 @@ public slots:
   void setControlsEnabled(bool enabled);
 
   void setPositioningMode(int mode);
+  void setDirection(bool direction);
   void setTravelDistance(int distance);
   void setMinFrequency(int frequency);
   void setMaxFrequency(int frequency);
