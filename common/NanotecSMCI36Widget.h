@@ -17,6 +17,7 @@
 #include <QComboBox>
 #include <QPushButton>
 #include <QTabWidget>
+#include <QPixmap>
 
 #include "NanotecSMCI36Model.h"
 #include "DeviceState.h"
@@ -160,6 +161,10 @@ protected:
 
   NanotecSMCI36Model * model_;
   int pin_;
+
+  QPixmap buttonRed_;
+  QPixmap buttonGreen_;
+  QPixmap buttonGrey_;
 
 protected slots:
 

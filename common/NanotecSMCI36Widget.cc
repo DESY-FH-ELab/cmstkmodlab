@@ -3,6 +3,7 @@
 #include <QGridLayout>
 #include <QFormLayout>
 
+#include <ApplicationConfig.h>
 #include <nqlogger.h>
 
 #include "NanotecSMCI36Widget.h"
@@ -476,7 +477,11 @@ NanotecSMCI36InputStateWidget::NanotecSMCI36InputStateWidget(NanotecSMCI36Model*
     model_(model),
     pin_(pin)
 {
-  setText("xxx");
+  buttonRed_ = QPixmap(QString(Config::CMSTkModLabBasePath.c_str()) + "/share/common/button_red.png");
+  buttonGreen_ = QPixmap(QString(Config::CMSTkModLabBasePath.c_str()) + "/share/common/button_green.png");
+  buttonGrey_ = QPixmap(QString(Config::CMSTkModLabBasePath.c_str()) + "/share/common/button_grey.png");
+
+  setPixmap(buttonGrey_);
 
   // Connect all the signals
   connect(model_, SIGNAL(deviceStateChanged(State)),
@@ -512,9 +517,9 @@ void NanotecSMCI36InputStateWidget::updateInfo()
 
   bool state = model_->getInputPinState(pin_);
   if (state) {
-    setText("on");
+    setPixmap(buttonGreen_);
   } else {
-    setText("off");
+    setPixmap(buttonRed_);
   }
 }
 
