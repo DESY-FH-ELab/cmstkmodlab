@@ -95,6 +95,21 @@ void NanotecSMCI36LinearStageModel::requestResetError()
   controller_->resetPositionError();
 }
 
+bool NanotecSMCI36LinearStageModel::getInputPinState(int pin) const
+{
+  return controller_->getInputPinState(pin);
+}
+
+bool NanotecSMCI36LinearStageModel::getOutputPinState(int pin) const
+{
+  return controller_->getOutputPinState(pin);
+}
+
+void NanotecSMCI36LinearStageModel::toggleOutputPin(int pin)
+{
+  controller_->toggleOutputPin(pin);
+}
+
 State NanotecSMCI36LinearStageModel::getDeviceState() const
 {
   return controller_->getDeviceState();
@@ -135,6 +150,8 @@ void NanotecSMCI36LinearStageModel::updateInformation()
 
   double speed = pitch*maxFrequency/stepMode;
 
+  unsigned int io = controller_->getIO();
+
   if (min != speedLimits_.first ||
       max != speedLimits_.second) {
     speedLimits_ = std::pair<double,double>(min, max);
@@ -143,11 +160,13 @@ void NanotecSMCI36LinearStageModel::updateInformation()
 
   if (status_ != status ||
       position_ != position ||
-      speed_ != speed) {
+      speed_ != speed ||
+      io_ != io) {
 
     status_ = status;
     position_ = position;
     speed_ = speed;
+    io_ = io;
 
     emit informationChanged();
   }

@@ -30,6 +30,9 @@ public:
   const std::pair<double,double>& getSpeedLimits() const { return speedLimits_; }
   double getSpeed() const { return speed_; }
 
+  bool getInputPinState(int pin) const;
+  bool getOutputPinState(int pin) const;
+
 public slots:
 
   void updateDeviceState(State newState);
@@ -41,6 +44,7 @@ public slots:
   void requestStop();
   void requestQuickStop();
   void requestResetError();
+  void toggleOutputPin(int pin);
 
 protected:
 
@@ -54,6 +58,7 @@ protected:
   double position_;
   std::pair<double,double> speedLimits_;
   double speed_;
+  unsigned int io_;
 
 protected slots:
 

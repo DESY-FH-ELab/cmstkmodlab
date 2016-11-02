@@ -128,8 +128,6 @@ NanotecSMCI36LinearStageMovementWidget::NanotecSMCI36LinearStageMovementWidget(N
 
   layout->addLayout(gridLayout);
 
-  layout->addStretch(1);
-
   // Connect all the signals
   connect(model_, SIGNAL(deviceStateChanged(State)),
           this, SLOT(updateDeviceState(State)));
@@ -179,6 +177,212 @@ void NanotecSMCI36LinearStageMovementWidget::limitsChanged()
   speed_->setMaximum(model_->getSpeedLimits().second);
 }
 
+NanotecSMCI36LinearStageInputStateWidget::NanotecSMCI36LinearStageInputStateWidget(NanotecSMCI36LinearStageModel* model,
+                                                                                   int pin,
+                                                                                   QWidget *parent)
+ : QLabel(parent),
+   model_(model),
+   pin_(pin)
+{
+  buttonRed_ = QPixmap(QString(Config::CMSTkModLabBasePath.c_str()) + "/share/common/button_red.png");
+  buttonGreen_ = QPixmap(QString(Config::CMSTkModLabBasePath.c_str()) + "/share/common/button_green.png");
+  buttonGrey_ = QPixmap(QString(Config::CMSTkModLabBasePath.c_str()) + "/share/common/button_grey.png");
+
+  setPixmap(buttonGrey_);
+
+  // Connect all the signals
+  connect(model_, SIGNAL(deviceStateChanged(State)),
+          this, SLOT(updateDeviceState(State)));
+  connect(model_, SIGNAL(controlStateChanged(bool)),
+          this, SLOT(controlStateChanged(bool)));
+  connect(model_, SIGNAL(informationChanged()),
+          this, SLOT(updateInfo()));
+
+  updateDeviceState(model_->getDeviceState());
+  updateInfo();
+}
+
+/**
+  Updates the GUI according to the new state of the controller
+ */
+void NanotecSMCI36LinearStageInputStateWidget::updateDeviceState(State newState)
+{
+  bool ready = (newState == READY);
+
+  controlStateChanged(ready);
+}
+
+/// Updates the GUI when the controller is enabled/disabled.
+void NanotecSMCI36LinearStageInputStateWidget::controlStateChanged(bool enabled)
+{
+  setEnabled(enabled);
+
+  if (enabled) {
+    bool state = model_->getInputPinState(pin_);
+    if (state) {
+      setPixmap(buttonGreen_);
+    } else {
+      setPixmap(buttonRed_);
+    }
+  } else {
+    setPixmap(buttonGrey_);
+  }
+}
+
+void NanotecSMCI36LinearStageInputStateWidget::updateInfo()
+{
+  // NQLog("NanotecSMCI36InputStateWidget", NQLog::Debug) << "updateInfo()";
+
+  bool state = model_->getInputPinState(pin_);
+  if (state) {
+    setPixmap(buttonGreen_);
+  } else {
+    setPixmap(buttonRed_);
+  }
+}
+
+NanotecSMCI36LinearStageOutputStateWidget::NanotecSMCI36LinearStageOutputStateWidget(NanotecSMCI36LinearStageModel* model,
+                                                                                     int pin,
+                                                                                     QWidget *parent)
+  : QLabel(parent),
+    model_(model),
+    pin_(pin)
+{
+  buttonRed_ = QPixmap(QString(Config::CMSTkModLabBasePath.c_str()) + "/share/common/button_red.png");
+  buttonGreen_ = QPixmap(QString(Config::CMSTkModLabBasePath.c_str()) + "/share/common/button_green.png");
+  buttonGrey_ = QPixmap(QString(Config::CMSTkModLabBasePath.c_str()) + "/share/common/button_grey.png");
+
+  setPixmap(buttonGrey_);
+
+  // Connect all the signals
+  connect(model_, SIGNAL(deviceStateChanged(State)),
+          this, SLOT(updateDeviceState(State)));
+  connect(model_, SIGNAL(controlStateChanged(bool)),
+          this, SLOT(controlStateChanged(bool)));
+  connect(model_, SIGNAL(informationChanged()),
+          this, SLOT(updateInfo()));
+
+  connect(this, SIGNAL(toggleOutputPin(int)),
+          model_, SLOT(toggleOutputPin(int)));
+
+  updateDeviceState(model_->getDeviceState());
+  updateInfo();
+}
+
+/**
+  Updates the GUI according to the new state of the controller
+ */
+void NanotecSMCI36LinearStageOutputStateWidget::updateDeviceState(State newState)
+{
+  bool ready = (newState == READY);
+
+  controlStateChanged(ready);
+}
+
+/// Updates the GUI when the controller is enabled/disabled.
+void NanotecSMCI36LinearStageOutputStateWidget::controlStateChanged(bool enabled)
+{
+  setEnabled(enabled);
+
+  if (enabled) {
+    bool state = model_->getOutputPinState(pin_);
+    if (state) {
+      setPixmap(buttonGreen_);
+    } else {
+      setPixmap(buttonRed_);
+    }
+  } else {
+    setPixmap(buttonGrey_);
+  }
+}
+
+void NanotecSMCI36LinearStageOutputStateWidget::mousePressEvent(QMouseEvent* event)
+{
+  if (isEnabled()) {
+    emit toggleOutputPin(pin_);
+  }
+}
+
+void NanotecSMCI36LinearStageOutputStateWidget::updateInfo()
+{
+  // NQLog("NanotecSMCI36LinearStageOutputStateWidget", NQLog::Debug) << "updateInfo()";
+
+  if (isEnabled()) {
+    bool state = model_->getOutputPinState(pin_);
+    if (state) {
+      setPixmap(buttonGreen_);
+    } else {
+      setPixmap(buttonRed_);
+    }
+  } else {
+    setPixmap(buttonGrey_);
+  }
+}
+
+
+NanotecSMCI36LinearStageIOWidget::NanotecSMCI36LinearStageIOWidget(NanotecSMCI36LinearStageModel* model,
+                                                                   QWidget *parent)
+  : QWidget(parent),
+    model_(model)
+{
+  QGridLayout* layout = new QGridLayout();
+  setLayout(layout);
+
+  QLabel *label;
+
+  for (int i=1;i<7;++i) {
+    label = new QLabel(QString("%1").arg(i), this);
+    layout->addWidget(label, 0, i, Qt::AlignHCenter | Qt::AlignVCenter);
+  }
+  label = new QLabel("input", this);
+  layout->addWidget(label, 1, 0, Qt::AlignVCenter);
+
+  label = new QLabel("output", this);
+  layout->addWidget(label, 2, 0, Qt::AlignVCenter);
+
+  for (int i=1;i<7;++i) {
+    NanotecSMCI36LinearStageInputStateWidget *stateWidget = new NanotecSMCI36LinearStageInputStateWidget(model_, i, this);
+    layout->addWidget(stateWidget, 1, i, Qt::AlignHCenter | Qt::AlignVCenter);
+  }
+
+  for (int i=1;i<4;++i) {
+    NanotecSMCI36LinearStageOutputStateWidget *stateWidget = new NanotecSMCI36LinearStageOutputStateWidget(model_, i, this);
+    layout->addWidget(stateWidget, 2, i, Qt::AlignHCenter | Qt::AlignVCenter);
+  }
+
+  // Connect all the signals
+  connect(model_, SIGNAL(deviceStateChanged(State)),
+          this, SLOT(updateDeviceState(State)));
+  connect(model_, SIGNAL(controlStateChanged(bool)),
+          this, SLOT(controlStateChanged(bool)));
+  connect(model_, SIGNAL(informationChanged()),
+          this, SLOT(updateInfo()));
+
+  updateDeviceState(model_->getDeviceState());
+  updateInfo();
+}
+
+/**
+  Updates the GUI according to the new state of the controller
+ */
+void NanotecSMCI36LinearStageIOWidget::updateDeviceState(State newState)
+{
+  bool ready = (newState == READY);
+
+  controlStateChanged(ready);
+}
+
+/// Updates the GUI when the controller is enabled/disabled.
+void NanotecSMCI36LinearStageIOWidget::controlStateChanged(bool /* enabled */)
+{
+
+}
+
+void NanotecSMCI36LinearStageIOWidget::updateInfo()
+{
+  //NQLog("NanotecSMCI36LinearStageIOWidget", NQLog::Debug) << "updateInfo()";
+}
+
 NanotecSMCI36LinearStageWidget::NanotecSMCI36LinearStageWidget(NanotecSMCI36LinearStageModel* model,
                                                                QWidget *parent)
   : QWidget(parent),
@@ -195,6 +399,11 @@ NanotecSMCI36LinearStageWidget::NanotecSMCI36LinearStageWidget(NanotecSMCI36Line
 
   stageMovement_ = new NanotecSMCI36LinearStageMovementWidget(model_, this);
   layout->addWidget(stageMovement_);
+
+  stageIO_ = new NanotecSMCI36LinearStageIOWidget(model_, this);
+  layout->addWidget(stageIO_);
+
+  layout->addStretch(1);
 
   // Connect all the signals
   connect(model_, SIGNAL(deviceStateChanged(State)),

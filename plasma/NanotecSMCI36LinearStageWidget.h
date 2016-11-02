@@ -78,6 +78,76 @@ signals:
   void requestMove(double);
 };
 
+class NanotecSMCI36LinearStageInputStateWidget : public QLabel
+{
+  Q_OBJECT
+public:
+  explicit NanotecSMCI36LinearStageInputStateWidget(NanotecSMCI36LinearStageModel* model,
+                                                    int pin,
+                                                    QWidget *parent = 0);
+
+protected:
+
+  NanotecSMCI36LinearStageModel * model_;
+  int pin_;
+
+  QPixmap buttonRed_;
+  QPixmap buttonGreen_;
+  QPixmap buttonGrey_;
+
+protected slots:
+
+  void updateDeviceState( State newState );
+  void controlStateChanged(bool);
+  void updateInfo();
+};
+
+class NanotecSMCI36LinearStageOutputStateWidget : public QLabel
+{
+  Q_OBJECT
+public:
+  explicit NanotecSMCI36LinearStageOutputStateWidget(NanotecSMCI36LinearStageModel* model,
+                                                     int pin,
+                                                     QWidget *parent = 0);
+
+protected:
+
+  NanotecSMCI36LinearStageModel * model_;
+  int pin_;
+
+  QPixmap buttonRed_;
+  QPixmap buttonGreen_;
+  QPixmap buttonGrey_;
+
+  void mousePressEvent(QMouseEvent* event);
+
+protected slots:
+
+  void updateDeviceState( State newState );
+  void controlStateChanged(bool);
+  void updateInfo();
+
+signals:
+
+  void toggleOutputPin(int);
+};
+
+class NanotecSMCI36LinearStageIOWidget : public QWidget
+{
+    Q_OBJECT
+public:
+  explicit NanotecSMCI36LinearStageIOWidget(NanotecSMCI36LinearStageModel* model, QWidget *parent = 0);
+
+protected:
+  NanotecSMCI36LinearStageModel* model_;
+
+public slots:
+
+  void updateDeviceState( State newState );
+  void controlStateChanged(bool);
+  void updateInfo();
+};
+
 class NanotecSMCI36LinearStageWidget : public QWidget
 {
     Q_OBJECT
@@ -90,6 +160,7 @@ protected:
 
   NanotecSMCI36LinearStageStatusWidget* stageStatus_;
   NanotecSMCI36LinearStageMovementWidget* stageMovement_;
+  NanotecSMCI36LinearStageIOWidget* stageIO_;
 
 public slots:
 
