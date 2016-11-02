@@ -186,6 +186,7 @@ signals:
   void deviceStateChanged(State newState);
   void informationChanged();
   void controlStateChanged(bool);
+  void stepModeChanged(int);
 };
 
 #endif // NANOTECSMCI36MODEL_H

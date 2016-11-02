@@ -110,6 +110,7 @@ void NanotecSMCI36Model::setStepMode(int mode)
     stepMode_ = mode;
 
     emit informationChanged();
+    emit stepModeChanged(stepMode_);
   }
 }
 
