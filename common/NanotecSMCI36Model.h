@@ -32,7 +32,6 @@ public:
                               double updateInterval2 = 5,
                               QObject *parent = 0);
 
-  double getPitch() const { return pitch_; } // unit is [mm / full step]
 
   unsigned int getStatus() const { return status_; }
   int getMotorID() const { return motorID_; }
@@ -97,7 +96,6 @@ public:
   void setPhaseCurrent(int current);
   void setStandStillPhaseCurrent(int current);
 
-  void setPitch(double pitch);
   void setStepMode(int mode);
   void setRampMode(int mode);
   void setErrorCorrectionMode(int mode);
@@ -152,7 +150,6 @@ protected:
 
   void setDeviceState( State state );
 
-  double pitch_;
   unsigned int status_;
   int motorID_;
   int phaseCurrent_;

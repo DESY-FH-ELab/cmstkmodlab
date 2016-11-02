@@ -16,7 +16,6 @@ NanotecSMCI36Model::NanotecSMCI36Model(const char* port,
     NanotecSMCI36_PORT(port),
     updateInterval1_(updateInterval1),
     updateInterval2_(updateInterval2),
-    pitch_(0.35),
     maxSpeedForOperation_(100),
     maxSpeedForRefRun_(5),
     ioPolarityMask_(0x107003F)
@@ -37,12 +36,10 @@ NanotecSMCI36Model::NanotecSMCI36Model(const char* port,
   NQLog("NanotecSMCI36Model") << "constructed";
 }
 
-void NanotecSMCI36Model::setPitch(double pitch)
 void NanotecSMCI36Model::setMotorID(int id)
 {
   if (state_!=READY) return;
 
-  pitch_ = pitch;
   NQLogMessage("NanotecSMCI36Model") << "setMotorID(" << id << ")";
 
   controller_->SetMotorID(id);
