@@ -131,6 +131,7 @@ public slots:
   void resetPositionError();
 
   void setOutputPinState(int pin, bool state);
+  void toggleOutputPin(int pin);
 
   void updateInformation1();
   void updateInformation2();

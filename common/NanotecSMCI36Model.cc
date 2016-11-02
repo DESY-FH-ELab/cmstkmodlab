@@ -559,6 +559,14 @@ void NanotecSMCI36Model::setOutputPinState(int pin, bool state)
   setIO(io);
 }
 
+void NanotecSMCI36Model::toggleOutputPin(int pin)
+{
+  if (state_!=READY) return;
+
+  bool state = getOutputPinState(pin);
+  setOutputPinState(pin, !state);
+}
+
 void NanotecSMCI36Model::initialize()
 {
   NQLog("NanotecSMCI36Model") << "initialize() " << NanotecSMCI36_PORT;

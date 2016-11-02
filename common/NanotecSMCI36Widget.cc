@@ -509,6 +509,17 @@ void NanotecSMCI36InputStateWidget::updateDeviceState(State newState)
 void NanotecSMCI36InputStateWidget::controlStateChanged(bool enabled)
 {
   setEnabled(enabled);
+
+  if (enabled) {
+    bool state = model_->getInputPinState(pin_);
+    if (state) {
+      setPixmap(buttonGreen_);
+    } else {
+      setPixmap(buttonRed_);
+    }
+  } else {
+    setPixmap(buttonGrey_);
+  }
 }
 
 void NanotecSMCI36InputStateWidget::updateInfo()
@@ -526,11 +537,15 @@ void NanotecSMCI36InputStateWidget::updateInfo()
 NanotecSMCI36OutputStateWidget::NanotecSMCI36OutputStateWidget(NanotecSMCI36Model* model,
                                                                int pin,
                                                                QWidget *parent)
-  : QCheckBox(parent),
+  : QLabel(parent),
     model_(model),
     pin_(pin)
 {
-  setText("");
+  buttonRed_ = QPixmap(QString(Config::CMSTkModLabBasePath.c_str()) + "/share/common/button_red.png");
+  buttonGreen_ = QPixmap(QString(Config::CMSTkModLabBasePath.c_str()) + "/share/common/button_green.png");
+  buttonGrey_ = QPixmap(QString(Config::CMSTkModLabBasePath.c_str()) + "/share/common/button_grey.png");
+
+  setPixmap(buttonGrey_);
 
   // Connect all the signals
   connect(model_, SIGNAL(deviceStateChanged(State)),
@@ -540,20 +555,11 @@ NanotecSMCI36OutputStateWidget::NanotecSMCI36OutputStateWidget(NanotecSMCI36Mode
   connect(model_, SIGNAL(informationChanged()),
           this, SLOT(updateInfo()));
 
-  connect(this, SIGNAL(stateChanged(int)),
-          this, SLOT(outputChanged(int)));
+  connect(this, SIGNAL(toggleOutputPin(int)),
+          model_, SLOT(toggleOutputPin(int)));
 
   updateDeviceState(model_->getDeviceState());
   updateInfo();
-}
-
-void NanotecSMCI36OutputStateWidget::outputChanged(int /* polarity */)
-{
-  // NQLog("NanotecSMCI36OutputStateWidget", NQLog::Debug) << "indexChanged()";
-
-  if (model_->getOutputPinState(pin_)!=isChecked()) {
-    model_->setOutputPinState(pin_, isChecked());
-  }
 }
 
 /**
@@ -570,15 +576,39 @@ void NanotecSMCI36OutputStateWidget::updateDeviceState(State newState)
 void NanotecSMCI36OutputStateWidget::controlStateChanged(bool enabled)
 {
   setEnabled(enabled);
+
+  if (enabled) {
+    bool state = model_->getOutputPinState(pin_);
+    if (state) {
+      setPixmap(buttonGreen_);
+    } else {
+      setPixmap(buttonRed_);
+    }
+  } else {
+    setPixmap(buttonGrey_);
+  }
+}
+
+void NanotecSMCI36OutputStateWidget::mousePressEvent(QMouseEvent* event)
+{
+  if (isEnabled()) {
+    emit toggleOutputPin(pin_);
+  }
 }
 
 void NanotecSMCI36OutputStateWidget::updateInfo()
 {
   // NQLog("NanotecSMCI36OutputStateWidget", NQLog::Debug) << "updateInfo()";
 
-  bool checked = model_->getOutputPinState(pin_);
-  if (isChecked()!=checked) {
-    setChecked(checked);
+  if (isEnabled()) {
+    bool state = model_->getOutputPinState(pin_);
+    if (state) {
+      setPixmap(buttonGreen_);
+    } else {
+      setPixmap(buttonRed_);
+    }
+  } else {
+    setPixmap(buttonGrey_);
   }
 }
 

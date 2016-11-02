@@ -173,7 +173,7 @@ protected slots:
   void updateInfo();
 };
 
-class NanotecSMCI36OutputStateWidget : public QCheckBox
+class NanotecSMCI36OutputStateWidget : public QLabel
 {
   Q_OBJECT
 public:
@@ -186,12 +186,21 @@ protected:
   NanotecSMCI36Model * model_;
   int pin_;
 
+  QPixmap buttonRed_;
+  QPixmap buttonGreen_;
+  QPixmap buttonGrey_;
+
+  void mousePressEvent(QMouseEvent* event);
+
 protected slots:
 
-  void outputChanged(int);
   void updateDeviceState( State newState );
   void controlStateChanged(bool);
   void updateInfo();
+
+signals:
+
+  void toggleOutputPin(int);
 };
 
 class NanotecSMCI36InputWidget : public QWidget
