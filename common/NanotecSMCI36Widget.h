@@ -21,25 +21,6 @@
 #include "NanotecSMCI36Model.h"
 #include "DeviceState.h"
 
-class NanotecSMCI36StepModeWidget : public QComboBox
-{
-  Q_OBJECT
-public:
-  explicit NanotecSMCI36StepModeWidget(NanotecSMCI36Model* model,
-                                       QWidget *parent = 0);
-
-protected:
-
-  NanotecSMCI36Model * model_;
-
-protected slots:
-
-  void indexChanged(int);
-  void updateDeviceState( State newState );
-  void controlStateChanged(bool);
-  void updateInfo();
-};
-
 class NanotecSMCI36ErrorCorrectionModeWidget : public QComboBox
 {
   Q_OBJECT
@@ -109,6 +90,7 @@ protected:
   QLabel* status_;
   QLabel* controllerSteps_;
   QLabel* encoderSteps_;
+  QLabel* stepMode_;
 
 public slots:
 
@@ -126,10 +108,6 @@ public:
 protected:
   NanotecSMCI36Model* model_;
 
-  QDoubleSpinBox* pitch_;
-  QSpinBox* motorID_;
-
-  NanotecSMCI36StepModeWidget* stepMode_;
   NanotecSMCI36ErrorCorrectionModeWidget* errorCorrectionMode_;
   QSpinBox* maxEncoderDeviation_;
   NanotecSMCI36RampModeWidget* rampMode_;
@@ -150,25 +128,13 @@ public:
 protected:
   NanotecSMCI36Model* model_;
 
-  QCheckBox* stageMode_;
-
   NanotecSMCI36PositioningModeWidget* positioningMode_;
 
-  QTabWidget* modeTabs_;
-
   QCheckBox* direction_;
-  QDoubleSpinBox* travelDistance_;
-  QDoubleSpinBox* minFrequency_;
-  QDoubleSpinBox* maxFrequency_;
-  QDoubleSpinBox* maxFrequency2_;
-
-  QDoubleSpinBox* travelDistanceInMM_;
-  QDoubleSpinBox* minSpeed_;
-  QDoubleSpinBox* maxSpeed_;
-  QDoubleSpinBox* maxSpeed2_;
-
-  QLabel* minPosition_;
-  QLabel* maxPosition_;
+  QSpinBox* travelDistance_;
+  QSpinBox* minFrequency_;
+  QSpinBox* maxFrequency_;
+  QSpinBox* maxFrequency2_;
 
   QPushButton* start_;
   QPushButton* stop_;
@@ -177,72 +143,6 @@ protected:
 
 public slots:
 
-  void stageModeChanged(bool);
-  void positionModeChanged(int);
-  void updateDeviceState( State newState );
-  void controlStateChanged(bool);
-  void updateInfo();
-};
-
-class NanotecSMCI36Widget : public QWidget
-{
-    Q_OBJECT
-public:
-  explicit NanotecSMCI36Widget(NanotecSMCI36Model* model, QWidget *parent = 0);
-
-protected:
-  NanotecSMCI36Model* model_;
-
-  QCheckBox* smci36CheckBox_;
-
-  NanotecSMCI36StatusWidget* scmi36Status_;
-  NanotecSMCI36SettingsWidget* scmi36Settings_;
-  NanotecSMCI36MovementWidget* scmi36Movement_;
-
-public slots:
-
-  void updateDeviceState( State newState );
-  void controlStateChanged(bool);
-  void updateInfo();
-};
-
-class NanotecSMCI36InputReversePolarityWidget : public QCheckBox
-{
-  Q_OBJECT
-public:
-  explicit NanotecSMCI36InputReversePolarityWidget(NanotecSMCI36Model* model,
-                                                   int pin,
-                                                   QWidget *parent = 0);
-
-protected:
-
-  NanotecSMCI36Model * model_;
-  int pin_;
-
-protected slots:
-
-  void polarityChanged(int);
-  void updateDeviceState( State newState );
-  void controlStateChanged(bool);
-  void updateInfo();
-};
-
-class NanotecSMCI36OutputReversePolarityWidget : public QCheckBox
-{
-  Q_OBJECT
-public:
-  explicit NanotecSMCI36OutputReversePolarityWidget(NanotecSMCI36Model* model,
-                                                    int pin,
-                                                    QWidget *parent = 0);
-
-protected:
-
-  NanotecSMCI36Model * model_;
-  int pin_;
-
-protected slots:
-
-  void polarityChanged(int);
   void updateDeviceState( State newState );
   void controlStateChanged(bool);
   void updateInfo();
@@ -284,48 +184,6 @@ protected:
 protected slots:
 
   void outputChanged(int);
-  void updateDeviceState( State newState );
-  void controlStateChanged(bool);
-  void updateInfo();
-};
-
-class NanotecSMCI36InputFunctionWidget : public QComboBox
-{
-  Q_OBJECT
-public:
-  explicit NanotecSMCI36InputFunctionWidget(NanotecSMCI36Model* model,
-                                            int pin,
-                                            QWidget *parent = 0);
-
-protected:
-
-  NanotecSMCI36Model * model_;
-  int pin_;
-
-protected slots:
-
-  void indexChanged(int);
-  void updateDeviceState( State newState );
-  void controlStateChanged(bool);
-  void updateInfo();
-};
-
-class NanotecSMCI36OutputFunctionWidget : public QComboBox
-{
-  Q_OBJECT
-public:
-  explicit NanotecSMCI36OutputFunctionWidget(NanotecSMCI36Model* model,
-                                             int pin,
-                                             QWidget *parent = 0);
-
-protected:
-
-  NanotecSMCI36Model * model_;
-  int pin_;
-
-protected slots:
-
-  void indexChanged(int);
   void updateDeviceState( State newState );
   void controlStateChanged(bool);
   void updateInfo();
@@ -379,6 +237,29 @@ public:
 
 protected:
   NanotecSMCI36Model* model_;
+
+public slots:
+
+  void updateDeviceState( State newState );
+  void controlStateChanged(bool);
+  void updateInfo();
+};
+
+class NanotecSMCI36Widget : public QWidget
+{
+    Q_OBJECT
+public:
+  explicit NanotecSMCI36Widget(NanotecSMCI36Model* model, QWidget *parent = 0);
+
+protected:
+  NanotecSMCI36Model* model_;
+
+  QCheckBox* smci36CheckBox_;
+
+  NanotecSMCI36StatusWidget* scmi36Status_;
+  NanotecSMCI36SettingsWidget* scmi36Settings_;
+  NanotecSMCI36MovementWidget* scmi36Movement_;
+  NanotecSMCI36IOWidget* smci36IO_;
 
 public slots:
 
