@@ -140,14 +140,16 @@ void NanotecSMCI36Model::setDirection(bool direction)
 }
 
 void NanotecSMCI36Model::setTravelDistance(double distance)
+void NanotecSMCI36Model::setEncoderDirection(bool direction)
 {
   if (state_!=READY) return;
 
   travelDistance_ = distance;
 
   checkPositionLimits();
+  NQLogMessage("NanotecSMCI36Model") << "setEncoderDirection(" << direction << ")";
 
-  controller_->SetTravelDistance(distance);
+  controller_->SetEncoderDirection(direction);
 
   updateInformation2();
 }

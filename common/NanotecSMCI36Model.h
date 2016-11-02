@@ -58,6 +58,7 @@ public:
   const std::map<int,std::string>& getPositioningModeNames() const;
 
   bool getDirection() const { return direction_; }
+  bool getEncoderDirection() const { return encoderDirection_; }
 
   double getTravelDistance() const { return travelDistance_; }
   double getMinFrequency() const { return minFrequency_; }
@@ -114,6 +115,7 @@ public slots:
 
   void setMinPositionInMM(double position);
   void setMaxPositionInMM(double position);
+  void setEncoderDirection(bool direction);
 
   void start();
   void stop();
@@ -164,6 +166,7 @@ protected:
   double maxSpeedForRefRun_;
   double minPositionInMM_;
   double maxPositionInMM_;
+  bool encoderDirection_;
 
   std::array<int,7> inputPinFunction_;
   std::array<int,4> outputPinFunction_;
