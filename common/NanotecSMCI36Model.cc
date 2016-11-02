@@ -158,14 +158,10 @@ void NanotecSMCI36Model::setDirection(bool direction)
   updateInformation2();
 }
 
-void NanotecSMCI36Model::setTravelDistance(double distance)
 void NanotecSMCI36Model::setEncoderDirection(bool direction)
 {
   if (state_!=READY) return;
 
-  travelDistance_ = distance;
-
-  checkPositionLimits();
   NQLogMessage("NanotecSMCI36Model") << "setEncoderDirection(" << direction << ")";
 
   controller_->SetEncoderDirection(direction);
@@ -173,87 +169,54 @@ void NanotecSMCI36Model::setEncoderDirection(bool direction)
   updateInformation2();
 }
 
-void NanotecSMCI36Model::setMinFrequency(double frequency)
+void NanotecSMCI36Model::setTravelDistance(int distance)
 {
   if (state_!=READY) return;
+
+  travelDistance_ = distance;
+
+  controller_->SetTravelDistance(distance);
+
+  updateInformation2();
+}
+
+void NanotecSMCI36Model::setMinFrequency(int frequency)
+{
+  if (state_!=READY) return;
+
+  NQLogMessage("NanotecSMCI36Model") << "setMinFrequency(" << frequency << ")";
 
   controller_->SetMinimumFrequency(frequency);
 
   updateInformation2();
 }
 
-void NanotecSMCI36Model::setMaxFrequency(double frequency)
+void NanotecSMCI36Model::setMaxFrequency(int frequency)
 {
   if (state_!=READY) return;
+
+  NQLogMessage("NanotecSMCI36Model") << "setMaxFrequency(" << frequency << ")";
 
   controller_->SetMaximumFrequency(frequency);
 
   updateInformation2();
 }
 
-void NanotecSMCI36Model::setMaxFrequency2(double frequency)
+void NanotecSMCI36Model::setMaxFrequency2(int frequency)
 {
   if (state_!=READY) return;
+
+  NQLogMessage("NanotecSMCI36Model") << "setMaxFrequency2(" << frequency << ")";
 
   controller_->SetMaximumFrequency2(frequency);
 
   updateInformation2();
 }
 
-void NanotecSMCI36Model::setTravelDistanceInMM(double distance)
 {
-  setTravelDistance(distance*getStepMode()/getPitch());
 
-  updateInformation2();
-}
 
-void NanotecSMCI36Model::setMinSpeed(double speed)
-{
-  setMinFrequency(speed*getStepMode()/getPitch());
 
-  updateInformation2();
-}
-
-void NanotecSMCI36Model::setMaxSpeed(double speed)
-{
-  if (getPositioningMode()==VNanotecSMCI36::smciExternalRefRun &&
-      speed>getMaxSpeedForRefRun()) {
-    speed = getMaxSpeedForRefRun();
-  }
-
-  setMaxFrequency(speed*getStepMode()/getPitch());
-
-  updateInformation2();
-}
-
-void NanotecSMCI36Model::setMaxSpeed2(double speed)
-{
-  if (getPositioningMode()==VNanotecSMCI36::smciExternalRefRun &&
-      speed>getMaxSpeedForRefRun()) {
-    speed = getMaxSpeedForRefRun();
-  }
-
-  setMaxFrequency2(speed*getStepMode()/getPitch());
-
-  updateInformation2();
-}
-
-void NanotecSMCI36Model::setMinPositionInMM(double position)
-{
-  bool infoChanged = !(minPositionInMM_==position);
-
-  minPositionInMM_ = position;
-
-  if (infoChanged) emit informationChanged();
-}
-
-void NanotecSMCI36Model::setMaxPositionInMM(double position)
-{
-  bool infoChanged = !(maxPositionInMM_==position);
-
-  maxPositionInMM_ = position;
-
-  if (infoChanged) emit informationChanged();
 }
 
 void NanotecSMCI36Model::setTravelDistanceNoCheck(double distance)
@@ -560,10 +523,10 @@ void NanotecSMCI36Model::updateInformation2()
     int errorCorrectionMode = controller_->GetErrorCorrectionMode();
     int maxEncoderDeviation = controller_->GetMaxEncoderDeviation();
     bool direction = controller_->GetDirection();
-    double travelDistance = controller_->GetTravelDistance();
-    double minFrequency = controller_->GetMinimumFrequency();
-    double maxFrequency = controller_->GetMaximumFrequency();
-    double maxFrequency2 = controller_->GetMaximumFrequency2();
+    int travelDistance = controller_->GetTravelDistance();
+    int minFrequency = controller_->GetMinimumFrequency();
+    int maxFrequency = controller_->GetMaximumFrequency();
+    int maxFrequency2 = controller_->GetMaximumFrequency2();
 
     std::array<int,7> inputPinFunction;
     inputPinFunction[0] = 0;

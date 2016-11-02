@@ -61,10 +61,6 @@ public:
   bool getDirection() const { return direction_; }
   bool getEncoderDirection() const { return encoderDirection_; }
 
-  double getTravelDistance() const { return travelDistance_; }
-  double getMinFrequency() const { return minFrequency_; }
-  double getMaxFrequency() const { return maxFrequency_; }
-  double getMaxFrequency2() const { return maxFrequency2_; }
 
   double getTravelDistanceInMM() const { return getPitch()*getTravelDistance()/getStepMode(); }
   double getMinSpeed() const { return getPitch()*getMinFrequency()/getStepMode(); }
@@ -73,6 +69,10 @@ public:
 
   double getMinPositionInMM() const { return minPositionInMM_; }
   double getMaxPositionInMM() const { return maxPositionInMM_; }
+  int getTravelDistance() const { return travelDistance_; }
+  int getMinFrequency() const { return minFrequency_; }
+  int getMaxFrequency() const { return maxFrequency_; }
+  int getMaxFrequency2() const { return maxFrequency2_; }
 
   void setMaxSpeedForOperation(double speed)  { maxSpeedForOperation_ = speed; }
   double getMaxSpeedForOperation() const { return maxSpeedForOperation_; }
@@ -103,10 +103,6 @@ public:
   void setMaxEncoderDeviation(int steps);
   void setPositioningMode(int mode);
   void setDirection(bool direction);
-  void setTravelDistance(double distance);
-  void setMinFrequency(double frequency);
-  void setMaxFrequency(double frequency);
-  void setMaxFrequency2(double frequency);
   void setTravelDistanceInMM(double distance);
   void setMinSpeed(double speed);
   void setMaxSpeed(double speed);
@@ -132,6 +128,11 @@ public slots:
   void setDeviceEnabled(bool enabled);
   void setControlsEnabled(bool enabled);
 
+  void setPositioningMode(int mode);
+  void setTravelDistance(int distance);
+  void setMinFrequency(int frequency);
+  void setMaxFrequency(int frequency);
+  void setMaxFrequency2(int frequency);
   void setOutputPinState(int pin, bool state);
 
   void updateInformation1();
@@ -164,16 +165,16 @@ protected:
   int encoderSteps_;
   int positioningMode_;
   bool direction_;
-  double travelDistance_;
-  double minFrequency_;
-  double maxFrequency_;
-  double maxFrequency2_;
 
   double maxSpeedForOperation_;
   double maxSpeedForRefRun_;
   double minPositionInMM_;
   double maxPositionInMM_;
   bool encoderDirection_;
+  int travelDistance_;
+  int minFrequency_;
+  int maxFrequency_;
+  int maxFrequency2_;
 
   std::array<int,7> inputPinFunction_;
   std::array<int,4> outputPinFunction_;
