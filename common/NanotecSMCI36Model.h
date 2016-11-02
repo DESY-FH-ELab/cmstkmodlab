@@ -37,6 +37,9 @@ public:
   unsigned int getStatus() const { return status_; }
   int getMotorID() const { return motorID_; }
 
+  int getPhaseCurrent() const { return phaseCurrent_; }
+  int getStandStillPhaseCurrent() const { return standStillPhaseCurrent_; }
+
   int getStepMode() const { return stepMode_; }
   const std::map<int,std::string>& getStepModeNames() const;
 
@@ -89,10 +92,9 @@ public:
   bool getOutputPolarity(int pin) const;
   bool getOutputPinState(int pin) const;
 
-public slots:
 
-  void setDeviceEnabled(bool enabled);
-  void setControlsEnabled(bool enabled);
+  void setPhaseCurrent(int current);
+  void setStandStillPhaseCurrent(int current);
 
   void setPitch(double pitch);
   void setMotorID(int motorID);
@@ -125,6 +127,12 @@ public slots:
 
   void setOutputPinFunction(int pin, int function);
   void setOutputPolarity(int pin, bool reverse);
+
+public slots:
+
+  void setDeviceEnabled(bool enabled);
+  void setControlsEnabled(bool enabled);
+
   void setOutputPinState(int pin, bool state);
 
   void updateInformation1();
@@ -147,6 +155,8 @@ protected:
   double pitch_;
   unsigned int status_;
   int motorID_;
+  int phaseCurrent_;
+  int standStillPhaseCurrent_;
   int stepMode_;
   int rampMode_;
   int errorCorrectionMode_;

@@ -44,11 +44,26 @@ void NanotecSMCI36Model::setPitch(double pitch)
   pitch_ = pitch;
 }
 
-void NanotecSMCI36Model::setMotorID(int motorID)
+void NanotecSMCI36Model::setPhaseCurrent(int current)
 {
   if (state_!=READY) return;
 
-  controller_->SetMotorID(motorID);
+  NQLogMessage("NanotecSMCI36Model") << "setPhaseCurrent(" << current << ")";
+
+  controller_->SetPhaseCurrent(current);
+
+  updateInformation2();
+}
+
+void NanotecSMCI36Model::setStandStillPhaseCurrent(int current)
+{
+  if (state_!=READY) return;
+
+  NQLogMessage("NanotecSMCI36Model") << "setStandStillPhaseCurrent(" << current << ")";
+
+  controller_->SetStandStillPhaseCurrent(current);
+
+  updateInformation2();
 }
 
 void NanotecSMCI36Model::setStepMode(int mode)
