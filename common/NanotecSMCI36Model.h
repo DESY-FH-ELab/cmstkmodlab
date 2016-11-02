@@ -66,8 +66,11 @@ public:
   bool getEncoderDirection() const { return encoderDirection_; }
 
   int getTravelDistance() const { return travelDistance_; }
+  const std::pair<int,int>& getMinFrequencyLimits() const;
   int getMinFrequency() const { return minFrequency_; }
+  const std::pair<int,int>& getMaxFrequencyLimits() const;
   int getMaxFrequency() const { return maxFrequency_; }
+  const std::pair<int,int>& getMaxFrequency2Limits() const;
   int getMaxFrequency2() const { return maxFrequency2_; }
 
   int getQuickstopRampHzPerSecond() const { return quickstopRamp_; }

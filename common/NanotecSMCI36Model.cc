@@ -193,6 +193,21 @@ const std::map<int,std::string>& NanotecSMCI36Model::getPositioningModeNames() c
   return controller_->GetPositioningModeNames();
 }
 
+const std::pair<int,int>& NanotecSMCI36Model::getMinFrequencyLimits() const
+{
+  return controller_->GetMinFrequencyLimits();
+}
+
+const std::pair<int,int>& NanotecSMCI36Model::getMaxFrequencyLimits() const
+{
+  return controller_->GetMaxFrequencyLimits();
+}
+
+const std::pair<int,int>& NanotecSMCI36Model::getMaxFrequency2Limits() const
+{
+  return controller_->GetMaxFrequency2Limits();
+}
+
 void NanotecSMCI36Model::setMaxEncoderDeviation(int steps)
 {
   if (state_!=READY) return;

@@ -3,6 +3,7 @@
 
 #include <string>
 #include <map>
+#include <utility>
 
 typedef const char* ioport_t;
 
@@ -230,12 +231,15 @@ class VNanotecSMCI36
   virtual bool GetDirection() const = 0;
 
   virtual void SetMinimumFrequency(int frequency) = 0;
+  const std::pair<int,int>& GetMinFrequencyLimits() const { return minFrequencyLimits_; }
   virtual int GetMinimumFrequency() const = 0;
 
   virtual void SetMaximumFrequency(int frequency) = 0;
+  const std::pair<int,int>& GetMaxFrequencyLimits() const { return maxFrequencyLimits_; }
   virtual int GetMaximumFrequency() const = 0;
 
   virtual void SetMaximumFrequency2(int frequency) = 0;
+  const std::pair<int,int>& GetMaxFrequency2Limits() const { return maxFrequency2Limits_; }
   virtual int GetMaximumFrequency2() const = 0;
 
   virtual void Start() = 0;
@@ -249,6 +253,10 @@ class VNanotecSMCI36
   std::map<int,std::string> outputPinFunctionNames_;
   std::map<int,std::string> rampModeNames_;
   std::map<int,std::string> positioningModeNames_;
+
+  std::pair<int,int> minFrequencyLimits_;
+  std::pair<int,int> maxFrequencyLimits_;
+  std::pair<int,int> maxFrequency2Limits_;
 };
 
 #endif

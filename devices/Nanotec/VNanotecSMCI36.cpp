@@ -45,6 +45,10 @@ VNanotecSMCI36::VNanotecSMCI36( const ioport_t ioPort )
   positioningModeNames_[smciRelativePositioning] = "Relative Positioning";
   positioningModeNames_[smciAbsolutePositioning] = "Absolute Positioning";
   positioningModeNames_[smciExternalRefRun] =      "External Reference Run";
+
+  minFrequencyLimits_ = std::pair<int,int>(1, 160000);
+  maxFrequencyLimits_ = std::pair<int,int>(1, 1000000);
+  maxFrequency2Limits_ = std::pair<int,int>(1, 1000000);
 }
 
 VNanotecSMCI36::~VNanotecSMCI36()

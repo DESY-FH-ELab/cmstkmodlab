@@ -866,7 +866,7 @@ bool NanotecSMCI36::GetDirection() const
 
 void NanotecSMCI36::SetMinimumFrequency(int frequency)
 {
-  if (frequency < 1 || frequency > 160000) return;
+  if (frequency < minFrequencyLimits_.first || frequency > minFrequencyLimits_.second) return;
 
   char command[20];
   sprintf(command, "#%du%d", driveAddress_, frequency);
@@ -897,7 +897,7 @@ int NanotecSMCI36::GetMinimumFrequency() const
 
 void NanotecSMCI36::SetMaximumFrequency(int frequency)
 {
-  if (frequency < 1 || frequency > 1000000) return;
+  if (frequency < maxFrequencyLimits_.first || frequency > maxFrequencyLimits_.second) return;
 
   char command[20];
   sprintf(command, "#%do%d", driveAddress_, frequency);
@@ -928,7 +928,7 @@ int NanotecSMCI36::GetMaximumFrequency() const
 
 void NanotecSMCI36::SetMaximumFrequency2(int frequency)
 {
-  if (frequency < 1 || frequency > 1000000) return;
+  if (frequency < maxFrequency2Limits_.first || frequency > maxFrequency2Limits_.second) return;
 
   char command[20];
   sprintf(command, "#%dn%d", driveAddress_, frequency);

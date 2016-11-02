@@ -374,7 +374,7 @@ bool NanotecSMCI36Fake::GetDirection() const
 
 void NanotecSMCI36Fake::SetMinimumFrequency(int frequency)
 {
-  if (frequency < 1 || frequency > 160000) return;
+  if (frequency < minFrequencyLimits_.first || frequency > minFrequencyLimits_.second) return;
   minFrequency_ = frequency;
 }
 
@@ -385,7 +385,7 @@ int NanotecSMCI36Fake::GetMinimumFrequency() const
 
 void NanotecSMCI36Fake::SetMaximumFrequency(int frequency)
 {
-  if (frequency < 1 || frequency > 1000000) return;
+  if (frequency < maxFrequencyLimits_.first || frequency > maxFrequencyLimits_.second) return;
   maxFrequency_ = frequency;
 }
 
@@ -396,7 +396,7 @@ int NanotecSMCI36Fake::GetMaximumFrequency() const
 
 void NanotecSMCI36Fake::SetMaximumFrequency2(int frequency)
 {
-  if (frequency < 1 || frequency > 1000000) return;
+  if (frequency < maxFrequency2Limits_.first || frequency > maxFrequency2Limits_.second) return;
   maxFrequency2_ = frequency;
 }
 
