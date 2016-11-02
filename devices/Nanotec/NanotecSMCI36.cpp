@@ -107,7 +107,7 @@ int NanotecSMCI36::GetPhaseCurrent() const
   std::string ret = buffer;
   ret.erase(0, ret.find('i')+1);
 
-  std::cout << ret << std::endl;
+  // std::cout << ret << std::endl;
 
   return std::atoi(ret.c_str());
 }
@@ -136,6 +136,8 @@ int NanotecSMCI36::GetStandStillPhaseCurrent() const
 
   std::string ret = buffer;
   ret.erase(0, ret.find('r')+1);
+
+  // std::cout << ret << std::endl;
 
   return std::atoi(ret.c_str());
 }
@@ -175,6 +177,8 @@ int NanotecSMCI36::GetStepMode() const
   std::string ret = buffer;
   ret.erase(0, ret.find('g')+1);
 
+  // std::cout << ret << std::endl;
+
   return std::atoi(ret.c_str());
 }
 
@@ -199,6 +203,9 @@ int NanotecSMCI36::GetDriveAddress()
 
   std::string ret = buffer;
   ret.erase(0, ret.find('m')+1);
+
+  // std::cout << ret << std::endl;
+
   driveAddress_ = std::atoi(ret.c_str());
 
   return driveAddress_;
@@ -226,6 +233,8 @@ int NanotecSMCI36::GetMotorID() const
 
   std::string ret = buffer;
   ret.erase(0, ret.find('t')+1);
+
+  // std::cout << ret << std::endl;
 
   return std::atoi(ret.c_str());
 }
@@ -255,6 +264,8 @@ int NanotecSMCI36::GetErrorCorrectionMode() const
   std::string ret = buffer;
   ret.erase(0, ret.find('U')+1);
 
+  // std::cout << ret << std::endl;
+
   return std::atoi(ret.c_str());
 }
 
@@ -281,6 +292,8 @@ bool NanotecSMCI36::GetEncoderDirection() const
   std::string ret = buffer;
   ret.erase(0, ret.find('q')+1);
 
+  // std::cout << ret << std::endl;
+  
   return std::atoi(ret.c_str());
 }
 
@@ -308,6 +321,8 @@ int NanotecSMCI36::GetSwingOutTime() const
 
   std::string ret = buffer;
   ret.erase(0, ret.find('O')+1);
+
+  // std::cout << ret << std::endl;
 
   return std::atoi(ret.c_str());
 }
@@ -337,6 +352,8 @@ int NanotecSMCI36::GetMaxEncoderDeviation() const
   std::string ret = buffer;
   ret.erase(0, ret.find('X')+1);
 
+  // std::cout << ret << std::endl;
+
   return std::atoi(ret.c_str());
 }
 
@@ -353,6 +370,8 @@ int NanotecSMCI36::GetPosition() const
   std::string ret = buffer;
   ret.erase(0, ret.find('C')+1);
 
+  // std::cout << ret << std::endl;
+
   return std::atoi(ret.c_str());
 }
 
@@ -368,6 +387,8 @@ int NanotecSMCI36::GetEncoderPosition() const
 
   std::string ret = buffer;
   ret.erase(0, ret.find('I')+1);
+
+  // std::cout << ret << std::endl;
 
   return std::atoi(ret.c_str());
 }
@@ -411,6 +432,8 @@ int NanotecSMCI36::GetInputPinFunction(int pin) const
   std::string ret = buffer;
   ret.erase(0, ret.find("in_")+4);
 
+  // std::cout << ret << std::endl;
+
   return std::atoi(ret.c_str());
 }
 
@@ -443,6 +466,8 @@ int NanotecSMCI36::GetOutputPinFunction(int pin) const
   std::string ret = buffer;
   ret.erase(0, ret.find("out_")+5);
 
+  // std::cout << ret << std::endl;
+
   return std::atoi(ret.c_str());
 }
 
@@ -469,6 +494,8 @@ unsigned int NanotecSMCI36::GetIOMask() const
 
   std::string ret = buffer;
   ret.erase(0, ret.find('L')+1);
+
+  // std::cout << ret << std::endl;
 
   return std::atoll(ret.c_str());
 }
@@ -497,6 +524,8 @@ unsigned int NanotecSMCI36::GetReversePolarityMask() const
   std::string ret = buffer;
   ret.erase(0, ret.find('h')+1);
 
+  // std::cout << ret << std::endl;
+
   return std::atoll(ret.c_str());
 }
 
@@ -523,6 +552,8 @@ unsigned int NanotecSMCI36::GetIO() const
 
   std::string ret = buffer;
   ret.erase(0, ret.find('Y')+1);
+
+  // std::cout << ret << std::endl;
 
   return std::atoll(ret.c_str());
 }
@@ -553,6 +584,8 @@ int NanotecSMCI36::GetRampMode() const
   std::string ret = buffer;
   ret.erase(0, ret.find('e')+1);
 
+  // std::cout << ret << std::endl;
+
   return std::atoi(ret.c_str());
 }
 
@@ -581,6 +614,8 @@ int NanotecSMCI36::GetQuickstopRamp() const
 
   std::string ret = buffer;
   ret.erase(0, ret.find('H')+1);
+
+  // std::cout << ret << std::endl;
 
   return std::atoi(ret.c_str());
 }
@@ -611,6 +646,8 @@ int NanotecSMCI36::GetQuickstopRampHzPerSecond() const
   std::string ret = buffer;
   ret.erase(0, ret.find('k')+1);
 
+  // std::cout << ret << std::endl;
+
   return std::atoi(ret.c_str());
 }
 
@@ -639,6 +676,8 @@ int NanotecSMCI36::GetAccelerationRamp() const
 
   std::string ret = buffer;
   ret.erase(0, ret.find('b')+1);
+
+  // std::cout << ret << std::endl;
 
   return std::atoi(ret.c_str());
 }
@@ -669,6 +708,8 @@ int NanotecSMCI36::GetAccelerationRampHzPerSecond() const
   std::string ret = buffer;
   ret.erase(0, ret.find('l')+1);
 
+  // std::cout << ret << std::endl;
+
   return std::atoi(ret.c_str());
 }
 
@@ -697,6 +738,8 @@ int NanotecSMCI36::GetDecelerationRamp() const
 
   std::string ret = buffer;
   ret.erase(0, ret.find('B')+1);
+
+  // std::cout << ret << std::endl;
 
   return std::atoi(ret.c_str());
 }
@@ -727,6 +770,8 @@ int NanotecSMCI36::GetDecelerationRampHzPerSecond() const
   std::string ret = buffer;
   ret.erase(0, ret.find('l')+1);
 
+  // std::cout << ret << std::endl;
+
   return std::atoi(ret.c_str());
 }
 
@@ -756,6 +801,8 @@ int NanotecSMCI36::GetPositioningMode() const
   std::string ret = buffer;
   ret.erase(0, ret.find('p')+1);
 
+  // std::cout << ret << std::endl;
+
   return std::atoi(ret.c_str());
 }
 
@@ -783,6 +830,8 @@ int NanotecSMCI36::GetTravelDistance() const
   std::string ret = buffer;
   ret.erase(0, ret.find('s')+1);
 
+  // std::cout << ret << std::endl;
+
   return std::atoi(ret.c_str());
 }
 
@@ -809,6 +858,8 @@ bool NanotecSMCI36::GetDirection() const
 
   std::string ret = buffer;
   ret.erase(0, ret.find('d')+1);
+
+  // std::cout << ret << std::endl;
 
   return std::atoi(ret.c_str());
 }
@@ -839,6 +890,8 @@ int NanotecSMCI36::GetMinimumFrequency() const
   std::string ret = buffer;
   ret.erase(0, ret.find('u')+1);
 
+  // std::cout << ret << std::endl;
+
   return std::atoi(ret.c_str());
 }
 
@@ -868,6 +921,8 @@ int NanotecSMCI36::GetMaximumFrequency() const
   std::string ret = buffer;
   ret.erase(0, ret.find('o')+1);
 
+  // std::cout << ret << std::endl;
+
   return std::atoi(ret.c_str());
 }
 
@@ -896,6 +951,8 @@ int NanotecSMCI36::GetMaximumFrequency2() const
 
   std::string ret = buffer;
   ret.erase(0, ret.find('n')+1);
+
+  // std::cout << ret << std::endl;
 
   return std::atoi(ret.c_str());
 }
