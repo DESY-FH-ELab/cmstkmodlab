@@ -416,6 +416,20 @@ bool NanotecSMCI36Model::getOutputPinState(int pin) const
   return (io_&bit);
 }
 
+void NanotecSMCI36Model::setIO(unsigned int mask)
+{
+  if (state_!=READY) return;
+
+  NQLogMessage("NanotecSMCI36Model") << "setIO(" << mask << ")";
+
+  if (io_ != mask) {
+    controller_->SetIO(mask);
+    io_ = mask;
+
+    emit informationChanged();
+  }
+}
+
 void NanotecSMCI36Model::setOutputPinState(int pin, bool state)
 {
   unsigned int bit = controller_->GetOutputBitForPin(pin);

@@ -105,6 +105,7 @@ public:
 
   void setIOMask(unsigned int mask);
   void setReversePolarityMask(unsigned int mask);
+  void setIO(unsigned int mask);
 
   void setInputPinFunction(int pin, int function);
   void setInputPolarity(int pin, bool reverse);
