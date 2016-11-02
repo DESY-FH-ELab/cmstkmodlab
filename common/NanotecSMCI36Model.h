@@ -66,6 +66,9 @@ public:
   int getMaxFrequency() const { return maxFrequency_; }
   int getMaxFrequency2() const { return maxFrequency2_; }
 
+  int getQuickstopRampHzPerSecond() const { return quickstopRamp_; }
+  int getAccelerationRampHzPerSecond() const { return accelRamp_; }
+  int getDecelerationRampHzPerSecond() const { return decelRamp_; }
 
   int getInputPinFunction(int pin) const;
   const std::map<int,std::string>& getInputPinFunctionNames() const;
@@ -96,6 +99,12 @@ public:
   void stop();
   void quickStop();
   void resetPositionError();
+  void setQuickstopRampHzPerSecond(int ramp);
+  void setAccelerationRampHzPerSecond(int ramp);
+  void setDecelerationRampHzPerSecond(int ramp);
+
+  void setIOMask(unsigned int mask);
+  void setReversePolarityMask(unsigned int mask);
 
   void setInputPinFunction(int pin, int function);
   void setInputPolarity(int pin, bool reverse);
@@ -150,9 +159,13 @@ protected:
   int minFrequency_;
   int maxFrequency_;
   int maxFrequency2_;
+  int quickstopRamp_;
+  int accelRamp_;
+  int decelRamp_;
 
   std::array<int,7> inputPinFunction_;
   std::array<int,4> outputPinFunction_;
+  unsigned int ioMask_;
   unsigned int ioPolarityMask_;
   unsigned io_;
 

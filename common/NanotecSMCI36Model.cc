@@ -16,7 +16,6 @@ NanotecSMCI36Model::NanotecSMCI36Model(const char* port,
     NanotecSMCI36_PORT(port),
     updateInterval1_(updateInterval1),
     updateInterval2_(updateInterval2),
-    ioPolarityMask_(0x107003F)
     driveAddress_(0)
 {
   inputPinFunction_[0] = 0;
@@ -198,24 +197,37 @@ void NanotecSMCI36Model::setMaxFrequency2(int frequency)
   updateInformation2();
 }
 
-{
-
-
-
-}
-
+void NanotecSMCI36Model::setQuickstopRampHzPerSecond(int ramp)
 {
   if (state_!=READY) return;
 
+  NQLogMessage("NanotecSMCI36Model") << "setQuickstopRampHzPerSecond(" << ramp << ")";
 
+  controller_->SetQuickstopRampHzPerSecond(ramp);
 
   updateInformation2();
 }
 
+void NanotecSMCI36Model::setAccelerationRampHzPerSecond(int ramp)
 {
+  if (state_!=READY) return;
 
+  NQLogMessage("NanotecSMCI36Model") << "setAccelerationRampHzPerSecond(" << ramp << ")";
 
+  controller_->SetAccelerationRampHzPerSecond(ramp);
 
+  updateInformation2();
+}
+
+void NanotecSMCI36Model::setDecelerationRampHzPerSecond(int ramp)
+{
+  if (state_!=READY) return;
+
+  NQLogMessage("NanotecSMCI36Model") << "setDecelerationRampHzPerSecond(" << ramp << ")";
+
+  controller_->SetDecelerationRampHzPerSecond(ramp);
+
+  updateInformation2();
 }
 
 void NanotecSMCI36Model::start()
@@ -246,6 +258,28 @@ void NanotecSMCI36Model::resetPositionError()
   if (state_!=READY) return;
 
   controller_->ResetPositionError(controllerSteps_);
+}
+
+void NanotecSMCI36Model::setIOMask(unsigned int mask)
+{
+  if (state_!=READY) return;
+
+  controller_->SetIOMask(mask);
+
+  NQLogMessage("NanotecSMCI36Model") << "setIOMask(" << mask << ")";
+
+  updateInformation2();
+}
+
+void NanotecSMCI36Model::setReversePolarityMask(unsigned int mask)
+{
+  if (state_!=READY) return;
+
+  controller_->SetReversePolarityMask(mask);
+
+  NQLogMessage("NanotecSMCI36Model") << "setReversePolarityMask(" << mask << ")";
+
+  updateInformation2();
 }
 
 int NanotecSMCI36Model::getInputPinFunction(int pin) const
@@ -473,6 +507,9 @@ void NanotecSMCI36Model::updateInformation2()
     int minFrequency = controller_->GetMinimumFrequency();
     int maxFrequency = controller_->GetMaximumFrequency();
     int maxFrequency2 = controller_->GetMaximumFrequency2();
+    int quickstopRamp = controller_->GetQuickstopRampHzPerSecond();
+    int accelRamp = controller_->GetAccelerationRampHzPerSecond();
+    int decelRamp = controller_->GetDecelerationRampHzPerSecond();
 
     std::array<int,7> inputPinFunction;
     inputPinFunction[0] = 0;
@@ -486,6 +523,7 @@ void NanotecSMCI36Model::updateInformation2()
       outputPinFunction[i] = controller_->GetOutputPinFunction(i);
     }
 
+    unsigned int ioMask = controller_->GetIOMask();
     unsigned int ioPolarityMask = controller_->GetReversePolarityMask();
 
     if (driveAddress != driveAddress_ ||
@@ -500,8 +538,12 @@ void NanotecSMCI36Model::updateInformation2()
         minFrequency != minFrequency_ ||
         maxFrequency != maxFrequency_ ||
         maxFrequency2 != maxFrequency2_ ||
+        quickstopRamp != quickstopRamp_ ||
+        accelRamp != accelRamp_ ||
+        decelRamp != decelRamp_ ||
         inputPinFunction != inputPinFunction_ ||
         outputPinFunction != outputPinFunction_ ||
+        ioMask != ioMask_ ||
         ioPolarityMask != ioPolarityMask_) {
 
       driveAddress_ = driveAddress;
@@ -516,9 +558,13 @@ void NanotecSMCI36Model::updateInformation2()
       minFrequency_ = minFrequency;
       maxFrequency_ = maxFrequency;
       maxFrequency2_ = maxFrequency2;
+      quickstopRamp_ = quickstopRamp;
+      accelRamp_ = accelRamp;
+      decelRamp_= decelRamp;
 
       inputPinFunction_ = inputPinFunction;
       outputPinFunction_ = outputPinFunction;
+      ioMask_ = ioMask;
       ioPolarityMask_ = ioPolarityMask;
 
       // NQLog("NanotecSMCI36Model", NQLog::Spam) << "information changed";
