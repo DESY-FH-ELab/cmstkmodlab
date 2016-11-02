@@ -92,12 +92,12 @@ public:
   bool getOutputPolarity(int pin) const;
   bool getOutputPinState(int pin) const;
 
+  void setMotorID(int id);
 
   void setPhaseCurrent(int current);
   void setStandStillPhaseCurrent(int current);
 
   void setPitch(double pitch);
-  void setMotorID(int motorID);
   void setStepMode(int mode);
   void setRampMode(int mode);
   void setErrorCorrectionMode(int mode);

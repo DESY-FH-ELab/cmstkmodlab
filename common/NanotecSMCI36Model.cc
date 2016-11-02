@@ -38,10 +38,16 @@ NanotecSMCI36Model::NanotecSMCI36Model(const char* port,
 }
 
 void NanotecSMCI36Model::setPitch(double pitch)
+void NanotecSMCI36Model::setMotorID(int id)
 {
   if (state_!=READY) return;
 
   pitch_ = pitch;
+  NQLogMessage("NanotecSMCI36Model") << "setMotorID(" << id << ")";
+
+  controller_->SetMotorID(id);
+
+  updateInformation2();
 }
 
 void NanotecSMCI36Model::setPhaseCurrent(int current)
