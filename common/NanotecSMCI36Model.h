@@ -32,6 +32,7 @@ public:
                               double updateInterval2 = 5,
                               QObject *parent = 0);
 
+  int getDriveAddress() const { return driveAddress_; }
 
   unsigned int getStatus() const { return status_; }
   int getMotorID() const { return motorID_; }
@@ -150,6 +151,7 @@ protected:
 
   void setDeviceState( State state );
 
+  int driveAddress_;
   unsigned int status_;
   int motorID_;
   int phaseCurrent_;

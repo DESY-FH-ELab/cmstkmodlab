@@ -19,6 +19,7 @@ NanotecSMCI36Model::NanotecSMCI36Model(const char* port,
     maxSpeedForOperation_(100),
     maxSpeedForRefRun_(5),
     ioPolarityMask_(0x107003F)
+    driveAddress_(0)
 {
   inputPinFunction_[0] = 0;
   outputPinFunction_[0] = 0;
@@ -551,6 +552,7 @@ void NanotecSMCI36Model::updateInformation2()
 
   if ( state_ == READY ) {
 
+    int driveAddress = controller_->GetDriveAddress();
     int motorID = controller_->GetMotorID();
     int stepMode = controller_->GetStepMode();
     int rampMode = controller_->GetRampMode();
@@ -577,7 +579,8 @@ void NanotecSMCI36Model::updateInformation2()
 
     unsigned int ioPolarityMask = controller_->GetReversePolarityMask();
 
-    if (motorID != motorID_ ||
+    if (driveAddress != driveAddress_ ||
+        motorID != motorID_ ||
         stepMode != stepMode_ ||
         rampMode != rampMode_ ||
         positioningMode != positioningMode_ ||
@@ -592,6 +595,7 @@ void NanotecSMCI36Model::updateInformation2()
         outputPinFunction != outputPinFunction_ ||
         ioPolarityMask != ioPolarityMask_) {
 
+      driveAddress_ = driveAddress;
       motorID_ = motorID;
       stepMode_ = stepMode;
       rampMode_ = rampMode;
