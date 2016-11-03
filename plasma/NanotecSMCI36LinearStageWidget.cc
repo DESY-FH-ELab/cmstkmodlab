@@ -160,8 +160,27 @@ void NanotecSMCI36LinearStageMovementWidget::updateDeviceState(State newState)
 /// Updates the GUI when the controller is enabled/disabled.
 void NanotecSMCI36LinearStageMovementWidget::controlStateChanged(bool enabled)
 {
-  position_->setEnabled(enabled);
-  speed_->setEnabled(enabled);
+  bool ready = model_->isReady();
+
+  bool theEnabled;
+  if (enabled) {
+    if (ready) {
+      theEnabled = true;
+    } else {
+      theEnabled = false;
+    }
+  } else {
+    theEnabled = false;
+  }
+
+  position_->setEnabled(theEnabled);
+  speed_->setEnabled(theEnabled);
+  moveButton_->setEnabled(theEnabled);
+  refRunButton_->setEnabled(theEnabled);
+
+  stopButton_->setEnabled(enabled);
+  quickstopButton_->setEnabled(enabled);
+  resetErrorButton_->setEnabled(enabled);
 }
 
 void NanotecSMCI36LinearStageMovementWidget::updateInfo()
@@ -299,7 +318,9 @@ void NanotecSMCI36LinearStageOutputStateWidget::controlStateChanged(bool enabled
 
 void NanotecSMCI36LinearStageOutputStateWidget::mousePressEvent(QMouseEvent* event)
 {
-  if (isEnabled()) {
+  bool ready = model_->isReady();
+
+  if (isEnabled() && ready) {
     emit toggleOutputPin(pin_);
   }
 }
