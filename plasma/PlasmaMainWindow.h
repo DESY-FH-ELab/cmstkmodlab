@@ -11,6 +11,9 @@
 #include <NanotecSMCI36Model.h>
 #include <NanotecSMCI36Widget.h>
 
+#include <NanotecSMCI36LinearStageModel.h>
+#include <NanotecSMCI36LinearStageWidget.h>
+
 class PlasmaMainWindow : public QMainWindow
 {
   Q_OBJECT
@@ -30,13 +33,14 @@ protected:
   QDir currentDir_;
 
   NanotecSMCI36Model *smci36ModelX_;
+  NanotecSMCI36LinearStageModel *stageX_;
 
   QToolBar* toolBar_;
 
   QTabWidget* tabWidget_;
 
-  NanotecSMCI36Widget *smci36Widget_;
-  NanotecSMCI36IOWidget *smci36IOWidget_;
+  NanotecSMCI36Widget *smci36WidgetX_;
+  NanotecSMCI36LinearStageWidget *stageWidgetX_;
 };
 
 #endif // PLASMAMAINWINDOW_H
