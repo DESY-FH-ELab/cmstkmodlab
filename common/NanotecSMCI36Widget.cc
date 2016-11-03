@@ -656,7 +656,7 @@ void NanotecSMCI36OutputStateWidget::controlStateChanged(bool enabled)
   }
 }
 
-void NanotecSMCI36OutputStateWidget::mousePressEvent(QMouseEvent* event)
+void NanotecSMCI36OutputStateWidget::mousePressEvent(QMouseEvent* /* event */)
 {
   bool ready = model_->isReady();
 

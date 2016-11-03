@@ -52,7 +52,7 @@ void NanotecSMCI36LinearStageStatusWidget::updateDeviceState(State newState)
 }
 
 /// Updates the GUI when the controller is enabled/disabled.
-void NanotecSMCI36LinearStageStatusWidget::controlStateChanged(bool enabled)
+void NanotecSMCI36LinearStageStatusWidget::controlStateChanged(bool /* enabled */)
 {
 
 }
@@ -322,7 +322,7 @@ void NanotecSMCI36LinearStageOutputStateWidget::controlStateChanged(bool enabled
   }
 }
 
-void NanotecSMCI36LinearStageOutputStateWidget::mousePressEvent(QMouseEvent* event)
+void NanotecSMCI36LinearStageOutputStateWidget::mousePressEvent(QMouseEvent* /* event */)
 {
   bool ready = model_->isReady();
 
