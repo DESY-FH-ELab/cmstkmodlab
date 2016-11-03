@@ -22,6 +22,7 @@ NanotecSMCI36LinearStageStatusWidget::NanotecSMCI36LinearStageStatusWidget(Nanot
   setLayout(formLayout);
 
   status_ = new QLabel("", this);
+  status_->setFont(QFont("Helvetica", 18, QFont::DemiBold));
   formLayout->addRow("status", status_);
 
   position_ = new QLCDNumber(10, this);
@@ -60,7 +61,7 @@ void NanotecSMCI36LinearStageStatusWidget::updateInfo()
 {
   //NQLog("NanotecSMCI36StatusWidget", NQLog::Debug) << "updateInfo()";
 
-  status_->setText(QString::number(model_->getStatus()));
+  status_->setText(model_->getStatusText());
   position_->display(QString::number(model_->getPosition(), 'f', 4));
 }
 
