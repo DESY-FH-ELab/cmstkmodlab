@@ -63,7 +63,20 @@ void NanotecSMCI36ErrorCorrectionModeWidget::updateDeviceState(State newState)
 /// Updates the GUI when the controller is enabled/disabled.
 void NanotecSMCI36ErrorCorrectionModeWidget::controlStateChanged(bool enabled)
 {
-  setEnabled(enabled);
+  bool ready = model_->isReady();
+
+  bool theEnabled;
+  if (enabled) {
+    if (ready) {
+      theEnabled = true;
+    } else {
+      theEnabled = false;
+    }
+  } else {
+    theEnabled = false;
+  }
+
+  setEnabled(theEnabled);
 }
 
 void NanotecSMCI36ErrorCorrectionModeWidget::updateInfo()
@@ -132,7 +145,20 @@ void NanotecSMCI36RampModeWidget::updateDeviceState(State newState)
 /// Updates the GUI when the controller is enabled/disabled.
 void NanotecSMCI36RampModeWidget::controlStateChanged(bool enabled)
 {
-  setEnabled(enabled);
+  bool ready = model_->isReady();
+
+  bool theEnabled;
+  if (enabled) {
+    if (ready) {
+      theEnabled = true;
+    } else {
+      theEnabled = false;
+    }
+  } else {
+    theEnabled = false;
+  }
+
+  setEnabled(theEnabled);
 }
 
 void NanotecSMCI36RampModeWidget::updateInfo()
@@ -205,7 +231,20 @@ void NanotecSMCI36PositioningModeWidget::updateDeviceState(State newState)
 /// Updates the GUI when the controller is enabled/disabled.
 void NanotecSMCI36PositioningModeWidget::controlStateChanged(bool enabled)
 {
-  setEnabled(enabled);
+  bool ready = model_->isReady();
+
+  bool theEnabled;
+  if (enabled) {
+    if (ready) {
+      theEnabled = true;
+    } else {
+      theEnabled = false;
+    }
+  } else {
+    theEnabled = false;
+  }
+
+  setEnabled(theEnabled);
 }
 
 void NanotecSMCI36PositioningModeWidget::updateInfo()
@@ -331,7 +370,20 @@ void NanotecSMCI36SettingsWidget::updateDeviceState(State newState)
 /// Updates the GUI when the controller is enabled/disabled.
 void NanotecSMCI36SettingsWidget::controlStateChanged(bool enabled)
 {
-  maxEncoderDeviation_->setEnabled(enabled);
+  bool ready = model_->isReady();
+
+  bool theEnabled;
+  if (enabled) {
+    if (ready) {
+      theEnabled = true;
+    } else {
+      theEnabled = false;
+    }
+  } else {
+    theEnabled = false;
+  }
+
+  maxEncoderDeviation_->setEnabled(theEnabled);
 }
 
 void NanotecSMCI36SettingsWidget::updateInfo()
@@ -445,14 +497,28 @@ void NanotecSMCI36MovementWidget::updateDeviceState(State newState)
 /// Updates the GUI when the controller is enabled/disabled.
 void NanotecSMCI36MovementWidget::controlStateChanged(bool enabled)
 {
-  direction_->setEnabled(enabled);
+  bool ready = model_->isReady();
 
-  travelDistance_->setEnabled(enabled);
-  minFrequency_->setEnabled(enabled);
-  maxFrequency_->setEnabled(enabled);
-  maxFrequency2_->setEnabled(enabled);
+  bool theEnabled;
+  if (enabled) {
+    if (ready) {
+      theEnabled = true;
+    } else {
+      theEnabled = false;
+    }
+  } else {
+    theEnabled = false;
+  }
 
-  start_->setEnabled(enabled);
+  direction_->setEnabled(theEnabled);
+
+  travelDistance_->setEnabled(theEnabled);
+  minFrequency_->setEnabled(theEnabled);
+  maxFrequency_->setEnabled(theEnabled);
+  maxFrequency2_->setEnabled(theEnabled);
+
+  start_->setEnabled(theEnabled);
+
   stop_->setEnabled(enabled);
   quickstop_->setEnabled(enabled);
   resetPositionError_->setEnabled(enabled);
@@ -591,7 +657,9 @@ void NanotecSMCI36OutputStateWidget::controlStateChanged(bool enabled)
 
 void NanotecSMCI36OutputStateWidget::mousePressEvent(QMouseEvent* event)
 {
-  if (isEnabled()) {
+  bool ready = model_->isReady();
+
+  if (isEnabled() && ready) {
     emit toggleOutputPin(pin_);
   }
 }

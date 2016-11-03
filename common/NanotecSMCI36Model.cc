@@ -401,6 +401,10 @@ void NanotecSMCI36Model::start()
   if (state_!=READY) return;
 
   if (status_ & VNanotecSMCI36::smciReady) {
+    status_ |= ~VNanotecSMCI36::smciReady;
+
+    emit deviceStateChanged(state_);
+
     controller_->Start();
 
     emit motionStarted();
@@ -704,7 +708,11 @@ void NanotecSMCI36Model::updateInformation1()
         encoderSteps != encoderSteps_ ||
         io != io_) {
 
-      status_ = status;
+      if (status != status_) {
+        status_ = status;
+        emit deviceStateChanged(state_);
+      }
+
       controllerSteps_ = controllerSteps;
       encoderSteps_ = encoderSteps;
 
