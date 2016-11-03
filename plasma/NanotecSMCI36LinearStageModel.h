@@ -14,7 +14,9 @@ public:
 
   State getDeviceState() const;
 
+  bool isReady() const;
   unsigned int getStatus() const { return status_; }
+  const QString getStatusText() const;
 
   void setPitch(double pitch);
   double getPitch() const { return pitch_; }

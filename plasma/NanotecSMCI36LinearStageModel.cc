@@ -25,6 +25,16 @@ NanotecSMCI36LinearStageModel::NanotecSMCI36LinearStageModel(NanotecSMCI36Model 
   NQLog("NanotecSMCI36LinearStageModel") << "constructed";
 }
 
+bool NanotecSMCI36LinearStageModel::isReady() const
+{
+  return (status_ & VNanotecSMCI36::smciReady);
+}
+
+const QString NanotecSMCI36LinearStageModel::getStatusText() const
+{
+  return controller_->getStatusText();
+}
+
 void NanotecSMCI36LinearStageModel::setPitch(double pitch)
 {
   pitch_ = pitch;
