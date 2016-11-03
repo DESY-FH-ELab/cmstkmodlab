@@ -57,6 +57,11 @@ NanotecSMCI36Model::NanotecSMCI36Model(const char* port,
   NQLog("NanotecSMCI36Model") << "constructed";
 }
 
+bool NanotecSMCI36Model::isReady() const
+{
+  return (status_ & VNanotecSMCI36::smciReady);
+}
+
 const QString NanotecSMCI36Model::getStatusText() const
 {
   QString text;
