@@ -351,6 +351,8 @@ void NanotecSMCI36Model::start()
 
   if (status_ & VNanotecSMCI36::smciReady) {
     controller_->Start();
+
+    emit motionStarted();
   }
 }
 
@@ -359,6 +361,8 @@ void NanotecSMCI36Model::stop()
   if (state_!=READY) return;
 
   controller_->Stop(false);
+
+  emit motionFinished();
 }
 
 void NanotecSMCI36Model::quickStop()
@@ -366,6 +370,8 @@ void NanotecSMCI36Model::quickStop()
   if (state_!=READY) return;
 
   controller_->Stop(true);
+
+  emit motionFinished();
 }
 
 void NanotecSMCI36Model::resetPositionError()

@@ -189,6 +189,9 @@ signals:
   void informationChanged();
   void controlStateChanged(bool);
   void stepModeChanged(int);
+
+  void motionStarted();
+  void motionFinished();
 };
 
 #endif // NANOTECSMCI36MODEL_H
