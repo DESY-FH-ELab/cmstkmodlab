@@ -65,6 +65,11 @@ void NanotecSMCI36LinearStageModel::stepModeChanged(int stepMode)
   emit limitsChanged();
 }
 
+double NanotecSMCI36LinearStageModel::getStepSize() const
+{
+  return getPitch()/controller_->getStepMode();
+}
+
 void NanotecSMCI36LinearStageModel::motionHasStarted()
 {
   status_ |= ~VNanotecSMCI36::smciReady;

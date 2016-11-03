@@ -21,6 +21,8 @@ public:
   void setPitch(double pitch);
   double getPitch() const { return pitch_; }
 
+  double getStepSize() const;
+
   void setMinimumPosition(double position) { minPosition_ = position; }
   double getMinimumPosition() const { return minPosition_; }
 
