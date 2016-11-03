@@ -57,6 +57,52 @@ NanotecSMCI36Model::NanotecSMCI36Model(const char* port,
   NQLog("NanotecSMCI36Model") << "constructed";
 }
 
+const QString NanotecSMCI36Model::getStatusText() const
+{
+  QString text;
+
+  if ((status_ & VNanotecSMCI36::smciReady) &&
+      (status_ & VNanotecSMCI36::smciZero) &&
+      (status_ & VNanotecSMCI36::smciPosError)) {
+
+    text += "Ready | Zero | Position Error";
+
+  } else if ((status_ & VNanotecSMCI36::smciReady) &&
+             (status_ & VNanotecSMCI36::smciZero)) {
+
+    text += "Ready | Zero";
+
+  } else if ((status_ & VNanotecSMCI36::smciZero) &&
+             (status_ & VNanotecSMCI36::smciPosError)) {
+
+    text += "Zero | Position Error";
+
+  } else if ((status_ & VNanotecSMCI36::smciReady) &&
+             (status_ & VNanotecSMCI36::smciPosError)) {
+
+    text += "Zero | Position Error";
+
+  } else if (status_ & VNanotecSMCI36::smciPosError) {
+
+    text += "Position Error";
+
+  } else if (status_ & VNanotecSMCI36::smciReady) {
+
+    text += "Ready";
+
+  } else {
+
+    text += "Unknown";
+
+  }
+
+  text += " (";
+  text += QString::number(status_);
+  text += ")";
+
+  return text;
+}
+
 void NanotecSMCI36Model::setMotorID(int id)
 {
   if (state_!=READY) return;

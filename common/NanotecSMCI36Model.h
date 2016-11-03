@@ -36,6 +36,7 @@ public:
   int getDriveAddress() const { return driveAddress_; }
 
   unsigned int getStatus() const { return status_; }
+  const QString getStatusText() const;
 
   int getMotorID() const { return motorID_; }
 
