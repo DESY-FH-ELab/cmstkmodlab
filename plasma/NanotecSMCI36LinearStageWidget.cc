@@ -86,18 +86,18 @@ NanotecSMCI36LinearStageMovementWidget::NanotecSMCI36LinearStageMovementWidget(N
   label = new QLabel("speed [mm/s]", this);
   gridLayout->addWidget(label, 0, 1, Qt::AlignVCenter);
 
-  position_ = new QDoubleSpinBox(this);
+  position_ = new PlasmaStepDoubleSpinBox(this);
   position_->setMinimum(model_->getMinimumPosition());
   position_->setMaximum(model_->getMaximumPosition());
-  position_->setDecimals(4);
-  position_->setSingleStep(10);
+  position_->setDecimals(6);
+  position_->setSingleStep(model_->getStepSize());
   gridLayout->addWidget(position_, 1, 0, Qt::AlignVCenter);
 
-  speed_ = new QDoubleSpinBox(this);
+  speed_ = new PlasmaStepDoubleSpinBox(this);
   speed_->setMinimum(model_->getSpeedLimits().first);
   speed_->setMaximum(model_->getSpeedLimits().second);
-  speed_->setDecimals(4);
-  speed_->setSingleStep(0.1);
+  speed_->setDecimals(6);
+  speed_->setSingleStep(model_->getStepSize());
   connect(speed_, SIGNAL(valueChanged(double)),
           model_, SLOT(setSpeed(double)));
   gridLayout->addWidget(speed_, 1, 1, Qt::AlignVCenter);
@@ -187,12 +187,18 @@ void NanotecSMCI36LinearStageMovementWidget::updateInfo()
 {
   //NQLog("NanotecSMCI36Widget", NQLog::Debug) << "updateInfo()";
 
-  position_->setValue(model_->getPosition());
+  bool ready = model_->isReady();
+
+  if (ready) position_->setValue(model_->getPosition());
+
   speed_->setValue(model_->getSpeed());
 }
 
 void NanotecSMCI36LinearStageMovementWidget::limitsChanged()
 {
+  position_->setSingleStep(model_->getStepSize());
+  speed_->setSingleStep(model_->getStepSize());
+
   speed_->setMinimum(model_->getSpeedLimits().first);
   speed_->setMaximum(model_->getSpeedLimits().second);
 }

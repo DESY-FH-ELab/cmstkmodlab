@@ -19,6 +19,7 @@
 #include <QTabWidget>
 #include <QPixmap>
 
+#include "PlasmaStepDoubleSpinBox.h"
 #include "NanotecSMCI36LinearStageModel.h"
 
 class NanotecSMCI36LinearStageStatusWidget : public QWidget
@@ -53,8 +54,8 @@ protected:
 
   NanotecSMCI36LinearStageModel* model_;
 
-  QDoubleSpinBox* position_;
-  QDoubleSpinBox* speed_;
+  PlasmaStepDoubleSpinBox* position_;
+  PlasmaStepDoubleSpinBox* speed_;
   QPushButton *moveButton_;
 
   QPushButton *refRunButton_;
