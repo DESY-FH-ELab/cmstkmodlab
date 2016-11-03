@@ -19,6 +19,11 @@ NanotecSMCI36LinearStageModel::NanotecSMCI36LinearStageModel(NanotecSMCI36Model 
   connect(controller_, SIGNAL(informationChanged()),
           this, SLOT(updateInformation()));
 
+  connect(controller_, SIGNAL(motionStarted()),
+          this, SLOT(motionHasStarted()));
+  connect(controller_, SIGNAL(motionFinished()),
+          this, SLOT(motionHasFinished()));
+
   updateDeviceState(controller_->getDeviceState());
   updateInformation();
 
@@ -58,6 +63,24 @@ void NanotecSMCI36LinearStageModel::stepModeChanged(int stepMode)
   speedLimits_ = std::pair<double,double>(min, max);
 
   emit limitsChanged();
+}
+
+void NanotecSMCI36LinearStageModel::motionHasStarted()
+{
+  status_ |= ~VNanotecSMCI36::smciReady;
+
+  NQLogMessage("NanotecSMCI36LinearStageModel") << "start() - 1";
+
+  emit deviceStateChanged(getDeviceState());
+
+  NQLogMessage("NanotecSMCI36LinearStageModel") << "start() - 2";
+
+  emit motionStarted();
+}
+
+void NanotecSMCI36LinearStageModel::motionHasFinished()
+{
+  emit motionFinished();
 }
 
 void NanotecSMCI36LinearStageModel::setSpeed(double speed)
@@ -178,7 +201,11 @@ void NanotecSMCI36LinearStageModel::updateInformation()
       speed_ != speed ||
       io_ != io) {
 
-    status_ = status;
+    if (status != status_) {
+      status_ = status;
+      emit deviceStateChanged(getDeviceState());
+    }
+
     position_ = position;
     speed_ = speed;
     io_ = io;

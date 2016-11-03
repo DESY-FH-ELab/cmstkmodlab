@@ -66,12 +66,18 @@ protected slots:
 
   void stepModeChanged(int);
 
+  void motionHasStarted();
+  void motionHasFinished();
+
 signals:
 
   void deviceStateChanged(State newState);
   void informationChanged();
   void controlStateChanged(bool);
   void limitsChanged();
+
+  void motionStarted();
+  void motionFinished();
 };
 
 #endif // NANOTECSMCI36LINEARSTAGEMODEL_H
