@@ -60,8 +60,13 @@ void NanotecSMCI36LinearStageModel::requestMove(double position)
 {
   NQLog("NanotecSMCI36LinearStageModel", NQLog::Message) << "requestMove(" << position << ")";
 
+  double thePosition = position;
+
+  if (thePosition < getMinimumPosition()) thePosition = getMinimumPosition();
+  if (thePosition > getMaximumPosition()) thePosition = getMaximumPosition();
+
   controller_->setPositioningMode(VNanotecSMCI36::smciAbsolutePositioning);
-  double travelDistance = position*controller_->getStepMode()/getPitch();
+  double travelDistance = thePosition*controller_->getStepMode()/getPitch();
   controller_->setTravelDistance(travelDistance);
   controller_->start();
 }
