@@ -73,6 +73,10 @@ PlasmaMainWindow::PlasmaMainWindow(QWidget *parent)
           config->getValue("SMCI36_EncoderDirection_X",
                            0)
       );
+      smci36ModelX_->setMinFrequency(
+          config->getValue("SMCI36_MinFrequency_X",
+                           40)
+      );
       smci36ModelX_->setQuickstopRampHzPerSecond(
           config->getValue("SMCI36_QuickstopRampHzPerSecond_X",
                            3000000)
