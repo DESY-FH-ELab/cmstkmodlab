@@ -112,7 +112,7 @@ void NanotecSMCI36Model::setMotorID(int id)
 {
   if (state_!=READY) return;
 
-  NQLogMessage("NanotecSMCI36Model") << "setMotorID(" << id << ")";
+  // NQLogMessage("NanotecSMCI36Model") << "setMotorID(" << id << ")";
 
   if (motorID_ != id) {
     controller_->SetMotorID(id);
@@ -126,7 +126,7 @@ void NanotecSMCI36Model::setPhaseCurrent(int current)
 {
   if (state_!=READY) return;
 
-  NQLogMessage("NanotecSMCI36Model") << "setPhaseCurrent(" << current << ")";
+  // NQLogMessage("NanotecSMCI36Model") << "setPhaseCurrent(" << current << ")";
 
   if (phaseCurrent_ != current) {
     controller_->SetPhaseCurrent(current);
@@ -140,7 +140,7 @@ void NanotecSMCI36Model::setStandStillPhaseCurrent(int current)
 {
   if (state_!=READY) return;
 
-  NQLogMessage("NanotecSMCI36Model") << "setStandStillPhaseCurrent(" << current << ")";
+  // NQLogMessage("NanotecSMCI36Model") << "setStandStillPhaseCurrent(" << current << ")";
 
   if (standStillPhaseCurrent_ != current) {
     controller_->SetStandStillPhaseCurrent(current);
@@ -154,7 +154,7 @@ void NanotecSMCI36Model::setStepMode(int mode)
 {
   if (state_!=READY) return;
 
-  NQLogMessage("NanotecSMCI36Model") << "setStepMode(" << mode << ")";
+  // NQLogMessage("NanotecSMCI36Model") << "setStepMode(" << mode << ")";
 
   if (stepMode_ != mode) {
     controller_->SetStepMode(mode);
@@ -180,7 +180,7 @@ void NanotecSMCI36Model::setErrorCorrectionMode(int mode)
 {
   if (state_!=READY) return;
 
-  NQLogMessage("NanotecSMCI36Model") << "setErrorCorrectionMode(" << mode << ")";
+  // NQLogMessage("NanotecSMCI36Model") << "setErrorCorrectionMode(" << mode << ")";
 
   if (errorCorrectionMode_ != mode) {
     controller_->SetErrorCorrectionMode(mode);
@@ -199,7 +199,7 @@ void NanotecSMCI36Model::setRampMode(int mode)
 {
   if (state_!=READY) return;
 
-  NQLogMessage("NanotecSMCI36Model") << "setRampMode(" << mode << ")";
+  // NQLogMessage("NanotecSMCI36Model") << "setRampMode(" << mode << ")";
 
   if (rampMode_ != mode) {
     controller_->SetRampMode(mode);
@@ -224,7 +224,7 @@ void NanotecSMCI36Model::setPositioningMode(int mode)
 {
   if (state_!=READY) return;
 
-  NQLogMessage("NanotecSMCI36Model") << "setPositioningMode(" << mode << ")";
+  // NQLogMessage("NanotecSMCI36Model") << "setPositioningMode(" << mode << ")";
 
   if (positioningMode_ != mode) {
     controller_->SetPositioningMode(mode);
@@ -264,7 +264,7 @@ void NanotecSMCI36Model::setMaxEncoderDeviation(int steps)
 {
   if (state_!=READY) return;
 
-  NQLogMessage("NanotecSMCI36Model") << "setMaxEncoderDeviation(" << steps << ")";
+  // NQLogMessage("NanotecSMCI36Model") << "setMaxEncoderDeviation(" << steps << ")";
 
   if (maxEncoderDeviation_ != steps) {
     controller_->SetMaxEncoderDeviation(steps);
@@ -278,7 +278,7 @@ void NanotecSMCI36Model::setDirection(bool direction)
 {
   if (state_!=READY) return;
 
-  NQLogMessage("NanotecSMCI36Model") << "setDirection(" << direction << ")";
+  // NQLogMessage("NanotecSMCI36Model") << "setDirection(" << direction << ")";
 
   if (direction_ != direction) {
     controller_->SetDirection(direction);
@@ -292,7 +292,7 @@ void NanotecSMCI36Model::setEncoderDirection(bool direction)
 {
   if (state_!=READY) return;
 
-  NQLogMessage("NanotecSMCI36Model") << "setEncoderDirection(" << direction << ")";
+  // NQLogMessage("NanotecSMCI36Model") << "setEncoderDirection(" << direction << ")";
 
   if (encoderDirection_ != direction) {
     controller_->SetEncoderDirection(direction);
@@ -317,7 +317,7 @@ void NanotecSMCI36Model::setMinFrequency(int frequency)
 {
   if (state_!=READY) return;
 
-  NQLogMessage("NanotecSMCI36Model") << "setMinFrequency(" << frequency << ")";
+  // NQLogMessage("NanotecSMCI36Model") << "setMinFrequency(" << frequency << ")";
 
   if (minFrequency_ != frequency) {
     controller_->SetMinimumFrequency(frequency);
@@ -331,7 +331,7 @@ void NanotecSMCI36Model::setMaxFrequency(int frequency)
 {
   if (state_!=READY) return;
 
-  NQLogMessage("NanotecSMCI36Model") << "setMaxFrequency(" << frequency << ")";
+  // NQLogMessage("NanotecSMCI36Model") << "setMaxFrequency(" << frequency << ")";
 
   if (maxFrequency_ != frequency) {
     controller_->SetMaximumFrequency(frequency);
@@ -344,7 +344,7 @@ void NanotecSMCI36Model::setMaxFrequency2(int frequency)
 {
   if (state_!=READY) return;
 
-  NQLogMessage("NanotecSMCI36Model") << "setMaxFrequency2(" << frequency << ")";
+  // NQLogMessage("NanotecSMCI36Model") << "setMaxFrequency2(" << frequency << ")";
 
   if (maxFrequency2_ != frequency) {
     controller_->SetMaximumFrequency2(frequency);
@@ -358,7 +358,7 @@ void NanotecSMCI36Model::setQuickstopRampHzPerSecond(int ramp)
 {
   if (state_!=READY) return;
 
-  NQLogMessage("NanotecSMCI36Model") << "setQuickstopRampHzPerSecond(" << ramp << ")";
+  // NQLogMessage("NanotecSMCI36Model") << "setQuickstopRampHzPerSecond(" << ramp << ")";
 
   if (quickstopRamp_ != ramp) {
     controller_->SetQuickstopRampHzPerSecond(ramp);
@@ -372,7 +372,7 @@ void NanotecSMCI36Model::setAccelerationRampHzPerSecond(int ramp)
 {
   if (state_!=READY) return;
 
-  NQLogMessage("NanotecSMCI36Model") << "setAccelerationRampHzPerSecond(" << ramp << ")";
+  // NQLogMessage("NanotecSMCI36Model") << "setAccelerationRampHzPerSecond(" << ramp << ")";
 
   if (accelRamp_ != ramp) {
     controller_->SetAccelerationRampHzPerSecond(ramp);
@@ -386,7 +386,7 @@ void NanotecSMCI36Model::setDecelerationRampHzPerSecond(int ramp)
 {
   if (state_!=READY) return;
 
-  NQLogMessage("NanotecSMCI36Model") << "setDecelerationRampHzPerSecond(" << ramp << ")";
+  // NQLogMessage("NanotecSMCI36Model") << "setDecelerationRampHzPerSecond(" << ramp << ")";
 
   if (accelRamp_ != ramp) {
     controller_->SetDecelerationRampHzPerSecond(ramp);
@@ -409,8 +409,11 @@ void NanotecSMCI36Model::start()
   if (status_ & VNanotecSMCI36::smciReady && newPositionRequested) {
     status_ |= ~VNanotecSMCI36::smciReady;
 
+    // NQLogMessage("NanotecSMCI36Model") << "start() - 1";
+
     emit deviceStateChanged(state_);
 
+    // NQLogMessage("NanotecSMCI36Model") << "start() - 2";
 
     emit motionStarted();
 
@@ -447,7 +450,7 @@ void NanotecSMCI36Model::setIOMask(unsigned int mask)
 {
   if (state_!=READY) return;
 
-  NQLogMessage("NanotecSMCI36Model") << "setIOMask(" << mask << ")";
+  // NQLogMessage("NanotecSMCI36Model") << "setIOMask(" << mask << ")";
 
   if (ioMask_ != mask) {
     controller_->SetIOMask(mask);
@@ -461,7 +464,7 @@ void NanotecSMCI36Model::setReversePolarityMask(unsigned int mask)
 {
   if (state_!=READY) return;
 
-  NQLogMessage("NanotecSMCI36Model") << "setReversePolarityMask(" << mask << ")";
+  // NQLogMessage("NanotecSMCI36Model") << "setReversePolarityMask(" << mask << ")";
 
   if (ioPolarityMask_ != mask) {
     controller_->SetReversePolarityMask(mask);
@@ -491,7 +494,7 @@ void NanotecSMCI36Model::setInputPinFunction(int pin, int function)
 {
   if (state_!=READY) return;
 
-  NQLogMessage("NanotecSMCI36Model") << "setInputPinFunction(" << pin << ", " << function << ")";
+  // NQLogMessage("NanotecSMCI36Model") << "setInputPinFunction(" << pin << ", " << function << ")";
 
   if (inputPinFunction_[pin] != function) {
     controller_->SetInputPinFunction(pin, function);
@@ -514,7 +517,7 @@ void NanotecSMCI36Model::setInputPolarity(int pin, bool reverse)
   unsigned int bit = controller_->GetInputBitForPin(pin);
   if (bit==0) return;
 
-  NQLogMessage("NanotecSMCI36Model") << "setInputPolarity(" << pin << ", " << reverse << ")";
+  // NQLogMessage("NanotecSMCI36Model") << "setInputPolarity(" << pin << ", " << reverse << ")";
 
   unsigned int ioPolarityMask = ioPolarityMask_;
 
@@ -559,7 +562,7 @@ void NanotecSMCI36Model::setOutputPinFunction(int pin, int function)
 {
   if (state_!=READY) return;
 
-  NQLogMessage("NanotecSMCI36Model") << "setOutputPinFunction(" << pin << ", " << function << ")";
+  // NQLogMessage("NanotecSMCI36Model") << "setOutputPinFunction(" << pin << ", " << function << ")";
 
   if (outputPinFunction_[pin] != function) {
     controller_->SetOutputPinFunction(pin, function);
@@ -582,7 +585,7 @@ void NanotecSMCI36Model::setOutputPolarity(int pin, bool reverse)
   unsigned int bit = controller_->GetOutputBitForPin(pin);
   if (bit==0) return;
 
-  NQLogMessage("NanotecSMCI36Model") << "setOutputPolarity(" << pin << ", " << reverse << ")";
+  // NQLogMessage("NanotecSMCI36Model") << "setOutputPolarity(" << pin << ", " << reverse << ")";
 
   unsigned int ioPolarityMask = ioPolarityMask_;
 
@@ -611,7 +614,7 @@ void NanotecSMCI36Model::setIO(unsigned int mask)
 {
   if (state_!=READY) return;
 
-  NQLogMessage("NanotecSMCI36Model") << "setIO(" << mask << ")";
+  // NQLogMessage("NanotecSMCI36Model") << "setIO(" << mask << ")";
 
   if (io_ != mask) {
     controller_->SetIO(mask);
@@ -626,7 +629,7 @@ void NanotecSMCI36Model::setOutputPinState(int pin, bool state)
   unsigned int bit = controller_->GetOutputBitForPin(pin);
   if (bit==0) return;
 
-  NQLogMessage("NanotecSMCI36Model") << "setOutputPinState(" << pin << ", " << state << ")";
+  // NQLogMessage("NanotecSMCI36Model") << "setOutputPinState(" << pin << ", " << state << ")";
 
   unsigned int io = io_;
 

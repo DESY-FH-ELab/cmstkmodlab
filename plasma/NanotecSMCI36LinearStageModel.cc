@@ -74,11 +74,7 @@ void NanotecSMCI36LinearStageModel::motionHasStarted()
 {
   status_ |= ~VNanotecSMCI36::smciReady;
 
-  NQLogMessage("NanotecSMCI36LinearStageModel") << "start() - 1";
-
   emit deviceStateChanged(getDeviceState());
-
-  NQLogMessage("NanotecSMCI36LinearStageModel") << "start() - 2";
 
   emit motionStarted();
 }
@@ -96,8 +92,6 @@ void NanotecSMCI36LinearStageModel::setSpeed(double speed)
 
 void NanotecSMCI36LinearStageModel::requestMove(double position)
 {
-  NQLog("NanotecSMCI36LinearStageModel", NQLog::Message) << "requestMove(" << position << ")";
-
   double thePosition = position;
 
   if (thePosition < getMinimumPosition()) thePosition = getMinimumPosition();
@@ -105,13 +99,16 @@ void NanotecSMCI36LinearStageModel::requestMove(double position)
 
   controller_->setPositioningMode(VNanotecSMCI36::smciAbsolutePositioning);
   double travelDistance = thePosition*controller_->getStepMode()/getPitch();
+
+  // NQLogMessage("NanotecSMCI36LinearStageModel") << "requestMove(" << position << ") " << travelDistance;
+
   controller_->setTravelDistance(travelDistance);
   controller_->start();
 }
 
 void NanotecSMCI36LinearStageModel::requestReferenceRun()
 {
-  NQLog("NanotecSMCI36LinearStageModel", NQLog::Message) << "requestReferenceRun()";
+  // NQLogMessage("NanotecSMCI36LinearStageModel") << "requestReferenceRun()";
 
   controller_->setPositioningMode(VNanotecSMCI36::smciExternalRefRun);
   controller_->start();
@@ -119,21 +116,21 @@ void NanotecSMCI36LinearStageModel::requestReferenceRun()
 
 void NanotecSMCI36LinearStageModel::requestStop()
 {
-  NQLog("NanotecSMCI36LinearStageModel", NQLog::Message) << "requestStop()";
+  // NQLogMessage("NanotecSMCI36LinearStageModel") << "requestStop()";
 
   controller_->stop();
 }
 
 void NanotecSMCI36LinearStageModel::requestQuickStop()
 {
-  NQLog("NanotecSMCI36LinearStageModel", NQLog::Message) << "requestQuickStop()";
+  // NQLogMessage("NanotecSMCI36LinearStageModel") << "requestQuickStop()";
 
   controller_->quickStop();
 }
 
 void NanotecSMCI36LinearStageModel::requestResetError()
 {
-  NQLog("NanotecSMCI36LinearStageModel", NQLog::Message) << "requestResetError()";
+  // NQLogMessage("NanotecSMCI36LinearStageModel") << "requestResetError()";
 
   controller_->resetPositionError();
 }
