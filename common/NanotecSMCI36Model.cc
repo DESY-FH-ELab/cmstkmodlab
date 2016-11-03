@@ -97,7 +97,7 @@ const QString NanotecSMCI36Model::getStatusText() const
 
   } else {
 
-    text += "Unknown";
+    text += "Moving";
 
   }
 
