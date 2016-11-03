@@ -176,12 +176,13 @@ void NanotecSMCI36LinearStageModel::updateInformation()
 
   double pitch = getPitch();
   double stepMode = controller_->getStepMode();
+  double controllerSteps = controller_->getControllerPosition();
   double encoderSteps = controller_->getEncoderPosition();
   double minFrequency = controller_->getMinFrequency();
   double maxFrequency = controller_->getMaxFrequency();
 
   unsigned int status = controller_->getStatus();
-  double position = pitch*encoderSteps/stepMode;
+  double position = pitch*controllerSteps/stepMode;
 
   double min = pitch*minFrequency/stepMode;
   double max = pitch*controller_->getMinFrequencyLimits().second/stepMode;
