@@ -400,14 +400,21 @@ void NanotecSMCI36Model::start()
 {
   if (state_!=READY) return;
 
-  if (status_ & VNanotecSMCI36::smciReady) {
+  bool newPositionRequested = true;
+  if (getPositioningMode()==VNanotecSMCI36::smciAbsolutePositioning &&
+      getControllerPosition()==getTravelDistance()) {
+    newPositionRequested = false;
+  }
+
+  if (status_ & VNanotecSMCI36::smciReady && newPositionRequested) {
     status_ |= ~VNanotecSMCI36::smciReady;
 
     emit deviceStateChanged(state_);
 
-    controller_->Start();
 
     emit motionStarted();
+
+    controller_->Start();
   }
 }
 
