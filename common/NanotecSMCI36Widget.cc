@@ -271,6 +271,7 @@ NanotecSMCI36StatusWidget::NanotecSMCI36StatusWidget(NanotecSMCI36Model* model, 
   setLayout(formLayout);
 
   status_ = new QLabel("", this);
+  status_->setFont(QFont("Helvetica", 18, QFont::DemiBold));
   formLayout->addRow("status", status_);
 
   controllerSteps_ = new QLabel("", this);
@@ -314,7 +315,7 @@ void NanotecSMCI36StatusWidget::updateInfo()
 {
   //NQLog("NanotecSMCI36StatusWidget", NQLog::Debug) << "updateInfo()";
 
-  status_->setText(QString::number(model_->getStatus()));
+  status_->setText(model_->getStatusText());
   controllerSteps_->setText(QString::number(model_->getControllerPosition()));
   encoderSteps_->setText(QString::number(model_->getEncoderPosition()));
   stepMode_->setText(QString(model_->getStepModeName().c_str()));
