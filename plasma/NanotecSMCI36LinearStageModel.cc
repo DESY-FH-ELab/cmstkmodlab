@@ -54,6 +54,11 @@ void NanotecSMCI36LinearStageModel::setPitch(double pitch)
   emit limitsChanged();
 }
 
+void NanotecSMCI36LinearStageModel::setSpeedForRefRun(double speed)
+{
+  speedForRefRun_ = speed;
+}
+
 void NanotecSMCI36LinearStageModel::stepModeChanged(int stepMode)
 {
   double min, max;
@@ -72,6 +77,12 @@ double NanotecSMCI36LinearStageModel::getStepSize() const
 
 void NanotecSMCI36LinearStageModel::motionHasStarted()
 {
+  NQLogMessage("NanotecSMCI36LinearStageModel") << "motionHasStarted()";
+
+  if (controller_->getPositioningMode()==VNanotecSMCI36::smciExternalRefRun) {
+    isInReferenceRun_ = true;
+  }
+
   status_ |= ~VNanotecSMCI36::smciReady;
 
   emit deviceStateChanged(getDeviceState());
@@ -81,6 +92,18 @@ void NanotecSMCI36LinearStageModel::motionHasStarted()
 
 void NanotecSMCI36LinearStageModel::motionHasFinished()
 {
+  NQLogMessage("NanotecSMCI36LinearStageModel") << "motionHasFinished()";
+
+  if (controller_->getPositioningMode()==VNanotecSMCI36::smciExternalRefRun &&
+      isInReferenceRun_) {
+
+    controller_->setPositioningMode(VNanotecSMCI36::smciAbsolutePositioning);
+    controller_->setMinFrequency(minFrequency_);
+    controller_->setMaxFrequency(maxFrequency_);
+
+    isInReferenceRun_ = false;
+  }
+
   emit motionFinished();
 }
 
@@ -109,6 +132,14 @@ void NanotecSMCI36LinearStageModel::requestMove(double position)
 void NanotecSMCI36LinearStageModel::requestReferenceRun()
 {
   // NQLogMessage("NanotecSMCI36LinearStageModel") << "requestReferenceRun()";
+
+  minFrequency_ = controller_->getMinFrequency();
+  maxFrequency_ = controller_->getMaxFrequency();
+  isInReferenceRun_ = true;
+
+  double frequency = speedForRefRun_*controller_->getStepMode()/getPitch();
+  controller_->setMinFrequency(frequency);
+  controller_->setMaxFrequency(frequency);
 
   controller_->setPositioningMode(VNanotecSMCI36::smciExternalRefRun);
   controller_->start();

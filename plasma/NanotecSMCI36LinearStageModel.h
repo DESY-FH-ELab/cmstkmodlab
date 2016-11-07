@@ -21,6 +21,9 @@ public:
   void setPitch(double pitch);
   double getPitch() const { return pitch_; }
 
+  void setSpeedForRefRun(double speed);
+  double getSpeedForRefRun() const { return speedForRefRun_; }
+
   double getStepSize() const;
 
   void setMinimumPosition(double position) { minPosition_ = position; }
@@ -63,6 +66,11 @@ protected:
   std::pair<double,double> speedLimits_;
   double speed_;
   unsigned int io_;
+
+  int minFrequency_;
+  int maxFrequency_;
+  bool isInReferenceRun_;
+  double speedForRefRun_;
 
 protected slots:
 
