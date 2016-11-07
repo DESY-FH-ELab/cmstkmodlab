@@ -445,7 +445,7 @@ NanotecSMCI36MovementWidget::NanotecSMCI36MovementWidget(NanotecSMCI36Model* mod
   maxFrequency2_->setMaximum(model_->getMaxFrequency2Limits().second);
   connect(maxFrequency2_, SIGNAL(valueChanged(int)),
           model_, SLOT(setMaxFrequency2(int)));
-  formLayout->addRow("max. frequency [Hz]", maxFrequency2_);
+  formLayout->addRow("max. frequency 2 [Hz]", maxFrequency2_);
 
   layout->addLayout(formLayout);
 
