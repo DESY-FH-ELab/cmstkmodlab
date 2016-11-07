@@ -119,6 +119,10 @@ PlasmaMainWindow::PlasmaMainWindow(QWidget *parent)
       stageX_->setMaximumPosition(config->getValue<double>("Stage_MaxPosition_X",
                                                            370.0)
       );
+      stageX_->setSpeedForRefRun(config->getValue<double>("Stage_SpeedForRefRun_X",
+                                                          20.0)
+      );
+
 
       smci36ModelX_->updateInformation2();
       stageX_->updateInformation();

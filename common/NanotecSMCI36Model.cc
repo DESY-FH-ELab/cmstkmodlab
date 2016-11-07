@@ -719,6 +719,10 @@ void NanotecSMCI36Model::updateInformation1()
         io != io_) {
 
       if (status != status_) {
+
+        if (!(status_ & VNanotecSMCI36::smciReady) &&
+            (status & VNanotecSMCI36::smciReady)) emit motionFinished();
+
         status_ = status;
         emit deviceStateChanged(state_);
       }
