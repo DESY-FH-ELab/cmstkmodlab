@@ -3,76 +3,10 @@
 #include <QGridLayout>
 #include <QFormLayout>
 
+#include <ApplicationConfig.h>
 #include <nqlogger.h>
 
 #include "NanotecSMCI36Widget.h"
-
-NanotecSMCI36StepModeWidget::NanotecSMCI36StepModeWidget(NanotecSMCI36Model* model,
-                                                         QWidget *parent)
-  : QComboBox(parent),
-    model_(model)
-{
-  // No user editable text
-  setEditable(false);
-
-  const std::vector<std::pair<int,std::string>>& modes = model_->getStepModeNames();
-
-  for (std::vector<std::pair<int,std::string>>::const_iterator it = modes.begin();
-       it!=modes.end();
-       ++it) {
-    addItem(it->second.c_str(), QVariant(it->first));
-  }
-
-  // Connect all the signals
-  connect(model_, SIGNAL(deviceStateChanged(State)),
-          this, SLOT(updateDeviceState(State)));
-  connect(model_, SIGNAL(controlStateChanged(bool)),
-          this, SLOT(controlStateChanged(bool)));
-  connect(model_, SIGNAL(informationChanged()),
-          this, SLOT(updateInfo()));
-
-  connect(this, SIGNAL(currentIndexChanged(int)),
-          this, SLOT(indexChanged(int)));
-
-  updateDeviceState(model_->getDeviceState());
-  updateInfo();
-}
-
-void NanotecSMCI36StepModeWidget::indexChanged(int index)
-{
-  int userValue = itemData(index).toInt();
-
-  if (model_->getStepMode()!=userValue) {
-    model_->setStepMode(userValue);
-  }
-}
-
-/**
-  Updates the GUI according to the new state of the controller
- */
-void NanotecSMCI36StepModeWidget::updateDeviceState(State newState)
-{
-  bool ready = (newState == READY);
-
-  controlStateChanged(ready);
-}
-
-/// Updates the GUI when the controller is enabled/disabled.
-void NanotecSMCI36StepModeWidget::controlStateChanged(bool enabled)
-{
-  setEnabled(enabled);
-}
-
-void NanotecSMCI36StepModeWidget::updateInfo()
-{
-  NQLog("NanotecSMCI36StepModeWidget", NQLog::Debug) << "updateInfo()";
-
-  int mode = model_->getStepMode();
-  int index = findData(mode);
-  if (index!=currentIndex()) {
-    setCurrentIndex(index);
-  }
-}
 
 NanotecSMCI36ErrorCorrectionModeWidget::NanotecSMCI36ErrorCorrectionModeWidget(NanotecSMCI36Model* model,
                                                                                QWidget *parent)
@@ -82,9 +16,9 @@ NanotecSMCI36ErrorCorrectionModeWidget::NanotecSMCI36ErrorCorrectionModeWidget(N
   // No user editable text
   setEditable(false);
 
-  const std::vector<std::pair<int,std::string>>& modes = model_->getErrorCorrectionModeNames();
+  const std::map<int,std::string>& modes = model_->getErrorCorrectionModeNames();
 
-  for (std::vector<std::pair<int,std::string>>::const_iterator it = modes.begin();
+  for (std::map<int,std::string>::const_iterator it = modes.begin();
        it!=modes.end();
        ++it) {
     addItem(it->second.c_str(), QVariant(it->first));
@@ -129,7 +63,20 @@ void NanotecSMCI36ErrorCorrectionModeWidget::updateDeviceState(State newState)
 /// Updates the GUI when the controller is enabled/disabled.
 void NanotecSMCI36ErrorCorrectionModeWidget::controlStateChanged(bool enabled)
 {
-  setEnabled(enabled);
+  bool ready = model_->isReady();
+
+  bool theEnabled;
+  if (enabled) {
+    if (ready) {
+      theEnabled = true;
+    } else {
+      theEnabled = false;
+    }
+  } else {
+    theEnabled = false;
+  }
+
+  setEnabled(theEnabled);
 }
 
 void NanotecSMCI36ErrorCorrectionModeWidget::updateInfo()
@@ -151,9 +98,9 @@ NanotecSMCI36RampModeWidget::NanotecSMCI36RampModeWidget(NanotecSMCI36Model* mod
   // No user editable text
   setEditable(false);
 
-  const std::vector<std::pair<int,std::string>>& modes = model_->getRampModeNames();
+  const std::map<int,std::string>& modes = model_->getRampModeNames();
 
-  for (std::vector<std::pair<int,std::string>>::const_iterator it = modes.begin();
+  for (std::map<int,std::string>::const_iterator it = modes.begin();
        it!=modes.end();
        ++it) {
     addItem(it->second.c_str(), QVariant(it->first));
@@ -198,7 +145,20 @@ void NanotecSMCI36RampModeWidget::updateDeviceState(State newState)
 /// Updates the GUI when the controller is enabled/disabled.
 void NanotecSMCI36RampModeWidget::controlStateChanged(bool enabled)
 {
-  setEnabled(enabled);
+  bool ready = model_->isReady();
+
+  bool theEnabled;
+  if (enabled) {
+    if (ready) {
+      theEnabled = true;
+    } else {
+      theEnabled = false;
+    }
+  } else {
+    theEnabled = false;
+  }
+
+  setEnabled(theEnabled);
 }
 
 void NanotecSMCI36RampModeWidget::updateInfo()
@@ -220,12 +180,13 @@ NanotecSMCI36PositioningModeWidget::NanotecSMCI36PositioningModeWidget(NanotecSM
   // No user editable text
   setEditable(false);
 
-  const std::vector<std::pair<int,std::string>>& modes = model_->getPositioningModeNames();
+  const std::map<int,std::string>& modes = model_->getPositioningModeNames();
 
-  for (std::vector<std::pair<int,std::string>>::const_iterator it = modes.begin();
+  for (std::map<int,std::string>::const_iterator it = modes.begin();
        it!=modes.end();
        ++it) {
-    if (it->first==VNanotecSMCI36::smciAbsolutePositioning ||
+    if (it->first==VNanotecSMCI36::smciRelativePositioning ||
+        it->first==VNanotecSMCI36::smciAbsolutePositioning ||
         it->first==VNanotecSMCI36::smciExternalRefRun) {
     addItem(it->second.c_str(), QVariant(it->first));
     }
@@ -270,7 +231,20 @@ void NanotecSMCI36PositioningModeWidget::updateDeviceState(State newState)
 /// Updates the GUI when the controller is enabled/disabled.
 void NanotecSMCI36PositioningModeWidget::controlStateChanged(bool enabled)
 {
-  setEnabled(enabled);
+  bool ready = model_->isReady();
+
+  bool theEnabled;
+  if (enabled) {
+    if (ready) {
+      theEnabled = true;
+    } else {
+      theEnabled = false;
+    }
+  } else {
+    theEnabled = false;
+  }
+
+  setEnabled(theEnabled);
 }
 
 void NanotecSMCI36PositioningModeWidget::updateInfo()
@@ -289,17 +263,25 @@ NanotecSMCI36StatusWidget::NanotecSMCI36StatusWidget(NanotecSMCI36Model* model, 
     model_(model)
 {
   QFormLayout *formLayout = new QFormLayout;
+  formLayout->setSpacing(0);
+  formLayout->setMargin(0);
+  formLayout->setContentsMargins(0, 0, 0, 0);
   formLayout->setVerticalSpacing(2);
+  formLayout->setHorizontalSpacing(8);
   setLayout(formLayout);
 
-  status_ = new QLabel("         ", this);
+  status_ = new QLabel("", this);
+  status_->setFont(QFont("Helvetica", 18, QFont::DemiBold));
   formLayout->addRow("status", status_);
 
-  controllerSteps_ = new QLabel("         ", this);
-  formLayout->addRow("controller steps", controllerSteps_);
+  controllerSteps_ = new QLabel("", this);
+  formLayout->addRow("controller position", controllerSteps_);
 
-  encoderSteps_ = new QLabel("         ", this);
-  formLayout->addRow("encoder steps", encoderSteps_);
+  encoderSteps_ = new QLabel("", this);
+  formLayout->addRow("encoder position", encoderSteps_);
+
+  stepMode_ = new QLabel("", this);
+  formLayout->addRow("step mode", stepMode_);
 
   // Connect all the signals
   connect(model_, SIGNAL(deviceStateChanged(State)),
@@ -333,13 +315,10 @@ void NanotecSMCI36StatusWidget::updateInfo()
 {
   //NQLog("NanotecSMCI36StatusWidget", NQLog::Debug) << "updateInfo()";
 
-  unsigned int status = model_->getStatus();
-  status_->setText(QString::number(status));
-
-  controllerSteps_->setText(QString("%1 mm (%2)").arg(model_->getControllerPosition(), 20, 'f', 3)
-                                                 .arg(model_->getControllerSteps()));
-  encoderSteps_->setText(QString("%1 mm (%2)").arg(model_->getEncoderPosition(), 20, 'f', 3)
-                                              .arg(model_->getEncoderSteps()));
+  status_->setText(model_->getStatusText());
+  controllerSteps_->setText(QString::number(model_->getControllerPosition()));
+  encoderSteps_->setText(QString::number(model_->getEncoderPosition()));
+  stepMode_->setText(QString(model_->getStepModeName().c_str()));
 }
 
 NanotecSMCI36SettingsWidget::NanotecSMCI36SettingsWidget(NanotecSMCI36Model* model, QWidget *parent)
@@ -347,32 +326,18 @@ NanotecSMCI36SettingsWidget::NanotecSMCI36SettingsWidget(NanotecSMCI36Model* mod
     model_(model)
 {
   QFormLayout *formLayout = new QFormLayout;
+  formLayout->setSpacing(0);
+  formLayout->setMargin(0);
+  formLayout->setContentsMargins(0, 0, 0, 0);
   formLayout->setVerticalSpacing(2);
+  formLayout->setHorizontalSpacing(8);
   setLayout(formLayout);
-
-  pitch_ = new QDoubleSpinBox(this);
-  pitch_->setDecimals(6);
-  pitch_->setMinimum(0.001);
-  pitch_->setMaximum(1);
-  connect(pitch_, SIGNAL(valueChanged(double)),
-          model_, SLOT(setPitch(double)));
-  formLayout->addRow("pitch [mm/full step]", pitch_);
-
-  motorID_ = new QSpinBox(this);
-  motorID_->setMinimum(0);
-  motorID_->setMaximum(2147483647);
-  connect(motorID_, SIGNAL(valueChanged(int)),
-          model_, SLOT(setMotorID(int)));
-  formLayout->addRow("motor ID", motorID_);
-
-  stepMode_ = new NanotecSMCI36StepModeWidget(model_, this);
-  formLayout->addRow("step mode", stepMode_);
 
   errorCorrectionMode_ = new NanotecSMCI36ErrorCorrectionModeWidget(model_, this);
   formLayout->addRow("error correction mode", errorCorrectionMode_);
 
   maxEncoderDeviation_ = new QSpinBox(this);
-  maxEncoderDeviation_->setMinimum(0);
+  maxEncoderDeviation_->setMinimum(4);
   maxEncoderDeviation_->setMaximum(250);
   connect(maxEncoderDeviation_, SIGNAL(valueChanged(int)),
           model_, SLOT(setMaxEncoderDeviation(int)));
@@ -406,18 +371,26 @@ void NanotecSMCI36SettingsWidget::updateDeviceState(State newState)
 /// Updates the GUI when the controller is enabled/disabled.
 void NanotecSMCI36SettingsWidget::controlStateChanged(bool enabled)
 {
-  pitch_->setEnabled(enabled);
-  motorID_->setEnabled(enabled);
+  bool ready = model_->isReady();
 
-  maxEncoderDeviation_->setEnabled(enabled);
+  bool theEnabled;
+  if (enabled) {
+    if (ready) {
+      theEnabled = true;
+    } else {
+      theEnabled = false;
+    }
+  } else {
+    theEnabled = false;
+  }
+
+  maxEncoderDeviation_->setEnabled(theEnabled);
 }
 
 void NanotecSMCI36SettingsWidget::updateInfo()
 {
   //NQLog("NanotecSMCI36SettingsWidget", NQLog::Debug) << "updateInfo()";
 
-  pitch_->setValue(model_->getPitch());
-  motorID_->setValue(model_->getMotorID());
   maxEncoderDeviation_->setValue(model_->getMaxEncoderDeviation());
 }
 
@@ -427,112 +400,54 @@ NanotecSMCI36MovementWidget::NanotecSMCI36MovementWidget(NanotecSMCI36Model* mod
 {
   QVBoxLayout* layout = new QVBoxLayout();
   layout->setSpacing(0);
+  layout->setMargin(0);
+  layout->setContentsMargins(0, 0, 0, 0);
   setLayout(layout);
 
-  stageMode_ = new QCheckBox("stage mode", this);
-  layout->addWidget(stageMode_);
-  stageMode_->setChecked(true);
-  connect(stageMode_, SIGNAL(clicked(bool)),
-          this, SLOT(stageModeChanged(bool)));
-
   QFormLayout *formLayout = new QFormLayout;
+  formLayout->setSpacing(0);
+  formLayout->setMargin(0);
+  formLayout->setContentsMargins(0, 0, 0, 0);
   formLayout->setVerticalSpacing(2);
+  formLayout->setHorizontalSpacing(8);
 
   positioningMode_ = new NanotecSMCI36PositioningModeWidget(model_, this);
   formLayout->addRow("positioning mode", positioningMode_);
 
-  /*
   direction_ = new QCheckBox(this);
   connect(direction_, SIGNAL(clicked(bool)),
           model_, SLOT(setDirection(bool)));
   formLayout->addRow("direction", direction_);
-  */
 
-  layout->addLayout(formLayout);
-
-  modeTabs_ = new QTabWidget(this);
-
-  QWidget * widget = new QWidget(modeTabs_);
-
-  formLayout = new QFormLayout;
-  widget->setLayout(formLayout);
-  formLayout->setVerticalSpacing(2);
-
-  travelDistance_ = new QDoubleSpinBox(widget);
+  travelDistance_ = new QSpinBox(this);
   travelDistance_->setMinimum(-100000);
   travelDistance_->setMaximum(+100000);
-  connect(travelDistance_, SIGNAL(valueChanged(double)),
-          model_, SLOT(setTravelDistance(double)));
+  connect(travelDistance_, SIGNAL(valueChanged(int)),
+          model_, SLOT(setTravelDistance(int)));
   formLayout->addRow("travel distance [steps]", travelDistance_);
 
-  minFrequency_ = new QDoubleSpinBox(widget);
-  minFrequency_->setMinimum(1);
-  minFrequency_->setMaximum(160000);
-  connect(minFrequency_, SIGNAL(valueChanged(double)),
-          model_, SLOT(setMinFrequency(double)));
-  formLayout->addRow("min. speed [steps/s]", minFrequency_);
+  minFrequency_ = new QSpinBox(this);
+  minFrequency_->setMinimum(model_->getMinFrequencyLimits().first);
+  minFrequency_->setMaximum(model_->getMinFrequencyLimits().second);
+  connect(minFrequency_, SIGNAL(valueChanged(int)),
+          model_, SLOT(setMinFrequency(int)));
+  formLayout->addRow("min. frequency [Hz]", minFrequency_);
 
-  maxFrequency_ = new QDoubleSpinBox(widget);
-  maxFrequency_->setMinimum(1);
-  maxFrequency_->setMaximum(512000);
-  connect(maxFrequency_, SIGNAL(valueChanged(double)),
-          model_, SLOT(setMaxFrequency(double)));
-  formLayout->addRow("max. speed [steps/s]", maxFrequency_);
+  maxFrequency_ = new QSpinBox(this);
+  maxFrequency_->setMinimum(model_->getMaxFrequencyLimits().first);
+  maxFrequency_->setMaximum(model_->getMaxFrequencyLimits().second);
+  connect(maxFrequency_, SIGNAL(valueChanged(int)),
+          model_, SLOT(setMaxFrequency(int)));
+  formLayout->addRow("max. frequency [Hz]", maxFrequency_);
 
-  maxFrequency2_ = new QDoubleSpinBox(widget);
-  maxFrequency2_->setMinimum(1);
-  maxFrequency2_->setMaximum(512000);
-  connect(maxFrequency2_, SIGNAL(valueChanged(double)),
-          model_, SLOT(setMaxFrequency2(double)));
-  formLayout->addRow("max. speed 2 [steps/s]", maxFrequency2_);
+  maxFrequency2_ = new QSpinBox(this);
+  maxFrequency2_->setMinimum(model_->getMaxFrequency2Limits().first);
+  maxFrequency2_->setMaximum(model_->getMaxFrequency2Limits().second);
+  connect(maxFrequency2_, SIGNAL(valueChanged(int)),
+          model_, SLOT(setMaxFrequency2(int)));
+  formLayout->addRow("max. frequency 2 [Hz]", maxFrequency2_);
 
-  modeTabs_->addTab(widget, "step");
-
-  widget = new QWidget(modeTabs_);
-
-  formLayout = new QFormLayout;
-  widget->setLayout(formLayout);
-  formLayout->setVerticalSpacing(2);
-
-  travelDistanceInMM_ = new QDoubleSpinBox(widget);
-  travelDistanceInMM_->setMinimum(-100000);
-  travelDistanceInMM_->setMaximum(+100000);
-  connect(travelDistanceInMM_, SIGNAL(valueChanged(double)),
-          model_, SLOT(setTravelDistanceInMM(double)));
-  formLayout->addRow("travel distance [mm]", travelDistanceInMM_);
-
-  minSpeed_ = new QDoubleSpinBox(widget);
-  minSpeed_->setMinimum(1);
-  minSpeed_->setMaximum(160000);
-  connect(minSpeed_, SIGNAL(valueChanged(double)),
-          model_, SLOT(setMinSpeed(double)));
-  formLayout->addRow("min. speed [mm/s]", minSpeed_);
-
-  maxSpeed_ = new QDoubleSpinBox(widget);
-  maxSpeed_->setMinimum(1);
-  maxSpeed_->setMaximum(160000);
-  connect(maxSpeed_, SIGNAL(valueChanged(double)),
-          model_, SLOT(setMaxSpeed(double)));
-  formLayout->addRow("max. speed [mm/s]", maxSpeed_);
-
-  maxSpeed2_ = new QDoubleSpinBox(widget);
-  maxSpeed2_->setMinimum(1);
-  maxSpeed2_->setMaximum(160000);
-  connect(maxSpeed2_, SIGNAL(valueChanged(double)),
-          model_, SLOT(setMaxSpeed(double)));
-  formLayout->addRow("max. speed 2 [mm/s]", maxSpeed2_);
-
-  minPosition_ = new QLabel(widget);
-  formLayout->addRow("min. position [mm]", minPosition_);
-
-  maxPosition_ = new QLabel(widget);
-  formLayout->addRow("max. position [mm]", maxPosition_);
-
-  modeTabs_->addTab(widget, "mm");
-
-  layout->addWidget(modeTabs_);
-
-  modeTabs_->setCurrentIndex(1);
+  layout->addLayout(formLayout);
 
   QHBoxLayout* hlayout = new QHBoxLayout();
 
@@ -565,28 +480,9 @@ NanotecSMCI36MovementWidget::NanotecSMCI36MovementWidget(NanotecSMCI36Model* mod
           this, SLOT(controlStateChanged(bool)));
   connect(model_, SIGNAL(informationChanged()),
           this, SLOT(updateInfo()));
-  connect(model_, SIGNAL(positionModeChanged(int)),
-          this, SLOT(positionModeChanged(int)));
 
   updateDeviceState(model_->getDeviceState());
   updateInfo();
-}
-
-void NanotecSMCI36MovementWidget::stageModeChanged(bool)
-{
-  bool ready = (model_->getDeviceState() == READY);
-  controlStateChanged(ready);
-}
-
-void NanotecSMCI36MovementWidget::positionModeChanged(int mode)
-{
-  if (mode==VNanotecSMCI36::smciExternalRefRun) {
-    maxSpeed_->setMaximum(model_->getMaxSpeedForRefRun());
-    maxSpeed2_->setMaximum(model_->getMaxSpeedForRefRun());
-  } else {
-    maxSpeed_->setMaximum(model_->getMaxSpeedForOperation());
-    maxSpeed2_->setMaximum(model_->getMaxSpeedForOperation());
-  }
 }
 
 /**
@@ -602,35 +498,28 @@ void NanotecSMCI36MovementWidget::updateDeviceState(State newState)
 /// Updates the GUI when the controller is enabled/disabled.
 void NanotecSMCI36MovementWidget::controlStateChanged(bool enabled)
 {
-  stageMode_->setEnabled(enabled);
+  bool ready = model_->isReady();
 
-  // direction_->setEnabled(enabled);
-
-  /*
-  if (!stageMode_->isChecked()) {
-    travelDistance_->setEnabled(enabled);
-    minFrequency_->setEnabled(enabled);
-    maxFrequency_->setEnabled(enabled);
-    maxFrequency2_->setEnabled(enabled);
-
-    travelDistanceInMM_->setEnabled(!enabled);
-    minSpeed_->setEnabled(!enabled);
-    maxSpeed_->setEnabled(!enabled);
-    maxSpeed2_->setEnabled(!enabled);
+  bool theEnabled;
+  if (enabled) {
+    if (ready) {
+      theEnabled = true;
+    } else {
+      theEnabled = false;
+    }
   } else {
-    travelDistance_->setEnabled(!enabled);
-    minFrequency_->setEnabled(!enabled);
-    maxFrequency_->setEnabled(!enabled);
-    maxFrequency2_->setEnabled(!enabled);
-
-    travelDistanceInMM_->setEnabled(enabled);
-    minSpeed_->setEnabled(enabled);
-    maxSpeed_->setEnabled(enabled);
-    maxSpeed2_->setEnabled(enabled);
+    theEnabled = false;
   }
-  */
 
-  start_->setEnabled(enabled);
+  direction_->setEnabled(theEnabled);
+
+  travelDistance_->setEnabled(theEnabled);
+  minFrequency_->setEnabled(theEnabled);
+  maxFrequency_->setEnabled(theEnabled);
+  maxFrequency2_->setEnabled(theEnabled);
+
+  start_->setEnabled(theEnabled);
+
   stop_->setEnabled(enabled);
   quickstop_->setEnabled(enabled);
   resetPositionError_->setEnabled(enabled);
@@ -640,20 +529,326 @@ void NanotecSMCI36MovementWidget::updateInfo()
 {
   //NQLog("NanotecSMCI36Widget", NQLog::Debug) << "updateInfo()";
 
-  // direction_->setChecked(model_->getDirection());
+  direction_->setChecked(model_->getDirection());
 
   travelDistance_->setValue(model_->getTravelDistance());
   minFrequency_->setValue(model_->getMinFrequency());
   maxFrequency_->setValue(model_->getMaxFrequency());
   maxFrequency2_->setValue(model_->getMaxFrequency2());
+}
 
-  travelDistanceInMM_->setValue(model_->getTravelDistanceInMM());
-  minSpeed_->setValue(model_->getMinSpeed());
-  maxSpeed_->setValue(model_->getMaxSpeed());
-  maxSpeed2_->setValue(model_->getMaxSpeed2());
+NanotecSMCI36InputStateWidget::NanotecSMCI36InputStateWidget(NanotecSMCI36Model* model,
+                                                             int pin,
+                                                             QWidget *parent)
+  : QLabel(parent),
+    model_(model),
+    pin_(pin)
+{
+  buttonRed_ = QPixmap(QString(Config::CMSTkModLabBasePath.c_str()) + "/share/common/button_red.png");
+  buttonGreen_ = QPixmap(QString(Config::CMSTkModLabBasePath.c_str()) + "/share/common/button_green.png");
+  buttonGrey_ = QPixmap(QString(Config::CMSTkModLabBasePath.c_str()) + "/share/common/button_grey.png");
 
-  minPosition_->setText(QString::number(model_->getMinPositionInMM()));
-  maxPosition_->setText(QString::number(model_->getMaxPositionInMM()));
+  setPixmap(buttonGrey_);
+
+  // Connect all the signals
+  connect(model_, SIGNAL(deviceStateChanged(State)),
+          this, SLOT(updateDeviceState(State)));
+  connect(model_, SIGNAL(controlStateChanged(bool)),
+          this, SLOT(controlStateChanged(bool)));
+  connect(model_, SIGNAL(informationChanged()),
+          this, SLOT(updateInfo()));
+
+  updateDeviceState(model_->getDeviceState());
+  updateInfo();
+}
+
+/**
+  Updates the GUI according to the new state of the controller
+ */
+void NanotecSMCI36InputStateWidget::updateDeviceState(State newState)
+{
+  bool ready = (newState == READY);
+
+  controlStateChanged(ready);
+}
+
+/// Updates the GUI when the controller is enabled/disabled.
+void NanotecSMCI36InputStateWidget::controlStateChanged(bool enabled)
+{
+  setEnabled(enabled);
+
+  if (enabled) {
+    bool state = model_->getInputPinState(pin_);
+    if (state) {
+      setPixmap(buttonGreen_);
+    } else {
+      setPixmap(buttonRed_);
+    }
+  } else {
+    setPixmap(buttonGrey_);
+  }
+}
+
+void NanotecSMCI36InputStateWidget::updateInfo()
+{
+  // NQLog("NanotecSMCI36InputStateWidget", NQLog::Debug) << "updateInfo()";
+
+  bool state = model_->getInputPinState(pin_);
+  if (state) {
+    setPixmap(buttonGreen_);
+  } else {
+    setPixmap(buttonRed_);
+  }
+}
+
+NanotecSMCI36OutputStateWidget::NanotecSMCI36OutputStateWidget(NanotecSMCI36Model* model,
+                                                               int pin,
+                                                               QWidget *parent)
+  : QLabel(parent),
+    model_(model),
+    pin_(pin)
+{
+  buttonRed_ = QPixmap(QString(Config::CMSTkModLabBasePath.c_str()) + "/share/common/button_red.png");
+  buttonGreen_ = QPixmap(QString(Config::CMSTkModLabBasePath.c_str()) + "/share/common/button_green.png");
+  buttonGrey_ = QPixmap(QString(Config::CMSTkModLabBasePath.c_str()) + "/share/common/button_grey.png");
+
+  setPixmap(buttonGrey_);
+
+  // Connect all the signals
+  connect(model_, SIGNAL(deviceStateChanged(State)),
+          this, SLOT(updateDeviceState(State)));
+  connect(model_, SIGNAL(controlStateChanged(bool)),
+          this, SLOT(controlStateChanged(bool)));
+  connect(model_, SIGNAL(informationChanged()),
+          this, SLOT(updateInfo()));
+
+  connect(this, SIGNAL(toggleOutputPin(int)),
+          model_, SLOT(toggleOutputPin(int)));
+
+  updateDeviceState(model_->getDeviceState());
+  updateInfo();
+}
+
+/**
+  Updates the GUI according to the new state of the controller
+ */
+void NanotecSMCI36OutputStateWidget::updateDeviceState(State newState)
+{
+  bool ready = (newState == READY);
+
+  controlStateChanged(ready);
+}
+
+/// Updates the GUI when the controller is enabled/disabled.
+void NanotecSMCI36OutputStateWidget::controlStateChanged(bool enabled)
+{
+  setEnabled(enabled);
+
+  if (enabled) {
+    bool state = model_->getOutputPinState(pin_);
+    if (state) {
+      setPixmap(buttonGreen_);
+    } else {
+      setPixmap(buttonRed_);
+    }
+  } else {
+    setPixmap(buttonGrey_);
+  }
+}
+
+void NanotecSMCI36OutputStateWidget::mousePressEvent(QMouseEvent* /* event */)
+{
+  bool ready = model_->isReady();
+
+  if (isEnabled() && ready) {
+    emit toggleOutputPin(pin_);
+  }
+}
+
+void NanotecSMCI36OutputStateWidget::updateInfo()
+{
+  // NQLog("NanotecSMCI36OutputStateWidget", NQLog::Debug) << "updateInfo()";
+
+  if (isEnabled()) {
+    bool state = model_->getOutputPinState(pin_);
+    if (state) {
+      setPixmap(buttonGreen_);
+    } else {
+      setPixmap(buttonRed_);
+    }
+  } else {
+    setPixmap(buttonGrey_);
+  }
+}
+
+NanotecSMCI36InputWidget::NanotecSMCI36InputWidget(NanotecSMCI36Model* model,
+                                                   int pin,
+                                                   QWidget *parent)
+  : QWidget(parent),
+    model_(model),
+    pin_(pin)
+{
+  QGridLayout* layout = new QGridLayout();
+  setLayout(layout);
+
+  QLabel *label;
+
+  for (int i=1;i<7;++i) {
+    label = new QLabel(QString("%1").arg(i), this);
+    layout->addWidget(label, 0, i, Qt::AlignHCenter | Qt::AlignVCenter);
+  }
+  label = new QLabel("input", this);
+  layout->addWidget(label, 1, 0, Qt::AlignVCenter);
+
+  for (int i=1;i<7;++i) {
+    NanotecSMCI36InputStateWidget *stateWidget = new NanotecSMCI36InputStateWidget(model_, i, this);
+    layout->addWidget(stateWidget, 1, i, Qt::AlignHCenter | Qt::AlignVCenter);
+  }
+
+  // Connect all the signals
+  connect(model_, SIGNAL(deviceStateChanged(State)),
+          this, SLOT(updateDeviceState(State)));
+  connect(model_, SIGNAL(controlStateChanged(bool)),
+          this, SLOT(controlStateChanged(bool)));
+  connect(model_, SIGNAL(informationChanged()),
+          this, SLOT(updateInfo()));
+
+  updateDeviceState(model_->getDeviceState());
+  updateInfo();
+}
+
+void NanotecSMCI36InputWidget::updateDeviceState(State newState)
+{
+  bool ready = (newState == READY);
+
+  controlStateChanged(ready);
+}
+
+/// Updates the GUI when the controller is enabled/disabled.
+void NanotecSMCI36InputWidget::controlStateChanged(bool enabled)
+{
+  setEnabled(enabled);
+}
+
+void NanotecSMCI36InputWidget::updateInfo()
+{
+  // NQLog("NanotecSMCI36InputWidget", NQLog::Debug) << "updateInfo()";
+}
+
+NanotecSMCI36OutputWidget::NanotecSMCI36OutputWidget(NanotecSMCI36Model* model,
+                                                     int pin,
+                                                     QWidget *parent)
+  : QWidget(parent),
+    model_(model),
+    pin_(pin)
+{
+  QGridLayout* layout = new QGridLayout();
+  setLayout(layout);
+
+  QLabel *label;
+
+  for (int i=1;i<4;++i) {
+    label = new QLabel(QString("%1").arg(i), this);
+    layout->addWidget(label, 0, i, Qt::AlignHCenter | Qt::AlignVCenter);
+  }
+  label = new QLabel("output", this);
+  layout->addWidget(label, 1, 0, Qt::AlignVCenter);
+
+  for (int i=1;i<4;++i) {
+    NanotecSMCI36OutputStateWidget *stateWidget = new NanotecSMCI36OutputStateWidget(model_, i, this);
+    layout->addWidget(stateWidget, 2, i, Qt::AlignHCenter | Qt::AlignVCenter);
+  }
+
+  // Connect all the signals
+  connect(model_, SIGNAL(deviceStateChanged(State)),
+          this, SLOT(updateDeviceState(State)));
+  connect(model_, SIGNAL(controlStateChanged(bool)),
+          this, SLOT(controlStateChanged(bool)));
+  connect(model_, SIGNAL(informationChanged()),
+          this, SLOT(updateInfo()));
+
+  updateDeviceState(model_->getDeviceState());
+  updateInfo();
+}
+
+void NanotecSMCI36OutputWidget::updateDeviceState(State newState)
+{
+  bool ready = (newState == READY);
+
+  controlStateChanged(ready);
+}
+
+/// Updates the GUI when the controller is enabled/disabled.
+void NanotecSMCI36OutputWidget::controlStateChanged(bool enabled)
+{
+  setEnabled(enabled);
+}
+
+void NanotecSMCI36OutputWidget::updateInfo()
+{
+  // NQLog("NanotecSMCI36OutputWidget", NQLog::Debug) << "updateInfo()";
+}
+
+NanotecSMCI36IOWidget::NanotecSMCI36IOWidget(NanotecSMCI36Model* model, QWidget *parent)
+  : QWidget(parent),
+    model_(model)
+{
+  QGridLayout* layout = new QGridLayout();
+  setLayout(layout);
+
+  QLabel *label;
+
+  for (int i=1;i<7;++i) {
+    label = new QLabel(QString("%1").arg(i), this);
+    layout->addWidget(label, 0, i, Qt::AlignHCenter | Qt::AlignVCenter);
+  }
+  label = new QLabel("input", this);
+  layout->addWidget(label, 1, 0, Qt::AlignVCenter);
+
+  label = new QLabel("output", this);
+  layout->addWidget(label, 2, 0, Qt::AlignVCenter);
+
+  for (int i=1;i<7;++i) {
+    NanotecSMCI36InputStateWidget *stateWidget = new NanotecSMCI36InputStateWidget(model_, i, this);
+    layout->addWidget(stateWidget, 1, i, Qt::AlignHCenter | Qt::AlignVCenter);
+  }
+
+  for (int i=1;i<4;++i) {
+    NanotecSMCI36OutputStateWidget *stateWidget = new NanotecSMCI36OutputStateWidget(model_, i, this);
+    layout->addWidget(stateWidget, 2, i, Qt::AlignHCenter | Qt::AlignVCenter);
+  }
+
+  // Connect all the signals
+  connect(model_, SIGNAL(deviceStateChanged(State)),
+          this, SLOT(updateDeviceState(State)));
+  connect(model_, SIGNAL(controlStateChanged(bool)),
+          this, SLOT(controlStateChanged(bool)));
+  connect(model_, SIGNAL(informationChanged()),
+          this, SLOT(updateInfo()));
+
+  updateDeviceState(model_->getDeviceState());
+  updateInfo();
+}
+
+/**
+  Updates the GUI according to the new state of the controller
+ */
+void NanotecSMCI36IOWidget::updateDeviceState(State newState)
+{
+  bool ready = (newState == READY);
+
+  controlStateChanged(ready);
+}
+
+/// Updates the GUI when the controller is enabled/disabled.
+void NanotecSMCI36IOWidget::controlStateChanged(bool /* enabled */)
+{
+
+}
+
+void NanotecSMCI36IOWidget::updateInfo()
+{
+  //NQLog("NanotecSMCI36IOWidget", NQLog::Debug) << "updateInfo()";
 }
 
 NanotecSMCI36Widget::NanotecSMCI36Widget(NanotecSMCI36Model* model, QWidget *parent)
@@ -661,7 +856,9 @@ NanotecSMCI36Widget::NanotecSMCI36Widget(NanotecSMCI36Model* model, QWidget *par
     model_(model)
 {
   QVBoxLayout* layout = new QVBoxLayout();
-  layout->setSpacing(0);
+  layout->setSpacing(8);
+  layout->setMargin(0);
+  layout->setContentsMargins(4, 4, 4, 4);
   setLayout(layout);
 
   smci36CheckBox_ = new QCheckBox("Enable controller", this);
@@ -675,6 +872,9 @@ NanotecSMCI36Widget::NanotecSMCI36Widget(NanotecSMCI36Model* model, QWidget *par
 
   scmi36Movement_ = new NanotecSMCI36MovementWidget(model_, this);
   layout->addWidget(scmi36Movement_);
+
+  smci36IO_ = new NanotecSMCI36IOWidget(model_, this);
+  layout->addWidget(smci36IO_);
 
   // Connect all the signals
   connect(model_, SIGNAL(deviceStateChanged(State)),
@@ -711,559 +911,4 @@ void NanotecSMCI36Widget::controlStateChanged(bool /* enabled */)
 void NanotecSMCI36Widget::updateInfo()
 {
   //NQLog("NanotecSMCI36Widget", NQLog::Debug) << "updateInfo()";
-}
-
-NanotecSMCI36InputReversePolarityWidget::NanotecSMCI36InputReversePolarityWidget(NanotecSMCI36Model* model,
-                                                                   int pin,
-                                                                   QWidget *parent)
-  : QCheckBox(parent),
-    model_(model),
-    pin_(pin)
-{
-  setText("rev. pol.");
-
-  // Connect all the signals
-  connect(model_, SIGNAL(deviceStateChanged(State)),
-          this, SLOT(updateDeviceState(State)));
-  connect(model_, SIGNAL(controlStateChanged(bool)),
-          this, SLOT(controlStateChanged(bool)));
-  connect(model_, SIGNAL(informationChanged()),
-          this, SLOT(updateInfo()));
-
-  connect(this, SIGNAL(stateChanged(int)),
-          this, SLOT(polarityChanged(int)));
-
-  updateDeviceState(model_->getDeviceState());
-  updateInfo();
-}
-
-void NanotecSMCI36InputReversePolarityWidget::polarityChanged(int /* polarity */)
-{
-  // NQLog("NanotecSMCI36PositioningModeWidget", NQLog::Debug) << "indexChanged()";
-
-  if (model_->getInputPolarity(pin_)!=isChecked()) {
-    model_->setInputPolarity(pin_, isChecked());
-  }
-}
-
-/**
-  Updates the GUI according to the new state of the controller
- */
-void NanotecSMCI36InputReversePolarityWidget::updateDeviceState(State newState)
-{
-  bool ready = (newState == READY);
-
-  controlStateChanged(ready);
-}
-
-/// Updates the GUI when the controller is enabled/disabled.
-void NanotecSMCI36InputReversePolarityWidget::controlStateChanged(bool enabled)
-{
-  setEnabled(enabled);
-}
-
-void NanotecSMCI36InputReversePolarityWidget::updateInfo()
-{
-  // NQLog("NanotecSMCI36InputReversePolarityWidget", NQLog::Debug) << "updateInfo()";
-
-  bool checked = model_->getInputPolarity(pin_);
-  if (isChecked()!=checked) {
-    setChecked(checked);
-  }
-}
-
-NanotecSMCI36OutputReversePolarityWidget::NanotecSMCI36OutputReversePolarityWidget(NanotecSMCI36Model* model,
-                                                                                   int pin,
-                                                                                   QWidget *parent)
-  : QCheckBox(parent),
-    model_(model),
-    pin_(pin)
-{
-  setText("rev. pol.");
-
-  // Connect all the signals
-  connect(model_, SIGNAL(deviceStateChanged(State)),
-          this, SLOT(updateDeviceState(State)));
-  connect(model_, SIGNAL(controlStateChanged(bool)),
-          this, SLOT(controlStateChanged(bool)));
-  connect(model_, SIGNAL(informationChanged()),
-          this, SLOT(updateInfo()));
-
-  connect(this, SIGNAL(stateChanged(int)),
-          this, SLOT(polarityChanged(int)));
-
-  updateDeviceState(model_->getDeviceState());
-  updateInfo();
-}
-
-void NanotecSMCI36OutputReversePolarityWidget::polarityChanged(int /* polarity */)
-{
-  // NQLog("NanotecSMCI36OutputReversePolarityWidget", NQLog::Debug) << "indexChanged()";
-
-  if (model_->getOutputPolarity(pin_)!=isChecked()) {
-    model_->setOutputPolarity(pin_, isChecked());
-  }
-}
-
-/**
-  Updates the GUI according to the new state of the controller
- */
-void NanotecSMCI36OutputReversePolarityWidget::updateDeviceState(State newState)
-{
-  bool ready = (newState == READY);
-
-  controlStateChanged(ready);
-}
-
-/// Updates the GUI when the controller is enabled/disabled.
-void NanotecSMCI36OutputReversePolarityWidget::controlStateChanged(bool enabled)
-{
-  setEnabled(enabled);
-}
-
-void NanotecSMCI36OutputReversePolarityWidget::updateInfo()
-{
-  // NQLog("NanotecSMCI36OutputReversePolarityWidget", NQLog::Debug) << "updateInfo()";
-
-  bool checked = model_->getOutputPolarity(pin_);
-  if (isChecked()!=checked) {
-    setChecked(checked);
-  }
-}
-
-NanotecSMCI36InputStateWidget::NanotecSMCI36InputStateWidget(NanotecSMCI36Model* model,
-                                                             int pin,
-                                                             QWidget *parent)
-  : QLabel(parent),
-    model_(model),
-    pin_(pin)
-{
-  // Connect all the signals
-  connect(model_, SIGNAL(deviceStateChanged(State)),
-          this, SLOT(updateDeviceState(State)));
-  connect(model_, SIGNAL(controlStateChanged(bool)),
-          this, SLOT(controlStateChanged(bool)));
-  connect(model_, SIGNAL(informationChanged()),
-          this, SLOT(updateInfo()));
-
-  updateDeviceState(model_->getDeviceState());
-  updateInfo();
-}
-
-/**
-  Updates the GUI according to the new state of the controller
- */
-void NanotecSMCI36InputStateWidget::updateDeviceState(State newState)
-{
-  bool ready = (newState == READY);
-
-  controlStateChanged(ready);
-}
-
-/// Updates the GUI when the controller is enabled/disabled.
-void NanotecSMCI36InputStateWidget::controlStateChanged(bool enabled)
-{
-  setEnabled(enabled);
-}
-
-void NanotecSMCI36InputStateWidget::updateInfo()
-{
-  // NQLog("NanotecSMCI36InputStateWidget", NQLog::Debug) << "updateInfo()";
-
-  bool state = model_->getInputPinState(pin_);
-  if (state) {
-    setText("on");
-  } else {
-    setText("off");
-  }
-}
-
-NanotecSMCI36OutputStateWidget::NanotecSMCI36OutputStateWidget(NanotecSMCI36Model* model,
-                                                               int pin,
-                                                               QWidget *parent)
-  : QCheckBox(parent),
-    model_(model),
-    pin_(pin)
-{
-  setText("");
-
-  // Connect all the signals
-  connect(model_, SIGNAL(deviceStateChanged(State)),
-          this, SLOT(updateDeviceState(State)));
-  connect(model_, SIGNAL(controlStateChanged(bool)),
-          this, SLOT(controlStateChanged(bool)));
-  connect(model_, SIGNAL(informationChanged()),
-          this, SLOT(updateInfo()));
-
-  connect(this, SIGNAL(stateChanged(int)),
-          this, SLOT(outputChanged(int)));
-
-  updateDeviceState(model_->getDeviceState());
-  updateInfo();
-}
-
-void NanotecSMCI36OutputStateWidget::outputChanged(int /* polarity */)
-{
-  // NQLog("NanotecSMCI36OutputStateWidget", NQLog::Debug) << "indexChanged()";
-
-  if (model_->getOutputPinState(pin_)!=isChecked()) {
-    model_->setOutputPinState(pin_, isChecked());
-  }
-}
-
-/**
-  Updates the GUI according to the new state of the controller
- */
-void NanotecSMCI36OutputStateWidget::updateDeviceState(State newState)
-{
-  bool ready = (newState == READY);
-
-  controlStateChanged(ready);
-}
-
-/// Updates the GUI when the controller is enabled/disabled.
-void NanotecSMCI36OutputStateWidget::controlStateChanged(bool enabled)
-{
-  setEnabled(enabled);
-}
-
-void NanotecSMCI36OutputStateWidget::updateInfo()
-{
-  // NQLog("NanotecSMCI36OutputStateWidget", NQLog::Debug) << "updateInfo()";
-
-  bool checked = model_->getOutputPinState(pin_);
-  if (isChecked()!=checked) {
-    setChecked(checked);
-  }
-}
-
-NanotecSMCI36InputFunctionWidget::NanotecSMCI36InputFunctionWidget(NanotecSMCI36Model* model,
-                                                                   int pin,
-                                                                   QWidget *parent)
-  : QComboBox(parent),
-    model_(model),
-    pin_(pin)
-{
-  // No user editable text
-  setEditable(false);
-
-  const std::vector<std::pair<int,std::string>>& modes = model_->getInputPinFunctionNames();
-
-  for (std::vector<std::pair<int,std::string>>::const_iterator it = modes.begin();
-       it!=modes.end();
-       ++it) {
-    addItem(it->second.c_str(), QVariant(it->first));
-  }
-
-  // Connect all the signals
-  connect(model_, SIGNAL(deviceStateChanged(State)),
-          this, SLOT(updateDeviceState(State)));
-  connect(model_, SIGNAL(controlStateChanged(bool)),
-          this, SLOT(controlStateChanged(bool)));
-  connect(model_, SIGNAL(informationChanged()),
-          this, SLOT(updateInfo()));
-
-  connect(this, SIGNAL(currentIndexChanged(int)),
-          this, SLOT(indexChanged(int)));
-
-  updateDeviceState(model_->getDeviceState());
-  updateInfo();
-}
-
-void NanotecSMCI36InputFunctionWidget::indexChanged(int index)
-{
-  // NQLog("NanotecSMCI36InputFunctionWidget", NQLog::Debug) << "indexChanged()";
-
-  int userValue = itemData(index).toInt();
-
-  if (model_->getInputPinFunction(pin_)!=userValue) {
-    model_->setInputPinFunction(pin_, userValue);
-  }
-}
-
-/**
-  Updates the GUI according to the new state of the controller
- */
-void NanotecSMCI36InputFunctionWidget::updateDeviceState(State newState)
-{
-  bool ready = (newState == READY);
-
-  controlStateChanged(ready);
-}
-
-/// Updates the GUI when the controller is enabled/disabled.
-void NanotecSMCI36InputFunctionWidget::controlStateChanged(bool enabled)
-{
-  setEnabled(enabled);
-}
-
-void NanotecSMCI36InputFunctionWidget::updateInfo()
-{
-  // NQLog("NanotecSMCI36InputFunctionWidget", NQLog::Debug) << "updateInfo()";
-
-  int function = model_->getInputPinFunction(pin_);
-  int index = findData(function);
-  if (index!=currentIndex()) {
-    setCurrentIndex(index);
-  }
-}
-
-NanotecSMCI36OutputFunctionWidget::NanotecSMCI36OutputFunctionWidget(NanotecSMCI36Model* model,
-                                                                     int pin,
-                                                                     QWidget *parent)
-  : QComboBox(parent),
-    model_(model),
-    pin_(pin)
-{
-  // No user editable text
-  setEditable(false);
-
-  const std::vector<std::pair<int,std::string>>& modes = model_->getOutputPinFunctionNames();
-
-  for (std::vector<std::pair<int,std::string>>::const_iterator it = modes.begin();
-       it!=modes.end();
-       ++it) {
-    addItem(it->second.c_str(), QVariant(it->first));
-  }
-
-  // Connect all the signals
-  connect(model_, SIGNAL(deviceStateChanged(State)),
-          this, SLOT(updateDeviceState(State)));
-  connect(model_, SIGNAL(controlStateChanged(bool)),
-          this, SLOT(controlStateChanged(bool)));
-  connect(model_, SIGNAL(informationChanged()),
-          this, SLOT(updateInfo()));
-
-  connect(this, SIGNAL(currentIndexChanged(int)),
-          this, SLOT(indexChanged(int)));
-
-  updateDeviceState(model_->getDeviceState());
-  updateInfo();
-}
-
-void NanotecSMCI36OutputFunctionWidget::indexChanged(int index)
-{
-  // NQLog("NanotecSMCI36OutputFunctionWidget", NQLog::Debug) << "indexChanged()";
-
-  int userValue = itemData(index).toInt();
-
-  if (model_->getOutputPinFunction(pin_)!=userValue) {
-    model_->setOutputPinFunction(pin_, userValue);
-  }
-}
-
-/**
-  Updates the GUI according to the new state of the controller
- */
-void NanotecSMCI36OutputFunctionWidget::updateDeviceState(State newState)
-{
-  bool ready = (newState == READY);
-
-  controlStateChanged(ready);
-}
-
-/// Updates the GUI when the controller is enabled/disabled.
-void NanotecSMCI36OutputFunctionWidget::controlStateChanged(bool enabled)
-{
-  setEnabled(enabled);
-}
-
-void NanotecSMCI36OutputFunctionWidget::updateInfo()
-{
-  // NQLog("NanotecSMCI36OutputFunctionWidget", NQLog::Debug) << "updateInfo()";
-
-  int function = model_->getInputPinFunction(pin_);
-  int index = findData(function);
-  if (index!=currentIndex()) {
-    setCurrentIndex(index);
-  }
-}
-
-NanotecSMCI36InputWidget::NanotecSMCI36InputWidget(NanotecSMCI36Model* model,
-                                                   int pin,
-                                                   QWidget *parent)
-  : QWidget(parent),
-    model_(model),
-    pin_(pin)
-{
-  QHBoxLayout* layout = new QHBoxLayout();
-  layout->setSpacing(4);
-  setLayout(layout);
-
-  QLabel *label = new QLabel(QString("input %1").arg(pin_), this);
-  layout->addWidget(label);
-
-  NanotecSMCI36InputFunctionWidget *functionWidget = new NanotecSMCI36InputFunctionWidget(model_, pin_, this);
-  layout->addWidget(functionWidget);
-
-  NanotecSMCI36InputReversePolarityWidget *polarityWidget = new NanotecSMCI36InputReversePolarityWidget(model_, pin_, this);
-  layout->addWidget(polarityWidget);
-
-  NanotecSMCI36InputStateWidget *stateWidget = new NanotecSMCI36InputStateWidget(model_, pin_, this);
-  layout->addWidget(stateWidget);
-
-  layout->addStretch(1);
-
-  // Connect all the signals
-  connect(model_, SIGNAL(deviceStateChanged(State)),
-          this, SLOT(updateDeviceState(State)));
-  connect(model_, SIGNAL(controlStateChanged(bool)),
-          this, SLOT(controlStateChanged(bool)));
-  connect(model_, SIGNAL(informationChanged()),
-          this, SLOT(updateInfo()));
-
-  updateDeviceState(model_->getDeviceState());
-  updateInfo();
-}
-
-/**
-  Updates the GUI according to the new state of the controller
- */
-void NanotecSMCI36InputWidget::updateDeviceState(State newState)
-{
-  bool ready = (newState == READY);
-
-  controlStateChanged(ready);
-}
-
-/// Updates the GUI when the controller is enabled/disabled.
-void NanotecSMCI36InputWidget::controlStateChanged(bool /* enabled */)
-{
-  // setEnabled(enabled);
-}
-
-void NanotecSMCI36InputWidget::updateInfo()
-{
-  // NQLog("NanotecSMCI36InputWidget", NQLog::Debug) << "updateInfo()";
-}
-
-NanotecSMCI36OutputWidget::NanotecSMCI36OutputWidget(NanotecSMCI36Model* model,
-                                                     int pin,
-                                                     QWidget *parent)
-  : QWidget(parent),
-    model_(model),
-    pin_(pin)
-{
-  QHBoxLayout* layout = new QHBoxLayout();
-  layout->setSpacing(4);
-  setLayout(layout);
-
-  QLabel *label = new QLabel(QString("output %1").arg(pin_), this);
-  layout->addWidget(label);
-
-  NanotecSMCI36OutputFunctionWidget *functionWidget = new NanotecSMCI36OutputFunctionWidget(model_, pin_, this);
-  layout->addWidget(functionWidget);
-
-  NanotecSMCI36OutputReversePolarityWidget *polarityWidget = new NanotecSMCI36OutputReversePolarityWidget(model_, pin_, this);
-  layout->addWidget(polarityWidget);
-
-  NanotecSMCI36OutputStateWidget *stateWidget = new NanotecSMCI36OutputStateWidget(model_, pin_, this);
-  layout->addWidget(stateWidget);
-
-  layout->addStretch(1);
-
-  // Connect all the signals
-  connect(model_, SIGNAL(deviceStateChanged(State)),
-          this, SLOT(updateDeviceState(State)));
-  connect(model_, SIGNAL(controlStateChanged(bool)),
-          this, SLOT(controlStateChanged(bool)));
-  connect(model_, SIGNAL(informationChanged()),
-          this, SLOT(updateInfo()));
-
-  updateDeviceState(model_->getDeviceState());
-  updateInfo();
-}
-
-/**
-  Updates the GUI according to the new state of the controller
- */
-void NanotecSMCI36OutputWidget::updateDeviceState(State newState)
-{
-  bool ready = (newState == READY);
-
-  controlStateChanged(ready);
-}
-
-/// Updates the GUI when the controller is enabled/disabled.
-void NanotecSMCI36OutputWidget::controlStateChanged(bool /* enabled */)
-{
-  // setEnabled(enabled);
-}
-
-void NanotecSMCI36OutputWidget::updateInfo()
-{
-  // NQLog("NanotecSMCI36OutputWidget", NQLog::Debug) << "updateInfo()";
-}
-
-NanotecSMCI36IOWidget::NanotecSMCI36IOWidget(NanotecSMCI36Model* model, QWidget *parent)
-  : QWidget(parent),
-    model_(model)
-{
-  QGridLayout* layout = new QGridLayout();
-  setLayout(layout);
-
-  int row = 0;
-  for (int i=1;i<7;++i) {
-    QLabel *label = new QLabel(QString("input %1").arg(i), this);
-    layout->addWidget(label, row, 0);
-
-    NanotecSMCI36InputFunctionWidget *functionWidget = new NanotecSMCI36InputFunctionWidget(model_, i, this);
-    layout->addWidget(functionWidget, row, 1);
-
-    NanotecSMCI36InputReversePolarityWidget *polarityWidget = new NanotecSMCI36InputReversePolarityWidget(model_, i, this);
-    layout->addWidget(polarityWidget, row, 2);
-
-    NanotecSMCI36InputStateWidget *stateWidget = new NanotecSMCI36InputStateWidget(model_, i, this);
-    layout->addWidget(stateWidget, row, 3);
-
-    row++;
-  }
-
-  for (int i=1;i<4;++i) {
-    QLabel *label = new QLabel(QString("output %1").arg(i), this);
-    layout->addWidget(label, row, 0);
-
-    NanotecSMCI36OutputFunctionWidget *functionWidget = new NanotecSMCI36OutputFunctionWidget(model_, i, this);
-    layout->addWidget(functionWidget, row, 1);
-
-    NanotecSMCI36OutputReversePolarityWidget *polarityWidget = new NanotecSMCI36OutputReversePolarityWidget(model_, i, this);
-    layout->addWidget(polarityWidget, row, 2);
-
-    NanotecSMCI36OutputStateWidget *stateWidget = new NanotecSMCI36OutputStateWidget(model_, i, this);
-    layout->addWidget(stateWidget, row, 3);
-
-    row++;
-  }
-
-  // Connect all the signals
-  connect(model_, SIGNAL(deviceStateChanged(State)),
-          this, SLOT(updateDeviceState(State)));
-  connect(model_, SIGNAL(controlStateChanged(bool)),
-          this, SLOT(controlStateChanged(bool)));
-  connect(model_, SIGNAL(informationChanged()),
-          this, SLOT(updateInfo()));
-
-  updateDeviceState(model_->getDeviceState());
-  updateInfo();
-}
-
-/**
-  Updates the GUI according to the new state of the controller
- */
-void NanotecSMCI36IOWidget::updateDeviceState(State newState)
-{
-  bool ready = (newState == READY);
-
-  controlStateChanged(ready);
-}
-
-/// Updates the GUI when the controller is enabled/disabled.
-void NanotecSMCI36IOWidget::controlStateChanged(bool /* enabled */)
-{
-
-}
-
-void NanotecSMCI36IOWidget::updateInfo()
-{
-  //NQLog("NanotecSMCI36IOWidget", NQLog::Debug) << "updateInfo()";
 }

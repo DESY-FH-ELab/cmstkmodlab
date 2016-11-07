@@ -46,6 +46,7 @@ void NanotecComHandler::SendCommand( const char *commandString )
   SendFeedString();
 
   usleep(10000);
+
   // std::cout << "command: |" << commandString << "|" << std::endl;
 }
 

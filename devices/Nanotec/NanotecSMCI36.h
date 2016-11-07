@@ -38,14 +38,17 @@ class NanotecSMCI36 : public VNanotecSMCI36
   void SetStepMode(int mode);
   int GetStepMode() const;
 
+  void SetDriveAddress(int address);
+  int GetDriveAddress();
+
   void SetMotorID(int ID);
   int GetMotorID() const;
 
   void SetErrorCorrectionMode(int mode);
   int GetErrorCorrectionMode() const;
 
-  void SetEncoderDirection(int direction);
-  int GetEncoderDirection() const;
+  void SetEncoderDirection(bool direction);
+  bool GetEncoderDirection() const;
 
   void SetSwingOutTime(int time);
   int GetSwingOutTime() const;
@@ -121,6 +124,8 @@ class NanotecSMCI36 : public VNanotecSMCI36
 
   NanotecComHandler* comHandler_;
   bool isDeviceAvailable_;
+
+  int driveAddress_;
 };
 
 #endif

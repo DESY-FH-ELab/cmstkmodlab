@@ -2,6 +2,7 @@
 #define NANOTECSMCI36MODEL_H
 
 #include <cmath>
+#include <map>
 #include <array>
 
 #include <QString>
@@ -32,100 +33,112 @@ public:
                               double updateInterval2 = 5,
                               QObject *parent = 0);
 
-  double getPitch() const { return pitch_; } // unit is [mm / full step]
+  int getDriveAddress() const { return driveAddress_; }
 
+  bool isReady() const;
   unsigned int getStatus() const { return status_; }
+  const QString getStatusText() const;
+
   int getMotorID() const { return motorID_; }
 
+  int getPhaseCurrent() const { return phaseCurrent_; }
+  int getStandStillPhaseCurrent() const { return standStillPhaseCurrent_; }
+
   int getStepMode() const { return stepMode_; }
-  const std::vector<std::pair<int,std::string>>& getStepModeNames() const;
+  const std::string getStepModeName() const;
+  const std::map<int,std::string>& getStepModeNames() const;
 
   int getRampMode() const { return rampMode_; }
-  const std::vector<std::pair<int,std::string>>& getRampModeNames() const;
+  const std::string getRampModeName() const;
+  const std::map<int,std::string>& getRampModeNames() const;
 
   int getErrorCorrectionMode() const { return errorCorrectionMode_; }
-  const std::vector<std::pair<int,std::string>>& getErrorCorrectionModeNames() const;
+  const std::map<int,std::string>& getErrorCorrectionModeNames() const;
 
   int getMaxEncoderDeviation() const { return maxEncoderDeviation_; }
 
-  int getControllerSteps() const { return controllerSteps_; }
-  double getControllerPosition() const { return getPitch()*getControllerSteps()/getStepMode(); }
-
-  int getEncoderSteps() const { return encoderSteps_; }
-  double getEncoderPosition() const { return getPitch()*getEncoderSteps()/getStepMode(); }
+  int getControllerPosition() const { return controllerSteps_; }
+  int getEncoderPosition() const { return encoderSteps_; }
 
   int getPositioningMode() const { return positioningMode_; }
-  const std::vector<std::pair<int,std::string>>& getPositioningModeNames() const;
+  const std::string getPositioningModeName() const;
+  const std::map<int,std::string>& getPositioningModeNames() const;
 
   bool getDirection() const { return direction_; }
+  bool getEncoderDirection() const { return encoderDirection_; }
 
-  double getTravelDistance() const { return travelDistance_; }
-  double getMinFrequency() const { return minFrequency_; }
-  double getMaxFrequency() const { return maxFrequency_; }
-  double getMaxFrequency2() const { return maxFrequency2_; }
+  int getTravelDistance() const { return travelDistance_; }
+  const std::pair<int,int>& getMinFrequencyLimits() const;
+  int getMinFrequency() const { return minFrequency_; }
+  const std::pair<int,int>& getMaxFrequencyLimits() const;
+  int getMaxFrequency() const { return maxFrequency_; }
+  const std::pair<int,int>& getMaxFrequency2Limits() const;
+  int getMaxFrequency2() const { return maxFrequency2_; }
 
-  double getTravelDistanceInMM() const { return getPitch()*getTravelDistance()/getStepMode(); }
-  double getMinSpeed() const { return getPitch()*getMinFrequency()/getStepMode(); }
-  double getMaxSpeed() const { return getPitch()*getMaxFrequency()/getStepMode(); }
-  double getMaxSpeed2() const { return getPitch()*getMaxFrequency2()/getStepMode(); }
-
-  double getMinPositionInMM() const { return minPositionInMM_; }
-  double getMaxPositionInMM() const { return maxPositionInMM_; }
-
-  void setMaxSpeedForOperation(double speed)  { maxSpeedForOperation_ = speed; }
-  double getMaxSpeedForOperation() const { return maxSpeedForOperation_; }
-
-  void setMaxSpeedForRefRun(double speed)  { maxSpeedForRefRun_ = speed; }
-  double getMaxSpeedForRefRun() const { return maxSpeedForRefRun_; }
+  int getQuickstopRampHzPerSecond() const { return quickstopRamp_; }
+  int getAccelerationRampHzPerSecond() const { return accelRamp_; }
+  int getDecelerationRampHzPerSecond() const { return decelRamp_; }
 
   int getInputPinFunction(int pin) const;
-  const std::vector<std::pair<int,std::string>>& getInputPinFunctionNames() const;
+  const std::string getInputPinFunctionName(int pin) const;
+  const std::map<int,std::string>& getInputPinFunctionNames() const;
 
   bool getInputPolarity(int pin) const;
   bool getInputPinState(int pin) const;
 
   int getOutputPinFunction(int pin) const;
-  const std::vector<std::pair<int,std::string>>& getOutputPinFunctionNames() const;
+  const std::string getOutputPinFunctionName(int pin) const;
+  const std::map<int,std::string>& getOutputPinFunctionNames() const;
 
   bool getOutputPolarity(int pin) const;
   bool getOutputPinState(int pin) const;
 
-public slots:
+  void setMotorID(int id);
 
-  void setDeviceEnabled(bool enabled);
-  void setControlsEnabled(bool enabled);
+  void setPhaseCurrent(int current);
+  void setStandStillPhaseCurrent(int current);
 
-  void setPitch(double pitch);
-  void setMotorID(int motorID);
   void setStepMode(int mode);
   void setRampMode(int mode);
   void setErrorCorrectionMode(int mode);
   void setMaxEncoderDeviation(int steps);
-  void setPositioningMode(int mode);
-  void setDirection(bool direction);
-  void setTravelDistance(double distance);
-  void setMinFrequency(double frequency);
-  void setMaxFrequency(double frequency);
-  void setMaxFrequency2(double frequency);
-  void setTravelDistanceInMM(double distance);
-  void setMinSpeed(double speed);
-  void setMaxSpeed(double speed);
-  void setMaxSpeed2(double speed);
+  void setEncoderDirection(bool direction);
 
-  void setMinPositionInMM(double position);
-  void setMaxPositionInMM(double position);
+  void setQuickstopRampHzPerSecond(int ramp);
+  void setAccelerationRampHzPerSecond(int ramp);
+  void setDecelerationRampHzPerSecond(int ramp);
 
-  void start();
-  void stop();
-  void quickStop();
-  void resetPositionError();
+  void setIOMask(unsigned int mask);
+  void setReversePolarityMask(unsigned int mask);
+
+  unsigned int getIO() const { return io_; }
+  void setIO(unsigned int mask);
 
   void setInputPinFunction(int pin, int function);
   void setInputPolarity(int pin, bool reverse);
 
   void setOutputPinFunction(int pin, int function);
   void setOutputPolarity(int pin, bool reverse);
+
+public slots:
+
+  void setDeviceEnabled(bool enabled);
+  void setControlsEnabled(bool enabled);
+
+  void setPositioningMode(int mode);
+  void setDirection(bool direction);
+  void setTravelDistance(int distance);
+  void setMinFrequency(int frequency);
+  void setMaxFrequency(int frequency);
+  void setMaxFrequency2(int frequency);
+
+  void start();
+  void stop();
+  void quickStop();
+  void resetPositionError();
+
   void setOutputPinState(int pin, bool state);
+  void toggleOutputPin(int pin);
 
   void updateInformation1();
   void updateInformation2();
@@ -144,9 +157,11 @@ protected:
 
   void setDeviceState( State state );
 
-  double pitch_;
+  int driveAddress_;
   unsigned int status_;
   int motorID_;
+  int phaseCurrent_;
+  int standStillPhaseCurrent_;
   int stepMode_;
   int rampMode_;
   int errorCorrectionMode_;
@@ -155,32 +170,30 @@ protected:
   int encoderSteps_;
   int positioningMode_;
   bool direction_;
-  double travelDistance_;
-  double minFrequency_;
-  double maxFrequency_;
-  double maxFrequency2_;
-
-  double maxSpeedForOperation_;
-  double maxSpeedForRefRun_;
-  double minPositionInMM_;
-  double maxPositionInMM_;
+  bool encoderDirection_;
+  int travelDistance_;
+  int minFrequency_;
+  int maxFrequency_;
+  int maxFrequency2_;
+  int quickstopRamp_;
+  int accelRamp_;
+  int decelRamp_;
 
   std::array<int,7> inputPinFunction_;
   std::array<int,4> outputPinFunction_;
+  unsigned int ioMask_;
   unsigned int ioPolarityMask_;
   unsigned io_;
-
-  void setTravelDistanceNoCheck(double distance);
-  void setTravelDistanceInMMNoCheck(double distance);
-  void checkPositionLimits();
 
 signals:
 
   void deviceStateChanged(State newState);
   void informationChanged();
-  void positionModeChanged(int mode);
-  void message(const QString & text);
   void controlStateChanged(bool);
+  void stepModeChanged(int);
+
+  void motionStarted();
+  void motionFinished();
 };
 
 #endif // NANOTECSMCI36MODEL_H
