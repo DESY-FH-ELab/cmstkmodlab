@@ -24,7 +24,10 @@ int main(int argc, char *argv[])
   QCoreApplication app(argc, argv);
 
   NQLogger::instance()->addActiveModule("*");
-  NQLogger::instance()->addDestiniation(stdout, NQLog::Debug);
+
+  if (!app.arguments().contains("--daemon")) {
+    NQLogger::instance()->addDestiniation(stdout, NQLog::Debug);
+  }
 
 #if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
   QString logdir = QDesktopServices::storageLocation(QDesktopServices::CacheLocation);
