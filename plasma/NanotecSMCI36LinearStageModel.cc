@@ -77,6 +77,8 @@ double NanotecSMCI36LinearStageModel::getStepSize() const
 
 void NanotecSMCI36LinearStageModel::motionHasStarted()
 {
+  NQLogMessage("NanotecSMCI36LinearStageModel") << "motionHasStarted()";
+
   if (controller_->getPositioningMode()==VNanotecSMCI36::smciExternalRefRun) {
     isInReferenceRun_ = true;
   }
@@ -90,6 +92,8 @@ void NanotecSMCI36LinearStageModel::motionHasStarted()
 
 void NanotecSMCI36LinearStageModel::motionHasFinished()
 {
+  NQLogMessage("NanotecSMCI36LinearStageModel") << "motionHasFinished()";
+
   if (controller_->getPositioningMode()==VNanotecSMCI36::smciExternalRefRun &&
       isInReferenceRun_) {
 
