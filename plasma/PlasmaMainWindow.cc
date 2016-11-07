@@ -130,8 +130,6 @@ PlasmaMainWindow::PlasmaMainWindow(QWidget *parent)
 
     tabWidget_ = new QTabWidget(this);
 
-    QWidget * w;
-
     if (smci36ModelX_) {
       stageWidgetX_ = new NanotecSMCI36LinearStageWidget(stageX_, tabWidget_);
       tabWidget_->addTab(stageWidgetX_, "stage X");
