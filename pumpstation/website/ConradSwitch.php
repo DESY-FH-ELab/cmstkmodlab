@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 if (isset($_GET["channel"])) {
 	$channel = strip_tags ($_GET["channel"]);
 	

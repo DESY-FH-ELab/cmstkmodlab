@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 
 <html>
     <head>
@@ -25,7 +25,7 @@
 		//if on
 		if ($val_array[$i][0] == 1 ) {
 			echo ("<img id='button_".$i."' src='data/img/ValveOpen.png' onclick='changeSwitch(".$i.");'/>");
-		}	 
+		}
 	}
 	?>
 	 
