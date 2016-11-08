@@ -121,9 +121,19 @@
             "title": "julabo"
         }, 
         {
-            "location": "/", 
+            "location": "/assembly/", 
             "text": "", 
             "title": "Assembly"
+        }, 
+        {
+            "location": "/plasma/", 
+            "text": "", 
+            "title": "Plasma Cleaner"
+        }, 
+        {
+            "location": "/vacuum/", 
+            "text": "", 
+            "title": "Pump Station"
         }
     ]
 }

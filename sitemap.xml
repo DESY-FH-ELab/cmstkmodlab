@@ -65,7 +65,23 @@
 
     
     <url>
-     <loc>http://desy-fh-elab.github.io/cmstkmodlab/</loc>
+     <loc>http://desy-fh-elab.github.io/cmstkmodlab/assembly/</loc>
+     <lastmod>2016-11-08</lastmod>
+     <changefreq>daily</changefreq>
+    </url>
+    
+
+    
+    <url>
+     <loc>http://desy-fh-elab.github.io/cmstkmodlab/plasma/</loc>
+     <lastmod>2016-11-08</lastmod>
+     <changefreq>daily</changefreq>
+    </url>
+    
+
+    
+    <url>
+     <loc>http://desy-fh-elab.github.io/cmstkmodlab/vacuum/</loc>
      <lastmod>2016-11-08</lastmod>
      <changefreq>daily</changefreq>
     </url>
