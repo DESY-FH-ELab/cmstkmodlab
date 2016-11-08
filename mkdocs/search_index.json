@@ -131,7 +131,7 @@
             "title": "Plasma Cleaner"
         }, 
         {
-            "location": "/vacuum/", 
+            "location": "/pumpstation/", 
             "text": "", 
             "title": "Pump Station"
         }
