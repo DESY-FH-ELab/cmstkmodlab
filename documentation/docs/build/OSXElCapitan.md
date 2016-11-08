@@ -1,4 +1,4 @@
-# Build Instructions for OSX El Capitan
+# Build Instructions for OSX El Capitan and macOS Siera
 
 ## Requirements
 
