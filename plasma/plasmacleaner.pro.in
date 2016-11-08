@@ -60,7 +60,8 @@ greaterThan(QT_MAJOR_VERSION, 4) {
 HEADERS += PlasmaMainWindow.h \
            PlasmaStepDoubleSpinBox.h \
            NanotecSMCI36LinearStageModel.h \
-           NanotecSMCI36LinearStageWidget.h
+           NanotecSMCI36LinearStageWidget.h \
+           PlasmaStageWidget.h
 
 equals(USEFAKEDEVICES,"X0") {
 HEADERS += 
@@ -72,7 +73,8 @@ SOURCES += plasmacleaner.cc \
            PlasmaMainWindow.cc \
            PlasmaStepDoubleSpinBox.cc \
            NanotecSMCI36LinearStageModel.cc \
-           NanotecSMCI36LinearStageWidget.cc
+           NanotecSMCI36LinearStageWidget.cc \
+           PlasmaStageWidget.cc
 
 equals(USEFAKEDEVICES,"X0") {
 SOURCES += 

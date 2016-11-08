@@ -12,7 +12,7 @@
 #include <NanotecSMCI36Widget.h>
 
 #include <NanotecSMCI36LinearStageModel.h>
-#include <NanotecSMCI36LinearStageWidget.h>
+#include <PlasmaStageWidget.h>
 
 class PlasmaMainWindow : public QMainWindow
 {
@@ -40,7 +40,7 @@ protected:
   QTabWidget* tabWidget_;
 
   NanotecSMCI36Widget *smci36WidgetX_;
-  NanotecSMCI36LinearStageWidget *stageWidgetX_;
+  PlasmaStageWidget *stageWidgetX_;
 };
 
 #endif // PLASMAMAINWINDOW_H
