@@ -49,6 +49,23 @@ void ConradModel::initialize( void )
   // may be notified of non-responsiveness
   setDeviceState( INITIALIZING );
 
+#ifdef USE_FAKEIO
+
+  renewController("/dev/ttyUSBFake");
+
+  controller_->initialize();
+
+  std::vector<bool> status = controller_->queryStatus();
+
+  // Announce new states
+  if (status.size() == 8) {
+
+    setAllSwitchesReady(status);
+    setDeviceState( READY );
+  }
+
+#else
+
   // create a list with all available ttyUSB device (system) files
   QStringList filters("ttyUSB*");
 
@@ -129,6 +146,7 @@ void ConradModel::initialize( void )
         << "is connecting to the device.";
 
   }
+#endif
 }
 
 /// Sets all the device states to OFF
@@ -216,7 +234,7 @@ void ConradModel::setAllSwitchesReady(const std::vector<bool>& ready)
 {
   for ( unsigned int i = 0; i < ready.size(); ++i ) {
     // Set device state according to queried state
-    setSwitchState( i, ready.at(i) ? READY : OFF );
+    setSwitchState(i, ready.at(i) ? READY : OFF);
   }
 }
 

@@ -46,7 +46,6 @@ public:
 
   // Methods for power control and status querying of the devices connected to
   // the switch
-  void setSwitchEnabled( int device, bool enabled );
   const State& getSwitchState( int device ) const;
 
 public slots:
@@ -56,6 +55,7 @@ public slots:
   void enableSwitch( int device );
   void disableSwitch( int device );
   void setControlsEnabled(bool enabled);
+  void setSwitchEnabled(int device, bool enabled);
 
 protected:
   void initialize();
