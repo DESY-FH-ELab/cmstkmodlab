@@ -52,6 +52,7 @@ public slots:
   void requestQuickStop();
   void requestResetError();
   void toggleOutputPin(int pin);
+  void setOutputPinState(int pin, bool state);
 
 protected:
 

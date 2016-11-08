@@ -181,6 +181,11 @@ void NanotecSMCI36LinearStageModel::toggleOutputPin(int pin)
   controller_->toggleOutputPin(pin);
 }
 
+void NanotecSMCI36LinearStageModel::setOutputPinState(int pin, bool state)
+{
+  controller_->setOutputPinState(pin, state);
+}
+
 State NanotecSMCI36LinearStageModel::getDeviceState() const
 {
   return controller_->getDeviceState();
