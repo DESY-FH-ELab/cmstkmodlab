@@ -1,0 +1,10 @@
+PumpStationControl.pro
+PumpStationControl.pro.user
+.qmake.stash
+Makefile
+*.d
+*.o
+*~
+moc_*
+PumpStationControl
+

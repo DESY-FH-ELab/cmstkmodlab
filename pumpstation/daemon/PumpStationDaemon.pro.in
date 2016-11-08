@@ -1,7 +1,7 @@
 ARCHITECTURE=@architecture@
 USEFAKEDEVICES="X@usefakedevices@"
 
-LIBS += -L@basepath@/devices/lib -lTkModLabNanotec
+LIBS += -L@basepath@/devices/lib -lTkModLabConrad
 LIBS += -L@basepath@/common -lCommon
 
 QMAKE = @qmake@
@@ -34,12 +34,15 @@ equals(USEFAKEDEVICES,"X1") {
 DEFINES += USE_FAKEIO
 }
 
-QT += core gui xml network script svg
+QT += core network gui xml
 greaterThan(QT_MAJOR_VERSION, 4) {
   QT += widgets
 } 
 
-TARGET = plasmacleaner
+CONFIG   += console
+CONFIG   -= app_bundle
+
+TARGET = PumpStationDaemon
 TEMPLATE = app
 
 macx {
@@ -57,11 +60,9 @@ greaterThan(QT_MAJOR_VERSION, 4) {
 }
 
 # Input
-HEADERS += PlasmaMainWindow.h \
-           PlasmaStepDoubleSpinBox.h \
-           NanotecSMCI36LinearStageModel.h \
-           NanotecSMCI36LinearStageWidget.h \
-           PlasmaStageWidget.h
+HEADERS += CommunicationThread.h \
+           CommunicationServer.h \
+           DataLogger.h
 
 equals(USEFAKEDEVICES,"X0") {
 HEADERS += 
@@ -69,12 +70,10 @@ HEADERS +=
 HEADERS += 
 }
 
-SOURCES += plasmacleaner.cc \
-           PlasmaMainWindow.cc \
-           PlasmaStepDoubleSpinBox.cc \
-           NanotecSMCI36LinearStageModel.cc \
-           NanotecSMCI36LinearStageWidget.cc \
-           PlasmaStageWidget.cc
+SOURCES += PumpStationDaemon.cc \
+           CommunicationThread.cc \
+           CommunicationServer.cc \
+           DataLogger.cc
 
 equals(USEFAKEDEVICES,"X0") {
 SOURCES += 
