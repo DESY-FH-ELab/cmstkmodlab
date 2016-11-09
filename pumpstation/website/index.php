@@ -277,8 +277,9 @@
         <img style="width:32px;" src="data/CMS-Logo.png"/>
         <span style="vertical-align:top;">
         <?php
-        $data = shell_exec('uptime');
-	    echo (gethostname().' - '.$data);
+        date_default_timezone_set($ini_array['TimeZone']);
+        $date = date('Y-m-d H:i:s');
+	    echo (gethostname().' - '.$date);
         ?>
         </span>
 	    </div>	    
