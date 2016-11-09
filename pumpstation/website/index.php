@@ -35,10 +35,11 @@
  
     <div id="centered">
       <div style="margin:auto;width:800px;background-color:#FFFFFF;">
+
         <div style="width:800px;position:absolute;">
           <img src="data/pumpstation_schematic.png" width="100%"/>
         </div>
-
+        
         <?php
           $command = "/var/www/html/PumpStationControl --web getPressure 0";
           exec ($command, $valP0, $return);
@@ -267,14 +268,18 @@
 
 	    </div>
 	   
-        <div style="position:absolute;width:800px;margin-top: 460px;">
-        <hr>
+        <div style="position:absolute;width:800px;margin-top: 460px;vertical-align:top;">
+	    <hr>        
+        <img style="width:32px;" src="data/DESY-Logo.png"/>
+        <img style="width:32px;" src="data/CMS-Logo.png"/>
+        <span style="vertical-align:top;">
         <?php
         $data = shell_exec('uptime');
 	    echo (gethostname().' - '.$data);
         ?>
-	    </div>
-	    
+        </span>
+	    </div>	    
+
       </div>
     </div>
 
