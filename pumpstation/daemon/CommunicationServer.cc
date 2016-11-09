@@ -94,7 +94,7 @@ void CommunicationServer::handleCommand()
       } else {
         QMutexLocker locker(&mutex_);
         double pressure = leyboldModel_->getPressure(channel);
-        response = QString("%1 mbar").arg(pressure, 0, 'E', 3);
+        response = QString("%1 mbar").arg(pressure, 0, 'f', 1);
       }
     }
   } else {
