@@ -5,7 +5,7 @@ NOPUMPSTATION = @nopumpstation@
 
 USEFAKEDEVICES= @usefakedevices@
 
-subdirs	      = daemon controller
+subdirs	      = daemon controller app
 
 all:
 	@for dir in $(subdirs); do (cd $$dir; make); done
