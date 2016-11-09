@@ -1,0 +1,9 @@
+#!/bin/bash
+
+touch /var/run/pumpstation.pid
+
+. @basepath@/tkmodlabenv.sh
+
+cd @basepath@/pumpstation/daemon
+
+./PumpStationDaemon --daemon

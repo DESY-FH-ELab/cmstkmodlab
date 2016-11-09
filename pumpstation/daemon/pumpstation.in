@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 ### BEGIN INIT INFO
 # Provides:        pumpstation
@@ -9,23 +9,25 @@
 # Short-Description: pump station daemon
 ### END INIT INFO
 
-PATH=@basepath@/pumpstation/daemon
+PATH=/sbin:/bin:/usr/sbin:/usr/bin:@basepath@/pumpstation/daemon
 
 . /lib/lsb/init-functions
 
-DAEMON=@basepath@/pumpstation/daemon/PumpStationDaemon
+DAEMON=@basepath@/pumpstation/daemon/runPumpStation.sh
 PIDFILE=/var/run/pumpstation.pid
 
 test -x $DAEMON || exit 5
 
 LOCKFILE=/run/lock/pumpstation
 
+UGID=$(getent passwd pi | cut -f 3,4 -d:)
+
 case $1 in
 	start)
 		log_daemon_msg "Starting pump station daemon" "PumpStationDaemon"
 		(
 			flock -w 180 9
-			start-stop-daemon --start --quiet --oknodo --pidfile $PIDFILE --startas $DAEMON -- -p $PIDFILE --daemon
+			start-stop-daemon --start --quiet --oknodo --background --pidfile $PIDFILE --startas $DAEMON
 		) 9>$LOCKFILE
 		log_end_msg $?
   		;;

@@ -8,3 +8,4 @@ Makefile
 moc_*
 PumpStationDaemon
 pumpstation
+runPumpStation.sh
