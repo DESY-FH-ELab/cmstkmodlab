@@ -23,7 +23,9 @@ class LeyboldGraphixThree : public VLeyboldGraphixThree
 
   std::string GetVersion() const;
 
- private:
+  double GetPressure(int channel) const;
+
+ protected:
 
   void SendCommand(std::string& command) const;
   bool ReceiveData(std::string& buffer) const;
