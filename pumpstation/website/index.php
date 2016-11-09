@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 
 <html>
   <head>
@@ -39,127 +39,127 @@
         </div>
 
         <?php
-          $command = "/Users/mussgill/Sites/PumpStationControl --web getPressure 0";
+          $command = "/var/www/html/PumpStationControl --web getPressure 0";
           exec ($command, $valP0, $return);
-          if ($valP0[0] >= 200.0) {
+          if ($valP0 >= 200.0) {
             echo ('<div style="position:absolute;width:128px;height:30px;margin-left:341px;margin-top:5px;background-color:#FF5555;">');
-          } else if ($valP0[0] < 150.0 ) {
+          } else if ($valP0 < 150.0 ) {
             echo ('<div style="position:absolute;width:128px;height:30px;margin-left:341px;margin-top:5px;background-color:#55FF55;">');
           } else {
             echo ('<div style="position:absolute;width:128px;height:30px;margin-left:341px;margin-top:5px;background-color:#FFAA55;">');
           }
           echo ('<div style="font-size:16px;text-align:right;margin-top:5px;margin-right:10px;">');
-          echo (number_format($valP0[0], 1, ".", ","));
+          echo (number_format($valP0, 1, ".", ","));
           echo (" mbar");
           echo ('</div></div>');
 
-          $command = "/Users/mussgill/Sites/PumpStationControl --web getPressure 1";
+          $command = "/var/www/html/PumpStationControl --web getPressure 1";
           exec ($command, $valP1, $return);
-          if ($valP1[0] >= 200.0) {
+          if ($valP1 >= 200.0) {
             echo ('<div style="position:absolute;width:128px;height:30px;margin-left:341px;margin-top:45px;background-color:#FF5555;">');
-          } else if ($valP1[0] < 150.0 ) {
+          } else if ($valP1 < 150.0 ) {
             echo ('<div style="position:absolute;width:128px;height:30px;margin-left:341px;margin-top:45px;background-color:#55FF55;">');
           } else {
             echo ('<div style="position:absolute;width:128px;height:30px;margin-left:341px;margin-top:45px;background-color:#FFAA55;">');
           }
           echo ('<div style="font-size:16px;text-align:right;margin-top:5px;margin-right:10px;">');
-          echo (number_format($valP1[0], 1, ".", ","));
+          echo (number_format($valP1, 1, ".", ","));
           echo (" mbar");
           echo ('</div></div>');
 
-          $command = "/Users/mussgill/Sites/PumpStationControl --web getPressure 2";
+          $command = "/var/www/html/PumpStationControl --web getPressure 2";
           exec ($command, $valP2, $return);
-          if ($valP2[0] >= 200.0) {
+          if ($valP2 >= 200.0) {
             echo ('<div style="position:absolute;width:128px;height:30px;margin-left:341px;margin-top:85px;background-color:#FF5555;">');
-          } else if ($valP2[0] < 150.0 ) {
+          } else if ($valP2 < 150.0 ) {
             echo ('<div style="position:absolute;width:128px;height:30px;margin-left:341px;margin-top:85px;background-color:#55FF55;">');
           } else {
             echo ('<div style="position:absolute;width:128px;height:30px;margin-left:341px;margin-top:85px;background-color:#FFAA55;">');
           }
           echo ('<div style="font-size:16px;text-align:right;margin-top:5px;margin-right:10px;">');
-          echo (number_format($valP2[0], 1, ".", ","));
+          echo (number_format($valP2, 1, ".", ","));
           echo (" mbar");
           echo ('</div></div>');
 
-          $command = "/Users/mussgill/Sites/PumpStationControl --web getSwitchState 0";
+          $command = "/var/www/html/PumpStationControl --web getSwitchState 0";
           exec ($command, $valS0, $return);
-          if ($valS0[0] == 0 ) {
+          if ($valS0 == 0 ) {
             echo ('<div style="position:absolute;width:68px;height:30px;margin-left:221px;margin-top:29px;background-color:#FF5555;">');
-          } else if ($valS0[0] == 1 ) {
+          } else if ($valS0 == 1 ) {
             echo ('<div style="position:absolute;width:68px;height:30px;margin-left:221px;margin-top:29px;background-color:#55FF55;">');
           }
           echo ('<div style="font-size:16px;text-align:center;margin-top:5px;">');
-          if ($valS0[0] == 0 ) {
+          if ($valS0 == 0 ) {
             echo ("closed");
-          } else if ($valS0[0] == 1 ) {
+          } else if ($valS0 == 1 ) {
             echo ("open");
           } else {
             echo ("XXX");
           }
           echo ("</div></div>");
 
-          $command = "/Users/mussgill/Sites/PumpStationControl --web getSwitchState 1";
+          $command = "/var/www/html/PumpStationControl --web getSwitchState 1";
           exec ($command, $valS1, $return);
-          if ($valS1[0] == 0 ) {
+          if ($valS1 == 0 ) {
             echo ('<div style="position:absolute;width:68px;height:30px;margin-left:131px;margin-top:29px;background-color:#FF5555;">');
-          } else if ($valS1[0] == 1 ) {
+          } else if ($valS1 == 1 ) {
             echo ('<div style="position:absolute;width:68px;height:30px;margin-left:131px;margin-top:29px;background-color:#55FF55;">');
           }
           echo ('<div style="font-size:16px;text-align:center;margin-top:5px;">');
-          if ($valS1[0] == 0 ) {
+          if ($valS1 == 0 ) {
             echo ("closed");
-          } else if ($valS1[0] == 1 ) {
+          } else if ($valS1 == 1 ) {
             echo ("open");
           } else {
             echo ("XXX");
           }
           echo ("</div></div>");
 
-          $command = "/Users/mussgill/Sites/PumpStationControl --web getSwitchState 2";
+          $command = "/var/www/html/PumpStationControl --web getSwitchState 2";
           exec ($command, $valS2, $return);
-          if ($valS2[0] == 0 ) {
+          if ($valS2 == 0 ) {
             echo ('<div style="position:absolute;width:68px;height:30px;margin-left:41px;margin-top:29px;background-color:#FF5555;">');
-          } else if ($valS2[0] == 1 ) {
+          } else if ($valS2 == 1 ) {
             echo ('<div style="position:absolute;width:68px;height:30px;margin-left:41px;margin-top:29px;background-color:#55FF55;">');
           }
           echo ('<div style="font-size:16px;text-align:center;margin-top:5px;">');
-          if ($valS2[0] == 0 ) {
+          if ($valS2 == 0 ) {
             echo ("closed");
-          } else if ($valS2[0] == 1 ) {
+          } else if ($valS2 == 1 ) {
             echo ("open");
           } else {
             echo ("XXX");
           }
           echo ("</div></div>");
 
-          $command = "/Users/mussgill/Sites/PumpStationControl --web getSwitchState 3";
+          $command = "/var/www/html/PumpStationControl --web getSwitchState 3";
           exec ($command, $valS3, $return);
-          if ($valS3[0] == 0 ) {
+          if ($valS3 == 0 ) {
             echo ('<div style="position:absolute;width:58px;height:30px;margin-left:601px;margin-top:5px;background-color:#FF5555;">');
-          } else if ($valS3[0] == 1 ) {
+          } else if ($valS3 == 1 ) {
             echo ('<div style="position:absolute;width:58px;height:30px;margin-left:601px;margin-top:5px;background-color:#55FF55;">');
           }
           echo ('<div style="font-size:16px;text-align:center;margin-top:5px;">');
-          if ($valS3[0] == 0 ) {
+          if ($valS3 == 0 ) {
             echo ("OFF");
-          } else if ($valS3[0] == 1 ) {
+          } else if ($valS3 == 1 ) {
             echo ("ON");
           } else {
             echo ("XXX");
           }
           echo ("</div></div>");
 
-          $command = "/Users/mussgill/Sites/PumpStationControl --web getSwitchState 4";
+          $command = "/var/www/html/PumpStationControl --web getSwitchState 4";
           exec ($command, $valS4, $return);
-          if ($valS4[0] == 0 ) {
+          if ($valS4 == 0 ) {
             echo ('<div style="position:absolute;width:58px;height:30px;margin-left:601px;margin-top:45px;background-color:#FF5555;">');
-          } else if ($valS4[0] == 1 ) {
+          } else if ($valS4 == 1 ) {
             echo ('<div style="position:absolute;width:58px;height:30px;margin-left:601px;margin-top:45px;background-color:#55FF55">');
           }
           echo ('<div style="font-size:16px;text-align:center;margin-top:5px;">');
-          if ($valS4[0] == 0 ) {
+          if ($valS4 == 0 ) {
             echo ("OFF");
-          } else if ($valS4[0] == 1 ) {
+          } else if ($valS4 == 1 ) {
             echo ("ON");
           } else {
             echo ("XXX");
@@ -174,7 +174,7 @@
 	$val_array = array(0,0,0,0,0,0,0,0);
 	//this php script generate the first page in function of the file
 	for ( $i= 0; $i<8; $i++) {
-		$command = "/Users/mussgill/Sites/PumpStationControl --web getSwitchState ".$i;
+		$command = "/var/www/html/PumpStationControl --web getSwitchState ".$i;
 		exec ($command, $val_array[$i], $return);
 	}
 	//for loop to read the value
