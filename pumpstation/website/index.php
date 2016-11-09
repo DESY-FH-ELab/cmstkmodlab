@@ -6,7 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="chrome=1,IE=edge" />
     <meta name="viewport" content="user-scalable=no, width=800" />
     <meta charset="utf-8" />
-    <meta http-equiv="refresh" content="30">
+    <meta http-equiv="refresh" content="5">
     <title>.: CMS Pump Station Status & Control :.</title>
     <style type="text/css">
       body {
@@ -134,7 +134,7 @@
           echo ('<div style="font-size:16px;text-align:center;margin-top:5px;">');
           if ($S1 == 0 ) {
             echo ("closed");
-          } else if ($valS1 == 1 ) {
+          } else if ($S1 == 1 ) {
             echo ("open");
           } else {
             echo ("XXX");
@@ -209,34 +209,72 @@
         ?>
 
         <div style="position:absolute;width:800px;margin-top: 370px;">
+        
+        <div style="font-size:18px;position:absolute;width:100px;margin-left:0px;text-align:center;">Valve 1</div>
+        <div style="font-size:18px;position:absolute;width:100px;margin-left:0px;margin-top:24px;text-align:center;">
+        <?php
+        if ($S0 == 0 ) {
+		  echo ("<img id='switch_0' src='data/button_red.png' onclick='changeSwitch(0);'/>");
+		} else {
+		  echo ("<img id='switch_0' src='data/button_green.png' onclick='changeSwitch(0);'/>");
+		}	
+        ?>
+        </div>
+        
+        <div style="font-size:18px;position:absolute;width:100px;margin-left:100px;text-align:center;">Valve 2</div>
+        <div style="font-size:18px;position:absolute;width:100px;margin-left:100px;margin-top:24px;text-align:center;">
+        <?php
+        if ($S1 == 0 ) {
+		  echo ("<img id='switch_1' src='data/button_red.png' onclick='changeSwitch(1);'/>");
+		} else {
+		  echo ("<img id='switch_1' src='data/button_green.png' onclick='changeSwitch(1);'/>");
+		}	
+        ?>
+        </div>
+        
+        <div style="font-size:18px;position:absolute;width:100px;margin-left:200px;text-align:center;">Valve 3</div>
+        <div style="font-size:18px;position:absolute;width:100px;margin-left:200px;margin-top:24px;text-align:center;">
+        <?php
+        if ($S2 == 0 ) {
+		  echo ("<img id='switch_2' src='data/button_red.png' onclick='changeSwitch(2);'/>");
+		} else {
+		  echo ("<img id='switch_2' src='data/button_green.png' onclick='changeSwitch(2);'/>");
+		}	
+        ?>
+        </div>
 
-    <!-- On/Off button's picture -->
-	<?php
-	$val_array = array(0,0,0,0,0,0,0,0);
-	//this php script generate the first page in function of the file
-	for ( $i= 0; $i<8; $i++) {
-		$command = "/var/www/html/PumpStationControl --web getSwitchState ".$i;
-		exec ($command, $val_array[$i], $return);
-        if (is_array($val_array[$i])) {
-            $val_array[$i] = intval($val_array[$i][0]);
-          } else {
-            $val_array[$i] = intval($val_array[$i]);
-          }
-	}
-	//for loop to read the value
-	$i =0;
-	for ($i = 0; $i < 8; $i++) {
-		//if off
-		if ($val_array[$i] == 0 ) {
-			echo ("<img id='button_".$i."' src='data/img/ValveClosed.png' onclick='changeSwitch(".$i.");'/>");
-		}
-		//if on
-		if ($val_array[$i] == 1 ) {
-			echo ("<img id='button_".$i."' src='data/img/ValveOpen.png' onclick='changeSwitch(".$i.");'/>");
-		}	 
-	}
-	?>
-	        </div>
+        <div style="font-size:18px;position:absolute;width:100px;margin-left:565px;text-align:center;">Pump 1</div>
+        <div style="font-size:18px;position:absolute;width:100px;margin-left:565px;margin-top:24px;text-align:center;">
+        <?php
+        if ($S3 == 0 ) {
+		  echo ("<img id='switch_3' src='data/button_red.png' onclick='changeSwitch(3);'/>");
+		} else {
+		  echo ("<img id='switch_3' src='data/button_green.png' onclick='changeSwitch(3);'/>");
+		}	
+        ?>
+        </div>
+
+        <div style="font-size:18px;position:absolute;width:100px;margin-left:665px;text-align:center;">Pump 2</div>
+        <div style="font-size:18px;position:absolute;width:100px;margin-left:665px;margin-top:24px;text-align:center;">
+        <?php
+        if ($S4 == 0 ) {
+		  echo ("<img id='switch_4' src='data/button_red.png' onclick='changeSwitch(4);'/>");
+		} else {
+		  echo ("<img id='switch_4' src='data/button_green.png' onclick='changeSwitch(4);'/>");
+		}	
+        ?>
+        </div>
+
+	    </div>
+	   
+        <div style="position:absolute;width:800px;margin-top: 460px;">
+        <hr>
+        <?php
+        $data = shell_exec('uptime');
+	    echo (gethostname().' - '.$data);
+        ?>
+	    </div>
+	    
       </div>
     </div>
 
