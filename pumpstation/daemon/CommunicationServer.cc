@@ -89,7 +89,7 @@ void CommunicationServer::handleCommand()
     } else {
       int channel = args.at(0).toInt();
 
-      if (channel<0 || channel>3) {
+      if (channel<0 || channel>2) {
         response = "ERR";
       } else {
         QMutexLocker locker(&mutex_);
