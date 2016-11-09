@@ -41,8 +41,8 @@ void DataLogger::start()
   QString filename("pumpstation_%1_%2.xml");
   filename = filename.arg(dt.toString("yyyyMMdd"));
   int i = 1;
-  while (currentDir_.exists(filename.arg(i))) ++i;
-  filename = filename.arg(i);
+  while (currentDir_.exists(filename.arg(i, 2, 10, QChar('0')))) ++i;
+  filename = filename.arg(i, 2, 10, QChar('0'));
 
   ofilename_ = currentDir_.absoluteFilePath(filename);
   ofile_ = new QFile(ofilename_);
