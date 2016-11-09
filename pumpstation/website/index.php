@@ -41,7 +41,10 @@
         </div>
         
         <?php
-          $command = "/var/www/html/PumpStationControl --web getPressure 0";
+        
+          $ini_array = parse_ini_file("pumpstation.ini");
+          
+          $command = $ini_array['DocumentRoot']."/PumpStationControl --web getPressure 0";
           exec ($command, $valP0, $return);
           if (is_array($valP0)) {
             $P0 = floatval($valP0[0]);
@@ -60,7 +63,7 @@
           echo (" mbar");
           echo ('</div></div>');
 
-          $command = "/var/www/html/PumpStationControl --web getPressure 1";
+          $command = $ini_array['DocumentRoot']."/PumpStationControl --web getPressure 1";
           exec ($command, $valP1, $return);
           if (is_array($valP1)) {
             $P1 = floatval($valP1[0]);
@@ -79,7 +82,7 @@
           echo (" mbar");
           echo ('</div></div>');
 
-          $command = "/var/www/html/PumpStationControl --web getPressure 2";
+          $command = $ini_array['DocumentRoot']."/PumpStationControl --web getPressure 2";
           exec ($command, $valP2, $return);
           if (is_array($valP2)) {
             $P2 = floatval($valP2[0]);
@@ -98,7 +101,7 @@
           echo (" mbar");
           echo ('</div></div>');
 
-          $command = "/var/www/html/PumpStationControl --web getSwitchState 0";
+          $command = $ini_array['DocumentRoot']."/PumpStationControl --web getSwitchState 0";
           exec ($command, $valS0, $return);
           if (is_array($valS0)) {
             $S0 = boolval($valS0[0]);
@@ -120,7 +123,7 @@
           }
           echo ("</div></div>");
 
-          $command = "/var/www/html/PumpStationControl --web getSwitchState 1";
+          $command = $ini_array['DocumentRoot']."/PumpStationControl --web getSwitchState 1";
           exec ($command, $valS1, $return);
           if (is_array($valS1)) {
             $S1 = boolval($valS1[0]);
@@ -142,7 +145,7 @@
           }
           echo ("</div></div>");
 
-          $command = "/var/www/html/PumpStationControl --web getSwitchState 2";
+          $command = $ini_array['DocumentRoot']."/PumpStationControl --web getSwitchState 2";
           exec ($command, $valS2, $return);
           if (is_array($valS2)) {
             $S2 = boolval($valS2[0]);
@@ -164,7 +167,7 @@
           }
           echo ("</div></div>");
 
-          $command = "/var/www/html/PumpStationControl --web getSwitchState 3";
+          $command = $ini_array['DocumentRoot']."/PumpStationControl --web getSwitchState 3";
           exec ($command, $valS3, $return);
           if (is_array($valS3)) {
             $S3 = boolval($valS3[0]);
@@ -186,7 +189,7 @@
           }
           echo ("</div></div>");
 
-          $command = "/var/www/html/PumpStationControl --web getSwitchState 4";
+          $command = $ini_array['DocumentRoot']."/PumpStationControl --web getSwitchState 4";
           exec ($command, $valS4, $return);
           if (is_array($valS4)) {
             $S4 = boolval($valS4[0]);

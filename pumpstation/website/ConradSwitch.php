@@ -2,9 +2,11 @@
 if (isset($_GET["channel"])) {
 	$channel = strip_tags ($_GET["channel"]);
 	
-	if ((is_numeric($channel)) && ($channel <= 7) && ($channel >= 0) ) {
+	if ((is_numeric($channel)) && ($channel <= 4) && ($channel >= 0) ) {
 		
-		$command = "/var/www/html/PumpStationControl --web getSwitchState ".$channel;
+		$ini_array = parse_ini_file("pumpstation.ini");
+		
+		$command = $ini_array['DocumentRoot']."/PumpStationControl --web getSwitchState ".$channel;
 		exec ($command, $status, $return);
 		
 		if ($status[0] == "0" ) {
@@ -13,7 +15,7 @@ if (isset($_GET["channel"])) {
 			$status[0] = "0";
 		}
 		
-		$command = "/var/www/html/PumpStationControl --web setSwitchState ".$channel." ".$status[0];
+		$command = $ini_array['DocumentRoot']."/PumpStationControl --web setSwitchState ".$channel." ".$status[0];
 		exec ($command, $status, $return);
 		
 		echo($status[0]);
