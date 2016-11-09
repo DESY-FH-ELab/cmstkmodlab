@@ -1,0 +1,58 @@
+#!/bin/sh
+
+### BEGIN INIT INFO
+# Provides:        pumpstation
+# Required-Start:  $network $remote_fs $syslog
+# Required-Stop:   $network $remote_fs $syslog
+# Default-Start:   2 3 4 5
+# Default-Stop: 
+# Short-Description: pump station daemon
+### END INIT INFO
+
+PATH=@basepath@/pumpstation/daemon
+
+. /lib/lsb/init-functions
+
+DAEMON=@basepath@/pumpstation/daemon/PumpStationDaemon
+PIDFILE=/var/run/pumpstation.pid
+
+test -x $DAEMON || exit 5
+
+LOCKFILE=/run/lock/pumpstation
+
+case $1 in
+	start)
+		log_daemon_msg "Starting pump station daemon" "PumpStationDaemon"
+		(
+			flock -w 180 9
+			start-stop-daemon --start --quiet --oknodo --pidfile $PIDFILE --startas $DAEMON -- -p $PIDFILE --daemon
+		) 9>$LOCKFILE
+		log_end_msg $?
+  		;;
+	stop)
+		log_daemon_msg "Stopping pump station daemon" "PumpStationDaemon"
+  		start-stop-daemon --stop --quiet --oknodo --pidfile $PIDFILE
+		log_end_msg $?
+		rm -f $PIDFILE
+  		;;
+	restart|force-reload)
+		$0 stop && sleep 2 && $0 start
+  		;;
+	try-restart)
+		if $0 status >/dev/null; then
+			$0 restart
+		else
+			exit 0
+		fi
+		;;
+	reload)
+		exit 3
+		;;
+	status)
+		status_of_proc $DAEMON "PumpStationDaemon"
+		;;
+	*)
+		echo "Usage: $0 {start|stop|restart|try-restart|force-reload|status}"
+		exit 2
+		;;
+esac
