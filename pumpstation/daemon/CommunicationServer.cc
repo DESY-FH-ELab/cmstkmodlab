@@ -8,9 +8,11 @@
 #include "CommunicationServer.h"
 
 CommunicationServer::CommunicationServer(ConradModel* conradModel,
+                                         LeyboldGraphixThreeModel* leyboldModel,
                                          QObject *parent)
  : QTcpServer(parent),
-   conradModel_(conradModel)
+   conradModel_(conradModel),
+   leyboldModel_(leyboldModel)
 {
   connect(this, SIGNAL(setSwitchEnabled(int, bool)),
           conradModel_, SLOT(setSwitchEnabled(int, bool)));
@@ -79,6 +81,20 @@ void CommunicationServer::handleCommand()
         QMutexLocker locker(&mutex_);
         State state = conradModel_->getSwitchState(channel);
         response = QString::number((int)state);
+      }
+    }
+  } else if (cmd=="getPressure") {
+    if (args.count()!=1) {
+      response = "ERR";
+    } else {
+      int channel = args.at(0).toInt();
+
+      if (channel<0 || channel>3) {
+        response = "ERR";
+      } else {
+        QMutexLocker locker(&mutex_);
+        double pressure = leyboldModel_->getPressure(channel);
+        response = QString("%1 mbar").arg(pressure, 0, 'E', 3);
       }
     }
   } else {
