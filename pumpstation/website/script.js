@@ -1,4 +1,4 @@
-﻿var button_0 = document.getElementById("button_0");
+var button_0 = document.getElementById("button_0");
 var button_1 = document.getElementById("button_1");
 var button_2 = document.getElementById("button_2");
 var button_3 = document.getElementById("button_3");
