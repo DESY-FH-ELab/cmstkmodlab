@@ -6,6 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="chrome=1,IE=edge" />
     <meta name="viewport" content="user-scalable=no, width=800" />
     <meta charset="utf-8" />
+    <meta http-equiv="refresh" content="30">
     <title>.: CMS Pump Station Status & Control :.</title>
     <style type="text/css">
       body {
@@ -20,7 +21,7 @@
         left: 50%;
         width:30em;
         height:18em;
-        background-color:#aaFFFF;
+        background-color:#FFFFFF;
         margin-top: 10px; /*set to a negative number 1/2 of your height*/
         margin-left: -400px; /*set to a negative number 1/2 of your width*/
       }
@@ -41,57 +42,77 @@
         <?php
           $command = "/var/www/html/PumpStationControl --web getPressure 0";
           exec ($command, $valP0, $return);
-          if ($valP0 >= 200.0) {
+          if (is_array($valP0)) {
+            $P0 = floatval($valP0[0]);
+          } else {
+            $P0 = floatval($valP0);
+          }
+          if ($P0 >= 200.0) {
             echo ('<div style="position:absolute;width:128px;height:30px;margin-left:341px;margin-top:5px;background-color:#FF5555;">');
-          } else if ($valP0 < 150.0 ) {
+          } else if ($P0 < 150.0 ) {
             echo ('<div style="position:absolute;width:128px;height:30px;margin-left:341px;margin-top:5px;background-color:#55FF55;">');
           } else {
             echo ('<div style="position:absolute;width:128px;height:30px;margin-left:341px;margin-top:5px;background-color:#FFAA55;">');
           }
           echo ('<div style="font-size:16px;text-align:right;margin-top:5px;margin-right:10px;">');
-          echo (number_format($valP0, 1, ".", ","));
+          echo (number_format($P0, 1, ".", ","));
           echo (" mbar");
           echo ('</div></div>');
 
           $command = "/var/www/html/PumpStationControl --web getPressure 1";
           exec ($command, $valP1, $return);
-          if ($valP1 >= 200.0) {
+          if (is_array($valP1)) {
+            $P1 = floatval($valP1[0]);
+          } else {
+            $P1 = floatval($valP1);
+          }
+          if ($P1 >= 200.0) {
             echo ('<div style="position:absolute;width:128px;height:30px;margin-left:341px;margin-top:45px;background-color:#FF5555;">');
-          } else if ($valP1 < 150.0 ) {
+          } else if ($P1 < 150.0 ) {
             echo ('<div style="position:absolute;width:128px;height:30px;margin-left:341px;margin-top:45px;background-color:#55FF55;">');
           } else {
             echo ('<div style="position:absolute;width:128px;height:30px;margin-left:341px;margin-top:45px;background-color:#FFAA55;">');
           }
           echo ('<div style="font-size:16px;text-align:right;margin-top:5px;margin-right:10px;">');
-          echo (number_format($valP1, 1, ".", ","));
+          echo (number_format($P1, 1, ".", ","));
           echo (" mbar");
           echo ('</div></div>');
 
           $command = "/var/www/html/PumpStationControl --web getPressure 2";
           exec ($command, $valP2, $return);
-          if ($valP2 >= 200.0) {
+          if (is_array($valP2)) {
+            $P2 = floatval($valP2[0]);
+          } else {
+            $P2 = floatval($valP2);
+          }
+          if ($P2 >= 200.0) {
             echo ('<div style="position:absolute;width:128px;height:30px;margin-left:341px;margin-top:85px;background-color:#FF5555;">');
-          } else if ($valP2 < 150.0 ) {
+          } else if ($P2 < 150.0 ) {
             echo ('<div style="position:absolute;width:128px;height:30px;margin-left:341px;margin-top:85px;background-color:#55FF55;">');
           } else {
             echo ('<div style="position:absolute;width:128px;height:30px;margin-left:341px;margin-top:85px;background-color:#FFAA55;">');
           }
           echo ('<div style="font-size:16px;text-align:right;margin-top:5px;margin-right:10px;">');
-          echo (number_format($valP2, 1, ".", ","));
+          echo (number_format($P2, 1, ".", ","));
           echo (" mbar");
           echo ('</div></div>');
 
           $command = "/var/www/html/PumpStationControl --web getSwitchState 0";
           exec ($command, $valS0, $return);
-          if ($valS0 == 0 ) {
+          if (is_array($valS0)) {
+            $S0 = boolval($valS0[0]);
+          } else {
+            $S0 = boolval($valS0);
+          }
+          if ($S0 == 0 ) {
             echo ('<div style="position:absolute;width:68px;height:30px;margin-left:221px;margin-top:29px;background-color:#FF5555;">');
-          } else if ($valS0 == 1 ) {
+          } else if ($S0 == 1 ) {
             echo ('<div style="position:absolute;width:68px;height:30px;margin-left:221px;margin-top:29px;background-color:#55FF55;">');
           }
           echo ('<div style="font-size:16px;text-align:center;margin-top:5px;">');
-          if ($valS0 == 0 ) {
+          if ($S0 == 0 ) {
             echo ("closed");
-          } else if ($valS0 == 1 ) {
+          } else if ($S0 == 1 ) {
             echo ("open");
           } else {
             echo ("XXX");
@@ -100,13 +121,18 @@
 
           $command = "/var/www/html/PumpStationControl --web getSwitchState 1";
           exec ($command, $valS1, $return);
-          if ($valS1 == 0 ) {
+          if (is_array($valS1)) {
+            $S1 = boolval($valS1[0]);
+          } else {
+            $S1 = boolval($valS1);
+          }
+          if ($S1 == 0 ) {
             echo ('<div style="position:absolute;width:68px;height:30px;margin-left:131px;margin-top:29px;background-color:#FF5555;">');
-          } else if ($valS1 == 1 ) {
+          } else if ($S1 == 1 ) {
             echo ('<div style="position:absolute;width:68px;height:30px;margin-left:131px;margin-top:29px;background-color:#55FF55;">');
           }
           echo ('<div style="font-size:16px;text-align:center;margin-top:5px;">');
-          if ($valS1 == 0 ) {
+          if ($S1 == 0 ) {
             echo ("closed");
           } else if ($valS1 == 1 ) {
             echo ("open");
@@ -117,15 +143,20 @@
 
           $command = "/var/www/html/PumpStationControl --web getSwitchState 2";
           exec ($command, $valS2, $return);
-          if ($valS2 == 0 ) {
+          if (is_array($valS2)) {
+            $S2 = boolval($valS2[0]);
+          } else {
+            $S2 = boolval($valS2);
+          }
+          if ($S2 == 0 ) {
             echo ('<div style="position:absolute;width:68px;height:30px;margin-left:41px;margin-top:29px;background-color:#FF5555;">');
-          } else if ($valS2 == 1 ) {
+          } else if ($S2 == 1 ) {
             echo ('<div style="position:absolute;width:68px;height:30px;margin-left:41px;margin-top:29px;background-color:#55FF55;">');
           }
           echo ('<div style="font-size:16px;text-align:center;margin-top:5px;">');
-          if ($valS2 == 0 ) {
+          if ($S2 == 0 ) {
             echo ("closed");
-          } else if ($valS2 == 1 ) {
+          } else if ($S2 == 1 ) {
             echo ("open");
           } else {
             echo ("XXX");
@@ -134,15 +165,20 @@
 
           $command = "/var/www/html/PumpStationControl --web getSwitchState 3";
           exec ($command, $valS3, $return);
-          if ($valS3 == 0 ) {
+          if (is_array($valS3)) {
+            $S3 = boolval($valS3[0]);
+          } else {
+            $S3 = boolval($valS3);
+          }
+          if ($S3 == 0 ) {
             echo ('<div style="position:absolute;width:58px;height:30px;margin-left:601px;margin-top:5px;background-color:#FF5555;">');
-          } else if ($valS3 == 1 ) {
+          } else if ($S3 == 1 ) {
             echo ('<div style="position:absolute;width:58px;height:30px;margin-left:601px;margin-top:5px;background-color:#55FF55;">');
           }
           echo ('<div style="font-size:16px;text-align:center;margin-top:5px;">');
-          if ($valS3 == 0 ) {
+          if ($S3 == 0 ) {
             echo ("OFF");
-          } else if ($valS3 == 1 ) {
+          } else if ($S3 == 1 ) {
             echo ("ON");
           } else {
             echo ("XXX");
@@ -151,15 +187,20 @@
 
           $command = "/var/www/html/PumpStationControl --web getSwitchState 4";
           exec ($command, $valS4, $return);
-          if ($valS4 == 0 ) {
+          if (is_array($valS4)) {
+            $S4 = boolval($valS4[0]);
+          } else {
+            $S4 = boolval($valS4);
+          }
+          if ($S4 == 0 ) {
             echo ('<div style="position:absolute;width:58px;height:30px;margin-left:601px;margin-top:45px;background-color:#FF5555;">');
-          } else if ($valS4 == 1 ) {
+          } else if ($S4 == 1 ) {
             echo ('<div style="position:absolute;width:58px;height:30px;margin-left:601px;margin-top:45px;background-color:#55FF55">');
           }
           echo ('<div style="font-size:16px;text-align:center;margin-top:5px;">');
-          if ($valS4 == 0 ) {
+          if ($S4 == 0 ) {
             echo ("OFF");
-          } else if ($valS4 == 1 ) {
+          } else if ($S4 == 1 ) {
             echo ("ON");
           } else {
             echo ("XXX");
@@ -176,16 +217,21 @@
 	for ( $i= 0; $i<8; $i++) {
 		$command = "/var/www/html/PumpStationControl --web getSwitchState ".$i;
 		exec ($command, $val_array[$i], $return);
+        if (is_array($val_array[$i])) {
+            $val_array[$i] = intval($val_array[$i][0]);
+          } else {
+            $val_array[$i] = intval($val_array[$i]);
+          }
 	}
 	//for loop to read the value
 	$i =0;
 	for ($i = 0; $i < 8; $i++) {
 		//if off
-		if ($val_array[$i][0] == 0 ) {
+		if ($val_array[$i] == 0 ) {
 			echo ("<img id='button_".$i."' src='data/img/ValveClosed.png' onclick='changeSwitch(".$i.");'/>");
 		}
 		//if on
-		if ($val_array[$i][0] == 1 ) {
+		if ($val_array[$i] == 1 ) {
 			echo ("<img id='button_".$i."' src='data/img/ValveOpen.png' onclick='changeSwitch(".$i.");'/>");
 		}	 
 	}
