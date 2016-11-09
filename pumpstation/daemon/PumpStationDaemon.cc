@@ -24,28 +24,28 @@ int main(int argc, char *argv[])
 {
   QCoreApplication app(argc, argv);
 
-  NQLogger::instance()->addActiveModule("*");
-
   if (!app.arguments().contains("--daemon")) {
+    NQLogger::instance()->addActiveModule("*");
+
     NQLogger::instance()->addDestiniation(stdout, NQLog::Debug);
-  }
 
 #if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
-  QString logdir = QDesktopServices::storageLocation(QDesktopServices::CacheLocation);
+    QString logdir = QDesktopServices::storageLocation(QDesktopServices::CacheLocation);
 #else
-  QString logdir = QStandardPaths::writableLocation(QStandardPaths::CacheLocation);
+    QString logdir = QStandardPaths::writableLocation(QStandardPaths::CacheLocation);
 #endif
-  QDir dir(logdir);
-  if (!dir.exists()) dir.mkpath(".");
-  QString logfilename = logdir + "/pumpstation.log";
+    QDir dir(logdir);
+    if (!dir.exists()) dir.mkpath(".");
+    QString logfilename = logdir + "/pumpstation.log";
 
-  NQLog("pumpstation") << "version " << APPLICATIONVERSIONSTR;
+    NQLog("pumpstation") << "version " << APPLICATIONVERSIONSTR;
 
-  NQLog("pumpstation") << "using " << logfilename << " for logging";
+    NQLog("pumpstation") << "using " << logfilename << " for logging";
 
-  QFile * logfile = new QFile(logfilename);
-  if (logfile->open(QIODevice::WriteOnly | QIODevice::Append | QIODevice::Text)) {
-    NQLogger::instance()->addDestiniation(logfile, NQLog::Message);
+    QFile * logfile = new QFile(logfilename);
+    if (logfile->open(QIODevice::WriteOnly | QIODevice::Append | QIODevice::Text)) {
+      NQLogger::instance()->addDestiniation(logfile, NQLog::Message);
+    }
   }
 
   qRegisterMetaType<State>("State");
