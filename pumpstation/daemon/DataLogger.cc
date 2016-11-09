@@ -10,9 +10,11 @@
 #include "DataLogger.h"
 
 DataLogger::DataLogger(ConradModel* conradModel,
+                       LeyboldGraphixThreeModel* leyboldModel,
                        QObject *parent)
  : QObject(parent),
    conradModel_(conradModel),
+   leyboldModel_(leyboldModel),
    isStreaming_(false),
    ofile_(0),
    stream_(0)

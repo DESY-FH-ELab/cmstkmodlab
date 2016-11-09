@@ -9,6 +9,7 @@
 #include <QDateTime>
 
 #include <ConradModel.h>
+#include <LeyboldGraphixThreeModel.h>
 
 class DataLogger : public QObject
 {
@@ -17,6 +18,7 @@ class DataLogger : public QObject
 public:
 
   DataLogger(ConradModel* conradModel,
+             LeyboldGraphixThreeModel* leyboldModel,
              QObject *parent = 0);
 
   void start();
@@ -30,6 +32,7 @@ protected slots:
 protected:
 
   ConradModel* conradModel_;
+  LeyboldGraphixThreeModel* leyboldModel_;
 
   QMutex mutex_;
   bool isStreaming_;

@@ -34,6 +34,12 @@ std::string LeyboldGraphixThree::GetVersion() const
   return buffer;
 }
 
+double LeyboldGraphixThree::GetPressure(int channel) const
+{
+  if (channel<0 || channel>2) return -1;
+  return 100. + channel * 0.1;
+}
+
 bool LeyboldGraphixThree::DeviceAvailable() const
 {
   return isDeviceAvailable_;

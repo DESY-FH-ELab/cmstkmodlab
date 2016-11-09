@@ -14,8 +14,11 @@ class LeyboldGraphixThreeFake : public VLeyboldGraphixThree
 
   std::string GetVersion() const;
 
- private:
+  double GetPressure(int channel) const;
 
+ protected:
+
+  double pressure_[3];
 };
 
 #endif // _LEYBOLDGRAPHIXTHREEFAKE_H_

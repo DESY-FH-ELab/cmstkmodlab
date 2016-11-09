@@ -17,6 +17,8 @@ class VLeyboldGraphixThree
 
   virtual std::string GetVersion() const = 0;
 
+  virtual double GetPressure(int channel) const = 0;
+
   char GetChecksum(const std::string& buffer) const;
 };
 

@@ -1,6 +1,6 @@
-site_name: TkModLab
+site_name: CMSTkModLab
 site_url: http://desy-fh-elab.github.io/cmstkmodlab
-site_description: Documentation for DESY FH-E-Lab Software
+site_description: Documentation for DESY CMS Lab Software
 site_author: Andreas Mussgiller
 
 repo_url: https://github.com/DESY-FH-ELab/cmstkmodlab
@@ -17,6 +17,8 @@ pages:
 - Defo:
     - defoDAQ: defo/defoDAQ.md
     - defoDAQ Scripting: defo/defoDAQScripting.md
-- Assembly: index.md
+- Assembly: assembly/index.md
+- Plasma Cleaner: plasma/index.md
+- Pump Station: pumpstation/index.md
 
-theme: flatly
+theme: readthedocs

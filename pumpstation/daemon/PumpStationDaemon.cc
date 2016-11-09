@@ -15,6 +15,7 @@
 #include <DeviceState.h>
 
 #include <ConradModel.h>
+#include <LeyboldGraphixThreeModel.h>
 #include <DataLogger.h>
 
 #include "CommunicationThread.h"
@@ -49,14 +50,17 @@ int main(int argc, char *argv[])
 
   qRegisterMetaType<State>("State");
 
-  ApplicationConfig::instance(std::string(Config::CMSTkModLabBasePath) + "/pumpstation/pumpstation.cfg");
+  ApplicationConfig * config = ApplicationConfig::instance(std::string(Config::CMSTkModLabBasePath) + "/pumpstation/pumpstation.cfg");
 
   ConradModel conrad(&app);
 
-  DataLogger logger(&conrad, &app);
+  std::string leyboldPort = config->getValue("LeyboldPort");
+  LeyboldGraphixThreeModel leybold(leyboldPort.c_str(), 5, &app);
+
+  DataLogger logger(&conrad, &leybold, &app);
   logger.start();
 
-  CommunicationThread commthread(&conrad, &app);
+  CommunicationThread commthread(&conrad, &leybold, &app);
 
   commthread.start();
 

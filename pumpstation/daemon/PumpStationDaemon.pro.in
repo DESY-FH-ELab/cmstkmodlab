@@ -2,6 +2,7 @@ ARCHITECTURE=@architecture@
 USEFAKEDEVICES="X@usefakedevices@"
 
 LIBS += -L@basepath@/devices/lib -lTkModLabConrad
+LIBS += -L@basepath@/devices/lib -lTkModLabLeybold
 LIBS += -L@basepath@/common -lCommon
 
 QMAKE = @qmake@
