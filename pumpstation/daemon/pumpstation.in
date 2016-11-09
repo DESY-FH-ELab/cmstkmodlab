@@ -14,7 +14,7 @@ PATH=/sbin:/bin:/usr/sbin:/usr/bin:@basepath@/pumpstation/daemon
 . /lib/lsb/init-functions
 
 DAEMON=@basepath@/pumpstation/daemon/runPumpStation.sh
-PIDFILE=/var/run/pumpstation.pid
+PIDFILE=@basepath@/pumpstation/daemon/pumpstation.pid
 
 test -x $DAEMON || exit 5
 
@@ -27,7 +27,7 @@ case $1 in
 		log_daemon_msg "Starting pump station daemon" "PumpStationDaemon"
 		(
 			flock -w 180 9
-			start-stop-daemon --start --quiet --oknodo --background --pidfile $PIDFILE --startas $DAEMON
+			start-stop-daemon --start --quiet --oknodo --background --pidfile $PIDFILE --startas $DAEMON −−chuid $UGID
 		) 9>$LOCKFILE
 		log_end_msg $?
   		;;
