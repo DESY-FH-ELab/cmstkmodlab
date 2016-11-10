@@ -42,6 +42,10 @@ $(LIBDIR)/lib$(LIB).so: $(addsuffix .o,$(MODULES))
 test: test.cc $(LIBDIR)/lib$(LIB).so
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) test.cc -o test -L../lib -lTkModLabLeybold
 
+install:
+	install -m 755 -p $(LIBDIR)/lib$(LIB).so /usr/lib
+	strip /usr/lib/lib$(LIB).so
+
 clean:
 	@rm -f $(LIBDIR)/lib$(LIB).so
 	@rm -f $(addsuffix .o,$(MODULES))

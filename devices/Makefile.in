@@ -22,15 +22,11 @@ subdirs	      = Julabo \
 		        Nanotec \
 		        Leybold
 
-ifeq ($(NOTHERMAL),0)
-subdirs      += 
-endif
-ifeq ($(NODEFO),0)
-subdirs      += 
-endif
-
 all:
 	@for dir in $(subdirs); do (cd $$dir; make); done
+
+install:
+	@for dir in $(subdirs); do (cd $$dir; make install); done
 
 clean:
 	@rm -f *~

@@ -1,8 +1,6 @@
 ARCHITECTURE=@architecture@
 USEFAKEDEVICES="X@usefakedevices@"
 
-LIBS += -L@basepath@/devices/lib -lTkModLabConrad
-LIBS += -L@basepath@/devices/lib -lTkModLabLeybold
 LIBS += -L@basepath@/common -lCommon
 
 QMAKE = @qmake@
@@ -35,30 +33,16 @@ equals(USEFAKEDEVICES,"X1") {
 DEFINES += USE_FAKEIO
 }
 
-QT += core network gui xml
+QT += core gui xml network script svg webkit
 greaterThan(QT_MAJOR_VERSION, 4) {
   QT += widgets
 } 
 
-CONFIG   += console
-CONFIG   -= app_bundle
-
-TARGET = PumpStationDaemon
+TARGET = pumpstation
 TEMPLATE = app
 
 macx {
   QMAKE_POST_LINK = install_name_tool -change libCommon.1.dylib @basepath@/common/libCommon.1.dylib $(TARGET)
-}
-
-unix {
-  target.path = /usr/bin
-  target.from = PumpStationDaemon
-
-  systemd.path = /etc/init.d
-  systemd.from = pumpstation
-  systemd.extra = systemctl enable pumpstation
-  
-  INSTALLS += target systemd
 }
 
 DEPENDPATH += @basepath@/common
@@ -72,22 +56,16 @@ greaterThan(QT_MAJOR_VERSION, 4) {
 }
 
 # Input
-HEADERS += PumpStationModel.h \
-           CommunicationThread.h \
-           CommunicationServer.h \
-           DataLogger.h
-
+HEADERS += PumpStationMainWindow.h
+           
 equals(USEFAKEDEVICES,"X0") {
 HEADERS += 
 } else {
 HEADERS += 
 }
 
-SOURCES += PumpStationDaemon.cc \
-           PumpStationModel.cc \
-           CommunicationThread.cc \
-           CommunicationServer.cc \
-           DataLogger.cc
+SOURCES += pumpstation.cc \
+           PumpStationMainWindow.cc
 
 equals(USEFAKEDEVICES,"X0") {
 SOURCES += 

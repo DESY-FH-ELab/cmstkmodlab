@@ -5,8 +5,7 @@
 #include <QTcpServer>
 #include <QTcpSocket>
 
-#include <ConradModel.h>
-#include <LeyboldGraphixThreeModel.h>
+#include <PumpStationModel.h>
 
 class CommunicationServer : public QTcpServer
 {
@@ -14,8 +13,7 @@ class CommunicationServer : public QTcpServer
 
 public:
 
-  CommunicationServer(ConradModel* conradModel,
-                      LeyboldGraphixThreeModel* leyboldModel,
+  CommunicationServer(PumpStationModel* model,
                       QObject *parent = 0);
 
 protected slots:
@@ -30,8 +28,7 @@ protected:
 
   void incomingConnection(int socketDescriptor);
 
-  ConradModel* conradModel_;
-  LeyboldGraphixThreeModel* leyboldModel_;
+  PumpStationModel* model_;
 
   QTcpSocket* socket_;
   QMutex mutex_;

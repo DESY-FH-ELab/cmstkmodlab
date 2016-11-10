@@ -1,0 +1,11 @@
+pumpstation.pro
+pumpstation.pro.user
+.qmake.stash
+Makefile
+*.d
+*.o
+*~
+moc_*
+pumpstation.app
+pumpstation
+

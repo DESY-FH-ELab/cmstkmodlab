@@ -8,19 +8,17 @@
 
 #include "CommunicationThread.h"
 
-CommunicationThread::CommunicationThread(ConradModel* conradModel,
-                                         LeyboldGraphixThreeModel* leyboldModel,
+CommunicationThread::CommunicationThread(PumpStationModel* model,
                                          QObject *parent)
  : QThread(parent),
-   conradModel_(conradModel),
-   leyboldModel_(leyboldModel)
+   model_(model)
 {
 
 }
 
 void CommunicationThread::run()
 {
-  server_ = new CommunicationServer(conradModel_, leyboldModel_);
+  server_ = new CommunicationServer(model_);
 
   // find out which IP to connect to
   QString ipAddress;

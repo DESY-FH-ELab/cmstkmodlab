@@ -18,34 +18,40 @@
 #include <LeyboldGraphixThreeModel.h>
 #include <DataLogger.h>
 
+#include "PumpStationModel.h"
 #include "CommunicationThread.h"
 
 int main(int argc, char *argv[])
 {
   QCoreApplication app(argc, argv);
 
-  NQLogger::instance()->addActiveModule("*");
+  if (app.arguments().contains("--nodaemon")) {
+    NQLogger::instance()->addActiveModule("*");
 
-  if (!app.arguments().contains("--daemon")) {
     NQLogger::instance()->addDestiniation(stdout, NQLog::Debug);
-  }
 
 #if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
-  QString logdir = QDesktopServices::storageLocation(QDesktopServices::CacheLocation);
+    QString logdir = QDesktopServices::storageLocation(QDesktopServices::CacheLocation);
 #else
-  QString logdir = QStandardPaths::writableLocation(QStandardPaths::CacheLocation);
+    QString logdir = QStandardPaths::writableLocation(QStandardPaths::CacheLocation);
 #endif
-  QDir dir(logdir);
-  if (!dir.exists()) dir.mkpath(".");
-  QString logfilename = logdir + "/pumpstation.log";
+    QDir dir(logdir);
+    if (!dir.exists()) dir.mkpath(".");
+    QString logfilename = logdir + "/pumpstation.log";
 
-  NQLog("pumpstation") << "version " << APPLICATIONVERSIONSTR;
+    NQLog("pumpstation") << "version " << APPLICATIONVERSIONSTR;
 
-  NQLog("pumpstation") << "using " << logfilename << " for logging";
+    NQLog("pumpstation") << "using " << logfilename << " for logging";
 
-  QFile * logfile = new QFile(logfilename);
-  if (logfile->open(QIODevice::WriteOnly | QIODevice::Append | QIODevice::Text)) {
-    NQLogger::instance()->addDestiniation(logfile, NQLog::Message);
+    QFile * logfile = new QFile(logfilename);
+    if (logfile->open(QIODevice::WriteOnly | QIODevice::Append | QIODevice::Text)) {
+      NQLogger::instance()->addDestiniation(logfile, NQLog::Message);
+    }
+  } else if (app.arguments().contains("--pidfile")) {
+    int idx = app.arguments().indexOf("--pidfile");
+    if (app.arguments().count()>idx+1) {
+      QString pidfile = app.arguments().at(idx+1);
+    }
   }
 
   qRegisterMetaType<State>("State");
@@ -57,11 +63,12 @@ int main(int argc, char *argv[])
   std::string leyboldPort = config->getValue("LeyboldPort");
   LeyboldGraphixThreeModel leybold(leyboldPort.c_str(), 5, &app);
 
-  DataLogger logger(&conrad, &leybold, &app);
+  PumpStationModel model(&conrad, &leybold, 5, &app);
+
+  DataLogger logger(&model, &app);
   logger.start();
 
-  CommunicationThread commthread(&conrad, &leybold, &app);
-
+  CommunicationThread commthread(&model, &app);
   commthread.start();
 
   return app.exec();

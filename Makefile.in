@@ -42,14 +42,19 @@ ifeq ($(NOPLASMA),0)
 qtsubdirs    += plasma
 endif
 ifeq ($(NOPUMPSTATION),0)
-qtsubdirs    += pumpstation/daemon pumpstation/controller
+qtsubdirs    += pumpstation/daemon pumpstation/controller pumpstation/app
 endif
+
+installsubdirs = devices external common pumpstation
 
 all: qt
 	@for dir in $(subdirs); do (cd $$dir; make); done
 
 qt:
 	@for dir in $(qtsubdirs); do (cd $$dir; @qmake@); done
+
+install:
+	@for dir in $(installsubdirs); do (cd $$dir; make install); done
 
 Makefile: Makefile.in @basepath@/config.status
 	@basepath@/config.status Makefile.in

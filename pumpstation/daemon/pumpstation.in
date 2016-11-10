@@ -1,0 +1,39 @@
+#!/bin/sh
+# kFreeBSD do not accept scripts as interpreters, using #!/bin/sh and sourcing.
+if [ true != "$INIT_D_SCRIPT_SOURCED" ] ; then
+    set "$0" "$@"; INIT_D_SCRIPT_SOURCED=true . /lib/init/init-d-script
+fi
+### BEGIN INIT INFO
+# Provides:          pumpstation
+# Required-Start:    $remote_fs $syslog
+# Required-Stop:     $remote_fs $syslog
+# Default-Start:     2 3 4 5
+# Default-Stop:
+# Short-Description: initscript for CMS pump station daemon
+# Description:       control daemon for CMS pump station
+### END INIT INFO
+
+#
+# Author: Andreas Mussgiller <andreas.mussgiller@desy.de>
+#
+
+DESC="CMS pump station control"
+NAME=pumpstation
+SCRIPTNAME=/etc/init.d/$NAME
+DAEMON=/usr/bin/PumpStationDaemon
+PIDFILE=/var/run/pumpstation.pid
+
+[ -x "$DAEMON" ] || exit 0
+
+do_start () {
+	log_daemon_msg "Starting pump station daemon" "pumpstation"
+	start-stop-daemon --start --quiet --oknodo --background --chuid pi --group pi --make-pidfile --pidfile $PIDFILE --startas $DAEMON
+	log_end_msg $?
+}
+
+do_stop () {
+	log_daemon_msg "Stopping pump station daemon" "pumpstation"
+	start-stop-daemon --stop --quiet --oknodo --chuid pi --group pi --pidfile $PIDFILE
+	log_end_msg $?
+	rm -f $PIDFILE
+}
