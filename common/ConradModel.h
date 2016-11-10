@@ -76,7 +76,6 @@ signals:
   // Classname identifiers are needed because Qt can't resolve internal enums
   void deviceStateChanged(State newState);
   void switchStateChanged(int device, State newState);
-  void defoMessage(const QString & text);
   void controlStateChanged(bool);
 };
 
