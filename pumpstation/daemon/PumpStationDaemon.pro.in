@@ -55,8 +55,7 @@ unix {
   target.from = PumpStationDaemon
 
   systemd.path = /etc/init.d
-  systemd.from = pumpstation
-  systemd.extra = systemctl enable pumpstation
+  systemd.extra = chmod a+x pumpstation; cp pumpstation /etc/init.d; systemctl enable pumpstation
   
   INSTALLS += target systemd
 }
