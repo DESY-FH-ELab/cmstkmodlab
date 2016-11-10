@@ -24,7 +24,7 @@ int main(int argc, char *argv[])
 {
   QCoreApplication app(argc, argv);
 
-  if (!app.arguments().contains("--daemon")) {
+  if (app.arguments().contains("--nodaemon")) {
     NQLogger::instance()->addActiveModule("*");
 
     NQLogger::instance()->addDestiniation(stdout, NQLog::Debug);
