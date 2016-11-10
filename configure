@@ -24,6 +24,15 @@ ROOTLIBS=`root-config --libs`
 ROOTGLIBS=`root-config --glibs`
 ROOTMAJOR=`root-config --version | cut -d . -f 1`
 
+echo "#!/bin/sh" > reconfigure
+COMMANDLINE="./configure "
+for var in "$@"
+do
+    COMMANDLINE="$COMMANDLINE $var"
+done
+echo $COMMANDLINE >> reconfigure
+chmod a+x reconfigure
+
 while test $# -gt 0; do 
   case $1 in
     --nodefo)
