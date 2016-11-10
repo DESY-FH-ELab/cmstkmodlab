@@ -1,60 +1,42 @@
-#!/bin/bash
-
+#!/bin/sh
+# kFreeBSD do not accept scripts as interpreters, using #!/bin/sh and sourcing.
+if [ true != "$INIT_D_SCRIPT_SOURCED" ] ; then
+    set "$0" "$@"; INIT_D_SCRIPT_SOURCED=true . /lib/init/init-d-script
+fi
 ### BEGIN INIT INFO
-# Provides:        pumpstation
-# Required-Start:  $network $remote_fs $syslog
-# Required-Stop:   $network $remote_fs $syslog
-# Default-Start:   2 3 4 5
-# Default-Stop: 
-# Short-Description: pump station daemon
+# Provides:          psd
+# Required-Start:    $remote_fs $syslog
+# Required-Stop:     $remote_fs $syslog
+# Default-Start:     2 3 4 5
+# Default-Stop:      0 1 6
+# Short-Description: Example initscript
+# Description:       This file should be used to construct scripts to be
+#                    placed in /etc/init.d.  This example start a
+#                    single forking daemon capable of writing a pid
+#                    file.  To get other behavoirs, implemend
+#                    do_start(), do_stop() or other functions to
+#                    override the defaults in /lib/init/init-d-script.
 ### END INIT INFO
 
-PATH=/sbin:/bin:/usr/sbin:/usr/bin:@basepath@/pumpstation/daemon
+# Author: Foo Bar <foobar@baz.org>
+#
+# Please remove the "Author" lines above and replace them
+# with your own name if you copy and modify this script.
 
-. /lib/lsb/init-functions
+DESC="Description of the service"
+NAME=psd
+DAEMON=/usr/bin/PumpStationDaemon
+PIDFILE=/home/pi/cmstkmodlab/pumpstation/daemon/psd.pid
 
-DAEMON=@basepath@/pumpstation/daemon/runPumpStation.sh
-PIDFILE=@basepath@/pumpstation/daemon/pumpstation.pid
+do_start () {
+	log_daemon_msg "Starting pump station daemon" "psd"
+	start-stop-daemon --start --quiet --oknodo --background --chuid pi --group pi --make-pidfile --pidfile $PIDFILE --startas $DAEMON
+	log_end_msg $?
+}
 
-test -x $DAEMON || exit 5
-
-LOCKFILE=/run/lock/pumpstation
-
-UGID=$(getent passwd pi | cut -f 3,4 -d:)
-
-case $1 in
-	start)
-		log_daemon_msg "Starting pump station daemon" "PumpStationDaemon"
-		(
-			flock -w 180 9
-			start-stop-daemon --start --quiet --oknodo --background --pidfile $PIDFILE --startas $DAEMON −−chuid $UGID
-		) 9>$LOCKFILE
-		log_end_msg $?
-  		;;
-	stop)
-		log_daemon_msg "Stopping pump station daemon" "PumpStationDaemon"
-  		start-stop-daemon --stop --quiet --oknodo --pidfile $PIDFILE
-		log_end_msg $?
-		rm -f $PIDFILE
-  		;;
-	restart|force-reload)
-		$0 stop && sleep 2 && $0 start
-  		;;
-	try-restart)
-		if $0 status >/dev/null; then
-			$0 restart
-		else
-			exit 0
-		fi
-		;;
-	reload)
-		exit 3
-		;;
-	status)
-		status_of_proc $DAEMON "PumpStationDaemon"
-		;;
-	*)
-		echo "Usage: $0 {start|stop|restart|try-restart|force-reload|status}"
-		exit 2
-		;;
-esac
+do_stop () {
+	log_daemon_msg "Stopping pump station daemon" "psd"
+	start-stop-daemon --stop --quiet --oknodo --chuid pi --group pi --pidfile $PIDFILE
+	log_end_msg $?
+	rm -f $PIDFILE
+}
