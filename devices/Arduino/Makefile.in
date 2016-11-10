@@ -44,6 +44,10 @@ testPres: testPres.cc $(LIBDIR)/lib$(LIB).so
 	@echo "Compiling $<"
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $< -o $@
 
+install:
+	install -m 755 -p $(LIBDIR)/lib$(LIB).so /usr/lib
+	strip /usr/lib/lib$(LIB).so
+
 clean:
 	@rm -f $(LIBDIR)/lib$(LIB).so
 	@rm -f $(addsuffix .o,$(MODULES))
