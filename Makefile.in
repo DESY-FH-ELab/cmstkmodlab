@@ -45,7 +45,7 @@ ifeq ($(NOPUMPSTATION),0)
 qtsubdirs    += pumpstation/daemon pumpstation/controller pumpstation/app
 endif
 
-installsubdirs = devices external common
+installsubdirs = devices external common pumpstation
 
 all: qt
 	@for dir in $(subdirs); do (cd $$dir; make); done
