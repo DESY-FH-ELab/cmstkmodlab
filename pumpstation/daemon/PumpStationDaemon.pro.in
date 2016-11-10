@@ -50,9 +50,16 @@ macx {
   QMAKE_POST_LINK = install_name_tool -change libCommon.1.dylib @basepath@/common/libCommon.1.dylib $(TARGET)
 }
 
-target.path = /usr/bin
-target.from = PumpStationDaemon
-INSTALLS += target
+unix {
+  target.path = /usr/bin
+  target.from = PumpStationDaemon
+
+  systemd.path = /etc/init.d
+  systemd.from = pumpstation
+  systemd.extra = systemctl enable pumpstation
+  
+  INSTALLS += target systemd
+}
 
 DEPENDPATH += @basepath@/common
 INCLUDEPATH += .

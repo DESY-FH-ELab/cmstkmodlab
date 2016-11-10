@@ -8,7 +8,7 @@ fi
 # Required-Start:    $remote_fs $syslog
 # Required-Stop:     $remote_fs $syslog
 # Default-Start:     2 3 4 5
-# Default-Stop:      0 1 6
+# Default-Stop:
 # Short-Description: initscript for CMS pump station daemon
 # Description:       control daemon for CMS pump station
 ### END INIT INFO
@@ -19,8 +19,11 @@ fi
 
 DESC="CMS pump station control"
 NAME=pumpstation
+SCRIPTNAME=/etc/init.d/$NAME
 DAEMON=/usr/bin/PumpStationDaemon
 PIDFILE=/var/run/pumpstation.pid
+
+[ -x "$DAEMON" ] || exit 0
 
 do_start () {
 	log_daemon_msg "Starting pump station daemon" "pumpstation"
