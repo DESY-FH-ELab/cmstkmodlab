@@ -3,7 +3,7 @@ NOTHERMAL     = @nothermal@
 NODEFO        = @nodefo@
 USEFAKEDEVICES= @usefakedevices@
 
-subdirs	      = ddierckx math twitcurl
+subdirs	      = ddierckx math
 installsubdirs = ddierckx
 
 all:

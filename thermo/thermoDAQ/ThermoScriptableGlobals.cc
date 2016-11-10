@@ -4,10 +4,6 @@
 #include <fstream>
 #include <string>
 
-#ifndef NO_TWITTER
-#include <twitcurl.h>
-#endif
-
 #include <QMutexLocker>
 #include <QDateTime>
 #include <QDir>
@@ -103,47 +99,10 @@ QScriptValue ThermoScriptableGlobals::mkUTime(int year, int month, int day,
   return QScriptValue(utime);
 }
 
-void ThermoScriptableGlobals::tweet(const QString& user, const QString& pw,
+void ThermoScriptableGlobals::tweet(const QString& /* user */, const QString& /* pw */,
                                     const QString& message)
 {
-#ifndef NO_TWITTER
-
-    twitCurl twitterObj;
-
-    std::string username = user.toStdString();
-    std::string password = pw.toStdString();
-
-    twitterObj.setTwitterUsername( username );
-    twitterObj.setTwitterPassword( password );
-
-    QDir homeDir = QDir::home();
-    std::ifstream ifile(homeDir.filePath(".twitterTkModLab").toStdString().c_str());
-    std::string line;
-    ifile >> line; twitterObj.getOAuth().setConsumerKey(line);
-    ifile >> line; twitterObj.getOAuth().setConsumerSecret(line);
-    ifile >> line; twitterObj.getOAuth().setOAuthTokenKey(line);
-    ifile >> line; twitterObj.getOAuth().setOAuthTokenSecret(line);
-    ifile.close();
-
-    std::string replyMsg;
-    if (twitterObj.accountVerifyCredGet()) {
-        twitterObj.getLastWebResponse(replyMsg);
-        printf( "\ntwitterClient:: twitCurl::accountVerifyCredGet web response:\n%s\n", replyMsg.c_str());
-
-        std::string m = QDateTime::currentDateTime().toString("yyMMddhhmm").toStdString();
-        m += ": ";
-        m += message.toStdString();
-        m += " #TkModLab";
-        if (twitterObj.statusUpdate(m)) {
-            twitterObj.getLastWebResponse(replyMsg);
-            //printf("\ntwitterClient:: twitCurl::statusUpdate web response:\n%s\n", replyMsg.c_str() );
-	    NQLog("thermoDAQ") << "tweet: " << m;
-        }
-    } else {
-      NQLog("thermoDAQ") << "cannot log into twitter account";
-    }
-
-#endif
+  slack(message);
 }
 
 void ThermoScriptableGlobals::slack(const QString& message)
