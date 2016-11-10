@@ -1,9 +1,0 @@
-#!/bin/bash
-
-. @basepath@/tkmodlabenv.sh
-
-cd @basepath@/pumpstation/daemon
-
-./PumpStationDaemon --daemon &
-
-echo $! > @basepath@/pumpstation/daemon/pumpstation.pid
