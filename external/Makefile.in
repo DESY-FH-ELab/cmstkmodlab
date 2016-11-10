@@ -4,9 +4,13 @@ NODEFO        = @nodefo@
 USEFAKEDEVICES= @usefakedevices@
 
 subdirs	      = ddierckx math twitcurl
+installsubdirs = ddierckx
 
 all:
 	@for dir in $(subdirs); do (cd $$dir; make); done
+
+install:
+	@for dir in $(installsubdirs); do (cd $$dir; make install); done
 
 clean:
 	@rm -f *~
