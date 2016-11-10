@@ -9,18 +9,19 @@
 
 #include "DataLogger.h"
 
-DataLogger::DataLogger(ConradModel* conradModel,
-                       LeyboldGraphixThreeModel* leyboldModel,
+DataLogger::DataLogger(PumpStationModel* model,
                        QObject *parent)
  : QObject(parent),
-   conradModel_(conradModel),
-   leyboldModel_(leyboldModel),
+   model_(model),
    isStreaming_(false),
    ofile_(0),
    stream_(0)
 {
-  connect(conradModel_, SIGNAL(switchStateChanged(int, State)),
+  connect(model_, SIGNAL(switchStateChanged(int, State)),
           this, SLOT(switchStateChanged(int, State)));
+
+  connect(model_, SIGNAL(pressureChanged(int,double)),
+          this, SLOT(pressureChanged(int,double)));
 
   restartTimer_ = new QTimer();
   connect(restartTimer_, SIGNAL(timeout()),
@@ -115,13 +116,23 @@ void DataLogger::writeStatus()
   QXmlStreamWriter xml(&buffer);
   xml.setAutoFormatting(true);
 
-  for (int i=0;i<8;++i) {
-    State state = conradModel_->getSwitchState(i);
+  for (int i=0;i<5;++i) {
+    State state = model_->getSwitchState(i);
 
     xml.writeStartElement("ConradSwitch");
     xml.writeAttribute("time", utime.toString(Qt::ISODate));
     xml.writeAttribute("id", QString::number(i));
     xml.writeAttribute("state", QString::number((int)state));
+    xml.writeEndElement();
+  }
+
+  for (int i=0;i<3;++i) {
+    double p = model_->getPressure(i);
+
+    xml.writeStartElement("LeyboldGraphixThree");
+    xml.writeAttribute("time", utime.toString(Qt::ISODate));
+    xml.writeAttribute("id", QString::number(i));
+    xml.writeAttribute("p", QString::number(p, 'e', 6));
     xml.writeEndElement();
   }
 
@@ -134,7 +145,7 @@ void DataLogger::switchStateChanged(int device, State newState)
 
   QMutexLocker locker(&mutex_);
 
-  NQLogDebug("logger") << "void DataLogger::switchStateChanged(" << device << ", " << (int)newState << ")";
+  NQLogMessage("logger") << "void DataLogger::switchStateChanged(" << device << ", " << (int)newState << ")";
 
   QDateTime utime = QDateTime::currentDateTime();
 
@@ -146,6 +157,27 @@ void DataLogger::switchStateChanged(int device, State newState)
   xml.writeAttribute("time", utime.toString(Qt::ISODate));
   xml.writeAttribute("id", QString::number(device));
   xml.writeAttribute("state", QString::number((int)newState));
+  xml.writeEndElement();
+
+  writeToStream(buffer);
+}
+
+void DataLogger::pressureChanged(int channel, double p)
+{
+  QMutexLocker locker(&mutex_);
+
+  NQLogMessage("logger") << "void DataLogger::pressureChanged(" << channel << ", " << p << ")";
+
+  QDateTime utime = QDateTime::currentDateTime();
+
+  QString buffer;
+  QXmlStreamWriter xml(&buffer);
+  xml.setAutoFormatting(true);
+
+  xml.writeStartElement("LeyboldGraphixThree");
+  xml.writeAttribute("time", utime.toString(Qt::ISODate));
+  xml.writeAttribute("id", QString::number(channel));
+  xml.writeAttribute("p", QString::number(p, 'e', 6));
   xml.writeEndElement();
 
   writeToStream(buffer);

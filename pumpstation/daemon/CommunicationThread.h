@@ -4,8 +4,7 @@
 #include <QThread>
 #include <QTcpSocket>
 
-#include <ConradModel.h>
-#include <LeyboldGraphixThreeModel.h>
+#include <PumpStationModel.h>
 
 #include "CommunicationServer.h"
 
@@ -15,16 +14,14 @@ class CommunicationThread : public QThread
 
 public:
 
-  CommunicationThread(ConradModel* conradModel,
-                      LeyboldGraphixThreeModel* leyboldModel,
+  CommunicationThread(PumpStationModel* model,
                       QObject *parent = 0);
 
   void run();
 
 protected:
 
-  ConradModel* conradModel_;
-  LeyboldGraphixThreeModel* leyboldModel_;
+  PumpStationModel* model_;
 
   CommunicationServer* server_;
 };

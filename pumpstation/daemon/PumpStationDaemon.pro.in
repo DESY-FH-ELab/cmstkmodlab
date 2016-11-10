@@ -72,7 +72,8 @@ greaterThan(QT_MAJOR_VERSION, 4) {
 }
 
 # Input
-HEADERS += CommunicationThread.h \
+HEADERS += PumpStationModel.h \
+           CommunicationThread.h \
            CommunicationServer.h \
            DataLogger.h
 
@@ -83,6 +84,7 @@ HEADERS +=
 }
 
 SOURCES += PumpStationDaemon.cc \
+           PumpStationModel.cc \
            CommunicationThread.cc \
            CommunicationServer.cc \
            DataLogger.cc

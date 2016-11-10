@@ -18,6 +18,7 @@
 #include <LeyboldGraphixThreeModel.h>
 #include <DataLogger.h>
 
+#include "PumpStationModel.h"
 #include "CommunicationThread.h"
 
 int main(int argc, char *argv[])
@@ -46,6 +47,11 @@ int main(int argc, char *argv[])
     if (logfile->open(QIODevice::WriteOnly | QIODevice::Append | QIODevice::Text)) {
       NQLogger::instance()->addDestiniation(logfile, NQLog::Message);
     }
+  } else if (app.arguments().contains("--pidfile")) {
+    int idx = app.arguments().indexOf("--pidfile");
+    if (app.arguments().count()>idx+1) {
+      QString pidfile = app.arguments().at(idx+1);
+    }
   }
 
   qRegisterMetaType<State>("State");
@@ -57,11 +63,12 @@ int main(int argc, char *argv[])
   std::string leyboldPort = config->getValue("LeyboldPort");
   LeyboldGraphixThreeModel leybold(leyboldPort.c_str(), 5, &app);
 
-  DataLogger logger(&conrad, &leybold, &app);
+  PumpStationModel model(&conrad, &leybold, 5, &app);
+
+  DataLogger logger(&model, &app);
   logger.start();
 
-  CommunicationThread commthread(&conrad, &leybold, &app);
-
+  CommunicationThread commthread(&model, &app);
   commthread.start();
 
   return app.exec();

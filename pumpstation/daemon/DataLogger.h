@@ -8,8 +8,7 @@
 #include <QTimer>
 #include <QDateTime>
 
-#include <ConradModel.h>
-#include <LeyboldGraphixThreeModel.h>
+#include <PumpStationModel.h>
 
 class DataLogger : public QObject
 {
@@ -17,8 +16,7 @@ class DataLogger : public QObject
 
 public:
 
-  DataLogger(ConradModel* conradModel,
-             LeyboldGraphixThreeModel* leyboldModel,
+  DataLogger(PumpStationModel* model,
              QObject *parent = 0);
 
   void start();
@@ -27,12 +25,13 @@ public:
 protected slots:
 
   void switchStateChanged(int device, State newState);
+  void pressureChanged(int channel, double p);
+
   void checkRestart();
 
 protected:
 
-  ConradModel* conradModel_;
-  LeyboldGraphixThreeModel* leyboldModel_;
+  PumpStationModel* model_;
 
   QMutex mutex_;
   bool isStreaming_;
