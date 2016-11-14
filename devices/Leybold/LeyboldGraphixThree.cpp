@@ -34,10 +34,224 @@ std::string LeyboldGraphixThree::GetVersion() const
   return buffer;
 }
 
-double LeyboldGraphixThree::GetPressure(int channel) const
+int LeyboldGraphixThree::GetSerialNumber() const
 {
-  if (channel<0 || channel>2) return -1;
-  return 100. + channel * 0.1;
+  std::string command;
+
+  command += SI;
+  command += "5";
+  command += Separator;
+  command += "2";
+
+  SendCommand(command);
+
+  std::string buffer;
+  bool isACK = ReceiveData(buffer);
+
+  return std::atoi(buffer.c_str());
+}
+
+int LeyboldGraphixThree::GetItemNumber() const
+{
+  std::string command;
+
+  command += SI;
+  command += "5";
+  command += Separator;
+  command += "3";
+
+  SendCommand(command);
+
+  std::string buffer;
+  bool isACK = ReceiveData(buffer);
+
+  return std::atoi(buffer.c_str());
+}
+
+int LeyboldGraphixThree::GetNumberOfChannels() const
+{
+  std::string command;
+
+  command += SI;
+  command += "5";
+  command += Separator;
+  command += "8";
+
+  SendCommand(command);
+
+  std::string buffer;
+  bool isACK = ReceiveData(buffer);
+
+  return std::atoi(buffer.c_str());
+}
+
+std::string LeyboldGraphixThree::GetSensorType(int sensor) const
+{
+  if (sensor<1 || sensor>3) return std::string("out of range");
+
+  std::string command;
+
+  command += SI;
+  command += std::to_string(sensor);
+  command += Separator;
+  command += "4";
+
+  SendCommand(command);
+
+  std::string buffer;
+  bool isACK = ReceiveData(buffer);
+
+  return buffer;
+}
+
+std::string LeyboldGraphixThree::GetSensorName(int sensor) const
+{
+  if (sensor<1 || sensor>3) return std::string("out of range");
+
+  std::string command;
+
+  command += SI;
+  command += std::to_string(sensor);
+  command += Separator;
+  command += "5";
+
+  SendCommand(command);
+
+  std::string buffer;
+  bool isACK = ReceiveData(buffer);
+
+  return buffer;
+}
+void LeyboldGraphixThree::SetSensorName(int sensor, const std::string& name)
+{
+  if (sensor<1 || sensor>3) return;
+
+  std::string command;
+
+  command += SO;
+  command += std::to_string(sensor);
+  command += Separator;
+  command += "5";
+  command += Separator;
+  command += name;
+
+  SendCommand(command);
+
+  std::string buffer;
+  bool isACK = ReceiveData(buffer);
+}
+
+LeyboldGraphixThree::SensorStatus LeyboldGraphixThree::GetSensorStatus(int sensor) const
+{
+  if (sensor<1 || sensor>3) return SensorStatus_nosen;
+
+  std::string command;
+
+  command += SI;
+  command += std::to_string(sensor);
+  command += Separator;
+  command += "24";
+
+  SendCommand(command);
+
+  std::string buffer;
+  bool isACK = ReceiveData(buffer);
+
+  std::map<std::string,SensorStatus>::const_iterator itFind = sensorStatusText_.find(buffer);
+  if (itFind!=sensorStatusText_.end()) {
+    return itFind->second;
+  }
+
+  return SensorStatus_nosen;
+}
+
+std::string LeyboldGraphixThree::GetSensorStatusText(int sensor) const
+
+{
+  if (sensor<1 || sensor>3) return "NO-SEN";
+
+  std::string command;
+
+  command += SI;
+  command += std::to_string(sensor);
+  command += Separator;
+  command += "24";
+
+  SendCommand(command);
+
+  std::string buffer;
+  bool isACK = ReceiveData(buffer);
+
+  return buffer;
+}
+
+double LeyboldGraphixThree::GetPressure(int sensor) const
+{
+  if (sensor<1 || sensor>3) return -1;
+
+  std::string command;
+
+  command += SI;
+  command += std::to_string(sensor);
+  command += Separator;
+  command += "29";
+
+  SendCommand(command);
+
+  std::string buffer;
+  bool isACK = ReceiveData(buffer);
+
+  if (buffer=="....") return 1013.;
+
+  return std::atof(buffer.c_str());
+}
+
+LeyboldGraphixThree::DisplayUnit LeyboldGraphixThree::GetDisplayUnit() const
+{
+  std::string command;
+
+  command += SI;
+  command += "5";
+  command += Separator;
+  command += "4";
+
+  SendCommand(command);
+
+  std::string buffer;
+  bool isACK = ReceiveData(buffer);
+
+  std::map<std::string,DisplayUnit>::const_iterator itFind = displayNameUnits_.find(buffer);
+  if (itFind!=displayNameUnits_.end()) {
+    return itFind->second;
+  }
+
+  return DisplayUnit_unknown;
+}
+
+void LeyboldGraphixThree::SetDisplayUnit(LeyboldGraphixThree::DisplayUnit unit)
+{
+  std::string name;
+
+  std::map<DisplayUnit,std::string>::const_iterator itFind = displayUnitNames_.find(unit);
+  if (itFind!=displayUnitNames_.end()) {
+    name = itFind->second;
+  } else {
+    return;
+  }
+
+  std::string command;
+
+  command += SO;
+  command += "5";
+  command += Separator;
+  command += "4";
+  command += Separator;
+  command += name;
+
+  SendCommand(command);
+
+  std::string buffer;
+  bool isACK = ReceiveData(buffer);
 }
 
 bool LeyboldGraphixThree::DeviceAvailable() const
@@ -47,9 +261,12 @@ bool LeyboldGraphixThree::DeviceAvailable() const
 
 void LeyboldGraphixThree::SendCommand(std::string& command) const
 {
+  command += " ";
   char crc = GetChecksum(command);
   command += crc;
   command += EOT;
+
+  // std::cout << command.length() << " |" << command.c_str() << "|" << std::endl;
 
   comHandler_->SendCommand(command.c_str());
 }
@@ -82,24 +299,31 @@ void LeyboldGraphixThree::StripBuffer(char* buffer) const
   }
 }
 
+char LeyboldGraphixThree::GetChecksum(const std::string& buffer) const
+{
+  int sum = 0;
+
+  for (int i=0;i<buffer.length();++i) {
+    sum += buffer[i];
+  }
+
+  char CRC = 255 - (sum%256);
+
+  return CRC;
+}
+
 void LeyboldGraphixThree::DeviceInit()
 {
   isDeviceAvailable_ = false;
 
   if (comHandler_->DeviceAvailable()) {
     
-    /*
-    comHandler_->SendCommand("#1v");
-    char buffer[1000];
-    comHandler_->ReceiveString(buffer);
-    StripBuffer(buffer);
+    int itemNumber = GetItemNumber();
 
-    std::string buf = buffer;
-    if (buf.find("1v SMCI36_RS485", 0)==0) {
+    if (itemNumber==230682) {
       isDeviceAvailable_ = true;
     } else {
       isDeviceAvailable_ = false;
     }
-  */
   }
 }

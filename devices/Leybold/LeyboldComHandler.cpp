@@ -42,9 +42,6 @@ void LeyboldComHandler::SendCommand( const char *commandString )
     write( fIoPortFileDescriptor, &singleCharacter, 1 );
   }
 
-  // send feed characters
-  SendFeedString();
-
   usleep(10000);
   // std::cout << "command: |" << commandString << "|" << std::endl;
 }
@@ -123,8 +120,8 @@ void LeyboldComHandler::InitializeIoPort( void )
   bzero( &fThisTermios, sizeof( fThisTermios ) );
 
   // set input/output baud rate
-  cfsetispeed(&fThisTermios, B115200);
-  cfsetospeed(&fThisTermios, B115200);
+  cfsetispeed(&fThisTermios, B38400);
+  cfsetospeed(&fThisTermios, B38400);
 
   // enable the receiver and disable modem control signals
   fThisTermios.c_cflag |= CREAD;
@@ -174,21 +171,6 @@ void LeyboldComHandler::CloseIoPort( void )
   if (!fDeviceAvailable) return;
 
   close( fIoPortFileDescriptor );
-}
-
-//! Send command termination string (<CR><NL>).
-/*!
-  \internal
-*/
-void LeyboldComHandler::SendFeedString( void )
-{
-  if (!fDeviceAvailable) return;
-
-  // feed string is <CR>
-  char feedString = '\r';
-
-  // write <CR> and get echo
-  write( fIoPortFileDescriptor, &feedString, 1 );
 }
 
 bool LeyboldComHandler::DeviceAvailable()
