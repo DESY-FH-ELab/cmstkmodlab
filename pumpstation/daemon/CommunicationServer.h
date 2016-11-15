@@ -26,7 +26,11 @@ signals:
 
 protected:
 
+#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
   void incomingConnection(int socketDescriptor);
+#else
+  void incomingConnection(qintptr socketDescriptor);
+#endif
 
   PumpStationModel* model_;
 

@@ -1,5 +1,6 @@
 pumpstation.pro
 pumpstation.pro.user
+.qmake.cache
 .qmake.stash
 Makefile
 *.d
