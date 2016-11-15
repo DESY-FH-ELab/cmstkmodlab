@@ -81,6 +81,20 @@ void CommunicationServer::handleCommand()
         response = QString::number((int)state);
       }
     }
+  } else if (cmd=="getSensorStatus") {
+    if (args.count()!=1) {
+      response = "ERR";
+    } else {
+      int sensor = args.at(0).toInt();
+
+      if (sensor<1 || sensor>3) {
+        response = "ERR";
+      } else {
+        QMutexLocker locker(&mutex_);
+        int status = model_->getSensorStatus(sensor);
+        response = QString::number(status);
+      }
+    }
   } else if (cmd=="getPressure") {
     if (args.count()!=1) {
       response = "ERR";
