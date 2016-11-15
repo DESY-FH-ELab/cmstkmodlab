@@ -22,6 +22,7 @@ public:
   const State& getSwitchState(int channel) const;
 
   std::string getSensorName(int sensor) const;
+  int getSensorStatus(int sensor) const;
   double getPressure(int sensor) const;
 
 public slots:
@@ -43,12 +44,15 @@ protected:
   QTimer* timer_;
 
   std::array<State,5> switchState_;
+
+  std::array<LeyboldGraphixThree_t::SensorStatus,3> sensorStatus_;
   std::array<double,3> pressure_;
 
 signals:
 
   void switchStateChanged(int,State);
   void pressureChanged(int,double);
+  void sensorStatusChanged(int,int);
 };
 
 #endif // PUMPSTATIONMODEL_H
