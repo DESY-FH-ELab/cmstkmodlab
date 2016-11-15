@@ -117,12 +117,10 @@ void DataLogger::writeStatus()
   xml.setAutoFormatting(true);
 
   for (int i=0;i<5;++i) {
-    State state = model_->getSwitchState(i);
-
     xml.writeStartElement("ConradSwitch");
     xml.writeAttribute("time", utime.toString(Qt::ISODate));
     xml.writeAttribute("id", QString::number(i));
-    xml.writeAttribute("state", QString::number((int)state));
+    xml.writeAttribute("state", QString::number((int)model_->getSwitchState(i)));
     xml.writeEndElement();
   }
 
