@@ -109,6 +109,26 @@ void CommunicationServer::handleCommand()
         response = QString("%1").arg(pressure, 0, 'f', 1);
       }
     }
+  } else if (cmd=="getVacuumStatus") {
+    if (args.count()!=0) {
+      response = "ERR";
+    } else {
+
+      QMutexLocker locker(&mutex_);
+
+      int s1 = model_->getSensorStatus(1);
+      int s2 = model_->getSensorStatus(2);
+      int s3 = model_->getSensorStatus(3);
+
+      double p1 = model_->getPressure(1);
+      double p2 = model_->getPressure(2);
+      double p3 = model_->getPressure(3);
+
+      response = QString("%1;%2;%3;%4;%5;%6")
+              .arg(s1).arg(p1, 0, 'f', 1)
+              .arg(s2).arg(p2, 0, 'f', 1)
+              .arg(s3).arg(p3, 0, 'f', 1);
+    }
   } else {
     response = "ERR";
   }
