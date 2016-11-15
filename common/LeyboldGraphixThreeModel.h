@@ -32,6 +32,9 @@ public:
                                     double updateInterval = 5,
                                     QObject *parent = 0);
 
+  const std::string getSensorName(int sensor) const;
+  void setSensorName(int sensor, const std::string& name);
+
   LeyboldGraphixThree_t::SensorStatus getSensorStatus(int sensor) const;
   double getPressure(int sensor) const;
 

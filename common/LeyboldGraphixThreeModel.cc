@@ -25,6 +25,16 @@ LeyboldGraphixThreeModel::LeyboldGraphixThreeModel(const char* port,
   NQLog("LeyboldGraphixThree") << "constructed";
 }
 
+const std::string LeyboldGraphixThreeModel::getSensorName(int sensor) const
+{
+  return controller_->GetSensorName(sensor);
+}
+
+void LeyboldGraphixThreeModel::setSensorName(int sensor, const std::string& name)
+{
+  controller_->SetSensorName(sensor, name);
+}
+
 LeyboldGraphixThree_t::SensorStatus LeyboldGraphixThreeModel::getSensorStatus(int sensor) const
 {
   if (sensor<1 || sensor>3) return LeyboldGraphixThree_t::SensorStatus_unknown;
