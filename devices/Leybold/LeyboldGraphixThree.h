@@ -8,6 +8,7 @@
 #include <utility>
 #include <fstream>
 #include <cmath>
+#include <array>
 
 #include "VLeyboldGraphixThree.h"
 #include "LeyboldComHandler.h"
@@ -22,8 +23,22 @@ class LeyboldGraphixThree : public VLeyboldGraphixThree
   bool DeviceAvailable() const;
 
   std::string GetVersion() const;
+  int GetSerialNumber() const;
+  int GetItemNumber() const;
 
-  double GetPressure(int channel) const;
+  int GetNumberOfChannels() const;
+
+  std::string GetSensorType(int sensor) const;
+
+  std::string GetSensorName(int sensor) const;
+  void SetSensorName(int sensor, const std::string& name);
+
+  SensorStatus GetSensorStatus(int sensor) const;
+
+  double GetPressure(int sensor) const;
+
+  DisplayUnit GetDisplayUnit() const;
+  void SetDisplayUnit(DisplayUnit);
 
  protected:
 
@@ -32,15 +47,19 @@ class LeyboldGraphixThree : public VLeyboldGraphixThree
   void StripBuffer(char*) const;
   void DeviceInit();
 
-  LeyboldComHandler* comHandler_;
-  bool isDeviceAvailable_;
-
   static constexpr const char Separator = 0x3B;
   static constexpr const char EOT       = 0x04;
   static constexpr const char SI        = 0x0F;
   static constexpr const char SO        = 0x0E;
   static constexpr const char ACK       = 0x06;
   static constexpr const char NACK      = 0x15;
+
+  char GetChecksum(const std::string& buffer) const;
+
+  LeyboldComHandler* comHandler_;
+  bool isDeviceAvailable_;
+
+  mutable std::array<SensorStatus,3> sensorStatus_;
 };
 
 #endif // _LEYBOLDGRAPHIXTHREE_H_

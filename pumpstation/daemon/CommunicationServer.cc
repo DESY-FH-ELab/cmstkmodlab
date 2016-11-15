@@ -81,19 +81,73 @@ void CommunicationServer::handleCommand()
         response = QString::number((int)state);
       }
     }
+  } else if (cmd=="getSwitchStatus") {
+    if (args.count()!=0) {
+      response = "ERR";
+    } else {
+
+      QMutexLocker locker(&mutex_);
+
+      int s0 = model_->getSwitchState(0);
+      int s1 = model_->getSwitchState(1);
+      int s2 = model_->getSwitchState(2);
+      int s3 = model_->getSwitchState(3);
+      int s4 = model_->getSwitchState(4);
+
+      response = QString("%1;%2;%3;%4;%5")
+                .arg(s0)
+                .arg(s1)
+                .arg(s2)
+                .arg(s3)
+                .arg(s4);
+     }
+  } else if (cmd=="getSensorStatus") {
+    if (args.count()!=1) {
+      response = "ERR";
+    } else {
+      int sensor = args.at(0).toInt();
+
+      if (sensor<1 || sensor>3) {
+        response = "ERR";
+      } else {
+        QMutexLocker locker(&mutex_);
+        int status = model_->getSensorStatus(sensor);
+        response = QString::number(status);
+      }
+    }
   } else if (cmd=="getPressure") {
     if (args.count()!=1) {
       response = "ERR";
     } else {
-      int channel = args.at(0).toInt();
+      int sensor = args.at(0).toInt();
 
-      if (channel<0 || channel>2) {
+      if (sensor<1 || sensor>3) {
         response = "ERR";
       } else {
         QMutexLocker locker(&mutex_);
-        double pressure = model_->getPressure(channel);
+        double pressure = model_->getPressure(sensor);
         response = QString("%1").arg(pressure, 0, 'f', 1);
       }
+    }
+  } else if (cmd=="getVacuumStatus") {
+    if (args.count()!=0) {
+      response = "ERR";
+    } else {
+
+      QMutexLocker locker(&mutex_);
+
+      int s1 = model_->getSensorStatus(1);
+      int s2 = model_->getSensorStatus(2);
+      int s3 = model_->getSensorStatus(3);
+
+      double p1 = model_->getPressure(1);
+      double p2 = model_->getPressure(2);
+      double p3 = model_->getPressure(3);
+
+      response = QString("%1;%2;%3;%4;%5;%6")
+              .arg(s1).arg(p1, 0, 'f', 1)
+              .arg(s2).arg(p2, 0, 'f', 1)
+              .arg(s3).arg(p3, 0, 'f', 1);
     }
   } else {
     response = "ERR";

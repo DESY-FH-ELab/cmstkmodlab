@@ -12,7 +12,9 @@ LeyboldGraphixThreeModel::LeyboldGraphixThreeModel(const char* port,
     LeyboldGraphixThree_PORT(port),
     updateInterval_(updateInterval)
 {
-  for (int i=0;i<3;i++) pressure_[i] = -1;
+  for (int i=0;i<3;i++) status_[i] = LeyboldGraphixThree_t::SensorStatus_unknown;
+  for (int i=0;i<3;i++) pressure_[i] = -999;
+  displayUnit_ = LeyboldGraphixThree_t::DisplayUnit_unknown;
 
   timer_ = new QTimer(this);
   timer_->setInterval(updateInterval_ * 1000);
@@ -23,10 +25,40 @@ LeyboldGraphixThreeModel::LeyboldGraphixThreeModel(const char* port,
   NQLog("LeyboldGraphixThree") << "constructed";
 }
 
-double LeyboldGraphixThreeModel::getPressure(int channel) const
+const std::string LeyboldGraphixThreeModel::getSensorName(int sensor) const
 {
-  if (channel<0 || channel>2) return -1;
-  return pressure_[channel];
+  return controller_->GetSensorName(sensor);
+}
+
+void LeyboldGraphixThreeModel::setSensorName(int sensor, const std::string& name)
+{
+  controller_->SetSensorName(sensor, name);
+}
+
+LeyboldGraphixThree_t::SensorStatus LeyboldGraphixThreeModel::getSensorStatus(int sensor) const
+{
+  if (sensor<1 || sensor>3) return LeyboldGraphixThree_t::SensorStatus_unknown;
+  return status_[sensor-1];
+}
+
+double LeyboldGraphixThreeModel::getPressure(int sensor) const
+{
+  if (sensor<1 || sensor>3) return -1.;
+  return pressure_[sensor-1];
+}
+
+LeyboldGraphixThree_t::DisplayUnit LeyboldGraphixThreeModel::getDisplayUnit() const
+{
+  return displayUnit_;
+}
+
+void LeyboldGraphixThreeModel::setDisplayUnit(LeyboldGraphixThree_t::DisplayUnit unit)
+{
+  if (displayUnit_ != unit) {
+    controller_->SetDisplayUnit(unit);
+    displayUnit_ = unit;
+    emit informationChanged();
+  }
 }
 
 void LeyboldGraphixThreeModel::initialize()
@@ -81,14 +113,24 @@ void LeyboldGraphixThreeModel::updateInformation()
 
     // unsigned int status = controller_->GetStatus();
 
+    std::array<LeyboldGraphixThree_t::SensorStatus,3> status;
     std::array<double,3> pressure;
+
     for (int i=0;i<3;++i) {
-      pressure[i] = controller_->GetPressure(i);
+      status[i] = controller_->GetSensorStatus(i+1);
+      pressure[i] = controller_->GetPressure(i+1);
     }
 
-    if (pressure != pressure_) {
+    LeyboldGraphixThree_t::DisplayUnit displayUnit = controller_->GetDisplayUnit();
 
+    if (status != status_ ||
+        pressure != pressure_ ||
+        displayUnit != displayUnit_) {
+
+      status_ = status;
       pressure_ = pressure;
+
+      displayUnit_ = displayUnit;
 
       // NQLog("LeyboldGraphixThreeModel", NQLog::Spam) << "information changed";
 

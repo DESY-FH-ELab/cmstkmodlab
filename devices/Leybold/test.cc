@@ -17,17 +17,29 @@ typedef LeyboldGraphixThree LeyboldGraphixThree_t;
 
 int main()
 {
-  LeyboldGraphixThree_t gt("/dev/tty.SLAB_USBtoUART");
+  LeyboldGraphixThree_t gt("/dev/ttyUSB0");
 
-  std::string buffer;
+  std::cout << "version:                 " << gt.GetVersion() << std::endl;
+  std::cout << "serial number:           " << gt.GetSerialNumber() << std::endl;
+  std::cout << "item number:             " << gt.GetItemNumber() << std::endl;
+  gt.SetDisplayUnit(VLeyboldGraphixThree::DisplayUnit_mbar);
+  VLeyboldGraphixThree::DisplayUnit unit = gt.GetDisplayUnit();
+  std::cout << "display unit:            " << gt.GetDisplayUnitName(unit) << std::endl << std::endl;
 
-  buffer += (char)0x0E;
-  buffer += "1;5;vacuum ";
-  buffer += (char)0x00;
+  std::cout << "number of channels:      " << gt.GetNumberOfChannels() << std::endl << std::endl;
 
-  gt.GetChecksum(buffer.c_str());
+  for (int i=1;i<4;++i) {
+    std::cout << "sensor " << i << std::endl;
 
-  std::cout << "checksum = " << (int)gt.GetChecksum(buffer.c_str()) << std::endl;
+    std::cout << "  type:                  " << gt.GetSensorType(i) << std::endl;
+    gt.SetSensorName(i, std::string("SENSOR")+std::to_string(i));
+    std::cout << "  name:                  " << gt.GetSensorName(i) << std::endl;
+    VLeyboldGraphixThree::SensorStatus status = gt.GetSensorStatus(i);
+    std::cout << "  status:                " << gt.GetSensorStatusText(status) << std::endl;
+    std::cout << "  pressure:              " << gt.GetPressure(i) << std::endl;
+
+    std::cout << std::endl;
+  }
 
   return 0;
 }

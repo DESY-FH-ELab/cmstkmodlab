@@ -5,7 +5,8 @@ BASEPATH      = @basepath@
 
 LIBS          = PyTkModLabNanotec \
                 PyTkModLabHameg \
-                PyTkModLabConrad
+                PyTkModLabConrad \
+                PyTkModLabLeybold
 
 PYTHONINC    := $(shell python-config --cflags)
 
@@ -44,6 +45,10 @@ PyTkModLabHameg.so: PyTkModLabHameg.o $(BASEPATH)/devices/lib/libTkModLabHameg.s
 PyTkModLabConrad.so: PyTkModLabConrad.o $(BASEPATH)/devices/lib/libTkModLabConrad.so
 	@echo "Linking shared library $@"
 	$(LD) $(addsuffix .o,$(basename $@)) -o $@ $(SOFLAGS) -L$(BASEPATH)/devices/lib -lTkModLabConrad
+
+PyTkModLabLeybold.so: PyTkModLabLeybold.o $(BASEPATH)/devices/lib/libTkModLabLeybold.so
+	@echo "Linking shared library $@"
+	$(LD) $(addsuffix .o,$(basename $@)) -o $@ $(SOFLAGS) -L$(BASEPATH)/devices/lib -lTkModLabLeybold
 
 %.d: %.cc
 	@echo Making dependency for file $< ...

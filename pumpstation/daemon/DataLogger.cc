@@ -117,22 +117,19 @@ void DataLogger::writeStatus()
   xml.setAutoFormatting(true);
 
   for (int i=0;i<5;++i) {
-    State state = model_->getSwitchState(i);
-
     xml.writeStartElement("ConradSwitch");
     xml.writeAttribute("time", utime.toString(Qt::ISODate));
     xml.writeAttribute("id", QString::number(i));
-    xml.writeAttribute("state", QString::number((int)state));
+    xml.writeAttribute("state", QString::number((int)model_->getSwitchState(i)));
     xml.writeEndElement();
   }
 
-  for (int i=0;i<3;++i) {
-    double p = model_->getPressure(i);
-
+  for (int i=1;i<4;++i) {
     xml.writeStartElement("LeyboldGraphixThree");
     xml.writeAttribute("time", utime.toString(Qt::ISODate));
     xml.writeAttribute("id", QString::number(i));
-    xml.writeAttribute("p", QString::number(p, 'e', 6));
+    xml.writeAttribute("status", QString::number(model_->getSensorStatus(i)));
+    xml.writeAttribute("p", QString::number(model_->getPressure(i), 'e', 6));
     xml.writeEndElement();
   }
 
@@ -162,11 +159,11 @@ void DataLogger::switchStateChanged(int device, State newState)
   writeToStream(buffer);
 }
 
-void DataLogger::pressureChanged(int channel, double p)
+void DataLogger::pressureChanged(int sensor, double p)
 {
   QMutexLocker locker(&mutex_);
 
-  NQLogMessage("logger") << "void DataLogger::pressureChanged(" << channel << ", " << p << ")";
+  NQLogMessage("logger") << "void DataLogger::pressureChanged(" << sensor << ", " << p << ")";
 
   QDateTime utime = QDateTime::currentDateTime();
 
@@ -176,7 +173,8 @@ void DataLogger::pressureChanged(int channel, double p)
 
   xml.writeStartElement("LeyboldGraphixThree");
   xml.writeAttribute("time", utime.toString(Qt::ISODate));
-  xml.writeAttribute("id", QString::number(channel));
+  xml.writeAttribute("id", QString::number(sensor));
+  xml.writeAttribute("status", QString::number(model_->getSensorStatus(sensor)));
   xml.writeAttribute("p", QString::number(p, 'e', 6));
   xml.writeEndElement();
 

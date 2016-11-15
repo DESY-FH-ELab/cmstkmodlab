@@ -32,7 +32,14 @@ public:
                                     double updateInterval = 5,
                                     QObject *parent = 0);
 
-  double getPressure(int channel) const;
+  const std::string getSensorName(int sensor) const;
+  void setSensorName(int sensor, const std::string& name);
+
+  LeyboldGraphixThree_t::SensorStatus getSensorStatus(int sensor) const;
+  double getPressure(int sensor) const;
+
+  LeyboldGraphixThree_t::DisplayUnit getDisplayUnit() const;
+  void setDisplayUnit(LeyboldGraphixThree_t::DisplayUnit unit);
 
 public slots:
 
@@ -51,9 +58,11 @@ protected:
   const double updateInterval_;
   QTimer* timer_;
 
-  void setDeviceState( State state );
+  void setDeviceState(State state);
 
+  std::array<LeyboldGraphixThree_t::SensorStatus,3> status_;
   std::array<double,3> pressure_;
+  LeyboldGraphixThree_t::DisplayUnit displayUnit_;
 
 signals:
 
