@@ -23,7 +23,8 @@ int main()
   std::cout << "serial number:           " << gt.GetSerialNumber() << std::endl;
   std::cout << "item number:             " << gt.GetItemNumber() << std::endl;
   gt.SetDisplayUnit(VLeyboldGraphixThree::DisplayUnit_mbar);
-  std::cout << "display unit:            " << gt.GetDisplayUnitName() << std::endl << std::endl;
+  VLeyboldGraphixThree::DisplayUnit unit = gt.GetDisplayUnit();
+  std::cout << "display unit:            " << gt.GetDisplayUnitName(unit) << std::endl << std::endl;
 
   std::cout << "number of channels:      " << gt.GetNumberOfChannels() << std::endl << std::endl;
 
@@ -33,8 +34,8 @@ int main()
     std::cout << "  type:                  " << gt.GetSensorType(i) << std::endl;
     gt.SetSensorName(i, std::string("SENSOR")+std::to_string(i));
     std::cout << "  name:                  " << gt.GetSensorName(i) << std::endl;
-    std::cout << "  status:                " << gt.GetSensorStatus(i) << std::endl;
-    std::cout << "  status text:           " << gt.GetSensorStatusText(i) << std::endl;
+    VLeyboldGraphixThree::SensorStatus status = gt.GetSensorStatus(i);
+    std::cout << "  status:                " << gt.GetSensorStatusText(status) << std::endl;
     std::cout << "  pressure:              " << gt.GetPressure(i) << std::endl;
 
     std::cout << std::endl;

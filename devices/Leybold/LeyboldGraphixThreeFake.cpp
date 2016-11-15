@@ -66,14 +66,6 @@ LeyboldGraphixThreeFake::SensorStatus LeyboldGraphixThreeFake::GetSensorStatus(i
   return SensorStatus_ok;
 }
 
-std::string LeyboldGraphixThreeFake::GetSensorStatusText(int sensor) const
-
-{
-  if (sensor<1 || sensor>3) return "NO-SEN";
-
-  return "OK";
-}
-
 double LeyboldGraphixThreeFake::GetPressure(int sensor) const
 {
   if (sensor<1 || sensor>3) return -1;

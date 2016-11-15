@@ -165,26 +165,6 @@ LeyboldGraphixThree::SensorStatus LeyboldGraphixThree::GetSensorStatus(int senso
   return SensorStatus_nosen;
 }
 
-std::string LeyboldGraphixThree::GetSensorStatusText(int sensor) const
-
-{
-  if (sensor<1 || sensor>3) return "NO-SEN";
-
-  std::string command;
-
-  command += SI;
-  command += std::to_string(sensor);
-  command += Separator;
-  command += "24";
-
-  SendCommand(command);
-
-  std::string buffer;
-  bool isACK = ReceiveData(buffer);
-
-  return buffer;
-}
-
 double LeyboldGraphixThree::GetPressure(int sensor) const
 {
   if (sensor<1 || sensor>3) return -1;
@@ -201,7 +181,7 @@ double LeyboldGraphixThree::GetPressure(int sensor) const
   std::string buffer;
   bool isACK = ReceiveData(buffer);
 
-  if (buffer=="....") return 1013.;
+  if (buffer=="....") return -1.0;
 
   return std::atof(buffer.c_str());
 }

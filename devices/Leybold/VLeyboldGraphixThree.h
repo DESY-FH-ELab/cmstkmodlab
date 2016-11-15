@@ -18,7 +18,8 @@ class VLeyboldGraphixThree
     SensorStatus_soff    = 3,
     SensorStatus_ErrorH  = 4,
     SensorStatus_ErrorL  = 5,
-    SensorStatus_ErrorS  = 6
+    SensorStatus_ErrorS  = 6,
+    SensorStatus_unknown
   };
 
   enum DisplayUnit {
@@ -48,23 +49,24 @@ class VLeyboldGraphixThree
   virtual void SetSensorName(int sensor, const std::string& name) = 0;
 
   virtual SensorStatus GetSensorStatus(int sensor) const = 0;
-  virtual std::string GetSensorStatusText(int sensor) const = 0;
+  std::string GetSensorStatusText(SensorStatus status) const;
+  const std::map<SensorStatus,std::string>& GetSensorStatusTexts() const {
+    return sensorTextStatus_;
+  }
 
   virtual double GetPressure(int sensor) const = 0;
 
   virtual DisplayUnit GetDisplayUnit() const = 0;
-  virtual void SetDisplayUnit(DisplayUnit) = 0;
-  std::string GetDisplayUnitName() const;
+  virtual void SetDisplayUnit(DisplayUnit unit) = 0;
+  std::string GetDisplayUnitName(DisplayUnit unit) const;
   const std::map<DisplayUnit,std::string>& GetDisplayUnitNames() const {
     return displayUnitNames_;
-  }
-  const std::map<std::string,DisplayUnit>& GetDisplayNameUnits() const {
-    return displayNameUnits_;
   }
 
  protected:
 
   std::map<std::string,SensorStatus> sensorStatusText_;
+  std::map<SensorStatus, std::string> sensorTextStatus_;
 
   std::map<DisplayUnit,std::string> displayUnitNames_;
   std::map<std::string,DisplayUnit> displayNameUnits_;

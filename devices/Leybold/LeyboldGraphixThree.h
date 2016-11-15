@@ -33,7 +33,6 @@ class LeyboldGraphixThree : public VLeyboldGraphixThree
   void SetSensorName(int sensor, const std::string& name);
 
   SensorStatus GetSensorStatus(int sensor) const;
-  std::string GetSensorStatusText(int sensor) const;
 
   double GetPressure(int sensor) const;
 
