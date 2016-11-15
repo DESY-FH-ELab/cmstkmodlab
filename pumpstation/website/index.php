@@ -44,25 +44,6 @@
         
           $ini_array = parse_ini_file("pumpstation.ini");
           
-          $command = $ini_array['DocumentRoot']."/PumpStationControl --web getPressure 0";
-          exec ($command, $valP0, $return);
-          if (is_array($valP0)) {
-            $P0 = floatval($valP0[0]);
-          } else {
-            $P0 = floatval($valP0);
-          }
-          if ($P0 >= 200.0) {
-            echo ('<div style="position:absolute;width:128px;height:30px;margin-left:341px;margin-top:5px;background-color:#FF5555;">');
-          } else if ($P0 < 150.0 ) {
-            echo ('<div style="position:absolute;width:128px;height:30px;margin-left:341px;margin-top:5px;background-color:#55FF55;">');
-          } else {
-            echo ('<div style="position:absolute;width:128px;height:30px;margin-left:341px;margin-top:5px;background-color:#FFAA55;">');
-          }
-          echo ('<div style="font-size:16px;text-align:right;margin-top:5px;margin-right:10px;">');
-          echo (number_format($P0, 1, ".", ","));
-          echo (" mbar");
-          echo ('</div></div>');
-
           $command = $ini_array['DocumentRoot']."/PumpStationControl --web getPressure 1";
           exec ($command, $valP1, $return);
           if (is_array($valP1)) {
@@ -71,11 +52,11 @@
             $P1 = floatval($valP1);
           }
           if ($P1 >= 200.0) {
-            echo ('<div style="position:absolute;width:128px;height:30px;margin-left:341px;margin-top:45px;background-color:#FF5555;">');
+            echo ('<div style="position:absolute;width:128px;height:30px;margin-left:341px;margin-top:5px;background-color:#FF5555;">');
           } else if ($P1 < 150.0 ) {
-            echo ('<div style="position:absolute;width:128px;height:30px;margin-left:341px;margin-top:45px;background-color:#55FF55;">');
+            echo ('<div style="position:absolute;width:128px;height:30px;margin-left:341px;margin-top:5px;background-color:#55FF55;">');
           } else {
-            echo ('<div style="position:absolute;width:128px;height:30px;margin-left:341px;margin-top:45px;background-color:#FFAA55;">');
+            echo ('<div style="position:absolute;width:128px;height:30px;margin-left:341px;margin-top:5px;background-color:#FFAA55;">');
           }
           echo ('<div style="font-size:16px;text-align:right;margin-top:5px;margin-right:10px;">');
           echo (number_format($P1, 1, ".", ","));
@@ -90,14 +71,33 @@
             $P2 = floatval($valP2);
           }
           if ($P2 >= 200.0) {
-            echo ('<div style="position:absolute;width:128px;height:30px;margin-left:341px;margin-top:85px;background-color:#FF5555;">');
+            echo ('<div style="position:absolute;width:128px;height:30px;margin-left:341px;margin-top:45px;background-color:#FF5555;">');
           } else if ($P2 < 150.0 ) {
+            echo ('<div style="position:absolute;width:128px;height:30px;margin-left:341px;margin-top:45px;background-color:#55FF55;">');
+          } else {
+            echo ('<div style="position:absolute;width:128px;height:30px;margin-left:341px;margin-top:45px;background-color:#FFAA55;">');
+          }
+          echo ('<div style="font-size:16px;text-align:right;margin-top:5px;margin-right:10px;">');
+          echo (number_format($P2, 1, ".", ","));
+          echo (" mbar");
+          echo ('</div></div>');
+
+          $command = $ini_array['DocumentRoot']."/PumpStationControl --web getPressure 3";
+          exec ($command, $valP3, $return);
+          if (is_array($valP3)) {
+            $P3 = floatval($valP3[0]);
+          } else {
+            $P3 = floatval($valP3);
+          }
+          if ($P3 >= 200.0) {
+            echo ('<div style="position:absolute;width:128px;height:30px;margin-left:341px;margin-top:85px;background-color:#FF5555;">');
+          } else if ($P3 < 150.0 ) {
             echo ('<div style="position:absolute;width:128px;height:30px;margin-left:341px;margin-top:85px;background-color:#55FF55;">');
           } else {
             echo ('<div style="position:absolute;width:128px;height:30px;margin-left:341px;margin-top:85px;background-color:#FFAA55;">');
           }
           echo ('<div style="font-size:16px;text-align:right;margin-top:5px;margin-right:10px;">');
-          echo (number_format($P2, 1, ".", ","));
+          echo (number_format($P3, 1, ".", ","));
           echo (" mbar");
           echo ('</div></div>');
 
