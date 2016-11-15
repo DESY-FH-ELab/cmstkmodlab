@@ -17,7 +17,7 @@ typedef LeyboldGraphixThree LeyboldGraphixThree_t;
 
 int main()
 {
-  LeyboldGraphixThree_t gt("/dev/tty.usbserial");
+  LeyboldGraphixThree_t gt("/dev/ttyUSB0");
 
   std::cout << "version:                 " << gt.GetVersion() << std::endl;
   std::cout << "serial number:           " << gt.GetSerialNumber() << std::endl;
