@@ -85,13 +85,13 @@ void CommunicationServer::handleCommand()
     if (args.count()!=1) {
       response = "ERR";
     } else {
-      int channel = args.at(0).toInt();
+      int sensor = args.at(0).toInt();
 
-      if (channel<0 || channel>2) {
+      if (sensor<1 || sensor>3) {
         response = "ERR";
       } else {
         QMutexLocker locker(&mutex_);
-        double pressure = model_->getPressure(channel);
+        double pressure = model_->getPressure(sensor);
         response = QString("%1").arg(pressure, 0, 'f', 1);
       }
     }
