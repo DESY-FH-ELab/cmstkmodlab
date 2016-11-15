@@ -51,7 +51,7 @@ protected:
   const double updateInterval_;
   QTimer* timer_;
 
-  void setDeviceState( State state );
+  void setDeviceState(State state);
 
   std::array<double,3> pressure_;
 
