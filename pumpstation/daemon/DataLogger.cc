@@ -124,9 +124,9 @@ void DataLogger::writeStatus()
     xml.writeEndElement();
   }
 
-  for (int i=0;i<3;++i) {
     double p = model_->getPressure(i);
 
+  for (int i=1;i<4;++i) {
     xml.writeStartElement("LeyboldGraphixThree");
     xml.writeAttribute("time", utime.toString(Qt::ISODate));
     xml.writeAttribute("id", QString::number(i));
