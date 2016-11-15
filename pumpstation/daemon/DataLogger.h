@@ -25,7 +25,7 @@ public:
 protected slots:
 
   void switchStateChanged(int device, State newState);
-  void pressureChanged(int channel, double p);
+  void pressureChanged(int sensor, double p);
 
   void checkRestart();
 

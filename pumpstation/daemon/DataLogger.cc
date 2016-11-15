@@ -160,11 +160,11 @@ void DataLogger::switchStateChanged(int device, State newState)
   writeToStream(buffer);
 }
 
-void DataLogger::pressureChanged(int channel, double p)
+void DataLogger::pressureChanged(int sensor, double p)
 {
   QMutexLocker locker(&mutex_);
 
-  NQLogMessage("logger") << "void DataLogger::pressureChanged(" << channel << ", " << p << ")";
+  NQLogMessage("logger") << "void DataLogger::pressureChanged(" << sensor << ", " << p << ")";
 
   QDateTime utime = QDateTime::currentDateTime();
 
@@ -174,7 +174,7 @@ void DataLogger::pressureChanged(int channel, double p)
 
   xml.writeStartElement("LeyboldGraphixThree");
   xml.writeAttribute("time", utime.toString(Qt::ISODate));
-  xml.writeAttribute("id", QString::number(channel));
+  xml.writeAttribute("id", QString::number(sensor));
   xml.writeAttribute("p", QString::number(p, 'e', 6));
   xml.writeEndElement();
 

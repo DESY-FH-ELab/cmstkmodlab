@@ -21,7 +21,7 @@ public:
 
   const State& getSwitchState(int channel) const;
 
-  double getPressure(int channel) const;
+  double getPressure(int sensor) const;
 
 public slots:
 
