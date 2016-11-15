@@ -29,6 +29,7 @@ NanotecSMCI36LinearStageStatusWidget::NanotecSMCI36LinearStageStatusWidget(Nanot
   position_->setMode(QLCDNumber::Dec);
   position_->setSegmentStyle(QLCDNumber::Filled);
   position_->setMinimumHeight(60);
+  position_->setMinimumWidth(240);
   position_->setFrameStyle(0);
   formLayout->addRow("position [mm]", position_);
 
