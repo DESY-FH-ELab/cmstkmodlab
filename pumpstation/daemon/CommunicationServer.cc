@@ -16,9 +16,15 @@ CommunicationServer::CommunicationServer(PumpStationModel* model,
           model_, SLOT(setSwitchEnabled(int, bool)));
 }
 
+#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
 void CommunicationServer::incomingConnection(int socketDescriptor)
 {
   NQLogDebug("server") << "void CommunicationServer::incomingConnection(int socketDescriptor)";
+#else
+  void CommunicationServer::incomingConnection(qintptr socketDescriptor)
+  {
+    NQLogDebug("server") << "void CommunicationServer::incomingConnection(qintptr socketDescriptor)";
+#endif
 
   socket_ = new QTcpSocket();
 

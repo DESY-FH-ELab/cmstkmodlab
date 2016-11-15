@@ -7,7 +7,6 @@
 #include <QFileDialog>
 #include <QApplication>
 #include <QPalette>
-#include <QWebView>
 
 #include <nqlogger.h>
 #include <ApplicationConfig.h>
@@ -21,11 +20,19 @@ PumpStationMainWindow::PumpStationMainWindow(double updateInterval,
 {
   ApplicationConfig* config = ApplicationConfig::instance();
 
+#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
   view_ = new QWebView(parent);
   view_->setMinimumWidth(860);
   view_->setMinimumHeight(540);
   view_->load(QUrl(config->getValue("URL").c_str()));
   view_->show();
+#else
+  view_ = new QWebEngineView(parent);
+  view_->setMinimumWidth(860);
+  view_->setMinimumHeight(540);
+  view_->load(QUrl(config->getValue("URL").c_str()));
+  view_->show();
+#endif
 
   setCentralWidget(view_);
   updateGeometry();

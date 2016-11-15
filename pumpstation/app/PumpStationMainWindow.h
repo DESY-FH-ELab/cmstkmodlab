@@ -2,8 +2,13 @@
 #define PUMPSTATIONMAINWINDOW_H
 
 #include <QMainWindow>
-#include <QWebView>
 #include <QTimer>
+
+#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
+#include <QWebView>
+#else
+#include <QWebEngineView>
+#endif
 
 class PumpStationMainWindow : public QMainWindow
 {
@@ -25,7 +30,11 @@ protected slots:
 
 protected:
 
+#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
   QWebView* view_;
+#else
+  QWebEngineView* view_;
+#endif
 
   /// Time interval between cache refreshes; in seconds.
   const double updateInterval_;
