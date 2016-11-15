@@ -63,6 +63,11 @@ int main(int argc, char *argv[])
   std::string leyboldPort = config->getValue("LeyboldPort");
   LeyboldGraphixThreeModel leybold(leyboldPort.c_str(), 5, &app);
 
+  leybold.setDisplayUnit(VLeyboldGraphixThree::DisplayUnit_mbar);
+  leybold.setSensorName(1, "p1");
+  leybold.setSensorName(2, "p2");
+  leybold.setSensorName(3, "p3");
+
   PumpStationModel model(&conrad, &leybold, 5, &app);
 
   DataLogger logger(&model, &app);
