@@ -10,6 +10,10 @@ LeyboldGraphixThree::LeyboldGraphixThree( const ioport_t ioPort )
 {
   comHandler_ = new LeyboldComHandler( ioPort );
   DeviceInit();
+
+  sensorStatus_[0] = SensorStatus_unknown;
+  sensorStatus_[1] = SensorStatus_unknown;
+  sensorStatus_[2] = SensorStatus_unknown;
 }
 
 LeyboldGraphixThree::~LeyboldGraphixThree()
@@ -159,6 +163,7 @@ LeyboldGraphixThree::SensorStatus LeyboldGraphixThree::GetSensorStatus(int senso
 
   std::map<std::string,SensorStatus>::const_iterator itFind = sensorStatusText_.find(buffer);
   if (itFind!=sensorStatusText_.end()) {
+    sensorStatus_[sensor-1] = itFind->second;
     return itFind->second;
   }
 
@@ -181,7 +186,10 @@ double LeyboldGraphixThree::GetPressure(int sensor) const
   std::string buffer;
   bool isACK = ReceiveData(buffer);
 
-  if (buffer=="....") return -1.0;
+  if (sensorStatus_[sensor-1]!=SensorStatus_ok) {
+    // std::cout << "sensor " << sensor << " not OK" << std::endl;
+    return -1;
+  }
 
   return std::atof(buffer.c_str());
 }

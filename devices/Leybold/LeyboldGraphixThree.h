@@ -8,6 +8,7 @@
 #include <utility>
 #include <fstream>
 #include <cmath>
+#include <array>
 
 #include "VLeyboldGraphixThree.h"
 #include "LeyboldComHandler.h"
@@ -57,6 +58,8 @@ class LeyboldGraphixThree : public VLeyboldGraphixThree
 
   LeyboldComHandler* comHandler_;
   bool isDeviceAvailable_;
+
+  mutable std::array<SensorStatus,3> sensorStatus_;
 };
 
 #endif // _LEYBOLDGRAPHIXTHREE_H_
