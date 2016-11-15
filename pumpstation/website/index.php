@@ -44,14 +44,31 @@
         
           $ini_array = parse_ini_file("pumpstation.ini");
           
-          $command = $ini_array['DocumentRoot']."/PumpStationControl --web getPressure 1";
-          exec ($command, $valP1, $return);
-          if (is_array($valP1)) {
-            $P1 = floatval($valP1[0]);
+          $command = $ini_array['DocumentRoot']."/PumpStationControl --web getVacuumStatus";
+          exec ($command, $valVS, $return);
+          if (is_array($valVS)) {
+            $VS = $valVS[0];
           } else {
-            $P1 = floatval($valP1);
+            $VS = $valVS;
           }
-          if ($P1 >= 200.0) {
+          list($valSS1, $valP1, $valSS2, $valP2, $valSS3, $valP3) = explode(";", $VS);
+          
+          $SS1 = intval($valSS1);
+          $SS2 = intval($valSS2);
+          $SS3 = intval($valSS3);
+          
+          $P1 = floatval($valP1);
+          $P2 = floatval($valP2);
+          $P3 = floatval($valP3);
+          
+          # $command = $ini_array['DocumentRoot']."/PumpStationControl --web getPressure 1";
+          # exec ($command, $valP1, $return);
+          # if (is_array($valP1)) {
+          #   $P1 = floatval($valP1[0]);
+          # } else {
+          #   $P1 = floatval($valP1);
+          # }
+          if ($P1 >= 200.0 || $P1 < 0.0) {
             echo ('<div style="position:absolute;width:128px;height:30px;margin-left:341px;margin-top:5px;background-color:#FF5555;">');
           } else if ($P1 < 150.0 ) {
             echo ('<div style="position:absolute;width:128px;height:30px;margin-left:341px;margin-top:5px;background-color:#55FF55;">');
@@ -63,14 +80,14 @@
           echo (" mbar");
           echo ('</div></div>');
 
-          $command = $ini_array['DocumentRoot']."/PumpStationControl --web getPressure 2";
-          exec ($command, $valP2, $return);
-          if (is_array($valP2)) {
-            $P2 = floatval($valP2[0]);
-          } else {
-            $P2 = floatval($valP2);
-          }
-          if ($P2 >= 200.0) {
+          # $command = $ini_array['DocumentRoot']."/PumpStationControl --web getPressure 2";
+          # exec ($command, $valP2, $return);
+          # if (is_array($valP2)) {
+          #   $P2 = floatval($valP2[0]);
+          # } else {
+          #   $P2 = floatval($valP2);
+          # }
+          if ($P2 >= 200.0 || $P2 < 0.0) {
             echo ('<div style="position:absolute;width:128px;height:30px;margin-left:341px;margin-top:45px;background-color:#FF5555;">');
           } else if ($P2 < 150.0 ) {
             echo ('<div style="position:absolute;width:128px;height:30px;margin-left:341px;margin-top:45px;background-color:#55FF55;">');
@@ -82,14 +99,14 @@
           echo (" mbar");
           echo ('</div></div>');
 
-          $command = $ini_array['DocumentRoot']."/PumpStationControl --web getPressure 3";
-          exec ($command, $valP3, $return);
-          if (is_array($valP3)) {
-            $P3 = floatval($valP3[0]);
-          } else {
-            $P3 = floatval($valP3);
-          }
-          if ($P3 >= 200.0) {
+          # $command = $ini_array['DocumentRoot']."/PumpStationControl --web getPressure 3";
+          # exec ($command, $valP3, $return);
+          # if (is_array($valP3)) {
+          #   $P3 = floatval($valP3[0]);
+          # } else {
+          #   $P3 = floatval($valP3);
+          # }
+          if ($P3 >= 200.0 || $P3 < 0.0) {
             echo ('<div style="position:absolute;width:128px;height:30px;margin-left:341px;margin-top:85px;background-color:#FF5555;">');
           } else if ($P3 < 150.0 ) {
             echo ('<div style="position:absolute;width:128px;height:30px;margin-left:341px;margin-top:85px;background-color:#55FF55;">');
@@ -101,13 +118,28 @@
           echo (" mbar");
           echo ('</div></div>');
 
-          $command = $ini_array['DocumentRoot']."/PumpStationControl --web getSwitchState 0";
-          exec ($command, $valS0, $return);
-          if (is_array($valS0)) {
-            $S0 = boolval($valS0[0]);
+          $command = $ini_array['DocumentRoot']."/PumpStationControl --web getSwitchStatus";
+          exec ($command, $valSS, $return);
+          if (is_array($valSS)) {
+            $SS = $valSS[0];
           } else {
-            $S0 = boolval($valS0);
+            $SS = $valSS;
           }
+          list($valS0, $valS1, $valS2, $valS3, $valS4) = explode(";", $SS);
+          
+          $S0 = intval($valS0);
+          $S1 = intval($valS1);
+          $S2 = intval($valS2);
+          $S3 = intval($valS3);
+          $S4 = intval($valS4);
+          
+          # $command = $ini_array['DocumentRoot']."/PumpStationControl --web getSwitchState 0";
+          # exec ($command, $valS0, $return);
+          # if (is_array($valS0)) {
+          #   $S0 = boolval($valS0[0]);
+          # } else {
+          #   $S0 = boolval($valS0);
+          # }
           if ($S0 == 0 ) {
             echo ('<div style="position:absolute;width:68px;height:30px;margin-left:221px;margin-top:29px;background-color:#FF5555;">');
           } else if ($S0 == 1 ) {
@@ -123,13 +155,13 @@
           }
           echo ("</div></div>");
 
-          $command = $ini_array['DocumentRoot']."/PumpStationControl --web getSwitchState 1";
-          exec ($command, $valS1, $return);
-          if (is_array($valS1)) {
-            $S1 = boolval($valS1[0]);
-          } else {
-            $S1 = boolval($valS1);
-          }
+          # $command = $ini_array['DocumentRoot']."/PumpStationControl --web getSwitchState 1";
+          # exec ($command, $valS1, $return);
+          # if (is_array($valS1)) {
+          #   $S1 = boolval($valS1[0]);
+          # } else {
+          #   $S1 = boolval($valS1);
+          # }
           if ($S1 == 0 ) {
             echo ('<div style="position:absolute;width:68px;height:30px;margin-left:131px;margin-top:29px;background-color:#FF5555;">');
           } else if ($S1 == 1 ) {
@@ -145,13 +177,13 @@
           }
           echo ("</div></div>");
 
-          $command = $ini_array['DocumentRoot']."/PumpStationControl --web getSwitchState 2";
-          exec ($command, $valS2, $return);
-          if (is_array($valS2)) {
-            $S2 = boolval($valS2[0]);
-          } else {
-            $S2 = boolval($valS2);
-          }
+          # $command = $ini_array['DocumentRoot']."/PumpStationControl --web getSwitchState 2";
+          # exec ($command, $valS2, $return);
+          # if (is_array($valS2)) {
+          #   $S2 = boolval($valS2[0]);
+          # } else {
+          #   $S2 = boolval($valS2);
+          # }
           if ($S2 == 0 ) {
             echo ('<div style="position:absolute;width:68px;height:30px;margin-left:41px;margin-top:29px;background-color:#FF5555;">');
           } else if ($S2 == 1 ) {
@@ -167,13 +199,13 @@
           }
           echo ("</div></div>");
 
-          $command = $ini_array['DocumentRoot']."/PumpStationControl --web getSwitchState 3";
-          exec ($command, $valS3, $return);
-          if (is_array($valS3)) {
-            $S3 = boolval($valS3[0]);
-          } else {
-            $S3 = boolval($valS3);
-          }
+          # $command = $ini_array['DocumentRoot']."/PumpStationControl --web getSwitchState 3";
+          # exec ($command, $valS3, $return);
+          # if (is_array($valS3)) {
+          #   $S3 = boolval($valS3[0]);
+          # } else {
+          #   $S3 = boolval($valS3);
+          # }
           if ($S3 == 0 ) {
             echo ('<div style="position:absolute;width:58px;height:30px;margin-left:601px;margin-top:5px;background-color:#FF5555;">');
           } else if ($S3 == 1 ) {
@@ -189,13 +221,13 @@
           }
           echo ("</div></div>");
 
-          $command = $ini_array['DocumentRoot']."/PumpStationControl --web getSwitchState 4";
-          exec ($command, $valS4, $return);
-          if (is_array($valS4)) {
-            $S4 = boolval($valS4[0]);
-          } else {
-            $S4 = boolval($valS4);
-          }
+          # $command = $ini_array['DocumentRoot']."/PumpStationControl --web getSwitchState 4";
+          # exec ($command, $valS4, $return);
+          # if (is_array($valS4)) {
+          #   $S4 = boolval($valS4[0]);
+          # } else {
+          #   $S4 = boolval($valS4);
+          # }
           if ($S4 == 0 ) {
             echo ('<div style="position:absolute;width:58px;height:30px;margin-left:601px;margin-top:45px;background-color:#FF5555;">');
           } else if ($S4 == 1 ) {
