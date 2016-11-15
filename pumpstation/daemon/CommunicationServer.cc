@@ -81,6 +81,26 @@ void CommunicationServer::handleCommand()
         response = QString::number((int)state);
       }
     }
+  } else if (cmd=="getSwitchStatus") {
+    if (args.count()!=0) {
+      response = "ERR";
+    } else {
+
+      QMutexLocker locker(&mutex_);
+
+      int s0 = model_->getSwitchState(0);
+      int s1 = model_->getSwitchState(1);
+      int s2 = model_->getSwitchState(2);
+      int s3 = model_->getSwitchState(3);
+      int s4 = model_->getSwitchState(4);
+
+      response = QString("%1;%2;%3;%4;%5")
+                .arg(s0)
+                .arg(s1)
+                .arg(s2)
+                .arg(s3)
+                .arg(s4);
+     }
   } else if (cmd=="getSensorStatus") {
     if (args.count()!=1) {
       response = "ERR";
