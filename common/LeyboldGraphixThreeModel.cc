@@ -116,9 +116,9 @@ void LeyboldGraphixThreeModel::updateInformation()
     std::array<LeyboldGraphixThree_t::SensorStatus,3> status;
     std::array<double,3> pressure;
 
-    for (int i=1;i<4;++i) {
-      status[i] = controller_->GetSensorStatus(i);
-      pressure[i] = controller_->GetPressure(i);
+    for (int i=0;i<3;++i) {
+      status[i] = controller_->GetSensorStatus(i+1);
+      pressure[i] = controller_->GetPressure(i+1);
     }
 
     LeyboldGraphixThree_t::DisplayUnit displayUnit = controller_->GetDisplayUnit();
