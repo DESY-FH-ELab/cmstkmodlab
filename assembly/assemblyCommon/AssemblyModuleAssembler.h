@@ -232,7 +232,7 @@ class AssemblySensorLocator : public QWidget
 public:
 
   explicit AssemblySensorLocator(QWidget *parent = 0, std::string ="test",
-                                 double a  = 0.0);
+                                 double a  = 0.0, AssemblySensorMarkerFinder* finder_ = 0);
 
   double local_x, local_y, local_z, local_a;
   QPushButton* button1;
@@ -253,7 +253,6 @@ protected:
 
 public slots:
 
-  void locateSensor_templateMatching(int);
   void locateSensor_circleSeed(int);
   void foundsensor(int);
   void locatePickup();

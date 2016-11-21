@@ -6,6 +6,7 @@
 
 #include "AssemblyVMarkerFinder.h"
 
+
 class AssemblySensorMarkerFinder : public AssemblyVMarkerFinder
 {
     Q_OBJECT
@@ -55,13 +56,15 @@ public slots:
     void setLinesHoughMaxLineGap(double value) { linesHoughMaxLineGap_ = value; }
 
     virtual void findMarker(const cv::Mat&);
-    virtual void findMarker_circleSeed(const cv::Mat&);
-    virtual void findMarker_templateMatching(const cv::Mat&);
+    virtual void findMarker_circleSeed(int);
+    virtual void findMarker_templateMatching(int);
 
 
 protected slots:
 
 protected:
+    std::string cacheDirectory1_;
+    std::string cacheDirectory2_;
 
 
     size_t findLines();
@@ -120,6 +123,9 @@ protected:
 signals:
 
     void edgesDetected(const cv::Mat&);
+    void updateImage(int, std::string);
+    void foundSensor(int);
+
 };
 
 #endif // ASSEMBLYSENSORMARKERFINDER_H
