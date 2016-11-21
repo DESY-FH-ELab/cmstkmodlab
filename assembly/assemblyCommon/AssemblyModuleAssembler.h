@@ -20,6 +20,8 @@
 //#include <AssemblyVMarkerFinder.h>
 #include <AssemblyUEyeView.h>
 #include "AssemblyVUEyeModel.h"
+#include "AssemblySensorMarkerFinder.h"
+
 //#include "AssemblyVUEyeCamera.h"
 
 //motion
@@ -56,6 +58,8 @@ public:
   QLineEdit * lE4;
   QLineEdit * lE5;
   QLineEdit * lE6;
+    
+  AssemblySensorMarkerFinder * finder_;
 
 protected:
 
@@ -234,10 +238,13 @@ public:
   QPushButton* button1;
   QLineEdit *lineEdit1;
   QLabel* ql;
-  QGroupBox *groupBox;
+  QGroupBox *groupBox1, *groupBox2;
   QRadioButton *radio1;
   QRadioButton *radio2;
-  QVBoxLayout *vbox;
+  QRadioButton *radio3;
+  QRadioButton *radio4;
+
+  QVBoxLayout *vbox1,*vbox2 ;
 
 protected:
 

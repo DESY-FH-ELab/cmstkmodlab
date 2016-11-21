@@ -55,6 +55,9 @@ public slots:
     void setLinesHoughMaxLineGap(double value) { linesHoughMaxLineGap_ = value; }
 
     virtual void findMarker(const cv::Mat&);
+    virtual void findMarker_circleSeed(const cv::Mat&);
+    virtual void findMarker_templateMatching(const cv::Mat&);
+
 
 protected slots:
 

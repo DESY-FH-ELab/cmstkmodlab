@@ -47,6 +47,8 @@ AssemblyModuleAssembler::AssemblyModuleAssembler(AssemblyVUEyeModel *uEyeModel_,
 
   QPalette palette;
   palette.setColor(QPalette::Background, QColor(220, 220, 220));
+    
+  finder_ = new AssemblySensorMarkerFinder();
 
   imageView_1 = new AssemblyUEyeView();
   imageView_1->setMinimumSize(200,200);
@@ -56,6 +58,11 @@ AssemblyModuleAssembler::AssemblyModuleAssembler(AssemblyVUEyeModel *uEyeModel_,
   imageView_1->setScaledContents(true);
   imageView_1->setAlignment(Qt::AlignCenter);
   QApplication::processEvents();
+    
+  imageView_1->connectImageProducer(finder_, SIGNAL(markerFound(const cv::Mat&)));
+
+  connect(uEyeModel_, SIGNAL(imageAcquired(const cv::Mat&)),
+            finder_, SLOT(findMarker(const cv::Mat&)));
 
   scrollArea_1 = new QScrollArea(this);
   scrollArea_1->setMinimumSize(200, 200);
@@ -213,7 +220,6 @@ AssemblyModuleAssembler::AssemblyModuleAssembler(AssemblyVUEyeModel *uEyeModel_,
   g1->addWidget(cmdr8, 11, 0);
 
   //make all the neccessary connections
-
   connect(attacher1, SIGNAL(moveRelative(double,double,double,double)),
           motionManager_, SLOT(moveRelative(double,double,double,double)));
   connect(cmdr0, SIGNAL(moveAbsolute(double,double,double,double)),
@@ -340,7 +346,7 @@ void AssemblyModuleAssembler::disconnectImageProducer(const QObject* sender,
 
 void AssemblyModuleAssembler::snapShot()
 {
-  // NQLog("AssemblyModuleAssembler") << ":snapShot()";
+   NQLog("AssemblyModuleAssembler") << ":snapShot()";
 
   if (image_.rows==0) return;
 
@@ -697,20 +703,32 @@ AssemblySensorLocator::AssemblySensorLocator(QWidget *parent, std::string string
   button1 = new QPushButton(qname, this);
 
   l->addWidget(button1,0,0);
-
-  groupBox = new QGroupBox(tr("Pattern Recognition Method"));
-
+    
+  groupBox1 = new QGroupBox(tr("Pattern Recognition Method"));
+  groupBox2 = new QGroupBox(tr("Mode"));
+    
   radio1 = new QRadioButton(tr("&Circle Seed Algorithm"));
   radio2 = new QRadioButton(tr("T&emplate Matching"));
   radio2->setChecked(true);
 
-  vbox = new QVBoxLayout;
-  vbox->addWidget(radio1);
-  vbox->addWidget(radio2);
-  vbox->addStretch(1);
-  groupBox->setLayout(vbox);
+  vbox1 = new QVBoxLayout;
+  vbox1->addWidget(radio1);
+  vbox1->addWidget(radio2);
+  vbox1->addStretch(1);
+  groupBox1->setLayout(vbox1);
+    
+  radio3 = new QRadioButton(tr("&Demo"));
+  radio4 = new QRadioButton(tr("&Lab"));
+  radio3->setChecked(true);
+    
+  vbox2 = new QVBoxLayout;
+  vbox2->addWidget(radio3);
+  vbox2->addWidget(radio4);
+  vbox2->addStretch(1);
+  groupBox2->setLayout(vbox2);
 
-  l->addWidget(groupBox,1,0);
+  l->addWidget(groupBox1,1,0);
+  l->addWidget(groupBox2,1,1);
 
   ql = new QLabel("", this);
   l->addWidget(ql,0,1);
@@ -730,8 +748,12 @@ AssemblySensorLocator::AssemblySensorLocator(QWidget *parent, std::string string
           this, SLOT(locatePickup()));
   connect(this, SIGNAL(locatePickupCorner_circleSeed(int)),
           this, SLOT(locateSensor_circleSeed(int)));
+ // connect(this, SIGNAL(locatePickupCorner_templateMatching(int)),
+ //         this, SLOT(locateSensor_templateMatching(int)));
+
   connect(this, SIGNAL(locatePickupCorner_templateMatching(int)),
-          this, SLOT(locateSensor_templateMatching(int)));
+             finder_, SLOT(findMarker_templateMatching(int)));
+
 }
 
 void AssemblySensorLocator::locatePickup()
@@ -753,6 +775,7 @@ void AssemblySensorLocator::locateSensor_templateMatching(int stage)
   cv::Mat img, img_clip_A, img_clip_B, result_1, result_2, dst;
   int match_method;
 
+    if (radio3->isChecked()) {
 
   img = cv::imread(Config::CMSTkModLabBasePath + "/share/assembly/RawSensor_4.png",
                    CV_LOAD_IMAGE_COLOR);
@@ -760,6 +783,20 @@ void AssemblySensorLocator::locateSensor_templateMatching(int stage)
                           CV_LOAD_IMAGE_COLOR);
   img_clip_B = cv::imread(Config::CMSTkModLabBasePath + "/share/assembly/RawSensor_3_clipB.png",
                           CV_LOAD_IMAGE_COLOR);
+        
+    } else if (radio4->isChecked()){
+    
+        NQLog("AssemblySensorLocator") << "***LAB MODE NOT IMPLMENTED YET....REVERTING TO DEMO IMAGES!!!***" ;
+
+        
+        img = cv::imread(Config::CMSTkModLabBasePath + "/share/assembly/RawSensor_4.png",
+                         CV_LOAD_IMAGE_COLOR);
+        img_clip_A = cv::imread(Config::CMSTkModLabBasePath + "/share/assembly/RawSensor_3_clipA.png",
+                                CV_LOAD_IMAGE_COLOR);
+        img_clip_B = cv::imread(Config::CMSTkModLabBasePath + "/share/assembly/RawSensor_3_clipB.png",
+                                CV_LOAD_IMAGE_COLOR);
+    }
+    
 
   Point matchLoc_1, matchLoc_2, matchLoc_final;
 
@@ -916,7 +953,6 @@ void AssemblySensorLocator::locateSensor_templateMatching(int stage)
     }
 
     std::cout << std::setprecision(10);
-    //    cout<< theta<<"  ,  " << FOM  <<endl;
 
     thetas[i] = theta;
     FOMs[i] = FOM;
@@ -933,9 +969,8 @@ void AssemblySensorLocator::locateSensor_templateMatching(int stage)
 
 
   rectangle( img, matchLoc_final, Point( matchLoc_final.x + img_clip_B_bin.cols , matchLoc_final.y + img_clip_B_bin.rows ), Scalar(color,color-50,color+50), 2, 8, 0 );
-  // rectangle( result_2, matchLoc_2, Point( matchLoc_2.x + img_clip_B_bin.cols , matchLoc_2.y + img_clip_B_bin.rows ), Scalar(color,color-50,color+50), 2, 8, 0 );
 
-  TCanvas *c1 = new TCanvas("c1","Rotation extraction",200,10,700,500);
+   TCanvas *c1 = new TCanvas("c1","Rotation extraction",200,10,700,500);
 
   if (thetas[0] && FOMs[0]){
     TGraph *gr = new TGraph(40, thetas, FOMs);

@@ -531,3 +531,33 @@ void AssemblySensorMarkerFinder::drawOrientation()
              cv::Point(cvRound(circleCenter_.x - dx2), cvRound(circleCenter_.y - dy2)),
              cv::Scalar(255, 255, 0), 6, CV_AA);
 }
+
+
+
+
+
+void AssemblySensorMarkerFinder::findMarker_templateMatching(int blah)
+{
+    
+    NQLog("AssemblySensorMarkerFinder") << "findMarker_templateMatching()";
+    
+    
+    //  emit markerFound(imageRGB_);
+
+  //  emit markerFound(imageRGB_);
+}
+
+void AssemblySensorMarkerFinder::findMarker_circleSeed(int blah)
+{
+    
+    NQLog("AssemblySensorMarkerFinder") << "findMarker_templateMatching()";
+    
+    
+    
+    //  emit markerFound(imageRGB_);
+}
+
+
+
+
+

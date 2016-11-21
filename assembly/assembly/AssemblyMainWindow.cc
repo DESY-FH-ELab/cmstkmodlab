@@ -165,10 +165,8 @@ void AssemblyMainWindow::cameraOpened()
     edgeView_->connectImageProducer(finder_, SIGNAL(edgesDetected(const cv::Mat&)));
 
     rawView_->connectImageProducer(camera_, SIGNAL(imageAcquired(const cv::Mat&)));
-
-    //    playView_->connectImageProducer_tracker(camera_, SIGNAL(imageAcquired(const cv::Mat&)));
-
     
+
     connect(camera_, SIGNAL(imageAcquired(const cv::Mat&)),
             finder_, SLOT(findMarker(const cv::Mat&)));
 
