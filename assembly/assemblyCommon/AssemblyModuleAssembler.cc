@@ -242,10 +242,8 @@ AssemblyModuleAssembler::AssemblyModuleAssembler(AssemblyVUEyeModel *uEyeModel_,
 
   connect(lctr1, SIGNAL(sendPosition(int, double,double,double)), this, SLOT(updateText(int,double,double,double)));
 
-  connect(lctr1, SIGNAL(updateImage(int, std::string)), this, SLOT( updateImage(int,std::string)));
-  
-
-  connect(lctr1, SIGNAL(foundSensor(int)), lctr1, SLOT( foundsensor(int)));
+//  connect(lctr1, SIGNAL(updateImage(int, std::string)), this, SLOT( updateImage(int,std::string)));
+ // connect(lctr1, SIGNAL(foundSensor(int)), lctr1, SLOT( foundsensor(int)));
 
     //now patrec method in assemblymarkerfinder sends the processed image back to the view
     //should replace connection above
