@@ -14,6 +14,7 @@
 
 
 using namespace cv;
+using namespace std;
 
 
 AssemblySensorMarkerFinder::AssemblySensorMarkerFinder(QObject *parent)
@@ -777,19 +778,335 @@ void AssemblySensorMarkerFinder::findMarker_templateMatching(int mode)
     std::string filename = cacheDirectory1_ + "/PatRec_TM_result.png";
     cv::imwrite(filename, img);
     
-    emit updateImage(0, filename);
+    emit updateImage(1, filename);
     
     emit foundSensor(1);
 }
 
-void AssemblySensorMarkerFinder::findMarker_circleSeed(int blah)
+void AssemblySensorMarkerFinder::findMarker_circleSeed(int mode)
 {
+
+    cv::Mat img_gs, img_rgb, img_edges;
     
-    NQLog("AssemblySensorMarkerFinder") << "findMarker_templateMatching()";
+    
+     if (mode == 0) {
+    
+         NQLog("AssemblySensorMarkerFinder") << "DEMO MODE (USING DEMO IMAGES)" ;
+
+    img_gs = cv::imread(Config::CMSTkModLabBasePath + "/share/assembly/im_scan___Exp10___EdgeThr145___lt110.png",
+                        CV_LOAD_IMAGE_COLOR);
+    
+     }else if (mode ==1){
+     
+         
+         NQLog("AssemblySensorMarkerFinder") << "***LAB MODE NOT IMPLMENTED YET....REVERTING TO DEMO MODE!!!***" ;
+
+         img_gs = cv::imread(Config::CMSTkModLabBasePath + "/share/assembly/im_scan___Exp10___EdgeThr145___lt110.png",
+                             CV_LOAD_IMAGE_COLOR);
+     
+     
+     }
+    
+         
+    cvtColor(img_gs, img_gs , CV_RGB2GRAY);
+    
+    int radius;
+    int  expectedCircleRadius_ = 89;
+    double circleCenterDetectionThreshold_  = 35.0;
+    double circleEdgeDetectionThreshold_  = 145.0;
+    double linesCannyEdgeDetectionThreshold1_ =50;
+    double linesCannyEdgeDetectionThreshold2_ =200;
+    double linesCannyEdgeDetectionApertureSize_ =3;
+    double linesCannyEdgeDetectionL2Gradient_ =1;
+    double linesHoughDistanceResolution_ = 1.0;
+    //    double linesHoughAngleResolution_*CV_PI/180,
+    double linesHoughAngleResolution_ = 0.1;
+    double linesHoughThreshold_ = 110.0;
+    double linesHoughMinLineLength_=  150.0;
+    double linesHoughMaxLineGap_ =25.0;
+    bool  dist1_, dist2_, dist3_, doca_ ;
+    double slope_final = 0.0, ang_final = 0.0;
+    double distance,doca,x0,x1,x2, y0,y1,y2, x,y;
+    
+    std::vector<cv::Vec3f> circles;
+    cv::Point2f circleCenter_;
+    
+    std::vector<cv::Vec4i> tempLines;
+    std::vector<std::pair<cv::Point2f,cv::Point2f> > lines_;
+    std::vector<std::pair<cv::Point2f,cv::Point2f> > goodLines_;
+    std::vector<std::pair<cv::Point2f,cv::Point2f> > mergedLines_;
+    
+    std::vector<cv::Point2f> intersections_;
+    std::vector<cv::Point2f> goodIntersections_;
+    std::vector<cv::Point2f> finalIntersections_;
+    std::vector<cv::Point2f> finalIntersectionsUp_;
+    std::vector<cv::Point2f> finalIntersectionsDown_;
+    
+    lines_.clear();
+    goodLines_.clear();
+    intersections_.clear();
+    goodIntersections_.clear();
+    finalIntersections_.clear();
+    
+    //detect circles
+    cv::HoughCircles(img_gs, circles, CV_HOUGH_GRADIENT, 1, 20,
+                     circleEdgeDetectionThreshold_, circleCenterDetectionThreshold_,
+                     expectedCircleRadius_ - 15., expectedCircleRadius_ + 15.);
+    
+    //get centre of first circle...problematic if this is not the right one.
+    if (circles.size() != 0){
+        circleCenter_.x = circles[0][0];
+        circleCenter_.y = circles[0][1];
+    }
+    
+    
+    cvtColor(img_gs, img_rgb , CV_GRAY2RGB);
+    
+    /// Draw the circles detected in blue
+    for( size_t i = 0; i < circles.size(); i++ )
+    {
+        cv::Point center(cvRound(circles[i][0]), cvRound(circles[i][1]));
+        x = cvRound(circles[i][0]);
+        y = cvRound(circles[i][1]);
+        radius = cvRound(circles[i][2]);
+        // circle center
+        circle( img_rgb, center, 3, cv::Scalar(0,0,255), -1, 8, 0 );
+        //circle outline;
+        circle( img_rgb, center, radius, cv::Scalar(0,0,255), 3, 8, 0 );
+    }
+    
+    //detect edges
+    cv::Canny(img_gs, img_edges,
+              linesCannyEdgeDetectionThreshold1_,
+              linesCannyEdgeDetectionThreshold2_,
+              linesCannyEdgeDetectionApertureSize_,
+              linesCannyEdgeDetectionL2Gradient_);
+    
+    
+    NQLog("AssemblyVUEyeCamera") << "  running hough lines";
+    
+    
+    //detect lines
+    cv::HoughLinesP(img_edges, tempLines,
+                    linesHoughDistanceResolution_,
+                    linesHoughAngleResolution_*CV_PI/180,
+                    linesHoughThreshold_,
+                    linesHoughMinLineLength_,
+                    linesHoughMaxLineGap_);
+    
+    
+    for (size_t i = 0; i < tempLines.size(); i++ ) {
+        lines_.push_back(std::pair<cv::Point2f,cv::Point2f>(cv::Point2f(tempLines[i][0],tempLines[i][1]), cv::Point2f(tempLines[i][2],tempLines[i][3])));
+    }
+    
+    
+    //draw the initial collection of lines in red (handy for debugging, monitoring of PatRec)
+    for (size_t i = 0; i < lines_.size(); i++ ) {
+        cv::line(img_rgb,
+                 cv::Point(cvRound(lines_[i].first.x), cvRound(lines_[i].first.y)),
+                 cv::Point(cvRound(lines_[i].second.x), cvRound(lines_[i].second.y)),
+                 cv::Scalar(255, 0, 0), 2, CV_AA);
+    }
+    
+    
+    //select only the lines which have starting/ending points close to the circle centre and DOCA consistent with the L marker outline
+    for (size_t i = 0; i < lines_.size(); i++ ) {
+        dist1_  = dist2_ = dist3_ = doca_ = false;
+        distance = std::sqrt(std::pow(circleCenter_.x - lines_[i].first.x, 2.0) +
+                             std::pow(circleCenter_.y - lines_[i].first.y, 2.0));
+        if (distance < expectedCircleRadius_*6.0) dist1_ = true;
+        
+        distance = std::sqrt(std::pow(circleCenter_.x - lines_[i].second.x, 2.0) +
+                             std::pow(circleCenter_.y - lines_[i].second.y, 2.0));
+        //  if (distance < expectedCircleRadius_*2.5) goodLines_.push_back(lines_[i]);
+        if (distance < expectedCircleRadius_*6.0)  dist2_ = true  ;
+        
+        x0 = circleCenter_.x;
+        y0 = circleCenter_.y;
+        x1 =  lines_[i].first.x;
+        y1 =  lines_[i].first.y;
+        x2 =  lines_[i].second.x;
+        y2 =  lines_[i].second.y;
+        
+        doca =  std::fabs( x0*(y2-y1)  -  y0*(x2-x1) + x2*y1 -y2*x1)/ std::sqrt(   std::pow(y2 - y1,2.0)   +    std::pow(x2 - x1,2.0)      );
+        
+        
+        if ((doca <expectedCircleRadius_*5.8  && doca >expectedCircleRadius_*5.4)  || (doca <expectedCircleRadius_*1.3  && doca >expectedCircleRadius_*0.7)   ) doca_ = true;
+        
+        if (dist1_ && dist2_ && doca_ ) goodLines_.push_back(lines_[i]);
+    }
+    
+    //draw the initial collection of "good" lines in pink (handy for debugging, monitoring of PatRec)
+    
+    for (size_t i = 0; i < goodLines_.size(); i++ ) {
+        cv::line(img_rgb,
+                 cv::Point(cvRound(goodLines_[i].first.x), cvRound(goodLines_[i].first.y)),
+                 cv::Point(cvRound(goodLines_[i].second.x), cvRound(goodLines_[i].second.y)),
+                 cv::Scalar(255, 0, 255), 4, CV_AA);
+    }
+    
+    
+    //find all intersections between goodlines that intersect @ ~ 90 degrees
+    for (size_t i = 0; i < goodLines_.size(); i++) {
+        for (size_t j = 0; j < goodLines_.size(); j++) {
+            
+            if (i == j ) continue;
+            cv::Point2f theIntersection;
+            cv::Point2f o1,o2,p1,p2,r;
+            double distance;
+            o1 = goodLines_[i].first;
+            p1 = goodLines_[i].second;
+            o2 = goodLines_[j].first;
+            p2 = goodLines_[j].second;
+            
+            cv::Point2f x = o2 - o1;
+            cv::Point2f d1 = p1 - o1;
+            cv::Point2f d2 = p2 - o2;
+            
+            double cross = d1.x*d2.y - d1.y*d2.x;
+            double slope1 = (p1.y - o1.y) / (p1.x - o1.x);
+            double slope2 = (p2.y - o2.y) / (p2.x - o2.x);
+            double ang1 = atan (slope1) * 180 / 3.14;
+            double ang2 = atan (slope2) * 180 / 3.14;
+            
+            double ang = fabs(ang2) - fabs(ang1);
+            
+            
+            if ( fabs(ang) > 80.0  && fabs(ang) < 100.0   &&   abs(cross) > /*EPS*/1e-7){
+                double t1 = (x.x * d2.y - x.y * d2.x)/cross;
+                r = o1 + d1 * t1;
+                intersections_.push_back(r);
+                
+                
+                distance = std::sqrt(std::pow(circleCenter_.x - r.x, 2.0) +
+                                     std::pow(circleCenter_.y - r.y, 2.0));
+                //if (distance > 6.0*expectedCircleRadius_)continue;
+            }
+        }
+    }
+    
+    
+    // Now select intersections that occur near the start or end point of the intersecting lines. This removes random intersections from sprurious "noise" lines.
+    
+    for(unsigned int  intsec = 0; intsec < intersections_.size(); intsec++ ){
+        bool goodIntersection = false;
+        for(unsigned int  gl = 0; gl < goodLines_.size(); gl++ ){
+            
+            double d_start = std::sqrt(std::pow(intersections_[intsec].x - goodLines_[gl].first.x, 2.0) + std::pow(intersections_[intsec].y - goodLines_[gl].first.y, 2.0));
+            double d_end = std::sqrt(std::pow(intersections_[intsec].x - goodLines_[gl].second.x, 2.0) + std::pow(intersections_[intsec].y - goodLines_[gl].second.y, 2.0));
+            if(d_start< 5.0 || d_end < 5.0) goodIntersection = true;
+        }
+        if(goodIntersection == true) goodIntersections_.push_back(intersections_[intsec]);
+    }
+    
+    for (unsigned int goodint =0; goodint < goodIntersections_.size(); goodint++){
+        
+        
+        // Select the two intersections that are adjacent to the circle.
+        if (std::sqrt(std::pow(circleCenter_.x - goodIntersections_[goodint].x, 2.0) + std::pow(circleCenter_.y - goodIntersections_[goodint].y, 2.0)) < expectedCircleRadius_*1.6) finalIntersections_.push_back(goodIntersections_[goodint]);
+        
+    }
     
     
     
-    //  emit markerFound(imageRGB_);
+    //one typically ends up with multiple intersections at each corner due extra, spurious lines
+    cout <<"n final intersection  = = "<< finalIntersections_.size()<< endl;
+    
+    // I divide the collection of final intersections into those abpve the circle's centre "up"
+    // and below "down". I use the average point of these collections to define to define the interesting intersections.
+    double running_total_x  =0;
+    double running_total_y  =0;
+    double av_x_up;
+    double av_x_down;
+    double av_y_up;
+    double av_y_down;
+    
+    finalIntersectionsDown_.clear();
+    finalIntersectionsUp_.clear();
+    
+    if (finalIntersections_.size() >0){
+        for (unsigned int finalint =0; finalint < finalIntersections_.size(); finalint++) {
+            if ( y > finalIntersections_[finalint].y){
+                finalIntersectionsDown_.push_back(finalIntersections_[finalint]);
+            }
+            else if ( y < finalIntersections_[finalint].y){
+                finalIntersectionsUp_.push_back(finalIntersections_[finalint]);
+            }
+            
+        }
+        
+        
+        for (unsigned int finalintup =0; finalintup < finalIntersectionsUp_.size(); finalintup++) {
+            running_total_x = running_total_x + finalIntersectionsUp_[finalintup].x;
+            running_total_y = running_total_y + finalIntersectionsUp_[finalintup].y;
+        }
+        
+        av_x_up = running_total_x/finalIntersectionsUp_.size();
+        av_y_up = running_total_y/finalIntersectionsUp_.size();
+        
+        running_total_x  =0;
+        running_total_y  =0;
+        
+        for (unsigned int finalintdown =0; finalintdown < finalIntersectionsDown_.size(); finalintdown++) {
+            running_total_x = running_total_x + finalIntersectionsDown_[finalintdown].x;
+            running_total_y = running_total_y + finalIntersectionsDown_[finalintdown].y;
+        }
+        
+        av_x_down = running_total_x/finalIntersectionsDown_.size();
+        av_y_down = running_total_y/finalIntersectionsDown_.size();
+        
+        for (unsigned int finalintup =0; finalintup < finalIntersectionsUp_.size(); finalintup++) {
+            circle( img_rgb, finalIntersectionsUp_[finalintup], 10, cv::Scalar(0,255,255), 3, 8, 0 );
+        }
+        
+        for (unsigned int finalintdown =0; finalintdown < finalIntersectionsDown_.size(); finalintdown++) {
+            circle( img_rgb, finalIntersectionsDown_[finalintdown], 10, cv::Scalar(0,255,0), 3, 8, 0 );
+        }
+        
+        cv::line(img_rgb,
+                 cv::Point(cvRound(av_x_down), cvRound(av_y_down)),
+                 cv::Point(cvRound(av_x_up), cvRound(av_y_up)),
+                 cv::Scalar(0, 255, 255), 4, CV_AA);
+        
+        
+        circle( img_rgb, cv::Point(x,y), 10, cv::Scalar(255,255,0), 3, 8, 0 );
+        
+        
+        slope_final = (av_y_up -  av_y_down) / (av_x_up -  av_x_down);
+        ang_final = atan (slope_final) * 180 / 3.14;
+        
+        
+    }
+    
+    
+    std::ostringstream convert;   // stream used for the conversion
+    convert.str(" ");
+    convert.clear();
+    convert << ang_final;
+    std::string str_ang_final = convert.str();
+    convert.str(" ");
+    convert.clear();
+    convert << circleCenter_.x ;
+    std::string str_x = convert.str();
+    convert.str(" ");
+    convert.clear();
+    convert << circleCenter_.y;
+    std::string str_y = convert.str();
+    
+    std::string text_result = "Marker is at = (" +  str_x  +  ", " + str_y + "), with orientation = " + str_ang_final  + " degrees";
+    
+    
+    putText(img_rgb, text_result, cvPoint(30,100),
+            cv::FONT_HERSHEY_COMPLEX_SMALL, 2.8, cvScalar(200,200,250), 1, CV_AA);
+    std::string filename = cacheDirectory1_ + "/PatRec_result.png";
+    cv::imwrite(filename, img_rgb);
+    
+    emit updateImage(1, filename);
+    emit foundSensor(1);
+    //emit sendPosition(0, circleCenter_.x,circleCenter_.y, ang_final);
+    NQLog("AssemblyVUEyeCamera") << "  found marker";
+    
+
 }
 
 

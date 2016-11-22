@@ -253,7 +253,6 @@ protected:
 
 public slots:
 
-  void locateSensor_circleSeed(int);
   void foundsensor(int);
   void locatePickup();
 
