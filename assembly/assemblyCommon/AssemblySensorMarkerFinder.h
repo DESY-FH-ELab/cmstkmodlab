@@ -67,7 +67,7 @@ protected slots:
 
     void write_image(const cv::Mat&);
     void scan(double, int , int);
-    void testSLOT();
+    void testSLOT(cv::Mat);
 
 protected:
     std::string cacheDirectory1_;

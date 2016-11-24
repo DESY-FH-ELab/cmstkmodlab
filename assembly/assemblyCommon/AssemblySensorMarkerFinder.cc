@@ -71,7 +71,7 @@ AssemblySensorMarkerFinder::~AssemblySensorMarkerFinder()
 //  expectedCircleRadius_ =    rad;
 // }
 
-void  AssemblySensorMarkerFinder::testSLOT(){
+void  AssemblySensorMarkerFinder::testSLOT(cv::Mat){
 
     NQLog("AssemblySensorMarkerFinder") << "testSLOT()";
   emit getImage();
