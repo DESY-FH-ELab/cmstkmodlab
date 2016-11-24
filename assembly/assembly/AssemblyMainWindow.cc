@@ -43,20 +43,19 @@ AssemblyMainWindow::AssemblyMainWindow(QWidget *parent) :
     uEyeModel_ = new AssemblyUEyeModel_t(10);
     cameraThread_ = new AssemblyUEyeCameraThread(uEyeModel_, this);
     cameraThread_->start();
-
-    assembleView_ = new AssemblyModuleAssembler(uEyeModel_, lStepExpressModel_, motionManager_, conradModel_, tabWidget_);
-    tabWidget_->addTab(assembleView_, "assemble");
-    
+   
     finder_ = new AssemblySensorMarkerFinder();
     finderThread_ = new AssemblyMarkerFinderThread(finder_, this);
     finderThread_->start();
+
+    assembleView_ = new AssemblyModuleAssembler(uEyeModel_, finder_, lStepExpressModel_, conradModel_, tabWidget_);
+    tabWidget_->addTab(assembleView_, "assemble");
 
     finderWidget_ = new AssemblySensorMarkerFinderWidget(finder_, this);
     tabWidget_->addTab(finderWidget_, "finder config");
 
     uEyeWidget_ = new AssemblyUEyeWidget(uEyeModel_, this);
     tabWidget_->addTab(uEyeWidget_, "uEye");
-    
     
     QWidget * widget;
     widget= new QWidget(tabWidget_);
@@ -85,8 +84,6 @@ AssemblyMainWindow::AssemblyMainWindow(QWidget *parent) :
     layoutv2->addWidget(lStepPosition);
     
     
-    
-
     connect(QApplication::instance(), SIGNAL(aboutToQuit()),
             this, SLOT(quit()));
 
@@ -119,6 +116,7 @@ void AssemblyMainWindow::onOpenCamera()
 
     camera_ = uEyeModel_->getCameraByID(10);
 
+
     connect(this, SIGNAL(openCamera()),
             camera_, SLOT(open()));
     connect(this, SIGNAL(closeCamera()),
@@ -129,6 +127,7 @@ void AssemblyMainWindow::onOpenCamera()
             this, SLOT(cameraOpened()));
     connect(camera_, SIGNAL(cameraClosed()),
             this, SLOT(cameraClosed()));
+
 
     emit openCamera();
 }
@@ -142,10 +141,7 @@ void AssemblyMainWindow::onCloseCamera()
 
 void AssemblyMainWindow::onSnapShot()
 {
-   NQLog("AssemblyUEyeCamera::onSnapShot", NQLog::Message) << " pre ";
     emit acquireImage();
-   NQLog("AssemblyUEyeCamera::onSnapShot", NQLog::Message) << " post ";
-
 }
 
 
@@ -166,11 +162,27 @@ void AssemblyMainWindow::cameraOpened()
 
     rawView_->connectImageProducer(camera_, SIGNAL(imageAcquired(const cv::Mat&)));
     
+  bool test =   connect(cameraThread_, SIGNAL(eventHappened()),  finder_, SLOT(testSLOT()) );
+ 
+   connect(finder_, SIGNAL(getImage()), camera_, SLOT(acquireImage()));
 
-    connect(camera_, SIGNAL(imageAcquired(const cv::Mat&)),
-            finder_, SLOT(findMarker(const cv::Mat&)));
+   if (test){
+    NQLog("AssemblyMainWindow, signals successfully connected");
 
-    //liveTimer_->start(2000);
+   } else {
+
+    NQLog("AssemblyMainWindow, signal connection failed");
+}
+
+    NQLog("AssemblyMainWindow") << " connecting finder and camera()";
+    connect(camera_, SIGNAL(imageAcquired(const cv::Mat&)), finder_, SLOT(findMarker(const cv::Mat&)));
+
+
+  //connect image acquired signal of camera model to blur detection SLOT of Z scanner
+   connect(camera_, SIGNAL(imageAcquired(const cv::Mat&)),  finder_, SLOT(write_image(const cv::Mat&)));
+
+
+    //    liveTimer_->start(2000);
 }
 
 void AssemblyMainWindow::cameraClosed()

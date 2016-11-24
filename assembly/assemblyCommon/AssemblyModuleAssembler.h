@@ -22,7 +22,7 @@
 #include "AssemblyVUEyeModel.h"
 #include "AssemblySensorMarkerFinder.h"
 
-//#include "AssemblyVUEyeCamera.h"
+#include "AssemblyVUEyeCamera.h"
 
 //motion
 #include "LStepExpressModel.h"
@@ -43,10 +43,7 @@ class AssemblyModuleAssembler : public QWidget
 
 public:
 
-  explicit AssemblyModuleAssembler(AssemblyVUEyeModel *uEyeModel_,
-                                   LStepExpressModel* lStepExpressModel_,
-                                   LStepExpressMotionManager* manager_,
-                                   ConradModel *conradModel_,
+  explicit AssemblyModuleAssembler(AssemblyVUEyeModel *uEyeModel_, AssemblySensorMarkerFinder * finder_,LStepExpressModel* lStepExpressModel_, ConradModel *conradModel_,
                                    QWidget *parent = 0);
   void connectImageProducer(const QObject* sender, const char* signal);
   void disconnectImageProducer(const QObject* sender, const char* signal);
@@ -58,9 +55,9 @@ public:
   QLineEdit * lE4;
   QLineEdit * lE5;
   QLineEdit * lE6;
-    
-  AssemblySensorMarkerFinder * finder_;
 
+  AssemblyVUEyeCamera * camera_;
+ 
 protected:
 
   void keyReleaseEvent(QKeyEvent *event);
@@ -92,7 +89,7 @@ public slots:
   void gotoPickup();
   void updateImage(int,std::string);
   void updateText(int,double, double, double);
-
+ 
 signals:
 
   void moveAbsolute(double,double,double,double);
@@ -200,9 +197,33 @@ signals:
   void moveAbsolute(double,double,double,double);
 };
 
-class AssemblyAligner : public QWidget
+
+class AssemblyZScanner : public QWidget
 {
   Q_OBJECT
+
+public:
+
+  explicit AssemblyZScanner(QWidget *parent = 0, AssemblySensorMarkerFinder * finder_ = 0, std::string ="test", double range =5.0 , int steps = 30, int delay = 1000 );
+
+  double local_range, local_steps, local_delay;
+  QPushButton* button1;
+  QLineEdit *lineEdit1;
+
+protected:
+
+public slots:
+  void run_scan();
+
+signals:
+  void run_scan(double,int,int);
+};
+
+
+
+class AssemblyAligner : public QWidget
+{
+  Q_OBJECT      
 public:
 
   explicit AssemblyAligner(QWidget *parent = 0, std::string ="test",

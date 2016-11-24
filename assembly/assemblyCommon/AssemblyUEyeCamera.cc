@@ -427,6 +427,7 @@ void AssemblyUEyeCamera::eventHappend()
 
 void AssemblyUEyeCamera::acquireImage()
 {
+  NQLog("AssemblyUEyeCamera::aquireImage()")<< "TEST CONNECTION" ;
 
     NQLog("AssemblyUEyeCamera::aquireImage() here", NQLog::Message) ;
 

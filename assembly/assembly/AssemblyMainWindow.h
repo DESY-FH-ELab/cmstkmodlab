@@ -93,7 +93,6 @@ protected:
   AssemblyUEyeSnapShooter* rawView_;
   AssemblyModuleAssembler* assembleView_;
     
-
   AssemblyUEyeModel_t* uEyeModel_;
   AssemblyUEyeCameraThread* cameraThread_;
   AssemblyUEyeWidget* uEyeWidget_;
@@ -103,7 +102,6 @@ protected:
   AssemblyMarkerFinderThread* finderThread_;
   AssemblySensorMarkerFinder* finder_;
   AssemblySensorMarkerFinderWidget* finderWidget_;
-    
     
   LStepExpressModel* lStepExpressModel_;
   LStepExpressMotionManager* motionManager_;

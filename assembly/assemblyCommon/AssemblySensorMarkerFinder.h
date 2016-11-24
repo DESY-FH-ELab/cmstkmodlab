@@ -6,6 +6,9 @@
 
 #include "AssemblyVMarkerFinder.h"
 
+#include <QTimer>
+#include <QDateTime>
+#include <QString>
 
 class AssemblySensorMarkerFinder : public AssemblyVMarkerFinder
 {
@@ -62,6 +65,10 @@ public slots:
 
 protected slots:
 
+    void write_image(const cv::Mat&);
+    void scan(double, int , int);
+    void testSLOT();
+
 protected:
     std::string cacheDirectory1_;
     std::string cacheDirectory2_;
@@ -82,6 +89,7 @@ protected:
     void drawIntersections();
     void drawOutline();
     void drawOrientation();
+
 
     cv::Mat image_;
     cv::Mat imageEdges_;
@@ -120,11 +128,12 @@ protected:
     std::vector<cv::Point2f> intersections_;
     std::vector<cv::Point2f> goodIntersections_;
 
-signals:
 
+signals:
     void edgesDetected(const cv::Mat&);
     void updateImage(int, std::string);
     void foundSensor(int);
+    void getImage();
 
 };
 

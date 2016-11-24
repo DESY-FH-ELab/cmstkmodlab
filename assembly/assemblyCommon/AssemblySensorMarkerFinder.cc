@@ -8,7 +8,6 @@
 
 #include "AssemblySensorMarkerFinder.h"
 
-
 #include <TGraph.h>
 #include <TCanvas.h>
 
@@ -55,13 +54,7 @@ AssemblySensorMarkerFinder::AssemblySensorMarkerFinder(QObject *parent)
     if (!dir2.exists()) dir2.mkpath(".");
     cacheDirectory2_ = cachedirTemp.toStdString();
 
-
-
-
 }
-
-
-
 
 
 AssemblySensorMarkerFinder::~AssemblySensorMarkerFinder()
@@ -78,6 +71,49 @@ AssemblySensorMarkerFinder::~AssemblySensorMarkerFinder()
 //  expectedCircleRadius_ =    rad;
 // }
 
+void  AssemblySensorMarkerFinder::testSLOT(){
+
+    NQLog("AssemblySensorMarkerFinder") << "testSLOT()";
+  emit getImage();
+}
+
+
+void  AssemblySensorMarkerFinder::write_image(const cv::Mat& newImage){
+
+    NQLog("AssemblySensorMarkerFinder") << "write_image()";
+    QDateTime local(QDateTime::currentDateTime());
+    QString local_str = local.toString();
+    QString filename = QString("ZScan_%1.png").arg(local_str);
+    filename = filename.simplified();
+    filename.replace( " ", "" );
+
+    cv::imwrite(filename.toStdString(), newImage);
+}
+
+
+void  AssemblySensorMarkerFinder::scan(double range, int steps, int delay){
+
+  NQLog("AssemblySensorMarkerFinder::scan") << range << ",  " <<steps <<",   " << delay ;
+   
+  double step_distance = range/steps;
+  int nSteps = 0;
+  steps = 4;
+
+  getImage();
+
+  while ( nSteps < steps/2){
+     NQLog("AssemblyZScanner:scan(),  Scanning  1st half, step ");
+     //take image
+     //     emit getImage(); 
+     //save image with Z position in filename
+     //delay
+
+     //move in Z 
+
+     //moveRelative(0.0,0.0,step_distance,0.0);
+     nSteps++;
+	  }
+}
 
 
 void AssemblySensorMarkerFinder::findMarker(const cv::Mat& image)
@@ -882,9 +918,7 @@ void AssemblySensorMarkerFinder::findMarker_circleSeed(int mode)
               linesCannyEdgeDetectionApertureSize_,
               linesCannyEdgeDetectionL2Gradient_);
     
-    
     NQLog("AssemblyVUEyeCamera") << "  running hough lines";
-    
     
     //detect lines
     cv::HoughLinesP(img_edges, tempLines,
@@ -1073,9 +1107,7 @@ void AssemblySensorMarkerFinder::findMarker_circleSeed(int mode)
         
         
         slope_final = (av_y_up -  av_y_down) / (av_x_up -  av_x_down);
-        ang_final = atan (slope_final) * 180 / 3.14;
-        
-        
+        ang_final = atan (slope_final) * 180 / 3.14;    
     }
     
     
@@ -1108,8 +1140,3 @@ void AssemblySensorMarkerFinder::findMarker_circleSeed(int mode)
     
 
 }
-
-
-
-
-
