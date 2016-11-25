@@ -193,9 +193,9 @@ AssemblyModuleAssembler::AssemblyModuleAssembler(AssemblyVUEyeModel *uEyeModel_,
   g1->addWidget(cmdr0,2,0);
 
 
-  AssemblyZScanner * cmdr_zscan = new AssemblyZScanner(this, finder_ ,  "Z scan", 5.0, 30,1000);
-  cmdr0->setToolTip("Runs scan and detects distance of object from camera )");
-  g1->addWidget(cmdr_zscan,3,0);
+//  AssemblyZScanner * cmdr_zscan = new AssemblyZScanner(this, finder_ ,  "Z scan", 5.0, 30,1000);
+//  cmdr0->setToolTip("Runs scan and detects distance of object from camera )");
+//  g1->addWidget(cmdr_zscan,3,0);
 
   AssemblyCommander * cmdr1 = new AssemblyCommander(this, "Go to pickup", 100.0,100.0,100.0,100.0);
   cmdr1->setToolTip("(2) Moves x,y,z stage to pickup position (default = (100,100,100) using moveAbsolute(x,y,z) routine)");
@@ -635,58 +635,6 @@ void AssemblyCommander::goToTarget()
   emit moveAbsolute(x_d, y_d, z_d, a_d);
 
   NQLog("AssemblyCommander:goToTarget") <<"move requested...";
-}
-
-
-AssemblyZScanner::AssemblyZScanner(QWidget *parent, AssemblySensorMarkerFinder * finder_,  std::string string,
-                                     double range, int steps, int delay)
-: QWidget(parent), local_range(range), local_steps(steps),local_delay(delay)
-{
-
-  QFormLayout *l = new QFormLayout(this);
-  setLayout(l);
-
-  std::ostringstream strs;
-  strs.clear();
-  strs << range;
-  strs << ",";
-  strs << steps;
-  strs << ",";
-  strs << delay;
-  std::string str = strs.str();
-  QString qstr = QString::fromStdString(str);
-  QString qname = QString::fromStdString(string);
-
-  this->local_range = range;
-  this->local_steps = steps;
-  this->local_delay = delay;
-
-  button1 = new QPushButton(qname, this);
-
-  lineEdit1 = new QLineEdit();
-  lineEdit1->setText(qstr);
-  l->addRow(button1,lineEdit1);
-
-  connect(button1, SIGNAL(clicked()),
-          this, SLOT(run_scan()));
-
-  connect(this, SIGNAL(run_scan(double, int, int)),
-          finder_, SLOT(scan(double, int, int)));
-
-}
-
-void AssemblyZScanner::run_scan()
-{
-
-  NQLog("AssemblyZScanner:scan(),  Scan range  = ") <<  this->local_range << ", N steps =  "<< this->local_steps <<", delay = " << this->local_delay;
-
-
-  double range = this->local_range;
-  int steps = this->local_steps;
-  int delay = this->local_delay;
-
-  emit run_scan(range, steps, delay);
-
 }
 
 

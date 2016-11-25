@@ -57,6 +57,10 @@ AssemblyMainWindow::AssemblyMainWindow(QWidget *parent) :
     uEyeWidget_ = new AssemblyUEyeWidget(uEyeModel_, this);
     tabWidget_->addTab(uEyeWidget_, "uEye");
     
+    autoFocusView_ = new AssemblyAutoFocus(uEyeModel_,lStepExpressModel_, this);
+    tabWidget_->addTab(autoFocusView_, "Auto Focus");
+    
+    
     QWidget * widget;
     widget= new QWidget(tabWidget_);
     tabWidget_->addTab(widget, "Motion Manager");
