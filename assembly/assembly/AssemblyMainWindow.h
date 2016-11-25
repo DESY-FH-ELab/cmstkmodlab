@@ -24,6 +24,7 @@ typedef AssemblyUEyeModel AssemblyUEyeModel_t;
 #include "AssemblyUEyeSnapShooter.h"
 #include "AssemblyModuleAssembler.h"
 #include "AssemblyAutoFocus.h"
+#include "AssemblyScanner.h"
 
 
 #include "AssemblyMarkerFinderThread.h"

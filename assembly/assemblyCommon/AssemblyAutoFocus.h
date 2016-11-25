@@ -27,12 +27,14 @@
 #include "LStepExpressMotionManager.h"
 
 
+#include "AssemblyScanner.h"
+
 class AssemblyAutoFocus : public QWidget
 {
   Q_OBJECT
 
 public:
-  explicit AssemblyAutoFocus(AssemblyVUEyeModel *uEyeModel_,LStepExpressModel* lStepExpressModel_,QWidget *parent = 0);
+  explicit AssemblyAutoFocus(AssemblyScanner *cmdr_zscan, QWidget *parent = 0);
   void connectImageProducer(const QObject* sender, const char* signal);
   void disconnectImageProducer(const QObject* sender, const char* signal);
 
@@ -51,7 +53,6 @@ protected:
   QCheckBox *checkbox;
 
 
-
 public slots:
 
   void imageAcquired(const cv::Mat&);
@@ -63,29 +64,6 @@ public slots:
 signals:
   void run_scan(double,int);
   void moveRelative(double,double,double,double);
-};
-
-class AssemblyZScanner : public QObject
-{
-  Q_OBJECT
-
-public:
-  AssemblyVUEyeCamera* camera_;
-  LStepExpressMotionManager* motionManager_;
-  explicit AssemblyZScanner(AssemblyVUEyeModel *uEyeModel_, LStepExpressModel* lStepExpressModel_);
-
-  double local_range, local_steps, local_delay;
-
-protected:
-
-public slots:
-  void run_scan(double, int);
-  void enable_autofocus(int);
-  void write_image(cv::Mat);
-
-    
-signals:
-
 };
 
 

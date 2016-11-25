@@ -30,13 +30,20 @@
 using namespace std;
 using namespace cv;
 
-AssemblyAutoFocus::AssemblyAutoFocus(AssemblyVUEyeModel *uEyeModel_,LStepExpressModel* lStepExpressModel_,QWidget *parent)
+AssemblyAutoFocus::AssemblyAutoFocus(AssemblyScanner *cmdr_zscan,QWidget *parent)
   : QWidget(parent)
 {
 
   LStepExpressMotionManager* motionManager_ = new LStepExpressMotionManager(lStepExpressModel_);
 
   camera_ = uEyeModel_->getCameraByID(10);
+
+  if (camera_){
+    NQLog("AssemblyAutoFocus::::: camera make") ;
+  }else{
+
+    NQLog("AssemblyAutoFocus::::: camera NULL") ;
+}
 
   QGridLayout *l = new QGridLayout(this);
   setLayout(l);
@@ -76,9 +83,7 @@ AssemblyAutoFocus::AssemblyAutoFocus(AssemblyVUEyeModel *uEyeModel_,LStepExpress
   checkbox = new QCheckBox("Enable auto-focusing", this);
   g0->addWidget(checkbox,3,0);
 
-    
-  AssemblyZScanner * cmdr_zscan = new AssemblyZScanner(uEyeModel_, lStepExpressModel_);
-    
+     
     
   //make all the neccessary connections
   connect(button1, SIGNAL(clicked()), this, SLOT(configure_scan()));
@@ -103,65 +108,6 @@ void AssemblyAutoFocus::configure_scan()
     NQLog("AssemblyAutoFocus::configure_scan(),  Scan range  = ") << x_d << ",   "<< y_d ;
     
     emit run_scan(x_d, y_d);
-    
-}
-
-
-
-AssemblyZScanner::AssemblyZScanner(AssemblyVUEyeModel *uEyeModel_,LStepExpressModel* lStepExpressModel_)
-{
-    NQLog("AssemblyZScanner::AssemblyZScanner()");
-    
-    
-    //construct motion manager from motion model
-    motionManager_ = new LStepExpressMotionManager(lStepExpressModel_);
-    
-    //get mobile camera from camera model
-    camera_ = uEyeModel_->getCameraByID(10);
-    
-    
-}
-
-
-void AssemblyZScanner::enable_autofocus(int enabled)
-{
-    NQLog("AssemblyZScanner:enable_autofocus() ");
-    
-    if (enabled == 2){
-        NQLog("AssemblyZScanner:enable_autofocus() ") << " connecting motion/vision for scan " ;
-        
-        connect (this, SIGNAL(getImage()), camera_, SLOT(acquireImage()));
-        connect(camera_, SIGNAL(imageAcquired(cv::Mat)),  this, SLOT(write_image(cv::Mat)) );
-
-
-
-    }
-    else if (enabled == 0){
-    
-        NQLog("AssemblyZScanner:enable_autofocus() ") << " disconnecting motion/vision for scan "  ;
-        
-        disconnect (this, SIGNAL(getImage()), camera_, SLOT(acquireImage()));
-        disconnect(camera_, SIGNAL(imageAcquired(cv::Mat)),  this, SLOT(write_image(cv::Mat)) );
-
-    }
-    
-    
-}
-
-
-
-void AssemblyZScanner::run_scan(double step_size, int nSteps)
-{
-    NQLog("AssemblyZScanner:run_scan()");
-    
-    
-}
-
-
-void AssemblyZScanner::write_image(cv::Mat)
-{
-    NQLog("AssemblyZScanner:write_image()");
-    
     
 }
 
