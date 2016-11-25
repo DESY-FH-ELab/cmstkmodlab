@@ -65,7 +65,7 @@ public slots:
 
 protected slots:
 
-    void write_image(const cv::Mat&);
+    void write_image(cv::Mat);
     void scan(double, int , int);
     void testSLOT(cv::Mat);
 
@@ -73,7 +73,10 @@ protected:
     std::string cacheDirectory1_;
     std::string cacheDirectory2_;
 
-
+    
+    int nAcquiredImages;
+    int nTotalImages;
+ 
     size_t findLines();
 
     size_t findIntersections();
