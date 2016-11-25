@@ -162,7 +162,7 @@ void AssemblyMainWindow::cameraOpened()
 
     rawView_->connectImageProducer(camera_, SIGNAL(imageAcquired(const cv::Mat&)));
     
-  bool test =   connect(cameraThread_, SIGNAL(eventHappened()),  finder_, SLOT(testSLOT()) );
+  bool test =   connect(camera_, SIGNAL(imageAcquired()),  finder_, SLOT(testSLOT()) );
  
    connect(finder_, SIGNAL(getImage()), camera_, SLOT(acquireImage()));
 
