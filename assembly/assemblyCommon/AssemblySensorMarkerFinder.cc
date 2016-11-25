@@ -71,14 +71,14 @@ AssemblySensorMarkerFinder::~AssemblySensorMarkerFinder()
 //  expectedCircleRadius_ =    rad;
 // }
 
-void  AssemblySensorMarkerFinder::testSLOT(){
+void  AssemblySensorMarkerFinder::testSLOT(cv::Mat){
 
     NQLog("AssemblySensorMarkerFinder") << "testSLOT()";
   emit getImage();
 }
 
 
-void  AssemblySensorMarkerFinder::write_image(const cv::Mat& newImage){
+void  AssemblySensorMarkerFinder::write_image(cv::Mat newImage){
 
     NQLog("AssemblySensorMarkerFinder") << "write_image()";
     QDateTime local(QDateTime::currentDateTime());
@@ -88,31 +88,31 @@ void  AssemblySensorMarkerFinder::write_image(const cv::Mat& newImage){
     filename.replace( " ", "" );
 
     cv::imwrite(filename.toStdString(), newImage);
+
+
+    //check global image counter 
+    if (nAcquiredImages < nTotalImages){ 
+      cout <<"n acquired images = "<< nAcquiredImages<<"  nTotal images = "<< nTotalImages  <<endl; 
+       nAcquiredImages++;
+       emit getImage();
+    }
 }
 
 
 void  AssemblySensorMarkerFinder::scan(double range, int steps, int delay){
 
   NQLog("AssemblySensorMarkerFinder::scan") << range << ",  " <<steps <<",   " << delay ;
+
+  steps = 10;
+  nTotalImages = steps;
    
   double step_distance = range/steps;
   int nSteps = 0;
-  steps = 4;
 
-  getImage();
+  nAcquiredImages = 1;
+  emit getImage();
 
-  while ( nSteps < steps/2){
-     NQLog("AssemblyZScanner:scan(),  Scanning  1st half, step ");
-     //take image
-     //     emit getImage(); 
-     //save image with Z position in filename
-     //delay
 
-     //move in Z 
-
-     //moveRelative(0.0,0.0,step_distance,0.0);
-     nSteps++;
-	  }
 }
 
 
