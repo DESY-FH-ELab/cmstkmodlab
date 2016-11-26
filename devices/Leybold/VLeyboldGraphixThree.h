@@ -52,6 +52,7 @@ class VLeyboldGraphixThree
   virtual void SetSensorDetectionMode(int sensor, SensorDetectionMode mode) = 0;
 
   virtual std::string GetSensorType(int sensor) const = 0;
+  virtual void SetSensorType(int sensor, std::string type) = 0;
 
   virtual std::string GetSensorName(int sensor) const = 0;
   virtual void SetSensorName(int sensor, const std::string& name) = 0;

@@ -22,6 +22,7 @@ class LeyboldGraphixThreeFake : public VLeyboldGraphixThree
   void SetSensorDetectionMode(int sensor, SensorDetectionMode mode);
 
   std::string GetSensorType(int sensor) const;
+  void SetSensorType(int sensor, std::string type);
 
   std::string GetSensorName(int sensor) const;
   void SetSensorName(int sensor, const std::string& name);
@@ -36,6 +37,7 @@ class LeyboldGraphixThreeFake : public VLeyboldGraphixThree
  protected:
 
   SensorDetectionMode sensorDetectionMode_[3];
+  std::string sensorType_[3];
   std::string sensorName_[3];
   double pressure_[3];
   DisplayUnit displayUnit_;

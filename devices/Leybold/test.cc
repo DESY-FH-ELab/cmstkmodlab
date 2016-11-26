@@ -32,6 +32,7 @@ int main()
     std::cout << "sensor " << i << std::endl;
 
     gt.SetSensorDetectionMode(i, VLeyboldGraphixThree::SensorDetectionManual);
+    gt.SetSensorType(i, "TTR91N");
 
     std::cout << "  detection mode:        " << gt.GetSensorDetectionMode(i) << std::endl;
     std::cout << "  type:                  " << gt.GetSensorType(i) << std::endl;

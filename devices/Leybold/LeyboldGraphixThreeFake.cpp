@@ -10,6 +10,10 @@ LeyboldGraphixThreeFake::LeyboldGraphixThreeFake( const ioport_t ioPort )
   sensorDetectionMode_[1] = SensorDetectionAuto;
   sensorDetectionMode_[2] = SensorDetectionAuto;
 
+  sensorType_[0] = "TTR?";
+  sensorType_[1] = "TTR?";
+  sensorType_[2] = "TTR?";
+
   pressure_[0] = 100.0;
   pressure_[1] = 100.1;
   pressure_[2] = 100.2;
@@ -60,7 +64,14 @@ std::string LeyboldGraphixThreeFake::GetSensorType(int sensor) const
 {
   if (sensor<1 || sensor>3) return std::string("out of range");
 
-  return "TTR91";
+  return sensorType_[sensor-1];
+}
+
+void LeyboldGraphixThreeFake::SetSensorType(int sensor, std::string type)
+{
+  if (sensor<1 || sensor>3) return;
+
+  sensorType_[sensor-1] = type;
 }
 
 std::string LeyboldGraphixThreeFake::GetSensorName(int sensor) const
