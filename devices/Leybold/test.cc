@@ -31,6 +31,9 @@ int main()
   for (int i=1;i<4;++i) {
     std::cout << "sensor " << i << std::endl;
 
+    gt.SetSensorDetectionMode(i, VLeyboldGraphixThree::SensorDetectionManual);
+
+    std::cout << "  detection mode:        " << gt.GetSensorDetectionMode(i) << std::endl;
     std::cout << "  type:                  " << gt.GetSensorType(i) << std::endl;
     gt.SetSensorName(i, std::string("SENSOR")+std::to_string(i));
     std::cout << "  name:                  " << gt.GetSensorName(i) << std::endl;

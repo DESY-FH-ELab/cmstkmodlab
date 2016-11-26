@@ -6,6 +6,10 @@
 LeyboldGraphixThreeFake::LeyboldGraphixThreeFake( const ioport_t ioPort )
   :VLeyboldGraphixThree(ioPort)
 {
+  sensorDetectionMode_[0] = SensorDetectionAuto;
+  sensorDetectionMode_[1] = SensorDetectionAuto;
+  sensorDetectionMode_[2] = SensorDetectionAuto;
+
   pressure_[0] = 100.0;
   pressure_[1] = 100.1;
   pressure_[2] = 100.2;
@@ -36,6 +40,20 @@ int LeyboldGraphixThreeFake::GetItemNumber() const
 int LeyboldGraphixThreeFake::GetNumberOfChannels() const
 {
   return 3;
+}
+
+VLeyboldGraphixThree::SensorDetectionMode LeyboldGraphixThreeFake::GetSensorDetectionMode(int sensor) const
+{
+  if (sensor<1 || sensor>3) return SensorDetectionAuto;
+
+  return sensorDetectionMode_[sensor-1];
+}
+
+void LeyboldGraphixThreeFake::SetSensorDetectionMode(int sensor, VLeyboldGraphixThree::SensorDetectionMode mode)
+{
+  if (sensor<1 || sensor>3) return;
+
+  sensorDetectionMode_[sensor-1] = mode;
 }
 
 std::string LeyboldGraphixThreeFake::GetSensorType(int sensor) const

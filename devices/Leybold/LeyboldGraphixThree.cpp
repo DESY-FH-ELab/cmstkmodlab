@@ -89,6 +89,49 @@ int LeyboldGraphixThree::GetNumberOfChannels() const
   return std::atoi(buffer.c_str());
 }
 
+VLeyboldGraphixThree::SensorDetectionMode LeyboldGraphixThree::GetSensorDetectionMode(int sensor) const
+{
+  std::string command;
+
+  command += SI;
+  command += std::to_string(sensor);
+  command += Separator;
+  command += "2";
+
+  SendCommand(command);
+
+  std::string buffer;
+  bool isACK = ReceiveData(buffer);
+
+  if (buffer=="Auto") {
+    return SensorDetectionAuto;
+  } else {
+    return SensorDetectionManual;
+  }
+}
+
+void LeyboldGraphixThree::SetSensorDetectionMode(int sensor, VLeyboldGraphixThree::SensorDetectionMode mode)
+{
+  std::string command;
+
+  command += SO;
+  command += std::to_string(sensor);
+  command += Separator;
+  command += "2";
+  command += Separator;
+
+  if (mode==SensorDetectionAuto) {
+    command += "Auto";
+  } else {
+    command += "Manual";
+  }
+
+  SendCommand(command);
+
+  std::string buffer;
+  bool isACK = ReceiveData(buffer);
+}
+
 std::string LeyboldGraphixThree::GetSensorType(int sensor) const
 {
   if (sensor<1 || sensor>3) return std::string("out of range");

@@ -11,6 +11,11 @@ class VLeyboldGraphixThree
 {
  public:
 
+  enum SensorDetectionMode {
+    SensorDetectionAuto    = 0,
+    SensorDetectionManual  = 1
+  };
+
   enum SensorStatus {
     SensorStatus_nosen   = 0,
     SensorStatus_ok      = 1,
@@ -42,6 +47,9 @@ class VLeyboldGraphixThree
   virtual int GetItemNumber() const = 0;
 
   virtual int GetNumberOfChannels() const = 0;
+
+  virtual SensorDetectionMode GetSensorDetectionMode(int sensor) const = 0;
+  virtual void SetSensorDetectionMode(int sensor, SensorDetectionMode mode) = 0;
 
   virtual std::string GetSensorType(int sensor) const = 0;
 

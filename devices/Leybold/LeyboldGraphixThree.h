@@ -28,6 +28,9 @@ class LeyboldGraphixThree : public VLeyboldGraphixThree
 
   int GetNumberOfChannels() const;
 
+  SensorDetectionMode GetSensorDetectionMode(int sensor) const;
+  void SetSensorDetectionMode(int sensor, SensorDetectionMode mode);
+
   std::string GetSensorType(int sensor) const;
 
   std::string GetSensorName(int sensor) const;
