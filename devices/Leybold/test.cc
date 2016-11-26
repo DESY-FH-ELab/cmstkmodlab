@@ -45,5 +45,28 @@ int main()
     std::cout << std::endl;
   }
 
+  std::cout << std::endl;
+
+  gt.SetSetPointChannelAssignment(1, VLeyboldGraphixThree::SetPointChannel1);
+  gt.SetSetPointChannelAssignment(2, VLeyboldGraphixThree::SetPointChannel1);
+  gt.SetSetPointChannelAssignment(3, VLeyboldGraphixThree::SetPointChannel1);
+  gt.SetSetPointChannelAssignment(4, VLeyboldGraphixThree::SetPointChannel1);
+  gt.SetSetPointChannelAssignment(5, VLeyboldGraphixThree::SetPointChannel2);
+  gt.SetSetPointChannelAssignment(6, VLeyboldGraphixThree::SetPointChannel3);
+
+  for (int i=1;i<7;++i) {
+    std::cout << "set point " << i << std::endl;
+
+    gt.SetSetPointOnPressure(i, 700);
+    gt.SetSetPointOffPressure(i, 800);
+
+    std::cout << "  assignment:            " << gt.GetSetPointChannelAssignment(i) << std::endl;
+    std::cout << "  on pressure:           " << gt.GetSetPointOnPressure(i) << std::endl;
+    std::cout << "  off pressure:          " << gt.GetSetPointOffPressure(i) << std::endl;
+    std::cout << "  status:                " << gt.GetSetPointStatus(i) << std::endl;
+
+    std::cout << std::endl;
+  }
+
   return 0;
 }

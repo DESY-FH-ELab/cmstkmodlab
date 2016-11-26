@@ -44,6 +44,17 @@ class LeyboldGraphixThree : public VLeyboldGraphixThree
   DisplayUnit GetDisplayUnit() const;
   void SetDisplayUnit(DisplayUnit);
 
+  SetPointChannel GetSetPointChannelAssignment(int sp) const;
+  void SetSetPointChannelAssignment(int sp, SetPointChannel channel);
+
+  double GetSetPointOnPressure(int sp) const;
+  void SetSetPointOnPressure(int sp, double pressure);
+
+  double GetSetPointOffPressure(int sp) const;
+  void SetSetPointOffPressure(int sp, double pressure);
+
+  bool GetSetPointStatus(int sp) const;
+
  protected:
 
   void SendCommand(std::string& command) const;

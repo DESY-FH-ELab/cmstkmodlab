@@ -19,6 +19,12 @@ LeyboldGraphixThreeFake::LeyboldGraphixThreeFake( const ioport_t ioPort )
   pressure_[2] = 100.2;
 
   displayUnit_ = DisplayUnit_mbar;
+
+  for (int i=0;i<6;++i) {
+    setPointChannel_[i] = SetPointChannelOff;
+    setPointOnPressure_[i] = 1.e3;
+    setPointOffPressure_[i] = 1.e3;
+  }
 }
 
 LeyboldGraphixThreeFake::~LeyboldGraphixThreeFake()
@@ -110,3 +116,46 @@ void LeyboldGraphixThreeFake::SetDisplayUnit(LeyboldGraphixThreeFake::DisplayUni
 {
   displayUnit_ = unit;
 }
+
+VLeyboldGraphixThree::SetPointChannel LeyboldGraphixThreeFake::GetSetPointChannelAssignment(int sp) const
+{
+  if (sp<1 || sp>6) return SetPointChannelOff;
+  return setPointChannel_[sp-1];
+}
+
+void LeyboldGraphixThreeFake::SetSetPointChannelAssignment(int sp, VLeyboldGraphixThree::SetPointChannel channel)
+{
+  if (sp<1 || sp>6) return;
+  setPointChannel_[sp-1] = channel;
+}
+
+double LeyboldGraphixThreeFake::GetSetPointOnPressure(int sp) const
+{
+  if (sp<1 || sp>6) return -1;
+  return setPointOnPressure_[sp-1];
+}
+
+void LeyboldGraphixThreeFake::SetSetPointOnPressure(int sp, double pressure)
+{
+  if (sp<1 || sp>6) return;
+  setPointOnPressure_[sp-1] = pressure;
+}
+
+double LeyboldGraphixThreeFake::GetSetPointOffPressure(int sp) const
+{
+  if (sp<1 || sp>6) return -1;
+  return setPointOffPressure_[sp-1];
+}
+
+void LeyboldGraphixThreeFake::SetSetPointOffPressure(int sp, double pressure)
+{
+  if (sp<1 || sp>6) return;
+  setPointOffPressure_[sp-1] = pressure;
+}
+
+bool LeyboldGraphixThreeFake::GetSetPointStatus(int sp) const
+{
+  if (sp<1 || sp>6) return false;
+  return false;
+}
+

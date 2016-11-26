@@ -34,6 +34,17 @@ class LeyboldGraphixThreeFake : public VLeyboldGraphixThree
   DisplayUnit GetDisplayUnit() const;
   void SetDisplayUnit(DisplayUnit);
 
+  SetPointChannel GetSetPointChannelAssignment(int sp) const;
+  void SetSetPointChannelAssignment(int sp, SetPointChannel channel);
+
+  double GetSetPointOnPressure(int sp) const;
+  void SetSetPointOnPressure(int sp, double pressure);
+
+  double GetSetPointOffPressure(int sp) const;
+  void SetSetPointOffPressure(int sp, double pressure);
+
+  bool GetSetPointStatus(int sp) const;
+
  protected:
 
   SensorDetectionMode sensorDetectionMode_[3];
@@ -41,6 +52,9 @@ class LeyboldGraphixThreeFake : public VLeyboldGraphixThree
   std::string sensorName_[3];
   double pressure_[3];
   DisplayUnit displayUnit_;
+  SetPointChannel setPointChannel_[6];
+  double setPointOnPressure_[6];
+  double setPointOffPressure_[6];
 };
 
 #endif // _LEYBOLDGRAPHIXTHREEFAKE_H_

@@ -36,6 +36,12 @@ class VLeyboldGraphixThree
     DisplayUnit_unknown
   };
 
+  enum SetPointChannel {
+    SetPointChannelOff   = 0,
+    SetPointChannel1     = 1,
+    SetPointChannel2     = 2,
+    SetPointChannel3     = 3
+  };
 
   VLeyboldGraphixThree( const ioport_t );
   virtual ~VLeyboldGraphixThree();
@@ -71,6 +77,17 @@ class VLeyboldGraphixThree
   const std::map<DisplayUnit,std::string>& GetDisplayUnitNames() const {
     return displayUnitNames_;
   }
+
+  virtual SetPointChannel GetSetPointChannelAssignment(int sp) const = 0;
+  virtual void SetSetPointChannelAssignment(int sp, SetPointChannel channel) = 0;
+
+  virtual double GetSetPointOnPressure(int sp) const = 0;
+  virtual void SetSetPointOnPressure(int sp, double pressure) = 0;
+
+  virtual double GetSetPointOffPressure(int sp) const = 0;
+  virtual void SetSetPointOffPressure(int sp, double pressure) = 0;
+
+  virtual bool GetSetPointStatus(int sp) const = 0;
 
  protected:
 

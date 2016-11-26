@@ -31,5 +31,12 @@ BOOST_PYTHON_MODULE(PyTkModLabLeybold)
       .def("GetDisplayUnit", &LeyboldGraphixThree_t::GetDisplayUnit)
       .def("SetDisplayUnit", &LeyboldGraphixThree_t::SetDisplayUnit)
       .def("GetDisplayUnitName", &LeyboldGraphixThree_t::GetDisplayUnitName)
+      .def("GetSetPointChannelAssignment", &LeyboldGraphixThree_t::GetSetPointChannelAssignment)
+      .def("SetSetPointChannelAssignment", &LeyboldGraphixThree_t::SetSetPointChannelAssignment)
+      .def("GetSetPointOnPressure", &LeyboldGraphixThree_t::GetSetPointOnPressure)
+      .def("SetSetPointOnPressure", &LeyboldGraphixThree_t::SetSetPointOnPressure)
+      .def("GetSetPointOffPressure", &LeyboldGraphixThree_t::GetSetPointOffPressure)
+      .def("SetSetPointOffPressure", &LeyboldGraphixThree_t::SetSetPointOffPressure)
+      .def("GetSetPointStatus", &LeyboldGraphixThree_t::GetSetPointStatus)
     ;
 };

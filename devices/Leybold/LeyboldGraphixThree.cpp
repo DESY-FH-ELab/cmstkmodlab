@@ -304,6 +304,162 @@ void LeyboldGraphixThree::SetDisplayUnit(LeyboldGraphixThree::DisplayUnit unit)
   bool isACK = ReceiveData(buffer);
 }
 
+VLeyboldGraphixThree::SetPointChannel LeyboldGraphixThree::GetSetPointChannelAssignment(int sp) const
+{
+  if (sp<1 || sp>6) return SetPointChannelOff;
+
+  std::string command;
+
+  command += SI;
+  command += "4";
+  command += Separator;
+  command += std::to_string((sp-1)*4 + 1);
+
+  SendCommand(command);
+
+  std::string buffer;
+  bool isACK = ReceiveData(buffer);
+
+  if (buffer=="Off") {
+    return SetPointChannelOff;
+  } else if (buffer=="1") {
+    return SetPointChannel1;
+  } else if (buffer=="2") {
+    return SetPointChannel2;
+  } else if (buffer=="3") {
+    return SetPointChannel3;
+  }
+
+  return SetPointChannelOff;
+}
+
+void LeyboldGraphixThree::SetSetPointChannelAssignment(int sp, VLeyboldGraphixThree::SetPointChannel channel)
+{
+  if (sp<1 || sp>6) return;
+
+  std::string command;
+
+  command += SI;
+  command += "4";
+  command += Separator;
+  command += std::to_string((sp-1)*4 + 1);
+  command += Separator;
+
+  if (channel==SetPointChannel1) {
+    command += "1";
+  } else if (channel==SetPointChannel2) {
+    command += "2";
+  } else if(channel==SetPointChannel3) {
+    command += "3";
+  } else {
+    command += "Off";
+  }
+
+  SendCommand(command);
+
+  std::string buffer;
+  bool isACK = ReceiveData(buffer);
+}
+
+double LeyboldGraphixThree::GetSetPointOnPressure(int sp) const
+{
+  if (sp<1 || sp>6) return -1;
+
+  std::string command;
+
+  command += SI;
+  command += "4";
+  command += Separator;
+  command += std::to_string((sp-1)*4 + 2);
+
+  SendCommand(command);
+
+  std::string buffer;
+  bool isACK = ReceiveData(buffer);
+
+  return std::atof(buffer.c_str());
+}
+
+void LeyboldGraphixThree::SetSetPointOnPressure(int sp, double pressure)
+{
+  if (sp<1 || sp>6) return;
+
+  std::string command;
+
+  command += SI;
+  command += "4";
+  command += Separator;
+  command += std::to_string((sp-1)*4 + 2);
+  command += Separator;
+  command += std::to_string(pressure);
+
+  SendCommand(command);
+
+  std::string buffer;
+  bool isACK = ReceiveData(buffer);
+}
+
+double LeyboldGraphixThree::GetSetPointOffPressure(int sp) const
+{
+  if (sp<1 || sp>6) return -1;
+
+  std::string command;
+
+  command += SI;
+  command += "4";
+  command += Separator;
+  command += std::to_string((sp-1)*4 + 3);
+
+  SendCommand(command);
+
+  std::string buffer;
+  bool isACK = ReceiveData(buffer);
+
+  return std::atof(buffer.c_str());
+}
+
+void LeyboldGraphixThree::SetSetPointOffPressure(int sp, double pressure)
+{
+  if (sp<1 || sp>6) return;
+
+  std::string command;
+
+  command += SI;
+  command += "4";
+  command += Separator;
+  command += std::to_string((sp-1)*4 + 3);
+  command += Separator;
+  command += std::to_string(pressure);
+
+  SendCommand(command);
+
+  std::string buffer;
+  bool isACK = ReceiveData(buffer);
+}
+
+bool LeyboldGraphixThree::GetSetPointStatus(int sp) const
+{
+  if (sp<1 || sp>6) return false;
+
+  std::string command;
+
+  command += SI;
+  command += "4";
+  command += Separator;
+  command += std::to_string((sp-1)*4 + 4);
+
+  SendCommand(command);
+
+  std::string buffer;
+  bool isACK = ReceiveData(buffer);
+
+  if (buffer=="On") {
+    return true;
+  }
+
+  return false;
+}
+
 bool LeyboldGraphixThree::DeviceAvailable() const
 {
   return isDeviceAvailable_;
