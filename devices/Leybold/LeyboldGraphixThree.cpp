@@ -339,7 +339,7 @@ void LeyboldGraphixThree::SetSetPointChannelAssignment(int sp, VLeyboldGraphixTh
 
   std::string command;
 
-  command += SI;
+  command += SO;
   command += "4";
   command += Separator;
   command += std::to_string((sp-1)*4 + 1);
@@ -386,7 +386,7 @@ void LeyboldGraphixThree::SetSetPointOnPressure(int sp, double pressure)
 
   std::string command;
 
-  command += SI;
+  command += SO;
   command += "4";
   command += Separator;
   command += std::to_string((sp-1)*4 + 2);
@@ -425,6 +425,7 @@ void LeyboldGraphixThree::SetSetPointOffPressure(int sp, double pressure)
   std::string command;
 
   command += SI;
+  command += SO;
   command += "4";
   command += Separator;
   command += std::to_string((sp-1)*4 + 3);
