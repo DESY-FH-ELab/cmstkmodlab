@@ -55,6 +55,11 @@ int main()
   gt.SetSetPointChannelAssignment(6, VLeyboldGraphixThree::SetPointChannel3);
 
   for (int i=1;i<7;++i) {
+
+    int setPointAssignment = gt.GetSetPointChannelAssignment(i);
+
+    if (setPointAssignment==0) continue;
+
     std::cout << "set point " << i << std::endl;
 
     gt.SetSetPointOnPressure(i, 700);
