@@ -67,8 +67,8 @@ int main()
 
     std::cout << "set point " << i << std::endl;
 
-    gt.SetSetPointOnPressure(i, 700);
-    gt.SetSetPointOffPressure(i, 800);
+    gt.SetSetPointOnPressure(i, 800);
+    gt.SetSetPointOffPressure(i, 850);
 
     std::cout << "  assignment:            " << gt.GetSetPointChannelAssignment(i) << std::endl;
     std::cout << "  on pressure:           " << gt.GetSetPointOnPressure(i) << std::endl;
