@@ -25,6 +25,26 @@ LeyboldGraphixThreeModel::LeyboldGraphixThreeModel(const char* port,
   NQLog("LeyboldGraphixThree") << "constructed";
 }
 
+LeyboldGraphixThree_t::SensorDetectionMode LeyboldGraphixThreeModel::getSensorDetectionMode(int sensor) const
+{
+  return controller_->GetSensorDetectionMode(sensor);
+}
+
+void LeyboldGraphixThreeModel::setSensorDetectionMode(int sensor, LeyboldGraphixThree_t::SensorDetectionMode mode)
+{
+  controller_->SetSensorDetectionMode(sensor, mode);
+}
+
+LeyboldGraphixThree_t::SensorType LeyboldGraphixThreeModel::getSensorType(int sensor) const
+{
+  return controller_->GetSensorType(sensor);
+}
+
+void LeyboldGraphixThreeModel::setSensorType(int sensor, LeyboldGraphixThree_t::SensorType type)
+{
+  controller_->SetSensorType(sensor, type);
+}
+
 const std::string LeyboldGraphixThreeModel::getSensorName(int sensor) const
 {
   return controller_->GetSensorName(sensor);

@@ -32,6 +32,12 @@ public:
                                     double updateInterval = 5,
                                     QObject *parent = 0);
 
+  LeyboldGraphixThree_t::SensorDetectionMode getSensorDetectionMode(int sensor) const;
+  void setSensorDetectionMode(int sensor, LeyboldGraphixThree_t::SensorDetectionMode mode);
+
+  LeyboldGraphixThree_t::SensorType getSensorType(int sensor) const;
+  void setSensorType(int sensor, LeyboldGraphixThree_t::SensorType type);
+
   const std::string getSensorName(int sensor) const;
   void setSensorName(int sensor, const std::string& name);
 
