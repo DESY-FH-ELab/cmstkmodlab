@@ -21,8 +21,8 @@ class LeyboldGraphixThreeFake : public VLeyboldGraphixThree
   SensorDetectionMode GetSensorDetectionMode(int sensor) const;
   void SetSensorDetectionMode(int sensor, SensorDetectionMode mode);
 
-  std::string GetSensorType(int sensor) const;
-  void SetSensorType(int sensor, std::string type);
+  std::string GetSensorTypeName(int sensor) const;
+  void SetSensorTypeName(int sensor, std::string type);
 
   std::string GetSensorName(int sensor) const;
   void SetSensorName(int sensor, const std::string& name);

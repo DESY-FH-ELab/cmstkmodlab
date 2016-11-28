@@ -132,7 +132,7 @@ void LeyboldGraphixThree::SetSensorDetectionMode(int sensor, VLeyboldGraphixThre
   bool isACK = ReceiveData(buffer);
 }
 
-std::string LeyboldGraphixThree::GetSensorType(int sensor) const
+std::string LeyboldGraphixThree::GetSensorTypeName(int sensor) const
 {
   if (sensor<1 || sensor>3) return std::string("out of range");
 
@@ -151,7 +151,7 @@ std::string LeyboldGraphixThree::GetSensorType(int sensor) const
   return buffer;
 }
 
-void LeyboldGraphixThree::SetSensorType(int sensor, std::string type)
+void LeyboldGraphixThree::SetSensorTypeName(int sensor, std::string type)
 {
   if (sensor<1 || sensor>3) return;
 

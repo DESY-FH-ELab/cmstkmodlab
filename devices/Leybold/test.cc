@@ -29,13 +29,18 @@ int main()
   std::cout << "number of channels:      " << gt.GetNumberOfChannels() << std::endl << std::endl;
 
   for (int i=1;i<4;++i) {
+
+    gt.SetSensorDetectionMode(i, VLeyboldGraphixThree::SensorDetectionAuto);
+
+    VLeyboldGraphixThree::SensorType type = gt.GetSensorType(i);
+    if (type==VLeyboldGraphixThree::SensorType_NOSEN) continue;
+
+    if (type==VLeyboldGraphixThree::SensorType_TTRx) gt.SetSensorType(i, VLeyboldGraphixThree::SensorType_TTR91N);
+
     std::cout << "sensor " << i << std::endl;
 
-    gt.SetSensorDetectionMode(i, VLeyboldGraphixThree::SensorDetectionManual);
-    gt.SetSensorType(i, "TTR91N");
-
     std::cout << "  detection mode:        " << gt.GetSensorDetectionMode(i) << std::endl;
-    std::cout << "  type:                  " << gt.GetSensorType(i) << std::endl;
+    std::cout << "  type:                  " << gt.GetSensorTypeName(i) << std::endl;
     gt.SetSensorName(i, std::string("SENSOR")+std::to_string(i));
     std::cout << "  name:                  " << gt.GetSensorName(i) << std::endl;
     VLeyboldGraphixThree::SensorStatus status = gt.GetSensorStatus(i);

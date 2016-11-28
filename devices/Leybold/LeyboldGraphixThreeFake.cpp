@@ -66,14 +66,14 @@ void LeyboldGraphixThreeFake::SetSensorDetectionMode(int sensor, VLeyboldGraphix
   sensorDetectionMode_[sensor-1] = mode;
 }
 
-std::string LeyboldGraphixThreeFake::GetSensorType(int sensor) const
+std::string LeyboldGraphixThreeFake::GetSensorTypeName(int sensor) const
 {
   if (sensor<1 || sensor>3) return std::string("out of range");
 
   return sensorType_[sensor-1];
 }
 
-void LeyboldGraphixThreeFake::SetSensorType(int sensor, std::string type)
+void LeyboldGraphixThreeFake::SetSensorTypeName(int sensor, std::string type)
 {
   if (sensor<1 || sensor>3) return;
 

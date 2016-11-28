@@ -16,6 +16,14 @@ class VLeyboldGraphixThree
     SensorDetectionManual  = 1
   };
 
+  enum SensorType {
+    SensorType_NOSEN     = 0,
+    SensorType_TTRx      = 1000,
+    SensorType_TTR90     = 1900,
+    SensorType_TTR91     = 1910,
+    SensorType_TTR91N    = 1911
+  };
+
   enum SensorStatus {
     SensorStatus_nosen   = 0,
     SensorStatus_ok      = 1,
@@ -57,8 +65,10 @@ class VLeyboldGraphixThree
   virtual SensorDetectionMode GetSensorDetectionMode(int sensor) const = 0;
   virtual void SetSensorDetectionMode(int sensor, SensorDetectionMode mode) = 0;
 
-  virtual std::string GetSensorType(int sensor) const = 0;
-  virtual void SetSensorType(int sensor, std::string type) = 0;
+  virtual std::string GetSensorTypeName(int sensor) const = 0;
+  SensorType GetSensorType(int sensor) const;
+  virtual void SetSensorTypeName(int sensor, std::string type) = 0;
+  void SetSensorType(int sensor, SensorType type);
 
   virtual std::string GetSensorName(int sensor) const = 0;
   virtual void SetSensorName(int sensor, const std::string& name) = 0;
