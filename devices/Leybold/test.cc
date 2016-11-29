@@ -17,7 +17,7 @@ typedef LeyboldGraphixThree LeyboldGraphixThree_t;
 
 int main()
 {
-  LeyboldGraphixThree_t leybold("/dev/tty.usbserial");
+  LeyboldGraphixThree_t leybold("/dev/ttyUSB0");
 
   std::cout << "version:                 " << leybold.GetVersion() << std::endl;
   std::cout << "serial number:           " << leybold.GetSerialNumber() << std::endl;
@@ -36,12 +36,9 @@ int main()
 
     VLeyboldGraphixThree::SensorType type = leybold.GetSensorType(i);
 
-    std::cout << type << std::endl;
-
     if (type==VLeyboldGraphixThree::SensorType_NOSEN) continue;
 
     if (type==VLeyboldGraphixThree::SensorType_TTRx) {
-      std::cout << "TTRx" << std::endl;
       leybold.SetSensorType(i, VLeyboldGraphixThree::SensorType_TTR91N);
     }
 
