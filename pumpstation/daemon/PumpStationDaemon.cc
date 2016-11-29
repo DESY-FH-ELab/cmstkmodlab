@@ -92,6 +92,8 @@ int main(int argc, char *argv[])
 
   leybold.setDisplayUnit(VLeyboldGraphixThree::DisplayUnit_mbar);
 
+  leybold.updateInformation();
+
   PumpStationModel model(&conrad, &leybold, 5, &app);
 
   DataLogger logger(&model, &app);

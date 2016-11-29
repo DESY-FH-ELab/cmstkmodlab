@@ -93,7 +93,7 @@ void LeyboldGraphixThreeModel::initialize()
 
   if ( enabled ) {
     setDeviceState(READY);
-    updateInformation();
+    // updateInformation();
   }
   else {
     setDeviceState( OFF );
