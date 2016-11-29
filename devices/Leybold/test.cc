@@ -22,11 +22,23 @@ int main()
   std::cout << "version:                 " << leybold.GetVersion() << std::endl;
   std::cout << "serial number:           " << leybold.GetSerialNumber() << std::endl;
   std::cout << "item number:             " << leybold.GetItemNumber() << std::endl;
+
   leybold.SetDisplayUnit(VLeyboldGraphixThree::DisplayUnit_mbar);
   VLeyboldGraphixThree::DisplayUnit unit = leybold.GetDisplayUnit();
   std::cout << "display unit:            " << leybold.GetDisplayUnitName(unit) << std::endl << std::endl;
 
   std::cout << "number of channels:      " << leybold.GetNumberOfChannels() << std::endl << std::endl;
+
+  leybold.SetSensorName(1, "SYS");
+  leybold.SetSensorName(2, "P1");
+  leybold.SetSensorName(3, "P2");
+
+  leybold.SetSetPointChannelAssignment(1, VLeyboldGraphixThree::SetPointChannelOff);
+  leybold.SetSetPointChannelAssignment(2, VLeyboldGraphixThree::SetPointChannelOff);
+  leybold.SetSetPointChannelAssignment(3, VLeyboldGraphixThree::SetPointChannelOff);
+  leybold.SetSetPointChannelAssignment(4, VLeyboldGraphixThree::SetPointChannelOff);
+  leybold.SetSetPointChannelAssignment(5, VLeyboldGraphixThree::SetPointChannelOff);
+  leybold.SetSetPointChannelAssignment(6, VLeyboldGraphixThree::SetPointChannelOff);
 
   for (int i=1;i<4;++i) {
 
@@ -59,13 +71,6 @@ int main()
 
     std::cout << std::endl;
   }
-
-  leybold.SetSetPointChannelAssignment(1, VLeyboldGraphixThree::SetPointChannelOff);
-  leybold.SetSetPointChannelAssignment(2, VLeyboldGraphixThree::SetPointChannelOff);
-  leybold.SetSetPointChannelAssignment(3, VLeyboldGraphixThree::SetPointChannelOff);
-  leybold.SetSetPointChannelAssignment(4, VLeyboldGraphixThree::SetPointChannelOff);
-  leybold.SetSetPointChannelAssignment(5, VLeyboldGraphixThree::SetPointChannelOff);
-  leybold.SetSetPointChannelAssignment(6, VLeyboldGraphixThree::SetPointChannelOff);
 
   /*
 
