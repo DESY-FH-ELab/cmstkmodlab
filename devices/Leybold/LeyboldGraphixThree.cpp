@@ -424,7 +424,6 @@ void LeyboldGraphixThree::SetSetPointOffPressure(int sp, double pressure)
 
   std::string command;
 
-  command += SI;
   command += SO;
   command += "4";
   command += Separator;
