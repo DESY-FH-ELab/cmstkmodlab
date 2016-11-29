@@ -42,7 +42,7 @@ void LeyboldComHandler::SendCommand( const char *commandString )
     write( fIoPortFileDescriptor, &singleCharacter, 1 );
   }
 
-  usleep(10000);
+  usleep(25000);
   // std::cout << "command: |" << commandString << "|" << std::endl;
 }
 
@@ -63,7 +63,7 @@ void LeyboldComHandler::ReceiveString( char *receiveString )
     return;
   }
 
-  usleep(10000);
+  usleep(25000);
 
   int timeout = 0, readResult = 0;
 
