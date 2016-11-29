@@ -35,7 +35,7 @@ void LeyboldComHandler::SendCommand( const char *commandString )
 
   char singleCharacter = 0; 
 
-  for ( unsigned int i = 0; i < strlen( commandString ); i++ ) {
+  for (unsigned int i=0;i<strlen(commandString);i++) {
     
     // scan command string character wise & write
     singleCharacter = commandString[i];
@@ -67,11 +67,11 @@ void LeyboldComHandler::ReceiveString( char *receiveString )
 
   int timeout = 0, readResult = 0;
 
-  while ( timeout < 100000 )  {
+  while (timeout < 100000)  {
 
     readResult = read( fIoPortFileDescriptor, receiveString, 1024 );
 
-    if ( readResult > 0 ) {
+    if (readResult > 0) {
       receiveString[readResult] = 0;
       break;
     }
@@ -90,7 +90,7 @@ void LeyboldComHandler::OpenIoPort( void )
   fIoPortFileDescriptor = open( fIoPort, O_RDWR | O_NOCTTY  | O_NDELAY );
 
   // check if successful
-  if ( fIoPortFileDescriptor == -1 ) {
+  if (fIoPortFileDescriptor == -1) {
     std::cerr << "[LeyboldComHandler::OpenIoPort] ** ERROR: could not open device file "
               << fIoPort << "." << std::endl;
     std::cerr << "                               (probably it's not user-writable)."
@@ -114,10 +114,10 @@ void LeyboldComHandler::InitializeIoPort( void )
   if (!fDeviceAvailable) return;
 
   // get and save current ioport settings for later restoring
-  tcgetattr( fIoPortFileDescriptor, &fCurrentTermios );
+  tcgetattr(fIoPortFileDescriptor, &fCurrentTermios);
 
   // clear new settings struct
-  bzero( &fThisTermios, sizeof( fThisTermios ) );
+  bzero(&fThisTermios, sizeof(fThisTermios));
 
   // set input/output baud rate
   cfsetispeed(&fThisTermios, B38400);
@@ -159,7 +159,7 @@ void LeyboldComHandler::RestoreIoPort( void )
   if (!fDeviceAvailable) return;
 
   // restore old com port settings
-  tcsetattr( fIoPortFileDescriptor, TCSANOW, &fCurrentTermios );
+  tcsetattr(fIoPortFileDescriptor, TCSANOW, &fCurrentTermios);
 }
 
 //! Close I/O port.
@@ -170,7 +170,7 @@ void LeyboldComHandler::CloseIoPort( void )
 {
   if (!fDeviceAvailable) return;
 
-  close( fIoPortFileDescriptor );
+  close(fIoPortFileDescriptor);
 }
 
 bool LeyboldComHandler::DeviceAvailable()
