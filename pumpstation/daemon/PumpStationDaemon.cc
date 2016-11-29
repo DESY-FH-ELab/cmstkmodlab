@@ -85,8 +85,8 @@ int main(int argc, char *argv[])
   }
 
   leybold.setSensorName(1, "System");
-  leybold.setSensorName(2, "Pump 1");
-  leybold.setSensorName(3, "Pump 2");
+  leybold.setSensorName(2, "Pump1");
+  leybold.setSensorName(3, "Pump2");
 
   leybold.setDisplayUnit(VLeyboldGraphixThree::DisplayUnit_mbar);
 
