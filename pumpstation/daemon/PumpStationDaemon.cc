@@ -63,6 +63,7 @@ int main(int argc, char *argv[])
   std::string leyboldPort = config->getValue("LeyboldPort");
   LeyboldGraphixThreeModel leybold(leyboldPort.c_str(), 5, &app);
 
+  /*
   if (leybold.getSensorDetectionMode(1)!=VLeyboldGraphixThree::SensorDetectionAuto) {
     leybold.setSensorDetectionMode(1, VLeyboldGraphixThree::SensorDetectionAuto);
   }
@@ -83,6 +84,7 @@ int main(int argc, char *argv[])
   if (leybold.getSensorType(3)==VLeyboldGraphixThree::SensorType_TTRx) {
     leybold.setSensorType(3, VLeyboldGraphixThree::SensorType_TTR91N);
   }
+  */
 
   leybold.setSensorName(1, "SYS");
   leybold.setSensorName(2, "P1");
