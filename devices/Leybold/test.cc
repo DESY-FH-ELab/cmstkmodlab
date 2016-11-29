@@ -17,66 +17,78 @@ typedef LeyboldGraphixThree LeyboldGraphixThree_t;
 
 int main()
 {
-  LeyboldGraphixThree_t gt("/dev/ttyUSB0");
+  LeyboldGraphixThree_t leybold("/dev/tty.usbserial");
 
-  std::cout << "version:                 " << gt.GetVersion() << std::endl;
-  std::cout << "serial number:           " << gt.GetSerialNumber() << std::endl;
-  std::cout << "item number:             " << gt.GetItemNumber() << std::endl;
-  gt.SetDisplayUnit(VLeyboldGraphixThree::DisplayUnit_mbar);
-  VLeyboldGraphixThree::DisplayUnit unit = gt.GetDisplayUnit();
-  std::cout << "display unit:            " << gt.GetDisplayUnitName(unit) << std::endl << std::endl;
+  std::cout << "version:                 " << leybold.GetVersion() << std::endl;
+  std::cout << "serial number:           " << leybold.GetSerialNumber() << std::endl;
+  std::cout << "item number:             " << leybold.GetItemNumber() << std::endl;
+  leybold.SetDisplayUnit(VLeyboldGraphixThree::DisplayUnit_mbar);
+  VLeyboldGraphixThree::DisplayUnit unit = leybold.GetDisplayUnit();
+  std::cout << "display unit:            " << leybold.GetDisplayUnitName(unit) << std::endl << std::endl;
 
-  std::cout << "number of channels:      " << gt.GetNumberOfChannels() << std::endl << std::endl;
+  std::cout << "number of channels:      " << leybold.GetNumberOfChannels() << std::endl << std::endl;
 
   for (int i=1;i<4;++i) {
 
-    gt.SetSensorDetectionMode(i, VLeyboldGraphixThree::SensorDetectionAuto);
+    if (leybold.GetSensorDetectionMode(i)!=VLeyboldGraphixThree::SensorDetectionAuto) {
+      leybold.SetSensorDetectionMode(i, VLeyboldGraphixThree::SensorDetectionAuto);
+    }
 
-    VLeyboldGraphixThree::SensorType type = gt.GetSensorType(i);
+    VLeyboldGraphixThree::SensorType type = leybold.GetSensorType(i);
+
+    std::cout << type << std::endl;
+
     if (type==VLeyboldGraphixThree::SensorType_NOSEN) continue;
 
-    if (type==VLeyboldGraphixThree::SensorType_TTRx) gt.SetSensorType(i, VLeyboldGraphixThree::SensorType_TTR91N);
+    if (type==VLeyboldGraphixThree::SensorType_TTRx) {
+      std::cout << "TTRx" << std::endl;
+      leybold.SetSensorType(i, VLeyboldGraphixThree::SensorType_TTR91N);
+    }
+
+    // leybold.SetSensorType(i, VLeyboldGraphixThree::SensorType_TTRx);
 
     std::cout << "sensor " << i << std::endl;
 
-    std::cout << "  detection mode:        " << gt.GetSensorDetectionMode(i) << std::endl;
-    std::cout << "  type:                  " << gt.GetSensorTypeName(i) << std::endl;
-    gt.SetSensorName(i, std::string("SENSOR")+std::to_string(i));
-    std::cout << "  name:                  " << gt.GetSensorName(i) << std::endl;
-    VLeyboldGraphixThree::SensorStatus status = gt.GetSensorStatus(i);
-    std::cout << "  status:                " << gt.GetSensorStatusText(status) << std::endl;
-    std::cout << "  pressure:              " << gt.GetPressure(i) << std::endl;
+    std::cout << "  detection mode:        " << leybold.GetSensorDetectionMode(i) << std::endl;
+    std::cout << "  type:                  " << leybold.GetSensorTypeName(i) << std::endl;
+    leybold.SetSensorName(i, std::string("SENSOR")+std::to_string(i));
+    std::cout << "  name:                  " << leybold.GetSensorName(i) << std::endl;
+    VLeyboldGraphixThree::SensorStatus status = leybold.GetSensorStatus(i);
+    std::cout << "  status:                " << leybold.GetSensorStatusText(status) << std::endl;
+    std::cout << "  pressure:              " << leybold.GetPressure(i) << std::endl;
 
     std::cout << std::endl;
   }
 
-  std::cout << std::endl;
+  leybold.SetSetPointChannelAssignment(1, VLeyboldGraphixThree::SetPointChannelOff);
+  leybold.SetSetPointChannelAssignment(2, VLeyboldGraphixThree::SetPointChannelOff);
+  leybold.SetSetPointChannelAssignment(3, VLeyboldGraphixThree::SetPointChannelOff);
+  leybold.SetSetPointChannelAssignment(4, VLeyboldGraphixThree::SetPointChannelOff);
+  leybold.SetSetPointChannelAssignment(5, VLeyboldGraphixThree::SetPointChannelOff);
+  leybold.SetSetPointChannelAssignment(6, VLeyboldGraphixThree::SetPointChannelOff);
 
-  gt.SetSetPointChannelAssignment(1, VLeyboldGraphixThree::SetPointChannel1);
-  gt.SetSetPointChannelAssignment(2, VLeyboldGraphixThree::SetPointChannel1);
-  gt.SetSetPointChannelAssignment(3, VLeyboldGraphixThree::SetPointChannel1);
-  gt.SetSetPointChannelAssignment(4, VLeyboldGraphixThree::SetPointChannel1);
-  gt.SetSetPointChannelAssignment(5, VLeyboldGraphixThree::SetPointChannel2);
-  gt.SetSetPointChannelAssignment(6, VLeyboldGraphixThree::SetPointChannel3);
+  /*
 
   for (int i=1;i<7;++i) {
 
-    int setPointAssignment = gt.GetSetPointChannelAssignment(i);
+    int setPointAssignment = leybold.GetSetPointChannelAssignment(i);
 
     if (setPointAssignment==0) continue;
 
     std::cout << "set point " << i << std::endl;
 
-    gt.SetSetPointOnPressure(i, 800);
-    gt.SetSetPointOffPressure(i, 850);
+    leybold.SetSetPointOnPressure(i, 800);
+    leybold.SetSetPointOffPressure(i, 850);
 
-    std::cout << "  assignment:            " << gt.GetSetPointChannelAssignment(i) << std::endl;
-    std::cout << "  on pressure:           " << gt.GetSetPointOnPressure(i) << std::endl;
-    std::cout << "  off pressure:          " << gt.GetSetPointOffPressure(i) << std::endl;
-    std::cout << "  status:                " << gt.GetSetPointStatus(i) << std::endl;
+    std::cout << "  assignment:            " << leybold.GetSetPointChannelAssignment(i) << std::endl;
+    std::cout << "  on pressure:           " << leybold.GetSetPointOnPressure(i) << std::endl;
+    std::cout << "  off pressure:          " << leybold.GetSetPointOffPressure(i) << std::endl;
+    std::cout << "  status:                " << leybold.GetSetPointStatus(i) << std::endl;
 
     std::cout << std::endl;
   }
+
+  */
 
   return 0;
 }
