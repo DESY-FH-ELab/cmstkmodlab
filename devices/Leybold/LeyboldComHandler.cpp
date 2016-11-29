@@ -63,7 +63,7 @@ void LeyboldComHandler::ReceiveString( char *receiveString )
     return;
   }
 
-  usleep( 10000 );
+  usleep(10000);
 
   int timeout = 0, readResult = 0;
 
