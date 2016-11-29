@@ -496,7 +496,7 @@ bool LeyboldGraphixThree::ReceiveData(std::string& buffer) const
   }
 
   size_t idxEOT = buffer.find(EOT);
-  if (idxEOT!=std::string::npos) {
+  if (idxEOT==std::string::npos) {
     return false;
   }
 
