@@ -14,7 +14,7 @@ class LeyboldGraphixThreeFake : public VLeyboldGraphixThree
 
   std::string GetVersion() const;
   int GetSerialNumber() const;
-  int GetItemNumber() const;
+  std::string GetItemNumber() const;
 
   int GetNumberOfChannels() const;
 

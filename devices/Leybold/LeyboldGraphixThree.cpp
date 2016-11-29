@@ -55,7 +55,7 @@ int LeyboldGraphixThree::GetSerialNumber() const
   return std::atoi(buffer.c_str());
 }
 
-int LeyboldGraphixThree::GetItemNumber() const
+std::string LeyboldGraphixThree::GetItemNumber() const
 {
   std::string command;
 
@@ -69,7 +69,7 @@ int LeyboldGraphixThree::GetItemNumber() const
   std::string buffer;
   bool isACK = ReceiveData(buffer);
 
-  return std::atoi(buffer.c_str());
+  return buffer;
 }
 
 int LeyboldGraphixThree::GetNumberOfChannels() const
@@ -472,7 +472,7 @@ void LeyboldGraphixThree::SendCommand(std::string& command) const
   command += crc;
   command += EOT;
 
-  // std::cout << command.length() << " |" << command.c_str() << "|" << std::endl;
+  std::cout << command.length() << " |" << command.c_str() << "|";
 
   comHandler_->SendCommand(command.c_str());
 }
@@ -496,12 +496,14 @@ bool LeyboldGraphixThree::ReceiveData(std::string& buffer) const
   }
 
   size_t idxEOT = buffer.find(EOT);
-  if (idxEOT!=std::string::npos) {
+  if (idxEOT==std::string::npos) {
     return false;
   }
 
   char crc = buffer[idxEOT-1];
   buffer.resize(idxEOT-1);
+
+  std::cout << " ->  |" << buffer << "|" << std::endl;
 
   return isACK;
 }
@@ -535,9 +537,9 @@ void LeyboldGraphixThree::DeviceInit()
 
   if (comHandler_->DeviceAvailable()) {
     
-    int itemNumber = GetItemNumber();
+    std::string itemNumber = GetItemNumber();
 
-    if (itemNumber==230682) {
+    if (itemNumber=="230682V01") {
       isDeviceAvailable_ = true;
     } else {
       isDeviceAvailable_ = false;
