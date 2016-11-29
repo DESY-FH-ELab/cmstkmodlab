@@ -84,9 +84,9 @@ int main(int argc, char *argv[])
     leybold.setSensorType(3, VLeyboldGraphixThree::SensorType_TTR91N);
   }
 
-  leybold.setSensorName(1, "System");
-  leybold.setSensorName(2, "Pump1");
-  leybold.setSensorName(3, "Pump2");
+  leybold.setSensorName(1, "SYS");
+  leybold.setSensorName(2, "P1");
+  leybold.setSensorName(3, "P2");
 
   leybold.setDisplayUnit(VLeyboldGraphixThree::DisplayUnit_mbar);
 
