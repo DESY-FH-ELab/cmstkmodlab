@@ -42,9 +42,9 @@ int LeyboldGraphixThreeFake::GetSerialNumber() const
   return 453;
 }
 
-int LeyboldGraphixThreeFake::GetItemNumber() const
+std::string  LeyboldGraphixThreeFake::GetItemNumber() const
 {
-  return 230682;
+  return std::string("230682V01");
 }
 
 int LeyboldGraphixThreeFake::GetNumberOfChannels() const

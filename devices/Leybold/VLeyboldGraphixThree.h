@@ -58,7 +58,7 @@ class VLeyboldGraphixThree
 
   virtual std::string GetVersion() const = 0;
   virtual int GetSerialNumber() const = 0;
-  virtual int GetItemNumber() const = 0;
+  virtual std::string GetItemNumber() const = 0;
 
   virtual int GetNumberOfChannels() const = 0;
 
