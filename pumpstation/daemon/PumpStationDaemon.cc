@@ -84,11 +84,11 @@ int main(int argc, char *argv[])
   if (leybold.getSensorType(3)==VLeyboldGraphixThree::SensorType_TTRx) {
     leybold.setSensorType(3, VLeyboldGraphixThree::SensorType_TTR91N);
   }
-  */
 
   leybold.setSensorName(1, "SYS");
   leybold.setSensorName(2, "P1");
   leybold.setSensorName(3, "P2");
+  */
 
   leybold.setDisplayUnit(VLeyboldGraphixThree::DisplayUnit_mbar);
 
