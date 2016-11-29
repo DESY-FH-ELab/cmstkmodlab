@@ -472,7 +472,7 @@ void LeyboldGraphixThree::SendCommand(std::string& command) const
   command += crc;
   command += EOT;
 
-  std::cout << command.length() << " |" << command.c_str() << "|";
+  // std::cout << command.length() << " |" << command.c_str() << "|";
 
   comHandler_->SendCommand(command.c_str());
 }
@@ -503,7 +503,7 @@ bool LeyboldGraphixThree::ReceiveData(std::string& buffer) const
   char crc = buffer[idxEOT-1];
   buffer.resize(idxEOT-1);
 
-  std::cout << " ->  |" << buffer << "|" << std::endl;
+  // std::cout << " ->  |" << buffer << "|" << std::endl;
 
   return isACK;
 }
