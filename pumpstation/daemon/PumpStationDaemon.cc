@@ -65,26 +65,28 @@ int main(int argc, char *argv[])
 
   if (leybold.getSensorDetectionMode(1)!=VLeyboldGraphixThree::SensorDetectionAuto) {
     leybold.setSensorDetectionMode(1, VLeyboldGraphixThree::SensorDetectionAuto);
-    if (leybold.getSensorType(1)==VLeyboldGraphixThree::SensorType_TTRx) {
-      leybold.setSensorType(1, VLeyboldGraphixThree::SensorType_TTR91N);
-    }
   }
-  if (leybold.getSensorDetectionMode(2)!=VLeyboldGraphixThree::SensorDetectionAuto) {
-    leybold.setSensorDetectionMode(2, VLeyboldGraphixThree::SensorDetectionAuto);
-    if (leybold.getSensorType(2)==VLeyboldGraphixThree::SensorType_TTRx) {
-      leybold.setSensorType(2, VLeyboldGraphixThree::SensorType_TTR91N);
-    }
-  }
-  if (leybold.getSensorDetectionMode(3)!=VLeyboldGraphixThree::SensorDetectionAuto) {
-    leybold.setSensorDetectionMode(3, VLeyboldGraphixThree::SensorDetectionAuto);
-    if (leybold.getSensorType(3)==VLeyboldGraphixThree::SensorType_TTRx) {
-      leybold.setSensorType(3, VLeyboldGraphixThree::SensorType_TTR91N);
-    }
+  if (leybold.getSensorType(1)==VLeyboldGraphixThree::SensorType_TTRx) {
+    leybold.setSensorType(1, VLeyboldGraphixThree::SensorType_TTR91N);
   }
 
-  leybold.setSensorName(1, "p1");
-  leybold.setSensorName(2, "p2");
-  leybold.setSensorName(3, "p3");
+  if (leybold.getSensorDetectionMode(2)!=VLeyboldGraphixThree::SensorDetectionAuto) {
+    leybold.setSensorDetectionMode(2, VLeyboldGraphixThree::SensorDetectionAuto);
+  }
+  if (leybold.getSensorType(2)==VLeyboldGraphixThree::SensorType_TTRx) {
+    leybold.setSensorType(2, VLeyboldGraphixThree::SensorType_TTR91N);
+  }
+
+  if (leybold.getSensorDetectionMode(3)!=VLeyboldGraphixThree::SensorDetectionAuto) {
+    leybold.setSensorDetectionMode(3, VLeyboldGraphixThree::SensorDetectionAuto);
+  }
+  if (leybold.getSensorType(3)==VLeyboldGraphixThree::SensorType_TTRx) {
+    leybold.setSensorType(3, VLeyboldGraphixThree::SensorType_TTR91N);
+  }
+
+  leybold.setSensorName(1, "System");
+  leybold.setSensorName(2, "Pump 1");
+  leybold.setSensorName(3, "Pump 2");
 
   leybold.setDisplayUnit(VLeyboldGraphixThree::DisplayUnit_mbar);
 
