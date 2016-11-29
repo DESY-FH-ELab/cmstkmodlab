@@ -485,12 +485,23 @@ bool LeyboldGraphixThree::ReceiveData(std::string& buffer) const
 
   buffer = buf;
 
-  size_t idxEOT = buffer.find(EOT);
-  char crc = buffer[idxEOT-1];
+  bool isACK = false;
 
-  buffer.resize(idxEOT-1);
-  bool isACK = (buffer[0]==ACK);
+  if (buffer[0]==ACK) isACK = true;
   buffer.erase(0, 1);
+
+  if (!isACK) {
+    std::cout << "*** NACK *** " << buffer[0] << std::endl;
+    return isACK;
+  }
+
+  size_t idxEOT = buffer.find(EOT);
+  if (idxEOT!=std::string::npos) {
+    return false;
+  }
+
+  char crc = buffer[idxEOT-1];
+  buffer.resize(idxEOT-1);
 
   return isACK;
 }
