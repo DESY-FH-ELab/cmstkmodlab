@@ -81,7 +81,7 @@ void DataLogger::start()
   writeStatus();
 
   restartTimer_->start(60000);
-  statusTimer_->start(10000);
+  statusTimer_->start(30000);
 }
 
 void DataLogger::stop()
