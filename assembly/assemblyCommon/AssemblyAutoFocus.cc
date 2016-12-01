@@ -30,7 +30,7 @@
 using namespace std;
 using namespace cv;
 
-AssemblyAutoFocus::AssemblyAutoFocus(AssemblyVUEyeModel *uEyeModel_, LStepExpressModel* lStepExpressModel_, AssemblyScanner *cmdr_zscan,QWidget *parent)
+AssemblyAutoFocus::AssemblyAutoFocus(AssemblyVUEyeModel *uEyeModel_, LStepExpressModel* lStepExpressModel_, QWidget *parent)
   : QWidget(parent)
 {
 
@@ -79,7 +79,11 @@ AssemblyAutoFocus::AssemblyAutoFocus(AssemblyVUEyeModel *uEyeModel_, LStepExpres
   checkbox = new QCheckBox("Enable auto-focusing", this);
   g0->addWidget(checkbox,3,0);
 
-     
+    
+   camera_ = uEyeModel_->getCameraByID(10);
+    
+   cmdr_zscan = new AssemblyScanner(camera_);
+
     
   //make all the neccessary connections
   connect(button1, SIGNAL(clicked()), this, SLOT(configure_scan()));
