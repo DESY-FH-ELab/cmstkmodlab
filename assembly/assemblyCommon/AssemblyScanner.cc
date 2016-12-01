@@ -48,19 +48,19 @@ void AssemblyScanner::enable_autofocus(int enabled)
         NQLog("AssemblyZScanner:enable_autofocus() ") << " connecting motion/vision for scan " ;
 
     //construct motion manager from motion model
-	// motionManager_ = new LStepExpressMotionManager(lStepExpressModel_);
+	 motionManager_ = new LStepExpressMotionManager(lStepExpressModel_);
     
     //get mobile camera from camera model
-    //   camera_ = uEyeModel_->getCameraByID(10);
-    // if (camera_){
-    // NQLog("AssemblyZScanner:camera object created() ");
-    // } else{
-    //NQLog("AssemblyZScanner:NULL camera object ");
-    //}
+       camera_ = uEyeModel_->getCameraByID(10);
+    if (camera_){
+    NQLog("AssemblyZScanner:camera object created() ");
+     } else{
+    NQLog("AssemblyZScanner:NULL camera object ");
+    }
 
         
-    //connect (this, SIGNAL(getImage()), camera_, SLOT(acquireImage()));
-	//  connect(camera_, SIGNAL(imageAcquired(cv::Mat)),  this, SLOT(write_image(cv::Mat)) );
+    connect (this, SIGNAL(getImage()), camera_, SLOT(acquireImage()));
+	  connect(camera_, SIGNAL(imageAcquired(cv::Mat)),  this, SLOT(write_image(cv::Mat)) );
 
 
 
@@ -69,8 +69,8 @@ void AssemblyScanner::enable_autofocus(int enabled)
     
         NQLog("AssemblyScanner:enable_autofocus() ") << " disconnecting motion/vision for scan "  ;
         
-        //disconnect (this, SIGNAL(getImage()), camera_, SLOT(acquireImage()));
-        //disconnect(camera_, SIGNAL(imageAcquired(cv::Mat)),  this, SLOT(write_image(cv::Mat)) );
+        disconnect (this, SIGNAL(getImage()), camera_, SLOT(acquireImage()));
+        disconnect(camera_, SIGNAL(imageAcquired(cv::Mat)),  this, SLOT(write_image(cv::Mat)) );
 
     }
     

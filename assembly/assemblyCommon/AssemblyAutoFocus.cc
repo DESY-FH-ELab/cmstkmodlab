@@ -30,12 +30,11 @@
 using namespace std;
 using namespace cv;
 
-AssemblyAutoFocus::AssemblyAutoFocus(AssemblyScanner *cmdr_zscan,QWidget *parent)
+AssemblyAutoFocus::AssemblyAutoFocus(AssemblyVUEyeModel *uEyeModel_, LStepExpressModel* lStepExpressModel_, AssemblyScanner *cmdr_zscan,QWidget *parent)
   : QWidget(parent)
 {
 
- // LStepExpressMotionManager* motionManager_ = new LStepExpressMotionManager(lStepExpressModel_);
-
+  //LStepExpressMotionManager* motionManager_ = new LStepExpressMotionManager(lStepExpressModel_);
   //camera_ = uEyeModel_->getCameraByID(10);
 
   if (camera_){

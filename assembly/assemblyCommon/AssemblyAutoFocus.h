@@ -34,7 +34,7 @@ class AssemblyAutoFocus : public QWidget
   Q_OBJECT
 
 public:
-  explicit AssemblyAutoFocus(AssemblyScanner *cmdr_zscan, QWidget *parent = 0);
+  explicit AssemblyAutoFocus(AssemblyVUEyeModel *uEyeModel_,LStepExpressModel* lStepExpressModel_, AssemblyScanner *cmdr_zscan, QWidget *parent = 0);
   void connectImageProducer(const QObject* sender, const char* signal);
   void disconnectImageProducer(const QObject* sender, const char* signal);
 

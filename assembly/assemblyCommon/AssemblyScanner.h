@@ -32,7 +32,9 @@ class AssemblyScanner : public QObject
   Q_OBJECT
 
 public:
+    AssemblyVUEyeModel *uEyeModel_;
   AssemblyVUEyeCamera* camera_;
+  LStepExpressModel* lStepExpressModel_;
   LStepExpressMotionManager* motionManager_;
   explicit AssemblyScanner(AssemblyVUEyeModel *uEyeModel_, LStepExpressModel* lStepExpressModel_);
 
