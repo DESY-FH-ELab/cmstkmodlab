@@ -34,15 +34,14 @@ AssemblyAutoFocus::AssemblyAutoFocus(AssemblyScanner *cmdr_zscan,QWidget *parent
   : QWidget(parent)
 {
 
-  LStepExpressMotionManager* motionManager_ = new LStepExpressMotionManager(lStepExpressModel_);
+ // LStepExpressMotionManager* motionManager_ = new LStepExpressMotionManager(lStepExpressModel_);
 
-  camera_ = uEyeModel_->getCameraByID(10);
+  //camera_ = uEyeModel_->getCameraByID(10);
 
   if (camera_){
-    NQLog("AssemblyAutoFocus::::: camera make") ;
+    NQLog("AssemblyAutoFocus::camera make") ;
   }else{
-
-    NQLog("AssemblyAutoFocus::::: camera NULL") ;
+    NQLog("AssemblyAutoFocus::camera NULL") ;
 }
 
   QGridLayout *l = new QGridLayout(this);

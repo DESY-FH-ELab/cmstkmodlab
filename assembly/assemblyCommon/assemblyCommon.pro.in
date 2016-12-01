@@ -81,6 +81,7 @@ HEADERS += AssemblyVUEyeCamera.h \
            AssemblyUEyeWidget.h \
            AssemblyUEyeCameraWidget.h \
            AssemblyUEyeView.h \
+           AssemblyScanner.h \
            AssemblyUEyeSnapShooter.h \
            AssemblyModuleAssembler.h \
            AssemblyAutoFocus.h \
@@ -123,6 +124,7 @@ SOURCES += AssemblyVUEyeCamera.cc \
            AssemblyUEyeSnapShooter.cc \
            AssemblyModuleAssembler.cc \
            AssemblyAutoFocus.cc \
+           AssemblyScanner.cc \
            AssemblyMarkerFinderThread.cc \
            AssemblyVMarkerFinder.cc \
            AssemblySensorMarkerFinder.cc \
