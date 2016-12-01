@@ -34,8 +34,6 @@ AssemblyAutoFocus::AssemblyAutoFocus(AssemblyVUEyeModel *uEyeModel_, LStepExpres
   : QWidget(parent)
 {
 
-  //LStepExpressMotionManager* motionManager_ = new LStepExpressMotionManager(lStepExpressModel_);
-  //camera_ = uEyeModel_->getCameraByID(10);
 
   if (camera_){
     NQLog("AssemblyAutoFocus::camera make") ;

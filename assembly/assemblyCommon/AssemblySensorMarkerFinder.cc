@@ -63,14 +63,6 @@ AssemblySensorMarkerFinder::~AssemblySensorMarkerFinder()
 }
 
 
-
-//void AssemblySensorMarkerFinder::overrideCircleConfig(int edge, int centre, int rad)
-//{
-//  circleEdgeDetectionThreshold_ =  edge;
-//  circleCenterDetectionThreshold_ =  centre;
-//  expectedCircleRadius_ =    rad;
-// }
-
 void  AssemblySensorMarkerFinder::testSLOT(cv::Mat){
 
     NQLog("AssemblySensorMarkerFinder") << "testSLOT()";
@@ -78,42 +70,7 @@ void  AssemblySensorMarkerFinder::testSLOT(cv::Mat){
 }
 
 
-void  AssemblySensorMarkerFinder::write_image(cv::Mat newImage){
 
-    NQLog("AssemblySensorMarkerFinder") << "write_image()";
-    QDateTime local(QDateTime::currentDateTime());
-    QString local_str = local.toString();
-    QString filename = QString("ZScan_%1.png").arg(local_str);
-    filename = filename.simplified();
-    filename.replace( " ", "" );
-
-    cv::imwrite(filename.toStdString(), newImage);
-
-
-    //check global image counter 
-    if (nAcquiredImages < nTotalImages){ 
-      cout <<"n acquired images = "<< nAcquiredImages<<"  nTotal images = "<< nTotalImages  <<endl; 
-       nAcquiredImages++;
-       emit getImage();
-    }
-}
-
-
-void  AssemblySensorMarkerFinder::scan(double range, int steps, int delay){
-
-  NQLog("AssemblySensorMarkerFinder::scan") << range << ",  " <<steps <<",   " << delay ;
-
-  steps = 10;
-  nTotalImages = steps;
-   
-  double step_distance = range/steps;
-  int nSteps = 0;
-
-  nAcquiredImages = 1;
-  emit getImage();
-
-
-}
 
 
 void AssemblySensorMarkerFinder::findMarker(const cv::Mat& image)

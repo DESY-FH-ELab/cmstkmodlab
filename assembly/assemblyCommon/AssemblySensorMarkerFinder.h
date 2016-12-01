@@ -64,9 +64,6 @@ public slots:
 
 
 protected slots:
-
-    void write_image(cv::Mat);
-    void scan(double, int , int);
     void testSLOT(cv::Mat);
 
 protected:

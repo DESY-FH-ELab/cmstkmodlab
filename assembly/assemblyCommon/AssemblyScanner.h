@@ -39,6 +39,7 @@ public:
   explicit AssemblyScanner(AssemblyVUEyeModel *uEyeModel_, LStepExpressModel* lStepExpressModel_);
 
   double local_range, local_steps, local_delay;
+  int nTotalImages, nAcquiredImages;
 
 protected:
 
@@ -49,6 +50,7 @@ public slots:
 
     
 signals:
+    void getImage();
 
 };
 

@@ -33,10 +33,7 @@ using namespace cv;
 AssemblyScanner::AssemblyScanner(AssemblyVUEyeModel *uEyeModel_,LStepExpressModel* lStepExpressModel_)
 {
     NQLog("AssemblyZScanner::AssemblyScanner()");
-    
-    
 
-    
 }
 
 
@@ -45,22 +42,26 @@ void AssemblyScanner::enable_autofocus(int enabled)
     NQLog("AssemblyScanner:enable_autofocus() ");
     
     if (enabled == 2){
-        NQLog("AssemblyZScanner:enable_autofocus() ") << " connecting motion/vision for scan " ;
+        NQLog("AssemblyScanner:enable_autofocus() ") << " connecting motion/vision for scan " ;
 
     //construct motion manager from motion model
-	 motionManager_ = new LStepExpressMotionManager(lStepExpressModel_);
+	// motionManager_ = new LStepExpressMotionManager(lStepExpressModel_);
     
     //get mobile camera from camera model
        camera_ = uEyeModel_->getCameraByID(10);
     if (camera_){
-    NQLog("AssemblyZScanner:camera object created() ");
-     } else{
-    NQLog("AssemblyZScanner:NULL camera object ");
+        
+    NQLog("AssemblyScanner:camera object created() ");
+    
+    } else{
+         
+    NQLog("AssemblyScanner:NULL camera object ");
+    
     }
 
         
     connect (this, SIGNAL(getImage()), camera_, SLOT(acquireImage()));
-	  connect(camera_, SIGNAL(imageAcquired(cv::Mat)),  this, SLOT(write_image(cv::Mat)) );
+    connect(camera_, SIGNAL(imageAcquired(cv::Mat)),  this, SLOT(write_image(cv::Mat)) );
 
 
 
@@ -78,19 +79,47 @@ void AssemblyScanner::enable_autofocus(int enabled)
 }
 
 
-void AssemblyScanner::run_scan(double step_size, int nSteps)
-{
-    NQLog("AssemblyScanner:run_scan()");
+
+void  AssemblyScanner::run_scan(double range, int steps){
+    
+    NQLog("AssemblyScanner::scan") << range << ",  " <<steps;
+    
+    steps = 10;
+    nTotalImages = steps;
+    
+    double step_distance = range/steps;
+    int nSteps = 0;
+    
+    nAcquiredImages = 1;
+    emit getImage();
     
 }
 
 
-void AssemblyScanner::write_image(cv::Mat)
-{
-    NQLog("AssemblyScanner:write_image()");
+void  AssemblyScanner::write_image(cv::Mat newImage){
+    
+    NQLog("AssemblyScanner") << "write_image()";
+    QDateTime local(QDateTime::currentDateTime());
+    QString local_str = local.toString();
+    QString filename = QString("ZScan_%1.png").arg(local_str);
+    filename = filename.simplified();
+    filename.replace( " ", "" );
+    
+    cv::imwrite(filename.toStdString(), newImage);
     
     
+    //check global image counter
+    if (nAcquiredImages < nTotalImages){
+        cout <<"n acquired images = "<< nAcquiredImages<<"  nTotal images = "<< nTotalImages  <<endl;
+        nAcquiredImages++;
+        emit getImage();
+    }
+    
+    //possibly disconnect (disconnect(camera_, SIGNAL(imageAcquired(cv::Mat)),  this, SLOT(write_image(cv::Mat)) );
+    // when enough images are taken
+
 }
+
 
 
 

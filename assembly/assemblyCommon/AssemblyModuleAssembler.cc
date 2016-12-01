@@ -193,10 +193,6 @@ AssemblyModuleAssembler::AssemblyModuleAssembler(AssemblyVUEyeModel *uEyeModel_,
   g1->addWidget(cmdr0,2,0);
 
 
-//  AssemblyZScanner * cmdr_zscan = new AssemblyZScanner(this, finder_ ,  "Z scan", 5.0, 30,1000);
-//  cmdr0->setToolTip("Runs scan and detects distance of object from camera )");
-//  g1->addWidget(cmdr_zscan,3,0);
-
   AssemblyCommander * cmdr1 = new AssemblyCommander(this, "Go to pickup", 100.0,100.0,100.0,100.0);
   cmdr1->setToolTip("(2) Moves x,y,z stage to pickup position (default = (100,100,100) using moveAbsolute(x,y,z) routine)");
   g1->addWidget(cmdr1,4,0);
