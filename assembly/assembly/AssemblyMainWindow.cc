@@ -56,12 +56,10 @@ AssemblyMainWindow::AssemblyMainWindow(QWidget *parent) :
 
     uEyeWidget_ = new AssemblyUEyeWidget(uEyeModel_, this);
     tabWidget_->addTab(uEyeWidget_, "uEye");
-
-    AssemblyScanner * cmdr_zscan = new AssemblyScanner(uEyeModel_, lStepExpressModel_);
     
-    autoFocusView_ = new AssemblyAutoFocus(uEyeModel_, lStepExpressModel_, cmdr_zscan, tabWidget_);
+    autoFocusView_ = new AssemblyAutoFocus(uEyeModel_, lStepExpressModel_, tabWidget_);
     tabWidget_->addTab(autoFocusView_, "Auto Focus");
-    
+
     
     QWidget * widget;
     widget= new QWidget(tabWidget_);

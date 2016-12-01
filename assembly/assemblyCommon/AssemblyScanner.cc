@@ -30,10 +30,13 @@
 using namespace std;
 using namespace cv;
 
-AssemblyScanner::AssemblyScanner(AssemblyVUEyeModel *uEyeModel_,LStepExpressModel* lStepExpressModel_)
+AssemblyScanner::AssemblyScanner(AssemblyVUEyeCamera *camera_)
 {
     NQLog("AssemblyZScanner::AssemblyScanner()");
+    connect (this, SIGNAL(getImage()), camera_, SLOT(acquireImage()));
+    connect(camera_, SIGNAL(imageAcquired(cv::Mat)),  this, SLOT(write_image(cv::Mat)) );
 
+    
 }
 
 
@@ -48,7 +51,7 @@ void AssemblyScanner::enable_autofocus(int enabled)
 	// motionManager_ = new LStepExpressMotionManager(lStepExpressModel_);
     
     //get mobile camera from camera model
-       camera_ = uEyeModel_->getCameraByID(10);
+      // camera_ = uEyeModel_->getCameraByID(10);
     if (camera_){
         
     NQLog("AssemblyScanner:camera object created() ");
@@ -70,8 +73,8 @@ void AssemblyScanner::enable_autofocus(int enabled)
     
         NQLog("AssemblyScanner:enable_autofocus() ") << " disconnecting motion/vision for scan "  ;
         
-        disconnect (this, SIGNAL(getImage()), camera_, SLOT(acquireImage()));
-        disconnect(camera_, SIGNAL(imageAcquired(cv::Mat)),  this, SLOT(write_image(cv::Mat)) );
+    //    disconnect (this, SIGNAL(getImage()), camera_, SLOT(acquireImage()));
+     //   disconnect(camera_, SIGNAL(imageAcquired(cv::Mat)),  this, SLOT(write_image(cv::Mat)) );
 
     }
     
