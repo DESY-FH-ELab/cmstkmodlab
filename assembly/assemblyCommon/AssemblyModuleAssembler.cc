@@ -41,6 +41,14 @@ AssemblyModuleAssembler::AssemblyModuleAssembler(AssemblyVUEyeModel *uEyeModel_,
 
 
   camera_ = uEyeModel_->getCameraByID(10);
+    
+    if (camera_){
+  NQLog("AssemblyModuleAssembler::constructed  camera");
+    }else{
+    
+        NQLog("AssemblyModuleAssembler::  cant  construct camera");
+
+    }
 
   QGridLayout *l = new QGridLayout(this);
   setLayout(l);

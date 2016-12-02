@@ -16,6 +16,8 @@
 #include <QCheckBox>
 #include <QRadioButton>
 
+
+
 //vision
 #include <AssemblyUEyeView.h>
 #include "AssemblyVUEyeModel.h"
@@ -34,13 +36,12 @@ class AssemblyAutoFocus : public QWidget
   Q_OBJECT
 
 public:
-  explicit AssemblyAutoFocus(AssemblyVUEyeModel *uEyeModel_,LStepExpressModel* lStepExpressModel_, QWidget *parent = 0);
+  explicit AssemblyAutoFocus(AssemblyScanner* cmdr_zscan, QWidget *parent = 0);
   void connectImageProducer(const QObject* sender, const char* signal);
   void disconnectImageProducer(const QObject* sender, const char* signal);
 
-  AssemblyVUEyeCamera * camera_;
   AssemblyScanner * cmdr_zscan;
-
+  
  
 protected:
 
@@ -49,10 +50,15 @@ protected:
   QScrollArea *scrollArea_1;
   AssemblyUEyeView *imageView_1;
 
+  QScrollArea *scrollArea_2;
+  AssemblyUEyeView *imageView_2;
+    
   cv::Mat image_;
+  cv::Mat img;
   QPushButton* button1;
   QLineEdit * lE1;
   QCheckBox *checkbox;
+
 
 
 public slots:
@@ -61,11 +67,13 @@ public slots:
   void updateImage(int,std::string);
   void updateText(int,double, double, double);
   void configure_scan();
+  void make_graph(vector<double>, vector<double>);
 
  
 signals:
   void run_scan(double,int);
   void moveRelative(double,double,double,double);
+  void graph_made(const cv::Mat&);
 };
 
 

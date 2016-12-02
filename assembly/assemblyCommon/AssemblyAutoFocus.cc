@@ -30,16 +30,9 @@
 using namespace std;
 using namespace cv;
 
-AssemblyAutoFocus::AssemblyAutoFocus(AssemblyVUEyeModel *uEyeModel_, LStepExpressModel* lStepExpressModel_, QWidget *parent)
+AssemblyAutoFocus::AssemblyAutoFocus(AssemblyScanner* cmdr_zscan, QWidget *parent)
   : QWidget(parent)
 {
-
-
-  if (camera_){
-    NQLog("AssemblyAutoFocus::camera make") ;
-  }else{
-    NQLog("AssemblyAutoFocus::camera NULL") ;
-}
 
   QGridLayout *l = new QGridLayout(this);
   setLayout(l);
@@ -50,7 +43,6 @@ AssemblyAutoFocus::AssemblyAutoFocus(AssemblyVUEyeModel *uEyeModel_, LStepExpres
   QPalette palette;
   palette.setColor(QPalette::Background, QColor(220, 220, 220));
     
-
   imageView_1 = new AssemblyUEyeView();
   imageView_1->setMinimumSize(200,200);
   imageView_1->setPalette(palette);
@@ -59,8 +51,8 @@ AssemblyAutoFocus::AssemblyAutoFocus(AssemblyVUEyeModel *uEyeModel_, LStepExpres
   imageView_1->setScaledContents(true);
   imageView_1->setAlignment(Qt::AlignCenter);
   QApplication::processEvents();
+  imageView_1->connectImageProducer(cmdr_zscan, SIGNAL(updateScanImage(cv::Mat)));
     
-
   scrollArea_1 = new QScrollArea(this);
   scrollArea_1->setMinimumSize(200, 200);
   scrollArea_1->setPalette(palette);
@@ -70,6 +62,32 @@ AssemblyAutoFocus::AssemblyAutoFocus(AssemblyVUEyeModel *uEyeModel_, LStepExpres
   scrollArea_1->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 
   g0->addWidget(scrollArea_1,0,0);
+
+    
+  imageView_2 = new AssemblyUEyeView();
+  imageView_2->setMinimumSize(200,200);
+  imageView_2->setPalette(palette);
+  imageView_2->setBackgroundRole(QPalette::Background);
+  imageView_2->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+  imageView_2->setScaledContents(true);
+  imageView_2->setAlignment(Qt::AlignCenter);
+  imageView_2->setZoomFactor(1.0);
+
+  QApplication::processEvents();    
+  imageView_2->connectImageProducer(this, SIGNAL(graph_made(const cv::Mat&)));
+
+  scrollArea_2 = new QScrollArea(this);
+  scrollArea_2->setMinimumSize(200, 200);
+  scrollArea_2->setPalette(palette);
+  scrollArea_2->setBackgroundRole(QPalette::Background);
+  scrollArea_2->setAlignment(Qt::AlignCenter);
+  scrollArea_2->setWidget(imageView_2);
+  scrollArea_2->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+    
+  g0->addWidget(scrollArea_2,0,1);
+    
+
+    
   lE1 = new QLineEdit("0.1,10");
   g0->addWidget(lE1,1,0);
 
@@ -78,17 +96,13 @@ AssemblyAutoFocus::AssemblyAutoFocus(AssemblyVUEyeModel *uEyeModel_, LStepExpres
     
   checkbox = new QCheckBox("Enable auto-focusing", this);
   g0->addWidget(checkbox,3,0);
-
     
-   camera_ = uEyeModel_->getCameraByID(10);
-    
-   cmdr_zscan = new AssemblyScanner(camera_);
-
     
   //make all the neccessary connections
   connect(button1, SIGNAL(clicked()), this, SLOT(configure_scan()));
   connect(this , SIGNAL(run_scan(double, int)), cmdr_zscan , SLOT(run_scan(double, int)));
   connect(checkbox, SIGNAL(stateChanged(int)), cmdr_zscan, SLOT(enable_autofocus(int)));
+
     
 }
 
@@ -112,6 +126,23 @@ void AssemblyAutoFocus::configure_scan()
 }
 
 
+void AssemblyAutoFocus::make_graph(vector<double> x, vector <double> y){
+
+  int points  =  x.size();
+  TGraph * gr = new TGraph(points);
+  TCanvas *  canvas = new TCanvas();
+
+  for (int i =0; i < x.size(); i++){
+    gr->SetPoint(i, x[i], y[i]);
+}
+
+
+  gr->Draw("AC*");
+  canvas->SaveAs("variance.png");
+  cv::Mat img = cv::imread("variance.png", CV_LOAD_IMAGE_COLOR);
+ 
+  emit graph_made(img);
+}
 
 
 void AssemblyAutoFocus::updateText(int stage, double x, double y , double a){

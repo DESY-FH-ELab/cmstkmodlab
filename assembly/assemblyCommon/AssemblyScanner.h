@@ -27,21 +27,27 @@
 #include "LStepExpressMotionManager.h"
 
 
+using namespace std;
+
+
 class AssemblyScanner : public QObject
 {
   Q_OBJECT
 
 public:
   AssemblyVUEyeModel *uEyeModel_;
-  AssemblyVUEyeCamera* camera_;
+  AssemblyVUEyeCamera* camera_l;
   LStepExpressModel* lStepExpressModel_;
   LStepExpressMotionManager* motionManager_;
-  explicit AssemblyScanner(AssemblyVUEyeCamera *camera_);
+
+  explicit AssemblyScanner(AssemblyVUEyeModel *uEyeModel_);
 
   double local_range, local_steps, local_delay;
   int nTotalImages, nAcquiredImages;
+  vector<double> x_vals, y_vals;
 
 protected:
+    double imageVariance(cv::Mat img_input);
 
 public slots:
   void run_scan(double, int);
@@ -51,7 +57,8 @@ public slots:
     
 signals:
     void getImage();
-
+    void updateScanImage(cv::Mat);
+    void make_graph(vector<double>, vector<double>);
 };
 
 

@@ -95,6 +95,7 @@ protected:
   AssemblyUEyeSnapShooter* rawView_;
   AssemblyModuleAssembler* assembleView_;
   AssemblyAutoFocus* autoFocusView_;
+  AssemblyScanner*  cmdr_zscan;
 
     
   AssemblyUEyeModel_t* uEyeModel_;
