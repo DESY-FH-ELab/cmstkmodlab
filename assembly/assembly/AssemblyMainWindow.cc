@@ -57,7 +57,9 @@ AssemblyMainWindow::AssemblyMainWindow(QWidget *parent) :
     uEyeWidget_ = new AssemblyUEyeWidget(uEyeModel_, this);
     tabWidget_->addTab(uEyeWidget_, "uEye");
     
-    autoFocusView_ = new AssemblyAutoFocus(uEyeModel_, lStepExpressModel_, tabWidget_);
+    cmdr_zscan = new AssemblyScanner(uEyeModel_);
+    
+    autoFocusView_ = new AssemblyAutoFocus(cmdr_zscan, tabWidget_);
     tabWidget_->addTab(autoFocusView_, "Auto Focus");
 
     
@@ -131,6 +133,9 @@ void AssemblyMainWindow::onOpenCamera()
             this, SLOT(cameraOpened()));
     connect(camera_, SIGNAL(cameraClosed()),
             this, SLOT(cameraClosed()));
+
+    connect (cmdr_zscan, SIGNAL(getImage()), camera_, SLOT(acquireImage()));
+    connect(camera_, SIGNAL(imageAcquired(cv::Mat)), cmdr_zscan, SLOT(write_image(cv::Mat)) );
 
 
     emit openCamera();

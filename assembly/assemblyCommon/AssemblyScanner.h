@@ -16,6 +16,10 @@
 #include <QCheckBox>
 #include <QRadioButton>
 
+#include <TGraph.h>
+#include <TCanvas.h>
+
+
 //vision
 #include <AssemblyUEyeView.h>
 #include "AssemblyVUEyeModel.h"
@@ -27,21 +31,26 @@
 #include "LStepExpressMotionManager.h"
 
 
+
 class AssemblyScanner : public QObject
 {
   Q_OBJECT
 
 public:
   AssemblyVUEyeModel *uEyeModel_;
-  AssemblyVUEyeCamera* camera_;
+  AssemblyVUEyeCamera* camera_l;
   LStepExpressModel* lStepExpressModel_;
   LStepExpressMotionManager* motionManager_;
-  explicit AssemblyScanner(AssemblyVUEyeCamera *camera_);
+  TGraph *gr;
+  TCanvas *canvas;
+
+  explicit AssemblyScanner(AssemblyVUEyeModel *uEyeModel_);
 
   double local_range, local_steps, local_delay;
   int nTotalImages, nAcquiredImages;
 
 protected:
+    double imageVariance(cv::Mat img_input);
 
 public slots:
   void run_scan(double, int);
@@ -51,6 +60,7 @@ public slots:
     
 signals:
     void getImage();
+    void updateScanImage(cv::Mat);
 
 };
 

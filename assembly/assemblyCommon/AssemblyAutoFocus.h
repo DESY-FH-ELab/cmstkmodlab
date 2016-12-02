@@ -34,11 +34,10 @@ class AssemblyAutoFocus : public QWidget
   Q_OBJECT
 
 public:
-  explicit AssemblyAutoFocus(AssemblyVUEyeModel *uEyeModel_,LStepExpressModel* lStepExpressModel_, QWidget *parent = 0);
+  explicit AssemblyAutoFocus(AssemblyScanner* cmdr_zscan, QWidget *parent = 0);
   void connectImageProducer(const QObject* sender, const char* signal);
   void disconnectImageProducer(const QObject* sender, const char* signal);
 
-  AssemblyVUEyeCamera * camera_;
   AssemblyScanner * cmdr_zscan;
 
  
@@ -49,10 +48,14 @@ protected:
   QScrollArea *scrollArea_1;
   AssemblyUEyeView *imageView_1;
 
+  QScrollArea *scrollArea_2;
+  AssemblyUEyeView *imageView_2;
+    
   cv::Mat image_;
   QPushButton* button1;
   QLineEdit * lE1;
   QCheckBox *checkbox;
+
 
 
 public slots:
