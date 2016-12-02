@@ -26,6 +26,10 @@ DataLogger::DataLogger(PumpStationModel* model,
   restartTimer_ = new QTimer();
   connect(restartTimer_, SIGNAL(timeout()),
           this, SLOT(checkRestart()));
+
+  statusTimer_ = new QTimer();
+  connect(statusTimer_, SIGNAL(timeout()),
+          this, SLOT(writeStatus()));
 }
 
 void DataLogger::start()
@@ -77,12 +81,14 @@ void DataLogger::start()
   writeStatus();
 
   restartTimer_->start(60000);
+  statusTimer_->start(30000);
 }
 
 void DataLogger::stop()
 {
   if (!isStreaming_) return;
 
+  statusTimer_->stop();
   restartTimer_->stop();
 
   writeStatus();

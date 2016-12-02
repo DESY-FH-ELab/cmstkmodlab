@@ -28,6 +28,7 @@ protected slots:
   void pressureChanged(int sensor, double p);
 
   void checkRestart();
+  void writeStatus();
 
 protected:
 
@@ -41,9 +42,9 @@ protected:
   QDir currentDir_;
   QDateTime fileDateTime_;
   QTimer* restartTimer_;
+  QTimer* statusTimer_;
 
   void writeToStream(QString& buffer);
-  void writeStatus();
 };
 
 #endif // DATALOGGER_H

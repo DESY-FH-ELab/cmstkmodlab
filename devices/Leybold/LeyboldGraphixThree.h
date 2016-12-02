@@ -24,11 +24,15 @@ class LeyboldGraphixThree : public VLeyboldGraphixThree
 
   std::string GetVersion() const;
   int GetSerialNumber() const;
-  int GetItemNumber() const;
+  std::string GetItemNumber() const;
 
   int GetNumberOfChannels() const;
 
-  std::string GetSensorType(int sensor) const;
+  SensorDetectionMode GetSensorDetectionMode(int sensor) const;
+  void SetSensorDetectionMode(int sensor, SensorDetectionMode mode);
+
+  std::string GetSensorTypeName(int sensor) const;
+  void SetSensorTypeName(int sensor, std::string type);
 
   std::string GetSensorName(int sensor) const;
   void SetSensorName(int sensor, const std::string& name);
@@ -39,6 +43,17 @@ class LeyboldGraphixThree : public VLeyboldGraphixThree
 
   DisplayUnit GetDisplayUnit() const;
   void SetDisplayUnit(DisplayUnit);
+
+  SetPointChannel GetSetPointChannelAssignment(int sp) const;
+  void SetSetPointChannelAssignment(int sp, SetPointChannel channel);
+
+  double GetSetPointOnPressure(int sp) const;
+  void SetSetPointOnPressure(int sp, double pressure);
+
+  double GetSetPointOffPressure(int sp) const;
+  void SetSetPointOffPressure(int sp, double pressure);
+
+  bool GetSetPointStatus(int sp) const;
 
  protected:
 

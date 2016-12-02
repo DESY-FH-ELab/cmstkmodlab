@@ -6,11 +6,25 @@
 LeyboldGraphixThreeFake::LeyboldGraphixThreeFake( const ioport_t ioPort )
   :VLeyboldGraphixThree(ioPort)
 {
+  sensorDetectionMode_[0] = SensorDetectionAuto;
+  sensorDetectionMode_[1] = SensorDetectionAuto;
+  sensorDetectionMode_[2] = SensorDetectionAuto;
+
+  sensorType_[0] = "TTR?";
+  sensorType_[1] = "TTR?";
+  sensorType_[2] = "TTR?";
+
   pressure_[0] = 100.0;
   pressure_[1] = 100.1;
   pressure_[2] = 100.2;
 
   displayUnit_ = DisplayUnit_mbar;
+
+  for (int i=0;i<6;++i) {
+    setPointChannel_[i] = SetPointChannelOff;
+    setPointOnPressure_[i] = 1.e3;
+    setPointOffPressure_[i] = 1.e3;
+  }
 }
 
 LeyboldGraphixThreeFake::~LeyboldGraphixThreeFake()
@@ -28,9 +42,9 @@ int LeyboldGraphixThreeFake::GetSerialNumber() const
   return 453;
 }
 
-int LeyboldGraphixThreeFake::GetItemNumber() const
+std::string LeyboldGraphixThreeFake::GetItemNumber() const
 {
-  return 230682;
+  return std::string("230682V01");
 }
 
 int LeyboldGraphixThreeFake::GetNumberOfChannels() const
@@ -38,11 +52,32 @@ int LeyboldGraphixThreeFake::GetNumberOfChannels() const
   return 3;
 }
 
-std::string LeyboldGraphixThreeFake::GetSensorType(int sensor) const
+VLeyboldGraphixThree::SensorDetectionMode LeyboldGraphixThreeFake::GetSensorDetectionMode(int sensor) const
+{
+  if (sensor<1 || sensor>3) return SensorDetectionAuto;
+
+  return sensorDetectionMode_[sensor-1];
+}
+
+void LeyboldGraphixThreeFake::SetSensorDetectionMode(int sensor, VLeyboldGraphixThree::SensorDetectionMode mode)
+{
+  if (sensor<1 || sensor>3) return;
+
+  sensorDetectionMode_[sensor-1] = mode;
+}
+
+std::string LeyboldGraphixThreeFake::GetSensorTypeName(int sensor) const
 {
   if (sensor<1 || sensor>3) return std::string("out of range");
 
-  return "TTR91";
+  return sensorType_[sensor-1];
+}
+
+void LeyboldGraphixThreeFake::SetSensorTypeName(int sensor, std::string type)
+{
+  if (sensor<1 || sensor>3) return;
+
+  sensorType_[sensor-1] = type;
 }
 
 std::string LeyboldGraphixThreeFake::GetSensorName(int sensor) const
@@ -81,3 +116,46 @@ void LeyboldGraphixThreeFake::SetDisplayUnit(LeyboldGraphixThreeFake::DisplayUni
 {
   displayUnit_ = unit;
 }
+
+VLeyboldGraphixThree::SetPointChannel LeyboldGraphixThreeFake::GetSetPointChannelAssignment(int sp) const
+{
+  if (sp<1 || sp>6) return SetPointChannelOff;
+  return setPointChannel_[sp-1];
+}
+
+void LeyboldGraphixThreeFake::SetSetPointChannelAssignment(int sp, VLeyboldGraphixThree::SetPointChannel channel)
+{
+  if (sp<1 || sp>6) return;
+  setPointChannel_[sp-1] = channel;
+}
+
+double LeyboldGraphixThreeFake::GetSetPointOnPressure(int sp) const
+{
+  if (sp<1 || sp>6) return -1;
+  return setPointOnPressure_[sp-1];
+}
+
+void LeyboldGraphixThreeFake::SetSetPointOnPressure(int sp, double pressure)
+{
+  if (sp<1 || sp>6) return;
+  setPointOnPressure_[sp-1] = pressure;
+}
+
+double LeyboldGraphixThreeFake::GetSetPointOffPressure(int sp) const
+{
+  if (sp<1 || sp>6) return -1;
+  return setPointOffPressure_[sp-1];
+}
+
+void LeyboldGraphixThreeFake::SetSetPointOffPressure(int sp, double pressure)
+{
+  if (sp<1 || sp>6) return;
+  setPointOffPressure_[sp-1] = pressure;
+}
+
+bool LeyboldGraphixThreeFake::GetSetPointStatus(int sp) const
+{
+  if (sp<1 || sp>6) return false;
+  return false;
+}
+
