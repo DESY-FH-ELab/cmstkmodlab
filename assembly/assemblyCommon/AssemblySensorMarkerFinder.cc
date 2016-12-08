@@ -565,10 +565,26 @@ void AssemblySensorMarkerFinder::findMarker_templateMatching(int mode)
     
     if (mode == 0) {
         
-        img = cv::imread(Config::CMSTkModLabBasePath + "/share/assembly/RawSensor_4.png",
-                         CV_LOAD_IMAGE_COLOR);
-        img_clip_A = cv::imread(Config::CMSTkModLabBasePath + "/share/assembly/RawSensor_3_clipA.png",
-                                CV_LOAD_IMAGE_COLOR);
+       // img = cv::imread(Config::CMSTkModLabBasePath + "/share/assembly/RawSensor_4.png",
+         //                CV_LOAD_IMAGE_COLOR);
+
+       // img = cv::imread(Config::CMSTkModLabBasePath + "/share/assembly/glassdummycorneronbaseplate.png",
+        //               CV_LOAD_IMAGE_COLOR);
+        
+         img = cv::imread(Config::CMSTkModLabBasePath + "/share/assembly/glassslidecorneronbaseplate_sliverpaint_A.png",
+                       CV_LOAD_IMAGE_COLOR);
+        
+        
+        //img_clip_A = cv::imread(Config::CMSTkModLabBasePath + "/share/assembly/RawSensor_3_clipA.png",
+          //                      CV_LOAD_IMAGE_COLOR);
+        
+      //  img_clip_A = cv::imread(Config::CMSTkModLabBasePath + "/share/assembly/glassdummycorneronbaseplate_template.png",
+        //                  CV_LOAD_IMAGE_COLOR);
+        
+          img_clip_A = cv::imread(Config::CMSTkModLabBasePath + "/share/assembly/glassslidecorneronbaseplate_sliverpaint_A_clip.png",
+                          CV_LOAD_IMAGE_COLOR);
+        
+        
         img_clip_B = cv::imread(Config::CMSTkModLabBasePath + "/share/assembly/RawSensor_3_clipB.png",
                                 CV_LOAD_IMAGE_COLOR);
         
@@ -585,6 +601,9 @@ void AssemblySensorMarkerFinder::findMarker_templateMatching(int mode)
                                 CV_LOAD_IMAGE_COLOR);
     }
     
+    
+    NQLog("AssemblySensorMarkerFinder") << "Finding Marker (Template Matching), got images" ;
+
     
     Point matchLoc_1, matchLoc_2, matchLoc_final;
     
@@ -622,9 +641,18 @@ void AssemblySensorMarkerFinder::findMarker_templateMatching(int mode)
     cv::imwrite(filename_clip_A_bin, img_clip_A_bin);
     cv::imwrite(filename_clip_B_bin, img_clip_B_bin);
     
-    emit updateImage(4, filename_img_bin);
-    emit updateImage(5, filename_clip_A_bin);
-    emit updateImage(6, filename_clip_B_bin);
+    QString filename_img_bin_qs = QString::fromStdString(filename_img_bin);
+    QString filename_clip_A_bin_qs = QString::fromStdString(filename_clip_A_bin);
+    QString filename_clip_B_bin_qs = QString::fromStdString(filename_clip_B_bin);
+    
+    
+    emit updateImage(4, filename_img_bin_qs);
+    emit updateImage(5, filename_clip_A_bin_qs);
+    emit updateImage(6, filename_clip_B_bin_qs);
+    
+    NQLog("AssemblySensorMarkerFinder") << "Finding Marker (Template Matching), updated images in view" ;
+
+    
     
     //GaussianBlur( img_gs_copy, img_gs_copy, Size( 51, 51 ), 0, 0 );
     //GaussianBlur( img_clip_gs, img_clip_gs, Size( 51, 51 ), 0, 0 );
@@ -646,6 +674,9 @@ void AssemblySensorMarkerFinder::findMarker_templateMatching(int mode)
     match_method = 1;
     matchTemplate( img_copy_bin, img_clip_A_bin, result_1, match_method);
     
+    NQLog("AssemblySensorMarkerFinder") << "Finding Marker (Template Matching), pre- matching routine" ;
+
+    
     minMaxLoc( result_1, &minVal, &maxVal, &minLoc, &maxLoc, Mat() );
     
     /// For SQDIFF and SQDIFF_NORMED, the best matches are lower values. For all the other methods, the higher the better
@@ -656,6 +687,9 @@ void AssemblySensorMarkerFinder::findMarker_templateMatching(int mode)
         matchLoc_1 = maxLoc;
         FOM = maxVal;
     }
+    
+    NQLog("AssemblySensorMarkerFinder") << "Finding Marker (Template Matching), post- matching routine" ;
+
     
     //circle( img_gs, Point( matchLoc_1.x + (img_clip_gs.cols/2.0) , matchLoc_1.y + (img_clip_gs.rows/2.0) ), 10, Scalar(255,0,0) );
     
@@ -702,7 +736,7 @@ void AssemblySensorMarkerFinder::findMarker_templateMatching(int mode)
     
     
     
-    for (float theta = -6.0; theta < 6.0;  theta = theta + 0.3){
+    for (float theta = -5.0; theta < 5.0;  theta = theta + 0.3){
         //    for (float theta = -180.0; theta < 180.0;  theta = theta + 9.0){
         
         // Point2f src_center(img_gs_copy.cols/2.0F, img_gs_copy.rows/2.0F);
@@ -764,14 +798,17 @@ void AssemblySensorMarkerFinder::findMarker_templateMatching(int mode)
         gr->Draw("AC*");
         std::string filename_canvas = cacheDirectory1_ + "/RotationExtraction.png";
         c1->SaveAs(filename_canvas.c_str());
+        QString filename_canvas_qs = QString::fromStdString(filename_canvas);
         
-        emit updateImage(2, filename_canvas);
+        emit updateImage(2, filename_canvas_qs);
     }
     
     std::string filename = cacheDirectory1_ + "/PatRec_TM_result.png";
     cv::imwrite(filename, img);
     
-    emit updateImage(1, filename);
+    QString filename_qs = QString::fromStdString(filename);
+    
+    emit updateImage(1, filename_qs);
     
     emit foundSensor(1);
 }
@@ -1090,7 +1127,10 @@ void AssemblySensorMarkerFinder::findMarker_circleSeed(int mode)
     std::string filename = cacheDirectory1_ + "/PatRec_result.png";
     cv::imwrite(filename, img_rgb);
     
-    emit updateImage(1, filename);
+    QString filename_qs = QString::fromStdString(filename);
+    
+    
+    emit updateImage(1, filename_qs);
     emit foundSensor(1);
     //emit sendPosition(0, circleCenter_.x,circleCenter_.y, ang_final);
     NQLog("AssemblyVUEyeCamera") << "  found marker";

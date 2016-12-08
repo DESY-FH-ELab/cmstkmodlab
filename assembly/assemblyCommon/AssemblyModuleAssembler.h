@@ -87,7 +87,7 @@ public slots:
   void snapShot();
   void imageAcquired(const cv::Mat&);
   void gotoPickup();
-  void updateImage(int,std::string);
+  void updateImage(int,QString);
   void updateText(int,double, double, double);
  
 signals:

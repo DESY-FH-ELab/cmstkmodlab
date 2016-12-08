@@ -257,7 +257,7 @@ AssemblyModuleAssembler::AssemblyModuleAssembler(AssemblyVUEyeModel *uEyeModel_,
 
   connect(lctr1, SIGNAL(sendPosition(int, double,double,double)), this, SLOT(updateText(int,double,double,double)));
 
-  connect(finder_, SIGNAL(updateImage(int, std::string)), this, SLOT( updateImage(int,std::string)));
+  connect(finder_, SIGNAL(updateImage(int, QString)), this, SLOT( updateImage(int,QString)));
   connect(finder_, SIGNAL(foundSensor(int)), lctr1, SLOT( foundsensor(int)));
 
 }
@@ -302,11 +302,13 @@ void AssemblyModuleAssembler::updateText(int stage, double x, double y , double 
   }
 }
 
-void AssemblyModuleAssembler::updateImage(int stage, std::string filename)
+void AssemblyModuleAssembler::updateImage(int stage, QString filename)
 {
   NQLog("AssemblyModuleAssembler") << ":updateImage()  " + filename;
 
-  cv::Mat img_gs = cv::imread(filename, CV_LOAD_IMAGE_COLOR);
+  std::string filename_ss = filename.toUtf8().constData();
+
+  cv::Mat img_gs = cv::imread(filename_ss, CV_LOAD_IMAGE_COLOR);
 
   if (stage == 1 ){
     imageView_1->setZoomFactor(0.2);

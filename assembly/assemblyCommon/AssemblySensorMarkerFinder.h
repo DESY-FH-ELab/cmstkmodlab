@@ -131,7 +131,7 @@ protected:
 
 signals:
     void edgesDetected(const cv::Mat&);
-    void updateImage(int, std::string);
+    void updateImage(int, QString);
     void foundSensor(int);
     void getImage();
 
