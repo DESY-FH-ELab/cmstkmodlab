@@ -40,7 +40,7 @@ public:
   LStepExpressModel* lStepExpressModel_;
   LStepExpressMotionManager* motionManager_;
 
-  explicit AssemblyScanner(AssemblyVUEyeModel *uEyeModel_);
+  explicit AssemblyScanner(AssemblyVUEyeModel *uEyeModel_, LStepExpressModel* lStepExpressModel_);
 
   double local_range, local_steps, local_delay;
   int nTotalImages, nAcquiredImages;
@@ -57,6 +57,7 @@ public slots:
     
 signals:
     void getImage();
+    void moveRelative(double, double, double, double);
     void updateScanImage(cv::Mat);
     void make_graph(vector<double>, vector<double>);
 };

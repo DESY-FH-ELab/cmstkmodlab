@@ -29,16 +29,17 @@
 using namespace std;
 using namespace cv;
 
-AssemblyScanner::AssemblyScanner(AssemblyVUEyeModel *uEyeModel_)
+AssemblyScanner::AssemblyScanner(AssemblyVUEyeModel *uEyeModel_, LStepExpressModel* lStepExpressModel_)
 {
     NQLog("AssemblyZScanner::AssemblyScanner()");
+    motionManager_ = new LStepExpressMotionManager(lStepExpressModel_);
     
   //  camera_l = uEyeModel_->getCameraByID(10);
 
    // connect (this, SIGNAL(getImage()), camera_l, SLOT(acquireImage()));
    // connect(camera_l, SIGNAL(imageAcquired(cv::Mat)),  this, SLOT(write_image(cv::Mat)) );
 
-    
+
 }
 
 
@@ -83,8 +84,8 @@ void  AssemblyScanner::run_scan(double range, int steps){
     y_vals.clear();
 
     nAcquiredImages = 1;
-    emit getImage();
-    
+    //emit getImage();
+    emit moveRelative(0.0,0.0,range,0.0);
 }
 
 

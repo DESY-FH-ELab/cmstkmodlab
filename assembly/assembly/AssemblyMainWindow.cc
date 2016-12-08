@@ -57,7 +57,7 @@ AssemblyMainWindow::AssemblyMainWindow(QWidget *parent) :
     uEyeWidget_ = new AssemblyUEyeWidget(uEyeModel_, this);
     tabWidget_->addTab(uEyeWidget_, "uEye");
     
-    cmdr_zscan = new AssemblyScanner(uEyeModel_);
+    cmdr_zscan = new AssemblyScanner(uEyeModel_, lStepExpressModel_);
     
     autoFocusView_ = new AssemblyAutoFocus(cmdr_zscan, tabWidget_);
     tabWidget_->addTab(autoFocusView_, "Auto Focus");
@@ -122,6 +122,7 @@ void AssemblyMainWindow::onOpenCamera()
 
     camera_ = uEyeModel_->getCameraByID(10);
 
+    motionManager_ = new LStepExpressMotionManager(lStepExpressModel_);
 
     connect(this, SIGNAL(openCamera()),
             camera_, SLOT(open()));
@@ -134,10 +135,15 @@ void AssemblyMainWindow::onOpenCamera()
     connect(camera_, SIGNAL(cameraClosed()),
             this, SLOT(cameraClosed()));
 
-    connect (cmdr_zscan, SIGNAL(getImage()), camera_, SLOT(acquireImage()));
-    connect(camera_, SIGNAL(imageAcquired(cv::Mat)), cmdr_zscan, SLOT(write_image(cv::Mat)) );
+   // connect (cmdr_zscan, SIGNAL(getImage()), camera_, SLOT(acquireImage()));
+    
+    connect (cmdr_zscan, SIGNAL(moveRelative(double, double,double, double)),motionManager_, SLOT(moveRelative(double, double,double, double)));
+    connect (lStepExpressModel_, SIGNAL(motionFinished()), camera_, SLOT(acquireImage()));
 
-    connect (cmdr_zscan, SIGNAL(make_graph(vector<double>, vector<double>)), autoFocusView_, SLOT(make_graph(vector<double>, vector<double>)));
+    connect(camera_, SIGNAL(imageAcquired(cv::Mat)), cmdr_zscan, SLOT(write_image(cv::Mat)) );
+    
+    connect (cmdr_zscan, SIGNAL(getImage(double,double,double,double)), motionManager_ , SLOT(moveRelative()));
+    connect (cmdr_zscan,SIGNAL(make_graph(vector<double>,vector<double>)),autoFocusView_,SLOT(make_graph(vector<double>,vector<double>)));
 
     emit openCamera();
 }
