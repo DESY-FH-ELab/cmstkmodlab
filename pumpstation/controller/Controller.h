@@ -13,12 +13,11 @@ public:
 
   Controller(QStringList& arguments);
 
-private slots:
+public slots:
 
   void connectToServer();
   void sendCommand();
   void readResponse();
-  void reportError(QAbstractSocket::SocketError socketError);
 
 private:
 
