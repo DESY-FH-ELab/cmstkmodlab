@@ -97,7 +97,13 @@ AssemblyMainWindow::AssemblyMainWindow(QWidget *parent) :
     toolBar_->addAction("open", this, SLOT(onOpenCamera()));
     toolBar_->addAction("close", this, SLOT(onCloseCamera()));
     toolBar_->addAction("snapshot", this, SLOT(onSnapShot()));
+    
+    checkbox = new QCheckBox("Enable auto-focusing", this);
+    toolBar_->addWidget(checkbox);
   
+    connect(checkbox, SIGNAL(stateChanged(int)), this, SLOT(enableAutoFocus(int)));
+
+    
     setCentralWidget(tabWidget_);
     updateGeometry();
 
@@ -135,18 +141,32 @@ void AssemblyMainWindow::onOpenCamera()
     connect(camera_, SIGNAL(cameraClosed()),
             this, SLOT(cameraClosed()));
 
-   // connect (cmdr_zscan, SIGNAL(getImage()), camera_, SLOT(acquireImage()));
-    
-    connect (cmdr_zscan, SIGNAL(moveRelative(double, double,double, double)),motionManager_, SLOT(moveRelative(double, double,double, double)));
-    connect (lStepExpressModel_, SIGNAL(motionFinished()), camera_, SLOT(acquireImage()));
-
-    connect(camera_, SIGNAL(imageAcquired(cv::Mat)), cmdr_zscan, SLOT(write_image(cv::Mat)) );
-    
-    //    connect (cmdr_zscan, SIGNAL(getImage(double,double,double,double)), motionManager_ , SLOT(moveRelative()));
-    connect (cmdr_zscan,SIGNAL(make_graph(vector<double>,vector<double>)),autoFocusView_,SLOT(make_graph(vector<double>,vector<double>)));
-
     emit openCamera();
 }
+
+void AssemblyMainWindow::enableAutoFocus(int state){
+
+    
+    NQLog("AssemblyMainWindow::enableAutoFocus") << ": state  " << state;
+
+    if (state == 2) {
+    connect (cmdr_zscan, SIGNAL(moveRelative(double, double,double, double)),motionManager_, SLOT(moveRelative(double, double,double, double)));
+    connect (lStepExpressModel_, SIGNAL(motionFinished()), camera_, SLOT(acquireImage()));
+    connect(camera_, SIGNAL(imageAcquired(cv::Mat)), cmdr_zscan, SLOT(write_image(cv::Mat)) );
+    connect (cmdr_zscan,SIGNAL(make_graph(vector<double>,vector<double>)),autoFocusView_,SLOT(make_graph(vector<double>,vector<double>)));
+    } else{
+    
+    disconnect (cmdr_zscan, SIGNAL(moveRelative(double, double,double, double)),motionManager_, SLOT(moveRelative(double, double,double, double)));
+    disconnect (lStepExpressModel_, SIGNAL(motionFinished()), camera_, SLOT(acquireImage()));
+    disconnect(camera_, SIGNAL(imageAcquired(cv::Mat)), cmdr_zscan, SLOT(write_image(cv::Mat)) );
+    disconnect (cmdr_zscan,SIGNAL(make_graph(vector<double>,vector<double>)),autoFocusView_,SLOT(make_graph(vector<double>,vector<double>)));
+    
+    }
+
+
+}
+
+
 
 void AssemblyMainWindow::onCloseCamera()
 {

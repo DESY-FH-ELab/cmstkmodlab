@@ -71,6 +71,7 @@ public slots:
 
   void cameraOpened();
   void cameraClosed();
+  void enableAutoFocus(int);
 
 signals:
 
@@ -78,6 +79,7 @@ signals:
   void closeCamera();
   void acquireImage();
 
+    
 protected slots:
 
 void liveUpdate();
@@ -96,6 +98,7 @@ protected:
   AssemblyModuleAssembler* assembleView_;
   AssemblyAutoFocus* autoFocusView_;
   AssemblyScanner*  cmdr_zscan;
+  QCheckBox *checkbox;
 
     
   AssemblyUEyeModel_t* uEyeModel_;
