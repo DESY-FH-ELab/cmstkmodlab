@@ -52,6 +52,13 @@ greaterThan(QT_MAJOR_VERSION, 4) {
   cache()
 }
 
+unix {
+  target.path = /usr/bin
+  target.from = PumpStationController
+
+  INSTALLS += target
+}
+
 # Input
 HEADERS += Controller.h \
            @basepath@/common/ApplicationConfig.h \

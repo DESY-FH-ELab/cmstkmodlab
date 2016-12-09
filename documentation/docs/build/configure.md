@@ -9,8 +9,14 @@ Do not build code related to the thermal measurement setup.
 * <b>--noassembly</b></br>
 Do not build code related to the automated module assembly setup.
 
-* <b>--notwitter</b></br>
-Do not build with twitter support (only used by thermal measurement software).
+* <b>--noplasma</b></br>
+Do not build code related to the plasma cleaner.
+
+* <b>--nopumpstation</b></br>
+Do not build code related to the CMS DAF pump station.
+
+* <b>--noueye</b></br>
+Build without support for uEye cameras.
 
 * <b>--fake</b></br>
-Build with fake device support
+Build with fake device support.
