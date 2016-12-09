@@ -54,8 +54,8 @@ unix {
   target.path = /usr/bin
   target.from = PumpStationDaemon
 
-  systemd.path = /etc/init.d
-  systemd.extra = chmod a+x pumpstation; cp pumpstation /etc/init.d; systemctl enable pumpstation
+  systemd.path = /etc/systemd/system
+  systemd.extra = systemctl stop pumpstation; chmod 664 pumpstation.service; cp pumpstation.service /etc/systemd/system; systemctl daemon-reload; systemctl enable pumpstation; systemctl start pumpstation
   
   INSTALLS += target systemd
 }
