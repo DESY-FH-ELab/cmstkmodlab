@@ -1,4 +1,6 @@
-# Setup Instructions for Pump Station Software on Raspbian Linux (Jessie)
+# Setup Instructions for Pump Station Software
+
+The software is supposed to be running on a raspberry pi with Raspbian (Jessie) as operating system.
 
 ## Requirements
 
@@ -12,17 +14,9 @@ In addition, please install the following packages via
 
 ## Installation
 
-Go to the directory to which you checked out the source code and run
+Once building the software has successfully finished, install all required libraries and applications via
 
-   `./configure` [options]
+   `sudo make install`
 
-with options as described in the [documentation](./configure).
-
-Then run
-
-   `source tkmodlabenv.sh`
-   
-in case you use `bash` or add the script to your `.bashrc`. You should
-now be good to go and build the software by running
-
-   `make`
+This will also install scripts to automatically start the pump station daemon on system startup.
+After a reboot of the system, the daemon will be running as the default raspberry pi user.
