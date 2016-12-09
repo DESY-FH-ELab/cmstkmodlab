@@ -60,7 +60,7 @@ public slots:
 
     virtual void findMarker(const cv::Mat&);
     virtual void findMarker_circleSeed(int);
-    virtual void findMarker_templateMatching(int);
+    virtual void findMarker_templateMatching(cv::Mat);
 
 
 protected slots:
@@ -134,6 +134,7 @@ signals:
     void updateImage(int, QString);
     void foundSensor(int);
     void getImage();
+    void getImageBlur(cv::Mat, cv::Rect);
 
 };
 

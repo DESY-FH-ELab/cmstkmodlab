@@ -59,13 +59,19 @@ AssemblyMainWindow::AssemblyMainWindow(QWidget *parent) :
     
     cmdr_zscan = new AssemblyScanner(uEyeModel_, lStepExpressModel_);
     
-    autoFocusView_ = new AssemblyAutoFocus(cmdr_zscan, tabWidget_);
-    tabWidget_->addTab(autoFocusView_, "Auto Focus");
+    NQLog("AssemblyMainWindow") << "assembly scanner constructed";
 
     
+    autoFocusView_ = new AssemblyAutoFocus(cmdr_zscan, tabWidget_);
+    tabWidget_->addTab(autoFocusView_, "Auto Focus");
+    
+    NQLog("AssemblyMainWindow") << "autofocus view  added";
+
     QWidget * widget;
     widget= new QWidget(tabWidget_);
     tabWidget_->addTab(widget, "Motion Manager");
+
+    NQLog("AssemblyMainWindow") << "motion manager added";
 
     
     QHBoxLayout * layout = new QHBoxLayout(widget);
@@ -75,6 +81,9 @@ AssemblyMainWindow::AssemblyMainWindow(QWidget *parent) :
     
     LStepExpressWidget *lStepExpressWidget = new LStepExpressWidget(lStepExpressModel_, widget);
     layoutv->addWidget(lStepExpressWidget);
+    
+    NQLog("AssemblyMainWindow") << "LStepExpressWidget added";
+
     
     LStepExpressJoystickWidget *lStepJoystick = new LStepExpressJoystickWidget(lStepExpressModel_, widget);
     layoutv->addWidget(lStepJoystick);
@@ -103,7 +112,6 @@ AssemblyMainWindow::AssemblyMainWindow(QWidget *parent) :
   
     connect(checkbox, SIGNAL(stateChanged(int)), this, SLOT(enableAutoFocus(int)));
 
-    
     setCentralWidget(tabWidget_);
     updateGeometry();
 
@@ -147,25 +155,32 @@ void AssemblyMainWindow::onOpenCamera()
 void AssemblyMainWindow::enableAutoFocus(int state){
 
     
-    NQLog("AssemblyMainWindow::enableAutoFocus") << ": state  " << state;
+NQLog("AssemblyMainWindow::enableAutoFocus") << ": state  " << state;
 
-    if (state == 2) {
-    connect (cmdr_zscan, SIGNAL(moveRelative(double, double,double, double)),motionManager_, SLOT(moveRelative(double, double,double, double)));
-    connect (lStepExpressModel_, SIGNAL(motionFinished()), camera_, SLOT(acquireImage()));
-    connect(camera_, SIGNAL(imageAcquired(cv::Mat)), cmdr_zscan, SLOT(write_image(cv::Mat)) );
-    connect (cmdr_zscan,SIGNAL(make_graph(vector<double>,vector<double>)),autoFocusView_,SLOT(make_graph(vector<double>,vector<double>)));
-    } else{
+if (state == 2) {
+
+    connect(cmdr_zscan, SIGNAL(moveRelative(double, double,double, double)),motionManager_, SLOT(moveRelative(double, double,double, double)));
+    connect(lStepExpressModel_, SIGNAL(motionFinished()), camera_, SLOT(acquireImage()));
+//    connect(camera_, SIGNAL(imageAcquired(cv::Mat)), cmdr_zscan, SLOT(write_image(cv::Mat)) );
+    connect(camera_, SIGNAL(imageAcquired(cv::Mat)), finder_, SLOT(findMarker_templateMatching(cv::Mat)) );
+    connect(finder_, SIGNAL(getImageBlur(cv::Mat, cv::Rect)), cmdr_zscan, SLOT(write_image(cv::Mat, cv::Rect)) );
     
+    connect(cmdr_zscan,SIGNAL(make_graph(vector<double>,vector<double>)),autoFocusView_,SLOT(make_graph(vector<double>,vector<double>)));
+
+
+}else if (state == 0 ){
+
     disconnect (cmdr_zscan, SIGNAL(moveRelative(double, double,double, double)),motionManager_, SLOT(moveRelative(double, double,double, double)));
     disconnect (lStepExpressModel_, SIGNAL(motionFinished()), camera_, SLOT(acquireImage()));
-    disconnect(camera_, SIGNAL(imageAcquired(cv::Mat)), cmdr_zscan, SLOT(write_image(cv::Mat)) );
-    disconnect (cmdr_zscan,SIGNAL(make_graph(vector<double>,vector<double>)),autoFocusView_,SLOT(make_graph(vector<double>,vector<double>)));
+  //  disconnect(camera_, SIGNAL(imageAcquired(cv::Mat)), cmdr_zscan, SLOT(write_image(cv::Mat)) );
     
-    }
+    disconnect(camera_, SIGNAL(imageAcquired(cv::Mat)), finder_, SLOT(findMarker_templateMatching(int, cv::Mat)) );
+    disconnect(finder_, SIGNAL(getImageBlur(cv::Mat, cv::Rect)), cmdr_zscan, SLOT(write_image(cv::Mat, cv::Rect)) );
+    disconnect (cmdr_zscan,SIGNAL(make_graph(vector<double>,vector<double>)),autoFocusView_,SLOT(make_graph(vector<double>,vector<double>)));
 
 
 }
-
+}
 
 
 void AssemblyMainWindow::onCloseCamera()

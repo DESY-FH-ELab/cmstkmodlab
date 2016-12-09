@@ -557,11 +557,13 @@ void AssemblySensorMarkerFinder::drawOrientation()
 
 
 
-void AssemblySensorMarkerFinder::findMarker_templateMatching(int mode)
+void AssemblySensorMarkerFinder::findMarker_templateMatching(cv::Mat img_gs)
 {
     NQLog("AssemblySensorMarkerFinder") << "Finding Marker (Template Matching)" ;
     cv::Mat img, img_clip_A, img_clip_B, result_1, result_2, dst;
     int match_method;
+    
+    int mode = 3;
     
     if (mode == 0) {
         
@@ -581,8 +583,7 @@ void AssemblySensorMarkerFinder::findMarker_templateMatching(int mode)
       //  img_clip_A = cv::imread(Config::CMSTkModLabBasePath + "/share/assembly/glassdummycorneronbaseplate_template.png",
         //                  CV_LOAD_IMAGE_COLOR);
         
-          img_clip_A = cv::imread(Config::CMSTkModLabBasePath + "/share/assembly/glassslidecorneronbaseplate_sliverpaint_A_clip.png",
-                          CV_LOAD_IMAGE_COLOR);
+          img_clip_A = cv::imread(Config::CMSTkModLabBasePath + "/share/assembly/glassslidecorneronbaseplate_sliverpaint_A_clip.png",CV_LOAD_IMAGE_COLOR);
         
         
         img_clip_B = cv::imread(Config::CMSTkModLabBasePath + "/share/assembly/RawSensor_3_clipB.png",
@@ -599,7 +600,13 @@ void AssemblySensorMarkerFinder::findMarker_templateMatching(int mode)
                                 CV_LOAD_IMAGE_COLOR);
         img_clip_B = cv::imread(Config::CMSTkModLabBasePath + "/share/assembly/RawSensor_3_clipB.png",
                                 CV_LOAD_IMAGE_COLOR);
+    } else {
+    
+        img = img_gs;
+        img_clip_A = cv::imread(Config::CMSTkModLabBasePath + "/share/assembly/RawSensor_3_clipA.png", CV_LOAD_IMAGE_COLOR);
+
     }
+    
     
     
     NQLog("AssemblySensorMarkerFinder") << "Finding Marker (Template Matching), got images" ;
@@ -788,8 +795,10 @@ void AssemblySensorMarkerFinder::findMarker_templateMatching(int mode)
         color = 50 + 200*theta;
     }
     
-    
+    cv::Mat img_raw = img.clone();
     rectangle( img, matchLoc_final, Point( matchLoc_final.x + img_clip_B_bin.cols , matchLoc_final.y + img_clip_B_bin.rows ), Scalar(color,color-50,color+50), 2, 8, 0 );
+    
+    cv::Rect rectangle(matchLoc_final, Point( matchLoc_final.x + img_clip_B_bin.cols , matchLoc_final.y + img_clip_B_bin.rows ) );
     
     TCanvas *c1 = new TCanvas("c1","Rotation extraction",200,10,700,500);
     
@@ -811,6 +820,8 @@ void AssemblySensorMarkerFinder::findMarker_templateMatching(int mode)
     emit updateImage(1, filename_qs);
     
     emit foundSensor(1);
+    emit getImageBlur(img_raw, rectangle);
+
 }
 
 void AssemblySensorMarkerFinder::findMarker_circleSeed(int mode)

@@ -34,11 +34,16 @@ AssemblyAutoFocus::AssemblyAutoFocus(AssemblyScanner* cmdr_zscan, QWidget *paren
   : QWidget(parent)
 {
 
+  NQLog("AssemblyAutoFocus::AssemblyAutoFocus");
+    
   QGridLayout *l = new QGridLayout(this);
   setLayout(l);
 
   QGridLayout *g0 = new QGridLayout(this);
   l->addLayout(g0,0,0);
+    
+    NQLog("AssemblyAutoFocus::AssemblyAutoFocus 2");
+
 
   QPalette palette;
   palette.setColor(QPalette::Background, QColor(220, 220, 220));
@@ -94,15 +99,14 @@ AssemblyAutoFocus::AssemblyAutoFocus(AssemblyScanner* cmdr_zscan, QWidget *paren
   button1 = new QPushButton("AutoFocus (step distance (mm), number of steps)", this);
   g0->addWidget(button1,2,0);
     
-  checkbox = new QCheckBox("Enable auto-focusing", this);
-  g0->addWidget(checkbox,3,0);
-    
     
   //make all the neccessary connections
   connect(button1, SIGNAL(clicked()), this, SLOT(configure_scan()));
   connect(this , SIGNAL(run_scan(double, int)), cmdr_zscan , SLOT(run_scan(double, int)));
-  connect(checkbox, SIGNAL(stateChanged(int)), cmdr_zscan, SLOT(enable_autofocus(int)));
 
+    NQLog("AssemblyAutoFocus::AssemblyAutoFocus 3");
+
+    
     
 }
 

@@ -48,12 +48,11 @@ public:
   double step_distance;
 
 protected:
-    double imageVariance(cv::Mat img_input);
+    double imageVariance(cv::Mat img_input, cv::Rect rectangle);
 
 public slots:
   void run_scan(double, int);
-  void enable_autofocus(int);
-  void write_image(cv::Mat);
+    void write_image(cv::Mat, cv::Rect);
 
     
 signals:

@@ -31,7 +31,7 @@ using namespace cv;
 
 AssemblyScanner::AssemblyScanner(AssemblyVUEyeModel *uEyeModel_, LStepExpressModel* lStepExpressModel_)
 {
-    NQLog("AssemblyZScanner::AssemblyScanner()");
+    NQLog("AssemblyScanner::AssemblyScanner()");
     motionManager_ = new LStepExpressMotionManager(lStepExpressModel_);
     
   //  camera_l = uEyeModel_->getCameraByID(10);
@@ -42,31 +42,6 @@ AssemblyScanner::AssemblyScanner(AssemblyVUEyeModel *uEyeModel_, LStepExpressMod
 
 }
 
-
-void AssemblyScanner::enable_autofocus(int enabled)
-{
-    NQLog("AssemblyScanner:enable_autofocus() ");
-    
-    if (enabled == 2){
-        NQLog("AssemblyScanner:enable_autofocus() ") << " connecting motion/vision for scan " ;
-
-        camera_l = uEyeModel_->getCameraByID(10);
-
-        
- 
-    }
-    else if (enabled == 0){
-    
-        NQLog("AssemblyScanner:enable_autofocus() ") << " disconnecting motion/vision for scan "  ;
-        
-
-    //    disconnect (this, SIGNAL(getImage()), camera_, SLOT(acquireImage()));
-     //   disconnect(camera_, SIGNAL(imageAcquired(cv::Mat)),  this, SLOT(write_image(cv::Mat)) );
-
-    }
-    
-    
-}
 
 
 
@@ -89,7 +64,7 @@ void  AssemblyScanner::run_scan(double range, int steps){
 }
 
 
-void  AssemblyScanner::write_image(cv::Mat newImage){
+void  AssemblyScanner::write_image(cv::Mat newImage, cv::Rect rectangle){
     
     NQLog("AssemblyScanner") << "write_image()";
     QDateTime local(QDateTime::currentDateTime());
@@ -101,7 +76,7 @@ void  AssemblyScanner::write_image(cv::Mat newImage){
     cv::imwrite(filename.toStdString(), newImage);
     emit updateScanImage(newImage);
     
-    double variance  = this->imageVariance(newImage);
+    double variance  = this->imageVariance(newImage, rectangle);
     double x = nAcquiredImages;     
     x_vals.push_back(x);
     y_vals.push_back(variance);
@@ -124,10 +99,11 @@ void  AssemblyScanner::write_image(cv::Mat newImage){
 
 
 
-double AssemblyScanner::imageVariance(cv::Mat img_input) {
+double AssemblyScanner::imageVariance(cv::Mat img_input, cv::Rect rectangle) {
     
     
     Mat img_copy = img_input.clone();
+    Mat roi(img_copy, rectangle);
     
     //Convert color image to greyscale (GS)
     Mat img_copy_gs(img_copy.size(), img_copy.type());

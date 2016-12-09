@@ -7,6 +7,10 @@ LStepExpressWidget::LStepExpressWidget(LStepExpressModel* model,
     : QWidget(parent),
       model_(model)
 {
+    
+    NQLog("LStepExpressWidget::LStepExpressWidget")  ;
+
+    
     QVBoxLayout* layout = new QVBoxLayout(this);
     setLayout(layout);
 
