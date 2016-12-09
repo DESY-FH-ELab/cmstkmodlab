@@ -29,10 +29,6 @@ Controller::Controller(QStringList& arguments)
 
   connect(socket_, SIGNAL(connected()), this, SLOT(sendCommand()));
   connect(socket_, SIGNAL(readyRead()), this, SLOT(readResponse()));
-  connect(socket_, SIGNAL(error(QAbstractSocket::SocketError)),
-          this, SLOT(reportError(QAbstractSocket::SocketError)));
-
-  connectToServer();
 }
 
 void Controller::connectToServer()
@@ -43,6 +39,16 @@ void Controller::connectToServer()
 
   socket_->abort();
   socket_->connectToHost(ipAddress, port);
+
+  if (!socket_->waitForConnected(500)) {
+    NQLog("controller") << "The following error occurred: " << socket_->errorString().toStdString();
+
+    std::cout << "ERR" << std::endl;
+
+    socket_->close();
+    socket_->deleteLater();
+    QCoreApplication::quit();
+  }
 }
 
 void Controller::sendCommand()
@@ -89,20 +95,4 @@ void Controller::readResponse()
   socket_->close();
 
   QCoreApplication::quit();
-}
-
-void Controller::reportError(QAbstractSocket::SocketError socketError)
-{
-  switch (socketError) {
-  case QAbstractSocket::RemoteHostClosedError:
-    break;
-  case QAbstractSocket::HostNotFoundError:
-    NQLogFatal("controller") << "The host was not found. Please check the host name and port settings.";
-    break;
-  case QAbstractSocket::ConnectionRefusedError:
-    NQLogFatal("controller") << "The connection was refused by the peer. Make sure the fortune server is running, and check that the host name and port settings are correct.";
-    break;
-  default:
-    NQLogFatal("controller") << "The following error occurred: " << socket_->errorString().toStdString();
-  }
 }

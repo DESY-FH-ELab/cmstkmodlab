@@ -31,6 +31,7 @@ int main(int argc, char *argv[])
   }
 
   Controller controller(arguments);
+  QTimer::singleShot(0, &controller, SLOT(connectToServer()));
 
   return app.exec();
 }
