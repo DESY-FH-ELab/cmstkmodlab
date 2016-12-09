@@ -7,12 +7,12 @@
         }, 
         {
             "location": "/build/configure/", 
-            "text": "Main Configuration Script\n\n\n\n\n\n\n--nodefo\n\nDo not build code related to optical deformation setup (ODM).\n\n\n\n\n\n\n--nothermal\n\nDo not build code related to the thermal measurement setup.\n\n\n\n\n\n\n--noassembly\n\nDo not build code related to the automated module assembly setup.\n\n\n\n\n\n\n--notwitter\n\nDo not build with twitter support (only used by thermal measurement software).\n\n\n\n\n\n\n--fake\n\nBuild with fake device support", 
+            "text": "Main Configuration Script\n\n\n\n\n\n\n--nodefo\n\nDo not build code related to optical deformation setup (ODM).\n\n\n\n\n\n\n--nothermal\n\nDo not build code related to the thermal measurement setup.\n\n\n\n\n\n\n--noassembly\n\nDo not build code related to the automated module assembly setup.\n\n\n\n\n\n\n--noplasma\n\nDo not build code related to the plasma cleaner.\n\n\n\n\n\n\n--nopumpstation\n\nDo not build code related to the CMS DAF pump station.\n\n\n\n\n\n\n--noueye\n\nBuild without support for uEye cameras.\n\n\n\n\n\n\n--fake\n\nBuild with fake device support.", 
             "title": "configure"
         }, 
         {
             "location": "/build/configure/#main-configuration-script", 
-            "text": "--nodefo \nDo not build code related to optical deformation setup (ODM).    --nothermal \nDo not build code related to the thermal measurement setup.    --noassembly \nDo not build code related to the automated module assembly setup.    --notwitter \nDo not build with twitter support (only used by thermal measurement software).    --fake \nBuild with fake device support", 
+            "text": "--nodefo \nDo not build code related to optical deformation setup (ODM).    --nothermal \nDo not build code related to the thermal measurement setup.    --noassembly \nDo not build code related to the automated module assembly setup.    --noplasma \nDo not build code related to the plasma cleaner.    --nopumpstation \nDo not build code related to the CMS DAF pump station.    --noueye \nBuild without support for uEye cameras.    --fake \nBuild with fake device support.", 
             "title": "Main Configuration Script"
         }, 
         {
@@ -131,9 +131,34 @@
             "title": "Plasma Cleaner"
         }, 
         {
-            "location": "/vacuum/", 
+            "location": "/pumpstation/setup/", 
+            "text": "Setup Instructions for Pump Station Software\n\n\nThe software is supposed to be running on a raspberry pi with Raspbian (Jessie) as operating system.\n\n\nRequirements\n\n\nYou should have a running Raspbian Linux installation based on the\n\nbuild instructions\n to start with.\nIn addition, please install the following packages via\n\n\nsudo apt-get install apache2\n\n   \nsudo apt-get install libapache2-mod-webauth\n\n   \nsudo apt-get install libapache2-mod-php5\n\n\nInstallation\n\n\nOnce building the software has successfully finished, install all required libraries and applications via\n\n\nsudo make install\n\n\nThis will also install scripts to automatically start the pump station daemon on system startup.\nAfter a reboot of the system, the daemon will be running as the default raspberry pi user.", 
+            "title": "setup"
+        }, 
+        {
+            "location": "/pumpstation/setup/#setup-instructions-for-pump-station-software", 
+            "text": "The software is supposed to be running on a raspberry pi with Raspbian (Jessie) as operating system.", 
+            "title": "Setup Instructions for Pump Station Software"
+        }, 
+        {
+            "location": "/pumpstation/setup/#requirements", 
+            "text": "You should have a running Raspbian Linux installation based on the build instructions  to start with.\nIn addition, please install the following packages via  sudo apt-get install apache2 \n    sudo apt-get install libapache2-mod-webauth \n    sudo apt-get install libapache2-mod-php5", 
+            "title": "Requirements"
+        }, 
+        {
+            "location": "/pumpstation/setup/#installation", 
+            "text": "Once building the software has successfully finished, install all required libraries and applications via  sudo make install  This will also install scripts to automatically start the pump station daemon on system startup.\nAfter a reboot of the system, the daemon will be running as the default raspberry pi user.", 
+            "title": "Installation"
+        }, 
+        {
+            "location": "/pumpstation/", 
+            "text": "Usage", 
+            "title": "usage"
+        }, 
+        {
+            "location": "/pumpstation/#usage", 
             "text": "", 
-            "title": "Pump Station"
+            "title": "Usage"
         }
     ]
 }
