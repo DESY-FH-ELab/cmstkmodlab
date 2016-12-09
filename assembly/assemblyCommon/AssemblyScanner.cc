@@ -85,7 +85,7 @@ void  AssemblyScanner::run_scan(double range, int steps){
 
     nAcquiredImages = 1;
     //emit getImage();
-    emit moveRelative(0.0,0.0,range,0.0);
+    emit moveRelative(0.0,0.0,1.0,0.0);
 }
 
 
@@ -109,9 +109,9 @@ void  AssemblyScanner::write_image(cv::Mat newImage){
     //check global image counter
     if (nAcquiredImages <= nTotalImages){
         cout <<"n acquired images = "<< nAcquiredImages<<"  nTotal images = "<< nTotalImages  <<endl;
-        nAcquiredImages++;
-        
-        emit getImage();
+        nAcquiredImages++; 
+        emit moveRelative(0.0,0.0,-0.1,0.0);
+	//        emit getImage();
     } else{
     
       emit make_graph(x_vals, y_vals);    

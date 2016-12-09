@@ -45,6 +45,7 @@ public:
   double local_range, local_steps, local_delay;
   int nTotalImages, nAcquiredImages;
   vector<double> x_vals, y_vals;
+  double step_distance;
 
 protected:
     double imageVariance(cv::Mat img_input);

@@ -21,7 +21,7 @@ AssemblyMainWindow::AssemblyMainWindow(QWidget *parent) :
     
     
     lStepExpressModel_ = new LStepExpressModel(config->getValue<std::string>("LStepExpressDevice").c_str(),
-                                               1000, 100);
+                                               1000, 1000);
     motionManager_ = new LStepExpressMotionManager(lStepExpressModel_);
     motionThread_ = new LStepExpressMotionThread(this);
     motionThread_->start();
@@ -142,7 +142,7 @@ void AssemblyMainWindow::onOpenCamera()
 
     connect(camera_, SIGNAL(imageAcquired(cv::Mat)), cmdr_zscan, SLOT(write_image(cv::Mat)) );
     
-    connect (cmdr_zscan, SIGNAL(getImage(double,double,double,double)), motionManager_ , SLOT(moveRelative()));
+    //    connect (cmdr_zscan, SIGNAL(getImage(double,double,double,double)), motionManager_ , SLOT(moveRelative()));
     connect (cmdr_zscan,SIGNAL(make_graph(vector<double>,vector<double>)),autoFocusView_,SLOT(make_graph(vector<double>,vector<double>)));
 
     emit openCamera();
