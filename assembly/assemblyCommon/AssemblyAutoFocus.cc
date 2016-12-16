@@ -130,22 +130,12 @@ void AssemblyAutoFocus::configure_scan()
 }
 
 
-void AssemblyAutoFocus::make_graph(vector<double> x, vector <double> y){
-
-  int points  =  x.size();
-  TGraph * gr = new TGraph(points);
-  TCanvas *  canvas = new TCanvas();
-
-  for (int i =0; i < x.size(); i++){
-    gr->SetPoint(i, x[i], y[i]);
-}
+void AssemblyAutoFocus::make_graph(const string img_name){
 
 
-  gr->Draw("AC*");
-  canvas->SaveAs("variance.png");
-  cv::Mat img = cv::imread("variance.png", CV_LOAD_IMAGE_COLOR);
- 
+  cv::Mat img = cv::imread(img_name, CV_LOAD_IMAGE_COLOR);
   emit graph_made(img);
+        
 }
 
 

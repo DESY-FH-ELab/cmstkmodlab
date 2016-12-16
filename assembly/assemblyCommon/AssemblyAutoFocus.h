@@ -28,7 +28,6 @@
 #include "LStepExpressModel.h"
 #include "LStepExpressMotionManager.h"
 
-
 #include "AssemblyScanner.h"
 
 class AssemblyAutoFocus : public QWidget
@@ -59,15 +58,13 @@ protected:
   QLineEdit * lE1;
   QCheckBox *checkbox;
 
-
-
 public slots:
 
   void imageAcquired(const cv::Mat&);
   void updateImage(int,std::string);
   void updateText(int,double, double, double);
   void configure_scan();
-  void make_graph(vector<double>, vector<double>);
+  void make_graph(const string);
 
  
 signals:

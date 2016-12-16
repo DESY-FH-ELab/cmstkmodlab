@@ -15,6 +15,7 @@
 #include <QVBoxLayout>
 #include <QCheckBox>
 #include <QRadioButton>
+#include <QString>
 
 //vision
 #include <AssemblyUEyeView.h>
@@ -59,7 +60,7 @@ signals:
     void getImage();
     void moveRelative(double, double, double, double);
     void updateScanImage(cv::Mat);
-    void make_graph(vector<double>, vector<double>);
+    void make_graph(const string);
 };
 
 

@@ -13,6 +13,9 @@
 #include <QApplication>
 
 
+#include <TGraph.h>
+#include <TCanvas.h>
+
 
 #include <nqlogger.h>
 #include <ApplicationConfig.h>
@@ -64,7 +67,7 @@ void  AssemblyScanner::run_scan(double range, int steps){
 }
 
 
-void  AssemblyScanner::write_image(cv::Mat newImage, cv::Rect rectangle){
+void  AssemblyScanner::write_image(cv::Mat newImage, cv::Rect marker_rect){
     
     NQLog("AssemblyScanner") << "write_image()";
     QDateTime local(QDateTime::currentDateTime());
@@ -73,10 +76,19 @@ void  AssemblyScanner::write_image(cv::Mat newImage, cv::Rect rectangle){
     filename = filename.simplified();
     filename.replace( " ", "" );
     
+    Point tl = marker_rect.tl();
+    Point br = marker_rect.br();
+    
+//    rectangle( newImage, rectangle, Scalar(255,0,0), 2, 8, 0 );
+ //   rectangle(newImage, rectangle, Scalar(255,0,0), 2, 8, 0);
+    
+    rectangle(newImage, tl, br, Scalar(255,0,0), 2, 8, 0);
+    
+    
     cv::imwrite(filename.toStdString(), newImage);
     emit updateScanImage(newImage);
     
-    double variance  = this->imageVariance(newImage, rectangle);
+    double variance  = this->imageVariance(newImage, marker_rect);
     double x = nAcquiredImages;     
     x_vals.push_back(x);
     y_vals.push_back(variance);
@@ -86,15 +98,33 @@ void  AssemblyScanner::write_image(cv::Mat newImage, cv::Rect rectangle){
         cout <<"n acquired images = "<< nAcquiredImages<<"  nTotal images = "<< nTotalImages  <<endl;
         nAcquiredImages++; 
         emit moveRelative(0.0,0.0,-0.1,0.0);
-	//        emit getImage();
     } else{
+        
+        int points  =  y_vals.size();
+        TGraph * gr = new TGraph(points);
+        TCanvas *  canvas = new TCanvas();
+        
+        double variance_max, z_at_peak =0;
+        
+        //fitting the peak (Gaussian?) would improve precision a little here
+        
+        for (unsigned long  i =0; i < y_vals.size(); i++){
+            gr->SetPoint(i, x_vals[i], y_vals[i]);
+            if (y_vals[i] > variance_max){
+                variance_max = y_vals[i];
+                z_at_peak = x_vals[i];
+            }
+        }
+        
+        gr->Draw("AC*");
+        const string img_name = "variance.png";
+        canvas->SaveAs(img_name.c_str());
     
-      emit make_graph(x_vals, y_vals);    
-    }
-    
-    //possibly disconnect (disconnect(camera_, SIGNAL(imageAcquired(cv::Mat)),  this, SLOT(write_image(cv::Mat)) );
-    // when enough images are taken
+        emit make_graph(img_name);
 
+        
+      //emit some signal with measured marker Z position
+    }
 }
 
 
