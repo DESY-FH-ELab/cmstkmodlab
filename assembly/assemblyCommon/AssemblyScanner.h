@@ -61,6 +61,8 @@ signals:
     void moveRelative(double, double, double, double);
     void updateScanImage(cv::Mat);
     void make_graph(const string);
+    void updateText(double);
+
 };
 
 

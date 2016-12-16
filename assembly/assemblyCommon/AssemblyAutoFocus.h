@@ -55,22 +55,25 @@ protected:
   cv::Mat image_;
   cv::Mat img;
   QPushButton* button1;
+  QPushButton* button2;
   QLineEdit * lE1;
+  QLineEdit * lE2;
+
   QCheckBox *checkbox;
 
 public slots:
-
   void imageAcquired(const cv::Mat&);
   void updateImage(int,std::string);
-  void updateText(int,double, double, double);
   void configure_scan();
   void make_graph(const string);
-
- 
+  void updateText(double);
+  void go_to_focal_point();
+    
 signals:
   void run_scan(double,int);
   void moveRelative(double,double,double,double);
   void graph_made(const cv::Mat&);
+
 };
 
 

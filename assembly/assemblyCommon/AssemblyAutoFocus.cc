@@ -92,20 +92,31 @@ AssemblyAutoFocus::AssemblyAutoFocus(AssemblyScanner* cmdr_zscan, QWidget *paren
   g0->addWidget(scrollArea_2,0,1);
     
 
-    
   lE1 = new QLineEdit("0.1,10");
   g0->addWidget(lE1,1,0);
 
   button1 = new QPushButton("AutoFocus (step distance (mm), number of steps)", this);
   g0->addWidget(button1,2,0);
     
+  checkbox = new QCheckBox("Track marker", this);
+  g0->addWidget(checkbox,3,0);
+    
+  QFormLayout *g1 = new QFormLayout(this);
+  g0->addLayout(g1,1,1);
+    
+  button2 = new QPushButton("Go to focal point", this);
+  g1->addRow(button2);
+    
+  lE2 = new QLineEdit("Absolute focal point = ");
+  g1->addRow(lE2);
+
     
   //make all the neccessary connections
   connect(button1, SIGNAL(clicked()), this, SLOT(configure_scan()));
   connect(this , SIGNAL(run_scan(double, int)), cmdr_zscan , SLOT(run_scan(double, int)));
+  connect(button2, SIGNAL(clicked()), this, SLOT(go_to_focal_point()));
 
-    NQLog("AssemblyAutoFocus::AssemblyAutoFocus 3");
-
+  NQLog("AssemblyAutoFocus::AssemblyAutoFocus 3");
     
     
 }
@@ -139,28 +150,30 @@ void AssemblyAutoFocus::make_graph(const string img_name){
 }
 
 
-void AssemblyAutoFocus::updateText(int stage, double x, double y , double a){
+void AssemblyAutoFocus::updateText(double z){
 
   NQLog("AssemblyAutoFocus::updateText");
 
   std::ostringstream strs;
   strs.clear();
-  strs << x;
-  strs << ",";
-  strs << y;
-  strs << ",";
-  strs << a;
+  strs << z;
+//  strs << ",";
   std::string str = strs.str();
   QString qstr = "";
   qstr = QString::fromStdString(str);
-  // QString qname = QString::fromStdString(string);
-
-  if(stage == 1 ){
-    qstr = "Pickup pos. = " + qstr;
-    lE1->setText(qstr);
-  }
-
+  qstr = "Absolute focal point (measured)  = " + qstr;
+  lE2->setText(qstr);
 }
+
+
+
+
+void AssemblyAutoFocus::go_to_focal_point(){
+    
+    NQLog("AssemblyAutoFocus::go_to_focal_point()");
+    
+}
+
 
 void AssemblyAutoFocus::updateImage(int stage, std::string filename)
 {

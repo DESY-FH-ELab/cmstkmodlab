@@ -89,8 +89,10 @@ void  AssemblyScanner::write_image(cv::Mat newImage, cv::Rect marker_rect){
     emit updateScanImage(newImage);
     
     double variance  = this->imageVariance(newImage, marker_rect);
-    double x = nAcquiredImages;     
-    x_vals.push_back(x);
+    double x = nAcquiredImages;
+    double current_z = lStepExpressModel_->getPosition(2);
+    
+    x_vals.push_back(current_z);
     y_vals.push_back(variance);
 
     //check global image counter
@@ -124,6 +126,8 @@ void  AssemblyScanner::write_image(cv::Mat newImage, cv::Rect marker_rect){
 
         
       //emit some signal with measured marker Z position
+        
+        emit updateText(100);
     }
 }
 

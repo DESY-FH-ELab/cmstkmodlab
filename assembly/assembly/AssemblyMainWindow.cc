@@ -164,9 +164,8 @@ if (state == 2) {
 //    connect(camera_, SIGNAL(imageAcquired(cv::Mat)), cmdr_zscan, SLOT(write_image(cv::Mat)) );
     connect(camera_, SIGNAL(imageAcquired(cv::Mat)), finder_, SLOT(findMarker_templateMatching(cv::Mat)) );
     connect(finder_, SIGNAL(getImageBlur(cv::Mat, cv::Rect)), cmdr_zscan, SLOT(write_image(cv::Mat, cv::Rect)) );
-    
     connect(cmdr_zscan,SIGNAL(make_graph(vector<double>,vector<double>)),autoFocusView_,SLOT(make_graph(vector<double>,vector<double>)));
-
+    connect(cmdr_zscan,SIGNAL(updateText(double)),autoFocusView_,SLOT(updateText(double)));
 
 }else if (state == 0 ){
 
@@ -177,8 +176,8 @@ if (state == 2) {
     disconnect(camera_, SIGNAL(imageAcquired(cv::Mat)), finder_, SLOT(findMarker_templateMatching(int, cv::Mat)) );
     disconnect(finder_, SIGNAL(getImageBlur(cv::Mat, cv::Rect)), cmdr_zscan, SLOT(write_image(cv::Mat, cv::Rect)) );
     disconnect (cmdr_zscan,SIGNAL(make_graph(vector<double>,vector<double>)),autoFocusView_,SLOT(make_graph(vector<double>,vector<double>)));
-
-
+    disconnect(cmdr_zscan,SIGNAL(updateText(double)),autoFocusView_,SLOT(updateText(double)));
+    
 }
 }
 
