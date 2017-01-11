@@ -10,6 +10,7 @@
 
 #include <TGraph.h>
 #include <TCanvas.h>
+#include <TH1F.h>
 
 
 using namespace cv;
@@ -68,9 +69,6 @@ void  AssemblySensorMarkerFinder::testSLOT(cv::Mat){
     NQLog("AssemblySensorMarkerFinder") << "testSLOT()";
   emit getImage();
 }
-
-
-
 
 
 void AssemblySensorMarkerFinder::findMarker(const cv::Mat& image)
@@ -554,123 +552,53 @@ void AssemblySensorMarkerFinder::drawOrientation()
 }
 
 
-
-
-
-void AssemblySensorMarkerFinder::findMarker_templateMatching(cv::Mat img_gs)
+void AssemblySensorMarkerFinder::findMarker_templateMatching(cv::Mat img, cv::Mat img_clip_A)
 {
     NQLog("AssemblySensorMarkerFinder") << "Finding Marker (Template Matching)" ;
-    cv::Mat img, img_clip_A, img_clip_B, result_1, result_2, dst;
-    int match_method;
-    
-    int mode = 3;
-    
-    if (mode == 0) {
-        
-       // img = cv::imread(Config::CMSTkModLabBasePath + "/share/assembly/RawSensor_4.png",
-         //                CV_LOAD_IMAGE_COLOR);
-
-       // img = cv::imread(Config::CMSTkModLabBasePath + "/share/assembly/glassdummycorneronbaseplate.png",
-        //               CV_LOAD_IMAGE_COLOR);
-        
-         img = cv::imread(Config::CMSTkModLabBasePath + "/share/assembly/glassslidecorneronbaseplate_sliverpaint_A.png",
-                       CV_LOAD_IMAGE_COLOR);
         
         
-        //img_clip_A = cv::imread(Config::CMSTkModLabBasePath + "/share/assembly/RawSensor_3_clipA.png",
-          //                      CV_LOAD_IMAGE_COLOR);
-        
-      //  img_clip_A = cv::imread(Config::CMSTkModLabBasePath + "/share/assembly/glassdummycorneronbaseplate_template.png",
-        //                  CV_LOAD_IMAGE_COLOR);
-        
-          img_clip_A = cv::imread(Config::CMSTkModLabBasePath + "/share/assembly/glassslidecorneronbaseplate_sliverpaint_A_clip.png",CV_LOAD_IMAGE_COLOR);
-        
-        
-        img_clip_B = cv::imread(Config::CMSTkModLabBasePath + "/share/assembly/RawSensor_3_clipB.png",
-                                CV_LOAD_IMAGE_COLOR);
-        
-    } else if (mode == 1){
-        
-        NQLog("AssemblySensorLocator") << "***LAB MODE NOT IMPLMENTED YET....REVERTING TO DEMO IMAGES!!!***" ;
-        
-        
-        img = cv::imread(Config::CMSTkModLabBasePath + "/share/assembly/RawSensor_4.png",
-                         CV_LOAD_IMAGE_COLOR);
-        img_clip_A = cv::imread(Config::CMSTkModLabBasePath + "/share/assembly/RawSensor_3_clipA.png",
-                                CV_LOAD_IMAGE_COLOR);
-        img_clip_B = cv::imread(Config::CMSTkModLabBasePath + "/share/assembly/RawSensor_3_clipB.png",
-                                CV_LOAD_IMAGE_COLOR);
-    } else {
-    
-        img = img_gs;
-        img_clip_A = cv::imread(Config::CMSTkModLabBasePath + "/share/assembly/RawSensor_3_clipA.png", CV_LOAD_IMAGE_COLOR);
-
-    }
-    
-    
-    
-    NQLog("AssemblySensorMarkerFinder") << "Finding Marker (Template Matching), got images" ;
-
-    
     Point matchLoc_1, matchLoc_2, matchLoc_final;
+    Mat result_1, result_2;
     
     Mat img_copy = img.clone();
     
     //Greyscale images
     Mat img_copy_gs(img_copy.size(), img_copy.type());
     Mat img_clip_A_gs(img_clip_A.size(), img_clip_A.type());
-    Mat img_clip_B_gs(img_clip_B.size(), img_clip_B.type());
     
     //convert color to GS
     cvtColor( img_copy,   img_copy_gs,   CV_BGR2GRAY );
     cvtColor( img_clip_A, img_clip_A_gs, CV_BGR2GRAY );
-    cvtColor( img_clip_B, img_clip_B_gs, CV_BGR2GRAY );
     
     //Binary images
     Mat img_copy_bin(img_copy_gs.size(), img_copy_gs.type());
     Mat img_clip_A_bin(img_clip_A_gs.size(), img_clip_A_gs.type());
-    Mat img_clip_B_bin(img_clip_B_gs.size(), img_clip_B_gs.type());
     
     //Apply thresholding
     cv::threshold(img_copy_gs, img_copy_bin, 60, 255, cv::THRESH_BINARY);
     cv::threshold(img_clip_A_gs, img_clip_A_bin, 90, 255, cv::THRESH_BINARY);
-    cv::threshold(img_clip_B_gs, img_clip_B_bin, 90, 255, cv::THRESH_BINARY);
     
     // img_copy_bin = img_copy_gs.clone();
     // img_clip_A_bin = img_clip_A_gs.clone();
-    // img_clip_B_bin = img_clip_B_gs.clone();
     
     std::string filename_img_bin = Config::CMSTkModLabBasePath + "/share/assembly/Sensor_bin.png";
     std::string filename_clip_A_bin = Config::CMSTkModLabBasePath + "/share/assembly/clip_A_bin.png";
-    std::string filename_clip_B_bin = Config::CMSTkModLabBasePath + "/share/assembly/clip_B_bin.png";
     
     cv::imwrite(filename_img_bin, img_copy_bin);
     cv::imwrite(filename_clip_A_bin, img_clip_A_bin);
-    cv::imwrite(filename_clip_B_bin, img_clip_B_bin);
     
     QString filename_img_bin_qs = QString::fromStdString(filename_img_bin);
     QString filename_clip_A_bin_qs = QString::fromStdString(filename_clip_A_bin);
-    QString filename_clip_B_bin_qs = QString::fromStdString(filename_clip_B_bin);
     
-    
-    emit updateImage(4, filename_img_bin_qs);
-    emit updateImage(5, filename_clip_A_bin_qs);
-    emit updateImage(6, filename_clip_B_bin_qs);
+    //emit updateImage(4, filename_img_bin_qs);
+    //emit updateImage(5, filename_clip_A_bin_qs);
     
     NQLog("AssemblySensorMarkerFinder") << "Finding Marker (Template Matching), updated images in view" ;
 
     
-    
-    //GaussianBlur( img_gs_copy, img_gs_copy, Size( 51, 51 ), 0, 0 );
-    //GaussianBlur( img_clip_gs, img_clip_gs, Size( 51, 51 ), 0, 0 );
-    //GaussianBlur( img_clip_gs_2, img_clip_gs_2, Size( 51, 51 ), 0, 0 );
-    
-    
     /// Localizing the best match with minMaxLoc
     double FOM, FOM_inc = 1000.0, minVal, maxVal; Point minLoc; Point maxLoc;
     double thetas[40], FOMs[40];
-    
-    //first find the (x,y) location of the circle within the corner marker
     
     //create result matrix to hold correlation values
     int result_cols =  img_copy_bin.cols - img_clip_A.cols + 1;
@@ -678,7 +606,7 @@ void AssemblySensorMarkerFinder::findMarker_templateMatching(cv::Mat img_gs)
     
     result_1.create( result_rows, result_cols, CV_32FC1 );
     
-    match_method = 1;
+    int match_method = 1;
     matchTemplate( img_copy_bin, img_clip_A_bin, result_1, match_method);
     
     NQLog("AssemblySensorMarkerFinder") << "Finding Marker (Template Matching), pre- matching routine" ;
@@ -700,47 +628,14 @@ void AssemblySensorMarkerFinder::findMarker_templateMatching(cv::Mat img_gs)
     
     //circle( img_gs, Point( matchLoc_1.x + (img_clip_gs.cols/2.0) , matchLoc_1.y + (img_clip_gs.rows/2.0) ), 10, Scalar(255,0,0) );
     
-    circle( img, Point( matchLoc_1.x  , matchLoc_1.y ), 30, Scalar(255,0,0) );
-    rectangle( img, matchLoc_1, Point( matchLoc_1.x + img_clip_A_bin.cols , matchLoc_1.y + img_clip_A_bin.rows ), Scalar(255,0,0), 2, 8, 0 );
+    //circle( img, Point( matchLoc_1.x  , matchLoc_1.y ), 30, Scalar(255,0,0) );
+    //rectangle( img, matchLoc_1, Point( matchLoc_1.x + img_clip_A_bin.cols , matchLoc_1.y + img_clip_A_bin.rows ), Scalar(255,0,0), 2, 8, 0 );
     
-    NQLog("AssemblySensorLocator") <<  matchLoc_1.x<< "   "<< matchLoc_1.y;
+    NQLog("AssemblySensorMarkerFinder") <<  matchLoc_1.x<< "   "<< matchLoc_1.y;
     
     
     int i = 0;
     int color = 200;
-    
-    //Optional - currently not preferred.
-    //Precisiely find the circle within the marker
-    
-    /*
-     // define location of sub matrices in image
-     Rect roi1( matchLoc_1.x  , matchLoc_1.y, img_clip_A_bin.cols, img_clip_A_bin.rows );
-     
-     
-     // define sub matrices in main matrix
-     Mat img_copy_2 = img_copy_gs.clone();
-     Mat sub1( img_copy_2, roi1 );
-     
-     GaussianBlur( sub1, sub1, Size( 9, 9 ), 4,4 );
-     
-     vector<Vec3f> circles;
-     HoughCircles(sub1, circles, CV_HOUGH_GRADIENT, 2, sub1.rows/2, 20, 40 );
-     
-     NQLog("AssemblySensorLocator  ") <<  circles.size() << "  circles detected ";
-     
-     
-     for( size_t i = 0; i < circles.size(); i++ )
-     {
-     Point center(cvRound(circles[i][0]) + matchLoc_1.x , cvRound(circles[i][1]) + matchLoc_1.y);
-     int radius = cvRound(circles[i][2]);
-     // draw the circle center
-     circle( img, center, 3, Scalar(0,255,0), -1, 8, 0 );
-     // draw the circle outline
-     circle( img, center, radius, Scalar(0,0,255), 3, 8, 0 );
-     }
-     
-     */
-    
     
     
     for (float theta = -5.0; theta < 5.0;  theta = theta + 0.3){
@@ -750,6 +645,7 @@ void AssemblySensorMarkerFinder::findMarker_templateMatching(cv::Mat img_gs)
         Point2f src_center( matchLoc_1.x + (img_clip_A_bin.cols/2) , matchLoc_1.y + (img_clip_A_bin.rows/2) );
         
         Mat rot_mat = getRotationMatrix2D(matchLoc_1, theta, 1.0);
+        Mat dst;
         cv::Scalar avgPixelIntensity = cv::mean( img_copy_bin );
         warpAffine(img_copy_bin, dst, rot_mat, img_copy_bin.size(), cv::INTER_CUBIC,
                    cv::BORDER_CONSTANT, avgPixelIntensity);
@@ -762,11 +658,11 @@ void AssemblySensorMarkerFinder::findMarker_templateMatching(cv::Mat img_gs)
         cv::imwrite(filename_rotated, dst);
         
         //create result matrix to hold correlation values
-        result_cols =  img_copy_bin.cols - img_clip_B_bin.cols + 1;
-        result_rows = img_copy_bin.rows - img_clip_B_bin.rows + 1;
+        result_cols =  img_copy_bin.cols - img_clip_A_bin.cols + 1;
+        result_rows = img_copy_bin.rows - img_clip_A_bin.rows + 1;
         
         result_2.create( result_rows, result_cols, CV_32FC1 );
-        matchTemplate( dst, img_clip_B_bin, result_2, match_method );
+        matchTemplate( dst, img_clip_A_bin, result_2, match_method );
         
         // normalize( result, result, 0, 1, NORM_MINMAX, -1, Mat() );
         minMaxLoc( result_2, &minVal, &maxVal, &minLoc, &maxLoc, Mat() );
@@ -796,15 +692,19 @@ void AssemblySensorMarkerFinder::findMarker_templateMatching(cv::Mat img_gs)
     }
     
     cv::Mat img_raw = img.clone();
-    rectangle( img, matchLoc_final, Point( matchLoc_final.x + img_clip_B_bin.cols , matchLoc_final.y + img_clip_B_bin.rows ), Scalar(color,color-50,color+50), 2, 8, 0 );
+    rectangle( img, matchLoc_final, Point( matchLoc_final.x + img_clip_A_bin.cols , matchLoc_final.y + img_clip_A_bin.rows ), Scalar(color,color-50,color+50), 2, 8, 0 );
     
-    cv::Rect rectangle(matchLoc_final, Point( matchLoc_final.x + img_clip_B_bin.cols , matchLoc_final.y + img_clip_B_bin.rows ) );
+    cv::Rect rectangle(matchLoc_final, Point( matchLoc_final.x + img_clip_A_bin.cols , matchLoc_final.y + img_clip_A_bin.rows ) );
     
     TCanvas *c1 = new TCanvas("c1","Rotation extraction",200,10,700,500);
     
     if (thetas[0] && FOMs[0]){
         TGraph *gr = new TGraph(40, thetas, FOMs);
         gr->Draw("AC*");
+        gr->GetHistogram()->GetXaxis()->SetTitle("Rotational tranformation (degrees)");
+        gr->GetHistogram()->GetYaxis()->SetTitle("Minimised metric value");
+        gr->GetHistogram()->SetTitle("");
+        
         std::string filename_canvas = cacheDirectory1_ + "/RotationExtraction.png";
         c1->SaveAs(filename_canvas.c_str());
         QString filename_canvas_qs = QString::fromStdString(filename_canvas);

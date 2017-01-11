@@ -32,17 +32,11 @@
 using namespace std;
 using namespace cv;
 
-AssemblyScanner::AssemblyScanner(AssemblyVUEyeModel *uEyeModel_, LStepExpressModel* lStepExpressModel_)
+AssemblyScanner::AssemblyScanner(LStepExpressModel* lStepExpressModel_)
 {
     NQLog("AssemblyScanner::AssemblyScanner()");
     motionManager_ = new LStepExpressMotionManager(lStepExpressModel_);
     
-  //  camera_l = uEyeModel_->getCameraByID(10);
-
-   // connect (this, SIGNAL(getImage()), camera_l, SLOT(acquireImage()));
-   // connect(camera_l, SIGNAL(imageAcquired(cv::Mat)),  this, SLOT(write_image(cv::Mat)) );
-
-
 }
 
 
@@ -78,6 +72,8 @@ void  AssemblyScanner::write_image(cv::Mat newImage, cv::Rect marker_rect){
     
     Point tl = marker_rect.tl();
     Point br = marker_rect.br();
+    
+
     
 //    rectangle( newImage, rectangle, Scalar(255,0,0), 2, 8, 0 );
  //   rectangle(newImage, rectangle, Scalar(255,0,0), 2, 8, 0);
@@ -127,7 +123,7 @@ void  AssemblyScanner::write_image(cv::Mat newImage, cv::Rect marker_rect){
         
       //emit some signal with measured marker Z position
         
-        emit updateText(100);
+        emit updateText(100.74);
     }
 }
 

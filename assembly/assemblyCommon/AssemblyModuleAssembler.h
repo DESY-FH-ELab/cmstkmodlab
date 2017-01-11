@@ -93,6 +93,7 @@ public slots:
 signals:
 
   void moveAbsolute(double,double,double,double);
+
 };
 
 class AssemblyVacuumToggler : public QWidget
@@ -101,20 +102,25 @@ class AssemblyVacuumToggler : public QWidget
 
 public:
     
-  explicit AssemblyVacuumToggler(QWidget *parent = 0, std::string ="test", double a  = 0.0);
+  explicit AssemblyVacuumToggler(QWidget *parent = 0, std::string ="test");
 
-  double local_x, local_y, local_z, local_a;
   QPushButton* button1;
   QLineEdit *lineEdit1;
   ConradModel * cnrd1;
 
-  QLabel* ql;
+  QLabel* ql1;
+  QLabel* ql2;
+  QLabel* ql3;
+
+  QRadioButton *radio1;
+  QRadioButton *radio2;
+  QRadioButton *radio3;
+    
   bool state;
     
 protected:
     
 public slots:
-
   void toggleVacuum();
     
 signals:
@@ -127,9 +133,8 @@ class AssemblyAttacher : public QWidget
 
 public:
 
-  explicit AssemblyAttacher(std::string ="test", double drop =0.0);
-
-  double local_drop;
+  explicit AssemblyAttacher(std::string ="test", double x =0.0, double y =0.0, double z  =0.0, double a  =0.0);
+  double local_x, local_y, local_z, local_a;
   QPushButton* button1;
   QLineEdit *lineEdit1;
 
@@ -137,7 +142,7 @@ protected:
 
 public slots:
 
-  void dropAttach();
+  void moveRelative();
     
 signals:
 
@@ -241,6 +246,7 @@ public:
   QRadioButton *radio2;
   QRadioButton *radio3;
   QRadioButton *radio4;
+  QRadioButton *radio5;
 
   QVBoxLayout *vbox1,*vbox2 ;
 
@@ -260,7 +266,7 @@ signals:
   void foundSensor(int);
   void sendPosition(int, double, double, double);
   void locatePickupCorner_circleSeed(int);
-  void locatePickupCorner_templateMatching(int);
+  void locatePickupCorner_templateMatching(cv::Mat,cv::Mat);
 };
 
 #endif // ASSEMBLYMODULEASSEMBLER_H

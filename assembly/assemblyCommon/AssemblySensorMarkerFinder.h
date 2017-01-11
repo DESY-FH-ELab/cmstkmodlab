@@ -60,7 +60,7 @@ public slots:
 
     virtual void findMarker(const cv::Mat&);
     virtual void findMarker_circleSeed(int);
-    virtual void findMarker_templateMatching(cv::Mat);
+    virtual void findMarker_templateMatching(cv::Mat, cv::Mat);
 
 
 protected slots:

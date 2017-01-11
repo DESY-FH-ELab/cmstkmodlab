@@ -16,12 +16,7 @@
 #include <QCheckBox>
 #include <QRadioButton>
 #include <QString>
-
-//vision
-#include <AssemblyUEyeView.h>
-#include "AssemblyVUEyeModel.h"
-#include "AssemblySensorMarkerFinder.h"
-#include "AssemblyVUEyeCamera.h"
+#include <QDateTime>
 
 //motion
 #include "LStepExpressModel.h"
@@ -36,12 +31,10 @@ class AssemblyScanner : public QObject
   Q_OBJECT
 
 public:
-  AssemblyVUEyeModel *uEyeModel_;
-  AssemblyVUEyeCamera* camera_l;
   LStepExpressModel* lStepExpressModel_;
   LStepExpressMotionManager* motionManager_;
 
-  explicit AssemblyScanner(AssemblyVUEyeModel *uEyeModel_, LStepExpressModel* lStepExpressModel_);
+  explicit AssemblyScanner(LStepExpressModel* lStepExpressModel_);
 
   double local_range, local_steps, local_delay;
   int nTotalImages, nAcquiredImages;
