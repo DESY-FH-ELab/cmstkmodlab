@@ -811,7 +811,11 @@ AssemblySensorLocator::AssemblySensorLocator(QWidget *parent, std::string string
   ql->setStyleSheet("QLabel { background-color : orange; color : black; }");
 
     
-  connect(button1, SIGNAL(clicked()), this, SLOT(runObjectDetection()));
+  connect(button1, SIGNAL(clicked()), this, SLOT(detectPatRecMode()));
+    
+  connect(this, SIGNAL(runObjectDetection(int, int )), finder_, SLOT(runObjectDetection(int, int)));
+
+    
  // connect(this, SIGNAL(locatePickupCorner_circleSeed(int)),
   //        this, SLOT(locateSensor_circleSeed(int)));
 
@@ -824,99 +828,35 @@ AssemblySensorLocator::AssemblySensorLocator(QWidget *parent, std::string string
 }
 
 
-void AssemblySensorLocator::runObjectDetection()
-{
-
-
-    NQLog("AssemblySensorLocator::runObjectDetection()") << "" ;
-
-    emit acquireImage();
-}
-
-
-void AssemblySensorLocator::locatePickup(cv::Mat master_image)
+void AssemblySensorLocator::detectPatRecMode()
 {
     objectmode = 0;
     labmode = 0;
-
+    
     if (radio1->isChecked()){
         objectmode =0;
     } else if (radio2->isChecked()){
         objectmode =1;
-
+        
     }else if (radio3->isChecked()){
-
+        
         objectmode =2;
     }
     
     if (radio4->isChecked()){
         labmode = 0;
-    
+        
     } else if(radio5->isChecked())
     {
         labmode = 1;
     }
     
-        
-    cv::Mat img, img_clip_A, img_clip_B, result_1, result_2, dst;
-    int match_method;
-    
-    if (labmode == 0) {
-        
-        if(objectmode==0){
-        
-        img = cv::imread(Config::CMSTkModLabBasePath + "/share/assembly/RawSensor_4.png",
-                        CV_LOAD_IMAGE_COLOR);
-        
-        img_clip_A = cv::imread(Config::CMSTkModLabBasePath + "/share/assembly/RawSensor_3_clipB.png",
-                                CV_LOAD_IMAGE_COLOR);
-        }
-        
-        else if (objectmode == 1 ){
-            
-            NQLog("AssemblySensorLocator") << "***DETECTION OF POSITIONING PIN NOT IMPLMENTED YET!!***" ;
-        }
-        
-        else if (objectmode == 2){
-        
-        img = cv::imread(Config::CMSTkModLabBasePath + "/share/assembly/glassslidecorneronbaseplate_sliverpaint_A.png",
-                         CV_LOAD_IMAGE_COLOR);
-        
-        
-        img_clip_A = cv::imread(Config::CMSTkModLabBasePath + "/share/assembly/glassslidecorneronbaseplate_sliverpaint_A_clip.png",CV_LOAD_IMAGE_COLOR);
-        
-        }
-
-        
-    } else if (labmode == 1){
-        
-        if(objectmode==0){
-            
-            img = master_image;
-            
-            img_clip_A = cv::imread(Config::CMSTkModLabBasePath + "/share/assembly/RawSensor_3_clipB.png",
-                                    CV_LOAD_IMAGE_COLOR);
-        }
-        
-        else if (objectmode == 1 ){
-            
-            NQLog("AssemblySensorLocator") << "***DETECTION OF POSITIONING PIN NOT IMPLMENTED YET!!***" ;
-        }
-        
-        else if (objectmode == 2){
-            
-            img = master_image;
-            
-            
-            img_clip_A = cv::imread(Config::CMSTkModLabBasePath + "/share/assembly/glassslidecorneronbaseplate_sliverpaint_A_clip.png",CV_LOAD_IMAGE_COLOR);
-            
-        }
-        
-    }
-    
-    emit locatePickupCorner_templateMatching(img,img_clip_A);
+    emit runObjectDetection(labmode, objectmode);
 
 }
+
+
+
 
 
 

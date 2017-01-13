@@ -37,6 +37,10 @@ public:
 
     double matchLoc_x_lab;
     double matchLoc_y_lab;
+    int labmode_g, objectmode_g;
+    
+    cv::Mat img, img_clip_A, img_clip_B, result_1, result_2, dst;
+
 
     size_t findCircle(const cv::Mat&);
     const std::vector<AssemblyMarkerCircle>& getCircles() { return circles_; }
@@ -67,7 +71,8 @@ public slots:
 
 
 protected slots:
-    void testSLOT(cv::Mat);
+    void runObjectDetection(int labmode, int objectmode);
+    void runObjectDetection_labmode(cv::Mat);
 
 protected:
     std::string cacheDirectory1_;
@@ -133,12 +138,15 @@ protected:
 
 
 signals:
+    
+    void locatePickupCorner_templateMatching(cv::Mat,cv::Mat);
     void reportObjectLocation(int, double,double, double);
     void edgesDetected(const cv::Mat&);
     void updateImage(int, QString);
     void foundSensor(int);
     void getImage();
     void getImageBlur(cv::Mat, cv::Rect);
+    void acquireImage();
 
 };
 

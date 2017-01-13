@@ -264,11 +264,13 @@ protected:
 public slots:
 
   void foundsensor(int);
+  void detectPatRecMode();
+
   void locatePickup(cv::Mat);
-  void runObjectDetection();
 
 signals:
-
+    
+  void runObjectDetection(int, int);
   void updateImage(int, std::string);
   void foundSensor(int);
   void acquireImage();

@@ -91,9 +91,7 @@ AssemblyMainWindow::AssemblyMainWindow(QWidget *parent) :
     layout->addLayout(layoutv);
     
     QVBoxLayout * layoutv2 = new QVBoxLayout(widget);
-    
-    //LStepExpressStatusWindow *lStepStatusWindow = new LStepExpressStatusWindow(lStepExpressModel_, widget);
-    //layoutv2->addWidget(lStepStatusWindow);
+
     
     LStepExpressPositionWidget *lStepPosition = new LStepExpressPositionWidget(motionManager_, lStepExpressModel_, widget);
     layoutv2->addWidget(lStepPosition);
@@ -209,12 +207,20 @@ void AssemblyMainWindow::cameraOpened()
 
     rawView_->connectImageProducer(camera_, SIGNAL(imageAcquired(const cv::Mat&)));
     
-
-    //  bool test =   connect(camera_, SIGNAL(imageAcquired(cv::Mat)),  finder_, SLOT(testSLOT(cv::Mat)) );
     bool test =   connect(camera_, SIGNAL(imageAcquired(cv::Mat)),  finder_, SLOT(write_image(cv::Mat)) );
- 
+
+    connect(camera_, SIGNAL(imageAcquired(cv::Mat)),  finder_, SLOT(runObjectDetection_labmode(cv::Mat)) );
+    
+    connect(camera_, SIGNAL(imageAcquired(cv::Mat)),  finder_, SLOT(locatePickup(cv::Mat)) );
+    
+    
    connect(finder_, SIGNAL(getImage()), camera_, SLOT(acquireImage()));
 
+   connect(finder_, SIGNAL(acquireImage()), camera_, SLOT(acquireImage()));
+    
+   connect(finder_, SIGNAL(locatePickupCorner_templateMatching(cv::Mat,cv::Mat)), finder_, SLOT(findMarker_templateMatching(cv::Mat,cv::Mat)));
+    
+    
    if (test){
     NQLog("AssemblyMainWindow, signals successfully connected");
 

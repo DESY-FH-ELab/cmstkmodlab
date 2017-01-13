@@ -111,6 +111,8 @@ protected:
   AssemblySensorMarkerFinder* finder_;
   AssemblySensorMarkerFinderWidget* finderWidget_;
     
+
+    
   LStepExpressModel* lStepExpressModel_;
   LStepExpressMotionManager* motionManager_;
   LStepExpressSettings* lStepExpressSettings_;
