@@ -35,6 +35,9 @@ public:
     double linesHoughMinLineLength() const { return linesHoughMinLineLength_; }
     double linesHoughMaxLineGap() const { return linesHoughMaxLineGap_; }
 
+    double matchLoc_x_lab;
+    double matchLoc_y_lab;
+
     size_t findCircle(const cv::Mat&);
     const std::vector<AssemblyMarkerCircle>& getCircles() { return circles_; }
 
@@ -130,6 +133,7 @@ protected:
 
 
 signals:
+    void reportObjectLocation(int, double,double, double);
     void edgesDetected(const cv::Mat&);
     void updateImage(int, QString);
     void foundSensor(int);

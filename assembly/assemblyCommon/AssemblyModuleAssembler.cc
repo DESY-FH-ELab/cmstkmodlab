@@ -232,51 +232,52 @@ AssemblyModuleAssembler::AssemblyModuleAssembler(AssemblyVUEyeModel *uEyeModel_,
   //        motionManager_, SLOT(moveRelative(double,double,double,double)));
   //connect(cmdr8, SIGNAL(locateSetdowncorner(int)), lctr1, SLOT( locateSensor(int)));
 
-  connect(lctr1, SIGNAL(sendPosition(int, double,double,double)), this, SLOT(updateText(int,double,double,double)));
+    
+    
+  connect(lStepExpressModel_, SIGNAL(acquireImage()), camera_, SLOT(acquireImage()));
+    
+  connect(lctr1, SIGNAL(acquireImage()), camera_, SLOT(acquireImage()));
 
+  connect(camera_, SIGNAL(imageAcquired(cv::Mat)), lctr1, SLOT(locatePickup(cv::Mat)));
+
+    
+  connect(lctr1, SIGNAL(sendPosition(int, double,double,double)), this, SLOT(updateText(int,double,double,double)));
   connect(finder_, SIGNAL(updateImage(int, QString)), this, SLOT( updateImage(int,QString)));
   connect(finder_, SIGNAL(foundSensor(int)), lctr1, SLOT( foundsensor(int)));
+  connect(finder_, SIGNAL(reportObjectLocation(int, double, double, double)), this, SLOT( updateText(int, double, double, double )));
 
 }
 
-void AssemblyModuleAssembler::updateText(int stage, double x, double y , double a){
+void AssemblyModuleAssembler::updateText(int stage, double x, double y, double a){
 
   NQLog("AssemblyCommander::updateText");
 
-  std::ostringstream strs;
-  strs.clear();
-  strs << x;
-  strs << ",";
-  strs << y;
-  strs << ",";
-  strs << a;
-  std::string str = strs.str();
-  QString qstr = "";
-  qstr = QString::fromStdString(str);
-  // QString qname = QString::fromStdString(string);
+  std::ostringstream strs_position;
+  std::ostringstream strs_orientation;
 
+  strs_position.clear();
+  strs_orientation.clear();
+
+  strs_position << x;
+  strs_position << ",";
+  strs_position << y;
+  std::string str_position = strs_position.str();
+  QString qstr_position = "";
+  qstr_position = QString::fromStdString(str_position);
+    
+  strs_orientation << a;
+  std::string str_orientation = strs_orientation.str();
+  QString qstr_orientation = "";
+  qstr_orientation = QString::fromStdString(str_orientation);
+    
   if(stage == 1 ){
-    qstr = "Pickup pos. = " + qstr;
-    lE1->setText(qstr);
-  } else if (stage==2){
-    qstr = "Mntd. pos. (cor.1) = " + qstr;
-    lE2->setText(qstr);
+    qstr_position = "Object location = " + qstr_position + " mm, mm (lab frame)";
+    lE1->setText(qstr_position);
+      
+    qstr_orientation = "Object orientation = " + qstr_orientation + " degrees";
+    lE2->setText(qstr_orientation);
   }
-  else if (stage==3){
-    qstr = "Mntd. pos. (cor.2) = " + qstr;
-    lE3->setText(qstr);
-  }
-  else if (stage==4){
-    qstr = "Mntd. pos. (cor.3) = " + qstr;
-    lE6->setText(qstr);
-  }else if (stage==5){
-    qstr = "Mntd. pos. (cor.4) = " + qstr;
-    lE5->setText(qstr);
-  }
-  else if (stage==6){
-    qstr = "Dtchd. pos. = " + qstr;
-    lE4->setText(qstr);
-  }
+
 }
 
 void AssemblyModuleAssembler::updateImage(int stage, QString filename)
@@ -285,7 +286,7 @@ void AssemblyModuleAssembler::updateImage(int stage, QString filename)
 
   std::string filename_ss = filename.toUtf8().constData();
 
-  cv::Mat img_gs = cv::imread(filename_ss, CV_LOAD_IMAGE_COLOR);
+  cv::Mat img_gs = cv::imread(filename_ss, CV_LOAD_IMAGE_UNCHANGED);
 
   if (stage == 1 ){
     imageView_1->setZoomFactor(0.2);
@@ -296,17 +297,12 @@ void AssemblyModuleAssembler::updateImage(int stage, QString filename)
     imageView_2->setZoomFactor(0.75);
   }
   else if (stage ==3){
-    imageView_3->setImage(img_gs);
-  }
-  else if (stage ==4){
-    imageView_6->setImage(img_gs);
-  }
-  else if (stage ==5){
-    imageView_5->setImage(img_gs);
-  }
-  else if (stage ==6){
     imageView_4->setImage(img_gs);
   }
+  else if (stage ==4){
+    imageView_3->setImage(img_gs);
+  }
+
 }
 
 void AssemblyModuleAssembler::gotoPickup()
@@ -406,6 +402,12 @@ AssemblyVacuumToggler::AssemblyVacuumToggler(QWidget *parent, std::string string
   radio1 = new QRadioButton(tr("&Channel 1"));
   radio2 = new QRadioButton(tr("&Channel 2"));
   radio3 = new QRadioButton(tr("&Channel 3"));
+    
+    
+  valves.push_back(radio1);
+  valves.push_back(radio2);
+  valves.push_back(radio3);
+    
 
   l->addWidget(radio1,1,0);
   l->addWidget(radio2,3,0);
@@ -439,6 +441,12 @@ AssemblyVacuumToggler::AssemblyVacuumToggler(QWidget *parent, std::string string
   ql3->setPixmap(pixmap);
   ql3->setText("VACUUM OFF");
   ql3->setStyleSheet("QLabel { background-color : green; color : black; }");
+    
+    
+
+  labels.push_back(ql1);
+  labels.push_back(ql2);
+  labels.push_back(ql3);
 
   connect(button1, SIGNAL(clicked()),
           this, SLOT(toggleVacuum()));
@@ -451,86 +459,37 @@ AssemblyVacuumToggler::AssemblyVacuumToggler(QWidget *parent, std::string string
 
 void AssemblyVacuumToggler::toggleVacuum()
 {
-  NQLog("AssemblyVacuumToggler") << ": toggling vacuum voltage";
-
+    NQLog("AssemblyVacuumToggler") << ": toggling vacuum voltage";
     
+    for (int i = 0; i < 3 ; i ++){
     
-   if (radio1->isChecked()) {
-  if (cnrd1->getSwitchState(1) == 0){
-      cnrd1->setSwitchEnabled(1, true);
-
-      ql1->setText("VACUUM ON");
-      ql1->setStyleSheet("QLabel { background-color : red; color : black; }");
-      
-    if (cnrd1->getSwitchState(1) == 1){
-      ql1->setText("VACUUM ON");
-      ql1->setStyleSheet("QLabel { background-color : red; color : black; }");
-      state = true;
+        if (valves[i]->isChecked()){
+            
+            if (cnrd1->getSwitchState(i+1) == 0){
+                cnrd1->setSwitchEnabled(i+1, true);
+                
+                labels[i]->setText("VACUUM ON");
+                labels[i]->setStyleSheet("QLabel { background-color : red; color : black; }");
+                
+                if (cnrd1->getSwitchState(i+1) == 1){
+                    labels[i]->setText("VACUUM ON");
+                    labels[i]->setStyleSheet("QLabel { background-color : red; color : black; }");
+                    state = true;
+                }
+            }else if (cnrd1->getSwitchState(i+1) == 1){
+                cnrd1->setSwitchEnabled(i+1, false);
+                
+                if (cnrd1->getSwitchState(i+1) == 0){
+                    labels[i]->setText("VACUUM OFF");
+                    labels[i]->setStyleSheet("QLabel { background-color : green; color : black; }");
+                    state = false;
+                }
+            }
+        }
     }
-  }else if (cnrd1->getSwitchState(1) == 1){
-    cnrd1->setSwitchEnabled(1, false);
-    
-    if (cnrd1->getSwitchState(1) == 0){
-      ql1->setText("VACUUM OFF");
-      ql1->setStyleSheet("QLabel { background-color : green; color : black; }");
-      state = false;
-    }
-  }
-    
-   } else if (radio2->isChecked()){
-   
-   
-       if (cnrd1->getSwitchState(2) == 0){
-           cnrd1->setSwitchEnabled(2, true);
-           
-           ql2->setText("VACUUM ON");
-           ql2->setStyleSheet("QLabel { background-color : red; color : black; }");
-           
-           if (cnrd1->getSwitchState(2) == 1){
-               ql2->setText("VACUUM ON");
-               ql2->setStyleSheet("QLabel { background-color : red; color : black; }");
-               state = true;
-           }
-       }else if (cnrd1->getSwitchState(2) == 1){
-           cnrd1->setSwitchEnabled(2, false);
-           
-           if (cnrd1->getSwitchState(2) == 0){
-               ql2->setText("VACUUM OFF");
-               ql2->setStyleSheet("QLabel { background-color : green; color : black; }");
-               state = false;
-           }
-       }
-   
-   }else if (radio3->isChecked()){
-       
-       if (cnrd1->getSwitchState(3) == 0){
-           cnrd1->setSwitchEnabled(3, true);
-           
-           ql3->setText("VACUUM ON");
-           ql3->setStyleSheet("QLabel { background-color : red; color : black; }");
-           
-           if (cnrd1->getSwitchState(3) == 1){
-               ql3->setText("VACUUM ON");
-               ql3->setStyleSheet("QLabel { background-color : red; color : black; }");
-               state = true;
-           }
-       }else if (cnrd1->getSwitchState(3) == 1){
-           cnrd1->setSwitchEnabled(3, false);
-           
-           if (cnrd1->getSwitchState(3) == 0){
-               ql3->setText("VACUUM OFF");
-               ql3->setStyleSheet("QLabel { background-color : green; color : black; }");
-               state = false;
-           }
-       }
-       
-       
-   }
-
-
-    
-    
 }
+
+
 
 AssemblyAttacher::AssemblyAttacher(std::string string, double x ,double y, double z,double a)
 :local_x(x), local_y(y),local_z(z),local_a(a)
@@ -777,6 +736,7 @@ AssemblySensorLocator::AssemblySensorLocator(QWidget *parent, std::string string
                                              double a, AssemblySensorMarkerFinder * finder_ )
  : QWidget(parent), local_a(a)
 {
+    
   std::ostringstream strs;
   strs.clear();
   strs << a;
@@ -808,8 +768,6 @@ AssemblySensorLocator::AssemblySensorLocator(QWidget *parent, std::string string
   groupBox1 = new QGroupBox(tr("Object sought"));
   groupBox2 = new QGroupBox(tr("Mode"));
     
-  //radio1 = new QRadioButton(tr("&Circle Seed Algorithm"));
-  //radio2 = new QRadioButton(tr("T&emplate Matching"));
     
   radio1 = new QRadioButton(tr("&Fiducial marker"));
   radio2 = new QRadioButton(tr("&Positioning pin"));
@@ -852,8 +810,8 @@ AssemblySensorLocator::AssemblySensorLocator(QWidget *parent, std::string string
   ql->setText("WAITING");
   ql->setStyleSheet("QLabel { background-color : orange; color : black; }");
 
-  connect(button1, SIGNAL(clicked()),
-          this, SLOT(locatePickup()));
+    
+  connect(button1, SIGNAL(clicked()), this, SLOT(runObjectDetection()));
  // connect(this, SIGNAL(locatePickupCorner_circleSeed(int)),
   //        this, SLOT(locateSensor_circleSeed(int)));
 
@@ -865,63 +823,99 @@ AssemblySensorLocator::AssemblySensorLocator(QWidget *parent, std::string string
 
 }
 
-void AssemblySensorLocator::locatePickup()
+
+void AssemblySensorLocator::runObjectDetection()
 {
+
+
+    NQLog("AssemblySensorLocator::runObjectDetection()") << "" ;
+
+    emit acquireImage();
+}
+
+
+void AssemblySensorLocator::locatePickup(cv::Mat master_image)
+{
+    objectmode = 0;
+    labmode = 0;
+
+    if (radio1->isChecked()){
+        objectmode =0;
+    } else if (radio2->isChecked()){
+        objectmode =1;
+
+    }else if (radio3->isChecked()){
+
+        objectmode =2;
+    }
     
+    if (radio4->isChecked()){
+        labmode = 0;
     
+    } else if(radio5->isChecked())
+    {
+        labmode = 1;
+    }
+    
+        
     cv::Mat img, img_clip_A, img_clip_B, result_1, result_2, dst;
     int match_method;
     
-    int mode = 0;
-    
-    if (mode == 0) {
+    if (labmode == 0) {
         
-         img = cv::imread(Config::CMSTkModLabBasePath + "/share/assembly/RawSensor_4.png",
+        if(objectmode==0){
+        
+        img = cv::imread(Config::CMSTkModLabBasePath + "/share/assembly/RawSensor_4.png",
                         CV_LOAD_IMAGE_COLOR);
         
-        // img = cv::imread(Config::CMSTkModLabBasePath + "/share/assembly/glassdummycorneronbaseplate.png",
-        //               CV_LOAD_IMAGE_COLOR);
-        
-        //img = cv::imread(Config::CMSTkModLabBasePath + "/share/assembly/glassslidecorneronbaseplate_sliverpaint_A.png",
-        //                 CV_LOAD_IMAGE_COLOR);
-        
-        
         img_clip_A = cv::imread(Config::CMSTkModLabBasePath + "/share/assembly/RawSensor_3_clipB.png",
-                              CV_LOAD_IMAGE_COLOR);
+                                CV_LOAD_IMAGE_COLOR);
+        }
         
-        //  img_clip_A = cv::imread(Config::CMSTkModLabBasePath + "/share/assembly/glassdummycorneronbaseplate_template.png",
-        //                  CV_LOAD_IMAGE_COLOR);
+        else if (objectmode == 1 ){
+            
+            NQLog("AssemblySensorLocator") << "***DETECTION OF POSITIONING PIN NOT IMPLMENTED YET!!***" ;
+        }
         
-//        img_clip_A = cv::imread(Config::CMSTkModLabBasePath + "/share/assembly/glassslidecorneronbaseplate_sliverpaint_A_clip.png",CV_LOAD_IMAGE_COLOR);
+        else if (objectmode == 2){
+        
+        img = cv::imread(Config::CMSTkModLabBasePath + "/share/assembly/glassslidecorneronbaseplate_sliverpaint_A.png",
+                         CV_LOAD_IMAGE_COLOR);
         
         
-        //img_clip_B = cv::imread(Config::CMSTkModLabBasePath + "/share/assembly/RawSensor_3_clipB.png",
-         //                       CV_LOAD_IMAGE_COLOR);
- 
-        emit locatePickupCorner_templateMatching(img,img_clip_A);
+        img_clip_A = cv::imread(Config::CMSTkModLabBasePath + "/share/assembly/glassslidecorneronbaseplate_sliverpaint_A_clip.png",CV_LOAD_IMAGE_COLOR);
+        
+        }
 
         
+    } else if (labmode == 1){
         
+        if(objectmode==0){
+            
+            img = master_image;
+            
+            img_clip_A = cv::imread(Config::CMSTkModLabBasePath + "/share/assembly/RawSensor_3_clipB.png",
+                                    CV_LOAD_IMAGE_COLOR);
+        }
         
-    } else if (mode == 1){
+        else if (objectmode == 1 ){
+            
+            NQLog("AssemblySensorLocator") << "***DETECTION OF POSITIONING PIN NOT IMPLMENTED YET!!***" ;
+        }
         
-        NQLog("AssemblySensorLocator") << "***LAB MODE NOT IMPLMENTED YET....REVERTING TO DEMO IMAGES!!!***" ;
-        
-        
-        img = cv::imread(Config::CMSTkModLabBasePath + "/share/assembly/RawSensor_4.png",
-                         CV_LOAD_IMAGE_COLOR);
-        img_clip_A = cv::imread(Config::CMSTkModLabBasePath + "/share/assembly/RawSensor_3_clipA.png",
-                                CV_LOAD_IMAGE_COLOR);
-        img_clip_B = cv::imread(Config::CMSTkModLabBasePath + "/share/assembly/RawSensor_3_clipB.png",
-                                CV_LOAD_IMAGE_COLOR);
-    } else {
-        
-        img = cv::imread(Config::CMSTkModLabBasePath + "/share/assembly/RawSensor_4.png",
-                         CV_LOAD_IMAGE_COLOR);
-        img_clip_A = cv::imread(Config::CMSTkModLabBasePath + "/share/assembly/RawSensor_3_clipA.png", CV_LOAD_IMAGE_COLOR);
+        else if (objectmode == 2){
+            
+            img = master_image;
+            
+            
+            img_clip_A = cv::imread(Config::CMSTkModLabBasePath + "/share/assembly/glassslidecorneronbaseplate_sliverpaint_A_clip.png",CV_LOAD_IMAGE_COLOR);
+            
+        }
         
     }
     
+    emit locatePickupCorner_templateMatching(img,img_clip_A);
+
 }
 
 

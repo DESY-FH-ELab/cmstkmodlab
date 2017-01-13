@@ -87,6 +87,7 @@ public slots:
   void snapShot();
   void imageAcquired(const cv::Mat&);
   void gotoPickup();
+
   void updateImage(int,QString);
   void updateText(int,double, double, double);
  
@@ -108,6 +109,9 @@ public:
   QLineEdit *lineEdit1;
   ConradModel * cnrd1;
 
+  std::vector <QRadioButton*> valves;
+  std::vector <QLabel*> labels;
+    
   QLabel* ql1;
   QLabel* ql2;
   QLabel* ql3;
@@ -247,6 +251,8 @@ public:
   QRadioButton *radio3;
   QRadioButton *radio4;
   QRadioButton *radio5;
+  int objectmode, labmode;
+
 
   QVBoxLayout *vbox1,*vbox2 ;
 
@@ -258,12 +264,14 @@ protected:
 public slots:
 
   void foundsensor(int);
-  void locatePickup();
+  void locatePickup(cv::Mat);
+  void runObjectDetection();
 
 signals:
 
   void updateImage(int, std::string);
   void foundSensor(int);
+  void acquireImage();
   void sendPosition(int, double, double, double);
   void locatePickupCorner_circleSeed(int);
   void locatePickupCorner_templateMatching(cv::Mat,cv::Mat);

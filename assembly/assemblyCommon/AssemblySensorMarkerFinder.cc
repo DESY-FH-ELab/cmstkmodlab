@@ -598,7 +598,7 @@ void AssemblySensorMarkerFinder::findMarker_templateMatching(cv::Mat img, cv::Ma
     
     /// Localizing the best match with minMaxLoc
     double FOM, FOM_inc = 1000.0, minVal, maxVal; Point minLoc; Point maxLoc;
-    double thetas[40], FOMs[40];
+    double thetas[40], FOMs[40], best_theta;
     
     //create result matrix to hold correlation values
     int result_cols =  img_copy_bin.cols - img_clip_A.cols + 1;
@@ -678,6 +678,8 @@ void AssemblySensorMarkerFinder::findMarker_templateMatching(cv::Mat img, cv::Ma
         
         std::cout << std::setprecision(10);
         
+        std::cout <<"theta = "<<  theta << ",  FOM = "<<  FOM<<  std::endl;
+        
         thetas[i] = theta;
         FOMs[i] = FOM;
         i++;
@@ -686,6 +688,7 @@ void AssemblySensorMarkerFinder::findMarker_templateMatching(cv::Mat img, cv::Ma
             
             FOM_inc = FOM;
             matchLoc_final = matchLoc_2;
+            best_theta = theta;
         }
         
         color = 50 + 200*theta;
@@ -700,11 +703,21 @@ void AssemblySensorMarkerFinder::findMarker_templateMatching(cv::Mat img, cv::Ma
     
     if (thetas[0] && FOMs[0]){
         TGraph *gr = new TGraph(40, thetas, FOMs);
+
+        //gr->Fit("pol6");
         gr->Draw("AC*");
         gr->GetHistogram()->GetXaxis()->SetTitle("Rotational tranformation (degrees)");
         gr->GetHistogram()->GetYaxis()->SetTitle("Minimised metric value");
         gr->GetHistogram()->SetTitle("");
-        
+
+        TGraph *gr_bestmatch = new TGraph(1);
+        gr_bestmatch->SetPoint(0, best_theta, FOM_inc);
+        gr_bestmatch->SetMarkerColor(2);
+        gr_bestmatch->SetMarkerStyle(22);
+        gr_bestmatch->SetMarkerSize(3);
+
+        gr_bestmatch->Draw("PSAME");
+
         std::string filename_canvas = cacheDirectory1_ + "/RotationExtraction.png";
         c1->SaveAs(filename_canvas.c_str());
         QString filename_canvas_qs = QString::fromStdString(filename_canvas);
@@ -715,13 +728,35 @@ void AssemblySensorMarkerFinder::findMarker_templateMatching(cv::Mat img, cv::Ma
     std::string filename = cacheDirectory1_ + "/PatRec_TM_result.png";
     cv::imwrite(filename, img);
     
+    
     QString filename_qs = QString::fromStdString(filename);
+    QString filename_template = QString::fromStdString(filename_clip_A_bin);
+    QString filename_master = QString::fromStdString(filename_img_bin);
     
     emit updateImage(1, filename_qs);
     
     emit foundSensor(1);
     emit getImageBlur(img_raw, rectangle);
 
+    emit updateImage(3, filename_template);
+    emit updateImage(4, filename_master);
+    
+    
+    //work out match location in field of view
+    // the origin of the FOV coordinate system is the top left corner
+    //the match loction (centre of the template) is calculated in mm
+    //this should be enough for postion correction with moverealtive()
+    //the dimensions of the image in the lab frame need
+    //to be measured precisely somehow. For now taking width = 5mm
+    //and height = 4mm
+
+    matchLoc_x_lab = (matchLoc_final.x +  (img_clip_A_bin.cols/2) ) * (5.0/img.cols); // need to add the current X pos of the lang
+    matchLoc_y_lab = (matchLoc_final.y +  (img_clip_A_bin.rows/2) ) * (4.0/img.rows); // need to add the current Y pos of the lang
+    
+    //update line edits in view
+    
+    emit reportObjectLocation(1, matchLoc_x_lab, matchLoc_y_lab, best_theta);
+    
 }
 
 void AssemblySensorMarkerFinder::findMarker_circleSeed(int mode)
