@@ -81,11 +81,8 @@ void AssemblySensorMarkerFinder::runObjectDetection(int labmode, int objectmode)
         
     }else if (labmode == 0){
         
-        
         //standard signals to launch PatRec here
-    
         int match_method;
-        
         
             if(objectmode==0){
                 
@@ -112,6 +109,8 @@ void AssemblySensorMarkerFinder::runObjectDetection(int labmode, int objectmode)
             }
         
          emit locatePickupCorner_templateMatching(img,img_clip_A);
+        NQLog("AssemblySensorLocator::runObjectDetection()") << " emit locatePickupCorner_templateMatching " ;
+
         
     }
 }

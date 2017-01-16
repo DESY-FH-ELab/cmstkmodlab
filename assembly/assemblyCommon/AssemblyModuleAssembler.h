@@ -266,8 +266,6 @@ public slots:
   void foundsensor(int);
   void detectPatRecMode();
 
-  void locatePickup(cv::Mat);
-
 signals:
     
   void runObjectDetection(int, int);

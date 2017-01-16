@@ -822,8 +822,8 @@ AssemblySensorLocator::AssemblySensorLocator(QWidget *parent, std::string string
   connect(this, SIGNAL(locatePickupCorner_templateMatching(cv::Mat,cv::Mat)),
              finder_, SLOT(findMarker_templateMatching(cv::Mat,cv::Mat)));
     
-  connect(this, SIGNAL(locatePickupCorner_circleSeed(cv::Mat,cv::Mat)),
-            finder_, SLOT(findMarker_circleSeed(cv::Mat,cv::Mat)));
+  //connect(this, SIGNAL(locatePickupCorner_circleSeed(cv::Mat,cv::Mat)),
+  //          finder_, SLOT(findMarker_circleSeed(cv::Mat,cv::Mat)));
 
 }
 
