@@ -116,6 +116,10 @@ void AssemblySensorMarkerFinder::runObjectDetection(int labmode, int objectmode)
 }
 
 void AssemblySensorMarkerFinder::runObjectDetection_labmode(cv::Mat master_image){
+    
+    
+    NQLog("AssemblySensorLocator::runObjectDetection()") << "" ;
+
 
     if(objectmode_g==0){
         
