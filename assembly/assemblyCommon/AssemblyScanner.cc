@@ -39,6 +39,157 @@ AssemblyScanner::AssemblyScanner(LStepExpressModel* lStepExpressModel_)
     
 }
 
+void  AssemblyScanner::run_precisionestimation(double x_m, double y_m, double z_m , double x_p, double y_p, double z_p, int its){
+    
+    NQLog("AssemblyScanner::run_precisionestimation")<<  " x_m = " << x_m <<  " y_m = " << y_m << " z_m = " << z_m << " x_p = " << x_p  << " y_p = " << y_p  <<" z_p = " << z_p <<  " iterations = " << its;
+    
+    x_meas = x_m;
+    y_meas = y_m;
+    z_meas = z_m;
+    
+    x_pickup = x_p;
+    y_pickup = y_p;
+    z_pickup = z_p;
+    
+    iterations = its;
+    iteration = 0;
+    
+    step = 0;
+    z_prepickup = z_pickup + 5.00;
+
+    emit nextStep();
+}
+
+
+void  AssemblyScanner::fill_positionvectors(int stage, double x_pr, double y_pr, double theta_pr ){
+    
+    NQLog("AssemblyScanner::fill_positionvectors")<< " step =  "<< step;
+    
+    if (step == 1){
+    
+        xpre_vec.push_back(x_pr);
+        ypre_vec.push_back(y_pr);
+        thetapre_vec.push_back(theta_pr);
+    
+    }else if(step == 11){
+    
+    
+        xpost_vec.push_back(x_pr);
+        ypost_vec.push_back(y_pr);
+        thetapost_vec.push_back(theta_pr);
+        
+    }
+
+
+    
+    emit nextStep();
+}
+
+
+void  AssemblyScanner::process_step(){
+    
+    if (iteration < iterations){
+    
+    NQLog("AssemblyScanner::process_step") <<step;
+    
+    if (step == 0){
+        step++;
+// Step 0: Go to measurement position
+//        emit moveAbsolute(x_meas,y_meas,z_meas, 0.0);
+        emit nextStep();
+    }
+    else if  (step == 1){
+        step++;
+// Step 1: Run pattern recognition
+       emit acquireImage();
+     //   emit nextStep();
+
+    }else if (step == 2){
+        step++;
+        emit nextStep();
+    }
+    else if (step == 3){
+        step++;
+        emit nextStep();
+
+    // Step 3: Go to pre-pickup position
+      //  emit moveAbsolute(x_pickup,y_pickup,z_prepickup, 0.0);
+        
+    }else if (step == 4){
+        step++;
+        emit nextStep();
+
+        // Step 3: Go to pickup position
+       // emit moveAbsolute(x_pickup,y_pickup,z_pickup, 0.0);
+        
+    }else if (step == 5){
+        step++;
+        emit nextStep();
+
+        // Step 4: Turn on vacuum
+        //emit toggleVacuum(1);
+    }
+    else if (step == 6){
+        step++;
+        emit nextStep();
+
+        // Step 6: Go back to pre-pickup position
+        //emit moveAbsolute(x_pickup,y_pickup,z_prepickup, 0.0);
+        
+    }else if (step == 7){
+        step++;
+        emit nextStep();
+
+        // Step 7: Go back to pickup position
+       // emit moveAbsolute(x_pickup,y_pickup,z_pickup, 0.0);
+        
+    }else if (step == 8){
+        step++;
+        emit nextStep();
+
+        // Step 8: Release vacuum
+       // emit toggleVacuum(1);
+        
+    }else if (step == 9){
+        step++;
+        emit nextStep();
+
+        // Step 9: Go back to pre-pickup position
+       // emit moveAbsolute(x_pickup,y_pickup,z_prepickup, 0.0);
+        
+    }else if (step == 10){
+        step++;
+        emit nextStep();
+
+        // Step 10: Go back to measurement position
+       // emit moveAbsolute(x_meas,y_meas,z_meas, 0.0);
+    }else if  (step == 11){
+        step++;
+        emit nextStep();
+
+        // Step 11: Run pattern recognition
+     
+    }else if (step == 12){
+        step = 0;
+        iteration++;
+        emit nextStep();
+
+        // Step 12: Add pattern recognition results to 'post' vector
+    }
+        
+    }else{
+    
+        NQLog("AssemblyScanner::processstep")<< " estimation finished ";
+    
+        //make graphs from filled vectors here
+        
+        
+    }
+    
+     }
+
+
+
 
 
 
@@ -73,14 +224,11 @@ void  AssemblyScanner::write_image(cv::Mat newImage, cv::Rect marker_rect){
     Point tl = marker_rect.tl();
     Point br = marker_rect.br();
     
-
-    
 //    rectangle( newImage, rectangle, Scalar(255,0,0), 2, 8, 0 );
  //   rectangle(newImage, rectangle, Scalar(255,0,0), 2, 8, 0);
     
     rectangle(newImage, tl, br, Scalar(255,0,0), 2, 8, 0);
-    
-    
+
     cv::imwrite(filename.toStdString(), newImage);
     emit updateScanImage(newImage);
     
@@ -105,7 +253,6 @@ void  AssemblyScanner::write_image(cv::Mat newImage, cv::Rect marker_rect){
         double variance_max, z_at_peak =0;
         
         //fitting the peak (Gaussian?) would improve precision a little here
-        
         for (unsigned long  i =0; i < y_vals.size(); i++){
             gr->SetPoint(i, x_vals[i], y_vals[i]);
             if (y_vals[i] > variance_max){
@@ -120,10 +267,8 @@ void  AssemblyScanner::write_image(cv::Mat newImage, cv::Rect marker_rect){
     
         emit make_graph(img_name);
 
-        
       //emit some signal with measured marker Z position
-        
-        emit updateText(100.74);
+        emit updateText(z_at_peak);
     }
 }
 

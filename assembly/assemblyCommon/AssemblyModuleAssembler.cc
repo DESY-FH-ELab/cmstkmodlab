@@ -2,6 +2,7 @@
 #include <iostream>
 #include <sstream>
 #include <iomanip>
+#include <stdlib.h>
 
 #include <QFormLayout>
 #include <QFileDialog>
@@ -195,6 +196,9 @@ AssemblyModuleAssembler::AssemblyModuleAssembler(AssemblyVUEyeModel *uEyeModel_,
 
   AssemblyVacuumToggler * toggle1 = new AssemblyVacuumToggler(this, "Toggle vacuum");
   g1->addWidget(toggle1,8,0);
+    
+  AssemblyPrecisionEstimator * precision1 = new AssemblyPrecisionEstimator(this, "Estimate Assembly Precision", "0.0,0.0,0.0", "0.0,0.0,0.0", 1 );
+  g1->addWidget(precision1 ,9,0);
 
   //AssemblyCommander * cmdr4 = new AssemblyCommander(this, "Go to stat. camera", 100.0,100.0,100.0,100.0);
   //g1->addWidget(cmdr4, 9, 0);
@@ -216,8 +220,13 @@ AssemblyModuleAssembler::AssemblyModuleAssembler(AssemblyVUEyeModel *uEyeModel_,
           motionManager_, SLOT(moveRelative(double,double,double,double)));
   connect(cmdr0, SIGNAL(moveAbsolute(double,double,double,double)),
           motionManager_, SLOT(moveAbsolute(double,double,double,double)));
-  connect(cmdr1, SIGNAL(moveAbsolute(double,double,double,double)),
-          motionManager_, SLOT(moveAbsolute(double,double,double,double)));
+  connect(cmdr1, SIGNAL(moveRelative(double,double,double,double)),
+          motionManager_, SLOT(moveRelative(double,double,double,double)));
+    
+  connect(precision1, SIGNAL(launchPrecisionEstimation(double, double, double, double, double, double, int)),
+            this, SLOT(startMacro(double, double, double, double, double, double, int)));
+    
+    
   //connect(cmdr2, SIGNAL(moveAbsolute(double,double,double,double)),
   //        motionManager_, SLOT(moveRelative(double,double,double,double)));
  // connect(cmdr4, SIGNAL(moveAbsolute(double,double,double,double)),
@@ -279,6 +288,15 @@ void AssemblyModuleAssembler::updateText(int stage, double x, double y, double a
   }
 
 }
+
+void AssemblyModuleAssembler::startMacro(double x_meas, double y_meas, double z_meas, double x_pickup, double y_pickup, double z_pickup, int iterations)
+{
+    NQLog("AssemblyModuleAssembler::startMacro");
+    
+    emit launchPrecisionEstimation(x_meas,  y_meas,  z_meas,  x_pickup,  y_pickup, z_pickup, iterations);
+    
+}
+
 
 void AssemblyModuleAssembler::updateImage(int stage, QString filename)
 {
@@ -381,6 +399,104 @@ void AssemblyModuleAssembler::keyReleaseEvent(QKeyEvent * event)
   }
 }
 
+
+AssemblyPrecisionEstimator::AssemblyPrecisionEstimator(QWidget *parent, string text, string measurement_position, string pickup_position, int iterations )
+: QWidget(parent)
+{
+    QGridLayout *l = new QGridLayout(this);
+    setLayout(l);
+    
+    QString q_pu_pos = QString::fromStdString(pickup_position);
+    QString q_meas_pos = QString::fromStdString(measurement_position);
+    QString qname = QString::fromStdString(text);
+
+    button1 = new QPushButton(qname, this);
+    l->addWidget(button1,0,0);
+    
+    QFormLayout *fl1 = new QFormLayout(this);
+    l->addLayout(fl1,1,0);
+
+    label1 = new QLabel();
+    lineEdit1 = new QLineEdit();
+    fl1->addRow(label1,lineEdit1);
+
+    label2 = new QLabel();
+    lineEdit2 = new QLineEdit();
+    fl1->addRow(label2,lineEdit2);
+    
+    label3 = new QLabel();
+    lineEdit3 = new QLineEdit();
+    fl1->addRow(label3,lineEdit3);
+    
+
+    label1->setText("Measurement position (x,y,z)");
+    label2->setText("Pickup position (x,y,z)");
+    label3->setText("N iterations");
+    
+
+    
+    lineEdit1->setText("0.0,0.0,0.0");
+    lineEdit2->setText("0.0,0.0,0.0");
+    lineEdit3->setText("10");
+    
+    connect(button1, SIGNAL(clicked()),
+            this, SLOT(run()));
+}
+
+
+void AssemblyPrecisionEstimator::recordPosition(double x, double y, double theta)
+{
+ 
+    NQLog("AssemblyPrecisionEstimator") << ":recordPosition";
+
+}
+
+
+void AssemblyPrecisionEstimator::run()
+{
+    
+    NQLog("AssemblyPrecisionEstimator") << ":run";
+    
+    
+    
+    //parse lineEdit text to get target coordinates
+    QString  parent_string_meas = this->lineEdit1->text();
+    
+    QStringList pieces_meas = parent_string_meas.split( "," );
+    QString x_meas_s = pieces_meas.value( pieces_meas.length() - 3);
+    QString y_meas_s = pieces_meas.value( pieces_meas.length() - 2);
+    QString z_meas_s = pieces_meas.value( pieces_meas.length() -1);
+    
+    double x_meas_d = x_meas_s.toDouble();
+    double y_meas_d = y_meas_s.toDouble();
+    double z_meas_d = z_meas_s.toDouble();
+    
+    
+    QString  parent_string_pickup = this->lineEdit2->text();
+    
+    QStringList pieces_pickup = parent_string_pickup.split( "," );
+    QString x_pickup_s = pieces_pickup.value( pieces_pickup.length() - 3);
+    QString y_pickup_s = pieces_pickup.value( pieces_pickup.length() - 2);
+    QString z_pickup_s = pieces_pickup.value( pieces_pickup.length() - 1);
+    
+    double x_pickup_d = x_pickup_s.toDouble();
+    double y_pickup_d = y_pickup_s.toDouble();
+    double z_pickup_d = z_pickup_s.toDouble();
+    
+    
+    QString  parent_string_iterations = this->lineEdit3->text();
+    
+    int iterations_i = parent_string_iterations.toInt();
+    
+    NQLog("AssemblyPrecisionEstimator::run")<<  " x_m = " << x_meas_d <<  " y_m = " << y_meas_d << " z_m = " << z_meas_d << " x_p = " << x_pickup_d  << " y_p = " << y_pickup_d  <<" z_p = " << z_pickup_d <<  " iterations = " << iterations_i;
+
+
+    emit launchPrecisionEstimation(x_meas_d, y_meas_d, z_meas_d, x_pickup_d, y_pickup_d, z_pickup_d, iterations_i );
+    
+}
+
+
+
 AssemblyVacuumToggler::AssemblyVacuumToggler(QWidget *parent, std::string string)
 : QWidget(parent)
 {
@@ -442,8 +558,6 @@ AssemblyVacuumToggler::AssemblyVacuumToggler(QWidget *parent, std::string string
   ql3->setText("VACUUM OFF");
   ql3->setStyleSheet("QLabel { background-color : green; color : black; }");
     
-    
-
   labels.push_back(ql1);
   labels.push_back(ql2);
   labels.push_back(ql3);

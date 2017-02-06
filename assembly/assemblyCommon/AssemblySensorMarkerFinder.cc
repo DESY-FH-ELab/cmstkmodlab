@@ -713,8 +713,11 @@ void AssemblySensorMarkerFinder::findMarker_templateMatching(cv::Mat img, cv::Ma
     int i = 0;
     int color = 200;
     
+    float theta_hi = 100.0;
+    float theta_lo = -1.0 * theta_hi;
+    float theta_step = (theta_hi*2)/40.0  ;
     
-    for (float theta = -5.0; theta < 5.0;  theta = theta + 0.3){
+    for (float theta = theta_lo ; theta < theta_hi;  theta = theta + theta_step){
         //    for (float theta = -180.0; theta < 180.0;  theta = theta + 9.0){
         
         // Point2f src_center(img_gs_copy.cols/2.0F, img_gs_copy.rows/2.0F);

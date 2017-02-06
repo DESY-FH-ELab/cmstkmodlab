@@ -72,6 +72,7 @@ public slots:
   void cameraOpened();
   void cameraClosed();
   void enableAutoFocus(int);
+  void enablePrecisionEstimation(int);
 
 signals:
 
@@ -98,7 +99,8 @@ protected:
   AssemblyModuleAssembler* assembleView_;
   AssemblyAutoFocus* autoFocusView_;
   AssemblyScanner*  cmdr_zscan;
-  QCheckBox *checkbox;
+  QCheckBox *checkbox1;
+  QCheckBox *checkbox2;
 
     
   AssemblyUEyeModel_t* uEyeModel_;

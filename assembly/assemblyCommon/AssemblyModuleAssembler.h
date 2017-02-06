@@ -9,6 +9,7 @@
 #include <QScrollArea>
 #include <QKeyEvent>
 #include <QLineEdit>
+#include <QLabel>
 #include <QPushButton>
 #include <QPainter>
 #include <QGroupBox>
@@ -56,6 +57,7 @@ public:
   QLineEdit * lE5;
   QLineEdit * lE6;
 
+
   AssemblyVUEyeCamera * camera_;
  
 protected:
@@ -87,15 +89,54 @@ public slots:
   void snapShot();
   void imageAcquired(const cv::Mat&);
   void gotoPickup();
-
   void updateImage(int,QString);
   void updateText(int,double, double, double);
- 
+  void startMacro(double, double, double, double, double, double, int);
+
 signals:
 
   void moveAbsolute(double,double,double,double);
+  void launchPrecisionEstimation(double, double, double, double, double, double, int);
+
 
 };
+
+
+class AssemblyPrecisionEstimator : public QWidget
+{
+    Q_OBJECT
+public:
+    
+    explicit AssemblyPrecisionEstimator(QWidget *parent = 0, std::string text ="Estimate Assembly Precision",
+                                        std::string measurement_position = "0.0,0.0,0.0", std::string pickup_position = "0.0,0.0,0.0", int iterations = 1 );
+    
+    double local_x, local_y, local_z, local_a;
+    QPushButton* button1;
+    
+    QLabel * label1;
+    QLabel * label2;
+    QLabel * label3;
+    
+    QLineEdit *lineEdit1;
+    QLineEdit *lineEdit2;
+    QLineEdit *lineEdit3;
+
+    
+    protected:
+    
+    public slots:
+    void recordPosition(double,double,double);
+    void run();
+    
+signals:
+    void moveAbsolute(double,double,double,double);
+    void locateMarker();
+    void launchPrecisionEstimation(double, double, double, double, double, double, int);
+
+};
+
+
+
 
 class AssemblyVacuumToggler : public QWidget
 {
