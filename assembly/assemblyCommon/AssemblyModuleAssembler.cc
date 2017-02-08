@@ -197,7 +197,7 @@ AssemblyModuleAssembler::AssemblyModuleAssembler(AssemblyVUEyeModel *uEyeModel_,
   AssemblyVacuumToggler * toggle1 = new AssemblyVacuumToggler(this, "Toggle vacuum");
   g1->addWidget(toggle1,8,0);
     
-  AssemblyPrecisionEstimator * precision1 = new AssemblyPrecisionEstimator(this, "Estimate Assembly Precision", "0.0,0.0,0.0", "0.0,0.0,0.0", 1 );
+  AssemblyPrecisionEstimator * precision1 = new AssemblyPrecisionEstimator(this, "Estimate Assembly Precision", "-200.0,0.0,0.0", "0.0,0.0,0.0", 1 );
   g1->addWidget(precision1 ,9,0);
 
   //AssemblyCommander * cmdr4 = new AssemblyCommander(this, "Go to stat. camera", 100.0,100.0,100.0,100.0);
@@ -439,9 +439,9 @@ AssemblyPrecisionEstimator::AssemblyPrecisionEstimator(QWidget *parent, string t
     
 
     
-    lineEdit1->setText("0.0,0.0,0.0");
-    lineEdit2->setText("0.0,0.0,0.0");
-    lineEdit3->setText("10");
+    lineEdit1->setText("-110.9979, -39.009, 9.8975");
+    lineEdit2->setText("-210.9969, 9.0032, 9.8975");
+    lineEdit3->setText("3");
     
     connect(button1, SIGNAL(clicked()),
             this, SLOT(run()));

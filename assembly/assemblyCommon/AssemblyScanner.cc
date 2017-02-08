@@ -97,36 +97,33 @@ void  AssemblyScanner::fill_positionvectors(int stage, double x_pr, double y_pr,
 
 
 void  AssemblyScanner::process_step(){
+
+    NQLog("AssemblyScanner::process_step, iteration ==") <<iteration;
     
     if (iteration < iterations){
-    
-    NQLog("AssemblyScanner::process_step") <<step;
     
     if (step == 0){
         step++;
 // Step 0: Go to measurement position
-//        emit moveAbsolute(x_meas,y_meas,z_meas, 0.0);
-        emit nextStep();
+	NQLog("AssemblySensorMarkerFinder") << "   Requesting motion to:  x "<< x_meas <<" y "<< y_meas <<" "<< z_meas  ;
+        emit moveAbsolute(x_meas,y_meas,z_meas, 0.0);
+        //emit nextStep();
     }
     else if  (step == 1){
         step++;
 // Step 1: Run pattern recognition
       emit acquireImage();
-       //emit nextStep();
-       // emit makeDummies(1,1.0,1.0,1.0);
 
     }else if (step == 2){
         step++;
-        emit nextStep();
         // Go to pre-pickup position
-        //  emit moveAbsolute(x_pickup,y_pickup,z_prepickup, 0.0);
+	         emit moveAbsolute(x_pickup,y_pickup,z_pickup, 0.0);
     }
     else if (step == 3){
         step++;
-        emit nextStep();
+	emit nextStep();
         // Go to pickup position
-        //  emit moveAbsolute(x_pickup,y_pickup,z_pickup, 0.0);
-
+	//emit moveAbsolute(x_pickup,y_pickup,z_pickup, 0.0);
         
     }else if (step == 4){
         step++;
@@ -139,11 +136,11 @@ void  AssemblyScanner::process_step(){
         step++;
         emit nextStep();
         // Step 6: Go back to pre-pickup position
-        //emit moveAbsolute(x_pickup,y_pickup,z_prepickup, 0.0);
+	//    emit moveAbsolute(x_pickup,y_pickup,z_prepickup, 0.0);
     }
     else if (step == 6){
         step++;
-        emit nextStep();
+	   emit nextStep();
         // Step 7: Go back to pickup position
         // emit moveAbsolute(x_pickup,y_pickup,z_pickup, 0.0);
  
@@ -159,25 +156,22 @@ void  AssemblyScanner::process_step(){
         step++;
         emit nextStep();
         // Step 9: Go back to pre-pickup position
-        // emit moveAbsolute(x_pickup,y_pickup,z_prepickup, 0.0);
+	//        emit moveAbsolute(x_pickup,y_pickup,z_prepickup, 0.0);
         
-
         
     }else if (step == 9){
         step++;
-        emit nextStep();
+	//  emit nextStep();
         // Step 10: Go back to measurement position
-        // emit moveAbsolute(x_meas,y_meas,z_meas, 0.0);
+         emit moveAbsolute(x_meas,y_meas,z_meas, 0.0);
 
    
     }else if (step == 10){
         step++;
         emit acquireImage();
-            // Step 11: Run pattern recognition
-
-
+     
     }else if  (step == 11){
-        step = 0;
+      step = 0;
         iteration++;
         emit nextStep();
      
@@ -188,16 +182,15 @@ void  AssemblyScanner::process_step(){
         NQLog("AssemblyScanner::processstep")<< " vector has size =  "<<xpre_vec.size();
         
         
-        TH1F * h_x = new TH1F("","", 20,-3.0, 3.0);
-        TH1F * h_y = new TH1F("","", 20,-12.0, 12.0);
-        TH1F * h_theta = new TH1F("","", 20,-25.0,25.0);
+        TH1F * h_x = new TH1F("","", 20,-0.5, 0.5);
+        TH1F * h_y = new TH1F("","", 20,-0.5, 0.5);
+        TH1F * h_theta = new TH1F("","", 20,-1.0,1.0);
         
         for (int i = 0; i< iterations; i++){
         
-            h_x->Fill(xpre_vec[i]);
-            h_y->Fill(ypre_vec[i]);
-            h_theta->Fill(thetapre_vec[i]);
-        
+            h_x->Fill(xpre_vec[i] - xpost_vec[i] );
+            h_y->Fill(ypre_vec[i] - ypost_vec[i] );
+            h_theta->Fill(thetapre_vec[i] - thetapost_vec[i] );
         }
 
         string x_canvas_s = "c_x.png";

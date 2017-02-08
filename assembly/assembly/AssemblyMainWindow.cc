@@ -264,9 +264,9 @@ void AssemblyMainWindow::cameraOpened()
 
     rawView_->connectImageProducer(camera_, SIGNAL(imageAcquired(const cv::Mat&)));
     
-   bool test =   connect(camera_, SIGNAL(imageAcquired(cv::Mat)),  finder_, SLOT(write_image(cv::Mat)) );
-   connect(camera_, SIGNAL(imageAcquired(cv::Mat)),  finder_, SLOT(runObjectDetection_labmode(cv::Mat)) );
-   connect(camera_, SIGNAL(imageAcquired(cv::Mat)),  finder_, SLOT(locatePickup(cv::Mat)) );
+    //   bool test =   connect(camera_, SIGNAL(imageAcquired(cv::Mat)),  finder_, SLOT(write_image(cv::Mat)) );
+    //connect(camera_, SIGNAL(imageAcquired(cv::Mat)),  finder_, SLOT(runObjectDetection_labmode(cv::Mat)) );
+    //connect(camera_, SIGNAL(imageAcquired(cv::Mat)),  finder_, SLOT(locatePickup(cv::Mat)) );
     
     
    connect(finder_, SIGNAL(getImage()), camera_, SLOT(acquireImage()));
@@ -274,11 +274,6 @@ void AssemblyMainWindow::cameraOpened()
    connect(finder_, SIGNAL(locatePickupCorner_templateMatching(cv::Mat,cv::Mat)), finder_, SLOT(findMarker_templateMatching(cv::Mat,cv::Mat)));
     
     
-   if (test){
-   NQLog("AssemblyMainWindow, signals successfully connected");
-   } else {
-    NQLog("AssemblyMainWindow, signal connection failed");
-}
 
     NQLog("AssemblyMainWindow") << " connecting finder and camera()";
     connect(camera_, SIGNAL(imageAcquired(const cv::Mat&)), finder_, SLOT(findMarker(const cv::Mat&)));

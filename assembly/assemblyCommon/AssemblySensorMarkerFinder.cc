@@ -102,15 +102,13 @@ void AssemblySensorMarkerFinder::runObjectDetection(int labmode, int objectmode)
                 
                 img = cv::imread(Config::CMSTkModLabBasePath + "/share/assembly/glassslidecorneronbaseplate_sliverpaint_A.png",
                                  CV_LOAD_IMAGE_COLOR);
-                
-                
+                                
                 img_clip_A = cv::imread(Config::CMSTkModLabBasePath + "/share/assembly/glassslidecorneronbaseplate_sliverpaint_A_clip.png",CV_LOAD_IMAGE_COLOR);
                 
             }
         
          emit locatePickupCorner_templateMatching(img,img_clip_A);
         NQLog("AssemblySensorLocator::runObjectDetection()") << " emit locatePickupCorner_templateMatching " ;
-
         
     }
 }
@@ -120,6 +118,12 @@ void AssemblySensorMarkerFinder::runObjectDetection_labmode(cv::Mat master_image
     
     NQLog("AssemblySensorLocator::runObjectDetection()") << "" ;
 
+
+    NQLog("AssemblySensorLocator::runObjectDetection_labmode()") << "" ;
+
+    //hard coding for lab tests, to be reomoved!!!!
+
+    objectmode_g = 2;
 
     if(objectmode_g==0){
         
@@ -136,6 +140,8 @@ void AssemblySensorMarkerFinder::runObjectDetection_labmode(cv::Mat master_image
     
     else if (objectmode_g == 2){
         
+        NQLog("AssemblySensorLocator") << "***DETECTIING SILVER PAINTER CORNER!***" ;
+
         img = master_image;
         
         img_clip_A = cv::imread(Config::CMSTkModLabBasePath + "/share/assembly/glassslidecorneronbaseplate_sliverpaint_A_clip.png",CV_LOAD_IMAGE_COLOR);
@@ -630,28 +636,41 @@ void AssemblySensorMarkerFinder::drawOrientation()
 
 void AssemblySensorMarkerFinder::findMarker_templateMatching(cv::Mat img, cv::Mat img_clip_A)
 {
-    NQLog("AssemblySensorMarkerFinder") << "Finding Marker (Template Matching)" ;
-        
-        
+    NQLog("AssemblySensorMarkerFinder") << "Finding Marker (Template Matching) here";
+
+    NQLog("AssemblySensorMarkerFinder") << ", numer of image channels =  "<<img_clip_A.channels() ;
+      
     Point matchLoc_1, matchLoc_2, matchLoc_final;
-    Mat result_1, result_2;
-    
+    Mat result_1, result_2; 
     Mat img_copy = img.clone();
     
     //Greyscale images
     Mat img_copy_gs(img_copy.size(), img_copy.type());
     Mat img_clip_A_gs(img_clip_A.size(), img_clip_A.type());
     
+
+    if (img.channels()> 1){
     //convert color to GS
     cvtColor( img_copy,   img_copy_gs,   CV_BGR2GRAY );
+    }else{
+     img_copy_gs = img_copy.clone();
+}
+
+    if (img_clip_A.channels()> 1){
+    //convert color to GS
     cvtColor( img_clip_A, img_clip_A_gs, CV_BGR2GRAY );
-    
+    }else{
+     img_clip_A_gs = img_clip_A.clone();
+}
+
+
+
     //Binary images
     Mat img_copy_bin(img_copy_gs.size(), img_copy_gs.type());
     Mat img_clip_A_bin(img_clip_A_gs.size(), img_clip_A_gs.type());
     
     //Apply thresholding
-    cv::threshold(img_copy_gs, img_copy_bin, 60, 255, cv::THRESH_BINARY);
+    cv::threshold(img_copy_gs, img_copy_bin, 100, 255, cv::THRESH_BINARY);
     cv::threshold(img_clip_A_gs, img_clip_A_bin, 90, 255, cv::THRESH_BINARY);
     
     // img_copy_bin = img_copy_gs.clone();
@@ -670,7 +689,6 @@ void AssemblySensorMarkerFinder::findMarker_templateMatching(cv::Mat img, cv::Ma
     //emit updateImage(5, filename_clip_A_bin_qs);
     
     NQLog("AssemblySensorMarkerFinder") << "Finding Marker (Template Matching), updated images in view" ;
-
     
     /// Localizing the best match with minMaxLoc
     double FOM, FOM_inc = 1000.0, minVal, maxVal; Point minLoc; Point maxLoc;
@@ -680,6 +698,7 @@ void AssemblySensorMarkerFinder::findMarker_templateMatching(cv::Mat img, cv::Ma
     int result_cols =  img_copy_bin.cols - img_clip_A.cols + 1;
     int result_rows = img_copy_bin.rows - img_clip_A.rows + 1;
     
+    // result_1.create( result_rows, result_cols, CV_32FC1 );
     result_1.create( result_rows, result_cols, CV_32FC1 );
     
     int match_method = 1;
@@ -713,11 +732,8 @@ void AssemblySensorMarkerFinder::findMarker_templateMatching(cv::Mat img, cv::Ma
     int i = 0;
     int color = 200;
     
-    float theta_hi = 100.0;
-    float theta_lo = -1.0 * theta_hi;
-    float theta_step = (theta_hi*2)/40.0  ;
     
-    for (float theta = theta_lo ; theta < theta_hi;  theta = theta + theta_step){
+    for (float theta = -64.0; theta < 64.0;  theta = theta + 3.2){
         //    for (float theta = -180.0; theta < 180.0;  theta = theta + 9.0){
         
         // Point2f src_center(img_gs_copy.cols/2.0F, img_gs_copy.rows/2.0F);
