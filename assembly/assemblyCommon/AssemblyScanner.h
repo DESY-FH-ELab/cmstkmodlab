@@ -18,6 +18,7 @@
 #include <QString>
 #include <QDateTime>
 
+
 //motion
 #include "LStepExpressModel.h"
 #include "LStepExpressMotionManager.h"
@@ -33,6 +34,8 @@ class AssemblyScanner : public QObject
 public:
   LStepExpressModel* lStepExpressModel_;
   LStepExpressMotionManager* motionManager_;
+    
+
 
   explicit AssemblyScanner(LStepExpressModel* lStepExpressModel_);
 
@@ -68,6 +71,9 @@ signals:
     void updateText(double);
     void nextStep();
     void acquireImage();
+    void makeDummies(int, double,double,double);
+    void showHistos(int, QString);
+
 
 };
 

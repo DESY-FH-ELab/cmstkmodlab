@@ -170,7 +170,20 @@ void AssemblyMainWindow::enablePrecisionEstimation(int state){
 
     connect(cmdr_zscan, SIGNAL(moveAbsolute(double, double, double, double)),motionManager_, SLOT(moveAbsolute(double, double,double, double)));
     connect(lStepExpressModel_, SIGNAL(motionFinished()), cmdr_zscan, SLOT(process_step()));
+  
+        
+        //for testing with random numbers
+    // connect(cmdr_zscan, SIGNAL(makeDummies(int, double,double,double)), cmdr_zscan, SLOT(fill_positionvectors(int, double,double,double)));
+
+    //    for real lab tests with camera
     connect(cmdr_zscan, SIGNAL(acquireImage()), camera_, SLOT(acquireImage()));
+
+        
+        
+     connect(cmdr_zscan, SIGNAL(showHistos(int, QString)), assembleView_, SLOT(updateImage(int, QString)));
+
+        
+        
 
     connect(camera_, SIGNAL(imageAcquired(cv::Mat)), finder_, SLOT(runObjectDetection_labmode(cv::Mat)) );
     connect(finder_,SIGNAL(reportObjectLocation(int,double,double,double)), cmdr_zscan, SLOT(fill_positionvectors(int, double,double,double)));

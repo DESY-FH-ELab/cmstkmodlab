@@ -307,18 +307,22 @@ void AssemblyModuleAssembler::updateImage(int stage, QString filename)
   cv::Mat img_gs = cv::imread(filename_ss, CV_LOAD_IMAGE_UNCHANGED);
 
   if (stage == 1 ){
-    imageView_1->setZoomFactor(0.2);
+    imageView_1->setZoomFactor(0.5);
     imageView_1->setImage(img_gs);
     
   }else if (stage ==2){
     imageView_2->setImage(img_gs);
-    imageView_2->setZoomFactor(0.75);
+    imageView_2->setZoomFactor(0.5);
   }
   else if (stage ==3){
     imageView_4->setImage(img_gs);
+    imageView_4->setZoomFactor(0.5);
+
   }
   else if (stage ==4){
     imageView_3->setImage(img_gs);
+    imageView_3->setZoomFactor(0.5);
+
   }
 
 }

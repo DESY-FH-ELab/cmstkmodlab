@@ -15,6 +15,11 @@
 
 #include <TGraph.h>
 #include <TCanvas.h>
+#include <TH1F.h>
+#include <TF1.h>
+#include <TRandom.h>
+
+
 
 
 #include <nqlogger.h>
@@ -32,11 +37,14 @@
 using namespace std;
 using namespace cv;
 
+TRandom * r = new TRandom();
+
+
 AssemblyScanner::AssemblyScanner(LStepExpressModel* lStepExpressModel_)
 {
     NQLog("AssemblyScanner::AssemblyScanner()");
     motionManager_ = new LStepExpressMotionManager(lStepExpressModel_);
-    
+
 }
 
 void  AssemblyScanner::run_precisionestimation(double x_m, double y_m, double z_m , double x_p, double y_p, double z_p, int its){
@@ -63,9 +71,14 @@ void  AssemblyScanner::run_precisionestimation(double x_m, double y_m, double z_
 
 void  AssemblyScanner::fill_positionvectors(int stage, double x_pr, double y_pr, double theta_pr ){
     
-    NQLog("AssemblyScanner::fill_positionvectors")<< " step =  "<< step;
+   // x_pr = r->Gaus(0.0,1.0);
+   // y_pr = r->Gaus(0.0,5.0);
+   // theta_pr = r->Gaus(0.0,10.0);
+
+    NQLog("AssemblyScanner::fill_positionvectors")<< " step =  " << step<< "  x = "<< x_pr << "  y = "<< y_pr << "  theta = "<< theta_pr ;
+
     
-    if (step == 1){
+    if (step == 2){
     
         xpre_vec.push_back(x_pr);
         ypre_vec.push_back(y_pr);
@@ -73,14 +86,11 @@ void  AssemblyScanner::fill_positionvectors(int stage, double x_pr, double y_pr,
     
     }else if(step == 11){
     
-    
         xpost_vec.push_back(x_pr);
         ypost_vec.push_back(y_pr);
         thetapost_vec.push_back(theta_pr);
         
     }
-
-
     
     emit nextStep();
 }
@@ -101,95 +111,133 @@ void  AssemblyScanner::process_step(){
     else if  (step == 1){
         step++;
 // Step 1: Run pattern recognition
-       emit acquireImage();
-     //   emit nextStep();
+      emit acquireImage();
+       //emit nextStep();
+       // emit makeDummies(1,1.0,1.0,1.0);
 
     }else if (step == 2){
         step++;
         emit nextStep();
+        // Go to pre-pickup position
+        //  emit moveAbsolute(x_pickup,y_pickup,z_prepickup, 0.0);
     }
     else if (step == 3){
         step++;
         emit nextStep();
+        // Go to pickup position
+        //  emit moveAbsolute(x_pickup,y_pickup,z_pickup, 0.0);
 
-    // Step 3: Go to pre-pickup position
-      //  emit moveAbsolute(x_pickup,y_pickup,z_prepickup, 0.0);
         
     }else if (step == 4){
         step++;
         emit nextStep();
 
-        // Step 3: Go to pickup position
-       // emit moveAbsolute(x_pickup,y_pickup,z_pickup, 0.0);
+        // Step 4: Turn on vacuum
+        //emit toggleVacuum(1);
         
     }else if (step == 5){
         step++;
         emit nextStep();
-
-        // Step 4: Turn on vacuum
-        //emit toggleVacuum(1);
+        // Step 6: Go back to pre-pickup position
+        //emit moveAbsolute(x_pickup,y_pickup,z_prepickup, 0.0);
     }
     else if (step == 6){
         step++;
         emit nextStep();
-
-        // Step 6: Go back to pre-pickup position
-        //emit moveAbsolute(x_pickup,y_pickup,z_prepickup, 0.0);
+        // Step 7: Go back to pickup position
+        // emit moveAbsolute(x_pickup,y_pickup,z_pickup, 0.0);
+ 
         
     }else if (step == 7){
         step++;
         emit nextStep();
+        // Step 8: Release vacuum
+        // emit toggleVacuum(1);
 
-        // Step 7: Go back to pickup position
-       // emit moveAbsolute(x_pickup,y_pickup,z_pickup, 0.0);
         
     }else if (step == 8){
         step++;
         emit nextStep();
+        // Step 9: Go back to pre-pickup position
+        // emit moveAbsolute(x_pickup,y_pickup,z_prepickup, 0.0);
+        
 
-        // Step 8: Release vacuum
-       // emit toggleVacuum(1);
         
     }else if (step == 9){
         step++;
         emit nextStep();
+        // Step 10: Go back to measurement position
+        // emit moveAbsolute(x_meas,y_meas,z_meas, 0.0);
 
-        // Step 9: Go back to pre-pickup position
-       // emit moveAbsolute(x_pickup,y_pickup,z_prepickup, 0.0);
-        
+   
     }else if (step == 10){
         step++;
-        emit nextStep();
+        emit acquireImage();
+            // Step 11: Run pattern recognition
 
-        // Step 10: Go back to measurement position
-       // emit moveAbsolute(x_meas,y_meas,z_meas, 0.0);
+
     }else if  (step == 11){
-        step++;
-        emit nextStep();
-
-        // Step 11: Run pattern recognition
-     
-    }else if (step == 12){
         step = 0;
         iteration++;
         emit nextStep();
-
-        // Step 12: Add pattern recognition results to 'post' vector
+     
     }
-        
     }else{
-    
         NQLog("AssemblyScanner::processstep")<< " estimation finished ";
-    
         //make graphs from filled vectors here
+        NQLog("AssemblyScanner::processstep")<< " vector has size =  "<<xpre_vec.size();
         
+        
+        TH1F * h_x = new TH1F("","", 20,-3.0, 3.0);
+        TH1F * h_y = new TH1F("","", 20,-12.0, 12.0);
+        TH1F * h_theta = new TH1F("","", 20,-25.0,25.0);
+        
+        for (int i = 0; i< iterations; i++){
+        
+            h_x->Fill(xpre_vec[i]);
+            h_y->Fill(ypre_vec[i]);
+            h_theta->Fill(thetapre_vec[i]);
+        
+        }
+
+        string x_canvas_s = "c_x.png";
+        string y_canvas_s = "c_y.png";
+        string theta_canvas_s = "c_theta.png";
+
+        
+        TCanvas * c_x  = new TCanvas();
+        h_x->Draw();
+        h_x->Fit("gaus");
+        TF1 *fit_x = h_x->GetFunction("gaus");
+        double x_mean = fit_x->GetParameter(1);
+        double x_sigma = fit_x->GetParameter(2);
+
+        c_x->SaveAs(x_canvas_s.c_str());
+
+        TCanvas * c_y  = new TCanvas();
+        h_y->Draw();
+        h_y->Fit("gaus");
+        c_y->SaveAs(y_canvas_s.c_str());
+
+
+        TCanvas * c_theta  = new TCanvas();
+        h_theta->Draw();
+        h_theta->Fit("gaus");
+        c_theta->SaveAs(theta_canvas_s.c_str());
+        
+        
+        QString x_canvas_qs = QString::fromLocal8Bit(x_canvas_s.c_str());
+        QString y_canvas_qs = QString::fromLocal8Bit(y_canvas_s.c_str());
+        QString theta_canvas_qs = QString::fromLocal8Bit(theta_canvas_s.c_str());
+        
+        
+        emit showHistos( 1, x_canvas_qs);
+        emit showHistos( 2, y_canvas_qs);
+        emit showHistos( 3, theta_canvas_qs);
         
     }
     
      }
-
-
-
 
 
 
