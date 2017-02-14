@@ -108,7 +108,7 @@ class AssemblyPrecisionEstimator : public QWidget
 public:
     
     explicit AssemblyPrecisionEstimator(QWidget *parent = 0, std::string text ="Estimate Assembly Precision",
-                                        std::string measurement_position = "0.0,0.0,0.0", std::string pickup_position = "0.0,0.0,0.0", int iterations = 1 );
+                                        std::string measurement_position = "0.0,0.0,0.0", std::string pickup_position = "0.0,0.0,0.0", int iterations = 1 , ConradModel * conradModel_ = 0);
     
     double local_x, local_y, local_z, local_a;
     QPushButton* button1;

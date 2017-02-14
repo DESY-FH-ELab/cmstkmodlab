@@ -57,7 +57,7 @@ AssemblyMainWindow::AssemblyMainWindow(QWidget *parent) :
     uEyeWidget_ = new AssemblyUEyeWidget(uEyeModel_, this);
     tabWidget_->addTab(uEyeWidget_, "uEye");
     
-    cmdr_zscan = new AssemblyScanner(lStepExpressModel_);
+    cmdr_zscan = new AssemblyScanner(lStepExpressModel_, conradModel_);
     
     NQLog("AssemblyMainWindow") << "assembly scanner constructed";
 

@@ -40,7 +40,7 @@ public:
   LStepExpressModel* lStepExpressModel_;
   LStepExpressMotionManager* motionManager_;
     
-  explicit AssemblyScanner(LStepExpressModel* lStepExpressModel_);
+  explicit AssemblyScanner(LStepExpressModel* lStepExpressModel_, ConradModel * cnrd1);
 
   double local_range, local_steps, local_delay;
   double x_meas, y_meas, z_meas;

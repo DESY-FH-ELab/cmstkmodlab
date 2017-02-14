@@ -40,7 +40,7 @@ using namespace cv;
 TRandom * r = new TRandom();
 
 
-AssemblyScanner::AssemblyScanner(LStepExpressModel* lStepExpressModel_)
+AssemblyScanner::AssemblyScanner(LStepExpressModel* lStepExpressModel_, ConradModel * cnrd1)
 {
     NQLog("AssemblyScanner::AssemblyScanner()");
     motionManager_ = new LStepExpressMotionManager(lStepExpressModel_);
@@ -48,11 +48,6 @@ AssemblyScanner::AssemblyScanner(LStepExpressModel* lStepExpressModel_)
     qt->setSingleShot(true);
     connect(qt, SIGNAL(timeout()), this, SLOT(process_step()));
     connect(this, SIGNAL(changeVacuumState()), this, SLOT(toggleVacuum()));
-
-    cnrd1 = new ConradModel();
-
-
-
 
 }
 
