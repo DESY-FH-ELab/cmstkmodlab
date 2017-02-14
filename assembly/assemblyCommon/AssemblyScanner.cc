@@ -44,6 +44,15 @@ AssemblyScanner::AssemblyScanner(LStepExpressModel* lStepExpressModel_)
 {
     NQLog("AssemblyScanner::AssemblyScanner()");
     motionManager_ = new LStepExpressMotionManager(lStepExpressModel_);
+    qt = new QTimer(this);
+    qt->setSingleShot(true);
+    connect(qt, SIGNAL(timeout()), this, SLOT(process_step()));
+    connect(this, SIGNAL(changeVacuumState()), this, SLOT(toggleVacuum()));
+
+    cnrd1 = new ConradModel();
+
+
+
 
 }
 
@@ -96,9 +105,25 @@ void  AssemblyScanner::fill_positionvectors(int stage, double x_pr, double y_pr,
 }
 
 
+
+void AssemblyScanner::toggleVacuum()
+{
+    NQLog("AssemblyScanner") << ": toggling vacuum voltage";
+    
+            if (cnrd1->getSwitchState(1) == 0){
+                cnrd1->setSwitchEnabled(1, true);
+                
+            }else if (cnrd1->getSwitchState(1) == 1){
+                cnrd1->setSwitchEnabled(1, false);
+            }
+        
+}
+
+
+
 void  AssemblyScanner::process_step(){
 
-    NQLog("AssemblyScanner::process_step, iteration ==") <<iteration;
+    NQLog("AssemblyScanner::process_step, iteration ==") <<iteration <<" step = " << step;
     
     if (iteration < iterations){
     
@@ -106,66 +131,53 @@ void  AssemblyScanner::process_step(){
         step++;
 // Step 0: Go to measurement position
 	NQLog("AssemblySensorMarkerFinder") << "   Requesting motion to:  x "<< x_meas <<" y "<< y_meas <<" "<< z_meas  ;
-        emit moveAbsolute(x_meas,y_meas,z_meas, 0.0);
-        //emit nextStep();
+    emit moveAbsolute(x_meas,y_meas,z_meas, 0.0);
     }
     else if  (step == 1){
         step++;
 // Step 1: Run pattern recognition
       emit acquireImage();
-
+        
     }else if (step == 2){
         step++;
         // Go to pre-pickup position
-	         emit moveAbsolute(x_pickup,y_pickup,z_pickup, 0.0);
+       emit moveAbsolute(x_pickup,y_pickup,z_pickup, 0.0);
+
     }
     else if (step == 3){
         step++;
-	emit nextStep();
         // Go to pickup position
-	//emit moveAbsolute(x_pickup,y_pickup,z_pickup, 0.0);
+	emit moveAbsolute(x_pickup,y_pickup,z_pickup, 0.0);
         
     }else if (step == 4){
         step++;
-        emit nextStep();
-
+        emit changeVacuumState();
         // Step 4: Turn on vacuum
-        //emit toggleVacuum(1);
+        qt->start(3000);
         
     }else if (step == 5){
         step++;
-        emit nextStep();
         // Step 6: Go back to pre-pickup position
-	//    emit moveAbsolute(x_pickup,y_pickup,z_prepickup, 0.0);
+	 emit moveAbsolute(x_pickup,y_pickup,z_prepickup, 0.0);
     }
     else if (step == 6){
         step++;
-	   emit nextStep();
         // Step 7: Go back to pickup position
-        // emit moveAbsolute(x_pickup,y_pickup,z_pickup, 0.0);
- 
-        
+         emit moveAbsolute(x_pickup,y_pickup,z_pickup, 0.0);
     }else if (step == 7){
         step++;
-        emit nextStep();
         // Step 8: Release vacuum
-        // emit toggleVacuum(1);
-
-        
+        emit changeVacuumState();
     }else if (step == 8){
         step++;
-        emit nextStep();
         // Step 9: Go back to pre-pickup position
-	//        emit moveAbsolute(x_pickup,y_pickup,z_prepickup, 0.0);
-        
+        emit moveAbsolute(x_pickup,y_pickup,z_prepickup, 0.0);
         
     }else if (step == 9){
         step++;
-	//  emit nextStep();
-        // Step 10: Go back to measurement position
-         emit moveAbsolute(x_meas,y_meas,z_meas, 0.0);
+     // Step 10: Go back to measurement position
+     emit moveAbsolute(x_meas,y_meas,z_meas, 0.0);
 
-   
     }else if (step == 10){
         step++;
         emit acquireImage();

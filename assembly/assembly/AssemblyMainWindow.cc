@@ -176,10 +176,10 @@ void AssemblyMainWindow::enablePrecisionEstimation(int state){
     // connect(cmdr_zscan, SIGNAL(makeDummies(int, double,double,double)), cmdr_zscan, SLOT(fill_positionvectors(int, double,double,double)));
 
     //    for real lab tests with camera
-    connect(cmdr_zscan, SIGNAL(acquireImage()), camera_, SLOT(acquireImage()));
+     connect(cmdr_zscan, SIGNAL(acquireImage()), camera_, SLOT(acquireImage()));
 
-        
-        
+     connect(cmdr_zscan, SIGNAL(changeVacuumState()), cmdr_zscan, SLOT(changeVacuumState()));
+
      connect(cmdr_zscan, SIGNAL(showHistos(int, QString)), assembleView_, SLOT(updateImage(int, QString)));
 
         

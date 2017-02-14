@@ -17,11 +17,15 @@
 #include <QRadioButton>
 #include <QString>
 #include <QDateTime>
+#include <QTimer>
 
 
 //motion
 #include "LStepExpressModel.h"
 #include "LStepExpressMotionManager.h"
+
+//relay card for vacuum control
+#include "ConradModel.h"
 
 
 using namespace std;
@@ -32,11 +36,10 @@ class AssemblyScanner : public QObject
   Q_OBJECT
 
 public:
+  ConradModel * cnrd1;
   LStepExpressModel* lStepExpressModel_;
   LStepExpressMotionManager* motionManager_;
     
-
-
   explicit AssemblyScanner(LStepExpressModel* lStepExpressModel_);
 
   double local_range, local_steps, local_delay;
@@ -50,6 +53,7 @@ public:
   vector<double> xpre_vec,ypre_vec,thetapre_vec;
   vector<double> xpost_vec,ypost_vec,thetapost_vec;
   double step_distance;
+  QTimer * qt;
 
 protected:
     double imageVariance(cv::Mat img_input, cv::Rect rectangle);
@@ -60,6 +64,8 @@ public slots:
   void run_precisionestimation(double, double, double, double, double, double, int);
   void process_step();
   void fill_positionvectors(int , double, double, double);
+  void toggleVacuum();
+
 
     
 signals:
@@ -73,8 +79,7 @@ signals:
     void acquireImage();
     void makeDummies(int, double,double,double);
     void showHistos(int, QString);
-
-
+    void changeVacuumState();
 };
 
 
