@@ -50,7 +50,7 @@ typedef AssemblyUEyeModel AssemblyUEyeModel_t;
 
 //conrad relay card
 #include "ConradModel.h"
-
+#include "ConradManager.h"
 
 
 class AssemblyMainWindow : public QMainWindow
@@ -121,6 +121,7 @@ protected:
   LStepExpressMotionThread* motionThread_;
     
   ConradModel * conradModel_;
+  ConradManager* conradManager_;
 
   double testTimerCount_;
 

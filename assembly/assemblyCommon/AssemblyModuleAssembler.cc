@@ -586,8 +586,8 @@ void AssemblyVacuumToggler::toggleVacuum()
             if (cnrd1->getSwitchState(i+1) == 0){
                 cnrd1->setSwitchEnabled(i+1, true);
                 
-                labels[i]->setText("VACUUM ON");
-                labels[i]->setStyleSheet("QLabel { background-color : red; color : black; }");
+                //labels[i]->setText("VACUUM ON");
+                //labels[i]->setStyleSheet("QLabel { background-color : red; color : black; }");
                 
                 if (cnrd1->getSwitchState(i+1) == 1){
                     labels[i]->setText("VACUUM ON");
