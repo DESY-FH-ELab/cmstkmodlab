@@ -38,13 +38,51 @@
 //relay card for vacuum control
 #include "ConradModel.h"
 
+
+class AssemblyVacuumToggler : public QWidget
+{
+  Q_OBJECT
+
+public:
+    
+  explicit AssemblyVacuumToggler(QWidget *parent = 0, std::string ="test");
+
+  QPushButton* button1;
+  QLineEdit *lineEdit1;
+  //ConradModel * cnrd1;
+
+  std::vector <QRadioButton*> valves;
+  std::vector <QLabel*> labels;
+      
+  QLabel* ql1;
+  QLabel* ql2;
+  QLabel* ql3;
+
+  QRadioButton *radio1;
+  QRadioButton *radio2;
+  QRadioButton *radio3;
+    
+  bool state;
+    
+protected:
+    
+public slots:
+  void toggleVacuum();
+  void updateVacuumChannelState(int, bool);
+  
+signals:
+  void toggleVacuum(int);
+
+};
+
+
 class AssemblyModuleAssembler : public QWidget
 {
   Q_OBJECT
 
 public:
 
-  explicit AssemblyModuleAssembler(AssemblyVUEyeModel *uEyeModel_, AssemblySensorMarkerFinder * finder_,LStepExpressModel* lStepExpressModel_, ConradModel *conradModel_,
+  explicit AssemblyModuleAssembler(AssemblyVUEyeModel *uEyeModel_, AssemblySensorMarkerFinder * finder_,LStepExpressModel* lStepExpressModel_,
                                    QWidget *parent = 0);
   void connectImageProducer(const QObject* sender, const char* signal);
   void disconnectImageProducer(const QObject* sender, const char* signal);
@@ -59,6 +97,7 @@ public:
 
 
   AssemblyVUEyeCamera * camera_;
+  AssemblyVacuumToggler* toggle1;  //to connect vacuum signals in MainWindow
  
 protected:
 
@@ -137,40 +176,6 @@ signals:
 
 
 
-
-class AssemblyVacuumToggler : public QWidget
-{
-  Q_OBJECT
-
-public:
-    
-  explicit AssemblyVacuumToggler(QWidget *parent = 0, std::string ="test");
-
-  QPushButton* button1;
-  QLineEdit *lineEdit1;
-  ConradModel * cnrd1;
-
-  std::vector <QRadioButton*> valves;
-  std::vector <QLabel*> labels;
-    
-  QLabel* ql1;
-  QLabel* ql2;
-  QLabel* ql3;
-
-  QRadioButton *radio1;
-  QRadioButton *radio2;
-  QRadioButton *radio3;
-    
-  bool state;
-    
-protected:
-    
-public slots:
-  void toggleVacuum();
-    
-signals:
-
-};
 
 class AssemblyAttacher : public QWidget
 {

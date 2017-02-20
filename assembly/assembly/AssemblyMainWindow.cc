@@ -48,8 +48,10 @@ AssemblyMainWindow::AssemblyMainWindow(QWidget *parent) :
     finderThread_ = new AssemblyMarkerFinderThread(finder_, this);
     finderThread_->start();
 
-    assembleView_ = new AssemblyModuleAssembler(uEyeModel_, finder_, lStepExpressModel_, conradModel_, tabWidget_);
+    assembleView_ = new AssemblyModuleAssembler(uEyeModel_, finder_, lStepExpressModel_, tabWidget_);
     tabWidget_->addTab(assembleView_, "assemble");
+
+    conradModel_ = new ConradModel(assembleView_);
 
     finderWidget_ = new AssemblySensorMarkerFinderWidget(finder_, this);
     tabWidget_->addTab(finderWidget_, "finder config");
@@ -59,6 +61,9 @@ AssemblyMainWindow::AssemblyMainWindow(QWidget *parent) :
     
     cmdr_zscan = new AssemblyScanner(lStepExpressModel_);
     conradManager_ = new ConradManager(conradModel_);
+
+    connect(assembleView_ -> toggle1, SIGNAL(toggleVacuum(int)), conradManager_, SLOT(toggleVacuum(int)));
+    connect(conradManager_, SIGNAL(updateVacuumChannelState(int, bool)), assembleView_ -> toggle1, SLOT(updateVacuumChannelState(int, bool)));
     
     NQLog("AssemblyMainWindow") << "assembly scanner constructed";
 

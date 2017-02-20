@@ -35,7 +35,6 @@ using namespace cv;
 
 AssemblyModuleAssembler::AssemblyModuleAssembler(AssemblyVUEyeModel *uEyeModel_, AssemblySensorMarkerFinder * finder_,
                                                  LStepExpressModel* lStepExpressModel_,
-                                                 ConradModel * conradModel_,
                                                  QWidget *parent)
   : QWidget(parent)
 {
@@ -194,7 +193,8 @@ AssemblyModuleAssembler::AssemblyModuleAssembler(AssemblyVUEyeModel *uEyeModel_,
   AssemblyAttacher * attacher1 = new AssemblyAttacher("Drop/Raise", 10.0);
  // g1->addWidget(attacher1,7,0);
 
-  AssemblyVacuumToggler * toggle1 = new AssemblyVacuumToggler(this, "Toggle vacuum");
+  //AssemblyVacuumToggler * toggle1 = new AssemblyVacuumToggler(this, "Toggle vacuum");
+  toggle1 = new AssemblyVacuumToggler(this, "Toggle vacuum");
   g1->addWidget(toggle1,8,0);
     
   AssemblyPrecisionEstimator * precision1 = new AssemblyPrecisionEstimator(this, "Estimate Assembly Precision", "-200.0,0.0,0.0", "0.0,0.0,0.0", 1 );
@@ -509,11 +509,11 @@ AssemblyVacuumToggler::AssemblyVacuumToggler(QWidget *parent, std::string string
 
   state = false;
     
-  cnrd1 = new ConradModel(parent);
+  //cnrd1 = new ConradModel(parent);
 
   QString qname = QString::fromStdString(string);
 
-  state = false;
+  state = false;//???
 
   button1 = new QPushButton(qname, this);
   l->addWidget(button1,0,0);
@@ -577,13 +577,16 @@ AssemblyVacuumToggler::AssemblyVacuumToggler(QWidget *parent, std::string string
 
 void AssemblyVacuumToggler::toggleVacuum()
 {
-    NQLog("AssemblyVacuumToggler") << ": toggling vacuum voltage";
+    NQLog("AssemblyVacuumToggler") << ": toggling vacuum voltage ";
     
     for (int i = 0; i < 3 ; i ++){
     
         if (valves[i]->isChecked()){
             
-            if (cnrd1->getSwitchState(i+1) == 0){
+	  NQLog("AssemblyVacuumToggler") << ": emit signal to channel " << (i + 1);
+	  emit toggleVacuum(i + 1);
+	  
+	  /*if (cnrd1->getSwitchState(i+1) == 0){
                 cnrd1->setSwitchEnabled(i+1, true);
                 
                 //labels[i]->setText("VACUUM ON");
@@ -602,9 +605,20 @@ void AssemblyVacuumToggler::toggleVacuum()
                     labels[i]->setStyleSheet("QLabel { background-color : green; color : black; }");
                     state = false;
                 }
-            }
+	    }*/
         }
     }
+}
+
+void AssemblyVacuumToggler::updateVacuumChannelState(int channelNumber, bool channelState)
+{
+  if (channelState){
+    labels[channelNumber]->setText("VACUUM ON");
+    labels[channelNumber]->setStyleSheet("QLabel { background-color : red; color : black; }");
+  }else {
+    labels[channelNumber]->setText("VACUUM OFF");
+    labels[channelNumber]->setStyleSheet("QLabel { background-color : green; color : black; }");    
+  }
 }
 
 
