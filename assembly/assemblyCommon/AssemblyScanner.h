@@ -73,7 +73,7 @@ signals:
     void acquireImage();
     void makeDummies(int, double,double,double);
     void showHistos(int, QString);
-
+    void toggleVacuum(int);
 
 };
 

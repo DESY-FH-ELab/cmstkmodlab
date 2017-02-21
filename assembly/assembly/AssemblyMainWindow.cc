@@ -176,7 +176,8 @@ void AssemblyMainWindow::enablePrecisionEstimation(int state){
 
     connect(cmdr_zscan, SIGNAL(moveAbsolute(double, double, double, double)),motionManager_, SLOT(moveAbsolute(double, double,double, double)));
     connect(lStepExpressModel_, SIGNAL(motionFinished()), cmdr_zscan, SLOT(process_step()));
-  
+    connect(cmdr_zscan, SIGNAL(toggleVacuum(int)), conradManager_, SLOT(toggleVacuum(int)));
+    connect(conradManager_, SIGNAL(updateVacuumChannelState(int, bool)), cmdr_zscan, SIGNAL(nextStep()));
         
         //for testing with random numbers
     // connect(cmdr_zscan, SIGNAL(makeDummies(int, double,double,double)), cmdr_zscan, SLOT(fill_positionvectors(int, double,double,double)));
@@ -200,6 +201,8 @@ void AssemblyMainWindow::enablePrecisionEstimation(int state){
         
     disconnect(cmdr_zscan, SIGNAL(moveRelative(double, double,double, double)),motionManager_, SLOT(moveRelative(double, double,double, double)));
     disconnect(lStepExpressModel_, SIGNAL(motionFinished()), camera_, SLOT(acquireImage()));
+    disconnect(cmdr_zscan, SIGNAL(toggleVacuum(int)), conradManager_, SLOT(toggleVacuum(int)));
+    disconnect(conradManager_, SIGNAL(updateVacuumChannelState(int, bool)), cmdr_zscan, SIGNAL(nextStep()));
     disconnect(camera_, SIGNAL(imageAcquired(cv::Mat)), finder_, SLOT(findMarker_templateMatching(int, cv::Mat)) );
     disconnect(finder_, SIGNAL(getImageBlur(cv::Mat, cv::Rect)), cmdr_zscan, SLOT(write_image(cv::Mat, cv::Rect)) );
     disconnect(cmdr_zscan,SIGNAL(make_graph(vector<double>,vector<double>)),autoFocusView_,SLOT(make_graph(vector<double>,vector<double>)));

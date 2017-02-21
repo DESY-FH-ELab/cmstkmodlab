@@ -103,42 +103,58 @@ void  AssemblyScanner::process_step(){
     if (iteration < iterations){
     
     if (step == 0){
+
+      NQLog("AssemblyScanner:: step == ") << step;
         step++;
 // Step 0: Go to measurement position
 	NQLog("AssemblySensorMarkerFinder") << "   Requesting motion to:  x "<< x_meas <<" y "<< y_meas <<" "<< z_meas  ;
-        emit moveAbsolute(x_meas,y_meas,z_meas, 0.0);
-        //emit nextStep();
+        //emit moveAbsolute(x_meas,y_meas,z_meas, 0.0);
+        emit nextStep();
     }
     else if  (step == 1){
+
+      NQLog("AssemblyScanner:: step == ") << step;
         step++;
 // Step 1: Run pattern recognition
-      emit acquireImage();
+	//emit acquireImage();
+	emit nextStep();
 
     }else if (step == 2){
+
+      NQLog("AssemblyScanner:: step == ") << step;
         step++;
         // Go to pre-pickup position
-	         emit moveAbsolute(x_pickup,y_pickup,z_pickup, 0.0);
+	//emit moveAbsolute(x_pickup,y_pickup,z_pickup, 0.0);
+	emit nextStep();
     }
     else if (step == 3){
+
+      NQLog("AssemblyScanner:: step == ") << step;
         step++;
 	emit nextStep();
         // Go to pickup position
 	//emit moveAbsolute(x_pickup,y_pickup,z_pickup, 0.0);
         
     }else if (step == 4){
+
+      NQLog("AssemblyScanner:: step == ") << step;
         step++;
-        emit nextStep();
+        //emit nextStep();
 
         // Step 4: Turn on vacuum
-        //emit toggleVacuum(1);
+        emit toggleVacuum(1);
         
     }else if (step == 5){
+
+      NQLog("AssemblyScanner:: step == ") << step;
         step++;
         emit nextStep();
         // Step 6: Go back to pre-pickup position
 	//    emit moveAbsolute(x_pickup,y_pickup,z_prepickup, 0.0);
     }
     else if (step == 6){
+
+      NQLog("AssemblyScanner:: step == ") << step;
         step++;
 	   emit nextStep();
         // Step 7: Go back to pickup position
@@ -146,13 +162,17 @@ void  AssemblyScanner::process_step(){
  
         
     }else if (step == 7){
+
+      NQLog("AssemblyScanner:: step == ") << step;
         step++;
-        emit nextStep();
+        //emit nextStep();
         // Step 8: Release vacuum
-        // emit toggleVacuum(1);
+        emit toggleVacuum(1);
 
         
     }else if (step == 8){
+
+      NQLog("AssemblyScanner:: step == ") << step;
         step++;
         emit nextStep();
         // Step 9: Go back to pre-pickup position
@@ -160,17 +180,24 @@ void  AssemblyScanner::process_step(){
         
         
     }else if (step == 9){
+
+      NQLog("AssemblyScanner:: step == ") << step;
         step++;
-	//  emit nextStep();
+	emit nextStep();
         // Step 10: Go back to measurement position
-         emit moveAbsolute(x_meas,y_meas,z_meas, 0.0);
+	//emit moveAbsolute(x_meas,y_meas,z_meas, 0.0);
 
    
     }else if (step == 10){
+
+      NQLog("AssemblyScanner:: step == ") << step;
         step++;
-        emit acquireImage();
-     
+        //emit acquireImage();
+	emit nextStep();
+
     }else if  (step == 11){
+
+      NQLog("AssemblyScanner:: step == ") << step;
       step = 0;
         iteration++;
         emit nextStep();
