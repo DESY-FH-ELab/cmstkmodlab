@@ -670,7 +670,7 @@ void AssemblySensorMarkerFinder::findMarker_templateMatching(cv::Mat img, cv::Ma
     Mat img_clip_A_bin(img_clip_A_gs.size(), img_clip_A_gs.type());
     
     //Apply thresholding
-    cv::threshold(img_copy_gs, img_copy_bin, 100, 255, cv::THRESH_BINARY);
+    cv::threshold(img_copy_gs, img_copy_bin, 200, 255, cv::THRESH_BINARY);
     cv::threshold(img_clip_A_gs, img_clip_A_bin, 90, 255, cv::THRESH_BINARY);
     
     // img_copy_bin = img_copy_gs.clone();

@@ -108,32 +108,32 @@ void  AssemblyScanner::process_step(){
         step++;
 // Step 0: Go to measurement position
 	NQLog("AssemblySensorMarkerFinder") << "   Requesting motion to:  x "<< x_meas <<" y "<< y_meas <<" "<< z_meas  ;
-        //emit moveAbsolute(x_meas,y_meas,z_meas, 0.0);
-        emit nextStep();
+        emit moveAbsolute(x_meas,y_meas,z_meas, 0.0);
+        //emit nextStep();
     }
     else if  (step == 1){
 
       NQLog("AssemblyScanner:: step == ") << step;
         step++;
 // Step 1: Run pattern recognition
-	//emit acquireImage();
-	emit nextStep();
+	emit acquireImage();
+	//emit nextStep();
 
     }else if (step == 2){
 
       NQLog("AssemblyScanner:: step == ") << step;
         step++;
         // Go to pre-pickup position
-	//emit moveAbsolute(x_pickup,y_pickup,z_pickup, 0.0);
-	emit nextStep();
+	emit moveAbsolute(x_pickup,y_pickup,z_prepickup, 0.0);
+	//emit nextStep();
     }
     else if (step == 3){
 
       NQLog("AssemblyScanner:: step == ") << step;
         step++;
-	emit nextStep();
+	//emit nextStep();
         // Go to pickup position
-	//emit moveAbsolute(x_pickup,y_pickup,z_pickup, 0.0);
+	emit moveAbsolute(x_pickup,y_pickup,z_pickup, 0.0);
         
     }else if (step == 4){
 
@@ -148,17 +148,17 @@ void  AssemblyScanner::process_step(){
 
       NQLog("AssemblyScanner:: step == ") << step;
         step++;
-        emit nextStep();
+        //emit nextStep();
         // Step 6: Go back to pre-pickup position
-	//    emit moveAbsolute(x_pickup,y_pickup,z_prepickup, 0.0);
+	emit moveAbsolute(x_pickup,y_pickup,z_prepickup, 0.0);
     }
     else if (step == 6){
 
       NQLog("AssemblyScanner:: step == ") << step;
         step++;
-	   emit nextStep();
+	// emit nextStep();
         // Step 7: Go back to pickup position
-        // emit moveAbsolute(x_pickup,y_pickup,z_pickup, 0.0);
+        emit moveAbsolute(x_pickup,y_pickup,z_pickup, 0.0);
  
         
     }else if (step == 7){
@@ -174,26 +174,26 @@ void  AssemblyScanner::process_step(){
 
       NQLog("AssemblyScanner:: step == ") << step;
         step++;
-        emit nextStep();
+        //emit nextStep();
         // Step 9: Go back to pre-pickup position
-	//        emit moveAbsolute(x_pickup,y_pickup,z_prepickup, 0.0);
+	emit moveAbsolute(x_pickup,y_pickup,z_prepickup, 0.0);
         
         
     }else if (step == 9){
 
       NQLog("AssemblyScanner:: step == ") << step;
         step++;
-	emit nextStep();
+	//emit nextStep();
         // Step 10: Go back to measurement position
-	//emit moveAbsolute(x_meas,y_meas,z_meas, 0.0);
+	emit moveAbsolute(x_meas,y_meas,z_meas, 0.0);
 
    
     }else if (step == 10){
 
       NQLog("AssemblyScanner:: step == ") << step;
         step++;
-        //emit acquireImage();
-	emit nextStep();
+        emit acquireImage();
+	//emit nextStep();
 
     }else if  (step == 11){
 
@@ -218,6 +218,8 @@ void  AssemblyScanner::process_step(){
             h_x->Fill(xpre_vec[i] - xpost_vec[i] );
             h_y->Fill(ypre_vec[i] - ypost_vec[i] );
             h_theta->Fill(thetapre_vec[i] - thetapost_vec[i] );
+	    NQLog("AssemblyScanner::")<< " filling histos with: x pre  =  "<<  xpre_vec[i] << " x post  "<< xpost_vec[i] << " y  pre  = "<<  ypre_vec[i] << " y post  "<< ypost_vec[i] <<  " theta pre "<<   thetapre_vec[i] << " theta  post  = "<<  thetapost_vec[i] ;
+
         }
 
         string x_canvas_s = "c_x.png";

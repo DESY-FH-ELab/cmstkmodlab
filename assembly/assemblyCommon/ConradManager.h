@@ -19,11 +19,10 @@ class ConradManager : public QObject
  protected:
   ConradModel* ConradModel_;
   int channelNumber;
-  bool state;
   QTimer* liveTimer_;
 
  private:
-  const int togglingVacuumDelay = 2000;
+  const int togglingVacuumDelay = 3000;
   
  public:
   //add constructor
@@ -53,5 +52,6 @@ questions:
 3) qt timer constractor
 4) ComradManager thread safe version, channelNumber, state
 5) debugSlot
+6) add checking to all USB ports for every device.
 
  */
