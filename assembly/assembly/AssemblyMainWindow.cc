@@ -64,7 +64,9 @@ AssemblyMainWindow::AssemblyMainWindow(QWidget *parent) :
 
     connect(assembleView_ -> toggle1, SIGNAL(toggleVacuum(int)), conradManager_, SLOT(toggleVacuum(int)));
     connect(conradManager_, SIGNAL(updateVacuumChannelState(int, bool)), assembleView_ -> toggle1, SLOT(updateVacuumChannelState(int, bool)));
+    connect(assembleView_ -> toggle1, SIGNAL(updateVacuumChannelsStatus()), conradManager_, SLOT(updateVacuumChannelsStatus()));
     
+
     NQLog("AssemblyMainWindow") << "assembly scanner constructed";
 
     
@@ -185,12 +187,7 @@ void AssemblyMainWindow::enablePrecisionEstimation(int state){
     //    for real lab tests with camera
     connect(cmdr_zscan, SIGNAL(acquireImage()), camera_, SLOT(acquireImage()));
 
-        
-        
-     connect(cmdr_zscan, SIGNAL(showHistos(int, QString)), assembleView_, SLOT(updateImage(int, QString)));
-
-        
-        
+    connect(cmdr_zscan, SIGNAL(showHistos(int, QString)), assembleView_, SLOT(updateImage(int, QString))); 
 
     connect(camera_, SIGNAL(imageAcquired(cv::Mat)), finder_, SLOT(runObjectDetection_labmode(cv::Mat)) );
     connect(finder_,SIGNAL(reportObjectLocation(int,double,double,double)), cmdr_zscan, SLOT(fill_positionvectors(int, double,double,double)));

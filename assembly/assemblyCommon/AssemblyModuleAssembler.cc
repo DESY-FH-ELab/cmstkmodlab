@@ -562,12 +562,17 @@ AssemblyVacuumToggler::AssemblyVacuumToggler(QWidget *parent, std::string string
   ql3->setText("VACUUM OFF");
   ql3->setStyleSheet("QLabel { background-color : green; color : black; }");
     
+
+    NQLog("VacuumToggler") << ": !!!!!!!!!!!!!!!!!!!!!!!!!!!!!1 ";
+  emit updateVacuumChannelsStatus();
+
   labels.push_back(ql1);
   labels.push_back(ql2);
   labels.push_back(ql3);
 
   connect(button1, SIGNAL(clicked()),
           this, SLOT(toggleVacuum()));
+  connect(button1, SIGNAL(clicked()), this, SLOT(disableVacuumButton()));
 
 }
 
@@ -578,7 +583,7 @@ AssemblyVacuumToggler::AssemblyVacuumToggler(QWidget *parent, std::string string
 void AssemblyVacuumToggler::toggleVacuum()
 {
     NQLog("AssemblyVacuumToggler") << ": toggling vacuum voltage ";
-    
+
     for (int i = 0; i < 3 ; i ++){
     
         if (valves[i]->isChecked()){
@@ -610,8 +615,20 @@ void AssemblyVacuumToggler::toggleVacuum()
     }
 }
 
+void AssemblyVacuumToggler::enableVacuumButton()
+{
+  button1 -> setEnabled(true);
+}
+
+void AssemblyVacuumToggler::disableVacuumButton()
+{
+  button1 -> setEnabled(false);
+}
+
 void AssemblyVacuumToggler::updateVacuumChannelState(int channelNumber, bool channelState)
 {
+  emit enableVacuumButton();
+
   if (channelState){
     labels[channelNumber]->setText("VACUUM ON");
     labels[channelNumber]->setStyleSheet("QLabel { background-color : red; color : black; }");

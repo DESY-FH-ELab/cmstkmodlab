@@ -36,7 +36,7 @@
 //#include "LStepExpressJoystickWidget.h"
 
 //relay card for vacuum control
-#include "ConradModel.h"
+//#include "ConradModel.h"
 
 
 class AssemblyVacuumToggler : public QWidget
@@ -69,10 +69,13 @@ protected:
 public slots:
   void toggleVacuum();
   void updateVacuumChannelState(int, bool);
+  void enableVacuumButton();
+  void disableVacuumButton();
+    
   
 signals:
   void toggleVacuum(int);
-
+  void updateVacuumChannelsStatus();
 };
 
 
@@ -166,12 +169,10 @@ public:
     public slots:
     void recordPosition(double,double,double);
     void run();
-    
 signals:
     void moveAbsolute(double,double,double,double);
     void locateMarker();
     void launchPrecisionEstimation(double, double, double, double, double, double, int);
-
 };
 
 
