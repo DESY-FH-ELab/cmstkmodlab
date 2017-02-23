@@ -63,9 +63,13 @@ AssemblyMainWindow::AssemblyMainWindow(QWidget *parent) :
     conradManager_ = new ConradManager(conradModel_);
 
     connect(assembleView_ -> toggle1, SIGNAL(toggleVacuum(int)), conradManager_, SLOT(toggleVacuum(int)));
+    //connect(assembleView_ -> toggle1, SIGNAL(toggleVacuum(int)), assembleView_ -> toggle1, SLOT(disableVacuumButton()));
     connect(conradManager_, SIGNAL(updateVacuumChannelState(int, bool)), assembleView_ -> toggle1, SLOT(updateVacuumChannelState(int, bool)));
-    connect(assembleView_ -> toggle1, SIGNAL(updateVacuumChannelsStatus()), conradManager_, SLOT(updateVacuumChannelsStatus()));
+    connect(this, SIGNAL(updateVacuumChannelsStatus()), conradManager_, SLOT(updateVacuumChannelsStatus()));
     
+    
+    emit updateVacuumChannelsStatus();
+
 
     NQLog("AssemblyMainWindow") << "assembly scanner constructed";
 

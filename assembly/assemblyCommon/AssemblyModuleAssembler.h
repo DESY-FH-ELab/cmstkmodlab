@@ -75,7 +75,6 @@ public slots:
   
 signals:
   void toggleVacuum(int);
-  void updateVacuumChannelsStatus();
 };
 
 

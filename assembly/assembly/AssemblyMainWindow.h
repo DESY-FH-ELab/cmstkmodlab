@@ -79,7 +79,7 @@ signals:
   void openCamera();
   void closeCamera();
   void acquireImage();
-
+  void updateVacuumChannelsStatus();
     
 protected slots:
 
