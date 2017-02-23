@@ -84,6 +84,7 @@ HEADERS += AssemblyVUEyeCamera.h \
            AssemblyScanner.h \
            ConradManager.h \
            AssemblyUEyeSnapShooter.h \
+           AssemblyThresholdTuner.h \
            AssemblyModuleAssembler.h \
            AssemblyAutoFocus.h \
            AssemblyMarkerFinderThread.h \
@@ -123,6 +124,7 @@ SOURCES += AssemblyVUEyeCamera.cc \
            AssemblyUEyeCameraWidget.cc \
            AssemblyUEyeView.cc \
            AssemblyUEyeSnapShooter.cc \
+           AssemblyThresholdTuner.cc \
            AssemblyModuleAssembler.cc \
            AssemblyAutoFocus.cc \
            AssemblyScanner.cc \

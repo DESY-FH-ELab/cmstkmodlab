@@ -54,5 +54,10 @@ questions:
 4) ComradManager thread safe version, channelNumber, state
 5) debugSlot
 6) add checking to all USB ports for every device.
+7) add try-catch in setNewThreshold slot.
+
+
+Link to uEye datasheet
+http://www.physimetrics.com/content/PDF_Content/Cameras/IDS/UI-3480CP-M-GL.pdf
 
  */

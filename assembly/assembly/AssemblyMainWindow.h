@@ -22,6 +22,7 @@ typedef AssemblyUEyeModel AssemblyUEyeModel_t;
 #include "AssemblyUEyeWidget.h"
 #include "AssemblyUEyeView.h"
 #include "AssemblyUEyeSnapShooter.h"
+#include "AssemblyThresholdTuner.h"
 #include "AssemblyModuleAssembler.h"
 #include "AssemblyAutoFocus.h"
 #include "AssemblyScanner.h"
@@ -94,6 +95,7 @@ protected:
   QTabWidget* tabWidget_;
 
   AssemblyUEyeSnapShooter* finderView_;
+  AssemblyThresholdTuner* thresholdTunerView_;
   AssemblyUEyeSnapShooter* edgeView_;
   AssemblyUEyeSnapShooter* rawView_;
   AssemblyModuleAssembler* assembleView_;

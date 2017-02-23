@@ -34,6 +34,9 @@ AssemblyMainWindow::AssemblyMainWindow(QWidget *parent) :
     finderView_ = new AssemblyUEyeSnapShooter(tabWidget_);
     tabWidget_->addTab(finderView_, "finder");
 
+    thresholdTunerView_ = new AssemblyThresholdTuner(tabWidget_);
+    tabWidget_->addTab(thresholdTunerView_, "Threshold");
+
     edgeView_ = new AssemblyUEyeSnapShooter(tabWidget_);
     tabWidget_->addTab(edgeView_, "edges");
 
@@ -49,7 +52,10 @@ AssemblyMainWindow::AssemblyMainWindow(QWidget *parent) :
     finderThread_->start();
 
     assembleView_ = new AssemblyModuleAssembler(uEyeModel_, finder_, lStepExpressModel_, tabWidget_);
-    tabWidget_->addTab(assembleView_, "assemble");
+    tabWidget_->addTab(assembleView_, "Manual assembly");
+
+    //autoAssemblyView_ = new AssemblyAutomatedModuleAssembler(uEyeModel_, finder_, lStepExpressModel_, tabWidget_);
+    //tabWidget_->addTab(autoAssemblyView_, "Automated assembly");
 
     conradModel_ = new ConradModel(assembleView_);
 
@@ -269,6 +275,8 @@ void AssemblyMainWindow::cameraOpened()
     NQLog("AssemblyMainWindow") << ":cameraOpened()";
 
     finderView_->connectImageProducer(finder_, SIGNAL(markerFound(const cv::Mat&)));
+
+    thresholdTunerView_ -> connectImageProducer(camera_, SIGNAL(imageAcquired(const cv::Mat&)));
 
     edgeView_->connectImageProducer(finder_, SIGNAL(edgesDetected(const cv::Mat&)));
 

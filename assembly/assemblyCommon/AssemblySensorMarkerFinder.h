@@ -13,6 +13,14 @@
 class AssemblySensorMarkerFinder : public AssemblyVMarkerFinder
 {
     Q_OBJECT
+protected:
+    
+    int generalThreshold;
+
+    double matchLoc_x_lab;
+    double matchLoc_y_lab;
+    int labmode_g, objectmode_g;
+
 public:
     explicit AssemblySensorMarkerFinder(QObject *parent = 0);
     ~AssemblySensorMarkerFinder();
@@ -35,10 +43,9 @@ public:
     double linesHoughMinLineLength() const { return linesHoughMinLineLength_; }
     double linesHoughMaxLineGap() const { return linesHoughMaxLineGap_; }
 
-    double matchLoc_x_lab;
-    double matchLoc_y_lab;
-    int labmode_g, objectmode_g;
-    
+    int getGeneralThresholdValue() {return generalThreshold; }
+    void setGeneralThresholdValue(int newThresholdValue) { generalThreshold = newThresholdValue; }
+
     cv::Mat img, img_clip_A, img_clip_B, result_1, result_2, dst;
 
 
@@ -49,6 +56,7 @@ public slots:
 
     void setGaussianBlurKernelSize(int value) { gaussianBlurKernelSize_ = value; }
     void setGaussianBlurSigma(int value) { gaussianBlurSigma_ = value;}
+    void setNewGeneralThreshold(int value) { generalThreshold = value;}
 
     void setExpectedCircleSize(double value) { expectedCircleRadius_ = value; }
     void setCircleEdgeDetectionThreshold(int value) { circleEdgeDetectionThreshold_ = value; }
