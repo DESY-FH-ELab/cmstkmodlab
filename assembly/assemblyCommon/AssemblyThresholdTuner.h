@@ -12,10 +12,13 @@
 #include <QLabel>
 #include <QPushButton>
 #include <QFormLayout>
+#include <QString>
 
 #include <AssemblyVUEyeCamera.h>
 #include <AssemblyVMarkerFinder.h>
 #include <AssemblyUEyeView.h>
+#include "nqlogger.h"
+
 
 class AssemblyThresholdTuner : public QWidget
 {
@@ -45,8 +48,8 @@ public slots:
     void snapShot();
     void imageAcquired(const cv::Mat&);
     void setNewThreshold();
-    //void updateThresholdLabel(int value) { lineEdit -> setText(std::to_string(value)); }
-    void updateThresholdLabel(int value) { lineEdit -> setText("123456"); }
+    void updateThresholdLabel(int value) { 
+    NQLog("AssemblyThresholdTuner") << " : INFO!! : threshold received. Value = " << value; lineEdit -> setText(QString::number(value)); }
 
  signals:
     

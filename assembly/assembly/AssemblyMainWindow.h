@@ -81,6 +81,7 @@ signals:
   void closeCamera();
   void acquireImage();
   void updateVacuumChannelsStatus();
+  void updateThresholdLabel();
     
 protected slots:
 

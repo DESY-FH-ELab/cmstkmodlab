@@ -1,5 +1,3 @@
-#include "nqlogger.h"
-
 #include "ConradManager.h"
 
 

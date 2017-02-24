@@ -4,6 +4,8 @@
 #include <QObject>
 #include <QTimer>
 #include "ConradModel.h"
+#include "nqlogger.h"
+
 
 #if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
 #include <QDesktopServices>

@@ -9,6 +9,8 @@
 #include <QTimer>
 #include <QDateTime>
 #include <QString>
+#include "nqlogger.h"
+
 
 class AssemblySensorMarkerFinder : public AssemblyVMarkerFinder
 {
@@ -56,7 +58,9 @@ public slots:
 
     void setGaussianBlurKernelSize(int value) { gaussianBlurKernelSize_ = value; }
     void setGaussianBlurSigma(int value) { gaussianBlurSigma_ = value;}
-    void setNewGeneralThreshold(int value) { generalThreshold = value;}
+    void setNewGeneralThreshold(int value);
+    void getCurrentGeneralThreshold() { 
+    NQLog("AssemblySensorMarkerFinder") << " : INFO! : update signal received and threshold sent."; emit sendCurrentGeneralThreshold(generalThreshold); }
 
     void setExpectedCircleSize(double value) { expectedCircleRadius_ = value; }
     void setCircleEdgeDetectionThreshold(int value) { circleEdgeDetectionThreshold_ = value; }
@@ -155,6 +159,7 @@ signals:
     void getImage();
     void getImageBlur(cv::Mat, cv::Rect);
     void acquireImage();
+    void sendCurrentGeneralThreshold(int);
 
 };
 

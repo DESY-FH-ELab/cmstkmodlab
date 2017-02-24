@@ -735,7 +735,8 @@ void AssemblySensorMarkerFinder::findMarker_templateMatching(cv::Mat img, cv::Ma
     int color = 200;
     
     
-    for (float theta = -64.0; theta < 64.0;  theta = theta + 3.2){
+    for (float theta = 14.0; theta < 34.0;  theta = theta + 0.5){
+      //    for (float theta = -64.0; theta < 64.0;  theta = theta + 3.2){
         //    for (float theta = -180.0; theta < 180.0;  theta = theta + 9.0){
         
         // Point2f src_center(img_gs_copy.cols/2.0F, img_gs_copy.rows/2.0F);
@@ -1179,4 +1180,12 @@ void AssemblySensorMarkerFinder::findMarker_circleSeed(int mode)
     NQLog("AssemblyVUEyeCamera") << "  found marker";
     
 
+}
+
+
+void AssemblySensorMarkerFinder::setNewGeneralThreshold(int value)
+{
+  generalThreshold = value;
+  emit sendCurrentGeneralThreshold(value);  
+  NQLog("AssemblySensorMarkerFinder") << " Threshold value successfuly changed to value = "<< value;
 }

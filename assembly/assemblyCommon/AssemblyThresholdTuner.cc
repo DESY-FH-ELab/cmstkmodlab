@@ -63,21 +63,20 @@ AssemblyThresholdTuner::AssemblyThresholdTuner(QWidget *parent)
     
     label -> setText("Threshold");
 
-    emit updateThresholdLabel();
-
     connect(setThresholdButton, SIGNAL(clicked()), this, SLOT(setNewThreshold()));
 }
 
 void AssemblyThresholdTuner::setNewThreshold()
 {
-  try
-    {
+  
       emit setNewThreshold((lineEdit -> text()).toInt());
+      /*try   //Is exceptions possible in Qt?
+    {
     }
   catch (const std::exception& e)
     {
       NQLog("AssemblyThresholdTuner") << " : ERROR! : incorrect threshold value.";
-    }
+    }*/
 }
 
 void AssemblyThresholdTuner::connectImageProducer(const QObject* sender,
