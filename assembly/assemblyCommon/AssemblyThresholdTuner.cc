@@ -24,23 +24,41 @@ AssemblyThresholdTuner::AssemblyThresholdTuner(QWidget *parent)
     QPalette palette;
     palette.setColor(QPalette::Background, QColor(220, 220, 220));
 
-    imageView_ = new AssemblyUEyeView();
-    imageView_->setMinimumSize(800, 600);
-    imageView_->setPalette(palette);
-    imageView_->setBackgroundRole(QPalette::Background);
-    imageView_->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-    imageView_->setScaledContents(true);
-    imageView_->setAlignment(Qt::AlignCenter);
+    imageView1_ = new AssemblyUEyeView();
+    imageView1_->setMinimumSize(800, 600);
+    imageView1_->setPalette(palette);
+    imageView1_->setBackgroundRole(QPalette::Background);
+    imageView1_->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+    imageView1_->setScaledContents(true);
+    imageView1_->setAlignment(Qt::AlignCenter);
 
-    scrollArea_ = new QScrollArea(this);
-    scrollArea_->setMinimumSize(800, 600);
-    scrollArea_->setPalette(palette);
-    scrollArea_->setBackgroundRole(QPalette::Background);
-    scrollArea_->setAlignment(Qt::AlignCenter);
-    scrollArea_->setWidget(imageView_);
-    scrollArea_->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+    scrollArea1_ = new QScrollArea(this);
+    scrollArea1_->setMinimumSize(800, 600);
+    scrollArea1_->setPalette(palette);
+    scrollArea1_->setBackgroundRole(QPalette::Background);
+    scrollArea1_->setAlignment(Qt::AlignCenter);
+    scrollArea1_->setWidget(imageView1_);
+    scrollArea1_->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 
-    l->addWidget(scrollArea_, 1, 0);   
+    imageView2_ = new AssemblyUEyeView();
+    imageView2_->setMinimumSize(800, 600);
+    imageView2_->setPalette(palette);
+    imageView2_->setBackgroundRole(QPalette::Background);
+    imageView2_->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+    imageView2_->setScaledContents(true);
+    imageView2_->setAlignment(Qt::AlignCenter);
+
+    scrollArea2_ = new QScrollArea(this);
+    scrollArea2_->setMinimumSize(800, 600);
+    scrollArea2_->setPalette(palette);
+    scrollArea2_->setBackgroundRole(QPalette::Background);
+    scrollArea2_->setAlignment(Qt::AlignCenter);
+    scrollArea2_->setWidget(imageView2_);
+    scrollArea2_->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+
+
+    l->addWidget(scrollArea1_, 1, 0); 
+    l->addWidget(scrollArea2_, 2, 0);   
 
     setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 
@@ -55,7 +73,7 @@ AssemblyThresholdTuner::AssemblyThresholdTuner(QWidget *parent)
     lTuner->addWidget(setThresholdButton,0,0);
     
     QFormLayout *fl1 = new QFormLayout(this);
-    lTuner->addLayout(fl1,1,0);
+    lTuner->addLayout(fl1,2,0);
 
     label = new QLabel();
     lineEdit = new QLineEdit();
@@ -73,7 +91,7 @@ void AssemblyThresholdTuner::setNewThreshold()
       /*try   //Is exceptions possible in Qt?
     {
     }
-  catch (const std::exception& e)
+    catch (const std::exception& e)
     {
       NQLog("AssemblyThresholdTuner") << " : ERROR! : incorrect threshold value.";
     }*/
@@ -84,7 +102,7 @@ void AssemblyThresholdTuner::connectImageProducer(const QObject* sender,
 {
     NQLog("AssemblyThresholdTuner") << ":connectImageProducer";
 
-    imageView_->connectImageProducer(sender, signal);
+    imageView1_->connectImageProducer(sender, signal);
 
     connect(sender, signal,
             this, SLOT(imageAcquired(const cv::Mat&)));
@@ -95,7 +113,7 @@ void AssemblyThresholdTuner::disconnectImageProducer(const QObject* sender,
 {
     NQLog("AssemblyThresholdTuner") << ":disconnectImageProducer";
 
-    imageView_->disconnectImageProducer(sender, signal);
+    imageView1_->disconnectImageProducer(sender, signal);
 
     disconnect(sender, signal,
                this, SLOT(imageAcquired(const cv::Mat&)));
@@ -125,19 +143,23 @@ void AssemblyThresholdTuner::keyReleaseEvent(QKeyEvent * event)
     if (!(event->modifiers() & Qt::ShiftModifier)) {
         switch (event->key()) {
         case Qt::Key_0:
-            imageView_->setZoomFactor(0.25);
+            imageView1_->setZoomFactor(0.25);
+            imageView2_->setZoomFactor(0.25);
             event->accept();
             break;
         case Qt::Key_1:
-            imageView_->setZoomFactor(1.00);
+            imageView1_->setZoomFactor(1.00);
+            imageView2_->setZoomFactor(1.00);
             event->accept();
             break;
         case Qt::Key_Plus:
-            imageView_->increaseZoomFactor();
+            imageView1_->increaseZoomFactor();
+            imageView2_->increaseZoomFactor();
             event->accept();
             break;
         case Qt::Key_Minus:
-            imageView_->decreaseZoomFactor();
+            imageView1_->decreaseZoomFactor();
+            imageView2_->decreaseZoomFactor();
             event->accept();
             break;
         default:

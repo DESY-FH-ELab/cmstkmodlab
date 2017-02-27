@@ -34,15 +34,18 @@ protected:
 
     void keyReleaseEvent(QKeyEvent *event);
 
-    QScrollArea *scrollArea_;
-    AssemblyUEyeView *imageView_;
+    QScrollArea *scrollArea1_;
+    AssemblyUEyeView *imageView1_;
+
+    QScrollArea *scrollArea2_;
+    AssemblyUEyeView *imageView2_;
 
     QPushButton* setThresholdButton;
     QLabel* label;
     QLineEdit* lineEdit;
 
     cv::Mat image_;
-
+public slots:
 public slots:
 
     void snapShot();
