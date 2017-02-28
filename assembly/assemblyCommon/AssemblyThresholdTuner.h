@@ -30,6 +30,8 @@ public:
     void connectImageProducer(const QObject* sender, const char* signal);
     void disconnectImageProducer(const QObject* sender, const char* signal);
 
+    QPushButton* button;
+
 protected:
 
     void keyReleaseEvent(QKeyEvent *event);

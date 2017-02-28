@@ -55,8 +55,9 @@ AssemblyMainWindow::AssemblyMainWindow(QWidget *parent) :
     connect(this, SIGNAL(updateThresholdLabel()), finder_, SLOT(getCurrentGeneralThreshold()));
     connect(finder_, SIGNAL(sendCurrentGeneralThreshold(int)), thresholdTunerView_, SLOT(updateThresholdLabel(int)));
     connect(thresholdTunerView_, SIGNAL(setNewThreshold(int)), finder_, SLOT(setNewGeneralThreshold(int)));
+    connect(thresholdTunerView_ -> button, SIGNAL(clicked(bool))), camera_, SLOT(acquireImage()));
     emit updateThresholdLabel();    
-    NQLog("AssemblyThresholdTuner") << " : INFO! : update signal sent.";
+    NQLog("AssemblyThresholdTuner") << " : INFO! : initialization signal sent.";
 
     assembleView_ = new AssemblyModuleAssembler(uEyeModel_, finder_, lStepExpressModel_, tabWidget_);
     tabWidget_->addTab(assembleView_, "Manual assembly");

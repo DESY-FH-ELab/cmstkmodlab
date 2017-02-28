@@ -15,7 +15,7 @@ AssemblyThresholdTuner::AssemblyThresholdTuner(QWidget *parent)
   QGridLayout *l = new QGridLayout();
   setLayout(l);  
 
-    QPushButton * button = new QPushButton("save", this);
+    button = new QPushButton("save", this);
     connect(button, SIGNAL(clicked(bool)),
             this, SLOT(snapShot()));
     
