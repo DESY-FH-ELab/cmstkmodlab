@@ -58,9 +58,6 @@ public slots:
 
     void setGaussianBlurKernelSize(int value) { gaussianBlurKernelSize_ = value; }
     void setGaussianBlurSigma(int value) { gaussianBlurSigma_ = value;}
-    void setNewGeneralThreshold(int value);
-    void getCurrentGeneralThreshold() { 
-    NQLog("AssemblySensorMarkerFinder") << " : INFO! : update signal received and threshold sent."; emit sendCurrentGeneralThreshold(generalThreshold); }
 
     void setExpectedCircleSize(double value) { expectedCircleRadius_ = value; }
     void setCircleEdgeDetectionThreshold(int value) { circleEdgeDetectionThreshold_ = value; }
@@ -81,6 +78,10 @@ public slots:
     virtual void findMarker_circleSeed(int);
     virtual void findMarker_templateMatching(cv::Mat, cv::Mat);
 
+    //ThresholdTunerSlots
+    void setNewGeneralThreshold(int value);
+    void getCurrentGeneralThreshold();
+    void updateThresholdImage();
 
 protected slots:
     void runObjectDetection(int labmode, int objectmode);
@@ -160,6 +161,7 @@ signals:
     void getImageBlur(cv::Mat, cv::Rect);
     void acquireImage();
     void sendCurrentGeneralThreshold(int);
+    void sendUpdatedThresholdImage(QString);
 
 };
 

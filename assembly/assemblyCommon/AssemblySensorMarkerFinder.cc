@@ -79,7 +79,8 @@ void AssemblySensorMarkerFinder::runObjectDetection(int labmode, int objectmode)
 
     if(labmode == 1){
         
-    emit acquireImage();
+    emit acquireImage
+      ();
         
     }else if (labmode == 0){
         
@@ -640,7 +641,7 @@ void AssemblySensorMarkerFinder::findMarker_templateMatching(cv::Mat img, cv::Ma
 {
     NQLog("AssemblySensorMarkerFinder") << "Finding Marker (Template Matching) here";
 
-    NQLog("AssemblySensorMarkerFinder") << ", numer of image channels =  "<<img_clip_A.channels() ;
+    NQLog("AssemblySensorMarkerFinder") << ", number of image channels =  "<<img_clip_A.channels() ;
       
     Point matchLoc_1, matchLoc_2, matchLoc_final;
     Mat result_1, result_2; 
@@ -1182,10 +1183,67 @@ void AssemblySensorMarkerFinder::findMarker_circleSeed(int mode)
 
 }
 
-
 void AssemblySensorMarkerFinder::setNewGeneralThreshold(int value)
 {
   generalThreshold = value;
-  emit sendCurrentGeneralThreshold(value);  
+  emit sendCurrentGeneralThreshold(value);
+  this -> updateThresholdImage();
   NQLog("AssemblySensorMarkerFinder") << " Threshold value successfuly changed to value = "<< value;
+}
+
+void AssemblySensorMarkerFinder::getCurrentGeneralThreshold()
+{ 
+    NQLog("AssemblySensorMarkerFinder") << " : INFO! : update signal received and threshold sent.";
+    emit sendCurrentGeneralThreshold(generalThreshold); }
+
+void AssemblySensorMarkerFinder::updateThresholdImage()
+{
+
+
+    Mat img_copy = img.clone();
+    
+    //Greyscale images
+    Mat img_copy_gs(img_copy.size(), img_copy.type());
+    Mat img_clip_A_gs(img_clip_A.size(), img_clip_A.type());
+    
+
+    if (img.channels()> 1){
+    //convert color to GS
+    cvtColor( img_copy,   img_copy_gs,   CV_BGR2GRAY );
+    }else{
+     img_copy_gs = img_copy.clone();
+}
+
+    if (img_clip_A.channels()> 1){
+    //convert color to GS
+    cvtColor( img_clip_A, img_clip_A_gs, CV_BGR2GRAY );
+    }else{
+     img_clip_A_gs = img_clip_A.clone();
+}
+
+
+
+    //Binary images
+    Mat img_copy_bin(img_copy_gs.size(), img_copy_gs.type());
+    Mat img_clip_A_bin(img_clip_A_gs.size(), img_clip_A_gs.type());
+    
+    //Apply thresholding
+    cv::threshold(img_copy_gs, img_copy_bin, generalThreshold, 255, cv::THRESH_BINARY);
+    cv::threshold(img_clip_A_gs, img_clip_A_bin, 90, 255, cv::THRESH_BINARY);
+     
+    std::string filename_img_bin = Config::CMSTkModLabBasePath + "/share/assembly/Sensor_bin.png";
+    std::string filename_clip_A_bin = Config::CMSTkModLabBasePath + "/share/assembly/clip_A_bin.png";
+    NQLog("AssemblySensorMarkerFinder") << "::updateThresholdImage() ######################";
+    cv::imwrite(filename_img_bin, img_copy_bin);
+    cv::imwrite(filename_clip_A_bin, img_clip_A_bin);
+    NQLog("AssemblySensorMarkerFinder") << "::updateThresholdImage() !!!!!!!!!!!!!!!!!!!!!!!!!!!";
+    
+    QString filename_img_bin_qs = QString::fromStdString(filename_img_bin);
+    QString filename_clip_A_bin_qs = QString::fromStdString(filename_clip_A_bin);
+    
+    QString filename_template = QString::fromStdString(filename_clip_A_bin);
+    QString filename_master = QString::fromStdString(filename_img_bin);
+    
+    //emit sendUpdatedThresholdImage(filename_template);
+    emit sendUpdatedThresholdImage(filename_master);
 }

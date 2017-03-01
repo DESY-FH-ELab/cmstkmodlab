@@ -47,19 +47,22 @@ protected:
     QLineEdit* lineEdit;
 
     cv::Mat image_;
-public slots:
+    
 public slots:
 
     void snapShot();
     void imageAcquired(const cv::Mat&);
     void setNewThreshold();
-    void updateThresholdLabel(int value) { 
-    NQLog("AssemblyThresholdTuner") << " : INFO!! : threshold received. Value = " << value; lineEdit -> setText(QString::number(value)); }
+    void updateThresholdLabelSlot(int);
+    void enableThresholdButton();
+    void disableThresholdButton();
+    void updateThresholdImage(QString);
 
  signals:
     
     void setNewThreshold(int);
     void updateThresholdLabel();
+    void updateThresholdImagePicture();
 
 };
 
