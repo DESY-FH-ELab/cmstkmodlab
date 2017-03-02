@@ -736,7 +736,7 @@ void AssemblySensorMarkerFinder::findMarker_templateMatching(cv::Mat img, cv::Ma
     int color = 200;
     
     
-    for (float theta = 14.0; theta < 34.0;  theta = theta + 0.5){
+    for (float theta = 17.0; theta < 27.0;  theta = theta + 0.25){
       //    for (float theta = -64.0; theta < 64.0;  theta = theta + 3.2){
         //    for (float theta = -180.0; theta < 180.0;  theta = theta + 9.0){
         
