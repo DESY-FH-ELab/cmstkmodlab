@@ -79,9 +79,9 @@ public slots:
     virtual void findMarker_templateMatching(cv::Mat, cv::Mat);
 
     //ThresholdTunerSlots
-    void setNewGeneralThreshold(int value);
+    void setNewGeneralThreshold(int, cv::Mat);
     void getCurrentGeneralThreshold();
-    void updateThresholdImage();
+    void updateThresholdImage(cv::Mat);
 
 protected slots:
     void runObjectDetection(int labmode, int objectmode);

@@ -89,7 +89,7 @@ void AssemblyThresholdTuner::setNewThreshold()
   NQLog("AssemblyThresholdTuner") << "::setNewThreshold():: INFO!!!! Threshold button pressed.";
   
   setThresholdButton -> setEnabled(false);
-  emit setNewThreshold((lineEdit -> text()).toInt());
+  emit setNewThreshold((lineEdit -> text()).toInt(), image_);
       
       /*try   //Is exceptions possible in Qt?
     {
@@ -125,7 +125,8 @@ void AssemblyThresholdTuner::updateThresholdImage(QString filename)
 
   cv::Mat img_gs = cv::imread(filename_ss, CV_LOAD_IMAGE_UNCHANGED);
   
-  imageView2_->setImage(img_gs);
+  imageView2_ -> setImage(img_gs);
+  //imageView2_ -> setImage(image_);
   //imageView2_->setZoomFactor(0.5);
 
 }
@@ -166,9 +167,11 @@ void AssemblyThresholdTuner::snapShot()
     cv::imwrite(filename.toStdString(), image_);
 }
 
-void AssemblyThresholdTuner::imageAcquired(const cv::Mat& newImage)
+//void AssemblyThresholdTuner::imageAcquired(const cv::Mat& newImage)
+void AssemblyThresholdTuner::imageAcquired(cv::Mat newImage)
 {
-    newImage.copyTo(image_);
+  NQLog("AssemblyThresholdTuner") << "::imageAcquired(const cv::Mat& newImage) : IMAGE copied!!!";
+  newImage.copyTo(image_);
 }
 
 void AssemblyThresholdTuner::keyReleaseEvent(QKeyEvent * event)

@@ -51,7 +51,8 @@ protected:
 public slots:
 
     void snapShot();
-    void imageAcquired(const cv::Mat&);
+    //void imageAcquired(const cv::Mat&);
+    void imageAcquired(cv::Mat);
     void setNewThreshold();
     void updateThresholdLabelSlot(int);
     void enableThresholdButton();
@@ -60,7 +61,7 @@ public slots:
 
  signals:
     
-    void setNewThreshold(int);
+    void setNewThreshold(int, cv::Mat);
     void updateThresholdLabel();
     void updateThresholdImagePicture();
 

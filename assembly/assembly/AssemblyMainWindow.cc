@@ -55,9 +55,10 @@ AssemblyMainWindow::AssemblyMainWindow(QWidget *parent) :
     connect(thresholdTunerView_, SIGNAL(updateThresholdLabel()), finder_, SLOT(getCurrentGeneralThreshold()));    
     connect(this, SIGNAL(updateThresholdLabel()), finder_, SLOT(getCurrentGeneralThreshold()));
     connect(finder_, SIGNAL(sendCurrentGeneralThreshold(int)), thresholdTunerView_, SLOT(updateThresholdLabelSlot(int)));
-    connect(thresholdTunerView_, SIGNAL(setNewThreshold(int)), finder_, SLOT(setNewGeneralThreshold(int)));
-    //connect(thresholdTunerView_ -> button, SIGNAL(clicked(bool))), camera_, SLOT(acquireImage()));
-    connect(finder_, SIGNAL(sendUpdatedThresholdImage(QString)), thresholdTunerView_, SLOT(updateThresholdImage(Qstring)));
+    connect(thresholdTunerView_, SIGNAL(setNewThreshold(int,cv::Mat)), finder_, SLOT(setNewGeneralThreshold(int, cv::Mat)));
+    //connect(camera_, SIGNAL(imageAcquired(cv::Mat)), thresholdTunerView_, SLOT(imageAcquired(const cv::Mat&)));
+    connect(camera_, SIGNAL(imageAcquired(cv::Mat)), thresholdTunerView_, SLOT(imageAcquired(cv::Mat)));
+    connect(finder_, SIGNAL(sendUpdatedThresholdImage(QString)), thresholdTunerView_, SLOT(updateThresholdImage(QString)));
     emit updateThresholdLabel();    
     NQLog("AssemblyThresholdTuner") << " : INFO! : initialization signal sent.";
 
