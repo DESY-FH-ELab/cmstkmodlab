@@ -64,6 +64,7 @@ void  AssemblyScanner::run_precisionestimation(double x_m, double y_m, double z_
     step = 0;
     z_prepickup = z_pickup + 5.00;
 
+
     emit nextStep();
 }
 
@@ -211,7 +212,10 @@ void  AssemblyScanner::process_step(){
         TH1F * h_x = new TH1F("","", 20,-0.5, 0.5);
         TH1F * h_y = new TH1F("","", 20,-0.5, 0.5);
         TH1F * h_theta = new TH1F("","", 20,-1.0,1.0);
-        
+
+	
+	outfile.open("DataLogfile.txt");
+	
         for (int i = 0; i< iterations; i++){
         
             h_x->Fill(xpre_vec[i] - xpost_vec[i] );
@@ -219,7 +223,13 @@ void  AssemblyScanner::process_step(){
             h_theta->Fill(thetapre_vec[i] - thetapost_vec[i] );
 	    NQLog("AssemblyScanner::")<< " filling histos with: x pre  =  "<<  xpre_vec[i] << " x post  "<< xpost_vec[i] << " y  pre  = "<<  ypre_vec[i] << " y post  "<< ypost_vec[i] <<  " theta pre "<<   thetapre_vec[i] << " theta  post  = "<<  thetapost_vec[i] ;
 
+	    outfile << xpre_vec[i] << "," << ypre_vec[i] << "," << thetapre_vec[i] << ",";
+	    outfile << xpost_vec[i] << "," << ypost_vec[i] << "," << thetapost_vec[i] << ",";
+	    outfile << std::endl;
+
         }
+
+	outfile.close();
 
         string x_canvas_s = "c_x.png";
         string y_canvas_s = "c_y.png";
