@@ -82,6 +82,8 @@ AssemblyThresholdTuner::AssemblyThresholdTuner(QWidget *parent)
     label -> setText("Threshold");
 
     connect(setThresholdButton, SIGNAL(clicked()), this, SLOT(setNewThreshold()));
+
+    
 }
 
 void AssemblyThresholdTuner::setNewThreshold()
@@ -113,6 +115,7 @@ void AssemblyThresholdTuner::disableThresholdButton()
 void AssemblyThresholdTuner::updateThresholdLabelSlot(int value)
 { 
     NQLog("AssemblyThresholdTuner") << "::updateThresholdLabel():: INFO!! : threshold received. Value = " << value;
+    
     lineEdit -> setText(QString::number(value));
     setThresholdButton -> setEnabled(true);
 }

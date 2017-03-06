@@ -20,6 +20,7 @@
 #include "nqlogger.h"
 
 
+
 class AssemblyThresholdTuner : public QWidget
 {
     Q_OBJECT
@@ -31,7 +32,7 @@ public:
     void disconnectImageProducer(const QObject* sender, const char* signal);
 
     QPushButton* button;
-
+    
 protected:
 
     void keyReleaseEvent(QKeyEvent *event);

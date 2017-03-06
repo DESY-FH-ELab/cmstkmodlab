@@ -52,7 +52,7 @@ public:
   vector<double> xpre_vec,ypre_vec,thetapre_vec;
   vector<double> xpost_vec,ypost_vec,thetapost_vec;
   double step_distance;
-  ofstream outfile;
+  std::ofstream outfile;
 
 protected:
     double imageVariance(cv::Mat img_input, cv::Rect rectangle);
