@@ -439,9 +439,9 @@ AssemblyPrecisionEstimator::AssemblyPrecisionEstimator(QWidget *parent, string t
     
 
     
-    lineEdit1->setText("54.8327,-19.9927,-76.3294");
-    lineEdit2->setText("-34.1604,-60.9907,-107.3152");
-    lineEdit3->setText("3");
+    lineEdit1->setText("74.9968,-3.4013,-89.6049");
+    lineEdit2->setText("-13.0000,-46.9969,-120.3002");
+    lineEdit3->setText("1");
     
     connect(button1, SIGNAL(clicked()),
             this, SLOT(run()));
