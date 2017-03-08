@@ -124,8 +124,8 @@ void  AssemblyScanner::process_step(){
       NQLog("AssemblyScanner:: step == ") << step;
         step++;
         // Go to pre-pickup position
-	emit moveAbsolute(x_pickup,y_pickup,z_prepickup, 0.0);
-	//emit nextStep();
+	//emit moveAbsolute(x_pickup,y_pickup,z_prepickup, 0.0);
+	emit nextStep();
     }
     else if (step == 3){
 
@@ -139,18 +139,18 @@ void  AssemblyScanner::process_step(){
 
       NQLog("AssemblyScanner:: step == ") << step;
         step++;
-        //emit nextStep();
+        emit nextStep();
 
         // Step 4: Turn on vacuum
-        emit toggleVacuum(1);
+        //emit toggleVacuum(1);
         
     }else if (step == 5){
 
       NQLog("AssemblyScanner:: step == ") << step;
         step++;
-        //emit nextStep();
+        emit nextStep();
         // Step 6: Go back to pre-pickup position
-	emit moveAbsolute(x_pickup,y_pickup,z_prepickup, 0.0);
+	//emit moveAbsolute(x_pickup,y_pickup,z_prepickup, 0.0);
     }
     else if (step == 6){
 
@@ -165,18 +165,18 @@ void  AssemblyScanner::process_step(){
 
       NQLog("AssemblyScanner:: step == ") << step;
         step++;
-        //emit nextStep();
+        emit nextStep();
         // Step 8: Release vacuum
-        emit toggleVacuum(1);
+        //emit toggleVacuum(1);
 
         
     }else if (step == 8){
 
       NQLog("AssemblyScanner:: step == ") << step;
         step++;
-        //emit nextStep();
+        emit nextStep();
         // Step 9: Go back to pre-pickup position
-	emit moveAbsolute(x_pickup,y_pickup,z_prepickup, 0.0);
+	//emit moveAbsolute(x_pickup,y_pickup,z_prepickup, 0.0);
         
         
     }else if (step == 9){
@@ -215,6 +215,7 @@ void  AssemblyScanner::process_step(){
 
 	
 	outfile.open("DataLogfile.txt");
+	outfile << "x_pre,y_pre,theta_pre,x_pos,y_pos,theta_pos" << endl;
 	
         for (int i = 0; i< iterations; i++){
         
@@ -224,7 +225,7 @@ void  AssemblyScanner::process_step(){
 	    NQLog("AssemblyScanner::")<< " filling histos with: x pre  =  "<<  xpre_vec[i] << " x post  "<< xpost_vec[i] << " y  pre  = "<<  ypre_vec[i] << " y post  "<< ypost_vec[i] <<  " theta pre "<<   thetapre_vec[i] << " theta  post  = "<<  thetapost_vec[i] ;
 
 	    outfile << xpre_vec[i] << "," << ypre_vec[i] << "," << thetapre_vec[i] << ",";
-	    outfile << xpost_vec[i] << "," << ypost_vec[i] << "," << thetapost_vec[i] << ",";
+	    outfile << xpost_vec[i] << "," << ypost_vec[i] << "," << thetapost_vec[i];
 	    outfile << std::endl;
 
         }

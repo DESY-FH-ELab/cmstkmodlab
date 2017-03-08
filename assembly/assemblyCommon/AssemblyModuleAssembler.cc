@@ -439,8 +439,8 @@ AssemblyPrecisionEstimator::AssemblyPrecisionEstimator(QWidget *parent, string t
     
 
     
-    lineEdit1->setText("74.9968,-3.4013,-89.6049");
-    lineEdit2->setText("-13.0000,-46.9969,-120.3002");
+    lineEdit1->setText("-50.3352,-11.1187,-109.5057");
+    lineEdit2->setText("-45.3352,-6.1187,-104.5057");
     lineEdit3->setText("1");
     
     connect(button1, SIGNAL(clicked()),
