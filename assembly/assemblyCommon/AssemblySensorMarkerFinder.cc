@@ -79,8 +79,7 @@ void AssemblySensorMarkerFinder::runObjectDetection(int labmode, int objectmode)
 
     if(labmode == 1){
         
-    emit acquireImage
-      ();
+    emit acquireImage();
         
     }else if (labmode == 0){
         
@@ -124,9 +123,7 @@ void AssemblySensorMarkerFinder::runObjectDetection_labmode(cv::Mat master_image
 
     NQLog("AssemblySensorLocator::runObjectDetection_labmode()") << "" ;
 
-    //hard coding for lab tests, to be reomoved!!!!
-
-    objectmode_g = 2;
+    //objectmode_g = 2;    //hard coding for lab tests, to be reomoved!!!!
 
     if(objectmode_g==0){
         
@@ -736,9 +733,9 @@ void AssemblySensorMarkerFinder::findMarker_templateMatching(cv::Mat img, cv::Ma
     int color = 200;
     
     
-    for (float theta = 17.0; theta < 27.0;  theta = theta + 0.25){
+    for (float theta = -1; theta < 1;  theta = theta + 0.05){
       //    for (float theta = -64.0; theta < 64.0;  theta = theta + 3.2){
-        //    for (float theta = -180.0; theta < 180.0;  theta = theta + 9.0){
+    //    for (float theta = -180.0; theta < 180.0;  theta = theta + 9.0){
         
         // Point2f src_center(img_gs_copy.cols/2.0F, img_gs_copy.rows/2.0F);
         Point2f src_center( matchLoc_1.x + (img_clip_A_bin.cols/2) , matchLoc_1.y + (img_clip_A_bin.rows/2) );
