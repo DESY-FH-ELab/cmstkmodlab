@@ -200,6 +200,9 @@ AssemblyModuleAssembler::AssemblyModuleAssembler(AssemblyVUEyeModel *uEyeModel_,
   AssemblyPrecisionEstimator * precision1 = new AssemblyPrecisionEstimator(this, "Estimate Assembly Precision", "-200.0,0.0,0.0", "0.0,0.0,0.0", 1 );
   g1->addWidget(precision1 ,9,0);
 
+  AssemblySandwitchAssembler* sandwitch1 = new AssemblySandwitchAssembler(this, "Assemble Sandwitch");
+  gl -> addWidget(sandwitch1, 0, 4);
+
   //AssemblyCommander * cmdr4 = new AssemblyCommander(this, "Go to stat. camera", 100.0,100.0,100.0,100.0);
   //g1->addWidget(cmdr4, 9, 0);
 
@@ -499,6 +502,102 @@ void AssemblyPrecisionEstimator::run()
     
 }
 
+AssemblySandwitchAssembler::AssemblySandwitchAssembler(QWidget *parent, string text, string assembly_position, string bottom_part_position, string top_part_position)
+: QWidget(parent)
+{
+    QGridLayout *l = new QGridLayout(this);
+    setLayout(l);
+    
+    //QString q_assembly_pos = QString::fromStdString(assembly_pickup);
+    //QString q_bottom_pos = QString::fromStdString(bottom_part_position);
+    //QString q_top_pos = QString::fromStdString(bottom_part_position);
+    QString qname = QString::fromStdString(text);
+
+    button1 = new QPushButton(qname, this);
+    l->addWidget(button1,0,0);
+    
+    QFormLayout *fl1 = new QFormLayout(this);
+    l->addLayout(fl1,1,0);
+
+    label1 = new QLabel();
+    lineEdit1 = new QLineEdit();
+    fl1->addRow(label1,lineEdit1);
+
+    label2 = new QLabel();
+    lineEdit2 = new QLineEdit();
+    fl1->addRow(label2,lineEdit2);
+    
+    label3 = new QLabel();
+    lineEdit3 = new QLineEdit();
+    fl1->addRow(label3,lineEdit3);
+    
+
+    label1->setText("Assembly position (x,y,z)");
+    label2->setText("Bottom part position (x,y,z)");
+    label3->setText("Top part position (x,y,z)");
+    
+
+    
+    lineEdit1->setText("74.9968,-3.4013,-89.6049");
+    lineEdit2->setText("-13.0000,-46.9969,-120.3002");
+    lineEdit3->setText("-13.0000,-46.9969,-120.3002");
+    
+    connect(button1, SIGNAL(clicked()),
+            this, SLOT(run()));
+}
+
+
+void AssemblySandwitchAssembler::run()
+{
+    
+    NQLog("AssemblySandwitchAssembler") << ":run";
+    
+    
+    
+    //parse lineEdit text to get target coordinates
+    QString  parent_string_assembly = this->lineEdit1->text();
+    
+    QStringList pieces_assembly = parent_string_assembly.split( "," );
+    QString x_assembly_s = pieces_assembly.value( pieces_assembly.length() - 3);
+    QString y_assembly_s = pieces_assembly.value( pieces_assembly.length() - 2);
+    QString z_assembly_s = pieces_assembly.value( pieces_assembly.length() -1);
+    
+    double x_assembly_d = x_assembly_s.toDouble();
+    double y_assembly_d = y_assembly_s.toDouble();
+    double z_assembly_d = z_assembly_s.toDouble();
+    
+    
+    QString  parent_string_bottom = this->lineEdit2->text();
+    
+    QStringList pieces_bottom = parent_string_bottom.split( "," );
+    QString x_bottom_s = pieces_bottom.value( pieces_bottom.length() - 3);
+    QString y_bottom_s = pieces_bottom.value( pieces_bottom.length() - 2);
+    QString z_bottom_s = pieces_bottom.value( pieces_bottom.length() - 1);
+    
+    double x_bottom_d = x_bottom_s.toDouble();
+    double y_bottom_d = y_bottom_s.toDouble();
+    double z_bottom_d = z_bottom_s.toDouble();
+    
+    
+    QString  parent_string_top = this->lineEdit3->text();
+    
+    QStringList pieces_top = parent_string_top.split( "," );
+    QString x_top_s = pieces_top.value( pieces_top.length() - 3);
+    QString y_top_s = pieces_top.value( pieces_top.length() - 2);
+    QString z_top_s = pieces_top.value( pieces_top.length() - 1);
+    
+    double x_top_d = x_top_s.toDouble();
+    double y_top_d = y_top_s.toDouble();
+    double z_top_d = z_top_s.toDouble();
+    
+    NQLog("AssemblySandwitchAssembler::run")<<  " x_a = " << x_assembly_d <<  " y_a = " << y_assembly_d << " z_a = " << z_assembly_d;
+    NQLog("AssemblySandwitchAssembler::run")<<  " x_b = " << x_bottom_d <<  " y_b = " << y_bottom_d << " z_b = " << z_bottom_d;
+    NQLog("AssemblySandwitchAssembler::run")<<  " x_t = " << x_top_d <<  " y_t = " << y_top_d << " z_t = " << z_top_d;
+
+
+    emit launchSandwitchAssembly(x_assembly_d, y_assembly_d, z_assembly_d, x_bottom_d, y_bottom_d, z_bottom_d, x_top_d, y_top_d, z_top_d);
+    
+}
 
 
 AssemblyVacuumToggler::AssemblyVacuumToggler(QWidget *parent, std::string string)

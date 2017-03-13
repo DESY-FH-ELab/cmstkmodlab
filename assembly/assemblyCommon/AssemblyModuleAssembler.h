@@ -175,6 +175,33 @@ signals:
 };
 
 
+class AssemblySandwitchAssembler : public QWidget
+{
+    Q_OBJECT
+public:
+    
+    explicit AssemblySandwitchAssembler(QWidget *parent = 0, std::string text ="Assemble sandwitch",
+                                        std::string assembly_position = "0.0,0.0,0.0", std::string bottom_part_position = "0.0,0.0,0.0", std::string top_part_position = "0.0,0.0,0.0");
+    
+    //double local_x, local_y, local_z, local_a;
+    QPushButton* button1;
+    
+    QLabel * label1;
+    QLabel * label2;
+    QLabel * label3;
+    
+    QLineEdit *lineEdit1;
+    QLineEdit *lineEdit2;
+    QLineEdit *lineEdit3;
+
+    
+    protected:
+    
+    public slots:
+    void run();
+signals:
+    void launchSandwitchAssembly(double, double, double, double, double, double, double, double, double);
+};
 
 
 class AssemblyAttacher : public QWidget
