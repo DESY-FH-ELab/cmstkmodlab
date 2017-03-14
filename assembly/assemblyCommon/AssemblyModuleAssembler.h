@@ -138,6 +138,7 @@ signals:
 
   void moveAbsolute(double,double,double,double);
   void launchPrecisionEstimation(double, double, double, double, double, double, int);
+  void launchSandwitchAssembly(double, double, double, double, double, double, double, double, double);
 
 
 };

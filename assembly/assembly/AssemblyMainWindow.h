@@ -26,6 +26,7 @@ typedef AssemblyUEyeModel AssemblyUEyeModel_t;
 #include "AssemblyModuleAssembler.h"
 #include "AssemblyAutoFocus.h"
 #include "AssemblyScanner.h"
+#include "AssemblyAssembler.h"
 
 
 #include "AssemblyMarkerFinderThread.h"
@@ -74,6 +75,7 @@ public slots:
   void cameraClosed();
   void enableAutoFocus(int);
   void enablePrecisionEstimation(int);
+  void enableSandwitchAssembly(int);
 
 signals:
 
@@ -104,6 +106,7 @@ protected:
   AssemblyScanner*  cmdr_zscan;
   QCheckBox *checkbox1;
   QCheckBox *checkbox2;
+  QCheckBox *checkbox3;
 
     
   AssemblyUEyeModel_t* uEyeModel_;
@@ -125,6 +128,7 @@ protected:
     
   ConradModel * conradModel_;
   ConradManager* conradManager_;
+  AssemblyAssembler* module_assembler_;
 
   double testTimerCount_;
 

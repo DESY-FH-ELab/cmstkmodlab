@@ -47,8 +47,7 @@ AssemblyMainWindow::AssemblyMainWindow(QWidget *parent) :
     finder_ = new AssemblySensorMarkerFinder();
     finderThread_ = new AssemblyMarkerFinderThread(finder_, this);
     finderThread_->start();
-
-    
+ 
     thresholdTunerView_ = new AssemblyThresholdTuner(tabWidget_);
     tabWidget_->addTab(thresholdTunerView_, "Threshold");
 
@@ -79,6 +78,7 @@ AssemblyMainWindow::AssemblyMainWindow(QWidget *parent) :
     
     cmdr_zscan = new AssemblyScanner(lStepExpressModel_);
     conradManager_ = new ConradManager(conradModel_);
+    module_assembler_ = new AssemblyAssembler(lStepExpressModel_);
 
     connect(assembleView_ -> toggle1, SIGNAL(toggleVacuum(int)), conradManager_, SLOT(toggleVacuum(int)));
     //connect(assembleView_ -> toggle1, SIGNAL(toggleVacuum(int)), assembleView_ -> toggle1, SLOT(disableVacuumButton()));
@@ -140,11 +140,15 @@ AssemblyMainWindow::AssemblyMainWindow(QWidget *parent) :
     
     checkbox2 = new QCheckBox("Enable precision estimation", this);
     toolBar_->addWidget(checkbox2);
+    
+    checkbox3 = new QCheckBox("Enable sandwitch assembly", this);
+    toolBar_->addWidget(checkbox3);
   
     connect(checkbox1, SIGNAL(stateChanged(int)), this, SLOT(enableAutoFocus(int)));
-    
-    
+        
     connect(checkbox2, SIGNAL(stateChanged(int)), this, SLOT(enablePrecisionEstimation(int)));
+  
+    connect(checkbox3, SIGNAL(stateChanged(int)), this, SLOT(enableSandwitchAssembly(int)));
 
 
     setCentralWidget(tabWidget_);
@@ -218,7 +222,7 @@ void AssemblyMainWindow::enablePrecisionEstimation(int state){
         
     }else if (state == 0 ){
         
-    disconnect(cmdr_zscan, SIGNAL(moveRelative(double, double,double, double)),motionManager_, SLOT(moveRelative(double, double,double, double)));
+    disconnect(cmdr_zscan, SIGNAL(moveAbsolute(double, double,double, double)),motionManager_, SLOT(moveAbsolute(double, double,double, double)));
     disconnect(lStepExpressModel_, SIGNAL(motionFinished()), camera_, SLOT(acquireImage()));
     disconnect(cmdr_zscan, SIGNAL(toggleVacuum(int)), conradManager_, SLOT(toggleVacuum(int)));
     disconnect(conradManager_, SIGNAL(updateVacuumChannelState(int, bool)), cmdr_zscan, SIGNAL(nextStep()));
@@ -233,6 +237,56 @@ void AssemblyMainWindow::enablePrecisionEstimation(int state){
 
 
 
+void AssemblyMainWindow::enableSandwitchAssembly(int state){
+    
+    
+    NQLog("AssemblyMainWindow::enableSandwitchAssembly") << ": state  " << state;
+    
+    if (state == 2){
+        
+      connect(assembleView_, SIGNAL(launchSandwitchAssembly(double, double, double, double, double, double, double, double, double)), module_assembler_, SLOT(run_sandwitchassembly(double, double, double, double, double, double, double, double, double)));
+
+    connect(module_assembler_, SIGNAL(moveAbsolute(double, double, double, double)),motionManager_, SLOT(moveAbsolute(double, double,double, double)));
+    connect(lStepExpressModel_, SIGNAL(motionFinished()), module_assembler_, SLOT(process_step()));
+    connect(module_assembler_, SIGNAL(toggleVacuum(int)), conradManager_, SLOT(toggleVacuum(int)));
+    connect(conradManager_, SIGNAL(updateVacuumChannelState(int, bool)), module_assembler_, SIGNAL(nextStep()));
+        
+        //for testing with random numbers
+    // connect(cmdr_zscan, SIGNAL(makeDummies(int, double,double,double)), cmdr_zscan, SLOT(fill_positionvectors(int, double,double,double)));
+
+    //    for real lab tests with camera
+    connect(module_assembler_, SIGNAL(acquireImage()), camera_, SLOT(acquireImage()));
+
+    connect(module_assembler_, SIGNAL(showHistos(int, QString)), assembleView_, SLOT(updateImage(int, QString))); 
+
+    connect(camera_, SIGNAL(imageAcquired(cv::Mat)), finder_, SLOT(runObjectDetection_labmode(cv::Mat)) );
+    connect(finder_,SIGNAL(reportObjectLocation(int,double,double,double)), module_assembler_, SLOT(fill_positionvectors(int, double,double,double)));
+    connect(module_assembler_, SIGNAL(nextStep()), module_assembler_, SLOT(process_step()));
+
+        
+    }else if (state == 0 ){
+        
+    disconnect(assembleView_, SIGNAL(launchSandwitchAssembly(double, double, double, double, double, double, double, double, double)), module_assembler_, SLOT(run_sandwitchassembly(double, double, double, double, double, double, double, double, double)));
+
+    disconnect(module_assembler_, SIGNAL(moveAbsolute(double, double, double, double)),motionManager_, SLOT(moveAbsolute(double, double,double, double)));
+    disconnect(lStepExpressModel_, SIGNAL(motionFinished()), module_assembler_, SLOT(process_step()));
+    disconnect(module_assembler_, SIGNAL(toggleVacuum(int)), conradManager_, SLOT(toggleVacuum(int)));
+    disconnect(conradManager_, SIGNAL(updateVacuumChannelState(int, bool)), module_assembler_, SIGNAL(nextStep()));
+        
+        //for testing with random numbers
+    // disconnect(cmdr_zscan, SIGNAL(makeDummies(int, double,double,double)), cmdr_zscan, SLOT(fill_positionvectors(int, double,double,double)));
+
+    //    for real lab tests with camera
+    disconnect(module_assembler_, SIGNAL(acquireImage()), camera_, SLOT(acquireImage()));
+
+    disconnect(module_assembler_, SIGNAL(showHistos(int, QString)), assembleView_, SLOT(updateImage(int, QString))); 
+
+    disconnect(camera_, SIGNAL(imageAcquired(cv::Mat)), finder_, SLOT(runObjectDetection_labmode(cv::Mat)) );
+    disconnect(finder_,SIGNAL(reportObjectLocation(int,double,double,double)), module_assembler_, SLOT(fill_positionvectors(int, double,double,double)));
+    disconnect(module_assembler_, SIGNAL(nextStep()), module_assembler_, SLOT(process_step()));
+        
+    }
+}
 
 void AssemblyMainWindow::enableAutoFocus(int state){
 

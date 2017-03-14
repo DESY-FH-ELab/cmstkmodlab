@@ -1,5 +1,5 @@
-#ifndef ASSEMBLYSCANNER_H
-#define ASSEMBLYSCANNER_H
+#ifndef ASSEMBLYASSEMBLER_H
+#define ASSEMBLYASSEMBLER_H
 
 #include <string>
 #include <iostream>
@@ -29,7 +29,7 @@
 using namespace std;
 
 
-class AssemblyScanner : public QObject
+class AssemblyAssembler : public QObject
 {
   Q_OBJECT
 
@@ -39,13 +39,14 @@ public:
     
 
 
-  explicit AssemblyScanner(LStepExpressModel* lStepExpressModel_);
+  explicit AssemblyAssembler(LStepExpressModel* lStepExpressModel_);
 
-  double local_range, local_steps, local_delay;
-  double x_meas, y_meas, z_meas;
-  double x_pickup, y_pickup, z_pickup;
-  double z_prepickup;
-  int iteration, iterations;
+  //double local_range, local_steps, local_delay;
+  double x_assembly, y_assembly, z_assembly;
+  double x_bottom, y_bottom, z_bottom;
+  double x_top, y_top, z_top;
+  double z_prepickup_distance, z_spacer_thickness, z_sensor_thickness;
+  double platform_rotation;
     
   int nTotalImages, nAcquiredImages, step;
   vector<double> x_vals, y_vals;
@@ -54,13 +55,13 @@ public:
   double step_distance;
   std::ofstream outfile;
 
-protected:
-    double imageVariance(cv::Mat img_input, cv::Rect rectangle);
+  protected:
+  double imageVariance(cv::Mat img_input, cv::Rect rectangle);
 
 public slots:
   void run_scan(double, int);
   void write_image(cv::Mat, cv::Rect);
-  void run_precisionestimation(double, double, double, double, double, double, int);
+  void run_sandwitchassembly(double, double, double, double, double, double, double, double, double);
   void process_step();
   void fill_positionvectors(int , double, double, double);
 

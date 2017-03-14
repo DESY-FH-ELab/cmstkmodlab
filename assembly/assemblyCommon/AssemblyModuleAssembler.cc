@@ -200,8 +200,11 @@ AssemblyModuleAssembler::AssemblyModuleAssembler(AssemblyVUEyeModel *uEyeModel_,
   AssemblyPrecisionEstimator * precision1 = new AssemblyPrecisionEstimator(this, "Estimate Assembly Precision", "-200.0,0.0,0.0", "0.0,0.0,0.0", 1 );
   g1->addWidget(precision1 ,9,0);
 
+  QGridLayout *g2 = new QGridLayout();
+  l->addLayout(g2,1,1);
+  
   AssemblySandwitchAssembler* sandwitch1 = new AssemblySandwitchAssembler(this, "Assemble Sandwitch");
-  gl -> addWidget(sandwitch1, 0, 4);
+  g2 -> addWidget(sandwitch1, 0, 0);
 
   //AssemblyCommander * cmdr4 = new AssemblyCommander(this, "Go to stat. camera", 100.0,100.0,100.0,100.0);
   //g1->addWidget(cmdr4, 9, 0);
