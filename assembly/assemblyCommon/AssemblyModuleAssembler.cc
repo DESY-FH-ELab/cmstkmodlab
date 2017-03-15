@@ -231,7 +231,8 @@ AssemblyModuleAssembler::AssemblyModuleAssembler(AssemblyVUEyeModel *uEyeModel_,
     
   connect(precision1, SIGNAL(launchPrecisionEstimation(double, double, double, double, double, double, int)),
             this, SLOT(startMacro(double, double, double, double, double, double, int)));
-    
+  
+  connect(sandwitch1, SIGNAL(launchSandwitchAssembly(double, double, double, double, double, double, double, double, double)), this, SIGNAL(launchSandwitchAssembly(double, double, double, double, double, double, double, double, double)));
     
   //connect(cmdr2, SIGNAL(moveAbsolute(double,double,double,double)),
   //        motionManager_, SLOT(moveRelative(double,double,double,double)));
@@ -314,7 +315,7 @@ void AssemblyModuleAssembler::updateImage(int stage, QString filename)
 
   if (stage == 1 ){
     imageView_1->setImage(img_gs);
-    imageView_1->setZoomFactor(0.5);
+    imageView_1->setZoomFactor(0.3);
     
   }else if (stage ==2){
     imageView_2->setImage(img_gs);
@@ -541,9 +542,9 @@ AssemblySandwitchAssembler::AssemblySandwitchAssembler(QWidget *parent, string t
     
 
     
-    lineEdit1->setText("74.9968,-3.4013,-89.6049");
-    lineEdit2->setText("-13.0000,-46.9969,-120.3002");
-    lineEdit3->setText("-13.0000,-46.9969,-120.3002");
+    lineEdit1->setText("0.0,55.0,-108.0");
+    lineEdit2->setText("50.0,-111.90,-127.7184");
+    lineEdit3->setText("-80.0,-111.90,-125.70");
     
     connect(button1, SIGNAL(clicked()),
             this, SLOT(run()));

@@ -156,9 +156,9 @@ void  AssemblyScanner::process_step(){
 
       NQLog("AssemblyScanner:: step == ") << step;
         step++;
-	//emit nextStep();
+	emit nextStep();
         // Step 7: Go back to pickup position
-        emit moveAbsolute(x_pickup,y_pickup,z_pickup, 0.0);
+        //emit moveAbsolute(x_pickup,y_pickup,z_pickup, 0.0);
  
         
     }else if (step == 7){

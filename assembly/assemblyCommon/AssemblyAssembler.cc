@@ -55,12 +55,16 @@ void  AssemblyAssembler::run_sandwitchassembly(double x_a, double y_a, double z_
     x_bottom = x_b;
     y_bottom = y_b;
     z_bottom = z_b;
+
+    x_top = x_t;
+    y_top = y_t;
+    z_top = z_t;
     
     step = 0;
 
     //Parameters of assembly.
-    z_prepickup_distance = 5.00;
-    platform_rotation = 90.00;
+    z_prepickup_distance = 20.00;
+    platform_rotation = -90.00;
     z_spacer_thickness = 2.00;
     z_sensor_thickness = 0.30;
 
@@ -105,7 +109,7 @@ void  AssemblyAssembler::process_step(){
       NQLog("AssemblyAssembler:: step == ") << step;
         step++;
 // Step 0: Go to top part pre-pick up position
-        emit moveAbsolute(x_top, y_top, (z_top - z_prepickup_distance), 0.0);
+        emit moveAbsolute(x_top, y_top, (z_top + z_prepickup_distance), 0.0);
         //emit nextStep();
     }
     else if  (step == 1){
@@ -129,7 +133,7 @@ void  AssemblyAssembler::process_step(){
       NQLog("AssemblyScanner:: step == ") << step;
         step++;
 // Step 3: Go to top part pre-pick up position
-        emit moveAbsolute(x_top, y_top, (z_top - z_prepickup_distance), 0.0);
+        emit moveAbsolute(x_top, y_top, (z_top + z_prepickup_distance), 0.0);
         //emit nextStep();
         
     }else if (step == 4){
@@ -137,7 +141,7 @@ void  AssemblyAssembler::process_step(){
       NQLog("AssemblyAssembler:: step == ") << step;
         step++;
 // Step 4: Go to assembly pre-pick up position
-        emit moveAbsolute(x_assembly, y_assembly, (z_assembly - z_prepickup_distance), 0.0);
+        emit moveAbsolute(x_assembly, y_assembly, (z_assembly + z_prepickup_distance), 0.0);
         //emit nextStep();
         
     }else if (step == 5){
@@ -169,7 +173,7 @@ void  AssemblyAssembler::process_step(){
       NQLog("AssemblyAssembler:: step == ") << step;
         step++;
 // Step 8: Go to assembly pre-pick up position
-        emit moveAbsolute(x_assembly, y_assembly, (z_assembly - z_prepickup_distance), 0.0);
+        emit moveAbsolute(x_assembly, y_assembly, (z_assembly + z_prepickup_distance), 0.0);
         //emit nextStep();
         
         
@@ -178,7 +182,7 @@ void  AssemblyAssembler::process_step(){
       NQLog("AssemblyAssembler:: step == ") << step;
         step++;
 // Step 9: Go to top pre-pick up position
-        emit moveAbsolute(x_top, y_top, (z_top - z_spacer_thickness - z_prepickup_distance), 0.0);
+        emit moveAbsolute(x_top, y_top, (z_top + z_spacer_thickness + z_prepickup_distance), 0.0);
         //emit nextStep();
 
    
@@ -187,7 +191,7 @@ void  AssemblyAssembler::process_step(){
       NQLog("AssemblyAssembler:: step == ") << step;
         step++;
 // Step 10: Go to top pick up position
-        emit moveAbsolute(x_top, y_top, (z_top - z_spacer_thickness), 0.0);
+        emit moveAbsolute(x_top, y_top, (z_top + z_spacer_thickness), 0.0);
         //emit nextStep();
 
     }else if (step == 11){
@@ -203,7 +207,7 @@ void  AssemblyAssembler::process_step(){
       NQLog("AssemblyAssembler:: step == ") << step;
         step++;
 // Step 9: Go to top part pre-pick up position
-        emit moveAbsolute(x_top, y_top, (z_top - z_spacer_thickness - z_prepickup_distance), 0.0);
+        emit moveAbsolute(x_top, y_top, (z_top + z_spacer_thickness + z_prepickup_distance), 0.0);
         //emit nextStep();
 
     }else if (step == 13){
@@ -211,7 +215,7 @@ void  AssemblyAssembler::process_step(){
       NQLog("AssemblyAssembler:: step == ") << step;
         step++;
 // Step 13: Go to bottom part pre-pick up position
-        emit moveAbsolute(x_bottom, y_bottom, (z_bottom - z_prepickup_distance), 0.0);
+        emit moveAbsolute(x_bottom, y_bottom, (z_bottom + z_prepickup_distance), 0.0);
         //emit nextStep();
 
     }else if (step == 14){
@@ -235,7 +239,7 @@ void  AssemblyAssembler::process_step(){
       NQLog("AssemblyAssembler:: step == ") << step;
         step++;
 // Step 16: Go to bottom part pre-pick up position
-        emit moveAbsolute(x_bottom, y_bottom, (z_bottom - z_prepickup_distance), 0.0);
+        emit moveAbsolute(x_bottom, y_bottom, (z_bottom + z_prepickup_distance), 0.0);
         //emit nextStep();
 
     }else if (step == 17){
@@ -243,7 +247,7 @@ void  AssemblyAssembler::process_step(){
       NQLog("AssemblyAssembler:: step == ") << step;
         step++;
 // Step 17: Go to assembly rotated(!) pre-pick up position
-        emit moveAbsolute(x_assembly, y_assembly, (z_assembly - z_prepickup_distance), platform_rotation);
+        emit moveAbsolute(x_assembly, y_assembly, (z_assembly + z_prepickup_distance), platform_rotation);
         //emit nextStep();	
 
 
@@ -268,7 +272,7 @@ void  AssemblyAssembler::process_step(){
       NQLog("AssemblyAssembler:: step == ") << step;
         step++;
 // Step 20: Go to assembly rotated(!) pre-pick up position
-        emit moveAbsolute(x_assembly, y_assembly, (z_assembly - z_prepickup_distance), platform_rotation);
+        emit moveAbsolute(x_assembly, y_assembly, (z_assembly + z_prepickup_distance), platform_rotation);
         //emit nextStep();
 	
     }else if (step == 21){
@@ -276,7 +280,7 @@ void  AssemblyAssembler::process_step(){
       NQLog("AssemblyAssembler:: step == ") << step;
         step++;
 // Step 21: Go to top pre-pick up position
-        emit moveAbsolute(x_top, y_top, (z_top - z_spacer_thickness - z_prepickup_distance), platform_rotation);
+        emit moveAbsolute(x_top, y_top, (z_top + z_spacer_thickness + z_prepickup_distance), platform_rotation);
         //emit nextStep();
 
    
@@ -285,7 +289,7 @@ void  AssemblyAssembler::process_step(){
       NQLog("AssemblyAssembler:: step == ") << step;
         step++;
 // Step 22: Go to top pick up position
-        emit moveAbsolute(x_top, y_top, (z_top - z_spacer_thickness), platform_rotation);
+        emit moveAbsolute(x_top, y_top, (z_top + z_spacer_thickness), platform_rotation);
         //emit nextStep();
 
     }else if (step == 23){
@@ -301,7 +305,7 @@ void  AssemblyAssembler::process_step(){
       NQLog("AssemblyAssembler:: step == ") << step;
         step++;
 // Step 24: Go to top part pre-pick up position
-        emit moveAbsolute(x_top, y_top, (z_top - z_spacer_thickness - z_prepickup_distance), platform_rotation);
+        emit moveAbsolute(x_top, y_top, (z_top + z_spacer_thickness + z_prepickup_distance), platform_rotation);
         //emit nextStep();
 
     }else if (step == 25){
@@ -309,7 +313,7 @@ void  AssemblyAssembler::process_step(){
       NQLog("AssemblyAssembler:: step == ") << step;
         step++;
 // Step 25: Go to assembly rotated(!) pre-pick up position
-        emit moveAbsolute(x_assembly, y_assembly, (z_assembly - z_spacer_thickness - z_sensor_thickness - z_prepickup_distance), platform_rotation);
+        emit moveAbsolute(x_assembly, y_assembly, (z_assembly + z_spacer_thickness + z_sensor_thickness + z_prepickup_distance), platform_rotation);
         //emit nextStep();
 
     }else if (step == 26){
@@ -317,7 +321,7 @@ void  AssemblyAssembler::process_step(){
       NQLog("AssemblyAssembler:: step == ") << step;
         step++;
 // Step 26: Go to assembly rotated(!) pick up position
-        emit moveAbsolute(x_assembly, y_assembly, (z_assembly - z_spacer_thickness - z_sensor_thickness), platform_rotation);
+        emit moveAbsolute(x_assembly, y_assembly, (z_assembly + z_spacer_thickness + z_sensor_thickness), platform_rotation);
         //emit nextStep();
 
     }else if (step == 27){
@@ -340,7 +344,7 @@ void  AssemblyAssembler::process_step(){
       NQLog("AssemblyAssembler:: step == ") << step;
         step++;
 // Step 29: Go to assembly rotated(!) pre-pick up position
-        emit moveAbsolute(x_assembly, y_assembly, (z_assembly - z_spacer_thickness - z_sensor_thickness - z_prepickup_distance), platform_rotation);
+        emit moveAbsolute(x_assembly, y_assembly, (z_assembly + z_spacer_thickness + z_sensor_thickness - z_prepickup_distance), platform_rotation);
         //emit nextStep();
 
     }else if (step == 30){
