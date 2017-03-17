@@ -446,8 +446,8 @@ AssemblyPrecisionEstimator::AssemblyPrecisionEstimator(QWidget *parent, string t
     
 
     
-    lineEdit1->setText("-50.3352,-11.1187,-109.5057");
-    lineEdit2->setText("-45.3352,-6.1187,-104.5057");
+    lineEdit1->setText("43.6694,35.0808,-88.1719");
+    lineEdit2->setText("-45.3352,-6.1187,-119.0884");
     lineEdit3->setText("1");
     
     connect(button1, SIGNAL(clicked()),
@@ -625,16 +625,19 @@ AssemblyVacuumToggler::AssemblyVacuumToggler(QWidget *parent, std::string string
   radio1 = new QRadioButton(tr("&Channel 1"));
   radio2 = new QRadioButton(tr("&Channel 2"));
   radio3 = new QRadioButton(tr("&Channel 3"));
+  radio4 = new QRadioButton(tr("&Channel 4"));
     
     
   valves.push_back(radio1);
   valves.push_back(radio2);
   valves.push_back(radio3);
+  valves.push_back(radio4);
     
 
   l->addWidget(radio1,1,0);
   l->addWidget(radio2,3,0);
   l->addWidget(radio3,5,0);
+  l->addWidget(radio4,7,0);
     
 
   QPixmap pixmap(100,100);
@@ -664,10 +667,18 @@ AssemblyVacuumToggler::AssemblyVacuumToggler(QWidget *parent, std::string string
   ql3->setPixmap(pixmap);
   ql3->setText("VACUUM OFF");
   ql3->setStyleSheet("QLabel { background-color : green; color : black; }");
+   
+  ql4 = new QLabel("", this);
+  l->addWidget(ql4,7,1);
+    
+  ql4->setPixmap(pixmap);
+  ql4->setText("VACUUM OFF");
+  ql4->setStyleSheet("QLabel { background-color : green; color : black; }");
     
   labels.push_back(ql1);
   labels.push_back(ql2);
   labels.push_back(ql3);
+  labels.push_back(ql4);
 
   connect(button1, SIGNAL(clicked()),
           this, SLOT(toggleVacuum()));
@@ -682,7 +693,7 @@ void AssemblyVacuumToggler::toggleVacuum()
 {
     NQLog("AssemblyVacuumToggler") << ": toggling vacuum voltage ";
 
-    for (int i = 0; i < 3 ; i ++){
+    for (int i = 0; i < 4 ; i ++){
     
         if (valves[i]->isChecked()){
             

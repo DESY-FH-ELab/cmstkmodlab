@@ -57,10 +57,12 @@ public:
   QLabel* ql1;
   QLabel* ql2;
   QLabel* ql3;
+  QLabel* ql4;
 
   QRadioButton *radio1;
   QRadioButton *radio2;
   QRadioButton *radio3;
+  QRadioButton *radio4;
     
   bool state;
     

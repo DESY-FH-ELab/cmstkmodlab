@@ -123,14 +123,14 @@ void AssemblySensorMarkerFinder::runObjectDetection_labmode(cv::Mat master_image
 
     NQLog("AssemblySensorLocator::runObjectDetection_labmode()") << "" ;
 
-    //objectmode_g = 2;    //hard coding for lab tests, to be reomoved!!!!
+    objectmode_g = 2;    //hard coding for lab tests, to be reomoved!!!!
 
     if(objectmode_g==0){
-        
+      NQLog("AssemblySensorLocator") << "***DETECTIING FIDUCIAL MARKER!***" ;
+
         img = master_image;
         
-        img_clip_A = cv::imread(Config::CMSTkModLabBasePath + "/share/assembly/RawSensor_3_clipB.png",
-                                CV_LOAD_IMAGE_COLOR);
+        img_clip_A = cv::imread(Config::CMSTkModLabBasePath + "/share/assembly/RawSensor_3_clipB.png", CV_LOAD_IMAGE_COLOR);
     }
     
     else if (objectmode_g == 1 ){
@@ -747,7 +747,7 @@ void AssemblySensorMarkerFinder::findMarker_templateMatching(cv::Mat img, cv::Ma
     int color = 200;
     
     
-    for (float theta = -1; theta < 1;  theta = theta + 0.05){
+    for (float theta = 20; theta < 24;  theta = theta + 0.2){
       //    for (float theta = -64.0; theta < 64.0;  theta = theta + 3.2){
     //    for (float theta = -180.0; theta < 180.0;  theta = theta + 9.0){
         
