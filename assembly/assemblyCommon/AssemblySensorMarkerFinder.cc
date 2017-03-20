@@ -91,8 +91,11 @@ void AssemblySensorMarkerFinder::runObjectDetection(int labmode, int objectmode)
                 img = cv::imread(Config::CMSTkModLabBasePath + "/share/assembly/RawSensor_4.png",
                                  CV_LOAD_IMAGE_COLOR);
                 
-                img_clip_A = cv::imread(Config::CMSTkModLabBasePath + "/share/assembly/RawSensor_3_clipB.png",
-                                        CV_LOAD_IMAGE_COLOR);
+//               img_clip_A = cv::imread(Config::CMSTkModLabBasePath + "/share/assembly/RawSensor_3_clipB.png",
+//                                       CV_LOAD_IMAGE_COLOR);
+
+               img_clip_A = cv::imread(Config::CMSTkModLabBasePath + "/share/assembly/spacer_corner_tempate_crop.png",
+                                       CV_LOAD_IMAGE_COLOR);
             }
             
             else if (objectmode == 1 ){
@@ -123,7 +126,7 @@ void AssemblySensorMarkerFinder::runObjectDetection_labmode(cv::Mat master_image
 
     NQLog("AssemblySensorLocator::runObjectDetection_labmode()") << "" ;
 
-    objectmode_g = 2;    //hard coding for lab tests, to be reomoved!!!!
+     objectmode_g = 3;    //hard coding for lab tests, to be reomoved!!!!
 
     if(objectmode_g==0){
       NQLog("AssemblySensorLocator") << "***DETECTIING FIDUCIAL MARKER!***" ;
@@ -142,11 +145,20 @@ void AssemblySensorMarkerFinder::runObjectDetection_labmode(cv::Mat master_image
         
         NQLog("AssemblySensorLocator") << "***DETECTIING SILVER PAINTER CORNER!***" ;
 
-        img = master_image;
-        
-        img_clip_A = cv::imread(Config::CMSTkModLabBasePath + "/share/assembly/glassslidecorneronbaseplate_sliverpaint_A_clip.png",CV_LOAD_IMAGE_COLOR);
-        
+        img = master_image;   
+	//        img_clip_A = cv::imread(Config::CMSTkModLabBasePath + "/share/assembly/glassslidecorneronbaseplate_sliverpaint_A_clip.png",CV_LOAD_IMAGE_COLOR);
+        img_clip_A = cv::imread(Config::CMSTkModLabBasePath + "/share/assembly/glassslidecorner_sliverpaint_D_crop.png",CV_LOAD_IMAGE_COLOR);
+      
     }
+
+ else if (objectmode_g == 3){
+         NQLog("AssemblySensorLocator") << "***DETECTIING SPACER  CORNER!***" ;
+         img = master_image;   
+         img_clip_A = cv::imread(Config::CMSTkModLabBasePath + "/share/assembly/spacer_corner_tempate_crop.png",
+                                       CV_LOAD_IMAGE_COLOR);
+
+}
+
     emit locatePickupCorner_templateMatching(img,img_clip_A);
 
     
@@ -747,10 +759,12 @@ void AssemblySensorMarkerFinder::findMarker_templateMatching(cv::Mat img, cv::Ma
     int color = 200;
     
     
-    for (float theta = 20; theta < 24;  theta = theta + 0.2){
+    //    for (float theta = 20; theta < 24;  theta = theta + 0.2){
       //    for (float theta = -64.0; theta < 64.0;  theta = theta + 3.2){
     //    for (float theta = -180.0; theta < 180.0;  theta = theta + 9.0){
-        
+      
+    for (float theta = -1.0; theta < 1.0;  theta = theta + 0.1){
+  
         // Point2f src_center(img_gs_copy.cols/2.0F, img_gs_copy.rows/2.0F);
         Point2f src_center( matchLoc_1.x + (img_clip_A_bin.cols/2) , matchLoc_1.y + (img_clip_A_bin.rows/2) );
         

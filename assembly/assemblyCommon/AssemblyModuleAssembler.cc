@@ -444,10 +444,9 @@ AssemblyPrecisionEstimator::AssemblyPrecisionEstimator(QWidget *parent, string t
     label2->setText("Pickup position (x,y,z)");
     label3->setText("N iterations");
     
-
     
-    lineEdit1->setText("43.6694,35.0808,-88.1719");
-    lineEdit2->setText("-45.3352,-6.1187,-119.0884");
+    lineEdit1->setText("48.9792,58.0699,-88.1536");
+    lineEdit2->setText("-39.6346,17.4785,-119.1284,0.0");
     lineEdit3->setText("1");
     
     connect(button1, SIGNAL(clicked()),
@@ -773,9 +772,9 @@ void AssemblyAttacher::moveRelative(){
     QString  parent_string = this->lineEdit1->text();
     
     QStringList pieces = parent_string.split( "," );
-    QString x = pieces.value( pieces.length() - 3);
-    QString y = pieces.value( pieces.length() - 2);
-    QString z = pieces.value( pieces.length() - 1);
+    QString x = pieces.value( pieces.length() - 4);
+    QString y = pieces.value( pieces.length() - 3);
+    QString z = pieces.value( pieces.length() - 2);
     QString a = pieces.value( pieces.length() - 1);
     
     double x_d = x.toDouble();
@@ -783,7 +782,7 @@ void AssemblyAttacher::moveRelative(){
     double z_d = z.toDouble();
     double a_d = a.toDouble();
     
-    NQLog("AssemblyAttacher::moveRelative") << ": moving relative (parsed) "<< x_d<<" "<< y_d<<" "<< z_d;
+    NQLog("AssemblyAttacher::moveRelative") << ": moving relative (parsed!!!) "<< x_d<<" "<< y_d<<" "<< z_d <<" "<< a_d;
     
     NQLog("AssemblyAttacher::moveRelative") <<" requesting move...";
     
@@ -900,9 +899,9 @@ void AssemblyCommander::goToTarget()
   QString  parent_string = this->lineEdit1->text();
 
   QStringList pieces = parent_string.split( "," );
-  QString x = pieces.value( pieces.length() - 3);
-  QString y = pieces.value( pieces.length() - 2);
-  QString z = pieces.value( pieces.length() - 1);
+  QString x = pieces.value( pieces.length() - 4);
+  QString y = pieces.value( pieces.length() - 3);
+  QString z = pieces.value( pieces.length() - 2);
   QString a = pieces.value( pieces.length() - 1);
 
   double x_d = x.toDouble();
@@ -1013,6 +1012,7 @@ AssemblySensorLocator::AssemblySensorLocator(QWidget *parent, std::string string
   radio1 = new QRadioButton(tr("&Fiducial marker"));
   radio2 = new QRadioButton(tr("&Positioning pin"));
   radio3 = new QRadioButton(tr("&Sensor corner"));
+  radio31 = new QRadioButton(tr("&Spacer corner"));
     
   radio1->setChecked(true);
 
@@ -1020,6 +1020,7 @@ AssemblySensorLocator::AssemblySensorLocator(QWidget *parent, std::string string
   vbox1->addWidget(radio1);
   vbox1->addWidget(radio2);
   vbox1->addWidget(radio3);
+  vbox1->addWidget(radio31);
 
   vbox1->addStretch(1);
   groupBox1->setLayout(vbox1);
@@ -1083,7 +1084,11 @@ void AssemblySensorLocator::detectPatRecMode()
         
         objectmode =2;
     }
+    else if (radio31->isChecked()){  
+        objectmode =3;
+    }
     
+
     if (radio4->isChecked()){
         labmode = 0;
         
@@ -1092,6 +1097,8 @@ void AssemblySensorLocator::detectPatRecMode()
         labmode = 1;
     }
     
+    NQLog("AssemblyModuleAssembler:: emitting runobjectdetection with args :" )<<  labmode <<" , " << objectmode ;
+
     emit runObjectDetection(labmode, objectmode);
 
 }

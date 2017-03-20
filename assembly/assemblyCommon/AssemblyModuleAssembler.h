@@ -325,6 +325,7 @@ public:
   QRadioButton *radio1;
   QRadioButton *radio2;
   QRadioButton *radio3;
+  QRadioButton *radio31;
   QRadioButton *radio4;
   QRadioButton *radio5;
   int objectmode, labmode;

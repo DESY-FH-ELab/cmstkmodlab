@@ -139,20 +139,19 @@ void  AssemblyScanner::process_step(){
 
       NQLog("AssemblyScanner:: step == ") << step;
         step++;
-        //emit nextStep();
+        emit nextStep();
 
         // Step 4: Turn on pick up vacuum
-        emit toggleVacuum(1);
+        //emit toggleVacuum(1);
         
     }else if (step == 5){
 
       NQLog("AssemblyScanner:: step == ") << step;
         step++;
-        //emit nextStep();
+        emit nextStep();
 
         // Step 5: Turn off bottom vacuum
-        emit toggleVacuum(2);
-        emit toggleVacuum(3);
+        //emit toggleVacuum(2);
         
     }else if (step == 6){
 
@@ -175,19 +174,18 @@ void  AssemblyScanner::process_step(){
 
       NQLog("AssemblyScanner:: step == ") << step;
         step++;
-        //emit nextStep();
+        emit nextStep();
         // Step 8: Turn on bottom vacuum
-        emit toggleVacuum(2);
-        emit toggleVacuum(3);
+	// emit toggleVacuum(2);
  
         
     }else if (step == 9){
 
       NQLog("AssemblyScanner:: step == ") << step;
         step++;
-        //emit nextStep();
+        emit nextStep();
         // Step 9: Turn off pick up vacuum
-        emit toggleVacuum(1);
+        //emit toggleVacuum(1);
 
         
     }else if (step == 10){
