@@ -36,7 +36,49 @@
 //#include "LStepExpressJoystickWidget.h"
 
 //relay card for vacuum control
-#include "ConradModel.h"
+//#include "ConradModel.h"
+
+
+class AssemblyVacuumToggler : public QWidget
+{
+  Q_OBJECT
+
+public:
+    
+  explicit AssemblyVacuumToggler(QWidget *parent = 0, std::string ="test");
+
+  QPushButton* button1;
+  QLineEdit *lineEdit1;
+  //ConradModel * cnrd1;
+
+  std::vector <QRadioButton*> valves;
+  std::vector <QLabel*> labels;
+      
+  QLabel* ql1;
+  QLabel* ql2;
+  QLabel* ql3;
+  QLabel* ql4;
+
+  QRadioButton *radio1;
+  QRadioButton *radio2;
+  QRadioButton *radio3;
+  QRadioButton *radio4;
+    
+  bool state;
+    
+protected:
+    
+public slots:
+  void toggleVacuum();
+  void updateVacuumChannelState(int, bool);
+  void enableVacuumButton();
+  void disableVacuumButton();
+    
+  
+signals:
+  void toggleVacuum(int);
+};
+
 
 class AssemblyModuleAssembler : public QWidget
 {
@@ -44,7 +86,7 @@ class AssemblyModuleAssembler : public QWidget
 
 public:
 
-  explicit AssemblyModuleAssembler(AssemblyVUEyeModel *uEyeModel_, AssemblySensorMarkerFinder * finder_,LStepExpressModel* lStepExpressModel_, ConradModel *conradModel_,
+  explicit AssemblyModuleAssembler(AssemblyVUEyeModel *uEyeModel_, AssemblySensorMarkerFinder * finder_,LStepExpressModel* lStepExpressModel_,
                                    QWidget *parent = 0);
   void connectImageProducer(const QObject* sender, const char* signal);
   void disconnectImageProducer(const QObject* sender, const char* signal);
@@ -59,6 +101,7 @@ public:
 
 
   AssemblyVUEyeCamera * camera_;
+  AssemblyVacuumToggler* toggle1;  //to connect vacuum signals in MainWindow
  
 protected:
 
@@ -97,6 +140,7 @@ signals:
 
   void moveAbsolute(double,double,double,double);
   void launchPrecisionEstimation(double, double, double, double, double, double, int);
+  void launchSandwitchAssembly(double, double, double, double, double, double, double, double, double);
 
 
 };
@@ -127,50 +171,41 @@ public:
     public slots:
     void recordPosition(double,double,double);
     void run();
-    
 signals:
     void moveAbsolute(double,double,double,double);
     void locateMarker();
     void launchPrecisionEstimation(double, double, double, double, double, double, int);
-
 };
 
 
-
-
-class AssemblyVacuumToggler : public QWidget
+class AssemblySandwitchAssembler : public QWidget
 {
-  Q_OBJECT
-
+    Q_OBJECT
 public:
     
-  explicit AssemblyVacuumToggler(QWidget *parent = 0, std::string ="test");
+    explicit AssemblySandwitchAssembler(QWidget *parent = 0, std::string text ="Assemble sandwitch",
+                                        std::string assembly_position = "0.0,0.0,0.0", std::string bottom_part_position = "0.0,0.0,0.0", std::string top_part_position = "0.0,0.0,0.0");
+    
+    //double local_x, local_y, local_z, local_a;
+    QPushButton* button1;
+    
+    QLabel * label1;
+    QLabel * label2;
+    QLabel * label3;
+    
+    QLineEdit *lineEdit1;
+    QLineEdit *lineEdit2;
+    QLineEdit *lineEdit3;
 
-  QPushButton* button1;
-  QLineEdit *lineEdit1;
-  ConradModel * cnrd1;
-
-  std::vector <QRadioButton*> valves;
-  std::vector <QLabel*> labels;
     
-  QLabel* ql1;
-  QLabel* ql2;
-  QLabel* ql3;
-
-  QRadioButton *radio1;
-  QRadioButton *radio2;
-  QRadioButton *radio3;
+    protected:
     
-  bool state;
-    
-protected:
-    
-public slots:
-  void toggleVacuum();
-    
+    public slots:
+    void run();
 signals:
-
+    void launchSandwitchAssembly(double, double, double, double, double, double, double, double, double);
 };
+
 
 class AssemblyAttacher : public QWidget
 {
@@ -290,6 +325,7 @@ public:
   QRadioButton *radio1;
   QRadioButton *radio2;
   QRadioButton *radio3;
+  QRadioButton *radio31;
   QRadioButton *radio4;
   QRadioButton *radio5;
   int objectmode, labmode;

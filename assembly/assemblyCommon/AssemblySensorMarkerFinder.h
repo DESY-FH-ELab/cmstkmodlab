@@ -9,10 +9,20 @@
 #include <QTimer>
 #include <QDateTime>
 #include <QString>
+#include "nqlogger.h"
+
 
 class AssemblySensorMarkerFinder : public AssemblyVMarkerFinder
 {
     Q_OBJECT
+protected:
+    
+    int generalThreshold;
+
+    double matchLoc_x_lab;
+    double matchLoc_y_lab;
+    int labmode_g, objectmode_g;
+
 public:
     explicit AssemblySensorMarkerFinder(QObject *parent = 0);
     ~AssemblySensorMarkerFinder();
@@ -35,10 +45,9 @@ public:
     double linesHoughMinLineLength() const { return linesHoughMinLineLength_; }
     double linesHoughMaxLineGap() const { return linesHoughMaxLineGap_; }
 
-    double matchLoc_x_lab;
-    double matchLoc_y_lab;
-    int labmode_g, objectmode_g;
-    
+    int getGeneralThresholdValue() {return generalThreshold; }
+    void setGeneralThresholdValue(int newThresholdValue) { generalThreshold = newThresholdValue; }
+
     cv::Mat img, img_clip_A, img_clip_B, result_1, result_2, dst;
 
 
@@ -69,6 +78,10 @@ public slots:
     virtual void findMarker_circleSeed(int);
     virtual void findMarker_templateMatching(cv::Mat, cv::Mat);
 
+    //ThresholdTunerSlots
+    void setNewGeneralThreshold(int, cv::Mat);
+    void getCurrentGeneralThreshold();
+    void updateThresholdImage(cv::Mat);
 
 protected slots:
     void runObjectDetection(int labmode, int objectmode);
@@ -147,6 +160,8 @@ signals:
     void getImage();
     void getImageBlur(cv::Mat, cv::Rect);
     void acquireImage();
+    void sendCurrentGeneralThreshold(int);
+    void sendUpdatedThresholdImage(QString);
 
 };
 

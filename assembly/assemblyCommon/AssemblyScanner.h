@@ -2,6 +2,8 @@
 #define ASSEMBLYSCANNER_H
 
 #include <string>
+#include <iostream>
+#include <fstream>
 
 #include <opencv2/opencv.hpp>
 
@@ -53,8 +55,8 @@ public:
   vector<double> xpre_vec,ypre_vec,thetapre_vec;
   vector<double> xpost_vec,ypost_vec,thetapost_vec;
   double step_distance;
-  QTimer * qt;
-
+  std::ofstream outfile;
+  
 protected:
     double imageVariance(cv::Mat img_input, cv::Rect rectangle);
 
@@ -79,8 +81,10 @@ signals:
     void acquireImage();
     void makeDummies(int, double,double,double);
     void showHistos(int, QString);
-    void changeVacuumState();
+    void toggleVacuum(int);
+
+
 };
 
 
-#endif // ASSEMBLYAUTOFOCUS_H
+#endif // ASSEMBLYASSEMBLER_H

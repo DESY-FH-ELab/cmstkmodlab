@@ -40,6 +40,8 @@ AssemblySensorMarkerFinder::AssemblySensorMarkerFinder(QObject *parent)
     linesHoughMinLineLength_ = config->getValue<double>("SensorMarkerLinesHoughMinLineLength", 50);
     linesHoughMaxLineGap_ = config->getValue<double>("SensorMarkerLinesHoughMaxLineGap", 25);
 
+    generalThreshold = 200;   //default threshold value
+
 
 #if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
     QString cachedirTemp = QDesktopServices::storageLocation(QDesktopServices::CacheLocation);
@@ -89,8 +91,11 @@ void AssemblySensorMarkerFinder::runObjectDetection(int labmode, int objectmode)
                 img = cv::imread(Config::CMSTkModLabBasePath + "/share/assembly/RawSensor_4.png",
                                  CV_LOAD_IMAGE_COLOR);
                 
-                img_clip_A = cv::imread(Config::CMSTkModLabBasePath + "/share/assembly/RawSensor_3_clipB.png",
-                                        CV_LOAD_IMAGE_COLOR);
+//               img_clip_A = cv::imread(Config::CMSTkModLabBasePath + "/share/assembly/RawSensor_3_clipB.png",
+//                                       CV_LOAD_IMAGE_COLOR);
+
+               img_clip_A = cv::imread(Config::CMSTkModLabBasePath + "/share/assembly/spacer_corner_tempate_crop.png",
+                                       CV_LOAD_IMAGE_COLOR);
             }
             
             else if (objectmode == 1 ){
@@ -121,16 +126,14 @@ void AssemblySensorMarkerFinder::runObjectDetection_labmode(cv::Mat master_image
 
     NQLog("AssemblySensorLocator::runObjectDetection_labmode()") << "" ;
 
-    //hard coding for lab tests, to be reomoved!!!!
-
-    objectmode_g = 2;
+     objectmode_g = 3;    //hard coding for lab tests, to be reomoved!!!!
 
     if(objectmode_g==0){
-        
+      NQLog("AssemblySensorLocator") << "***DETECTIING FIDUCIAL MARKER!***" ;
+
         img = master_image;
         
-        img_clip_A = cv::imread(Config::CMSTkModLabBasePath + "/share/assembly/RawSensor_3_clipB.png",
-                                CV_LOAD_IMAGE_COLOR);
+        img_clip_A = cv::imread(Config::CMSTkModLabBasePath + "/share/assembly/RawSensor_3_clipB.png", CV_LOAD_IMAGE_COLOR);
     }
     
     else if (objectmode_g == 1 ){
@@ -142,11 +145,20 @@ void AssemblySensorMarkerFinder::runObjectDetection_labmode(cv::Mat master_image
         
         NQLog("AssemblySensorLocator") << "***DETECTIING SILVER PAINTER CORNER!***" ;
 
-        img = master_image;
-        
-        img_clip_A = cv::imread(Config::CMSTkModLabBasePath + "/share/assembly/glassslidecorneronbaseplate_sliverpaint_A_clip.png",CV_LOAD_IMAGE_COLOR);
-        
+        img = master_image;   
+	//        img_clip_A = cv::imread(Config::CMSTkModLabBasePath + "/share/assembly/glassslidecorneronbaseplate_sliverpaint_A_clip.png",CV_LOAD_IMAGE_COLOR);
+        img_clip_A = cv::imread(Config::CMSTkModLabBasePath + "/share/assembly/glassslidecorner_sliverpaint_D_crop.png",CV_LOAD_IMAGE_COLOR);
+      
     }
+
+ else if (objectmode_g == 3){
+         NQLog("AssemblySensorLocator") << "***DETECTIING SPACER  CORNER!***" ;
+         img = master_image;   
+         img_clip_A = cv::imread(Config::CMSTkModLabBasePath + "/share/assembly/spacer_corner_tempate_crop.png",
+                                       CV_LOAD_IMAGE_COLOR);
+
+}
+
     emit locatePickupCorner_templateMatching(img,img_clip_A);
 
     
@@ -634,56 +646,70 @@ void AssemblySensorMarkerFinder::drawOrientation()
 }
 
 
+//void AssemblySensorMarkerFinder::findMarker_templateMatching(cv::Mat img, cv::Mat img_clip_A, cv::Mat img_glass_marker_raw)
 void AssemblySensorMarkerFinder::findMarker_templateMatching(cv::Mat img, cv::Mat img_clip_A)
 {
     NQLog("AssemblySensorMarkerFinder") << "Finding Marker (Template Matching) here";
 
-    NQLog("AssemblySensorMarkerFinder") << ", numer of image channels =  "<<img_clip_A.channels() ;
+    NQLog("AssemblySensorMarkerFinder") << ", number of image channels =  "<<img_clip_A.channels() ;
       
     Point matchLoc_1, matchLoc_2, matchLoc_final;
     Mat result_1, result_2; 
     Mat img_copy = img.clone();
-    
+   
+
     //Greyscale images
     Mat img_copy_gs(img_copy.size(), img_copy.type());
     Mat img_clip_A_gs(img_clip_A.size(), img_clip_A.type());
-    
+    //Mat img_glass_marker_raw_gs(img_glass_marker_raw.size(), img_glass_marker_raw.type());
 
     if (img.channels()> 1){
     //convert color to GS
     cvtColor( img_copy,   img_copy_gs,   CV_BGR2GRAY );
-    }else{
+    }else {
      img_copy_gs = img_copy.clone();
-}
+    }
 
     if (img_clip_A.channels()> 1){
     //convert color to GS
     cvtColor( img_clip_A, img_clip_A_gs, CV_BGR2GRAY );
-    }else{
+    }else {
      img_clip_A_gs = img_clip_A.clone();
-}
+    }
+
+    /*if (img_glass_marker_raw.channels()> 1){
+    //convert color to GS
+    cvtColor( img_glass_marker_raw, img_glass_marker_raw_gs, CV_BGR2GRAY );
+    }else {
+     img_glass_marker_raw_gs = img_glass_marker_raw.clone();
+    }*/
 
 
 
     //Binary images
     Mat img_copy_bin(img_copy_gs.size(), img_copy_gs.type());
     Mat img_clip_A_bin(img_clip_A_gs.size(), img_clip_A_gs.type());
+    //Mat img_glass_marker_bin(img_glass_marker_raw_gs.size(), img_glass_marker_raw_gs.type());
     
     //Apply thresholding
-    cv::threshold(img_copy_gs, img_copy_bin, 100, 255, cv::THRESH_BINARY);
-    cv::threshold(img_clip_A_gs, img_clip_A_bin, 90, 255, cv::THRESH_BINARY);
-    
+    cv::threshold(img_copy_gs, img_copy_bin, generalThreshold, 255, cv::THRESH_BINARY);
+    cv::threshold(img_clip_A_gs, img_clip_A_bin, 88, 255, cv::THRESH_BINARY);    //90 for silicon marker
+    //cv::threshold(img_glass_marker_raw_gs, img_glass_marker_bin, 88, 255, cv::THRESH_BINARY);
+        
     // img_copy_bin = img_copy_gs.clone();
     // img_clip_A_bin = img_clip_A_gs.clone();
     
     std::string filename_img_bin = Config::CMSTkModLabBasePath + "/share/assembly/Sensor_bin.png";
     std::string filename_clip_A_bin = Config::CMSTkModLabBasePath + "/share/assembly/clip_A_bin.png";
+    //std::string filename_img_glass_marker_bin = Config::CMSTkModLabBasePath + "/share/assembly/img_glass_marker_bin.png";
     
     cv::imwrite(filename_img_bin, img_copy_bin);
     cv::imwrite(filename_clip_A_bin, img_clip_A_bin);
+    //cv::imwrite(filename_img_glass_marker_bin, img_glass_marker_bin);
     
     QString filename_img_bin_qs = QString::fromStdString(filename_img_bin);
     QString filename_clip_A_bin_qs = QString::fromStdString(filename_clip_A_bin);
+    //QString filename_img_glass_marker_bin_qs = QString::fromStdString(filename_img_glass_marker_bin);
     
     //emit updateImage(4, filename_img_bin_qs);
     //emit updateImage(5, filename_clip_A_bin_qs);
@@ -733,9 +759,12 @@ void AssemblySensorMarkerFinder::findMarker_templateMatching(cv::Mat img, cv::Ma
     int color = 200;
     
     
-    for (float theta = -64.0; theta < 64.0;  theta = theta + 3.2){
-        //    for (float theta = -180.0; theta < 180.0;  theta = theta + 9.0){
-        
+    //    for (float theta = 20; theta < 24;  theta = theta + 0.2){
+      //    for (float theta = -64.0; theta < 64.0;  theta = theta + 3.2){
+    //    for (float theta = -180.0; theta < 180.0;  theta = theta + 9.0){
+      
+    for (float theta = -1.0; theta < 1.0;  theta = theta + 0.1){
+  
         // Point2f src_center(img_gs_copy.cols/2.0F, img_gs_copy.rows/2.0F);
         Point2f src_center( matchLoc_1.x + (img_clip_A_bin.cols/2) , matchLoc_1.y + (img_clip_A_bin.rows/2) );
         
@@ -1177,4 +1206,52 @@ void AssemblySensorMarkerFinder::findMarker_circleSeed(int mode)
     NQLog("AssemblyVUEyeCamera") << "  found marker";
     
 
+}
+
+void AssemblySensorMarkerFinder::setNewGeneralThreshold(int value, cv::Mat img)
+{
+  generalThreshold = value;
+  emit sendCurrentGeneralThreshold(value);
+  this -> updateThresholdImage(img);
+  NQLog("AssemblySensorMarkerFinder") << " Threshold value successfuly changed to value = "<< value;
+}
+
+void AssemblySensorMarkerFinder::getCurrentGeneralThreshold()
+{ 
+    NQLog("AssemblySensorMarkerFinder") << " : INFO! : update signal received and threshold sent.";
+    emit sendCurrentGeneralThreshold(generalThreshold); }
+
+void AssemblySensorMarkerFinder::updateThresholdImage(cv::Mat img)
+{
+
+
+    Mat img_copy = img.clone();
+    
+    //Greyscale images
+    Mat img_copy_gs(img_copy.size(), img_copy.type());    
+
+    if (img.channels()> 1){
+    //convert color to GS
+    cvtColor( img_copy,   img_copy_gs,   CV_BGR2GRAY );
+    }else{
+     img_copy_gs = img_copy.clone();
+    }
+
+    //Binary images
+    Mat img_copy_bin(img_copy_gs.size(), img_copy_gs.type());
+    
+    //Apply thresholding
+    NQLog("AssemblySensorMarkerFinder") << "::updateThresholdImage() : applying threshold for ThresholdTuner.";
+    cv::threshold(img_copy_gs, img_copy_bin, generalThreshold, 255, cv::THRESH_BINARY);
+     
+    std::string filename_img_bin = Config::CMSTkModLabBasePath + "/share/assembly/Sensor_bin.png";
+    
+    cv::imwrite(filename_img_bin, img_copy_bin);
+    
+    QString filename_img_bin_qs = QString::fromStdString(filename_img_bin);
+    
+    QString filename_master = QString::fromStdString(filename_img_bin);
+    
+    emit sendUpdatedThresholdImage(filename_master);
+    NQLog("AssemblySensorMarkerFinder") << "::updateThresholdImage() : signal emitted!!!";
 }
