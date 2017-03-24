@@ -197,7 +197,7 @@ AssemblyModuleAssembler::AssemblyModuleAssembler(AssemblyVUEyeModel *uEyeModel_,
   toggle1 = new AssemblyVacuumToggler(this, "Toggle vacuum");
   g1->addWidget(toggle1,8,0);
     
-  AssemblyPrecisionEstimator * precision1 = new AssemblyPrecisionEstimator(this, "Estimate Assembly Precision", "-200.0,0.0,0.0", "0.0,0.0,0.0", 1 );
+  AssemblyPrecisionEstimator * precision1 = new AssemblyPrecisionEstimator(this, "Estimate Assembly Precision", "-200.0,0.0,0.0", "0.0,0.0,0.0", 1 , conradModel_);
   g1->addWidget(precision1 ,9,0);
 
   QGridLayout *g2 = new QGridLayout();
@@ -411,7 +411,7 @@ void AssemblyModuleAssembler::keyReleaseEvent(QKeyEvent * event)
 }
 
 
-AssemblyPrecisionEstimator::AssemblyPrecisionEstimator(QWidget *parent, string text, string measurement_position, string pickup_position, int iterations )
+AssemblyPrecisionEstimator::AssemblyPrecisionEstimator(QWidget *parent, string text, string measurement_position, string pickup_position, int iterations , ConradModel * cnrd1)
 : QWidget(parent)
 {
     QGridLayout *l = new QGridLayout(this);
@@ -611,8 +611,6 @@ AssemblyVacuumToggler::AssemblyVacuumToggler(QWidget *parent, std::string string
 
   state = false;
     
-  //cnrd1 = new ConradModel(parent);
-
   QString qname = QString::fromStdString(string);
 
   state = false;//???

@@ -39,10 +39,14 @@ using namespace cv;
 TRandom * r = new TRandom();
 
 
-AssemblyScanner::AssemblyScanner(LStepExpressModel* lStepExpressModel_)
+AssemblyScanner::AssemblyScanner(LStepExpressModel* lStepExpressModel_, ConradModel * cnrd1)
 {
     NQLog("AssemblyScanner::AssemblyScanner()");
     motionManager_ = new LStepExpressMotionManager(lStepExpressModel_);
+    qt = new QTimer(this);
+    qt->setSingleShot(true);
+    connect(qt, SIGNAL(timeout()), this, SLOT(process_step()));
+    connect(this, SIGNAL(changeVacuumState()), this, SLOT(toggleVacuum()));
 
 }
 
@@ -96,9 +100,25 @@ void  AssemblyScanner::fill_positionvectors(int stage, double x_pr, double y_pr,
 }
 
 
+
+void AssemblyScanner::toggleVacuum()
+{
+    NQLog("AssemblyScanner") << ": toggling vacuum voltage";
+    
+            if (cnrd1->getSwitchState(1) == 0){
+                cnrd1->setSwitchEnabled(1, true);
+                
+            }else if (cnrd1->getSwitchState(1) == 1){
+                cnrd1->setSwitchEnabled(1, false);
+            }
+        
+}
+
+
+
 void  AssemblyScanner::process_step(){
 
-    NQLog("AssemblyScanner::process_step, iteration ==") <<iteration;
+    NQLog("AssemblyScanner::process_step, iteration ==") <<iteration <<" step = " << step;
     
     if (iteration < iterations){
     
@@ -108,8 +128,7 @@ void  AssemblyScanner::process_step(){
         step++;
 // Step 0: Go to measurement position
 	NQLog("AssemblySensorMarkerFinder") << "   Requesting motion to:  x "<< x_meas <<" y "<< y_meas <<" "<< z_meas  ;
-        emit moveAbsolute(x_meas,y_meas,z_meas, 0.0);
-        //emit nextStep();
+    emit moveAbsolute(x_meas,y_meas,z_meas, 0.0);
     }
     else if  (step == 1){
 
@@ -126,13 +145,14 @@ void  AssemblyScanner::process_step(){
         // Go to pre-pickup position
 	emit moveAbsolute(x_pickup,y_pickup,z_prepickup, 0.0);
 	//emit nextStep();
+
     }
     else if (step == 3){
 
       NQLog("AssemblyScanner:: step == ") << step;
         step++;
 	//emit nextStep();
-        // Go to pickup position
+
 	emit moveAbsolute(x_pickup,y_pickup,z_pickup, 0.0);
         
     }else if (step == 4){
@@ -143,6 +163,7 @@ void  AssemblyScanner::process_step(){
 
         // Step 4: Turn on pick up vacuum
         //emit toggleVacuum(1);
+
         
     }else if (step == 5){
 
@@ -160,6 +181,7 @@ void  AssemblyScanner::process_step(){
         //emit nextStep();
         // Step 6: Go back to pre-pickup position
 	emit moveAbsolute(x_pickup,y_pickup,z_prepickup, 0.0);
+
     }
     else if (step == 7){
 
@@ -196,6 +218,8 @@ void  AssemblyScanner::process_step(){
         // Step 10: Go back to pre-pickup position
 	emit moveAbsolute(x_pickup,y_pickup,z_prepickup, 0.0);
         
+=======
+
         
     }else if (step == 11){
 
@@ -209,6 +233,7 @@ void  AssemblyScanner::process_step(){
     }else if (step == 12){
 
       NQLog("AssemblyScanner:: step == ") << step;
+
         step++;
         emit acquireImage();
 	//emit nextStep();

@@ -84,7 +84,7 @@ AssemblyMainWindow::AssemblyMainWindow(QWidget *parent) :
     //connect(assembleView_ -> toggle1, SIGNAL(toggleVacuum(int)), assembleView_ -> toggle1, SLOT(disableVacuumButton()));
     connect(conradManager_, SIGNAL(updateVacuumChannelState(int, bool)), assembleView_ -> toggle1, SLOT(updateVacuumChannelState(int, bool)));
     connect(this, SIGNAL(updateVacuumChannelsStatus()), conradManager_, SLOT(updateVacuumChannelsStatus()));
-    
+
     
     emit updateVacuumChannelsStatus();
 
@@ -211,9 +211,9 @@ void AssemblyMainWindow::enablePrecisionEstimation(int state){
     // connect(cmdr_zscan, SIGNAL(makeDummies(int, double,double,double)), cmdr_zscan, SLOT(fill_positionvectors(int, double,double,double)));
 
     //    for real lab tests with camera
-    connect(cmdr_zscan, SIGNAL(acquireImage()), camera_, SLOT(acquireImage()));
-
-    connect(cmdr_zscan, SIGNAL(showHistos(int, QString)), assembleView_, SLOT(updateImage(int, QString))); 
+     connect(cmdr_zscan, SIGNAL(acquireImage()), camera_, SLOT(acquireImage()));
+     connect(cmdr_zscan, SIGNAL(changeVacuumState()), cmdr_zscan, SLOT(changeVacuumState()));
+     connect(cmdr_zscan, SIGNAL(showHistos(int, QString)), assembleView_, SLOT(updateImage(int, QString))); 
 
     connect(camera_, SIGNAL(imageAcquired(cv::Mat)), finder_, SLOT(runObjectDetection_labmode(cv::Mat)) );
     connect(finder_,SIGNAL(reportObjectLocation(int,double,double,double)), cmdr_zscan, SLOT(fill_positionvectors(int, double,double,double)));
