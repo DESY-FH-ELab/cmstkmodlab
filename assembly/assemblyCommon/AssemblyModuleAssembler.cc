@@ -35,7 +35,6 @@ using namespace cv;
 
 AssemblyModuleAssembler::AssemblyModuleAssembler(AssemblyVUEyeModel *uEyeModel_, AssemblySensorMarkerFinder * finder_,
                                                  LStepExpressModel* lStepExpressModel_,
-                                                 ConradModel * conradModel_,
                                                  QWidget *parent)
   : QWidget(parent)
 {
@@ -194,11 +193,18 @@ AssemblyModuleAssembler::AssemblyModuleAssembler(AssemblyVUEyeModel *uEyeModel_,
   AssemblyAttacher * attacher1 = new AssemblyAttacher("Drop/Raise", 10.0);
  // g1->addWidget(attacher1,7,0);
 
-  AssemblyVacuumToggler * toggle1 = new AssemblyVacuumToggler(this, "Toggle vacuum");
+  //AssemblyVacuumToggler * toggle1 = new AssemblyVacuumToggler(this, "Toggle vacuum");
+  toggle1 = new AssemblyVacuumToggler(this, "Toggle vacuum");
   g1->addWidget(toggle1,8,0);
     
   AssemblyPrecisionEstimator * precision1 = new AssemblyPrecisionEstimator(this, "Estimate Assembly Precision", "-200.0,0.0,0.0", "0.0,0.0,0.0", 1 , conradModel_);
   g1->addWidget(precision1 ,9,0);
+
+  QGridLayout *g2 = new QGridLayout();
+  l->addLayout(g2,1,1);
+  
+  AssemblySandwitchAssembler* sandwitch1 = new AssemblySandwitchAssembler(this, "Assemble Sandwitch");
+  g2 -> addWidget(sandwitch1, 0, 0);
 
   //AssemblyCommander * cmdr4 = new AssemblyCommander(this, "Go to stat. camera", 100.0,100.0,100.0,100.0);
   //g1->addWidget(cmdr4, 9, 0);
@@ -225,7 +231,8 @@ AssemblyModuleAssembler::AssemblyModuleAssembler(AssemblyVUEyeModel *uEyeModel_,
     
   connect(precision1, SIGNAL(launchPrecisionEstimation(double, double, double, double, double, double, int)),
             this, SLOT(startMacro(double, double, double, double, double, double, int)));
-    
+  
+  connect(sandwitch1, SIGNAL(launchSandwitchAssembly(double, double, double, double, double, double, double, double, double)), this, SIGNAL(launchSandwitchAssembly(double, double, double, double, double, double, double, double, double)));
     
   //connect(cmdr2, SIGNAL(moveAbsolute(double,double,double,double)),
   //        motionManager_, SLOT(moveRelative(double,double,double,double)));
@@ -307,8 +314,8 @@ void AssemblyModuleAssembler::updateImage(int stage, QString filename)
   cv::Mat img_gs = cv::imread(filename_ss, CV_LOAD_IMAGE_UNCHANGED);
 
   if (stage == 1 ){
-    imageView_1->setZoomFactor(0.5);
     imageView_1->setImage(img_gs);
+    imageView_1->setZoomFactor(0.3);
     
   }else if (stage ==2){
     imageView_2->setImage(img_gs);
@@ -437,11 +444,10 @@ AssemblyPrecisionEstimator::AssemblyPrecisionEstimator(QWidget *parent, string t
     label2->setText("Pickup position (x,y,z)");
     label3->setText("N iterations");
     
-
     
-    lineEdit1->setText("-110.9979, -39.009, 9.8975");
-    lineEdit2->setText("-210.9969, 9.0032, 9.8975");
-    lineEdit3->setText("3");
+    lineEdit1->setText("48.9792,58.0699,-88.1536");
+    lineEdit2->setText("-39.6346,17.4785,-119.1284,0.0");
+    lineEdit3->setText("1");
     
     connect(button1, SIGNAL(clicked()),
             this, SLOT(run()));
@@ -499,6 +505,102 @@ void AssemblyPrecisionEstimator::run()
     
 }
 
+AssemblySandwitchAssembler::AssemblySandwitchAssembler(QWidget *parent, string text, string assembly_position, string bottom_part_position, string top_part_position)
+: QWidget(parent)
+{
+    QGridLayout *l = new QGridLayout(this);
+    setLayout(l);
+    
+    //QString q_assembly_pos = QString::fromStdString(assembly_pickup);
+    //QString q_bottom_pos = QString::fromStdString(bottom_part_position);
+    //QString q_top_pos = QString::fromStdString(bottom_part_position);
+    QString qname = QString::fromStdString(text);
+
+    button1 = new QPushButton(qname, this);
+    l->addWidget(button1,0,0);
+    
+    QFormLayout *fl1 = new QFormLayout(this);
+    l->addLayout(fl1,1,0);
+
+    label1 = new QLabel();
+    lineEdit1 = new QLineEdit();
+    fl1->addRow(label1,lineEdit1);
+
+    label2 = new QLabel();
+    lineEdit2 = new QLineEdit();
+    fl1->addRow(label2,lineEdit2);
+    
+    label3 = new QLabel();
+    lineEdit3 = new QLineEdit();
+    fl1->addRow(label3,lineEdit3);
+    
+
+    label1->setText("Assembly position (x,y,z)");
+    label2->setText("Bottom part position (x,y,z)");
+    label3->setText("Top part position (x,y,z)");
+    
+
+    
+    lineEdit1->setText("0.0,55.0,-108.0");
+    lineEdit2->setText("50.0,-111.90,-127.7184");
+    lineEdit3->setText("-80.0,-111.90,-125.70");
+    
+    connect(button1, SIGNAL(clicked()),
+            this, SLOT(run()));
+}
+
+
+void AssemblySandwitchAssembler::run()
+{
+    
+    NQLog("AssemblySandwitchAssembler") << ":run";
+    
+    
+    
+    //parse lineEdit text to get target coordinates
+    QString  parent_string_assembly = this->lineEdit1->text();
+    
+    QStringList pieces_assembly = parent_string_assembly.split( "," );
+    QString x_assembly_s = pieces_assembly.value( pieces_assembly.length() - 3);
+    QString y_assembly_s = pieces_assembly.value( pieces_assembly.length() - 2);
+    QString z_assembly_s = pieces_assembly.value( pieces_assembly.length() -1);
+    
+    double x_assembly_d = x_assembly_s.toDouble();
+    double y_assembly_d = y_assembly_s.toDouble();
+    double z_assembly_d = z_assembly_s.toDouble();
+    
+    
+    QString  parent_string_bottom = this->lineEdit2->text();
+    
+    QStringList pieces_bottom = parent_string_bottom.split( "," );
+    QString x_bottom_s = pieces_bottom.value( pieces_bottom.length() - 3);
+    QString y_bottom_s = pieces_bottom.value( pieces_bottom.length() - 2);
+    QString z_bottom_s = pieces_bottom.value( pieces_bottom.length() - 1);
+    
+    double x_bottom_d = x_bottom_s.toDouble();
+    double y_bottom_d = y_bottom_s.toDouble();
+    double z_bottom_d = z_bottom_s.toDouble();
+    
+    
+    QString  parent_string_top = this->lineEdit3->text();
+    
+    QStringList pieces_top = parent_string_top.split( "," );
+    QString x_top_s = pieces_top.value( pieces_top.length() - 3);
+    QString y_top_s = pieces_top.value( pieces_top.length() - 2);
+    QString z_top_s = pieces_top.value( pieces_top.length() - 1);
+    
+    double x_top_d = x_top_s.toDouble();
+    double y_top_d = y_top_s.toDouble();
+    double z_top_d = z_top_s.toDouble();
+    
+    NQLog("AssemblySandwitchAssembler::run")<<  " x_a = " << x_assembly_d <<  " y_a = " << y_assembly_d << " z_a = " << z_assembly_d;
+    NQLog("AssemblySandwitchAssembler::run")<<  " x_b = " << x_bottom_d <<  " y_b = " << y_bottom_d << " z_b = " << z_bottom_d;
+    NQLog("AssemblySandwitchAssembler::run")<<  " x_t = " << x_top_d <<  " y_t = " << y_top_d << " z_t = " << z_top_d;
+
+
+    emit launchSandwitchAssembly(x_assembly_d, y_assembly_d, z_assembly_d, x_bottom_d, y_bottom_d, z_bottom_d, x_top_d, y_top_d, z_top_d);
+    
+}
 
 
 AssemblyVacuumToggler::AssemblyVacuumToggler(QWidget *parent, std::string string)
@@ -509,10 +611,9 @@ AssemblyVacuumToggler::AssemblyVacuumToggler(QWidget *parent, std::string string
 
   state = false;
     
-
   QString qname = QString::fromStdString(string);
 
-  state = false;
+  state = false;//???
 
   button1 = new QPushButton(qname, this);
   l->addWidget(button1,0,0);
@@ -521,16 +622,19 @@ AssemblyVacuumToggler::AssemblyVacuumToggler(QWidget *parent, std::string string
   radio1 = new QRadioButton(tr("&Channel 1"));
   radio2 = new QRadioButton(tr("&Channel 2"));
   radio3 = new QRadioButton(tr("&Channel 3"));
+  radio4 = new QRadioButton(tr("&Channel 4"));
     
     
   valves.push_back(radio1);
   valves.push_back(radio2);
   valves.push_back(radio3);
+  valves.push_back(radio4);
     
 
   l->addWidget(radio1,1,0);
   l->addWidget(radio2,3,0);
   l->addWidget(radio3,5,0);
+  l->addWidget(radio4,7,0);
     
 
   QPixmap pixmap(100,100);
@@ -560,10 +664,18 @@ AssemblyVacuumToggler::AssemblyVacuumToggler(QWidget *parent, std::string string
   ql3->setPixmap(pixmap);
   ql3->setText("VACUUM OFF");
   ql3->setStyleSheet("QLabel { background-color : green; color : black; }");
+   
+  ql4 = new QLabel("", this);
+  l->addWidget(ql4,7,1);
+    
+  ql4->setPixmap(pixmap);
+  ql4->setText("VACUUM OFF");
+  ql4->setStyleSheet("QLabel { background-color : green; color : black; }");
     
   labels.push_back(ql1);
   labels.push_back(ql2);
   labels.push_back(ql3);
+  labels.push_back(ql4);
 
   connect(button1, SIGNAL(clicked()),
           this, SLOT(toggleVacuum()));
@@ -576,34 +688,43 @@ AssemblyVacuumToggler::AssemblyVacuumToggler(QWidget *parent, std::string string
 
 void AssemblyVacuumToggler::toggleVacuum()
 {
-    NQLog("AssemblyVacuumToggler") << ": toggling vacuum voltage";
-    
-    for (int i = 0; i < 3 ; i ++){
+    NQLog("AssemblyVacuumToggler") << ": toggling vacuum voltage ";
+
+    for (int i = 0; i < 4 ; i ++){
     
         if (valves[i]->isChecked()){
             
-            if (cnrd1->getSwitchState(i+1) == 0){
-                cnrd1->setSwitchEnabled(i+1, true);
-                
-                labels[i]->setText("VACUUM ON");
-                labels[i]->setStyleSheet("QLabel { background-color : red; color : black; }");
-                
-                if (cnrd1->getSwitchState(i+1) == 1){
-                    labels[i]->setText("VACUUM ON");
-                    labels[i]->setStyleSheet("QLabel { background-color : red; color : black; }");
-                    state = true;
-                }
-            }else if (cnrd1->getSwitchState(i+1) == 1){
-                cnrd1->setSwitchEnabled(i+1, false);
-                
-                if (cnrd1->getSwitchState(i+1) == 0){
-                    labels[i]->setText("VACUUM OFF");
-                    labels[i]->setStyleSheet("QLabel { background-color : green; color : black; }");
-                    state = false;
-                }
-            }
+	  NQLog("AssemblyVacuumToggler") << ": emit signal to channel " << (i + 1);
+	  button1 -> setEnabled(false);
+	  emit toggleVacuum(i + 1);
+	  return;
         }
     }
+    NQLog("AssemblyVacuumToggler") << ": None channel selected! Vacuum is not toggled.";
+    
+}
+
+void AssemblyVacuumToggler::enableVacuumButton()
+{
+  button1 -> setEnabled(true);
+}
+
+void AssemblyVacuumToggler::disableVacuumButton()
+{
+  button1 -> setEnabled(false);
+}
+
+void AssemblyVacuumToggler::updateVacuumChannelState(int channelNumber, bool channelState)
+{
+  emit enableVacuumButton();
+
+  if (channelState){
+    labels[channelNumber]->setText("VACUUM ON");
+    labels[channelNumber]->setStyleSheet("QLabel { background-color : red; color : black; }");
+  }else {
+    labels[channelNumber]->setText("VACUUM OFF");
+    labels[channelNumber]->setStyleSheet("QLabel { background-color : green; color : black; }");    
+  }
 }
 
 
@@ -649,9 +770,9 @@ void AssemblyAttacher::moveRelative(){
     QString  parent_string = this->lineEdit1->text();
     
     QStringList pieces = parent_string.split( "," );
-    QString x = pieces.value( pieces.length() - 3);
-    QString y = pieces.value( pieces.length() - 2);
-    QString z = pieces.value( pieces.length() - 1);
+    QString x = pieces.value( pieces.length() - 4);
+    QString y = pieces.value( pieces.length() - 3);
+    QString z = pieces.value( pieces.length() - 2);
     QString a = pieces.value( pieces.length() - 1);
     
     double x_d = x.toDouble();
@@ -659,7 +780,7 @@ void AssemblyAttacher::moveRelative(){
     double z_d = z.toDouble();
     double a_d = a.toDouble();
     
-    NQLog("AssemblyAttacher::moveRelative") << ": moving relative (parsed) "<< x_d<<" "<< y_d<<" "<< z_d;
+    NQLog("AssemblyAttacher::moveRelative") << ": moving relative (parsed!!!) "<< x_d<<" "<< y_d<<" "<< z_d <<" "<< a_d;
     
     NQLog("AssemblyAttacher::moveRelative") <<" requesting move...";
     
@@ -776,9 +897,9 @@ void AssemblyCommander::goToTarget()
   QString  parent_string = this->lineEdit1->text();
 
   QStringList pieces = parent_string.split( "," );
-  QString x = pieces.value( pieces.length() - 3);
-  QString y = pieces.value( pieces.length() - 2);
-  QString z = pieces.value( pieces.length() - 1);
+  QString x = pieces.value( pieces.length() - 4);
+  QString y = pieces.value( pieces.length() - 3);
+  QString z = pieces.value( pieces.length() - 2);
   QString a = pieces.value( pieces.length() - 1);
 
   double x_d = x.toDouble();
@@ -889,6 +1010,7 @@ AssemblySensorLocator::AssemblySensorLocator(QWidget *parent, std::string string
   radio1 = new QRadioButton(tr("&Fiducial marker"));
   radio2 = new QRadioButton(tr("&Positioning pin"));
   radio3 = new QRadioButton(tr("&Sensor corner"));
+  radio31 = new QRadioButton(tr("&Spacer corner"));
     
   radio1->setChecked(true);
 
@@ -896,6 +1018,7 @@ AssemblySensorLocator::AssemblySensorLocator(QWidget *parent, std::string string
   vbox1->addWidget(radio1);
   vbox1->addWidget(radio2);
   vbox1->addWidget(radio3);
+  vbox1->addWidget(radio31);
 
   vbox1->addStretch(1);
   groupBox1->setLayout(vbox1);
@@ -959,7 +1082,11 @@ void AssemblySensorLocator::detectPatRecMode()
         
         objectmode =2;
     }
+    else if (radio31->isChecked()){  
+        objectmode =3;
+    }
     
+
     if (radio4->isChecked()){
         labmode = 0;
         
@@ -968,6 +1095,8 @@ void AssemblySensorLocator::detectPatRecMode()
         labmode = 1;
     }
     
+    NQLog("AssemblyModuleAssembler:: emitting runobjectdetection with args :" )<<  labmode <<" , " << objectmode ;
+
     emit runObjectDetection(labmode, objectmode);
 
 }

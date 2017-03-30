@@ -47,9 +47,28 @@ AssemblyMainWindow::AssemblyMainWindow(QWidget *parent) :
     finder_ = new AssemblySensorMarkerFinder();
     finderThread_ = new AssemblyMarkerFinderThread(finder_, this);
     finderThread_->start();
+ 
+    thresholdTunerView_ = new AssemblyThresholdTuner(tabWidget_);
+    tabWidget_->addTab(thresholdTunerView_, "Threshold");
 
-    assembleView_ = new AssemblyModuleAssembler(uEyeModel_, finder_, lStepExpressModel_, conradModel_, tabWidget_);
-    tabWidget_->addTab(assembleView_, "assemble");
+    connect(thresholdTunerView_, SIGNAL(updateThresholdLabel()), finder_, SLOT(getCurrentGeneralThreshold()));    
+    connect(this, SIGNAL(updateThresholdLabel()), finder_, SLOT(getCurrentGeneralThreshold()));
+    connect(finder_, SIGNAL(sendCurrentGeneralThreshold(int)), thresholdTunerView_, SLOT(updateThresholdLabelSlot(int)));
+    connect(thresholdTunerView_, SIGNAL(setNewThreshold(int,cv::Mat)), finder_, SLOT(setNewGeneralThreshold(int, cv::Mat)));
+    //connect(camera_, SIGNAL(imageAcquired(cv::Mat)), thresholdTunerView_, SLOT(imageAcquired(const cv::Mat&)));
+    connect(camera_, SIGNAL(imageAcquired(cv::Mat)), thresholdTunerView_, SLOT(imageAcquired(cv::Mat)));
+    connect(finder_, SIGNAL(sendUpdatedThresholdImage(QString)), thresholdTunerView_, SLOT(updateThresholdImage(QString)));
+    emit updateThresholdLabel();    
+    NQLog("AssemblyThresholdTuner") << " : INFO! : initialization signal sent.";
+
+    
+    assembleView_ = new AssemblyModuleAssembler(uEyeModel_, finder_, lStepExpressModel_, tabWidget_);
+    tabWidget_->addTab(assembleView_, "Manual assembly");
+
+    //autoAssemblyView_ = new AssemblyAutomatedModuleAssembler(uEyeModel_, finder_, lStepExpressModel_, tabWidget_);
+    //tabWidget_->addTab(autoAssemblyView_, "Automated assembly");
+
+    conradModel_ = new ConradModel(assembleView_);
 
     finderWidget_ = new AssemblySensorMarkerFinderWidget(finder_, this);
     tabWidget_->addTab(finderWidget_, "finder config");
@@ -57,8 +76,19 @@ AssemblyMainWindow::AssemblyMainWindow(QWidget *parent) :
     uEyeWidget_ = new AssemblyUEyeWidget(uEyeModel_, this);
     tabWidget_->addTab(uEyeWidget_, "uEye");
     
-    cmdr_zscan = new AssemblyScanner(lStepExpressModel_, conradModel_);
+    cmdr_zscan = new AssemblyScanner(lStepExpressModel_);
+    conradManager_ = new ConradManager(conradModel_);
+    module_assembler_ = new AssemblyAssembler(lStepExpressModel_);
+
+    connect(assembleView_ -> toggle1, SIGNAL(toggleVacuum(int)), conradManager_, SLOT(toggleVacuum(int)));
+    //connect(assembleView_ -> toggle1, SIGNAL(toggleVacuum(int)), assembleView_ -> toggle1, SLOT(disableVacuumButton()));
+    connect(conradManager_, SIGNAL(updateVacuumChannelState(int, bool)), assembleView_ -> toggle1, SLOT(updateVacuumChannelState(int, bool)));
+    connect(this, SIGNAL(updateVacuumChannelsStatus()), conradManager_, SLOT(updateVacuumChannelsStatus()));
+
     
+    emit updateVacuumChannelsStatus();
+
+
     NQLog("AssemblyMainWindow") << "assembly scanner constructed";
 
     
@@ -110,11 +140,15 @@ AssemblyMainWindow::AssemblyMainWindow(QWidget *parent) :
     
     checkbox2 = new QCheckBox("Enable precision estimation", this);
     toolBar_->addWidget(checkbox2);
+    
+    checkbox3 = new QCheckBox("Enable sandwitch assembly", this);
+    toolBar_->addWidget(checkbox3);
   
     connect(checkbox1, SIGNAL(stateChanged(int)), this, SLOT(enableAutoFocus(int)));
-    
-    
+        
     connect(checkbox2, SIGNAL(stateChanged(int)), this, SLOT(enablePrecisionEstimation(int)));
+  
+    connect(checkbox3, SIGNAL(stateChanged(int)), this, SLOT(enableSandwitchAssembly(int)));
 
 
     setCentralWidget(tabWidget_);
@@ -166,26 +200,20 @@ void AssemblyMainWindow::enablePrecisionEstimation(int state){
     
     if (state == 2){
         
-    connect(assembleView_, SIGNAL(launchPrecisionEstimation(double, double, double, double, double, double, int)),cmdr_zscan, SLOT(run_precisionestimation(double, double, double, double, double, double, int)));
-
+connect(assembleView_, SIGNAL(launchPrecisionEstimation(double, double, double, double, double, double, int)),cmdr_zscan, SLOT(run_precisionestimation(double, double, double, double, double, double, int)));
     connect(cmdr_zscan, SIGNAL(moveAbsolute(double, double, double, double)),motionManager_, SLOT(moveAbsolute(double, double,double, double)));
     connect(lStepExpressModel_, SIGNAL(motionFinished()), cmdr_zscan, SLOT(process_step()));
-        
+    connect(cmdr_zscan, SIGNAL(toggleVacuum(int)), conradManager_, SLOT(toggleVacuum(int)));
+    connect(conradManager_, SIGNAL(updateVacuumChannelState(int, bool)), cmdr_zscan, SIGNAL(nextStep()));
         
 //        connect(cmdr_zscan, SIGNAL(toggleVacuum()), conradManager_, SLOT(changeVacuum()));
-
         //for testing with random numbers
     // connect(cmdr_zscan, SIGNAL(makeDummies(int, double,double,double)), cmdr_zscan, SLOT(fill_positionvectors(int, double,double,double)));
 
     //    for real lab tests with camera
      connect(cmdr_zscan, SIGNAL(acquireImage()), camera_, SLOT(acquireImage()));
-
      connect(cmdr_zscan, SIGNAL(changeVacuumState()), cmdr_zscan, SLOT(changeVacuumState()));
-
-     connect(cmdr_zscan, SIGNAL(showHistos(int, QString)), assembleView_, SLOT(updateImage(int, QString)));
-
-        
-        
+     connect(cmdr_zscan, SIGNAL(showHistos(int, QString)), assembleView_, SLOT(updateImage(int, QString))); 
 
     connect(camera_, SIGNAL(imageAcquired(cv::Mat)), finder_, SLOT(runObjectDetection_labmode(cv::Mat)) );
     connect(finder_,SIGNAL(reportObjectLocation(int,double,double,double)), cmdr_zscan, SLOT(fill_positionvectors(int, double,double,double)));
@@ -194,8 +222,10 @@ void AssemblyMainWindow::enablePrecisionEstimation(int state){
         
     }else if (state == 0 ){
         
-    disconnect(cmdr_zscan, SIGNAL(moveRelative(double, double,double, double)),motionManager_, SLOT(moveRelative(double, double,double, double)));
+    disconnect(cmdr_zscan, SIGNAL(moveAbsolute(double, double,double, double)),motionManager_, SLOT(moveAbsolute(double, double,double, double)));
     disconnect(lStepExpressModel_, SIGNAL(motionFinished()), camera_, SLOT(acquireImage()));
+    disconnect(cmdr_zscan, SIGNAL(toggleVacuum(int)), conradManager_, SLOT(toggleVacuum(int)));
+    disconnect(conradManager_, SIGNAL(updateVacuumChannelState(int, bool)), cmdr_zscan, SIGNAL(nextStep()));
     disconnect(camera_, SIGNAL(imageAcquired(cv::Mat)), finder_, SLOT(findMarker_templateMatching(int, cv::Mat)) );
     disconnect(finder_, SIGNAL(getImageBlur(cv::Mat, cv::Rect)), cmdr_zscan, SLOT(write_image(cv::Mat, cv::Rect)) );
     disconnect(cmdr_zscan,SIGNAL(make_graph(vector<double>,vector<double>)),autoFocusView_,SLOT(make_graph(vector<double>,vector<double>)));
@@ -207,6 +237,56 @@ void AssemblyMainWindow::enablePrecisionEstimation(int state){
 
 
 
+void AssemblyMainWindow::enableSandwitchAssembly(int state){
+    
+    
+    NQLog("AssemblyMainWindow::enableSandwitchAssembly") << ": state  " << state;
+    
+    if (state == 2){
+        
+      connect(assembleView_, SIGNAL(launchSandwitchAssembly(double, double, double, double, double, double, double, double, double)), module_assembler_, SLOT(run_sandwitchassembly(double, double, double, double, double, double, double, double, double)));
+
+    connect(module_assembler_, SIGNAL(moveAbsolute(double, double, double, double)),motionManager_, SLOT(moveAbsolute(double, double,double, double)));
+    connect(lStepExpressModel_, SIGNAL(motionFinished()), module_assembler_, SLOT(process_step()));
+    connect(module_assembler_, SIGNAL(toggleVacuum(int)), conradManager_, SLOT(toggleVacuum(int)));
+    connect(conradManager_, SIGNAL(updateVacuumChannelState(int, bool)), module_assembler_, SIGNAL(nextStep()));
+        
+        //for testing with random numbers
+    // connect(cmdr_zscan, SIGNAL(makeDummies(int, double,double,double)), cmdr_zscan, SLOT(fill_positionvectors(int, double,double,double)));
+
+    //    for real lab tests with camera
+    connect(module_assembler_, SIGNAL(acquireImage()), camera_, SLOT(acquireImage()));
+
+    connect(module_assembler_, SIGNAL(showHistos(int, QString)), assembleView_, SLOT(updateImage(int, QString))); 
+
+    connect(camera_, SIGNAL(imageAcquired(cv::Mat)), finder_, SLOT(runObjectDetection_labmode(cv::Mat)) );
+    connect(finder_,SIGNAL(reportObjectLocation(int,double,double,double)), module_assembler_, SLOT(fill_positionvectors(int, double,double,double)));
+    connect(module_assembler_, SIGNAL(nextStep()), module_assembler_, SLOT(process_step()));
+
+        
+    }else if (state == 0 ){
+        
+    disconnect(assembleView_, SIGNAL(launchSandwitchAssembly(double, double, double, double, double, double, double, double, double)), module_assembler_, SLOT(run_sandwitchassembly(double, double, double, double, double, double, double, double, double)));
+
+    disconnect(module_assembler_, SIGNAL(moveAbsolute(double, double, double, double)),motionManager_, SLOT(moveAbsolute(double, double,double, double)));
+    disconnect(lStepExpressModel_, SIGNAL(motionFinished()), module_assembler_, SLOT(process_step()));
+    disconnect(module_assembler_, SIGNAL(toggleVacuum(int)), conradManager_, SLOT(toggleVacuum(int)));
+    disconnect(conradManager_, SIGNAL(updateVacuumChannelState(int, bool)), module_assembler_, SIGNAL(nextStep()));
+        
+        //for testing with random numbers
+    // disconnect(cmdr_zscan, SIGNAL(makeDummies(int, double,double,double)), cmdr_zscan, SLOT(fill_positionvectors(int, double,double,double)));
+
+    //    for real lab tests with camera
+    disconnect(module_assembler_, SIGNAL(acquireImage()), camera_, SLOT(acquireImage()));
+
+    disconnect(module_assembler_, SIGNAL(showHistos(int, QString)), assembleView_, SLOT(updateImage(int, QString))); 
+
+    disconnect(camera_, SIGNAL(imageAcquired(cv::Mat)), finder_, SLOT(runObjectDetection_labmode(cv::Mat)) );
+    disconnect(finder_,SIGNAL(reportObjectLocation(int,double,double,double)), module_assembler_, SLOT(fill_positionvectors(int, double,double,double)));
+    disconnect(module_assembler_, SIGNAL(nextStep()), module_assembler_, SLOT(process_step()));
+        
+    }
+}
 
 void AssemblyMainWindow::enableAutoFocus(int state){
 
@@ -261,6 +341,8 @@ void AssemblyMainWindow::cameraOpened()
     NQLog("AssemblyMainWindow") << ":cameraOpened()";
 
     finderView_->connectImageProducer(finder_, SIGNAL(markerFound(const cv::Mat&)));
+
+    thresholdTunerView_ -> connectImageProducer(camera_, SIGNAL(imageAcquired(const cv::Mat&)));
 
     edgeView_->connectImageProducer(finder_, SIGNAL(edgesDetected(const cv::Mat&)));
 

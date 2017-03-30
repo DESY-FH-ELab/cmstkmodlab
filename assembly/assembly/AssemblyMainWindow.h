@@ -22,9 +22,11 @@ typedef AssemblyUEyeModel AssemblyUEyeModel_t;
 #include "AssemblyUEyeWidget.h"
 #include "AssemblyUEyeView.h"
 #include "AssemblyUEyeSnapShooter.h"
+#include "AssemblyThresholdTuner.h"
 #include "AssemblyModuleAssembler.h"
 #include "AssemblyAutoFocus.h"
 #include "AssemblyScanner.h"
+#include "AssemblyAssembler.h"
 
 
 #include "AssemblyMarkerFinderThread.h"
@@ -50,7 +52,7 @@ typedef AssemblyUEyeModel AssemblyUEyeModel_t;
 
 //conrad relay card
 #include "ConradModel.h"
-
+#include "ConradManager.h"
 
 
 class AssemblyMainWindow : public QMainWindow
@@ -73,13 +75,15 @@ public slots:
   void cameraClosed();
   void enableAutoFocus(int);
   void enablePrecisionEstimation(int);
+  void enableSandwitchAssembly(int);
 
 signals:
 
   void openCamera();
   void closeCamera();
   void acquireImage();
-
+  void updateVacuumChannelsStatus();
+  void updateThresholdLabel();
     
 protected slots:
 
@@ -94,6 +98,7 @@ protected:
   QTabWidget* tabWidget_;
 
   AssemblyUEyeSnapShooter* finderView_;
+  AssemblyThresholdTuner* thresholdTunerView_;
   AssemblyUEyeSnapShooter* edgeView_;
   AssemblyUEyeSnapShooter* rawView_;
   AssemblyModuleAssembler* assembleView_;
@@ -101,6 +106,7 @@ protected:
   AssemblyScanner*  cmdr_zscan;
   QCheckBox *checkbox1;
   QCheckBox *checkbox2;
+  QCheckBox *checkbox3;
 
     
   AssemblyUEyeModel_t* uEyeModel_;
@@ -121,6 +127,8 @@ protected:
   LStepExpressMotionThread* motionThread_;
     
   ConradModel * conradModel_;
+  ConradManager* conradManager_;
+  AssemblyAssembler* module_assembler_;
 
   double testTimerCount_;
 
