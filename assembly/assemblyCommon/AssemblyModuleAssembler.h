@@ -36,7 +36,7 @@
 //#include "LStepExpressJoystickWidget.h"
 
 //relay card for vacuum control
-//#include "ConradModel.h"
+#include "ConradModel.h"
 
 
 class AssemblyVacuumToggler : public QWidget
@@ -99,6 +99,7 @@ public:
   QLineEdit * lE5;
   QLineEdit * lE6;
 
+  ConradModel * cnrd1;
 
   AssemblyVUEyeCamera * camera_;
   AssemblyVacuumToggler* toggle1;  //to connect vacuum signals in MainWindow

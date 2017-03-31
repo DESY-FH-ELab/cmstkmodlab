@@ -26,6 +26,11 @@
 #include "LStepExpressMotionManager.h"
 
 
+
+
+#include <math.h>       /* atan */
+
+
 using namespace std;
 
 
@@ -33,10 +38,13 @@ class AssemblyAssembler : public QObject
 {
   Q_OBJECT
 
+    
+
 public:
   LStepExpressModel* lStepExpressModel_;
   LStepExpressMotionManager* motionManager_;
     
+  double marker_x, marker_y, marker_z, marker_theta;
 
 
   explicit AssemblyAssembler(LStepExpressModel* lStepExpressModel_);
@@ -48,7 +56,7 @@ public:
   double z_prepickup_distance, z_spacer_thickness, z_sensor_thickness;
   double platform_rotation;
     
-  int nTotalImages, nAcquiredImages, step;
+  int nTotalImages, nAcquiredImages, step, alignment_step;
   vector<double> x_vals, y_vals;
   vector<double> xpre_vec,ypre_vec,thetapre_vec;
   vector<double> xpost_vec,ypost_vec,thetapost_vec;
@@ -63,6 +71,8 @@ public slots:
   void write_image(cv::Mat, cv::Rect);
   void run_sandwitchassembly(double, double, double, double, double, double, double, double, double);
   void process_step();
+  void run_alignment(int, double, double, double);
+
   void fill_positionvectors(int , double, double, double);
 
     
@@ -74,6 +84,7 @@ signals:
     void make_graph(const string);
     void updateText(double);
     void nextStep();
+    void nextAlignmentStep();
     void acquireImage();
     void makeDummies(int, double,double,double);
     void showHistos(int, QString);

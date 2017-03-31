@@ -76,7 +76,9 @@ AssemblyMainWindow::AssemblyMainWindow(QWidget *parent) :
     uEyeWidget_ = new AssemblyUEyeWidget(uEyeModel_, this);
     tabWidget_->addTab(uEyeWidget_, "uEye");
     
-    cmdr_zscan = new AssemblyScanner(lStepExpressModel_);
+    cmdr_zscan = new AssemblyScanner(lStepExpressModel_,conradModel_ );
+    
+    
     conradManager_ = new ConradManager(conradModel_);
     module_assembler_ = new AssemblyAssembler(lStepExpressModel_);
 
@@ -135,15 +137,18 @@ AssemblyMainWindow::AssemblyMainWindow(QWidget *parent) :
     toolBar_->addAction("close", this, SLOT(onCloseCamera()));
     toolBar_->addAction("snapshot", this, SLOT(onSnapShot()));
     
-    checkbox1 = new QCheckBox("Enable auto-focusing", this);
+    checkbox1 = new QCheckBox("Auto-focusing", this);
     toolBar_->addWidget(checkbox1);
     
-    checkbox2 = new QCheckBox("Enable precision estimation", this);
+    checkbox2 = new QCheckBox("Precision", this);
     toolBar_->addWidget(checkbox2);
     
-    checkbox3 = new QCheckBox("Enable sandwitch assembly", this);
+    checkbox3 = new QCheckBox("Assembly", this);
     toolBar_->addWidget(checkbox3);
   
+    checkbox4 = new QCheckBox("Alignment", this);
+    toolBar_->addWidget(checkbox4);
+    
     connect(checkbox1, SIGNAL(stateChanged(int)), this, SLOT(enableAutoFocus(int)));
         
     connect(checkbox2, SIGNAL(stateChanged(int)), this, SLOT(enablePrecisionEstimation(int)));
@@ -195,12 +200,11 @@ void AssemblyMainWindow::onOpenCamera()
 
 void AssemblyMainWindow::enablePrecisionEstimation(int state){
     
-    
     NQLog("AssemblyMainWindow::enablePrecisionEstimation") << ": state  " << state;
     
     if (state == 2){
         
-connect(assembleView_, SIGNAL(launchPrecisionEstimation(double, double, double, double, double, double, int)),cmdr_zscan, SLOT(run_precisionestimation(double, double, double, double, double, double, int)));
+    connect(assembleView_, SIGNAL(launchPrecisionEstimation(double, double, double, double, double, double, int)),cmdr_zscan, SLOT(run_precisionestimation(double, double, double, double, double, double, int)));
     connect(cmdr_zscan, SIGNAL(moveAbsolute(double, double, double, double)),motionManager_, SLOT(moveAbsolute(double, double,double, double)));
     connect(lStepExpressModel_, SIGNAL(motionFinished()), cmdr_zscan, SLOT(process_step()));
     connect(cmdr_zscan, SIGNAL(toggleVacuum(int)), conradManager_, SLOT(toggleVacuum(int)));
@@ -244,7 +248,7 @@ void AssemblyMainWindow::enableSandwitchAssembly(int state){
     
     if (state == 2){
         
-      connect(assembleView_, SIGNAL(launchSandwitchAssembly(double, double, double, double, double, double, double, double, double)), module_assembler_, SLOT(run_sandwitchassembly(double, double, double, double, double, double, double, double, double)));
+      connect(assembleView_, SIGNAL(launchSandwitchAssembly(double, double, double, double, double, double, double, double, double)),module_assembler_, SLOT(run_sandwitchassembly(double, double, double, double, double, double, double, double, double)));
 
     connect(module_assembler_, SIGNAL(moveAbsolute(double, double, double, double)),motionManager_, SLOT(moveAbsolute(double, double,double, double)));
     connect(lStepExpressModel_, SIGNAL(motionFinished()), module_assembler_, SLOT(process_step()));
@@ -260,7 +264,7 @@ void AssemblyMainWindow::enableSandwitchAssembly(int state){
     connect(module_assembler_, SIGNAL(showHistos(int, QString)), assembleView_, SLOT(updateImage(int, QString))); 
 
     connect(camera_, SIGNAL(imageAcquired(cv::Mat)), finder_, SLOT(runObjectDetection_labmode(cv::Mat)) );
-    connect(finder_,SIGNAL(reportObjectLocation(int,double,double,double)), module_assembler_, SLOT(fill_positionvectors(int, double,double,double)));
+    connect(finder_,SIGNAL(reportObjectLocation(int,double,double,double)), module_assembler_, SLOT(centre_marker(int, double,double,double)));
     connect(module_assembler_, SIGNAL(nextStep()), module_assembler_, SLOT(process_step()));
 
         

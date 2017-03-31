@@ -39,6 +39,7 @@ class AssemblyScanner : public QObject
 
 public:
   ConradModel * cnrd1;
+  QTimer * qt;
   LStepExpressModel* lStepExpressModel_;
   LStepExpressMotionManager* motionManager_;
     
@@ -67,8 +68,6 @@ public slots:
   void process_step();
   void fill_positionvectors(int , double, double, double);
   void toggleVacuum();
-
-
     
 signals:
     void getImage();

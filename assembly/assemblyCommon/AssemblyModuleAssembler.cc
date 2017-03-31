@@ -163,20 +163,19 @@ AssemblyModuleAssembler::AssemblyModuleAssembler(AssemblyVUEyeModel *uEyeModel_,
   QGridLayout *g1 = new QGridLayout();
   l->addLayout(g1,0,1);
 
-  QLabel* header_label = new QLabel("Hover mouse over button for info on each step", this);
-  g1->addWidget(header_label,0,0);
+  //QLabel* header_label = new QLabel("Hover mouse over button for info on each step", this);
+  //g1->addWidget(header_label,0,0);
 
 //  QPushButton* connect_button = new QPushButton("Connect Devcies", this);
 //  g1->addWidget(connect_button,1,0);
 
-
   AssemblyCommander * cmdr0 = new AssemblyCommander(this, "Move absolute", 0.0,0.0,0.0,0.0);
   cmdr0->setToolTip("(1) Returns x,y,z stage to origin (default = (0,0,0) using moveAbsolute(x,y,z) routine)");
-  g1->addWidget(cmdr0,2,0);
+  g1->addWidget(cmdr0,0,0);
 
   AssemblyAttacher * cmdr1 = new AssemblyAttacher("Move relative", 0.0,0.0,0.0,0.0);
   cmdr1->setToolTip("(2) Moves x,y,z stage realtive to current position using moveAbsolute(x,y,z) routine)");
-  g1->addWidget(cmdr1,3,0);
+  g1->addWidget(cmdr1,1,0);
     
   //AssemblyCommander * cmdr1 = new AssemblyCommander(this, "Move relative", 0.0,0.0,0.0,0.0);
   //cmdr1->setToolTip("(2) Moves x,y,z stage to pickup position (default = (100,100,100) using moveAbsolute(x,y,z) routine)");
@@ -184,7 +183,7 @@ AssemblyModuleAssembler::AssemblyModuleAssembler(AssemblyVUEyeModel *uEyeModel_,
 
   AssemblySensorLocator * lctr1 = new AssemblySensorLocator(this, "Locate object", 0.0, finder_);
   lctr1->setToolTip("(3) Acquires image from mobile camera, runs PatRec routine to deduce and report sensor (x,y,z,phi) postion");
-  g1->addWidget(lctr1,5,0);
+  g1->addWidget(lctr1,2,0);
 
  // AssemblyCommander * cmdr2 = new AssemblyCommander(this, "Correct position", 100.0,100.0,100.0,100.0);
  // cmdr2->setToolTip("(4) Corrects arm position using relative displacement using (eventually) pre-calculated displacment from PatRec");
@@ -195,15 +194,15 @@ AssemblyModuleAssembler::AssemblyModuleAssembler(AssemblyVUEyeModel *uEyeModel_,
 
   //AssemblyVacuumToggler * toggle1 = new AssemblyVacuumToggler(this, "Toggle vacuum");
   toggle1 = new AssemblyVacuumToggler(this, "Toggle vacuum");
-  g1->addWidget(toggle1,8,0);
+  g1->addWidget(toggle1,3,0);
     
-  AssemblyPrecisionEstimator * precision1 = new AssemblyPrecisionEstimator(this, "Estimate Assembly Precision", "-200.0,0.0,0.0", "0.0,0.0,0.0", 1 , conradModel_);
-  g1->addWidget(precision1 ,9,0);
+  AssemblyPrecisionEstimator * precision1 = new AssemblyPrecisionEstimator(this, "Estimate Assembly Precision", "-200.0,0.0,0.0", "0.0,0.0,0.0", 1 , cnrd1);
+  //g1->addWidget(precision1,4,0);
 
   QGridLayout *g2 = new QGridLayout();
   l->addLayout(g2,1,1);
   
-  AssemblySandwitchAssembler* sandwitch1 = new AssemblySandwitchAssembler(this, "Assemble Sandwitch");
+  AssemblySandwitchAssembler* sandwitch1 = new AssemblySandwitchAssembler(this, "Assemble Sandwich");
   g2 -> addWidget(sandwitch1, 0, 0);
 
   //AssemblyCommander * cmdr4 = new AssemblyCommander(this, "Go to stat. camera", 100.0,100.0,100.0,100.0);
@@ -619,22 +618,22 @@ AssemblyVacuumToggler::AssemblyVacuumToggler(QWidget *parent, std::string string
   l->addWidget(button1,0,0);
     
 
-  radio1 = new QRadioButton(tr("&Channel 1"));
-  radio2 = new QRadioButton(tr("&Channel 2"));
-  radio3 = new QRadioButton(tr("&Channel 3"));
-  radio4 = new QRadioButton(tr("&Channel 4"));
+  radio1 = new QRadioButton(tr("&Pickup"));
+  radio2 = new QRadioButton(tr("&Spacers"));
+  radio3 = new QRadioButton(tr("&Baseplate"));
+ // radio4 = new QRadioButton(tr("&Channel 4"));
     
     
   valves.push_back(radio1);
   valves.push_back(radio2);
   valves.push_back(radio3);
-  valves.push_back(radio4);
+ // valves.push_back(radio4);
     
 
   l->addWidget(radio1,1,0);
   l->addWidget(radio2,3,0);
   l->addWidget(radio3,5,0);
-  l->addWidget(radio4,7,0);
+  //l->addWidget(radio4,7,0);
     
 
   QPixmap pixmap(100,100);
@@ -665,17 +664,17 @@ AssemblyVacuumToggler::AssemblyVacuumToggler(QWidget *parent, std::string string
   ql3->setText("VACUUM OFF");
   ql3->setStyleSheet("QLabel { background-color : green; color : black; }");
    
-  ql4 = new QLabel("", this);
-  l->addWidget(ql4,7,1);
+  //ql4 = new QLabel("", this);
+ // l->addWidget(ql4,7,1);
     
-  ql4->setPixmap(pixmap);
-  ql4->setText("VACUUM OFF");
-  ql4->setStyleSheet("QLabel { background-color : green; color : black; }");
+  //ql4->setPixmap(pixmap);
+ // ql4->setText("VACUUM OFF");
+  //ql4->setStyleSheet("QLabel { background-color : green; color : black; }");
     
   labels.push_back(ql1);
   labels.push_back(ql2);
   labels.push_back(ql3);
-  labels.push_back(ql4);
+ // labels.push_back(ql4);
 
   connect(button1, SIGNAL(clicked()),
           this, SLOT(toggleVacuum()));
@@ -683,8 +682,6 @@ AssemblyVacuumToggler::AssemblyVacuumToggler(QWidget *parent, std::string string
 }
 
 
-//possibly incorrect to have this methid defined here
-// TODO: move it to a controller class
 
 void AssemblyVacuumToggler::toggleVacuum()
 {

@@ -50,6 +50,9 @@ AssemblyScanner::AssemblyScanner(LStepExpressModel* lStepExpressModel_, ConradMo
 
 }
 
+
+
+
 void  AssemblyScanner::run_precisionestimation(double x_m, double y_m, double z_m , double x_p, double y_p, double z_p, int its){
     
     NQLog("AssemblyScanner::run_precisionestimation")<<  " x_m = " << x_m <<  " y_m = " << y_m << " z_m = " << z_m << " x_p = " << x_p  << " y_p = " << y_p  <<" z_p = " << z_p <<  " iterations = " << its;
@@ -218,8 +221,6 @@ void  AssemblyScanner::process_step(){
         // Step 10: Go back to pre-pickup position
 	emit moveAbsolute(x_pickup,y_pickup,z_prepickup, 0.0);
         
-=======
-
         
     }else if (step == 11){
 

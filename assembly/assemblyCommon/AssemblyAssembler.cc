@@ -46,7 +46,7 @@ AssemblyAssembler::AssemblyAssembler(LStepExpressModel* lStepExpressModel_)
 
 void  AssemblyAssembler::run_sandwitchassembly(double x_a, double y_a, double z_a , double x_b, double y_b, double z_b, double x_t, double y_t, double z_t){
     
-  NQLog("AssemblyAssembler::run_sandwitchassembler")<<  " x_a = " << x_a <<  " y_a = " << y_a << " z_a = " << z_a << " x_b = " << x_b  << " y_b = " << y_b  <<" z_b = " << z_b << "x_t = " << x_t  << " y_t = " << y_t  <<" z_t = " << z_t ;
+  NQLog("AssemblyAssembler::run_sandwichassembler")<<  " x_a = " << x_a <<  " y_a = " << y_a << " z_a = " << z_a << " x_b = " << x_b  << " y_b = " << y_b  <<" z_b = " << z_b << "x_t = " << x_t  << " y_t = " << y_t  <<" z_t = " << z_t ;
     
     x_assembly = x_a;
     y_assembly = y_a;
@@ -99,35 +99,68 @@ void  AssemblyAssembler::fill_positionvectors(int stage, double x_pr, double y_p
 }
 
 
+
+//void  AssemblyScanner::run_alignment(){
+//    NQLog("AssemblyScanner::run_alignment")<<  " tolerance = " << tolerance <<  " max iterations = "<< max_iterations << endl;
+    
+    // Rought manual alignment with ref marker on platform
+    
+    //2. Apply rough angular correction:
+    //a. Run PatRec and detect X1,Y1,Theta
+    //b. put marker in centre of fied of view (need to accurate conversion of pixels to mm )
+    //c. iterate:
+    //    - rotate platform to allign (some small fraction of required rotation)
+    //    - put marker in centre of fied of view
+    //    repeat until target alignment reached
+
+    //emit acquireImage();
+    //3. Apply fine angular correction:
+    // a. Go to far-away corner, Run PatRec and detect X2,Y2
+    // b. Calculate residual angular mis-alignment from (Y2-Y1)/(X2-X1)
+    //c. iterate:
+    //    - rotate platform to allign (some small fraction of required rotation)
+    //    - put marker in centre of fied of view
+    //    repeat until target alignment reached
+    
+    
+    //4. Confirm alignment
+    //   - return to starting corner and conform detected X doesn't change
+    
+  //  emit nextAlignmentStep();
+
+//}
+
+
+
 void  AssemblyAssembler::process_step(){
 
   NQLog("AssemblyAssembler::") << "process_step";
-    
     
     if (step == 0){
 
       NQLog("AssemblyAssembler:: step == ") << step;
         step++;
-// Step 0: Go to top part pre-pick up position
-        emit moveAbsolute(x_top, y_top, (z_top + z_prepickup_distance), 0.0);
+        //Step 0: Go to measurement position for ref corner (needs to be manually pre-determined)
+        emit moveAbsolute(x_assembly, y_assembly, z_assembly + z_prepickup_distance, 0.0);
         //emit nextStep();
     }
     else if  (step == 1){
 
       NQLog("AssemblyAssembler:: step == ") << step;
-        step++;
-// Step 1: Do to top part pick up position
-        emit moveAbsolute(x_top, y_top, z_top, 0.0);
-	//emit nextStep();
-
+        
+    
     }else if (step == 2){
 
       NQLog("AssemblyAssembler:: step == ") << step;
         step++;
 
-//Step 2: Turn on vacuum
+        //Step 2: Turn on vacuum
         emit toggleVacuum(1);   //vacuum line 1, pick up tool
     }
+    
+
+    
+    /*
     else if (step == 3){
 
       NQLog("AssemblyScanner:: step == ") << step;
@@ -185,7 +218,6 @@ void  AssemblyAssembler::process_step(){
         emit moveAbsolute(x_top, y_top, (z_top + z_spacer_thickness + z_prepickup_distance), 0.0);
         //emit nextStep();
 
-   
     }else if (step == 10){
 
       NQLog("AssemblyAssembler:: step == ") << step;
@@ -248,8 +280,7 @@ void  AssemblyAssembler::process_step(){
         step++;
 // Step 17: Go to assembly rotated(!) pre-pick up position
         emit moveAbsolute(x_assembly, y_assembly, (z_assembly + z_prepickup_distance), platform_rotation);
-        //emit nextStep();	
-
+        //emit nextStep();
 
     }else if (step == 18){
 
@@ -363,73 +394,98 @@ void  AssemblyAssembler::process_step(){
       //emit nextStep();
      
     }
-    /*else{
-        NQLog("AssemblyScanner::processstep")<< " estimation finished ";
-        //make graphs from filled vectors here
-        NQLog("AssemblyScanner::processstep")<< " vector has size =  "<<xpre_vec.size();
-        
-        
-        TH1F * h_x = new TH1F("","", 20,-0.5, 0.5);
-        TH1F * h_y = new TH1F("","", 20,-0.5, 0.5);
-        TH1F * h_theta = new TH1F("","", 20,-1.0,1.0);
 
-	
-	outfile.open("DataLogfile.txt");
-	outfile << "x_pre,y_pre,theta_pre,x_pos,y_pos,theta_pos" << endl;
-	
-        for (int i = 0; i< iterations; i++){
-        
-            h_x->Fill(xpre_vec[i] - xpost_vec[i] );
-            h_y->Fill(ypre_vec[i] - ypost_vec[i] );
-            h_theta->Fill(thetapre_vec[i] - thetapost_vec[i] );
-	    NQLog("AssemblyScanner::")<< " filling histos with: x pre  =  "<<  xpre_vec[i] << " x post  "<< xpost_vec[i] << " y  pre  = "<<  ypre_vec[i] << " y post  "<< ypost_vec[i] <<  " theta pre "<<   thetapre_vec[i] << " theta  post  = "<<  thetapost_vec[i] ;
-
-	    outfile << xpre_vec[i] << "," << ypre_vec[i] << "," << thetapre_vec[i] << ",";
-	    outfile << xpost_vec[i] << "," << ypost_vec[i] << "," << thetapost_vec[i];
-	    outfile << std::endl;
-
-        }
-
-	outfile.close();
-
-        string x_canvas_s = "c_x.png";
-        string y_canvas_s = "c_y.png";
-        string theta_canvas_s = "c_theta.png";
-
-        
-        TCanvas * c_x  = new TCanvas();
-        h_x->Draw();
-        h_x->Fit("gaus");
-        TF1 *fit_x = h_x->GetFunction("gaus");
-        double x_mean = fit_x->GetParameter(1);
-        double x_sigma = fit_x->GetParameter(2);
-
-        c_x->SaveAs(x_canvas_s.c_str());
-
-        TCanvas * c_y  = new TCanvas();
-        h_y->Draw();
-        h_y->Fit("gaus");
-        c_y->SaveAs(y_canvas_s.c_str());
-
-
-        TCanvas * c_theta  = new TCanvas();
-        h_theta->Draw();
-        h_theta->Fit("gaus");
-        c_theta->SaveAs(theta_canvas_s.c_str());
-        
-        
-        QString x_canvas_qs = QString::fromLocal8Bit(x_canvas_s.c_str());
-        QString y_canvas_qs = QString::fromLocal8Bit(y_canvas_s.c_str());
-        QString theta_canvas_qs = QString::fromLocal8Bit(theta_canvas_s.c_str());
-        
-        
-        emit showHistos( 1, x_canvas_qs);
-        emit showHistos( 2, y_canvas_qs);
-        emit showHistos( 3, theta_canvas_qs);
-        
-    }*/
+    */
     
      }
+
+
+
+void  AssemblyAssembler::run_alignment(int stage, double x_pr, double y_pr, double theta_pr){
+    
+    NQLog("AssemblyAssembler::run_alignment");
+    // Rought manual alignment with ref marker on platform
+    //1. Go to 'start' position (manually?)
+    //2. Apply rough angular correction:
+    //a. Run PatRec and detect X1,Y1,Theta
+    //b. put marker in centre of fied of view (need to accurate conversion of pixels to mm )
+    //c. iterate:
+    //    - rotate platform to allign (some small fraction of required rotation)
+    //    - put marker in centre of fied of view
+    //    repeat until target alignment reached
+    
+    //need to accurately calc mm/pixel
+    //(taken from https://en.ids-imaging.com/manuals/uEye_SDK/EN/uEye_Manual_4.82/index.html?sensor-data-ui-148x.html)
+    
+    double mm_per_pixel_y = 5.632/2560.0;
+    double mm_per_pixel_x = 4.224/1920.0;
+    
+    double target_x = ( x_pr - (1920.0/2) ) * mm_per_pixel_x;
+    double target_y = ( y_pr - (2560.0/2) ) * mm_per_pixel_y;
+    double target_theta = theta_pr;
+    
+    double X1, Y1, X2, Y2 = 0.0;
+    
+    
+    if (alignment_step == 0){
+        NQLog("AssemblyAssembler::run_alignment step == ") << alignment_step;
+    
+        if ( ( fabs(target_x)  > 0.01) || (  fabs(target_y)  > 0.01)||(  fabs(target_theta)  > 0.05)  ){
+           emit moveRelative(target_x, target_y, 0.0, target_theta/0.2);
+           emit acquireImage();
+        }else{
+            X1 = x_pr;
+            Y1 = y_pr;
+            alignment_step++;
+            emit nextAlignmentStep();
+        }
+        
+        //3. Apply fine angular correction:
+        // a. Go to far-away corner, Run PatRec and detect X2,Y2
+        // b. Calculate residual angular mis-alignment from (Y2-Y1)/(X2-X1)
+        //c. iterate:
+        //    - rotate platform to allign (some small fraction of required rotation)
+        //    - put marker in centre of fied of view
+        //    repeat until target alignment reached
+        } else if(alignment_step == 1){
+            alignment_step++;
+            emit moveRelative(92.60, 0.0, 0.0, 0.0);
+            emit nextAlignmentStep();
+        }
+        else if(alignment_step == 2){
+            alignment_step++;
+            emit acquireImage();
+        }
+        else if(alignment_step == 3){
+            alignment_step++;
+            emit moveRelative(target_x, target_y, 0.0, 0.0);
+        }
+        else if (alignment_step == 4){
+
+            double fine_angle = atan ((( x_pr - (1920.0/2) ) * mm_per_pixel_x ) / (92.6)) * (180.00 / 3.141);
+
+            if ( ( fabs(target_x)  > 0.01) || (  fabs(target_y)  > 0.01)||(  fabs(fine_angle)  > 0.01)  ){
+                emit moveRelative(target_x, target_y, 0.0, fine_angle/0.2);
+                emit acquireImage();
+            }else{
+                alignment_step++;
+                emit nextAlignmentStep();
+            }
+            
+        }else if (alignment_step == 5 ){
+        
+            NQLog("AssemblyAssembler::run_alignment ***ALIGNMENT COMPLETED** ");
+        
+        }
+    
+    //4. Optional Confirm alignment
+    //   - return to starting corner and conform detected X doesn't change
+    
+}
+
+
+
+
 
 
 

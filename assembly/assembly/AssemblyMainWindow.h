@@ -107,6 +107,7 @@ protected:
   QCheckBox *checkbox1;
   QCheckBox *checkbox2;
   QCheckBox *checkbox3;
+  QCheckBox *checkbox4;
 
     
   AssemblyUEyeModel_t* uEyeModel_;
