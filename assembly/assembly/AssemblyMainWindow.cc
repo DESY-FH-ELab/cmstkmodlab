@@ -155,6 +155,8 @@ AssemblyMainWindow::AssemblyMainWindow(QWidget *parent) :
   
     connect(checkbox3, SIGNAL(stateChanged(int)), this, SLOT(enableSandwitchAssembly(int)));
 
+    connect(checkbox4, SIGNAL(stateChanged(int)), this, SLOT(enableAlignment(int)));
+
 
     setCentralWidget(tabWidget_);
     updateGeometry();
@@ -239,9 +241,19 @@ void AssemblyMainWindow::enablePrecisionEstimation(int state){
 }
 
 
+void AssemblyMainWindow::enableAlignment(int state)
+{
+    NQLog("AssemblyMainWindow::enableAlignment") << ": state  " << state;
+    
+    if (state == 2){
+        connect(assembleView_, SIGNAL(launchAlignment(int, double, double, double)), module_assembler_, SLOT(run_alignment(int, double, double, double)));
+    }else if (state == 0 ){
+        disconnect(assembleView_, SIGNAL(launchAlignment(int, double, double, double)), module_assembler_, SLOT(run_alignment(int, double, double, double)));
+    }
+}
 
 
-void AssemblyMainWindow::enableSandwitchAssembly(int state){
+void AssemblyMainWindow::enableSandwichAssembly(int state){
     
     
     NQLog("AssemblyMainWindow::enableSandwitchAssembly") << ": state  " << state;

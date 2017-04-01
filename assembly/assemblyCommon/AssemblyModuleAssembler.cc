@@ -166,9 +166,6 @@ AssemblyModuleAssembler::AssemblyModuleAssembler(AssemblyVUEyeModel *uEyeModel_,
   //QLabel* header_label = new QLabel("Hover mouse over button for info on each step", this);
   //g1->addWidget(header_label,0,0);
 
-//  QPushButton* connect_button = new QPushButton("Connect Devcies", this);
-//  g1->addWidget(connect_button,1,0);
-
   AssemblyCommander * cmdr0 = new AssemblyCommander(this, "Move absolute", 0.0,0.0,0.0,0.0);
   cmdr0->setToolTip("(1) Returns x,y,z stage to origin (default = (0,0,0) using moveAbsolute(x,y,z) routine)");
   g1->addWidget(cmdr0,0,0);
@@ -177,22 +174,11 @@ AssemblyModuleAssembler::AssemblyModuleAssembler(AssemblyVUEyeModel *uEyeModel_,
   cmdr1->setToolTip("(2) Moves x,y,z stage realtive to current position using moveAbsolute(x,y,z) routine)");
   g1->addWidget(cmdr1,1,0);
     
-  //AssemblyCommander * cmdr1 = new AssemblyCommander(this, "Move relative", 0.0,0.0,0.0,0.0);
-  //cmdr1->setToolTip("(2) Moves x,y,z stage to pickup position (default = (100,100,100) using moveAbsolute(x,y,z) routine)");
-  //g1->addWidget(cmdr1,4,0);
 
   AssemblySensorLocator * lctr1 = new AssemblySensorLocator(this, "Locate object", 0.0, finder_);
   lctr1->setToolTip("(3) Acquires image from mobile camera, runs PatRec routine to deduce and report sensor (x,y,z,phi) postion");
   g1->addWidget(lctr1,2,0);
 
- // AssemblyCommander * cmdr2 = new AssemblyCommander(this, "Correct position", 100.0,100.0,100.0,100.0);
- // cmdr2->setToolTip("(4) Corrects arm position using relative displacement using (eventually) pre-calculated displacment from PatRec");
- // g1->addWidget(cmdr2,6,0);
-
-  AssemblyAttacher * attacher1 = new AssemblyAttacher("Drop/Raise", 10.0);
- // g1->addWidget(attacher1,7,0);
-
-  //AssemblyVacuumToggler * toggle1 = new AssemblyVacuumToggler(this, "Toggle vacuum");
   toggle1 = new AssemblyVacuumToggler(this, "Toggle vacuum");
   g1->addWidget(toggle1,3,0);
     
@@ -202,27 +188,16 @@ AssemblyModuleAssembler::AssemblyModuleAssembler(AssemblyVUEyeModel *uEyeModel_,
   QGridLayout *g2 = new QGridLayout();
   l->addLayout(g2,1,1);
   
-  AssemblySandwitchAssembler* sandwitch1 = new AssemblySandwitchAssembler(this, "Assemble Sandwich");
-  g2 -> addWidget(sandwitch1, 0, 0);
+  AssemblySandwichAssembler* sandwich1 = new AssemblySandwichAssembler(this, "Assemble Sandwich");
+  g2 -> addWidget(sandwich1, 0, 0);
 
-  //AssemblyCommander * cmdr4 = new AssemblyCommander(this, "Go to stat. camera", 100.0,100.0,100.0,100.0);
-  //g1->addWidget(cmdr4, 9, 0);
-
- // AssemblyMountChecker * cmdr5 = new AssemblyMountChecker(this, "Check mount", 100.0,100.0,100.0,100.0, 0);
- // g1->addWidget(cmdr5, 10, 0);
-
-  //  AssemblyCommander * cmdr6 = new AssemblyCommander(this, "Go to rotation stage", 100.0,100.0,100.0,100.0);
-  //g1->addWidget(cmdr6, 11, 0);
-
-  //AssemblyCommander * cmdr7 = new AssemblyCommander(this, "Drop and detach", 100.0,100.0,100.0,100.0);
-  //g1->addWidget(cmdr7, 12, 0);
 
   //AssemblyAligner * cmdr8 = new AssemblyAligner(this, "Align", 0.0);
   //g1->addWidget(cmdr8, 13, 0);
 
   //make all the neccessary connections
-  connect(attacher1, SIGNAL(moveRelative(double,double,double,double)),
-          motionManager_, SLOT(moveRelative(double,double,double,double)));
+  //connect(attacher1, SIGNAL(moveRelative(double,double,double,double)),
+   //       motionManager_, SLOT(moveRelative(double,double,double,double)));
   connect(cmdr0, SIGNAL(moveAbsolute(double,double,double,double)),
           motionManager_, SLOT(moveAbsolute(double,double,double,double)));
   connect(cmdr1, SIGNAL(moveRelative(double,double,double,double)),
@@ -231,28 +206,14 @@ AssemblyModuleAssembler::AssemblyModuleAssembler(AssemblyVUEyeModel *uEyeModel_,
   connect(precision1, SIGNAL(launchPrecisionEstimation(double, double, double, double, double, double, int)),
             this, SLOT(startMacro(double, double, double, double, double, double, int)));
   
-  connect(sandwitch1, SIGNAL(launchSandwitchAssembly(double, double, double, double, double, double, double, double, double)), this, SIGNAL(launchSandwitchAssembly(double, double, double, double, double, double, double, double, double)));
+  connect(sandwich1, SIGNAL(launchSandwichAssembly(double, double, double, double, double, double, double, double, double)), this, SIGNAL(launchSandwichAssembly(double, double, double, double, double, double, double, double, double)));
     
-  //connect(cmdr2, SIGNAL(moveAbsolute(double,double,double,double)),
-  //        motionManager_, SLOT(moveRelative(double,double,double,double)));
- // connect(cmdr4, SIGNAL(moveAbsolute(double,double,double,double)),
-  //        motionManager_, SLOT(moveAbsolute(double,double,double,double)));
- // connect(cmdr5, SIGNAL(moveAbsolute(double,double,double,double)),
-  //        motionManager_, SLOT(moveAbsolute(double,double,double,double)));
-  //connect(cmdr6, SIGNAL(moveAbsolute(double,double,double,double)),
-  //        motionManager_, SLOT(moveAbsolute(double,double,double,double)));
-  //connect(cmdr7, SIGNAL(moveAbsolute(double,double,double,double)),
-  //       motionManager_, SLOT(moveAbsolute(double,double,double,double)));
-  //connect(cmdr8, SIGNAL(moveRelative(double,double,double,double)),
-  //        motionManager_, SLOT(moveRelative(double,double,double,double)));
-  //connect(cmdr8, SIGNAL(locateSetdowncorner(int)), lctr1, SLOT( locateSensor(int)));
+ 
+  connect(sandwich1, SIGNAL(launchAlignment(int, double, double, double)), this, SIGNAL(launchAlignment(int, double, double, double)));
 
-    
     
   connect(lStepExpressModel_, SIGNAL(acquireImage()), camera_, SLOT(acquireImage()));
-    
   connect(lctr1, SIGNAL(acquireImage()), camera_, SLOT(acquireImage()));
-
   connect(camera_, SIGNAL(imageAcquired(cv::Mat)), lctr1, SLOT(locatePickup(cv::Mat)));
 
     
@@ -504,7 +465,7 @@ void AssemblyPrecisionEstimator::run()
     
 }
 
-AssemblySandwitchAssembler::AssemblySandwitchAssembler(QWidget *parent, string text, string assembly_position, string bottom_part_position, string top_part_position)
+AssemblySandwichAssembler::AssemblySandwichAssembler(QWidget *parent, string text, string assembly_position, string bottom_part_position, string top_part_position)
 : QWidget(parent)
 {
     QGridLayout *l = new QGridLayout(this);
@@ -515,11 +476,14 @@ AssemblySandwitchAssembler::AssemblySandwitchAssembler(QWidget *parent, string t
     //QString q_top_pos = QString::fromStdString(bottom_part_position);
     QString qname = QString::fromStdString(text);
 
+    button0 = new QPushButton("Align object", this);
+    l->addWidget(button0,0,0);
+    
     button1 = new QPushButton(qname, this);
-    l->addWidget(button1,0,0);
+    l->addWidget(button1,1,0);
     
     QFormLayout *fl1 = new QFormLayout(this);
-    l->addLayout(fl1,1,0);
+    l->addLayout(fl1,2,0);
 
     label1 = new QLabel();
     lineEdit1 = new QLineEdit();
@@ -546,13 +510,24 @@ AssemblySandwitchAssembler::AssemblySandwitchAssembler(QWidget *parent, string t
     
     connect(button1, SIGNAL(clicked()),
             this, SLOT(run()));
+    
+    connect(button0, SIGNAL(clicked()),
+            this, SLOT(run_alignment()));
 }
 
 
-void AssemblySandwitchAssembler::run()
+void AssemblySandwichAssembler::run_alignment(){
+
+    NQLog("AssemblySandwichAssembler") << ":run_alignment()";
+
+    emit launchAlignment(1,0.0,0.0,0.0);
+
+}
+
+void AssemblySandwichAssembler::run()
 {
     
-    NQLog("AssemblySandwitchAssembler") << ":run";
+    NQLog("AssemblySandwichAssembler") << ":run";
     
     
     
@@ -592,12 +567,12 @@ void AssemblySandwitchAssembler::run()
     double y_top_d = y_top_s.toDouble();
     double z_top_d = z_top_s.toDouble();
     
-    NQLog("AssemblySandwitchAssembler::run")<<  " x_a = " << x_assembly_d <<  " y_a = " << y_assembly_d << " z_a = " << z_assembly_d;
-    NQLog("AssemblySandwitchAssembler::run")<<  " x_b = " << x_bottom_d <<  " y_b = " << y_bottom_d << " z_b = " << z_bottom_d;
-    NQLog("AssemblySandwitchAssembler::run")<<  " x_t = " << x_top_d <<  " y_t = " << y_top_d << " z_t = " << z_top_d;
+    NQLog("AssemblySandwichAssembler::run")<<  " x_a = " << x_assembly_d <<  " y_a = " << y_assembly_d << " z_a = " << z_assembly_d;
+    NQLog("AssemblySandwichAssembler::run")<<  " x_b = " << x_bottom_d <<  " y_b = " << y_bottom_d << " z_b = " << z_bottom_d;
+    NQLog("AssemblySandwichAssembler::run")<<  " x_t = " << x_top_d <<  " y_t = " << y_top_d << " z_t = " << z_top_d;
 
 
-    emit launchSandwitchAssembly(x_assembly_d, y_assembly_d, z_assembly_d, x_bottom_d, y_bottom_d, z_bottom_d, x_top_d, y_top_d, z_top_d);
+    emit launchSandwichAssembly(x_assembly_d, y_assembly_d, z_assembly_d, x_bottom_d, y_bottom_d, z_bottom_d, x_top_d, y_top_d, z_top_d);
     
 }
 

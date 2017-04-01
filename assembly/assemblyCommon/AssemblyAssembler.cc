@@ -426,8 +426,14 @@ void  AssemblyAssembler::run_alignment(int stage, double x_pr, double y_pr, doub
     
     double X1, Y1, X2, Y2 = 0.0;
     
-    
     if (alignment_step == 0){
+        NQLog("AssemblyAssembler::run_alignment step == ") << alignment_step;
+
+        alignment_step++;
+        emit acquireImage();
+
+    }
+    if (alignment_step == 1){
         NQLog("AssemblyAssembler::run_alignment step == ") << alignment_step;
     
         if ( ( fabs(target_x)  > 0.01) || (  fabs(target_y)  > 0.01)||(  fabs(target_theta)  > 0.05)  ){
@@ -447,20 +453,28 @@ void  AssemblyAssembler::run_alignment(int stage, double x_pr, double y_pr, doub
         //    - rotate platform to allign (some small fraction of required rotation)
         //    - put marker in centre of fied of view
         //    repeat until target alignment reached
-        } else if(alignment_step == 1){
+        } else if(alignment_step == 2){
+            NQLog("AssemblyAssembler::run_alignment step == ") << alignment_step;
+
             alignment_step++;
             emit moveRelative(92.60, 0.0, 0.0, 0.0);
             emit nextAlignmentStep();
         }
-        else if(alignment_step == 2){
+        else if(alignment_step == 3){
+            NQLog("AssemblyAssembler::run_alignment step == ") << alignment_step;
+
             alignment_step++;
             emit acquireImage();
         }
-        else if(alignment_step == 3){
+        else if(alignment_step == 4){
+            NQLog("AssemblyAssembler::run_alignment step == ") << alignment_step;
+
             alignment_step++;
             emit moveRelative(target_x, target_y, 0.0, 0.0);
         }
-        else if (alignment_step == 4){
+        else if (alignment_step == 5){
+            NQLog("AssemblyAssembler::run_alignment step == ") << alignment_step;
+
 
             double fine_angle = atan ((( x_pr - (1920.0/2) ) * mm_per_pixel_x ) / (92.6)) * (180.00 / 3.141);
 
@@ -472,7 +486,7 @@ void  AssemblyAssembler::run_alignment(int stage, double x_pr, double y_pr, doub
                 emit nextAlignmentStep();
             }
             
-        }else if (alignment_step == 5 ){
+        }else if (alignment_step == 6 ){
         
             NQLog("AssemblyAssembler::run_alignment ***ALIGNMENT COMPLETED** ");
         

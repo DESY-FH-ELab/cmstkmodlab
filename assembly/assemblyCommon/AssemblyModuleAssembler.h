@@ -141,7 +141,8 @@ signals:
 
   void moveAbsolute(double,double,double,double);
   void launchPrecisionEstimation(double, double, double, double, double, double, int);
-  void launchSandwitchAssembly(double, double, double, double, double, double, double, double, double);
+  void launchSandwichAssembly(double, double, double, double, double, double, double, double, double);
+  void launchAlignment(int, double, double, double );
 
 
 };
@@ -179,15 +180,16 @@ signals:
 };
 
 
-class AssemblySandwitchAssembler : public QWidget
+class AssemblySandwichAssembler : public QWidget
 {
     Q_OBJECT
 public:
     
-    explicit AssemblySandwitchAssembler(QWidget *parent = 0, std::string text ="Assemble sandwitch",
+    explicit AssemblySandwichAssembler(QWidget *parent = 0, std::string text ="Assemble sandwich",
                                         std::string assembly_position = "0.0,0.0,0.0", std::string bottom_part_position = "0.0,0.0,0.0", std::string top_part_position = "0.0,0.0,0.0");
     
     //double local_x, local_y, local_z, local_a;
+    QPushButton* button0;
     QPushButton* button1;
     
     QLabel * label1;
@@ -203,8 +205,12 @@ public:
     
     public slots:
     void run();
-signals:
-    void launchSandwitchAssembly(double, double, double, double, double, double, double, double, double);
+    void run_alignment();
+
+    signals:
+    void launchSandwichAssembly(double, double, double, double, double, double, double, double, double);
+    void launchAlignment(int, double, double, double );
+
 };
 
 

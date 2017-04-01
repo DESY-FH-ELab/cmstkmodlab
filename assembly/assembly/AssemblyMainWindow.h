@@ -75,7 +75,9 @@ public slots:
   void cameraClosed();
   void enableAutoFocus(int);
   void enablePrecisionEstimation(int);
-  void enableSandwitchAssembly(int);
+  void enableSandwichAssembly(int);
+  void enableAlignment(int);
+
 
 signals:
 
