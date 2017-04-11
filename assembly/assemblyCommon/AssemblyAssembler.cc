@@ -403,7 +403,7 @@ void  AssemblyAssembler::process_step(){
 
 void  AssemblyAssembler::run_alignment(int stage, double x_pr, double y_pr, double theta_pr){
     
-    NQLog("AssemblyAssembler::run_alignment");
+    NQLog("AssemblyAssembler::run_alignment here");
     // Rought manual alignment with ref marker on platform
     //1. Go to 'start' position (manually?)
     //2. Apply rough angular correction:
@@ -417,11 +417,14 @@ void  AssemblyAssembler::run_alignment(int stage, double x_pr, double y_pr, doub
     //need to accurately calc mm/pixel
     //(taken from https://en.ids-imaging.com/manuals/uEye_SDK/EN/uEye_Manual_4.82/index.html?sensor-data-ui-148x.html)
     
-    double mm_per_pixel_y = 5.632/2560.0;
-    double mm_per_pixel_x = 4.224/1920.0;
+    //    double mm_per_pixel_x = 5.632/2560.0;
+    //double mm_per_pixel_y = 4.224/1920.0;
+
+    double mm_per_pixel_x = 0.0012;
+    double mm_per_pixel_y = 0.0012;
     
-    double target_x = ( x_pr - (1920.0/2) ) * mm_per_pixel_x;
-    double target_y = ( y_pr - (2560.0/2) ) * mm_per_pixel_y;
+    double target_x = ( y_pr - (1317.0/2.0) ) * mm_per_pixel_x;
+    double target_y = ( x_pr - (1964.0/2.0) ) * mm_per_pixel_y;
     double target_theta = theta_pr;
     
     double X1, Y1, X2, Y2 = 0.0;
@@ -435,9 +438,12 @@ void  AssemblyAssembler::run_alignment(int stage, double x_pr, double y_pr, doub
     }
     if (alignment_step == 1){
         NQLog("AssemblyAssembler::run_alignment step == ") << alignment_step;
-    
-        if ( ( fabs(target_x)  > 0.01) || (  fabs(target_y)  > 0.01)||(  fabs(target_theta)  > 0.05)  ){
-           emit moveRelative(target_x, target_y, 0.0, target_theta/0.2);
+        NQLog("AssemblyAssembler:: found marker at  ") << x_pr <<" "<< y_pr <<" "<< theta_pr ;
+          NQLog("AssemblyAssembler::  target is ===>  ") << target_x <<",  "<< target_y;
+        if ( ( fabs(target_x)  > 0.01) || (  fabs(target_y)  > 0.01) ){
+	  //          emit moveRelative(target_x, target_y, 0.0, target_theta/0.2);
+         NQLog("AssemblyAssembler:: moving to  ") << target_x <<",  "<< target_y;
+	  emit moveRelative(target_x, target_y, 0.0, 0.0);
            emit acquireImage();
         }else{
             X1 = x_pr;
@@ -453,7 +459,11 @@ void  AssemblyAssembler::run_alignment(int stage, double x_pr, double y_pr, doub
         //    - rotate platform to allign (some small fraction of required rotation)
         //    - put marker in centre of fied of view
         //    repeat until target alignment reached
-        } else if(alignment_step == 2){
+
+        }
+
+    /*
+ else if(alignment_step == 2){
             NQLog("AssemblyAssembler::run_alignment step == ") << alignment_step;
 
             alignment_step++;
@@ -494,7 +504,7 @@ void  AssemblyAssembler::run_alignment(int stage, double x_pr, double y_pr, doub
     
     //4. Optional Confirm alignment
     //   - return to starting corner and conform detected X doesn't change
-    
+    */    
 }
 
 

@@ -83,11 +83,13 @@ AssemblyMainWindow::AssemblyMainWindow(QWidget *parent) :
     module_assembler_ = new AssemblyAssembler(lStepExpressModel_);
 
     connect(assembleView_ -> toggle1, SIGNAL(toggleVacuum(int)), conradManager_, SLOT(toggleVacuum(int)));
+    connect(assembleView_ , SIGNAL(runObjectDetection(int, int)), finder_, SLOT(runObjectDetection(int, int)));
+
     //connect(assembleView_ -> toggle1, SIGNAL(toggleVacuum(int)), assembleView_ -> toggle1, SLOT(disableVacuumButton()));
     connect(conradManager_, SIGNAL(updateVacuumChannelState(int, bool)), assembleView_ -> toggle1, SLOT(updateVacuumChannelState(int, bool)));
     connect(this, SIGNAL(updateVacuumChannelsStatus()), conradManager_, SLOT(updateVacuumChannelsStatus()));
+    connect(camera_, SIGNAL(imageAcquired(cv::Mat)), finder_, SLOT(runObjectDetection_labmode(cv::Mat)) );
 
-    
     emit updateVacuumChannelsStatus();
 
 
@@ -246,9 +248,19 @@ void AssemblyMainWindow::enableAlignment(int state)
     NQLog("AssemblyMainWindow::enableAlignment") << ": state  " << state;
     
     if (state == 2){
+        disconnect(camera_, SIGNAL(imageAcquired(cv::Mat)), finder_, SLOT(runObjectDetection_labmode(cv::Mat)) );
         connect(assembleView_, SIGNAL(launchAlignment(int, double, double, double)), module_assembler_, SLOT(run_alignment(int, double, double, double)));
+        connect(module_assembler_, SIGNAL(acquireImage()), camera_, SLOT(acquireImage()));
+        connect(camera_, SIGNAL(imageAcquired(cv::Mat)), finder_, SLOT(runObjectDetection_labmode(cv::Mat)) );
+        connect(module_assembler_, SIGNAL(moveRelative(double, double, double, double)),motionManager_, SLOT(moveRelative(double, double,double, double)));
+        connect(finder_,SIGNAL(reportObjectLocation(int,double,double,double)), module_assembler_, SLOT(run_alignment(int, double,double,double)));
     }else if (state == 0 ){
+        connect(camera_, SIGNAL(imageAcquired(cv::Mat)), finder_, SLOT(runObjectDetection_labmode(cv::Mat)) );
         disconnect(assembleView_, SIGNAL(launchAlignment(int, double, double, double)), module_assembler_, SLOT(run_alignment(int, double, double, double)));
+        disconnect(module_assembler_, SIGNAL(acquireImage()), camera_, SLOT(acquireImage()));
+        disconnect(camera_, SIGNAL(imageAcquired(cv::Mat)), finder_, SLOT(runObjectDetection_labmode(cv::Mat)) );
+        disconnect(module_assembler_, SIGNAL(moveRelative(double, double, double, double)),motionManager_, SLOT(moveRelative(double, double,double, double)));
+        disconnect(finder_,SIGNAL(reportObjectLocation(int,double,double,double)), module_assembler_, SLOT(run_alignment(int, double,double,double)));
     }
 }
 
@@ -256,7 +268,7 @@ void AssemblyMainWindow::enableAlignment(int state)
 void AssemblyMainWindow::enableSandwichAssembly(int state){
     
     
-    NQLog("AssemblyMainWindow::enableSandwitchAssembly") << ": state  " << state;
+    NQLog("AssemblyMainWindow::enableSandwichAssembly") << ": state  " << state;
     
     if (state == 2){
         
@@ -365,7 +377,7 @@ void AssemblyMainWindow::cameraOpened()
     rawView_->connectImageProducer(camera_, SIGNAL(imageAcquired(const cv::Mat&)));
     
     //   bool test =   connect(camera_, SIGNAL(imageAcquired(cv::Mat)),  finder_, SLOT(write_image(cv::Mat)) );
-    //connect(camera_, SIGNAL(imageAcquired(cv::Mat)),  finder_, SLOT(runObjectDetection_labmode(cv::Mat)) );
+            connect(camera_, SIGNAL(imageAcquired(cv::Mat)),  finder_, SLOT(runObjectDetection_labmode(cv::Mat)) );
     //connect(camera_, SIGNAL(imageAcquired(cv::Mat)),  finder_, SLOT(locatePickup(cv::Mat)) );
     
     
@@ -376,7 +388,7 @@ void AssemblyMainWindow::cameraOpened()
     
 
     NQLog("AssemblyMainWindow") << " connecting finder and camera()";
-    connect(camera_, SIGNAL(imageAcquired(const cv::Mat&)), finder_, SLOT(findMarker(const cv::Mat&)));
+    //    connect(camera_, SIGNAL(imageAcquired(const cv::Mat&)), finder_, SLOT(findMarker(const cv::Mat&)));
 
 
   //connect image acquired signal of camera model to blur detection SLOT of Z scanner

@@ -72,7 +72,7 @@ AssemblySensorMarkerFinder::~AssemblySensorMarkerFinder()
 void AssemblySensorMarkerFinder::runObjectDetection(int labmode, int objectmode)
 {
     
-    NQLog("AssemblySensorLocator::runObjectDetection()") << "" ;
+  NQLog("AssemblySensorMarkerFinder::runObjectDetection(), labmode = ") << labmode   << ", objectmode = "<< objectmode ;
 
     labmode_g = labmode;
     objectmode_g = objectmode;
@@ -121,19 +121,18 @@ void AssemblySensorMarkerFinder::runObjectDetection(int labmode, int objectmode)
 void AssemblySensorMarkerFinder::runObjectDetection_labmode(cv::Mat master_image){
     
     
-    NQLog("AssemblySensorLocator::runObjectDetection()") << "" ;
-
-
+    NQLog("AssemblySensorLocator::runObjectDetection() here ") << "" ;
     NQLog("AssemblySensorLocator::runObjectDetection_labmode()") << "" ;
 
-     objectmode_g = 3;    //hard coding for lab tests, to be reomoved!!!!
+     objectmode_g = 0;    //hard coding for lab tests, to be reomoved!!!!
 
     if(objectmode_g==0){
       NQLog("AssemblySensorLocator") << "***DETECTIING FIDUCIAL MARKER!***" ;
 
         img = master_image;
         
-        img_clip_A = cv::imread(Config::CMSTkModLabBasePath + "/share/assembly/RawSensor_3_clipB.png", CV_LOAD_IMAGE_COLOR);
+	//        img_clip_A = cv::imread(Config::CMSTkModLabBasePath + "/share/assembly/RawSensor_3_clipB.png", CV_LOAD_IMAGE_COLOR);
+        img_clip_A = cv::imread(Config::CMSTkModLabBasePath + "/share/assembly/RawSensor_3_clipB_temp.png", CV_LOAD_IMAGE_COLOR);
     }
     
     else if (objectmode_g == 1 ){
@@ -763,7 +762,8 @@ void AssemblySensorMarkerFinder::findMarker_templateMatching(cv::Mat img, cv::Ma
       //    for (float theta = -64.0; theta < 64.0;  theta = theta + 3.2){
     //    for (float theta = -180.0; theta < 180.0;  theta = theta + 9.0){
       
-    for (float theta = -1.0; theta < 1.0;  theta = theta + 0.1){
+        for (float theta = -2.0; theta < 2.0;  theta = theta + 0.2){
+    //  for (float theta = -10.0; theta <= 10.0;  theta = theta + 1.0){
   
         // Point2f src_center(img_gs_copy.cols/2.0F, img_gs_copy.rows/2.0F);
         Point2f src_center( matchLoc_1.x + (img_clip_A_bin.cols/2) , matchLoc_1.y + (img_clip_A_bin.rows/2) );
@@ -819,7 +819,7 @@ void AssemblySensorMarkerFinder::findMarker_templateMatching(cv::Mat img, cv::Ma
     }
     
     cv::Mat img_raw = img.clone();
-    rectangle( img, matchLoc_final, Point( matchLoc_final.x + img_clip_A_bin.cols , matchLoc_final.y + img_clip_A_bin.rows ), Scalar(color,color-50,color+50), 2, 8, 0 );
+    rectangle( img, matchLoc_final, Point( matchLoc_final.x + img_clip_A_bin.cols , matchLoc_final.y + img_clip_A_bin.rows ), Scalar(255,0,255), 2, 8, 0 );
     
     cv::Rect rectangle(matchLoc_final, Point( matchLoc_final.x + img_clip_A_bin.cols , matchLoc_final.y + img_clip_A_bin.rows ) );
     
@@ -874,12 +874,12 @@ void AssemblySensorMarkerFinder::findMarker_templateMatching(cv::Mat img, cv::Ma
     //to be measured precisely somehow. For now taking width = 5mm
     //and height = 4mm
 
-    matchLoc_x_lab = (matchLoc_final.x +  (img_clip_A_bin.cols/2) ) * (5.0/img.cols); // need to add the current X pos of the lang
-    matchLoc_y_lab = (matchLoc_final.y +  (img_clip_A_bin.rows/2) ) * (4.0/img.rows); // need to add the current Y pos of the lang
+    //    matchLoc_x_lab = (matchLoc_final.x +  (img_clip_A_bin.cols/2) ) * (5.0/img.cols); // need to add the current X pos of the lang
+    //matchLoc_y_lab = (matchLoc_final.y +  (img_clip_A_bin.rows/2) ) * (4.0/img.rows); // need to add the current Y pos of the lang
     
     //update line edits in view
     
-    emit reportObjectLocation(1, matchLoc_x_lab, matchLoc_y_lab, best_theta);
+    emit reportObjectLocation(1, matchLoc_final.x , matchLoc_final.y, best_theta);
     
 }
 
