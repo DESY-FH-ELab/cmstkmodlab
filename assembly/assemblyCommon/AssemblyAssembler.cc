@@ -414,9 +414,7 @@ void  AssemblyAssembler::run_alignment(int stage, double x_pr, double y_pr, doub
     //    - put marker in centre of fied of view
     //    repeat until target alignment reached
     
-    //need to accurately calc mm/pixel
-    //(taken from https://en.ids-imaging.com/manuals/uEye_SDK/EN/uEye_Manual_4.82/index.html?sensor-data-ui-148x.html)
-    
+
     //    double mm_per_pixel_x = 5.632/2560.0;
     //double mm_per_pixel_y = 4.224/1920.0;
 
@@ -437,9 +435,15 @@ void  AssemblyAssembler::run_alignment(int stage, double x_pr, double y_pr, doub
 
     }
     if (alignment_step == 1){
+        NQLog(" ");
+        NQLog(" ");
+
         NQLog("AssemblyAssembler::run_alignment step == ") << alignment_step;
         NQLog("AssemblyAssembler:: found marker at  ") << x_pr <<" "<< y_pr <<" "<< theta_pr ;
-          NQLog("AssemblyAssembler::  target is ===>  ") << target_x <<",  "<< target_y;
+        NQLog("AssemblyAssembler::  target is ===>  ") << target_x <<",  "<< target_y;
+        NQLog(" ");
+        NQLog(" ");
+
         if ( ( fabs(target_x)  > 0.01) || (  fabs(target_y)  > 0.01) ){
 	  //          emit moveRelative(target_x, target_y, 0.0, target_theta/0.2);
          NQLog("AssemblyAssembler:: moving to  ") << target_x <<",  "<< target_y;

@@ -91,11 +91,11 @@ void AssemblySensorMarkerFinder::runObjectDetection(int labmode, int objectmode)
                 img = cv::imread(Config::CMSTkModLabBasePath + "/share/assembly/RawSensor_4.png",
                                  CV_LOAD_IMAGE_COLOR);
                 
-//               img_clip_A = cv::imread(Config::CMSTkModLabBasePath + "/share/assembly/RawSensor_3_clipB.png",
-//                                       CV_LOAD_IMAGE_COLOR);
-
-               img_clip_A = cv::imread(Config::CMSTkModLabBasePath + "/share/assembly/spacer_corner_tempate_crop.png",
+              img_clip_A = cv::imread(Config::CMSTkModLabBasePath + "/share/assembly/RawSensor_3_clipB_temp.png",
                                        CV_LOAD_IMAGE_COLOR);
+
+              // img_clip_A = cv::imread(Config::CMSTkModLabBasePath + "/share/assembly/spacer_corner_tempate_crop.png",
+                //                       CV_LOAD_IMAGE_COLOR);
             }
             
             else if (objectmode == 1 ){
@@ -113,7 +113,7 @@ void AssemblySensorMarkerFinder::runObjectDetection(int labmode, int objectmode)
             }
         
          emit locatePickupCorner_templateMatching(img,img_clip_A);
-        NQLog("AssemblySensorLocator::runObjectDetection()") << " emit locatePickupCorner_templateMatching " ;
+        NQLog("AssemblySensorMarkerFinder::runObjectDetection()") << " emit locatePickupCorner_templateMatching " ;
         
     }
 }
@@ -762,7 +762,7 @@ void AssemblySensorMarkerFinder::findMarker_templateMatching(cv::Mat img, cv::Ma
       //    for (float theta = -64.0; theta < 64.0;  theta = theta + 3.2){
     //    for (float theta = -180.0; theta < 180.0;  theta = theta + 9.0){
       
-        for (float theta = -2.0; theta < 2.0;  theta = theta + 0.2){
+        for (float theta = -20.0; theta < 20.0;  theta = theta + 1.0){
     //  for (float theta = -10.0; theta <= 10.0;  theta = theta + 1.0){
   
         // Point2f src_center(img_gs_copy.cols/2.0F, img_gs_copy.rows/2.0F);
@@ -820,6 +820,10 @@ void AssemblySensorMarkerFinder::findMarker_templateMatching(cv::Mat img, cv::Ma
     
     cv::Mat img_raw = img.clone();
     rectangle( img, matchLoc_final, Point( matchLoc_final.x + img_clip_A_bin.cols , matchLoc_final.y + img_clip_A_bin.rows ), Scalar(255,0,255), 2, 8, 0 );
+    
+    circle( img, matchLoc_final, 10, Scalar(0,0,255), 4, 8, 0 );
+    line(img, Point(img.cols/2.0, 0), Point(img.cols/2.0, img.rows ), Scalar(255,255,0), 2, 8, 0);
+    line(img, Point(0, img.rows/2.0), Point(img.cols, img.rows/2.0 ), Scalar(255,255,0), 2, 8, 0);
     
     cv::Rect rectangle(matchLoc_final, Point( matchLoc_final.x + img_clip_A_bin.cols , matchLoc_final.y + img_clip_A_bin.rows ) );
     
