@@ -182,23 +182,23 @@ void AssemblyThresholdTuner::keyReleaseEvent(QKeyEvent * event)
     if (!(event->modifiers() & Qt::ShiftModifier)) {
         switch (event->key()) {
         case Qt::Key_0:
-            imageView1_->setZoomFactor(0.25);
-            imageView2_->setZoomFactor(0.25);
+	  //            imageView1_->setZoomFactor(0.25);
+          //  imageView2_->setZoomFactor(0.25);
             event->accept();
             break;
         case Qt::Key_1:
-            imageView1_->setZoomFactor(1.00);
-            imageView2_->setZoomFactor(1.00);
+	  //            imageView1_->setZoomFactor(1.00);
+          //  imageView2_->setZoomFactor(1.00);
             event->accept();
             break;
         case Qt::Key_Plus:
-            imageView1_->increaseZoomFactor();
-            imageView2_->increaseZoomFactor();
+	  // imageView1_->increaseZoomFactor();
+	  // imageView2_->increaseZoomFactor();
             event->accept();
             break;
         case Qt::Key_Minus:
-            imageView1_->decreaseZoomFactor();
-            imageView2_->decreaseZoomFactor();
+	  //imageView1_->decreaseZoomFactor();
+	  // imageView2_->decreaseZoomFactor();
             event->accept();
             break;
         default:

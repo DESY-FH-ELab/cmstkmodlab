@@ -124,7 +124,7 @@ void AssemblySensorMarkerFinder::runObjectDetection_labmode(cv::Mat master_image
     NQLog("AssemblySensorLocator::runObjectDetection() here ") << "" ;
     NQLog("AssemblySensorLocator::runObjectDetection_labmode()") << "" ;
 
-     objectmode_g = 0;    //hard coding for lab tests, to be reomoved!!!!
+     objectmode_g = 2;    //hard coding for lab tests, to be reomoved!!!!
 
     if(objectmode_g==0){
       NQLog("AssemblySensorLocator") << "***DETECTIING FIDUCIAL MARKER!***" ;
@@ -146,7 +146,8 @@ void AssemblySensorMarkerFinder::runObjectDetection_labmode(cv::Mat master_image
 
         img = master_image;   
 	//        img_clip_A = cv::imread(Config::CMSTkModLabBasePath + "/share/assembly/glassslidecorneronbaseplate_sliverpaint_A_clip.png",CV_LOAD_IMAGE_COLOR);
-        img_clip_A = cv::imread(Config::CMSTkModLabBasePath + "/share/assembly/glassslidecorner_sliverpaint_D_crop.png",CV_LOAD_IMAGE_COLOR);
+	// img_clip_A = cv::imread(Config::CMSTkModLabBasePath + "/share/assembly/glassslidecorner_sliverpaint_D_crop.png",CV_LOAD_IMAGE_COLOR);
+           img_clip_A = cv::imread(Config::CMSTkModLabBasePath + "/share/assembly/simplecorner.png",CV_LOAD_IMAGE_COLOR);
       
     }
 
@@ -723,6 +724,10 @@ void AssemblySensorMarkerFinder::findMarker_templateMatching(cv::Mat img, cv::Ma
     int result_cols =  img_copy_bin.cols - img_clip_A.cols + 1;
     int result_rows = img_copy_bin.rows - img_clip_A.rows + 1;
     
+
+    NQLog("AssemblySensorMarkerFinder") << ", Master cols = "<< img_copy_bin.cols << "  Master rows " << img_copy_bin.rows << " template cols << " << img_clip_A.cols << " template rows "<<img_clip_A.rows  ;
+
+
     // result_1.create( result_rows, result_cols, CV_32FC1 );
     result_1.create( result_rows, result_cols, CV_32FC1 );
     
@@ -762,9 +767,11 @@ void AssemblySensorMarkerFinder::findMarker_templateMatching(cv::Mat img, cv::Ma
       //    for (float theta = -64.0; theta < 64.0;  theta = theta + 3.2){
     //    for (float theta = -180.0; theta < 180.0;  theta = theta + 9.0){
       
-        for (float theta = -20.0; theta < 20.0;  theta = theta + 1.0){
+     for (float theta = -5.0; theta < 5.0;  theta = theta + 0.25){
     //  for (float theta = -10.0; theta <= 10.0;  theta = theta + 1.0){
   
+    //        for (float theta = -3.2; theta < 3.2;  theta = theta + 0.16){
+
         // Point2f src_center(img_gs_copy.cols/2.0F, img_gs_copy.rows/2.0F);
         Point2f src_center( matchLoc_1.x + (img_clip_A_bin.cols/2) , matchLoc_1.y + (img_clip_A_bin.rows/2) );
         
@@ -800,8 +807,7 @@ void AssemblySensorMarkerFinder::findMarker_templateMatching(cv::Mat img, cv::Ma
             FOM = maxVal;
         }
         
-        std::cout << std::setprecision(10);
-        
+        std::cout << std::setprecision(10);     
         std::cout <<"theta = "<<  theta << ",  FOM = "<<  FOM<<  std::endl;
         
         thetas[i] = theta;

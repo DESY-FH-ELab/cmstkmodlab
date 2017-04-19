@@ -61,9 +61,8 @@ AssemblyModuleAssembler::AssemblyModuleAssembler(AssemblyVUEyeModel *uEyeModel_,
   QPalette palette;
   palette.setColor(QPalette::Background, QColor(220, 220, 220));
     
-
   imageView_1 = new AssemblyUEyeView();
-  imageView_1->setMinimumSize(200,200);
+  imageView_1->setMinimumSize(300,300);
   imageView_1->setPalette(palette);
   imageView_1->setBackgroundRole(QPalette::Background);
   imageView_1->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
@@ -97,7 +96,7 @@ AssemblyModuleAssembler::AssemblyModuleAssembler(AssemblyVUEyeModel *uEyeModel_,
   imageView_2->setAlignment(Qt::AlignCenter);
 
   scrollArea_2 = new QScrollArea(this);
-  scrollArea_2->setMinimumSize(200, 200);
+  scrollArea_2->setMinimumSize(200,200);
   scrollArea_2->setPalette(palette);
   scrollArea_2->setBackgroundRole(QPalette::Background);
   scrollArea_2->setAlignment(Qt::AlignCenter);
@@ -117,7 +116,7 @@ AssemblyModuleAssembler::AssemblyModuleAssembler(AssemblyVUEyeModel *uEyeModel_,
   imageView_3->setAlignment(Qt::AlignCenter);
 
   scrollArea_3 = new QScrollArea(this);
-  scrollArea_3->setMinimumSize(200, 200);
+  scrollArea_3->setMinimumSize(200,200);
   scrollArea_3->setPalette(palette);
   scrollArea_3->setBackgroundRole(QPalette::Background);
   scrollArea_3->setAlignment(Qt::AlignCenter);
@@ -137,7 +136,7 @@ AssemblyModuleAssembler::AssemblyModuleAssembler(AssemblyVUEyeModel *uEyeModel_,
   imageView_4->setAlignment(Qt::AlignCenter);
 
   scrollArea_4 = new QScrollArea(this);
-  scrollArea_4->setMinimumSize(200, 200);
+  scrollArea_4->setMinimumSize(200,200);
   scrollArea_4->setPalette(palette);
   scrollArea_4->setBackgroundRole(QPalette::Background);
   scrollArea_4->setAlignment(Qt::AlignCenter);
@@ -148,13 +147,13 @@ AssemblyModuleAssembler::AssemblyModuleAssembler(AssemblyVUEyeModel *uEyeModel_,
   lE4 = new QLineEdit("Dtchd pos. = ,X,X");
  // g0->addWidget(lE4,3,0);
 
-    QGridLayout *gl = new QGridLayout();
-    l->addLayout(gl,1,0);
+  //    QGridLayout *gl = new QGridLayout();
+  //  l->addLayout(gl,1,0);
     
     // Add all the axes displays
-  for (unsigned int i=0;i<4;++i) {
-    gl->addWidget(new LStepExpressAxisWidget(lStepExpressModel_, i, this), 0, i);
-    }
+  // for (unsigned int i=0;i<4;++i) {
+  //  gl->addWidget(new LStepExpressAxisWidget(lStepExpressModel_, i, this), 0, i);
+  //  }
 
   //LStepExpressPositionWidget *lStepPosition = new LStepExpressPositionWidget(motionManager_, lStepExpressModel_, this);
   //g0->addWidget(lStepPosition,3,0);
@@ -275,7 +274,7 @@ void AssemblyModuleAssembler::updateImage(int stage, QString filename)
 
   if (stage == 1 ){
     imageView_1->setImage(img_gs);
-    imageView_1->setZoomFactor(0.3);
+    // imageView_1->setZoomFactor(0.3);
     
   }else if (stage ==2){
     imageView_2->setImage(img_gs);
@@ -283,12 +282,12 @@ void AssemblyModuleAssembler::updateImage(int stage, QString filename)
   }
   else if (stage ==3){
     imageView_4->setImage(img_gs);
-    imageView_4->setZoomFactor(0.5);
+    //imageView_4->setZoomFactor(0.5);
 
   }
   else if (stage ==4){
     imageView_3->setImage(img_gs);
-    imageView_3->setZoomFactor(0.5);
+    // imageView_3->setZoomFactor(0.5);
 
   }
 
@@ -349,19 +348,19 @@ void AssemblyModuleAssembler::keyReleaseEvent(QKeyEvent * event)
   if (!(event->modifiers() & Qt::ShiftModifier)) {
     switch (event->key()) {
     case Qt::Key_0:
-      imageView_1->setZoomFactor(0.25);
+      //      imageView_1->setZoomFactor(0.25);
       event->accept();
       break;
     case Qt::Key_1:
-      imageView_1->setZoomFactor(1.00);
+      //imageView_1->setZoomFactor(1.00);
       event->accept();
       break;
     case Qt::Key_Plus:
-      imageView_1->increaseZoomFactor();
+      //imageView_1->increaseZoomFactor();
       event->accept();
       break;
     case Qt::Key_Minus:
-      imageView_1->decreaseZoomFactor();
+      //imageView_1->decreaseZoomFactor();
       event->accept();
       break;
     default:
