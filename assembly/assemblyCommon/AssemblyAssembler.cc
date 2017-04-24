@@ -399,11 +399,6 @@ void  AssemblyAssembler::process_step(){
     
      }
 
-void AssemblyAssembler::launch_next_alignment_step(){
-
-  nextAlignmentStep(1, 0.0,0.0,0.0);
-
-}
 
 
 void  AssemblyAssembler::run_alignment(int stage, double x_pr, double y_pr, double theta_pr){
@@ -455,23 +450,45 @@ void  AssemblyAssembler::run_alignment(int stage, double x_pr, double y_pr, doub
     else if (alignment_step == 1){
         NQLog("AssemblyAssembler::run_alignment step == ") << alignment_step;
         alignment_step++;
-     if ( ( fabs(target_x)  > 0.005) || (  fabs(target_y)  > 0.005)  ){
+        if ( ( fabs(target_x)  > 0.005) || (  fabs(target_y)  > 0.005)  ){
           NQLog("AssemblyAssembler:: moving to  ") << target_x <<",  "<< target_y <<"  target theta " <<  target_theta ;
-	  emit moveRelative(target_x, target_y, 0.0, 0.0);
+            emit moveRelative(target_x, target_y, 0.0, 0.0);
         }
-}
+      }
+    
     else if (alignment_step == 2){
         NQLog("AssemblyAssembler::run_alignment step == ") << alignment_step;
         alignment_step++;
         emit acquireImage();
     }
-
-
- else if (alignment_step == 3){
+    else if (alignment_step == 3){
         NQLog("AssemblyAssembler::run_alignment step == ") << alignment_step;
-            X1 = x_pr;
-            Y1 = y_pr;
-            alignment_step =0;
+        NQLog("AssemblyAssembler::First corner aligned");
+        alignment_step++;
+        
+        double target_x_2 = cos((target_theta*3.14)/180.0)*95.00;
+        double target_y_2 = sin((target_theta*3.14)/180.0)*95.00;
+        
+        NQLog("AssemblyAssembler::Going to second corner by moving: ") << target_x_2 <<", "   <<  target_y_2;
+        
+       // emit moveRelative(target_x_2, target_y_2, 0.0, 0.0);
+
+    }
+
+    else if (alignment_step == 4){
+        NQLog("AssemblyAssembler::run_alignment step == ") << alignment_step;
+        NQLog("AssemblyAssembler::Detecting second corner");
+        alignment_step++;
+        emit acquireImage();
+        
+    }
+    
+    
+    else if (alignment_step == 5){
+        NQLog("AssemblyAssembler::run_alignment step == ") << alignment_step;
+        X1 = x_pr;
+        Y1 = y_pr;
+        alignment_step =0;
         NQLog("AssemblyAssembler::TARGET REACHED?! ");
 
 	    //  emit nextAlignmentStep();
