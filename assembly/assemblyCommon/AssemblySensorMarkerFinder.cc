@@ -124,7 +124,7 @@ void AssemblySensorMarkerFinder::runObjectDetection_labmode(cv::Mat master_image
     NQLog("AssemblySensorLocator::runObjectDetection() here ") << "" ;
     NQLog("AssemblySensorLocator::runObjectDetection_labmode()") << "" ;
 
-     objectmode_g = 2;    //hard coding for lab tests, to be reomoved!!!!
+     objectmode_g = 0;    //hard coding for lab tests, to be reomoved!!!!
 
     if(objectmode_g==0){
       NQLog("AssemblySensorLocator") << "***DETECTIING FIDUCIAL MARKER!***" ;
@@ -156,12 +156,9 @@ void AssemblySensorMarkerFinder::runObjectDetection_labmode(cv::Mat master_image
          img = master_image;   
          img_clip_A = cv::imread(Config::CMSTkModLabBasePath + "/share/assembly/spacer_corner_tempate_crop.png",
                                        CV_LOAD_IMAGE_COLOR);
-
-}
+     }
 
     emit locatePickupCorner_templateMatching(img,img_clip_A);
-
-    
 }
 
 
@@ -718,7 +715,7 @@ void AssemblySensorMarkerFinder::findMarker_templateMatching(cv::Mat img, cv::Ma
     
     /// Localizing the best match with minMaxLoc
     double FOM, FOM_inc = 1000.0, minVal, maxVal; Point minLoc; Point maxLoc;
-    double thetas[40], FOMs[40], best_theta;
+    double thetas[80], FOMs[80], best_theta;
     
     //create result matrix to hold correlation values
     int result_cols =  img_copy_bin.cols - img_clip_A.cols + 1;
@@ -767,10 +764,14 @@ void AssemblySensorMarkerFinder::findMarker_templateMatching(cv::Mat img, cv::Ma
       //    for (float theta = -64.0; theta < 64.0;  theta = theta + 3.2){
     //    for (float theta = -180.0; theta < 180.0;  theta = theta + 9.0){
       
-     for (float theta = -5.0; theta < 5.0;  theta = theta + 0.25){
+    //     for (float theta = -5.0; theta < 5.0;  theta = theta + 0.25){
     //  for (float theta = -10.0; theta <= 10.0;  theta = theta + 1.0){
   
     //        for (float theta = -3.2; theta < 3.2;  theta = theta + 0.16){
+
+      for (float theta_coarse = 0.0; theta_coarse <= 270.0;  theta_coarse = theta_coarse + 90.0){
+	for (float theta_fine = -5.0; theta_fine < 5.0;  theta_fine = theta_fine + 0.5){
+	  float	theta = theta_coarse + theta_fine;
 
         // Point2f src_center(img_gs_copy.cols/2.0F, img_gs_copy.rows/2.0F);
         Point2f src_center( matchLoc_1.x + (img_clip_A_bin.cols/2) , matchLoc_1.y + (img_clip_A_bin.rows/2) );
@@ -781,7 +782,9 @@ void AssemblySensorMarkerFinder::findMarker_templateMatching(cv::Mat img, cv::Ma
         warpAffine(img_copy_bin, dst, rot_mat, img_copy_bin.size(), cv::INTER_CUBIC,
                    cv::BORDER_CONSTANT, avgPixelIntensity);
         
-        std::string filename_rotated_base = cacheDirectory2_ + "/Rotation_result_";
+	//    std::string filename_rotated_base = cacheDirectory2_ + "/Rotation_result_";
+
+    std::string filename_rotated_base =  "Rotation_result_";
         std::ostringstream ss;
         ss << theta;
         std::string theta_str = ss.str();
@@ -823,6 +826,7 @@ void AssemblySensorMarkerFinder::findMarker_templateMatching(cv::Mat img, cv::Ma
         
         color = 50 + 200*theta;
     }
+}
     
     cv::Mat img_raw = img.clone();
     rectangle( img, matchLoc_final, Point( matchLoc_final.x + img_clip_A_bin.cols , matchLoc_final.y + img_clip_A_bin.rows ), Scalar(255,0,255), 2, 8, 0 );
@@ -836,7 +840,7 @@ void AssemblySensorMarkerFinder::findMarker_templateMatching(cv::Mat img, cv::Ma
     TCanvas *c1 = new TCanvas("c1","Rotation extraction",200,10,700,500);
     
     if (thetas[0] && FOMs[0]){
-        TGraph *gr = new TGraph(40, thetas, FOMs);
+        TGraph *gr = new TGraph(80, thetas, FOMs);
 
         //gr->Fit("pol6");
         gr->Draw("AC*");

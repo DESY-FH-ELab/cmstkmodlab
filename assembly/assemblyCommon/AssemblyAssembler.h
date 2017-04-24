@@ -72,7 +72,7 @@ public slots:
   void run_sandwitchassembly(double, double, double, double, double, double, double, double, double);
   void process_step();
   void run_alignment(int, double, double, double);
-
+  void launch_next_alignment_step();
   void fill_positionvectors(int , double, double, double);
 
     
@@ -84,7 +84,7 @@ signals:
     void make_graph(const string);
     void updateText(double);
     void nextStep();
-    void nextAlignmentStep();
+    void nextAlignmentStep(int, double, double, double);
     void acquireImage();
     void makeDummies(int, double,double,double);
     void showHistos(int, QString);

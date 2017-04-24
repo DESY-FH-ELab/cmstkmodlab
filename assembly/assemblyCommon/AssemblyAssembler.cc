@@ -401,7 +401,14 @@ void  AssemblyAssembler::process_step(){
 
 
 
-void  AssemblyAssembler::run_alignment(int stage, double x_pr, double y_pr, double theta_pr){
+void AssemblyAssembler::launch_next_alignment_step(){
+
+  emit nextAlignmentStep(1, 0.0, 0.0, 0.0);
+
+}
+
+
+void AssemblyAssembler::run_alignment(int stage, double x_pr, double y_pr, double theta_pr){
 
     // Rought manual alignment with ref marker on platform
     //1. Go to 'start' position (manually?)
@@ -466,12 +473,19 @@ void  AssemblyAssembler::run_alignment(int stage, double x_pr, double y_pr, doub
         NQLog("AssemblyAssembler::First corner aligned");
         alignment_step++;
         
-        double target_x_2 = cos((target_theta*3.14)/180.0)*95.00;
-        double target_y_2 = sin((target_theta*3.14)/180.0)*95.00;
+        double target_x_1 = (-1.0)*cos((target_theta*3.14)/180.0)*99.00;
+        double target_y_1 = (-1.0)*sin((target_theta*3.14)/180.0)*99.00;
         
+        double target_y_2 = (1.0)*cos((target_theta*3.14)/180.0)*48.00;
+        double target_x_2 = (1.0)*sin((target_theta*3.14)/180.0)*48.00;
+
+        double target_x_3 = target_x_1 + target_x_2; 
+        double target_y_3 =  target_y_1 + target_y_2;
+
+
         NQLog("AssemblyAssembler::Going to second corner by moving: ") << target_x_2 <<", "   <<  target_y_2;
         
-       // emit moveRelative(target_x_2, target_y_2, 0.0, 0.0);
+        emit moveRelative(target_x_3, target_y_3, 0.8, 0.0);
 
     }
 
