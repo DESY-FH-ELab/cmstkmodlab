@@ -485,7 +485,7 @@ void AssemblyAssembler::run_alignment(int stage, double x_pr, double y_pr, doubl
 
         NQLog("AssemblyAssembler::Going to second corner by moving: ") << target_x_2 <<", "   <<  target_y_2;
         
-        emit moveRelative(target_x_3, target_y_3, 0.8, 0.0);
+        emit moveRelative(target_x_3, target_y_3, 0.2, 0.0);
 
     }
 

@@ -769,26 +769,30 @@ void AssemblySensorMarkerFinder::findMarker_templateMatching(cv::Mat img, cv::Ma
   
     //        for (float theta = -3.2; theta < 3.2;  theta = theta + 0.16){
 
-      for (float theta_coarse = 0.0; theta_coarse <= 270.0;  theta_coarse = theta_coarse + 90.0){
+    std::string filename_rotated;
+
+      for (float theta_coarse = 0.0; theta_coarse <= 180.0;  theta_coarse = theta_coarse + 180.0){
 	for (float theta_fine = -5.0; theta_fine < 5.0;  theta_fine = theta_fine + 0.5){
 	  float	theta = theta_coarse + theta_fine;
 
-        // Point2f src_center(img_gs_copy.cols/2.0F, img_gs_copy.rows/2.0F);
-        Point2f src_center( matchLoc_1.x + (img_clip_A_bin.cols/2) , matchLoc_1.y + (img_clip_A_bin.rows/2) );
+         Point2f src_center(img_copy_bin.cols/2.0F, img_copy_bin.rows/2.0F);
+	  // Point2f src_center( matchLoc_1.x + (img_clip_A_bin.cols/2) , matchLoc_1.y + (img_clip_A_bin.rows/2) );
         
-        Mat rot_mat = getRotationMatrix2D(matchLoc_1, theta, 1.0);
-        Mat dst;
+	 // Mat rot_mat = getRotationMatrix2D(matchLoc_1, theta, 1.0);
+        Mat rot_mat = getRotationMatrix2D(src_center, theta, 1.0);
+        Mat dst, dst_orig;
         cv::Scalar avgPixelIntensity = cv::mean( img_copy_bin );
         warpAffine(img_copy_bin, dst, rot_mat, img_copy_bin.size(), cv::INTER_CUBIC,
                    cv::BORDER_CONSTANT, avgPixelIntensity);
-        
+        warpAffine(img_copy_gs, dst_orig, rot_mat, img_copy_bin.size(), cv::INTER_CUBIC,
+                   cv::BORDER_CONSTANT, avgPixelIntensity);
 	//    std::string filename_rotated_base = cacheDirectory2_ + "/Rotation_result_";
 
-    std::string filename_rotated_base =  "Rotation_result_";
+	std::string filename_rotated_base =  "Rotation_result_";
         std::ostringstream ss;
         ss << theta;
         std::string theta_str = ss.str();
-        std::string filename_rotated = filename_rotated_base + theta_str + ".png";
+        filename_rotated = filename_rotated_base + theta_str + ".png";
         cv::imwrite(filename_rotated, dst);
         
         //create result matrix to hold correlation values
@@ -830,13 +834,26 @@ void AssemblySensorMarkerFinder::findMarker_templateMatching(cv::Mat img, cv::Ma
     
     cv::Mat img_raw = img.clone();
     rectangle( img, matchLoc_final, Point( matchLoc_final.x + img_clip_A_bin.cols , matchLoc_final.y + img_clip_A_bin.rows ), Scalar(255,0,255), 2, 8, 0 );
-    
-    circle( img, matchLoc_final, 10, Scalar(0,0,255), 4, 8, 0 );
+
+    cv::Rect rect_result = cv::Rect( matchLoc_final, Point( matchLoc_final.x + img_clip_A_bin.cols , matchLoc_final.y + img_clip_A_bin.rows ) );     
+
     line(img, Point(img.cols/2.0, 0), Point(img.cols/2.0, img.rows ), Scalar(255,255,0), 2, 8, 0);
     line(img, Point(0, img.rows/2.0), Point(img.cols, img.rows/2.0 ), Scalar(255,255,0), 2, 8, 0);
     
-    cv::Rect rectangle(matchLoc_final, Point( matchLoc_final.x + img_clip_A_bin.cols , matchLoc_final.y + img_clip_A_bin.rows ) );
-    
+
+        if (best_theta > -5.0 && best_theta < 5.0){
+     circle( img, matchLoc_final, 10, Scalar(0,0,255), 4, 8, 0 );
+        rectangle(img, matchLoc_final, Point( matchLoc_final.x + img_clip_A_bin.cols , matchLoc_final.y + img_clip_A_bin.rows ), Scalar(255,0,255), 2, 8, 0 );
+     } else if (best_theta > 175.0 && best_theta < 185.0){
+    circle( img,  Point( dst.cols - matchLoc_final.x ,  dst.rows - matchLoc_final.y ) , 10, Scalar(0,0,255), 4, 8, 0 );
+        rectangle(img, Point( dst.cols - matchLoc_final.x,  dst.rows - matchLoc_final.y ),  Point( dst.cols - matchLoc_final.x  - img_clip_A_bin.cols,  dst.rows - matchLoc_final.y - img_clip_A_bin.rows ) , Scalar(255,0,255), 2, 8, 0 );
+     }
+
+
+    //     circle( dst_orig, matchLoc_final, 10, Scalar(0,0,255), 4, 8, 0 );
+    // rectangle(dst_orig, matchLoc_final, Point( matchLoc_final.x + img_clip_A_bin.cols , matchLoc_final.y + img_clip_A_bin.rows ), Scalar(255,0,255), 2, 8, 0 );
+  
+
     TCanvas *c1 = new TCanvas("c1","Rotation extraction",200,10,700,500);
     
     if (thetas[0] && FOMs[0]){
@@ -866,15 +883,16 @@ void AssemblySensorMarkerFinder::findMarker_templateMatching(cv::Mat img, cv::Ma
     std::string filename = cacheDirectory1_ + "/PatRec_TM_result.png";
     cv::imwrite(filename, img);
     
-    
+ 
     QString filename_qs = QString::fromStdString(filename);
     QString filename_template = QString::fromStdString(filename_clip_A_bin);
     QString filename_master = QString::fromStdString(filename_img_bin);
+    QString filename_rotated_qs = QString::fromStdString(filename_rotated);
     
     emit updateImage(1, filename_qs);
     
     emit foundSensor(1);
-    emit getImageBlur(img_raw, rectangle);
+    emit getImageBlur(img_raw, rect_result);
 
     emit updateImage(3, filename_template);
     emit updateImage(4, filename_master);
