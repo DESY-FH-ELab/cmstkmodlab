@@ -833,7 +833,7 @@ void AssemblySensorMarkerFinder::findMarker_templateMatching(cv::Mat img, cv::Ma
 }
     
     cv::Mat img_raw = img.clone();
-    rectangle( img, matchLoc_final, Point( matchLoc_final.x + img_clip_A_bin.cols , matchLoc_final.y + img_clip_A_bin.rows ), Scalar(255,0,255), 2, 8, 0 );
+    //  rectangle( img, matchLoc_final, Point( matchLoc_final.x + img_clip_A_bin.cols , matchLoc_final.y + img_clip_A_bin.rows ), Scalar(255,0,255), 2, 8, 0 );
 
     cv::Rect rect_result = cv::Rect( matchLoc_final, Point( matchLoc_final.x + img_clip_A_bin.cols , matchLoc_final.y + img_clip_A_bin.rows ) );     
 
@@ -842,11 +842,15 @@ void AssemblySensorMarkerFinder::findMarker_templateMatching(cv::Mat img, cv::Ma
     
 
         if (best_theta > -5.0 && best_theta < 5.0){
-     circle( img, matchLoc_final, 10, Scalar(0,0,255), 4, 8, 0 );
-        rectangle(img, matchLoc_final, Point( matchLoc_final.x + img_clip_A_bin.cols , matchLoc_final.y + img_clip_A_bin.rows ), Scalar(255,0,255), 2, 8, 0 );
+
+  circle( img, matchLoc_final, 20, Scalar(255,0,255), 4, 8, 0 );
+  rectangle(img, matchLoc_final, Point( matchLoc_final.x + img_clip_A_bin.cols , matchLoc_final.y + img_clip_A_bin.rows ), Scalar(255,0,255), 2, 8, 0 );
+
      } else if (best_theta > 175.0 && best_theta < 185.0){
-    circle( img,  Point( dst.cols - matchLoc_final.x ,  dst.rows - matchLoc_final.y ) , 10, Scalar(0,0,255), 4, 8, 0 );
-        rectangle(img, Point( dst.cols - matchLoc_final.x,  dst.rows - matchLoc_final.y ),  Point( dst.cols - matchLoc_final.x  - img_clip_A_bin.cols,  dst.rows - matchLoc_final.y - img_clip_A_bin.rows ) , Scalar(255,0,255), 2, 8, 0 );
+
+  circle( img,  Point( img.cols - matchLoc_final.x ,  img.rows - matchLoc_final.y ) , 20, Scalar(255,0,255), 4, 8, 0 );
+  rectangle(img, Point( img.cols - matchLoc_final.x,  img.rows - matchLoc_final.y ),  Point( img.cols - matchLoc_final.x  - img_clip_A_bin.cols,  img.rows - matchLoc_final.y - img_clip_A_bin.rows ) , Scalar(255,0,255), 2, 8, 0 );
+
      }
 
 

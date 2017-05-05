@@ -18,9 +18,6 @@
 #include <TF1.h>
 #include <TRandom.h>
 
-
-
-
 #include <nqlogger.h>
 #include <ApplicationConfig.h>
 
@@ -425,6 +422,13 @@ void AssemblyAssembler::run_alignment(int stage, double x_pr, double y_pr, doubl
 
     double mm_per_pixel_x = 0.0012;
     double mm_per_pixel_y = 0.0012;
+
+
+    if (theta_pr >= 175.0 && theta_pr <= 185.0){
+      x_pr = 2560.0 - x_pr;
+      y_pr = 1920.0 - y_pr;
+    }
+
     
     //double target_x = ( y_pr - (1317/2.0) ) * mm_per_pixel_x;
     //double target_y = ( x_pr - (1964.0/2.0) ) * mm_per_pixel_y;
@@ -497,14 +501,28 @@ void AssemblyAssembler::run_alignment(int stage, double x_pr, double y_pr, doubl
         
     }
     
-    
+
     else if (alignment_step == 5){
+        NQLog("AssemblyAssembler::run_alignment step == ") << alignment_step;
+        NQLog("AssemblyAssembler::centering second corner");
+        alignment_step++;
+	if ( ( fabs(target_x)  > 0.005) || (  fabs(target_y)  > 0.005)  ){
+          NQLog("AssemblyAssembler:: moving to  ") << target_x <<",  "<< target_y <<"  target theta " <<  target_theta ;
+            emit moveRelative(target_x, target_y, 0.0, 0.0);
+        }
+}
+    else if (alignment_step == 6){
+        NQLog("AssemblyAssembler::run_alignment step == ") << alignment_step;
+        NQLog("AssemblyAssembler::Detecting second corner");
+        alignment_step++;
+        emit acquireImage(); 
+    }
+    else if (alignment_step == 7){
         NQLog("AssemblyAssembler::run_alignment step == ") << alignment_step;
         X1 = x_pr;
         Y1 = y_pr;
         alignment_step =0;
         NQLog("AssemblyAssembler::TARGET REACHED?! ");
-
 	    //  emit nextAlignmentStep();
         }
 
