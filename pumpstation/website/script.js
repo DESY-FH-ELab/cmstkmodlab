@@ -8,7 +8,7 @@ var switch_4 = document.getElementById("switch_4");
 var Switches = [ switch_0, switch_1, switch_2, switch_3, switch_4];
 
 function changeSwitch(channel) {
-    var data = 0;
+	var data = 0;
 	var request = new XMLHttpRequest();
 	request.open("GET", "ConradSwitch.php?channel=" + channel, true);
 	request.send(null);
@@ -29,7 +29,7 @@ function changeSwitch(channel) {
 				alert ("Something went wrong!");
 				return ("fail"); 
 			}
-			
+
 		} else if (request.readyState == 4 && request.status == 500) {
 			alert ("server error");
 			return ("fail");
@@ -38,5 +38,5 @@ function changeSwitch(channel) {
 			return ("fail");
 		}
 	}
-    return 0;
+	return 0;
 }
