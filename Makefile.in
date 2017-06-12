@@ -42,7 +42,7 @@ ifeq ($(NOPLASMA),0)
 qtsubdirs    += plasma
 endif
 ifeq ($(NOPUMPSTATION),0)
-qtsubdirs    += pumpstation/daemon pumpstation/controller pumpstation/app
+qtsubdirs    += pumpstation/daemon pumpstation/controller pumpstation/app pumpstation/analysis
 endif
 
 installsubdirs = devices external common pumpstation

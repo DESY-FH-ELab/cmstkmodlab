@@ -1,0 +1,11 @@
+PumpStationAnalysis.pro
+PumpStationAnalysis.pro.user
+.qmake.cache
+.qmake.stash
+Makefile
+*.d
+*.o
+*~
+moc_*
+PumpStationAnalysis
+
