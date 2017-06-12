@@ -1,3 +1,5 @@
+#include <signal.h>
+
 #include <iostream>
 
 #include <QCoreApplication>
@@ -21,9 +23,46 @@
 #include "PumpStationModel.h"
 #include "CommunicationThread.h"
 
+static int setup_unix_signal_handlers()
+{
+	/*
+	struct sigaction sighup;
+	sighup.sa_handler = DataLogger::hupSignalHandler;
+	sigemptyset(&sighup.sa_mask);
+	sighup.sa_flags = 0;
+	sighup.sa_flags |= SA_RESTART;
+
+	if (sigaction(SIGHUP, &sighup, 0))
+		return 1;
+  */
+
+	struct sigaction sigint;
+	sigint.sa_handler = DataLogger::intSignalHandler;
+	sigemptyset(&sigint.sa_mask);
+	sigint.sa_flags = 0;
+	sigint.sa_flags |= SA_RESTART;
+
+	if (sigaction(SIGINT, &sigint, 0))
+		return 2;
+
+	/*
+	struct sigaction sigterm;
+	sigterm.sa_handler = DataLogger::termSignalHandler;
+	sigemptyset(&sigterm.sa_mask);
+	sigterm.sa_flags |= SA_RESTART;
+
+	if (sigaction(SIGTERM, &sigterm, 0))
+		return 3;
+	*/
+
+	return 0;
+}
+
 int main(int argc, char *argv[])
 {
   QCoreApplication app(argc, argv);
+
+  setup_unix_signal_handlers();
 
   if (app.arguments().contains("--nodaemon")) {
     NQLogger::instance()->addActiveModule("*");
@@ -96,11 +135,11 @@ int main(int argc, char *argv[])
 
   PumpStationModel model(&conrad, &leybold, 5, &app);
 
-  DataLogger logger(&model, &app);
-  logger.start();
-
   CommunicationThread commthread(&model, &app);
   commthread.start();
+
+  DataLogger logger(&model, &commthread, &app);
+  logger.start();
 
   return app.exec();
 }
