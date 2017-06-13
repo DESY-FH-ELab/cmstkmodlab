@@ -72,6 +72,8 @@ HEADERS += nqlogger.h \
            DeviceState.h \
            DeviceParameter.h \
            Ringbuffer.h \
+           Fifo.h \
+           HistoryFifo.h \
            SingletonApplication.h \
            ApplicationConfig.h \
            ApplicationConfigReader.h \
