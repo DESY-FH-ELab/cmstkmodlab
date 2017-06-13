@@ -24,6 +24,10 @@ public:
     	return size_;
     }
 
+    virtual void push(const T& value) {
+    	push(QDateTime::currentDateTime(), value);
+    }
+
     virtual void push(const QDateTime& dt, const T& value) {
     	if (size_<capacity_) {
     		timestamp_[size_] = dt;
