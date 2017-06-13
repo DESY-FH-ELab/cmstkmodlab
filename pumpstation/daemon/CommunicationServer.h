@@ -23,6 +23,7 @@ protected slots:
 signals:
 
   void setSwitchEnabled(int channel, bool enabled);
+  void setSwitchBlocked(int channel, bool blocked);
 
 protected:
 

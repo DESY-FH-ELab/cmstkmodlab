@@ -12,6 +12,9 @@ CommunicationServer::CommunicationServer(PumpStationModel* model,
  : QTcpServer(parent),
    model_(model)
 {
+  connect(this, SIGNAL(setSwitchBlocked(int, bool)),
+          model_, SLOT(setSwitchBlocked(int, bool)));
+
   connect(this, SIGNAL(setSwitchEnabled(int, bool)),
           model_, SLOT(setSwitchEnabled(int, bool)));
 }
@@ -73,6 +76,20 @@ void CommunicationServer::handleCommand()
         response = "OK";
       }
     }
+  } else if (cmd=="setSwitchBlocked") {
+    if (args.count()!=2) {
+      response = "ERR";
+    } else {
+      int channel = args.at(0).toInt();
+      int state = args.at(1).toInt();
+
+      if (channel<0 || channel>4) {
+        response = "ERR";
+      } else {
+        emit setSwitchBlocked(channel, state);
+        response = "OK";
+      }
+    }
   } else if (cmd=="getSwitchState") {
     if (args.count()!=1) {
       response = "ERR";
@@ -84,6 +101,20 @@ void CommunicationServer::handleCommand()
       } else {
         QMutexLocker locker(&mutex_);
         State state = model_->getSwitchState(channel);
+        response = QString::number((int)state);
+      }
+    }
+  } else if (cmd=="getSwitchBlocked") {
+    if (args.count()!=1) {
+      response = "ERR";
+    } else {
+      int channel = args.at(0).toInt();
+
+      if (channel<0 || channel>4) {
+        response = "ERR";
+      } else {
+        QMutexLocker locker(&mutex_);
+        bool state = model_->getSwitchBlocked(channel);
         response = QString::number((int)state);
       }
     }
@@ -99,6 +130,26 @@ void CommunicationServer::handleCommand()
       int s2 = model_->getSwitchState(2);
       int s3 = model_->getSwitchState(3);
       int s4 = model_->getSwitchState(4);
+
+      response = QString("%1;%2;%3;%4;%5")
+                .arg(s0)
+                .arg(s1)
+                .arg(s2)
+                .arg(s3)
+                .arg(s4);
+     }
+  } else if (cmd=="getSwitchBlockedStatus") {
+    if (args.count()!=0) {
+      response = "ERR";
+    } else {
+
+      QMutexLocker locker(&mutex_);
+
+      int s0 = model_->getSwitchBlocked(0);
+      int s1 = model_->getSwitchBlocked(1);
+      int s2 = model_->getSwitchBlocked(2);
+      int s3 = model_->getSwitchBlocked(3);
+      int s4 = model_->getSwitchBlocked(4);
 
       response = QString("%1;%2;%3;%4;%5")
                 .arg(s0)

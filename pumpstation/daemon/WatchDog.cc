@@ -30,6 +30,12 @@ WatchDog::WatchDog(PumpStationModel* model,
 
   connect(model_, SIGNAL(pressureChanged(int,double)),
           this, SLOT(pressureChanged(int,double)));
+
+  connect(this, SIGNAL(setSwitchBlocked(int, bool)),
+          model_, SLOT(setSwitchBlocked(int, bool)));
+
+  connect(this, SIGNAL(setSwitchEnabled(int, bool)),
+          model_, SLOT(setSwitchEnabled(int, bool)));
 }
 
 void WatchDog::switchStateChanged(int device, State newState)
@@ -70,4 +76,9 @@ void WatchDog::checkValues()
 {
   NQLogMessage("watchdog") << "void DataLogger::checkValues()";
 
+  for (int i=0;i<5;++i) {
+  	if (model_->getSwitchBlocked(i)) {
+  		emit setSwitchBlocked(i, false);
+  	}
+  }
 }

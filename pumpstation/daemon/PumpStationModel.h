@@ -19,6 +19,7 @@ public:
                             double updateInterval = 5,
                             QObject *parent = 0);
 
+  bool getSwitchBlocked(int channel) const;
   const State& getSwitchState(int channel) const;
 
   std::string getSensorName(int sensor) const;
@@ -27,6 +28,7 @@ public:
 
 public slots:
 
+  void setSwitchBlocked(int, bool);
   void setSwitchEnabled(int, bool);
 
 protected slots:
@@ -43,6 +45,7 @@ protected:
   const double updateInterval_;
   QTimer* timer_;
 
+  std::array<bool,5> switchBlocked_;
   std::array<State,5> switchState_;
 
   std::array<LeyboldGraphixThree_t::SensorStatus,3> sensorStatus_;

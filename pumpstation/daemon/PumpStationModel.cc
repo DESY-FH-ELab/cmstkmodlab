@@ -13,6 +13,8 @@ PumpStationModel::PumpStationModel(ConradModel* conradModel,
     leyboldModel_(leyboldModel),
     updateInterval_(updateInterval)
 {
+	for (int i=0;i<5;++i) switchBlocked_[i] = true;
+
   for (int i=0;i<3;i++) sensorStatus_[i] = LeyboldGraphixThree_t::SensorStatus_unknown;
   for (int i=0;i<3;i++) pressure_[i] = -999;
 
@@ -29,6 +31,11 @@ PumpStationModel::PumpStationModel(ConradModel* conradModel,
   //updateConrad();
 
   NQLog("PumpStationModel") << "constructed";
+}
+
+bool PumpStationModel::getSwitchBlocked(int channel) const
+{
+	return switchBlocked_[channel];
 }
 
 const State& PumpStationModel::getSwitchState( int channel ) const
@@ -53,8 +60,15 @@ int PumpStationModel::getSensorStatus(int sensor) const
   return (int)sensorStatus_[sensor-1];
 }
 
+void PumpStationModel::setSwitchBlocked(int channel, bool blocked)
+{
+	switchBlocked_[channel] = blocked;
+}
+
 void PumpStationModel::setSwitchEnabled(int channel, bool enabled)
 {
+	if (switchBlocked_[channel]) return;
+
   conradModel_->setSwitchEnabled(channel, enabled);
 
   if (enabled) {

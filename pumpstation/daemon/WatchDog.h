@@ -43,6 +43,11 @@ protected:
   HistoryFifo<double> pressure1_;
   HistoryFifo<double> pressure2_;
   HistoryFifo<double> pressure3_;
+
+signals:
+
+  void setSwitchEnabled(int channel, bool enabled);
+  void setSwitchBlocked(int channel, bool blocked);
 };
 
 #endif // WATCHDOG_H
