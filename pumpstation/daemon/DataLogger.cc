@@ -188,7 +188,7 @@ void DataLogger::switchStateChanged(int device, State newState)
 
   QMutexLocker locker(&mutex_);
 
-  NQLogMessage("logger") << "void DataLogger::switchStateChanged(" << device << ", " << (int)newState << ")";
+  NQLogDebug("logger") << "void DataLogger::switchStateChanged(" << device << ", " << (int)newState << ")";
 
   QDateTime utime = QDateTime::currentDateTime();
 
@@ -205,7 +205,7 @@ void DataLogger::pressureChanged(int sensor, double p)
 {
   QMutexLocker locker(&mutex_);
 
-  NQLogMessage("logger") << "void DataLogger::pressureChanged(" << sensor << ", " << p << ")";
+  NQLogDebug("logger") << "void DataLogger::pressureChanged(" << sensor << ", " << p << ")";
 
   QDateTime utime = QDateTime::currentDateTime();
 
