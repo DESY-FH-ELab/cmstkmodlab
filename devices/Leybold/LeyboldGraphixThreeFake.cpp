@@ -1,5 +1,6 @@
 #include <cmath>
 #include <iostream>
+#include <cstdlib>
 
 #include "LeyboldGraphixThreeFake.h"
 
@@ -14,9 +15,9 @@ LeyboldGraphixThreeFake::LeyboldGraphixThreeFake( const ioport_t ioPort )
   sensorType_[1] = "TTR?";
   sensorType_[2] = "TTR?";
 
-  pressure_[0] = 100.0;
-  pressure_[1] = 100.1;
-  pressure_[2] = 100.2;
+  pressure_[0] = 110.0;
+  pressure_[1] = 120.0;
+  pressure_[2] = 130.0;
 
   displayUnit_ = DisplayUnit_mbar;
 
@@ -104,7 +105,7 @@ LeyboldGraphixThreeFake::SensorStatus LeyboldGraphixThreeFake::GetSensorStatus(i
 double LeyboldGraphixThreeFake::GetPressure(int sensor) const
 {
   if (sensor<1 || sensor>3) return -1;
-  return pressure_[sensor-1];
+  return pressure_[sensor-1] + rand() % 10;
 }
 
 LeyboldGraphixThreeFake::DisplayUnit LeyboldGraphixThreeFake::GetDisplayUnit() const
