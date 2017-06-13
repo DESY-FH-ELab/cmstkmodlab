@@ -74,7 +74,8 @@ greaterThan(QT_MAJOR_VERSION, 4) {
 HEADERS += PumpStationModel.h \
            CommunicationThread.h \
            CommunicationServer.h \
-           DataLogger.h
+           DataLogger.h \
+           WatchDog.h
 
 equals(USEFAKEDEVICES,"X0") {
 HEADERS += 
@@ -86,7 +87,8 @@ SOURCES += PumpStationDaemon.cc \
            PumpStationModel.cc \
            CommunicationThread.cc \
            CommunicationServer.cc \
-           DataLogger.cc
+           DataLogger.cc \
+           WatchDog.cc
 
 equals(USEFAKEDEVICES,"X0") {
 SOURCES += 

@@ -19,6 +19,7 @@
 #include <ConradModel.h>
 #include <LeyboldGraphixThreeModel.h>
 #include <DataLogger.h>
+#include <WatchDog.h>
 
 #include "PumpStationModel.h"
 #include "CommunicationThread.h"
@@ -140,6 +141,8 @@ int main(int argc, char *argv[])
 
   DataLogger logger(&model, &commthread, &app);
   logger.start();
+
+  WatchDog watchdog(&model, 300/5, &app);
 
   return app.exec();
 }
