@@ -67,7 +67,7 @@ int main(int argc, char *argv[])
   if (app.arguments().contains("--nodaemon")) {
     NQLogger::instance()->addActiveModule("*");
 
-    NQLogger::instance()->addDestiniation(stdout, NQLog::Debug);
+    NQLogger::instance()->addDestiniation(stdout, NQLog::Spam);
 
 #if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
     QString logdir = QDesktopServices::storageLocation(QDesktopServices::CacheLocation);
