@@ -5,13 +5,13 @@
 
 #include <QVector>
 
-template <class T,size_t N=5> class Fifo
+template <class T> class Fifo
 {
 public:
 
     typedef T      value_type;
 
-    Fifo() {
+    Fifo(int N) {
     	buffer_.resize(N);
     	size_ = 0;
     	capacity_ = N;

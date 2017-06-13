@@ -32,7 +32,7 @@ double imageScale(double focalLength)
 int main(int argc, char *argv[])
 {
 	{
-		HistoryFifo<double,5> fifo;
+		HistoryFifo<double> fifo(5);
 
 		fifo.push(QDateTime::fromString("2017-06-13T09:09:11", Qt::ISODate), 10);
 		fifo.push(QDateTime::fromString("2017-06-13T09:09:12", Qt::ISODate), 20);
@@ -56,7 +56,7 @@ int main(int argc, char *argv[])
 
 	/*
 	{
-		Fifo<int,5> fifo;
+		Fifo<int> fifo(5);
 
 		fifo.push(1);
 		fifo.push(2); // 1

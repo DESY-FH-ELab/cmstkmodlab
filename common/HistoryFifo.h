@@ -6,13 +6,13 @@
 #include <QVector>
 #include <QDateTime>
 
-template <class T,size_t N=5> class HistoryFifo
+template <class T> class HistoryFifo
 {
 public:
 
     typedef T      value_type;
 
-    HistoryFifo() {
+    HistoryFifo(int N) {
     	timestamp_.resize(N);
     	buffer_.resize(N);
     	size_ = 0;
