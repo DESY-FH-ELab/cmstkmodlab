@@ -2,7 +2,7 @@
 
 #include <QtCore>
 #include <QXmlStreamWriter>
-#include <QFile.h>
+#include <QFile>
 
 #include "Analyser.h"
 
