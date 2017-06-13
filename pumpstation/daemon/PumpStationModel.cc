@@ -25,8 +25,8 @@ PumpStationModel::PumpStationModel(ConradModel* conradModel,
 
   timer_->start();
 
-  updateInformation();
-  updateConrad();
+  //updateInformation();
+  //updateConrad();
 
   NQLog("PumpStationModel") << "constructed";
 }
@@ -72,7 +72,7 @@ void PumpStationModel::setSwitchEnabled(int channel, bool enabled)
 
 void PumpStationModel::updateInformation()
 {
-  // NQLog("PumpStationModel", NQLog::Message) << "updateInformation()";
+  NQLog("PumpStationModel", NQLog::Message) << "updateInformation()";
 
   if (thread()==QApplication::instance()->thread()) {
     // NQLog("PumpStationModel", NQLog::Debug) << " running in main application thread";
@@ -91,6 +91,7 @@ void PumpStationModel::updateInformation()
     }
 
     pressure[i] = leyboldModel_->getPressure(i+1);
+
     if (pressure_[i] != pressure[i]) {
       pressure_[i] = pressure[i];
       emit pressureChanged(i+1, pressure_[i]);
