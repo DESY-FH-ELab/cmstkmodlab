@@ -20,7 +20,7 @@ PumpStationModel::PumpStationModel(ConradModel* conradModel,
 
   for (int i=0;i<3;i++) {
   	sensorStatus_[i] = LeyboldGraphixThree_t::SensorStatus_unknown;
-  	pressure_[i] = -999;
+  	pressure_[i] = 0;
   }
 
   connect(leyboldModel_, SIGNAL(informationChanged()),
@@ -32,8 +32,8 @@ PumpStationModel::PumpStationModel(ConradModel* conradModel,
 
   timer_->start();
 
-  //updateInformation();
-  //updateConrad();
+  updateInformation();
+  updateConrad();
 
   NQLog("PumpStationModel") << "constructed";
 }
