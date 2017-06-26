@@ -13,10 +13,15 @@ PumpStationModel::PumpStationModel(ConradModel* conradModel,
     leyboldModel_(leyboldModel),
     updateInterval_(updateInterval)
 {
-	for (int i=0;i<5;++i) switchBlocked_[i] = true;
+	for (int i=0;i<5;++i) {
+		switchBlocked_[i] = true;
+		switchState_[i] = OFF;
+	}
 
-  for (int i=0;i<3;i++) sensorStatus_[i] = LeyboldGraphixThree_t::SensorStatus_unknown;
-  for (int i=0;i<3;i++) pressure_[i] = -999;
+  for (int i=0;i<3;i++) {
+  	sensorStatus_[i] = LeyboldGraphixThree_t::SensorStatus_unknown;
+  	pressure_[i] = -999;
+  }
 
   connect(leyboldModel_, SIGNAL(informationChanged()),
           this, SLOT(updateInformation()));
