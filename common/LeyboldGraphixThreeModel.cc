@@ -18,11 +18,11 @@ LeyboldGraphixThreeModel::LeyboldGraphixThreeModel(const char* port,
 
   timer_ = new QTimer(this);
   timer_->setInterval(updateInterval_ * 1000);
-  connect( timer_, SIGNAL(timeout()), this, SLOT(updateInformation()) );
+  connect( timer_, SIGNAL(timeout()), this, SLOT(updateInformation()));
 
   setDeviceEnabled(true);
 
-  NQLog("LeyboldGraphixThree") << "constructed";
+  NQLog("LeyboldGraphixThreeModel") << "constructed";
 }
 
 LeyboldGraphixThree_t::SensorDetectionMode LeyboldGraphixThreeModel::getSensorDetectionMode(int sensor) const
