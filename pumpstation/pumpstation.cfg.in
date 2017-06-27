@@ -1,6 +1,6 @@
 ServerPort        63432
 DataPath          @basepath@/pumpstation
-LeyboldPort       /dev/ttyUSB0
+LeyboldPort       /dev/ttyLeybold
 URL               http://cmsvakusaug.desy.de
 
 slackwebhook	  https://hooks.slack.com/services/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
