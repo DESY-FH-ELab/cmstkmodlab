@@ -1,6 +1,9 @@
 ARCHITECTURE=@architecture@
 USEFAKEDEVICES="X@usefakedevices@"
 
+QMAKE_CXXFLAGS += @rootcflags@
+LIBS += @rootlibs@
+
 QMAKE = @qmake@
 
 macx {

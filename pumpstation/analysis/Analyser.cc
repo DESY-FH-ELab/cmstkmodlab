@@ -4,10 +4,13 @@
 #include <QXmlStreamWriter>
 #include <QFile>
 
+#include <TDatime.h>
+
 #include "Analyser.h"
 
 Analyser::Analyser(QStringList& arguments)
- : arguments_(arguments)
+ : arguments_(arguments),
+   measurementValid_(false)
 {
 	dataValid_ = false;
 	for (int i=0;i<5;++i) switchStateValid_[i] = false;
@@ -16,11 +19,52 @@ Analyser::Analyser(QStringList& arguments)
 
 void Analyser::analyse()
 {
-  QStringList::const_iterator constIterator;
-  for (constIterator = arguments_.constBegin(); constIterator != arguments_.constEnd();
-      ++constIterator) {
+	if (arguments_.size()!=2) return;
+
+  QStringList::const_iterator constIterator = arguments_.constBegin();
+
+  QString filename = *constIterator;
+  if (!filename.endsWith(".root")) filename += ".root";
+  std::string rootname = filename.toStdString();
+
+  ofile_ = new TFile(rootname.c_str(), "RECREATE");
+
+  otree_ = new TTree("pumpstation", "pumpstation");
+
+  otree_->Branch("uTime", &measurement_.uTime, "uTime/i");
+  otree_->Branch("datime", &measurement_.datime, 1024, 2);
+
+  for (int i=0;i<5;++i) {
+  	char dummy1[20];
+  	char dummy2[20];
+
+  	sprintf(dummy1, "switchState%d", i);
+  	sprintf(dummy2, "switchState%d/I", i);
+  	otree_->Branch(dummy1, &measurement_.switchState[i], dummy2);
+  }
+
+  for (int i=0;i<3;++i) {
+  	char dummy1[20];
+  	char dummy2[20];
+
+  	sprintf(dummy1, "gaugeState%d", i);
+  	sprintf(dummy2, "gaugeState%d/I", i);
+  	otree_->Branch(dummy1, &measurement_.gaugeState[i], dummy2);
+
+  	sprintf(dummy1, "pressure%d", i);
+  	sprintf(dummy2, "pressure%d/D", i);
+  	otree_->Branch(dummy1, &measurement_.pressure[i], dummy2);
+  }
+
+  ++constIterator;
+  for (;
+  		 constIterator != arguments_.constEnd();
+  		 ++constIterator) {
       processFile(*constIterator);
   }
+
+  ofile_->Write();
+  delete ofile_;
 
   QCoreApplication::quit();
 }
@@ -104,8 +148,20 @@ void Analyser::processFile(const QString& filename)
 
 void Analyser::dumpData()
 {
-	std::cout << utime_.toTime_t() ;
-	for (int i=0;i<5;++i) std::cout << " " << switchState_[i];
-	for (int i=0;i<3;++i) std::cout << " " << gaugeState_[i] << " " << std::scientific << gaugePressure_[i];
+	std::cout << utime_.toTime_t();
+	measurement_.uTime = utime_.toTime_t();
+	measurement_.datime = TDatime(measurement_.uTime);
+
+	for (int i=0;i<5;++i) {
+		std::cout << " " << switchState_[i];
+		measurement_.switchState[i] = switchState_[i];
+	}
+	for (int i=0;i<3;++i) {
+		std::cout << " " << gaugeState_[i] << " " << std::scientific << gaugePressure_[i];
+		measurement_.gaugeState[i] = gaugeState_[i];
+		measurement_.pressure[i] = gaugePressure_[i];
+	}
 	std::cout << std::endl;
+
+	otree_->Fill();
 }

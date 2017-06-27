@@ -7,6 +7,18 @@
 #include <QStringList>
 #include <QObject>
 
+#include <TFile.h>
+#include <TTree.h>
+#include <TDatime.h>
+
+typedef struct {
+	unsigned int   uTime;
+	TDatime        datime;
+	int            switchState[5];
+	int            gaugeState[3];
+	double         pressure[3];
+} Measurement_t;
+
 class Analyser : public QObject
 {
   Q_OBJECT
@@ -33,6 +45,11 @@ private:
   std::array<bool,3> gaugeState_;
   std::array<float,3> gaugePressure_;
   std::array<bool,3> gaugeValid_;
+
+  bool measurementValid_;
+  Measurement_t measurement_;
+  TFile *ofile_;
+  TTree *otree_;
 };
 
 #endif // ANALYSER_H
