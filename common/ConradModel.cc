@@ -11,6 +11,16 @@ ConradModel::ConradModel(QObject * /* parent */)
   setControlsEnabled(true);
 }
 
+ConradModel::ConradModel(const char* port, QObject * /* parent */)
+: QObject(),
+  AbstractDeviceModel(),
+  port_(port),
+  switchStates_(8, OFF)
+{
+  setDeviceEnabled(true);
+  setControlsEnabled(true);
+}
+
 /// Shuts down all the devices before closing down.
 ConradModel::~ConradModel()
 {
@@ -66,85 +76,102 @@ void ConradModel::initialize( void )
 
 #else
 
-  // create a list with all available ttyUSB device (system) files
-  QStringList filters("ttyUSB*");
+  if (port_.isEmpty()) {
+    // create a list with all available ttyUSB device (system) files
+    QStringList filters("ttyUSB*");
 
-  QDir devDir("/dev");
-  devDir.setNameFilters(filters);
-  devDir.setFilter(QDir::System);
-  QStringList list = devDir.entryList();
-
-  // Only loop over list when not empty
-  if (!list.empty()) {
-
-    // browse and try initialize() until conradController_ gets an answer
-    QStringList::const_iterator it = list.begin();
-    QString port = QString( "/dev/" ) + *it;
-
-    renewController( port );
-
-    while (it < list.end() && !controller_->initialize()) {
-
-      // Compose full absolute location of USB device
-      port = QString( "/dev/" ) + *it;
+    QDir devDir("/dev");
+    devDir.setNameFilters(filters);
+    devDir.setFilter(QDir::System);
+    QStringList list = devDir.entryList();
+    
+    // Only loop over list when not empty
+    if (!list.empty()) {
+      
+      // browse and try initialize() until conradController_ gets an answer
+      QStringList::const_iterator it = list.begin();
+      QString port = QString( "/dev/" ) + *it;
+      
       renewController( port );
-
-      ++it;
-    }
-
-    // check communication; if it is not at the end, switch was found
-    if (it != list.end()) {
-
-      // read and init status
-      std::vector<bool> status = controller_->queryStatus();
-
-      // Announce new states
-      if (status.size() == 8) {
-
-        setAllSwitchesReady( status );
-        setDeviceState( READY );
-
-        // FIXME Redirect to central logger
-        //    if( debugLevel_ >= 1 )
-        NQLog("ConradModel::initialize()", NQLog::Message)
+      
+      while (it < list.end() && !controller_->initialize()) {
+	
+	// Compose full absolute location of USB device
+	port = QString( "/dev/" ) + *it;
+	renewController( port );
+	
+	++it;
+      }
+      
+      // check communication; if it is not at the end, switch was found
+      if (it != list.end()) {
+	
+	// read and init status
+	std::vector<bool> status = controller_->queryStatus();
+	
+	// Announce new states
+	if (status.size() == 8) {
+	  
+	  setAllSwitchesReady( status );
+	  setDeviceState( READY );
+	  
+	  // FIXME Redirect to central logger
+	  //    if( debugLevel_ >= 1 )
+	  NQLog("ConradModel::initialize()", NQLog::Message)
             << "connection to conrad via: "
             << port.toStdString() << ".";
-
-      } else {
-
-        /*
-         would be 0 if query failed (according to ConradController::queryStatus)
-         This means device malfunction, so set state accordingly
-         */
-
-        setDeviceFullOff();
-
-        NQLog("ConradModel::initialize()", NQLog::Fatal)
+	  
+	} else {
+	  
+	  /*
+	    would be 0 if query failed (according to ConradController::queryStatus)
+	    This means device malfunction, so set state accordingly
+	  */
+	  
+	  setDeviceFullOff();
+	  
+	  NQLog("ConradModel::initialize()", NQLog::Fatal)
             << "** ERROR: received malformed state vector.";
-
+	  
+	}
+      } else {
+	// if not successful; i.e. DEVICE NOT FOUND
+	setDeviceFullOff();
+	// TODO Log why it failed
+	NQLog("ConradModel::initialize()", NQLog::Fatal)
+          << "Cannot connect to Conrad. Make sure that";
+	NQLog("ConradModel::initialize()", NQLog::Fatal)
+          << "/dev/ttyUSB* is present and readable and no other process";
+	NQLog("ConradModel::initialize()", NQLog::Fatal)
+          << "is connecting to the device.";
       }
     } else {
-      // if not successful; i.e. DEVICE NOT FOUND
+      
       setDeviceFullOff();
-      // TODO Log why it failed
+      
       NQLog("ConradModel::initialize()", NQLog::Fatal)
-          << "Cannot connect to Conrad. Make sure that";
+        << "Cannot connect to Conrad. Make sure that";
       NQLog("ConradModel::initialize()", NQLog::Fatal)
-          << "/dev/ttyUSB* is present and readable and no other process";
+        << "/dev/ttyUSB* is present and readable and no other process";
       NQLog("ConradModel::initialize()", NQLog::Fatal)
-          << "is connecting to the device.";
+        << "is connecting to the device.";
+      
     }
   } else {
 
-    setDeviceFullOff();
-
-    NQLog("ConradModel::initialize()", NQLog::Fatal)
-        << "Cannot connect to Conrad. Make sure that";
-    NQLog("ConradModel::initialize()", NQLog::Fatal)
-        << "/dev/ttyUSB* is present and readable and no other process";
-    NQLog("ConradModel::initialize()", NQLog::Fatal)
-        << "is connecting to the device.";
-
+    std::cout << "port: " << port_.toStdString() << std::endl;
+    renewController(port_);
+    
+    controller_->initialize();
+    
+    std::vector<bool> status = controller_->queryStatus();
+    
+    // Announce new states
+    if (status.size() == 8) {
+      
+      setAllSwitchesReady(status);
+      setDeviceState( READY );
+    }
   }
 #endif
 }
