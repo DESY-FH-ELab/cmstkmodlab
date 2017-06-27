@@ -21,9 +21,15 @@ WatchDog::WatchDog(PumpStationModel* model,
 		               QObject *parent)
  : QObject(parent),
    model_(model),
-	 pressure1_(HistoryFifo<double>(history)),
-	 pressure2_(HistoryFifo<double>(history)),
-	 pressure3_(HistoryFifo<double>(history))
+   pressure1_(HistoryFifo<double>(history)),
+   pressure2_(HistoryFifo<double>(history)),
+   pressure3_(HistoryFifo<double>(history))
+{
+  connect(model_, SIGNAL(dataValid()),
+          this, SLOT(initialize()));
+}
+
+void WatchDog::initialize()
 {
   connect(model_, SIGNAL(switchStateChanged(int, State)),
           this, SLOT(switchStateChanged(int, State)));
@@ -36,49 +42,50 @@ WatchDog::WatchDog(PumpStationModel* model,
 
   connect(this, SIGNAL(setSwitchEnabled(int, bool)),
           model_, SLOT(setSwitchEnabled(int, bool)));
+
 }
 
 void WatchDog::switchStateChanged(int device, State newState)
 {
   if (newState!=OFF && newState!=READY) return;
-
+  
   QMutexLocker locker(&mutex_);
-
+  
   NQLogDebug("watchdog") << "void WatchDog::switchStateChanged(" << device << ", " << (int)newState << ")";
-
+  
   switchState_[device] = newState;
-
+  
   checkValues();
 }
 
 void WatchDog::pressureChanged(int sensor, double p)
 {
   QMutexLocker locker(&mutex_);
-
+  
   NQLogDebug("watchdog") << "void DataLogger::pressureChanged(" << sensor << ", " << p << ")";
-
+  
   switch (sensor) {
   case 1:
-  	pressure1_.push(p);
-  	break;
+    pressure1_.push(p);
+    break;
   case 2:
-  	pressure2_.push(p);
-  	break;
+    pressure2_.push(p);
+    break;
   case 3:
-  	pressure3_.push(p);
-  	break;
+    pressure3_.push(p);
+    break;
   }
-
+  
   checkValues();
 }
 
 void WatchDog::checkValues()
 {
-  NQLogMessage("watchdog") << "void DataLogger::checkValues()";
+  NQLogMessage("WatchDog") << "checkValues";
 
   for (int i=0;i<5;++i) {
-  	if (model_->getSwitchBlocked(i)) {
-  		emit setSwitchBlocked(i, false);
-  	}
+    if (model_->getSwitchBlocked(i)) {
+      emit setSwitchBlocked(i, false);
+    }
   }
 }

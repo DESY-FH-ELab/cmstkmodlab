@@ -40,7 +40,10 @@ protected:
 
   ConradModel* conradModel_;
   LeyboldGraphixThreeModel* leyboldModel_;
-
+  bool conradDataValid_;
+  bool leyboldDataValid_;
+  bool dataValid_;
+  
   /// Time interval between cache refreshes; in seconds.
   const double updateInterval_;
   QTimer* timer_;
@@ -53,6 +56,7 @@ protected:
 
 signals:
 
+  void dataValid();
   void switchStateChanged(int,State);
   void pressureChanged(int,double);
   void sensorStatusChanged(int,int);

@@ -26,37 +26,37 @@
 
 static int setup_unix_signal_handlers()
 {
-	/*
-	struct sigaction sighup;
-	sighup.sa_handler = DataLogger::hupSignalHandler;
-	sigemptyset(&sighup.sa_mask);
-	sighup.sa_flags = 0;
-	sighup.sa_flags |= SA_RESTART;
+  /*
+    struct sigaction sighup;
+    sighup.sa_handler = DataLogger::hupSignalHandler;
+    sigemptyset(&sighup.sa_mask);
+    sighup.sa_flags = 0;
+    sighup.sa_flags |= SA_RESTART;
 
-	if (sigaction(SIGHUP, &sighup, 0))
-		return 1;
+    if (sigaction(SIGHUP, &sighup, 0))
+    return 1;
   */
 
-	struct sigaction sigint;
-	sigint.sa_handler = DataLogger::intSignalHandler;
-	sigemptyset(&sigint.sa_mask);
-	sigint.sa_flags = 0;
-	sigint.sa_flags |= SA_RESTART;
+  struct sigaction sigint;
+  sigint.sa_handler = DataLogger::intSignalHandler;
+  sigemptyset(&sigint.sa_mask);
+  sigint.sa_flags = 0;
+  sigint.sa_flags |= SA_RESTART;
 
-	if (sigaction(SIGINT, &sigint, 0))
-		return 2;
+  if (sigaction(SIGINT, &sigint, 0))
+    return 2;
 
-	/*
-	struct sigaction sigterm;
-	sigterm.sa_handler = DataLogger::termSignalHandler;
-	sigemptyset(&sigterm.sa_mask);
-	sigterm.sa_flags |= SA_RESTART;
+  /*
+    struct sigaction sigterm;
+    sigterm.sa_handler = DataLogger::termSignalHandler;
+    sigemptyset(&sigterm.sa_mask);
+    sigterm.sa_flags |= SA_RESTART;
 
-	if (sigaction(SIGTERM, &sigterm, 0))
-		return 3;
-	*/
+    if (sigaction(SIGTERM, &sigterm, 0))
+    return 3;
+  */
 
-	return 0;
+  return 0;
 }
 
 int main(int argc, char *argv[])
@@ -97,11 +97,12 @@ int main(int argc, char *argv[])
   qRegisterMetaType<State>("State");
 
   ApplicationConfig * config = ApplicationConfig::instance(std::string(Config::CMSTkModLabBasePath) + "/pumpstation/pumpstation.cfg");
-
-  ConradModel conrad(&app);
+  
+  std::string conradPort = config->getValue("ConradPort");
+  ConradModel conrad(conradPort.c_str(), &app);
 
   std::string leyboldPort = config->getValue("LeyboldPort");
-  LeyboldGraphixThreeModel leybold(leyboldPort.c_str(), 5, &app);
+  LeyboldGraphixThreeModel leybold(leyboldPort.c_str(), 1, &app);
 
   /*
   if (leybold.getSensorDetectionMode(1)!=VLeyboldGraphixThree::SensorDetectionAuto) {
@@ -140,9 +141,10 @@ int main(int argc, char *argv[])
   commthread.start();
 
   DataLogger logger(&model, &commthread, &app);
-  logger.start();
-
+  logger.initialize();
+  
   WatchDog watchdog(&model, 300/5, &app);
+  watchdog.initialize();
 
   return app.exec();
 }

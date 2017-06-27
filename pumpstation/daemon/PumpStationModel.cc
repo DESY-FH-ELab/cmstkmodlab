@@ -11,16 +11,19 @@ PumpStationModel::PumpStationModel(ConradModel* conradModel,
   : QObject(),
     conradModel_(conradModel),
     leyboldModel_(leyboldModel),
+    conradDataValid_(false),
+    leyboldDataValid_(false),
+    dataValid_(false),
     updateInterval_(updateInterval)
 {
-	for (int i=0;i<5;++i) {
-		switchBlocked_[i] = true;
-		switchState_[i] = OFF;
-	}
+  for (int i=0;i<5;++i) {
+    switchBlocked_[i] = true;
+    switchState_[i] = OFF;
+  }
 
   for (int i=0;i<3;i++) {
-  	sensorStatus_[i] = LeyboldGraphixThree_t::SensorStatus_unknown;
-  	pressure_[i] = 0;
+    sensorStatus_[i] = LeyboldGraphixThree_t::SensorStatus_unknown;
+    pressure_[i] = 0;
   }
 
   connect(leyboldModel_, SIGNAL(informationChanged()),
@@ -28,19 +31,19 @@ PumpStationModel::PumpStationModel(ConradModel* conradModel,
 
   timer_ = new QTimer(this);
   timer_->setInterval(updateInterval_ * 1000);
-  connect( timer_, SIGNAL(timeout()), this, SLOT(updateConrad()) );
+  connect(timer_, SIGNAL(timeout()), this, SLOT(updateConrad()));
 
   timer_->start();
 
-  //updateInformation();
-  //updateConrad();
+  updateInformation();
+  updateConrad();
 
   NQLog("PumpStationModel") << "constructed";
 }
 
 bool PumpStationModel::getSwitchBlocked(int channel) const
 {
-	return switchBlocked_[channel];
+  return switchBlocked_[channel];
 }
 
 const State& PumpStationModel::getSwitchState( int channel ) const
@@ -67,12 +70,12 @@ int PumpStationModel::getSensorStatus(int sensor) const
 
 void PumpStationModel::setSwitchBlocked(int channel, bool blocked)
 {
-	switchBlocked_[channel] = blocked;
+  switchBlocked_[channel] = blocked;
 }
 
 void PumpStationModel::setSwitchEnabled(int channel, bool enabled)
 {
-	if (switchBlocked_[channel]) return;
+  if (switchBlocked_[channel]) return;
 
   conradModel_->setSwitchEnabled(channel, enabled);
 
@@ -91,7 +94,7 @@ void PumpStationModel::setSwitchEnabled(int channel, bool enabled)
 
 void PumpStationModel::updateInformation()
 {
-  NQLog("PumpStationModel", NQLog::Message) << "updateInformation()";
+  // NQLog("PumpStationModel", NQLog::Message) << "updateInformation()";
 
   if (thread()==QApplication::instance()->thread()) {
     // NQLog("PumpStationModel", NQLog::Debug) << " running in main application thread";
@@ -116,6 +119,14 @@ void PumpStationModel::updateInformation()
       emit pressureChanged(i+1, pressure_[i]);
     }
   }
+
+  leyboldDataValid_ = true;
+  if (!dataValid_) {
+    if (conradDataValid_) {
+      dataValid_ = true;
+      emit dataValid();
+    }
+  }
 }
 
 void PumpStationModel::updateConrad()
@@ -137,4 +148,12 @@ void PumpStationModel::updateConrad()
   }
 
   switchState_ = switchState;
+
+  conradDataValid_ = true;
+  if (!dataValid_) {
+    if (leyboldDataValid_) {
+      dataValid_ = true;
+      emit dataValid();
+    }
+  }
 }

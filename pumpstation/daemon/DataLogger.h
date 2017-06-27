@@ -22,15 +22,16 @@ public:
   DataLogger(PumpStationModel* model, CommunicationThread* thread,
              QObject *parent = 0);
 
-  void start();
-  void stop();
-
   // Unix signal handlers.
   static void hupSignalHandler(int unused);
   static void intSignalHandler(int unused);
   static void termSignalHandler(int unused);
 
 public slots:
+
+  void initialize();
+  void start();
+  void stop();
 
   // Qt signal handlers.
   void handleSigHup();
