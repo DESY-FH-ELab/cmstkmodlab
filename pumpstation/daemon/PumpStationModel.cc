@@ -32,8 +32,8 @@ PumpStationModel::PumpStationModel(ConradModel* conradModel,
 
   timer_->start();
 
-  updateInformation();
-  updateConrad();
+  //updateInformation();
+  //updateConrad();
 
   NQLog("PumpStationModel") << "constructed";
 }
