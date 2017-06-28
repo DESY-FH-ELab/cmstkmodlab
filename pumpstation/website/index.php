@@ -96,7 +96,13 @@ if ($P2 >= 200.0 || $P2 < 0.0) {
 	echo ('<div style="position:absolute;width:128px;height:30px;margin-left:341px;margin-top:45px;background-color:#FFAA55;">');
 }
 echo ('<div style="font-size:16px;text-align:right;margin-top:5px;margin-right:10px;">');
-echo (number_format ( $P2, 1, ".", "," ));
+if ($P2 >= 10.0) {
+	printf ( "%.0f", $P2);
+} else if ($P2 >= 0.1) {
+	printf ( "%.1f", $P2);
+} else {
+	printf ( "%.2E", $P2);
+}
 echo (" mbar");
 echo ('</div></div>');
 
@@ -115,7 +121,13 @@ if ($P3 >= 200.0 || $P3 < 0.0) {
 	echo ('<div style="position:absolute;width:128px;height:30px;margin-left:341px;margin-top:85px;background-color:#FFAA55;">');
 }
 echo ('<div style="font-size:16px;text-align:right;margin-top:5px;margin-right:10px;">');
-echo (number_format ( $P3, 1, ".", "," ));
+if ($P3 >= 10.0) {
+	printf ( "%.0f", $P3);
+} else if ($P3 >= 0.1) {
+	printf ( "%.1f", $P3);
+} else {
+	printf ( "%.2E", $P3);
+}
 echo (" mbar");
 echo ('</div></div>');
 
