@@ -81,7 +81,7 @@ void WatchDog::pressureChanged(int sensor, double p)
 
 void WatchDog::checkValues()
 {
-  NQLogMessage("WatchDog") << "checkValues";
+	NQLogDebug("WatchDog") << "checkValues";
 
   for (int i=0;i<5;++i) {
     if (model_->getSwitchBlocked(i)) {
