@@ -45,129 +45,95 @@
 
       <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
 	<ul class="current">
+	  
           
-            <li>
-    <li class="toctree-l1 ">
-        <a class="" href="..">Home</a>
-        
-    </li>
-<li>
+            <li class="toctree-l1">
+		
+    <a class="" href="..">Home</a>
+	    </li>
           
-            <li>
+            <li class="toctree-l1">
+		
+    <span class="caption-text">Build</span>
     <ul class="subnav">
-    <li><span>Build</span></li>
-
-        
-            
-    <li class="toctree-l1 ">
-        <a class="" href="../build/configure/">configure</a>
-        
-    </li>
-
-        
-            
-    <li class="toctree-l1 ">
-        <a class="" href="../build/UbuntuLinux/">Ubuntu Linux</a>
-        
-    </li>
-
-        
-            
-    <li class="toctree-l1 ">
-        <a class="" href="../build/RaspbianLinux/">Raspbian Linux</a>
-        
-    </li>
-
-        
-            
-    <li class="toctree-l1 ">
-        <a class="" href="../build/OSXElCapitan/">OSX El Capitan</a>
-        
-    </li>
-
-        
+                <li class="">
+                    
+    <a class="" href="../build/configure/">configure</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../build/UbuntuLinux/">Ubuntu Linux</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../build/RaspbianLinux/">Raspbian Linux</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../build/OSXElCapitan/">OSX El Capitan</a>
+                </li>
     </ul>
-<li>
+	    </li>
           
-            <li>
+            <li class="toctree-l1">
+		
+    <span class="caption-text">Thermo</span>
     <ul class="subnav">
-    <li><span>Thermo</span></li>
-
-        
-            
-    <li class="toctree-l1 ">
-        <a class="" href="../thermo/thermoDAQ/">thermoDAQ</a>
-        
-    </li>
-
-        
+                <li class="">
+                    
+    <a class="" href="../thermo/thermoDAQ/">thermoDAQ</a>
+                </li>
     </ul>
-<li>
+	    </li>
           
-            <li>
+            <li class="toctree-l1">
+		
+    <span class="caption-text">Defo</span>
     <ul class="subnav">
-    <li><span>Defo</span></li>
-
-        
-            
-    <li class="toctree-l1 ">
-        <a class="" href="../defo/defoDAQ/">defoDAQ</a>
-        
-    </li>
-
-        
-            
-    <li class="toctree-l1 ">
-        <a class="" href="../defo/defoDAQScripting/">defoDAQ Scripting</a>
-        
-    </li>
-
-        
+                <li class="">
+                    
+    <a class="" href="../defo/defoDAQ/">defoDAQ</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../defo/defoDAQScripting/">defoDAQ Scripting</a>
+                </li>
     </ul>
-<li>
+	    </li>
           
-            <li>
-    <li class="toctree-l1 ">
-        <a class="" href="../assembly/">Assembly</a>
-        
-    </li>
-<li>
+            <li class="toctree-l1">
+		
+    <a class="" href="../assembly/">Assembly</a>
+	    </li>
           
-            <li>
-    <li class="toctree-l1 ">
-        <a class="" href="../plasma/">Plasma Cleaner</a>
-        
-    </li>
-<li>
+            <li class="toctree-l1">
+		
+    <a class="" href="../plasma/">Plasma Cleaner</a>
+	    </li>
           
-            <li>
+            <li class="toctree-l1">
+		
+    <span class="caption-text">Pump Station</span>
     <ul class="subnav">
-    <li><span>Pump Station</span></li>
+                <li class="">
+                    
+    <a class="" href="setup/">setup</a>
+                </li>
+                <li class=" current">
+                    
+    <a class="current" href="./">usage</a>
+    <ul class="subnav">
+            
+    <li class="toctree-l3"><a href="#usage">Usage</a></li>
+    
 
-        
-            
-    <li class="toctree-l1 ">
-        <a class="" href="setup/">setup</a>
-        
-    </li>
+    <li class="toctree-l3"><a href="#pumpstationcontrol">PumpStationControl</a></li>
+    
 
-        
-            
-    <li class="toctree-l1 current">
-        <a class="current" href="./">usage</a>
-        
-            <ul>
-            
-                <li class="toctree-l3"><a href="#usage">Usage</a></li>
-                
-            
-            </ul>
-        
-    </li>
-
-        
     </ul>
-<li>
+                </li>
+    </ul>
+	    </li>
           
         </ul>
       </div>
@@ -210,6 +176,52 @@
               
                 <h1 id="usage">Usage</h1>
 <p><img alt="Screenshot" src="./screenshot.png" /></p>
+<h1 id="pumpstationcontrol">PumpStationControl</h1>
+<p>the command line program <code>PumpStationControl</code> communicates with the <code>PumpStationDaemon</code>
+by sending commands and receiving and printing the daemon response on the command line.
+The daemon understands the following commands:</p>
+<ul>
+<li>
+<p><b>setPumpState [int pump] [int state]</b></br>
+switches on or off a pump. [int pump] can be either 1 or 2, [int state] is either 1 for
+ON or 0 for OFF.</p>
+</li>
+<li>
+<p><b>getPumpState [int pump]</b></br>
+returns the state of a pump. [int pump] can be either 1 or 2. The returned value is
+either 1 if the pump is ON or 0 if it is OFF.</p>
+</li>
+<li>
+<p><b>setPumpOperatingHours [int pump] [double hours]</b></br>
+Sets the operating hours of a pump. [int pump] can be either 1 or 2, [double hours] is
+the number of hours the pump has been running. This command can be used to synchronize
+the operating hours of a pump stored in the daemon config file with the actual value
+measured by the pump itself.</p>
+</li>
+<li>
+<p><b>getPumpOperatingHours</b></br>
+returns the operating hours of both pumps in hours separated by a semicolon.</p>
+</li>
+<li>
+<p><b>setValveState [int valve] [int state]</b></br>
+opens or closes a valve. [int valve] can be either 1, 2 or 3, [int state] is either 1 for
+OPEN or 0 for CLOSED.</p>
+</li>
+<li>
+<p><b>getValveState [int valve]</b></br>
+returns the state of a valve. [int valve] can be either 1, 2 or 3. The returned value is
+either 1 if the valve is OPEN or 0 if it is CLOSED.</p>
+</li>
+<li>
+<p><b>getPressure [int gauge]</b></br>
+returns the pressure reading of a gauge in mbar. [int gauge] can be either 1, 2 or 3.</p>
+</li>
+<li>
+<p><b>getVacuumStatus</b></br>
+returns the status and pressure reading of all three gauges. The individual values are separated
+by semicolons.</p>
+</li>
+</ul>
               
             </div>
           </div>
@@ -243,7 +255,7 @@
   <div class="rst-versions" role="note" style="cursor: pointer">
     <span class="rst-current-version" data-toggle="rst-current-version">
       
-          <a href="https://github.com/DESY-FH-ELab/cmstkmodlab" class="icon icon-github" style="float: left; color: #fcfcfc"> GitHub</a>
+          <a href="https://github.com/DESY-FH-ELab/cmstkmodlab" class="fa fa-github" style="float: left; color: #fcfcfc"> GitHub</a>
       
       
         <span><a href="setup/" style="color: #fcfcfc;">&laquo; Previous</a></span>
