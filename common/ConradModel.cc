@@ -95,12 +95,12 @@ void ConradModel::initialize( void )
       renewController( port );
       
       while (it < list.end() && !controller_->initialize()) {
-	
-	// Compose full absolute location of USB device
-	port = QString( "/dev/" ) + *it;
-	renewController( port );
-	
-	++it;
+
+      	// Compose full absolute location of USB device
+      	port = QString( "/dev/" ) + *it;
+      	renewController( port );
+
+      	++it;
       }
       
       // check communication; if it is not at the end, switch was found
@@ -159,7 +159,6 @@ void ConradModel::initialize( void )
     }
   } else {
 
-    std::cout << "port: " << port_.toStdString() << std::endl;
     renewController(port_);
     
     controller_->initialize();
