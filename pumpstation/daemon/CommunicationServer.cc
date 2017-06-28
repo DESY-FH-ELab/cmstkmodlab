@@ -119,7 +119,7 @@ void CommunicationServer::handleCommand()
       QMutexLocker locker(&mutex_);
       double value1 = model_->getPumpOperatingHours(1);
       double value2 = model_->getPumpOperatingHours(2);
-      response = QString("%1;%2").arg(value1, 'f', 6).arg(value2, 'f', 6);
+      response = QString("%1;%2").arg(value1, 0, 'f', 6).arg(value2, 0, 'f', 6);
     }
   } else if (cmd=="setValveState") {
   	if (args.count()!=2) {
