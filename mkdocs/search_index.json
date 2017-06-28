@@ -132,7 +132,7 @@
         }, 
         {
             "location": "/pumpstation/setup/", 
-            "text": "Setup Instructions for Pump Station Software\n\n\nThe software is supposed to be running on a raspberry pi with Raspbian (Jessie) as operating system.\n\n\nRequirements\n\n\nYou should have a running Raspbian Linux installation based on the\n\nbuild instructions\n to start with.\nIn addition, please install the following packages via\n\n\nsudo apt-get install apache2\n\n   \nsudo apt-get install libapache2-mod-webauth\n\n   \nsudo apt-get install libapache2-mod-php5\n\n\nInstallation\n\n\nOnce building the software has successfully finished, install all required libraries and applications via\n\n\nsudo make install\n\n\nThis will also install scripts to automatically start the pump station daemon on system startup.\nAfter a reboot of the system, the daemon will be running as the default raspberry pi user.", 
+            "text": "Setup Instructions for Pump Station Software\n\n\nThe software is supposed to be running on a raspberry pi with Raspbian (Jessie) as operating system.\n\n\nRequirements\n\n\nYou should have a running Raspbian Linux installation based on the\n\nbuild instructions\n to start with.\nIn addition, please install the following packages via\n\n\nsudo apt-get install apache2\n\n   \nsudo apt-get install libapache2-mod-webauth\n\n   \nsudo apt-get install libapache2-mod-php5\n\n   \nsudo apt-get install udev\n\n\nInstallation\n\n\nOnce building the software has successfully finished, install all required libraries and applications via\n\n\nsudo make install\n\n\nThis will also install scripts to automatically start the pump station daemon on system startup.\nAfter a reboot of the system, the daemon will be running as the default raspberry pi user.\n\n\nThe deamon communicating with the devices in the background requires the devices (\n/dev/ttyUSB*\n) to\nbe correctly found. The Leybold GraphixThree controller is supposed to accessable via \n/dev/ttyLeybold\n,\nand the Conrad relay card via \n/dev/ttyConrad\n. A udev rules file \n99-usb-serial.rules\n is\navailable in the \npumpstation\n directory of the repository. Please copy it to the directory\n\n/etc/udev/rules.d/\n and restart the system.", 
             "title": "setup"
         }, 
         {
@@ -142,23 +142,28 @@
         }, 
         {
             "location": "/pumpstation/setup/#requirements", 
-            "text": "You should have a running Raspbian Linux installation based on the build instructions  to start with.\nIn addition, please install the following packages via  sudo apt-get install apache2 \n    sudo apt-get install libapache2-mod-webauth \n    sudo apt-get install libapache2-mod-php5", 
+            "text": "You should have a running Raspbian Linux installation based on the build instructions  to start with.\nIn addition, please install the following packages via  sudo apt-get install apache2 \n    sudo apt-get install libapache2-mod-webauth \n    sudo apt-get install libapache2-mod-php5 \n    sudo apt-get install udev", 
             "title": "Requirements"
         }, 
         {
             "location": "/pumpstation/setup/#installation", 
-            "text": "Once building the software has successfully finished, install all required libraries and applications via  sudo make install  This will also install scripts to automatically start the pump station daemon on system startup.\nAfter a reboot of the system, the daemon will be running as the default raspberry pi user.", 
+            "text": "Once building the software has successfully finished, install all required libraries and applications via  sudo make install  This will also install scripts to automatically start the pump station daemon on system startup.\nAfter a reboot of the system, the daemon will be running as the default raspberry pi user.  The deamon communicating with the devices in the background requires the devices ( /dev/ttyUSB* ) to\nbe correctly found. The Leybold GraphixThree controller is supposed to accessable via  /dev/ttyLeybold ,\nand the Conrad relay card via  /dev/ttyConrad . A udev rules file  99-usb-serial.rules  is\navailable in the  pumpstation  directory of the repository. Please copy it to the directory /etc/udev/rules.d/  and restart the system.", 
             "title": "Installation"
         }, 
         {
             "location": "/pumpstation/", 
-            "text": "Usage", 
+            "text": "Usage\n\n\n\n\nPumpStationControl\n\n\nthe command line program \nPumpStationControl\n communicates with the \nPumpStationDaemon\n\nby sending commands and receiving and printing the daemon response on the command line.\nThe daemon understands the following commands:\n\n\n\n\n\n\nsetPumpState [int pump] [int state]\n\nswitches on or off a pump. [int pump] can be either 1 or 2, [int state] is either 1 for\nON or 0 for OFF.\n\n\n\n\n\n\ngetPumpState [int pump]\n\nreturns the state of a pump. [int pump] can be either 1 or 2. The returned value is\neither 1 if the pump is ON or 0 if it is OFF.\n\n\n\n\n\n\nsetPumpOperatingHours [int pump] [double hours]\n\nSets the operating hours of a pump. [int pump] can be either 1 or 2, [double hours] is\nthe number of hours the pump has been running. This command can be used to synchronize\nthe operating hours of a pump stored in the daemon config file with the actual value\nmeasured by the pump itself.\n\n\n\n\n\n\ngetPumpOperatingHours\n\nreturns the operating hours of both pumps in hours separated by a semicolon.\n\n\n\n\n\n\nsetValveState [int valve] [int state]\n\nopens or closes a valve. [int valve] can be either 1, 2 or 3, [int state] is either 1 for\nOPEN or 0 for CLOSED.\n\n\n\n\n\n\ngetValveState [int valve]\n\nreturns the state of a valve. [int valve] can be either 1, 2 or 3. The returned value is\neither 1 if the valve is OPEN or 0 if it is CLOSED.\n\n\n\n\n\n\ngetPressure [int gauge]\n\nreturns the pressure reading of a gauge in mbar. [int gauge] can be either 1, 2 or 3.\n\n\n\n\n\n\ngetVacuumStatus\n\nreturns the status and pressure reading of all three gauges. The individual values are separated\nby semicolons.", 
             "title": "usage"
         }, 
         {
             "location": "/pumpstation/#usage", 
             "text": "", 
             "title": "Usage"
+        }, 
+        {
+            "location": "/pumpstation/#pumpstationcontrol", 
+            "text": "the command line program  PumpStationControl  communicates with the  PumpStationDaemon \nby sending commands and receiving and printing the daemon response on the command line.\nThe daemon understands the following commands:    setPumpState [int pump] [int state] \nswitches on or off a pump. [int pump] can be either 1 or 2, [int state] is either 1 for\nON or 0 for OFF.    getPumpState [int pump] \nreturns the state of a pump. [int pump] can be either 1 or 2. The returned value is\neither 1 if the pump is ON or 0 if it is OFF.    setPumpOperatingHours [int pump] [double hours] \nSets the operating hours of a pump. [int pump] can be either 1 or 2, [double hours] is\nthe number of hours the pump has been running. This command can be used to synchronize\nthe operating hours of a pump stored in the daemon config file with the actual value\nmeasured by the pump itself.    getPumpOperatingHours \nreturns the operating hours of both pumps in hours separated by a semicolon.    setValveState [int valve] [int state] \nopens or closes a valve. [int valve] can be either 1, 2 or 3, [int state] is either 1 for\nOPEN or 0 for CLOSED.    getValveState [int valve] \nreturns the state of a valve. [int valve] can be either 1, 2 or 3. The returned value is\neither 1 if the valve is OPEN or 0 if it is CLOSED.    getPressure [int gauge] \nreturns the pressure reading of a gauge in mbar. [int gauge] can be either 1, 2 or 3.    getVacuumStatus \nreturns the status and pressure reading of all three gauges. The individual values are separated\nby semicolons.", 
+            "title": "PumpStationControl"
         }
     ]
 }

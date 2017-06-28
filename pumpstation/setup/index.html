@@ -45,133 +45,100 @@
 
       <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
 	<ul class="current">
+	  
           
-            <li>
-    <li class="toctree-l1 ">
-        <a class="" href="../..">Home</a>
-        
-    </li>
-<li>
+            <li class="toctree-l1">
+		
+    <a class="" href="../..">Home</a>
+	    </li>
           
-            <li>
+            <li class="toctree-l1">
+		
+    <span class="caption-text">Build</span>
     <ul class="subnav">
-    <li><span>Build</span></li>
-
-        
-            
-    <li class="toctree-l1 ">
-        <a class="" href="../../build/configure/">configure</a>
-        
-    </li>
-
-        
-            
-    <li class="toctree-l1 ">
-        <a class="" href="../../build/UbuntuLinux/">Ubuntu Linux</a>
-        
-    </li>
-
-        
-            
-    <li class="toctree-l1 ">
-        <a class="" href="../../build/RaspbianLinux/">Raspbian Linux</a>
-        
-    </li>
-
-        
-            
-    <li class="toctree-l1 ">
-        <a class="" href="../../build/OSXElCapitan/">OSX El Capitan</a>
-        
-    </li>
-
-        
+                <li class="">
+                    
+    <a class="" href="../../build/configure/">configure</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../build/UbuntuLinux/">Ubuntu Linux</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../build/RaspbianLinux/">Raspbian Linux</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../build/OSXElCapitan/">OSX El Capitan</a>
+                </li>
     </ul>
-<li>
+	    </li>
           
-            <li>
+            <li class="toctree-l1">
+		
+    <span class="caption-text">Thermo</span>
     <ul class="subnav">
-    <li><span>Thermo</span></li>
-
-        
-            
-    <li class="toctree-l1 ">
-        <a class="" href="../../thermo/thermoDAQ/">thermoDAQ</a>
-        
-    </li>
-
-        
+                <li class="">
+                    
+    <a class="" href="../../thermo/thermoDAQ/">thermoDAQ</a>
+                </li>
     </ul>
-<li>
+	    </li>
           
-            <li>
+            <li class="toctree-l1">
+		
+    <span class="caption-text">Defo</span>
     <ul class="subnav">
-    <li><span>Defo</span></li>
-
-        
-            
-    <li class="toctree-l1 ">
-        <a class="" href="../../defo/defoDAQ/">defoDAQ</a>
-        
-    </li>
-
-        
-            
-    <li class="toctree-l1 ">
-        <a class="" href="../../defo/defoDAQScripting/">defoDAQ Scripting</a>
-        
-    </li>
-
-        
+                <li class="">
+                    
+    <a class="" href="../../defo/defoDAQ/">defoDAQ</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../defo/defoDAQScripting/">defoDAQ Scripting</a>
+                </li>
     </ul>
-<li>
+	    </li>
           
-            <li>
-    <li class="toctree-l1 ">
-        <a class="" href="../../assembly/">Assembly</a>
-        
-    </li>
-<li>
+            <li class="toctree-l1">
+		
+    <a class="" href="../../assembly/">Assembly</a>
+	    </li>
           
-            <li>
-    <li class="toctree-l1 ">
-        <a class="" href="../../plasma/">Plasma Cleaner</a>
-        
-    </li>
-<li>
+            <li class="toctree-l1">
+		
+    <a class="" href="../../plasma/">Plasma Cleaner</a>
+	    </li>
           
-            <li>
+            <li class="toctree-l1">
+		
+    <span class="caption-text">Pump Station</span>
     <ul class="subnav">
-    <li><span>Pump Station</span></li>
+                <li class=" current">
+                    
+    <a class="current" href="./">setup</a>
+    <ul class="subnav">
+            
+    <li class="toctree-l3"><a href="#setup-instructions-for-pump-station-software">Setup Instructions for Pump Station Software</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l4" href="#requirements">Requirements</a></li>
+        
+            <li><a class="toctree-l4" href="#installation">Installation</a></li>
+        
+        </ul>
+    
 
-        
-            
-    <li class="toctree-l1 current">
-        <a class="current" href="./">setup</a>
-        
-            <ul>
-            
-                <li class="toctree-l3"><a href="#setup-instructions-for-pump-station-software">Setup Instructions for Pump Station Software</a></li>
-                
-                    <li><a class="toctree-l4" href="#requirements">Requirements</a></li>
-                
-                    <li><a class="toctree-l4" href="#installation">Installation</a></li>
-                
-            
-            </ul>
-        
-    </li>
-
-        
-            
-    <li class="toctree-l1 ">
-        <a class="" href="../">usage</a>
-        
-    </li>
-
-        
     </ul>
-<li>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../">usage</a>
+                </li>
+    </ul>
+	    </li>
           
         </ul>
       </div>
@@ -220,12 +187,18 @@
 In addition, please install the following packages via</p>
 <p><code>sudo apt-get install apache2</code><br/>
    <code>sudo apt-get install libapache2-mod-webauth</code><br/>
-   <code>sudo apt-get install libapache2-mod-php5</code><br/></p>
+   <code>sudo apt-get install libapache2-mod-php5</code><br/>
+   <code>sudo apt-get install udev</code></br></p>
 <h2 id="installation">Installation</h2>
 <p>Once building the software has successfully finished, install all required libraries and applications via</p>
 <p><code>sudo make install</code></p>
 <p>This will also install scripts to automatically start the pump station daemon on system startup.
 After a reboot of the system, the daemon will be running as the default raspberry pi user.</p>
+<p>The deamon communicating with the devices in the background requires the devices (<code>/dev/ttyUSB*</code>) to
+be correctly found. The Leybold GraphixThree controller is supposed to accessable via <code>/dev/ttyLeybold</code>,
+and the Conrad relay card via <code>/dev/ttyConrad</code>. A udev rules file <code>99-usb-serial.rules</code> is
+available in the <code>pumpstation</code> directory of the repository. Please copy it to the directory
+<code>/etc/udev/rules.d/</code> and restart the system.</p>
               
             </div>
           </div>
@@ -261,7 +234,7 @@ After a reboot of the system, the daemon will be running as the default raspberr
   <div class="rst-versions" role="note" style="cursor: pointer">
     <span class="rst-current-version" data-toggle="rst-current-version">
       
-          <a href="https://github.com/DESY-FH-ELab/cmstkmodlab" class="icon icon-github" style="float: left; color: #fcfcfc"> GitHub</a>
+          <a href="https://github.com/DESY-FH-ELab/cmstkmodlab" class="fa fa-github" style="float: left; color: #fcfcfc"> GitHub</a>
       
       
         <span><a href="../../plasma/" style="color: #fcfcfc;">&laquo; Previous</a></span>
