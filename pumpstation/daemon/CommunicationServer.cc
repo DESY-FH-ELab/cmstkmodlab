@@ -27,11 +27,11 @@ CommunicationServer::CommunicationServer(PumpStationModel* model,
 #if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
 void CommunicationServer::incomingConnection(int socketDescriptor)
 {
-  NQLogDebug("server") << "void CommunicationServer::incomingConnection(int socketDescriptor)";
+  NQLogDebug("CommunicationServer") << "void CommunicationServer::incomingConnection(int socketDescriptor)";
 #else
   void CommunicationServer::incomingConnection(qintptr socketDescriptor)
   {
-    NQLogDebug("server") << "void CommunicationServer::incomingConnection(qintptr socketDescriptor)";
+    NQLogDebug("CommunicationServer") << "void CommunicationServer::incomingConnection(qintptr socketDescriptor)";
 #endif
 
   socket_ = new QTcpSocket();
@@ -49,7 +49,7 @@ void CommunicationServer::incomingConnection(int socketDescriptor)
 
 void CommunicationServer::handleCommand()
 {
-  NQLogDebug("server") << "void CommunicationServer::handleCommand()";
+  NQLogDebug("CommunicationServer") << "void CommunicationServer::handleCommand()";
 
   QDataStream in(socket_);
   in.setVersion(QDataStream::Qt_4_0);
@@ -60,7 +60,7 @@ void CommunicationServer::handleCommand()
   QString command;
   in >> command;
 
-  NQLogDebug("server") << "command: (" << blockSize << ") |" << command.toStdString() << "|";
+  NQLogDebug("CommunicationServer") << "command: (" << blockSize << ") |" << command.toStdString() << "|";
 
   QStringList args = command.split(" ");
   QString cmd = args.at(0);
