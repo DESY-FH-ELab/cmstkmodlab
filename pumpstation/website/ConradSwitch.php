@@ -18,6 +18,9 @@ if (isset ( $_GET ["channel"] )) {
 		$command = $ini_array ['DocumentRoot'] . "/PumpStationControl --web setSwitchState " . $channel . " " . $status [0];
 		exec ( $command, $status, $return );
 		
+		$command = $ini_array ['DocumentRoot'] . "/PumpStationControl --web getSwitchState " . $channel;
+		exec ( $command, $status, $return );
+		
 		echo ($status [0]);
 	} else {
 		echo ("fail");
