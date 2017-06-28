@@ -229,9 +229,9 @@ echo ("</div></div>");
 // $Pump1State= boolval($valP1);
 // }
 if ($Pump1State== 0) {
-	echo ('<div style="position:absolute;width:88px;height:30px;margin-left:571px;margin-top:5px;background-color:#FF5555;">');
+	echo ('<div style="position:absolute;width:108px;height:30px;margin-left:551px;margin-top:5px;background-color:#FF5555;">');
 } else if ($Pump1State== 1) {
-	echo ('<div style="position:absolute;width:88px;height:30px;margin-left:571px;margin-top:5px;background-color:#55FF55;">');
+	echo ('<div style="position:absolute;width:108px;height:30px;margin-left:551px;margin-top:5px;background-color:#55FF55;">');
 }
 echo ('<div style="font-size:16px;text-align:right;margin-top:5px;margin-right:5px;">');
 printf ( "%.2f h", $valOH1 );
@@ -245,9 +245,9 @@ echo ("</div></div>");
 // $Pump2State= boolval($valP2);
 // }
 if ($Pump2State== 0) {
-	echo ('<div style="position:absolute;width:88px;height:30px;margin-left:571px;margin-top:45px;background-color:#FF5555;">');
+	echo ('<div style="position:absolute;width:108px;height:30px;margin-left:551px;margin-top:45px;background-color:#FF5555;">');
 } else if ($Pump2State== 1) {
-	echo ('<div style="position:absolute;width:88px;height:30px;margin-left:571px;margin-top:45px;background-color:#55FF55">');
+	echo ('<div style="position:absolute;width:108px;height:30px;margin-left:551px;margin-top:45px;background-color:#55FF55">');
 }
 echo ('<div style="font-size:16px;text-align:right;margin-top:5px;margin-right:5px;">');
 printf ( "%.2f h", $valOH2 );
