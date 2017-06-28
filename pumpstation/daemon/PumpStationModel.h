@@ -2,6 +2,7 @@
 #define PUMPSTATIONMODEL_H
 
 #include <array>
+#include <vector>
 
 #include <QTimer>
 
@@ -26,15 +27,21 @@ public:
   int getSensorStatus(int sensor) const;
   double getPressure(int sensor) const;
 
+  double getPumpOperatingHours(int pump) const;
+
 public slots:
 
   void setSwitchBlocked(int, bool);
   void setSwitchEnabled(int, bool);
+  void PumpOperatingHours(int, double);
 
 protected slots:
 
   void updateInformation();
   void updateConrad();
+
+  void pump1HeartBeat();
+  void pump2HeartBeat();
 
 protected:
 
@@ -48,11 +55,18 @@ protected:
   const double updateInterval_;
   QTimer* timer_;
 
+  QTimer* pump1timer_;
+  QTimer* pump2timer_;
+
   std::array<bool,5> switchBlocked_;
   std::array<State,5> switchState_;
 
   std::array<LeyboldGraphixThree_t::SensorStatus,3> sensorStatus_;
   std::array<double,3> pressure_;
+
+  std::vector<int> pumpChannels_;
+  std::vector<int> valveChannels_;
+  std::array<double,3> pumpOperatingHours_;
 
 signals:
 

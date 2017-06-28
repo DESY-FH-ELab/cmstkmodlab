@@ -26,6 +26,7 @@ signals:
 
   void setSwitchEnabled(int channel, bool enabled);
   void setSwitchBlocked(int channel, bool blocked);
+  void setPumpOperatingHours(int, double);
 
 protected:
 

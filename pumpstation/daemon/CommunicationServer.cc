@@ -22,6 +22,9 @@ CommunicationServer::CommunicationServer(PumpStationModel* model,
 
   connect(this, SIGNAL(setSwitchEnabled(int, bool)),
           model_, SLOT(setSwitchEnabled(int, bool)));
+
+  connect(this, SIGNAL(setPumpOperatingHours(int, double)),
+          model_, SLOT(setPumpOperatingHours(int, double)));
 }
 
 #if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
@@ -94,6 +97,29 @@ void CommunicationServer::handleCommand()
         State state = model_->getSwitchState(pumpChannels_[pump-1]);
         response = QString::number((int)state);
       }
+    }
+  } else if (cmd=="setPumpOperatingHours") {
+    if (args.count()!=2) {
+      response = "ERR";
+    } else {
+      int pump = args.at(0).toInt();
+      double value = args.at(1).toDouble();
+
+      if (pump<1 || pump>2) {
+        response = "ERR";
+      } else {
+      	emit setPumpOperatingHours(pump, value);
+      	response = "OK";
+      }
+    }
+  } else if (cmd=="getPumpOperatingHours") {
+    if (args.count()!=0) {
+      response = "ERR";
+    } else {
+      QMutexLocker locker(&mutex_);
+      double value1 = model_->getPumpOperatingHours(1);
+      double value2 = model_->getPumpOperatingHours(2);
+      response = QString("%1;%2").arg(value1, 'f', 6).arg(value2, 'f', 6);
     }
   } else if (cmd=="setValveState") {
   	if (args.count()!=2) {
