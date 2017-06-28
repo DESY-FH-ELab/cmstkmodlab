@@ -102,7 +102,7 @@ int main(int argc, char *argv[])
   ConradModel conrad(conradPort.c_str(), &app);
 
   std::string leyboldPort = config->getValue("LeyboldPort");
-  LeyboldGraphixThreeModel leybold(leyboldPort.c_str(), 1, &app);
+  LeyboldGraphixThreeModel leybold(leyboldPort.c_str(), config->getValue<int>("LeyboldUpdateInterval"), &app);
 
   /*
   if (leybold.getSensorDetectionMode(1)!=VLeyboldGraphixThree::SensorDetectionAuto) {
