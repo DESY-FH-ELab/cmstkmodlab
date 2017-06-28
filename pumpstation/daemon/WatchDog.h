@@ -20,12 +20,14 @@ class WatchDog : public QObject
 
 public:
 
-	WatchDog(PumpStationModel* model,
-			     int history,
+  WatchDog(PumpStationModel* model,
+	   int history,
            QObject *parent = 0);
 
 public slots:
-
+  
+  void initialize();
+  
 protected slots:
 
   void switchStateChanged(int device, State newState);

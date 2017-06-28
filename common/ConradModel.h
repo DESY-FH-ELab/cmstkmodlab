@@ -42,6 +42,8 @@ public:
 
   // TODO Add initialisation parameters
   explicit ConradModel(QObject *parent = 0);
+  explicit ConradModel(const char* port,
+                       QObject *parent = 0);
   virtual ~ConradModel();
 
   // Methods for power control and status querying of the devices connected to
@@ -58,6 +60,9 @@ public slots:
   void setSwitchEnabled(int device, bool enabled);
 
 protected:
+
+  QString port_;
+  
   void initialize();
   void close();
 

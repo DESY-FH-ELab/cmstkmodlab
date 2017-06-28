@@ -24,26 +24,34 @@ DataLogger::DataLogger(PumpStationModel* model,
                        QObject *parent)
  : QObject(parent),
    model_(model),
-	 thread_(thread),
+   thread_(thread),
    isStreaming_(false),
    ofile_(0),
    stream_(0)
 {
-	if (::socketpair(AF_UNIX, SOCK_STREAM, 0, sighupFd))
-		qFatal("Couldn't create HUP socketpair");
+  connect(model_, SIGNAL(dataValid()),
+          this, SLOT(initialize()));
+}
 
-	if (::socketpair(AF_UNIX, SOCK_STREAM, 0, sigintFd))
-		qFatal("Couldn't create HUP socketpair");
+void DataLogger::initialize()
+{
+  NQLog("DataLogger") << "initialize";
 
-	if (::socketpair(AF_UNIX, SOCK_STREAM, 0, sigtermFd))
-		qFatal("Couldn't create TERM socketpair");
+  if (::socketpair(AF_UNIX, SOCK_STREAM, 0, sighupFd))
+    qFatal("Couldn't create HUP socketpair");
 
-	snHup = new QSocketNotifier(sighupFd[1], QSocketNotifier::Read, this);
-	connect(snHup, SIGNAL(activated(int)), this, SLOT(handleSigHup()));
-	snInt = new QSocketNotifier(sigintFd[1], QSocketNotifier::Read, this);
-	connect(snInt, SIGNAL(activated(int)), this, SLOT(handleSigInt()));
-	snTerm = new QSocketNotifier(sigtermFd[1], QSocketNotifier::Read, this);
-	connect(snTerm, SIGNAL(activated(int)), this, SLOT(handleSigTerm()));
+  if (::socketpair(AF_UNIX, SOCK_STREAM, 0, sigintFd))
+    qFatal("Couldn't create HUP socketpair");
+
+  if (::socketpair(AF_UNIX, SOCK_STREAM, 0, sigtermFd))
+    qFatal("Couldn't create TERM socketpair");
+
+  snHup = new QSocketNotifier(sighupFd[1], QSocketNotifier::Read, this);
+  connect(snHup, SIGNAL(activated(int)), this, SLOT(handleSigHup()));
+  snInt = new QSocketNotifier(sigintFd[1], QSocketNotifier::Read, this);
+  connect(snInt, SIGNAL(activated(int)), this, SLOT(handleSigInt()));
+  snTerm = new QSocketNotifier(sigtermFd[1], QSocketNotifier::Read, this);
+  connect(snTerm, SIGNAL(activated(int)), this, SLOT(handleSigTerm()));
 
   connect(model_, SIGNAL(switchStateChanged(int, State)),
           this, SLOT(switchStateChanged(int, State)));
@@ -58,12 +66,16 @@ DataLogger::DataLogger(PumpStationModel* model,
   statusTimer_ = new QTimer();
   connect(statusTimer_, SIGNAL(timeout()),
           this, SLOT(writeStatus()));
+  
+  start();
 }
 
 void DataLogger::start()
 {
   if (isStreaming_) return;
 
+  NQLog("DataLogger") << "start";
+ 
   QDateTime dt = QDateTime::currentDateTime();
 
   ApplicationConfig* config = ApplicationConfig::instance();
@@ -125,6 +137,8 @@ void DataLogger::stop()
 {
   if (!isStreaming_) return;
 
+  NQLog("DataLogger") << "stop";
+ 
   statusTimer_->stop();
   restartTimer_->stop();
 
