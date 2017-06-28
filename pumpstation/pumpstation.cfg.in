@@ -1,5 +1,5 @@
 ServerPort             63432
-DataPath               @basepath@/pumpstation
+DataPath               @basepath@/pumpstation/data
 LeyboldPort            /dev/ttyLeybold
 ConradPort             /dev/ttyConrad
 URL                    http://cmsvakusaug.desy.de
