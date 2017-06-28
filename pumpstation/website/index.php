@@ -146,6 +146,15 @@ $Valve1State = intval ( $valS2 );
 $Valve2State= intval ( $valS3 );
 $Valve3State= intval ( $valS4 );
 
+$command = $ini_array ['DocumentRoot'] . "/PumpStationControl --web getPumpOperatingHours";
+exec ( $command, $valOH, $return );
+if (is_array ( $valOH )) {
+	$OH = $valOH [0];
+} else {
+	$OH = $valOH;
+}
+list ( $valOH1, $valOH2 ) = explode ( ";", $OH );
+
 // $command = $ini_array['DocumentRoot']."/PumpStationControl --web getSwitchState " . $ini_array['Valve1Switch'];
 // exec ($command, $valV1, $return);
 // if (is_array($valV1)) {
@@ -220,18 +229,12 @@ echo ("</div></div>");
 // $Pump1State= boolval($valP1);
 // }
 if ($Pump1State== 0) {
-	echo ('<div style="position:absolute;width:58px;height:30px;margin-left:601px;margin-top:5px;background-color:#FF5555;">');
+	echo ('<div style="position:absolute;width:88px;height:30px;margin-left:571px;margin-top:5px;background-color:#FF5555;">');
 } else if ($Pump1State== 1) {
-	echo ('<div style="position:absolute;width:58px;height:30px;margin-left:601px;margin-top:5px;background-color:#55FF55;">');
+	echo ('<div style="position:absolute;width:88px;height:30px;margin-left:571px;margin-top:5px;background-color:#55FF55;">');
 }
-echo ('<div style="font-size:16px;text-align:center;margin-top:5px;">');
-if ($Pump1State== 0) {
-	echo ("OFF");
-} else if ($Pump1State== 1) {
-	echo ("ON");
-} else {
-	echo ("XXX");
-}
+echo ('<div style="font-size:16px;text-align:right;margin-top:5px;margin-right:5px;">');
+printf ( "%.2f h", $valOH1 );
 echo ("</div></div>");
 
 // $command = $ini_array['DocumentRoot']."/PumpStationControl --web getSwitchState " . $ini_array['Pump2Switch'];
@@ -242,18 +245,12 @@ echo ("</div></div>");
 // $Pump2State= boolval($valP2);
 // }
 if ($Pump2State== 0) {
-	echo ('<div style="position:absolute;width:58px;height:30px;margin-left:601px;margin-top:45px;background-color:#FF5555;">');
+	echo ('<div style="position:absolute;width:88px;height:30px;margin-left:571px;margin-top:45px;background-color:#FF5555;">');
 } else if ($Pump2State== 1) {
-	echo ('<div style="position:absolute;width:58px;height:30px;margin-left:601px;margin-top:45px;background-color:#55FF55">');
+	echo ('<div style="position:absolute;width:88px;height:30px;margin-left:571px;margin-top:45px;background-color:#55FF55">');
 }
-echo ('<div style="font-size:16px;text-align:center;margin-top:5px;">');
-if ($Pump2State== 0) {
-	echo ("OFF");
-} else if ($Pump2State== 1) {
-	echo ("ON");
-} else {
-	echo ("XXX");
-}
+echo ('<div style="font-size:16px;text-align:right;margin-top:5px;margin-right:5px;">');
+printf ( "%.2f h", $valOH2 );
 echo ("</div></div>");
 ?>
 
