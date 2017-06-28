@@ -286,6 +286,10 @@ void DataLogger::handleSigInt()
 
     thread_->quit();
     thread_->wait();
+
+    ApplicationConfig * config = ApplicationConfig::instance();
+    config->safe(std::string(Config::CMSTkModLabBasePath) + "/pumpstation/pumpstation.cfg");
+
     QCoreApplication::exit(0);
 
     snInt->setEnabled(true);
