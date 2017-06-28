@@ -1,11 +1,11 @@
-var switch_0 = document.getElementById("switch_0");
-var switch_1 = document.getElementById("switch_1");
-var switch_2 = document.getElementById("switch_2");
-var switch_3 = document.getElementById("switch_3");
-var switch_4 = document.getElementById("switch_4");
+var switch_V1 = document.getElementById("switch_V1");
+var switch_V2 = document.getElementById("switch_V2");
+var switch_V3 = document.getElementById("switch_V3");
+var switch_P1 = document.getElementById("switch_P1");
+var switch_P2 = document.getElementById("switch_P2");
 
 //Create an array for easy access later
-var Switches = [ switch_0, switch_1, switch_2, switch_3, switch_4];
+var Switches = [ switch_V1, switch_V2, switch_V3, switch_P1, switch_P2];
 
 function changeSwitch(channel) {
 	var data = 0;
