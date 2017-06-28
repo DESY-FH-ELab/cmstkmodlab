@@ -221,22 +221,6 @@ if ($Valve3State== 0) {
 }
 echo ("</div></div>");
 
-// $command = $ini_array['DocumentRoot']."/PumpStationControl --web getSwitchState " . $ini_array['Pump1Switch'];
-// exec ($command, $valP1, $return);
-// if (is_array($valP1)) {
-// $Pump1State= boolval($valP1[0]);
-// } else {
-// $Pump1State= boolval($valP1);
-// }
-if ($Pump1State== 0) {
-	echo ('<div style="position:absolute;width:108px;height:30px;margin-left:551px;margin-top:5px;background-color:#FF5555;">');
-} else if ($Pump1State== 1) {
-	echo ('<div style="position:absolute;width:108px;height:30px;margin-left:551px;margin-top:5px;background-color:#55FF55;">');
-}
-echo ('<div style="font-size:16px;text-align:right;margin-top:5px;margin-right:5px;">');
-printf ( "%.2f h", $valOH1 );
-echo ("</div></div>");
-
 // $command = $ini_array['DocumentRoot']."/PumpStationControl --web getSwitchState " . $ini_array['Pump2Switch'];
 // exec ($command, $valP2, $return);
 // if (is_array($valP2)) {
@@ -245,12 +229,28 @@ echo ("</div></div>");
 // $Pump2State= boolval($valP2);
 // }
 if ($Pump2State== 0) {
-	echo ('<div style="position:absolute;width:108px;height:30px;margin-left:551px;margin-top:45px;background-color:#FF5555;">');
+	echo ('<div style="position:absolute;width:108px;height:30px;margin-left:551px;margin-top:5px;background-color:#FF5555;">');
 } else if ($Pump2State== 1) {
-	echo ('<div style="position:absolute;width:108px;height:30px;margin-left:551px;margin-top:45px;background-color:#55FF55">');
+	echo ('<div style="position:absolute;width:108px;height:30px;margin-left:551px;margin-top:5px;background-color:#55FF55;">');
 }
 echo ('<div style="font-size:16px;text-align:right;margin-top:5px;margin-right:5px;">');
 printf ( "%.2f h", $valOH2 );
+echo ("</div></div>");
+
+// $command = $ini_array['DocumentRoot']."/PumpStationControl --web getSwitchState " . $ini_array['Pump1Switch'];
+// exec ($command, $valP1, $return);
+// if (is_array($valP1)) {
+// $Pump1State= boolval($valP1[0]);
+// } else {
+// $Pump1State= boolval($valP1);
+// }
+if ($Pump1State== 0) {
+	echo ('<div style="position:absolute;width:108px;height:30px;margin-left:551px;margin-top:45px;background-color:#FF5555;">');
+} else if ($Pump1State== 1) {
+	echo ('<div style="position:absolute;width:108px;height:30px;margin-left:551px;margin-top:45px;background-color:#55FF55">');
+}
+echo ('<div style="font-size:16px;text-align:right;margin-top:5px;margin-right:5px;">');
+printf ( "%.2f h", $valOH1 );
 echo ("</div></div>");
 ?>
 
