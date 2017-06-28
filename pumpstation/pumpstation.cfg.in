@@ -4,8 +4,11 @@ LeyboldPort       /dev/ttyLeybold
 ConradPort        /dev/ttyConrad
 URL               http://cmsvakusaug.desy.de
 
-PumpSwitches      0 1
-ValveSwitches     2 4 3
+PumpSwitches      0
+PumpSwitches      1
+ValveSwitches     2
+ValveSwitches     4
+ValveSwitches     3
 
 slackwebhook	  https://hooks.slack.com/services/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
 slackusername     pumpstation
