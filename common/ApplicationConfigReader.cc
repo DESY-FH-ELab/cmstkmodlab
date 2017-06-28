@@ -38,9 +38,9 @@ void ApplicationConfigReader::fill(std::multimap<std::string,std::string> &keyva
 
     std::istringstream iss(buffer.c_str(), std::istringstream::in);
     iss >> Key;
-    iss >> Value;
-
-    keyvalueMap.insert(std::make_pair(Key, Value));
+    while (iss >> Value) {
+    	keyvalueMap.insert(std::make_pair(Key, Value));
+    }
   }
   
   file.close();
