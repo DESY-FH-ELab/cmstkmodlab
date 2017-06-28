@@ -71,7 +71,13 @@ if ($P1 >= 200.0 || $P1 < 0.0) {
 	echo ('<div style="position:absolute;width:128px;height:30px;margin-left:341px;margin-top:5px;background-color:#FFAA55;">');
 }
 echo ('<div style="font-size:16px;text-align:right;margin-top:5px;margin-right:10px;">');
-echo (number_format ( $P1, 1, ".", "," ));
+if ($P1 >= 10.0) {
+	printf ( "%.0f", $P1);
+} else if ($P1 >= 0.1) {
+	printf ( "%.1f", $P1);
+} else {
+	printf ( "%.2E", $P1);
+}
 echo (" mbar");
 echo ('</div></div>');
 
@@ -122,116 +128,116 @@ if (is_array ( $valSS )) {
 }
 list ( $valS0, $valS1, $valS2, $valS3, $valS4 ) = explode ( ";", $SS );
 
-$S0 = intval ( $valS0 );
-$S1 = intval ( $valS1 );
-$S2 = intval ( $valS2 );
-$S3 = intval ( $valS3 );
-$S4 = intval ( $valS4 );
+$Pump1State = intval ( $valS0 );
+$Pump2State = intval ( $valS1 );
+$Valve1State = intval ( $valS2 );
+$Valve2State= intval ( $valS3 );
+$Valve3State= intval ( $valS4 );
 
-// $command = $ini_array['DocumentRoot']."/PumpStationControl --web getSwitchState 0";
-// exec ($command, $valS0, $return);
-// if (is_array($valS0)) {
-// $S0 = boolval($valS0[0]);
+// $command = $ini_array['DocumentRoot']."/PumpStationControl --web getSwitchState " . $ini_array['Valve1Switch'];
+// exec ($command, $valV1, $return);
+// if (is_array($valV1)) {
+// $Valve1State= boolval($valV1[0]);
 // } else {
-// $S0 = boolval($valS0);
+// $Valve1State= boolval($valV1);
 // }
-if ($S0 == 0) {
+if ($Valve1State== 0) {
 	echo ('<div style="position:absolute;width:68px;height:30px;margin-left:221px;margin-top:29px;background-color:#FF5555;">');
-} else if ($S0 == 1) {
+} else if ($Valve1State== 1) {
 	echo ('<div style="position:absolute;width:68px;height:30px;margin-left:221px;margin-top:29px;background-color:#55FF55;">');
 }
 echo ('<div style="font-size:16px;text-align:center;margin-top:5px;">');
-if ($S0 == 0) {
+if ($Valve1State== 0) {
 	echo ("closed");
-} else if ($S0 == 1) {
+} else if ($Valve1State== 1) {
 	echo ("open");
 } else {
 	echo ("XXX");
 }
 echo ("</div></div>");
 
-// $command = $ini_array['DocumentRoot']."/PumpStationControl --web getSwitchState 1";
-// exec ($command, $valS1, $return);
-// if (is_array($valS1)) {
-// $S1 = boolval($valS1[0]);
+// $command = $ini_array['DocumentRoot']."/PumpStationControl --web getSwitchState " . $ini_array['Valve2Switch'];
+// exec ($command, $valV2, $return);
+// if (is_array($valV2)) {
+// $Valve2State= boolval($valV2[0]);
 // } else {
-// $S1 = boolval($valS1);
+// $Valve2State= boolval($valV2);
 // }
-if ($S1 == 0) {
+if ($Valve2State== 0) {
 	echo ('<div style="position:absolute;width:68px;height:30px;margin-left:131px;margin-top:29px;background-color:#FF5555;">');
 } else if ($S1 == 1) {
 	echo ('<div style="position:absolute;width:68px;height:30px;margin-left:131px;margin-top:29px;background-color:#55FF55;">');
 }
 echo ('<div style="font-size:16px;text-align:center;margin-top:5px;">');
-if ($S1 == 0) {
+if ($Valve2State== 0) {
 	echo ("closed");
-} else if ($S1 == 1) {
+} else if ($Valve2State== 1) {
 	echo ("open");
 } else {
 	echo ("XXX");
 }
 echo ("</div></div>");
 
-// $command = $ini_array['DocumentRoot']."/PumpStationControl --web getSwitchState 2";
-// exec ($command, $valS2, $return);
-// if (is_array($valS2)) {
-// $S2 = boolval($valS2[0]);
+// $command = $ini_array['DocumentRoot']."/PumpStationControl --web getSwitchState " . $ini_array['Valve3Switch'];
+// exec ($command, $valV3, $return);
+// if (is_array($valV3)) {
+// $Valve3State= boolval($valV3[0]);
 // } else {
-// $S2 = boolval($valS2);
+// $Valve3State= boolval($valV3);
 // }
-if ($S2 == 0) {
+if ($Valve3State== 0) {
 	echo ('<div style="position:absolute;width:68px;height:30px;margin-left:41px;margin-top:29px;background-color:#FF5555;">');
-} else if ($S2 == 1) {
+} else if ($Valve3State== 1) {
 	echo ('<div style="position:absolute;width:68px;height:30px;margin-left:41px;margin-top:29px;background-color:#55FF55;">');
 }
 echo ('<div style="font-size:16px;text-align:center;margin-top:5px;">');
-if ($S2 == 0) {
+if ($Valve3State== 0) {
 	echo ("closed");
-} else if ($S2 == 1) {
+} else if ($Valve3State== 1) {
 	echo ("open");
 } else {
 	echo ("XXX");
 }
 echo ("</div></div>");
 
-// $command = $ini_array['DocumentRoot']."/PumpStationControl --web getSwitchState 3";
-// exec ($command, $valS3, $return);
-// if (is_array($valS3)) {
-// $S3 = boolval($valS3[0]);
+// $command = $ini_array['DocumentRoot']."/PumpStationControl --web getSwitchState " . $ini_array['Pump1Switch'];
+// exec ($command, $valP1, $return);
+// if (is_array($valP1)) {
+// $Pump1State= boolval($valP1[0]);
 // } else {
-// $S3 = boolval($valS3);
+// $Pump1State= boolval($valP1);
 // }
-if ($S3 == 0) {
+if ($Pump1State== 0) {
 	echo ('<div style="position:absolute;width:58px;height:30px;margin-left:601px;margin-top:5px;background-color:#FF5555;">');
-} else if ($S3 == 1) {
+} else if ($Pump1State== 1) {
 	echo ('<div style="position:absolute;width:58px;height:30px;margin-left:601px;margin-top:5px;background-color:#55FF55;">');
 }
 echo ('<div style="font-size:16px;text-align:center;margin-top:5px;">');
-if ($S3 == 0) {
+if ($Pump1State== 0) {
 	echo ("OFF");
-} else if ($S3 == 1) {
+} else if ($Pump1State== 1) {
 	echo ("ON");
 } else {
 	echo ("XXX");
 }
 echo ("</div></div>");
 
-// $command = $ini_array['DocumentRoot']."/PumpStationControl --web getSwitchState 4";
-// exec ($command, $valS4, $return);
-// if (is_array($valS4)) {
-// $S4 = boolval($valS4[0]);
+// $command = $ini_array['DocumentRoot']."/PumpStationControl --web getSwitchState " . $ini_array['Pump2Switch'];
+// exec ($command, $valP2, $return);
+// if (is_array($valP2)) {
+// $Pump2State= boolval($valP2[0]);
 // } else {
-// $S4 = boolval($valS4);
+// $Pump2State= boolval($valP2);
 // }
-if ($S4 == 0) {
+if ($Pump2State== 0) {
 	echo ('<div style="position:absolute;width:58px;height:30px;margin-left:601px;margin-top:45px;background-color:#FF5555;">');
-} else if ($S4 == 1) {
+} else if ($Pump2State== 1) {
 	echo ('<div style="position:absolute;width:58px;height:30px;margin-left:601px;margin-top:45px;background-color:#55FF55">');
 }
 echo ('<div style="font-size:16px;text-align:center;margin-top:5px;">');
-if ($S4 == 0) {
+if ($Pump2State== 0) {
 	echo ("OFF");
-} else if ($S4 == 1) {
+} else if ($Pump2State== 1) {
 	echo ("ON");
 } else {
 	echo ("XXX");
@@ -244,10 +250,10 @@ echo ("</div></div>");
         <div style="font-size:18px;position:absolute;width:100px;margin-left:0px;text-align:center;">Valve 1</div>
         <div style="font-size:18px;position:absolute;width:100px;margin-left:0px;margin-top:24px;text-align:center;">
         <?php
-        if ($S0 == 0 ) {
-		  echo ("<img id='switch_0' src='data/button_red.png' onclick='changeSwitch(0);'/>");
+        if ($Valve1State== 0 ) {
+          echo ("<img id='switch_V1' src='data/button_red.png' onclick='changeSwitch(" . $ini_array['Valve1Switch']. ");'/>");
 		} else {
-		  echo ("<img id='switch_0' src='data/button_green.png' onclick='changeSwitch(0);'/>");
+		  echo ("<img id='switch_V1' src='data/button_green.png' onclick='changeSwitch(" . $ini_array['Valve1Switch']. ");'/>");
 		}	
         ?>
         </div>
@@ -255,10 +261,10 @@ echo ("</div></div>");
         <div style="font-size:18px;position:absolute;width:100px;margin-left:100px;text-align:center;">Valve 2</div>
         <div style="font-size:18px;position:absolute;width:100px;margin-left:100px;margin-top:24px;text-align:center;">
         <?php
-        if ($S1 == 0 ) {
-		  echo ("<img id='switch_1' src='data/button_red.png' onclick='changeSwitch(1);'/>");
+        if ($Valve2State== 0 ) {
+		  echo ("<img id='switch_V2' src='data/button_red.png' onclick='changeSwitch(" . $ini_array['Valve2Switch']. ");'/>");
 		} else {
-		  echo ("<img id='switch_1' src='data/button_green.png' onclick='changeSwitch(1);'/>");
+		  echo ("<img id='switch_V2' src='data/button_green.png' onclick='changeSwitch(" . $ini_array['Valve2Switch']. ");'/>");
 		}	
         ?>
         </div>
@@ -266,10 +272,10 @@ echo ("</div></div>");
         <div style="font-size:18px;position:absolute;width:100px;margin-left:200px;text-align:center;">Valve 3</div>
         <div style="font-size:18px;position:absolute;width:100px;margin-left:200px;margin-top:24px;text-align:center;">
         <?php
-        if ($S2 == 0 ) {
-		  echo ("<img id='switch_2' src='data/button_red.png' onclick='changeSwitch(2);'/>");
+        if ($Valve3State== 0 ) {
+		  echo ("<img id='switch_V3' src='data/button_red.png' onclick='changeSwitch(" . $ini_array['Valve3Switch']. ");'/>");
 		} else {
-		  echo ("<img id='switch_2' src='data/button_green.png' onclick='changeSwitch(2);'/>");
+		  echo ("<img id='switch_V3' src='data/button_green.png' onclick='changeSwitch(" . $ini_array['Valve3Switch']. ");'/>");
 		}	
         ?>
         </div>
@@ -277,10 +283,10 @@ echo ("</div></div>");
         <div style="font-size:18px;position:absolute;width:100px;margin-left:565px;text-align:center;">Pump 1</div>
         <div style="font-size:18px;position:absolute;width:100px;margin-left:565px;margin-top:24px;text-align:center;">
         <?php
-        if ($S3 == 0 ) {
-		  echo ("<img id='switch_3' src='data/button_red.png' onclick='changeSwitch(3);'/>");
+        if ($Pump1State== 0 ) {
+		  echo ("<img id='switch_P1' src='data/button_red.png' onclick='changeSwitch(" . $ini_array['Pump1Switch']. ");'/>");
 		} else {
-		  echo ("<img id='switch_3' src='data/button_green.png' onclick='changeSwitch(3);'/>");
+		  echo ("<img id='switch_P1' src='data/button_green.png' onclick='changeSwitch(" . $ini_array['Pump1Switch']. ");'/>");
 		}	
         ?>
         </div>
@@ -288,10 +294,10 @@ echo ("</div></div>");
         <div style="font-size:18px;position:absolute;width:100px;margin-left:665px;text-align:center;">Pump 2</div>
         <div style="font-size:18px;position:absolute;width:100px;margin-left:665px;margin-top:24px;text-align:center;">
         <?php
-        if ($S4 == 0 ) {
-		  echo ("<img id='switch_4' src='data/button_red.png' onclick='changeSwitch(4);'/>");
+        if ($Pump2State== 0 ) {
+		  echo ("<img id='switch_P2' src='data/button_red.png' onclick='changeSwitch(" . $ini_array['Pump2Switch']. ");'/>");
 		} else {
-		  echo ("<img id='switch_4' src='data/button_green.png' onclick='changeSwitch(4);'/>");
+		  echo ("<img id='switch_P2' src='data/button_green.png' onclick='changeSwitch(" . $ini_array['Pump2Switch']. ");'/>");
 		}	
         ?>
         </div>
