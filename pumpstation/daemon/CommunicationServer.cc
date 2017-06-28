@@ -12,6 +12,11 @@ CommunicationServer::CommunicationServer(PumpStationModel* model,
  : QTcpServer(parent),
    model_(model)
 {
+	ApplicationConfig * config = ApplicationConfig::instance();
+
+  pumpChannels_ = config->getValueVector<int>("PumpSwitches");
+  valveChannels_ = config->getValueVector<int>("ValveSwitches");
+
   connect(this, SIGNAL(setSwitchBlocked(int, bool)),
           model_, SLOT(setSwitchBlocked(int, bool)));
 
@@ -62,12 +67,68 @@ void CommunicationServer::handleCommand()
   args.removeAt(0);
   QString response;
 
-  if (cmd=="setSwitchState") {
-    if (args.count()!=2) {
+  if (cmd=="setPumpState") {
+  	if (args.count()!=2) {
+  		response = "ERR";
+  	} else {
+  		int pump = args.at(0).toInt();
+  		int state = args.at(1).toInt();
+
+  		if (pump<1 || pump>2) {
+  			response = "ERR";
+  		} else {
+  			emit setSwitchEnabled(pumpChannels_[pump-1], state);
+  			response = "OK";
+  		}
+  	}
+  } else if (cmd=="getPumpState") {
+    if (args.count()!=1) {
       response = "ERR";
     } else {
-      int channel = args.at(0).toInt();
-      int state = args.at(1).toInt();
+      int pump = args.at(0).toInt();
+
+      if (pump<1 || pump>2) {
+        response = "ERR";
+      } else {
+        QMutexLocker locker(&mutex_);
+        State state = model_->getSwitchState(pumpChannels_[pump-1]);
+        response = QString::number((int)state);
+      }
+    }
+  } else if (cmd=="setValveState") {
+  	if (args.count()!=2) {
+  		response = "ERR";
+  	} else {
+  		int valve = args.at(0).toInt();
+  		int state = args.at(1).toInt();
+
+  		if (valve<1 || valve>3) {
+  			response = "ERR";
+  		} else {
+  			emit setSwitchEnabled(valveChannels_[valve-1], state);
+  			response = "OK";
+  		}
+  	}
+  } else if (cmd=="getValveState") {
+    if (args.count()!=1) {
+      response = "ERR";
+    } else {
+      int valve = args.at(0).toInt();
+
+      if (valve<1 || valve>3) {
+        response = "ERR";
+      } else {
+        QMutexLocker locker(&mutex_);
+        State state = model_->getSwitchState(valveChannels_[valve-1]);
+        response = QString::number((int)state);
+      }
+    }
+  } else if (cmd=="setSwitchState") {
+  	if (args.count()!=2) {
+  		response = "ERR";
+  	} else {
+  		int channel = args.at(0).toInt();
+  		int state = args.at(1).toInt();
 
       if (channel<0 || channel>4) {
         response = "ERR";
