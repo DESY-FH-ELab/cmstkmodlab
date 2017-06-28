@@ -33,7 +33,7 @@ public slots:
 
   void setSwitchBlocked(int, bool);
   void setSwitchEnabled(int, bool);
-  void PumpOperatingHours(int, double);
+  void setPumpOperatingHours(int, double);
 
 protected slots:
 

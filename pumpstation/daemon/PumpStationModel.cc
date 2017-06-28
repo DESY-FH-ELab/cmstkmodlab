@@ -198,7 +198,7 @@ double PumpStationModel::getPumpOperatingHours(int pump) const
 	return pumpOperatingHours_[pump];
 }
 
-void PumpStationModel::PumpOperatingHours(int pump, double value)
+void PumpStationModel::setPumpOperatingHours(int pump, double value)
 {
 	if (pump<1 || pump>2) return;
 	pumpOperatingHours_[pump] = value;
