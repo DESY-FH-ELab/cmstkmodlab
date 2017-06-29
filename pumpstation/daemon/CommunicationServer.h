@@ -1,6 +1,8 @@
 #ifndef COMMUNICATIONSERVER_H
 #define COMMUNICATIONSERVER_H
 
+#include <vector>
+
 #include <QMutex>
 #include <QTcpServer>
 #include <QTcpSocket>
@@ -23,6 +25,8 @@ protected slots:
 signals:
 
   void setSwitchEnabled(int channel, bool enabled);
+  void setSwitchBlocked(int channel, bool blocked);
+  void setPumpOperatingHours(int, double);
 
 protected:
 
@@ -33,6 +37,9 @@ protected:
 #endif
 
   PumpStationModel* model_;
+
+  std::vector<int> pumpChannels_;
+  std::vector<int> valveChannels_;
 
   QTcpSocket* socket_;
   QMutex mutex_;

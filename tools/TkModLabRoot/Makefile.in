@@ -59,7 +59,7 @@ endif
 
 lib$(TARGET).so: $(OBJECTS)
 	@echo "Linking shared library $@"
-	$(LD) $(SOFLAGS) $^ -o $@ $(ELIBS) -lgfortran
+	$(LD) $(SOFLAGS) $^ -o $@ $(ELIBS)
 
 lib$(TARGET).rootmap: lib$(TARGET).so LinkDef.h
 	@echo "Creating library rootmap $@"

@@ -1,3 +1,5 @@
+#include <signal.h>
+
 #include <iostream>
 
 #include <QCoreApplication>
@@ -17,18 +19,56 @@
 #include <ConradModel.h>
 #include <LeyboldGraphixThreeModel.h>
 #include <DataLogger.h>
+#include <WatchDog.h>
 
 #include "PumpStationModel.h"
 #include "CommunicationThread.h"
+
+static int setup_unix_signal_handlers()
+{
+  /*
+    struct sigaction sighup;
+    sighup.sa_handler = DataLogger::hupSignalHandler;
+    sigemptyset(&sighup.sa_mask);
+    sighup.sa_flags = 0;
+    sighup.sa_flags |= SA_RESTART;
+
+    if (sigaction(SIGHUP, &sighup, 0))
+    return 1;
+  */
+
+  struct sigaction sigint;
+  sigint.sa_handler = DataLogger::intSignalHandler;
+  sigemptyset(&sigint.sa_mask);
+  sigint.sa_flags = 0;
+  sigint.sa_flags |= SA_RESTART;
+
+  if (sigaction(SIGINT, &sigint, 0))
+    return 2;
+
+  /*
+    struct sigaction sigterm;
+    sigterm.sa_handler = DataLogger::termSignalHandler;
+    sigemptyset(&sigterm.sa_mask);
+    sigterm.sa_flags |= SA_RESTART;
+
+    if (sigaction(SIGTERM, &sigterm, 0))
+    return 3;
+  */
+
+  return 0;
+}
 
 int main(int argc, char *argv[])
 {
   QCoreApplication app(argc, argv);
 
+  setup_unix_signal_handlers();
+
   if (app.arguments().contains("--nodaemon")) {
     NQLogger::instance()->addActiveModule("*");
 
-    NQLogger::instance()->addDestiniation(stdout, NQLog::Debug);
+    NQLogger::instance()->addDestiniation(stdout, NQLog::Spam);
 
 #if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
     QString logdir = QDesktopServices::storageLocation(QDesktopServices::CacheLocation);
@@ -57,11 +97,12 @@ int main(int argc, char *argv[])
   qRegisterMetaType<State>("State");
 
   ApplicationConfig * config = ApplicationConfig::instance(std::string(Config::CMSTkModLabBasePath) + "/pumpstation/pumpstation.cfg");
-
-  ConradModel conrad(&app);
+  
+  std::string conradPort = config->getValue("ConradPort");
+  ConradModel conrad(conradPort.c_str(), &app);
 
   std::string leyboldPort = config->getValue("LeyboldPort");
-  LeyboldGraphixThreeModel leybold(leyboldPort.c_str(), 5, &app);
+  LeyboldGraphixThreeModel leybold(leyboldPort.c_str(), config->getValue<int>("LeyboldUpdateInterval"), &app);
 
   /*
   if (leybold.getSensorDetectionMode(1)!=VLeyboldGraphixThree::SensorDetectionAuto) {
@@ -96,11 +137,14 @@ int main(int argc, char *argv[])
 
   PumpStationModel model(&conrad, &leybold, 5, &app);
 
-  DataLogger logger(&model, &app);
-  logger.start();
-
   CommunicationThread commthread(&model, &app);
   commthread.start();
+
+  DataLogger logger(&model, &commthread, &app);
+  logger.initialize();
+  
+  WatchDog watchdog(&model, 300/5, &app);
+  watchdog.initialize();
 
   return app.exec();
 }

@@ -1,4 +1,16 @@
-ServerPort        63432
-DataPath          @basepath@/pumpstation
-LeyboldPort       /dev/ttyUSB0
-URL               http://cmsvakusaug.desy.de
+ServerPort             63432
+DataPath               @basepath@/pumpstation/data
+LeyboldPort            /dev/ttyLeybold
+ConradPort             /dev/ttyConrad
+URL                    http://cmsvakusaug.desy.de
+LeyboldUpdateInterval  1
+
+PumpSwitches           0 1
+ValveSwitches          2 4 3
+
+Pump1OperatingHours    1.3456
+Pump2OperatingHours    2.6789
+
+slackwebhook	       https://hooks.slack.com/services/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
+slackusername          pumpstation
+slackchannel	       #daf_25c

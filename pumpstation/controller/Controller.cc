@@ -33,7 +33,7 @@ Controller::Controller(QStringList& arguments)
 
 void Controller::connectToServer()
 {
-  NQLogDebug("controller") << "void Controller::connectToServer()";
+  NQLogDebug("Controller") << "void Controller::connectToServer()";
 
   quint16 port = ApplicationConfig::instance()->getValue("ServerPort", 63432);
 
@@ -41,7 +41,7 @@ void Controller::connectToServer()
   socket_->connectToHost(ipAddress, port);
 
   if (!socket_->waitForConnected(500)) {
-    NQLog("controller") << "The following error occurred: " << socket_->errorString().toStdString();
+    NQLog("Controller") << "The following error occurred: " << socket_->errorString().toStdString();
 
     std::cout << "ERR" << std::endl;
 
@@ -53,7 +53,7 @@ void Controller::connectToServer()
 
 void Controller::sendCommand()
 {
-  NQLogDebug("controller") << "void Controller::sendCommand()";
+  NQLogDebug("Controller") << "void Controller::sendCommand()";
 
   QString command;
   for (int i=0; i<arguments_.size(); ++i) {
@@ -61,7 +61,7 @@ void Controller::sendCommand()
     command += arguments_.at(i);
   }
 
-  NQLogDebug("controller") << "command.length() = " << command.length();
+  NQLogDebug("Controller") << "command.length() = " << command.length();
 
   QByteArray block;
   QDataStream out(&block, QIODevice::WriteOnly);
@@ -75,7 +75,7 @@ void Controller::sendCommand()
 
 void Controller::readResponse()
 {
-  NQLogDebug("controller") << "void Controller::readResponse()";
+  NQLogDebug("Controller") << "void Controller::readResponse()";
 
   QDataStream in(socket_);
   in.setVersion(QDataStream::Qt_4_0);
@@ -83,12 +83,12 @@ void Controller::readResponse()
   quint16 blockSize = 0;
   in >> blockSize;
 
-  NQLogDebug("controller") << "blockSize = " << blockSize;
+  NQLogDebug("Controller") << "blockSize = " << blockSize;
 
   QString response;
   in >> response;
 
-  NQLogDebug("controller") << "response: (" << blockSize << ") |" << response.toStdString() << "|";
+  NQLogDebug("Controller") << "response: (" << blockSize << ") |" << response.toStdString() << "|";
 
   std::cout << response.toStdString() << std::endl;
 

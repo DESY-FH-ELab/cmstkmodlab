@@ -1,5 +1,11 @@
+#include <sys/socket.h>
+#include <sys/types.h>
+#include <sys/uio.h>
+#include <unistd.h>
+
 #include <iostream>
 
+#include <QApplication>
 #include <QMutexLocker>
 #include <QProcess>
 #include <QXmlStreamWriter>
@@ -9,14 +15,44 @@
 
 #include "DataLogger.h"
 
+int DataLogger::sighupFd[2];
+int DataLogger::sigintFd[2];
+int DataLogger::sigtermFd[2];
+
 DataLogger::DataLogger(PumpStationModel* model,
+		                   CommunicationThread* thread,
                        QObject *parent)
  : QObject(parent),
    model_(model),
+   thread_(thread),
    isStreaming_(false),
    ofile_(0),
    stream_(0)
 {
+  connect(model_, SIGNAL(dataValid()),
+          this, SLOT(initialize()));
+}
+
+void DataLogger::initialize()
+{
+  NQLog("DataLogger") << "initialize";
+
+  if (::socketpair(AF_UNIX, SOCK_STREAM, 0, sighupFd))
+    qFatal("Couldn't create HUP socketpair");
+
+  if (::socketpair(AF_UNIX, SOCK_STREAM, 0, sigintFd))
+    qFatal("Couldn't create HUP socketpair");
+
+  if (::socketpair(AF_UNIX, SOCK_STREAM, 0, sigtermFd))
+    qFatal("Couldn't create TERM socketpair");
+
+  snHup = new QSocketNotifier(sighupFd[1], QSocketNotifier::Read, this);
+  connect(snHup, SIGNAL(activated(int)), this, SLOT(handleSigHup()));
+  snInt = new QSocketNotifier(sigintFd[1], QSocketNotifier::Read, this);
+  connect(snInt, SIGNAL(activated(int)), this, SLOT(handleSigInt()));
+  snTerm = new QSocketNotifier(sigtermFd[1], QSocketNotifier::Read, this);
+  connect(snTerm, SIGNAL(activated(int)), this, SLOT(handleSigTerm()));
+
   connect(model_, SIGNAL(switchStateChanged(int, State)),
           this, SLOT(switchStateChanged(int, State)));
 
@@ -30,12 +66,16 @@ DataLogger::DataLogger(PumpStationModel* model,
   statusTimer_ = new QTimer();
   connect(statusTimer_, SIGNAL(timeout()),
           this, SLOT(writeStatus()));
+  
+  start();
 }
 
 void DataLogger::start()
 {
   if (isStreaming_) return;
 
+  NQLog("DataLogger") << "start";
+ 
   QDateTime dt = QDateTime::currentDateTime();
 
   ApplicationConfig* config = ApplicationConfig::instance();
@@ -72,11 +112,20 @@ void DataLogger::start()
     */
   }
 
-  stream_ = new QTextStream(ofile_);
+  //stream_ = new QTextStream(ofile_);
+
+  xml_ = new QXmlStreamWriter(ofile_);
+  xml_->setAutoFormatting(true);
 
   isStreaming_ = true;
 
   fileDateTime_ = dt;
+
+  QString buffer;
+  xml_->writeStartDocument();
+
+  xml_->writeStartElement("PumpStationLog");
+  xml_->writeAttribute("time", dt.toString(Qt::ISODate));
 
   writeStatus();
 
@@ -88,14 +137,20 @@ void DataLogger::stop()
 {
   if (!isStreaming_) return;
 
+  NQLog("DataLogger") << "stop";
+ 
   statusTimer_->stop();
   restartTimer_->stop();
 
   writeStatus();
 
-  stream_->device()->close();
+  xml_->writeEndElement();
+  xml_->writeEndDocument();
+
+  //stream_->device()->close();
   delete ofile_;
-  delete stream_;
+  delete xml_;
+  //delete stream_;
 
   isStreaming_ = false;
 }
@@ -118,28 +173,27 @@ void DataLogger::writeStatus()
 
   QDateTime utime = QDateTime::currentDateTime();
 
-  QString buffer;
-  QXmlStreamWriter xml(&buffer);
-  xml.setAutoFormatting(true);
+  xml_->writeStartElement("Status");
+  xml_->writeAttribute("time", utime.toString(Qt::ISODate));
 
   for (int i=0;i<5;++i) {
-    xml.writeStartElement("ConradSwitch");
-    xml.writeAttribute("time", utime.toString(Qt::ISODate));
-    xml.writeAttribute("id", QString::number(i));
-    xml.writeAttribute("state", QString::number((int)model_->getSwitchState(i)));
-    xml.writeEndElement();
+    xml_->writeStartElement("ConradSwitch");
+    xml_->writeAttribute("id", QString::number(i));
+    xml_->writeAttribute("state", QString::number((int)model_->getSwitchState(i)));
+    xml_->writeEndElement();
   }
 
   for (int i=1;i<4;++i) {
-    xml.writeStartElement("LeyboldGraphixThree");
-    xml.writeAttribute("time", utime.toString(Qt::ISODate));
-    xml.writeAttribute("id", QString::number(i));
-    xml.writeAttribute("status", QString::number(model_->getSensorStatus(i)));
-    xml.writeAttribute("p", QString::number(model_->getPressure(i), 'e', 6));
-    xml.writeEndElement();
+    xml_->writeStartElement("LeyboldGraphixThree");
+    xml_->writeAttribute("id", QString::number(i));
+    xml_->writeAttribute("status", QString::number(model_->getSensorStatus(i)));
+    xml_->writeAttribute("p", QString::number(model_->getPressure(i), 'e', 6));
+    xml_->writeEndElement();
   }
 
-  writeToStream(buffer);
+  xml_->writeEndElement();
+
+  ofile_->flush();
 }
 
 void DataLogger::switchStateChanged(int device, State newState)
@@ -148,43 +202,35 @@ void DataLogger::switchStateChanged(int device, State newState)
 
   QMutexLocker locker(&mutex_);
 
-  NQLogMessage("logger") << "void DataLogger::switchStateChanged(" << device << ", " << (int)newState << ")";
+  NQLogDebug("logger") << "void DataLogger::switchStateChanged(" << device << ", " << (int)newState << ")";
 
   QDateTime utime = QDateTime::currentDateTime();
 
-  QString buffer;
-  QXmlStreamWriter xml(&buffer);
-  xml.setAutoFormatting(true);
+  xml_->writeStartElement("ConradSwitch");
+  xml_->writeAttribute("time", utime.toString(Qt::ISODate));
+  xml_->writeAttribute("id", QString::number(device));
+  xml_->writeAttribute("state", QString::number((int)newState));
+  xml_->writeEndElement();
 
-  xml.writeStartElement("ConradSwitch");
-  xml.writeAttribute("time", utime.toString(Qt::ISODate));
-  xml.writeAttribute("id", QString::number(device));
-  xml.writeAttribute("state", QString::number((int)newState));
-  xml.writeEndElement();
-
-  writeToStream(buffer);
+  ofile_->flush();
 }
 
 void DataLogger::pressureChanged(int sensor, double p)
 {
   QMutexLocker locker(&mutex_);
 
-  NQLogMessage("logger") << "void DataLogger::pressureChanged(" << sensor << ", " << p << ")";
+  NQLogDebug("logger") << "void DataLogger::pressureChanged(" << sensor << ", " << p << ")";
 
   QDateTime utime = QDateTime::currentDateTime();
 
-  QString buffer;
-  QXmlStreamWriter xml(&buffer);
-  xml.setAutoFormatting(true);
+  xml_->writeStartElement("LeyboldGraphixThree");
+  xml_->writeAttribute("time", utime.toString(Qt::ISODate));
+  xml_->writeAttribute("id", QString::number(sensor));
+  xml_->writeAttribute("status", QString::number(model_->getSensorStatus(sensor)));
+  xml_->writeAttribute("p", QString::number(p, 'e', 6));
+  xml_->writeEndElement();
 
-  xml.writeStartElement("LeyboldGraphixThree");
-  xml.writeAttribute("time", utime.toString(Qt::ISODate));
-  xml.writeAttribute("id", QString::number(sensor));
-  xml.writeAttribute("status", QString::number(model_->getSensorStatus(sensor)));
-  xml.writeAttribute("p", QString::number(p, 'e', 6));
-  xml.writeEndElement();
-
-  writeToStream(buffer);
+  ofile_->flush();
 }
 
 void DataLogger::writeToStream(QString& buffer)
@@ -197,4 +243,65 @@ void DataLogger::writeToStream(QString& buffer)
     *stream_ << buffer << "\n";
     stream_->flush();
   }
+}
+
+void DataLogger::hupSignalHandler(int)
+{
+    char a = 1;
+    ::write(sighupFd[0], &a, sizeof(a));
+}
+
+void DataLogger::intSignalHandler(int)
+{
+    char a = 1;
+    ::write(sigintFd[0], &a, sizeof(a));
+}
+
+void DataLogger::termSignalHandler(int)
+{
+    char a = 1;
+    ::write(sigtermFd[0], &a, sizeof(a));
+}
+
+void DataLogger::handleSigHup()
+{
+    snHup->setEnabled(false);
+    char tmp;
+    ::read(sighupFd[1], &tmp, sizeof(tmp));
+
+    // std::cout << "handleSigHup()" << std::endl;
+
+    snHup->setEnabled(true);
+}
+
+void DataLogger::handleSigInt()
+{
+    snInt->setEnabled(false);
+    char tmp;
+    ::read(sigintFd[1], &tmp, sizeof(tmp));
+
+    // std::cout << "handleSigInt()" << std::endl;
+
+    stop();
+
+    thread_->quit();
+    thread_->wait();
+
+    ApplicationConfig * config = ApplicationConfig::instance();
+    config->safe(std::string(Config::CMSTkModLabBasePath) + "/pumpstation/pumpstation.cfg");
+
+    QCoreApplication::exit(0);
+
+    snInt->setEnabled(true);
+}
+
+void DataLogger::handleSigTerm()
+{
+    snTerm->setEnabled(false);
+    char tmp;
+    ::read(sigtermFd[1], &tmp, sizeof(tmp));
+
+    // std::cout << "handleSigTerm()" << std::endl;
+
+    snTerm->setEnabled(true);
 }
