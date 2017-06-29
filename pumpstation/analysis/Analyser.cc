@@ -19,7 +19,10 @@ Analyser::Analyser(QStringList& arguments)
 
 void Analyser::analyse()
 {
-	if (arguments_.size()!=2) return;
+	if (arguments_.size()<2) {
+		std::cout << "usage: PumpStationAnalysis <output file> <input file 1> <input file 2> ..." << std::endl;
+		return;
+	}
 
   QStringList::const_iterator constIterator = arguments_.constBegin();
 
