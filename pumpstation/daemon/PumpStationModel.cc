@@ -118,7 +118,7 @@ void PumpStationModel::setSwitchBlocked(int channel, bool blocked)
 
 void PumpStationModel::setSwitchEnabled(int channel, bool enabled)
 {
-  // if (switchBlocked_[channel]) return;
+  if (switchBlocked_[channel]) return;
 
   conradModel_->setSwitchEnabled(channel, enabled);
 
