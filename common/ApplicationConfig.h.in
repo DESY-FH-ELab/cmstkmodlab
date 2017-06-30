@@ -91,6 +91,7 @@ public:
   
   template <class aType> void setValue(std::string const& key, aType value) {
     QVariant variant(value);
+    keyvalueMap_.erase(key);
     keyvalueMap_.insert(std::make_pair(key, variant.toString().toStdString()));
   }
   
