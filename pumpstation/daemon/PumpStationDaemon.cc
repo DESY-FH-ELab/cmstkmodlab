@@ -65,9 +65,10 @@ int main(int argc, char *argv[])
 
   setup_unix_signal_handlers();
 
+  NQLogger::instance()->addActiveModule("*");
+
   if (app.arguments().contains("--nodaemon")) {
 
-    NQLogger::instance()->addActiveModule("*");
     NQLogger::instance()->addDestiniation(stdout, NQLog::Spam);
 
   } else if (app.arguments().contains("--pidfile")) {
@@ -77,8 +78,6 @@ int main(int argc, char *argv[])
       QString pidfile = app.arguments().at(idx+1);
     }
 
-    NQLogger::instance()->addActiveModule("*");
-    NQLogger::instance()->addDestiniation(stdout, NQLog::Spam);
   }
 
 #if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
