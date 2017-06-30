@@ -21,7 +21,30 @@ PumpStationModel::PumpStationModel(ConradModel* conradModel,
 	ApplicationConfig * config = ApplicationConfig::instance();
 
   pumpChannels_ = config->getValueVector<int>("PumpSwitches");
+  QString channelsString = "";
+  int count = 0;
+  for (std::vector<int>::iterator it = pumpChannels_.begin();
+  		 it!=pumpChannels_.end();
+  		 ++it) {
+  	if (count>0) channelsString += " ";
+  	channelsString += QString::number(*it);
+  	count++;
+  }
+  NQLog("PumpStationModel") << "pump channels: " << channelsString;
+
   valveChannels_ = config->getValueVector<int>("ValveSwitches");
+  channelsString = "";
+  count = 0;
+  for (std::vector<int>::iterator it = valveChannels_.begin();
+  		 it!=valveChannels_.end();
+  		 ++it) {
+  	if (count>0) channelsString += " ";
+  	channelsString += QString::number(*it);
+  	count++;
+  }
+  NQLog("PumpStationModel") << "valve channels: " << channelsString;
+
+  heartBeat_ = config->getValue<double>("HeartBeat");
   pumpOperatingHours_[1] = config->getValue<double>("Pump1OperatingHours");
   pumpOperatingHours_[2] = config->getValue<double>("Pump2OperatingHours");
 
