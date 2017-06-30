@@ -29,6 +29,9 @@ public:
 
   double getPumpOperatingHours(int pump) const;
 
+  int getPumpChannel(int pump) const;
+  int getValveChannel(int valve) const;
+
 public slots:
 
   void setSwitchBlocked(int, bool);
@@ -69,9 +72,6 @@ protected:
   std::vector<int> valveChannels_;
 
   std::array<double,3> pumpOperatingHours_;
-
-  int getPumpChannel(int pump) const;
-  int getValveChannel(int pump) const;
 
 signals:
 
