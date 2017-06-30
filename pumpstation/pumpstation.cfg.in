@@ -6,7 +6,7 @@ URL                    http://cmsvakusaug.desy.de
 LeyboldUpdateInterval  1
 
 PumpSwitches           0 1
-ValveSwitches          2 4 3
+ValveSwitches          2 3 4
 
 HeartBeat              18.0
 Pump1OperatingHours    1.000
