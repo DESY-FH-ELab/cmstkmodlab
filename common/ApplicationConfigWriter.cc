@@ -42,6 +42,7 @@ void ApplicationConfigWriter::writeMerge(std::multimap<std::string,std::string> 
 		throw; // must abort
 	}
 
+	int count;
 	std::string Key;
 	std::string Value;
 	std::string buffer;
@@ -63,10 +64,14 @@ void ApplicationConfigWriter::writeMerge(std::multimap<std::string,std::string> 
 				ostream.width(25);
 				ostream << std::left << it->first;
 
+				count = 0;
 				auto range = tmap.equal_range(it->first);
 				for (auto i = range.first; i != range.second; ++i) {
-					ostream << i->second << " ";
+					if (count>0) ostream << " ";
+					ostream << i->second;
+					count++;
 				}
+				ostream << "\n";
 
 				keyMap.insert(std::make_pair(it->first, it->first));
 			}
@@ -89,10 +94,14 @@ void ApplicationConfigWriter::writeMerge(std::multimap<std::string,std::string> 
 			ostream.width(25);
 			ostream << std::left << v->first;
 
+			count = 0;
 			auto range = tmap.equal_range(v->first);
 			for (auto i = range.first; i != range.second; ++i) {
-				ostream << i->second << " ";
+				if (count>0) ostream << " ";
+				ostream << i->second;
+				count++;
 			}
+			ostream << "\n";
 
 			keyMap.insert(std::make_pair(v->first, v->first));
 		}
