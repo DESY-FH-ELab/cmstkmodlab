@@ -113,12 +113,15 @@ int PumpStationModel::getSensorStatus(int sensor) const
 
 void PumpStationModel::setSwitchBlocked(int channel, bool blocked)
 {
+	NQLogSpam("PumpStationModel") << "setSwitchBlocked(" << channel << ", " << blocked << ")";
   switchBlocked_[channel] = blocked;
 }
 
 void PumpStationModel::setSwitchEnabled(int channel, bool enabled)
 {
   if (switchBlocked_[channel]) return;
+
+  NQLogSpam("PumpStationModel") << "setSwitchEnabled(" << channel << ", " << enabled << ")";
 
   conradModel_->setSwitchEnabled(channel, enabled);
 
