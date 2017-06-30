@@ -29,6 +29,9 @@ PumpStationModel::PumpStationModel(ConradModel* conradModel,
     switchBlocked_[i] = true;
     switchState_[i] = OFF;
   }
+  switchBlocked_[getPumpChannel(1)] = false;
+  switchBlocked_[getPumpChannel(2)] = false;
+  switchBlocked_[getValveChannel(3)] = false;
 
   for (int i=0;i<3;i++) {
     sensorStatus_[i] = LeyboldGraphixThree_t::SensorStatus_unknown;
@@ -218,4 +221,13 @@ void PumpStationModel::pump2HeartBeat()
 
 	ApplicationConfig * config = ApplicationConfig::instance();
 	config->setValue<double>("Pump2OperatingHours", pumpOperatingHours_[2]);
+
+int PumpStationModel::getPumpChannel(int pump) const
+{
+	return pumpChannels_[pump-1];
+}
+
+int PumpStationModel::getValveChannel(int valve) const
+{
+	return valveChannels_[valve-1];
 }

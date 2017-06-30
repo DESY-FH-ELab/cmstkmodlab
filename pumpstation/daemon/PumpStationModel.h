@@ -66,7 +66,11 @@ protected:
 
   std::vector<int> pumpChannels_;
   std::vector<int> valveChannels_;
+
   std::array<double,3> pumpOperatingHours_;
+
+  int getPumpChannel(int pump) const;
+  int getValveChannel(int pump) const;
 
 signals:
 
