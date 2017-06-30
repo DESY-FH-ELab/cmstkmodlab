@@ -66,32 +66,36 @@ int main(int argc, char *argv[])
   setup_unix_signal_handlers();
 
   if (app.arguments().contains("--nodaemon")) {
-    NQLogger::instance()->addActiveModule("*");
 
+    NQLogger::instance()->addActiveModule("*");
     NQLogger::instance()->addDestiniation(stdout, NQLog::Spam);
 
-#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
-    QString logdir = QDesktopServices::storageLocation(QDesktopServices::CacheLocation);
-#else
-    QString logdir = QStandardPaths::writableLocation(QStandardPaths::CacheLocation);
-#endif
-    QDir dir(logdir);
-    if (!dir.exists()) dir.mkpath(".");
-    QString logfilename = logdir + "/pumpstation.log";
-
-    NQLog("pumpstation") << "version " << APPLICATIONVERSIONSTR;
-
-    NQLog("pumpstation") << "using " << logfilename << " for logging";
-
-    QFile * logfile = new QFile(logfilename);
-    if (logfile->open(QIODevice::WriteOnly | QIODevice::Append | QIODevice::Text)) {
-      NQLogger::instance()->addDestiniation(logfile, NQLog::Message);
-    }
   } else if (app.arguments().contains("--pidfile")) {
     int idx = app.arguments().indexOf("--pidfile");
     if (app.arguments().count()>idx+1) {
       QString pidfile = app.arguments().at(idx+1);
     }
+
+    NQLogger::instance()->addActiveModule("*");
+    NQLogger::instance()->addDestiniation(stdout, NQLog::Spam);
+  }
+
+#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
+  QString logdir = QDesktopServices::storageLocation(QDesktopServices::CacheLocation);
+#else
+  QString logdir = QStandardPaths::writableLocation(QStandardPaths::CacheLocation);
+#endif
+  QDir dir(logdir);
+  if (!dir.exists()) dir.mkpath(".");
+  QString logfilename = logdir + "/pumpstation.log";
+
+  NQLog("pumpstation") << "version " << APPLICATIONVERSIONSTR;
+
+  NQLog("pumpstation") << "using " << logfilename << " for logging";
+
+  QFile * logfile = new QFile(logfilename);
+  if (logfile->open(QIODevice::WriteOnly | QIODevice::Append | QIODevice::Text)) {
+  	NQLogger::instance()->addDestiniation(logfile, NQLog::Message);
   }
 
   qRegisterMetaType<State>("State");
