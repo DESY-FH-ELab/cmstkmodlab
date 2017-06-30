@@ -20,6 +20,8 @@
 #include <Fifo.h>
 #include <HistoryFifo.h>
 
+#include <ApplicationConfig.h>
+
 double imageScale(double focalLength)
 {
   double p0 = -0.0240888;
@@ -31,6 +33,22 @@ double imageScale(double focalLength)
 
 int main(int argc, char *argv[])
 {
+	{
+		ApplicationConfig * config = ApplicationConfig::instance("test.cfg");
+
+	  std::vector<int> integer1 = config->getValueVector<int>("integer1");
+	  std::cout << "integer1: ";
+	  for (std::vector<int>::iterator it = integer1.begin();
+	  		 it!=integer1.end();
+	  		 ++it) {
+	  	 std::cout << *it << " ";
+	  }
+	  std::cout << std::endl;
+
+	  config->safe("testout.cfg");
+	}
+
+	/*
 	{
 		HistoryFifo<double> fifo(5);
 
@@ -53,6 +71,7 @@ int main(int argc, char *argv[])
 		std::cout << fifo.delta(0, 4) << std::endl;
 		std::cout << fifo.gradient(0, 4) << std::endl;
 	}
+  */
 
 	/*
 	{
