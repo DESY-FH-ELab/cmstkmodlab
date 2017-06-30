@@ -125,12 +125,50 @@ void PumpStationModel::setSwitchEnabled(int channel, bool enabled)
   if (enabled) {
     if (switchState_[channel] != READY) {
       switchState_[channel] = READY;
+
       emit switchStateChanged(channel, switchState_[channel]);
+
+      // pump 1 is turned on
+      //   => valve 1 is unblocked
+      if (channel==getPumpChannel(1)) {
+      	setSwitchBlocked(getValveChannel(1), false);
+      }
+
+      // pump 2 is turned on
+      //   => valve 2 is unblocked
+      if (channel==getPumpChannel(2)) {
+      	setSwitchBlocked(getValveChannel(2), false);
+      }
+
     }
   } else {
     if (switchState_[channel] != OFF) {
       switchState_[channel] = OFF;
+
       emit switchStateChanged(channel, switchState_[channel]);
+
+      // pump 1 is turned off
+      //   => valve 1 is closed if it is open
+      //   => valve 1 is blocked
+      if (channel==getPumpChannel(1)) {
+      	if (switchState_[getValveChannel(1)]==READY) {
+      		conradModel_->setSwitchEnabled(getValveChannel(1), false);
+      		emit switchStateChanged(getValveChannel(1), switchState_[channel]);
+      	}
+      	setSwitchBlocked(getValveChannel(1), true);
+      }
+
+      // pump 2 is turned off
+      //   => valve 2 is closed if it is open
+      //   => valve 2 is blocked
+      if (channel==getPumpChannel(2)) {
+      	if (switchState_[getValveChannel(2)]==READY) {
+      		conradModel_->setSwitchEnabled(getValveChannel(2), false);
+      		emit switchStateChanged(getValveChannel(1), switchState_[channel]);
+      	}
+      	setSwitchBlocked(getValveChannel(2), true);
+      }
+
     }
   }
 }
