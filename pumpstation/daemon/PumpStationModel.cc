@@ -212,7 +212,7 @@ void PumpStationModel::updateInformation()
 
 void PumpStationModel::updateConrad()
 {
-	NQLogSpam("PumpStationModel") << "updateConrad()";
+	// NQLog("PumpStationModel", NQLog::Debug) << "updateConrad()";
 
   if (thread()==QApplication::instance()->thread()) {
     // NQLog("PumpStationModel", NQLog::Debug) << " running in main application thread";
