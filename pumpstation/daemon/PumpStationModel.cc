@@ -224,23 +224,6 @@ void PumpStationModel::updateConrad()
   for (int i=0;i<5;++i) {
     switchState[i] = conradModel_->getSwitchState(i);
     if (switchState_[i] != switchState[i]) {
-
-    	if (i==pumpChannels_[0]) { // pump 1
-    		if (switchState[i]==OFF) {
-    			pump1timer_->stop();
-    		} else if (switchState[i]==READY) {
-    			pump1timer_->start();
-    		}
-    	}
-
-    	if (i==pumpChannels_[1]) { // pump 1
-    		if (switchState[i]==OFF) {
-    			pump2timer_->stop();
-    		} else if (switchState[i]==READY) {
-    			pump2timer_->start();
-    		}
-    	}
-
       emit switchStateChanged(i, switchState[i]);
     }
   }
@@ -253,6 +236,28 @@ void PumpStationModel::updateConrad()
       dataValid_ = true;
       emit dataValid();
     }
+  }
+
+  // start pump 1 heart beat if it is not running and pump 1 is running
+  if (switchState_[getPumpChannel(1)]==READY && !pump1timer_->isActive()) {
+  	NQLogSpam("PumpStationModel") << "starting pump 1 heart beat";
+  	pump1timer_->start();
+  }
+  // stop pump 1 heart beat if it is running and pump 1 is not running
+  if (switchState_[getPumpChannel(1)]==OFF && pump1timer_->isActive()) {
+  	NQLogSpam("PumpStationModel") << "stopping pump 1 heart beat";
+  	pump1timer_->stop();
+  }
+
+  // start pump 2 heart beat if it is not running and pump 2 is running
+  if (switchState_[getPumpChannel(2)]==READY && !pump2timer_->isActive()) {
+		NQLogSpam("PumpStationModel") << "starting pump 2 heart beat";
+  	pump2timer_->start();
+  }
+  // stop pump 2 heart beat if it is running and pump 2 is not running
+  if (switchState_[getPumpChannel(2)]==OFF && pump2timer_->isActive()) {
+  	NQLogSpam("PumpStationModel") << "stoping pump 2 heart beat";
+  	pump2timer_->stop();
   }
 }
 
