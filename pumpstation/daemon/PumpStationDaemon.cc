@@ -71,7 +71,8 @@ int main(int argc, char *argv[])
     NQLogger::instance()->addDestiniation(stdout, NQLog::Spam);
 
   } else if (app.arguments().contains("--pidfile")) {
-    int idx = app.arguments().indexOf("--pidfile");
+
+  	int idx = app.arguments().indexOf("--pidfile");
     if (app.arguments().count()>idx+1) {
       QString pidfile = app.arguments().at(idx+1);
     }
