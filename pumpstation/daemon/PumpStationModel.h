@@ -55,6 +55,7 @@ protected:
   const double updateInterval_;
   QTimer* timer_;
 
+  double heartBeat_;
   QTimer* pump1timer_;
   QTimer* pump2timer_;
 

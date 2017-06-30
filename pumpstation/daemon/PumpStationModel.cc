@@ -71,11 +71,11 @@ PumpStationModel::PumpStationModel(ConradModel* conradModel,
   timer_->start();
 
   pump1timer_ = new QTimer(this);
-  pump1timer_->setInterval(30 * 1000);
+  pump1timer_->setInterval(heartBeat_ * 1000);
   connect(pump1timer_, SIGNAL(timeout()), this, SLOT(pump1HeartBeat()));
 
   pump2timer_ = new QTimer(this);
-  pump2timer_->setInterval(30 * 1000);
+  pump2timer_->setInterval(heartBeat_ * 1000);
   connect(pump2timer_, SIGNAL(timeout()), this, SLOT(pump2HeartBeat()));
 
   updateInformation();
@@ -232,18 +232,23 @@ void PumpStationModel::setPumpOperatingHours(int pump, double value)
 
 void PumpStationModel::pump1HeartBeat()
 {
-	pumpOperatingHours_[1] += 30. / 3600.;
+	pumpOperatingHours_[1] += heartBeat_ / 3600.;
 
 	ApplicationConfig * config = ApplicationConfig::instance();
 	config->setValue<double>("Pump1OperatingHours", pumpOperatingHours_[1]);
+
+	NQLog("PumpStationModel") << "pump1HeartBeat = " << pumpOperatingHours_[1];
 }
 
 void PumpStationModel::pump2HeartBeat()
 {
-	pumpOperatingHours_[2] += 30. / 3600.;
+	pumpOperatingHours_[2] += heartBeat_ / 3600.;
 
 	ApplicationConfig * config = ApplicationConfig::instance();
 	config->setValue<double>("Pump2OperatingHours", pumpOperatingHours_[2]);
+
+	NQLog("PumpStationModel") << "pump1HeartBeat = " << pumpOperatingHours_[2];
+}
 
 int PumpStationModel::getPumpChannel(int pump) const
 {
