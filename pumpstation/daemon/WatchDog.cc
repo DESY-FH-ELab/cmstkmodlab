@@ -51,7 +51,7 @@ void WatchDog::switchStateChanged(int device, State newState)
   
   QMutexLocker locker(&mutex_);
   
-  NQLogDebug("watchdog") << "void WatchDog::switchStateChanged(" << device << ", " << (int)newState << ")";
+  // NQLogSpam("WatchDog") << "switchStateChanged(" << device << ", " << (int)newState << ")";
   
   switchState_[device] = newState;
   
@@ -62,7 +62,7 @@ void WatchDog::pressureChanged(int sensor, double p)
 {
   QMutexLocker locker(&mutex_);
   
-  NQLogDebug("watchdog") << "void DataLogger::pressureChanged(" << sensor << ", " << p << ")";
+  // NQLogSpam("WatchDog") << "pressureChanged(" << sensor << ", " << p << ")";
   
   switch (sensor) {
   case 1:
