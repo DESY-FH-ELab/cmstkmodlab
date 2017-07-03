@@ -76,7 +76,7 @@ if ($P1 >= 10.0) {
 } else if ($P1 >= 0.1) {
 	printf ( "%.1f", $P1);
 } else {
-	printf ( "%.2E", $P1);
+	printf ( "%.1E", $P1);
 }
 echo (" mbar");
 echo ('</div></div>');
@@ -101,7 +101,7 @@ if ($P2 >= 10.0) {
 } else if ($P2 >= 0.1) {
 	printf ( "%.1f", $P2);
 } else {
-	printf ( "%.2E", $P2);
+	printf ( "%.1E", $P2);
 }
 echo (" mbar");
 echo ('</div></div>');
@@ -126,7 +126,7 @@ if ($P3 >= 10.0) {
 } else if ($P3 >= 0.1) {
 	printf ( "%.1f", $P3);
 } else {
-	printf ( "%.2E", $P3);
+	printf ( "%.1E", $P3);
 }
 echo (" mbar");
 echo ('</div></div>');
@@ -249,7 +249,7 @@ if ($Pump2State== 0) {
 	echo ('<div style="position:absolute;width:108px;height:30px;margin-left:551px;margin-top:5px;background-color:#55FF55;">');
 }
 echo ('<div style="font-size:16px;text-align:right;margin-top:5px;margin-right:5px;">');
-printf ( "%.2f h", $valOH2 );
+printf ( "%.1f h", $valOH2 );
 echo ("</div></div>");
 
 // $command = $ini_array['DocumentRoot']."/PumpStationControl --web getSwitchState " . $ini_array['Pump1Switch'];
@@ -265,7 +265,7 @@ if ($Pump1State== 0) {
 	echo ('<div style="position:absolute;width:108px;height:30px;margin-left:551px;margin-top:45px;background-color:#55FF55">');
 }
 echo ('<div style="font-size:16px;text-align:right;margin-top:5px;margin-right:5px;">');
-printf ( "%.2f h", $valOH1 );
+printf ( "%.1f h", $valOH1 );
 echo ("</div></div>");
 ?>
 
