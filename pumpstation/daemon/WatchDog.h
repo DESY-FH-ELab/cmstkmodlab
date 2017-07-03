@@ -35,8 +35,6 @@ protected slots:
 
 protected:
 
-  void checkValues();
-
   PumpStationModel* model_;
 
   QMutex mutex_;

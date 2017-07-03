@@ -54,16 +54,43 @@ void WatchDog::switchStateChanged(int device, State newState)
   // NQLogSpam("WatchDog") << "switchStateChanged(" << device << ", " << (int)newState << ")";
   
   switchState_[device] = newState;
-  
-  checkValues();
+
+	/*
+	int pumpChannel;
+	int valveChannel;
+
+	for (int pump=1;pump<=2;pump++) {
+		pumpChannel = model_->getPumpChannel(pump);
+		valveChannel = model_->getValveChannel(pump);
+
+		// pump is on and corresponding valve is blocked => unblock valve
+		if (switchState_[pumpChannel]==READY && model_->getSwitchBlocked(valveChannel)==true) {
+			NQLogSpam("WatchDog") << "unblock valve " << pump;
+			emit setSwitchBlocked(valveChannel, false);
+		}
+
+		// pump is off and corresponding valve is open => close and block valve
+		if (switchState_[pumpChannel]==OFF) {
+			if (switchState_[valveChannel]==READY) {
+				NQLogSpam("WatchDog") << "close valve " << pump;
+				emit setSwitchEnabled(valveChannel, false);
+			}
+			if (model_->getSwitchBlocked(valveChannel)==false) {
+				NQLogSpam("WatchDog") << "block valve " << pump;
+				emit setSwitchBlocked(valveChannel, true);
+			}
+		}
+	}
+  */
+
 }
 
 void WatchDog::pressureChanged(int sensor, double p)
 {
   QMutexLocker locker(&mutex_);
-  
+
   // NQLogSpam("WatchDog") << "pressureChanged(" << sensor << ", " << p << ")";
-  
+
   switch (sensor) {
   case 1:
     pressure1_.push(p);
@@ -74,18 +101,5 @@ void WatchDog::pressureChanged(int sensor, double p)
   case 3:
     pressure3_.push(p);
     break;
-  }
-  
-  checkValues();
-}
-
-void WatchDog::checkValues()
-{
-	NQLogDebug("WatchDog") << "checkValues";
-
-  for (int i=0;i<5;++i) {
-    if (model_->getSwitchBlocked(i)) {
-      emit setSwitchBlocked(i, false);
-    }
   }
 }
