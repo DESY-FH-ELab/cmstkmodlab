@@ -20,9 +20,9 @@ class WatchDog : public QObject
 
 public:
 
-  WatchDog(PumpStationModel* model,
-	   int history,
-           QObject *parent = 0);
+	WatchDog(PumpStationModel* model,
+		     	 int history,
+			     QObject *parent = 0);
 
 public slots:
   
