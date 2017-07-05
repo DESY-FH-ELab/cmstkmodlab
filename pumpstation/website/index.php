@@ -123,7 +123,7 @@ if ($PSYS >= 200.0 || $PSYS < 0.0) {
 echo ('<div style="font-size:16px;text-align:right;margin-top:5px;margin-right:10px;">');
 if ($PSYS>= 10.0) {
 	printf ( "%.0f", $PSYS);
-} else if ($P3 >= 0.1) {
+} else if ($PSYS>= 0.1) {
 	printf ( "%.1f", $PSYS);
 } else {
 	printf ( "%.1E", $PSYS);
