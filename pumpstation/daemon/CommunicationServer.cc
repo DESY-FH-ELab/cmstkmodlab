@@ -70,7 +70,16 @@ void CommunicationServer::handleCommand()
   args.removeAt(0);
   QString response;
 
-  if (cmd=="setPumpState") {
+  if (cmd=="writeConfig") {
+  	if (args.count()!=0) {
+  		response = "ERR";
+  	} else {
+  		ApplicationConfig * config = ApplicationConfig::instance();
+  		config->safe(std::string(Config::CMSTkModLabBasePath) + "/pumpstation/pumpstation.cfg");
+
+  		response = "OK";
+  	}
+  } else if (cmd=="setPumpState") {
   	if (args.count()!=2) {
   		response = "ERR";
   	} else {
