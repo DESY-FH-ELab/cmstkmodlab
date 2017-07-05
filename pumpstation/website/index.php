@@ -33,7 +33,7 @@
       <div style="margin:auto;width:800px;background-color:#FFFFFF;">
 
         <div style="width:800px;position:absolute;">
-          <img src="data/pumpstation_schematic.png" width="100%"/>
+          <img src="data/pumpstation_schematic@2x.png" width="100%"/>
         </div>
         
 <?php
