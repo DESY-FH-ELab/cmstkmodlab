@@ -48,13 +48,13 @@ if (is_array ( $valVS )) {
 }
 list ( $valSS1, $valP1, $valSS2, $valP2, $valSS3, $valP3 ) = explode ( ";", $VS );
 
-$SS1 = intval ( $valSS1 );
-$SS2 = intval ( $valSS2 );
-$SS3 = intval ( $valSS3 );
+$SSSYS = intval ( $valSS1 );
+$SS1 = intval ( $valSS2 );
+$SS2 = intval ( $valSS3 );
 
-$P1 = floatval ( $valP1 );
-$P2 = floatval ( $valP2 );
-$P3 = floatval ( $valP3 );
+$PSYS = floatval ( $valP1 );
+$P1 = floatval ( $valP2 );
+$P2 = floatval ( $valP3 );
 
 // $command = $ini_array['DocumentRoot']."/PumpStationControl --web getPressure 1";
 // exec ($command, $valP1, $return);
@@ -113,7 +113,7 @@ echo ('</div></div>');
 // } else {
 // $P3 = floatval($valP3);
 // }
-if ($P3 >= 200.0 || $P3 < 0.0) {
+if ($PSYS >= 200.0 || $PSYS < 0.0) {
 	echo ('<div style="position:absolute;width:128px;height:30px;margin-left:341px;margin-top:85px;background-color:#FF5555;">');
 } else if ($P3 < 150.0) {
 	echo ('<div style="position:absolute;width:128px;height:30px;margin-left:341px;margin-top:85px;background-color:#55FF55;">');
@@ -121,12 +121,12 @@ if ($P3 >= 200.0 || $P3 < 0.0) {
 	echo ('<div style="position:absolute;width:128px;height:30px;margin-left:341px;margin-top:85px;background-color:#FFAA55;">');
 }
 echo ('<div style="font-size:16px;text-align:right;margin-top:5px;margin-right:10px;">');
-if ($P3 >= 10.0) {
-	printf ( "%.0f", $P3);
+if ($PSYS>= 10.0) {
+	printf ( "%.0f", $PSYS);
 } else if ($P3 >= 0.1) {
-	printf ( "%.1f", $P3);
+	printf ( "%.1f", $PSYS);
 } else {
-	printf ( "%.1E", $P3);
+	printf ( "%.1E", $PSYS);
 }
 echo (" mbar");
 echo ('</div></div>');
