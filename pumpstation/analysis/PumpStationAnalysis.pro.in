@@ -49,7 +49,12 @@ macx {
   #QMAKE_POST_LINK = install_name_tool -change libCommon.1.dylib @basepath@/common/libCommon.1.dylib $(TARGET)
 }
 
-unix {
+macx {
+  target.path = ~/bin
+  target.from = PumpStationAnalysis
+  
+  INSTALLS += target
+} else {
   target.path = /usr/bin
   target.from = PumpStationAnalysis
   
