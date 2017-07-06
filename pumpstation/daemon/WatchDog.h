@@ -6,7 +6,7 @@
 #include <QObject>
 #include <QMutex>
 #include <QTimer>
-#include <QDateTime>
+#include <QTime>
 #include <QXmlStreamWriter>
 #include <QSocketNotifier>
 
@@ -32,10 +32,13 @@ protected slots:
 
   void switchStateChanged(int device, State newState);
   void pressureChanged(int sensor, double p);
+  void statusTimeout();
 
 protected:
 
   PumpStationModel* model_;
+
+  QTimer* statusTimer_;
 
   QMutex mutex_;
 
