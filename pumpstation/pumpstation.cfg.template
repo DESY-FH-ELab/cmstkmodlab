@@ -6,10 +6,11 @@ URL                    http://cmsvakusaug.desy.de
 LeyboldUpdateInterval  1
 
 PumpSwitches           0 1
-ValveSwitches          2 4 3
+ValveSwitches          2 3 4
 
-Pump1OperatingHours    1.3456
-Pump2OperatingHours    2.6789
+HeartBeat              18.0
+Pump1OperatingHours    1.000
+Pump2OperatingHours    1.000
 
 slackwebhook	       https://hooks.slack.com/services/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
 slackusername          pumpstation

@@ -1,5 +1,6 @@
 common_test
 common_test.pro
+testout.cfg
 *.o
 .qmake.stash
 .qmake.cache

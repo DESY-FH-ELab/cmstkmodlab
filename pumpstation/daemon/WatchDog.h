@@ -6,7 +6,7 @@
 #include <QObject>
 #include <QMutex>
 #include <QTimer>
-#include <QDateTime>
+#include <QTime>
 #include <QXmlStreamWriter>
 #include <QSocketNotifier>
 
@@ -20,9 +20,9 @@ class WatchDog : public QObject
 
 public:
 
-  WatchDog(PumpStationModel* model,
-	   int history,
-           QObject *parent = 0);
+	WatchDog(PumpStationModel* model,
+		     	 int history,
+			     QObject *parent = 0);
 
 public slots:
   
@@ -32,12 +32,13 @@ protected slots:
 
   void switchStateChanged(int device, State newState);
   void pressureChanged(int sensor, double p);
+  void statusTimeout();
 
 protected:
 
-  void checkValues();
-
   PumpStationModel* model_;
+
+  QTimer* statusTimer_;
 
   QMutex mutex_;
 

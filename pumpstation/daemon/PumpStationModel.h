@@ -29,6 +29,9 @@ public:
 
   double getPumpOperatingHours(int pump) const;
 
+  int getPumpChannel(int pump) const;
+  int getValveChannel(int valve) const;
+
 public slots:
 
   void setSwitchBlocked(int, bool);
@@ -55,6 +58,7 @@ protected:
   const double updateInterval_;
   QTimer* timer_;
 
+  double heartBeat_;
   QTimer* pump1timer_;
   QTimer* pump2timer_;
 
@@ -66,6 +70,7 @@ protected:
 
   std::vector<int> pumpChannels_;
   std::vector<int> valveChannels_;
+
   std::array<double,3> pumpOperatingHours_;
 
 signals:

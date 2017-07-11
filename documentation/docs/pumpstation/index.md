@@ -8,6 +8,9 @@ the command line program `PumpStationControl` communicates with the `PumpStation
 by sending commands and receiving and printing the daemon response on the command line.
 The daemon understands the following commands:
 
+* <b>writeConfig</b></br>
+write config file.
+
 * <b>setPumpState [int pump] [int state]</b></br>
 switches on or off a pump. [int pump] can be either 1 or 2, [int state] is either 1 for
 ON or 0 for OFF.

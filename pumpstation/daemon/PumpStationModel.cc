@@ -21,7 +21,30 @@ PumpStationModel::PumpStationModel(ConradModel* conradModel,
 	ApplicationConfig * config = ApplicationConfig::instance();
 
   pumpChannels_ = config->getValueVector<int>("PumpSwitches");
+  QString channelsString = "";
+  int count = 0;
+  for (std::vector<int>::iterator it = pumpChannels_.begin();
+  		 it!=pumpChannels_.end();
+  		 ++it) {
+  	if (count>0) channelsString += " ";
+  	channelsString += QString::number(*it);
+  	count++;
+  }
+  NQLog("PumpStationModel") << "pump channels: " << channelsString;
+
   valveChannels_ = config->getValueVector<int>("ValveSwitches");
+  channelsString = "";
+  count = 0;
+  for (std::vector<int>::iterator it = valveChannels_.begin();
+  		 it!=valveChannels_.end();
+  		 ++it) {
+  	if (count>0) channelsString += " ";
+  	channelsString += QString::number(*it);
+  	count++;
+  }
+  NQLog("PumpStationModel") << "valve channels: " << channelsString;
+
+  heartBeat_ = config->getValue<double>("HeartBeat");
   pumpOperatingHours_[1] = config->getValue<double>("Pump1OperatingHours");
   pumpOperatingHours_[2] = config->getValue<double>("Pump2OperatingHours");
 
@@ -29,6 +52,9 @@ PumpStationModel::PumpStationModel(ConradModel* conradModel,
     switchBlocked_[i] = true;
     switchState_[i] = OFF;
   }
+  switchBlocked_[getPumpChannel(1)] = false;
+  switchBlocked_[getPumpChannel(2)] = false;
+  switchBlocked_[getValveChannel(3)] = false;
 
   for (int i=0;i<3;i++) {
     sensorStatus_[i] = LeyboldGraphixThree_t::SensorStatus_unknown;
@@ -45,11 +71,11 @@ PumpStationModel::PumpStationModel(ConradModel* conradModel,
   timer_->start();
 
   pump1timer_ = new QTimer(this);
-  pump1timer_->setInterval(30 * 1000);
+  pump1timer_->setInterval(heartBeat_ * 1000);
   connect(pump1timer_, SIGNAL(timeout()), this, SLOT(pump1HeartBeat()));
 
   pump2timer_ = new QTimer(this);
-  pump2timer_->setInterval(30 * 1000);
+  pump2timer_->setInterval(heartBeat_ * 1000);
   connect(pump2timer_, SIGNAL(timeout()), this, SLOT(pump2HeartBeat()));
 
   updateInformation();
@@ -87,24 +113,65 @@ int PumpStationModel::getSensorStatus(int sensor) const
 
 void PumpStationModel::setSwitchBlocked(int channel, bool blocked)
 {
+	NQLogSpam("PumpStationModel") << "setSwitchBlocked(" << channel << ", " << blocked << ")";
   switchBlocked_[channel] = blocked;
 }
 
 void PumpStationModel::setSwitchEnabled(int channel, bool enabled)
 {
-  // if (switchBlocked_[channel]) return;
+  if (switchBlocked_[channel]) return;
+
+  NQLogSpam("PumpStationModel") << "setSwitchEnabled(" << channel << ", " << enabled << ")";
 
   conradModel_->setSwitchEnabled(channel, enabled);
 
   if (enabled) {
     if (switchState_[channel] != READY) {
       switchState_[channel] = READY;
+
       emit switchStateChanged(channel, switchState_[channel]);
+
+      // pump 1 is turned on
+      //   => valve 1 is unblocked
+      if (channel==getPumpChannel(1)) {
+      	setSwitchBlocked(getValveChannel(1), false);
+      }
+
+      // pump 2 is turned on
+      //   => valve 2 is unblocked
+      if (channel==getPumpChannel(2)) {
+      	setSwitchBlocked(getValveChannel(2), false);
+      }
+
     }
   } else {
     if (switchState_[channel] != OFF) {
       switchState_[channel] = OFF;
+
       emit switchStateChanged(channel, switchState_[channel]);
+
+      // pump 1 is turned off
+      //   => valve 1 is closed if it is open
+      //   => valve 1 is blocked
+      if (channel==getPumpChannel(1)) {
+      	if (switchState_[getValveChannel(1)]==READY) {
+      		conradModel_->setSwitchEnabled(getValveChannel(1), false);
+      		emit switchStateChanged(getValveChannel(1), switchState_[channel]);
+      	}
+      	setSwitchBlocked(getValveChannel(1), true);
+      }
+
+      // pump 2 is turned off
+      //   => valve 2 is closed if it is open
+      //   => valve 2 is blocked
+      if (channel==getPumpChannel(2)) {
+      	if (switchState_[getValveChannel(2)]==READY) {
+      		conradModel_->setSwitchEnabled(getValveChannel(2), false);
+      		emit switchStateChanged(getValveChannel(1), switchState_[channel]);
+      	}
+      	setSwitchBlocked(getValveChannel(2), true);
+      }
+
     }
   }
 }
@@ -148,7 +215,7 @@ void PumpStationModel::updateInformation()
 
 void PumpStationModel::updateConrad()
 {
-  // NQLog("PumpStationModel", NQLog::Message) << "updateConrad()";
+	// NQLog("PumpStationModel", NQLog::Debug) << "updateConrad()";
 
   if (thread()==QApplication::instance()->thread()) {
     // NQLog("PumpStationModel", NQLog::Debug) << " running in main application thread";
@@ -160,23 +227,6 @@ void PumpStationModel::updateConrad()
   for (int i=0;i<5;++i) {
     switchState[i] = conradModel_->getSwitchState(i);
     if (switchState_[i] != switchState[i]) {
-
-    	if (i==pumpChannels_[0]) { // pump 1
-    		if (switchState[i]==OFF) {
-    			pump1timer_->stop();
-    		} else if (switchState[i]==READY) {
-    			pump1timer_->start();
-    		}
-    	}
-
-    	if (i==pumpChannels_[1]) { // pump 1
-    		if (switchState[i]==OFF) {
-    			pump2timer_->stop();
-    		} else if (switchState[i]==READY) {
-    			pump2timer_->start();
-    		}
-    	}
-
       emit switchStateChanged(i, switchState[i]);
     }
   }
@@ -190,6 +240,28 @@ void PumpStationModel::updateConrad()
       emit dataValid();
     }
   }
+
+  // start pump 1 heart beat if it is not running and pump 1 is running
+  if (switchState_[getPumpChannel(1)]==READY && !pump1timer_->isActive()) {
+  	NQLogSpam("PumpStationModel") << "starting pump 1 heart beat";
+  	pump1timer_->start();
+  }
+  // stop pump 1 heart beat if it is running and pump 1 is not running
+  if (switchState_[getPumpChannel(1)]==OFF && pump1timer_->isActive()) {
+  	NQLogSpam("PumpStationModel") << "stopping pump 1 heart beat";
+  	pump1timer_->stop();
+  }
+
+  // start pump 2 heart beat if it is not running and pump 2 is running
+  if (switchState_[getPumpChannel(2)]==READY && !pump2timer_->isActive()) {
+		NQLogSpam("PumpStationModel") << "starting pump 2 heart beat";
+  	pump2timer_->start();
+  }
+  // stop pump 2 heart beat if it is running and pump 2 is not running
+  if (switchState_[getPumpChannel(2)]==OFF && pump2timer_->isActive()) {
+  	NQLogSpam("PumpStationModel") << "stoping pump 2 heart beat";
+  	pump2timer_->stop();
+  }
 }
 
 double PumpStationModel::getPumpOperatingHours(int pump) const
@@ -202,20 +274,41 @@ void PumpStationModel::setPumpOperatingHours(int pump, double value)
 {
 	if (pump<1 || pump>2) return;
 	pumpOperatingHours_[pump] = value;
+
+	ApplicationConfig * config = ApplicationConfig::instance();
+	if (pump==1) {
+		config->setValue<double>("Pump1OperatingHours", value);
+	} else {
+		config->setValue<double>("Pump2OperatingHours", value);
+	}
 }
 
 void PumpStationModel::pump1HeartBeat()
 {
-	pumpOperatingHours_[1] += 30. / 3600.;
+	pumpOperatingHours_[1] += heartBeat_ / 3600.;
 
 	ApplicationConfig * config = ApplicationConfig::instance();
 	config->setValue<double>("Pump1OperatingHours", pumpOperatingHours_[1]);
+
+	NQLog("PumpStationModel") << "pump1HeartBeat = " << pumpOperatingHours_[1];
 }
 
 void PumpStationModel::pump2HeartBeat()
 {
-	pumpOperatingHours_[2] += 30. / 3600.;
+	pumpOperatingHours_[2] += heartBeat_ / 3600.;
 
 	ApplicationConfig * config = ApplicationConfig::instance();
 	config->setValue<double>("Pump2OperatingHours", pumpOperatingHours_[2]);
+
+	NQLog("PumpStationModel") << "pump1HeartBeat = " << pumpOperatingHours_[2];
+}
+
+int PumpStationModel::getPumpChannel(int pump) const
+{
+	return pumpChannels_[pump-1];
+}
+
+int PumpStationModel::getValveChannel(int valve) const
+{
+	return valveChannels_[valve-1];
 }

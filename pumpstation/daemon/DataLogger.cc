@@ -163,6 +163,9 @@ void DataLogger::checkRestart()
 
   if (fileDateTime_.secsTo(utime)<60*60) return;
 
+  ApplicationConfig * config = ApplicationConfig::instance();
+  config->safe(std::string(Config::CMSTkModLabBasePath) + "/pumpstation/pumpstation.cfg");
+
   stop();
   start();
 }

@@ -20,7 +20,7 @@ pages:
 - Assembly: assembly/index.md
 - Plasma Cleaner: plasma/index.md
 - Pump Station:
-    - setup: pumpstation/setup.md
     - usage: pumpstation/index.md
+    - setup: pumpstation/setup.md
 
 theme: readthedocs
