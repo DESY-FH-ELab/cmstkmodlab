@@ -36,6 +36,25 @@ int main(int argc, char *argv[])
 	{
 		ApplicationConfig * config = ApplicationConfig::instance("test.cfg");
 
+		double double1 = config->getValue<double>("double1");
+
+		std::cout << double1 << std::endl;
+
+		double1 = 4.3;
+
+		config->setValue<double>("double1", double1);
+
+		double1 = config->getValue<double>("double1");
+
+		std::cout << double1 << std::endl;
+
+		config->safe("testout.cfg");
+	}
+
+	/*
+	{
+		ApplicationConfig * config = ApplicationConfig::instance("test.cfg");
+
 	  std::vector<int> integer1 = config->getValueVector<int>("integer1");
 	  std::cout << "integer1: ";
 	  for (std::vector<int>::iterator it = integer1.begin();
@@ -47,6 +66,7 @@ int main(int argc, char *argv[])
 
 	  config->safe("testout.cfg");
 	}
+  */
 
 	/*
 	{
