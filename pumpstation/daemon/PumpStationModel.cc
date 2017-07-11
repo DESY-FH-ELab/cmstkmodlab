@@ -274,6 +274,12 @@ void PumpStationModel::setPumpOperatingHours(int pump, double value)
 {
 	if (pump<1 || pump>2) return;
 	pumpOperatingHours_[pump] = value;
+
+	if (pump==1) {
+		config->setValue<double>("Pump1OperatingHours", value);
+	} else {
+		config->setValue<double>("Pump2OperatingHours", value);
+	}
 }
 
 void PumpStationModel::pump1HeartBeat()
