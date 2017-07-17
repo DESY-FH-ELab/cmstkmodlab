@@ -540,8 +540,14 @@ void LeyboldGraphixThree::SendCommand(std::string& command) const
   command += crc;
   command += EOT;
 
-  // std::cout << command.length() << " |" << command.c_str() << "|";
-
+  /*
+  std::cout << "LeyboldGraphixThree::SendCommand "
+	    << command.length()
+	    << " |"
+	    << command.c_str()
+	    << "|" << std::endl;
+  */
+  
   comHandler_->SendCommand(command.c_str());
 
   usleep(50);
