@@ -109,6 +109,9 @@ int main(int argc, char *argv[])
   LeyboldGraphixThreeModel leybold(leyboldPort.c_str(), config->getValue<int>("LeyboldUpdateInterval"), &app);
 
   /*
+  QDateTime dt = QDateTime::currentDateTime();
+  leybold.setDateTime(dt);
+  
   if (leybold.getSensorDetectionMode(1)!=VLeyboldGraphixThree::SensorDetectionAuto) {
     leybold.setSensorDetectionMode(1, VLeyboldGraphixThree::SensorDetectionAuto);
   }
@@ -133,9 +136,9 @@ int main(int argc, char *argv[])
   leybold.setSensorName(1, "SYS");
   leybold.setSensorName(2, "P1");
   leybold.setSensorName(3, "P2");
-  */
 
   leybold.setDisplayUnit(VLeyboldGraphixThree::DisplayUnit_mbar);
+  */
 
   leybold.updateInformation();
 
