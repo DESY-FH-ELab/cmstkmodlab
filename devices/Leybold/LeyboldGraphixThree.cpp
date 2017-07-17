@@ -543,6 +543,8 @@ void LeyboldGraphixThree::SendCommand(std::string& command) const
   // std::cout << command.length() << " |" << command.c_str() << "|";
 
   comHandler_->SendCommand(command.c_str());
+
+  usleep(50);
 }
 
 bool LeyboldGraphixThree::ReceiveData(std::string& buffer) const
