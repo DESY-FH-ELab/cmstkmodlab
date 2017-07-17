@@ -18,7 +18,7 @@ PumpStationModel::PumpStationModel(ConradModel* conradModel,
     dataValid_(false),
     updateInterval_(updateInterval)
 {
-	ApplicationConfig * config = ApplicationConfig::instance();
+  ApplicationConfig * config = ApplicationConfig::instance();
 
   pumpChannels_ = config->getValueVector<int>("PumpSwitches");
   QString channelsString = "";
