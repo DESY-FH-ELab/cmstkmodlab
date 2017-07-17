@@ -81,6 +81,28 @@ void LeyboldGraphixThreeModel::setDisplayUnit(LeyboldGraphixThree_t::DisplayUnit
   }
 }
 
+const QDateTime LeyboldGraphixThreeModel::getDateTime() const
+{
+  std::string date = controller_->GetDate();
+  std::string time = controller_->GetTime();
+
+  QDateTime dt(QDate::fromString(date.c_str(), "yyyy-MM-dd"),
+	       QTime::fromString(time.c_str(), "hh:mm:ss"));
+ 
+  return dt;
+}
+
+void LeyboldGraphixThreeModel::setDateTime(const QDateTime& dt)
+{
+  NQLog("LeyboldGraphixThreeModel") << "setDateTime: "
+				    << dt.toString("yyyy-MM-dd").toStdString()
+				    << " "
+				    << dt.toString("hh:mm:ss").toStdString();
+  
+  controller_->SetDate(dt.toString("yyyy-MM-dd").toStdString());
+  controller_->SetTime(dt.toString("hh:mm:ss").toStdString());
+}
+
 void LeyboldGraphixThreeModel::initialize()
 {
   NQLog("LeyboldGraphixThreeModel") << "initialize() " << LeyboldGraphixThree_PORT;

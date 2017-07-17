@@ -7,6 +7,7 @@
 
 #include <QString>
 #include <QTimer>
+#include <QDateTime>
 
 #include "DeviceState.h"
 #include "DeviceParameter.h"
@@ -47,6 +48,9 @@ public:
   LeyboldGraphixThree_t::DisplayUnit getDisplayUnit() const;
   void setDisplayUnit(LeyboldGraphixThree_t::DisplayUnit unit);
 
+  const QDateTime getDateTime() const;
+  void setDateTime(const QDateTime& dt);
+  
 public slots:
 
   void setDeviceEnabled(bool enabled);

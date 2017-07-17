@@ -460,6 +460,74 @@ bool LeyboldGraphixThree::GetSetPointStatus(int sp) const
   return false;
 }
 
+std::string LeyboldGraphixThree::GetDate() const
+{
+  std::string command;
+
+  command += SI;
+  command += "5";
+  command += Separator;
+  command += "21";
+
+  SendCommand(command);
+
+  std::string buffer;
+  bool isACK = ReceiveData(buffer);
+
+  return buffer;
+}
+
+void LeyboldGraphixThree::SetDate(const std::string& date)
+{
+  std::string command;
+
+  command += SO;
+  command += "5";
+  command += Separator;
+  command += "21";
+  command += Separator;
+  command += date;
+
+  SendCommand(command);
+
+  std::string buffer;
+  bool isACK = ReceiveData(buffer);
+}
+
+std::string LeyboldGraphixThree::GetTime() const
+{
+  std::string command;
+
+  command += SI;
+  command += "5";
+  command += Separator;
+  command += "20";
+
+  SendCommand(command);
+
+  std::string buffer;
+  bool isACK = ReceiveData(buffer);
+
+  return buffer;
+}
+
+void LeyboldGraphixThree::SetTime(const std::string& time)
+{
+  std::string command;
+
+  command += SO;
+  command += "5";
+  command += Separator;
+  command += "20";
+  command += Separator;
+  command += time;
+
+  SendCommand(command);
+
+  std::string buffer;
+  bool isACK = ReceiveData(buffer);
+}
+
 bool LeyboldGraphixThree::DeviceAvailable() const
 {
   return isDeviceAvailable_;

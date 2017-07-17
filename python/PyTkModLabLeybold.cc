@@ -38,5 +38,9 @@ BOOST_PYTHON_MODULE(PyTkModLabLeybold)
       .def("GetSetPointOffPressure", &LeyboldGraphixThree_t::GetSetPointOffPressure)
       .def("SetSetPointOffPressure", &LeyboldGraphixThree_t::SetSetPointOffPressure)
       .def("GetSetPointStatus", &LeyboldGraphixThree_t::GetSetPointStatus)
+      .def("GetDate", &LeyboldGraphixThree_t::GetDate)
+      .def("SetDate", &LeyboldGraphixThree_t::SetDate)
+      .def("GetTime", &LeyboldGraphixThree_t::GetTime)
+      .def("SetTime", &LeyboldGraphixThree_t::SetTime)
     ;
 };

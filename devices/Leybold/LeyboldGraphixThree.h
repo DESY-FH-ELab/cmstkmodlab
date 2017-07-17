@@ -55,6 +55,12 @@ class LeyboldGraphixThree : public VLeyboldGraphixThree
 
   bool GetSetPointStatus(int sp) const;
 
+  std::string GetDate() const;
+  void SetDate(const std::string& date);
+
+  std::string GetTime() const;
+  void SetTime(const std::string& time);
+
  protected:
 
   void SendCommand(std::string& command) const;

@@ -1,4 +1,5 @@
 #include <cmath>
+#include <ctime>
 #include <iostream>
 #include <cstdlib>
 
@@ -160,3 +161,32 @@ bool LeyboldGraphixThreeFake::GetSetPointStatus(int sp) const
   return false;
 }
 
+std::string LeyboldGraphixThreeFake::GetDate() const
+{
+  std::time_t t = std::time(NULL);
+  char buffer[100];
+
+  std::strftime(buffer, sizeof(buffer), "%Y-%m-%d", std::localtime(&t));
+
+  return std::string(buffer);
+}
+
+void LeyboldGraphixThreeFake::SetDate(const std::string&)
+{
+
+}
+
+std::string LeyboldGraphixThreeFake::GetTime() const
+{
+  std::time_t t = std::time(NULL);
+  char buffer[100];
+
+  std::strftime(buffer, sizeof(buffer), "%H:%M:%S", std::localtime(&t));
+
+  return std::string(buffer);
+}
+
+void LeyboldGraphixThreeFake::SetTime(const std::string&)
+{
+
+}

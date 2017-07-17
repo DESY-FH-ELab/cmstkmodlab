@@ -99,6 +99,12 @@ class VLeyboldGraphixThree
 
   virtual bool GetSetPointStatus(int sp) const = 0;
 
+  virtual std::string GetDate() const = 0;
+  virtual void SetDate(const std::string& date) = 0;
+
+  virtual std::string GetTime() const = 0;
+  virtual void SetTime(const std::string& date) = 0;
+  
  protected:
 
   std::map<std::string,SensorStatus> sensorStatusText_;
