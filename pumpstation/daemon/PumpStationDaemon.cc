@@ -64,8 +64,10 @@ int main(int argc, char *argv[])
 {
   QCoreApplication app(argc, argv);
 
-  setup_unix_signal_handlers();
-
+  if (!app.arguments().contains("--nodaemon")) {
+    setup_unix_signal_handlers();
+  }
+  
   NQLogger::instance()->addActiveModule("*");
 
   if (app.arguments().contains("--nodaemon")) {
