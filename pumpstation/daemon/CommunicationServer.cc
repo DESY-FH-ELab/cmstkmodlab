@@ -71,34 +71,34 @@ void CommunicationServer::handleCommand()
   QString response;
 
   if (cmd=="writeConfig") {
-  	if (args.count()!=0) {
-  		response = "ERR";
-  	} else {
-  		ApplicationConfig * config = ApplicationConfig::instance();
-  		config->safe(std::string(Config::CMSTkModLabBasePath) + "/pumpstation/pumpstation.cfg");
-
-  		response = "OK";
-  	}
+    if (args.count()!=0) {
+      response = "ERR";
+    } else {
+      ApplicationConfig * config = ApplicationConfig::instance();
+      config->safe(std::string(Config::CMSTkModLabBasePath) + "/pumpstation/pumpstation.cfg");
+      
+      response = "OK";
+    }
   } else if (cmd=="setPumpState") {
-  	if (args.count()!=2) {
-  		response = "ERR";
-  	} else {
-  		int pump = args.at(0).toInt();
-  		int state = args.at(1).toInt();
-
-  		if (pump<1 || pump>2) {
-  			response = "ERR";
-  		} else {
-  			emit setSwitchEnabled(pumpChannels_[pump-1], state);
-  			response = "OK";
-  		}
-  	}
+    if (args.count()!=2) {
+      response = "ERR";
+    } else {
+      int pump = args.at(0).toInt();
+      int state = args.at(1).toInt();
+      
+      if (pump<1 || pump>2) {
+	response = "ERR";
+      } else {
+	emit setSwitchEnabled(pumpChannels_[pump-1], state);
+	response = "OK";
+      }
+    }
   } else if (cmd=="getPumpState") {
     if (args.count()!=1) {
       response = "ERR";
     } else {
       int pump = args.at(0).toInt();
-
+      
       if (pump<1 || pump>2) {
         response = "ERR";
       } else {
@@ -131,25 +131,25 @@ void CommunicationServer::handleCommand()
       response = QString("%1;%2").arg(value1, 0, 'f', 6).arg(value2, 0, 'f', 6);
     }
   } else if (cmd=="setValveState") {
-  	if (args.count()!=2) {
-  		response = "ERR";
-  	} else {
-  		int valve = args.at(0).toInt();
-  		int state = args.at(1).toInt();
-
-  		if (valve<1 || valve>3) {
-  			response = "ERR";
-  		} else {
-  			emit setSwitchEnabled(valveChannels_[valve-1], state);
-  			response = "OK";
-  		}
-  	}
+    if (args.count()!=2) {
+      response = "ERR";
+    } else {
+      int valve = args.at(0).toInt();
+      int state = args.at(1).toInt();
+      
+      if (valve<1 || valve>3) {
+	response = "ERR";
+      } else {
+	emit setSwitchEnabled(valveChannels_[valve-1], state);
+	response = "OK";
+      }
+    }
   } else if (cmd=="getValveState") {
     if (args.count()!=1) {
       response = "ERR";
     } else {
       int valve = args.at(0).toInt();
-
+      
       if (valve<1 || valve>3) {
         response = "ERR";
       } else {
@@ -159,12 +159,12 @@ void CommunicationServer::handleCommand()
       }
     }
   } else if (cmd=="setSwitchState") {
-  	if (args.count()!=2) {
-  		response = "ERR";
-  	} else {
-  		int channel = args.at(0).toInt();
-  		int state = args.at(1).toInt();
-
+    if (args.count()!=2) {
+      response = "ERR";
+    } else {
+      int channel = args.at(0).toInt();
+      int state = args.at(1).toInt();
+      
       if (channel<0 || channel>4) {
         response = "ERR";
       } else {
