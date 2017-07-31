@@ -22,5 +22,6 @@ pages:
 - Pump Station:
     - usage: pumpstation/index.md
     - setup: pumpstation/setup.md
+- License: license.md
 
 theme: readthedocs
