@@ -50,7 +50,8 @@ QVariant LStepExpressMeasurementTable::data(const QModelIndex& index, int role) 
  
 void LStepExpressMeasurementTable::update()
 {
-  reset();
+	beginResetModel();
+	endResetModel();
 }
 
 void LStepExpressMeasurementTable::insertData(int column_index, std::vector<float> values)
