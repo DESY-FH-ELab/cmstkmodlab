@@ -43,7 +43,7 @@ double imageScale(double focalLength)
   return p0 + p1 * focalLength + p2 * focalLength * focalLength;
 }
 
-int main(int argc, char *argv[])
+int main(int /* argc */, char ** /* argv */)
 {
 	{
 		ApplicationConfig * config = ApplicationConfig::instance("test.cfg");

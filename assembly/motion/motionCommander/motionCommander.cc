@@ -29,7 +29,7 @@
 
 #include "MCommanderMainWindow.h"
 
-static const char* assemblyGUID = "{5F9DC7D7-54C2-4625-A7C6-2EBE4C37C8F5}";
+// static const char* assemblyGUID = "{5F9DC7D7-54C2-4625-A7C6-2EBE4C37C8F5}";
 //#define SINGLETON 1
 
 int main( int argc, char** argv )
