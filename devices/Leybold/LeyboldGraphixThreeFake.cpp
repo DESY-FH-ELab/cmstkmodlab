@@ -1,4 +1,17 @@
+/////////////////////////////////////////////////////////////////////////////////
+//                                                                             //
+//               Copyright (C) 2011-2017 - The DESY CMS Group                  //
+//                           All rights reserved                               //
+//                                                                             //
+//      The CMStkModLab source code is licensed under the GNU GPL v3.0.        //
+//      You have the right to modify and/or redistribute this source code      //
+//      under the terms specified in the license, which may be found online    //
+//      at http://www.gnu.org/licenses or at License.txt.                      //
+//                                                                             //
+/////////////////////////////////////////////////////////////////////////////////
+
 #include <cmath>
+#include <ctime>
 #include <iostream>
 #include <cstdlib>
 
@@ -160,3 +173,32 @@ bool LeyboldGraphixThreeFake::GetSetPointStatus(int sp) const
   return false;
 }
 
+std::string LeyboldGraphixThreeFake::GetDate() const
+{
+  std::time_t t = std::time(NULL);
+  char buffer[100];
+
+  std::strftime(buffer, sizeof(buffer), "%Y-%m-%d", std::localtime(&t));
+
+  return std::string(buffer);
+}
+
+void LeyboldGraphixThreeFake::SetDate(const std::string&)
+{
+
+}
+
+std::string LeyboldGraphixThreeFake::GetTime() const
+{
+  std::time_t t = std::time(NULL);
+  char buffer[100];
+
+  std::strftime(buffer, sizeof(buffer), "%H:%M:%S", std::localtime(&t));
+
+  return std::string(buffer);
+}
+
+void LeyboldGraphixThreeFake::SetTime(const std::string&)
+{
+
+}

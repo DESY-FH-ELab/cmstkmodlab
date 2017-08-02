@@ -1,3 +1,15 @@
+/////////////////////////////////////////////////////////////////////////////////
+//                                                                             //
+//               Copyright (C) 2011-2017 - The DESY CMS Group                  //
+//                           All rights reserved                               //
+//                                                                             //
+//      The CMStkModLab source code is licensed under the GNU GPL v3.0.        //
+//      You have the right to modify and/or redistribute this source code      //
+//      under the terms specified in the license, which may be found online    //
+//      at http://www.gnu.org/licenses or at License.txt.                      //
+//                                                                             //
+/////////////////////////////////////////////////////////////////////////////////
+
 #ifndef _VLEYBOLDGRAPHIXTHREE_H_
 #define _VLEYBOLDGRAPHIXTHREE_H_
 
@@ -99,6 +111,12 @@ class VLeyboldGraphixThree
 
   virtual bool GetSetPointStatus(int sp) const = 0;
 
+  virtual std::string GetDate() const = 0;
+  virtual void SetDate(const std::string& date) = 0;
+
+  virtual std::string GetTime() const = 0;
+  virtual void SetTime(const std::string& date) = 0;
+  
  protected:
 
   std::map<std::string,SensorStatus> sensorStatusText_;

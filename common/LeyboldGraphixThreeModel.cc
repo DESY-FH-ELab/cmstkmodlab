@@ -1,3 +1,15 @@
+/////////////////////////////////////////////////////////////////////////////////
+//                                                                             //
+//               Copyright (C) 2011-2017 - The DESY CMS Group                  //
+//                           All rights reserved                               //
+//                                                                             //
+//      The CMStkModLab source code is licensed under the GNU GPL v3.0.        //
+//      You have the right to modify and/or redistribute this source code      //
+//      under the terms specified in the license, which may be found online    //
+//      at http://www.gnu.org/licenses or at License.txt.                      //
+//                                                                             //
+/////////////////////////////////////////////////////////////////////////////////
+
 #include <QApplication>
 
 #include <nqlogger.h>
@@ -79,6 +91,28 @@ void LeyboldGraphixThreeModel::setDisplayUnit(LeyboldGraphixThree_t::DisplayUnit
     displayUnit_ = unit;
     emit informationChanged();
   }
+}
+
+const QDateTime LeyboldGraphixThreeModel::getDateTime() const
+{
+  std::string date = controller_->GetDate();
+  std::string time = controller_->GetTime();
+
+  QDateTime dt(QDate::fromString(date.c_str(), "yyyy-MM-dd"),
+	       QTime::fromString(time.c_str(), "hh:mm:ss"));
+ 
+  return dt;
+}
+
+void LeyboldGraphixThreeModel::setDateTime(const QDateTime& dt)
+{
+  NQLog("LeyboldGraphixThreeModel") << "setDateTime: "
+				    << dt.toString("yyyy-MM-dd").toStdString()
+				    << " "
+				    << dt.toString("hh:mm:ss").toStdString();
+  
+  controller_->SetDate(dt.toString("yyyy-MM-dd").toStdString());
+  controller_->SetTime(dt.toString("hh:mm:ss").toStdString());
 }
 
 void LeyboldGraphixThreeModel::initialize()

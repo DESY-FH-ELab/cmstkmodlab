@@ -1,3 +1,15 @@
+/////////////////////////////////////////////////////////////////////////////////
+//                                                                             //
+//               Copyright (C) 2011-2017 - The DESY CMS Group                  //
+//                           All rights reserved                               //
+//                                                                             //
+//      The CMStkModLab source code is licensed under the GNU GPL v3.0.        //
+//      You have the right to modify and/or redistribute this source code      //
+//      under the terms specified in the license, which may be found online    //
+//      at http://www.gnu.org/licenses or at License.txt.                      //
+//                                                                             //
+/////////////////////////////////////////////////////////////////////////////////
+
 #include <cstring>
 #include <cmath>
 #include <sstream>
@@ -460,6 +472,74 @@ bool LeyboldGraphixThree::GetSetPointStatus(int sp) const
   return false;
 }
 
+std::string LeyboldGraphixThree::GetDate() const
+{
+  std::string command;
+
+  command += SI;
+  command += "5";
+  command += Separator;
+  command += "21";
+
+  SendCommand(command);
+
+  std::string buffer;
+  bool isACK = ReceiveData(buffer);
+
+  return buffer;
+}
+
+void LeyboldGraphixThree::SetDate(const std::string& date)
+{
+  std::string command;
+
+  command += SO;
+  command += "5";
+  command += Separator;
+  command += "21";
+  command += Separator;
+  command += date;
+
+  SendCommand(command);
+
+  std::string buffer;
+  bool isACK = ReceiveData(buffer);
+}
+
+std::string LeyboldGraphixThree::GetTime() const
+{
+  std::string command;
+
+  command += SI;
+  command += "5";
+  command += Separator;
+  command += "20";
+
+  SendCommand(command);
+
+  std::string buffer;
+  bool isACK = ReceiveData(buffer);
+
+  return buffer;
+}
+
+void LeyboldGraphixThree::SetTime(const std::string& time)
+{
+  std::string command;
+
+  command += SO;
+  command += "5";
+  command += Separator;
+  command += "20";
+  command += Separator;
+  command += time;
+
+  SendCommand(command);
+
+  std::string buffer;
+  bool isACK = ReceiveData(buffer);
+}
+
 bool LeyboldGraphixThree::DeviceAvailable() const
 {
   return isDeviceAvailable_;
@@ -472,9 +552,17 @@ void LeyboldGraphixThree::SendCommand(std::string& command) const
   command += crc;
   command += EOT;
 
-  // std::cout << command.length() << " |" << command.c_str() << "|";
-
+  /*
+  std::cout << "LeyboldGraphixThree::SendCommand "
+	    << command.length()
+	    << " |"
+	    << command.c_str()
+	    << "|" << std::endl;
+  */
+  
   comHandler_->SendCommand(command.c_str());
+
+  usleep(50);
 }
 
 bool LeyboldGraphixThree::ReceiveData(std::string& buffer) const

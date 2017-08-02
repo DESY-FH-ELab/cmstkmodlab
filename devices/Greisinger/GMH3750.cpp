@@ -1,3 +1,15 @@
+/////////////////////////////////////////////////////////////////////////////////
+//                                                                             //
+//               Copyright (C) 2011-2017 - The DESY CMS Group                  //
+//                           All rights reserved                               //
+//                                                                             //
+//      The CMStkModLab source code is licensed under the GNU GPL v3.0.        //
+//      You have the right to modify and/or redistribute this source code      //
+//      under the terms specified in the license, which may be found online    //
+//      at http://www.gnu.org/licenses or at License.txt.                      //
+//                                                                             //
+/////////////////////////////////////////////////////////////////////////////////
+
 #include <string.h>
 
 #include <cmath>
@@ -26,10 +38,10 @@ bool GMH3750::Read(double & temperature)
   char buffer[1000];
   bzero( buffer, 1000 );
 
-  command[0] = 254;
-  command[1] = 0;
-  command[2] = 61;
-  command[3] = 0;
+  command[0] = char(254);
+  command[1] = char(0);
+  command[2] = char(61);
+  command[3] = char(0);
 
   comHandler_->SendCommand( command, 3 );
   comHandler_->ReceiveString( buffer );

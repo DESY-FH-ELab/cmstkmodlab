@@ -1,3 +1,15 @@
+/////////////////////////////////////////////////////////////////////////////////
+//                                                                             //
+//               Copyright (C) 2011-2017 - The DESY CMS Group                  //
+//                           All rights reserved                               //
+//                                                                             //
+//      The CMStkModLab source code is licensed under the GNU GPL v3.0.        //
+//      You have the right to modify and/or redistribute this source code      //
+//      under the terms specified in the license, which may be found online    //
+//      at http://www.gnu.org/licenses or at License.txt.                      //
+//                                                                             //
+/////////////////////////////////////////////////////////////////////////////////
+
 #include <signal.h>
 
 #include <iostream>
@@ -6,6 +18,7 @@
 #include <QtCore>
 #include <QtNetwork>
 #include <QFile>
+#include <QDateTime>
 #if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
 #include <QDesktopServices>
 #else
@@ -63,8 +76,10 @@ int main(int argc, char *argv[])
 {
   QCoreApplication app(argc, argv);
 
-  setup_unix_signal_handlers();
-
+  if (!app.arguments().contains("--nodaemon")) {
+    setup_unix_signal_handlers();
+  }
+  
   NQLogger::instance()->addActiveModule("*");
 
   if (app.arguments().contains("--nodaemon")) {
@@ -72,14 +87,14 @@ int main(int argc, char *argv[])
     NQLogger::instance()->addDestiniation(stdout, NQLog::Spam);
 
   } else if (app.arguments().contains("--pidfile")) {
-
-  	int idx = app.arguments().indexOf("--pidfile");
+    
+    int idx = app.arguments().indexOf("--pidfile");
     if (app.arguments().count()>idx+1) {
       QString pidfile = app.arguments().at(idx+1);
     }
-
+    
   }
-
+  
 #if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
   QString logdir = QDesktopServices::storageLocation(QDesktopServices::CacheLocation);
 #else
@@ -109,6 +124,9 @@ int main(int argc, char *argv[])
   LeyboldGraphixThreeModel leybold(leyboldPort.c_str(), config->getValue<int>("LeyboldUpdateInterval"), &app);
 
   /*
+  QDateTime dt = QDateTime::currentDateTime();
+  leybold.setDateTime(dt);
+  
   if (leybold.getSensorDetectionMode(1)!=VLeyboldGraphixThree::SensorDetectionAuto) {
     leybold.setSensorDetectionMode(1, VLeyboldGraphixThree::SensorDetectionAuto);
   }
@@ -133,9 +151,9 @@ int main(int argc, char *argv[])
   leybold.setSensorName(1, "SYS");
   leybold.setSensorName(2, "P1");
   leybold.setSensorName(3, "P2");
-  */
 
   leybold.setDisplayUnit(VLeyboldGraphixThree::DisplayUnit_mbar);
+  */
 
   leybold.updateInformation();
 
