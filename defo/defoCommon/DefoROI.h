@@ -10,7 +10,7 @@
 //                                                                             //
 /////////////////////////////////////////////////////////////////////////////////
 
-s#ifndef DEFOROI_H
+#ifndef DEFOROI_H
 #define DEFOROI_H
 
 #include <QDir>
