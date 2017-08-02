@@ -38,10 +38,10 @@ bool GMH3750::Read(double & temperature)
   char buffer[1000];
   bzero( buffer, 1000 );
 
-  command[0] = 254;
-  command[1] = 0;
-  command[2] = 61;
-  command[3] = 0;
+  command[0] = char(254);
+  command[1] = char(0);
+  command[2] = char(61);
+  command[3] = char(0);
 
   comHandler_->SendCommand( command, 3 );
   comHandler_->ReceiveString( buffer );
