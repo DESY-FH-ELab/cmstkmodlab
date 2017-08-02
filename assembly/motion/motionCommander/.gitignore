@@ -1,6 +1,7 @@
 motionCommander.pro
 motionCommander.pro.user
 .qmake.stash
+.qmake.cache
 Makefile
 *.d
 *.o
