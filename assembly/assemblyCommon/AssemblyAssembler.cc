@@ -11,7 +11,6 @@
 #include <QLabel>
 #include <QApplication>
 
-
 #include <TGraph.h>
 #include <TCanvas.h>
 #include <TH1F.h>
@@ -30,13 +29,14 @@
 
 #include "AssemblyAssembler.h"
 
+
 using namespace std;
 using namespace cv;
 
 
-AssemblyAssembler::AssemblyAssembler(LStepExpressModel* lStepExpressModel_)
-{
-    NQLog("AssemblyAssembler::AssemblyAssembler()");
+AssemblyAssembler::AssemblyAssembler(LStepExpressModel* lStepExpressModel):
+ QObject(), lStepExpressModel_(lStepExpressModel){
+	NQLog("AssemblyAssembler::AssemblyAssembler()");
     motionManager_ = new LStepExpressMotionManager(lStepExpressModel_);
 
 }
@@ -399,7 +399,6 @@ void  AssemblyAssembler::process_step(){
 
 
 void AssemblyAssembler::launch_next_alignment_step(){
-
   emit nextAlignmentStep(1, 0.0, 0.0, 0.0);
 
 }
@@ -433,6 +432,7 @@ void AssemblyAssembler::run_alignment(int stage, double x_pr, double y_pr, doubl
     //double target_x = ( y_pr - (1317/2.0) ) * mm_per_pixel_x;
     //double target_y = ( x_pr - (1964.0/2.0) ) * mm_per_pixel_y;
 
+    //coordinate system is flipped
     double target_x = ( y_pr - (1920.0/2.0) ) * mm_per_pixel_x;
     double target_y = ( x_pr - (2560.0/2.0) ) * mm_per_pixel_y;
     double target_theta = theta_pr;
@@ -470,30 +470,120 @@ void AssemblyAssembler::run_alignment(int stage, double x_pr, double y_pr, doubl
     else if (alignment_step == 2){
         NQLog("AssemblyAssembler::run_alignment step == ") << alignment_step;
         alignment_step++;
-        emit acquireImage();
+		
+		double x1_pos = lStepExpressModel_ -> getPosition(0); 	
+		double y1_pos = lStepExpressModel_ -> getPosition(1); 	
+		std::cout << " !!!!! " << std::endl;
+		std::cout << " xposition = " << x1_pos << "  yposition = " << y1_pos << std::endl;
+		std::cout << " !!!!! " << std::endl;
+		emit acquireImage();
     }
-    else if (alignment_step == 3){
+
+
+	else if (alignment_step == 3){
         NQLog("AssemblyAssembler::run_alignment step == ") << alignment_step;
-        NQLog("AssemblyAssembler::First corner aligned");
         alignment_step++;
+
+		// Define orientation to be reached 
+		double wanted_theta = 0.7;		//wanted orientation
+		double delta_theta =  wanted_theta - target_theta;
+		
+		std::cout << " " << std::endl;
+		std::cout << "wanted angle " << wanted_theta << std::endl;		
+		std::cout << "sensor is at angle " << target_theta << std::endl;
+		std::cout << "need to rotate by " << delta_theta << std::endl;
+		std::cout << " " << std::endl;
+
+		if ( fabs ( delta_theta > 0.01 ) ){ 
+			if ( fabs ( delta_theta <= 0.5 ) ){
+          		//NQLog("AssemblyAssembler:: moving by  ") <<  delta_theta ;
+				std::cout << " " << std::endl;
+				std::cout << "moving to wanted orientation" << std::endl;
+				std::cout << " " << std::endl;
+				alignment_step = alignment_step + 3;
+           		emit moveRelative(0.0, 0.0, 0.0, delta_theta);
+        	} 
+		
+			else if ( fabs ( delta_theta ) > 0.5){
+				std::cout << "  " << std::endl;
+				std::cout << "Need to move in steps" << std::endl;
+				std::cout << " " << std::endl;
+			
+           		emit moveRelative(0.0, 0.0, 0.0, 0.5);
+			}
+			
+			
+		}
+		
+    }
+
+    else if (alignment_step == 4){
+        NQLog("AssemblyAssembler::run_alignment step == ") << alignment_step;
+        alignment_step++;
+		//alignment_step = alignment_step - 1;
+		emit acquireImage();
+    }
+	
+	else if (alignment_step == 5){
+        NQLog("AssemblyAssembler::run_alignment step == ") << alignment_step;
+        alignment_step++;
+        if ( ( fabs(target_x)  > 0.005) || (  fabs(target_y)  > 0.005)  ){
+          NQLog("AssemblyAssembler:: moving to  ") << target_x <<",  "<< target_y <<"  target theta " <<  target_theta ;
+            emit moveRelative(target_x, target_y, 0.0, 0.0);
+        }
+      }
+
+	else if (alignment_step == 6){
+        NQLog("AssemblyAssembler::run_alignment step == ") << alignment_step;
+        alignment_step = alignment_step - 3;
+		//alignment_step = alignment_step - 1;
+		emit acquireImage();
+	}
+
+	else if (alignment_step == 7){
+        NQLog("AssemblyAssembler::run_alignment step == ") << alignment_step;
+        alignment_step++;
+		emit acquireImage();
+	}
+
+	else if (alignment_step == 8){
+        NQLog("AssemblyAssembler::run_alignment step == ") << alignment_step;
+        alignment_step++;
+        if ( ( fabs(target_x)  > 0.005) || (  fabs(target_y)  > 0.005)  ){
+          NQLog("AssemblyAssembler:: moving to  ") << target_x <<",  "<< target_y <<"  target theta " <<  target_theta ;
+            emit moveRelative(target_x, target_y, 0.0, 0.0);
+        }
+      }
+
+
+	else if (alignment_step == 9){
+        NQLog("AssemblyAssembler::run_alignment step == ") << alignment_step;
+        alignment_step++;
+		emit acquireImage();
+	}
+
+
+    else if (alignment_step == 10){
+        NQLog("AssemblyAssembler::run_alignment step == ") << alignment_step;
+        NQLog("AssemblyAssembler::First corner aligned");	        
+	alignment_step++;
         
-        double target_x_1 = (-1.0)*cos((target_theta*3.14)/180.0)*99.00;
-        double target_y_1 = (-1.0)*sin((target_theta*3.14)/180.0)*99.00;
+        double target_x_1 = (-1.0)*cos((target_theta*3.14)/180.0)*100.00;
+        double target_y_1 = (-1.0)*sin((target_theta*3.14)/180.0)*100.00;
         
-        double target_y_2 = (1.0)*cos((target_theta*3.14)/180.0)*48.00;
-        double target_x_2 = (1.0)*sin((target_theta*3.14)/180.0)*48.00;
+        double target_y_2 = (1.0)*cos((target_theta*3.14)/180.0)*49.00;
+        double target_x_2 = (1.0)*sin((target_theta*3.14)/180.0)*49.00;
 
         double target_x_3 = target_x_1 + target_x_2; 
         double target_y_3 =  target_y_1 + target_y_2;
 
-
         NQLog("AssemblyAssembler::Going to second corner by moving: ") << target_x_2 <<", "   <<  target_y_2;
         
-        emit moveRelative(target_x_3, target_y_3, 0.2, 0.0);
+        emit moveRelative(target_x_3, target_y_3, 0.10, 0.0);
 
     }
 
-    else if (alignment_step == 4){
+    else if (alignment_step == 11){
         NQLog("AssemblyAssembler::run_alignment step == ") << alignment_step;
         NQLog("AssemblyAssembler::Detecting second corner");
         alignment_step++;
@@ -502,22 +592,28 @@ void AssemblyAssembler::run_alignment(int stage, double x_pr, double y_pr, doubl
     }
     
 
-    else if (alignment_step == 5){
+    else if (alignment_step == 12){
         NQLog("AssemblyAssembler::run_alignment step == ") << alignment_step;
         NQLog("AssemblyAssembler::centering second corner");
         alignment_step++;
-	if ( ( fabs(target_x)  > 0.005) || (  fabs(target_y)  > 0.005)  ){
+		if ( ( fabs(target_x)  > 0.005) || (  fabs(target_y)  > 0.005)  ){
           NQLog("AssemblyAssembler:: moving to  ") << target_x <<",  "<< target_y <<"  target theta " <<  target_theta ;
             emit moveRelative(target_x, target_y, 0.0, 0.0);
         }
 }
-    else if (alignment_step == 6){
+    else if (alignment_step == 13){
         NQLog("AssemblyAssembler::run_alignment step == ") << alignment_step;
         NQLog("AssemblyAssembler::Detecting second corner");
         alignment_step++;
+		double x2_pos = lStepExpressModel_ -> getPosition(0); 	
+		double y2_pos = lStepExpressModel_ -> getPosition(1); 	
+		std::cout << " !!!!! " << std::endl;
+		std::cout << " x2 position = " << x2_pos << "  y2 position = " << y2_pos << std::endl;
+		std::cout << " !!!!! " << std::endl;
+		emit acquireImage();
         emit acquireImage(); 
     }
-    else if (alignment_step == 7){
+    else if (alignment_step == 14){
         NQLog("AssemblyAssembler::run_alignment step == ") << alignment_step;
         X1 = x_pr;
         Y1 = y_pr;
@@ -525,6 +621,7 @@ void AssemblyAssembler::run_alignment(int stage, double x_pr, double y_pr, doubl
         NQLog("AssemblyAssembler::TARGET REACHED?! ");
 	    //  emit nextAlignmentStep();
         }
+
 
     /*
  else if(alignment_step == 2){
@@ -568,8 +665,8 @@ void AssemblyAssembler::run_alignment(int stage, double x_pr, double y_pr, doubl
     
     //4. Optional Confirm alignment
     //   - return to starting corner and conform detected X doesn't change
-    */    
-}
+   */    
+}  
 
 
 
