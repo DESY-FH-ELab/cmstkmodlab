@@ -83,161 +83,161 @@ void CommunicationServer::handleCommand()
   QString response;
 
   if (cmd=="writeConfig") {
-    if (args.count()!=0) {
-      response = "ERR";
-    } else {
-      ApplicationConfig * config = ApplicationConfig::instance();
-      config->safe(std::string(Config::CMSTkModLabBasePath) + "/pumpstation/pumpstation.cfg");
-      
-      response = "OK";
-    }
+  	if (args.count()!=0) {
+  		response = "ERR";
+  	} else {
+  		ApplicationConfig * config = ApplicationConfig::instance();
+  		config->safe(std::string(Config::CMSTkModLabBasePath) + "/pumpstation/pumpstation.cfg");
+
+  		response = "OK";
+  	}
   } else if (cmd=="setPumpState") {
-    if (args.count()!=2) {
-      response = "ERR";
-    } else {
-      int pump = args.at(0).toInt();
-      int state = args.at(1).toInt();
-      
-      if (pump<1 || pump>2) {
-	response = "ERR";
-      } else {
-	emit setSwitchEnabled(pumpChannels_[pump-1], state);
-	response = "OK";
-      }
-    }
+  	if (args.count()!=2) {
+  		response = "ERR";
+  	} else {
+  		int pump = args.at(0).toInt();
+  		int state = args.at(1).toInt();
+
+  		if (pump<1 || pump>2) {
+  			response = "ERR";
+  		} else {
+  			emit setSwitchEnabled(pumpChannels_[pump-1], state);
+  			response = "OK";
+  		}
+  	}
   } else if (cmd=="getPumpState") {
-    if (args.count()!=1) {
-      response = "ERR";
-    } else {
-      int pump = args.at(0).toInt();
-      
-      if (pump<1 || pump>2) {
-        response = "ERR";
-      } else {
-        QMutexLocker locker(&mutex_);
-        State state = model_->getSwitchState(pumpChannels_[pump-1]);
-        response = QString::number((int)state);
-      }
-    }
+  	if (args.count()!=1) {
+  		response = "ERR";
+  	} else {
+  		int pump = args.at(0).toInt();
+
+  		if (pump<1 || pump>2) {
+  			response = "ERR";
+  		} else {
+  			QMutexLocker locker(&mutex_);
+  			State state = model_->getSwitchState(pumpChannels_[pump-1]);
+  			response = QString::number((int)state);
+  		}
+  	}
   } else if (cmd=="setPumpOperatingHours") {
-    if (args.count()!=2) {
-      response = "ERR";
-    } else {
-      int pump = args.at(0).toInt();
-      double value = args.at(1).toDouble();
+  	if (args.count()!=2) {
+  		response = "ERR";
+  	} else {
+  		int pump = args.at(0).toInt();
+  		double value = args.at(1).toDouble();
 
-      if (pump<1 || pump>2) {
-        response = "ERR";
-      } else {
-      	emit setPumpOperatingHours(pump, value);
-      	response = "OK";
-      }
-    }
+  		if (pump<1 || pump>2) {
+  			response = "ERR";
+  		} else {
+  			emit setPumpOperatingHours(pump, value);
+  			response = "OK";
+  		}
+  	}
   } else if (cmd=="getPumpOperatingHours") {
-    if (args.count()!=0) {
-      response = "ERR";
-    } else {
-      QMutexLocker locker(&mutex_);
-      double value1 = model_->getPumpOperatingHours(1);
-      double value2 = model_->getPumpOperatingHours(2);
-      response = QString("%1;%2").arg(value1, 0, 'f', 6).arg(value2, 0, 'f', 6);
-    }
+  	if (args.count()!=0) {
+  		response = "ERR";
+  	} else {
+  		QMutexLocker locker(&mutex_);
+  		double value1 = model_->getPumpOperatingHours(1);
+  		double value2 = model_->getPumpOperatingHours(2);
+  		response = QString("%1;%2").arg(value1, 0, 'f', 6).arg(value2, 0, 'f', 6);
+  	}
   } else if (cmd=="setValveState") {
-    if (args.count()!=2) {
-      response = "ERR";
-    } else {
-      int valve = args.at(0).toInt();
-      int state = args.at(1).toInt();
-      
-      if (valve<1 || valve>3) {
-	response = "ERR";
-      } else {
-	emit setSwitchEnabled(valveChannels_[valve-1], state);
-	response = "OK";
-      }
-    }
+  	if (args.count()!=2) {
+  		response = "ERR";
+  	} else {
+  		int valve = args.at(0).toInt();
+  		int state = args.at(1).toInt();
+
+  		if (valve<1 || valve>3) {
+  			response = "ERR";
+  		} else {
+  			emit setSwitchEnabled(valveChannels_[valve-1], state);
+  			response = "OK";
+  		}
+  	}
   } else if (cmd=="getValveState") {
-    if (args.count()!=1) {
-      response = "ERR";
-    } else {
-      int valve = args.at(0).toInt();
-      
-      if (valve<1 || valve>3) {
-        response = "ERR";
-      } else {
-        QMutexLocker locker(&mutex_);
-        State state = model_->getSwitchState(valveChannels_[valve-1]);
-        response = QString::number((int)state);
-      }
-    }
+  	if (args.count()!=1) {
+  		response = "ERR";
+  	} else {
+  		int valve = args.at(0).toInt();
+
+  		if (valve<1 || valve>3) {
+  			response = "ERR";
+  		} else {
+  			QMutexLocker locker(&mutex_);
+  			State state = model_->getSwitchState(valveChannels_[valve-1]);
+  			response = QString::number((int)state);
+  		}
+  	}
   } else if (cmd=="setSwitchState") {
-    if (args.count()!=2) {
-      response = "ERR";
-    } else {
-      int channel = args.at(0).toInt();
-      int state = args.at(1).toInt();
-      
-      if (channel<0 || channel>4) {
-        response = "ERR";
-      } else {
-        emit setSwitchEnabled(channel, state);
-        response = "OK";
-      }
-    }
+  	if (args.count()!=2) {
+  		response = "ERR";
+  	} else {
+  		int channel = args.at(0).toInt();
+  		int state = args.at(1).toInt();
+
+  		if (channel<0 || channel>4) {
+  			response = "ERR";
+  		} else {
+  			emit setSwitchEnabled(channel, state);
+  			response = "OK";
+  		}
+  	}
   } else if (cmd=="setSwitchBlocked") {
-    if (args.count()!=2) {
-      response = "ERR";
-    } else {
-      int channel = args.at(0).toInt();
-      int state = args.at(1).toInt();
+  	if (args.count()!=2) {
+  		response = "ERR";
+  	} else {
+  		int channel = args.at(0).toInt();
+  		int state = args.at(1).toInt();
 
-      if (channel<0 || channel>4) {
-        response = "ERR";
-      } else {
-        emit setSwitchBlocked(channel, state);
-        response = "OK";
-      }
-    }
+  		if (channel<0 || channel>4) {
+  			response = "ERR";
+  		} else {
+  			emit setSwitchBlocked(channel, state);
+  			response = "OK";
+  		}
+  	}
   } else if (cmd=="getSwitchState") {
-    if (args.count()!=1) {
-      response = "ERR";
-    } else {
-      int channel = args.at(0).toInt();
+  	if (args.count()!=1) {
+  		response = "ERR";
+  	} else {
+  		int channel = args.at(0).toInt();
 
-      if (channel<0 || channel>4) {
-        response = "ERR";
-      } else {
-        QMutexLocker locker(&mutex_);
-        State state = model_->getSwitchState(channel);
-        response = QString::number((int)state);
-      }
-    }
+  		if (channel<0 || channel>4) {
+  			response = "ERR";
+  		} else {
+  			QMutexLocker locker(&mutex_);
+  			State state = model_->getSwitchState(channel);
+  			response = QString::number((int)state);
+  		}
+  	}
   } else if (cmd=="getSwitchBlocked") {
-    if (args.count()!=1) {
-      response = "ERR";
-    } else {
-      int channel = args.at(0).toInt();
+  	if (args.count()!=1) {
+  		response = "ERR";
+  	} else {
+  		int channel = args.at(0).toInt();
 
-      if (channel<0 || channel>4) {
-        response = "ERR";
-      } else {
-        QMutexLocker locker(&mutex_);
-        bool state = model_->getSwitchBlocked(channel);
-        response = QString::number((int)state);
-      }
-    }
+  		if (channel<0 || channel>4) {
+  			response = "ERR";
+  		} else {
+  			QMutexLocker locker(&mutex_);
+  			bool state = model_->getSwitchBlocked(channel);
+  			response = QString::number((int)state);
+  		}
+  	}
   } else if (cmd=="getSwitchStatus") {
-    if (args.count()!=0) {
-      response = "ERR";
-    } else {
+  	if (args.count()!=0) {
+  		response = "ERR";
+  	} else {
 
-      QMutexLocker locker(&mutex_);
+  		QMutexLocker locker(&mutex_);
 
-      int s0 = model_->getSwitchState(0);
-      int s1 = model_->getSwitchState(1);
-      int s2 = model_->getSwitchState(2);
-      int s3 = model_->getSwitchState(3);
-      int s4 = model_->getSwitchState(4);
+  		int s0 = model_->getSwitchState(0);
+  		int s1 = model_->getSwitchState(1);
+  		int s2 = model_->getSwitchState(2);
+  		int s3 = model_->getSwitchState(3);
+  		int s4 = model_->getSwitchState(4);
 
       response = QString("%1;%2;%3;%4;%5")
                 .arg(s0)
