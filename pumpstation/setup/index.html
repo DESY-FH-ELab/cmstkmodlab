@@ -193,7 +193,8 @@ In addition, please install the following packages via</p>
 <p><code>sudo apt-get install apache2</code><br/>
    <code>sudo apt-get install libapache2-mod-webauth</code><br/>
    <code>sudo apt-get install libapache2-mod-php5</code><br/>
-   <code>sudo apt-get install udev</code></br></p>
+   <code>sudo apt-get install udev</code></br>
+   <code>sudo apt-get install davfs2</code></br></p>
 <h2 id="installation">Installation</h2>
 <p>Once building the software has successfully finished, install all required libraries and applications via</p>
 <p><code>sudo make install</code></p>
@@ -204,6 +205,29 @@ be correctly found. The Leybold GraphixThree controller is supposed to accessabl
 and the Conrad relay card via <code>/dev/ttyConrad</code>. A udev rules file <code>99-usb-serial.rules</code> is
 available in the <code>pumpstation</code> directory of the repository. Please copy it to the directory
 <code>/etc/udev/rules.d/</code> and restart the system.</p>
+<p>In order to automatically synchronise the data to the DESY cloud, perform the following steps:</p>
+<ul>
+<li>
+<p>create a directory to be used as a mount point for the DESY cloud via</br>
+   <code>sudo mkdir /media/desyCloud</code></br></p>
+</li>
+<li>
+<p>add the following line to <code>/etc/fstab</code></br>
+   <code>https://desycloud.desy.de/remote.php/webdav /media/desyCloud davfs noauto,user 0 0</code></br></p>
+</li>
+<li>
+<p>add the user <code>pi</code> to the group <code>davfs2</code> via</br>
+   <code>sudo usermod -a -G davfs2 pi</code></br></p>
+</li>
+<li>
+<p>add the DESY cloud credentials to <code>davfs2</code> by adding the following line to the file <code>~/.davfs2/secrets</code></br>
+   <code>https://desycloud.desy.de/remote.php/webdav USER PASSWORD</code></br></p>
+</li>
+<li>
+<p>add the following entry to the crontab for the user <code>pi</code></br>
+   <code>0 7,19 * * * /home/pi/cmstkmodlab/pumpstation/cloudSync.sh &gt; /dev/null 2&gt;&amp;1</code></p>
+</li>
+</ul>
               
             </div>
           </div>
