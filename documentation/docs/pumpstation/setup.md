@@ -27,3 +27,24 @@ be correctly found. The Leybold GraphixThree controller is supposed to accessabl
 and the Conrad relay card via `/dev/ttyConrad`. A udev rules file `99-usb-serial.rules` is
 available in the `pumpstation` directory of the repository. Please copy it to the directory
 `/etc/udev/rules.d/` and restart the system.
+
+In order to automatically synchronise the data to the DESY cloud, create a directory as a mount point
+via
+
+   `sudo mkdir /media/desyCloud`,</br>
+
+add the following line to `/etc/fstab`
+
+   `https://desycloud.desy.de/remote.php/webdav /media/desyCloud davfs noauto,user 0 0`,
+
+add the user `pi` to the group `davfs2` via
+
+   `sudo usermod -a -G davfs2 pi`,</br>
+
+add the DESY cloud credentials to davfs2 bz adding the following line to the file `/home/pi/.davfs2/secrets`
+
+   `https://desycloud.desy.de/remote.php/webdav USER PASSWORD`,</br>
+
+and add the following entry to the crontab for the user `pi`
+
+   `0 7,19 * * * /home/pi/cmstkmodlab/pumpstation/cloudSync.sh > /dev/null 2>&1`
