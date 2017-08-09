@@ -19,6 +19,15 @@
 #include <QMutex>
 #include <QMutexLocker>
 
+
+#include <QDir>
+#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
+#include <QDesktopServices>
+#else
+#include <QStandardPaths>
+#endif
+
+
 class AssemblyMarkerCircle
 {
 public:

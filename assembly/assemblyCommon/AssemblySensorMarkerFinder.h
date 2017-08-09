@@ -18,9 +18,23 @@
 
 #include "AssemblyVMarkerFinder.h"
 
+#include <QTimer>
+#include <QDateTime>
+#include <QString>
+#include "nqlogger.h"
+
+
 class AssemblySensorMarkerFinder : public AssemblyVMarkerFinder
 {
     Q_OBJECT
+protected:
+    
+    int generalThreshold;
+
+    double matchLoc_x_lab;
+    double matchLoc_y_lab;
+    int labmode_g, objectmode_g;
+
 public:
     explicit AssemblySensorMarkerFinder(QObject *parent = 0);
     ~AssemblySensorMarkerFinder();
@@ -42,6 +56,12 @@ public:
     int linesHoughThreshold() const { return linesHoughThreshold_; }
     double linesHoughMinLineLength() const { return linesHoughMinLineLength_; }
     double linesHoughMaxLineGap() const { return linesHoughMaxLineGap_; }
+
+    int getGeneralThresholdValue() {return generalThreshold; }
+    void setGeneralThresholdValue(int newThresholdValue) { generalThreshold = newThresholdValue; }
+
+    cv::Mat img, img_clip_A, img_clip_B, result_1, result_2, dst;
+
 
     size_t findCircle(const cv::Mat&);
     const std::vector<AssemblyMarkerCircle>& getCircles() { return circles_; }
@@ -67,12 +87,26 @@ public slots:
     void setLinesHoughMaxLineGap(double value) { linesHoughMaxLineGap_ = value; }
 
     virtual void findMarker(const cv::Mat&);
+    virtual void findMarker_circleSeed(int);
+    virtual void findMarker_templateMatching(cv::Mat, cv::Mat);
+
+    //ThresholdTunerSlots
+    void setNewGeneralThreshold(int, cv::Mat);
+    void getCurrentGeneralThreshold();
+    void updateThresholdImage(cv::Mat);
 
 protected slots:
+    void runObjectDetection(int labmode, int objectmode);
+    void runObjectDetection_labmode(cv::Mat);
 
 protected:
+    std::string cacheDirectory1_;
+    std::string cacheDirectory2_;
 
-
+    
+    int nAcquiredImages;
+    int nTotalImages;
+ 
     size_t findLines();
 
     size_t findIntersections();
@@ -88,6 +122,7 @@ protected:
     void drawIntersections();
     void drawOutline();
     void drawOrientation();
+
 
     cv::Mat image_;
     cv::Mat imageEdges_;
@@ -126,9 +161,20 @@ protected:
     std::vector<cv::Point2f> intersections_;
     std::vector<cv::Point2f> goodIntersections_;
 
-signals:
 
+signals:
+    
+    void locatePickupCorner_templateMatching(cv::Mat,cv::Mat);
+    void reportObjectLocation(int, double,double, double);
     void edgesDetected(const cv::Mat&);
+    void updateImage(int, QString);
+    void foundSensor(int);
+    void getImage();
+    void getImageBlur(cv::Mat, cv::Rect);
+    void acquireImage();
+    void sendCurrentGeneralThreshold(int);
+    void sendUpdatedThresholdImage(QString);
+
 };
 
 #endif // ASSEMBLYSENSORMARKERFINDER_H
