@@ -12,6 +12,7 @@ In addition, please install the following packages via
    `sudo apt-get install libapache2-mod-webauth`<br/>
    `sudo apt-get install libapache2-mod-php5`<br/>
    `sudo apt-get install udev`</br>
+   `sudo apt-get install davfs2`</br>
    
 ## Installation
 
@@ -28,23 +29,19 @@ and the Conrad relay card via `/dev/ttyConrad`. A udev rules file `99-usb-serial
 available in the `pumpstation` directory of the repository. Please copy it to the directory
 `/etc/udev/rules.d/` and restart the system.
 
-In order to automatically synchronise the data to the DESY cloud, create a directory as a mount point
-via
+In order to automatically synchronise the data to the DESY cloud, perform the following steps:
 
-   `sudo mkdir /media/desyCloud`,</br>
+- create a directory to be used as a mount point for the DESY cloud via</br>
+   `sudo mkdir /media/desyCloud`</br>
 
-add the following line to `/etc/fstab`
+- add the following line to `/etc/fstab`</br>
+   `https://desycloud.desy.de/remote.php/webdav /media/desyCloud davfs noauto,user 0 0`</br>
 
-   `https://desycloud.desy.de/remote.php/webdav /media/desyCloud davfs noauto,user 0 0`,
+- add the user `pi` to the group `davfs2` via</br>
+   `sudo usermod -a -G davfs2 pi`</br>
 
-add the user `pi` to the group `davfs2` via
-
-   `sudo usermod -a -G davfs2 pi`,</br>
-
-add the DESY cloud credentials to davfs2 bz adding the following line to the file `/home/pi/.davfs2/secrets`
-
-   `https://desycloud.desy.de/remote.php/webdav USER PASSWORD`,</br>
-
-and add the following entry to the crontab for the user `pi`
-
+- add the DESY cloud credentials to `davfs2` by adding the following line to the file `~/.davfs2/secrets`</br>
+   `https://desycloud.desy.de/remote.php/webdav USER PASSWORD`</br>
+   
+- add the following entry to the crontab for the user `pi`</br>
    `0 7,19 * * * /home/pi/cmstkmodlab/pumpstation/cloudSync.sh > /dev/null 2>&1`
