@@ -59,6 +59,9 @@ AssemblyVUEyeCamera * AssemblyVUEyeModel::getCameraByID(unsigned int id)
 
 void AssemblyVUEyeModel::clear()
 {
+    
+    NQLog("AssemblyVUEyeModel::clear()");
+
     for (QVector<AssemblyVUEyeCamera*>::iterator it = cameras_.begin();
          it != cameras_.end();
          ++it) {

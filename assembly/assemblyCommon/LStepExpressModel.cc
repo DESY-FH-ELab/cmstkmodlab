@@ -151,7 +151,7 @@ void LStepExpressModel::moveRelative(std::vector<double> & values)
 void LStepExpressModel::moveRelative(double x, double y, double z, double a)
 {
 
-  //    NQLog("LStepExpressModel ", NQLog::Spam)<< "moveRelative() v2 x = "<<x<<" y = "<<y<<" z = "<<z<<" a = "<<a  ;
+      NQLog("LStepExpressModel ", NQLog::Spam)<< "moveRelative() v2 x = "<<x<<" y = "<<y<<" z = "<<z<<" a = "<<a  ;
   controller_->MoveRelative(LStepExpress_t::X, x);
   controller_->MoveRelative(LStepExpress_t::Y, y);
   controller_->MoveRelative(LStepExpress_t::Z, z);
@@ -419,6 +419,8 @@ void LStepExpressModel::updateInformation()
 
 void LStepExpressModel::updateMotionInformation()
 {
+  NQLog("LStepExpressModel ")<< "updateMotionInformation motion information changed"  ;
+
     static const int nUpdates = updateInterval_/motionUpdateInterval_;
 
     if ( state_ == READY && !isPaused_) {
@@ -504,6 +506,9 @@ void LStepExpressModel::updateMotionInformation()
 
 void LStepExpressModel::updateMotionInformationFromTimer()
 {
+
+     NQLog("LStepExpressModel ")<< " update from timer"  ;
+
     static const int nUpdates = updateInterval_/motionUpdateInterval_;
     
     if ( state_ == READY && !isPaused_) {
@@ -547,7 +552,10 @@ void LStepExpressModel::updateMotionInformationFromTimer()
 	    bool ifaxisnotenabled = (axis_)[i] == 0;
 	    temp *= (ifaxisenabled || ifaxisnotenabled);
           }
-	  if(temp){inMotion_ = false; emit motionFinished();}
+	  if(temp){inMotion_ = false;
+
+	    NQLog("LStepExpressModel ")<< "emitting motion finished signal"  ;
+            emit motionFinished();}
       }
       
       if( (axis_)[0] || (axis_)[1] || (axis_)[2] || (axis_)[3]){

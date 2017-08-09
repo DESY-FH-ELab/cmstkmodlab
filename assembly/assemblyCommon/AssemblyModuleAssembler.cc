@@ -14,6 +14,7 @@
 #include <iostream>
 #include <sstream>
 #include <iomanip>
+#include <stdlib.h>
 
 #include <QFormLayout>
 #include <QFileDialog>
@@ -39,35 +40,52 @@
 
 #include "AssemblyModuleAssembler.h"
 
+#include "LStepExpressWidget.h"
+
 using namespace std;
 using namespace cv;
 
-AssemblyModuleAssembler::AssemblyModuleAssembler(AssemblyVUEyeModel *uEyeModel_,
+AssemblyModuleAssembler::AssemblyModuleAssembler(AssemblyVUEyeModel *uEyeModel_, AssemblySensorMarkerFinder * finder_,
                                                  LStepExpressModel* lStepExpressModel_,
-                                                 LStepExpressMotionManager* manager_,
-                                                 ConradModel * conradModel_,
                                                  QWidget *parent)
   : QWidget(parent)
 {
+
   LStepExpressMotionManager* motionManager_ = new LStepExpressMotionManager(lStepExpressModel_);
 
-  QGridLayout *l = new QGridLayout(this);
+
+  camera_ = uEyeModel_->getCameraByID(10);
+    
+    if (camera_){
+  NQLog("AssemblyModuleAssembler::constructed  camera");
+    }else{
+    
+        NQLog("AssemblyModuleAssembler::  cant  construct camera");
+
+    }
+
+  QGridLayout *l = new QGridLayout();
   setLayout(l);
 
-  QGridLayout *g0 = new QGridLayout(this);
+  QGridLayout *g0 = new QGridLayout();
   l->addLayout(g0,0,0);
 
   QPalette palette;
   palette.setColor(QPalette::Background, QColor(220, 220, 220));
-
+    
   imageView_1 = new AssemblyUEyeView();
-  imageView_1->setMinimumSize(200,200);
+  imageView_1->setMinimumSize(300,300);
   imageView_1->setPalette(palette);
   imageView_1->setBackgroundRole(QPalette::Background);
   imageView_1->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
   imageView_1->setScaledContents(true);
   imageView_1->setAlignment(Qt::AlignCenter);
   QApplication::processEvents();
+    
+  imageView_1->connectImageProducer(finder_, SIGNAL(markerFound(const cv::Mat&)));
+
+  //  connect(uEyeModel_, SIGNAL(imageAcquired(const cv::Mat&)),
+  //         finder_, SLOT(findMarker(const cv::Mat&)));
 
   scrollArea_1 = new QScrollArea(this);
   scrollArea_1->setMinimumSize(200, 200);
@@ -78,7 +96,7 @@ AssemblyModuleAssembler::AssemblyModuleAssembler(AssemblyVUEyeModel *uEyeModel_,
   scrollArea_1->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 
   g0->addWidget(scrollArea_1,0,0);
-  lE1 = new QLineEdit("Pickup pos. = X,X,X");
+  lE1 = new QLineEdit("Object location. = X,Z");
   g0->addWidget(lE1,1,0);
 
   imageView_2 = new AssemblyUEyeView();
@@ -90,7 +108,7 @@ AssemblyModuleAssembler::AssemblyModuleAssembler(AssemblyVUEyeModel *uEyeModel_,
   imageView_2->setAlignment(Qt::AlignCenter);
 
   scrollArea_2 = new QScrollArea(this);
-  scrollArea_2->setMinimumSize(200, 200);
+  scrollArea_2->setMinimumSize(200,200);
   scrollArea_2->setPalette(palette);
   scrollArea_2->setBackgroundRole(QPalette::Background);
   scrollArea_2->setAlignment(Qt::AlignCenter);
@@ -98,7 +116,7 @@ AssemblyModuleAssembler::AssemblyModuleAssembler(AssemblyVUEyeModel *uEyeModel_,
   scrollArea_2->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 
   g0->addWidget(scrollArea_2,0,1);
-  lE2 = new QLineEdit("Mntd pos. (cor. 1) = X,X,X");
+  lE2 = new QLineEdit("Orientation. = alpha");
   g0->addWidget(lE2,1,1);
 
   imageView_3 = new AssemblyUEyeView();
@@ -110,16 +128,16 @@ AssemblyModuleAssembler::AssemblyModuleAssembler(AssemblyVUEyeModel *uEyeModel_,
   imageView_3->setAlignment(Qt::AlignCenter);
 
   scrollArea_3 = new QScrollArea(this);
-  scrollArea_3->setMinimumSize(200, 200);
+  scrollArea_3->setMinimumSize(200,200);
   scrollArea_3->setPalette(palette);
   scrollArea_3->setBackgroundRole(QPalette::Background);
   scrollArea_3->setAlignment(Qt::AlignCenter);
   scrollArea_3->setWidget(imageView_3);
   scrollArea_3->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 
-  g0->addWidget(scrollArea_3,0,2);
-  lE3 = new QLineEdit("Mntd pos. (cor. 2) = X,X,X");
-  g0->addWidget(lE3,1,2);
+  g0->addWidget(scrollArea_3,2,0);
+  lE3 = new QLineEdit("Mntd pos. (cor. 2) = lE3,X");
+ // g0->addWidget(lE3,1,2);
 
   imageView_4 = new AssemblyUEyeView();
   imageView_4->setMinimumSize(200,200);
@@ -130,196 +148,161 @@ AssemblyModuleAssembler::AssemblyModuleAssembler(AssemblyVUEyeModel *uEyeModel_,
   imageView_4->setAlignment(Qt::AlignCenter);
 
   scrollArea_4 = new QScrollArea(this);
-  scrollArea_4->setMinimumSize(200, 200);
+  scrollArea_4->setMinimumSize(200,200);
   scrollArea_4->setPalette(palette);
   scrollArea_4->setBackgroundRole(QPalette::Background);
   scrollArea_4->setAlignment(Qt::AlignCenter);
   scrollArea_4->setWidget(imageView_4);
   scrollArea_4->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 
-  g0->addWidget(scrollArea_4,2,0);
-  lE4 = new QLineEdit("Dtchd pos. = X,X,X");
-  g0->addWidget(lE4,3,0);
+  g0->addWidget(scrollArea_4,2,1);
+  lE4 = new QLineEdit("Dtchd pos. = ,X,X");
+ // g0->addWidget(lE4,3,0);
 
-  imageView_5 = new AssemblyUEyeView();
-  imageView_5->setMinimumSize(200,200);
-  imageView_5->setPalette(palette);
-  imageView_5->setBackgroundRole(QPalette::Background);
-  imageView_5->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-  imageView_5->setScaledContents(true);
-  imageView_5->setAlignment(Qt::AlignCenter);
+  //    QGridLayout *gl = new QGridLayout();
+  //  l->addLayout(gl,1,0);
+    
+    // Add all the axes displays
+  // for (unsigned int i=0;i<4;++i) {
+  //  gl->addWidget(new LStepExpressAxisWidget(lStepExpressModel_, i, this), 0, i);
+  //  }
 
-  scrollArea_5 = new QScrollArea(this);
-  scrollArea_5->setMinimumSize(200, 200);
-  scrollArea_5->setPalette(palette);
-  scrollArea_5->setBackgroundRole(QPalette::Background);
-  scrollArea_5->setAlignment(Qt::AlignCenter);
-  scrollArea_5->setWidget(imageView_5);
-  scrollArea_5->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-
-  g0->addWidget(scrollArea_5,2,1);
-  lE5 = new QLineEdit("Mntd pos. (cor. 4) = X,X,X");
-  g0->addWidget(lE5,3,1);
-
-  imageView_6 = new AssemblyUEyeView();
-  imageView_6->setMinimumSize(200,200);
-  imageView_6->setPalette(palette);
-  imageView_6->setBackgroundRole(QPalette::Background);
-  imageView_6->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-  imageView_6->setScaledContents(true);
-  imageView_6->setAlignment(Qt::AlignCenter);
-
-  scrollArea_6 = new QScrollArea(this);
-  scrollArea_6->setMinimumSize(200, 200);
-  scrollArea_6->setPalette(palette);
-  scrollArea_6->setBackgroundRole(QPalette::Background);
-  scrollArea_6->setAlignment(Qt::AlignCenter);
-  scrollArea_6->setWidget(imageView_6);
-  scrollArea_6->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-
-  g0->addWidget(scrollArea_6,2,2);
-  lE6 = new QLineEdit("Mntd pos. (cor. 3) = X,X,X");
-  g0->addWidget(lE6,3,2);
-
-  QGridLayout *g1 = new QGridLayout(this);
+  //LStepExpressPositionWidget *lStepPosition = new LStepExpressPositionWidget(motionManager_, lStepExpressModel_, this);
+  //g0->addWidget(lStepPosition,3,0);
+    
+    
+  QGridLayout *g1 = new QGridLayout();
   l->addLayout(g1,0,1);
 
-  QLabel* header_label = new QLabel("Hover mouse over button for info on each step", this);
-  g1->addWidget(header_label,0,0);
+  //QLabel* header_label = new QLabel("Hover mouse over button for info on each step", this);
+  //g1->addWidget(header_label,0,0);
 
-  AssemblyCommander * cmdr0 = new AssemblyCommander(this, "Go to origin", 0.0,0.0,0.0,0.0);
+  AssemblyCommander * cmdr0 = new AssemblyCommander(this, "Move absolute", 0.0,0.0,0.0,0.0);
   cmdr0->setToolTip("(1) Returns x,y,z stage to origin (default = (0,0,0) using moveAbsolute(x,y,z) routine)");
-  g1->addWidget(cmdr0,1,0);
+  g1->addWidget(cmdr0,0,0);
 
-  AssemblyCommander * cmdr1 = new AssemblyCommander(this, "Go to pickup", 100.0,100.0,100.0,100.0);
-  cmdr1->setToolTip("(2) Moves x,y,z stage to pickup position (default = (100,100,100) using moveAbsolute(x,y,z) routine)");
-  g1->addWidget(cmdr1,2,0);
+  AssemblyAttacher * cmdr1 = new AssemblyAttacher("Move relative", 0.0,0.0,0.0,0.0);
+  cmdr1->setToolTip("(2) Moves x,y,z stage realtive to current position using moveAbsolute(x,y,z) routine)");
+  g1->addWidget(cmdr1,1,0);
+    
 
-  AssemblySensorLocator * lctr1 = new AssemblySensorLocator(this, "Locate sensor", 0.0);
+  AssemblySensorLocator * lctr1 = new AssemblySensorLocator(this, "Locate object", 0.0, finder_);
   lctr1->setToolTip("(3) Acquires image from mobile camera, runs PatRec routine to deduce and report sensor (x,y,z,phi) postion");
-  g1->addWidget(lctr1,3,0);
+  g1->addWidget(lctr1,2,0);
 
-  AssemblyCommander * cmdr2 = new AssemblyCommander(this, "Correct position", 100.0,100.0,100.0,100.0);
-  cmdr2->setToolTip("(4) Corrects arm position using relative displacement using (eventually) pre-calculated displacment from PatRec");
-  g1->addWidget(cmdr2,4,0);
+  toggle1 = new AssemblyVacuumToggler(this, "Toggle vacuum");
+  g1->addWidget(toggle1,3,0);
+    
+  AssemblyPrecisionEstimator * precision1 = new AssemblyPrecisionEstimator(this, "Estimate Assembly Precision", "-200.0,0.0,0.0", "0.0,0.0,0.0", 1 , cnrd1);
+  //g1->addWidget(precision1,4,0);
 
-  AssemblyAttacher * attacher1 = new AssemblyAttacher("Drop/Raise", 10.0);
-  g1->addWidget(attacher1,5,0);
+  QGridLayout *g2 = new QGridLayout();
+  l->addLayout(g2,1,1);
+  
+  AssemblySandwichAssembler* sandwich1 = new AssemblySandwichAssembler(this, "Assemble Sandwich");
+  g2 -> addWidget(sandwich1, 0, 0);
 
-  AssemblyVacuumToggler * toggle1 = new AssemblyVacuumToggler(this, "Toggle vacuum", 0.0);
-  g1->addWidget(toggle1,6,0);
 
-  AssemblyCommander * cmdr4 = new AssemblyCommander(this, "Go to stat. camera", 100.0,100.0,100.0,100.0);
-  g1->addWidget(cmdr4, 7, 0);
-
-  AssemblyMountChecker * cmdr5 = new AssemblyMountChecker(this, "Check mount", 100.0,100.0,100.0,100.0, 0);
-  g1->addWidget(cmdr5, 8, 0);
-
-  AssemblyCommander * cmdr6 = new AssemblyCommander(this, "Go to rotation stage", 100.0,100.0,100.0,100.0);
-  g1->addWidget(cmdr6, 9, 0);
-
-  AssemblyCommander * cmdr7 = new AssemblyCommander(this, "Drop and detach", 100.0,100.0,100.0,100.0);
-  g1->addWidget(cmdr7, 10, 0);
-
-  AssemblyAligner * cmdr8 = new AssemblyAligner(this, "Align", 0.0);
-  g1->addWidget(cmdr8, 11, 0);
+  //AssemblyAligner * cmdr8 = new AssemblyAligner(this, "Align", 0.0);
+  //g1->addWidget(cmdr8, 13, 0);
 
   //make all the neccessary connections
-
-  connect(attacher1, SIGNAL(moveRelative(double,double,double,double)),
-          motionManager_, SLOT(moveRelative(double,double,double,double)));
+  //connect(attacher1, SIGNAL(moveRelative(double,double,double,double)),
+   //       motionManager_, SLOT(moveRelative(double,double,double,double)));
   connect(cmdr0, SIGNAL(moveAbsolute(double,double,double,double)),
           motionManager_, SLOT(moveAbsolute(double,double,double,double)));
-  connect(cmdr1, SIGNAL(moveAbsolute(double,double,double,double)),
-          motionManager_, SLOT(moveAbsolute(double,double,double,double)));
-  connect(cmdr2, SIGNAL(moveAbsolute(double,double,double,double)),
+  connect(cmdr1, SIGNAL(moveRelative(double,double,double,double)),
           motionManager_, SLOT(moveRelative(double,double,double,double)));
-  connect(cmdr4, SIGNAL(moveAbsolute(double,double,double,double)),
-          motionManager_, SLOT(moveAbsolute(double,double,double,double)));
-  connect(cmdr5, SIGNAL(moveAbsolute(double,double,double,double)),
-          motionManager_, SLOT(moveAbsolute(double,double,double,double)));
-  connect(cmdr6, SIGNAL(moveAbsolute(double,double,double,double)),
-          motionManager_, SLOT(moveAbsolute(double,double,double,double)));
-  connect(cmdr7, SIGNAL(moveAbsolute(double,double,double,double)),
-          motionManager_, SLOT(moveAbsolute(double,double,double,double)));
-  connect(cmdr8, SIGNAL(moveRelative(double,double,double,double)),
-          motionManager_, SLOT(moveRelative(double,double,double,double)));
-  connect(cmdr8, SIGNAL(locateSetdowncorner(int)), lctr1, SLOT( locateSensor(int)));
+    
+  connect(precision1, SIGNAL(launchPrecisionEstimation(double, double, double, double, double, double, int)),
+            this, SLOT(startMacro(double, double, double, double, double, double, int)));
+  
+  connect(sandwich1, SIGNAL(launchSandwichAssembly(double, double, double, double, double, double, double, double, double)), this, SIGNAL(launchSandwichAssembly(double, double, double, double, double, double, double, double, double)));
+    
+ 
+  connect(sandwich1, SIGNAL(launchAlignment(int, double, double, double)), this, SIGNAL(launchAlignment(int, double, double, double)));
 
+    
+  connect(lStepExpressModel_, SIGNAL(acquireImage()), camera_, SLOT(acquireImage()));
+  connect(lctr1, SIGNAL(acquireImage()), camera_, SLOT(acquireImage()));
+  connect(camera_, SIGNAL(imageAcquired(cv::Mat)), lctr1, SLOT(locatePickup(cv::Mat)));
+
+    
   connect(lctr1, SIGNAL(sendPosition(int, double,double,double)), this, SLOT(updateText(int,double,double,double)));
+  connect(finder_, SIGNAL(updateImage(int, QString)), this, SLOT( updateImage(int,QString)));
+  connect(finder_, SIGNAL(foundSensor(int)), lctr1, SLOT( foundsensor(int)));
+  connect(finder_, SIGNAL(reportObjectLocation(int, double, double, double)), this, SLOT( updateText(int, double, double, double )));
 
-  connect(lctr1, SIGNAL(updateImage(int, std::string)), this, SLOT( updateImage(int,std::string)));
-  connect(lctr1, SIGNAL(foundSensor(int)), lctr1, SLOT( foundsensor(int)));
 }
 
-void AssemblyModuleAssembler::updateText(int stage, double x, double y , double a){
+void AssemblyModuleAssembler::updateText(int stage, double x, double y, double a){
 
   NQLog("AssemblyCommander::updateText");
 
-  std::ostringstream strs;
-  strs.clear();
-  strs << x;
-  strs << ",";
-  strs << y;
-  strs << ",";
-  strs << a;
-  std::string str = strs.str();
-  QString qstr = "";
-  qstr = QString::fromStdString(str);
-  // QString qname = QString::fromStdString(string);
+  std::ostringstream strs_position;
+  std::ostringstream strs_orientation;
 
+  strs_position.clear();
+  strs_orientation.clear();
+
+  strs_position << x;
+  strs_position << ",";
+  strs_position << y;
+  std::string str_position = strs_position.str();
+  QString qstr_position = "";
+  qstr_position = QString::fromStdString(str_position);
+    
+  strs_orientation << a;
+  std::string str_orientation = strs_orientation.str();
+  QString qstr_orientation = "";
+  qstr_orientation = QString::fromStdString(str_orientation);
+    
   if(stage == 1 ){
-    qstr = "Pickup pos. = " + qstr;
-    lE1->setText(qstr);
-  } else if (stage==2){
-    qstr = "Mntd. pos. (cor.1) = " + qstr;
-    lE2->setText(qstr);
+    qstr_position = "Object location = " + qstr_position + " mm, mm (lab frame)";
+    lE1->setText(qstr_position);
+      
+    qstr_orientation = "Object orientation = " + qstr_orientation + " degrees";
+    lE2->setText(qstr_orientation);
   }
-  else if (stage==3){
-    qstr = "Mntd. pos. (cor.2) = " + qstr;
-    lE3->setText(qstr);
-  }
-  else if (stage==4){
-    qstr = "Mntd. pos. (cor.3) = " + qstr;
-    lE6->setText(qstr);
-  }else if (stage==5){
-    qstr = "Mntd. pos. (cor.4) = " + qstr;
-    lE5->setText(qstr);
-  }
-  else if (stage==6){
-    qstr = "Dtchd. pos. = " + qstr;
-    lE4->setText(qstr);
-  }
+
 }
 
-void AssemblyModuleAssembler::updateImage(int stage, std::string filename)
+void AssemblyModuleAssembler::startMacro(double x_meas, double y_meas, double z_meas, double x_pickup, double y_pickup, double z_pickup, int iterations)
+{
+    NQLog("AssemblyModuleAssembler::startMacro");
+    
+    emit launchPrecisionEstimation(x_meas,  y_meas,  z_meas,  x_pickup,  y_pickup, z_pickup, iterations);
+    
+}
+
+
+void AssemblyModuleAssembler::updateImage(int stage, QString filename)
 {
   NQLog("AssemblyModuleAssembler") << ":updateImage()  " + filename;
 
-  //cv::Mat img_gs = cv::imread("/Users/keaveney/Desktop/calibration/PatRec_result.png", CV_LOAD_IMAGE_COLOR);
+  std::string filename_ss = filename.toUtf8().constData();
 
-  cv::Mat img_gs = cv::imread(filename, CV_LOAD_IMAGE_COLOR);
+  cv::Mat img_gs = cv::imread(filename_ss, CV_LOAD_IMAGE_UNCHANGED);
 
   if (stage == 1 ){
-    imageView_1->setZoomFactor(0.2);
     imageView_1->setImage(img_gs);
+    // imageView_1->setZoomFactor(0.3);
     
   }else if (stage ==2){
     imageView_2->setImage(img_gs);
-    imageView_2->setZoomFactor(0.75);
+    imageView_2->setZoomFactor(0.5);
   }
   else if (stage ==3){
-    imageView_3->setImage(img_gs);
+    imageView_4->setImage(img_gs);
+    //imageView_4->setZoomFactor(0.5);
+
   }
   else if (stage ==4){
-    imageView_6->setImage(img_gs);
+    imageView_3->setImage(img_gs);
+    // imageView_3->setZoomFactor(0.5);
+
   }
-  else if (stage ==5){
-    imageView_5->setImage(img_gs);
-  }
-  else if (stage ==6){
-    imageView_4->setImage(img_gs);
-  }
+
 }
 
 void AssemblyModuleAssembler::gotoPickup()
@@ -327,6 +310,7 @@ void AssemblyModuleAssembler::gotoPickup()
   NQLog("AssemblyModuleAssembler") << ":gotoPickup()";
   //connect(this, SIGNAL(moveAbsolute(double,double,double,double)), motionManager_, SLOT(moveAbsolute(double,double,double,double)));
 }
+
 
 void AssemblyModuleAssembler::connectImageProducer(const QObject* sender,
                                                    const char* signal)
@@ -352,7 +336,7 @@ void AssemblyModuleAssembler::disconnectImageProducer(const QObject* sender,
 
 void AssemblyModuleAssembler::snapShot()
 {
-  // NQLog("AssemblyModuleAssembler") << ":snapShot()";
+   NQLog("AssemblyModuleAssembler") << ":snapShot()";
 
   if (image_.rows==0) return;
 
@@ -376,19 +360,19 @@ void AssemblyModuleAssembler::keyReleaseEvent(QKeyEvent * event)
   if (!(event->modifiers() & Qt::ShiftModifier)) {
     switch (event->key()) {
     case Qt::Key_0:
-      imageView_1->setZoomFactor(0.25);
+      //      imageView_1->setZoomFactor(0.25);
       event->accept();
       break;
     case Qt::Key_1:
-      imageView_1->setZoomFactor(1.00);
+      //imageView_1->setZoomFactor(1.00);
       event->accept();
       break;
     case Qt::Key_Plus:
-      imageView_1->increaseZoomFactor();
+      //imageView_1->increaseZoomFactor();
       event->accept();
       break;
     case Qt::Key_Minus:
-      imageView_1->decreaseZoomFactor();
+      //imageView_1->decreaseZoomFactor();
       event->accept();
       break;
     default:
@@ -397,105 +381,395 @@ void AssemblyModuleAssembler::keyReleaseEvent(QKeyEvent * event)
   }
 }
 
-AssemblyVacuumToggler::AssemblyVacuumToggler(QWidget *parent, std::string string, double a)
-: QWidget(parent),local_a(a)
+
+AssemblyPrecisionEstimator::AssemblyPrecisionEstimator(QWidget *parent, string text, string measurement_position, string pickup_position, int iterations , ConradModel * cnrd1)
+: QWidget(parent)
+{
+    QGridLayout *l = new QGridLayout(this);
+    setLayout(l);
+    
+    QString q_pu_pos = QString::fromStdString(pickup_position);
+    QString q_meas_pos = QString::fromStdString(measurement_position);
+    QString qname = QString::fromStdString(text);
+
+    button1 = new QPushButton(qname, this);
+    l->addWidget(button1,0,0);
+    
+    QFormLayout *fl1 = new QFormLayout(this);
+    l->addLayout(fl1,1,0);
+
+    label1 = new QLabel();
+    lineEdit1 = new QLineEdit();
+    fl1->addRow(label1,lineEdit1);
+
+    label2 = new QLabel();
+    lineEdit2 = new QLineEdit();
+    fl1->addRow(label2,lineEdit2);
+    
+    label3 = new QLabel();
+    lineEdit3 = new QLineEdit();
+    fl1->addRow(label3,lineEdit3);
+    
+
+    label1->setText("Measurement position (x,y,z)");
+    label2->setText("Pickup position (x,y,z)");
+    label3->setText("N iterations");
+    
+    
+    lineEdit1->setText("48.9792,58.0699,-88.1536");
+    lineEdit2->setText("-39.6346,17.4785,-119.1284,0.0");
+    lineEdit3->setText("1");
+    
+    connect(button1, SIGNAL(clicked()),
+            this, SLOT(run()));
+}
+
+
+void AssemblyPrecisionEstimator::recordPosition(double x, double y, double theta)
+{
+ 
+    NQLog("AssemblyPrecisionEstimator") << ":recordPosition";
+
+}
+
+
+void AssemblyPrecisionEstimator::run()
+{
+    
+    NQLog("AssemblyPrecisionEstimator") << ":run";
+    
+    
+    
+    //parse lineEdit text to get target coordinates
+    QString  parent_string_meas = this->lineEdit1->text();
+    
+    QStringList pieces_meas = parent_string_meas.split( "," );
+    QString x_meas_s = pieces_meas.value( pieces_meas.length() - 3);
+    QString y_meas_s = pieces_meas.value( pieces_meas.length() - 2);
+    QString z_meas_s = pieces_meas.value( pieces_meas.length() -1);
+    
+    double x_meas_d = x_meas_s.toDouble();
+    double y_meas_d = y_meas_s.toDouble();
+    double z_meas_d = z_meas_s.toDouble();
+    
+    
+    QString  parent_string_pickup = this->lineEdit2->text();
+    
+    QStringList pieces_pickup = parent_string_pickup.split( "," );
+    QString x_pickup_s = pieces_pickup.value( pieces_pickup.length() - 3);
+    QString y_pickup_s = pieces_pickup.value( pieces_pickup.length() - 2);
+    QString z_pickup_s = pieces_pickup.value( pieces_pickup.length() - 1);
+    
+    double x_pickup_d = x_pickup_s.toDouble();
+    double y_pickup_d = y_pickup_s.toDouble();
+    double z_pickup_d = z_pickup_s.toDouble();
+    
+    
+    QString  parent_string_iterations = this->lineEdit3->text();
+    
+    int iterations_i = parent_string_iterations.toInt();
+    
+    NQLog("AssemblyPrecisionEstimator::run")<<  " x_m = " << x_meas_d <<  " y_m = " << y_meas_d << " z_m = " << z_meas_d << " x_p = " << x_pickup_d  << " y_p = " << y_pickup_d  <<" z_p = " << z_pickup_d <<  " iterations = " << iterations_i;
+
+
+    emit launchPrecisionEstimation(x_meas_d, y_meas_d, z_meas_d, x_pickup_d, y_pickup_d, z_pickup_d, iterations_i );
+    
+}
+
+AssemblySandwichAssembler::AssemblySandwichAssembler(QWidget *parent, string text, string assembly_position, string bottom_part_position, string top_part_position)
+: QWidget(parent)
+{
+    QGridLayout *l = new QGridLayout(this);
+    setLayout(l);
+    
+    //QString q_assembly_pos = QString::fromStdString(assembly_pickup);
+    //QString q_bottom_pos = QString::fromStdString(bottom_part_position);
+    //QString q_top_pos = QString::fromStdString(bottom_part_position);
+    QString qname = QString::fromStdString(text);
+
+    button0 = new QPushButton("Align object", this);
+    l->addWidget(button0,0,0);
+    
+    button1 = new QPushButton(qname, this);
+    l->addWidget(button1,1,0);
+    
+    QFormLayout *fl1 = new QFormLayout(this);
+    l->addLayout(fl1,2,0);
+
+    label1 = new QLabel();
+    lineEdit1 = new QLineEdit();
+    fl1->addRow(label1,lineEdit1);
+
+    label2 = new QLabel();
+    lineEdit2 = new QLineEdit();
+    fl1->addRow(label2,lineEdit2);
+    
+    label3 = new QLabel();
+    lineEdit3 = new QLineEdit();
+    fl1->addRow(label3,lineEdit3);
+    
+
+    label1->setText("Assembly position (x,y,z)");
+    label2->setText("Bottom part position (x,y,z)");
+    label3->setText("Top part position (x,y,z)");
+    
+
+    
+    lineEdit1->setText("0.0,55.0,-108.0");
+    lineEdit2->setText("50.0,-111.90,-127.7184");
+    lineEdit3->setText("-80.0,-111.90,-125.70");
+    
+    connect(button1, SIGNAL(clicked()),
+            this, SLOT(run()));
+    
+    connect(button0, SIGNAL(clicked()),
+            this, SLOT(run_alignment()));
+}
+
+
+void AssemblySandwichAssembler::run_alignment(){
+
+    NQLog("AssemblySandwichAssembler") << ":run_alignment()";
+
+    emit launchAlignment(1,0.0,0.0,0.0);
+
+}
+
+void AssemblySandwichAssembler::run()
+{
+    
+    NQLog("AssemblySandwichAssembler") << ":run";
+    
+    
+    
+    //parse lineEdit text to get target coordinates
+    QString  parent_string_assembly = this->lineEdit1->text();
+    
+    QStringList pieces_assembly = parent_string_assembly.split( "," );
+    QString x_assembly_s = pieces_assembly.value( pieces_assembly.length() - 3);
+    QString y_assembly_s = pieces_assembly.value( pieces_assembly.length() - 2);
+    QString z_assembly_s = pieces_assembly.value( pieces_assembly.length() -1);
+    
+    double x_assembly_d = x_assembly_s.toDouble();
+    double y_assembly_d = y_assembly_s.toDouble();
+    double z_assembly_d = z_assembly_s.toDouble();
+    
+    
+    QString  parent_string_bottom = this->lineEdit2->text();
+    
+    QStringList pieces_bottom = parent_string_bottom.split( "," );
+    QString x_bottom_s = pieces_bottom.value( pieces_bottom.length() - 3);
+    QString y_bottom_s = pieces_bottom.value( pieces_bottom.length() - 2);
+    QString z_bottom_s = pieces_bottom.value( pieces_bottom.length() - 1);
+    
+    double x_bottom_d = x_bottom_s.toDouble();
+    double y_bottom_d = y_bottom_s.toDouble();
+    double z_bottom_d = z_bottom_s.toDouble();
+    
+    
+    QString  parent_string_top = this->lineEdit3->text();
+    
+    QStringList pieces_top = parent_string_top.split( "," );
+    QString x_top_s = pieces_top.value( pieces_top.length() - 3);
+    QString y_top_s = pieces_top.value( pieces_top.length() - 2);
+    QString z_top_s = pieces_top.value( pieces_top.length() - 1);
+    
+    double x_top_d = x_top_s.toDouble();
+    double y_top_d = y_top_s.toDouble();
+    double z_top_d = z_top_s.toDouble();
+    
+    NQLog("AssemblySandwichAssembler::run")<<  " x_a = " << x_assembly_d <<  " y_a = " << y_assembly_d << " z_a = " << z_assembly_d;
+    NQLog("AssemblySandwichAssembler::run")<<  " x_b = " << x_bottom_d <<  " y_b = " << y_bottom_d << " z_b = " << z_bottom_d;
+    NQLog("AssemblySandwichAssembler::run")<<  " x_t = " << x_top_d <<  " y_t = " << y_top_d << " z_t = " << z_top_d;
+
+
+    emit launchSandwichAssembly(x_assembly_d, y_assembly_d, z_assembly_d, x_bottom_d, y_bottom_d, z_bottom_d, x_top_d, y_top_d, z_top_d);
+    
+}
+
+
+AssemblyVacuumToggler::AssemblyVacuumToggler(QWidget *parent, std::string string)
+: QWidget(parent)
 {
   QGridLayout *l = new QGridLayout(this);
   setLayout(l);
 
-  cnrd1 = new ConradModel(parent);
-
-  std::ostringstream strs;
-  strs.clear();
-  strs << a;
-  std::string str = strs.str();
-  QString qstr = QString::fromStdString(str);
+  state = false;
+    
   QString qname = QString::fromStdString(string);
 
-  state = false;
+  state = false;//???
 
   button1 = new QPushButton(qname, this);
   l->addWidget(button1,0,0);
+    
 
-  ql = new QLabel("", this);
-  l->addWidget(ql,0,1);
+  radio1 = new QRadioButton(tr("&Pickup"));
+  radio2 = new QRadioButton(tr("&Spacers"));
+  radio3 = new QRadioButton(tr("&Baseplate"));
+ // radio4 = new QRadioButton(tr("&Channel 4"));
+    
+    
+  valves.push_back(radio1);
+  valves.push_back(radio2);
+  valves.push_back(radio3);
+ // valves.push_back(radio4);
+    
+
+  l->addWidget(radio1,1,0);
+  l->addWidget(radio2,3,0);
+  l->addWidget(radio3,5,0);
+  //l->addWidget(radio4,7,0);
+    
 
   QPixmap pixmap(100,100);
   pixmap.fill(QColor("transparent"));
-
+    
   QPainter painter(&pixmap);
   painter.setBrush(QBrush(Qt::red));
   painter.drawEllipse(0, 0, 30, 30);
+    
+  ql1 = new QLabel("", this);
+  l->addWidget(ql1,1,1);
 
-  ql->setPixmap(pixmap);
-  ql->setText("VACUUM OFF");
-  ql->setStyleSheet("QLabel { background-color : green; color : black; }");
+  ql1->setPixmap(pixmap);
+  ql1->setText("VACUUM OFF");
+  ql1->setStyleSheet("QLabel { background-color : green; color : black; }");
+    
+  ql2 = new QLabel("", this);
+  l->addWidget(ql2,3,1);
+    
+  ql2->setPixmap(pixmap);
+  ql2->setText("VACUUM OFF");
+  ql2->setStyleSheet("QLabel { background-color : green; color : black; }");
+   
+  ql3 = new QLabel("", this);
+  l->addWidget(ql3,5,1);
+    
+  ql3->setPixmap(pixmap);
+  ql3->setText("VACUUM OFF");
+  ql3->setStyleSheet("QLabel { background-color : green; color : black; }");
+   
+  //ql4 = new QLabel("", this);
+ // l->addWidget(ql4,7,1);
+    
+  //ql4->setPixmap(pixmap);
+ // ql4->setText("VACUUM OFF");
+  //ql4->setStyleSheet("QLabel { background-color : green; color : black; }");
+    
+  labels.push_back(ql1);
+  labels.push_back(ql2);
+  labels.push_back(ql3);
+ // labels.push_back(ql4);
 
   connect(button1, SIGNAL(clicked()),
           this, SLOT(toggleVacuum()));
 
 }
 
+
+
 void AssemblyVacuumToggler::toggleVacuum()
 {
-  NQLog("AssemblyVacuumToggler") << ": toggling vacuum voltage";
+    NQLog("AssemblyVacuumToggler") << ": toggling vacuum voltage ";
 
-  if (!state){
-    cnrd1->setSwitchEnabled(1, true);
+    for (int i = 0; i < 4 ; i ++){
     
-    if (cnrd1->getSwitchState(1) == 1){
-      ql->setText("VACUUM ON");
-      ql->setStyleSheet("QLabel { background-color : red; color : black; }");
-      state = true;
+        if (valves[i]->isChecked()){
+            
+	  NQLog("AssemblyVacuumToggler") << ": emit signal to channel " << (i + 1);
+	  button1 -> setEnabled(false);
+	  emit toggleVacuum(i + 1);
+	  return;
+        }
     }
-  }else if (state){
-    cnrd1->setSwitchEnabled(1, false);
+    NQLog("AssemblyVacuumToggler") << ": None channel selected! Vacuum is not toggled.";
     
-    if (cnrd1->getSwitchState(1) == 0){
-      ql->setText("VACUUM OFF");
-      ql->setStyleSheet("QLabel { background-color : green; color : black; }");
-      state = false;
-    }
+}
+
+void AssemblyVacuumToggler::enableVacuumButton()
+{
+  button1 -> setEnabled(true);
+}
+
+void AssemblyVacuumToggler::disableVacuumButton()
+{
+  button1 -> setEnabled(false);
+}
+
+void AssemblyVacuumToggler::updateVacuumChannelState(int channelNumber, bool channelState)
+{
+  emit enableVacuumButton();
+
+  if (channelState){
+    labels[channelNumber]->setText("VACUUM ON");
+    labels[channelNumber]->setStyleSheet("QLabel { background-color : red; color : black; }");
+  }else {
+    labels[channelNumber]->setText("VACUUM OFF");
+    labels[channelNumber]->setStyleSheet("QLabel { background-color : green; color : black; }");    
   }
 }
 
-AssemblyAttacher::AssemblyAttacher(std::string string, double drop)
-: local_drop(drop)
+
+
+AssemblyAttacher::AssemblyAttacher(std::string string, double x ,double y, double z,double a)
+:local_x(x), local_y(y),local_z(z),local_a(a)
 {
-  QFormLayout *ll = new QFormLayout(this);
-  setLayout(ll);
+    
+    
+    QFormLayout *l = new QFormLayout(this);
+    setLayout(l);
+    
+    std::ostringstream strs;
+    strs.clear();
+    strs << x;
+    strs << ",";
+    strs << y;
+    strs << ",";
+    strs << z;
+    std::string str = strs.str();
+    QString qstr = QString::fromStdString(str);
+    QString qname = QString::fromStdString(string);
+    
+    this->local_x = x;
+    this->local_y = y;
+    this->local_z = z;
+    this->local_a = a;
+    
+    button1 = new QPushButton(qname, this);
+    
+    lineEdit1 = new QLineEdit();
+    lineEdit1->setText(qstr);
+    l->addRow(button1,lineEdit1);
+    
 
-
-  std::ostringstream strs;
-  strs.clear();
-  strs << drop;
-  std::string str = strs.str();
-  QString qstr = QString::fromStdString(str);
-  QString qname = QString::fromStdString(string);
-
-
-  button1 = new QPushButton(qname, this);
-
-  lineEdit1 = new QLineEdit();
-  lineEdit1->setText(qstr);
-  ll->addRow(button1,lineEdit1);
 
   connect(button1, SIGNAL(clicked()),
-          this, SLOT(dropAttach()));
+          this, SLOT(moveRelative()));
 }
 
-void AssemblyAttacher::dropAttach(){
-
-  //parse lineEdit text to get target coordinates
-  QString  parent_string = this->lineEdit1->text();
-
-  double d_d = parent_string.toDouble();
-
-  NQLog("AssemblyUEyeCameraSettingsMotionInterface") <<" requesting move... ";
-
-  emit moveRelative(0.0,0.0,-d_d, 0.0);
-
-  NQLog("AssemblyUEyeCameraSettingsMotionInterface") <<"move requested ";
+void AssemblyAttacher::moveRelative(){
+    //parse lineEdit text to get target coordinates
+    QString  parent_string = this->lineEdit1->text();
+    
+    QStringList pieces = parent_string.split( "," );
+    QString x = pieces.value( pieces.length() - 4);
+    QString y = pieces.value( pieces.length() - 3);
+    QString z = pieces.value( pieces.length() - 2);
+    QString a = pieces.value( pieces.length() - 1);
+    
+    double x_d = x.toDouble();
+    double y_d = y.toDouble();
+    double z_d = z.toDouble();
+    double a_d = a.toDouble();
+    
+    NQLog("AssemblyAttacher::moveRelative") << ": moving relative (parsed!!!) "<< x_d<<" "<< y_d<<" "<< z_d <<" "<< a_d;
+    
+    NQLog("AssemblyAttacher::moveRelative") <<" requesting move...";
+    
+    emit moveRelative(x_d, y_d, z_d, a_d);
+    
+    NQLog("AssemblyAttacher::moveRelative") <<"move requested...";
 }
 
 AssemblyMountChecker::AssemblyMountChecker(QWidget *parent, std::string string,
@@ -606,9 +880,9 @@ void AssemblyCommander::goToTarget()
   QString  parent_string = this->lineEdit1->text();
 
   QStringList pieces = parent_string.split( "," );
-  QString x = pieces.value( pieces.length() - 3);
-  QString y = pieces.value( pieces.length() - 2);
-  QString z = pieces.value( pieces.length() - 1);
+  QString x = pieces.value( pieces.length() - 4);
+  QString y = pieces.value( pieces.length() - 3);
+  QString z = pieces.value( pieces.length() - 2);
   QString a = pieces.value( pieces.length() - 1);
 
   double x_d = x.toDouble();
@@ -616,7 +890,7 @@ void AssemblyCommander::goToTarget()
   double z_d = z.toDouble();
   double a_d = a.toDouble();
 
-  NQLog("AssemblyCommander:goToTarget") << ": going to target (parsed) "<< x_d<<" "<< y_d<<"  "<< z_d;
+  NQLog("AssemblyCommander:goToTarget") << ": going to target (parsed) "<< x_d<<" "<< y_d<<" "<< z_d;
 
   NQLog("AssemblyCommander:goToTarget") <<" requesting move...";
 
@@ -624,6 +898,7 @@ void AssemblyCommander::goToTarget()
 
   NQLog("AssemblyCommander:goToTarget") <<"move requested...";
 }
+
 
 AssemblyAligner::AssemblyAligner(QWidget *parent, std::string string,
                                  double a)
@@ -679,9 +954,10 @@ void AssemblyAligner::align()
 }
 
 AssemblySensorLocator::AssemblySensorLocator(QWidget *parent, std::string string,
-                                             double a)
+                                             double a, AssemblySensorMarkerFinder * finder_ )
  : QWidget(parent), local_a(a)
 {
+    
   std::ostringstream strs;
   strs.clear();
   strs << a;
@@ -709,20 +985,39 @@ AssemblySensorLocator::AssemblySensorLocator(QWidget *parent, std::string string
   button1 = new QPushButton(qname, this);
 
   l->addWidget(button1,0,0);
+    
+  groupBox1 = new QGroupBox(tr("Object sought"));
+  groupBox2 = new QGroupBox(tr("Mode"));
+    
+    
+  radio1 = new QRadioButton(tr("&Fiducial marker"));
+  radio2 = new QRadioButton(tr("&Positioning pin"));
+  radio3 = new QRadioButton(tr("&Sensor corner"));
+  radio31 = new QRadioButton(tr("&Spacer corner"));
+    
+  radio1->setChecked(true);
 
-  groupBox = new QGroupBox(tr("Pattern Recognition Method"));
+  vbox1 = new QVBoxLayout;
+  vbox1->addWidget(radio1);
+  vbox1->addWidget(radio2);
+  vbox1->addWidget(radio3);
+  vbox1->addWidget(radio31);
 
-  radio1 = new QRadioButton(tr("&Circle Seed Algorithm"));
-  radio2 = new QRadioButton(tr("T&emplate Matching"));
-  radio2->setChecked(true);
+  vbox1->addStretch(1);
+  groupBox1->setLayout(vbox1);
+    
+  radio4 = new QRadioButton(tr("&Demo"));
+  radio5 = new QRadioButton(tr("&Lab"));
+  radio4->setChecked(true);
+    
+  vbox2 = new QVBoxLayout;
+  vbox2->addWidget(radio4);
+  vbox2->addWidget(radio5);
+  vbox2->addStretch(1);
+  groupBox2->setLayout(vbox2);
 
-  vbox = new QVBoxLayout;
-  vbox->addWidget(radio1);
-  vbox->addWidget(radio2);
-  vbox->addStretch(1);
-  groupBox->setLayout(vbox);
-
-  l->addWidget(groupBox,1,0);
+  l->addWidget(groupBox1,1,0);
+  l->addWidget(groupBox2,1,1);
 
   ql = new QLabel("", this);
   l->addWidget(ql,0,1);
@@ -738,541 +1033,61 @@ AssemblySensorLocator::AssemblySensorLocator(QWidget *parent, std::string string
   ql->setText("WAITING");
   ql->setStyleSheet("QLabel { background-color : orange; color : black; }");
 
-  connect(button1, SIGNAL(clicked()),
-          this, SLOT(locatePickup()));
-  connect(this, SIGNAL(locatePickupCorner_circleSeed(int)),
-          this, SLOT(locateSensor_circleSeed(int)));
-  connect(this, SIGNAL(locatePickupCorner_templateMatching(int)),
-          this, SLOT(locateSensor_templateMatching(int)));
+    
+  connect(button1, SIGNAL(clicked()), this, SLOT(detectPatRecMode()));
+    
+  connect(this, SIGNAL(runObjectDetection(int, int )), finder_, SLOT(runObjectDetection(int, int)));
+
+    
+ // connect(this, SIGNAL(locatePickupCorner_circleSeed(int)),
+  //        this, SLOT(locateSensor_circleSeed(int)));
+
+  connect(this, SIGNAL(locatePickupCorner_templateMatching(cv::Mat,cv::Mat)),
+             finder_, SLOT(findMarker_templateMatching(cv::Mat,cv::Mat)));
+    
+  //connect(this, SIGNAL(locatePickupCorner_circleSeed(cv::Mat,cv::Mat)),
+  //          finder_, SLOT(findMarker_circleSeed(cv::Mat,cv::Mat)));
+
 }
 
-void AssemblySensorLocator::locatePickup()
+
+void AssemblySensorLocator::detectPatRecMode()
 {
-  if (radio1->isChecked()) {
-    NQLog("AssemblySensorLocator") << "Circle seed selected" ;
-    emit locatePickupCorner_circleSeed(1);
+    objectmode = 0;
+    labmode = 0;
     
-  } else if (radio2->isChecked()) {
-    NQLog("AssemblySensorLocator") << "Template matching selected" ;
+    if (radio1->isChecked()){
+        objectmode =0;
+    } else if (radio2->isChecked()){
+        objectmode =1;
+        
+    }else if (radio3->isChecked()){
+        
+        objectmode =2;
+    }
+    else if (radio31->isChecked()){  
+        objectmode =3;
+    }
     
-    emit locatePickupCorner_templateMatching(1);
-  }
-}
 
-void AssemblySensorLocator::locateSensor_templateMatching(int stage)
-{
-  NQLog("AssemblySensorLocator") << "Finding Marker (Template Matching)" ;
-  cv::Mat img, img_clip_A, img_clip_B, result_1, result_2, dst;
-  int match_method;
-
-
-  img = cv::imread(Config::CMSTkModLabBasePath + "/share/assembly/RawSensor_4.png",
-                   CV_LOAD_IMAGE_COLOR);
-  img_clip_A = cv::imread(Config::CMSTkModLabBasePath + "/share/assembly/RawSensor_3_clipA.png",
-                          CV_LOAD_IMAGE_COLOR);
-  img_clip_B = cv::imread(Config::CMSTkModLabBasePath + "/share/assembly/RawSensor_3_clipB.png",
-                          CV_LOAD_IMAGE_COLOR);
-
-  Point matchLoc_1, matchLoc_2, matchLoc_final;
-
-  Mat img_copy = img.clone();
-
-  //Greyscale images
-  Mat img_copy_gs(img_copy.size(), img_copy.type());
-  Mat img_clip_A_gs(img_clip_A.size(), img_clip_A.type());
-  Mat img_clip_B_gs(img_clip_B.size(), img_clip_B.type());
-
-  //convert color to GS
-  cvtColor( img_copy,   img_copy_gs,   CV_BGR2GRAY );
-  cvtColor( img_clip_A, img_clip_A_gs, CV_BGR2GRAY );
-  cvtColor( img_clip_B, img_clip_B_gs, CV_BGR2GRAY );
-
-  //Binary images
-  Mat img_copy_bin(img_copy_gs.size(), img_copy_gs.type());
-  Mat img_clip_A_bin(img_clip_A_gs.size(), img_clip_A_gs.type());
-  Mat img_clip_B_bin(img_clip_B_gs.size(), img_clip_B_gs.type());
-
-  //Apply thresholding
-  cv::threshold(img_copy_gs, img_copy_bin, 60, 255, cv::THRESH_BINARY);
-  cv::threshold(img_clip_A_gs, img_clip_A_bin, 90, 255, cv::THRESH_BINARY);
-  cv::threshold(img_clip_B_gs, img_clip_B_bin, 90, 255, cv::THRESH_BINARY);
-
-  // img_copy_bin = img_copy_gs.clone();
-  // img_clip_A_bin = img_clip_A_gs.clone();
-  // img_clip_B_bin = img_clip_B_gs.clone();
-
-  std::string filename_img_bin = Config::CMSTkModLabBasePath + "/share/assembly/Sensor_bin.png";
-  std::string filename_clip_A_bin = Config::CMSTkModLabBasePath + "/share/assembly/clip_A_bin.png";
-  std::string filename_clip_B_bin = Config::CMSTkModLabBasePath + "/share/assembly/clip_B_bin.png";
-
-  cv::imwrite(filename_img_bin, img_copy_bin);
-  cv::imwrite(filename_clip_A_bin, img_clip_A_bin);
-  cv::imwrite(filename_clip_B_bin, img_clip_B_bin);
-
-  emit updateImage(4, filename_img_bin);
-  emit updateImage(5, filename_clip_A_bin);
-  emit updateImage(6, filename_clip_B_bin);
-
-  //GaussianBlur( img_gs_copy, img_gs_copy, Size( 51, 51 ), 0, 0 );
-  //GaussianBlur( img_clip_gs, img_clip_gs, Size( 51, 51 ), 0, 0 );
-  //GaussianBlur( img_clip_gs_2, img_clip_gs_2, Size( 51, 51 ), 0, 0 );
-
-
-  /// Localizing the best match with minMaxLoc
-  double FOM, FOM_inc = 1000.0, minVal, maxVal; Point minLoc; Point maxLoc;
-  double thetas[40], FOMs[40];
-
-  //first find the (x,y) location of the circle within the corner marker
-
-  //create result matrix to hold correlation values
-  int result_cols =  img_copy_bin.cols - img_clip_A.cols + 1;
-  int result_rows = img_copy_bin.rows - img_clip_A.rows + 1;
-
-  result_1.create( result_rows, result_cols, CV_32FC1 );
-
-  match_method =1;
-  matchTemplate( img_copy_bin, img_clip_A_bin, result_1, match_method);
-
-  minMaxLoc( result_1, &minVal, &maxVal, &minLoc, &maxLoc, Mat() );
-
-
-  /// For SQDIFF and SQDIFF_NORMED, the best matches are lower values. For all the other methods, the higher the better
-  if( match_method  == CV_TM_SQDIFF || match_method == CV_TM_SQDIFF_NORMED ) {
-    matchLoc_1 = minLoc;
-    FOM = minVal;
-  } else {
-    matchLoc_1 = maxLoc;
-    FOM = maxVal;
-  }
-
-  //circle( img_gs, Point( matchLoc_1.x + (img_clip_gs.cols/2.0) , matchLoc_1.y + (img_clip_gs.rows/2.0) ), 10, Scalar(255,0,0) );
-
-  circle( img, Point( matchLoc_1.x  , matchLoc_1.y ), 30, Scalar(255,0,0) );
-  rectangle( img, matchLoc_1, Point( matchLoc_1.x + img_clip_A_bin.cols , matchLoc_1.y + img_clip_A_bin.rows ), Scalar(255,0,0), 2, 8, 0 );
-
-  NQLog("AssemblySensorLocator") <<  matchLoc_1.x<< "   "<< matchLoc_1.y;
-
-
-  int i = 0;
-  int color = 200;
-
-  //Optional - currently not preferred.
-  //Precisiely find the circle within the marker
-  
-  /*
-    // define location of sub matrices in image
-    Rect roi1( matchLoc_1.x  , matchLoc_1.y, img_clip_A_bin.cols, img_clip_A_bin.rows );
-
-    
-    // define sub matrices in main matrix
-    Mat img_copy_2 = img_copy_gs.clone();
-    Mat sub1( img_copy_2, roi1 );
-    
-    GaussianBlur( sub1, sub1, Size( 9, 9 ), 4,4 );
-    
-    vector<Vec3f> circles;
-    HoughCircles(sub1, circles, CV_HOUGH_GRADIENT, 2, sub1.rows/2, 20, 40 );
-    
-    NQLog("AssemblySensorLocator  ") <<  circles.size() << "  circles detected ";
-
-    
-    for( size_t i = 0; i < circles.size(); i++ )
+    if (radio4->isChecked()){
+        labmode = 0;
+        
+    } else if(radio5->isChecked())
     {
-        Point center(cvRound(circles[i][0]) + matchLoc_1.x , cvRound(circles[i][1]) + matchLoc_1.y);
-        int radius = cvRound(circles[i][2]);
-        // draw the circle center
-        circle( img, center, 3, Scalar(0,255,0), -1, 8, 0 );
-        // draw the circle outline
-        circle( img, center, radius, Scalar(0,0,255), 3, 8, 0 );
+        labmode = 1;
     }
     
-   */
+    NQLog("AssemblyModuleAssembler:: emitting runobjectdetection with args :" )<<  labmode <<" , " << objectmode ;
 
+    emit runObjectDetection(labmode, objectmode);
 
-
-  for (float theta = -6.0; theta < 6.0;  theta = theta + 0.3){
-    //    for (float theta = -180.0; theta < 180.0;  theta = theta + 9.0){
-
-    // Point2f src_center(img_gs_copy.cols/2.0F, img_gs_copy.rows/2.0F);
-    Point2f src_center( matchLoc_1.x + (img_clip_A_bin.cols/2) , matchLoc_1.y + (img_clip_A_bin.rows/2) );
-    
-    Mat rot_mat = getRotationMatrix2D(matchLoc_1, theta, 1.0);
-    cv::Scalar avgPixelIntensity = cv::mean( img_copy_bin );
-    warpAffine(img_copy_bin, dst, rot_mat, img_copy_bin.size(), cv::INTER_CUBIC,
-               cv::BORDER_CONSTANT, avgPixelIntensity);
-
-    std::string filename_rotated_base = cacheDirectory2_ + "/Rotation_result_";
-    std::ostringstream ss;
-    ss << theta;
-    std::string theta_str = ss.str();
-    std::string filename_rotated = filename_rotated_base + theta_str + ".png";
-    cv::imwrite(filename_rotated, dst);
-    
-    //create result matrix to hold correlation values
-    result_cols =  img_copy_bin.cols - img_clip_B_bin.cols + 1;
-    result_rows = img_copy_bin.rows - img_clip_B_bin.rows + 1;
-
-    result_2.create( result_rows, result_cols, CV_32FC1 );
-    matchTemplate( dst, img_clip_B_bin, result_2, match_method );
-
-    // normalize( result, result, 0, 1, NORM_MINMAX, -1, Mat() );
-    minMaxLoc( result_2, &minVal, &maxVal, &minLoc, &maxLoc, Mat() );
-
-    /// For SQDIFF and SQDIFF_NORMED, the best matches are lower values. For all the other methods, the higher the better
-    if( match_method  == CV_TM_SQDIFF || match_method == CV_TM_SQDIFF_NORMED ) {
-      matchLoc_2 = minLoc;
-      FOM = minVal;
-    } else {
-      matchLoc_2 = maxLoc;
-      FOM = maxVal;
-    }
-
-    std::cout << std::setprecision(10);
-    //    cout<< theta<<"  ,  " << FOM  <<endl;
-
-    thetas[i] = theta;
-    FOMs[i] = FOM;
-    i++;
-
-    if (FOM < FOM_inc ) {
-
-      FOM_inc = FOM;
-      matchLoc_final = matchLoc_2;
-    }
-
-    color = 50 + 200*theta;
-  }
-
-
-  rectangle( img, matchLoc_final, Point( matchLoc_final.x + img_clip_B_bin.cols , matchLoc_final.y + img_clip_B_bin.rows ), Scalar(color,color-50,color+50), 2, 8, 0 );
-  // rectangle( result_2, matchLoc_2, Point( matchLoc_2.x + img_clip_B_bin.cols , matchLoc_2.y + img_clip_B_bin.rows ), Scalar(color,color-50,color+50), 2, 8, 0 );
-
-  TCanvas *c1 = new TCanvas("c1","Rotation extraction",200,10,700,500);
-
-  if (thetas[0] && FOMs[0]){
-    TGraph *gr = new TGraph(40, thetas, FOMs);
-    gr->Draw("AC*");
-    std::string filename_canvas = cacheDirectory1_ + "/RotationExtraction.png";
-    c1->SaveAs(filename_canvas.c_str());
-
-    emit updateImage(2, filename_canvas);
-  }
-
-  std::string filename = cacheDirectory1_ + "/PatRec_TM_result.png";
-  cv::imwrite(filename, img);
-
-  emit updateImage(stage, filename);
-
-  emit foundSensor(1);
 }
 
-void AssemblySensorLocator::locateSensor_circleSeed(int stage)
-{
-  NQLog("AssemblySensorLocator") << "Finding Marker (Circle Seed Algorithm)" ;
-
-  cv::Mat img_gs, img_rgb, img_edges;
-
-  img_gs = cv::imread(Config::CMSTkModLabBasePath + "/share/assembly/im_scan___Exp10___EdgeThr145___lt110.png",
-                      CV_LOAD_IMAGE_COLOR);
-
-  cvtColor(img_gs, img_gs , CV_RGB2GRAY);
-
-  int radius;
-  int  expectedCircleRadius_ = 89;
-  double circleCenterDetectionThreshold_  = 35.0;
-  double circleEdgeDetectionThreshold_  = 145.0;
-  double linesCannyEdgeDetectionThreshold1_ =50;
-  double linesCannyEdgeDetectionThreshold2_ =200;
-  double linesCannyEdgeDetectionApertureSize_ =3;
-  double linesCannyEdgeDetectionL2Gradient_ =1;
-  double linesHoughDistanceResolution_ = 1.0;
-  //    double linesHoughAngleResolution_*CV_PI/180,
-  double linesHoughAngleResolution_ = 0.1;
-  double linesHoughThreshold_ = 110.0;
-  double linesHoughMinLineLength_=  150.0;
-  double linesHoughMaxLineGap_ =25.0;
-  bool  dist1_, dist2_, dist3_, doca_ ;
-  double slope_final = 0.0, ang_final = 0.0;
-  double distance,doca,x0,x1,x2, y0,y1,y2, x,y;
-
-  std::vector<cv::Vec3f> circles;
-  cv::Point2f circleCenter_;
-
-  std::vector<cv::Vec4i> tempLines;
-  std::vector<std::pair<cv::Point2f,cv::Point2f> > lines_;
-  std::vector<std::pair<cv::Point2f,cv::Point2f> > goodLines_;
-  std::vector<std::pair<cv::Point2f,cv::Point2f> > mergedLines_;
-
-  std::vector<cv::Point2f> intersections_;
-  std::vector<cv::Point2f> goodIntersections_;
-  std::vector<cv::Point2f> finalIntersections_;
-  std::vector<cv::Point2f> finalIntersectionsUp_;
-  std::vector<cv::Point2f> finalIntersectionsDown_;
-
-  lines_.clear();
-  goodLines_.clear();
-  intersections_.clear();
-  goodIntersections_.clear();
-  finalIntersections_.clear();
-
-  //detect circles
-  cv::HoughCircles(img_gs, circles, CV_HOUGH_GRADIENT, 1, 20,
-                   circleEdgeDetectionThreshold_, circleCenterDetectionThreshold_,
-                   expectedCircleRadius_ - 15., expectedCircleRadius_ + 15.);
-
-  //get centre of first circle...problematic if this is not the right one.
-  if (circles.size() != 0){
-    circleCenter_.x = circles[0][0];
-    circleCenter_.y = circles[0][1];
-  }
-
-
-  cvtColor(img_gs, img_rgb , CV_GRAY2RGB);
-
-  /// Draw the circles detected in blue
-  for( size_t i = 0; i < circles.size(); i++ )
-  {
-    cv::Point center(cvRound(circles[i][0]), cvRound(circles[i][1]));
-    x = cvRound(circles[i][0]);
-    y = cvRound(circles[i][1]);
-    radius = cvRound(circles[i][2]);
-    // circle center
-    circle( img_rgb, center, 3, cv::Scalar(0,0,255), -1, 8, 0 );
-    //circle outline;
-    circle( img_rgb, center, radius, cv::Scalar(0,0,255), 3, 8, 0 );
-  }
-
-  //detect edges
-  cv::Canny(img_gs, img_edges,
-            linesCannyEdgeDetectionThreshold1_,
-            linesCannyEdgeDetectionThreshold2_,
-            linesCannyEdgeDetectionApertureSize_,
-            linesCannyEdgeDetectionL2Gradient_);
-
-
-  NQLog("AssemblyVUEyeCamera") << "  running hough lines";
-
-
-  //detect lines
-  cv::HoughLinesP(img_edges, tempLines,
-                  linesHoughDistanceResolution_,
-                  linesHoughAngleResolution_*CV_PI/180,
-                  linesHoughThreshold_,
-                  linesHoughMinLineLength_,
-                  linesHoughMaxLineGap_);
-
-
-  for (size_t i = 0; i < tempLines.size(); i++ ) {
-    lines_.push_back(std::pair<cv::Point2f,cv::Point2f>(cv::Point2f(tempLines[i][0],tempLines[i][1]), cv::Point2f(tempLines[i][2],tempLines[i][3])));
-  }
-
-
-  //draw the initial collection of lines in red (handy for debugging, monitoring of PatRec)
-  for (size_t i = 0; i < lines_.size(); i++ ) {
-    cv::line(img_rgb,
-             cv::Point(cvRound(lines_[i].first.x), cvRound(lines_[i].first.y)),
-             cv::Point(cvRound(lines_[i].second.x), cvRound(lines_[i].second.y)),
-             cv::Scalar(255, 0, 0), 2, CV_AA);
-  }
-
-
-  //select only the lines which have starting/ending points close to the circle centre and DOCA consistent with the L marker outline
-  for (size_t i = 0; i < lines_.size(); i++ ) {
-    dist1_  = dist2_ = dist3_ = doca_ = false;
-    distance = std::sqrt(std::pow(circleCenter_.x - lines_[i].first.x, 2.0) +
-                         std::pow(circleCenter_.y - lines_[i].first.y, 2.0));
-    if (distance < expectedCircleRadius_*6.0) dist1_ = true;
-    
-    distance = std::sqrt(std::pow(circleCenter_.x - lines_[i].second.x, 2.0) +
-                         std::pow(circleCenter_.y - lines_[i].second.y, 2.0));
-    //  if (distance < expectedCircleRadius_*2.5) goodLines_.push_back(lines_[i]);
-    if (distance < expectedCircleRadius_*6.0)  dist2_ = true  ;
-    
-    x0 = circleCenter_.x;
-    y0 = circleCenter_.y;
-    x1 =  lines_[i].first.x;
-    y1 =  lines_[i].first.y;
-    x2 =  lines_[i].second.x;
-    y2 =  lines_[i].second.y;
-    
-    doca =  std::fabs( x0*(y2-y1)  -  y0*(x2-x1) + x2*y1 -y2*x1)/ std::sqrt(   std::pow(y2 - y1,2.0)   +    std::pow(x2 - x1,2.0)      );
-    
-    
-    if ((doca <expectedCircleRadius_*5.8  && doca >expectedCircleRadius_*5.4)  || (doca <expectedCircleRadius_*1.3  && doca >expectedCircleRadius_*0.7)   ) doca_ = true;
-    
-    if (dist1_ && dist2_ && doca_ ) goodLines_.push_back(lines_[i]);
-  }
-
-  //draw the initial collection of "good" lines in pink (handy for debugging, monitoring of PatRec)
-
-  for (size_t i = 0; i < goodLines_.size(); i++ ) {
-    cv::line(img_rgb,
-             cv::Point(cvRound(goodLines_[i].first.x), cvRound(goodLines_[i].first.y)),
-             cv::Point(cvRound(goodLines_[i].second.x), cvRound(goodLines_[i].second.y)),
-             cv::Scalar(255, 0, 255), 4, CV_AA);
-  }
-
-
-  //find all intersections between goodlines that intersect @ ~ 90 degrees
-  for (size_t i = 0; i < goodLines_.size(); i++) {
-    for (size_t j = 0; j < goodLines_.size(); j++) {
-
-      if (i == j ) continue;
-      cv::Point2f theIntersection;
-      cv::Point2f o1,o2,p1,p2,r;
-      double distance;
-      o1 = goodLines_[i].first;
-      p1 = goodLines_[i].second;
-      o2 = goodLines_[j].first;
-      p2 = goodLines_[j].second;
-
-      cv::Point2f x = o2 - o1;
-      cv::Point2f d1 = p1 - o1;
-      cv::Point2f d2 = p2 - o2;
-
-      double cross = d1.x*d2.y - d1.y*d2.x;
-      double slope1 = (p1.y - o1.y) / (p1.x - o1.x);
-      double slope2 = (p2.y - o2.y) / (p2.x - o2.x);
-      double ang1 = atan (slope1) * 180 / 3.14;
-      double ang2 = atan (slope2) * 180 / 3.14;
-
-      double ang = fabs(ang2) - fabs(ang1);
-
-
-      if ( fabs(ang) > 80.0  && fabs(ang) < 100.0   &&   abs(cross) > /*EPS*/1e-7){
-        double t1 = (x.x * d2.y - x.y * d2.x)/cross;
-        r = o1 + d1 * t1;
-        intersections_.push_back(r);
-
-
-        distance = std::sqrt(std::pow(circleCenter_.x - r.x, 2.0) +
-                             std::pow(circleCenter_.y - r.y, 2.0));
-        //if (distance > 6.0*expectedCircleRadius_)continue;
-      }
-    }
-  }
-
-
-  // Now select intersections that occur near the start or end point of the intersecting lines. This removes random intersections from sprurious "noise" lines.
-
-  for(unsigned int  intsec = 0; intsec < intersections_.size(); intsec++ ){
-    bool goodIntersection = false;
-    for(unsigned int  gl = 0; gl < goodLines_.size(); gl++ ){
-
-      double d_start = std::sqrt(std::pow(intersections_[intsec].x - goodLines_[gl].first.x, 2.0) + std::pow(intersections_[intsec].y - goodLines_[gl].first.y, 2.0));
-      double d_end = std::sqrt(std::pow(intersections_[intsec].x - goodLines_[gl].second.x, 2.0) + std::pow(intersections_[intsec].y - goodLines_[gl].second.y, 2.0));
-      if(d_start< 5.0 || d_end < 5.0) goodIntersection = true;
-    }
-    if(goodIntersection == true) goodIntersections_.push_back(intersections_[intsec]);
-  }
-
-  for (unsigned int goodint =0; goodint < goodIntersections_.size(); goodint++){
-    
-    
-    // Select the two intersections that are adjacent to the circle.
-    if (std::sqrt(std::pow(circleCenter_.x - goodIntersections_[goodint].x, 2.0) + std::pow(circleCenter_.y - goodIntersections_[goodint].y, 2.0)) < expectedCircleRadius_*1.6) finalIntersections_.push_back(goodIntersections_[goodint]);
-    
-  }
 
 
 
-  //one typically ends up with multiple intersections at each corner due extra, spurious lines
-  cout <<"n final intersection  = = "<< finalIntersections_.size()<< endl;
 
-  // I divide the collection of final intersections into those abpve the circle's centre "up"
-  // and below "down". I use the average point of these collections to define to define the interesting intersections.
-  double running_total_x  =0;
-  double running_total_y  =0;
-  double av_x_up;
-  double av_x_down;
-  double av_y_up;
-  double av_y_down;
-
-  finalIntersectionsDown_.clear();
-  finalIntersectionsUp_.clear();
-
-  if (finalIntersections_.size() >0){
-    for (unsigned int finalint =0; finalint < finalIntersections_.size(); finalint++) {
-      if ( y > finalIntersections_[finalint].y){
-        finalIntersectionsDown_.push_back(finalIntersections_[finalint]);
-      }
-      else if ( y < finalIntersections_[finalint].y){
-        finalIntersectionsUp_.push_back(finalIntersections_[finalint]);
-      }
-
-    }
-    
-    
-    for (unsigned int finalintup =0; finalintup < finalIntersectionsUp_.size(); finalintup++) {
-      running_total_x = running_total_x + finalIntersectionsUp_[finalintup].x;
-      running_total_y = running_total_y + finalIntersectionsUp_[finalintup].y;
-    }
-    
-    av_x_up = running_total_x/finalIntersectionsUp_.size();
-    av_y_up = running_total_y/finalIntersectionsUp_.size();
-    
-    running_total_x  =0;
-    running_total_y  =0;
-    
-    for (unsigned int finalintdown =0; finalintdown < finalIntersectionsDown_.size(); finalintdown++) {
-      running_total_x = running_total_x + finalIntersectionsDown_[finalintdown].x;
-      running_total_y = running_total_y + finalIntersectionsDown_[finalintdown].y;
-    }
-    
-    av_x_down = running_total_x/finalIntersectionsDown_.size();
-    av_y_down = running_total_y/finalIntersectionsDown_.size();
-    
-    for (unsigned int finalintup =0; finalintup < finalIntersectionsUp_.size(); finalintup++) {
-      circle( img_rgb, finalIntersectionsUp_[finalintup], 10, cv::Scalar(0,255,255), 3, 8, 0 );
-    }
-    
-    for (unsigned int finalintdown =0; finalintdown < finalIntersectionsDown_.size(); finalintdown++) {
-      circle( img_rgb, finalIntersectionsDown_[finalintdown], 10, cv::Scalar(0,255,0), 3, 8, 0 );
-    }
-    
-    cv::line(img_rgb,
-             cv::Point(cvRound(av_x_down), cvRound(av_y_down)),
-             cv::Point(cvRound(av_x_up), cvRound(av_y_up)),
-             cv::Scalar(0, 255, 255), 4, CV_AA);
-    
-    
-    circle( img_rgb, cv::Point(x,y), 10, cv::Scalar(255,255,0), 3, 8, 0 );
-    
-    
-    slope_final = (av_y_up -  av_y_down) / (av_x_up -  av_x_down);
-    ang_final = atan (slope_final) * 180 / 3.14;
-    
-    
-  }
-
-
-  std::ostringstream convert;   // stream used for the conversion
-  convert.str(" ");
-  convert.clear();
-  convert << ang_final;
-  std::string str_ang_final = convert.str();
-  convert.str(" ");
-  convert.clear();
-  convert << circleCenter_.x ;
-  std::string str_x = convert.str();
-  convert.str(" ");
-  convert.clear();
-  convert << circleCenter_.y;
-  std::string str_y = convert.str();
-
-  std::string text_result = "Marker is at = (" +  str_x  +  ", " + str_y + "), with orientation = " + str_ang_final  + " degrees";
-
-
-  putText(img_rgb, text_result, cvPoint(30,100),
-          cv::FONT_HERSHEY_COMPLEX_SMALL, 2.8, cvScalar(200,200,250), 1, CV_AA);
-  std::string filename = cacheDirectory1_ + "/PatRec_result.png";
-  cv::imwrite(filename, img_rgb);
-
-  emit updateImage(stage, filename);
-  emit foundSensor(1);
-  emit sendPosition(stage, circleCenter_.x,circleCenter_.y, ang_final);
-  NQLog("AssemblyVUEyeCamera") << "  found marker";
-}
 
 void AssemblySensorLocator::foundsensor(int state)
 {
