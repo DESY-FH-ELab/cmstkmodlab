@@ -15,10 +15,39 @@
 #include <QtCore>
 #include <QXmlStreamWriter>
 #include <QFile>
+#include <QDirIterator>
 
 #include <TDatime.h>
 
 #include "Analyser.h"
+
+DataFileDate::DataFileDate()
+ : date_(QDate()),
+	 n_(0)
+{
+
+}
+
+DataFileDate::DataFileDate(const DataFileDate& other)
+ : date_(other.getDate().year(), other.getDate().month(), other.getDate().day()),
+	 n_(other.getNumber())
+{
+
+}
+
+DataFileDate::DataFileDate(const QDate& date, int n)
+ : date_(date),
+	 n_(n)
+{
+
+}
+
+DataFileDate::DataFileDate(int y, int m, int d, int n)
+ : date_(y, m, d),
+	 n_(n)
+{
+
+}
 
 Analyser::Analyser(QStringList& arguments)
  : arguments_(arguments),
@@ -31,17 +60,77 @@ Analyser::Analyser(QStringList& arguments)
 
 void Analyser::analyse()
 {
-	if (arguments_.size()<2) {
-		std::cout << "usage: PumpStationAnalysis <output file> <input file 1> <input file 2> ..." << std::endl;
+	bool hasStartDate = false;
+	QDate startDate;
+	if (arguments_.size()>=3) {
+		QStringList list = arguments_[2].split('-', QString::SkipEmptyParts);
+		if (list.size()!=3) {
+			std::cout << "cannot parse start date " << arguments_[2].toStdString() << std::endl;
+			QCoreApplication::quit();
+			return;
+		}
 
-	  QCoreApplication::quit();
+		int y = list[0].toInt();
+		int m = list[1].toInt();
+		int d = list[2].toInt();
 
-	  return;
+		startDate = QDate(y, m, d);
+
+		hasStartDate = true;
 	}
 
-  QStringList::const_iterator constIterator = arguments_.constBegin();
+	bool hasEndDate = false;
+	QDate endDate;
+	if (arguments_.size()==4) {
+		QStringList list = arguments_[3].split('-', QString::SkipEmptyParts);
+		if (list.size()!=3) {
+			std::cout << "cannot parse end date " << arguments_[3].toStdString() << std::endl;
+			QCoreApplication::quit();
+			return;
+		}
 
-  QString filename = *constIterator;
+		int y = list[0].toInt();
+		int m = list[1].toInt();
+		int d = list[2].toInt();
+
+		endDate = QDate(y, m, d);
+
+		hasEndDate = true;
+	}
+
+	QDirIterator it(arguments_[1], QDirIterator::NoIteratorFlags);
+	while (it.hasNext()) {
+		QString filename = it.next();
+
+		if (!filename.endsWith(".xml")) continue;
+		if (!filename.contains("pumpstation_")) continue;
+
+		QString dateStamp = filename;
+
+		dateStamp.remove(".xml");
+		dateStamp.remove(0, dateStamp.indexOf("pumpstation_"));
+		dateStamp.remove("pumpstation_");
+
+		dateStamp.insert(6, "_");
+		dateStamp.insert(4, "_");
+
+		QStringList list = dateStamp.split('_', QString::SkipEmptyParts);
+		if (list.size()!=4) continue;
+
+		int y = list[0].toInt();
+		int m = list[1].toInt();
+		int d = list[2].toInt();
+		int n = list[3].toInt();
+
+		QDate date(y, m, d);
+
+		if (hasStartDate && date<startDate) continue;
+		if (hasEndDate && date>endDate) continue;
+
+		fileMap_[DataFileDate(date, n)] = filename;
+	}
+
+  QString filename = arguments_[0];
   if (!filename.endsWith(".root")) filename += ".root";
   std::string rootname = filename.toStdString();
 
@@ -74,11 +163,10 @@ void Analyser::analyse()
   	otree_->Branch(dummy1, &measurement_.pressure[i], dummy2);
   }
 
-  ++constIterator;
-  for (;
-  		 constIterator != arguments_.constEnd();
-  		 ++constIterator) {
-      processFile(*constIterator);
+  for (std::map<DataFileDate, QString>::iterator it = fileMap_.begin();
+  		 it!=fileMap_.end();
+  		 ++it) {
+      processFile(it->second);
   }
 
   ofile_->Write();
