@@ -88,10 +88,14 @@ void AssemblySensorMarkerFinder::runObjectDetection(int labmode, int objectmode)
         
             if(objectmode==0){
                 
-                img = cv::imread(Config::CMSTkModLabBasePath + "/share/assembly/RawSensor_4.png",
+                //img = cv::imread(Config::CMSTkModLabBasePath + "/share/assembly/RawSensor_4.png",
+                  //               CV_LOAD_IMAGE_COLOR);
+				img = cv::imread(Config::CMSTkModLabBasePath + "/share/assembly/SensorPiece_1.png",
                                  CV_LOAD_IMAGE_COLOR);
                 
-              img_clip_A = cv::imread(Config::CMSTkModLabBasePath + "/share/assembly/RawSensor_3_clipB_temp.png",
+              //img_clip_A = cv::imread(Config::CMSTkModLabBasePath + "/share/assembly/RawSensor_3_clipB_temp.png",
+                //                       CV_LOAD_IMAGE_COLOR);
+				img_clip_A = cv::imread(Config::CMSTkModLabBasePath + "/share/assembly/SensorPiece_1_clipC.png",
                                        CV_LOAD_IMAGE_COLOR);
 
               // img_clip_A = cv::imread(Config::CMSTkModLabBasePath + "/share/assembly/spacer_corner_tempate_crop.png",
@@ -124,15 +128,16 @@ void AssemblySensorMarkerFinder::runObjectDetection_labmode(cv::Mat master_image
     NQLog("AssemblySensorLocator::runObjectDetection() here ") << "" ;
     NQLog("AssemblySensorLocator::runObjectDetection_labmode()") << "" ;
 
-     objectmode_g = 0;    //hard coding for lab tests, to be reomoved!!!!
+     //objectmode_g = 0;    //hard coding for lab tests, to be reomoved!!!! 
 
-    if(objectmode_g==0){
+    if(objectmode_g == 0){
       NQLog("AssemblySensorLocator") << "***DETECTIING FIDUCIAL MARKER!***" ;
 
         img = master_image;
         
 	//        img_clip_A = cv::imread(Config::CMSTkModLabBasePath + "/share/assembly/RawSensor_3_clipB.png", CV_LOAD_IMAGE_COLOR);
-        img_clip_A = cv::imread(Config::CMSTkModLabBasePath + "/share/assembly/RawSensor_3_clipB_temp.png", CV_LOAD_IMAGE_COLOR);
+     //   img_clip_A = cv::imread(Config::CMSTkModLabBasePath + "/share/assembly/RawSensor_3_clipB_temp.png", CV_LOAD_IMAGE_COLOR);
+		img_clip_A = cv::imread(Config::CMSTkModLabBasePath + "/share/assembly/SensorPiece_1_clipC.png", CV_LOAD_IMAGE_COLOR);
     }
     
     else if (objectmode_g == 1 ){
@@ -151,7 +156,7 @@ void AssemblySensorMarkerFinder::runObjectDetection_labmode(cv::Mat master_image
       
     }
 
- else if (objectmode_g == 3){
+	else if (objectmode_g == 3){
          NQLog("AssemblySensorLocator") << "***DETECTIING SPACER  CORNER!***" ;
          img = master_image;   
          img_clip_A = cv::imread(Config::CMSTkModLabBasePath + "/share/assembly/spacer_corner_tempate_crop.png",
@@ -690,7 +695,7 @@ void AssemblySensorMarkerFinder::findMarker_templateMatching(cv::Mat img, cv::Ma
     
     //Apply thresholding
     cv::threshold(img_copy_gs, img_copy_bin, generalThreshold, 255, cv::THRESH_BINARY);
-    cv::threshold(img_clip_A_gs, img_clip_A_bin, 88, 255, cv::THRESH_BINARY);    //90 for silicon marker
+    cv::threshold(img_clip_A_gs, img_clip_A_bin, 85, 255, cv::THRESH_BINARY);    //90 for silicon marker, 88 for glass?
     //cv::threshold(img_glass_marker_raw_gs, img_glass_marker_bin, 88, 255, cv::THRESH_BINARY);
         
     // img_copy_bin = img_copy_gs.clone();
@@ -772,7 +777,7 @@ void AssemblySensorMarkerFinder::findMarker_templateMatching(cv::Mat img, cv::Ma
     std::string filename_rotated;
 
       for (float theta_coarse = 0.0; theta_coarse <= 180.0;  theta_coarse = theta_coarse + 180.0){
-	for (float theta_fine = -5.0; theta_fine < 5.0;  theta_fine = theta_fine + 0.5){
+	for (float theta_fine = -5.0; theta_fine < 5.0;  theta_fine = theta_fine + 0.25){
 	  float	theta = theta_coarse + theta_fine;
 
          Point2f src_center(img_copy_bin.cols/2.0F, img_copy_bin.rows/2.0F);
@@ -815,7 +820,7 @@ void AssemblySensorMarkerFinder::findMarker_templateMatching(cv::Mat img, cv::Ma
         }
         
         std::cout << std::setprecision(10);     
-        std::cout <<"theta = "<<  theta << ",  FOM = "<<  FOM<<  std::endl;
+        //std::cout <<"theta = "<<  theta << ",  FOM = "<<  FOM<<  std::endl;
         
         thetas[i] = theta;
         FOMs[i] = FOM;

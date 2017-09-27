@@ -3,6 +3,7 @@
 #include <nqlogger.h>
 #include "LStepExpressModel.h"
 
+
 LStepExpressModel::LStepExpressModel(const char* port,
                                      int updateInterval,
                                      int motionUpdateInterval,
