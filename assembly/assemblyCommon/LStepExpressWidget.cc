@@ -76,6 +76,9 @@ LStepExpressWidget::LStepExpressWidget(LStepExpressModel* model,
 
     lstepStateChanged(model_->getDeviceState());
 
+    lstepCheckBox_->setCheckable(true);
+    lstepCheckBox_->setChecked(true);
+
 }
 
 LStepExpressWidget::~LStepExpressWidget()
