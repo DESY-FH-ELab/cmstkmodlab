@@ -54,8 +54,8 @@ unix {
   target.path = /usr/bin
   target.from = PumpStationDaemon
 
-  systemd.path = /etc/init.d
-  systemd.extra = chmod a+x pumpstation; cp pumpstation /etc/init.d; systemctl enable pumpstation
+  systemd.path = /etc/systemd/system
+  systemd.extra = systemctl stop pumpstation; chmod 664 pumpstation.service; cp pumpstation.service /etc/systemd/system; systemctl daemon-reload; systemctl enable pumpstation; systemctl start pumpstation
   
   INSTALLS += target systemd
 }
@@ -74,7 +74,8 @@ greaterThan(QT_MAJOR_VERSION, 4) {
 HEADERS += PumpStationModel.h \
            CommunicationThread.h \
            CommunicationServer.h \
-           DataLogger.h
+           DataLogger.h \
+           WatchDog.h
 
 equals(USEFAKEDEVICES,"X0") {
 HEADERS += 
@@ -86,7 +87,8 @@ SOURCES += PumpStationDaemon.cc \
            PumpStationModel.cc \
            CommunicationThread.cc \
            CommunicationServer.cc \
-           DataLogger.cc
+           DataLogger.cc \
+           WatchDog.cc
 
 equals(USEFAKEDEVICES,"X0") {
 SOURCES += 

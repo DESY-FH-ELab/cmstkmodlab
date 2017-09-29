@@ -1,3 +1,15 @@
+/////////////////////////////////////////////////////////////////////////////////
+//                                                                             //
+//               Copyright (C) 2011-2017 - The DESY CMS Group                  //
+//                           All rights reserved                               //
+//                                                                             //
+//      The CMStkModLab source code is licensed under the GNU GPL v3.0.        //
+//      You have the right to modify and/or redistribute this source code      //
+//      under the terms specified in the license, which may be found online    //
+//      at http://www.gnu.org/licenses or at License.txt.                      //
+//                                                                             //
+/////////////////////////////////////////////////////////////////////////////////
+
 #include <iostream>
 
 #include <QtCore>
@@ -29,25 +41,31 @@ Controller::Controller(QStringList& arguments)
 
   connect(socket_, SIGNAL(connected()), this, SLOT(sendCommand()));
   connect(socket_, SIGNAL(readyRead()), this, SLOT(readResponse()));
-  connect(socket_, SIGNAL(error(QAbstractSocket::SocketError)),
-          this, SLOT(reportError(QAbstractSocket::SocketError)));
-
-  connectToServer();
 }
 
 void Controller::connectToServer()
 {
-  NQLogDebug("controller") << "void Controller::connectToServer()";
+  NQLogDebug("Controller") << "void Controller::connectToServer()";
 
   quint16 port = ApplicationConfig::instance()->getValue("ServerPort", 63432);
 
   socket_->abort();
   socket_->connectToHost(ipAddress, port);
+
+  if (!socket_->waitForConnected(500)) {
+    NQLog("Controller") << "The following error occurred: " << socket_->errorString().toStdString();
+
+    std::cout << "ERR" << std::endl;
+
+    socket_->close();
+    socket_->deleteLater();
+    QCoreApplication::quit();
+  }
 }
 
 void Controller::sendCommand()
 {
-  NQLogDebug("controller") << "void Controller::sendCommand()";
+  NQLogDebug("Controller") << "void Controller::sendCommand()";
 
   QString command;
   for (int i=0; i<arguments_.size(); ++i) {
@@ -55,7 +73,7 @@ void Controller::sendCommand()
     command += arguments_.at(i);
   }
 
-  NQLogDebug("controller") << "command.length() = " << command.length();
+  NQLogDebug("Controller") << "command.length() = " << command.length();
 
   QByteArray block;
   QDataStream out(&block, QIODevice::WriteOnly);
@@ -69,7 +87,7 @@ void Controller::sendCommand()
 
 void Controller::readResponse()
 {
-  NQLogDebug("controller") << "void Controller::readResponse()";
+  NQLogDebug("Controller") << "void Controller::readResponse()";
 
   QDataStream in(socket_);
   in.setVersion(QDataStream::Qt_4_0);
@@ -77,32 +95,16 @@ void Controller::readResponse()
   quint16 blockSize = 0;
   in >> blockSize;
 
-  NQLogDebug("controller") << "blockSize = " << blockSize;
+  NQLogDebug("Controller") << "blockSize = " << blockSize;
 
   QString response;
   in >> response;
 
-  NQLogDebug("controller") << "response: (" << blockSize << ") |" << response.toStdString() << "|";
+  NQLogDebug("Controller") << "response: (" << blockSize << ") |" << response.toStdString() << "|";
 
   std::cout << response.toStdString() << std::endl;
 
   socket_->close();
 
   QCoreApplication::quit();
-}
-
-void Controller::reportError(QAbstractSocket::SocketError socketError)
-{
-  switch (socketError) {
-  case QAbstractSocket::RemoteHostClosedError:
-    break;
-  case QAbstractSocket::HostNotFoundError:
-    NQLogFatal("controller") << "The host was not found. Please check the host name and port settings.";
-    break;
-  case QAbstractSocket::ConnectionRefusedError:
-    NQLogFatal("controller") << "The connection was refused by the peer. Make sure the fortune server is running, and check that the host name and port settings are correct.";
-    break;
-  default:
-    NQLogFatal("controller") << "The following error occurred: " << socket_->errorString().toStdString();
-  }
 }

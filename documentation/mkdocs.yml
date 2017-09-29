@@ -19,6 +19,9 @@ pages:
     - defoDAQ Scripting: defo/defoDAQScripting.md
 - Assembly: assembly/index.md
 - Plasma Cleaner: plasma/index.md
-- Pump Station: pumpstation/index.md
+- Pump Station:
+    - usage: pumpstation/index.md
+    - setup: pumpstation/setup.md
+- License: license.md
 
 theme: readthedocs

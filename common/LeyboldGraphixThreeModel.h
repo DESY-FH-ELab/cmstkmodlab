@@ -1,3 +1,15 @@
+/////////////////////////////////////////////////////////////////////////////////
+//                                                                             //
+//               Copyright (C) 2011-2017 - The DESY CMS Group                  //
+//                           All rights reserved                               //
+//                                                                             //
+//      The CMStkModLab source code is licensed under the GNU GPL v3.0.        //
+//      You have the right to modify and/or redistribute this source code      //
+//      under the terms specified in the license, which may be found online    //
+//      at http://www.gnu.org/licenses or at License.txt.                      //
+//                                                                             //
+/////////////////////////////////////////////////////////////////////////////////
+
 #ifndef LEYBOLDGRAPHIXTHREEMODEL_H
 #define LEYBOLDGRAPHIXTHREEMODEL_H
 
@@ -7,6 +19,7 @@
 
 #include <QString>
 #include <QTimer>
+#include <QDateTime>
 
 #include "DeviceState.h"
 #include "DeviceParameter.h"
@@ -32,6 +45,12 @@ public:
                                     double updateInterval = 5,
                                     QObject *parent = 0);
 
+  LeyboldGraphixThree_t::SensorDetectionMode getSensorDetectionMode(int sensor) const;
+  void setSensorDetectionMode(int sensor, LeyboldGraphixThree_t::SensorDetectionMode mode);
+
+  LeyboldGraphixThree_t::SensorType getSensorType(int sensor) const;
+  void setSensorType(int sensor, LeyboldGraphixThree_t::SensorType type);
+
   const std::string getSensorName(int sensor) const;
   void setSensorName(int sensor, const std::string& name);
 
@@ -41,6 +60,9 @@ public:
   LeyboldGraphixThree_t::DisplayUnit getDisplayUnit() const;
   void setDisplayUnit(LeyboldGraphixThree_t::DisplayUnit unit);
 
+  const QDateTime getDateTime() const;
+  void setDateTime(const QDateTime& dt);
+  
 public slots:
 
   void setDeviceEnabled(bool enabled);

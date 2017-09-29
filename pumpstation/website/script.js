@@ -1,14 +1,26 @@
-var switch_0 = document.getElementById("switch_0");
-var switch_1 = document.getElementById("switch_1");
-var switch_2 = document.getElementById("switch_2");
-var switch_3 = document.getElementById("switch_3");
-var switch_4 = document.getElementById("switch_4");
+/////////////////////////////////////////////////////////////////////////////////
+//                                                                             //
+//               Copyright (C) 2011-2017 - The DESY CMS Group                  //
+//                           All rights reserved                               //
+//                                                                             //
+//      The CMStkModLab source code is licensed under the GNU GPL v3.0.        //
+//      You have the right to modify and/or redistribute this source code      //      
+//      under the terms specified in the license, which may be found online    //
+//      at http://www.gnu.org/licenses or at License.txt.                      //
+//                                                                             //
+/////////////////////////////////////////////////////////////////////////////////
+
+var switch_V1 = document.getElementById("switch_V1");
+var switch_V2 = document.getElementById("switch_V2");
+var switch_V3 = document.getElementById("switch_V3");
+var switch_P1 = document.getElementById("switch_P1");
+var switch_P2 = document.getElementById("switch_P2");
 
 //Create an array for easy access later
-var Switches = [ switch_0, switch_1, switch_2, switch_3, switch_4];
+var Switches = [ switch_V1, switch_V2, switch_V3, switch_P1, switch_P2];
 
 function changeSwitch(channel) {
-    var data = 0;
+	var data = 0;
 	var request = new XMLHttpRequest();
 	request.open("GET", "ConradSwitch.php?channel=" + channel, true);
 	request.send(null);
@@ -29,7 +41,7 @@ function changeSwitch(channel) {
 				alert ("Something went wrong!");
 				return ("fail"); 
 			}
-			
+
 		} else if (request.readyState == 4 && request.status == 500) {
 			alert ("server error");
 			return ("fail");
@@ -38,5 +50,5 @@ function changeSwitch(channel) {
 			return ("fail");
 		}
 	}
-    return 0;
+	return 0;
 }

@@ -8,6 +8,4 @@ Makefile
 *~
 moc_*
 PumpStationDaemon
-pumpstation
-pumpstation.pid
-
+pumpstation.service

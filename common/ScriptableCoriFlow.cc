@@ -21,7 +21,7 @@ QScriptValue ScriptableCoriFlow::getTemp() {
 }
 
 
-void ScriptableCoriFlow::waitForTempBelow(float temperature,
+void ScriptableCoriFlow::waitForTempBelow(float /* temperature */,
                                                   int timeout) {
 
   for (int m=0;m<=timeout;++m) {

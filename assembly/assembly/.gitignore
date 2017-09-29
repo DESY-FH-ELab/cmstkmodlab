@@ -1,6 +1,7 @@
 assembly.pro
 assembly.pro.user
 .qmake.stash
+.qmake.cache
 Makefile
 *.d
 *.o
