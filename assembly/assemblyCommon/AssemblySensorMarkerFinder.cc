@@ -686,8 +686,6 @@ void AssemblySensorMarkerFinder::findMarker_templateMatching(cv::Mat img, cv::Ma
      img_glass_marker_raw_gs = img_glass_marker_raw.clone();
     }*/
 
-
-
     //Binary images
     Mat img_copy_bin(img_copy_gs.size(), img_copy_gs.type());
     Mat img_clip_A_bin(img_clip_A_gs.size(), img_clip_A_gs.type());
@@ -716,11 +714,11 @@ void AssemblySensorMarkerFinder::findMarker_templateMatching(cv::Mat img, cv::Ma
     //emit updateImage(4, filename_img_bin_qs);
     //emit updateImage(5, filename_clip_A_bin_qs);
     
-    NQLog("AssemblySensorMarkerFinder") << "Finding Marker (Template Matching), updated images in view" ;
+    NQLog("AssemblySensorMarkerFinder") << "Finding Marker (Template Matching) wrote images" ;
     
     /// Localizing the best match with minMaxLoc
     double FOM, FOM_inc = 1000.0, minVal, maxVal; Point minLoc; Point maxLoc;
-    double thetas[80], FOMs[80], best_theta;
+    double thetas[10], FOMs[10], best_theta;
     
     //create result matrix to hold correlation values
     int result_cols =  img_copy_bin.cols - img_clip_A.cols + 1;
@@ -776,9 +774,43 @@ void AssemblySensorMarkerFinder::findMarker_templateMatching(cv::Mat img, cv::Ma
 
     std::string filename_rotated;
 
-      for (float theta_coarse = 0.0; theta_coarse <= 180.0;  theta_coarse = theta_coarse + 180.0){
-	for (float theta_fine = -5.0; theta_fine < 5.0;  theta_fine = theta_fine + 0.25){
-	  float	theta = theta_coarse + theta_fine;
+    NQLog("AssemblySensorMarkerFinder") << "looping"<< "   ";
+    float scan_start = -5.0, scan_end = 180.0, scan_step =  0.1;
+    float FOM_near, FOM_far;
+    float theta_coarse;
+
+    //first check if we are at the "near" or "far" corner
+   // for (float theta_coarse = 0.0; theta_coarse <= 180.0;  theta_coarse = theta_coarse + 180.0){
+     for (int scan = 0; scan <= 2;  scan++){
+         NQLog("AssemblySensorMarkerFinder") << "*** Scan number "<< scan;
+        
+         if (scan == 0){
+            theta_coarse = 0.0;
+            scan_start = 0.001, scan_end = 0.001, scan_step =  1.0;
+         } else if (scan == 1){
+             theta_coarse = 180.0;
+             scan_start = 0.001, scan_end = 0.001, scan_step =  1.0;
+         }
+         
+         else{
+             
+             NQLog("AssemblySensorMarkerFinder") << "*** Deciding corner: "<< " FOM_near  =  "<<FOM_near <<" FOM far =  "<< FOM_far ;
+
+             //scan_start = -0.5, scan_end = 0.85, scan_step =  0.15;
+             scan_start = -0.25, scan_end = 0.425, scan_step =  0.075;
+
+             if (FOM_near < FOM_far){
+                 NQLog("AssemblySensorMarkerFinder") << " @ Near corner" ;
+                 theta_coarse = 0.0;
+             }else if(FOM_near > FOM_far){
+                 NQLog("AssemblySensorMarkerFinder") << " @ Far corner" ;
+                 theta_coarse = 180.0;
+             }
+         }
+        
+    
+	for (float theta_fine = scan_start; theta_fine <= scan_end;  theta_fine = theta_fine + scan_step){
+        float theta = theta_coarse + theta_fine;
 
          Point2f src_center(img_copy_bin.cols/2.0F, img_copy_bin.rows/2.0F);
 	  // Point2f src_center( matchLoc_1.x + (img_clip_A_bin.cols/2) , matchLoc_1.y + (img_clip_A_bin.rows/2) );
@@ -793,7 +825,7 @@ void AssemblySensorMarkerFinder::findMarker_templateMatching(cv::Mat img, cv::Ma
                    cv::BORDER_CONSTANT, avgPixelIntensity);
 	//    std::string filename_rotated_base = cacheDirectory2_ + "/Rotation_result_";
 
-	std::string filename_rotated_base =  "Rotation_result_";
+	    std::string filename_rotated_base =  "Rotation_result_";
         std::ostringstream ss;
         ss << theta;
         std::string theta_str = ss.str();
@@ -820,44 +852,60 @@ void AssemblySensorMarkerFinder::findMarker_templateMatching(cv::Mat img, cv::Ma
         }
         
         std::cout << std::setprecision(10);     
-        //std::cout <<"theta = "<<  theta << ",  FOM = "<<  FOM<<  std::endl;
+        std::cout <<"theta = "<<  theta << ",  FOM = "<<  FOM<<  std::endl;
         
-        thetas[i] = theta;
-        FOMs[i] = FOM;
-        i++;
-        
-        if (FOM < FOM_inc ) {
-            
-            FOM_inc = FOM;
-            matchLoc_final = matchLoc_2;
-            best_theta = theta;
+
+        if (scan == 0 ){
+            FOM_near = FOM;
         }
+        else if (scan == 1){
+            FOM_far = FOM;
+        } else {
+            thetas[i] = theta;
+            FOMs[i] = FOM;
+            i++;
+
+            if (FOM < FOM_inc ) {
+                
+                FOM_inc = FOM;
+                matchLoc_final = matchLoc_2;
+                best_theta = theta;
+            }
+        
+        }
+        
+    
         
         color = 50 + 200*theta;
     }
-}
+         
+         NQLog("AssemblySensorMarkerFinder") << " Finished fine scan best theta = "<<  best_theta ;
+
+    }
     
     cv::Mat img_raw = img.clone();
     //  rectangle( img, matchLoc_final, Point( matchLoc_final.x + img_clip_A_bin.cols , matchLoc_final.y + img_clip_A_bin.rows ), Scalar(255,0,255), 2, 8, 0 );
 
-    cv::Rect rect_result = cv::Rect( matchLoc_final, Point( matchLoc_final.x + img_clip_A_bin.cols , matchLoc_final.y + img_clip_A_bin.rows ) );     
+    cv::Rect rect_result = cv::Rect( matchLoc_final, Point( matchLoc_final.x + img_clip_A_bin.cols, matchLoc_final.y + img_clip_A_bin.rows));
 
     line(img, Point(img.cols/2.0, 0), Point(img.cols/2.0, img.rows ), Scalar(255,255,0), 2, 8, 0);
     line(img, Point(0, img.rows/2.0), Point(img.cols, img.rows/2.0 ), Scalar(255,255,0), 2, 8, 0);
     
-
         if (best_theta > -5.0 && best_theta < 5.0){
-
-  circle( img, matchLoc_final, 20, Scalar(255,0,255), 4, 8, 0 );
-  rectangle(img, matchLoc_final, Point( matchLoc_final.x + img_clip_A_bin.cols , matchLoc_final.y + img_clip_A_bin.rows ), Scalar(255,0,255), 2, 8, 0 );
+            //the circle of radius 4 is meant to *roughly* represnt the x,y precision of the x-y motion stage so that the
+            //use can see if the patrec results make sense (the top left corner of the marker should be within the cirle)
+            line(img,Point(matchLoc_final.x,matchLoc_final.y - 50),Point(matchLoc_final.x + 240,matchLoc_final.y - 50 ),Scalar(0,255,0),2,8,0);
+            putText(img, "200 um", Point(matchLoc_final.x, matchLoc_final.y - 100 ), FONT_HERSHEY_SCRIPT_SIMPLEX, 2, Scalar(0,255,0), 3, 8);
+            circle(img, matchLoc_final, 4, Scalar(255,0,255), 4, 8, 0 );
+            circle(img, matchLoc_final, 4, Scalar(255,0,255), 4, 8, 0 );
+            rectangle(img, matchLoc_final, Point( matchLoc_final.x + img_clip_A_bin.cols, matchLoc_final.y + img_clip_A_bin.rows ), Scalar(255,0,255), 2, 8, 0);
 
      } else if (best_theta > 175.0 && best_theta < 185.0){
-
-  circle( img,  Point( img.cols - matchLoc_final.x ,  img.rows - matchLoc_final.y ) , 20, Scalar(255,0,255), 4, 8, 0 );
-  rectangle(img, Point( img.cols - matchLoc_final.x,  img.rows - matchLoc_final.y ),  Point( img.cols - matchLoc_final.x  - img_clip_A_bin.cols,  img.rows - matchLoc_final.y - img_clip_A_bin.rows ) , Scalar(255,0,255), 2, 8, 0 );
-
+         line(img, Point( img.cols - matchLoc_final.x - 240 ,  img.rows - matchLoc_final.y - 100 ), Point( img.cols - matchLoc_final.x,  img.rows - matchLoc_final.y - 100 ), Scalar(0,255,0), 2, 8, 0);
+         putText(img, "200 um", Point( img.cols - matchLoc_final.x - 240, img.rows - matchLoc_final.y - 50 ), FONT_HERSHEY_SCRIPT_SIMPLEX, 2, Scalar(0,255,0), 3, 8);
+         circle( img,  Point( img.cols - matchLoc_final.x ,  img.rows - matchLoc_final.y ) , 4, Scalar(255,0,255), 4, 8, 0 );
+         rectangle(img, Point( img.cols - matchLoc_final.x,  img.rows - matchLoc_final.y ),  Point( img.cols - matchLoc_final.x  - img_clip_A_bin.cols,  img.rows - matchLoc_final.y - img_clip_A_bin.rows ) , Scalar(255,0,255), 2, 8, 0 );
      }
-
 
     //     circle( dst_orig, matchLoc_final, 10, Scalar(0,0,255), 4, 8, 0 );
     // rectangle(dst_orig, matchLoc_final, Point( matchLoc_final.x + img_clip_A_bin.cols , matchLoc_final.y + img_clip_A_bin.rows ), Scalar(255,0,255), 2, 8, 0 );
@@ -866,7 +914,7 @@ void AssemblySensorMarkerFinder::findMarker_templateMatching(cv::Mat img, cv::Ma
     TCanvas *c1 = new TCanvas("c1","Rotation extraction",200,10,700,500);
     
     if (thetas[0] && FOMs[0]){
-        TGraph *gr = new TGraph(80, thetas, FOMs);
+        TGraph *gr = new TGraph(10, thetas, FOMs);
 
         //gr->Fit("pol6");
         gr->Draw("AC*");
@@ -885,6 +933,8 @@ void AssemblySensorMarkerFinder::findMarker_templateMatching(cv::Mat img, cv::Ma
         std::string filename_canvas = cacheDirectory1_ + "/RotationExtraction.png";
         c1->SaveAs(filename_canvas.c_str());
         QString filename_canvas_qs = QString::fromStdString(filename_canvas);
+        c1->SaveAs("test.png");
+
         
         emit updateImage(2, filename_canvas_qs);
     }
@@ -911,9 +961,7 @@ void AssemblySensorMarkerFinder::findMarker_templateMatching(cv::Mat img, cv::Ma
     // the origin of the FOV coordinate system is the top left corner
     //the match loction (centre of the template) is calculated in mm
     //this should be enough for postion correction with moverealtive()
-    //the dimensions of the image in the lab frame need
-    //to be measured precisely somehow. For now taking width = 5mm
-    //and height = 4mm
+    
 
     //    matchLoc_x_lab = (matchLoc_final.x +  (img_clip_A_bin.cols/2) ) * (5.0/img.cols); // need to add the current X pos of the lang
     //matchLoc_y_lab = (matchLoc_final.y +  (img_clip_A_bin.rows/2) ) * (4.0/img.rows); // need to add the current Y pos of the lang
