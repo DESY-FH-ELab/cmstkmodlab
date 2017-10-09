@@ -70,14 +70,14 @@ int main( int argc, char** argv )
     QApplication app( argc, argv );
 #endif
 
-  app.setStyle("cleanlooks");
+    app.setStyle("cleanlooks");
 
-  ApplicationConfig::instance(std::string(Config::CMSTkModLabBasePath) + "/assembly/assembly.cfg");
+    ApplicationConfig::instance(std::string(Config::CMSTkModLabBasePath) + "/assembly/assembly.cfg");
 
-  AssemblyMainWindow mainWindow;
+    AssemblyMainWindow mainWindow;
 
-  mainWindow.setWindowTitle(QString("assembly - ") + APPLICATIONVERSIONSTR);
-  mainWindow.show();
+    mainWindow.setWindowTitle(QString("assembly - ") + APPLICATIONVERSIONSTR);
+    mainWindow.show();
 
-  return app.exec();
+    return app.exec();
 }
