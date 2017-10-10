@@ -80,6 +80,7 @@ Q_OBJECT
 
   void cameraOpened();
   void cameraClosed();
+
   void enableAutoFocus(int);
   void enablePrecisionEstimation(int);
   void enableSandwichAssembly(int);

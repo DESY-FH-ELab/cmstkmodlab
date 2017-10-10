@@ -23,33 +23,27 @@
 #include <QLabel>
 #include <QApplication>
 
-
 #include <TGraph.h>
 #include <TCanvas.h>
 #include <TH1F.h>
 #include <TF1.h>
 #include <TRandom.h>
 
-
-
-
 #include <nqlogger.h>
 #include <ApplicationConfig.h>
 
 #include <QDir>
 #if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
-#include <QDesktopServices>
+ #include <QDesktopServices>
 #else
-#include <QStandardPaths>
+ #include <QStandardPaths>
 #endif
 
 #include "AssemblyScanner.h"
 
-using namespace std;
 using namespace cv;
 
 TRandom * r = new TRandom();
-
 
 AssemblyScanner::AssemblyScanner(LStepExpressModel* lStepExpressModel_, ConradModel * cnrd1)
 {
@@ -271,7 +265,7 @@ void  AssemblyScanner::process_step(){
 
 	
 	outfile.open("DataLogfile.txt");
-	outfile << "x_pre,y_pre,theta_pre,x_pos,y_pos,theta_pos" << endl;
+	outfile << "x_pre,y_pre,theta_pre,x_pos,y_pos,theta_pos" << std::endl;
 	
         for (int i = 0; i< iterations; i++){
         
@@ -288,9 +282,9 @@ void  AssemblyScanner::process_step(){
 
 	outfile.close();
 
-        string x_canvas_s = "c_x.png";
-        string y_canvas_s = "c_y.png";
-        string theta_canvas_s = "c_theta.png";
+        std::string x_canvas_s = "c_x.png";
+        std::string y_canvas_s = "c_y.png";
+        std::string theta_canvas_s = "c_theta.png";
 
         
         TCanvas * c_x  = new TCanvas();
@@ -377,7 +371,7 @@ void  AssemblyScanner::write_image(cv::Mat newImage, cv::Rect marker_rect){
 
     //check global image counter
     if (nAcquiredImages <= nTotalImages){
-        cout <<"n acquired images = "<< nAcquiredImages<<"  nTotal images = "<< nTotalImages  <<endl;
+        std::cout <<"n acquired images = "<< nAcquiredImages<<"  nTotal images = "<< nTotalImages  <<std::endl;
         nAcquiredImages++; 
         emit moveRelative(0.0,0.0,-0.1,0.0);
     } else{
@@ -398,7 +392,7 @@ void  AssemblyScanner::write_image(cv::Mat newImage, cv::Rect marker_rect){
         }
         
         gr->Draw("AC*");
-        const string img_name = "variance.png";
+        const std::string img_name = "variance.png";
         canvas->SaveAs(img_name.c_str());
     
         emit make_graph(img_name);

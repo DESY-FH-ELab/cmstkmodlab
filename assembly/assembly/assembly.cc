@@ -46,7 +46,7 @@ int main( int argc, char** argv )
     QString logdir = QStandardPaths::writableLocation(QStandardPaths::CacheLocation);
 #endif
     QDir dir(logdir);
-    if (!dir.exists()) dir.mkpath(".");
+    if(!dir.exists()){ dir.mkpath("."); }
     QString logfilename = logdir + "/assembly.log";
 
     NQLog("assembly") << "version " << APPLICATIONVERSIONSTR;
@@ -54,8 +54,9 @@ int main( int argc, char** argv )
     NQLog("assembly") << "using " << logfilename << " for logging";
 
     QFile * logfile = new QFile(logfilename);
-    if (logfile->open(QIODevice::WriteOnly | QIODevice::Append | QIODevice::Text)) {
-        NQLogger::instance()->addDestiniation(logfile, NQLog::Message);
+    if(logfile->open(QIODevice::WriteOnly | QIODevice::Append | QIODevice::Text)){
+
+      NQLogger::instance()->addDestiniation(logfile, NQLog::Message);
     }
 
     qRegisterMetaType<State>("State");
@@ -63,8 +64,9 @@ int main( int argc, char** argv )
 #ifdef SINGLETON
     SingletonApplication app(argc, argv, assemblyGUID);
     if(!app.lock()){
-        NQLog("assembly") << "Application instance already running!";
-        exit(1);
+
+      NQLog("assembly") << "Application instance already running!";
+      exit(1);
     }
 #else
     QApplication app( argc, argv );
@@ -72,7 +74,7 @@ int main( int argc, char** argv )
 
     app.setStyle("cleanlooks");
 
-    ApplicationConfig::instance(std::string(Config::CMSTkModLabBasePath) + "/assembly/assembly.cfg");
+    ApplicationConfig::instance(std::string(Config::CMSTkModLabBasePath)+"/assembly/assembly.cfg");
 
     AssemblyMainWindow mainWindow;
 

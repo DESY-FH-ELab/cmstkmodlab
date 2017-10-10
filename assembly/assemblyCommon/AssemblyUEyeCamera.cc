@@ -439,17 +439,21 @@ void AssemblyUEyeCamera::eventHappend()
 
 void AssemblyUEyeCamera::acquireImage()
 {
-  NQLog("AssemblyUEyeCamera::aquireImage()")<< "TEST CONNECTION" ;
+  NQLog("AssemblyUEyeCamera::acquireImage()") << "TEST CONNECTION";
 
-    NQLog("AssemblyUEyeCamera::aquireImage() here", NQLog::Message) ;
+  NQLog("AssemblyUEyeCamera::acquireImage() here", NQLog::Message);
 
-    if (cameraState_!=READY) return;
+  if(cameraState_ != READY){ return; }
 
-    NQLog("AssemblyUEyeCamera::aquireImage()", NQLog::Message) << "camera is ready...";
-    unsigned int ret = is_FreezeVideo(cameraHandle_, IS_DONT_WAIT);
+  NQLog("AssemblyUEyeCamera::acquireImage()", NQLog::Message) << "camera is ready...";
+  unsigned int ret = is_FreezeVideo(cameraHandle_, IS_DONT_WAIT);
 
-    if (ret == IS_SUCCESS)
-      NQLog("AssemblyUEyeCamera::aquireImage()", NQLog::Message) << "successfully acquired... " << ret;
+  if(ret == IS_SUCCESS){
+
+    NQLog("AssemblyUEyeCamera::acquireImage()", NQLog::Message) << "successfully acquired... " << ret;
+  }
+
+  return;
 }
 
 int AssemblyUEyeCamera::searchDefaultImageFormats(int supportMask)
