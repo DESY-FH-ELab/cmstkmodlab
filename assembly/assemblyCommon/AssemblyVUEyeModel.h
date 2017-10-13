@@ -26,8 +26,9 @@
 
 class AssemblyVUEyeModel : public QObject
 {
-    Q_OBJECT
-public:
+ Q_OBJECT
+
+  public:
     explicit AssemblyVUEyeModel(int updateInterval, QObject *parent);
     ~AssemblyVUEyeModel();
 
@@ -35,14 +36,12 @@ public:
     AssemblyVUEyeCamera * getCamera(size_t idx);
     AssemblyVUEyeCamera * getCameraByID(unsigned int id);
 
-public slots:
-
+  public slots:
     virtual void updateInformation() = 0;
 
-protected slots:
+  protected slots:
 
-protected:
-
+  protected:
     int updateInterval_;
     QTimer* timer_;
 
@@ -50,10 +49,10 @@ protected:
 
     QVector<QThread*> threads_;
     QVector<AssemblyVUEyeCamera*> cameras_;
+
     void clear();
 
-signals:
-
+  signals:
     void cameraCountChanged(unsigned int);
 };
 

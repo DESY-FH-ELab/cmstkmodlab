@@ -50,14 +50,14 @@ AssemblyMainWindow::AssemblyMainWindow(QWidget *parent) : QMainWindow(parent), c
     rawView_ = new AssemblyUEyeSnapShooter(tabWidget_);
     tabWidget_->addTab(rawView_, "raw");
 
-    uEyeModel_ = new AssemblyUEyeModel_t(10);
+    uEyeModel_    = new AssemblyUEyeModel_t(10);
     cameraThread_ = new AssemblyUEyeCameraThread(uEyeModel_, this);
     cameraThread_->start();
 
-    finder_ = new AssemblySensorMarkerFinder();
+    finder_       = new AssemblySensorMarkerFinder();
     finderThread_ = new AssemblyMarkerFinderThread(finder_, this);
     finderThread_->start();
- 
+
     thresholdTunerView_ = new AssemblyThresholdTuner(tabWidget_);
     tabWidget_->addTab(thresholdTunerView_, "Threshold");
 
@@ -65,12 +65,13 @@ AssemblyMainWindow::AssemblyMainWindow(QWidget *parent) : QMainWindow(parent), c
     connect(this               , SIGNAL(updateThresholdLabel())            , finder_            , SLOT(getCurrentGeneralThreshold()));
     connect(finder_            , SIGNAL(sendCurrentGeneralThreshold(int))  , thresholdTunerView_, SLOT(updateThresholdLabelSlot(int)));
     connect(thresholdTunerView_, SIGNAL(setNewThreshold(int,cv::Mat))      , finder_            , SLOT(setNewGeneralThreshold(int, cv::Mat)));
-//  connect(camera_              , SIGNAL(imageAcquired(cv::Mat))            , thresholdTunerView_, SLOT(imageAcquired(const cv::Mat&)));
+//    connect(camera_            , SIGNAL(imageAcquired(cv::Mat))            , thresholdTunerView_, SLOT(imageAcquired(const cv::Mat&)));
     connect(camera_            , SIGNAL(imageAcquired(cv::Mat))            , thresholdTunerView_, SLOT(imageAcquired(cv::Mat)));
     connect(finder_            , SIGNAL(sendUpdatedThresholdImage(QString)), thresholdTunerView_, SLOT(updateThresholdImage(QString)));
+
     emit updateThresholdLabel();    
 
-    NQLog("AssemblyThresholdTuner") << " : INFO! : initialization signal sent.";
+    NQLog("AssemblyMainWindow::AssemblyMainWindow") << "initialization signal sent";
 
     assembleView_ = new AssemblyModuleAssembler(uEyeModel_, finder_, lStepExpressModel_, tabWidget_);
     tabWidget_->addTab(assembleView_, "Manual assembly");
@@ -94,42 +95,39 @@ AssemblyMainWindow::AssemblyMainWindow(QWidget *parent) : QMainWindow(parent), c
     connect(assembleView_->toggle1, SIGNAL(toggleVacuum(int))           , conradManager_, SLOT(toggleVacuum(int)));
     connect(assembleView_         , SIGNAL(runObjectDetection(int, int)), finder_       , SLOT(runObjectDetection(int, int)));
 
-//    connect(assembleView_ -> toggle1, SIGNAL(toggleVacuum(int)), assembleView_ -> toggle1, SLOT(disableVacuumButton()));
-    connect(conradManager_, SIGNAL(updateVacuumChannelState(int, bool)), assembleView_ -> toggle1, SLOT(updateVacuumChannelState(int, bool)));
-    connect(this, SIGNAL(updateVacuumChannelsStatus()), conradManager_, SLOT(updateVacuumChannelsStatus()));
-//    connect(camera_, SIGNAL(imageAcquired(cv::Mat)), finder_, SLOT(runObjectDetection_labmode(cv::Mat)) );
+//  connect(assembleView_->toggle1, SIGNAL(toggleVacuum(int))                  , assembleView_->toggle1, SLOT(disableVacuumButton()));
+    connect(conradManager_        , SIGNAL(updateVacuumChannelState(int, bool)), assembleView_->toggle1, SLOT(updateVacuumChannelState(int, bool)));
+    connect(this                  , SIGNAL(updateVacuumChannelsStatus())       , conradManager_        , SLOT(updateVacuumChannelsStatus()));
+//  connect(camera_               , SIGNAL(imageAcquired(cv::Mat))             , finder_               , SLOT(runObjectDetection_labmode(cv::Mat)));
 
     emit updateVacuumChannelsStatus();
-
-    NQLog("AssemblyMainWindow") << "assembly scanner constructed";
 
     autoFocusView_ = new AssemblyAutoFocus(cmdr_zscan, tabWidget_);
     tabWidget_->addTab(autoFocusView_, "Auto Focus");
 
-    NQLog("AssemblyMainWindow") << "autofocus view added";
+    NQLog("AssemblyMainWindow::AssemblyMainWindow") << "added view \"Auto focus\"";
 
-    QWidget * widget;
-    widget= new QWidget(tabWidget_);
+    QWidget* widget = new QWidget(tabWidget_);
     tabWidget_->addTab(widget, "Motion Manager");
 
-    NQLog("AssemblyMainWindow") << "motion manager added";
+    NQLog("AssemblyMainWindow::AssemblyMainWindow") << "added view \"Motion Manager\"";
 
-    QHBoxLayout * layout = new QHBoxLayout(widget);
+    QHBoxLayout* layout  = new QHBoxLayout(widget);
     widget->setLayout(layout);
 
-    QVBoxLayout * layoutv = new QVBoxLayout(widget);
+    QVBoxLayout* layoutv = new QVBoxLayout(widget);
 
-    LStepExpressWidget *lStepExpressWidget = new LStepExpressWidget(lStepExpressModel_, widget);
-    layoutv->addWidget(lStepExpressWidget);
+    LStepExpressWidget* lStepExpressWidget = new LStepExpressWidget(lStepExpressModel_, widget);
+    layoutv->addWidget (lStepExpressWidget);
 
-    NQLog("AssemblyMainWindow") << "LStepExpressWidget added";
+    NQLog("AssemblyMainWindow::AssemblyMainWindow") << "LStepExpressWidget added";
 
     LStepExpressJoystickWidget *lStepJoystick = new LStepExpressJoystickWidget(lStepExpressModel_, widget);
     layoutv->addWidget(lStepJoystick);
 
     layout->addLayout(layoutv);
 
-    QVBoxLayout * layoutv2 = new QVBoxLayout(widget);
+    QVBoxLayout* layoutv2 = new QVBoxLayout(widget);
 
     LStepExpressPositionWidget *lStepPosition = new LStepExpressPositionWidget(motionManager_, lStepExpressModel_, widget);
     layoutv2->addWidget(lStepPosition);
@@ -137,9 +135,9 @@ AssemblyMainWindow::AssemblyMainWindow(QWidget *parent) : QMainWindow(parent), c
     connect(QApplication::instance(), SIGNAL(aboutToQuit()), this, SLOT(quit()));
 
     toolBar_ = addToolBar("Tools");
-    toolBar_->addAction("open"    , this, SLOT(onOpenCamera()));
-    toolBar_->addAction("close"   , this, SLOT(onCloseCamera()));
-    toolBar_->addAction("snapshot", this, SLOT(onSnapShot()));
+    toolBar_ ->addAction("open"    , this, SLOT(onOpenCamera()));
+    toolBar_ ->addAction("close"   , this, SLOT(onCloseCamera()));
+    toolBar_ ->addAction("snapshot", this, SLOT(onSnapShot()));
 
     checkbox1 = new QCheckBox("Auto-focusing", this);
     toolBar_->addWidget(checkbox1);
@@ -159,11 +157,13 @@ AssemblyMainWindow::AssemblyMainWindow(QWidget *parent) : QMainWindow(parent), c
     connect(checkbox4, SIGNAL(stateChanged(int)), this, SLOT(enableAlignment(int)));
 
     setCentralWidget(tabWidget_);
+
     updateGeometry();
 
-    NQLog("AssemblyMainWindow") << "main window constructed";
+    NQLog("AssemblyMainWindow::AssemblyMainWindow") << "main-window constructed";
 
     liveTimer_ = new QTimer(this);
+
     connect(liveTimer_, SIGNAL(timeout()), this, SLOT(liveUpdate()));
 
     QTimer::singleShot(1, uEyeModel_, SLOT(updateInformation()));
@@ -171,14 +171,14 @@ AssemblyMainWindow::AssemblyMainWindow(QWidget *parent) : QMainWindow(parent), c
 
 void AssemblyMainWindow::liveUpdate()
 {
-    NQLog("AssemblyMainWindow") << ":liveUpdate()";
+    NQLog("AssemblyMainWindow::liveUpdate()") << "emitting signal acquireImage()";
 
     emit acquireImage();
 }
 
 void AssemblyMainWindow::onOpenCamera()
 {
-    NQLog("AssemblyMainWindow") << ":onOpenCamera() ";
+    NQLog("AssemblyMainWindow::onOpenCamera()") << "connecting main-window to camera";
 
     camera_ = uEyeModel_->getCameraByID(10);
 
@@ -195,64 +195,68 @@ void AssemblyMainWindow::onOpenCamera()
 
 void AssemblyMainWindow::enableAutoFocus(int state)
 {
-  if(state == 2){
+    if(state == 2){
 
-    NQLog("AssemblyMainWindow::enableAutoFocus") << "switched to ON" ;
+      NQLog("AssemblyMainWindow::enableAutoFocus") << "switched to ON";
 
-    connect   (cmdr_zscan        , SIGNAL(moveRelative(double, double, double, double))        , motionManager_, SLOT(moveRelative(double, double, double, double)));
-    connect   (lStepExpressModel_, SIGNAL(motionFinished())                                    , camera_       , SLOT(acquireImage()));
-    connect   (camera_           , SIGNAL(imageAcquired(cv::Mat))                              , finder_       , SLOT(findMarker_templateMatching(cv::Mat, cv::Mat)));
-    connect   (finder_           , SIGNAL(getImageBlur(cv::Mat, cv::Rect))                     , cmdr_zscan    , SLOT(write_image(cv::Mat, cv::Rect)));
-    connect   (cmdr_zscan        , SIGNAL(make_graph(std::vector<double>, std::vector<double>)), autoFocusView_, SLOT(make_graph(std::vector<double>, std::vector<double>)));
-    connect   (cmdr_zscan        , SIGNAL(updateText(double))                                  , autoFocusView_, SLOT(updateText(double)));
+      connect   (cmdr_zscan        , SIGNAL(moveRelative(double, double, double, double))        , motionManager_, SLOT(moveRelative(double, double, double, double)));
+      connect   (lStepExpressModel_, SIGNAL(motionFinished())                                    , camera_       , SLOT(acquireImage()));
+      connect   (camera_           , SIGNAL(imageAcquired(cv::Mat))                              , finder_       , SLOT(findMarker_templateMatching(cv::Mat, cv::Mat)));
+      connect   (finder_           , SIGNAL(getImageBlur(cv::Mat, cv::Rect))                     , cmdr_zscan    , SLOT(write_image(cv::Mat, cv::Rect)));
+      connect   (cmdr_zscan        , SIGNAL(make_graph(std::vector<double>, std::vector<double>)), autoFocusView_, SLOT(make_graph(std::vector<double>, std::vector<double>)));
+      connect   (cmdr_zscan        , SIGNAL(updateText(double))                                  , autoFocusView_, SLOT(updateText(double)));
 
-    NQLog("AssemblyMainWindow::enableAutoFocus") << "signal-slot connections enabled";
-  }
-  else if(state == 0){
+      NQLog("AssemblyMainWindow::enableAutoFocus") << "signal-slot connections enabled";
+    }
+    else if(state == 0){
 
-    NQLog("AssemblyMainWindow::enableAutoFocus") << "switched to OFF";
+      NQLog("AssemblyMainWindow::enableAutoFocus") << "switched to OFF";
 
-    disconnect(cmdr_zscan        , SIGNAL(moveRelative(double, double, double, double))        , motionManager_, SLOT(moveRelative(double, double, double, double)));
-    disconnect(lStepExpressModel_, SIGNAL(motionFinished())                                    , camera_       , SLOT(acquireImage()));
-    disconnect(camera_           , SIGNAL(imageAcquired(cv::Mat))                              , finder_       , SLOT(findMarker_templateMatching(cv::Mat, cv::Mat)));
-    disconnect(finder_           , SIGNAL(getImageBlur(cv::Mat, cv::Rect))                     , cmdr_zscan    , SLOT(write_image(cv::Mat, cv::Rect)));
-    disconnect(cmdr_zscan        , SIGNAL(make_graph(std::vector<double>, std::vector<double>)), autoFocusView_, SLOT(make_graph(std::vector<double>, std::vector<double>)));
-    disconnect(cmdr_zscan        , SIGNAL(updateText(double))                                  , autoFocusView_, SLOT(updateText(double)));
+      disconnect(cmdr_zscan        , SIGNAL(moveRelative(double, double, double, double))        , motionManager_, SLOT(moveRelative(double, double, double, double)));
+      disconnect(lStepExpressModel_, SIGNAL(motionFinished())                                    , camera_       , SLOT(acquireImage()));
+      disconnect(camera_           , SIGNAL(imageAcquired(cv::Mat))                              , finder_       , SLOT(findMarker_templateMatching(cv::Mat, cv::Mat)));
+      disconnect(finder_           , SIGNAL(getImageBlur(cv::Mat, cv::Rect))                     , cmdr_zscan    , SLOT(write_image(cv::Mat, cv::Rect)));
+      disconnect(cmdr_zscan        , SIGNAL(make_graph(std::vector<double>, std::vector<double>)), autoFocusView_, SLOT(make_graph(std::vector<double>, std::vector<double>)));
+      disconnect(cmdr_zscan        , SIGNAL(updateText(double))                                  , autoFocusView_, SLOT(updateText(double)));
 
-    NQLog("AssemblyMainWindow::enableAutoFocus") << "signal-slot connections disabled";
-  }
+      NQLog("AssemblyMainWindow::enableAutoFocus") << "signal-slot connections disabled";
+    }
 
-  return;
+    return;
 }
 
-void AssemblyMainWindow::enablePrecisionEstimation(int state){
-
-    NQLog("AssemblyMainWindow::enablePrecisionEstimation") << ": state  " << state;
-
+void AssemblyMainWindow::enablePrecisionEstimation(int state)
+{
     if(state == 2){
+
+      NQLog("AssemblyMainWindow::enablePrecisionEstimation") << "switched to ON";
 
       connect(assembleView_, SIGNAL(launchPrecisionEstimation(double, double, double, double, double, double, int)), cmdr_zscan,
                              SLOT  (run_precisionestimation  (double, double, double, double, double, double, int)));
 
-      connect(cmdr_zscan        , SIGNAL(moveAbsolute(double, double, double, double)), motionManager_, SLOT(moveAbsolute(double, double,double, double)));
-      connect(lStepExpressModel_, SIGNAL(motionFinished())                            , cmdr_zscan    , SLOT(process_step()));
-      connect(cmdr_zscan        , SIGNAL(toggleVacuum(int))                           , conradManager_, SLOT(toggleVacuum(int)));
-      connect(conradManager_    , SIGNAL(updateVacuumChannelState(int, bool))         , cmdr_zscan    , SIGNAL(nextStep()));
-        
+      connect   (cmdr_zscan        , SIGNAL(moveAbsolute(double, double, double, double)), motionManager_, SLOT(moveAbsolute(double, double,double, double)));
+      connect   (lStepExpressModel_, SIGNAL(motionFinished())                            , cmdr_zscan    , SLOT(process_step()));
+      connect   (cmdr_zscan        , SIGNAL(toggleVacuum(int))                           , conradManager_, SLOT(toggleVacuum(int)));
+      connect   (conradManager_    , SIGNAL(updateVacuumChannelState(int, bool))         , cmdr_zscan    , SIGNAL(nextStep()));
+
 //      connect(cmdr_zscan, SIGNAL(toggleVacuum()), conradManager_, SLOT(changeVacuum()));
 //      for testing with random numbers
 //        connect(cmdr_zscan, SIGNAL(makeDummies(int, double,double,double)), cmdr_zscan, SLOT(fill_positionvectors(int, double,double,double)));
 
 //      for real lab tests with camera
-      connect(cmdr_zscan, SIGNAL(acquireImage())          , camera_      , SLOT(acquireImage()));
-      connect(cmdr_zscan, SIGNAL(changeVacuumState())     , cmdr_zscan   , SLOT(changeVacuumState()));
-      connect(cmdr_zscan, SIGNAL(showHistos(int, QString)), assembleView_, SLOT(updateImage(int, QString))); 
+      connect   (cmdr_zscan, SIGNAL(acquireImage())          , camera_      , SLOT(acquireImage()));
+      connect   (cmdr_zscan, SIGNAL(changeVacuumState())     , cmdr_zscan   , SLOT(changeVacuumState()));
+      connect   (cmdr_zscan, SIGNAL(showHistos(int, QString)), assembleView_, SLOT(updateImage(int, QString))); 
 
-      connect(camera_, SIGNAL(imageAcquired(cv::Mat)), finder_, SLOT(runObjectDetection_labmode(cv::Mat)) );
-      connect(finder_,SIGNAL(reportObjectLocation(int,double,double,double)), cmdr_zscan, SLOT(fill_positionvectors(int, double,double,double)));
-      connect(cmdr_zscan, SIGNAL(nextStep()), cmdr_zscan, SLOT(process_step()));
+      connect   (camera_   , SIGNAL(imageAcquired(cv::Mat))                           , finder_   , SLOT(runObjectDetection_labmode(cv::Mat)));
+      connect   (finder_   , SIGNAL(reportObjectLocation(int, double, double, double)), cmdr_zscan, SLOT(fill_positionvectors(int, double, double, double)));
+      connect   (cmdr_zscan, SIGNAL(nextStep())                                       , cmdr_zscan, SLOT(process_step()));
+
+      NQLog("AssemblyMainWindow::enablePrecisionEstimation") << "signal-slot connections enabled";
     }
-    else if (state == 0 ){
+    else if(state == 0 ){
+
+      NQLog("AssemblyMainWindow::enablePrecisionEstimation") << "switched to OFF";
 
       disconnect(cmdr_zscan        , SIGNAL(moveAbsolute(double, double,double, double)), motionManager_, SLOT(moveAbsolute(double, double,double, double)));
       disconnect(lStepExpressModel_, SIGNAL(motionFinished())                           , camera_       , SLOT(acquireImage()));
@@ -262,16 +266,18 @@ void AssemblyMainWindow::enablePrecisionEstimation(int state){
       disconnect(finder_           , SIGNAL(getImageBlur(cv::Mat, cv::Rect))            , cmdr_zscan    , SLOT(write_image(cv::Mat, cv::Rect)) );
       disconnect(cmdr_zscan        , SIGNAL(make_graph(vector<double>,vector<double>))  , autoFocusView_, SLOT(make_graph(vector<double>,vector<double>)));
       disconnect(cmdr_zscan        , SIGNAL(updateText(double))                         , autoFocusView_, SLOT(updateText(double)));
+
+      NQLog("AssemblyMainWindow::enablePrecisionEstimation") << "signal-slot connections disabled";
     }
 
     return;
 }
 
-void AssemblyMainWindow::enableSandwichAssembly(int state){
-
+void AssemblyMainWindow::enableSandwichAssembly(int state)
+{
     NQLog("AssemblyMainWindow::enableSandwichAssembly") << ": state  " << state;
-    
-    if (state == 2){
+
+    if(state == 2){
 
       connect(assembleView_, SIGNAL(launchSandwitchAssembly(double, double, double, double, double, double, double, double, double)), module_assembler_,
                              SLOT  (run_sandwitchassembly  (double, double, double, double, double, double, double, double, double)));
@@ -318,41 +324,49 @@ void AssemblyMainWindow::enableSandwichAssembly(int state){
 
 void AssemblyMainWindow::enableAlignment(int state)
 {
-  NQLog("AssemblyMainWindow::enableAlignment") << ": state=" << state;
+    if(state == 2){
 
-  if(state == 2){
+      NQLog("AssemblyMainWindow::enableAlignment") << "switched to ON";
 
-    connect(camera_           , SIGNAL(imageAcquired(cv::Mat))                           , finder_          , SLOT(runObjectDetection_labmode(cv::Mat)));
-    connect(assembleView_     , SIGNAL(launchAlignment(int, double, double, double))     , module_assembler_, SLOT(run_alignment(int, double, double, double)));
-    connect(module_assembler_ , SIGNAL(acquireImage())                                   , camera_          , SLOT(acquireImage()));
-    connect(lStepExpressModel_, SIGNAL(motionFinished())                                 , module_assembler_, SLOT(launch_next_alignment_step()));
-    connect(module_assembler_ , SIGNAL(moveRelative(double, double, double, double))     , motionManager_   , SLOT(moveRelative(double, double, double, double)));
-    connect(finder_           , SIGNAL(reportObjectLocation(int, double, double, double)), module_assembler_, SLOT(run_alignment(int, double, double, double)));
-    connect(module_assembler_ , SIGNAL(nextAlignmentStep(int, double, double, double))   , module_assembler_, SLOT(run_alignment(int, double, double, double)));
-  }
-  else if(state == 0){
+      connect   (camera_           , SIGNAL(imageAcquired(cv::Mat))                           , finder_          , SLOT(runObjectDetection_labmode(cv::Mat)));
+      connect   (assembleView_     , SIGNAL(launchAlignment     (int, double, double, double)), module_assembler_, SLOT(run_alignment(int, double, double, double)));
+      connect   (module_assembler_ , SIGNAL(acquireImage())                                   , camera_          , SLOT(acquireImage()));
+      connect   (lStepExpressModel_, SIGNAL(motionFinished())                                 , module_assembler_, SLOT(launch_next_alignment_step()));
+      connect   (module_assembler_ , SIGNAL(moveRelative(double, double, double, double))     , motionManager_   , SLOT(moveRelative(double, double, double, double)));
+      connect   (finder_           , SIGNAL(reportObjectLocation(int, double, double, double)), module_assembler_, SLOT(run_alignment(int, double, double, double)));
+      connect   (module_assembler_ , SIGNAL(nextAlignmentStep   (int, double, double, double)), module_assembler_, SLOT(run_alignment(int, double, double, double)));
 
-    disconnect(camera_           , SIGNAL(imageAcquired(cv::Mat))                           , finder_          , SLOT(runObjectDetection_labmode(cv::Mat)) );
-    disconnect(assembleView_     , SIGNAL(launchAlignment(int, double, double, double))     , module_assembler_, SLOT(run_alignment(int, double, double, double)));
-    disconnect(module_assembler_ , SIGNAL(acquireImage())                                   , camera_          , SLOT(acquireImage()));
-//    disconnect(lStepExpressModel_, SIGNAL(motionFinished())                                 , module_assembler_, SLOT(launch_next_alignment_step()));
-    disconnect(module_assembler_ , SIGNAL(moveRelative(double, double, double, double))     , motionManager_   , SLOT(moveRelative(double, double, double, double)));
-    disconnect(finder_           , SIGNAL(reportObjectLocation(int, double, double, double)), module_assembler_, SLOT(run_alignment(int, double, double, double)));
-    disconnect(module_assembler_ , SIGNAL(nextAlignmentStep(int, double, double, double))   , module_assembler_, SLOT(run_alignment(int, double, double, double)));
-  }
+      NQLog("AssemblyMainWindow::enableAlignment") << "signal-slot connections enabled";
+    }
+    else if(state == 0){
 
-  return;
+      NQLog("AssemblyMainWindow::enableAlignment") << "switched to OFF";
+
+      disconnect(camera_           , SIGNAL(imageAcquired(cv::Mat))                           , finder_          , SLOT(runObjectDetection_labmode(cv::Mat)) );
+      disconnect(assembleView_     , SIGNAL(launchAlignment     (int, double, double, double)), module_assembler_, SLOT(run_alignment(int, double, double, double)));
+      disconnect(module_assembler_ , SIGNAL(acquireImage())                                   , camera_          , SLOT(acquireImage()));
+//      disconnect(lStepExpressModel_, SIGNAL(motionFinished())                                 , module_assembler_, SLOT(launch_next_alignment_step()));
+      disconnect(module_assembler_ , SIGNAL(moveRelative(double, double, double, double))     , motionManager_   , SLOT(moveRelative(double, double, double, double)));
+      disconnect(finder_           , SIGNAL(reportObjectLocation(int, double, double, double)), module_assembler_, SLOT(run_alignment(int, double, double, double)));
+      disconnect(module_assembler_ , SIGNAL(nextAlignmentStep   (int, double, double, double)), module_assembler_, SLOT(run_alignment(int, double, double, double)));
+
+      NQLog("AssemblyMainWindow::enableAlignment") << "signal-slot connections disabled";
+    }
+
+    return;
 }
 
 void AssemblyMainWindow::onCloseCamera()
 {
-    NQLog("AssemblyMainWindow") << ":onCloseCamera()";
+    NQLog("AssemblyMainWindow::onCloseCamera()");
 
     emit closeCamera();
 }
 
 void AssemblyMainWindow::onSnapShot()
 {
+    NQLog("AssemblyMainWindow::onSnapShot()");
+
     emit acquireImage();
 }
 
@@ -364,13 +378,10 @@ void AssemblyMainWindow::testTimer()
 
 void AssemblyMainWindow::cameraOpened()
 {
-    finderView_->connectImageProducer(finder_, SIGNAL(markerFound(const cv::Mat&)));
-
-    thresholdTunerView_ -> connectImageProducer(camera_, SIGNAL(imageAcquired(const cv::Mat&)));
-
-    edgeView_->connectImageProducer(finder_, SIGNAL(edgesDetected(const cv::Mat&)));
-
-    rawView_->connectImageProducer(camera_, SIGNAL(imageAcquired(const cv::Mat&)));
+    finderView_        ->connectImageProducer(finder_, SIGNAL(markerFound  (const cv::Mat&)));
+    thresholdTunerView_->connectImageProducer(camera_, SIGNAL(imageAcquired(const cv::Mat&)));
+    edgeView_          ->connectImageProducer(finder_, SIGNAL(edgesDetected(const cv::Mat&)));
+    rawView_           ->connectImageProducer(camera_, SIGNAL(imageAcquired(const cv::Mat&)));
 
 //    const bool test = connect(camera_, SIGNAL(imageAcquired(cv::Mat)), finder_, SLOT(write_image(cv::Mat)));
 //    connect(camera_, SIGNAL(imageAcquired(cv::Mat)), finder_, SLOT(runObjectDetection_labmode(cv::Mat)));
@@ -393,15 +404,13 @@ void AssemblyMainWindow::cameraOpened()
 
 void AssemblyMainWindow::cameraClosed()
 {
-    NQLog("AssemblyMainWindow") << ":cameraClosed()";
+    NQLog("AssemblyMainWindow::cameraClosed()") << "disconnecting finder from camera";
 
     finderView_->disconnectImageProducer(finder_, SIGNAL(markerFound(const cv::Mat&)));
-
     edgeView_  ->disconnectImageProducer(finder_, SIGNAL(edgesDetected(const cv::Mat&)));
-
     rawView_   ->disconnectImageProducer(camera_, SIGNAL(imagef(const cv::Mat&)));
+//    playView_  ->disconnectImageProducer(camera_, SIGNAL(imageAcquired(const cv::Mat&)));
 
-//    playView_->disconnectImageProducer(camera_, SIGNAL(imageAcquired(const cv::Mat&)));
     disconnect(camera_, SIGNAL(imageAcquired(const cv::Mat&)), finder_, SLOT(findMarker(const cv::Mat&)));
 
     liveTimer_->stop();
@@ -409,9 +418,9 @@ void AssemblyMainWindow::cameraClosed()
 
 void AssemblyMainWindow::quit()
 {
-    NQLog("AssemblyMainWindow") << "quit";
-
     if(camera_){
+
+      NQLog("AssemblyMainWindow::quit") << "emitting signal closeCamera()";
 
       emit closeCamera();
       camera_ = 0;
@@ -419,12 +428,13 @@ void AssemblyMainWindow::quit()
 
     if(cameraThread_){
 
+      NQLog("AssemblyMainWindow::quit") << "quitting camera thread";
+
       if(cameraThread_->wait(2000) == false){
          cameraThread_->terminate();
       }
 
       cameraThread_->quit();
-//      delete cameraThread_;
     }
 
     return;

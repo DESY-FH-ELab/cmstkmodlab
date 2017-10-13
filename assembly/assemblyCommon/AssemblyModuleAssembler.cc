@@ -44,30 +44,24 @@
 
 using namespace cv;
 
-AssemblyModuleAssembler::AssemblyModuleAssembler(AssemblyVUEyeModel *uEyeModel_, AssemblySensorMarkerFinder * finder_,
-                                                 LStepExpressModel* lStepExpressModel_,
-                                                 QWidget *parent)
-  : QWidget(parent)
+AssemblyModuleAssembler::AssemblyModuleAssembler(
+  AssemblyVUEyeModel *uEyeModel_, AssemblySensorMarkerFinder * finder_,
+  LStepExpressModel* lStepExpressModel_,
+  QWidget *parent
+) : QWidget(parent)
 {
-
   LStepExpressMotionManager* motionManager_ = new LStepExpressMotionManager(lStepExpressModel_);
 
-
   camera_ = uEyeModel_->getCameraByID(10);
-    
-    if (camera_){
-  NQLog("AssemblyModuleAssembler::constructed  camera");
-    }else{
-    
-        NQLog("AssemblyModuleAssembler::  cant  construct camera");
 
-    }
+  if(camera_){ NQLog("AssemblyModuleAssembler::AssemblyModuleAssembler") << "camera enabled"  ; }
+  else       { NQLog("AssemblyModuleAssembler::AssemblyModuleAssembler") << "camera not found"; }
 
   QGridLayout *l = new QGridLayout();
   setLayout(l);
 
   QGridLayout *g0 = new QGridLayout();
-  l->addLayout(g0,0,0);
+  l->addLayout(g0, 0, 0);
 
   QPalette palette;
   palette.setColor(QPalette::Background, QColor(220, 220, 220));
@@ -83,8 +77,7 @@ AssemblyModuleAssembler::AssemblyModuleAssembler(AssemblyVUEyeModel *uEyeModel_,
     
   imageView_1->connectImageProducer(finder_, SIGNAL(markerFound(const cv::Mat&)));
 
-  //  connect(uEyeModel_, SIGNAL(imageAcquired(const cv::Mat&)),
-  //         finder_, SLOT(findMarker(const cv::Mat&)));
+//  connect(uEyeModel_, SIGNAL(imageAcquired(const cv::Mat&)), finder_, SLOT(findMarker(const cv::Mat&)));
 
   scrollArea_1 = new QScrollArea(this);
   scrollArea_1->setMinimumSize(200, 200);
@@ -94,8 +87,8 @@ AssemblyModuleAssembler::AssemblyModuleAssembler(AssemblyVUEyeModel *uEyeModel_,
   scrollArea_1->setWidget(imageView_1);
   scrollArea_1->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 
-  g0->addWidget(scrollArea_1,0,0);
-  lE1 = new QLineEdit("Object location. = X,Z");
+  g0->addWidget(scrollArea_1, 0, 0);
+  lE1 = new QLineEdit("Object Location = X,Z");
   g0->addWidget(lE1,1,0);
 
   imageView_2 = new AssemblyUEyeView();
@@ -106,8 +99,8 @@ AssemblyModuleAssembler::AssemblyModuleAssembler(AssemblyVUEyeModel *uEyeModel_,
   imageView_2->setScaledContents(true);
   imageView_2->setAlignment(Qt::AlignCenter);
 
-  scrollArea_2 = new QScrollArea(this);
-  scrollArea_2->setMinimumSize(200,200);
+  scrollArea_2 = new QScrollArea();
+  scrollArea_2->setMinimumSize(200, 200);
   scrollArea_2->setPalette(palette);
   scrollArea_2->setBackgroundRole(QPalette::Background);
   scrollArea_2->setAlignment(Qt::AlignCenter);
@@ -115,18 +108,18 @@ AssemblyModuleAssembler::AssemblyModuleAssembler(AssemblyVUEyeModel *uEyeModel_,
   scrollArea_2->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 
   g0->addWidget(scrollArea_2,0,1);
-  lE2 = new QLineEdit("Orientation. = alpha");
+  lE2 = new QLineEdit("Orientation = alpha");
   g0->addWidget(lE2,1,1);
 
   imageView_3 = new AssemblyUEyeView();
-  imageView_3->setMinimumSize(200,200);
+  imageView_3->setMinimumSize(200, 200);
   imageView_3->setPalette(palette);
   imageView_3->setBackgroundRole(QPalette::Background);
   imageView_3->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
   imageView_3->setScaledContents(true);
   imageView_3->setAlignment(Qt::AlignCenter);
 
-  scrollArea_3 = new QScrollArea(this);
+  scrollArea_3 = new QScrollArea();
   scrollArea_3->setMinimumSize(200,200);
   scrollArea_3->setPalette(palette);
   scrollArea_3->setBackgroundRole(QPalette::Background);
@@ -134,7 +127,7 @@ AssemblyModuleAssembler::AssemblyModuleAssembler(AssemblyVUEyeModel *uEyeModel_,
   scrollArea_3->setWidget(imageView_3);
   scrollArea_3->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 
-  g0->addWidget(scrollArea_3,2,0);
+  g0->addWidget(scrollArea_3, 2, 0);
   lE3 = new QLineEdit("Mntd pos. (cor. 2) = lE3,X");
  // g0->addWidget(lE3,1,2);
 
@@ -146,8 +139,8 @@ AssemblyModuleAssembler::AssemblyModuleAssembler(AssemblyVUEyeModel *uEyeModel_,
   imageView_4->setScaledContents(true);
   imageView_4->setAlignment(Qt::AlignCenter);
 
-  scrollArea_4 = new QScrollArea(this);
-  scrollArea_4->setMinimumSize(200,200);
+  scrollArea_4 = new QScrollArea();
+  scrollArea_4->setMinimumSize(200, 200);
   scrollArea_4->setPalette(palette);
   scrollArea_4->setBackgroundRole(QPalette::Background);
   scrollArea_4->setAlignment(Qt::AlignCenter);
@@ -156,67 +149,62 @@ AssemblyModuleAssembler::AssemblyModuleAssembler(AssemblyVUEyeModel *uEyeModel_,
 
   g0->addWidget(scrollArea_4,2,1);
   lE4 = new QLineEdit("Dtchd pos. = ,X,X");
- // g0->addWidget(lE4,3,0);
+//  g0->addWidget(lE4, 3, 0);
 
-  //    QGridLayout *gl = new QGridLayout();
-  //  l->addLayout(gl,1,0);
-    
-    // Add all the axes displays
-  // for (unsigned int i=0;i<4;++i) {
-  //  gl->addWidget(new LStepExpressAxisWidget(lStepExpressModel_, i, this), 0, i);
-  //  }
+//  QGridLayout *gl = new QGridLayout();
+//  l->addLayout(gl,1,0);
 
-  //LStepExpressPositionWidget *lStepPosition = new LStepExpressPositionWidget(motionManager_, lStepExpressModel_, this);
-  //g0->addWidget(lStepPosition,3,0);
-    
-    
+//  // Add all the axes displays
+//  for(unsigned int i=0; i<4; ++i){
+//    gl->addWidget(new LStepExpressAxisWidget(lStepExpressModel_, i, this), 0, i);
+//  }
+
+//  LStepExpressPositionWidget *lStepPosition = new LStepExpressPositionWidget(motionManager_, lStepExpressModel_, this);
+//  g0->addWidget(lStepPosition,3,0);
+
   QGridLayout *g1 = new QGridLayout();
-  l->addLayout(g1,0,1);
+  l->addLayout(g1, 0, 1);
 
-  //QLabel* header_label = new QLabel("Hover mouse over button for info on each step", this);
-  //g1->addWidget(header_label,0,0);
+//  QLabel* header_label = new QLabel("Hover mouse over button for info on each step", this);
+//  g1->addWidget(header_label,0,0);
 
-  AssemblyCommander * cmdr0 = new AssemblyCommander(this, "Move absolute", 0.0,0.0,0.0,0.0);
+  AssemblyCommander* cmdr0 = new AssemblyCommander(this, "Move Absolute", 0.0, 0.0, 0.0, 0.0);
   cmdr0->setToolTip("(1) Returns x,y,z stage to origin (default = (0,0,0) using moveAbsolute(x,y,z) routine)");
-  g1->addWidget(cmdr0,0,0);
+  g1->addWidget(cmdr0, 0, 0);
 
-  AssemblyAttacher * cmdr1 = new AssemblyAttacher("Move relative", 0.0,0.0,0.0,0.0);
+  AssemblyAttacher* cmdr1 = new AssemblyAttacher("Move relative", 0.0, 0.0, 0.0, 0.0);
   cmdr1->setToolTip("(2) Moves x,y,z stage realtive to current position using moveAbsolute(x,y,z) routine)");
-  g1->addWidget(cmdr1,1,0);
-    
+  g1->addWidget(cmdr1, 1, 0);
 
-  AssemblySensorLocator * lctr1 = new AssemblySensorLocator(this, "Locate object", 0.0, finder_);
+  AssemblySensorLocator* lctr1 = new AssemblySensorLocator(this, "Locate object", 0.0, finder_);
   lctr1->setToolTip("(3) Acquires image from mobile camera, runs PatRec routine to deduce and report sensor (x,y,z,phi) position");
-  g1->addWidget(lctr1,2,0);
+  g1->addWidget(lctr1, 2, 0);
 
-  toggle1 = new AssemblyVacuumToggler(this, "Toggle vacuum");
-  g1->addWidget(toggle1,3,0);
-    
+  toggle1 = new AssemblyVacuumToggler(this, "Toggle Vacuum");
+  g1->addWidget(toggle1, 3, 0);
+
   AssemblyPrecisionEstimator * precision1 = new AssemblyPrecisionEstimator(this, "Estimate Assembly Precision", "-200.0,0.0,0.0", "0.0,0.0,0.0", 1 , cnrd1);
-  //g1->addWidget(precision1,4,0);
+//  g1->addWidget(precision1,4,0);
 
   QGridLayout *g2 = new QGridLayout();
-  l->addLayout(g2,1,1);
-  
+  l->addLayout(g2, 1, 1);
+
   AssemblySandwichAssembler* sandwich1 = new AssemblySandwichAssembler(this, "Assemble Sandwich");
   g2 -> addWidget(sandwich1, 0, 0);
 
+//  AssemblyAligner * cmdr8 = new AssemblyAligner(this, "Align", 0.0);
+//  g1->addWidget(cmdr8, 13, 0);
 
-  //AssemblyAligner * cmdr8 = new AssemblyAligner(this, "Align", 0.0);
-  //g1->addWidget(cmdr8, 13, 0);
+  // make all the neccessary connections
+//  connect(attacher1, SIGNAL(moveRelative(double, double, double, double)), motionManager_, SLOT(moveRelative(double, double, double, double)));
+  connect(cmdr0, SIGNAL(moveAbsolute(double, double, double, double)), motionManager_, SLOT(moveAbsolute(double, double, double, double)));
+  connect(cmdr1, SIGNAL(moveRelative(double, double, double, double)), motionManager_, SLOT(moveRelative(double, double, double, double)));
 
-  //make all the neccessary connections
-  //connect(attacher1, SIGNAL(moveRelative(double,double,double,double)),
-   //       motionManager_, SLOT(moveRelative(double,double,double,double)));
-  connect(cmdr0, SIGNAL(moveAbsolute(double,double,double,double)),
-          motionManager_, SLOT(moveAbsolute(double,double,double,double)));
-  connect(cmdr1, SIGNAL(moveRelative(double,double,double,double)),
-          motionManager_, SLOT(moveRelative(double,double,double,double)));
-    
   connect(precision1, SIGNAL(launchPrecisionEstimation(double, double, double, double, double, double, int)),
-            this, SLOT(startMacro(double, double, double, double, double, double, int)));
-  
-  connect(sandwich1, SIGNAL(launchSandwichAssembly(double, double, double, double, double, double, double, double, double)), this, SIGNAL(launchSandwichAssembly(double, double, double, double, double, double, double, double, double)));
+          this      , SLOT  (startMacro               (double, double, double, double, double, double, int)));
+
+  connect(sandwich1, SIGNAL(launchSandwichAssembly(double, double, double, double, double, double, double, double, double)),
+          this     , SIGNAL(launchSandwichAssembly(double, double, double, double, double, double, double, double, double)));
     
  
   connect(sandwich1, SIGNAL(launchAlignment(int, double, double, double)), this, SIGNAL(launchAlignment(int, double, double, double)));
@@ -230,8 +218,7 @@ AssemblyModuleAssembler::AssemblyModuleAssembler(AssemblyVUEyeModel *uEyeModel_,
   connect(lctr1, SIGNAL(sendPosition(int, double,double,double)), this, SLOT(updateText(int,double,double,double)));
   connect(finder_, SIGNAL(updateImage(int, QString)), this, SLOT( updateImage(int,QString)));
   connect(finder_, SIGNAL(foundSensor(int)), lctr1, SLOT( foundsensor(int)));
-  connect(finder_, SIGNAL(reportObjectLocation(int, double, double, double)), this, SLOT( updateText(int, double, double, double )));
-
+  connect(finder_, SIGNAL(reportObjectLocation(int, double, double, double)), this, SLOT(updateText(int, double, double, double)));
 }
 
 void AssemblyModuleAssembler::updateText(int stage, double x, double y, double a){

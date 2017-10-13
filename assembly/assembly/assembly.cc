@@ -33,7 +33,7 @@
 static const char* assemblyGUID = "{5F9DC7D7-54C2-4625-A7C6-2EBE4C37C8F5}";
 //#define SINGLETON 1
 
-int main( int argc, char** argv )
+int main(int argc, char** argv)
 {
     qRegisterMetaType<cv::Mat>("cv::Mat");
 
@@ -45,6 +45,7 @@ int main( int argc, char** argv )
 #else
     QString logdir = QStandardPaths::writableLocation(QStandardPaths::CacheLocation);
 #endif
+
     QDir dir(logdir);
     if(!dir.exists()){ dir.mkpath("."); }
     QString logfilename = logdir + "/assembly.log";
@@ -53,7 +54,7 @@ int main( int argc, char** argv )
 
     NQLog("assembly") << "using " << logfilename << " for logging";
 
-    QFile * logfile = new QFile(logfilename);
+    QFile* logfile = new QFile(logfilename);
     if(logfile->open(QIODevice::WriteOnly | QIODevice::Append | QIODevice::Text)){
 
       NQLogger::instance()->addDestiniation(logfile, NQLog::Message);

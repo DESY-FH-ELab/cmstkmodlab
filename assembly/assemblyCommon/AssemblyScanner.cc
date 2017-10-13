@@ -22,22 +22,21 @@
 #include <QPixmap>
 #include <QLabel>
 #include <QApplication>
+#include <QDir>
+#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
+#include <QDesktopServices>
+#else
+#include <QStandardPaths>
+#endif
+
+#include <nqlogger.h>
+#include <ApplicationConfig.h>
 
 #include <TGraph.h>
 #include <TCanvas.h>
 #include <TH1F.h>
 #include <TF1.h>
 #include <TRandom.h>
-
-#include <nqlogger.h>
-#include <ApplicationConfig.h>
-
-#include <QDir>
-#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
- #include <QDesktopServices>
-#else
- #include <QStandardPaths>
-#endif
 
 #include "AssemblyScanner.h"
 
