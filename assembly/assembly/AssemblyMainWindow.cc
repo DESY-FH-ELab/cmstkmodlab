@@ -90,7 +90,6 @@ AssemblyMainWindow::AssemblyMainWindow(QWidget *parent) :
     
     cmdr_zscan = new AssemblyScanner(lStepExpressModel_,conradModel_ );
     
-    
     conradManager_ = new ConradManager(conradModel_);
     module_assembler_ = new AssemblyAssembler(lStepExpressModel_);
 
@@ -104,9 +103,7 @@ AssemblyMainWindow::AssemblyMainWindow(QWidget *parent) :
 
     emit updateVacuumChannelsStatus();
 
-
     NQLog("AssemblyMainWindow") << "assembly scanner constructed";
-
     
     autoFocusView_ = new AssemblyAutoFocus(cmdr_zscan, tabWidget_);
     tabWidget_->addTab(autoFocusView_, "Auto Focus");
