@@ -33,6 +33,7 @@
 #include <ApplicationConfig.h>
 
 #include <QDir>
+
 #if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
 #include <QDesktopServices>
 #else
@@ -41,16 +42,13 @@
 
 #include "AssemblyAssembler.h"
 
-
-using namespace std;
 using namespace cv;
 
+AssemblyAssembler::AssemblyAssembler(LStepExpressModel* lStepExpressModel) : QObject(), lStepExpressModel_(lStepExpressModel)
+{
+  NQLog("AssemblyAssembler::AssemblyAssembler");
 
-AssemblyAssembler::AssemblyAssembler(LStepExpressModel* lStepExpressModel):
- QObject(), lStepExpressModel_(lStepExpressModel){
-	NQLog("AssemblyAssembler::AssemblyAssembler()");
-    motionManager_ = new LStepExpressMotionManager(lStepExpressModel_);
-
+  motionManager_ = new LStepExpressMotionManager(lStepExpressModel_);
 }
 
 void  AssemblyAssembler::run_sandwitchassembly(double x_a, double y_a, double z_a , double x_b, double y_b, double z_b, double x_t, double y_t, double z_t){
@@ -806,7 +804,7 @@ void  AssemblyAssembler::write_image(cv::Mat newImage, cv::Rect marker_rect){
 
     //check global image counter
     if (nAcquiredImages <= nTotalImages){
-        cout <<"n acquired images = "<< nAcquiredImages<<"  nTotal images = "<< nTotalImages  <<endl;
+        std::cout <<"n acquired images = "<< nAcquiredImages<<"  nTotal images = "<< nTotalImages  << std::endl;
         nAcquiredImages++; 
         emit moveRelative(0.0,0.0,-0.1,0.0);
     } else{
@@ -827,7 +825,7 @@ void  AssemblyAssembler::write_image(cv::Mat newImage, cv::Rect marker_rect){
         }
         
         gr->Draw("AC*");
-        const string img_name = "variance.png";
+        const std::string img_name = "variance.png";
         canvas->SaveAs(img_name.c_str());
     
         emit make_graph(img_name);

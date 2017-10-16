@@ -42,7 +42,6 @@
 
 #include "LStepExpressWidget.h"
 
-using namespace std;
 using namespace cv;
 
 AssemblyModuleAssembler::AssemblyModuleAssembler(AssemblyVUEyeModel *uEyeModel_, AssemblySensorMarkerFinder * finder_,
@@ -187,7 +186,7 @@ AssemblyModuleAssembler::AssemblyModuleAssembler(AssemblyVUEyeModel *uEyeModel_,
     
 
   AssemblySensorLocator * lctr1 = new AssemblySensorLocator(this, "Locate object", 0.0, finder_);
-  lctr1->setToolTip("(3) Acquires image from mobile camera, runs PatRec routine to deduce and report sensor (x,y,z,phi) postion");
+  lctr1->setToolTip("(3) Acquires image from mobile camera, runs PatRec routine to deduce and report sensor (x,y,z,phi) position");
   g1->addWidget(lctr1,2,0);
 
   toggle1 = new AssemblyVacuumToggler(this, "Toggle vacuum");
@@ -382,7 +381,7 @@ void AssemblyModuleAssembler::keyReleaseEvent(QKeyEvent * event)
 }
 
 
-AssemblyPrecisionEstimator::AssemblyPrecisionEstimator(QWidget *parent, string text, string measurement_position, string pickup_position, int iterations , ConradModel * cnrd1)
+AssemblyPrecisionEstimator::AssemblyPrecisionEstimator(QWidget *parent, std::string text, std::string measurement_position, std::string pickup_position, int /* iterations */, ConradModel* /* cnrd1 */)
 : QWidget(parent)
 {
     QGridLayout *l = new QGridLayout(this);
@@ -419,19 +418,18 @@ AssemblyPrecisionEstimator::AssemblyPrecisionEstimator(QWidget *parent, string t
     lineEdit1->setText("48.9792,58.0699,-88.1536");
     lineEdit2->setText("-39.6346,17.4785,-119.1284,0.0");
     lineEdit3->setText("1");
-    
-    connect(button1, SIGNAL(clicked()),
-            this, SLOT(run()));
+
+    connect(button1, SIGNAL(clicked()), this, SLOT(run()));
+
+    return;
 }
 
-
-void AssemblyPrecisionEstimator::recordPosition(double x, double y, double theta)
+void AssemblyPrecisionEstimator::recordPosition(double /* x */, double /* y */, double /* theta */)
 {
- 
-    NQLog("AssemblyPrecisionEstimator") << ":recordPosition";
+  NQLog("AssemblyPrecisionEstimator::recordPosition");
 
+  return;
 }
-
 
 void AssemblyPrecisionEstimator::run()
 {
@@ -476,7 +474,7 @@ void AssemblyPrecisionEstimator::run()
     
 }
 
-AssemblySandwichAssembler::AssemblySandwichAssembler(QWidget *parent, string text, string assembly_position, string bottom_part_position, string top_part_position)
+AssemblySandwichAssembler::AssemblySandwichAssembler(QWidget *parent, std::string text, std::string /* assembly_position */, std::string /* bottom_part_position */, std::string /* top_part_position */)
 : QWidget(parent)
 {
     QGridLayout *l = new QGridLayout(this);
@@ -988,13 +986,12 @@ AssemblySensorLocator::AssemblySensorLocator(QWidget *parent, std::string string
     
   groupBox1 = new QGroupBox(tr("Object sought"));
   groupBox2 = new QGroupBox(tr("Mode"));
-    
-    
-  radio1 = new QRadioButton(tr("&Fiducial marker"));
-  radio2 = new QRadioButton(tr("&Positioning pin"));
-  radio3 = new QRadioButton(tr("&Sensor corner"));
+
+  radio1  = new QRadioButton(tr("&Fiducial marker"));
+  radio2  = new QRadioButton(tr("&Positioning pin"));
+  radio3  = new QRadioButton(tr("&Sensor corner"));
   radio31 = new QRadioButton(tr("&Spacer corner"));
-    
+
   radio1->setChecked(true);
 
   vbox1 = new QVBoxLayout;
@@ -1033,61 +1030,34 @@ AssemblySensorLocator::AssemblySensorLocator(QWidget *parent, std::string string
   ql->setText("WAITING");
   ql->setStyleSheet("QLabel { background-color : orange; color : black; }");
 
-    
-  connect(button1, SIGNAL(clicked()), this, SLOT(detectPatRecMode()));
-    
-  connect(this, SIGNAL(runObjectDetection(int, int )), finder_, SLOT(runObjectDetection(int, int)));
+  connect(button1, SIGNAL(clicked())                   , this   , SLOT(detectPatRecMode()));
+  connect(this   , SIGNAL(runObjectDetection(int, int)), finder_, SLOT(runObjectDetection(int, int)));
 
-    
- // connect(this, SIGNAL(locatePickupCorner_circleSeed(int)),
-  //        this, SLOT(locateSensor_circleSeed(int)));
+//  connect(this, SIGNAL(locatePickupCorner_circleSeed(int)), this, SLOT(locateSensor_circleSeed(int)));
 
-  connect(this, SIGNAL(locatePickupCorner_templateMatching(cv::Mat,cv::Mat)),
-             finder_, SLOT(findMarker_templateMatching(cv::Mat,cv::Mat)));
-    
-  //connect(this, SIGNAL(locatePickupCorner_circleSeed(cv::Mat,cv::Mat)),
-  //          finder_, SLOT(findMarker_circleSeed(cv::Mat,cv::Mat)));
+  connect(this, SIGNAL(locatePickupCorner_templateMatching(cv::Mat, cv::Mat)), finder_, SLOT(findMarker_templateMatching(cv::Mat, cv::Mat)));
 
+//  connect(this, SIGNAL(locatePickupCorner_circleSeed(cv::Mat,cv::Mat)), finder_, SLOT(findMarker_circleSeed(cv::Mat,cv::Mat)));
 }
-
 
 void AssemblySensorLocator::detectPatRecMode()
 {
-    objectmode = 0;
-    labmode = 0;
-    
-    if (radio1->isChecked()){
-        objectmode =0;
-    } else if (radio2->isChecked()){
-        objectmode =1;
-        
-    }else if (radio3->isChecked()){
-        
-        objectmode =2;
-    }
-    else if (radio31->isChecked()){  
-        objectmode =3;
-    }
-    
+  int objectmode(0), labmode(0);
 
-    if (radio4->isChecked()){
-        labmode = 0;
-        
-    } else if(radio5->isChecked())
-    {
-        labmode = 1;
-    }
-    
-    NQLog("AssemblyModuleAssembler:: emitting runobjectdetection with args :" )<<  labmode <<" , " << objectmode ;
+  if     (radio1 ->isChecked()){ objectmode = 0; }
+  else if(radio2 ->isChecked()){ objectmode = 1; }
+  else if(radio3 ->isChecked()){ objectmode = 2; }
+  else if(radio31->isChecked()){ objectmode = 3; }
 
-    emit runObjectDetection(labmode, objectmode);
+  if     (radio4 ->isChecked()){ labmode = 0; }
+  else if(radio5 ->isChecked()){ labmode = 1; }
 
+  NQLog("AssemblyModuleAssembler::detectPatRecMode") << "emitting signal: runObjectDetection(" << labmode << ", " << objectmode << ")";
+
+  emit runObjectDetection(labmode, objectmode);
+
+  return;
 }
-
-
-
-
-
 
 void AssemblySensorLocator::foundsensor(int state)
 {

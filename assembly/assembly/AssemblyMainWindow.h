@@ -40,12 +40,9 @@ typedef AssemblyUEyeModel AssemblyUEyeModel_t;
 #include "AssemblyScanner.h"
 #include "AssemblyAssembler.h"
 
-
 #include "AssemblyMarkerFinderThread.h"
 #include "AssemblySensorMarkerFinder.h"
 #include "AssemblySensorMarkerFinderWidget.h"
-
-
 
 //motion
 #include <ApplicationConfig.h>
@@ -56,7 +53,6 @@ typedef AssemblyUEyeModel AssemblyUEyeModel_t;
 #include "LStepExpressSettingsWidget.h"
 #include "LStepExpressWidget.h"
 #include "LStepExpressJoystickWidget.h"
-
 #include "LStepExpressMeasurement.h"
 #include "LStepExpressMeasurementWidget.h"
 #include "LStepExpressPositionWidget.h"
@@ -66,14 +62,13 @@ typedef AssemblyUEyeModel AssemblyUEyeModel_t;
 #include "ConradModel.h"
 #include "ConradManager.h"
 
-
 class AssemblyMainWindow : public QMainWindow
 {
-  Q_OBJECT
-public:
+Q_OBJECT
+ public:
   explicit AssemblyMainWindow(QWidget *parent = 0);
 
-public slots:
+ public slots:
 
   void quit();
 
@@ -85,25 +80,25 @@ public slots:
 
   void cameraOpened();
   void cameraClosed();
+
   void enableAutoFocus(int);
   void enablePrecisionEstimation(int);
   void enableSandwichAssembly(int);
   void enableAlignment(int);
 
-
-signals:
+ signals:
 
   void openCamera();
   void closeCamera();
   void acquireImage();
   void updateVacuumChannelsStatus();
   void updateThresholdLabel();
-    
-protected slots:
 
-void liveUpdate();
+ protected slots:
 
-protected:
+  void liveUpdate();
+
+ protected:
 
   QDir currentDir_;
 
@@ -118,12 +113,12 @@ protected:
   AssemblyModuleAssembler* assembleView_;
   AssemblyAutoFocus* autoFocusView_;
   AssemblyScanner*  cmdr_zscan;
+
   QCheckBox *checkbox1;
   QCheckBox *checkbox2;
   QCheckBox *checkbox3;
   QCheckBox *checkbox4;
 
-    
   AssemblyUEyeModel_t* uEyeModel_;
   AssemblyUEyeCameraThread* cameraThread_;
   AssemblyUEyeWidget* uEyeWidget_;
@@ -133,14 +128,12 @@ protected:
   AssemblyMarkerFinderThread* finderThread_;
   AssemblySensorMarkerFinder* finder_;
   AssemblySensorMarkerFinderWidget* finderWidget_;
-    
 
-    
   LStepExpressModel* lStepExpressModel_;
   LStepExpressMotionManager* motionManager_;
   LStepExpressSettings* lStepExpressSettings_;
   LStepExpressMotionThread* motionThread_;
-    
+
   ConradModel * conradModel_;
   ConradManager* conradManager_;
   AssemblyAssembler* module_assembler_;

@@ -77,61 +77,45 @@ AssemblySensorMarkerFinder::~AssemblySensorMarkerFinder()
     NQLog("AssemblySensorMarkerFinder") << "delete";
 }
 
-
-
-
-
 void AssemblySensorMarkerFinder::runObjectDetection(int labmode, int objectmode)
 {
-    
-  NQLog("AssemblySensorMarkerFinder::runObjectDetection(), labmode = ") << labmode   << ", objectmode = "<< objectmode ;
+  NQLog("AssemblySensorMarkerFinder::runObjectDetection") << "labmode=" << labmode << ", objectmode=" << objectmode;
 
-    labmode_g = labmode;
-    objectmode_g = objectmode;
+  labmode_g = labmode;
+  objectmode_g = objectmode;
 
-    if(labmode == 1){
-        
+  if(labmode == 1){
+
     emit acquireImage();
-        
-    }else if (labmode == 0){
-        
-        //standard signals to launch PatRec here
-        int match_method;
-        
-            if(objectmode==0){
-                
-                //img = cv::imread(Config::CMSTkModLabBasePath + "/share/assembly/RawSensor_4.png",
-                  //               CV_LOAD_IMAGE_COLOR);
-				img = cv::imread(Config::CMSTkModLabBasePath + "/share/assembly/SensorPiece_1.png",
-                                 CV_LOAD_IMAGE_COLOR);
-                
-              //img_clip_A = cv::imread(Config::CMSTkModLabBasePath + "/share/assembly/RawSensor_3_clipB_temp.png",
-                //                       CV_LOAD_IMAGE_COLOR);
-				img_clip_A = cv::imread(Config::CMSTkModLabBasePath + "/share/assembly/SensorPiece_1_clipC.png",
-                                       CV_LOAD_IMAGE_COLOR);
+  }
+  else if(labmode == 0){
 
-              // img_clip_A = cv::imread(Config::CMSTkModLabBasePath + "/share/assembly/spacer_corner_tempate_crop.png",
-                //                       CV_LOAD_IMAGE_COLOR);
-            }
-            
-            else if (objectmode == 1 ){
-                
-                NQLog("AssemblySensorLocator") << "***DETECTION OF POSITIONING PIN NOT IMPLMENTED YET!!***" ;
-            }
-            
-            else if (objectmode == 2){
-                
-                img = cv::imread(Config::CMSTkModLabBasePath + "/share/assembly/glassslidecorneronbaseplate_sliverpaint_A.png",
-                                 CV_LOAD_IMAGE_COLOR);
-                                
-                img_clip_A = cv::imread(Config::CMSTkModLabBasePath + "/share/assembly/glassslidecorneronbaseplate_sliverpaint_A_clip.png",CV_LOAD_IMAGE_COLOR);
-                
-            }
-        
-         emit locatePickupCorner_templateMatching(img,img_clip_A);
-        NQLog("AssemblySensorMarkerFinder::runObjectDetection()") << " emit locatePickupCorner_templateMatching " ;
-        
+    // standard signals to launch PatRec here
+    if(objectmode==0){
+
+//    img = cv::imread(Config::CMSTkModLabBasePath+"/share/assembly/RawSensor_4.png"  , CV_LOAD_IMAGE_COLOR);
+      img = cv::imread(Config::CMSTkModLabBasePath+"/share/assembly/SensorPiece_1.png", CV_LOAD_IMAGE_COLOR);
+
+//    img_clip_A = cv::imread(Config::CMSTkModLabBasePath+"/share/assembly/RawSensor_3_clipB_temp.png"    , CV_LOAD_IMAGE_COLOR);
+      img_clip_A = cv::imread(Config::CMSTkModLabBasePath+"/share/assembly/SensorPiece_1_clipC.png"       , CV_LOAD_IMAGE_COLOR);
+//    img_clip_A = cv::imread(Config::CMSTkModLabBasePath+"/share/assembly/spacer_corner_tempate_crop.png", CV_LOAD_IMAGE_COLOR);
     }
+    else if(objectmode == 1){
+
+      NQLog("AssemblySensorMarkerFinder::runObjectDetection") << "***DETECTION OF POSITIONING PIN NOT IMPLEMENTED YET!!***" ;
+    }
+    else if(objectmode == 2){
+
+      img        = cv::imread(Config::CMSTkModLabBasePath+"/share/assembly/glassslidecorneronbaseplate_sliverpaint_A.png"     , CV_LOAD_IMAGE_COLOR);
+      img_clip_A = cv::imread(Config::CMSTkModLabBasePath+"/share/assembly/glassslidecorneronbaseplate_sliverpaint_A_clip.png", CV_LOAD_IMAGE_COLOR);
+    }
+
+    NQLog("AssemblySensorMarkerFinder::runObjectDetection") << " emitting signal: locatePickupCorner_templateMatching";
+
+    emit locatePickupCorner_templateMatching(img, img_clip_A);
+  }
+
+  return;
 }
 
 void AssemblySensorMarkerFinder::runObjectDetection_labmode(cv::Mat master_image){

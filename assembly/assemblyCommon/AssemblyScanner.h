@@ -41,9 +41,7 @@
 //relay card for vacuum control
 #include "ConradModel.h"
 
-
-using namespace std;
-
+//using namespace std;
 
 class AssemblyScanner : public QObject
 {
@@ -62,40 +60,37 @@ public:
   double x_pickup, y_pickup, z_pickup;
   double z_prepickup;
   int iteration, iterations;
-    
+
   int nTotalImages, nAcquiredImages, step;
-  vector<double> x_vals, y_vals;
-  vector<double> xpre_vec,ypre_vec,thetapre_vec;
-  vector<double> xpost_vec,ypost_vec,thetapost_vec;
+  std::vector<double> x_vals, y_vals;
+  std::vector<double> xpre_vec,ypre_vec,thetapre_vec;
+  std::vector<double> xpost_vec,ypost_vec,thetapost_vec;
   double step_distance;
   std::ofstream outfile;
   
-protected:
-    double imageVariance(cv::Mat img_input, cv::Rect rectangle);
+ protected:
+  double imageVariance(cv::Mat img_input, cv::Rect rectangle);
 
-public slots:
+ public slots:
   void run_scan(double, int);
   void write_image(cv::Mat, cv::Rect);
   void run_precisionestimation(double, double, double, double, double, double, int);
   void process_step();
   void fill_positionvectors(int , double, double, double);
   void toggleVacuum();
-    
-signals:
-    void getImage();
-    void moveRelative(double, double, double, double);
-    void moveAbsolute(double, double, double, double);
-    void updateScanImage(cv::Mat);
-    void make_graph(const string);
-    void updateText(double);
-    void nextStep();
-    void acquireImage();
-    void makeDummies(int, double,double,double);
-    void showHistos(int, QString);
-    void toggleVacuum(int);
 
-
+ signals:
+  void getImage();
+  void moveRelative(double, double, double, double);
+  void moveAbsolute(double, double, double, double);
+  void updateScanImage(cv::Mat);
+  void make_graph(const std::string);
+  void updateText(double);
+  void nextStep();
+  void acquireImage();
+  void makeDummies(int, double,double,double);
+  void showHistos(int, QString);
+  void toggleVacuum(int);
 };
-
 
 #endif // ASSEMBLYASSEMBLER_H

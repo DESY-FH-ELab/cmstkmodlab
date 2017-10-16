@@ -28,8 +28,6 @@
 #include <QCheckBox>
 #include <QRadioButton>
 
-
-
 //vision
 #include <AssemblyUEyeView.h>
 #include "AssemblyVUEyeModel.h"
@@ -75,9 +73,9 @@ protected:
 
 public slots:
   void imageAcquired(const cv::Mat&);
-  void updateImage(int,std::string);
+  void updateImage(int, std::string);
   void configure_scan();
-  void make_graph(const string);
+  void make_graph(const std::string);
   void updateText(double);
   void go_to_focal_point();
     
