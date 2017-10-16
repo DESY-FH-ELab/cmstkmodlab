@@ -133,6 +133,9 @@ Q_OBJECT
   LStepExpressMotionManager* motionManager_;
   LStepExpressSettings* lStepExpressSettings_;
   LStepExpressMotionThread* motionThread_;
+    
+  LStepExpressSettingsWidget* lStepExpressSettingsWidget_;
+
 
   ConradModel * conradModel_;
   ConradManager* conradManager_;

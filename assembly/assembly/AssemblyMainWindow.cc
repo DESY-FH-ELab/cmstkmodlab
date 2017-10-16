@@ -41,14 +41,14 @@ AssemblyMainWindow::AssemblyMainWindow(QWidget *parent) : QMainWindow(parent), c
     tabWidget_ = new QTabWidget(this);
     tabWidget_->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);
 
-    finderView_ = new AssemblyUEyeSnapShooter(tabWidget_);
-    tabWidget_->addTab(finderView_, "finder");
+//    finderView_ = new AssemblyUEyeSnapShooter(tabWidget_);
+//    tabWidget_->addTab(finderView_, "finder");
 
-    edgeView_ = new AssemblyUEyeSnapShooter(tabWidget_);
-    tabWidget_->addTab(edgeView_, "edges");
+//    edgeView_ = new AssemblyUEyeSnapShooter(tabWidget_);
+//    tabWidget_->addTab(edgeView_, "edges");
 
-    rawView_ = new AssemblyUEyeSnapShooter(tabWidget_);
-    tabWidget_->addTab(rawView_, "raw");
+//    rawView_ = new AssemblyUEyeSnapShooter(tabWidget_);
+//    tabWidget_->addTab(rawView_, "raw");
 
     uEyeModel_ = new AssemblyUEyeModel_t(10);
     cameraThread_ = new AssemblyUEyeCameraThread(uEyeModel_, this);
@@ -80,8 +80,8 @@ AssemblyMainWindow::AssemblyMainWindow(QWidget *parent) : QMainWindow(parent), c
 
     conradModel_ = new ConradModel(assembleView_);
 
-    finderWidget_ = new AssemblySensorMarkerFinderWidget(finder_, this);
-    tabWidget_->addTab(finderWidget_, "finder config");
+   // finderWidget_ = new AssemblySensorMarkerFinderWidget(finder_, this);
+   // tabWidget_->addTab(finderWidget_, "finder config");
 
     uEyeWidget_ = new AssemblyUEyeWidget(uEyeModel_, this);
     tabWidget_->addTab(uEyeWidget_, "uEye");
@@ -108,10 +108,14 @@ AssemblyMainWindow::AssemblyMainWindow(QWidget *parent) : QMainWindow(parent), c
 
     NQLog("AssemblyMainWindow") << "autofocus view added";
 
+    
+    //Probably need a dedicated class for Motionmanager tab widget so
+    //no details have to be included here (but this was just for testing)
+    
     QWidget * widget;
     widget= new QWidget(tabWidget_);
     tabWidget_->addTab(widget, "Motion Manager");
-
+    
     NQLog("AssemblyMainWindow") << "motion manager added";
 
     QHBoxLayout * layout = new QHBoxLayout(widget);
@@ -134,6 +138,15 @@ AssemblyMainWindow::AssemblyMainWindow(QWidget *parent) : QMainWindow(parent), c
     LStepExpressPositionWidget *lStepPosition = new LStepExpressPositionWidget(motionManager_, lStepExpressModel_, widget);
     layoutv2->addWidget(lStepPosition);
 
+    
+    lStepExpressSettings_ = new LStepExpressSettings(lStepExpressModel_, widget);
+
+    lStepExpressSettingsWidget_ = new LStepExpressSettingsWidget(lStepExpressSettings_, tabWidget_);
+    tabWidget_->addTab(lStepExpressSettingsWidget_, "Motion settings");
+
+    
+    
+    
     connect(QApplication::instance(), SIGNAL(aboutToQuit()), this, SLOT(quit()));
 
     toolBar_ = addToolBar("Tools");
