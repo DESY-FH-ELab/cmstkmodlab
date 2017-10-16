@@ -6,3 +6,5 @@ tkmodlabenv.sh
 .cproject
 .project
 ./share/assembly/Sensor_bin.png
+assembly/assembly/*png
+share/assembly/*png
