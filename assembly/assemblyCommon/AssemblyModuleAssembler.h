@@ -329,9 +329,9 @@ signals:
 
 class AssemblySensorLocator : public QWidget
 {
-  Q_OBJECT
+Q_OBJECT
 
-public:
+ public:
 
   explicit AssemblySensorLocator(QWidget *parent = 0, std::string ="test",
                                  double a  = 0.0, AssemblySensorMarkerFinder* finder_ = 0);
@@ -347,23 +347,21 @@ public:
   QRadioButton *radio31;
   QRadioButton *radio4;
   QRadioButton *radio5;
-  int objectmode, labmode;
-
 
   QVBoxLayout *vbox1,*vbox2 ;
 
-protected:
+ protected:
 
   std::string cacheDirectory1_;
   std::string cacheDirectory2_;
 
-public slots:
+ public slots:
 
   void foundsensor(int);
   void detectPatRecMode();
 
-signals:
-    
+ signals:
+
   void runObjectDetection(int, int);
   void updateImage(int, std::string);
   void foundSensor(int);
