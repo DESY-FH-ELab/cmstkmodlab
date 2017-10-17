@@ -135,15 +135,11 @@ AssemblyMainWindow::AssemblyMainWindow(QWidget *parent) : QMainWindow(parent), c
     LStepExpressPositionWidget *lStepPosition = new LStepExpressPositionWidget(motionManager_, lStepExpressModel_, widget);
     layoutv2->addWidget(lStepPosition);
 
-    
     lStepExpressSettings_ = new LStepExpressSettings(lStepExpressModel_, widget);
 
     lStepExpressSettingsWidget_ = new LStepExpressSettingsWidget(lStepExpressSettings_, tabWidget_);
-    tabWidget_->addTab(lStepExpressSettingsWidget_, "Motion settings");
+    tabWidget_->addTab(lStepExpressSettingsWidget_, "Motion Settings");
 
-    
-    
-    
     connect(QApplication::instance(), SIGNAL(aboutToQuit()), this, SLOT(quit()));
 
     toolBar_ = addToolBar("Tools");
@@ -390,10 +386,10 @@ void AssemblyMainWindow::testTimer()
 
 void AssemblyMainWindow::cameraOpened()
 {
-    finderView_        ->connectImageProducer(finder_, SIGNAL(markerFound  (const cv::Mat&)));
+//    finderView_        ->connectImageProducer(finder_, SIGNAL(markerFound  (const cv::Mat&)));
     thresholdTunerView_->connectImageProducer(camera_, SIGNAL(imageAcquired(const cv::Mat&)));
-    edgeView_          ->connectImageProducer(finder_, SIGNAL(edgesDetected(const cv::Mat&)));
-    rawView_           ->connectImageProducer(camera_, SIGNAL(imageAcquired(const cv::Mat&)));
+//    edgeView_          ->connectImageProducer(finder_, SIGNAL(edgesDetected(const cv::Mat&)));
+//    rawView_           ->connectImageProducer(camera_, SIGNAL(imageAcquired(const cv::Mat&)));
 
 //    const bool test = connect(camera_, SIGNAL(imageAcquired(cv::Mat)), finder_, SLOT(write_image(cv::Mat)));
 //    connect(camera_, SIGNAL(imageAcquired(cv::Mat)), finder_, SLOT(runObjectDetection_labmode(cv::Mat)));
@@ -419,8 +415,8 @@ void AssemblyMainWindow::cameraClosed()
     NQLog("AssemblyMainWindow::cameraClosed()") << "disconnecting finder from camera";
 
     finderView_->disconnectImageProducer(finder_, SIGNAL(markerFound(const cv::Mat&)));
-    edgeView_  ->disconnectImageProducer(finder_, SIGNAL(edgesDetected(const cv::Mat&)));
-    rawView_   ->disconnectImageProducer(camera_, SIGNAL(imagef(const cv::Mat&)));
+//    edgeView_  ->disconnectImageProducer(finder_, SIGNAL(edgesDetected(const cv::Mat&)));
+//    rawView_   ->disconnectImageProducer(camera_, SIGNAL(imagef(const cv::Mat&)));
 //    playView_  ->disconnectImageProducer(camera_, SIGNAL(imageAcquired(const cv::Mat&)));
 
     disconnect(camera_, SIGNAL(imageAcquired(const cv::Mat&)), finder_, SLOT(findMarker(const cv::Mat&)));
