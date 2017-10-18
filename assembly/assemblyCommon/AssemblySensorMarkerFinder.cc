@@ -131,9 +131,9 @@ void AssemblySensorMarkerFinder::runObjectDetection_labmode(cv::Mat master_image
 
         img = master_image;
         
-	//        img_clip_A = cv::imread(Config::CMSTkModLabBasePath + "/share/assembly/RawSensor_3_clipB.png", CV_LOAD_IMAGE_COLOR);
-     //   img_clip_A = cv::imread(Config::CMSTkModLabBasePath + "/share/assembly/RawSensor_3_clipB_temp.png", CV_LOAD_IMAGE_COLOR);
-		img_clip_A = cv::imread(Config::CMSTkModLabBasePath + "/share/assembly/SensorPiece_1_clipC.png", CV_LOAD_IMAGE_COLOR);
+	//        img_clip_A = cv::imread(Config::CMSTkModLabBasePath+"/share/assembly/RawSensor_3_clipB.png", CV_LOAD_IMAGE_COLOR);
+     //   img_clip_A = cv::imread(Config::CMSTkModLabBasePath+"/share/assembly/RawSensor_3_clipB_temp.png", CV_LOAD_IMAGE_COLOR);
+		img_clip_A = cv::imread(Config::CMSTkModLabBasePath+"/share/assembly/SensorPiece_1_clipC.png", CV_LOAD_IMAGE_COLOR);
     }
     
     else if (objectmode_g == 1 ){
@@ -146,16 +146,16 @@ void AssemblySensorMarkerFinder::runObjectDetection_labmode(cv::Mat master_image
         NQLog("AssemblySensorLocator") << "***DETECTIING SILVER PAINTER CORNER!***" ;
 
         img = master_image;   
-	//        img_clip_A = cv::imread(Config::CMSTkModLabBasePath + "/share/assembly/glassslidecorneronbaseplate_sliverpaint_A_clip.png",CV_LOAD_IMAGE_COLOR);
-	// img_clip_A = cv::imread(Config::CMSTkModLabBasePath + "/share/assembly/glassslidecorner_sliverpaint_D_crop.png",CV_LOAD_IMAGE_COLOR);
-           img_clip_A = cv::imread(Config::CMSTkModLabBasePath + "/share/assembly/simplecorner.png",CV_LOAD_IMAGE_COLOR);
+	//        img_clip_A = cv::imread(Config::CMSTkModLabBasePath+"/share/assembly/glassslidecorneronbaseplate_sliverpaint_A_clip.png",CV_LOAD_IMAGE_COLOR);
+	// img_clip_A = cv::imread(Config::CMSTkModLabBasePath+"/share/assembly/glassslidecorner_sliverpaint_D_crop.png",CV_LOAD_IMAGE_COLOR);
+           img_clip_A = cv::imread(Config::CMSTkModLabBasePath+"/share/assembly/simplecorner.png",CV_LOAD_IMAGE_COLOR);
       
     }
 
 	else if (objectmode_g == 3){
          NQLog("AssemblySensorLocator") << "***DETECTIING SPACER  CORNER!***" ;
          img = master_image;   
-         img_clip_A = cv::imread(Config::CMSTkModLabBasePath + "/share/assembly/spacer_corner_tempate_crop.png",
+         img_clip_A = cv::imread(Config::CMSTkModLabBasePath+"/share/assembly/spacer_corner_tempate_crop.png",
                                        CV_LOAD_IMAGE_COLOR);
      }
 
@@ -695,9 +695,9 @@ void AssemblySensorMarkerFinder::findMarker_templateMatching(cv::Mat img, cv::Ma
     // img_copy_bin = img_copy_gs.clone();
     // img_clip_A_bin = img_clip_A_gs.clone();
     
-    std::string filename_img_bin = Config::CMSTkModLabBasePath + "/share/assembly/Sensor_bin.png";
-    std::string filename_clip_A_bin = Config::CMSTkModLabBasePath + "/share/assembly/clip_A_bin.png";
-    //std::string filename_img_glass_marker_bin = Config::CMSTkModLabBasePath + "/share/assembly/img_glass_marker_bin.png";
+    const std::string filename_img_bin    = cacheDirectory1_+"/Sensor_bin.png";
+    const std::string filename_clip_A_bin = cacheDirectory1_+"/clip_A_bin.png";
+//    const std::string filename_img_glass_marker_bin = cacheDirectory1_+"/share/assembly/img_glass_marker_bin.png";
     
     cv::imwrite(filename_img_bin, img_copy_bin);
     cv::imwrite(filename_clip_A_bin, img_clip_A_bin);
@@ -815,17 +815,15 @@ void AssemblySensorMarkerFinder::findMarker_templateMatching(cv::Mat img, cv::Ma
         Mat rot_mat = getRotationMatrix2D(src_center, theta, 1.0);
         Mat dst, dst_orig;
         cv::Scalar avgPixelIntensity = cv::mean( img_copy_bin );
-        warpAffine(img_copy_bin, dst, rot_mat, img_copy_bin.size(), cv::INTER_CUBIC,
-                   cv::BORDER_CONSTANT, avgPixelIntensity);
-        warpAffine(img_copy_gs, dst_orig, rot_mat, img_copy_bin.size(), cv::INTER_CUBIC,
-                   cv::BORDER_CONSTANT, avgPixelIntensity);
-	//    std::string filename_rotated_base = cacheDirectory2_ + "/Rotation_result_";
 
-	    std::string filename_rotated_base =  "Rotation_result_";
+        warpAffine(img_copy_bin, dst     , rot_mat, img_copy_bin.size(), cv::INTER_CUBIC, cv::BORDER_CONSTANT, avgPixelIntensity);
+        warpAffine(img_copy_gs , dst_orig, rot_mat, img_copy_bin.size(), cv::INTER_CUBIC, cv::BORDER_CONSTANT, avgPixelIntensity);
+
+        std::string filename_rotated_base = cacheDirectory2_+"/Rotation_result_";
         std::ostringstream ss;
         ss << theta;
         std::string theta_str = ss.str();
-        filename_rotated = filename_rotated_base + theta_str + ".png";
+        filename_rotated = filename_rotated_base + theta_str+".png";
         cv::imwrite(filename_rotated, dst);
         
         //create result matrix to hold correlation values
@@ -926,16 +924,15 @@ void AssemblySensorMarkerFinder::findMarker_templateMatching(cv::Mat img, cv::Ma
 
         gr_bestmatch->Draw("PSAME");
 
-        std::string filename_canvas = cacheDirectory1_ + "/RotationExtraction.png";
+        std::string filename_canvas = cacheDirectory1_+"/RotationExtraction.png";
         c1->SaveAs(filename_canvas.c_str());
         QString filename_canvas_qs = QString::fromStdString(filename_canvas);
-        c1->SaveAs("test.png");
+        c1->SaveAs((cacheDirectory1_+"test.png").c_str());
 
-        
         emit updateImage(2, filename_canvas_qs);
     }
     
-    std::string filename = cacheDirectory1_ + "/PatRec_TM_result.png";
+    std::string filename = cacheDirectory1_+"/PatRec_TM_result.png";
     cv::imwrite(filename, img);
     
  
@@ -978,7 +975,7 @@ void AssemblySensorMarkerFinder::findMarker_circleSeed(int mode)
     
          NQLog("AssemblySensorMarkerFinder") << "DEMO MODE (USING DEMO IMAGES)" ;
 
-    img_gs = cv::imread(Config::CMSTkModLabBasePath + "/share/assembly/im_scan___Exp10___EdgeThr145___lt110.png",
+    img_gs = cv::imread(Config::CMSTkModLabBasePath+"/share/assembly/im_scan___Exp10___EdgeThr145___lt110.png",
                         CV_LOAD_IMAGE_COLOR);
     
      }else if (mode ==1){
@@ -986,7 +983,7 @@ void AssemblySensorMarkerFinder::findMarker_circleSeed(int mode)
          
          NQLog("AssemblySensorMarkerFinder") << "***LAB MODE NOT IMPLMENTED YET....REVERTING TO DEMO MODE!!!***" ;
 
-         img_gs = cv::imread(Config::CMSTkModLabBasePath + "/share/assembly/im_scan___Exp10___EdgeThr145___lt110.png",
+         img_gs = cv::imread(Config::CMSTkModLabBasePath+"/share/assembly/im_scan___Exp10___EdgeThr145___lt110.png",
                              CV_LOAD_IMAGE_COLOR);
      
      
@@ -1279,7 +1276,7 @@ void AssemblySensorMarkerFinder::findMarker_circleSeed(int mode)
     
     putText(img_rgb, text_result, cvPoint(30,100),
             cv::FONT_HERSHEY_COMPLEX_SMALL, 2.8, cvScalar(200,200,250), 1, CV_AA);
-    std::string filename = cacheDirectory1_ + "/PatRec_result.png";
+    std::string filename = cacheDirectory1_+"/PatRec_result.png";
     cv::imwrite(filename, img_rgb);
     
     QString filename_qs = QString::fromStdString(filename);
@@ -1329,15 +1326,15 @@ void AssemblySensorMarkerFinder::updateThresholdImage(cv::Mat img)
     //Apply thresholding
     NQLog("AssemblySensorMarkerFinder") << "::updateThresholdImage() : applying threshold for ThresholdTuner.";
     cv::threshold(img_copy_gs, img_copy_bin, generalThreshold_, 255, cv::THRESH_BINARY);
-     
-    std::string filename_img_bin = Config::CMSTkModLabBasePath + "/share/assembly/Sensor_bin.png";
-    
+
+    std::string filename_img_bin = cacheDirectory1_+"/Sensor_bin.png";
+
     cv::imwrite(filename_img_bin, img_copy_bin);
-    
+
     QString filename_img_bin_qs = QString::fromStdString(filename_img_bin);
-    
+
     QString filename_master = QString::fromStdString(filename_img_bin);
-    
+
     emit sendUpdatedThresholdImage(filename_master);
     NQLog("AssemblySensorMarkerFinder") << "::updateThresholdImage() : signal emitted!!!";
 }
