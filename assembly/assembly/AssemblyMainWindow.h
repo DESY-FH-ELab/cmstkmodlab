@@ -13,56 +13,48 @@
 #ifndef ASSEMBLYMAINWINDOW_H
 #define ASSEMBLYMAINWINDOW_H
 
+#include <AssemblyVUEyeCamera.h>
+#ifdef NOUEYE
+#include <AssemblyUEyeFakeModel.h>
+typedef AssemblyUEyeFakeModel AssemblyUEyeModel_t;
+#else
+#include <AssemblyUEyeModel.h>
+typedef AssemblyUEyeModel AssemblyUEyeModel_t;
+#endif
+#include <AssemblyUEyeCameraThread.h>
+#include <AssemblyUEyeWidget.h>
+#include <AssemblyUEyeView.h>
+#include <AssemblyUEyeSnapShooter.h>
+#include <AssemblyThresholdTuner.h>
+#include <AssemblyModuleAssembler.h>
+#include <AssemblyAutoFocus.h>
+#include <AssemblyScanner.h>
+#include <AssemblyAssembler.h>
+#include <AssemblyMarkerFinderThread.h>
+#include <AssemblySensorMarkerFinder.h>
+#include <AssemblySensorMarkerFinderWidget.h>
+#include <SnapshotController.h>
+#include <LStepExpressModel.h>
+#include <LStepExpressSettings.h>
+#include <LStepExpressMotionManager.h>
+#include <LStepExpressMotionThread.h>
+#include <LStepExpressSettingsWidget.h>
+#include <LStepExpressWidget.h>
+#include <LStepExpressJoystickWidget.h>
+#include <LStepExpressMeasurement.h>
+#include <LStepExpressMeasurementWidget.h>
+#include <LStepExpressPositionWidget.h>
+#include <LStepExpressStatusWindow.h>
+#include <ConradModel.h>
+#include <ConradManager.h>
+#include <ZFocusFinder.h>
+
 #include <QMainWindow>
 #include <QTabWidget>
 #include <QDir>
 #include <QTimer>
 #include <QToolBar>
 #include <QScrollArea>
-
-#include "AssemblyVUEyeCamera.h"
-
-#ifdef NOUEYE
-#include "AssemblyUEyeFakeModel.h"
-typedef AssemblyUEyeFakeModel AssemblyUEyeModel_t;
-#else
-#include "AssemblyUEyeModel.h"
-typedef AssemblyUEyeModel AssemblyUEyeModel_t;
-#endif
-
-#include "AssemblyUEyeCameraThread.h"
-#include "AssemblyUEyeWidget.h"
-#include "AssemblyUEyeView.h"
-#include "AssemblyUEyeSnapShooter.h"
-#include "AssemblyThresholdTuner.h"
-#include "AssemblyModuleAssembler.h"
-#include "AssemblyAutoFocus.h"
-#include "AssemblyScanner.h"
-#include "AssemblyAssembler.h"
-
-#include "AssemblyMarkerFinderThread.h"
-#include "AssemblySensorMarkerFinder.h"
-#include "AssemblySensorMarkerFinderWidget.h"
-
-#include "SnapshotController.h"
-
-//motion
-#include <ApplicationConfig.h>
-#include "LStepExpressModel.h"
-#include "LStepExpressSettings.h"
-#include "LStepExpressMotionManager.h"
-#include "LStepExpressMotionThread.h"
-#include "LStepExpressSettingsWidget.h"
-#include "LStepExpressWidget.h"
-#include "LStepExpressJoystickWidget.h"
-#include "LStepExpressMeasurement.h"
-#include "LStepExpressMeasurementWidget.h"
-#include "LStepExpressPositionWidget.h"
-#include "LStepExpressStatusWindow.h"
-
-//conrad relay card
-#include "ConradModel.h"
-#include "ConradManager.h"
 
 class AssemblyMainWindow : public QMainWindow
 {
@@ -73,29 +65,35 @@ class AssemblyMainWindow : public QMainWindow
 
   public slots:
 
-    void quit();
+    void  enable_images();
+    void disable_images();
+    void get_image();
+
+    void    connect_images();
+    void disconnect_images();
+
+    void changeState_AutoFocus          (int);
+    void changeState_PrecisionEstimation(int);
+    void changeState_SandwichAssembly   (int);
+    void changeState_Alignment          (int);
 
     void testTimer();
 
-    void enableImages();
-    void disableImages();
-    void getImage();
-
-    void cameraOpened();
-    void cameraClosed();
-
-    void enableAutoFocus(int);
-    void enablePrecisionEstimation(int);
-    void enableSandwichAssembly(int);
-    void enableAlignment(int);
+    void quit();
 
   signals:
 
-    void openCamera();
-    void closeCamera();
-    void acquireImage();
-    void updateVacuumChannelsStatus();
+    void images_ON();
+    void images_OFF();
+
+    void use_camera();
+
     void updateThresholdLabel();
+
+    void updateVacuumChannelsStatus();
+
+    void AutoFocus_ON();
+    void AutoFocus_OFF();
 
   protected slots:
 
@@ -127,6 +125,8 @@ class AssemblyMainWindow : public QMainWindow
     unsigned int              camera_ID_;
     AssemblyVUEyeCamera *     camera_;
     AssemblyUEyeCameraThread* cameraThread_;
+
+    ZFocusFinder* zfocus_finder_;
 
     AssemblySensorMarkerFinder*       finder_;
     AssemblyMarkerFinderThread*       finderThread_;

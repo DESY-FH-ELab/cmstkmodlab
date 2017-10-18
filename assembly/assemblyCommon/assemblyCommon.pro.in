@@ -110,6 +110,7 @@ HEADERS += AssemblyVUEyeCamera.h \
            LaserThread.h \
            LaserControlsWidget.h \
            SnapshotController.h \
+           ZFocusFinder.h \
            Log.h
 
 equals(NOUEYE,"X0") {
@@ -155,6 +156,7 @@ SOURCES += AssemblyVUEyeCamera.cc \
            LaserThread.cc \ 
            LaserControlsWidget.cc \
            SnapshotController.cc \
+           ZFocusFinder.cc \
            Log.cc
 
 equals(NOUEYE,"X0") {

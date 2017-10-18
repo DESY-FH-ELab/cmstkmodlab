@@ -41,9 +41,9 @@
 
 using namespace cv;
 
-AssemblyAutoFocus::AssemblyAutoFocus(AssemblyScanner* cmdr_zscan, QWidget *parent) : QWidget(parent)
+AssemblyAutoFocus::AssemblyAutoFocus(AssemblyScanner* /* cmdr_zscan */, QWidget *parent) : QWidget(parent)
 {
-  NQLog("AssemblyAutoFocus::AssemblyAutoFocus");
+//  NQLog("AssemblyAutoFocus::AssemblyAutoFocus");
 
   QGridLayout* l = new QGridLayout(this);
   setLayout(l);
@@ -62,7 +62,7 @@ AssemblyAutoFocus::AssemblyAutoFocus(AssemblyScanner* cmdr_zscan, QWidget *paren
   imageView_1->setScaledContents(true);
   imageView_1->setAlignment(Qt::AlignCenter);
   QApplication::processEvents();
-  imageView_1->connectImageProducer(cmdr_zscan, SIGNAL(updateScanImage(cv::Mat)));
+//!!  imageView_1->connectImageProducer(cmdr_zscan, SIGNAL(updateScanImage(cv::Mat)));
 
   scrollArea_1 = new QScrollArea(this);
   scrollArea_1->setMinimumSize(200, 200);
@@ -116,7 +116,7 @@ AssemblyAutoFocus::AssemblyAutoFocus(AssemblyScanner* cmdr_zscan, QWidget *paren
 
   //make all the neccessary connections
   connect(button1, SIGNAL(clicked())            , this      , SLOT(configure_scan()));
-  connect(this   , SIGNAL(run_scan(double, int)), cmdr_zscan, SLOT(run_scan(double, int)));
+//!!  connect(this   , SIGNAL(run_scan(double, int)), cmdr_zscan, SLOT(run_scan(double, int)));
   connect(button2, SIGNAL(clicked())            , this      , SLOT(go_to_focal_point()));
 
   return;    
