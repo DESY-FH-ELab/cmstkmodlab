@@ -10,7 +10,11 @@
 //                                                                             //
 /////////////////////////////////////////////////////////////////////////////////
 
-#include <opencv2/opencv.hpp>
+#include <AssemblyMainWindow.h>
+#include <SingletonApplication.h>
+#include <ApplicationConfig.h>
+#include <DeviceState.h>
+#include <nqlogger.h>
 
 #include <QApplication>
 #include <QProcess>
@@ -22,15 +26,9 @@
 #include <QStandardPaths>
 #endif
 
-#include <nqlogger.h>
-#include <DeviceState.h>
+#include <opencv2/opencv.hpp>
 
-#include "SingletonApplication.h"
-#include "ApplicationConfig.h"
-
-#include "AssemblyMainWindow.h"
-
-static const char* assemblyGUID = "{5F9DC7D7-54C2-4625-A7C6-2EBE4C37C8F5}";
+//static const char* assemblyGUID = "{5F9DC7D7-54C2-4625-A7C6-2EBE4C37C8F5}";
 //#define SINGLETON 1
 
 int main(int argc, char** argv)

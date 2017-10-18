@@ -29,7 +29,7 @@ class AssemblySensorMarkerFinder : public AssemblyVMarkerFinder
     Q_OBJECT
 protected:
     
-    int generalThreshold;
+    int generalThreshold_;
 
     double matchLoc_x_lab;
     double matchLoc_y_lab;
@@ -57,8 +57,8 @@ public:
     double linesHoughMinLineLength() const { return linesHoughMinLineLength_; }
     double linesHoughMaxLineGap() const { return linesHoughMaxLineGap_; }
 
-    int getGeneralThresholdValue() {return generalThreshold; }
-    void setGeneralThresholdValue(int newThresholdValue) { generalThreshold = newThresholdValue; }
+    int getGeneralThresholdValue() {return generalThreshold_; }
+    void setGeneralThresholdValue(int newThresholdValue) { generalThreshold_ = newThresholdValue; }
 
     cv::Mat img, img_clip_A, img_clip_B, result_1, result_2, dst;
 

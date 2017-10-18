@@ -10,22 +10,65 @@
 //                                                                             //
 /////////////////////////////////////////////////////////////////////////////////
 
-#include <stdlib.h>
+#include <AssemblyMainWindow.h>
+#include <ApplicationConfig.h>
+#include <nqlogger.h>
+#include <Log.h>
 
-#include <string>
 #include <iostream>
+//!!#include <stdlib.h>
+#include <string>
 
 #include <QGroupBox>
 #include <QFileDialog>
 #include <QApplication>
 #include <QPalette>
 
-#include <nqlogger.h>
-#include <ApplicationConfig.h>
+AssemblyMainWindow::AssemblyMainWindow(const unsigned int camera_ID, QWidget *parent) :
+  QMainWindow(parent),
 
-#include "AssemblyMainWindow.h"
+  toolBar_(0),
+  tabWidget_(0),
 
-AssemblyMainWindow::AssemblyMainWindow(QWidget *parent) : QMainWindow(parent), camera_(0)
+//  finderView_(0),
+  thresholdTunerView_(0),
+//  edgeView_(0),
+//  rawView_(0),
+  assembleView_(0),
+  autoFocusView_(0),
+  cmdr_zscan(0),
+
+  checkbox1(0),
+  checkbox2(0),
+  checkbox3(0),
+  checkbox4(0),
+
+  uEyeModel_(0),
+  uEyeWidget_(0),
+
+  camera_ID_(camera_ID),
+  camera_(0),
+  cameraThread_(0),
+
+  finder_(0),
+  finderThread_(0),
+  finderWidget_(0),
+
+  lStepExpressModel_(0),
+  lStepExpressSettings_(0),
+  lStepExpressSettingsWidget_(0),
+
+  motionManager_(0),
+  motionThread_(0),
+
+  conradModel_(0),
+  conradManager_(0),
+  module_assembler_(0),
+
+  snapshot_ctr_(0),
+
+  testTimerCount_(0.),
+  liveTimer_(0)
 {
     ApplicationConfig* config = ApplicationConfig::instance();
 
@@ -50,7 +93,17 @@ AssemblyMainWindow::AssemblyMainWindow(QWidget *parent) : QMainWindow(parent), c
 //    rawView_ = new AssemblyUEyeSnapShooter(tabWidget_);
 //    tabWidget_->addTab(rawView_, "raw");
 
-    uEyeModel_    = new AssemblyUEyeModel_t(10);
+    uEyeModel_ = new AssemblyUEyeModel_t(10);
+    uEyeModel_->updateInformation();
+
+    camera_ = uEyeModel_->getCameraByID(camera_ID_);
+
+    if(!camera_)
+    {
+      const std::string log("null pointer to AssemblyVUEyeCamera object (camera-ID = "+std::to_string(camera_ID_)+")");
+      Log::KILL("AssemblyMainWindow::AssemblyMainWindow -- "+log);
+    }
+
     cameraThread_ = new AssemblyUEyeCameraThread(uEyeModel_, this);
     cameraThread_->start();
 
@@ -73,16 +126,16 @@ AssemblyMainWindow::AssemblyMainWindow(QWidget *parent) : QMainWindow(parent), c
 
     NQLog("AssemblyMainWindow::AssemblyMainWindow") << "initialization signal sent";
 
-    assembleView_ = new AssemblyModuleAssembler(uEyeModel_, finder_, lStepExpressModel_, tabWidget_);
-    tabWidget_->addTab(assembleView_, "Manual assembly");
+    assembleView_ = new AssemblyModuleAssembler(camera_, finder_, lStepExpressModel_, tabWidget_);
+    tabWidget_->addTab(assembleView_, "Manual Assembly");
 
 //    autoAssemblyView_ = new AssemblyAutomatedModuleAssembler(uEyeModel_, finder_, lStepExpressModel_, tabWidget_);
 //    tabWidget_->addTab(autoAssemblyView_, "Automated assembly");
 
     conradModel_ = new ConradModel(assembleView_);
 
-   // finderWidget_ = new AssemblySensorMarkerFinderWidget(finder_, this);
-   // tabWidget_->addTab(finderWidget_, "finder config");
+//    finderWidget_ = new AssemblySensorMarkerFinderWidget(finder_, this);
+//    tabWidget_->addTab(finderWidget_, "finder config");
 
     uEyeWidget_ = new AssemblyUEyeWidget(uEyeModel_, this);
     tabWidget_->addTab(uEyeWidget_, "uEye");
@@ -93,7 +146,7 @@ AssemblyMainWindow::AssemblyMainWindow(QWidget *parent) : QMainWindow(parent), c
     module_assembler_ = new AssemblyAssembler(lStepExpressModel_);
     
     connect(assembleView_->toggle1, SIGNAL(toggleVacuum(int))           , conradManager_, SLOT(toggleVacuum(int)));
-    connect(assembleView_         , SIGNAL(runObjectDetection(int, int)), finder_       , SLOT(runObjectDetection(int, int)));
+//!!    connect(assembleView_         , SIGNAL(runObjectDetection(int, int)), finder_       , SLOT(runObjectDetection(int, int)));
 
 //  connect(assembleView_->toggle1, SIGNAL(toggleVacuum(int))                  , assembleView_->toggle1, SLOT(disableVacuumButton()));
     connect(conradManager_        , SIGNAL(updateVacuumChannelState(int, bool)), assembleView_->toggle1, SLOT(updateVacuumChannelState(int, bool)));
@@ -118,7 +171,7 @@ AssemblyMainWindow::AssemblyMainWindow(QWidget *parent) : QMainWindow(parent), c
     QHBoxLayout* layout  = new QHBoxLayout(widget);
     widget->setLayout(layout);
 
-    QVBoxLayout* layoutv = new QVBoxLayout(widget);
+    QVBoxLayout* layoutv = new QVBoxLayout();
 
     LStepExpressWidget* lStepExpressWidget = new LStepExpressWidget(lStepExpressModel_, widget);
     layoutv->addWidget (lStepExpressWidget);
@@ -130,9 +183,10 @@ AssemblyMainWindow::AssemblyMainWindow(QWidget *parent) : QMainWindow(parent), c
 
     layout->addLayout(layoutv);
 
-    QVBoxLayout* layoutv2 = new QVBoxLayout(widget);
+    QVBoxLayout* layoutv2 = new QVBoxLayout();
 
     LStepExpressPositionWidget *lStepPosition = new LStepExpressPositionWidget(motionManager_, lStepExpressModel_, widget);
+
     layoutv2->addWidget(lStepPosition);
 
     lStepExpressSettings_ = new LStepExpressSettings(lStepExpressModel_, widget);
@@ -143,9 +197,9 @@ AssemblyMainWindow::AssemblyMainWindow(QWidget *parent) : QMainWindow(parent), c
     connect(QApplication::instance(), SIGNAL(aboutToQuit()), this, SLOT(quit()));
 
     toolBar_ = addToolBar("Tools");
-    toolBar_ ->addAction("open"    , this, SLOT(onOpenCamera()));
-    toolBar_ ->addAction("close"   , this, SLOT(onCloseCamera()));
-    toolBar_ ->addAction("snapshot", this, SLOT(onSnapShot()));
+    toolBar_ ->addAction("camera ON" , this, SLOT(enableImages ()));
+    toolBar_ ->addAction("camera OFF", this, SLOT(disableImages()));
+    toolBar_ ->addAction("snapshot"  , this, SLOT(getImage     ()));
 
     checkbox1 = new QCheckBox("Auto-focusing", this);
     toolBar_->addWidget(checkbox1);
@@ -161,7 +215,7 @@ AssemblyMainWindow::AssemblyMainWindow(QWidget *parent) : QMainWindow(parent), c
 
     connect(checkbox1, SIGNAL(stateChanged(int)), this, SLOT(enableAutoFocus(int)));
     connect(checkbox2, SIGNAL(stateChanged(int)), this, SLOT(enablePrecisionEstimation(int)));
-    connect(checkbox3, SIGNAL(stateChanged(int)), this, SLOT(enableSandwitchAssembly(int)));
+    connect(checkbox3, SIGNAL(stateChanged(int)), this, SLOT(enableSandwichAssembly(int)));
     connect(checkbox4, SIGNAL(stateChanged(int)), this, SLOT(enableAlignment(int)));
 
     setCentralWidget(tabWidget_);
@@ -174,24 +228,39 @@ AssemblyMainWindow::AssemblyMainWindow(QWidget *parent) : QMainWindow(parent), c
 
     connect(liveTimer_, SIGNAL(timeout()), this, SLOT(liveUpdate()));
 
-    QTimer::singleShot(1, uEyeModel_, SLOT(updateInformation()));
+//!!    QTimer::singleShot(1, uEyeModel_, SLOT(updateInformation()));
 }
 
 void AssemblyMainWindow::liveUpdate()
 {
-    NQLog("AssemblyMainWindow::liveUpdate()") << "emitting signal acquireImage()";
+    NQLog("AssemblyMainWindow::liveUpdate") << "emitting signal acquireImage()";
 
     emit acquireImage();
 }
 
-void AssemblyMainWindow::onOpenCamera()
+void AssemblyMainWindow::enableImages()
 {
-    NQLog("AssemblyMainWindow::onOpenCamera()") << "connecting main-window to camera";
-
-    camera_ = uEyeModel_->getCameraByID(10);
+    NQLog("AssemblyMainWindow::enableImages") << "connecting main-window to camera";
 
     motionManager_ = new LStepExpressMotionManager(lStepExpressModel_);
 
+/*!!
+    snapshot_ctr_ = new SnapshotController();
+
+    connect(this         , SIGNAL(openCamera      ()), snapshot_ctr_, SLOT(enable      ()));
+    connect(snapshot_ctr_, SIGNAL(openCamera      ()), camera_      , SLOT(open        ()));
+    connect(camera_      , SIGNAL(cameraOpened    ()), snapshot_ctr_, SLOT(cameraOpened()));
+    connect(snapshot_ctr_, SIGNAL(camera_is_opened()), this         , SLOT(cameraOpened()));
+
+    connect(this         , SIGNAL(acquireImage ()       ), snapshot_ctr_, SLOT(acquireImage ()       ));
+    connect(snapshot_ctr_, SIGNAL(getImage     ()       ), camera_      , SLOT(acquireImage ()       ));
+    connect(camera_      , SIGNAL(imageAcquired(cv::Mat)), snapshot_ctr_, SLOT(retrieveImage(cv::Mat)));
+
+    connect(this         , SIGNAL(closeCamera     ()), snapshot_ctr_, SLOT(disable     ()));
+    connect(snapshot_ctr_, SIGNAL(closeCamera     ()), camera_      , SLOT(close       ()));
+    connect(camera_      , SIGNAL(cameraClosed    ()), snapshot_ctr_, SLOT(cameraClosed()));
+    connect(snapshot_ctr_, SIGNAL(camera_is_closed()), this         , SLOT(cameraClosed()));
+*/
     connect(this   , SIGNAL(openCamera())  , camera_, SLOT(open()));
     connect(this   , SIGNAL(closeCamera()) , camera_, SLOT(close()));
     connect(this   , SIGNAL(acquireImage()), camera_, SLOT(acquireImage()));
@@ -199,6 +268,8 @@ void AssemblyMainWindow::onOpenCamera()
     connect(camera_, SIGNAL(cameraClosed()), this   , SLOT(cameraClosed()));
 
     emit openCamera();
+
+    return;
 }
 
 void AssemblyMainWindow::enableAutoFocus(int state)
@@ -364,16 +435,16 @@ void AssemblyMainWindow::enableAlignment(int state)
     return;
 }
 
-void AssemblyMainWindow::onCloseCamera()
+void AssemblyMainWindow::disableImages()
 {
-    NQLog("AssemblyMainWindow::onCloseCamera()");
+    NQLog("AssemblyMainWindow::disableImages()");
 
     emit closeCamera();
 }
 
-void AssemblyMainWindow::onSnapShot()
+void AssemblyMainWindow::getImage()
 {
-    NQLog("AssemblyMainWindow::onSnapShot()");
+    NQLog("AssemblyMainWindow::getImage()");
 
     emit acquireImage();
 }
@@ -402,7 +473,7 @@ void AssemblyMainWindow::cameraOpened()
 
     connect(finder_, SIGNAL(locatePickupCorner_templateMatching(cv::Mat, cv::Mat)), finder_, SLOT(findMarker_templateMatching(cv::Mat, cv::Mat)));
 
-//    connect(camera_, SIGNAL(imageAcquired(const cv::Mat&)), finder_, SLOT(findMarker(const cv::Mat&)));
+    connect(camera_, SIGNAL(imageAcquired(const cv::Mat&)), finder_, SLOT(findMarker(const cv::Mat&)));
 
 //    connect image acquired signal of camera model to blur detection SLOT of Z scanner
     connect(camera_, SIGNAL(imageAcquired(const cv::Mat&)), finder_, SLOT(write_image(const cv::Mat&)));
@@ -414,10 +485,10 @@ void AssemblyMainWindow::cameraClosed()
 {
     NQLog("AssemblyMainWindow::cameraClosed()") << "disconnecting finder from camera";
 
-    finderView_->disconnectImageProducer(finder_, SIGNAL(markerFound(const cv::Mat&)));
-//    edgeView_  ->disconnectImageProducer(finder_, SIGNAL(edgesDetected(const cv::Mat&)));
-//    rawView_   ->disconnectImageProducer(camera_, SIGNAL(imagef(const cv::Mat&)));
-//    playView_  ->disconnectImageProducer(camera_, SIGNAL(imageAcquired(const cv::Mat&)));
+//    finderView_        ->disconnectImageProducer(finder_, SIGNAL(markerFound  (const cv::Mat&)));
+    thresholdTunerView_->disconnectImageProducer(camera_, SIGNAL(imageAcquired(const cv::Mat&)));
+//    edgeView_          ->disconnectImageProducer(finder_, SIGNAL(edgesDetected(const cv::Mat&)));
+//    rawView_           ->disconnectImageProducer(camera_, SIGNAL(imagef       (const cv::Mat&)));
 
     disconnect(camera_, SIGNAL(imageAcquired(const cv::Mat&)), finder_, SLOT(findMarker(const cv::Mat&)));
 

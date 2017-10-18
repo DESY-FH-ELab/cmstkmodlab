@@ -10,39 +10,52 @@
 //                                                                             //
 /////////////////////////////////////////////////////////////////////////////////
 
-#ifndef ASSEMBLYUEYEMODEL_H
-#define ASSEMBLYUEYEMODEL_H
-
-#include <uEye.h>
+#ifndef SNAPSHOTCONTROLLER_H
+#define SNAPSHOTCONTROLLER_H
 
 #include <QObject>
-#include <QTimer>
-#include <QThread>
-#include <QMutex>
-#include <QMutexLocker>
 
-#include "AssemblyVUEyeModel.h"
+#include <opencv2/opencv.hpp>
 
-class AssemblyUEyeModel : public AssemblyVUEyeModel
+class SnapshotController : public QObject
 {
  Q_OBJECT
 
   public:
 
-    explicit AssemblyUEyeModel(int updateInterval=60, QObject* parent=0);
-    ~AssemblyUEyeModel();
+    explicit SnapshotController();
+    virtual ~SnapshotController();
+
+    bool is_enabled() const { return is_enabled_; }
+
+  protected:
+    bool is_enabled_;
 
   public slots:
 
-    void updateInformation();
+    void enable();
+    void disable();
+
+    void acquireImage();
+
+    void cameraOpened();
+    void cameraClosed();
+
+    void retrieveImage(const cv::Mat&);
 
   protected slots:
 
-  protected:
+  signals:
 
-  private:
+    void openCamera  ();
+    void closeCamera ();
 
-    UEYE_CAMERA_LIST* uEyeCameraList_;
+    void getImage();
+
+    void camera_is_opened();
+    void camera_is_closed();
+
+    void imageAcquired(const cv::Mat&);
 };
 
-#endif // ASSEMBLYUEYEMODEL_H
+#endif // SNAPSHOTCONTROLLER_H

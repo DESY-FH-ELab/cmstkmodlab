@@ -51,7 +51,7 @@ public:
   ConradModel * cnrd1;
   QTimer * qt;
   LStepExpressModel* lStepExpressModel_;
-  LStepExpressMotionManager* motionManager_;
+//!!  LStepExpressMotionManager* motionManager_;
     
   explicit AssemblyScanner(LStepExpressModel* lStepExpressModel_, ConradModel * cnrd1);
 

@@ -10,39 +10,48 @@
 //                                                                             //
 /////////////////////////////////////////////////////////////////////////////////
 
-#ifndef ASSEMBLYUEYEMODEL_H
-#define ASSEMBLYUEYEMODEL_H
+#include "SnapshotController.h"
 
-#include <uEye.h>
+#include <QApplication>
 
-#include <QObject>
-#include <QTimer>
-#include <QThread>
-#include <QMutex>
-#include <QMutexLocker>
+#include <nqlogger.h>
 
-#include "AssemblyVUEyeModel.h"
+SnapshotController:: SnapshotController() {}
 
-class AssemblyUEyeModel : public AssemblyVUEyeModel
+SnapshotController::~SnapshotController() {}
+
+//!!NQLog("SnapshotController") << "moveAbsolute";
+
+void SnapshotController::enable()
 {
- Q_OBJECT
+  is_enabled_ = true;
 
-  public:
+  emit openCamera();
+}
 
-    explicit AssemblyUEyeModel(int updateInterval=60, QObject* parent=0);
-    ~AssemblyUEyeModel();
+void SnapshotController::disable()
+{
+  is_enabled_ = false;
 
-  public slots:
+  emit closeCamera();
+}
 
-    void updateInformation();
+void SnapshotController::acquireImage()
+{
+  emit getImage();
+}
 
-  protected slots:
+void SnapshotController::cameraOpened()
+{
+  emit camera_is_opened();
+}
 
-  protected:
+void SnapshotController::cameraClosed()
+{
+  emit camera_is_closed();
+}
 
-  private:
-
-    UEYE_CAMERA_LIST* uEyeCameraList_;
-};
-
-#endif // ASSEMBLYUEYEMODEL_H
+void SnapshotController::retrieveImage(const cv::Mat& a_mat)
+{
+  emit imageAcquired(a_mat);
+}

@@ -10,6 +10,12 @@
 //                                                                             //
 /////////////////////////////////////////////////////////////////////////////////
 
+#include <AssemblyModuleAssembler.h>
+#include <LStepExpressWidget.h>
+#include <ApplicationConfig.h>
+#include <nqlogger.h>
+#include <Log.h>
+
 #include <vector>
 #include <iostream>
 #include <sstream>
@@ -24,13 +30,6 @@
 #include <QPixmap>
 #include <QLabel>
 #include <QApplication>
-
-#include <TGraph.h>
-#include <TCanvas.h>
-
-#include <nqlogger.h>
-#include <ApplicationConfig.h>
-
 #include <QDir>
 #if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
 #include <QDesktopServices>
@@ -38,24 +37,28 @@
 #include <QStandardPaths>
 #endif
 
-#include "AssemblyModuleAssembler.h"
-
-#include "LStepExpressWidget.h"
+#include <TGraph.h>
+#include <TCanvas.h>
 
 using namespace cv;
 
 AssemblyModuleAssembler::AssemblyModuleAssembler(
-  AssemblyVUEyeModel *uEyeModel_, AssemblySensorMarkerFinder * finder_,
+  AssemblyVUEyeCamera* camera, AssemblySensorMarkerFinder * finder_,
   LStepExpressModel* lStepExpressModel_,
   QWidget *parent
-) : QWidget(parent)
+) : QWidget(parent),
+    camera_(camera)
 {
   LStepExpressMotionManager* motionManager_ = new LStepExpressMotionManager(lStepExpressModel_);
 
-  camera_ = uEyeModel_->getCameraByID(10);
-
   if(camera_){ NQLog("AssemblyModuleAssembler::AssemblyModuleAssembler") << "camera enabled"  ; }
   else       { NQLog("AssemblyModuleAssembler::AssemblyModuleAssembler") << "camera not found"; }
+
+  if(!camera_)
+  {
+    const std::string log("initialization error: null pointer to AssemblyVUEyeCamera object");
+    Log::KILL("AssemblyModuleAssembler::AssemblyModuleAssembler -- "+log);
+  }
 
   QGridLayout *l = new QGridLayout();
   setLayout(l);
@@ -209,12 +212,10 @@ AssemblyModuleAssembler::AssemblyModuleAssembler(
  
   connect(sandwich1, SIGNAL(launchAlignment(int, double, double, double)), this, SIGNAL(launchAlignment(int, double, double, double)));
 
-    
-  connect(lStepExpressModel_, SIGNAL(acquireImage()), camera_, SLOT(acquireImage()));
+//!!  connect(lStepExpressModel_, SIGNAL(acquireImage()), camera_, SLOT(acquireImage()));
   connect(lctr1, SIGNAL(acquireImage()), camera_, SLOT(acquireImage()));
   connect(camera_, SIGNAL(imageAcquired(cv::Mat)), lctr1, SLOT(locatePickup(cv::Mat)));
 
-    
   connect(lctr1, SIGNAL(sendPosition(int, double,double,double)), this, SLOT(updateText(int,double,double,double)));
   connect(finder_, SIGNAL(updateImage(int, QString)), this, SLOT( updateImage(int,QString)));
   connect(finder_, SIGNAL(foundSensor(int)), lctr1, SLOT( foundsensor(int)));
@@ -381,7 +382,7 @@ AssemblyPrecisionEstimator::AssemblyPrecisionEstimator(QWidget *parent, std::str
     button1 = new QPushButton(qname, this);
     l->addWidget(button1,0,0);
     
-    QFormLayout *fl1 = new QFormLayout(this);
+    QFormLayout *fl1 = new QFormLayout();
     l->addLayout(fl1,1,0);
 
     label1 = new QLabel();
@@ -478,7 +479,7 @@ AssemblySandwichAssembler::AssemblySandwichAssembler(QWidget *parent, std::strin
     button1 = new QPushButton(qname, this);
     l->addWidget(button1,1,0);
     
-    QFormLayout *fl1 = new QFormLayout(this);
+    QFormLayout *fl1 = new QFormLayout();
     l->addLayout(fl1,2,0);
 
     label1 = new QLabel();

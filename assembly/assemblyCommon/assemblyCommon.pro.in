@@ -108,7 +108,9 @@ HEADERS += AssemblyVUEyeCamera.h \
            LaserModel.h \
            LaserWidget.h \
            LaserThread.h \
-           LaserControlsWidget.h 
+           LaserControlsWidget.h \
+           SnapshotController.h \
+           Log.h
 
 equals(NOUEYE,"X0") {
 HEADERS += AssemblyUEyeCamera.h \
@@ -151,7 +153,9 @@ SOURCES += AssemblyVUEyeCamera.cc \
            LaserModel.cc \
            LaserWidget.cc \
            LaserThread.cc \ 
-           LaserControlsWidget.cc
+           LaserControlsWidget.cc \
+           SnapshotController.cc \
+           Log.cc
 
 equals(NOUEYE,"X0") {
 SOURCES += AssemblyUEyeCamera.cc \

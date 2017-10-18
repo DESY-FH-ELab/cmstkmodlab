@@ -47,16 +47,15 @@ TRandom * r = new TRandom();
 AssemblyScanner::AssemblyScanner(LStepExpressModel* lStepExpressModel_, ConradModel * cnrd1)
 {
     NQLog("AssemblyScanner::AssemblyScanner()");
-    motionManager_ = new LStepExpressMotionManager(lStepExpressModel_);
+
+//!!    motionManager_ = new LStepExpressMotionManager(lStepExpressModel_);
+
     qt = new QTimer(this);
     qt->setSingleShot(true);
     connect(qt, SIGNAL(timeout()), this, SLOT(process_step()));
-    connect(this, SIGNAL(changeVacuumState()), this, SLOT(toggleVacuum()));
 
+//!!    connect(this, SIGNAL(changeVacuumState()), this, SLOT(toggleVacuum()));
 }
-
-
-
 
 void  AssemblyScanner::run_precisionestimation(double x_m, double y_m, double z_m , double x_p, double y_p, double z_p, int its){
     

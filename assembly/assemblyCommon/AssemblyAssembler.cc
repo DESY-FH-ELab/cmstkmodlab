@@ -10,10 +10,12 @@
 //                                                                             //
 /////////////////////////////////////////////////////////////////////////////////
 
-#include <vector>
+#include "AssemblyAssembler.h"
+
 #include <iostream>
-#include <sstream>
 #include <iomanip>
+#include <vector>
+#include <cmath>
 
 #include <QFormLayout>
 #include <QFileDialog>
@@ -35,15 +37,13 @@
 #include <TCanvas.h>
 #include <TGraph.h>
 
-#include "AssemblyAssembler.h"
-
 using namespace cv;
 
 AssemblyAssembler::AssemblyAssembler(LStepExpressModel* lStepExpressModel) : QObject(), lStepExpressModel_(lStepExpressModel)
 {
     NQLog("AssemblyAssembler::AssemblyAssembler");
 
-    motionManager_ = new LStepExpressMotionManager(lStepExpressModel_);
+//!!    motionManager_ = new LStepExpressMotionManager(lStepExpressModel_);
 }
 
 void  AssemblyAssembler::run_sandwitchassembly(double x_a, double y_a, double z_a , double x_b, double y_b, double z_b, double x_t, double y_t, double z_t)
@@ -132,11 +132,11 @@ void  AssemblyAssembler::fill_positionvectors(int stage, double x_pr, double y_p
 
 //}
 
-void  AssemblyAssembler::process_step(){
+void AssemblyAssembler::process_step(){
 
-  NQLog("AssemblyAssembler::") << "process_step";
-    
-    if (step == 0){
+    NQLog("AssemblyAssembler::") << "process_step";
+
+    if(step == 0){
 
       NQLog("AssemblyAssembler:: step == ") << step;
         step++;

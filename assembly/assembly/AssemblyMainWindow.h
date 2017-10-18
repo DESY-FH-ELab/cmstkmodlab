@@ -44,6 +44,8 @@ typedef AssemblyUEyeModel AssemblyUEyeModel_t;
 #include "AssemblySensorMarkerFinder.h"
 #include "AssemblySensorMarkerFinderWidget.h"
 
+#include "SnapshotController.h"
+
 //motion
 #include <ApplicationConfig.h>
 #include "LStepExpressModel.h"
@@ -64,86 +66,88 @@ typedef AssemblyUEyeModel AssemblyUEyeModel_t;
 
 class AssemblyMainWindow : public QMainWindow
 {
-Q_OBJECT
- public:
-  explicit AssemblyMainWindow(QWidget *parent = 0);
+ Q_OBJECT
 
- public slots:
+  public:
+    explicit AssemblyMainWindow(const unsigned int camera_ID=10, QWidget* parent=0);
 
-  void quit();
+  public slots:
 
-  void testTimer();
+    void quit();
 
-  void onOpenCamera();
-  void onCloseCamera();
-  void onSnapShot();
+    void testTimer();
 
-  void cameraOpened();
-  void cameraClosed();
+    void enableImages();
+    void disableImages();
+    void getImage();
 
-  void enableAutoFocus(int);
-  void enablePrecisionEstimation(int);
-  void enableSandwichAssembly(int);
-  void enableAlignment(int);
+    void cameraOpened();
+    void cameraClosed();
 
- signals:
+    void enableAutoFocus(int);
+    void enablePrecisionEstimation(int);
+    void enableSandwichAssembly(int);
+    void enableAlignment(int);
 
-  void openCamera();
-  void closeCamera();
-  void acquireImage();
-  void updateVacuumChannelsStatus();
-  void updateThresholdLabel();
+  signals:
 
- protected slots:
+    void openCamera();
+    void closeCamera();
+    void acquireImage();
+    void updateVacuumChannelsStatus();
+    void updateThresholdLabel();
 
-  void liveUpdate();
+  protected slots:
 
- protected:
+    void liveUpdate();
 
-  QDir currentDir_;
+  protected:
 
-  QToolBar* toolBar_;
+    QDir currentDir_;
 
-  QTabWidget* tabWidget_;
+    QToolBar* toolBar_;
+    QTabWidget* tabWidget_;
 
-  AssemblyUEyeSnapShooter* finderView_;
-  AssemblyThresholdTuner* thresholdTunerView_;
-  AssemblyUEyeSnapShooter* edgeView_;
-  AssemblyUEyeSnapShooter* rawView_;
-  AssemblyModuleAssembler* assembleView_;
-  AssemblyAutoFocus* autoFocusView_;
-  AssemblyScanner*  cmdr_zscan;
+//    AssemblyUEyeSnapShooter* finderView_;
+    AssemblyThresholdTuner* thresholdTunerView_;
+//    AssemblyUEyeSnapShooter* edgeView_;
+//    AssemblyUEyeSnapShooter* rawView_;
+    AssemblyModuleAssembler* assembleView_;
+    AssemblyAutoFocus* autoFocusView_;
+    AssemblyScanner*  cmdr_zscan;
 
-  QCheckBox *checkbox1;
-  QCheckBox *checkbox2;
-  QCheckBox *checkbox3;
-  QCheckBox *checkbox4;
+    QCheckBox *checkbox1;
+    QCheckBox *checkbox2;
+    QCheckBox *checkbox3;
+    QCheckBox *checkbox4;
 
-  AssemblyUEyeModel_t* uEyeModel_;
-  AssemblyUEyeCameraThread* cameraThread_;
-  AssemblyUEyeWidget* uEyeWidget_;
+    AssemblyUEyeModel_t* uEyeModel_;
+    AssemblyUEyeWidget*  uEyeWidget_;
 
-  AssemblyVUEyeCamera * camera_;
+    unsigned int              camera_ID_;
+    AssemblyVUEyeCamera *     camera_;
+    AssemblyUEyeCameraThread* cameraThread_;
 
-  AssemblyMarkerFinderThread* finderThread_;
-  AssemblySensorMarkerFinder* finder_;
-  AssemblySensorMarkerFinderWidget* finderWidget_;
+    AssemblySensorMarkerFinder*       finder_;
+    AssemblyMarkerFinderThread*       finderThread_;
+    AssemblySensorMarkerFinderWidget* finderWidget_;
 
-  LStepExpressModel* lStepExpressModel_;
-  LStepExpressMotionManager* motionManager_;
-  LStepExpressSettings* lStepExpressSettings_;
-  LStepExpressMotionThread* motionThread_;
-    
-  LStepExpressSettingsWidget* lStepExpressSettingsWidget_;
+    LStepExpressModel*          lStepExpressModel_;
+    LStepExpressSettings*       lStepExpressSettings_;
+    LStepExpressSettingsWidget* lStepExpressSettingsWidget_;
 
+    LStepExpressMotionManager* motionManager_;
+    LStepExpressMotionThread*  motionThread_;
 
-  ConradModel * conradModel_;
-  ConradManager* conradManager_;
-  AssemblyAssembler* module_assembler_;
+    ConradModel*       conradModel_;
+    ConradManager*     conradManager_;
+    AssemblyAssembler* module_assembler_;
 
-  double testTimerCount_;
+    SnapshotController* snapshot_ctr_;
 
-  QTimer *liveTimer_;
+    double testTimerCount_;
+
+    QTimer *liveTimer_;
 };
 
 #endif // ASSEMBLYMAINWINDOW_H

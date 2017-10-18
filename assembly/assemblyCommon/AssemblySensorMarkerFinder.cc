@@ -52,7 +52,7 @@ AssemblySensorMarkerFinder::AssemblySensorMarkerFinder(QObject *parent)
     linesHoughMinLineLength_ = config->getValue<double>("SensorMarkerLinesHoughMinLineLength", 50);
     linesHoughMaxLineGap_ = config->getValue<double>("SensorMarkerLinesHoughMaxLineGap", 25);
 
-    generalThreshold = 200;   //default threshold value
+    generalThreshold_ = 200;   //default threshold value
 
 
 #if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
@@ -688,7 +688,7 @@ void AssemblySensorMarkerFinder::findMarker_templateMatching(cv::Mat img, cv::Ma
     //Mat img_glass_marker_bin(img_glass_marker_raw_gs.size(), img_glass_marker_raw_gs.type());
     
     //Apply thresholding
-    cv::threshold(img_copy_gs, img_copy_bin, generalThreshold, 255, cv::THRESH_BINARY);
+    cv::threshold(img_copy_gs, img_copy_bin, generalThreshold_, 255, cv::THRESH_BINARY);
     cv::threshold(img_clip_A_gs, img_clip_A_bin, 85, 255, cv::THRESH_BINARY);    //90 for silicon marker, 88 for glass?
     //cv::threshold(img_glass_marker_raw_gs, img_glass_marker_bin, 88, 255, cv::THRESH_BINARY);
         
@@ -1295,7 +1295,7 @@ void AssemblySensorMarkerFinder::findMarker_circleSeed(int mode)
 
 void AssemblySensorMarkerFinder::setNewGeneralThreshold(int value, cv::Mat img)
 {
-  generalThreshold = value;
+  generalThreshold_ = value;
   emit sendCurrentGeneralThreshold(value);
   this -> updateThresholdImage(img);
   NQLog("AssemblySensorMarkerFinder") << " Threshold value successfuly changed to value = "<< value;
@@ -1303,8 +1303,9 @@ void AssemblySensorMarkerFinder::setNewGeneralThreshold(int value, cv::Mat img)
 
 void AssemblySensorMarkerFinder::getCurrentGeneralThreshold()
 { 
-    NQLog("AssemblySensorMarkerFinder") << " : INFO! : update signal received and threshold sent.";
-    emit sendCurrentGeneralThreshold(generalThreshold); }
+    NQLog("AssemblySensorMarkerFinder::getCurrentGeneralThreshold") << "emitting signal sendCurrentGeneralThreshold("+std::to_string(generalThreshold_)+")";
+    emit sendCurrentGeneralThreshold(generalThreshold_);
+}
 
 void AssemblySensorMarkerFinder::updateThresholdImage(cv::Mat img)
 {
@@ -1327,7 +1328,7 @@ void AssemblySensorMarkerFinder::updateThresholdImage(cv::Mat img)
     
     //Apply thresholding
     NQLog("AssemblySensorMarkerFinder") << "::updateThresholdImage() : applying threshold for ThresholdTuner.";
-    cv::threshold(img_copy_gs, img_copy_bin, generalThreshold, 255, cv::THRESH_BINARY);
+    cv::threshold(img_copy_gs, img_copy_bin, generalThreshold_, 255, cv::THRESH_BINARY);
      
     std::string filename_img_bin = Config::CMSTkModLabBasePath + "/share/assembly/Sensor_bin.png";
     
