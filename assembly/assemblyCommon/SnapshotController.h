@@ -69,6 +69,8 @@ class SnapshotController : public QObject
     void   use_camera();
     void close_camera();
 
+    void run_autofocus();
+
     void camera_enabled();
     void camera_disabled();
 

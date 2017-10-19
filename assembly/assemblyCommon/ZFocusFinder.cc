@@ -21,12 +21,6 @@
 #include <QPixmap>
 #include <QLabel>
 #include <QApplication>
-#include <QDir>
-#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
-#include <QDesktopServices>
-#else
-#include <QStandardPaths>
-#endif
 
 #include <TGraph.h>
 #include <TCanvas.h>
@@ -46,7 +40,7 @@ ZFocusFinder::ZFocusFinder(AssemblyVUEyeCamera* camera, LStepExpressModel* lStep
 //    qt->setSingleShot(true);
 //    connect(qt, SIGNAL(timeout()), this, SLOT(process_step()));
 
-    NQLog("ZFocusFinder::ZFocusFinder") << "constructed";
+//  NQLog("ZFocusFinder::ZFocusFinder") << "constructed";
 }
 
 //!!void  ZFocusFinder::run_precisionestimation(double x_m, double y_m, double z_m , double x_p, double y_p, double z_p, int its){
@@ -106,11 +100,14 @@ ZFocusFinder::ZFocusFinder(AssemblyVUEyeCamera* camera, LStepExpressModel* lStep
 //!!        
 //!!}
 
+void ZFocusFinder::do_autofocus()
+{
+}
 
 void ZFocusFinder::process_step(){
 
     NQLog("ZFocusFinder::process_step, iteration ==") <<iteration <<" step = " << step;
-    
+
     if (iteration < iterations){
     
     if (step == 0){
@@ -303,8 +300,6 @@ void ZFocusFinder::process_step(){
     
 }
 
-
-
 void  ZFocusFinder::run_scan(double range, int steps){
     
     NQLog("ZFocusFinder::scan") << range << ",  " <<steps;
@@ -323,9 +318,8 @@ void  ZFocusFinder::run_scan(double range, int steps){
     emit moveRelative(0.0,0.0,1.0,0.0);
 }
 
-
 void  ZFocusFinder::write_image(cv::Mat newImage, cv::Rect marker_rect){
-    
+
     NQLog("ZFocusFinder") << "write_image()";
     QDateTime local(QDateTime::currentDateTime());
     QString local_str = local.toString();
@@ -344,7 +338,7 @@ void  ZFocusFinder::write_image(cv::Mat newImage, cv::Rect marker_rect){
     cv::imwrite(filename.toStdString(), newImage);
     emit updateScanImage(newImage);
     
-    double variance  = this->imageVariance(newImage, marker_rect);
+    double variance  = this->image_focus_value(newImage);
     double x = nAcquiredImages;
     double current_z = lStepExpressModel_->getPosition(2);
     
@@ -384,28 +378,34 @@ void  ZFocusFinder::write_image(cv::Mat newImage, cv::Rect marker_rect){
     }
 }
 
+/* \Brief Image-focus discriminant based on Laplacian method in OpenCV
+ *        REF: https://docs.opencv.org/2.4/doc/tutorials/imgproc/imgtrans/laplace_operator/laplace_operator.html
+ */
+double ZFocusFinder::image_focus_value(const cv::Mat& img)
+{
+  // Remove noise by blurring with a Gaussian filter
+  cv::Mat img_gaus;
+  cv::GaussianBlur(img, img_gaus, cv::Size(img.cols, img.rows), 0, 0, cv::BORDER_DEFAULT);
 
+  // Convert the image to grayscale
+  cv::Mat img_gray;
+  cv::cvtColor(img_gaus, img_gray, CV_BGR2GRAY);
 
-double ZFocusFinder::imageVariance(cv::Mat img_input, cv::Rect rectangle) {
-    
-    
-    cv::Mat img_copy = img_input.clone();
-    cv::Mat roi(img_copy, rectangle);
-    
-    //Convert color image to greyscale (GS)
-    cv::Mat img_copy_gs(img_copy.size(), img_copy.type());
-  //  cv::cvtColor(img_copy, img_copy_gs, CV_BGR2GRAY);
-    
-    //Apply laplacian function to GS image
-    cv::Mat img_laplace;
-    cv::Laplacian(img_copy, img_laplace, CV_64F);
-    
-    //Calculate standard deviation of laplace image
-    cv::Scalar mean, std_dev;
-    cv::meanStdDev(img_laplace, mean, std_dev, cv::Mat());
-    
-    std::cout<<"Variance: "<<std_dev.val[0]*std_dev.val[0]<<std::endl;
-    
-    return std_dev.val[0]*std_dev.val[0];
-    
+  // Apply laplacian function to GS image
+  cv::Mat img_lap;
+  cv::Laplacian(img_gray, img_lap, CV_64F);
+
+  cv::Mat img_lap_abs;
+//  cv::convertScaleAbs(img_lap, img_lap_abs);
+  img_lap_abs = img_lap.clone();
+
+  // Calculate standard deviation of laplace image
+  cv::Scalar mean, std_dev;
+  cv::meanStdDev(img_lap_abs, mean, std_dev);
+
+  const float value = (std_dev.val[0] * std_dev.val[0]);
+
+  NQLog("ZFocusFinder::image_focus_value") << "value = " << value;
+
+  return value;
 }

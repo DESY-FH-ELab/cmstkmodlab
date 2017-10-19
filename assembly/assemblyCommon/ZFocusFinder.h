@@ -64,18 +64,21 @@ class ZFocusFinder : public QObject
 
     AssemblyVUEyeCamera* camera_;
 
-    double imageVariance(cv::Mat img_input, cv::Rect rectangle);
+    double image_focus_value(const cv::Mat&);
 
   public slots:
+
+    void do_autofocus();
 
     void run_scan(double, int);
     void write_image(cv::Mat, cv::Rect);
     void process_step();
-//    void run_precisionestimation(double, double, double, double, double, double, int);
-//    void fill_positionvectors(int , double, double, double);
-//    void toggleVacuum();
+//!!    void run_precisionestimation(double, double, double, double, double, double, int);
+//!!    void fill_positionvectors(int , double, double, double);
+//!!    void toggleVacuum();
 
   signals:
+
     void getImage();
     void moveRelative(double, double, double, double);
     void moveAbsolute(double, double, double, double);

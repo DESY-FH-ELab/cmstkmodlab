@@ -11,18 +11,16 @@
 /////////////////////////////////////////////////////////////////////////////////
 
 #include <SnapshotController.h>
-
-#include <QApplication>
-
 #include <nqlogger.h>
+#include <Util.h>
 #include <Log.h>
 
-SnapshotController:: SnapshotController(AssemblyVUEyeCamera* camera, ZFocusFinder* zfocus_finder, QObject* parent)
- : QObject(parent),
-   camera_(camera),
-   zfocus_finder_(zfocus_finder),
-   is_enabled_(false),
-   autofocus_is_enabled_(false)
+SnapshotController:: SnapshotController(AssemblyVUEyeCamera* camera, ZFocusFinder* zfocus_finder, QObject* parent) :
+  QObject(parent),
+  camera_(camera),
+  zfocus_finder_(zfocus_finder),
+  is_enabled_(false),
+  autofocus_is_enabled_(false)
 {
   if(!camera_)
   {
@@ -32,7 +30,7 @@ SnapshotController:: SnapshotController(AssemblyVUEyeCamera* camera, ZFocusFinde
     Log::KILL("SnapshotController::SnapshotController -- "+log);
   }
 
-  crosscheck_inputs();
+  this->crosscheck_inputs();
 
   connect(this   , SIGNAL( open_camera()), camera_, SLOT(open        ()));
   connect(this   , SIGNAL(  use_camera()), camera_, SLOT(acquireImage()));
@@ -61,6 +59,8 @@ void SnapshotController::disable()
 
 void SnapshotController::acquire_image()
 {
+  emit run_autofocus();
+
   emit use_camera();
 }
 
@@ -88,7 +88,15 @@ void SnapshotController::enable_AutoFocus()
     return;
   }
 
-  crosscheck_inputs();
+  this->crosscheck_inputs();
+
+  connect(this, SIGNAL(run_autofocus()), zfocus_finder_, SLOT(do_autofocus()));
+
+  autofocus_is_enabled_ = true;
+
+  NQLog("SnapshotController::enable_AutoFocus") << "signal-slot connections enabled";
+
+  return;
 
 //!!!!  connect   (zfocus_ctr_       , SIGNAL(moveRelative(double, double, double, double))        , motionManager_, SLOT(moveRelative(double, double, double, double)));
 //!!!!  connect   (lStepExpressModel_, SIGNAL(motionFinished())                                    , camera_       , SLOT(acquireImage()));
@@ -97,34 +105,20 @@ void SnapshotController::enable_AutoFocus()
 //!!!!  connect   (cmdr_zscan        , SIGNAL(make_graph(std::vector<double>, std::vector<double>)), autoFocusView_, SLOT(make_graph(std::vector<double>, std::vector<double>)));
 //!!!!  connect   (cmdr_zscan        , SIGNAL(updateText(double))                                  , autoFocusView_, SLOT(updateText(double)));
 
-/*                                                                                                                                                                                                                  
-      connect   (cmdr_zscan        , SIGNAL(moveRelative(double, double, double, double))        , motionManager_, SLOT(moveRelative(double, double, double, double)));                                             
-      connect   (lStepExpressModel_, SIGNAL(motionFinished())                                    , camera_       , SLOT(acquireImage()));                                                                           
-      connect   (camera_           , SIGNAL(imageAcquired(cv::Mat))                              , finder_       , SLOT(findMarker_templateMatching(cv::Mat, cv::Mat)));                                            
-      connect   (finder_           , SIGNAL(getImageBlur(cv::Mat, cv::Rect))                     , cmdr_zscan    , SLOT(write_image(cv::Mat, cv::Rect)));                                                           
-      connect   (cmdr_zscan        , SIGNAL(make_graph(std::vector<double>, std::vector<double>)), autoFocusView_, SLOT(make_graph(std::vector<double>, std::vector<double>)));                                     
-      connect   (cmdr_zscan        , SIGNAL(updateText(double))                                  , autoFocusView_, SLOT(updateText(double)));                                                                       
-                                                                                                                                                                                                                   */
-
-  autofocus_is_enabled_ = true;
-
-  NQLog("SnapshotController::enable_AutoFocus") << "signal-slot connections enabled";
-
-  return;
 }
 
 void SnapshotController::disable_AutoFocus()
 {
-/*                                                                                                                                                                                                                  
-      disconnect(cmdr_zscan        , SIGNAL(moveRelative(double, double, double, double))        , motionManager_, SLOT(moveRelative(double, double, double, double)));                                             
-      disconnect(lStepExpressModel_, SIGNAL(motionFinished())                                    , camera_       , SLOT(acquireImage()));                                                                           
-      disconnect(camera_           , SIGNAL(imageAcquired(cv::Mat))                              , finder_       , SLOT(findMarker_templateMatching(cv::Mat, cv::Mat)));                                            
-      disconnect(finder_           , SIGNAL(getImageBlur(cv::Mat, cv::Rect))                     , cmdr_zscan    , SLOT(write_image(cv::Mat, cv::Rect)));                                                           
-      disconnect(cmdr_zscan        , SIGNAL(make_graph(std::vector<double>, std::vector<double>)), autoFocusView_, SLOT(make_graph(std::vector<double>, std::vector<double>)));                                     
-      disconnect(cmdr_zscan        , SIGNAL(updateText(double))                                  , autoFocusView_, SLOT(updateText(double)));                                                                       
-                                                                                                                                                                                                                    
-      NQLog("AssemblyMainWindow::changeState_AutoFocus") << "signal-slot connections disabled";                                                                                                                     
-*/
+  if(zfocus_finder_ == 0)
+  {
+    NQLog("SnapshotController::disable_AutoFocus") << "ZFocusFinder not initialized, no action taken";
+
+    return;
+  }
+
+  this->crosscheck_inputs();
+
+  disconnect(this, SIGNAL(run_autofocus()), zfocus_finder_, SLOT(do_autofocus()));
 
   autofocus_is_enabled_ = false;
 
@@ -135,11 +129,14 @@ void SnapshotController::disable_AutoFocus()
 
 void SnapshotController::crosscheck_inputs() const
 {
-  if(zfocus_finder_->camera() != camera_)
+  if(zfocus_finder_)
   {
-    Log::KILL("SnapshotController::SnapshotController -- SnapshotController.camera differs from ZFocusFinder.camera");
+    if(zfocus_finder_->camera() != camera_)
+    {
+      Log::KILL("SnapshotController::SnapshotController -- SnapshotController.camera differs from ZFocusFinder.camera");
 
-    return;
+      return;
+    }
   }
 
   return;

@@ -10,27 +10,25 @@
 //                                                                             //
 /////////////////////////////////////////////////////////////////////////////////
 
+#include <AssemblySensorMarkerFinder.h>
+#include <ApplicationConfig.h>
+#include <nqlogger.h>
+#include <Util.h>
+
 #include <iostream>
 #include <cmath>
 
 #include <QApplication>
 
-#include <nqlogger.h>
-#include <ApplicationConfig.h>
-
-#include "AssemblySensorMarkerFinder.h"
-
 #include <TGraph.h>
 #include <TCanvas.h>
 #include <TH1F.h>
 
-
 using namespace cv;
 using namespace std;
 
-
-AssemblySensorMarkerFinder::AssemblySensorMarkerFinder(QObject *parent)
-    : AssemblyVMarkerFinder(parent)
+AssemblySensorMarkerFinder::AssemblySensorMarkerFinder(QObject *parent) :
+  AssemblyVMarkerFinder(parent)
 {
     ApplicationConfig* config = ApplicationConfig::instance();
 
@@ -54,27 +52,18 @@ AssemblySensorMarkerFinder::AssemblySensorMarkerFinder(QObject *parent)
 
     generalThreshold_ = 200;   //default threshold value
 
+    const QString      cache_dir = Util::QtCacheDirectory()+"/assembly/calibration";
+    Util::QDir_mkpath (cache_dir);
+    cacheDirectory1_ = cache_dir.toStdString();
 
-#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
-    QString cachedirTemp = QDesktopServices::storageLocation(QDesktopServices::CacheLocation);
-#else
-    QString cachedirTemp = QStandardPaths::writableLocation(QStandardPaths::CacheLocation);
-#endif
-    cachedirTemp += "/assembly/calibration";
-    QDir dir1(cachedirTemp);
-    if (!dir1.exists()) dir1.mkpath(".");
-    cacheDirectory1_ = cachedirTemp.toStdString();
-    cachedirTemp += "/RotatedImages";
-    QDir dir2(cachedirTemp);
-    if (!dir2.exists()) dir2.mkpath(".");
-    cacheDirectory2_ = cachedirTemp.toStdString();
-
+    const QString      cache_subdir = cache_dir+"/RotatedImages";
+    Util::QDir_mkpath (cache_subdir);
+    cacheDirectory2_ = cache_subdir.toStdString();
 }
-
 
 AssemblySensorMarkerFinder::~AssemblySensorMarkerFinder()
 {
-    NQLog("AssemblySensorMarkerFinder") << "delete";
+    NQLog("AssemblySensorMarkerFinder") << "deconstructed";
 }
 
 void AssemblySensorMarkerFinder::runObjectDetection(int labmode, int objectmode)
@@ -876,7 +865,7 @@ void AssemblySensorMarkerFinder::findMarker_templateMatching(cv::Mat img, cv::Ma
          NQLog("AssemblySensorMarkerFinder") << " Finished fine scan best theta = "<<  best_theta ;
 
     }
-    
+
     cv::Mat img_raw = img.clone();
     //  rectangle( img, matchLoc_final, Point( matchLoc_final.x + img_clip_A_bin.cols , matchLoc_final.y + img_clip_A_bin.rows ), Scalar(255,0,255), 2, 8, 0 );
 
@@ -1306,10 +1295,8 @@ void AssemblySensorMarkerFinder::getCurrentGeneralThreshold()
 
 void AssemblySensorMarkerFinder::updateThresholdImage(cv::Mat img)
 {
-
-
     Mat img_copy = img.clone();
-    
+
     //Greyscale images
     Mat img_copy_gs(img_copy.size(), img_copy.type());    
 

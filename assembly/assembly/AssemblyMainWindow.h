@@ -107,12 +107,11 @@ class AssemblyMainWindow : public QMainWindow
     QTabWidget* tabWidget_;
 
 //    AssemblyUEyeSnapShooter* finderView_;
-    AssemblyThresholdTuner* thresholdTunerView_;
 //    AssemblyUEyeSnapShooter* edgeView_;
 //    AssemblyUEyeSnapShooter* rawView_;
-    AssemblyModuleAssembler* assembleView_;
     AssemblyAutoFocus* autoFocusView_;
-    AssemblyScanner*  cmdr_zscan;
+    AssemblyThresholdTuner* thresholdTunerView_;
+    AssemblyModuleAssembler* assembleView_;
 
     QCheckBox *checkbox1;
     QCheckBox *checkbox2;
@@ -120,12 +119,13 @@ class AssemblyMainWindow : public QMainWindow
     QCheckBox *checkbox4;
 
     AssemblyUEyeModel_t* uEyeModel_;
-    AssemblyUEyeWidget*  uEyeWidget_;
+//!!    AssemblyUEyeWidget*  uEyeWidget_;
 
     unsigned int              camera_ID_;
     AssemblyVUEyeCamera *     camera_;
     AssemblyUEyeCameraThread* cameraThread_;
 
+    AssemblyScanner* cmdr_zscan;
     ZFocusFinder* zfocus_finder_;
 
     AssemblySensorMarkerFinder*       finder_;

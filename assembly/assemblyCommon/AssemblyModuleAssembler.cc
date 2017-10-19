@@ -14,6 +14,7 @@
 #include <LStepExpressWidget.h>
 #include <ApplicationConfig.h>
 #include <nqlogger.h>
+#include <Util.h>
 #include <Log.h>
 
 #include <vector>
@@ -30,12 +31,6 @@
 #include <QPixmap>
 #include <QLabel>
 #include <QApplication>
-#include <QDir>
-#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
-#include <QDesktopServices>
-#else
-#include <QStandardPaths>
-#endif
 
 #include <TGraph.h>
 #include <TCanvas.h>
@@ -951,19 +946,13 @@ AssemblySensorLocator::AssemblySensorLocator(QWidget *parent, std::string string
   QString qstr = QString::fromStdString(str);
   QString qname = QString::fromStdString(string);
 
-#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
-  QString cachedirTemp = QDesktopServices::storageLocation(QDesktopServices::CacheLocation);
-#else
-  QString cachedirTemp = QStandardPaths::writableLocation(QStandardPaths::CacheLocation);
-#endif
-  cachedirTemp += "/assembly/calibration";
-  QDir dir1(cachedirTemp);
-  if (!dir1.exists()) dir1.mkpath(".");
-  cacheDirectory1_ = cachedirTemp.toStdString();
-  cachedirTemp += "/RotatedImages";
-  QDir dir2(cachedirTemp);
-  if (!dir2.exists()) dir2.mkpath(".");
-  cacheDirectory2_ = cachedirTemp.toStdString();
+  const QString      cache_dir = Util::QtCacheDirectory()+"/assembly/calibration";
+  Util::QDir_mkpath (cache_dir);
+  cacheDirectory1_ = cache_dir.toStdString();
+
+  const QString      cache_subdir = cache_dir+"/RotatedImages";
+  Util::QDir_mkpath (cache_subdir);
+  cacheDirectory2_ = cache_subdir.toStdString();
 
   QGridLayout *l = new QGridLayout(this);
   setLayout(l);
