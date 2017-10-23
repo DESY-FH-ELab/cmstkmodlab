@@ -23,8 +23,6 @@ ImageController::ImageController(AssemblyVUEyeCamera* camera, ZFocusFinder* zfoc
 {
   if(!camera)
   {
-    NQLog("ImageController::ImageController") << "camera initialization failed";
-
     const std::string log("initialization error: null pointer to AssemblyVUEyeCamera object");
     Log::KILL("ImageController::ImageController -- "+log);
   }
@@ -41,11 +39,14 @@ ImageController::ImageController(AssemblyVUEyeCamera* camera, ZFocusFinder* zfoc
 
   camera_manager_ = new AssemblyUEyeCameraManager(camera);
 
-  connect(this           , SIGNAL(open_camera()) , camera_manager_, SLOT(open()));
-  connect(camera_manager_, SIGNAL(cameraOpened()), this           , SLOT(enable_camera()));
+  connect(this           , SIGNAL(open_camera())   , camera_manager_, SLOT(open()));
+  connect(camera_manager_, SIGNAL(camera_opened()) , this           , SLOT(enable_camera()));
 
-  connect(this           , SIGNAL(close_camera()), camera_manager_, SLOT(close()));
-  connect(camera_manager_, SIGNAL(cameraClosed()), this           , SLOT(disable_camera()));
+  connect(this           , SIGNAL(close_camera())  , camera_manager_, SLOT(close()));
+  connect(camera_manager_, SIGNAL(camera_closed()) , this           , SLOT(disable_camera()));
+
+  connect(this           , SIGNAL(image())                , camera_manager_, SLOT(acquire_image()));
+  connect(camera_manager_, SIGNAL(image_acquired(cv::Mat)), this           , SLOT(retrieve_image(cv::Mat)));
 }
 
 ImageController::~ImageController() {}
@@ -96,7 +97,7 @@ void ImageController::enable_AutoFocus()
   disconnect(this           , SIGNAL(image())                , camera_manager_, SLOT(acquire_image()));
   disconnect(camera_manager_, SIGNAL(image_acquired(cv::Mat)), this           , SLOT(retrieve_image(cv::Mat)));
 
-  connect   (this           , SIGNAL(image())                , zfocus_finder_ , SLOT(acquire_image()));
+  connect   (this           , SIGNAL(image())                , zfocus_finder_ , SLOT(execute()));
   connect   (zfocus_finder_ , SIGNAL(image_acquired(cv::Mat)), this           , SLOT(retrieve_image(cv::Mat)));
 
   autofocus_is_enabled_ = true;

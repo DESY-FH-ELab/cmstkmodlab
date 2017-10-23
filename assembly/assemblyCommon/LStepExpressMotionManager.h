@@ -27,19 +27,21 @@ class LStepExpressMotionManager : public QObject
     explicit LStepExpressMotionManager(LStepExpressModel*, QObject* parent=0);
     virtual ~LStepExpressMotionManager();
 
+    LStepExpressModel* model() const { return model_; }
+
+    bool model_connected() const { return model_connected_; }
+
+    double get_position_X() const { return model()->getPosition(0); }
+    double get_position_Y() const { return model()->getPosition(1); }
+    double get_position_Z() const { return model()->getPosition(2); }
+    double get_position_A() const { return model()->getPosition(3); }
+
     void myMoveToThread(QThread*);
-
-    bool is_connected() const { return is_connected_; }
-
-    double get_position_X() const { return model_->getPosition(0); }
-    double get_position_Y() const { return model_->getPosition(1); }
-    double get_position_Z() const { return model_->getPosition(2); }
-    double get_position_A() const { return model_->getPosition(3); }
 
   public slots:
 
-    void  enable_motion();
-    void disable_motion();
+    void    connect_model();
+    void disconnect_model();
 
     void appendMotion(const LStepExpressMotion& motion);
     void appendMotions(const QQueue<LStepExpressMotion>& motions);
@@ -55,14 +57,16 @@ class LStepExpressMotionManager : public QObject
     void run();
 
     LStepExpressModel* model_;
-    QQueue<LStepExpressMotion> motions_;
+
+    bool model_connected_;
+
     bool inMotion_;
 
-    bool is_connected_;
+    QQueue<LStepExpressMotion> motions_;
 
   protected slots:
 
-    void start_motion();
+    void  start_motion();
     void finish_motion();
 
   signals:

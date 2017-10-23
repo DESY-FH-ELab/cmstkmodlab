@@ -10,28 +10,33 @@
 //                                                                             //
 /////////////////////////////////////////////////////////////////////////////////
 
-#include <QApplication>
-
+#include <LStepExpressMotionManager.h>
 #include <nqlogger.h>
+#include <Log.h>
 
-#include "LStepExpressMotionManager.h"
-
-LStepExpressMotionManager::LStepExpressMotionManager(LStepExpressModel* model, QObject *parent)
-    : QObject(parent),
-      model_(model),
-      inMotion_(false),
-      is_connected_(false)
+LStepExpressMotionManager::LStepExpressMotionManager(LStepExpressModel* model, QObject *parent) :
+  QObject(parent),
+  model_(model),
+  model_connected_(false),
+  inMotion_(false)
 {
-    this->enable_motion();
+    if(!model_)
+    {
+      NQLog("LStepExpressMotionManager::LStepExpressMotionManager") << "pointer to LStepExpressModel initialized to NULL";
+    }
+
+    this->connect_model();
 }
 
 LStepExpressMotionManager::~LStepExpressMotionManager()
 {
 }
 
-void LStepExpressMotionManager::enable_motion()
+void LStepExpressMotionManager::connect_model()
 {
-    if(is_connected_ == false)
+    if(!model_){ return; }
+
+    if(model_connected_ == false)
     {
       connect   (model_, SIGNAL(motionStarted()) , this, SLOT( start_motion()));
       connect   (model_, SIGNAL(motionFinished()), this, SLOT(finish_motion()));
@@ -42,15 +47,17 @@ void LStepExpressMotionManager::enable_motion()
       connect   (this  , SIGNAL(signalMoveRelative(double, double, double, double)),
                  model_, SLOT  (      moveRelative(double, double, double, double)));
 
-      is_connected_ = true;
+      model_connected_ = true;
     }
 
     return;
 }
 
-void LStepExpressMotionManager::disable_motion()
+void LStepExpressMotionManager::disconnect_model()
 {
-    if(is_connected_ == true)
+    if(!model_){ return; }
+
+    if(model_connected_ == true)
     {
       disconnect(model_, SIGNAL(motionStarted()) , this, SLOT( start_motion()));
       disconnect(model_, SIGNAL(motionFinished()), this, SLOT(finish_motion()));
@@ -61,7 +68,7 @@ void LStepExpressMotionManager::disable_motion()
       disconnect(this  , SIGNAL(signalMoveRelative(double, double, double, double)),
                  model_, SLOT  (      moveRelative(double, double, double, double)));
 
-      is_connected_ = false;
+      model_connected_ = false;
     }
 
     return;

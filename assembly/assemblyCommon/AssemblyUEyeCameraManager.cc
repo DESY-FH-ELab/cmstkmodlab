@@ -16,7 +16,8 @@
 
 AssemblyUEyeCameraManager::AssemblyUEyeCameraManager(AssemblyVUEyeCamera* camera, QObject *parent) :
    QObject(parent),
-   camera_(camera)
+   camera_(camera),
+   model_connected_(false)
 {
   if(!this->camera())
   {
@@ -26,15 +27,47 @@ AssemblyUEyeCameraManager::AssemblyUEyeCameraManager(AssemblyVUEyeCamera* camera
     Log::KILL("AssemblyUEyeCameraManager::AssemblyUEyeCameraManager -- "+log);
   }
 
-  connect(this, SIGNAL( open_camera()), camera_, SLOT(open()));
-  connect(this, SIGNAL(close_camera()), camera_, SLOT(close()));
-
-  connect(this, SIGNAL(update_cameraInfo()), camera_, SLOT(updateInformation()));
-  connect(this, SIGNAL(acquire_image())    , camera_, SLOT(acquireImage()));
-
-  connect(camera_, SIGNAL(imageAcquired(cv::Mat)), this, SLOT(image_acquired(cv::Mat)));
+  this->connect_model();
 }
 
 AssemblyUEyeCameraManager::~AssemblyUEyeCameraManager()
 {
+}
+
+void AssemblyUEyeCameraManager::connect_model()
+{
+  if(model_connected_ == false)
+  {
+    connect(this   , SIGNAL(open_camera()) , camera_, SLOT(open()));
+    connect(camera_, SIGNAL(cameraOpened()), this   , SLOT(enable_camera()));
+
+    connect(this   , SIGNAL(close_camera()), camera_, SLOT(close()));
+    connect(camera_, SIGNAL(cameraClosed()), this   , SLOT(disable_camera()));
+
+    connect(this   , SIGNAL(call_camera())         , camera_, SLOT(acquireImage()));
+    connect(camera_, SIGNAL(imageAcquired(cv::Mat)), this   , SLOT(process_image(cv::Mat)));
+
+    model_connected_ = true;
+  }
+
+  return;
+}
+
+void AssemblyUEyeCameraManager::disconnect_model()
+{
+  if(model_connected_ == true)
+  {
+    disconnect(this   , SIGNAL(open_camera()) , camera_, SLOT(open()));
+    disconnect(camera_, SIGNAL(cameraOpened()), this   , SLOT(enable_camera()));
+
+    disconnect(this   , SIGNAL(close_camera()), camera_, SLOT(close()));
+    disconnect(camera_, SIGNAL(cameraClosed()), this   , SLOT(disable_camera()));
+
+    disconnect(this   , SIGNAL(call_camera())         , camera_, SLOT(acquireImage()));
+    disconnect(camera_, SIGNAL(imageAcquired(cv::Mat)), this   , SLOT(process_image(cv::Mat)));
+
+    model_connected_ = false;
+  }
+
+  return;
 }

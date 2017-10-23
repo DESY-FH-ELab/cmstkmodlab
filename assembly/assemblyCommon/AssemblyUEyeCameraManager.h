@@ -30,28 +30,40 @@ class AssemblyUEyeCameraManager : public QObject
 
     AssemblyVUEyeCamera* camera() const { return camera_; }
 
+    bool model_connected() const { return model_connected_; }
+
   protected:
 
     AssemblyVUEyeCamera* camera_;
 
+    bool model_connected_;
+
   signals:
 
-//!!    void cameraOpened();
-//!!    void cameraClosed();
+    void camera_opened();
+    void camera_closed();
 
     void  open_camera();
     void close_camera();
 
-    void update_cameraInfo();
+    void  call_camera();
 
     void image_acquired(const cv::Mat&);
 
   public slots:
 
-    virtual void open() {}
-    virtual void close() {}
+    virtual void    connect_model();
+    virtual void disconnect_model();
 
-    virtual void acquire_image() {}
+    virtual void open () { emit  open_camera(); }
+    virtual void close() { emit close_camera(); }
+
+    virtual void  enable_camera() { emit camera_opened(); }
+    virtual void disable_camera() { emit camera_closed(); }
+
+    virtual void acquire_image() { emit call_camera(); }
+
+    void process_image(const cv::Mat& img){ emit image_acquired(img); }
 };
 
 #endif // ASSEMBLYUEYECAMERAMANAGER_H

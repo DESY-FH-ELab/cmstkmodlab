@@ -131,10 +131,10 @@ zfocus_finder_ = new ZFocusFinder(camera_, motionModel_);
 
 /////!!!!
 
-connect(autoFocusView_, SIGNAL(run_scan(double, int)), zfocus_finder_, SLOT(run_scan(double, int)));
+connect(autoFocusView_, SIGNAL(run_scan(double, int))  , zfocus_finder_, SLOT(update_focus_inputs(double, int)));
 
-connect(zfocus_finder_, SIGNAL(make_graph(std::vector<double>, std::vector<double>)), autoFocusView_, SLOT(make_graph(std::vector<double>, std::vector<double>)));
-connect(zfocus_finder_, SIGNAL(updateText(double))                                  , autoFocusView_, SLOT(updateText(double)));
+connect(zfocus_finder_, SIGNAL(show_zscan(std::string)), autoFocusView_, SLOT(make_graph(std::string)));
+connect(zfocus_finder_, SIGNAL(update_text(double))    , autoFocusView_, SLOT(updateText(double)));
 
 /////!!!!
 
@@ -270,8 +270,6 @@ connect(zfocus_finder_, SIGNAL(updateText(double))                              
 
     connect(liveTimer_, SIGNAL(timeout()), this, SLOT(liveUpdate()));
 
-//!!    QTimer::singleShot(1, cameraModel_, SLOT(updateInformation()));
-
     connect(QApplication::instance(), SIGNAL(aboutToQuit()), this, SLOT(quit()));
 
     NQLog("AssemblyMainWindow::AssemblyMainWindow") << "constructed";
@@ -288,12 +286,10 @@ void AssemblyMainWindow::enable_images()
 {
     NQLog("AssemblyMainWindow::enable_images") << "connecting main-window to image-controller";
 
-//!!    motionManager_ = new LStepExpressMotionManager(motionModel_);
-
     image_ctr_ = new ImageController(camera_, zfocus_finder_);
 
-    connect(this      , SIGNAL(images_ON ())     , image_ctr_, SLOT(enable()));
-    connect(image_ctr_, SIGNAL(camera_enabled()) , this      , SLOT(   connect_images()));
+    connect(this      , SIGNAL(images_ON())      , image_ctr_, SLOT(enable()));
+    connect(image_ctr_, SIGNAL(camera_enabled()) , this      , SLOT(connect_images()));
 
     connect(this      , SIGNAL(images_OFF())     , image_ctr_, SLOT(disable()));
     connect(image_ctr_, SIGNAL(camera_disabled()), this      , SLOT(disconnect_images()));
@@ -541,8 +537,8 @@ void AssemblyMainWindow::connect_images()
 
     NQLog("AssemblyMainWindow::connect_images") << "connecting finder and camera";
 
-    connect(finder_, SIGNAL(getImage())    , image_ctr_, SLOT(acquireImage()));
-    connect(finder_, SIGNAL(acquireImage()), image_ctr_, SLOT(acquireImage()));
+    connect(finder_, SIGNAL(getImage())    , image_ctr_, SLOT(acquire_image()));
+    connect(finder_, SIGNAL(acquireImage()), image_ctr_, SLOT(acquire_image()));
 
     connect(finder_, SIGNAL(locatePickupCorner_templateMatching(cv::Mat, cv::Mat)), finder_, SLOT(findMarker_templateMatching(cv::Mat, cv::Mat)));
 

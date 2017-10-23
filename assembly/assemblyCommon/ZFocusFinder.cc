@@ -15,45 +15,51 @@
 #include <Util.h>
 #include <Log.h>
 
-#include <QFormLayout>
-#include <QFileDialog>
-#include <QString>
-#include <QStringList>
-#include <QPixmap>
-#include <QLabel>
-#include <QApplication>
-
+#include <TGraph.h>
 #include <TCanvas.h>
-#include <TH1F.h>
-#include <TF1.h>
-#include <TRandom.h>
+//!!#include <TH1F.h>
+//!!#include <TF1.h>
+//!!#include <TRandom.h>
 
 #include <vector>
 #include <iostream>
 #include <iomanip>
 
+int ZFocusFinder::exe_counter_ = -1;
+int ZFocusFinder::focus_pointN_max_ = 20;
+
 ZFocusFinder::ZFocusFinder(AssemblyVUEyeCamera* camera, LStepExpressModel* motion_model, QObject* parent) :
   QObject(parent),
   camera_manager_(0),
   motion_manager_(0),
-  bestimage_index_(0),
-  image_counter_(0),
   motion_enabled_(false),
-  autofocus_completed_(false),
-  max_deltaZ_(1.0),
+  focus_completed_(false),
+  focus_pointN_(5),
+  focus_zsigma_(1.0),
+  zposi_init_(-9999.),
+  zposi_min_ (-50.),
+  zposi_max_ (-30.),
+  zrelm_index_(0),
+  image_counter_(0),
   output_dir_("")
 {
-//    qt = new QTimer(this);
-//    qt->setSingleShot(true);
-//    connect(qt, SIGNAL(timeout()), this, SLOT(process_step()));
+    if(!camera)
+    {
+      Log::KILL("ZFocusFinder::ZFocusFinder -- null pointer to AssemblyVUEyeCamera object");
+    }
 
-//  NQLog("ZFocusFinder::ZFocusFinder") << "constructed";
-
-    if(!camera)      { exit(10); }//!!
-    if(!motion_model){ exit(10); }//!!
+    if(!motion_model)
+    {
+      Log::KILL("ZFocusFinder::ZFocusFinder -- null pointer to LStepExpressModel object");
+    }
 
     camera_manager_ = new AssemblyUEyeCameraManager(camera);
     motion_manager_ = new LStepExpressMotionManager(motion_model);
+
+    ////
+
+    connect(this , SIGNAL(initialized()), this, SLOT(acquire_image()));
+    connect(this , SIGNAL(next_zpoint()), this, SLOT(acquire_image()));
 
     ////
 
@@ -61,105 +67,9 @@ ZFocusFinder::ZFocusFinder(AssemblyVUEyeCamera* camera, LStepExpressModel* motio
 
     v_zposi_vals_.clear();
     v_focus_vals_.clear();
+
+    NQLog("ZFocusFinder::ZFocusFinder") << "constructed";
 }
-
-void ZFocusFinder::process_image(const cv::Mat& img)
-{
-  if(autofocus_completed_)
-  {
-    v_zposi_vals_.clear();
-    v_focus_vals_.clear();
-
-    image_counter_ = 0;
-
-    disconnect(this           , SIGNAL(focus       (double, double, double, double)),
-               motion_manager_, SLOT  (moveRelative(double, double, double, double)));
-
-    disconnect(motion_manager_, SIGNAL(motion_finished()),
-               camera_manager_, SLOT  (acquire_image()));
-
-    disconnect(camera_manager_, SIGNAL(image_acquired(cv::Mat)),
-               this           , SLOT  (process_image (cv::Mat)));
-
-    const std::string img_outpath = output_dir_.toStdString()+"/ZFocusFinder_"+std::to_string(bestimage_index_)+"_best.png";
-
-    cv::imwrite(img_outpath, img);
-
-    emit image_acquired(img);
-  }
-  else
-  {
-    const double current_Z = motion_manager_->get_position_Z();
-    const double focus_val = this->image_focus_value(img);
-
-    v_zposi_vals_.emplace_back(current_Z);
-    v_focus_vals_.emplace_back(focus_val);
-
-    const std::string img_outpath = output_dir_.toStdString()+"/ZFocusFinder_"+std::to_string(image_counter_)+".png";
-    cv::imwrite(img_outpath, img);
-
-    ++image_counter_;
-  }
-
-  return;
-}
-
-//!!void  ZFocusFinder::run_precisionestimation(double x_m, double y_m, double z_m , double x_p, double y_p, double z_p, int its){
-//!!
-//!!    NQLog("ZFocusFinder::run_precisionestimation")<<  " x_m = " << x_m <<  " y_m = " << y_m << " z_m = " << z_m << " x_p = " << x_p  << " y_p = " << y_p  <<" z_p = " << z_p <<  " iterations = " << its;
-//!!
-//!!    x_meas = x_m;
-//!!    y_meas = y_m;
-//!!    z_meas = z_m;
-//!!
-//!!    x_pickup = x_p;
-//!!    y_pickup = y_p;
-//!!    z_pickup = z_p;
-//!!
-//!!    iterations = its;
-//!!    iteration = 0;
-//!!
-//!!    step = 0;
-//!!    z_prepickup = z_pickup + 5.00;
-//!!
-//!!
-//!!    emit nextStep();
-//!!}
-
-//!!void  ZFocusFinder::fill_positionvectors(int stage, double x_pr, double y_pr, double theta_pr ){
-//!!
-//!!    NQLog("ZFocusFinder::fill_positionvectors")<< " step =  " << step<< "  x = "<< x_pr << "  y = "<< y_pr << "  theta = "<< theta_pr ;
-//!!
-//!!
-//!!    if (step == 2){
-//!!
-//!!        xpre_vec.push_back(x_pr);
-//!!        ypre_vec.push_back(y_pr);
-//!!        thetapre_vec.push_back(theta_pr);
-//!!
-//!!    }else if(step == 13){
-//!!
-//!!        xpost_vec.push_back(x_pr);
-//!!        ypost_vec.push_back(y_pr);
-//!!        thetapost_vec.push_back(theta_pr);
-//!!
-//!!    }
-//!!
-//!!    emit nextStep();
-//!!}
-
-//!!void ZFocusFinder::toggleVacuum()
-//!!{
-//!!    NQLog("ZFocusFinder") << ": toggling vacuum voltage";
-//!!
-//!!            if (cnrd1->getSwitchState(1) == 0){
-//!!                cnrd1->setSwitchEnabled(1, true);
-//!!
-//!!            }else if (cnrd1->getSwitchState(1) == 1){
-//!!                cnrd1->setSwitchEnabled(1, false);
-//!!            }
-//!!
-//!!}
 
 void ZFocusFinder::enable_motion()
 {
@@ -199,256 +109,163 @@ void ZFocusFinder::disable_motion()
     return;
 }
 
-void ZFocusFinder::acquire_image()
+void  ZFocusFinder::update_focus_inputs(const double zsigma, const int pointN)
+{
+  if(zsigma > 0.)
+  {
+    focus_zsigma_ = zsigma;
+  }
+  else
+  {
+    NQLog("ZFocusFinder::update_focus_inputs") << "non-positive input value for z-motion range"
+                                               << ", value not updated";
+  }
+
+  if(pointN > 0)
+  {
+    if(pointN > ZFocusFinder::focus_pointN_max_)
+    {
+      NQLog("ZFocusFinder::update_focus_inputs") << "input number of scans larger than allowed max"
+                                                 << ", setting equal to allowed max";
+
+      focus_pointN_ = ZFocusFinder::focus_pointN_max_;
+    }
+    else
+    {
+      focus_pointN_ = pointN;
+    }
+  }
+  else
+  {
+    NQLog("ZFocusFinder::update_focus_inputs") << "non-positive input value for number of scans"
+                                               << ", value not updated";
+  }
+}
+
+void ZFocusFinder::execute()
 {
     this->enable_motion();
 
-    const double zposi_init = motion_manager_->get_position_Z();
+    focus_completed_ = false;
 
-    autofocus_completed_ = false;
+    ++exe_counter_;
 
-    output_dir_ = Util::QtCacheDirectory()+"/autofocus/";
+    const std::string output_subdir("/autofocus_"+std::to_string(exe_counter_));
+
+    output_dir_ = Util::QtCacheDirectory()+QString(output_subdir.c_str());
     Util::QDir_mkpath(output_dir_);
 
-    v_zrelm_vals_.emplace_back(+1.0); //!! dummy
-    v_zrelm_vals_.emplace_back(-0.5); //!! dummy
-    v_zrelm_vals_.emplace_back(-0.5); //!! dummy
-    v_zrelm_vals_.emplace_back(-0.5); //!! dummy
-    v_zrelm_vals_.emplace_back(-0.5); //!! dummy
+    zposi_init_ = motion_manager_->get_position_Z();
 
-    for(unsigned int i=0; i<v_zrelm_vals_.size(); ++i)
+    v_zposi_vals_.clear();
+    v_focus_vals_.clear();
+
+    v_zrelm_vals_.clear();
+
+    /** scan N points around initial position
+     *  TO DO: introduce pre-scan routine to
+     *         pin down z-interval containing best-focus position,
+     *         followed by finer scan in that interval
+     */
+
+//!!    // step-1: scan N points around initial position to find interval containing the best-focus
+//!!    const unsigned int prescan_imageN = 5;
+//!!
+//!!    const double zposi_init = motion_manager_->get_position_Z();
+//!!
+//!!    const double zposi_max = zposi_init + autofocus_zrange_;
+//!!    const double zposi_min = zposi_init - autofocus_zrange_;
+//!!
+//!!    const double prescan_zrelm = (autofocus_zrange_ * 2.0 / double(prescan_imageN - 1));
+
+    const double zmin = std::max(zposi_min_, zposi_init_ - focus_zsigma_);
+    const double zmax = std::min(zposi_max_, zposi_init_ + focus_zsigma_);
+
+    v_zrelm_vals_.emplace_back(zmax - zposi_init_);
+
+    const double zstep = -1.0 * ((zmax - zmin) / double(focus_pointN_ - 1));
+
+    for(int i=1; i<focus_pointN_; ++i)
     {
-       emit focus(0.0, 0.0, v_zrelm_vals_.at(i), 0.0);
+      v_zrelm_vals_.emplace_back(zstep);
     }
 
+    zrelm_index_ = -1;
+
+    emit initialized();
+}
+
+void ZFocusFinder::acquire_image()
+{
+  ++zrelm_index_;
+
+  if(zrelm_index_ < 0)
+  {
+    std::string log = "logic error: negative index for std::vector \"v_zrelm_vals_\"";
+    log += "logic error: negative index for std::vector \"v_zrelm_vals_\"";
+
+    Log::KILL("ZFocusFinder::acquire_image -- "+log);
+  }
+  else if(zrelm_index_ < int(v_zrelm_vals_.size()))
+  {
+    emit focus(0., 0., v_zrelm_vals_.at(zrelm_index_), 0.);
+
+    return;
+  }
+  else
+  {
     // Find best position
-    bestimage_index_ = 0;                 //!! dummy
-    const double zposi_best = zposi_init; //!! dummy
+    double zposi_best(zposi_init_);
+    {
+      if(v_zposi_vals_.size() != v_focus_vals_.size())
+      {
+        std::string log = "logic error: sizes of";
+        log += "std::vector \"v_zposi_vals_\" and ";
+        log += "std::vector \"v_focus_vals_\" differ";
 
-    const double zposi_now  = motion_manager_->get_position_Z();
+        Log::KILL("ZFocusFinder::acquire_image -- "+log);
+      }
 
-    autofocus_completed_ = true;
+      std::unique_ptr<TGraph> zscan_gra(new TGraph(v_zposi_vals_.size()));
 
-    emit focus(0.0, 0.0, (zposi_best-zposi_now), 0.0); //!! dummy signal for testing, to be implemented
+      double focus_max(-1.);
+      for(unsigned int i=0; i<v_zposi_vals_.size(); ++i)
+      {
+        const double i_zposi = v_zposi_vals_.at(i);
+        const double i_focus = v_focus_vals_.at(i);
+
+        zscan_gra->SetPoint(i, i_zposi, i_focus);
+
+        if((i==0) || (i_focus > focus_max)){ focus_max = i_focus; zposi_best = i_zposi; }
+      }
+
+      std::unique_ptr<TCanvas> zscan_can(new TCanvas());
+      zscan_can->cd();
+      zscan_gra->Draw("AC*");
+
+      const std::string zscan_plot_path = output_dir_.toStdString()+"/ZFocusFinder_zscan.png";
+
+      zscan_can->SaveAs(zscan_plot_path.c_str());
+
+      emit show_zscan(zscan_plot_path);
+
+      emit update_text(zposi_best);
+    }
+    // ------------------
+
+    // auto-focus completed: move to best-focus position
+    focus_completed_ = true;
+
+    const double zposi_now = motion_manager_->get_position_Z();
+
+    emit focus(0.0, 0.0, (zposi_best-zposi_now), 0.0);
+  }
+
+  return;
 }
 
-void ZFocusFinder::process_step()
-{
-//!!
-//!!     NQLog("ZFocusFinder::process_step, iteration ==") <<iteration <<" step = " << step;
-//!!
-//!!     if (iteration < iterations){
-//!!
-//!!     if (step == 0){
-//!!
-//!!       NQLog("ZFocusFinder:: step == ") << step;
-//!!         step++;
-//!! // Step 0: Go to measurement position
-//!! 	NQLog("AssemblySensorMarkerFinder") << "   Requesting motion to:  x "<< x_meas <<" y "<< y_meas <<" "<< z_meas  ;
-//!!     emit moveAbsolute(x_meas,y_meas,z_meas, 0.0);
-//!!     }
-//!!     else if  (step == 1){
-//!!
-//!!       NQLog("ZFocusFinder:: step == ") << step;
-//!!         step++;
-//!! // Step 1: Run pattern recognition
-//!! 	emit acquireImage();
-//!! 	//emit nextStep();
-//!!
-//!!     }else if (step == 2){
-//!!
-//!!       NQLog("ZFocusFinder:: step == ") << step;
-//!!         step++;
-//!!         // Go to pre-pickup position
-//!! 	emit moveAbsolute(x_pickup,y_pickup,z_prepickup, 0.0);
-//!! 	//emit nextStep();
-//!!
-//!!     }
-//!!     else if (step == 3){
-//!!
-//!!       NQLog("ZFocusFinder:: step == ") << step;
-//!!         step++;
-//!! 	//emit nextStep();
-//!!
-//!! 	emit moveAbsolute(x_pickup,y_pickup,z_pickup, 0.0);
-//!!
-//!!     }else if (step == 4){
-//!!
-//!!       NQLog("ZFocusFinder:: step == ") << step;
-//!!         step++;
-//!!         emit nextStep();
-//!!
-//!!         // Step 4: Turn on pick up vacuum
-//!!         //emit toggleVacuum(1);
-//!!
-//!!
-//!!     }else if (step == 5){
-//!!
-//!!       NQLog("ZFocusFinder:: step == ") << step;
-//!!         step++;
-//!!         emit nextStep();
-//!!
-//!!         // Step 5: Turn off bottom vacuum
-//!!         //emit toggleVacuum(2);
-//!!
-//!!     }else if (step == 6){
-//!!
-//!!       NQLog("ZFocusFinder:: step == ") << step;
-//!!         step++;
-//!!         //emit nextStep();
-//!!         // Step 6: Go back to pre-pickup position
-//!! 	emit moveAbsolute(x_pickup,y_pickup,z_prepickup, 0.0);
-//!!
-//!!     }
-//!!     else if (step == 7){
-//!!
-//!!       NQLog("ZFocusFinder:: step == ") << step;
-//!!         step++;
-//!! 	//emit nextStep();
-//!!         // Step 7: Go back to pickup position
-//!!         emit moveAbsolute(x_pickup,y_pickup,z_pickup, 0.0);
-//!!
-//!!
-//!!     }else if (step == 8){
-//!!
-//!!       NQLog("ZFocusFinder:: step == ") << step;
-//!!         step++;
-//!!         emit nextStep();
-//!!         // Step 8: Turn on bottom vacuum
-//!! 	// emit toggleVacuum(2);
-//!!
-//!!
-//!!     }else if (step == 9){
-//!!
-//!!       NQLog("ZFocusFinder:: step == ") << step;
-//!!         step++;
-//!!         emit nextStep();
-//!!         // Step 9: Turn off pick up vacuum
-//!!         //emit toggleVacuum(1);
-//!!
-//!!
-//!!     }else if (step == 10){
-//!!
-//!!       NQLog("ZFocusFinder:: step == ") << step;
-//!!         step++;
-//!!         //emit nextStep();
-//!!         // Step 10: Go back to pre-pickup position
-//!! 	emit moveAbsolute(x_pickup,y_pickup,z_prepickup, 0.0);
-//!!
-//!!
-//!!     }else if (step == 11){
-//!!
-//!!       NQLog("ZFocusFinder:: step == ") << step;
-//!!         step++;
-//!! 	//emit nextStep();
-//!!         // Step 11: Go back to measurement position
-//!! 	emit moveAbsolute(x_meas,y_meas,z_meas, 0.0);
-//!!
-//!!
-//!!     }else if (step == 12){
-//!!
-//!!       NQLog("ZFocusFinder:: step == ") << step;
-//!!
-//!!         step++;
-//!!         emit acquireImage();
-//!! 	//emit nextStep();
-//!!
-//!!     }else if  (step == 13){
-//!!
-//!!       NQLog("ZFocusFinder:: step == ") << step;
-//!!       step = 0;
-//!!         iteration++;
-//!!         emit nextStep();
-//!!
-//!!     }
-//!!     }else{
-//!!         NQLog("ZFocusFinder::processstep")<< " estimation finished ";
-//!!         //make graphs from filled vectors here
-//!!         NQLog("ZFocusFinder::processstep")<< " vector has size =  "<<xpre_vec.size();
-//!!
-//!!
-//!!         TH1F * h_x = new TH1F("","", 20,-0.5, 0.5);
-//!!         TH1F * h_y = new TH1F("","", 20,-0.5, 0.5);
-//!!         TH1F * h_theta = new TH1F("","", 20,-1.0,1.0);
-//!!
-//!!
-//!! //!!	outfile.open("DataLogfile.txt");
-//!! //!!	outfile << "x_pre,y_pre,theta_pre,x_pos,y_pos,theta_pos" << std::endl;
-//!! //!!
-//!! //!!        for (int i = 0; i< iterations; i++){
-//!! //!!
-//!! //!!            h_x->Fill(xpre_vec[i] - xpost_vec[i] );
-//!! //!!            h_y->Fill(ypre_vec[i] - ypost_vec[i] );
-//!! //!!            h_theta->Fill(thetapre_vec[i] - thetapost_vec[i] );
-//!! //!!	    NQLog("ZFocusFinder::")<< " filling histos with: x pre  =  "<<  xpre_vec[i] << " x post  "<< xpost_vec[i] << " y  pre  = "<<  ypre_vec[i] << " y post  "<< ypost_vec[i] <<  " theta pre "<<   thetapre_vec[i] << " theta  post  = "<<  thetapost_vec[i] ;
-//!! //!!
-//!! //!!	    outfile << xpre_vec[i] << "," << ypre_vec[i] << "," << thetapre_vec[i] << ",";
-//!! //!!	    outfile << xpost_vec[i] << "," << ypost_vec[i] << "," << thetapost_vec[i];
-//!! //!!	    outfile << std::endl;
-//!! //!!
-//!! //!!        }
-//!! //!!
-//!! //!!	outfile.close();
-//!!
-//!!         std::string x_canvas_s = "c_x.png";
-//!!         std::string y_canvas_s = "c_y.png";
-//!!         std::string theta_canvas_s = "c_theta.png";
-//!!
-//!!
-//!!         TCanvas * c_x  = new TCanvas();
-//!!         h_x->Draw();
-//!!         h_x->Fit("gaus");
-//!!         TF1 *fit_x = h_x->GetFunction("gaus");
-//!!         double x_mean = fit_x->GetParameter(1);
-//!!         double x_sigma = fit_x->GetParameter(2);
-//!!
-//!!         c_x->SaveAs(x_canvas_s.c_str());
-//!!
-//!!         TCanvas * c_y  = new TCanvas();
-//!!         h_y->Draw();
-//!!         h_y->Fit("gaus");
-//!!         c_y->SaveAs(y_canvas_s.c_str());
-//!!
-//!!
-//!!         TCanvas * c_theta  = new TCanvas();
-//!!         h_theta->Draw();
-//!!         h_theta->Fit("gaus");
-//!!         c_theta->SaveAs(theta_canvas_s.c_str());
-//!!
-//!!
-//!!         QString x_canvas_qs = QString::fromLocal8Bit(x_canvas_s.c_str());
-//!!         QString y_canvas_qs = QString::fromLocal8Bit(y_canvas_s.c_str());
-//!!         QString theta_canvas_qs = QString::fromLocal8Bit(theta_canvas_s.c_str());
-//!!
-//!!
-//!!         emit showHistos( 1, x_canvas_qs);
-//!!         emit showHistos( 2, y_canvas_qs);
-//!!         emit showHistos( 3, theta_canvas_qs);
-//!!
-//!!     }
-
-}
-
-void  ZFocusFinder::run_scan(double range, int steps)
-{
-//!!    NQLog("ZFocusFinder::scan") << range << ",  " <<steps;
-//!!
-//!!   // steps = 10;
-//!!    nTotalImages = steps;
-//!!
-//!!    double step_distance = range/steps;
-//!!    int nSteps = 0;
-//!!
-//!!    x_vals.clear();
-//!!    y_vals.clear();
-//!!
-//!!    nAcquiredImages = 1;
-//!!    //emit getImage();
-//!!    emit moveRelative(0.0,0.0,1.0,0.0);
-}
-
-void ZFocusFinder::write_image(const cv::Mat& /* newImage */) //!!, cv::Rect marker_rect)
-{
+//!!void ZFocusFinder::write_image(const cv::Mat& /* newImage */) //!!, cv::Rect marker_rect)
+//!!{
 //!!    NQLog("ZFocusFinder") << "write_image()";
 //!!
 //!!    QDateTime local(QDateTime::currentDateTime());
@@ -482,30 +299,49 @@ void ZFocusFinder::write_image(const cv::Mat& /* newImage */) //!!, cv::Rect mar
 //!!        emit moveRelative(0.0,0.0,-0.1,0.0);
 //!!    } else{
 //!!
-//!!        int points  =  y_vals.size();
-//!!        TGraph * gr = new TGraph(points);
-//!!        TCanvas *  canvas = new TCanvas();
-//!!
-//!!        double variance_max, z_at_peak =0;
-//!!
-//!!        //fitting the peak (Gaussian?) would improve precision a little here
-//!!        for (unsigned long  i =0; i < y_vals.size(); i++){
-//!!            gr->SetPoint(i, x_vals[i], y_vals[i]);
-//!!            if (y_vals[i] > variance_max){
-//!!                variance_max = y_vals[i];
-//!!                z_at_peak = x_vals[i];
-//!!            }
-//!!        }
-//!!
-//!!        gr->Draw("AC*");
-//!!        const std::string img_name = "variance.png";
-//!!        canvas->SaveAs(img_name.c_str());
-//!!
-//!!        emit make_graph(img_name);
-//!!
-//!!      //emit some signal with measured marker Z position
-//!!        emit updateText(z_at_peak);
 //!!    }
+//!!}
+
+void ZFocusFinder::process_image(const cv::Mat& img)
+{
+  if(focus_completed_)
+  {
+    v_zrelm_vals_.clear();
+
+    v_zposi_vals_.clear();
+    v_focus_vals_.clear();
+
+    focus_completed_ = false;
+
+    image_counter_ = 0;
+
+    zrelm_index_ = -1;
+
+    this->disable_motion();
+
+    const std::string img_outpath = output_dir_.toStdString()+"/ZFocusFinder_best.png";
+
+    cv::imwrite(img_outpath, img);
+
+    emit image_acquired(img);
+  }
+  else
+  {
+    const double current_Z = motion_manager_->get_position_Z();
+    const double focus_val = this->image_focus_value(img);
+
+    v_zposi_vals_.emplace_back(current_Z);
+    v_focus_vals_.emplace_back(focus_val);
+
+    const std::string img_outpath = output_dir_.toStdString()+"/ZFocusFinder_"+std::to_string(image_counter_)+".png";
+    cv::imwrite(img_outpath, img);
+
+    ++image_counter_;
+
+    emit next_zpoint();
+  }
+
+  return;
 }
 
 /* \Brief Image-focus discriminant based on Laplacian method in OpenCV
