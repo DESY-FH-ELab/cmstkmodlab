@@ -109,7 +109,8 @@ HEADERS += AssemblyVUEyeCamera.h \
            LaserWidget.h \
            LaserThread.h \
            LaserControlsWidget.h \
-           SnapshotController.h \
+           AssemblyUEyeCameraManager.h \
+           ImageController.h \
            AutoFocusView.h \
            ZFocusFinder.h \
            Util.h \
@@ -157,7 +158,8 @@ SOURCES += AssemblyVUEyeCamera.cc \
            LaserWidget.cc \
            LaserThread.cc \ 
            LaserControlsWidget.cc \
-           SnapshotController.cc \
+           AssemblyUEyeCameraManager.cc \
+           ImageController.cc \
            AutoFocusView.cc \
            ZFocusFinder.cc \
            Util.cc \

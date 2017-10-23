@@ -14,6 +14,7 @@
 #define ZFOCUSFINDER_H
 
 #include <AssemblyVUEyeCamera.h>
+#include <AssemblyUEyeCameraManager.h>
 #include <LStepExpressModel.h>
 #include <LStepExpressMotionManager.h>
 
@@ -31,6 +32,7 @@
 #include <QDateTime>
 #include <QTimer>
 
+#include <vector>
 #include <string>
 
 #include <opencv2/opencv.hpp>
@@ -41,10 +43,10 @@ class ZFocusFinder : public QObject
 
   public:
 
-    QTimer * qt;
+    QTimer* qt;
     LStepExpressModel* lStepExpressModel_;
 
-    explicit ZFocusFinder(AssemblyVUEyeCamera*, LStepExpressModel* lStepExpressModel_=0, QObject* parent=0);
+    explicit ZFocusFinder(AssemblyVUEyeCamera*, LStepExpressModel* lStepExpressModel_, QObject* parent=0);
 
     double local_range, local_steps, local_delay;
     double x_meas, y_meas, z_meas;
@@ -58,20 +60,42 @@ class ZFocusFinder : public QObject
     std::vector<double> xpost_vec,ypost_vec,thetapost_vec;
     double step_distance;
 
-    AssemblyVUEyeCamera* camera() const { return camera_; }
+    AssemblyVUEyeCamera* camera() const { return camera_manager_->camera(); }
 
   protected:
 
-    AssemblyVUEyeCamera* camera_;
+    AssemblyUEyeCameraManager* camera_manager_;
+    LStepExpressMotionManager* motion_manager_;
 
     double image_focus_value(const cv::Mat&);
 
+    unsigned int bestimage_index_;
+
+    unsigned int image_counter_;
+
+    bool motion_enabled_;
+    bool autofocus_completed_;
+
+    double max_deltaZ_;
+
+    QString output_dir_;
+
+    std::vector<double> v_zrelm_vals_;
+
+    std::vector<double> v_zposi_vals_;
+    std::vector<double> v_focus_vals_;
+
   public slots:
 
-    void do_autofocus();
+    void acquire_image();
+
+    void process_image (const cv::Mat&); //!!, cv::Rect);
+
+    void  enable_motion();
+    void disable_motion();
 
     void run_scan(double, int);
-    void write_image(cv::Mat, cv::Rect);
+    void write_image(const cv::Mat&); //!!, cv::Rect);
     void process_step();
 //!!    void run_precisionestimation(double, double, double, double, double, double, int);
 //!!    void fill_positionvectors(int , double, double, double);
@@ -79,8 +103,14 @@ class ZFocusFinder : public QObject
 
   signals:
 
+    void focus(double, double, double, double);
+
+    void image_tmp();
+    void image_final();
+
+    void image_acquired(const cv::Mat&);
+
     void getImage();
-    void moveRelative(double, double, double, double);
     void moveAbsolute(double, double, double, double);
     void updateScanImage(cv::Mat);
     void make_graph(const std::string);

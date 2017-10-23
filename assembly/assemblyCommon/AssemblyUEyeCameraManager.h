@@ -10,71 +10,48 @@
 //                                                                             //
 /////////////////////////////////////////////////////////////////////////////////
 
-#ifndef SNAPSHOTCONTROLLER_H
-#define SNAPSHOTCONTROLLER_H
+#ifndef ASSEMBLYUEYECAMERAMANAGER_H
+#define ASSEMBLYUEYECAMERAMANAGER_H
 
 #include <AssemblyVUEyeCamera.h>
-#include <ZFocusFinder.h>
 
 #include <QObject>
 
 #include <opencv2/opencv.hpp>
 
-/*! \brief SnapshotController: CONTROLLER
- *           Wrapper class for camera model including
- *           auto-focusing (vertical movement of the motion stage)
- */
-class SnapshotController : public QObject
+class AssemblyUEyeCameraManager : public QObject
 {
  Q_OBJECT
 
   public:
 
-    explicit SnapshotController(AssemblyVUEyeCamera*, ZFocusFinder* zff=0, QObject* parent=0);
-    virtual ~SnapshotController();
+    explicit AssemblyUEyeCameraManager(AssemblyVUEyeCamera*, QObject* parent=0);
+    virtual ~AssemblyUEyeCameraManager();
 
-    bool is_enabled() const { return is_enabled_; }
-    bool autofocus_is_enabled() const { return autofocus_is_enabled_; }
+    AssemblyVUEyeCamera* camera() const { return camera_; }
 
   protected:
 
     AssemblyVUEyeCamera* camera_;
-    ZFocusFinder* zfocus_finder_;
-
-    bool is_enabled_;
-    bool autofocus_is_enabled_;
-
-    void crosscheck_inputs() const;
-
-  public slots:
-
-    void  enable();
-    void disable();
-
-    void acquire_image();
-
-    void  enable_camera();
-    void disable_camera();
-
-    void retrieve_image(const cv::Mat&);
-
-    void  enable_AutoFocus();
-    void disable_AutoFocus();
-
-  protected slots:
 
   signals:
 
+//!!    void cameraOpened();
+//!!    void cameraClosed();
+
     void  open_camera();
-    void   use_camera();
     void close_camera();
 
-    void run_autofocus();
-
-    void camera_enabled();
-    void camera_disabled();
+    void update_cameraInfo();
 
     void image_acquired(const cv::Mat&);
+
+  public slots:
+
+    virtual void open() {}
+    virtual void close() {}
+
+    virtual void acquire_image() {}
 };
 
-#endif // SNAPSHOTCONTROLLER_H
+#endif // ASSEMBLYUEYECAMERAMANAGER_H

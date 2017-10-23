@@ -33,7 +33,6 @@ typedef AssemblyUEyeModel AssemblyUEyeModel_t;
 #include <AssemblyMarkerFinderThread.h>
 #include <AssemblySensorMarkerFinder.h>
 #include <AssemblySensorMarkerFinderWidget.h>
-#include <SnapshotController.h>
 #include <LStepExpressModel.h>
 #include <LStepExpressSettings.h>
 #include <LStepExpressMotionManager.h>
@@ -47,6 +46,7 @@ typedef AssemblyUEyeModel AssemblyUEyeModel_t;
 #include <LStepExpressStatusWindow.h>
 #include <ConradModel.h>
 #include <ConradManager.h>
+#include <ImageController.h>
 #include <ZFocusFinder.h>
 
 #include <QMainWindow>
@@ -67,7 +67,7 @@ class AssemblyMainWindow : public QMainWindow
 
     void  enable_images();
     void disable_images();
-    void get_image();
+    void     get_image ();
 
     void    connect_images();
     void disconnect_images();
@@ -86,7 +86,7 @@ class AssemblyMainWindow : public QMainWindow
     void images_ON();
     void images_OFF();
 
-    void use_camera();
+    void image();
 
     void updateThresholdLabel();
 
@@ -118,9 +118,8 @@ class AssemblyMainWindow : public QMainWindow
     QCheckBox *checkbox3;
     QCheckBox *checkbox4;
 
-    AssemblyUEyeModel_t* uEyeModel_;
-//!!    AssemblyUEyeWidget*  uEyeWidget_;
-
+    AssemblyUEyeModel_t* cameraModel_;
+//!!    AssemblyUEyeWidget*  cameraWidget_;
     unsigned int              camera_ID_;
     AssemblyVUEyeCamera *     camera_;
     AssemblyUEyeCameraThread* cameraThread_;
@@ -132,18 +131,18 @@ class AssemblyMainWindow : public QMainWindow
     AssemblyMarkerFinderThread*       finderThread_;
     AssemblySensorMarkerFinderWidget* finderWidget_;
 
-    LStepExpressModel*          lStepExpressModel_;
-    LStepExpressSettings*       lStepExpressSettings_;
-    LStepExpressSettingsWidget* lStepExpressSettingsWidget_;
+    LStepExpressModel*          motionModel_;
+    LStepExpressMotionManager*  motionManager_;
+    LStepExpressMotionThread*   motionThread_;
+    LStepExpressSettings*       motionSettings_;
+    LStepExpressSettingsWidget* motionSettingsWidget_;
 
-    LStepExpressMotionManager* motionManager_;
-    LStepExpressMotionThread*  motionThread_;
 
     ConradModel*       conradModel_;
     ConradManager*     conradManager_;
     AssemblyAssembler* module_assembler_;
 
-    SnapshotController* snapshot_ctr_;
+    ImageController* image_ctr_;
 
     double testTimerCount_;
 
