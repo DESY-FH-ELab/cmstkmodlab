@@ -40,6 +40,12 @@ class ZFocusFinder : public QObject
     AssemblyVUEyeCamera*       camera()         const { return camera_manager_->camera(); }
     LStepExpressMotionManager* motion_manager() const { return motion_manager_; }
 
+    struct focus_info
+    {
+      double z_position;
+      double focus_disc;
+    };
+
   protected:
 
     AssemblyUEyeCameraManager* camera_manager_;
@@ -58,8 +64,7 @@ class ZFocusFinder : public QObject
     int                   zrelm_index_;
     std::vector<double> v_zrelm_vals_;
 
-    std::vector<double> v_zposi_vals_;
-    std::vector<double> v_focus_vals_;
+    std::vector<focus_info> v_focus_vals_;
 
     int image_counter_;
 
@@ -85,11 +90,9 @@ class ZFocusFinder : public QObject
 
   signals:
 
-    void initialized();
+    void next_zpoint();
 
     void focus(double, double, double, double);
-
-    void next_zpoint();
 
     void image_acquired(const cv::Mat&);
 

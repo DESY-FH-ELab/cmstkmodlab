@@ -22,7 +22,7 @@ LStepExpressMotionManager::LStepExpressMotionManager(LStepExpressModel* model, Q
 {
     if(!model_)
     {
-      NQLog("LStepExpressMotionManager::LStepExpressMotionManager") << "pointer to LStepExpressModel initialized to NULL";
+      Log::KILL("LStepExpressMotionManager::LStepExpressMotionManager -- pointer to LStepExpressModel initialized to NULL");
     }
 
     this->connect_model();

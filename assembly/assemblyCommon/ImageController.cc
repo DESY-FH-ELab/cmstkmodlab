@@ -102,7 +102,7 @@ void ImageController::enable_AutoFocus()
 
   autofocus_is_enabled_ = true;
 
-  NQLog("ImageController::disable_AutoFocus") << "connected ZFocusFinder";
+  NQLog("ImageController::enable_AutoFocus") << "connected ZFocusFinder";
 
   return;
 }

@@ -344,6 +344,13 @@ void AssemblyMainWindow::changeState_AutoFocus(int state)
       return;
     }
 
+    if(!motionModel_){
+
+      NQLog("AssemblyMainWindow::changeState_AutoFocus") << "LStepExpressMotionModel not initialized, no action taken (hint: plug-in motion stage cable)";
+
+      return;
+    }
+
     if(state == 2){
 
       NQLog("AssemblyMainWindow::changeState_AutoFocus") << "emitting signal \"AutoFocus_ON\"";
@@ -528,8 +535,8 @@ void AssemblyMainWindow::connect_images()
 //    edgeView_          ->connectImageProducer(finder_, SIGNAL(edgesDetected(const cv::Mat&)));
 //    rawView_           ->connectImageProducer(camera_, SIGNAL(imageAcquired(const cv::Mat&)));
 
-    thresholdTunerView_->connectImageProducer(image_ctr_    , SIGNAL(image_acquired (cv::Mat)));
-    autoFocusView_     ->connectImageProducer(zfocus_finder_, SIGNAL(updateScanImage(cv::Mat)));
+    thresholdTunerView_->connectImageProducer(image_ctr_    , SIGNAL(image_acquired(cv::Mat)));
+    autoFocusView_     ->connectImageProducer(zfocus_finder_, SIGNAL(image_acquired(cv::Mat)));
 
 //    const bool test = connect(camera_, SIGNAL(imageAcquired(cv::Mat)), finder_, SLOT(write_image(cv::Mat)));
 //    connect(camera_, SIGNAL(imageAcquired(cv::Mat)), finder_, SLOT(runObjectDetection_labmode(cv::Mat)));
@@ -560,8 +567,8 @@ void AssemblyMainWindow::disconnect_images()
 
 //!!    disconnect(camera_, SIGNAL(imageAcquired(const cv::Mat&)), finder_, SLOT(findMarker(const cv::Mat&)));
 
-    thresholdTunerView_->disconnectImageProducer(image_ctr_    , SIGNAL(image_acquired (cv::Mat)));
-    autoFocusView_     ->disconnectImageProducer(zfocus_finder_, SIGNAL(updateScanImage(cv::Mat)));
+    thresholdTunerView_->disconnectImageProducer(image_ctr_    , SIGNAL(image_acquired(cv::Mat)));
+    autoFocusView_     ->disconnectImageProducer(zfocus_finder_, SIGNAL(image_acquired(cv::Mat)));
 
     liveTimer_->stop();
 }
