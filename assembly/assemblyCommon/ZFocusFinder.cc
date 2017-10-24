@@ -176,17 +176,6 @@ void ZFocusFinder::execute()
      *         pin down z-interval containing best-focus position,
      *         followed by finer scan in that interval
      */
-
-//!!    // step-1: scan N points around initial position to find interval containing the best-focus
-//!!    const unsigned int prescan_imageN = 5;
-//!!
-//!!    const double zposi_init = motion_manager_->get_position_Z();
-//!!
-//!!    const double zposi_max = zposi_init + autofocus_zrange_;
-//!!    const double zposi_min = zposi_init - autofocus_zrange_;
-//!!
-//!!    const double prescan_zrelm = (autofocus_zrange_ * 2.0 / double(prescan_imageN - 1));
-
     const double zmin = std::max(zposi_min_, zposi_init_ - focus_zsigma_);
     const double zmax = std::min(zposi_max_, zposi_init_ + focus_zsigma_);
 
@@ -218,6 +207,8 @@ void ZFocusFinder::acquire_image()
     log += "logic error: negative index for std::vector \"v_zrelm_vals_\"";
 
     Log::KILL("ZFocusFinder::acquire_image -- "+log);
+
+    return;
   }
   else if(zrelm_index_ < int(v_zrelm_vals_.size()))
   {
@@ -277,6 +268,8 @@ void ZFocusFinder::acquire_image()
     NQLog("ZFocusFinder::acquire_image") << "emitting signal \"focus(0, 0, " << dz << ", 0)\"";
 
     emit focus(0., 0., dz, 0.);
+
+    return;
   }
 
   return;
@@ -288,6 +281,10 @@ void ZFocusFinder::process_image(const cv::Mat& img)
 
   if(focus_completed_)
   {
+    // disable autofocus motion manager
+    this->disable_motion();
+
+    // clear internal data members
     v_zrelm_vals_.clear();
 
     v_focus_vals_.clear();
@@ -298,27 +295,30 @@ void ZFocusFinder::process_image(const cv::Mat& img)
 
     zrelm_index_ = -1;
 
-    this->disable_motion();
-
+    // save best-focus image
     const std::string img_outpath = output_dir_.toStdString()+"/ZFocusFinder_best.png";
 
     cv::imwrite(img_outpath, img);
 
+    // signal to end autofocus
     NQLog("ZFocusFinder::process_image") << "emitting signal \"image_acquired\"";
 
     emit image_acquired(img);
   }
   else
   {
+    // generic autofocus step
     ZFocusFinder::focus_info this_focus;
     this_focus.z_position = motion_manager_->get_position_Z();
     this_focus.focus_disc = this->image_focus_value(img);
 
     v_focus_vals_.emplace_back(this_focus);
 
+    // save image
     const std::string img_outpath = output_dir_.toStdString()+"/ZFocusFinder_"+std::to_string(image_counter_)+".png";
     cv::imwrite(img_outpath, img);
 
+    // go to next autofocus step
     ++image_counter_;
 
     NQLog("ZFocusFinder::process_image") << "emitting signal \"next_zpoint\"";
