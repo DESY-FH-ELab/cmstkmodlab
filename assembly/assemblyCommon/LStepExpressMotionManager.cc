@@ -184,7 +184,7 @@ void LStepExpressMotionManager::finish_motion()
 {
     inMotion_ = false;
 
-    NQLog("LStepExpressMotionManager::finish_motion") << "emitting signal \"motion_finished\"";
+//    NQLog("LStepExpressMotionManager::finish_motion") << "emitting signal \"motion_finished\"";
 
     emit motion_finished();
 }

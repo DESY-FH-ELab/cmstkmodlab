@@ -56,7 +56,7 @@ ZFocusFinder::ZFocusFinder(AssemblyVUEyeCamera* camera, LStepExpressModel* motio
 
     ////
 
-    connect(this , SIGNAL(next_zpoint()), this, SLOT(acquire_image()));
+    connect(this , SIGNAL(next_zpoint()), this, SLOT(test_focus()));
 
     ////
 
@@ -150,29 +150,34 @@ void ZFocusFinder::update_focus_inputs(const double zsigma, const int pointN)
     return;
 }
 
-void ZFocusFinder::execute()
+void ZFocusFinder::acquire_image()
 {
     this->enable_motion();
 
     focus_completed_ = false;
 
-    ++exe_counter_;
-
-    std::string exe_counter_str = std::to_string(exe_counter_);
-
-    if(exe_counter_ < 1000)
+    bool  output_dir_exists(true);
+    while(output_dir_exists)
     {
-      char tmp[256];
-      sprintf(tmp, "%03d", exe_counter_);
-      exe_counter_str = std::string(tmp);
+      ++exe_counter_;
+
+      std::string exe_counter_str = std::to_string(exe_counter_);
+
+      if(exe_counter_ < 1000)
+      {
+        char tmp[256];
+        sprintf(tmp, "%03d", exe_counter_);
+        exe_counter_str = std::string(tmp);
+      }
+
+      output_dir_ = Util::QtCacheDirectory().toStdString()+"/autofocus/"+exe_counter_str+"/";
+
+      output_dir_exists = Util::DirectoryExists(output_dir_);
     }
 
-    const std::string output_subdir("/autofocus/"+exe_counter_str+"/");
-
-    output_dir_ = Util::QtCacheDirectory()+QString(output_subdir.c_str());
     Util::QDir_mkpath(output_dir_);
 
-    NQLog("ZFocusFinder::execute") << "created output directory: " << output_dir_;
+    NQLog("ZFocusFinder::acquire_image") << "created output directory: " << output_dir_;
 
     zposi_init_ = motion_manager_->get_position_Z();
 
@@ -199,14 +204,14 @@ void ZFocusFinder::execute()
 
     zrelm_index_ = -1;
 
-    NQLog("ZFocusFinder::execute") << "emitting signal \"next_zpoint\"";
+    NQLog("ZFocusFinder::acquire_image") << "emitting signal \"next_zpoint\"";
 
     emit next_zpoint();
 }
 
-void ZFocusFinder::acquire_image()
+void ZFocusFinder::test_focus()
 {
-  NQLog("ZFocusFinder::acquire_image");
+  NQLog("ZFocusFinder::test_focus");
 
   ++zrelm_index_;
 
@@ -215,7 +220,7 @@ void ZFocusFinder::acquire_image()
     std::string log = "logic error: negative index for std::vector \"v_zrelm_vals_\"";
     log += "logic error: negative index for std::vector \"v_zrelm_vals_\"";
 
-    Log::KILL("ZFocusFinder::acquire_image -- "+log);
+    Log::KILL("ZFocusFinder::test_focus -- "+log);
 
     return;
   }
@@ -223,7 +228,7 @@ void ZFocusFinder::acquire_image()
   {
     const double dz = v_zrelm_vals_.at(zrelm_index_);
 
-    NQLog("ZFocusFinder::acquire_image") << "emitting signal \"focus(0, 0, " << dz << ", 0)\"";
+    NQLog("ZFocusFinder::test_focus") << "emitting signal \"focus(0, 0, " << dz << ", 0)\"";
 
     emit focus(0., 0., dz, 0.);
 
@@ -232,13 +237,18 @@ void ZFocusFinder::acquire_image()
   else
   {
     // Find best position
-    NQLog("ZFocusFinder::acquire_image") << "finding best-focus position";
+    NQLog("ZFocusFinder::test_focus") << "finding best-focus position";
 
     double zposi_best(zposi_init_);
     {
       std::unique_ptr<TGraph> zscan_gra(new TGraph(v_focus_vals_.size()));
+      zscan_gra->SetName("zfocus");
+      zscan_gra->SetTitle(";z-axis position [mm];focus discriminant");
+      zscan_gra->SetMarkerColor(4);
+      zscan_gra->SetMarkerStyle(21);
+      zscan_gra->SetMarkerSize(1.5);
 
-      double focus_max(-1.);
+      double focus_best(-1.);
       for(unsigned int i=0; i<v_focus_vals_.size(); ++i)
       {
         const double i_zposi = v_focus_vals_.at(i).z_position;
@@ -246,24 +256,24 @@ void ZFocusFinder::acquire_image()
 
         zscan_gra->SetPoint(i, i_zposi, i_focus);
 
-        if((i==0) || (i_focus > focus_max)){ focus_max = i_focus; zposi_best = i_zposi; }
+        if((i==0) || (i_focus > focus_best)){ focus_best = i_focus; zposi_best = i_zposi; }
       }
 
       std::unique_ptr<TCanvas> zscan_can(new TCanvas());
       zscan_can->cd();
-      zscan_gra->Draw("AC*");
+      zscan_gra->Draw("alp");
 
-      const std::string zscan_plot_path_png  = output_dir_.toStdString()+"/ZFocusFinder_zscan.png";
-      const std::string zscan_plot_path_root = output_dir_.toStdString()+"/ZFocusFinder_zscan.root";
+      const std::string zscan_plot_path_png  = output_dir_+"/ZFocusFinder_zscan.png";
+      const std::string zscan_plot_path_root = output_dir_+"/ZFocusFinder_zscan.root";
 
       zscan_can->SaveAs(zscan_plot_path_png .c_str());
       zscan_can->SaveAs(zscan_plot_path_root.c_str());
 
-      NQLog("ZFocusFinder::acquire_image") << "emitting signal \"show_zscan(" << zscan_plot_path_png << ")\"";
+      NQLog("ZFocusFinder::test_focus") << "emitting signal \"show_zscan(" << zscan_plot_path_png << ")\"";
 
       emit show_zscan(zscan_plot_path_png);
 
-      NQLog("ZFocusFinder::acquire_image") << "emitting signal \"update_text(" << zposi_best << ")\"";
+      NQLog("ZFocusFinder::test_focus") << "emitting signal \"update_text(" << zposi_best << ")\"";
 
       emit update_text(zposi_best);
     }
@@ -276,7 +286,7 @@ void ZFocusFinder::acquire_image()
 
     const double dz = (zposi_best-zposi_now);
 
-    NQLog("ZFocusFinder::acquire_image") << "emitting signal \"focus(0, 0, " << dz << ", 0)\"";
+    NQLog("ZFocusFinder::test_focus") << "emitting signal \"focus(0, 0, " << dz << ", 0)\"";
 
     emit focus(0., 0., dz, 0.);
 
@@ -307,7 +317,7 @@ void ZFocusFinder::process_image(const cv::Mat& img)
     zrelm_index_ = -1;
 
     // save best-focus image
-    const std::string img_outpath = output_dir_.toStdString()+"/ZFocusFinder_best.png";
+    const std::string img_outpath = output_dir_+"/ZFocusFinder_best.png";
 
     cv::imwrite(img_outpath, img);
 
@@ -326,7 +336,7 @@ void ZFocusFinder::process_image(const cv::Mat& img)
     v_focus_vals_.emplace_back(this_focus);
 
     // save image
-    const std::string img_outpath = output_dir_.toStdString()+"/ZFocusFinder_"+std::to_string(image_counter_)+".png";
+    const std::string img_outpath = output_dir_+"/ZFocusFinder_"+std::to_string(image_counter_)+".png";
     cv::imwrite(img_outpath, img);
 
     // go to next autofocus step
@@ -345,19 +355,17 @@ void ZFocusFinder::process_image(const cv::Mat& img)
  */
 double ZFocusFinder::image_focus_value(const cv::Mat& img)
 {
-  NQLog("ZFocusFinder::image_focus_value");
-/*
-  // Remove noise by blurring with a Gaussian filter
-  cv::Mat img_gaus;
-  cv::GaussianBlur(img, img_gaus, cv::Size(img.cols, img.rows), 0, 0, cv::BORDER_DEFAULT);
-
-  // Convert the image to grayscale
-  cv::Mat img_gray;
-  cv::cvtColor(img_gaus, img_gray, CV_BGR2GRAY);
+//!!  // Remove noise by blurring with a Gaussian filter
+//!!  cv::Mat img_gaus;
+//!!  cv::GaussianBlur(img, img_gaus, cv::Size(img.cols, img.rows), 0, 0, cv::BORDER_DEFAULT);
+//!!
+//!!  // Convert the image to grayscale
+//!!  cv::Mat img_gray;
+//!!  cv::cvtColor(img_gaus, img_gray, CV_BGR2GRAY);
 
   // Apply laplacian function to GS image
   cv::Mat img_lap;
-  cv::Laplacian(img_gray, img_lap, CV_64F);
+  cv::Laplacian(img, img_lap, CV_64F);
 
   cv::Mat img_lap_abs;
 //  cv::convertScaleAbs(img_lap, img_lap_abs);
@@ -369,9 +377,8 @@ double ZFocusFinder::image_focus_value(const cv::Mat& img)
 
   const float value = (std_dev.val[0] * std_dev.val[0]);
 
-  NQLog("ZFocusFinder::image_focus_value") << "image(" << exe_counter_ << ", " << image_counter_ << ") focus-value = " << value;
+  NQLog("ZFocusFinder::image_focus_value")
+       << "image(" << exe_counter_ << "," << image_counter_ << ") focus-value = " << value;
 
   return value;
-*/
-  return 1.0;
 }

@@ -103,7 +103,7 @@ void ImageController::enable_AutoFocus()
   disconnect(this           , SIGNAL(image())                , camera_manager_, SLOT(acquire_image()));
   disconnect(camera_manager_, SIGNAL(image_acquired(cv::Mat)), this           , SLOT(retrieve_image(cv::Mat)));
 
-  connect   (this           , SIGNAL(image())                , zfocus_finder_ , SLOT(execute()));
+  connect   (this           , SIGNAL(image())                , zfocus_finder_ , SLOT(acquire_image()));
   connect   (zfocus_finder_ , SIGNAL(image_acquired(cv::Mat)), this           , SLOT(retrieve_image(cv::Mat)));
 
   autofocus_is_enabled_ = true;

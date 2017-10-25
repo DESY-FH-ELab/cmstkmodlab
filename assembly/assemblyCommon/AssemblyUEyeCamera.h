@@ -54,6 +54,8 @@ private:
 
     HIDS cameraHandle_;
     volatile bool runEventThread_;
+
+    unsigned int verbosity_;
 };
 
 class AssemblyUEyeCamera : public AssemblyVUEyeCamera
@@ -126,6 +128,8 @@ private:
     UEYE_IMAGE images_[5];
 
     cv::Mat image_;
+
+    unsigned int verbosity_;
 };
 
 #endif // ASSEMBLYUEYECAMERA_H

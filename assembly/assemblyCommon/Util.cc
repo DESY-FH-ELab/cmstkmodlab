@@ -23,3 +23,20 @@ bool Util::QDir_mkpath(const QString& path)
 
   return true;
 }
+
+bool Util::QDir_mkpath(const std::string& path)
+{
+  return Util::QDir_mkpath(QString(path.c_str()));
+}
+
+bool Util::DirectoryExists(const QString& path)
+{
+  const QDir dir(path);
+
+  return dir.exists();
+}
+
+bool Util::DirectoryExists(const std::string& path)
+{
+  return Util::DirectoryExists(QString(path.c_str()));
+}

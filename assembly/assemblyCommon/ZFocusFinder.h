@@ -19,7 +19,6 @@
 #include <LStepExpressMotionManager.h>
 
 #include <QObject>
-#include <QString>
 
 #include <vector>
 #include <string>
@@ -68,7 +67,7 @@ class ZFocusFinder : public QObject
 
     int image_counter_;
 
-    QString output_dir_;
+    std::string output_dir_;
 
     static int exe_counter_;
     static int focus_pointN_max_;
@@ -82,9 +81,9 @@ class ZFocusFinder : public QObject
 
     void update_focus_inputs(const double, const int);
 
-    void execute();
-
     void acquire_image();
+
+    void test_focus();
 
     void process_image(const cv::Mat&);
 

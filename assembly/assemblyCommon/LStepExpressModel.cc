@@ -146,13 +146,14 @@ void LStepExpressModel::moveRelative(std::vector<double> & values)
 
 void LStepExpressModel::moveRelative(double x, double y, double z, double a)
 {
+/*
     NQLog("LStepExpressModel::moveRelative", NQLog::Spam)
          << "("  << "x=" << x
          << ", " << "y=" << y
          << ", " << "z=" << z
          << ", " << "a=" << a
          << ")";
-
+*/
     this->check_controller("moveRelative");
 
     controller_->MoveRelative(LStepExpress_t::X, x);
@@ -161,9 +162,9 @@ void LStepExpressModel::moveRelative(double x, double y, double z, double a)
     controller_->MoveRelative(LStepExpress_t::A, a);
 
     inMotion_ = true;
-
+/*
     NQLog("LStepExpressModel::moveRelative") << "emitting signal \"motionStarted\"";
-
+*/
     emit motionStarted();
 }
 
@@ -436,8 +437,9 @@ void LStepExpressModel::updateInformation()
 
 void LStepExpressModel::updateMotionInformation()
 {
-  NQLog("LStepExpressModel ")<< "updateMotionInformation motion information changed"  ;
-
+/*
+    NQLog("LStepExpressModel ")<< "updateMotionInformation motion information changed"  ;
+*/
     static const int nUpdates = updateInterval_/motionUpdateInterval_;
 
     if ( state_ == READY && !isPaused_) {
