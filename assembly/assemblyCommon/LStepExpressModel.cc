@@ -46,7 +46,7 @@ LStepExpressModel::LStepExpressModel(const char* port,
     timer_ = new QTimer(this);
     timer_->setInterval(motionUpdateInterval_);
     connect(timer_, SIGNAL(timeout()), this, SLOT(updateMotionInformationFromTimer()));
-    //    connect(this, SIGNAL(informationChanged()), this, SLOT(updateInformation()));
+//    connect(this, SIGNAL(informationChanged()), this, SLOT(updateInformation()));
 }
 
 LStepExpressModel::~LStepExpressModel()
@@ -161,6 +161,8 @@ void LStepExpressModel::moveRelative(double x, double y, double z, double a)
     controller_->MoveRelative(LStepExpress_t::A, a);
 
     inMotion_ = true;
+
+    NQLog("LStepExpressModel::moveRelative") << "emitting signal \"motionStarted\"";
 
     emit motionStarted();
 }
@@ -480,7 +482,12 @@ void LStepExpressModel::updateMotionInformation()
 	    temp = ifaxisenabled || ifaxisnotenabled;
 	    //	    NQLog("LStepExpressModel", NQLog::Spam) <<" axis status =  "<<(ivalues)[i]<<" axis enabled = "<<(axis_)[i]<<" temp = "<<temp;
           }
-          if(temp){inMotion_ = false; emit motionFinished();}
+          if(temp)
+          {
+            inMotion_ = false;
+
+            emit motionFinished();
+          }
           
           /*
 	if (std::all_of(ivalues.begin(), ivalues.end(),
@@ -521,9 +528,9 @@ void LStepExpressModel::updateMotionInformation()
 
 void LStepExpressModel::updateMotionInformationFromTimer()
 {
-
-     NQLog("LStepExpressModel ")<< " update from timer"  ;
-
+/*
+    NQLog("LStepExpressModel") << "update from timer";
+*/
     static const int nUpdates = updateInterval_/motionUpdateInterval_;
     
     if ( state_ == READY && !isPaused_) {
@@ -567,10 +574,12 @@ void LStepExpressModel::updateMotionInformationFromTimer()
 	    bool ifaxisnotenabled = (axis_)[i] == 0;
 	    temp *= (ifaxisenabled || ifaxisnotenabled);
           }
-	  if(temp){inMotion_ = false;
+	  if(temp)
+          {
+            inMotion_ = false;
 
-	    NQLog("LStepExpressModel ")<< "emitting motion finished signal"  ;
-            emit motionFinished();}
+            emit motionFinished();
+          }
       }
       
       if( (axis_)[0] || (axis_)[1] || (axis_)[2] || (axis_)[3]){

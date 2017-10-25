@@ -13,10 +13,12 @@
 #ifndef LSTEPEXPRESSMOTIONMANAGER_H
 #define LSTEPEXPRESSMOTIONMANAGER_H
 
-#include <QQueue>
-
 #include <LStepExpressModel.h>
 #include <LStepExpressMotion.h>
+
+#include <vector>
+
+#include <QQueue>
 
 class LStepExpressMotionManager : public QObject
 {
@@ -43,12 +45,15 @@ class LStepExpressMotionManager : public QObject
     void    connect_model();
     void disconnect_model();
 
+    void  start_motion();
+    void finish_motion();
+
     void appendMotion(const LStepExpressMotion& motion);
     void appendMotions(const QQueue<LStepExpressMotion>& motions);
     void moveRelative(const std::vector<double>& values);
     void moveRelative(double x, double y, double z, double a);
     void moveRelative(unsigned int axis, double value);
-    void moveAbsolute(std::vector<double>& values);
+    void moveAbsolute(const std::vector<double>& values);
     void moveAbsolute(double x=0.0, double y=0.0, double z=0.0, double a=0.0);
     void moveAbsolute(unsigned int axis, double value);
 
@@ -66,8 +71,8 @@ class LStepExpressMotionManager : public QObject
 
   protected slots:
 
-    void  start_motion();
-    void finish_motion();
+    void motionStarted();
+    void motionFinished();
 
   signals:
 

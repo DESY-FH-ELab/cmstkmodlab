@@ -31,8 +31,9 @@ AssemblyUEyeModel::~AssemblyUEyeModel()
 
 void AssemblyUEyeModel::updateInformation()
 {
+/*
     NQLog("AssemblyUEyeModel::updateInformation");
-
+*/
     UEYE_CAMERA_LIST* uEyeCameraList = new UEYE_CAMERA_LIST;
 
     uEyeCameraList->dwCount = 0;

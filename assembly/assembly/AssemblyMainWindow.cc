@@ -194,13 +194,25 @@ connect(zfocus_finder_, SIGNAL(update_text(double))    , autoFocusView_, SLOT(up
 //!!    NQLog("AssemblyMainWindow::AssemblyMainWindow") << "added view \""+tabname_uEye+"\"";
 //!!    /* --------------------------------------------------------- */
 
+    /* MOTION-SETTINGS VIEW ------------------------------------ */
+    const std::string tabname_MotionSettings("Motion Settings");
+
+    QWidget* widget = new QWidget(tabWidget_);
+
+    motionSettings_ = new LStepExpressSettings(motionModel_, widget);
+
+    motionSettingsWidget_ = new LStepExpressSettingsWidget(motionSettings_, tabWidget_);
+    tabWidget_->addTab(motionSettingsWidget_, QString(tabname_MotionSettings.c_str()));
+
+    NQLog("AssemblyMainWindow::AssemblyMainWindow") << "added view \""+tabname_MotionSettings+"\"";
+    /* --------------------------------------------------------- */
+
     /* MOTION-MANAGER VIEW ------------------------------------- */
     const std::string tabname_MotionManager("Motion Manager");
 
     //Probably need a dedicated class for Motionmanager tab widget so
     //no details have to be included here (but this was just for testing)
 
-    QWidget* widget = new QWidget(tabWidget_);
     tabWidget_->addTab(widget, QString(tabname_MotionManager.c_str()));
 
     QHBoxLayout* layout  = new QHBoxLayout(widget);
@@ -221,21 +233,9 @@ connect(zfocus_finder_, SIGNAL(update_text(double))    , autoFocusView_, SLOT(up
     QVBoxLayout* layoutv2 = new QVBoxLayout();
 
     LStepExpressPositionWidget *lStepPosition = new LStepExpressPositionWidget(motionManager_, motionModel_, widget);
-
     layoutv2->addWidget(lStepPosition);
 
     NQLog("AssemblyMainWindow::AssemblyMainWindow") << "added view \""+tabname_MotionManager+"\"";
-    /* --------------------------------------------------------- */
-
-    /* MOTION-SETTINGS VIEW ------------------------------------ */
-    const std::string tabname_MotionSettings("Motion Settings");
-
-    motionSettings_ = new LStepExpressSettings(motionModel_, widget);
-
-    motionSettingsWidget_ = new LStepExpressSettingsWidget(motionSettings_, tabWidget_);
-    tabWidget_->addTab(motionSettingsWidget_, QString(tabname_MotionSettings.c_str()));
-
-    NQLog("AssemblyMainWindow::AssemblyMainWindow") << "added view \""+tabname_MotionSettings+"\"";
     /* --------------------------------------------------------- */
 
     /* Upper Toolbar ------------------------------------------- */

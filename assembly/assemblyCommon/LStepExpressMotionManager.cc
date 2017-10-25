@@ -84,10 +84,7 @@ void LStepExpressMotionManager::run()
 {
     if(inMotion_){ return; }
 
-    if(motions_.empty())
-    {
-      emit motion_finished();
-    }
+    if(motions_.empty()){ return; }
 
     LStepExpressMotion motion = motions_.dequeue();
 
@@ -122,50 +119,43 @@ void LStepExpressMotionManager::run()
 void LStepExpressMotionManager::appendMotion(const LStepExpressMotion& motion)
 {
     motions_.enqueue(motion);
-    run();
+    this->run();
 }
 
 void LStepExpressMotionManager::appendMotions(const QQueue<LStepExpressMotion>& motions)
 {
     motions_.append(motions);
-    run();
+    this->run();
 }
 
 void LStepExpressMotionManager::moveRelative(const std::vector<double>& values)
 {
     motions_.enqueue(LStepExpressMotion(values, false));
-    run();
+    this->run();
 }
 
 void LStepExpressMotionManager::moveRelative(double x, double y, double z, double a)
 {
     motions_.enqueue(LStepExpressMotion(x, y, z, a, false));
-    run();
+    this->run();
 }
 
 void LStepExpressMotionManager::moveRelative(unsigned int axis, double value)
 {
     motions_.enqueue(LStepExpressMotion(axis, value, false));
-    run();
+    this->run();
 }
 
-void LStepExpressMotionManager::moveAbsolute(std::vector<double> & values)
+void LStepExpressMotionManager::moveAbsolute(const std::vector<double>& values)
 {
     motions_.enqueue(LStepExpressMotion(values, true));
-    run();
+    this->run();
 }
 
 void LStepExpressMotionManager::moveAbsolute(double x, double y, double z, double a)
 {
-    NQLog("LStepExpressMotionManager") << "moveAbsolute";
-
     motions_.enqueue(LStepExpressMotion(x, y, z, a, true));
-
-    NQLog("LStepExpressMotionManager") << "motionsEnquee x "<<  x  <<" y "<< y<<" z "<< z << " a "<< a;
-
     this->run();
-
-    NQLog("LStepExpressMotionManager") << "run Done";
 }
 
 void LStepExpressMotionManager::moveAbsolute(unsigned int axis, double value)
@@ -174,14 +164,27 @@ void LStepExpressMotionManager::moveAbsolute(unsigned int axis, double value)
     this->run();
 }
 
-void LStepExpressMotionManager::start_motion()
+void LStepExpressMotionManager::motionStarted()
 {
     inMotion_ = true;
+}
+
+void LStepExpressMotionManager::motionFinished()
+{
+    inMotion_ = false;
+    this->run();
+}
+
+void LStepExpressMotionManager::start_motion()
+{
+    this->motionStarted();
 }
 
 void LStepExpressMotionManager::finish_motion()
 {
     inMotion_ = false;
 
-    this->run();
+    NQLog("LStepExpressMotionManager::finish_motion") << "emitting signal \"motion_finished\"";
+
+    emit motion_finished();
 }

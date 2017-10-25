@@ -47,9 +47,13 @@ ImageController::ImageController(AssemblyVUEyeCamera* camera, ZFocusFinder* zfoc
 
   connect(this           , SIGNAL(image())                , camera_manager_, SLOT(acquire_image()));
   connect(camera_manager_, SIGNAL(image_acquired(cv::Mat)), this           , SLOT(retrieve_image(cv::Mat)));
+
+  NQLog("ImageController::ImageController") << "constructed";
 }
 
-ImageController::~ImageController() {}
+ImageController::~ImageController()
+{
+}
 
 void ImageController::enable()
 {
@@ -67,6 +71,8 @@ void ImageController::disable()
 
 void ImageController::acquire_image()
 {
+  NQLog("ImageController::acquire_image") << "emitting signal \"image\"";
+
   emit image();
 }
 
@@ -89,7 +95,7 @@ void ImageController::enable_AutoFocus()
 {
   if(zfocus_finder_ == 0)
   {
-    NQLog("ImageController::ImageController") << "ZFocusFinder not initialized, auto-focusing not enabled";
+    NQLog("ImageController::enable_AutoFocus") << "ZFocusFinder not initialized, auto-focusing not enabled";
 
     return;
   }
