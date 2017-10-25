@@ -730,27 +730,29 @@ AssemblyAttacher::AssemblyAttacher(std::string string, double x ,double y, doubl
 }
 
 void AssemblyAttacher::moveRelative(){
-    //parse lineEdit text to get target coordinates
-    QString  parent_string = this->lineEdit1->text();
-    
-    QStringList pieces = parent_string.split( "," );
-    QString x = pieces.value( pieces.length() - 4);
-    QString y = pieces.value( pieces.length() - 3);
-    QString z = pieces.value( pieces.length() - 2);
-    QString a = pieces.value( pieces.length() - 1);
-    
+
+    const QString parent_string = this->lineEdit1->text();
+
+    // parse lineEdit text to get target coordinates
+    const QStringList pieces = parent_string.split(",");
+
+    const QString x = pieces.value(pieces.length() - 4);
+    const QString y = pieces.value(pieces.length() - 3);
+    const QString z = pieces.value(pieces.length() - 2);
+    const QString a = pieces.value(pieces.length() - 1);
+
     double x_d = x.toDouble();
     double y_d = y.toDouble();
     double z_d = z.toDouble();
     double a_d = a.toDouble();
-    
-    NQLog("AssemblyAttacher::moveRelative") << ": moving relative (parsed!!!) "<< x_d<<" "<< y_d<<" "<< z_d <<" "<< a_d;
-    
-    NQLog("AssemblyAttacher::moveRelative") <<" requesting move...";
-    
+
+    if(Log::verbosity > 1)
+    {
+      NQLog("AssemblyAttacher::moveRelative") << "emitting signal "
+           << "\"moveRelative(" << x_d << ", " << y_d << ", " << z_d << ", " << a_d << ")\"";
+    }
+
     emit moveRelative(x_d, y_d, z_d, a_d);
-    
-    NQLog("AssemblyAttacher::moveRelative") <<"move requested...";
 }
 
 AssemblyMountChecker::AssemblyMountChecker(QWidget *parent, std::string string,

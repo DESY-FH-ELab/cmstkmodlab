@@ -13,14 +13,13 @@
 #ifndef ASSEMBLYUEYECAMERA_H
 #define ASSEMBLYUEYECAMERA_H
 
-#include <opencv2/opencv.hpp>
-
+#include <AssemblyVUEyeCamera.h>
 #include <uEye.h>
 
 #include <QThread>
 #include <QColor>
 
-#include "AssemblyVUEyeCamera.h"
+#include <opencv2/opencv.hpp>
 
 typedef struct _UEYE_IMAGE
 {
@@ -54,8 +53,6 @@ private:
 
     HIDS cameraHandle_;
     volatile bool runEventThread_;
-
-    unsigned int verbosity_;
 };
 
 class AssemblyUEyeCamera : public AssemblyVUEyeCamera
@@ -128,8 +125,6 @@ private:
     UEYE_IMAGE images_[5];
 
     cv::Mat image_;
-
-    unsigned int verbosity_;
 };
 
 #endif // ASSEMBLYUEYECAMERA_H

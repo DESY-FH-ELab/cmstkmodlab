@@ -3,6 +3,8 @@
 #include <iostream>
 #include <stdexcept>
 
+unsigned int Log::verbosity = 0;
+
 void Log::KILL(const std::string& log_){
 
   throw std::runtime_error(log_);
