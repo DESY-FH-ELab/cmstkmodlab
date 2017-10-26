@@ -15,7 +15,6 @@
 #include <ApplicationConfig.h>
 #include <nqlogger.h>
 #include <Util.h>
-#include <Log.h>
 
 #include <vector>
 #include <iostream>
@@ -51,8 +50,10 @@ AssemblyModuleAssembler::AssemblyModuleAssembler(
 
   if(!camera_)
   {
-    const std::string log("initialization error: null pointer to AssemblyVUEyeCamera object");
-    Log::KILL("AssemblyModuleAssembler::AssemblyModuleAssembler -- "+log);
+    NQLog("AssemblyModuleAssembler::AssemblyModuleAssembler", NQLog::Fatal)
+         << "initialization error: null pointer to AssemblyVUEyeCamera object";
+
+    exit(1);
   }
 
   QGridLayout *l = new QGridLayout();
@@ -746,7 +747,7 @@ void AssemblyAttacher::moveRelative(){
     double z_d = z.toDouble();
     double a_d = a.toDouble();
 
-    Log::NQLog2("AssemblyAttacher::moveRelative", Log::NQLog2::Message)
+    NQLog("AssemblyAttacher::moveRelative", NQLog::Message)
          << "emitting signal \"moveRelative("
          << x_d << ", " << y_d << ", " << z_d << ", " << a_d << ")\"";
 

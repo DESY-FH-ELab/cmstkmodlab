@@ -12,7 +12,6 @@
 
 #include <AssemblyUEyeCameraManager.h>
 #include <nqlogger.h>
-#include <Log.h>
 
 AssemblyUEyeCameraManager::AssemblyUEyeCameraManager(AssemblyVUEyeCamera* camera, QObject *parent) :
    QObject(parent),
@@ -21,10 +20,11 @@ AssemblyUEyeCameraManager::AssemblyUEyeCameraManager(AssemblyVUEyeCamera* camera
 {
   if(!this->camera())
   {
-    NQLog("AssemblyUEyeCameraManager::AssemblyUEyeCameraManager") << "camera initialization failed";
+    NQLog("AssemblyUEyeCameraManager::AssemblyUEyeCameraManager", NQLog::Fatal)
+         << "camera initialization failed"
+         << "null pointer to AssemblyVUEyeCamera object";
 
-    const std::string log("initialization error: null pointer to AssemblyVUEyeCamera object");
-    Log::KILL("AssemblyUEyeCameraManager::AssemblyUEyeCameraManager -- "+log);
+    exit(1);
   }
 
   this->connect_model();

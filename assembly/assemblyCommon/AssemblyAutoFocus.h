@@ -14,12 +14,6 @@
 #define ASSEMBLYAUTOFOCUS_H
 
 #include <AssemblyUEyeView.h>
-#include <AssemblyVUEyeModel.h>
-#include <AssemblySensorMarkerFinder.h>
-#include <AssemblyVUEyeCamera.h>
-#include <LStepExpressModel.h>
-#include <LStepExpressMotionManager.h>
-#include <AssemblyScanner.h>
 
 #include <string>
 
@@ -41,11 +35,11 @@ class AssemblyAutoFocus : public QWidget
  Q_OBJECT
 
   public:
-    explicit AssemblyAutoFocus(AssemblyScanner* cmdr_zscan, QWidget *parent = 0);
-    void connectImageProducer(const QObject* sender, const char* signal);
-    void disconnectImageProducer(const QObject* sender, const char* signal);
 
-    AssemblyScanner * cmdr_zscan;
+    explicit AssemblyAutoFocus(QWidget* parent=0);
+
+    void    connectImageProducer(const QObject* sender, const char* signal);
+    void disconnectImageProducer(const QObject* sender, const char* signal);
 
   protected:
 

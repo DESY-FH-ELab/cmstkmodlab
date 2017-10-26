@@ -41,7 +41,7 @@
 
 using namespace cv;
 
-AssemblyAutoFocus::AssemblyAutoFocus(AssemblyScanner* /* cmdr_zscan */, QWidget *parent) : QWidget(parent)
+AssemblyAutoFocus::AssemblyAutoFocus(QWidget *parent) : QWidget(parent)
 {
 //  NQLog("AssemblyAutoFocus::AssemblyAutoFocus");
 

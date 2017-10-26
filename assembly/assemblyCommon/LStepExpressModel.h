@@ -75,8 +75,6 @@ public:
     void saveConfig();
     void reset();
 
-    void check_controller(const std::string&);
-
 public slots:
 
     void setDeviceEnabled(bool enabled = true);

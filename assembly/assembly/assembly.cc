@@ -15,19 +15,12 @@
 #include <ApplicationConfig.h>
 #include <DeviceState.h>
 #include <nqlogger.h>
-#include <Log.h>
+#include <Util.h>
 
 #include <string>
 
 #include <QApplication>
-#include <QProcess>
 #include <QFile>
-#include <QDir>
-#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
-#include <QDesktopServices>
-#else
-#include <QStandardPaths>
-#endif
 
 #include <opencv2/opencv.hpp>
 
@@ -39,36 +32,32 @@ int main(int argc, char** argv)
 {
     qRegisterMetaType<cv::Mat>("cv::Mat");
 
+    const NQLog::LogLevel nqloglevel = NQLog::Message;
+
     NQLogger::instance()->addActiveModule("*");
-    NQLogger::instance()->addDestiniation(stdout, NQLog::Spam);
+    NQLogger::instance()->addDestiniation(stdout, nqloglevel);
 
-#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
-    QString logdir = QDesktopServices::storageLocation(QDesktopServices::CacheLocation);
-#else
-    QString logdir = QStandardPaths::writableLocation(QStandardPaths::CacheLocation);
-#endif
+    const QString logdir = Util::QtCacheDirectory();
+    Util::QDir_mkpath(logdir);
 
-    QDir dir(logdir);
-    if(!dir.exists()){ dir.mkpath("."); }
-    QString logfilename = logdir + "/assembly.log";
-
-    NQLog("assembly") << "version " << APPLICATIONVERSIONSTR;
-
-    NQLog("assembly") << "using " << logfilename << " for logging";
+    const QString logfilename = logdir + "/assembly.log";
 
     QFile* logfile = new QFile(logfilename);
-    if(logfile->open(QIODevice::WriteOnly | QIODevice::Append | QIODevice::Text)){
-
-      NQLogger::instance()->addDestiniation(logfile, NQLog::Message);
+    if(logfile->open(QIODevice::WriteOnly | QIODevice::Append | QIODevice::Text))
+    {
+      NQLogger::instance()->addDestiniation(logfile, nqloglevel);
     }
+
+    NQLog("assembly", NQLog::Message) << "version " << APPLICATIONVERSIONSTR;
+    NQLog("assembly", NQLog::Message) << "using " << logfilename << " for logging";
 
     qRegisterMetaType<State>("State");
 
 #ifdef SINGLETON
     SingletonApplication app(argc, argv, assemblyGUID);
-    if(!app.lock()){
-
-      NQLog("assembly") << "Application instance already running!";
+    if(!app.lock())
+    {
+      NQLog("assembly", NQLog::Message) << "Application instance already running!";
       exit(1);
     }
 #else
@@ -77,9 +66,7 @@ int main(int argc, char** argv)
 
     app.setStyle("cleanlooks");
 
-    const std::string  config_file = std::string(Config::CMSTkModLabBasePath)+"/assembly/assembly.cfg";
-    ApplicationConfig* config = ApplicationConfig::instance(config_file);
-    Log::verbosity =   config->getValue<int>("VerbosityLevel", 999);
+    ApplicationConfig::instance(std::string(Config::CMSTkModLabBasePath) + "/assembly/assembly.cfg");
 
     AssemblyMainWindow mainWindow;
 

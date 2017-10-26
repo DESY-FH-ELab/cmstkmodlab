@@ -12,7 +12,6 @@
 
 #include <LStepExpressMotionManager.h>
 #include <nqlogger.h>
-#include <Log.h>
 
 LStepExpressMotionManager::LStepExpressMotionManager(LStepExpressModel* model, QObject *parent) :
   QObject(parent),
@@ -22,7 +21,10 @@ LStepExpressMotionManager::LStepExpressMotionManager(LStepExpressModel* model, Q
 {
     if(!model_)
     {
-      Log::KILL("LStepExpressMotionManager::LStepExpressMotionManager -- pointer to LStepExpressModel initialized to NULL");
+      NQLog("LStepExpressMotionManager::LStepExpressMotionManager", NQLog::Fatal)
+           << "pointer to LStepExpressModel initialized to NULL";
+
+      exit(1);
     }
 
     this->connect_model();

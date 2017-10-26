@@ -13,9 +13,10 @@
 #include <ZFocusFinder.h>
 #include <nqlogger.h>
 #include <Util.h>
-#include <Log.h>
 
 #include <iostream>
+#include <iomanip>
+#include <sstream>
 #include <vector>
 #include <cstdio>
 #include <memory>
@@ -38,17 +39,18 @@ ZFocusFinder::ZFocusFinder(AssemblyVUEyeCamera* camera, LStepExpressModel* motio
   zposi_min_ (-99.),
   zposi_max_ (+99.),
   zrelm_index_(0),
-  image_counter_(0),
   output_dir_("")
 {
     if(!camera)
     {
-      Log::KILL("ZFocusFinder::ZFocusFinder -- null pointer to AssemblyVUEyeCamera object");
+      NQLog("ZFocusFinder::ZFocusFinder", NQLog::Fatal) << "null pointer to AssemblyVUEyeCamera object";
+      exit(1);
     }
 
     if(!motion_model)
     {
-      Log::KILL("ZFocusFinder::ZFocusFinder -- null pointer to LStepExpressModel object");
+      NQLog("ZFocusFinder::ZFocusFinder", NQLog::Fatal) << "null pointer to LStepExpressModel object";
+      exit(1);
     }
 
     camera_manager_ = new AssemblyUEyeCameraManager(camera);
@@ -163,11 +165,11 @@ void ZFocusFinder::acquire_image()
 
       std::string exe_counter_str = std::to_string(exe_counter_);
 
-      if(exe_counter_ < 1000)
+      if(exe_counter_ < 1e3)
       {
-        char tmp[256];
-        sprintf(tmp, "%03d", exe_counter_);
-        exe_counter_str = std::string(tmp);
+        std::stringstream exe_counter_strss;
+        exe_counter_strss << std::setw(3) << std::setfill('0') << exe_counter_;
+        exe_counter_str = exe_counter_strss.str();
       }
 
       output_dir_ = Util::QtCacheDirectory().toStdString()+"/autofocus/"+exe_counter_str+"/";
@@ -211,18 +213,14 @@ void ZFocusFinder::acquire_image()
 
 void ZFocusFinder::test_focus()
 {
-  NQLog("ZFocusFinder::test_focus");
-
   ++zrelm_index_;
 
   if(zrelm_index_ < 0)
   {
-    std::string log = "logic error: negative index for std::vector \"v_zrelm_vals_\"";
-    log += "logic error: negative index for std::vector \"v_zrelm_vals_\"";
+    NQLog("ZFocusFinder::test_focus", NQLog::Fatal)
+         << "logic error: negative index for std::vector \"v_zrelm_vals_\"";
 
-    Log::KILL("ZFocusFinder::test_focus -- "+log);
-
-    return;
+    exit(1);
   }
   else if(zrelm_index_ < int(v_zrelm_vals_.size()))
   {
@@ -279,6 +277,21 @@ void ZFocusFinder::test_focus()
     }
     // ------------------
 
+    // text output file -
+    std::ofstream txtfile(output_dir_+"/values.txt");
+    if(txtfile.is_open())
+    {
+      txtfile << "# index z-position focus_discriminant\n";
+
+      for(unsigned int i=0; i<v_focus_vals_.size(); ++i)
+      {
+        txtfile << i << " " << v_focus_vals_.at(i).z_position << " " << v_focus_vals_.at(i).focus_disc << std::endl;
+      }
+
+      txtfile.close();
+    }
+    // ------------------
+
     // auto-focus completed: move to best-focus position
     focus_completed_ = true;
 
@@ -291,6 +304,7 @@ void ZFocusFinder::test_focus()
     emit focus(0., 0., dz, 0.);
 
     return;
+    // ------------------
   }
 
   return;
@@ -311,8 +325,6 @@ void ZFocusFinder::process_image(const cv::Mat& img)
     v_focus_vals_.clear();
 
     focus_completed_ = false;
-
-    image_counter_ = 0;
 
     zrelm_index_ = -1;
 
@@ -336,12 +348,10 @@ void ZFocusFinder::process_image(const cv::Mat& img)
     v_focus_vals_.emplace_back(this_focus);
 
     // save image
-    const std::string img_outpath = output_dir_+"/ZFocusFinder_"+std::to_string(image_counter_)+".png";
+    const std::string img_outpath = output_dir_+"/ZFocusFinder_"+std::to_string(v_focus_vals_.size())+".png";
     cv::imwrite(img_outpath, img);
 
     // go to next autofocus step
-    ++image_counter_;
-
     NQLog("ZFocusFinder::process_image") << "emitting signal \"next_zpoint\"";
 
     emit next_zpoint();
@@ -377,8 +387,8 @@ double ZFocusFinder::image_focus_value(const cv::Mat& img)
 
   const float value = (std_dev.val[0] * std_dev.val[0]);
 
-  NQLog("ZFocusFinder::image_focus_value")
-       << "image(" << exe_counter_ << "," << image_counter_ << ") focus-value = " << value;
+  NQLog("ZFocusFinder::image_focus_value", NQLog::Message)
+       << "image(" << exe_counter_ << "," << v_focus_vals_.size() << ") focus-value = " << value;
 
   return value;
 }

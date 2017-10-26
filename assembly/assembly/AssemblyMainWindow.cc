@@ -13,7 +13,6 @@
 #include <AssemblyMainWindow.h>
 #include <ApplicationConfig.h>
 #include <nqlogger.h>
-#include <Log.h>
 
 #include <string>
 
@@ -101,8 +100,10 @@ AssemblyMainWindow::AssemblyMainWindow(const unsigned int camera_ID, QWidget *pa
 
     if(!camera_)
     {
-      const std::string log("null pointer to AssemblyVUEyeCamera object (camera-ID = "+std::to_string(camera_ID_)+")");
-      Log::KILL("AssemblyMainWindow::AssemblyMainWindow -- "+log);
+      NQLog("AssemblyMainWindow::AssemblyMainWindow", NQLog::Fatal)
+           << "null pointer to AssemblyVUEyeCamera object (camera-ID = "+std::to_string(camera_ID_)+")";
+
+      exit(1);
     }
 
     cameraThread_ = new AssemblyUEyeCameraThread(cameraModel_, this);
@@ -111,32 +112,6 @@ AssemblyMainWindow::AssemblyMainWindow(const unsigned int camera_ID, QWidget *pa
     finder_       = new AssemblySensorMarkerFinder();
     finderThread_ = new AssemblyMarkerFinderThread(finder_, this);
     finderThread_->start();
-
-/////!!!!
-
-cmdr_zscan = new AssemblyScanner(motionModel_, 0);
-
-zfocus_finder_ = new ZFocusFinder(camera_, motionModel_);
-
-/////!!!!
-
-    /* AUTO-FOCUS VIEW ----------------------------------------- */
-    const std::string tabname_AutoFocus("Auto-Focus");
-
-    autoFocusView_ = new AssemblyAutoFocus(cmdr_zscan, tabWidget_);
-    tabWidget_->addTab(autoFocusView_, QString(tabname_AutoFocus.c_str()));
-
-    NQLog("AssemblyMainWindow::AssemblyMainWindow") << "added view \""+tabname_AutoFocus+"\"";
-    /* --------------------------------------------------------- */
-
-/////!!!!
-
-connect(autoFocusView_, SIGNAL(run_scan(double, int))  , zfocus_finder_, SLOT(update_focus_inputs(double, int)));
-
-connect(zfocus_finder_, SIGNAL(show_zscan(std::string)), autoFocusView_, SLOT(make_graph(std::string)));
-connect(zfocus_finder_, SIGNAL(update_text(double))    , autoFocusView_, SLOT(updateText(double)));
-
-/////!!!!
 
     /* IMAGE-THRESHOLDING VIEW --------------------------------- */
     const std::string tabname_ImageThresholding("Image Thresholding");
@@ -154,6 +129,30 @@ connect(zfocus_finder_, SIGNAL(update_text(double))    , autoFocusView_, SLOT(up
     NQLog("AssemblyMainWindow::AssemblyMainWindow") << "emitting signal \"updateThresholdLabel\"";
 
     emit updateThresholdLabel();
+    /* --------------------------------------------------------- */
+
+/////!!!!
+
+cmdr_zscan = new AssemblyScanner(motionModel_, 0);
+
+/////!!!!
+
+    /* AUTO-FOCUS VIEW ----------------------------------------- */
+    const std::string tabname_AutoFocus("Auto-Focus");
+
+    zfocus_finder_ = new ZFocusFinder(camera_, motionModel_);
+
+    autoFocusView_ = new AssemblyAutoFocus(tabWidget_);
+    tabWidget_->addTab(autoFocusView_, QString(tabname_AutoFocus.c_str()));
+
+    connect(autoFocusView_, SIGNAL(run_scan(double, int))  , zfocus_finder_, SLOT(update_focus_inputs(double, int)));
+
+    connect(zfocus_finder_, SIGNAL(show_zscan(std::string)), autoFocusView_, SLOT(make_graph(std::string)));
+    connect(zfocus_finder_, SIGNAL(update_text(double))    , autoFocusView_, SLOT(updateText(double)));
+
+    autoFocusView_->configure_scan();
+
+    NQLog("AssemblyMainWindow::AssemblyMainWindow") << "added view \""+tabname_AutoFocus+"\"";
     /* --------------------------------------------------------- */
 
     /* MANUAL-ASSEMBLY VIEW ------------------------------------ */

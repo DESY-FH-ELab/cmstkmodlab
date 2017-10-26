@@ -13,7 +13,6 @@
 #include <ImageController.h>
 #include <nqlogger.h>
 #include <Util.h>
-#include <Log.h>
 
 ImageController::ImageController(AssemblyVUEyeCamera* camera, ZFocusFinder* zfocus_finder, QObject* parent) :
   QObject(parent),
@@ -23,17 +22,20 @@ ImageController::ImageController(AssemblyVUEyeCamera* camera, ZFocusFinder* zfoc
 {
   if(!camera)
   {
-    const std::string log("initialization error: null pointer to AssemblyVUEyeCamera object");
-    Log::KILL("ImageController::ImageController -- "+log);
+    NQLog("ImageController::ImageController", NQLog::Fatal)
+         << "initialization error: null pointer to AssemblyVUEyeCamera object";
+
+    exit(1);
   }
 
   if(zfocus_finder_)
   {
     if(zfocus_finder_->camera() != camera)
     {
-      Log::KILL("ImageController::ImageController -- target input camera differs from ZFocusFinder.camera");
+      NQLog("ImageController::ImageController", NQLog::Fatal)
+           << "target input camera differs from ZFocusFinder.camera";
 
-      return;
+      exit(1);
     }
   }
 

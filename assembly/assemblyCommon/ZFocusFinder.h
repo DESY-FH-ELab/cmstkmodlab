@@ -65,8 +65,6 @@ class ZFocusFinder : public QObject
 
     std::vector<focus_info> v_focus_vals_;
 
-    int image_counter_;
-
     std::string output_dir_;
 
     static int exe_counter_;
