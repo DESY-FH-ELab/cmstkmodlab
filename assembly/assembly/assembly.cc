@@ -15,6 +15,9 @@
 #include <ApplicationConfig.h>
 #include <DeviceState.h>
 #include <nqlogger.h>
+#include <Log.h>
+
+#include <string>
 
 #include <QApplication>
 #include <QProcess>
@@ -28,8 +31,9 @@
 
 #include <opencv2/opencv.hpp>
 
-//static const char* assemblyGUID = "{5F9DC7D7-54C2-4625-A7C6-2EBE4C37C8F5}";
-//#define SINGLETON 1
+#ifdef SINGLETON
+static const char* assemblyGUID = "{5F9DC7D7-54C2-4625-A7C6-2EBE4C37C8F5}";
+#endif
 
 int main(int argc, char** argv)
 {
@@ -68,12 +72,14 @@ int main(int argc, char** argv)
       exit(1);
     }
 #else
-    QApplication app( argc, argv );
+    QApplication app(argc, argv);
 #endif
 
     app.setStyle("cleanlooks");
 
-    ApplicationConfig::instance(std::string(Config::CMSTkModLabBasePath)+"/assembly/assembly.cfg");
+    const std::string  config_file = std::string(Config::CMSTkModLabBasePath)+"/assembly/assembly.cfg";
+    ApplicationConfig* config = ApplicationConfig::instance(config_file);
+    Log::verbosity =   config->getValue<unsigned int>("VerbosityLevel", 999);
 
     AssemblyMainWindow mainWindow;
 
