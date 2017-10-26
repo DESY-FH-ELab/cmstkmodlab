@@ -79,7 +79,7 @@ int main(int argc, char** argv)
 
     const std::string  config_file = std::string(Config::CMSTkModLabBasePath)+"/assembly/assembly.cfg";
     ApplicationConfig* config = ApplicationConfig::instance(config_file);
-    Log::verbosity =   config->getValue<unsigned int>("VerbosityLevel", 999);
+    Log::verbosity =   config->getValue<int>("VerbosityLevel", 999);
 
     AssemblyMainWindow mainWindow;
 

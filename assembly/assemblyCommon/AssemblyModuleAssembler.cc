@@ -746,11 +746,9 @@ void AssemblyAttacher::moveRelative(){
     double z_d = z.toDouble();
     double a_d = a.toDouble();
 
-    if(Log::verbosity > 1)
-    {
-      NQLog("AssemblyAttacher::moveRelative") << "emitting signal "
-           << "\"moveRelative(" << x_d << ", " << y_d << ", " << z_d << ", " << a_d << ")\"";
-    }
+    Log::NQLog2("AssemblyAttacher::moveRelative", Log::NQLog2::Message)
+         << "emitting signal \"moveRelative("
+         << x_d << ", " << y_d << ", " << z_d << ", " << a_d << ")\"";
 
     emit moveRelative(x_d, y_d, z_d, a_d);
 }
