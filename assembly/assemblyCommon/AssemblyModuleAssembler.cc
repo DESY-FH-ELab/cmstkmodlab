@@ -182,8 +182,8 @@ AssemblyModuleAssembler::AssemblyModuleAssembler(
   toggle1 = new AssemblyVacuumToggler(this, "Toggle Vacuum");
   g1->addWidget(toggle1, 3, 0);
 
-  AssemblyPrecisionEstimator * precision1 = new AssemblyPrecisionEstimator(this, "Estimate Assembly Precision", "-200.0,0.0,0.0", "0.0,0.0,0.0", 1 , cnrd1);
-//  g1->addWidget(precision1,4,0);
+//A  AssemblyPrecisionEstimator * precision1 = new AssemblyPrecisionEstimator(this, "Estimate Assembly Precision", "-200.0,0.0,0.0", "0.0,0.0,0.0", 1 , cnrd1);
+//A//  g1->addWidget(precision1,4,0);
 
   QGridLayout *g2 = new QGridLayout();
   l->addLayout(g2, 1, 1);
@@ -199,8 +199,8 @@ AssemblyModuleAssembler::AssemblyModuleAssembler(
   connect(cmdr0, SIGNAL(moveAbsolute(double, double, double, double)), motionManager_, SLOT(moveAbsolute(double, double, double, double)));
   connect(cmdr1, SIGNAL(moveRelative(double, double, double, double)), motionManager_, SLOT(moveRelative(double, double, double, double)));
 
-  connect(precision1, SIGNAL(launchPrecisionEstimation(double, double, double, double, double, double, int)),
-          this      , SLOT  (startMacro               (double, double, double, double, double, double, int)));
+//A  connect(precision1, SIGNAL(launchPrecisionEstimation(double, double, double, double, double, double, int)),
+//A          this      , SLOT  (startMacro               (double, double, double, double, double, double, int)));
 
   connect(sandwich1, SIGNAL(launchSandwichAssembly(double, double, double, double, double, double, double, double, double)),
           this     , SIGNAL(launchSandwichAssembly(double, double, double, double, double, double, double, double, double)));
