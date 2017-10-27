@@ -34,7 +34,7 @@ ZFocusFinder::ZFocusFinder(AssemblyVUEyeCamera* camera, LStepExpressModel* motio
   motion_enabled_(false),
   focus_completed_(false),
   focus_pointN_(10),
-  focus_zsigma_(0.5),
+  focus_zrange_(0.5),
   zposi_init_(-9999.),
   zposi_min_ (-99.),
   zposi_max_ (+99.),
@@ -111,13 +111,13 @@ void ZFocusFinder::disable_motion()
     return;
 }
 
-void ZFocusFinder::update_focus_inputs(const double zsigma, const int pointN)
+void ZFocusFinder::update_focus_inputs(const double zrange, const int pointN)
 {
-    if(zsigma > 0.)
+    if(zrange > 0.)
     {
-      focus_zsigma_ = zsigma;
+      focus_zrange_ = zrange;
 
-      NQLog("ZFocusFinder::update_focus_inputs") << "updated z-motion range to " << focus_zsigma_;
+      NQLog("ZFocusFinder::update_focus_inputs") << "updated z-motion range to " << focus_zrange_;
     }
     else
     {
@@ -192,8 +192,8 @@ void ZFocusFinder::acquire_image()
      *         pin down z-interval containing best-focus position,
      *         followed by finer scan in that interval
      */
-    const double zmin = std::max(zposi_min_, zposi_init_ - focus_zsigma_);
-    const double zmax = std::min(zposi_max_, zposi_init_ + focus_zsigma_);
+    const double zmin = std::max(zposi_min_, zposi_init_ - (focus_zrange_/2.));
+    const double zmax = std::min(zposi_max_, zposi_init_ + (focus_zrange_/2.));
 
     v_zrelm_vals_.emplace_back(zmax - zposi_init_);
 
