@@ -30,28 +30,33 @@ static const char* assemblyGUID = "{5F9DC7D7-54C2-4625-A7C6-2EBE4C37C8F5}";
 
 int main(int argc, char** argv)
 {
-    qRegisterMetaType<cv::Mat>("cv::Mat");
+    // log output -----------
+    ApplicationConfig* config = ApplicationConfig::instance(std::string(Config::CMSTkModLabBasePath)+"/assembly/assembly.cfg");
 
-    const NQLog::LogLevel nqloglevel = NQLog::Message;
+    const NQLog::LogLevel nqloglevel_stdout  = ((NQLog::LogLevel) config->getValue<int>("LogLevel_stdout" , 2));
+    const NQLog::LogLevel nqloglevel_logfile = ((NQLog::LogLevel) config->getValue<int>("LogLevel_logfile", 2));
 
     NQLogger::instance()->addActiveModule("*");
-    NQLogger::instance()->addDestiniation(stdout, nqloglevel);
+    NQLogger::instance()->addDestiniation(stdout, nqloglevel_stdout);
 
     const QString logdir = Util::QtCacheDirectory();
     Util::QDir_mkpath(logdir);
 
-    const QString logfilename = logdir + "/assembly.log";
+    const QString logfilename = logdir+"/assembly.log";
+
+    NQLog("assembly", NQLog::Message) << "version  : " << APPLICATIONVERSIONSTR;
+    NQLog("assembly", NQLog::Message) << "log file : " << logfilename;
 
     QFile* logfile = new QFile(logfilename);
     if(logfile->open(QIODevice::WriteOnly | QIODevice::Append | QIODevice::Text))
     {
-      NQLogger::instance()->addDestiniation(logfile, nqloglevel);
+      NQLogger::instance()->addDestiniation(logfile, nqloglevel_logfile);
     }
+    // ----------------------
 
-    NQLog("assembly", NQLog::Message) << "version " << APPLICATIONVERSIONSTR;
-    NQLog("assembly", NQLog::Message) << "using " << logfilename << " for logging";
-
+    // Qt application -------
     qRegisterMetaType<State>("State");
+    qRegisterMetaType<cv::Mat>("cv::Mat");
 
 #ifdef SINGLETON
     SingletonApplication app(argc, argv, assemblyGUID);
@@ -66,12 +71,11 @@ int main(int argc, char** argv)
 
     app.setStyle("cleanlooks");
 
-    ApplicationConfig::instance(std::string(Config::CMSTkModLabBasePath) + "/assembly/assembly.cfg");
-
     AssemblyMainWindow mainWindow;
 
-    mainWindow.setWindowTitle(QString("assembly - ") + APPLICATIONVERSIONSTR);
+    mainWindow.setWindowTitle(QString("assembly - ")+APPLICATIONVERSIONSTR);
     mainWindow.show();
 
     return app.exec();
+    // ----------------------
 }

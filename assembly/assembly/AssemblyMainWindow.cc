@@ -70,6 +70,11 @@ AssemblyMainWindow::AssemblyMainWindow(const unsigned int camera_ID, QWidget *pa
   liveTimer_(0)
 {
     ApplicationConfig* config = ApplicationConfig::instance();
+    if(!config)
+    {
+      NQLog("AssemblyMainWindow", NQLog::Fatal) << "ApplicationConfig::instance() not initialized (null pointer)";
+      exit(1);
+    }
 
     motionModel_ = new LStepExpressModel(config->getValue<std::string>("LStepExpressDevice").c_str(), 1000, 1000);
 
