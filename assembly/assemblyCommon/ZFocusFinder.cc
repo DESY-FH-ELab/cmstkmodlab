@@ -25,7 +25,7 @@
 #include <TCanvas.h>
 
 int ZFocusFinder::exe_counter_ = -1;
-int ZFocusFinder::focus_pointN_max_ = 20;
+int ZFocusFinder::focus_pointN_max_ = 200;
 
 ZFocusFinder::ZFocusFinder(AssemblyVUEyeCamera* camera, LStepExpressModel* motion_model, QObject* parent) :
   QObject(parent),
@@ -340,21 +340,29 @@ void ZFocusFinder::process_image(const cv::Mat& img)
   }
   else
   {
-    // generic autofocus step
-    ZFocusFinder::focus_info this_focus;
-    this_focus.z_position = motion_manager_->get_position_Z();
-    this_focus.focus_disc = this->image_focus_value(img);
-
-    v_focus_vals_.emplace_back(this_focus);
+    // --- generic autofocus step ---
 
     // save image
     const std::string img_outpath = output_dir_+"/ZFocusFinder_"+std::to_string(v_focus_vals_.size())+".png";
     cv::imwrite(img_outpath, img);
 
-    // go to next autofocus step
-    NQLog("ZFocusFinder::process_image") << "emitting signal \"next_zpoint\"";
+    // save focus info
+    ZFocusFinder::focus_info this_focus;
+    this_focus.z_position = motion_manager_->get_position_Z();
+    this_focus.focus_disc = this->image_focus_value(img);
+
+    NQLog("ZFocusFinder", NQLog::Spam) << "[process_image]"
+       << " image(" << exe_counter_ << "," << v_focus_vals_.size() << "),"
+       << " focus-value = " << this_focus.focus_disc;
+
+    v_focus_vals_.emplace_back(this_focus);
+    // ------------------------------
+
+    // --- go to next autofocus step
+    NQLog("ZFocusFinder", NQLog::Debug) << "[process_image]" << " emitting signal \"next_zpoint\"";
 
     emit next_zpoint();
+    // ------------------------------
   }
 
   return;
@@ -365,13 +373,13 @@ void ZFocusFinder::process_image(const cv::Mat& img)
  */
 double ZFocusFinder::image_focus_value(const cv::Mat& img)
 {
-//!!  // Remove noise by blurring with a Gaussian filter
-//!!  cv::Mat img_gaus;
-//!!  cv::GaussianBlur(img, img_gaus, cv::Size(img.cols, img.rows), 0, 0, cv::BORDER_DEFAULT);
-//!!
-//!!  // Convert the image to grayscale
-//!!  cv::Mat img_gray;
-//!!  cv::cvtColor(img_gaus, img_gray, CV_BGR2GRAY);
+//  // Remove noise by blurring with a Gaussian filter
+//  cv::Mat img_gaus;
+//  cv::GaussianBlur(img, img_gaus, cv::Size(img.cols, img.rows), 0, 0, cv::BORDER_DEFAULT);
+//
+//  // Convert the image to grayscale
+//  cv::Mat img_gray;
+//  cv::cvtColor(img_gaus, img_gray, CV_BGR2GRAY);
 
   // Apply laplacian function to GS image
   cv::Mat img_lap;
@@ -386,9 +394,6 @@ double ZFocusFinder::image_focus_value(const cv::Mat& img)
   cv::meanStdDev(img_lap_abs, mean, std_dev);
 
   const float value = (std_dev.val[0] * std_dev.val[0]);
-
-  NQLog("ZFocusFinder::image_focus_value", NQLog::Message)
-       << "image(" << exe_counter_ << "," << v_focus_vals_.size() << ") focus-value = " << value;
 
   return value;
 }
