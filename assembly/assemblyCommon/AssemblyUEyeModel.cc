@@ -10,30 +10,28 @@
 //                                                                             //
 /////////////////////////////////////////////////////////////////////////////////
 
-#include <iostream>
-
-#include <QApplication>
-
+#include <AssemblyUEyeCamera.h>
+#include <AssemblyUEyeModel.h>
 #include <nqlogger.h>
 
-#include "AssemblyUEyeCamera.h"
-#include "AssemblyUEyeModel.h"
-
-AssemblyUEyeModel::AssemblyUEyeModel(int updateInterval, QObject *parent)
-  : AssemblyVUEyeModel(updateInterval, parent), uEyeCameraList_(0) {}
+AssemblyUEyeModel::AssemblyUEyeModel(int updateInterval, QObject* parent) :
+  AssemblyVUEyeModel(updateInterval, parent),
+  uEyeCameraList_(0)
+{
+    NQLog("AssemblyUEyeModel", NQLog::Debug) << "constructed";
+}
 
 AssemblyUEyeModel::~AssemblyUEyeModel()
 {
-    NQLog("AssemblyUEyeModel::~AssemblyUEyeModel") << "deleting UEYE_CAMERA_LIST";
-
     if(uEyeCameraList_){ delete uEyeCameraList_; }
+
+    NQLog("AssemblyUEyeModel", NQLog::Debug) << "destructed";
 }
 
 void AssemblyUEyeModel::updateInformation()
 {
-/*
-    NQLog("AssemblyUEyeModel::updateInformation");
-*/
+    NQLog("AssemblyUEyeModel", NQLog::Debug) << "updateInformation";
+
     UEYE_CAMERA_LIST* uEyeCameraList = new UEYE_CAMERA_LIST;
 
     uEyeCameraList->dwCount = 0;
@@ -44,7 +42,7 @@ void AssemblyUEyeModel::updateInformation()
 
         if(uEyeCameraList_==0 || dw != uEyeCameraList_->dwCount){
 
-            NQLog("AssemblyUEyeModel::updateInformation") << dw << " camera(s) connected";
+            NQLog("AssemblyUEyeModel", NQLog::Message) << "updateInformation: " << dw << " camera(s) connected";
 
             delete uEyeCameraList_;
 
@@ -84,25 +82,29 @@ void AssemblyUEyeModel::updateInformation()
                 camera->setModelName(info->Model);
                 camera->setFullModelName(info->FullModelName);
                 camera->setStatus(info->dwStatus);
-                NQLog("AssemblyUEyeModel::updateInformation") << "Parameters";
-                NQLog("AssemblyUEyeModel::updateInformation") << "camera number" << idx;
-                NQLog("AssemblyUEyeModel::updateInformation") << "model name      : " << camera->getModelName();
-                NQLog("AssemblyUEyeModel::updateInformation") << "full model name : " << camera->getFullModelName();
-                NQLog("AssemblyUEyeModel::updateInformation") << "serial number   : " << camera->getSerialNumber();
-                NQLog("AssemblyUEyeModel::updateInformation") << "camera ID       : " << camera->getCameraID();
-                NQLog("AssemblyUEyeModel::updateInformation") << "device ID       : " << camera->getDeviceID();
-                NQLog("AssemblyUEyeModel::updateInformation") << "sensor ID       : " << camera->getSensorID();
-                NQLog("AssemblyUEyeModel::updateInformation") << "status          : " << camera->getStatus();
+
+                NQLog("AssemblyUEyeModel", NQLog::Message) << "updateInformation: Parameters";
+                NQLog("AssemblyUEyeModel", NQLog::Message) << "updateInformation: camera number" << idx;
+                NQLog("AssemblyUEyeModel", NQLog::Message) << "updateInformation: model name      : " << camera->getModelName();
+                NQLog("AssemblyUEyeModel", NQLog::Message) << "updateInformation: full model name : " << camera->getFullModelName();
+                NQLog("AssemblyUEyeModel", NQLog::Message) << "updateInformation: serial number   : " << camera->getSerialNumber();
+                NQLog("AssemblyUEyeModel", NQLog::Message) << "updateInformation: camera ID       : " << camera->getCameraID();
+                NQLog("AssemblyUEyeModel", NQLog::Message) << "updateInformation: device ID       : " << camera->getDeviceID();
+                NQLog("AssemblyUEyeModel", NQLog::Message) << "updateInformation: sensor ID       : " << camera->getSensorID();
+                NQLog("AssemblyUEyeModel", NQLog::Message) << "updateInformation: status          : " << camera->getStatus();
             }
 
-            emit cameraCountChanged((unsigned int) dw);
+            NQLog("AssemblyUEyeModel", NQLog::Debug) << "updateInformation"
+               << ": emitting signal \"cameraCountChanged(" << dw << ")\"";
+
+            emit cameraCountChanged(((unsigned int) dw));
         }
     }
 
     delete uEyeCameraList;
 
-    for(QVector<AssemblyVUEyeCamera*>::iterator it=cameras_.begin(); it != cameras_.end(); ++it){
-
+    for(QVector<AssemblyVUEyeCamera*>::iterator it=cameras_.begin(); it!=cameras_.end(); ++it)
+    {
         (*it)->updateInformation();
     }
 

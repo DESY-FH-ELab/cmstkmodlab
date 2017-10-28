@@ -43,13 +43,13 @@ ZFocusFinder::ZFocusFinder(AssemblyVUEyeCamera* camera, LStepExpressModel* motio
 {
     if(!camera)
     {
-      NQLog("ZFocusFinder::ZFocusFinder", NQLog::Fatal) << "null pointer to AssemblyVUEyeCamera object";
+      NQLog("ZFocusFinder", NQLog::Fatal) << "null pointer to AssemblyVUEyeCamera object";
       exit(1);
     }
 
     if(!motion_model)
     {
-      NQLog("ZFocusFinder::ZFocusFinder", NQLog::Fatal) << "null pointer to LStepExpressModel object";
+      NQLog("ZFocusFinder", NQLog::Fatal) << "null pointer to LStepExpressModel object";
       exit(1);
     }
 
@@ -66,11 +66,13 @@ ZFocusFinder::ZFocusFinder(AssemblyVUEyeCamera* camera, LStepExpressModel* motio
 
     v_focus_vals_.clear();
 
-    NQLog("ZFocusFinder::ZFocusFinder") << "constructed";
+    NQLog("ZFocusFinder::ZFocusFinder", NQLog::Debug) << "constructed";
 }
 
 void ZFocusFinder::enable_motion()
 {
+    NQLog("ZFocusFinder", NQLog::Debug) << "enable_motion";
+
     if(motion_enabled_ == false)
     {
       connect   (this           , SIGNAL(focus       (double, double, double, double)),
@@ -83,8 +85,6 @@ void ZFocusFinder::enable_motion()
                  this           , SLOT  (process_image (cv::Mat)));
 
       motion_enabled_ = true;
-
-      NQLog("ZFocusFinder::enable_motion") << "completed";
     }
 
     return;
@@ -92,6 +92,8 @@ void ZFocusFinder::enable_motion()
 
 void ZFocusFinder::disable_motion()
 {
+    NQLog("ZFocusFinder", NQLog::Debug) << "disable_motion";
+
     if(motion_enabled_ == true)
     {
       disconnect(this           , SIGNAL(focus       (double, double, double, double)),
@@ -104,8 +106,6 @@ void ZFocusFinder::disable_motion()
                  this           , SLOT  (process_image (cv::Mat)));
 
       motion_enabled_ = false;
-
-      NQLog("ZFocusFinder::disable_motion") << "completed";
     }
 
     return;
@@ -117,36 +117,37 @@ void ZFocusFinder::update_focus_inputs(const double zrange, const int pointN)
     {
       focus_zrange_ = zrange;
 
-      NQLog("ZFocusFinder::update_focus_inputs") << "updated z-motion range to " << focus_zrange_;
+      NQLog("ZFocusFinder", NQLog::Message) << "update_focus_inputs"
+         << ": updated z-motion range to " << focus_zrange_;
     }
     else
     {
-      NQLog("ZFocusFinder::update_focus_inputs") << "non-positive input value for z-motion range"
-                                                 << ", value not updated";
+      NQLog("ZFocusFinder", NQLog::Message) << "update_focus_inputs"
+         << ": non-positive input value for z-motion range, value not updated";
     }
 
     if(pointN > 0)
     {
       if(pointN > ZFocusFinder::focus_pointN_max_)
       {
-        NQLog("ZFocusFinder::update_focus_inputs") << "input number of scans larger than allowed max"
-                                                   << ", setting equal to allowed max";
+        NQLog("ZFocusFinder", NQLog::Message) << "update_focus_inputs"
+           << ": input number of scans larger than allowed max"
+           << ", setting equal to allowed max";
 
         focus_pointN_ = ZFocusFinder::focus_pointN_max_;
-
-        NQLog("ZFocusFinder::update_focus_inputs") << "updated number of scans to " << focus_pointN_;
       }
       else
       {
         focus_pointN_ = pointN;
-
-        NQLog("ZFocusFinder::update_focus_inputs") << "updated number of scans to " << focus_pointN_;
       }
+
+      NQLog("ZFocusFinder", NQLog::Message) << "update_focus_inputs"
+         << ": updated number of scans to " << focus_pointN_;
     }
     else
     {
-      NQLog("ZFocusFinder::update_focus_inputs") << "non-positive input value for number of scans"
-                                                 << ", value not updated";
+      NQLog("ZFocusFinder", NQLog::Message) << "update_focus_inputs"
+         << ": non-positive input value for number of scans, value not updated";
     }
 
     return;
@@ -179,7 +180,8 @@ void ZFocusFinder::acquire_image()
 
     Util::QDir_mkpath(output_dir_);
 
-    NQLog("ZFocusFinder::acquire_image") << "created output directory: " << output_dir_;
+    NQLog("ZFocusFinder", NQLog::Spam) << "acquire_image"
+       << ": created output directory: " << output_dir_;
 
     zposi_init_ = motion_manager_->get_position_Z();
 
@@ -206,7 +208,8 @@ void ZFocusFinder::acquire_image()
 
     zrelm_index_ = -1;
 
-    NQLog("ZFocusFinder::acquire_image") << "emitting signal \"next_zpoint\"";
+    NQLog("ZFocusFinder", NQLog::Debug) << "acquire_image"
+       << ": emitting signal \"next_zpoint\"";
 
     emit next_zpoint();
 }
@@ -217,8 +220,8 @@ void ZFocusFinder::test_focus()
 
   if(zrelm_index_ < 0)
   {
-    NQLog("ZFocusFinder::test_focus", NQLog::Fatal)
-         << "logic error: negative index for std::vector \"v_zrelm_vals_\"";
+    NQLog("ZFocusFinder", NQLog::Fatal) << "test_focus"
+       << ": logic error, negative index for std::vector \"v_zrelm_vals_\"";
 
     exit(1);
   }
@@ -226,7 +229,8 @@ void ZFocusFinder::test_focus()
   {
     const double dz = v_zrelm_vals_.at(zrelm_index_);
 
-    NQLog("ZFocusFinder::test_focus") << "emitting signal \"focus(0, 0, " << dz << ", 0)\"";
+    NQLog("ZFocusFinder::test_focus", NQLog::Debug) << "test_focus"
+       << ": emitting signal \"focus(0, 0, " << dz << ", 0)\"";
 
     emit focus(0., 0., dz, 0.);
 
@@ -235,7 +239,8 @@ void ZFocusFinder::test_focus()
   else
   {
     // Find best position
-    NQLog("ZFocusFinder::test_focus") << "finding best-focus position";
+    NQLog("ZFocusFinder", NQLog::Spam) << "test_focus"
+       << ": finding best-focus position";
 
     double zposi_best(zposi_init_);
     {
@@ -267,11 +272,13 @@ void ZFocusFinder::test_focus()
       zscan_can->SaveAs(zscan_plot_path_png .c_str());
       zscan_can->SaveAs(zscan_plot_path_root.c_str());
 
-      NQLog("ZFocusFinder::test_focus") << "emitting signal \"show_zscan(" << zscan_plot_path_png << ")\"";
+      NQLog("ZFocusFinder", NQLog::Debug) << "test_focus"
+         << ": emitting signal \"show_zscan(" << zscan_plot_path_png << ")\"";
 
       emit show_zscan(zscan_plot_path_png);
 
-      NQLog("ZFocusFinder::test_focus") << "emitting signal \"update_text(" << zposi_best << ")\"";
+      NQLog("ZFocusFinder", NQLog::Debug) << "test_focus"
+         << ": emitting signal \"update_text(" << zposi_best << ")\"";
 
       emit update_text(zposi_best);
     }
@@ -290,6 +297,9 @@ void ZFocusFinder::test_focus()
 
       txtfile.close();
     }
+
+    NQLog("ZFocusFinder", NQLog::Spam) << "test_focus"
+      << ": created output file: " << output_dir_+"/values.txt";
     // ------------------
 
     // auto-focus completed: move to best-focus position
@@ -299,7 +309,8 @@ void ZFocusFinder::test_focus()
 
     const double dz = (zposi_best-zposi_now);
 
-    NQLog("ZFocusFinder::test_focus") << "emitting signal \"focus(0, 0, " << dz << ", 0)\"";
+    NQLog("ZFocusFinder", NQLog::Debug) << "test_focus"
+       << ": emitting signal \"focus(0, 0, " << dz << ", 0)\"";
 
     emit focus(0., 0., dz, 0.);
 
@@ -312,7 +323,7 @@ void ZFocusFinder::test_focus()
 
 void ZFocusFinder::process_image(const cv::Mat& img)
 {
-  NQLog("ZFocusFinder::process_image");
+  NQLog("ZFocusFinder", NQLog::Debug) << "process_image";
 
   if(focus_completed_)
   {
@@ -334,7 +345,8 @@ void ZFocusFinder::process_image(const cv::Mat& img)
     cv::imwrite(img_outpath, img);
 
     // signal to end autofocus
-    NQLog("ZFocusFinder::process_image") << "emitting signal \"image_acquired\"";
+    NQLog("ZFocusFinder", NQLog::Debug) << "process_image"
+       << ": emitting signal \"image_acquired\"";
 
     emit image_acquired(img);
   }
@@ -351,15 +363,16 @@ void ZFocusFinder::process_image(const cv::Mat& img)
     this_focus.z_position = motion_manager_->get_position_Z();
     this_focus.focus_disc = this->image_focus_value(img);
 
-    NQLog("ZFocusFinder", NQLog::Spam) << "[process_image]"
-       << " image(" << exe_counter_ << "," << v_focus_vals_.size() << "),"
-       << " focus-value = " << this_focus.focus_disc;
+    NQLog("ZFocusFinder", NQLog::Spam) << "process_image"
+       << ": image(" << exe_counter_ << "," << v_focus_vals_.size() << ")"
+       << ", focus-value = " << this_focus.focus_disc;
 
     v_focus_vals_.emplace_back(this_focus);
     // ------------------------------
 
     // --- go to next autofocus step
-    NQLog("ZFocusFinder", NQLog::Debug) << "[process_image]" << " emitting signal \"next_zpoint\"";
+    NQLog("ZFocusFinder", NQLog::Debug) << "process_image"
+       << ": emitting signal \"next_zpoint\"";
 
     emit next_zpoint();
     // ------------------------------

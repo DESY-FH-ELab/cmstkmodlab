@@ -10,8 +10,8 @@
 //                                                                             //
 /////////////////////////////////////////////////////////////////////////////////
 
-#ifndef SNAPSHOTCONTROLLER_H
-#define SNAPSHOTCONTROLLER_H
+#ifndef IMAGECONTROLLER_H
+#define IMAGECONTROLLER_H
 
 #include <AssemblyUEyeCameraManager.h>
 #include <ZFocusFinder.h>
@@ -79,4 +79,4 @@ class ImageController : public QObject
     void image_acquired(const cv::Mat&);
 };
 
-#endif // SNAPSHOTCONTROLLER_H
+#endif // IMAGECONTROLLER_H

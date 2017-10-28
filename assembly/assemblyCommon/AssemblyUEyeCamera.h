@@ -17,7 +17,6 @@
 #include <uEye.h>
 
 #include <QThread>
-#include <QColor>
 
 #include <opencv2/opencv.hpp>
 
@@ -31,9 +30,9 @@ typedef struct _UEYE_IMAGE
 
 class AssemblyUEyeCameraEventThread : public QThread
 {
-Q_OBJECT
+ Q_OBJECT
 
-public:
+  public:
 
     AssemblyUEyeCameraEventThread();
     virtual ~AssemblyUEyeCameraEventThread();
@@ -41,15 +40,15 @@ public:
     int start(HIDS cameraHandle);
     void stop();
 
-signals:
+  signals:
 
     void eventHappened();
 
-protected:
+  protected:
 
     void run();
 
-private:
+  private:
 
     HIDS cameraHandle_;
     volatile bool runEventThread_;
@@ -57,8 +56,10 @@ private:
 
 class AssemblyUEyeCamera : public AssemblyVUEyeCamera
 {
-    Q_OBJECT
-public:
+ Q_OBJECT
+
+  public:
+
     explicit AssemblyUEyeCamera(QObject *parent);
     ~AssemblyUEyeCamera();
 
@@ -68,7 +69,7 @@ public:
 
     bool isAvailable() const;
 
-public slots:
+  public slots:
 
     void open();
     void close();
@@ -78,11 +79,11 @@ public slots:
     void setPixelClock(unsigned int);
     void setExposureTime(double);
 
-protected slots:
+  protected slots:
 
     void eventHappend();
 
-protected:
+  protected:
 
     int searchDefaultImageFormats(int supportMask);
     void setupCapture();
@@ -93,9 +94,7 @@ protected:
     unsigned int readPixelClock();
     double readExposureTime();
 
-signals:
-
-private:
+  private:
 
     HIDS cameraHandle_;
     AssemblyUEyeCameraEventThread* eventThread_;

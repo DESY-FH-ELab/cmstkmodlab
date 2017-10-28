@@ -63,7 +63,7 @@ AssemblySensorMarkerFinder::AssemblySensorMarkerFinder(QObject *parent) :
 
 AssemblySensorMarkerFinder::~AssemblySensorMarkerFinder()
 {
-    NQLog("AssemblySensorMarkerFinder") << "deconstructed";
+    NQLog("AssemblySensorMarkerFinder", NQLog::Debug) << "destructed";
 }
 
 void AssemblySensorMarkerFinder::runObjectDetection(int labmode, int objectmode)
