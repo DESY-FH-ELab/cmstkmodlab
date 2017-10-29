@@ -152,8 +152,8 @@ AssemblyMainWindow::AssemblyMainWindow(const unsigned int camera_ID, QWidget* pa
 
     connect(autoFocusView_, SIGNAL(run_scan(double, int))  , zfocus_finder_, SLOT(update_focus_inputs(double, int)));
 
-    connect(zfocus_finder_, SIGNAL(show_zscan(std::string)), autoFocusView_, SLOT(make_graph(std::string)));
-    connect(zfocus_finder_, SIGNAL(update_text(double))    , autoFocusView_, SLOT(updateText(double)));
+    connect(zfocus_finder_, SIGNAL(show_zscan(QString)), autoFocusView_, SLOT(make_graph(QString)));
+    connect(zfocus_finder_, SIGNAL(update_text(double)), autoFocusView_, SLOT(updateText(double)));
 
     autoFocusView_->configure_scan();
 

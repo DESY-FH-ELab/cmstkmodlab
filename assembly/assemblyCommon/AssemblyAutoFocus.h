@@ -15,18 +15,13 @@
 
 #include <AssemblyUEyeView.h>
 
-#include <string>
-
 #include <QWidget>
+#include <QString>
 #include <QScrollArea>
 #include <QKeyEvent>
 #include <QLineEdit>
 #include <QPushButton>
-#include <QPainter>
-#include <QGroupBox>
-#include <QVBoxLayout>
 #include <QCheckBox>
-#include <QRadioButton>
 
 #include <opencv2/opencv.hpp>
 
@@ -62,9 +57,9 @@ class AssemblyAutoFocus : public QWidget
 
   public slots:
     void imageAcquired(const cv::Mat&);
-    void updateImage(int, std::string);
+    void updateImage(int, const QString&);
     void configure_scan();
-    void make_graph(const std::string);
+    void make_graph(const QString&);
     void updateText(double);
     void go_to_focal_point();
 

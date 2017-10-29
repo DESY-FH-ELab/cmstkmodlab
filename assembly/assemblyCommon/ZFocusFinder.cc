@@ -275,7 +275,7 @@ void ZFocusFinder::test_focus()
       NQLog("ZFocusFinder", NQLog::Debug) << "test_focus"
          << ": emitting signal \"show_zscan(" << zscan_plot_path_png << ")\"";
 
-      emit show_zscan(zscan_plot_path_png);
+      emit show_zscan(QString(zscan_plot_path_png.c_str()));
 
       NQLog("ZFocusFinder", NQLog::Debug) << "test_focus"
          << ": emitting signal \"update_text(" << zposi_best << ")\"";

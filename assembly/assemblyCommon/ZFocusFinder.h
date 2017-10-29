@@ -19,6 +19,7 @@
 #include <LStepExpressMotionManager.h>
 
 #include <QObject>
+#include <QString>
 
 #include <vector>
 #include <string>
@@ -93,7 +94,7 @@ class ZFocusFinder : public QObject
 
     void image_acquired(const cv::Mat&);
 
-    void show_zscan(const std::string);
+    void show_zscan(const QString&);
 
     void update_text(const double);
 };

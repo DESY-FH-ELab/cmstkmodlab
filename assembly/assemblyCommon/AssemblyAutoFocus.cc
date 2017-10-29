@@ -146,9 +146,10 @@ void AssemblyAutoFocus::configure_scan()
   emit run_scan(x_d, y_d);
 }
 
-void AssemblyAutoFocus::make_graph(const std::string img_name)
+void AssemblyAutoFocus::make_graph(const QString& img_name)
 {
-  cv::Mat img = cv::imread(img_name, CV_LOAD_IMAGE_COLOR);
+  cv::Mat img = cv::imread(img_name.toStdString(), CV_LOAD_IMAGE_COLOR);
+
   emit graph_made(img);
 
   return;
@@ -174,11 +175,11 @@ void AssemblyAutoFocus::go_to_focal_point(){
   return;    
 }
 
-void AssemblyAutoFocus::updateImage(int stage, std::string filename)
+void AssemblyAutoFocus::updateImage(int stage, const QString& filename)
 {
   NQLog("AssemblyAutoFocus", NQLog::Debug) << "updateImage(" << stage << ", " << filename << ")";
 
-  cv::Mat img_gs = cv::imread(filename, CV_LOAD_IMAGE_COLOR);
+  const cv::Mat img_gs = cv::imread(filename.toStdString(), CV_LOAD_IMAGE_COLOR);
 
   if(stage == 1)
   {

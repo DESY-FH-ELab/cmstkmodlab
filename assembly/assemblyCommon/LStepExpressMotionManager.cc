@@ -21,8 +21,8 @@ LStepExpressMotionManager::LStepExpressMotionManager(LStepExpressModel* model, Q
 {
     if(!model_)
     {
-      NQLog("LStepExpressMotionManager::LStepExpressMotionManager", NQLog::Fatal)
-           << "pointer to LStepExpressModel initialized to NULL";
+      NQLog("LStepExpressMotionManager", NQLog::Fatal)
+         << "pointer to LStepExpressModel initialized to NULL";
 
       exit(1);
     }
@@ -94,7 +94,7 @@ void LStepExpressMotionManager::run()
 
     if(motion.getMode() == true)
     {
-      NQLog("LStepExpressMotionManager::run") << "emitting signal \"signalMoveAbsolute("
+      NQLog("LStepExpressMotionManager", NQLog::Spam) << "run: emitting signal \"signalMoveAbsolute("
         <<   "x=" << motion.getX()
         << ", y=" << motion.getY()
         << ", z=" << motion.getZ()
@@ -105,7 +105,7 @@ void LStepExpressMotionManager::run()
     }
     else
     {
-      NQLog("LStepExpressMotionManager::run") << "emitting signal \"signalMoveRelative("
+      NQLog("LStepExpressMotionManager", NQLog::Spam) << "run: emitting signal \"signalMoveAbsolute("
         <<   "x=" << motion.getX()
         << ", y=" << motion.getY()
         << ", z=" << motion.getZ()
@@ -186,7 +186,8 @@ void LStepExpressMotionManager::finish_motion()
 {
     inMotion_ = false;
 
-//    NQLog("LStepExpressMotionManager::finish_motion") << "emitting signal \"motion_finished\"";
+    NQLog("LStepExpressMotionManager", NQLog::Debug) << "finish_motion"
+       << ": emitting signal \"motion_finished\"";
 
     emit motion_finished();
 }
