@@ -103,7 +103,7 @@ void ImageController::disable_camera()
 
 void ImageController::retrieve_image(const cv::Mat& a_mat)
 {
-  NQLog("ImageController", NQLog::Debug) << "retrieve_image"
+  NQLog("ImageController", NQLog::Message) << "retrieve_image"
      << ": emitting signal \"image_acquired\"";
 
   emit image_acquired(a_mat);

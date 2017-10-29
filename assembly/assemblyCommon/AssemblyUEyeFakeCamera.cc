@@ -10,20 +10,15 @@
 //                                                                             //
 /////////////////////////////////////////////////////////////////////////////////
 
+#include <AssemblyUEyeFakeCamera.h>
+#include <ApplicationConfig.h>
+#include <nqlogger.h>
+
 #include <unistd.h>
 
-#include <iostream>
-
-#include <QApplication>
-
-#include <nqlogger.h>
-#include <ApplicationConfig.h>
-
-#include "AssemblyUEyeFakeCamera.h"
-
-AssemblyUEyeFakeCamera::AssemblyUEyeFakeCamera(QObject *parent)
-    : AssemblyVUEyeCamera(parent),
-      imageIndex_(0)
+AssemblyUEyeFakeCamera::AssemblyUEyeFakeCamera(QObject* parent) :
+  AssemblyVUEyeCamera(parent),
+  imageIndex_(0)
 {
     cameraState_ = State::OFF;
 
@@ -77,7 +72,7 @@ AssemblyUEyeFakeCamera::AssemblyUEyeFakeCamera(QObject *parent)
 
 AssemblyUEyeFakeCamera::~AssemblyUEyeFakeCamera()
 {
-    if (cameraState_==READY) close();
+    if (cameraState_==READY){ close(); }
 }
 
 void AssemblyUEyeFakeCamera::open()
@@ -245,7 +240,8 @@ void AssemblyUEyeFakeCamera::acquireImage()
 
     image_ = cv::imread(imageFilenames_[imageIndex_++], CV_LOAD_IMAGE_GRAYSCALE);
 
-    NQLog("AssemblyUEyeFakeCamera::acquireImage") << "emitting signal \"imageAcquired\"";
+    NQLog("AssemblyUEyeFakeCamera", NQLog::Debug) << "acquireImage"
+       << ": emitting signal \"imageAcquired\"";
 
     emit imageAcquired(image_);
 

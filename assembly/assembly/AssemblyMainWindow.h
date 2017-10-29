@@ -21,7 +21,6 @@ typedef AssemblyUEyeFakeModel AssemblyUEyeModel_t;
 #include <AssemblyUEyeModel.h>
 typedef AssemblyUEyeModel AssemblyUEyeModel_t;
 #endif
-#include <AssemblyUEyeCameraThread.h>
 #include <AssemblyUEyeWidget.h>
 #include <AssemblyUEyeView.h>
 #include <AssemblyUEyeSnapShooter.h>
@@ -30,13 +29,9 @@ typedef AssemblyUEyeModel AssemblyUEyeModel_t;
 #include <AssemblyAutoFocus.h>
 #include <AssemblyScanner.h>
 #include <AssemblyAssembler.h>
-#include <AssemblyMarkerFinderThread.h>
-#include <AssemblySensorMarkerFinder.h>
-#include <AssemblySensorMarkerFinderWidget.h>
 #include <LStepExpressModel.h>
 #include <LStepExpressSettings.h>
 #include <LStepExpressMotionManager.h>
-#include <LStepExpressMotionThread.h>
 #include <LStepExpressSettingsWidget.h>
 #include <LStepExpressWidget.h>
 #include <LStepExpressJoystickWidget.h>
@@ -47,10 +42,12 @@ typedef AssemblyUEyeModel AssemblyUEyeModel_t;
 #include <ConradModel.h>
 #include <ConradManager.h>
 #include <ImageController.h>
+#include <MarkerFinderPatRec.h>
 #include <ZFocusFinder.h>
 
 #include <QMainWindow>
 #include <QTabWidget>
+#include <QThread>
 #include <QDir>
 #include <QTimer>
 #include <QToolBar>
@@ -118,27 +115,27 @@ class AssemblyMainWindow : public QMainWindow
     QCheckBox *checkbox3;
     QCheckBox *checkbox4;
 
-    AssemblyUEyeModel_t* cameraModel_;
-//!!    AssemblyUEyeWidget*  cameraWidget_;
-    unsigned int              camera_ID_;
-    AssemblyVUEyeCamera *     camera_;
-    AssemblyUEyeCameraThread* cameraThread_;
-
-    ZFocusFinder* zfocus_finder_;
-
-    AssemblySensorMarkerFinder*       finder_;
-    AssemblyMarkerFinderThread*       finderThread_;
-    AssemblySensorMarkerFinderWidget* finderWidget_;
-
-    LStepExpressModel*          motionModel_;
-    LStepExpressMotionManager*  motionManager_;
-    LStepExpressMotionThread*   motionThread_;
+    LStepExpressModel*          motion_model_;
+    LStepExpressMotionManager*  motion_manager_;
+    QThread*                    motion_thread_;
     LStepExpressSettings*       motionSettings_;
     LStepExpressSettingsWidget* motionSettingsWidget_;
 
+    AssemblyUEyeModel_t* camera_model_;
+    QThread*             camera_thread_;
+//    AssemblyUEyeWidget*  camera_widget_;
+    unsigned int         camera_ID_;
+    AssemblyVUEyeCamera* camera_;
+
+    ZFocusFinder* zfocus_finder_;
+    QThread*      zfocus_finder_thread_;
+
+    MarkerFinderPatRec* marker_finder_;
+    QThread*            marker_finder_thread_;
 
     ConradModel*       conradModel_;
     ConradManager*     conradManager_;
+
     AssemblyAssembler* module_assembler_;
 
     ImageController* image_ctr_;

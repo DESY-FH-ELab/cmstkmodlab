@@ -10,15 +10,11 @@
 //                                                                             //
 /////////////////////////////////////////////////////////////////////////////////
 
-#include <vector>
-
-#include <QVBoxLayout>
-#include <QFileDialog>
-#include <QPushButton>
-
+#include <AssemblyThresholdTuner.h>
 #include <nqlogger.h>
 
-#include "AssemblyThresholdTuner.h"
+#include <QFileDialog>
+#include <QPushButton>
 
 AssemblyThresholdTuner::AssemblyThresholdTuner(QWidget* parent) : QWidget(parent)
 {
@@ -95,7 +91,8 @@ AssemblyThresholdTuner::AssemblyThresholdTuner(QWidget* parent) : QWidget(parent
 
 void AssemblyThresholdTuner::setNewThreshold()
 {
-    NQLog("AssemblyThresholdTuner::setNewThreshold") << "Threshold button clicked";
+    NQLog("AssemblyThresholdTuner", NQLog::Debug) << "setNewThreshold"
+       << ": threshold button clicked";
 
     setThresholdButton->setEnabled(false);
 
@@ -137,7 +134,7 @@ void AssemblyThresholdTuner::updateThresholdImage(QString filename)
 
 void AssemblyThresholdTuner::connectImageProducer(const QObject* sender, const char* signal)
 {
-    NQLog("AssemblyThresholdTuner::connectImageProducer");
+    NQLog("AssemblyThresholdTuner", NQLog::Debug) << "connectImageProducer";
 
     imageView1_->connectImageProducer(sender, signal);
 
@@ -146,7 +143,7 @@ void AssemblyThresholdTuner::connectImageProducer(const QObject* sender, const c
 
 void AssemblyThresholdTuner::disconnectImageProducer(const QObject* sender, const char* signal)
 {
-    NQLog("AssemblyThresholdTuner::disconnectImageProducer");
+    NQLog("AssemblyThresholdTuner", NQLog::Debug) << "disconnectImageProducer";
 
     imageView1_->disconnectImageProducer(sender, signal);
 
@@ -155,7 +152,7 @@ void AssemblyThresholdTuner::disconnectImageProducer(const QObject* sender, cons
 
 void AssemblyThresholdTuner::snapShot()
 {
-    NQLog("AssemblyThresholdTuner::snapShot");
+    NQLog("AssemblyThresholdTuner", NQLog::Debug) << "snapShot";
 
     if(image_.rows==0){ return; }
 
@@ -167,10 +164,10 @@ void AssemblyThresholdTuner::snapShot()
     cv::imwrite(filename.toStdString(), image_);
 }
 
-//void AssemblyThresholdTuner::imageAcquired(const cv::Mat& newImage)
 void AssemblyThresholdTuner::imageAcquired(cv::Mat newImage)
 {
-    NQLog("AssemblyThresholdTuner::imageAcquired") << "image copied";
+    NQLog("AssemblyThresholdTuner", NQLog::Debug) << "imageAcquired";
+
     newImage.copyTo(image_);
 }
 

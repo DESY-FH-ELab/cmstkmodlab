@@ -37,7 +37,7 @@
 using namespace cv;
 
 AssemblyModuleAssembler::AssemblyModuleAssembler(
-  AssemblyVUEyeCamera* camera, AssemblySensorMarkerFinder * finder_,
+  AssemblyVUEyeCamera* camera, MarkerFinderPatRec* finder_,
   LStepExpressModel* lStepExpressModel_,
   QWidget *parent
 ) : QWidget(parent),
@@ -936,7 +936,7 @@ void AssemblyAligner::align()
 }
 
 AssemblySensorLocator::AssemblySensorLocator(QWidget *parent, std::string string,
-                                             double a, AssemblySensorMarkerFinder * finder_ )
+                                             double a, MarkerFinderPatRec* finder_ )
  : QWidget(parent), local_a(a)
 {
     

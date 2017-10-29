@@ -31,7 +31,7 @@
 //vision
 #include <AssemblyUEyeView.h>
 #include <AssemblyVUEyeCamera.h>
-#include <AssemblySensorMarkerFinder.h>
+#include <MarkerFinderPatRec.h>
 
 #include "AssemblyVUEyeCamera.h"
 
@@ -96,7 +96,7 @@ class AssemblyModuleAssembler : public QWidget
  Q_OBJECT
 
 public:
-  explicit AssemblyModuleAssembler(AssemblyVUEyeCamera* camera, AssemblySensorMarkerFinder* finder_, LStepExpressModel* lStepExpressModel_, QWidget* parent=0);
+  explicit AssemblyModuleAssembler(AssemblyVUEyeCamera* camera, MarkerFinderPatRec* finder_, LStepExpressModel* lStepExpressModel_, QWidget* parent=0);
   void connectImageProducer(const QObject* sender, const char* signal);
   void disconnectImageProducer(const QObject* sender, const char* signal);
 
@@ -334,7 +334,7 @@ Q_OBJECT
  public:
 
   explicit AssemblySensorLocator(QWidget *parent = 0, std::string ="test",
-                                 double a  = 0.0, AssemblySensorMarkerFinder* finder_ = 0);
+                                 double a  = 0.0, MarkerFinderPatRec* finder_ = 0);
 
   double local_x, local_y, local_z, local_a;
   QPushButton* button1;

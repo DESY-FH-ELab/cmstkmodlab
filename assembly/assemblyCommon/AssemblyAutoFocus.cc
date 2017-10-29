@@ -43,8 +43,6 @@ using namespace cv;
 
 AssemblyAutoFocus::AssemblyAutoFocus(QWidget *parent) : QWidget(parent)
 {
-//  NQLog("AssemblyAutoFocus::AssemblyAutoFocus");
-
   QGridLayout* l = new QGridLayout(this);
   setLayout(l);
 
@@ -126,6 +124,8 @@ AssemblyAutoFocus::AssemblyAutoFocus(QWidget *parent) : QWidget(parent)
   // make all the neccessary connections
   connect(button1, SIGNAL(clicked()), this, SLOT(configure_scan()));
   connect(button2, SIGNAL(clicked()), this, SLOT(go_to_focal_point()));
+
+  NQLog("AssemblyAutoFocus", NQLog::Debug) << "constructed";
 }
 
 void AssemblyAutoFocus::configure_scan()
@@ -156,9 +156,10 @@ void AssemblyAutoFocus::make_graph(const std::string img_name)
 
 void AssemblyAutoFocus::updateText(double z)
 {
-  NQLog("AssemblyAutoFocus::updateText");
+  NQLog("AssemblyAutoFocus", NQLog::Debug) << "updateText"
+     << ": updated value of absolute focal point";
 
-  const QString qstr = "Absolute focal point (measured)  = "+QString::fromStdString(std::to_string(z));
+  const QString qstr = "Absolute focal point (measured) = "+QString::fromStdString(std::to_string(z));
 
   lE2->setText(qstr);
 
@@ -167,19 +168,20 @@ void AssemblyAutoFocus::updateText(double z)
 
 void AssemblyAutoFocus::go_to_focal_point(){
 
-  NQLog("AssemblyAutoFocus::go_to_focal_point()");
+  NQLog("AssemblyAutoFocus", NQLog::Warning) << "go_to_focal_point"
+     << ": to be implemented, no action taken";
 
   return;    
 }
 
 void AssemblyAutoFocus::updateImage(int stage, std::string filename)
 {
-  NQLog("AssemblyAutoFocus") << ":updateImage()  " + filename;
+  NQLog("AssemblyAutoFocus", NQLog::Debug) << "updateImage(" << stage << ", " << filename << ")";
 
   cv::Mat img_gs = cv::imread(filename, CV_LOAD_IMAGE_COLOR);
 
-  if(stage == 1){
-
+  if(stage == 1)
+  {
     imageView_1->setZoomFactor(0.2);
     imageView_1->setImage(img_gs);    
   }
@@ -189,7 +191,7 @@ void AssemblyAutoFocus::updateImage(int stage, std::string filename)
 
 void AssemblyAutoFocus::connectImageProducer(const QObject* sender, const char* signal)
 {
-  NQLog("AssemblyAutoFocus") << ":connectImageProducer";
+  NQLog("AssemblyAutoFocus", NQLog::Debug) << "connectImageProducer";
 
   imageView_1->connectImageProducer(sender, signal);
 
@@ -200,7 +202,7 @@ void AssemblyAutoFocus::connectImageProducer(const QObject* sender, const char* 
 
 void AssemblyAutoFocus::disconnectImageProducer(const QObject* sender, const char* signal)
 {
-  NQLog("AssemblyAutoFocus") << ":disconnectImageProducer";
+  NQLog("AssemblyAutoFocus", NQLog::Debug) << "disconnectImageProducer";
 
   imageView_1->disconnectImageProducer(sender, signal);
 
@@ -211,7 +213,7 @@ void AssemblyAutoFocus::disconnectImageProducer(const QObject* sender, const cha
 
 void AssemblyAutoFocus::imageAcquired(const cv::Mat& newImage)
 {
-  NQLog("AssemblyAutoFocus") << ":imageAcquired";
+  NQLog("AssemblyAutoFocus", NQLog::Debug) << "imageAcquired";
 
   newImage.copyTo(image_);
 

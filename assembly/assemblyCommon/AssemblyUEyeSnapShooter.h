@@ -20,7 +20,6 @@
 #include <QKeyEvent>
 
 #include <AssemblyVUEyeCamera.h>
-#include <AssemblyVMarkerFinder.h>
 #include <AssemblyUEyeView.h>
 
 class AssemblyUEyeSnapShooter : public QWidget
