@@ -82,11 +82,11 @@ AssemblyUEyeFakeCamera::~AssemblyUEyeFakeCamera()
 
 void AssemblyUEyeFakeCamera::open()
 {
-    if (cameraState_==State::READY || cameraState_==State::INITIALIZING) return;
+    if(cameraState_==State::READY || cameraState_==State::INITIALIZING){ return; }
 
     cameraState_ = State::INITIALIZING;
 
-    NQLog("AssemblyUEyeFakeCamera") << ":open()";
+    NQLog("AssemblyUEyeFakeCamera", NQLog::Debug) << "open";
 
     setID("IDS GmbH");
     setVersion("");
@@ -121,15 +121,18 @@ void AssemblyUEyeFakeCamera::open()
 
 void AssemblyUEyeFakeCamera::close()
 {
-    if (cameraState_!=State::READY) return;
+    NQLog("AssemblyUEyeFakeCamera", NQLog::Debug) << "close";
 
-    NQLog("AssemblyUEyeFakeCamera") << ":close()";
+    if(cameraState_ != State::READY){ return; }
 
     cameraState_ = State::CLOSING;
 
     usleep(500000);
 
     cameraState_ = State::OFF;
+
+    NQLog("AssemblyUEyeFakeCamera", NQLog::Debug) << "close"
+       << ": emitting signal \"cameraClosed\"";
 
     emit cameraClosed();
 }

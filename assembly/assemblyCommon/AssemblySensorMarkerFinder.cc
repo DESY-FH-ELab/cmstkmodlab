@@ -31,6 +31,11 @@ AssemblySensorMarkerFinder::AssemblySensorMarkerFinder(QObject *parent) :
   AssemblyVMarkerFinder(parent)
 {
     ApplicationConfig* config = ApplicationConfig::instance();
+    if(!config)
+    {
+      NQLog("AssemblySensorMarkerFinder", NQLog::Fatal) << "ApplicationConfig::instance() not initialized, null pointer";
+      exit(1);
+    }
 
     gaussianBlurKernelSize_ = config->getValue<int>("SensorMarkerGaussianBlurKernelSize", 9);
     gaussianBlurSigma_ = config->getValue<int>("SensorMarkerGaussianBlurSigma", 2);
@@ -99,7 +104,8 @@ void AssemblySensorMarkerFinder::runObjectDetection(int labmode, int objectmode)
       img_clip_A = cv::imread(Config::CMSTkModLabBasePath+"/share/assembly/glassslidecorneronbaseplate_sliverpaint_A_clip.png", CV_LOAD_IMAGE_COLOR);
     }
 
-    NQLog("AssemblySensorMarkerFinder::runObjectDetection") << " emitting signal: locatePickupCorner_templateMatching";
+    NQLog("AssemblySensorMarkerFinder") << "runObjectDetection"
+       << ": emitting signal \"locatePickupCorner_templateMatching\"";
 
     emit locatePickupCorner_templateMatching(img, img_clip_A);
   }
@@ -1282,15 +1288,24 @@ void AssemblySensorMarkerFinder::findMarker_circleSeed(int mode)
 void AssemblySensorMarkerFinder::setNewGeneralThreshold(int value, cv::Mat img)
 {
   generalThreshold_ = value;
+
+  NQLog("AssemblySensorMarkerFinder", NQLog::Debug) << "setNewGeneralThreshold"
+     << ": emitting signal \"sendCurrentGeneralThreshold(" << value << ")\"";
+
   emit sendCurrentGeneralThreshold(value);
-  this -> updateThresholdImage(img);
-  NQLog("AssemblySensorMarkerFinder") << " Threshold value successfuly changed to value = "<< value;
+
+  this->updateThresholdImage(img);
+
+  NQLog("AssemblySensorMarkerFinder", NQLog::Spam) << "setNewGeneralThreshold"
+     << ": updated threshold value: " << value;
 }
 
 void AssemblySensorMarkerFinder::getCurrentGeneralThreshold()
 { 
-    NQLog("AssemblySensorMarkerFinder::getCurrentGeneralThreshold") << "emitting signal sendCurrentGeneralThreshold("+std::to_string(generalThreshold_)+")";
-    emit sendCurrentGeneralThreshold(generalThreshold_);
+  NQLog("AssemblySensorMarkerFinder", NQLog::Debug) << "getCurrentGeneralThreshold"
+     << ": emitting signal \"sendCurrentGeneralThreshold(" << generalThreshold_ << ")\"";
+
+  emit sendCurrentGeneralThreshold(generalThreshold_);
 }
 
 void AssemblySensorMarkerFinder::updateThresholdImage(cv::Mat img)

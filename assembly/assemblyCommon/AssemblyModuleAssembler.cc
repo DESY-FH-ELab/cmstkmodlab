@@ -45,8 +45,8 @@ AssemblyModuleAssembler::AssemblyModuleAssembler(
 {
   LStepExpressMotionManager* motionManager_ = new LStepExpressMotionManager(lStepExpressModel_);
 
-  if(camera_){ NQLog("AssemblyModuleAssembler::AssemblyModuleAssembler") << "camera enabled"  ; }
-  else       { NQLog("AssemblyModuleAssembler::AssemblyModuleAssembler") << "camera not found"; }
+  if(camera_){ NQLog("AssemblyModuleAssembler", NQLog::Debug)    << "camera enabled"  ; }
+  else       { NQLog("AssemblyModuleAssembler", NQLog::Critical) << "camera not found"; }
 
   if(!camera_)
   {

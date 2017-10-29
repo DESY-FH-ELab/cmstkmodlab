@@ -10,16 +10,12 @@
 //                                                                             //
 /////////////////////////////////////////////////////////////////////////////////
 
-#include <iostream>
-
-#include <QApplication>
-
+#include <AssemblyVUEyeModel.h>
 #include <nqlogger.h>
 
-#include "AssemblyVUEyeModel.h"
-
-AssemblyVUEyeModel::AssemblyVUEyeModel(int updateInterval, QObject *parent)
-  : QObject(parent), updateInterval_(updateInterval)
+AssemblyVUEyeModel::AssemblyVUEyeModel(int updateInterval, QObject* parent) :
+  QObject(parent),
+  updateInterval_(updateInterval)
 {
     timer_ = new QTimer(this);
     timer_->setInterval(updateInterval_ * 1000);
@@ -27,11 +23,13 @@ AssemblyVUEyeModel::AssemblyVUEyeModel(int updateInterval, QObject *parent)
     connect(timer_, SIGNAL(timeout()), this, SLOT(updateInformation()));
 
     timer_->start();
+
+    NQLog("AssemblyVUEyeModel", NQLog::Debug) << "constructed";
 }
 
 AssemblyVUEyeModel::~AssemblyVUEyeModel()
 {
-    NQLog("AssemblyVUEyeModel::~AssemblyVUEyeModel") << "delete";
+    NQLog("AssemblyVUEyeModel", NQLog::Debug) << "destructed";
 }
 
 size_t AssemblyVUEyeModel::getCameraCount() const
@@ -41,6 +39,8 @@ size_t AssemblyVUEyeModel::getCameraCount() const
 
 AssemblyVUEyeCamera* AssemblyVUEyeModel::getCamera(size_t idx)
 {
+    NQLog("AssemblyVUEyeModel", NQLog::Debug) << "getCamera(" << idx <<" )";
+
     if(idx >= this->getCameraCount()){ return 0; }
 
     return cameras_.at(idx);
@@ -48,9 +48,11 @@ AssemblyVUEyeCamera* AssemblyVUEyeModel::getCamera(size_t idx)
 
 AssemblyVUEyeCamera* AssemblyVUEyeModel::getCameraByID(unsigned int id)
 {
+    NQLog("AssemblyVUEyeModel", NQLog::Debug) << "getCameraByID(" << id << ")";
+
     for(QVector<AssemblyVUEyeCamera*>::iterator it=cameras_.begin(); it!=cameras_.end(); ++it)
     {
-        if((*it)->getCameraID()==id){ return *it; }
+      if((*it)->getCameraID()==id){ return *it; }
     }
 
     return 0;
@@ -58,15 +60,13 @@ AssemblyVUEyeCamera* AssemblyVUEyeModel::getCameraByID(unsigned int id)
 
 void AssemblyVUEyeModel::clear()
 {
-    NQLog("AssemblyVUEyeModel::clear") << "clearing collection of camera(s)";
-
     for(QVector<AssemblyVUEyeCamera*>::iterator it=cameras_.begin(); it!=cameras_.end(); ++it)
     {
         delete *it;
     }
     cameras_.clear();
 
-    NQLog("AssemblyVUEyeModel::clear") << "clearing collection of thread(s)";
+    NQLog("AssemblyVUEyeModel", NQLog::Debug) << "clear: collection of camera(s) cleared";
 
     for(QVector<QThread*>::iterator it = threads_.begin(); it != threads_.end(); ++it)
     {
@@ -74,6 +74,8 @@ void AssemblyVUEyeModel::clear()
         delete *it;
     }
     threads_.clear();
+
+    NQLog("AssemblyVUEyeModel", NQLog::Debug) << "clear: collection of thread(s) cleared";
 
     return;
 }

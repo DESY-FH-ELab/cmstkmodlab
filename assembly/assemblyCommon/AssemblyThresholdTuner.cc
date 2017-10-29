@@ -114,16 +114,16 @@ void AssemblyThresholdTuner::disableThresholdButton()
 
 void AssemblyThresholdTuner::updateThresholdLabelSlot(int value)
 { 
-    NQLog("AssemblyThresholdTuner::updateThresholdLabelSlot") << "threshold received: value = " << value;
-    
+    NQLog("AssemblyThresholdTuner", NQLog::Spam) << "updateThresholdLabelSlot(" << value << ")"
+       << ": updated threshold value: " << value;
+
     lineEdit->setText(QString::number(value));
+
     setThresholdButton->setEnabled(true);
 }
 
 void AssemblyThresholdTuner::updateThresholdImage(QString filename)
 {
-    NQLog("AssemblyThresholdTuner::updateThresholdImage") << "file name: "+filename;
-
     std::string filename_ss = filename.toUtf8().constData();
 
     cv::Mat img_gs = cv::imread(filename_ss, CV_LOAD_IMAGE_UNCHANGED);
@@ -131,6 +131,8 @@ void AssemblyThresholdTuner::updateThresholdImage(QString filename)
     imageView2_->setImage(img_gs);
 //    imageView2_->setImage(image_);
 //    imageView2_->setZoomFactor(0.5);
+
+    NQLog("AssemblyThresholdTuner", NQLog::Message) << "updateThresholdImage: file="+filename;
 }
 
 void AssemblyThresholdTuner::connectImageProducer(const QObject* sender, const char* signal)

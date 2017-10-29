@@ -140,11 +140,10 @@ void AssemblyAutoFocus::configure_scan()
   double x_d = x.toDouble();
   double y_d = y.toInt();
 
-  NQLog("AssemblyAutoFocus::configure_scan(),  Scan range  = ") << x_d << ",   "<< y_d ;
+  NQLog("AssemblyAutoFocus", NQLog::Debug) << "configure_scan"
+     << ": emitting signal \"run_scan(" << x_d << ", " << y_d << "\")";
 
   emit run_scan(x_d, y_d);
-
-  return;
 }
 
 void AssemblyAutoFocus::make_graph(const std::string img_name)

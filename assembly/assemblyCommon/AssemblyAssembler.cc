@@ -10,7 +10,8 @@
 //                                                                             //
 /////////////////////////////////////////////////////////////////////////////////
 
-#include "AssemblyAssembler.h"
+#include <AssemblyAssembler.h>
+#include <nqlogger.h>
 
 #include <iostream>
 #include <iomanip>
@@ -23,16 +24,6 @@
 #include <QStringList>
 #include <QPixmap>
 #include <QLabel>
-#include <QApplication>
-#include <QDir>
-#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
-#include <QDesktopServices>
-#else
-#include <QStandardPaths>
-#endif
-
-#include <nqlogger.h>
-#include <ApplicationConfig.h>
 
 #include <TCanvas.h>
 #include <TGraph.h>
@@ -41,9 +32,7 @@ using namespace cv;
 
 AssemblyAssembler::AssemblyAssembler(LStepExpressModel* lStepExpressModel) : QObject(), lStepExpressModel_(lStepExpressModel)
 {
-    NQLog("AssemblyAssembler::AssemblyAssembler");
-
-//!!    motionManager_ = new LStepExpressMotionManager(lStepExpressModel_);
+    NQLog("AssemblyAssembler", NQLog::Debug) << "constructed";
 }
 
 void  AssemblyAssembler::run_sandwitchassembly(double x_a, double y_a, double z_a , double x_b, double y_b, double z_b, double x_t, double y_t, double z_t)

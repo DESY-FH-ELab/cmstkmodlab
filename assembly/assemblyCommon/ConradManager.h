@@ -13,22 +13,14 @@
 #ifndef CONRADMANAGER_H
 #define CONRADMANAGER_H
 
+#include <ConradModel.h>
+
 #include <QObject>
 #include <QTimer>
-#include "ConradModel.h"
-#include "nqlogger.h"
-
-
-#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
-#include <QDesktopServices>
-#else
-#include <QStandardPaths>
-#endif
-
 
 class ConradManager : public QObject
 {
-  Q_OBJECT
+ Q_OBJECT
 
  protected:
   ConradModel* ConradModel_;
@@ -36,28 +28,29 @@ class ConradManager : public QObject
   QTimer* liveTimer_;
 
  private:
+
   const int togglingVacuumDelay = 3000;
   
  public:
+
   //add constructor
   explicit ConradManager(ConradModel* ConradModel_);
 
-public slots:
+ public slots:
 
-    void toggleVacuum(int);
-    void vacuumToggled();
-    void updateVacuumChannelsStatus();
+  void toggleVacuum(int);
+  void vacuumToggled();
+  void updateVacuumChannelsStatus();
 
-    //signal to say when vacuum state has changed (needs timer)
+ //signal to say when vacuum state has changed (needs timer)
  signals:
-    void updateVacuumChannelState(int, bool);
-    void enableVacuumButton();
-    void disableVacuumButton();
+
+  void updateVacuumChannelState(int, bool);
+  void  enableVacuumButton();
+  void disableVacuumButton();
 };
 
 #endif // CONRADMANAGER_H
-
-
 
 /*
 
@@ -74,4 +67,4 @@ questions:
 Link to uEye datasheet
 http://www.physimetrics.com/content/PDF_Content/Cameras/IDS/UI-3480CP-M-GL.pdf
 
- */
+*/

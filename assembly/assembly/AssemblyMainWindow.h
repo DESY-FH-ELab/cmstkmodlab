@@ -124,7 +124,6 @@ class AssemblyMainWindow : public QMainWindow
     AssemblyVUEyeCamera *     camera_;
     AssemblyUEyeCameraThread* cameraThread_;
 
-    AssemblyScanner* cmdr_zscan;
     ZFocusFinder* zfocus_finder_;
 
     AssemblySensorMarkerFinder*       finder_;
