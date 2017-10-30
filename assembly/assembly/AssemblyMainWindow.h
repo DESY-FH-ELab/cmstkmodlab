@@ -27,7 +27,6 @@ typedef AssemblyUEyeModel AssemblyUEyeModel_t;
 #include <AssemblyThresholdTuner.h>
 #include <AssemblyModuleAssembler.h>
 #include <AssemblyAutoFocus.h>
-#include <AssemblyScanner.h>
 #include <AssemblyAssembler.h>
 #include <LStepExpressModel.h>
 #include <LStepExpressMotionManager.h>

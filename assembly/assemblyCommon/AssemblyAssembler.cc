@@ -73,7 +73,7 @@ void  AssemblyAssembler::fill_positionvectors(int stage, double x_pr, double y_p
     // y_pr     = r->Gaus(0.0,  5.0);
     // theta_pr = r->Gaus(0.0, 10.0);
 
-    NQLog("AssemblyScanner::fill_positionvectors") << "step = " << step << " x = "<< x_pr << " y = " << y_pr << " theta = " << theta_pr;
+    NQLog("AssemblyAssembler::fill_positionvectors") << "step = " << step << " x = "<< x_pr << " y = " << y_pr << " theta = " << theta_pr;
 
     if(step == 2){
 
@@ -91,8 +91,8 @@ void  AssemblyAssembler::fill_positionvectors(int stage, double x_pr, double y_p
     emit nextStep();
 }
 
-//void  AssemblyScanner::run_alignment(){
-//    NQLog("AssemblyScanner::run_alignment")<<  " tolerance = " << tolerance <<  " max iterations = "<< max_iterations << endl;
+//void  AssemblyAssembler::run_alignment(){
+//    NQLog("AssemblyAssembler::run_alignment")<<  " tolerance = " << tolerance <<  " max iterations = "<< max_iterations << endl;
 
 // Rought manual alignment with ref marker on platform
 
@@ -152,7 +152,7 @@ void AssemblyAssembler::process_step(){
     /*
     else if (step == 3){
 
-      NQLog("AssemblyScanner:: step == ") << step;
+      NQLog("AssemblyAssembler:: step == ") << step;
         step++;
 // Step 3: Go to top part pre-pick up position
         emit moveAbsolute(x_top, y_top, (z_top + z_prepickup_distance), 0.0);
@@ -738,7 +738,7 @@ void AssemblyAssembler::run_alignment(int stage, double x_pr, double y_pr, doubl
 
 void  AssemblyAssembler::run_scan(double range, int steps) {
     
-    NQLog("AssemblyScanner::scan") << range << ",  " <<steps;
+    NQLog("AssemblyAssembler::scan") << range << ",  " <<steps;
     
    // steps = 10;
     nTotalImages = steps;
@@ -757,7 +757,7 @@ void  AssemblyAssembler::run_scan(double range, int steps) {
 
 void  AssemblyAssembler::write_image(cv::Mat newImage, cv::Rect marker_rect){
     
-    NQLog("AssemblyScanner") << "write_image()";
+    NQLog("AssemblyAssembler") << "write_image()";
     QDateTime local(QDateTime::currentDateTime());
     QString local_str = local.toString();
     QString filename = QString("ZScan_%1.png").arg(local_str);
