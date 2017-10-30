@@ -30,8 +30,9 @@ typedef AssemblyUEyeModel AssemblyUEyeModel_t;
 #include <AssemblyScanner.h>
 #include <AssemblyAssembler.h>
 #include <LStepExpressModel.h>
-#include <LStepExpressSettings.h>
 #include <LStepExpressMotionManager.h>
+#include <LStepExpressMotionView.h>
+#include <LStepExpressSettings.h>
 #include <LStepExpressSettingsWidget.h>
 #include <LStepExpressWidget.h>
 #include <LStepExpressJoystickWidget.h>
@@ -117,6 +118,7 @@ class AssemblyMainWindow : public QMainWindow
 
     LStepExpressModel*          motion_model_;
     LStepExpressMotionManager*  motion_manager_;
+    LStepExpressMotionView*     motion_manager_view_;
     QThread*                    motion_thread_;
     LStepExpressSettings*       motionSettings_;
     LStepExpressSettingsWidget* motionSettingsWidget_;

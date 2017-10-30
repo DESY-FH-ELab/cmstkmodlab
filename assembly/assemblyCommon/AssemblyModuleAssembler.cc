@@ -50,8 +50,8 @@ AssemblyModuleAssembler::AssemblyModuleAssembler(
 
   if(!camera_)
   {
-    NQLog("AssemblyModuleAssembler::AssemblyModuleAssembler", NQLog::Fatal)
-         << "initialization error: null pointer to AssemblyVUEyeCamera object";
+    NQLog("AssemblyModuleAssembler", NQLog::Fatal)
+       << "initialization error: null pointer to AssemblyVUEyeCamera object";
 
     exit(1);
   }
@@ -220,7 +220,8 @@ AssemblyModuleAssembler::AssemblyModuleAssembler(
 
 void AssemblyModuleAssembler::updateText(int stage, double x, double y, double a){
 
-  NQLog("AssemblyCommander::updateText");
+  NQLog("AssemblyCommander", NQLog::Debug) << "updateText"
+     << "(" << stage << ", " << x << ", " << y << ", " << a << ")";
 
   std::ostringstream strs_position;
   std::ostringstream strs_orientation;
@@ -240,14 +241,14 @@ void AssemblyModuleAssembler::updateText(int stage, double x, double y, double a
   QString qstr_orientation = "";
   qstr_orientation = QString::fromStdString(str_orientation);
     
-  if(stage == 1 ){
+  if(stage == 1)
+  {
     qstr_position = "Object location = " + qstr_position + " mm, mm (lab frame)";
     lE1->setText(qstr_position);
-      
+
     qstr_orientation = "Object orientation = " + qstr_orientation + " degrees";
     lE2->setText(qstr_orientation);
   }
-
 }
 
 void AssemblyModuleAssembler::startMacro(double x_meas, double y_meas, double z_meas, double x_pickup, double y_pickup, double z_pickup, int iterations)
@@ -255,13 +256,11 @@ void AssemblyModuleAssembler::startMacro(double x_meas, double y_meas, double z_
     NQLog("AssemblyModuleAssembler::startMacro");
     
     emit launchPrecisionEstimation(x_meas,  y_meas,  z_meas,  x_pickup,  y_pickup, z_pickup, iterations);
-    
 }
 
-
-void AssemblyModuleAssembler::updateImage(int stage, QString filename)
+void AssemblyModuleAssembler::updateImage(const int stage, const QString& filename)
 {
-  NQLog("AssemblyModuleAssembler") << ":updateImage()  " + filename;
+  NQLog("AssemblyModuleAssembler") << "updateImage(" << stage << ", " << filename << ")";
 
   std::string filename_ss = filename.toUtf8().constData();
 
@@ -1039,24 +1038,25 @@ void AssemblySensorLocator::detectPatRecMode()
 
 void AssemblySensorLocator::foundsensor(int state)
 {
-  NQLog("AssemblySensorLocator::foundsensor");
+  NQLog("AssemblySensorLocator", NQLog::Debug) << "foundsensor(" << state << ")";
 
-  if (state == 0) {
+  if(state == 0)
+  {
     ql->setText("WAITING");
-    NQLog("AssemblySensorLocator::foundsensor")<< " 0  ";
-
     ql->setStyleSheet("QLabel { background-color : orange; color : black; }");
     
-  } else if (state == 1) {
-    
-    NQLog("AssemblySensorLocator::foundsensor")<< " 1 ";
-    
+  }
+  else if(state == 1)
+  {
     ql->setText("FOUND MARKER");
     ql->setStyleSheet("QLabel { background-color : green; color : black; }");
     
-  } else if (state == 2) {
-    NQLog("AssemblySensorLocator::foundsensor")<< " 2 ";
+  }
+  else if(state == 2)
+  {
     ql->setText("ERROR");
     ql->setStyleSheet("QLabel { background-color : red; color : black; }");
   }
+
+  return;
 }

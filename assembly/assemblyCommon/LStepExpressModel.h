@@ -13,7 +13,6 @@
 #ifndef LSTEPEXPRESSMODEL_H
 #define LSTEPEXPRESSMODEL_H
 
-#include <cmath>
 #include <vector>
 
 #include <QString>

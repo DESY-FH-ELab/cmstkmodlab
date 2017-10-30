@@ -142,8 +142,8 @@ public slots:
   void snapShot();
   void imageAcquired(const cv::Mat&);
   void gotoPickup();
-  void updateImage(int,QString);
-  void updateText(int,double, double, double);
+  void updateImage(const int, const QString&);
+  void updateText(const int, const double, const double, const double);
   void startMacro(double, double, double, double, double, double, int);
 
 signals:

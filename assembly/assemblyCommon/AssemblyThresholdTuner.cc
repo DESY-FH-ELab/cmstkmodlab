@@ -119,7 +119,7 @@ void AssemblyThresholdTuner::updateThresholdLabelSlot(int value)
     setThresholdButton->setEnabled(true);
 }
 
-void AssemblyThresholdTuner::updateThresholdImage(QString filename)
+void AssemblyThresholdTuner::updateThresholdImage(const QString& filename)
 {
     std::string filename_ss = filename.toUtf8().constData();
 

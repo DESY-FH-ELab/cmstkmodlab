@@ -67,7 +67,7 @@ class AssemblyThresholdTuner : public QWidget
     void updateThresholdLabelSlot(int);
     void enableThresholdButton();
     void disableThresholdButton();
-    void updateThresholdImage(QString);
+    void updateThresholdImage(const QString&);
 
  signals:
 

@@ -88,11 +88,12 @@ HEADERS += AssemblyVUEyeCamera.h \
            AssemblyModuleAssembler.h \
            AssemblyAutoFocus.h \
            LStepExpressModel.h \
-           LStepExpressSettings.h \
            LStepExpressMotion.h \
            LStepExpressMotionManager.h \
+           LStepExpressMotionView.h \
            LStepExpressWidget.h \
            LStepExpressJoystickWidget.h \
+           LStepExpressSettings.h \
            LStepExpressSettingsWidget.h \
            LStepExpressMeasurement.h \
            LStepExpressMeasurementWidget.h \
@@ -130,11 +131,12 @@ SOURCES += AssemblyVUEyeCamera.cc \
            AssemblyAssembler.cc \
            ConradManager.cc \
            LStepExpressModel.cc \
-           LStepExpressSettings.cc \
            LStepExpressMotion.cc \
            LStepExpressMotionManager.cc \
+           LStepExpressMotionView.cc \
            LStepExpressWidget.cc \
            LStepExpressJoystickWidget.cc \
+           LStepExpressSettings.cc \
            LStepExpressSettingsWidget.cc \
            LStepExpressMeasurement.cc \
            LStepExpressMeasurementWidget.cc \

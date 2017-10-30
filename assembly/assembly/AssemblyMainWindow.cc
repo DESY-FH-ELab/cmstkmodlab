@@ -41,6 +41,7 @@ AssemblyMainWindow::AssemblyMainWindow(const unsigned int camera_ID, QWidget* pa
 
   motion_model_(0),
   motion_manager_(0),
+  motion_manager_view_(0),
   motion_thread_(0),
   motionSettings_(0),
   motionSettingsWidget_(0),
@@ -127,10 +128,10 @@ AssemblyMainWindow::AssemblyMainWindow(const unsigned int camera_ID, QWidget* pa
 //    tabWidget_->addTab(rawView_, "raw");
 
     /* IMAGE-THRESHOLDING VIEW --------------------------------- */
-    const std::string tabname_ImageThresholding("Image Thresholding");
+    const QString tabname_ImageThresholding("Image Thresholding");
 
     thresholdTunerView_ = new AssemblyThresholdTuner(tabWidget_);
-    tabWidget_->addTab(thresholdTunerView_, QString(tabname_ImageThresholding.c_str()));
+    tabWidget_->addTab(thresholdTunerView_, tabname_ImageThresholding);
 
     connect(thresholdTunerView_, SIGNAL(updateThresholdLabel())            , marker_finder_     , SLOT(getCurrentGeneralThreshold()));
     connect(this               , SIGNAL(updateThresholdLabel())            , marker_finder_     , SLOT(getCurrentGeneralThreshold()));
@@ -138,17 +139,17 @@ AssemblyMainWindow::AssemblyMainWindow(const unsigned int camera_ID, QWidget* pa
     connect(thresholdTunerView_, SIGNAL(setNewThreshold(int, cv::Mat))     , marker_finder_     , SLOT(setNewGeneralThreshold(int, cv::Mat)));
     connect(marker_finder_     , SIGNAL(sendUpdatedThresholdImage(QString)), thresholdTunerView_, SLOT(updateThresholdImage(QString)));
 
-    NQLog("AssemblyMainWindow", NQLog::Message) << "added view \""+tabname_ImageThresholding+"\"";
+    NQLog("AssemblyMainWindow", NQLog::Message) << "added view \"" << tabname_ImageThresholding << "\"";
     NQLog("AssemblyMainWindow", NQLog::Spam)    << "emitting signal \"updateThresholdLabel\"";
 
     emit updateThresholdLabel();
     /* --------------------------------------------------------- */
 
     /* AUTO-FOCUS VIEW ----------------------------------------- */
-    const std::string tabname_AutoFocus("Auto-Focus");
+    const QString tabname_AutoFocus("Auto-Focus");
 
     autoFocusView_ = new AssemblyAutoFocus(tabWidget_);
-    tabWidget_->addTab(autoFocusView_, QString(tabname_AutoFocus.c_str()));
+    tabWidget_->addTab(autoFocusView_, tabname_AutoFocus);
 
     connect(autoFocusView_, SIGNAL(run_scan(double, int))  , zfocus_finder_, SLOT(update_focus_inputs(double, int)));
 
@@ -157,16 +158,16 @@ AssemblyMainWindow::AssemblyMainWindow(const unsigned int camera_ID, QWidget* pa
 
     autoFocusView_->configure_scan();
 
-    NQLog("AssemblyMainWindow", NQLog::Message) << "added view \""+tabname_AutoFocus+"\"";
+    NQLog("AssemblyMainWindow", NQLog::Message) << "added view \"" << tabname_AutoFocus << "\"";
     /* --------------------------------------------------------- */
 
     /* MANUAL-ASSEMBLY VIEW ------------------------------------ */
-    const std::string tabname_ManualAssembly("Manual Assembly");
+    const QString tabname_ManualAssembly("Manual Assembly");
 
     assembleView_ = new AssemblyModuleAssembler(camera_, marker_finder_, motion_model_, tabWidget_);
-    tabWidget_->addTab(assembleView_, QString(tabname_ManualAssembly.c_str()));
+    tabWidget_->addTab(assembleView_, tabname_ManualAssembly);
 
-    NQLog("AssemblyMainWindow", NQLog::Message) << "added view \""+tabname_ManualAssembly+"\"";
+    NQLog("AssemblyMainWindow", NQLog::Message) << "added view \"" << tabname_ManualAssembly << "\"";
 
     // VACUUM connections
     conradModel_   = new ConradModel(assembleView_);
@@ -190,54 +191,32 @@ AssemblyMainWindow::AssemblyMainWindow(const unsigned int camera_ID, QWidget* pa
     /* --------------------------------------------------------- */
 
 //    /* U-EYE VIEW ---------------------------------------------- */
-//    const std::string tabname_uEye("uEye");
+//    const QString tabname_uEye("uEye");
 //
 //    camera_widget_ = new AssemblyUEyeWidget(camera_model_, this);
-//    tabWidget_->addTab(camera_widget_, QString(tabname_uEye.c_str()));
+//    tabWidget_->addTab(camera_widget_, tabname_uEye);
 //
-//    NQLog("AssemblyMainWindow", NQLog::Message) << "added view \""+tabname_uEye+"\"";
+//    NQLog("AssemblyMainWindow", NQLog::Message) << "added view \"" << tabname_uEye << "\"";
 //    /* --------------------------------------------------------- */
 
     /* MOTION-SETTINGS VIEW ------------------------------------ */
-    const std::string tabname_MotionSettings("Motion Settings");
+    const QString tabname_MotionSettings("Motion Settings");
 
-    QWidget* widget = new QWidget(tabWidget_);
-
-    motionSettings_ = new LStepExpressSettings(motion_model_, widget);
+    motionSettings_ = new LStepExpressSettings(motion_model_, tabWidget_);
 
     motionSettingsWidget_ = new LStepExpressSettingsWidget(motionSettings_, tabWidget_);
-    tabWidget_->addTab(motionSettingsWidget_, QString(tabname_MotionSettings.c_str()));
+    tabWidget_->addTab(motionSettingsWidget_, tabname_MotionSettings);
 
-    NQLog("AssemblyMainWindow", NQLog::Message) << "added view \""+tabname_MotionSettings+"\"";
+    NQLog("AssemblyMainWindow", NQLog::Message) << "added view \"" << tabname_MotionSettings << "\"";
     /* --------------------------------------------------------- */
 
     /* MOTION-MANAGER VIEW ------------------------------------- */
-    const std::string tabname_MotionManager("Motion Manager");
+    const QString tabname_MotionManager("Motion Manager");
 
-    //Probably need a dedicated class for Motionmanager tab widget so
-    //no details have to be included here (but this was just for testing)
+    motion_manager_view_ = new LStepExpressMotionView(motion_model_, motion_manager_, tabWidget_);
+    tabWidget_->addTab(motion_manager_view_, tabname_MotionManager);
 
-    tabWidget_->addTab(widget, QString(tabname_MotionManager.c_str()));
-
-    QHBoxLayout* layout  = new QHBoxLayout(widget);
-    widget->setLayout(layout);
-
-    QVBoxLayout* layoutv = new QVBoxLayout();
-
-    LStepExpressWidget* motionWidget = new LStepExpressWidget(motion_model_, widget);
-    layoutv->addWidget (motionWidget);
-
-    LStepExpressJoystickWidget *lStepJoystick = new LStepExpressJoystickWidget(motion_model_, widget);
-    layoutv->addWidget(lStepJoystick);
-
-    layout->addLayout(layoutv);
-
-    QVBoxLayout* layoutv2 = new QVBoxLayout();
-
-    LStepExpressPositionWidget *lStepPosition = new LStepExpressPositionWidget(motion_manager_, motion_model_, widget);
-    layoutv2->addWidget(lStepPosition);
-
-    NQLog("AssemblyMainWindow", NQLog::Message) << "added view \""+tabname_MotionManager+"\"";
+    NQLog("AssemblyMainWindow", NQLog::Message) << "added view \"" << tabname_MotionManager << "\"";
     /* --------------------------------------------------------- */
 
     /* Upper Toolbar ------------------------------------------- */
