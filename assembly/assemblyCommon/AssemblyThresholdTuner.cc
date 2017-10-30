@@ -20,12 +20,10 @@
 
 #include "AssemblyThresholdTuner.h"
 
-AssemblyThresholdTuner::AssemblyThresholdTuner(QWidget *parent)
-    : QWidget(parent)
+AssemblyThresholdTuner::AssemblyThresholdTuner(QWidget* parent) : QWidget(parent)
 {
-
-  QGridLayout *l = new QGridLayout();
-  setLayout(l);  
+    QGridLayout *l = new QGridLayout();
+    setLayout(l);  
 
   /*button = new QPushButton("save", this);
     connect(button, SIGNAL(clicked(bool)),
@@ -68,7 +66,6 @@ AssemblyThresholdTuner::AssemblyThresholdTuner(QWidget *parent)
     scrollArea2_->setWidget(imageView2_);
     scrollArea2_->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 
-
     l->addWidget(scrollArea1_, 0, 0); 
     l->addWidget(scrollArea2_, 1, 0);   
 
@@ -76,108 +73,94 @@ AssemblyThresholdTuner::AssemblyThresholdTuner(QWidget *parent)
 
     QWidget* Tuner = new QWidget();
     
-    l -> addWidget(Tuner, 0, 1);
+    l->addWidget(Tuner, 0, 1);
 
-    QGridLayout *lTuner = new QGridLayout(this);
-    Tuner -> setLayout(lTuner);
+    QGridLayout *lTuner = new QGridLayout();
+    Tuner->setLayout(lTuner);
 
     setThresholdButton = new QPushButton("Set Threshold", this);
     lTuner->addWidget(setThresholdButton,0,0);
-    
-    QFormLayout *fl1 = new QFormLayout(this);
+
+    QFormLayout *fl1 = new QFormLayout();
     lTuner->addLayout(fl1,2,0);
 
     label = new QLabel();
     lineEdit = new QLineEdit();
-    fl1 -> addRow(label,lineEdit);
-    
-    label -> setText("Threshold");
+    fl1->addRow(label,lineEdit);
+
+    label->setText("Threshold");
 
     connect(setThresholdButton, SIGNAL(clicked()), this, SLOT(setNewThreshold()));
-
-    
 }
 
 void AssemblyThresholdTuner::setNewThreshold()
 {
-  NQLog("AssemblyThresholdTuner") << "::setNewThreshold():: INFO!!!! Threshold button pressed.";
-  
-  setThresholdButton -> setEnabled(false);
-  emit setNewThreshold((lineEdit -> text()).toInt(), image_);
-      
-      /*try   //Is exceptions possible in Qt?
-    {
-    }
-    catch (const std::exception& e)
-    {
-      NQLog("AssemblyThresholdTuner") << " : ERROR! : incorrect threshold value.";
-    }*/
+    NQLog("AssemblyThresholdTuner::setNewThreshold") << "Threshold button clicked";
+
+    setThresholdButton->setEnabled(false);
+
+    emit setNewThreshold((lineEdit->text()).toInt(), image_);
 }
 
 void AssemblyThresholdTuner::enableThresholdButton()
 {
-  setThresholdButton -> setEnabled(true);
+    setThresholdButton->setEnabled(true);
 }
 
 void AssemblyThresholdTuner::disableThresholdButton()
 {
-  setThresholdButton -> setEnabled(false);
+    setThresholdButton->setEnabled(false);
 }
 
 void AssemblyThresholdTuner::updateThresholdLabelSlot(int value)
 { 
-    NQLog("AssemblyThresholdTuner") << "::updateThresholdLabel():: INFO!! : threshold received. Value = " << value;
+    NQLog("AssemblyThresholdTuner::updateThresholdLabelSlot") << "threshold received: value = " << value;
     
-    lineEdit -> setText(QString::number(value));
-    setThresholdButton -> setEnabled(true);
+    lineEdit->setText(QString::number(value));
+    setThresholdButton->setEnabled(true);
 }
 
 void AssemblyThresholdTuner::updateThresholdImage(QString filename)
 {
-  NQLog("AssemblyThresholdTuner") << "::updateThresholdImage(Qstring) " + filename;
+    NQLog("AssemblyThresholdTuner::updateThresholdImage") << "file name: "+filename;
 
-  std::string filename_ss = filename.toUtf8().constData();
+    std::string filename_ss = filename.toUtf8().constData();
 
-  cv::Mat img_gs = cv::imread(filename_ss, CV_LOAD_IMAGE_UNCHANGED);
-  
-  imageView2_ -> setImage(img_gs);
-  //imageView2_ -> setImage(image_);
-  //imageView2_->setZoomFactor(0.5);
+    cv::Mat img_gs = cv::imread(filename_ss, CV_LOAD_IMAGE_UNCHANGED);
 
+    imageView2_->setImage(img_gs);
+//    imageView2_->setImage(image_);
+//    imageView2_->setZoomFactor(0.5);
 }
 
-void AssemblyThresholdTuner::connectImageProducer(const QObject* sender,
-                                                   const char* signal)
+void AssemblyThresholdTuner::connectImageProducer(const QObject* sender, const char* signal)
 {
-    NQLog("AssemblyThresholdTuner") << ":connectImageProducer";
+    NQLog("AssemblyThresholdTuner::connectImageProducer");
 
     imageView1_->connectImageProducer(sender, signal);
 
-    connect(sender, signal,
-            this, SLOT(imageAcquired(const cv::Mat&)));
+    connect(sender, signal, this, SLOT(imageAcquired(const cv::Mat&)));
 }
 
-void AssemblyThresholdTuner::disconnectImageProducer(const QObject* sender,
-                                                      const char* signal)
+void AssemblyThresholdTuner::disconnectImageProducer(const QObject* sender, const char* signal)
 {
-    NQLog("AssemblyThresholdTuner") << ":disconnectImageProducer";
+    NQLog("AssemblyThresholdTuner::disconnectImageProducer");
 
     imageView1_->disconnectImageProducer(sender, signal);
 
-    disconnect(sender, signal,
-               this, SLOT(imageAcquired(const cv::Mat&)));
+    disconnect(sender, signal, this, SLOT(imageAcquired(const cv::Mat&)));
 }
 
 void AssemblyThresholdTuner::snapShot()
 {
-    // NQLog("AssemblyThresholdTuner") << ":snapShot()";
+    NQLog("AssemblyThresholdTuner::snapShot");
 
-    if (image_.rows==0) return;
+    if(image_.rows==0){ return; }
 
     QString filename = QFileDialog::getSaveFileName(this, "save image", ".", "*.png");
-    if (filename.isNull() || filename.isEmpty()) return;
+    if(filename.isNull() || filename.isEmpty()) return;
 
-    if (!filename.endsWith(".png")) filename += ".png";
+    if(!filename.endsWith(".png")) filename += ".png";
 
     cv::imwrite(filename.toStdString(), image_);
 }
@@ -185,11 +168,11 @@ void AssemblyThresholdTuner::snapShot()
 //void AssemblyThresholdTuner::imageAcquired(const cv::Mat& newImage)
 void AssemblyThresholdTuner::imageAcquired(cv::Mat newImage)
 {
-  NQLog("AssemblyThresholdTuner") << "::imageAcquired(const cv::Mat& newImage) : IMAGE copied!!!";
-  newImage.copyTo(image_);
+    NQLog("AssemblyThresholdTuner::imageAcquired") << "image copied";
+    newImage.copyTo(image_);
 }
 
-void AssemblyThresholdTuner::keyReleaseEvent(QKeyEvent * event)
+void AssemblyThresholdTuner::keyReleaseEvent(QKeyEvent* event)
 {
     if (!(event->modifiers() & Qt::ShiftModifier)) {
         switch (event->key()) {

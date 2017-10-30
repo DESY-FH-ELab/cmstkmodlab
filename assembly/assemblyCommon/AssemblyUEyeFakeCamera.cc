@@ -238,13 +238,13 @@ void AssemblyUEyeFakeCamera::setExposureTime(double et)
 
 void AssemblyUEyeFakeCamera::acquireImage()
 {
-    if (cameraState_!=State::READY) return;
-
-    NQLog("AssemblyUEyeFakeCamera") << ":acquireImage()";
+    if(cameraState_ != State::READY){ return; }
 
     image_ = cv::imread(imageFilenames_[imageIndex_++], CV_LOAD_IMAGE_GRAYSCALE);
 
+    NQLog("AssemblyUEyeFakeCamera::acquireImage") << "emitting signal \"imageAcquired\"";
+
     emit imageAcquired(image_);
 
-    if (imageIndex_==imageFilenames_.size()) imageIndex_ = 0;
+    if(imageIndex_ == imageFilenames_.size()){ imageIndex_ = 0; }
 }

@@ -13,9 +13,9 @@
 #ifndef ASSEMBLYAUTOFOCUS_H
 #define ASSEMBLYAUTOFOCUS_H
 
-#include <string>
+#include <AssemblyUEyeView.h>
 
-#include <opencv2/opencv.hpp>
+#include <string>
 
 #include <QWidget>
 #include <QScrollArea>
@@ -28,63 +28,50 @@
 #include <QCheckBox>
 #include <QRadioButton>
 
-//vision
-#include <AssemblyUEyeView.h>
-#include "AssemblyVUEyeModel.h"
-#include "AssemblySensorMarkerFinder.h"
-#include "AssemblyVUEyeCamera.h"
-
-//motion
-#include "LStepExpressModel.h"
-#include "LStepExpressMotionManager.h"
-
-#include "AssemblyScanner.h"
+#include <opencv2/opencv.hpp>
 
 class AssemblyAutoFocus : public QWidget
 {
-  Q_OBJECT
+ Q_OBJECT
 
-public:
-  explicit AssemblyAutoFocus(AssemblyScanner* cmdr_zscan, QWidget *parent = 0);
-  void connectImageProducer(const QObject* sender, const char* signal);
-  void disconnectImageProducer(const QObject* sender, const char* signal);
+  public:
 
-  AssemblyScanner * cmdr_zscan;
-  
- 
-protected:
+    explicit AssemblyAutoFocus(QWidget* parent=0);
 
-  void keyReleaseEvent(QKeyEvent *event);
+    void    connectImageProducer(const QObject* sender, const char* signal);
+    void disconnectImageProducer(const QObject* sender, const char* signal);
 
-  QScrollArea *scrollArea_1;
-  AssemblyUEyeView *imageView_1;
+  protected:
 
-  QScrollArea *scrollArea_2;
-  AssemblyUEyeView *imageView_2;
-    
-  cv::Mat image_;
-  cv::Mat img;
-  QPushButton* button1;
-  QPushButton* button2;
-  QLineEdit * lE1;
-  QLineEdit * lE2;
+    void keyReleaseEvent(QKeyEvent *event);
 
-  QCheckBox *checkbox;
+    QScrollArea *scrollArea_1;
+    AssemblyUEyeView *imageView_1;
 
-public slots:
-  void imageAcquired(const cv::Mat&);
-  void updateImage(int, std::string);
-  void configure_scan();
-  void make_graph(const std::string);
-  void updateText(double);
-  void go_to_focal_point();
-    
-signals:
-  void run_scan(double,int);
-  void moveRelative(double,double,double,double);
-  void graph_made(const cv::Mat&);
+    QScrollArea *scrollArea_2;
+    AssemblyUEyeView *imageView_2;
 
+    cv::Mat image_;
+    cv::Mat img;
+    QPushButton* button1;
+    QPushButton* button2;
+    QLineEdit * lE1;
+    QLineEdit * lE2;
+
+    QCheckBox *checkbox;
+
+  public slots:
+    void imageAcquired(const cv::Mat&);
+    void updateImage(int, std::string);
+    void configure_scan();
+    void make_graph(const std::string);
+    void updateText(double);
+    void go_to_focal_point();
+
+  signals:
+    void run_scan(double,int);
+    void moveRelative(double,double,double,double);
+    void graph_made(const cv::Mat&);
 };
-
 
 #endif // ASSEMBLYAUTOFOCUS_H

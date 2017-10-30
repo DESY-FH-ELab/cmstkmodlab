@@ -29,11 +29,9 @@
 #include <QRadioButton>
 
 //vision
-//#include <AssemblyVUEyeCamera.h>
-//#include <AssemblyVMarkerFinder.h>
 #include <AssemblyUEyeView.h>
-#include "AssemblyVUEyeModel.h"
-#include "AssemblySensorMarkerFinder.h"
+#include <AssemblyVUEyeCamera.h>
+#include <AssemblySensorMarkerFinder.h>
 
 #include "AssemblyVUEyeCamera.h"
 
@@ -49,6 +47,7 @@
 
 //relay card for vacuum control
 #include "ConradModel.h"
+
 
 
 class AssemblyVacuumToggler : public QWidget
@@ -94,12 +93,10 @@ signals:
 
 class AssemblyModuleAssembler : public QWidget
 {
-  Q_OBJECT
+ Q_OBJECT
 
 public:
-
-  explicit AssemblyModuleAssembler(AssemblyVUEyeModel *uEyeModel_, AssemblySensorMarkerFinder * finder_,LStepExpressModel* lStepExpressModel_,
-                                   QWidget *parent = 0);
+  explicit AssemblyModuleAssembler(AssemblyVUEyeCamera* camera, AssemblySensorMarkerFinder* finder_, LStepExpressModel* lStepExpressModel_, QWidget* parent=0);
   void connectImageProducer(const QObject* sender, const char* signal);
   void disconnectImageProducer(const QObject* sender, const char* signal);
 
@@ -115,7 +112,7 @@ public:
 
   AssemblyVUEyeCamera * camera_;
   AssemblyVacuumToggler* toggle1;  //to connect vacuum signals in MainWindow
- 
+
 protected:
 
   void keyReleaseEvent(QKeyEvent *event);
@@ -155,9 +152,8 @@ signals:
   void launchPrecisionEstimation(double, double, double, double, double, double, int);
   void launchSandwichAssembly(double, double, double, double, double, double, double, double, double);
   void launchAlignment(int, double, double, double );
-
-
 };
+
 
 
 class AssemblyPrecisionEstimator : public QWidget
@@ -224,6 +220,7 @@ public:
     void launchAlignment(int, double, double, double );
 
 };
+
 
 
 class AssemblyAttacher : public QWidget
@@ -302,6 +299,7 @@ signals:
 };
 
 
+
 class AssemblyAligner : public QWidget
 {
   Q_OBJECT      
@@ -326,6 +324,8 @@ signals:
   void moveRelative(double,double,double,double);
   void locateSetdowncorner(int);
 };
+
+
 
 class AssemblySensorLocator : public QWidget
 {
@@ -359,6 +359,7 @@ Q_OBJECT
 
   void foundsensor(int);
   void detectPatRecMode();
+  void locatePickup(const cv::Mat&) {} //!!
 
  signals:
 

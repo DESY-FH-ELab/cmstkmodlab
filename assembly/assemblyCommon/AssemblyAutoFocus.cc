@@ -41,9 +41,9 @@
 
 using namespace cv;
 
-AssemblyAutoFocus::AssemblyAutoFocus(AssemblyScanner* cmdr_zscan, QWidget *parent) : QWidget(parent)
+AssemblyAutoFocus::AssemblyAutoFocus(QWidget *parent) : QWidget(parent)
 {
-  NQLog("AssemblyAutoFocus::AssemblyAutoFocus");
+//  NQLog("AssemblyAutoFocus::AssemblyAutoFocus");
 
   QGridLayout* l = new QGridLayout(this);
   setLayout(l);
@@ -62,7 +62,7 @@ AssemblyAutoFocus::AssemblyAutoFocus(AssemblyScanner* cmdr_zscan, QWidget *paren
   imageView_1->setScaledContents(true);
   imageView_1->setAlignment(Qt::AlignCenter);
   QApplication::processEvents();
-  imageView_1->connectImageProducer(cmdr_zscan, SIGNAL(updateScanImage(cv::Mat)));
+//!!  imageView_1->connectImageProducer(cmdr_zscan, SIGNAL(updateScanImage(cv::Mat)));
 
   scrollArea_1 = new QScrollArea(this);
   scrollArea_1->setMinimumSize(200, 200);
@@ -96,30 +96,36 @@ AssemblyAutoFocus::AssemblyAutoFocus(AssemblyScanner* cmdr_zscan, QWidget *paren
 
   g0->addWidget(scrollArea_2, 0, 1);
 
-  lE1 = new QLineEdit("0.1, 10");
-  g0->addWidget(lE1,1,0);
+  // left-hand side widgets
+  QGridLayout*  g1 = new QGridLayout();
+  g0->addLayout(g1, 1, 0);
 
-  button1 = new QPushButton("AutoFocus (step distance (mm), number of steps)", this);
-  g0->addWidget(button1, 2, 0);
+  button1 = new QPushButton("Update AutoFocus Parameters");
+  g1->addWidget(button1, 1, 0);
 
-  checkbox = new QCheckBox("Track marker", this);
-  g0->addWidget(checkbox, 3, 0);
+  QFormLayout*  fl1 = new QFormLayout();
+  g1->addLayout(fl1, 2, 0);
 
-  QFormLayout *g1 = new QFormLayout();
-  g0->addLayout(g1, 1, 1);
+  QLabel* lt1 = new QLabel("[z-range (mm), number of steps]");
+  lE1 = new QLineEdit("0.5, 10");
+  fl1->addRow(lt1, lE1);
 
-  button2 = new QPushButton("Go to focal point", this);
-  g1->addRow(button2);
+  checkbox = new QCheckBox("Track marker");
+  g1->addWidget(checkbox, 3, 0);
+
+  // right-hand side widgets
+  QFormLayout*  g2 = new QFormLayout();
+  g0->addLayout(g2, 1, 1);
+
+  button2 = new QPushButton("Go to focal point");
+  g2->addRow(button2);
 
   lE2 = new QLineEdit("Absolute focal point = ");
-  g1->addRow(lE2);
+  g2->addRow(lE2);
 
-  //make all the neccessary connections
-  connect(button1, SIGNAL(clicked())            , this      , SLOT(configure_scan()));
-  connect(this   , SIGNAL(run_scan(double, int)), cmdr_zscan, SLOT(run_scan(double, int)));
-  connect(button2, SIGNAL(clicked())            , this      , SLOT(go_to_focal_point()));
-
-  return;    
+  // make all the neccessary connections
+  connect(button1, SIGNAL(clicked()), this, SLOT(configure_scan()));
+  connect(button2, SIGNAL(clicked()), this, SLOT(go_to_focal_point()));
 }
 
 void AssemblyAutoFocus::configure_scan()

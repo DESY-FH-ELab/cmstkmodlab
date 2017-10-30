@@ -13,47 +13,70 @@
 #ifndef LSTEPEXPRESSMOTIONMANAGER_H
 #define LSTEPEXPRESSMOTIONMANAGER_H
 
-#include <QQueue>
+#include <LStepExpressModel.h>
+#include <LStepExpressMotion.h>
 
-#include "LStepExpressModel.h"
-#include "LStepExpressMotion.h"
+#include <vector>
+
+#include <QQueue>
 
 class LStepExpressMotionManager : public QObject
 {
-    Q_OBJECT
+ Q_OBJECT
 
-public:
+  public:
 
-    explicit LStepExpressMotionManager(LStepExpressModel* model, QObject *parent = 0);
-    ~LStepExpressMotionManager();
+    explicit LStepExpressMotionManager(LStepExpressModel*, QObject* parent=0);
+    virtual ~LStepExpressMotionManager();
 
-    void myMoveToThread(QThread *thread);
+    LStepExpressModel* model() const { return model_; }
 
-public slots:
+    bool model_connected() const { return model_connected_; }
+
+    double get_position_X() const { return model()->getPosition(0); }
+    double get_position_Y() const { return model()->getPosition(1); }
+    double get_position_Z() const { return model()->getPosition(2); }
+    double get_position_A() const { return model()->getPosition(3); }
+
+    void myMoveToThread(QThread*);
+
+  public slots:
+
+    void    connect_model();
+    void disconnect_model();
+
+    void  start_motion();
+    void finish_motion();
 
     void appendMotion(const LStepExpressMotion& motion);
     void appendMotions(const QQueue<LStepExpressMotion>& motions);
-    void moveRelative(std::vector<double> & values);
+    void moveRelative(const std::vector<double>& values);
     void moveRelative(double x, double y, double z, double a);
     void moveRelative(unsigned int axis, double value);
-    void moveAbsolute(std::vector<double> & values);
-    void moveAbsolute(double x = 0.0, double y = 0.0, double z = 0.0, double a = 0.0);
+    void moveAbsolute(const std::vector<double>& values);
+    void moveAbsolute(double x=0.0, double y=0.0, double z=0.0, double a=0.0);
     void moveAbsolute(unsigned int axis, double value);
 
-protected:
+  protected:
 
     void run();
 
     LStepExpressModel* model_;
-    QQueue<LStepExpressMotion> motions_;
+
+    bool model_connected_;
+
     bool inMotion_;
 
-protected slots:
+    QQueue<LStepExpressMotion> motions_;
+
+  protected slots:
 
     void motionStarted();
     void motionFinished();
 
-signals:
+  signals:
+
+    void motion_finished();
 
     void signalMoveRelative(double x, double y, double z, double a);
     void signalMoveAbsolute(double x, double y, double z, double a);

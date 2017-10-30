@@ -25,21 +25,22 @@
 
 class AssemblyUEyeModel : public AssemblyVUEyeModel
 {
-    Q_OBJECT
-public:
-    explicit AssemblyUEyeModel(int updateInterval = 60,
-                               QObject *parent = 0);
+ Q_OBJECT
+
+  public:
+
+    explicit AssemblyUEyeModel(int updateInterval=60, QObject* parent=0);
     ~AssemblyUEyeModel();
 
-public slots:
+  public slots:
 
     void updateInformation();
 
-protected slots:
+  protected slots:
 
-protected:
+  protected:
 
-private:
+  private:
 
     UEYE_CAMERA_LIST* uEyeCameraList_;
 };

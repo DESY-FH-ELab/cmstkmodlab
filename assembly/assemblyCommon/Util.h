@@ -10,50 +10,23 @@
 //                                                                             //
 /////////////////////////////////////////////////////////////////////////////////
 
-#ifndef ASSEMBLYVUEYEMODEL_H
-#define ASSEMBLYVUEYEMODEL_H
+#ifndef UTIL_H
+#define UTIL_H
 
-#include <vector>
+#include <string>
 
-#include <QObject>
-#include <QTimer>
-#include <QThread>
-#include <QMutex>
-#include <QMutexLocker>
-#include <QVector>
+#include <QString>
 
-#include "AssemblyVUEyeCamera.h"
+namespace Util {
 
-class AssemblyVUEyeModel : public QObject
-{
- Q_OBJECT
+  QString QtCacheDirectory();
 
-  public:
-    explicit AssemblyVUEyeModel(int updateInterval, QObject *parent);
-    ~AssemblyVUEyeModel();
+  bool QDir_mkpath(const QString&);
+  bool QDir_mkpath(const std::string&);
 
-    size_t getCameraCount() const;
-    AssemblyVUEyeCamera * getCamera(size_t idx);
-    AssemblyVUEyeCamera * getCameraByID(unsigned int id);
+  bool DirectoryExists(const QString&);
+  bool DirectoryExists(const std::string&);
 
-  public slots:
-    virtual void updateInformation() = 0;
+}
 
-  protected slots:
-
-  protected:
-    int updateInterval_;
-    QTimer* timer_;
-
-    QMutex mutex_;
-
-    QVector<QThread*> threads_;
-    QVector<AssemblyVUEyeCamera*> cameras_;
-
-    void clear();
-
-  signals:
-    void cameraCountChanged(unsigned int);
-};
-
-#endif // ASSEMBLYVUEYEMODEL_H
+#endif

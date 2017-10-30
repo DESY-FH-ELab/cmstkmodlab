@@ -26,14 +26,10 @@ LStepExpressSettingsComboBox::LStepExpressSettingsComboBox(LStepExpressSettings*
       settings_(settings),
       key_(key)
 {
-    connect(this, SIGNAL(valueChanged(double)),
-            this, SLOT(valueChanged(double)));
+//!!    connect(this, SIGNAL(valueChanged         (double)), this     , SLOT(valueChanged         (double)));
+    connect(this, SIGNAL(valueChanged(QString, double)), settings_, SLOT(valueChanged(QString, double)));
 
-    connect(this, SIGNAL(valueChanged(QString, double)),
-            settings_, SLOT(valueChanged(QString, double)));
-
-    connect(settings_, SIGNAL(settingChanged(QString, QVariant)),
-            this, SLOT(settingChanged(QString, QVariant)));
+    connect(settings_, SIGNAL(settingChanged(QString, QVariant)), this, SLOT(settingChanged(QString, QVariant)));
 }
 
 void LStepExpressSettingsComboBox::settingChanged(QString key, QVariant value)
@@ -266,7 +262,8 @@ LStepExpressSettingsWidget::LStepExpressSettingsWidget(LStepExpressSettings* set
     mainToolBox_->addItem(extraToolBox_, "Extra");
 
     QWidget * buttons = new QWidget(this);
-    QHBoxLayout* hlayout = new QHBoxLayout(this);
+
+    QHBoxLayout* hlayout = new QHBoxLayout();
     hlayout->setContentsMargins(4, 4, 4, 4);
     buttons->setLayout(hlayout);
 

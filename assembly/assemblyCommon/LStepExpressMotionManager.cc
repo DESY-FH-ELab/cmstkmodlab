@@ -10,129 +10,183 @@
 //                                                                             //
 /////////////////////////////////////////////////////////////////////////////////
 
-#include <QApplication>
-
+#include <LStepExpressMotionManager.h>
 #include <nqlogger.h>
 
-#include "LStepExpressMotionManager.h"
-
-LStepExpressMotionManager::LStepExpressMotionManager(LStepExpressModel* model, QObject *parent)
-    : QObject(parent),
-      model_(model),
-      inMotion_(false)
+LStepExpressMotionManager::LStepExpressMotionManager(LStepExpressModel* model, QObject *parent) :
+  QObject(parent),
+  model_(model),
+  model_connected_(false),
+  inMotion_(false)
 {
-    connect(model_, SIGNAL(motionStarted()),
-            this, SLOT(motionStarted()));
+    if(!model_)
+    {
+      NQLog("LStepExpressMotionManager::LStepExpressMotionManager", NQLog::Fatal)
+           << "pointer to LStepExpressModel initialized to NULL";
 
-    connect(model_, SIGNAL(motionFinished()),
-            this, SLOT(motionFinished()));
+      exit(1);
+    }
 
-    connect(this, SIGNAL(signalMoveAbsolute(double,double,double,double)),
-            model_, SLOT(moveAbsolute(double,double,double,double)));
-
-    connect(this, SIGNAL(signalMoveRelative(double,double,double,double)),
-            model_, SLOT(moveRelative(double,double,double,double)));
-
+    this->connect_model();
 }
 
 LStepExpressMotionManager::~LStepExpressMotionManager()
 {
 }
 
+void LStepExpressMotionManager::connect_model()
+{
+    if(!model_){ return; }
+
+    if(model_connected_ == false)
+    {
+      connect   (model_, SIGNAL(motionStarted()) , this, SLOT( start_motion()));
+      connect   (model_, SIGNAL(motionFinished()), this, SLOT(finish_motion()));
+
+      connect   (this  , SIGNAL(signalMoveAbsolute(double, double, double, double)),
+                 model_, SLOT  (      moveAbsolute(double, double, double, double)));
+
+      connect   (this  , SIGNAL(signalMoveRelative(double, double, double, double)),
+                 model_, SLOT  (      moveRelative(double, double, double, double)));
+
+      model_connected_ = true;
+    }
+
+    return;
+}
+
+void LStepExpressMotionManager::disconnect_model()
+{
+    if(!model_){ return; }
+
+    if(model_connected_ == true)
+    {
+      disconnect(model_, SIGNAL(motionStarted()) , this, SLOT( start_motion()));
+      disconnect(model_, SIGNAL(motionFinished()), this, SLOT(finish_motion()));
+
+      disconnect(this  , SIGNAL(signalMoveAbsolute(double, double, double, double)),
+                 model_, SLOT  (      moveAbsolute(double, double, double, double)));
+
+      disconnect(this  , SIGNAL(signalMoveRelative(double, double, double, double)),
+                 model_, SLOT  (      moveRelative(double, double, double, double)));
+
+      model_connected_ = false;
+    }
+
+    return;
+}
+
+void LStepExpressMotionManager::myMoveToThread(QThread* thread)
+{
+    model_->moveToThread(thread);
+    this  ->moveToThread(thread);
+}
+
 void LStepExpressMotionManager::run()
 {
+    if(inMotion_){ return; }
 
-    if (inMotion_) return;
-
-    if (motions_.empty()) return;
-
-//    NQLog("LStepExpressMotionManager", NQLog::Debug) << "run";
+    if(motions_.empty()){ return; }
 
     LStepExpressMotion motion = motions_.dequeue();
 
     inMotion_ = true;
 
-    if (motion.getMode()==true) {
-    NQLog("LStepExpressMotionManager") << "run2 mode==true"<< motion.getX()   <<" y "<<  motion.getY()  <<" z "<<motion.getZ()    << " a "<< motion.getA()   ;
+    if(motion.getMode() == true)
+    {
+      NQLog("LStepExpressMotionManager::run") << "emitting signal \"signalMoveAbsolute("
+        <<   "x=" << motion.getX()
+        << ", y=" << motion.getY()
+        << ", z=" << motion.getZ()
+        << ", a=" << motion.getA()
+        << ")\"";
 
-
-        emit signalMoveAbsolute(motion.getX(), motion.getY(), motion.getZ(), motion.getA());
-    } else {
-    NQLog("LStepExpressMotionManager") << "run3 mode==false";
-
-        emit signalMoveRelative(motion.getX(), motion.getY(), motion.getZ(), motion.getA());
+      emit signalMoveAbsolute(motion.getX(), motion.getY(), motion.getZ(), motion.getA());
     }
-}
+    else
+    {
+      NQLog("LStepExpressMotionManager::run") << "emitting signal \"signalMoveRelative("
+        <<   "x=" << motion.getX()
+        << ", y=" << motion.getY()
+        << ", z=" << motion.getZ()
+        << ", a=" << motion.getA()
+        << ")\"";
 
-void LStepExpressMotionManager::myMoveToThread(QThread *thread)
-{
-    model_->moveToThread(thread);
-    this->moveToThread(thread);
+      emit signalMoveRelative(motion.getX(), motion.getY(), motion.getZ(), motion.getA());
+    }
+
+    return;
 }
 
 void LStepExpressMotionManager::appendMotion(const LStepExpressMotion& motion)
 {
     motions_.enqueue(motion);
-    run();
+    this->run();
 }
 
 void LStepExpressMotionManager::appendMotions(const QQueue<LStepExpressMotion>& motions)
 {
     motions_.append(motions);
-    run();
+    this->run();
 }
 
-void LStepExpressMotionManager::moveRelative(std::vector<double> & values)
+void LStepExpressMotionManager::moveRelative(const std::vector<double>& values)
 {
     motions_.enqueue(LStepExpressMotion(values, false));
-    run();
+    this->run();
 }
 
 void LStepExpressMotionManager::moveRelative(double x, double y, double z, double a)
 {
     motions_.enqueue(LStepExpressMotion(x, y, z, a, false));
-    run();
+    this->run();
 }
 
 void LStepExpressMotionManager::moveRelative(unsigned int axis, double value)
 {
     motions_.enqueue(LStepExpressMotion(axis, value, false));
-    run();
+    this->run();
 }
 
-void LStepExpressMotionManager::moveAbsolute(std::vector<double> & values)
+void LStepExpressMotionManager::moveAbsolute(const std::vector<double>& values)
 {
-
     motions_.enqueue(LStepExpressMotion(values, true));
-    run();
+    this->run();
 }
 
 void LStepExpressMotionManager::moveAbsolute(double x, double y, double z, double a)
 {
-  NQLog("LStepExpressMotionManager") << "moveAbsolute";
-
     motions_.enqueue(LStepExpressMotion(x, y, z, a, true));
-    NQLog("LStepExpressMotionManager") << "motionsEnquee x "<<  x  <<" y "<< y<<" z "<< z << " a "<< a;
-    run();
-  NQLog("LStepExpressMotionManager") << "run Done";
+    this->run();
 }
 
 void LStepExpressMotionManager::moveAbsolute(unsigned int axis, double value)
 {
     motions_.enqueue(LStepExpressMotion(axis, value, true));
-    run();
+    this->run();
 }
 
 void LStepExpressMotionManager::motionStarted()
 {
-  // NQLog("LStepExpressMotionManager", NQLog::Debug) << "motionStarted()";
     inMotion_ = true;
 }
 
 void LStepExpressMotionManager::motionFinished()
 {
-  //    NQLog("LStepExpressMotionManager", NQLog::Debug) << "motionFinished()";
+    inMotion_ = false;
+    this->run();
+}
+
+void LStepExpressMotionManager::start_motion()
+{
+    this->motionStarted();
+}
+
+void LStepExpressMotionManager::finish_motion()
+{
     inMotion_ = false;
 
-    this->run();
+//    NQLog("LStepExpressMotionManager::finish_motion") << "emitting signal \"motion_finished\"";
+
+    emit motion_finished();
 }

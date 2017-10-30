@@ -10,76 +10,72 @@
 //                                                                             //
 /////////////////////////////////////////////////////////////////////////////////
 
-#include <opencv2/opencv.hpp>
+#include <AssemblyMainWindow.h>
+#include <SingletonApplication.h>
+#include <ApplicationConfig.h>
+#include <DeviceState.h>
+#include <nqlogger.h>
+#include <Util.h>
+
+#include <string>
 
 #include <QApplication>
-#include <QProcess>
 #include <QFile>
-#include <QDir>
-#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
-#include <QDesktopServices>
-#else
-#include <QStandardPaths>
+
+#include <opencv2/opencv.hpp>
+
+#ifdef SINGLETON
+static const char* assemblyGUID = "{5F9DC7D7-54C2-4625-A7C6-2EBE4C37C8F5}";
 #endif
 
-#include <nqlogger.h>
-#include <DeviceState.h>
-
-#include "SingletonApplication.h"
-#include "ApplicationConfig.h"
-
-#include "AssemblyMainWindow.h"
-
-static const char* assemblyGUID = "{5F9DC7D7-54C2-4625-A7C6-2EBE4C37C8F5}";
-//#define SINGLETON 1
-
-int main( int argc, char** argv )
+int main(int argc, char** argv)
 {
-    qRegisterMetaType<cv::Mat>("cv::Mat");
+    // log output -----------
+    ApplicationConfig* config = ApplicationConfig::instance(std::string(Config::CMSTkModLabBasePath)+"/assembly/assembly.cfg");
+
+    const NQLog::LogLevel nqloglevel_stdout  = ((NQLog::LogLevel) config->getValue<int>("LogLevel_stdout" , 2));
+    const NQLog::LogLevel nqloglevel_logfile = ((NQLog::LogLevel) config->getValue<int>("LogLevel_logfile", 2));
 
     NQLogger::instance()->addActiveModule("*");
-    NQLogger::instance()->addDestiniation(stdout, NQLog::Spam);
+    NQLogger::instance()->addDestiniation(stdout, nqloglevel_stdout);
 
-#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
-    QString logdir = QDesktopServices::storageLocation(QDesktopServices::CacheLocation);
-#else
-    QString logdir = QStandardPaths::writableLocation(QStandardPaths::CacheLocation);
-#endif
-    QDir dir(logdir);
-    if(!dir.exists()){ dir.mkpath("."); }
-    QString logfilename = logdir + "/assembly.log";
+    const QString logdir = Util::QtCacheDirectory();
+    Util::QDir_mkpath(logdir);
 
-    NQLog("assembly") << "version " << APPLICATIONVERSIONSTR;
+    const QString logfilename = logdir+"/assembly.log";
 
-    NQLog("assembly") << "using " << logfilename << " for logging";
+    NQLog("assembly", NQLog::Message) << "version  : " << APPLICATIONVERSIONSTR;
+    NQLog("assembly", NQLog::Message) << "log file : " << logfilename;
 
-    QFile * logfile = new QFile(logfilename);
-    if(logfile->open(QIODevice::WriteOnly | QIODevice::Append | QIODevice::Text)){
-
-      NQLogger::instance()->addDestiniation(logfile, NQLog::Message);
+    QFile* logfile = new QFile(logfilename);
+    if(logfile->open(QIODevice::WriteOnly | QIODevice::Append | QIODevice::Text))
+    {
+      NQLogger::instance()->addDestiniation(logfile, nqloglevel_logfile);
     }
+    // ----------------------
 
+    // Qt application -------
     qRegisterMetaType<State>("State");
+    qRegisterMetaType<cv::Mat>("cv::Mat");
 
 #ifdef SINGLETON
     SingletonApplication app(argc, argv, assemblyGUID);
-    if(!app.lock()){
-
-      NQLog("assembly") << "Application instance already running!";
+    if(!app.lock())
+    {
+      NQLog("assembly", NQLog::Message) << "Application instance already running!";
       exit(1);
     }
 #else
-    QApplication app( argc, argv );
+    QApplication app(argc, argv);
 #endif
 
     app.setStyle("cleanlooks");
 
-    ApplicationConfig::instance(std::string(Config::CMSTkModLabBasePath)+"/assembly/assembly.cfg");
-
     AssemblyMainWindow mainWindow;
 
-    mainWindow.setWindowTitle(QString("assembly - ") + APPLICATIONVERSIONSTR);
+    mainWindow.setWindowTitle(QString("assembly - ")+APPLICATIONVERSIONSTR);
     mainWindow.show();
 
     return app.exec();
+    // ----------------------
 }

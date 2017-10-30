@@ -10,10 +10,12 @@
 //                                                                             //
 /////////////////////////////////////////////////////////////////////////////////
 
-#include <vector>
+#include "AssemblyAssembler.h"
+
 #include <iostream>
-#include <sstream>
 #include <iomanip>
+#include <vector>
+#include <cmath>
 
 #include <QFormLayout>
 #include <QFileDialog>
@@ -22,43 +24,39 @@
 #include <QPixmap>
 #include <QLabel>
 #include <QApplication>
-
-#include <TGraph.h>
-#include <TCanvas.h>
-#include <TH1F.h>
-#include <TF1.h>
-#include <TRandom.h>
-
-#include <nqlogger.h>
-#include <ApplicationConfig.h>
-
 #include <QDir>
-
 #if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
 #include <QDesktopServices>
 #else
 #include <QStandardPaths>
 #endif
 
-#include "AssemblyAssembler.h"
+#include <nqlogger.h>
+#include <ApplicationConfig.h>
+
+#include <TCanvas.h>
+#include <TGraph.h>
 
 using namespace cv;
 
 AssemblyAssembler::AssemblyAssembler(LStepExpressModel* lStepExpressModel) : QObject(), lStepExpressModel_(lStepExpressModel)
 {
-  NQLog("AssemblyAssembler::AssemblyAssembler");
+    NQLog("AssemblyAssembler::AssemblyAssembler");
 
-  motionManager_ = new LStepExpressMotionManager(lStepExpressModel_);
+//!!    motionManager_ = new LStepExpressMotionManager(lStepExpressModel_);
 }
 
-void  AssemblyAssembler::run_sandwitchassembly(double x_a, double y_a, double z_a , double x_b, double y_b, double z_b, double x_t, double y_t, double z_t){
-    
-  NQLog("AssemblyAssembler::run_sandwichassembler")<<  " x_a = " << x_a <<  " y_a = " << y_a << " z_a = " << z_a << " x_b = " << x_b  << " y_b = " << y_b  <<" z_b = " << z_b << "x_t = " << x_t  << " y_t = " << y_t  <<" z_t = " << z_t ;
-    
+void  AssemblyAssembler::run_sandwitchassembly(double x_a, double y_a, double z_a , double x_b, double y_b, double z_b, double x_t, double y_t, double z_t)
+{
+    NQLog("AssemblyAssembler::run_sandwichassembly")
+        << " x_a = " << x_a << " y_a = " << y_a << " z_a = " << z_a
+        << " x_b = " << x_b << " y_b = " << y_b << " z_b = " << z_b
+        << " x_t = " << x_t << " y_t = " << y_t << " z_t = " << z_t;
+
     x_assembly = x_a;
     y_assembly = y_a;
     z_assembly = z_a;
-    
+
     x_bottom = x_b;
     y_bottom = y_b;
     z_bottom = z_b;
@@ -66,84 +64,79 @@ void  AssemblyAssembler::run_sandwitchassembly(double x_a, double y_a, double z_
     x_top = x_t;
     y_top = y_t;
     z_top = z_t;
-    
+
     step = 0;
 
-    //Parameters of assembly.
+    // Parameters of assembly.
     z_prepickup_distance = 20.00;
     platform_rotation = -90.00;
     z_spacer_thickness = 2.00;
     z_sensor_thickness = 0.30;
 
     emit nextStep();
+
+    return;
 }
 
+void  AssemblyAssembler::fill_positionvectors(int stage, double x_pr, double y_pr, double theta_pr)
+{
+    // x_pr     = r->Gaus(0.0,  1.0);
+    // y_pr     = r->Gaus(0.0,  5.0);
+    // theta_pr = r->Gaus(0.0, 10.0);
 
-void  AssemblyAssembler::fill_positionvectors(int stage, double x_pr, double y_pr, double theta_pr ){
-    
-   // x_pr = r->Gaus(0.0,1.0);
-   // y_pr = r->Gaus(0.0,5.0);
-   // theta_pr = r->Gaus(0.0,10.0);
+    NQLog("AssemblyScanner::fill_positionvectors") << "step = " << step << " x = "<< x_pr << " y = " << y_pr << " theta = " << theta_pr;
 
-    NQLog("AssemblyScanner::fill_positionvectors")<< " step =  " << step<< "  x = "<< x_pr << "  y = "<< y_pr << "  theta = "<< theta_pr ;
+    if(step == 2){
 
-    
-    if (step == 2){
-    
         xpre_vec.push_back(x_pr);
         ypre_vec.push_back(y_pr);
         thetapre_vec.push_back(theta_pr);
-    
-    }else if(step == 11){
-    
+    }
+    else if(step == 11){
+
         xpost_vec.push_back(x_pr);
         ypost_vec.push_back(y_pr);
         thetapost_vec.push_back(theta_pr);
-        
     }
-    
+
     emit nextStep();
 }
 
-
-
 //void  AssemblyScanner::run_alignment(){
 //    NQLog("AssemblyScanner::run_alignment")<<  " tolerance = " << tolerance <<  " max iterations = "<< max_iterations << endl;
-    
-    // Rought manual alignment with ref marker on platform
-    
-    //2. Apply rough angular correction:
-    //a. Run PatRec and detect X1,Y1,Theta
-    //b. put marker in centre of fied of view (need to accurate conversion of pixels to mm )
-    //c. iterate:
-    //    - rotate platform to allign (some small fraction of required rotation)
-    //    - put marker in centre of fied of view
-    //    repeat until target alignment reached
 
-    //emit acquireImage();
-    //3. Apply fine angular correction:
-    // a. Go to far-away corner, Run PatRec and detect X2,Y2
-    // b. Calculate residual angular mis-alignment from (Y2-Y1)/(X2-X1)
-    //c. iterate:
-    //    - rotate platform to allign (some small fraction of required rotation)
-    //    - put marker in centre of fied of view
-    //    repeat until target alignment reached
-    
-    
-    //4. Confirm alignment
-    //   - return to starting corner and conform detected X doesn't change
-    
-  //  emit nextAlignmentStep();
+// Rought manual alignment with ref marker on platform
+
+//2. Apply rough angular correction:
+//a. Run PatRec and detect X1,Y1,Theta
+//b. put marker in centre of fied of view (need to accurate conversion of pixels to mm )
+//c. iterate:
+//    - rotate platform to allign (some small fraction of required rotation)
+//    - put marker in centre of fied of view
+//    repeat until target alignment reached
+
+//emit acquireImage();
+//3. Apply fine angular correction:
+// a. Go to far-away corner, Run PatRec and detect X2,Y2
+// b. Calculate residual angular mis-alignment from (Y2-Y1)/(X2-X1)
+//c. iterate:
+//    - rotate platform to allign (some small fraction of required rotation)
+//    - put marker in centre of fied of view
+//    repeat until target alignment reached
+
+
+//4. Confirm alignment
+//   - return to starting corner and conform detected X doesn't change
+
+//  emit nextAlignmentStep();
 
 //}
 
+void AssemblyAssembler::process_step(){
 
+    NQLog("AssemblyAssembler::") << "process_step";
 
-void  AssemblyAssembler::process_step(){
-
-  NQLog("AssemblyAssembler::") << "process_step";
-    
-    if (step == 0){
+    if(step == 0){
 
       NQLog("AssemblyAssembler:: step == ") << step;
         step++;
@@ -154,7 +147,7 @@ void  AssemblyAssembler::process_step(){
     else if  (step == 1){
 
       NQLog("AssemblyAssembler:: step == ") << step;
-        
+      
     
     }else if (step == 2){
 
@@ -404,13 +397,11 @@ void  AssemblyAssembler::process_step(){
 
     */
     
-     }
+}
 
-
-
-void AssemblyAssembler::launch_next_alignment_step(){
-  emit nextAlignmentStep(1, 0.0, 0.0, 0.0);
-
+void AssemblyAssembler::launch_next_alignment_step()
+{
+    emit nextAlignmentStep(1, 0.0, 0.0, 0.0);
 }
 
 double x1_pos, x2_pos, y1_pos, y2_pos, slope, deg_orient, orient;
@@ -837,30 +828,24 @@ void  AssemblyAssembler::write_image(cv::Mat newImage, cv::Rect marker_rect){
 
 
 
-double AssemblyAssembler::imageVariance(cv::Mat img_input, cv::Rect rectangle) {
-    
-    
+double AssemblyAssembler::imageVariance(cv::Mat img_input, cv::Rect rectangle)
+{
     Mat img_copy = img_input.clone();
     Mat roi(img_copy, rectangle);
-    
-    //Convert color image to greyscale (GS)
+
+    // Convert color image to greyscale (GS)
     Mat img_copy_gs(img_copy.size(), img_copy.type());
-  //  cvtColor(img_copy, img_copy_gs, CV_BGR2GRAY);
-    
-    //Apply laplacian function to GS image
+//    cvtColor(img_copy, img_copy_gs, CV_BGR2GRAY);
+
+    // Apply laplacian function to GS image
     Mat img_laplace;
     Laplacian(img_copy, img_laplace, CV_64F);
-    
-    //Calculate standard deviation of laplace image
+
+    // Calculate standard deviation of laplace image
     cv::Scalar mean, std_dev;
     meanStdDev(img_laplace, mean, std_dev, cv::Mat());
-    
-    std::cout<<"Variance: "<<std_dev.val[0]*std_dev.val[0]<<std::endl;
-    
+
+    std::cout << "Variance: " <<std_dev.val[0]*std_dev.val[0] << std::endl;
+
     return std_dev.val[0]*std_dev.val[0];
-    
 }
-
-
-
-

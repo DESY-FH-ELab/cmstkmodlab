@@ -10,23 +10,18 @@
 //                                                                             //
 /////////////////////////////////////////////////////////////////////////////////
 
+#include <LStepExpressWidget.h>
 #include <nqlogger.h>
 
-#include "LStepExpressWidget.h"
-
-LStepExpressWidget::LStepExpressWidget(LStepExpressModel* model,
-                                       QWidget *parent)
-    : QWidget(parent),
-      model_(model)
+LStepExpressWidget::LStepExpressWidget(LStepExpressModel* model, QWidget *parent)
+  : QWidget(parent), model_(model)
 {
-    
-    NQLog("LStepExpressWidget::LStepExpressWidget")  ;
+//    NQLog("LStepExpressWidget::LStepExpressWidget");
 
-    
     QVBoxLayout* layout = new QVBoxLayout(this);
     setLayout(layout);
 
-    QHBoxLayout* hlayout = new QHBoxLayout(this);
+    QHBoxLayout* hlayout = new QHBoxLayout();
     layout->addLayout(hlayout);
 
     lstepCheckBox_ = new QCheckBox("Enable Controller", this);
@@ -51,55 +46,44 @@ LStepExpressWidget::LStepExpressWidget(LStepExpressModel* model,
     axisControlWidget_->setLayout(axisLayout);
 
     // Add all the axes displays
-    for (unsigned int i=0;i<4;++i) {
-        axisLayout->addWidget(new LStepExpressAxisWidget(model_, i, this),
-                              0, i);
+    for(unsigned int i=0;i<4;++i)
+    {
+      axisLayout->addWidget(new LStepExpressAxisWidget(model_, i, this), 0, i);
     }
 
-    connect(lstepCheckBox_, SIGNAL(toggled(bool)),
-            model_, SLOT(setDeviceEnabled(bool)));
+    connect(lstepCheckBox_, SIGNAL(toggled(bool)), model_, SLOT(setDeviceEnabled(bool)));
 
-    connect(joystickCheckBox_, SIGNAL(toggled(bool)),
-            model_, SLOT(setJoystickEnabled(bool)));
+    connect(joystickCheckBox_, SIGNAL(toggled(bool)), model_, SLOT(setJoystickEnabled(bool)));
 
-    connect(buttonOrigin_, SIGNAL(clicked()),
-            model_, SLOT(moveAbsolute()));
+    connect(buttonOrigin_, SIGNAL(clicked()), model_, SLOT(moveAbsolute()));
 
-    connect(model_, SIGNAL(deviceStateChanged(State)),
-            this, SLOT(lstepStateChanged(State)));
+    connect(model_, SIGNAL(deviceStateChanged(State)), this, SLOT(lstepStateChanged(State)));
 
-    connect(model_, SIGNAL(controlStateChanged(bool)),
-            this, SLOT(controlStateChanged(bool)));
+    connect(model_, SIGNAL(controlStateChanged(bool)), this, SLOT(controlStateChanged(bool)));
 
-    connect(model_, SIGNAL(informationChanged()),
-            this, SLOT(updateWidgets()));
+    connect(model_, SIGNAL(informationChanged()), this, SLOT(updateWidgets()));
 
-    connect(model_, SIGNAL(motionStarted()),
-            this, SLOT(motionStarted()));
+    connect(model_, SIGNAL(motionStarted()), this, SLOT(motionStarted()));
 
-    connect(model_, SIGNAL(motionFinished()),
-            this, SLOT(motionFinished()));
+    connect(model_, SIGNAL(motionFinished()), this, SLOT(motionFinished()));
 
-    connect(buttonCalibrate_, SIGNAL(clicked()),
-	    model_, SLOT(calibrate()));
+    connect(buttonCalibrate_, SIGNAL(clicked()), model_, SLOT(calibrate()));
 
-    connect(buttonEmergencyStop_, SIGNAL(clicked()),
-	model_, SLOT(emergencyStop()));
+    connect(buttonEmergencyStop_, SIGNAL(clicked()), model_, SLOT(emergencyStop()));
 
     lstepStateChanged(model_->getDeviceState());
 
     lstepCheckBox_->setCheckable(true);
     lstepCheckBox_->setChecked(true);
-
 }
 
 LStepExpressWidget::~LStepExpressWidget()
 {
-    if(lstepCheckBox_){delete lstepCheckBox_; lstepCheckBox_ = NULL;}
-    if(joystickCheckBox_){delete joystickCheckBox_; joystickCheckBox_ = NULL;}
-    if(buttonOrigin_){delete buttonOrigin_; buttonOrigin_ = NULL;}
-    if(buttonCalibrate_){delete buttonCalibrate_; buttonCalibrate_ = NULL;}
-    if(buttonEmergencyStop_){delete buttonEmergencyStop_; buttonEmergencyStop_ = NULL;}
+    if(lstepCheckBox_      ){ delete lstepCheckBox_      ; lstepCheckBox_       = NULL; }
+    if(joystickCheckBox_   ){ delete joystickCheckBox_   ; joystickCheckBox_    = NULL; }
+    if(buttonOrigin_       ){ delete buttonOrigin_       ; buttonOrigin_        = NULL; }
+    if(buttonCalibrate_    ){ delete buttonCalibrate_    ; buttonCalibrate_     = NULL; }
+    if(buttonEmergencyStop_){ delete buttonEmergencyStop_; buttonEmergencyStop_ = NULL; }
 }
 
 void LStepExpressWidget::updateWidgets()
@@ -109,48 +93,46 @@ void LStepExpressWidget::updateWidgets()
 /// Updates the GUI when the Keithley multimeter is enabled/disabled.
 void LStepExpressWidget::lstepStateChanged(State newState)
 {
-  //    NQLog("LStepExpressWidget", NQLog::Spam)<< "lStepStateChanged(State newState) " << newState  ;
+//    NQLog("LStepExpressWidget", NQLog::Spam)<< "lStepStateChanged(State newState) " << newState  ;
 
     lstepCheckBox_->setChecked(newState == READY || newState == INITIALIZING);
 
-    joystickCheckBox_->setEnabled(newState == READY);
-
-    buttonOrigin_->setEnabled(newState == READY);
-
-    buttonCalibrate_->setEnabled(newState == READY);
-
-    axisControlWidget_->setEnabled(newState == READY);
-
+    joystickCheckBox_   ->setEnabled(newState == READY);
+    buttonOrigin_       ->setEnabled(newState == READY);
+    buttonCalibrate_    ->setEnabled(newState == READY);
+    axisControlWidget_  ->setEnabled(newState == READY);
     buttonEmergencyStop_->setEnabled(newState == READY);
 }
 
 /// Updates the GUI when the controler is enabled/disabled.
 void LStepExpressWidget::controlStateChanged(bool enabled)
 {
-  //    NQLog("LStepExpressWidget", NQLog::Spam)<< "controlStateChanged(bool enabled) " << enabled  ;
+//    NQLog("LStepExpressWidget", NQLog::Spam)<< "controlStateChanged(bool enabled) " << enabled  ;
 
-    if (enabled) {
-        lstepStateChanged(model_->getDeviceState());
-    } else {
-        lstepCheckBox_->setEnabled(false);
-        joystickCheckBox_->setEnabled(false);
-        buttonOrigin_->setEnabled(false);
-        buttonCalibrate_->setEnabled(false);
-        axisControlWidget_->setEnabled(false);
-        buttonEmergencyStop_->setEnabled(false);
+    if(enabled)
+    {
+      lstepStateChanged(model_->getDeviceState());
+    }
+    else
+    {
+      lstepCheckBox_      ->setEnabled(false);
+      joystickCheckBox_   ->setEnabled(false);
+      buttonOrigin_       ->setEnabled(false);
+      buttonCalibrate_    ->setEnabled(false);
+      axisControlWidget_  ->setEnabled(false);
+      buttonEmergencyStop_->setEnabled(false);
     }
 }
 
 void LStepExpressWidget::motionStarted()
 {
-  //    NQLog("LStepExpressWidget", NQLog::Spam)<< "motionStarted()"  ;
+//    NQLog("LStepExpressWidget", NQLog::Spam)<< "motionStarted()"  ;
 }
 
 void LStepExpressWidget::motionFinished()
 {
-  //    NQLog("LStepExpressWidget", NQLog::Spam)<< "motionFinished()"  ;
+//    NQLog("LStepExpressWidget", NQLog::Spam)<< "motionFinished()"  ;
 }
-
 
 LStepExpressAxisWidget::LStepExpressAxisWidget(LStepExpressModel* model,
                                                unsigned int axis,
@@ -216,11 +198,11 @@ LStepExpressAxisWidget::~LStepExpressAxisWidget()
 
 void LStepExpressAxisWidget::updateWidgets()
 {
-  //    NQLog("LStepExpressAxisWidget ", NQLog::Spam)<< "updateWidgets()"  ;
+//    NQLog("LStepExpressAxisWidget ", NQLog::Spam)<< "updateWidgets()"  ;
     
     bool axis = model_->getAxisEnabled(axis_);
 
-    //    NQLog("LStepExpressAxisWidget ", NQLog::Spam)<< "updateWidgets() , axis enabled?  "<<axis<<" joystick enabled? =  "<<model_->getJoystickEnabled()  ;
+//    NQLog("LStepExpressAxisWidget ", NQLog::Spam)<< "updateWidgets() , axis enabled?  "<<axis<<" joystick enabled? =  "<<model_->getJoystickEnabled()  ;
 
     if (axis && model_->getJoystickEnabled()) {
         joystickCheckBox_->setEnabled(true);
@@ -228,28 +210,31 @@ void LStepExpressAxisWidget::updateWidgets()
         joystickCheckBox_->setEnabled(false);
     }
 
-    //    NQLog("LStepExpressAxisWidget ", NQLog::Spam)<< "updateWidgets() JOYstick ----------->" << model_->getJoystickAxisEnabled(axis_)  ;
+//    NQLog("LStepExpressAxisWidget ", NQLog::Spam)<< "updateWidgets() JOYstick ----------->" << model_->getJoystickAxisEnabled(axis_)  ;
 
     if(axis){QString temp = model_->getAxisDimensionShortName(axis_); if(axisDimensionName_ != temp){axisDimensionName_ = temp; updateMotionWidgets();}}
 }
 
 void LStepExpressAxisWidget::updateMotionWidgets()
 {
-  //    NQLog("LStepExpressAxisWidget ", NQLog::Spam)<< "updateMotionWidgets()"  ;
-    statusLabel_->setText(model_->getAxisStatusText(axis_));
-    positionLabel_->setText(QString::number(model_->getPosition(axis_), 'f', 4) + " " + axisDimensionName_);
+//    NQLog("LStepExpressAxisWidget ", NQLog::Spam)<< "updateMotionWidgets()"  ;
+    statusLabel_  ->setText(model_->getAxisStatusText(axis_));
+    positionLabel_->setText(QString::number(model_->getPosition(axis_), 'f', 4)+" "+axisDimensionName_);
 }
 
 void LStepExpressAxisWidget::lStepStateChanged(State newState)
 {
-  //    NQLog("LStepExpressAxisWidget ", NQLog::Spam)<< "lStepStateChanged(State newState) " << newState  ;
-  //NQLog("LStepExpressAxisWidget ", NQLog::Spam)<< "                             axis " << model_->getAxisEnabled(axis_)  ;
+//    NQLog("LStepExpressAxisWidget ", NQLog::Spam)<< "lStepStateChanged(State newState) " << newState  ;
+//    NQLog("LStepExpressAxisWidget ", NQLog::Spam)<< "                             axis " << model_->getAxisEnabled(axis_)  ;
 
-    if (newState == READY || newState == INITIALIZING) {
+    if (newState == READY || newState == INITIALIZING)
+    {
       enabledCheckBox_->setEnabled(true);
       joystickCheckBox_->setEnabled(model_->getJoystickEnabled());
       updateWidgets();
-    } else {
+    }
+    else
+    {
       enabledCheckBox_->setEnabled(false);
       joystickCheckBox_->setEnabled(false);
     }
@@ -257,12 +242,15 @@ void LStepExpressAxisWidget::lStepStateChanged(State newState)
 
 void LStepExpressAxisWidget::controlStateChanged(bool enabled)
 {
-  //    NQLog("LStepExpressAxisWidget ", NQLog::Spam)<< "controlStateChanged(bool enabled) " << enabled  ;
+//    NQLog("LStepExpressAxisWidget ", NQLog::Spam)<< "controlStateChanged(bool enabled) " << enabled;
 
-    if (enabled) {
-        lStepStateChanged(model_->getDeviceState());
-    } else {
-        enabledCheckBox_->setEnabled(false);
+    if(enabled)
+    {
+      lStepStateChanged(model_->getDeviceState());
+    }
+    else
+    {
+      enabledCheckBox_->setEnabled(false);
     }
 }
 
@@ -278,10 +266,10 @@ void LStepExpressAxisWidget::joystickCheckBoxToggled(bool enabled)
 
 void LStepExpressAxisWidget::motionStarted()
 {
-  //    NQLog("LStepExpressAxisWidget ", NQLog::Spam)<< "motionStarted()"  ;
+//    NQLog("LStepExpressAxisWidget ", NQLog::Spam)<< "motionStarted";
 }
 
 void LStepExpressAxisWidget::motionFinished()
 {
-  //    NQLog("LStepExpressAxisWidget ", NQLog::Spam)<< "motionFinished()"  ;
+//    NQLog("LStepExpressAxisWidget ", NQLog::Spam)<< "motionFinished";
 }

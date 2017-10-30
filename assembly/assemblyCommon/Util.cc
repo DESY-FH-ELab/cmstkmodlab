@@ -10,50 +10,45 @@
 //                                                                             //
 /////////////////////////////////////////////////////////////////////////////////
 
-#ifndef ASSEMBLYVUEYEMODEL_H
-#define ASSEMBLYVUEYEMODEL_H
+#include <Util.h>
 
-#include <vector>
+#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
+#include <QDesktopServices>
+#else
+#include <QStandardPaths>
+#endif
+#include <QDir>
 
-#include <QObject>
-#include <QTimer>
-#include <QThread>
-#include <QMutex>
-#include <QMutexLocker>
-#include <QVector>
-
-#include "AssemblyVUEyeCamera.h"
-
-class AssemblyVUEyeModel : public QObject
+QString Util::QtCacheDirectory()
 {
- Q_OBJECT
+ #if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
+   return QDesktopServices::storageLocation(QDesktopServices::CacheLocation);
+ #else
+   return QStandardPaths::writableLocation(QStandardPaths::CacheLocation);
+ #endif
+}
 
-  public:
-    explicit AssemblyVUEyeModel(int updateInterval, QObject *parent);
-    ~AssemblyVUEyeModel();
+bool Util::QDir_mkpath(const QString& path)
+{
+  const QDir dir(path);
+  if(dir.exists() == false){ return dir.mkpath("."); }
 
-    size_t getCameraCount() const;
-    AssemblyVUEyeCamera * getCamera(size_t idx);
-    AssemblyVUEyeCamera * getCameraByID(unsigned int id);
+  return true;
+}
 
-  public slots:
-    virtual void updateInformation() = 0;
+bool Util::QDir_mkpath(const std::string& path)
+{
+  return Util::QDir_mkpath(QString(path.c_str()));
+}
 
-  protected slots:
+bool Util::DirectoryExists(const QString& path)
+{
+  const QDir dir(path);
 
-  protected:
-    int updateInterval_;
-    QTimer* timer_;
+  return dir.exists();
+}
 
-    QMutex mutex_;
-
-    QVector<QThread*> threads_;
-    QVector<AssemblyVUEyeCamera*> cameras_;
-
-    void clear();
-
-  signals:
-    void cameraCountChanged(unsigned int);
-};
-
-#endif // ASSEMBLYVUEYEMODEL_H
+bool Util::DirectoryExists(const std::string& path)
+{
+  return Util::DirectoryExists(QString(path.c_str()));
+}

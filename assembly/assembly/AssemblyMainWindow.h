@@ -13,6 +13,42 @@
 #ifndef ASSEMBLYMAINWINDOW_H
 #define ASSEMBLYMAINWINDOW_H
 
+#include <AssemblyVUEyeCamera.h>
+#ifdef NOUEYE
+#include <AssemblyUEyeFakeModel.h>
+typedef AssemblyUEyeFakeModel AssemblyUEyeModel_t;
+#else
+#include <AssemblyUEyeModel.h>
+typedef AssemblyUEyeModel AssemblyUEyeModel_t;
+#endif
+#include <AssemblyUEyeCameraThread.h>
+#include <AssemblyUEyeWidget.h>
+#include <AssemblyUEyeView.h>
+#include <AssemblyUEyeSnapShooter.h>
+#include <AssemblyThresholdTuner.h>
+#include <AssemblyModuleAssembler.h>
+#include <AssemblyAutoFocus.h>
+#include <AssemblyScanner.h>
+#include <AssemblyAssembler.h>
+#include <AssemblyMarkerFinderThread.h>
+#include <AssemblySensorMarkerFinder.h>
+#include <AssemblySensorMarkerFinderWidget.h>
+#include <LStepExpressModel.h>
+#include <LStepExpressSettings.h>
+#include <LStepExpressMotionManager.h>
+#include <LStepExpressMotionThread.h>
+#include <LStepExpressSettingsWidget.h>
+#include <LStepExpressWidget.h>
+#include <LStepExpressJoystickWidget.h>
+#include <LStepExpressMeasurement.h>
+#include <LStepExpressMeasurementWidget.h>
+#include <LStepExpressPositionWidget.h>
+#include <LStepExpressStatusWindow.h>
+#include <ConradModel.h>
+#include <ConradManager.h>
+#include <ImageController.h>
+#include <ZFocusFinder.h>
+
 #include <QMainWindow>
 #include <QTabWidget>
 #include <QDir>
@@ -20,130 +56,97 @@
 #include <QToolBar>
 #include <QScrollArea>
 
-#include "AssemblyVUEyeCamera.h"
-
-#ifdef NOUEYE
-#include "AssemblyUEyeFakeModel.h"
-typedef AssemblyUEyeFakeModel AssemblyUEyeModel_t;
-#else
-#include "AssemblyUEyeModel.h"
-typedef AssemblyUEyeModel AssemblyUEyeModel_t;
-#endif
-
-#include "AssemblyUEyeCameraThread.h"
-#include "AssemblyUEyeWidget.h"
-#include "AssemblyUEyeView.h"
-#include "AssemblyUEyeSnapShooter.h"
-#include "AssemblyThresholdTuner.h"
-#include "AssemblyModuleAssembler.h"
-#include "AssemblyAutoFocus.h"
-#include "AssemblyScanner.h"
-#include "AssemblyAssembler.h"
-
-#include "AssemblyMarkerFinderThread.h"
-#include "AssemblySensorMarkerFinder.h"
-#include "AssemblySensorMarkerFinderWidget.h"
-
-//motion
-#include <ApplicationConfig.h>
-#include "LStepExpressModel.h"
-#include "LStepExpressSettings.h"
-#include "LStepExpressMotionManager.h"
-#include "LStepExpressMotionThread.h"
-#include "LStepExpressSettingsWidget.h"
-#include "LStepExpressWidget.h"
-#include "LStepExpressJoystickWidget.h"
-#include "LStepExpressMeasurement.h"
-#include "LStepExpressMeasurementWidget.h"
-#include "LStepExpressPositionWidget.h"
-#include "LStepExpressStatusWindow.h"
-
-//conrad relay card
-#include "ConradModel.h"
-#include "ConradManager.h"
-
 class AssemblyMainWindow : public QMainWindow
 {
-Q_OBJECT
- public:
-  explicit AssemblyMainWindow(QWidget *parent = 0);
+ Q_OBJECT
 
- public slots:
+  public:
+    explicit AssemblyMainWindow(const unsigned int camera_ID=10, QWidget* parent=0);
 
-  void quit();
+  public slots:
 
-  void testTimer();
+    void  enable_images();
+    void disable_images();
+    void     get_image ();
 
-  void onOpenCamera();
-  void onCloseCamera();
-  void onSnapShot();
+    void    connect_images();
+    void disconnect_images();
 
-  void cameraOpened();
-  void cameraClosed();
+    void changeState_AutoFocus          (int);
+    void changeState_PrecisionEstimation(int);
+    void changeState_SandwichAssembly   (int);
+    void changeState_Alignment          (int);
 
-  void enableAutoFocus(int);
-  void enablePrecisionEstimation(int);
-  void enableSandwichAssembly(int);
-  void enableAlignment(int);
+    void testTimer();
 
- signals:
+    void quit();
 
-  void openCamera();
-  void closeCamera();
-  void acquireImage();
-  void updateVacuumChannelsStatus();
-  void updateThresholdLabel();
+  signals:
 
- protected slots:
+    void images_ON();
+    void images_OFF();
 
-  void liveUpdate();
+    void image();
 
- protected:
+    void updateThresholdLabel();
 
-  QDir currentDir_;
+    void updateVacuumChannelsStatus();
 
-  QToolBar* toolBar_;
+    void AutoFocus_ON();
+    void AutoFocus_OFF();
 
-  QTabWidget* tabWidget_;
+  protected slots:
 
-  AssemblyUEyeSnapShooter* finderView_;
-  AssemblyThresholdTuner* thresholdTunerView_;
-  AssemblyUEyeSnapShooter* edgeView_;
-  AssemblyUEyeSnapShooter* rawView_;
-  AssemblyModuleAssembler* assembleView_;
-  AssemblyAutoFocus* autoFocusView_;
-  AssemblyScanner*  cmdr_zscan;
+    void liveUpdate();
 
-  QCheckBox *checkbox1;
-  QCheckBox *checkbox2;
-  QCheckBox *checkbox3;
-  QCheckBox *checkbox4;
+  protected:
 
-  AssemblyUEyeModel_t* uEyeModel_;
-  AssemblyUEyeCameraThread* cameraThread_;
-  AssemblyUEyeWidget* uEyeWidget_;
+    QDir currentDir_;
 
-  AssemblyVUEyeCamera * camera_;
+    QToolBar* toolBar_;
+    QTabWidget* tabWidget_;
 
-  AssemblyMarkerFinderThread* finderThread_;
-  AssemblySensorMarkerFinder* finder_;
-  AssemblySensorMarkerFinderWidget* finderWidget_;
+//    AssemblyUEyeSnapShooter* finderView_;
+//    AssemblyUEyeSnapShooter* edgeView_;
+//    AssemblyUEyeSnapShooter* rawView_;
+    AssemblyAutoFocus* autoFocusView_;
+    AssemblyThresholdTuner* thresholdTunerView_;
+    AssemblyModuleAssembler* assembleView_;
 
-  LStepExpressModel* lStepExpressModel_;
-  LStepExpressMotionManager* motionManager_;
-  LStepExpressSettings* lStepExpressSettings_;
-  LStepExpressMotionThread* motionThread_;
-    
-  LStepExpressSettingsWidget* lStepExpressSettingsWidget_;
+    QCheckBox *checkbox1;
+    QCheckBox *checkbox2;
+    QCheckBox *checkbox3;
+    QCheckBox *checkbox4;
+
+    AssemblyUEyeModel_t* cameraModel_;
+//!!    AssemblyUEyeWidget*  cameraWidget_;
+    unsigned int              camera_ID_;
+    AssemblyVUEyeCamera *     camera_;
+    AssemblyUEyeCameraThread* cameraThread_;
+
+    AssemblyScanner* cmdr_zscan;
+    ZFocusFinder* zfocus_finder_;
+
+    AssemblySensorMarkerFinder*       finder_;
+    AssemblyMarkerFinderThread*       finderThread_;
+    AssemblySensorMarkerFinderWidget* finderWidget_;
+
+    LStepExpressModel*          motionModel_;
+    LStepExpressMotionManager*  motionManager_;
+    LStepExpressMotionThread*   motionThread_;
+    LStepExpressSettings*       motionSettings_;
+    LStepExpressSettingsWidget* motionSettingsWidget_;
 
 
-  ConradModel * conradModel_;
-  ConradManager* conradManager_;
-  AssemblyAssembler* module_assembler_;
+    ConradModel*       conradModel_;
+    ConradManager*     conradManager_;
+    AssemblyAssembler* module_assembler_;
 
-  double testTimerCount_;
+    ImageController* image_ctr_;
 
-  QTimer *liveTimer_;
+    double testTimerCount_;
+
+    QTimer *liveTimer_;
 };
 
 #endif // ASSEMBLYMAINWINDOW_H
