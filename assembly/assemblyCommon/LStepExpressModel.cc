@@ -701,16 +701,18 @@ void LStepExpressModel::updateMotionInformationFromTimer()
             emit motionFinished();
           }
       }
-      
-      if( (axis_)[0] || (axis_)[1] || (axis_)[2] || (axis_)[3]){
+
+      if((axis_)[0] || (axis_)[1] || (axis_)[2] || (axis_)[3])
+      {
           controller_->GetPosition(dvalues);
           if (dvalues!=position_) {
 	  position_ = dvalues;
 	  changed = true;
           }
       }
-      
-      if(!inMotion_ && finishedCalibrating_){
+
+      if(!inMotion_ && finishedCalibrating_)
+      {
           std::vector<double> posvalues{0.0, 0.0, 0.0, 0.0};
           controller_->SetPosition(posvalues);
           position_ = posvalues;
@@ -721,7 +723,7 @@ void LStepExpressModel::updateMotionInformationFromTimer()
       if(changed)
       {
           NQLog("LStepExpressModel", NQLog::Debug) << "updateMotionInformationFromTimer"
-            << ": emitting signal \"motionFinished\"";
+             << ": emitting signal \"motionInformationChanged\"";
 
           emit motionInformationChanged();
       }
