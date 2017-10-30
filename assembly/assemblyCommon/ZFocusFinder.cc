@@ -21,8 +21,9 @@
 #include <cstdio>
 #include <memory>
 
-#include <TGraph.h>
 #include <TCanvas.h>
+#include <TGraph.h>
+#include <TFile.h>
 
 int ZFocusFinder::exe_counter_ = -1;
 int ZFocusFinder::focus_pointN_max_ = 200;
@@ -245,11 +246,11 @@ void ZFocusFinder::test_focus()
     double zposi_best(zposi_init_);
     {
       std::unique_ptr<TGraph> zscan_gra(new TGraph(v_focus_vals_.size()));
-      zscan_gra->SetName("zfocus");
+      zscan_gra->SetName("zfocus_graph");
       zscan_gra->SetTitle(";z-axis position [mm];focus discriminant");
-      zscan_gra->SetMarkerColor(4);
-      zscan_gra->SetMarkerStyle(21);
-      zscan_gra->SetMarkerSize(1.5);
+      zscan_gra->SetMarkerColor(2);
+      zscan_gra->SetMarkerStyle(20);
+      zscan_gra->SetMarkerSize(1.25);
 
       double focus_best(-1.);
       for(unsigned int i=0; i<v_focus_vals_.size(); ++i)
@@ -263,14 +264,20 @@ void ZFocusFinder::test_focus()
       }
 
       std::unique_ptr<TCanvas> zscan_can(new TCanvas());
+      zscan_can->SetName("zfocus_plot");
       zscan_can->cd();
       zscan_gra->Draw("alp");
 
       const std::string zscan_plot_path_png  = output_dir_+"/ZFocusFinder_zscan.png";
       const std::string zscan_plot_path_root = output_dir_+"/ZFocusFinder_zscan.root";
 
-      zscan_can->SaveAs(zscan_plot_path_png .c_str());
-      zscan_can->SaveAs(zscan_plot_path_root.c_str());
+      zscan_can->SaveAs(zscan_plot_path_png.c_str());
+
+      std::unique_ptr<TFile> zscan_fil(new TFile(zscan_plot_path_root.c_str(), "recreate"));
+      zscan_fil->cd();
+      zscan_can->Write();
+      zscan_gra->Write();
+      zscan_fil->Close();
 
       NQLog("ZFocusFinder", NQLog::Debug) << "test_focus"
          << ": emitting signal \"show_zscan(" << zscan_plot_path_png << ")\"";

@@ -139,7 +139,7 @@ AssemblyMainWindow::AssemblyMainWindow(const unsigned int camera_ID, QWidget* pa
     connect(thresholdTunerView_, SIGNAL(setNewThreshold(int, cv::Mat))     , marker_finder_     , SLOT(setNewGeneralThreshold(int, cv::Mat)));
     connect(marker_finder_     , SIGNAL(sendUpdatedThresholdImage(QString)), thresholdTunerView_, SLOT(updateThresholdImage(QString)));
 
-    NQLog("AssemblyMainWindow", NQLog::Message) << "added view \"" << tabname_ImageThresholding << "\"";
+    NQLog("AssemblyMainWindow", NQLog::Message) << "added view " << tabname_ImageThresholding;
     NQLog("AssemblyMainWindow", NQLog::Spam)    << "emitting signal \"updateThresholdLabel\"";
 
     emit updateThresholdLabel();
@@ -158,7 +158,7 @@ AssemblyMainWindow::AssemblyMainWindow(const unsigned int camera_ID, QWidget* pa
 
     autoFocusView_->configure_scan();
 
-    NQLog("AssemblyMainWindow", NQLog::Message) << "added view \"" << tabname_AutoFocus << "\"";
+    NQLog("AssemblyMainWindow", NQLog::Message) << "added view " << tabname_AutoFocus;
     /* --------------------------------------------------------- */
 
     /* MANUAL-ASSEMBLY VIEW ------------------------------------ */
@@ -167,7 +167,7 @@ AssemblyMainWindow::AssemblyMainWindow(const unsigned int camera_ID, QWidget* pa
     assembleView_ = new AssemblyModuleAssembler(camera_, marker_finder_, motion_model_, tabWidget_);
     tabWidget_->addTab(assembleView_, tabname_ManualAssembly);
 
-    NQLog("AssemblyMainWindow", NQLog::Message) << "added view \"" << tabname_ManualAssembly << "\"";
+    NQLog("AssemblyMainWindow", NQLog::Message) << "added view " << tabname_ManualAssembly;
 
     // VACUUM connections
     conradModel_   = new ConradModel(assembleView_);
@@ -196,7 +196,7 @@ AssemblyMainWindow::AssemblyMainWindow(const unsigned int camera_ID, QWidget* pa
 //    camera_widget_ = new AssemblyUEyeWidget(camera_model_, this);
 //    tabWidget_->addTab(camera_widget_, tabname_uEye);
 //
-//    NQLog("AssemblyMainWindow", NQLog::Message) << "added view \"" << tabname_uEye << "\"";
+//    NQLog("AssemblyMainWindow", NQLog::Message) << "added view " << tabname_uEye;
 //    /* --------------------------------------------------------- */
 
     /* MOTION-SETTINGS VIEW ------------------------------------ */
@@ -207,7 +207,7 @@ AssemblyMainWindow::AssemblyMainWindow(const unsigned int camera_ID, QWidget* pa
     motionSettingsWidget_ = new LStepExpressSettingsWidget(motionSettings_, tabWidget_);
     tabWidget_->addTab(motionSettingsWidget_, tabname_MotionSettings);
 
-    NQLog("AssemblyMainWindow", NQLog::Message) << "added view \"" << tabname_MotionSettings << "\"";
+    NQLog("AssemblyMainWindow", NQLog::Message) << "added view " << tabname_MotionSettings;
     /* --------------------------------------------------------- */
 
     /* MOTION-MANAGER VIEW ------------------------------------- */
@@ -216,7 +216,7 @@ AssemblyMainWindow::AssemblyMainWindow(const unsigned int camera_ID, QWidget* pa
     motion_manager_view_ = new LStepExpressMotionView(motion_model_, motion_manager_, tabWidget_);
     tabWidget_->addTab(motion_manager_view_, tabname_MotionManager);
 
-    NQLog("AssemblyMainWindow", NQLog::Message) << "added view \"" << tabname_MotionManager << "\"";
+    NQLog("AssemblyMainWindow", NQLog::Message) << "added view " << tabname_MotionManager;
     /* --------------------------------------------------------- */
 
     /* Upper Toolbar ------------------------------------------- */

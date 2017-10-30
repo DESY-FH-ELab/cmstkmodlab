@@ -72,11 +72,8 @@ AssemblyModuleAssembler::AssemblyModuleAssembler(
   imageView_1->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
   imageView_1->setScaledContents(true);
   imageView_1->setAlignment(Qt::AlignCenter);
-  QApplication::processEvents();
-    
-  imageView_1->connectImageProducer(finder_, SIGNAL(markerFound(const cv::Mat&)));
 
-//  connect(uEyeModel_, SIGNAL(imageAcquired(const cv::Mat&)), finder_, SLOT(findMarker(const cv::Mat&)));
+  QApplication::processEvents();
 
   scrollArea_1 = new QScrollArea(this);
   scrollArea_1->setMinimumSize(200, 200);
@@ -167,13 +164,23 @@ AssemblyModuleAssembler::AssemblyModuleAssembler(
 //  QLabel* header_label = new QLabel("Hover mouse over button for info on each step", this);
 //  g1->addWidget(header_label,0,0);
 
-  AssemblyCommander* cmdr0 = new AssemblyCommander(this, "Move Absolute", 0.0, 0.0, 0.0, 0.0);
-  cmdr0->setToolTip("(1) Returns x,y,z stage to origin (default = (0,0,0) using moveAbsolute(x,y,z) routine)");
-  g1->addWidget(cmdr0, 0, 0);
+  // widget: move absolute
+  MoveWidget* w_moveabs = new MoveWidget("Move Absolute", "0,0,0,0");
+  w_moveabs->useMoveRelative(false);
+  w_moveabs->setToolTip("(1) Moves x,y,z,a stage using moveAbsolute routine (with respect to origin)");
+  g1->addWidget(w_moveabs, 0, 0);
 
-  AssemblyAttacher* cmdr1 = new AssemblyAttacher("Move relative", 0.0, 0.0, 0.0, 0.0);
-  cmdr1->setToolTip("(2) Moves x,y,z stage realtive to current position using moveAbsolute(x,y,z) routine)");
-  g1->addWidget(cmdr1, 1, 0);
+  connect(w_moveabs, SIGNAL(moveAbsolute(double, double, double, double)), motionManager_, SLOT(moveAbsolute(double, double, double, double)));
+  // ---------------------
+
+  // widget: move relative
+  MoveWidget* w_moverel = new MoveWidget("Move Relative", "0,0,0,0");
+  w_moverel->useMoveRelative(true);
+  w_moverel->setToolTip("(2) Moves x,y,z,a stage using moveRelative routine (with respect to current position)");
+  g1->addWidget(w_moverel, 1, 0);
+
+  connect(w_moverel, SIGNAL(moveRelative(double, double, double, double)), motionManager_, SLOT(moveRelative(double, double, double, double)));
+  // ---------------------
 
   AssemblySensorLocator* lctr1 = new AssemblySensorLocator(this, "Locate object", 0.0, finder_);
   lctr1->setToolTip("(3) Acquires image from mobile camera, runs PatRec routine to deduce and report sensor (x,y,z,phi) position");
@@ -194,18 +201,12 @@ AssemblyModuleAssembler::AssemblyModuleAssembler(
 //  AssemblyAligner * cmdr8 = new AssemblyAligner(this, "Align", 0.0);
 //  g1->addWidget(cmdr8, 13, 0);
 
-  // make all the neccessary connections
-//  connect(attacher1, SIGNAL(moveRelative(double, double, double, double)), motionManager_, SLOT(moveRelative(double, double, double, double)));
-  connect(cmdr0, SIGNAL(moveAbsolute(double, double, double, double)), motionManager_, SLOT(moveAbsolute(double, double, double, double)));
-  connect(cmdr1, SIGNAL(moveRelative(double, double, double, double)), motionManager_, SLOT(moveRelative(double, double, double, double)));
-
 //A  connect(precision1, SIGNAL(launchPrecisionEstimation(double, double, double, double, double, double, int)),
 //A          this      , SLOT  (startMacro               (double, double, double, double, double, double, int)));
 
   connect(sandwich1, SIGNAL(launchSandwichAssembly(double, double, double, double, double, double, double, double, double)),
           this     , SIGNAL(launchSandwichAssembly(double, double, double, double, double, double, double, double, double)));
-    
- 
+
   connect(sandwich1, SIGNAL(launchAlignment(int, double, double, double)), this, SIGNAL(launchAlignment(int, double, double, double)));
 
 //!!  connect(lStepExpressModel_, SIGNAL(acquireImage()), camera_, SLOT(acquireImage()));
@@ -218,9 +219,9 @@ AssemblyModuleAssembler::AssemblyModuleAssembler(
   connect(finder_, SIGNAL(reportObjectLocation(int, double, double, double)), this, SLOT(updateText(int, double, double, double)));
 }
 
-void AssemblyModuleAssembler::updateText(int stage, double x, double y, double a){
-
-  NQLog("AssemblyCommander", NQLog::Debug) << "updateText"
+void AssemblyModuleAssembler::updateText(int stage, double x, double y, double a)
+{
+  NQLog("AssemblyModuleAssembler", NQLog::Debug) << "updateText"
      << "(" << stage << ", " << x << ", " << y << ", " << a << ")";
 
   std::ostringstream strs_position;
@@ -301,8 +302,7 @@ void AssemblyModuleAssembler::connectImageProducer(const QObject* sender,
 
   imageView_1->connectImageProducer(sender, signal);
 
-  connect(sender, signal,
-          this, SLOT(imageAcquired(const cv::Mat&)));
+  connect(sender, signal, this, SLOT(imageAcquired(const cv::Mat&)));
 }
 
 void AssemblyModuleAssembler::disconnectImageProducer(const QObject* sender,
@@ -312,8 +312,7 @@ void AssemblyModuleAssembler::disconnectImageProducer(const QObject* sender,
 
   imageView_1->disconnectImageProducer(sender, signal);
 
-  disconnect(sender, signal,
-             this, SLOT(imageAcquired(const cv::Mat&)));
+  disconnect(sender, signal, this, SLOT(imageAcquired(const cv::Mat&)));
 }
 
 void AssemblyModuleAssembler::snapShot()
@@ -691,66 +690,62 @@ void AssemblyVacuumToggler::updateVacuumChannelState(int channelNumber, bool cha
   }
 }
 
-
-
-AssemblyAttacher::AssemblyAttacher(std::string string, double x ,double y, double z,double a)
-:local_x(x), local_y(y),local_z(z),local_a(a)
+MoveWidget::MoveWidget(const QString& label, const QString& default_entry, const bool move_relative, QWidget* parent) :
+  QWidget(parent),
+  moveRelative_(move_relative)
 {
-    
-    
-    QFormLayout *l = new QFormLayout(this);
-    setLayout(l);
-    
-    std::ostringstream strs;
-    strs.clear();
-    strs << x;
-    strs << ",";
-    strs << y;
-    strs << ",";
-    strs << z;
-    std::string str = strs.str();
-    QString qstr = QString::fromStdString(str);
-    QString qname = QString::fromStdString(string);
-    
-    this->local_x = x;
-    this->local_y = y;
-    this->local_z = z;
-    this->local_a = a;
-    
-    button1 = new QPushButton(qname, this);
-    
-    lineEdit1 = new QLineEdit();
-    lineEdit1->setText(qstr);
-    l->addRow(button1,lineEdit1);
-    
+    layout_ = new QFormLayout(this);
+    this->setLayout(layout_);
 
+    button_ = new QPushButton(label, this);
 
-  connect(button1, SIGNAL(clicked()),
-          this, SLOT(moveRelative()));
+    liedit_ = new QLineEdit();
+    liedit_->setText(default_entry);
+    layout_->addRow(button_, liedit_);
+
+    connect(button_, SIGNAL(clicked()), this, SLOT(execute()));
 }
 
-void AssemblyAttacher::moveRelative(){
+void MoveWidget::execute()
+{
+  const QString line_entry = this->liedit_->text();
 
-    const QString parent_string = this->lineEdit1->text();
+  // parse lineEdit text to get target coordinates
+  const QStringList entries = line_entry.split(",");
 
-    // parse lineEdit text to get target coordinates
-    const QStringList pieces = parent_string.split(",");
+  if(entries.length() == 4)
+  {
+    const double x_d = entries.value(0).toDouble();
+    const double y_d = entries.value(1).toDouble();
+    const double z_d = entries.value(2).toDouble();
+    const double a_d = entries.value(3).toDouble();
 
-    const QString x = pieces.value(pieces.length() - 4);
-    const QString y = pieces.value(pieces.length() - 3);
-    const QString z = pieces.value(pieces.length() - 2);
-    const QString a = pieces.value(pieces.length() - 1);
-
-    double x_d = x.toDouble();
-    double y_d = y.toDouble();
-    double z_d = z.toDouble();
-    double a_d = a.toDouble();
-
-    NQLog("AssemblyAttacher::moveRelative", NQLog::Message)
+    if(moveRelative_)
+    {
+      NQLog("MoveWidget", NQLog::Message) << "execute"
          << "emitting signal \"moveRelative("
          << x_d << ", " << y_d << ", " << z_d << ", " << a_d << ")\"";
 
-    emit moveRelative(x_d, y_d, z_d, a_d);
+      emit moveRelative(x_d, y_d, z_d, a_d);
+    }
+    else
+    {
+      NQLog("MoveWidget", NQLog::Message) << "execute"
+         << "emitting signal \"moveAbsolute("
+         << x_d << ", " << y_d << ", " << z_d << ", " << a_d << ")\"";
+
+      emit moveAbsolute(x_d, y_d, z_d, a_d);
+    }
+  }
+  else
+  {
+    NQLog("MoveWidget", NQLog::Warning) << "execute"
+       << ": invalid input string format, no action taken";
+
+    return;
+  }
+
+  return;
 }
 
 AssemblyMountChecker::AssemblyMountChecker(QWidget *parent, std::string string,
@@ -820,66 +815,6 @@ void AssemblyMountChecker::checkMount()
   emit locateCorner(5);
   emit reportCornerLocation(4);
 }
-
-AssemblyCommander::AssemblyCommander(QWidget *parent, std::string string,
-                                     double x ,double y, double z,
-                                     double a)
-: QWidget(parent), local_x(x), local_y(y),local_z(z),local_a(a)
-{
-  QFormLayout *l = new QFormLayout(this);
-  setLayout(l);
-
-  std::ostringstream strs;
-  strs.clear();
-  strs << x;
-  strs << ",";
-  strs << y;
-  strs << ",";
-  strs << z;
-  std::string str = strs.str();
-  QString qstr = QString::fromStdString(str);
-  QString qname = QString::fromStdString(string);
-
-  this->local_x = x;
-  this->local_y = y;
-  this->local_z = z;
-  this->local_a = a;
-
-  button1 = new QPushButton(qname, this);
-
-  lineEdit1 = new QLineEdit();
-  lineEdit1->setText(qstr);
-  l->addRow(button1,lineEdit1);
-
-  connect(button1, SIGNAL(clicked()),
-          this, SLOT(goToTarget()));
-}
-
-void AssemblyCommander::goToTarget()
-{
-  //parse lineEdit text to get target coordinates
-  QString  parent_string = this->lineEdit1->text();
-
-  QStringList pieces = parent_string.split( "," );
-  QString x = pieces.value( pieces.length() - 4);
-  QString y = pieces.value( pieces.length() - 3);
-  QString z = pieces.value( pieces.length() - 2);
-  QString a = pieces.value( pieces.length() - 1);
-
-  double x_d = x.toDouble();
-  double y_d = y.toDouble();
-  double z_d = z.toDouble();
-  double a_d = a.toDouble();
-
-  NQLog("AssemblyCommander:goToTarget") << ": going to target (parsed) "<< x_d<<" "<< y_d<<" "<< z_d;
-
-  NQLog("AssemblyCommander:goToTarget") <<" requesting move...";
-
-  emit moveAbsolute(x_d, y_d, z_d, a_d);
-
-  NQLog("AssemblyCommander:goToTarget") <<"move requested...";
-}
-
 
 AssemblyAligner::AssemblyAligner(QWidget *parent, std::string string,
                                  double a)

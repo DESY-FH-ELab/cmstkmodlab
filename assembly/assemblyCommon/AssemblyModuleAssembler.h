@@ -18,6 +18,7 @@
 #include <opencv2/opencv.hpp>
 
 #include <QWidget>
+#include <QFormLayout>
 #include <QScrollArea>
 #include <QKeyEvent>
 #include <QLineEdit>
@@ -39,16 +40,12 @@
 #include "LStepExpressModel.h"
 //#include "LStepExpressSettings.h"
 #include "LStepExpressMotionManager.h"
-//#include "LStepExpressMotionThread.h"
 
 //#include "LStepExpressSettingsWidget.h"
 //#include "LStepExpressWidget.h"
 //#include "LStepExpressJoystickWidget.h"
 
-//relay card for vacuum control
-#include "ConradModel.h"
-
-
+#include <ConradModel.h>
 
 class AssemblyVacuumToggler : public QWidget
 {
@@ -218,31 +215,35 @@ public:
     signals:
     void launchSandwichAssembly(double, double, double, double, double, double, double, double, double);
     void launchAlignment(int, double, double, double );
-
 };
 
-
-
-class AssemblyAttacher : public QWidget
+class MoveWidget : public QWidget
 {
-  Q_OBJECT
+ Q_OBJECT
 
-public:
+ public:
 
-  explicit AssemblyAttacher(std::string ="test", double x =0.0, double y =0.0, double z  =0.0, double a  =0.0);
-  double local_x, local_y, local_z, local_a;
-  QPushButton* button1;
-  QLineEdit *lineEdit1;
+  explicit MoveWidget(const QString&, const QString&, const bool move_relative=false, QWidget* parent=0);
+  virtual ~MoveWidget() {}
 
-protected:
+  void useMoveRelative(const bool b=false){ moveRelative_ = b; }
 
-public slots:
+ protected:
 
-  void moveRelative();
+  bool moveRelative_;
+
+  QFormLayout* layout_;
+  QPushButton* button_;
+  QLineEdit*   liedit_;
+
+ public slots:
+
+  void execute();
     
-signals:
+ signals:
 
-  void moveRelative(double,double,double,double);
+  void moveAbsolute(const double, const double, const double, const double);
+  void moveRelative(const double, const double, const double, const double);
 };
 
 class AssemblyMountChecker : public QWidget
@@ -273,33 +274,6 @@ signals:
   void reportCornerLocation(int);
 };
 
-class AssemblyCommander : public QWidget
-{
-  Q_OBJECT
-
-public:
-
-  explicit AssemblyCommander(QWidget *parent = 0, std::string ="test",
-                             double x =0.0, double y =0.0, double z  =0.0,
-                             double a  =0.0);
-
-  double local_x, local_y, local_z, local_a;
-  QPushButton* button1;
-  QLineEdit *lineEdit1;
-
-protected:
-
-public slots:
-
-  void goToTarget();
-
-signals:
-
-  void moveAbsolute(double,double,double,double);
-};
-
-
-
 class AssemblyAligner : public QWidget
 {
   Q_OBJECT      
@@ -324,8 +298,6 @@ signals:
   void moveRelative(double,double,double,double);
   void locateSetdowncorner(int);
 };
-
-
 
 class AssemblySensorLocator : public QWidget
 {
