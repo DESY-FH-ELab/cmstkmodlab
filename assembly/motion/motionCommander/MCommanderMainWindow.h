@@ -20,6 +20,7 @@
 #include <LStepExpressModel.h>
 #include <LStepExpressSettings.h>
 #include <LStepExpressMotionManager.h>
+#include <LStepExpressMotionThread.h>
 
 #include <LStepExpressSettingsWidget.h>
 #include <LStepExpressWidget.h>
@@ -32,6 +33,7 @@
 
 #include <LaserControlsWidget.h>
 #include <LaserModel.h>
+#include <LaserThread.h>
 
 class MCommanderMainWindow : public QMainWindow
 {
@@ -56,10 +58,10 @@ protected:
     LStepExpressSettings* lStepExpressSettings_;
 
     LStepExpressMotionManager* motionManager_;
-    QThread*                   motionThread_;
+    LStepExpressMotionThread*  motionThread_;
 
-    LaserModel* laserModel_;
-    QThread*    laserThread_;
+    LaserModel*  laserModel_;
+    LaserThread* laserThread_;
 
     LStepExpressMeasurement*      measurement_;
     LStepExpressMeasurementTable* measurementTable_;

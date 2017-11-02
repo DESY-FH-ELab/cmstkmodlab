@@ -14,6 +14,7 @@
 #define ASSEMBLYMAINWINDOW_H
 
 #include <AssemblyVUEyeCamera.h>
+#include <AssemblyUEyeCameraThread.h>
 #ifdef NOUEYE
 #include <AssemblyUEyeFakeModel.h>
 typedef AssemblyUEyeFakeModel AssemblyUEyeModel_t;
@@ -31,6 +32,7 @@ typedef AssemblyUEyeModel AssemblyUEyeModel_t;
 #include <LStepExpressModel.h>
 #include <LStepExpressMotionManager.h>
 #include <LStepExpressMotionView.h>
+#include <LStepExpressMotionThread.h>
 #include <LStepExpressSettings.h>
 #include <LStepExpressSettingsWidget.h>
 #include <LStepExpressWidget.h>
@@ -43,11 +45,11 @@ typedef AssemblyUEyeModel AssemblyUEyeModel_t;
 #include <ConradManager.h>
 #include <ImageController.h>
 #include <MarkerFinderPatRec.h>
+#include <MarkerFinderPatRecThread.h>
 #include <ZFocusFinder.h>
 
 #include <QMainWindow>
 #include <QTabWidget>
-#include <QThread>
 #include <QDir>
 #include <QTimer>
 #include <QToolBar>
@@ -110,29 +112,28 @@ class AssemblyMainWindow : public QMainWindow
     AssemblyThresholdTuner* thresholdTunerView_;
     AssemblyModuleAssembler* assembleView_;
 
-    QCheckBox *checkbox1;
-    QCheckBox *checkbox2;
-    QCheckBox *checkbox3;
-    QCheckBox *checkbox4;
+    QCheckBox* checkbox1;
+    QCheckBox* checkbox2;
+    QCheckBox* checkbox3;
+    QCheckBox* checkbox4;
 
     LStepExpressModel*          motion_model_;
     LStepExpressMotionManager*  motion_manager_;
     LStepExpressMotionView*     motion_manager_view_;
-    QThread*                    motion_thread_;
+    LStepExpressMotionThread*   motion_thread_;
     LStepExpressSettings*       motionSettings_;
     LStepExpressSettingsWidget* motionSettingsWidget_;
 
-    AssemblyUEyeModel_t* camera_model_;
-    QThread*             camera_thread_;
-//    AssemblyUEyeWidget*  camera_widget_;
-    unsigned int         camera_ID_;
-    AssemblyVUEyeCamera* camera_;
+    AssemblyUEyeModel_t*      camera_model_;
+    AssemblyUEyeCameraThread* camera_thread_;
+//    AssemblyUEyeWidget*      camera_widget_;
+    unsigned int              camera_ID_;
+    AssemblyVUEyeCamera*      camera_;
 
-    ZFocusFinder* zfocus_finder_;
-    QThread*      zfocus_finder_thread_;
+    ZFocusFinder*       zfocus_finder_;
 
-    MarkerFinderPatRec* marker_finder_;
-    QThread*            marker_finder_thread_;
+    MarkerFinderPatRec*       marker_finder_;
+    MarkerFinderPatRecThread* marker_finder_thread_;
 
     ConradModel*       conradModel_;
     ConradManager*     conradManager_;
@@ -143,7 +144,7 @@ class AssemblyMainWindow : public QMainWindow
 
     double testTimerCount_;
 
-    QTimer *liveTimer_;
+    QTimer* liveTimer_;
 };
 
 #endif // ASSEMBLYMAINWINDOW_H

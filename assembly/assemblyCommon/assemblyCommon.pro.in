@@ -79,6 +79,7 @@ HEADERS += AssemblyVUEyeCamera.h \
            AssemblyVUEyeModel.h \
            AssemblyUEyeWidget.h \
            AssemblyUEyeCameraWidget.h \
+           AssemblyUEyeCameraThread.h \
            AssemblyUEyeView.h \
            AssemblyAssembler.h \
            ConradManager.h \
@@ -90,6 +91,7 @@ HEADERS += AssemblyVUEyeCamera.h \
            LStepExpressMotion.h \
            LStepExpressMotionManager.h \
            LStepExpressMotionView.h \
+           LStepExpressMotionThread.h \
            LStepExpressWidget.h \
            LStepExpressJoystickWidget.h \
            LStepExpressSettings.h \
@@ -100,11 +102,13 @@ HEADERS += AssemblyVUEyeCamera.h \
            LStepExpressPositionWidget.h \
            LStepExpressStatusWindow.h \
            LaserModel.h \
+           LaserThread.h \
            LaserWidget.h \
            LaserControlsWidget.h \
            AssemblyUEyeCameraManager.h \
            MarkerFinderManual.h \
            MarkerFinderPatRec.h \
+           MarkerFinderPatRecThread.h \
            ImageController.h \
            ZFocusFinder.h \
            Util.h
@@ -121,6 +125,7 @@ SOURCES += AssemblyVUEyeCamera.cc \
            AssemblyVUEyeModel.cc \
            AssemblyUEyeWidget.cc \
            AssemblyUEyeCameraWidget.cc \
+           AssemblyUEyeCameraThread.cc \
            AssemblyUEyeView.cc \
            AssemblyUEyeSnapShooter.cc \
            AssemblyThresholdTuner.cc \
@@ -132,6 +137,7 @@ SOURCES += AssemblyVUEyeCamera.cc \
            LStepExpressMotion.cc \
            LStepExpressMotionManager.cc \
            LStepExpressMotionView.cc \
+           LStepExpressMotionThread.cc \
            LStepExpressWidget.cc \
            LStepExpressJoystickWidget.cc \
            LStepExpressSettings.cc \
@@ -143,10 +149,12 @@ SOURCES += AssemblyVUEyeCamera.cc \
            LStepExpressStatusWindow.cc \
            LaserModel.cc \
            LaserWidget.cc \
+           LaserThread.cc \
            LaserControlsWidget.cc \
            AssemblyUEyeCameraManager.cc \
            MarkerFinderManual.cc \
            MarkerFinderPatRec.cc \
+           MarkerFinderPatRecThread.cc \
            ImageController.cc \
            ZFocusFinder.cc \
            Util.cc

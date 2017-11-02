@@ -53,7 +53,6 @@ AssemblyMainWindow::AssemblyMainWindow(const unsigned int camera_ID, QWidget* pa
   camera_(0),
 
   zfocus_finder_(0),
-  zfocus_finder_thread_(0),
 
   marker_finder_(0),
   marker_finder_thread_(0),
@@ -79,17 +78,15 @@ AssemblyMainWindow::AssemblyMainWindow(const unsigned int camera_ID, QWidget* pa
     motion_model_   = new LStepExpressModel(config->getValue<std::string>("LStepExpressDevice").c_str(), 1000, 1000);
     motion_manager_ = new LStepExpressMotionManager(motion_model_);
 
-    motion_thread_  = new QThread(this);
-    motion_model_  ->moveToThread(motion_thread_);
-    motion_manager_->moveToThread(motion_thread_);
+    motion_thread_  = new LStepExpressMotionThread(this);
+    motion_manager_->myMoveToThread(motion_thread_);
     motion_thread_->start();
 
     // camera
     camera_model_ = new AssemblyUEyeModel_t(10);
     camera_model_->updateInformation();
 
-    camera_thread_ = new QThread(this);
-    camera_model_->moveToThread(camera_thread_);
+    camera_thread_ = new AssemblyUEyeCameraThread(camera_model_, this);
     camera_thread_->start();
 
     camera_ = camera_model_->getCameraByID(camera_ID_);
@@ -104,15 +101,12 @@ AssemblyMainWindow::AssemblyMainWindow(const unsigned int camera_ID, QWidget* pa
 
     // marker finder
     marker_finder_ = new MarkerFinderPatRec();
-    marker_finder_thread_ = new QThread(this);
-    marker_finder_->moveToThread(marker_finder_thread_);
+
+    marker_finder_thread_ = new MarkerFinderPatRecThread(marker_finder_, this);
     marker_finder_thread_->start();
 
     // zfocus finder
     zfocus_finder_ = new ZFocusFinder(camera_, motion_model_);
-    zfocus_finder_thread_ = new QThread(this);
-    zfocus_finder_->moveToThread(zfocus_finder_thread_);
-    zfocus_finder_thread_->start();
 
     /* TAB WIDGET ---------------------------------------------- */
     tabWidget_ = new QTabWidget(this);
@@ -151,10 +145,10 @@ AssemblyMainWindow::AssemblyMainWindow(const unsigned int camera_ID, QWidget* pa
     autoFocusView_ = new AssemblyAutoFocus(tabWidget_);
     tabWidget_->addTab(autoFocusView_, tabname_AutoFocus);
 
-    connect(autoFocusView_, SIGNAL(run_scan(double, int))  , zfocus_finder_, SLOT(update_focus_inputs(double, int)));
+    connect(autoFocusView_, SIGNAL(run_scan(double, int)), zfocus_finder_, SLOT(update_focus_inputs(double, int)));
 
-    connect(zfocus_finder_, SIGNAL(show_zscan(QString)), autoFocusView_, SLOT(make_graph(QString)));
-    connect(zfocus_finder_, SIGNAL(update_text(double)), autoFocusView_, SLOT(updateText(double)));
+    connect(zfocus_finder_, SIGNAL(show_zscan(QString))  , autoFocusView_, SLOT(make_graph(QString)));
+    connect(zfocus_finder_, SIGNAL(update_text(double))  , autoFocusView_, SLOT(updateText(double)));
 
     autoFocusView_->configure_scan();
 
