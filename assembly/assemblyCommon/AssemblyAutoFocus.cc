@@ -19,7 +19,22 @@
 #include <QString>
 #include <QStringList>
 
-AssemblyAutoFocus::AssemblyAutoFocus(QWidget* parent) : QWidget(parent)
+AssemblyAutoFocus::AssemblyAutoFocus(QWidget* parent) :
+  QWidget(parent),
+
+  imageView_1_(0),
+  imageView_2_(0),
+
+  scrollArea_1_(0),
+  scrollArea_2_(0),
+
+  button_1_(0),
+  button_2_(0),
+
+  lineed_1_(0),
+  lineed_2_(0),
+
+  checkbox_(0)
 {
   QGridLayout* l = new QGridLayout(this);
   this->setLayout(l);
@@ -30,87 +45,91 @@ AssemblyAutoFocus::AssemblyAutoFocus(QWidget* parent) : QWidget(parent)
   QPalette palette;
   palette.setColor(QPalette::Background, QColor(220, 220, 220));
 
-  imageView_1 = new AssemblyUEyeView();
-  imageView_1->setMinimumSize(200, 200);
-  imageView_1->setPalette(palette);
-  imageView_1->setBackgroundRole(QPalette::Background);
-  imageView_1->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-  imageView_1->setScaledContents(true);
-  imageView_1->setAlignment(Qt::AlignCenter);
+  imageView_1_ = new AssemblyUEyeView();
+  imageView_1_->setMinimumSize(200, 200);
+  imageView_1_->setPalette(palette);
+  imageView_1_->setBackgroundRole(QPalette::Background);
+  imageView_1_->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+  imageView_1_->setScaledContents(true);
+  imageView_1_->setAlignment(Qt::AlignCenter);
 
   QApplication::processEvents();
 
-  scrollArea_1 = new QScrollArea(this);
-  scrollArea_1->setMinimumSize(200, 200);
-  scrollArea_1->setPalette(palette);
-  scrollArea_1->setBackgroundRole(QPalette::Background);
-  scrollArea_1->setAlignment(Qt::AlignCenter);
-  scrollArea_1->setWidget(imageView_1);
-  scrollArea_1->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+  scrollArea_1_ = new QScrollArea(this);
+  scrollArea_1_->setMinimumSize(200, 200);
+  scrollArea_1_->setPalette(palette);
+  scrollArea_1_->setBackgroundRole(QPalette::Background);
+  scrollArea_1_->setAlignment(Qt::AlignCenter);
+  scrollArea_1_->setWidget(imageView_1_);
+  scrollArea_1_->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 
-  g0->addWidget(scrollArea_1, 0, 0);
+  g0->addWidget(scrollArea_1_, 0, 0);
 
-  imageView_2 = new AssemblyUEyeView();
-  imageView_2->setMinimumSize(200, 200);
-  imageView_2->setPalette(palette);
-  imageView_2->setBackgroundRole(QPalette::Background);
-  imageView_2->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-  imageView_2->setScaledContents(true);
-  imageView_2->setAlignment(Qt::AlignCenter);
-  imageView_2->setZoomFactor(1.0);
+  imageView_2_ = new AssemblyUEyeView();
+  imageView_2_->setMinimumSize(200, 200);
+  imageView_2_->setPalette(palette);
+  imageView_2_->setBackgroundRole(QPalette::Background);
+  imageView_2_->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+  imageView_2_->setScaledContents(true);
+  imageView_2_->setAlignment(Qt::AlignCenter);
+  imageView_2_->setZoomFactor(1.0);
 
   QApplication::processEvents();    
 
-  imageView_2->connectImageProducer(this, SIGNAL(graph_made(const cv::Mat&)));
+  imageView_2_->connectImageProducer(this, SIGNAL(graph_made(const cv::Mat&)));
 
-  scrollArea_2 = new QScrollArea(this);
-  scrollArea_2->setMinimumSize(200, 200);
-  scrollArea_2->setPalette(palette);
-  scrollArea_2->setBackgroundRole(QPalette::Background);
-  scrollArea_2->setAlignment(Qt::AlignCenter);
-  scrollArea_2->setWidget(imageView_2);
-  scrollArea_2->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+  scrollArea_2_ = new QScrollArea(this);
+  scrollArea_2_->setMinimumSize(200, 200);
+  scrollArea_2_->setPalette(palette);
+  scrollArea_2_->setBackgroundRole(QPalette::Background);
+  scrollArea_2_->setAlignment(Qt::AlignCenter);
+  scrollArea_2_->setWidget(imageView_2_);
+  scrollArea_2_->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 
-  g0->addWidget(scrollArea_2, 0, 1);
+  g0->addWidget(scrollArea_2_, 0, 1);
 
   // left-hand side widgets
   QGridLayout*  g1 = new QGridLayout();
   g0->addLayout(g1, 1, 0);
 
-  button1 = new QPushButton("Update Auto-Focus Parameters");
-  g1->addWidget(button1, 1, 0);
+  button_1_ = new QPushButton("Update Auto-Focus Parameters");
+  g1->addWidget(button_1_, 1, 0);
 
   QFormLayout*  fl1 = new QFormLayout();
   g1->addLayout(fl1, 2, 0);
 
   QLabel* lt1 = new QLabel("[z-range (mm), number of steps]");
-  lE1 = new QLineEdit("0.5, 10");
-  fl1->addRow(lt1, lE1);
+  lineed_1_ = new QLineEdit("0.5, 10");
+  fl1->addRow(lt1, lineed_1_);
 
-  checkbox = new QCheckBox("Track marker");
-  g1->addWidget(checkbox, 3, 0);
+  checkbox_ = new QCheckBox("Track marker");
+  g1->addWidget(checkbox_, 3, 0);
 
   // right-hand side widgets
   QFormLayout*  g2 = new QFormLayout();
   g0->addLayout(g2, 1, 1);
 
-  button2 = new QPushButton("Go to focal point");
-  g2->addRow(button2);
+  button_2_ = new QPushButton("Go to focal point");
+  g2->addRow(button_2_);
 
-  lE2 = new QLineEdit("Absolute focal point = ");
-  g2->addRow(lE2);
+  lineed_2_ = new QLineEdit("Absolute focal point = ");
+  g2->addRow(lineed_2_);
 
-  // make all the neccessary connections
-  connect(button1, SIGNAL(clicked()), this, SLOT(configure_scan()));
-  connect(button2, SIGNAL(clicked()), this, SLOT(go_to_focal_point()));
+  // connect button(s)
+  connect(button_1_, SIGNAL(clicked()), this, SLOT(configure_scan()));
+  connect(button_2_, SIGNAL(clicked()), this, SLOT(go_to_focal_point()));
 
   NQLog("AssemblyAutoFocus", NQLog::Debug) << "constructed";
+}
+
+AssemblyAutoFocus::~AssemblyAutoFocus()
+{
 }
 
 void AssemblyAutoFocus::configure_scan()
 {
   //parse lineEdit text to get target coordinates
-  const QString parent_string = lE1->text();
+  const QString parent_string = lineed_1_->text();
 
   const QStringList pieces = parent_string.split(",");
 
@@ -150,7 +169,7 @@ void AssemblyAutoFocus::updateText(const double z)
 {
   const QString qstr = "Absolute focal point (measured) = "+QString::fromStdString(std::to_string(z));
 
-  lE2->setText(qstr);
+  lineed_2_->setText(qstr);
 
   NQLog("AssemblyAutoFocus", NQLog::Debug) << "updateText"
      << ": updated value of absolute focal point";
@@ -166,28 +185,26 @@ void AssemblyAutoFocus::go_to_focal_point()
   return;    
 }
 
-void AssemblyAutoFocus::updateImage(const int stage, const QString& filename)
-{
-  NQLog("AssemblyAutoFocus", NQLog::Debug) << "updateImage(" << stage << ", " << filename << ")";
-
-  const cv::Mat img_gs = cv::imread(filename.toStdString(), CV_LOAD_IMAGE_COLOR);
-
-  if(stage == 1)
-  {
-    imageView_1->setZoomFactor(0.2);
-    imageView_1->setImage(img_gs);    
-  }
-
-  return;
-}
+//!! void AssemblyAutoFocus::updateImage(const int stage, const QString& filename)
+//!! {
+//!!   NQLog("AssemblyAutoFocus", NQLog::Debug) << "updateImage(" << stage << ", " << filename << ")";
+//!! 
+//!!   const cv::Mat img_gs = cv::imread(filename.toStdString(), CV_LOAD_IMAGE_COLOR);
+//!! 
+//!!   if(stage == 1)
+//!!   {
+//!!     imageView_1_->setZoomFactor(0.2);
+//!!     imageView_1_->setImage(img_gs);    
+//!!   }
+//!! 
+//!!   return;
+//!! }
 
 void AssemblyAutoFocus::connectImageProducer(const QObject* sender, const char* signal)
 {
   NQLog("AssemblyAutoFocus", NQLog::Debug) << "connectImageProducer";
 
-  imageView_1->connectImageProducer(sender, signal);
-
-  connect(sender, signal, this, SLOT(imageAcquired(const cv::Mat&)));
+  imageView_1_->connectImageProducer(sender, signal);
 
   return;
 }
@@ -196,9 +213,7 @@ void AssemblyAutoFocus::disconnectImageProducer(const QObject* sender, const cha
 {
   NQLog("AssemblyAutoFocus", NQLog::Debug) << "disconnectImageProducer";
 
-  imageView_1->disconnectImageProducer(sender, signal);
-
-  disconnect(sender, signal, this, SLOT(imageAcquired(const cv::Mat&)));
+  imageView_1_->disconnectImageProducer(sender, signal);
 
   return;
 }
@@ -212,22 +227,22 @@ void AssemblyAutoFocus::keyReleaseEvent(QKeyEvent* event)
     switch(event->key())
     {
       case Qt::Key_0:
-        imageView_1->setZoomFactor(0.25);
+        imageView_1_->setZoomFactor(0.25);
         event->accept();
         break;
 
       case Qt::Key_1:
-        imageView_1->setZoomFactor(1.00);
+        imageView_1_->setZoomFactor(1.00);
         event->accept();
         break;
 
       case Qt::Key_Plus:
-        imageView_1->increaseZoomFactor();
+        imageView_1_->increaseZoomFactor();
         event->accept();
         break;
 
       case Qt::Key_Minus:
-        imageView_1->decreaseZoomFactor();
+        imageView_1_->decreaseZoomFactor();
         event->accept();
         break;
 

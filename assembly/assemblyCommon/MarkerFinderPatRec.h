@@ -26,49 +26,70 @@ class MarkerFinderPatRec : public QObject
 
  public:
 
-  explicit MarkerFinderPatRec(QObject* parent=0);
+  explicit MarkerFinderPatRec(const QString&, const QString&, QObject* parent=0);
   virtual ~MarkerFinderPatRec();
 
-  int  getGeneralThresholdValue()    { return generalThreshold_; }
-  void setGeneralThresholdValue(const int v){ generalThreshold_ = v; }
+  void set_threshold(const int);
+  int  get_threshold() const { return threshold_; }
 
-  cv::Mat img;
-  cv::Mat img_clip_A;
-  cv::Mat img_clip_B;
-  cv::Mat result_1;
-  cv::Mat result_2;
-  cv::Mat dst;
+  void delete_image();
+  void delete_binary_image();
 
  protected:
+
+//!!  int mode_lab_;
+//!!  int mode_obj_;
+
+  int threshold_;
+  int threshold_tpl_;
+
+  cv::Mat image_mas_; // master image
+  cv::Mat image_bin_; // master image + threshold
+  cv::Mat image_tpl_; // template image
+
+  bool updated_threshold_;
+  bool updated_image_master_;
+  bool updated_image_master_binary_;
 
   std::string cacheDirectory1_;
   std::string cacheDirectory2_;
 
-  int generalThreshold_;
-
-  double matchLoc_x_lab;
-  double matchLoc_y_lab;
-
-  int labmode_g;
-  int objectmode_g;
+  void PatRec(double&, cv::Point&, const cv::Mat&, const cv::Mat&, const double, const int) const;
 
  public slots:
 
-  void setNewGeneralThreshold(const int, const cv::Mat&);
-  void getCurrentGeneralThreshold();
-  void updateThresholdImage(const cv::Mat&);
+  void update_threshold(const int);
 
-  void runObjectDetection(const int labmode, const int objectmode);
-  void runObjectDetection_labmode(const cv::Mat&);
+  void acquire_image();
 
-  virtual void findMarker_templateMatching(cv::Mat, cv::Mat);
+  void update_image(const cv::Mat&);
+  void update_binary_image();
+
+  cv::Mat get_binary_image(const cv::Mat&, const int) const;
+
+  void run_PatRec(const int, const int);
+
+  void template_matching(const cv::Mat&, const cv::Mat&, const cv::Mat&, const int);
+
+//!!  void runObjectDetection(const int labmode, const int objectmode);
+//!!  void runObjectDetection_labmode(const cv::Mat&);
 
  signals:
 
-  void sendCurrentGeneralThreshold(const int);
-  void sendUpdatedThresholdImage(const QString&);
+  void threshold_request();
+  void threshold_updated();
 
-  void locatePickupCorner_templateMatching(cv::Mat, cv::Mat);
+  void image_request();
+
+  void        image_updated(const cv::Mat&);
+  void binary_image_updated(const cv::Mat&);
+
+  void run_template_matching(const cv::Mat&, const cv::Mat&, const cv::Mat&, const int);
+
+
+
+
+//!!  void locatePickupCorner_templateMatching(cv::Mat, cv::Mat);
 
   void reportObjectLocation(int, double, double, double);
 
@@ -78,7 +99,6 @@ class MarkerFinderPatRec : public QObject
   void getImage();
   void getImageBlur(cv::Mat, cv::Rect);
 
-  void acquireImage();
 };
 
 #endif // MARKERFINDERPATREC_H

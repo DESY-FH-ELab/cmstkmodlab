@@ -223,7 +223,7 @@ class MoveWidget : public QWidget
 
   QFormLayout* layout_;
   QPushButton* button_;
-  QLineEdit*   liedit_;
+  QLineEdit*   lineed_;
 
  public slots:
 
@@ -242,14 +242,14 @@ class LocateWidget : public QWidget
 
  public:
 
-  explicit LocateWidget(const QString&, MarkerFinderPatRec*, QWidget* parent=0);
+  explicit LocateWidget(const QString&, QWidget* parent=0);
   virtual ~LocateWidget() {}
 
  protected:
 
   QGridLayout* layout_;
   QPushButton* button_;
-  QLineEdit*   liedit_;
+  QLineEdit*   lineed_;
   QLabel*      label_;
   QGroupBox*   groupBox1_;
   QGroupBox*   groupBox2_;
@@ -267,11 +267,14 @@ class LocateWidget : public QWidget
  public slots:
 
   void foundsensor(int);
-  void detectPatRecMode();
+
+  void execute();
 
  signals:
 
-  void runObjectDetection(int, int);
+  void finder_mode(int, int);
+
+  void sendPosition(int, double, double, double);
 };
 // ----------
 

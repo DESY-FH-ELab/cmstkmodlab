@@ -87,8 +87,6 @@ class AssemblyMainWindow : public QMainWindow
 
     void image();
 
-    void updateThresholdLabel();
-
     void updateVacuumChannelsStatus();
 
     void AutoFocus_ON();

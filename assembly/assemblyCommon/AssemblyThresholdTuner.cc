@@ -16,183 +16,152 @@
 #include <QFileDialog>
 #include <QPushButton>
 
-AssemblyThresholdTuner::AssemblyThresholdTuner(QWidget* parent) : QWidget(parent)
+AssemblyThresholdTuner::AssemblyThresholdTuner(QWidget* parent) :
+  QWidget(parent),
+
+  imageView_1_(0),
+  imageView_2_(0),
+
+  scrollArea_1_(0),
+  scrollArea_2_(0),
+
+  thre_button_(0),
+  thre_label_(0),
+  thre_linee_(0)
 {
     QGridLayout *l = new QGridLayout();
-    setLayout(l);  
-
-  /*button = new QPushButton("save", this);
-    connect(button, SIGNAL(clicked(bool)),
-            this, SLOT(snapShot()));
-    
-    l->addWidget(button,0,0);*/
+    this->setLayout(l);  
 
     QPalette palette;
     palette.setColor(QPalette::Background, QColor(220, 220, 220));
 
-    imageView1_ = new AssemblyUEyeView();
-    imageView1_->setMinimumSize(500, 300);
-    imageView1_->setPalette(palette);
-    imageView1_->setBackgroundRole(QPalette::Background);
-    imageView1_->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-    imageView1_->setScaledContents(true);
-    imageView1_->setAlignment(Qt::AlignCenter);
+    imageView_1_ = new AssemblyUEyeView();
+    imageView_1_->setMinimumSize(500, 300);
+    imageView_1_->setPalette(palette);
+    imageView_1_->setBackgroundRole(QPalette::Background);
+    imageView_1_->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+    imageView_1_->setScaledContents(true);
+    imageView_1_->setAlignment(Qt::AlignCenter);
 
-    scrollArea1_ = new QScrollArea(this);
-    scrollArea1_->setMinimumSize(500, 300);
-    scrollArea1_->setPalette(palette);
-    scrollArea1_->setBackgroundRole(QPalette::Background);
-    scrollArea1_->setAlignment(Qt::AlignCenter);
-    scrollArea1_->setWidget(imageView1_);
-    scrollArea1_->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+    imageView_2_ = new AssemblyUEyeView();
+    imageView_2_->setMinimumSize(500, 300);
+    imageView_2_->setPalette(palette);
+    imageView_2_->setBackgroundRole(QPalette::Background);
+    imageView_2_->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+    imageView_2_->setScaledContents(true);
+    imageView_2_->setAlignment(Qt::AlignCenter);
 
-    imageView2_ = new AssemblyUEyeView();
-    imageView2_->setMinimumSize(500, 300);
-    imageView2_->setPalette(palette);
-    imageView2_->setBackgroundRole(QPalette::Background);
-    imageView2_->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-    imageView2_->setScaledContents(true);
-    imageView2_->setAlignment(Qt::AlignCenter);
+    scrollArea_1_ = new QScrollArea(this);
+    scrollArea_1_->setMinimumSize(500, 300);
+    scrollArea_1_->setPalette(palette);
+    scrollArea_1_->setBackgroundRole(QPalette::Background);
+    scrollArea_1_->setAlignment(Qt::AlignCenter);
+    scrollArea_1_->setWidget(imageView_1_);
+    scrollArea_1_->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 
-    scrollArea2_ = new QScrollArea(this);
-    scrollArea2_->setMinimumSize(500, 300);
-    scrollArea2_->setPalette(palette);
-    scrollArea2_->setBackgroundRole(QPalette::Background);
-    scrollArea2_->setAlignment(Qt::AlignCenter);
-    scrollArea2_->setWidget(imageView2_);
-    scrollArea2_->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+    scrollArea_2_ = new QScrollArea(this);
+    scrollArea_2_->setMinimumSize(500, 300);
+    scrollArea_2_->setPalette(palette);
+    scrollArea_2_->setBackgroundRole(QPalette::Background);
+    scrollArea_2_->setAlignment(Qt::AlignCenter);
+    scrollArea_2_->setWidget(imageView_2_);
+    scrollArea_2_->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 
-    l->addWidget(scrollArea1_, 0, 0); 
-    l->addWidget(scrollArea2_, 1, 0);   
+    l->addWidget(scrollArea_1_, 0, 0); 
+    l->addWidget(scrollArea_2_, 1, 0);   
 
-    setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+    this->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 
     QWidget* Tuner = new QWidget();
-    
     l->addWidget(Tuner, 0, 1);
 
     QGridLayout *lTuner = new QGridLayout();
     Tuner->setLayout(lTuner);
 
-    setThresholdButton = new QPushButton("Set Threshold", this);
-    lTuner->addWidget(setThresholdButton,0,0);
+    thre_button_ = new QPushButton("Threshold Image", this);
+    thre_button_->setEnabled(true);
+    lTuner->addWidget(thre_button_, 0, 0);
 
     QFormLayout *fl1 = new QFormLayout();
-    lTuner->addLayout(fl1,2,0);
+    lTuner->addLayout(fl1, 2, 0);
 
-    label = new QLabel();
-    lineEdit = new QLineEdit();
-    fl1->addRow(label,lineEdit);
+    thre_label_ = new QLabel();
+    thre_label_->setText("Threshold");
 
-    label->setText("Threshold");
+    thre_linee_ = new QLineEdit();
+    thre_linee_->setText("200");
 
-    connect(setThresholdButton, SIGNAL(clicked()), this, SLOT(setNewThreshold()));
+    fl1->addRow(thre_label_, thre_linee_);
+
+    connect(thre_button_, SIGNAL(clicked()), this, SLOT(read_threshold()));
 }
 
-void AssemblyThresholdTuner::setNewThreshold()
+int AssemblyThresholdTuner::get_threshold() const
 {
-    NQLog("AssemblyThresholdTuner", NQLog::Debug) << "setNewThreshold"
-       << ": threshold button clicked";
-
-    setThresholdButton->setEnabled(false);
-
-    emit setNewThreshold((lineEdit->text()).toInt(), image_);
+    return thre_linee_->text().toInt();
 }
 
-void AssemblyThresholdTuner::enableThresholdButton()
+void AssemblyThresholdTuner::read_threshold()
 {
-    setThresholdButton->setEnabled(true);
+    const int val = this->get_threshold();
+
+    NQLog("AssemblyThresholdTuner", NQLog::Debug) << "update_threshold"
+       << ": emitting signal \"threshold_value(" << val << ")\"";
+
+    emit threshold_value(val);
 }
 
-void AssemblyThresholdTuner::disableThresholdButton()
-{
-    setThresholdButton->setEnabled(false);
-}
-
-void AssemblyThresholdTuner::updateThresholdLabelSlot(int value)
-{ 
-    NQLog("AssemblyThresholdTuner", NQLog::Spam) << "updateThresholdLabelSlot(" << value << ")"
-       << ": updated threshold value: " << value;
-
-    lineEdit->setText(QString::number(value));
-
-    setThresholdButton->setEnabled(true);
-}
-
-void AssemblyThresholdTuner::updateThresholdImage(const QString& filename)
-{
-    std::string filename_ss = filename.toUtf8().constData();
-
-    cv::Mat img_gs = cv::imread(filename_ss, CV_LOAD_IMAGE_UNCHANGED);
-
-    imageView2_->setImage(img_gs);
-//    imageView2_->setImage(image_);
-//    imageView2_->setZoomFactor(0.5);
-
-    NQLog("AssemblyThresholdTuner", NQLog::Message) << "updateThresholdImage: file="+filename;
-}
-
-void AssemblyThresholdTuner::connectImageProducer(const QObject* sender, const char* signal)
+void AssemblyThresholdTuner::connectImageProducer_1(const QObject* sender, const char* signal)
 {
     NQLog("AssemblyThresholdTuner", NQLog::Debug) << "connectImageProducer";
 
-    imageView1_->connectImageProducer(sender, signal);
-
-    connect(sender, signal, this, SLOT(imageAcquired(const cv::Mat&)));
+    imageView_1_->connectImageProducer(sender, signal);
 }
 
-void AssemblyThresholdTuner::disconnectImageProducer(const QObject* sender, const char* signal)
+void AssemblyThresholdTuner::disconnectImageProducer_1(const QObject* sender, const char* signal)
 {
     NQLog("AssemblyThresholdTuner", NQLog::Debug) << "disconnectImageProducer";
 
-    imageView1_->disconnectImageProducer(sender, signal);
-
-    disconnect(sender, signal, this, SLOT(imageAcquired(const cv::Mat&)));
+    imageView_1_->disconnectImageProducer(sender, signal);
 }
 
-void AssemblyThresholdTuner::snapShot()
+void AssemblyThresholdTuner::connectImageProducer_2(const QObject* sender, const char* signal)
 {
-    NQLog("AssemblyThresholdTuner", NQLog::Debug) << "snapShot";
+    NQLog("AssemblyThresholdTuner", NQLog::Debug) << "connectImageProducer";
 
-    if(image_.rows==0){ return; }
-
-    QString filename = QFileDialog::getSaveFileName(this, "save image", ".", "*.png");
-    if(filename.isNull() || filename.isEmpty()) return;
-
-    if(!filename.endsWith(".png")) filename += ".png";
-
-    cv::imwrite(filename.toStdString(), image_);
+    imageView_2_->connectImageProducer(sender, signal);
 }
 
-void AssemblyThresholdTuner::imageAcquired(cv::Mat newImage)
+void AssemblyThresholdTuner::disconnectImageProducer_2(const QObject* sender, const char* signal)
 {
-    NQLog("AssemblyThresholdTuner", NQLog::Debug) << "imageAcquired";
+    NQLog("AssemblyThresholdTuner", NQLog::Debug) << "disconnectImageProducer";
 
-    newImage.copyTo(image_);
+    imageView_2_->disconnectImageProducer(sender, signal);
 }
 
 void AssemblyThresholdTuner::keyReleaseEvent(QKeyEvent* event)
 {
-    if (!(event->modifiers() & Qt::ShiftModifier)) {
+    if(!(event->modifiers() & Qt::ShiftModifier))
+    {
         switch (event->key()) {
         case Qt::Key_0:
-	  //            imageView1_->setZoomFactor(0.25);
-          //  imageView2_->setZoomFactor(0.25);
+	  //            imageView_1_->setZoomFactor(0.25);
+          //  imageView_2_->setZoomFactor(0.25);
             event->accept();
             break;
         case Qt::Key_1:
-	  //            imageView1_->setZoomFactor(1.00);
-          //  imageView2_->setZoomFactor(1.00);
+	  //            imageView_1_->setZoomFactor(1.00);
+          //  imageView_2_->setZoomFactor(1.00);
             event->accept();
             break;
         case Qt::Key_Plus:
-	  // imageView1_->increaseZoomFactor();
-	  // imageView2_->increaseZoomFactor();
+	  // imageView_1_->increaseZoomFactor();
+	  // imageView_2_->increaseZoomFactor();
             event->accept();
             break;
         case Qt::Key_Minus:
-	  //imageView1_->decreaseZoomFactor();
-	  // imageView2_->decreaseZoomFactor();
+	  //imageView_1_->decreaseZoomFactor();
+	  // imageView_2_->decreaseZoomFactor();
             event->accept();
             break;
         default:

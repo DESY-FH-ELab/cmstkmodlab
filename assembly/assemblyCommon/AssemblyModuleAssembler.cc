@@ -125,8 +125,8 @@ AssemblyModuleAssembler::AssemblyModuleAssembler(
   scrollArea_3->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 
   g0->addWidget(scrollArea_3, 2, 0);
-  lE3 = new QLineEdit("Mntd pos. (cor. 2) = lE3,X");
- // g0->addWidget(lE3,1,2);
+//  lE3 = new QLineEdit("Mntd pos. (cor. 2) = lE3,X");
+//  g0->addWidget(lE3, 1, 2);
 
   imageView_4 = new AssemblyUEyeView();
   imageView_4->setMinimumSize(200,200);
@@ -183,9 +183,12 @@ AssemblyModuleAssembler::AssemblyModuleAssembler(
   connect(w_moverel, SIGNAL(moveRelative(double, double, double, double)), motionManager_, SLOT(moveRelative(double, double, double, double)));
   // ---------------------
 
-  LocateWidget* w_locate = new LocateWidget("Locate object", finder_, this);
+  LocateWidget* w_locate = new LocateWidget("Standalone Pattern Recognition", this);
   w_locate->setToolTip("(3) Acquires image from mobile camera, runs PatRec routine to deduce and report sensor (x,y,z,phi) position");
   g1->addWidget(w_locate, 2, 0);
+
+  connect(w_locate, SIGNAL(finder_mode(int, int)), finder_ , SLOT(run_PatRec(int, int)));
+  connect(finder_ , SIGNAL(foundSensor(int))     , w_locate, SLOT(foundsensor(int)));
 
   toggle1 = new AssemblyVacuumToggler(this, "Toggle Vacuum");
   g1->addWidget(toggle1, 3, 0);
@@ -210,11 +213,12 @@ AssemblyModuleAssembler::AssemblyModuleAssembler(
 
   connect(sandwich1, SIGNAL(launchAlignment(int, double, double, double)), this, SIGNAL(launchAlignment(int, double, double, double)));
 
-  connect(w_locate, SIGNAL(acquireImage()), camera_, SLOT(acquireImage()));
 
-  connect(w_locate, SIGNAL(sendPosition(int, double,double,double)), this, SLOT(updateText(int,double,double,double)));
-  connect(finder_ , SIGNAL(updateImage(int, QString)), this, SLOT( updateImage(int,QString)));
-  connect(finder_ , SIGNAL(foundSensor(int)), w_locate, SLOT(foundsensor(int)));
+
+
+
+  connect(w_locate, SIGNAL(sendPosition(int, double, double, double)), this, SLOT(updateText(int, double, double, double)));
+  connect(finder_ , SIGNAL(updateImage(int, QString)), this, SLOT(updateImage(int, QString)));
   connect(finder_ , SIGNAL(reportObjectLocation(int, double, double, double)), this, SLOT(updateText(int, double, double, double)));
 }
 
@@ -260,31 +264,32 @@ void AssemblyModuleAssembler::startMacro(double x_meas, double y_meas, double z_
 
 void AssemblyModuleAssembler::updateImage(const int stage, const QString& filename)
 {
-  NQLog("AssemblyModuleAssembler") << "updateImage(" << stage << ", " << filename << ")";
+  NQLog("AssemblyModuleAssembler", NQLog::Debug) << "updateImage(" << stage << ", " << filename << ")";
 
-  std::string filename_ss = filename.toUtf8().constData();
+  const std::string filename_ss = filename.toUtf8().constData();
 
-  cv::Mat img_gs = cv::imread(filename_ss, CV_LOAD_IMAGE_UNCHANGED);
+  const cv::Mat img_gs = cv::imread(filename_ss, CV_LOAD_IMAGE_UNCHANGED);
 
-  if (stage == 1 ){
+  if(stage == 1)
+  {
     imageView_1->setImage(img_gs);
-    // imageView_1->setZoomFactor(0.3);
-    
-  }else if (stage ==2){
+//    imageView_1->setZoomFactor(0.3);
+  }
+  else if(stage == 2)
+  {
     imageView_2->setImage(img_gs);
     imageView_2->setZoomFactor(0.5);
   }
-  else if (stage ==3){
-    imageView_4->setImage(img_gs);
-    //imageView_4->setZoomFactor(0.5);
-
-  }
-  else if (stage ==4){
+  else if(stage == 3)
+  {
     imageView_3->setImage(img_gs);
-    // imageView_3->setZoomFactor(0.5);
-
+//    imageView_3->setZoomFactor(0.5);
   }
-
+  else if(stage == 4)
+  {
+    imageView_4->setImage(img_gs);
+//    imageView_4->setZoomFactor(0.5);
+  }
 }
 
 void AssemblyModuleAssembler::gotoPickup()
@@ -698,16 +703,16 @@ MoveWidget::MoveWidget(const QString& label, const QString& default_entry, const
 
     button_ = new QPushButton(label, this);
 
-    liedit_ = new QLineEdit();
-    liedit_->setText(default_entry);
-    layout_->addRow(button_, liedit_);
+    lineed_ = new QLineEdit();
+    lineed_->setText(default_entry);
+    layout_->addRow(button_, lineed_);
 
     connect(button_, SIGNAL(clicked()), this, SLOT(execute()));
 }
 
 void MoveWidget::execute()
 {
-  const QString line_entry = this->liedit_->text();
+  const QString line_entry = this->lineed_->text();
 
   // parse lineEdit text to get target coordinates
   const QStringList entries = line_entry.split(",");
@@ -748,14 +753,33 @@ void MoveWidget::execute()
 }
 // ----------
 
-LocateWidget::LocateWidget(const QString& label, MarkerFinderPatRec* finder, QWidget* parent) : QWidget(parent)
+LocateWidget::LocateWidget(const QString& label, QWidget* parent) :
+  QWidget(parent),
+
+  layout_(0),
+  button_(0),
+  lineed_(0),
+  label_ (0),
+
+  groupBox1_(0),
+  groupBox2_(0),
+
+  radio1_(0),
+  radio2_(0),
+  radio3_(0),
+  radio4_(0),
+  radio5_(0),
+  radio6_(0),
+
+  vbox1_(0),
+  vbox2_(0)
 {
   layout_ = new QGridLayout(this);
   this->setLayout(layout_);
 
   button_ = new QPushButton(label, this);
-
-  layout_->addWidget(button_,0,0);
+  button_->setEnabled(true);
+  layout_->addWidget(button_, 0, 0);
     
   groupBox1_ = new QGroupBox(tr("Object sought"));
   groupBox2_ = new QGroupBox(tr("Mode"));
@@ -803,26 +827,25 @@ LocateWidget::LocateWidget(const QString& label, MarkerFinderPatRec* finder, QWi
   label_->setText("WAITING");
   label_->setStyleSheet("QLabel { background-color : orange; color : black; }");
 
-  connect(button_, SIGNAL(clicked())                   , this  , SLOT(detectPatRecMode()));
-  connect(this   , SIGNAL(runObjectDetection(int, int)), finder, SLOT(runObjectDetection(int, int)));
+  connect(button_, SIGNAL(clicked()), this, SLOT(execute()));
 }
 
-void LocateWidget::detectPatRecMode()
+void LocateWidget::execute()
 {
-  int objectmode(0), labmode(0);
+  int mode_lab(0), mode_obj(0);
 
-  if     (radio1_->isChecked()){ objectmode = 0; }
-  else if(radio2_->isChecked()){ objectmode = 1; }
-  else if(radio3_->isChecked()){ objectmode = 2; }
-  else if(radio4_->isChecked()){ objectmode = 3; }
+  if     (radio1_->isChecked()){ mode_obj = 0; }
+  else if(radio2_->isChecked()){ mode_obj = 1; }
+  else if(radio3_->isChecked()){ mode_obj = 2; }
+  else if(radio4_->isChecked()){ mode_obj = 3; }
 
-  if     (radio5_->isChecked()){ labmode = 0; }
-  else if(radio6_->isChecked()){ labmode = 1; }
+  if     (radio5_->isChecked()){ mode_lab = 0; }
+  else if(radio6_->isChecked()){ mode_lab = 1; }
 
-  NQLog("LocateWidget", NQLog::Debug) << "detectPatRecMode"
-     << ": emitting signal \"runObjectDetection(" << labmode << ", " << objectmode << ")\"";
+  NQLog("LocateWidget", NQLog::Debug) << "execute"
+     << ": emitting signal \"finder_mode(" << mode_lab << ", " << mode_obj << ")\"";
 
-  emit runObjectDetection(labmode, objectmode);
+  emit finder_mode(mode_lab, mode_obj);
 }
 
 void LocateWidget::foundsensor(int state)
@@ -833,13 +856,11 @@ void LocateWidget::foundsensor(int state)
   {
     label_->setText("WAITING");
     label_->setStyleSheet("QLabel { background-color : orange; color : black; }");
-    
   }
   else if(state == 1)
   {
     label_->setText("FOUND MARKER");
     label_->setStyleSheet("QLabel { background-color : green; color : black; }");
-    
   }
   else if(state == 2)
   {

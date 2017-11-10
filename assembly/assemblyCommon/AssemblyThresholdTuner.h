@@ -34,47 +34,38 @@ class AssemblyThresholdTuner : public QWidget
 
  public:
 
-    explicit AssemblyThresholdTuner(QWidget* parent=0);
-    virtual ~AssemblyThresholdTuner() {}
+  explicit AssemblyThresholdTuner(QWidget* parent=0);
+  virtual ~AssemblyThresholdTuner() {}
 
-    void    connectImageProducer(const QObject* sender, const char* signal);
-    void disconnectImageProducer(const QObject* sender, const char* signal);
+  int get_threshold() const;
 
-    QPushButton* button;
+  void    connectImageProducer_1(const QObject* sender, const char* signal);
+  void disconnectImageProducer_1(const QObject* sender, const char* signal);
+
+  void    connectImageProducer_2(const QObject* sender, const char* signal);
+  void disconnectImageProducer_2(const QObject* sender, const char* signal);
 
  protected:
 
-    void keyReleaseEvent(QKeyEvent *event);
+  void keyReleaseEvent(QKeyEvent *event);
 
-    QScrollArea *scrollArea1_;
-    AssemblyUEyeView *imageView1_;
+  AssemblyUEyeView* imageView_1_;
+  AssemblyUEyeView* imageView_2_;
 
-    QScrollArea *scrollArea2_;
-    AssemblyUEyeView *imageView2_;
+  QScrollArea* scrollArea_1_;
+  QScrollArea* scrollArea_2_;
 
-    QPushButton* setThresholdButton;
-    QLabel* label;
-    QLineEdit* lineEdit;
-
-    cv::Mat image_;
+  QPushButton* thre_button_;
+  QLabel*      thre_label_;
+  QLineEdit*   thre_linee_;
 
  public slots:
 
-    void snapShot();
-    //void imageAcquired(const cv::Mat&);
-    void imageAcquired(cv::Mat);
-    void setNewThreshold();
-    void updateThresholdLabelSlot(int);
-    void enableThresholdButton();
-    void disableThresholdButton();
-    void updateThresholdImage(const QString&);
+  void read_threshold();
 
  signals:
 
-    void setNewThreshold(int, cv::Mat);
-    void updateThresholdLabel();
-    void updateThresholdImagePicture();
-
+  void threshold_value(const int);
 };
 
 #endif // ASSEMBLYTHRESHOLDTUNER_H

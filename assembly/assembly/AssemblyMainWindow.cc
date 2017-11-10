@@ -13,6 +13,7 @@
 #include <AssemblyMainWindow.h>
 #include <ApplicationConfig.h>
 #include <nqlogger.h>
+#include <Util.h>
 
 #include <string>
 
@@ -100,7 +101,7 @@ AssemblyMainWindow::AssemblyMainWindow(const unsigned int camera_ID, QWidget* pa
     }
 
     // marker finder
-    marker_finder_ = new MarkerFinderPatRec();
+    marker_finder_ = new MarkerFinderPatRec(Util::QtCacheDirectory()+"/assembly/markerfinder", "rotations");
 
     marker_finder_thread_ = new MarkerFinderPatRecThread(marker_finder_, this);
     marker_finder_thread_->start();
@@ -127,20 +128,17 @@ AssemblyMainWindow::AssemblyMainWindow(const unsigned int camera_ID, QWidget* pa
     thresholdTunerView_ = new AssemblyThresholdTuner(tabWidget_);
     tabWidget_->addTab(thresholdTunerView_, tabname_ImageThresholding);
 
-    connect(thresholdTunerView_, SIGNAL(updateThresholdLabel())            , marker_finder_     , SLOT(getCurrentGeneralThreshold()));
-    connect(this               , SIGNAL(updateThresholdLabel())            , marker_finder_     , SLOT(getCurrentGeneralThreshold()));
-    connect(marker_finder_     , SIGNAL(sendCurrentGeneralThreshold(int))  , thresholdTunerView_, SLOT(updateThresholdLabelSlot(int)));
-    connect(thresholdTunerView_, SIGNAL(setNewThreshold(int, cv::Mat))     , marker_finder_     , SLOT(setNewGeneralThreshold(int, cv::Mat)));
-    connect(marker_finder_     , SIGNAL(sendUpdatedThresholdImage(QString)), thresholdTunerView_, SLOT(updateThresholdImage(QString)));
+    marker_finder_->set_threshold(thresholdTunerView_->get_threshold());
+
+    connect(marker_finder_     , SIGNAL(threshold_request()) , thresholdTunerView_, SLOT(  read_threshold()));
+    connect(thresholdTunerView_, SIGNAL(threshold_value(int)), marker_finder_     , SLOT(update_threshold(int)));
+    connect(marker_finder_     , SIGNAL(threshold_updated()) , marker_finder_     , SLOT(update_binary_image()));
 
     NQLog("AssemblyMainWindow", NQLog::Message) << "added view " << tabname_ImageThresholding;
-    NQLog("AssemblyMainWindow", NQLog::Spam)    << "emitting signal \"updateThresholdLabel\"";
-
-    emit updateThresholdLabel();
     /* --------------------------------------------------------- */
 
     /* AUTO-FOCUS VIEW ----------------------------------------- */
-    const QString tabname_AutoFocus("Auto-Focus");
+    const QString tabname_AutoFocus("Auto Focus");
 
     autoFocusView_ = new AssemblyAutoFocus(tabWidget_);
     tabWidget_->addTab(autoFocusView_, tabname_AutoFocus);
@@ -155,13 +153,13 @@ AssemblyMainWindow::AssemblyMainWindow(const unsigned int camera_ID, QWidget* pa
     NQLog("AssemblyMainWindow", NQLog::Message) << "added view " << tabname_AutoFocus;
     /* --------------------------------------------------------- */
 
-    /* MANUAL-ASSEMBLY VIEW ------------------------------------ */
-    const QString tabname_ManualAssembly("Manual Assembly");
+    /* AUTOMATED-ASSEMBLY VIEW ------------------------------------ */
+    const QString tabname_AutoAssembly("Auto Assembly");
 
     assembleView_ = new AssemblyModuleAssembler(camera_, marker_finder_, motion_model_, tabWidget_);
-    tabWidget_->addTab(assembleView_, tabname_ManualAssembly);
+    tabWidget_->addTab(assembleView_, tabname_AutoAssembly);
 
-    NQLog("AssemblyMainWindow", NQLog::Message) << "added view " << tabname_ManualAssembly;
+    NQLog("AssemblyMainWindow", NQLog::Message) << "added view " << tabname_AutoAssembly;
 
     // VACUUM connections
     conradModel_   = new ConradModel(assembleView_);
@@ -169,13 +167,11 @@ AssemblyMainWindow::AssemblyMainWindow(const unsigned int camera_ID, QWidget* pa
 
     module_assembler_ = new AssemblyAssembler(motion_model_);
 
-    connect(assembleView_->toggle1, SIGNAL(toggleVacuum(int))           , conradManager_, SLOT(toggleVacuum(int)));
-//!!    connect(assembleView_         , SIGNAL(runObjectDetection(int, int)), marker_finder_, SLOT(runObjectDetection(int, int)));
+    connect(assembleView_->toggle1, SIGNAL(toggleVacuum(int)), conradManager_, SLOT(toggleVacuum(int)));
 
 //  connect(assembleView_->toggle1, SIGNAL(toggleVacuum(int))                  , assembleView_->toggle1, SLOT(disableVacuumButton()));
     connect(conradManager_        , SIGNAL(updateVacuumChannelState(int, bool)), assembleView_->toggle1, SLOT(updateVacuumChannelState(int, bool)));
     connect(this                  , SIGNAL(updateVacuumChannelsStatus())       , conradManager_        , SLOT(updateVacuumChannelsStatus()));
-//  connect(camera_               , SIGNAL(imageAcquired(cv::Mat))             , marker_finder_        , SLOT(runObjectDetection_labmode(cv::Mat)));
 
     NQLog("AssemblyMainWindow", NQLog::Debug) << "emitting signal \"updateVacuumChannelsStatus\"";
 
@@ -247,7 +243,15 @@ AssemblyMainWindow::AssemblyMainWindow(const unsigned int camera_ID, QWidget* pa
 
     connect(QApplication::instance(), SIGNAL(aboutToQuit()), this, SLOT(quit()));
 
-    NQLog("AssemblyMainWindow", NQLog::Message) << "constructed";
+    NQLog("AssemblyMainWindow", NQLog::Message) << "///////////////////////////////////////////////////////";
+    NQLog("AssemblyMainWindow", NQLog::Message) << "//                                                   //";
+    NQLog("AssemblyMainWindow", NQLog::Message) << "//                     DESY-CMS                      //";
+    NQLog("AssemblyMainWindow", NQLog::Message) << "//                                                   //";
+    NQLog("AssemblyMainWindow", NQLog::Message) << "//             Automated Module Assembly             //";
+    NQLog("AssemblyMainWindow", NQLog::Message) << "//                                                   //";
+    NQLog("AssemblyMainWindow", NQLog::Message) << "//  - AssemblyMainWindow initialized successfully -  //";
+    NQLog("AssemblyMainWindow", NQLog::Message) << "//                                                   //";
+    NQLog("AssemblyMainWindow", NQLog::Message) << "///////////////////////////////////////////////////////";
 }
 
 void AssemblyMainWindow::liveUpdate()
@@ -259,12 +263,15 @@ void AssemblyMainWindow::liveUpdate()
 
 void AssemblyMainWindow::enable_images()
 {
-    image_ctr_ = new ImageController(camera_, zfocus_finder_);
+    if(!image_ctr_)
+    {
+      image_ctr_ = new ImageController(camera_, zfocus_finder_);
 
-    connect(this      , SIGNAL(images_ON())      , image_ctr_, SLOT(enable()));
+      connect(this    , SIGNAL(images_ON())      , image_ctr_, SLOT(enable()));
+      connect(this    , SIGNAL(images_OFF())     , image_ctr_, SLOT(disable()));
+    }
+
     connect(image_ctr_, SIGNAL(camera_enabled()) , this      , SLOT(connect_images()));
-
-    connect(this      , SIGNAL(images_OFF())     , image_ctr_, SLOT(disable()));
     connect(image_ctr_, SIGNAL(camera_disabled()), this      , SLOT(disconnect_images()));
 
     connect(this      , SIGNAL(image())          , image_ctr_, SLOT(acquire_image()));
@@ -284,19 +291,12 @@ void AssemblyMainWindow::disable_images()
 {
     if(image_ctr_)
     {
-      disconnect(this      , SIGNAL(images_ON())      , image_ctr_, SLOT(enable()));
       disconnect(image_ctr_, SIGNAL(camera_enabled()) , this      , SLOT(connect_images()));
-
-      disconnect(this      , SIGNAL(images_OFF())     , image_ctr_, SLOT(disable()));
       disconnect(image_ctr_, SIGNAL(camera_disabled()), this      , SLOT(disconnect_images()));
 
       disconnect(this      , SIGNAL(image())          , image_ctr_, SLOT(acquire_image()));
       disconnect(this      , SIGNAL(AutoFocus_ON())   , image_ctr_, SLOT( enable_AutoFocus()));
       disconnect(this      , SIGNAL(AutoFocus_OFF())  , image_ctr_, SLOT(disable_AutoFocus()));
-
-      delete image_ctr_;
-
-      image_ctr_ = 0;
 
       NQLog("AssemblyMainWindow", NQLog::Message) << "disable_images"
          << ": ImageController disconnected";
@@ -463,7 +463,7 @@ void AssemblyMainWindow::changeState_Alignment(int state)
     {
       disconnect(image_ctr_        , SIGNAL(image_acquired(cv::Mat))                          , marker_finder_   , SLOT(runObjectDetection_labmode(cv::Mat)) );
       disconnect(assembleView_     , SIGNAL(launchAlignment     (int, double, double, double)), module_assembler_, SLOT(run_alignment(int, double, double, double)));
-      disconnect(module_assembler_ , SIGNAL(acquireImage())                                   , image_ctr_    , SLOT(acquire_image()));
+      disconnect(module_assembler_ , SIGNAL(acquireImage())                                   , image_ctr_       , SLOT(acquire_image()));
 //      disconnect(motion_model_    , SIGNAL(motionFinished())                                 , module_assembler_, SLOT(launch_next_alignment_step()));
       disconnect(module_assembler_ , SIGNAL(moveRelative(double, double, double, double))     , motion_manager_  , SLOT(moveRelative(double, double, double, double)));
       disconnect(marker_finder_    , SIGNAL(reportObjectLocation(int, double, double, double)), module_assembler_, SLOT(run_alignment(int, double, double, double)));
@@ -519,14 +519,12 @@ void AssemblyMainWindow::connect_images()
 //    connect(camera_, SIGNAL(imageAcquired(cv::Mat)), finder_, SLOT(runObjectDetection_labmode(cv::Mat)));
 //    connect(camera_, SIGNAL(imageAcquired(cv::Mat)), finder_, SLOT(locatePickup(cv::Mat)));
 
-    connect(marker_finder_, SIGNAL(getImage())    , image_ctr_, SLOT(acquire_image()));
-    connect(marker_finder_, SIGNAL(acquireImage()), image_ctr_, SLOT(acquire_image()));
+    connect(marker_finder_, SIGNAL(image_request())        , image_ctr_    , SLOT(acquire_image()));
+    connect(image_ctr_    , SIGNAL(image_acquired(cv::Mat)), marker_finder_, SLOT( update_image(cv::Mat)));
 
-    connect(marker_finder_, SIGNAL(locatePickupCorner_templateMatching(cv::Mat, cv::Mat)), marker_finder_, SLOT(findMarker_templateMatching(cv::Mat, cv::Mat)));
+    thresholdTunerView_->connectImageProducer_1(marker_finder_, SIGNAL(       image_updated(cv::Mat)));
+    thresholdTunerView_->connectImageProducer_2(marker_finder_, SIGNAL(binary_image_updated(cv::Mat)));
 
-
-
-    thresholdTunerView_->connectImageProducer(image_ctr_    , SIGNAL(image_acquired(cv::Mat)));
     autoFocusView_     ->connectImageProducer(zfocus_finder_, SIGNAL(image_acquired(cv::Mat)));
 
     NQLog("AssemblyMainWindow", NQLog::Message) << "connect_images"
@@ -541,7 +539,12 @@ void AssemblyMainWindow::disconnect_images()
 //    edgeView_          ->disconnectImageProducer(finder_, SIGNAL(edgesDetected(const cv::Mat&)));
 //    rawView_           ->disconnectImageProducer(camera_, SIGNAL(imagef       (const cv::Mat&)));
 
-    thresholdTunerView_->disconnectImageProducer(image_ctr_    , SIGNAL(image_acquired(cv::Mat)));
+    disconnect(marker_finder_, SIGNAL(image_request())        , image_ctr_    , SLOT(acquire_image()));
+    disconnect(image_ctr_    , SIGNAL(image_acquired(cv::Mat)), marker_finder_, SLOT(update_image(cv::Mat)));
+
+    thresholdTunerView_->disconnectImageProducer_1(marker_finder_, SIGNAL(       image_updated(cv::Mat)));
+    thresholdTunerView_->disconnectImageProducer_2(marker_finder_, SIGNAL(binary_image_updated(cv::Mat)));
+
     autoFocusView_     ->disconnectImageProducer(zfocus_finder_, SIGNAL(image_acquired(cv::Mat)));
 
     NQLog("AssemblyMainWindow", NQLog::Message) << "disconnect_images"
