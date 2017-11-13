@@ -101,7 +101,7 @@ AssemblyMainWindow::AssemblyMainWindow(const unsigned int camera_ID, QWidget* pa
     }
 
     // marker finder
-    marker_finder_ = new MarkerFinderPatRec(Util::QtCacheDirectory()+"/assembly/markerfinder", "rotations");
+    marker_finder_ = new MarkerFinderPatRec(Util::QtCacheDirectory()+"/MarkerFinderPatRec", "rotations");
 
     marker_finder_thread_ = new MarkerFinderPatRecThread(marker_finder_, this);
     marker_finder_thread_->start();
@@ -143,9 +143,9 @@ AssemblyMainWindow::AssemblyMainWindow(const unsigned int camera_ID, QWidget* pa
     autoFocusView_ = new AssemblyAutoFocus(tabWidget_);
     tabWidget_->addTab(autoFocusView_, tabname_AutoFocus);
 
-    connect(autoFocusView_, SIGNAL(run_scan(double, int)), zfocus_finder_, SLOT(update_focus_inputs(double, int)));
+    connect(autoFocusView_, SIGNAL(scan_values(double, int)), zfocus_finder_, SLOT(update_focus_inputs(double, int)));
 
-    connect(zfocus_finder_, SIGNAL(show_zscan(QString))  , autoFocusView_, SLOT(make_graph(QString)));
+    connect(zfocus_finder_, SIGNAL(show_zscan(QString))  , autoFocusView_, SLOT(read_graph(QString)));
     connect(zfocus_finder_, SIGNAL(update_text(double))  , autoFocusView_, SLOT(updateText(double)));
 
     autoFocusView_->configure_scan();
@@ -384,7 +384,7 @@ void AssemblyMainWindow::changeState_PrecisionEstimation(int /* state */)
       disconnect(conradManager_    , SIGNAL(updateVacuumChannelState(int, bool))        , cmdr_zscan    , SIGNAL(nextStep()));
       disconnect(camera_           , SIGNAL(imageAcquired(cv::Mat))                     , marker_finder_, SLOT(findMarker_templateMatching(int, cv::Mat)));
       disconnect(marker_finder_    , SIGNAL(getImageBlur(cv::Mat, cv::Rect))            , cmdr_zscan    , SLOT(write_image(cv::Mat, cv::Rect)) );
-      disconnect(cmdr_zscan        , SIGNAL(make_graph(vector<double>,vector<double>))  , autoFocusView_, SLOT(make_graph(vector<double>,vector<double>)));
+      disconnect(cmdr_zscan        , SIGNAL(read_graph(vector<double>,vector<double>))  , autoFocusView_, SLOT(read_graph(vector<double>,vector<double>)));
       disconnect(cmdr_zscan        , SIGNAL(updateText(double))                         , autoFocusView_, SLOT(updateText(double)));
 
       NQLog("AssemblyMainWindow::changeState_PrecisionEstimation") << "signal-slot connections disabled";
@@ -449,7 +449,9 @@ void AssemblyMainWindow::changeState_Alignment(int state)
 {
     if(state == 2)
     {
-      connect   (image_ctr_        , SIGNAL(image_acquired(cv::Mat))                          , marker_finder_   , SLOT(runObjectDetection_labmode(cv::Mat)));
+      connect   (marker_finder_    , SIGNAL(image_updated())                                  , marker_finder_   , SLOT(update_binary_image()));
+      connect   (marker_finder_    , SIGNAL(binary_image_updated())                           , marker_finder_   , SLOT(run_PatRec(1, 0)));
+
       connect   (assembleView_     , SIGNAL(launchAlignment     (int, double, double, double)), module_assembler_, SLOT(run_alignment(int, double, double, double)));
       connect   (module_assembler_ , SIGNAL(acquireImage())                                   , image_ctr_       , SLOT(acquire_image()));
       connect   (motion_model_     , SIGNAL(motionFinished())                                 , module_assembler_, SLOT(launch_next_alignment_step()));
@@ -461,7 +463,9 @@ void AssemblyMainWindow::changeState_Alignment(int state)
     }
     else if(state == 0)
     {
-      disconnect(image_ctr_        , SIGNAL(image_acquired(cv::Mat))                          , marker_finder_   , SLOT(runObjectDetection_labmode(cv::Mat)) );
+      disconnect(marker_finder_    , SIGNAL(image_updated())                                  , marker_finder_   , SLOT(update_binary_image()));
+      disconnect(marker_finder_    , SIGNAL(binary_image_updated())                           , marker_finder_   , SLOT(run_PatRec(1, 0)));
+
       disconnect(assembleView_     , SIGNAL(launchAlignment     (int, double, double, double)), module_assembler_, SLOT(run_alignment(int, double, double, double)));
       disconnect(module_assembler_ , SIGNAL(acquireImage())                                   , image_ctr_       , SLOT(acquire_image()));
 //      disconnect(motion_model_    , SIGNAL(motionFinished())                                 , module_assembler_, SLOT(launch_next_alignment_step()));

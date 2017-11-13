@@ -27,6 +27,9 @@ namespace Util {
   bool DirectoryExists(const QString&);
   bool DirectoryExists(const std::string&);
 
+  bool IsFile(const QString&);
+  bool IsFile(const std::string&);
+
 }
 
 #endif

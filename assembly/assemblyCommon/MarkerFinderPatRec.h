@@ -13,8 +13,6 @@
 #ifndef MARKERFINDERPATREC_H
 #define MARKERFINDERPATREC_H
 
-#include <nqlogger.h>
-
 #include <QObject>
 #include <QString>
 
@@ -37,8 +35,10 @@ class MarkerFinderPatRec : public QObject
 
  protected:
 
-//!!  int mode_lab_;
-//!!  int mode_obj_;
+  static int exe_counter_;
+
+  std::string output_dir_path_;
+  std::string output_subdir_name_;
 
   int threshold_;
   int threshold_tpl_;
@@ -51,10 +51,7 @@ class MarkerFinderPatRec : public QObject
   bool updated_image_master_;
   bool updated_image_master_binary_;
 
-  std::string cacheDirectory1_;
-  std::string cacheDirectory2_;
-
-  void PatRec(double&, cv::Point&, const cv::Mat&, const cv::Mat&, const double, const int) const;
+  void PatRec(double&, cv::Point&, const cv::Mat&, const cv::Mat&, const double, const int, const std::string& out_dir="") const;
 
  public slots:
 
@@ -71,9 +68,6 @@ class MarkerFinderPatRec : public QObject
 
   void template_matching(const cv::Mat&, const cv::Mat&, const cv::Mat&, const int);
 
-//!!  void runObjectDetection(const int labmode, const int objectmode);
-//!!  void runObjectDetection_labmode(const cv::Mat&);
-
  signals:
 
   void threshold_request();
@@ -86,19 +80,13 @@ class MarkerFinderPatRec : public QObject
 
   void run_template_matching(const cv::Mat&, const cv::Mat&, const cv::Mat&, const int);
 
+  void image_path(const int, const QString&);
 
-
+  void PatRec_exitcode(const int);
 
 //!!  void locatePickupCorner_templateMatching(cv::Mat, cv::Mat);
 
   void reportObjectLocation(int, double, double, double);
-
-  void updateImage(int, QString);
-  void foundSensor(int);
-
-  void getImage();
-  void getImageBlur(cv::Mat, cv::Rect);
-
 };
 
 #endif // MARKERFINDERPATREC_H

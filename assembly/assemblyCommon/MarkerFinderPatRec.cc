@@ -23,11 +23,13 @@
 #include <TCanvas.h>
 #include <TH1.h>
 
+int MarkerFinderPatRec::exe_counter_ = -1;
+
 MarkerFinderPatRec::MarkerFinderPatRec(const QString& output_dir_path, const QString& output_subdir_name, QObject* parent) :
   QObject(parent),
 
-//!!  mode_lab_(-1),
-//!!  mode_obj_(-1),
+  output_dir_path_   (output_dir_path   .toStdString()),
+  output_subdir_name_(output_subdir_name.toStdString()),
 
   threshold_(-1),
   threshold_tpl_(-1),
@@ -39,20 +41,6 @@ MarkerFinderPatRec::MarkerFinderPatRec(const QString& output_dir_path, const QSt
   // connections
   connect(this, SIGNAL(run_template_matching(const cv::Mat&, const cv::Mat&, const cv::Mat&, const int)),
           this, SLOT  (    template_matching(const cv::Mat&, const cv::Mat&, const cv::Mat&, const int)));
-  // -----------
-
-  // output streams
-  const QString      cache_dir = output_dir_path;
-  Util::QDir_mkpath (cache_dir);
-  cacheDirectory1_ = cache_dir.toStdString();
-
-  NQLog("MarkerFinderPatRec", NQLog::Spam) << "created directory " << cacheDirectory1_;
-
-  const QString      cache_subdir = output_dir_path+"/"+output_subdir_name;
-  Util::QDir_mkpath (cache_subdir);
-  cacheDirectory2_ = cache_subdir.toStdString();
-
-  NQLog("MarkerFinderPatRec", NQLog::Spam) << "created directory " << cacheDirectory2_;
   // -----------
 
   NQLog("MarkerFinderPatRec", NQLog::Debug) << "constructed";
@@ -137,18 +125,15 @@ void MarkerFinderPatRec::update_binary_image()
     NQLog("MarkerFinderPatRec", NQLog::Spam) << "update_binary_image"
        << ": created binary image with threshold=" << threshold_;
 
-    const std::string filepath_img_bin = cacheDirectory1_+"/Sensor_bin.png";
-    cv::imwrite(filepath_img_bin, image_bin_);
-
     NQLog("MarkerFinderPatRec", NQLog::Debug) << "update_binary_image"
-       << ": emitting signal \"binary_image_updated(" << filepath_img_bin << ")\"";
+       << ": emitting signal \"binary_image_updated\"";
 
     emit binary_image_updated(image_bin_);
   }
   else
   {
     NQLog("MarkerFinderPatRec", NQLog::Warning) << "update_binary_image"
-       << ": master image not available, no binary image produced (hint: enable camera and take an image)";
+       << ": master image not available, no binary image produced (hint: enable camera and get an image)";
 
     return;
   }
@@ -187,6 +172,10 @@ void MarkerFinderPatRec::delete_binary_image()
 
 void MarkerFinderPatRec::run_PatRec(const int mode_lab, const int mode_obj)
 {
+  NQLog("MarkerFinderPatRec", NQLog::Message) << "run_PatRec"
+     << "(mode_lab=" << mode_lab << ", mode_obj=" << mode_obj << ")"
+     << ": initiated Pattern Recognition";
+
   // --- input validation
   if(!updated_threshold_)
   {
@@ -198,7 +187,7 @@ void MarkerFinderPatRec::run_PatRec(const int mode_lab, const int mode_obj)
   }
   // --------------------
 
-  if(mode_lab == 1) // --- PRODUCTION MODE ---
+  if(mode_lab == 1) // PRODUCTION MODE
   {
     // --- input validation
     if(!updated_image_master_)
@@ -215,13 +204,19 @@ void MarkerFinderPatRec::run_PatRec(const int mode_lab, const int mode_obj)
 
     if(mode_obj == 0)
     {
-      image_tpl_ = cv::imread(Config::CMSTkModLabBasePath+"/share/assembly/SensorPiece_1_clipC.png", CV_LOAD_IMAGE_COLOR);
+      NQLog("MarkerFinderPatRec", NQLog::Spam) << "run_PatRec"
+         << "(mode_lab=" << mode_lab << ", mode_obj=" << mode_obj << ")"
+         << ": detection of sensor fiducial marker";
+
+      image_tpl_ = cv::imread(Config::CMSTkModLabBasePath+"/share/assembly/SensorPiece_1_clipC.png"   , CV_LOAD_IMAGE_COLOR);
+//    image_tpl_ = cv::imread(Config::CMSTkModLabBasePath+"/share/assembly/RawSensor_3_clipB.png"     , CV_LOAD_IMAGE_COLOR);
+//    image_tpl_ = cv::imread(Config::CMSTkModLabBasePath+"/share/assembly/RawSensor_3_clipB_temp.png", CV_LOAD_IMAGE_COLOR);
 
       threshold_tpl_ = 85; // 90 for silicon marker, 88 for glass?
     }
     else if(mode_obj == 1)
     {
-      NQLog("MarkerFinderPatRec", NQLog::Debug) << "run_PatRec"
+      NQLog("MarkerFinderPatRec", NQLog::Warning) << "run_PatRec"
          << "(mode_lab=" << mode_lab << ", mode_obj=" << mode_obj << ")"
          << ": detection of positioning pin not implemented yet, no action taken";
 
@@ -229,142 +224,102 @@ void MarkerFinderPatRec::run_PatRec(const int mode_lab, const int mode_obj)
     }
     else if(mode_obj == 2)
     {
-      image_tpl_ = cv::imread(Config::CMSTkModLabBasePath+"/share/assembly/glassslidecorneronbaseplate_sliverpaint_A_clip.png", CV_LOAD_IMAGE_COLOR);
+      NQLog("MarkerFinderPatRec", NQLog::Spam) << "run_PatRec"
+         << "(mode_lab=" << mode_lab << ", mode_obj=" << mode_obj << ")"
+         << ": detection of sensor corner";
+
+      image_tpl_ = cv::imread(Config::CMSTkModLabBasePath+"/share/assembly/simplecorner.png"                                  , CV_LOAD_IMAGE_COLOR);
+//    image_tpl_ = cv::imread(Config::CMSTkModLabBasePath+"/share/assembly/glassslidecorneronbaseplate_sliverpaint_A_clip.png", CV_LOAD_IMAGE_COLOR);
+//    image_tpl_ = cv::imread(Config::CMSTkModLabBasePath+"/share/assembly/glassslidecorner_sliverpaint_D_crop.png"           , CV_LOAD_IMAGE_COLOR);
 
       threshold_tpl_ = 85; // 90 for silicon marker, 88 for glass?
     }
     else if(mode_obj == 3)
     {
-      NQLog("MarkerFinderPatRec", NQLog::Debug) << "run_PatRec"
+      NQLog("MarkerFinderPatRec", NQLog::Spam) << "run_PatRec"
          << "(mode_lab=" << mode_lab << ", mode_obj=" << mode_obj << ")"
-         << ": detection of spacer corner not implemented yet, no action taken";
+         << ": detection of spacer corner";
 
-      return;
+      image_tpl_ = cv::imread(Config::CMSTkModLabBasePath+"/share/assembly/spacer_corner_tempate_crop.png", CV_LOAD_IMAGE_COLOR);
+
+      threshold_tpl_ = 85; // 90 for silicon marker, 88 for glass?
     }
     else
     {
-      NQLog("MarkerFinderPatRec", NQLog::Debug) << "run_PatRec"
+      NQLog("MarkerFinderPatRec", NQLog::Warning) << "run_PatRec"
          << "(mode_lab=" << mode_lab << ", mode_obj=" << mode_obj << ")"
          << ": undefined value for object-mode, no action taken";
 
       return;
     }
   }
-  else // --- DEMO MODE ---
+  else if(mode_lab == 0) // DEMO MODE
   {
-    image_mas_ = cv::imread(Config::CMSTkModLabBasePath+"/share/assembly/SensorPiece_1.png"      , CV_LOAD_IMAGE_COLOR);
-    image_tpl_ = cv::imread(Config::CMSTkModLabBasePath+"/share/assembly/SensorPiece_1_clipC.png", CV_LOAD_IMAGE_COLOR);
+    if(mode_obj == 0)
+    {
+      NQLog("MarkerFinderPatRec", NQLog::Spam) << "run_PatRec"
+         << "(mode_lab=" << mode_lab << ", mode_obj=" << mode_obj << ")"
+         << ": detection of sensor fiducial marker";
+
+      image_mas_ = cv::imread(Config::CMSTkModLabBasePath+"/share/assembly/SensorPiece_1.png"      , CV_LOAD_IMAGE_COLOR);
+      image_tpl_ = cv::imread(Config::CMSTkModLabBasePath+"/share/assembly/SensorPiece_1_clipC.png", CV_LOAD_IMAGE_COLOR);
+
+      threshold_tpl_ = 85; // 90 for silicon marker, 88 for glass?
+    }
+    else if(mode_obj == 1)
+    {
+      NQLog("MarkerFinderPatRec", NQLog::Warning) << "run_PatRec"
+         << "(mode_lab=" << mode_lab << ", mode_obj=" << mode_obj << ")"
+         << ": detection of positioning pin not implemented yet, no action taken";
+
+      return;
+    }
+    else if(mode_obj == 2)
+    {
+      NQLog("MarkerFinderPatRec", NQLog::Spam) << "run_PatRec"
+         << "(mode_lab=" << mode_lab << ", mode_obj=" << mode_obj << ")"
+         << ": detection of sensor corner";
+
+      image_mas_ = cv::imread(Config::CMSTkModLabBasePath+"/share/assembly/glassslidecorneronbaseplate_sliverpaint_A.png"     , CV_LOAD_IMAGE_COLOR);
+      image_tpl_ = cv::imread(Config::CMSTkModLabBasePath+"/share/assembly/glassslidecorneronbaseplate_sliverpaint_A_clip.png", CV_LOAD_IMAGE_COLOR);
+
+      threshold_tpl_ = 85; // 90 for silicon marker, 88 for glass?
+    }
+    else if(mode_obj == 3)
+    {
+      NQLog("MarkerFinderPatRec", NQLog::Spam) << "run_PatRec"
+         << "(mode_lab=" << mode_lab << ", mode_obj=" << mode_obj << ")"
+         << ": detection of spacer corner not implemented, no action taken";
+
+      return;
+    }
+    else
+    {
+      NQLog("MarkerFinderPatRec", NQLog::Warning) << "run_PatRec"
+         << "(mode_lab=" << mode_lab << ", mode_obj=" << mode_obj << ")"
+         << ": undefined value for object-mode, no action taken";
+
+      return;
+    }
 
     this->update_image(image_mas_);
     this->update_binary_image();
+  }
+  else
+  {
+    NQLog("MarkerFinderPatRec", NQLog::Warning) << "run_PatRec"
+       << "(mode_lab=" << mode_lab << ", mode_obj=" << mode_obj << ")"
+       << ": undefined value for lab-mode, no action taken";
 
-    threshold_tpl_ = 85; // 90 for silicon marker, 88 for glass?
+    return;
   }
 
-  NQLog("MarkerFinderPatRec", NQLog::Message) << "run_PatRec"
+  NQLog("MarkerFinderPatRec", NQLog::Debug) << "run_PatRec"
      << "(mode_lab=" << mode_lab << ", mode_obj=" << mode_obj << ")"
      << ": emitting signal \"run_template_matching\"";
 
   emit run_template_matching(image_mas_, image_bin_, image_tpl_, threshold_tpl_);
 }
-
-//!!void MarkerFinderPatRec::runObjectDetection(const int mode_lab, const int mode_obj)
-//!!{
-//!!  NQLog("MarkerFinderPatRec", NQLog::Debug) << "runObjectDetection"
-//!!     << "(mode_lab=" << mode_lab << ", mode_obj=" << mode_obj << ")";
-//!!
-//!!  mode_lab_ = mode_lab;
-//!!  mode_obj_ = mode_obj;
-//!!
-//!!  if(mode_lab_ == 1)
-//!!  {
-//!!    NQLog("MarkerFinderPatRec", NQLog::Debug) << "runObjectDetection"
-//!!       << "(mode_lab=" << mode_lab << ", mode_obj=" << mode_obj << ")"
-//!!       << ": emitting signal \"acquire_image\"";
-//!!
-//!!    emit acquire_image();
-//!!  }
-//!!  else if(mode_lab_ == 0)
-//!!  {
-//!!    // standard signals to launch PatRec here
-//!!    if(mode_obj_ == 0)
-//!!    {
-//!!//    image_mas_ = cv::imread(Config::CMSTkModLabBasePath+"/share/assembly/RawSensor_4.png"  , CV_LOAD_IMAGE_COLOR);
-//!!      image_mas_ = cv::imread(Config::CMSTkModLabBasePath+"/share/assembly/SensorPiece_1.png", CV_LOAD_IMAGE_COLOR);
-//!!
-//!!//    image_tpl_ = cv::imread(Config::CMSTkModLabBasePath+"/share/assembly/RawSensor_3_clipB_temp.png"    , CV_LOAD_IMAGE_COLOR);
-//!!      image_tpl_ = cv::imread(Config::CMSTkModLabBasePath+"/share/assembly/SensorPiece_1_clipC.png"       , CV_LOAD_IMAGE_COLOR);
-//!!//    image_tpl_ = cv::imread(Config::CMSTkModLabBasePath+"/share/assembly/spacer_corner_tempate_crop.png", CV_LOAD_IMAGE_COLOR);
-//!!    }
-//!!    else if(mode_obj_ == 1)
-//!!    {
-//!!      NQLog("MarkerFinderPatRec", NQLog::Warning) << "runObjectDetection"
-//!!         << ": detection of positioning pin not implemented yet";
-//!!    }
-//!!    else if(mode_obj_ == 2)
-//!!    {
-//!!      image_mas_ = cv::imread(Config::CMSTkModLabBasePath+"/share/assembly/glassslidecorneronbaseplate_sliverpaint_A.png"     , CV_LOAD_IMAGE_COLOR);
-//!!      image_tpl_ = cv::imread(Config::CMSTkModLabBasePath+"/share/assembly/glassslidecorneronbaseplate_sliverpaint_A_clip.png", CV_LOAD_IMAGE_COLOR);
-//!!    }
-//!!
-//!!    NQLog("MarkerFinderPatRec", NQLog::Debug) << "runObjectDetection"
-//!!       << "(mode_lab=" << mode_lab << ", mode_obj=" << mode_obj << ")"
-//!!       << ": emitting signal \"locatePickupCorner_templateMatching\"";
-//!!
-//!!    emit locatePickupCorner_templateMatching(image_mas_, image_tpl_);
-//!!  }
-//!!
-//!!  return;
-//!!}
-
-//!!void MarkerFinderPatRec::runObjectDetection_labmode(const cv::Mat& master_image)
-//!!{
-//!!    if(mode_obj_ == 0)
-//!!    {
-//!!      NQLog("MarkerFinderPatRec", NQLog::Debug) << "runObjectDetection_labmode"
-//!!         << ": detecting fiducial marker";
-//!!
-//!!      image_mas_ = master_image;
-//!!
-//!!      image_tpl_ = cv::imread(Config::CMSTkModLabBasePath+"/share/assembly/SensorPiece_1_clipC.png"   , CV_LOAD_IMAGE_COLOR);
-//!!//    image_tpl_ = cv::imread(Config::CMSTkModLabBasePath+"/share/assembly/RawSensor_3_clipB.png"     , CV_LOAD_IMAGE_COLOR);
-//!!//    image_tpl_ = cv::imread(Config::CMSTkModLabBasePath+"/share/assembly/RawSensor_3_clipB_temp.png", CV_LOAD_IMAGE_COLOR);
-//!!
-//!!      threshold_tpl_ = 85; // 90 for silicon marker, 88 for glass?
-//!!    }
-//!!    else if(mode_obj_ == 1)
-//!!    {
-//!!      NQLog("MarkerFinderPatRec", NQLog::Warning) << "runObjectDetection_labmode"
-//!!         << ": detection of positioning pin not implemented yet";
-//!!    }
-//!!    else if (mode_obj_ == 2)
-//!!    {
-//!!      NQLog("MarkerFinderPatRec", NQLog::Debug) << "runObjectDetection_labmode"
-//!!         << ": detecting silver painter corner";
-//!!
-//!!      image_mas_ = master_image;   
-//!!
-//!!      image_tpl_ = cv::imread(Config::CMSTkModLabBasePath+"/share/assembly/simplecorner.png"                                  , CV_LOAD_IMAGE_COLOR);
-//!!//    image_tpl_ = cv::imread(Config::CMSTkModLabBasePath+"/share/assembly/glassslidecorneronbaseplate_sliverpaint_A_clip.png", CV_LOAD_IMAGE_COLOR);
-//!!//    image_tpl_ = cv::imread(Config::CMSTkModLabBasePath+"/share/assembly/glassslidecorner_sliverpaint_D_crop.png"           , CV_LOAD_IMAGE_COLOR);
-//!!
-//!!      threshold_tpl_ = 85; // 90 for silicon marker, 88 for glass?
-//!!    }
-//!!    else if (mode_obj_ == 3)
-//!!    {
-//!!      NQLog("MarkerFinderPatRec", NQLog::Debug) << "runObjectDetection_labmode"
-//!!         << ": detecting spacer corner";
-//!!
-//!!      image_mas_ = master_image;   
-//!!
-//!!      image_tpl_ = cv::imread(Config::CMSTkModLabBasePath+"/share/assembly/spacer_corner_tempate_crop.png", CV_LOAD_IMAGE_COLOR);
-//!!    }
-//!!
-//!!    NQLog("MarkerFinderPatRec", NQLog::Debug) << "runObjectDetection_labmode"
-//!!       << ": emitting signal \"locatePickupCorner_templateMatching\"";
-//!!
-//!!    emit locatePickupCorner_templateMatching(image_mas_, image_tpl_);
-//!!}
 
 void MarkerFinderPatRec::template_matching(const cv::Mat& img_master, const cv::Mat& img_master_bin, const cv::Mat& img_templa, const int threshold_templa)
 {
@@ -373,6 +328,39 @@ void MarkerFinderPatRec::template_matching(const cv::Mat& img_master, const cv::
     NQLog("MarkerFinderPatRec", NQLog::Debug) << "template_matching: Master   rows = " << img_master.rows;
     NQLog("MarkerFinderPatRec", NQLog::Debug) << "template_matching: Template cols = " << img_templa.cols;
     NQLog("MarkerFinderPatRec", NQLog::Debug) << "template_matching: Template rows = " << img_templa.rows;
+
+    // output directory
+    std::string output_dir(""), output_subdir("");
+
+    bool  output_dir_exists(true);
+    while(output_dir_exists)
+    {
+      ++exe_counter_;
+
+      std::string exe_counter_str = std::to_string(exe_counter_);
+
+      if(exe_counter_ < 1e3)
+      {
+        std::stringstream exe_counter_strss;
+        exe_counter_strss << std::setw(3) << std::setfill('0') << exe_counter_;
+        exe_counter_str = exe_counter_strss.str();
+      }
+
+      output_dir = output_dir_path_+"/"+exe_counter_str+"/";
+
+      output_dir_exists = Util::DirectoryExists(output_dir);
+    }
+
+    output_subdir = output_dir+output_subdir_name_;
+
+    Util::QDir_mkpath(output_dir);
+
+    NQLog("MarkerFinderPatRec", NQLog::Message) << "template_matching: created output directory: " << output_dir;
+
+    Util::QDir_mkpath(output_subdir);
+
+    NQLog("MarkerFinderPatRec", NQLog::Message) << "template_matching: created output directory: " << output_subdir;
+    // -----------
 
     // GreyScale images
     cv::Mat img_master_gs(img_master.size(), img_master.type());
@@ -390,13 +378,19 @@ void MarkerFinderPatRec::template_matching(const cv::Mat& img_master, const cv::
 
     cv::threshold(img_templa_gs, img_templa_bin, threshold_templa, 255, cv::THRESH_BINARY);
 
-    const std::string filepath_img_master_bin = cacheDirectory1_+"/Sensor_bin.png";
-    const std::string filepath_img_templa_bin = cacheDirectory1_+"/clip_A_bin.png";
+    const std::string filepath_img_master_bin = output_dir+"/image_master_binary.png";
+    const std::string filepath_img_templa     = output_dir+"/image_template.png";
+    const std::string filepath_img_templa_bin = output_dir+"/image_template_binary.png";
 
     cv::imwrite(filepath_img_master_bin, img_master_bin);
 
     NQLog("MarkerFinderPatRec", NQLog::Spam) << "template_matching"
        << ": saved master-binary image to " << filepath_img_master_bin;
+
+    cv::imwrite(filepath_img_templa, img_templa);
+
+    NQLog("MarkerFinderPatRec", NQLog::Spam) << "template_matching"
+       << ": saved template image to " << filepath_img_templa;
 
     cv::imwrite(filepath_img_templa_bin, img_templa_bin);
 
@@ -404,43 +398,16 @@ void MarkerFinderPatRec::template_matching(const cv::Mat& img_master, const cv::
        << ": saved template-binary image to " << filepath_img_templa_bin;
     // -----------
 
-    // Match-method for openCV matchTemplate()
-    // For SQDIFF and SQDIFF_NORMED, the best matches are lower values. For all the other methods, the higher the better.
-    // REF https://docs.opencv.org/2.4/modules/imgproc/doc/object_detection.html?highlight=matchtemplate#matchtemplate
+    // --- Template Matching
+
+    /* Template-Matching method for matchTemplate() routine of OpenCV
+     * For SQDIFF and SQDIFF_NORMED, the best matches are lower values. For all the other methods, the higher the better.
+     * REF https://docs.opencv.org/2.4/modules/imgproc/doc/object_detection.html?highlight=matchtemplate#matchtemplate
+     */
     const int match_method = CV_TM_SQDIFF_NORMED;
     const bool use_minFOM = ((match_method  == CV_TM_SQDIFF) || (match_method == CV_TM_SQDIFF_NORMED));
 
-    // --- PRE-MATCHING
-
-    NQLog("MarkerFinderPatRec", NQLog::Spam) << "template_matching" << ": pre-matching routine";
-
-    {
-      double minVal(0.), maxVal(0.);
-      cv::Point minLoc, maxLoc;
-
-      cv::Mat result_1;
-      result_1.create((img_master_bin.rows-img_templa.rows+1), (img_master_bin.cols-img_templa.cols+1), CV_32FC1);
-
-      cv::matchTemplate(img_master_bin, img_templa_bin, result_1, match_method);
-
-      cv::minMaxLoc(result_1, &minVal, &maxVal, &minLoc, &maxLoc, cv::Mat());
-
-      cv::Point matchLoc_1;
-
-      if(use_minFOM){ matchLoc_1 = minLoc; }
-      else          { matchLoc_1 = maxLoc; }
-
-      NQLog("MarkerFinderPatRec", NQLog::Spam) << "template_matching" << ": pre-matching routine"
-         << ", found matching at point (x=" << matchLoc_1.x << ", y=" << matchLoc_1.y << ")";
-    }
-
-    // ----------------
-
-    // --- POST-MATCHING
-
-    NQLog("MarkerFinderPatRec") << "template_matching" << ": post-matching routine";
-    cv::Point matchLoc_2, matchLoc_final;//!!
-    cv::Mat result_2; //!!
+    NQLog("MarkerFinderPatRec", NQLog::Spam) << "template_matching" << ": initiated matching routine with angular scan";
 
     // First, get theta-rough angle: best guess of central value for finer angular scan
     double theta_rough(-9999.);
@@ -463,12 +430,18 @@ void MarkerFinderPatRec::template_matching(const cv::Mat& img_master, const cv::
         if(update){ best_FOM = i_FOM; theta_rough = i_angle; }
       }
     }
+
+    NQLog("MarkerFinderPatRec", NQLog::Message) << "template_matching" << ": rough estimate of best-angle yields best-theta=" << theta_rough;
     // ----------------
 
-    const double theta_range     = 10.;
-    const double theta_fine_step = 0.25;
+    const double theta_fine_min  = -5.0;
+    const double theta_fine_max  = +5.0;
+    const double theta_fine_step =  0.25;
 
-    const int N_rotations = (2 * int(theta_range/theta_fine_step));
+    NQLog("MarkerFinderPatRec", NQLog::Message) << "template_matching" << ": angular scan parameters"
+       << "(min="<< theta_rough+theta_fine_min << ", max=" << theta_rough+theta_fine_max << ", step=" << theta_fine_step << ")";
+
+    const int N_rotations = (2 * int((theta_fine_max-theta_fine_min) / theta_fine_step));
 
     std::vector<std::pair<double, double> > vec_angleNfom;
     vec_angleNfom.reserve(N_rotations);
@@ -477,7 +450,7 @@ void MarkerFinderPatRec::template_matching(const cv::Mat& img_master, const cv::
     double    best_theta(0.);
     cv::Point best_matchLoc;
 
-    for(double theta_fine=(-0.5*theta_range); theta_fine<(0.5*theta_range); theta_fine += theta_fine_step)
+    for(double theta_fine=theta_fine_min; theta_fine<theta_fine_max; theta_fine += theta_fine_step)
     {
       const unsigned int scan_counter = vec_angleNfom.size();
 
@@ -486,7 +459,7 @@ void MarkerFinderPatRec::template_matching(const cv::Mat& img_master, const cv::
       double i_FOM(0.);
       cv::Point i_matchLoc;
 
-      this->PatRec(i_FOM, i_matchLoc, img_master_bin, img_templa_bin, i_theta, match_method);
+      this->PatRec(i_FOM, i_matchLoc, img_master_bin, img_templa_bin, i_theta, match_method, output_subdir);
 
       const bool update = (scan_counter==0) || (use_minFOM ? (i_FOM < best_FOM) : (i_FOM > best_FOM));
 
@@ -503,7 +476,7 @@ void MarkerFinderPatRec::template_matching(const cv::Mat& img_master, const cv::
          << ": angular scan: [" << scan_counter << "] theta=" << i_theta << ", FOM=" << i_FOM;
     }
 
-    NQLog("MarkerFinderPatRec", NQLog::Spam) << "template_matching"
+    NQLog("MarkerFinderPatRec", NQLog::Message) << "template_matching"
        << ": angular scan completed: best_theta=" << best_theta;
 
     cv::Mat img_master_copy = img_master.clone();
@@ -511,22 +484,34 @@ void MarkerFinderPatRec::template_matching(const cv::Mat& img_master, const cv::
     line(img_master_copy, cv::Point(img_master_copy.cols/2.0, 0), cv::Point(img_master_copy.cols/2.0, img_master_copy.rows ), cv::Scalar(255,255,0), 2, 8, 0);
     line(img_master_copy, cv::Point(0, img_master_copy.rows/2.0), cv::Point(img_master_copy.cols, img_master_copy.rows/2.0 ), cv::Scalar(255,255,0), 2, 8, 0);
 
-    if(fabs(best_theta) < (0.5*theta_range))
+    if(theta_rough == 0.)
     {
       //the circle of radius 4 is meant to *roughly* represent the x,y precision of the x-y motion stage so that the
       //use can see if the patrec results make sense (the top left corner of the marker should be within the cirle)
-      line(img_master_copy,cv::Point(best_matchLoc.x,best_matchLoc.y - 50),cv::Point(best_matchLoc.x + 240,best_matchLoc.y - 50 ),cv::Scalar(0,255,0),2,8,0);
-      putText(img_master_copy, "200 um", cv::Point(best_matchLoc.x, best_matchLoc.y - 100 ), cv::FONT_HERSHEY_SCRIPT_SIMPLEX, 2, cv::Scalar(0,255,0), 3, 8);
-      circle(img_master_copy, best_matchLoc, 4, cv::Scalar(255,0,255), 4, 8, 0 );
-      circle(img_master_copy, best_matchLoc, 4, cv::Scalar(255,0,255), 4, 8, 0 );
-      rectangle(img_master_copy, best_matchLoc, cv::Point( best_matchLoc.x + img_templa_bin.cols, best_matchLoc.y + img_templa_bin.rows ), cv::Scalar(255,0,255), 2, 8, 0);
+      line(img_master_copy, cv::Point(best_matchLoc.x, best_matchLoc.y - 50), cv::Point(best_matchLoc.x + 240, best_matchLoc.y - 50), cv::Scalar(0, 255, 0), 2, 8, 0);
+
+      putText(img_master_copy, "200 um", cv::Point(best_matchLoc.x, best_matchLoc.y - 100), cv::FONT_HERSHEY_SCRIPT_SIMPLEX, 2, cv::Scalar(0, 255, 0), 3, 8);
+
+      circle(img_master_copy, best_matchLoc, 4, cv::Scalar(255, 0, 255), 4, 8, 0);
+
+      rectangle(img_master_copy, best_matchLoc, cv::Point(best_matchLoc.x + img_templa_bin.cols, best_matchLoc.y + img_templa_bin.rows), cv::Scalar(255, 0, 255), 2, 8, 0);
     }
-    else if(fabs(fabs(best_theta)-180.) < (0.5*theta_range))
+    else if(theta_rough == 180.)
     {
-      line(img_master_copy, cv::Point( img_master_copy.cols - best_matchLoc.x - 240 ,  img_master_copy.rows - best_matchLoc.y - 100 ), cv::Point( img_master_copy.cols - best_matchLoc.x,  img_master_copy.rows - best_matchLoc.y - 100 ), cv::Scalar(0,255,0), 2, 8, 0);
-      putText(img_master_copy, "200 um", cv::Point( img_master_copy.cols - best_matchLoc.x - 240, img_master_copy.rows - best_matchLoc.y - 50 ), cv::FONT_HERSHEY_SCRIPT_SIMPLEX, 2, cv::Scalar(0,255,0), 3, 8);
-      circle( img_master_copy,  cv::Point( img_master_copy.cols - best_matchLoc.x ,  img_master_copy.rows - best_matchLoc.y ) , 4, cv::Scalar(255,0,255), 4, 8, 0 );
-      rectangle(img_master_copy, cv::Point( img_master_copy.cols - best_matchLoc.x,  img_master_copy.rows - best_matchLoc.y ),  cv::Point( img_master_copy.cols - best_matchLoc.x  - img_templa_bin.cols,  img_master_copy.rows - best_matchLoc.y - img_templa_bin.rows ) , cv::Scalar(255,0,255), 2, 8, 0 );
+      line(img_master_copy, cv::Point(img_master_copy.cols - best_matchLoc.x - 240, img_master_copy.rows - best_matchLoc.y - 100),
+                            cv::Point(img_master_copy.cols - best_matchLoc.x, img_master_copy.rows - best_matchLoc.y - 100), cv::Scalar(0, 255, 0), 2, 8, 0);
+
+      putText(img_master_copy, "200 um", cv::Point(img_master_copy.cols - best_matchLoc.x - 240, img_master_copy.rows - best_matchLoc.y - 50), cv::FONT_HERSHEY_SCRIPT_SIMPLEX, 2, cv::Scalar(0, 255, 0), 3, 8);
+
+      circle(img_master_copy, cv::Point(img_master_copy.cols - best_matchLoc.x, img_master_copy.rows-best_matchLoc.y), 4, cv::Scalar(255, 0, 255), 4, 8, 0);
+
+      rectangle(img_master_copy, cv::Point(img_master_copy.cols - best_matchLoc.x, img_master_copy.rows - best_matchLoc.y),
+                                 cv::Point(img_master_copy.cols - best_matchLoc.x - img_templa_bin.cols, img_master_copy.rows - best_matchLoc.y - img_templa_bin.rows), cv::Scalar(255, 0, 255), 2, 8, 0);
+    }
+    else
+    {
+      NQLog("MarkerFinderPatRec", NQLog::Warning) << "template_matching"
+         << ": undefined behaviour for rough-theta=" << theta_rough << ", no lines/circles will be displayed on master image copy";
     }
 
     // FOM(angle) plot
@@ -556,7 +541,7 @@ void MarkerFinderPatRec::template_matching(const cv::Mat& img_master, const cv::
       gr_best->Draw("PSAME");
       gr_best->SetName("PatRec_FOM_best");
 
-      const std::string filepath_FOM_base = cacheDirectory1_+"/RotationExtraction";
+      const std::string filepath_FOM_base = output_dir+"/RotationExtraction";
 
       const std::string filepath_FOM_png  = filepath_FOM_base+".png";
       const std::string filepath_FOM_root = filepath_FOM_base+".root";
@@ -569,22 +554,24 @@ void MarkerFinderPatRec::template_matching(const cv::Mat& img_master, const cv::
       gr_best->Write();
       o_file->Close();
 
-      emit updateImage(2, QString::fromStdString(filepath_FOM_png));
+      emit image_path(2, QString::fromStdString(filepath_FOM_png));
     }
     // ---
 
-    const std::string filepath_img_master_copy = cacheDirectory1_+"/PatRec_TM_result.png";
+    const std::string filepath_img_master_copy = output_dir+"/image_master_PatRec.png";
     cv::imwrite(filepath_img_master_copy, img_master_copy);
 
-    emit updateImage(1, QString::fromStdString(filepath_img_master_copy));
-    emit updateImage(3, QString::fromStdString(filepath_img_master_bin));
-    emit updateImage(4, QString::fromStdString(filepath_img_templa_bin));
+    emit image_path(1, QString::fromStdString(filepath_img_master_copy));
+    emit image_path(3, QString::fromStdString(filepath_img_master_bin));
+    emit image_path(4, QString::fromStdString(filepath_img_templa_bin));
 
-    emit foundSensor(1);
+    // update line edits in view
+    emit reportObjectLocation(1, best_matchLoc.x , best_matchLoc.y, best_theta);
 
-    const cv::Rect rect_result = cv::Rect(best_matchLoc, cv::Point(best_matchLoc.x + img_templa_bin.cols, best_matchLoc.y + img_templa_bin.rows));
+    emit PatRec_exitcode(0);
 
-    emit getImageBlur(img_master, rect_result);
+/*
+//    const cv::Rect rect_result = cv::Rect(best_matchLoc, cv::Point(best_matchLoc.x + img_templa_bin.cols, best_matchLoc.y + img_templa_bin.rows));
 
     //work out match location in field of view
     // the origin of the FOV coordinate system is the top left corner
@@ -594,11 +581,10 @@ void MarkerFinderPatRec::template_matching(const cv::Mat& img_master, const cv::
     //matchLoc_x_lab = (best_matchLoc.x +  (img_templa_bin.cols/2) ) * (5.0/img_master.cols); // need to add the current X pos of the lang
     //matchLoc_y_lab = (best_matchLoc.y +  (img_templa_bin.rows/2) ) * (4.0/img_master.rows); // need to add the current Y pos of the lang
 
-    //update line edits in view
-    emit reportObjectLocation(1, best_matchLoc.x , best_matchLoc.y, best_theta);
+*/
 }
 
-void MarkerFinderPatRec::PatRec(double& fom, cv::Point& match_loc, const cv::Mat& img_master_bin, const cv::Mat& img_templa_bin, const double angle, const int match_method) const
+void MarkerFinderPatRec::PatRec(double& fom, cv::Point& match_loc, const cv::Mat& img_master_bin, const cv::Mat& img_templa_bin, const double angle, const int match_method, const std::string& out_dir) const
 {
   // rotated master image
   cv::Mat img_master_bin_rot;
@@ -611,15 +597,18 @@ void MarkerFinderPatRec::PatRec(double& fom, cv::Point& match_loc, const cv::Mat
 
   warpAffine(img_master_bin, img_master_bin_rot, rot_mat, img_master_bin.size(), cv::INTER_CUBIC, cv::BORDER_CONSTANT, avgPixelIntensity);
 
-  const std::string filepath_img_master_bin_rot = cacheDirectory2_+"/Rotation_result_"+std::to_string(angle)+".png";
+  if(out_dir != "")
+  {
+    const std::string filepath_img_master_bin_rot = out_dir+"/image_master_binary_Rotation_"+std::to_string(angle)+".png";
 
-  cv::imwrite(filepath_img_master_bin_rot, img_master_bin_rot);
+    cv::imwrite(filepath_img_master_bin_rot, img_master_bin_rot);
 
-  NQLog("MarkerFinderPatRec", NQLog::Spam) << "PatRec"
-     << ": saved rotated master-binary image to " << filepath_img_master_bin_rot;
+    NQLog("MarkerFinderPatRec", NQLog::Spam) << "PatRec"
+       << ": saved rotated master-binary image to " << filepath_img_master_bin_rot;
+  }
   // -----------
 
-  // matrix with PatRec figures-of-merit
+  // matrix with PatRec Figure-Of-Merit values
   cv::Mat result_mat;
   result_mat.create((img_master_bin.rows-img_templa_bin.rows+1), (img_master_bin.cols-img_templa_bin.cols+1), CV_32FC1);
 

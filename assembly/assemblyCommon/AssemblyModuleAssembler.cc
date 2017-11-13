@@ -188,7 +188,7 @@ AssemblyModuleAssembler::AssemblyModuleAssembler(
   g1->addWidget(w_locate, 2, 0);
 
   connect(w_locate, SIGNAL(finder_mode(int, int)), finder_ , SLOT(run_PatRec(int, int)));
-  connect(finder_ , SIGNAL(foundSensor(int))     , w_locate, SLOT(foundsensor(int)));
+  connect(finder_ , SIGNAL(PatRec_exitcode(int)) , w_locate, SLOT(change_label(int)));
 
   toggle1 = new AssemblyVacuumToggler(this, "Toggle Vacuum");
   g1->addWidget(toggle1, 3, 0);
@@ -215,11 +215,9 @@ AssemblyModuleAssembler::AssemblyModuleAssembler(
 
 
 
-
-
-  connect(w_locate, SIGNAL(sendPosition(int, double, double, double)), this, SLOT(updateText(int, double, double, double)));
-  connect(finder_ , SIGNAL(updateImage(int, QString)), this, SLOT(updateImage(int, QString)));
-  connect(finder_ , SIGNAL(reportObjectLocation(int, double, double, double)), this, SLOT(updateText(int, double, double, double)));
+  connect(w_locate, SIGNAL(sendPosition        (int, double, double, double)), this, SLOT(updateText (int, double, double, double)));
+  connect(finder_ , SIGNAL(image_path          (int, QString))               , this, SLOT(updateImage(int, QString)));
+  connect(finder_ , SIGNAL(reportObjectLocation(int, double, double, double)), this, SLOT(updateText (int, double, double, double)));
 }
 
 void AssemblyModuleAssembler::updateText(int stage, double x, double y, double a)
@@ -798,7 +796,7 @@ LocateWidget::LocateWidget(const QString& label, QWidget* parent) :
   vbox1_->addWidget(radio4_);
   vbox1_->addStretch(1);
   groupBox1_->setLayout(vbox1_);
-    
+
   radio5_ = new QRadioButton(tr("&Demo"));
   radio5_->setChecked(true);
 
@@ -848,16 +846,11 @@ void LocateWidget::execute()
   emit finder_mode(mode_lab, mode_obj);
 }
 
-void LocateWidget::foundsensor(int state)
+void LocateWidget::change_label(const int state)
 {
-  NQLog("LocateWidget", NQLog::Debug) << "foundsensor(" << state << ")";
+  NQLog("LocateWidget", NQLog::Debug) << "change_label(" << state << ")";
 
   if(state == 0)
-  {
-    label_->setText("WAITING");
-    label_->setStyleSheet("QLabel { background-color : orange; color : black; }");
-  }
-  else if(state == 1)
   {
     label_->setText("FOUND MARKER");
     label_->setStyleSheet("QLabel { background-color : green; color : black; }");

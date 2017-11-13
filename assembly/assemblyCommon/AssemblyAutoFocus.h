@@ -58,16 +58,16 @@ class AssemblyAutoFocus : public QWidget
  public slots:
 
   void configure_scan();
-  void make_graph(const QString&);
+  void read_graph(const QString&);
   void updateText(double);
   void go_to_focal_point();
 //!!  void updateImage(const int, const QString&);
 
  signals:
 
-  void run_scan(double,int);
-  void moveRelative(double,double,double,double);
-  void graph_made(const cv::Mat&);
+  void scan_values(const double, const int);
+
+  void graph_found(const cv::Mat&);
 };
 
 #endif // ASSEMBLYAUTOFOCUS_H

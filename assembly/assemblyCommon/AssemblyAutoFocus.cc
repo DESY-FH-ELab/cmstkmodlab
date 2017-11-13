@@ -12,6 +12,7 @@
 
 #include <AssemblyAutoFocus.h>
 #include <nqlogger.h>
+#include <Util.h>
 
 #include <QApplication>
 #include <QFormLayout>
@@ -76,7 +77,7 @@ AssemblyAutoFocus::AssemblyAutoFocus(QWidget* parent) :
 
   QApplication::processEvents();    
 
-  imageView_2_->connectImageProducer(this, SIGNAL(graph_made(const cv::Mat&)));
+  imageView_2_->connectImageProducer(this, SIGNAL(graph_found(const cv::Mat&)));
 
   scrollArea_2_ = new QScrollArea(this);
   scrollArea_2_->setMinimumSize(200, 200);
@@ -142,9 +143,9 @@ void AssemblyAutoFocus::configure_scan()
     const double y_d = y.toInt();
 
     NQLog("AssemblyAutoFocus", NQLog::Debug) << "configure_scan"
-       << ": emitting signal \"run_scan(" << x_d << ", " << y_d << "\")";
+       << ": emitting signal \"scan_values(" << x_d << ", " << y_d << "\")";
 
-    emit run_scan(x_d, y_d);
+    emit scan_values(x_d, y_d);
   }
   else
   {
@@ -155,14 +156,24 @@ void AssemblyAutoFocus::configure_scan()
   }
 }
 
-void AssemblyAutoFocus::make_graph(const QString& img_name)
+void AssemblyAutoFocus::read_graph(const QString& img_path)
 {
-  const cv::Mat img = cv::imread(img_name.toStdString(), CV_LOAD_IMAGE_COLOR);
+  if(Util::IsFile(img_path))
+  {
+    const cv::Mat img = cv::imread(img_path.toStdString(), CV_LOAD_IMAGE_COLOR);
 
-  NQLog("AssemblyAutoFocus", NQLog::Debug) << "make_graph"
-     << ": emitting signal \"graph_made\"";
+    NQLog("AssemblyAutoFocus", NQLog::Debug) << "read_graph"
+       << ": emitting signal \"graph_found\"";
 
-  emit graph_made(img);
+    emit graph_found(img);
+  }
+  else
+  {
+    NQLog("AssemblyAutoFocus", NQLog::Warning) << "read_graph"
+       << ": invalid path to input file, no action taken (file=" << img_path << ")";
+
+    return;
+  }
 }
 
 void AssemblyAutoFocus::updateText(const double z)

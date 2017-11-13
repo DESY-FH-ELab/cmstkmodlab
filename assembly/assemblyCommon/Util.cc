@@ -18,13 +18,14 @@
 #include <QStandardPaths>
 #endif
 #include <QDir>
+#include <QFileInfo>
 
 QString Util::QtCacheDirectory()
 {
  #if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
-   return QDesktopServices::storageLocation(QDesktopServices::CacheLocation);
+  return QDesktopServices::storageLocation(QDesktopServices::CacheLocation);
  #else
-   return QStandardPaths::writableLocation(QStandardPaths::CacheLocation);
+  return QStandardPaths::writableLocation(QStandardPaths::CacheLocation);
  #endif
 }
 
@@ -51,4 +52,16 @@ bool Util::DirectoryExists(const QString& path)
 bool Util::DirectoryExists(const std::string& path)
 {
   return Util::DirectoryExists(QString(path.c_str()));
+}
+
+bool Util::IsFile(const QString& path)
+{
+  const QFileInfo qfileinfo(path);
+
+  return (qfileinfo.exists() && qfileinfo.isFile());
+}
+
+bool Util::IsFile(const std::string& path)
+{
+  return Util::IsFile(QString(path.c_str()));
 }

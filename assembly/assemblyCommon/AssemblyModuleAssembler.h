@@ -266,9 +266,9 @@ class LocateWidget : public QWidget
 
  public slots:
 
-  void foundsensor(int);
-
   void execute();
+
+  void change_label(const int);
 
  signals:
 
