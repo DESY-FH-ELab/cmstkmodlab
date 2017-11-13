@@ -166,7 +166,7 @@ AssemblyModuleAssembler::AssemblyModuleAssembler(
 //  g1->addWidget(header_label,0,0);
 
   // widget: move absolute
-  MoveWidget* w_moveabs = new MoveWidget("Move Absolute", "0,0,0,0");
+  MoveWidget* w_moveabs = new MoveWidget("Move Absolute", "0,0,0");
   w_moveabs->useMoveRelative(false);
   w_moveabs->setToolTip("(1) Moves x,y,z,a stage using moveAbsolute routine (with respect to origin)");
   g1->addWidget(w_moveabs, 0, 0);
@@ -175,7 +175,7 @@ AssemblyModuleAssembler::AssemblyModuleAssembler(
   // ---------------------
 
   // widget: move relative
-  MoveWidget* w_moverel = new MoveWidget("Move Relative", "0,0,0,0");
+  MoveWidget* w_moverel = new MoveWidget("Move Relative", "0,0,0");
   w_moverel->useMoveRelative(true);
   w_moverel->setToolTip("(2) Moves x,y,z,a stage using moveRelative routine (with respect to current position)");
   g1->addWidget(w_moverel, 1, 0);
@@ -696,36 +696,37 @@ MoveWidget::MoveWidget(const QString& label, const QString& default_entry, const
   QWidget(parent),
   moveRelative_(move_relative)
 {
-    layout_ = new QFormLayout(this);
-    this->setLayout(layout_);
+  layout_ = new QFormLayout(this);
+  this->setLayout(layout_);
 
-    button_ = new QPushButton(label, this);
+  button_ = new QPushButton(label, this);
 
-    lineed_ = new QLineEdit();
-    lineed_->setText(default_entry);
-    layout_->addRow(button_, lineed_);
+  lineed_ = new QLineEdit();
+  lineed_->setText(default_entry);
+  layout_->addRow(button_, lineed_);
 
-    connect(button_, SIGNAL(clicked()), this, SLOT(execute()));
+  connect(button_, SIGNAL(clicked()), this, SLOT(execute()));
 }
 
 void MoveWidget::execute()
 {
-  const QString line_entry = this->lineed_->text();
+  QString line_entry = this->lineed_->text();
 
   // parse lineEdit text to get target coordinates
-  const QStringList entries = line_entry.split(",");
+  const QStringList entries = line_entry.remove(" ").split(",");
 
-  if(entries.length() == 4)
+  if((entries.length() == 3) || (entries.length() == 4))
   {
     const double x_d = entries.value(0).toDouble();
     const double y_d = entries.value(1).toDouble();
     const double z_d = entries.value(2).toDouble();
-    const double a_d = entries.value(3).toDouble();
+
+    const double a_d = (entries.length() == 4) ? entries.value(3).toDouble() : 0.0;
 
     if(moveRelative_)
     {
       NQLog("MoveWidget", NQLog::Message) << "execute"
-         << "emitting signal \"moveRelative("
+         << ": emitting signal \"moveRelative("
          << x_d << ", " << y_d << ", " << z_d << ", " << a_d << ")\"";
 
       emit moveRelative(x_d, y_d, z_d, a_d);
@@ -733,7 +734,7 @@ void MoveWidget::execute()
     else
     {
       NQLog("MoveWidget", NQLog::Message) << "execute"
-         << "emitting signal \"moveAbsolute("
+         << ": emitting signal \"moveAbsolute("
          << x_d << ", " << y_d << ", " << z_d << ", " << a_d << ")\"";
 
       emit moveAbsolute(x_d, y_d, z_d, a_d);
@@ -742,7 +743,7 @@ void MoveWidget::execute()
   else
   {
     NQLog("MoveWidget", NQLog::Warning) << "execute"
-       << ": invalid input string format, no action taken";
+       << ": invalid input string format (" << line_entry << "), no action taken";
 
     return;
   }
