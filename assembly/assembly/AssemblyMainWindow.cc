@@ -156,7 +156,7 @@ AssemblyMainWindow::AssemblyMainWindow(const unsigned int camera_ID, QWidget* pa
     /* AUTOMATED-ASSEMBLY VIEW ------------------------------------ */
     const QString tabname_AutoAssembly("Auto Assembly");
 
-    assembleView_ = new AssemblyModuleAssembler(camera_, marker_finder_, motion_model_, tabWidget_);
+    assembleView_ = new AssemblyModuleAssembler(motion_manager_, marker_finder_, tabWidget_);
     tabWidget_->addTab(assembleView_, tabname_AutoAssembly);
 
     NQLog("AssemblyMainWindow", NQLog::Message) << "added view " << tabname_AutoAssembly;
@@ -167,11 +167,10 @@ AssemblyMainWindow::AssemblyMainWindow(const unsigned int camera_ID, QWidget* pa
 
     module_assembler_ = new AssemblyAssembler(motion_model_);
 
-    connect(assembleView_->toggle1, SIGNAL(toggleVacuum(int)), conradManager_, SLOT(toggleVacuum(int)));
+    connect(assembleView_->VacuumToggler(), SIGNAL(toggleVacuum(int))                  , conradManager_                , SLOT(toggleVacuum(int)));
+    connect(conradManager_                , SIGNAL(updateVacuumChannelState(int, bool)), assembleView_->VacuumToggler(), SLOT(updateVacuumChannelState(int, bool)));
 
-//  connect(assembleView_->toggle1, SIGNAL(toggleVacuum(int))                  , assembleView_->toggle1, SLOT(disableVacuumButton()));
-    connect(conradManager_        , SIGNAL(updateVacuumChannelState(int, bool)), assembleView_->toggle1, SLOT(updateVacuumChannelState(int, bool)));
-    connect(this                  , SIGNAL(updateVacuumChannelsStatus())       , conradManager_        , SLOT(updateVacuumChannelsStatus()));
+    connect(this                          , SIGNAL(updateVacuumChannelsStatus())       , conradManager_                , SLOT(updateVacuumChannelsStatus()));
 
     NQLog("AssemblyMainWindow", NQLog::Debug) << "emitting signal \"updateVacuumChannelsStatus\"";
 
@@ -468,7 +467,7 @@ void AssemblyMainWindow::changeState_Alignment(int state)
 
       disconnect(assembleView_     , SIGNAL(launchAlignment     (int, double, double, double)), module_assembler_, SLOT(run_alignment(int, double, double, double)));
       disconnect(module_assembler_ , SIGNAL(acquireImage())                                   , image_ctr_       , SLOT(acquire_image()));
-//      disconnect(motion_model_    , SIGNAL(motionFinished())                                 , module_assembler_, SLOT(launch_next_alignment_step()));
+      disconnect(motion_model_     , SIGNAL(motionFinished())                                 , module_assembler_, SLOT(launch_next_alignment_step()));
       disconnect(module_assembler_ , SIGNAL(moveRelative(double, double, double, double))     , motion_manager_  , SLOT(moveRelative(double, double, double, double)));
       disconnect(marker_finder_    , SIGNAL(reportObjectLocation(int, double, double, double)), module_assembler_, SLOT(run_alignment(int, double, double, double)));
       disconnect(module_assembler_ , SIGNAL(nextAlignmentStep   (int, double, double, double)), module_assembler_, SLOT(run_alignment(int, double, double, double)));

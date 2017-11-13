@@ -16,13 +16,13 @@
 #include <AssemblyUEyeView.h>
 #include <AssemblyVUEyeCamera.h>
 #include <MarkerFinderPatRec.h>
-#include <LStepExpressModel.h>
 #include <LStepExpressMotionManager.h>
 #include <ConradModel.h>
 
 #include <string>
 
 #include <QWidget>
+#include <QString>
 #include <QFormLayout>
 #include <QScrollArea>
 #include <QKeyEvent>
@@ -36,46 +36,7 @@
 
 #include <opencv2/opencv.hpp>
 
-class AssemblyVacuumToggler : public QWidget
-{
-  Q_OBJECT
-
-public:
-    
-  explicit AssemblyVacuumToggler(QWidget *parent = 0, std::string ="test");
-
-  QPushButton* button1;
-  QLineEdit *lineEdit1;
-  //ConradModel * cnrd1;
-
-  std::vector <QRadioButton*> valves;
-  std::vector <QLabel*> labels;
-      
-  QLabel* ql1;
-  QLabel* ql2;
-  QLabel* ql3;
-  QLabel* ql4;
-
-  QRadioButton *radio1;
-  QRadioButton *radio2;
-  QRadioButton *radio3;
-  QRadioButton *radio4;
-    
-  bool state;
-    
-protected:
-    
-public slots:
-  void toggleVacuum();
-  void updateVacuumChannelState(int, bool);
-  void enableVacuumButton();
-  void disableVacuumButton();
-    
-  
-signals:
-  void toggleVacuum(int);
-};
-
+class VacuumWidget;
 
 class AssemblyModuleAssembler : public QWidget
 {
@@ -83,63 +44,56 @@ class AssemblyModuleAssembler : public QWidget
 
  public:
 
-  explicit AssemblyModuleAssembler(AssemblyVUEyeCamera* camera, MarkerFinderPatRec* finder_, LStepExpressModel* lStepExpressModel_, QWidget* parent=0);
-  void connectImageProducer(const QObject* sender, const char* signal);
-  void disconnectImageProducer(const QObject* sender, const char* signal);
+  explicit AssemblyModuleAssembler(LStepExpressMotionManager*, MarkerFinderPatRec*, QWidget* parent=0);
+
+//!!  void    connectImageProducer(const QObject* sender, const char* signal);
+//!!  void disconnectImageProducer(const QObject* sender, const char* signal);
 
   double pickup_position;
-  QLineEdit * lE1;
-  QLineEdit * lE2;
-  QLineEdit * lE3;
-  QLineEdit * lE4;
-  QLineEdit * lE5;
-  QLineEdit * lE6;
 
-  ConradModel * cnrd1;
-
-  AssemblyVUEyeCamera * camera_;
-  AssemblyVacuumToggler* toggle1;  //to connect vacuum signals in MainWindow
+  // to connect vacuum signals in MainWindow
+  VacuumWidget* VacuumToggler() const { return w_vacuum_; }
 
  protected:
 
   void keyReleaseEvent(QKeyEvent *event);
 
-  QScrollArea *scrollArea_1;
-  AssemblyUEyeView *imageView_1;
+  QScrollArea* scrollArea_1_;
+  QScrollArea* scrollArea_2_;
+  QScrollArea* scrollArea_3_;
+  QScrollArea* scrollArea_4_;
 
-  QScrollArea *scrollArea_2;
-  AssemblyUEyeView *imageView_2;
+  AssemblyUEyeView* imageView_1_;
+  AssemblyUEyeView* imageView_2_;
+  AssemblyUEyeView* imageView_3_;
+  AssemblyUEyeView* imageView_4_;
 
-  QScrollArea *scrollArea_3;
-  AssemblyUEyeView *imageView_3;
+  QLineEdit* liedit_1_;
+  QLineEdit* liedit_2_;
+  QLineEdit* liedit_3_;
+  QLineEdit* liedit_4_;
 
-  QScrollArea *scrollArea_4;
-  AssemblyUEyeView *imageView_4;
+  VacuumWidget* w_vacuum_;
 
-  QScrollArea *scrollArea_5;
-  AssemblyUEyeView *imageView_5;
-
-  QScrollArea *scrollArea_6;
-  AssemblyUEyeView *imageView_6;
-
-  cv::Mat image_;
+//!!  cv::Mat image_;
 
  public slots:
 
-  void snapShot();
-  void imageAcquired(const cv::Mat&);
-  void gotoPickup();
+//!!  void snapShot();
+//!!  void imageAcquired(const cv::Mat&);
+
   void updateImage(const int, const QString&);
   void updateText(const int, const double, const double, const double);
   void startMacro(double, double, double, double, double, double, int);
 
  signals:
 
-  void moveAbsolute(double,double,double,double);
+  void launchAlignment(int, double, double, double);
+
   void launchPrecisionEstimation(double, double, double, double, double, double, int);
   void launchSandwichAssembly(double, double, double, double, double, double, double, double, double);
-  void launchAlignment(int, double, double, double );
 };
+// ===========================================================================
 
 class AssemblyPrecisionEstimator : public QWidget
 {
@@ -171,7 +125,7 @@ signals:
     void locateMarker();
     void launchPrecisionEstimation(double, double, double, double, double, double, int);
 };
-
+// ===========================================================================
 
 class AssemblySandwichAssembler : public QWidget
 {
@@ -204,7 +158,7 @@ public:
     void launchSandwichAssembly(double, double, double, double, double, double, double, double, double);
     void launchAlignment(int, double, double, double );
 };
-// ----------
+// ===========================================================================
 
 class MoveWidget : public QWidget
 {
@@ -234,7 +188,7 @@ class MoveWidget : public QWidget
   void moveAbsolute(const double, const double, const double, const double);
   void moveRelative(const double, const double, const double, const double);
 };
-// ----------
+// ===========================================================================
 
 class LocateWidget : public QWidget
 {
@@ -272,11 +226,38 @@ class LocateWidget : public QWidget
 
  signals:
 
-  void finder_mode(int, int);
+  void mode(int, int);
 
   void sendPosition(int, double, double, double);
 };
-// ----------
+// ===========================================================================
+
+class VacuumWidget : public QWidget
+{
+ Q_OBJECT
+
+ public:
+
+  explicit VacuumWidget(const QString&, QWidget* parent=0);
+  virtual ~VacuumWidget() {}
+
+  QPushButton* button_;
+
+  std::vector<QRadioButton*> valves_;
+  std::vector<QLabel*>       labels_;
+
+ public slots:
+
+  void toggleVacuum();
+  void updateVacuumChannelState(const int, const bool);
+  void enableVacuumButton();
+  void disableVacuumButton();
+
+ signals:
+
+  void toggleVacuum(const int);
+};
+// ===========================================================================
 
 //!!class AssemblyMountChecker : public QWidget
 //!!{
@@ -305,7 +286,8 @@ class LocateWidget : public QWidget
 //!!  void locateCorner(int);
 //!!  void reportCornerLocation(int);
 //!!};
-
+//!!// ===========================================================================
+//!!
 //!!class AssemblyAligner : public QWidget
 //!!{
 //!!  Q_OBJECT      
@@ -330,5 +312,6 @@ class LocateWidget : public QWidget
 //!!  void moveRelative(double,double,double,double);
 //!!  void locateSetdowncorner(int);
 //!!};
+//!!// ===========================================================================
 
 #endif // ASSEMBLYMODULEASSEMBLER_H
