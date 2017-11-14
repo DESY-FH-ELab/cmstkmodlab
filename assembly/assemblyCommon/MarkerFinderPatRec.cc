@@ -189,6 +189,9 @@ void MarkerFinderPatRec::update_rough_angles(QString qstr)
       v_rough_angles_.emplace_back(entries.value(i).toDouble());
     }
 
+    NQLog("MarkerFinderPatRec", NQLog::Message) << "update_rough_angles"
+       << ": updated list of rough angles: " << qstr;
+
     NQLog("MarkerFinderPatRec", NQLog::Debug) << "update_rough_angles"
        << ": emitting signal \"rough_angles_updated\"";
 
@@ -211,6 +214,11 @@ void MarkerFinderPatRec::update_angscan_parameters(QString qstr)
   {
     theta_fine_range_ = entries.value(0).toDouble();
     theta_fine_step_  = entries.value(1).toDouble();
+
+    NQLog("MarkerFinderPatRec", NQLog::Message) << "update_angscan_parameters"
+       << ": updated parameters of angular-scan:"
+       << " (theta_fine_range=" << theta_fine_range_
+       << ", theta_fine_step="  << theta_fine_step_ << ")";
 
     NQLog("MarkerFinderPatRec", NQLog::Debug) << "update_angscan_parameters"
        << ": emitting signal \"angscan_parameters_updated\"";
@@ -609,9 +617,9 @@ void MarkerFinderPatRec::template_matching(const cv::Mat& img_master, const cv::
     const std::string filepath_img_master_copy = output_dir+"/image_master_PatRec.png";
     Util::cv_imwrite_png(filepath_img_master_copy, img_master_copy);
 
-    emit image_path(1, QString::fromStdString(filepath_img_master_copy));
-    emit image_path(3, QString::fromStdString(filepath_img_master_bin));
-    emit image_path(4, QString::fromStdString(filepath_img_templa_bin));
+    emit image_mat(1, img_master_copy);
+    emit image_mat(3, img_master_bin);
+    emit image_mat(4, img_templa_bin);
 
     // update line edits in view
     emit reportObjectLocation(1, best_matchLoc.x, best_matchLoc.y, best_theta);

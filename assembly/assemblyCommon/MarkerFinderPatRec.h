@@ -94,6 +94,7 @@ class MarkerFinderPatRec : public QObject
   void run_template_matching(const cv::Mat&, const cv::Mat&, const cv::Mat&, const int);
 
   void image_path(const int, const QString&);
+  void image_mat (const int, const cv::Mat&);
 
   void rough_angles_updated();
   void angscan_parameters_updated();

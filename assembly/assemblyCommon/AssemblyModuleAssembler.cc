@@ -30,6 +30,7 @@
 #include <QPixmap>
 #include <QLabel>
 #include <QApplication>
+#include <QImageReader>
 #include <QPainter>
 
 #include <TGraph.h>
@@ -203,6 +204,7 @@ AssemblyModuleAssembler::AssemblyModuleAssembler(LStepExpressMotionManager* moti
 
   connect(w_patrec, SIGNAL(sendPosition        (int, double, double, double)), this, SLOT(updateText (int, double, double, double)));
   connect(finder  , SIGNAL(image_path          (int, QString))               , this, SLOT(updateImage(int, QString)));
+  connect(finder  , SIGNAL(image_mat           (int, cv::Mat))               , this, SLOT(updateImage(int, cv::Mat)));
   connect(finder  , SIGNAL(reportObjectLocation(int, double, double, double)), this, SLOT(updateText (int, double, double, double)));
   // ---------------------
 
@@ -261,30 +263,49 @@ void AssemblyModuleAssembler::startMacro(double x_meas, double y_meas, double z_
 
 void AssemblyModuleAssembler::updateImage(const int stage, const QString& filename)
 {
-  NQLog("AssemblyModuleAssembler", NQLog::Debug) << "updateImage(" << stage << ", " << filename << ")";
+  NQLog("AssemblyModuleAssembler", NQLog::Debug) << "updateImage(" << stage << ", file=" << filename << ")";
 
   const std::string filename_ss = filename.toUtf8().constData();
 
   const cv::Mat img_gs = cv::imread(filename_ss, CV_LOAD_IMAGE_UNCHANGED);
 
+  const QImageReader img_reader(QString::fromStdString(filename_ss));
+
+  if(img_reader.format() == "png")
+  {
+    cv::Mat img_1;
+    cv::cvtColor(img_gs, img_1, CV_RGB2BGR);
+
+    this->updateImage(stage, img_1);
+  }
+  else
+  {
+    this->updateImage(stage, img_gs);
+  }
+}
+
+void AssemblyModuleAssembler::updateImage(const int stage, const cv::Mat& img)
+{
+  NQLog("AssemblyModuleAssembler", NQLog::Debug) << "updateImage(" << stage << ", image)";
+
   if(stage == 1)
   {
-    imageView_1_->setImage(img_gs);
+    imageView_1_->setImage(img);
 //    imageView_1_->setZoomFactor(0.3);
   }
   else if(stage == 2)
   {
-    imageView_2_->setImage(img_gs);
+    imageView_2_->setImage(img);
     imageView_2_->setZoomFactor(0.5);
   }
   else if(stage == 3)
   {
-    imageView_3_->setImage(img_gs);
+    imageView_3_->setImage(img);
 //    imageView_3_->setZoomFactor(0.5);
   }
   else if(stage == 4)
   {
-    imageView_4_->setImage(img_gs);
+    imageView_4_->setImage(img);
 //    imageView_4_->setZoomFactor(0.5);
   }
 }

@@ -75,6 +75,8 @@ class AssemblyModuleAssembler : public QWidget
  public slots:
 
   void updateImage(const int, const QString&);
+  void updateImage(const int, const cv::Mat&);
+
   void updateText(const int, const double, const double, const double);
   void startMacro(double, double, double, double, double, double, int);
 
