@@ -51,6 +51,11 @@ class MarkerFinderPatRec : public QObject
   bool updated_image_master_;
   bool updated_image_master_binary_;
 
+  double theta_fine_range_;
+  double theta_fine_step_;
+
+  std::vector<double> v_rough_angles_;
+
   void PatRec(double&, cv::Point&, const cv::Mat&, const cv::Mat&, const double, const int, const std::string& out_dir="") const;
 
   cv::Point2f RotatePoint(const cv::Point2f&, const double) const;
@@ -68,6 +73,9 @@ class MarkerFinderPatRec : public QObject
   void update_binary_image();
 
   cv::Mat get_binary_image(const cv::Mat&, const int) const;
+
+  void update_rough_angles      (QString);
+  void update_angscan_parameters(QString);
 
   void run_PatRec(const int, const int);
 
@@ -87,11 +95,12 @@ class MarkerFinderPatRec : public QObject
 
   void image_path(const int, const QString&);
 
-  void PatRec_exitcode(const int);
-
-//!!  void locatePickupCorner_templateMatching(cv::Mat, cv::Mat);
+  void rough_angles_updated();
+  void angscan_parameters_updated();
 
   void reportObjectLocation(int, double, double, double);
+
+  void PatRec_exitcode(const int);
 };
 
 #endif // MARKERFINDERPATREC_H

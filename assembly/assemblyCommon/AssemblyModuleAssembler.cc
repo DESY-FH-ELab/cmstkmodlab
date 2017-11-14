@@ -187,15 +187,21 @@ AssemblyModuleAssembler::AssemblyModuleAssembler(LStepExpressMotionManager* moti
   connect(w_moverel, SIGNAL(moveRelative(double, double, double, double)), motion_manager, SLOT(moveRelative(double, double, double, double)));
   // ---------------------
 
-  // widget: locate-object (Pattern Recognition)
-  LocateWidget* w_locate = new LocateWidget("Standalone Pattern Recognition", this);
-  w_locate->setToolTip("(3) Runs PatRec routine to deduce and report sensor (x,y,z,phi) position");
-  g1->addWidget(w_locate, 2, 0);
+  // widget: Pattern Recognition
+  PatRecWidget* w_patrec = new PatRecWidget("Standalone Pattern Recognition", this);
+  w_patrec->setToolTip("(3) Runs PatRec routine to deduce and report sensor (x,y,z,phi) position");
+  g1->addWidget(w_patrec, 2, 0);
 
-  connect(w_locate, SIGNAL(mode(int, int))       , finder  , SLOT(run_PatRec(int, int)));
-  connect(finder  , SIGNAL(PatRec_exitcode(int)) , w_locate, SLOT(change_label(int)));
+  connect(w_patrec, SIGNAL(mode(int, int))       , finder  , SLOT(run_PatRec(int, int)));
+  connect(finder  , SIGNAL(PatRec_exitcode(int)) , w_patrec, SLOT(change_label(int)));
 
-  connect(w_locate, SIGNAL(sendPosition        (int, double, double, double)), this, SLOT(updateText (int, double, double, double)));
+  finder->update_rough_angles      ( w_patrec->widget_angrough()->get_input_string() );
+  finder->update_angscan_parameters( w_patrec->widget_angscanp()->get_input_string() );
+
+  connect(w_patrec->widget_angrough(), SIGNAL(input_string(QString)), finder, SLOT(update_rough_angles      (QString)));
+  connect(w_patrec->widget_angscanp(), SIGNAL(input_string(QString)), finder, SLOT(update_angscan_parameters(QString)));
+
+  connect(w_patrec, SIGNAL(sendPosition        (int, double, double, double)), this, SLOT(updateText (int, double, double, double)));
   connect(finder  , SIGNAL(image_path          (int, QString))               , this, SLOT(updateImage(int, QString)));
   connect(finder  , SIGNAL(reportObjectLocation(int, double, double, double)), this, SLOT(updateText (int, double, double, double)));
   // ---------------------
@@ -283,69 +289,34 @@ void AssemblyModuleAssembler::updateImage(const int stage, const QString& filena
   }
 }
 
-//!!void AssemblyModuleAssembler::connectImageProducer(const QObject* sender,
-//!!                                                   const char* signal)
-//!!{
-//!!  NQLog("AssemblyModuleAssembler") << ":connectImageProducer";
-//!!
-//!!  imageView_1->connectImageProducer(sender, signal);
-//!!
-//!!  connect(sender, signal, this, SLOT(imageAcquired(const cv::Mat&)));
-//!!}
-//!!
-//!!void AssemblyModuleAssembler::disconnectImageProducer(const QObject* sender,
-//!!                                                      const char* signal)
-//!!{
-//!!  NQLog("AssemblyModuleAssembler") << ":disconnectImageProducer";
-//!!
-//!!  imageView_1->disconnectImageProducer(sender, signal);
-//!!
-//!!  disconnect(sender, signal, this, SLOT(imageAcquired(const cv::Mat&)));
-//!!}
-//!!
-//!!void AssemblyModuleAssembler::snapShot()
-//!!{
-//!!   NQLog("AssemblyModuleAssembler") << ":snapShot()";
-//!!
-//!!  if (image_.rows==0) return;
-//!!
-//!!  QString filename = QFileDialog::getSaveFileName(this, "save image", ".", "*.png");
-//!!  if (filename.isNull() || filename.isEmpty()) return;
-//!!
-//!!  if (!filename.endsWith(".png")) filename += ".png";
-//!!
-//!!  cv::imwrite(filename.toStdString(), image_);
-//!!}
-//!!
-//!!void AssemblyModuleAssembler::imageAcquired(const cv::Mat& newImage)
-//!!{
-//!!  NQLog("AssemblyModuleAssembler") << ":imageAcquired";
-//!!
-//!!  newImage.copyTo(image_);
-//!!}
-
 void AssemblyModuleAssembler::keyReleaseEvent(QKeyEvent * event)
 {
-  if (!(event->modifiers() & Qt::ShiftModifier)) {
-    switch (event->key()) {
-    case Qt::Key_0:
-      //      imageView_1->setZoomFactor(0.25);
-      event->accept();
-      break;
-    case Qt::Key_1:
-      //imageView_1->setZoomFactor(1.00);
-      event->accept();
-      break;
-    case Qt::Key_Plus:
-      //imageView_1->increaseZoomFactor();
-      event->accept();
-      break;
-    case Qt::Key_Minus:
-      //imageView_1->decreaseZoomFactor();
-      event->accept();
-      break;
-    default:
-      break;
+  if(!(event->modifiers() & Qt::ShiftModifier))
+  {
+    switch(event->key())
+    {
+      case Qt::Key_0:
+//        imageView_1->setZoomFactor(0.25);
+        event->accept();
+        break;
+
+      case Qt::Key_1:
+//        imageView_1->setZoomFactor(1.00);
+        event->accept();
+        break;
+
+      case Qt::Key_Plus:
+//        imageView_1->increaseZoomFactor();
+        event->accept();
+        break;
+
+      case Qt::Key_Minus:
+//        imageView_1->decreaseZoomFactor();
+        event->accept();
+        break;
+
+      default:
+        break;
     }
   }
 }
@@ -617,7 +588,37 @@ void MoveWidget::execute()
 }
 // ===========================================================================
 
-LocateWidget::LocateWidget(const QString& label, QWidget* parent) :
+StringWidget::StringWidget(const QString& label, const QString& default_entry, QWidget* parent) : QWidget(parent)
+{
+  layout_ = new QFormLayout(this);
+  this->setLayout(layout_);
+
+  button_ = new QPushButton(label, this);
+
+  lineed_ = new QLineEdit();
+  lineed_->setText(default_entry);
+  layout_->addRow(button_, lineed_);
+
+  connect(button_, SIGNAL(clicked()), this, SLOT(execute()));
+}
+
+QString StringWidget::get_input_string() const
+{
+  return this->lineed_->text();
+}
+
+void StringWidget::execute()
+{
+  const QString line_entry = this->get_input_string();
+
+  NQLog("StringWidget", NQLog::Debug) << "execute"
+     << ": emitting signal \"input_string(" << line_entry << ")\"";
+
+  emit input_string(line_entry);
+}
+// ===========================================================================
+
+PatRecWidget::PatRecWidget(const QString& label, QWidget* parent) :
   QWidget(parent),
 
   layout_(0),
@@ -636,14 +637,20 @@ LocateWidget::LocateWidget(const QString& label, QWidget* parent) :
   radio6_(0),
 
   vbox1_(0),
-  vbox2_(0)
+  vbox2_(0),
+
+  sw_angrough_(0),
+  sw_angscanp_(0)
 {
-  layout_ = new QGridLayout(this);
+  layout_ = new QFormLayout(this);
   this->setLayout(layout_);
+
+  QGridLayout*    layout_1 = new QGridLayout();
+  layout_->addRow(layout_1);
 
   button_ = new QPushButton(label, this);
   button_->setEnabled(true);
-  layout_->addWidget(button_, 0, 0);
+  layout_1->addWidget(button_, 0, 0);
 
   groupBox1_ = new QGroupBox(tr("Object"));
   groupBox2_ = new QGroupBox(tr("Mode"));
@@ -676,8 +683,8 @@ LocateWidget::LocateWidget(const QString& label, QWidget* parent) :
 
   groupBox2_->setLayout(vbox2_);
 
-  layout_->addWidget(groupBox1_, 1, 0);
-  layout_->addWidget(groupBox2_, 1, 1);
+  layout_1->addWidget(groupBox1_, 1, 0);
+  layout_1->addWidget(groupBox2_, 1, 1);
 
   QPixmap pixmap(100, 100);
   pixmap.fill(QColor("transparent"));
@@ -687,12 +694,25 @@ LocateWidget::LocateWidget(const QString& label, QWidget* parent) :
   label_->setText(" WAITING");
   label_->setStyleSheet("QLabel { background-color : orange; color : black; }");
 
-  layout_->addWidget(label_, 0, 1);
+  layout_1->addWidget(label_, 0, 1);
+
+  // PatRec: angular analysis configuration
+  QFormLayout*    layout_2 = new QFormLayout();
+  layout_->addRow(layout_2);
+
+  // widget: PatRec rough angles
+  sw_angrough_ = new StringWidget("Rough Angles (list)", "0,180");
+  layout_2->addRow(sw_angrough_);
+
+  // widget: PatRec angular-scan parameters
+  sw_angscanp_ = new StringWidget("Ang-Scan parameters (fine-range, fine-step)", "5,0.25");
+  layout_2->addRow(sw_angscanp_);
+  // ---------------------
 
   connect(button_, SIGNAL(clicked()), this, SLOT(execute()));
 }
 
-void LocateWidget::execute()
+void PatRecWidget::execute()
 {
   int mode_lab(0), mode_obj(0);
 
@@ -704,15 +724,15 @@ void LocateWidget::execute()
   if     (radio5_->isChecked()){ mode_lab = 0; }
   else if(radio6_->isChecked()){ mode_lab = 1; }
 
-  NQLog("LocateWidget", NQLog::Debug) << "execute"
+  NQLog("PatRecWidget", NQLog::Debug) << "execute"
      << ": emitting signal \"mode(" << mode_lab << ", " << mode_obj << ")\"";
 
   emit mode(mode_lab, mode_obj);
 }
 
-void LocateWidget::change_label(const int state)
+void PatRecWidget::change_label(const int state)
 {
-  NQLog("LocateWidget", NQLog::Debug) << "change_label(" << state << ")";
+  NQLog("PatRecWidget", NQLog::Debug) << "change_label(" << state << ")";
 
   if(state == 0)
   {

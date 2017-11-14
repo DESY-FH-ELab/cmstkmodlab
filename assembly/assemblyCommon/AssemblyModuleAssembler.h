@@ -46,9 +46,6 @@ class AssemblyModuleAssembler : public QWidget
 
   explicit AssemblyModuleAssembler(LStepExpressMotionManager*, MarkerFinderPatRec*, QWidget* parent=0);
 
-//!!  void    connectImageProducer(const QObject* sender, const char* signal);
-//!!  void disconnectImageProducer(const QObject* sender, const char* signal);
-
   double pickup_position;
 
   // to connect vacuum signals in MainWindow
@@ -75,12 +72,7 @@ class AssemblyModuleAssembler : public QWidget
 
   VacuumWidget* w_vacuum_;
 
-//!!  cv::Mat image_;
-
  public slots:
-
-//!!  void snapShot();
-//!!  void imageAcquired(const cv::Mat&);
 
   void updateImage(const int, const QString&);
   void updateText(const int, const double, const double, const double);
@@ -160,6 +152,33 @@ public:
 };
 // ===========================================================================
 
+class StringWidget : public QWidget
+{
+ Q_OBJECT
+
+ public:
+
+  explicit StringWidget(const QString&, const QString&, QWidget* parent=0);
+  virtual ~StringWidget() {}
+
+  QString get_input_string() const;
+
+ protected:
+
+  QFormLayout* layout_;
+  QPushButton* button_;
+  QLineEdit*   lineed_;
+
+ public slots:
+
+  void execute();
+
+ signals:
+
+  void input_string(QString);
+};
+// ===========================================================================
+
 class MoveWidget : public QWidget
 {
  Q_OBJECT
@@ -190,18 +209,21 @@ class MoveWidget : public QWidget
 };
 // ===========================================================================
 
-class LocateWidget : public QWidget
+class PatRecWidget : public QWidget
 {
  Q_OBJECT
 
  public:
 
-  explicit LocateWidget(const QString&, QWidget* parent=0);
-  virtual ~LocateWidget() {}
+  explicit PatRecWidget(const QString&, QWidget* parent=0);
+  virtual ~PatRecWidget() {}
+
+  const StringWidget* widget_angrough() { return sw_angrough_; }
+  const StringWidget* widget_angscanp() { return sw_angscanp_; }
 
  protected:
 
-  QGridLayout* layout_;
+  QFormLayout* layout_;
   QPushButton* button_;
   QLineEdit*   lineed_;
   QLabel*      label_;
@@ -217,6 +239,9 @@ class LocateWidget : public QWidget
 
   QVBoxLayout* vbox1_;
   QVBoxLayout* vbox2_;
+
+  StringWidget* sw_angrough_;
+  StringWidget* sw_angscanp_;
 
  public slots:
 

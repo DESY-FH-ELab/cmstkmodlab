@@ -37,8 +37,13 @@ MarkerFinderPatRec::MarkerFinderPatRec(const QString& output_dir_path, const QSt
 
   updated_threshold_(false),
   updated_image_master_(false),
-  updated_image_master_binary_(false)
+  updated_image_master_binary_(false),
+
+  theta_fine_range_(1.0),
+  theta_fine_step_ (0.1)
 {
+  v_rough_angles_.clear();
+
   // connections
   connect(this, SIGNAL(run_template_matching(const cv::Mat&, const cv::Mat&, const cv::Mat&, const int)),
           this, SLOT  (    template_matching(const cv::Mat&, const cv::Mat&, const cv::Mat&, const int)));
@@ -169,6 +174,56 @@ void MarkerFinderPatRec::delete_binary_image()
   if(updated_image_master_binary_){ updated_image_master_binary_ = false; }
 
   return;
+}
+
+void MarkerFinderPatRec::update_rough_angles(QString qstr)
+{
+  const QStringList entries = qstr.remove(" ").split(",");
+
+  if(entries.length() > 0)
+  {
+    v_rough_angles_.clear();
+
+    for(int i=0; i<entries.length(); ++i)
+    {
+      v_rough_angles_.emplace_back(entries.value(i).toDouble());
+    }
+
+    NQLog("MarkerFinderPatRec", NQLog::Debug) << "update_rough_angles"
+       << ": emitting signal \"rough_angles_updated\"";
+
+    emit rough_angles_updated();
+  }
+  else
+  {
+    NQLog("MarkerFinderPatRec", NQLog::Warning) << "update_rough_angles"
+       << ": input string with invalid format (" << qstr << "), no action taken";
+
+    return;
+  }
+}
+
+void MarkerFinderPatRec::update_angscan_parameters(QString qstr)
+{
+  const QStringList entries = qstr.remove(" ").split(",");
+
+  if(entries.length() == 2)
+  {
+    theta_fine_range_ = entries.value(0).toDouble();
+    theta_fine_step_  = entries.value(1).toDouble();
+
+    NQLog("MarkerFinderPatRec", NQLog::Debug) << "update_angscan_parameters"
+       << ": emitting signal \"angscan_parameters_updated\"";
+
+    emit angscan_parameters_updated();
+  }
+  else
+  {
+    NQLog("MarkerFinderPatRec", NQLog::Warning) << "update_angscan_parameters"
+       << ": input string with invalid format (" << qstr << "), no action taken";
+
+    return;
+  }
 }
 
 void MarkerFinderPatRec::run_PatRec(const int mode_lab, const int mode_obj)
@@ -383,7 +438,7 @@ void MarkerFinderPatRec::template_matching(const cv::Mat& img_master, const cv::
     const std::string filepath_img_templa     = output_dir+"/image_template.png";
     const std::string filepath_img_templa_bin = output_dir+"/image_template_binary.png";
 
-    Util::cv_imwrite_png(filepath_img_master_bin, img_master_bin);
+    cv::imwrite(filepath_img_master_bin, img_master_bin);
 
     NQLog("MarkerFinderPatRec", NQLog::Spam) << "template_matching"
        << ": saved master-binary image to " << filepath_img_master_bin;
@@ -393,7 +448,7 @@ void MarkerFinderPatRec::template_matching(const cv::Mat& img_master, const cv::
     NQLog("MarkerFinderPatRec", NQLog::Spam) << "template_matching"
        << ": saved template image to " << filepath_img_templa;
 
-    Util::cv_imwrite_png(filepath_img_templa_bin, img_templa_bin);
+    cv::imwrite(filepath_img_templa_bin, img_templa_bin);
 
     NQLog("MarkerFinderPatRec", NQLog::Spam) << "template_matching"
        << ": saved template-binary image to " << filepath_img_templa_bin;
@@ -413,13 +468,13 @@ void MarkerFinderPatRec::template_matching(const cv::Mat& img_master, const cv::
     // First, get theta-rough angle: best guess of central value for finer angular scan
     double theta_rough(-9999.);
 
-    const std::vector<double> v_test_angles({0., 180.});
+    if(v_rough_angles_.size() > 0)
     {
       double best_FOM(0.);
 
-      for(unsigned int i=0; i<v_test_angles.size(); ++i)
+      for(unsigned int i=0; i<v_rough_angles_.size(); ++i)
       {
-        double i_angle = v_test_angles.at(i);
+        double i_angle = v_rough_angles_.at(i);
 
         double i_FOM(0.);
         cv::Point i_matchLoc;
@@ -431,13 +486,20 @@ void MarkerFinderPatRec::template_matching(const cv::Mat& img_master, const cv::
         if(update){ best_FOM = i_FOM; theta_rough = i_angle; }
       }
     }
+    else
+    {
+      NQLog("MarkerFinderPatRec", NQLog::Critical) << "template_matching"
+         << ": empty list of rough angles, stopping Pattern Recognition";
+
+      return;
+    }
 
     NQLog("MarkerFinderPatRec", NQLog::Message) << "template_matching" << ": rough estimate of best-angle yields best-theta=" << theta_rough;
     // ----------------
 
-    const double theta_fine_min  = -5.0;
-    const double theta_fine_max  = +5.0;
-    const double theta_fine_step =  0.25;
+    const double theta_fine_min  = -1.0 * theta_fine_range_;
+    const double theta_fine_max  = +1.0 * theta_fine_range_;
+    const double theta_fine_step =        theta_fine_step_;
 
     NQLog("MarkerFinderPatRec", NQLog::Message) << "template_matching" << ": angular scan parameters"
        << "(min="<< theta_rough+theta_fine_min << ", max=" << theta_rough+theta_fine_max << ", step=" << theta_fine_step << ")";
@@ -602,7 +664,7 @@ void MarkerFinderPatRec::PatRec(double& fom, cv::Point& match_loc, const cv::Mat
   {
     const std::string filepath_img_master_bin_rot = out_dir+"/image_master_binary_Rotation_"+std::to_string(angle)+".png";
 
-    Util::cv_imwrite_png(filepath_img_master_bin_rot, img_master_bin_rot);
+    cv::imwrite(filepath_img_master_bin_rot, img_master_bin_rot);
 
     NQLog("MarkerFinderPatRec", NQLog::Spam) << "PatRec"
        << ": saved rotated master-binary image to " << filepath_img_master_bin_rot;
