@@ -16,6 +16,7 @@
 #include <Util.h>
 
 #include <iostream>
+#include <fstream>
 #include <memory>
 
 #include <TFile.h>
@@ -382,17 +383,17 @@ void MarkerFinderPatRec::template_matching(const cv::Mat& img_master, const cv::
     const std::string filepath_img_templa     = output_dir+"/image_template.png";
     const std::string filepath_img_templa_bin = output_dir+"/image_template_binary.png";
 
-    cv::imwrite(filepath_img_master_bin, img_master_bin);
+    Util::cv_imwrite_png(filepath_img_master_bin, img_master_bin);
 
     NQLog("MarkerFinderPatRec", NQLog::Spam) << "template_matching"
        << ": saved master-binary image to " << filepath_img_master_bin;
 
-    cv::imwrite(filepath_img_templa, img_templa);
+    Util::cv_imwrite_png(filepath_img_templa, img_templa);
 
     NQLog("MarkerFinderPatRec", NQLog::Spam) << "template_matching"
        << ": saved template image to " << filepath_img_templa;
 
-    cv::imwrite(filepath_img_templa_bin, img_templa_bin);
+    Util::cv_imwrite_png(filepath_img_templa_bin, img_templa_bin);
 
     NQLog("MarkerFinderPatRec", NQLog::Spam) << "template_matching"
        << ": saved template-binary image to " << filepath_img_templa_bin;
@@ -479,40 +480,25 @@ void MarkerFinderPatRec::template_matching(const cv::Mat& img_master, const cv::
     NQLog("MarkerFinderPatRec", NQLog::Message) << "template_matching"
        << ": angular scan completed: best_theta=" << best_theta;
 
+    // copy of master image
     cv::Mat img_master_copy = img_master.clone();
 
-    line(img_master_copy, cv::Point(img_master_copy.cols/2.0, 0), cv::Point(img_master_copy.cols/2.0, img_master_copy.rows ), cv::Scalar(255,255,0), 2, 8, 0);
-    line(img_master_copy, cv::Point(0, img_master_copy.rows/2.0), cv::Point(img_master_copy.cols, img_master_copy.rows/2.0 ), cv::Scalar(255,255,0), 2, 8, 0);
+    // drawings on top of master image copy ---
+//    line(img_master_copy, cv::Point(   img_master_copy.cols/2.0, 0), cv::Point(img_master_copy.cols/2.0, img_master_copy.rows    ), cv::Scalar(255,255,0), 2, 8, 0);
+//    line(img_master_copy, cv::Point(0, img_master_copy.rows/2.0   ), cv::Point(img_master_copy.cols    , img_master_copy.rows/2.0), cv::Scalar(255,255,0), 2, 8, 0);
 
-    if(theta_rough == 0.)
-    {
-      //the circle of radius 4 is meant to *roughly* represent the x,y precision of the x-y motion stage so that the
-      //use can see if the patrec results make sense (the top left corner of the marker should be within the cirle)
-      line(img_master_copy, cv::Point(best_matchLoc.x, best_matchLoc.y - 50), cv::Point(best_matchLoc.x + 240, best_matchLoc.y - 50), cv::Scalar(0, 255, 0), 2, 8, 0);
+    // scale label
+    line   (img_master_copy,           cv::Point(img_master_copy.cols-300, img_master_copy.rows- 50), cv::Point(img_master_copy.cols-50, img_master_copy.rows-50), cv::Scalar(0,255,0), 2, 8, 0);
+    putText(img_master_copy, "200 um", cv::Point(img_master_copy.cols-300, img_master_copy.rows-100), cv::FONT_HERSHEY_SCRIPT_SIMPLEX, 2, cv::Scalar(0,255,0), 3, 8);
 
-      putText(img_master_copy, "200 um", cv::Point(best_matchLoc.x, best_matchLoc.y - 100), cv::FONT_HERSHEY_SCRIPT_SIMPLEX, 2, cv::Scalar(0, 255, 0), 3, 8);
+    this->draw_RotatedRect(img_master_copy, best_matchLoc, img_templa_bin.cols, img_templa_bin.rows, best_theta, cv::Scalar(0,0,255));
 
-      circle(img_master_copy, best_matchLoc, 4, cv::Scalar(255, 0, 255), 4, 8, 0);
-
-      rectangle(img_master_copy, best_matchLoc, cv::Point(best_matchLoc.x + img_templa_bin.cols, best_matchLoc.y + img_templa_bin.rows), cv::Scalar(255, 0, 255), 2, 8, 0);
-    }
-    else if(theta_rough == 180.)
-    {
-      line(img_master_copy, cv::Point(img_master_copy.cols - best_matchLoc.x - 240, img_master_copy.rows - best_matchLoc.y - 100),
-                            cv::Point(img_master_copy.cols - best_matchLoc.x, img_master_copy.rows - best_matchLoc.y - 100), cv::Scalar(0, 255, 0), 2, 8, 0);
-
-      putText(img_master_copy, "200 um", cv::Point(img_master_copy.cols - best_matchLoc.x - 240, img_master_copy.rows - best_matchLoc.y - 50), cv::FONT_HERSHEY_SCRIPT_SIMPLEX, 2, cv::Scalar(0, 255, 0), 3, 8);
-
-      circle(img_master_copy, cv::Point(img_master_copy.cols - best_matchLoc.x, img_master_copy.rows-best_matchLoc.y), 4, cv::Scalar(255, 0, 255), 4, 8, 0);
-
-      rectangle(img_master_copy, cv::Point(img_master_copy.cols - best_matchLoc.x, img_master_copy.rows - best_matchLoc.y),
-                                 cv::Point(img_master_copy.cols - best_matchLoc.x - img_templa_bin.cols, img_master_copy.rows - best_matchLoc.y - img_templa_bin.rows), cv::Scalar(255, 0, 255), 2, 8, 0);
-    }
-    else
-    {
-      NQLog("MarkerFinderPatRec", NQLog::Warning) << "template_matching"
-         << ": undefined behaviour for rough-theta=" << theta_rough << ", no lines/circles will be displayed on master image copy";
-    }
+    /* the circle of radius 4 is meant to *roughly* represent the x,y precision of the x-y motion stage
+     * so that the user can see if the patrec results make sense
+     * (the top left corner of the marker should be within the cirle)
+     */
+    circle(img_master_copy, best_matchLoc, 4, cv::Scalar(255,0,0), 4, 8, 0);
+    // ----------------------------------------
 
     // FOM(angle) plot
     if(vec_angleNfom.size() > 0)
@@ -559,14 +545,29 @@ void MarkerFinderPatRec::template_matching(const cv::Mat& img_master, const cv::
     // ---
 
     const std::string filepath_img_master_copy = output_dir+"/image_master_PatRec.png";
-    cv::imwrite(filepath_img_master_copy, img_master_copy);
+    Util::cv_imwrite_png(filepath_img_master_copy, img_master_copy);
 
     emit image_path(1, QString::fromStdString(filepath_img_master_copy));
     emit image_path(3, QString::fromStdString(filepath_img_master_bin));
     emit image_path(4, QString::fromStdString(filepath_img_templa_bin));
 
     // update line edits in view
-    emit reportObjectLocation(1, best_matchLoc.x , best_matchLoc.y, best_theta);
+    emit reportObjectLocation(1, best_matchLoc.x, best_matchLoc.y, best_theta);
+
+    // text output file -
+    std::ofstream txtfile(output_dir+"/PatRec_results.txt");
+    if(txtfile.is_open())
+    {
+      txtfile << "# best_matchLoc.x best_matchLoc.y best_theta\n";
+
+      txtfile << best_matchLoc.x << " " << best_matchLoc.y << " " << best_theta << std::endl;
+
+      txtfile.close();
+    }
+
+    NQLog("MarkerFinderPatRec", NQLog::Spam) << "template_matching"
+      << ": created output file: " << output_dir+"/PatRec_results.txt";
+    // ------------------
 
     emit PatRec_exitcode(0);
 
@@ -601,7 +602,7 @@ void MarkerFinderPatRec::PatRec(double& fom, cv::Point& match_loc, const cv::Mat
   {
     const std::string filepath_img_master_bin_rot = out_dir+"/image_master_binary_Rotation_"+std::to_string(angle)+".png";
 
-    cv::imwrite(filepath_img_master_bin_rot, img_master_bin_rot);
+    Util::cv_imwrite_png(filepath_img_master_bin_rot, img_master_bin_rot);
 
     NQLog("MarkerFinderPatRec", NQLog::Spam) << "PatRec"
        << ": saved rotated master-binary image to " << filepath_img_master_bin_rot;
@@ -624,6 +625,53 @@ void MarkerFinderPatRec::PatRec(double& fom, cv::Point& match_loc, const cv::Mat
   if(use_minFOM){ match_loc = minLoc; fom = minVal; }
   else          { match_loc = maxLoc; fom = maxVal; }
   // -----------
+
+  // convert match-loc of rotated  master image
+  // to      match-loc in original master image
+  match_loc = this->RotatePoint(src_center, match_loc, angle);
+
+  return;
+}
+
+cv::Point2f MarkerFinderPatRec::RotatePoint(const cv::Point2f& p, const double deg) const
+{
+  const double rad = deg * (M_PI/180.);
+
+  const float x = std::cos(rad) * p.x - std::sin(rad) * p.y;
+  const float y = std::sin(rad) * p.x + std::cos(rad) * p.y;
+
+  const cv::Point2f rot_p(x, y);
+  return rot_p;
+}
+
+cv::Point2f MarkerFinderPatRec::RotatePoint(const cv::Point2f& cen_pt, const cv::Point2f& p, const double deg) const
+{
+  const cv::Point2f trans_pt = p - cen_pt;
+  const cv::Point2f rot_pt   = this->RotatePoint(trans_pt, deg);
+  const cv::Point2f fin_pt   = rot_pt + cen_pt;
+
+  return fin_pt;
+}
+
+void MarkerFinderPatRec::draw_RotatedRect(cv::Mat& image, const cv::Point& orig, const double rect_size_x, const double rect_size_y, const double angle, const cv::Scalar& rect_color) const
+{
+  const cv::Point2f orig2f(orig.x, orig.y);
+
+  const cv::RotatedRect rot_rect(orig2f, cv::Size2f(rect_size_x, rect_size_y), angle);
+
+  cv::Point2f vertices_0[4];
+  rot_rect.points(vertices_0);
+
+  cv::Point2f vertices[4];
+  for(unsigned int i=0; i<4; ++i)
+  {
+    vertices[i] = vertices_0[i] + (orig2f - vertices_0[1]);
+  }
+
+  for(unsigned int i=0; i<4; ++i)
+  {
+    line(image, vertices[i], vertices[(i+1)%4], rect_color, 2, 8, 0);
+  }
 
   return;
 }

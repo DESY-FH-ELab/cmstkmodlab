@@ -16,10 +16,10 @@
 #include <nqlogger.h>
 #include <Util.h>
 
-#include <vector>
 #include <iostream>
 #include <sstream>
 #include <iomanip>
+#include <vector>
 #include <stdlib.h>
 
 #include <QFormLayout>
@@ -231,31 +231,18 @@ void AssemblyModuleAssembler::updateText(int stage, double x, double y, double a
   NQLog("AssemblyModuleAssembler", NQLog::Debug) << "updateText"
      << "(" << stage << ", " << x << ", " << y << ", " << a << ")";
 
-  std::ostringstream strs_position;
-  std::ostringstream strs_orientation;
+  std::stringstream posi_strs;
+  posi_strs << std::setprecision(3) << x << ", " << y;
+  const QString posi_qstr = QString::fromStdString(posi_strs.str());
 
-  strs_position.clear();
-  strs_orientation.clear();
+  std::stringstream orie_strs;
+  orie_strs << std::setprecision(3) << a;
+  const QString orie_qstr = QString::fromStdString(orie_strs.str());
 
-  strs_position << x;
-  strs_position << ",";
-  strs_position << y;
-  std::string str_position = strs_position.str();
-  QString qstr_position = "";
-  qstr_position = QString::fromStdString(str_position);
-    
-  strs_orientation << a;
-  std::string str_orientation = strs_orientation.str();
-  QString qstr_orientation = "";
-  qstr_orientation = QString::fromStdString(str_orientation);
-    
   if(stage == 1)
   {
-    qstr_position = "Object location = " + qstr_position + " mm, mm (lab frame)";
-    liedit_1_->setText(qstr_position);
-
-    qstr_orientation = "Object orientation = " + qstr_orientation + " degrees";
-    liedit_2_->setText(qstr_orientation);
+    liedit_1_->setText("Object location = "   +posi_qstr+" [pixel #, pixel #] (field of view)");
+    liedit_2_->setText("Object orientation = "+orie_qstr+" degrees");
   }
 }
 

@@ -17,8 +17,11 @@
 
 #include <QString>
 
+#include <opencv2/opencv.hpp>
+
 namespace Util {
 
+  // Qt
   QString QtCacheDirectory();
 
   bool QDir_mkpath(const QString&);
@@ -29,6 +32,9 @@ namespace Util {
 
   bool IsFile(const QString&);
   bool IsFile(const std::string&);
+
+  // Open CV
+  void cv_imwrite_png(const std::string&, const cv::Mat&);
 
 }
 

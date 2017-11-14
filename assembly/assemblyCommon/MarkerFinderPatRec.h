@@ -53,6 +53,11 @@ class MarkerFinderPatRec : public QObject
 
   void PatRec(double&, cv::Point&, const cv::Mat&, const cv::Mat&, const double, const int, const std::string& out_dir="") const;
 
+  cv::Point2f RotatePoint(const cv::Point2f&, const double) const;
+  cv::Point2f RotatePoint(const cv::Point2f&, const cv::Point2f&, const double) const;
+
+  void draw_RotatedRect(cv::Mat&, const cv::Point&, const double, const double, const double, const cv::Scalar&) const;
+
  public slots:
 
   void update_threshold(const int);

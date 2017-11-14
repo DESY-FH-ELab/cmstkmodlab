@@ -65,3 +65,13 @@ bool Util::IsFile(const std::string& path)
 {
   return Util::IsFile(QString(path.c_str()));
 }
+
+void Util::cv_imwrite_png(const std::string& path, const cv::Mat& img)
+{
+  cv::Mat img_conv;
+  cv::cvtColor(img, img_conv, CV_BGR2RGB);
+
+  cv::imwrite(path, img_conv);
+
+  return;
+}
