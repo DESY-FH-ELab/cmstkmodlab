@@ -696,8 +696,8 @@ void MarkerFinderPatRec::PatRec(double& fom, cv::Point& match_loc, const cv::Mat
   else          { match_loc = maxLoc; fom = maxVal; }
   // -----------
 
-  // convert match-loc of rotated  master image
-  // to      match-loc in original master image
+  // convert match-loc val of rotated  master image
+  // to pixel-coordinates  in original master image
   match_loc = this->RotatePoint(src_center, match_loc, angle);
 
   return;

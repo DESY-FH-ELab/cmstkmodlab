@@ -89,71 +89,6 @@ class AssemblyModuleAssembler : public QWidget
 };
 // ===========================================================================
 
-class AssemblyPrecisionEstimator : public QWidget
-{
-    Q_OBJECT
-public:
-    
-    explicit AssemblyPrecisionEstimator(QWidget *parent = 0, std::string text ="Estimate Assembly Precision",
-                                        std::string measurement_position = "0.0,0.0,0.0", std::string pickup_position = "0.0,0.0,0.0", int iterations = 1 , ConradModel * conradModel_ = 0);
-    
-    double local_x, local_y, local_z, local_a;
-    QPushButton* button1;
-    
-    QLabel * label1;
-    QLabel * label2;
-    QLabel * label3;
-    
-    QLineEdit *lineEdit1;
-    QLineEdit *lineEdit2;
-    QLineEdit *lineEdit3;
-
-    
-    protected:
-    
-    public slots:
-    void recordPosition(double,double,double);
-    void run();
-signals:
-    void moveAbsolute(double,double,double,double);
-    void locateMarker();
-    void launchPrecisionEstimation(double, double, double, double, double, double, int);
-};
-// ===========================================================================
-
-class AssemblySandwichAssembler : public QWidget
-{
-    Q_OBJECT
-public:
-    
-    explicit AssemblySandwichAssembler(QWidget *parent = 0, std::string text ="Assemble sandwich",
-                                        std::string assembly_position = "0.0,0.0,0.0", std::string bottom_part_position = "0.0,0.0,0.0", std::string top_part_position = "0.0,0.0,0.0");
-    
-    //double local_x, local_y, local_z, local_a;
-    QPushButton* button0;
-    QPushButton* button1;
-    
-    QLabel * label1;
-    QLabel * label2;
-    QLabel * label3;
-    
-    QLineEdit *lineEdit1;
-    QLineEdit *lineEdit2;
-    QLineEdit *lineEdit3;
-
-    
-    protected:
-    
-    public slots:
-    void run();
-    void run_alignment();
-
-    signals:
-    void launchSandwichAssembly(double, double, double, double, double, double, double, double, double);
-    void launchAlignment(int, double, double, double );
-};
-// ===========================================================================
-
 class StringWidget : public QWidget
 {
  Q_OBJECT
@@ -219,6 +154,38 @@ class MoveWidget : public QWidget
 };
 // ===========================================================================
 
+class VacuumWidget : public QWidget
+{
+ Q_OBJECT
+
+ public:
+
+  explicit VacuumWidget(const QString&, QWidget* parent=0);
+  virtual ~VacuumWidget() {}
+
+  QFormLayout* layout() const { return layout_; }
+
+ protected:
+
+  QFormLayout* layout_;
+  QPushButton* button_;
+
+  std::vector<QRadioButton*> valves_;
+  std::vector<QLabel*>       labels_;
+
+ public slots:
+
+  void toggleVacuum();
+  void updateVacuumChannelState(const int, const bool);
+  void enableVacuumButton();
+  void disableVacuumButton();
+
+ signals:
+
+  void toggleVacuum(const int);
+};
+// ===========================================================================
+
 class PatRecWidget : public QWidget
 {
  Q_OBJECT
@@ -227,6 +194,8 @@ class PatRecWidget : public QWidget
 
   explicit PatRecWidget(const QString&, QWidget* parent=0);
   virtual ~PatRecWidget() {}
+
+  QFormLayout* layout() const { return layout_; }
 
   const StringWidget* widget_angrough() { return sw_angrough_; }
   const StringWidget* widget_angscanp() { return sw_angscanp_; }
@@ -267,35 +236,68 @@ class PatRecWidget : public QWidget
 };
 // ===========================================================================
 
-class VacuumWidget : public QWidget
+class AssemblyPrecisionEstimator : public QWidget
 {
- Q_OBJECT
+    Q_OBJECT
+public:
+    
+    explicit AssemblyPrecisionEstimator(QWidget *parent = 0, std::string text ="Estimate Assembly Precision",
+                                        std::string measurement_position = "0.0,0.0,0.0", std::string pickup_position = "0.0,0.0,0.0", int iterations = 1 , ConradModel * conradModel_ = 0);
+    
+    double local_x, local_y, local_z, local_a;
+    QPushButton* button1;
+    
+    QLabel * label1;
+    QLabel * label2;
+    QLabel * label3;
+    
+    QLineEdit *lineEdit1;
+    QLineEdit *lineEdit2;
+    QLineEdit *lineEdit3;
 
- public:
+    
+    protected:
+    
+    public slots:
+    void recordPosition(double,double,double);
+    void run();
+signals:
+    void moveAbsolute(double,double,double,double);
+    void locateMarker();
+    void launchPrecisionEstimation(double, double, double, double, double, double, int);
+};
+// ===========================================================================
 
-  explicit VacuumWidget(const QString&, QWidget* parent=0);
-  virtual ~VacuumWidget() {}
+class AssemblySandwichAssembler : public QWidget
+{
+    Q_OBJECT
+public:
+    
+    explicit AssemblySandwichAssembler(QWidget *parent = 0, std::string text ="Assemble sandwich",
+                                        std::string assembly_position = "0.0,0.0,0.0", std::string bottom_part_position = "0.0,0.0,0.0", std::string top_part_position = "0.0,0.0,0.0");
+    
+    //double local_x, local_y, local_z, local_a;
+    QPushButton* button0;
+    QPushButton* button1;
+    
+    QLabel * label1;
+    QLabel * label2;
+    QLabel * label3;
+    
+    QLineEdit *lineEdit1;
+    QLineEdit *lineEdit2;
+    QLineEdit *lineEdit3;
 
-  QFormLayout* layout() const { return layout_; }
+    
+    protected:
+    
+    public slots:
+    void run();
+    void run_alignment();
 
- protected:
-
-  QFormLayout* layout_;
-  QPushButton* button_;
-
-  std::vector<QRadioButton*> valves_;
-  std::vector<QLabel*>       labels_;
-
- public slots:
-
-  void toggleVacuum();
-  void updateVacuumChannelState(const int, const bool);
-  void enableVacuumButton();
-  void disableVacuumButton();
-
- signals:
-
-  void toggleVacuum(const int);
+    signals:
+    void launchSandwichAssembly(double, double, double, double, double, double, double, double, double);
+    void launchAlignment(int, double, double, double );
 };
 // ===========================================================================
 

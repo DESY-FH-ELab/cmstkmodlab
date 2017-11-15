@@ -200,35 +200,40 @@ AssemblyModuleAssembler::AssemblyModuleAssembler(LStepExpressMotionManager* moti
   f1->addRow(box_move);
   // ---------------------
 
-  // widget: Pattern Recognition
-  PatRecWidget* w_patrec = new PatRecWidget("Standalone Pattern Recognition", this);
-  f1->addRow(w_patrec);
-
-  w_patrec->setToolTip("(3) Runs PatRec routine to deduce and report sensor (x,y,z,phi) position");
-
-  connect(w_patrec, SIGNAL(mode(int, int))       , finder  , SLOT(run_PatRec(int, int)));
-  connect(finder  , SIGNAL(PatRec_exitcode(int)) , w_patrec, SLOT(change_label(int)));
-
-  finder->update_rough_angles      ( w_patrec->widget_angrough()->get_input_string() );
-  finder->update_angscan_parameters( w_patrec->widget_angscanp()->get_input_string() );
-
-  connect(w_patrec->widget_angrough(), SIGNAL(input_string(QString)), finder, SLOT(update_rough_angles      (QString)));
-  connect(w_patrec->widget_angscanp(), SIGNAL(input_string(QString)), finder, SLOT(update_angscan_parameters(QString)));
-
-  connect(w_patrec, SIGNAL(sendPosition        (int, double, double, double)), this, SLOT(updateText (int, double, double, double)));
-  connect(finder  , SIGNAL(image_path          (int, QString))               , this, SLOT(updateImage(int, QString)));
-  connect(finder  , SIGNAL(image_mat           (int, cv::Mat))               , this, SLOT(updateImage(int, cv::Mat)));
-  connect(finder  , SIGNAL(reportObjectLocation(int, double, double, double)), this, SLOT(updateText (int, double, double, double)));
-  // ---------------------
-
-  // widget: vacuum
+  // VACUUM WIDGET -------
   QGroupBox* box_vacuum = new QGroupBox(tr("Vacuum"));
 
-  w_vacuum_ = new VacuumWidget("Toggle Vacuum", this);
+    w_vacuum_ = new VacuumWidget("Toggle Vacuum", this);
 
   box_vacuum->setLayout(w_vacuum_->layout());
 
   f1->addRow(box_vacuum);
+  // ---------------------
+
+  // PATREC  WIDGET ------
+  QGroupBox* box_patrec = new QGroupBox("Pattern Recognition");
+
+    PatRecWidget* w_patrec = new PatRecWidget("Standalone PatRec");
+
+    w_patrec->setToolTip("(3) Runs PatRec routine to deduce and report sensor (x,y,z,phi) position");
+
+    connect(w_patrec, SIGNAL(mode(int, int))       , finder  , SLOT(run_PatRec(int, int)));
+    connect(finder  , SIGNAL(PatRec_exitcode(int)) , w_patrec, SLOT(change_label(int)));
+
+    finder->update_rough_angles      ( w_patrec->widget_angrough()->get_input_string() );
+    finder->update_angscan_parameters( w_patrec->widget_angscanp()->get_input_string() );
+
+    connect(w_patrec->widget_angrough(), SIGNAL(input_string(QString)), finder, SLOT(update_rough_angles      (QString)));
+    connect(w_patrec->widget_angscanp(), SIGNAL(input_string(QString)), finder, SLOT(update_angscan_parameters(QString)));
+
+    connect(w_patrec, SIGNAL(sendPosition        (int, double, double, double)), this, SLOT(updateText (int, double, double, double)));
+    connect(finder  , SIGNAL(image_path          (int, QString))               , this, SLOT(updateImage(int, QString)));
+    connect(finder  , SIGNAL(image_mat           (int, cv::Mat))               , this, SLOT(updateImage(int, cv::Mat)));
+    connect(finder  , SIGNAL(reportObjectLocation(int, double, double, double)), this, SLOT(updateText (int, double, double, double)));
+
+  box_patrec->setLayout(w_patrec->layout());
+
+  f1->addRow(box_patrec);
   // ---------------------
 
 //!!  AssemblyPrecisionEstimator * precision1 = new AssemblyPrecisionEstimator(this, "Estimate Assembly Precision", "-200.0,0.0,0.0", "0.0,0.0,0.0", 1 , cnrd1);
