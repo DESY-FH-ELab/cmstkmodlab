@@ -44,14 +44,16 @@ ZFocusFinder::ZFocusFinder(AssemblyVUEyeCamera* camera, LStepExpressModel* motio
 {
     if(!camera)
     {
-      NQLog("ZFocusFinder", NQLog::Fatal) << "null pointer to AssemblyVUEyeCamera object";
-      exit(1);
+      NQLog("ZFocusFinder", NQLog::Fatal) << "null pointer to AssemblyVUEyeCamera object, exiting";
+
+      return;
     }
 
     if(!motion_model)
     {
-      NQLog("ZFocusFinder", NQLog::Fatal) << "null pointer to LStepExpressModel object";
-      exit(1);
+      NQLog("ZFocusFinder", NQLog::Fatal) << "null pointer to LStepExpressModel object, exiting";
+
+      return;
     }
 
     camera_manager_ = new AssemblyUEyeCameraManager(camera);

@@ -13,11 +13,10 @@
 #ifndef ASSEMBLYASSEMBLER_H
 #define ASSEMBLYASSEMBLER_H
 
-#include <iostream>
-#include <string>
-//!!#include <fstream>
+#include <LStepExpressMotionManager.h>
 
-#include <opencv2/opencv.hpp>
+#include <string>
+#include <vector>
 
 #include <QWidget>
 #include <QScrollArea>
@@ -32,19 +31,15 @@
 #include <QString>
 #include <QDateTime>
 
-#include "LStepExpressModel.h"
-#include "LStepExpressMotionManager.h"
+#include <opencv2/opencv.hpp>
 
 class AssemblyAssembler : public QObject
 {
  Q_OBJECT
 
   public:
-    explicit AssemblyAssembler(LStepExpressModel*);
+    explicit AssemblyAssembler(LStepExpressMotionManager*, QObject* parent=0);
     virtual ~AssemblyAssembler() {}
-
-    LStepExpressModel* lStepExpressModel_;
-//!!    LStepExpressMotionManager* motionManager_;
 
     double marker_x, marker_y, marker_z, marker_theta;
 
@@ -60,24 +55,37 @@ class AssemblyAssembler : public QObject
     std::vector<double> xpre_vec,ypre_vec,thetapre_vec;
     std::vector<double> xpost_vec,ypost_vec,thetapost_vec;
     double step_distance;
-//!!    std::ofstream outfile;
 
   protected:
+
+    LStepExpressMotionManager* motion_manager_;
+
     double imageVariance(cv::Mat img_input, cv::Rect rectangle);
 
+    bool motion_enabled_;
+
   public slots:
+
     void run_scan(double, int);
     void write_image(cv::Mat, cv::Rect);
     void run_sandwitchassembly(double, double, double, double, double, double, double, double, double);
     void process_step();
     void run_alignment(int, double, double, double);
     void launch_next_alignment_step();
-    void fill_positionvectors(int , double, double, double);
+    void fill_positionvectors(int, double, double, double);
+
+    void  enable_motion();
+    void disable_motion();
+
+    void move_relative(const double, const double, const double, const double);
+
+    void stop_motion();
 
   signals:
+
     void getImage();
-    void moveRelative(double, double, double, double);
-    void moveAbsolute(double, double, double, double);
+    void moveRelative(const double, const double, const double, const double);
+    void moveAbsolute(const double, const double, const double, const double);
     void updateScanImage(cv::Mat);
     void make_graph(const std::string);
     void updateText(double);
@@ -87,6 +95,8 @@ class AssemblyAssembler : public QObject
     void makeDummies(int, double,double,double);
     void showHistos(int, QString);
     void toggleVacuum(int);
+
+    void motion_finished();
 };
 
 #endif // ASSEMBLYASSEMBLER_H

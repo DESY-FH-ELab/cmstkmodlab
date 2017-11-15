@@ -165,7 +165,7 @@ AssemblyMainWindow::AssemblyMainWindow(const unsigned int camera_ID, QWidget* pa
     conradModel_   = new ConradModel(assembleView_);
     conradManager_ = new ConradManager(conradModel_);
 
-    module_assembler_ = new AssemblyAssembler(motion_model_);
+    module_assembler_ = new AssemblyAssembler(motion_manager_);
 
     connect(assembleView_->VacuumToggler(), SIGNAL(toggleVacuum(int))                  , conradManager_                , SLOT(toggleVacuum(int)));
     connect(conradManager_                , SIGNAL(updateVacuumChannelState(int, bool)), assembleView_->VacuumToggler(), SLOT(updateVacuumChannelState(int, bool)));
@@ -448,29 +448,31 @@ void AssemblyMainWindow::changeState_Alignment(int state)
 {
     if(state == 2)
     {
+      connect   (assembleView_     , SIGNAL(launchAlignment     (int, double, double, double)), module_assembler_, SLOT(run_alignment(int, double, double, double)));
+      connect   (module_assembler_ , SIGNAL(nextAlignmentStep   (int, double, double, double)), module_assembler_, SLOT(run_alignment(int, double, double, double)));
+
+      connect   (module_assembler_ , SIGNAL(acquireImage())                                   , image_ctr_       , SLOT(acquire_image()));
       connect   (marker_finder_    , SIGNAL(image_updated())                                  , marker_finder_   , SLOT(update_binary_image()));
       connect   (marker_finder_    , SIGNAL(binary_image_updated())                           , marker_finder_   , SLOT(run_PatRec(1, 0)));
-
-      connect   (assembleView_     , SIGNAL(launchAlignment     (int, double, double, double)), module_assembler_, SLOT(run_alignment(int, double, double, double)));
-      connect   (module_assembler_ , SIGNAL(acquireImage())                                   , image_ctr_       , SLOT(acquire_image()));
-      connect   (motion_model_     , SIGNAL(motionFinished())                                 , module_assembler_, SLOT(launch_next_alignment_step()));
-      connect   (module_assembler_ , SIGNAL(moveRelative(double, double, double, double))     , motion_manager_  , SLOT(moveRelative(double, double, double, double)));
       connect   (marker_finder_    , SIGNAL(reportObjectLocation(int, double, double, double)), module_assembler_, SLOT(run_alignment(int, double, double, double)));
-      connect   (module_assembler_ , SIGNAL(nextAlignmentStep   (int, double, double, double)), module_assembler_, SLOT(run_alignment(int, double, double, double)));
+
+      connect   (module_assembler_ , SIGNAL(moveRelative(double, double, double, double))     , module_assembler_, SLOT(move_relative(double, double, double, double)));
+      connect   (module_assembler_ , SIGNAL(motion_finished())                                , module_assembler_, SLOT(launch_next_alignment_step()));
 
       NQLog("AssemblyMainWindow", NQLog::Message) << "changeState_Alignment: alignment enabled";
     }
     else if(state == 0)
     {
+      disconnect(assembleView_     , SIGNAL(launchAlignment     (int, double, double, double)), module_assembler_, SLOT(run_alignment(int, double, double, double)));
+      disconnect(module_assembler_ , SIGNAL(nextAlignmentStep   (int, double, double, double)), module_assembler_, SLOT(run_alignment(int, double, double, double)));
+
+      disconnect(module_assembler_ , SIGNAL(acquireImage())                                   , image_ctr_       , SLOT(acquire_image()));
       disconnect(marker_finder_    , SIGNAL(image_updated())                                  , marker_finder_   , SLOT(update_binary_image()));
       disconnect(marker_finder_    , SIGNAL(binary_image_updated())                           , marker_finder_   , SLOT(run_PatRec(1, 0)));
-
-      disconnect(assembleView_     , SIGNAL(launchAlignment     (int, double, double, double)), module_assembler_, SLOT(run_alignment(int, double, double, double)));
-      disconnect(module_assembler_ , SIGNAL(acquireImage())                                   , image_ctr_       , SLOT(acquire_image()));
-      disconnect(motion_model_     , SIGNAL(motionFinished())                                 , module_assembler_, SLOT(launch_next_alignment_step()));
-      disconnect(module_assembler_ , SIGNAL(moveRelative(double, double, double, double))     , motion_manager_  , SLOT(moveRelative(double, double, double, double)));
       disconnect(marker_finder_    , SIGNAL(reportObjectLocation(int, double, double, double)), module_assembler_, SLOT(run_alignment(int, double, double, double)));
-      disconnect(module_assembler_ , SIGNAL(nextAlignmentStep   (int, double, double, double)), module_assembler_, SLOT(run_alignment(int, double, double, double)));
+
+      disconnect(module_assembler_ , SIGNAL(moveRelative(double, double, double, double))     , module_assembler_, SLOT(move_relative(double, double, double, double)));
+      disconnect(module_assembler_ , SIGNAL(motion_finished())                                , module_assembler_, SLOT(launch_next_alignment_step()));
 
       NQLog("AssemblyMainWindow", NQLog::Message) << "changeState_Alignment: alignment disabled";
     }
