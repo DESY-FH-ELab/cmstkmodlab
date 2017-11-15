@@ -16,39 +16,38 @@
 
 ImageController::ImageController(AssemblyVUEyeCamera* camera, ZFocusFinder* zfocus_finder, QObject* parent) :
   QObject(parent),
+  camera_manager_(camera),
   zfocus_finder_(zfocus_finder),
   is_enabled_(false),
   autofocus_is_enabled_(false)
 {
-  if(!camera)
+  if(!camera_manager_)
   {
-    NQLog("ImageController", NQLog::Fatal)
-       << "initialization error: null pointer to AssemblyVUEyeCamera object";
+    NQLog("ImageController", NQLog::Fatal) << "initialization error"
+       << ": null pointer to AssemblyVUEyeCamera object, exiting";
 
-    exit(1);
+    return;
   }
 
   if(zfocus_finder_)
   {
-    if(zfocus_finder_->camera() != camera)
+    if(zfocus_finder_->camera_manager() != camera_manager_)
     {
-      NQLog("ImageController", NQLog::Fatal)
-         << "target input camera differs from ZFocusFinder.camera";
+      NQLog("ImageController", NQLog::Fatal) << "initialization error"
+         << ": target input camera differs from ZFocusFinder.camera";
 
-      exit(1);
+      return;
     }
   }
 
-  camera_manager_ = new AssemblyUEyeCameraManager(camera);
+  connect(this           , SIGNAL(open_camera())  , camera_manager_, SLOT(open()));
+  connect(camera_manager_, SIGNAL(cameraOpened()) , this           , SLOT(enable_camera()));
 
-  connect(this           , SIGNAL(open_camera())   , camera_manager_, SLOT(open()));
-  connect(camera_manager_, SIGNAL(camera_opened()) , this           , SLOT(enable_camera()));
+  connect(this           , SIGNAL(close_camera()) , camera_manager_, SLOT(close()));
+  connect(camera_manager_, SIGNAL(cameraClosed()) , this           , SLOT(disable_camera()));
 
-  connect(this           , SIGNAL(close_camera())  , camera_manager_, SLOT(close()));
-  connect(camera_manager_, SIGNAL(camera_closed()) , this           , SLOT(disable_camera()));
-
-  connect(this           , SIGNAL(image())                , camera_manager_, SLOT(acquire_image()));
-  connect(camera_manager_, SIGNAL(image_acquired(cv::Mat)), this           , SLOT(retrieve_image(cv::Mat)));
+  connect(this           , SIGNAL(image())               , camera_manager_, SLOT(acquireImage()));
+  connect(camera_manager_, SIGNAL(imageAcquired(cv::Mat)), this           , SLOT(retrieve_image(cv::Mat)));
 
   NQLog("ImageController", NQLog::Debug) << "constructed";
 }
@@ -119,8 +118,8 @@ void ImageController::enable_AutoFocus()
     return;
   }
 
-  disconnect(this           , SIGNAL(image())                , camera_manager_, SLOT(acquire_image()));
-  disconnect(camera_manager_, SIGNAL(image_acquired(cv::Mat)), this           , SLOT(retrieve_image(cv::Mat)));
+  disconnect(this           , SIGNAL(image())                , camera_manager_, SLOT(acquireImage()));
+  disconnect(camera_manager_, SIGNAL(imageAcquired(cv::Mat)) , this           , SLOT(retrieve_image(cv::Mat)));
 
   connect   (this           , SIGNAL(image())                , zfocus_finder_ , SLOT(acquire_image()));
   connect   (zfocus_finder_ , SIGNAL(image_acquired(cv::Mat)), this           , SLOT(retrieve_image(cv::Mat)));
@@ -143,8 +142,8 @@ void ImageController::disable_AutoFocus()
     return;
   }
 
-  connect   (this           , SIGNAL(image())                , camera_manager_, SLOT(acquire_image()));
-  connect   (camera_manager_, SIGNAL(image_acquired(cv::Mat)), this           , SLOT(retrieve_image(cv::Mat)));
+  connect   (this           , SIGNAL(image())                , camera_manager_, SLOT(acquireImage()));
+  connect   (camera_manager_, SIGNAL(imageAcquired(cv::Mat)) , this           , SLOT(retrieve_image(cv::Mat)));
 
   disconnect(this           , SIGNAL(image())                , zfocus_finder_ , SLOT(acquire_image()));
   disconnect(zfocus_finder_ , SIGNAL(image_acquired(cv::Mat)), this           , SLOT(retrieve_image(cv::Mat)));

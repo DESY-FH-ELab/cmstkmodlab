@@ -26,50 +26,49 @@
 #include <TFile.h>
 
 int ZFocusFinder::exe_counter_ = -1;
-int ZFocusFinder::focus_pointN_max_ = 200;
 
-ZFocusFinder::ZFocusFinder(AssemblyVUEyeCamera* camera, LStepExpressModel* motion_model, QObject* parent) :
+ZFocusFinder::ZFocusFinder(AssemblyVUEyeCamera* camera, LStepExpressMotionManager* motion_manager, QObject* parent) :
   QObject(parent),
-  camera_manager_(0),
-  motion_manager_(0),
+
+  camera_manager_(camera),
+  motion_manager_(motion_manager),
+
   motion_enabled_(false),
+
   focus_completed_(false),
+  focus_pointN_max_(200),
   focus_pointN_(10),
   focus_zrange_(0.5),
+
   zposi_init_(-9999.),
   zposi_min_ (-99.),
   zposi_max_ (+99.),
+
   zrelm_index_(0),
+
   output_dir_("")
 {
-    if(!camera)
-    {
-      NQLog("ZFocusFinder", NQLog::Fatal) << "null pointer to AssemblyVUEyeCamera object, exiting";
+  // initialization
+  v_zrelm_vals_.clear();
+  v_focus_vals_.clear();
 
-      return;
-    }
+  // validation
+  if(!camera_manager_)
+  {
+    NQLog("ZFocusFinder", NQLog::Fatal) << "null pointer to AssemblyVUEyeCamera object, exiting";
+    return;
+  }
 
-    if(!motion_model)
-    {
-      NQLog("ZFocusFinder", NQLog::Fatal) << "null pointer to LStepExpressModel object, exiting";
+  if(!motion_manager_)
+  {
+    NQLog("ZFocusFinder", NQLog::Fatal) << "null pointer to LStepExpressMotionManager object, exiting";
+    return;
+  }
 
-      return;
-    }
+  // connections
+  connect(this , SIGNAL(next_zpoint()), this, SLOT(test_focus()));
 
-    camera_manager_ = new AssemblyUEyeCameraManager(camera);
-    motion_manager_ = new LStepExpressMotionManager(motion_model);
-
-    ////
-
-    connect(this , SIGNAL(next_zpoint()), this, SLOT(test_focus()));
-
-    ////
-
-    v_zrelm_vals_.clear();
-
-    v_focus_vals_.clear();
-
-    NQLog("ZFocusFinder::ZFocusFinder", NQLog::Debug) << "constructed";
+  NQLog("ZFocusFinder::ZFocusFinder", NQLog::Debug) << "constructed";
 }
 
 void ZFocusFinder::enable_motion()
@@ -82,10 +81,10 @@ void ZFocusFinder::enable_motion()
                  motion_manager_, SLOT  (moveRelative(double, double, double, double)));
 
       connect   (motion_manager_, SIGNAL(motion_finished()),
-                 camera_manager_, SLOT  (acquire_image()));
+                 camera_manager_, SLOT  (acquireImage()));
 
-      connect   (camera_manager_, SIGNAL(image_acquired(cv::Mat)),
-                 this           , SLOT  (process_image (cv::Mat)));
+      connect   (camera_manager_, SIGNAL(imageAcquired(cv::Mat)),
+                 this           , SLOT  (process_image(cv::Mat)));
 
       motion_enabled_ = true;
     }
@@ -103,10 +102,10 @@ void ZFocusFinder::disable_motion()
                  motion_manager_, SLOT  (moveRelative(double, double, double, double)));
 
       disconnect(motion_manager_, SIGNAL(motion_finished()),
-                 camera_manager_, SLOT  (acquire_image()));
+                 camera_manager_, SLOT  (acquireImage()));
 
-      disconnect(camera_manager_, SIGNAL(image_acquired(cv::Mat)),
-                 this           , SLOT  (process_image (cv::Mat)));
+      disconnect(camera_manager_, SIGNAL(imageAcquired(cv::Mat)),
+                 this           , SLOT  (process_image(cv::Mat)));
 
       motion_enabled_ = false;
     }
@@ -131,13 +130,13 @@ void ZFocusFinder::update_focus_inputs(const double zrange, const int pointN)
 
     if(pointN > 0)
     {
-      if(pointN > ZFocusFinder::focus_pointN_max_)
+      if(pointN > focus_pointN_max_)
       {
         NQLog("ZFocusFinder", NQLog::Message) << "update_focus_inputs"
            << ": input number of scans larger than allowed max"
            << ", setting equal to allowed max";
 
-        focus_pointN_ = ZFocusFinder::focus_pointN_max_;
+        focus_pointN_ = focus_pointN_max_;
       }
       else
       {

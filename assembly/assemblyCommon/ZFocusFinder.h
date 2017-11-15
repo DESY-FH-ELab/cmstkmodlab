@@ -14,8 +14,6 @@
 #define ZFOCUSFINDER_H
 
 #include <AssemblyVUEyeCamera.h>
-#include <AssemblyUEyeCameraManager.h>
-#include <LStepExpressModel.h>
 #include <LStepExpressMotionManager.h>
 
 #include <QObject>
@@ -35,9 +33,9 @@ class ZFocusFinder : public QObject
     QTimer* qt;
     LStepExpressModel* lStepExpressModel_;
 
-    explicit ZFocusFinder(AssemblyVUEyeCamera*, LStepExpressModel* lStepExpressModel_, QObject* parent=0);
+    explicit ZFocusFinder(AssemblyVUEyeCamera*, LStepExpressMotionManager*, QObject* parent=0);
 
-    AssemblyVUEyeCamera*       camera()         const { return camera_manager_->camera(); }
+    AssemblyVUEyeCamera*       camera_manager() const { return camera_manager_; }
     LStepExpressMotionManager* motion_manager() const { return motion_manager_; }
 
     struct focus_info
@@ -48,12 +46,15 @@ class ZFocusFinder : public QObject
 
   protected:
 
-    AssemblyUEyeCameraManager* camera_manager_;
+    AssemblyVUEyeCamera*       camera_manager_;
     LStepExpressMotionManager* motion_manager_;
+
+    static int exe_counter_;
 
     bool motion_enabled_;
 
     bool   focus_completed_;
+    int    focus_pointN_max_;
     int    focus_pointN_;
     double focus_zrange_;
 
@@ -61,15 +62,12 @@ class ZFocusFinder : public QObject
     double zposi_min_;
     double zposi_max_;
 
-    int                   zrelm_index_;
-    std::vector<double> v_zrelm_vals_;
-
-    std::vector<focus_info> v_focus_vals_;
+    int zrelm_index_;
 
     std::string output_dir_;
 
-    static int exe_counter_;
-    static int focus_pointN_max_;
+    std::vector<double>     v_zrelm_vals_;
+    std::vector<focus_info> v_focus_vals_;
 
     double image_focus_value(const cv::Mat&);
 

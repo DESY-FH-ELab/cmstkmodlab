@@ -75,7 +75,7 @@ void AssemblyAssembler::move_relative(const double x, const double y, const doub
 {
   this->enable_motion();
 
-  motion_manager_->moveRelative(x, y, z, a);  
+  motion_manager_->moveRelative(x, y, z, a);
 }
 
 void AssemblyAssembler::stop_motion()
@@ -514,8 +514,8 @@ void AssemblyAssembler::run_alignment(int stage, double x_pr, double y_pr, doubl
     else if (alignment_step == 2){
         NQLog("AssemblyAssembler::run_alignment step == ") << alignment_step;
         alignment_step++;
-		x1_pos = motion_manager_->get_position_X(); 	
-		y1_pos = motion_manager_->get_position_Y(); 	
+		x1_pos = motion_manager_->get_position_X();
+		y1_pos = motion_manager_->get_position_Y();
 		std::cout << " !!!!! " << std::endl;
 		std::cout << " xposition = " << x1_pos << "  yposition = " << y1_pos << std::endl;
 		std::cout << " !!!!! " << std::endl;
@@ -575,8 +575,8 @@ void AssemblyAssembler::run_alignment(int stage, double x_pr, double y_pr, doubl
         NQLog("AssemblyAssembler::run_alignment step == ") << alignment_step;
         NQLog("AssemblyAssembler::Detecting second corner");
         alignment_step++;
-		double x2_pos = motion_manager_->get_position_X(); 	
-		double y2_pos = motion_manager_->get_position_Y();	
+		double x2_pos = motion_manager_->get_position_X();
+		double y2_pos = motion_manager_->get_position_Y();
 		std::cout << " !!!!! " << std::endl;
 		std::cout << " x1 position = " << x1_pos << "  y1 position = " << y1_pos << std::endl;
 		std::cout << " !!!!! " << std::endl;

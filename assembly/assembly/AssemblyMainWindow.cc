@@ -107,7 +107,7 @@ AssemblyMainWindow::AssemblyMainWindow(const unsigned int camera_ID, QWidget* pa
     marker_finder_thread_->start();
 
     // zfocus finder
-    zfocus_finder_ = new ZFocusFinder(camera_, motion_model_);
+    zfocus_finder_ = new ZFocusFinder(camera_, motion_manager_);
 
     /* TAB WIDGET ---------------------------------------------- */
     tabWidget_ = new QTabWidget(this);

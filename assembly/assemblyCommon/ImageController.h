@@ -13,7 +13,7 @@
 #ifndef IMAGECONTROLLER_H
 #define IMAGECONTROLLER_H
 
-#include <AssemblyUEyeCameraManager.h>
+#include <AssemblyVUEyeCamera.h>
 #include <ZFocusFinder.h>
 
 #include <QObject>
@@ -33,15 +33,15 @@ class ImageController : public QObject
     explicit ImageController(AssemblyVUEyeCamera*, ZFocusFinder* zff=0, QObject* parent=0);
     virtual ~ImageController();
 
-    bool is_enabled() const { return is_enabled_; }
+    bool is_enabled()           const { return is_enabled_; }
     bool autofocus_is_enabled() const { return autofocus_is_enabled_; }
 
-    AssemblyVUEyeCamera* camera() const { return camera_manager_->camera(); }
+    AssemblyVUEyeCamera* camera_manager() const { return camera_manager_; }
 
   protected:
 
-    AssemblyUEyeCameraManager* camera_manager_;
-    ZFocusFinder* zfocus_finder_;
+    AssemblyVUEyeCamera* camera_manager_;
+    ZFocusFinder*        zfocus_finder_;
 
     bool is_enabled_;
     bool autofocus_is_enabled_;

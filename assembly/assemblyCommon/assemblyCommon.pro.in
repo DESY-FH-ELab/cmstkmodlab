@@ -105,7 +105,6 @@ HEADERS += AssemblyVUEyeCamera.h \
            LaserThread.h \
            LaserWidget.h \
            LaserControlsWidget.h \
-           AssemblyUEyeCameraManager.h \
            MarkerFinderManual.h \
            MarkerFinderPatRec.h \
            MarkerFinderPatRecThread.h \
@@ -151,7 +150,6 @@ SOURCES += AssemblyVUEyeCamera.cc \
            LaserWidget.cc \
            LaserThread.cc \
            LaserControlsWidget.cc \
-           AssemblyUEyeCameraManager.cc \
            MarkerFinderManual.cc \
            MarkerFinderPatRec.cc \
            MarkerFinderPatRecThread.cc \
