@@ -165,33 +165,46 @@ AssemblyModuleAssembler::AssemblyModuleAssembler(LStepExpressMotionManager* moti
 //  liedit_4_ = new QLineEdit("Dtchd pos. = ,X,X");
 //  g0->addWidget(liedit_4_, 3, 0);
 
-  QGridLayout* g1 = new QGridLayout();
-  l->addLayout(g1, 0, 1);
+  QFormLayout* f1 = new QFormLayout();
+  l->addLayout(f1, 0, 1);
 
-  // widget: move absolute
-  MoveWidget*   w_moveabs = new MoveWidget("Move Absolute", "0,0,0");
-  g1->addWidget(w_moveabs, 0, 0);
+  // MOVE WIDGETS --------
+  QGroupBox* box_move = new QGroupBox(tr("Motion Stage"));
 
-  w_moveabs->useMoveRelative(false);
-  w_moveabs->setToolTip("(1) Moves x,y,z,a stage using moveAbsolute routine (with respect to origin)");
+  QGridLayout* g_move = new QGridLayout();
 
-  connect(w_moveabs, SIGNAL(moveAbsolute(double, double, double, double)), motion_manager, SLOT(moveAbsolute(double, double, double, double)));
-  // ---------------------
+    // widget: move absolute
+    MoveWidget* w_moveabs = new MoveWidget("Move Absolute", "0,0,0");
+    g_move->addWidget(w_moveabs->button(), 0, 0);
+    g_move->addWidget(w_moveabs->lineed(), 0, 1);
 
-  // widget: move relative
-  MoveWidget*   w_moverel = new MoveWidget("Move Relative", "0,0,0");
-  g1->addWidget(w_moverel, 1, 0);
+    w_moveabs->useMoveRelative(false);
+    w_moveabs->setToolTip("(1) Moves x,y,z,a stage using moveAbsolute routine (with respect to origin)");
 
-  w_moverel->useMoveRelative(true);
-  w_moverel->setToolTip("(2) Moves x,y,z,a stage using moveRelative routine (with respect to current position)");
+    connect(w_moveabs, SIGNAL(moveAbsolute(double, double, double, double)), motion_manager, SLOT(moveAbsolute(double, double, double, double)));
+    // ---------------------
 
-  connect(w_moverel, SIGNAL(moveRelative(double, double, double, double)), motion_manager, SLOT(moveRelative(double, double, double, double)));
+    // widget: move relative
+    MoveWidget* w_moverel = new MoveWidget("Move Relative", "0,0,0");
+    g_move->addWidget(w_moverel->button(), 1, 0);
+    g_move->addWidget(w_moverel->lineed(), 1, 1);
+
+    w_moverel->useMoveRelative(true);
+    w_moverel->setToolTip("(2) Moves x,y,z,a stage using moveRelative routine (with respect to current position)");
+
+    connect(w_moverel, SIGNAL(moveRelative(double, double, double, double)), motion_manager, SLOT(moveRelative(double, double, double, double)));
+    // ---------------------
+
+  box_move->setLayout(g_move);
+
+  f1->addRow(box_move);
   // ---------------------
 
   // widget: Pattern Recognition
   PatRecWidget* w_patrec = new PatRecWidget("Standalone Pattern Recognition", this);
+  f1->addRow(w_patrec);
+
   w_patrec->setToolTip("(3) Runs PatRec routine to deduce and report sensor (x,y,z,phi) position");
-  g1->addWidget(w_patrec, 2, 0);
 
   connect(w_patrec, SIGNAL(mode(int, int))       , finder  , SLOT(run_PatRec(int, int)));
   connect(finder  , SIGNAL(PatRec_exitcode(int)) , w_patrec, SLOT(change_label(int)));
@@ -209,12 +222,17 @@ AssemblyModuleAssembler::AssemblyModuleAssembler(LStepExpressMotionManager* moti
   // ---------------------
 
   // widget: vacuum
+  QGroupBox* box_vacuum = new QGroupBox(tr("Vacuum"));
+
   w_vacuum_ = new VacuumWidget("Toggle Vacuum", this);
-  g1->addWidget(w_vacuum_, 3, 0);
+
+  box_vacuum->setLayout(w_vacuum_->layout());
+
+  f1->addRow(box_vacuum);
   // ---------------------
 
 //!!  AssemblyPrecisionEstimator * precision1 = new AssemblyPrecisionEstimator(this, "Estimate Assembly Precision", "-200.0,0.0,0.0", "0.0,0.0,0.0", 1 , cnrd1);
-//!!//  g1->addWidget(precision1,4,0);
+//!!//  f1->addRow(precision1);
 //!!
 //!!  connect(precision1, SIGNAL(launchPrecisionEstimation(double, double, double, double, double, double, int)),
 //!!          this      , SLOT  (startMacro               (double, double, double, double, double, double, int)));
@@ -448,7 +466,7 @@ AssemblySandwichAssembler::AssemblySandwichAssembler(QWidget *parent, std::strin
     //QString q_top_pos = QString::fromStdString(bottom_part_position);
     QString qname = QString::fromStdString(text);
 
-    button0 = new QPushButton("Align object", this);
+    button0 = new QPushButton("Align Object", this);
     l->addWidget(button0,0,0);
     
     button1 = new QPushButton(qname, this);
@@ -556,18 +574,31 @@ MoveWidget::MoveWidget(const QString& label, const QString& default_entry, const
   layout_ = new QFormLayout(this);
   this->setLayout(layout_);
 
-  button_ = new QPushButton(label, this);
+  button_ = new QPushButton(label);
+  button_->setStyleSheet(
+    "Text-align: left;"
+    "padding-left:   4px;"
+    "padding-right:  4px;"
+    "padding-top:    3px;"
+    "padding-bottom: 3px;"
+  );
 
   lineed_ = new QLineEdit();
   lineed_->setText(default_entry);
+
   layout_->addRow(button_, lineed_);
 
   connect(button_, SIGNAL(clicked()), this, SLOT(execute()));
 }
 
+QString MoveWidget::get_input_string() const
+{
+  return this->lineed_->text();
+}
+
 void MoveWidget::execute()
 {
-  QString line_entry = this->lineed_->text();
+  QString line_entry = this->get_input_string();
 
   // parse lineEdit text to get target coordinates
   const QStringList entries = line_entry.remove(" ").split(",");
@@ -615,9 +646,17 @@ StringWidget::StringWidget(const QString& label, const QString& default_entry, Q
   this->setLayout(layout_);
 
   button_ = new QPushButton(label, this);
+  button_->setStyleSheet(
+    "Text-align: left;"
+    "padding-left:   4px;"
+    "padding-right:  4px;"
+    "padding-top:    3px;"
+    "padding-bottom: 3px;"
+  );
 
   lineed_ = new QLineEdit();
   lineed_->setText(default_entry);
+
   layout_->addRow(button_, lineed_);
 
   connect(button_, SIGNAL(clicked()), this, SLOT(execute()));
@@ -718,16 +757,18 @@ PatRecWidget::PatRecWidget(const QString& label, QWidget* parent) :
   layout_1->addWidget(label_, 0, 1);
 
   // PatRec: angular analysis configuration
-  QFormLayout*    layout_2 = new QFormLayout();
+  QGridLayout* layout_2 = new QGridLayout();
   layout_->addRow(layout_2);
 
   // widget: PatRec rough angles
-  sw_angrough_ = new StringWidget("Rough Angles (list)", "0,180");
-  layout_2->addRow(sw_angrough_);
+  sw_angrough_ = new StringWidget("Pre-Scan Angles (list)", "0,180");
+  layout_2->addWidget(sw_angrough_->button(), 0, 0);
+  layout_2->addWidget(sw_angrough_->lineed(), 0, 1);
 
   // widget: PatRec angular-scan parameters
-  sw_angscanp_ = new StringWidget("Ang-Scan parameters (fine-range, fine-step)", "5,0.25");
-  layout_2->addRow(sw_angscanp_);
+  sw_angscanp_ = new StringWidget("Scan Params (fine-range, fine-step)", "5,0.25");
+  layout_2->addWidget(sw_angscanp_->button(), 1, 0);
+  layout_2->addWidget(sw_angscanp_->lineed(), 1, 1);
   // ---------------------
 
   connect(button_, SIGNAL(clicked()), this, SLOT(execute()));
@@ -770,31 +811,25 @@ void PatRecWidget::change_label(const int state)
 }
 // ===========================================================================
 
-VacuumWidget::VacuumWidget(const QString& label, QWidget* parent) :
-  QWidget(parent),
-  button_(0)
+VacuumWidget::VacuumWidget(const QString& label, QWidget* parent) : QWidget(parent)
 {
-  QGridLayout* layout = new QGridLayout(this);
-  this->setLayout(layout);
+  layout_ = new QFormLayout();
+  this->setLayout(layout_);
 
-  button_ = new QPushButton(label, this);
-  layout->addWidget(button_, 0, 0);
+  button_ = new QPushButton(label);
+  layout_->addRow(button_);
+
+  QGridLayout* grid = new QGridLayout();
 
   QRadioButton* radio_1 = new QRadioButton(tr("&Pickup"));
   QRadioButton* radio_2 = new QRadioButton(tr("&Spacers"));
   QRadioButton* radio_3 = new QRadioButton(tr("&Baseplate"));
 //  QRadioButton* radio_4 = new QRadioButton(tr("&Channel 4"));
 
-  layout->addWidget(radio_1, 1, 0);
-  layout->addWidget(radio_2, 3, 0);
-  layout->addWidget(radio_3, 5, 0);
-//  layout->addWidget(radio_4, 7, 0);
-
-  valves_.clear();
-  valves_.push_back(radio_1);
-  valves_.push_back(radio_2);
-  valves_.push_back(radio_3);
-//  valves_.push_back(radio4);
+  grid->addWidget(radio_1, 1, 0);
+  grid->addWidget(radio_2, 3, 0);
+  grid->addWidget(radio_3, 5, 0);
+//  grid->addWidget(radio_4, 7, 0);
 
   QPixmap pixmap(100, 100);
   pixmap.fill(QColor("transparent"));
@@ -823,10 +858,18 @@ VacuumWidget::VacuumWidget(const QString& label, QWidget* parent) :
 //  label_4->setText(" VACUUM OFF");
 //  label_4->setStyleSheet("QLabel { background-color : green; color : black; }");
 
-  layout->addWidget(label_1, 1, 1);
-  layout->addWidget(label_2, 3, 1);
-  layout->addWidget(label_3, 5, 1);
-//  layout->addWidget(label_4, 7, 1);
+  grid->addWidget(label_1, 1, 1);
+  grid->addWidget(label_2, 3, 1);
+  grid->addWidget(label_3, 5, 1);
+//  grid->addWidget(label_4, 7, 1);
+
+  layout_->addRow(grid);
+
+  valves_.clear();
+  valves_.push_back(radio_1);
+  valves_.push_back(radio_2);
+  valves_.push_back(radio_3);
+//  valves_.push_back(radio4);
 
   labels_.clear();
   labels_.push_back(label_1);

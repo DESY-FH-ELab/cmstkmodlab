@@ -163,6 +163,9 @@ class StringWidget : public QWidget
   explicit StringWidget(const QString&, const QString&, QWidget* parent=0);
   virtual ~StringWidget() {}
 
+  QPushButton* button() const { return button_; }
+  QLineEdit*   lineed() const { return lineed_; }
+
   QString get_input_string() const;
 
  protected:
@@ -189,6 +192,11 @@ class MoveWidget : public QWidget
 
   explicit MoveWidget(const QString&, const QString&, const bool move_relative=false, QWidget* parent=0);
   virtual ~MoveWidget() {}
+
+  QString get_input_string() const;
+
+  QPushButton* button() const { return button_; }
+  QLineEdit*   lineed() const { return lineed_; }
 
   void useMoveRelative(const bool b=false){ moveRelative_ = b; }
 
@@ -268,6 +276,11 @@ class VacuumWidget : public QWidget
   explicit VacuumWidget(const QString&, QWidget* parent=0);
   virtual ~VacuumWidget() {}
 
+  QFormLayout* layout() const { return layout_; }
+
+ protected:
+
+  QFormLayout* layout_;
   QPushButton* button_;
 
   std::vector<QRadioButton*> valves_;
