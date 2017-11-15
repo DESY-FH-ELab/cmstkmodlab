@@ -327,14 +327,14 @@ void AssemblyMainWindow::changeState_AutoFocus(int state)
 
     if(state == 2)
     {
-      NQLog("AssemblyMainWindow", NQLog::Message) << "changeState_AutoFocus"
+      NQLog("AssemblyMainWindow", NQLog::Spam) << "changeState_AutoFocus"
          << ": emitting signal \"AutoFocus_ON\"";
 
       emit AutoFocus_ON();
     }
     else if(state == 0)
     {
-      NQLog("AssemblyMainWindow", NQLog::Message) << "changeState_AutoFocus"
+      NQLog("AssemblyMainWindow", NQLog::Spam) << "changeState_AutoFocus"
          << ": emitting signal \"AutoFocus_OFF\"";
 
       emit AutoFocus_OFF();
@@ -452,8 +452,8 @@ void AssemblyMainWindow::changeState_Alignment(int state)
       connect   (module_assembler_ , SIGNAL(nextAlignmentStep   (int, double, double, double)), module_assembler_, SLOT(run_alignment(int, double, double, double)));
 
       connect   (module_assembler_ , SIGNAL(acquireImage())                                   , image_ctr_       , SLOT(acquire_image()));
-      connect   (marker_finder_    , SIGNAL(image_updated())                                  , marker_finder_   , SLOT(update_binary_image()));
-      connect   (marker_finder_    , SIGNAL(binary_image_updated())                           , marker_finder_   , SLOT(run_PatRec(1, 0)));
+      connect   (marker_finder_    , SIGNAL(       image_updated())                           , marker_finder_   , SLOT(update_binary_image()));
+      connect   (marker_finder_    , SIGNAL(binary_image_updated())                           , marker_finder_   , SLOT(run_PatRec_lab_marker()));
       connect   (marker_finder_    , SIGNAL(reportObjectLocation(int, double, double, double)), module_assembler_, SLOT(run_alignment(int, double, double, double)));
 
       connect   (module_assembler_ , SIGNAL(moveRelative(double, double, double, double))     , module_assembler_, SLOT(move_relative(double, double, double, double)));
@@ -467,8 +467,8 @@ void AssemblyMainWindow::changeState_Alignment(int state)
       disconnect(module_assembler_ , SIGNAL(nextAlignmentStep   (int, double, double, double)), module_assembler_, SLOT(run_alignment(int, double, double, double)));
 
       disconnect(module_assembler_ , SIGNAL(acquireImage())                                   , image_ctr_       , SLOT(acquire_image()));
-      disconnect(marker_finder_    , SIGNAL(image_updated())                                  , marker_finder_   , SLOT(update_binary_image()));
-      disconnect(marker_finder_    , SIGNAL(binary_image_updated())                           , marker_finder_   , SLOT(run_PatRec(1, 0)));
+      disconnect(marker_finder_    , SIGNAL(       image_updated())                           , marker_finder_   , SLOT(update_binary_image()));
+      disconnect(marker_finder_    , SIGNAL(binary_image_updated())                           , marker_finder_   , SLOT(run_PatRec_lab_marker()));
       disconnect(marker_finder_    , SIGNAL(reportObjectLocation(int, double, double, double)), module_assembler_, SLOT(run_alignment(int, double, double, double)));
 
       disconnect(module_assembler_ , SIGNAL(moveRelative(double, double, double, double))     , module_assembler_, SLOT(move_relative(double, double, double, double)));

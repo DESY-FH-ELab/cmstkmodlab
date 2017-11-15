@@ -78,6 +78,7 @@ class MarkerFinderPatRec : public QObject
   void update_angscan_parameters(QString);
 
   void run_PatRec(const int, const int);
+  void run_PatRec_lab_marker(){ this->run_PatRec(1, 0); }
 
   void template_matching(const cv::Mat&, const cv::Mat&, const cv::Mat&, const int);
 
@@ -90,6 +91,9 @@ class MarkerFinderPatRec : public QObject
 
   void        image_updated(const cv::Mat&);
   void binary_image_updated(const cv::Mat&);
+
+  void        image_updated();
+  void binary_image_updated();
 
   void run_template_matching(const cv::Mat&, const cv::Mat&, const cv::Mat&, const int);
 

@@ -101,6 +101,7 @@ void MarkerFinderPatRec::update_image(const cv::Mat& img)
      << ": emitting signal \"image_updated\"";
 
   emit image_updated(image_mas_);
+  emit image_updated();
 }
 
 void MarkerFinderPatRec::delete_image()
@@ -135,6 +136,7 @@ void MarkerFinderPatRec::update_binary_image()
        << ": emitting signal \"binary_image_updated\"";
 
     emit binary_image_updated(image_bin_);
+    emit binary_image_updated();
   }
   else
   {
