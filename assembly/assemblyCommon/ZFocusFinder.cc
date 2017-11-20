@@ -191,11 +191,10 @@ void ZFocusFinder::acquire_image()
 
     v_focus_vals_.clear();
 
-    /** scan N points around initial position
-     *  TO DO: introduce pre-scan routine to
-     *         pin down z-interval containing best-focus position,
-     *         followed by finer scan in that interval
-     */
+    // scan N points around initial position
+    // NOTE: should we introduce a pre-scan routine to
+    //       pin down z-interval containing best-focus position,
+    //       followed by finer scan in that interval?
     const double zmin = std::max(zposi_min_, zposi_init_ - (focus_zrange_/2.));
     const double zmax = std::min(zposi_max_, zposi_init_ + (focus_zrange_/2.));
 
@@ -389,9 +388,8 @@ void ZFocusFinder::process_image(const cv::Mat& img)
   return;
 }
 
-/* \Brief Image-focus discriminant based on Laplacian method in OpenCV
- *        REF: https://docs.opencv.org/2.4/doc/tutorials/imgproc/imgtrans/laplace_operator/laplace_operator.html
- */
+// \Brief Image-focus discriminant based on Laplacian method in OpenCV
+//        REF: https://docs.opencv.org/2.4/doc/tutorials/imgproc/imgtrans/laplace_operator/laplace_operator.html
 double ZFocusFinder::image_focus_value(const cv::Mat& img)
 {
 //  // Remove noise by blurring with a Gaussian filter

@@ -57,7 +57,7 @@ void AssemblyUEyeView::setImage(const cv::Mat& newImage)
     update();
 }
 
-void AssemblyUEyeView::paintEvent(QPaintEvent* /* ev */)
+void AssemblyUEyeView::paintEvent(QPaintEvent*)
 {
     if (!image_.isNull()) {
 

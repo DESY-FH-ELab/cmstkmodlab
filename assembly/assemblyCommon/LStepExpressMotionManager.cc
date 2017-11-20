@@ -191,3 +191,22 @@ void LStepExpressMotionManager::finish_motion()
 
     emit motion_finished();
 }
+
+void LStepExpressMotionManager::read_position3D()
+{
+  const double x = this->get_position_X();
+  const double y = this->get_position_Y();
+  const double z = this->get_position_Z();
+
+  emit position3D(x, y, z);
+}
+
+void LStepExpressMotionManager::read_position4D()
+{
+  const double x = this->get_position_X();
+  const double y = this->get_position_Y();
+  const double z = this->get_position_Z();
+  const double a = this->get_position_A();
+
+  emit position4D(x, y, z, a);
+}

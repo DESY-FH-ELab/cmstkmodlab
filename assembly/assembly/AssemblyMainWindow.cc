@@ -53,10 +53,12 @@ AssemblyMainWindow::AssemblyMainWindow(const unsigned int camera_ID, QWidget* pa
   camera_ID_(camera_ID),
   camera_(0),
 
-  zfocus_finder_(0),
-
   marker_finder_(0),
   marker_finder_thread_(0),
+
+  zfocus_finder_(0),
+
+  multipickup_tester_(0),
 
   conradModel_(0),
   conradManager_(0),
@@ -71,8 +73,8 @@ AssemblyMainWindow::AssemblyMainWindow(const unsigned int camera_ID, QWidget* pa
     ApplicationConfig* config = ApplicationConfig::instance();
     if(!config)
     {
-      NQLog("AssemblyMainWindow", NQLog::Fatal) << "ApplicationConfig::instance() not initialized, null pointer";
-      exit(1);
+      NQLog("AssemblyMainWindow", NQLog::Fatal) << "ApplicationConfig::instance() not initialized (null pointer), exiting";
+      return;
     }
 
     // motion
@@ -95,9 +97,10 @@ AssemblyMainWindow::AssemblyMainWindow(const unsigned int camera_ID, QWidget* pa
     {
       NQLog("AssemblyMainWindow", NQLog::Fatal)
          << "null pointer to AssemblyVUEyeCamera object"
-         << " (camera_ID="+std::to_string(camera_ID_)+")";
+         << " (camera_ID="+std::to_string(camera_ID_)+")"
+         << ", exiting";
 
-      exit(1);
+      return;
     }
 
     // marker finder
@@ -108,6 +111,9 @@ AssemblyMainWindow::AssemblyMainWindow(const unsigned int camera_ID, QWidget* pa
 
     // zfocus finder
     zfocus_finder_ = new ZFocusFinder(camera_, motion_manager_);
+
+    // multi-pickup tester
+    multipickup_tester_ = new MultiPickupTester(motion_manager_);
 
     /* TAB WIDGET ---------------------------------------------- */
     tabWidget_ = new QTabWidget(this);
@@ -175,6 +181,11 @@ AssemblyMainWindow::AssemblyMainWindow(const unsigned int camera_ID, QWidget* pa
     NQLog("AssemblyMainWindow", NQLog::Debug) << "emitting signal \"updateVacuumChannelsStatus\"";
 
     emit updateVacuumChannelsStatus();
+    // ---
+
+    // MULTI-PICKUP TESTER
+    connect(assembleView_, SIGNAL(multipickup_request       (const MultiPickupTester::Configuration&)),
+            this         , SLOT  (connect_multipickupNpatrec(const MultiPickupTester::Configuration&)));
     // ---
 
     /* --------------------------------------------------------- */
@@ -346,21 +357,17 @@ void AssemblyMainWindow::changeState_AutoFocus(int state)
 void AssemblyMainWindow::changeState_PrecisionEstimation(int /* state */)
 {
 /*
-    if(state == 2){
-
-      NQLog("AssemblyMainWindow::changeState_PrecisionEstimation") << "precision estimation ON";
-
-      connect(assembleView_, SIGNAL(launchPrecisionEstimation(double, double, double, double, double, double, int)), cmdr_zscan,
+   if(state == 2)
+   {
+     connect(assembleView_, SIGNAL(launchPrecisionEstimation(double, double, double, double, double, double, int)), cmdr_zscan,
                              SLOT  (run_precisionestimation  (double, double, double, double, double, double, int)));
 
-      connect   (cmdr_zscan        , SIGNAL(moveAbsolute(double, double, double, double)), motion_manager_, SLOT(moveAbsolute(double, double,double, double)));
-      connect   (motion_model_     , SIGNAL(motionFinished())                            , cmdr_zscan    , SLOT(process_step()));
-      connect   (cmdr_zscan        , SIGNAL(toggleVacuum(int))                           , conradManager_, SLOT(toggleVacuum(int)));
-      connect   (conradManager_    , SIGNAL(updateVacuumChannelState(int, bool))         , cmdr_zscan    , SIGNAL(nextStep()));
+     connect   (cmdr_zscan        , SIGNAL(moveAbsolute(double, double, double, double)), motion_manager_, SLOT(moveAbsolute(double, double,double, double)));
+     connect   (motion_model_     , SIGNAL(motionFinished())                            , cmdr_zscan    , SLOT(process_step()));
+     connect   (cmdr_zscan        , SIGNAL(toggleVacuum(int))                           , conradManager_, SLOT(toggleVacuum(int)));
+     connect   (conradManager_    , SIGNAL(updateVacuumChannelState(int, bool))         , cmdr_zscan    , SIGNAL(nextStep()));
 
-//      connect(cmdr_zscan, SIGNAL(toggleVacuum()), conradManager_, SLOT(changeVacuum()));
-//      for testing with random numbers
-//        connect(cmdr_zscan, SIGNAL(makeDummies(int, double,double,double)), cmdr_zscan, SLOT(fill_positionvectors(int, double,double,double)));
+
 
 //      for real lab tests with camera
       connect   (cmdr_zscan, SIGNAL(acquireImage())          , camera_      , SLOT(acquireImage()));
@@ -371,12 +378,10 @@ void AssemblyMainWindow::changeState_PrecisionEstimation(int /* state */)
       connect   (finder_   , SIGNAL(reportObjectLocation(int, double, double, double)), cmdr_zscan, SLOT(fill_positionvectors(int, double, double, double)));
       connect   (cmdr_zscan, SIGNAL(nextStep())                                       , cmdr_zscan, SLOT(process_step()));
 
-      NQLog("AssemblyMainWindow::changeState_PrecisionEstimation") << "signal-slot connections enabled";
+      NQLog("AssemblyMainWindow", NQLog::Message) << "changeState_PrecisionEstimation" << "pushup-mode enabled";
     }
-    else if(state == 0 ){
-
-      NQLog("AssemblyMainWindow::changeState_PrecisionEstimation") << "precision estimation OFF";
-
+    else if(state == 0 )
+    {
       disconnect(cmdr_zscan        , SIGNAL(moveAbsolute(double, double,double, double)), motion_manager_, SLOT(moveAbsolute(double, double,double, double)));
       disconnect(motion_model_     , SIGNAL(motionFinished())                           , camera_       , SLOT(acquireImage()));
       disconnect(cmdr_zscan        , SIGNAL(toggleVacuum(int))                          , conradManager_, SLOT(toggleVacuum(int)));
@@ -386,10 +391,11 @@ void AssemblyMainWindow::changeState_PrecisionEstimation(int /* state */)
       disconnect(cmdr_zscan        , SIGNAL(read_graph(vector<double>,vector<double>))  , autoFocusView_, SLOT(read_graph(vector<double>,vector<double>)));
       disconnect(cmdr_zscan        , SIGNAL(updateText(double))                         , autoFocusView_, SLOT(updateText(double)));
 
-      NQLog("AssemblyMainWindow::changeState_PrecisionEstimation") << "signal-slot connections disabled";
+      NQLog("AssemblyMainWindow", NQLog::Message) << "changeState_PrecisionEstimation" << "pushup-mode disabled";
     }
-*/
+
     return;
+*/
 }
 
 void AssemblyMainWindow::changeState_SandwichAssembly(int /* state */)
@@ -583,4 +589,64 @@ void AssemblyMainWindow::quit()
     }
 
     return;
+}
+
+void AssemblyMainWindow::connect_multipickupNpatrec(const MultiPickupTester::Configuration& conf)
+{
+  multipickup_tester_->set_configuration(conf);
+
+  connect(this               , SIGNAL(multipickupNpatrec_connected()), multipickup_tester_, SLOT(start_measurement()));
+  connect(multipickup_tester_, SIGNAL(measurement_finished())        , multipickup_tester_, SLOT(start_pickup()));
+  connect(multipickup_tester_, SIGNAL(pickup_finished())             , multipickup_tester_, SLOT(start_measurement()));
+  connect(multipickup_tester_, SIGNAL(test_finished())               , this               , SLOT(disconnect_multipickupNpatrec()));
+
+  // movement
+  connect(multipickup_tester_, SIGNAL(move_absolute(double, double, double, double)), motion_manager_, SLOT(moveAbsolute(double, double, double, double)));
+  connect(multipickup_tester_, SIGNAL(move_relative(double, double, double, double)), motion_manager_, SLOT(moveRelative(double, double, double, double)));
+
+  connect(motion_manager_, SIGNAL(motion_finished()), multipickup_tester_, SLOT(setup_next_step()));
+  // ---
+
+  // measurement
+  connect(multipickup_tester_, SIGNAL(measurement_request()) , image_ctr_         , SLOT(acquire_image()));
+  connect(marker_finder_     , SIGNAL(       image_updated()), marker_finder_     , SLOT(update_binary_image()));
+  connect(marker_finder_     , SIGNAL(binary_image_updated()), marker_finder_     , SLOT(run_PatRec_lab_marker()));
+  connect(marker_finder_     , SIGNAL(PatRec_exitcode(int))  , multipickup_tester_, SLOT(finish_measurement(int)));
+  // ---
+
+  // vacuum
+  connect(multipickup_tester_, SIGNAL(vacuum_toggle(int))  , conradManager_     , SLOT(toggleVacuum(int)));
+  connect(conradManager_     , SIGNAL(enableVacuumButton()), multipickup_tester_, SLOT(setup_next_step()));
+  // ---
+
+  emit multipickupNpatrec_connected();
+}
+
+void AssemblyMainWindow::disconnect_multipickupNpatrec()
+{
+  disconnect(this               , SIGNAL(multipickupNpatrec_connected()), multipickup_tester_, SLOT(start_measurement()));
+  disconnect(multipickup_tester_, SIGNAL(measurement_finished())        , multipickup_tester_, SLOT(start_pickup()));
+  disconnect(multipickup_tester_, SIGNAL(pickup_finished())             , multipickup_tester_, SLOT(start_measurement()));
+  disconnect(multipickup_tester_, SIGNAL(test_finished())               , this               , SLOT(disconnect_multipickupNpatrec()));
+
+  // movement
+  disconnect(multipickup_tester_, SIGNAL(move_absolute(double, double, double, double)), motion_manager_, SLOT(moveAbsolute(double, double, double, double)));
+  disconnect(multipickup_tester_, SIGNAL(move_relative(double, double, double, double)), motion_manager_, SLOT(moveRelative(double, double, double, double)));
+
+  disconnect(motion_manager_    , SIGNAL(motion_finished()), multipickup_tester_, SLOT(setup_next_step()));
+  // ---
+
+  // measurement
+  disconnect(multipickup_tester_, SIGNAL(measurement_request()) , image_ctr_         , SLOT(acquire_image()));
+  disconnect(marker_finder_     , SIGNAL(       image_updated()), marker_finder_     , SLOT(update_binary_image()));
+  disconnect(marker_finder_     , SIGNAL(binary_image_updated()), marker_finder_     , SLOT(run_PatRec_lab_marker()));
+  disconnect(marker_finder_     , SIGNAL(PatRec_exitcode(int))  , multipickup_tester_, SLOT(finish_measurement(int)));
+  // ---
+
+  // vacuum
+  disconnect(multipickup_tester_, SIGNAL(vacuum_toggle(int))  , conradManager_     , SLOT(toggleVacuum(int)));
+  disconnect(conradManager_     , SIGNAL(enableVacuumButton()), multipickup_tester_, SLOT(setup_next_step()));
+  // ---
+
+  emit multipickupNpatrec_disconnected();
 }

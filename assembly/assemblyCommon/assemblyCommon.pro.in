@@ -108,6 +108,7 @@ HEADERS += AssemblyVUEyeCamera.h \
            MarkerFinderManual.h \
            MarkerFinderPatRec.h \
            MarkerFinderPatRecThread.h \
+           MultiPickupTester.h \
            ImageController.h \
            ZFocusFinder.h \
            Util.h
@@ -153,6 +154,7 @@ SOURCES += AssemblyVUEyeCamera.cc \
            MarkerFinderManual.cc \
            MarkerFinderPatRec.cc \
            MarkerFinderPatRecThread.cc \
+           MultiPickupTester.cc \
            ImageController.cc \
            ZFocusFinder.cc \
            Util.cc

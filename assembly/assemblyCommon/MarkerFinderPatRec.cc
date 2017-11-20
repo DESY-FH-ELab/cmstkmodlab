@@ -466,10 +466,9 @@ void MarkerFinderPatRec::template_matching(const cv::Mat& img_master, const cv::
 
     // --- Template Matching
 
-    /* Template-Matching method for matchTemplate() routine of OpenCV
-     * For SQDIFF and SQDIFF_NORMED, the best matches are lower values. For all the other methods, the higher the better.
-     * REF https://docs.opencv.org/2.4/modules/imgproc/doc/object_detection.html?highlight=matchtemplate#matchtemplate
-     */
+    // Template-Matching method for matchTemplate() routine of OpenCV
+    // For SQDIFF and SQDIFF_NORMED, the best matches are lower values. For all the other methods, the higher the better.
+    // REF https://docs.opencv.org/2.4/modules/imgproc/doc/object_detection.html?highlight=matchtemplate#matchtemplate
     const int match_method = CV_TM_SQDIFF_NORMED;
     const bool use_minFOM = ((match_method  == CV_TM_SQDIFF) || (match_method == CV_TM_SQDIFF_NORMED));
 
@@ -565,10 +564,9 @@ void MarkerFinderPatRec::template_matching(const cv::Mat& img_master, const cv::
 
     this->draw_RotatedRect(img_master_copy, best_matchLoc, img_templa_bin.cols, img_templa_bin.rows, best_theta, cv::Scalar(0,0,255));
 
-    /* the circle of radius 4 is meant to *roughly* represent the x,y precision of the x-y motion stage
-     * so that the user can see if the patrec results make sense
-     * (the top left corner of the marker should be within the cirle)
-     */
+    // the circle of radius 4 is meant to *roughly* represent the x,y precision of the x-y motion stage
+    // so that the user can see if the patrec results make sense
+    // (the top left corner of the marker should be within the cirle)
     circle(img_master_copy, best_matchLoc, 4, cv::Scalar(255,0,0), 4, 8, 0);
     // ----------------------------------------
 
@@ -638,23 +636,23 @@ void MarkerFinderPatRec::template_matching(const cv::Mat& img_master, const cv::
     }
 
     NQLog("MarkerFinderPatRec", NQLog::Spam) << "template_matching"
-      << ": created output file: " << output_dir+"/PatRec_results.txt";
+       << ": created output file: " << output_dir+"/PatRec_results.txt";
     // ------------------
+
+    NQLog("MarkerFinderPatRec", NQLog::Debug) << "template_matching"
+       << ": emitting signal \"PatRec_exitcode(0)\"";
 
     emit PatRec_exitcode(0);
 
-/*
 //    const cv::Rect rect_result = cv::Rect(best_matchLoc, cv::Point(best_matchLoc.x + img_templa_bin.cols, best_matchLoc.y + img_templa_bin.rows));
-
-    //work out match location in field of view
-    // the origin of the FOV coordinate system is the top left corner
-    //the match loction (centre of the template) is calculated in mm
-    //this should be enough for postion correction with moverealtive()
-
-    //matchLoc_x_lab = (best_matchLoc.x +  (img_templa_bin.cols/2) ) * (5.0/img_master.cols); // need to add the current X pos of the lang
-    //matchLoc_y_lab = (best_matchLoc.y +  (img_templa_bin.rows/2) ) * (4.0/img_master.rows); // need to add the current Y pos of the lang
-
-*/
+//
+//    //work out match location in field of view
+//    // the origin of the FOV coordinate system is the top left corner
+//    //the match loction (centre of the template) is calculated in mm
+//    //this should be enough for postion correction with moverealtive()
+//
+//    //matchLoc_x_lab = (best_matchLoc.x +  (img_templa_bin.cols/2) ) * (5.0/img_master.cols); // need to add the current X pos of the lang
+//    //matchLoc_y_lab = (best_matchLoc.y +  (img_templa_bin.rows/2) ) * (4.0/img_master.rows); // need to add the current Y pos of the lang
 }
 
 void MarkerFinderPatRec::PatRec(double& fom, cv::Point& match_loc, const cv::Mat& img_master_bin, const cv::Mat& img_templa_bin, const double angle, const int match_method, const std::string& out_dir) const

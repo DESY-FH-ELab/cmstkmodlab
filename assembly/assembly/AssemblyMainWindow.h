@@ -46,6 +46,7 @@ typedef AssemblyUEyeModel AssemblyUEyeModel_t;
 #include <ImageController.h>
 #include <MarkerFinderPatRec.h>
 #include <MarkerFinderPatRecThread.h>
+#include <MultiPickupTester.h>
 #include <ZFocusFinder.h>
 
 #include <QMainWindow>
@@ -76,6 +77,9 @@ class AssemblyMainWindow : public QMainWindow
     void changeState_SandwichAssembly   (int);
     void changeState_Alignment          (int);
 
+    void    connect_multipickupNpatrec(const MultiPickupTester::Configuration&);
+    void disconnect_multipickupNpatrec();
+
     void testTimer();
 
     void quit();
@@ -91,6 +95,9 @@ class AssemblyMainWindow : public QMainWindow
 
     void AutoFocus_ON();
     void AutoFocus_OFF();
+
+    void multipickupNpatrec_connected();
+    void multipickupNpatrec_disconnected();
 
   protected slots:
 
@@ -128,17 +135,19 @@ class AssemblyMainWindow : public QMainWindow
     unsigned int              camera_ID_;
     AssemblyVUEyeCamera*      camera_;
 
-    ZFocusFinder*       zfocus_finder_;
-
     MarkerFinderPatRec*       marker_finder_;
     MarkerFinderPatRecThread* marker_finder_thread_;
+
+    ZFocusFinder*      zfocus_finder_;
+
+    MultiPickupTester* multipickup_tester_;
 
     ConradModel*       conradModel_;
     ConradManager*     conradManager_;
 
     AssemblyAssembler* module_assembler_;
 
-    ImageController* image_ctr_;
+    ImageController*   image_ctr_;
 
     double testTimerCount_;
 

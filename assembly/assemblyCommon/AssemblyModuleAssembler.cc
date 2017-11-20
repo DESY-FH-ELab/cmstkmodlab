@@ -36,9 +36,7 @@
 #include <TGraph.h>
 #include <TCanvas.h>
 
-using namespace cv;
-
-AssemblyModuleAssembler::AssemblyModuleAssembler(LStepExpressMotionManager* motion_manager, MarkerFinderPatRec* finder, QWidget* parent) :
+AssemblyModuleAssembler::AssemblyModuleAssembler(const LStepExpressMotionManager* motion_manager, MarkerFinderPatRec* finder, QWidget* parent) :
   QWidget(parent),
 
   scrollArea_1_(0),
@@ -74,11 +72,12 @@ AssemblyModuleAssembler::AssemblyModuleAssembler(LStepExpressMotionManager* moti
     return;
   }
 
-  QGridLayout *l = new QGridLayout();
-  setLayout(l);
+  QGridLayout*    layout = new QGridLayout(this);
+  this->setLayout(layout);
 
-  QGridLayout *g0 = new QGridLayout();
-  l->addLayout(g0, 0, 0);
+  // IMAGE VIEW(S) -------
+  QGridLayout* g0 = new QGridLayout();
+  layout->addLayout(g0, 0, 0);
 
   QPalette palette;
   palette.setColor(QPalette::Background, QColor(220, 220, 220));
@@ -164,9 +163,29 @@ AssemblyModuleAssembler::AssemblyModuleAssembler(LStepExpressMotionManager* moti
   g0->addWidget(scrollArea_4_, 2, 1);
 //  liedit_4_ = new QLineEdit("Dtchd pos. = ,X,X");
 //  g0->addWidget(liedit_4_, 3, 0);
+  // ---------------------
 
-  QFormLayout* f1 = new QFormLayout();
-  l->addLayout(f1, 0, 1);
+  // MULTI-PICKUP WIDGET -
+  //   repeatitions of "pick-up + PatRec" procedure
+  //   to measure module-misplacement introduced by the pick-up
+  QFormLayout* f10 = new QFormLayout();
+  layout->addLayout(f10, 1, 0);
+
+  QGroupBox* box_mupiup = new QGroupBox(tr("\"Pickup + PatRec\" Iterations"));
+
+    MultiPickupTesterWidget* w_mupiup = new MultiPickupTesterWidget("Run \"Pickup + PatRec\"", motion_manager);
+    f10->addRow(w_mupiup);
+
+    connect(w_mupiup, SIGNAL(multipickup_request(const MultiPickupTester::Configuration&)),
+            this    , SIGNAL(multipickup_request(const MultiPickupTester::Configuration&)));
+
+  box_mupiup->setLayout(w_mupiup->layout());
+
+  f10->addRow(box_mupiup);
+  // ---------------------
+
+  QFormLayout* f01 = new QFormLayout();
+  layout->addLayout(f01, 0, 1);
 
   // MOVE WIDGETS --------
   QGroupBox* box_move = new QGroupBox(tr("Motion Stage"));
@@ -197,7 +216,7 @@ AssemblyModuleAssembler::AssemblyModuleAssembler(LStepExpressMotionManager* moti
 
   box_move->setLayout(g_move);
 
-  f1->addRow(box_move);
+  f01->addRow(box_move);
   // ---------------------
 
   // VACUUM WIDGET -------
@@ -207,7 +226,7 @@ AssemblyModuleAssembler::AssemblyModuleAssembler(LStepExpressMotionManager* moti
 
   box_vacuum->setLayout(w_vacuum_->layout());
 
-  f1->addRow(box_vacuum);
+  f01->addRow(box_vacuum);
   // ---------------------
 
   // PATREC  WIDGET ------
@@ -233,27 +252,28 @@ AssemblyModuleAssembler::AssemblyModuleAssembler(LStepExpressMotionManager* moti
 
   box_patrec->setLayout(w_patrec->layout());
 
-  f1->addRow(box_patrec);
+  f01->addRow(box_patrec);
   // ---------------------
 
-//!!  AssemblyPrecisionEstimator * precision1 = new AssemblyPrecisionEstimator(this, "Estimate Assembly Precision", "-200.0,0.0,0.0", "0.0,0.0,0.0", 1 , cnrd1);
-//!!//  f1->addRow(precision1);
-//!!
-//!!  connect(precision1, SIGNAL(launchPrecisionEstimation(double, double, double, double, double, double, int)),
-//!!          this      , SLOT  (startMacro               (double, double, double, double, double, double, int)));
+  // ALIGNMENT WIDGET ----
+  QFormLayout* f11 = new QFormLayout();
+  layout->addLayout(f11, 1, 1);
 
-  // SandwichAssembler
-  QGridLayout* g2 = new QGridLayout();
-  l->addLayout(g2, 1, 1);
+  QGroupBox* box_alignm = new QGroupBox(tr("Alignment"));
 
-  AssemblySandwichAssembler* sandwich1 = new AssemblySandwichAssembler(this, "Assemble Sandwich");
-  g2->addWidget(sandwich1, 0, 0);
+    AssemblySandwichAssembler* w_alignm = new AssemblySandwichAssembler(this, "Assemble Sandwich");
 
-  connect(sandwich1, SIGNAL(launchSandwichAssembly(double, double, double, double, double, double, double, double, double)),
-          this     , SIGNAL(launchSandwichAssembly(double, double, double, double, double, double, double, double, double)));
+    w_alignm->setToolTip("(4) Aligns object to target angle (with respect to the motion stage x-axis)");
 
-  connect(sandwich1, SIGNAL(launchAlignment(int, double, double, double)),
-          this     , SIGNAL(launchAlignment(int, double, double, double)));
+    connect(w_alignm, SIGNAL(launchSandwichAssembly(double, double, double, double, double, double, double, double, double)),
+            this    , SIGNAL(launchSandwichAssembly(double, double, double, double, double, double, double, double, double)));
+
+    connect(w_alignm, SIGNAL(launchAlignment(int, double, double, double)),
+            this    , SIGNAL(launchAlignment(int, double, double, double)));
+
+  box_alignm->setLayout(w_alignm->layout());
+
+  f11->addRow(box_alignm);
   // ---------------------
 }
 
@@ -275,13 +295,6 @@ void AssemblyModuleAssembler::updateText(int stage, double x, double y, double a
     liedit_1_->setText("Object location = "   +posi_qstr+" [pixel #, pixel #] (field of view)");
     liedit_2_->setText("Object orientation = "+orie_qstr+" degrees");
   }
-}
-
-void AssemblyModuleAssembler::startMacro(double x_meas, double y_meas, double z_meas, double x_pickup, double y_pickup, double z_pickup, int iterations)
-{
-    NQLog("AssemblyModuleAssembler::startMacro");
-    
-    emit launchPrecisionEstimation(x_meas,  y_meas,  z_meas,  x_pickup,  y_pickup, z_pickup, iterations);
 }
 
 void AssemblyModuleAssembler::updateImage(const int stage, const QString& filename)
@@ -366,105 +379,147 @@ void AssemblyModuleAssembler::keyReleaseEvent(QKeyEvent * event)
 }
 // ===========================================================================
 
-AssemblyPrecisionEstimator::AssemblyPrecisionEstimator(QWidget *parent, std::string text, std::string measurement_position, std::string pickup_position, int /* iterations */, ConradModel* /* cnrd1 */)
-: QWidget(parent)
+MultiPickupTesterWidget::MultiPickupTesterWidget(const QString& label, const LStepExpressMotionManager* motion_manager, QWidget* parent) :
+  QWidget(parent),
+  motion_manager_(motion_manager)
 {
-    QGridLayout *l = new QGridLayout(this);
-    setLayout(l);
-    
-    QString q_pu_pos = QString::fromStdString(pickup_position);
-    QString q_meas_pos = QString::fromStdString(measurement_position);
-    QString qname = QString::fromStdString(text);
-
-    button1 = new QPushButton(qname, this);
-    l->addWidget(button1,0,0);
-    
-    QFormLayout *fl1 = new QFormLayout();
-    l->addLayout(fl1,1,0);
-
-    label1 = new QLabel();
-    lineEdit1 = new QLineEdit();
-    fl1->addRow(label1,lineEdit1);
-
-    label2 = new QLabel();
-    lineEdit2 = new QLineEdit();
-    fl1->addRow(label2,lineEdit2);
-    
-    label3 = new QLabel();
-    lineEdit3 = new QLineEdit();
-    fl1->addRow(label3,lineEdit3);
-    
-
-    label1->setText("Measurement position (x,y,z)");
-    label2->setText("Pickup position (x,y,z)");
-    label3->setText("N iterations");
-    
-    
-    lineEdit1->setText("48.9792,58.0699,-88.1536");
-    lineEdit2->setText("-39.6346,17.4785,-119.1284,0.0");
-    lineEdit3->setText("1");
-
-    connect(button1, SIGNAL(clicked()), this, SLOT(run()));
+  if(!motion_manager_)
+  {
+    NQLog("MultiPickupTesterWidget", NQLog::Critical)
+       << "input error: null pointer to LStepExpressMotionManager object, initialization stopped";
 
     return;
+  }
+
+  layout_ = new QGridLayout(this);
+  this->setLayout(layout_);
+
+  exe_button_ = new QPushButton(label);
+  layout_->addWidget(exe_button_, 0, 0);
+
+  QFormLayout* fl1 = new QFormLayout();
+  layout_->addLayout(fl1, 1, 0);
+
+  QGridLayout* g2 = new QGridLayout();
+
+  measur_label_  = new QLabel("Measurement Position (x,y,z)");
+  measur_lineed_ = new QLineEdit("0,0,0");
+  measur_button_ = new QPushButton("Update");
+  g2->addWidget(measur_label_ , 0, 0);
+  g2->addWidget(measur_lineed_, 0, 1);
+  g2->addWidget(measur_button_, 0, 2);
+
+  pickup_label_  = new QLabel("Pickup Position (x,y,z)");
+  pickup_lineed_ = new QLineEdit("0,0,0");
+  pickup_button_ = new QPushButton("Update");
+  g2->addWidget(pickup_label_ , 1, 0);
+  g2->addWidget(pickup_lineed_, 1, 1);
+  g2->addWidget(pickup_button_, 1, 2);
+
+  iteraN_label_  = new QLabel("N Iterations (int)");
+  iteraN_lineed_ = new QLineEdit("10");
+  g2->addWidget(iteraN_label_ , 2, 0);
+  g2->addWidget(iteraN_lineed_, 2, 1);
+
+  fl1->addRow(g2);
+
+  connect(exe_button_   , SIGNAL(clicked()), this, SLOT(execute()));
+  connect(measur_button_, SIGNAL(clicked()), this, SLOT(update_position_measurement()));
+  connect(pickup_button_, SIGNAL(clicked()), this, SLOT(update_position_pickup()));
 }
 
-void AssemblyPrecisionEstimator::recordPosition(double /* x */, double /* y */, double /* theta */)
+void MultiPickupTesterWidget::update_position_measurement()
 {
-  NQLog("AssemblyPrecisionEstimator::recordPosition");
+  const double x = motion_manager_->get_position_X();
+  const double y = motion_manager_->get_position_Y();
+  const double z = motion_manager_->get_position_Z();
+
+  const std::string posi_str = std::to_string(x)+", "+std::to_string(y)+", "+std::to_string(z);
+
+  measur_lineed_->setText(QString::fromStdString(posi_str));
 
   return;
 }
 
-void AssemblyPrecisionEstimator::run()
+void MultiPickupTesterWidget::update_position_pickup()
 {
-    
-    NQLog("AssemblyPrecisionEstimator") << ":run";
-    
-    
-    
-    //parse lineEdit text to get target coordinates
-    QString  parent_string_meas = this->lineEdit1->text();
-    
-    QStringList pieces_meas = parent_string_meas.split( "," );
-    QString x_meas_s = pieces_meas.value( pieces_meas.length() - 3);
-    QString y_meas_s = pieces_meas.value( pieces_meas.length() - 2);
-    QString z_meas_s = pieces_meas.value( pieces_meas.length() -1);
-    
-    double x_meas_d = x_meas_s.toDouble();
-    double y_meas_d = y_meas_s.toDouble();
-    double z_meas_d = z_meas_s.toDouble();
-    
-    
-    QString  parent_string_pickup = this->lineEdit2->text();
-    
-    QStringList pieces_pickup = parent_string_pickup.split( "," );
-    QString x_pickup_s = pieces_pickup.value( pieces_pickup.length() - 3);
-    QString y_pickup_s = pieces_pickup.value( pieces_pickup.length() - 2);
-    QString z_pickup_s = pieces_pickup.value( pieces_pickup.length() - 1);
-    
-    double x_pickup_d = x_pickup_s.toDouble();
-    double y_pickup_d = y_pickup_s.toDouble();
-    double z_pickup_d = z_pickup_s.toDouble();
-    
-    
-    QString  parent_string_iterations = this->lineEdit3->text();
-    
-    int iterations_i = parent_string_iterations.toInt();
-    
-    NQLog("AssemblyPrecisionEstimator::run")<<  " x_m = " << x_meas_d <<  " y_m = " << y_meas_d << " z_m = " << z_meas_d << " x_p = " << x_pickup_d  << " y_p = " << y_pickup_d  <<" z_p = " << z_pickup_d <<  " iterations = " << iterations_i;
+  const double x = motion_manager_->get_position_X();
+  const double y = motion_manager_->get_position_Y();
+  const double z = motion_manager_->get_position_Z();
 
+  const std::string posi_str = std::to_string(x)+", "+std::to_string(y)+", "+std::to_string(z);
 
-    emit launchPrecisionEstimation(x_meas_d, y_meas_d, z_meas_d, x_pickup_d, y_pickup_d, z_pickup_d, iterations_i );
-    
+  pickup_lineed_->setText(QString::fromStdString(posi_str));
+
+  return;
+}
+
+void MultiPickupTesterWidget::execute()
+{
+  NQLog("MultiPickupTesterWidget", NQLog::Debug) << "execute";
+
+  // measurement position
+  const QString measur_qstr = this->measur_lineed_->text().remove(" ");
+
+  const QStringList measur_qsl = measur_qstr.split(",");
+
+  if(measur_qsl.length() != 3)
+  {
+    NQLog("MultiPickupTesterWidget", NQLog::Debug) << "execute"
+      << "invalid format for measurement position (" << measur_qstr << "), no action taken";
+
+    return;
+  }
+
+  const double measur_x = measur_qsl.at(0).toDouble();
+  const double measur_y = measur_qsl.at(1).toDouble();
+  const double measur_z = measur_qsl.at(2).toDouble();
+
+  // pickup position
+  const QString pickup_qstr = this->pickup_lineed_->text().remove(" ");
+
+  const QStringList pickup_qsl = pickup_qstr.split(",");
+
+  if(pickup_qsl.length() != 3)
+  {
+    NQLog("MultiPickupTesterWidget", NQLog::Debug) << "execute"
+      << "invalid format for pick-up position (" << pickup_qstr << "), no action taken";
+
+    return;
+  }
+
+  const double pickup_x = pickup_qsl.at(0).toDouble();
+  const double pickup_y = pickup_qsl.at(1).toDouble();
+  const double pickup_z = pickup_qsl.at(2).toDouble();
+
+  // number of iterations
+  const QString iteraN_qstr = this->iteraN_lineed_->text().remove(" ");
+
+  const double iteraN = iteraN_qstr.toInt();
+
+  // output signal
+  NQLog("MultiPickupTesterWidget", NQLog::Debug) << "execute"
+     << ": emitting signal \"multipickup_request"
+     <<  "(m_x=" << measur_x <<  ", m_y=" << measur_y << ", m_z=" << measur_z
+     << ", p_x=" << pickup_x <<  ", p_y=" << pickup_y << ", p_z=" << pickup_z
+     << ", n=" << iteraN << ")\"";
+
+  const MultiPickupTester::Configuration mpt_conf
+  (
+    measur_x, measur_y, measur_z,
+    pickup_x, pickup_y, pickup_z,
+    iteraN
+  );
+
+  emit multipickup_request(mpt_conf);
 }
 // ===========================================================================
 
-AssemblySandwichAssembler::AssemblySandwichAssembler(QWidget *parent, std::string text, std::string /* assembly_position */, std::string /* bottom_part_position */, std::string /* top_part_position */)
-: QWidget(parent)
+AssemblySandwichAssembler::AssemblySandwichAssembler(QWidget *parent, std::string text, std::string /* assembly_position */, std::string /* bottom_part_position */, std::string /* top_part_position */) :
+  QWidget(parent)
 {
     QGridLayout *l = new QGridLayout(this);
-    setLayout(l);
+    this->setLayout(l);
     
     //QString q_assembly_pos = QString::fromStdString(assembly_pickup);
     //QString q_bottom_pos = QString::fromStdString(bottom_part_position);

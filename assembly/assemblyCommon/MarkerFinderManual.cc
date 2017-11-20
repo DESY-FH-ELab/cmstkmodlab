@@ -833,7 +833,7 @@ void MarkerFinderManual::findMarker_circleSeed(int mode)
             double ang = fabs(ang2) - fabs(ang1);
             
             
-            if ( fabs(ang) > 80.0  && fabs(ang) < 100.0   &&   abs(cross) > /*EPS*/1e-7){
+            if ( fabs(ang) > 80.0  && fabs(ang) < 100.0   &&   abs(cross) > 1e-7){// EPS
                 double t1 = (x.x * d2.y - x.y * d2.x)/cross;
                 r = o1 + d1 * t1;
                 intersections_.push_back(r);

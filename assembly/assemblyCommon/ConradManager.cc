@@ -37,7 +37,6 @@ void ConradManager::toggleVacuum(int chNumber)
 
   if(ConradModel_->getSwitchState(chNumber) == 0)
   {
-
     //NQLog("ConradManager") << ": attempt to turn ON the vacuum on channel " << chNumber;
     ConradModel_ -> setSwitchEnabled(chNumber, true);
     channelNumber = chNumber;
@@ -46,7 +45,6 @@ void ConradManager::toggleVacuum(int chNumber)
     liveTimer_ -> start(togglingVacuumDelay);
 
     //emit updateVacuumChannelState(chNumber - 1, true);
-                
   }
   else if(ConradModel_->getSwitchState(chNumber) == 1)
   {
@@ -56,8 +54,6 @@ void ConradManager::toggleVacuum(int chNumber)
 
     // here will be a QtTimer for about 2 secs
     liveTimer_ -> start(togglingVacuumDelay);
-    
-    // here will be a QtTimer for about 2 secs
 
     //emit updateVacuumChannelState(chNumber - 1, false);
   }
@@ -86,7 +82,7 @@ void ConradManager::vacuumToggled()
 
 void ConradManager::updateVacuumChannelsStatus()
 {  
-  for (int i = 0; i < 3; ++i)
+  for(int i=0; i<3; ++i)
   {
     NQLog("ConradManager", NQLog::Debug) << "vacuumToggled"
        << ": emitting signal \"updateVacuumChannelState("
@@ -94,8 +90,6 @@ void ConradManager::updateVacuumChannelsStatus()
 
     emit updateVacuumChannelState(i, ConradModel_->getSwitchState(i+1));
   }
-
-  return;
 }
 
 // maybe need checkStatus SLOT

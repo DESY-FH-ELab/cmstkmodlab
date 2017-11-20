@@ -16,8 +16,7 @@
 
 #include "LaserModel.h"
 
-LaserModel::LaserModel(const char* port,
-	           QObject * /*parent*/)
+LaserModel::LaserModel(const char* port, QObject*)
     : QObject(),
       AbstractDeviceModel<Keyence_t>(),
       Laser_PORT(port)

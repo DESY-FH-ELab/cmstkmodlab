@@ -20,10 +20,9 @@
 
 #include <opencv2/opencv.hpp>
 
-/*! \brief ImageController: CONTROLLER
- *           Wrapper class for camera model including
- *           auto-focusing (vertical movement of the motion stage)
- */
+// \brief ImageController: CONTROLLER
+//          Wrapper class for camera model including
+//          auto-focusing (vertical movement of the motion stage)
 class ImageController : public QObject
 {
  Q_OBJECT

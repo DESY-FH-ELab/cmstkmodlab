@@ -15,8 +15,9 @@
 
 #include <AssemblyUEyeView.h>
 #include <AssemblyVUEyeCamera.h>
-#include <MarkerFinderPatRec.h>
 #include <LStepExpressMotionManager.h>
+#include <MarkerFinderPatRec.h>
+#include <MultiPickupTester.h>
 #include <ConradModel.h>
 
 #include <string>
@@ -44,7 +45,7 @@ class AssemblyModuleAssembler : public QWidget
 
  public:
 
-  explicit AssemblyModuleAssembler(LStepExpressMotionManager*, MarkerFinderPatRec*, QWidget* parent=0);
+  explicit AssemblyModuleAssembler(const LStepExpressMotionManager*, MarkerFinderPatRec*, QWidget* parent=0);
 
   double pickup_position;
 
@@ -78,13 +79,13 @@ class AssemblyModuleAssembler : public QWidget
   void updateImage(const int, const cv::Mat&);
 
   void updateText(const int, const double, const double, const double);
-  void startMacro(double, double, double, double, double, double, int);
 
  signals:
 
+  void multipickup_request(const MultiPickupTester::Configuration&);
+
   void launchAlignment(int, double, double, double);
 
-  void launchPrecisionEstimation(double, double, double, double, double, double, int);
   void launchSandwichAssembly(double, double, double, double, double, double, double, double, double);
 };
 // ===========================================================================
@@ -236,35 +237,52 @@ class PatRecWidget : public QWidget
 };
 // ===========================================================================
 
-class AssemblyPrecisionEstimator : public QWidget
+class MultiPickupTesterWidget : public QWidget
 {
-    Q_OBJECT
-public:
-    
-    explicit AssemblyPrecisionEstimator(QWidget *parent = 0, std::string text ="Estimate Assembly Precision",
-                                        std::string measurement_position = "0.0,0.0,0.0", std::string pickup_position = "0.0,0.0,0.0", int iterations = 1 , ConradModel * conradModel_ = 0);
-    
-    double local_x, local_y, local_z, local_a;
-    QPushButton* button1;
-    
-    QLabel * label1;
-    QLabel * label2;
-    QLabel * label3;
-    
-    QLineEdit *lineEdit1;
-    QLineEdit *lineEdit2;
-    QLineEdit *lineEdit3;
+ Q_OBJECT
 
-    
-    protected:
-    
-    public slots:
-    void recordPosition(double,double,double);
-    void run();
-signals:
-    void moveAbsolute(double,double,double,double);
-    void locateMarker();
-    void launchPrecisionEstimation(double, double, double, double, double, double, int);
+ public:
+
+  explicit MultiPickupTesterWidget(const QString&, const LStepExpressMotionManager*, QWidget* parent=0);
+  virtual ~MultiPickupTesterWidget() {}
+
+  QGridLayout* layout() const { return layout_; }
+
+  double local_x, local_y, local_z, local_a;
+
+ protected:
+
+  const LStepExpressMotionManager* motion_manager_;
+
+  QGridLayout* layout_;
+
+  QPushButton* exe_button_;
+
+  QLabel *     pickup_label_;
+  QLineEdit*   pickup_lineed_;
+  QPushButton* pickup_button_;
+
+  QLabel*      measur_label_;
+  QLineEdit*   measur_lineed_;
+  QPushButton* measur_button_;
+
+  QLabel*      iteraN_label_;
+  QLineEdit*   iteraN_lineed_;
+
+ public slots:
+
+  void execute();
+
+  void update_position_measurement();
+  void update_position_pickup();
+
+ signals:
+
+//!!  void moveAbsolute(double, double, double, double);
+//!!
+//!!  void locateMarker();
+
+  void multipickup_request(const MultiPickupTester::Configuration&);
 };
 // ===========================================================================
 

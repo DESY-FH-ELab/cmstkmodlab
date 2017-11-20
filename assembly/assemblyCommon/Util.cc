@@ -69,7 +69,15 @@ bool Util::IsFile(const std::string& path)
 void Util::cv_imwrite_png(const std::string& path, const cv::Mat& img)
 {
   cv::Mat img_conv;
-  cv::cvtColor(img, img_conv, CV_BGR2RGB);
+
+  if(img.channels() > 1)
+  {
+    cv::cvtColor(img, img_conv, CV_BGR2RGB);
+  }
+  else
+  {
+    img_conv = img.clone();
+  }
 
   cv::imwrite(path, img_conv);
 
