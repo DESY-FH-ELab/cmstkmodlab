@@ -59,6 +59,7 @@ AssemblyMainWindow::AssemblyMainWindow(const unsigned int camera_ID, QWidget* pa
   zfocus_finder_(0),
 
   multipickup_tester_(0),
+  multipickup_tester_thread_(0),
 
   conradModel_(0),
   conradManager_(0),
@@ -104,8 +105,7 @@ AssemblyMainWindow::AssemblyMainWindow(const unsigned int camera_ID, QWidget* pa
     }
 
     // marker finder
-    marker_finder_ = new MarkerFinderPatRec(Util::QtCacheDirectory()+"/MarkerFinderPatRec", "rotations");
-
+    marker_finder_        = new MarkerFinderPatRec(Util::QtCacheDirectory()+"/MarkerFinderPatRec", "rotations");
     marker_finder_thread_ = new MarkerFinderPatRecThread(marker_finder_, this);
     marker_finder_thread_->start();
 
@@ -113,7 +113,9 @@ AssemblyMainWindow::AssemblyMainWindow(const unsigned int camera_ID, QWidget* pa
     zfocus_finder_ = new ZFocusFinder(camera_, motion_manager_);
 
     // multi-pickup tester
-    multipickup_tester_ = new MultiPickupTester(motion_manager_);
+    multipickup_tester_        = new MultiPickupTester(motion_manager_);
+    multipickup_tester_thread_ = new MultiPickupTesterThread(multipickup_tester_, this);
+    multipickup_tester_thread_->start();
 
     /* TAB WIDGET ---------------------------------------------- */
     tabWidget_ = new QTabWidget(this);

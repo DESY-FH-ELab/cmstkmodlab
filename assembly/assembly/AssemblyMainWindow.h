@@ -47,6 +47,7 @@ typedef AssemblyUEyeModel AssemblyUEyeModel_t;
 #include <MarkerFinderPatRec.h>
 #include <MarkerFinderPatRecThread.h>
 #include <MultiPickupTester.h>
+#include <MultiPickupTesterThread.h>
 #include <ZFocusFinder.h>
 
 #include <QMainWindow>
@@ -138,9 +139,10 @@ class AssemblyMainWindow : public QMainWindow
     MarkerFinderPatRec*       marker_finder_;
     MarkerFinderPatRecThread* marker_finder_thread_;
 
-    ZFocusFinder*      zfocus_finder_;
+    ZFocusFinder* zfocus_finder_;
 
-    MultiPickupTester* multipickup_tester_;
+    MultiPickupTester*        multipickup_tester_;
+    MultiPickupTesterThread*  multipickup_tester_thread_;
 
     ConradModel*       conradModel_;
     ConradManager*     conradManager_;
