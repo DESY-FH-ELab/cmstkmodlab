@@ -143,8 +143,8 @@ class AssemblyMainWindow : public QMainWindow
 
     ZFocusFinder* zfocus_finder_;
 
-    MultiPickupTester*        multipickup_tester_;
-    MultiPickupTesterThread*  multipickup_tester_thread_;
+    MultiPickupTester*        multipickup_;
+    MultiPickupTesterThread*  multipickup_thread_;
 
     ConradModel*       conradModel_;
     ConradManager*     conradManager_;
