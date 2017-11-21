@@ -44,6 +44,7 @@ typedef AssemblyUEyeModel AssemblyUEyeModel_t;
 #include <ConradModel.h>
 #include <ConradManager.h>
 #include <ImageController.h>
+#include <ImageControllerThread.h>
 #include <MarkerFinderPatRec.h>
 #include <MarkerFinderPatRecThread.h>
 #include <MultiPickupTester.h>
@@ -150,7 +151,8 @@ class AssemblyMainWindow : public QMainWindow
 
     AssemblyAssembler* module_assembler_;
 
-    ImageController*   image_ctr_;
+    ImageController*       image_ctr_;
+    ImageControllerThread* image_ctr_thread_;
 
     double testTimerCount_;
 

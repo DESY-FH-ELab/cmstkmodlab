@@ -67,6 +67,7 @@ AssemblyMainWindow::AssemblyMainWindow(const unsigned int camera_ID, QWidget* pa
   module_assembler_(0),
 
   image_ctr_(0),
+  image_ctr_thread_(0),
 
   testTimerCount_(0.),
   liveTimer_(0)
@@ -278,9 +279,12 @@ void AssemblyMainWindow::enable_images()
     if(!image_ctr_)
     {
       image_ctr_ = new ImageController(camera_, zfocus_finder_);
+      image_ctr_thread_ = new ImageControllerThread(image_ctr_);
 
       connect(this    , SIGNAL(images_ON())      , image_ctr_, SLOT(enable()));
       connect(this    , SIGNAL(images_OFF())     , image_ctr_, SLOT(disable()));
+
+      image_ctr_thread_->start();
     }
 
     connect(image_ctr_, SIGNAL(camera_enabled()) , this      , SLOT(connect_images()));
@@ -637,7 +641,7 @@ void AssemblyMainWindow::quit_thread(QThread* thread, const std::string& msg) co
 
       thread->quit();
 
-      NQLog("AssemblyMainWindow", NQLog::Message) << "quit_thread: terminated "+msg+" thread";
+      NQLog("AssemblyMainWindow", NQLog::Message) << "quit_thread: "+msg;
     }
 }
 
@@ -653,10 +657,11 @@ void AssemblyMainWindow::quit()
       camera_ = 0;
     }
 
-    this->quit_thread(camera_thread_            , "AssemblyVUEyeCamera");
-    this->quit_thread(motion_thread_            , "LStepExpressMotionManager");
-    this->quit_thread(marker_finder_thread_     , "MarkerFinderPatRec");
-    this->quit_thread(multipickup_tester_thread_, "MultiPickupTester");
+    this->quit_thread(camera_thread_            , "terminated AssemblyUEyeCameraThread");
+    this->quit_thread(motion_thread_            , "terminated LStepExpressMotionThread");
+    this->quit_thread(image_ctr_thread_         , "terminated ImageControllerThread");
+    this->quit_thread(marker_finder_thread_     , "terminated MarkerFinderPatRecThread");
+    this->quit_thread(multipickup_tester_thread_, "terminated MultiPickupTesterThread");
 
     return;
 }

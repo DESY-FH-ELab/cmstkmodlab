@@ -111,6 +111,7 @@ HEADERS += AssemblyVUEyeCamera.h \
            MultiPickupTester.h \
            MultiPickupTesterThread.h \
            ImageController.h \
+           ImageControllerThread.h \
            ZFocusFinder.h \
            Util.h
 
@@ -158,6 +159,7 @@ SOURCES += AssemblyVUEyeCamera.cc \
            MultiPickupTester.cc \
            MultiPickupTesterThread.cc \
            ImageController.cc \
+           ImageControllerThread.cc \
            ZFocusFinder.cc \
            Util.cc
 
