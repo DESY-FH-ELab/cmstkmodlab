@@ -587,6 +587,9 @@ void AssemblyMainWindow::connect_multipickupNpatrec(const MultiPickupTester::Con
     connect(conradManager_     , SIGNAL(enableVacuumButton()), multipickup_tester_, SLOT(setup_next_step()));
     // ---
 
+    NQLog("AssemblyMainWindow", NQLog::Debug) << "connect_multipickupNpatrec"
+       << ": emitting signal \"multipickupNpatrec_connected\"";
+
     emit multipickupNpatrec_connected();
 }
 
@@ -616,7 +619,13 @@ void AssemblyMainWindow::disconnect_multipickupNpatrec()
     disconnect(conradManager_     , SIGNAL(enableVacuumButton()), multipickup_tester_, SLOT(setup_next_step()));
     // ---
 
+    NQLog("AssemblyMainWindow", NQLog::Debug) << "disconnect_multipickupNpatrec"
+       << ": emitting signal \"multipickupNpatrec_disconnected\"";
+
     emit multipickupNpatrec_disconnected();
+
+    NQLog("AssemblyMainWindow", NQLog::Message) << "disconnect_multipickupNpatrec"
+       << ": multi-pickup test completed";
 }
 
 void AssemblyMainWindow::testTimer()
@@ -641,7 +650,7 @@ void AssemblyMainWindow::quit_thread(QThread* thread, const std::string& msg) co
          thread->wait();
       }
 
-      NQLog("AssemblyMainWindow", NQLog::Message) << "quit_thread: "+msg;
+      NQLog("AssemblyMainWindow", NQLog::Spam) << "quit_thread: "+msg;
     }
 }
 
@@ -649,7 +658,7 @@ void AssemblyMainWindow::quit()
 {
     if(camera_)
     {
-      NQLog("AssemblyMainWindow", NQLog::Message) << "quit"
+      NQLog("AssemblyMainWindow", NQLog::Debug) << "quit"
          << ": emitting signal \"images_OFF\"";
 
       emit images_OFF();
@@ -662,6 +671,8 @@ void AssemblyMainWindow::quit()
     this->quit_thread(image_ctr_thread_         , "terminated ImageControllerThread");
     this->quit_thread(marker_finder_thread_     , "terminated MarkerFinderPatRecThread");
     this->quit_thread(multipickup_tester_thread_, "terminated MultiPickupTesterThread");
+
+    NQLog("AssemblyMainWindow", NQLog::Message) << "quit: application closed";
 
     return;
 }
