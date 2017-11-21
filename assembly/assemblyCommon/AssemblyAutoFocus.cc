@@ -196,21 +196,6 @@ void AssemblyAutoFocus::go_to_focal_point()
   return;    
 }
 
-//!! void AssemblyAutoFocus::updateImage(const int stage, const QString& filename)
-//!! {
-//!!   NQLog("AssemblyAutoFocus", NQLog::Debug) << "updateImage(" << stage << ", " << filename << ")";
-//!! 
-//!!   const cv::Mat img_gs = cv::imread(filename.toStdString(), CV_LOAD_IMAGE_COLOR);
-//!! 
-//!!   if(stage == 1)
-//!!   {
-//!!     imageView_1_->setZoomFactor(0.2);
-//!!     imageView_1_->setImage(img_gs);    
-//!!   }
-//!! 
-//!!   return;
-//!! }
-
 void AssemblyAutoFocus::connectImageProducer(const QObject* sender, const char* signal)
 {
   NQLog("AssemblyAutoFocus", NQLog::Debug) << "connectImageProducer";

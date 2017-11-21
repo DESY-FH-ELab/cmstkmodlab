@@ -61,7 +61,6 @@ class AssemblyAutoFocus : public QWidget
   void read_graph(const QString&);
   void updateText(double);
   void go_to_focal_point();
-//!!  void updateImage(const int, const QString&);
 
  signals:
 
