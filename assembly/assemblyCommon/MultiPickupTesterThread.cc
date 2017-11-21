@@ -19,7 +19,17 @@ MultiPickupTesterThread::MultiPickupTesterThread(MultiPickupTester* tester, QObj
   QThread(parent),
   tester_(tester)
 {
+  if(tester_ == NULL)
+  {
+    NQLog("MultiPickupTesterThread", NQLog::Fatal) << "initialization error"
+       << ": null pointer to MultiPickupTester object, exiting constructor";
+
+    return;
+  }
+
   tester_->moveToThread(this);
+
+//  connect(this, SIGNAL(finished()), this, SLOT(deleteLater()));
 
   NQLog("MultiPickupTesterThread", NQLog::Debug) << "constructed";
 }

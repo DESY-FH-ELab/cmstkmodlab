@@ -19,7 +19,17 @@ ImageControllerThread::ImageControllerThread(ImageController* imagec, QObject* p
   QThread(parent),
   imagec_(imagec)
 {
+  if(imagec_ == NULL)
+  {
+    NQLog("ImageControllerThread", NQLog::Fatal) << "initialization error"
+       << ": null pointer to ImageController object, exiting constructor";
+
+    return;
+  }
+
   imagec_->moveToThread(this);
+
+//  connect(this, SIGNAL(finished()), this, SLOT(deleteLater()));
 
   NQLog("ImageControllerThread", NQLog::Debug) << "constructed";
 }

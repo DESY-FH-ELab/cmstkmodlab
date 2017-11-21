@@ -19,7 +19,17 @@ MarkerFinderPatRecThread::MarkerFinderPatRecThread(MarkerFinderPatRec* finder, Q
   QThread(parent),
   finder_(finder)
 {
+  if(finder_ == NULL)
+  {
+    NQLog("MarkerFinderPatRecThread", NQLog::Fatal) << "initialization error"
+       << ": null pointer to MarkerFinderPatRec object, exiting constructor";
+
+    return;
+  }
+
   finder_->moveToThread(this);
+
+//  connect(this, SIGNAL(finished()), this, SLOT(deleteLater()));
 
   NQLog("MarkerFinderPatRecThread", NQLog::Debug) << "constructed";
 }

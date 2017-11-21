@@ -83,8 +83,7 @@ AssemblyMainWindow::AssemblyMainWindow(const unsigned int camera_ID, QWidget* pa
     motion_model_   = new LStepExpressModel(config->getValue<std::string>("LStepExpressDevice").c_str(), 1000, 1000);
     motion_manager_ = new LStepExpressMotionManager(motion_model_);
 
-    motion_thread_  = new LStepExpressMotionThread(this);
-    motion_manager_->myMoveToThread(motion_thread_);
+    motion_thread_  = new LStepExpressMotionThread(motion_manager_, this);
     motion_thread_->start();
 
     // camera
@@ -634,12 +633,13 @@ void AssemblyMainWindow::quit_thread(QThread* thread, const std::string& msg) co
 {
     if(thread)
     {
+      thread->quit();
+
       if(thread->wait(2000) == false)
       {
          thread->terminate();
+         thread->wait();
       }
-
-      thread->quit();
 
       NQLog("AssemblyMainWindow", NQLog::Message) << "quit_thread: "+msg;
     }

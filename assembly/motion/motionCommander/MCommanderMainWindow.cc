@@ -31,10 +31,9 @@ MCommanderMainWindow::MCommanderMainWindow(QWidget *parent)
   lStepExpressModel_ = new LStepExpressModel(config->getValue<std::string>("LStepExpressDevice").c_str(), 1000, 100);
   //lStepExpressSettings_ = new LStepExpressSettings(lStepExpressModel_);
   motionManager_ = new LStepExpressMotionManager(lStepExpressModel_);
-  motionThread_ = new LStepExpressMotionThread(this);
-  motionThread_->start();
+  motionThread_ = new LStepExpressMotionThread(motionManager_, this);
   //lStepExpressSettings_->moveToThread(motionThread_);
-  motionManager_->myMoveToThread(motionThread_);
+  motionThread_->start();
 
   laserModel_ = new LaserModel(config->getValue<std::string>("KeyenceDevice").c_str());
   laserThread_ = new LaserThread(this);
