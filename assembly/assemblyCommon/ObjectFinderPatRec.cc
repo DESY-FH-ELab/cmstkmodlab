@@ -10,7 +10,7 @@
 //                                                                             //
 /////////////////////////////////////////////////////////////////////////////////
 
-#include <MarkerFinderPatRec.h>
+#include <ObjectFinderPatRec.h>
 #include <ApplicationConfig.h>
 #include <nqlogger.h>
 #include <Util.h>
@@ -24,9 +24,9 @@
 #include <TCanvas.h>
 #include <TH1.h>
 
-int MarkerFinderPatRec::exe_counter_ = -1;
+int ObjectFinderPatRec::exe_counter_ = -1;
 
-MarkerFinderPatRec::MarkerFinderPatRec(const QString& output_dir_path, const QString& output_subdir_name, QObject* parent) :
+ObjectFinderPatRec::ObjectFinderPatRec(const QString& output_dir_path, const QString& output_subdir_name, QObject* parent) :
   QObject(parent),
 
   output_dir_path_   (output_dir_path   .toStdString()),
@@ -49,15 +49,15 @@ MarkerFinderPatRec::MarkerFinderPatRec(const QString& output_dir_path, const QSt
           this, SLOT  (    template_matching(const cv::Mat&, const cv::Mat&, const cv::Mat&, const int)));
   // -----------
 
-  NQLog("MarkerFinderPatRec", NQLog::Debug) << "constructed";
+  NQLog("ObjectFinderPatRec", NQLog::Debug) << "constructed";
 }
 
-MarkerFinderPatRec::~MarkerFinderPatRec()
+ObjectFinderPatRec::~ObjectFinderPatRec()
 {
-  NQLog("MarkerFinderPatRec", NQLog::Debug) << "destructed";
+  NQLog("ObjectFinderPatRec", NQLog::Debug) << "destructed";
 }
 
-void MarkerFinderPatRec::set_threshold(const int v)
+void ObjectFinderPatRec::set_threshold(const int v)
 {
   if(threshold_ != v)
   {
@@ -71,25 +71,25 @@ void MarkerFinderPatRec::set_threshold(const int v)
   return;
 }
 
-void MarkerFinderPatRec::update_threshold(const int v)
+void ObjectFinderPatRec::update_threshold(const int v)
 {
   this->set_threshold(v);
 
-  NQLog("MarkerFinderPatRec", NQLog::Debug) << "update_threshold(" << v << ")"
+  NQLog("ObjectFinderPatRec", NQLog::Debug) << "update_threshold(" << v << ")"
      << ": emitting signal \"threshold_updated\"";
 
   emit threshold_updated();
 }
 
-void MarkerFinderPatRec::acquire_image()
+void ObjectFinderPatRec::acquire_image()
 {
-  NQLog("MarkerFinderPatRec", NQLog::Debug) << "acquire_image"
+  NQLog("ObjectFinderPatRec", NQLog::Debug) << "acquire_image"
      << ": emitting signal \"image\"";
 
   emit image_request();
 }
 
-void MarkerFinderPatRec::update_image(const cv::Mat& img)
+void ObjectFinderPatRec::update_image(const cv::Mat& img)
 {
   image_mas_ = img;
 
@@ -97,14 +97,14 @@ void MarkerFinderPatRec::update_image(const cv::Mat& img)
 
   if(updated_image_master_binary_){ updated_image_master_binary_ = false; }
 
-  NQLog("MarkerFinderPatRec", NQLog::Debug) << "update_image"
+  NQLog("ObjectFinderPatRec", NQLog::Debug) << "update_image"
      << ": emitting signal \"image_updated\"";
 
   emit image_updated(image_mas_);
   emit image_updated();
 }
 
-void MarkerFinderPatRec::delete_image()
+void ObjectFinderPatRec::delete_image()
 {
   image_mas_ = cv::Mat();
 
@@ -113,13 +113,13 @@ void MarkerFinderPatRec::delete_image()
   return;
 }
 
-void MarkerFinderPatRec::update_binary_image()
+void ObjectFinderPatRec::update_binary_image()
 {
   if(updated_image_master_)
   {
     if(!updated_threshold_)
     {
-      NQLog("MarkerFinderPatRec", NQLog::Warning) << "update_binary_image"
+      NQLog("ObjectFinderPatRec", NQLog::Warning) << "update_binary_image"
          << ": threshold value not available, no binary image produced";
 
       return;
@@ -129,10 +129,10 @@ void MarkerFinderPatRec::update_binary_image()
 
     if(!updated_image_master_binary_){ updated_image_master_binary_ = true; }
 
-    NQLog("MarkerFinderPatRec", NQLog::Spam) << "update_binary_image"
+    NQLog("ObjectFinderPatRec", NQLog::Spam) << "update_binary_image"
        << ": created binary image with threshold=" << threshold_;
 
-    NQLog("MarkerFinderPatRec", NQLog::Debug) << "update_binary_image"
+    NQLog("ObjectFinderPatRec", NQLog::Debug) << "update_binary_image"
        << ": emitting signal \"binary_image_updated\"";
 
     emit binary_image_updated(image_bin_);
@@ -140,14 +140,14 @@ void MarkerFinderPatRec::update_binary_image()
   }
   else
   {
-    NQLog("MarkerFinderPatRec", NQLog::Warning) << "update_binary_image"
+    NQLog("ObjectFinderPatRec", NQLog::Warning) << "update_binary_image"
        << ": master image not available, no binary image produced (hint: enable camera and get an image)";
 
     return;
   }
 }
 
-cv::Mat MarkerFinderPatRec::get_binary_image(const cv::Mat& img, const int threshold) const
+cv::Mat ObjectFinderPatRec::get_binary_image(const cv::Mat& img, const int threshold) const
 {
   // greyscale image
   cv::Mat img_gs(img.size(), img.type());
@@ -169,7 +169,7 @@ cv::Mat MarkerFinderPatRec::get_binary_image(const cv::Mat& img, const int thres
   return img_bin;
 }
 
-void MarkerFinderPatRec::delete_binary_image()
+void ObjectFinderPatRec::delete_binary_image()
 {
   image_bin_ = cv::Mat();
 
@@ -178,7 +178,7 @@ void MarkerFinderPatRec::delete_binary_image()
   return;
 }
 
-void MarkerFinderPatRec::update_rough_angles(QString qstr)
+void ObjectFinderPatRec::update_rough_angles(QString qstr)
 {
   const QStringList entries = qstr.remove(" ").split(",");
 
@@ -191,24 +191,24 @@ void MarkerFinderPatRec::update_rough_angles(QString qstr)
       v_rough_angles_.emplace_back(entries.value(i).toDouble());
     }
 
-    NQLog("MarkerFinderPatRec", NQLog::Message) << "update_rough_angles"
+    NQLog("ObjectFinderPatRec", NQLog::Message) << "update_rough_angles"
        << ": updated list of rough angles: " << qstr;
 
-    NQLog("MarkerFinderPatRec", NQLog::Debug) << "update_rough_angles"
+    NQLog("ObjectFinderPatRec", NQLog::Debug) << "update_rough_angles"
        << ": emitting signal \"rough_angles_updated\"";
 
     emit rough_angles_updated();
   }
   else
   {
-    NQLog("MarkerFinderPatRec", NQLog::Warning) << "update_rough_angles"
+    NQLog("ObjectFinderPatRec", NQLog::Warning) << "update_rough_angles"
        << ": input string with invalid format (" << qstr << "), no action taken";
 
     return;
   }
 }
 
-void MarkerFinderPatRec::update_angscan_parameters(QString qstr)
+void ObjectFinderPatRec::update_angscan_parameters(QString qstr)
 {
   const QStringList entries = qstr.remove(" ").split(",");
 
@@ -217,35 +217,35 @@ void MarkerFinderPatRec::update_angscan_parameters(QString qstr)
     theta_fine_range_ = entries.value(0).toDouble();
     theta_fine_step_  = entries.value(1).toDouble();
 
-    NQLog("MarkerFinderPatRec", NQLog::Message) << "update_angscan_parameters"
+    NQLog("ObjectFinderPatRec", NQLog::Message) << "update_angscan_parameters"
        << ": updated parameters of angular-scan:"
        << " (theta_fine_range=" << theta_fine_range_
        << ", theta_fine_step="  << theta_fine_step_ << ")";
 
-    NQLog("MarkerFinderPatRec", NQLog::Debug) << "update_angscan_parameters"
+    NQLog("ObjectFinderPatRec", NQLog::Debug) << "update_angscan_parameters"
        << ": emitting signal \"angscan_parameters_updated\"";
 
     emit angscan_parameters_updated();
   }
   else
   {
-    NQLog("MarkerFinderPatRec", NQLog::Warning) << "update_angscan_parameters"
+    NQLog("ObjectFinderPatRec", NQLog::Warning) << "update_angscan_parameters"
        << ": input string with invalid format (" << qstr << "), no action taken";
 
     return;
   }
 }
 
-void MarkerFinderPatRec::run_PatRec(const int mode_lab, const int mode_obj)
+void ObjectFinderPatRec::run_PatRec(const int mode_lab, const int mode_obj)
 {
-  NQLog("MarkerFinderPatRec", NQLog::Message) << "run_PatRec"
+  NQLog("ObjectFinderPatRec", NQLog::Message) << "run_PatRec"
      << "(mode_lab=" << mode_lab << ", mode_obj=" << mode_obj << ")"
      << ": initiated Pattern Recognition";
 
   // --- input validation
   if(!updated_threshold_)
   {
-    NQLog("MarkerFinderPatRec", NQLog::Warning) << "run_PatRec"
+    NQLog("ObjectFinderPatRec", NQLog::Warning) << "run_PatRec"
        << "(mode_lab=" << mode_lab << ", mode_obj=" << mode_obj << ")"
        << ": threshold value not available, no action taken";
 
@@ -258,7 +258,7 @@ void MarkerFinderPatRec::run_PatRec(const int mode_lab, const int mode_obj)
     // --- input validation
     if(!updated_image_master_)
     {
-      NQLog("MarkerFinderPatRec", NQLog::Warning) << "run_PatRec"
+      NQLog("ObjectFinderPatRec", NQLog::Warning) << "run_PatRec"
          << "(mode_lab=" << mode_lab << ", mode_obj=" << mode_obj << ")"
          << ": updated master image not available, no action taken";
 
@@ -270,7 +270,7 @@ void MarkerFinderPatRec::run_PatRec(const int mode_lab, const int mode_obj)
 
     if(mode_obj == 0)
     {
-      NQLog("MarkerFinderPatRec", NQLog::Spam) << "run_PatRec"
+      NQLog("ObjectFinderPatRec", NQLog::Spam) << "run_PatRec"
          << "(mode_lab=" << mode_lab << ", mode_obj=" << mode_obj << ")"
          << ": detection of sensor fiducial marker";
 
@@ -282,7 +282,7 @@ void MarkerFinderPatRec::run_PatRec(const int mode_lab, const int mode_obj)
     }
     else if(mode_obj == 1)
     {
-      NQLog("MarkerFinderPatRec", NQLog::Warning) << "run_PatRec"
+      NQLog("ObjectFinderPatRec", NQLog::Warning) << "run_PatRec"
          << "(mode_lab=" << mode_lab << ", mode_obj=" << mode_obj << ")"
          << ": detection of positioning pin not implemented yet, no action taken";
 
@@ -290,7 +290,7 @@ void MarkerFinderPatRec::run_PatRec(const int mode_lab, const int mode_obj)
     }
     else if(mode_obj == 2)
     {
-      NQLog("MarkerFinderPatRec", NQLog::Spam) << "run_PatRec"
+      NQLog("ObjectFinderPatRec", NQLog::Spam) << "run_PatRec"
          << "(mode_lab=" << mode_lab << ", mode_obj=" << mode_obj << ")"
          << ": detection of sensor corner";
 
@@ -302,7 +302,7 @@ void MarkerFinderPatRec::run_PatRec(const int mode_lab, const int mode_obj)
     }
     else if(mode_obj == 3)
     {
-      NQLog("MarkerFinderPatRec", NQLog::Spam) << "run_PatRec"
+      NQLog("ObjectFinderPatRec", NQLog::Spam) << "run_PatRec"
          << "(mode_lab=" << mode_lab << ", mode_obj=" << mode_obj << ")"
          << ": detection of spacer corner";
 
@@ -312,7 +312,7 @@ void MarkerFinderPatRec::run_PatRec(const int mode_lab, const int mode_obj)
     }
     else
     {
-      NQLog("MarkerFinderPatRec", NQLog::Warning) << "run_PatRec"
+      NQLog("ObjectFinderPatRec", NQLog::Warning) << "run_PatRec"
          << "(mode_lab=" << mode_lab << ", mode_obj=" << mode_obj << ")"
          << ": undefined value for object-mode, no action taken";
 
@@ -323,7 +323,7 @@ void MarkerFinderPatRec::run_PatRec(const int mode_lab, const int mode_obj)
   {
     if(mode_obj == 0)
     {
-      NQLog("MarkerFinderPatRec", NQLog::Spam) << "run_PatRec"
+      NQLog("ObjectFinderPatRec", NQLog::Spam) << "run_PatRec"
          << "(mode_lab=" << mode_lab << ", mode_obj=" << mode_obj << ")"
          << ": detection of sensor fiducial marker";
 
@@ -334,7 +334,7 @@ void MarkerFinderPatRec::run_PatRec(const int mode_lab, const int mode_obj)
     }
     else if(mode_obj == 1)
     {
-      NQLog("MarkerFinderPatRec", NQLog::Warning) << "run_PatRec"
+      NQLog("ObjectFinderPatRec", NQLog::Warning) << "run_PatRec"
          << "(mode_lab=" << mode_lab << ", mode_obj=" << mode_obj << ")"
          << ": detection of positioning pin not implemented yet, no action taken";
 
@@ -342,7 +342,7 @@ void MarkerFinderPatRec::run_PatRec(const int mode_lab, const int mode_obj)
     }
     else if(mode_obj == 2)
     {
-      NQLog("MarkerFinderPatRec", NQLog::Spam) << "run_PatRec"
+      NQLog("ObjectFinderPatRec", NQLog::Spam) << "run_PatRec"
          << "(mode_lab=" << mode_lab << ", mode_obj=" << mode_obj << ")"
          << ": detection of sensor corner";
 
@@ -353,7 +353,7 @@ void MarkerFinderPatRec::run_PatRec(const int mode_lab, const int mode_obj)
     }
     else if(mode_obj == 3)
     {
-      NQLog("MarkerFinderPatRec", NQLog::Spam) << "run_PatRec"
+      NQLog("ObjectFinderPatRec", NQLog::Spam) << "run_PatRec"
          << "(mode_lab=" << mode_lab << ", mode_obj=" << mode_obj << ")"
          << ": detection of spacer corner not implemented, no action taken";
 
@@ -361,7 +361,7 @@ void MarkerFinderPatRec::run_PatRec(const int mode_lab, const int mode_obj)
     }
     else
     {
-      NQLog("MarkerFinderPatRec", NQLog::Warning) << "run_PatRec"
+      NQLog("ObjectFinderPatRec", NQLog::Warning) << "run_PatRec"
          << "(mode_lab=" << mode_lab << ", mode_obj=" << mode_obj << ")"
          << ": undefined value for object-mode, no action taken";
 
@@ -373,27 +373,27 @@ void MarkerFinderPatRec::run_PatRec(const int mode_lab, const int mode_obj)
   }
   else
   {
-    NQLog("MarkerFinderPatRec", NQLog::Warning) << "run_PatRec"
+    NQLog("ObjectFinderPatRec", NQLog::Warning) << "run_PatRec"
        << "(mode_lab=" << mode_lab << ", mode_obj=" << mode_obj << ")"
        << ": undefined value for lab-mode, no action taken";
 
     return;
   }
 
-  NQLog("MarkerFinderPatRec", NQLog::Debug) << "run_PatRec"
+  NQLog("ObjectFinderPatRec", NQLog::Debug) << "run_PatRec"
      << "(mode_lab=" << mode_lab << ", mode_obj=" << mode_obj << ")"
      << ": emitting signal \"run_template_matching\"";
 
   emit run_template_matching(image_mas_, image_bin_, image_tpl_, threshold_tpl_);
 }
 
-void MarkerFinderPatRec::template_matching(const cv::Mat& img_master, const cv::Mat& img_master_bin, const cv::Mat& img_templa, const int threshold_templa)
+void ObjectFinderPatRec::template_matching(const cv::Mat& img_master, const cv::Mat& img_master_bin, const cv::Mat& img_templa, const int threshold_templa)
 {
-    NQLog("MarkerFinderPatRec", NQLog::Debug) << "template_matching";
-    NQLog("MarkerFinderPatRec", NQLog::Debug) << "template_matching: Master   cols = " << img_master.cols;
-    NQLog("MarkerFinderPatRec", NQLog::Debug) << "template_matching: Master   rows = " << img_master.rows;
-    NQLog("MarkerFinderPatRec", NQLog::Debug) << "template_matching: Template cols = " << img_templa.cols;
-    NQLog("MarkerFinderPatRec", NQLog::Debug) << "template_matching: Template rows = " << img_templa.rows;
+    NQLog("ObjectFinderPatRec", NQLog::Debug) << "template_matching";
+    NQLog("ObjectFinderPatRec", NQLog::Debug) << "template_matching: Master   cols = " << img_master.cols;
+    NQLog("ObjectFinderPatRec", NQLog::Debug) << "template_matching: Master   rows = " << img_master.rows;
+    NQLog("ObjectFinderPatRec", NQLog::Debug) << "template_matching: Template cols = " << img_templa.cols;
+    NQLog("ObjectFinderPatRec", NQLog::Debug) << "template_matching: Template rows = " << img_templa.rows;
 
     // output directory
     std::string output_dir(""), output_subdir("");
@@ -421,11 +421,11 @@ void MarkerFinderPatRec::template_matching(const cv::Mat& img_master, const cv::
 
     Util::QDir_mkpath(output_dir);
 
-    NQLog("MarkerFinderPatRec", NQLog::Message) << "template_matching: created output directory: " << output_dir;
+    NQLog("ObjectFinderPatRec", NQLog::Message) << "template_matching: created output directory: " << output_dir;
 
     Util::QDir_mkpath(output_subdir);
 
-    NQLog("MarkerFinderPatRec", NQLog::Message) << "template_matching: created output directory: " << output_subdir;
+    NQLog("ObjectFinderPatRec", NQLog::Message) << "template_matching: created output directory: " << output_subdir;
     // -----------
 
     // GreyScale images
@@ -450,17 +450,17 @@ void MarkerFinderPatRec::template_matching(const cv::Mat& img_master, const cv::
 
     cv::imwrite(filepath_img_master_bin, img_master_bin);
 
-    NQLog("MarkerFinderPatRec", NQLog::Spam) << "template_matching"
+    NQLog("ObjectFinderPatRec", NQLog::Spam) << "template_matching"
        << ": saved master-binary image to " << filepath_img_master_bin;
 
     Util::cv_imwrite_png(filepath_img_templa, img_templa);
 
-    NQLog("MarkerFinderPatRec", NQLog::Spam) << "template_matching"
+    NQLog("ObjectFinderPatRec", NQLog::Spam) << "template_matching"
        << ": saved template image to " << filepath_img_templa;
 
     cv::imwrite(filepath_img_templa_bin, img_templa_bin);
 
-    NQLog("MarkerFinderPatRec", NQLog::Spam) << "template_matching"
+    NQLog("ObjectFinderPatRec", NQLog::Spam) << "template_matching"
        << ": saved template-binary image to " << filepath_img_templa_bin;
     // -----------
 
@@ -472,7 +472,7 @@ void MarkerFinderPatRec::template_matching(const cv::Mat& img_master, const cv::
     const int match_method = CV_TM_SQDIFF_NORMED;
     const bool use_minFOM = ((match_method  == CV_TM_SQDIFF) || (match_method == CV_TM_SQDIFF_NORMED));
 
-    NQLog("MarkerFinderPatRec", NQLog::Spam) << "template_matching" << ": initiated matching routine with angular scan";
+    NQLog("ObjectFinderPatRec", NQLog::Spam) << "template_matching" << ": initiated matching routine with angular scan";
 
     // First, get theta-rough angle: best guess of central value for finer angular scan
     double theta_rough(-9999.);
@@ -497,20 +497,20 @@ void MarkerFinderPatRec::template_matching(const cv::Mat& img_master, const cv::
     }
     else
     {
-      NQLog("MarkerFinderPatRec", NQLog::Critical) << "template_matching"
+      NQLog("ObjectFinderPatRec", NQLog::Critical) << "template_matching"
          << ": empty list of rough angles, stopping Pattern Recognition";
 
       return;
     }
 
-    NQLog("MarkerFinderPatRec", NQLog::Message) << "template_matching" << ": rough estimate of best-angle yields best-theta=" << theta_rough;
+    NQLog("ObjectFinderPatRec", NQLog::Message) << "template_matching" << ": rough estimate of best-angle yields best-theta=" << theta_rough;
     // ----------------
 
     const double theta_fine_min  = -1.0 * theta_fine_range_;
     const double theta_fine_max  = +1.0 * theta_fine_range_;
     const double theta_fine_step =        theta_fine_step_;
 
-    NQLog("MarkerFinderPatRec", NQLog::Message) << "template_matching" << ": angular scan parameters"
+    NQLog("ObjectFinderPatRec", NQLog::Message) << "template_matching" << ": angular scan parameters"
        << "(min="<< theta_rough+theta_fine_min << ", max=" << theta_rough+theta_fine_max << ", step=" << theta_fine_step << ")";
 
     const int N_rotations = (2 * int((theta_fine_max-theta_fine_min) / theta_fine_step));
@@ -544,11 +544,11 @@ void MarkerFinderPatRec::template_matching(const cv::Mat& img_master, const cv::
 
       vec_angleNfom.emplace_back(std::make_pair(i_theta, i_FOM));
 
-      NQLog("MarkerFinderPatRec", NQLog::Spam) << "template_matching"
+      NQLog("ObjectFinderPatRec", NQLog::Spam) << "template_matching"
          << ": angular scan: [" << scan_counter << "] theta=" << i_theta << ", FOM=" << i_FOM;
     }
 
-    NQLog("MarkerFinderPatRec", NQLog::Message) << "template_matching"
+    NQLog("ObjectFinderPatRec", NQLog::Message) << "template_matching"
        << ": angular scan completed: best_theta=" << best_theta;
 
     // copy of master image
@@ -635,11 +635,11 @@ void MarkerFinderPatRec::template_matching(const cv::Mat& img_master, const cv::
       txtfile.close();
     }
 
-    NQLog("MarkerFinderPatRec", NQLog::Spam) << "template_matching"
+    NQLog("ObjectFinderPatRec", NQLog::Spam) << "template_matching"
        << ": created output file: " << output_dir+"/PatRec_results.txt";
     // ------------------
 
-    NQLog("MarkerFinderPatRec", NQLog::Debug) << "template_matching"
+    NQLog("ObjectFinderPatRec", NQLog::Debug) << "template_matching"
        << ": emitting signal \"PatRec_exitcode(0)\"";
 
     emit PatRec_exitcode(0);
@@ -655,7 +655,7 @@ void MarkerFinderPatRec::template_matching(const cv::Mat& img_master, const cv::
 //    //matchLoc_y_lab = (best_matchLoc.y +  (img_templa_bin.rows/2) ) * (4.0/img_master.rows); // need to add the current Y pos of the lang
 }
 
-void MarkerFinderPatRec::PatRec(double& fom, cv::Point& match_loc, const cv::Mat& img_master_bin, const cv::Mat& img_templa_bin, const double angle, const int match_method, const std::string& out_dir) const
+void ObjectFinderPatRec::PatRec(double& fom, cv::Point& match_loc, const cv::Mat& img_master_bin, const cv::Mat& img_templa_bin, const double angle, const int match_method, const std::string& out_dir) const
 {
   // rotated master image
   cv::Mat img_master_bin_rot;
@@ -674,7 +674,7 @@ void MarkerFinderPatRec::PatRec(double& fom, cv::Point& match_loc, const cv::Mat
 
     cv::imwrite(filepath_img_master_bin_rot, img_master_bin_rot);
 
-    NQLog("MarkerFinderPatRec", NQLog::Spam) << "PatRec"
+    NQLog("ObjectFinderPatRec", NQLog::Spam) << "PatRec"
        << ": saved rotated master-binary image to " << filepath_img_master_bin_rot;
   }
   // -----------
@@ -703,7 +703,7 @@ void MarkerFinderPatRec::PatRec(double& fom, cv::Point& match_loc, const cv::Mat
   return;
 }
 
-cv::Point2f MarkerFinderPatRec::RotatePoint(const cv::Point2f& p, const double deg) const
+cv::Point2f ObjectFinderPatRec::RotatePoint(const cv::Point2f& p, const double deg) const
 {
   const double rad = deg * (M_PI/180.);
 
@@ -714,7 +714,7 @@ cv::Point2f MarkerFinderPatRec::RotatePoint(const cv::Point2f& p, const double d
   return rot_p;
 }
 
-cv::Point2f MarkerFinderPatRec::RotatePoint(const cv::Point2f& cen_pt, const cv::Point2f& p, const double deg) const
+cv::Point2f ObjectFinderPatRec::RotatePoint(const cv::Point2f& cen_pt, const cv::Point2f& p, const double deg) const
 {
   const cv::Point2f trans_pt = p - cen_pt;
   const cv::Point2f rot_pt   = this->RotatePoint(trans_pt, deg);
@@ -723,7 +723,7 @@ cv::Point2f MarkerFinderPatRec::RotatePoint(const cv::Point2f& cen_pt, const cv:
   return fin_pt;
 }
 
-void MarkerFinderPatRec::draw_RotatedRect(cv::Mat& image, const cv::Point& orig, const double rect_size_x, const double rect_size_y, const double angle, const cv::Scalar& rect_color) const
+void ObjectFinderPatRec::draw_RotatedRect(cv::Mat& image, const cv::Point& orig, const double rect_size_x, const double rect_size_y, const double angle, const cv::Scalar& rect_color) const
 {
   const cv::Point2f orig2f(orig.x, orig.y);
 

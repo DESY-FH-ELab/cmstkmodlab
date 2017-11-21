@@ -45,8 +45,8 @@ typedef AssemblyUEyeModel AssemblyUEyeModel_t;
 #include <ConradManager.h>
 #include <ImageController.h>
 #include <ImageControllerThread.h>
-#include <MarkerFinderPatRec.h>
-#include <MarkerFinderPatRecThread.h>
+#include <ObjectFinderPatRec.h>
+#include <ObjectFinderPatRecThread.h>
 #include <MultiPickupTester.h>
 #include <MultiPickupTesterThread.h>
 #include <ZFocusFinder.h>
@@ -138,8 +138,8 @@ class AssemblyMainWindow : public QMainWindow
     unsigned int              camera_ID_;
     AssemblyVUEyeCamera*      camera_;
 
-    MarkerFinderPatRec*       marker_finder_;
-    MarkerFinderPatRecThread* marker_finder_thread_;
+    ObjectFinderPatRec*       finder_;
+    ObjectFinderPatRecThread* finder_thread_;
 
     ZFocusFinder* zfocus_finder_;
 

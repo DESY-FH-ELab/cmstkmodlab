@@ -16,7 +16,7 @@
 #include <AssemblyUEyeView.h>
 #include <AssemblyVUEyeCamera.h>
 #include <LStepExpressMotionManager.h>
-#include <MarkerFinderPatRec.h>
+#include <ObjectFinderPatRec.h>
 #include <MultiPickupTester.h>
 #include <ConradModel.h>
 
@@ -45,7 +45,7 @@ class AssemblyModuleAssembler : public QWidget
 
  public:
 
-  explicit AssemblyModuleAssembler(const LStepExpressMotionManager*, MarkerFinderPatRec*, QWidget* parent=0);
+  explicit AssemblyModuleAssembler(const LStepExpressMotionManager*, ObjectFinderPatRec*, QWidget* parent=0);
 
   double pickup_position;
 

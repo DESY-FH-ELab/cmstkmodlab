@@ -105,9 +105,9 @@ HEADERS += AssemblyVUEyeCamera.h \
            LaserThread.h \
            LaserWidget.h \
            LaserControlsWidget.h \
-           MarkerFinderManual.h \
-           MarkerFinderPatRec.h \
-           MarkerFinderPatRecThread.h \
+           ObjectFinderManual.h \
+           ObjectFinderPatRec.h \
+           ObjectFinderPatRecThread.h \
            MultiPickupTester.h \
            MultiPickupTesterThread.h \
            ImageController.h \
@@ -153,9 +153,9 @@ SOURCES += AssemblyVUEyeCamera.cc \
            LaserWidget.cc \
            LaserThread.cc \
            LaserControlsWidget.cc \
-           MarkerFinderManual.cc \
-           MarkerFinderPatRec.cc \
-           MarkerFinderPatRecThread.cc \
+           ObjectFinderManual.cc \
+           ObjectFinderPatRec.cc \
+           ObjectFinderPatRecThread.cc \
            MultiPickupTester.cc \
            MultiPickupTesterThread.cc \
            ImageController.cc \

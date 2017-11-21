@@ -36,7 +36,7 @@
 #include <TGraph.h>
 #include <TCanvas.h>
 
-AssemblyModuleAssembler::AssemblyModuleAssembler(const LStepExpressMotionManager* motion_manager, MarkerFinderPatRec* finder, QWidget* parent) :
+AssemblyModuleAssembler::AssemblyModuleAssembler(const LStepExpressMotionManager* motion_manager, ObjectFinderPatRec* finder, QWidget* parent) :
   QWidget(parent),
 
   scrollArea_1_(0),
@@ -67,7 +67,7 @@ AssemblyModuleAssembler::AssemblyModuleAssembler(const LStepExpressMotionManager
   if(!finder)
   {
     NQLog("AssemblyModuleAssembler", NQLog::Critical)
-       << "input error: null pointer to MarkerFinderPatRec object, initialization stopped";
+       << "input error: null pointer to ObjectFinderPatRec object, initialization stopped";
 
     return;
   }

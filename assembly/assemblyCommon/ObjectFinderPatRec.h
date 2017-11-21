@@ -10,22 +10,22 @@
 //                                                                             //
 /////////////////////////////////////////////////////////////////////////////////
 
-#ifndef MARKERFINDERPATREC_H
-#define MARKERFINDERPATREC_H
+#ifndef OBJECTFINDERPATREC_H
+#define OBJECTFINDERPATREC_H
 
 #include <QObject>
 #include <QString>
 
 #include <opencv2/opencv.hpp>
 
-class MarkerFinderPatRec : public QObject
+class ObjectFinderPatRec : public QObject
 {
  Q_OBJECT
 
  public:
 
-  explicit MarkerFinderPatRec(const QString&, const QString&, QObject* parent=0);
-  virtual ~MarkerFinderPatRec();
+  explicit ObjectFinderPatRec(const QString&, const QString&, QObject* parent=0);
+  virtual ~ObjectFinderPatRec();
 
   void set_threshold(const int);
   int  get_threshold() const { return threshold_; }
@@ -108,4 +108,4 @@ class MarkerFinderPatRec : public QObject
   void PatRec_exitcode(const int);
 };
 
-#endif // MARKERFINDERPATREC_H
+#endif // OBJECTFINDERPATREC_H

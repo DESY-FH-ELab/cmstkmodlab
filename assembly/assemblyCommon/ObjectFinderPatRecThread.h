@@ -10,29 +10,28 @@
 //                                                                             //
 /////////////////////////////////////////////////////////////////////////////////
 
-#ifndef MARKERFINDERPATRECTHREAD_H
-#define MARKERFINDERPATRECTHREAD_H
+#ifndef OBJECTFINDERPATRECTHREAD_H
+#define OBJECTFINDERPATRECTHREAD_H
 
-#include <MarkerFinderPatRec.h>
+#include <ObjectFinderPatRec.h>
 
 #include <QObject>
 #include <QThread>
 
-class MarkerFinderPatRecThread : public QThread
+class ObjectFinderPatRecThread : public QThread
 {
  Q_OBJECT
 
  public:
 
-  explicit MarkerFinderPatRecThread(MarkerFinderPatRec* finder, QObject* parent=0);
-
-  virtual ~MarkerFinderPatRecThread();
+  explicit ObjectFinderPatRecThread(ObjectFinderPatRec* finder, QObject* parent=0);
+  virtual ~ObjectFinderPatRecThread();
 
   void run();
 
  protected:
 
-  MarkerFinderPatRec* finder_;
+  ObjectFinderPatRec* finder_;
 };
 
-#endif // MARKERFINDERPATRECTHREAD_H
+#endif // OBJECTFINDERPATRECTHREAD_H

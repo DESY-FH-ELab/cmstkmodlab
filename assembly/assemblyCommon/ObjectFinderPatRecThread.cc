@@ -10,19 +10,19 @@
 //                                                                             //
 /////////////////////////////////////////////////////////////////////////////////
 
-#include <MarkerFinderPatRecThread.h>
+#include <ObjectFinderPatRecThread.h>
 #include <nqlogger.h>
 
 #include <QMutex>
 
-MarkerFinderPatRecThread::MarkerFinderPatRecThread(MarkerFinderPatRec* finder, QObject* parent) :
+ObjectFinderPatRecThread::ObjectFinderPatRecThread(ObjectFinderPatRec* finder, QObject* parent) :
   QThread(parent),
   finder_(finder)
 {
   if(finder_ == NULL)
   {
-    NQLog("MarkerFinderPatRecThread", NQLog::Fatal) << "initialization error"
-       << ": null pointer to MarkerFinderPatRec object, exiting constructor";
+    NQLog("ObjectFinderPatRecThread", NQLog::Fatal) << "initialization error"
+       << ": null pointer to ObjectFinderPatRec object, exiting constructor";
 
     return;
   }
@@ -31,17 +31,17 @@ MarkerFinderPatRecThread::MarkerFinderPatRecThread(MarkerFinderPatRec* finder, Q
 
 //  connect(this, SIGNAL(finished()), this, SLOT(deleteLater()));
 
-  NQLog("MarkerFinderPatRecThread", NQLog::Debug) << "constructed";
+  NQLog("ObjectFinderPatRecThread", NQLog::Debug) << "constructed";
 }
 
-MarkerFinderPatRecThread::~MarkerFinderPatRecThread()
+ObjectFinderPatRecThread::~ObjectFinderPatRecThread()
 {
-  NQLog("MarkerFinderPatRecThread", NQLog::Debug) << "destructed";
+  NQLog("ObjectFinderPatRecThread", NQLog::Debug) << "destructed";
 }
 
-void MarkerFinderPatRecThread::run()
+void ObjectFinderPatRecThread::run()
 {
-  NQLog("MarkerFinderPatRecThread", NQLog::Debug) << "run";
+  NQLog("ObjectFinderPatRecThread", NQLog::Debug) << "run";
 
   this->exec();
 

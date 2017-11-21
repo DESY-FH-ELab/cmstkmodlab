@@ -28,7 +28,7 @@
 #endif
 
 #include <ApplicationConfig.h>
-#include <MarkerFinderManual.h>
+#include <ObjectFinderManual.h>
 
 class ImageInfo
 {
@@ -95,7 +95,7 @@ int main( int argc, char** argv )
                   GaussianBlurKernelSize, GaussianBlurSigma, images);
     }
 
-    MarkerFinderManual finder;
+    ObjectFinderManual finder;
 
     finder.setGaussianBlurKernelSize(GaussianBlurKernelSize);
     finder.setGaussianBlurSigma(GaussianBlurSigma);
