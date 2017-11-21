@@ -512,16 +512,6 @@ void AssemblyMainWindow::get_image()
     emit image();
 }
 
-void AssemblyMainWindow::testTimer()
-{
-    NQLog("AssemblyMainWindow", NQLog::Debug) << "testTimer"
-       << ": timeOut=" << testTimerCount_;
-
-    testTimerCount_ += 0.1;
-
-    return;
-}
-
 void AssemblyMainWindow::connect_images()
 {
 //    finderView_        ->connectImageProducer(finder_, SIGNAL(markerFound  (const cv::Mat&)));
@@ -566,6 +556,91 @@ void AssemblyMainWindow::disconnect_images()
     liveTimer_->stop();
 }
 
+void AssemblyMainWindow::connect_multipickupNpatrec(const MultiPickupTester::Configuration& conf)
+{
+    multipickup_tester_->set_configuration(conf);
+
+    connect(this               , SIGNAL(multipickupNpatrec_connected()), multipickup_tester_, SLOT(start_measurement()));
+    connect(multipickup_tester_, SIGNAL(measurement_finished())        , multipickup_tester_, SLOT(start_pickup()));
+    connect(multipickup_tester_, SIGNAL(pickup_finished())             , multipickup_tester_, SLOT(start_measurement()));
+    connect(multipickup_tester_, SIGNAL(test_finished())               , this               , SLOT(disconnect_multipickupNpatrec()));
+
+    // movement
+    connect(multipickup_tester_, SIGNAL(move_absolute(double, double, double, double)), motion_manager_, SLOT(moveAbsolute(double, double, double, double)));
+    connect(multipickup_tester_, SIGNAL(move_relative(double, double, double, double)), motion_manager_, SLOT(moveRelative(double, double, double, double)));
+
+    connect(motion_manager_, SIGNAL(motion_finished()), multipickup_tester_, SLOT(setup_next_step()));
+    // ---
+
+    // measurement
+    connect(multipickup_tester_, SIGNAL(measurement_request()) , image_ctr_         , SLOT(acquire_image()));
+    connect(marker_finder_     , SIGNAL(       image_updated()), marker_finder_     , SLOT(update_binary_image()));
+    connect(marker_finder_     , SIGNAL(binary_image_updated()), marker_finder_     , SLOT(run_PatRec_lab_marker()));
+    connect(marker_finder_     , SIGNAL(PatRec_exitcode(int))  , multipickup_tester_, SLOT(finish_measurement(int)));
+    // ---
+
+    // vacuum
+    connect(multipickup_tester_, SIGNAL(vacuum_toggle(int))  , conradManager_     , SLOT(toggleVacuum(int)));
+    connect(conradManager_     , SIGNAL(enableVacuumButton()), multipickup_tester_, SLOT(setup_next_step()));
+    // ---
+
+    emit multipickupNpatrec_connected();
+}
+
+void AssemblyMainWindow::disconnect_multipickupNpatrec()
+{
+    disconnect(this               , SIGNAL(multipickupNpatrec_connected()), multipickup_tester_, SLOT(start_measurement()));
+    disconnect(multipickup_tester_, SIGNAL(measurement_finished())        , multipickup_tester_, SLOT(start_pickup()));
+    disconnect(multipickup_tester_, SIGNAL(pickup_finished())             , multipickup_tester_, SLOT(start_measurement()));
+    disconnect(multipickup_tester_, SIGNAL(test_finished())               , this               , SLOT(disconnect_multipickupNpatrec()));
+
+    // movement
+    disconnect(multipickup_tester_, SIGNAL(move_absolute(double, double, double, double)), motion_manager_, SLOT(moveAbsolute(double, double, double, double)));
+    disconnect(multipickup_tester_, SIGNAL(move_relative(double, double, double, double)), motion_manager_, SLOT(moveRelative(double, double, double, double)));
+
+    disconnect(motion_manager_    , SIGNAL(motion_finished()), multipickup_tester_, SLOT(setup_next_step()));
+    // ---
+
+    // measurement
+    disconnect(multipickup_tester_, SIGNAL(measurement_request()) , image_ctr_         , SLOT(acquire_image()));
+    disconnect(marker_finder_     , SIGNAL(       image_updated()), marker_finder_     , SLOT(update_binary_image()));
+    disconnect(marker_finder_     , SIGNAL(binary_image_updated()), marker_finder_     , SLOT(run_PatRec_lab_marker()));
+    disconnect(marker_finder_     , SIGNAL(PatRec_exitcode(int))  , multipickup_tester_, SLOT(finish_measurement(int)));
+    // ---
+
+    // vacuum
+    disconnect(multipickup_tester_, SIGNAL(vacuum_toggle(int))  , conradManager_     , SLOT(toggleVacuum(int)));
+    disconnect(conradManager_     , SIGNAL(enableVacuumButton()), multipickup_tester_, SLOT(setup_next_step()));
+    // ---
+
+    emit multipickupNpatrec_disconnected();
+}
+
+void AssemblyMainWindow::testTimer()
+{
+    NQLog("AssemblyMainWindow", NQLog::Debug) << "testTimer"
+       << ": timeOut=" << testTimerCount_;
+
+    testTimerCount_ += 0.1;
+
+    return;
+}
+
+void AssemblyMainWindow::quit_thread(QThread* thread, const std::string& msg) const
+{
+    if(thread)
+    {
+      if(thread->wait(2000) == false)
+      {
+         thread->terminate();
+      }
+
+      thread->quit();
+
+      NQLog("AssemblyMainWindow", NQLog::Message) << "quit_thread: terminated "+msg+" thread";
+    }
+}
+
 void AssemblyMainWindow::quit()
 {
     if(camera_)
@@ -578,77 +653,10 @@ void AssemblyMainWindow::quit()
       camera_ = 0;
     }
 
-    if(camera_thread_)
-    {
-      NQLog("AssemblyMainWindow", NQLog::Message) << "quit"
-         << ": quitting camera thread";
-
-      if(camera_thread_->wait(2000) == false){
-         camera_thread_->terminate();
-      }
-
-      camera_thread_->quit();
-    }
+    this->quit_thread(camera_thread_            , "AssemblyVUEyeCamera");
+    this->quit_thread(motion_thread_            , "LStepExpressMotionManager");
+    this->quit_thread(marker_finder_thread_     , "MarkerFinderPatRec");
+    this->quit_thread(multipickup_tester_thread_, "MultiPickupTester");
 
     return;
-}
-
-void AssemblyMainWindow::connect_multipickupNpatrec(const MultiPickupTester::Configuration& conf)
-{
-  multipickup_tester_->set_configuration(conf);
-
-  connect(this               , SIGNAL(multipickupNpatrec_connected()), multipickup_tester_, SLOT(start_measurement()));
-  connect(multipickup_tester_, SIGNAL(measurement_finished())        , multipickup_tester_, SLOT(start_pickup()));
-  connect(multipickup_tester_, SIGNAL(pickup_finished())             , multipickup_tester_, SLOT(start_measurement()));
-  connect(multipickup_tester_, SIGNAL(test_finished())               , this               , SLOT(disconnect_multipickupNpatrec()));
-
-  // movement
-  connect(multipickup_tester_, SIGNAL(move_absolute(double, double, double, double)), motion_manager_, SLOT(moveAbsolute(double, double, double, double)));
-  connect(multipickup_tester_, SIGNAL(move_relative(double, double, double, double)), motion_manager_, SLOT(moveRelative(double, double, double, double)));
-
-  connect(motion_manager_, SIGNAL(motion_finished()), multipickup_tester_, SLOT(setup_next_step()));
-  // ---
-
-  // measurement
-  connect(multipickup_tester_, SIGNAL(measurement_request()) , image_ctr_         , SLOT(acquire_image()));
-  connect(marker_finder_     , SIGNAL(       image_updated()), marker_finder_     , SLOT(update_binary_image()));
-  connect(marker_finder_     , SIGNAL(binary_image_updated()), marker_finder_     , SLOT(run_PatRec_lab_marker()));
-  connect(marker_finder_     , SIGNAL(PatRec_exitcode(int))  , multipickup_tester_, SLOT(finish_measurement(int)));
-  // ---
-
-  // vacuum
-  connect(multipickup_tester_, SIGNAL(vacuum_toggle(int))  , conradManager_     , SLOT(toggleVacuum(int)));
-  connect(conradManager_     , SIGNAL(enableVacuumButton()), multipickup_tester_, SLOT(setup_next_step()));
-  // ---
-
-  emit multipickupNpatrec_connected();
-}
-
-void AssemblyMainWindow::disconnect_multipickupNpatrec()
-{
-  disconnect(this               , SIGNAL(multipickupNpatrec_connected()), multipickup_tester_, SLOT(start_measurement()));
-  disconnect(multipickup_tester_, SIGNAL(measurement_finished())        , multipickup_tester_, SLOT(start_pickup()));
-  disconnect(multipickup_tester_, SIGNAL(pickup_finished())             , multipickup_tester_, SLOT(start_measurement()));
-  disconnect(multipickup_tester_, SIGNAL(test_finished())               , this               , SLOT(disconnect_multipickupNpatrec()));
-
-  // movement
-  disconnect(multipickup_tester_, SIGNAL(move_absolute(double, double, double, double)), motion_manager_, SLOT(moveAbsolute(double, double, double, double)));
-  disconnect(multipickup_tester_, SIGNAL(move_relative(double, double, double, double)), motion_manager_, SLOT(moveRelative(double, double, double, double)));
-
-  disconnect(motion_manager_    , SIGNAL(motion_finished()), multipickup_tester_, SLOT(setup_next_step()));
-  // ---
-
-  // measurement
-  disconnect(multipickup_tester_, SIGNAL(measurement_request()) , image_ctr_         , SLOT(acquire_image()));
-  disconnect(marker_finder_     , SIGNAL(       image_updated()), marker_finder_     , SLOT(update_binary_image()));
-  disconnect(marker_finder_     , SIGNAL(binary_image_updated()), marker_finder_     , SLOT(run_PatRec_lab_marker()));
-  disconnect(marker_finder_     , SIGNAL(PatRec_exitcode(int))  , multipickup_tester_, SLOT(finish_measurement(int)));
-  // ---
-
-  // vacuum
-  disconnect(multipickup_tester_, SIGNAL(vacuum_toggle(int))  , conradManager_     , SLOT(toggleVacuum(int)));
-  disconnect(conradManager_     , SIGNAL(enableVacuumButton()), multipickup_tester_, SLOT(setup_next_step()));
-  // ---
-
-  emit multipickupNpatrec_disconnected();
 }

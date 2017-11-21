@@ -83,6 +83,7 @@ class AssemblyMainWindow : public QMainWindow
 
     void testTimer();
 
+    void quit_thread(QThread*, const std::string&) const;
     void quit();
 
   signals:
