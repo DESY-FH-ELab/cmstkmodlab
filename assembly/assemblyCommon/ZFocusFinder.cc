@@ -41,8 +41,8 @@ ZFocusFinder::ZFocusFinder(AssemblyVUEyeCamera* camera, LStepExpressMotionManage
   focus_zrange_(0.5),
 
   zposi_init_(-9999.),
-  zposi_min_ (-99.),
-  zposi_max_ (+99.),
+  zposi_min_ (-110.),
+  zposi_max_ (+110.),
 
   zrelm_index_(0),
 
@@ -195,8 +195,30 @@ void ZFocusFinder::acquire_image()
     // NOTE: should we introduce a pre-scan routine to
     //       pin down z-interval containing best-focus position,
     //       followed by finer scan in that interval?
-    const double zmin = std::max(zposi_min_, zposi_init_ - (focus_zrange_/2.));
-    const double zmax = std::min(zposi_max_, zposi_init_ + (focus_zrange_/2.));
+    const double zmin = (zposi_init_ - (focus_zrange_/2.));
+    const double zmax = (zposi_init_ + (focus_zrange_/2.));
+
+    if(zmin < zposi_min_)
+    {
+      NQLog("ZFocusFinder", NQLog::Critical) << "acquire_image"
+         << ": target z-min position (" << zmin << ") exceeds allowed minimum (" << zposi_min_ << ")"
+         << ", exiting routine";
+
+      this->disable_motion();
+
+      return;
+    }
+
+    if(zmax > zposi_max_)
+    {
+      NQLog("ZFocusFinder", NQLog::Critical) << "acquire_image"
+         << ": target z-max position (" << zmax << ") exceeds allowed maximum (" << zposi_max_ << ")"
+         << ", exiting routine";
+
+      this->disable_motion();
+
+      return;
+    }
 
     v_zrelm_vals_.emplace_back(zmax - zposi_init_);
 
@@ -208,6 +230,10 @@ void ZFocusFinder::acquire_image()
     }
 
     zrelm_index_ = -1;
+
+    NQLog("ZFocusFinder", NQLog::Message) << "acquire_image"
+       << ": initialized auto-focusing"
+       << " (z-min=" << zmin << ", z-max=" << zmax << ", steps=" << focus_pointN_ << ")";
 
     NQLog("ZFocusFinder", NQLog::Debug) << "acquire_image"
        << ": emitting signal \"next_zpoint\"";
