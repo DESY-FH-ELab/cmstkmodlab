@@ -274,11 +274,14 @@ void ObjectFinderPatRec::run_PatRec(const int mode_lab, const int mode_obj)
          << "(mode_lab=" << mode_lab << ", mode_obj=" << mode_obj << ")"
          << ": detection of sensor fiducial marker";
 
-      image_tpl_ = cv::imread(Config::CMSTkModLabBasePath+"/share/assembly/SensorPiece_1_clipC.png"   , CV_LOAD_IMAGE_COLOR);
-//    image_tpl_ = cv::imread(Config::CMSTkModLabBasePath+"/share/assembly/RawSensor_3_clipB.png"     , CV_LOAD_IMAGE_COLOR);
-//    image_tpl_ = cv::imread(Config::CMSTkModLabBasePath+"/share/assembly/RawSensor_3_clipB_temp.png", CV_LOAD_IMAGE_COLOR);
+//      image_tpl_ = cv::imread(Config::CMSTkModLabBasePath+"/share/assembly/SensorPiece_1_clipC.png"   , CV_LOAD_IMAGE_COLOR);
+////    image_tpl_ = cv::imread(Config::CMSTkModLabBasePath+"/share/assembly/RawSensor_3_clipB.png"     , CV_LOAD_IMAGE_COLOR);
+////    image_tpl_ = cv::imread(Config::CMSTkModLabBasePath+"/share/assembly/RawSensor_3_clipB_temp.png", CV_LOAD_IMAGE_COLOR);
+//
+//      threshold_tpl_ = 85; // 90 for silicon marker, 88 for glass, 188 for marked-glass
 
-      threshold_tpl_ = 85; // 90 for silicon marker, 88 for glass?
+      image_tpl_ = cv::imread(Config::CMSTkModLabBasePath+"/share/assembly/glass_template_raw_cropped.png"   , CV_LOAD_IMAGE_COLOR);
+      threshold_tpl_ = 188; // 90 for silicon marker, 88 for glass, 188 for marked-glass
     }
     else if(mode_obj == 1)
     {
