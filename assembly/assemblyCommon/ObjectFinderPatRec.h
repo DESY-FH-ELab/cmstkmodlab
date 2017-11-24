@@ -74,6 +74,9 @@ class ObjectFinderPatRec : public QObject
 
   cv::Mat get_binary_image(const cv::Mat&, const int) const;
 
+  void send_image_master();
+  void send_image_binary();
+
   void update_rough_angles      (QString);
   void update_angscan_parameters(QString);
 
@@ -95,13 +98,15 @@ class ObjectFinderPatRec : public QObject
   void        image_updated();
   void binary_image_updated();
 
-  void run_template_matching(const cv::Mat&, const cv::Mat&, const cv::Mat&, const int);
+  void image_sent(const cv::Mat&);
 
   void image_path(const int, const QString&);
   void image_mat (const int, const cv::Mat&);
 
   void rough_angles_updated();
   void angscan_parameters_updated();
+
+  void run_template_matching(const cv::Mat&, const cv::Mat&, const cv::Mat&, const int);
 
   void reportObjectLocation(int, double, double, double);
 

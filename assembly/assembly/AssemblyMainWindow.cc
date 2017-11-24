@@ -142,6 +142,11 @@ AssemblyMainWindow::AssemblyMainWindow(const unsigned int camera_ID, QWidget* pa
     connect(thresholdTunerView_, SIGNAL(threshold_value(int)), finder_            , SLOT(update_threshold(int)));
     connect(finder_            , SIGNAL(threshold_updated()) , finder_            , SLOT(update_binary_image()));
 
+    connect(thresholdTunerView_, SIGNAL(image_raw_request()) , finder_, SLOT(send_image_master()));
+    connect(thresholdTunerView_, SIGNAL(image_bin_request()) , finder_, SLOT(send_image_binary()));
+
+    connect(finder_, SIGNAL(image_sent(const cv::Mat&)), thresholdTunerView_, SLOT(save_image(const cv::Mat&)));
+
     NQLog("AssemblyMainWindow", NQLog::Message) << "added view " << tabname_ImageThresholding;
     /* --------------------------------------------------------- */
 

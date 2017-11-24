@@ -14,24 +14,15 @@
 #include <nqlogger.h>
 
 #include <QFileDialog>
-#include <QPushButton>
+#include <QGridLayout>
+#include <QFormLayout>
 
-AssemblyThresholdTuner::AssemblyThresholdTuner(QWidget* parent) :
-  QWidget(parent),
-
-  imageView_1_(0),
-  imageView_2_(0),
-
-  scrollArea_1_(0),
-  scrollArea_2_(0),
-
-  thre_button_(0),
-  thre_label_(0),
-  thre_linee_(0)
+AssemblyThresholdTuner::AssemblyThresholdTuner(QWidget* parent) : QWidget(parent)
 {
-    QGridLayout *l = new QGridLayout();
-    this->setLayout(l);  
+    QGridLayout* l = new QGridLayout();
+    this->setLayout(l);
 
+    //// left-hand side
     QPalette palette;
     palette.setColor(QPalette::Background, QColor(220, 220, 220));
 
@@ -71,34 +62,51 @@ AssemblyThresholdTuner::AssemblyThresholdTuner(QWidget* parent) :
     l->addWidget(scrollArea_2_, 1, 0);   
 
     this->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+    //// ---------------
 
-    QWidget* Tuner = new QWidget();
-    l->addWidget(Tuner, 0, 1);
+    //// right-hand side
 
-    QGridLayout *lTuner = new QGridLayout();
-    Tuner->setLayout(lTuner);
+    // raw image options
+    QFormLayout* lRaw = new QFormLayout();
+    l->addLayout(lRaw, 0, 1);
 
-    thre_button_ = new QPushButton("Threshold Image", this);
-    thre_button_->setEnabled(true);
-    lTuner->addWidget(thre_button_, 0, 0);
+    imgraw_button_ = new QPushButton("Save Image (before thresholding)");
+    lRaw->addRow(imgraw_button_);
 
-    QFormLayout *fl1 = new QFormLayout();
+    // bin image options
+    QGridLayout* lTuner = new QGridLayout();
+    l->addLayout(lTuner, 1, 1);
+
+    imgbin_button_ = new QPushButton("Save Image (after thresholding)");
+    lTuner->addWidget(imgbin_button_, 0, 0);
+
+    thresh_button_ = new QPushButton("Threshold Image", this);
+    thresh_button_->setEnabled(true);
+    lTuner->addWidget(thresh_button_, 1, 0);
+
+    QFormLayout* fl1 = new QFormLayout();
     lTuner->addLayout(fl1, 2, 0);
 
-    thre_label_ = new QLabel();
-    thre_label_->setText("Threshold");
+    thresh_label_ = new QLabel();
+    thresh_label_->setText("Threshold");
 
-    thre_linee_ = new QLineEdit();
-    thre_linee_->setText("200");
+    thresh_linee_ = new QLineEdit();
+    thresh_linee_->setText("200");
 
-    fl1->addRow(thre_label_, thre_linee_);
+    fl1->addRow(thresh_label_, thresh_linee_);
 
-    connect(thre_button_, SIGNAL(clicked()), this, SLOT(read_threshold()));
+    // connection(s)
+    connect(imgraw_button_, SIGNAL(clicked()), this, SLOT(save_image_raw()));
+    connect(imgbin_button_, SIGNAL(clicked()), this, SLOT(save_image_bin()));
+
+    connect(thresh_button_, SIGNAL(clicked()), this, SLOT(read_threshold()));
+
+    //// ---------------
 }
 
 int AssemblyThresholdTuner::get_threshold() const
 {
-    return thre_linee_->text().toInt();
+    return thresh_linee_->text().toInt();
 }
 
 void AssemblyThresholdTuner::read_threshold()
@@ -109,6 +117,42 @@ void AssemblyThresholdTuner::read_threshold()
        << ": emitting signal \"threshold_value(" << val << ")\"";
 
     emit threshold_value(val);
+}
+
+void AssemblyThresholdTuner::save_image_raw()
+{
+    NQLog("AssemblyThresholdTuner", NQLog::Debug) << "save_image_raw"
+       << ": emitting signal \"image_raw_request\"";
+
+    emit image_raw_request();
+}
+
+void AssemblyThresholdTuner::save_image_bin()
+{
+    NQLog("AssemblyThresholdTuner", NQLog::Debug) << "save_image_bin"
+       << ": emitting signal \"image_bin_request\"";
+
+    emit image_bin_request();
+}
+
+void AssemblyThresholdTuner::save_image(const cv::Mat& image)
+{
+    if(image.rows == 0)
+    {
+      NQLog("AssemblyThresholdTuner", NQLog::Warning) << "save_image"
+         << ": input cv::Mat object has zero rows, no image saved";
+
+      return;
+    }
+
+    QString filename = QFileDialog::getSaveFileName(this, "save image", ".", "*.png");
+    if(filename.isNull() || filename.isEmpty()){ return; }
+
+    if(!filename.endsWith(".png")){ filename += ".png"; }
+
+    cv::imwrite(filename.toStdString(), image);
+
+    return;
 }
 
 void AssemblyThresholdTuner::connectImageProducer_1(const QObject* sender, const char* signal)

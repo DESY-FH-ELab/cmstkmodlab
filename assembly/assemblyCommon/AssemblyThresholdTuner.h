@@ -13,18 +13,15 @@
 #ifndef ASSEMBLYTHRESHOLDTUNER_H
 #define ASSEMBLYTHRESHOLDTUNER_H
 
-#include <AssemblyVUEyeCamera.h>
 #include <AssemblyUEyeView.h>
 #include <nqlogger.h>
 
 #include <QWidget>
 #include <QScrollArea>
 #include <QKeyEvent>
+#include <QPushButton>
 #include <QLineEdit>
 #include <QLabel>
-#include <QPushButton>
-#include <QFormLayout>
-#include <QString>
 
 #include <opencv2/opencv.hpp>
 
@@ -55,17 +52,28 @@ class AssemblyThresholdTuner : public QWidget
   QScrollArea* scrollArea_1_;
   QScrollArea* scrollArea_2_;
 
-  QPushButton* thre_button_;
-  QLabel*      thre_label_;
-  QLineEdit*   thre_linee_;
+  QPushButton* imgraw_button_;
+  QPushButton* imgbin_button_;
+
+  QPushButton* thresh_button_;
+  QLabel*      thresh_label_;
+  QLineEdit*   thresh_linee_;
 
  public slots:
 
   void read_threshold();
 
+  void save_image_raw();
+  void save_image_bin();
+
+  void save_image(const cv::Mat&);
+
  signals:
 
   void threshold_value(const int);
+
+  void image_raw_request();
+  void image_bin_request();
 };
 
 #endif // ASSEMBLYTHRESHOLDTUNER_H

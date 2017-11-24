@@ -178,6 +178,22 @@ void ObjectFinderPatRec::delete_binary_image()
   return;
 }
 
+void ObjectFinderPatRec::send_image_master()
+{
+  NQLog("ObjectFinderPatRec", NQLog::Debug) << "send_image_master"
+     << ": emitting signal \"image_sent\"";
+
+  emit image_sent(image_mas_);
+}
+
+void ObjectFinderPatRec::send_image_binary()
+{
+  NQLog("ObjectFinderPatRec", NQLog::Debug) << "send_image_binary"
+     << ": emitting signal \"image_sent\"";
+
+  emit image_sent(image_bin_);
+}
+
 void ObjectFinderPatRec::update_rough_angles(QString qstr)
 {
   const QStringList entries = qstr.remove(" ").split(",");
