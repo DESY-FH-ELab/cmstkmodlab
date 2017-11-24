@@ -38,11 +38,10 @@ ZFocusFinder::ZFocusFinder(AssemblyVUEyeCamera* camera, LStepExpressMotionManage
   focus_completed_(false),
   focus_pointN_max_(200),
   focus_pointN_(10),
+  focus_zrange_max_(3.0),
   focus_zrange_(0.5),
 
   zposi_init_(-9999.),
-  zposi_min_ (-110.),
-  zposi_max_ (+110.),
 
   zrelm_index_(0),
 
@@ -117,7 +116,19 @@ void ZFocusFinder::update_focus_inputs(const double zrange, const int pointN)
 {
     if(zrange > 0.)
     {
-      focus_zrange_ = zrange;
+      if(zrange > focus_zrange_max_)
+      {
+        NQLog("ZFocusFinder", NQLog::Warning) << "update_focus_inputs"
+           << ": input value for z-motion range (" << zrange << ")"
+           << " larger than allowed max ("   << focus_zrange_max_ << ")"
+           << ", setting equal to allowed max";
+
+        focus_zrange_ = focus_zrange_max_;
+      }
+      else
+      {
+        focus_zrange_ = zrange;
+      }
 
       NQLog("ZFocusFinder", NQLog::Message) << "update_focus_inputs"
          << ": updated z-motion range to " << focus_zrange_;
@@ -132,8 +143,9 @@ void ZFocusFinder::update_focus_inputs(const double zrange, const int pointN)
     {
       if(pointN > focus_pointN_max_)
       {
-        NQLog("ZFocusFinder", NQLog::Message) << "update_focus_inputs"
-           << ": input number of scans larger than allowed max"
+        NQLog("ZFocusFinder", NQLog::Warning) << "update_focus_inputs"
+           << ": input value for number of scans (" << pointN << ")"
+           << "larger than allowed max ("     << focus_pointN_max_ << ")"
            << ", setting equal to allowed max";
 
         focus_pointN_ = focus_pointN_max_;
@@ -197,28 +209,6 @@ void ZFocusFinder::acquire_image()
     //       followed by finer scan in that interval?
     const double zmin = (zposi_init_ - (focus_zrange_/2.));
     const double zmax = (zposi_init_ + (focus_zrange_/2.));
-
-    if(zmin < zposi_min_)
-    {
-      NQLog("ZFocusFinder", NQLog::Critical) << "acquire_image"
-         << ": target z-min position (" << zmin << ") exceeds allowed minimum (" << zposi_min_ << ")"
-         << ", exiting routine";
-
-      this->disable_motion();
-
-      return;
-    }
-
-    if(zmax > zposi_max_)
-    {
-      NQLog("ZFocusFinder", NQLog::Critical) << "acquire_image"
-         << ": target z-max position (" << zmax << ") exceeds allowed maximum (" << zposi_max_ << ")"
-         << ", exiting routine";
-
-      this->disable_motion();
-
-      return;
-    }
 
     v_zrelm_vals_.emplace_back(zmax - zposi_init_);
 

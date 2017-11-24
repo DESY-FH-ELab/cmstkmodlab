@@ -56,11 +56,10 @@ class ZFocusFinder : public QObject
     bool   focus_completed_;
     int    focus_pointN_max_;
     int    focus_pointN_;
+    double focus_zrange_max_;
     double focus_zrange_;
 
     double zposi_init_;
-    double zposi_min_;
-    double zposi_max_;
 
     int zrelm_index_;
 
