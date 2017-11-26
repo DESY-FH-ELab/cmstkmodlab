@@ -434,9 +434,10 @@ void MultiPickupTesterWidget::update_position_measurement()
   const double y = motion_manager_->get_position_Y();
   const double z = motion_manager_->get_position_Z();
 
-  const std::string posi_str = std::to_string(x)+", "+std::to_string(y)+", "+std::to_string(z);
+  std::stringstream posi_strs;
+  posi_strs << x << ", " << y << ", " << z;
 
-  measur_lineed_->setText(QString::fromStdString(posi_str));
+  measur_lineed_->setText(QString::fromStdString(posi_strs.str()));
 
   return;
 }
@@ -447,9 +448,10 @@ void MultiPickupTesterWidget::update_position_pickup()
   const double y = motion_manager_->get_position_Y();
   const double z = motion_manager_->get_position_Z();
 
-  const std::string posi_str = std::to_string(x)+", "+std::to_string(y)+", "+std::to_string(z);
+  std::stringstream posi_strs;
+  posi_strs << x << ", " << y << ", " << z;
 
-  pickup_lineed_->setText(QString::fromStdString(posi_str));
+  pickup_lineed_->setText(QString::fromStdString(posi_strs.str()));
 
   return;
 }

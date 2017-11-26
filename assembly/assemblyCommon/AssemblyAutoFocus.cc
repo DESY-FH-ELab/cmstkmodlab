@@ -14,6 +14,8 @@
 #include <nqlogger.h>
 #include <Util.h>
 
+#include <sstream>
+
 #include <QApplication>
 #include <QFormLayout>
 #include <QLabel>
