@@ -11,6 +11,7 @@
 /////////////////////////////////////////////////////////////////////////////////
 
 #include <ZFocusFinder.h>
+#include <ApplicationConfig.h>
 #include <nqlogger.h>
 #include <Util.h>
 
@@ -36,10 +37,6 @@ ZFocusFinder::ZFocusFinder(AssemblyVUEyeCamera* camera, LStepExpressMotionManage
   motion_enabled_(false),
 
   focus_completed_(false),
-  focus_pointN_max_(200),
-  focus_pointN_(10),
-  focus_zrange_max_(3.0),
-  focus_zrange_(0.5),
 
   zposi_init_(-9999.),
 
@@ -48,8 +45,24 @@ ZFocusFinder::ZFocusFinder(AssemblyVUEyeCamera* camera, LStepExpressMotionManage
   output_dir_("")
 {
   // initialization
+  ApplicationConfig* config = ApplicationConfig::instance();
+  if(!config)
+  {
+    NQLog("ZFocusFinder", NQLog::Fatal)
+       << "ApplicationConfig::instance() not initialized (null pointer), stopped constructor";
+
+    return;
+  }
+
+  focus_pointN_max_ = config->getValue<int>   ("ZFocusFinder_pointN_max", 200);
+  focus_pointN_     = config->getValue<int>   ("ZFocusFinder_pointN"    ,  50);
+
+  focus_zrange_max_ = config->getValue<double>("ZFocusFinder_zrange_max", 3.0);
+  focus_zrange_     = config->getValue<double>("ZFocusFinder_zrange"    , 0.5);
+
   v_zrelm_vals_.clear();
   v_focus_vals_.clear();
+  // --------------
 
   // validation
   if(!camera_manager_)
@@ -63,9 +76,11 @@ ZFocusFinder::ZFocusFinder(AssemblyVUEyeCamera* camera, LStepExpressMotionManage
     NQLog("ZFocusFinder", NQLog::Fatal) << "null pointer to LStepExpressMotionManager object, exiting";
     return;
   }
+  // --------------
 
-  // connections
+  // connection(s)
   connect(this , SIGNAL(next_zpoint()), this, SLOT(test_focus()));
+  // --------------
 
   NQLog("ZFocusFinder::ZFocusFinder", NQLog::Debug) << "constructed";
 }

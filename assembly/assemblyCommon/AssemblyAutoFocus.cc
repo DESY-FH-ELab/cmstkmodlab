@@ -100,25 +100,31 @@ AssemblyAutoFocus::AssemblyAutoFocus(QWidget* parent) :
   g1->addLayout(fl1, 2, 0);
 
   QLabel* lt1 = new QLabel("[z-range (mm), number of steps]");
-  lineed_1_ = new QLineEdit("0.5, 10");
+  lineed_1_ = new QLineEdit("");
   fl1->addRow(lt1, lineed_1_);
 
-  checkbox_ = new QCheckBox("Track marker");
-  g1->addWidget(checkbox_, 3, 0);
+  QLabel* lt2 = new QLabel("Best-Focus z-axis value");
+  lineed_2_ = new QLineEdit("");
+  fl1->addRow(lt2, lineed_2_);
+
+  // -----------------------
 
   // right-hand side widgets
-  QFormLayout*  g2 = new QFormLayout();
-  g0->addLayout(g2, 1, 1);
+  QFormLayout*  f2 = new QFormLayout();
+  g0->addLayout(f2, 1, 1);
 
   button_2_ = new QPushButton("Go to focal point");
-  g2->addRow(button_2_);
+  f2->addRow(button_2_);
 
-  lineed_2_ = new QLineEdit("Absolute focal point = ");
-  g2->addRow(lineed_2_);
+  checkbox_ = new QCheckBox("Track marker");
+  f2->addRow(checkbox_);
 
-  // connect button(s)
+  // -----------------------
+
+  // connection(s)
   connect(button_1_, SIGNAL(clicked()), this, SLOT(configure_scan()));
   connect(button_2_, SIGNAL(clicked()), this, SLOT(go_to_focal_point()));
+  // -----------------------
 
   NQLog("AssemblyAutoFocus", NQLog::Debug) << "constructed";
 }
@@ -127,9 +133,21 @@ AssemblyAutoFocus::~AssemblyAutoFocus()
 {
 }
 
+void AssemblyAutoFocus::update_scan_config(const double zrange, const int points)
+{
+  const std::string str = std::to_string(zrange)+","+std::to_string(points);
+
+  std::stringstream scan_strs;
+  scan_strs << zrange << ", " << points;
+
+  lineed_1_->setText(QString::fromStdString(scan_strs.str()));
+
+  return;
+}
+
 void AssemblyAutoFocus::configure_scan()
 {
-  //parse lineEdit text to get target coordinates
+  // parse lineEdit text to get target coordinates
   const QString parent_string = lineed_1_->text();
 
   const QStringList pieces = parent_string.split(",");
@@ -143,9 +161,9 @@ void AssemblyAutoFocus::configure_scan()
     const double y_d = y.toInt();
 
     NQLog("AssemblyAutoFocus", NQLog::Debug) << "configure_scan"
-       << ": emitting signal \"scan_values(" << x_d << ", " << y_d << "\")";
+       << ": emitting signal \"scan_config(" << x_d << ", " << y_d << "\")";
 
-    emit scan_values(x_d, y_d);
+    emit scan_config(x_d, y_d);
   }
   else
   {

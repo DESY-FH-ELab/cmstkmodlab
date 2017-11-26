@@ -156,12 +156,12 @@ AssemblyMainWindow::AssemblyMainWindow(const unsigned int camera_ID, QWidget* pa
     autoFocusView_ = new AssemblyAutoFocus(tabWidget_);
     tabWidget_->addTab(autoFocusView_, tabname_AutoFocus);
 
-    connect(autoFocusView_, SIGNAL(scan_values(double, int)), zfocus_finder_, SLOT(update_focus_inputs(double, int)));
+    connect(autoFocusView_, SIGNAL(scan_config(double, int)), zfocus_finder_, SLOT(update_focus_inputs(double, int)));
 
     connect(zfocus_finder_, SIGNAL(show_zscan(QString))  , autoFocusView_, SLOT(read_graph(QString)));
     connect(zfocus_finder_, SIGNAL(update_text(double))  , autoFocusView_, SLOT(updateText(double)));
 
-    autoFocusView_->configure_scan();
+    autoFocusView_->update_scan_config(zfocus_finder_->zrange(), zfocus_finder_->points());
 
     NQLog("AssemblyMainWindow", NQLog::Message) << "added view " << tabname_AutoFocus;
     /* --------------------------------------------------------- */

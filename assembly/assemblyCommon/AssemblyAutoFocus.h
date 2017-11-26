@@ -37,6 +37,8 @@ class AssemblyAutoFocus : public QWidget
   void    connectImageProducer(const QObject* sender, const char* signal);
   void disconnectImageProducer(const QObject* sender, const char* signal);
 
+  void update_scan_config(const double, const int);
+
  protected:
 
   void keyReleaseEvent(QKeyEvent* event);
@@ -64,7 +66,7 @@ class AssemblyAutoFocus : public QWidget
 
  signals:
 
-  void scan_values(const double, const int);
+  void scan_config(const double, const int);
 
   void graph_found(const cv::Mat&);
 };

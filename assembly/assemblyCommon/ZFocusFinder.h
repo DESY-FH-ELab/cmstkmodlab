@@ -38,6 +38,9 @@ class ZFocusFinder : public QObject
     AssemblyVUEyeCamera*       camera_manager() const { return camera_manager_; }
     LStepExpressMotionManager* motion_manager() const { return motion_manager_; }
 
+    double zrange() const { return focus_zrange_; }
+    int    points() const { return focus_pointN_; }
+
     struct focus_info
     {
       double z_position;
