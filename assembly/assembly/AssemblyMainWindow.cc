@@ -568,6 +568,8 @@ void AssemblyMainWindow::connect_multipickupNpatrec(const MultiPickupTester::Con
 {
     multipickup_->set_configuration(conf);
 
+    assembleView_->MultiPickupWidget()->lineEdit_setDisabled(true);
+
     connect(this        , SIGNAL(multipickupNpatrec_connected()), multipickup_, SLOT(start_measurement()));
     connect(multipickup_, SIGNAL(measurement_finished())        , multipickup_, SLOT(start_pickup()));
     connect(multipickup_, SIGNAL(pickup_finished())             , multipickup_, SLOT(start_measurement()));
@@ -600,6 +602,8 @@ void AssemblyMainWindow::connect_multipickupNpatrec(const MultiPickupTester::Con
 
 void AssemblyMainWindow::disconnect_multipickupNpatrec()
 {
+    assembleView_->MultiPickupWidget()->lineEdit_setDisabled(false);
+
     disconnect(this        , SIGNAL(multipickupNpatrec_connected()), multipickup_, SLOT(start_measurement()));
     disconnect(multipickup_, SIGNAL(measurement_finished())        , multipickup_, SLOT(start_pickup()));
     disconnect(multipickup_, SIGNAL(pickup_finished())             , multipickup_, SLOT(start_measurement()));

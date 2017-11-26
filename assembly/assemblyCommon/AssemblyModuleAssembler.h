@@ -37,6 +37,7 @@
 
 #include <opencv2/opencv.hpp>
 
+class MultiPickupTesterWidget;
 class VacuumWidget;
 
 class AssemblyModuleAssembler : public QWidget
@@ -47,7 +48,7 @@ class AssemblyModuleAssembler : public QWidget
 
   explicit AssemblyModuleAssembler(const LStepExpressMotionManager*, ObjectFinderPatRec*, QWidget* parent=0);
 
-  double pickup_position;
+  MultiPickupTesterWidget* MultiPickupWidget() { return w_mupiup_; }
 
   // to connect vacuum signals in MainWindow
   VacuumWidget* VacuumToggler() const { return w_vacuum_; }
@@ -70,6 +71,8 @@ class AssemblyModuleAssembler : public QWidget
   QLineEdit* liedit_2_;
   QLineEdit* liedit_3_;
   QLineEdit* liedit_4_;
+
+  MultiPickupTesterWidget* w_mupiup_;
 
   VacuumWidget* w_vacuum_;
 
@@ -248,7 +251,7 @@ class MultiPickupTesterWidget : public QWidget
 
   QGridLayout* layout() const { return layout_; }
 
-  double local_x, local_y, local_z, local_a;
+  void lineEdit_setDisabled(const bool);
 
  protected:
 

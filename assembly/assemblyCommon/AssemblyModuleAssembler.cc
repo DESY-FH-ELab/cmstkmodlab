@@ -173,13 +173,13 @@ AssemblyModuleAssembler::AssemblyModuleAssembler(const LStepExpressMotionManager
 
   QGroupBox* box_mupiup = new QGroupBox(tr("\"Pickup + PatRec\" Iterations"));
 
-    MultiPickupTesterWidget* w_mupiup = new MultiPickupTesterWidget("Run \"Pickup + PatRec\"", motion_manager);
-    f10->addRow(w_mupiup);
+    w_mupiup_ = new MultiPickupTesterWidget("Run \"Pickup + PatRec\"", motion_manager);
+    f10->addRow(w_mupiup_);
 
-    connect(w_mupiup, SIGNAL(multipickup_request(const MultiPickupTester::Configuration&)),
-            this    , SIGNAL(multipickup_request(const MultiPickupTester::Configuration&)));
+    connect(w_mupiup_, SIGNAL(multipickup_request(const MultiPickupTester::Configuration&)),
+            this     , SIGNAL(multipickup_request(const MultiPickupTester::Configuration&)));
 
-  box_mupiup->setLayout(w_mupiup->layout());
+  box_mupiup->setLayout(w_mupiup_->layout());
 
   f10->addRow(box_mupiup);
   // ---------------------
@@ -452,6 +452,15 @@ void MultiPickupTesterWidget::update_position_pickup()
   posi_strs << x << ", " << y << ", " << z;
 
   pickup_lineed_->setText(QString::fromStdString(posi_strs.str()));
+
+  return;
+}
+
+void MultiPickupTesterWidget::lineEdit_setDisabled(const bool bit)
+{
+  measur_lineed_->setDisabled(bit);
+  pickup_lineed_->setDisabled(bit);
+  iteraN_lineed_->setDisabled(bit);
 
   return;
 }
