@@ -100,7 +100,6 @@ class MultiPickupTester : public QObject
 
   void measurement_request();
 
-  void move_absolute(const double, const double, const double, const double);
   void move_relative(const double, const double, const double, const double);
 
   void vacuum_toggle(const int);

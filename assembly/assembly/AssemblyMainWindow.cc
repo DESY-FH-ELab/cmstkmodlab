@@ -576,7 +576,6 @@ void AssemblyMainWindow::connect_multipickupNpatrec(const MultiPickupTester::Con
     connect(multipickup_, SIGNAL(test_finished())               , this        , SLOT(disconnect_multipickupNpatrec()));
 
     // movement
-    connect(multipickup_, SIGNAL(move_absolute(double, double, double, double)), motion_manager_, SLOT(moveAbsolute(double, double, double, double)));
     connect(multipickup_, SIGNAL(move_relative(double, double, double, double)), motion_manager_, SLOT(moveRelative(double, double, double, double)));
 
     connect(motion_manager_, SIGNAL(motion_finished()), multipickup_, SLOT(setup_next_step()));
@@ -610,7 +609,6 @@ void AssemblyMainWindow::disconnect_multipickupNpatrec()
     disconnect(multipickup_, SIGNAL(test_finished())               , this        , SLOT(disconnect_multipickupNpatrec()));
 
     // movement
-    disconnect(multipickup_, SIGNAL(move_absolute(double, double, double, double)), motion_manager_, SLOT(moveAbsolute(double, double, double, double)));
     disconnect(multipickup_, SIGNAL(move_relative(double, double, double, double)), motion_manager_, SLOT(moveRelative(double, double, double, double)));
 
     disconnect(motion_manager_, SIGNAL(motion_finished()), multipickup_, SLOT(setup_next_step()));

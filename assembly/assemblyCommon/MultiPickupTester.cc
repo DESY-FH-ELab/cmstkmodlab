@@ -50,12 +50,14 @@ void MultiPickupTester::start_measurement()
 {
   mode_ = MultiPickupTester::measurement;
 
-  const double meas_a = motion_manager_->get_position_A();
+  const double dx = (conf_.measurement_X() - motion_manager_->get_position_X());
+  const double dy = (conf_.measurement_Y() - motion_manager_->get_position_Y());
+  const double dz = (conf_.measurement_Z() - motion_manager_->get_position_Z());
 
   NQLog("MultiPickupTester", NQLog::Debug) << "start_measurement"
-     << ": emitting signal \"move_absolute()\"";
+     << ": emitting signal \"move_relative(" << dx << ", " << dy << ", " << dz << ", 0)\"";
 
-  emit move_absolute(conf_.measurement_X(), conf_.measurement_Y(), conf_.measurement_Z(), meas_a);
+  emit move_relative(dx, dy, dz, 0.);
 }
 
 void MultiPickupTester::finish_measurement(const int exit_code)
@@ -94,12 +96,14 @@ void MultiPickupTester::start_pickup()
   picked_up_   = false;
   vacuum_on_   = false;
 
-  const double pickup_a = motion_manager_->get_position_A();
+  const double dx = (conf_.pickup_X() - motion_manager_->get_position_X());
+  const double dy = (conf_.pickup_Y() - motion_manager_->get_position_Y());
+  const double dz = (conf_.pickup_Z() - motion_manager_->get_position_Z());
 
   NQLog("MultiPickupTester", NQLog::Debug) << "start_pickup"
-     << ": emitting signal \"move_absolute()\"";
+     << ": emitting signal \"move_relative(" << dx << ", " << dy << ", " << dz << ", 0)\"";
 
-  emit move_absolute(conf_.pickup_X(), conf_.pickup_Y(), conf_.pickup_Z(), pickup_a);
+  emit move_relative(dx, dy, dz, 0.);
 }
 
 void MultiPickupTester::setup_next_step()
