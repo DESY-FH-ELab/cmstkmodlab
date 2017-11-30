@@ -193,7 +193,7 @@ AssemblyModuleAssembler::AssemblyModuleAssembler(const LStepExpressMotionManager
   QGridLayout* g_move = new QGridLayout();
 
     // widget: move absolute
-    MoveWidget* w_moveabs = new MoveWidget("Move Absolute", "0,0,0");
+    MoveWidget* w_moveabs = new MoveWidget("Move Absolute", "0,0,0,0");
     g_move->addWidget(w_moveabs->button(), 0, 0);
     g_move->addWidget(w_moveabs->lineed(), 0, 1);
 
@@ -204,7 +204,7 @@ AssemblyModuleAssembler::AssemblyModuleAssembler(const LStepExpressMotionManager
     // ---------------------
 
     // widget: move relative
-    MoveWidget* w_moverel = new MoveWidget("Move Relative", "0,0,0");
+    MoveWidget* w_moverel = new MoveWidget("Move Relative", "0,0,0,0");
     g_move->addWidget(w_moverel->button(), 1, 0);
     g_move->addWidget(w_moverel->lineed(), 1, 1);
 
@@ -674,7 +674,7 @@ void MoveWidget::execute()
   // parse lineEdit text to get target coordinates
   const QStringList entries = line_entry.remove(" ").split(",");
 
-  if((entries.length() == 3) || (entries.length() == 4))
+  if((entries.length() == 4) || (moveRelative_ && (entries.length() == 3)))
   {
     const double x_d = entries.value(0).toDouble();
     const double y_d = entries.value(1).toDouble();
@@ -702,7 +702,7 @@ void MoveWidget::execute()
   else
   {
     NQLog("MoveWidget", NQLog::Warning) << "execute"
-       << ": invalid input string format (" << line_entry << "), no action taken";
+       << ": [moveRelative=" << moveRelative_ << "] invalid input string format (" << line_entry << "), no action taken";
 
     return;
   }
