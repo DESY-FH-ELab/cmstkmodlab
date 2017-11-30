@@ -74,6 +74,7 @@ class MultiPickupTester : public QObject
 
   int itera_counter_;
 
+  int    pickup_vacuum_;
   double pickup_deltaZ_;
 
   Mode          mode_;

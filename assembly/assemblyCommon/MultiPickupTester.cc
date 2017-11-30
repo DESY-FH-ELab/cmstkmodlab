@@ -27,6 +27,8 @@ MultiPickupTester::MultiPickupTester(LStepExpressMotionManager* motion_manager, 
 
   itera_counter_ = 0;
 
+  pickup_vacuum_ = 2;
+
   pickup_deltaZ_ = 20.;
 
   mode_ = MultiPickupTester::None;
@@ -146,9 +148,9 @@ void MultiPickupTester::setup_next_step()
             vacuum_on_ = false;
 
             NQLog("MultiPickupTester", NQLog::Debug) << "setup_next_step"
-               << ": emitting signal \"vacuum_toggle(1)\"";
+               << ": emitting signal \"vacuum_toggle(" << pickup_vacuum_ << ")\"";
 
-            emit vacuum_toggle(1);
+            emit vacuum_toggle(pickup_vacuum_);
           }
           else
           {
@@ -166,9 +168,9 @@ void MultiPickupTester::setup_next_step()
           vacuum_on_ = true;
 
           NQLog("MultiPickupTester", NQLog::Debug) << "setup_next_step"
-             << ": emitting signal \"vacuum_toggle(1)\"";
+             << ": emitting signal \"vacuum_toggle(" << pickup_vacuum_ << ")\"";
 
-          emit vacuum_toggle(1);
+          emit vacuum_toggle(pickup_vacuum_);
         }
         else if(picked_up_ == false && vacuum_on_ == true)
         {
