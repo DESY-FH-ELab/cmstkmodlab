@@ -26,8 +26,6 @@ class MultiPickupTester : public QObject
 
   LStepExpressMotionManager* motion_manager() const { return motion_manager_; }
 
-  enum Mode { None, measurement, pickup };
-
   class Configuration
   {
    public:
@@ -68,16 +66,22 @@ class MultiPickupTester : public QObject
 
   void set_configuration(const Configuration& conf){ conf_ = conf; }
 
+  void initialize_switches();
+
  protected:
 
   LStepExpressMotionManager* motion_manager_;
 
-  int itera_counter_;
-
   int    pickup_vacuum_;
   double pickup_deltaZ_;
 
+  enum Mode { Mode_None, Mode_measurement, Mode_pickup };
+  enum Movement { Movement_None, Movement_XY, Movement_Z };
+
+  int itera_counter_;
+
   Mode          mode_;
+  Movement      move_;
   Configuration conf_;
 
   bool vacuum_on_   = false;
@@ -85,8 +89,6 @@ class MultiPickupTester : public QObject
   bool picked_up_   = false;
 
  public slots:
-
-  void execute(const Configuration&);
 
   void start_measurement();
   void finish_measurement(const int exit_code=0);
