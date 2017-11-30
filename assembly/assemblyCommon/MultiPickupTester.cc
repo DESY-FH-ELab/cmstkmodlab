@@ -11,6 +11,7 @@
 /////////////////////////////////////////////////////////////////////////////////
 
 #include <MultiPickupTester.h>
+#include <ApplicationConfig.h>
 #include <nqlogger.h>
 
 MultiPickupTester::MultiPickupTester(LStepExpressMotionManager* motion_manager, QObject* parent) :
@@ -25,9 +26,17 @@ MultiPickupTester::MultiPickupTester(LStepExpressMotionManager* motion_manager, 
     return;
   }
 
-  pickup_vacuum_ = 2;
+  ApplicationConfig* config = ApplicationConfig::instance();
+  if(!config)
+  {
+    NQLog("MultiPickupTester", NQLog::Fatal)
+       << "ApplicationConfig::instance() not initialized (null pointer), stopped constructor";
 
-  pickup_deltaZ_ = 20.;
+    return;
+  }
+
+  pickup_vacuum_ = config->getValue<int>   ("MultiPickupTester_pickup_vacuum", 1);
+  pickup_deltaZ_ = config->getValue<double>("MultiPickupTester_pickup_deltaZ", 20.);
 
   this->initialize_switches();
 
