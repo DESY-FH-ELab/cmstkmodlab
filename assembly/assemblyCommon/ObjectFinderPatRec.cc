@@ -296,8 +296,11 @@ void ObjectFinderPatRec::run_PatRec(const int mode_lab, const int mode_obj)
 //
 //      threshold_tpl_ = 85; // 90 for silicon marker, 88 for glass, 188 for marked-glass
 
-      image_tpl_ = cv::imread(Config::CMSTkModLabBasePath+"/share/assembly/glass_template_raw_cropped.png"   , CV_LOAD_IMAGE_COLOR);
-      threshold_tpl_ = 188; // 90 for silicon marker, 88 for glass, 188 for marked-glass
+//!!      image_tpl_ = cv::imread(Config::CMSTkModLabBasePath+"/share/assembly/glass_template_raw_cropped.png"   , CV_LOAD_IMAGE_COLOR);
+//!!      threshold_tpl_ = 188; // 90 for silicon marker, 88 for glass, 188 for marked-glass
+
+      image_tpl_ = cv::imread(Config::CMSTkModLabBasePath+"/share/assembly/RawSensor_3_clipB_temp.png", CV_LOAD_IMAGE_COLOR);
+      threshold_tpl_ = 50;
     }
     else if(mode_obj == 1)
     {
