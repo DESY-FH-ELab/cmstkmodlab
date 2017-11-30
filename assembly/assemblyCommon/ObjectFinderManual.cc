@@ -689,7 +689,7 @@ void ObjectFinderManual::findMarker_circleSeed(int mode)
     double linesHoughMaxLineGap_ =25.0;
     bool  dist1_, dist2_, dist3_, doca_ ;
     double slope_final = 0.0, ang_final = 0.0;
-    double distance,doca,x0,x1,x2, y0,y1,y2, x,y;
+    double distance,doca,x0,x1,x2, y0,y1,y2, x(0.), y(0.);
     
     std::vector<cv::Vec3f> circles;
     cv::Point2f circleCenter_;
@@ -814,7 +814,7 @@ void ObjectFinderManual::findMarker_circleSeed(int mode)
             if (i == j ) continue;
             cv::Point2f theIntersection;
             cv::Point2f o1,o2,p1,p2,r;
-            double distance;
+//            double distance;
             o1 = goodLines_[i].first;
             p1 = goodLines_[i].second;
             o2 = goodLines_[j].first;
@@ -839,9 +839,9 @@ void ObjectFinderManual::findMarker_circleSeed(int mode)
                 intersections_.push_back(r);
                 
                 
-                distance = std::sqrt(std::pow(circleCenter_.x - r.x, 2.0) +
-                                     std::pow(circleCenter_.y - r.y, 2.0));
-                //if (distance > 6.0*expectedCircleRadius_)continue;
+//                distance = std::sqrt(std::pow(circleCenter_.x - r.x, 2.0) +
+//                                     std::pow(circleCenter_.y - r.y, 2.0));
+//                //if (distance > 6.0*expectedCircleRadius_)continue;
             }
         }
     }
