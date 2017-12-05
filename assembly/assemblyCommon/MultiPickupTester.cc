@@ -66,7 +66,7 @@ void MultiPickupTester::start_measurement()
 
   const double dz = (conf_.measurement_Z() - motion_manager_->get_position_Z());
 
-  NQLog("MultiPickupTester", NQLog::Debug) << "start_measurement"
+  NQLog("MultiPickupTester", NQLog::Spam) << "start_measurement"
      << ": emitting signal \"move_relative(0, 0, " << dz << ", 0)\"";
 
   move_ = MultiPickupTester::Movement_Z;
@@ -81,7 +81,7 @@ void MultiPickupTester::finish_measurement(const int exit_code)
     NQLog("MultiPickupTester", NQLog::Critical) << "finish_measurement"
        << ": measurement terminated with non-zero exit code (" << exit_code << "). Stopping test.";
 
-    NQLog("MultiPickupTester", NQLog::Debug) << "finish_measurement"
+    NQLog("MultiPickupTester", NQLog::Spam) << "finish_measurement"
        << ": emitting signal \"test_finished\"";
 
     this->initialize_switches();
@@ -93,7 +93,7 @@ void MultiPickupTester::finish_measurement(const int exit_code)
 
   ++itera_counter_;
 
-  NQLog("MultiPickupTester", NQLog::Debug) << "finish_measurement"
+  NQLog("MultiPickupTester", NQLog::Spam) << "finish_measurement"
      << ": emitting signal \"measurement_finished\"";
 
   emit measurement_finished();
@@ -103,7 +103,7 @@ void MultiPickupTester::start_pickup()
 {
   if(itera_counter_ > conf_.iterations())
   {
-    NQLog("MultiPickupTester", NQLog::Debug) << "start_pickup"
+    NQLog("MultiPickupTester", NQLog::Spam) << "start_pickup"
        << ": emitting signal \"test_finished\"";
 
     this->initialize_switches();
@@ -122,7 +122,7 @@ void MultiPickupTester::start_pickup()
   const double dx = (conf_.pickup_X() - motion_manager_->get_position_X());
   const double dy = (conf_.pickup_Y() - motion_manager_->get_position_Y());
 
-  NQLog("MultiPickupTester", NQLog::Debug) << "start_pickup"
+  NQLog("MultiPickupTester", NQLog::Spam) << "start_pickup"
      << ": emitting signal \"move_relative(" << dx << ", " << dy << ", 0, 0)\"";
 
   move_ = MultiPickupTester::Movement_XY;
@@ -134,7 +134,7 @@ void MultiPickupTester::setup_next_step()
 {
   if(itera_counter_ > conf_.iterations())
   {
-    NQLog("MultiPickupTester", NQLog::Debug) << "setup_next_step"
+    NQLog("MultiPickupTester", NQLog::Spam) << "setup_next_step"
        << ": emitting signal \"test_finished\"";
 
     this->initialize_switches();
@@ -152,7 +152,7 @@ void MultiPickupTester::setup_next_step()
         const double dx = (conf_.measurement_X() - motion_manager_->get_position_X());
         const double dy = (conf_.measurement_Y() - motion_manager_->get_position_Y());
 
-        NQLog("MultiPickupTester", NQLog::Debug) << "setup_next_step"
+        NQLog("MultiPickupTester", NQLog::Spam) << "setup_next_step"
            << ": emitting signal \"move_relative(" << dx << ", " << dy << ", 0, 0)\"";
 
         move_ = MultiPickupTester::Movement_XY;
@@ -163,7 +163,7 @@ void MultiPickupTester::setup_next_step()
       {
         move_ = MultiPickupTester::Movement_None;
 
-        NQLog("MultiPickupTester", NQLog::Debug) << "setup_next_step"
+        NQLog("MultiPickupTester", NQLog::Spam) << "setup_next_step"
            << ": emitting signal \"measurement_request\"";
 
         emit measurement_request();
@@ -173,7 +173,7 @@ void MultiPickupTester::setup_next_step()
         NQLog("MultiPickupTester", NQLog::Fatal) << "setup_next_step"
            << ": logic error (Mode=measurement, Movement!=[XY,Z]), terminating test";
 
-        NQLog("MultiPickupTester", NQLog::Debug) << "setup_next_step"
+        NQLog("MultiPickupTester", NQLog::Spam) << "setup_next_step"
            << ": emitting signal \"test_finished\"";
 
         this->initialize_switches();
@@ -192,7 +192,7 @@ void MultiPickupTester::setup_next_step()
           NQLog("MultiPickupTester", NQLog::Critical) << "setup_next_step"
              << ": logic error: [mode=pickup] pickup completed, but picked_up switch still ON. Stopping test.";
 
-          NQLog("MultiPickupTester", NQLog::Debug) << "setup_next_step"
+          NQLog("MultiPickupTester", NQLog::Spam) << "setup_next_step"
              << ": emitting signal \"test_finished\"";
 
           this->initialize_switches();
@@ -207,14 +207,14 @@ void MultiPickupTester::setup_next_step()
           {
             vacuum_on_ = false;
 
-            NQLog("MultiPickupTester", NQLog::Debug) << "setup_next_step"
+            NQLog("MultiPickupTester", NQLog::Spam) << "setup_next_step"
                << ": emitting signal \"vacuum_toggle(" << pickup_vacuum_ << ")\"";
 
             emit vacuum_toggle(pickup_vacuum_);
           }
           else
           {
-            NQLog("MultiPickupTester", NQLog::Debug) << "setup_next_step"
+            NQLog("MultiPickupTester", NQLog::Spam) << "setup_next_step"
                << ": emitting signal \"pickup_finished\"";
 
             emit pickup_finished();
@@ -229,7 +229,7 @@ void MultiPickupTester::setup_next_step()
           {
             const double dz = (conf_.pickup_Z() - motion_manager_->get_position_Z());
 
-            NQLog("MultiPickupTester", NQLog::Debug) << "setup_next_step"
+            NQLog("MultiPickupTester", NQLog::Spam) << "setup_next_step"
                << ": emitting signal \"move_relative(0, 0, " << dz << ", 0)\"";
 
             move_ = MultiPickupTester::Movement_Z;
@@ -242,7 +242,7 @@ void MultiPickupTester::setup_next_step()
 
             vacuum_on_ = true;
 
-            NQLog("MultiPickupTester", NQLog::Debug) << "setup_next_step"
+            NQLog("MultiPickupTester", NQLog::Spam) << "setup_next_step"
                << ": emitting signal \"vacuum_toggle(" << pickup_vacuum_ << ")\"";
 
             emit vacuum_toggle(pickup_vacuum_);
@@ -252,7 +252,7 @@ void MultiPickupTester::setup_next_step()
             NQLog("MultiPickupTester", NQLog::Fatal) << "setup_next_step"
                << ": logic error (Mode=pickup, Movement!=[XY,Z]), terminating test";
 
-            NQLog("MultiPickupTester", NQLog::Debug) << "setup_next_step"
+            NQLog("MultiPickupTester", NQLog::Spam) << "setup_next_step"
                << ": emitting signal \"test_finished\"";
 
             this->initialize_switches();
@@ -268,7 +268,7 @@ void MultiPickupTester::setup_next_step()
 
           const double dz = +1.0 * pickup_deltaZ_;
 
-          NQLog("MultiPickupTester", NQLog::Debug) << "setup_next_step"
+          NQLog("MultiPickupTester", NQLog::Spam) << "setup_next_step"
              << ": emitting signal \"move_relative(0, 0, " << dz << ", 0)\"";
 
           emit move_relative(0., 0., dz, 0.);
@@ -281,7 +281,7 @@ void MultiPickupTester::setup_next_step()
 
           const double dz = -1.0 * pickup_deltaZ_;
 
-          NQLog("MultiPickupTester", NQLog::Debug) << "setup_next_step"
+          NQLog("MultiPickupTester", NQLog::Spam) << "setup_next_step"
              << ": emitting signal \"move_relative(0, 0, " << dz << ", 0)\"";
 
           emit move_relative(0., 0., dz, 0.);
@@ -293,7 +293,7 @@ void MultiPickupTester::setup_next_step()
       NQLog("MultiPickupTester", NQLog::Critical) << "setup_next_step"
          << ": logic error: undefined value for MultiPickupTester mode. Stopping test.";
 
-      NQLog("MultiPickupTester", NQLog::Debug) << "setup_next_step"
+      NQLog("MultiPickupTester", NQLog::Spam) << "setup_next_step"
          << ": emitting signal \"test_finished\"";
 
       this->initialize_switches();
