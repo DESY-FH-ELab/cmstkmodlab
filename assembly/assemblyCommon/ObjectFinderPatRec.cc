@@ -75,7 +75,7 @@ void ObjectFinderPatRec::update_threshold(const int v)
 {
   this->set_threshold(v);
 
-  NQLog("ObjectFinderPatRec", NQLog::Debug) << "update_threshold(" << v << ")"
+  NQLog("ObjectFinderPatRec", NQLog::Spam) << "update_threshold(" << v << ")"
      << ": emitting signal \"threshold_updated\"";
 
   emit threshold_updated();
@@ -83,7 +83,7 @@ void ObjectFinderPatRec::update_threshold(const int v)
 
 void ObjectFinderPatRec::acquire_image()
 {
-  NQLog("ObjectFinderPatRec", NQLog::Debug) << "acquire_image"
+  NQLog("ObjectFinderPatRec", NQLog::Spam) << "acquire_image"
      << ": emitting signal \"image\"";
 
   emit image_request();
@@ -97,7 +97,7 @@ void ObjectFinderPatRec::update_image(const cv::Mat& img)
 
   if(updated_image_master_binary_){ updated_image_master_binary_ = false; }
 
-  NQLog("ObjectFinderPatRec", NQLog::Debug) << "update_image"
+  NQLog("ObjectFinderPatRec", NQLog::Spam) << "update_image"
      << ": emitting signal \"image_updated\"";
 
   emit image_updated(image_mas_);
@@ -132,7 +132,7 @@ void ObjectFinderPatRec::update_binary_image()
     NQLog("ObjectFinderPatRec", NQLog::Spam) << "update_binary_image"
        << ": created binary image with threshold=" << threshold_;
 
-    NQLog("ObjectFinderPatRec", NQLog::Debug) << "update_binary_image"
+    NQLog("ObjectFinderPatRec", NQLog::Spam) << "update_binary_image"
        << ": emitting signal \"binary_image_updated\"";
 
     emit binary_image_updated(image_bin_);
@@ -180,7 +180,7 @@ void ObjectFinderPatRec::delete_binary_image()
 
 void ObjectFinderPatRec::send_image_master()
 {
-  NQLog("ObjectFinderPatRec", NQLog::Debug) << "send_image_master"
+  NQLog("ObjectFinderPatRec", NQLog::Spam) << "send_image_master"
      << ": emitting signal \"image_sent\"";
 
   emit image_sent(image_mas_);
@@ -188,7 +188,7 @@ void ObjectFinderPatRec::send_image_master()
 
 void ObjectFinderPatRec::send_image_binary()
 {
-  NQLog("ObjectFinderPatRec", NQLog::Debug) << "send_image_binary"
+  NQLog("ObjectFinderPatRec", NQLog::Spam) << "send_image_binary"
      << ": emitting signal \"image_sent\"";
 
   emit image_sent(image_bin_);
@@ -210,7 +210,7 @@ void ObjectFinderPatRec::update_rough_angles(QString qstr)
     NQLog("ObjectFinderPatRec", NQLog::Message) << "update_rough_angles"
        << ": updated list of rough angles: " << qstr;
 
-    NQLog("ObjectFinderPatRec", NQLog::Debug) << "update_rough_angles"
+    NQLog("ObjectFinderPatRec", NQLog::Spam) << "update_rough_angles"
        << ": emitting signal \"rough_angles_updated\"";
 
     emit rough_angles_updated();
@@ -238,7 +238,7 @@ void ObjectFinderPatRec::update_angscan_parameters(QString qstr)
        << " (theta_fine_range=" << theta_fine_range_
        << ", theta_fine_step="  << theta_fine_step_ << ")";
 
-    NQLog("ObjectFinderPatRec", NQLog::Debug) << "update_angscan_parameters"
+    NQLog("ObjectFinderPatRec", NQLog::Spam) << "update_angscan_parameters"
        << ": emitting signal \"angscan_parameters_updated\"";
 
     emit angscan_parameters_updated();
@@ -402,7 +402,7 @@ void ObjectFinderPatRec::run_PatRec(const int mode_lab, const int mode_obj)
     return;
   }
 
-  NQLog("ObjectFinderPatRec", NQLog::Debug) << "run_PatRec"
+  NQLog("ObjectFinderPatRec", NQLog::Spam) << "run_PatRec"
      << "(mode_lab=" << mode_lab << ", mode_obj=" << mode_obj << ")"
      << ": emitting signal \"run_template_matching\"";
 
@@ -411,11 +411,11 @@ void ObjectFinderPatRec::run_PatRec(const int mode_lab, const int mode_obj)
 
 void ObjectFinderPatRec::template_matching(const cv::Mat& img_master, const cv::Mat& img_master_bin, const cv::Mat& img_templa, const int threshold_templa)
 {
-    NQLog("ObjectFinderPatRec", NQLog::Debug) << "template_matching";
-    NQLog("ObjectFinderPatRec", NQLog::Debug) << "template_matching: Master   cols = " << img_master.cols;
-    NQLog("ObjectFinderPatRec", NQLog::Debug) << "template_matching: Master   rows = " << img_master.rows;
-    NQLog("ObjectFinderPatRec", NQLog::Debug) << "template_matching: Template cols = " << img_templa.cols;
-    NQLog("ObjectFinderPatRec", NQLog::Debug) << "template_matching: Template rows = " << img_templa.rows;
+    NQLog("ObjectFinderPatRec", NQLog::Spam) << "template_matching";
+    NQLog("ObjectFinderPatRec", NQLog::Spam) << "template_matching: Master   cols = " << img_master.cols;
+    NQLog("ObjectFinderPatRec", NQLog::Spam) << "template_matching: Master   rows = " << img_master.rows;
+    NQLog("ObjectFinderPatRec", NQLog::Spam) << "template_matching: Template cols = " << img_templa.cols;
+    NQLog("ObjectFinderPatRec", NQLog::Spam) << "template_matching: Template rows = " << img_templa.rows;
 
     // output directory
     std::string output_dir(""), output_subdir("");
@@ -661,7 +661,7 @@ void ObjectFinderPatRec::template_matching(const cv::Mat& img_master, const cv::
        << ": created output file: " << output_dir+"/PatRec_results.txt";
     // ------------------
 
-    NQLog("ObjectFinderPatRec", NQLog::Debug) << "template_matching"
+    NQLog("ObjectFinderPatRec", NQLog::Spam) << "template_matching"
        << ": emitting signal \"PatRec_exitcode(0)\"";
 
     emit PatRec_exitcode(0);

@@ -185,7 +185,7 @@ AssemblyMainWindow::AssemblyMainWindow(const unsigned int camera_ID, QWidget* pa
 
     connect(this                          , SIGNAL(updateVacuumChannelsStatus())       , conradManager_                , SLOT(updateVacuumChannelsStatus()));
 
-    NQLog("AssemblyMainWindow", NQLog::Debug) << "emitting signal \"updateVacuumChannelsStatus\"";
+    NQLog("AssemblyMainWindow", NQLog::Spam) << "emitting signal \"updateVacuumChannelsStatus\"";
 
     emit updateVacuumChannelsStatus();
     // ---
@@ -301,7 +301,7 @@ void AssemblyMainWindow::enable_images()
     NQLog("AssemblyMainWindow", NQLog::Message) << "enable_images"
        << ": ImageController connected";
 
-    NQLog("AssemblyMainWindow", NQLog::Debug) << "enable_images"
+    NQLog("AssemblyMainWindow", NQLog::Spam) << "enable_images"
        << ": emitting image \"images_ON\"";
 
     emit images_ON();
@@ -322,7 +322,7 @@ void AssemblyMainWindow::disable_images()
          << ": ImageController disconnected";
     }
 
-    NQLog("AssemblyMainWindow", NQLog::Debug) << "enable_images"
+    NQLog("AssemblyMainWindow", NQLog::Spam) << "enable_images"
        << ": emitting image \"images_OFF\"";
 
     emit images_OFF();
@@ -514,7 +514,7 @@ void AssemblyMainWindow::get_image()
       return;
     }
 
-    NQLog("AssemblyMainWindow", NQLog::Debug) << "get_image"
+    NQLog("AssemblyMainWindow", NQLog::Spam) << "get_image"
        << ": emitting signal \"image\"";
 
     emit image();
@@ -593,7 +593,7 @@ void AssemblyMainWindow::connect_multipickupNpatrec(const MultiPickupTester::Con
     connect(conradManager_, SIGNAL(enableVacuumButton()), multipickup_  , SLOT(setup_next_step()));
     // ---
 
-    NQLog("AssemblyMainWindow", NQLog::Debug) << "connect_multipickupNpatrec"
+    NQLog("AssemblyMainWindow", NQLog::Spam) << "connect_multipickupNpatrec"
        << ": emitting signal \"multipickupNpatrec_connected\"";
 
     emit multipickupNpatrec_connected();
@@ -626,7 +626,7 @@ void AssemblyMainWindow::disconnect_multipickupNpatrec()
     disconnect(conradManager_, SIGNAL(enableVacuumButton()), multipickup_  , SLOT(setup_next_step()));
     // ---
 
-    NQLog("AssemblyMainWindow", NQLog::Debug) << "disconnect_multipickupNpatrec"
+    NQLog("AssemblyMainWindow", NQLog::Spam) << "disconnect_multipickupNpatrec"
        << ": emitting signal \"multipickupNpatrec_disconnected\"";
 
     emit multipickupNpatrec_disconnected();
@@ -637,7 +637,7 @@ void AssemblyMainWindow::disconnect_multipickupNpatrec()
 
 void AssemblyMainWindow::testTimer()
 {
-    NQLog("AssemblyMainWindow", NQLog::Debug) << "testTimer"
+    NQLog("AssemblyMainWindow", NQLog::Spam) << "testTimer"
        << ": timeOut=" << testTimerCount_;
 
     testTimerCount_ += 0.1;
@@ -665,7 +665,7 @@ void AssemblyMainWindow::quit()
 {
     if(camera_)
     {
-      NQLog("AssemblyMainWindow", NQLog::Debug) << "quit"
+      NQLog("AssemblyMainWindow", NQLog::Spam) << "quit"
          << ": emitting signal \"images_OFF\"";
 
       emit images_OFF();

@@ -60,7 +60,7 @@ void ImageController::enable()
 {
   is_enabled_ = true;
 
-  NQLog("ImageController", NQLog::Debug) << "enable"
+  NQLog("ImageController", NQLog::Spam) << "enable"
      << ": emitting signal \"open_camera\"";
 
   emit open_camera();
@@ -70,7 +70,7 @@ void ImageController::disable()
 {
   is_enabled_ = false;
 
-  NQLog("ImageController", NQLog::Debug) << "disable"
+  NQLog("ImageController", NQLog::Spam) << "disable"
      << ": emitting signal \"close_camera\"";
 
   emit close_camera();
@@ -78,7 +78,7 @@ void ImageController::disable()
 
 void ImageController::acquire_image()
 {
-  NQLog("ImageController", NQLog::Debug) << "acquire_image"
+  NQLog("ImageController", NQLog::Spam) << "acquire_image"
      << ": emitting signal \"image\"";
 
   emit image();
@@ -86,7 +86,7 @@ void ImageController::acquire_image()
 
 void ImageController::enable_camera()
 {
-  NQLog("ImageController", NQLog::Debug) << "enable_camera"
+  NQLog("ImageController", NQLog::Spam) << "enable_camera"
      << ": emitting signal \"camera_enabled\"";
 
   emit camera_enabled();
@@ -94,7 +94,7 @@ void ImageController::enable_camera()
 
 void ImageController::disable_camera()
 {
-  NQLog("ImageController", NQLog::Debug) << "disable_camera"
+  NQLog("ImageController", NQLog::Spam) << "disable_camera"
      << ": emitting signal \"camera_disabled\"";
 
   emit camera_disabled();

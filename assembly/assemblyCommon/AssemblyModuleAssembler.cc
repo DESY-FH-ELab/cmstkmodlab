@@ -279,7 +279,7 @@ AssemblyModuleAssembler::AssemblyModuleAssembler(const LStepExpressMotionManager
 
 void AssemblyModuleAssembler::updateText(int stage, double x, double y, double a)
 {
-  NQLog("AssemblyModuleAssembler", NQLog::Debug) << "updateText"
+  NQLog("AssemblyModuleAssembler", NQLog::Spam) << "updateText"
      << "(" << stage << ", " << x << ", " << y << ", " << a << ")";
 
   std::stringstream posi_strs;
@@ -299,7 +299,7 @@ void AssemblyModuleAssembler::updateText(int stage, double x, double y, double a
 
 void AssemblyModuleAssembler::updateImage(const int stage, const QString& filename)
 {
-  NQLog("AssemblyModuleAssembler", NQLog::Debug) << "updateImage(" << stage << ", file=" << filename << ")";
+  NQLog("AssemblyModuleAssembler", NQLog::Spam) << "updateImage(" << stage << ", file=" << filename << ")";
 
   const std::string filename_ss = filename.toUtf8().constData();
 
@@ -322,7 +322,7 @@ void AssemblyModuleAssembler::updateImage(const int stage, const QString& filena
 
 void AssemblyModuleAssembler::updateImage(const int stage, const cv::Mat& img)
 {
-  NQLog("AssemblyModuleAssembler", NQLog::Debug) << "updateImage(" << stage << ", image)";
+  NQLog("AssemblyModuleAssembler", NQLog::Spam) << "updateImage(" << stage << ", image)";
 
   if(stage == 1)
   {
@@ -467,7 +467,7 @@ void MultiPickupTesterWidget::lineEdit_setDisabled(const bool bit)
 
 void MultiPickupTesterWidget::execute()
 {
-  NQLog("MultiPickupTesterWidget", NQLog::Debug) << "execute";
+  NQLog("MultiPickupTesterWidget", NQLog::Spam) << "execute";
 
   // measurement position
   const QString measur_qstr = this->measur_lineed_->text().remove(" ");
@@ -476,7 +476,7 @@ void MultiPickupTesterWidget::execute()
 
   if(measur_qsl.length() != 3)
   {
-    NQLog("MultiPickupTesterWidget", NQLog::Debug) << "execute"
+    NQLog("MultiPickupTesterWidget", NQLog::Warning) << "execute"
       << "invalid format for measurement position (" << measur_qstr << "), no action taken";
 
     return;
@@ -493,7 +493,7 @@ void MultiPickupTesterWidget::execute()
 
   if(pickup_qsl.length() != 3)
   {
-    NQLog("MultiPickupTesterWidget", NQLog::Debug) << "execute"
+    NQLog("MultiPickupTesterWidget", NQLog::Warning) << "execute"
       << "invalid format for pick-up position (" << pickup_qstr << "), no action taken";
 
     return;
@@ -509,7 +509,7 @@ void MultiPickupTesterWidget::execute()
   const double iteraN = iteraN_qstr.toInt();
 
   // output signal
-  NQLog("MultiPickupTesterWidget", NQLog::Debug) << "execute"
+  NQLog("MultiPickupTesterWidget", NQLog::Spam) << "execute"
      << ": emitting signal \"multipickup_request"
      <<  "(m_x=" << measur_x <<  ", m_y=" << measur_y << ", m_z=" << measur_z
      << ", p_x=" << pickup_x <<  ", p_y=" << pickup_y << ", p_z=" << pickup_z
@@ -742,7 +742,7 @@ void StringWidget::execute()
 {
   const QString line_entry = this->get_input_string();
 
-  NQLog("StringWidget", NQLog::Debug) << "execute"
+  NQLog("StringWidget", NQLog::Spam) << "execute"
      << ": emitting signal \"input_string(" << line_entry << ")\"";
 
   emit input_string(line_entry);
@@ -857,7 +857,7 @@ void PatRecWidget::execute()
   if     (radio5_->isChecked()){ mode_lab = 0; }
   else if(radio6_->isChecked()){ mode_lab = 1; }
 
-  NQLog("PatRecWidget", NQLog::Debug) << "execute"
+  NQLog("PatRecWidget", NQLog::Spam) << "execute"
      << ": emitting signal \"mode(" << mode_lab << ", " << mode_obj << ")\"";
 
   emit mode(mode_lab, mode_obj);
@@ -865,7 +865,7 @@ void PatRecWidget::execute()
 
 void PatRecWidget::change_label(const int state)
 {
-  NQLog("PatRecWidget", NQLog::Debug) << "change_label(" << state << ")";
+  NQLog("PatRecWidget", NQLog::Spam) << "change_label(" << state << ")";
 
   if(state == 0)
   {

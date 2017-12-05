@@ -87,7 +87,7 @@ ZFocusFinder::ZFocusFinder(AssemblyVUEyeCamera* camera, LStepExpressMotionManage
 
 void ZFocusFinder::enable_motion()
 {
-    NQLog("ZFocusFinder", NQLog::Debug) << "enable_motion";
+    NQLog("ZFocusFinder", NQLog::Spam) << "enable_motion";
 
     if(motion_enabled_ == false)
     {
@@ -108,7 +108,7 @@ void ZFocusFinder::enable_motion()
 
 void ZFocusFinder::disable_motion()
 {
-    NQLog("ZFocusFinder", NQLog::Debug) << "disable_motion";
+    NQLog("ZFocusFinder", NQLog::Spam) << "disable_motion";
 
     if(motion_enabled_ == true)
     {
@@ -240,7 +240,7 @@ void ZFocusFinder::acquire_image()
        << ": initialized auto-focusing"
        << " (z-min=" << zmin << ", z-max=" << zmax << ", steps=" << focus_pointN_ << ")";
 
-    NQLog("ZFocusFinder", NQLog::Debug) << "acquire_image"
+    NQLog("ZFocusFinder", NQLog::Spam) << "acquire_image"
        << ": emitting signal \"next_zpoint\"";
 
     emit next_zpoint();
@@ -261,7 +261,7 @@ void ZFocusFinder::test_focus()
   {
     const double dz = v_zrelm_vals_.at(zrelm_index_);
 
-    NQLog("ZFocusFinder::test_focus", NQLog::Debug) << "test_focus"
+    NQLog("ZFocusFinder::test_focus", NQLog::Spam) << "test_focus"
        << ": emitting signal \"focus(0, 0, " << dz << ", 0)\"";
 
     emit focus(0., 0., dz, 0.);
@@ -310,12 +310,12 @@ void ZFocusFinder::test_focus()
       zscan_gra->Write();
       zscan_fil->Close();
 
-      NQLog("ZFocusFinder", NQLog::Debug) << "test_focus"
+      NQLog("ZFocusFinder", NQLog::Spam) << "test_focus"
          << ": emitting signal \"show_zscan(" << zscan_plot_path_png << ")\"";
 
       emit show_zscan(QString(zscan_plot_path_png.c_str()));
 
-      NQLog("ZFocusFinder", NQLog::Debug) << "test_focus"
+      NQLog("ZFocusFinder", NQLog::Spam) << "test_focus"
          << ": emitting signal \"update_text(" << zposi_best << ")\"";
 
       emit update_text(zposi_best);
@@ -347,7 +347,7 @@ void ZFocusFinder::test_focus()
 
     const double dz = (zposi_best-zposi_now);
 
-    NQLog("ZFocusFinder", NQLog::Debug) << "test_focus"
+    NQLog("ZFocusFinder", NQLog::Spam) << "test_focus"
        << ": emitting signal \"focus(0, 0, " << dz << ", 0)\"";
 
     emit focus(0., 0., dz, 0.);
@@ -361,7 +361,7 @@ void ZFocusFinder::test_focus()
 
 void ZFocusFinder::process_image(const cv::Mat& img)
 {
-  NQLog("ZFocusFinder", NQLog::Debug) << "process_image";
+  NQLog("ZFocusFinder", NQLog::Spam) << "process_image";
 
   if(focus_completed_)
   {
@@ -383,7 +383,7 @@ void ZFocusFinder::process_image(const cv::Mat& img)
     cv::imwrite(img_outpath, img);
 
     // signal to end autofocus
-    NQLog("ZFocusFinder", NQLog::Debug) << "process_image"
+    NQLog("ZFocusFinder", NQLog::Spam) << "process_image"
        << ": emitting signal \"image_acquired\"";
 
     emit image_acquired(img);
@@ -409,7 +409,7 @@ void ZFocusFinder::process_image(const cv::Mat& img)
     // ------------------------------
 
     // --- go to next autofocus step
-    NQLog("ZFocusFinder", NQLog::Debug) << "process_image"
+    NQLog("ZFocusFinder", NQLog::Spam) << "process_image"
        << ": emitting signal \"next_zpoint\"";
 
     emit next_zpoint();
