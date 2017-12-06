@@ -19,7 +19,7 @@ LStepExpressMotionManager::LStepExpressMotionManager(LStepExpressModel* model, Q
   model_connected_(false),
   inMotion_(false)
 {
-    if(!model_)
+    if(model_ == false)
     {
       NQLog("LStepExpressMotionManager", NQLog::Fatal) << "initialization error"
          << ": null pointer to LStepExpressModel object, exiting constructor";
@@ -36,7 +36,7 @@ LStepExpressMotionManager::~LStepExpressMotionManager()
 
 void LStepExpressMotionManager::connect_model()
 {
-    if(!model_){ return; }
+    if(model_ == false){ return; }
 
     if(model_connected_ == false)
     {
@@ -57,7 +57,7 @@ void LStepExpressMotionManager::connect_model()
 
 void LStepExpressMotionManager::disconnect_model()
 {
-    if(!model_){ return; }
+    if(model_ == false){ return; }
 
     if(model_connected_ == true)
     {
@@ -88,6 +88,23 @@ void LStepExpressMotionManager::run()
 
     if(motions_.empty()){ return; }
 
+    const bool axes_ready = (
+         this->AxisIsReady(0)
+      && this->AxisIsReady(1)
+      && this->AxisIsReady(2)
+      && this->AxisIsReady(3)
+    );
+
+    if(axes_ready == false)
+    {
+      NQLog("LStepExpressMotionManager", NQLog::Critical) << "run"
+         << ": at least one axis in invalid state, motion request rejected";
+
+      this->finish_motion();
+
+      return;
+    }
+
     LStepExpressMotion motion = motions_.dequeue();
 
     inMotion_ = true;
@@ -116,6 +133,20 @@ void LStepExpressMotionManager::run()
     }
 
     return;
+}
+
+bool LStepExpressMotionManager::AxisIsReady(const int axis) const
+{
+  const bool axis_ready = (model_->getAxisStatusText(axis) == "@");
+
+  if(axis_ready == false)
+  {
+    NQLog("LStepExpressMotionManager", NQLog::Critical) << "AxisIsReady"
+       << ": invalid state (" << model_->getAxisStatusText(axis)
+       << ") for axis #" << axis << " of motion stage, axis not ready";
+  }
+
+  return axis_ready;
 }
 
 void LStepExpressMotionManager::appendMotion(const LStepExpressMotion& motion)
@@ -186,7 +217,7 @@ void LStepExpressMotionManager::finish_motion()
 {
     inMotion_ = false;
 
-    NQLog("LStepExpressMotionManager", NQLog::Debug) << "finish_motion"
+    NQLog("LStepExpressMotionManager", NQLog::Spam) << "finish_motion"
        << ": emitting signal \"motion_finished\"";
 
     emit motion_finished();

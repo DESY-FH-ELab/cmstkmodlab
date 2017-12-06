@@ -44,6 +44,8 @@ class LStepExpressMotionManager : public QObject
 
     void run();
 
+    bool AxisIsReady(const int) const;
+
     LStepExpressModel* model_;
 
     bool model_connected_;
