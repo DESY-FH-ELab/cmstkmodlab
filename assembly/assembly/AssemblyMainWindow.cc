@@ -78,7 +78,10 @@ AssemblyMainWindow::AssemblyMainWindow(const unsigned int camera_ID, QWidget* pa
     ApplicationConfig* config = ApplicationConfig::instance();
     if(!config)
     {
-      NQLog("AssemblyMainWindow", NQLog::Fatal) << "ApplicationConfig::instance() not initialized (null pointer), exiting";
+      NQLog("AssemblyMainWindow", NQLog::Fatal) << "---------------------------------------------------------------------------------";
+      NQLog("AssemblyMainWindow", NQLog::Fatal) << "ApplicationConfig::instance() not initialized (null pointer), exiting constructor";
+      NQLog("AssemblyMainWindow", NQLog::Fatal) << "---------------------------------------------------------------------------------";
+
       return;
     }
 
@@ -99,12 +102,9 @@ AssemblyMainWindow::AssemblyMainWindow(const unsigned int camera_ID, QWidget* pa
     camera_ = camera_model_->getCameraByID(camera_ID_);
     if(!camera_)
     {
-      NQLog("AssemblyMainWindow", NQLog::Fatal)
-         << "null pointer to AssemblyVUEyeCamera object"
-         << " (camera_ID="+std::to_string(camera_ID_)+")"
-         << ", exiting";
-
-      return;
+      NQLog("AssemblyMainWindow", NQLog::Critical) << "-----------------------------------------------------------";
+      NQLog("AssemblyMainWindow", NQLog::Critical) << "null pointer to AssemblyVUEyeCamera object (camera_ID=" << camera_ID_ << ")";
+      NQLog("AssemblyMainWindow", NQLog::Critical) << "-----------------------------------------------------------";
     }
 
     // marker finder
