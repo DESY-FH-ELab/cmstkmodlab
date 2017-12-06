@@ -577,19 +577,23 @@ void AssemblyObjectFinderPatRec::template_matching(const cv::Mat& img_master, co
     cv::Mat img_master_copy = img_master.clone();
 
     // drawings on top of master image copy ---
-//    line(img_master_copy, cv::Point(   img_master_copy.cols/2.0, 0), cv::Point(img_master_copy.cols/2.0, img_master_copy.rows    ), cv::Scalar(255,255,0), 2, 8, 0);
-//    line(img_master_copy, cv::Point(0, img_master_copy.rows/2.0   ), cv::Point(img_master_copy.cols    , img_master_copy.rows/2.0), cv::Scalar(255,255,0), 2, 8, 0);
 
-    // scale label
-    line   (img_master_copy,           cv::Point(img_master_copy.cols-300, img_master_copy.rows- 50), cv::Point(img_master_copy.cols-50, img_master_copy.rows-50), cv::Scalar(0,255,0), 2, 8, 0);
-    putText(img_master_copy, "200 um", cv::Point(img_master_copy.cols-300, img_master_copy.rows-100), cv::FONT_HERSHEY_SCRIPT_SIMPLEX, 2, cv::Scalar(0,255,0), 3, 8);
-
+    // rectangle representing template in best-match position
     this->draw_RotatedRect(img_master_copy, best_matchLoc, img_templa_bin.cols, img_templa_bin.rows, best_theta, cv::Scalar(0,0,255));
 
     // the circle of radius 4 is meant to *roughly* represent the x,y precision of the x-y motion stage
     // so that the user can see if the patrec results make sense
     // (the top left corner of the marker should be within the cirle)
-    circle(img_master_copy, best_matchLoc, 4, cv::Scalar(255,0,0), 4, 8, 0);
+    circle(img_master_copy, best_matchLoc,  4, cv::Scalar(255,0,0), 4, 8, 0); // 1-sigma
+    circle(img_master_copy, best_matchLoc, 15, cv::Scalar(255,0,0), 4, 8, 0); // only for visualization
+
+    // cross-lines to mark the center of the image
+    line(img_master_copy, cv::Point(   img_master_copy.cols/2.0, 0), cv::Point(img_master_copy.cols/2.0, img_master_copy.rows    ), cv::Scalar(255,255,0), 2, 8, 0);
+    line(img_master_copy, cv::Point(0, img_master_copy.rows/2.0   ), cv::Point(img_master_copy.cols    , img_master_copy.rows/2.0), cv::Scalar(255,255,0), 2, 8, 0);
+
+    // label for distance scale
+    line   (img_master_copy,           cv::Point(100, 125), cv::Point(350, 125)               , cv::Scalar(0,255,0), 2, 8, 0);
+    putText(img_master_copy, "200 um", cv::Point(100, 100), cv::FONT_HERSHEY_SCRIPT_SIMPLEX, 2, cv::Scalar(0,255,0), 3, 8);
     // ----------------------------------------
 
     // FOM(angle) plot
