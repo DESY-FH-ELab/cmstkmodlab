@@ -108,8 +108,6 @@ class AssemblyMainWindow : public QMainWindow
 
   protected:
 
-    QDir currentDir_;
-
     // model(s) and model-manager(s)
     ConradModel*   conradModel_;
     ConradManager* conradManager_;
