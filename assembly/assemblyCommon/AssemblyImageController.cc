@@ -21,7 +21,7 @@ AssemblyImageController::AssemblyImageController(AssemblyVUEyeCamera* camera, As
   is_enabled_(false),
   autofocus_is_enabled_(false)
 {
-  if(!camera_manager_)
+  if(camera_manager_ == NULL)
   {
     NQLog("AssemblyImageController", NQLog::Fatal) << "initialization error"
        << ": null pointer to AssemblyVUEyeCamera object, exiting constructor";
@@ -29,15 +29,12 @@ AssemblyImageController::AssemblyImageController(AssemblyVUEyeCamera* camera, As
     return;
   }
 
-  if(zfocus_finder_)
+  if(zfocus_finder_ != NULL && zfocus_finder_->camera_manager() != camera_manager_)
   {
-    if(zfocus_finder_->camera_manager() != camera_manager_)
-    {
-      NQLog("AssemblyImageController", NQLog::Fatal) << "initialization error"
-         << ": target input camera differs from camera of AssemblyZFocusFinder, exiting constructor";
+    NQLog("AssemblyImageController", NQLog::Fatal) << "initialization error"
+       << ": target input camera differs from camera of AssemblyZFocusFinder, exiting constructor";
 
-      return;
-    }
+    return;
   }
 
   connect(this           , SIGNAL(open_camera())  , camera_manager_, SLOT(open()));

@@ -18,7 +18,7 @@ AssemblyMultiPickupTester::AssemblyMultiPickupTester(LStepExpressMotionManager* 
   QObject(parent),
   motion_manager_(motion_manager)
 {
-  if(!motion_manager_)
+  if(motion_manager_ == NULL)
   {
     NQLog("AssemblyMultiPickupTester", NQLog::Critical) << "input error"
        << ": null pointer to LStepExpressMotionManager object, initialization stopped";
@@ -27,7 +27,7 @@ AssemblyMultiPickupTester::AssemblyMultiPickupTester(LStepExpressMotionManager* 
   }
 
   ApplicationConfig* config = ApplicationConfig::instance();
-  if(!config)
+  if(config == NULL)
   {
     NQLog("AssemblyMultiPickupTester", NQLog::Fatal)
        << "ApplicationConfig::instance() not initialized (null pointer), stopped constructor";

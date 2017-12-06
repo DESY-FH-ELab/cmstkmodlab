@@ -76,11 +76,11 @@ AssemblyMainWindow::AssemblyMainWindow(const unsigned int camera_ID, QWidget* pa
   liveTimer_(0)
 {
     ApplicationConfig* config = ApplicationConfig::instance();
-    if(!config)
+    if(config == NULL)
     {
-      NQLog("AssemblyMainWindow", NQLog::Fatal) << "---------------------------------------------------------------------------------";
-      NQLog("AssemblyMainWindow", NQLog::Fatal) << "ApplicationConfig::instance() not initialized (null pointer), exiting constructor";
-      NQLog("AssemblyMainWindow", NQLog::Fatal) << "---------------------------------------------------------------------------------";
+      NQLog("AssemblyMainWindow", NQLog::Fatal) << "-------------------------------------------------------------------------------------------------------";
+      NQLog("AssemblyMainWindow", NQLog::Fatal) << "initialization error: ApplicationConfig::instance() not initialized (null pointer), exiting constructor";
+      NQLog("AssemblyMainWindow", NQLog::Fatal) << "-------------------------------------------------------------------------------------------------------";
 
       return;
     }
@@ -100,11 +100,11 @@ AssemblyMainWindow::AssemblyMainWindow(const unsigned int camera_ID, QWidget* pa
     camera_thread_->start();
 
     camera_ = camera_model_->getCameraByID(camera_ID_);
-    if(!camera_)
+    if(camera_ == NULL)
     {
-      NQLog("AssemblyMainWindow", NQLog::Critical) << "-----------------------------------------------------------";
-      NQLog("AssemblyMainWindow", NQLog::Critical) << "null pointer to AssemblyVUEyeCamera object (camera_ID=" << camera_ID_ << ")";
-      NQLog("AssemblyMainWindow", NQLog::Critical) << "-----------------------------------------------------------";
+      NQLog("AssemblyMainWindow", NQLog::Critical) << "---------------------------------------------------------------------------------";
+      NQLog("AssemblyMainWindow", NQLog::Critical) << "initialization error: null pointer to AssemblyVUEyeCamera object (camera_ID=" << camera_ID_ << ")";
+      NQLog("AssemblyMainWindow", NQLog::Critical) << "---------------------------------------------------------------------------------";
     }
 
     // marker finder
@@ -283,7 +283,7 @@ void AssemblyMainWindow::liveUpdate()
 
 void AssemblyMainWindow::enable_images()
 {
-    if(!image_ctr_)
+    if(image_ctr_ == NULL)
     {
       image_ctr_        = new AssemblyImageController(camera_, zfocus_finder_);
       image_ctr_thread_ = new AssemblyImageControllerThread(image_ctr_);
@@ -333,7 +333,7 @@ void AssemblyMainWindow::disable_images()
 
 void AssemblyMainWindow::changeState_AutoFocus(int state)
 {
-    if(!image_ctr_)
+    if(image_ctr_ == NULL)
     {
       NQLog("AssemblyMainWindow", NQLog::Warning) << "changeState_AutoFocus"
          << ": ImageController not initialized, no action taken (hint: click \"Camera ON\")";
@@ -341,7 +341,7 @@ void AssemblyMainWindow::changeState_AutoFocus(int state)
       return;
     }
 
-    if(!motion_model_)
+    if(motion_model_ == NULL)
     {
       NQLog("AssemblyMainWindow", NQLog::Warning) << "changeState_AutoFocus"
          << ": LStepExpressModel not initialized, no action taken (hint: plug-in motion stage cable)";
