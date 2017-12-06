@@ -28,7 +28,7 @@
 #endif
 
 #include <ApplicationConfig.h>
-#include <ObjectFinderManual.h>
+#include <AssemblyObjectFinderManual.h>
 
 class ImageInfo
 {
@@ -95,7 +95,7 @@ int main( int argc, char** argv )
                   GaussianBlurKernelSize, GaussianBlurSigma, images);
     }
 
-    ObjectFinderManual finder;
+    AssemblyObjectFinderManual finder;
 
     finder.setGaussianBlurKernelSize(GaussianBlurKernelSize);
     finder.setGaussianBlurSigma(GaussianBlurSigma);

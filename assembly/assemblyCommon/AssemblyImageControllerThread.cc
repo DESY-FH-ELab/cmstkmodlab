@@ -10,38 +10,38 @@
 //                                                                             //
 /////////////////////////////////////////////////////////////////////////////////
 
-#include <ImageControllerThread.h>
+#include <AssemblyImageControllerThread.h>
 #include <nqlogger.h>
 
 #include <QMutex>
 
-ImageControllerThread::ImageControllerThread(ImageController* imagec, QObject* parent) :
+AssemblyImageControllerThread::AssemblyImageControllerThread(AssemblyImageController* image_c, QObject* parent) :
   QThread(parent),
-  imagec_(imagec)
+  image_ctr_(image_c)
 {
-  if(imagec_ == NULL)
+  if(image_ctr_ == NULL)
   {
-    NQLog("ImageControllerThread", NQLog::Fatal) << "initialization error"
-       << ": null pointer to ImageController object, exiting constructor";
+    NQLog("AssemblyImageControllerThread", NQLog::Fatal) << "initialization error"
+       << ": null pointer to AssemblyImageController object, exiting constructor";
 
     return;
   }
 
-  imagec_->moveToThread(this);
+  image_ctr_->moveToThread(this);
 
 //  connect(this, SIGNAL(finished()), this, SLOT(deleteLater()));
 
-  NQLog("ImageControllerThread", NQLog::Debug) << "constructed";
+  NQLog("AssemblyImageControllerThread", NQLog::Debug) << "constructed";
 }
 
-ImageControllerThread::~ImageControllerThread()
+AssemblyImageControllerThread::~AssemblyImageControllerThread()
 {
-  NQLog("ImageControllerThread", NQLog::Debug) << "destructed";
+  NQLog("AssemblyImageControllerThread", NQLog::Debug) << "destructed";
 }
 
-void ImageControllerThread::run()
+void AssemblyImageControllerThread::run()
 {
-  NQLog("ImageControllerThread", NQLog::Debug) << "run";
+  NQLog("AssemblyImageControllerThread", NQLog::Spam) << "run";
 
   this->exec();
 

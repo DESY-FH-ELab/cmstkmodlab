@@ -10,8 +10,8 @@
 //                                                                             //
 /////////////////////////////////////////////////////////////////////////////////
 
-#ifndef OBJECTFINDERMANUAL_H
-#define OBJECTFINDERMANUAL_H
+#ifndef ASSEMBLYOBJECTFINDERMANUAL_H
+#define ASSEMBLYOBJECTFINDERMANUAL_H
 
 #include <nqlogger.h>
 
@@ -40,7 +40,7 @@ protected:
     float x_, y_, r_, q_;
 };
 
-class ObjectFinderManual : public QObject
+class AssemblyObjectFinderManual : public QObject
 {
     Q_OBJECT
 protected:
@@ -52,8 +52,8 @@ protected:
     int labmode_g, objectmode_g;
 
 public:
-    explicit ObjectFinderManual(QObject *parent = 0);
-    ~ObjectFinderManual();
+    explicit AssemblyObjectFinderManual(QObject *parent = 0);
+    ~AssemblyObjectFinderManual();
 
     int gaussianBlurKernelSize() const { return gaussianBlurKernelSize_; }
     int gaussianBlurSigma() const { return gaussianBlurSigma_; }
@@ -197,4 +197,4 @@ signals:
     void sendUpdatedThresholdImage(QString);
 };
 
-#endif // OBJECTFINDERMANUAL_H
+#endif // ASSEMBLYOBJECTFINDERMANUAL_H

@@ -10,28 +10,28 @@
 //                                                                             //
 /////////////////////////////////////////////////////////////////////////////////
 
-#ifndef OBJECTFINDERPATRECTHREAD_H
-#define OBJECTFINDERPATRECTHREAD_H
+#ifndef ASSEMBLYMULTIPICKUPTESTERTHREAD_H
+#define ASSEMBLYMULTIPICKUPTESTERTHREAD_H
 
-#include <ObjectFinderPatRec.h>
+#include <AssemblyMultiPickupTester.h>
 
 #include <QObject>
 #include <QThread>
 
-class ObjectFinderPatRecThread : public QThread
+class AssemblyMultiPickupTesterThread : public QThread
 {
  Q_OBJECT
 
  public:
 
-  explicit ObjectFinderPatRecThread(ObjectFinderPatRec* finder, QObject* parent=0);
-  virtual ~ObjectFinderPatRecThread();
+  explicit AssemblyMultiPickupTesterThread(AssemblyMultiPickupTester*, QObject* parent=0);
+  virtual ~AssemblyMultiPickupTesterThread();
 
   void run();
 
  protected:
 
-  ObjectFinderPatRec* finder_;
+  AssemblyMultiPickupTester* tester_;
 };
 
-#endif // OBJECTFINDERPATRECTHREAD_H
+#endif // ASSEMBLYMULTIPICKUPTESTERTHREAD_H

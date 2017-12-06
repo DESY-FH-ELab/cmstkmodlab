@@ -10,40 +10,28 @@
 //                                                                             //
 /////////////////////////////////////////////////////////////////////////////////
 
-#include <MultiPickupTesterThread.h>
-#include <nqlogger.h>
+#ifndef ASSEMBLYOBJECTFINDERPATRECTHREAD_H
+#define ASSEMBLYOBJECTFINDERPATRECTHREAD_H
 
-#include <QMutex>
+#include <AssemblyObjectFinderPatRec.h>
 
-MultiPickupTesterThread::MultiPickupTesterThread(MultiPickupTester* tester, QObject* parent) :
-  QThread(parent),
-  tester_(tester)
+#include <QObject>
+#include <QThread>
+
+class AssemblyObjectFinderPatRecThread : public QThread
 {
-  if(tester_ == NULL)
-  {
-    NQLog("MultiPickupTesterThread", NQLog::Fatal) << "initialization error"
-       << ": null pointer to MultiPickupTester object, exiting constructor";
+ Q_OBJECT
 
-    return;
-  }
+ public:
 
-  tester_->moveToThread(this);
+  explicit AssemblyObjectFinderPatRecThread(AssemblyObjectFinderPatRec* finder, QObject* parent=0);
+  virtual ~AssemblyObjectFinderPatRecThread();
 
-//  connect(this, SIGNAL(finished()), this, SLOT(deleteLater()));
+  void run();
 
-  NQLog("MultiPickupTesterThread", NQLog::Debug) << "constructed";
-}
+ protected:
 
-MultiPickupTesterThread::~MultiPickupTesterThread()
-{
-  NQLog("MultiPickupTesterThread", NQLog::Debug) << "destructed";
-}
+  AssemblyObjectFinderPatRec* finder_;
+};
 
-void MultiPickupTesterThread::run()
-{
-  NQLog("MultiPickupTesterThread", NQLog::Debug) << "run";
-
-  this->exec();
-
-  return;
-}
+#endif // ASSEMBLYOBJECTFINDERPATRECTHREAD_H

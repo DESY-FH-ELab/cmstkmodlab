@@ -13,12 +13,12 @@
 #ifndef ASSEMBLYMODULEASSEMBLER_H
 #define ASSEMBLYMODULEASSEMBLER_H
 
-#include <AssemblyUEyeView.h>
-#include <AssemblyVUEyeCamera.h>
-#include <LStepExpressMotionManager.h>
-#include <ObjectFinderPatRec.h>
-#include <MultiPickupTester.h>
 #include <ConradModel.h>
+#include <LStepExpressMotionManager.h>
+#include <AssemblyVUEyeCamera.h>
+#include <AssemblyUEyeView.h>
+#include <AssemblyObjectFinderPatRec.h>
+#include <AssemblyMultiPickupTester.h>
 
 #include <string>
 
@@ -46,7 +46,7 @@ class AssemblyModuleAssembler : public QWidget
 
  public:
 
-  explicit AssemblyModuleAssembler(const LStepExpressMotionManager*, ObjectFinderPatRec*, QWidget* parent=0);
+  explicit AssemblyModuleAssembler(const LStepExpressMotionManager*, AssemblyObjectFinderPatRec*, QWidget* parent=0);
 
   MultiPickupTesterWidget* MultiPickupWidget() { return w_mupiup_; }
 
@@ -85,7 +85,7 @@ class AssemblyModuleAssembler : public QWidget
 
  signals:
 
-  void multipickup_request(const MultiPickupTester::Configuration&);
+  void multipickup_request(const AssemblyMultiPickupTester::Configuration&);
 
   void launchAlignment(int, double, double, double);
 
@@ -281,11 +281,7 @@ class MultiPickupTesterWidget : public QWidget
 
  signals:
 
-//!!  void moveAbsolute(double, double, double, double);
-//!!
-//!!  void locateMarker();
-
-  void multipickup_request(const MultiPickupTester::Configuration&);
+  void multipickup_request(const AssemblyMultiPickupTester::Configuration&);
 };
 // ===========================================================================
 

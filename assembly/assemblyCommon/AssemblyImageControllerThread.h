@@ -10,28 +10,28 @@
 //                                                                             //
 /////////////////////////////////////////////////////////////////////////////////
 
-#ifndef MULTIPICKUPTESTERTHREAD_H
-#define MULTIPICKUPTESTERTHREAD_H
+#ifndef ASSEMBLYIMAGECONTROLLERTHREAD_H
+#define ASSEMBLYIMAGECONTROLLERTHREAD_H
 
-#include <MultiPickupTester.h>
+#include <AssemblyImageController.h>
 
 #include <QObject>
 #include <QThread>
 
-class MultiPickupTesterThread : public QThread
+class AssemblyImageControllerThread : public QThread
 {
  Q_OBJECT
 
  public:
 
-  explicit MultiPickupTesterThread(MultiPickupTester*, QObject* parent=0);
-  virtual ~MultiPickupTesterThread();
+  explicit AssemblyImageControllerThread(AssemblyImageController*, QObject* parent=0);
+  virtual ~AssemblyImageControllerThread();
 
   void run();
 
  protected:
 
-  MultiPickupTester* tester_;
+  AssemblyImageController* image_ctr_;
 };
 
-#endif // MULTIPICKUPTESTERTHREAD_H
+#endif // ASSEMBLYIMAGECONTROLLERTHREAD_H

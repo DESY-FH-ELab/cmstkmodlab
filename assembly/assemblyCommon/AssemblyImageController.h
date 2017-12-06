@@ -10,27 +10,28 @@
 //                                                                             //
 /////////////////////////////////////////////////////////////////////////////////
 
-#ifndef IMAGECONTROLLER_H
-#define IMAGECONTROLLER_H
+#ifndef ASSEMBLYIMAGECONTROLLER_H
+#define ASSEMBLYIMAGECONTROLLER_H
 
 #include <AssemblyVUEyeCamera.h>
-#include <ZFocusFinder.h>
+#include <AssemblyZFocusFinder.h>
 
 #include <QObject>
 
 #include <opencv2/opencv.hpp>
 
-// \brief ImageController: CONTROLLER
-//          Wrapper class for camera model including
-//          auto-focusing (vertical movement of the motion stage)
-class ImageController : public QObject
+// \brief AssemblyImageController: CONTROLLER
+//         Manager to use camera model
+//         with option to apply auto-focusing
+//         (vertical movement of the motion stage, see AssemblyZFocusFinder)
+class AssemblyImageController : public QObject
 {
  Q_OBJECT
 
   public:
 
-    explicit ImageController(AssemblyVUEyeCamera*, ZFocusFinder* zff=0, QObject* parent=0);
-    virtual ~ImageController();
+    explicit AssemblyImageController(AssemblyVUEyeCamera*, AssemblyZFocusFinder* zff=0, QObject* parent=0);
+    virtual ~AssemblyImageController();
 
     bool is_enabled()           const { return is_enabled_; }
     bool autofocus_is_enabled() const { return autofocus_is_enabled_; }
@@ -39,8 +40,8 @@ class ImageController : public QObject
 
   protected:
 
-    AssemblyVUEyeCamera* camera_manager_;
-    ZFocusFinder*        zfocus_finder_;
+    AssemblyVUEyeCamera*  camera_manager_;
+    AssemblyZFocusFinder* zfocus_finder_;
 
     bool is_enabled_;
     bool autofocus_is_enabled_;
@@ -78,4 +79,4 @@ class ImageController : public QObject
     void image_acquired(const cv::Mat&);
 };
 
-#endif // IMAGECONTROLLER_H
+#endif // ASSEMBLYIMAGECONTROLLER_H

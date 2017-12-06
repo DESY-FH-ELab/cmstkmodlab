@@ -36,7 +36,7 @@
 #include <TGraph.h>
 #include <TCanvas.h>
 
-AssemblyModuleAssembler::AssemblyModuleAssembler(const LStepExpressMotionManager* motion_manager, ObjectFinderPatRec* finder, QWidget* parent) :
+AssemblyModuleAssembler::AssemblyModuleAssembler(const LStepExpressMotionManager* motion_manager, AssemblyObjectFinderPatRec* finder, QWidget* parent) :
   QWidget(parent),
 
   scrollArea_1_(0),
@@ -59,7 +59,7 @@ AssemblyModuleAssembler::AssemblyModuleAssembler(const LStepExpressMotionManager
   if(!motion_manager)
   {
     NQLog("AssemblyModuleAssembler", NQLog::Critical)
-       << "input error: null pointer to LStepExpressMotionManager object, initialization stopped";
+       << "input error: null pointer to LStepExpressMotionManager object, exiting constructor";
 
     return;
   }
@@ -67,7 +67,7 @@ AssemblyModuleAssembler::AssemblyModuleAssembler(const LStepExpressMotionManager
   if(!finder)
   {
     NQLog("AssemblyModuleAssembler", NQLog::Critical)
-       << "input error: null pointer to ObjectFinderPatRec object, initialization stopped";
+       << "input error: null pointer to AssemblyObjectFinderPatRec object, exiting constructor";
 
     return;
   }
@@ -176,8 +176,8 @@ AssemblyModuleAssembler::AssemblyModuleAssembler(const LStepExpressMotionManager
     w_mupiup_ = new MultiPickupTesterWidget("Run \"Pickup + PatRec\"", motion_manager);
     f10->addRow(w_mupiup_);
 
-    connect(w_mupiup_, SIGNAL(multipickup_request(const MultiPickupTester::Configuration&)),
-            this     , SIGNAL(multipickup_request(const MultiPickupTester::Configuration&)));
+    connect(w_mupiup_, SIGNAL(multipickup_request(const AssemblyMultiPickupTester::Configuration&)),
+            this     , SIGNAL(multipickup_request(const AssemblyMultiPickupTester::Configuration&)));
 
   box_mupiup->setLayout(w_mupiup_->layout());
 
@@ -386,7 +386,7 @@ MultiPickupTesterWidget::MultiPickupTesterWidget(const QString& label, const LSt
   if(!motion_manager_)
   {
     NQLog("MultiPickupTesterWidget", NQLog::Critical)
-       << "input error: null pointer to LStepExpressMotionManager object, initialization stopped";
+       << "input error: null pointer to LStepExpressMotionManager object, exiting constructor";
 
     return;
   }
@@ -515,7 +515,7 @@ void MultiPickupTesterWidget::execute()
      << ", p_x=" << pickup_x <<  ", p_y=" << pickup_y << ", p_z=" << pickup_z
      << ", n=" << iteraN << ")\"";
 
-  const MultiPickupTester::Configuration mpt_conf
+  const AssemblyMultiPickupTester::Configuration mpt_conf
   (
     measur_x, measur_y, measur_z,
     pickup_x, pickup_y, pickup_z,

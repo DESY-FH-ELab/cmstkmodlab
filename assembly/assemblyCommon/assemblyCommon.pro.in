@@ -81,12 +81,20 @@ HEADERS += AssemblyVUEyeCamera.h \
            AssemblyUEyeCameraWidget.h \
            AssemblyUEyeCameraThread.h \
            AssemblyUEyeView.h \
-           AssemblyAssembler.h \
-           ConradManager.h \
            AssemblyUEyeSnapShooter.h \
            AssemblyThresholdTuner.h \
            AssemblyModuleAssembler.h \
            AssemblyAutoFocus.h \
+           AssemblyObjectFinderManual.h \
+           AssemblyObjectFinderPatRec.h \
+           AssemblyObjectFinderPatRecThread.h \
+           AssemblyMultiPickupTester.h \
+           AssemblyMultiPickupTesterThread.h \
+           AssemblyImageController.h \
+           AssemblyImageControllerThread.h \
+           AssemblyZFocusFinder.h \
+           AssemblyAssembler.h \
+           ConradManager.h \
            LStepExpressModel.h \
            LStepExpressMotion.h \
            LStepExpressMotionManager.h \
@@ -105,14 +113,6 @@ HEADERS += AssemblyVUEyeCamera.h \
            LaserThread.h \
            LaserWidget.h \
            LaserControlsWidget.h \
-           ObjectFinderManual.h \
-           ObjectFinderPatRec.h \
-           ObjectFinderPatRecThread.h \
-           MultiPickupTester.h \
-           MultiPickupTesterThread.h \
-           ImageController.h \
-           ImageControllerThread.h \
-           ZFocusFinder.h \
            Util.h
 
 equals(NOUEYE,"X0") {
@@ -133,6 +133,14 @@ SOURCES += AssemblyVUEyeCamera.cc \
            AssemblyThresholdTuner.cc \
            AssemblyModuleAssembler.cc \
            AssemblyAutoFocus.cc \
+           AssemblyImageController.cc \
+           AssemblyImageControllerThread.cc \
+           AssemblyZFocusFinder.cc \
+           AssemblyObjectFinderManual.cc \
+           AssemblyObjectFinderPatRec.cc \
+           AssemblyObjectFinderPatRecThread.cc \
+           AssemblyMultiPickupTester.cc \
+           AssemblyMultiPickupTesterThread.cc \
            AssemblyAssembler.cc \
            ConradManager.cc \
            LStepExpressModel.cc \
@@ -153,14 +161,6 @@ SOURCES += AssemblyVUEyeCamera.cc \
            LaserWidget.cc \
            LaserThread.cc \
            LaserControlsWidget.cc \
-           ObjectFinderManual.cc \
-           ObjectFinderPatRec.cc \
-           ObjectFinderPatRecThread.cc \
-           MultiPickupTester.cc \
-           MultiPickupTesterThread.cc \
-           ImageController.cc \
-           ImageControllerThread.cc \
-           ZFocusFinder.cc \
            Util.cc
 
 equals(NOUEYE,"X0") {

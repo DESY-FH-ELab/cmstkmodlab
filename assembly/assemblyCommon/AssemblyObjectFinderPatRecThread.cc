@@ -10,18 +10,18 @@
 //                                                                             //
 /////////////////////////////////////////////////////////////////////////////////
 
-#include <ObjectFinderPatRecThread.h>
+#include <AssemblyObjectFinderPatRecThread.h>
 #include <nqlogger.h>
 
 #include <QMutex>
 
-ObjectFinderPatRecThread::ObjectFinderPatRecThread(ObjectFinderPatRec* finder, QObject* parent) :
+AssemblyObjectFinderPatRecThread::AssemblyObjectFinderPatRecThread(AssemblyObjectFinderPatRec* finder, QObject* parent) :
   QThread(parent),
   finder_(finder)
 {
   if(finder_ == NULL)
   {
-    NQLog("ObjectFinderPatRecThread", NQLog::Fatal) << "initialization error"
+    NQLog("AssemblyObjectFinderPatRecThread", NQLog::Fatal) << "initialization error"
        << ": null pointer to ObjectFinderPatRec object, exiting constructor";
 
     return;
@@ -31,17 +31,17 @@ ObjectFinderPatRecThread::ObjectFinderPatRecThread(ObjectFinderPatRec* finder, Q
 
 //  connect(this, SIGNAL(finished()), this, SLOT(deleteLater()));
 
-  NQLog("ObjectFinderPatRecThread", NQLog::Debug) << "constructed";
+  NQLog("AssemblyObjectFinderPatRecThread", NQLog::Debug) << "constructed";
 }
 
-ObjectFinderPatRecThread::~ObjectFinderPatRecThread()
+AssemblyObjectFinderPatRecThread::~AssemblyObjectFinderPatRecThread()
 {
-  NQLog("ObjectFinderPatRecThread", NQLog::Debug) << "destructed";
+  NQLog("AssemblyObjectFinderPatRecThread", NQLog::Debug) << "destructed";
 }
 
-void ObjectFinderPatRecThread::run()
+void AssemblyObjectFinderPatRecThread::run()
 {
-  NQLog("ObjectFinderPatRecThread", NQLog::Debug) << "run";
+  NQLog("AssemblyObjectFinderPatRecThread", NQLog::Spam) << "run";
 
   this->exec();
 

@@ -10,7 +10,7 @@
 //                                                                             //
 /////////////////////////////////////////////////////////////////////////////////
 
-#include <ObjectFinderPatRec.h>
+#include <AssemblyObjectFinderPatRec.h>
 #include <ApplicationConfig.h>
 #include <nqlogger.h>
 #include <Util.h>
@@ -24,9 +24,9 @@
 #include <TCanvas.h>
 #include <TH1.h>
 
-int ObjectFinderPatRec::exe_counter_ = -1;
+int AssemblyObjectFinderPatRec::exe_counter_ = -1;
 
-ObjectFinderPatRec::ObjectFinderPatRec(const QString& output_dir_path, const QString& output_subdir_name, QObject* parent) :
+AssemblyObjectFinderPatRec::AssemblyObjectFinderPatRec(const QString& output_dir_path, const QString& output_subdir_name, QObject* parent) :
   QObject(parent),
 
   output_dir_path_   (output_dir_path   .toStdString()),
@@ -49,15 +49,15 @@ ObjectFinderPatRec::ObjectFinderPatRec(const QString& output_dir_path, const QSt
           this, SLOT  (    template_matching(const cv::Mat&, const cv::Mat&, const cv::Mat&, const int)));
   // -----------
 
-  NQLog("ObjectFinderPatRec", NQLog::Debug) << "constructed";
+  NQLog("AssemblyObjectFinderPatRec", NQLog::Debug) << "constructed";
 }
 
-ObjectFinderPatRec::~ObjectFinderPatRec()
+AssemblyObjectFinderPatRec::~AssemblyObjectFinderPatRec()
 {
-  NQLog("ObjectFinderPatRec", NQLog::Debug) << "destructed";
+  NQLog("AssemblyObjectFinderPatRec", NQLog::Debug) << "destructed";
 }
 
-void ObjectFinderPatRec::set_threshold(const int v)
+void AssemblyObjectFinderPatRec::set_threshold(const int v)
 {
   if(threshold_ != v)
   {
@@ -71,25 +71,25 @@ void ObjectFinderPatRec::set_threshold(const int v)
   return;
 }
 
-void ObjectFinderPatRec::update_threshold(const int v)
+void AssemblyObjectFinderPatRec::update_threshold(const int v)
 {
   this->set_threshold(v);
 
-  NQLog("ObjectFinderPatRec", NQLog::Spam) << "update_threshold(" << v << ")"
+  NQLog("AssemblyObjectFinderPatRec", NQLog::Spam) << "update_threshold(" << v << ")"
      << ": emitting signal \"threshold_updated\"";
 
   emit threshold_updated();
 }
 
-void ObjectFinderPatRec::acquire_image()
+void AssemblyObjectFinderPatRec::acquire_image()
 {
-  NQLog("ObjectFinderPatRec", NQLog::Spam) << "acquire_image"
+  NQLog("AssemblyObjectFinderPatRec", NQLog::Spam) << "acquire_image"
      << ": emitting signal \"image\"";
 
   emit image_request();
 }
 
-void ObjectFinderPatRec::update_image(const cv::Mat& img)
+void AssemblyObjectFinderPatRec::update_image(const cv::Mat& img)
 {
   image_mas_ = img;
 
@@ -97,14 +97,14 @@ void ObjectFinderPatRec::update_image(const cv::Mat& img)
 
   if(updated_image_master_binary_){ updated_image_master_binary_ = false; }
 
-  NQLog("ObjectFinderPatRec", NQLog::Spam) << "update_image"
+  NQLog("AssemblyObjectFinderPatRec", NQLog::Spam) << "update_image"
      << ": emitting signal \"image_updated\"";
 
   emit image_updated(image_mas_);
   emit image_updated();
 }
 
-void ObjectFinderPatRec::delete_image()
+void AssemblyObjectFinderPatRec::delete_image()
 {
   image_mas_ = cv::Mat();
 
@@ -113,13 +113,13 @@ void ObjectFinderPatRec::delete_image()
   return;
 }
 
-void ObjectFinderPatRec::update_binary_image()
+void AssemblyObjectFinderPatRec::update_binary_image()
 {
   if(updated_image_master_)
   {
     if(!updated_threshold_)
     {
-      NQLog("ObjectFinderPatRec", NQLog::Warning) << "update_binary_image"
+      NQLog("AssemblyObjectFinderPatRec", NQLog::Warning) << "update_binary_image"
          << ": threshold value not available, no binary image produced";
 
       return;
@@ -129,10 +129,10 @@ void ObjectFinderPatRec::update_binary_image()
 
     if(!updated_image_master_binary_){ updated_image_master_binary_ = true; }
 
-    NQLog("ObjectFinderPatRec", NQLog::Spam) << "update_binary_image"
+    NQLog("AssemblyObjectFinderPatRec", NQLog::Spam) << "update_binary_image"
        << ": created binary image with threshold=" << threshold_;
 
-    NQLog("ObjectFinderPatRec", NQLog::Spam) << "update_binary_image"
+    NQLog("AssemblyObjectFinderPatRec", NQLog::Spam) << "update_binary_image"
        << ": emitting signal \"binary_image_updated\"";
 
     emit binary_image_updated(image_bin_);
@@ -140,14 +140,14 @@ void ObjectFinderPatRec::update_binary_image()
   }
   else
   {
-    NQLog("ObjectFinderPatRec", NQLog::Warning) << "update_binary_image"
+    NQLog("AssemblyObjectFinderPatRec", NQLog::Warning) << "update_binary_image"
        << ": master image not available, no binary image produced (hint: enable camera and get an image)";
 
     return;
   }
 }
 
-cv::Mat ObjectFinderPatRec::get_binary_image(const cv::Mat& img, const int threshold) const
+cv::Mat AssemblyObjectFinderPatRec::get_binary_image(const cv::Mat& img, const int threshold) const
 {
   // greyscale image
   cv::Mat img_gs(img.size(), img.type());
@@ -169,7 +169,7 @@ cv::Mat ObjectFinderPatRec::get_binary_image(const cv::Mat& img, const int thres
   return img_bin;
 }
 
-void ObjectFinderPatRec::delete_binary_image()
+void AssemblyObjectFinderPatRec::delete_binary_image()
 {
   image_bin_ = cv::Mat();
 
@@ -178,23 +178,23 @@ void ObjectFinderPatRec::delete_binary_image()
   return;
 }
 
-void ObjectFinderPatRec::send_image_master()
+void AssemblyObjectFinderPatRec::send_image_master()
 {
-  NQLog("ObjectFinderPatRec", NQLog::Spam) << "send_image_master"
+  NQLog("AssemblyObjectFinderPatRec", NQLog::Spam) << "send_image_master"
      << ": emitting signal \"image_sent\"";
 
   emit image_sent(image_mas_);
 }
 
-void ObjectFinderPatRec::send_image_binary()
+void AssemblyObjectFinderPatRec::send_image_binary()
 {
-  NQLog("ObjectFinderPatRec", NQLog::Spam) << "send_image_binary"
+  NQLog("AssemblyObjectFinderPatRec", NQLog::Spam) << "send_image_binary"
      << ": emitting signal \"image_sent\"";
 
   emit image_sent(image_bin_);
 }
 
-void ObjectFinderPatRec::update_rough_angles(QString qstr)
+void AssemblyObjectFinderPatRec::update_rough_angles(QString qstr)
 {
   const QStringList entries = qstr.remove(" ").split(",");
 
@@ -207,24 +207,24 @@ void ObjectFinderPatRec::update_rough_angles(QString qstr)
       v_rough_angles_.emplace_back(entries.value(i).toDouble());
     }
 
-    NQLog("ObjectFinderPatRec", NQLog::Message) << "update_rough_angles"
+    NQLog("AssemblyObjectFinderPatRec", NQLog::Message) << "update_rough_angles"
        << ": updated list of rough angles: " << qstr;
 
-    NQLog("ObjectFinderPatRec", NQLog::Spam) << "update_rough_angles"
+    NQLog("AssemblyObjectFinderPatRec", NQLog::Spam) << "update_rough_angles"
        << ": emitting signal \"rough_angles_updated\"";
 
     emit rough_angles_updated();
   }
   else
   {
-    NQLog("ObjectFinderPatRec", NQLog::Warning) << "update_rough_angles"
+    NQLog("AssemblyObjectFinderPatRec", NQLog::Warning) << "update_rough_angles"
        << ": input string with invalid format (" << qstr << "), no action taken";
 
     return;
   }
 }
 
-void ObjectFinderPatRec::update_angscan_parameters(QString qstr)
+void AssemblyObjectFinderPatRec::update_angscan_parameters(QString qstr)
 {
   const QStringList entries = qstr.remove(" ").split(",");
 
@@ -233,35 +233,35 @@ void ObjectFinderPatRec::update_angscan_parameters(QString qstr)
     theta_fine_range_ = entries.value(0).toDouble();
     theta_fine_step_  = entries.value(1).toDouble();
 
-    NQLog("ObjectFinderPatRec", NQLog::Message) << "update_angscan_parameters"
+    NQLog("AssemblyObjectFinderPatRec", NQLog::Message) << "update_angscan_parameters"
        << ": updated parameters of angular-scan:"
        << " (theta_fine_range=" << theta_fine_range_
        << ", theta_fine_step="  << theta_fine_step_ << ")";
 
-    NQLog("ObjectFinderPatRec", NQLog::Spam) << "update_angscan_parameters"
+    NQLog("AssemblyObjectFinderPatRec", NQLog::Spam) << "update_angscan_parameters"
        << ": emitting signal \"angscan_parameters_updated\"";
 
     emit angscan_parameters_updated();
   }
   else
   {
-    NQLog("ObjectFinderPatRec", NQLog::Warning) << "update_angscan_parameters"
+    NQLog("AssemblyObjectFinderPatRec", NQLog::Warning) << "update_angscan_parameters"
        << ": input string with invalid format (" << qstr << "), no action taken";
 
     return;
   }
 }
 
-void ObjectFinderPatRec::run_PatRec(const int mode_lab, const int mode_obj)
+void AssemblyObjectFinderPatRec::run_PatRec(const int mode_lab, const int mode_obj)
 {
-  NQLog("ObjectFinderPatRec", NQLog::Message) << "run_PatRec"
+  NQLog("AssemblyObjectFinderPatRec", NQLog::Message) << "run_PatRec"
      << "(mode_lab=" << mode_lab << ", mode_obj=" << mode_obj << ")"
      << ": initiated Pattern Recognition";
 
   // --- input validation
   if(!updated_threshold_)
   {
-    NQLog("ObjectFinderPatRec", NQLog::Warning) << "run_PatRec"
+    NQLog("AssemblyObjectFinderPatRec", NQLog::Warning) << "run_PatRec"
        << "(mode_lab=" << mode_lab << ", mode_obj=" << mode_obj << ")"
        << ": threshold value not available, no action taken";
 
@@ -274,7 +274,7 @@ void ObjectFinderPatRec::run_PatRec(const int mode_lab, const int mode_obj)
     // --- input validation
     if(!updated_image_master_)
     {
-      NQLog("ObjectFinderPatRec", NQLog::Warning) << "run_PatRec"
+      NQLog("AssemblyObjectFinderPatRec", NQLog::Warning) << "run_PatRec"
          << "(mode_lab=" << mode_lab << ", mode_obj=" << mode_obj << ")"
          << ": updated master image not available, no action taken";
 
@@ -286,7 +286,7 @@ void ObjectFinderPatRec::run_PatRec(const int mode_lab, const int mode_obj)
 
     if(mode_obj == 0)
     {
-      NQLog("ObjectFinderPatRec", NQLog::Spam) << "run_PatRec"
+      NQLog("AssemblyObjectFinderPatRec", NQLog::Spam) << "run_PatRec"
          << "(mode_lab=" << mode_lab << ", mode_obj=" << mode_obj << ")"
          << ": detection of sensor fiducial marker";
 
@@ -304,7 +304,7 @@ void ObjectFinderPatRec::run_PatRec(const int mode_lab, const int mode_obj)
     }
     else if(mode_obj == 1)
     {
-      NQLog("ObjectFinderPatRec", NQLog::Warning) << "run_PatRec"
+      NQLog("AssemblyObjectFinderPatRec", NQLog::Warning) << "run_PatRec"
          << "(mode_lab=" << mode_lab << ", mode_obj=" << mode_obj << ")"
          << ": detection of positioning pin not implemented yet, no action taken";
 
@@ -312,7 +312,7 @@ void ObjectFinderPatRec::run_PatRec(const int mode_lab, const int mode_obj)
     }
     else if(mode_obj == 2)
     {
-      NQLog("ObjectFinderPatRec", NQLog::Spam) << "run_PatRec"
+      NQLog("AssemblyObjectFinderPatRec", NQLog::Spam) << "run_PatRec"
          << "(mode_lab=" << mode_lab << ", mode_obj=" << mode_obj << ")"
          << ": detection of sensor corner";
 
@@ -324,7 +324,7 @@ void ObjectFinderPatRec::run_PatRec(const int mode_lab, const int mode_obj)
     }
     else if(mode_obj == 3)
     {
-      NQLog("ObjectFinderPatRec", NQLog::Spam) << "run_PatRec"
+      NQLog("AssemblyObjectFinderPatRec", NQLog::Spam) << "run_PatRec"
          << "(mode_lab=" << mode_lab << ", mode_obj=" << mode_obj << ")"
          << ": detection of spacer corner";
 
@@ -334,7 +334,7 @@ void ObjectFinderPatRec::run_PatRec(const int mode_lab, const int mode_obj)
     }
     else
     {
-      NQLog("ObjectFinderPatRec", NQLog::Warning) << "run_PatRec"
+      NQLog("AssemblyObjectFinderPatRec", NQLog::Warning) << "run_PatRec"
          << "(mode_lab=" << mode_lab << ", mode_obj=" << mode_obj << ")"
          << ": undefined value for object-mode, no action taken";
 
@@ -345,7 +345,7 @@ void ObjectFinderPatRec::run_PatRec(const int mode_lab, const int mode_obj)
   {
     if(mode_obj == 0)
     {
-      NQLog("ObjectFinderPatRec", NQLog::Spam) << "run_PatRec"
+      NQLog("AssemblyObjectFinderPatRec", NQLog::Spam) << "run_PatRec"
          << "(mode_lab=" << mode_lab << ", mode_obj=" << mode_obj << ")"
          << ": detection of sensor fiducial marker";
 
@@ -356,7 +356,7 @@ void ObjectFinderPatRec::run_PatRec(const int mode_lab, const int mode_obj)
     }
     else if(mode_obj == 1)
     {
-      NQLog("ObjectFinderPatRec", NQLog::Warning) << "run_PatRec"
+      NQLog("AssemblyObjectFinderPatRec", NQLog::Warning) << "run_PatRec"
          << "(mode_lab=" << mode_lab << ", mode_obj=" << mode_obj << ")"
          << ": detection of positioning pin not implemented yet, no action taken";
 
@@ -364,7 +364,7 @@ void ObjectFinderPatRec::run_PatRec(const int mode_lab, const int mode_obj)
     }
     else if(mode_obj == 2)
     {
-      NQLog("ObjectFinderPatRec", NQLog::Spam) << "run_PatRec"
+      NQLog("AssemblyObjectFinderPatRec", NQLog::Spam) << "run_PatRec"
          << "(mode_lab=" << mode_lab << ", mode_obj=" << mode_obj << ")"
          << ": detection of sensor corner";
 
@@ -375,7 +375,7 @@ void ObjectFinderPatRec::run_PatRec(const int mode_lab, const int mode_obj)
     }
     else if(mode_obj == 3)
     {
-      NQLog("ObjectFinderPatRec", NQLog::Spam) << "run_PatRec"
+      NQLog("AssemblyObjectFinderPatRec", NQLog::Spam) << "run_PatRec"
          << "(mode_lab=" << mode_lab << ", mode_obj=" << mode_obj << ")"
          << ": detection of spacer corner not implemented, no action taken";
 
@@ -383,7 +383,7 @@ void ObjectFinderPatRec::run_PatRec(const int mode_lab, const int mode_obj)
     }
     else
     {
-      NQLog("ObjectFinderPatRec", NQLog::Warning) << "run_PatRec"
+      NQLog("AssemblyObjectFinderPatRec", NQLog::Warning) << "run_PatRec"
          << "(mode_lab=" << mode_lab << ", mode_obj=" << mode_obj << ")"
          << ": undefined value for object-mode, no action taken";
 
@@ -395,27 +395,27 @@ void ObjectFinderPatRec::run_PatRec(const int mode_lab, const int mode_obj)
   }
   else
   {
-    NQLog("ObjectFinderPatRec", NQLog::Warning) << "run_PatRec"
+    NQLog("AssemblyObjectFinderPatRec", NQLog::Warning) << "run_PatRec"
        << "(mode_lab=" << mode_lab << ", mode_obj=" << mode_obj << ")"
        << ": undefined value for lab-mode, no action taken";
 
     return;
   }
 
-  NQLog("ObjectFinderPatRec", NQLog::Spam) << "run_PatRec"
+  NQLog("AssemblyObjectFinderPatRec", NQLog::Spam) << "run_PatRec"
      << "(mode_lab=" << mode_lab << ", mode_obj=" << mode_obj << ")"
      << ": emitting signal \"run_template_matching\"";
 
   emit run_template_matching(image_mas_, image_bin_, image_tpl_, threshold_tpl_);
 }
 
-void ObjectFinderPatRec::template_matching(const cv::Mat& img_master, const cv::Mat& img_master_bin, const cv::Mat& img_templa, const int threshold_templa)
+void AssemblyObjectFinderPatRec::template_matching(const cv::Mat& img_master, const cv::Mat& img_master_bin, const cv::Mat& img_templa, const int threshold_templa)
 {
-    NQLog("ObjectFinderPatRec", NQLog::Spam) << "template_matching";
-    NQLog("ObjectFinderPatRec", NQLog::Spam) << "template_matching: Master   cols = " << img_master.cols;
-    NQLog("ObjectFinderPatRec", NQLog::Spam) << "template_matching: Master   rows = " << img_master.rows;
-    NQLog("ObjectFinderPatRec", NQLog::Spam) << "template_matching: Template cols = " << img_templa.cols;
-    NQLog("ObjectFinderPatRec", NQLog::Spam) << "template_matching: Template rows = " << img_templa.rows;
+    NQLog("AssemblyObjectFinderPatRec", NQLog::Spam) << "template_matching";
+    NQLog("AssemblyObjectFinderPatRec", NQLog::Spam) << "template_matching: Master   cols = " << img_master.cols;
+    NQLog("AssemblyObjectFinderPatRec", NQLog::Spam) << "template_matching: Master   rows = " << img_master.rows;
+    NQLog("AssemblyObjectFinderPatRec", NQLog::Spam) << "template_matching: Template cols = " << img_templa.cols;
+    NQLog("AssemblyObjectFinderPatRec", NQLog::Spam) << "template_matching: Template rows = " << img_templa.rows;
 
     // output directory
     std::string output_dir(""), output_subdir("");
@@ -443,11 +443,11 @@ void ObjectFinderPatRec::template_matching(const cv::Mat& img_master, const cv::
 
     Util::QDir_mkpath(output_dir);
 
-    NQLog("ObjectFinderPatRec", NQLog::Message) << "template_matching: created output directory: " << output_dir;
+    NQLog("AssemblyObjectFinderPatRec", NQLog::Message) << "template_matching: created output directory: " << output_dir;
 
     Util::QDir_mkpath(output_subdir);
 
-    NQLog("ObjectFinderPatRec", NQLog::Message) << "template_matching: created output directory: " << output_subdir;
+    NQLog("AssemblyObjectFinderPatRec", NQLog::Message) << "template_matching: created output directory: " << output_subdir;
     // -----------
 
     // GreyScale images
@@ -472,17 +472,17 @@ void ObjectFinderPatRec::template_matching(const cv::Mat& img_master, const cv::
 
     cv::imwrite(filepath_img_master_bin, img_master_bin);
 
-    NQLog("ObjectFinderPatRec", NQLog::Spam) << "template_matching"
+    NQLog("AssemblyObjectFinderPatRec", NQLog::Spam) << "template_matching"
        << ": saved master-binary image to " << filepath_img_master_bin;
 
     Util::cv_imwrite_png(filepath_img_templa, img_templa);
 
-    NQLog("ObjectFinderPatRec", NQLog::Spam) << "template_matching"
+    NQLog("AssemblyObjectFinderPatRec", NQLog::Spam) << "template_matching"
        << ": saved template image to " << filepath_img_templa;
 
     cv::imwrite(filepath_img_templa_bin, img_templa_bin);
 
-    NQLog("ObjectFinderPatRec", NQLog::Spam) << "template_matching"
+    NQLog("AssemblyObjectFinderPatRec", NQLog::Spam) << "template_matching"
        << ": saved template-binary image to " << filepath_img_templa_bin;
     // -----------
 
@@ -494,7 +494,7 @@ void ObjectFinderPatRec::template_matching(const cv::Mat& img_master, const cv::
     const int match_method = CV_TM_SQDIFF_NORMED;
     const bool use_minFOM = ((match_method  == CV_TM_SQDIFF) || (match_method == CV_TM_SQDIFF_NORMED));
 
-    NQLog("ObjectFinderPatRec", NQLog::Spam) << "template_matching" << ": initiated matching routine with angular scan";
+    NQLog("AssemblyObjectFinderPatRec", NQLog::Spam) << "template_matching" << ": initiated matching routine with angular scan";
 
     // First, get theta-rough angle: best guess of central value for finer angular scan
     double theta_rough(-9999.);
@@ -519,20 +519,20 @@ void ObjectFinderPatRec::template_matching(const cv::Mat& img_master, const cv::
     }
     else
     {
-      NQLog("ObjectFinderPatRec", NQLog::Critical) << "template_matching"
+      NQLog("AssemblyObjectFinderPatRec", NQLog::Critical) << "template_matching"
          << ": empty list of rough angles, stopping Pattern Recognition";
 
       return;
     }
 
-    NQLog("ObjectFinderPatRec", NQLog::Message) << "template_matching" << ": rough estimate of best-angle yields best-theta=" << theta_rough;
+    NQLog("AssemblyObjectFinderPatRec", NQLog::Message) << "template_matching" << ": rough estimate of best-angle yields best-theta=" << theta_rough;
     // ----------------
 
     const double theta_fine_min  = -1.0 * theta_fine_range_;
     const double theta_fine_max  = +1.0 * theta_fine_range_;
     const double theta_fine_step =        theta_fine_step_;
 
-    NQLog("ObjectFinderPatRec", NQLog::Message) << "template_matching" << ": angular scan parameters"
+    NQLog("AssemblyObjectFinderPatRec", NQLog::Message) << "template_matching" << ": angular scan parameters"
        << "(min="<< theta_rough+theta_fine_min << ", max=" << theta_rough+theta_fine_max << ", step=" << theta_fine_step << ")";
 
     const int N_rotations = (2 * int((theta_fine_max-theta_fine_min) / theta_fine_step));
@@ -566,11 +566,11 @@ void ObjectFinderPatRec::template_matching(const cv::Mat& img_master, const cv::
 
       vec_angleNfom.emplace_back(std::make_pair(i_theta, i_FOM));
 
-      NQLog("ObjectFinderPatRec", NQLog::Spam) << "template_matching"
+      NQLog("AssemblyObjectFinderPatRec", NQLog::Spam) << "template_matching"
          << ": angular scan: [" << scan_counter << "] theta=" << i_theta << ", FOM=" << i_FOM;
     }
 
-    NQLog("ObjectFinderPatRec", NQLog::Message) << "template_matching"
+    NQLog("AssemblyObjectFinderPatRec", NQLog::Message) << "template_matching"
        << ": angular scan completed: best_theta=" << best_theta;
 
     // copy of master image
@@ -657,11 +657,11 @@ void ObjectFinderPatRec::template_matching(const cv::Mat& img_master, const cv::
       txtfile.close();
     }
 
-    NQLog("ObjectFinderPatRec", NQLog::Spam) << "template_matching"
+    NQLog("AssemblyObjectFinderPatRec", NQLog::Spam) << "template_matching"
        << ": created output file: " << output_dir+"/PatRec_results.txt";
     // ------------------
 
-    NQLog("ObjectFinderPatRec", NQLog::Spam) << "template_matching"
+    NQLog("AssemblyObjectFinderPatRec", NQLog::Spam) << "template_matching"
        << ": emitting signal \"PatRec_exitcode(0)\"";
 
     emit PatRec_exitcode(0);
@@ -677,7 +677,7 @@ void ObjectFinderPatRec::template_matching(const cv::Mat& img_master, const cv::
 //    //matchLoc_y_lab = (best_matchLoc.y +  (img_templa_bin.rows/2) ) * (4.0/img_master.rows); // need to add the current Y pos of the lang
 }
 
-void ObjectFinderPatRec::PatRec(double& fom, cv::Point& match_loc, const cv::Mat& img_master_bin, const cv::Mat& img_templa_bin, const double angle, const int match_method, const std::string& out_dir) const
+void AssemblyObjectFinderPatRec::PatRec(double& fom, cv::Point& match_loc, const cv::Mat& img_master_bin, const cv::Mat& img_templa_bin, const double angle, const int match_method, const std::string& out_dir) const
 {
   // rotated master image
   cv::Mat img_master_bin_rot;
@@ -696,7 +696,7 @@ void ObjectFinderPatRec::PatRec(double& fom, cv::Point& match_loc, const cv::Mat
 
     cv::imwrite(filepath_img_master_bin_rot, img_master_bin_rot);
 
-    NQLog("ObjectFinderPatRec", NQLog::Spam) << "PatRec"
+    NQLog("AssemblyObjectFinderPatRec", NQLog::Spam) << "PatRec"
        << ": saved rotated master-binary image to " << filepath_img_master_bin_rot;
   }
   // -----------
@@ -725,7 +725,7 @@ void ObjectFinderPatRec::PatRec(double& fom, cv::Point& match_loc, const cv::Mat
   return;
 }
 
-cv::Point2f ObjectFinderPatRec::RotatePoint(const cv::Point2f& p, const double deg) const
+cv::Point2f AssemblyObjectFinderPatRec::RotatePoint(const cv::Point2f& p, const double deg) const
 {
   const double rad = deg * (M_PI/180.);
 
@@ -736,7 +736,7 @@ cv::Point2f ObjectFinderPatRec::RotatePoint(const cv::Point2f& p, const double d
   return rot_p;
 }
 
-cv::Point2f ObjectFinderPatRec::RotatePoint(const cv::Point2f& cen_pt, const cv::Point2f& p, const double deg) const
+cv::Point2f AssemblyObjectFinderPatRec::RotatePoint(const cv::Point2f& cen_pt, const cv::Point2f& p, const double deg) const
 {
   const cv::Point2f trans_pt = p - cen_pt;
   const cv::Point2f rot_pt   = this->RotatePoint(trans_pt, deg);
@@ -745,7 +745,7 @@ cv::Point2f ObjectFinderPatRec::RotatePoint(const cv::Point2f& cen_pt, const cv:
   return fin_pt;
 }
 
-void ObjectFinderPatRec::draw_RotatedRect(cv::Mat& image, const cv::Point& orig, const double rect_size_x, const double rect_size_y, const double angle, const cv::Scalar& rect_color) const
+void AssemblyObjectFinderPatRec::draw_RotatedRect(cv::Mat& image, const cv::Point& orig, const double rect_size_x, const double rect_size_y, const double angle, const cv::Scalar& rect_color) const
 {
   const cv::Point2f orig2f(orig.x, orig.y);
 

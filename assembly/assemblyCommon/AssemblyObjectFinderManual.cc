@@ -10,7 +10,7 @@
 //                                                                             //
 /////////////////////////////////////////////////////////////////////////////////
 
-#include <ObjectFinderManual.h>
+#include <AssemblyObjectFinderManual.h>
 #include <ApplicationConfig.h>
 #include <nqlogger.h>
 #include <Util.h>
@@ -35,13 +35,13 @@ AssemblyMarkerCircle::AssemblyMarkerCircle(float x, float y, float r, float q)
 {
 }
 
-ObjectFinderManual::ObjectFinderManual(QObject* parent) :
+AssemblyObjectFinderManual::AssemblyObjectFinderManual(QObject* parent) :
   QObject(parent)
 {
     ApplicationConfig* config = ApplicationConfig::instance();
     if(!config)
     {
-      NQLog("ObjectFinderManual", NQLog::Fatal) << "ApplicationConfig::instance() not initialized, null pointer";
+      NQLog("AssemblyObjectFinderManual", NQLog::Fatal) << "ApplicationConfig::instance() not initialized, null pointer";
       exit(1);
     }
 
@@ -74,14 +74,14 @@ ObjectFinderManual::ObjectFinderManual(QObject* parent) :
     cacheDirectory2_ = cache_subdir.toStdString();
 }
 
-ObjectFinderManual::~ObjectFinderManual()
+AssemblyObjectFinderManual::~AssemblyObjectFinderManual()
 {
-    NQLog("ObjectFinderManual", NQLog::Debug) << "destructed";
+    NQLog("AssemblyObjectFinderManual", NQLog::Debug) << "destructed";
 }
 
-void ObjectFinderManual::runObjectDetection(int labmode, int objectmode)
+void AssemblyObjectFinderManual::runObjectDetection(int labmode, int objectmode)
 {
-  NQLog("ObjectFinderManual::runObjectDetection") << "labmode=" << labmode << ", objectmode=" << objectmode;
+  NQLog("AssemblyObjectFinderManual::runObjectDetection") << "labmode=" << labmode << ", objectmode=" << objectmode;
 
   labmode_g = labmode;
   objectmode_g = objectmode;
@@ -104,7 +104,7 @@ void ObjectFinderManual::runObjectDetection(int labmode, int objectmode)
     }
     else if(objectmode == 1){
 
-      NQLog("ObjectFinderManual::runObjectDetection") << "***DETECTION OF POSITIONING PIN NOT IMPLEMENTED YET!!***" ;
+      NQLog("AssemblyObjectFinderManual::runObjectDetection") << "***DETECTION OF POSITIONING PIN NOT IMPLEMENTED YET!!***" ;
     }
     else if(objectmode == 2){
 
@@ -112,7 +112,7 @@ void ObjectFinderManual::runObjectDetection(int labmode, int objectmode)
       img_clip_A = cv::imread(Config::CMSTkModLabBasePath+"/share/assembly/glassslidecorneronbaseplate_sliverpaint_A_clip.png", CV_LOAD_IMAGE_COLOR);
     }
 
-    NQLog("ObjectFinderManual") << "runObjectDetection"
+    NQLog("AssemblyObjectFinderManual") << "runObjectDetection"
        << ": emitting signal \"locatePickupCorner_templateMatching\"";
 
     emit locatePickupCorner_templateMatching(img, img_clip_A);
@@ -121,7 +121,7 @@ void ObjectFinderManual::runObjectDetection(int labmode, int objectmode)
   return;
 }
 
-void ObjectFinderManual::runObjectDetection_labmode(cv::Mat master_image){
+void AssemblyObjectFinderManual::runObjectDetection_labmode(cv::Mat master_image){
     
     
     NQLog("AssemblySensorLocator::runObjectDetection() here ") << "" ;
@@ -166,10 +166,10 @@ void ObjectFinderManual::runObjectDetection_labmode(cv::Mat master_image){
 }
 
 
-void ObjectFinderManual::findMarker(const cv::Mat& image)
+void AssemblyObjectFinderManual::findMarker(const cv::Mat& image)
 {
 
-    NQLog("ObjectFinderManual") << "findMarker()";
+    NQLog("AssemblyObjectFinderManual") << "findMarker()";
 
     QMutexLocker lock(&mutex_);
     image.copyTo(image_);
@@ -193,34 +193,34 @@ void ObjectFinderManual::findMarker(const cv::Mat& image)
         emit markerFound(imageRGB_);
         return;
     }
-    NQLog("ObjectFinderManual") << "found circle";
+    NQLog("AssemblyObjectFinderManual") << "found circle";
 
 
     ret = findLines();
-    NQLog("ObjectFinderManual") << "found lines";
+    NQLog("AssemblyObjectFinderManual") << "found lines";
 
     ret = findIntersections();
 
-    NQLog("ObjectFinderManual") << "found intersections";
+    NQLog("AssemblyObjectFinderManual") << "found intersections";
     determineOrientation();
 
-    NQLog("ObjectFinderManual") << "orientation determined";
+    NQLog("AssemblyObjectFinderManual") << "orientation determined";
 
     drawCircle();
-    NQLog("ObjectFinderManual") << "circles drawn";
+    NQLog("AssemblyObjectFinderManual") << "circles drawn";
 
     drawLines();
-    NQLog("ObjectFinderManual") << "lines drawn";
+    NQLog("AssemblyObjectFinderManual") << "lines drawn";
 
     //  drawOutline();
-    NQLog("ObjectFinderManual") << "outlines drawn";
+    NQLog("AssemblyObjectFinderManual") << "outlines drawn";
 
     //drawIntersections();
-    NQLog("ObjectFinderManual") <<"intersections drawn";
+    NQLog("AssemblyObjectFinderManual") <<"intersections drawn";
 
     // drawOrientation();
 
-    NQLog("ObjectFinderManual") << "shapes drawn";
+    NQLog("AssemblyObjectFinderManual") << "shapes drawn";
 
     NQLog("   ") ;
     NQLog("   ") ;
@@ -230,7 +230,7 @@ void ObjectFinderManual::findMarker(const cv::Mat& image)
     emit markerFound(imageRGB_);
 }
 
-size_t ObjectFinderManual::findCircle(const cv::Mat& image)
+size_t AssemblyObjectFinderManual::findCircle(const cv::Mat& image)
 {
 
     global_image_ptr = &image;
@@ -250,7 +250,7 @@ size_t ObjectFinderManual::findCircle(const cv::Mat& image)
 
 
     lock.unlock();
-    NQLog("ObjectFinderManual") << " N circles = " << circles.size()  ;
+    NQLog("AssemblyObjectFinderManual") << " N circles = " << circles.size()  ;
 
 
     if (circles.size()==0) {
@@ -262,29 +262,29 @@ size_t ObjectFinderManual::findCircle(const cv::Mat& image)
         circleCenter_.x = circles[0][0];
         circleCenter_.y = circles[0][1];
         circleRadius_ = circles[0][2];
-    NQLog("ObjectFinderManual") << " getting  circle qual"  ;
+    NQLog("AssemblyObjectFinderManual") << " getting  circle qual"  ;
 
 
         circleQuality_ = 1.0 - std::fabs(circleRadius_-expectedCircleRadius_)/expectedCircleRadius_;
 
-    NQLog("ObjectFinderManual") << " got circle qual"  ;
+    NQLog("AssemblyObjectFinderManual") << " got circle qual"  ;
 
             circles_.push_back(AssemblyMarkerCircle(circleCenter_.x,
                                                 circleCenter_.y,
                                                circleRadius_,
                                                circleQuality_));
-    NQLog("ObjectFinderManual") << " got circle qual 2"  ;
+    NQLog("AssemblyObjectFinderManual") << " got circle qual 2"  ;
 
         return 1;
     }
 
-    NQLog("ObjectFinderManual") << " before radius map"  ;
+    NQLog("AssemblyObjectFinderManual") << " before radius map"  ;
 
     std::map<double,cv::Vec3f> radiusMap;
     for(size_t i = 0; i < circles.size(); i++ ) {
         radiusMap[std::fabs(circles[i][2]-expectedCircleRadius_)] = circles[i];
     }
-    NQLog("ObjectFinderManual") << " after radius map"  ;
+    NQLog("AssemblyObjectFinderManual") << " after radius map"  ;
 
     std::map<double,cv::Vec3f>::iterator it = radiusMap.begin();
 
@@ -312,12 +312,12 @@ size_t ObjectFinderManual::findCircle(const cv::Mat& image)
     } else if (minDistance<=2*circleRadius_) {
         circleQuality_ *= 1.0 - minDistance/(2*circleRadius_);
     }
-    NQLog("ObjectFinderManual") << " returning circles "  ;
+    NQLog("AssemblyObjectFinderManual") << " returning circles "  ;
 
     return circles.size();
 }
 
-void ObjectFinderManual::drawCircle()
+void AssemblyObjectFinderManual::drawCircle()
 {
     cv::Point2f center(cvRound(circleCenter_.x),
                        cvRound(circleCenter_.y));
@@ -330,7 +330,7 @@ void ObjectFinderManual::drawCircle()
 
 }
 
-size_t ObjectFinderManual::findLines()
+size_t AssemblyObjectFinderManual::findLines()
 {
     cv::Canny(image_, imageEdges_,
               linesCannyEdgeDetectionThreshold1_,
@@ -371,7 +371,7 @@ size_t ObjectFinderManual::findLines()
     return goodLines_.size();
 }
 
-void ObjectFinderManual::drawLines()
+void AssemblyObjectFinderManual::drawLines()
 {
     for (size_t i = 0; i < lines_.size(); i++ ) {
         cv::line(imageRGB_,
@@ -387,7 +387,7 @@ void ObjectFinderManual::drawLines()
     }
  }
 
-bool ObjectFinderManual::intersection(cv::Point2f o1, cv::Point2f p1,
+bool AssemblyObjectFinderManual::intersection(cv::Point2f o1, cv::Point2f p1,
                                               cv::Point2f o2, cv::Point2f p2,
                                               cv::Point2f &r, double distance)
 {
@@ -411,7 +411,7 @@ bool ObjectFinderManual::intersection(cv::Point2f o1, cv::Point2f p1,
   return true;
 }
 
-void ObjectFinderManual::mergeIntersections(std::vector<cv::Point2f>& intersections)
+void AssemblyObjectFinderManual::mergeIntersections(std::vector<cv::Point2f>& intersections)
 {
     std::vector<cv::Point2f> tempIntersections;
     std::vector<bool> intersectionFlag(intersections.size());
@@ -447,7 +447,7 @@ void ObjectFinderManual::mergeIntersections(std::vector<cv::Point2f>& intersecti
     intersections = tempIntersections;
 }
 
-size_t ObjectFinderManual::findIntersections()
+size_t AssemblyObjectFinderManual::findIntersections()
 {
     intersections_.clear();
     goodIntersections_.clear();
@@ -497,7 +497,7 @@ size_t ObjectFinderManual::findIntersections()
     return intersections_.size();
 }
 
-void ObjectFinderManual::drawIntersections()
+void AssemblyObjectFinderManual::drawIntersections()
 {
     for(size_t i = 0; i < intersections_.size(); i++ ) {
         cv::Point center(cvRound(intersections_[i].x), cvRound(intersections_[i].y));
@@ -510,7 +510,7 @@ void ObjectFinderManual::drawIntersections()
     }
 }
 
-void ObjectFinderManual::determineOrientation()
+void AssemblyObjectFinderManual::determineOrientation()
 {
     if (goodIntersections_.size()!=2 && intersections_.size()!=4) return;
 
@@ -587,31 +587,31 @@ void ObjectFinderManual::determineOrientation()
     cv::Point2f d = igp - il1;
     angle = std::atan2(d.y, d.x);
     if (angle<0) angle += 2.*CV_PI;
-    // NQLog("ObjectFinderManual") << "ia1 " << angle;
+    // NQLog("AssemblyObjectFinderManual") << "ia1 " << angle;
     orientation_ += angle;
 
     d = ogp - ol1;
     angle = std::atan2(d.y, d.x);
     if (angle<0) angle += 2.*CV_PI;
-    // NQLog("ObjectFinderManual") << "oa1 " << angle;
+    // NQLog("AssemblyObjectFinderManual") << "oa1 " << angle;
     orientation_ += angle;
 
     d = igp - il2;
     angle = std::atan2(d.y, d.x) + CV_PI/2;
     if (angle<0) angle += 2.*CV_PI;
-    // NQLog("ObjectFinderManual") << "ia2 " << angle;
+    // NQLog("AssemblyObjectFinderManual") << "ia2 " << angle;
     orientation_ += angle;
 
     d = ogp - ol2;
     angle = std::atan2(d.y, d.x) + CV_PI/2;
     if (angle<0) angle += 2.*CV_PI;
-    // NQLog("ObjectFinderManual") << "oa2 " << angle;
+    // NQLog("AssemblyObjectFinderManual") << "oa2 " << angle;
     orientation_ += angle;
 
     orientation_ /= 4.;
 }
 
-void ObjectFinderManual::drawOutline()
+void AssemblyObjectFinderManual::drawOutline()
 {
     cv::line(imageRGB_,
              goodIntersections_[0], intersections_[0],
@@ -633,7 +633,7 @@ void ObjectFinderManual::drawOutline()
              cv::Scalar(0, 255, 255), 4, CV_AA);
 }
 
-void ObjectFinderManual::drawOrientation()
+void AssemblyObjectFinderManual::drawOrientation()
 {
     double dx1 = circleRadius_/4 * std::cos(orientation_);
     double dy1 = circleRadius_/4 * std::sin(orientation_);
@@ -646,7 +646,7 @@ void ObjectFinderManual::drawOrientation()
              cv::Scalar(255, 255, 0), 6, CV_AA);
 }
 
-void ObjectFinderManual::findMarker_circleSeed(int mode)
+void AssemblyObjectFinderManual::findMarker_circleSeed(int mode)
 {
 
     cv::Mat img_gs, img_rgb, img_edges;
@@ -654,7 +654,7 @@ void ObjectFinderManual::findMarker_circleSeed(int mode)
     
      if (mode == 0) {
     
-         NQLog("ObjectFinderManual") << "DEMO MODE (USING DEMO IMAGES)" ;
+         NQLog("AssemblyObjectFinderManual") << "DEMO MODE (USING DEMO IMAGES)" ;
 
     img_gs = cv::imread(Config::CMSTkModLabBasePath+"/share/assembly/im_scan___Exp10___EdgeThr145___lt110.png",
                         CV_LOAD_IMAGE_COLOR);
@@ -662,7 +662,7 @@ void ObjectFinderManual::findMarker_circleSeed(int mode)
      }else if (mode ==1){
      
          
-         NQLog("ObjectFinderManual") << "***LAB MODE NOT IMPLMENTED YET....REVERTING TO DEMO MODE!!!***" ;
+         NQLog("AssemblyObjectFinderManual") << "***LAB MODE NOT IMPLMENTED YET....REVERTING TO DEMO MODE!!!***" ;
 
          img_gs = cv::imread(Config::CMSTkModLabBasePath+"/share/assembly/im_scan___Exp10___EdgeThr145___lt110.png",
                              CV_LOAD_IMAGE_COLOR);
@@ -971,30 +971,30 @@ void ObjectFinderManual::findMarker_circleSeed(int mode)
 
 }
 
-void ObjectFinderManual::setNewGeneralThreshold(int value, cv::Mat img)
+void AssemblyObjectFinderManual::setNewGeneralThreshold(int value, cv::Mat img)
 {
   generalThreshold_ = value;
 
-  NQLog("ObjectFinderManual", NQLog::Debug) << "setNewGeneralThreshold"
+  NQLog("AssemblyObjectFinderManual", NQLog::Debug) << "setNewGeneralThreshold"
      << ": emitting signal \"sendCurrentGeneralThreshold(" << value << ")\"";
 
   emit sendCurrentGeneralThreshold(value);
 
   this->updateThresholdImage(img);
 
-  NQLog("ObjectFinderManual", NQLog::Spam) << "setNewGeneralThreshold"
+  NQLog("AssemblyObjectFinderManual", NQLog::Spam) << "setNewGeneralThreshold"
      << ": updated threshold value: " << value;
 }
 
-void ObjectFinderManual::getCurrentGeneralThreshold()
+void AssemblyObjectFinderManual::getCurrentGeneralThreshold()
 { 
-  NQLog("ObjectFinderManual", NQLog::Debug) << "getCurrentGeneralThreshold"
+  NQLog("AssemblyObjectFinderManual", NQLog::Debug) << "getCurrentGeneralThreshold"
      << ": emitting signal \"sendCurrentGeneralThreshold(" << generalThreshold_ << ")\"";
 
   emit sendCurrentGeneralThreshold(generalThreshold_);
 }
 
-void ObjectFinderManual::updateThresholdImage(cv::Mat img)
+void AssemblyObjectFinderManual::updateThresholdImage(cv::Mat img)
 {
     Mat img_copy = img.clone();
 
@@ -1012,7 +1012,7 @@ void ObjectFinderManual::updateThresholdImage(cv::Mat img)
     Mat img_copy_bin(img_copy_gs.size(), img_copy_gs.type());
     
     //Apply thresholding
-    NQLog("ObjectFinderManual") << "::updateThresholdImage() : applying threshold for ThresholdTuner.";
+    NQLog("AssemblyObjectFinderManual") << "::updateThresholdImage() : applying threshold for ThresholdTuner.";
     cv::threshold(img_copy_gs, img_copy_bin, generalThreshold_, 255, cv::THRESH_BINARY);
 
     std::string filename_img_bin = cacheDirectory1_+"/Sensor_bin.png";
@@ -1024,5 +1024,5 @@ void ObjectFinderManual::updateThresholdImage(cv::Mat img)
     QString filename_master = QString::fromStdString(filename_img_bin);
 
     emit sendUpdatedThresholdImage(filename_master);
-    NQLog("ObjectFinderManual") << "::updateThresholdImage() : signal emitted!!!";
+    NQLog("AssemblyObjectFinderManual") << "::updateThresholdImage() : signal emitted!!!";
 }

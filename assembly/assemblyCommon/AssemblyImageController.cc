@@ -10,11 +10,11 @@
 //                                                                             //
 /////////////////////////////////////////////////////////////////////////////////
 
-#include <ImageController.h>
+#include <AssemblyImageController.h>
 #include <nqlogger.h>
 #include <Util.h>
 
-ImageController::ImageController(AssemblyVUEyeCamera* camera, ZFocusFinder* zfocus_finder, QObject* parent) :
+AssemblyImageController::AssemblyImageController(AssemblyVUEyeCamera* camera, AssemblyZFocusFinder* zfocus_finder, QObject* parent) :
   QObject(parent),
   camera_manager_(camera),
   zfocus_finder_(zfocus_finder),
@@ -23,8 +23,8 @@ ImageController::ImageController(AssemblyVUEyeCamera* camera, ZFocusFinder* zfoc
 {
   if(!camera_manager_)
   {
-    NQLog("ImageController", NQLog::Fatal) << "initialization error"
-       << ": null pointer to AssemblyVUEyeCamera object, exiting";
+    NQLog("AssemblyImageController", NQLog::Fatal) << "initialization error"
+       << ": null pointer to AssemblyVUEyeCamera object, exiting constructor";
 
     return;
   }
@@ -33,8 +33,8 @@ ImageController::ImageController(AssemblyVUEyeCamera* camera, ZFocusFinder* zfoc
   {
     if(zfocus_finder_->camera_manager() != camera_manager_)
     {
-      NQLog("ImageController", NQLog::Fatal) << "initialization error"
-         << ": target input camera differs from ZFocusFinder.camera";
+      NQLog("AssemblyImageController", NQLog::Fatal) << "initialization error"
+         << ": target input camera differs from camera of AssemblyZFocusFinder, exiting constructor";
 
       return;
     }
@@ -49,71 +49,71 @@ ImageController::ImageController(AssemblyVUEyeCamera* camera, ZFocusFinder* zfoc
   connect(this           , SIGNAL(image())               , camera_manager_, SLOT(acquireImage()));
   connect(camera_manager_, SIGNAL(imageAcquired(cv::Mat)), this           , SLOT(retrieve_image(cv::Mat)));
 
-  NQLog("ImageController", NQLog::Debug) << "constructed";
+  NQLog("AssemblyImageController", NQLog::Debug) << "constructed";
 }
 
-ImageController::~ImageController()
+AssemblyImageController::~AssemblyImageController()
 {
 }
 
-void ImageController::enable()
+void AssemblyImageController::enable()
 {
   is_enabled_ = true;
 
-  NQLog("ImageController", NQLog::Spam) << "enable"
+  NQLog("AssemblyImageController", NQLog::Spam) << "enable"
      << ": emitting signal \"open_camera\"";
 
   emit open_camera();
 }
 
-void ImageController::disable()
+void AssemblyImageController::disable()
 {
   is_enabled_ = false;
 
-  NQLog("ImageController", NQLog::Spam) << "disable"
+  NQLog("AssemblyImageController", NQLog::Spam) << "disable"
      << ": emitting signal \"close_camera\"";
 
   emit close_camera();
 }
 
-void ImageController::acquire_image()
+void AssemblyImageController::acquire_image()
 {
-  NQLog("ImageController", NQLog::Spam) << "acquire_image"
+  NQLog("AssemblyImageController", NQLog::Spam) << "acquire_image"
      << ": emitting signal \"image\"";
 
   emit image();
 }
 
-void ImageController::enable_camera()
+void AssemblyImageController::enable_camera()
 {
-  NQLog("ImageController", NQLog::Spam) << "enable_camera"
+  NQLog("AssemblyImageController", NQLog::Spam) << "enable_camera"
      << ": emitting signal \"camera_enabled\"";
 
   emit camera_enabled();
 }
 
-void ImageController::disable_camera()
+void AssemblyImageController::disable_camera()
 {
-  NQLog("ImageController", NQLog::Spam) << "disable_camera"
+  NQLog("AssemblyImageController", NQLog::Spam) << "disable_camera"
      << ": emitting signal \"camera_disabled\"";
 
   emit camera_disabled();
 }
 
-void ImageController::retrieve_image(const cv::Mat& a_mat)
+void AssemblyImageController::retrieve_image(const cv::Mat& a_mat)
 {
-  NQLog("ImageController", NQLog::Message) << "retrieve_image"
+  NQLog("AssemblyImageController", NQLog::Message) << "retrieve_image"
      << ": emitting signal \"image_acquired\"";
 
   emit image_acquired(a_mat);
 }
 
-void ImageController::enable_AutoFocus()
+void AssemblyImageController::enable_AutoFocus()
 {
   if(zfocus_finder_ == 0)
   {
-    NQLog("ImageController", NQLog::Warning) << "enable_AutoFocus"
-       << ": ZFocusFinder not initialized, auto-focusing not enabled";
+    NQLog("AssemblyImageController", NQLog::Warning) << "enable_AutoFocus"
+       << ": AssemblyZFocusFinder not initialized, auto-focusing not enabled";
 
     return;
   }
@@ -126,18 +126,18 @@ void ImageController::enable_AutoFocus()
 
   autofocus_is_enabled_ = true;
 
-  NQLog("ImageController", NQLog::Message) << "enable_AutoFocus"
-     << ": connected ZFocusFinder";
+  NQLog("AssemblyImageController", NQLog::Message) << "enable_AutoFocus"
+     << ": connected AssemblyZFocusFinder";
 
   return;
 }
 
-void ImageController::disable_AutoFocus()
+void AssemblyImageController::disable_AutoFocus()
 {
   if(zfocus_finder_ == 0)
   {
-    NQLog("ImageController", NQLog::Warning) << "disable_AutoFocus"
-       << ": ZFocusFinder not initialized, no action taken";
+    NQLog("AssemblyImageController", NQLog::Warning) << "disable_AutoFocus"
+       << ": AssemblyZFocusFinder not initialized, no action taken";
 
     return;
   }
@@ -150,8 +150,8 @@ void ImageController::disable_AutoFocus()
 
   autofocus_is_enabled_ = false;
 
-  NQLog("ImageController", NQLog::Message) << "disable_AutoFocus"
-     << ": disconnected ZFocusFinder";
+  NQLog("AssemblyImageController", NQLog::Message) << "disable_AutoFocus"
+     << ": disconnected AssemblyZFocusFinder";
 
   return;
 }

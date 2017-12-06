@@ -10,22 +10,22 @@
 //                                                                             //
 /////////////////////////////////////////////////////////////////////////////////
 
-#ifndef OBJECTFINDERPATREC_H
-#define OBJECTFINDERPATREC_H
+#ifndef ASSEMBLYOBJECTFINDERPATREC_H
+#define ASSEMBLYOBJECTFINDERPATREC_H
 
 #include <QObject>
 #include <QString>
 
 #include <opencv2/opencv.hpp>
 
-class ObjectFinderPatRec : public QObject
+class AssemblyObjectFinderPatRec : public QObject
 {
  Q_OBJECT
 
  public:
 
-  explicit ObjectFinderPatRec(const QString&, const QString&, QObject* parent=0);
-  virtual ~ObjectFinderPatRec();
+  explicit AssemblyObjectFinderPatRec(const QString&, const QString&, QObject* parent=0);
+  virtual ~AssemblyObjectFinderPatRec();
 
   void set_threshold(const int);
   int  get_threshold() const { return threshold_; }
@@ -113,4 +113,4 @@ class ObjectFinderPatRec : public QObject
   void PatRec_exitcode(const int);
 };
 
-#endif // OBJECTFINDERPATREC_H
+#endif // ASSEMBLYOBJECTFINDERPATREC_H

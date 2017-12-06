@@ -10,8 +10,8 @@
 //                                                                             //
 /////////////////////////////////////////////////////////////////////////////////
 
-#ifndef ZFOCUSFINDER_H
-#define ZFOCUSFINDER_H
+#ifndef ASSEMBLYZFOCUSFINDER_H
+#define ASSEMBLYZFOCUSFINDER_H
 
 #include <AssemblyVUEyeCamera.h>
 #include <LStepExpressMotionManager.h>
@@ -24,7 +24,7 @@
 
 #include <opencv2/opencv.hpp>
 
-class ZFocusFinder : public QObject
+class AssemblyZFocusFinder : public QObject
 {
  Q_OBJECT
 
@@ -33,7 +33,7 @@ class ZFocusFinder : public QObject
     QTimer* qt;
     LStepExpressModel* lStepExpressModel_;
 
-    explicit ZFocusFinder(AssemblyVUEyeCamera*, LStepExpressMotionManager*, QObject* parent=0);
+    explicit AssemblyZFocusFinder(AssemblyVUEyeCamera*, LStepExpressMotionManager*, QObject* parent=0);
 
     AssemblyVUEyeCamera*       camera_manager() const { return camera_manager_; }
     LStepExpressMotionManager* motion_manager() const { return motion_manager_; }
@@ -99,4 +99,4 @@ class ZFocusFinder : public QObject
     void update_text(const double);
 };
 
-#endif // ZFOCUSFINDER_H
+#endif // ASSEMBLYZFOCUSFINDER_H

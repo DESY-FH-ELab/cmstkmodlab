@@ -10,19 +10,19 @@
 //                                                                             //
 /////////////////////////////////////////////////////////////////////////////////
 
-#ifndef MULTIPICKUPTESTER_H
-#define MULTIPICKUPTESTER_H
+#ifndef ASSEMBLYMULTIPICKUPTESTER_H
+#define ASSEMBLYMULTIPICKUPTESTER_H
 
 #include <LStepExpressMotionManager.h>
 
-class MultiPickupTester : public QObject
+class AssemblyMultiPickupTester : public QObject
 {
  Q_OBJECT
 
  public:
 
-  explicit MultiPickupTester(LStepExpressMotionManager*, QObject* parent=0);
-  virtual ~MultiPickupTester();
+  explicit AssemblyMultiPickupTester(LStepExpressMotionManager*, QObject* parent=0);
+  virtual ~AssemblyMultiPickupTester();
 
   LStepExpressMotionManager* motion_manager() const { return motion_manager_; }
 
@@ -108,4 +108,4 @@ class MultiPickupTester : public QObject
   void vacuum_toggle(const int);
 };
 
-#endif // MULTIPICKUPTESTER_H
+#endif // ASSEMBLYMULTIPICKUPTESTER_H
