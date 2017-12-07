@@ -477,7 +477,9 @@ void MultiPickupTesterWidget::execute()
   if(measur_qsl.length() != 3)
   {
     NQLog("MultiPickupTesterWidget", NQLog::Warning) << "execute"
-      << "invalid format for measurement position (" << measur_qstr << "), no action taken";
+       << ": invalid format for measurement position (" << measur_qstr << "), no action taken";
+
+    this->lineEdit_setDisabled(false);
 
     return;
   }
@@ -494,7 +496,9 @@ void MultiPickupTesterWidget::execute()
   if(pickup_qsl.length() != 3)
   {
     NQLog("MultiPickupTesterWidget", NQLog::Warning) << "execute"
-      << "invalid format for pick-up position (" << pickup_qstr << "), no action taken";
+       << ": invalid format for pick-up position (" << pickup_qstr << "), no action taken";
+
+    this->lineEdit_setDisabled(false);
 
     return;
   }
@@ -504,9 +508,9 @@ void MultiPickupTesterWidget::execute()
   const double pickup_z = pickup_qsl.at(2).toDouble();
 
   // number of iterations
-  const QString iteraN_qstr = this->iteraN_lineed_->text().remove(" ");
+  const QString iteraN_qstr = this->iteraN_lineed_->text();
 
-  const double iteraN = iteraN_qstr.toInt();
+  const int iteraN = iteraN_qstr.toInt();
 
   // output signal
   NQLog("MultiPickupTesterWidget", NQLog::Spam) << "execute"
