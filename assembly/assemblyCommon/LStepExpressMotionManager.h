@@ -59,9 +59,6 @@ class LStepExpressMotionManager : public QObject
     void    connect_model();
     void disconnect_model();
 
-    void  start_motion();
-    void finish_motion();
-
     void appendMotion(const LStepExpressMotion& motion);
     void appendMotions(const QQueue<LStepExpressMotion>& motions);
     void moveRelative(const std::vector<double>& values);
