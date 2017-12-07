@@ -97,7 +97,8 @@ QString LStepExpressModel::getAxisName(unsigned int axis)
     NQLog("LStepExpressModel", NQLog::Debug) << "getAxisName(" << axis << ")";
 
     QString temp(controller_->GetAxisName((VLStepExpress::Axis)axis));
-    return  temp;
+
+    return temp;
 }
 
 QString LStepExpressModel::getAxisDimensionShortName(unsigned int axis)
@@ -105,7 +106,8 @@ QString LStepExpressModel::getAxisDimensionShortName(unsigned int axis)
     NQLog("LStepExpressModel ", NQLog::Debug) << "getAxisDimensionShortName(" << axis << ")";
 
     QString temp(controller_->GetAxisDimensionShortName((VLStepExpress::Dimension)dim_[axis]));
-    return  temp;
+
+    return temp;
 }
 
 QString LStepExpressModel::getAxisStatusText(unsigned int axis)
@@ -116,7 +118,7 @@ QString LStepExpressModel::getAxisStatusText(unsigned int axis)
 
     NQLog("LStepExpressModel", NQLog::Debug) << "getAxisStatusText(" << axis << ")=" << temp.toStdString();
 
-    return  temp;
+    return temp;
 }
 
 bool LStepExpressModel::getAxisState(unsigned int axis)
@@ -161,19 +163,15 @@ void LStepExpressModel::moveRelative(const std::vector<double>& values)
 
 void LStepExpressModel::moveRelative(const double x, const double y, const double z, const double a)
 {
-    NQLog("LStepExpressModel", NQLog::Debug) << "moveRelative"
-       << "("  << "x=" << x
-       << ", " << "y=" << y
-       << ", " << "z=" << z
-       << ", " << "a=" << a
-       << ")";
+    NQLog("LStepExpressModel", NQLog::Spam) << "moveRelative"
+       << "(x=" << x << ", y=" << y << ", z=" << z << ", a=" << a << ")";
 
-    if(!controller_)
+    if(controller_ == NULL)
     {
       NQLog("LStepExpressModel", NQLog::Critical) << "moveRelative"
          << ": null pointer to controller, no action taken";
 
-      NQLog("LStepExpressModel", NQLog::Debug) << "moveRelative"
+      NQLog("LStepExpressModel", NQLog::Spam) << "moveRelative"
          << ": emitting signal \"motionFinished\"";
 
       emit motionFinished();
@@ -187,7 +185,7 @@ void LStepExpressModel::moveRelative(const double x, const double y, const doubl
 
       inMotion_ = true;
 
-      NQLog("LStepExpressModel", NQLog::Debug) << "moveRelative"
+      NQLog("LStepExpressModel", NQLog::Spam) << "moveRelative"
          << ": emitting signal \"motionStarted\"";
 
       emit motionStarted();
@@ -196,16 +194,14 @@ void LStepExpressModel::moveRelative(const double x, const double y, const doubl
 
 void LStepExpressModel::moveRelative(const unsigned int axis, const double value)
 {
-    NQLog("LStepExpressModel", NQLog::Debug) << "moveRelative"
-       << "("  << "axis="  << axis
-       << ", " << "value=" << value
-       << ")";
+    NQLog("LStepExpressModel", NQLog::Spam) << "moveRelative"
+       << "(axis="  << axis << ", value=" << value << ")";
 
     controller_->MoveRelative((VLStepExpress::Axis)axis, value);
 
     inMotion_ = true;
 
-    NQLog("LStepExpressModel", NQLog::Debug) << "moveRelative"
+    NQLog("LStepExpressModel", NQLog::Spam) << "moveRelative"
        << ": emitting signal \"motionStarted\"";
 
     emit motionStarted();
@@ -223,19 +219,15 @@ void LStepExpressModel::moveAbsolute(const std::vector<double>& values)
 
 void LStepExpressModel::moveAbsolute(const double x, const double y, const double z, const double a)
 {
-    NQLog("LStepExpressModel", NQLog::Debug) << "moveAbsolute"
-       << "("  << "x=" << x
-       << ", " << "y=" << y
-       << ", " << "z=" << z
-       << ", " << "a=" << a
-       << ")";
+    NQLog("LStepExpressModel", NQLog::Spam) << "moveAbsolute"
+       << "(x=" << x << ", y=" << y << ", z=" << z << ", a=" << a << ")";
 
-    if(!controller_)
+    if(controller_ == NULL)
     {
       NQLog("LStepExpressModel", NQLog::Critical) << "moveAbsolute"
          << ": null pointer to controller, no action taken";
 
-      NQLog("LStepExpressModel", NQLog::Debug) << "moveAbsolute"
+      NQLog("LStepExpressModel", NQLog::Spam) << "moveAbsolute"
          << ": emitting signal \"motionFinished\"";
 
       emit motionFinished();
@@ -249,7 +241,7 @@ void LStepExpressModel::moveAbsolute(const double x, const double y, const doubl
 
       inMotion_ = true;
 
-      NQLog("LStepExpressModel", NQLog::Debug) << "moveAbsolute"
+      NQLog("LStepExpressModel", NQLog::Spam) << "moveAbsolute"
          << ": emitting signal \"motionStarted\"";
 
       emit motionStarted();
@@ -258,16 +250,14 @@ void LStepExpressModel::moveAbsolute(const double x, const double y, const doubl
 
 void LStepExpressModel::moveAbsolute(const unsigned int axis, const double value)
 {
-    NQLog("LStepExpressModel", NQLog::Debug) << "moveAbsolute"
-       << "("  << "axis="  << axis
-       << ", " << "value=" << value
-       << ")";
+    NQLog("LStepExpressModel", NQLog::Spam) << "moveAbsolute"
+       << "(axis="  << axis << ", value=" << value << ")";
 
     controller_->MoveAbsolute((VLStepExpress::Axis)axis, value);
 
     inMotion_ = true;
 
-    NQLog("LStepExpressModel", NQLog::Debug) << "moveAbsolute"
+    NQLog("LStepExpressModel", NQLog::Spam) << "moveAbsolute"
        << ": emitting signal \"motionStarted\"";
 
     emit motionStarted();
@@ -275,7 +265,7 @@ void LStepExpressModel::moveAbsolute(const unsigned int axis, const double value
 
 void LStepExpressModel::calibrate()
 {
-    NQLog("LStepExpressModel", NQLog::Debug) << "calibrate";
+    NQLog("LStepExpressModel", NQLog::Spam) << "calibrate";
 
     controller_->Calibrate();
 
@@ -283,7 +273,7 @@ void LStepExpressModel::calibrate()
 
     finishedCalibrating_ = true;
 
-    NQLog("LStepExpressModel", NQLog::Debug) << "calibrate"
+    NQLog("LStepExpressModel", NQLog::Spam) << "calibrate"
        << ": emitting signal \"motionStarted\"";
 
     emit motionStarted();
@@ -291,7 +281,7 @@ void LStepExpressModel::calibrate()
 
 void LStepExpressModel::emergencyStop()
 {
-    NQLog("LStepExpressModel", NQLog::Debug) << "emergencyStop";
+    NQLog("LStepExpressModel", NQLog::Spam) << "emergencyStop";
 
     controller_->EmergencyStop();
 
@@ -299,12 +289,12 @@ void LStepExpressModel::emergencyStop()
 
     finishedCalibrating_ = false;
 
-    NQLog("LStepExpressModel", NQLog::Debug) << "emergencyStop"
+    NQLog("LStepExpressModel", NQLog::Spam) << "emergencyStop"
        << ": emitting signal \"emergencyStopSignal\"";
 
     emit emergencyStopSignal();
 
-    NQLog("LStepExpressModel", NQLog::Debug) << "emergencyStop"
+    NQLog("LStepExpressModel", NQLog::Spam) << "emergencyStop"
        << ": emitting signal \"motionFinished\"";
 
     emit motionFinished();
