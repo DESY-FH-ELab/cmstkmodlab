@@ -229,6 +229,10 @@ void LStepExpressMotionManager::read_position3D()
   const double y = this->get_position_Y();
   const double z = this->get_position_Z();
 
+  NQLog("LStepExpressMotionManager", NQLog::Spam) << "read_position3D"
+     << ": emitting signal \"position4D"
+     << "(x=" << x << ", y=" << y << ", z=" << z << ")\"";
+
   emit position3D(x, y, z);
 }
 
@@ -239,5 +243,24 @@ void LStepExpressMotionManager::read_position4D()
   const double z = this->get_position_Z();
   const double a = this->get_position_A();
 
+  NQLog("LStepExpressMotionManager", NQLog::Spam) << "read_position4D"
+     << ": emitting signal \"position4D"
+     << "(x=" << x << ", y=" << y << ", z=" << z << ", a=" << a << ")\"";
+
   emit position4D(x, y, z, a);
+}
+
+void LStepExpressMotionManager::clear_motion_queue()
+{
+  if(inMotion_)
+  {
+    NQLog("LStepExpressMotionManager", NQLog::Warning) << "clear_motion_queue"
+       << ": motion stage is moving, no action taken";
+
+    return;
+  }
+
+  motions_.clear();
+
+  return;
 }

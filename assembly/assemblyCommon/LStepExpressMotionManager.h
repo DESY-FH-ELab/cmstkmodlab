@@ -74,6 +74,8 @@ class LStepExpressMotionManager : public QObject
     void read_position3D();
     void read_position4D();
 
+    void clear_motion_queue();
+
   protected slots:
 
     void motionStarted();
