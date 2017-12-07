@@ -102,29 +102,14 @@ void LStepExpressMotionManager::run()
       return;
     }
 
+    // check on axes ----
+    this->AxisIsReady(0);
+    this->AxisIsReady(1);
+    this->AxisIsReady(2);
+    this->AxisIsReady(3);
+    // ------------------
+
     LStepExpressMotion motion = motions_.dequeue();
-
-    // check on axes
-    const bool axes_ready = (
-         this->AxisIsReady(0)
-      && this->AxisIsReady(1)
-      && this->AxisIsReady(2)
-      && this->AxisIsReady(3)
-    );
-
-    if(axes_ready == false)
-    {
-      NQLog("LStepExpressMotionManager", NQLog::Critical) << "run"
-         << ": at least one axis in invalid state, motion request rejected";
-
-      NQLog("LStepExpressMotionManager", NQLog::Spam) << "run"
-         << ": emitting signal \"motion_finished\"";
-
-      emit motion_finished();
-
-      return;
-    }
-    // -------------
 
     inMotion_ = true;
 
@@ -160,7 +145,7 @@ bool LStepExpressMotionManager::AxisIsReady(const int axis) const
 
   if(axis_ready == false)
   {
-    NQLog("LStepExpressMotionManager", NQLog::Critical) << "AxisIsReady"
+    NQLog("LStepExpressMotionManager", NQLog::Warning) << "AxisIsReady"
        << ": invalid state (" << model_->getAxisStatusText(axis)
        << ") for axis #" << axis << " of motion stage, axis not ready";
   }
