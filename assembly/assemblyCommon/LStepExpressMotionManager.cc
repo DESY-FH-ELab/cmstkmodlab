@@ -102,6 +102,9 @@ void LStepExpressMotionManager::run()
       return;
     }
 
+    LStepExpressMotion motion = motions_.dequeue();
+
+    // check on axes
     const bool axes_ready = (
          this->AxisIsReady(0)
       && this->AxisIsReady(1)
@@ -121,8 +124,7 @@ void LStepExpressMotionManager::run()
 
       return;
     }
-
-    LStepExpressMotion motion = motions_.dequeue();
+    // -------------
 
     inMotion_ = true;
 
