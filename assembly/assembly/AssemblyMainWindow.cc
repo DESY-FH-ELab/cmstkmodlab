@@ -574,6 +574,14 @@ void AssemblyMainWindow::disconnect_images()
 
 void AssemblyMainWindow::connect_multipickupNpatrec(const AssemblyMultiPickupTester::Configuration& conf)
 {
+    if(image_ctr_ == NULL)
+    {
+      NQLog("AssemblyMainWindow", NQLog::Warning) << "connect_multipickupNpatrec"
+         << ": ImageController not initialized, no action taken (hint: click \"Camera ON\")";
+
+      return;
+    }
+
     multipickup_->set_configuration(conf);
 
     assembleView_->MultiPickup_Widget()->enable(false);

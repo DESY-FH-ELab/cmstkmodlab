@@ -496,8 +496,6 @@ void MultiPickupTesterWidget::enable(const bool b)
 
 void MultiPickupTesterWidget::execute()
 {
-  NQLog("MultiPickupTesterWidget", NQLog::Spam) << "execute";
-
   // measurement position
   const QString measur_qstr = this->measur_lineed_->text().remove(" ");
 
