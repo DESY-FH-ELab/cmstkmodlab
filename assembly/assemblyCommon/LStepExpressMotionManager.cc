@@ -122,7 +122,7 @@ void LStepExpressMotionManager::run()
     }
     else
     {
-      NQLog("LStepExpressMotionManager", NQLog::Spam) << "run: emitting signal \"signalMoveAbsolute("
+      NQLog("LStepExpressMotionManager", NQLog::Spam) << "run: emitting signal \"signalMoveRelative("
         <<   "x=" << motion.getX()
         << ", y=" << motion.getY()
         << ", z=" << motion.getZ()
