@@ -138,12 +138,12 @@ class MoveWidget : public QWidget
   explicit MoveWidget(const QString&, const QString&, const bool move_relative=false, QWidget* parent=0);
   virtual ~MoveWidget() {}
 
-  QString get_input_string() const;
-
   QPushButton* button() const { return button_; }
   QLineEdit*   lineed() const { return lineed_; }
 
   void useMoveRelative(const bool b=false){ moveRelative_ = b; }
+
+  QString get_input_string() const;
 
  protected:
 
@@ -157,6 +157,8 @@ class MoveWidget : public QWidget
 
   void execute();
     
+  void enable(const bool b=true);
+
  signals:
 
   void moveAbsolute(const double, const double, const double, const double);
@@ -257,8 +259,6 @@ class MultiPickupTesterWidget : public QWidget
 
   QGridLayout* layout() const { return layout_; }
 
-  void lineEdit_setDisabled(const bool);
-
  protected:
 
   const LStepExpressMotionManager* motion_manager_;
@@ -284,6 +284,8 @@ class MultiPickupTesterWidget : public QWidget
 
   void update_position_measurement();
   void update_position_pickup();
+
+  void enable(const bool);
 
  signals:
 

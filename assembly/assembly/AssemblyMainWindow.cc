@@ -576,7 +576,7 @@ void AssemblyMainWindow::connect_multipickupNpatrec(const AssemblyMultiPickupTes
 {
     multipickup_->set_configuration(conf);
 
-    assembleView_->MultiPickup_Widget()->lineEdit_setDisabled(true);
+    assembleView_->MultiPickup_Widget()->enable(false);
 
     connect(this        , SIGNAL(multipickupNpatrec_connected()), multipickup_, SLOT(start_measurement()));
     connect(multipickup_, SIGNAL(measurement_finished())        , multipickup_, SLOT(start_pickup()));
@@ -609,7 +609,7 @@ void AssemblyMainWindow::connect_multipickupNpatrec(const AssemblyMultiPickupTes
 
 void AssemblyMainWindow::disconnect_multipickupNpatrec()
 {
-    assembleView_->MultiPickup_Widget()->lineEdit_setDisabled(false);
+    assembleView_->MultiPickup_Widget()->enable(true);
 
     disconnect(this        , SIGNAL(multipickupNpatrec_connected()), multipickup_, SLOT(start_measurement()));
     disconnect(multipickup_, SIGNAL(measurement_finished())        , multipickup_, SLOT(start_pickup()));

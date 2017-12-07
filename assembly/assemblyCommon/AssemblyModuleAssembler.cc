@@ -197,6 +197,7 @@ AssemblyModuleAssembler::AssemblyModuleAssembler(const LStepExpressMotionManager
     w_moveabs->setToolTip("(1) Moves x,y,z,a stage using moveAbsolute routine (with respect to origin)");
 
     connect(w_moveabs, SIGNAL(moveAbsolute(double, double, double, double)), motion_manager, SLOT(moveAbsolute(double, double, double, double)));
+    connect(motion_manager, SIGNAL(motion_finished()), w_moveabs, SLOT(enable()));
     // ---------------------
 
     // widget: move relative
@@ -208,6 +209,7 @@ AssemblyModuleAssembler::AssemblyModuleAssembler(const LStepExpressMotionManager
     w_moverel->setToolTip("(2) Moves x,y,z,a stage using moveRelative routine (with respect to current position)");
 
     connect(w_moverel, SIGNAL(moveRelative(double, double, double, double)), motion_manager, SLOT(moveRelative(double, double, double, double)));
+    connect(motion_manager, SIGNAL(motion_finished()), w_moverel, SLOT(enable()));
     // ---------------------
 
   box_move->setLayout(g_move);
@@ -218,7 +220,8 @@ AssemblyModuleAssembler::AssemblyModuleAssembler(const LStepExpressMotionManager
   // VACUUM WIDGET -------
   QGroupBox* box_vacuum = new QGroupBox(tr("Vacuum"));
 
-    w_vacuum_ = new VacuumWidget("Toggle Vacuum", this);
+  w_vacuum_ = new VacuumWidget("Toggle Vacuum", this);
+  w_vacuum_->setToolTip("(3) Controls vacuum valves");
 
   box_vacuum->setLayout(w_vacuum_->layout());
 
@@ -228,8 +231,8 @@ AssemblyModuleAssembler::AssemblyModuleAssembler(const LStepExpressMotionManager
   // PATREC  WIDGET ------
   QGroupBox* box_patrec = new QGroupBox("Pattern Recognition");
 
-    w_patrec_ = new PatRecWidget("Standalone PatRec");
-    w_patrec_->setToolTip("(3) Runs Pattern Recognition routine to determine sensor (x,y,z,a) position");
+  w_patrec_ = new PatRecWidget("Standalone PatRec");
+  w_patrec_->setToolTip("(4) Runs Pattern Recognition routine to determine sensor (x,y,z,a) position");
 
   box_patrec->setLayout(w_patrec_->layout());
 
@@ -242,14 +245,14 @@ AssemblyModuleAssembler::AssemblyModuleAssembler(const LStepExpressMotionManager
 
   QGroupBox* box_alignm = new QGroupBox(tr("Alignment"));
 
-    AssemblySandwichAssembler* w_alignm = new AssemblySandwichAssembler(this, "Assemble Sandwich");
-    w_alignm->setToolTip("(4) Aligns object to target angle (with respect to the x-axis of the motion stage)");
+  AssemblySandwichAssembler* w_alignm = new AssemblySandwichAssembler(this, "Assemble Sandwich");
+  w_alignm->setToolTip("(5) Aligns object to target angle (with respect to the x-axis of the motion stage)");
 
-    connect(w_alignm, SIGNAL(launchSandwichAssembly(double, double, double, double, double, double, double, double, double)),
-            this    , SIGNAL(launchSandwichAssembly(double, double, double, double, double, double, double, double, double)));
+  connect(w_alignm, SIGNAL(launchSandwichAssembly(double, double, double, double, double, double, double, double, double)),
+          this    , SIGNAL(launchSandwichAssembly(double, double, double, double, double, double, double, double, double)));
 
-    connect(w_alignm, SIGNAL(launchAlignment(int, double, double, double)),
-            this    , SIGNAL(launchAlignment(int, double, double, double)));
+  connect(w_alignm, SIGNAL(launchAlignment(int, double, double, double)),
+          this    , SIGNAL(launchAlignment(int, double, double, double)));
 
   box_alignm->setLayout(w_alignm->layout());
 
@@ -477,11 +480,16 @@ void MultiPickupTesterWidget::update_position_pickup()
   return;
 }
 
-void MultiPickupTesterWidget::lineEdit_setDisabled(const bool bit)
+void MultiPickupTesterWidget::enable(const bool b)
 {
-  measur_lineed_->setDisabled(bit);
-  pickup_lineed_->setDisabled(bit);
-  iteraN_lineed_->setDisabled(bit);
+  exe_button_   ->setEnabled(b);
+
+  measur_button_->setEnabled(b);
+  pickup_button_->setEnabled(b);
+
+  measur_lineed_->setEnabled(b);
+  pickup_lineed_->setEnabled(b);
+  iteraN_lineed_->setEnabled(b);
 
   return;
 }
@@ -500,7 +508,7 @@ void MultiPickupTesterWidget::execute()
     NQLog("MultiPickupTesterWidget", NQLog::Warning) << "execute"
        << ": invalid format for measurement position (" << measur_qstr << "), no action taken";
 
-    this->lineEdit_setDisabled(false);
+    this->enable(true);
 
     return;
   }
@@ -519,7 +527,7 @@ void MultiPickupTesterWidget::execute()
     NQLog("MultiPickupTesterWidget", NQLog::Warning) << "execute"
        << ": invalid format for pick-up position (" << pickup_qstr << "), no action taken";
 
-    this->lineEdit_setDisabled(false);
+    this->enable(true);
 
     return;
   }
@@ -692,6 +700,14 @@ QString MoveWidget::get_input_string() const
   return this->lineed_->text();
 }
 
+void MoveWidget::enable(const bool b)
+{
+  button_->setEnabled(b);
+  lineed_->setEnabled(b);
+
+  return;
+}
+
 void MoveWidget::execute()
 {
   QString line_entry = this->get_input_string();
@@ -713,6 +729,8 @@ void MoveWidget::execute()
          << ": emitting signal \"moveRelative("
          << x_d << ", " << y_d << ", " << z_d << ", " << a_d << ")\"";
 
+      this->enable(false);
+
       emit moveRelative(x_d, y_d, z_d, a_d);
     }
     else
@@ -720,6 +738,8 @@ void MoveWidget::execute()
       NQLog("MoveWidget", NQLog::Message) << "execute"
          << ": emitting signal \"moveAbsolute("
          << x_d << ", " << y_d << ", " << z_d << ", " << a_d << ")\"";
+
+      this->enable(false);
 
       emit moveAbsolute(x_d, y_d, z_d, a_d);
     }
