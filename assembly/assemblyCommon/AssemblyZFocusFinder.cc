@@ -91,8 +91,6 @@ AssemblyZFocusFinder::AssemblyZFocusFinder(AssemblyVUEyeCamera* camera, LStepExp
 
 void AssemblyZFocusFinder::enable_motion()
 {
-    NQLog("AssemblyZFocusFinder", NQLog::Spam) << "enable_motion";
-
     if(motion_enabled_ == false)
     {
       connect   (this           , SIGNAL(focus       (double, double, double, double)),
@@ -105,6 +103,9 @@ void AssemblyZFocusFinder::enable_motion()
                  this           , SLOT  (process_image(cv::Mat)));
 
       motion_enabled_ = true;
+
+      NQLog("AssemblyZFocusFinder", NQLog::Spam) << "enable_motion"
+         << ": AssemblyZFocusFinder connected to AssemblyVUEyeCamera and LStepExpressMotionManager";
     }
 
     return;
@@ -112,8 +113,6 @@ void AssemblyZFocusFinder::enable_motion()
 
 void AssemblyZFocusFinder::disable_motion()
 {
-    NQLog("AssemblyZFocusFinder", NQLog::Spam) << "disable_motion";
-
     if(motion_enabled_ == true)
     {
       disconnect(this           , SIGNAL(focus       (double, double, double, double)),
@@ -126,6 +125,9 @@ void AssemblyZFocusFinder::disable_motion()
                  this           , SLOT  (process_image(cv::Mat)));
 
       motion_enabled_ = false;
+
+      NQLog("AssemblyZFocusFinder", NQLog::Spam) << "disable_motion"
+         << ": AssemblyZFocusFinder disconnected from AssemblyVUEyeCamera and LStepExpressMotionManager";
     }
 
     return;
@@ -164,7 +166,7 @@ void AssemblyZFocusFinder::update_focus_inputs(const double zrange, const int po
       {
         NQLog("AssemblyZFocusFinder", NQLog::Warning) << "update_focus_inputs"
            << ": input value for number of scans (" << pointN << ")"
-           << "larger than allowed max ("     << focus_pointN_max_ << ")"
+           << " larger than allowed max ("    << focus_pointN_max_ << ")"
            << ", setting equal to allowed max";
 
         focus_pointN_ = focus_pointN_max_;
@@ -188,6 +190,16 @@ void AssemblyZFocusFinder::update_focus_inputs(const double zrange, const int po
 
 void AssemblyZFocusFinder::acquire_image()
 {
+    if(focus_pointN_ <= 1)
+    {
+      NQLog("AssemblyZFocusFinder", NQLog::Fatal) << "acquire_image"
+         << ": invalid input number of scans (" << focus_pointN_ << "), stopping AssemblyZFocusFinder";
+
+      this->disable_motion();
+
+      return;
+    }
+
     this->enable_motion();
 
     focus_completed_ = false;
@@ -223,11 +235,8 @@ void AssemblyZFocusFinder::acquire_image()
     v_focus_vals_.clear();
 
     // scan N points around initial position
-    // NOTE: should we introduce a pre-scan routine to
-    //       pin down z-interval containing best-focus position,
-    //       followed by finer scan in that interval?
-    const double zmin = (zposi_init_ - (focus_zrange_/2.));
-    const double zmax = (zposi_init_ + (focus_zrange_/2.));
+    const double zmin = (zposi_init_ - focus_zrange_);
+    const double zmax = (zposi_init_ + focus_zrange_);
 
     v_zrelm_vals_.emplace_back(zmax - zposi_init_);
 
@@ -257,9 +266,11 @@ void AssemblyZFocusFinder::test_focus()
   if(zrelm_index_ < 0)
   {
     NQLog("AssemblyZFocusFinder", NQLog::Fatal) << "test_focus"
-       << ": logic error, negative index for std::vector \"v_zrelm_vals_\"";
+       << ": logic error, negative index for std::vector \"v_zrelm_vals_\", stopping AssemblyZFocusFinder";
 
-    exit(1);
+    this->disable_motion();
+
+    return;
   }
   else if(zrelm_index_ < int(v_zrelm_vals_.size()))
   {
