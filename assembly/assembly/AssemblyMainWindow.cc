@@ -172,8 +172,13 @@ AssemblyMainWindow::AssemblyMainWindow(const unsigned int camera_ID, QWidget* pa
     /* AUTOMATED-ASSEMBLY VIEW ------------------------------------ */
     const QString tabname_AutoAssembly("Auto Assembly");
 
-    assembleView_ = new AssemblyModuleAssembler(motion_manager_, object_finder_, tabWidget_);
+    assembleView_ = new AssemblyModuleAssembler(motion_manager_, tabWidget_);
     tabWidget_->addTab(assembleView_, tabname_AutoAssembly);
+
+    assembleView_->connect_to_finder(object_finder_);
+
+    object_finder_->update_rough_angles      (assembleView_->PatRec_Widget()->widget_angrough()->get_input_string());
+    object_finder_->update_angscan_parameters(assembleView_->PatRec_Widget()->widget_angscanp()->get_input_string());
 
     NQLog("AssemblyMainWindow", NQLog::Message) << "added view " << tabname_AutoAssembly;
 
@@ -183,8 +188,8 @@ AssemblyMainWindow::AssemblyMainWindow(const unsigned int camera_ID, QWidget* pa
 
     module_assembler_ = new AssemblyAssembler(motion_manager_);
 
-    connect(assembleView_->VacuumToggler(), SIGNAL(toggleVacuum(int))                  , conradManager_                , SLOT(toggleVacuum(int)));
-    connect(conradManager_                , SIGNAL(updateVacuumChannelState(int, bool)), assembleView_->VacuumToggler(), SLOT(updateVacuumChannelState(int, bool)));
+    connect(assembleView_->Vacuum_Widget(), SIGNAL(toggleVacuum(int))                  , conradManager_                , SLOT(toggleVacuum(int)));
+    connect(conradManager_                , SIGNAL(updateVacuumChannelState(int, bool)), assembleView_->Vacuum_Widget(), SLOT(updateVacuumChannelState(int, bool)));
 
     connect(this                          , SIGNAL(updateVacuumChannelsStatus())       , conradManager_                , SLOT(updateVacuumChannelsStatus()));
 
@@ -571,7 +576,7 @@ void AssemblyMainWindow::connect_multipickupNpatrec(const AssemblyMultiPickupTes
 {
     multipickup_->set_configuration(conf);
 
-    assembleView_->MultiPickupWidget()->lineEdit_setDisabled(true);
+    assembleView_->MultiPickup_Widget()->lineEdit_setDisabled(true);
 
     connect(this        , SIGNAL(multipickupNpatrec_connected()), multipickup_, SLOT(start_measurement()));
     connect(multipickup_, SIGNAL(measurement_finished())        , multipickup_, SLOT(start_pickup()));
@@ -604,7 +609,7 @@ void AssemblyMainWindow::connect_multipickupNpatrec(const AssemblyMultiPickupTes
 
 void AssemblyMainWindow::disconnect_multipickupNpatrec()
 {
-    assembleView_->MultiPickupWidget()->lineEdit_setDisabled(false);
+    assembleView_->MultiPickup_Widget()->lineEdit_setDisabled(false);
 
     disconnect(this        , SIGNAL(multipickupNpatrec_connected()), multipickup_, SLOT(start_measurement()));
     disconnect(multipickup_, SIGNAL(measurement_finished())        , multipickup_, SLOT(start_pickup()));

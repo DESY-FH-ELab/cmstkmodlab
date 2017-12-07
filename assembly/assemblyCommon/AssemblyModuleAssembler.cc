@@ -36,7 +36,7 @@
 #include <TGraph.h>
 #include <TCanvas.h>
 
-AssemblyModuleAssembler::AssemblyModuleAssembler(const LStepExpressMotionManager* motion_manager, AssemblyObjectFinderPatRec* finder, QWidget* parent) :
+AssemblyModuleAssembler::AssemblyModuleAssembler(const LStepExpressMotionManager* motion_manager, QWidget* parent) :
   QWidget(parent),
 
   scrollArea_1_(0),
@@ -54,20 +54,16 @@ AssemblyModuleAssembler::AssemblyModuleAssembler(const LStepExpressMotionManager
   liedit_3_(0),
   liedit_4_(0),
 
-  w_vacuum_(0)
+  w_vacuum_(0),
+  w_patrec_(0),
+  w_mupiup_(0),
+
+  objfinder_connected_(false)
 {
-  if(!motion_manager)
+  if(motion_manager == NULL)
   {
     NQLog("AssemblyModuleAssembler", NQLog::Critical)
        << "input error: null pointer to LStepExpressMotionManager object, exiting constructor";
-
-    return;
-  }
-
-  if(!finder)
-  {
-    NQLog("AssemblyModuleAssembler", NQLog::Critical)
-       << "input error: null pointer to AssemblyObjectFinderPatRec object, exiting constructor";
 
     return;
   }
@@ -232,25 +228,10 @@ AssemblyModuleAssembler::AssemblyModuleAssembler(const LStepExpressMotionManager
   // PATREC  WIDGET ------
   QGroupBox* box_patrec = new QGroupBox("Pattern Recognition");
 
-    PatRecWidget* w_patrec = new PatRecWidget("Standalone PatRec");
+    w_patrec_ = new PatRecWidget("Standalone PatRec");
+    w_patrec_->setToolTip("(3) Runs Pattern Recognition routine to determine sensor (x,y,z,a) position");
 
-    w_patrec->setToolTip("(3) Runs PatRec routine to deduce and report sensor (x,y,z,phi) position");
-
-    connect(w_patrec, SIGNAL(mode(int, int))       , finder  , SLOT(run_PatRec(int, int)));
-    connect(finder  , SIGNAL(PatRec_exitcode(int)) , w_patrec, SLOT(change_label(int)));
-
-    finder->update_rough_angles      ( w_patrec->widget_angrough()->get_input_string() );
-    finder->update_angscan_parameters( w_patrec->widget_angscanp()->get_input_string() );
-
-    connect(w_patrec->widget_angrough(), SIGNAL(input_string(QString)), finder, SLOT(update_rough_angles      (QString)));
-    connect(w_patrec->widget_angscanp(), SIGNAL(input_string(QString)), finder, SLOT(update_angscan_parameters(QString)));
-
-    connect(w_patrec, SIGNAL(sendPosition        (int, double, double, double)), this, SLOT(updateText (int, double, double, double)));
-    connect(finder  , SIGNAL(image_path          (int, QString))               , this, SLOT(updateImage(int, QString)));
-    connect(finder  , SIGNAL(image_mat           (int, cv::Mat))               , this, SLOT(updateImage(int, cv::Mat)));
-    connect(finder  , SIGNAL(reportObjectLocation(int, double, double, double)), this, SLOT(updateText (int, double, double, double)));
-
-  box_patrec->setLayout(w_patrec->layout());
+  box_patrec->setLayout(w_patrec_->layout());
 
   f01->addRow(box_patrec);
   // ---------------------
@@ -262,8 +243,7 @@ AssemblyModuleAssembler::AssemblyModuleAssembler(const LStepExpressMotionManager
   QGroupBox* box_alignm = new QGroupBox(tr("Alignment"));
 
     AssemblySandwichAssembler* w_alignm = new AssemblySandwichAssembler(this, "Assemble Sandwich");
-
-    w_alignm->setToolTip("(4) Aligns object to target angle (with respect to the motion stage x-axis)");
+    w_alignm->setToolTip("(4) Aligns object to target angle (with respect to the x-axis of the motion stage)");
 
     connect(w_alignm, SIGNAL(launchSandwichAssembly(double, double, double, double, double, double, double, double, double)),
             this    , SIGNAL(launchSandwichAssembly(double, double, double, double, double, double, double, double, double)));
@@ -275,6 +255,47 @@ AssemblyModuleAssembler::AssemblyModuleAssembler(const LStepExpressMotionManager
 
   f11->addRow(box_alignm);
   // ---------------------
+}
+
+void AssemblyModuleAssembler::connect_to_finder(const AssemblyObjectFinderPatRec* finder)
+{
+  if(finder == NULL)
+  {
+    NQLog("AssemblyModuleAssembler", NQLog::Critical) << "connect_to_finder"
+       << ": null pointer to AssemblyObjectFinderPatRec object, no action taken";
+
+    return;
+  }
+
+  if(objfinder_connected_ == false)
+  {
+    connect(this->PatRec_Widget(), SIGNAL(mode(int, int)), finder, SLOT(run_PatRec(int, int)));
+
+    connect(finder, SIGNAL(PatRec_exitcode(int)), this->PatRec_Widget(), SLOT(change_label(int)));
+
+    connect(this->PatRec_Widget()->widget_angrough(), SIGNAL(input_string(QString)), finder, SLOT(update_rough_angles      (QString)));
+    connect(this->PatRec_Widget()->widget_angscanp(), SIGNAL(input_string(QString)), finder, SLOT(update_angscan_parameters(QString)));
+
+    connect(this->PatRec_Widget(), SIGNAL(sendPosition(int, double, double, double)), this, SLOT(updateText (int, double, double, double)));
+
+    connect(finder, SIGNAL(image_path          (int, QString))               , this, SLOT(updateImage(int, QString)));
+    connect(finder, SIGNAL(image_mat           (int, cv::Mat))               , this, SLOT(updateImage(int, cv::Mat)));
+    connect(finder, SIGNAL(reportObjectLocation(int, double, double, double)), this, SLOT(updateText (int, double, double, double)));
+
+    NQLog("AssemblyModuleAssembler", NQLog::Spam) << "connect_to_finder"
+       << ": widget connected to object of type AssemblyObjectFinderPatRec";
+
+    objfinder_connected_ = true;
+  }
+  else
+  {
+    NQLog("AssemblyModuleAssembler", NQLog::Critical) << "connect_to_finder"
+       << ": widget already connected to an object of type AssemblyObjectFinderPatRec, no action taken";
+
+    return;
+  }
+
+  return;
 }
 
 void AssemblyModuleAssembler::updateText(int stage, double x, double y, double a)

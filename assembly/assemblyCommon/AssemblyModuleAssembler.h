@@ -37,8 +37,9 @@
 
 #include <opencv2/opencv.hpp>
 
-class MultiPickupTesterWidget;
 class VacuumWidget;
+class PatRecWidget;
+class MultiPickupTesterWidget;
 
 class AssemblyModuleAssembler : public QWidget
 {
@@ -46,12 +47,14 @@ class AssemblyModuleAssembler : public QWidget
 
  public:
 
-  explicit AssemblyModuleAssembler(const LStepExpressMotionManager*, AssemblyObjectFinderPatRec*, QWidget* parent=0);
+  explicit AssemblyModuleAssembler(const LStepExpressMotionManager*, QWidget* parent=0);
 
-  MultiPickupTesterWidget* MultiPickupWidget() { return w_mupiup_; }
+  VacuumWidget* Vacuum_Widget() const { return w_vacuum_; }
+  PatRecWidget* PatRec_Widget() const { return w_patrec_; }
 
-  // to connect vacuum signals in MainWindow
-  VacuumWidget* VacuumToggler() const { return w_vacuum_; }
+  MultiPickupTesterWidget* MultiPickup_Widget() { return w_mupiup_; }
+
+  void connect_to_finder(const AssemblyObjectFinderPatRec*);
 
  protected:
 
@@ -72,9 +75,12 @@ class AssemblyModuleAssembler : public QWidget
   QLineEdit* liedit_3_;
   QLineEdit* liedit_4_;
 
+  VacuumWidget* w_vacuum_;
+  PatRecWidget* w_patrec_;
+
   MultiPickupTesterWidget* w_mupiup_;
 
-  VacuumWidget* w_vacuum_;
+  bool objfinder_connected_;
 
  public slots:
 
