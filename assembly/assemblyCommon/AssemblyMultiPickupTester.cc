@@ -62,6 +62,10 @@ void AssemblyMultiPickupTester::initialize_switches()
 
 void AssemblyMultiPickupTester::start_measurement()
 {
+  NQLog("AssemblyMultiPickupTester", NQLog::Message) << "start_measurement: -------------------------------";
+  NQLog("AssemblyMultiPickupTester", NQLog::Message) << "start_measurement: initializing measurement [#" << itera_counter_ << "]";
+  NQLog("AssemblyMultiPickupTester", NQLog::Message) << "start_measurement: -------------------------------";
+
   mode_ = AssemblyMultiPickupTester::Mode_measurement;
 
   const double dz = (conf_.measurement_Z() - motion_manager_->get_position_Z());
