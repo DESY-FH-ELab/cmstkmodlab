@@ -29,12 +29,9 @@ typedef AssemblyUEyeModel AssemblyUEyeModel_t;
 #include <AssemblyModuleAssembler.h>
 #include <AssemblyAutoFocus.h>
 #include <AssemblyImageController.h>
-#include <AssemblyImageControllerThread.h>
 #include <AssemblyZFocusFinder.h>
 #include <AssemblyObjectFinderPatRec.h>
-#include <AssemblyObjectFinderPatRecThread.h>
 #include <AssemblyMultiPickupTester.h>
-#include <AssemblyMultiPickupTesterThread.h>
 #include <AssemblyAssembler.h>
 #include <LStepExpressModel.h>
 #include <LStepExpressMotionManager.h>
@@ -142,19 +139,17 @@ class AssemblyMainWindow : public QMainWindow
     QCheckBox* checkbox4;
 
     // controller(s)
-    AssemblyImageController*          image_ctr_;
-    AssemblyImageControllerThread*    image_ctr_thread_;
+    AssemblyImageController*    image_ctr_;
 
-    AssemblyZFocusFinder*             zfocus_finder_;
+    AssemblyZFocusFinder*       zfocus_finder_;
 
-    AssemblyObjectFinderPatRec*       object_finder_;
-    AssemblyObjectFinderPatRecThread* object_finder_thread_;
+    AssemblyObjectFinderPatRec* object_finder_;
 
-    AssemblyMultiPickupTester*        multipickup_;
-    AssemblyMultiPickupTesterThread*  multipickup_thread_;
+    AssemblyMultiPickupTester*  multipickup_;
 
-    AssemblyAssembler* module_assembler_;
+    AssemblyAssembler*          module_assembler_;
 
+    // timing
     double testTimerCount_;
 
     QTimer* liveTimer_;

@@ -60,18 +60,12 @@ AssemblyMainWindow::AssemblyMainWindow(const unsigned int camera_ID, QWidget* pa
 
   // controller(s)
   image_ctr_(0),
-  image_ctr_thread_(0),
-
   zfocus_finder_(0),
-
   object_finder_(0),
-  object_finder_thread_(0),
-
   multipickup_(0),
-  multipickup_thread_(0),
-
   module_assembler_(0),
 
+  // timing
   testTimerCount_(0.),
   liveTimer_(0)
 {
@@ -108,17 +102,13 @@ AssemblyMainWindow::AssemblyMainWindow(const unsigned int camera_ID, QWidget* pa
     }
 
     // marker finder
-    object_finder_        = new AssemblyObjectFinderPatRec(Util::QtCacheDirectory()+"/AssemblyObjectFinderPatRec", "rotations");
-    object_finder_thread_ = new AssemblyObjectFinderPatRecThread(object_finder_, this);
-    object_finder_thread_->start();
+    object_finder_ = new AssemblyObjectFinderPatRec(Util::QtCacheDirectory()+"/AssemblyObjectFinderPatRec", "rotations");
 
     // zfocus finder
     zfocus_finder_ = new AssemblyZFocusFinder(camera_, motion_manager_);
 
     // multi-pickup tester
-    multipickup_        = new AssemblyMultiPickupTester(motion_manager_);
-    multipickup_thread_ = new AssemblyMultiPickupTesterThread(multipickup_, this);
-    multipickup_thread_->start();
+    multipickup_ = new AssemblyMultiPickupTester(motion_manager_);
 
     /* TAB WIDGET ---------------------------------------------- */
     tabWidget_ = new QTabWidget(this);
@@ -290,13 +280,10 @@ void AssemblyMainWindow::enable_images()
 {
     if(image_ctr_ == NULL)
     {
-      image_ctr_        = new AssemblyImageController(camera_, zfocus_finder_);
-      image_ctr_thread_ = new AssemblyImageControllerThread(image_ctr_);
+      image_ctr_ = new AssemblyImageController(camera_, zfocus_finder_);
 
       connect(this    , SIGNAL(images_ON())      , image_ctr_, SLOT(enable()));
       connect(this    , SIGNAL(images_OFF())     , image_ctr_, SLOT(disable()));
-
-      image_ctr_thread_->start();
     }
 
     connect(image_ctr_, SIGNAL(camera_enabled()) , this      , SLOT(connect_images()));
@@ -689,11 +676,8 @@ void AssemblyMainWindow::quit()
       camera_ = 0;
     }
 
-    this->quit_thread(motion_thread_       , "terminated LStepExpressMotionThread");
-    this->quit_thread(camera_thread_       , "terminated AssemblyUEyeCameraThread");
-    this->quit_thread(image_ctr_thread_    , "terminated AssemblyImageControllerThread");
-    this->quit_thread(object_finder_thread_, "terminated AssemblyObjectFinderPatRecThread");
-    this->quit_thread(multipickup_thread_  , "terminated AssemblyMultiPickupTesterThread");
+    this->quit_thread(motion_thread_, "terminated LStepExpressMotionThread");
+    this->quit_thread(camera_thread_, "terminated AssemblyUEyeCameraThread");
 
     NQLog("AssemblyMainWindow", NQLog::Message) << "quit: application closed";
 
