@@ -31,11 +31,12 @@
 AssemblyAssembler::AssemblyAssembler(LStepExpressMotionManager* motion_manager, QObject* parent) :
   QObject(parent),
   motion_manager_(motion_manager),
-  motion_enabled_(false)
+  motion_manager_enabled_(false)
 {
-  if(!motion_manager_)
+  if(motion_manager_ == NULL)
   {
-    NQLog("AssemblyAssembler", NQLog::Fatal) << "null pointer to LStepExpressMotionManager object, exiting";
+    NQLog("AssemblyAssembler", NQLog::Fatal) << "initialization error"
+       << ": null pointer to LStepExpressMotionManager object, exiting constructor";
 
     return;
   }
@@ -43,29 +44,33 @@ AssemblyAssembler::AssemblyAssembler(LStepExpressMotionManager* motion_manager, 
   NQLog("AssemblyAssembler", NQLog::Debug) << "constructed";
 }
 
-void AssemblyAssembler::enable_motion()
+void AssemblyAssembler::enable_motion_manager(const bool arg)
 {
-  if(motion_enabled_ == false)
+  if(arg == motion_manager_enabled_)
   {
-    connect   (motion_manager_, SIGNAL(motion_finished()), this, SLOT(stop_motion()));
+    NQLog("AssemblyAssembler", NQLog::Spam) << "enable_motion_manager(" << arg << ")"
+       << ": motion-manager for AssemblyAssembler already " << (arg ? "enabled" : "disabled") << ", no action taken";
 
-    motion_enabled_ = true;
-
-    NQLog("AssemblyAssembler", NQLog::Debug) << "enable_motion: motion-manager connected";
+    return;
   }
 
-  return;
-}
+  if(arg)
+  {
+    connect(motion_manager_, SIGNAL(motion_finished()), this, SLOT(stop_motion()));
 
-void AssemblyAssembler::disable_motion()
-{
-  if(motion_enabled_ == true)
+    motion_manager_enabled_ = true;
+
+    NQLog("AssemblyAssembler", NQLog::Spam) << "enable_motion_manager(" << arg << ")"
+       << ": motion-manager for AssemblyAssembler enabled";
+  }
+  else
   {
     disconnect(motion_manager_, SIGNAL(motion_finished()), this, SLOT(stop_motion()));
 
-    motion_enabled_ = false;
+    motion_manager_enabled_ = false;
 
-    NQLog("AssemblyAssembler", NQLog::Debug) << "disable_motion: motion-manager disconnected";
+    NQLog("AssemblyAssembler", NQLog::Spam) << "enable_motion_manager(" << arg << ")"
+       << ": motion-manager for AssemblyAssembler disabled";
   }
 
   return;
@@ -73,14 +78,14 @@ void AssemblyAssembler::disable_motion()
 
 void AssemblyAssembler::move_relative(const double x, const double y, const double z, const double a)
 {
-  this->enable_motion();
+  this->connect_motion_manager();
 
   motion_manager_->moveRelative(x, y, z, a);
 }
 
 void AssemblyAssembler::stop_motion()
 {
-  this->disable_motion();
+  this->disconnect_motion_manager();
 
   NQLog("AssemblyAssembler", NQLog::Debug) << "stop_motion"
      << ": emitting signal \"motion_finished\"";

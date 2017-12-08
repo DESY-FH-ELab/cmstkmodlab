@@ -48,24 +48,24 @@ AssemblyMultiPickupTester::~AssemblyMultiPickupTester()
 {
 }
 
-void AssemblyMultiPickupTester::enable_motion_manager(const bool b)
+void AssemblyMultiPickupTester::enable_motion_manager(const bool arg)
 {
-  if(b == motion_manager_enabled_)
+  if(arg == motion_manager_enabled_)
   {
-    NQLog("AssemblyMultiPickupTester", NQLog::Spam) << "enable_motion_manager(" << b << ")"
-       << ": motion-manager for multi-pickup test already " << (b ? "enabled" : "disabled") << ", no action taken";
+    NQLog("AssemblyMultiPickupTester", NQLog::Spam) << "enable_motion_manager(" << arg << ")"
+       << ": motion-manager for multi-pickup test already " << (arg ? "enabled" : "disabled") << ", no action taken";
 
     return;
   }
 
-  if(b)
+  if(arg)
   {
     connect(this, SIGNAL(move_relative(double, double, double, double)), motion_manager_, SLOT(moveRelative(double, double, double, double)));
     connect(motion_manager_, SIGNAL(motion_finished()), this, SLOT(setup_next_step()));
 
     motion_manager_enabled_ = true;
 
-    NQLog("AssemblyMultiPickupTester", NQLog::Spam) << "enable_motion_manager(" << b << ")"
+    NQLog("AssemblyMultiPickupTester", NQLog::Spam) << "enable_motion_manager(" << arg << ")"
        << ": motion-manager for multi-pickup test enabled";
   }
   else
@@ -75,7 +75,7 @@ void AssemblyMultiPickupTester::enable_motion_manager(const bool b)
 
     motion_manager_enabled_ = false;
 
-    NQLog("AssemblyMultiPickupTester", NQLog::Spam) << "enable_motion_manager(" << b << ")"
+    NQLog("AssemblyMultiPickupTester", NQLog::Spam) << "enable_motion_manager(" << arg << ")"
        << ": motion-manager for multi-pickup test disabled";
   }
 

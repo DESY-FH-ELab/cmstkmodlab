@@ -60,9 +60,14 @@ class AssemblyAssembler : public QObject
 
     LStepExpressMotionManager* motion_manager_;
 
-    double imageVariance(cv::Mat img_input, cv::Rect rectangle);
+    bool motion_manager_enabled_;
 
-    bool motion_enabled_;
+    void enable_motion_manager(const bool);
+
+    void    connect_motion_manager() { this->enable_motion_manager(true) ; }
+    void disconnect_motion_manager() { this->enable_motion_manager(false); }
+
+    double imageVariance(cv::Mat img_input, cv::Rect rectangle);
 
   public slots:
 
@@ -73,9 +78,6 @@ class AssemblyAssembler : public QObject
     void run_alignment(int, double, double, double);
     void launch_next_alignment_step();
     void fill_positionvectors(int, double, double, double);
-
-    void  enable_motion();
-    void disable_motion();
 
     void move_relative(const double, const double, const double, const double);
 
