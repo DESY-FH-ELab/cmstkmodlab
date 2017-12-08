@@ -14,9 +14,10 @@
 #include <ApplicationConfig.h>
 #include <nqlogger.h>
 
-AssemblyMultiPickupTester::AssemblyMultiPickupTester(LStepExpressMotionManager* motion_manager, QObject* parent) :
+AssemblyMultiPickupTester::AssemblyMultiPickupTester(const LStepExpressMotionManager* motion_manager, QObject* parent) :
   QObject(parent),
-  motion_manager_(motion_manager)
+  motion_manager_(motion_manager),
+  motion_manager_enabled_(false)
 {
   if(motion_manager_ == NULL)
   {
@@ -38,7 +39,7 @@ AssemblyMultiPickupTester::AssemblyMultiPickupTester(LStepExpressMotionManager* 
   pickup_vacuum_ = config->getValue<int>   ("AssemblyMultiPickupTester_pickup_vacuum", 1);
   pickup_deltaZ_ = config->getValue<double>("AssemblyMultiPickupTester_pickup_deltaZ", 20.);
 
-  this->initialize_switches();
+  this->reset();
 
   NQLog("AssemblyMultiPickupTester", NQLog::Debug) << "constructed";
 }
@@ -47,7 +48,41 @@ AssemblyMultiPickupTester::~AssemblyMultiPickupTester()
 {
 }
 
-void AssemblyMultiPickupTester::initialize_switches()
+void AssemblyMultiPickupTester::enable_motion_manager(const bool b)
+{
+  if(b == motion_manager_enabled_)
+  {
+    NQLog("AssemblyMultiPickupTester", NQLog::Spam) << "enable_motion_manager(" << b << ")"
+       << ": motion-manager for multi-pickup test already " << (b ? "enabled" : "disabled") << ", no action taken";
+
+    return;
+  }
+
+  if(b)
+  {
+    connect(this, SIGNAL(move_relative(double, double, double, double)), motion_manager_, SLOT(moveRelative(double, double, double, double)));
+    connect(motion_manager_, SIGNAL(motion_finished()), this, SLOT(setup_next_step()));
+
+    motion_manager_enabled_ = true;
+
+    NQLog("AssemblyMultiPickupTester", NQLog::Spam) << "enable_motion_manager(" << b << ")"
+       << ": motion-manager for multi-pickup test enabled";
+  }
+  else
+  {
+    disconnect(this, SIGNAL(move_relative(double, double, double, double)), motion_manager_, SLOT(moveRelative(double, double, double, double)));
+    disconnect(motion_manager_, SIGNAL(motion_finished()), this, SLOT(setup_next_step()));
+
+    motion_manager_enabled_ = false;
+
+    NQLog("AssemblyMultiPickupTester", NQLog::Spam) << "enable_motion_manager(" << b << ")"
+       << ": motion-manager for multi-pickup test disabled";
+  }
+
+  return;
+}
+
+void AssemblyMultiPickupTester::reset()
 {
   itera_counter_ = 0;
 
@@ -58,6 +93,8 @@ void AssemblyMultiPickupTester::initialize_switches()
   vacuum_on_   = false;
   pickup_done_ = false;
   picked_up_   = false;
+
+  this->disconnect_motion_manager();
 }
 
 void AssemblyMultiPickupTester::start_measurement()
@@ -75,6 +112,8 @@ void AssemblyMultiPickupTester::start_measurement()
 
   move_ = AssemblyMultiPickupTester::Movement_Z;
 
+  this->connect_motion_manager();
+
   emit move_relative(0., 0., dz, 0.);
 }
 
@@ -88,7 +127,7 @@ void AssemblyMultiPickupTester::finish_measurement(const int exit_code)
     NQLog("AssemblyMultiPickupTester", NQLog::Spam) << "finish_measurement"
        << ": emitting signal \"test_finished\"";
 
-    this->initialize_switches();
+    this->reset();
 
     emit test_finished();
 
@@ -110,7 +149,7 @@ void AssemblyMultiPickupTester::start_pickup()
     NQLog("AssemblyMultiPickupTester", NQLog::Spam) << "start_pickup"
        << ": emitting signal \"test_finished\"";
 
-    this->initialize_switches();
+    this->reset();
 
     emit test_finished();
 
@@ -131,6 +170,8 @@ void AssemblyMultiPickupTester::start_pickup()
 
   move_ = AssemblyMultiPickupTester::Movement_XY;
 
+  this->connect_motion_manager();
+
   emit move_relative(dx, dy, 0., 0.);
 }
 
@@ -141,7 +182,7 @@ void AssemblyMultiPickupTester::setup_next_step()
     NQLog("AssemblyMultiPickupTester", NQLog::Spam) << "setup_next_step"
        << ": emitting signal \"test_finished\"";
 
-    this->initialize_switches();
+    this->reset();
 
     emit test_finished();
 
@@ -161,11 +202,15 @@ void AssemblyMultiPickupTester::setup_next_step()
 
         move_ = AssemblyMultiPickupTester::Movement_XY;
 
+        this->connect_motion_manager();
+
         emit move_relative(dx, dy, 0., 0.);
       }
       else if(move_ == AssemblyMultiPickupTester::Movement_XY)
       {
         move_ = AssemblyMultiPickupTester::Movement_None;
+
+        this->disconnect_motion_manager();
 
         NQLog("AssemblyMultiPickupTester", NQLog::Spam) << "setup_next_step"
            << ": emitting signal \"measurement_request\"";
@@ -180,7 +225,7 @@ void AssemblyMultiPickupTester::setup_next_step()
         NQLog("AssemblyMultiPickupTester", NQLog::Spam) << "setup_next_step"
            << ": emitting signal \"test_finished\"";
 
-        this->initialize_switches();
+        this->reset();
 
         emit test_finished();
 
@@ -199,7 +244,7 @@ void AssemblyMultiPickupTester::setup_next_step()
           NQLog("AssemblyMultiPickupTester", NQLog::Spam) << "setup_next_step"
              << ": emitting signal \"test_finished\"";
 
-          this->initialize_switches();
+          this->reset();
 
           emit test_finished();
 
@@ -221,6 +266,10 @@ void AssemblyMultiPickupTester::setup_next_step()
             NQLog("AssemblyMultiPickupTester", NQLog::Spam) << "setup_next_step"
                << ": emitting signal \"pickup_finished\"";
 
+            move_ = AssemblyMultiPickupTester::Movement_None;
+
+            this->disconnect_motion_manager();
+
             emit pickup_finished();
           }
         }
@@ -238,11 +287,15 @@ void AssemblyMultiPickupTester::setup_next_step()
 
             move_ = AssemblyMultiPickupTester::Movement_Z;
 
+            this->connect_motion_manager();
+
             emit move_relative(0., 0., dz, 0.);
           }
           else if(move_ == AssemblyMultiPickupTester::Movement_Z)
           {
             move_ = AssemblyMultiPickupTester::Movement_None;
+
+            this->disconnect_motion_manager();
 
             vacuum_on_ = true;
 
@@ -259,7 +312,7 @@ void AssemblyMultiPickupTester::setup_next_step()
             NQLog("AssemblyMultiPickupTester", NQLog::Spam) << "setup_next_step"
                << ": emitting signal \"test_finished\"";
 
-            this->initialize_switches();
+            this->reset();
 
             emit test_finished();
 
@@ -275,6 +328,10 @@ void AssemblyMultiPickupTester::setup_next_step()
           NQLog("AssemblyMultiPickupTester", NQLog::Spam) << "setup_next_step"
              << ": emitting signal \"move_relative(0, 0, " << dz << ", 0)\"";
 
+          move_ = AssemblyMultiPickupTester::Movement_Z;
+
+          this->connect_motion_manager();
+
           emit move_relative(0., 0., dz, 0.);
         }
         else if(picked_up_ == true && vacuum_on_ == true)
@@ -288,6 +345,10 @@ void AssemblyMultiPickupTester::setup_next_step()
           NQLog("AssemblyMultiPickupTester", NQLog::Spam) << "setup_next_step"
              << ": emitting signal \"move_relative(0, 0, " << dz << ", 0)\"";
 
+          move_ = AssemblyMultiPickupTester::Movement_Z;
+
+          this->connect_motion_manager();
+
           emit move_relative(0., 0., dz, 0.);
         }
       }
@@ -300,7 +361,7 @@ void AssemblyMultiPickupTester::setup_next_step()
       NQLog("AssemblyMultiPickupTester", NQLog::Spam) << "setup_next_step"
          << ": emitting signal \"test_finished\"";
 
-      this->initialize_switches();
+      this->reset();
 
       emit test_finished();
 

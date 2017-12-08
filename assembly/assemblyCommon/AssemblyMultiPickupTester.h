@@ -21,10 +21,10 @@ class AssemblyMultiPickupTester : public QObject
 
  public:
 
-  explicit AssemblyMultiPickupTester(LStepExpressMotionManager*, QObject* parent=0);
+  explicit AssemblyMultiPickupTester(const LStepExpressMotionManager*, QObject* parent=0);
   virtual ~AssemblyMultiPickupTester();
 
-  LStepExpressMotionManager* motion_manager() const { return motion_manager_; }
+  const LStepExpressMotionManager* motion_manager() const { return motion_manager_; }
 
   class Configuration
   {
@@ -66,11 +66,18 @@ class AssemblyMultiPickupTester : public QObject
 
   void set_configuration(const Configuration& conf){ conf_ = conf; }
 
-  void initialize_switches();
-
  protected:
 
-  LStepExpressMotionManager* motion_manager_;
+  const LStepExpressMotionManager* motion_manager_;
+
+  bool motion_manager_enabled_;
+
+  void enable_motion_manager(const bool);
+
+  void    connect_motion_manager() { this->enable_motion_manager(true) ; }
+  void disconnect_motion_manager() { this->enable_motion_manager(false); }
+
+  void reset();
 
   int    pickup_vacuum_;
   double pickup_deltaZ_;

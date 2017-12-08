@@ -578,12 +578,6 @@ void AssemblyMainWindow::connect_multipickupNpatrec(const AssemblyMultiPickupTes
     connect(multipickup_, SIGNAL(pickup_finished())             , multipickup_, SLOT(start_measurement()));
     connect(multipickup_, SIGNAL(test_finished())               , this        , SLOT(disconnect_multipickupNpatrec()));
 
-    // movement
-    connect(multipickup_, SIGNAL(move_relative(double, double, double, double)), motion_manager_, SLOT(moveRelative(double, double, double, double)));
-
-    connect(motion_manager_, SIGNAL(motion_finished()), multipickup_, SLOT(setup_next_step()));
-    // ---
-
     // measurement
     connect(multipickup_  , SIGNAL(measurement_request()) , image_ctr_    , SLOT(acquire_image()));
     connect(object_finder_, SIGNAL(       image_updated()), object_finder_, SLOT(update_binary_image()));
@@ -591,7 +585,7 @@ void AssemblyMainWindow::connect_multipickupNpatrec(const AssemblyMultiPickupTes
     connect(object_finder_, SIGNAL(PatRec_exitcode(int))  , multipickup_  , SLOT(finish_measurement(int)));
     // ---
 
-    // vacuum
+    // pickup (vacuum)
     connect(multipickup_  , SIGNAL(vacuum_toggle(int))  , conradManager_, SLOT(toggleVacuum(int)));
     connect(conradManager_, SIGNAL(enableVacuumButton()), multipickup_  , SLOT(setup_next_step()));
     // ---
@@ -611,12 +605,6 @@ void AssemblyMainWindow::disconnect_multipickupNpatrec()
     disconnect(multipickup_, SIGNAL(pickup_finished())             , multipickup_, SLOT(start_measurement()));
     disconnect(multipickup_, SIGNAL(test_finished())               , this        , SLOT(disconnect_multipickupNpatrec()));
 
-    // movement
-    disconnect(multipickup_, SIGNAL(move_relative(double, double, double, double)), motion_manager_, SLOT(moveRelative(double, double, double, double)));
-
-    disconnect(motion_manager_, SIGNAL(motion_finished()), multipickup_, SLOT(setup_next_step()));
-    // ---
-
     // measurement
     disconnect(multipickup_  , SIGNAL(measurement_request()) , image_ctr_    , SLOT(acquire_image()));
     disconnect(object_finder_, SIGNAL(       image_updated()), object_finder_, SLOT(update_binary_image()));
@@ -624,7 +612,7 @@ void AssemblyMainWindow::disconnect_multipickupNpatrec()
     disconnect(object_finder_, SIGNAL(PatRec_exitcode(int))  , multipickup_  , SLOT(finish_measurement(int)));
     // ---
 
-    // vacuum
+    // pickup (vacuum)
     disconnect(multipickup_  , SIGNAL(vacuum_toggle(int))  , conradManager_, SLOT(toggleVacuum(int)));
     disconnect(conradManager_, SIGNAL(enableVacuumButton()), multipickup_  , SLOT(setup_next_step()));
     // ---
