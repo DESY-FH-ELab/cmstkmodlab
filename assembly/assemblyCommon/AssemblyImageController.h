@@ -30,18 +30,18 @@ class AssemblyImageController : public QObject
 
   public:
 
-    explicit AssemblyImageController(AssemblyVUEyeCamera*, AssemblyZFocusFinder* zff=0, QObject* parent=0);
+    explicit AssemblyImageController(const AssemblyVUEyeCamera*, const AssemblyZFocusFinder* zff=0, QObject* parent=0);
     virtual ~AssemblyImageController();
 
     bool is_enabled()           const { return is_enabled_; }
     bool autofocus_is_enabled() const { return autofocus_is_enabled_; }
 
-    AssemblyVUEyeCamera* camera_manager() const { return camera_manager_; }
+    const AssemblyVUEyeCamera* camera_manager() const { return camera_manager_; }
 
   protected:
 
-    AssemblyVUEyeCamera*  camera_manager_;
-    AssemblyZFocusFinder* zfocus_finder_;
+    const AssemblyVUEyeCamera*  camera_manager_;
+    const AssemblyZFocusFinder* zfocus_finder_;
 
     bool is_enabled_;
     bool autofocus_is_enabled_;

@@ -30,13 +30,10 @@ class AssemblyZFocusFinder : public QObject
 
   public:
 
-    QTimer* qt;
-    LStepExpressModel* lStepExpressModel_;
+    explicit AssemblyZFocusFinder(const AssemblyVUEyeCamera*, const LStepExpressMotionManager*, QObject* parent=0);
 
-    explicit AssemblyZFocusFinder(AssemblyVUEyeCamera*, LStepExpressMotionManager*, QObject* parent=0);
-
-    AssemblyVUEyeCamera*       camera_manager() const { return camera_manager_; }
-    LStepExpressMotionManager* motion_manager() const { return motion_manager_; }
+    const AssemblyVUEyeCamera*       camera_manager() const { return camera_manager_; }
+    const LStepExpressMotionManager* motion_manager() const { return motion_manager_; }
 
     double zrange() const { return focus_zrange_; }
     int    points() const { return focus_pointN_; }
@@ -49,8 +46,8 @@ class AssemblyZFocusFinder : public QObject
 
   protected:
 
-    AssemblyVUEyeCamera*       camera_manager_;
-    LStepExpressMotionManager* motion_manager_;
+    const AssemblyVUEyeCamera*       camera_manager_;
+    const LStepExpressMotionManager* motion_manager_;
 
     static int exe_counter_;
 

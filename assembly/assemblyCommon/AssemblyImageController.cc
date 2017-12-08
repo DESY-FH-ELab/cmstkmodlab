@@ -14,7 +14,7 @@
 #include <nqlogger.h>
 #include <Util.h>
 
-AssemblyImageController::AssemblyImageController(AssemblyVUEyeCamera* camera, AssemblyZFocusFinder* zfocus_finder, QObject* parent) :
+AssemblyImageController::AssemblyImageController(const AssemblyVUEyeCamera* camera, const AssemblyZFocusFinder* zfocus_finder, QObject* parent) :
   QObject(parent),
   camera_manager_(camera),
   zfocus_finder_(zfocus_finder),

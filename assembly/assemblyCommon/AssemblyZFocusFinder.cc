@@ -28,7 +28,7 @@
 
 int AssemblyZFocusFinder::exe_counter_ = -1;
 
-AssemblyZFocusFinder::AssemblyZFocusFinder(AssemblyVUEyeCamera* camera, LStepExpressMotionManager* motion_manager, QObject* parent) :
+AssemblyZFocusFinder::AssemblyZFocusFinder(const AssemblyVUEyeCamera* camera, const LStepExpressMotionManager* motion_manager, QObject* parent) :
   QObject(parent),
 
   camera_manager_(camera),
