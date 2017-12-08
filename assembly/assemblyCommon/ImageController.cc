@@ -22,8 +22,8 @@ ImageController::ImageController(AssemblyVUEyeCamera* camera, ZFocusFinder* zfoc
 {
   if(!camera)
   {
-    NQLog("ImageController::ImageController", NQLog::Fatal)
-         << "initialization error: null pointer to AssemblyVUEyeCamera object";
+    NQLog("ImageController", NQLog::Fatal)
+       << "initialization error: null pointer to AssemblyVUEyeCamera object";
 
     exit(1);
   }
@@ -32,8 +32,8 @@ ImageController::ImageController(AssemblyVUEyeCamera* camera, ZFocusFinder* zfoc
   {
     if(zfocus_finder_->camera() != camera)
     {
-      NQLog("ImageController::ImageController", NQLog::Fatal)
-           << "target input camera differs from ZFocusFinder.camera";
+      NQLog("ImageController", NQLog::Fatal)
+         << "target input camera differs from ZFocusFinder.camera";
 
       exit(1);
     }
@@ -50,7 +50,7 @@ ImageController::ImageController(AssemblyVUEyeCamera* camera, ZFocusFinder* zfoc
   connect(this           , SIGNAL(image())                , camera_manager_, SLOT(acquire_image()));
   connect(camera_manager_, SIGNAL(image_acquired(cv::Mat)), this           , SLOT(retrieve_image(cv::Mat)));
 
-  NQLog("ImageController::ImageController") << "constructed";
+  NQLog("ImageController", NQLog::Debug) << "constructed";
 }
 
 ImageController::~ImageController()
@@ -61,6 +61,9 @@ void ImageController::enable()
 {
   is_enabled_ = true;
 
+  NQLog("ImageController", NQLog::Debug) << "enable"
+     << ": emitting signal \"open_camera\"";
+
   emit open_camera();
 }
 
@@ -68,28 +71,41 @@ void ImageController::disable()
 {
   is_enabled_ = false;
 
+  NQLog("ImageController", NQLog::Debug) << "disable"
+     << ": emitting signal \"close_camera\"";
+
   emit close_camera();
 }
 
 void ImageController::acquire_image()
 {
-  NQLog("ImageController::acquire_image") << "emitting signal \"image\"";
+  NQLog("ImageController", NQLog::Debug) << "acquire_image"
+     << ": emitting signal \"image\"";
 
   emit image();
 }
 
 void ImageController::enable_camera()
 {
+  NQLog("ImageController", NQLog::Debug) << "enable_camera"
+     << ": emitting signal \"camera_enabled\"";
+
   emit camera_enabled();
 }
 
 void ImageController::disable_camera()
 {
+  NQLog("ImageController", NQLog::Debug) << "disable_camera"
+     << ": emitting signal \"camera_disabled\"";
+
   emit camera_disabled();
 }
 
 void ImageController::retrieve_image(const cv::Mat& a_mat)
 {
+  NQLog("ImageController", NQLog::Message) << "retrieve_image"
+     << ": emitting signal \"image_acquired\"";
+
   emit image_acquired(a_mat);
 }
 
@@ -97,7 +113,8 @@ void ImageController::enable_AutoFocus()
 {
   if(zfocus_finder_ == 0)
   {
-    NQLog("ImageController::enable_AutoFocus") << "ZFocusFinder not initialized, auto-focusing not enabled";
+    NQLog("ImageController", NQLog::Warning) << "enable_AutoFocus"
+       << ": ZFocusFinder not initialized, auto-focusing not enabled";
 
     return;
   }
@@ -110,7 +127,8 @@ void ImageController::enable_AutoFocus()
 
   autofocus_is_enabled_ = true;
 
-  NQLog("ImageController::enable_AutoFocus") << "connected ZFocusFinder";
+  NQLog("ImageController", NQLog::Message) << "enable_AutoFocus"
+     << ": connected ZFocusFinder";
 
   return;
 }
@@ -119,7 +137,8 @@ void ImageController::disable_AutoFocus()
 {
   if(zfocus_finder_ == 0)
   {
-    NQLog("ImageController::disable_AutoFocus") << "ZFocusFinder not initialized, no action taken";
+    NQLog("ImageController", NQLog::Warning) << "disable_AutoFocus"
+       << ": ZFocusFinder not initialized, no action taken";
 
     return;
   }
@@ -132,7 +151,8 @@ void ImageController::disable_AutoFocus()
 
   autofocus_is_enabled_ = false;
 
-  NQLog("ImageController::disable_AutoFocus") << "disconnected ZFocusFinder";
+  NQLog("ImageController", NQLog::Message) << "disable_AutoFocus"
+     << ": disconnected ZFocusFinder";
 
   return;
 }

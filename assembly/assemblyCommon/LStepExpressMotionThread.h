@@ -17,13 +17,14 @@
 
 class LStepExpressMotionThread : public QThread
 {
-    Q_OBJECT
+ Q_OBJECT
 
-public:
+ public:
 
-    explicit LStepExpressMotionThread(QObject *parent = 0);
+  explicit LStepExpressMotionThread(QObject* parent=0);
+  virtual ~LStepExpressMotionThread();
 
-    void run();
+  void run();
 };
 
 #endif // LSTEPEXPRESSMOTIONTHREAD_H

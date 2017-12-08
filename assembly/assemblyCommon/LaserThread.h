@@ -17,14 +17,14 @@
 
 class LaserThread : public QThread
 {
-    Q_OBJECT
+ Q_OBJECT
 
  public:
 
-    explicit LaserThread(QObject *parent = 0);
-    ~LaserThread();
+  explicit LaserThread(QObject* parent=0);
+  virtual ~LaserThread();
 
-    void run();
+  void run();
 };
 
 #endif // LASERTHREAD_H                          

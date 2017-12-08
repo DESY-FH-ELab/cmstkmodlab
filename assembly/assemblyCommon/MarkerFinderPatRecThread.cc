@@ -10,27 +10,30 @@
 //                                                                             //
 /////////////////////////////////////////////////////////////////////////////////
 
-#ifndef ASSEMBLYMARKERFINDERTHREAD_H
-#define ASSEMBLYMARKERFINDERTHREAD_H
+#include <MarkerFinderPatRecThread.h>
+#include <nqlogger.h>
 
-#include <QObject>
-#include <QThread>
+#include <QMutex>
 
-#include "AssemblyVMarkerFinder.h"
-
-class AssemblyMarkerFinderThread : public QThread
+MarkerFinderPatRecThread::MarkerFinderPatRecThread(MarkerFinderPatRec* finder, QObject* parent) :
+  QThread(parent),
+  finder_(finder)
 {
-public:
-    explicit AssemblyMarkerFinderThread(AssemblyVMarkerFinder* finder,
-                                        QObject *parent = 0);
+  finder_->moveToThread(this);
 
-    ~AssemblyMarkerFinderThread();
+  NQLog("MarkerFinderPatRecThread", NQLog::Debug) << "constructed";
+}
 
-    void run();
+MarkerFinderPatRecThread::~MarkerFinderPatRecThread()
+{
+  NQLog("MarkerFinderPatRecThread", NQLog::Debug) << "destructed";
+}
 
-protected:
+void MarkerFinderPatRecThread::run()
+{
+  NQLog("MarkerFinderPatRecThread", NQLog::Debug) << "run";
 
-    AssemblyVMarkerFinder* finder_;
-};
+  this->exec();
 
-#endif // ASSEMBLYMARKERFINDERTHREAD_H
+  return;
+}

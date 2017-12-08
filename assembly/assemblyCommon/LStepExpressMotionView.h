@@ -10,30 +10,31 @@
 //                                                                             //
 /////////////////////////////////////////////////////////////////////////////////
 
-#include <iostream>
+#ifndef LSTEPEXPRESSMOTIONVIEW_H
+#define LSTEPEXPRESSMOTIONVIEW_H
 
-#include <QApplication>
+#include <LStepExpressModel.h>
+#include <LStepExpressMotionManager.h>
 
-#include <nqlogger.h>
+#include <QWidget>
 
-#include "AssemblyVMarkerFinder.h"
-
-AssemblyMarkerCircle::AssemblyMarkerCircle(float x, float y, float r, float q)
-    : x_(x),
-      y_(y),
-      r_(r),
-      q_(q)
+class LStepExpressMotionView : public QWidget
 {
+ Q_OBJECT
 
-}
+ public:
 
-AssemblyVMarkerFinder::AssemblyVMarkerFinder(QObject *parent)
-    : QObject(parent)
-{
+  explicit LStepExpressMotionView(LStepExpressModel*, LStepExpressMotionManager*, QWidget*);
+  virtual ~LStepExpressMotionView() {}
 
-}
+ protected:
 
-AssemblyVMarkerFinder::~AssemblyVMarkerFinder()
-{
-    NQLog("AssemblyVMarkerFinder") << "delete";
-}
+  LStepExpressModel*         model_;
+  LStepExpressMotionManager* manager_;
+
+ public slots:
+
+ signals:
+};
+
+#endif // LSTEPEXPRESSMOTIONVIEW_H

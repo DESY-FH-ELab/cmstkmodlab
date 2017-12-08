@@ -13,9 +13,6 @@
 #ifndef ASSEMBLYUEYECAMERATHREAD_H
 #define ASSEMBLYUEYECAMERATHREAD_H
 
-#include <QObject>
-#include <QThread>
-
 #ifdef NOUEYE
 #include "AssemblyUEyeFakeModel.h"
 typedef AssemblyUEyeFakeModel AssemblyUEyeModel_t;
@@ -24,18 +21,24 @@ typedef AssemblyUEyeFakeModel AssemblyUEyeModel_t;
 typedef AssemblyUEyeModel AssemblyUEyeModel_t;
 #endif
 
+#include <QObject>
+#include <QThread>
+
 class AssemblyUEyeCameraThread : public QThread
 {
-public:
-    explicit AssemblyUEyeCameraThread(AssemblyUEyeModel_t* model,
-                                      QObject *parent = 0);
+ Q_OBJECT
 
-    ~AssemblyUEyeCameraThread();
+ public:
 
-    void run();
+  explicit AssemblyUEyeCameraThread(AssemblyUEyeModel_t* model, QObject* parent=0);
 
-protected:
-    AssemblyUEyeModel_t* model_;
+  virtual ~AssemblyUEyeCameraThread();
+
+  void run();
+
+ protected:
+
+  AssemblyUEyeModel_t* model_;
 };
 
 #endif // ASSEMBLYUEYECAMERATHREAD_H

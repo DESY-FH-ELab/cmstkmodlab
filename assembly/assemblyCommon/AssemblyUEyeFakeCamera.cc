@@ -10,20 +10,15 @@
 //                                                                             //
 /////////////////////////////////////////////////////////////////////////////////
 
+#include <AssemblyUEyeFakeCamera.h>
+#include <ApplicationConfig.h>
+#include <nqlogger.h>
+
 #include <unistd.h>
 
-#include <iostream>
-
-#include <QApplication>
-
-#include <nqlogger.h>
-#include <ApplicationConfig.h>
-
-#include "AssemblyUEyeFakeCamera.h"
-
-AssemblyUEyeFakeCamera::AssemblyUEyeFakeCamera(QObject *parent)
-    : AssemblyVUEyeCamera(parent),
-      imageIndex_(0)
+AssemblyUEyeFakeCamera::AssemblyUEyeFakeCamera(QObject* parent) :
+  AssemblyVUEyeCamera(parent),
+  imageIndex_(0)
 {
     cameraState_ = State::OFF;
 
@@ -77,16 +72,16 @@ AssemblyUEyeFakeCamera::AssemblyUEyeFakeCamera(QObject *parent)
 
 AssemblyUEyeFakeCamera::~AssemblyUEyeFakeCamera()
 {
-    if (cameraState_==READY) close();
+    if (cameraState_==READY){ close(); }
 }
 
 void AssemblyUEyeFakeCamera::open()
 {
-    if (cameraState_==State::READY || cameraState_==State::INITIALIZING) return;
+    if(cameraState_==State::READY || cameraState_==State::INITIALIZING){ return; }
 
     cameraState_ = State::INITIALIZING;
 
-    NQLog("AssemblyUEyeFakeCamera") << ":open()";
+    NQLog("AssemblyUEyeFakeCamera", NQLog::Debug) << "open";
 
     setID("IDS GmbH");
     setVersion("");
@@ -121,15 +116,18 @@ void AssemblyUEyeFakeCamera::open()
 
 void AssemblyUEyeFakeCamera::close()
 {
-    if (cameraState_!=State::READY) return;
+    NQLog("AssemblyUEyeFakeCamera", NQLog::Debug) << "close";
 
-    NQLog("AssemblyUEyeFakeCamera") << ":close()";
+    if(cameraState_ != State::READY){ return; }
 
     cameraState_ = State::CLOSING;
 
     usleep(500000);
 
     cameraState_ = State::OFF;
+
+    NQLog("AssemblyUEyeFakeCamera", NQLog::Debug) << "close"
+       << ": emitting signal \"cameraClosed\"";
 
     emit cameraClosed();
 }
@@ -242,7 +240,8 @@ void AssemblyUEyeFakeCamera::acquireImage()
 
     image_ = cv::imread(imageFilenames_[imageIndex_++], CV_LOAD_IMAGE_GRAYSCALE);
 
-    NQLog("AssemblyUEyeFakeCamera::acquireImage") << "emitting signal \"imageAcquired\"";
+    NQLog("AssemblyUEyeFakeCamera", NQLog::Debug) << "acquireImage"
+       << ": emitting signal \"imageAcquired\"";
 
     emit imageAcquired(image_);
 

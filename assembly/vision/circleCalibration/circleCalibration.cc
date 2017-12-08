@@ -28,7 +28,7 @@
 #endif
 
 #include <ApplicationConfig.h>
-#include <AssemblySensorMarkerFinder.h>
+#include <MarkerFinderManual.h>
 
 class ImageInfo
 {
@@ -95,7 +95,7 @@ int main( int argc, char** argv )
                   GaussianBlurKernelSize, GaussianBlurSigma, images);
     }
 
-    AssemblySensorMarkerFinder finder;
+    MarkerFinderManual finder;
 
     finder.setGaussianBlurKernelSize(GaussianBlurKernelSize);
     finder.setGaussianBlurSigma(GaussianBlurSigma);

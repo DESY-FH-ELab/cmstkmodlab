@@ -10,29 +10,30 @@
 //                                                                             //
 /////////////////////////////////////////////////////////////////////////////////
 
-#include <QMutex>
-
+#include <AssemblyUEyeCameraThread.h>
 #include <nqlogger.h>
 
-#include "AssemblyUEyeCameraThread.h"
+#include <QMutex>
 
-AssemblyUEyeCameraThread::AssemblyUEyeCameraThread(AssemblyUEyeModel_t* model,
-                                                   QObject *parent)
-    : QThread(parent),
-      model_(model)
+AssemblyUEyeCameraThread::AssemblyUEyeCameraThread(AssemblyUEyeModel_t* model, QObject* parent) :
+  QThread(parent),
+  model_(model)
 {
-    model_->moveToThread(this);
+  model_->moveToThread(this);
 
-    NQLog("AssemblyUEyeCameraThread", NQLog::Spam) << "construct";
+  NQLog("AssemblyUEyeCameraThread", NQLog::Debug) << "constructed";
 }
 
 AssemblyUEyeCameraThread::~AssemblyUEyeCameraThread()
 {
-    NQLog("AssemblyUEyeCameraThread", NQLog::Spam) << "delete";
+  NQLog("AssemblyUEyeCameraThread", NQLog::Debug) << "destructed";
 }
 
 void AssemblyUEyeCameraThread::run()
 {
-    NQLog("AssemblyUEyeCameraThread", NQLog::Spam) << "started";
-    exec();
+  NQLog("AssemblyUEyeCameraThread", NQLog::Debug) << "run";
+
+  this->exec();
+
+  return;
 }

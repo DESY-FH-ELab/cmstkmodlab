@@ -20,7 +20,6 @@
 #include <QMutex>
 
 #include <AssemblyVUEyeCamera.h>
-#include <AssemblyVMarkerFinder.h>
 
 class AssemblyUEyeView : public QLabel
 {

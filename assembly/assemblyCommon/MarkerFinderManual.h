@@ -10,21 +10,37 @@
 //                                                                             //
 /////////////////////////////////////////////////////////////////////////////////
 
-#ifndef ASSEMBLYSENSORMARKERFINDER_H
-#define ASSEMBLYSENSORMARKERFINDER_H
+#ifndef MARKERFINDERMANUAL_H
+#define MARKERFINDERMANUAL_H
+
+#include <nqlogger.h>
 
 #include <vector>
-#include <map>
-
-#include "AssemblyVMarkerFinder.h"
 
 #include <QTimer>
 #include <QDateTime>
 #include <QString>
-#include "nqlogger.h"
+#include <QMutex>
 
+#include <opencv2/opencv.hpp>
 
-class AssemblySensorMarkerFinder : public AssemblyVMarkerFinder
+class AssemblyMarkerCircle
+{
+public:
+
+    AssemblyMarkerCircle(float x, float y, float r, float q);
+
+    float x() const { return x_; }
+    float y() const { return y_; }
+    float r() const { return r_; }
+    float q() const { return q_; }
+
+protected:
+
+    float x_, y_, r_, q_;
+};
+
+class MarkerFinderManual : public QObject
 {
     Q_OBJECT
 protected:
@@ -36,8 +52,8 @@ protected:
     int labmode_g, objectmode_g;
 
 public:
-    explicit AssemblySensorMarkerFinder(QObject *parent = 0);
-    ~AssemblySensorMarkerFinder();
+    explicit MarkerFinderManual(QObject *parent = 0);
+    ~MarkerFinderManual();
 
     int gaussianBlurKernelSize() const { return gaussianBlurKernelSize_; }
     int gaussianBlurSigma() const { return gaussianBlurSigma_; }
@@ -88,7 +104,6 @@ public slots:
 
     virtual void findMarker(const cv::Mat&);
     virtual void findMarker_circleSeed(int);
-    virtual void findMarker_templateMatching(cv::Mat, cv::Mat);
 
     //ThresholdTunerSlots
     void setNewGeneralThreshold(int, cv::Mat);
@@ -100,6 +115,9 @@ protected slots:
     void runObjectDetection_labmode(cv::Mat);
 
 protected:
+
+    QMutex mutex_;
+
     std::string cacheDirectory1_;
     std::string cacheDirectory2_;
 
@@ -164,7 +182,10 @@ protected:
 
 signals:
     
-    void locatePickupCorner_templateMatching(cv::Mat,cv::Mat);
+    void markerFound(const cv::Mat&);
+
+    void locatePickupCorner_templateMatching(cv::Mat, cv::Mat);
+
     void reportObjectLocation(int, double,double, double);
     void edgesDetected(const cv::Mat&);
     void updateImage(int, QString);
@@ -174,7 +195,6 @@ signals:
     void acquireImage();
     void sendCurrentGeneralThreshold(int);
     void sendUpdatedThresholdImage(QString);
-
 };
 
-#endif // ASSEMBLYSENSORMARKERFINDER_H
+#endif // MARKERFINDERMANUAL_H

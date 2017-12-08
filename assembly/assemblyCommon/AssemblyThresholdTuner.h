@@ -13,9 +13,9 @@
 #ifndef ASSEMBLYTHRESHOLDTUNER_H
 #define ASSEMBLYTHRESHOLDTUNER_H
 
-#include <opencv2/opencv.hpp>
-
-#include <string>
+#include <AssemblyVUEyeCamera.h>
+#include <AssemblyUEyeView.h>
+#include <nqlogger.h>
 
 #include <QWidget>
 #include <QScrollArea>
@@ -26,26 +26,23 @@
 #include <QFormLayout>
 #include <QString>
 
-#include <AssemblyVUEyeCamera.h>
-#include <AssemblyVMarkerFinder.h>
-#include <AssemblyUEyeView.h>
-#include "nqlogger.h"
-
-
+#include <opencv2/opencv.hpp>
 
 class AssemblyThresholdTuner : public QWidget
 {
-    Q_OBJECT
-public:
+ Q_OBJECT
 
-    explicit AssemblyThresholdTuner(QWidget *parent = 0);
+ public:
 
-    void connectImageProducer(const QObject* sender, const char* signal);
+    explicit AssemblyThresholdTuner(QWidget* parent=0);
+    virtual ~AssemblyThresholdTuner() {}
+
+    void    connectImageProducer(const QObject* sender, const char* signal);
     void disconnectImageProducer(const QObject* sender, const char* signal);
 
     QPushButton* button;
-    
-protected:
+
+ protected:
 
     void keyReleaseEvent(QKeyEvent *event);
 
@@ -60,8 +57,8 @@ protected:
     QLineEdit* lineEdit;
 
     cv::Mat image_;
-    
-public slots:
+
+ public slots:
 
     void snapShot();
     //void imageAcquired(const cv::Mat&);
@@ -70,10 +67,10 @@ public slots:
     void updateThresholdLabelSlot(int);
     void enableThresholdButton();
     void disableThresholdButton();
-    void updateThresholdImage(QString);
+    void updateThresholdImage(const QString&);
 
  signals:
-    
+
     void setNewThreshold(int, cv::Mat);
     void updateThresholdLabel();
     void updateThresholdImagePicture();

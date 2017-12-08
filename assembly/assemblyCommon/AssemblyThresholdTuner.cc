@@ -10,15 +10,11 @@
 //                                                                             //
 /////////////////////////////////////////////////////////////////////////////////
 
-#include <vector>
-
-#include <QVBoxLayout>
-#include <QFileDialog>
-#include <QPushButton>
-
+#include <AssemblyThresholdTuner.h>
 #include <nqlogger.h>
 
-#include "AssemblyThresholdTuner.h"
+#include <QFileDialog>
+#include <QPushButton>
 
 AssemblyThresholdTuner::AssemblyThresholdTuner(QWidget* parent) : QWidget(parent)
 {
@@ -95,7 +91,8 @@ AssemblyThresholdTuner::AssemblyThresholdTuner(QWidget* parent) : QWidget(parent
 
 void AssemblyThresholdTuner::setNewThreshold()
 {
-    NQLog("AssemblyThresholdTuner::setNewThreshold") << "Threshold button clicked";
+    NQLog("AssemblyThresholdTuner", NQLog::Debug) << "setNewThreshold"
+       << ": threshold button clicked";
 
     setThresholdButton->setEnabled(false);
 
@@ -114,16 +111,16 @@ void AssemblyThresholdTuner::disableThresholdButton()
 
 void AssemblyThresholdTuner::updateThresholdLabelSlot(int value)
 { 
-    NQLog("AssemblyThresholdTuner::updateThresholdLabelSlot") << "threshold received: value = " << value;
-    
+    NQLog("AssemblyThresholdTuner", NQLog::Spam) << "updateThresholdLabelSlot(" << value << ")"
+       << ": updated threshold value: " << value;
+
     lineEdit->setText(QString::number(value));
+
     setThresholdButton->setEnabled(true);
 }
 
-void AssemblyThresholdTuner::updateThresholdImage(QString filename)
+void AssemblyThresholdTuner::updateThresholdImage(const QString& filename)
 {
-    NQLog("AssemblyThresholdTuner::updateThresholdImage") << "file name: "+filename;
-
     std::string filename_ss = filename.toUtf8().constData();
 
     cv::Mat img_gs = cv::imread(filename_ss, CV_LOAD_IMAGE_UNCHANGED);
@@ -131,11 +128,13 @@ void AssemblyThresholdTuner::updateThresholdImage(QString filename)
     imageView2_->setImage(img_gs);
 //    imageView2_->setImage(image_);
 //    imageView2_->setZoomFactor(0.5);
+
+    NQLog("AssemblyThresholdTuner", NQLog::Message) << "updateThresholdImage: file="+filename;
 }
 
 void AssemblyThresholdTuner::connectImageProducer(const QObject* sender, const char* signal)
 {
-    NQLog("AssemblyThresholdTuner::connectImageProducer");
+    NQLog("AssemblyThresholdTuner", NQLog::Debug) << "connectImageProducer";
 
     imageView1_->connectImageProducer(sender, signal);
 
@@ -144,7 +143,7 @@ void AssemblyThresholdTuner::connectImageProducer(const QObject* sender, const c
 
 void AssemblyThresholdTuner::disconnectImageProducer(const QObject* sender, const char* signal)
 {
-    NQLog("AssemblyThresholdTuner::disconnectImageProducer");
+    NQLog("AssemblyThresholdTuner", NQLog::Debug) << "disconnectImageProducer";
 
     imageView1_->disconnectImageProducer(sender, signal);
 
@@ -153,7 +152,7 @@ void AssemblyThresholdTuner::disconnectImageProducer(const QObject* sender, cons
 
 void AssemblyThresholdTuner::snapShot()
 {
-    NQLog("AssemblyThresholdTuner::snapShot");
+    NQLog("AssemblyThresholdTuner", NQLog::Debug) << "snapShot";
 
     if(image_.rows==0){ return; }
 
@@ -165,10 +164,10 @@ void AssemblyThresholdTuner::snapShot()
     cv::imwrite(filename.toStdString(), image_);
 }
 
-//void AssemblyThresholdTuner::imageAcquired(const cv::Mat& newImage)
 void AssemblyThresholdTuner::imageAcquired(cv::Mat newImage)
 {
-    NQLog("AssemblyThresholdTuner::imageAcquired") << "image copied";
+    NQLog("AssemblyThresholdTuner", NQLog::Debug) << "imageAcquired";
+
     newImage.copyTo(image_);
 }
 

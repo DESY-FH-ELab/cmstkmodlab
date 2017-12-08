@@ -10,56 +10,50 @@
 //                                                                             //
 /////////////////////////////////////////////////////////////////////////////////
 
-#include <stdlib.h>
+#include <MCommanderMainWindow.h>
+#include <ApplicationConfig.h>
+#include <nqlogger.h>
 
 #include <string>
-#include <iostream>
 
 #include <QGroupBox>
 #include <QFileDialog>
 #include <QApplication>
 #include <QPalette>
 
-#include <nqlogger.h>
-#include <ApplicationConfig.h>
-
-#include "MCommanderMainWindow.h"
-
 MCommanderMainWindow::MCommanderMainWindow(QWidget *parent)
 : QMainWindow(parent)
 {
   ApplicationConfig* config = ApplicationConfig::instance();
-  
-  connect(QApplication::instance(), SIGNAL(aboutToQuit()),
-          this, SLOT(quit()));
-  
-  lStepExpressModel_ = new LStepExpressModel(config->getValue<std::string>("LStepExpressDevice").c_str(),
-                                             1000, 100);
+
+  connect(QApplication::instance(), SIGNAL(aboutToQuit()), this, SLOT(quit()));
+
+  lStepExpressModel_ = new LStepExpressModel(config->getValue<std::string>("LStepExpressDevice").c_str(), 1000, 100);
   //lStepExpressSettings_ = new LStepExpressSettings(lStepExpressModel_);
   motionManager_ = new LStepExpressMotionManager(lStepExpressModel_);
   motionThread_ = new LStepExpressMotionThread(this);
   motionThread_->start();
   //lStepExpressSettings_->moveToThread(motionThread_);
   motionManager_->myMoveToThread(motionThread_);
-  
+
   laserModel_ = new LaserModel(config->getValue<std::string>("KeyenceDevice").c_str());
   laserThread_ = new LaserThread(this);
   laserModel_->moveToThread(laserThread_);
   laserThread_->start();
-  
+
   tabWidget_ = new QTabWidget(this);
- 
+
   QWidget * widget;
-  
+
   widget= new QWidget(tabWidget_);
-  
+
   tabWidget_->addTab(widget, "Motion Manager");
-  
-  // widget = new QWidget(tabWidget_);
-  
+
+//  widget = new QWidget(tabWidget_);
+
   QHBoxLayout * layout = new QHBoxLayout(widget);
   widget->setLayout(layout);
-  
+
   QVBoxLayout * layoutv = new QVBoxLayout(widget);
   
   LStepExpressWidget *lStepExpressWidget = new LStepExpressWidget(lStepExpressModel_, widget);

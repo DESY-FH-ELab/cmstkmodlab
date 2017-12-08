@@ -10,20 +10,24 @@
 //                                                                             //
 /////////////////////////////////////////////////////////////////////////////////
 
-#include <QApplication>
-#include <iostream>
+#include <LStepExpressMotionThread.h>
 #include <nqlogger.h>
 
-#include "LStepExpressMotionThread.h"
-
-LStepExpressMotionThread::LStepExpressMotionThread(QObject *parent)
-    : QThread(parent)
+LStepExpressMotionThread::LStepExpressMotionThread(QObject* parent) : QThread(parent)
 {
+  NQLog("LStepExpressMotionThread", NQLog::Debug) << "constructed";
+}
 
+LStepExpressMotionThread::~LStepExpressMotionThread()
+{
+  NQLog("LStepExpressMotionThread", NQLog::Debug) << "destructed";
 }
 
 void LStepExpressMotionThread::run()
 {
-  //    NQLog("LStepExpressMotionThread ", NQLog::Debug) << "run";
-    exec();
+  NQLog("LStepExpressMotionThread", NQLog::Debug) << "run";
+
+  this->exec();
+
+  return;
 }

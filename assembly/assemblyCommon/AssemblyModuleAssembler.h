@@ -13,42 +13,28 @@
 #ifndef ASSEMBLYMODULEASSEMBLER_H
 #define ASSEMBLYMODULEASSEMBLER_H
 
-#include <string>
-
-#include <opencv2/opencv.hpp>
-
-#include <QWidget>
-#include <QScrollArea>
-#include <QKeyEvent>
-#include <QLineEdit>
-#include <QLabel>
-#include <QPushButton>
-#include <QPainter>
-#include <QGroupBox>
-#include <QVBoxLayout>
-#include <QRadioButton>
-
-//vision
 #include <AssemblyUEyeView.h>
 #include <AssemblyVUEyeCamera.h>
-#include <AssemblySensorMarkerFinder.h>
+#include <MarkerFinderPatRec.h>
+#include <LStepExpressModel.h>
+#include <LStepExpressMotionManager.h>
+#include <ConradModel.h>
 
-#include "AssemblyVUEyeCamera.h"
+#include <string>
 
-//motion
-#include "LStepExpressModel.h"
-//#include "LStepExpressSettings.h"
-#include "LStepExpressMotionManager.h"
-//#include "LStepExpressMotionThread.h"
+#include <QWidget>
+#include <QFormLayout>
+#include <QScrollArea>
+#include <QKeyEvent>
+#include <QGridLayout>
+#include <QPushButton>
+#include <QLineEdit>
+#include <QLabel>
+#include <QGroupBox>
+#include <QRadioButton>
+#include <QVBoxLayout>
 
-//#include "LStepExpressSettingsWidget.h"
-//#include "LStepExpressWidget.h"
-//#include "LStepExpressJoystickWidget.h"
-
-//relay card for vacuum control
-#include "ConradModel.h"
-
-
+#include <opencv2/opencv.hpp>
 
 class AssemblyVacuumToggler : public QWidget
 {
@@ -95,8 +81,9 @@ class AssemblyModuleAssembler : public QWidget
 {
  Q_OBJECT
 
-public:
-  explicit AssemblyModuleAssembler(AssemblyVUEyeCamera* camera, AssemblySensorMarkerFinder* finder_, LStepExpressModel* lStepExpressModel_, QWidget* parent=0);
+ public:
+
+  explicit AssemblyModuleAssembler(AssemblyVUEyeCamera* camera, MarkerFinderPatRec* finder_, LStepExpressModel* lStepExpressModel_, QWidget* parent=0);
   void connectImageProducer(const QObject* sender, const char* signal);
   void disconnectImageProducer(const QObject* sender, const char* signal);
 
@@ -113,7 +100,7 @@ public:
   AssemblyVUEyeCamera * camera_;
   AssemblyVacuumToggler* toggle1;  //to connect vacuum signals in MainWindow
 
-protected:
+ protected:
 
   void keyReleaseEvent(QKeyEvent *event);
 
@@ -137,24 +124,22 @@ protected:
 
   cv::Mat image_;
 
-public slots:
+ public slots:
 
   void snapShot();
   void imageAcquired(const cv::Mat&);
   void gotoPickup();
-  void updateImage(int,QString);
-  void updateText(int,double, double, double);
+  void updateImage(const int, const QString&);
+  void updateText(const int, const double, const double, const double);
   void startMacro(double, double, double, double, double, double, int);
 
-signals:
+ signals:
 
   void moveAbsolute(double,double,double,double);
   void launchPrecisionEstimation(double, double, double, double, double, double, int);
   void launchSandwichAssembly(double, double, double, double, double, double, double, double, double);
   void launchAlignment(int, double, double, double );
 };
-
-
 
 class AssemblyPrecisionEstimator : public QWidget
 {
@@ -218,158 +203,129 @@ public:
     signals:
     void launchSandwichAssembly(double, double, double, double, double, double, double, double, double);
     void launchAlignment(int, double, double, double );
-
 };
+// ----------
 
-
-
-class AssemblyAttacher : public QWidget
+class MoveWidget : public QWidget
 {
-  Q_OBJECT
-
-public:
-
-  explicit AssemblyAttacher(std::string ="test", double x =0.0, double y =0.0, double z  =0.0, double a  =0.0);
-  double local_x, local_y, local_z, local_a;
-  QPushButton* button1;
-  QLineEdit *lineEdit1;
-
-protected:
-
-public slots:
-
-  void moveRelative();
-    
-signals:
-
-  void moveRelative(double,double,double,double);
-};
-
-class AssemblyMountChecker : public QWidget
-{
-  Q_OBJECT
-
-public:
-
-  explicit AssemblyMountChecker(QWidget *parent = 0, std::string ="test",
-                                double x =0.0, double y =0.0, double z  =0.0,
-                                double a  =0.0, int =0);
-
-  double local_x, local_y, local_z, local_a;
-  QPushButton* button1;
-  QLineEdit *lineEdit1;
-
-protected:
-
-public slots:
-
-  void checkMount();
-
-signals:
-
-  void moveAbsolute(double,double,double,double);
-  void moveRelative(double,double,double,double);
-  void locateCorner(int);
-  void reportCornerLocation(int);
-};
-
-class AssemblyCommander : public QWidget
-{
-  Q_OBJECT
-
-public:
-
-  explicit AssemblyCommander(QWidget *parent = 0, std::string ="test",
-                             double x =0.0, double y =0.0, double z  =0.0,
-                             double a  =0.0);
-
-  double local_x, local_y, local_z, local_a;
-  QPushButton* button1;
-  QLineEdit *lineEdit1;
-
-protected:
-
-public slots:
-
-  void goToTarget();
-
-signals:
-
-  void moveAbsolute(double,double,double,double);
-};
-
-
-
-class AssemblyAligner : public QWidget
-{
-  Q_OBJECT      
-public:
-
-  explicit AssemblyAligner(QWidget *parent = 0, std::string ="test",
-                           double a  = 0.0);
-
-  double local_x, local_y, local_z, local_a;
-  QPushButton* button1;
-  QLineEdit *lineEdit1;
-
-protected:
-
-public slots:
-
-  void align();
-  void setDown();
-
-signals:
-
-  void moveRelative(double,double,double,double);
-  void locateSetdowncorner(int);
-};
-
-
-
-class AssemblySensorLocator : public QWidget
-{
-Q_OBJECT
+ Q_OBJECT
 
  public:
 
-  explicit AssemblySensorLocator(QWidget *parent = 0, std::string ="test",
-                                 double a  = 0.0, AssemblySensorMarkerFinder* finder_ = 0);
+  explicit MoveWidget(const QString&, const QString&, const bool move_relative=false, QWidget* parent=0);
+  virtual ~MoveWidget() {}
 
-  double local_x, local_y, local_z, local_a;
-  QPushButton* button1;
-  QLineEdit *lineEdit1;
-  QLabel* ql;
-  QGroupBox *groupBox1, *groupBox2;
-  QRadioButton *radio1;
-  QRadioButton *radio2;
-  QRadioButton *radio3;
-  QRadioButton *radio31;
-  QRadioButton *radio4;
-  QRadioButton *radio5;
-
-  QVBoxLayout *vbox1,*vbox2 ;
+  void useMoveRelative(const bool b=false){ moveRelative_ = b; }
 
  protected:
 
-  std::string cacheDirectory1_;
-  std::string cacheDirectory2_;
+  bool moveRelative_;
+
+  QFormLayout* layout_;
+  QPushButton* button_;
+  QLineEdit*   liedit_;
+
+ public slots:
+
+  void execute();
+    
+ signals:
+
+  void moveAbsolute(const double, const double, const double, const double);
+  void moveRelative(const double, const double, const double, const double);
+};
+// ----------
+
+class LocateWidget : public QWidget
+{
+ Q_OBJECT
+
+ public:
+
+  explicit LocateWidget(const QString&, MarkerFinderPatRec*, QWidget* parent=0);
+  virtual ~LocateWidget() {}
+
+ protected:
+
+  QGridLayout* layout_;
+  QPushButton* button_;
+  QLineEdit*   liedit_;
+  QLabel*      label_;
+  QGroupBox*   groupBox1_;
+  QGroupBox*   groupBox2_;
+
+  QRadioButton* radio1_;
+  QRadioButton* radio2_;
+  QRadioButton* radio3_;
+  QRadioButton* radio4_;
+  QRadioButton* radio5_;
+  QRadioButton* radio6_;
+
+  QVBoxLayout* vbox1_;
+  QVBoxLayout* vbox2_;
 
  public slots:
 
   void foundsensor(int);
   void detectPatRecMode();
-  void locatePickup(const cv::Mat&) {} //!!
 
  signals:
 
   void runObjectDetection(int, int);
-  void updateImage(int, std::string);
-  void foundSensor(int);
-  void acquireImage();
-  void sendPosition(int, double, double, double);
-  void locatePickupCorner_circleSeed(int);
-  void locatePickupCorner_templateMatching(cv::Mat,cv::Mat);
 };
+// ----------
+
+//!!class AssemblyMountChecker : public QWidget
+//!!{
+//!!  Q_OBJECT
+//!!
+//!!public:
+//!!
+//!!  explicit AssemblyMountChecker(QWidget *parent = 0, std::string ="test",
+//!!                                double x =0.0, double y =0.0, double z  =0.0,
+//!!                                double a  =0.0, int =0);
+//!!
+//!!  double local_x, local_y, local_z, local_a;
+//!!  QPushButton* button1;
+//!!  QLineEdit *lineEdit1;
+//!!
+//!!protected:
+//!!
+//!!public slots:
+//!!
+//!!  void checkMount();
+//!!
+//!!signals:
+//!!
+//!!  void moveAbsolute(double,double,double,double);
+//!!  void moveRelative(double,double,double,double);
+//!!  void locateCorner(int);
+//!!  void reportCornerLocation(int);
+//!!};
+
+//!!class AssemblyAligner : public QWidget
+//!!{
+//!!  Q_OBJECT      
+//!!public:
+//!!
+//!!  explicit AssemblyAligner(QWidget *parent = 0, std::string ="test",
+//!!                           double a  = 0.0);
+//!!
+//!!  double local_x, local_y, local_z, local_a;
+//!!  QPushButton* button1;
+//!!  QLineEdit *lineEdit1;
+//!!
+//!!protected:
+//!!
+//!!public slots:
+//!!
+//!!  void align();
+//!!  void setDown();
+//!!
+//!!signals:
+//!!
+//!!  void moveRelative(double,double,double,double);
+//!!  void locateSetdowncorner(int);
+//!!};
 
 #endif // ASSEMBLYMODULEASSEMBLER_H

@@ -77,28 +77,24 @@ greaterThan(QT_MAJOR_VERSION, 4) {
 # Input
 HEADERS += AssemblyVUEyeCamera.h \
            AssemblyVUEyeModel.h \
-           AssemblyUEyeCameraThread.h \
            AssemblyUEyeWidget.h \
            AssemblyUEyeCameraWidget.h \
+           AssemblyUEyeCameraThread.h \
            AssemblyUEyeView.h \
-           AssemblyScanner.h \
            AssemblyAssembler.h \
            ConradManager.h \
            AssemblyUEyeSnapShooter.h \
            AssemblyThresholdTuner.h \
            AssemblyModuleAssembler.h \
            AssemblyAutoFocus.h \
-           AssemblyMarkerFinderThread.h \
-           AssemblyVMarkerFinder.h \
-           AssemblySensorMarkerFinder.h \
-           AssemblySensorMarkerFinderWidget.h \
            LStepExpressModel.h \
-           LStepExpressSettings.h \
            LStepExpressMotion.h \
            LStepExpressMotionManager.h \
+           LStepExpressMotionView.h \
            LStepExpressMotionThread.h \
            LStepExpressWidget.h \
            LStepExpressJoystickWidget.h \
+           LStepExpressSettings.h \
            LStepExpressSettingsWidget.h \
            LStepExpressMeasurement.h \
            LStepExpressMeasurementWidget.h \
@@ -106,10 +102,13 @@ HEADERS += AssemblyVUEyeCamera.h \
            LStepExpressPositionWidget.h \
            LStepExpressStatusWindow.h \
            LaserModel.h \
-           LaserWidget.h \
            LaserThread.h \
+           LaserWidget.h \
            LaserControlsWidget.h \
            AssemblyUEyeCameraManager.h \
+           MarkerFinderManual.h \
+           MarkerFinderPatRec.h \
+           MarkerFinderPatRecThread.h \
            ImageController.h \
            ZFocusFinder.h \
            Util.h
@@ -124,28 +123,24 @@ HEADERS += AssemblyUEyeFakeCamera.h \
 
 SOURCES += AssemblyVUEyeCamera.cc \
            AssemblyVUEyeModel.cc \
-           AssemblyUEyeCameraThread.cc \
            AssemblyUEyeWidget.cc \
            AssemblyUEyeCameraWidget.cc \
+           AssemblyUEyeCameraThread.cc \
            AssemblyUEyeView.cc \
            AssemblyUEyeSnapShooter.cc \
            AssemblyThresholdTuner.cc \
            AssemblyModuleAssembler.cc \
            AssemblyAutoFocus.cc \
-           AssemblyScanner.cc \
            AssemblyAssembler.cc \
            ConradManager.cc \
-           AssemblyMarkerFinderThread.cc \
-           AssemblyVMarkerFinder.cc \
-           AssemblySensorMarkerFinder.cc \
-           AssemblySensorMarkerFinderWidget.cc \
            LStepExpressModel.cc \
-           LStepExpressSettings.cc \
            LStepExpressMotion.cc \
            LStepExpressMotionManager.cc \
+           LStepExpressMotionView.cc \
            LStepExpressMotionThread.cc \
            LStepExpressWidget.cc \
            LStepExpressJoystickWidget.cc \
+           LStepExpressSettings.cc \
            LStepExpressSettingsWidget.cc \
            LStepExpressMeasurement.cc \
            LStepExpressMeasurementWidget.cc \
@@ -154,9 +149,12 @@ SOURCES += AssemblyVUEyeCamera.cc \
            LStepExpressStatusWindow.cc \
            LaserModel.cc \
            LaserWidget.cc \
-           LaserThread.cc \ 
+           LaserThread.cc \
            LaserControlsWidget.cc \
            AssemblyUEyeCameraManager.cc \
+           MarkerFinderManual.cc \
+           MarkerFinderPatRec.cc \
+           MarkerFinderPatRecThread.cc \
            ImageController.cc \
            ZFocusFinder.cc \
            Util.cc

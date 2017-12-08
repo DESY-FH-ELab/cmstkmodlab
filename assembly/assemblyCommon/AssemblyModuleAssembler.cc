@@ -30,6 +30,7 @@
 #include <QPixmap>
 #include <QLabel>
 #include <QApplication>
+#include <QPainter>
 
 #include <TGraph.h>
 #include <TCanvas.h>
@@ -37,7 +38,7 @@
 using namespace cv;
 
 AssemblyModuleAssembler::AssemblyModuleAssembler(
-  AssemblyVUEyeCamera* camera, AssemblySensorMarkerFinder * finder_,
+  AssemblyVUEyeCamera* camera, MarkerFinderPatRec* finder_,
   LStepExpressModel* lStepExpressModel_,
   QWidget *parent
 ) : QWidget(parent),
@@ -45,13 +46,13 @@ AssemblyModuleAssembler::AssemblyModuleAssembler(
 {
   LStepExpressMotionManager* motionManager_ = new LStepExpressMotionManager(lStepExpressModel_);
 
-  if(camera_){ NQLog("AssemblyModuleAssembler::AssemblyModuleAssembler") << "camera enabled"  ; }
-  else       { NQLog("AssemblyModuleAssembler::AssemblyModuleAssembler") << "camera not found"; }
+  if(camera_){ NQLog("AssemblyModuleAssembler", NQLog::Debug)    << "camera enabled"  ; }
+  else       { NQLog("AssemblyModuleAssembler", NQLog::Critical) << "camera not found"; }
 
   if(!camera_)
   {
-    NQLog("AssemblyModuleAssembler::AssemblyModuleAssembler", NQLog::Fatal)
-         << "initialization error: null pointer to AssemblyVUEyeCamera object";
+    NQLog("AssemblyModuleAssembler", NQLog::Fatal)
+       << "initialization error: null pointer to AssemblyVUEyeCamera object";
 
     exit(1);
   }
@@ -72,11 +73,8 @@ AssemblyModuleAssembler::AssemblyModuleAssembler(
   imageView_1->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
   imageView_1->setScaledContents(true);
   imageView_1->setAlignment(Qt::AlignCenter);
-  QApplication::processEvents();
-    
-  imageView_1->connectImageProducer(finder_, SIGNAL(markerFound(const cv::Mat&)));
 
-//  connect(uEyeModel_, SIGNAL(imageAcquired(const cv::Mat&)), finder_, SLOT(findMarker(const cv::Mat&)));
+  QApplication::processEvents();
 
   scrollArea_1 = new QScrollArea(this);
   scrollArea_1->setMinimumSize(200, 200);
@@ -167,17 +165,27 @@ AssemblyModuleAssembler::AssemblyModuleAssembler(
 //  QLabel* header_label = new QLabel("Hover mouse over button for info on each step", this);
 //  g1->addWidget(header_label,0,0);
 
-  AssemblyCommander* cmdr0 = new AssemblyCommander(this, "Move Absolute", 0.0, 0.0, 0.0, 0.0);
-  cmdr0->setToolTip("(1) Returns x,y,z stage to origin (default = (0,0,0) using moveAbsolute(x,y,z) routine)");
-  g1->addWidget(cmdr0, 0, 0);
+  // widget: move absolute
+  MoveWidget* w_moveabs = new MoveWidget("Move Absolute", "0,0,0,0");
+  w_moveabs->useMoveRelative(false);
+  w_moveabs->setToolTip("(1) Moves x,y,z,a stage using moveAbsolute routine (with respect to origin)");
+  g1->addWidget(w_moveabs, 0, 0);
 
-  AssemblyAttacher* cmdr1 = new AssemblyAttacher("Move relative", 0.0, 0.0, 0.0, 0.0);
-  cmdr1->setToolTip("(2) Moves x,y,z stage realtive to current position using moveAbsolute(x,y,z) routine)");
-  g1->addWidget(cmdr1, 1, 0);
+  connect(w_moveabs, SIGNAL(moveAbsolute(double, double, double, double)), motionManager_, SLOT(moveAbsolute(double, double, double, double)));
+  // ---------------------
 
-  AssemblySensorLocator* lctr1 = new AssemblySensorLocator(this, "Locate object", 0.0, finder_);
-  lctr1->setToolTip("(3) Acquires image from mobile camera, runs PatRec routine to deduce and report sensor (x,y,z,phi) position");
-  g1->addWidget(lctr1, 2, 0);
+  // widget: move relative
+  MoveWidget* w_moverel = new MoveWidget("Move Relative", "0,0,0,0");
+  w_moverel->useMoveRelative(true);
+  w_moverel->setToolTip("(2) Moves x,y,z,a stage using moveRelative routine (with respect to current position)");
+  g1->addWidget(w_moverel, 1, 0);
+
+  connect(w_moverel, SIGNAL(moveRelative(double, double, double, double)), motionManager_, SLOT(moveRelative(double, double, double, double)));
+  // ---------------------
+
+  LocateWidget* w_locate = new LocateWidget("Locate object", finder_, this);
+  w_locate->setToolTip("(3) Acquires image from mobile camera, runs PatRec routine to deduce and report sensor (x,y,z,phi) position");
+  g1->addWidget(w_locate, 2, 0);
 
   toggle1 = new AssemblyVacuumToggler(this, "Toggle Vacuum");
   g1->addWidget(toggle1, 3, 0);
@@ -194,33 +202,26 @@ AssemblyModuleAssembler::AssemblyModuleAssembler(
 //  AssemblyAligner * cmdr8 = new AssemblyAligner(this, "Align", 0.0);
 //  g1->addWidget(cmdr8, 13, 0);
 
-  // make all the neccessary connections
-//  connect(attacher1, SIGNAL(moveRelative(double, double, double, double)), motionManager_, SLOT(moveRelative(double, double, double, double)));
-  connect(cmdr0, SIGNAL(moveAbsolute(double, double, double, double)), motionManager_, SLOT(moveAbsolute(double, double, double, double)));
-  connect(cmdr1, SIGNAL(moveRelative(double, double, double, double)), motionManager_, SLOT(moveRelative(double, double, double, double)));
-
 //A  connect(precision1, SIGNAL(launchPrecisionEstimation(double, double, double, double, double, double, int)),
 //A          this      , SLOT  (startMacro               (double, double, double, double, double, double, int)));
 
   connect(sandwich1, SIGNAL(launchSandwichAssembly(double, double, double, double, double, double, double, double, double)),
           this     , SIGNAL(launchSandwichAssembly(double, double, double, double, double, double, double, double, double)));
-    
- 
+
   connect(sandwich1, SIGNAL(launchAlignment(int, double, double, double)), this, SIGNAL(launchAlignment(int, double, double, double)));
 
-//!!  connect(lStepExpressModel_, SIGNAL(acquireImage()), camera_, SLOT(acquireImage()));
-  connect(lctr1, SIGNAL(acquireImage()), camera_, SLOT(acquireImage()));
-  connect(camera_, SIGNAL(imageAcquired(cv::Mat)), lctr1, SLOT(locatePickup(cv::Mat)));
+  connect(w_locate, SIGNAL(acquireImage()), camera_, SLOT(acquireImage()));
 
-  connect(lctr1, SIGNAL(sendPosition(int, double,double,double)), this, SLOT(updateText(int,double,double,double)));
-  connect(finder_, SIGNAL(updateImage(int, QString)), this, SLOT( updateImage(int,QString)));
-  connect(finder_, SIGNAL(foundSensor(int)), lctr1, SLOT( foundsensor(int)));
-  connect(finder_, SIGNAL(reportObjectLocation(int, double, double, double)), this, SLOT(updateText(int, double, double, double)));
+  connect(w_locate, SIGNAL(sendPosition(int, double,double,double)), this, SLOT(updateText(int,double,double,double)));
+  connect(finder_ , SIGNAL(updateImage(int, QString)), this, SLOT( updateImage(int,QString)));
+  connect(finder_ , SIGNAL(foundSensor(int)), w_locate, SLOT(foundsensor(int)));
+  connect(finder_ , SIGNAL(reportObjectLocation(int, double, double, double)), this, SLOT(updateText(int, double, double, double)));
 }
 
-void AssemblyModuleAssembler::updateText(int stage, double x, double y, double a){
-
-  NQLog("AssemblyCommander::updateText");
+void AssemblyModuleAssembler::updateText(int stage, double x, double y, double a)
+{
+  NQLog("AssemblyModuleAssembler", NQLog::Debug) << "updateText"
+     << "(" << stage << ", " << x << ", " << y << ", " << a << ")";
 
   std::ostringstream strs_position;
   std::ostringstream strs_orientation;
@@ -240,14 +241,14 @@ void AssemblyModuleAssembler::updateText(int stage, double x, double y, double a
   QString qstr_orientation = "";
   qstr_orientation = QString::fromStdString(str_orientation);
     
-  if(stage == 1 ){
+  if(stage == 1)
+  {
     qstr_position = "Object location = " + qstr_position + " mm, mm (lab frame)";
     lE1->setText(qstr_position);
-      
+
     qstr_orientation = "Object orientation = " + qstr_orientation + " degrees";
     lE2->setText(qstr_orientation);
   }
-
 }
 
 void AssemblyModuleAssembler::startMacro(double x_meas, double y_meas, double z_meas, double x_pickup, double y_pickup, double z_pickup, int iterations)
@@ -255,13 +256,11 @@ void AssemblyModuleAssembler::startMacro(double x_meas, double y_meas, double z_
     NQLog("AssemblyModuleAssembler::startMacro");
     
     emit launchPrecisionEstimation(x_meas,  y_meas,  z_meas,  x_pickup,  y_pickup, z_pickup, iterations);
-    
 }
 
-
-void AssemblyModuleAssembler::updateImage(int stage, QString filename)
+void AssemblyModuleAssembler::updateImage(const int stage, const QString& filename)
 {
-  NQLog("AssemblyModuleAssembler") << ":updateImage()  " + filename;
+  NQLog("AssemblyModuleAssembler") << "updateImage(" << stage << ", " << filename << ")";
 
   std::string filename_ss = filename.toUtf8().constData();
 
@@ -302,8 +301,7 @@ void AssemblyModuleAssembler::connectImageProducer(const QObject* sender,
 
   imageView_1->connectImageProducer(sender, signal);
 
-  connect(sender, signal,
-          this, SLOT(imageAcquired(const cv::Mat&)));
+  connect(sender, signal, this, SLOT(imageAcquired(const cv::Mat&)));
 }
 
 void AssemblyModuleAssembler::disconnectImageProducer(const QObject* sender,
@@ -313,8 +311,7 @@ void AssemblyModuleAssembler::disconnectImageProducer(const QObject* sender,
 
   imageView_1->disconnectImageProducer(sender, signal);
 
-  disconnect(sender, signal,
-             this, SLOT(imageAcquired(const cv::Mat&)));
+  disconnect(sender, signal, this, SLOT(imageAcquired(const cv::Mat&)));
 }
 
 void AssemblyModuleAssembler::snapShot()
@@ -692,371 +689,287 @@ void AssemblyVacuumToggler::updateVacuumChannelState(int channelNumber, bool cha
   }
 }
 
-
-
-AssemblyAttacher::AssemblyAttacher(std::string string, double x ,double y, double z,double a)
-:local_x(x), local_y(y),local_z(z),local_a(a)
+MoveWidget::MoveWidget(const QString& label, const QString& default_entry, const bool move_relative, QWidget* parent) :
+  QWidget(parent),
+  moveRelative_(move_relative)
 {
-    
-    
-    QFormLayout *l = new QFormLayout(this);
-    setLayout(l);
-    
-    std::ostringstream strs;
-    strs.clear();
-    strs << x;
-    strs << ",";
-    strs << y;
-    strs << ",";
-    strs << z;
-    std::string str = strs.str();
-    QString qstr = QString::fromStdString(str);
-    QString qname = QString::fromStdString(string);
-    
-    this->local_x = x;
-    this->local_y = y;
-    this->local_z = z;
-    this->local_a = a;
-    
-    button1 = new QPushButton(qname, this);
-    
-    lineEdit1 = new QLineEdit();
-    lineEdit1->setText(qstr);
-    l->addRow(button1,lineEdit1);
-    
+    layout_ = new QFormLayout(this);
+    this->setLayout(layout_);
 
+    button_ = new QPushButton(label, this);
 
-  connect(button1, SIGNAL(clicked()),
-          this, SLOT(moveRelative()));
+    liedit_ = new QLineEdit();
+    liedit_->setText(default_entry);
+    layout_->addRow(button_, liedit_);
+
+    connect(button_, SIGNAL(clicked()), this, SLOT(execute()));
 }
 
-void AssemblyAttacher::moveRelative(){
+void MoveWidget::execute()
+{
+  const QString line_entry = this->liedit_->text();
 
-    const QString parent_string = this->lineEdit1->text();
+  // parse lineEdit text to get target coordinates
+  const QStringList entries = line_entry.split(",");
 
-    // parse lineEdit text to get target coordinates
-    const QStringList pieces = parent_string.split(",");
+  if(entries.length() == 4)
+  {
+    const double x_d = entries.value(0).toDouble();
+    const double y_d = entries.value(1).toDouble();
+    const double z_d = entries.value(2).toDouble();
+    const double a_d = entries.value(3).toDouble();
 
-    const QString x = pieces.value(pieces.length() - 4);
-    const QString y = pieces.value(pieces.length() - 3);
-    const QString z = pieces.value(pieces.length() - 2);
-    const QString a = pieces.value(pieces.length() - 1);
-
-    double x_d = x.toDouble();
-    double y_d = y.toDouble();
-    double z_d = z.toDouble();
-    double a_d = a.toDouble();
-
-    NQLog("AssemblyAttacher::moveRelative", NQLog::Message)
+    if(moveRelative_)
+    {
+      NQLog("MoveWidget", NQLog::Message) << "execute"
          << "emitting signal \"moveRelative("
          << x_d << ", " << y_d << ", " << z_d << ", " << a_d << ")\"";
 
-    emit moveRelative(x_d, y_d, z_d, a_d);
+      emit moveRelative(x_d, y_d, z_d, a_d);
+    }
+    else
+    {
+      NQLog("MoveWidget", NQLog::Message) << "execute"
+         << "emitting signal \"moveAbsolute("
+         << x_d << ", " << y_d << ", " << z_d << ", " << a_d << ")\"";
+
+      emit moveAbsolute(x_d, y_d, z_d, a_d);
+    }
+  }
+  else
+  {
+    NQLog("MoveWidget", NQLog::Warning) << "execute"
+       << ": invalid input string format, no action taken";
+
+    return;
+  }
+
+  return;
 }
+// ----------
 
-AssemblyMountChecker::AssemblyMountChecker(QWidget *parent, std::string string,
-                                           double x ,double y, double z,
-                                           double a, int mode)
-: QWidget(parent), local_x(x), local_y(y),local_z(z),local_a(a)
+LocateWidget::LocateWidget(const QString& label, MarkerFinderPatRec* finder, QWidget* parent) : QWidget(parent)
 {
-  QFormLayout *l = new QFormLayout(this);
-  setLayout(l);
+  layout_ = new QGridLayout(this);
+  this->setLayout(layout_);
 
-  NQLog("AssemblyMountChecker") << ": in mode" << mode;
+  button_ = new QPushButton(label, this);
 
-  std::ostringstream strs;
-  strs.clear();
-  strs << x;
-  strs << ",";
-  strs << y;
-  strs << ",";
-  strs << z;
-  std::string str = strs.str();
-  QString qstr = QString::fromStdString(str);
-  QString qname = QString::fromStdString(string);
-
-  this->local_x = x;
-  this->local_y = y;
-  this->local_z = z;
-  this->local_a = a;
-
-  button1 = new QPushButton(qname, this);
-
-  lineEdit1 = new QLineEdit();
-  lineEdit1->setText(qstr);
-  l->addRow(button1,lineEdit1);
-
-  connect(button1, SIGNAL(clicked()),
-          this, SLOT(checkMount()));
-}
-
-void AssemblyMountChecker::checkMount()
-{
-  //parse lineEdit text to get target coordinates
-  QString  parent_string = this->lineEdit1->text();
-
-  QStringList pieces = parent_string.split( "," );
-  QString x = pieces.value( pieces.length() - 3);
-  QString y = pieces.value( pieces.length() - 2);
-  QString z = pieces.value( pieces.length() - 1);
-  QString a = pieces.value( pieces.length() - 1);
-
-  double x_d = x.toDouble();
-  double y_d = y.toDouble();
-  double z_d = z.toDouble();
-  double a_d = a.toDouble();
-
-  NQLog("AssemblyMountChecker") << ": going to target (parsed) "<< x_d<<" "<< y_d<<"  "<< z_d;
-
-  emit moveAbsolute(x_d, y_d, z_d, a_d);// this should bring you to the first corner
-  emit locateCorner(2);
-  emit reportCornerLocation(1);
-  emit moveRelative(0.0, 10.0, 0.0, 0.0);//move to next corner
-  emit locateCorner(3);
-  emit reportCornerLocation(2);
-  emit moveRelative(5.0, 0.0, 0.0, 0.0);//move to next corner
-  emit locateCorner(4);
-  emit reportCornerLocation(3);
-  emit moveRelative(0.0, -10.0, 0.0, 0.0);//move to next corner
-  emit locateCorner(5);
-  emit reportCornerLocation(4);
-}
-
-AssemblyCommander::AssemblyCommander(QWidget *parent, std::string string,
-                                     double x ,double y, double z,
-                                     double a)
-: QWidget(parent), local_x(x), local_y(y),local_z(z),local_a(a)
-{
-  QFormLayout *l = new QFormLayout(this);
-  setLayout(l);
-
-  std::ostringstream strs;
-  strs.clear();
-  strs << x;
-  strs << ",";
-  strs << y;
-  strs << ",";
-  strs << z;
-  std::string str = strs.str();
-  QString qstr = QString::fromStdString(str);
-  QString qname = QString::fromStdString(string);
-
-  this->local_x = x;
-  this->local_y = y;
-  this->local_z = z;
-  this->local_a = a;
-
-  button1 = new QPushButton(qname, this);
-
-  lineEdit1 = new QLineEdit();
-  lineEdit1->setText(qstr);
-  l->addRow(button1,lineEdit1);
-
-  connect(button1, SIGNAL(clicked()),
-          this, SLOT(goToTarget()));
-}
-
-void AssemblyCommander::goToTarget()
-{
-  //parse lineEdit text to get target coordinates
-  QString  parent_string = this->lineEdit1->text();
-
-  QStringList pieces = parent_string.split( "," );
-  QString x = pieces.value( pieces.length() - 4);
-  QString y = pieces.value( pieces.length() - 3);
-  QString z = pieces.value( pieces.length() - 2);
-  QString a = pieces.value( pieces.length() - 1);
-
-  double x_d = x.toDouble();
-  double y_d = y.toDouble();
-  double z_d = z.toDouble();
-  double a_d = a.toDouble();
-
-  NQLog("AssemblyCommander:goToTarget") << ": going to target (parsed) "<< x_d<<" "<< y_d<<" "<< z_d;
-
-  NQLog("AssemblyCommander:goToTarget") <<" requesting move...";
-
-  emit moveAbsolute(x_d, y_d, z_d, a_d);
-
-  NQLog("AssemblyCommander:goToTarget") <<"move requested...";
-}
-
-
-AssemblyAligner::AssemblyAligner(QWidget *parent, std::string string,
-                                 double a)
-  : QWidget(parent),local_a(a)
-{
-  QFormLayout *l = new QFormLayout(this);
-  setLayout(l);
-
-  std::ostringstream strs;
-  strs.clear();
-  strs << a;
-  std::string str = strs.str();
-  QString qstr = QString::fromStdString(str);
-  QString qname = QString::fromStdString(string);
-
-  button1 = new QPushButton(qname, this);
-
-  lineEdit1 = new QLineEdit();
-  lineEdit1->setText(qstr);
-  l->addRow(button1,lineEdit1);
-
-  connect(button1, SIGNAL(clicked()),
-          this, SLOT(setDown()));
-}
-
-void AssemblyAligner::setDown()
-{
-  emit locateSetdowncorner(6);
-
-}
-
-void AssemblyAligner::align()
-{
-  //     emit locate(6);
-
-  //parse lineEdit text to get target coordinates
-  QString  parent_string = this->lineEdit1->text();
-
-  //  QStringList pieces = parent_string.split( "," );
-  //  QString x = pieces.value( pieces.length() - 3);
-  //  QString y = pieces.value( pieces.length() - 2);
-  //  QString z = pieces.value( pieces.length() - 1);
-  //  QString a = pieces.value( pieces.length() - 1);
-
-  // double x_d = x.toDouble();
-  // double y_d = y.toDouble();
-  // double z_d = z.toDouble();
-  double a_d = parent_string.toDouble();
-
-  NQLog("AssemblyAligner:align") << ": going to target alignment (parsed) "<< a_d<<" ";
-
-  emit moveRelative(0.0, 0.0, 0.0, a_d);
-}
-
-AssemblySensorLocator::AssemblySensorLocator(QWidget *parent, std::string string,
-                                             double a, AssemblySensorMarkerFinder * finder_ )
- : QWidget(parent), local_a(a)
-{
+  layout_->addWidget(button_,0,0);
     
-  std::ostringstream strs;
-  strs.clear();
-  strs << a;
-  std::string str = strs.str();
-  QString qstr = QString::fromStdString(str);
-  QString qname = QString::fromStdString(string);
+  groupBox1_ = new QGroupBox(tr("Object sought"));
+  groupBox2_ = new QGroupBox(tr("Mode"));
 
-  const QString      cache_dir = Util::QtCacheDirectory()+"/assembly/calibration";
-  Util::QDir_mkpath (cache_dir);
-  cacheDirectory1_ = cache_dir.toStdString();
+  radio1_ = new QRadioButton(tr("&Fiducial marker"));
+  radio2_ = new QRadioButton(tr("&Positioning pin"));
+  radio3_ = new QRadioButton(tr("&Sensor corner"));
+  radio4_ = new QRadioButton(tr("&Spacer corner"));
 
-  const QString      cache_subdir = cache_dir+"/RotatedImages";
-  Util::QDir_mkpath (cache_subdir);
-  cacheDirectory2_ = cache_subdir.toStdString();
+  radio1_->setChecked(true);
 
-  QGridLayout *l = new QGridLayout(this);
-  setLayout(l);
-
-  button1 = new QPushButton(qname, this);
-
-  l->addWidget(button1,0,0);
+  vbox1_ = new QVBoxLayout;
+  vbox1_->addWidget(radio1_);
+  vbox1_->addWidget(radio2_);
+  vbox1_->addWidget(radio3_);
+  vbox1_->addWidget(radio4_);
+  vbox1_->addStretch(1);
+  groupBox1_->setLayout(vbox1_);
     
-  groupBox1 = new QGroupBox(tr("Object sought"));
-  groupBox2 = new QGroupBox(tr("Mode"));
+  radio5_ = new QRadioButton(tr("&Demo"));
+  radio5_->setChecked(true);
 
-  radio1  = new QRadioButton(tr("&Fiducial marker"));
-  radio2  = new QRadioButton(tr("&Positioning pin"));
-  radio3  = new QRadioButton(tr("&Sensor corner"));
-  radio31 = new QRadioButton(tr("&Spacer corner"));
+  radio6_ = new QRadioButton(tr("&Lab"));
 
-  radio1->setChecked(true);
+  vbox2_ = new QVBoxLayout;
+  vbox2_->addWidget(radio5_);
+  vbox2_->addWidget(radio6_);
+  vbox2_->addStretch(1);
+  groupBox2_->setLayout(vbox2_);
 
-  vbox1 = new QVBoxLayout;
-  vbox1->addWidget(radio1);
-  vbox1->addWidget(radio2);
-  vbox1->addWidget(radio3);
-  vbox1->addWidget(radio31);
+  layout_->addWidget(groupBox1_, 1, 0);
+  layout_->addWidget(groupBox2_, 1, 1);
 
-  vbox1->addStretch(1);
-  groupBox1->setLayout(vbox1);
-    
-  radio4 = new QRadioButton(tr("&Demo"));
-  radio5 = new QRadioButton(tr("&Lab"));
-  radio4->setChecked(true);
-    
-  vbox2 = new QVBoxLayout;
-  vbox2->addWidget(radio4);
-  vbox2->addWidget(radio5);
-  vbox2->addStretch(1);
-  groupBox2->setLayout(vbox2);
+  label_ = new QLabel("", this);
+  layout_->addWidget(label_, 0, 1);
 
-  l->addWidget(groupBox1,1,0);
-  l->addWidget(groupBox2,1,1);
-
-  ql = new QLabel("", this);
-  l->addWidget(ql,0,1);
-
-  QPixmap pixmap(100,100);
+  QPixmap pixmap(100, 100);
   pixmap.fill(QColor("transparent"));
 
   QPainter painter(&pixmap);
   painter.setBrush(QBrush(Qt::red));
   painter.drawEllipse(0, 0, 30, 30);
 
-  ql->setPixmap(pixmap);
-  ql->setText("WAITING");
-  ql->setStyleSheet("QLabel { background-color : orange; color : black; }");
+  label_->setPixmap(pixmap);
+  label_->setText("WAITING");
+  label_->setStyleSheet("QLabel { background-color : orange; color : black; }");
 
-  connect(button1, SIGNAL(clicked())                   , this   , SLOT(detectPatRecMode()));
-  connect(this   , SIGNAL(runObjectDetection(int, int)), finder_, SLOT(runObjectDetection(int, int)));
-
-//  connect(this, SIGNAL(locatePickupCorner_circleSeed(int)), this, SLOT(locateSensor_circleSeed(int)));
-
-  connect(this, SIGNAL(locatePickupCorner_templateMatching(cv::Mat, cv::Mat)), finder_, SLOT(findMarker_templateMatching(cv::Mat, cv::Mat)));
-
-//  connect(this, SIGNAL(locatePickupCorner_circleSeed(cv::Mat,cv::Mat)), finder_, SLOT(findMarker_circleSeed(cv::Mat,cv::Mat)));
+  connect(button_, SIGNAL(clicked())                   , this  , SLOT(detectPatRecMode()));
+  connect(this   , SIGNAL(runObjectDetection(int, int)), finder, SLOT(runObjectDetection(int, int)));
 }
 
-void AssemblySensorLocator::detectPatRecMode()
+void LocateWidget::detectPatRecMode()
 {
   int objectmode(0), labmode(0);
 
-  if     (radio1 ->isChecked()){ objectmode = 0; }
-  else if(radio2 ->isChecked()){ objectmode = 1; }
-  else if(radio3 ->isChecked()){ objectmode = 2; }
-  else if(radio31->isChecked()){ objectmode = 3; }
+  if     (radio1_->isChecked()){ objectmode = 0; }
+  else if(radio2_->isChecked()){ objectmode = 1; }
+  else if(radio3_->isChecked()){ objectmode = 2; }
+  else if(radio4_->isChecked()){ objectmode = 3; }
 
-  if     (radio4 ->isChecked()){ labmode = 0; }
-  else if(radio5 ->isChecked()){ labmode = 1; }
+  if     (radio5_->isChecked()){ labmode = 0; }
+  else if(radio6_->isChecked()){ labmode = 1; }
 
-  NQLog("AssemblyModuleAssembler::detectPatRecMode") << "emitting signal: runObjectDetection(" << labmode << ", " << objectmode << ")";
+  NQLog("LocateWidget", NQLog::Debug) << "detectPatRecMode"
+     << ": emitting signal \"runObjectDetection(" << labmode << ", " << objectmode << ")\"";
 
   emit runObjectDetection(labmode, objectmode);
+}
+
+void LocateWidget::foundsensor(int state)
+{
+  NQLog("LocateWidget", NQLog::Debug) << "foundsensor(" << state << ")";
+
+  if(state == 0)
+  {
+    label_->setText("WAITING");
+    label_->setStyleSheet("QLabel { background-color : orange; color : black; }");
+    
+  }
+  else if(state == 1)
+  {
+    label_->setText("FOUND MARKER");
+    label_->setStyleSheet("QLabel { background-color : green; color : black; }");
+    
+  }
+  else if(state == 2)
+  {
+    label_->setText("ERROR");
+    label_->setStyleSheet("QLabel { background-color : red; color : black; }");
+  }
 
   return;
 }
+// ----------
 
-void AssemblySensorLocator::foundsensor(int state)
-{
-  NQLog("AssemblySensorLocator::foundsensor");
+//!!AssemblyMountChecker::AssemblyMountChecker(QWidget *parent, std::string string,
+//!!                                           double x ,double y, double z,
+//!!                                           double a, int mode)
+//!!: QWidget(parent), local_x(x), local_y(y),local_z(z),local_a(a)
+//!!{
+//!!  QFormLayout *l = new QFormLayout(this);
+//!!  setLayout(l);
+//!!
+//!!  NQLog("AssemblyMountChecker") << ": in mode" << mode;
+//!!
+//!!  std::ostringstream strs;
+//!!  strs.clear();
+//!!  strs << x;
+//!!  strs << ",";
+//!!  strs << y;
+//!!  strs << ",";
+//!!  strs << z;
+//!!  std::string str = strs.str();
+//!!  QString qstr = QString::fromStdString(str);
+//!!  QString qname = QString::fromStdString(string);
+//!!
+//!!  this->local_x = x;
+//!!  this->local_y = y;
+//!!  this->local_z = z;
+//!!  this->local_a = a;
+//!!
+//!!  button1 = new QPushButton(qname, this);
+//!!
+//!!  lineEdit1 = new QLineEdit();
+//!!  lineEdit1->setText(qstr);
+//!!  l->addRow(button1,lineEdit1);
+//!!
+//!!  connect(button1, SIGNAL(clicked()),
+//!!          this, SLOT(checkMount()));
+//!!}
+//!!
+//!!void AssemblyMountChecker::checkMount()
+//!!{
+//!!  //parse lineEdit text to get target coordinates
+//!!  QString  parent_string = this->lineEdit1->text();
+//!!
+//!!  QStringList pieces = parent_string.split( "," );
+//!!  QString x = pieces.value( pieces.length() - 3);
+//!!  QString y = pieces.value( pieces.length() - 2);
+//!!  QString z = pieces.value( pieces.length() - 1);
+//!!  QString a = pieces.value( pieces.length() - 1);
+//!!
+//!!  double x_d = x.toDouble();
+//!!  double y_d = y.toDouble();
+//!!  double z_d = z.toDouble();
+//!!  double a_d = a.toDouble();
+//!!
+//!!  NQLog("AssemblyMountChecker") << ": going to target (parsed) "<< x_d<<" "<< y_d<<"  "<< z_d;
+//!!
+//!!  emit moveAbsolute(x_d, y_d, z_d, a_d);// this should bring you to the first corner
+//!!  emit locateCorner(2);
+//!!  emit reportCornerLocation(1);
+//!!  emit moveRelative(0.0, 10.0, 0.0, 0.0);//move to next corner
+//!!  emit locateCorner(3);
+//!!  emit reportCornerLocation(2);
+//!!  emit moveRelative(5.0, 0.0, 0.0, 0.0);//move to next corner
+//!!  emit locateCorner(4);
+//!!  emit reportCornerLocation(3);
+//!!  emit moveRelative(0.0, -10.0, 0.0, 0.0);//move to next corner
+//!!  emit locateCorner(5);
+//!!  emit reportCornerLocation(4);
+//!!}
+// ----------
 
-  if (state == 0) {
-    ql->setText("WAITING");
-    NQLog("AssemblySensorLocator::foundsensor")<< " 0  ";
-
-    ql->setStyleSheet("QLabel { background-color : orange; color : black; }");
-    
-  } else if (state == 1) {
-    
-    NQLog("AssemblySensorLocator::foundsensor")<< " 1 ";
-    
-    ql->setText("FOUND MARKER");
-    ql->setStyleSheet("QLabel { background-color : green; color : black; }");
-    
-  } else if (state == 2) {
-    NQLog("AssemblySensorLocator::foundsensor")<< " 2 ";
-    ql->setText("ERROR");
-    ql->setStyleSheet("QLabel { background-color : red; color : black; }");
-  }
-}
+//!!AssemblyAligner::AssemblyAligner(QWidget *parent, std::string string,
+//!!                                 double a)
+//!!  : QWidget(parent),local_a(a)
+//!!{
+//!!  QFormLayout *l = new QFormLayout(this);
+//!!  setLayout(l);
+//!!
+//!!  std::ostringstream strs;
+//!!  strs.clear();
+//!!  strs << a;
+//!!  std::string str = strs.str();
+//!!  QString qstr = QString::fromStdString(str);
+//!!  QString qname = QString::fromStdString(string);
+//!!
+//!!  button1 = new QPushButton(qname, this);
+//!!
+//!!  lineEdit1 = new QLineEdit();
+//!!  lineEdit1->setText(qstr);
+//!!  l->addRow(button1,lineEdit1);
+//!!
+//!!  connect(button1, SIGNAL(clicked()),
+//!!          this, SLOT(setDown()));
+//!!}
+//!!
+//!!void AssemblyAligner::setDown()
+//!!{
+//!!  emit locateSetdowncorner(6);
+//!!
+//!!}
+//!!
+//!!void AssemblyAligner::align()
+//!!{
+//!!  //     emit locate(6);
+//!!
+//!!  //parse lineEdit text to get target coordinates
+//!!  QString  parent_string = this->lineEdit1->text();
+//!!
+//!!  //  QStringList pieces = parent_string.split( "," );
+//!!  //  QString x = pieces.value( pieces.length() - 3);
+//!!  //  QString y = pieces.value( pieces.length() - 2);
+//!!  //  QString z = pieces.value( pieces.length() - 1);
+//!!  //  QString a = pieces.value( pieces.length() - 1);
+//!!
+//!!  // double x_d = x.toDouble();
+//!!  // double y_d = y.toDouble();
+//!!  // double z_d = z.toDouble();
+//!!  double a_d = parent_string.toDouble();
+//!!
+//!!  NQLog("AssemblyAligner:align") << ": going to target alignment (parsed) "<< a_d<<" ";
+//!!
+//!!  emit moveRelative(0.0, 0.0, 0.0, a_d);
+//!!}
+// ----------

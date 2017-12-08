@@ -10,7 +10,7 @@
 //                                                                             //
 /////////////////////////////////////////////////////////////////////////////////
 
-#include <AssemblySensorMarkerFinder.h>
+#include <MarkerFinderManual.h>
 #include <ApplicationConfig.h>
 #include <nqlogger.h>
 #include <Util.h>
@@ -27,10 +27,23 @@
 using namespace cv;
 using namespace std;
 
-AssemblySensorMarkerFinder::AssemblySensorMarkerFinder(QObject *parent) :
-  AssemblyVMarkerFinder(parent)
+AssemblyMarkerCircle::AssemblyMarkerCircle(float x, float y, float r, float q)
+    : x_(x),
+      y_(y),
+      r_(r),
+      q_(q)
+{
+}
+
+MarkerFinderManual::MarkerFinderManual(QObject* parent) :
+  QObject(parent)
 {
     ApplicationConfig* config = ApplicationConfig::instance();
+    if(!config)
+    {
+      NQLog("MarkerFinderManual", NQLog::Fatal) << "ApplicationConfig::instance() not initialized, null pointer";
+      exit(1);
+    }
 
     gaussianBlurKernelSize_ = config->getValue<int>("SensorMarkerGaussianBlurKernelSize", 9);
     gaussianBlurSigma_ = config->getValue<int>("SensorMarkerGaussianBlurSigma", 2);
@@ -61,14 +74,14 @@ AssemblySensorMarkerFinder::AssemblySensorMarkerFinder(QObject *parent) :
     cacheDirectory2_ = cache_subdir.toStdString();
 }
 
-AssemblySensorMarkerFinder::~AssemblySensorMarkerFinder()
+MarkerFinderManual::~MarkerFinderManual()
 {
-    NQLog("AssemblySensorMarkerFinder") << "deconstructed";
+    NQLog("MarkerFinderManual", NQLog::Debug) << "destructed";
 }
 
-void AssemblySensorMarkerFinder::runObjectDetection(int labmode, int objectmode)
+void MarkerFinderManual::runObjectDetection(int labmode, int objectmode)
 {
-  NQLog("AssemblySensorMarkerFinder::runObjectDetection") << "labmode=" << labmode << ", objectmode=" << objectmode;
+  NQLog("MarkerFinderManual::runObjectDetection") << "labmode=" << labmode << ", objectmode=" << objectmode;
 
   labmode_g = labmode;
   objectmode_g = objectmode;
@@ -91,7 +104,7 @@ void AssemblySensorMarkerFinder::runObjectDetection(int labmode, int objectmode)
     }
     else if(objectmode == 1){
 
-      NQLog("AssemblySensorMarkerFinder::runObjectDetection") << "***DETECTION OF POSITIONING PIN NOT IMPLEMENTED YET!!***" ;
+      NQLog("MarkerFinderManual::runObjectDetection") << "***DETECTION OF POSITIONING PIN NOT IMPLEMENTED YET!!***" ;
     }
     else if(objectmode == 2){
 
@@ -99,7 +112,8 @@ void AssemblySensorMarkerFinder::runObjectDetection(int labmode, int objectmode)
       img_clip_A = cv::imread(Config::CMSTkModLabBasePath+"/share/assembly/glassslidecorneronbaseplate_sliverpaint_A_clip.png", CV_LOAD_IMAGE_COLOR);
     }
 
-    NQLog("AssemblySensorMarkerFinder::runObjectDetection") << " emitting signal: locatePickupCorner_templateMatching";
+    NQLog("MarkerFinderManual") << "runObjectDetection"
+       << ": emitting signal \"locatePickupCorner_templateMatching\"";
 
     emit locatePickupCorner_templateMatching(img, img_clip_A);
   }
@@ -107,7 +121,7 @@ void AssemblySensorMarkerFinder::runObjectDetection(int labmode, int objectmode)
   return;
 }
 
-void AssemblySensorMarkerFinder::runObjectDetection_labmode(cv::Mat master_image){
+void MarkerFinderManual::runObjectDetection_labmode(cv::Mat master_image){
     
     
     NQLog("AssemblySensorLocator::runObjectDetection() here ") << "" ;
@@ -152,10 +166,10 @@ void AssemblySensorMarkerFinder::runObjectDetection_labmode(cv::Mat master_image
 }
 
 
-void AssemblySensorMarkerFinder::findMarker(const cv::Mat& image)
+void MarkerFinderManual::findMarker(const cv::Mat& image)
 {
 
-    NQLog("AssemblySensorMarkerFinder") << "findMarker()";
+    NQLog("MarkerFinderManual") << "findMarker()";
 
     QMutexLocker lock(&mutex_);
     image.copyTo(image_);
@@ -179,34 +193,34 @@ void AssemblySensorMarkerFinder::findMarker(const cv::Mat& image)
         emit markerFound(imageRGB_);
         return;
     }
-    NQLog("AssemblySensorMarkerFinder") << "found circle";
+    NQLog("MarkerFinderManual") << "found circle";
 
 
     ret = findLines();
-    NQLog("AssemblySensorMarkerFinder") << "found lines";
+    NQLog("MarkerFinderManual") << "found lines";
 
     ret = findIntersections();
 
-    NQLog("AssemblySensorMarkerFinder") << "found intersections";
+    NQLog("MarkerFinderManual") << "found intersections";
     determineOrientation();
 
-    NQLog("AssemblySensorMarkerFinder") << "orientation determined";
+    NQLog("MarkerFinderManual") << "orientation determined";
 
     drawCircle();
-    NQLog("AssemblySensorMarkerFinder") << "circles drawn";
+    NQLog("MarkerFinderManual") << "circles drawn";
 
     drawLines();
-    NQLog("AssemblySensorMarkerFinder") << "lines drawn";
+    NQLog("MarkerFinderManual") << "lines drawn";
 
     //  drawOutline();
-    NQLog("AssemblySensorMarkerFinder") << "outlines drawn";
+    NQLog("MarkerFinderManual") << "outlines drawn";
 
     //drawIntersections();
-    NQLog("AssemblySensorMarkerFinder") <<"intersections drawn";
+    NQLog("MarkerFinderManual") <<"intersections drawn";
 
     // drawOrientation();
 
-    NQLog("AssemblySensorMarkerFinder") << "shapes drawn";
+    NQLog("MarkerFinderManual") << "shapes drawn";
 
     NQLog("   ") ;
     NQLog("   ") ;
@@ -216,7 +230,7 @@ void AssemblySensorMarkerFinder::findMarker(const cv::Mat& image)
     emit markerFound(imageRGB_);
 }
 
-size_t AssemblySensorMarkerFinder::findCircle(const cv::Mat& image)
+size_t MarkerFinderManual::findCircle(const cv::Mat& image)
 {
 
     global_image_ptr = &image;
@@ -236,7 +250,7 @@ size_t AssemblySensorMarkerFinder::findCircle(const cv::Mat& image)
 
 
     lock.unlock();
-    NQLog("AssemblySensorMarkerFinder") << " N circles = " << circles.size()  ;
+    NQLog("MarkerFinderManual") << " N circles = " << circles.size()  ;
 
 
     if (circles.size()==0) {
@@ -248,29 +262,29 @@ size_t AssemblySensorMarkerFinder::findCircle(const cv::Mat& image)
         circleCenter_.x = circles[0][0];
         circleCenter_.y = circles[0][1];
         circleRadius_ = circles[0][2];
-    NQLog("AssemblySensorMarkerFinder") << " getting  circle qual"  ;
+    NQLog("MarkerFinderManual") << " getting  circle qual"  ;
 
 
         circleQuality_ = 1.0 - std::fabs(circleRadius_-expectedCircleRadius_)/expectedCircleRadius_;
 
-    NQLog("AssemblySensorMarkerFinder") << " got circle qual"  ;
+    NQLog("MarkerFinderManual") << " got circle qual"  ;
 
             circles_.push_back(AssemblyMarkerCircle(circleCenter_.x,
                                                 circleCenter_.y,
                                                circleRadius_,
                                                circleQuality_));
-    NQLog("AssemblySensorMarkerFinder") << " got circle qual 2"  ;
+    NQLog("MarkerFinderManual") << " got circle qual 2"  ;
 
         return 1;
     }
 
-    NQLog("AssemblySensorMarkerFinder") << " before radius map"  ;
+    NQLog("MarkerFinderManual") << " before radius map"  ;
 
     std::map<double,cv::Vec3f> radiusMap;
     for(size_t i = 0; i < circles.size(); i++ ) {
         radiusMap[std::fabs(circles[i][2]-expectedCircleRadius_)] = circles[i];
     }
-    NQLog("AssemblySensorMarkerFinder") << " after radius map"  ;
+    NQLog("MarkerFinderManual") << " after radius map"  ;
 
     std::map<double,cv::Vec3f>::iterator it = radiusMap.begin();
 
@@ -298,12 +312,12 @@ size_t AssemblySensorMarkerFinder::findCircle(const cv::Mat& image)
     } else if (minDistance<=2*circleRadius_) {
         circleQuality_ *= 1.0 - minDistance/(2*circleRadius_);
     }
-    NQLog("AssemblySensorMarkerFinder") << " returning circles "  ;
+    NQLog("MarkerFinderManual") << " returning circles "  ;
 
     return circles.size();
 }
 
-void AssemblySensorMarkerFinder::drawCircle()
+void MarkerFinderManual::drawCircle()
 {
     cv::Point2f center(cvRound(circleCenter_.x),
                        cvRound(circleCenter_.y));
@@ -316,7 +330,7 @@ void AssemblySensorMarkerFinder::drawCircle()
 
 }
 
-size_t AssemblySensorMarkerFinder::findLines()
+size_t MarkerFinderManual::findLines()
 {
     cv::Canny(image_, imageEdges_,
               linesCannyEdgeDetectionThreshold1_,
@@ -357,7 +371,7 @@ size_t AssemblySensorMarkerFinder::findLines()
     return goodLines_.size();
 }
 
-void AssemblySensorMarkerFinder::drawLines()
+void MarkerFinderManual::drawLines()
 {
     for (size_t i = 0; i < lines_.size(); i++ ) {
         cv::line(imageRGB_,
@@ -373,7 +387,7 @@ void AssemblySensorMarkerFinder::drawLines()
     }
  }
 
-bool AssemblySensorMarkerFinder::intersection(cv::Point2f o1, cv::Point2f p1,
+bool MarkerFinderManual::intersection(cv::Point2f o1, cv::Point2f p1,
                                               cv::Point2f o2, cv::Point2f p2,
                                               cv::Point2f &r, double distance)
 {
@@ -397,7 +411,7 @@ bool AssemblySensorMarkerFinder::intersection(cv::Point2f o1, cv::Point2f p1,
   return true;
 }
 
-void AssemblySensorMarkerFinder::mergeIntersections(std::vector<cv::Point2f>& intersections)
+void MarkerFinderManual::mergeIntersections(std::vector<cv::Point2f>& intersections)
 {
     std::vector<cv::Point2f> tempIntersections;
     std::vector<bool> intersectionFlag(intersections.size());
@@ -433,7 +447,7 @@ void AssemblySensorMarkerFinder::mergeIntersections(std::vector<cv::Point2f>& in
     intersections = tempIntersections;
 }
 
-size_t AssemblySensorMarkerFinder::findIntersections()
+size_t MarkerFinderManual::findIntersections()
 {
     intersections_.clear();
     goodIntersections_.clear();
@@ -483,7 +497,7 @@ size_t AssemblySensorMarkerFinder::findIntersections()
     return intersections_.size();
 }
 
-void AssemblySensorMarkerFinder::drawIntersections()
+void MarkerFinderManual::drawIntersections()
 {
     for(size_t i = 0; i < intersections_.size(); i++ ) {
         cv::Point center(cvRound(intersections_[i].x), cvRound(intersections_[i].y));
@@ -496,7 +510,7 @@ void AssemblySensorMarkerFinder::drawIntersections()
     }
 }
 
-void AssemblySensorMarkerFinder::determineOrientation()
+void MarkerFinderManual::determineOrientation()
 {
     if (goodIntersections_.size()!=2 && intersections_.size()!=4) return;
 
@@ -573,31 +587,31 @@ void AssemblySensorMarkerFinder::determineOrientation()
     cv::Point2f d = igp - il1;
     angle = std::atan2(d.y, d.x);
     if (angle<0) angle += 2.*CV_PI;
-    // NQLog("AssemblySensorMarkerFinder") << "ia1 " << angle;
+    // NQLog("MarkerFinderManual") << "ia1 " << angle;
     orientation_ += angle;
 
     d = ogp - ol1;
     angle = std::atan2(d.y, d.x);
     if (angle<0) angle += 2.*CV_PI;
-    // NQLog("AssemblySensorMarkerFinder") << "oa1 " << angle;
+    // NQLog("MarkerFinderManual") << "oa1 " << angle;
     orientation_ += angle;
 
     d = igp - il2;
     angle = std::atan2(d.y, d.x) + CV_PI/2;
     if (angle<0) angle += 2.*CV_PI;
-    // NQLog("AssemblySensorMarkerFinder") << "ia2 " << angle;
+    // NQLog("MarkerFinderManual") << "ia2 " << angle;
     orientation_ += angle;
 
     d = ogp - ol2;
     angle = std::atan2(d.y, d.x) + CV_PI/2;
     if (angle<0) angle += 2.*CV_PI;
-    // NQLog("AssemblySensorMarkerFinder") << "oa2 " << angle;
+    // NQLog("MarkerFinderManual") << "oa2 " << angle;
     orientation_ += angle;
 
     orientation_ /= 4.;
 }
 
-void AssemblySensorMarkerFinder::drawOutline()
+void MarkerFinderManual::drawOutline()
 {
     cv::line(imageRGB_,
              goodIntersections_[0], intersections_[0],
@@ -619,7 +633,7 @@ void AssemblySensorMarkerFinder::drawOutline()
              cv::Scalar(0, 255, 255), 4, CV_AA);
 }
 
-void AssemblySensorMarkerFinder::drawOrientation()
+void MarkerFinderManual::drawOrientation()
 {
     double dx1 = circleRadius_/4 * std::cos(orientation_);
     double dy1 = circleRadius_/4 * std::sin(orientation_);
@@ -632,329 +646,7 @@ void AssemblySensorMarkerFinder::drawOrientation()
              cv::Scalar(255, 255, 0), 6, CV_AA);
 }
 
-
-//void AssemblySensorMarkerFinder::findMarker_templateMatching(cv::Mat img, cv::Mat img_clip_A, cv::Mat img_glass_marker_raw)
-void AssemblySensorMarkerFinder::findMarker_templateMatching(cv::Mat img, cv::Mat img_clip_A)
-{
-    NQLog("AssemblySensorMarkerFinder") << "Finding Marker (Template Matching) here";
-
-    NQLog("AssemblySensorMarkerFinder") << ", number of image channels =  "<<img_clip_A.channels() ;
-      
-    Point matchLoc_1, matchLoc_2, matchLoc_final;
-    Mat result_1, result_2; 
-    Mat img_copy = img.clone();
-   
-
-    //Greyscale images
-    Mat img_copy_gs(img_copy.size(), img_copy.type());
-    Mat img_clip_A_gs(img_clip_A.size(), img_clip_A.type());
-    //Mat img_glass_marker_raw_gs(img_glass_marker_raw.size(), img_glass_marker_raw.type());
-
-    if (img.channels()> 1){
-    //convert color to GS
-    cvtColor( img_copy,   img_copy_gs,   CV_BGR2GRAY );
-    }else {
-     img_copy_gs = img_copy.clone();
-    }
-
-    if (img_clip_A.channels()> 1){
-    //convert color to GS
-    cvtColor( img_clip_A, img_clip_A_gs, CV_BGR2GRAY );
-    }else {
-     img_clip_A_gs = img_clip_A.clone();
-    }
-
-    /*if (img_glass_marker_raw.channels()> 1){
-    //convert color to GS
-    cvtColor( img_glass_marker_raw, img_glass_marker_raw_gs, CV_BGR2GRAY );
-    }else {
-     img_glass_marker_raw_gs = img_glass_marker_raw.clone();
-    }*/
-
-    //Binary images
-    Mat img_copy_bin(img_copy_gs.size(), img_copy_gs.type());
-    Mat img_clip_A_bin(img_clip_A_gs.size(), img_clip_A_gs.type());
-    //Mat img_glass_marker_bin(img_glass_marker_raw_gs.size(), img_glass_marker_raw_gs.type());
-    
-    //Apply thresholding
-    cv::threshold(img_copy_gs, img_copy_bin, generalThreshold_, 255, cv::THRESH_BINARY);
-    cv::threshold(img_clip_A_gs, img_clip_A_bin, 85, 255, cv::THRESH_BINARY);    //90 for silicon marker, 88 for glass?
-    //cv::threshold(img_glass_marker_raw_gs, img_glass_marker_bin, 88, 255, cv::THRESH_BINARY);
-        
-    // img_copy_bin = img_copy_gs.clone();
-    // img_clip_A_bin = img_clip_A_gs.clone();
-    
-    const std::string filename_img_bin    = cacheDirectory1_+"/Sensor_bin.png";
-    const std::string filename_clip_A_bin = cacheDirectory1_+"/clip_A_bin.png";
-//    const std::string filename_img_glass_marker_bin = cacheDirectory1_+"/share/assembly/img_glass_marker_bin.png";
-    
-    cv::imwrite(filename_img_bin, img_copy_bin);
-    cv::imwrite(filename_clip_A_bin, img_clip_A_bin);
-    //cv::imwrite(filename_img_glass_marker_bin, img_glass_marker_bin);
-    
-    QString filename_img_bin_qs = QString::fromStdString(filename_img_bin);
-    QString filename_clip_A_bin_qs = QString::fromStdString(filename_clip_A_bin);
-    //QString filename_img_glass_marker_bin_qs = QString::fromStdString(filename_img_glass_marker_bin);
-    
-    //emit updateImage(4, filename_img_bin_qs);
-    //emit updateImage(5, filename_clip_A_bin_qs);
-    
-    NQLog("AssemblySensorMarkerFinder") << "Finding Marker (Template Matching) wrote images" ;
-    
-    /// Localizing the best match with minMaxLoc
-    double FOM, FOM_inc = 1000.0, minVal, maxVal; Point minLoc; Point maxLoc;
-    double thetas[10], FOMs[10], best_theta;
-    
-    //create result matrix to hold correlation values
-    int result_cols =  img_copy_bin.cols - img_clip_A.cols + 1;
-    int result_rows = img_copy_bin.rows - img_clip_A.rows + 1;
-    
-
-    NQLog("AssemblySensorMarkerFinder") << ", Master cols = "<< img_copy_bin.cols << "  Master rows " << img_copy_bin.rows << " template cols << " << img_clip_A.cols << " template rows "<<img_clip_A.rows  ;
-
-
-    // result_1.create( result_rows, result_cols, CV_32FC1 );
-    result_1.create( result_rows, result_cols, CV_32FC1 );
-    
-    int match_method = 1;
-    matchTemplate( img_copy_bin, img_clip_A_bin, result_1, match_method);
-    
-    NQLog("AssemblySensorMarkerFinder") << "Finding Marker (Template Matching), pre- matching routine" ;
-
-    
-    minMaxLoc( result_1, &minVal, &maxVal, &minLoc, &maxLoc, Mat() );
-    
-    /// For SQDIFF and SQDIFF_NORMED, the best matches are lower values. For all the other methods, the higher the better
-    if( match_method  == CV_TM_SQDIFF || match_method == CV_TM_SQDIFF_NORMED ) {
-        matchLoc_1 = minLoc;
-        FOM = minVal;
-    } else {
-        matchLoc_1 = maxLoc;
-        FOM = maxVal;
-    }
-    
-    NQLog("AssemblySensorMarkerFinder") << "Finding Marker (Template Matching), post- matching routine" ;
-
-    
-    //circle( img_gs, Point( matchLoc_1.x + (img_clip_gs.cols/2.0) , matchLoc_1.y + (img_clip_gs.rows/2.0) ), 10, Scalar(255,0,0) );
-    
-    //circle( img, Point( matchLoc_1.x  , matchLoc_1.y ), 30, Scalar(255,0,0) );
-    //rectangle( img, matchLoc_1, Point( matchLoc_1.x + img_clip_A_bin.cols , matchLoc_1.y + img_clip_A_bin.rows ), Scalar(255,0,0), 2, 8, 0 );
-    
-    NQLog("AssemblySensorMarkerFinder") <<  matchLoc_1.x<< "   "<< matchLoc_1.y;
-    
-    
-    int i = 0;
-    int color = 200;
-    
-    
-    //    for (float theta = 20; theta < 24;  theta = theta + 0.2){
-      //    for (float theta = -64.0; theta < 64.0;  theta = theta + 3.2){
-    //    for (float theta = -180.0; theta < 180.0;  theta = theta + 9.0){
-      
-    //     for (float theta = -5.0; theta < 5.0;  theta = theta + 0.25){
-    //  for (float theta = -10.0; theta <= 10.0;  theta = theta + 1.0){
-  
-    //        for (float theta = -3.2; theta < 3.2;  theta = theta + 0.16){
-
-    std::string filename_rotated;
-
-    NQLog("AssemblySensorMarkerFinder") << "looping"<< "   ";
-    float scan_start = -5.0, scan_end = 180.0, scan_step =  0.1;
-    float FOM_near, FOM_far;
-    float theta_coarse;
-
-    //first check if we are at the "near" or "far" corner
-   // for (float theta_coarse = 0.0; theta_coarse <= 180.0;  theta_coarse = theta_coarse + 180.0){
-     for (int scan = 0; scan <= 2;  scan++){
-         NQLog("AssemblySensorMarkerFinder") << "*** Scan number "<< scan;
-        
-         if (scan == 0){
-            theta_coarse = 0.0;
-            scan_start = 0.001, scan_end = 0.001, scan_step =  1.0;
-         } else if (scan == 1){
-             theta_coarse = 180.0;
-             scan_start = 0.001, scan_end = 0.001, scan_step =  1.0;
-         }
-         
-         else{
-             
-             NQLog("AssemblySensorMarkerFinder") << "*** Deciding corner: "<< " FOM_near  =  "<<FOM_near <<" FOM far =  "<< FOM_far ;
-
-             //scan_start = -0.5, scan_end = 0.85, scan_step =  0.15;
-             scan_start = -0.25, scan_end = 0.425, scan_step =  0.075;
-
-             if (FOM_near < FOM_far){
-                 NQLog("AssemblySensorMarkerFinder") << " @ Near corner" ;
-                 theta_coarse = 0.0;
-             }else if(FOM_near > FOM_far){
-                 NQLog("AssemblySensorMarkerFinder") << " @ Far corner" ;
-                 theta_coarse = 180.0;
-             }
-         }
-        
-    
-	for (float theta_fine = scan_start; theta_fine <= scan_end;  theta_fine = theta_fine + scan_step){
-        float theta = theta_coarse + theta_fine;
-
-         Point2f src_center(img_copy_bin.cols/2.0F, img_copy_bin.rows/2.0F);
-	  // Point2f src_center( matchLoc_1.x + (img_clip_A_bin.cols/2) , matchLoc_1.y + (img_clip_A_bin.rows/2) );
-        
-	 // Mat rot_mat = getRotationMatrix2D(matchLoc_1, theta, 1.0);
-        Mat rot_mat = getRotationMatrix2D(src_center, theta, 1.0);
-        Mat dst, dst_orig;
-        cv::Scalar avgPixelIntensity = cv::mean( img_copy_bin );
-
-        warpAffine(img_copy_bin, dst     , rot_mat, img_copy_bin.size(), cv::INTER_CUBIC, cv::BORDER_CONSTANT, avgPixelIntensity);
-        warpAffine(img_copy_gs , dst_orig, rot_mat, img_copy_bin.size(), cv::INTER_CUBIC, cv::BORDER_CONSTANT, avgPixelIntensity);
-
-        std::string filename_rotated_base = cacheDirectory2_+"/Rotation_result_";
-        std::ostringstream ss;
-        ss << theta;
-        std::string theta_str = ss.str();
-        filename_rotated = filename_rotated_base + theta_str+".png";
-        cv::imwrite(filename_rotated, dst);
-        
-        //create result matrix to hold correlation values
-        result_cols =  img_copy_bin.cols - img_clip_A_bin.cols + 1;
-        result_rows = img_copy_bin.rows - img_clip_A_bin.rows + 1;
-        
-        result_2.create( result_rows, result_cols, CV_32FC1 );
-        matchTemplate( dst, img_clip_A_bin, result_2, match_method );
-        
-        // normalize( result, result, 0, 1, NORM_MINMAX, -1, Mat() );
-        minMaxLoc( result_2, &minVal, &maxVal, &minLoc, &maxLoc, Mat() );
-        
-        /// For SQDIFF and SQDIFF_NORMED, the best matches are lower values. For all the other methods, the higher the better
-        if( match_method  == CV_TM_SQDIFF || match_method == CV_TM_SQDIFF_NORMED ) {
-            matchLoc_2 = minLoc;
-            FOM = minVal;
-        } else {
-            matchLoc_2 = maxLoc;
-            FOM = maxVal;
-        }
-        
-        std::cout << std::setprecision(10);     
-        std::cout <<"theta = "<<  theta << ",  FOM = "<<  FOM<<  std::endl;
-        
-
-        if (scan == 0 ){
-            FOM_near = FOM;
-        }
-        else if (scan == 1){
-            FOM_far = FOM;
-        } else {
-            thetas[i] = theta;
-            FOMs[i] = FOM;
-            i++;
-
-            if (FOM < FOM_inc ) {
-                
-                FOM_inc = FOM;
-                matchLoc_final = matchLoc_2;
-                best_theta = theta;
-            }
-        
-        }
-        
-    
-        
-        color = 50 + 200*theta;
-    }
-         
-         NQLog("AssemblySensorMarkerFinder") << " Finished fine scan best theta = "<<  best_theta ;
-
-    }
-
-    cv::Mat img_raw = img.clone();
-    //  rectangle( img, matchLoc_final, Point( matchLoc_final.x + img_clip_A_bin.cols , matchLoc_final.y + img_clip_A_bin.rows ), Scalar(255,0,255), 2, 8, 0 );
-
-    cv::Rect rect_result = cv::Rect( matchLoc_final, Point( matchLoc_final.x + img_clip_A_bin.cols, matchLoc_final.y + img_clip_A_bin.rows));
-
-    line(img, Point(img.cols/2.0, 0), Point(img.cols/2.0, img.rows ), Scalar(255,255,0), 2, 8, 0);
-    line(img, Point(0, img.rows/2.0), Point(img.cols, img.rows/2.0 ), Scalar(255,255,0), 2, 8, 0);
-    
-        if (best_theta > -5.0 && best_theta < 5.0){
-            //the circle of radius 4 is meant to *roughly* represnt the x,y precision of the x-y motion stage so that the
-            //use can see if the patrec results make sense (the top left corner of the marker should be within the cirle)
-            line(img,Point(matchLoc_final.x,matchLoc_final.y - 50),Point(matchLoc_final.x + 240,matchLoc_final.y - 50 ),Scalar(0,255,0),2,8,0);
-            putText(img, "200 um", Point(matchLoc_final.x, matchLoc_final.y - 100 ), FONT_HERSHEY_SCRIPT_SIMPLEX, 2, Scalar(0,255,0), 3, 8);
-            circle(img, matchLoc_final, 4, Scalar(255,0,255), 4, 8, 0 );
-            circle(img, matchLoc_final, 4, Scalar(255,0,255), 4, 8, 0 );
-            rectangle(img, matchLoc_final, Point( matchLoc_final.x + img_clip_A_bin.cols, matchLoc_final.y + img_clip_A_bin.rows ), Scalar(255,0,255), 2, 8, 0);
-
-     } else if (best_theta > 175.0 && best_theta < 185.0){
-         line(img, Point( img.cols - matchLoc_final.x - 240 ,  img.rows - matchLoc_final.y - 100 ), Point( img.cols - matchLoc_final.x,  img.rows - matchLoc_final.y - 100 ), Scalar(0,255,0), 2, 8, 0);
-         putText(img, "200 um", Point( img.cols - matchLoc_final.x - 240, img.rows - matchLoc_final.y - 50 ), FONT_HERSHEY_SCRIPT_SIMPLEX, 2, Scalar(0,255,0), 3, 8);
-         circle( img,  Point( img.cols - matchLoc_final.x ,  img.rows - matchLoc_final.y ) , 4, Scalar(255,0,255), 4, 8, 0 );
-         rectangle(img, Point( img.cols - matchLoc_final.x,  img.rows - matchLoc_final.y ),  Point( img.cols - matchLoc_final.x  - img_clip_A_bin.cols,  img.rows - matchLoc_final.y - img_clip_A_bin.rows ) , Scalar(255,0,255), 2, 8, 0 );
-     }
-
-    //     circle( dst_orig, matchLoc_final, 10, Scalar(0,0,255), 4, 8, 0 );
-    // rectangle(dst_orig, matchLoc_final, Point( matchLoc_final.x + img_clip_A_bin.cols , matchLoc_final.y + img_clip_A_bin.rows ), Scalar(255,0,255), 2, 8, 0 );
-  
-
-    TCanvas *c1 = new TCanvas("c1","Rotation extraction",200,10,700,500);
-    
-    if (thetas[0] && FOMs[0]){
-        TGraph *gr = new TGraph(10, thetas, FOMs);
-
-        //gr->Fit("pol6");
-        gr->Draw("AC*");
-        gr->GetHistogram()->GetXaxis()->SetTitle("Rotational tranformation (degrees)");
-        gr->GetHistogram()->GetYaxis()->SetTitle("Minimised metric value");
-        gr->GetHistogram()->SetTitle("");
-
-        TGraph *gr_bestmatch = new TGraph(1);
-        gr_bestmatch->SetPoint(0, best_theta, FOM_inc);
-        gr_bestmatch->SetMarkerColor(2);
-        gr_bestmatch->SetMarkerStyle(22);
-        gr_bestmatch->SetMarkerSize(3);
-
-        gr_bestmatch->Draw("PSAME");
-
-        std::string filename_canvas = cacheDirectory1_+"/RotationExtraction.png";
-        c1->SaveAs(filename_canvas.c_str());
-        QString filename_canvas_qs = QString::fromStdString(filename_canvas);
-        c1->SaveAs((cacheDirectory1_+"test.png").c_str());
-
-        emit updateImage(2, filename_canvas_qs);
-    }
-    
-    std::string filename = cacheDirectory1_+"/PatRec_TM_result.png";
-    cv::imwrite(filename, img);
-    
- 
-    QString filename_qs = QString::fromStdString(filename);
-    QString filename_template = QString::fromStdString(filename_clip_A_bin);
-    QString filename_master = QString::fromStdString(filename_img_bin);
-    QString filename_rotated_qs = QString::fromStdString(filename_rotated);
-    
-    emit updateImage(1, filename_qs);
-    
-    emit foundSensor(1);
-    emit getImageBlur(img_raw, rect_result);
-
-    emit updateImage(3, filename_template);
-    emit updateImage(4, filename_master);
-    
-    
-    //work out match location in field of view
-    // the origin of the FOV coordinate system is the top left corner
-    //the match loction (centre of the template) is calculated in mm
-    //this should be enough for postion correction with moverealtive()
-    
-
-    //    matchLoc_x_lab = (matchLoc_final.x +  (img_clip_A_bin.cols/2) ) * (5.0/img.cols); // need to add the current X pos of the lang
-    //matchLoc_y_lab = (matchLoc_final.y +  (img_clip_A_bin.rows/2) ) * (4.0/img.rows); // need to add the current Y pos of the lang
-    
-    //update line edits in view
-    
-    emit reportObjectLocation(1, matchLoc_final.x , matchLoc_final.y, best_theta);
-    
-}
-
-void AssemblySensorMarkerFinder::findMarker_circleSeed(int mode)
+void MarkerFinderManual::findMarker_circleSeed(int mode)
 {
 
     cv::Mat img_gs, img_rgb, img_edges;
@@ -962,7 +654,7 @@ void AssemblySensorMarkerFinder::findMarker_circleSeed(int mode)
     
      if (mode == 0) {
     
-         NQLog("AssemblySensorMarkerFinder") << "DEMO MODE (USING DEMO IMAGES)" ;
+         NQLog("MarkerFinderManual") << "DEMO MODE (USING DEMO IMAGES)" ;
 
     img_gs = cv::imread(Config::CMSTkModLabBasePath+"/share/assembly/im_scan___Exp10___EdgeThr145___lt110.png",
                         CV_LOAD_IMAGE_COLOR);
@@ -970,7 +662,7 @@ void AssemblySensorMarkerFinder::findMarker_circleSeed(int mode)
      }else if (mode ==1){
      
          
-         NQLog("AssemblySensorMarkerFinder") << "***LAB MODE NOT IMPLMENTED YET....REVERTING TO DEMO MODE!!!***" ;
+         NQLog("MarkerFinderManual") << "***LAB MODE NOT IMPLMENTED YET....REVERTING TO DEMO MODE!!!***" ;
 
          img_gs = cv::imread(Config::CMSTkModLabBasePath+"/share/assembly/im_scan___Exp10___EdgeThr145___lt110.png",
                              CV_LOAD_IMAGE_COLOR);
@@ -1279,21 +971,30 @@ void AssemblySensorMarkerFinder::findMarker_circleSeed(int mode)
 
 }
 
-void AssemblySensorMarkerFinder::setNewGeneralThreshold(int value, cv::Mat img)
+void MarkerFinderManual::setNewGeneralThreshold(int value, cv::Mat img)
 {
   generalThreshold_ = value;
+
+  NQLog("MarkerFinderManual", NQLog::Debug) << "setNewGeneralThreshold"
+     << ": emitting signal \"sendCurrentGeneralThreshold(" << value << ")\"";
+
   emit sendCurrentGeneralThreshold(value);
-  this -> updateThresholdImage(img);
-  NQLog("AssemblySensorMarkerFinder") << " Threshold value successfuly changed to value = "<< value;
+
+  this->updateThresholdImage(img);
+
+  NQLog("MarkerFinderManual", NQLog::Spam) << "setNewGeneralThreshold"
+     << ": updated threshold value: " << value;
 }
 
-void AssemblySensorMarkerFinder::getCurrentGeneralThreshold()
+void MarkerFinderManual::getCurrentGeneralThreshold()
 { 
-    NQLog("AssemblySensorMarkerFinder::getCurrentGeneralThreshold") << "emitting signal sendCurrentGeneralThreshold("+std::to_string(generalThreshold_)+")";
-    emit sendCurrentGeneralThreshold(generalThreshold_);
+  NQLog("MarkerFinderManual", NQLog::Debug) << "getCurrentGeneralThreshold"
+     << ": emitting signal \"sendCurrentGeneralThreshold(" << generalThreshold_ << ")\"";
+
+  emit sendCurrentGeneralThreshold(generalThreshold_);
 }
 
-void AssemblySensorMarkerFinder::updateThresholdImage(cv::Mat img)
+void MarkerFinderManual::updateThresholdImage(cv::Mat img)
 {
     Mat img_copy = img.clone();
 
@@ -1311,7 +1012,7 @@ void AssemblySensorMarkerFinder::updateThresholdImage(cv::Mat img)
     Mat img_copy_bin(img_copy_gs.size(), img_copy_gs.type());
     
     //Apply thresholding
-    NQLog("AssemblySensorMarkerFinder") << "::updateThresholdImage() : applying threshold for ThresholdTuner.";
+    NQLog("MarkerFinderManual") << "::updateThresholdImage() : applying threshold for ThresholdTuner.";
     cv::threshold(img_copy_gs, img_copy_bin, generalThreshold_, 255, cv::THRESH_BINARY);
 
     std::string filename_img_bin = cacheDirectory1_+"/Sensor_bin.png";
@@ -1323,5 +1024,5 @@ void AssemblySensorMarkerFinder::updateThresholdImage(cv::Mat img)
     QString filename_master = QString::fromStdString(filename_img_bin);
 
     emit sendUpdatedThresholdImage(filename_master);
-    NQLog("AssemblySensorMarkerFinder") << "::updateThresholdImage() : signal emitted!!!";
+    NQLog("MarkerFinderManual") << "::updateThresholdImage() : signal emitted!!!";
 }
