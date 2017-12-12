@@ -156,7 +156,7 @@ void LStepExpressWidget::motionFinished()
 
 void LStepExpressWidget::moveAngle180CW()
 {
-  NQLog("LStepExpressWidget", NQLog::Spam) << "moveAngle180CW"
+  NQLog("LStepExpressWidget", NQLog::Message) << "moveAngle180CW"
      << ": rotating platform by 180 degrees (clockwise)";
 
   model_->moveRelative(LStepExpress_t::A, -180.);

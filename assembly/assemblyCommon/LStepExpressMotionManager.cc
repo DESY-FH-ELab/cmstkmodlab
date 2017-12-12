@@ -251,5 +251,8 @@ void LStepExpressMotionManager::clear_motion_queue()
 
   motions_.clear();
 
+  NQLog("LStepExpressMotionManager", NQLog::Message) << "clear_motion_queue"
+     << ": motion queue cleared";
+
   return;
 }
