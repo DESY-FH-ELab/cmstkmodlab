@@ -880,7 +880,7 @@ PatRecWidget::PatRecWidget(const QString& label, QWidget* parent) :
   layout_2->addWidget(sw_angrough_->lineed(), 0, 1);
 
   // widget: PatRec angular-scan parameters
-  sw_angscanp_ = new StringWidget("Scan Params (fine-range, fine-step)", "5,0.25");
+  sw_angscanp_ = new StringWidget("Scan Params (fine-range, fine-step)", "5,0.125");
   layout_2->addWidget(sw_angscanp_->button(), 1, 0);
   layout_2->addWidget(sw_angscanp_->lineed(), 1, 1);
   // ---------------------
