@@ -54,8 +54,7 @@ AssemblyMainWindow::AssemblyMainWindow(const unsigned int camera_ID, QWidget* pa
   assembleView_(0),
 
   checkbox1(0),
-  checkbox2(0),
-  checkbox3(0),
+//  checkbox3(0),
   checkbox4(0),
 
   // controller(s)
@@ -233,19 +232,15 @@ AssemblyMainWindow::AssemblyMainWindow(const unsigned int camera_ID, QWidget* pa
     checkbox1 = new QCheckBox("Auto-Focusing", this);
     toolBar_->addWidget(checkbox1);
 
-    checkbox2 = new QCheckBox("Precision", this);
-    toolBar_->addWidget(checkbox2);
-
-    checkbox3 = new QCheckBox("Assembly", this);
-    toolBar_->addWidget(checkbox3);
+//    checkbox3 = new QCheckBox("Assembly", this);
+//    toolBar_->addWidget(checkbox3);
 
     checkbox4 = new QCheckBox("Alignment", this);
     toolBar_->addWidget(checkbox4);
 
-    connect(checkbox1, SIGNAL(stateChanged(int)), this, SLOT(changeState_AutoFocus          (int)));
-    connect(checkbox2, SIGNAL(stateChanged(int)), this, SLOT(changeState_PrecisionEstimation(int)));
-    connect(checkbox3, SIGNAL(stateChanged(int)), this, SLOT(changeState_SandwichAssembly   (int)));
-    connect(checkbox4, SIGNAL(stateChanged(int)), this, SLOT(changeState_Alignment          (int)));
+    connect(checkbox1, SIGNAL(stateChanged(int)), this, SLOT(changeState_AutoFocus       (int)));
+//    connect(checkbox3, SIGNAL(stateChanged(int)), this, SLOT(changeState_SandwichAssembly(int)));
+    connect(checkbox4, SIGNAL(stateChanged(int)), this, SLOT(changeState_Alignment       (int)));
 
     this->setCentralWidget(tabWidget_);
 
@@ -271,9 +266,9 @@ AssemblyMainWindow::AssemblyMainWindow(const unsigned int camera_ID, QWidget* pa
 
 void AssemblyMainWindow::liveUpdate()
 {
-    NQLog("AssemblyMainWindow", NQLog::Debug) << "liveUpdate: emitting signal \"image\"";
+    NQLog("AssemblyMainWindow", NQLog::Debug) << "liveUpdate: emitting signal \"image_request\"";
 
-    emit image();
+    emit image_request();
 }
 
 void AssemblyMainWindow::enable_images()
@@ -289,7 +284,7 @@ void AssemblyMainWindow::enable_images()
     connect(image_ctr_, SIGNAL(camera_enabled()) , this      , SLOT(connect_images()));
     connect(image_ctr_, SIGNAL(camera_disabled()), this      , SLOT(disconnect_images()));
 
-    connect(this      , SIGNAL(image())          , image_ctr_, SLOT(acquire_image()));
+    connect(this      , SIGNAL(image_request())  , image_ctr_, SLOT(acquire_image()));
     connect(this      , SIGNAL(AutoFocus_ON ())  , image_ctr_, SLOT( enable_AutoFocus()));
     connect(this      , SIGNAL(AutoFocus_OFF())  , image_ctr_, SLOT(disable_AutoFocus()));
 
@@ -309,7 +304,7 @@ void AssemblyMainWindow::disable_images()
       disconnect(image_ctr_, SIGNAL(camera_enabled()) , this      , SLOT(connect_images()));
       disconnect(image_ctr_, SIGNAL(camera_disabled()), this      , SLOT(disconnect_images()));
 
-      disconnect(this      , SIGNAL(image())          , image_ctr_, SLOT(acquire_image()));
+      disconnect(this      , SIGNAL(image_request())  , image_ctr_, SLOT(acquire_image()));
       disconnect(this      , SIGNAL(AutoFocus_ON())   , image_ctr_, SLOT( enable_AutoFocus()));
       disconnect(this      , SIGNAL(AutoFocus_OFF())  , image_ctr_, SLOT(disable_AutoFocus()));
 
@@ -359,53 +354,9 @@ void AssemblyMainWindow::changeState_AutoFocus(int state)
     return;
 }
 
-void AssemblyMainWindow::changeState_PrecisionEstimation(int /* state */)
-{
 /*
-   if(state == 2)
-   {
-     connect(assembleView_, SIGNAL(launchPrecisionEstimation(double, double, double, double, double, double, int)), cmdr_zscan,
-                             SLOT  (run_precisionestimation  (double, double, double, double, double, double, int)));
-
-     connect   (cmdr_zscan        , SIGNAL(moveAbsolute(double, double, double, double)), motion_manager_, SLOT(moveAbsolute(double, double,double, double)));
-     connect   (motion_model_     , SIGNAL(motionFinished())                            , cmdr_zscan    , SLOT(process_step()));
-     connect   (cmdr_zscan        , SIGNAL(toggleVacuum(int))                           , conradManager_, SLOT(toggleVacuum(int)));
-     connect   (conradManager_    , SIGNAL(updateVacuumChannelState(int, bool))         , cmdr_zscan    , SIGNAL(nextStep()));
-
-
-
-//      for real lab tests with camera
-      connect   (cmdr_zscan, SIGNAL(acquireImage())          , camera_      , SLOT(acquireImage()));
-      connect   (cmdr_zscan, SIGNAL(changeVacuumState())     , cmdr_zscan   , SLOT(changeVacuumState()));
-      connect   (cmdr_zscan, SIGNAL(showHistos(int, QString)), assembleView_, SLOT(updateImage(int, QString)));
-
-      connect   (camera_       , SIGNAL(imageAcquired(cv::Mat))                           , object_finder_, SLOT(runObjectDetection_labmode(cv::Mat)));
-      connect   (object_finder_, SIGNAL(reportObjectLocation(int, double, double, double)), cmdr_zscan    , SLOT(fill_positionvectors(int, double, double, double)));
-      connect   (cmdr_zscan    , SIGNAL(nextStep())                                       , cmdr_zscan    , SLOT(process_step()));
-
-      NQLog("AssemblyMainWindow", NQLog::Message) << "changeState_PrecisionEstimation" << "pushup-mode enabled";
-    }
-    else if(state == 0 )
-    {
-      disconnect(cmdr_zscan    , SIGNAL(moveAbsolute(double, double,double, double)), motion_manager_, SLOT(moveAbsolute(double, double,double, double)));
-      disconnect(motion_model_ , SIGNAL(motionFinished())                           , camera_        , SLOT(acquireImage()));
-      disconnect(cmdr_zscan    , SIGNAL(toggleVacuum(int))                          , conradManager_ , SLOT(toggleVacuum(int)));
-      disconnect(conradManager_, SIGNAL(updateVacuumChannelState(int, bool))        , cmdr_zscan     , SIGNAL(nextStep()));
-      disconnect(camera_       , SIGNAL(imageAcquired(cv::Mat))                     , object_finder_ , SLOT(findMarker_templateMatching(int, cv::Mat)));
-      disconnect(object_finder_, SIGNAL(getImageBlur(cv::Mat, cv::Rect))            , cmdr_zscan     , SLOT(write_image(cv::Mat, cv::Rect)) );
-      disconnect(cmdr_zscan    , SIGNAL(read_graph(vector<double>,vector<double>))  , autoFocusView_ , SLOT(read_graph(vector<double>,vector<double>)));
-      disconnect(cmdr_zscan    , SIGNAL(updateText(double))                         , autoFocusView_ , SLOT(updateText(double)));
-
-      NQLog("AssemblyMainWindow", NQLog::Message) << "changeState_PrecisionEstimation" << "pushup-mode disabled";
-    }
-
-    return;
-*/
-}
-
-void AssemblyMainWindow::changeState_SandwichAssembly(int /* state */)
+void AssemblyMainWindow::changeState_SandwichAssembly(int state)
 {
-/*
     if(state == 2){
 
       NQLog("AssemblyMainWindow::changeState_SandwichAssembly") << ": state  " << state;
@@ -451,9 +402,10 @@ void AssemblyMainWindow::changeState_SandwichAssembly(int /* state */)
       disconnect(object_finder_   , SIGNAL(reportObjectLocation(int,double,double,double)), module_assembler_, SLOT(fill_positionvectors(int, double,double,double)));
       disconnect(module_assembler_, SIGNAL(nextStep())                                    , module_assembler_, SLOT(process_step()));
     }
-*/
+
     return;
 }
+*/
 
 void AssemblyMainWindow::changeState_Alignment(int state)
 {
@@ -510,9 +462,9 @@ void AssemblyMainWindow::get_image()
     }
 
     NQLog("AssemblyMainWindow", NQLog::Spam) << "get_image"
-       << ": emitting signal \"image\"";
+       << ": emitting signal \"image_request\"";
 
-    emit image();
+    emit image_request();
 }
 
 void AssemblyMainWindow::connect_images()

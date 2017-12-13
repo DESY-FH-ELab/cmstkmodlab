@@ -71,10 +71,9 @@ class AssemblyMainWindow : public QMainWindow
     void    connect_images();
     void disconnect_images();
 
-    void changeState_AutoFocus          (int);
-    void changeState_PrecisionEstimation(int);
-    void changeState_SandwichAssembly   (int);
-    void changeState_Alignment          (int);
+    void changeState_AutoFocus       (int);
+//  void changeState_SandwichAssembly(int);
+    void changeState_Alignment       (int);
 
     void    connect_multipickupNpatrec(const AssemblyMultiPickupTester::Configuration&);
     void disconnect_multipickupNpatrec();
@@ -89,7 +88,7 @@ class AssemblyMainWindow : public QMainWindow
     void images_ON();
     void images_OFF();
 
-    void image();
+    void image_request();
 
     void updateVacuumChannelsStatus();
 
@@ -134,8 +133,7 @@ class AssemblyMainWindow : public QMainWindow
     AssemblyModuleAssembler* assembleView_;
 
     QCheckBox* checkbox1;
-    QCheckBox* checkbox2;
-    QCheckBox* checkbox3;
+//    QCheckBox* checkbox3;
     QCheckBox* checkbox4;
 
     // controller(s)
