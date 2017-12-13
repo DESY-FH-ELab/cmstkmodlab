@@ -28,7 +28,7 @@
 #include <TCanvas.h>
 #include <TGraph.h>
 
-AssemblyAssembler::AssemblyAssembler(LStepExpressMotionManager* motion_manager, QObject* parent) :
+AssemblyAssembler::AssemblyAssembler(const LStepExpressMotionManager* motion_manager, QObject* parent) :
   QObject(parent),
   motion_manager_(motion_manager),
   motion_manager_enabled_(false)
@@ -762,24 +762,24 @@ void AssemblyAssembler::run_alignment(int stage, double x_pr, double y_pr, doubl
     }
 }
 
-void AssemblyAssembler::run_scan(double range, int steps)
-{    
-    NQLog("AssemblyAssembler::scan") << range << ",  " <<steps;
-
-    // steps = 10;
-    nTotalImages = steps;
-       
-    double step_distance = range/steps;
-    int nSteps = 0;
-    
-    x_vals.clear();
-    y_vals.clear();
-
-    nAcquiredImages = 1;
-
-//    emit getImage();
-    this->moveRelative(0.0, 0.0, 1.0, 0.0);
-}
+//!! void AssemblyAssembler::run_scan(double range, int steps)
+//!! {    
+//!!     NQLog("AssemblyAssembler::scan") << range << ",  " <<steps;
+//!! 
+//!!     // steps = 10;
+//!!     nTotalImages = steps;
+//!!        
+//!!     double step_distance = range/steps;
+//!!     int nSteps = 0;
+//!!     
+//!!     x_vals.clear();
+//!!     y_vals.clear();
+//!! 
+//!!     nAcquiredImages = 1;
+//!! 
+//!! //    emit getImage();
+//!!     this->moveRelative(0.0, 0.0, 1.0, 0.0);
+//!! }
 
 //!! void AssemblyAssembler::write_image(cv::Mat newImage, cv::Rect marker_rect)
 //!! {

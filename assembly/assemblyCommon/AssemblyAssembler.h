@@ -38,7 +38,7 @@ class AssemblyAssembler : public QObject
  Q_OBJECT
 
   public:
-    explicit AssemblyAssembler(LStepExpressMotionManager*, QObject* parent=0);
+    explicit AssemblyAssembler(const LStepExpressMotionManager*, QObject* parent=0);
     virtual ~AssemblyAssembler() {}
 
     double marker_x, marker_y, marker_z, marker_theta;
@@ -58,7 +58,7 @@ class AssemblyAssembler : public QObject
 
   protected:
 
-    LStepExpressMotionManager* motion_manager_;
+    const LStepExpressMotionManager* motion_manager_;
 
     bool motion_manager_enabled_;
 
@@ -71,7 +71,7 @@ class AssemblyAssembler : public QObject
 
   public slots:
 
-    void run_scan(double, int);
+//!!    void run_scan(double, int);
 //!!    void write_image(cv::Mat, cv::Rect);
 //!!    void run_sandwitchassembly(double, double, double, double, double, double, double, double, double);
 //!!    void process_step();
@@ -87,17 +87,17 @@ class AssemblyAssembler : public QObject
 
     void move_relative(const double, const double, const double, const double);
 
-    void getImage();
-    void moveAbsolute(const double, const double, const double, const double);
-    void updateScanImage(cv::Mat);
-    void make_graph(const std::string);
-    void updateText(double);
-    void nextStep();
+//!!    void getImage();
+//!!    void moveAbsolute(const double, const double, const double, const double);
+//!!    void updateScanImage(cv::Mat);
+//!!    void make_graph(const std::string);
+//!!    void updateText(double);
+//!!    void nextStep();
     void nextAlignmentStep(int, double, double, double);
     void acquireImage();
-    void makeDummies(int, double,double,double);
-    void showHistos(int, QString);
-    void toggleVacuum(int);
+//!!    void makeDummies(int, double,double,double);
+//!!    void showHistos(int, QString);
+//!!    void toggleVacuum(int);
 
     void motion_finished();
 };
