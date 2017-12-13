@@ -528,8 +528,8 @@ void AssemblyAssembler::run_alignment(int stage, double x_pr, double y_pr, doubl
         x1_pos = motion_manager_->get_position_X();
         y1_pos = motion_manager_->get_position_Y();
 
-        NQLog("AssemblyAssembler", NQLog::Spam) << "run_alignment step [" << alignment_step << "] x-position = " << x1_pos;
-        NQLog("AssemblyAssembler", NQLog::Spam) << "run_alignment step [" << alignment_step << "] y-position = " << y1_pos;
+        NQLog("AssemblyAssembler", NQLog::Spam) << "run_alignment step [" << alignment_step << "]: x-position = " << x1_pos;
+        NQLog("AssemblyAssembler", NQLog::Spam) << "run_alignment step [" << alignment_step << "]: y-position = " << y1_pos;
         NQLog("AssemblyAssembler", NQLog::Spam) << "run_alignment step [" << alignment_step << "]";
 
         NQLog("AssemblyAssembler", NQLog::Spam) << "run_alignment step [" << alignment_step << "]"
@@ -633,14 +633,14 @@ void AssemblyAssembler::run_alignment(int stage, double x_pr, double y_pr, doubl
         double a2 = atan(slope) * (180.0/3.14);
         double del_a = a1 - a2;
 
-        NQLog("AssemblyAssembler", NQLog::Spam) << "run_alignment step [" << alignment_step << "] target angle = " << a1;
-        NQLog("AssemblyAssembler", NQLog::Spam) << "run_alignment step [" << alignment_step << "] sensor is aligned with angle = " << a2;
-        NQLog("AssemblyAssembler", NQLog::Spam) << "run_alignment step [" << alignment_step << "] need to rotate by " << del_a << " degrees ";
+        NQLog("AssemblyAssembler", NQLog::Spam) << "run_alignment step [" << alignment_step << "]: target angle = " << a1;
+        NQLog("AssemblyAssembler", NQLog::Spam) << "run_alignment step [" << alignment_step << "]: sensor is aligned with angle = " << a2;
+        NQLog("AssemblyAssembler", NQLog::Spam) << "run_alignment step [" << alignment_step << "]: need to rotate by " << del_a << " degrees ";
         NQLog("AssemblyAssembler", NQLog::Spam) << "run_alignment step [" << alignment_step << "]";
 
-        NQLog("AssemblyAssembler", NQLog::Spam) << "run_alignment step [" << alignment_step << "] target slope = " << wanted_slope;
-        NQLog("AssemblyAssembler", NQLog::Spam) << "run_alignment step [" << alignment_step << "] sensor is aligned with slope = " << slope;
-        NQLog("AssemblyAssembler", NQLog::Spam) << "run_alignment step [" << alignment_step << "] need to rotate by " << delta_theta_deg << " degrees ";
+        NQLog("AssemblyAssembler", NQLog::Spam) << "run_alignment step [" << alignment_step << "]: target slope = " << wanted_slope;
+        NQLog("AssemblyAssembler", NQLog::Spam) << "run_alignment step [" << alignment_step << "]: sensor is aligned with slope = " << slope;
+        NQLog("AssemblyAssembler", NQLog::Spam) << "run_alignment step [" << alignment_step << "]: need to rotate by " << delta_theta_deg << " degrees ";
         NQLog("AssemblyAssembler", NQLog::Spam) << "run_alignment step [" << alignment_step << "]";
 
         NQLog("AssemblyAssembler", NQLog::Spam) << "run_alignment step [" << alignment_step << "]"
@@ -745,7 +745,7 @@ void AssemblyAssembler::run_alignment(int stage, double x_pr, double y_pr, doubl
             else
             {
                 NQLog("AssemblyAssembler", NQLog::Spam) << "run_alignment step [" << (alignment_step-1) << "]";
-                NQLog("AssemblyAssembler", NQLog::Spam) << "run_alignment step [" << (alignment_step-1) << "] delta-theta >=" << 0.05 << ", requires large rotation => iterative procedure";
+                NQLog("AssemblyAssembler", NQLog::Spam) << "run_alignment step [" << (alignment_step-1) << "]: delta-theta >=" << 0.05 << ", requires large rotation => iterative procedure";
                 NQLog("AssemblyAssembler", NQLog::Spam) << "run_alignment step [" << (alignment_step-1) << "]";
 
                 alignment_step = 0;

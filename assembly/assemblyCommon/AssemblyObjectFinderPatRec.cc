@@ -654,9 +654,6 @@ void AssemblyObjectFinderPatRec::template_matching(const cv::Mat& img_master, co
     emit image_mat(3, img_master_bin);
     emit image_mat(4, img_templa_bin);
 
-    // update line edits in view
-    emit reportObjectLocation(1, best_matchLoc.x, best_matchLoc.y, best_theta);
-
     // text output file -
     std::ofstream txtfile(output_dir+"/PatRec_results.txt");
     if(txtfile.is_open())
@@ -671,6 +668,12 @@ void AssemblyObjectFinderPatRec::template_matching(const cv::Mat& img_master, co
     NQLog("AssemblyObjectFinderPatRec", NQLog::Spam) << "template_matching"
        << ": created output file: " << output_dir+"/PatRec_results.txt";
     // ------------------
+
+    // update line edits in view
+    NQLog("AssemblyObjectFinderPatRec", NQLog::Spam) << "template_matching"
+       << ": emitting signal \"reportObjectLocation(1, " << best_matchLoc.x << ", " << best_matchLoc.y << ", " << best_theta << ")\"";
+
+    emit reportObjectLocation(1, best_matchLoc.x, best_matchLoc.y, best_theta);
 
     NQLog("AssemblyObjectFinderPatRec", NQLog::Spam) << "template_matching"
        << ": emitting signal \"PatRec_exitcode(0)\"";
