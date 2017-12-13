@@ -101,11 +101,11 @@ AssemblyAutoFocus::AssemblyAutoFocus(QWidget* parent) :
   QFormLayout*  fl1 = new QFormLayout();
   g1->addLayout(fl1, 2, 0);
 
-  QLabel* lt1 = new QLabel("[z-range (mm), number of steps]");
+  QLabel* lt1 = new QLabel("Max Delta-Z [mm], # Steps");
   lineed_1_ = new QLineEdit("");
   fl1->addRow(lt1, lineed_1_);
 
-  QLabel* lt2 = new QLabel("Best-Focus z-axis value");
+  QLabel* lt2 = new QLabel("Z (best focus) [mm]");
   lineed_2_ = new QLineEdit("");
   fl1->addRow(lt2, lineed_2_);
 
@@ -162,7 +162,7 @@ void AssemblyAutoFocus::configure_scan()
     const double x_d = x.toDouble();
     const double y_d = y.toInt();
 
-    NQLog("AssemblyAutoFocus", NQLog::Debug) << "configure_scan"
+    NQLog("AssemblyAutoFocus", NQLog::Spam) << "configure_scan"
        << ": emitting signal \"scan_config(" << x_d << ", " << y_d << "\")";
 
     emit scan_config(x_d, y_d);
@@ -182,7 +182,7 @@ void AssemblyAutoFocus::read_graph(const QString& img_path)
   {
     const cv::Mat img = cv::imread(img_path.toStdString(), CV_LOAD_IMAGE_COLOR);
 
-    NQLog("AssemblyAutoFocus", NQLog::Debug) << "read_graph"
+    NQLog("AssemblyAutoFocus", NQLog::Spam) << "read_graph"
        << ": emitting signal \"graph_found\"";
 
     emit graph_found(img);
@@ -198,12 +198,10 @@ void AssemblyAutoFocus::read_graph(const QString& img_path)
 
 void AssemblyAutoFocus::updateText(const double z)
 {
-  const QString qstr = "Absolute focal point (measured) = "+QString::fromStdString(std::to_string(z));
+  lineed_2_->setText(QString::fromStdString(std::to_string(z)));
 
-  lineed_2_->setText(qstr);
-
-  NQLog("AssemblyAutoFocus", NQLog::Debug) << "updateText"
-     << ": updated value of absolute focal point";
+  NQLog("AssemblyAutoFocus", NQLog::Spam) << "updateText"
+     << ": displayed value of best z-position (focal point)";
 
   return;
 }
