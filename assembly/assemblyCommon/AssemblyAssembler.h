@@ -67,12 +67,12 @@ class AssemblyAssembler : public QObject
     void    connect_motion_manager() { this->enable_motion_manager(true) ; }
     void disconnect_motion_manager() { this->enable_motion_manager(false); }
 
-    double imageVariance(cv::Mat img_input, cv::Rect rectangle);
+//!!    double imageVariance(cv::Mat img_input, cv::Rect rectangle);
 
   public slots:
 
     void run_scan(double, int);
-    void write_image(cv::Mat, cv::Rect);
+//!!    void write_image(cv::Mat, cv::Rect);
     void run_sandwitchassembly(double, double, double, double, double, double, double, double, double);
     void process_step();
     void run_alignment(int, double, double, double);
