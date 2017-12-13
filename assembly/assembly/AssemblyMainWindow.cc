@@ -365,7 +365,7 @@ void AssemblyMainWindow::changeState_SandwichAssembly(int state)
                              SLOT  (run_sandwitchassembly  (double, double, double, double, double, double, double, double, double)));
 
       connect(module_assembler_ , SIGNAL(moveAbsolute(double, double, double, double)), motion_manager_   , SLOT(moveAbsolute(double, double,double, double)));
-      connect(motion_model_, SIGNAL(motionFinished())                            , module_assembler_, SLOT(process_step()));
+      connect(motion_model_     , SIGNAL(motionFinished())                            , module_assembler_, SLOT(process_step()));
       connect(module_assembler_ , SIGNAL(toggleVacuum(int))                           , conradManager_   , SLOT(toggleVacuum(int)));
       connect(conradManager_    , SIGNAL(updateVacuumChannelState(int, bool))         , module_assembler_, SIGNAL(nextStep()));
 
@@ -419,7 +419,6 @@ void AssemblyMainWindow::changeState_Alignment(int state)
       connect   (object_finder_    , SIGNAL(binary_image_updated())                           , object_finder_   , SLOT(run_PatRec_lab_marker()));
       connect   (object_finder_    , SIGNAL(reportObjectLocation(int, double, double, double)), module_assembler_, SLOT(run_alignment(int, double, double, double)));
 
-      connect   (module_assembler_ , SIGNAL(moveRelative(double, double, double, double))     , module_assembler_, SLOT(move_relative(double, double, double, double)));
       connect   (module_assembler_ , SIGNAL(motion_finished())                                , module_assembler_, SLOT(launch_next_alignment_step()));
 
       NQLog("AssemblyMainWindow", NQLog::Message) << "changeState_Alignment: alignment enabled";
@@ -434,7 +433,6 @@ void AssemblyMainWindow::changeState_Alignment(int state)
       disconnect(object_finder_    , SIGNAL(binary_image_updated())                           , object_finder_   , SLOT(run_PatRec_lab_marker()));
       disconnect(object_finder_    , SIGNAL(reportObjectLocation(int, double, double, double)), module_assembler_, SLOT(run_alignment(int, double, double, double)));
 
-      disconnect(module_assembler_ , SIGNAL(moveRelative(double, double, double, double))     , module_assembler_, SLOT(move_relative(double, double, double, double)));
       disconnect(module_assembler_ , SIGNAL(motion_finished())                                , module_assembler_, SLOT(launch_next_alignment_step()));
 
       NQLog("AssemblyMainWindow", NQLog::Message) << "changeState_Alignment: alignment disabled";

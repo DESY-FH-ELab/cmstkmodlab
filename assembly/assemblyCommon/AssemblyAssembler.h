@@ -73,20 +73,21 @@ class AssemblyAssembler : public QObject
 
     void run_scan(double, int);
 //!!    void write_image(cv::Mat, cv::Rect);
-    void run_sandwitchassembly(double, double, double, double, double, double, double, double, double);
-    void process_step();
+//!!    void run_sandwitchassembly(double, double, double, double, double, double, double, double, double);
+//!!    void process_step();
     void run_alignment(int, double, double, double);
     void launch_next_alignment_step();
-    void fill_positionvectors(int, double, double, double);
+//!!    void fill_positionvectors(int, double, double, double);
 
-    void move_relative(const double, const double, const double, const double);
+    void moveRelative(const double, const double, const double, const double);
 
-    void stop_motion();
+    void finish_motion();
 
   signals:
 
+    void move_relative(const double, const double, const double, const double);
+
     void getImage();
-    void moveRelative(const double, const double, const double, const double);
     void moveAbsolute(const double, const double, const double, const double);
     void updateScanImage(cv::Mat);
     void make_graph(const std::string);

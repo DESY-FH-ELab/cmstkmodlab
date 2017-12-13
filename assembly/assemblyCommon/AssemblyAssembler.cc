@@ -56,7 +56,8 @@ void AssemblyAssembler::enable_motion_manager(const bool arg)
 
   if(arg)
   {
-    connect(motion_manager_, SIGNAL(motion_finished()), this, SLOT(stop_motion()));
+    connect(this, SIGNAL(move_relative(double, double, double, double)), motion_manager_, SLOT(moveRelative(double, double, double, double)));
+    connect(motion_manager_, SIGNAL(motion_finished()), this, SLOT(finish_motion()));
 
     motion_manager_enabled_ = true;
 
@@ -65,7 +66,8 @@ void AssemblyAssembler::enable_motion_manager(const bool arg)
   }
   else
   {
-    disconnect(motion_manager_, SIGNAL(motion_finished()), this, SLOT(stop_motion()));
+    disconnect(this, SIGNAL(move_relative(double, double, double, double)), motion_manager_, SLOT(moveRelative(double, double, double, double)));
+    disconnect(motion_manager_, SIGNAL(motion_finished()), this, SLOT(finish_motion()));
 
     motion_manager_enabled_ = false;
 
@@ -76,78 +78,78 @@ void AssemblyAssembler::enable_motion_manager(const bool arg)
   return;
 }
 
-void AssemblyAssembler::move_relative(const double x, const double y, const double z, const double a)
+void AssemblyAssembler::moveRelative(const double x, const double y, const double z, const double a)
 {
   this->connect_motion_manager();
 
-  motion_manager_->moveRelative(x, y, z, a);
+  emit move_relative(x, y, z, a);
 }
 
-void AssemblyAssembler::stop_motion()
+void AssemblyAssembler::finish_motion()
 {
   this->disconnect_motion_manager();
 
-  NQLog("AssemblyAssembler", NQLog::Debug) << "stop_motion"
+  NQLog("AssemblyAssembler", NQLog::Debug) << "finish_motion"
      << ": emitting signal \"motion_finished\"";
 
   emit motion_finished();
 }
 
-void  AssemblyAssembler::run_sandwitchassembly(double x_a, double y_a, double z_a , double x_b, double y_b, double z_b, double x_t, double y_t, double z_t)
-{
-    NQLog("AssemblyAssembler::run_sandwichassembly")
-        << " x_a = " << x_a << " y_a = " << y_a << " z_a = " << z_a
-        << " x_b = " << x_b << " y_b = " << y_b << " z_b = " << z_b
-        << " x_t = " << x_t << " y_t = " << y_t << " z_t = " << z_t;
+//!! void AssemblyAssembler::run_sandwitchassembly(double x_a, double y_a, double z_a , double x_b, double y_b, double z_b, double x_t, double y_t, double z_t)
+//!! {
+//!!     NQLog("AssemblyAssembler::run_sandwichassembly")
+//!!         << " x_a = " << x_a << " y_a = " << y_a << " z_a = " << z_a
+//!!         << " x_b = " << x_b << " y_b = " << y_b << " z_b = " << z_b
+//!!         << " x_t = " << x_t << " y_t = " << y_t << " z_t = " << z_t;
+//!! 
+//!!     x_assembly = x_a;
+//!!     y_assembly = y_a;
+//!!     z_assembly = z_a;
+//!! 
+//!!     x_bottom = x_b;
+//!!     y_bottom = y_b;
+//!!     z_bottom = z_b;
+//!! 
+//!!     x_top = x_t;
+//!!     y_top = y_t;
+//!!     z_top = z_t;
+//!! 
+//!!     step = 0;
+//!! 
+//!!     // Parameters of assembly.
+//!!     z_prepickup_distance =  20.00;
+//!!     platform_rotation    = -90.00;
+//!!     z_spacer_thickness   =   2.00;
+//!!     z_sensor_thickness   =   0.30;
+//!! 
+//!!     emit nextStep();
+//!! 
+//!!     return;
+//!! }
 
-    x_assembly = x_a;
-    y_assembly = y_a;
-    z_assembly = z_a;
-
-    x_bottom = x_b;
-    y_bottom = y_b;
-    z_bottom = z_b;
-
-    x_top = x_t;
-    y_top = y_t;
-    z_top = z_t;
-
-    step = 0;
-
-    // Parameters of assembly.
-    z_prepickup_distance = 20.00;
-    platform_rotation = -90.00;
-    z_spacer_thickness = 2.00;
-    z_sensor_thickness = 0.30;
-
-    emit nextStep();
-
-    return;
-}
-
-void  AssemblyAssembler::fill_positionvectors(int stage, double x_pr, double y_pr, double theta_pr)
-{
-    // x_pr     = r->Gaus(0.0,  1.0);
-    // y_pr     = r->Gaus(0.0,  5.0);
-    // theta_pr = r->Gaus(0.0, 10.0);
-
-    NQLog("AssemblyAssembler::fill_positionvectors") << "step = " << step << " x = "<< x_pr << " y = " << y_pr << " theta = " << theta_pr;
-
-    if(step == 2)
-    {
-        xpre_vec.push_back(x_pr);
-        ypre_vec.push_back(y_pr);
-        thetapre_vec.push_back(theta_pr);
-    }
-    else if(step == 11){
-
-        xpost_vec.push_back(x_pr);
-        ypost_vec.push_back(y_pr);
-        thetapost_vec.push_back(theta_pr);
-    }
-
-    emit nextStep();
-}
+//!! void  AssemblyAssembler::fill_positionvectors(int stage, double x_pr, double y_pr, double theta_pr)
+//!! {
+//!!     // x_pr     = r->Gaus(0.0,  1.0);
+//!!     // y_pr     = r->Gaus(0.0,  5.0);
+//!!     // theta_pr = r->Gaus(0.0, 10.0);
+//!! 
+//!!     NQLog("AssemblyAssembler::fill_positionvectors") << "step = " << step << " x = "<< x_pr << " y = " << y_pr << " theta = " << theta_pr;
+//!! 
+//!!     if(step == 2)
+//!!     {
+//!!         xpre_vec.push_back(x_pr);
+//!!         ypre_vec.push_back(y_pr);
+//!!         thetapre_vec.push_back(theta_pr);
+//!!     }
+//!!     else if(step == 11){
+//!! 
+//!!         xpost_vec.push_back(x_pr);
+//!!         ypost_vec.push_back(y_pr);
+//!!         thetapost_vec.push_back(theta_pr);
+//!!     }
+//!! 
+//!!     emit nextStep();
+//!! }
 
 //void  AssemblyAssembler::run_alignment(){
 //    NQLog("AssemblyAssembler::run_alignment")<<  " tolerance = " << tolerance <<  " max iterations = "<< max_iterations << endl;
@@ -179,267 +181,267 @@ void  AssemblyAssembler::fill_positionvectors(int stage, double x_pr, double y_p
 
 //}
 
-void AssemblyAssembler::process_step(){
-
-    NQLog("AssemblyAssembler::") << "process_step";
-
-    if(step == 0)
-    {
-      NQLog("AssemblyAssembler:: step == ") << step;
-      step++;
-
-      // Step 0: Go to measurement position for ref corner (needs to be manually pre-determined)
-      emit moveAbsolute(x_assembly, y_assembly, z_assembly + z_prepickup_distance, 0.0);
-    }
-    else if(step == 1)
-    {
-      NQLog("AssemblyAssembler:: step == ") << step;
-    }
-    else if(step == 2)
-    {
-      NQLog("AssemblyAssembler:: step == ") << step;
-      step++;
-
-      // Step 2: Turn on vacuum
-      emit toggleVacuum(1); // vacuum line 1, pick up tool
-    }
-
-    /*
-    else if (step == 3){
-
-      NQLog("AssemblyAssembler:: step == ") << step;
-        step++;
-// Step 3: Go to top part pre-pick up position
-        emit moveAbsolute(x_top, y_top, (z_top + z_prepickup_distance), 0.0);
-        //emit nextStep();
-        
-    }else if (step == 4){
-
-      NQLog("AssemblyAssembler:: step == ") << step;
-        step++;
-// Step 4: Go to assembly pre-pick up position
-        emit moveAbsolute(x_assembly, y_assembly, (z_assembly + z_prepickup_distance), 0.0);
-        //emit nextStep();
-        
-    }else if (step == 5){
-
-      NQLog("AssemblyAssembler:: step == ") << step;
-        step++;
-// Step 5: Go to assembly pick up position
-        emit moveAbsolute(x_assembly, y_assembly, z_assembly, 0.0);
-        //emit nextStep();
-
-    }else if (step == 6){
-
-      NQLog("AssemblyAssembler:: step == ") << step;
-        step++;
-// Step 6 : Timer for fast gluing!!!
-        emit nextStep();
-        
-    }else if (step == 7){
-
-      NQLog("AssemblyAssembler:: step == ") << step;
-        step++;
-        //emit nextStep();
-// Step 7: Release vacuum under spacers
-        emit toggleVacuum(2);   //vacuum line 2, spacers pick up tool
-
-        
-    }else if (step == 8){
-
-      NQLog("AssemblyAssembler:: step == ") << step;
-        step++;
-// Step 8: Go to assembly pre-pick up position
-        emit moveAbsolute(x_assembly, y_assembly, (z_assembly + z_prepickup_distance), 0.0);
-        //emit nextStep();
-        
-        
-    }else if (step == 9){
-
-      NQLog("AssemblyAssembler:: step == ") << step;
-        step++;
-// Step 9: Go to top pre-pick up position
-        emit moveAbsolute(x_top, y_top, (z_top + z_spacer_thickness + z_prepickup_distance), 0.0);
-        //emit nextStep();
-
-    }else if (step == 10){
-
-      NQLog("AssemblyAssembler:: step == ") << step;
-        step++;
-// Step 10: Go to top pick up position
-        emit moveAbsolute(x_top, y_top, (z_top + z_spacer_thickness), 0.0);
-        //emit nextStep();
-
-    }else if (step == 11){
-
-      NQLog("AssemblyAssembler:: step == ") << step;
-        step++;
-        //emit nextStep();
-// Step 11: Release vacuum, pick up tool
-        emit toggleVacuum(1);   //vacuum line 1, pick up tool
-
-    }else if (step == 12){
-
-      NQLog("AssemblyAssembler:: step == ") << step;
-        step++;
-// Step 9: Go to top part pre-pick up position
-        emit moveAbsolute(x_top, y_top, (z_top + z_spacer_thickness + z_prepickup_distance), 0.0);
-        //emit nextStep();
-
-    }else if (step == 13){
-
-      NQLog("AssemblyAssembler:: step == ") << step;
-        step++;
-// Step 13: Go to bottom part pre-pick up position
-        emit moveAbsolute(x_bottom, y_bottom, (z_bottom + z_prepickup_distance), 0.0);
-        //emit nextStep();
-
-    }else if (step == 14){
-
-      NQLog("AssemblyAssembler:: step == ") << step;
-        step++;
-// Step 14: Go to bottom part pick up position
-        emit moveAbsolute(x_bottom, y_bottom, z_bottom, 0.0);
-        //emit nextStep();
-
-    }else if (step == 15){
-
-      NQLog("AssemblyAssembler:: step == ") << step;
-        step++;
-        //emit nextStep();
-// Step 151: Turn on. Pick up bottom part
-        emit toggleVacuum(1);   //vacuum line 1, pick up tool
-
-    }else if (step == 16){
-
-      NQLog("AssemblyAssembler:: step == ") << step;
-        step++;
-// Step 16: Go to bottom part pre-pick up position
-        emit moveAbsolute(x_bottom, y_bottom, (z_bottom + z_prepickup_distance), 0.0);
-        //emit nextStep();
-
-    }else if (step == 17){
-
-      NQLog("AssemblyAssembler:: step == ") << step;
-        step++;
-// Step 17: Go to assembly rotated(!) pre-pick up position
-        emit moveAbsolute(x_assembly, y_assembly, (z_assembly + z_prepickup_distance), platform_rotation);
-        //emit nextStep();
-
-    }else if (step == 18){
-
-      NQLog("AssemblyAssembler:: step == ") << step;
-        step++;
-// Step 18: Go to assembly rotated(!) pick up position
-        emit moveAbsolute(x_assembly, y_assembly, z_assembly, platform_rotation);
-        //emit nextStep();
-
-    }else if (step == 19){
-
-      NQLog("AssemblyAssembler:: step == ") << step;
-        step++;
-        //emit nextStep();
-// Step 11: Release vacuum, pick up tool
-        emit toggleVacuum(1);   //vacuum line 1, pick up tool
-
-    }else if (step == 20){
-
-      NQLog("AssemblyAssembler:: step == ") << step;
-        step++;
-// Step 20: Go to assembly rotated(!) pre-pick up position
-        emit moveAbsolute(x_assembly, y_assembly, (z_assembly + z_prepickup_distance), platform_rotation);
-        //emit nextStep();
-
-    }else if (step == 21){
-
-      NQLog("AssemblyAssembler:: step == ") << step;
-        step++;
-// Step 21: Go to top pre-pick up position
-        emit moveAbsolute(x_top, y_top, (z_top + z_spacer_thickness + z_prepickup_distance), platform_rotation);
-        //emit nextStep();
-
-   
-    }else if (step == 22){
-
-      NQLog("AssemblyAssembler:: step == ") << step;
-        step++;
-// Step 22: Go to top pick up position
-        emit moveAbsolute(x_top, y_top, (z_top + z_spacer_thickness), platform_rotation);
-        //emit nextStep();
-
-    }else if (step == 23){
-
-      NQLog("AssemblyAssembler:: step == ") << step;
-        step++;
-        //emit nextStep();
-// Step 23: Release vacuum, pick up tool
-        emit toggleVacuum(1);   //vacuum line 1, pick up tool
-
-    }else if (step == 24){
-
-      NQLog("AssemblyAssembler:: step == ") << step;
-        step++;
-// Step 24: Go to top part pre-pick up position
-        emit moveAbsolute(x_top, y_top, (z_top + z_spacer_thickness + z_prepickup_distance), platform_rotation);
-        //emit nextStep();
-
-    }else if (step == 25){
-
-      NQLog("AssemblyAssembler:: step == ") << step;
-        step++;
-// Step 25: Go to assembly rotated(!) pre-pick up position
-        emit moveAbsolute(x_assembly, y_assembly, (z_assembly + z_spacer_thickness + z_sensor_thickness + z_prepickup_distance), platform_rotation);
-        //emit nextStep();
-
-    }else if (step == 26){
-
-      NQLog("AssemblyAssembler:: step == ") << step;
-        step++;
-// Step 26: Go to assembly rotated(!) pick up position
-        emit moveAbsolute(x_assembly, y_assembly, (z_assembly + z_spacer_thickness + z_sensor_thickness), platform_rotation);
-        //emit nextStep();
-
-    }else if (step == 27){
-
-      NQLog("AssemblyAssembler:: step == ") << step;
-        step++;
-// Step 27 : Timer for fast gluing!!! 
-        emit nextStep();
-
-    }else if (step == 28){
-
-      NQLog("AssemblyAssembler:: step == ") << step;
-        step++;
-        //emit nextStep();
-// Step 28: Release vacuum, pick up tool
-        emit toggleVacuum(1);   //vacuum line 1, pick up tool
-
-    }else if (step == 29){
-
-      NQLog("AssemblyAssembler:: step == ") << step;
-        step++;
-// Step 29: Go to assembly rotated(!) pre-pick up position
-        emit moveAbsolute(x_assembly, y_assembly, (z_assembly + z_spacer_thickness + z_sensor_thickness - z_prepickup_distance), platform_rotation);
-        //emit nextStep();
-
-    }else if (step == 30){
-
-      NQLog("AssemblyAssembler:: step == ") << step;
-        step++;
-// Step 30: Module done. Please, carefully put it to the shell for 24 hours to let main glue to be cured. Thanks for choosing automated assembly for assembling your module.
-        emit moveAbsolute(0.0, 0.0, 0.0, platform_rotation + 180.00);
-        //emit nextStep();
-
-    }else if  (step == 11){
-
-      NQLog("AssemblyAssembler:: step == ") << step;
-      step = 0;
-      //emit nextStep();
-
-    }
-
-    */
-}
+//!! void AssemblyAssembler::process_step(){
+//!! 
+//!!     NQLog("AssemblyAssembler::") << "process_step";
+//!! 
+//!!     if(step == 0)
+//!!     {
+//!!       NQLog("AssemblyAssembler:: step == ") << step;
+//!!       step++;
+//!! 
+//!!       // Step 0: Go to measurement position for ref corner (needs to be manually pre-determined)
+//!!       emit moveAbsolute(x_assembly, y_assembly, z_assembly + z_prepickup_distance, 0.0);
+//!!     }
+//!!     else if(step == 1)
+//!!     {
+//!!       NQLog("AssemblyAssembler:: step == ") << step;
+//!!     }
+//!!     else if(step == 2)
+//!!     {
+//!!       NQLog("AssemblyAssembler:: step == ") << step;
+//!!       step++;
+//!! 
+//!!       // Step 2: Turn on vacuum
+//!!       emit toggleVacuum(1); // vacuum line 1, pick up tool
+//!!     }
+//!! 
+//!!     /*
+//!!     else if (step == 3){
+//!! 
+//!!       NQLog("AssemblyAssembler:: step == ") << step;
+//!!         step++;
+//!! // Step 3: Go to top part pre-pick up position
+//!!         emit moveAbsolute(x_top, y_top, (z_top + z_prepickup_distance), 0.0);
+//!!         //emit nextStep();
+//!!         
+//!!     }else if (step == 4){
+//!! 
+//!!       NQLog("AssemblyAssembler:: step == ") << step;
+//!!         step++;
+//!! // Step 4: Go to assembly pre-pick up position
+//!!         emit moveAbsolute(x_assembly, y_assembly, (z_assembly + z_prepickup_distance), 0.0);
+//!!         //emit nextStep();
+//!!         
+//!!     }else if (step == 5){
+//!! 
+//!!       NQLog("AssemblyAssembler:: step == ") << step;
+//!!         step++;
+//!! // Step 5: Go to assembly pick up position
+//!!         emit moveAbsolute(x_assembly, y_assembly, z_assembly, 0.0);
+//!!         //emit nextStep();
+//!! 
+//!!     }else if (step == 6){
+//!! 
+//!!       NQLog("AssemblyAssembler:: step == ") << step;
+//!!         step++;
+//!! // Step 6 : Timer for fast gluing!!!
+//!!         emit nextStep();
+//!!         
+//!!     }else if (step == 7){
+//!! 
+//!!       NQLog("AssemblyAssembler:: step == ") << step;
+//!!         step++;
+//!!         //emit nextStep();
+//!! // Step 7: Release vacuum under spacers
+//!!         emit toggleVacuum(2);   //vacuum line 2, spacers pick up tool
+//!! 
+//!!         
+//!!     }else if (step == 8){
+//!! 
+//!!       NQLog("AssemblyAssembler:: step == ") << step;
+//!!         step++;
+//!! // Step 8: Go to assembly pre-pick up position
+//!!         emit moveAbsolute(x_assembly, y_assembly, (z_assembly + z_prepickup_distance), 0.0);
+//!!         //emit nextStep();
+//!!         
+//!!         
+//!!     }else if (step == 9){
+//!! 
+//!!       NQLog("AssemblyAssembler:: step == ") << step;
+//!!         step++;
+//!! // Step 9: Go to top pre-pick up position
+//!!         emit moveAbsolute(x_top, y_top, (z_top + z_spacer_thickness + z_prepickup_distance), 0.0);
+//!!         //emit nextStep();
+//!! 
+//!!     }else if (step == 10){
+//!! 
+//!!       NQLog("AssemblyAssembler:: step == ") << step;
+//!!         step++;
+//!! // Step 10: Go to top pick up position
+//!!         emit moveAbsolute(x_top, y_top, (z_top + z_spacer_thickness), 0.0);
+//!!         //emit nextStep();
+//!! 
+//!!     }else if (step == 11){
+//!! 
+//!!       NQLog("AssemblyAssembler:: step == ") << step;
+//!!         step++;
+//!!         //emit nextStep();
+//!! // Step 11: Release vacuum, pick up tool
+//!!         emit toggleVacuum(1);   //vacuum line 1, pick up tool
+//!! 
+//!!     }else if (step == 12){
+//!! 
+//!!       NQLog("AssemblyAssembler:: step == ") << step;
+//!!         step++;
+//!! // Step 9: Go to top part pre-pick up position
+//!!         emit moveAbsolute(x_top, y_top, (z_top + z_spacer_thickness + z_prepickup_distance), 0.0);
+//!!         //emit nextStep();
+//!! 
+//!!     }else if (step == 13){
+//!! 
+//!!       NQLog("AssemblyAssembler:: step == ") << step;
+//!!         step++;
+//!! // Step 13: Go to bottom part pre-pick up position
+//!!         emit moveAbsolute(x_bottom, y_bottom, (z_bottom + z_prepickup_distance), 0.0);
+//!!         //emit nextStep();
+//!! 
+//!!     }else if (step == 14){
+//!! 
+//!!       NQLog("AssemblyAssembler:: step == ") << step;
+//!!         step++;
+//!! // Step 14: Go to bottom part pick up position
+//!!         emit moveAbsolute(x_bottom, y_bottom, z_bottom, 0.0);
+//!!         //emit nextStep();
+//!! 
+//!!     }else if (step == 15){
+//!! 
+//!!       NQLog("AssemblyAssembler:: step == ") << step;
+//!!         step++;
+//!!         //emit nextStep();
+//!! // Step 151: Turn on. Pick up bottom part
+//!!         emit toggleVacuum(1);   //vacuum line 1, pick up tool
+//!! 
+//!!     }else if (step == 16){
+//!! 
+//!!       NQLog("AssemblyAssembler:: step == ") << step;
+//!!         step++;
+//!! // Step 16: Go to bottom part pre-pick up position
+//!!         emit moveAbsolute(x_bottom, y_bottom, (z_bottom + z_prepickup_distance), 0.0);
+//!!         //emit nextStep();
+//!! 
+//!!     }else if (step == 17){
+//!! 
+//!!       NQLog("AssemblyAssembler:: step == ") << step;
+//!!         step++;
+//!! // Step 17: Go to assembly rotated(!) pre-pick up position
+//!!         emit moveAbsolute(x_assembly, y_assembly, (z_assembly + z_prepickup_distance), platform_rotation);
+//!!         //emit nextStep();
+//!! 
+//!!     }else if (step == 18){
+//!! 
+//!!       NQLog("AssemblyAssembler:: step == ") << step;
+//!!         step++;
+//!! // Step 18: Go to assembly rotated(!) pick up position
+//!!         emit moveAbsolute(x_assembly, y_assembly, z_assembly, platform_rotation);
+//!!         //emit nextStep();
+//!! 
+//!!     }else if (step == 19){
+//!! 
+//!!       NQLog("AssemblyAssembler:: step == ") << step;
+//!!         step++;
+//!!         //emit nextStep();
+//!! // Step 11: Release vacuum, pick up tool
+//!!         emit toggleVacuum(1);   //vacuum line 1, pick up tool
+//!! 
+//!!     }else if (step == 20){
+//!! 
+//!!       NQLog("AssemblyAssembler:: step == ") << step;
+//!!         step++;
+//!! // Step 20: Go to assembly rotated(!) pre-pick up position
+//!!         emit moveAbsolute(x_assembly, y_assembly, (z_assembly + z_prepickup_distance), platform_rotation);
+//!!         //emit nextStep();
+//!! 
+//!!     }else if (step == 21){
+//!! 
+//!!       NQLog("AssemblyAssembler:: step == ") << step;
+//!!         step++;
+//!! // Step 21: Go to top pre-pick up position
+//!!         emit moveAbsolute(x_top, y_top, (z_top + z_spacer_thickness + z_prepickup_distance), platform_rotation);
+//!!         //emit nextStep();
+//!! 
+//!!    
+//!!     }else if (step == 22){
+//!! 
+//!!       NQLog("AssemblyAssembler:: step == ") << step;
+//!!         step++;
+//!! // Step 22: Go to top pick up position
+//!!         emit moveAbsolute(x_top, y_top, (z_top + z_spacer_thickness), platform_rotation);
+//!!         //emit nextStep();
+//!! 
+//!!     }else if (step == 23){
+//!! 
+//!!       NQLog("AssemblyAssembler:: step == ") << step;
+//!!         step++;
+//!!         //emit nextStep();
+//!! // Step 23: Release vacuum, pick up tool
+//!!         emit toggleVacuum(1);   //vacuum line 1, pick up tool
+//!! 
+//!!     }else if (step == 24){
+//!! 
+//!!       NQLog("AssemblyAssembler:: step == ") << step;
+//!!         step++;
+//!! // Step 24: Go to top part pre-pick up position
+//!!         emit moveAbsolute(x_top, y_top, (z_top + z_spacer_thickness + z_prepickup_distance), platform_rotation);
+//!!         //emit nextStep();
+//!! 
+//!!     }else if (step == 25){
+//!! 
+//!!       NQLog("AssemblyAssembler:: step == ") << step;
+//!!         step++;
+//!! // Step 25: Go to assembly rotated(!) pre-pick up position
+//!!         emit moveAbsolute(x_assembly, y_assembly, (z_assembly + z_spacer_thickness + z_sensor_thickness + z_prepickup_distance), platform_rotation);
+//!!         //emit nextStep();
+//!! 
+//!!     }else if (step == 26){
+//!! 
+//!!       NQLog("AssemblyAssembler:: step == ") << step;
+//!!         step++;
+//!! // Step 26: Go to assembly rotated(!) pick up position
+//!!         emit moveAbsolute(x_assembly, y_assembly, (z_assembly + z_spacer_thickness + z_sensor_thickness), platform_rotation);
+//!!         //emit nextStep();
+//!! 
+//!!     }else if (step == 27){
+//!! 
+//!!       NQLog("AssemblyAssembler:: step == ") << step;
+//!!         step++;
+//!! // Step 27 : Timer for fast gluing!!! 
+//!!         emit nextStep();
+//!! 
+//!!     }else if (step == 28){
+//!! 
+//!!       NQLog("AssemblyAssembler:: step == ") << step;
+//!!         step++;
+//!!         //emit nextStep();
+//!! // Step 28: Release vacuum, pick up tool
+//!!         emit toggleVacuum(1);   //vacuum line 1, pick up tool
+//!! 
+//!!     }else if (step == 29){
+//!! 
+//!!       NQLog("AssemblyAssembler:: step == ") << step;
+//!!         step++;
+//!! // Step 29: Go to assembly rotated(!) pre-pick up position
+//!!         emit moveAbsolute(x_assembly, y_assembly, (z_assembly + z_spacer_thickness + z_sensor_thickness - z_prepickup_distance), platform_rotation);
+//!!         //emit nextStep();
+//!! 
+//!!     }else if (step == 30){
+//!! 
+//!!       NQLog("AssemblyAssembler:: step == ") << step;
+//!!         step++;
+//!! // Step 30: Module done. Please, carefully put it to the shell for 24 hours to let main glue to be cured. Thanks for choosing automated assembly for assembling your module.
+//!!         emit moveAbsolute(0.0, 0.0, 0.0, platform_rotation + 180.00);
+//!!         //emit nextStep();
+//!! 
+//!!     }else if  (step == 11){
+//!! 
+//!!       NQLog("AssemblyAssembler:: step == ") << step;
+//!!       step = 0;
+//!!       //emit nextStep();
+//!! 
+//!!     }
+//!! 
+//!!     */
+//!! }
 
 void AssemblyAssembler::launch_next_alignment_step()
 {
@@ -513,7 +515,7 @@ void AssemblyAssembler::run_alignment(int stage, double x_pr, double y_pr, doubl
         if((fabs(target_x) > 0.005) || (fabs(target_y)  > 0.005))
         {
           NQLog("AssemblyAssembler:: moving to  ") << target_x << ",  " << target_y << " target theta " << target_theta;
-          emit moveRelative(target_x, target_y, 0.0, 0.0);
+          this->moveRelative(target_x, target_y, 0.0, 0.0);
         }
     }
     else if(alignment_step == 2)
@@ -556,7 +558,7 @@ void AssemblyAssembler::run_alignment(int stage, double x_pr, double y_pr, doubl
 
         //NQLog("AssemblyAssembler::Going to second corner by moving: ") << target_x_2 <<", "   <<  target_y_2;
 
-        emit moveRelative(target_x_3, target_y_3, 0.0, 0.0);  // z = -0.20 for sensor with glue, z=0 for clean sensor
+        this->moveRelative(target_x_3, target_y_3, 0.0, 0.0);  // z = -0.20 for sensor with glue, z=0 for clean sensor
     }
     else if(alignment_step == 4)
     {
@@ -575,7 +577,7 @@ void AssemblyAssembler::run_alignment(int stage, double x_pr, double y_pr, doubl
         if( (fabs(target_x) > 0.005) || (fabs(target_y) > 0.005) )
         {
           NQLog("AssemblyAssembler") << "moveRelative(" << target_x << ",  " << target_y << ", 0,0)";
-          emit moveRelative(target_x, target_y, 0.0, 0.0);
+          this->moveRelative(target_x, target_y, 0.0, 0.0);
         }
     }
     else if(alignment_step == 6)
@@ -612,7 +614,7 @@ void AssemblyAssembler::run_alignment(int stage, double x_pr, double y_pr, doubl
         double wanted_slope = -0.71;
 
         //determine angle between the two slopes
-        double  delta_theta_arg = (wanted_slope - slope)/(1.0 + (wanted_slope * slope));
+        double delta_theta_arg = (wanted_slope - slope)/(1.0 + (wanted_slope * slope));
         double delta_theta = atan(delta_theta_arg);
         double delta_theta_deg = (delta_theta *180.0)/3.14;
 
@@ -648,7 +650,7 @@ void AssemblyAssembler::run_alignment(int stage, double x_pr, double y_pr, doubl
 
         double target_x_1 = (-1.0)*cos((target_theta*3.14)/180.0)*24.5;
         double target_y_1 = (-1.0)*sin((target_theta*3.14)/180.0)*24.5;
-        
+
         double target_y_2 = (1.0)*cos((target_theta*3.14)/180.0)*15.0;
         double target_x_2 = (1.0)*sin((target_theta*3.14)/180.0)*15.0;
 
@@ -657,7 +659,7 @@ void AssemblyAssembler::run_alignment(int stage, double x_pr, double y_pr, doubl
 
         //NQLog("AssemblyAssembler::Going to second corner by moving: ") << target_x_2 <<", "   <<  target_y_2;
 
-        emit moveRelative(target_x_3, target_y_3, -0.0, 0.0);  //z = 0.20 for sensor with glue, z=0 for clean sensor
+        this->moveRelative(target_x_3, target_y_3, -0.0, 0.0);  //z = 0.20 for sensor with glue, z=0 for clean sensor
     }
     else if(alignment_step == 8)
     {
@@ -677,7 +679,7 @@ void AssemblyAssembler::run_alignment(int stage, double x_pr, double y_pr, doubl
         if((fabs(target_x) > 0.005) || (fabs(target_y) > 0.005))
         {
           NQLog("AssemblyAssembler:: moving to  ") << target_x <<",  "<< target_y <<"  target theta " <<  target_theta ;
-          emit moveRelative(target_x, target_y, 0.0, 0.0);
+          this->moveRelative(target_x, target_y, 0.0, 0.0);
         }
     }
     else if(alignment_step == 10)
@@ -719,7 +721,8 @@ void AssemblyAssembler::run_alignment(int stage, double x_pr, double y_pr, doubl
                 std::cout << "moving to target orientation in one step " << std::endl;
                 std::cout << " " << std::endl;
                 alignment_step = 0;
-                emit moveRelative(0.0, 0.0, 0.0, delta_theta_deg);
+
+                this->moveRelative(0.0, 0.0, 0.0, delta_theta_deg);
             }
             else if(fabs(delta_theta_deg) > 0.5)
             {
@@ -730,11 +733,11 @@ void AssemblyAssembler::run_alignment(int stage, double x_pr, double y_pr, doubl
 
                 if(delta_theta_deg <= 0)
                 {
-        	  emit moveRelative(0.0, 0.0, 0.0, -0.5);
+        	  this->moveRelative(0.0, 0.0, 0.0, -0.5);
                 }
                 else
                 {
-                  emit moveRelative(0.0, 0.0, 0.0, +0.5);
+                  this->moveRelative(0.0, 0.0, 0.0, +0.5);
                 }
             }
         }
@@ -775,7 +778,7 @@ void AssemblyAssembler::run_scan(double range, int steps)
     nAcquiredImages = 1;
 
 //    emit getImage();
-    emit moveRelative(0.0, 0.0, 1.0, 0.0);
+    this->moveRelative(0.0, 0.0, 1.0, 0.0);
 }
 
 //!! void AssemblyAssembler::write_image(cv::Mat newImage, cv::Rect marker_rect)
@@ -809,7 +812,7 @@ void AssemblyAssembler::run_scan(double range, int steps)
 //!!     if (nAcquiredImages <= nTotalImages){
 //!!         std::cout <<"n acquired images = "<< nAcquiredImages<<"  nTotal images = "<< nTotalImages  << std::endl;
 //!!         nAcquiredImages++; 
-//!!         emit moveRelative(0.0,0.0,-0.1,0.0);
+//!!         this->moveRelative(0.0,0.0,-0.1,0.0);
 //!!     } else{
 //!!         
 //!!         int points  =  y_vals.size();
