@@ -91,7 +91,17 @@ void AssemblyObjectFinderPatRec::acquire_image()
 
 void AssemblyObjectFinderPatRec::update_image(const cv::Mat& img)
 {
-  image_mas_ = img;
+  if(img.channels() > 1)
+  {
+    image_mas_ = img;
+  }
+  else
+  {
+    cv::Mat img_color;
+    cv::cvtColor(img, img_color, cv::COLOR_GRAY2BGR);
+
+    image_mas_ = img_color;
+  }
 
   if(!updated_image_master_){ updated_image_master_ = true; }
 
