@@ -19,7 +19,7 @@ AssemblyMultiPickupTester::AssemblyMultiPickupTester(const LStepExpressMotionMan
   motion_manager_(motion_manager),
   motion_manager_enabled_(false)
 {
-  if(motion_manager_ == NULL)
+  if(motion_manager_ == nullptr)
   {
     NQLog("AssemblyMultiPickupTester", NQLog::Critical) << "input error"
        << ": null pointer to LStepExpressMotionManager object, initialization stopped";
@@ -28,7 +28,7 @@ AssemblyMultiPickupTester::AssemblyMultiPickupTester(const LStepExpressMotionMan
   }
 
   ApplicationConfig* config = ApplicationConfig::instance();
-  if(config == NULL)
+  if(config == nullptr)
   {
     NQLog("AssemblyMultiPickupTester", NQLog::Fatal)
        << "ApplicationConfig::instance() not initialized (null pointer), stopped constructor";

@@ -60,7 +60,7 @@ AssemblyModuleAssembler::AssemblyModuleAssembler(const LStepExpressMotionManager
 
   objfinder_connected_(false)
 {
-  if(motion_manager == NULL)
+  if(motion_manager == nullptr)
   {
     NQLog("AssemblyModuleAssembler", NQLog::Critical)
        << "input error: null pointer to LStepExpressMotionManager object, exiting constructor";
@@ -262,7 +262,7 @@ AssemblyModuleAssembler::AssemblyModuleAssembler(const LStepExpressMotionManager
 
 void AssemblyModuleAssembler::connect_to_finder(const AssemblyObjectFinderPatRec* finder)
 {
-  if(finder == NULL)
+  if(finder == nullptr)
   {
     NQLog("AssemblyModuleAssembler", NQLog::Critical) << "connect_to_finder"
        << ": null pointer to AssemblyObjectFinderPatRec object, no action taken";

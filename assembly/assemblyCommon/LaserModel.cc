@@ -32,7 +32,7 @@ LaserModel::LaserModel(const char* port, QObject*)
 
 LaserModel::~LaserModel()
 {
-  if(timer_) {delete timer_; timer_ = NULL;}
+  if(timer_) {delete timer_; timer_ = nullptr;}
 }
 
 void LaserModel::setLaserHead(int out)
@@ -113,7 +113,7 @@ void LaserModel::initialize()
 
     renewController(Laser_PORT);
 
-    bool enabled = (controller_ != NULL) && (controller_->DeviceAvailable());
+    bool enabled = (controller_ != nullptr) && (controller_->DeviceAvailable());
 
     if ( enabled ) {
         setLaserHead(2);
@@ -124,7 +124,7 @@ void LaserModel::initialize()
     else {
         setDeviceState( OFF );
         delete controller_;
-        controller_ = NULL;
+        controller_ = nullptr;
     }
 }
 

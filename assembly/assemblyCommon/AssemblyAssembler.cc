@@ -33,7 +33,7 @@ AssemblyAssembler::AssemblyAssembler(const LStepExpressMotionManager* motion_man
   motion_manager_(motion_manager),
   motion_manager_enabled_(false)
 {
-  if(motion_manager_ == NULL)
+  if(motion_manager_ == nullptr)
   {
     NQLog("AssemblyAssembler", NQLog::Fatal) << "initialization error"
        << ": null pointer to LStepExpressMotionManager object, exiting constructor";

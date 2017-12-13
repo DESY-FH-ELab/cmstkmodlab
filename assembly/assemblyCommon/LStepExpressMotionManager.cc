@@ -36,7 +36,7 @@ LStepExpressMotionManager::~LStepExpressMotionManager()
 
 void LStepExpressMotionManager::connect_model()
 {
-    if(model_ == NULL){ return; }
+    if(model_ == nullptr){ return; }
 
     if(model_connected_ == false)
     {

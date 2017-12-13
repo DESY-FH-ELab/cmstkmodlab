@@ -46,7 +46,7 @@ AssemblyZFocusFinder::AssemblyZFocusFinder(const AssemblyVUEyeCamera* camera, co
 {
   // initialization
   ApplicationConfig* config = ApplicationConfig::instance();
-  if(config == NULL)
+  if(config == nullptr)
   {
     NQLog("AssemblyZFocusFinder", NQLog::Fatal) << "initialization error"
        << ": ApplicationConfig::instance() not initialized (null pointer), exiting constructor";
@@ -65,7 +65,7 @@ AssemblyZFocusFinder::AssemblyZFocusFinder(const AssemblyVUEyeCamera* camera, co
   // --------------
 
   // validation
-  if(camera_manager_ == NULL)
+  if(camera_manager_ == nullptr)
   {
     NQLog("AssemblyZFocusFinder", NQLog::Fatal) << "initialization error"
        << ": null pointer to AssemblyVUEyeCamera object, exiting constructor";
@@ -73,7 +73,7 @@ AssemblyZFocusFinder::AssemblyZFocusFinder(const AssemblyVUEyeCamera* camera, co
     return;
   }
 
-  if(motion_manager_ == NULL)
+  if(motion_manager_ == nullptr)
   {
     NQLog("AssemblyZFocusFinder", NQLog::Fatal) << "initialization error"
        << ": null pointer to LStepExpressMotionManager object, exiting constructor";

@@ -166,7 +166,7 @@ void LStepExpressModel::moveRelative(const double x, const double y, const doubl
     NQLog("LStepExpressModel", NQLog::Spam) << "moveRelative"
        << "(x=" << x << ", y=" << y << ", z=" << z << ", a=" << a << ")";
 
-    if(controller_ == NULL)
+    if(controller_ == nullptr)
     {
       NQLog("LStepExpressModel", NQLog::Critical) << "moveRelative"
          << ": null pointer to controller, no action taken";
@@ -222,7 +222,7 @@ void LStepExpressModel::moveAbsolute(const double x, const double y, const doubl
     NQLog("LStepExpressModel", NQLog::Spam) << "moveAbsolute"
        << "(x=" << x << ", y=" << y << ", z=" << z << ", a=" << a << ")";
 
-    if(controller_ == NULL)
+    if(controller_ == nullptr)
     {
       NQLog("LStepExpressModel", NQLog::Critical) << "moveAbsolute"
          << ": null pointer to controller, no action taken";
@@ -434,7 +434,7 @@ void LStepExpressModel::initialize()
 
     renewController(LStepExpress_PORT);
 
-    bool enabled = (controller_ != NULL) && (controller_->DeviceAvailable());
+    bool enabled = (controller_ != nullptr) && (controller_->DeviceAvailable());
 
     if(enabled)
     {
@@ -454,7 +454,7 @@ void LStepExpressModel::initialize()
     {
       setDeviceState( OFF );
       delete controller_;
-      controller_ = NULL;
+      controller_ = nullptr;
     }
 }
 
