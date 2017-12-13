@@ -599,8 +599,8 @@ void AssemblyObjectFinderPatRec::template_matching(const cv::Mat& img_master, co
     line(img_master_copy, cv::Point(0, img_master_copy.rows/2.0   ), cv::Point(img_master_copy.cols    , img_master_copy.rows/2.0), cv::Scalar(255,255,0), 2, 8, 0);
 
     // label for distance scale
-    line   (img_master_copy,           cv::Point(100, 125), cv::Point(100+167, 125)           , cv::Scalar(0,255,0), 2, 8, 0);
-    putText(img_master_copy, "200 um", cv::Point(100, 100), cv::FONT_HERSHEY_SCRIPT_SIMPLEX, 2, cv::Scalar(0,255,0), 3, 8);
+    line   (img_master_copy,           cv::Point(100, 125), cv::Point(100+167, 125)             , cv::Scalar(0,255,0), 2, 8, 0);
+    putText(img_master_copy, "200 um", cv::Point(100, 100), cv::FONT_HERSHEY_SCRIPT_SIMPLEX, 1.5, cv::Scalar(0,255,0), 3, 8);
     // ----------------------------------------
 
     // FOM(angle) plot
