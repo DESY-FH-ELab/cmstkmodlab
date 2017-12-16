@@ -65,8 +65,9 @@ class AssemblyObjectFinderPatRec : public QObject
   void draw_RotatedRect(cv::Mat&, const cv::Point&, const double, const double, const double, const cv::Scalar&) const;
 
  private:
-  QMutex mutex_;
   Q_DISABLE_COPY(AssemblyObjectFinderPatRec)
+
+  mutable QMutex mutex_;
 
  public slots:
 

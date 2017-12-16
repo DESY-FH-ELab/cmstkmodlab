@@ -19,6 +19,8 @@
 #include <fstream>
 #include <memory>
 
+#include <QMutexLocker>
+
 #include <TFile.h>
 #include <TGraph.h>
 #include <TCanvas.h>
@@ -59,7 +61,7 @@ AssemblyObjectFinderPatRec::~AssemblyObjectFinderPatRec()
 
 void AssemblyObjectFinderPatRec::set_threshold(const int v)
 {
-  QMutexLocker ml(&mutex_);
+//  QMutexLocker ml(&mutex_);
 
   if(threshold_ != v)
   {
@@ -75,7 +77,7 @@ void AssemblyObjectFinderPatRec::set_threshold(const int v)
 
 void AssemblyObjectFinderPatRec::update_threshold(const int v)
 {
-  QMutexLocker ml(&mutex_);
+//  QMutexLocker ml(&mutex_);
 
   this->set_threshold(v);
 
@@ -95,7 +97,7 @@ void AssemblyObjectFinderPatRec::acquire_image()
 
 void AssemblyObjectFinderPatRec::update_image(const cv::Mat& img)
 {
-  QMutexLocker ml(&mutex_);
+//  QMutexLocker ml(&mutex_);
 
   if(img.channels() > 1)
   {
@@ -122,7 +124,7 @@ void AssemblyObjectFinderPatRec::update_image(const cv::Mat& img)
 
 void AssemblyObjectFinderPatRec::delete_image()
 {
-  QMutexLocker ml(&mutex_);
+//  QMutexLocker ml(&mutex_);
 
   image_mas_ = cv::Mat();
 
@@ -133,7 +135,7 @@ void AssemblyObjectFinderPatRec::delete_image()
 
 void AssemblyObjectFinderPatRec::update_binary_image()
 {
-  QMutexLocker ml(&mutex_);
+//  QMutexLocker ml(&mutex_);
 
   if(updated_image_master_)
   {
@@ -191,7 +193,7 @@ cv::Mat AssemblyObjectFinderPatRec::get_binary_image(const cv::Mat& img, const i
 
 void AssemblyObjectFinderPatRec::delete_binary_image()
 {
-  QMutexLocker ml(&mutex_);
+//  QMutexLocker ml(&mutex_);
 
   image_bin_ = cv::Mat();
 
@@ -202,7 +204,7 @@ void AssemblyObjectFinderPatRec::delete_binary_image()
 
 void AssemblyObjectFinderPatRec::send_image_master()
 {
-  QMutexLocker ml(&mutex_);
+//  QMutexLocker ml(&mutex_);
 
   NQLog("AssemblyObjectFinderPatRec", NQLog::Spam) << "send_image_master"
      << ": emitting signal \"image_sent\"";
@@ -212,7 +214,7 @@ void AssemblyObjectFinderPatRec::send_image_master()
 
 void AssemblyObjectFinderPatRec::send_image_binary()
 {
-  QMutexLocker ml(&mutex_);
+//  QMutexLocker ml(&mutex_);
 
   NQLog("AssemblyObjectFinderPatRec", NQLog::Spam) << "send_image_binary"
      << ": emitting signal \"image_sent\"";
@@ -222,7 +224,7 @@ void AssemblyObjectFinderPatRec::send_image_binary()
 
 void AssemblyObjectFinderPatRec::update_rough_angles(QString qstr)
 {
-  QMutexLocker ml(&mutex_);
+//  QMutexLocker ml(&mutex_);
 
   const QStringList entries = qstr.remove(" ").split(",");
 
@@ -254,7 +256,7 @@ void AssemblyObjectFinderPatRec::update_rough_angles(QString qstr)
 
 void AssemblyObjectFinderPatRec::update_angscan_parameters(QString qstr)
 {
-  QMutexLocker ml(&mutex_);
+//  QMutexLocker ml(&mutex_);
 
   const QStringList entries = qstr.remove(" ").split(",");
 
@@ -440,7 +442,7 @@ void AssemblyObjectFinderPatRec::run_PatRec(const int mode_lab, const int mode_o
 
 void AssemblyObjectFinderPatRec::template_matching(const cv::Mat& img_master, const cv::Mat& img_master_bin, const cv::Mat& img_templa, const int threshold_templa)
 {
-  QMutexLocker ml(&mutex_);
+//  QMutexLocker ml(&mutex_);
 
   NQLog("AssemblyObjectFinderPatRec", NQLog::Spam) << "template_matching";
   NQLog("AssemblyObjectFinderPatRec", NQLog::Spam) << "template_matching: Master   cols = " << img_master.cols;
