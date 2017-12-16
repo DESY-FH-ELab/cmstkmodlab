@@ -418,277 +418,277 @@ void AssemblyObjectFinderPatRec::run_PatRec(const int mode_lab, const int mode_o
 
 void AssemblyObjectFinderPatRec::template_matching(const cv::Mat& img_master, const cv::Mat& img_master_bin, const cv::Mat& img_templa, const int threshold_templa)
 {
-    NQLog("AssemblyObjectFinderPatRec", NQLog::Spam) << "template_matching";
-    NQLog("AssemblyObjectFinderPatRec", NQLog::Spam) << "template_matching: Master   cols = " << img_master.cols;
-    NQLog("AssemblyObjectFinderPatRec", NQLog::Spam) << "template_matching: Master   rows = " << img_master.rows;
-    NQLog("AssemblyObjectFinderPatRec", NQLog::Spam) << "template_matching: Template cols = " << img_templa.cols;
-    NQLog("AssemblyObjectFinderPatRec", NQLog::Spam) << "template_matching: Template rows = " << img_templa.rows;
+  NQLog("AssemblyObjectFinderPatRec", NQLog::Spam) << "template_matching";
+  NQLog("AssemblyObjectFinderPatRec", NQLog::Spam) << "template_matching: Master   cols = " << img_master.cols;
+  NQLog("AssemblyObjectFinderPatRec", NQLog::Spam) << "template_matching: Master   rows = " << img_master.rows;
+  NQLog("AssemblyObjectFinderPatRec", NQLog::Spam) << "template_matching: Template cols = " << img_templa.cols;
+  NQLog("AssemblyObjectFinderPatRec", NQLog::Spam) << "template_matching: Template rows = " << img_templa.rows;
 
-    // output directory
-    std::string output_dir(""), output_subdir("");
+  // output directory
+  std::string output_dir(""), output_subdir("");
 
-    bool  output_dir_exists(true);
-    while(output_dir_exists)
+  bool  output_dir_exists(true);
+  while(output_dir_exists)
+  {
+    ++exe_counter_;
+
+    std::string exe_counter_str = std::to_string(exe_counter_);
+
+    if(exe_counter_ < 1e3)
     {
-      ++exe_counter_;
-
-      std::string exe_counter_str = std::to_string(exe_counter_);
-
-      if(exe_counter_ < 1e3)
-      {
-        std::stringstream exe_counter_strss;
-        exe_counter_strss << std::setw(3) << std::setfill('0') << exe_counter_;
-        exe_counter_str = exe_counter_strss.str();
-      }
-
-      output_dir = output_dir_path_+"/"+exe_counter_str+"/";
-
-      output_dir_exists = Util::DirectoryExists(output_dir);
+      std::stringstream exe_counter_strss;
+      exe_counter_strss << std::setw(3) << std::setfill('0') << exe_counter_;
+      exe_counter_str = exe_counter_strss.str();
     }
 
-    output_subdir = output_dir+output_subdir_name_;
+    output_dir = output_dir_path_+"/"+exe_counter_str+"/";
 
-    Util::QDir_mkpath(output_dir);
+    output_dir_exists = Util::DirectoryExists(output_dir);
+  }
 
-    NQLog("AssemblyObjectFinderPatRec", NQLog::Message) << "template_matching: created output directory: " << output_dir;
+  output_subdir = output_dir+output_subdir_name_;
 
-    Util::QDir_mkpath(output_subdir);
+  Util::QDir_mkpath(output_dir);
 
-    NQLog("AssemblyObjectFinderPatRec", NQLog::Message) << "template_matching: created output directory: " << output_subdir;
-    // -----------
+  NQLog("AssemblyObjectFinderPatRec", NQLog::Message) << "template_matching: created output directory: " << output_dir;
 
-    // GreyScale images
-    cv::Mat img_master_gs(img_master.size(), img_master.type());
-    cv::Mat img_templa_gs(img_templa.size(), img_templa.type());
+  Util::QDir_mkpath(output_subdir);
 
-    if(img_master.channels() > 1){ cv::cvtColor(img_master, img_master_gs, CV_BGR2GRAY); }
-    else                         { img_master_gs = img_master.clone(); }
+  NQLog("AssemblyObjectFinderPatRec", NQLog::Message) << "template_matching: created output directory: " << output_subdir;
+  // -----------
 
-    if(img_templa.channels() > 1){ cv::cvtColor(img_templa, img_templa_gs, CV_BGR2GRAY); }
-    else                         { img_templa_gs = img_templa.clone(); }
-    // -----------
+  // GreyScale images
+  cv::Mat img_master_gs(img_master.size(), img_master.type());
+  cv::Mat img_templa_gs(img_templa.size(), img_templa.type());
 
-    // Binary images
-    cv::Mat img_templa_bin(img_templa_gs.size(), img_templa_gs.type());
+  if(img_master.channels() > 1){ cv::cvtColor(img_master, img_master_gs, CV_BGR2GRAY); }
+  else                         { img_master_gs = img_master.clone(); }
 
-    cv::threshold(img_templa_gs, img_templa_bin, threshold_templa, 255, cv::THRESH_BINARY);
+  if(img_templa.channels() > 1){ cv::cvtColor(img_templa, img_templa_gs, CV_BGR2GRAY); }
+  else                         { img_templa_gs = img_templa.clone(); }
+  // -----------
 
-    const std::string filepath_img_master_bin = output_dir+"/image_master_binary.png";
-    const std::string filepath_img_templa     = output_dir+"/image_template.png";
-    const std::string filepath_img_templa_bin = output_dir+"/image_template_binary.png";
+  // Binary images
+  cv::Mat img_templa_bin(img_templa_gs.size(), img_templa_gs.type());
 
-    cv::imwrite(filepath_img_master_bin, img_master_bin);
+  cv::threshold(img_templa_gs, img_templa_bin, threshold_templa, 255, cv::THRESH_BINARY);
 
-    NQLog("AssemblyObjectFinderPatRec", NQLog::Spam) << "template_matching"
-       << ": saved master-binary image to " << filepath_img_master_bin;
+  const std::string filepath_img_master_bin = output_dir+"/image_master_binary.png";
+  const std::string filepath_img_templa     = output_dir+"/image_template.png";
+  const std::string filepath_img_templa_bin = output_dir+"/image_template_binary.png";
 
-    Util::cv_imwrite_png(filepath_img_templa, img_templa);
+  cv::imwrite(filepath_img_master_bin, img_master_bin);
 
-    NQLog("AssemblyObjectFinderPatRec", NQLog::Spam) << "template_matching"
-       << ": saved template image to " << filepath_img_templa;
+  NQLog("AssemblyObjectFinderPatRec", NQLog::Spam) << "template_matching"
+     << ": saved master-binary image to " << filepath_img_master_bin;
 
-    cv::imwrite(filepath_img_templa_bin, img_templa_bin);
+  Util::cv_imwrite_png(filepath_img_templa, img_templa);
 
-    NQLog("AssemblyObjectFinderPatRec", NQLog::Spam) << "template_matching"
-       << ": saved template-binary image to " << filepath_img_templa_bin;
-    // -----------
+  NQLog("AssemblyObjectFinderPatRec", NQLog::Spam) << "template_matching"
+     << ": saved template image to " << filepath_img_templa;
 
-    // --- Template Matching
+  cv::imwrite(filepath_img_templa_bin, img_templa_bin);
 
-    // Template-Matching method for matchTemplate() routine of OpenCV
-    // For SQDIFF and SQDIFF_NORMED, the best matches are lower values. For all the other methods, the higher the better.
-    // REF https://docs.opencv.org/2.4/modules/imgproc/doc/object_detection.html?highlight=matchtemplate#matchtemplate
-    const int match_method = CV_TM_SQDIFF_NORMED;
-    const bool use_minFOM = ((match_method  == CV_TM_SQDIFF) || (match_method == CV_TM_SQDIFF_NORMED));
+  NQLog("AssemblyObjectFinderPatRec", NQLog::Spam) << "template_matching"
+     << ": saved template-binary image to " << filepath_img_templa_bin;
+  // -----------
 
-    NQLog("AssemblyObjectFinderPatRec", NQLog::Spam) << "template_matching" << ": initiated matching routine with angular scan";
+  // --- Template Matching
 
-    // First, get theta-rough angle: best guess of central value for finer angular scan
-    double theta_rough(-9999.);
+  // Template-Matching method for matchTemplate() routine of OpenCV
+  // For SQDIFF and SQDIFF_NORMED, the best matches are lower values. For all the other methods, the higher the better.
+  // REF https://docs.opencv.org/2.4/modules/imgproc/doc/object_detection.html?highlight=matchtemplate#matchtemplate
+  const int match_method = CV_TM_SQDIFF_NORMED;
+  const bool use_minFOM = ((match_method  == CV_TM_SQDIFF) || (match_method == CV_TM_SQDIFF_NORMED));
 
-    if(v_rough_angles_.size() > 0)
+  NQLog("AssemblyObjectFinderPatRec", NQLog::Spam) << "template_matching" << ": initiated matching routine with angular scan";
+
+  // First, get theta-rough angle: best guess of central value for finer angular scan
+  double theta_rough(-9999.);
+
+  if(v_rough_angles_.size() > 0)
+  {
+    double best_FOM(0.);
+
+    for(unsigned int i=0; i<v_rough_angles_.size(); ++i)
     {
-      double best_FOM(0.);
-
-      for(unsigned int i=0; i<v_rough_angles_.size(); ++i)
-      {
-        double i_angle = v_rough_angles_.at(i);
-
-        double i_FOM(0.);
-        cv::Point i_matchLoc;
-
-        this->PatRec(i_FOM, i_matchLoc, img_master_bin, img_templa_bin, i_angle, match_method);
-
-        const bool update = (i==0) || (use_minFOM ? (i_FOM < best_FOM) : (i_FOM > best_FOM));
-
-        if(update){ best_FOM = i_FOM; theta_rough = i_angle; }
-      }
-    }
-    else
-    {
-      NQLog("AssemblyObjectFinderPatRec", NQLog::Critical) << "template_matching"
-         << ": empty list of rough angles, stopping Pattern Recognition";
-
-      return;
-    }
-
-    NQLog("AssemblyObjectFinderPatRec", NQLog::Message) << "template_matching" << ": rough estimate of best-angle yields best-theta=" << theta_rough;
-    // ----------------
-
-    const double theta_fine_min  = -1.0 * theta_fine_range_;
-    const double theta_fine_max  = +1.0 * theta_fine_range_;
-    const double theta_fine_step =        theta_fine_step_;
-
-    NQLog("AssemblyObjectFinderPatRec", NQLog::Message) << "template_matching" << ": angular scan parameters"
-       << "(min="<< theta_rough+theta_fine_min << ", max=" << theta_rough+theta_fine_max << ", step=" << theta_fine_step << ")";
-
-    const int N_rotations = (2 * int((theta_fine_max-theta_fine_min) / theta_fine_step));
-
-    std::vector<std::pair<double, double> > vec_angleNfom;
-    vec_angleNfom.reserve(N_rotations);
-
-    double    best_FOM  (0.);
-    double    best_theta(0.);
-    cv::Point best_matchLoc;
-
-    for(double theta_fine=theta_fine_min; theta_fine<theta_fine_max; theta_fine += theta_fine_step)
-    {
-      const unsigned int scan_counter = vec_angleNfom.size();
-
-      double i_theta = theta_rough + theta_fine;
+      double i_angle = v_rough_angles_.at(i);
 
       double i_FOM(0.);
       cv::Point i_matchLoc;
 
-      this->PatRec(i_FOM, i_matchLoc, img_master_bin, img_templa_bin, i_theta, match_method, output_subdir);
+      this->PatRec(i_FOM, i_matchLoc, img_master_bin, img_templa_bin, i_angle, match_method);
 
-      const bool update = (scan_counter==0) || (use_minFOM ? (i_FOM < best_FOM) : (i_FOM > best_FOM));
+      const bool update = (i==0) || (use_minFOM ? (i_FOM < best_FOM) : (i_FOM > best_FOM));
 
-      if(update)
-      {
-        best_FOM      = i_FOM;
-        best_theta    = i_theta;
-        best_matchLoc = i_matchLoc;
-      }
+      if(update){ best_FOM = i_FOM; theta_rough = i_angle; }
+    }
+  }
+  else
+  {
+    NQLog("AssemblyObjectFinderPatRec", NQLog::Critical) << "template_matching"
+       << ": empty list of rough angles, stopping Pattern Recognition";
 
-      vec_angleNfom.emplace_back(std::make_pair(i_theta, i_FOM));
+    return;
+  }
 
-      NQLog("AssemblyObjectFinderPatRec", NQLog::Spam) << "template_matching"
-         << ": angular scan: [" << scan_counter << "] theta=" << i_theta << ", FOM=" << i_FOM;
+  NQLog("AssemblyObjectFinderPatRec", NQLog::Message) << "template_matching" << ": rough estimate of best-angle yields best-theta=" << theta_rough;
+  // ----------------
+
+  const double theta_fine_min  = -1.0 * theta_fine_range_;
+  const double theta_fine_max  = +1.0 * theta_fine_range_;
+  const double theta_fine_step =        theta_fine_step_;
+
+  NQLog("AssemblyObjectFinderPatRec", NQLog::Message) << "template_matching" << ": angular scan parameters"
+     << "(min="<< theta_rough+theta_fine_min << ", max=" << theta_rough+theta_fine_max << ", step=" << theta_fine_step << ")";
+
+  const int N_rotations = (2 * int((theta_fine_max-theta_fine_min) / theta_fine_step));
+
+  std::vector<std::pair<double, double> > vec_angleNfom;
+  vec_angleNfom.reserve(N_rotations);
+
+  double    best_FOM  (0.);
+  double    best_theta(0.);
+  cv::Point best_matchLoc;
+
+  for(double theta_fine=theta_fine_min; theta_fine<theta_fine_max; theta_fine += theta_fine_step)
+  {
+    const unsigned int scan_counter = vec_angleNfom.size();
+
+    double i_theta = theta_rough + theta_fine;
+
+    double i_FOM(0.);
+    cv::Point i_matchLoc;
+
+    this->PatRec(i_FOM, i_matchLoc, img_master_bin, img_templa_bin, i_theta, match_method, output_subdir);
+
+    const bool update = (scan_counter==0) || (use_minFOM ? (i_FOM < best_FOM) : (i_FOM > best_FOM));
+
+    if(update)
+    {
+      best_FOM      = i_FOM;
+      best_theta    = i_theta;
+      best_matchLoc = i_matchLoc;
     }
 
-    NQLog("AssemblyObjectFinderPatRec", NQLog::Message) << "template_matching"
-       << ": angular scan completed: best_theta=" << best_theta;
+    vec_angleNfom.emplace_back(std::make_pair(i_theta, i_FOM));
 
-    // copy of master image
-    cv::Mat img_master_copy = img_master.clone();
+    NQLog("AssemblyObjectFinderPatRec", NQLog::Spam) << "template_matching"
+       << ": angular scan: [" << scan_counter << "] theta=" << i_theta << ", FOM=" << i_FOM;
+  }
 
-    // drawings on top of master image copy ---
+  NQLog("AssemblyObjectFinderPatRec", NQLog::Message) << "template_matching"
+     << ": angular scan completed: best_theta=" << best_theta;
 
-    // rectangle representing template in best-match position
-    this->draw_RotatedRect(img_master_copy, best_matchLoc, img_templa_bin.cols, img_templa_bin.rows, best_theta, cv::Scalar(0,0,255));
+  // copy of master image
+  cv::Mat img_master_copy = img_master.clone();
 
-    // the circle of radius 4 is meant to *roughly* represent the x,y precision of the x-y motion stage
-    // so that the user can see if the patrec results make sense
-    // (the top left corner of the marker should be within the cirle)
-    circle(img_master_copy, best_matchLoc,  4, cv::Scalar(255,0,0), 4, 8, 0); // 1-sigma
-    circle(img_master_copy, best_matchLoc, 15, cv::Scalar(255,0,0), 4, 8, 0); // only for visualization
+  // drawings on top of master image copy ---
 
-    // cross-lines to mark the center of the image
-    line(img_master_copy, cv::Point(   img_master_copy.cols/2.0, 0), cv::Point(img_master_copy.cols/2.0, img_master_copy.rows    ), cv::Scalar(255,255,0), 2, 8, 0);
-    line(img_master_copy, cv::Point(0, img_master_copy.rows/2.0   ), cv::Point(img_master_copy.cols    , img_master_copy.rows/2.0), cv::Scalar(255,255,0), 2, 8, 0);
+  // rectangle representing template in best-match position
+  this->draw_RotatedRect(img_master_copy, best_matchLoc, img_templa_bin.cols, img_templa_bin.rows, best_theta, cv::Scalar(0,0,255));
 
-    // label for distance scale
-    line   (img_master_copy,           cv::Point(100, 125), cv::Point(100+167, 125)             , cv::Scalar(0,255,0), 2, 8, 0);
-    putText(img_master_copy, "200 um", cv::Point(100, 100), cv::FONT_HERSHEY_SCRIPT_SIMPLEX, 1.5, cv::Scalar(0,255,0), 3, 8);
-    // ----------------------------------------
+  // the circle of radius 4 is meant to *roughly* represent the x,y precision of the x-y motion stage
+  // so that the user can see if the patrec results make sense
+  // (the top left corner of the marker should be within the cirle)
+  circle(img_master_copy, best_matchLoc,  4, cv::Scalar(255,0,0), 4, 8, 0); // 1-sigma
+  circle(img_master_copy, best_matchLoc, 15, cv::Scalar(255,0,0), 4, 8, 0); // only for visualization
 
-    // FOM(angle) plot
-    if(vec_angleNfom.size() > 0)
+  // cross-lines to mark the center of the image
+  line(img_master_copy, cv::Point(   img_master_copy.cols/2.0, 0), cv::Point(img_master_copy.cols/2.0, img_master_copy.rows    ), cv::Scalar(255,255,0), 2, 8, 0);
+  line(img_master_copy, cv::Point(0, img_master_copy.rows/2.0   ), cv::Point(img_master_copy.cols    , img_master_copy.rows/2.0), cv::Scalar(255,255,0), 2, 8, 0);
+
+  // label for distance scale
+  line   (img_master_copy,           cv::Point(100, 125), cv::Point(100+167, 125)             , cv::Scalar(0,255,0), 2, 8, 0);
+  putText(img_master_copy, "200 um", cv::Point(100, 100), cv::FONT_HERSHEY_SCRIPT_SIMPLEX, 1.5, cv::Scalar(0,255,0), 3, 8);
+  // ----------------------------------------
+
+  // FOM(angle) plot
+  if(vec_angleNfom.size() > 0)
+  {
+    std::unique_ptr<TCanvas> c1(new TCanvas("FOM", "Rotation extraction", 200, 10, 700, 500));
+
+    std::unique_ptr<TGraph> gr_scan(new TGraph());
+    for(unsigned int idx=0; idx<vec_angleNfom.size(); ++idx)
     {
-      std::unique_ptr<TCanvas> c1(new TCanvas("FOM", "Rotation extraction", 200, 10, 700, 500));
-
-      std::unique_ptr<TGraph> gr_scan(new TGraph());
-      for(unsigned int idx=0; idx<vec_angleNfom.size(); ++idx)
-      {
-        gr_scan->SetPoint(idx, vec_angleNfom.at(idx).first, vec_angleNfom.at(idx).second);
-      }
+      gr_scan->SetPoint(idx, vec_angleNfom.at(idx).first, vec_angleNfom.at(idx).second);
+    }
 
 //      gr_scan->Fit("pol6");
 
-      gr_scan->Draw("AC*");
-      gr_scan->SetName("PatRec_FOM");
-      gr_scan->GetHistogram()->GetXaxis()->SetTitle("angle (degrees)");
-      gr_scan->GetHistogram()->GetYaxis()->SetTitle("PatRec FOM");
-      gr_scan->GetHistogram()->SetTitle("");
+    gr_scan->Draw("AC*");
+    gr_scan->SetName("PatRec_FOM");
+    gr_scan->GetHistogram()->GetXaxis()->SetTitle("angle (degrees)");
+    gr_scan->GetHistogram()->GetYaxis()->SetTitle("PatRec FOM");
+    gr_scan->GetHistogram()->SetTitle("");
 
-      std::unique_ptr<TGraph> gr_best(new TGraph(1));
-      gr_best->SetPoint(0, best_theta, best_FOM);
-      gr_best->SetMarkerColor(2);
-      gr_best->SetMarkerStyle(22);
-      gr_best->SetMarkerSize(3);
-      gr_best->Draw("PSAME");
-      gr_best->SetName("PatRec_FOM_best");
+    std::unique_ptr<TGraph> gr_best(new TGraph(1));
+    gr_best->SetPoint(0, best_theta, best_FOM);
+    gr_best->SetMarkerColor(2);
+    gr_best->SetMarkerStyle(22);
+    gr_best->SetMarkerSize(3);
+    gr_best->Draw("PSAME");
+    gr_best->SetName("PatRec_FOM_best");
 
-      const std::string filepath_FOM_base = output_dir+"/RotationExtraction";
+    const std::string filepath_FOM_base = output_dir+"/RotationExtraction";
 
-      const std::string filepath_FOM_png  = filepath_FOM_base+".png";
-      const std::string filepath_FOM_root = filepath_FOM_base+".root";
+    const std::string filepath_FOM_png  = filepath_FOM_base+".png";
+    const std::string filepath_FOM_root = filepath_FOM_base+".root";
 
-      c1->SaveAs(filepath_FOM_png.c_str());
+    c1->SaveAs(filepath_FOM_png.c_str());
 
-      std::unique_ptr<TFile> o_file(new TFile(filepath_FOM_root.c_str(), "recreate"));
-      o_file->cd();
-      gr_scan->Write();
-      gr_best->Write();
-      o_file->Close();
+    std::unique_ptr<TFile> o_file(new TFile(filepath_FOM_root.c_str(), "recreate"));
+    o_file->cd();
+    gr_scan->Write();
+    gr_best->Write();
+    o_file->Close();
 
-      emit image_path(2, QString::fromStdString(filepath_FOM_png));
-    }
-    // ---
+    emit image_path(2, QString::fromStdString(filepath_FOM_png));
+  }
+  // ---
 
-    const std::string filepath_img_master_copy = output_dir+"/image_master_PatRec.png";
-    Util::cv_imwrite_png(filepath_img_master_copy, img_master_copy);
+  const std::string filepath_img_master_copy = output_dir+"/image_master_PatRec.png";
+  Util::cv_imwrite_png(filepath_img_master_copy, img_master_copy);
 
-    emit image_mat(1, img_master_copy);
-    emit image_mat(3, img_master_bin);
-    emit image_mat(4, img_templa_bin);
+  emit image_mat(1, img_master_copy);
+  emit image_mat(3, img_master_bin);
+  emit image_mat(4, img_templa_bin);
 
-    // text output file -
-    std::ofstream txtfile(output_dir+"/PatRec_results.txt");
-    if(txtfile.is_open())
-    {
-      txtfile << "# best_matchLoc.x best_matchLoc.y best_theta\n";
+  // text output file -
+  std::ofstream txtfile(output_dir+"/PatRec_results.txt");
+  if(txtfile.is_open())
+  {
+    txtfile << "# best_matchLoc.x best_matchLoc.y best_theta\n";
 
-      txtfile << best_matchLoc.x << " " << best_matchLoc.y << " " << best_theta << std::endl;
+    txtfile << best_matchLoc.x << " " << best_matchLoc.y << " " << best_theta << std::endl;
 
-      txtfile.close();
-    }
+    txtfile.close();
+  }
 
-    NQLog("AssemblyObjectFinderPatRec", NQLog::Spam) << "template_matching"
-       << ": created output file: " << output_dir+"/PatRec_results.txt";
-    // ------------------
+  NQLog("AssemblyObjectFinderPatRec", NQLog::Spam) << "template_matching"
+     << ": created output file: " << output_dir+"/PatRec_results.txt";
+  // ------------------
 
-    // update line edits in view
-    NQLog("AssemblyObjectFinderPatRec", NQLog::Spam) << "template_matching"
-       << ": emitting signal \"reportObjectLocation(1, " << best_matchLoc.x << ", " << best_matchLoc.y << ", " << best_theta << ")\"";
+  // update line edits in view
+  NQLog("AssemblyObjectFinderPatRec", NQLog::Spam) << "template_matching"
+     << ": emitting signal \"reportObjectLocation(1, " << best_matchLoc.x << ", " << best_matchLoc.y << ", " << best_theta << ")\"";
 
-    emit reportObjectLocation(1, best_matchLoc.x, best_matchLoc.y, best_theta);
+  emit reportObjectLocation(1, best_matchLoc.x, best_matchLoc.y, best_theta);
 
-    NQLog("AssemblyObjectFinderPatRec", NQLog::Spam) << "template_matching"
-       << ": emitting signal \"PatRec_exitcode(0)\"";
+  NQLog("AssemblyObjectFinderPatRec", NQLog::Spam) << "template_matching"
+     << ": emitting signal \"PatRec_exitcode(0)\"";
 
-    emit PatRec_exitcode(0);
+  emit PatRec_exitcode(0);
 
-//    const cv::Rect rect_result = cv::Rect(best_matchLoc, cv::Point(best_matchLoc.x + img_templa_bin.cols, best_matchLoc.y + img_templa_bin.rows));
+//  const cv::Rect rect_result = cv::Rect(best_matchLoc, cv::Point(best_matchLoc.x + img_templa_bin.cols, best_matchLoc.y + img_templa_bin.rows));
 //
-//    //work out match location in field of view
-//    // the origin of the FOV coordinate system is the top left corner
-//    //the match loction (centre of the template) is calculated in mm
-//    //this should be enough for postion correction with moverealtive()
+//  // work out match location in field of view
+//  // the origin of the FOV coordinate system is the top left corner
+//  // the match loction (centre of the template) is calculated in mm
+//  // this should be enough for postion correction with moverealtive()
 //
-//    //matchLoc_x_lab = (best_matchLoc.x +  (img_templa_bin.cols/2) ) * (5.0/img_master.cols); // need to add the current X pos of the lang
-//    //matchLoc_y_lab = (best_matchLoc.y +  (img_templa_bin.rows/2) ) * (4.0/img_master.rows); // need to add the current Y pos of the lang
+//  //matchLoc_x_lab = (best_matchLoc.x +  (img_templa_bin.cols/2) ) * (5.0/img_master.cols); // need to add the current X pos of the lang
+//  //matchLoc_y_lab = (best_matchLoc.y +  (img_templa_bin.rows/2) ) * (4.0/img_master.rows); // need to add the current Y pos of the lang
 }
 
 void AssemblyObjectFinderPatRec::PatRec(double& fom, cv::Point& match_loc, const cv::Mat& img_master_bin, const cv::Mat& img_templa_bin, const double angle, const int match_method, const std::string& out_dir) const
@@ -747,6 +747,7 @@ cv::Point2f AssemblyObjectFinderPatRec::RotatePoint(const cv::Point2f& p, const 
   const float y = std::sin(rad) * p.x + std::cos(rad) * p.y;
 
   const cv::Point2f rot_p(x, y);
+
   return rot_p;
 }
 
