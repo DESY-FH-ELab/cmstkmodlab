@@ -37,9 +37,9 @@
 
 #include <opencv2/opencv.hpp>
 
-class VacuumWidget;
-class PatRecWidget;
-class MultiPickupTesterWidget;
+class AssemblyVacuumWidget;
+class AssemblyPatRecWidget;
+class AssemblyMultiPickupTesterWidget;
 
 class AssemblyModuleAssembler : public QWidget
 {
@@ -49,10 +49,10 @@ class AssemblyModuleAssembler : public QWidget
 
   explicit AssemblyModuleAssembler(const LStepExpressMotionManager*, QWidget* parent=0);
 
-  VacuumWidget* Vacuum_Widget() const { return w_vacuum_; }
-  PatRecWidget* PatRec_Widget() const { return w_patrec_; }
+  AssemblyVacuumWidget* Vacuum_Widget() const { return w_vacuum_; }
+  AssemblyPatRecWidget* PatRec_Widget() const { return w_patrec_; }
 
-  MultiPickupTesterWidget* MultiPickup_Widget() { return w_mupiup_; }
+  AssemblyMultiPickupTesterWidget* MultiPickup_Widget() { return w_mupiup_; }
 
   void connect_to_finder(const AssemblyObjectFinderPatRec*);
 
@@ -75,10 +75,10 @@ class AssemblyModuleAssembler : public QWidget
   QLineEdit* liedit_3_;
   QLineEdit* liedit_4_;
 
-  VacuumWidget* w_vacuum_;
-  PatRecWidget* w_patrec_;
+  AssemblyVacuumWidget* w_vacuum_;
+  AssemblyPatRecWidget* w_patrec_;
 
-  MultiPickupTesterWidget* w_mupiup_;
+  AssemblyMultiPickupTesterWidget* w_mupiup_;
 
   bool objfinder_connected_;
 
@@ -99,14 +99,14 @@ class AssemblyModuleAssembler : public QWidget
 };
 // ===========================================================================
 
-class StringWidget : public QWidget
+class AssemblyStringWidget : public QWidget
 {
  Q_OBJECT
 
  public:
 
-  explicit StringWidget(const QString&, const QString&, QWidget* parent=0);
-  virtual ~StringWidget() {}
+  explicit AssemblyStringWidget(const QString&, const QString&, QWidget* parent=0);
+  virtual ~AssemblyStringWidget() {}
 
   QPushButton* button() const { return button_; }
   QLineEdit*   lineed() const { return lineed_; }
@@ -129,14 +129,14 @@ class StringWidget : public QWidget
 };
 // ===========================================================================
 
-class MoveWidget : public QWidget
+class AssemblyMoveWidget : public QWidget
 {
  Q_OBJECT
 
  public:
 
-  explicit MoveWidget(const QString&, const QString&, const bool move_relative=false, QWidget* parent=0);
-  virtual ~MoveWidget() {}
+  explicit AssemblyMoveWidget(const QString&, const QString&, const bool move_relative=false, QWidget* parent=0);
+  virtual ~AssemblyMoveWidget() {}
 
   QPushButton* button() const { return button_; }
   QLineEdit*   lineed() const { return lineed_; }
@@ -166,14 +166,14 @@ class MoveWidget : public QWidget
 };
 // ===========================================================================
 
-class VacuumWidget : public QWidget
+class AssemblyVacuumWidget : public QWidget
 {
  Q_OBJECT
 
  public:
 
-  explicit VacuumWidget(const QString&, QWidget* parent=0);
-  virtual ~VacuumWidget() {}
+  explicit AssemblyVacuumWidget(const QString&, QWidget* parent=0);
+  virtual ~AssemblyVacuumWidget() {}
 
   QFormLayout* layout() const { return layout_; }
 
@@ -198,19 +198,19 @@ class VacuumWidget : public QWidget
 };
 // ===========================================================================
 
-class PatRecWidget : public QWidget
+class AssemblyPatRecWidget : public QWidget
 {
  Q_OBJECT
 
  public:
 
-  explicit PatRecWidget(const QString&, QWidget* parent=0);
-  virtual ~PatRecWidget() {}
+  explicit AssemblyPatRecWidget(const QString&, QWidget* parent=0);
+  virtual ~AssemblyPatRecWidget() {}
 
   QFormLayout* layout() const { return layout_; }
 
-  const StringWidget* widget_angrough() { return sw_angrough_; }
-  const StringWidget* widget_angscanp() { return sw_angscanp_; }
+  const AssemblyStringWidget* widget_angrough() { return sw_angrough_; }
+  const AssemblyStringWidget* widget_angscanp() { return sw_angscanp_; }
 
  protected:
 
@@ -231,8 +231,8 @@ class PatRecWidget : public QWidget
   QVBoxLayout* vbox1_;
   QVBoxLayout* vbox2_;
 
-  StringWidget* sw_angrough_;
-  StringWidget* sw_angscanp_;
+  AssemblyStringWidget* sw_angrough_;
+  AssemblyStringWidget* sw_angscanp_;
 
  public slots:
 
@@ -248,14 +248,14 @@ class PatRecWidget : public QWidget
 };
 // ===========================================================================
 
-class MultiPickupTesterWidget : public QWidget
+class AssemblyMultiPickupTesterWidget : public QWidget
 {
  Q_OBJECT
 
  public:
 
-  explicit MultiPickupTesterWidget(const QString&, const LStepExpressMotionManager*, QWidget* parent=0);
-  virtual ~MultiPickupTesterWidget() {}
+  explicit AssemblyMultiPickupTesterWidget(const QString&, const LStepExpressMotionManager*, QWidget* parent=0);
+  virtual ~AssemblyMultiPickupTesterWidget() {}
 
   QGridLayout* layout() const { return layout_; }
 

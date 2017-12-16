@@ -169,7 +169,7 @@ AssemblyModuleAssembler::AssemblyModuleAssembler(const LStepExpressMotionManager
 
   QGroupBox* box_mupiup = new QGroupBox(tr("\"Pickup + PatRec\" Iterations"));
 
-    w_mupiup_ = new MultiPickupTesterWidget("Run \"Pickup + PatRec\"", motion_manager);
+    w_mupiup_ = new AssemblyMultiPickupTesterWidget("Run \"Pickup + PatRec\"", motion_manager);
     f10->addRow(w_mupiup_);
 
     connect(w_mupiup_, SIGNAL(multipickup_request(const AssemblyMultiPickupTester::Configuration&)),
@@ -189,7 +189,7 @@ AssemblyModuleAssembler::AssemblyModuleAssembler(const LStepExpressMotionManager
   QGridLayout* g_move = new QGridLayout();
 
     // widget: move absolute
-    MoveWidget* w_moveabs = new MoveWidget("Move Absolute", "0,0,0,0");
+    AssemblyMoveWidget* w_moveabs = new AssemblyMoveWidget("Move Absolute", "0,0,0,0");
     g_move->addWidget(w_moveabs->button(), 0, 0);
     g_move->addWidget(w_moveabs->lineed(), 0, 1);
 
@@ -201,7 +201,7 @@ AssemblyModuleAssembler::AssemblyModuleAssembler(const LStepExpressMotionManager
     // ---------------------
 
     // widget: move relative
-    MoveWidget* w_moverel = new MoveWidget("Move Relative", "0,0,0,0");
+    AssemblyMoveWidget* w_moverel = new AssemblyMoveWidget("Move Relative", "0,0,0,0");
     g_move->addWidget(w_moverel->button(), 1, 0);
     g_move->addWidget(w_moverel->lineed(), 1, 1);
 
@@ -220,7 +220,7 @@ AssemblyModuleAssembler::AssemblyModuleAssembler(const LStepExpressMotionManager
   // VACUUM WIDGET -------
   QGroupBox* box_vacuum = new QGroupBox(tr("Vacuum"));
 
-  w_vacuum_ = new VacuumWidget("Toggle Vacuum", this);
+  w_vacuum_ = new AssemblyVacuumWidget("Toggle Vacuum", this);
   w_vacuum_->setToolTip("(3) Controls vacuum valves");
 
   box_vacuum->setLayout(w_vacuum_->layout());
@@ -231,7 +231,7 @@ AssemblyModuleAssembler::AssemblyModuleAssembler(const LStepExpressMotionManager
   // PATREC  WIDGET ------
   QGroupBox* box_patrec = new QGroupBox("Pattern Recognition");
 
-  w_patrec_ = new PatRecWidget("Standalone PatRec");
+  w_patrec_ = new AssemblyPatRecWidget("Standalone PatRec");
   w_patrec_->setToolTip("(4) Runs Pattern Recognition routine to determine sensor (x,y,z,a) position");
 
   box_patrec->setLayout(w_patrec_->layout());
@@ -403,13 +403,13 @@ void AssemblyModuleAssembler::keyReleaseEvent(QKeyEvent * event)
 }
 // ===========================================================================
 
-MultiPickupTesterWidget::MultiPickupTesterWidget(const QString& label, const LStepExpressMotionManager* motion_manager, QWidget* parent) :
+AssemblyMultiPickupTesterWidget::AssemblyMultiPickupTesterWidget(const QString& label, const LStepExpressMotionManager* motion_manager, QWidget* parent) :
   QWidget(parent),
   motion_manager_(motion_manager)
 {
   if(!motion_manager_)
   {
-    NQLog("MultiPickupTesterWidget", NQLog::Critical)
+    NQLog("AssemblyMultiPickupTesterWidget", NQLog::Critical)
        << "input error: null pointer to LStepExpressMotionManager object, exiting constructor";
 
     return;
@@ -452,7 +452,7 @@ MultiPickupTesterWidget::MultiPickupTesterWidget(const QString& label, const LSt
   connect(pickup_button_, SIGNAL(clicked()), this, SLOT(update_position_pickup()));
 }
 
-void MultiPickupTesterWidget::update_position_measurement()
+void AssemblyMultiPickupTesterWidget::update_position_measurement()
 {
   const double x = motion_manager_->get_position_X();
   const double y = motion_manager_->get_position_Y();
@@ -466,7 +466,7 @@ void MultiPickupTesterWidget::update_position_measurement()
   return;
 }
 
-void MultiPickupTesterWidget::update_position_pickup()
+void AssemblyMultiPickupTesterWidget::update_position_pickup()
 {
   const double x = motion_manager_->get_position_X();
   const double y = motion_manager_->get_position_Y();
@@ -480,7 +480,7 @@ void MultiPickupTesterWidget::update_position_pickup()
   return;
 }
 
-void MultiPickupTesterWidget::enable(const bool b)
+void AssemblyMultiPickupTesterWidget::enable(const bool b)
 {
   exe_button_   ->setEnabled(b);
 
@@ -494,7 +494,7 @@ void MultiPickupTesterWidget::enable(const bool b)
   return;
 }
 
-void MultiPickupTesterWidget::execute()
+void AssemblyMultiPickupTesterWidget::execute()
 {
   // measurement position
   const QString measur_qstr = this->measur_lineed_->text().remove(" ");
@@ -503,7 +503,7 @@ void MultiPickupTesterWidget::execute()
 
   if(measur_qsl.length() != 3)
   {
-    NQLog("MultiPickupTesterWidget", NQLog::Warning) << "execute"
+    NQLog("AssemblyMultiPickupTesterWidget", NQLog::Warning) << "execute"
        << ": invalid format for measurement position (" << measur_qstr << "), no action taken";
 
     this->enable(true);
@@ -522,7 +522,7 @@ void MultiPickupTesterWidget::execute()
 
   if(pickup_qsl.length() != 3)
   {
-    NQLog("MultiPickupTesterWidget", NQLog::Warning) << "execute"
+    NQLog("AssemblyMultiPickupTesterWidget", NQLog::Warning) << "execute"
        << ": invalid format for pick-up position (" << pickup_qstr << "), no action taken";
 
     this->enable(true);
@@ -540,7 +540,7 @@ void MultiPickupTesterWidget::execute()
   const int iteraN = iteraN_qstr.toInt();
 
   // output signal
-  NQLog("MultiPickupTesterWidget", NQLog::Spam) << "execute"
+  NQLog("AssemblyMultiPickupTesterWidget", NQLog::Spam) << "execute"
      << ": emitting signal \"multipickup_request"
      <<  "(m_x=" << measur_x <<  ", m_y=" << measur_y << ", m_z=" << measur_z
      << ", p_x=" << pickup_x <<  ", p_y=" << pickup_y << ", p_z=" << pickup_z
@@ -669,7 +669,7 @@ void AssemblySandwichAssembler::run()
 }
 // ===========================================================================
 
-MoveWidget::MoveWidget(const QString& label, const QString& default_entry, const bool move_relative, QWidget* parent) :
+AssemblyMoveWidget::AssemblyMoveWidget(const QString& label, const QString& default_entry, const bool move_relative, QWidget* parent) :
   QWidget(parent),
   moveRelative_(move_relative)
 {
@@ -693,12 +693,12 @@ MoveWidget::MoveWidget(const QString& label, const QString& default_entry, const
   connect(button_, SIGNAL(clicked()), this, SLOT(execute()));
 }
 
-QString MoveWidget::get_input_string() const
+QString AssemblyMoveWidget::get_input_string() const
 {
   return this->lineed_->text();
 }
 
-void MoveWidget::enable(const bool b)
+void AssemblyMoveWidget::enable(const bool b)
 {
   button_->setEnabled(b);
   lineed_->setEnabled(b);
@@ -706,7 +706,7 @@ void MoveWidget::enable(const bool b)
   return;
 }
 
-void MoveWidget::execute()
+void AssemblyMoveWidget::execute()
 {
   QString line_entry = this->get_input_string();
 
@@ -723,7 +723,7 @@ void MoveWidget::execute()
 
     if(moveRelative_)
     {
-      NQLog("MoveWidget", NQLog::Message) << "execute"
+      NQLog("AssemblyMoveWidget", NQLog::Message) << "execute"
          << ": emitting signal \"moveRelative("
          << x_d << ", " << y_d << ", " << z_d << ", " << a_d << ")\"";
 
@@ -733,7 +733,7 @@ void MoveWidget::execute()
     }
     else
     {
-      NQLog("MoveWidget", NQLog::Message) << "execute"
+      NQLog("AssemblyMoveWidget", NQLog::Message) << "execute"
          << ": emitting signal \"moveAbsolute("
          << x_d << ", " << y_d << ", " << z_d << ", " << a_d << ")\"";
 
@@ -744,7 +744,7 @@ void MoveWidget::execute()
   }
   else
   {
-    NQLog("MoveWidget", NQLog::Warning) << "execute"
+    NQLog("AssemblyMoveWidget", NQLog::Warning) << "execute"
        << ": [moveRelative=" << moveRelative_ << "] invalid input string format (" << line_entry << "), no action taken";
 
     return;
@@ -754,7 +754,7 @@ void MoveWidget::execute()
 }
 // ===========================================================================
 
-StringWidget::StringWidget(const QString& label, const QString& default_entry, QWidget* parent) : QWidget(parent)
+AssemblyStringWidget::AssemblyStringWidget(const QString& label, const QString& default_entry, QWidget* parent) : QWidget(parent)
 {
   layout_ = new QFormLayout(this);
   this->setLayout(layout_);
@@ -776,23 +776,23 @@ StringWidget::StringWidget(const QString& label, const QString& default_entry, Q
   connect(button_, SIGNAL(clicked()), this, SLOT(execute()));
 }
 
-QString StringWidget::get_input_string() const
+QString AssemblyStringWidget::get_input_string() const
 {
   return this->lineed_->text();
 }
 
-void StringWidget::execute()
+void AssemblyStringWidget::execute()
 {
   const QString line_entry = this->get_input_string();
 
-  NQLog("StringWidget", NQLog::Spam) << "execute"
+  NQLog("AssemblyStringWidget", NQLog::Spam) << "execute"
      << ": emitting signal \"input_string(" << line_entry << ")\"";
 
   emit input_string(line_entry);
 }
 // ===========================================================================
 
-PatRecWidget::PatRecWidget(const QString& label, QWidget* parent) :
+AssemblyPatRecWidget::AssemblyPatRecWidget(const QString& label, QWidget* parent) :
   QWidget(parent),
 
   layout_(0),
@@ -875,12 +875,12 @@ PatRecWidget::PatRecWidget(const QString& label, QWidget* parent) :
   layout_->addRow(layout_2);
 
   // widget: PatRec rough angles
-  sw_angrough_ = new StringWidget("Pre-Scan Angles (list)", "0,180");
+  sw_angrough_ = new AssemblyStringWidget("Pre-Scan Angles (list)", "0,180");
   layout_2->addWidget(sw_angrough_->button(), 0, 0);
   layout_2->addWidget(sw_angrough_->lineed(), 0, 1);
 
   // widget: PatRec angular-scan parameters
-  sw_angscanp_ = new StringWidget("Scan Params (fine-range, fine-step)", "5,0.125");
+  sw_angscanp_ = new AssemblyStringWidget("Scan Params (fine-range, fine-step)", "5,0.125");
   layout_2->addWidget(sw_angscanp_->button(), 1, 0);
   layout_2->addWidget(sw_angscanp_->lineed(), 1, 1);
   // ---------------------
@@ -888,7 +888,7 @@ PatRecWidget::PatRecWidget(const QString& label, QWidget* parent) :
   connect(button_, SIGNAL(clicked()), this, SLOT(execute()));
 }
 
-void PatRecWidget::execute()
+void AssemblyPatRecWidget::execute()
 {
   int mode_lab(0), mode_obj(0);
 
@@ -900,15 +900,15 @@ void PatRecWidget::execute()
   if     (radio5_->isChecked()){ mode_lab = 0; }
   else if(radio6_->isChecked()){ mode_lab = 1; }
 
-  NQLog("PatRecWidget", NQLog::Spam) << "execute"
+  NQLog("AssemblyPatRecWidget", NQLog::Spam) << "execute"
      << ": emitting signal \"mode(" << mode_lab << ", " << mode_obj << ")\"";
 
   emit mode(mode_lab, mode_obj);
 }
 
-void PatRecWidget::change_label(const int state)
+void AssemblyPatRecWidget::change_label(const int state)
 {
-  NQLog("PatRecWidget", NQLog::Spam) << "change_label(" << state << ")";
+  NQLog("AssemblyPatRecWidget", NQLog::Spam) << "change_label(" << state << ")";
 
   if(state == 0)
   {
@@ -925,7 +925,7 @@ void PatRecWidget::change_label(const int state)
 }
 // ===========================================================================
 
-VacuumWidget::VacuumWidget(const QString& label, QWidget* parent) : QWidget(parent)
+AssemblyVacuumWidget::AssemblyVacuumWidget(const QString& label, QWidget* parent) : QWidget(parent)
 {
   layout_ = new QFormLayout();
   this->setLayout(layout_);
@@ -993,18 +993,18 @@ VacuumWidget::VacuumWidget(const QString& label, QWidget* parent) : QWidget(pare
 
   connect(button_, SIGNAL(clicked()), this, SLOT(toggleVacuum()));
 
-  NQLog("VacuumWidget", NQLog::Debug) << "constructed";
+  NQLog("AssemblyVacuumWidget", NQLog::Debug) << "constructed";
 }
 
-void VacuumWidget::toggleVacuum()
+void AssemblyVacuumWidget::toggleVacuum()
 {
-  NQLog("VacuumWidget") << ": toggling vacuum voltage";
+  NQLog("AssemblyVacuumWidget") << ": toggling vacuum voltage";
 
   for(unsigned int i=0; i<valves_.size(); ++i)
   {
     if(valves_.at(i)->isChecked())
     {
-      NQLog("VacuumWidget") << ": emit signal to channel " << (i+1);
+      NQLog("AssemblyVacuumWidget") << ": emit signal to channel " << (i+1);
 
       button_->setEnabled(false);
 
@@ -1014,24 +1014,24 @@ void VacuumWidget::toggleVacuum()
     }
   }
 
-  NQLog("VacuumWidget") << ": None channel selected! Vacuum is not toggled.";
+  NQLog("AssemblyVacuumWidget") << ": None channel selected! Vacuum is not toggled.";
 }
 
-void VacuumWidget::enableVacuumButton()
+void AssemblyVacuumWidget::enableVacuumButton()
 {
   button_->setEnabled(true);
 }
 
-void VacuumWidget::disableVacuumButton()
+void AssemblyVacuumWidget::disableVacuumButton()
 {
   button_->setEnabled(false);
 }
 
-void VacuumWidget::updateVacuumChannelState(const int channelNumber, const bool channelState)
+void AssemblyVacuumWidget::updateVacuumChannelState(const int channelNumber, const bool channelState)
 {
   if(channelNumber >= int(labels_.size()))
   {
-    NQLog("VacuumWidget", NQLog::Warning) << "updateVacuumChannelState"
+    NQLog("AssemblyVacuumWidget", NQLog::Warning) << "updateVacuumChannelState"
        << "(" << channelNumber << ", " << channelState << ")"
        << ": out-of-range input channel number (" << channelNumber << "), no action taken";
 
