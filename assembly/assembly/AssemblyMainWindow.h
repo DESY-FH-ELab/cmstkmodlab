@@ -31,6 +31,7 @@ typedef AssemblyUEyeModel AssemblyUEyeModel_t;
 #include <AssemblyImageController.h>
 #include <AssemblyZFocusFinder.h>
 #include <AssemblyObjectFinderPatRec.h>
+#include <AssemblyObjectFinderPatRecThread.h>
 #include <AssemblyMultiPickupTester.h>
 #include <AssemblyAssembler.h>
 #include <LStepExpressModel.h>
@@ -141,7 +142,8 @@ class AssemblyMainWindow : public QMainWindow
 
     AssemblyZFocusFinder*       zfocus_finder_;
 
-    AssemblyObjectFinderPatRec* object_finder_;
+    AssemblyObjectFinderPatRec*       object_finder_;
+    AssemblyObjectFinderPatRecThread* object_finder_thread_;
 
     AssemblyMultiPickupTester*  multipickup_;
 

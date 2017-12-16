@@ -59,6 +59,8 @@ AssemblyObjectFinderPatRec::~AssemblyObjectFinderPatRec()
 
 void AssemblyObjectFinderPatRec::set_threshold(const int v)
 {
+  QMutexLocker ml(&mutex_);
+
   if(threshold_ != v)
   {
     threshold_ = v;
@@ -73,6 +75,8 @@ void AssemblyObjectFinderPatRec::set_threshold(const int v)
 
 void AssemblyObjectFinderPatRec::update_threshold(const int v)
 {
+  QMutexLocker ml(&mutex_);
+
   this->set_threshold(v);
 
   NQLog("AssemblyObjectFinderPatRec", NQLog::Spam) << "update_threshold(" << v << ")"
@@ -91,6 +95,8 @@ void AssemblyObjectFinderPatRec::acquire_image()
 
 void AssemblyObjectFinderPatRec::update_image(const cv::Mat& img)
 {
+  QMutexLocker ml(&mutex_);
+
   if(img.channels() > 1)
   {
     image_mas_ = img;
@@ -116,6 +122,8 @@ void AssemblyObjectFinderPatRec::update_image(const cv::Mat& img)
 
 void AssemblyObjectFinderPatRec::delete_image()
 {
+  QMutexLocker ml(&mutex_);
+
   image_mas_ = cv::Mat();
 
   if(updated_image_master_){ updated_image_master_ = false; }
@@ -125,6 +133,8 @@ void AssemblyObjectFinderPatRec::delete_image()
 
 void AssemblyObjectFinderPatRec::update_binary_image()
 {
+  QMutexLocker ml(&mutex_);
+
   if(updated_image_master_)
   {
     if(!updated_threshold_)
@@ -181,6 +191,8 @@ cv::Mat AssemblyObjectFinderPatRec::get_binary_image(const cv::Mat& img, const i
 
 void AssemblyObjectFinderPatRec::delete_binary_image()
 {
+  QMutexLocker ml(&mutex_);
+
   image_bin_ = cv::Mat();
 
   if(updated_image_master_binary_){ updated_image_master_binary_ = false; }
@@ -190,6 +202,8 @@ void AssemblyObjectFinderPatRec::delete_binary_image()
 
 void AssemblyObjectFinderPatRec::send_image_master()
 {
+  QMutexLocker ml(&mutex_);
+
   NQLog("AssemblyObjectFinderPatRec", NQLog::Spam) << "send_image_master"
      << ": emitting signal \"image_sent\"";
 
@@ -198,6 +212,8 @@ void AssemblyObjectFinderPatRec::send_image_master()
 
 void AssemblyObjectFinderPatRec::send_image_binary()
 {
+  QMutexLocker ml(&mutex_);
+
   NQLog("AssemblyObjectFinderPatRec", NQLog::Spam) << "send_image_binary"
      << ": emitting signal \"image_sent\"";
 
@@ -206,6 +222,8 @@ void AssemblyObjectFinderPatRec::send_image_binary()
 
 void AssemblyObjectFinderPatRec::update_rough_angles(QString qstr)
 {
+  QMutexLocker ml(&mutex_);
+
   const QStringList entries = qstr.remove(" ").split(",");
 
   if(entries.length() > 0)
@@ -236,6 +254,8 @@ void AssemblyObjectFinderPatRec::update_rough_angles(QString qstr)
 
 void AssemblyObjectFinderPatRec::update_angscan_parameters(QString qstr)
 {
+  QMutexLocker ml(&mutex_);
+
   const QStringList entries = qstr.remove(" ").split(",");
 
   if(entries.length() == 2)
@@ -264,6 +284,8 @@ void AssemblyObjectFinderPatRec::update_angscan_parameters(QString qstr)
 
 void AssemblyObjectFinderPatRec::run_PatRec(const int mode_lab, const int mode_obj)
 {
+  QMutexLocker ml(&mutex_);
+
   NQLog("AssemblyObjectFinderPatRec", NQLog::Message) << "run_PatRec"
      << "(mode_lab=" << mode_lab << ", mode_obj=" << mode_obj << ")"
      << ": initiated Pattern Recognition";
@@ -418,6 +440,8 @@ void AssemblyObjectFinderPatRec::run_PatRec(const int mode_lab, const int mode_o
 
 void AssemblyObjectFinderPatRec::template_matching(const cv::Mat& img_master, const cv::Mat& img_master_bin, const cv::Mat& img_templa, const int threshold_templa)
 {
+  QMutexLocker ml(&mutex_);
+
   NQLog("AssemblyObjectFinderPatRec", NQLog::Spam) << "template_matching";
   NQLog("AssemblyObjectFinderPatRec", NQLog::Spam) << "template_matching: Master   cols = " << img_master.cols;
   NQLog("AssemblyObjectFinderPatRec", NQLog::Spam) << "template_matching: Master   rows = " << img_master.rows;
