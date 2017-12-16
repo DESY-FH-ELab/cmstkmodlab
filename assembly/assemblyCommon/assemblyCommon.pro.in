@@ -89,6 +89,7 @@ HEADERS += AssemblyVUEyeCamera.h \
            AssemblyZFocusFinder.h \
            AssemblyObjectFinderManual.h \
            AssemblyObjectFinderPatRec.h \
+           AssemblyObjectFinderPatRecThread.h \
            AssemblyMultiPickupTester.h \
            AssemblyAssembler.h \
            ConradManager.h \
@@ -134,6 +135,7 @@ SOURCES += AssemblyVUEyeCamera.cc \
            AssemblyZFocusFinder.cc \
            AssemblyObjectFinderManual.cc \
            AssemblyObjectFinderPatRec.cc \
+           AssemblyObjectFinderPatRecThread.cc \
            AssemblyMultiPickupTester.cc \
            AssemblyAssembler.cc \
            ConradManager.cc \
