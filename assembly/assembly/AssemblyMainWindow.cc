@@ -169,6 +169,8 @@ AssemblyMainWindow::AssemblyMainWindow(const unsigned int camera_ID, QWidget* pa
 
     assembleView_->connect_to_finder(object_finder_);
 
+    assembleView_->moveToThread(object_finder_thread_);
+
     object_finder_->update_rough_angles      (assembleView_->PatRec_Widget()->widget_angrough()->get_input_string());
     object_finder_->update_angscan_parameters(assembleView_->PatRec_Widget()->widget_angscanp()->get_input_string());
 
