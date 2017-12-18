@@ -17,7 +17,8 @@
 
 #include <iostream>
 #include <fstream>
-#include <memory>
+
+#include <QThread>
 
 #include <TFile.h>
 #include <TGraph.h>
@@ -59,7 +60,7 @@ AssemblyObjectFinderPatRec::~AssemblyObjectFinderPatRec()
 
 void AssemblyObjectFinderPatRec::set_threshold(const int v)
 {
-//  mutex_.lock();
+  //mutex_.lock();
 
   if(threshold_ != v)
   {
@@ -70,21 +71,17 @@ void AssemblyObjectFinderPatRec::set_threshold(const int v)
     if(updated_image_master_binary_){ updated_image_master_binary_ = false; }
   }
 
-//  mutex_.unlock();
+  //mutex_.unlock();
 
   return;
 }
 
 void AssemblyObjectFinderPatRec::update_threshold(const int v)
 {
-//  mutex_.lock();
-
   this->set_threshold(v);
 
   NQLog("AssemblyObjectFinderPatRec", NQLog::Spam) << "update_threshold(" << v << ")"
      << ": emitting signal \"threshold_updated\"";
-
-//  mutex_.unlock();
 
   emit threshold_updated();
 }
@@ -99,7 +96,7 @@ void AssemblyObjectFinderPatRec::acquire_image()
 
 void AssemblyObjectFinderPatRec::update_image(const cv::Mat& img)
 {
-//  mutex_.lock();
+  //mutex_.lock();
 
   if(img.channels() > 1)
   {
@@ -117,10 +114,10 @@ void AssemblyObjectFinderPatRec::update_image(const cv::Mat& img)
 
   if(updated_image_master_binary_){ updated_image_master_binary_ = false; }
 
+  //mutex_.unlock();
+
   NQLog("AssemblyObjectFinderPatRec", NQLog::Spam) << "update_image"
      << ": emitting signal \"image_updated\"";
-
-//  mutex_.unlock();
 
   emit image_updated(image_mas_);
   emit image_updated();
@@ -128,20 +125,20 @@ void AssemblyObjectFinderPatRec::update_image(const cv::Mat& img)
 
 void AssemblyObjectFinderPatRec::delete_image()
 {
-//  mutex_.lock();
+  //mutex_.lock();
 
   image_mas_ = cv::Mat();
 
   if(updated_image_master_){ updated_image_master_ = false; }
 
-//  mutex_.unlock();
+  //mutex_.unlock();
 
   return;
 }
 
 void AssemblyObjectFinderPatRec::update_binary_image()
 {
-//  mutex_.lock();
+  //mutex_.lock();
 
   if(updated_image_master_)
   {
@@ -149,8 +146,6 @@ void AssemblyObjectFinderPatRec::update_binary_image()
     {
       NQLog("AssemblyObjectFinderPatRec", NQLog::Warning) << "update_binary_image"
          << ": threshold value not available, no binary image produced";
-
-//      mutex_.unlock();
 
       return;
     }
@@ -162,10 +157,10 @@ void AssemblyObjectFinderPatRec::update_binary_image()
     NQLog("AssemblyObjectFinderPatRec", NQLog::Spam) << "update_binary_image"
        << ": created binary image with threshold=" << threshold_;
 
+    //mutex_.unlock();
+
     NQLog("AssemblyObjectFinderPatRec", NQLog::Spam) << "update_binary_image"
        << ": emitting signal \"binary_image_updated\"";
-
-//    mutex_.unlock();
 
     emit binary_image_updated(image_bin_);
     emit binary_image_updated();
@@ -175,7 +170,7 @@ void AssemblyObjectFinderPatRec::update_binary_image()
     NQLog("AssemblyObjectFinderPatRec", NQLog::Warning) << "update_binary_image"
        << ": master image not available, no binary image produced (hint: enable camera and get an image)";
 
-//    mutex_.unlock();
+    //mutex_.unlock();
 
     return;
   }
@@ -205,49 +200,41 @@ cv::Mat AssemblyObjectFinderPatRec::get_binary_image(const cv::Mat& img, const i
 
 void AssemblyObjectFinderPatRec::delete_binary_image()
 {
-//  mutex_.lock();
+  //mutex_.lock();
 
   image_bin_ = cv::Mat();
 
   if(updated_image_master_binary_){ updated_image_master_binary_ = false; }
 
-//  mutex_.unlock();
+  //mutex_.unlock();
 
   return;
 }
 
 void AssemblyObjectFinderPatRec::send_image_master()
 {
-//  mutex_.lock();
-
   NQLog("AssemblyObjectFinderPatRec", NQLog::Spam) << "send_image_master"
      << ": emitting signal \"image_sent\"";
-
-//  mutex_.unlock();
 
   emit image_sent(image_mas_);
 }
 
 void AssemblyObjectFinderPatRec::send_image_binary()
 {
-//  mutex_.lock();
-
   NQLog("AssemblyObjectFinderPatRec", NQLog::Spam) << "send_image_binary"
      << ": emitting signal \"image_sent\"";
-
-//  mutex_.unlock();
 
   emit image_sent(image_bin_);
 }
 
 void AssemblyObjectFinderPatRec::update_rough_angles(QString qstr)
 {
-//  mutex_.lock();
-
   const QStringList entries = qstr.remove(" ").split(",");
 
   if(entries.length() > 0)
   {
+    //mutex_.lock();
+
     v_rough_angles_.clear();
 
     for(int i=0; i<entries.length(); ++i)
@@ -255,13 +242,13 @@ void AssemblyObjectFinderPatRec::update_rough_angles(QString qstr)
       v_rough_angles_.emplace_back(entries.value(i).toDouble());
     }
 
+    //mutex_.unlock();
+
     NQLog("AssemblyObjectFinderPatRec", NQLog::Message) << "update_rough_angles"
        << ": updated list of rough angles: " << qstr;
 
     NQLog("AssemblyObjectFinderPatRec", NQLog::Spam) << "update_rough_angles"
        << ": emitting signal \"rough_angles_updated\"";
-
-//    mutex_.unlock();
 
     emit rough_angles_updated();
   }
@@ -269,8 +256,6 @@ void AssemblyObjectFinderPatRec::update_rough_angles(QString qstr)
   {
     NQLog("AssemblyObjectFinderPatRec", NQLog::Warning) << "update_rough_angles"
        << ": input string with invalid format (" << qstr << "), no action taken";
-
-//    mutex_.unlock();
 
     return;
   }
@@ -280,14 +265,16 @@ void AssemblyObjectFinderPatRec::update_rough_angles(QString qstr)
 
 void AssemblyObjectFinderPatRec::update_angscan_parameters(QString qstr)
 {
-//  mutex_.lock();
-
   const QStringList entries = qstr.remove(" ").split(",");
 
   if(entries.length() == 2)
   {
+    //mutex_.lock();
+
     theta_fine_range_ = entries.value(0).toDouble();
     theta_fine_step_  = entries.value(1).toDouble();
+
+    //mutex_.unlock();
 
     NQLog("AssemblyObjectFinderPatRec", NQLog::Message) << "update_angscan_parameters"
        << ": updated parameters of angular-scan:"
@@ -297,7 +284,6 @@ void AssemblyObjectFinderPatRec::update_angscan_parameters(QString qstr)
     NQLog("AssemblyObjectFinderPatRec", NQLog::Spam) << "update_angscan_parameters"
        << ": emitting signal \"angscan_parameters_updated\"";
 
-//    mutex_.unlock();
 
     emit angscan_parameters_updated();
   }
@@ -306,19 +292,17 @@ void AssemblyObjectFinderPatRec::update_angscan_parameters(QString qstr)
     NQLog("AssemblyObjectFinderPatRec", NQLog::Warning) << "update_angscan_parameters"
        << ": input string with invalid format (" << qstr << "), no action taken";
 
-//    mutex_.unlock();
-
     return;
   }
 }
 
 void AssemblyObjectFinderPatRec::run_PatRec(const int mode_lab, const int mode_obj)
 {
-//  mutex_.lock();
-
   NQLog("AssemblyObjectFinderPatRec", NQLog::Message) << "run_PatRec"
      << "(mode_lab=" << mode_lab << ", mode_obj=" << mode_obj << ")"
      << ": initiated Pattern Recognition";
+
+  //mutex_.lock();
 
   // --- input validation
   if(!updated_threshold_)
@@ -465,20 +449,21 @@ void AssemblyObjectFinderPatRec::run_PatRec(const int mode_lab, const int mode_o
      << "(mode_lab=" << mode_lab << ", mode_obj=" << mode_obj << ")"
      << ": emitting signal \"run_template_matching\"";
 
-//  mutex_.unlock();
+  //mutex_.unlock();
 
   emit run_template_matching(image_mas_, image_bin_, image_tpl_, threshold_tpl_);
 }
 
 void AssemblyObjectFinderPatRec::template_matching(const cv::Mat& img_master, const cv::Mat& img_master_bin, const cv::Mat& img_templa, const int threshold_templa)
 {
-//  mutex_.lock();
-
   NQLog("AssemblyObjectFinderPatRec", NQLog::Spam) << "template_matching";
   NQLog("AssemblyObjectFinderPatRec", NQLog::Spam) << "template_matching: Master   cols = " << img_master.cols;
   NQLog("AssemblyObjectFinderPatRec", NQLog::Spam) << "template_matching: Master   rows = " << img_master.rows;
   NQLog("AssemblyObjectFinderPatRec", NQLog::Spam) << "template_matching: Template cols = " << img_templa.cols;
   NQLog("AssemblyObjectFinderPatRec", NQLog::Spam) << "template_matching: Template rows = " << img_templa.rows;
+
+  // QMutex lock (accessing data members)
+  //mutex_.lock();
 
   // output directory
   std::string output_dir(""), output_subdir("");
@@ -503,6 +488,15 @@ void AssemblyObjectFinderPatRec::template_matching(const cv::Mat& img_master, co
   }
 
   output_subdir = output_dir+output_subdir_name_;
+
+  const double theta_fine_min  = -1.0 * theta_fine_range_;
+  const double theta_fine_max  = +1.0 * theta_fine_range_;
+  const double theta_fine_step =        theta_fine_step_;
+
+  const std::vector<double> rough_angles(v_rough_angles_);
+
+  //mutex_.unlock();
+  // ------------------------------------
 
   Util::QDir_mkpath(output_dir);
 
@@ -562,13 +556,13 @@ void AssemblyObjectFinderPatRec::template_matching(const cv::Mat& img_master, co
   // First, get theta-rough angle: best guess of central value for finer angular scan
   double theta_rough(-9999.);
 
-  if(v_rough_angles_.size() > 0)
+  if(rough_angles.size() > 0)
   {
     double best_FOM(0.);
 
-    for(unsigned int i=0; i<v_rough_angles_.size(); ++i)
+    for(unsigned int i=0; i<rough_angles.size(); ++i)
     {
-      double i_angle = v_rough_angles_.at(i);
+      double i_angle = rough_angles.at(i);
 
       double i_FOM(0.);
       cv::Point i_matchLoc;
@@ -585,17 +579,11 @@ void AssemblyObjectFinderPatRec::template_matching(const cv::Mat& img_master, co
     NQLog("AssemblyObjectFinderPatRec", NQLog::Critical) << "template_matching"
        << ": empty list of rough angles, stopping Pattern Recognition";
 
-//    mutex_.unlock();
-
     return;
   }
 
   NQLog("AssemblyObjectFinderPatRec", NQLog::Message) << "template_matching" << ": rough estimate of best-angle yields best-theta=" << theta_rough;
   // ----------------
-
-  const double theta_fine_min  = -1.0 * theta_fine_range_;
-  const double theta_fine_max  = +1.0 * theta_fine_range_;
-  const double theta_fine_step =        theta_fine_step_;
 
   NQLog("AssemblyObjectFinderPatRec", NQLog::Message) << "template_matching" << ": angular scan parameters"
      << "(min="<< theta_rough+theta_fine_min << ", max=" << theta_rough+theta_fine_max << ", step=" << theta_fine_step << ")";
@@ -664,42 +652,42 @@ void AssemblyObjectFinderPatRec::template_matching(const cv::Mat& img_master, co
   // FOM(angle) plot
   if(vec_angleNfom.size() > 0)
   {
-    std::unique_ptr<TCanvas> c1(new TCanvas("FOM", "Rotation extraction", 200, 10, 700, 500));
+    TCanvas c1("FOM", "Rotation extraction", 200, 10, 700, 500);
 
-    std::unique_ptr<TGraph> gr_scan(new TGraph());
+    TGraph gr_scan;
     for(unsigned int idx=0; idx<vec_angleNfom.size(); ++idx)
     {
-      gr_scan->SetPoint(idx, vec_angleNfom.at(idx).first, vec_angleNfom.at(idx).second);
+      gr_scan.SetPoint(idx, vec_angleNfom.at(idx).first, vec_angleNfom.at(idx).second);
     }
 
-//      gr_scan->Fit("pol6");
+//    gr_scan.Fit("pol6");
 
-    gr_scan->Draw("AC*");
-    gr_scan->SetName("PatRec_FOM");
-    gr_scan->GetHistogram()->GetXaxis()->SetTitle("angle (degrees)");
-    gr_scan->GetHistogram()->GetYaxis()->SetTitle("PatRec FOM");
-    gr_scan->GetHistogram()->SetTitle("");
+    gr_scan.Draw("AC*");
+    gr_scan.SetName("PatRec_FOM");
+    gr_scan.GetHistogram()->GetXaxis()->SetTitle("angle (degrees)");
+    gr_scan.GetHistogram()->GetYaxis()->SetTitle("PatRec FOM");
+    gr_scan.GetHistogram()->SetTitle("");
 
-    std::unique_ptr<TGraph> gr_best(new TGraph(1));
-    gr_best->SetPoint(0, best_theta, best_FOM);
-    gr_best->SetMarkerColor(2);
-    gr_best->SetMarkerStyle(22);
-    gr_best->SetMarkerSize(3);
-    gr_best->Draw("PSAME");
-    gr_best->SetName("PatRec_FOM_best");
+    TGraph gr_best;
+    gr_best.SetPoint(0, best_theta, best_FOM);
+    gr_best.SetMarkerColor(2);
+    gr_best.SetMarkerStyle(22);
+    gr_best.SetMarkerSize(3);
+    gr_best.Draw("PSAME");
+    gr_best.SetName("PatRec_FOM_best");
 
     const std::string filepath_FOM_base = output_dir+"/RotationExtraction";
 
     const std::string filepath_FOM_png  = filepath_FOM_base+".png";
     const std::string filepath_FOM_root = filepath_FOM_base+".root";
 
-    c1->SaveAs(filepath_FOM_png.c_str());
+    c1.SaveAs(filepath_FOM_png.c_str());
 
-    std::unique_ptr<TFile> o_file(new TFile(filepath_FOM_root.c_str(), "recreate"));
-    o_file->cd();
-    gr_scan->Write();
-    gr_best->Write();
-    o_file->Close();
+    TFile o_file(filepath_FOM_root.c_str(), "recreate");
+    o_file.cd();
+    gr_scan.Write();
+    gr_best.Write();
+    o_file.Close();
 
     emit image_path(2, QString::fromStdString(filepath_FOM_png));
   }
@@ -728,8 +716,6 @@ void AssemblyObjectFinderPatRec::template_matching(const cv::Mat& img_master, co
   // ------------------
 
   // PatRec result(s)
-
-//  mutex_.unlock();
 
   NQLog("AssemblyObjectFinderPatRec", NQLog::Spam) << "template_matching"
      << ": emitting signal \"reportObjectLocation(1, " << best_matchLoc.x << ", " << best_matchLoc.y << ", " << best_theta << ")\"";
