@@ -286,7 +286,7 @@ void AssemblyObjectFinderPatRec::update_angscan_parameters(QString qstr)
 
 void AssemblyObjectFinderPatRec::run_PatRec(const int mode_lab, const int mode_obj)
 {
-  QMutexLocker ml(&mutex_);
+//  QMutexLocker ml(&mutex_);
 
   NQLog("AssemblyObjectFinderPatRec", NQLog::Message) << "run_PatRec"
      << "(mode_lab=" << mode_lab << ", mode_obj=" << mode_obj << ")"
@@ -442,7 +442,7 @@ void AssemblyObjectFinderPatRec::run_PatRec(const int mode_lab, const int mode_o
 
 void AssemblyObjectFinderPatRec::template_matching(const cv::Mat& img_master, const cv::Mat& img_master_bin, const cv::Mat& img_templa, const int threshold_templa)
 {
-//  QMutexLocker ml(&mutex_);
+  QMutexLocker ml(&mutex_);
 
   NQLog("AssemblyObjectFinderPatRec", NQLog::Spam) << "template_matching";
   NQLog("AssemblyObjectFinderPatRec", NQLog::Spam) << "template_matching: Master   cols = " << img_master.cols;
