@@ -103,8 +103,8 @@ AssemblyMainWindow::AssemblyMainWindow(const unsigned int camera_ID, QWidget* pa
 
     // marker finder
     object_finder_        = new AssemblyObjectFinderPatRec(Util::QtCacheDirectory()+"/AssemblyObjectFinderPatRec", "rotations");
-//    object_finder_thread_ = new AssemblyObjectFinderPatRecThread(object_finder_);
-//    object_finder_thread_->start();
+    object_finder_thread_ = new AssemblyObjectFinderPatRecThread(object_finder_);
+    object_finder_thread_->start();
 
     // zfocus finder
     zfocus_finder_ = new AssemblyZFocusFinder(camera_, motion_manager_);

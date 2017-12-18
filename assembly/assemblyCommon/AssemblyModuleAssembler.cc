@@ -281,9 +281,9 @@ void AssemblyModuleAssembler::connect_to_finder(const AssemblyObjectFinderPatRec
 
     connect(this->PatRec_Widget(), SIGNAL(sendPosition(int, double, double, double)), this, SLOT(updateText (int, double, double, double)));
 
-    connect(finder, SIGNAL(image_path          (int, QString))               , this, SLOT(updateImage(int, QString)));
-    connect(finder, SIGNAL(image_mat           (int, cv::Mat))               , this, SLOT(updateImage(int, cv::Mat)));
-    connect(finder, SIGNAL(reportObjectLocation(int, double, double, double)), this, SLOT(updateText (int, double, double, double)));
+    connect(finder, SIGNAL(image_path          (int, QString))               , this, SLOT(updateImage(int, QString))               , Qt::DirectConnection);
+    connect(finder, SIGNAL(image_mat           (int, cv::Mat))               , this, SLOT(updateImage(int, cv::Mat))               , Qt::DirectConnection);
+    connect(finder, SIGNAL(reportObjectLocation(int, double, double, double)), this, SLOT(updateText (int, double, double, double)), Qt::DirectConnection);
 
     NQLog("AssemblyModuleAssembler", NQLog::Spam) << "connect_to_finder"
        << ": widget connected to object of type AssemblyObjectFinderPatRec";
