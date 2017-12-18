@@ -19,8 +19,6 @@
 #include <fstream>
 #include <memory>
 
-#include <QMutexLocker>
-
 #include <TFile.h>
 #include <TGraph.h>
 #include <TCanvas.h>
@@ -61,7 +59,7 @@ AssemblyObjectFinderPatRec::~AssemblyObjectFinderPatRec()
 
 void AssemblyObjectFinderPatRec::set_threshold(const int v)
 {
-//  QMutexLocker ml(&mutex_);
+//  mutex_.lock();
 
   if(threshold_ != v)
   {
@@ -72,17 +70,21 @@ void AssemblyObjectFinderPatRec::set_threshold(const int v)
     if(updated_image_master_binary_){ updated_image_master_binary_ = false; }
   }
 
+//  mutex_.unlock();
+
   return;
 }
 
 void AssemblyObjectFinderPatRec::update_threshold(const int v)
 {
-//  QMutexLocker ml(&mutex_);
+//  mutex_.lock();
 
   this->set_threshold(v);
 
   NQLog("AssemblyObjectFinderPatRec", NQLog::Spam) << "update_threshold(" << v << ")"
      << ": emitting signal \"threshold_updated\"";
+
+//  mutex_.unlock();
 
   emit threshold_updated();
 }
@@ -97,7 +99,7 @@ void AssemblyObjectFinderPatRec::acquire_image()
 
 void AssemblyObjectFinderPatRec::update_image(const cv::Mat& img)
 {
-//  QMutexLocker ml(&mutex_);
+//  mutex_.lock();
 
   if(img.channels() > 1)
   {
@@ -118,24 +120,28 @@ void AssemblyObjectFinderPatRec::update_image(const cv::Mat& img)
   NQLog("AssemblyObjectFinderPatRec", NQLog::Spam) << "update_image"
      << ": emitting signal \"image_updated\"";
 
+//  mutex_.unlock();
+
   emit image_updated(image_mas_);
   emit image_updated();
 }
 
 void AssemblyObjectFinderPatRec::delete_image()
 {
-//  QMutexLocker ml(&mutex_);
+//  mutex_.lock();
 
   image_mas_ = cv::Mat();
 
   if(updated_image_master_){ updated_image_master_ = false; }
+
+//  mutex_.unlock();
 
   return;
 }
 
 void AssemblyObjectFinderPatRec::update_binary_image()
 {
-//  QMutexLocker ml(&mutex_);
+//  mutex_.lock();
 
   if(updated_image_master_)
   {
@@ -143,6 +149,8 @@ void AssemblyObjectFinderPatRec::update_binary_image()
     {
       NQLog("AssemblyObjectFinderPatRec", NQLog::Warning) << "update_binary_image"
          << ": threshold value not available, no binary image produced";
+
+//      mutex_.unlock();
 
       return;
     }
@@ -157,6 +165,8 @@ void AssemblyObjectFinderPatRec::update_binary_image()
     NQLog("AssemblyObjectFinderPatRec", NQLog::Spam) << "update_binary_image"
        << ": emitting signal \"binary_image_updated\"";
 
+//    mutex_.unlock();
+
     emit binary_image_updated(image_bin_);
     emit binary_image_updated();
   }
@@ -164,6 +174,8 @@ void AssemblyObjectFinderPatRec::update_binary_image()
   {
     NQLog("AssemblyObjectFinderPatRec", NQLog::Warning) << "update_binary_image"
        << ": master image not available, no binary image produced (hint: enable camera and get an image)";
+
+//    mutex_.unlock();
 
     return;
   }
@@ -193,38 +205,44 @@ cv::Mat AssemblyObjectFinderPatRec::get_binary_image(const cv::Mat& img, const i
 
 void AssemblyObjectFinderPatRec::delete_binary_image()
 {
-//  QMutexLocker ml(&mutex_);
+//  mutex_.lock();
 
   image_bin_ = cv::Mat();
 
   if(updated_image_master_binary_){ updated_image_master_binary_ = false; }
+
+//  mutex_.unlock();
 
   return;
 }
 
 void AssemblyObjectFinderPatRec::send_image_master()
 {
-//  QMutexLocker ml(&mutex_);
+//  mutex_.lock();
 
   NQLog("AssemblyObjectFinderPatRec", NQLog::Spam) << "send_image_master"
      << ": emitting signal \"image_sent\"";
+
+//  mutex_.unlock();
 
   emit image_sent(image_mas_);
 }
 
 void AssemblyObjectFinderPatRec::send_image_binary()
 {
-//  QMutexLocker ml(&mutex_);
+//  mutex_.lock();
 
   NQLog("AssemblyObjectFinderPatRec", NQLog::Spam) << "send_image_binary"
      << ": emitting signal \"image_sent\"";
+
+//  mutex_.unlock();
 
   emit image_sent(image_bin_);
 }
 
 void AssemblyObjectFinderPatRec::update_rough_angles(QString qstr)
 {
-//  QMutexLocker ml(&mutex_);
+//  mutex_.lock();
 
   const QStringList entries = qstr.remove(" ").split(",");
 
@@ -243,6 +261,8 @@ void AssemblyObjectFinderPatRec::update_rough_angles(QString qstr)
     NQLog("AssemblyObjectFinderPatRec", NQLog::Spam) << "update_rough_angles"
        << ": emitting signal \"rough_angles_updated\"";
 
+//    mutex_.unlock();
+
     emit rough_angles_updated();
   }
   else
@@ -250,13 +270,17 @@ void AssemblyObjectFinderPatRec::update_rough_angles(QString qstr)
     NQLog("AssemblyObjectFinderPatRec", NQLog::Warning) << "update_rough_angles"
        << ": input string with invalid format (" << qstr << "), no action taken";
 
+//    mutex_.unlock();
+
     return;
   }
+
+  return;
 }
 
 void AssemblyObjectFinderPatRec::update_angscan_parameters(QString qstr)
 {
-//  QMutexLocker ml(&mutex_);
+//  mutex_.lock();
 
   const QStringList entries = qstr.remove(" ").split(",");
 
@@ -273,6 +297,8 @@ void AssemblyObjectFinderPatRec::update_angscan_parameters(QString qstr)
     NQLog("AssemblyObjectFinderPatRec", NQLog::Spam) << "update_angscan_parameters"
        << ": emitting signal \"angscan_parameters_updated\"";
 
+//    mutex_.unlock();
+
     emit angscan_parameters_updated();
   }
   else
@@ -280,13 +306,15 @@ void AssemblyObjectFinderPatRec::update_angscan_parameters(QString qstr)
     NQLog("AssemblyObjectFinderPatRec", NQLog::Warning) << "update_angscan_parameters"
        << ": input string with invalid format (" << qstr << "), no action taken";
 
+//    mutex_.unlock();
+
     return;
   }
 }
 
 void AssemblyObjectFinderPatRec::run_PatRec(const int mode_lab, const int mode_obj)
 {
-//  QMutexLocker ml(&mutex_);
+//  mutex_.lock();
 
   NQLog("AssemblyObjectFinderPatRec", NQLog::Message) << "run_PatRec"
      << "(mode_lab=" << mode_lab << ", mode_obj=" << mode_obj << ")"
@@ -437,12 +465,14 @@ void AssemblyObjectFinderPatRec::run_PatRec(const int mode_lab, const int mode_o
      << "(mode_lab=" << mode_lab << ", mode_obj=" << mode_obj << ")"
      << ": emitting signal \"run_template_matching\"";
 
+//  mutex_.unlock();
+
   emit run_template_matching(image_mas_, image_bin_, image_tpl_, threshold_tpl_);
 }
 
 void AssemblyObjectFinderPatRec::template_matching(const cv::Mat& img_master, const cv::Mat& img_master_bin, const cv::Mat& img_templa, const int threshold_templa)
 {
-  QMutexLocker ml(&mutex_);
+//  mutex_.lock();
 
   NQLog("AssemblyObjectFinderPatRec", NQLog::Spam) << "template_matching";
   NQLog("AssemblyObjectFinderPatRec", NQLog::Spam) << "template_matching: Master   cols = " << img_master.cols;
@@ -554,6 +584,8 @@ void AssemblyObjectFinderPatRec::template_matching(const cv::Mat& img_master, co
   {
     NQLog("AssemblyObjectFinderPatRec", NQLog::Critical) << "template_matching"
        << ": empty list of rough angles, stopping Pattern Recognition";
+
+//    mutex_.unlock();
 
     return;
   }
@@ -695,7 +727,10 @@ void AssemblyObjectFinderPatRec::template_matching(const cv::Mat& img_master, co
      << ": created output file: " << output_dir+"/PatRec_results.txt";
   // ------------------
 
-  // update line edits in view
+  // PatRec result(s)
+
+//  mutex_.unlock();
+
   NQLog("AssemblyObjectFinderPatRec", NQLog::Spam) << "template_matching"
      << ": emitting signal \"reportObjectLocation(1, " << best_matchLoc.x << ", " << best_matchLoc.y << ", " << best_theta << ")\"";
 
@@ -715,6 +750,8 @@ void AssemblyObjectFinderPatRec::template_matching(const cv::Mat& img_master, co
 //
 //  //matchLoc_x_lab = (best_matchLoc.x +  (img_templa_bin.cols/2) ) * (5.0/img_master.cols); // need to add the current X pos of the lang
 //  //matchLoc_y_lab = (best_matchLoc.y +  (img_templa_bin.rows/2) ) * (4.0/img_master.rows); // need to add the current Y pos of the lang
+
+  return;
 }
 
 void AssemblyObjectFinderPatRec::PatRec(double& fom, cv::Point& match_loc, const cv::Mat& img_master_bin, const cv::Mat& img_templa_bin, const double angle, const int match_method, const std::string& out_dir) const
