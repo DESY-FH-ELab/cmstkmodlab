@@ -756,7 +756,7 @@ void AssemblyAssembler::run_alignment(int stage, double x_pr, double y_pr, doubl
             if(fabs(delta_theta_deg) < 0.5)
             {
                 NQLog("AssemblyAssembler", NQLog::Spam) << "run_alignment step [" << (alignment_step-1) << "]";
-                NQLog("AssemblyAssembler", NQLog::Spam) << "run_alignment step [" << (alignment_step-1) << "]: delta-theta < " << 0.05 << ", moving to target orientation in one step";
+                NQLog("AssemblyAssembler", NQLog::Spam) << "run_alignment step [" << (alignment_step-1) << "]: delta-theta < " << 0.5 << ", moving to target orientation in one step";
                 NQLog("AssemblyAssembler", NQLog::Spam) << "run_alignment step [" << (alignment_step-1) << "]";
 
                 alignment_step = 0;
@@ -766,7 +766,7 @@ void AssemblyAssembler::run_alignment(int stage, double x_pr, double y_pr, doubl
             else
             {
                 NQLog("AssemblyAssembler", NQLog::Spam) << "run_alignment step [" << (alignment_step-1) << "]";
-                NQLog("AssemblyAssembler", NQLog::Spam) << "run_alignment step [" << (alignment_step-1) << "]: delta-theta >=" << 0.05 << ", requires large rotation => iterative procedure";
+                NQLog("AssemblyAssembler", NQLog::Spam) << "run_alignment step [" << (alignment_step-1) << "]: delta-theta >=" << 0.5 << ", requires large rotation => iterative procedure";
                 NQLog("AssemblyAssembler", NQLog::Spam) << "run_alignment step [" << (alignment_step-1) << "]";
 
                 alignment_step = 0;
