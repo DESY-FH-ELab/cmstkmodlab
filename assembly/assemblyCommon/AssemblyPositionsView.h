@@ -17,6 +17,8 @@
 #include <LStepExpressMotionManager.h>
 #include <nqlogger.h>
 
+#include <vector>
+
 #include <QWidget>
 #include <QScrollArea>
 #include <QKeyEvent>
@@ -53,13 +55,7 @@ class AssemblyPositionsView : public QWidget
 
   cv::Mat image_;
 
-  AssemblyPositionsWidget* w_pos1_;
-  AssemblyPositionsWidget* w_pos2_;
-  AssemblyPositionsWidget* w_pos3_;
-  AssemblyPositionsWidget* w_pos4_;
-  AssemblyPositionsWidget* w_pos5_;
-  AssemblyPositionsWidget* w_pos6_;
-  AssemblyPositionsWidget* w_pos7_;
+  std::vector<AssemblyPositionsWidget*> v_wpos_;
 
  public slots:
 

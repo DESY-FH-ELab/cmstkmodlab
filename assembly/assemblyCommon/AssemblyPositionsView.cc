@@ -758,13 +758,13 @@ AssemblyPositionsView::AssemblyPositionsView(const LStepExpressMotionManager* mo
 
 //    measur_label_ = new QLabel("Position (x,y,z)");
 
-    w_pos1_ = new AssemblyPositionsWidget(motion_manager_); l2->addRow(w_pos1_);
-    w_pos2_ = new AssemblyPositionsWidget(motion_manager_); l2->addRow(w_pos2_);
-    w_pos3_ = new AssemblyPositionsWidget(motion_manager_); l2->addRow(w_pos3_);
-    w_pos4_ = new AssemblyPositionsWidget(motion_manager_); l2->addRow(w_pos4_);
-    w_pos5_ = new AssemblyPositionsWidget(motion_manager_); l2->addRow(w_pos5_);
-    w_pos6_ = new AssemblyPositionsWidget(motion_manager_); l2->addRow(w_pos6_);
-    w_pos7_ = new AssemblyPositionsWidget(motion_manager_); l2->addRow(w_pos7_);
+    v_wpos_.clear();
+
+    for(unsigned int i=0; i<10; ++i)
+    {
+      v_wpos_.emplace_back(new AssemblyPositionsWidget(motion_manager_));
+      l2->addRow(v_wpos_.back());
+    }
 
     l->addRow(box_posit);
     //// ---------------
@@ -905,7 +905,7 @@ AssemblyPositionsWidget::AssemblyPositionsWidget(const LStepExpressMotionManager
 
   pos_button_ = new QPushButton("Read");
   pos_lineed_value_ = new QLineEdit("");
-  pos_lineed_comme_ = new QLineEdit("Comment here");
+  pos_lineed_comme_ = new QLineEdit("Comment");
   l->addWidget(pos_button_      , 0, 0);
   l->addWidget(pos_lineed_value_, 0, 1);
   l->addWidget(pos_lineed_comme_, 0, 2);
@@ -920,9 +920,10 @@ void AssemblyPositionsWidget::update_position()
   const double x = motion_manager_->get_position_X();
   const double y = motion_manager_->get_position_Y();
   const double z = motion_manager_->get_position_Z();
+  const double a = motion_manager_->get_position_A();
 
   std::stringstream posi_strs;
-  posi_strs << x << ", " << y << ", " << z;
+  posi_strs << x << ", " << y << ", " << z << ", " << a;
 
   pos_lineed_value_->setText(QString::fromStdString(posi_strs.str()));
 
