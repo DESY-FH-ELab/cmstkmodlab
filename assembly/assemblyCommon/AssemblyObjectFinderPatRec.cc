@@ -108,7 +108,7 @@ void AssemblyObjectFinderPatRec::update_image(const cv::Mat& img)
     cv::Mat img_color;
     cv::cvtColor(img, img_color, cv::COLOR_GRAY2BGR);
 
-    image_mas_ = img_color;
+    image_mas_ = img_color.clone();
   }
 
   if(!updated_image_master_){ updated_image_master_ = true; }
