@@ -48,7 +48,7 @@ void AssemblyAssembler::enable_motion_manager(const bool arg)
 {
   if(arg == motion_manager_enabled_)
   {
-    NQLog("AssemblyAssembler", NQLog::Spam) << "enable_motion_manager(" << arg << ")"
+    NQLog("AssemblyAssembler", NQLog::Debug) << "enable_motion_manager(" << arg << ")"
        << ": motion-manager for AssemblyAssembler already " << (arg ? "enabled" : "disabled") << ", no action taken";
 
     return;

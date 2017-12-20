@@ -55,7 +55,7 @@ void AssemblyMultiPickupTester::enable_motion_manager(const bool arg)
 {
   if(arg == motion_manager_enabled_)
   {
-    NQLog("AssemblyMultiPickupTester", NQLog::Spam) << "enable_motion_manager(" << arg << ")"
+    NQLog("AssemblyMultiPickupTester", NQLog::Debug) << "enable_motion_manager(" << arg << ")"
        << ": motion-manager for multi-pickup test already " << (arg ? "enabled" : "disabled") << ", no action taken";
 
     return;
