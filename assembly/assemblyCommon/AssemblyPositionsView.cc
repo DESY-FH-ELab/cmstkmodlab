@@ -741,11 +741,11 @@ AssemblyPositionsView::AssemblyPositionsView(const LStepExpressMotionManager* mo
     QFormLayout*  lImg = new QFormLayout();
     g1->addLayout(lImg, 0, 1);
 
-    img_button_ = new QPushButton("Save Image");
-    lImg->addRow(img_button_);
+    img_save_button_ = new QPushButton("Save Image");
+    lImg->addRow(img_save_button_);
 
-    cli_button_ = new QPushButton("Draw Center Lines");
-    lImg->addRow(cli_button_);
+    img_celi_button_ = new QPushButton("Draw Center Lines");
+    lImg->addRow(img_celi_button_);
 
     l->addRow(box_image);
     //// ---------------
@@ -756,22 +756,43 @@ AssemblyPositionsView::AssemblyPositionsView(const LStepExpressMotionManager* mo
     QFormLayout* l2 = new QFormLayout();
     box_posit->setLayout(l2);
 
-//    measur_label_ = new QLabel("Position (x,y,z)");
-
     v_wpos_.clear();
-
-    for(unsigned int i=0; i<10; ++i)
+    for(unsigned int i=0; i<6; ++i)
     {
-      v_wpos_.emplace_back(new AssemblyPositionsWidget(motion_manager_));
+      v_wpos_.emplace_back(new AssemblyPositionReadWidget("#"+QString::number(i), motion_manager_));
       l2->addRow(v_wpos_.back());
     }
+
+    pos_calc_lineed_from_ = new QLineEdit("", box_posit);
+    pos_calc_lineed_to_   = new QLineEdit("", box_posit);
+    pos_calc_lineed_res_  = new QLineEdit("", box_posit);
+
+    pos_calc_lineed_from_->setSizePolicy(QSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed));
+    pos_calc_lineed_from_->setMaximumWidth(50);
+
+    pos_calc_lineed_to_  ->setSizePolicy(QSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed));
+    pos_calc_lineed_to_  ->setMaximumWidth(50);
+
+    pos_calc_button_ = new QPushButton("Show", box_posit);
+
+    QHBoxLayout* hbox = new QHBoxLayout;
+    hbox->addWidget(new QLabel("Get moveRelative from", box_posit));
+    hbox->addWidget(pos_calc_lineed_from_);
+    hbox->addWidget(new QLabel("to", box_posit));
+    hbox->addWidget(pos_calc_lineed_to_);
+    hbox->addWidget(new QLabel(" : ", box_posit));
+    hbox->addWidget(pos_calc_button_);
+    hbox->addWidget(pos_calc_lineed_res_);
+
+    l2->addRow(hbox);
 
     l->addRow(box_posit);
     //// ---------------
 
     //// connection(s)
-    connect(img_button_, SIGNAL(clicked()), this, SLOT(save_image()));
-    connect(cli_button_, SIGNAL(clicked()), this, SLOT(modify_image_centerlines()));
+    connect(img_save_button_, SIGNAL(clicked()), this, SLOT(save_image()));
+    connect(img_celi_button_, SIGNAL(clicked()), this, SLOT(modify_image_centerlines()));
+    connect(pos_calc_button_, SIGNAL(clicked()), this, SLOT(calculate_relative_distance()));
 
     this->connectImageProducer(this, SIGNAL(image_updated(cv::Mat)));
     //// ---------------
@@ -886,14 +907,140 @@ void AssemblyPositionsView::keyReleaseEvent(QKeyEvent* event)
     }
 }
 
-AssemblyPositionsWidget::AssemblyPositionsWidget(const LStepExpressMotionManager* motion_manager, QWidget* parent) :
+void AssemblyPositionsView::calculate_relative_distance()
+{
+  // FROM
+  QString idx_qstr_from = pos_calc_lineed_from_->text();
+
+  bool idx_from_valid(false);
+  const int idx_from = idx_qstr_from.remove(" ").toInt(&idx_from_valid);
+
+  if(!idx_from_valid)
+  {
+    NQLog("AssemblyPositionsView", NQLog::Critical) << "calculate_relative_distance"
+      << ": invalid input format for index of position \"From\" (" << idx_qstr_from << "), no action taken";
+
+    return;
+  }
+  else if(idx_from >= int(v_wpos_.size()))
+  {
+    NQLog("AssemblyPositionsView", NQLog::Critical) << "calculate_relative_distance"
+      << ": invalid input value for index of position \"From\" (out-of-range value, " << idx_from << "), no action taken";
+
+    return;
+  }
+  else if(idx_from < 0)
+  {
+    NQLog("AssemblyPositionsView", NQLog::Critical) << "calculate_relative_distance"
+      << ": invalid input value for index of position \"From\" (negative value, " << idx_from << "), no action taken";
+
+    return;
+  }
+
+  const QString qstr_from = v_wpos_.at(idx_from)->position_qstring();
+  // ----
+
+  // TO
+  QString idx_qstr_to = pos_calc_lineed_to_->text();
+
+  bool idx_to_valid(false);
+  const int idx_to = idx_qstr_to.remove(" ").toInt(&idx_to_valid);
+
+  if(!idx_to_valid)
+  {
+    NQLog("AssemblyPositionsView", NQLog::Critical) << "calculate_relative_distance"
+      << ": invalid input format for index of position \"To\" (" << idx_qstr_to << "), no action taken";
+
+    return;
+  }
+  else if(idx_to >= int(v_wpos_.size()))
+  {
+    NQLog("AssemblyPositionsView", NQLog::Critical) << "calculate_relative_distance"
+      << ": invalid input format for index of position \"To\" (out-of-range value, " << idx_to << "), no action taken";
+
+    return;
+  }
+  else if(idx_to < 0)
+  {
+    NQLog("AssemblyPositionsView", NQLog::Critical) << "calculate_relative_distance"
+      << ": invalid input format for index of position \"To\" (negative value, " << idx_to << "), no action taken";
+
+    return;
+  }
+
+  const QString qstr_to = v_wpos_.at(idx_to)->position_qstring();
+  // ----
+
+  std::vector<double> vpos_from, vpos_to;
+
+  const bool pass_vpos_from = this->load_position_4vector(vpos_from, qstr_from);
+  if(!pass_vpos_from){ return; }
+
+  const bool pass_vpos_to   = this->load_position_4vector(vpos_to, qstr_to);
+  if(!pass_vpos_to){ return; }
+
+  const double dX = (vpos_to.at(0) - vpos_from.at(0));
+  const double dY = (vpos_to.at(1) - vpos_from.at(1));
+  const double dZ = (vpos_to.at(2) - vpos_from.at(2));
+  const double dA = (vpos_to.at(3) - vpos_from.at(3));
+
+  std::stringstream posi_strs;
+  posi_strs << dX << ", " << dY << ", " << dZ << ", " << dA;
+
+  const QString qstr_res = QString::fromStdString(posi_strs.str());
+
+  pos_calc_lineed_res_->setText(qstr_res);
+
+  NQLog("AssemblyPositionsView", NQLog::Spam) << "calculate_relative_distance"
+    << ": relative distance " << idx_from << "->" << idx_to << " calculated successfully (" << qstr_res << ")";
+
+  return;
+}
+
+bool AssemblyPositionsView::load_position_4vector(std::vector<double>& vec, QString line_entry) const
+{
+  const QStringList entries = line_entry.remove(" ").split(",");
+
+  bool pass(false);
+
+  if(entries.length() == 4)
+  {
+    const double x_d = entries.value(0).toDouble();
+    const double y_d = entries.value(1).toDouble();
+    const double z_d = entries.value(2).toDouble();
+    const double a_d = entries.value(3).toDouble();
+
+    vec.clear();
+    vec.reserve(4);
+
+    vec.emplace_back(x_d);
+    vec.emplace_back(y_d);
+    vec.emplace_back(z_d);
+    vec.emplace_back(a_d);
+
+    NQLog("AssemblyPositionsView", NQLog::Spam) << "load_position_4vector"
+       << ": 4-vector position read successfully ("
+       << x_d << ", " << y_d << ", " << z_d << ", " << a_d << ")";
+
+    pass = true;
+  }
+  else
+  {
+    NQLog("AssemblyPositionsView", NQLog::Warning) << "load_position_4vector"
+       << ": invalid format in QLineEdit (" << line_entry << "), no action taken";
+  }
+
+  return pass;
+}
+
+AssemblyPositionReadWidget::AssemblyPositionReadWidget(const QString& qstr, const LStepExpressMotionManager* motion_manager, QWidget* parent) :
   QWidget(parent),
   motion_manager_(motion_manager)
 {
   //// INITIALIZATION
   if(motion_manager_ == nullptr)
   {
-    NQLog("AssemblyPositionsWidget", NQLog::Critical) << "initialization error"
+    NQLog("AssemblyPositionReadWidget", NQLog::Critical) << "initialization error"
        << ": null pointer to LStepExpressMotionManager object, exiting constructor";
 
     return;
@@ -903,19 +1050,20 @@ AssemblyPositionsWidget::AssemblyPositionsWidget(const LStepExpressMotionManager
   QGridLayout* l = new QGridLayout();
   this->setLayout(l);
 
-  pos_button_ = new QPushButton("Read");
-  pos_lineed_value_ = new QLineEdit("");
-  pos_lineed_comme_ = new QLineEdit("Comment");
-  l->addWidget(pos_button_      , 0, 0);
-  l->addWidget(pos_lineed_value_, 0, 1);
-  l->addWidget(pos_lineed_comme_, 0, 2);
+  pos_button_       = new QPushButton("Read"   , this);
+  pos_lineed_value_ = new QLineEdit  (""       , this);
+  pos_lineed_comme_ = new QLineEdit  ("Comment", this);
+  l->addWidget(new QLabel(qstr, this), 0, 0);
+  l->addWidget(pos_button_           , 0, 1);
+  l->addWidget(pos_lineed_value_     , 0, 2);
+  l->addWidget(pos_lineed_comme_     , 0, 3);
 
   connect(pos_button_, SIGNAL(clicked()), this, SLOT(update_position()));
 
-  NQLog("AssemblyPositionsWidget", NQLog::Debug) << "constructed";
+  NQLog("AssemblyPositionReadWidget", NQLog::Debug) << "constructed";
 }
 
-void AssemblyPositionsWidget::update_position()
+void AssemblyPositionReadWidget::update_position()
 {
   const double x = motion_manager_->get_position_X();
   const double y = motion_manager_->get_position_Y();

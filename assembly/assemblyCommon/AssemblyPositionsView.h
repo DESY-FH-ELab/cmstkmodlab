@@ -28,7 +28,7 @@
 
 #include <opencv2/opencv.hpp>
 
-class AssemblyPositionsWidget;
+class AssemblyPositionReadWidget;
 
 class AssemblyPositionsView : public QWidget
 {
@@ -50,32 +50,42 @@ class AssemblyPositionsView : public QWidget
 
   AssemblyUEyeView* img_view_;
   QScrollArea*      img_scroll_;
-  QPushButton*      img_button_;
-  QPushButton*      cli_button_;
+  QPushButton*      img_save_button_;
+  QPushButton*      img_celi_button_;
 
   cv::Mat image_;
 
-  std::vector<AssemblyPositionsWidget*> v_wpos_;
+  std::vector<AssemblyPositionReadWidget*> v_wpos_;
+
+  QLineEdit*   pos_calc_lineed_from_;
+  QLineEdit*   pos_calc_lineed_to_;
+  QLineEdit*   pos_calc_lineed_res_;
+  QPushButton* pos_calc_button_;
+
+  bool load_position_4vector(std::vector<double>&, QString) const;
 
  public slots:
 
   void update_image(const cv::Mat&);
   void save_image();
   void modify_image_centerlines();
+  void calculate_relative_distance();
 
  signals:
 
   void image_updated(const cv::Mat&);
 };
 
-class AssemblyPositionsWidget : public QWidget
+class AssemblyPositionReadWidget : public QWidget
 {
  Q_OBJECT
 
  public:
 
-  explicit AssemblyPositionsWidget(const LStepExpressMotionManager*, QWidget* parent=0);
-  virtual ~AssemblyPositionsWidget() {}
+  explicit AssemblyPositionReadWidget(const QString&, const LStepExpressMotionManager*, QWidget* parent=0);
+  virtual ~AssemblyPositionReadWidget() {}
+
+  QString position_qstring() const { return pos_lineed_value_->text(); }
 
  protected:
 
