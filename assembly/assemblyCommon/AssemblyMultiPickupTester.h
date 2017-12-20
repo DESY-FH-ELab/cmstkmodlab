@@ -80,6 +80,7 @@ class AssemblyMultiPickupTester : public QObject
   void reset();
 
   int    pickup_vacuum_;
+  int    pickup_basepl_;
   double pickup_deltaZ_;
 
   enum Mode { Mode_None, Mode_measurement, Mode_pickup };
@@ -91,9 +92,12 @@ class AssemblyMultiPickupTester : public QObject
   Movement      move_;
   Configuration conf_;
 
-  bool vacuum_on_   = false;
-  bool pickup_done_ = false;
-  bool picked_up_   = false;
+  bool use_vacuumBP_;
+
+  bool vacuum_on_;
+  bool vacuumBP_on_;
+  bool pickup_done_;
+  bool picked_up_;
 
  public slots:
 
