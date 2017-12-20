@@ -453,7 +453,7 @@ void AssemblyAssembler::launch_next_alignment_step()
 
 double x1_pos, x2_pos, y1_pos, y2_pos, slope, deg_orient, orient;
 
-void AssemblyAssembler::run_alignment(int stage, double x_pr, double y_pr, double theta_pr)
+void AssemblyAssembler::run_alignment(int /* stage */, double x_pr, double y_pr, double theta_pr)
 {
     // Rought manual alignment with ref marker on platform
     //1. Go to 'start' position (manually?)
@@ -471,12 +471,6 @@ void AssemblyAssembler::run_alignment(int stage, double x_pr, double y_pr, doubl
     const double mm_per_pixel_x = 0.0012;
     const double mm_per_pixel_y = 0.0012;
 
-//!!    if(theta_pr >= 175.0 && theta_pr <= 185.0)
-//!!    {
-//!!      x_pr = 2560.0 - x_pr;
-//!!      y_pr = 1920.0 - y_pr;
-//!!    }
-
     //double target_x = ( y_pr - (1317.0/2.0) ) * mm_per_pixel_x;
     //double target_y = ( x_pr - (1964.0/2.0) ) * mm_per_pixel_y;
 
@@ -486,16 +480,14 @@ void AssemblyAssembler::run_alignment(int stage, double x_pr, double y_pr, doubl
 
     double target_theta = theta_pr;
 
-//!!    double X1, Y1, X2, Y2 = 0.0;
-
     if(alignment_step == 0)
     {
-        NQLog("AssemblyAssembler", NQLog::Spam) << "run_alignment step [" << alignment_step << "]";
+        NQLog("AssemblyAssembler", NQLog::Message) << "run_alignment step [" << alignment_step << "]";
+
+        ++alignment_step;
 
         NQLog("AssemblyAssembler", NQLog::Spam) << "run_alignment step [" << alignment_step << "]"
            << ": emitting signal \"acquireImage\"";
-
-        ++alignment_step;
 
         emit acquireImage();
     }
@@ -509,14 +501,14 @@ void AssemblyAssembler::run_alignment(int stage, double x_pr, double y_pr, doubl
     //    repeat until target alignment reached   
     else if(alignment_step == 1)
     {
-        NQLog("AssemblyAssembler", NQLog::Spam) << "run_alignment step [" << alignment_step << "]"
+        NQLog("AssemblyAssembler", NQLog::Message) << "run_alignment step [" << alignment_step << "]"
            << ": centering camera on PatRec best-match position in first corner";
 
         ++alignment_step;
 
         if((fabs(target_x) > 0.005) || (fabs(target_y)  > 0.005))
         {
-          NQLog("AssemblyAssembler", NQLog::Spam) << "run_alignment step [" << (alignment_step-1) << "]"
+          NQLog("AssemblyAssembler", NQLog::Message) << "run_alignment step [" << (alignment_step-1) << "]"
              << ": moving to PatRec best-match position in first corner";
 
           this->moveRelative(target_x, target_y, 0.0, 0.0);
@@ -524,26 +516,26 @@ void AssemblyAssembler::run_alignment(int stage, double x_pr, double y_pr, doubl
     }
     else if(alignment_step == 2)
     {
-        NQLog("AssemblyAssembler", NQLog::Spam) << "run_alignment step [" << alignment_step << "]"
+        NQLog("AssemblyAssembler", NQLog::Message) << "run_alignment step [" << alignment_step << "]"
            << ": re-detecting first corner after centering";
 
         x1_pos = motion_manager_->get_position_X();
         y1_pos = motion_manager_->get_position_Y();
 
-        NQLog("AssemblyAssembler", NQLog::Spam) << "run_alignment step [" << alignment_step << "]: x1-position = " << x1_pos;
-        NQLog("AssemblyAssembler", NQLog::Spam) << "run_alignment step [" << alignment_step << "]: y1-position = " << y1_pos;
-        NQLog("AssemblyAssembler", NQLog::Spam) << "run_alignment step [" << alignment_step << "]";
+        NQLog("AssemblyAssembler", NQLog::Message) << "run_alignment step [" << alignment_step << "]: x1-position = " << x1_pos;
+        NQLog("AssemblyAssembler", NQLog::Message) << "run_alignment step [" << alignment_step << "]: y1-position = " << y1_pos;
+        NQLog("AssemblyAssembler", NQLog::Message) << "run_alignment step [" << alignment_step << "]";
+
+        ++alignment_step;
 
         NQLog("AssemblyAssembler", NQLog::Spam) << "run_alignment step [" << alignment_step << "]"
            << ": emitting signal \"acquireImage\"";
-
-        ++alignment_step;
 
         emit acquireImage();
     } 
     else if(alignment_step == 3)
     {
-        NQLog("AssemblyAssembler", NQLog::Spam) << "run_alignment step [" << alignment_step << "]"
+        NQLog("AssemblyAssembler", NQLog::Message) << "run_alignment step [" << alignment_step << "]"
            << ": moving to second corner";
 
         // silicon dummy sensor 47.4 x 99.75 with 0.7 correction in y_3
@@ -565,39 +557,32 @@ void AssemblyAssembler::run_alignment(int stage, double x_pr, double y_pr, doubl
         const double rel_dy = -SIN * markglas_deltaX + COS * markglas_deltaY;
         const double rel_dz = 0.0; // z = -0.20 for sensor with glue, z=0 for clean sensor
 
-//!!        double target_x_1 = (-1.0)*cos((target_theta*3.14)/180.0)*24.5;
-//!!        double target_y_1 = (-1.0)*sin((target_theta*3.14)/180.0)*24.5;
-//!!
-//!!        double target_y_2 = (1.0)*cos((target_theta*3.14)/180.0)*15.0;  
-//!!        double target_x_2 = (1.0)*sin((target_theta*3.14)/180.0)*15.0;
-//!!
-//!!        double rel_dx =  target_x_1 + target_x_2;
-//!!        double rel_dy = -target_y_1 + target_y_2 + 0.5;
-//!!        //not clear why minus sign and 0.5 is needed for y_3
-
         ++alignment_step;
 
         this->moveRelative(rel_dx, rel_dy, rel_dz, 0.0);
     }
     else if(alignment_step == 4)
     {
-        NQLog("AssemblyAssembler", NQLog::Spam) << "run_alignment step [" << alignment_step << "]"
+        NQLog("AssemblyAssembler", NQLog::Message) << "run_alignment step [" << alignment_step << "]"
            << ": acquiring image of second corner";
 
         ++alignment_step;
+
+        NQLog("AssemblyAssembler", NQLog::Spam) << "run_alignment step [" << alignment_step << "]"
+           << ": emitting signal \"acquireImage\"";
 
         emit acquireImage();
     }
     else if(alignment_step == 5)
     {
-        NQLog("AssemblyAssembler", NQLog::Spam) << "run_alignment step [" << alignment_step << "]"
+        NQLog("AssemblyAssembler", NQLog::Message) << "run_alignment step [" << alignment_step << "]"
            << ": centering camera on PatRec best-match position in second corner";
 
         ++alignment_step;
 
         if((fabs(target_x) > 0.005) || (fabs(target_y) > 0.005))
         {
-          NQLog("AssemblyAssembler", NQLog::Spam) << "run_alignment step [" << (alignment_step-1) << "]"
+          NQLog("AssemblyAssembler", NQLog::Message) << "run_alignment step [" << (alignment_step-1) << "]"
              << ": moving to PatRec best-match position in second corner";
 
           this->moveRelative(target_x, target_y, 0.0, 0.0);
@@ -605,7 +590,7 @@ void AssemblyAssembler::run_alignment(int stage, double x_pr, double y_pr, doubl
     }
     else if(alignment_step == 6)
     {
-        NQLog("AssemblyAssembler", NQLog::Spam) << "run_alignment step [" << alignment_step << "]"
+        NQLog("AssemblyAssembler", NQLog::Message) << "run_alignment step [" << alignment_step << "]"
            << ": re-detecting second corner after centering";
 
         double x2_pos = motion_manager_->get_position_X();
@@ -613,57 +598,41 @@ void AssemblyAssembler::run_alignment(int stage, double x_pr, double y_pr, doubl
 
         slope = (y2_pos - y1_pos)/(x2_pos - x1_pos);
 
-        NQLog("AssemblyAssembler", NQLog::Spam) << "run_alignment step [" << alignment_step << "]: x1-position = " << x1_pos;
-        NQLog("AssemblyAssembler", NQLog::Spam) << "run_alignment step [" << alignment_step << "]: y1-position = " << y1_pos;
-        NQLog("AssemblyAssembler", NQLog::Spam) << "run_alignment step [" << alignment_step << "]";
-        NQLog("AssemblyAssembler", NQLog::Spam) << "run_alignment step [" << alignment_step << "]: x2-position = " << x2_pos;
-        NQLog("AssemblyAssembler", NQLog::Spam) << "run_alignment step [" << alignment_step << "]: y2-position = " << y2_pos;
-        NQLog("AssemblyAssembler", NQLog::Spam) << "run_alignment step [" << alignment_step << "]";
-        NQLog("AssemblyAssembler", NQLog::Spam) << "run_alignment step [" << alignment_step << "]: sensor is aligned with slope = " << slope;
-        NQLog("AssemblyAssembler", NQLog::Spam) << "run_alignment step [" << alignment_step << "]";
-
-//!!        double a_xaxis = atan(slope);
-//!!
-//!!        double ratio = 50.0/100.0; // 47.4/99.75 for silicon dummy   48.0/98.5 for glass w/painted corners //!!
-//!!
-//!!        double total = atan(ratio);
-//!!        orient = total - fabs(a_xaxis);//!!
-//!!
-//!!        deg_orient = orient * (180.0/3.14159);
+        NQLog("AssemblyAssembler", NQLog::Message) << "run_alignment step [" << alignment_step << "]: x1-position = " << x1_pos;
+        NQLog("AssemblyAssembler", NQLog::Message) << "run_alignment step [" << alignment_step << "]: y1-position = " << y1_pos;
+        NQLog("AssemblyAssembler", NQLog::Message) << "run_alignment step [" << alignment_step << "]";
+        NQLog("AssemblyAssembler", NQLog::Message) << "run_alignment step [" << alignment_step << "]: x2-position = " << x2_pos;
+        NQLog("AssemblyAssembler", NQLog::Message) << "run_alignment step [" << alignment_step << "]: y2-position = " << y2_pos;
+        NQLog("AssemblyAssembler", NQLog::Message) << "run_alignment step [" << alignment_step << "]";
+        NQLog("AssemblyAssembler", NQLog::Message) << "run_alignment step [" << alignment_step << "]: sensor is aligned with slope = " << slope;
+        NQLog("AssemblyAssembler", NQLog::Message) << "run_alignment step [" << alignment_step << "]";
 
         // Define orientation to be reached 
         const double wanted_slope = -0.50;
-
-//!!        //determine angle between the two slopes
-//!!        double delta_theta_arg = (wanted_slope - slope)/(1.0 + (wanted_slope * slope));
-//!!        double delta_theta = atan(delta_theta_arg);
-//!!        double delta_theta_deg = (delta_theta *180.0)/3.14;
-//!!
-//!!        NQLog("AssemblyAssembler", NQLog::Spam) << "run_alignment step [" << alignment_step << "]: target slope = " << wanted_slope;
-//!!        NQLog("AssemblyAssembler", NQLog::Spam) << "run_alignment step [" << alignment_step << "]: sensor is aligned with slope = " << slope;
-//!!        NQLog("AssemblyAssembler", NQLog::Spam) << "run_alignment step [" << alignment_step << "]: need to rotate by " << delta_theta_deg << " degrees ";
-//!!        NQLog("AssemblyAssembler", NQLog::Spam) << "run_alignment step [" << alignment_step << "]";
 
         const double a1 = atan(wanted_slope) * (180.0/3.14159);
         const double a2 = atan       (slope) * (180.0/3.14159);
 
         const double delta_theta_deg = (a1 - a2);
 
-        NQLog("AssemblyAssembler", NQLog::Spam) << "run_alignment step [" << alignment_step << "]: target angle = " << a1;
-        NQLog("AssemblyAssembler", NQLog::Spam) << "run_alignment step [" << alignment_step << "]: sensor is aligned with angle = " << a2;
-        NQLog("AssemblyAssembler", NQLog::Spam) << "run_alignment step [" << alignment_step << "]: need to rotate by " << delta_theta_deg << " degrees ";
-        NQLog("AssemblyAssembler", NQLog::Spam) << "run_alignment step [" << alignment_step << "]";
+        NQLog("AssemblyAssembler", NQLog::Message) << "run_alignment step [" << alignment_step << "]: target angle = " << a1;
+        NQLog("AssemblyAssembler", NQLog::Message) << "run_alignment step [" << alignment_step << "]: sensor is aligned with angle = " << a2;
+        NQLog("AssemblyAssembler", NQLog::Message) << "run_alignment step [" << alignment_step << "]: need to rotate by " << delta_theta_deg << " degrees ";
+        NQLog("AssemblyAssembler", NQLog::Message) << "run_alignment step [" << alignment_step << "]";
 
         NQLog("AssemblyAssembler", NQLog::Spam) << "run_alignment step [" << alignment_step << "]"
            << ": emitting signal \"acquireImage\"";
 
         ++alignment_step;
 
+        NQLog("AssemblyAssembler", NQLog::Spam) << "run_alignment step [" << alignment_step << "]"
+           << ": emitting signal \"acquireImage\"";
+
         emit acquireImage(); 
     }
     else if(alignment_step == 7)
     {
-        NQLog("AssemblyAssembler", NQLog::Spam) << "run_alignment step [" << alignment_step << "]"
+        NQLog("AssemblyAssembler", NQLog::Message) << "run_alignment step [" << alignment_step << "]"
            << ": moving back to the first corner";
 
         const double markglas_deltaX = -(97.30 + 0.35*2); // by hand
@@ -684,26 +653,26 @@ void AssemblyAssembler::run_alignment(int stage, double x_pr, double y_pr, doubl
     }
     else if(alignment_step == 8)
     {
-        NQLog("AssemblyAssembler", NQLog::Spam) << "run_alignment step [" << alignment_step << "]"
+        NQLog("AssemblyAssembler", NQLog::Message) << "run_alignment step [" << alignment_step << "]"
            << ": detecting first corner for the 2nd time";
+
+        ++alignment_step;
 
         NQLog("AssemblyAssembler", NQLog::Spam) << "run_alignment step [" << alignment_step << "]"
            << ": emitting signal \"acquireImage\"";
-
-        ++alignment_step;
 
         emit acquireImage();
     }
     else if(alignment_step == 9)
     {
-        NQLog("AssemblyAssembler", NQLog::Spam) << "run_alignment step [" << alignment_step << "]"
+        NQLog("AssemblyAssembler", NQLog::Message) << "run_alignment step [" << alignment_step << "]"
            << ": centering camera on PatRec best-match position in first corner (for the 2nd time)";
 
         ++alignment_step;
 
         if((fabs(target_x) > 0.005) || (fabs(target_y) > 0.005))
         {
-          NQLog("AssemblyAssembler", NQLog::Spam) << "run_alignment step [" << (alignment_step-1) << "]"
+          NQLog("AssemblyAssembler", NQLog::Message) << "run_alignment step [" << (alignment_step-1) << "]"
              << ": moving to PatRec best-match position in first corner (for the 2nd time)";
 
           this->moveRelative(target_x, target_y, 0.0, 0.0);
@@ -711,7 +680,7 @@ void AssemblyAssembler::run_alignment(int stage, double x_pr, double y_pr, doubl
     }
     else if(alignment_step == 10)
     {
-        NQLog("AssemblyAssembler", NQLog::Spam) << "run_alignment step [" << alignment_step << "]";
+        NQLog("AssemblyAssembler", NQLog::Message) << "run_alignment step [" << alignment_step << "]";
 
         // Define orientation to be reached 
         const double wanted_slope = -0.50;
@@ -721,20 +690,20 @@ void AssemblyAssembler::run_alignment(int stage, double x_pr, double y_pr, doubl
 
         const double delta_theta_deg = (a1 - a2);
 
-        NQLog("AssemblyAssembler", NQLog::Spam) << "run_alignment step [" << alignment_step << "]: target angle = " << a1;
-        NQLog("AssemblyAssembler", NQLog::Spam) << "run_alignment step [" << alignment_step << "]: sensor is aligned with angle = " << a2;
-        NQLog("AssemblyAssembler", NQLog::Spam) << "run_alignment step [" << alignment_step << "]: need to rotate by " << delta_theta_deg << " degrees ";
-        NQLog("AssemblyAssembler", NQLog::Spam) << "run_alignment step [" << alignment_step << "]";
+        NQLog("AssemblyAssembler", NQLog::Message) << "run_alignment step [" << alignment_step << "]: target angle = " << a1;
+        NQLog("AssemblyAssembler", NQLog::Message) << "run_alignment step [" << alignment_step << "]: sensor is aligned with angle = " << a2;
+        NQLog("AssemblyAssembler", NQLog::Message) << "run_alignment step [" << alignment_step << "]: need to rotate by " << delta_theta_deg << " degrees ";
+        NQLog("AssemblyAssembler", NQLog::Message) << "run_alignment step [" << alignment_step << "]";
 
         if(fabs(delta_theta_deg) > 0.01)
         {
-            NQLog("AssemblyAssembler", NQLog::Spam) << "run_alignment step [" << alignment_step << "]: delta-theta > " << 0.01 << ", action required";
+            NQLog("AssemblyAssembler", NQLog::Message) << "run_alignment step [" << alignment_step << "]: delta-theta > " << 0.01 << ", action required";
 
             if(fabs(delta_theta_deg) < 0.5)
             {
-                NQLog("AssemblyAssembler", NQLog::Spam) << "run_alignment step [" << alignment_step << "]";
-                NQLog("AssemblyAssembler", NQLog::Spam) << "run_alignment step [" << alignment_step << "]: delta-theta < " << 0.5 << ", moving to target orientation in one step";
-                NQLog("AssemblyAssembler", NQLog::Spam) << "run_alignment step [" << alignment_step << "]";
+                NQLog("AssemblyAssembler", NQLog::Message) << "run_alignment step [" << alignment_step << "]";
+                NQLog("AssemblyAssembler", NQLog::Message) << "run_alignment step [" << alignment_step << "]: delta-theta < " << 0.5 << ", moving to target orientation in one step";
+                NQLog("AssemblyAssembler", NQLog::Message) << "run_alignment step [" << alignment_step << "]";
 
                 alignment_step = 0;
 
@@ -742,9 +711,9 @@ void AssemblyAssembler::run_alignment(int stage, double x_pr, double y_pr, doubl
             }
             else
             {
-                NQLog("AssemblyAssembler", NQLog::Spam) << "run_alignment step [" << alignment_step << "]";
-                NQLog("AssemblyAssembler", NQLog::Spam) << "run_alignment step [" << alignment_step << "]: delta-theta >=" << 0.5 << ", requires large rotation => iterative procedure";
-                NQLog("AssemblyAssembler", NQLog::Spam) << "run_alignment step [" << alignment_step << "]";
+                NQLog("AssemblyAssembler", NQLog::Message) << "run_alignment step [" << alignment_step << "]";
+                NQLog("AssemblyAssembler", NQLog::Message) << "run_alignment step [" << alignment_step << "]: delta-theta >=" << 0.5 << ", requires large rotation => iterative procedure";
+                NQLog("AssemblyAssembler", NQLog::Message) << "run_alignment step [" << alignment_step << "]";
 
                 alignment_step = 0;
 
@@ -755,9 +724,9 @@ void AssemblyAssembler::run_alignment(int stage, double x_pr, double y_pr, doubl
         }
         else
         {
-            NQLog("AssemblyAssembler", NQLog::Spam) << "run_alignment step [" << alignment_step << "]";
-            NQLog("AssemblyAssembler", NQLog::Spam) << "run_alignment step [" << alignment_step << "] ---> In Position, Alignment completed successfully";
-            NQLog("AssemblyAssembler", NQLog::Spam) << "run_alignment step [" << alignment_step << "]";
+            NQLog("AssemblyAssembler", NQLog::Message) << "run_alignment step [" << alignment_step << "]";
+            NQLog("AssemblyAssembler", NQLog::Message) << "run_alignment step [" << alignment_step << "] ---> In Position, Alignment completed successfully";
+            NQLog("AssemblyAssembler", NQLog::Message) << "run_alignment step [" << alignment_step << "]";
 
             alignment_step = 0;
         }
