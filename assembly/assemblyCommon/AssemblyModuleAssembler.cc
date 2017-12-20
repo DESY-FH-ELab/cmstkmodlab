@@ -327,20 +327,20 @@ void AssemblyModuleAssembler::updateImage(const int stage, const QString& filena
 
   const std::string filename_ss = filename.toUtf8().constData();
 
-  const cv::Mat img_gs = cv::imread(filename_ss, CV_LOAD_IMAGE_UNCHANGED);
+  const cv::Mat img = cv::imread(filename_ss, CV_LOAD_IMAGE_UNCHANGED);
 
   const QImageReader img_reader(QString::fromStdString(filename_ss));
 
-  if(img_reader.format() == "png")
+  if(img_reader.format() == "png" && (img.channels() > 1))
   {
     cv::Mat img_1;
-    cv::cvtColor(img_gs, img_1, CV_RGB2BGR);
+    cv::cvtColor(img, img_1, CV_RGB2BGR);
 
     this->updateImage(stage, img_1);
   }
   else
   {
-    this->updateImage(stage, img_gs);
+    this->updateImage(stage, img);
   }
 }
 

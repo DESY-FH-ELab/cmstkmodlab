@@ -87,7 +87,7 @@ class AssemblyZFocusFinder : public QObject
 
     void next_zpoint();
 
-    void focus(double, double, double, double);
+    void focus(const double, const double, const double, const double);
 
     void image_acquired(const cv::Mat&);
 
