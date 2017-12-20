@@ -504,7 +504,7 @@ void AssemblyMainWindow::disconnect_images()
     thresholdTunerView_->disconnectImageProducer_1(object_finder_, SIGNAL(       image_updated(cv::Mat)));
     thresholdTunerView_->disconnectImageProducer_2(object_finder_, SIGNAL(binary_image_updated(cv::Mat)));
 
-    autoFocusView_     ->disconnectImageProducer  (object_finder_, SIGNAL(image_acquired(cv::Mat)));
+    autoFocusView_     ->disconnectImageProducer  (zfocus_finder_, SIGNAL(image_acquired(cv::Mat)));
 
     NQLog("AssemblyMainWindow", NQLog::Message) << "disconnect_images"
        << ": disabled images in application view(s)";
