@@ -15,23 +15,7 @@
 
 #include <LStepExpressMotionManager.h>
 
-#include <string>
-#include <vector>
-
-#include <QWidget>
-#include <QScrollArea>
-#include <QKeyEvent>
-#include <QLineEdit>
-#include <QPushButton>
-#include <QPainter>
-#include <QGroupBox>
-#include <QVBoxLayout>
-#include <QCheckBox>
-#include <QRadioButton>
-#include <QString>
-#include <QDateTime>
-
-#include <opencv2/opencv.hpp>
+#include <QObject>
 
 class AssemblyAssembler : public QObject
 {
@@ -41,20 +25,20 @@ class AssemblyAssembler : public QObject
     explicit AssemblyAssembler(const LStepExpressMotionManager*, QObject* parent=0);
     virtual ~AssemblyAssembler() {}
 
-    double marker_x, marker_y, marker_z, marker_theta;
-
-//    double local_range, local_steps, local_delay;
-    double x_assembly, y_assembly, z_assembly;
-    double x_bottom, y_bottom, z_bottom;
-    double x_top, y_top, z_top;
-    double z_prepickup_distance, z_spacer_thickness, z_sensor_thickness;
-    double platform_rotation;
-
-    int nTotalImages, nAcquiredImages, step, alignment_step;
-    std::vector<double> x_vals, y_vals;
-    std::vector<double> xpre_vec,ypre_vec,thetapre_vec;
-    std::vector<double> xpost_vec,ypost_vec,thetapost_vec;
-    double step_distance;
+//!!    double marker_x, marker_y, marker_z, marker_theta;
+//!!
+//!!    double local_range, local_steps, local_delay;
+//!!    double x_assembly, y_assembly, z_assembly;
+//!!    double x_bottom, y_bottom, z_bottom;
+//!!    double x_top, y_top, z_top;
+//!!    double z_prepickup_distance, z_spacer_thickness, z_sensor_thickness;
+//!!    double platform_rotation;
+//!!
+//!!    int nTotalImages, nAcquiredImages, step, alignment_step;
+//!!    std::vector<double> x_vals, y_vals;
+//!!    std::vector<double> xpre_vec,ypre_vec,thetapre_vec;
+//!!    std::vector<double> xpost_vec,ypost_vec,thetapost_vec;
+//!!    double step_distance;
 
   protected:
 
@@ -66,6 +50,11 @@ class AssemblyAssembler : public QObject
 
     void    connect_motion_manager() { this->enable_motion_manager(true) ; }
     void disconnect_motion_manager() { this->enable_motion_manager(false); }
+
+    int alignment_step;
+
+    double object_deltaX_;
+    double object_deltaY_;
 
 //!!    double imageVariance(cv::Mat img_input, cv::Rect rectangle);
 

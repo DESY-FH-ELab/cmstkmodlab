@@ -11,22 +11,10 @@
 /////////////////////////////////////////////////////////////////////////////////
 
 #include <AssemblyAssembler.h>
+#include <ApplicationConfig.h>
 #include <nqlogger.h>
 
-#include <iostream>
-#include <iomanip>
-#include <vector>
 #include <cmath>
-
-#include <QFormLayout>
-#include <QFileDialog>
-#include <QString>
-#include <QStringList>
-#include <QPixmap>
-#include <QLabel>
-
-#include <TCanvas.h>
-#include <TGraph.h>
 
 AssemblyAssembler::AssemblyAssembler(const LStepExpressMotionManager* motion_manager, QObject* parent) :
   QObject(parent),
@@ -40,6 +28,18 @@ AssemblyAssembler::AssemblyAssembler(const LStepExpressMotionManager* motion_man
 
     return;
   }
+
+  ApplicationConfig* config = ApplicationConfig::instance();
+  if(config == nullptr)
+  {
+    NQLog("AssemblyAssembler", NQLog::Fatal)
+       << "ApplicationConfig::instance() not initialized (null pointer), stopped constructor";
+
+    return;
+  }
+
+  object_deltaX_ = config->getValue<double>("AssemblyAssembler_object_deltaX");
+  object_deltaY_ = config->getValue<double>("AssemblyAssembler_object_deltaY");
 
   NQLog("AssemblyAssembler", NQLog::Debug) << "constructed";
 }
@@ -545,8 +545,8 @@ void AssemblyAssembler::run_alignment(int /* stage */, double x_pr, double y_pr,
         // 24.5 and 15.0 refer to the samples made from gluing scrap Si structures
         // to glass dummies
 
-        const double markglas_deltaX = -(97.30 + 0.35*2); // by hand
-        const double markglas_deltaY =  (45.05 + 1.05*2); // by hand
+        const double markglas_deltaX = object_deltaX_;
+        const double markglas_deltaY = object_deltaY_;
 
         const double target_deg = (target_theta * (3.14159/180.0));
 
@@ -635,8 +635,8 @@ void AssemblyAssembler::run_alignment(int /* stage */, double x_pr, double y_pr,
         NQLog("AssemblyAssembler", NQLog::Message) << "run_alignment step [" << alignment_step << "]"
            << ": moving back to the first corner";
 
-        const double markglas_deltaX = -(97.30 + 0.35*2); // by hand
-        const double markglas_deltaY =  (45.05 + 1.05*2); // by hand
+        const double markglas_deltaX = object_deltaX_;
+        const double markglas_deltaY = object_deltaY_;
 
         const double target_deg = (target_theta * (3.14159/180.0));
 
