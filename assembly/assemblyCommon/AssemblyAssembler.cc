@@ -41,6 +41,8 @@ AssemblyAssembler::AssemblyAssembler(const LStepExpressMotionManager* motion_man
   object_deltaX_ = config->getValue<double>("AssemblyAssembler_object_deltaX");
   object_deltaY_ = config->getValue<double>("AssemblyAssembler_object_deltaY");
 
+  alignment_step = 0;
+
   NQLog("AssemblyAssembler", NQLog::Debug) << "constructed";
 }
 
