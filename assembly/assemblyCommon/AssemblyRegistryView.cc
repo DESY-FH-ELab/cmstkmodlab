@@ -190,36 +190,72 @@ bool AssemblyRegistryView::load_position_4vector(std::vector<double>& vec, QStri
 {
   const QStringList entries = line_entry.remove(" ").split(",");
 
-  bool pass(false);
-
   if(entries.length() == 4)
   {
-    const double x_d = entries.value(0).toDouble();
-    const double y_d = entries.value(1).toDouble();
-    const double z_d = entries.value(2).toDouble();
-    const double a_d = entries.value(3).toDouble();
+    bool valid_x(false);
+    bool valid_y(false);
+    bool valid_z(false);
+    bool valid_a(false);
 
-    vec.clear();
-    vec.reserve(4);
+    const double x_d = entries.value(0).toDouble(&valid_x);
+    const double y_d = entries.value(1).toDouble(&valid_y);
+    const double z_d = entries.value(2).toDouble(&valid_z);
+    const double a_d = entries.value(3).toDouble(&valid_a);
 
-    vec.emplace_back(x_d);
-    vec.emplace_back(y_d);
-    vec.emplace_back(z_d);
-    vec.emplace_back(a_d);
+    if(!valid_x)
+    {
+      NQLog("AssemblyRegistryView", NQLog::Spam) << "load_position_4vector"
+         << ": invalid format for x-axis position (" << entries.value(0) << "), returning \"false\"";
 
-    NQLog("AssemblyRegistryView", NQLog::Spam) << "load_position_4vector"
-       << ": 4-vector position read successfully ("
-       << x_d << ", " << y_d << ", " << z_d << ", " << a_d << ")";
+      return false;
+    }
+    else if(!valid_y)
+    {
+      NQLog("AssemblyRegistryView", NQLog::Spam) << "load_position_4vector"
+         << ": invalid format for y-axis position (" << entries.value(1) << "), returning \"false\"";
 
-    pass = true;
+      return false;
+    }
+    else if(!valid_z)
+    {
+      NQLog("AssemblyRegistryView", NQLog::Spam) << "load_position_4vector"
+         << ": invalid format for z-axis position (" << entries.value(2) << "), returning \"false\"";
+
+      return false;
+    }
+    else if(!valid_a)
+    {
+      NQLog("AssemblyRegistryView", NQLog::Spam) << "load_position_4vector"
+         << ": invalid format for a-axis position (" << entries.value(3) << "), returning \"false\"";
+
+      return false;
+    }
+    else
+    {
+      vec.clear();
+      vec.reserve(4);
+
+      vec.emplace_back(x_d);
+      vec.emplace_back(y_d);
+      vec.emplace_back(z_d);
+      vec.emplace_back(a_d);
+
+      NQLog("AssemblyRegistryView", NQLog::Spam) << "load_position_4vector"
+         << ": 4-vector position read successfully ("
+         << x_d << ", " << y_d << ", " << z_d << ", " << a_d << ")";
+
+      return true;
+    }
   }
   else
   {
     NQLog("AssemblyRegistryView", NQLog::Warning) << "load_position_4vector"
-       << ": invalid format in QLineEdit (" << line_entry << "), no action taken";
+       << ": invalid format in QLineEdit (" << line_entry << "), returning \"false\"";
+
+    return false;
   }
 
-  return pass;
+  return false;
 }
 // ==================================================
 
