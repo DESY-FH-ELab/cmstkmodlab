@@ -28,7 +28,7 @@ typedef AssemblyUEyeModel AssemblyUEyeModel_t;
 #include <AssemblyThresholdTuner.h>
 #include <AssemblyModuleAssembler.h>
 #include <AssemblyAutoFocus.h>
-#include <AssemblyPositionsView.h>
+#include <AssemblyRegistryView.h>
 #include <AssemblyImageController.h>
 #include <AssemblyZFocusFinder.h>
 #include <AssemblyObjectFinderPatRec.h>
@@ -133,7 +133,7 @@ class AssemblyMainWindow : public QMainWindow
     AssemblyAutoFocus*       autoFocusView_;
     AssemblyThresholdTuner*  thresholdTunerView_;
     AssemblyModuleAssembler* assembleView_;
-    AssemblyPositionsView*   positionsView_;
+    AssemblyRegistryView*    registryView_;
 
     QCheckBox* checkbox1;
 //    QCheckBox* checkbox3;
@@ -144,12 +144,14 @@ class AssemblyMainWindow : public QMainWindow
 
     AssemblyZFocusFinder*       zfocus_finder_;
 
-    AssemblyObjectFinderPatRec*       object_finder_;
-    AssemblyObjectFinderPatRecThread* object_finder_thread_;
+    AssemblyObjectFinderPatRec* object_finder_;
 
     AssemblyMultiPickupTester*  multipickup_;
 
     AssemblyAssembler*          module_assembler_;
+
+    // thread(s)
+    AssemblyObjectFinderPatRecThread* object_finder_thread_;
 
     // timing
     double testTimerCount_;

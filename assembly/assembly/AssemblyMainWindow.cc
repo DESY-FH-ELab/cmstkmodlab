@@ -52,7 +52,7 @@ AssemblyMainWindow::AssemblyMainWindow(const unsigned int camera_ID, QWidget* pa
   autoFocusView_(0),
   thresholdTunerView_(0),
   assembleView_(0),
-  positionsView_(0),
+  registryView_(0),
 
   checkbox1(0),
 //  checkbox3(0),
@@ -62,9 +62,11 @@ AssemblyMainWindow::AssemblyMainWindow(const unsigned int camera_ID, QWidget* pa
   image_ctr_(0),
   zfocus_finder_(0),
   object_finder_(0),
-  object_finder_thread_(0),
   multipickup_(0),
   module_assembler_(0),
+
+  // thread(s)
+  object_finder_thread_(0),
 
   // timing
   testTimerCount_(0.),
@@ -208,12 +210,12 @@ AssemblyMainWindow::AssemblyMainWindow(const unsigned int camera_ID, QWidget* pa
 //    /* --------------------------------------------------------- */
 
     /* POSITIONS VIEW -------------------------------------------- */
-    const QString tabname_Positions("Positions");
+    const QString tabname_Registry("Registry");
 
-    positionsView_ = new AssemblyPositionsView(motion_manager_, tabWidget_);
-    tabWidget_->addTab(positionsView_, tabname_Positions);
+    registryView_ = new AssemblyRegistryView(motion_manager_, tabWidget_);
+    tabWidget_->addTab(registryView_, tabname_Registry);
 
-    NQLog("AssemblyMainWindow", NQLog::Message) << "added view " << tabname_Positions;
+    NQLog("AssemblyMainWindow", NQLog::Message) << "added view " << tabname_Registry;
     /* ----------------------------------------------------------- */
 
     /* MOTION-SETTINGS VIEW ------------------------------------ */
@@ -496,7 +498,7 @@ void AssemblyMainWindow::connect_images()
 
     autoFocusView_     ->connectImageProducer  (zfocus_finder_, SIGNAL(image_acquired(cv::Mat)));
 
-    connect(image_ctr_, SIGNAL(image_acquired(cv::Mat)), positionsView_, SLOT(update_image(cv::Mat)));
+    connect(image_ctr_, SIGNAL(image_acquired(cv::Mat)), registryView_->ImageWidget(), SLOT(update_image(cv::Mat)));
 
     NQLog("AssemblyMainWindow", NQLog::Message) << "connect_images"
        << ": enabled images in application view(s)";
@@ -518,7 +520,7 @@ void AssemblyMainWindow::disconnect_images()
 
     autoFocusView_     ->disconnectImageProducer  (zfocus_finder_, SIGNAL(image_acquired(cv::Mat)));
 
-    disconnect(image_ctr_, SIGNAL(image_acquired(cv::Mat)), positionsView_, SLOT(update_image(cv::Mat)));
+    disconnect(image_ctr_, SIGNAL(image_acquired(cv::Mat)), registryView_->ImageWidget(), SLOT(update_image(cv::Mat)));
 
     NQLog("AssemblyMainWindow", NQLog::Message) << "disconnect_images"
        << ": disabled images in application view(s)";

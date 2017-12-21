@@ -85,7 +85,7 @@ HEADERS += AssemblyVUEyeCamera.h \
            AssemblyThresholdTuner.h \
            AssemblyModuleAssembler.h \
            AssemblyAutoFocus.h \
-           AssemblyPositionsView.h \
+           AssemblyRegistryView.h \
            AssemblyImageController.h \
            AssemblyZFocusFinder.h \
            AssemblyObjectFinderManual.h \
@@ -132,7 +132,7 @@ SOURCES += AssemblyVUEyeCamera.cc \
            AssemblyThresholdTuner.cc \
            AssemblyModuleAssembler.cc \
            AssemblyAutoFocus.cc \
-           AssemblyPositionsView.cc \
+           AssemblyRegistryView.cc \
            AssemblyImageController.cc \
            AssemblyZFocusFinder.cc \
            AssemblyObjectFinderManual.cc \
