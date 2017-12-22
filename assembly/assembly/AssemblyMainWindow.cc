@@ -458,7 +458,7 @@ void AssemblyMainWindow::changeState_Alignment(int state)
 
 void AssemblyMainWindow::get_image()
 {
-    if(image_ctr_ == 0)
+    if(image_ctr_ == nullptr)
     {
       NQLog("AssemblyMainWindow", NQLog::Warning) << "get_image"
          << ": ImageController not initialized, no action taken (hint: click \"Camera ON\")";

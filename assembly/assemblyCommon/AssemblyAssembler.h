@@ -25,20 +25,7 @@ class AssemblyAssembler : public QObject
     explicit AssemblyAssembler(const LStepExpressMotionManager*, QObject* parent=0);
     virtual ~AssemblyAssembler() {}
 
-//!!    double marker_x, marker_y, marker_z, marker_theta;
-//!!
-//!!    double local_range, local_steps, local_delay;
-//!!    double x_assembly, y_assembly, z_assembly;
-//!!    double x_bottom, y_bottom, z_bottom;
-//!!    double x_top, y_top, z_top;
-//!!    double z_prepickup_distance, z_spacer_thickness, z_sensor_thickness;
-//!!    double platform_rotation;
-//!!
-//!!    int nTotalImages, nAcquiredImages, step, alignment_step;
-//!!    std::vector<double> x_vals, y_vals;
-//!!    std::vector<double> xpre_vec,ypre_vec,thetapre_vec;
-//!!    std::vector<double> xpost_vec,ypost_vec,thetapost_vec;
-//!!    double step_distance;
+    void reset();
 
   protected:
 
@@ -51,22 +38,25 @@ class AssemblyAssembler : public QObject
     void    connect_motion_manager() { this->enable_motion_manager(true) ; }
     void disconnect_motion_manager() { this->enable_motion_manager(false); }
 
-    int alignment_step;
-
     double object_deltaX_;
     double object_deltaY_;
+    double target_angle_deg_;
 
-//!!    double imageVariance(cv::Mat img_input, cv::Rect rectangle);
+    double angle_max_dontIter_;
+    double angle_max_complete_;
+
+    int alignment_step;
+
+    double posi_x1_, posi_y1_;
+    double posi_x2_, posi_y2_;
+
+    double obj_slope_;
 
   public slots:
 
-//!!    void run_scan(double, int);
-//!!    void write_image(cv::Mat, cv::Rect);
-//!!    void run_sandwitchassembly(double, double, double, double, double, double, double, double, double);
-//!!    void process_step();
     void run_alignment(int, double, double, double);
+
     void launch_next_alignment_step();
-//!!    void fill_positionvectors(int, double, double, double);
 
     void moveRelative(const double, const double, const double, const double);
 
@@ -74,21 +64,12 @@ class AssemblyAssembler : public QObject
 
   signals:
 
-    void move_relative(const double, const double, const double, const double);
-
-//!!    void getImage();
-//!!    void moveAbsolute(const double, const double, const double, const double);
-//!!    void updateScanImage(cv::Mat);
-//!!    void make_graph(const std::string);
-//!!    void updateText(double);
-//!!    void nextStep();
     void nextAlignmentStep(int, double, double, double);
-    void acquireImage();
-//!!    void makeDummies(int, double,double,double);
-//!!    void showHistos(int, QString);
-//!!    void toggleVacuum(int);
 
+    void move_relative(const double, const double, const double, const double);
     void motion_finished();
+
+    void acquireImage();
 };
 
 #endif // ASSEMBLYASSEMBLER_H
