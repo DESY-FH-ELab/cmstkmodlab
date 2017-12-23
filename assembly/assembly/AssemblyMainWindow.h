@@ -61,104 +61,100 @@ class AssemblyMainWindow : public QMainWindow
 {
  Q_OBJECT
 
-  public:
+ public:
 
-    explicit AssemblyMainWindow(const unsigned int camera_ID=10, QWidget* parent=nullptr);
-    virtual ~AssemblyMainWindow() {}
+  explicit AssemblyMainWindow(const unsigned int camera_ID=10, QWidget* parent=nullptr);
+  virtual ~AssemblyMainWindow() {}
 
-  public slots:
+ public slots:
 
-    void  enable_images();
-    void disable_images();
-    void     get_image ();
+  void  enable_images();
+  void disable_images();
+  void     get_image ();
 
-    void    connect_images();
-    void disconnect_images();
+  void    connect_images();
+  void disconnect_images();
 
-    void changeState_AutoFocus       (int);
+  void changeState_AutoFocus       (int);
 //  void changeState_SandwichAssembly(int);
-    void changeState_Alignment       (int);
+  void changeState_Alignment       (int);
 
-    void    connect_multipickupNpatrec(const AssemblyMultiPickupTester::Configuration&);
-    void disconnect_multipickupNpatrec();
+  void    connect_multipickupNpatrec(const AssemblyMultiPickupTester::Configuration&);
+  void disconnect_multipickupNpatrec();
 
-    void testTimer();
+  void testTimer();
 
-    void quit_thread(QThread*, const std::string&) const;
-    void quit();
+  void quit_thread(QThread*, const std::string&) const;
+  void quit();
 
-  signals:
+ signals:
 
-    void images_ON();
-    void images_OFF();
+  void images_ON();
+  void images_OFF();
 
-    void image_request();
+  void image_request();
 
-    void updateVacuumChannelsStatus();
+  void updateVacuumChannelsStatus();
 
-    void AutoFocus_ON();
-    void AutoFocus_OFF();
+  void AutoFocus_ON();
+  void AutoFocus_OFF();
 
-    void multipickupNpatrec_connected();
-    void multipickupNpatrec_disconnected();
+  void multipickupNpatrec_connected();
+  void multipickupNpatrec_disconnected();
 
-  protected slots:
+ protected slots:
 
-    void liveUpdate();
+  void liveUpdate();
 
-  protected:
+ protected:
 
-    // model(s) and model-manager(s)
-    ConradModel*   conradModel_;
-    ConradManager* conradManager_;
+  // model(s) and model-manager(s)
+  ConradModel*   conradModel_;
+  ConradManager* conradManager_;
 
-    LStepExpressModel*          motion_model_;
-    LStepExpressMotionManager*  motion_manager_;
-    LStepExpressMotionView*     motion_manager_view_;
-    LStepExpressMotionThread*   motion_thread_;
-    LStepExpressSettings*       motionSettings_;
-    LStepExpressSettingsWidget* motionSettingsWidget_;
+  LStepExpressModel*          motion_model_;
+  LStepExpressMotionManager*  motion_manager_;
+  LStepExpressMotionView*     motion_manager_view_;
+  LStepExpressMotionThread*   motion_thread_;
+  LStepExpressSettings*       motionSettings_;
+  LStepExpressSettingsWidget* motionSettingsWidget_;
 
-    AssemblyUEyeModel_t*      camera_model_;
-    AssemblyUEyeCameraThread* camera_thread_;
-//    AssemblyUEyeWidget*      camera_widget_;
-    AssemblyVUEyeCamera*      camera_;
-    unsigned int              camera_ID_;
+  AssemblyUEyeModel_t*      camera_model_;
+  AssemblyUEyeCameraThread* camera_thread_;
+//  AssemblyUEyeWidget*      camera_widget_;
+  AssemblyVUEyeCamera*      camera_;
+  unsigned int              camera_ID_;
 
-    // view(s)
-    QToolBar*   toolBar_;
-    QTabWidget* tabWidget_;
+  // view(s)
+  QToolBar*   toolBar_;
+  QTabWidget* tabWidget_;
 
-//    AssemblyUEyeSnapShooter* finderView_;
-//    AssemblyUEyeSnapShooter* edgeView_;
-//    AssemblyUEyeSnapShooter* rawView_;
-    AssemblyThresholdView* thresholdView_;
-    AssemblyAutoFocusView* autoFocusView_;
-    AssemblyAssemblyView*  assemblyView_;
-    AssemblyRegistryView*  registryView_;
+//  AssemblyUEyeSnapShooter* finderView_;
+//  AssemblyUEyeSnapShooter* edgeView_;
+//  AssemblyUEyeSnapShooter* rawView_;
+  AssemblyThresholdView* thresholdView_;
+  AssemblyAutoFocusView* autoFocusView_;
+  AssemblyAssemblyView*  assemblyView_;
+  AssemblyRegistryView*  registryView_;
 
-    QCheckBox* checkbox1;
-    QCheckBox* checkbox2;
-//    QCheckBox* checkbox3;
+  QCheckBox* checkbox1;
+  QCheckBox* checkbox2;
+//  QCheckBox* checkbox3;
 
-    // controller(s)
-    AssemblyImageController*    image_ctr_;
+  // controller(s)
+  AssemblyImageController*    image_ctr_;
+  AssemblyZFocusFinder*       zfocus_finder_;
+  AssemblyObjectFinderPatRec* object_finder_;
+  AssemblyMultiPickupTester*  multipickup_;
+  AssemblyAssembler*          module_assembler_;
 
-    AssemblyZFocusFinder*       zfocus_finder_;
+  // thread(s)
+  AssemblyObjectFinderPatRecThread* object_finder_thread_;
 
-    AssemblyObjectFinderPatRec* object_finder_;
+  // timing
+  double testTimerCount_;
 
-    AssemblyMultiPickupTester*  multipickup_;
-
-    AssemblyAssembler*          module_assembler_;
-
-    // thread(s)
-    AssemblyObjectFinderPatRecThread* object_finder_thread_;
-
-    // timing
-    double testTimerCount_;
-
-    QTimer* liveTimer_;
+  QTimer* liveTimer_;
 };
 
 #endif // ASSEMBLYMAINWINDOW_H
