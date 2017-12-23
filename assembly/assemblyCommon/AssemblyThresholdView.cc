@@ -10,14 +10,14 @@
 //                                                                             //
 /////////////////////////////////////////////////////////////////////////////////
 
-#include <AssemblyThresholdTuner.h>
+#include <AssemblyThresholdView.h>
 #include <nqlogger.h>
 
 #include <QFileDialog>
 #include <QGridLayout>
 #include <QFormLayout>
 
-AssemblyThresholdTuner::AssemblyThresholdTuner(QWidget* parent) : QWidget(parent)
+AssemblyThresholdView::AssemblyThresholdView(QWidget* parent) : QWidget(parent)
 {
     QGridLayout* l = new QGridLayout();
     this->setLayout(l);
@@ -104,42 +104,42 @@ AssemblyThresholdTuner::AssemblyThresholdTuner(QWidget* parent) : QWidget(parent
     //// ---------------
 }
 
-int AssemblyThresholdTuner::get_threshold() const
+int AssemblyThresholdView::get_threshold() const
 {
     return thresh_linee_->text().toInt();
 }
 
-void AssemblyThresholdTuner::read_threshold()
+void AssemblyThresholdView::read_threshold()
 {
     const int val = this->get_threshold();
 
-    NQLog("AssemblyThresholdTuner", NQLog::Debug) << "update_threshold"
+    NQLog("AssemblyThresholdView", NQLog::Debug) << "update_threshold"
        << ": emitting signal \"threshold_value(" << val << ")\"";
 
     emit threshold_value(val);
 }
 
-void AssemblyThresholdTuner::save_image_raw()
+void AssemblyThresholdView::save_image_raw()
 {
-    NQLog("AssemblyThresholdTuner", NQLog::Debug) << "save_image_raw"
+    NQLog("AssemblyThresholdView", NQLog::Debug) << "save_image_raw"
        << ": emitting signal \"image_raw_request\"";
 
     emit image_raw_request();
 }
 
-void AssemblyThresholdTuner::save_image_bin()
+void AssemblyThresholdView::save_image_bin()
 {
-    NQLog("AssemblyThresholdTuner", NQLog::Debug) << "save_image_bin"
+    NQLog("AssemblyThresholdView", NQLog::Debug) << "save_image_bin"
        << ": emitting signal \"image_bin_request\"";
 
     emit image_bin_request();
 }
 
-void AssemblyThresholdTuner::save_image(const cv::Mat& image)
+void AssemblyThresholdView::save_image(const cv::Mat& image)
 {
     if(image.rows == 0)
     {
-      NQLog("AssemblyThresholdTuner", NQLog::Warning) << "save_image"
+      NQLog("AssemblyThresholdView", NQLog::Warning) << "save_image"
          << ": input cv::Mat object has zero rows, no image saved";
 
       return;
@@ -155,35 +155,35 @@ void AssemblyThresholdTuner::save_image(const cv::Mat& image)
     return;
 }
 
-void AssemblyThresholdTuner::connectImageProducer_1(const QObject* sender, const char* signal)
+void AssemblyThresholdView::connectImageProducer_1(const QObject* sender, const char* signal)
 {
-    NQLog("AssemblyThresholdTuner", NQLog::Debug) << "connectImageProducer";
+    NQLog("AssemblyThresholdView", NQLog::Debug) << "connectImageProducer";
 
     imageView_1_->connectImageProducer(sender, signal);
 }
 
-void AssemblyThresholdTuner::disconnectImageProducer_1(const QObject* sender, const char* signal)
+void AssemblyThresholdView::disconnectImageProducer_1(const QObject* sender, const char* signal)
 {
-    NQLog("AssemblyThresholdTuner", NQLog::Debug) << "disconnectImageProducer";
+    NQLog("AssemblyThresholdView", NQLog::Debug) << "disconnectImageProducer";
 
     imageView_1_->disconnectImageProducer(sender, signal);
 }
 
-void AssemblyThresholdTuner::connectImageProducer_2(const QObject* sender, const char* signal)
+void AssemblyThresholdView::connectImageProducer_2(const QObject* sender, const char* signal)
 {
-    NQLog("AssemblyThresholdTuner", NQLog::Debug) << "connectImageProducer";
+    NQLog("AssemblyThresholdView", NQLog::Debug) << "connectImageProducer";
 
     imageView_2_->connectImageProducer(sender, signal);
 }
 
-void AssemblyThresholdTuner::disconnectImageProducer_2(const QObject* sender, const char* signal)
+void AssemblyThresholdView::disconnectImageProducer_2(const QObject* sender, const char* signal)
 {
-    NQLog("AssemblyThresholdTuner", NQLog::Debug) << "disconnectImageProducer";
+    NQLog("AssemblyThresholdView", NQLog::Debug) << "disconnectImageProducer";
 
     imageView_2_->disconnectImageProducer(sender, signal);
 }
 
-void AssemblyThresholdTuner::keyReleaseEvent(QKeyEvent* event)
+void AssemblyThresholdView::keyReleaseEvent(QKeyEvent* event)
 {
     if(!(event->modifiers() & Qt::ShiftModifier))
     {

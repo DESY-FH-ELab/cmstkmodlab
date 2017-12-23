@@ -25,14 +25,14 @@
 
 #include <opencv2/opencv.hpp>
 
-class AssemblyThresholdTuner : public QWidget
+class AssemblyThresholdView : public QWidget
 {
  Q_OBJECT
 
  public:
 
-  explicit AssemblyThresholdTuner(QWidget* parent=0);
-  virtual ~AssemblyThresholdTuner() {}
+  explicit AssemblyThresholdView(QWidget* parent=0);
+  virtual ~AssemblyThresholdView() {}
 
   int get_threshold() const;
 

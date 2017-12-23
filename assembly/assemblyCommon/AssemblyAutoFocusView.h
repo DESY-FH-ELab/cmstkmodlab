@@ -25,14 +25,14 @@
 
 #include <opencv2/opencv.hpp>
 
-class AssemblyAutoFocus : public QWidget
+class AssemblyAutoFocusView : public QWidget
 {
  Q_OBJECT
 
  public:
 
-  explicit AssemblyAutoFocus(QWidget* parent=0);
-  virtual ~AssemblyAutoFocus();
+  explicit AssemblyAutoFocusView(QWidget* parent=0);
+  virtual ~AssemblyAutoFocusView();
 
   void    connectImageProducer(const QObject* sender, const char* signal);
   void disconnectImageProducer(const QObject* sender, const char* signal);

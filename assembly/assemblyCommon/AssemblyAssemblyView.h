@@ -41,13 +41,13 @@ class AssemblyVacuumWidget;
 class AssemblyPatRecWidget;
 class AssemblyMultiPickupTesterWidget;
 
-class AssemblyModuleAssembler : public QWidget
+class AssemblyAssemblyView : public QWidget
 {
  Q_OBJECT
 
  public:
 
-  explicit AssemblyModuleAssembler(const LStepExpressMotionManager*, QWidget* parent=0);
+  explicit AssemblyAssemblyView(const LStepExpressMotionManager*, QWidget* parent=0);
 
   AssemblyVacuumWidget* Vacuum_Widget() const { return w_vacuum_; }
   AssemblyPatRecWidget* PatRec_Widget() const { return w_patrec_; }

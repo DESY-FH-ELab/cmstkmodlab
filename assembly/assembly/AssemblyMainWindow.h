@@ -25,9 +25,9 @@ typedef AssemblyUEyeModel AssemblyUEyeModel_t;
 #include <AssemblyUEyeWidget.h>
 #include <AssemblyUEyeView.h>
 #include <AssemblyUEyeSnapShooter.h>
-#include <AssemblyThresholdTuner.h>
-#include <AssemblyModuleAssembler.h>
-#include <AssemblyAutoFocus.h>
+#include <AssemblyThresholdView.h>
+#include <AssemblyAutoFocusView.h>
+#include <AssemblyAssemblyView.h>
 #include <AssemblyRegistryView.h>
 #include <AssemblyImageController.h>
 #include <AssemblyZFocusFinder.h>
@@ -130,14 +130,14 @@ class AssemblyMainWindow : public QMainWindow
 //    AssemblyUEyeSnapShooter* finderView_;
 //    AssemblyUEyeSnapShooter* edgeView_;
 //    AssemblyUEyeSnapShooter* rawView_;
-    AssemblyAutoFocus*       autoFocusView_;
-    AssemblyThresholdTuner*  thresholdTunerView_;
-    AssemblyModuleAssembler* assembleView_;
-    AssemblyRegistryView*    registryView_;
+    AssemblyThresholdView* thresholdView_;
+    AssemblyAutoFocusView* autoFocusView_;
+    AssemblyAssemblyView*  assemblyView_;
+    AssemblyRegistryView*  registryView_;
 
     QCheckBox* checkbox1;
+    QCheckBox* checkbox2;
 //    QCheckBox* checkbox3;
-    QCheckBox* checkbox4;
 
     // controller(s)
     AssemblyImageController*    image_ctr_;

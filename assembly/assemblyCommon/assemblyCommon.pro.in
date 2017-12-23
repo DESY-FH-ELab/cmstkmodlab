@@ -82,9 +82,9 @@ HEADERS += AssemblyVUEyeCamera.h \
            AssemblyUEyeCameraThread.h \
            AssemblyUEyeView.h \
            AssemblyUEyeSnapShooter.h \
-           AssemblyThresholdTuner.h \
-           AssemblyModuleAssembler.h \
-           AssemblyAutoFocus.h \
+           AssemblyThresholdView.h \
+           AssemblyAutoFocusView.h \
+           AssemblyAssemblyView.h \
            AssemblyRegistryView.h \
            AssemblyImageController.h \
            AssemblyZFocusFinder.h \
@@ -129,9 +129,9 @@ SOURCES += AssemblyVUEyeCamera.cc \
            AssemblyUEyeCameraThread.cc \
            AssemblyUEyeView.cc \
            AssemblyUEyeSnapShooter.cc \
-           AssemblyThresholdTuner.cc \
-           AssemblyModuleAssembler.cc \
-           AssemblyAutoFocus.cc \
+           AssemblyThresholdView.cc \
+           AssemblyAutoFocusView.cc \
+           AssemblyAssemblyView.cc \
            AssemblyRegistryView.cc \
            AssemblyImageController.cc \
            AssemblyZFocusFinder.cc \

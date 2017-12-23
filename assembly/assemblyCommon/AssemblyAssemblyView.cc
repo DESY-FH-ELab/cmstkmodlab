@@ -10,7 +10,7 @@
 //                                                                             //
 /////////////////////////////////////////////////////////////////////////////////
 
-#include <AssemblyModuleAssembler.h>
+#include <AssemblyAssemblyView.h>
 #include <LStepExpressWidget.h>
 #include <ApplicationConfig.h>
 #include <nqlogger.h>
@@ -36,7 +36,7 @@
 #include <TGraph.h>
 #include <TCanvas.h>
 
-AssemblyModuleAssembler::AssemblyModuleAssembler(const LStepExpressMotionManager* motion_manager, QWidget* parent) :
+AssemblyAssemblyView::AssemblyAssemblyView(const LStepExpressMotionManager* motion_manager, QWidget* parent) :
   QWidget(parent),
 
   scrollArea_1_(0),
@@ -62,7 +62,7 @@ AssemblyModuleAssembler::AssemblyModuleAssembler(const LStepExpressMotionManager
 {
   if(motion_manager == nullptr)
   {
-    NQLog("AssemblyModuleAssembler", NQLog::Critical)
+    NQLog("AssemblyAssemblyView", NQLog::Critical)
        << "input error: null pointer to LStepExpressMotionManager object, exiting constructor";
 
     return;
@@ -260,11 +260,11 @@ AssemblyModuleAssembler::AssemblyModuleAssembler(const LStepExpressMotionManager
   // ---------------------
 }
 
-void AssemblyModuleAssembler::connect_to_finder(const AssemblyObjectFinderPatRec* finder)
+void AssemblyAssemblyView::connect_to_finder(const AssemblyObjectFinderPatRec* finder)
 {
   if(finder == nullptr)
   {
-    NQLog("AssemblyModuleAssembler", NQLog::Critical) << "connect_to_finder"
+    NQLog("AssemblyAssemblyView", NQLog::Critical) << "connect_to_finder"
        << ": null pointer to AssemblyObjectFinderPatRec object, no action taken";
 
     return;
@@ -285,14 +285,14 @@ void AssemblyModuleAssembler::connect_to_finder(const AssemblyObjectFinderPatRec
     connect(finder, SIGNAL(image_mat           (int, cv::Mat))               , this, SLOT(updateImage(int, cv::Mat)));
     connect(finder, SIGNAL(reportObjectLocation(int, double, double, double)), this, SLOT(updateText (int, double, double, double)));
 
-    NQLog("AssemblyModuleAssembler", NQLog::Spam) << "connect_to_finder"
+    NQLog("AssemblyAssemblyView", NQLog::Spam) << "connect_to_finder"
        << ": widget connected to object of type AssemblyObjectFinderPatRec";
 
     objfinder_connected_ = true;
   }
   else
   {
-    NQLog("AssemblyModuleAssembler", NQLog::Critical) << "connect_to_finder"
+    NQLog("AssemblyAssemblyView", NQLog::Critical) << "connect_to_finder"
        << ": widget already connected to an object of type AssemblyObjectFinderPatRec, no action taken";
 
     return;
@@ -301,9 +301,9 @@ void AssemblyModuleAssembler::connect_to_finder(const AssemblyObjectFinderPatRec
   return;
 }
 
-void AssemblyModuleAssembler::updateText(int stage, double x, double y, double a)
+void AssemblyAssemblyView::updateText(int stage, double x, double y, double a)
 {
-  NQLog("AssemblyModuleAssembler", NQLog::Spam) << "updateText"
+  NQLog("AssemblyAssemblyView", NQLog::Spam) << "updateText"
      << "(" << stage << ", " << x << ", " << y << ", " << a << ")";
 
   std::stringstream posi_strs;
@@ -321,9 +321,9 @@ void AssemblyModuleAssembler::updateText(int stage, double x, double y, double a
   }
 }
 
-void AssemblyModuleAssembler::updateImage(const int stage, const QString& filename)
+void AssemblyAssemblyView::updateImage(const int stage, const QString& filename)
 {
-  NQLog("AssemblyModuleAssembler", NQLog::Spam) << "updateImage(" << stage << ", file=" << filename << ")";
+  NQLog("AssemblyAssemblyView", NQLog::Spam) << "updateImage(" << stage << ", file=" << filename << ")";
 
   const std::string filename_ss = filename.toUtf8().constData();
 
@@ -344,9 +344,9 @@ void AssemblyModuleAssembler::updateImage(const int stage, const QString& filena
   }
 }
 
-void AssemblyModuleAssembler::updateImage(const int stage, const cv::Mat& img)
+void AssemblyAssemblyView::updateImage(const int stage, const cv::Mat& img)
 {
-  NQLog("AssemblyModuleAssembler", NQLog::Spam) << "updateImage(" << stage << ", image)";
+  NQLog("AssemblyAssemblyView", NQLog::Spam) << "updateImage(" << stage << ", image)";
 
   if(stage == 1)
   {
@@ -370,7 +370,7 @@ void AssemblyModuleAssembler::updateImage(const int stage, const cv::Mat& img)
   }
 }
 
-void AssemblyModuleAssembler::keyReleaseEvent(QKeyEvent * event)
+void AssemblyAssemblyView::keyReleaseEvent(QKeyEvent * event)
 {
   if(!(event->modifiers() & Qt::ShiftModifier))
   {
