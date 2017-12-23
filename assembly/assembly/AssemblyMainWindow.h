@@ -75,9 +75,9 @@ class AssemblyMainWindow : public QMainWindow
   void    connect_images();
   void disconnect_images();
 
-  void changeState_AutoFocus       (int);
-//  void changeState_SandwichAssembly(int);
-  void changeState_Alignment       (int);
+  void changeState_AutoFocus       (const int);
+//  void changeState_SandwichAssembly(const int);
+  void changeState_Alignment       (const int);
 
   void    connect_multipickupNpatrec(const AssemblyMultiPickupTester::Configuration&);
   void disconnect_multipickupNpatrec();

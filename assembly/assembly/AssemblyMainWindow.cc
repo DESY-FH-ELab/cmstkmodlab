@@ -115,7 +115,7 @@ AssemblyMainWindow::AssemblyMainWindow(const unsigned int camera_ID, QWidget* pa
     // multi-pickup tester
     multipickup_ = new AssemblyMultiPickupTester(motion_manager_);
 
-    /* TAB WIDGET ---------------------------------------------- */
+    // TAB WIDGET ----------------------------------------------
     tabWidget_ = new QTabWidget(this);
     tabWidget_->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);
 
@@ -128,7 +128,7 @@ AssemblyMainWindow::AssemblyMainWindow(const unsigned int camera_ID, QWidget* pa
 //    rawView_ = new AssemblyUEyeSnapShooter(tabWidget_);
 //    tabWidget_->addTab(rawView_, "raw");
 
-    /* IMAGE-THRESHOLDING VIEW --------------------------------- */
+    // IMAGE-THRESHOLDING VIEW ---------------------------------
     const QString tabname_ImageThresholding("Image Thresholding");
 
     thresholdView_ = new AssemblyThresholdView(tabWidget_);
@@ -146,9 +146,9 @@ AssemblyMainWindow::AssemblyMainWindow(const unsigned int camera_ID, QWidget* pa
     connect(object_finder_, SIGNAL(image_sent(cv::Mat)) , thresholdView_, SLOT(save_image(cv::Mat)));
 
     NQLog("AssemblyMainWindow", NQLog::Message) << "added view " << tabname_ImageThresholding;
-    /* --------------------------------------------------------- */
+    // ---------------------------------------------------------
 
-    /* AUTO-FOCUS VIEW ----------------------------------------- */
+    // AUTO-FOCUS VIEW -----------------------------------------
     const QString tabname_AutoFocus("Auto Focus");
 
     autoFocusView_ = new AssemblyAutoFocusView(tabWidget_);
@@ -162,9 +162,9 @@ AssemblyMainWindow::AssemblyMainWindow(const unsigned int camera_ID, QWidget* pa
     autoFocusView_->update_scan_config(zfocus_finder_->zrange(), zfocus_finder_->points());
 
     NQLog("AssemblyMainWindow", NQLog::Message) << "added view " << tabname_AutoFocus;
-    /* --------------------------------------------------------- */
+    // ---------------------------------------------------------
 
-    /* AUTOMATED-ASSEMBLY VIEW ------------------------------------ */
+    // AUTOMATED-ASSEMBLY VIEW ------------------------------------
     const QString tabname_AutoAssembly("Auto Assembly");
 
     assemblyView_ = new AssemblyAssemblyView(motion_manager_, tabWidget_);
@@ -198,27 +198,27 @@ AssemblyMainWindow::AssemblyMainWindow(const unsigned int camera_ID, QWidget* pa
             this         , SLOT  (connect_multipickupNpatrec(const AssemblyMultiPickupTester::Configuration&)));
     // ---
 
-    /* --------------------------------------------------------- */
+    // ---------------------------------------------------------
 
-//    /* U-EYE VIEW ---------------------------------------------- */
+//    // U-EYE VIEW ----------------------------------------------
 //    const QString tabname_uEye("uEye");
 //
 //    camera_widget_ = new AssemblyUEyeWidget(camera_model_, this);
 //    tabWidget_->addTab(camera_widget_, tabname_uEye);
 //
 //    NQLog("AssemblyMainWindow", NQLog::Message) << "added view " << tabname_uEye;
-//    /* --------------------------------------------------------- */
+//    // ---------------------------------------------------------
 
-    /* POSITIONS VIEW -------------------------------------------- */
+    // POSITIONS VIEW --------------------------------------------
     const QString tabname_Registry("Registry");
 
     registryView_ = new AssemblyRegistryView(motion_manager_, tabWidget_);
     tabWidget_->addTab(registryView_, tabname_Registry);
 
     NQLog("AssemblyMainWindow", NQLog::Message) << "added view " << tabname_Registry;
-    /* ----------------------------------------------------------- */
+    // -----------------------------------------------------------
 
-    /* MOTION-SETTINGS VIEW ------------------------------------ */
+    // MOTION-SETTINGS VIEW ------------------------------------
     const QString tabname_MotionSettings("Motion Settings");
 
     motionSettings_ = new LStepExpressSettings(motion_model_, tabWidget_);
@@ -227,18 +227,18 @@ AssemblyMainWindow::AssemblyMainWindow(const unsigned int camera_ID, QWidget* pa
     tabWidget_->addTab(motionSettingsWidget_, tabname_MotionSettings);
 
     NQLog("AssemblyMainWindow", NQLog::Message) << "added view " << tabname_MotionSettings;
-    /* --------------------------------------------------------- */
+    // ---------------------------------------------------------
 
-    /* MOTION-MANAGER VIEW ------------------------------------- */
+    // MOTION-MANAGER VIEW -------------------------------------
     const QString tabname_MotionManager("Motion Manager");
 
     motion_manager_view_ = new LStepExpressMotionView(motion_model_, motion_manager_, tabWidget_);
     tabWidget_->addTab(motion_manager_view_, tabname_MotionManager);
 
     NQLog("AssemblyMainWindow", NQLog::Message) << "added view " << tabname_MotionManager;
-    /* --------------------------------------------------------- */
+    // ---------------------------------------------------------
 
-    /* Upper Toolbar ------------------------------------------- */
+    // Upper Toolbar -------------------------------------------
     toolBar_ = addToolBar("Tools");
     toolBar_ ->addAction("Camera ON" , this, SLOT( enable_images()));
     toolBar_ ->addAction("Camera OFF", this, SLOT(disable_images()));
@@ -260,7 +260,7 @@ AssemblyMainWindow::AssemblyMainWindow(const unsigned int camera_ID, QWidget* pa
     this->setCentralWidget(tabWidget_);
 
     this->updateGeometry();
-    /* --------------------------------------------------------- */
+    // ---------------------------------------------------------
 
     liveTimer_ = new QTimer(this);
 
@@ -333,7 +333,7 @@ void AssemblyMainWindow::disable_images()
     emit images_OFF();
 }
 
-void AssemblyMainWindow::changeState_AutoFocus(int state)
+void AssemblyMainWindow::changeState_AutoFocus(const int state)
 {
     if(image_ctr_ == nullptr)
     {
@@ -369,61 +369,67 @@ void AssemblyMainWindow::changeState_AutoFocus(int state)
     return;
 }
 
-/*
-void AssemblyMainWindow::changeState_SandwichAssembly(int state)
+//void AssemblyMainWindow::changeState_SandwichAssembly(const int state)
+//{
+//    if(state == 2){
+//
+//      NQLog("AssemblyMainWindow::changeState_SandwichAssembly") << ": state  " << state;
+//
+//      connect(assemblyView_, SIGNAL(launchSandwitchAssembly(double, double, double, double, double, double, double, double, double)), module_assembler_,
+//                             SLOT  (run_sandwitchassembly  (double, double, double, double, double, double, double, double, double)));
+//
+//      connect(module_assembler_ , SIGNAL(moveAbsolute(double, double, double, double)), motion_manager_   , SLOT(moveAbsolute(double, double,double, double)));
+//      connect(motion_model_     , SIGNAL(motionFinished())                            , module_assembler_, SLOT(process_step()));
+//      connect(module_assembler_ , SIGNAL(toggleVacuum(int))                           , conradManager_   , SLOT(toggleVacuum(int)));
+//      connect(conradManager_    , SIGNAL(updateVacuumChannelState(int, bool))         , module_assembler_, SIGNAL(nextStep()));
+//
+//      //for testing with random numbers
+//      // connect(cmdr_zscan, SIGNAL(makeDummies(int, double,double,double)), cmdr_zscan, SLOT(fill_positionvectors(int, double,double,double)));
+//
+//      // for real lab tests with camera
+//      connect(module_assembler_, SIGNAL(acquireImage())          , camera_       , SLOT(acquireImage()));
+//      connect(module_assembler_, SIGNAL(showHistos(int, QString)), assemblyView_ , SLOT(updateImage(int, QString)));
+//      connect(camera_          , SIGNAL(imageAcquired(cv::Mat))  , object_finder_, SLOT(runObjectDetection_labmode(cv::Mat)) );
+//
+//      connect(object_finder_   , SIGNAL(reportObjectLocation(int,double,double,double)), module_assembler_, SLOT(centre_marker(int, double,double,double)));
+//      connect(module_assembler_, SIGNAL(nextStep())                                    , module_assembler_, SLOT(process_step()));
+//    }
+//    else if(state == 0){
+//
+//      NQLog("AssemblyMainWindow::changeState_SandwichAssembly") << ": state  " << state;
+//
+//      disconnect(assemblyView_, SIGNAL(launchSandwitchAssembly(double, double, double, double, double, double, double, double, double)), module_assembler_,
+//                                SLOT  (run_sandwitchassembly  (double, double, double, double, double, double, double, double, double)));
+//
+//      disconnect(module_assembler_ , SIGNAL(moveAbsolute(double, double, double, double)), motion_manager_   , SLOT(moveAbsolute(double, double,double, double)));
+//      disconnect(motion_model_, SIGNAL(motionFinished())                            , module_assembler_, SLOT(process_step()));
+//      disconnect(module_assembler_ , SIGNAL(toggleVacuum(int))                           , conradManager_   , SLOT(toggleVacuum(int)));
+//      disconnect(conradManager_    , SIGNAL(updateVacuumChannelState(int, bool))         , module_assembler_, SIGNAL(nextStep()));
+//
+//      // for testing with random numbers
+////      disconnect(cmdr_zscan, SIGNAL(makeDummies(int, double,double,double)), cmdr_zscan, SLOT(fill_positionvectors(int, double,double,double)));
+//
+//      // for real lab tests with camera
+//      disconnect(module_assembler_, SIGNAL(acquireImage())                                , camera_          , SLOT(acquireImage()));
+//      disconnect(module_assembler_, SIGNAL(showHistos(int, QString))                      , assemblyView_    , SLOT(updateImage(int, QString)));
+//      disconnect(camera_          , SIGNAL(imageAcquired(cv::Mat))                        , object_finder_   , SLOT(runObjectDetection_labmode(cv::Mat)) );
+//      disconnect(object_finder_   , SIGNAL(reportObjectLocation(int,double,double,double)), module_assembler_, SLOT(fill_positionvectors(int, double,double,double)));
+//      disconnect(module_assembler_, SIGNAL(nextStep())                                    , module_assembler_, SLOT(process_step()));
+//    }
+//
+//    return;
+//}
+
+void AssemblyMainWindow::changeState_Alignment(const int state)
 {
-    if(state == 2){
+    if(image_ctr_ == nullptr)
+    {
+      NQLog("AssemblyMainWindow", NQLog::Warning) << "changeState_AutoFocus"
+         << ": ImageController not initialized, no action taken (hint: click \"Camera ON\")";
 
-      NQLog("AssemblyMainWindow::changeState_SandwichAssembly") << ": state  " << state;
-
-      connect(assemblyView_, SIGNAL(launchSandwitchAssembly(double, double, double, double, double, double, double, double, double)), module_assembler_,
-                             SLOT  (run_sandwitchassembly  (double, double, double, double, double, double, double, double, double)));
-
-      connect(module_assembler_ , SIGNAL(moveAbsolute(double, double, double, double)), motion_manager_   , SLOT(moveAbsolute(double, double,double, double)));
-      connect(motion_model_     , SIGNAL(motionFinished())                            , module_assembler_, SLOT(process_step()));
-      connect(module_assembler_ , SIGNAL(toggleVacuum(int))                           , conradManager_   , SLOT(toggleVacuum(int)));
-      connect(conradManager_    , SIGNAL(updateVacuumChannelState(int, bool))         , module_assembler_, SIGNAL(nextStep()));
-
-      //for testing with random numbers
-      // connect(cmdr_zscan, SIGNAL(makeDummies(int, double,double,double)), cmdr_zscan, SLOT(fill_positionvectors(int, double,double,double)));
-
-      // for real lab tests with camera
-      connect(module_assembler_, SIGNAL(acquireImage())          , camera_       , SLOT(acquireImage()));
-      connect(module_assembler_, SIGNAL(showHistos(int, QString)), assemblyView_ , SLOT(updateImage(int, QString)));
-      connect(camera_          , SIGNAL(imageAcquired(cv::Mat))  , object_finder_, SLOT(runObjectDetection_labmode(cv::Mat)) );
-
-      connect(object_finder_   , SIGNAL(reportObjectLocation(int,double,double,double)), module_assembler_, SLOT(centre_marker(int, double,double,double)));
-      connect(module_assembler_, SIGNAL(nextStep())                                    , module_assembler_, SLOT(process_step()));
-    }
-    else if(state == 0){
-
-      NQLog("AssemblyMainWindow::changeState_SandwichAssembly") << ": state  " << state;
-
-      disconnect(assemblyView_, SIGNAL(launchSandwitchAssembly(double, double, double, double, double, double, double, double, double)), module_assembler_,
-                                SLOT  (run_sandwitchassembly  (double, double, double, double, double, double, double, double, double)));
-
-      disconnect(module_assembler_ , SIGNAL(moveAbsolute(double, double, double, double)), motion_manager_   , SLOT(moveAbsolute(double, double,double, double)));
-      disconnect(motion_model_, SIGNAL(motionFinished())                            , module_assembler_, SLOT(process_step()));
-      disconnect(module_assembler_ , SIGNAL(toggleVacuum(int))                           , conradManager_   , SLOT(toggleVacuum(int)));
-      disconnect(conradManager_    , SIGNAL(updateVacuumChannelState(int, bool))         , module_assembler_, SIGNAL(nextStep()));
-
-      // for testing with random numbers
-//      disconnect(cmdr_zscan, SIGNAL(makeDummies(int, double,double,double)), cmdr_zscan, SLOT(fill_positionvectors(int, double,double,double)));
-
-      // for real lab tests with camera
-      disconnect(module_assembler_, SIGNAL(acquireImage())                                , camera_          , SLOT(acquireImage()));
-      disconnect(module_assembler_, SIGNAL(showHistos(int, QString))                      , assemblyView_    , SLOT(updateImage(int, QString)));
-      disconnect(camera_          , SIGNAL(imageAcquired(cv::Mat))                        , object_finder_   , SLOT(runObjectDetection_labmode(cv::Mat)) );
-      disconnect(object_finder_   , SIGNAL(reportObjectLocation(int,double,double,double)), module_assembler_, SLOT(fill_positionvectors(int, double,double,double)));
-      disconnect(module_assembler_, SIGNAL(nextStep())                                    , module_assembler_, SLOT(process_step()));
+      return;
     }
 
-    return;
-}
-*/
-
-void AssemblyMainWindow::changeState_Alignment(int state)
-{
     if(state == 2)
     {
       connect   (assemblyView_     , SIGNAL(launchAlignment     (int, double, double, double)), module_assembler_, SLOT(run_alignment(int, double, double, double)));
