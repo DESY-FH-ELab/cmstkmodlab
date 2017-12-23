@@ -248,11 +248,11 @@ AssemblyAssemblyView::AssemblyAssemblyView(const LStepExpressMotionManager* moti
     AssemblyAlignWidget* w_alignm = new AssemblyAlignWidget(this);
     w_alignm->setToolTip("(5) Aligns object to target angle (with respect to the x-axis of the motion stage)");
 
-    connect(w_alignm, SIGNAL(launchSandwichAssembly(double, double, double, double, double, double, double, double, double)),
-            this    , SIGNAL(launchSandwichAssembly(double, double, double, double, double, double, double, double, double)));
-
     connect(w_alignm, SIGNAL(launchAlignment(int, double, double, double)),
             this    , SIGNAL(launchAlignment(int, double, double, double)));
+
+//    connect(w_alignm, SIGNAL(launchSandwichAssembly(double, double, double, double, double, double, double, double, double)),
+//            this    , SIGNAL(launchSandwichAssembly(double, double, double, double, double, double, double, double, double)));
 
   box_alignm->setLayout(w_alignm->layout());
 
