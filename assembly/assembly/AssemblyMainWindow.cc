@@ -424,7 +424,7 @@ void AssemblyMainWindow::changeState_Alignment(const int state)
 {
     if(image_ctr_ == nullptr)
     {
-      NQLog("AssemblyMainWindow", NQLog::Warning) << "changeState_AutoFocus"
+      NQLog("AssemblyMainWindow", NQLog::Warning) << "changeState_Alignment"
          << ": ImageController not initialized, no action taken (hint: click \"Camera ON\")";
 
       return;
