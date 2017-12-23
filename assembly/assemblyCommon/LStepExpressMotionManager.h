@@ -26,7 +26,7 @@ class LStepExpressMotionManager : public QObject
 
   public:
 
-    explicit LStepExpressMotionManager(LStepExpressModel*, QObject* parent=0);
+    explicit LStepExpressMotionManager(LStepExpressModel*, QObject* parent=nullptr);
     virtual ~LStepExpressMotionManager();
 
     LStepExpressModel* model() const { return model_; }

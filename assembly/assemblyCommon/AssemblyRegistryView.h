@@ -10,8 +10,8 @@
 //                                                                             //
 /////////////////////////////////////////////////////////////////////////////////
 
-#ifndef ASSEMBLYPOSITIONSVIEW_H
-#define ASSEMBLYPOSITIONSVIEW_H
+#ifndef ASSEMBLYREGISTRYVIEW_H
+#define ASSEMBLYREGISTRYVIEW_H
 
 #include <AssemblyUEyeView.h>
 #include <LStepExpressMotionManager.h>
@@ -37,7 +37,7 @@ class AssemblyRegistryView : public QWidget
 
  public:
 
-  explicit AssemblyRegistryView(const LStepExpressMotionManager*, QWidget* parent=0);
+  explicit AssemblyRegistryView(const LStepExpressMotionManager*, QWidget* parent=nullptr);
   virtual ~AssemblyRegistryView() {}
 
   AssemblyRegistryImageWidget* ImageWidget() const { return image_widget_; }
@@ -69,7 +69,7 @@ class AssemblyRegistryImageWidget : public QWidget
 
  public:
 
-  explicit AssemblyRegistryImageWidget(QWidget* parent=0);
+  explicit AssemblyRegistryImageWidget(QWidget* parent=nullptr);
   virtual ~AssemblyRegistryImageWidget() {}
 
   void    connectImageProducer(const QObject* sender, const char* signal);
@@ -104,7 +104,7 @@ class AssemblyRegistryPositionWidget : public QWidget
 
  public:
 
-  explicit AssemblyRegistryPositionWidget(const QString&, const LStepExpressMotionManager*, QWidget* parent=0);
+  explicit AssemblyRegistryPositionWidget(const QString&, const LStepExpressMotionManager*, QWidget* parent=nullptr);
   virtual ~AssemblyRegistryPositionWidget() {}
 
   QString position_qstring() const { return pos_lineed_value_->text(); }
@@ -123,4 +123,4 @@ class AssemblyRegistryPositionWidget : public QWidget
 };
 // ==================================================
 
-#endif // ASSEMBLYPOSITIONSVIEW_H
+#endif // ASSEMBLYREGISTRYVIEW_H

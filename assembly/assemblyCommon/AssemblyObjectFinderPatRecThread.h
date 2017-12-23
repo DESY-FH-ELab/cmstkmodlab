@@ -24,7 +24,7 @@ class AssemblyObjectFinderPatRecThread : public QThread
 
  public:
 
-  explicit AssemblyObjectFinderPatRecThread(AssemblyObjectFinderPatRec* finder, QObject* parent=0);
+  explicit AssemblyObjectFinderPatRecThread(AssemblyObjectFinderPatRec* finder, QObject* parent=nullptr);
   virtual ~AssemblyObjectFinderPatRecThread();
 
   void run();

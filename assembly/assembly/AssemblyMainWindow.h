@@ -62,7 +62,9 @@ class AssemblyMainWindow : public QMainWindow
  Q_OBJECT
 
   public:
-    explicit AssemblyMainWindow(const unsigned int camera_ID=10, QWidget* parent=0);
+
+    explicit AssemblyMainWindow(const unsigned int camera_ID=10, QWidget* parent=nullptr);
+    virtual ~AssemblyMainWindow() {}
 
   public slots:
 

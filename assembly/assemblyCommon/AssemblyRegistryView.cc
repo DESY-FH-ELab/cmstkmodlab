@@ -36,7 +36,7 @@ AssemblyRegistryView::AssemblyRegistryView(const LStepExpressMotionManager* moti
   }
   //// --------------
 
-  QFormLayout* l = new QFormLayout();
+  QFormLayout* l = new QFormLayout;
   this->setLayout(l);
 
   //// IMAGE
@@ -55,7 +55,7 @@ AssemblyRegistryView::AssemblyRegistryView(const LStepExpressMotionManager* moti
   //// POSITION(S)
   QGroupBox* box_posit = new QGroupBox(tr("Positions"));
 
-  QFormLayout* l2 = new QFormLayout();
+  QFormLayout* l2 = new QFormLayout;
   box_posit->setLayout(l2);
 
   v_wpos_.clear();
@@ -262,13 +262,13 @@ bool AssemblyRegistryView::load_position_4vector(std::vector<double>& vec, QStri
 AssemblyRegistryImageWidget::AssemblyRegistryImageWidget(QWidget* parent) : QWidget(parent)
 {
   //// layout
-  QGridLayout* g1 = new QGridLayout();
+  QGridLayout* g1 = new QGridLayout;
   this->setLayout(g1);
 
   QPalette palette;
   palette.setColor(QPalette::Background, QColor(220, 220, 220));
 
-  img_view_ = new AssemblyUEyeView();
+  img_view_ = new AssemblyUEyeView(this);
   img_view_->setMinimumSize(500, 300);
   img_view_->setPalette(palette);
   img_view_->setBackgroundRole(QPalette::Background);
@@ -288,13 +288,13 @@ AssemblyRegistryImageWidget::AssemblyRegistryImageWidget(QWidget* parent) : QWid
 
   this->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 
-  QFormLayout*  lImg = new QFormLayout();
+  QFormLayout*  lImg = new QFormLayout;
   g1->addLayout(lImg, 0, 1);
 
-  img_save_button_ = new QPushButton("Save Image");
+  img_save_button_ = new QPushButton("Save Image", this);
   lImg->addRow(img_save_button_);
 
-  img_celi_button_ = new QPushButton("Draw Center Lines");
+  img_celi_button_ = new QPushButton("Draw Center Lines", this);
   lImg->addRow(img_celi_button_);
   //// ---------------
 
@@ -430,7 +430,7 @@ AssemblyRegistryPositionWidget::AssemblyRegistryPositionWidget(const QString& qs
   }
   //// --------------
 
-  QGridLayout* l = new QGridLayout();
+  QGridLayout* l = new QGridLayout;
   this->setLayout(l);
 
   pos_button_       = new QPushButton("Read"   , this);

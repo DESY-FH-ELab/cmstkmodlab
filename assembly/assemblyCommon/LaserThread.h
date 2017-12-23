@@ -21,7 +21,7 @@ class LaserThread : public QThread
 
  public:
 
-  explicit LaserThread(QObject* parent=0);
+  explicit LaserThread(QObject* parent=nullptr);
   virtual ~LaserThread();
 
   void run();

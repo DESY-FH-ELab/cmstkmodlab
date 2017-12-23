@@ -24,7 +24,7 @@ class LStepExpressMotionThread : public QThread
 
  public:
 
-  explicit LStepExpressMotionThread(LStepExpressMotionManager*, QObject* parent=0);
+  explicit LStepExpressMotionThread(LStepExpressMotionManager*, QObject* parent=nullptr);
   virtual ~LStepExpressMotionThread();
 
   void run();

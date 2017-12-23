@@ -39,16 +39,16 @@ AssemblyAutoFocusView::AssemblyAutoFocusView(QWidget* parent) :
 
   checkbox_(0)
 {
-  QGridLayout* l = new QGridLayout(this);
+  QGridLayout* l = new QGridLayout;
   this->setLayout(l);
 
-  QGridLayout* g0 = new QGridLayout();
+  QGridLayout* g0 = new QGridLayout;
   l->addLayout(g0, 0, 0);
 
   QPalette palette;
   palette.setColor(QPalette::Background, QColor(220, 220, 220));
 
-  imageView_1_ = new AssemblyUEyeView();
+  imageView_1_ = new AssemblyUEyeView(this);
   imageView_1_->setMinimumSize(200, 200);
   imageView_1_->setPalette(palette);
   imageView_1_->setBackgroundRole(QPalette::Background);
@@ -68,7 +68,7 @@ AssemblyAutoFocusView::AssemblyAutoFocusView(QWidget* parent) :
 
   g0->addWidget(scrollArea_1_, 0, 0);
 
-  imageView_2_ = new AssemblyUEyeView();
+  imageView_2_ = new AssemblyUEyeView(this);
   imageView_2_->setMinimumSize(200, 200);
   imageView_2_->setPalette(palette);
   imageView_2_->setBackgroundRole(QPalette::Background);
@@ -92,33 +92,33 @@ AssemblyAutoFocusView::AssemblyAutoFocusView(QWidget* parent) :
   g0->addWidget(scrollArea_2_, 0, 1);
 
   // left-hand side widgets
-  QGridLayout*  g1 = new QGridLayout();
+  QGridLayout*  g1 = new QGridLayout;
   g0->addLayout(g1, 1, 0);
 
-  button_1_ = new QPushButton("Update Auto-Focus Parameters");
+  button_1_ = new QPushButton("Update Auto-Focus Parameters", this);
   g1->addWidget(button_1_, 1, 0);
 
-  QFormLayout*  fl1 = new QFormLayout();
+  QFormLayout*  fl1 = new QFormLayout;
   g1->addLayout(fl1, 2, 0);
 
-  QLabel* lt1 = new QLabel("Max Delta-Z [mm], # Steps");
-  lineed_1_ = new QLineEdit("");
+  QLabel* lt1 = new QLabel("Max Delta-Z [mm], # Steps", this);
+  lineed_1_ = new QLineEdit("", this);
   fl1->addRow(lt1, lineed_1_);
 
-  QLabel* lt2 = new QLabel("Z (best focus) [mm]");
-  lineed_2_ = new QLineEdit("");
+  QLabel* lt2 = new QLabel("Z (best focus) [mm]", this);
+  lineed_2_ = new QLineEdit("", this);
   fl1->addRow(lt2, lineed_2_);
 
   // -----------------------
 
   // right-hand side widgets
-  QFormLayout*  f2 = new QFormLayout();
+  QFormLayout*  f2 = new QFormLayout;
   g0->addLayout(f2, 1, 1);
 
-  button_2_ = new QPushButton("Go to focal point");
+  button_2_ = new QPushButton("Go to focal point", this);
   f2->addRow(button_2_);
 
-  checkbox_ = new QCheckBox("Track marker");
+  checkbox_ = new QCheckBox("Track marker", this);
   f2->addRow(checkbox_);
 
   // -----------------------
@@ -159,8 +159,26 @@ void AssemblyAutoFocusView::configure_scan()
     const QString x = pieces.value(0);
     const QString y = pieces.value(1);
 
-    const double x_d = x.toDouble();
-    const double y_d = y.toInt();
+    bool valid_x_d(false);
+    bool valid_y_d(false);
+
+    const double x_d = x.toDouble(&valid_x_d);
+    const double y_d = y.toInt   (&valid_y_d);
+
+    if(!valid_x_d)
+    {
+      NQLog("AssemblyAutoFocusView", NQLog::Warning) << "configure_scan"
+         << ": invalid format for scan-config parameter #1 (" << x << "), no action taken";
+
+      return;
+    }
+    else if(!valid_y_d)
+    {
+      NQLog("AssemblyAutoFocusView", NQLog::Warning) << "configure_scan"
+         << ": invalid format for scan-config parameter #2 (" << y << "), no action taken";
+
+      return;
+    }
 
     NQLog("AssemblyAutoFocusView", NQLog::Spam) << "configure_scan"
        << ": emitting signal \"scan_config(" << x_d << ", " << y_d << "\")";

@@ -22,7 +22,7 @@ class AssemblyAssembler : public QObject
  Q_OBJECT
 
   public:
-    explicit AssemblyAssembler(const LStepExpressMotionManager*, QObject* parent=0);
+    explicit AssemblyAssembler(const LStepExpressMotionManager*, QObject* parent=nullptr);
     virtual ~AssemblyAssembler() {}
 
     void reset();

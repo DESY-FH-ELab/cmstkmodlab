@@ -19,7 +19,7 @@ class AssemblyUEyeFakeModel : public AssemblyVUEyeModel
 {
  Q_OBJECT
   public:
-    explicit AssemblyUEyeFakeModel(int updateInterval=60, QObject* parent=0);
+    explicit AssemblyUEyeFakeModel(int updateInterval=60, QObject* parent=nullptr);
     ~AssemblyUEyeFakeModel();
 
   public slots:

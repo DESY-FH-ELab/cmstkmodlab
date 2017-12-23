@@ -30,7 +30,7 @@ class AssemblyUEyeCameraThread : public QThread
 
  public:
 
-  explicit AssemblyUEyeCameraThread(AssemblyUEyeModel_t* model, QObject* parent=0);
+  explicit AssemblyUEyeCameraThread(AssemblyUEyeModel_t* model, QObject* parent=nullptr);
 
   virtual ~AssemblyUEyeCameraThread();
 

@@ -10,8 +10,8 @@
 //                                                                             //
 /////////////////////////////////////////////////////////////////////////////////
 
-#ifndef ASSEMBLYAUTOFOCUS_H
-#define ASSEMBLYAUTOFOCUS_H
+#ifndef ASSEMBLYAUTOFOCUSVIEW_H
+#define ASSEMBLYAUTOFOCUSVIEW_H
 
 #include <AssemblyUEyeView.h>
 
@@ -31,7 +31,7 @@ class AssemblyAutoFocusView : public QWidget
 
  public:
 
-  explicit AssemblyAutoFocusView(QWidget* parent=0);
+  explicit AssemblyAutoFocusView(QWidget* parent=nullptr);
   virtual ~AssemblyAutoFocusView();
 
   void    connectImageProducer(const QObject* sender, const char* signal);
@@ -41,7 +41,7 @@ class AssemblyAutoFocusView : public QWidget
 
  protected:
 
-  void keyReleaseEvent(QKeyEvent* event);
+  void keyReleaseEvent(QKeyEvent*);
 
   AssemblyUEyeView* imageView_1_;
   AssemblyUEyeView* imageView_2_;
@@ -71,4 +71,4 @@ class AssemblyAutoFocusView : public QWidget
   void graph_found(const cv::Mat&);
 };
 
-#endif // ASSEMBLYAUTOFOCUS_H
+#endif // ASSEMBLYAUTOFOCUSVIEW_H

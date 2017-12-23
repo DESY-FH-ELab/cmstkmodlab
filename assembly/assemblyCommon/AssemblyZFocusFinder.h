@@ -30,7 +30,7 @@ class AssemblyZFocusFinder : public QObject
 
   public:
 
-    explicit AssemblyZFocusFinder(const AssemblyVUEyeCamera*, const LStepExpressMotionManager*, QObject* parent=0);
+    explicit AssemblyZFocusFinder(const AssemblyVUEyeCamera*, const LStepExpressMotionManager*, QObject* parent=nullptr);
 
     const AssemblyVUEyeCamera*       camera_manager() const { return camera_manager_; }
     const LStepExpressMotionManager* motion_manager() const { return motion_manager_; }

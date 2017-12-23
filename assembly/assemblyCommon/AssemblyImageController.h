@@ -30,7 +30,7 @@ class AssemblyImageController : public QObject
 
   public:
 
-    explicit AssemblyImageController(const AssemblyVUEyeCamera*, const AssemblyZFocusFinder* zff=0, QObject* parent=0);
+    explicit AssemblyImageController(const AssemblyVUEyeCamera*, const AssemblyZFocusFinder* zff=nullptr, QObject* parent=nullptr);
     virtual ~AssemblyImageController();
 
     bool is_enabled()           const { return is_enabled_; }

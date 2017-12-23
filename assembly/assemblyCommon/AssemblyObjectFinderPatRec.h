@@ -25,7 +25,7 @@ class AssemblyObjectFinderPatRec : public QObject
 
  public:
 
-  explicit AssemblyObjectFinderPatRec(const QString&, const QString&, QObject* parent=0);
+  explicit AssemblyObjectFinderPatRec(const QString&, const QString&, QObject* parent=nullptr);
   virtual ~AssemblyObjectFinderPatRec();
 
   void set_threshold(const int);

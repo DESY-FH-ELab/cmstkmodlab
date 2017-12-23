@@ -276,12 +276,10 @@ void AssemblyZFocusFinder::test_focus()
   {
     const double dz = v_zrelm_vals_.at(zrelm_index_);
 
-    NQLog("AssemblyZFocusFinder::test_focus", NQLog::Spam) << "test_focus"
+    NQLog("AssemblyZFocusFinder", NQLog::Spam) << "test_focus"
        << ": emitting signal \"focus(0, 0, " << dz << ", 0)\"";
 
     emit focus(0., 0., dz, 0.);
-
-    return;
   }
   else
   {
@@ -366,8 +364,6 @@ void AssemblyZFocusFinder::test_focus()
        << ": emitting signal \"focus(0, 0, " << dz << ", 0)\"";
 
     emit focus(0., 0., dz, 0.);
-
-    return;
     // ------------------
   }
 

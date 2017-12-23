@@ -10,11 +10,10 @@
 //                                                                             //
 /////////////////////////////////////////////////////////////////////////////////
 
-#ifndef ASSEMBLYTHRESHOLDTUNER_H
-#define ASSEMBLYTHRESHOLDTUNER_H
+#ifndef ASSEMBLYTHRESHOLDVIEW_H
+#define ASSEMBLYTHRESHOLDVIEW_H
 
 #include <AssemblyUEyeView.h>
-#include <nqlogger.h>
 
 #include <QWidget>
 #include <QScrollArea>
@@ -31,7 +30,7 @@ class AssemblyThresholdView : public QWidget
 
  public:
 
-  explicit AssemblyThresholdView(QWidget* parent=0);
+  explicit AssemblyThresholdView(QWidget* parent=nullptr);
   virtual ~AssemblyThresholdView() {}
 
   int get_threshold() const;
@@ -44,7 +43,7 @@ class AssemblyThresholdView : public QWidget
 
  protected:
 
-  void keyReleaseEvent(QKeyEvent *event);
+  void keyReleaseEvent(QKeyEvent*);
 
   AssemblyUEyeView* imageView_1_;
   AssemblyUEyeView* imageView_2_;
@@ -76,4 +75,4 @@ class AssemblyThresholdView : public QWidget
   void image_bin_request();
 };
 
-#endif // ASSEMBLYTHRESHOLDTUNER_H
+#endif // ASSEMBLYTHRESHOLDVIEW_H

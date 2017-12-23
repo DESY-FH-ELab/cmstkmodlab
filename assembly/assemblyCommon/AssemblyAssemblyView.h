@@ -10,8 +10,8 @@
 //                                                                             //
 /////////////////////////////////////////////////////////////////////////////////
 
-#ifndef ASSEMBLYMODULEASSEMBLER_H
-#define ASSEMBLYMODULEASSEMBLER_H
+#ifndef ASSEMBLYASSEMBLYVIEW_H
+#define ASSEMBLYASSEMBLYVIEW_H
 
 #include <ConradModel.h>
 #include <LStepExpressMotionManager.h>
@@ -47,7 +47,7 @@ class AssemblyAssemblyView : public QWidget
 
  public:
 
-  explicit AssemblyAssemblyView(const LStepExpressMotionManager*, QWidget* parent=0);
+  explicit AssemblyAssemblyView(const LStepExpressMotionManager*, QWidget* parent=nullptr);
 
   AssemblyVacuumWidget* Vacuum_Widget() const { return w_vacuum_; }
   AssemblyPatRecWidget* PatRec_Widget() const { return w_patrec_; }
@@ -95,7 +95,7 @@ class AssemblyAssemblyView : public QWidget
 
   void launchAlignment(int, double, double, double);
 
-  void launchSandwichAssembly(double, double, double, double, double, double, double, double, double);
+//  void launchSandwichAssembly(double, double, double, double, double, double, double, double, double);
 };
 // ===========================================================================
 
@@ -105,7 +105,7 @@ class AssemblyStringWidget : public QWidget
 
  public:
 
-  explicit AssemblyStringWidget(const QString&, const QString&, QWidget* parent=0);
+  explicit AssemblyStringWidget(const QString&, const QString&, QWidget* parent=nullptr);
   virtual ~AssemblyStringWidget() {}
 
   QPushButton* button() const { return button_; }
@@ -135,7 +135,7 @@ class AssemblyMoveWidget : public QWidget
 
  public:
 
-  explicit AssemblyMoveWidget(const QString&, const QString&, const bool move_relative=false, QWidget* parent=0);
+  explicit AssemblyMoveWidget(const QString&, const QString&, const bool move_relative=false, QWidget* parent=nullptr);
   virtual ~AssemblyMoveWidget() {}
 
   QPushButton* button() const { return button_; }
@@ -172,7 +172,7 @@ class AssemblyVacuumWidget : public QWidget
 
  public:
 
-  explicit AssemblyVacuumWidget(const QString&, QWidget* parent=0);
+  explicit AssemblyVacuumWidget(const QString&, QWidget* parent=nullptr);
   virtual ~AssemblyVacuumWidget() {}
 
   QFormLayout* layout() const { return layout_; }
@@ -204,7 +204,7 @@ class AssemblyPatRecWidget : public QWidget
 
  public:
 
-  explicit AssemblyPatRecWidget(const QString&, QWidget* parent=0);
+  explicit AssemblyPatRecWidget(const QString&, QWidget* parent=nullptr);
   virtual ~AssemblyPatRecWidget() {}
 
   QFormLayout* layout() const { return layout_; }
@@ -254,7 +254,7 @@ class AssemblyMultiPickupTesterWidget : public QWidget
 
  public:
 
-  explicit AssemblyMultiPickupTesterWidget(const QString&, const LStepExpressMotionManager*, QWidget* parent=0);
+  explicit AssemblyMultiPickupTesterWidget(const QString&, const LStepExpressMotionManager*, QWidget* parent=nullptr);
   virtual ~AssemblyMultiPickupTesterWidget() {}
 
   QGridLayout* layout() const { return layout_; }
@@ -293,36 +293,37 @@ class AssemblyMultiPickupTesterWidget : public QWidget
 };
 // ===========================================================================
 
-class AssemblySandwichAssembler : public QWidget
+class AssemblyAlignWidget : public QWidget
 {
-    Q_OBJECT
-public:
-    
-    explicit AssemblySandwichAssembler(QWidget *parent = 0, std::string text ="Assemble sandwich",
-                                        std::string assembly_position = "0.0,0.0,0.0", std::string bottom_part_position = "0.0,0.0,0.0", std::string top_part_position = "0.0,0.0,0.0");
-    
-    //double local_x, local_y, local_z, local_a;
-    QPushButton* button0;
-    QPushButton* button1;
-    
-    QLabel * label1;
-    QLabel * label2;
-    QLabel * label3;
-    
-    QLineEdit *lineEdit1;
-    QLineEdit *lineEdit2;
-    QLineEdit *lineEdit3;
+ Q_OBJECT
 
-    
-    protected:
-    
-    public slots:
-    void run();
-    void run_alignment();
+ public:
 
-    signals:
-    void launchSandwichAssembly(double, double, double, double, double, double, double, double, double);
-    void launchAlignment(int, double, double, double );
+  explicit AssemblyAlignWidget(QWidget* parent=nullptr);
+  virtual ~AssemblyAlignWidget() {}
+
+ protected:
+    
+  QPushButton* button0;
+  QPushButton* button1;
+    
+  QLabel* label1;
+  QLabel* label2;
+  QLabel* label3;
+    
+  QLineEdit* lineEdit1;
+  QLineEdit* lineEdit2;
+  QLineEdit* lineEdit3;
+
+ public slots:
+
+  void run_alignment();
+//  void run();
+
+ signals:
+
+  void launchAlignment(int, double, double, double);
+//  void launchSandwichAssembly(double, double, double, double, double, double, double, double, double);
 };
 // ===========================================================================
 
@@ -381,4 +382,4 @@ public:
 //!!};
 //!!// ===========================================================================
 
-#endif // ASSEMBLYMODULEASSEMBLER_H
+#endif // ASSEMBLYASSEMBLYVIEW_H

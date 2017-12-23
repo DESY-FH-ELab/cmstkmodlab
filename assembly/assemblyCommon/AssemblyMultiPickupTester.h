@@ -21,7 +21,7 @@ class AssemblyMultiPickupTester : public QObject
 
  public:
 
-  explicit AssemblyMultiPickupTester(const LStepExpressMotionManager*, QObject* parent=0);
+  explicit AssemblyMultiPickupTester(const LStepExpressMotionManager*, QObject* parent=nullptr);
   virtual ~AssemblyMultiPickupTester();
 
   const LStepExpressMotionManager* motion_manager() const { return motion_manager_; }
