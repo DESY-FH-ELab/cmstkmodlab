@@ -13,39 +13,42 @@
 #ifndef ASSEMBLYUEYEVIEW_H
 #define ASSEMBLYUEYEVIEW_H
 
-#include <opencv2/opencv.hpp>
-
 #include <QLabel>
 #include <QImage>
 #include <QMutex>
 
 #include <AssemblyVUEyeCamera.h>
 
+#include <opencv2/opencv.hpp>
+
 class AssemblyUEyeView : public QLabel
 {
-    Q_OBJECT
-public:
-    explicit AssemblyUEyeView(QWidget *parent = 0);
+ Q_OBJECT
 
-    void connectImageProducer(const QObject* sender, const char* signal);
-    void disconnectImageProducer(const QObject* sender, const char* signal);
+ public:
 
-    void setZoomFactor(float zoomFactor);
-    void increaseZoomFactor();
-    void decreaseZoomFactor();
+  explicit AssemblyUEyeView(QWidget* parent=nullptr);
 
-protected:
+  void    connectImageProducer(const QObject* sender, const char* signal);
+  void disconnectImageProducer(const QObject* sender, const char* signal);
 
-    void paintEvent(QPaintEvent*);
+  void setZoomFactor(float zoomFactor);
 
-    QImage image_;
-    float zoomFactor_;
+  void increaseZoomFactor();
+  void decreaseZoomFactor();
 
-    QMutex mutex_;
+ protected:
 
-public slots:
+  void paintEvent(QPaintEvent*);
 
-    void setImage(const cv::Mat&);
+  QImage image_;
+  float zoomFactor_;
+
+  QMutex mutex_;
+
+ public slots:
+
+  void setImage(const cv::Mat&);
 };
 
-#endif // ASSEMBLYUEYEWIDGET_H
+#endif // ASSEMBLYUEYEVIEW_H

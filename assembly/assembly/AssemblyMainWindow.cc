@@ -24,51 +24,7 @@
 
 AssemblyMainWindow::AssemblyMainWindow(const unsigned int camera_ID, QWidget* parent) :
   QMainWindow(parent),
-
-  // model(s) and model-manager(s)
-  conradModel_(0),
-  conradManager_(0),
-
-  motion_model_(0),
-  motion_manager_(0),
-  motion_manager_view_(0),
-  motion_thread_(0),
-  motionSettings_(0),
-  motionSettingsWidget_(0),
-
-  camera_model_(0),
-  camera_thread_(0),
-//  camera_widget_(0),
-  camera_(0),
   camera_ID_(camera_ID),
-
-  // view(s)
-  toolBar_(0),
-  tabWidget_(0),
-
-//  finderView_(0),
-//  edgeView_(0),
-//  rawView_(0),
-  thresholdView_(0),
-  autoFocusView_(0),
-  assemblyView_(0),
-  registryView_(0),
-
-  checkbox1(0),
-  checkbox2(0),
-//  checkbox3(0),
-
-  // controller(s)
-  image_ctr_(0),
-  zfocus_finder_(0),
-  object_finder_(0),
-  multipickup_(0),
-  module_assembler_(0),
-
-  // thread(s)
-  object_finder_thread_(0),
-
-  // timing
   testTimerCount_(0.),
   liveTimer_(0)
 {
@@ -104,13 +60,16 @@ AssemblyMainWindow::AssemblyMainWindow(const unsigned int camera_ID, QWidget* pa
       NQLog("AssemblyMainWindow", NQLog::Critical) << "---------------------------------------------------------------------------------";
     }
 
+    // zfocus finder
+    zfocus_finder_ = new AssemblyZFocusFinder(camera_, motion_manager_);
+
+    // image controller
+    image_ctr_ = new AssemblyImageController(camera_, zfocus_finder_);
+
     // marker finder
     object_finder_        = new AssemblyObjectFinderPatRec(Util::QtCacheDirectory()+"/AssemblyObjectFinderPatRec", "rotations");
 //    object_finder_thread_ = new AssemblyObjectFinderPatRecThread(object_finder_);
 //    object_finder_thread_->start();
-
-    // zfocus finder
-    zfocus_finder_ = new AssemblyZFocusFinder(camera_, motion_manager_);
 
     // multi-pickup tester
     multipickup_ = new AssemblyMultiPickupTester(motion_manager_);
@@ -288,13 +247,8 @@ void AssemblyMainWindow::liveUpdate()
 
 void AssemblyMainWindow::enable_images()
 {
-    if(image_ctr_ == nullptr)
-    {
-      image_ctr_ = new AssemblyImageController(camera_, zfocus_finder_);
-
-      connect(this    , SIGNAL(images_ON())      , image_ctr_, SLOT(enable()));
-      connect(this    , SIGNAL(images_OFF())     , image_ctr_, SLOT(disable()));
-    }
+    connect(this      , SIGNAL(images_ON())      , image_ctr_, SLOT(enable()));
+    connect(this      , SIGNAL(images_OFF())     , image_ctr_, SLOT(disable()));
 
     connect(image_ctr_, SIGNAL(camera_enabled()) , this      , SLOT(connect_images()));
     connect(image_ctr_, SIGNAL(camera_disabled()), this      , SLOT(disconnect_images()));
@@ -314,18 +268,18 @@ void AssemblyMainWindow::enable_images()
 
 void AssemblyMainWindow::disable_images()
 {
-    if(image_ctr_)
-    {
-      disconnect(image_ctr_, SIGNAL(camera_enabled()) , this      , SLOT(connect_images()));
-      disconnect(image_ctr_, SIGNAL(camera_disabled()), this      , SLOT(disconnect_images()));
+    disconnect(this      , SIGNAL(images_ON())      , image_ctr_, SLOT(enable()));
+    disconnect(this      , SIGNAL(images_OFF())     , image_ctr_, SLOT(disable()));
 
-      disconnect(this      , SIGNAL(image_request())  , image_ctr_, SLOT(acquire_image()));
-      disconnect(this      , SIGNAL(AutoFocus_ON())   , image_ctr_, SLOT( enable_AutoFocus()));
-      disconnect(this      , SIGNAL(AutoFocus_OFF())  , image_ctr_, SLOT(disable_AutoFocus()));
+    disconnect(image_ctr_, SIGNAL(camera_enabled()) , this      , SLOT(connect_images()));
+    disconnect(image_ctr_, SIGNAL(camera_disabled()), this      , SLOT(disconnect_images()));
 
-      NQLog("AssemblyMainWindow", NQLog::Message) << "disable_images"
-         << ": ImageController disconnected";
-    }
+    disconnect(this      , SIGNAL(image_request())  , image_ctr_, SLOT(acquire_image()));
+    disconnect(this      , SIGNAL(AutoFocus_ON())   , image_ctr_, SLOT( enable_AutoFocus()));
+    disconnect(this      , SIGNAL(AutoFocus_OFF())  , image_ctr_, SLOT(disable_AutoFocus()));
+
+    NQLog("AssemblyMainWindow", NQLog::Message) << "disable_images"
+       << ": ImageController disconnected";
 
     NQLog("AssemblyMainWindow", NQLog::Spam) << "enable_images"
        << ": emitting image \"images_OFF\"";

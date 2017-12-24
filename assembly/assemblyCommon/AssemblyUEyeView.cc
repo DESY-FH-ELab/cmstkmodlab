@@ -36,19 +36,23 @@ void AssemblyUEyeView::setImage(const cv::Mat& newImage)
 {
     QMutexLocker lock(&mutex_);
 
-    //NQLog("AssemblyUEyeView") << "set image " << newImage.type() << " " << newImage.channels();
-
-    if (newImage.channels()==1) {
+    if(newImage.channels() == 1)
+    {
         cv::Mat temp;
         cvtColor(newImage, temp, CV_GRAY2RGB);
+
         image_ = QImage((const uchar *) temp.data,
                         temp.cols, temp.rows,
                         temp.step, QImage::Format_RGB888);
+
         image_.bits();
-    } else {
+    }
+    else
+    {
         image_ = QImage((const uchar *) newImage.data,
                         newImage.cols, newImage.rows,
                         newImage.step, QImage::Format_RGB888);
+
         image_.bits();
     }
 
@@ -59,15 +63,15 @@ void AssemblyUEyeView::setImage(const cv::Mat& newImage)
 
 void AssemblyUEyeView::paintEvent(QPaintEvent*)
 {
-    if (!image_.isNull()) {
-
-        QImage image = image_.scaled(image_.width()*zoomFactor_,
-                                     image_.height()*zoomFactor_,
+    if(image_.isNull() == false)
+    {
+        QImage image = image_.scaled(image_.width()  * zoomFactor_,
+                                     image_.height() * zoomFactor_,
                                      Qt::KeepAspectRatio);
 
         resize(image.width(), image.height());
 
-        //qreal posX = this->width() / 2 - image.width() / 2;
+        //qreal posX = this->width()  / 2 - image.width()  / 2;
         //qreal posY = this->height() / 2 - image.height() / 2;
         QRectF target(0, 0, image.width(), image.height());
 
@@ -75,18 +79,21 @@ void AssemblyUEyeView::paintEvent(QPaintEvent*)
         painter.drawImage(target, image);
         painter.end();
     }
+
+    return;
 }
 
 void AssemblyUEyeView::setZoomFactor(float zoomFactor)
 {
-    if (zoomFactor_==zoomFactor) return;
+    if(zoomFactor_ == zoomFactor){ return; }
+
     zoomFactor_ = zoomFactor;
     update();
 }
 
 void AssemblyUEyeView::increaseZoomFactor()
 {
-    if (zoomFactor_>=4.0) return;
+    if(zoomFactor_ >= 4.0){ return; }
 
     zoomFactor_ += 0.05;
     update();

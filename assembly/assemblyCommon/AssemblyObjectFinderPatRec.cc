@@ -464,7 +464,7 @@ void AssemblyObjectFinderPatRec::template_matching(const cv::Mat& img_master, co
   NQLog("AssemblyObjectFinderPatRec", NQLog::Spam) << "template_matching: Template rows = " << img_templa.rows;
 
   // QMutex lock (accessing data members)
-  //mutex_.lock();
+//  mutex_.lock();
 
   // output directory
   std::string output_dir(""), output_subdir("");
@@ -728,6 +728,8 @@ void AssemblyObjectFinderPatRec::template_matching(const cv::Mat& img_master, co
      << ": emitting signal \"PatRec_exitcode(0)\"";
 
   emit PatRec_exitcode(0);
+
+//  mutex_.unlock();
 
 //  const cv::Rect rect_result = cv::Rect(best_matchLoc, cv::Point(best_matchLoc.x + img_templa_bin.cols, best_matchLoc.y + img_templa_bin.rows));
 //
