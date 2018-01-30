@@ -595,7 +595,7 @@ void AssemblyMainWindow::quit()
 
     this->quit_thread(motion_thread_       , "terminated LStepExpressMotionThread");
     this->quit_thread(camera_thread_       , "terminated AssemblyUEyeCameraThread");
-    this->quit_thread(object_finder_thread_, "terminated AssemblyObjectFinderPatRecThread");
+//    this->quit_thread(object_finder_thread_, "terminated AssemblyObjectFinderPatRecThread");
 
     NQLog("AssemblyMainWindow", NQLog::Message) << "quit: application closed";
 
