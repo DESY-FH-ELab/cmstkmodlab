@@ -50,9 +50,14 @@ class AssemblyAssembler : public QObject
     double posi_x1_, posi_y1_;
     double posi_x2_, posi_y2_;
 
-    double obj_slope_;
+    double obj_angle_deg_;
+
+    bool only_measure_ang_;
 
   public slots:
+
+    void start_alignment(const double, const double);
+    void start_alignment(const double, const double, const double);
 
     void run_alignment(int, double, double, double);
 
@@ -70,6 +75,10 @@ class AssemblyAssembler : public QObject
     void motion_finished();
 
     void acquireImage();
+
+    void object_angle(const double);
+
+    void alignment_finished();
 };
 
 #endif // ASSEMBLYASSEMBLER_H

@@ -64,7 +64,7 @@ AssemblyMainWindow::AssemblyMainWindow(const unsigned int camera_ID, QWidget* pa
     zfocus_finder_ = new AssemblyZFocusFinder(camera_, motion_manager_);
 
     // image controller
-    image_ctr_ = new AssemblyImageController(camera_, zfocus_finder_);
+    image_ctr_ = nullptr;
 
     // marker finder
     object_finder_        = new AssemblyObjectFinderPatRec(Util::QtCacheDirectory()+"/AssemblyObjectFinderPatRec", "rotations");
@@ -247,23 +247,28 @@ void AssemblyMainWindow::liveUpdate()
 
 void AssemblyMainWindow::enable_images()
 {
-    connect(this      , SIGNAL(images_ON())      , image_ctr_, SLOT(enable()));
-    connect(this      , SIGNAL(images_OFF())     , image_ctr_, SLOT(disable()));
+  if(image_ctr_ == nullptr)
+  {
+    image_ctr_ = new AssemblyImageController(camera_, zfocus_finder_);
+  }
 
-    connect(image_ctr_, SIGNAL(camera_enabled()) , this      , SLOT(connect_images()));
-    connect(image_ctr_, SIGNAL(camera_disabled()), this      , SLOT(disconnect_images()));
+  connect(this      , SIGNAL(images_ON())      , image_ctr_, SLOT(enable()));
+  connect(this      , SIGNAL(images_OFF())     , image_ctr_, SLOT(disable()));
 
-    connect(this      , SIGNAL(image_request())  , image_ctr_, SLOT(acquire_image()));
-    connect(this      , SIGNAL(AutoFocus_ON ())  , image_ctr_, SLOT( enable_AutoFocus()));
-    connect(this      , SIGNAL(AutoFocus_OFF())  , image_ctr_, SLOT(disable_AutoFocus()));
+  connect(image_ctr_, SIGNAL(camera_enabled()) , this      , SLOT(connect_images()));
+  connect(image_ctr_, SIGNAL(camera_disabled()), this      , SLOT(disconnect_images()));
 
-    NQLog("AssemblyMainWindow", NQLog::Message) << "enable_images"
-       << ": ImageController connected";
+  connect(this      , SIGNAL(image_request())  , image_ctr_, SLOT(acquire_image()));
+  connect(this      , SIGNAL(AutoFocus_ON ())  , image_ctr_, SLOT( enable_AutoFocus()));
+  connect(this      , SIGNAL(AutoFocus_OFF())  , image_ctr_, SLOT(disable_AutoFocus()));
 
-    NQLog("AssemblyMainWindow", NQLog::Spam) << "enable_images"
-       << ": emitting image \"images_ON\"";
+  NQLog("AssemblyMainWindow", NQLog::Message) << "enable_images"
+     << ": ImageController connected";
 
-    emit images_ON();
+  NQLog("AssemblyMainWindow", NQLog::Spam) << "enable_images"
+     << ": emitting signal \"images_ON\"";
+
+  emit images_ON();
 }
 
 void AssemblyMainWindow::disable_images()
@@ -386,7 +391,14 @@ void AssemblyMainWindow::changeState_Alignment(const int state)
 
     if(state == 2)
     {
-      connect   (assemblyView_     , SIGNAL(launchAlignment     (int, double, double, double)), module_assembler_, SLOT(run_alignment(int, double, double, double)));
+      assemblyView_->Alignm_Widget()->enable(true);
+
+      connect   (assemblyView_->Alignm_Widget(), SIGNAL(measure_angle_request(double, double))    , module_assembler_, SLOT(start_alignment(double, double)));
+      connect   (assemblyView_->Alignm_Widget(), SIGNAL(alignment_request(double, double, double)), module_assembler_, SLOT(start_alignment(double, double, double)));
+
+      connect   (module_assembler_ , SIGNAL(object_angle(double)), assemblyView_->Alignm_Widget(), SLOT(show_object_angle(double)));
+      connect   (module_assembler_ , SIGNAL(alignment_finished()), assemblyView_->Alignm_Widget(), SLOT(enable()));
+
       connect   (module_assembler_ , SIGNAL(nextAlignmentStep   (int, double, double, double)), module_assembler_, SLOT(run_alignment(int, double, double, double)));
 
       connect   (module_assembler_ , SIGNAL(acquireImage())                                   , image_ctr_       , SLOT(acquire_image()));
@@ -400,7 +412,14 @@ void AssemblyMainWindow::changeState_Alignment(const int state)
     }
     else if(state == 0)
     {
-      disconnect(assemblyView_     , SIGNAL(launchAlignment     (int, double, double, double)), module_assembler_, SLOT(run_alignment(int, double, double, double)));
+      assemblyView_->Alignm_Widget()->enable(false);
+
+      disconnect(assemblyView_->Alignm_Widget(), SIGNAL(measure_angle_request(double, double))    , module_assembler_, SLOT(start_alignment(double, double)));
+      disconnect(assemblyView_->Alignm_Widget(), SIGNAL(alignment_request(double, double, double)), module_assembler_, SLOT(start_alignment(double, double, double)));
+
+      disconnect(module_assembler_ , SIGNAL(object_angle(double)), assemblyView_->Alignm_Widget(), SLOT(show_object_angle(double)));
+      disconnect(module_assembler_ , SIGNAL(alignment_finished()), assemblyView_->Alignm_Widget(), SLOT(enable()));
+
       disconnect(module_assembler_ , SIGNAL(nextAlignmentStep   (int, double, double, double)), module_assembler_, SLOT(run_alignment(int, double, double, double)));
 
       disconnect(module_assembler_ , SIGNAL(acquireImage())                                   , image_ctr_       , SLOT(acquire_image()));

@@ -39,6 +39,7 @@
 
 class AssemblyVacuumWidget;
 class AssemblyPatRecWidget;
+class AssemblyAlignmWidget;
 class AssemblyMultiPickupTesterWidget;
 
 class AssemblyAssemblyView : public QWidget
@@ -51,6 +52,7 @@ class AssemblyAssemblyView : public QWidget
 
   AssemblyVacuumWidget* Vacuum_Widget() const { return w_vacuum_; }
   AssemblyPatRecWidget* PatRec_Widget() const { return w_patrec_; }
+  AssemblyAlignmWidget* Alignm_Widget() const { return w_alignm_; }
 
   AssemblyMultiPickupTesterWidget* MultiPickup_Widget() { return w_mupiup_; }
 
@@ -77,6 +79,7 @@ class AssemblyAssemblyView : public QWidget
 
   AssemblyVacuumWidget* w_vacuum_;
   AssemblyPatRecWidget* w_patrec_;
+  AssemblyAlignmWidget* w_alignm_;
 
   AssemblyMultiPickupTesterWidget* w_mupiup_;
 
@@ -96,36 +99,6 @@ class AssemblyAssemblyView : public QWidget
   void launchAlignment(int, double, double, double);
 
 //  void launchSandwichAssembly(double, double, double, double, double, double, double, double, double);
-};
-// ===========================================================================
-
-class AssemblyStringWidget : public QWidget
-{
- Q_OBJECT
-
- public:
-
-  explicit AssemblyStringWidget(const QString&, const QString&, QWidget* parent=nullptr);
-  virtual ~AssemblyStringWidget() {}
-
-  QPushButton* button() const { return button_; }
-  QLineEdit*   lineed() const { return lineed_; }
-
-  QString get_input_string() const;
-
- protected:
-
-  QFormLayout* layout_;
-  QPushButton* button_;
-  QLineEdit*   lineed_;
-
- public slots:
-
-  void execute();
-
- signals:
-
-  void input_string(QString);
 };
 // ===========================================================================
 
@@ -198,6 +171,36 @@ class AssemblyVacuumWidget : public QWidget
 };
 // ===========================================================================
 
+class AssemblyStringWidget : public QWidget
+{
+ Q_OBJECT
+
+ public:
+
+  explicit AssemblyStringWidget(const QString&, const QString&, QWidget* parent=nullptr);
+  virtual ~AssemblyStringWidget() {}
+
+  QPushButton* button() const { return button_; }
+  QLineEdit*   lineed() const { return lineed_; }
+
+  QString get_input_string() const;
+
+ protected:
+
+  QFormLayout* layout_;
+  QPushButton* button_;
+  QLineEdit*   lineed_;
+
+ public slots:
+
+  void execute();
+
+ signals:
+
+  void input_string(QString);
+};
+// ===========================================================================
+
 class AssemblyPatRecWidget : public QWidget
 {
  Q_OBJECT
@@ -248,6 +251,50 @@ class AssemblyPatRecWidget : public QWidget
 };
 // ===========================================================================
 
+class AssemblyAlignmWidget : public QWidget
+{
+ Q_OBJECT
+
+ public:
+
+  explicit AssemblyAlignmWidget(QWidget* parent=nullptr);
+  virtual ~AssemblyAlignmWidget() {}
+
+ protected:
+
+  QPushButton* measur_button_;
+  QPushButton* alignm_button_;
+
+  QLabel*      obj_deltaX_label_;
+  QLineEdit*   obj_deltaX_lineed_;
+
+  QLabel*      obj_deltaY_label_;
+  QLineEdit*   obj_deltaY_lineed_;
+
+  QLabel*      ang_target_label_;
+  QLineEdit*   ang_target_lineed_;
+
+  QLabel*      obj_angle_label_;
+  QLineEdit*   obj_angle_lineed_;
+
+ public slots:
+
+  void execute(const bool);
+
+  void measure_angle();
+  void align_object();
+
+  void enable(const bool on=true);
+
+  void show_object_angle(const double);
+
+ signals:
+
+  void measure_angle_request(const double, const double);
+  void alignment_request    (const double, const double, const double);
+};
+// ===========================================================================
+
 class AssemblyMultiPickupTesterWidget : public QWidget
 {
  Q_OBJECT
@@ -292,94 +339,5 @@ class AssemblyMultiPickupTesterWidget : public QWidget
   void multipickup_request(const AssemblyMultiPickupTester::Configuration&);
 };
 // ===========================================================================
-
-class AssemblyAlignWidget : public QWidget
-{
- Q_OBJECT
-
- public:
-
-  explicit AssemblyAlignWidget(QWidget* parent=nullptr);
-  virtual ~AssemblyAlignWidget() {}
-
- protected:
-    
-  QPushButton* button0;
-  QPushButton* button1;
-    
-  QLabel* label1;
-  QLabel* label2;
-  QLabel* label3;
-    
-  QLineEdit* lineEdit1;
-  QLineEdit* lineEdit2;
-  QLineEdit* lineEdit3;
-
- public slots:
-
-  void run_alignment();
-//  void run();
-
- signals:
-
-  void launchAlignment(int, double, double, double);
-//  void launchSandwichAssembly(double, double, double, double, double, double, double, double, double);
-};
-// ===========================================================================
-
-//!!class AssemblyMountChecker : public QWidget
-//!!{
-//!!  Q_OBJECT
-//!!
-//!!public:
-//!!
-//!!  explicit AssemblyMountChecker(QWidget *parent = 0, std::string ="test",
-//!!                                double x =0.0, double y =0.0, double z  =0.0,
-//!!                                double a  =0.0, int =0);
-//!!
-//!!  double local_x, local_y, local_z, local_a;
-//!!  QPushButton* button1;
-//!!  QLineEdit *lineEdit1;
-//!!
-//!!protected:
-//!!
-//!!public slots:
-//!!
-//!!  void checkMount();
-//!!
-//!!signals:
-//!!
-//!!  void moveAbsolute(double,double,double,double);
-//!!  void moveRelative(double,double,double,double);
-//!!  void locateCorner(int);
-//!!  void reportCornerLocation(int);
-//!!};
-//!!// ===========================================================================
-//!!
-//!!class AssemblyAligner : public QWidget
-//!!{
-//!!  Q_OBJECT      
-//!!public:
-//!!
-//!!  explicit AssemblyAligner(QWidget *parent = 0, std::string ="test",
-//!!                           double a  = 0.0);
-//!!
-//!!  double local_x, local_y, local_z, local_a;
-//!!  QPushButton* button1;
-//!!  QLineEdit *lineEdit1;
-//!!
-//!!protected:
-//!!
-//!!public slots:
-//!!
-//!!  void align();
-//!!  void setDown();
-//!!
-//!!signals:
-//!!
-//!!  void moveRelative(double,double,double,double);
-//!!  void locateSetdowncorner(int);
-//!!};
-//!!// ===========================================================================
 
 #endif // ASSEMBLYASSEMBLYVIEW_H

@@ -245,16 +245,10 @@ AssemblyAssemblyView::AssemblyAssemblyView(const LStepExpressMotionManager* moti
 
   QGroupBox* box_alignm = new QGroupBox(tr("Alignment"));
 
-    AssemblyAlignWidget* w_alignm = new AssemblyAlignWidget(this);
-    w_alignm->setToolTip("(5) Aligns object to target angle (with respect to the x-axis of the motion stage)");
+    w_alignm_ = new AssemblyAlignmWidget(this);
+    w_alignm_->setToolTip("(5) Aligns object to target angle (with respect to the x-axis of the motion stage)");
 
-    connect(w_alignm, SIGNAL(launchAlignment(int, double, double, double)),
-            this    , SIGNAL(launchAlignment(int, double, double, double)));
-
-//    connect(w_alignm, SIGNAL(launchSandwichAssembly(double, double, double, double, double, double, double, double, double)),
-//            this    , SIGNAL(launchSandwichAssembly(double, double, double, double, double, double, double, double, double)));
-
-  box_alignm->setLayout(w_alignm->layout());
+  box_alignm->setLayout(w_alignm_->layout());
 
   f11->addRow(box_alignm);
   // ---------------------
@@ -400,6 +394,589 @@ void AssemblyAssemblyView::keyReleaseEvent(QKeyEvent* event)
         break;
     }
   }
+}
+// ===========================================================================
+
+AssemblyMoveWidget::AssemblyMoveWidget(const QString& label, const QString& default_entry, const bool move_relative, QWidget* parent) :
+  QWidget(parent),
+  moveRelative_(move_relative)
+{
+  layout_ = new QFormLayout;
+  this->setLayout(layout_);
+
+  button_ = new QPushButton(label, this);
+  button_->setStyleSheet(
+    "Text-align: left;"
+    "padding-left:   4px;"
+    "padding-right:  4px;"
+    "padding-top:    3px;"
+    "padding-bottom: 3px;"
+  );
+
+  lineed_ = new QLineEdit(this);
+  lineed_->setText(default_entry);
+
+  layout_->addRow(button_, lineed_);
+
+  connect(button_, SIGNAL(clicked()), this, SLOT(execute()));
+}
+
+QString AssemblyMoveWidget::get_input_string() const
+{
+  return this->lineed_->text();
+}
+
+void AssemblyMoveWidget::enable(const bool b)
+{
+  button_->setEnabled(b);
+  lineed_->setEnabled(b);
+
+  return;
+}
+
+void AssemblyMoveWidget::execute()
+{
+  QString line_entry = this->get_input_string();
+
+  // parse lineEdit text to get target coordinates
+  const QStringList entries = line_entry.remove(" ").split(",");
+
+  if((entries.length() == 4) || (moveRelative_ && (entries.length() == 3)))
+  {
+    bool valid_x_d(false);
+    bool valid_y_d(false);
+    bool valid_z_d(false);
+    bool valid_a_d(true);
+
+    const double x_d = entries.value(0).toDouble(&valid_x_d);
+    const double y_d = entries.value(1).toDouble(&valid_y_d);
+    const double z_d = entries.value(2).toDouble(&valid_z_d);
+
+    const double a_d = (entries.length() == 4) ? entries.value(3).toDouble(&valid_a_d) : 0.0;
+
+    if(!valid_x_d)
+    {
+      NQLog("AssemblyMoveWidget", NQLog::Warning) << "execute"
+         << ": invalid format for x-axis value (" << entries.value(0) << "), no action taken";
+
+      return;
+    }
+    else if(!valid_y_d)
+    {
+      NQLog("AssemblyMoveWidget", NQLog::Warning) << "execute"
+         << ": invalid format for y-axis value (" << entries.value(1) << "), no action taken";
+
+      return;
+    }
+    else if(!valid_z_d)
+    {
+      NQLog("AssemblyMoveWidget", NQLog::Warning) << "execute"
+         << ": invalid format for z-axis value (" << entries.value(2) << "), no action taken";
+
+      return;
+    }
+    else if(!valid_a_d)
+    {
+      NQLog("AssemblyMoveWidget", NQLog::Warning) << "execute"
+         << ": invalid format for a-axis value (" << entries.value(3) << "), no action taken";
+
+      return;
+    }
+    // ---
+
+    if(moveRelative_)
+    {
+      NQLog("AssemblyMoveWidget", NQLog::Message) << "execute"
+         << ": emitting signal \"moveRelative("
+         << x_d << ", " << y_d << ", " << z_d << ", " << a_d << ")\"";
+
+      this->enable(false);
+
+      emit moveRelative(x_d, y_d, z_d, a_d);
+    }
+    else
+    {
+      NQLog("AssemblyMoveWidget", NQLog::Message) << "execute"
+         << ": emitting signal \"moveAbsolute("
+         << x_d << ", " << y_d << ", " << z_d << ", " << a_d << ")\"";
+
+      this->enable(false);
+
+      emit moveAbsolute(x_d, y_d, z_d, a_d);
+    }
+  }
+  else
+  {
+    NQLog("AssemblyMoveWidget", NQLog::Warning) << "execute"
+       << ": [moveRelative=" << moveRelative_ << "] invalid input string format (" << line_entry << "), no action taken";
+
+    return;
+  }
+
+  return;
+}
+// ===========================================================================
+
+AssemblyVacuumWidget::AssemblyVacuumWidget(const QString& label, QWidget* parent) : QWidget(parent)
+{
+  layout_ = new QFormLayout;
+  this->setLayout(layout_);
+
+  button_ = new QPushButton(label, this);
+  layout_->addRow(button_);
+
+  QGridLayout* grid = new QGridLayout;
+
+  QRadioButton* radio_1 = new QRadioButton(tr("&Pickup")   , this);
+  QRadioButton* radio_2 = new QRadioButton(tr("&Spacers")  , this);
+  QRadioButton* radio_3 = new QRadioButton(tr("&Baseplate"), this);
+//  QRadioButton* radio_4 = new QRadioButton(tr("&Channel 4"), this);
+
+  grid->addWidget(radio_1, 1, 0);
+  grid->addWidget(radio_2, 3, 0);
+  grid->addWidget(radio_3, 5, 0);
+//  grid->addWidget(radio_4, 7, 0);
+
+  QPixmap pixmap(100, 100);
+  pixmap.fill(QColor("transparent"));
+
+  QPainter painter(&pixmap);
+  painter.setBrush(QBrush(Qt::red));
+  painter.drawEllipse(0, 0, 30, 30);
+
+  QLabel* label_1 = new QLabel("", this);
+  label_1->setPixmap(pixmap);
+  label_1->setText(" VACUUM OFF");
+  label_1->setStyleSheet("QLabel { background-color : green; color : black; }");
+
+  QLabel* label_2 = new QLabel("", this);
+  label_2->setPixmap(pixmap);
+  label_2->setText(" VACUUM OFF");
+  label_2->setStyleSheet("QLabel { background-color : green; color : black; }");
+
+  QLabel* label_3 = new QLabel("", this);
+  label_3->setPixmap(pixmap);
+  label_3->setText(" VACUUM OFF");
+  label_3->setStyleSheet("QLabel { background-color : green; color : black; }");
+
+//  QLabel* label_4 = new QLabel("", this);
+//  label_4->setPixmap(pixmap);
+//  label_4->setText(" VACUUM OFF");
+//  label_4->setStyleSheet("QLabel { background-color : green; color : black; }");
+
+  grid->addWidget(label_1, 1, 1);
+  grid->addWidget(label_2, 3, 1);
+  grid->addWidget(label_3, 5, 1);
+//  grid->addWidget(label_4, 7, 1);
+
+  layout_->addRow(grid);
+
+  valves_.clear();
+  valves_.push_back(radio_1);
+  valves_.push_back(radio_2);
+  valves_.push_back(radio_3);
+//  valves_.push_back(radio4);
+
+  labels_.clear();
+  labels_.push_back(label_1);
+  labels_.push_back(label_2);
+  labels_.push_back(label_3);
+//  labels_.push_back(label_4);
+
+  connect(button_, SIGNAL(clicked()), this, SLOT(toggleVacuum()));
+
+  NQLog("AssemblyVacuumWidget", NQLog::Debug) << "constructed";
+}
+
+void AssemblyVacuumWidget::toggleVacuum()
+{
+  NQLog("AssemblyVacuumWidget") << ": toggling vacuum voltage";
+
+  for(unsigned int i=0; i<valves_.size(); ++i)
+  {
+    if(valves_.at(i)->isChecked())
+    {
+      NQLog("AssemblyVacuumWidget") << ": emit signal to channel " << (i+1);
+
+      button_->setEnabled(false);
+
+      emit toggleVacuum(i+1);
+
+      return;
+    }
+  }
+
+  NQLog("AssemblyVacuumWidget") << ": None channel selected! Vacuum is not toggled.";
+}
+
+void AssemblyVacuumWidget::enableVacuumButton()
+{
+  button_->setEnabled(true);
+}
+
+void AssemblyVacuumWidget::disableVacuumButton()
+{
+  button_->setEnabled(false);
+}
+
+void AssemblyVacuumWidget::updateVacuumChannelState(const int channelNumber, const bool channelState)
+{
+  if(channelNumber >= int(labels_.size()))
+  {
+    NQLog("AssemblyVacuumWidget", NQLog::Warning) << "updateVacuumChannelState"
+       << "(" << channelNumber << ", " << channelState << ")"
+       << ": out-of-range input channel number (" << channelNumber << "), no action taken";
+
+    return;
+  }
+
+  emit enableVacuumButton();
+
+  if(channelState)
+  {
+    labels_.at(channelNumber)->setText(" VACUUM ON");
+    labels_.at(channelNumber)->setStyleSheet("QLabel { background-color : red; color : black; }");
+  }
+  else
+  {
+    labels_.at(channelNumber)->setText(" VACUUM OFF");
+    labels_.at(channelNumber)->setStyleSheet("QLabel { background-color : green; color : black; }");
+  }
+}
+// ===========================================================================
+
+AssemblyStringWidget::AssemblyStringWidget(const QString& label, const QString& default_entry, QWidget* parent) : QWidget(parent)
+{
+  layout_ = new QFormLayout;
+  this->setLayout(layout_);
+
+  button_ = new QPushButton(label, this);
+  button_->setStyleSheet(
+    "Text-align: left;"
+    "padding-left:   4px;"
+    "padding-right:  4px;"
+    "padding-top:    3px;"
+    "padding-bottom: 3px;"
+  );
+
+  lineed_ = new QLineEdit(this);
+  lineed_->setText(default_entry);
+
+  layout_->addRow(button_, lineed_);
+
+  connect(button_, SIGNAL(clicked()), this, SLOT(execute()));
+}
+
+QString AssemblyStringWidget::get_input_string() const
+{
+  return this->lineed_->text();
+}
+
+void AssemblyStringWidget::execute()
+{
+  const QString line_entry = this->get_input_string();
+
+  NQLog("AssemblyStringWidget", NQLog::Spam) << "execute"
+     << ": emitting signal \"input_string(" << line_entry << ")\"";
+
+  emit input_string(line_entry);
+}
+// ===========================================================================
+
+AssemblyPatRecWidget::AssemblyPatRecWidget(const QString& label, QWidget* parent) :
+  QWidget(parent),
+
+  layout_(0),
+  button_(0),
+  lineed_(0),
+  label_ (0),
+
+  groupBox1_(0),
+  groupBox2_(0),
+
+  radio1_(0),
+  radio2_(0),
+  radio3_(0),
+  radio4_(0),
+  radio5_(0),
+  radio6_(0),
+
+  vbox1_(0),
+  vbox2_(0),
+
+  sw_angrough_(0),
+  sw_angscanp_(0)
+{
+  layout_ = new QFormLayout;
+  this->setLayout(layout_);
+
+  QGridLayout* layout_1 = new QGridLayout;
+  layout_->addRow(layout_1);
+
+  button_ = new QPushButton(label, this);
+  button_->setEnabled(true);
+  layout_1->addWidget(button_, 0, 0);
+
+  groupBox1_ = new QGroupBox(tr("Object"));
+  groupBox2_ = new QGroupBox(tr("Mode"));
+
+  radio1_ = new QRadioButton(tr("&Fiducial marker"), this);
+  radio2_ = new QRadioButton(tr("&Positioning pin"), this);
+  radio3_ = new QRadioButton(tr("&Sensor corner")  , this);
+  radio4_ = new QRadioButton(tr("&Spacer corner")  , this);
+
+  radio1_->setChecked(true);
+
+  vbox1_ = new QVBoxLayout;
+  vbox1_->addWidget(radio1_);
+  vbox1_->addWidget(radio2_);
+  vbox1_->addWidget(radio3_);
+  vbox1_->addWidget(radio4_);
+  vbox1_->addStretch(1);
+
+  groupBox1_->setLayout(vbox1_);
+
+  radio5_ = new QRadioButton(tr("&Demo"), this);
+  radio6_ = new QRadioButton(tr("&Lab") , this);
+
+  radio5_->setChecked(true);
+
+  vbox2_ = new QVBoxLayout;
+  vbox2_->addWidget(radio5_);
+  vbox2_->addWidget(radio6_);
+  vbox2_->addStretch(1);
+
+  groupBox2_->setLayout(vbox2_);
+
+  layout_1->addWidget(groupBox1_, 1, 0);
+  layout_1->addWidget(groupBox2_, 1, 1);
+
+  QPixmap pixmap(100, 100);
+  pixmap.fill(QColor("transparent"));
+
+  label_ = new QLabel("", this);
+  label_->setPixmap(pixmap);
+  label_->setText(" WAITING");
+  label_->setStyleSheet("QLabel { background-color : orange; color : black; }");
+
+  layout_1->addWidget(label_, 0, 1);
+
+  // PatRec: angular analysis configuration
+  QGridLayout* layout_2 = new QGridLayout;
+  layout_->addRow(layout_2);
+
+  // widget: PatRec rough angles
+  sw_angrough_ = new AssemblyStringWidget("Pre-Scan Angles (list)", "0,180", this);
+  layout_2->addWidget(sw_angrough_->button(), 0, 0);
+  layout_2->addWidget(sw_angrough_->lineed(), 0, 1);
+
+  // widget: PatRec angular-scan parameters
+  sw_angscanp_ = new AssemblyStringWidget("Scan Params (fine-range, fine-step)", "5,0.125", this);
+  layout_2->addWidget(sw_angscanp_->button(), 1, 0);
+  layout_2->addWidget(sw_angscanp_->lineed(), 1, 1);
+  // ---------------------
+
+  connect(button_, SIGNAL(clicked()), this, SLOT(execute()));
+}
+
+void AssemblyPatRecWidget::execute()
+{
+  int mode_lab(0), mode_obj(0);
+
+  if     (radio1_->isChecked()){ mode_obj = 0; }
+  else if(radio2_->isChecked()){ mode_obj = 1; }
+  else if(radio3_->isChecked()){ mode_obj = 2; }
+  else if(radio4_->isChecked()){ mode_obj = 3; }
+
+  if     (radio5_->isChecked()){ mode_lab = 0; }
+  else if(radio6_->isChecked()){ mode_lab = 1; }
+
+  NQLog("AssemblyPatRecWidget", NQLog::Spam) << "execute"
+     << ": emitting signal \"mode(" << mode_lab << ", " << mode_obj << ")\"";
+
+  emit mode(mode_lab, mode_obj);
+}
+
+void AssemblyPatRecWidget::change_label(const int state)
+{
+  NQLog("AssemblyPatRecWidget", NQLog::Spam) << "change_label(" << state << ")";
+
+  if(state == 0)
+  {
+    label_->setText(" FOUND MARKER");
+    label_->setStyleSheet("QLabel { background-color : green; color : black; }");
+  }
+  else if(state == 2)
+  {
+    label_->setText(" ERROR");
+    label_->setStyleSheet("QLabel { background-color : red; color : black; }");
+  }
+
+  return;
+}
+// ===========================================================================
+
+AssemblyAlignmWidget::AssemblyAlignmWidget(QWidget *parent) :
+  QWidget(parent)
+{
+  QGridLayout* g_lay = new QGridLayout;
+  this->setLayout(g_lay);
+
+  measur_button_ = new QPushButton("Measure Angle", this);
+  alignm_button_ = new QPushButton("Align Object" , this);
+
+  g_lay->addWidget(measur_button_, 0, 0);
+  g_lay->addWidget(alignm_button_, 0, 1);
+
+  connect(alignm_button_, SIGNAL(clicked()), this, SLOT(align_object()));
+  connect(measur_button_, SIGNAL(clicked()), this, SLOT(measure_angle()));
+
+  obj_deltaX_label_  = new QLabel("Obj. Delta-X [mm]", this);
+  obj_deltaX_lineed_ = new QLineEdit("", this);
+  g_lay->addWidget(obj_deltaX_label_ , 1, 0);
+  g_lay->addWidget(obj_deltaX_lineed_, 1, 1);
+
+  obj_deltaY_label_  = new QLabel("Obj. Delta-Y [mm]", this);
+  obj_deltaY_lineed_ = new QLineEdit("", this);
+  g_lay->addWidget(obj_deltaY_label_ , 2, 0);
+  g_lay->addWidget(obj_deltaY_lineed_, 2, 1);
+
+  ang_target_label_  = new QLabel("Target Angle [deg]", this);
+  ang_target_lineed_ = new QLineEdit("", this);
+  g_lay->addWidget(ang_target_label_ , 3, 0);
+  g_lay->addWidget(ang_target_lineed_, 3, 1);
+
+  obj_angle_label_  = new QLabel("Object Angle [deg]", this);
+  obj_angle_lineed_ = new QLineEdit("", this);
+  g_lay->addWidget(obj_angle_label_ , 4, 0);
+  g_lay->addWidget(obj_angle_lineed_, 4, 1);
+
+  obj_angle_lineed_->setReadOnly(true);
+
+  this->enable(false);
+}
+
+void AssemblyAlignmWidget::measure_angle()
+{
+  this->execute(true);
+}
+
+void AssemblyAlignmWidget::align_object()
+{
+  this->execute(false);
+}
+
+void AssemblyAlignmWidget::execute(const bool meas_only_mode)
+{
+  // Object Delta-X
+  const QString obj_deltaX_qstr = this->obj_deltaX_lineed_->text();
+
+  bool valid_obj_deltaX(false);
+
+  const double obj_deltaX_val = obj_deltaX_qstr.toDouble(&valid_obj_deltaX);
+
+  if(!valid_obj_deltaX)
+  {
+    NQLog("AssemblyAlignmWidget", NQLog::Warning) << "execute"
+       << ": invalid format for object delta-X distance (" << obj_deltaX_qstr << "), no action taken";
+
+    return;
+  }
+  // ---------------
+
+  // Object Delta-Y
+  const QString obj_deltaY_qstr = this->obj_deltaY_lineed_->text();
+
+  bool valid_obj_deltaY(false);
+
+  const double obj_deltaY_val = obj_deltaY_qstr.toDouble(&valid_obj_deltaY);
+
+  if(!valid_obj_deltaY)
+  {
+    NQLog("AssemblyAlignmWidget", NQLog::Warning) << "execute"
+       << ": invalid format for object delta-Y distance (" << obj_deltaY_qstr << "), no action taken";
+
+    return;
+  }
+  // ---------------
+
+  if(meas_only_mode)
+  {
+    // disable widget
+    this->enable(false);
+
+    // signal
+    NQLog("AssemblyAlignmWidget", NQLog::Spam) << "execute"
+      << ": emitting signal \"measure_angle_request("
+      << obj_deltaX_val << ", "
+      << obj_deltaY_val
+      << ")\"";
+
+    emit measure_angle_request(obj_deltaX_val, obj_deltaY_val);
+    // ---------------
+  }
+  else
+  {
+    // Target Angle
+    const QString ang_target_qstr = this->ang_target_lineed_->text();
+
+    bool valid_ang_target(false);
+
+    const double ang_target_val = ang_target_qstr.toDouble(&valid_ang_target);
+
+    if(!valid_ang_target)
+    {
+      NQLog("AssemblyAlignmWidget", NQLog::Warning) << "execute"
+         << ": invalid format for target angle (" << ang_target_qstr << "), no action taken";
+
+      return;
+    }
+    // ---------------
+
+    // disable widget
+    this->enable(false);
+
+    // signal
+    NQLog("AssemblyAlignmWidget", NQLog::Spam) << "alignment_request"
+      << ": emitting signal \"alignment_request("
+      << obj_deltaX_val << ", "
+      << obj_deltaY_val << ", "
+      << ang_target_val
+      << ")\"";
+
+    emit alignment_request(obj_deltaX_val, obj_deltaY_val, ang_target_val);
+    // ---------------
+  }
+}
+
+void AssemblyAlignmWidget::enable(const bool b)
+{
+  measur_button_->setEnabled(b);
+  alignm_button_->setEnabled(b);
+
+  const QString label_color = b ? "black" : "gray";
+
+  obj_deltaX_label_->setStyleSheet("QLabel { color : "+label_color+"; }");
+  obj_deltaY_label_->setStyleSheet("QLabel { color : "+label_color+"; }");
+  ang_target_label_->setStyleSheet("QLabel { color : "+label_color+"; }");
+  obj_angle_label_ ->setStyleSheet("QLabel { color : "+label_color+"; }");
+
+  obj_deltaX_lineed_->setEnabled(b);
+  obj_deltaY_lineed_->setEnabled(b);
+  ang_target_lineed_->setEnabled(b);
+  obj_angle_lineed_ ->setEnabled(b);
+
+  return;
+}
+
+void AssemblyAlignmWidget::show_object_angle(const double val)
+{
+  std::stringstream posi_strs;
+  posi_strs << val;
+
+  obj_angle_lineed_->setText(QString::fromStdString(posi_strs.str()));
+
+  return;
 }
 // ===========================================================================
 
@@ -632,641 +1209,3 @@ void AssemblyMultiPickupTesterWidget::execute()
   emit multipickup_request(mpt_conf);
 }
 // ===========================================================================
-
-AssemblyAlignWidget::AssemblyAlignWidget(QWidget *parent) :
-  QWidget(parent)
-{
-  QGridLayout *l = new QGridLayout;
-  this->setLayout(l);
-    
-  button0 = new QPushButton("Align Object", this);
-  l->addWidget(button0,0,0);
-    
-//  QString qname = QString::fromStdString(text);
-//
-//  button1 = new QPushButton(qname, this);
-//  l->addWidget(button1,1,0);
-//
-//  QFormLayout *fl1 = new QFormLayout;
-//  l->addLayout(fl1,2,0);
-//
-//  label1 = new QLabel(this);
-//  lineEdit1 = new QLineEdit(this);
-//  fl1->addRow(label1,lineEdit1);
-//
-//  label2 = new QLabel(this);
-//  lineEdit2 = new QLineEdit(this);
-//  fl1->addRow(label2,lineEdit2);
-//
-//  label3 = new QLabel(this);
-//  lineEdit3 = new QLineEdit(this);
-//  fl1->addRow(label3,lineEdit3);
-//
-//  label1->setText("Assembly position (x,y,z)");
-//  label2->setText("Bottom part position (x,y,z)");
-//  label3->setText("Top part position (x,y,z)");
-//
-//  lineEdit1->setText("0.0,55.0,-108.0");
-//  lineEdit2->setText("50.0,-111.90,-127.7184");
-//  lineEdit3->setText("-80.0,-111.90,-125.70");
-
-  connect(button0, SIGNAL(clicked()), this, SLOT(run_alignment()));
-//  connect(button1, SIGNAL(clicked()), this, SLOT(run()));
-}
-
-void AssemblyAlignWidget::run_alignment()
-{
-  NQLog("AssemblyAlignWidget", NQLog::Spam) << "run_alignment"
-    << ": emitting signal \"launchAlignment(1, 0, 0, 0)\"";
-
-  emit launchAlignment(1, 0.0, 0.0, 0.0);
-}
-
-//void AssemblyAlignWidget::run()
-//{
-//  NQLog("AssemblyAlignWidget", NQLog::Spam) << "run"
-//    << ": emitting signal \"launchAlignment(1, 0, 0, 0)\"";
-//
-//  //parse lineEdit text to get target coordinates
-//  QString  parent_string_assembly = this->lineEdit1->text();
-//
-//  QStringList pieces_assembly = parent_string_assembly.split( "," );
-//  QString x_assembly_s = pieces_assembly.value( pieces_assembly.length() - 3);
-//  QString y_assembly_s = pieces_assembly.value( pieces_assembly.length() - 2);
-//  QString z_assembly_s = pieces_assembly.value( pieces_assembly.length() -1);
-//
-//  double x_assembly_d = x_assembly_s.toDouble();
-//  double y_assembly_d = y_assembly_s.toDouble();
-//  double z_assembly_d = z_assembly_s.toDouble();
-//
-//  QString  parent_string_bottom = this->lineEdit2->text();
-//
-//  QStringList pieces_bottom = parent_string_bottom.split( "," );
-//  QString x_bottom_s = pieces_bottom.value( pieces_bottom.length() - 3);
-//  QString y_bottom_s = pieces_bottom.value( pieces_bottom.length() - 2);
-//  QString z_bottom_s = pieces_bottom.value( pieces_bottom.length() - 1);
-//
-//  double x_bottom_d = x_bottom_s.toDouble();
-//  double y_bottom_d = y_bottom_s.toDouble();
-//  double z_bottom_d = z_bottom_s.toDouble();
-//
-//  QString  parent_string_top = this->lineEdit3->text();
-//
-//  QStringList pieces_top = parent_string_top.split( "," );
-//  QString x_top_s = pieces_top.value( pieces_top.length() - 3);
-//  QString y_top_s = pieces_top.value( pieces_top.length() - 2);
-//  QString z_top_s = pieces_top.value( pieces_top.length() - 1);
-//
-//  double x_top_d = x_top_s.toDouble();
-//  double y_top_d = y_top_s.toDouble();
-//  double z_top_d = z_top_s.toDouble();
-//
-//  NQLog("AssemblyAlignWidget::run")<<  " x_a = " << x_assembly_d <<  " y_a = " << y_assembly_d << " z_a = " << z_assembly_d;
-//  NQLog("AssemblyAlignWidget::run")<<  " x_b = " << x_bottom_d <<  " y_b = " << y_bottom_d << " z_b = " << z_bottom_d;
-//  NQLog("AssemblyAlignWidget::run")<<  " x_t = " << x_top_d <<  " y_t = " << y_top_d << " z_t = " << z_top_d;
-//
-//  emit launchSandwichAssembly(x_assembly_d, y_assembly_d, z_assembly_d, x_bottom_d, y_bottom_d, z_bottom_d, x_top_d, y_top_d, z_top_d);
-//}
-// ===========================================================================
-
-AssemblyMoveWidget::AssemblyMoveWidget(const QString& label, const QString& default_entry, const bool move_relative, QWidget* parent) :
-  QWidget(parent),
-  moveRelative_(move_relative)
-{
-  layout_ = new QFormLayout;
-  this->setLayout(layout_);
-
-  button_ = new QPushButton(label, this);
-  button_->setStyleSheet(
-    "Text-align: left;"
-    "padding-left:   4px;"
-    "padding-right:  4px;"
-    "padding-top:    3px;"
-    "padding-bottom: 3px;"
-  );
-
-  lineed_ = new QLineEdit(this);
-  lineed_->setText(default_entry);
-
-  layout_->addRow(button_, lineed_);
-
-  connect(button_, SIGNAL(clicked()), this, SLOT(execute()));
-}
-
-QString AssemblyMoveWidget::get_input_string() const
-{
-  return this->lineed_->text();
-}
-
-void AssemblyMoveWidget::enable(const bool b)
-{
-  button_->setEnabled(b);
-  lineed_->setEnabled(b);
-
-  return;
-}
-
-void AssemblyMoveWidget::execute()
-{
-  QString line_entry = this->get_input_string();
-
-  // parse lineEdit text to get target coordinates
-  const QStringList entries = line_entry.remove(" ").split(",");
-
-  if((entries.length() == 4) || (moveRelative_ && (entries.length() == 3)))
-  {
-    bool valid_x_d(false);
-    bool valid_y_d(false);
-    bool valid_z_d(false);
-    bool valid_a_d(true);
-
-    const double x_d = entries.value(0).toDouble(&valid_x_d);
-    const double y_d = entries.value(1).toDouble(&valid_y_d);
-    const double z_d = entries.value(2).toDouble(&valid_z_d);
-
-    const double a_d = (entries.length() == 4) ? entries.value(3).toDouble(&valid_a_d) : 0.0;
-
-    if(!valid_x_d)
-    {
-      NQLog("AssemblyMoveWidget", NQLog::Warning) << "execute"
-         << ": invalid format for x-axis value (" << entries.value(0) << "), no action taken";
-
-      return;
-    }
-    else if(!valid_y_d)
-    {
-      NQLog("AssemblyMoveWidget", NQLog::Warning) << "execute"
-         << ": invalid format for y-axis value (" << entries.value(1) << "), no action taken";
-
-      return;
-    }
-    else if(!valid_z_d)
-    {
-      NQLog("AssemblyMoveWidget", NQLog::Warning) << "execute"
-         << ": invalid format for z-axis value (" << entries.value(2) << "), no action taken";
-
-      return;
-    }
-    else if(!valid_a_d)
-    {
-      NQLog("AssemblyMoveWidget", NQLog::Warning) << "execute"
-         << ": invalid format for a-axis value (" << entries.value(3) << "), no action taken";
-
-      return;
-    }
-    // ---
-
-    if(moveRelative_)
-    {
-      NQLog("AssemblyMoveWidget", NQLog::Message) << "execute"
-         << ": emitting signal \"moveRelative("
-         << x_d << ", " << y_d << ", " << z_d << ", " << a_d << ")\"";
-
-      this->enable(false);
-
-      emit moveRelative(x_d, y_d, z_d, a_d);
-    }
-    else
-    {
-      NQLog("AssemblyMoveWidget", NQLog::Message) << "execute"
-         << ": emitting signal \"moveAbsolute("
-         << x_d << ", " << y_d << ", " << z_d << ", " << a_d << ")\"";
-
-      this->enable(false);
-
-      emit moveAbsolute(x_d, y_d, z_d, a_d);
-    }
-  }
-  else
-  {
-    NQLog("AssemblyMoveWidget", NQLog::Warning) << "execute"
-       << ": [moveRelative=" << moveRelative_ << "] invalid input string format (" << line_entry << "), no action taken";
-
-    return;
-  }
-
-  return;
-}
-// ===========================================================================
-
-AssemblyStringWidget::AssemblyStringWidget(const QString& label, const QString& default_entry, QWidget* parent) : QWidget(parent)
-{
-  layout_ = new QFormLayout;
-  this->setLayout(layout_);
-
-  button_ = new QPushButton(label, this);
-  button_->setStyleSheet(
-    "Text-align: left;"
-    "padding-left:   4px;"
-    "padding-right:  4px;"
-    "padding-top:    3px;"
-    "padding-bottom: 3px;"
-  );
-
-  lineed_ = new QLineEdit(this);
-  lineed_->setText(default_entry);
-
-  layout_->addRow(button_, lineed_);
-
-  connect(button_, SIGNAL(clicked()), this, SLOT(execute()));
-}
-
-QString AssemblyStringWidget::get_input_string() const
-{
-  return this->lineed_->text();
-}
-
-void AssemblyStringWidget::execute()
-{
-  const QString line_entry = this->get_input_string();
-
-  NQLog("AssemblyStringWidget", NQLog::Spam) << "execute"
-     << ": emitting signal \"input_string(" << line_entry << ")\"";
-
-  emit input_string(line_entry);
-}
-// ===========================================================================
-
-AssemblyPatRecWidget::AssemblyPatRecWidget(const QString& label, QWidget* parent) :
-  QWidget(parent),
-
-  layout_(0),
-  button_(0),
-  lineed_(0),
-  label_ (0),
-
-  groupBox1_(0),
-  groupBox2_(0),
-
-  radio1_(0),
-  radio2_(0),
-  radio3_(0),
-  radio4_(0),
-  radio5_(0),
-  radio6_(0),
-
-  vbox1_(0),
-  vbox2_(0),
-
-  sw_angrough_(0),
-  sw_angscanp_(0)
-{
-  layout_ = new QFormLayout;
-  this->setLayout(layout_);
-
-  QGridLayout* layout_1 = new QGridLayout;
-  layout_->addRow(layout_1);
-
-  button_ = new QPushButton(label, this);
-  button_->setEnabled(true);
-  layout_1->addWidget(button_, 0, 0);
-
-  groupBox1_ = new QGroupBox(tr("Object"));
-  groupBox2_ = new QGroupBox(tr("Mode"));
-
-  radio1_ = new QRadioButton(tr("&Fiducial marker"), this);
-  radio2_ = new QRadioButton(tr("&Positioning pin"), this);
-  radio3_ = new QRadioButton(tr("&Sensor corner")  , this);
-  radio4_ = new QRadioButton(tr("&Spacer corner")  , this);
-
-  radio1_->setChecked(true);
-
-  vbox1_ = new QVBoxLayout;
-  vbox1_->addWidget(radio1_);
-  vbox1_->addWidget(radio2_);
-  vbox1_->addWidget(radio3_);
-  vbox1_->addWidget(radio4_);
-  vbox1_->addStretch(1);
-
-  groupBox1_->setLayout(vbox1_);
-
-  radio5_ = new QRadioButton(tr("&Demo"), this);
-  radio6_ = new QRadioButton(tr("&Lab") , this);
-
-  radio5_->setChecked(true);
-
-  vbox2_ = new QVBoxLayout;
-  vbox2_->addWidget(radio5_);
-  vbox2_->addWidget(radio6_);
-  vbox2_->addStretch(1);
-
-  groupBox2_->setLayout(vbox2_);
-
-  layout_1->addWidget(groupBox1_, 1, 0);
-  layout_1->addWidget(groupBox2_, 1, 1);
-
-  QPixmap pixmap(100, 100);
-  pixmap.fill(QColor("transparent"));
-
-  label_ = new QLabel("", this);
-  label_->setPixmap(pixmap);
-  label_->setText(" WAITING");
-  label_->setStyleSheet("QLabel { background-color : orange; color : black; }");
-
-  layout_1->addWidget(label_, 0, 1);
-
-  // PatRec: angular analysis configuration
-  QGridLayout* layout_2 = new QGridLayout;
-  layout_->addRow(layout_2);
-
-  // widget: PatRec rough angles
-  sw_angrough_ = new AssemblyStringWidget("Pre-Scan Angles (list)", "0,180", this);
-  layout_2->addWidget(sw_angrough_->button(), 0, 0);
-  layout_2->addWidget(sw_angrough_->lineed(), 0, 1);
-
-  // widget: PatRec angular-scan parameters
-  sw_angscanp_ = new AssemblyStringWidget("Scan Params (fine-range, fine-step)", "5,0.125", this);
-  layout_2->addWidget(sw_angscanp_->button(), 1, 0);
-  layout_2->addWidget(sw_angscanp_->lineed(), 1, 1);
-  // ---------------------
-
-  connect(button_, SIGNAL(clicked()), this, SLOT(execute()));
-}
-
-void AssemblyPatRecWidget::execute()
-{
-  int mode_lab(0), mode_obj(0);
-
-  if     (radio1_->isChecked()){ mode_obj = 0; }
-  else if(radio2_->isChecked()){ mode_obj = 1; }
-  else if(radio3_->isChecked()){ mode_obj = 2; }
-  else if(radio4_->isChecked()){ mode_obj = 3; }
-
-  if     (radio5_->isChecked()){ mode_lab = 0; }
-  else if(radio6_->isChecked()){ mode_lab = 1; }
-
-  NQLog("AssemblyPatRecWidget", NQLog::Spam) << "execute"
-     << ": emitting signal \"mode(" << mode_lab << ", " << mode_obj << ")\"";
-
-  emit mode(mode_lab, mode_obj);
-}
-
-void AssemblyPatRecWidget::change_label(const int state)
-{
-  NQLog("AssemblyPatRecWidget", NQLog::Spam) << "change_label(" << state << ")";
-
-  if(state == 0)
-  {
-    label_->setText(" FOUND MARKER");
-    label_->setStyleSheet("QLabel { background-color : green; color : black; }");
-  }
-  else if(state == 2)
-  {
-    label_->setText(" ERROR");
-    label_->setStyleSheet("QLabel { background-color : red; color : black; }");
-  }
-
-  return;
-}
-// ===========================================================================
-
-AssemblyVacuumWidget::AssemblyVacuumWidget(const QString& label, QWidget* parent) : QWidget(parent)
-{
-  layout_ = new QFormLayout;
-  this->setLayout(layout_);
-
-  button_ = new QPushButton(label, this);
-  layout_->addRow(button_);
-
-  QGridLayout* grid = new QGridLayout;
-
-  QRadioButton* radio_1 = new QRadioButton(tr("&Pickup")   , this);
-  QRadioButton* radio_2 = new QRadioButton(tr("&Spacers")  , this);
-  QRadioButton* radio_3 = new QRadioButton(tr("&Baseplate"), this);
-//  QRadioButton* radio_4 = new QRadioButton(tr("&Channel 4"), this);
-
-  grid->addWidget(radio_1, 1, 0);
-  grid->addWidget(radio_2, 3, 0);
-  grid->addWidget(radio_3, 5, 0);
-//  grid->addWidget(radio_4, 7, 0);
-
-  QPixmap pixmap(100, 100);
-  pixmap.fill(QColor("transparent"));
-
-  QPainter painter(&pixmap);
-  painter.setBrush(QBrush(Qt::red));
-  painter.drawEllipse(0, 0, 30, 30);
-
-  QLabel* label_1 = new QLabel("", this);
-  label_1->setPixmap(pixmap);
-  label_1->setText(" VACUUM OFF");
-  label_1->setStyleSheet("QLabel { background-color : green; color : black; }");
-
-  QLabel* label_2 = new QLabel("", this);
-  label_2->setPixmap(pixmap);
-  label_2->setText(" VACUUM OFF");
-  label_2->setStyleSheet("QLabel { background-color : green; color : black; }");
-
-  QLabel* label_3 = new QLabel("", this);
-  label_3->setPixmap(pixmap);
-  label_3->setText(" VACUUM OFF");
-  label_3->setStyleSheet("QLabel { background-color : green; color : black; }");
-
-//  QLabel* label_4 = new QLabel("", this);
-//  label_4->setPixmap(pixmap);
-//  label_4->setText(" VACUUM OFF");
-//  label_4->setStyleSheet("QLabel { background-color : green; color : black; }");
-
-  grid->addWidget(label_1, 1, 1);
-  grid->addWidget(label_2, 3, 1);
-  grid->addWidget(label_3, 5, 1);
-//  grid->addWidget(label_4, 7, 1);
-
-  layout_->addRow(grid);
-
-  valves_.clear();
-  valves_.push_back(radio_1);
-  valves_.push_back(radio_2);
-  valves_.push_back(radio_3);
-//  valves_.push_back(radio4);
-
-  labels_.clear();
-  labels_.push_back(label_1);
-  labels_.push_back(label_2);
-  labels_.push_back(label_3);
-//  labels_.push_back(label_4);
-
-  connect(button_, SIGNAL(clicked()), this, SLOT(toggleVacuum()));
-
-  NQLog("AssemblyVacuumWidget", NQLog::Debug) << "constructed";
-}
-
-void AssemblyVacuumWidget::toggleVacuum()
-{
-  NQLog("AssemblyVacuumWidget") << ": toggling vacuum voltage";
-
-  for(unsigned int i=0; i<valves_.size(); ++i)
-  {
-    if(valves_.at(i)->isChecked())
-    {
-      NQLog("AssemblyVacuumWidget") << ": emit signal to channel " << (i+1);
-
-      button_->setEnabled(false);
-
-      emit toggleVacuum(i+1);
-
-      return;
-    }
-  }
-
-  NQLog("AssemblyVacuumWidget") << ": None channel selected! Vacuum is not toggled.";
-}
-
-void AssemblyVacuumWidget::enableVacuumButton()
-{
-  button_->setEnabled(true);
-}
-
-void AssemblyVacuumWidget::disableVacuumButton()
-{
-  button_->setEnabled(false);
-}
-
-void AssemblyVacuumWidget::updateVacuumChannelState(const int channelNumber, const bool channelState)
-{
-  if(channelNumber >= int(labels_.size()))
-  {
-    NQLog("AssemblyVacuumWidget", NQLog::Warning) << "updateVacuumChannelState"
-       << "(" << channelNumber << ", " << channelState << ")"
-       << ": out-of-range input channel number (" << channelNumber << "), no action taken";
-
-    return;
-  }
-
-  emit enableVacuumButton();
-
-  if(channelState)
-  {
-    labels_.at(channelNumber)->setText(" VACUUM ON");
-    labels_.at(channelNumber)->setStyleSheet("QLabel { background-color : red; color : black; }");
-  }
-  else
-  {
-    labels_.at(channelNumber)->setText(" VACUUM OFF");
-    labels_.at(channelNumber)->setStyleSheet("QLabel { background-color : green; color : black; }");    
-  }
-}
-// ===========================================================================
-
-//!!AssemblyMountChecker::AssemblyMountChecker(QWidget *parent, std::string string,
-//!!                                           double x ,double y, double z,
-//!!                                           double a, int mode)
-//!!: QWidget(parent), local_x(x), local_y(y),local_z(z),local_a(a)
-//!!{
-//!!  QFormLayout *l = new QFormLayout(this);
-//!!  setLayout(l);
-//!!
-//!!  NQLog("AssemblyMountChecker") << ": in mode" << mode;
-//!!
-//!!  std::ostringstream strs;
-//!!  strs.clear();
-//!!  strs << x;
-//!!  strs << ",";
-//!!  strs << y;
-//!!  strs << ",";
-//!!  strs << z;
-//!!  std::string str = strs.str();
-//!!  QString qstr = QString::fromStdString(str);
-//!!  QString qname = QString::fromStdString(string);
-//!!
-//!!  this->local_x = x;
-//!!  this->local_y = y;
-//!!  this->local_z = z;
-//!!  this->local_a = a;
-//!!
-//!!  button1 = new QPushButton(qname, this);
-//!!
-//!!  lineEdit1 = new QLineEdit();
-//!!  lineEdit1->setText(qstr);
-//!!  l->addRow(button1,lineEdit1);
-//!!
-//!!  connect(button1, SIGNAL(clicked()),
-//!!          this, SLOT(checkMount()));
-//!!}
-//!!
-//!!void AssemblyMountChecker::checkMount()
-//!!{
-//!!  //parse lineEdit text to get target coordinates
-//!!  QString  parent_string = this->lineEdit1->text();
-//!!
-//!!  QStringList pieces = parent_string.split( "," );
-//!!  QString x = pieces.value( pieces.length() - 3);
-//!!  QString y = pieces.value( pieces.length() - 2);
-//!!  QString z = pieces.value( pieces.length() - 1);
-//!!  QString a = pieces.value( pieces.length() - 1);
-//!!
-//!!  double x_d = x.toDouble();
-//!!  double y_d = y.toDouble();
-//!!  double z_d = z.toDouble();
-//!!  double a_d = a.toDouble();
-//!!
-//!!  NQLog("AssemblyMountChecker") << ": going to target (parsed) "<< x_d<<" "<< y_d<<"  "<< z_d;
-//!!
-//!!  emit moveAbsolute(x_d, y_d, z_d, a_d);// this should bring you to the first corner
-//!!  emit locateCorner(2);
-//!!  emit reportCornerLocation(1);
-//!!  emit moveRelative(0.0, 10.0, 0.0, 0.0);//move to next corner
-//!!  emit locateCorner(3);
-//!!  emit reportCornerLocation(2);
-//!!  emit moveRelative(5.0, 0.0, 0.0, 0.0);//move to next corner
-//!!  emit locateCorner(4);
-//!!  emit reportCornerLocation(3);
-//!!  emit moveRelative(0.0, -10.0, 0.0, 0.0);//move to next corner
-//!!  emit locateCorner(5);
-//!!  emit reportCornerLocation(4);
-//!!}
-// ----------
-
-//!!AssemblyAligner::AssemblyAligner(QWidget *parent, std::string string,
-//!!                                 double a)
-//!!  : QWidget(parent),local_a(a)
-//!!{
-//!!  QFormLayout *l = new QFormLayout(this);
-//!!  setLayout(l);
-//!!
-//!!  std::ostringstream strs;
-//!!  strs.clear();
-//!!  strs << a;
-//!!  std::string str = strs.str();
-//!!  QString qstr = QString::fromStdString(str);
-//!!  QString qname = QString::fromStdString(string);
-//!!
-//!!  button1 = new QPushButton(qname, this);
-//!!
-//!!  lineEdit1 = new QLineEdit();
-//!!  lineEdit1->setText(qstr);
-//!!  l->addRow(button1,lineEdit1);
-//!!
-//!!  connect(button1, SIGNAL(clicked()),
-//!!          this, SLOT(setDown()));
-//!!}
-//!!
-//!!void AssemblyAligner::setDown()
-//!!{
-//!!  emit locateSetdowncorner(6);
-//!!
-//!!}
-//!!
-//!!void AssemblyAligner::align()
-//!!{
-//!!  //     emit locate(6);
-//!!
-//!!  //parse lineEdit text to get target coordinates
-//!!  QString  parent_string = this->lineEdit1->text();
-//!!
-//!!  //  QStringList pieces = parent_string.split( "," );
-//!!  //  QString x = pieces.value( pieces.length() - 3);
-//!!  //  QString y = pieces.value( pieces.length() - 2);
-//!!  //  QString z = pieces.value( pieces.length() - 1);
-//!!  //  QString a = pieces.value( pieces.length() - 1);
-//!!
-//!!  // double x_d = x.toDouble();
-//!!  // double y_d = y.toDouble();
-//!!  // double z_d = z.toDouble();
-//!!  double a_d = parent_string.toDouble();
-//!!
-//!!  NQLog("AssemblyAligner:align") << ": going to target alignment (parsed) "<< a_d<<" ";
-//!!
-//!!  emit moveRelative(0.0, 0.0, 0.0, a_d);
-//!!}
-// ----------

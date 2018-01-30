@@ -38,9 +38,11 @@ AssemblyAssembler::AssemblyAssembler(const LStepExpressMotionManager* motion_man
     return;
   }
 
-  object_deltaX_    = config->getValue<double>("AssemblyAssembler_object_deltaX");
-  object_deltaY_    = config->getValue<double>("AssemblyAssembler_object_deltaY");
-  target_angle_deg_ = config->getValue<double>("AssemblyAssembler_target_angle_deg");
+  object_deltaX_    = 0.;
+  object_deltaY_    = 0.;
+  target_angle_deg_ = 0.;
+
+  only_measure_ang_ = false;
 
   // maximum angular difference acceptable not to trigger iterative procedure for alignment
   angle_max_dontIter_ = config->getValue<double>("AssemblyAssembler_angle_max_dontIter");
@@ -62,7 +64,7 @@ void AssemblyAssembler::reset()
   posi_x2_ = 0.;
   posi_y2_ = 0.;
 
-  obj_slope_ = 0.;
+  obj_angle_deg_ = 0.;
 
   return;
 }
@@ -124,6 +126,42 @@ void AssemblyAssembler::launch_next_alignment_step()
      << ": emitting signal \"nextAlignmentStep(1, 0, 0, 0)\"";
 
   emit nextAlignmentStep(1, 0.0, 0.0, 0.0);
+}
+
+void AssemblyAssembler::start_alignment(const double obj_deltaX, const double obj_deltaY)
+{
+  object_deltaX_ = obj_deltaX;
+  object_deltaY_ = obj_deltaY;
+
+  only_measure_ang_ = true;
+
+  alignment_step = 0;
+
+  this->run_alignment(1, 0., 0., 0.);
+}
+
+void AssemblyAssembler::start_alignment(const double obj_deltaX, const double obj_deltaY, const double ang_target)
+{
+  if((-90. <= ang_target) && (ang_target <= 90.))
+  {
+    object_deltaX_ = obj_deltaX;
+    object_deltaY_ = obj_deltaY;
+
+    target_angle_deg_ = ang_target;
+
+    only_measure_ang_ = false;
+  }
+  else
+  {
+    NQLog("AssemblyAssembler", NQLog::Spam) << "start_alignment"
+       << ": invalid value for target angle (" << ang_target << " not in [-90,90]), alignment not initiated";
+
+    return;
+  }
+
+  alignment_step = 0;
+
+  this->run_alignment(1, 0., 0., 0.);
 }
 
 void AssemblyAssembler::run_alignment(int /* stage */, double x_pr, double y_pr, double angle_pr)
@@ -271,41 +309,35 @@ void AssemblyAssembler::run_alignment(int /* stage */, double x_pr, double y_pr,
         NQLog("AssemblyAssembler", NQLog::Message) << "run_alignment step [" << alignment_step << "]: position(X2) = " << posi_x2_;
         NQLog("AssemblyAssembler", NQLog::Message) << "run_alignment step [" << alignment_step << "]: position(Y2) = " << posi_y2_;
 
+        const double target_angle_deg = target_angle_deg_;
+
         if(posi_x2_ == posi_x1_)
         {
-          NQLog("AssemblyAssembler", NQLog::Critical) << "run_alignment step [" << alignment_step << "]";
-          NQLog("AssemblyAssembler", NQLog::Critical) << "run_alignment step [" << alignment_step << "]: position(X1) == position(X2), failed to define object orientation, restarting alignment";
-          NQLog("AssemblyAssembler", NQLog::Critical) << "run_alignment step [" << alignment_step << "]";
-
-          NQLog("AssemblyAssembler", NQLog::Spam) << "run_alignment step [" << alignment_step << "]"
-             << ": emitting signal \"acquireImage\"";
-
-          this->reset();
-
-          emit acquireImage(); 
+          obj_angle_deg_ = (posi_y2_ == posi_y1_) ? 0. : ((posi_y2_ > posi_y1_) ? 90. : -90.);
         }
         else
         {
-          obj_slope_ = (posi_y2_ - posi_y1_)/(posi_x2_ - posi_x1_);
+          const double obj_slope = ((posi_y2_ - posi_y1_)/(posi_x2_ - posi_x1_));
 
-          const double target_angle_deg = target_angle_deg_;
-          const double object_angle_deg = atan(obj_slope_) * (180.0/M_PI);
-
-          const double delta_angle_deg = (target_angle_deg - object_angle_deg);
-
-          NQLog("AssemblyAssembler", NQLog::Message) << "run_alignment step [" << alignment_step << "]";
-          NQLog("AssemblyAssembler", NQLog::Message) << "run_alignment step [" << alignment_step << "]: target alignment angle       [deg] = " << target_angle_deg;
-          NQLog("AssemblyAssembler", NQLog::Message) << "run_alignment step [" << alignment_step << "]: object aligned with angle    [deg] = " << object_angle_deg;
-          NQLog("AssemblyAssembler", NQLog::Message) << "run_alignment step [" << alignment_step << "]: angular distance from target [deg] = " << delta_angle_deg;
-          NQLog("AssemblyAssembler", NQLog::Message) << "run_alignment step [" << alignment_step << "]";
-
-          NQLog("AssemblyAssembler", NQLog::Spam) << "run_alignment step [" << alignment_step << "]"
-             << ": emitting signal \"acquireImage\"";
-
-          ++alignment_step;
-
-          emit acquireImage(); 
+          obj_angle_deg_ = atan(obj_slope) * (180.0/M_PI);
         }
+
+        const double object_angle_deg = obj_angle_deg_;
+
+        const double delta_angle_deg = (target_angle_deg - object_angle_deg);
+
+        NQLog("AssemblyAssembler", NQLog::Message) << "run_alignment step [" << alignment_step << "]";
+        NQLog("AssemblyAssembler", NQLog::Message) << "run_alignment step [" << alignment_step << "]: target alignment angle       [deg] = " << target_angle_deg;
+        NQLog("AssemblyAssembler", NQLog::Message) << "run_alignment step [" << alignment_step << "]: object aligned with angle    [deg] = " << object_angle_deg;
+        NQLog("AssemblyAssembler", NQLog::Message) << "run_alignment step [" << alignment_step << "]: angular distance from target [deg] = " << delta_angle_deg;
+        NQLog("AssemblyAssembler", NQLog::Message) << "run_alignment step [" << alignment_step << "]";
+
+        NQLog("AssemblyAssembler", NQLog::Spam) << "run_alignment step [" << alignment_step << "]"
+           << ": emitting signal \"acquireImage\"";
+
+        ++alignment_step;
+
+        emit acquireImage();
     }
     // Step #7: move back to 1st marker
     else if(alignment_step == 7)
@@ -363,51 +395,71 @@ void AssemblyAssembler::run_alignment(int /* stage */, double x_pr, double y_pr,
     {
         NQLog("AssemblyAssembler", NQLog::Message) << "run_alignment step [" << alignment_step << "]";
 
-        const double target_angle_deg = target_angle_deg_;
-        const double object_angle_deg = atan(obj_slope_) * (180.0/M_PI);
+        const double object_angle_deg = obj_angle_deg_;
 
-        const double delta_angle_deg = (target_angle_deg - object_angle_deg);
-
-        NQLog("AssemblyAssembler", NQLog::Message) << "run_alignment step [" << alignment_step << "]: target alignment angle       [deg] = " << target_angle_deg;
-        NQLog("AssemblyAssembler", NQLog::Message) << "run_alignment step [" << alignment_step << "]: object aligned with angle    [deg] = " << object_angle_deg;
-        NQLog("AssemblyAssembler", NQLog::Message) << "run_alignment step [" << alignment_step << "]: angular distance from target [deg] = " << delta_angle_deg;
-        NQLog("AssemblyAssembler", NQLog::Message) << "run_alignment step [" << alignment_step << "]";
-
-        if(fabs(delta_angle_deg) > angle_max_complete_)
+        if(only_measure_ang_)
         {
+          NQLog("AssemblyAssembler", NQLog::Message) << "run_alignment step [" << alignment_step << "]: mode = ONLY-MEASURE-ANGLE";
+          NQLog("AssemblyAssembler", NQLog::Message) << "run_alignment step [" << alignment_step << "]: object aligned with angle [deg] = " << object_angle_deg;
+          NQLog("AssemblyAssembler", NQLog::Message) << "run_alignment step [" << alignment_step << "]";
+
+          this->reset();
+
+          emit object_angle(object_angle_deg);
+
+          emit alignment_finished();
+        }
+        else
+        {
+          const double target_angle_deg = target_angle_deg_;
+
+          const double delta_angle_deg = (target_angle_deg - object_angle_deg);
+
+          NQLog("AssemblyAssembler", NQLog::Message) << "run_alignment step [" << alignment_step << "]: target alignment angle       [deg] = " << target_angle_deg;
+          NQLog("AssemblyAssembler", NQLog::Message) << "run_alignment step [" << alignment_step << "]: object aligned with angle    [deg] = " << object_angle_deg;
+          NQLog("AssemblyAssembler", NQLog::Message) << "run_alignment step [" << alignment_step << "]: angular distance from target [deg] = " << delta_angle_deg;
+          NQLog("AssemblyAssembler", NQLog::Message) << "run_alignment step [" << alignment_step << "]";
+
+          if(fabs(delta_angle_deg) > angle_max_complete_)
+          {
             NQLog("AssemblyAssembler", NQLog::Message) << "run_alignment step [" << alignment_step << "]: angle(object, target) > " << angle_max_complete_ << ", will apply a rotation";
 
             if(fabs(delta_angle_deg) <= angle_max_dontIter_)
             {
-                NQLog("AssemblyAssembler", NQLog::Message) << "run_alignment step [" << alignment_step << "]";
-                NQLog("AssemblyAssembler", NQLog::Message) << "run_alignment step [" << alignment_step << "]: angle(object, target) <= " << angle_max_dontIter_ << ", moving to target angle with 1 rotation";
-                NQLog("AssemblyAssembler", NQLog::Message) << "run_alignment step [" << alignment_step << "]";
+              NQLog("AssemblyAssembler", NQLog::Message) << "run_alignment step [" << alignment_step << "]";
+              NQLog("AssemblyAssembler", NQLog::Message) << "run_alignment step [" << alignment_step << "]: angle(object, target) <= " << angle_max_dontIter_ << ", moving to target angle with 1 rotation";
+              NQLog("AssemblyAssembler", NQLog::Message) << "run_alignment step [" << alignment_step << "]";
 
-                this->reset();
+              this->reset();
 
-                this->moveRelative(0.0, 0.0, 0.0, delta_angle_deg);
+              this->moveRelative(0.0, 0.0, 0.0, delta_angle_deg);
             }
             else
             {
-                NQLog("AssemblyAssembler", NQLog::Message) << "run_alignment step [" << alignment_step << "]";
-                NQLog("AssemblyAssembler", NQLog::Message) << "run_alignment step [" << alignment_step << "]: angle(object, target) > " << angle_max_dontIter_ << " deg, large rotation required";
-                NQLog("AssemblyAssembler", NQLog::Message) << "run_alignment step [" << alignment_step << "]: ===> iterative procedure (will now rotate by " << angle_max_dontIter_ << " deg)";
-                NQLog("AssemblyAssembler", NQLog::Message) << "run_alignment step [" << alignment_step << "]";
+              NQLog("AssemblyAssembler", NQLog::Message) << "run_alignment step [" << alignment_step << "]";
+              NQLog("AssemblyAssembler", NQLog::Message) << "run_alignment step [" << alignment_step << "]: angle(object, target) > " << angle_max_dontIter_ << " deg, large rotation required";
+              NQLog("AssemblyAssembler", NQLog::Message) << "run_alignment step [" << alignment_step << "]: ===> iterative procedure (will now rotate by " << angle_max_dontIter_ << " deg)";
+              NQLog("AssemblyAssembler", NQLog::Message) << "run_alignment step [" << alignment_step << "]";
 
-                this->reset();
+              this->reset();
 
-                const double rot_deg = (delta_angle_deg <= 0) ? (-1.0 * angle_max_dontIter_) : (+1.0 * angle_max_dontIter_);
+              const double rot_deg = (delta_angle_deg <= 0) ? (-1.0 * angle_max_dontIter_) : (+1.0 * angle_max_dontIter_);
 
-                this->moveRelative(0.0, 0.0, 0.0, rot_deg);
+              this->moveRelative(0.0, 0.0, 0.0, rot_deg);
             }
-        }
-        else
-        {
+          }
+          else
+          {
             NQLog("AssemblyAssembler", NQLog::Message) << "run_alignment step [" << alignment_step << "]";
             NQLog("AssemblyAssembler", NQLog::Message) << "run_alignment step [" << alignment_step << "] ===> In Position, Alignment completed successfully";
             NQLog("AssemblyAssembler", NQLog::Message) << "run_alignment step [" << alignment_step << "]";
 
             this->reset();
+
+            emit object_angle(object_angle_deg);
+
+            emit alignment_finished();
+          }
         }
     }
 
