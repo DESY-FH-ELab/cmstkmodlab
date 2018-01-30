@@ -128,15 +128,17 @@ void AssemblyAssembler::launch_next_alignment_step()
 
 void AssemblyAssembler::run_alignment(int /* stage */, double x_pr, double y_pr, double angle_pr)
 {
-    // Rought manual alignment with ref marker on platform
-    //  1. Go to 'start' position (manually?)
-    //  2. Apply rough angular correction:
-    //     a. Run PatRec and detect X1,Y1,Angle
-    //     b. put marker in centre of fied of view (need to accurate conversion of pixels to mm )
-    //     c. iterate:
-    //        - rotate platform to allign (some small fraction of required rotation)
-    //        - put marker in centre of fied of view
-    //  3. Repeat until target alignment reached
+  //
+  // Alignment of 2-marker sensor:
+  //
+  //  * routine assumes the initial position corresponds to the position of the 1st marker
+  //  * for each of the 2 markers:
+  //     a. PatRec: run PatRec and detect (X1,Y1)
+  //     b. re-centering: move camera to PatRec result (put marker in centre of fied of view)
+  //  * measure angle between the 2 markers
+  //  * align to targer orientation (input parameter) by rotating the platform
+  //  * iterative procedure to reach target orientation with small-enough rotations
+  //
 
     const double mm_per_pixel_x = 0.0012;
     const double mm_per_pixel_y = 0.0012;
@@ -147,6 +149,7 @@ void AssemblyAssembler::run_alignment(int /* stage */, double x_pr, double y_pr,
 
     const double patrec_angle = angle_pr;
 
+    // Step #0: PatRec on first marker
     if(alignment_step == 0)
     {
         NQLog("AssemblyAssembler", NQLog::Message) << "run_alignment step [" << alignment_step << "]";
@@ -158,14 +161,7 @@ void AssemblyAssembler::run_alignment(int /* stage */, double x_pr, double y_pr,
 
         emit acquireImage();
     }
-
-    //3. Apply fine angular correction:
-    // a. Go to far-away corner, Run PatRec and detect X2,Y2
-    // b. Calculate residual angular mis-alignment from (Y2-Y1)/(X2-X1)
-    // c. iterate:
-    //    - rotate platform to allign (some small fraction of required rotation)
-    //    - put marker in centre of fied of view
-    //    repeat until target alignment reached   
+    // Step #1: center image, move camera to (X,Y) result from PatRec
     else if(alignment_step == 1)
     {
         NQLog("AssemblyAssembler", NQLog::Message) << "run_alignment step [" << alignment_step << "]"
@@ -181,6 +177,7 @@ void AssemblyAssembler::run_alignment(int /* stage */, double x_pr, double y_pr,
           this->moveRelative(patrec_dX, patrec_dY, 0.0, 0.0);
         }
     }
+    // Step #2: re-run PatRec on 1st marker after centering
     else if(alignment_step == 2)
     {
         NQLog("AssemblyAssembler", NQLog::Message) << "run_alignment step [" << alignment_step << "]"
@@ -200,6 +197,7 @@ void AssemblyAssembler::run_alignment(int /* stage */, double x_pr, double y_pr,
 
         emit acquireImage();
     } 
+    // Step #3: move to 2nd marker
     else if(alignment_step == 3)
     {
         NQLog("AssemblyAssembler", NQLog::Message) << "run_alignment step [" << alignment_step << "]"
@@ -228,6 +226,7 @@ void AssemblyAssembler::run_alignment(int /* stage */, double x_pr, double y_pr,
 
         this->moveRelative(rel_dx, rel_dy, rel_dz, 0.0);
     }
+    // Step #4: run PatRec on 2nd marker
     else if(alignment_step == 4)
     {
         NQLog("AssemblyAssembler", NQLog::Message) << "run_alignment step [" << alignment_step << "]"
@@ -240,6 +239,7 @@ void AssemblyAssembler::run_alignment(int /* stage */, double x_pr, double y_pr,
 
         emit acquireImage();
     }
+    // Step #5: center image, move camera to (X,Y) result from PatRec
     else if(alignment_step == 5)
     {
         NQLog("AssemblyAssembler", NQLog::Message) << "run_alignment step [" << alignment_step << "]"
@@ -255,6 +255,7 @@ void AssemblyAssembler::run_alignment(int /* stage */, double x_pr, double y_pr,
           this->moveRelative(patrec_dX, patrec_dY, 0.0, 0.0);
         }
     }
+    // Step #6: re-run PatRec on 2nd marker after centering
     else if(alignment_step == 6)
     {
         NQLog("AssemblyAssembler", NQLog::Message) << "run_alignment step [" << alignment_step << "]"
@@ -306,6 +307,7 @@ void AssemblyAssembler::run_alignment(int /* stage */, double x_pr, double y_pr,
           emit acquireImage(); 
         }
     }
+    // Step #7: move back to 1st marker
     else if(alignment_step == 7)
     {
         NQLog("AssemblyAssembler", NQLog::Message) << "run_alignment step [" << alignment_step << "]"
@@ -327,6 +329,7 @@ void AssemblyAssembler::run_alignment(int /* stage */, double x_pr, double y_pr,
 
         this->moveRelative(rel_dx, rel_dy, rel_dz, 0.0);
     }
+    // Step #8: re-detecting 1st marker
     else if(alignment_step == 8)
     {
         NQLog("AssemblyAssembler", NQLog::Message) << "run_alignment step [" << alignment_step << "]"
@@ -339,6 +342,7 @@ void AssemblyAssembler::run_alignment(int /* stage */, double x_pr, double y_pr,
 
         emit acquireImage();
     }
+    // Step #9: centering camera on PatRec result for 1st marker
     else if(alignment_step == 9)
     {
         NQLog("AssemblyAssembler", NQLog::Message) << "run_alignment step [" << alignment_step << "]"
@@ -354,6 +358,7 @@ void AssemblyAssembler::run_alignment(int /* stage */, double x_pr, double y_pr,
           this->moveRelative(patrec_dX, patrec_dY, 0.0, 0.0);
         }
     }
+    // Step #10: check alignment
     else if(alignment_step == 10)
     {
         NQLog("AssemblyAssembler", NQLog::Message) << "run_alignment step [" << alignment_step << "]";
