@@ -50,19 +50,15 @@ class AssemblyAutoFocusView : public QWidget
   QScrollArea* scrollArea_2_;
 
   QPushButton* button_1_;
-  QPushButton* button_2_;
 
   QLineEdit * lineed_1_;
   QLineEdit * lineed_2_;
-
-  QCheckBox* checkbox_;
 
  public slots:
 
   void configure_scan();
   void read_graph(const QString&);
   void updateText(double);
-  void go_to_focal_point();
 
  signals:
 

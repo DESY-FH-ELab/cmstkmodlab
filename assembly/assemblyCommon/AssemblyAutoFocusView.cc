@@ -32,12 +32,8 @@ AssemblyAutoFocusView::AssemblyAutoFocusView(QWidget* parent) :
   scrollArea_2_(0),
 
   button_1_(0),
-  button_2_(0),
-
   lineed_1_(0),
-  lineed_2_(0),
-
-  checkbox_(0)
+  lineed_2_(0)
 {
   QGridLayout* l = new QGridLayout;
   this->setLayout(l);
@@ -91,41 +87,26 @@ AssemblyAutoFocusView::AssemblyAutoFocusView(QWidget* parent) :
 
   g0->addWidget(scrollArea_2_, 0, 1);
 
-  // left-hand side widgets
-  QGridLayout*  g1 = new QGridLayout;
-  g0->addLayout(g1, 1, 0);
-
-  button_1_ = new QPushButton("Update Auto-Focus Parameters", this);
-  g1->addWidget(button_1_, 1, 0);
-
-  QFormLayout*  fl1 = new QFormLayout;
-  g1->addLayout(fl1, 2, 0);
+  // widgets
+  QGridLayout* g1 = new QGridLayout;
+  l->addLayout(g1, 1, 0);
 
   QLabel* lt1 = new QLabel("Max Delta-Z [mm], # Steps", this);
   lineed_1_ = new QLineEdit("", this);
-  fl1->addRow(lt1, lineed_1_);
+  button_1_ = new QPushButton("Update Auto-Focus Parameters", this);
+
+  g1->addWidget(lt1      , 0, 0);
+  g1->addWidget(lineed_1_, 0, 1);
+  g1->addWidget(button_1_, 0, 2);
 
   QLabel* lt2 = new QLabel("Z (best focus) [mm]", this);
   lineed_2_ = new QLineEdit("", this);
-  fl1->addRow(lt2, lineed_2_);
+  lineed_2_->setReadOnly(true);
 
-  // -----------------------
+  g1->addWidget(lt2      , 1, 0);
+  g1->addWidget(lineed_2_, 1, 1);
 
-  // right-hand side widgets
-  QFormLayout*  f2 = new QFormLayout;
-  g0->addLayout(f2, 1, 1);
-
-  button_2_ = new QPushButton("Go to focal point", this);
-  f2->addRow(button_2_);
-
-  checkbox_ = new QCheckBox("Track marker", this);
-  f2->addRow(checkbox_);
-
-  // -----------------------
-
-  // connection(s)
   connect(button_1_, SIGNAL(clicked()), this, SLOT(configure_scan()));
-  connect(button_2_, SIGNAL(clicked()), this, SLOT(go_to_focal_point()));
   // -----------------------
 
   NQLog("AssemblyAutoFocusView", NQLog::Debug) << "constructed";
@@ -222,14 +203,6 @@ void AssemblyAutoFocusView::updateText(const double z)
      << ": displayed value of best z-position (focal point)";
 
   return;
-}
-
-void AssemblyAutoFocusView::go_to_focal_point()
-{
-  NQLog("AssemblyAutoFocusView", NQLog::Warning) << "go_to_focal_point"
-     << ": to be implemented, no action taken";
-
-  return;    
 }
 
 void AssemblyAutoFocusView::connectImageProducer(const QObject* sender, const char* signal)
