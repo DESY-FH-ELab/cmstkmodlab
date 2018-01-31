@@ -44,6 +44,7 @@ class AssemblyAssembler : public QObject
 
     double angle_max_dontIter_;
     double angle_max_complete_;
+    double angle_PatRec_offset_;
 
     int alignment_step;
 

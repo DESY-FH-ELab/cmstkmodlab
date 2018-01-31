@@ -50,6 +50,10 @@ AssemblyAssembler::AssemblyAssembler(const LStepExpressMotionManager* motion_man
   // maximum angular difference acceptable to declare alignment procedure finished
   angle_max_complete_ = config->getValue<double>("AssemblyAssembler_angle_max_complete");
 
+  // offset angle to derive (X,Y) from angle determined by PatRec
+  // (this offset derives from the orientation of the sensor in the template image)
+  angle_PatRec_offset_ = config->getValue<double>("AssemblyAssembler_angle_PatRec_offset");
+
   this->reset();
 
   NQLog("AssemblyAssembler", NQLog::Debug) << "constructed";
@@ -185,7 +189,7 @@ void AssemblyAssembler::run_alignment(int /* stage */, double x_pr, double y_pr,
     const double patrec_dX = ( y_pr - (1920.0/2.0) ) * mm_per_pixel_x;
     const double patrec_dY = ( x_pr - (2560.0/2.0) ) * mm_per_pixel_y;
 
-    const double patrec_angle = angle_pr;
+    const double patrec_angle = (angle_pr + angle_PatRec_offset_);
 
     // Step #0: PatRec on first marker
     if(alignment_step == 0)
@@ -205,14 +209,23 @@ void AssemblyAssembler::run_alignment(int /* stage */, double x_pr, double y_pr,
         NQLog("AssemblyAssembler", NQLog::Message) << "run_alignment step [" << alignment_step << "]"
            << ": centering camera on PatRec best-match position in first corner";
 
-        ++alignment_step;
-
         if((fabs(patrec_dX) > 0.005) || (fabs(patrec_dY)  > 0.005))
         {
-          NQLog("AssemblyAssembler", NQLog::Message) << "run_alignment step [" << (alignment_step-1) << "]"
+          NQLog("AssemblyAssembler", NQLog::Message) << "run_alignment step [" << alignment_step << "]"
              << ": moving to PatRec best-match position in first corner";
 
+          ++alignment_step;
+
           this->moveRelative(patrec_dX, patrec_dY, 0.0, 0.0);
+        }
+        else
+        {
+          NQLog("AssemblyAssembler", NQLog::Message) << "run_alignment step [" << alignment_step << "]"
+             << ": motion-stage already in position, emitting signal \"motion_finished\"";
+
+          ++alignment_step;
+
+          emit motion_finished();
         }
     }
     // Step #2: re-run PatRec on 1st marker after centering
@@ -283,14 +296,23 @@ void AssemblyAssembler::run_alignment(int /* stage */, double x_pr, double y_pr,
         NQLog("AssemblyAssembler", NQLog::Message) << "run_alignment step [" << alignment_step << "]"
            << ": centering camera on PatRec best-match position in second corner";
 
-        ++alignment_step;
-
         if((fabs(patrec_dX) > 0.005) || (fabs(patrec_dY) > 0.005))
         {
-          NQLog("AssemblyAssembler", NQLog::Message) << "run_alignment step [" << (alignment_step-1) << "]"
+          NQLog("AssemblyAssembler", NQLog::Message) << "run_alignment step [" << alignment_step << "]"
              << ": moving to PatRec best-match position in second corner";
 
+          ++alignment_step;
+
           this->moveRelative(patrec_dX, patrec_dY, 0.0, 0.0);
+        }
+        else
+        {
+          NQLog("AssemblyAssembler", NQLog::Message) << "run_alignment step [" << alignment_step << "]"
+             << ": motion-stage already in position, emitting signal \"motion_finished\"";
+
+          ++alignment_step;
+
+          emit motion_finished();
         }
     }
     // Step #6: re-run PatRec on 2nd marker after centering
@@ -380,14 +402,23 @@ void AssemblyAssembler::run_alignment(int /* stage */, double x_pr, double y_pr,
         NQLog("AssemblyAssembler", NQLog::Message) << "run_alignment step [" << alignment_step << "]"
            << ": centering camera on PatRec best-match position in first corner (for the 2nd time)";
 
-        ++alignment_step;
-
         if((fabs(patrec_dX) > 0.005) || (fabs(patrec_dY) > 0.005))
         {
-          NQLog("AssemblyAssembler", NQLog::Message) << "run_alignment step [" << (alignment_step-1) << "]"
+          NQLog("AssemblyAssembler", NQLog::Message) << "run_alignment step [" << alignment_step << "]"
              << ": moving to PatRec best-match position in first corner (for the 2nd time)";
 
+          ++alignment_step;
+
           this->moveRelative(patrec_dX, patrec_dY, 0.0, 0.0);
+        }
+        else
+        {
+          NQLog("AssemblyAssembler", NQLog::Message) << "run_alignment step [" << alignment_step << "]"
+             << ": motion-stage already in position, emitting signal \"motion_finished\"";
+
+          ++alignment_step;
+
+          emit motion_finished();
         }
     }
     // Step #10: check alignment
