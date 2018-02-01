@@ -32,6 +32,8 @@
 #include <QApplication>
 #include <QImageReader>
 #include <QPainter>
+#include <QScriptEngine>
+#include <qnumeric.h>
 
 #include <TGraph.h>
 #include <TCanvas.h>
@@ -920,9 +922,10 @@ void AssemblyAlignmWidget::execute(const bool meas_only_mode)
     // Target Angle
     const QString ang_target_qstr = this->ang_target_lineed_->text();
 
-    bool valid_ang_target(false);
+    QScriptEngine qscr_engine;
+    const double ang_target_val = qscr_engine.evaluate(ang_target_qstr).toNumber();
 
-    const double ang_target_val = ang_target_qstr.toDouble(&valid_ang_target);
+    const bool valid_ang_target = qIsFinite(ang_target_val);
 
     if(!valid_ang_target)
     {
