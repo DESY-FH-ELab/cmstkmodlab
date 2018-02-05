@@ -194,7 +194,18 @@ cv::Mat AssemblyObjectFinderPatRec::get_binary_image(const cv::Mat& img, const i
 
   // binary image (thresholding)
   cv::Mat img_bin(img_gs.size(), img_gs.type());
-  cv::threshold(img_gs, img_bin, threshold, 255, cv::THRESH_BINARY);
+
+  if(threshold >= 0)
+  {
+    cv::threshold(img_gs, img_bin, threshold, 255, cv::THRESH_BINARY);
+  }
+  else
+  {
+    NQLog("AssemblyObjectFinderPatRec", NQLog::Warning) << "get_binary_image"
+       << ": negative threshold value (" << threshold << "), thresholding not applied to input image";
+
+    img_bin = img_gs.clone();
+  }
 
   return img_bin;
 }
@@ -524,9 +535,15 @@ void AssemblyObjectFinderPatRec::template_matching(const cv::Mat& img_master, co
 
   cv::threshold(img_templa_gs, img_templa_bin, threshold_templa, 255, cv::THRESH_BINARY);
 
+  const std::string filepath_img_master     = output_dir+"/image_master.png";
   const std::string filepath_img_master_bin = output_dir+"/image_master_binary.png";
   const std::string filepath_img_templa     = output_dir+"/image_template.png";
   const std::string filepath_img_templa_bin = output_dir+"/image_template_binary.png";
+
+  cv::imwrite(filepath_img_master, img_master);
+
+  NQLog("AssemblyObjectFinderPatRec", NQLog::Spam) << "template_matching"
+     << ": saved master image to " << filepath_img_master;
 
   cv::imwrite(filepath_img_master_bin, img_master_bin);
 
