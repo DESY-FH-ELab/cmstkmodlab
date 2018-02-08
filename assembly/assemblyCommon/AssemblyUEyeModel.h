@@ -29,7 +29,7 @@ class AssemblyUEyeModel : public AssemblyVUEyeModel
 
   public:
 
-    explicit AssemblyUEyeModel(int updateInterval=60, QObject* parent=0);
+    explicit AssemblyUEyeModel(int updateInterval=60, QObject* parent=nullptr);
     ~AssemblyUEyeModel();
 
   public slots:

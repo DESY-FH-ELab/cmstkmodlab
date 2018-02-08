@@ -19,7 +19,7 @@ AssemblyUEyeCameraThread::AssemblyUEyeCameraThread(AssemblyUEyeModel_t* model, Q
   QThread(parent),
   model_(model)
 {
-  if(model_ == NULL)
+  if(model_ == nullptr)
   {
     NQLog("AssemblyUEyeCameraThread", NQLog::Fatal) << "initialization error"
        << ": null pointer to AssemblyUEyeModel_t object, exiting constructor";

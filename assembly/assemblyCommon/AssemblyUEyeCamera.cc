@@ -69,7 +69,7 @@ AssemblyUEyeCamera::AssemblyUEyeCamera(QObject *parent) : AssemblyVUEyeCamera(pa
     bufferProps_.bitspp = 8;
     bufferProps_.colorformat = IS_CM_MONO8;
     //bufferProps_.imgformat = QImage::Format_Invalid;
-    //bufferProps_.pRgbTable = NULL;
+    //bufferProps_.pRgbTable = nullptr;
     //bufferProps_.tableentries = 0;
 
     //for (int i = 0; i < 256; i++)
@@ -480,7 +480,7 @@ void AssemblyUEyeCamera::eventHappend()
     NQLog("AssemblyUEyeCamera", NQLog::Debug) << "eventHappend: new frame available";
 
     INT dummy = 0;
-    char *pLast = NULL, *pMem = NULL;
+    char *pLast = nullptr, *pMem = nullptr;
 
     is_GetActSeqBuf(cameraHandle_, &dummy, &pMem, &pLast);
     lastBuffer_ = pLast;
@@ -708,7 +708,7 @@ void AssemblyUEyeCamera::setExposureTime(double exposureTime)
 
 bool AssemblyUEyeCamera::allocImages()
 {
-    lastBuffer_ = NULL;
+    lastBuffer_ = nullptr;
 
     int nWidth = 0;
     int nHeight = 0;
@@ -725,7 +725,7 @@ bool AssemblyUEyeCamera::allocImages()
 
         if (images_[i].pBuf) {
             is_FreeImageMem (cameraHandle_, images_[i].pBuf, images_[i].nImageID);
-            images_[i].pBuf = NULL;
+            images_[i].pBuf = nullptr;
             images_[i].nImageID = 0;
         }
 
@@ -755,13 +755,13 @@ bool AssemblyUEyeCamera::allocImages()
 
 bool AssemblyUEyeCamera::freeImages()
 {
-    lastBuffer_ = NULL;
+    lastBuffer_ = nullptr;
     for (unsigned int i = 0; i < sizeof(images_) / sizeof(images_[0]); i++)
     {
         if (images_[i].pBuf)
         {
             is_FreeImageMem (cameraHandle_, images_[i].pBuf, images_[i].nImageID);
-            images_[i].pBuf = NULL;
+            images_[i].pBuf = nullptr;
             images_[i].nImageID = 0;
         }
     }

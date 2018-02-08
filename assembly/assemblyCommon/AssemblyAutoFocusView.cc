@@ -10,7 +10,7 @@
 //                                                                             //
 /////////////////////////////////////////////////////////////////////////////////
 
-#include <AssemblyAutoFocus.h>
+#include <AssemblyAutoFocusView.h>
 #include <nqlogger.h>
 #include <Util.h>
 
@@ -22,7 +22,7 @@
 #include <QString>
 #include <QStringList>
 
-AssemblyAutoFocus::AssemblyAutoFocus(QWidget* parent) :
+AssemblyAutoFocusView::AssemblyAutoFocusView(QWidget* parent) :
   QWidget(parent),
 
   imageView_1_(0),
@@ -32,23 +32,19 @@ AssemblyAutoFocus::AssemblyAutoFocus(QWidget* parent) :
   scrollArea_2_(0),
 
   button_1_(0),
-  button_2_(0),
-
   lineed_1_(0),
-  lineed_2_(0),
-
-  checkbox_(0)
+  lineed_2_(0)
 {
-  QGridLayout* l = new QGridLayout(this);
+  QGridLayout* l = new QGridLayout;
   this->setLayout(l);
 
-  QGridLayout* g0 = new QGridLayout();
+  QGridLayout* g0 = new QGridLayout;
   l->addLayout(g0, 0, 0);
 
   QPalette palette;
   palette.setColor(QPalette::Background, QColor(220, 220, 220));
 
-  imageView_1_ = new AssemblyUEyeView();
+  imageView_1_ = new AssemblyUEyeView(this);
   imageView_1_->setMinimumSize(200, 200);
   imageView_1_->setPalette(palette);
   imageView_1_->setBackgroundRole(QPalette::Background);
@@ -68,7 +64,7 @@ AssemblyAutoFocus::AssemblyAutoFocus(QWidget* parent) :
 
   g0->addWidget(scrollArea_1_, 0, 0);
 
-  imageView_2_ = new AssemblyUEyeView();
+  imageView_2_ = new AssemblyUEyeView(this);
   imageView_2_->setMinimumSize(200, 200);
   imageView_2_->setPalette(palette);
   imageView_2_->setBackgroundRole(QPalette::Background);
@@ -91,51 +87,36 @@ AssemblyAutoFocus::AssemblyAutoFocus(QWidget* parent) :
 
   g0->addWidget(scrollArea_2_, 0, 1);
 
-  // left-hand side widgets
-  QGridLayout*  g1 = new QGridLayout();
-  g0->addLayout(g1, 1, 0);
+  // widgets
+  QGridLayout* g1 = new QGridLayout;
+  l->addLayout(g1, 1, 0);
 
-  button_1_ = new QPushButton("Update Auto-Focus Parameters");
-  g1->addWidget(button_1_, 1, 0);
+  QLabel* lt1 = new QLabel("Max Delta-Z [mm], # Steps", this);
+  lineed_1_ = new QLineEdit("", this);
+  button_1_ = new QPushButton("Update Auto-Focus Parameters", this);
 
-  QFormLayout*  fl1 = new QFormLayout();
-  g1->addLayout(fl1, 2, 0);
+  g1->addWidget(lt1      , 0, 0);
+  g1->addWidget(lineed_1_, 0, 1);
+  g1->addWidget(button_1_, 0, 2);
 
-  QLabel* lt1 = new QLabel("[z-range (mm), number of steps]");
-  lineed_1_ = new QLineEdit("");
-  fl1->addRow(lt1, lineed_1_);
+  QLabel* lt2 = new QLabel("Z (best focus) [mm]", this);
+  lineed_2_ = new QLineEdit("", this);
+  lineed_2_->setReadOnly(true);
 
-  QLabel* lt2 = new QLabel("Best-Focus z-axis value");
-  lineed_2_ = new QLineEdit("");
-  fl1->addRow(lt2, lineed_2_);
+  g1->addWidget(lt2      , 1, 0);
+  g1->addWidget(lineed_2_, 1, 1);
 
-  // -----------------------
-
-  // right-hand side widgets
-  QFormLayout*  f2 = new QFormLayout();
-  g0->addLayout(f2, 1, 1);
-
-  button_2_ = new QPushButton("Go to focal point");
-  f2->addRow(button_2_);
-
-  checkbox_ = new QCheckBox("Track marker");
-  f2->addRow(checkbox_);
-
-  // -----------------------
-
-  // connection(s)
   connect(button_1_, SIGNAL(clicked()), this, SLOT(configure_scan()));
-  connect(button_2_, SIGNAL(clicked()), this, SLOT(go_to_focal_point()));
   // -----------------------
 
-  NQLog("AssemblyAutoFocus", NQLog::Debug) << "constructed";
+  NQLog("AssemblyAutoFocusView", NQLog::Debug) << "constructed";
 }
 
-AssemblyAutoFocus::~AssemblyAutoFocus()
+AssemblyAutoFocusView::~AssemblyAutoFocusView()
 {
 }
 
-void AssemblyAutoFocus::update_scan_config(const double zrange, const int points)
+void AssemblyAutoFocusView::update_scan_config(const double zrange, const int points)
 {
   const std::string str = std::to_string(zrange)+","+std::to_string(points);
 
@@ -147,7 +128,7 @@ void AssemblyAutoFocus::update_scan_config(const double zrange, const int points
   return;
 }
 
-void AssemblyAutoFocus::configure_scan()
+void AssemblyAutoFocusView::configure_scan()
 {
   // parse lineEdit text to get target coordinates
   const QString parent_string = lineed_1_->text();
@@ -159,84 +140,92 @@ void AssemblyAutoFocus::configure_scan()
     const QString x = pieces.value(0);
     const QString y = pieces.value(1);
 
-    const double x_d = x.toDouble();
-    const double y_d = y.toInt();
+    bool valid_x_d(false);
+    bool valid_y_d(false);
 
-    NQLog("AssemblyAutoFocus", NQLog::Debug) << "configure_scan"
+    const double x_d = x.toDouble(&valid_x_d);
+    const double y_d = y.toInt   (&valid_y_d);
+
+    if(!valid_x_d)
+    {
+      NQLog("AssemblyAutoFocusView", NQLog::Warning) << "configure_scan"
+         << ": invalid format for scan-config parameter #1 (" << x << "), no action taken";
+
+      return;
+    }
+    else if(!valid_y_d)
+    {
+      NQLog("AssemblyAutoFocusView", NQLog::Warning) << "configure_scan"
+         << ": invalid format for scan-config parameter #2 (" << y << "), no action taken";
+
+      return;
+    }
+
+    NQLog("AssemblyAutoFocusView", NQLog::Spam) << "configure_scan"
        << ": emitting signal \"scan_config(" << x_d << ", " << y_d << "\")";
 
     emit scan_config(x_d, y_d);
   }
   else
   {
-    NQLog("AssemblyAutoFocus", NQLog::Warning) << "configure_scan"
+    NQLog("AssemblyAutoFocusView", NQLog::Warning) << "configure_scan"
        << ": invalid input string format, no action taken";
 
     return;
   }
 }
 
-void AssemblyAutoFocus::read_graph(const QString& img_path)
+void AssemblyAutoFocusView::read_graph(const QString& img_path)
 {
   if(Util::IsFile(img_path))
   {
     const cv::Mat img = cv::imread(img_path.toStdString(), CV_LOAD_IMAGE_COLOR);
 
-    NQLog("AssemblyAutoFocus", NQLog::Debug) << "read_graph"
+    NQLog("AssemblyAutoFocusView", NQLog::Spam) << "read_graph"
        << ": emitting signal \"graph_found\"";
 
     emit graph_found(img);
   }
   else
   {
-    NQLog("AssemblyAutoFocus", NQLog::Warning) << "read_graph"
+    NQLog("AssemblyAutoFocusView", NQLog::Warning) << "read_graph"
        << ": invalid path to input file, no action taken (file=" << img_path << ")";
 
     return;
   }
 }
 
-void AssemblyAutoFocus::updateText(const double z)
+void AssemblyAutoFocusView::updateText(const double z)
 {
-  const QString qstr = "Absolute focal point (measured) = "+QString::fromStdString(std::to_string(z));
+  lineed_2_->setText(QString::fromStdString(std::to_string(z)));
 
-  lineed_2_->setText(qstr);
-
-  NQLog("AssemblyAutoFocus", NQLog::Debug) << "updateText"
-     << ": updated value of absolute focal point";
+  NQLog("AssemblyAutoFocusView", NQLog::Spam) << "updateText"
+     << ": displayed value of best z-position (focal point)";
 
   return;
 }
 
-void AssemblyAutoFocus::go_to_focal_point()
+void AssemblyAutoFocusView::connectImageProducer(const QObject* sender, const char* signal)
 {
-  NQLog("AssemblyAutoFocus", NQLog::Warning) << "go_to_focal_point"
-     << ": to be implemented, no action taken";
-
-  return;    
-}
-
-void AssemblyAutoFocus::connectImageProducer(const QObject* sender, const char* signal)
-{
-  NQLog("AssemblyAutoFocus", NQLog::Debug) << "connectImageProducer";
+  NQLog("AssemblyAutoFocusView", NQLog::Debug) << "connectImageProducer";
 
   imageView_1_->connectImageProducer(sender, signal);
 
   return;
 }
 
-void AssemblyAutoFocus::disconnectImageProducer(const QObject* sender, const char* signal)
+void AssemblyAutoFocusView::disconnectImageProducer(const QObject* sender, const char* signal)
 {
-  NQLog("AssemblyAutoFocus", NQLog::Debug) << "disconnectImageProducer";
+  NQLog("AssemblyAutoFocusView", NQLog::Debug) << "disconnectImageProducer";
 
   imageView_1_->disconnectImageProducer(sender, signal);
 
   return;
 }
 
-void AssemblyAutoFocus::keyReleaseEvent(QKeyEvent* event)
+void AssemblyAutoFocusView::keyReleaseEvent(QKeyEvent* event)
 {
-  NQLog("AssemblyAutoFocus", NQLog::Debug) << "keyReleaseEvent";
+  NQLog("AssemblyAutoFocusView", NQLog::Debug) << "keyReleaseEvent";
 
   if(!(event->modifiers() & Qt::ShiftModifier))
   {

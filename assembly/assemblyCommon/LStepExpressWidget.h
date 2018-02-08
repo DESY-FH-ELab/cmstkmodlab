@@ -32,7 +32,7 @@ class LStepExpressWidget : public QWidget
 
  public:
 
-  explicit LStepExpressWidget(LStepExpressModel* model, QWidget* parent=0);
+  explicit LStepExpressWidget(LStepExpressModel* model, QWidget* parent=nullptr);
   virtual ~LStepExpressWidget();
 
  protected:
@@ -69,7 +69,7 @@ class LStepExpressAxisWidget : public QWidget
 
  public:
 
-  explicit LStepExpressAxisWidget(LStepExpressModel* model, unsigned int axis, QWidget* parent=0);
+  explicit LStepExpressAxisWidget(LStepExpressModel* model, unsigned int axis, QWidget* parent=nullptr);
   virtual ~LStepExpressAxisWidget();
 
  protected:

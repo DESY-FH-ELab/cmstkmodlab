@@ -17,7 +17,7 @@ LStepExpressMotionThread::LStepExpressMotionThread(LStepExpressMotionManager* mo
   QThread(parent),
   motion_manager_(motion_manager)
 {
-  if(motion_manager_ == NULL)
+  if(motion_manager_ == nullptr)
   {
     NQLog("LStepExpressMotionThread", NQLog::Fatal) << "initialization error"
        << ": null pointer to LStepExpressMotionManager object, exiting constructor";

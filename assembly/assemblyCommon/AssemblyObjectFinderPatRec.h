@@ -15,6 +15,7 @@
 
 #include <QObject>
 #include <QString>
+#include <QMutex>
 
 #include <opencv2/opencv.hpp>
 
@@ -24,7 +25,7 @@ class AssemblyObjectFinderPatRec : public QObject
 
  public:
 
-  explicit AssemblyObjectFinderPatRec(const QString&, const QString&, QObject* parent=0);
+  explicit AssemblyObjectFinderPatRec(const QString&, const QString&, QObject* parent=nullptr);
   virtual ~AssemblyObjectFinderPatRec();
 
   void set_threshold(const int);
@@ -62,6 +63,11 @@ class AssemblyObjectFinderPatRec : public QObject
   cv::Point2f RotatePoint(const cv::Point2f&, const cv::Point2f&, const double) const;
 
   void draw_RotatedRect(cv::Mat&, const cv::Point&, const double, const double, const double, const cv::Scalar&) const;
+
+ private:
+  Q_DISABLE_COPY(AssemblyObjectFinderPatRec)
+
+  mutable QMutex mutex_;
 
  public slots:
 

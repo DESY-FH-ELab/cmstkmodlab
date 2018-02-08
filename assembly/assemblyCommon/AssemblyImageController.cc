@@ -21,7 +21,7 @@ AssemblyImageController::AssemblyImageController(const AssemblyVUEyeCamera* came
   is_enabled_(false),
   autofocus_is_enabled_(false)
 {
-  if(camera_manager_ == NULL)
+  if(camera_manager_ == nullptr)
   {
     NQLog("AssemblyImageController", NQLog::Fatal) << "initialization error"
        << ": null pointer to AssemblyVUEyeCamera object, exiting constructor";
@@ -29,7 +29,7 @@ AssemblyImageController::AssemblyImageController(const AssemblyVUEyeCamera* came
     return;
   }
 
-  if(zfocus_finder_ != NULL && zfocus_finder_->camera_manager() != camera_manager_)
+  if(zfocus_finder_ != nullptr && zfocus_finder_->camera_manager() != camera_manager_)
   {
     NQLog("AssemblyImageController", NQLog::Fatal) << "initialization error"
        << ": target input camera differs from camera of AssemblyZFocusFinder, exiting constructor";

@@ -10,41 +10,38 @@
 //                                                                             //
 /////////////////////////////////////////////////////////////////////////////////
 
-#ifndef ASSEMBLYTHRESHOLDTUNER_H
-#define ASSEMBLYTHRESHOLDTUNER_H
+#ifndef ASSEMBLYAUTOFOCUSVIEW_H
+#define ASSEMBLYAUTOFOCUSVIEW_H
 
 #include <AssemblyUEyeView.h>
-#include <nqlogger.h>
 
 #include <QWidget>
 #include <QScrollArea>
-#include <QKeyEvent>
 #include <QPushButton>
 #include <QLineEdit>
-#include <QLabel>
+#include <QCheckBox>
+#include <QKeyEvent>
+#include <QString>
 
 #include <opencv2/opencv.hpp>
 
-class AssemblyThresholdTuner : public QWidget
+class AssemblyAutoFocusView : public QWidget
 {
  Q_OBJECT
 
  public:
 
-  explicit AssemblyThresholdTuner(QWidget* parent=0);
-  virtual ~AssemblyThresholdTuner() {}
+  explicit AssemblyAutoFocusView(QWidget* parent=nullptr);
+  virtual ~AssemblyAutoFocusView();
 
-  int get_threshold() const;
+  void    connectImageProducer(const QObject* sender, const char* signal);
+  void disconnectImageProducer(const QObject* sender, const char* signal);
 
-  void    connectImageProducer_1(const QObject* sender, const char* signal);
-  void disconnectImageProducer_1(const QObject* sender, const char* signal);
-
-  void    connectImageProducer_2(const QObject* sender, const char* signal);
-  void disconnectImageProducer_2(const QObject* sender, const char* signal);
+  void update_scan_config(const double, const int);
 
  protected:
 
-  void keyReleaseEvent(QKeyEvent *event);
+  void keyReleaseEvent(QKeyEvent*);
 
   AssemblyUEyeView* imageView_1_;
   AssemblyUEyeView* imageView_2_;
@@ -52,28 +49,22 @@ class AssemblyThresholdTuner : public QWidget
   QScrollArea* scrollArea_1_;
   QScrollArea* scrollArea_2_;
 
-  QPushButton* imgraw_button_;
-  QPushButton* imgbin_button_;
+  QPushButton* button_1_;
 
-  QPushButton* thresh_button_;
-  QLabel*      thresh_label_;
-  QLineEdit*   thresh_linee_;
+  QLineEdit * lineed_1_;
+  QLineEdit * lineed_2_;
 
  public slots:
 
-  void read_threshold();
-
-  void save_image_raw();
-  void save_image_bin();
-
-  void save_image(const cv::Mat&);
+  void configure_scan();
+  void read_graph(const QString&);
+  void updateText(double);
 
  signals:
 
-  void threshold_value(const int);
+  void scan_config(const double, const int);
 
-  void image_raw_request();
-  void image_bin_request();
+  void graph_found(const cv::Mat&);
 };
 
-#endif // ASSEMBLYTHRESHOLDTUNER_H
+#endif // ASSEMBLYAUTOFOCUSVIEW_H

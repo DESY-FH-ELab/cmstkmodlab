@@ -89,13 +89,13 @@ LStepExpressWidget::LStepExpressWidget(LStepExpressModel* model, QWidget* parent
 
 LStepExpressWidget::~LStepExpressWidget()
 {
-    if(lstepCheckBox_      ){ delete lstepCheckBox_      ; lstepCheckBox_       = NULL; }
-    if(joystickCheckBox_   ){ delete joystickCheckBox_   ; joystickCheckBox_    = NULL; }
-    if(buttonOrigin_       ){ delete buttonOrigin_       ; buttonOrigin_        = NULL; }
-    if(buttonCalibrate_    ){ delete buttonCalibrate_    ; buttonCalibrate_     = NULL; }
-    if(buttonEmergencyStop_){ delete buttonEmergencyStop_; buttonEmergencyStop_ = NULL; }
-    if(buttonRotate180CW_  ){ delete buttonRotate180CW_  ; buttonRotate180CW_   = NULL; }
-    if(buttonClearQueue_   ){ delete buttonClearQueue_   ; buttonClearQueue_    = NULL; }
+    if(lstepCheckBox_      ){ delete lstepCheckBox_      ; lstepCheckBox_       = nullptr; }
+    if(joystickCheckBox_   ){ delete joystickCheckBox_   ; joystickCheckBox_    = nullptr; }
+    if(buttonOrigin_       ){ delete buttonOrigin_       ; buttonOrigin_        = nullptr; }
+    if(buttonCalibrate_    ){ delete buttonCalibrate_    ; buttonCalibrate_     = nullptr; }
+    if(buttonEmergencyStop_){ delete buttonEmergencyStop_; buttonEmergencyStop_ = nullptr; }
+    if(buttonRotate180CW_  ){ delete buttonRotate180CW_  ; buttonRotate180CW_   = nullptr; }
+    if(buttonClearQueue_   ){ delete buttonClearQueue_   ; buttonClearQueue_    = nullptr; }
 
     NQLog("LStepExpressWidget", NQLog::Debug) << "destructed";
 }
@@ -203,11 +203,11 @@ LStepExpressAxisWidget::LStepExpressAxisWidget(LStepExpressModel* model, unsigne
 
 LStepExpressAxisWidget::~LStepExpressAxisWidget()
 {
-    if(layout_)          { delete layout_;           layout_           = NULL; }
-    if(enabledCheckBox_) { delete enabledCheckBox_;  enabledCheckBox_  = NULL; }
-    if(joystickCheckBox_){ delete joystickCheckBox_; joystickCheckBox_ = NULL; }
-    if(statusLabel_)     { delete statusLabel_;      statusLabel_      = NULL; }
-    if(positionLabel_)   { delete positionLabel_;    positionLabel_    = NULL; }
+    if(layout_)          { delete layout_;           layout_           = nullptr; }
+    if(enabledCheckBox_) { delete enabledCheckBox_;  enabledCheckBox_  = nullptr; }
+    if(joystickCheckBox_){ delete joystickCheckBox_; joystickCheckBox_ = nullptr; }
+    if(statusLabel_)     { delete statusLabel_;      statusLabel_      = nullptr; }
+    if(positionLabel_)   { delete positionLabel_;    positionLabel_    = nullptr; }
 }
 
 void LStepExpressAxisWidget::updateWidgets()

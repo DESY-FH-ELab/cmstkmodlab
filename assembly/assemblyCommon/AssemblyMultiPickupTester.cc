@@ -19,7 +19,7 @@ AssemblyMultiPickupTester::AssemblyMultiPickupTester(const LStepExpressMotionMan
   motion_manager_(motion_manager),
   motion_manager_enabled_(false)
 {
-  if(motion_manager_ == NULL)
+  if(motion_manager_ == nullptr)
   {
     NQLog("AssemblyMultiPickupTester", NQLog::Critical) << "input error"
        << ": null pointer to LStepExpressMotionManager object, initialization stopped";
@@ -28,7 +28,7 @@ AssemblyMultiPickupTester::AssemblyMultiPickupTester(const LStepExpressMotionMan
   }
 
   ApplicationConfig* config = ApplicationConfig::instance();
-  if(config == NULL)
+  if(config == nullptr)
   {
     NQLog("AssemblyMultiPickupTester", NQLog::Fatal)
        << "ApplicationConfig::instance() not initialized (null pointer), stopped constructor";
@@ -36,8 +36,11 @@ AssemblyMultiPickupTester::AssemblyMultiPickupTester(const LStepExpressMotionMan
     return;
   }
 
-  pickup_vacuum_ = config->getValue<int>   ("AssemblyMultiPickupTester_pickup_vacuum", 1);
-  pickup_deltaZ_ = config->getValue<double>("AssemblyMultiPickupTester_pickup_deltaZ", 20.);
+  pickup_vacuum_ = config->getValue<int>   ("AssemblyMultiPickupTester_pickup_vacuum"   , 1);
+  pickup_basepl_ = config->getValue<int>   ("AssemblyMultiPickupTester_pickup_baseplate", 3);
+  pickup_deltaZ_ = config->getValue<double>("AssemblyMultiPickupTester_pickup_deltaZ"   , 20.);
+
+  use_vacuumBP_ = bool(pickup_basepl_ != 0);
 
   this->reset();
 
@@ -52,7 +55,7 @@ void AssemblyMultiPickupTester::enable_motion_manager(const bool arg)
 {
   if(arg == motion_manager_enabled_)
   {
-    NQLog("AssemblyMultiPickupTester", NQLog::Spam) << "enable_motion_manager(" << arg << ")"
+    NQLog("AssemblyMultiPickupTester", NQLog::Debug) << "enable_motion_manager(" << arg << ")"
        << ": motion-manager for multi-pickup test already " << (arg ? "enabled" : "disabled") << ", no action taken";
 
     return;
@@ -91,6 +94,7 @@ void AssemblyMultiPickupTester::reset()
   conf_ = AssemblyMultiPickupTester::Configuration();
 
   vacuum_on_   = false;
+  vacuumBP_on_ = true;
   pickup_done_ = false;
   picked_up_   = false;
 
@@ -158,9 +162,10 @@ void AssemblyMultiPickupTester::start_pickup()
 
   mode_ = AssemblyMultiPickupTester::Mode_pickup;
 
+  vacuum_on_   = false;
+  vacuumBP_on_ = true;
   pickup_done_ = false;
   picked_up_   = false;
-  vacuum_on_   = false;
 
   const double dx = (conf_.pickup_X() - motion_manager_->get_position_X());
   const double dy = (conf_.pickup_Y() - motion_manager_->get_position_Y());
@@ -252,7 +257,16 @@ void AssemblyMultiPickupTester::setup_next_step()
         }
         else
         {
-          if(vacuum_on_ == true)
+          if(use_vacuumBP_ && vacuumBP_on_ == false)
+          {
+            vacuumBP_on_ = true;
+
+            NQLog("AssemblyMultiPickupTester", NQLog::Spam) << "setup_next_step"
+               << ": emitting signal \"vacuum_toggle(" << pickup_basepl_ << ")\"";
+
+            emit vacuum_toggle(pickup_basepl_);
+          }
+          else if(vacuum_on_ == true)
           {
             vacuum_on_ = false;
 
@@ -276,7 +290,7 @@ void AssemblyMultiPickupTester::setup_next_step()
       }
       else
       {
-        if(picked_up_ == false && vacuum_on_ == false)
+        if(picked_up_ == false && (vacuum_on_ == false || (use_vacuumBP_ && vacuumBP_on_ == true)))
         {
           if(move_ == AssemblyMultiPickupTester::Movement_XY)
           {
@@ -303,6 +317,17 @@ void AssemblyMultiPickupTester::setup_next_step()
                << ": emitting signal \"vacuum_toggle(" << pickup_vacuum_ << ")\"";
 
             emit vacuum_toggle(pickup_vacuum_);
+          }
+          else if(move_ == AssemblyMultiPickupTester::Movement_None)
+          {
+            this->disconnect_motion_manager();
+
+            vacuumBP_on_ = false;
+
+            NQLog("AssemblyMultiPickupTester", NQLog::Spam) << "setup_next_step"
+               << ": emitting signal \"vacuum_toggle(" << pickup_basepl_ << ")\"";
+
+            emit vacuum_toggle(pickup_basepl_);
           }
           else
           {

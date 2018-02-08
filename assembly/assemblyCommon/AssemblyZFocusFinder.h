@@ -30,7 +30,7 @@ class AssemblyZFocusFinder : public QObject
 
   public:
 
-    explicit AssemblyZFocusFinder(const AssemblyVUEyeCamera*, const LStepExpressMotionManager*, QObject* parent=0);
+    explicit AssemblyZFocusFinder(const AssemblyVUEyeCamera*, const LStepExpressMotionManager*, QObject* parent=nullptr);
 
     const AssemblyVUEyeCamera*       camera_manager() const { return camera_manager_; }
     const LStepExpressMotionManager* motion_manager() const { return motion_manager_; }
@@ -87,7 +87,7 @@ class AssemblyZFocusFinder : public QObject
 
     void next_zpoint();
 
-    void focus(double, double, double, double);
+    void focus(const double, const double, const double, const double);
 
     void image_acquired(const cv::Mat&);
 

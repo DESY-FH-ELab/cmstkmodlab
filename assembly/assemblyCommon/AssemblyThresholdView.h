@@ -10,38 +10,40 @@
 //                                                                             //
 /////////////////////////////////////////////////////////////////////////////////
 
-#ifndef ASSEMBLYAUTOFOCUS_H
-#define ASSEMBLYAUTOFOCUS_H
+#ifndef ASSEMBLYTHRESHOLDVIEW_H
+#define ASSEMBLYTHRESHOLDVIEW_H
 
 #include <AssemblyUEyeView.h>
 
 #include <QWidget>
 #include <QScrollArea>
+#include <QKeyEvent>
 #include <QPushButton>
 #include <QLineEdit>
-#include <QCheckBox>
-#include <QKeyEvent>
-#include <QString>
+#include <QLabel>
 
 #include <opencv2/opencv.hpp>
 
-class AssemblyAutoFocus : public QWidget
+class AssemblyThresholdView : public QWidget
 {
  Q_OBJECT
 
  public:
 
-  explicit AssemblyAutoFocus(QWidget* parent=0);
-  virtual ~AssemblyAutoFocus();
+  explicit AssemblyThresholdView(QWidget* parent=nullptr);
+  virtual ~AssemblyThresholdView() {}
 
-  void    connectImageProducer(const QObject* sender, const char* signal);
-  void disconnectImageProducer(const QObject* sender, const char* signal);
+  int get_threshold() const;
 
-  void update_scan_config(const double, const int);
+  void    connectImageProducer_1(const QObject* sender, const char* signal);
+  void disconnectImageProducer_1(const QObject* sender, const char* signal);
+
+  void    connectImageProducer_2(const QObject* sender, const char* signal);
+  void disconnectImageProducer_2(const QObject* sender, const char* signal);
 
  protected:
 
-  void keyReleaseEvent(QKeyEvent* event);
+  void keyReleaseEvent(QKeyEvent*);
 
   AssemblyUEyeView* imageView_1_;
   AssemblyUEyeView* imageView_2_;
@@ -49,26 +51,28 @@ class AssemblyAutoFocus : public QWidget
   QScrollArea* scrollArea_1_;
   QScrollArea* scrollArea_2_;
 
-  QPushButton* button_1_;
-  QPushButton* button_2_;
+  QPushButton* imgraw_button_;
+  QPushButton* imgbin_button_;
 
-  QLineEdit * lineed_1_;
-  QLineEdit * lineed_2_;
-
-  QCheckBox* checkbox_;
+  QPushButton* thresh_button_;
+  QLabel*      thresh_label_;
+  QLineEdit*   thresh_linee_;
 
  public slots:
 
-  void configure_scan();
-  void read_graph(const QString&);
-  void updateText(double);
-  void go_to_focal_point();
+  void read_threshold();
+
+  void save_image_raw();
+  void save_image_bin();
+
+  void save_image(const cv::Mat&);
 
  signals:
 
-  void scan_config(const double, const int);
+  void threshold_value(const int);
 
-  void graph_found(const cv::Mat&);
+  void image_raw_request();
+  void image_bin_request();
 };
 
-#endif // ASSEMBLYAUTOFOCUS_H
+#endif // ASSEMBLYTHRESHOLDVIEW_H

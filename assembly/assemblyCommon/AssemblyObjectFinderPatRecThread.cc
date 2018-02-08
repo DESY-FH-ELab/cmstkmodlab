@@ -10,35 +10,38 @@
 //                                                                             //
 /////////////////////////////////////////////////////////////////////////////////
 
-#ifndef ASSEMBLYUEYECAMERATHREAD_H
-#define ASSEMBLYUEYECAMERATHREAD_H
+#include <AssemblyObjectFinderPatRecThread.h>
+#include <nqlogger.h>
 
-#ifdef NOUEYE
-#include "AssemblyUEyeFakeModel.h"
-typedef AssemblyUEyeFakeModel AssemblyUEyeModel_t;
-#else
-#include "AssemblyUEyeModel.h"
-typedef AssemblyUEyeModel AssemblyUEyeModel_t;
-#endif
-
-#include <QObject>
-#include <QThread>
-
-class AssemblyUEyeCameraThread : public QThread
+AssemblyObjectFinderPatRecThread::AssemblyObjectFinderPatRecThread(AssemblyObjectFinderPatRec* finder, QObject* parent) :
+  QThread(parent),
+  finder_(finder)
 {
- Q_OBJECT
+  if(finder_ == nullptr)
+  {
+    NQLog("AssemblyObjectFinderPatRecThread", NQLog::Fatal) << "initialization error"
+       << ": null pointer to ObjectFinderPatRec object, exiting constructor";
 
- public:
+    return;
+  }
 
-  explicit AssemblyUEyeCameraThread(AssemblyUEyeModel_t* model, QObject* parent=nullptr);
+  finder_->moveToThread(this);
 
-  virtual ~AssemblyUEyeCameraThread();
+//  connect(this, SIGNAL(finished()), this, SLOT(deleteLater()));
 
-  void run();
+  NQLog("AssemblyObjectFinderPatRecThread", NQLog::Debug) << "constructed";
+}
 
- protected:
+AssemblyObjectFinderPatRecThread::~AssemblyObjectFinderPatRecThread()
+{
+  NQLog("AssemblyObjectFinderPatRecThread", NQLog::Debug) << "destructed";
+}
 
-  AssemblyUEyeModel_t* model_;
-};
+void AssemblyObjectFinderPatRecThread::run()
+{
+  NQLog("AssemblyObjectFinderPatRecThread", NQLog::Spam) << "run";
 
-#endif // ASSEMBLYUEYECAMERATHREAD_H
+  this->exec();
+
+  return;
+}

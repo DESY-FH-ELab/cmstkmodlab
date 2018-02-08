@@ -10,35 +10,28 @@
 //                                                                             //
 /////////////////////////////////////////////////////////////////////////////////
 
-#ifndef ASSEMBLYUEYECAMERATHREAD_H
-#define ASSEMBLYUEYECAMERATHREAD_H
+#ifndef ASSEMBLYOBJECTFINDERPATRECTHREAD_H
+#define ASSEMBLYOBJECTFINDERPATRECTHREAD_H
 
-#ifdef NOUEYE
-#include "AssemblyUEyeFakeModel.h"
-typedef AssemblyUEyeFakeModel AssemblyUEyeModel_t;
-#else
-#include "AssemblyUEyeModel.h"
-typedef AssemblyUEyeModel AssemblyUEyeModel_t;
-#endif
+#include <AssemblyObjectFinderPatRec.h>
 
 #include <QObject>
 #include <QThread>
 
-class AssemblyUEyeCameraThread : public QThread
+class AssemblyObjectFinderPatRecThread : public QThread
 {
  Q_OBJECT
 
  public:
 
-  explicit AssemblyUEyeCameraThread(AssemblyUEyeModel_t* model, QObject* parent=nullptr);
-
-  virtual ~AssemblyUEyeCameraThread();
+  explicit AssemblyObjectFinderPatRecThread(AssemblyObjectFinderPatRec* finder, QObject* parent=nullptr);
+  virtual ~AssemblyObjectFinderPatRecThread();
 
   void run();
 
  protected:
 
-  AssemblyUEyeModel_t* model_;
+  AssemblyObjectFinderPatRec* finder_;
 };
 
-#endif // ASSEMBLYUEYECAMERATHREAD_H
+#endif // ASSEMBLYOBJECTFINDERPATRECTHREAD_H
