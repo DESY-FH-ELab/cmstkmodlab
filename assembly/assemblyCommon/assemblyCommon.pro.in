@@ -81,12 +81,17 @@ HEADERS += AssemblyVUEyeCamera.h \
            AssemblyUEyeCameraWidget.h \
            AssemblyUEyeCameraThread.h \
            AssemblyUEyeView.h \
-           AssemblyAssembler.h \
-           ConradManager.h \
            AssemblyUEyeSnapShooter.h \
            AssemblyThresholdTuner.h \
            AssemblyModuleAssembler.h \
            AssemblyAutoFocus.h \
+           AssemblyImageController.h \
+           AssemblyZFocusFinder.h \
+           AssemblyObjectFinderManual.h \
+           AssemblyObjectFinderPatRec.h \
+           AssemblyMultiPickupTester.h \
+           AssemblyAssembler.h \
+           ConradManager.h \
            LStepExpressModel.h \
            LStepExpressMotion.h \
            LStepExpressMotionManager.h \
@@ -105,12 +110,6 @@ HEADERS += AssemblyVUEyeCamera.h \
            LaserThread.h \
            LaserWidget.h \
            LaserControlsWidget.h \
-           AssemblyUEyeCameraManager.h \
-           MarkerFinderManual.h \
-           MarkerFinderPatRec.h \
-           MarkerFinderPatRecThread.h \
-           ImageController.h \
-           ZFocusFinder.h \
            Util.h
 
 equals(NOUEYE,"X0") {
@@ -131,6 +130,11 @@ SOURCES += AssemblyVUEyeCamera.cc \
            AssemblyThresholdTuner.cc \
            AssemblyModuleAssembler.cc \
            AssemblyAutoFocus.cc \
+           AssemblyImageController.cc \
+           AssemblyZFocusFinder.cc \
+           AssemblyObjectFinderManual.cc \
+           AssemblyObjectFinderPatRec.cc \
+           AssemblyMultiPickupTester.cc \
            AssemblyAssembler.cc \
            ConradManager.cc \
            LStepExpressModel.cc \
@@ -151,12 +155,6 @@ SOURCES += AssemblyVUEyeCamera.cc \
            LaserWidget.cc \
            LaserThread.cc \
            LaserControlsWidget.cc \
-           AssemblyUEyeCameraManager.cc \
-           MarkerFinderManual.cc \
-           MarkerFinderPatRec.cc \
-           MarkerFinderPatRecThread.cc \
-           ImageController.cc \
-           ZFocusFinder.cc \
            Util.cc
 
 equals(NOUEYE,"X0") {

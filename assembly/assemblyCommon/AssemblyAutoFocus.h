@@ -32,39 +32,43 @@ class AssemblyAutoFocus : public QWidget
  public:
 
   explicit AssemblyAutoFocus(QWidget* parent=0);
+  virtual ~AssemblyAutoFocus();
 
   void    connectImageProducer(const QObject* sender, const char* signal);
   void disconnectImageProducer(const QObject* sender, const char* signal);
+
+  void update_scan_config(const double, const int);
 
  protected:
 
   void keyReleaseEvent(QKeyEvent* event);
 
-  QScrollArea *scrollArea_1;
-  AssemblyUEyeView *imageView_1;
+  AssemblyUEyeView* imageView_1_;
+  AssemblyUEyeView* imageView_2_;
 
-  QScrollArea *scrollArea_2;
-  AssemblyUEyeView *imageView_2;
+  QScrollArea* scrollArea_1_;
+  QScrollArea* scrollArea_2_;
 
-  QPushButton* button1;
-  QPushButton* button2;
-  QLineEdit * lE1;
-  QLineEdit * lE2;
+  QPushButton* button_1_;
+  QPushButton* button_2_;
 
-  QCheckBox* checkbox;
+  QLineEdit * lineed_1_;
+  QLineEdit * lineed_2_;
+
+  QCheckBox* checkbox_;
 
  public slots:
 
   void configure_scan();
-  void make_graph(const QString&);
+  void read_graph(const QString&);
   void updateText(double);
   void go_to_focal_point();
-  void updateImage(const int, const QString&);
 
  signals:
-  void run_scan(double,int);
-  void moveRelative(double,double,double,double);
-  void graph_made(const cv::Mat&);
+
+  void scan_config(const double, const int);
+
+  void graph_found(const cv::Mat&);
 };
 
 #endif // ASSEMBLYAUTOFOCUS_H

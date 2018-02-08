@@ -13,18 +13,15 @@
 #ifndef ASSEMBLYTHRESHOLDTUNER_H
 #define ASSEMBLYTHRESHOLDTUNER_H
 
-#include <AssemblyVUEyeCamera.h>
 #include <AssemblyUEyeView.h>
 #include <nqlogger.h>
 
 #include <QWidget>
 #include <QScrollArea>
 #include <QKeyEvent>
+#include <QPushButton>
 #include <QLineEdit>
 #include <QLabel>
-#include <QPushButton>
-#include <QFormLayout>
-#include <QString>
 
 #include <opencv2/opencv.hpp>
 
@@ -34,47 +31,49 @@ class AssemblyThresholdTuner : public QWidget
 
  public:
 
-    explicit AssemblyThresholdTuner(QWidget* parent=0);
-    virtual ~AssemblyThresholdTuner() {}
+  explicit AssemblyThresholdTuner(QWidget* parent=0);
+  virtual ~AssemblyThresholdTuner() {}
 
-    void    connectImageProducer(const QObject* sender, const char* signal);
-    void disconnectImageProducer(const QObject* sender, const char* signal);
+  int get_threshold() const;
 
-    QPushButton* button;
+  void    connectImageProducer_1(const QObject* sender, const char* signal);
+  void disconnectImageProducer_1(const QObject* sender, const char* signal);
+
+  void    connectImageProducer_2(const QObject* sender, const char* signal);
+  void disconnectImageProducer_2(const QObject* sender, const char* signal);
 
  protected:
 
-    void keyReleaseEvent(QKeyEvent *event);
+  void keyReleaseEvent(QKeyEvent *event);
 
-    QScrollArea *scrollArea1_;
-    AssemblyUEyeView *imageView1_;
+  AssemblyUEyeView* imageView_1_;
+  AssemblyUEyeView* imageView_2_;
 
-    QScrollArea *scrollArea2_;
-    AssemblyUEyeView *imageView2_;
+  QScrollArea* scrollArea_1_;
+  QScrollArea* scrollArea_2_;
 
-    QPushButton* setThresholdButton;
-    QLabel* label;
-    QLineEdit* lineEdit;
+  QPushButton* imgraw_button_;
+  QPushButton* imgbin_button_;
 
-    cv::Mat image_;
+  QPushButton* thresh_button_;
+  QLabel*      thresh_label_;
+  QLineEdit*   thresh_linee_;
 
  public slots:
 
-    void snapShot();
-    //void imageAcquired(const cv::Mat&);
-    void imageAcquired(cv::Mat);
-    void setNewThreshold();
-    void updateThresholdLabelSlot(int);
-    void enableThresholdButton();
-    void disableThresholdButton();
-    void updateThresholdImage(const QString&);
+  void read_threshold();
+
+  void save_image_raw();
+  void save_image_bin();
+
+  void save_image(const cv::Mat&);
 
  signals:
 
-    void setNewThreshold(int, cv::Mat);
-    void updateThresholdLabel();
-    void updateThresholdImagePicture();
+  void threshold_value(const int);
 
+  void image_raw_request();
+  void image_bin_request();
 };
 
 #endif // ASSEMBLYTHRESHOLDTUNER_H

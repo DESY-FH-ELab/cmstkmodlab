@@ -79,7 +79,7 @@ class LStepExpressModel : public QObject, public AbstractDeviceModel<LStepExpres
     void setJoystickAxisEnabled(unsigned int axis, bool enabled);
 
     void moveRelative(const std::vector<double>& values);
-    void moveRelative(const double x=0., const double y=0., const double z=0., const double a=0.);
+    void moveRelative(const double x, const double y, const double z, const double a);
     void moveRelative(const unsigned int axis, const double value);
     void moveAbsolute(const std::vector<double> & values);
     void moveAbsolute(const double x=0., const double y=0., const double z=0., const double a=0.);

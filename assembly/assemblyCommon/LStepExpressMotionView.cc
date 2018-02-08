@@ -34,6 +34,8 @@ LStepExpressMotionView::LStepExpressMotionView(LStepExpressModel* model, LStepEx
   LStepExpressWidget* motionWidget = new LStepExpressWidget(model_, this);
   layout_1->addWidget(motionWidget);
 
+  connect(motionWidget, SIGNAL(clearQueue_request()), manager, SLOT(clear_motion_queue()));
+
   LStepExpressJoystickWidget* lStepJoystick = new LStepExpressJoystickWidget(model_, this);
   layout_1->addWidget(lStepJoystick);
 

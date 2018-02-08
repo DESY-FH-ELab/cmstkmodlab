@@ -26,7 +26,6 @@ LStepExpressSettingsComboBox::LStepExpressSettingsComboBox(LStepExpressSettings*
       settings_(settings),
       key_(key)
 {
-//!!    connect(this, SIGNAL(valueChanged         (double)), this     , SLOT(valueChanged         (double)));
     connect(this, SIGNAL(valueChanged(QString, double)), settings_, SLOT(valueChanged(QString, double)));
 
     connect(settings_, SIGNAL(settingChanged(QString, QVariant)), this, SLOT(settingChanged(QString, QVariant)));
@@ -34,9 +33,9 @@ LStepExpressSettingsComboBox::LStepExpressSettingsComboBox(LStepExpressSettings*
 
 void LStepExpressSettingsComboBox::settingChanged(QString key, QVariant value)
 {
-    if (key!=key_) return;
+    if(key != key_){ return; }
 
-    //    NQLog("LStepExpressSettingsComboBox", NQLog::Spam) << "settingChanged(" << key.toStdString() << ")"    ;
+//    NQLog("LStepExpressSettingsComboBox", NQLog::Spam) << "settingChanged(" << key.toStdString() << ")"    ;
 
     setCurrentIndex(value.toInt());
 }

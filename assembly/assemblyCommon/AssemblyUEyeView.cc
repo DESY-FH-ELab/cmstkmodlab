@@ -10,34 +10,26 @@
 //                                                                             //
 /////////////////////////////////////////////////////////////////////////////////
 
-#include <vector>
+#include <AssemblyUEyeView.h>
+#include <nqlogger.h>
 
 #include <QPainter>
 
-#include <nqlogger.h>
-
-#include "AssemblyUEyeView.h"
-
-AssemblyUEyeView::AssemblyUEyeView(QWidget *parent)
-    : QLabel(parent),
-      image_(QImage()),
-      zoomFactor_(0.25)
+AssemblyUEyeView::AssemblyUEyeView(QWidget* parent) :
+  QLabel(parent),
+  image_(QImage()),
+  zoomFactor_(0.25)
 {
-
 }
 
-void AssemblyUEyeView::connectImageProducer(const QObject* sender,
-                                            const char* signal)
+void AssemblyUEyeView::connectImageProducer(const QObject* sender, const char* signal)
 {
-    connect(sender, signal,
-            this, SLOT(setImage(const cv::Mat&)));
+    connect   (sender, signal, this, SLOT(setImage(const cv::Mat&)));
 }
 
-void AssemblyUEyeView::disconnectImageProducer(const QObject* sender,
-                                               const char* signal)
+void AssemblyUEyeView::disconnectImageProducer(const QObject* sender, const char* signal)
 {
-    disconnect(sender, signal,
-               this, SLOT(setImage(const cv::Mat&)));
+    disconnect(sender, signal, this, SLOT(setImage(const cv::Mat&)));
 }
 
 void AssemblyUEyeView::setImage(const cv::Mat& newImage)
@@ -45,7 +37,6 @@ void AssemblyUEyeView::setImage(const cv::Mat& newImage)
     QMutexLocker lock(&mutex_);
 
     //NQLog("AssemblyUEyeView") << "set image " << newImage.type() << " " << newImage.channels();
-
 
     if (newImage.channels()==1) {
         cv::Mat temp;
@@ -66,7 +57,7 @@ void AssemblyUEyeView::setImage(const cv::Mat& newImage)
     update();
 }
 
-void AssemblyUEyeView::paintEvent(QPaintEvent* /* ev */)
+void AssemblyUEyeView::paintEvent(QPaintEvent*)
 {
     if (!image_.isNull()) {
 

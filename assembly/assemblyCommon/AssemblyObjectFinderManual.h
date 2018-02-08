@@ -10,8 +10,8 @@
 //                                                                             //
 /////////////////////////////////////////////////////////////////////////////////
 
-#ifndef MARKERFINDERMANUAL_H
-#define MARKERFINDERMANUAL_H
+#ifndef ASSEMBLYOBJECTFINDERMANUAL_H
+#define ASSEMBLYOBJECTFINDERMANUAL_H
 
 #include <nqlogger.h>
 
@@ -40,7 +40,7 @@ protected:
     float x_, y_, r_, q_;
 };
 
-class MarkerFinderManual : public QObject
+class AssemblyObjectFinderManual : public QObject
 {
     Q_OBJECT
 protected:
@@ -52,8 +52,8 @@ protected:
     int labmode_g, objectmode_g;
 
 public:
-    explicit MarkerFinderManual(QObject *parent = 0);
-    ~MarkerFinderManual();
+    explicit AssemblyObjectFinderManual(QObject *parent = 0);
+    ~AssemblyObjectFinderManual();
 
     int gaussianBlurKernelSize() const { return gaussianBlurKernelSize_; }
     int gaussianBlurSigma() const { return gaussianBlurSigma_; }
@@ -197,4 +197,4 @@ signals:
     void sendUpdatedThresholdImage(QString);
 };
 
-#endif // MARKERFINDERMANUAL_H
+#endif // ASSEMBLYOBJECTFINDERMANUAL_H

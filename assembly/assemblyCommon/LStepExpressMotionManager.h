@@ -40,13 +40,24 @@ class LStepExpressMotionManager : public QObject
 
     void myMoveToThread(QThread*);
 
+  protected:
+
+    void run();
+
+    bool AxisIsReady(const int) const;
+
+    LStepExpressModel* model_;
+
+    bool model_connected_;
+
+    bool inMotion_;
+
+    QQueue<LStepExpressMotion> motions_;
+
   public slots:
 
     void    connect_model();
     void disconnect_model();
-
-    void  start_motion();
-    void finish_motion();
 
     void appendMotion(const LStepExpressMotion& motion);
     void appendMotions(const QQueue<LStepExpressMotion>& motions);
@@ -57,17 +68,10 @@ class LStepExpressMotionManager : public QObject
     void moveAbsolute(double x=0.0, double y=0.0, double z=0.0, double a=0.0);
     void moveAbsolute(unsigned int axis, double value);
 
-  protected:
+    void read_position3D();
+    void read_position4D();
 
-    void run();
-
-    LStepExpressModel* model_;
-
-    bool model_connected_;
-
-    bool inMotion_;
-
-    QQueue<LStepExpressMotion> motions_;
+    void clear_motion_queue();
 
   protected slots:
 
@@ -80,6 +84,9 @@ class LStepExpressMotionManager : public QObject
 
     void signalMoveRelative(double x, double y, double z, double a);
     void signalMoveAbsolute(double x, double y, double z, double a);
+
+    void position3D(const double, const double, const double);
+    void position4D(const double, const double, const double, const double);
 };
 
 #endif // LSTEPEXPRESSMOTIONMANAGER_H

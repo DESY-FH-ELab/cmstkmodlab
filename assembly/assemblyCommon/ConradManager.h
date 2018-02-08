@@ -22,7 +22,13 @@ class ConradManager : public QObject
 {
  Q_OBJECT
 
+ public:
+
+  //add constructor
+  explicit ConradManager(ConradModel* ConradModel_);
+
  protected:
+
   ConradModel* ConradModel_;
   int channelNumber;
   QTimer* liveTimer_;
@@ -30,11 +36,6 @@ class ConradManager : public QObject
  private:
 
   const int togglingVacuumDelay = 3000;
-  
- public:
-
-  //add constructor
-  explicit ConradManager(ConradModel* ConradModel_);
 
  public slots:
 

@@ -41,9 +41,12 @@ class LStepExpressWidget : public QWidget
   QCheckBox* lstepCheckBox_;
   QCheckBox* joystickCheckBox_;
   QPushButton* buttonOrigin_;
-  QWidget* axisControlWidget_;
   QPushButton* buttonCalibrate_;
   QPushButton* buttonEmergencyStop_;
+  QPushButton* buttonRotate180CW_;
+  QPushButton* buttonClearQueue_;
+
+  QWidget* axisControlWidget_;
 
  public slots:
 
@@ -52,6 +55,12 @@ class LStepExpressWidget : public QWidget
   void updateWidgets();
   void motionStarted();
   void motionFinished();
+
+  void moveAngle180CW();
+
+ signals:
+
+  void clearQueue_request();
 };
 
 class LStepExpressAxisWidget : public QWidget

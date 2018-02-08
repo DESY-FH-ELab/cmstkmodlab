@@ -28,6 +28,10 @@ typedef AssemblyUEyeModel AssemblyUEyeModel_t;
 #include <AssemblyThresholdTuner.h>
 #include <AssemblyModuleAssembler.h>
 #include <AssemblyAutoFocus.h>
+#include <AssemblyImageController.h>
+#include <AssemblyZFocusFinder.h>
+#include <AssemblyObjectFinderPatRec.h>
+#include <AssemblyMultiPickupTester.h>
 #include <AssemblyAssembler.h>
 #include <LStepExpressModel.h>
 #include <LStepExpressMotionManager.h>
@@ -43,10 +47,6 @@ typedef AssemblyUEyeModel AssemblyUEyeModel_t;
 #include <LStepExpressStatusWindow.h>
 #include <ConradModel.h>
 #include <ConradManager.h>
-#include <ImageController.h>
-#include <MarkerFinderPatRec.h>
-#include <MarkerFinderPatRecThread.h>
-#include <ZFocusFinder.h>
 
 #include <QMainWindow>
 #include <QTabWidget>
@@ -76,8 +76,12 @@ class AssemblyMainWindow : public QMainWindow
     void changeState_SandwichAssembly   (int);
     void changeState_Alignment          (int);
 
+    void    connect_multipickupNpatrec(const AssemblyMultiPickupTester::Configuration&);
+    void disconnect_multipickupNpatrec();
+
     void testTimer();
 
+    void quit_thread(QThread*, const std::string&) const;
     void quit();
 
   signals:
@@ -87,12 +91,13 @@ class AssemblyMainWindow : public QMainWindow
 
     void image();
 
-    void updateThresholdLabel();
-
     void updateVacuumChannelsStatus();
 
     void AutoFocus_ON();
     void AutoFocus_OFF();
+
+    void multipickupNpatrec_connected();
+    void multipickupNpatrec_disconnected();
 
   protected slots:
 
@@ -100,22 +105,9 @@ class AssemblyMainWindow : public QMainWindow
 
   protected:
 
-    QDir currentDir_;
-
-    QToolBar* toolBar_;
-    QTabWidget* tabWidget_;
-
-//    AssemblyUEyeSnapShooter* finderView_;
-//    AssemblyUEyeSnapShooter* edgeView_;
-//    AssemblyUEyeSnapShooter* rawView_;
-    AssemblyAutoFocus* autoFocusView_;
-    AssemblyThresholdTuner* thresholdTunerView_;
-    AssemblyModuleAssembler* assembleView_;
-
-    QCheckBox* checkbox1;
-    QCheckBox* checkbox2;
-    QCheckBox* checkbox3;
-    QCheckBox* checkbox4;
+    // model(s) and model-manager(s)
+    ConradModel*   conradModel_;
+    ConradManager* conradManager_;
 
     LStepExpressModel*          motion_model_;
     LStepExpressMotionManager*  motion_manager_;
@@ -127,21 +119,37 @@ class AssemblyMainWindow : public QMainWindow
     AssemblyUEyeModel_t*      camera_model_;
     AssemblyUEyeCameraThread* camera_thread_;
 //    AssemblyUEyeWidget*      camera_widget_;
-    unsigned int              camera_ID_;
     AssemblyVUEyeCamera*      camera_;
+    unsigned int              camera_ID_;
 
-    ZFocusFinder*       zfocus_finder_;
+    // view(s)
+    QToolBar*   toolBar_;
+    QTabWidget* tabWidget_;
 
-    MarkerFinderPatRec*       marker_finder_;
-    MarkerFinderPatRecThread* marker_finder_thread_;
+//    AssemblyUEyeSnapShooter* finderView_;
+//    AssemblyUEyeSnapShooter* edgeView_;
+//    AssemblyUEyeSnapShooter* rawView_;
+    AssemblyAutoFocus*       autoFocusView_;
+    AssemblyThresholdTuner*  thresholdTunerView_;
+    AssemblyModuleAssembler* assembleView_;
 
-    ConradModel*       conradModel_;
-    ConradManager*     conradManager_;
+    QCheckBox* checkbox1;
+    QCheckBox* checkbox2;
+    QCheckBox* checkbox3;
+    QCheckBox* checkbox4;
 
-    AssemblyAssembler* module_assembler_;
+    // controller(s)
+    AssemblyImageController*    image_ctr_;
 
-    ImageController* image_ctr_;
+    AssemblyZFocusFinder*       zfocus_finder_;
 
+    AssemblyObjectFinderPatRec* object_finder_;
+
+    AssemblyMultiPickupTester*  multipickup_;
+
+    AssemblyAssembler*          module_assembler_;
+
+    // timing
     double testTimerCount_;
 
     QTimer* liveTimer_;

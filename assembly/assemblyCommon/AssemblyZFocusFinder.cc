@@ -10,7 +10,8 @@
 //                                                                             //
 /////////////////////////////////////////////////////////////////////////////////
 
-#include <ZFocusFinder.h>
+#include <AssemblyZFocusFinder.h>
+#include <ApplicationConfig.h>
 #include <nqlogger.h>
 #include <Util.h>
 
@@ -25,137 +26,180 @@
 #include <TGraph.h>
 #include <TFile.h>
 
-int ZFocusFinder::exe_counter_ = -1;
-int ZFocusFinder::focus_pointN_max_ = 200;
+int AssemblyZFocusFinder::exe_counter_ = -1;
 
-ZFocusFinder::ZFocusFinder(AssemblyVUEyeCamera* camera, LStepExpressModel* motion_model, QObject* parent) :
+AssemblyZFocusFinder::AssemblyZFocusFinder(const AssemblyVUEyeCamera* camera, const LStepExpressMotionManager* motion_manager, QObject* parent) :
   QObject(parent),
-  camera_manager_(0),
-  motion_manager_(0),
+
+  camera_manager_(camera),
+  motion_manager_(motion_manager),
+
   motion_enabled_(false),
+
   focus_completed_(false),
-  focus_pointN_(10),
-  focus_zrange_(0.5),
+
   zposi_init_(-9999.),
-  zposi_min_ (-99.),
-  zposi_max_ (+99.),
+
   zrelm_index_(0),
+
   output_dir_("")
 {
-    if(!camera)
-    {
-      NQLog("ZFocusFinder", NQLog::Fatal) << "null pointer to AssemblyVUEyeCamera object";
-      exit(1);
-    }
+  // initialization
+  ApplicationConfig* config = ApplicationConfig::instance();
+  if(config == NULL)
+  {
+    NQLog("AssemblyZFocusFinder", NQLog::Fatal) << "initialization error"
+       << ": ApplicationConfig::instance() not initialized (null pointer), exiting constructor";
 
-    if(!motion_model)
-    {
-      NQLog("ZFocusFinder", NQLog::Fatal) << "null pointer to LStepExpressModel object";
-      exit(1);
-    }
+    return;
+  }
 
-    camera_manager_ = new AssemblyUEyeCameraManager(camera);
-    motion_manager_ = new LStepExpressMotionManager(motion_model);
+  focus_pointN_max_ = config->getValue<int>   ("AssemblyZFocusFinder_pointN_max", 200);
+  focus_pointN_     = config->getValue<int>   ("AssemblyZFocusFinder_pointN"    ,  50);
 
-    ////
+  focus_zrange_max_ = config->getValue<double>("AssemblyZFocusFinder_zrange_max", 3.0);
+  focus_zrange_     = config->getValue<double>("AssemblyZFocusFinder_zrange"    , 0.5);
 
-    connect(this , SIGNAL(next_zpoint()), this, SLOT(test_focus()));
+  v_zrelm_vals_.clear();
+  v_focus_vals_.clear();
+  // --------------
 
-    ////
+  // validation
+  if(camera_manager_ == NULL)
+  {
+    NQLog("AssemblyZFocusFinder", NQLog::Fatal) << "initialization error"
+       << ": null pointer to AssemblyVUEyeCamera object, exiting constructor";
 
-    v_zrelm_vals_.clear();
+    return;
+  }
 
-    v_focus_vals_.clear();
+  if(motion_manager_ == NULL)
+  {
+    NQLog("AssemblyZFocusFinder", NQLog::Fatal) << "initialization error"
+       << ": null pointer to LStepExpressMotionManager object, exiting constructor";
 
-    NQLog("ZFocusFinder::ZFocusFinder", NQLog::Debug) << "constructed";
+    return;
+  }
+  // --------------
+
+  // connection(s)
+  connect(this , SIGNAL(next_zpoint()), this, SLOT(test_focus()));
+  // --------------
+
+  NQLog("AssemblyZFocusFinder", NQLog::Debug) << "constructed";
 }
 
-void ZFocusFinder::enable_motion()
+void AssemblyZFocusFinder::enable_motion()
 {
-    NQLog("ZFocusFinder", NQLog::Debug) << "enable_motion";
-
     if(motion_enabled_ == false)
     {
       connect   (this           , SIGNAL(focus       (double, double, double, double)),
                  motion_manager_, SLOT  (moveRelative(double, double, double, double)));
 
       connect   (motion_manager_, SIGNAL(motion_finished()),
-                 camera_manager_, SLOT  (acquire_image()));
+                 camera_manager_, SLOT  (acquireImage()));
 
-      connect   (camera_manager_, SIGNAL(image_acquired(cv::Mat)),
-                 this           , SLOT  (process_image (cv::Mat)));
+      connect   (camera_manager_, SIGNAL(imageAcquired(cv::Mat)),
+                 this           , SLOT  (process_image(cv::Mat)));
 
       motion_enabled_ = true;
+
+      NQLog("AssemblyZFocusFinder", NQLog::Spam) << "enable_motion"
+         << ": AssemblyZFocusFinder connected to AssemblyVUEyeCamera and LStepExpressMotionManager";
     }
 
     return;
 }
 
-void ZFocusFinder::disable_motion()
+void AssemblyZFocusFinder::disable_motion()
 {
-    NQLog("ZFocusFinder", NQLog::Debug) << "disable_motion";
-
     if(motion_enabled_ == true)
     {
       disconnect(this           , SIGNAL(focus       (double, double, double, double)),
                  motion_manager_, SLOT  (moveRelative(double, double, double, double)));
 
       disconnect(motion_manager_, SIGNAL(motion_finished()),
-                 camera_manager_, SLOT  (acquire_image()));
+                 camera_manager_, SLOT  (acquireImage()));
 
-      disconnect(camera_manager_, SIGNAL(image_acquired(cv::Mat)),
-                 this           , SLOT  (process_image (cv::Mat)));
+      disconnect(camera_manager_, SIGNAL(imageAcquired(cv::Mat)),
+                 this           , SLOT  (process_image(cv::Mat)));
 
       motion_enabled_ = false;
+
+      NQLog("AssemblyZFocusFinder", NQLog::Spam) << "disable_motion"
+         << ": AssemblyZFocusFinder disconnected from AssemblyVUEyeCamera and LStepExpressMotionManager";
     }
 
     return;
 }
 
-void ZFocusFinder::update_focus_inputs(const double zrange, const int pointN)
+void AssemblyZFocusFinder::update_focus_inputs(const double zrange, const int pointN)
 {
     if(zrange > 0.)
     {
-      focus_zrange_ = zrange;
+      if(zrange > focus_zrange_max_)
+      {
+        NQLog("AssemblyZFocusFinder", NQLog::Warning) << "update_focus_inputs"
+           << ": input value for z-motion range (" << zrange << ")"
+           << " larger than allowed max ("   << focus_zrange_max_ << ")"
+           << ", setting equal to allowed max";
 
-      NQLog("ZFocusFinder", NQLog::Message) << "update_focus_inputs"
+        focus_zrange_ = focus_zrange_max_;
+      }
+      else
+      {
+        focus_zrange_ = zrange;
+      }
+
+      NQLog("AssemblyZFocusFinder", NQLog::Message) << "update_focus_inputs"
          << ": updated z-motion range to " << focus_zrange_;
     }
     else
     {
-      NQLog("ZFocusFinder", NQLog::Message) << "update_focus_inputs"
+      NQLog("AssemblyZFocusFinder", NQLog::Message) << "update_focus_inputs"
          << ": non-positive input value for z-motion range, value not updated";
     }
 
     if(pointN > 0)
     {
-      if(pointN > ZFocusFinder::focus_pointN_max_)
+      if(pointN > focus_pointN_max_)
       {
-        NQLog("ZFocusFinder", NQLog::Message) << "update_focus_inputs"
-           << ": input number of scans larger than allowed max"
+        NQLog("AssemblyZFocusFinder", NQLog::Warning) << "update_focus_inputs"
+           << ": input value for number of scans (" << pointN << ")"
+           << " larger than allowed max ("    << focus_pointN_max_ << ")"
            << ", setting equal to allowed max";
 
-        focus_pointN_ = ZFocusFinder::focus_pointN_max_;
+        focus_pointN_ = focus_pointN_max_;
       }
       else
       {
         focus_pointN_ = pointN;
       }
 
-      NQLog("ZFocusFinder", NQLog::Message) << "update_focus_inputs"
+      NQLog("AssemblyZFocusFinder", NQLog::Message) << "update_focus_inputs"
          << ": updated number of scans to " << focus_pointN_;
     }
     else
     {
-      NQLog("ZFocusFinder", NQLog::Message) << "update_focus_inputs"
+      NQLog("AssemblyZFocusFinder", NQLog::Message) << "update_focus_inputs"
          << ": non-positive input value for number of scans, value not updated";
     }
 
     return;
 }
 
-void ZFocusFinder::acquire_image()
+void AssemblyZFocusFinder::acquire_image()
 {
+    if(focus_pointN_ <= 1)
+    {
+      NQLog("AssemblyZFocusFinder", NQLog::Fatal) << "acquire_image"
+         << ": invalid input number of scans (" << focus_pointN_ << "), stopping AssemblyZFocusFinder";
+
+      this->disable_motion();
+
+      return;
+    }
+
     this->enable_motion();
 
     focus_completed_ = false;
@@ -174,14 +218,14 @@ void ZFocusFinder::acquire_image()
         exe_counter_str = exe_counter_strss.str();
       }
 
-      output_dir_ = Util::QtCacheDirectory().toStdString()+"/autofocus/"+exe_counter_str+"/";
+      output_dir_ = Util::QtCacheDirectory().toStdString()+"/AssemblyZFocusFinder/"+exe_counter_str+"/";
 
       output_dir_exists = Util::DirectoryExists(output_dir_);
     }
 
     Util::QDir_mkpath(output_dir_);
 
-    NQLog("ZFocusFinder", NQLog::Spam) << "acquire_image"
+    NQLog("AssemblyZFocusFinder", NQLog::Spam) << "acquire_image"
        << ": created output directory: " << output_dir_;
 
     zposi_init_ = motion_manager_->get_position_Z();
@@ -190,13 +234,9 @@ void ZFocusFinder::acquire_image()
 
     v_focus_vals_.clear();
 
-    /** scan N points around initial position
-     *  TO DO: introduce pre-scan routine to
-     *         pin down z-interval containing best-focus position,
-     *         followed by finer scan in that interval
-     */
-    const double zmin = std::max(zposi_min_, zposi_init_ - (focus_zrange_/2.));
-    const double zmax = std::min(zposi_max_, zposi_init_ + (focus_zrange_/2.));
+    // scan N points around initial position
+    const double zmin = (zposi_init_ - focus_zrange_);
+    const double zmax = (zposi_init_ + focus_zrange_);
 
     v_zrelm_vals_.emplace_back(zmax - zposi_init_);
 
@@ -209,28 +249,34 @@ void ZFocusFinder::acquire_image()
 
     zrelm_index_ = -1;
 
-    NQLog("ZFocusFinder", NQLog::Debug) << "acquire_image"
+    NQLog("AssemblyZFocusFinder", NQLog::Message) << "acquire_image"
+       << ": initialized auto-focusing"
+       << " (z-min=" << zmin << ", z-max=" << zmax << ", steps=" << focus_pointN_ << ")";
+
+    NQLog("AssemblyZFocusFinder", NQLog::Spam) << "acquire_image"
        << ": emitting signal \"next_zpoint\"";
 
     emit next_zpoint();
 }
 
-void ZFocusFinder::test_focus()
+void AssemblyZFocusFinder::test_focus()
 {
   ++zrelm_index_;
 
   if(zrelm_index_ < 0)
   {
-    NQLog("ZFocusFinder", NQLog::Fatal) << "test_focus"
-       << ": logic error, negative index for std::vector \"v_zrelm_vals_\"";
+    NQLog("AssemblyZFocusFinder", NQLog::Fatal) << "test_focus"
+       << ": logic error, negative index for std::vector \"v_zrelm_vals_\", stopping AssemblyZFocusFinder";
 
-    exit(1);
+    this->disable_motion();
+
+    return;
   }
   else if(zrelm_index_ < int(v_zrelm_vals_.size()))
   {
     const double dz = v_zrelm_vals_.at(zrelm_index_);
 
-    NQLog("ZFocusFinder::test_focus", NQLog::Debug) << "test_focus"
+    NQLog("AssemblyZFocusFinder::test_focus", NQLog::Spam) << "test_focus"
        << ": emitting signal \"focus(0, 0, " << dz << ", 0)\"";
 
     emit focus(0., 0., dz, 0.);
@@ -240,7 +286,7 @@ void ZFocusFinder::test_focus()
   else
   {
     // Find best position
-    NQLog("ZFocusFinder", NQLog::Spam) << "test_focus"
+    NQLog("AssemblyZFocusFinder", NQLog::Spam) << "test_focus"
        << ": finding best-focus position";
 
     double zposi_best(zposi_init_);
@@ -268,8 +314,8 @@ void ZFocusFinder::test_focus()
       zscan_can->cd();
       zscan_gra->Draw("alp");
 
-      const std::string zscan_plot_path_png  = output_dir_+"/ZFocusFinder_zscan.png";
-      const std::string zscan_plot_path_root = output_dir_+"/ZFocusFinder_zscan.root";
+      const std::string zscan_plot_path_png  = output_dir_+"/AssemblyZFocusFinder_zscan.png";
+      const std::string zscan_plot_path_root = output_dir_+"/AssemblyZFocusFinder_zscan.root";
 
       zscan_can->SaveAs(zscan_plot_path_png.c_str());
 
@@ -279,12 +325,12 @@ void ZFocusFinder::test_focus()
       zscan_gra->Write();
       zscan_fil->Close();
 
-      NQLog("ZFocusFinder", NQLog::Debug) << "test_focus"
+      NQLog("AssemblyZFocusFinder", NQLog::Spam) << "test_focus"
          << ": emitting signal \"show_zscan(" << zscan_plot_path_png << ")\"";
 
       emit show_zscan(QString(zscan_plot_path_png.c_str()));
 
-      NQLog("ZFocusFinder", NQLog::Debug) << "test_focus"
+      NQLog("AssemblyZFocusFinder", NQLog::Spam) << "test_focus"
          << ": emitting signal \"update_text(" << zposi_best << ")\"";
 
       emit update_text(zposi_best);
@@ -305,7 +351,7 @@ void ZFocusFinder::test_focus()
       txtfile.close();
     }
 
-    NQLog("ZFocusFinder", NQLog::Spam) << "test_focus"
+    NQLog("AssemblyZFocusFinder", NQLog::Spam) << "test_focus"
       << ": created output file: " << output_dir_+"/values.txt";
     // ------------------
 
@@ -316,7 +362,7 @@ void ZFocusFinder::test_focus()
 
     const double dz = (zposi_best-zposi_now);
 
-    NQLog("ZFocusFinder", NQLog::Debug) << "test_focus"
+    NQLog("AssemblyZFocusFinder", NQLog::Spam) << "test_focus"
        << ": emitting signal \"focus(0, 0, " << dz << ", 0)\"";
 
     emit focus(0., 0., dz, 0.);
@@ -328,9 +374,9 @@ void ZFocusFinder::test_focus()
   return;
 }
 
-void ZFocusFinder::process_image(const cv::Mat& img)
+void AssemblyZFocusFinder::process_image(const cv::Mat& img)
 {
-  NQLog("ZFocusFinder", NQLog::Debug) << "process_image";
+  NQLog("AssemblyZFocusFinder", NQLog::Spam) << "process_image";
 
   if(focus_completed_)
   {
@@ -347,12 +393,12 @@ void ZFocusFinder::process_image(const cv::Mat& img)
     zrelm_index_ = -1;
 
     // save best-focus image
-    const std::string img_outpath = output_dir_+"/ZFocusFinder_best.png";
+    const std::string img_outpath = output_dir_+"/AssemblyZFocusFinder_best.png";
 
     cv::imwrite(img_outpath, img);
 
     // signal to end autofocus
-    NQLog("ZFocusFinder", NQLog::Debug) << "process_image"
+    NQLog("AssemblyZFocusFinder", NQLog::Spam) << "process_image"
        << ": emitting signal \"image_acquired\"";
 
     emit image_acquired(img);
@@ -362,15 +408,15 @@ void ZFocusFinder::process_image(const cv::Mat& img)
     // --- generic autofocus step ---
 
     // save image
-    const std::string img_outpath = output_dir_+"/ZFocusFinder_"+std::to_string(v_focus_vals_.size())+".png";
+    const std::string img_outpath = output_dir_+"/AssemblyZFocusFinder_"+std::to_string(v_focus_vals_.size())+".png";
     cv::imwrite(img_outpath, img);
 
     // save focus info
-    ZFocusFinder::focus_info this_focus;
+    AssemblyZFocusFinder::focus_info this_focus;
     this_focus.z_position = motion_manager_->get_position_Z();
     this_focus.focus_disc = this->image_focus_value(img);
 
-    NQLog("ZFocusFinder", NQLog::Spam) << "process_image"
+    NQLog("AssemblyZFocusFinder", NQLog::Spam) << "process_image"
        << ": image(" << exe_counter_ << "," << v_focus_vals_.size() << ")"
        << ", focus-value = " << this_focus.focus_disc;
 
@@ -378,7 +424,7 @@ void ZFocusFinder::process_image(const cv::Mat& img)
     // ------------------------------
 
     // --- go to next autofocus step
-    NQLog("ZFocusFinder", NQLog::Debug) << "process_image"
+    NQLog("AssemblyZFocusFinder", NQLog::Spam) << "process_image"
        << ": emitting signal \"next_zpoint\"";
 
     emit next_zpoint();
@@ -388,10 +434,9 @@ void ZFocusFinder::process_image(const cv::Mat& img)
   return;
 }
 
-/* \Brief Image-focus discriminant based on Laplacian method in OpenCV
- *        REF: https://docs.opencv.org/2.4/doc/tutorials/imgproc/imgtrans/laplace_operator/laplace_operator.html
- */
-double ZFocusFinder::image_focus_value(const cv::Mat& img)
+// \Brief Image-focus discriminant based on Laplacian method in OpenCV
+//        REF: https://docs.opencv.org/2.4/doc/tutorials/imgproc/imgtrans/laplace_operator/laplace_operator.html
+double AssemblyZFocusFinder::image_focus_value(const cv::Mat& img)
 {
 //  // Remove noise by blurring with a Gaussian filter
 //  cv::Mat img_gaus;

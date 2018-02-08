@@ -28,11 +28,69 @@
 #include <TCanvas.h>
 #include <TGraph.h>
 
-using namespace cv;
-
-AssemblyAssembler::AssemblyAssembler(LStepExpressModel* lStepExpressModel) : QObject(), lStepExpressModel_(lStepExpressModel)
+AssemblyAssembler::AssemblyAssembler(LStepExpressMotionManager* motion_manager, QObject* parent) :
+  QObject(parent),
+  motion_manager_(motion_manager),
+  motion_manager_enabled_(false)
 {
-    NQLog("AssemblyAssembler", NQLog::Debug) << "constructed";
+  if(motion_manager_ == NULL)
+  {
+    NQLog("AssemblyAssembler", NQLog::Fatal) << "initialization error"
+       << ": null pointer to LStepExpressMotionManager object, exiting constructor";
+
+    return;
+  }
+
+  NQLog("AssemblyAssembler", NQLog::Debug) << "constructed";
+}
+
+void AssemblyAssembler::enable_motion_manager(const bool arg)
+{
+  if(arg == motion_manager_enabled_)
+  {
+    NQLog("AssemblyAssembler", NQLog::Spam) << "enable_motion_manager(" << arg << ")"
+       << ": motion-manager for AssemblyAssembler already " << (arg ? "enabled" : "disabled") << ", no action taken";
+
+    return;
+  }
+
+  if(arg)
+  {
+    connect(motion_manager_, SIGNAL(motion_finished()), this, SLOT(stop_motion()));
+
+    motion_manager_enabled_ = true;
+
+    NQLog("AssemblyAssembler", NQLog::Spam) << "enable_motion_manager(" << arg << ")"
+       << ": motion-manager for AssemblyAssembler enabled";
+  }
+  else
+  {
+    disconnect(motion_manager_, SIGNAL(motion_finished()), this, SLOT(stop_motion()));
+
+    motion_manager_enabled_ = false;
+
+    NQLog("AssemblyAssembler", NQLog::Spam) << "enable_motion_manager(" << arg << ")"
+       << ": motion-manager for AssemblyAssembler disabled";
+  }
+
+  return;
+}
+
+void AssemblyAssembler::move_relative(const double x, const double y, const double z, const double a)
+{
+  this->connect_motion_manager();
+
+  motion_manager_->moveRelative(x, y, z, a);
+}
+
+void AssemblyAssembler::stop_motion()
+{
+  this->disconnect_motion_manager();
+
+  NQLog("AssemblyAssembler", NQLog::Debug) << "stop_motion"
+     << ": emitting signal \"motion_finished\"";
+
+  emit motion_finished();
 }
 
 void  AssemblyAssembler::run_sandwitchassembly(double x_a, double y_a, double z_a , double x_b, double y_b, double z_b, double x_t, double y_t, double z_t)
@@ -461,8 +519,8 @@ void AssemblyAssembler::run_alignment(int stage, double x_pr, double y_pr, doubl
     else if (alignment_step == 2){
         NQLog("AssemblyAssembler::run_alignment step == ") << alignment_step;
         alignment_step++;
-		x1_pos = lStepExpressModel_ -> getPosition(0); 	
-		y1_pos = lStepExpressModel_ -> getPosition(1); 	
+		x1_pos = motion_manager_->get_position_X();
+		y1_pos = motion_manager_->get_position_Y();
 		std::cout << " !!!!! " << std::endl;
 		std::cout << " xposition = " << x1_pos << "  yposition = " << y1_pos << std::endl;
 		std::cout << " !!!!! " << std::endl;
@@ -522,8 +580,8 @@ void AssemblyAssembler::run_alignment(int stage, double x_pr, double y_pr, doubl
         NQLog("AssemblyAssembler::run_alignment step == ") << alignment_step;
         NQLog("AssemblyAssembler::Detecting second corner");
         alignment_step++;
-		double x2_pos = lStepExpressModel_ -> getPosition(0); 	
-		double y2_pos = lStepExpressModel_ -> getPosition(1);	
+		double x2_pos = motion_manager_->get_position_X();
+		double y2_pos = motion_manager_->get_position_Y();
 		std::cout << " !!!!! " << std::endl;
 		std::cout << " x1 position = " << x1_pos << "  y1 position = " << y1_pos << std::endl;
 		std::cout << " !!!!! " << std::endl;
@@ -764,20 +822,20 @@ void  AssemblyAssembler::write_image(cv::Mat newImage, cv::Rect marker_rect){
     filename = filename.simplified();
     filename.replace( " ", "" );
     
-    Point tl = marker_rect.tl();
-    Point br = marker_rect.br();
+    cv::Point tl = marker_rect.tl();
+    cv::Point br = marker_rect.br();
     
-//    rectangle( newImage, rectangle, Scalar(255,0,0), 2, 8, 0 );
- //   rectangle(newImage, rectangle, Scalar(255,0,0), 2, 8, 0);
+//    rectangle( newImage, rectangle, cv::Scalar(255,0,0), 2, 8, 0 );
+ //   rectangle(newImage, rectangle, cv::Scalar(255,0,0), 2, 8, 0);
     
-    rectangle(newImage, tl, br, Scalar(255,0,0), 2, 8, 0);
+    rectangle(newImage, tl, br, cv::Scalar(255,0,0), 2, 8, 0);
 
     cv::imwrite(filename.toStdString(), newImage);
     emit updateScanImage(newImage);
     
     double variance  = this->imageVariance(newImage, marker_rect);
     double x = nAcquiredImages;
-    double current_z = lStepExpressModel_->getPosition(2);
+    double current_z = motion_manager_->get_position_Z();
     
     x_vals.push_back(current_z);
     y_vals.push_back(variance);
@@ -819,15 +877,15 @@ void  AssemblyAssembler::write_image(cv::Mat newImage, cv::Rect marker_rect){
 
 double AssemblyAssembler::imageVariance(cv::Mat img_input, cv::Rect rectangle)
 {
-    Mat img_copy = img_input.clone();
-    Mat roi(img_copy, rectangle);
+    cv::Mat img_copy = img_input.clone();
+    cv::Mat roi(img_copy, rectangle);
 
     // Convert color image to greyscale (GS)
-    Mat img_copy_gs(img_copy.size(), img_copy.type());
+    cv::Mat img_copy_gs(img_copy.size(), img_copy.type());
 //    cvtColor(img_copy, img_copy_gs, CV_BGR2GRAY);
 
     // Apply laplacian function to GS image
-    Mat img_laplace;
+    cv::Mat img_laplace;
     Laplacian(img_copy, img_laplace, CV_64F);
 
     // Calculate standard deviation of laplace image
