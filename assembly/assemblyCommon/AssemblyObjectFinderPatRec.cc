@@ -387,7 +387,6 @@ void AssemblyObjectFinderPatRec::run_PatRec(const int mode_lab, const int mode_o
          << ": detection of spacer corner";
 
 //      image_tpl_ = cv::imread(Config::CMSTkModLabBasePath+"/share/assembly/spacer_corner_tempate_crop.png", CV_LOAD_IMAGE_COLOR);
-//
 //      threshold_tpl_ = 85; // 90 for silicon marker, 88 for glass?
 
       image_tpl_ = cv::imread(Config::CMSTkModLabBasePath+"/share/assembly/spacer_corner_threshold80_template.png", CV_LOAD_IMAGE_COLOR);
@@ -438,9 +437,13 @@ void AssemblyObjectFinderPatRec::run_PatRec(const int mode_lab, const int mode_o
     {
       NQLog("AssemblyObjectFinderPatRec", NQLog::Spam) << "run_PatRec"
          << "(mode_lab=" << mode_lab << ", mode_obj=" << mode_obj << ")"
-         << ": detection of spacer corner not implemented, no action taken";
+         << ": detection of spacer corner";
 
-      return;
+//      image_tpl_ = cv::imread(Config::CMSTkModLabBasePath+"/share/assembly/spacer_corner_tempate_crop.png", CV_LOAD_IMAGE_COLOR);
+//      threshold_tpl_ = 85; // 90 for silicon marker, 88 for glass?
+
+      image_tpl_ = cv::imread(Config::CMSTkModLabBasePath+"/share/assembly/spacer_corner_threshold80_template.png", CV_LOAD_IMAGE_COLOR);
+      threshold_tpl_ = -1;
     }
     else
     {
