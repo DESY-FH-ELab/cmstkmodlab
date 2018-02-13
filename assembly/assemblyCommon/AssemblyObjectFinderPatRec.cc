@@ -356,6 +356,9 @@ void AssemblyObjectFinderPatRec::run_PatRec(const int mode_lab, const int mode_o
 
       image_tpl_ = cv::imread(Config::CMSTkModLabBasePath+"/share/assembly/glass_marker1_template.png", CV_LOAD_IMAGE_COLOR);
       threshold_tpl_ = 165; // 90 for silicon marker, 88 for glass, 165 for marked-glass
+
+//      image_tpl_ = cv::imread(Config::CMSTkModLabBasePath+"/share/assembly/marked_glass_marker_drawing.png", CV_LOAD_IMAGE_COLOR);
+//      threshold_tpl_ = -1;
     }
     else if(mode_obj == 1)
     {
@@ -383,9 +386,12 @@ void AssemblyObjectFinderPatRec::run_PatRec(const int mode_lab, const int mode_o
          << "(mode_lab=" << mode_lab << ", mode_obj=" << mode_obj << ")"
          << ": detection of spacer corner";
 
-      image_tpl_ = cv::imread(Config::CMSTkModLabBasePath+"/share/assembly/spacer_corner_tempate_crop.png", CV_LOAD_IMAGE_COLOR);
+//      image_tpl_ = cv::imread(Config::CMSTkModLabBasePath+"/share/assembly/spacer_corner_tempate_crop.png", CV_LOAD_IMAGE_COLOR);
+//
+//      threshold_tpl_ = 85; // 90 for silicon marker, 88 for glass?
 
-      threshold_tpl_ = 85; // 90 for silicon marker, 88 for glass?
+      image_tpl_ = cv::imread(Config::CMSTkModLabBasePath+"/share/assembly/spacer_corner_threshold80_template.png", CV_LOAD_IMAGE_COLOR);
+      threshold_tpl_ = -1;
     }
     else
     {
@@ -533,7 +539,14 @@ void AssemblyObjectFinderPatRec::template_matching(const cv::Mat& img_master, co
   // Binary images
   cv::Mat img_templa_bin(img_templa_gs.size(), img_templa_gs.type());
 
-  cv::threshold(img_templa_gs, img_templa_bin, threshold_templa, 255, cv::THRESH_BINARY);
+  if(threshold_templa >= 0)
+  {
+    cv::threshold(img_templa_gs, img_templa_bin, threshold_templa, 255, cv::THRESH_BINARY);
+  }
+  else
+  {
+    img_templa_bin = img_templa_gs.clone();
+  }
 
   const std::string filepath_img_master     = output_dir+"/image_master.png";
   const std::string filepath_img_master_bin = output_dir+"/image_master_binary.png";
