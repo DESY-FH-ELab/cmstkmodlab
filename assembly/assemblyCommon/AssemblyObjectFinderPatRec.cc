@@ -389,7 +389,7 @@ void AssemblyObjectFinderPatRec::run_PatRec(const int mode_lab, const int mode_o
 //      image_tpl_ = cv::imread(Config::CMSTkModLabBasePath+"/share/assembly/spacer_corner_tempate_crop.png", CV_LOAD_IMAGE_COLOR);
 //      threshold_tpl_ = 85; // 90 for silicon marker, 88 for glass?
 
-      image_tpl_ = cv::imread(Config::CMSTkModLabBasePath+"/share/assembly/spacer_corner_template_v0_BWdrawing.png", CV_LOAD_IMAGE_COLOR);
+      image_tpl_ = cv::imread(Config::CMSTkModLabBasePath+"/share/assembly/spacer_corner_template_v0_BW.png", CV_LOAD_IMAGE_COLOR);
       threshold_tpl_ = -1;
     }
     else
@@ -442,7 +442,7 @@ void AssemblyObjectFinderPatRec::run_PatRec(const int mode_lab, const int mode_o
 //      image_tpl_ = cv::imread(Config::CMSTkModLabBasePath+"/share/assembly/spacer_corner_tempate_crop.png", CV_LOAD_IMAGE_COLOR);
 //      threshold_tpl_ = 85; // 90 for silicon marker, 88 for glass?
 
-      image_tpl_ = cv::imread(Config::CMSTkModLabBasePath+"/share/assembly/spacer_corner_template_v0_BWdrawing.png", CV_LOAD_IMAGE_COLOR);
+      image_tpl_ = cv::imread(Config::CMSTkModLabBasePath+"/share/assembly/spacer_corner_template_v0_BW.png", CV_LOAD_IMAGE_COLOR);
       threshold_tpl_ = -1;
     }
     else

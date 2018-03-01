@@ -88,6 +88,7 @@ class AssemblyObjectFinderPatRec : public QObject
 
   void run_PatRec(const int, const int);
   void run_PatRec_lab_marker(){ this->run_PatRec(1, 0); }
+  void run_PatRec_lab_spacer(){ this->run_PatRec(1, 3); }
 
   void template_matching(const cv::Mat&, const cv::Mat&, const cv::Mat&, const int);
 
