@@ -153,14 +153,14 @@ void HamegChannelWidget::updateInfo()
     }
   }
 
-  char dummy[10];
+  char dummy[30];
 
   if (!voltageSpinner_->hasFocus()) {
     float setVoltage = model_->getVoltageParameter(channel_).getValue();
     voltageSpinner_->setValue(setVoltage);
   }
   float voltage = model_->getVoltage(channel_);
-  sprintf(dummy, "%.02f", voltage);
+  snprintf(dummy, sizeof(dummy), "%.02f", voltage);
   voltageDisplay_->display(dummy);
 
   if (!currentSpinner_->hasFocus()) {
@@ -168,7 +168,7 @@ void HamegChannelWidget::updateInfo()
     currentSpinner_->setValue(setCurrent);
   }
   float current = model_->getCurrent(channel_);
-  sprintf(dummy, "%.03f", current);
+  snprintf(dummy, sizeof(dummy), "%.03f", current);
   currentDisplay_->display(dummy);
 }
 
