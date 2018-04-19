@@ -354,7 +354,7 @@ void AssemblyObjectFinderPatRec::run_PatRec(const int mode_lab, const int mode_o
 //
 //      threshold_tpl_ = 85; // 90 for silicon marker, 88 for glass, 188 for marked-glass
 
-//      image_tpl_ = cv::imread(Config::CMSTkModLabBasePath+"/share/assembly/markedglass_marker1_snapshot.png", CV_LOAD_IMAGE_COLOR);
+//      image_tpl_ = cv::imread(Config::CMSTkModLabBasePath+"/share/assembly/markedglass_marker1_template.png", CV_LOAD_IMAGE_COLOR);
 //      threshold_tpl_ = 165; // 90 for silicon marker, 88 for glass, 165 for marked-glass
 
       image_tpl_ = cv::imread(Config::CMSTkModLabBasePath+"/share/assembly/markedglass_marker1_drawing_588x588.png", CV_LOAD_IMAGE_COLOR);

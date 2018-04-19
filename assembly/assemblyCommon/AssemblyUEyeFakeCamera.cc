@@ -34,11 +34,13 @@ AssemblyUEyeFakeCamera::AssemblyUEyeFakeCamera(QObject* parent) :
     imageFilenamesForPixelClock_[5] = filenames;
 
     filenames.clear();
-    filenames.push_back(QString(filename + "/share/assembly/sensor_24MHz_333ms_1.png").toStdString());
-    filenames.push_back(QString(filename + "/share/assembly/sensor_24MHz_333ms_2.png").toStdString());
-    filenames.push_back(QString(filename + "/share/assembly/sensor_24MHz_333ms_3.png").toStdString());
-    filenames.push_back(QString(filename + "/share/assembly/sensor_24MHz_333ms_4.png").toStdString());
-    filenames.push_back(QString(filename + "/share/assembly/sensor_24MHz_333ms_5.png").toStdString());
+    filenames.push_back(QString(filename + "/share/assembly/sensor_24MHz_333ms_1.png"      ).toStdString());
+    filenames.push_back(QString(filename + "/share/assembly/sensor_24MHz_333ms_2.png"      ).toStdString());
+    filenames.push_back(QString(filename + "/share/assembly/sensor_24MHz_333ms_3.png"      ).toStdString());
+    filenames.push_back(QString(filename + "/share/assembly/sensor_24MHz_333ms_4.png"      ).toStdString());
+    filenames.push_back(QString(filename + "/share/assembly/sensor_24MHz_333ms_5.png"      ).toStdString());
+    filenames.push_back(QString(filename + "/share/assembly/markedglass_marker1_master.png").toStdString());
+    filenames.push_back(QString(filename + "/share/assembly/spacer_corner1.png"            ).toStdString());
     imageFilenamesForPixelClock_[24] = filenames;
 
     filenames.clear();
