@@ -788,7 +788,7 @@ void AssemblyObjectFinderPatRec::PatRec(double& fom, cv::Point& match_loc, const
 
   const cv::Scalar avgPixelIntensity = cv::mean(img_master_bin);
 
-  warpAffine(img_master_bin, img_master_bin_rot, rot_mat, img_master_bin.size(), cv::INTER_CUBIC, cv::BORDER_CONSTANT, avgPixelIntensity);
+  warpAffine(img_master_bin, img_master_bin_rot, rot_mat, img_master_bin.size(), cv::INTER_NEAREST, cv::BORDER_CONSTANT, avgPixelIntensity);
 
   if(out_dir != "")
   {
