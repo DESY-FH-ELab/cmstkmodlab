@@ -354,11 +354,11 @@ void AssemblyObjectFinderPatRec::run_PatRec(const int mode_lab, const int mode_o
 //
 //      threshold_tpl_ = 85; // 90 for silicon marker, 88 for glass, 188 for marked-glass
 
-      image_tpl_ = cv::imread(Config::CMSTkModLabBasePath+"/share/assembly/glass_marker1_template.png", CV_LOAD_IMAGE_COLOR);
-      threshold_tpl_ = 165; // 90 for silicon marker, 88 for glass, 165 for marked-glass
+//      image_tpl_ = cv::imread(Config::CMSTkModLabBasePath+"/share/assembly/markedglass_marker1_snapshot.png", CV_LOAD_IMAGE_COLOR);
+//      threshold_tpl_ = 165; // 90 for silicon marker, 88 for glass, 165 for marked-glass
 
-//      image_tpl_ = cv::imread(Config::CMSTkModLabBasePath+"/share/assembly/marked_glass_marker_drawing_588x588.png", CV_LOAD_IMAGE_COLOR);
-//      threshold_tpl_ = -1;
+      image_tpl_ = cv::imread(Config::CMSTkModLabBasePath+"/share/assembly/markedglass_marker1_drawing_588x588.png", CV_LOAD_IMAGE_COLOR);
+      threshold_tpl_ = -1;
     }
     else if(mode_obj == 1)
     {
@@ -596,7 +596,7 @@ void AssemblyObjectFinderPatRec::template_matching(const cv::Mat& img_master, co
 
     for(unsigned int i=0; i<rough_angles.size(); ++i)
     {
-      double i_angle = rough_angles.at(i);
+      const double i_angle = rough_angles.at(i);
 
       double i_FOM(0.);
       cv::Point i_matchLoc;
@@ -635,7 +635,7 @@ void AssemblyObjectFinderPatRec::template_matching(const cv::Mat& img_master, co
   {
     const unsigned int scan_counter = vec_angleNfom.size();
 
-    double i_theta = theta_rough + theta_fine;
+    const double i_theta = theta_rough + theta_fine;
 
     double i_FOM(0.);
     cv::Point i_matchLoc;
