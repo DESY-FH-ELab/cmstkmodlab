@@ -84,6 +84,7 @@ class AssemblyRegistryImageWidget : public QWidget
   QPushButton*      img_save_button_;
   QPushButton*      img_celi_button_;
 
+  //!! FIXME: View should not own (copy of) data, add dedicated controller
   cv::Mat image_;
 
  public slots:

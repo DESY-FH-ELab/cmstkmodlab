@@ -25,14 +25,16 @@ typedef AssemblyUEyeModel AssemblyUEyeModel_t;
 #include <AssemblyUEyeWidget.h>
 #include <AssemblyUEyeView.h>
 #include <AssemblyUEyeSnapShooter.h>
-#include <AssemblyThresholdView.h>
+#include <AssemblyImageThresholderView.h>
 #include <AssemblyAutoFocusView.h>
 #include <AssemblyAssemblyView.h>
 #include <AssemblyRegistryView.h>
 #include <AssemblyImageController.h>
+#include <AssemblyImageThresholder.h>
 #include <AssemblyZFocusFinder.h>
 #include <AssemblyObjectFinderPatRec.h>
 #include <AssemblyObjectFinderPatRecThread.h>
+#include <AssemblyObjectAligner.h>
 #include <AssemblyMultiPickupTester.h>
 #include <AssemblyAssembler.h>
 #include <LStepExpressModel.h>
@@ -79,6 +81,9 @@ class AssemblyMainWindow : public QMainWindow
 //  void changeState_SandwichAssembly(const int);
   void changeState_Alignment       (const int);
 
+  void    connect_objectAligner(const AssemblyObjectAligner::Configuration&);
+  void disconnect_objectAligner();
+
   void    connect_multipickupNpatrec(const AssemblyMultiPickupTester::Configuration&);
   void disconnect_multipickupNpatrec();
 
@@ -98,6 +103,9 @@ class AssemblyMainWindow : public QMainWindow
 
   void AutoFocus_ON();
   void AutoFocus_OFF();
+
+  void objectAligner_connected();
+  void objectAligner_disconnected();
 
   void multipickupNpatrec_connected();
   void multipickupNpatrec_disconnected();
@@ -132,7 +140,7 @@ class AssemblyMainWindow : public QMainWindow
 //  AssemblyUEyeSnapShooter* finderView_;
 //  AssemblyUEyeSnapShooter* edgeView_;
 //  AssemblyUEyeSnapShooter* rawView_;
-  AssemblyThresholdView* thresholdView_;
+  AssemblyImageThresholderView* thresholdView_;
   AssemblyAutoFocusView* autoFocusView_;
   AssemblyAssemblyView*  assemblyView_;
   AssemblyRegistryView*  registryView_;
@@ -144,12 +152,14 @@ class AssemblyMainWindow : public QMainWindow
   // controller(s)
   AssemblyImageController*    image_ctr_;
   AssemblyZFocusFinder*       zfocus_finder_;
-  AssemblyObjectFinderPatRec* object_finder_;
+  AssemblyImageThresholder*   img_thresholder_;
+  AssemblyObjectFinderPatRec* obj_finder_;
+  AssemblyObjectAligner*      obj_aligner_;
   AssemblyMultiPickupTester*  multipickup_;
   AssemblyAssembler*          module_assembler_;
 
   // thread(s)
-  AssemblyObjectFinderPatRecThread* object_finder_thread_;
+  AssemblyObjectFinderPatRecThread* obj_finder_thread_;
 
   // timing
   double testTimerCount_;

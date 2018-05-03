@@ -1,0 +1,253 @@
+/////////////////////////////////////////////////////////////////////////////////
+//                                                                             //
+//               Copyright (C) 2011-2017 - The DESY CMS Group                  //
+//                           All rights reserved                               //
+//                                                                             //
+//      The CMStkModLab source code is licensed under the GNU GPL v3.0.        //
+//      You have the right to modify and/or redistribute this source code      //
+//      under the terms specified in the license, which may be found online    //
+//      at http://www.gnu.org/licenses or at License.txt.                      //
+//                                                                             //
+/////////////////////////////////////////////////////////////////////////////////
+
+#include <AssemblyImageThresholder.h>
+#include <ApplicationConfig.h>
+#include <nqlogger.h>
+#include <Util.h>
+
+#include <iostream>
+#include <fstream>
+
+#include <QFile>
+#include <QTextStream>
+
+#include <TFile.h>
+#include <TGraph.h>
+#include <TCanvas.h>
+#include <TH1.h>
+
+AssemblyImageThresholder::AssemblyImageThresholder(QObject* parent) :
+  QObject(parent),
+
+//  method_(AssemblyImageThresholder::ThresholdingMethod::undefined),
+
+  updated_img_raw_(false),
+  updated_img_bin_(false)
+{
+  NQLog("AssemblyImageThresholder", NQLog::Debug) << "constructed";
+}
+
+AssemblyImageThresholder::~AssemblyImageThresholder()
+{
+  NQLog("AssemblyImageThresholder", NQLog::Debug) << "destructed";
+}
+
+void AssemblyImageThresholder::update_image_raw(const cv::Mat& img)
+{
+//  mutex_.lock();
+
+  if(img.channels() > 1)
+  {
+    img_raw_ = img;
+  }
+  else
+  {
+    cv::Mat img_color;
+    cv::cvtColor(img, img_color, cv::COLOR_GRAY2BGR);
+
+    img_raw_ = img_color.clone();
+  }
+
+  if(updated_img_raw_ == false){ updated_img_raw_ = true ; }
+  if(updated_img_bin_ == true ){ updated_img_bin_ = false; }
+
+//  mutex_.unlock();
+
+  NQLog("AssemblyImageThresholder", NQLog::Spam) << "update_image_raw"
+     << ": emitting signal \"updated_image_raw\"";
+
+  emit updated_image_raw(img_raw_);
+  emit updated_image_raw();
+}
+
+void AssemblyImageThresholder::delete_image_raw()
+{
+//  mutex_.lock();
+
+  img_raw_ = cv::Mat();
+
+  if(updated_img_raw_ == true){ updated_img_raw_ = false; }
+  if(updated_img_bin_ == true){ updated_img_bin_ = false; }
+
+//  mutex_.unlock();
+
+  return;
+}
+
+void AssemblyImageThresholder::update_image_binary_threshold(const int threshold_value)
+{
+  if(img_raw_.empty())
+  {
+    NQLog("AssemblyImageThresholder", NQLog::Warning) << "update_image_binary_threshold"
+       << ": empty input image, thresholding not applied to input image";
+
+    return;
+  }
+
+//  mutex_.lock();
+
+  img_bin_ = this->get_image_binary_threshold(img_raw_, threshold_value);
+
+  if(updated_img_bin_ == false){ updated_img_bin_ = true; }
+
+//  mutex_.unlock();
+
+  NQLog("AssemblyImageThresholder", NQLog::Spam) << "update_image_binary_threshold(" << threshold_value << ")"
+     << ": emitting signal \"updated_image_binary\"";
+
+  emit updated_image_binary(img_bin_);
+  emit updated_image_binary();
+}
+
+cv::Mat AssemblyImageThresholder::get_image_binary_threshold(const cv::Mat& img, const int threshold) const
+{
+  // greyscale image
+  cv::Mat img_gs(img.size(), img.type());
+
+  if(img.channels() > 1)
+  {
+    // convert color to GS
+    cv::cvtColor(img, img_gs, CV_BGR2GRAY);
+  }
+  else
+  {
+    img_gs = img.clone();
+  }
+
+  // binary image
+  cv::Mat img_bin(img_gs.size(), img_gs.type());
+
+  if(threshold < 0)
+  {
+    NQLog("AssemblyImageThresholder", NQLog::Warning) << "get_image_binary_adaptiveThreshold"
+       << ": negative threshold value (" << threshold << "), thresholding not applied to input image";
+
+    img_bin = img_gs.clone();
+  }
+  else
+  {
+    cv::threshold(img_gs, img_bin, threshold, 255, cv::THRESH_BINARY);
+  }
+
+  return img_bin;
+}
+
+void AssemblyImageThresholder::update_image_binary_adaptiveThreshold(const int blocksize_value)
+{
+  if(img_raw_.empty())
+  {
+    NQLog("AssemblyImageThresholder", NQLog::Warning) << "update_image_binary_adaptiveThreshold"
+       << ": empty input image, thresholding not applied to input image";
+
+    return;
+  }
+
+//  mutex_.lock();
+
+  img_bin_ = this->get_image_binary_adaptiveThreshold(img_raw_, blocksize_value);
+
+  if(updated_img_bin_ == false){ updated_img_bin_ = true; }
+
+//  mutex_.unlock();
+
+  NQLog("AssemblyImageThresholder", NQLog::Spam) << "update_image_binary_adaptiveThreshold(" << blocksize_value << ")"
+     << ": emitting signal \"updated_image_binary\"";
+
+  emit updated_image_binary(img_bin_);
+  emit updated_image_binary();
+}
+
+cv::Mat AssemblyImageThresholder::get_image_binary_adaptiveThreshold(const cv::Mat& img, const int blocksize) const
+{
+  // greyscale image
+  cv::Mat img_gs(img.size(), img.type());
+
+  if(img.channels() > 1)
+  {
+    // convert color to GS
+    cv::cvtColor(img, img_gs, CV_BGR2GRAY);
+  }
+  else
+  {
+    img_gs = img.clone();
+  }
+
+  // binary image
+  cv::Mat img_bin(img_gs.size(), img_gs.type());
+
+  if(blocksize < 0)
+  {
+    NQLog("AssemblyImageThresholder", NQLog::Warning) << "get_image_binary_adaptiveThreshold"
+       << ": negative block-size value (" << blocksize << "), thresholding not applied to input image";
+
+    img_bin = img_gs.clone();
+  }
+  else if((blocksize % 2) == 0)
+  {
+    NQLog("AssemblyImageThresholder", NQLog::Warning) << "get_image_binary_adaptiveThreshold"
+       << ": invalid (non-odd) block-size value (" << blocksize << "), thresholding not applied to input image";
+
+    img_bin = img_gs.clone();
+  }
+  else
+  {
+    cv::adaptiveThreshold(img_gs, img_bin, 255, cv::ADAPTIVE_THRESH_GAUSSIAN_C, cv::THRESH_BINARY, blocksize, 0.);
+  }
+
+  return img_bin;
+}
+
+void AssemblyImageThresholder::delete_image_binary()
+{
+//  mutex_.lock();
+
+  img_bin_ = cv::Mat();
+
+  if(updated_img_bin_){ updated_img_bin_ = false; }
+
+//  mutex_.unlock();
+
+  return;
+}
+
+void AssemblyImageThresholder::send_image_raw()
+{
+  if(img_raw_.empty())
+  {
+    NQLog("AssemblyImageThresholder", NQLog::Warning) << "send_image_raw"
+       << ": raw image is empty, no action taken";
+
+    return;
+  }
+
+  NQLog("AssemblyImageThresholder", NQLog::Spam) << "send_image_raw"
+     << ": emitting signal \"image_sent\"";
+
+  emit image_sent(img_raw_);
+}
+
+void AssemblyImageThresholder::send_image_binary()
+{
+  if(img_bin_.empty())
+  {
+    NQLog("AssemblyImageThresholder", NQLog::Warning) << "send_image_binary"
+       << ": binary image is empty, no action taken";
+
+    return;
+  }
+
+  NQLog("AssemblyImageThresholder", NQLog::Spam) << "send_image_binary"
+     << ": emitting signal \"image_sent\"";
+
+  emit image_sent(img_bin_);
+}

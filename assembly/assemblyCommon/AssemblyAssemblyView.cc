@@ -1202,8 +1202,7 @@ void AssemblyMultiPickupTesterWidget::execute()
      << ", p_x=" << pickup_x <<  ", p_y=" << pickup_y << ", p_z=" << pickup_z
      << ", n=" << iteraN << ")\"";
 
-  const AssemblyMultiPickupTester::Configuration mpt_conf
-  (
+  const AssemblyMultiPickupTester::Configuration mpt_conf(
     measur_x, measur_y, measur_z,
     pickup_x, pickup_y, pickup_z,
     iteraN

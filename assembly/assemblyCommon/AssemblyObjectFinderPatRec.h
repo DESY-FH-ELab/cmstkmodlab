@@ -31,8 +31,8 @@ class AssemblyObjectFinderPatRec : public QObject
   void set_threshold(const int);
   int  get_threshold() const { return threshold_; }
 
-  void delete_image();
-  void delete_binary_image();
+  void delete_image_master();
+  void delete_image_master_PatRec();
 
  protected:
 
@@ -42,15 +42,17 @@ class AssemblyObjectFinderPatRec : public QObject
   std::string output_subdir_name_;
 
   int threshold_;
-  int threshold_tpl_;
+  int threshold_template_;
 
-  cv::Mat image_mas_; // master image
-  cv::Mat image_bin_; // master image + threshold
-  cv::Mat image_tpl_; // template image
+  cv::Mat img_master_;        // original master image
+  cv::Mat img_master_PatRec_; // master image used in PatRec (example: binary/post-thresholding version of original master image)
+
+  cv::Mat img_template_;        // original template image
+  cv::Mat img_template_PatRec_; // template image used in PatRec (example: binary/post-thresholding version of original template image)
 
   bool updated_threshold_;
-  bool updated_image_master_;
-  bool updated_image_master_binary_;
+  bool updated_img_master_;
+  bool updated_img_master_PatRec_;
 
   double theta_fine_range_;
   double theta_fine_step_;
@@ -75,13 +77,13 @@ class AssemblyObjectFinderPatRec : public QObject
 
   void acquire_image();
 
-  void update_image(const cv::Mat&);
-  void update_binary_image();
+  void update_image_master(const cv::Mat&);
+  void update_image_master_PatRec();
 
-  cv::Mat get_binary_image(const cv::Mat&, const int) const;
+  cv::Mat get_image_master_PatRec(const cv::Mat&, const int) const;
 
   void send_image_master();
-  void send_image_binary();
+  void send_image_master_PatRec();
 
   void update_rough_angles      (QString);
   void update_angscan_parameters(QString);
@@ -94,23 +96,23 @@ class AssemblyObjectFinderPatRec : public QObject
  signals:
 
   void threshold_request();
-  void threshold_updated();
+  void updated_threshold();
 
   void image_request();
 
-  void        image_updated(const cv::Mat&);
-  void binary_image_updated(const cv::Mat&);
+  void updated_image_master(const cv::Mat&);
+  void updated_image_master_PatRec(const cv::Mat&);
 
-  void        image_updated();
-  void binary_image_updated();
+  void updated_image_master();
+  void updated_image_master_PatRec();
 
   void image_sent(const cv::Mat&);
 
   void image_path(const int, const QString&);
   void image_mat (const int, const cv::Mat&);
 
-  void rough_angles_updated();
-  void angscan_parameters_updated();
+  void updated_rough_angles();
+  void updated_angscan_parameters();
 
   void run_template_matching(const cv::Mat&, const cv::Mat&, const cv::Mat&, const int);
 

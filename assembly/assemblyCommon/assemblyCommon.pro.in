@@ -82,17 +82,19 @@ HEADERS += AssemblyVUEyeCamera.h \
            AssemblyUEyeCameraThread.h \
            AssemblyUEyeView.h \
            AssemblyUEyeSnapShooter.h \
-           AssemblyThresholdView.h \
+           AssemblyImageThresholderView.h \
            AssemblyAutoFocusView.h \
            AssemblyAssemblyView.h \
            AssemblyRegistryView.h \
            AssemblyImageController.h \
+           AssemblyImageThresholder.h \
            AssemblyZFocusFinder.h \
            AssemblyObjectFinderManual.h \
            AssemblyObjectFinderPatRec.h \
            AssemblyObjectFinderPatRecThread.h \
            AssemblyMultiPickupTester.h \
            AssemblyAssembler.h \
+           AssemblyObjectAligner.h \
            ConradManager.h \
            LStepExpressModel.h \
            LStepExpressMotion.h \
@@ -129,17 +131,19 @@ SOURCES += AssemblyVUEyeCamera.cc \
            AssemblyUEyeCameraThread.cc \
            AssemblyUEyeView.cc \
            AssemblyUEyeSnapShooter.cc \
-           AssemblyThresholdView.cc \
+           AssemblyImageThresholderView.cc \
            AssemblyAutoFocusView.cc \
            AssemblyAssemblyView.cc \
            AssemblyRegistryView.cc \
            AssemblyImageController.cc \
+           AssemblyImageThresholder.cc \
            AssemblyZFocusFinder.cc \
            AssemblyObjectFinderManual.cc \
            AssemblyObjectFinderPatRec.cc \
            AssemblyObjectFinderPatRecThread.cc \
            AssemblyMultiPickupTester.cc \
            AssemblyAssembler.cc \
+           AssemblyObjectAligner.cc \
            ConradManager.cc \
            LStepExpressModel.cc \
            LStepExpressMotion.cc \

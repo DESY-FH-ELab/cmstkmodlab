@@ -10,8 +10,8 @@
 //                                                                             //
 /////////////////////////////////////////////////////////////////////////////////
 
-#ifndef ASSEMBLYTHRESHOLDVIEW_H
-#define ASSEMBLYTHRESHOLDVIEW_H
+#ifndef ASSEMBLYIMAGETHRESHOLDINGVIEW_H
+#define ASSEMBLYIMAGETHRESHOLDINGVIEW_H
 
 #include <AssemblyUEyeView.h>
 
@@ -24,16 +24,14 @@
 
 #include <opencv2/opencv.hpp>
 
-class AssemblyThresholdView : public QWidget
+class AssemblyImageThresholderView : public QWidget
 {
  Q_OBJECT
 
  public:
 
-  explicit AssemblyThresholdView(QWidget* parent=nullptr);
-  virtual ~AssemblyThresholdView() {}
-
-  int get_threshold() const;
+  explicit AssemblyImageThresholderView(QWidget* parent=nullptr);
+  virtual ~AssemblyImageThresholderView() {}
 
   void    connectImageProducer_1(const QObject* sender, const char* signal);
   void disconnectImageProducer_1(const QObject* sender, const char* signal);
@@ -58,21 +56,27 @@ class AssemblyThresholdView : public QWidget
   QLabel*      thresh_label_;
   QLineEdit*   thresh_linee_;
 
+  QPushButton* adathr_button_;
+  QLabel*      adathr_label_;
+  QLineEdit*   adathr_linee_;
+
  public slots:
 
-  void read_threshold();
+  void apply_threshold();
+  void apply_adaptiveThreshold();
 
   void save_image_raw();
-  void save_image_bin();
+  void save_image_binary();
 
   void save_image(const cv::Mat&);
 
  signals:
 
-  void threshold_value(const int);
+  void threshold_request(const int);
+  void adaptiveThreshold_request(const int);
 
   void image_raw_request();
-  void image_bin_request();
+  void image_binary_request();
 };
 
-#endif // ASSEMBLYTHRESHOLDVIEW_H
+#endif // ASSEMBLYIMAGETHRESHOLDINGVIEW_H
