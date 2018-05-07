@@ -91,6 +91,7 @@ HEADERS += AssemblyVUEyeCamera.h \
            AssemblyZFocusFinder.h \
            AssemblyObjectFinderManual.h \
            AssemblyObjectFinderPatRec.h \
+           AssemblyObjectFinderPatRecView.h \
            AssemblyObjectFinderPatRecThread.h \
            AssemblyMultiPickupTester.h \
            AssemblyAssembler.h \
@@ -140,6 +141,7 @@ SOURCES += AssemblyVUEyeCamera.cc \
            AssemblyZFocusFinder.cc \
            AssemblyObjectFinderManual.cc \
            AssemblyObjectFinderPatRec.cc \
+           AssemblyObjectFinderPatRecView.cc \
            AssemblyObjectFinderPatRecThread.cc \
            AssemblyMultiPickupTester.cc \
            AssemblyAssembler.cc \

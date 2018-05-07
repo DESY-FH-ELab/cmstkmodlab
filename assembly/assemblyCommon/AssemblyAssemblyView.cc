@@ -190,29 +190,29 @@ AssemblyAssemblyView::AssemblyAssemblyView(const LStepExpressMotionManager* moti
 
   QGridLayout* g_move = new QGridLayout;
 
-    // widget: move absolute
-    AssemblyMoveWidget* w_moveabs = new AssemblyMoveWidget("Move Absolute", "0,0,0,0", this);
-    g_move->addWidget(w_moveabs->button(), 0, 0);
-    g_move->addWidget(w_moveabs->lineed(), 0, 1);
+  // widget: move absolute
+  AssemblyMoveWidget* w_moveabs = new AssemblyMoveWidget("Move Absolute", "0,0,0,0", this);
+  g_move->addWidget(w_moveabs->button(), 0, 0);
+  g_move->addWidget(w_moveabs->lineed(), 0, 1);
 
-    w_moveabs->useMoveRelative(false);
-    w_moveabs->setToolTip("(1) Moves x,y,z,a stage using moveAbsolute routine (with respect to origin)");
+  w_moveabs->useMoveRelative(false);
+  w_moveabs->setToolTip("(1) Moves x,y,z,a stage using moveAbsolute routine (with respect to origin)");
 
-    connect(w_moveabs, SIGNAL(moveAbsolute(double, double, double, double)), motion_manager, SLOT(moveAbsolute(double, double, double, double)));
-    connect(motion_manager, SIGNAL(motion_finished()), w_moveabs, SLOT(enable()));
-    // ---------------------
+  connect(w_moveabs, SIGNAL(moveAbsolute(double, double, double, double)), motion_manager, SLOT(moveAbsolute(double, double, double, double)));
+  connect(motion_manager, SIGNAL(motion_finished()), w_moveabs, SLOT(enable()));
+  // ---------------------
 
-    // widget: move relative
-    AssemblyMoveWidget* w_moverel = new AssemblyMoveWidget("Move Relative", "0,0,0,0", this);
-    g_move->addWidget(w_moverel->button(), 1, 0);
-    g_move->addWidget(w_moverel->lineed(), 1, 1);
+  // widget: move relative
+  AssemblyMoveWidget* w_moverel = new AssemblyMoveWidget("Move Relative", "0,0,0,0", this);
+  g_move->addWidget(w_moverel->button(), 1, 0);
+  g_move->addWidget(w_moverel->lineed(), 1, 1);
 
-    w_moverel->useMoveRelative(true);
-    w_moverel->setToolTip("(2) Moves x,y,z,a stage using moveRelative routine (with respect to current position)");
+  w_moverel->useMoveRelative(true);
+  w_moverel->setToolTip("(2) Moves x,y,z,a stage using moveRelative routine (with respect to current position)");
 
-    connect(w_moverel, SIGNAL(moveRelative(double, double, double, double)), motion_manager, SLOT(moveRelative(double, double, double, double)));
-    connect(motion_manager, SIGNAL(motion_finished()), w_moverel, SLOT(enable()));
-    // ---------------------
+  connect(w_moverel, SIGNAL(moveRelative(double, double, double, double)), motion_manager, SLOT(moveRelative(double, double, double, double)));
+  connect(motion_manager, SIGNAL(motion_finished()), w_moverel, SLOT(enable()));
+  // ---------------------
 
   box_move->setLayout(g_move);
 
@@ -222,8 +222,8 @@ AssemblyAssemblyView::AssemblyAssemblyView(const LStepExpressMotionManager* moti
   // VACUUM WIDGET -------
   QGroupBox* box_vacuum = new QGroupBox(tr("Vacuum"));
 
-    w_vacuum_ = new AssemblyVacuumWidget("Toggle Vacuum", this);
-    w_vacuum_->setToolTip("(3) Controls vacuum valves");
+  w_vacuum_ = new AssemblyVacuumWidget("Toggle Vacuum", this);
+  w_vacuum_->setToolTip("(3) Controls vacuum valves");
 
   box_vacuum->setLayout(w_vacuum_->layout());
 
@@ -233,8 +233,8 @@ AssemblyAssemblyView::AssemblyAssemblyView(const LStepExpressMotionManager* moti
   // PATREC  WIDGET ------
   QGroupBox* box_patrec = new QGroupBox(tr("Pattern Recognition"));
 
-    w_patrec_ = new AssemblyPatRecWidget("Standalone PatRec", this);
-    w_patrec_->setToolTip("(4) Runs Pattern Recognition routine to determine sensor (x,y,z,a) position");
+  w_patrec_ = new AssemblyPatRecWidget("Standalone PatRec", this);
+  w_patrec_->setToolTip("(4) Runs Pattern Recognition routine to determine sensor (x,y,z,a) position");
 
   box_patrec->setLayout(w_patrec_->layout());
 
@@ -247,8 +247,8 @@ AssemblyAssemblyView::AssemblyAssemblyView(const LStepExpressMotionManager* moti
 
   QGroupBox* box_alignm = new QGroupBox(tr("Alignment"));
 
-    w_alignm_ = new AssemblyAlignmWidget(this);
-    w_alignm_->setToolTip("(5) Aligns object to target angle (with respect to the x-axis of the motion stage)");
+  w_alignm_ = new AssemblyAlignmWidget(this);
+  w_alignm_->setToolTip("(5) Aligns object to target angle (with respect to the x-axis of the motion stage)");
 
   box_alignm->setLayout(w_alignm_->layout());
 
@@ -275,7 +275,7 @@ void AssemblyAssemblyView::connect_to_finder(const AssemblyObjectFinderPatRec* f
     connect(this->PatRec_Widget()->widget_angrough(), SIGNAL(input_string(QString)), finder, SLOT(update_rough_angles      (QString)));
     connect(this->PatRec_Widget()->widget_angscanp(), SIGNAL(input_string(QString)), finder, SLOT(update_angscan_parameters(QString)));
 
-    connect(this->PatRec_Widget(), SIGNAL(sendPosition(int, double, double, double)), this, SLOT(updateText (int, double, double, double)));
+    connect(this->PatRec_Widget(), SIGNAL(sendPosition(int, double, double, double)), this, SLOT(updateText(int, double, double, double)));
 
     connect(finder, SIGNAL(image_path          (int, QString))               , this, SLOT(updateImage(int, QString)));
     connect(finder, SIGNAL(image_mat           (int, cv::Mat))               , this, SLOT(updateImage(int, cv::Mat)));
@@ -716,7 +716,6 @@ AssemblyPatRecWidget::AssemblyPatRecWidget(const QString& label, QWidget* parent
   layout_->addRow(layout_1);
 
   button_ = new QPushButton(label, this);
-  button_->setEnabled(true);
   layout_1->addWidget(button_, 0, 0);
 
   groupBox1_ = new QGroupBox(tr("Object"));

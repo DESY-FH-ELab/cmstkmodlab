@@ -75,7 +75,7 @@ class AssemblyAssembler : public QObject
     void move_relative(const double, const double, const double, const double);
     void motion_finished();
 
-    void acquireImage();
+    void image_request();
 
     void object_angle(const double);
 

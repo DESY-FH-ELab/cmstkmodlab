@@ -67,9 +67,9 @@ AssemblyMainWindow::AssemblyMainWindow(const unsigned int camera_ID, QWidget* pa
     image_ctr_ = nullptr;
 
     // marker finder
-    obj_finder_        = new AssemblyObjectFinderPatRec(Util::QtCacheDirectory()+"/AssemblyObjectFinderPatRec", "rotations");
-//    obj_finder_thread_ = new AssemblyObjectFinderPatRecThread(obj_finder_);
-//    obj_finder_thread_->start();
+    finder_        = new AssemblyObjectFinderPatRec(Util::QtCacheDirectory()+"/AssemblyObjectFinderPatRec", "rotations");
+//    finder_thread_ = new AssemblyObjectFinderPatRecThread(finder_);
+//    finder_thread_->start();
 
     // multi-pickup tester
     multipickup_ = new AssemblyMultiPickupTester(motion_manager_);
@@ -95,13 +95,20 @@ AssemblyMainWindow::AssemblyMainWindow(const unsigned int camera_ID, QWidget* pa
     thresholdView_ = new AssemblyImageThresholderView(tabWidget_);
     tabWidget_->addTab(thresholdView_, tabname_ImageThresholding);
 
-    connect(thresholdView_, SIGNAL(threshold_request(int))        , img_thresholder_, SLOT(update_image_binary_threshold(int)));
+    connect(thresholdView_, SIGNAL(threshold_request        (int)), img_thresholder_, SLOT(update_image_binary_threshold        (int)));
     connect(thresholdView_, SIGNAL(adaptiveThreshold_request(int)), img_thresholder_, SLOT(update_image_binary_adaptiveThreshold(int)));
 
     connect(thresholdView_, SIGNAL(image_raw_request())   , img_thresholder_, SLOT(send_image_raw()));
     connect(thresholdView_, SIGNAL(image_binary_request()), img_thresholder_, SLOT(send_image_binary()));
 
     connect(img_thresholder_, SIGNAL(image_sent(cv::Mat)), thresholdView_, SLOT(save_image(cv::Mat)));
+
+    // connections: AssemblyObjectFinderPatRec <-> AssemblyImageThresholder
+    connect(finder_           , SIGNAL(updated_image_master())        , finder_          , SLOT(send_image_master()));
+    connect(finder_           , SIGNAL(sent_image_master(cv::Mat))    , img_thresholder_ , SLOT(update_image_raw(cv::Mat)));
+    connect(img_thresholder_  , SIGNAL(updated_image_raw())           , thresholdView_   , SLOT(apply_threshold())); //!! FIXME: should have configurable parameter, w/o relying on thresholdView_
+    connect(img_thresholder_  , SIGNAL(updated_image_binary(cv::Mat)) , finder_          , SLOT(update_image_master_PatRec(cv::Mat)));
+    // ----------
 
     NQLog("AssemblyMainWindow", NQLog::Message) << "added view " << tabname_ImageThresholding;
     // ---------------------------------------------------------
@@ -122,16 +129,24 @@ AssemblyMainWindow::AssemblyMainWindow(const unsigned int camera_ID, QWidget* pa
     NQLog("AssemblyMainWindow", NQLog::Message) << "added view " << tabname_AutoFocus;
     // ---------------------------------------------------------
 
-    // AUTOMATED-ASSEMBLY VIEW ------------------------------------
+    // AUTOMATED-ASSEMBLY VIEW ---------------------------------
     const QString tabname_AutoAssembly("Auto Assembly");
 
     assemblyView_ = new AssemblyAssemblyView(motion_manager_, tabWidget_);
     tabWidget_->addTab(assemblyView_, tabname_AutoAssembly);
 
-    assemblyView_->connect_to_finder(obj_finder_);
+    assemblyView_->connect_to_finder(finder_);
 
-    obj_finder_->update_rough_angles      (assemblyView_->PatRec_Widget()->widget_angrough()->get_input_string());
-    obj_finder_->update_angscan_parameters(assemblyView_->PatRec_Widget()->widget_angscanp()->get_input_string());
+    finder_->update_rough_angles      (assemblyView_->PatRec_Widget()->widget_angrough()->get_input_string());
+    finder_->update_angscan_parameters(assemblyView_->PatRec_Widget()->widget_angscanp()->get_input_string());
+
+    connect(finder_, SIGNAL(threshold_request        (int)), img_thresholder_, SLOT(update_image_binary_threshold        (int)));
+    connect(finder_, SIGNAL(adaptiveThreshold_request(int)), img_thresholder_, SLOT(update_image_binary_adaptiveThreshold(int)));
+
+    connect(thresholdView_, SIGNAL(image_raw_request())   , img_thresholder_, SLOT(send_image_raw()));
+    connect(thresholdView_, SIGNAL(image_binary_request()), img_thresholder_, SLOT(send_image_binary()));
+
+    connect(img_thresholder_, SIGNAL(image_sent(cv::Mat)), thresholdView_, SLOT(save_image(cv::Mat)));
 
     NQLog("AssemblyMainWindow", NQLog::Message) << "added view " << tabname_AutoAssembly;
 
@@ -159,6 +174,17 @@ AssemblyMainWindow::AssemblyMainWindow(const unsigned int camera_ID, QWidget* pa
     connect(assemblyView_, SIGNAL(multipickup_request(const AssemblyMultiPickupTester::Configuration&)), this, SLOT(connect_multipickupNpatrec(const AssemblyMultiPickupTester::Configuration&)));
     // ---
 
+    // ---------------------------------------------------------
+
+    // PATTERN-RECOGNITION VIEW --------------------------------
+    const QString tabname_PatRec("Pat Rec");
+
+    finder_view_ = new AssemblyObjectFinderPatRecView(motion_manager_, tabWidget_);
+    tabWidget_->addTab(finder_view_, tabname_PatRec);
+
+    finder_view_->connect_to_finder(finder_);
+
+    NQLog("AssemblyMainWindow", NQLog::Message) << "added view " << tabname_PatRec;
     // ---------------------------------------------------------
 
 //    // U-EYE VIEW ----------------------------------------------
@@ -330,57 +356,6 @@ void AssemblyMainWindow::changeState_AutoFocus(const int state)
     return;
 }
 
-//void AssemblyMainWindow::changeState_SandwichAssembly(const int state)
-//{
-//    if(state == 2){
-//
-//      NQLog("AssemblyMainWindow::changeState_SandwichAssembly") << ": state  " << state;
-//
-//      connect(assemblyView_, SIGNAL(launchSandwitchAssembly(double, double, double, double, double, double, double, double, double)), module_assembler_,
-//                             SLOT  (run_sandwitchassembly  (double, double, double, double, double, double, double, double, double)));
-//
-//      connect(module_assembler_ , SIGNAL(moveAbsolute(double, double, double, double)), motion_manager_   , SLOT(moveAbsolute(double, double,double, double)));
-//      connect(motion_model_     , SIGNAL(motionFinished())                            , module_assembler_, SLOT(process_step()));
-//      connect(module_assembler_ , SIGNAL(toggleVacuum(int))                           , conradManager_   , SLOT(toggleVacuum(int)));
-//      connect(conradManager_    , SIGNAL(updateVacuumChannelState(int, bool))         , module_assembler_, SIGNAL(nextStep()));
-//
-//      //for testing with random numbers
-//      // connect(cmdr_zscan, SIGNAL(makeDummies(int, double,double,double)), cmdr_zscan, SLOT(fill_positionvectors(int, double,double,double)));
-//
-//      // for real lab tests with camera
-//      connect(module_assembler_, SIGNAL(acquireImage())          , camera_       , SLOT(acquireImage()));
-//      connect(module_assembler_, SIGNAL(showHistos(int, QString)), assemblyView_ , SLOT(updateImage(int, QString)));
-//      connect(camera_          , SIGNAL(imageAcquired(cv::Mat))  , obj_finder_, SLOT(runObjectDetection_labmode(cv::Mat)) );
-//
-//      connect(obj_finder_   , SIGNAL(reportObjectLocation(int,double,double,double)), module_assembler_, SLOT(centre_marker(int, double,double,double)));
-//      connect(module_assembler_, SIGNAL(nextStep())                                    , module_assembler_, SLOT(process_step()));
-//    }
-//    else if(state == 0){
-//
-//      NQLog("AssemblyMainWindow::changeState_SandwichAssembly") << ": state  " << state;
-//
-//      disconnect(assemblyView_, SIGNAL(launchSandwitchAssembly(double, double, double, double, double, double, double, double, double)), module_assembler_,
-//                                SLOT  (run_sandwitchassembly  (double, double, double, double, double, double, double, double, double)));
-//
-//      disconnect(module_assembler_ , SIGNAL(moveAbsolute(double, double, double, double)), motion_manager_   , SLOT(moveAbsolute(double, double,double, double)));
-//      disconnect(motion_model_, SIGNAL(motionFinished())                            , module_assembler_, SLOT(process_step()));
-//      disconnect(module_assembler_ , SIGNAL(toggleVacuum(int))                           , conradManager_   , SLOT(toggleVacuum(int)));
-//      disconnect(conradManager_    , SIGNAL(updateVacuumChannelState(int, bool))         , module_assembler_, SIGNAL(nextStep()));
-//
-//      // for testing with random numbers
-////      disconnect(cmdr_zscan, SIGNAL(makeDummies(int, double,double,double)), cmdr_zscan, SLOT(fill_positionvectors(int, double,double,double)));
-//
-//      // for real lab tests with camera
-//      disconnect(module_assembler_, SIGNAL(acquireImage())                                , camera_          , SLOT(acquireImage()));
-//      disconnect(module_assembler_, SIGNAL(showHistos(int, QString))                      , assemblyView_    , SLOT(updateImage(int, QString)));
-//      disconnect(camera_          , SIGNAL(imageAcquired(cv::Mat))                        , obj_finder_   , SLOT(runObjectDetection_labmode(cv::Mat)) );
-//      disconnect(obj_finder_   , SIGNAL(reportObjectLocation(int,double,double,double)), module_assembler_, SLOT(fill_positionvectors(int, double,double,double)));
-//      disconnect(module_assembler_, SIGNAL(nextStep())                                    , module_assembler_, SLOT(process_step()));
-//    }
-//
-//    return;
-//}
-
 void AssemblyMainWindow::changeState_Alignment(const int state)
 {
     if(image_ctr_ == nullptr)
@@ -393,6 +368,29 @@ void AssemblyMainWindow::changeState_Alignment(const int state)
 
     if(state == 2)
     {
+      assemblyView_->Alignm_Widget()->enable(true);
+
+      connect   (assemblyView_->Alignm_Widget(), SIGNAL(measure_angle_request(double, double))    , module_assembler_, SLOT(start_alignment(double, double)));
+      connect   (assemblyView_->Alignm_Widget(), SIGNAL(alignment_request(double, double, double)), module_assembler_, SLOT(start_alignment(double, double, double)));
+
+      connect   (module_assembler_ , SIGNAL(object_angle(double)), assemblyView_->Alignm_Widget(), SLOT(show_object_angle(double)));
+      connect   (module_assembler_ , SIGNAL(alignment_finished()), assemblyView_->Alignm_Widget(), SLOT(enable()));
+
+      connect   (module_assembler_ , SIGNAL(nextAlignmentStep(int, double, double, double)), module_assembler_, SLOT(run_alignment(int, double, double, double)));
+
+      connect   (module_assembler_ , SIGNAL(image_request()), image_ctr_  , SLOT(acquire_image()));
+
+//!!      connect   (finder_           , SIGNAL(updated_image_master())        , finder_          , SLOT(send_image_master()));
+//!!      connect   (finder_           , SIGNAL(sent_image_master(cv::Mat))    , img_thresholder_ , SLOT(update_image_raw(cv::Mat)));
+//!!      connect   (img_thresholder_  , SIGNAL(updated_image_raw())           , thresholdView_   , SLOT(apply_threshold())); //!! FIXME: should have configurable parameter, w/o relying on thresholdView_
+//!!      connect   (img_thresholder_  , SIGNAL(updated_image_binary(cv::Mat)) , finder_          , SLOT(update_image_master_PatRec(cv::Mat)));
+      connect   (finder_           , SIGNAL(updated_image_master_PatRec()) , finder_          , SLOT(run_PatRec_lab_marker()));
+
+      connect   (finder_, SIGNAL(reportObjectLocation(int, double, double, double)), module_assembler_, SLOT(run_alignment(int, double, double, double)));
+
+      connect   (module_assembler_ , SIGNAL(motion_finished()), module_assembler_, SLOT(launch_next_alignment_step()));
+
+      NQLog("AssemblyMainWindow", NQLog::Message) << "changeState_Alignment: alignment enabled";
     }
     else if(state == 0)
     {
@@ -404,14 +402,19 @@ void AssemblyMainWindow::changeState_Alignment(const int state)
       disconnect(module_assembler_ , SIGNAL(object_angle(double)), assemblyView_->Alignm_Widget(), SLOT(show_object_angle(double)));
       disconnect(module_assembler_ , SIGNAL(alignment_finished()), assemblyView_->Alignm_Widget(), SLOT(enable()));
 
-      disconnect(module_assembler_ , SIGNAL(nextAlignmentStep   (int, double, double, double)), module_assembler_, SLOT(run_alignment(int, double, double, double)));
+      disconnect(module_assembler_ , SIGNAL(nextAlignmentStep(int, double, double, double)), module_assembler_, SLOT(run_alignment(int, double, double, double)));
 
-      disconnect(module_assembler_ , SIGNAL(acquireImage())                                   , image_ctr_       , SLOT(acquire_image()));
-      disconnect(obj_finder_    , SIGNAL(       updated_image_master())                           , obj_finder_   , SLOT(update_image_master_PatRec()));
-      disconnect(obj_finder_    , SIGNAL(updated_image_master_PatRec())                           , obj_finder_   , SLOT(run_PatRec_lab_marker()));
-      disconnect(obj_finder_    , SIGNAL(reportObjectLocation(int, double, double, double)), module_assembler_, SLOT(run_alignment(int, double, double, double)));
+      disconnect(module_assembler_ , SIGNAL(image_request()), image_ctr_  , SLOT(acquire_image()));
 
-      disconnect(module_assembler_ , SIGNAL(motion_finished())                                , module_assembler_, SLOT(launch_next_alignment_step()));
+//!!      disconnect(finder_           , SIGNAL(updated_image_master())        , finder_          , SLOT(send_image_master()));
+//!!      disconnect(finder_           , SIGNAL(sent_image_master(cv::Mat))    , img_thresholder_ , SLOT(update_image_raw(cv::Mat)));
+//!!      disconnect(img_thresholder_  , SIGNAL(updated_image_raw())           , thresholdView_   , SLOT(apply_threshold())); //!! FIXME: should have configurable parameter, w/o relying on thresholdView_
+//!!      disconnect(img_thresholder_  , SIGNAL(updated_image_binary(cv::Mat)) , finder_          , SLOT(update_image_master_PatRec(cv::Mat)));
+      disconnect(finder_           , SIGNAL(updated_image_master_PatRec()) , finder_          , SLOT(run_PatRec_lab_marker()));
+
+      disconnect(finder_, SIGNAL(reportObjectLocation(int, double, double, double)), module_assembler_, SLOT(run_alignment(int, double, double, double)));
+
+      disconnect(module_assembler_ , SIGNAL(motion_finished()), module_assembler_, SLOT(launch_next_alignment_step()));
 
       NQLog("AssemblyMainWindow", NQLog::Message) << "changeState_Alignment: alignment disabled";
     }
@@ -445,13 +448,13 @@ void AssemblyMainWindow::get_image()
 
 void AssemblyMainWindow::connect_images()
 {
-//  finderView_->connectImageProducer(obj_finder_, SIGNAL(markerFound  (const cv::Mat&)));
-//  edgeView_  ->connectImageProducer(obj_finder_, SIGNAL(edgesDetected(const cv::Mat&)));
+//  finderView_->connectImageProducer(finder_, SIGNAL(markerFound  (const cv::Mat&)));
+//  edgeView_  ->connectImageProducer(finder_, SIGNAL(edgesDetected(const cv::Mat&)));
 //  rawView_   ->connectImageProducer(camera_       , SIGNAL(imageAcquired(const cv::Mat&)));
 
-  connect(obj_finder_ , SIGNAL(image_request())        , image_ctr_       , SLOT(acquire_image()));
-  connect(image_ctr_  , SIGNAL(image_acquired(cv::Mat)), obj_finder_      , SLOT(update_image_master(cv::Mat)));
-  connect(image_ctr_  , SIGNAL(image_acquired(cv::Mat)), img_thresholder_ , SLOT(update_image_raw   (cv::Mat)));
+  connect(finder_    , SIGNAL(image_master_request())  , image_ctr_       , SLOT(acquire_image()));
+  connect(image_ctr_ , SIGNAL(image_acquired(cv::Mat)) , finder_          , SLOT(update_image_master(cv::Mat)));
+  connect(image_ctr_ , SIGNAL(image_acquired(cv::Mat)) , img_thresholder_ , SLOT(update_image_raw   (cv::Mat)));
 
   thresholdView_->connectImageProducer_1(img_thresholder_, SIGNAL(updated_image_raw   (cv::Mat)));
   thresholdView_->connectImageProducer_2(img_thresholder_, SIGNAL(updated_image_binary(cv::Mat)));
@@ -468,12 +471,12 @@ void AssemblyMainWindow::connect_images()
 
 void AssemblyMainWindow::disconnect_images()
 {
-//  finderView_        ->disconnectImageProducer(obj_finder_, SIGNAL(markerFound  (const cv::Mat&)));
-//  edgeView_          ->disconnectImageProducer(obj_finder_, SIGNAL(edgesDetected(const cv::Mat&)));
+//  finderView_        ->disconnectImageProducer(finder_, SIGNAL(markerFound  (const cv::Mat&)));
+//  edgeView_          ->disconnectImageProducer(finder_, SIGNAL(edgesDetected(const cv::Mat&)));
 //  rawView_           ->disconnectImageProducer(camera_, SIGNAL(imagef       (const cv::Mat&)));
 
-  disconnect(obj_finder_, SIGNAL(image_request())        , image_ctr_ , SLOT(acquire_image()));
-  disconnect(image_ctr_ , SIGNAL(image_acquired(cv::Mat)), obj_finder_, SLOT(update_image(cv::Mat)));
+  disconnect(finder_, SIGNAL(image_request())        , image_ctr_ , SLOT(acquire_image()));
+  disconnect(image_ctr_ , SIGNAL(image_acquired(cv::Mat)), finder_, SLOT(update_image(cv::Mat)));
 
   thresholdView_->disconnectImageProducer_1(img_thresholder_, SIGNAL(updated_image_raw   (cv::Mat)));
   thresholdView_->disconnectImageProducer_2(img_thresholder_, SIGNAL(updated_image_binary(cv::Mat)));
@@ -487,46 +490,46 @@ void AssemblyMainWindow::disconnect_images()
   liveTimer_->stop();
 }
 
-/* !! */
-/* !! */ void AssemblyMainWindow::disconnect_objectAligner() {}
-/* !! */
-
-void AssemblyMainWindow::connect_objectAligner(const AssemblyObjectAligner::Configuration& conf)
-{
-    if(image_ctr_ == nullptr)
-    {
-      NQLog("AssemblyMainWindow", NQLog::Warning) << "connect_objectAligner"
-         << ": ImageController not initialized, no action taken (hint: click \"Camera ON\")";
-
-      return;
-    }
-
-//!!    obj_aligner_->set_configuration(conf);
-
-    assemblyView_->Alignm_Widget()->enable(true);
-
-    connect(this, SIGNAL(objectAligner_connected()), obj_aligner_, SLOT(start_measurement()));
-
-    connect   (assemblyView_->Alignm_Widget(), SIGNAL(measure_angle_request(double, double))    , module_assembler_, SLOT(start_alignment(double, double)));
-    connect   (assemblyView_->Alignm_Widget(), SIGNAL(alignment_request(double, double, double)), module_assembler_, SLOT(start_alignment(double, double, double)));
-
-    connect   (module_assembler_ , SIGNAL(object_angle(double)), assemblyView_->Alignm_Widget(), SLOT(show_object_angle(double)));
-    connect   (module_assembler_ , SIGNAL(alignment_finished()), assemblyView_->Alignm_Widget(), SLOT(enable()));
-
-    connect   (module_assembler_ , SIGNAL(nextAlignmentStep   (int, double, double, double)), module_assembler_, SLOT(run_alignment(int, double, double, double)));
-
-    connect   (module_assembler_ , SIGNAL(acquireImage())                                   , image_ctr_       , SLOT(acquire_image()));
-    connect   (obj_finder_    , SIGNAL(       updated_image_master())                           , obj_finder_   , SLOT(update_image_master_PatRec()));
-    connect   (obj_finder_    , SIGNAL(updated_image_master_PatRec())                           , obj_finder_   , SLOT(run_PatRec_lab_marker()));
-    connect   (obj_finder_    , SIGNAL(reportObjectLocation(int, double, double, double)), module_assembler_, SLOT(run_alignment(int, double, double, double)));
-
-    connect   (module_assembler_ , SIGNAL(motion_finished())                                , module_assembler_, SLOT(launch_next_alignment_step()));
-
-    NQLog("AssemblyMainWindow", NQLog::Spam) << "connect_objectAligner"
-       << ": emitting signal \"objectAligner_connected\"";
-
-    emit objectAligner_connected();
-}
+//!!void AssemblyMainWindow::connect_objectAligner(const AssemblyObjectAligner::Configuration& conf)
+//!!{
+//!!    if(image_ctr_ == nullptr)
+//!!    {
+//!!      NQLog("AssemblyMainWindow", NQLog::Warning) << "connect_objectAligner"
+//!!         << ": ImageController not initialized, no action taken (hint: click \"Camera ON\")";
+//!!
+//!!      return;
+//!!    }
+//!!
+//!!    aligner_->set_configuration(conf);
+//!!
+//!!    assemblyView_->Alignm_Widget()->enable(true);
+//!!
+//!!    connect(this, SIGNAL(objectAligner_connected()), aligner_, SLOT(start_measurement()));
+//!!
+//!!    connect   (assemblyView_->Alignm_Widget(), SIGNAL(measure_angle_request(double, double))    , module_assembler_, SLOT(start_alignment(double, double)));
+//!!    connect   (assemblyView_->Alignm_Widget(), SIGNAL(alignment_request(double, double, double)), module_assembler_, SLOT(start_alignment(double, double, double)));
+//!!
+//!!    connect   (module_assembler_ , SIGNAL(object_angle(double)), assemblyView_->Alignm_Widget(), SLOT(show_object_angle(double)));
+//!!    connect   (module_assembler_ , SIGNAL(alignment_finished()), assemblyView_->Alignm_Widget(), SLOT(enable()));
+//!!
+//!!    connect   (module_assembler_ , SIGNAL(nextAlignmentStep   (int, double, double, double)), module_assembler_, SLOT(run_alignment(int, double, double, double)));
+//!!
+//!!    connect   (module_assembler_ , SIGNAL(acquireImage())                                   , image_ctr_       , SLOT(acquire_image()));
+//!!    connect   (finder_    , SIGNAL(       updated_image_master())                           , finder_   , SLOT(update_image_master_PatRec()));
+//!!    connect   (finder_    , SIGNAL(updated_image_master_PatRec())                           , finder_   , SLOT(run_PatRec_lab_marker()));
+//!!    connect   (finder_    , SIGNAL(reportObjectLocation(int, double, double, double)), module_assembler_, SLOT(run_alignment(int, double, double, double)));
+//!!
+//!!    connect   (module_assembler_ , SIGNAL(motion_finished())                                , module_assembler_, SLOT(launch_next_alignment_step()));
+//!!
+//!!    NQLog("AssemblyMainWindow", NQLog::Spam) << "connect_objectAligner"
+//!!       << ": emitting signal \"objectAligner_connected\"";
+//!!
+//!!    emit objectAligner_connected();
+//!!}
+//!!
+//!!void AssemblyMainWindow::disconnect_objectAligner()
+//!!{
+//!!}
 
 void AssemblyMainWindow::connect_multipickupNpatrec(const AssemblyMultiPickupTester::Configuration& conf)
 {
@@ -549,9 +552,9 @@ void AssemblyMainWindow::connect_multipickupNpatrec(const AssemblyMultiPickupTes
 
     // measurement
     connect(multipickup_  , SIGNAL(measurement_request()) , image_ctr_    , SLOT(acquire_image()));
-    connect(obj_finder_, SIGNAL(       updated_image_master()), obj_finder_, SLOT(update_image_master_PatRec()));
-    connect(obj_finder_, SIGNAL(updated_image_master_PatRec()), obj_finder_, SLOT(run_PatRec_lab_marker()));
-    connect(obj_finder_, SIGNAL(PatRec_exitcode(int))  , multipickup_  , SLOT(finish_measurement(int)));
+    connect(finder_, SIGNAL(       updated_image_master()), finder_, SLOT(update_image_master_PatRec()));
+    connect(finder_, SIGNAL(updated_image_master_PatRec()), finder_, SLOT(run_PatRec_lab_marker()));
+    connect(finder_, SIGNAL(PatRec_exitcode(int))  , multipickup_  , SLOT(finish_measurement(int)));
     // ---
 
     // pickup (vacuum)
@@ -576,9 +579,9 @@ void AssemblyMainWindow::disconnect_multipickupNpatrec()
 
     // measurement
     disconnect(multipickup_  , SIGNAL(measurement_request())        , image_ctr_    , SLOT(acquire_image()));
-    disconnect(obj_finder_, SIGNAL(updated_image_master())       , obj_finder_, SLOT(update_image_master_PatRec()));
-    disconnect(obj_finder_, SIGNAL(updated_image_master_PatRec()), obj_finder_, SLOT(run_PatRec_lab_marker()));
-    disconnect(obj_finder_, SIGNAL(PatRec_exitcode(int))         , multipickup_  , SLOT(finish_measurement(int)));
+    disconnect(finder_, SIGNAL(updated_image_master())       , finder_, SLOT(update_image_master_PatRec()));
+    disconnect(finder_, SIGNAL(updated_image_master_PatRec()), finder_, SLOT(run_PatRec_lab_marker()));
+    disconnect(finder_, SIGNAL(PatRec_exitcode(int))         , multipickup_  , SLOT(finish_measurement(int)));
     // ---
 
     // pickup (vacuum)
@@ -635,7 +638,7 @@ void AssemblyMainWindow::quit()
 
     this->quit_thread(motion_thread_       , "terminated LStepExpressMotionThread");
     this->quit_thread(camera_thread_       , "terminated AssemblyUEyeCameraThread");
-//    this->quit_thread(obj_finder_thread_, "terminated AssemblyObjectFinderPatRecThread");
+//    this->quit_thread(finder_thread_, "terminated AssemblyObjectFinderPatRecThread");
 
     NQLog("AssemblyMainWindow", NQLog::Message) << "quit: application closed";
 

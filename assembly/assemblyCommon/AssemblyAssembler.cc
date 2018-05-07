@@ -197,11 +197,11 @@ void AssemblyAssembler::run_alignment(int /* stage */, double x_pr, double y_pr,
         NQLog("AssemblyAssembler", NQLog::Message) << "run_alignment step [" << alignment_step << "]";
 
         NQLog("AssemblyAssembler", NQLog::Spam) << "run_alignment step [" << alignment_step << "]"
-           << ": emitting signal \"acquireImage\"";
+           << ": emitting signal \"image_request\"";
 
         ++alignment_step;
 
-        emit acquireImage();
+        emit image_request();
     }
     // Step #1: center image, move camera to (X,Y) result from PatRec
     else if(alignment_step == 1)
@@ -242,11 +242,11 @@ void AssemblyAssembler::run_alignment(int /* stage */, double x_pr, double y_pr,
         NQLog("AssemblyAssembler", NQLog::Message) << "run_alignment step [" << alignment_step << "]";
 
         NQLog("AssemblyAssembler", NQLog::Spam) << "run_alignment step [" << alignment_step << "]"
-           << ": emitting signal \"acquireImage\"";
+           << ": emitting signal \"image_request\"";
 
         ++alignment_step;
 
-        emit acquireImage();
+        emit image_request();
     } 
     // Step #3: move to 2nd marker
     else if(alignment_step == 3)
@@ -284,11 +284,11 @@ void AssemblyAssembler::run_alignment(int /* stage */, double x_pr, double y_pr,
            << ": acquiring image of second corner";
 
         NQLog("AssemblyAssembler", NQLog::Spam) << "run_alignment step [" << alignment_step << "]"
-           << ": emitting signal \"acquireImage\"";
+           << ": emitting signal \"image_request\"";
 
         ++alignment_step;
 
-        emit acquireImage();
+        emit image_request();
     }
     // Step #5: center image, move camera to (X,Y) result from PatRec
     else if(alignment_step == 5)
@@ -355,11 +355,11 @@ void AssemblyAssembler::run_alignment(int /* stage */, double x_pr, double y_pr,
         NQLog("AssemblyAssembler", NQLog::Message) << "run_alignment step [" << alignment_step << "]";
 
         NQLog("AssemblyAssembler", NQLog::Spam) << "run_alignment step [" << alignment_step << "]"
-           << ": emitting signal \"acquireImage\"";
+           << ": emitting signal \"image_request\"";
 
         ++alignment_step;
 
-        emit acquireImage();
+        emit image_request();
     }
     // Step #7: move back to 1st marker
     else if(alignment_step == 7)
@@ -390,11 +390,11 @@ void AssemblyAssembler::run_alignment(int /* stage */, double x_pr, double y_pr,
            << ": detecting first corner for the 2nd time";
 
         NQLog("AssemblyAssembler", NQLog::Spam) << "run_alignment step [" << alignment_step << "]"
-           << ": emitting signal \"acquireImage\"";
+           << ": emitting signal \"image_request\"";
 
         ++alignment_step;
 
-        emit acquireImage();
+        emit image_request();
     }
     // Step #9: centering camera on PatRec result for 1st marker
     else if(alignment_step == 9)

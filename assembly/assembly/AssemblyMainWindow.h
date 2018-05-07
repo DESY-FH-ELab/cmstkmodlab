@@ -33,6 +33,7 @@ typedef AssemblyUEyeModel AssemblyUEyeModel_t;
 #include <AssemblyImageThresholder.h>
 #include <AssemblyZFocusFinder.h>
 #include <AssemblyObjectFinderPatRec.h>
+#include <AssemblyObjectFinderPatRecView.h>
 #include <AssemblyObjectFinderPatRecThread.h>
 #include <AssemblyObjectAligner.h>
 #include <AssemblyMultiPickupTester.h>
@@ -81,8 +82,8 @@ class AssemblyMainWindow : public QMainWindow
 //  void changeState_SandwichAssembly(const int);
   void changeState_Alignment       (const int);
 
-  void    connect_objectAligner(const AssemblyObjectAligner::Configuration&);
-  void disconnect_objectAligner();
+//!!  void    connect_objectAligner(const AssemblyObjectAligner::Configuration&);
+//!!  void disconnect_objectAligner();
 
   void    connect_multipickupNpatrec(const AssemblyMultiPickupTester::Configuration&);
   void disconnect_multipickupNpatrec();
@@ -143,6 +144,7 @@ class AssemblyMainWindow : public QMainWindow
   AssemblyImageThresholderView* thresholdView_;
   AssemblyAutoFocusView* autoFocusView_;
   AssemblyAssemblyView*  assemblyView_;
+  AssemblyObjectFinderPatRecView* finder_view_;
   AssemblyRegistryView*  registryView_;
 
   QCheckBox* checkbox1;
@@ -153,13 +155,13 @@ class AssemblyMainWindow : public QMainWindow
   AssemblyImageController*    image_ctr_;
   AssemblyZFocusFinder*       zfocus_finder_;
   AssemblyImageThresholder*   img_thresholder_;
-  AssemblyObjectFinderPatRec* obj_finder_;
-  AssemblyObjectAligner*      obj_aligner_;
+  AssemblyObjectFinderPatRec* finder_;
+  AssemblyObjectAligner*      aligner_;
   AssemblyMultiPickupTester*  multipickup_;
   AssemblyAssembler*          module_assembler_;
 
   // thread(s)
-  AssemblyObjectFinderPatRecThread* obj_finder_thread_;
+  AssemblyObjectFinderPatRecThread* finder_thread_;
 
   // timing
   double testTimerCount_;
