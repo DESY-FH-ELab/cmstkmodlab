@@ -86,10 +86,13 @@ class AssemblyRegistryImageWidget : public QWidget
 
   //!! FIXME: View should not own (copy of) data, add dedicated controller
   cv::Mat image_;
+  cv::Mat image_raw_;
+
+  bool image_modified_;
 
  public slots:
 
-  void update_image(const cv::Mat&);
+  void update_image(const cv::Mat&, const bool update_image_raw=true);
   void save_image();
   void modify_image_centerlines();
 

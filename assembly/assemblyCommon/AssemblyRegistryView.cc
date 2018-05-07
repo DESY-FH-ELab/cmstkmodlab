@@ -259,7 +259,9 @@ bool AssemblyRegistryView::load_position_4vector(std::vector<double>& vec, QStri
 }
 // ==================================================
 
-AssemblyRegistryImageWidget::AssemblyRegistryImageWidget(QWidget* parent) : QWidget(parent)
+AssemblyRegistryImageWidget::AssemblyRegistryImageWidget(QWidget* parent) :
+  QWidget(parent),
+  image_modified_(false)
 {
   //// layout
   QGridLayout* g1 = new QGridLayout;
@@ -306,7 +308,7 @@ AssemblyRegistryImageWidget::AssemblyRegistryImageWidget(QWidget* parent) : QWid
   //// ---------------
 }
 
-void AssemblyRegistryImageWidget::update_image(const cv::Mat& img)
+void AssemblyRegistryImageWidget::update_image(const cv::Mat& img, const bool update_image_raw)
 {
   if(img.channels() == 1)
   {
@@ -323,48 +325,61 @@ void AssemblyRegistryImageWidget::update_image(const cv::Mat& img)
   NQLog("AssemblyRegistryImageWidget", NQLog::Spam) << "update_image"
      << ": emitting signal \"image_updated\"";
 
+  if(update_image_raw)
+  {
+    image_raw_ = image_.clone();
+
+    image_modified_ = false;
+  }
+
   emit image_updated(image_);
 }
 
 void AssemblyRegistryImageWidget::save_image()
 {
-    if(image_.rows == 0)
-    {
-      NQLog("AssemblyRegistryImageWidget", NQLog::Warning) << "save_image"
-         << ": input cv::Mat object has zero rows, no image saved";
-
-      return;
-    }
-
-    QString filename = QFileDialog::getSaveFileName(this, "save image", ".", "*.png");
-    if(filename.isNull() || filename.isEmpty()){ return; }
-
-    if(!filename.endsWith(".png")){ filename += ".png"; }
-
-    cv::imwrite(filename.toStdString(), image_);
-
-    return;
-}
-
-void AssemblyRegistryImageWidget::modify_image_centerlines()
-{
-  if(image_.rows == 0)
+  if(image_.empty())
   {
-    NQLog("AssemblyRegistryImageWidget", NQLog::Warning) << "modify_image_centerlines"
-       << ": input cv::Mat object has zero rows, no image saved";
+    NQLog("AssemblyRegistryImageWidget", NQLog::Warning) << "save_image"
+       << ": input image is empty, no action taken";
 
     return;
   }
 
-  cv::Mat img = image_.clone();
+  QString filename = QFileDialog::getSaveFileName(this, "save image", ".", "*.png");
+  if(filename.isNull() || filename.isEmpty()){ return; }
 
-  line(img, cv::Point(   img.cols/2.0, 0), cv::Point(img.cols/2.0, img.rows    ), cv::Scalar(255,0,0), 2, 8, 0);
-  line(img, cv::Point(0, img.rows/2.0   ), cv::Point(img.cols    , img.rows/2.0), cv::Scalar(255,0,0), 2, 8, 0);
+  if(!filename.endsWith(".png")){ filename += ".png"; }
 
-  NQLog("AssemblyRegistryImageWidget", NQLog::Spam) << "modify_image_centerlines"
-     << ": updating image";
+  cv::imwrite(filename.toStdString(), image_);
 
-  this->update_image(img);
+  return;
+}
+
+void AssemblyRegistryImageWidget::modify_image_centerlines()
+{
+  if(image_raw_.empty())
+  {
+    NQLog("AssemblyRegistryImageWidget", NQLog::Warning) << "modify_image_centerlines"
+       << ": input raw image is empty, no action taken";
+
+    return;
+  }
+
+  cv::Mat img = image_raw_.clone();
+
+  if(image_modified_ == false)
+  {
+    line(img, cv::Point(   img.cols/2.0, 0), cv::Point(img.cols/2.0, img.rows    ), cv::Scalar(255,0,0), 2, 8, 0);
+    line(img, cv::Point(0, img.rows/2.0   ), cv::Point(img.cols    , img.rows/2.0), cv::Scalar(255,0,0), 2, 8, 0);
+
+    image_modified_ = true;
+
+    this->update_image(img, false);
+  }
+  else
+  {
+    this->update_image(img, true);
+  }
 
   return;
 }
