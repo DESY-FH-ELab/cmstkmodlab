@@ -102,43 +102,6 @@ class AssemblyAssemblyView : public QWidget
 };
 // ===========================================================================
 
-class AssemblyMoveWidget : public QWidget
-{
- Q_OBJECT
-
- public:
-
-  explicit AssemblyMoveWidget(const QString&, const QString&, const bool move_relative=false, QWidget* parent=nullptr);
-  virtual ~AssemblyMoveWidget() {}
-
-  QPushButton* button() const { return button_; }
-  QLineEdit*   lineed() const { return lineed_; }
-
-  void useMoveRelative(const bool b=false){ moveRelative_ = b; }
-
-  QString get_input_string() const;
-
- protected:
-
-  bool moveRelative_;
-
-  QFormLayout* layout_;
-  QPushButton* button_;
-  QLineEdit*   lineed_;
-
- public slots:
-
-  void execute();
-    
-  void enable(const bool b=true);
-
- signals:
-
-  void moveAbsolute(const double, const double, const double, const double);
-  void moveRelative(const double, const double, const double, const double);
-};
-// ===========================================================================
-
 class AssemblyVacuumWidget : public QWidget
 {
  Q_OBJECT

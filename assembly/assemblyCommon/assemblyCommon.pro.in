@@ -85,6 +85,7 @@ HEADERS += AssemblyVUEyeCamera.h \
            AssemblyImageThresholderView.h \
            AssemblyAutoFocusView.h \
            AssemblyAssemblyView.h \
+           AssemblyMotionWidgets.h \
            AssemblyRegistryView.h \
            AssemblyImageController.h \
            AssemblyImageThresholder.h \
@@ -135,6 +136,7 @@ SOURCES += AssemblyVUEyeCamera.cc \
            AssemblyImageThresholderView.cc \
            AssemblyAutoFocusView.cc \
            AssemblyAssemblyView.cc \
+           AssemblyMotionWidgets.cc \
            AssemblyRegistryView.cc \
            AssemblyImageController.cc \
            AssemblyImageThresholder.cc \
