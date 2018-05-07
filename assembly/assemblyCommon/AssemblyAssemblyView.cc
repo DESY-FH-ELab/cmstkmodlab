@@ -186,39 +186,39 @@ AssemblyAssemblyView::AssemblyAssemblyView(const LStepExpressMotionManager* moti
   QFormLayout* f01 = new QFormLayout;
   layout->addLayout(f01, 0, 1);
 
-  // MOVE WIDGETS --------
-  QGroupBox* box_move = new QGroupBox(tr("Motion Stage"));
-
-  QGridLayout* g_move = new QGridLayout;
-
-  // widget: move absolute
-  AssemblyMoveWidget* w_moveabs = new AssemblyMoveWidget("Move Absolute", "0,0,0,0", this);
-  g_move->addWidget(w_moveabs->button(), 0, 0);
-  g_move->addWidget(w_moveabs->lineed(), 0, 1);
-
-  w_moveabs->useMoveRelative(false);
-  w_moveabs->setToolTip("(1) Moves x,y,z,a stage using moveAbsolute routine (with respect to origin)");
-
-  connect(w_moveabs, SIGNAL(moveAbsolute(double, double, double, double)), motion_manager, SLOT(moveAbsolute(double, double, double, double)));
-  connect(motion_manager, SIGNAL(motion_finished()), w_moveabs, SLOT(enable()));
-  // ---------------------
-
-  // widget: move relative
-  AssemblyMoveWidget* w_moverel = new AssemblyMoveWidget("Move Relative", "0,0,0,0", this);
-  g_move->addWidget(w_moverel->button(), 1, 0);
-  g_move->addWidget(w_moverel->lineed(), 1, 1);
-
-  w_moverel->useMoveRelative(true);
-  w_moverel->setToolTip("(2) Moves x,y,z,a stage using moveRelative routine (with respect to current position)");
-
-  connect(w_moverel, SIGNAL(moveRelative(double, double, double, double)), motion_manager, SLOT(moveRelative(double, double, double, double)));
-  connect(motion_manager, SIGNAL(motion_finished()), w_moverel, SLOT(enable()));
-  // ---------------------
-
-  box_move->setLayout(g_move);
-
-  f01->addRow(box_move);
-  // ---------------------
+//  // MOVE WIDGETS --------
+//  QGroupBox* box_move = new QGroupBox(tr("Motion Stage"));
+//
+//  QGridLayout* g_move = new QGridLayout;
+//
+//  // widget: move absolute
+//  AssemblyMoveWidget* w_moveabs = new AssemblyMoveWidget("Move Absolute", "0,0,0,0", this);
+//  g_move->addWidget(w_moveabs->button(), 0, 0);
+//  g_move->addWidget(w_moveabs->lineed(), 0, 1);
+//
+//  w_moveabs->useMoveRelative(false);
+//  w_moveabs->setToolTip("(1) Moves x,y,z,a stage using moveAbsolute routine (with respect to origin)");
+//
+//  connect(w_moveabs, SIGNAL(moveAbsolute(double, double, double, double)), motion_manager, SLOT(moveAbsolute(double, double, double, double)));
+//  connect(motion_manager, SIGNAL(motion_finished()), w_moveabs, SLOT(enable()));
+//  // ---------------------
+//
+//  // widget: move relative
+//  AssemblyMoveWidget* w_moverel = new AssemblyMoveWidget("Move Relative", "0,0,0,0", this);
+//  g_move->addWidget(w_moverel->button(), 1, 0);
+//  g_move->addWidget(w_moverel->lineed(), 1, 1);
+//
+//  w_moverel->useMoveRelative(true);
+//  w_moverel->setToolTip("(2) Moves x,y,z,a stage using moveRelative routine (with respect to current position)");
+//
+//  connect(w_moverel, SIGNAL(moveRelative(double, double, double, double)), motion_manager, SLOT(moveRelative(double, double, double, double)));
+//  connect(motion_manager, SIGNAL(motion_finished()), w_moverel, SLOT(enable()));
+//  // ---------------------
+//
+//  box_move->setLayout(g_move);
+//
+//  f01->addRow(box_move);
+//  // ---------------------
 
   // VACUUM WIDGET -------
   QGroupBox* box_vacuum = new QGroupBox(tr("Vacuum"));
