@@ -142,9 +142,8 @@ class AssemblyMainWindow : public QMainWindow
 //  AssemblyUEyeSnapShooter* finderView_;
 //  AssemblyUEyeSnapShooter* edgeView_;
 //  AssemblyUEyeSnapShooter* rawView_;
-  AssemblyImageView* img_view_;
-  AssemblyImageThresholderView* thresholdView_;
-  AssemblyAutoFocusView* autoFocusView_;
+  AssemblyImageView* image_view_;
+  AssemblyImageThresholderView* thresholder_view_;
   AssemblyAssemblyView*  assemblyView_;
   AssemblyObjectFinderPatRecView* finder_view_;
   AssemblyRegistryView*  registryView_;
@@ -156,7 +155,7 @@ class AssemblyMainWindow : public QMainWindow
   // Controller(s)
   AssemblyImageController*    image_ctr_;
   AssemblyZFocusFinder*       zfocus_finder_;
-  AssemblyImageThresholder*   img_thresholder_;
+  AssemblyImageThresholder*   thresholder_;
   AssemblyObjectFinderPatRec* finder_;
   AssemblyObjectAligner*      aligner_;
   AssemblyMultiPickupTester*  multipickup_;

@@ -65,15 +65,20 @@ class AssemblyImageView : public QWidget
 
  public slots:
 
-//!!  void save_image_raw();
-//!!  void save_image_binary();
-//!!
-//!!  void save_image(const cv::Mat&);
+  void update_text(const double);
+
+  void acquire_image_zscan(const QString&);
+
+  void  update_autofocus_config(const double, const int);
+  void acquire_autofocus_config();
 
  signals:
 
-//!!  void image_raw_request();
-//!!  void image_binary_request();
+  void image_zscan_acquired(const cv::Mat&);
+
+  void autofocus_config(const double, const int);
+
+  void autofocus_request();
 };
 
 #endif // ASSEMBLYIMAGEVIEW_H

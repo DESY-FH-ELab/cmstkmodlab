@@ -90,52 +90,46 @@ AssemblyMainWindow::AssemblyMainWindow(const unsigned int camera_ID, QWidget* pa
     // IMAGE VIEW ----------------------------------------------
     const QString tabname_Image("Image");
 
-    img_view_ = new AssemblyImageView(tabWidget_);
-    tabWidget_->addTab(img_view_, tabname_Image);
+    image_view_ = new AssemblyImageView(tabWidget_);
+    tabWidget_->addTab(image_view_, tabname_Image);
+
+    connect(zfocus_finder_ , SIGNAL(show_zscan(QString))           , image_view_    , SLOT(acquire_image_zscan(QString)));
+    connect(zfocus_finder_ , SIGNAL(text_update_request(double))   , image_view_    , SLOT(update_text(double)));
+
+    connect(zfocus_finder_ , SIGNAL(focus_config_request())        , image_view_    , SLOT(acquire_autofocus_config()));
+    connect(image_view_    , SIGNAL(autofocus_config(double, int)) , zfocus_finder_ , SLOT(update_focus_config(double, int)));
+
+    image_view_->connectImageProducer_autofocus(image_view_, SIGNAL(image_zscan_acquired(const cv::Mat&)));
+
+    image_view_->update_autofocus_config(zfocus_finder_->zrange(), zfocus_finder_->points());
 
     NQLog("AssemblyMainWindow", NQLog::Message) << "added view " << tabname_Image;
     // ---------------------------------------------------------
 
     // IMAGE-THRESHOLDING VIEW ---------------------------------
-    const QString tabname_ImageThresholding("Image Thresholding");
+    const QString tabname_ImageThresholding("Thresholding");
 
-    img_thresholder_ = new AssemblyImageThresholder();
+    thresholder_ = new AssemblyImageThresholder();
 
-    thresholdView_ = new AssemblyImageThresholderView(tabWidget_);
-    tabWidget_->addTab(thresholdView_, tabname_ImageThresholding);
+    thresholder_view_ = new AssemblyImageThresholderView(tabWidget_);
+    tabWidget_->addTab(thresholder_view_, tabname_ImageThresholding);
 
-    connect(thresholdView_, SIGNAL(threshold_request        (int)), img_thresholder_, SLOT(update_image_binary_threshold        (int)));
-    connect(thresholdView_, SIGNAL(adaptiveThreshold_request(int)), img_thresholder_, SLOT(update_image_binary_adaptiveThreshold(int)));
+    connect(thresholder_view_, SIGNAL(threshold_request        (int)), thresholder_, SLOT(update_image_binary_threshold        (int)));
+    connect(thresholder_view_, SIGNAL(adaptiveThreshold_request(int)), thresholder_, SLOT(update_image_binary_adaptiveThreshold(int)));
 
-    connect(thresholdView_, SIGNAL(image_raw_request())   , img_thresholder_, SLOT(send_image_raw()));
-    connect(thresholdView_, SIGNAL(image_binary_request()), img_thresholder_, SLOT(send_image_binary()));
+    connect(thresholder_view_, SIGNAL(image_raw_request())   , thresholder_, SLOT(send_image_raw()));
+    connect(thresholder_view_, SIGNAL(image_binary_request()), thresholder_, SLOT(send_image_binary()));
 
-    connect(img_thresholder_, SIGNAL(image_sent(cv::Mat)), thresholdView_, SLOT(save_image(cv::Mat)));
+    connect(thresholder_, SIGNAL(image_sent(cv::Mat)), thresholder_view_, SLOT(save_image(cv::Mat)));
 
     // connections: AssemblyObjectFinderPatRec <-> AssemblyImageThresholder
     connect(finder_           , SIGNAL(updated_image_master())        , finder_          , SLOT(send_image_master()));
-    connect(finder_           , SIGNAL(sent_image_master(cv::Mat))    , img_thresholder_ , SLOT(update_image_raw(cv::Mat)));
-    connect(img_thresholder_  , SIGNAL(updated_image_raw())           , thresholdView_   , SLOT(apply_threshold())); //!! FIXME: should have configurable parameter, w/o relying on thresholdView_
-    connect(img_thresholder_  , SIGNAL(updated_image_binary(cv::Mat)) , finder_          , SLOT(update_image_master_PatRec(cv::Mat)));
+    connect(finder_           , SIGNAL(sent_image_master(cv::Mat))    , thresholder_ , SLOT(update_image_raw(cv::Mat)));
+    connect(thresholder_  , SIGNAL(updated_image_raw())           , thresholder_view_   , SLOT(apply_threshold())); //!! FIXME: should have configurable parameter, w/o relying on thresholder_view_
+    connect(thresholder_  , SIGNAL(updated_image_binary(cv::Mat)) , finder_          , SLOT(update_image_master_PatRec(cv::Mat)));
     // ----------
 
     NQLog("AssemblyMainWindow", NQLog::Message) << "added view " << tabname_ImageThresholding;
-    // ---------------------------------------------------------
-
-    // AUTO-FOCUS VIEW -----------------------------------------
-    const QString tabname_AutoFocus("Auto Focus");
-
-    autoFocusView_ = new AssemblyAutoFocusView(tabWidget_);
-    tabWidget_->addTab(autoFocusView_, tabname_AutoFocus);
-
-    connect(autoFocusView_, SIGNAL(scan_config(double, int)), zfocus_finder_, SLOT(update_focus_inputs(double, int)));
-
-    connect(zfocus_finder_, SIGNAL(show_zscan(QString))  , autoFocusView_, SLOT(read_graph(QString)));
-    connect(zfocus_finder_, SIGNAL(update_text(double))  , autoFocusView_, SLOT(updateText(double)));
-
-    autoFocusView_->update_scan_config(zfocus_finder_->zrange(), zfocus_finder_->points());
-
-    NQLog("AssemblyMainWindow", NQLog::Message) << "added view " << tabname_AutoFocus;
     // ---------------------------------------------------------
 
     // AUTOMATED-ASSEMBLY VIEW ---------------------------------
@@ -149,8 +143,8 @@ AssemblyMainWindow::AssemblyMainWindow(const unsigned int camera_ID, QWidget* pa
     finder_->update_rough_angles      (assemblyView_->PatRec_Widget()->widget_angrough()->get_input_string());
     finder_->update_angscan_parameters(assemblyView_->PatRec_Widget()->widget_angscanp()->get_input_string());
 
-    connect(finder_, SIGNAL(threshold_request        (int)), img_thresholder_, SLOT(update_image_binary_threshold        (int)));
-    connect(finder_, SIGNAL(adaptiveThreshold_request(int)), img_thresholder_, SLOT(update_image_binary_adaptiveThreshold(int)));
+    connect(finder_, SIGNAL(threshold_request        (int)), thresholder_, SLOT(update_image_binary_threshold        (int)));
+    connect(finder_, SIGNAL(adaptiveThreshold_request(int)), thresholder_, SLOT(update_image_binary_adaptiveThreshold(int)));
 
     NQLog("AssemblyMainWindow", NQLog::Message) << "added view " << tabname_AutoAssembly;
 
@@ -244,8 +238,8 @@ AssemblyMainWindow::AssemblyMainWindow(const unsigned int camera_ID, QWidget* pa
 //    checkbox3 = new QCheckBox("Assembly", this);
 //    toolBar_->addWidget(checkbox3);
 
-    connect(checkbox1, SIGNAL(stateChanged(int)), this, SLOT(changeState_AutoFocus       (int)));
-    connect(checkbox2, SIGNAL(stateChanged(int)), this, SLOT(changeState_Alignment       (int)));
+    connect(checkbox1, SIGNAL(stateChanged(int)), this, SLOT(changeState_AutoFocus(int)));
+    connect(checkbox2, SIGNAL(stateChanged(int)), this, SLOT(changeState_Alignment(int)));
 //    connect(checkbox3, SIGNAL(stateChanged(int)), this, SLOT(changeState_SandwichAssembly(int)));
 
     this->setCentralWidget(tabWidget_);
@@ -385,9 +379,9 @@ void AssemblyMainWindow::changeState_Alignment(const int state)
       connect   (module_assembler_ , SIGNAL(image_request()), image_ctr_  , SLOT(acquire_image()));
 
 //!!      connect   (finder_           , SIGNAL(updated_image_master())        , finder_          , SLOT(send_image_master()));
-//!!      connect   (finder_           , SIGNAL(sent_image_master(cv::Mat))    , img_thresholder_ , SLOT(update_image_raw(cv::Mat)));
-//!!      connect   (img_thresholder_  , SIGNAL(updated_image_raw())           , thresholdView_   , SLOT(apply_threshold())); //!! FIXME: should have configurable parameter, w/o relying on thresholdView_
-//!!      connect   (img_thresholder_  , SIGNAL(updated_image_binary(cv::Mat)) , finder_          , SLOT(update_image_master_PatRec(cv::Mat)));
+//!!      connect   (finder_           , SIGNAL(sent_image_master(cv::Mat))    , thresholder_ , SLOT(update_image_raw(cv::Mat)));
+//!!      connect   (thresholder_  , SIGNAL(updated_image_raw())           , thresholder_view_   , SLOT(apply_threshold())); //!! FIXME: should have configurable parameter, w/o relying on thresholder_view_
+//!!      connect   (thresholder_  , SIGNAL(updated_image_binary(cv::Mat)) , finder_          , SLOT(update_image_master_PatRec(cv::Mat)));
       connect   (finder_           , SIGNAL(updated_image_master_PatRec()) , finder_          , SLOT(run_PatRec_lab_marker()));
 
       connect   (finder_, SIGNAL(reportObjectLocation(int, double, double, double)), module_assembler_, SLOT(run_alignment(int, double, double, double)));
@@ -411,9 +405,9 @@ void AssemblyMainWindow::changeState_Alignment(const int state)
       disconnect(module_assembler_ , SIGNAL(image_request()), image_ctr_  , SLOT(acquire_image()));
 
 //!!      disconnect(finder_           , SIGNAL(updated_image_master())        , finder_          , SLOT(send_image_master()));
-//!!      disconnect(finder_           , SIGNAL(sent_image_master(cv::Mat))    , img_thresholder_ , SLOT(update_image_raw(cv::Mat)));
-//!!      disconnect(img_thresholder_  , SIGNAL(updated_image_raw())           , thresholdView_   , SLOT(apply_threshold())); //!! FIXME: should have configurable parameter, w/o relying on thresholdView_
-//!!      disconnect(img_thresholder_  , SIGNAL(updated_image_binary(cv::Mat)) , finder_          , SLOT(update_image_master_PatRec(cv::Mat)));
+//!!      disconnect(finder_           , SIGNAL(sent_image_master(cv::Mat))    , thresholder_ , SLOT(update_image_raw(cv::Mat)));
+//!!      disconnect(thresholder_  , SIGNAL(updated_image_raw())           , thresholder_view_   , SLOT(apply_threshold())); //!! FIXME: should have configurable parameter, w/o relying on thresholder_view_
+//!!      disconnect(thresholder_  , SIGNAL(updated_image_binary(cv::Mat)) , finder_          , SLOT(update_image_master_PatRec(cv::Mat)));
       disconnect(finder_           , SIGNAL(updated_image_master_PatRec()) , finder_          , SLOT(run_PatRec_lab_marker()));
 
       disconnect(finder_, SIGNAL(reportObjectLocation(int, double, double, double)), module_assembler_, SLOT(run_alignment(int, double, double, double)));
@@ -452,20 +446,20 @@ void AssemblyMainWindow::get_image()
 
 void AssemblyMainWindow::connect_images()
 {
-//  finderView_->connectImageProducer(finder_, SIGNAL(markerFound  (const cv::Mat&)));
-//  edgeView_  ->connectImageProducer(finder_, SIGNAL(edgesDetected(const cv::Mat&)));
-//  rawView_   ->connectImageProducer(camera_       , SIGNAL(imageAcquired(const cv::Mat&)));
+//  finderView_->connectImageProducer(finder_ , SIGNAL(markerFound  (const cv::Mat&)));
+//  edgeView_  ->connectImageProducer(finder_ , SIGNAL(edgesDetected(const cv::Mat&)));
+//  rawView_   ->connectImageProducer(camera_ , SIGNAL(imageAcquired(const cv::Mat&)));
 
-  connect(finder_    , SIGNAL(image_master_request())  , image_ctr_       , SLOT(acquire_image()));
-  connect(image_ctr_ , SIGNAL(image_acquired(cv::Mat)) , finder_          , SLOT(update_image_master(cv::Mat)));
-  connect(image_ctr_ , SIGNAL(image_acquired(cv::Mat)) , img_thresholder_ , SLOT(update_image_raw   (cv::Mat)));
+  image_view_->connectImageProducer_image(image_ctr_, SIGNAL(image_acquired(cv::Mat)));
 
-  thresholdView_->connectImageProducer_1(img_thresholder_, SIGNAL(updated_image_raw   (cv::Mat)));
-  thresholdView_->connectImageProducer_2(img_thresholder_, SIGNAL(updated_image_binary(cv::Mat)));
+  thresholder_view_->connectImageProducer_1(thresholder_, SIGNAL(updated_image_raw   (cv::Mat)));
+  thresholder_view_->connectImageProducer_2(thresholder_, SIGNAL(updated_image_binary(cv::Mat)));
 
-  autoFocusView_->connectImageProducer(zfocus_finder_, SIGNAL(image_acquired(cv::Mat)));
+  connect(image_ctr_ , SIGNAL(image_acquired(cv::Mat)) , thresholder_ , SLOT(update_image_raw   (cv::Mat)));
+  connect(image_ctr_ , SIGNAL(image_acquired(cv::Mat)) , finder_      , SLOT(update_image_master(cv::Mat)));
+  connect(image_ctr_ , SIGNAL(image_acquired(cv::Mat)) , registryView_->ImageWidget(), SLOT(update_image(cv::Mat)));
 
-  connect(image_ctr_, SIGNAL(image_acquired(cv::Mat)), registryView_->ImageWidget(), SLOT(update_image(cv::Mat)));
+  connect(finder_, SIGNAL(image_master_request()), image_ctr_, SLOT(acquire_image()));
 
   NQLog("AssemblyMainWindow", NQLog::Message) << "connect_images"
      << ": enabled images in application view(s)";
@@ -475,18 +469,20 @@ void AssemblyMainWindow::connect_images()
 
 void AssemblyMainWindow::disconnect_images()
 {
-//  finderView_        ->disconnectImageProducer(finder_, SIGNAL(markerFound  (const cv::Mat&)));
-//  edgeView_          ->disconnectImageProducer(finder_, SIGNAL(edgesDetected(const cv::Mat&)));
-//  rawView_           ->disconnectImageProducer(camera_, SIGNAL(imagef       (const cv::Mat&)));
+//  finderView_->disconnectImageProducer(finder_ , SIGNAL(markerFound  (const cv::Mat&)));
+//  edgeView_  ->disconnectImageProducer(finder_ , SIGNAL(edgesDetected(const cv::Mat&)));
+//  rawView_   ->disconnectImageProducer(camera_ , SIGNAL(imagef       (const cv::Mat&)));
 
-  disconnect(finder_    , SIGNAL(image_request())        , image_ctr_ , SLOT(acquire_image()));
-  disconnect(image_ctr_ , SIGNAL(image_acquired(cv::Mat)), finder_    , SLOT(update_image(cv::Mat)));
+  image_view_->disconnectImageProducer_image(image_ctr_, SIGNAL(image_acquired(cv::Mat)));
 
-  thresholdView_->disconnectImageProducer_1(img_thresholder_, SIGNAL(updated_image_raw   (cv::Mat)));
-  thresholdView_->disconnectImageProducer_2(img_thresholder_, SIGNAL(updated_image_binary(cv::Mat)));
+  thresholder_view_->disconnectImageProducer_1(thresholder_, SIGNAL(updated_image_raw   (cv::Mat)));
+  thresholder_view_->disconnectImageProducer_2(thresholder_, SIGNAL(updated_image_binary(cv::Mat)));
 
-  autoFocusView_->disconnectImageProducer(zfocus_finder_, SIGNAL(image_acquired(cv::Mat)));
-  disconnect(image_ctr_, SIGNAL(image_acquired(cv::Mat)), registryView_->ImageWidget(), SLOT(update_image(cv::Mat)));
+  disconnect(image_ctr_ , SIGNAL(image_acquired(cv::Mat)) , thresholder_ , SLOT(update_image_raw   (cv::Mat)));
+  disconnect(image_ctr_ , SIGNAL(image_acquired(cv::Mat)) , finder_      , SLOT(update_image_master(cv::Mat)));
+  disconnect(image_ctr_ , SIGNAL(image_acquired(cv::Mat)) , registryView_->ImageWidget(), SLOT(update_image(cv::Mat)));
+
+  disconnect(finder_, SIGNAL(image_master_request()), image_ctr_, SLOT(acquire_image()));
 
   NQLog("AssemblyMainWindow", NQLog::Message) << "disconnect_images"
      << ": disabled images in application view(s)";

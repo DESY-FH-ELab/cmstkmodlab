@@ -29,7 +29,7 @@ AssemblyImageController::AssemblyImageController(const AssemblyVUEyeCamera* came
     return;
   }
 
-  if(zfocus_finder_ != nullptr && zfocus_finder_->camera_manager() != camera_manager_)
+  if((zfocus_finder_ != nullptr) && (zfocus_finder_->camera_manager() != camera_manager_))
   {
     NQLog("AssemblyImageController", NQLog::Fatal) << "initialization error"
        << ": target input camera differs from camera of AssemblyZFocusFinder, exiting constructor";
@@ -107,7 +107,7 @@ void AssemblyImageController::retrieve_image(const cv::Mat& a_mat)
 
 void AssemblyImageController::enable_AutoFocus()
 {
-  if(zfocus_finder_ == 0)
+  if(zfocus_finder_ == nullptr)
   {
     NQLog("AssemblyImageController", NQLog::Warning) << "enable_AutoFocus"
        << ": AssemblyZFocusFinder not initialized, auto-focusing not enabled";
@@ -118,7 +118,8 @@ void AssemblyImageController::enable_AutoFocus()
   disconnect(this           , SIGNAL(image())                , camera_manager_, SLOT(acquireImage()));
   disconnect(camera_manager_, SIGNAL(imageAcquired(cv::Mat)) , this           , SLOT(retrieve_image(cv::Mat)));
 
-  connect   (this           , SIGNAL(image())                , zfocus_finder_ , SLOT(acquire_image()));
+  connect   (this           , SIGNAL(image())                , zfocus_finder_ , SIGNAL(focus_config_request()));
+  connect   (zfocus_finder_ , SIGNAL(updated_focus_config()) , zfocus_finder_ , SLOT(acquire_image()));
   connect   (zfocus_finder_ , SIGNAL(image_acquired(cv::Mat)), this           , SLOT(retrieve_image(cv::Mat)));
 
   autofocus_is_enabled_ = true;
@@ -131,7 +132,7 @@ void AssemblyImageController::enable_AutoFocus()
 
 void AssemblyImageController::disable_AutoFocus()
 {
-  if(zfocus_finder_ == 0)
+  if(zfocus_finder_ == nullptr)
   {
     NQLog("AssemblyImageController", NQLog::Warning) << "disable_AutoFocus"
        << ": AssemblyZFocusFinder not initialized, no action taken";
@@ -142,7 +143,8 @@ void AssemblyImageController::disable_AutoFocus()
   connect   (this           , SIGNAL(image())                , camera_manager_, SLOT(acquireImage()));
   connect   (camera_manager_, SIGNAL(imageAcquired(cv::Mat)) , this           , SLOT(retrieve_image(cv::Mat)));
 
-  disconnect(this           , SIGNAL(image())                , zfocus_finder_ , SLOT(acquire_image()));
+  disconnect(this           , SIGNAL(image())                , zfocus_finder_ , SIGNAL(focus_config_request()));
+  disconnect(zfocus_finder_ , SIGNAL(updated_focus_config()) , zfocus_finder_ , SLOT(acquire_image()));
   disconnect(zfocus_finder_ , SIGNAL(image_acquired(cv::Mat)), this           , SLOT(retrieve_image(cv::Mat)));
 
   autofocus_is_enabled_ = false;

@@ -75,7 +75,7 @@ class AssemblyZFocusFinder : public QObject
     void  enable_motion();
     void disable_motion();
 
-    void update_focus_inputs(const double, const int);
+    void update_focus_config(const double, const int);
 
     void acquire_image();
 
@@ -87,13 +87,16 @@ class AssemblyZFocusFinder : public QObject
 
     void next_zpoint();
 
+    void focus_config_request();
+    void updated_focus_config();
+
     void focus(const double, const double, const double, const double);
 
     void image_acquired(const cv::Mat&);
 
     void show_zscan(const QString&);
 
-    void update_text(const double);
+    void update_text_request(const double);
 };
 
 #endif // ASSEMBLYZFOCUSFINDER_H
