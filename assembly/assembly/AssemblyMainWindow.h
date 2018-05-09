@@ -25,13 +25,14 @@ typedef AssemblyUEyeModel AssemblyUEyeModel_t;
 #include <AssemblyUEyeWidget.h>
 #include <AssemblyUEyeView.h>
 #include <AssemblyUEyeSnapShooter.h>
-#include <AssemblyImageThresholderView.h>
 #include <AssemblyAutoFocusView.h>
 #include <AssemblyAssemblyView.h>
 #include <AssemblyRegistryView.h>
-#include <AssemblyImageController.h>
-#include <AssemblyImageThresholder.h>
 #include <AssemblyZFocusFinder.h>
+#include <AssemblyImageController.h>
+#include <AssemblyImageView.h>
+#include <AssemblyImageThresholder.h>
+#include <AssemblyImageThresholderView.h>
 #include <AssemblyObjectFinderPatRec.h>
 #include <AssemblyObjectFinderPatRecView.h>
 #include <AssemblyObjectFinderPatRecThread.h>
@@ -117,7 +118,7 @@ class AssemblyMainWindow : public QMainWindow
 
  protected:
 
-  // model(s) and model-manager(s)
+  // Model(s) and Model-Manager(s)
   ConradModel*   conradModel_;
   ConradManager* conradManager_;
 
@@ -134,13 +135,14 @@ class AssemblyMainWindow : public QMainWindow
   AssemblyVUEyeCamera*      camera_;
   unsigned int              camera_ID_;
 
-  // view(s)
+  // View(s)
   QToolBar*   toolBar_;
   QTabWidget* tabWidget_;
 
 //  AssemblyUEyeSnapShooter* finderView_;
 //  AssemblyUEyeSnapShooter* edgeView_;
 //  AssemblyUEyeSnapShooter* rawView_;
+  AssemblyImageView* img_view_;
   AssemblyImageThresholderView* thresholdView_;
   AssemblyAutoFocusView* autoFocusView_;
   AssemblyAssemblyView*  assemblyView_;
@@ -151,7 +153,7 @@ class AssemblyMainWindow : public QMainWindow
   QCheckBox* checkbox2;
 //  QCheckBox* checkbox3;
 
-  // controller(s)
+  // Controller(s)
   AssemblyImageController*    image_ctr_;
   AssemblyZFocusFinder*       zfocus_finder_;
   AssemblyImageThresholder*   img_thresholder_;

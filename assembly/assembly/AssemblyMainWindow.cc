@@ -87,6 +87,15 @@ AssemblyMainWindow::AssemblyMainWindow(const unsigned int camera_ID, QWidget* pa
 //    rawView_ = new AssemblyUEyeSnapShooter(tabWidget_);
 //    tabWidget_->addTab(rawView_, "raw");
 
+    // IMAGE VIEW ----------------------------------------------
+    const QString tabname_Image("Image");
+
+    img_view_ = new AssemblyImageView(tabWidget_);
+    tabWidget_->addTab(img_view_, tabname_Image);
+
+    NQLog("AssemblyMainWindow", NQLog::Message) << "added view " << tabname_Image;
+    // ---------------------------------------------------------
+
     // IMAGE-THRESHOLDING VIEW ---------------------------------
     const QString tabname_ImageThresholding("Image Thresholding");
 
