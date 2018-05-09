@@ -25,7 +25,6 @@ typedef AssemblyUEyeModel AssemblyUEyeModel_t;
 #include <AssemblyUEyeWidget.h>
 #include <AssemblyUEyeView.h>
 #include <AssemblyUEyeSnapShooter.h>
-#include <AssemblyAutoFocusView.h>
 #include <AssemblyAssemblyView.h>
 #include <AssemblyRegistryView.h>
 #include <AssemblyZFocusFinder.h>
