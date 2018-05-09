@@ -15,6 +15,10 @@
 
 #include <LStepExpressModel.h>
 #include <LStepExpressMotionManager.h>
+#include <LStepExpressWidget.h>
+#include <LStepExpressJoystickWidget.h>
+#include <LStepExpressPositionWidget.h>
+#include <AssemblyMotionWidgets.h>
 
 #include <QWidget>
 
@@ -25,14 +29,22 @@ class LStepExpressMotionView : public QWidget
  public:
 
   explicit LStepExpressMotionView(LStepExpressModel*, LStepExpressMotionManager*, QWidget*);
-  virtual ~LStepExpressMotionView() {}
+  virtual ~LStepExpressMotionView();
 
  protected:
 
   LStepExpressModel*         model_;
   LStepExpressMotionManager* manager_;
 
+  LStepExpressWidget* w_lStep_;
+  AssemblyMoveWidget* w_moveabs_;
+  AssemblyMoveWidget* w_moverel_;
+  LStepExpressJoystickWidget* w_lStepJoystick_;
+  LStepExpressPositionWidget* w_lStepPosition_;
+
  public slots:
+
+  void stateChanged(const State&);
 
  signals:
 };
