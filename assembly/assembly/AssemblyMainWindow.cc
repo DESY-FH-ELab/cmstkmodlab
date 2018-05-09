@@ -143,11 +143,6 @@ AssemblyMainWindow::AssemblyMainWindow(const unsigned int camera_ID, QWidget* pa
     connect(finder_, SIGNAL(threshold_request        (int)), img_thresholder_, SLOT(update_image_binary_threshold        (int)));
     connect(finder_, SIGNAL(adaptiveThreshold_request(int)), img_thresholder_, SLOT(update_image_binary_adaptiveThreshold(int)));
 
-    connect(thresholdView_, SIGNAL(image_raw_request())   , img_thresholder_, SLOT(send_image_raw()));
-    connect(thresholdView_, SIGNAL(image_binary_request()), img_thresholder_, SLOT(send_image_binary()));
-
-    connect(img_thresholder_, SIGNAL(image_sent(cv::Mat)), thresholdView_, SLOT(save_image(cv::Mat)));
-
     NQLog("AssemblyMainWindow", NQLog::Message) << "added view " << tabname_AutoAssembly;
 
     // VACUUM connections
@@ -475,8 +470,8 @@ void AssemblyMainWindow::disconnect_images()
 //  edgeView_          ->disconnectImageProducer(finder_, SIGNAL(edgesDetected(const cv::Mat&)));
 //  rawView_           ->disconnectImageProducer(camera_, SIGNAL(imagef       (const cv::Mat&)));
 
-  disconnect(finder_, SIGNAL(image_request())        , image_ctr_ , SLOT(acquire_image()));
-  disconnect(image_ctr_ , SIGNAL(image_acquired(cv::Mat)), finder_, SLOT(update_image(cv::Mat)));
+  disconnect(finder_    , SIGNAL(image_request())        , image_ctr_ , SLOT(acquire_image()));
+  disconnect(image_ctr_ , SIGNAL(image_acquired(cv::Mat)), finder_    , SLOT(update_image(cv::Mat)));
 
   thresholdView_->disconnectImageProducer_1(img_thresholder_, SIGNAL(updated_image_raw   (cv::Mat)));
   thresholdView_->disconnectImageProducer_2(img_thresholder_, SIGNAL(updated_image_binary(cv::Mat)));
