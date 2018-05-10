@@ -26,6 +26,7 @@
 AssemblyMainWindow::AssemblyMainWindow(const unsigned int camera_ID, QWidget* parent) :
   QMainWindow(parent),
   camera_ID_(camera_ID),
+  images_enabled_(false),
   testTimerCount_(0.),
   liveTimer_(0)
 {
@@ -265,6 +266,16 @@ void AssemblyMainWindow::liveUpdate()
 
 void AssemblyMainWindow::enable_images()
 {
+  if(images_enabled_)
+  {
+    NQLog("AssemblyMainWindow", NQLog::Message) << "enable_images"
+       << ": images already enabled, no action taken";
+
+    return;
+  }
+
+  images_enabled_ = true;
+
   if(image_ctr_ == nullptr)
   {
     image_ctr_ = new AssemblyImageController(camera_, zfocus_finder_);
@@ -291,23 +302,33 @@ void AssemblyMainWindow::enable_images()
 
 void AssemblyMainWindow::disable_images()
 {
-    disconnect(this      , SIGNAL(images_ON())      , image_ctr_, SLOT(enable()));
-    disconnect(this      , SIGNAL(images_OFF())     , image_ctr_, SLOT(disable()));
-
-    disconnect(image_ctr_, SIGNAL(camera_enabled()) , this      , SLOT(connect_images()));
-    disconnect(image_ctr_, SIGNAL(camera_disabled()), this      , SLOT(disconnect_images()));
-
-    disconnect(this      , SIGNAL(image_request())  , image_ctr_, SLOT(acquire_image()));
-    disconnect(this      , SIGNAL(autofocus_ON())   , image_ctr_, SLOT( enable_autofocus()));
-    disconnect(this      , SIGNAL(autofocus_OFF())  , image_ctr_, SLOT(disable_autofocus()));
-
+  if(images_enabled_ == false)
+  {
     NQLog("AssemblyMainWindow", NQLog::Message) << "disable_images"
-       << ": ImageController disconnected";
+       << ": images already disabled, no action taken";
 
-    NQLog("AssemblyMainWindow", NQLog::Spam) << "enable_images"
-       << ": emitting image \"images_OFF\"";
+    return;
+  }
 
-    emit images_OFF();
+  images_enabled_ = false;
+
+  disconnect(this      , SIGNAL(images_ON())      , image_ctr_, SLOT(enable()));
+  disconnect(this      , SIGNAL(images_OFF())     , image_ctr_, SLOT(disable()));
+
+  disconnect(image_ctr_, SIGNAL(camera_enabled()) , this      , SLOT(connect_images()));
+  disconnect(image_ctr_, SIGNAL(camera_disabled()), this      , SLOT(disconnect_images()));
+
+  disconnect(this      , SIGNAL(image_request())  , image_ctr_, SLOT(acquire_image()));
+  disconnect(this      , SIGNAL(autofocus_ON())   , image_ctr_, SLOT( enable_autofocus()));
+  disconnect(this      , SIGNAL(autofocus_OFF())  , image_ctr_, SLOT(disable_autofocus()));
+
+  NQLog("AssemblyMainWindow", NQLog::Message) << "disable_images"
+     << ": ImageController disconnected";
+
+  NQLog("AssemblyMainWindow", NQLog::Spam) << "enable_images"
+     << ": emitting signal \"images_OFF\"";
+
+  emit images_OFF();
 }
 
 void AssemblyMainWindow::changeState_autofocus(const int state)

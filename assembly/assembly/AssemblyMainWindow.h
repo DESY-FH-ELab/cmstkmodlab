@@ -155,18 +155,19 @@ class AssemblyMainWindow : public QMainWindow
   // Controller(s)
   AssemblyImageController*    image_ctr_;
   AssemblyZFocusFinder*       zfocus_finder_;
-  AssemblyThresholder*   thresholder_;
-  AssemblyObjectFinderPatRec* finder_;
+  AssemblyThresholder*        thresholder_;
   AssemblyObjectAligner*      aligner_;
   AssemblyMultiPickupTester*  multipickup_;
   AssemblyAssembler*          module_assembler_;
 
-  // thread(s)
+  AssemblyObjectFinderPatRec*       finder_;
   AssemblyObjectFinderPatRecThread* finder_thread_;
+
+  // switches
+  bool images_enabled_;
 
   // timing
   double testTimerCount_;
-
   QTimer* liveTimer_;
 };
 
