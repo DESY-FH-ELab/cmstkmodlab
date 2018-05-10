@@ -90,15 +90,14 @@ AssemblyVacuumWidget::AssemblyVacuumWidget(const QString& label, QWidget* parent
 
 void AssemblyVacuumWidget::toggleVacuum()
 {
-  NQLog("AssemblyVacuumWidget") << ": toggling vacuum voltage";
-
   for(unsigned int i=0; i<valves_.size(); ++i)
   {
     if(valves_.at(i)->isChecked())
     {
-      NQLog("AssemblyVacuumWidget") << ": emit signal to channel " << (i+1);
-
       button_->setEnabled(false);
+
+      NQLog("AssemblyVacuumWidget") << "toggleVacuum"
+        << ": emitting signal toggleVacuum(" << i+1 << ")";
 
       emit toggleVacuum(i+1);
 
