@@ -93,13 +93,13 @@ AssemblyMainWindow::AssemblyMainWindow(const unsigned int camera_ID, QWidget* pa
     image_view_ = new AssemblyImageView(tabWidget_);
     tabWidget_->addTab(image_view_, tabname_Image);
 
-    connect(zfocus_finder_ , SIGNAL(show_zscan(QString))           , image_view_    , SLOT(acquire_image_zscan(QString)));
-    connect(zfocus_finder_ , SIGNAL(text_update_request(double))   , image_view_    , SLOT(update_text(double)));
+    connect(zfocus_finder_, SIGNAL(show_zscan(QString))          , image_view_   , SLOT(update_image_zscan(QString)));
+    connect(zfocus_finder_, SIGNAL(text_update_request(double))  , image_view_   , SLOT(update_text(double)));
 
-    connect(zfocus_finder_ , SIGNAL(focus_config_request())        , image_view_    , SLOT(acquire_autofocus_config()));
-    connect(image_view_    , SIGNAL(autofocus_config(double, int)) , zfocus_finder_ , SLOT(update_focus_config(double, int)));
+    connect(zfocus_finder_, SIGNAL(focus_config_request())       , image_view_   , SLOT(acquire_autofocus_config()));
+    connect(image_view_   , SIGNAL(autofocus_config(double, int)), zfocus_finder_, SLOT(update_focus_config(double, int)));
 
-    image_view_->connectImageProducer_autofocus(image_view_, SIGNAL(image_zscan_acquired(const cv::Mat&)));
+    image_view_->connectImageProducer_autofocus(image_view_, SIGNAL(image_zscan_updated(const cv::Mat&)));
 
     image_view_->update_autofocus_config(zfocus_finder_->zrange(), zfocus_finder_->points());
 

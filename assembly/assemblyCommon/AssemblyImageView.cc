@@ -35,9 +35,10 @@ AssemblyImageView::AssemblyImageView(QWidget* parent) :
   AF_ueye_(nullptr),
   AF_scroll_(nullptr),
   AF_result_bestZ_lineed_(nullptr),
+  AF_exe_button_(nullptr),
   AF_param_maxDZ_lineed_(nullptr),
   AF_param_Nstep_lineed_(nullptr),
-  AF_exe_button_(nullptr)
+  AF_save_zscan_button_(nullptr)
 {
   QGridLayout* g0 = new QGridLayout;
   this->setLayout(g0);
@@ -132,6 +133,11 @@ AssemblyImageView::AssemblyImageView(QWidget* parent) :
   QFormLayout* AF_lay = new QFormLayout;
   g0->addLayout(AF_lay, 1, 1);
 
+  AF_exe_button_ = new QPushButton("Auto-Focus Image", this);
+  AF_lay->addRow(AF_exe_button_);
+
+  connect(AF_exe_button_, SIGNAL(clicked()), this, SIGNAL(autofocus_request()));
+
   QGroupBox* AF_param_box = new QGroupBox(tr("Auto-Focus Configuration"));
   AF_lay->addRow(AF_param_box);
 
@@ -147,10 +153,10 @@ AssemblyImageView::AssemblyImageView(QWidget* parent) :
   AF_param_lay->addRow(AF_param_maxDZ_label, AF_param_maxDZ_lineed_);
   AF_param_lay->addRow(AF_param_Nstep_label, AF_param_Nstep_lineed_);
 
-  AF_exe_button_ = new QPushButton("Auto-Focus Image", this);
-  AF_lay->addRow(AF_exe_button_);
+  AF_save_zscan_button_ = new QPushButton("Save Z-Scan Image", this);
+  AF_lay->addRow(AF_save_zscan_button_);
 
-  connect(AF_exe_button_, SIGNAL(clicked()), this, SIGNAL(autofocus_request()));
+  connect(AF_save_zscan_button_, SIGNAL(clicked()), this, SLOT(save_image_zscan()));
   // ----------
 
   //// --------------------------------------------------
@@ -223,6 +229,31 @@ void AssemblyImageView::save_image()
   else
   {
     cv::imwrite(filename.toStdString(), image_);
+  }
+
+  return;
+}
+
+void AssemblyImageView::save_image_zscan()
+{
+  if(image_zscan_.empty())
+  {
+    NQLog("AssemblyImageView", NQLog::Warning) << "save_image_zscan"
+       << ": input z-scan image is empty, no action taken";
+
+    return;
+  }
+
+  const QString filename = QFileDialog::getSaveFileName(this, tr("Save Image"), QDir::homePath(), tr("PNG Files (*.png);;All Files (*)"));
+  if(filename.isNull() || filename.isEmpty()){ return; }
+
+  if(filename.endsWith(".png"))
+  {
+    Util::cv_imwrite_png(filename.toStdString(), image_zscan_);
+  }
+  else
+  {
+    cv::imwrite(filename.toStdString(), image_zscan_);
   }
 
   return;
@@ -316,20 +347,21 @@ void AssemblyImageView::acquire_autofocus_config()
   emit autofocus_config(maxDZ, Nstep);
 }
 
-void AssemblyImageView::acquire_image_zscan(const QString& img_path)
+void AssemblyImageView::update_image_zscan(const QString& img_path)
 {
   if(Util::IsFile(img_path))
   {
-    const cv::Mat img = img_path.endsWith(".png") ? Util::cv_imread_png(img_path.toStdString(), CV_LOAD_IMAGE_COLOR) : cv::imread(img_path.toStdString(), CV_LOAD_IMAGE_COLOR);
+    image_zscan_ = img_path.endsWith(".png") ? Util::cv_imread_png(img_path.toStdString(), CV_LOAD_IMAGE_COLOR) : cv::imread(img_path.toStdString(), CV_LOAD_IMAGE_COLOR);
 
-    NQLog("AssemblyImageView", NQLog::Spam) << "acquire_zscan_image"
-       << ": emitting signal \"image_zscan_acquired\"";
+    NQLog("AssemblyImageView", NQLog::Spam) << "update_image_zscan"
+       << ": emitting signal \"image_zscan_updated\"";
 
-    emit image_zscan_acquired(img);
+    emit image_zscan_updated(image_zscan_);
+    emit image_zscan_updated();
   }
   else
   {
-    NQLog("AssemblyImageView", NQLog::Warning) << "acquire_zscan_image"
+    NQLog("AssemblyImageView", NQLog::Warning) << "update_image_zscan"
        << ": invalid path to input file, no action taken (file=" << img_path << ")";
 
     return;

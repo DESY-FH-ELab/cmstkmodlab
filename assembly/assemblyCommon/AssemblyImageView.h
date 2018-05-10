@@ -65,10 +65,14 @@ class AssemblyImageView : public QWidget
 
   QLineEdit* AF_result_bestZ_lineed_;
 
+  QPushButton* AF_exe_button_;
+
   QLineEdit* AF_param_maxDZ_lineed_;
   QLineEdit* AF_param_Nstep_lineed_;
 
-  QPushButton* AF_exe_button_;
+  QPushButton* AF_save_zscan_button_;
+
+  cv::Mat image_zscan_;
   // -------------------
 
  public slots:
@@ -77,12 +81,12 @@ class AssemblyImageView : public QWidget
 
   void load_image();
   void save_image();
-
   void modify_image_centerlines();
 
   void update_text(const double);
 
-  void acquire_image_zscan(const QString&);
+  void   save_image_zscan();
+  void update_image_zscan(const QString&);
 
   void  update_autofocus_config(const double, const int);
   void acquire_autofocus_config();
@@ -91,7 +95,8 @@ class AssemblyImageView : public QWidget
 
   void image_updated(const cv::Mat&);
 
-  void image_zscan_acquired(const cv::Mat&);
+  void image_zscan_updated(const cv::Mat&);
+  void image_zscan_updated();
 
   void autofocus_config(const double, const int);
 
