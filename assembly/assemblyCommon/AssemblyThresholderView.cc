@@ -129,7 +129,7 @@ AssemblyThresholderView::AssemblyThresholderView(QWidget* parent) :
   imgbin_thresh_layout->addLayout(imgbin_thresh_inputcfg, 1, 0);
 
   imgbin_thresh_label_ = new QLabel(this);
-  imgbin_thresh_label_->setText("Threshold");
+  imgbin_thresh_label_->setText("Threshold (int)");
 
   imgbin_thresh_linee_ = new QLineEdit(this);
   imgbin_thresh_linee_->setText("100");
@@ -149,7 +149,7 @@ AssemblyThresholderView::AssemblyThresholderView(QWidget* parent) :
   imgbin_adathr_layout->addLayout(imgbin_adathr_inputcfg, 1, 0);
 
   imgbin_adathr_label_ = new QLabel(this);
-  imgbin_adathr_label_->setText("Block Size");
+  imgbin_adathr_label_->setText("Block Size (odd int)");
 
   imgbin_adathr_linee_ = new QLineEdit(this);
   imgbin_adathr_linee_->setText("587");
