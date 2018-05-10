@@ -16,15 +16,43 @@
 #include <AssemblyUtilities.h>
 
 #include <QStringList>
+#include <QLabel>
 
-AssemblyMoveWidget::AssemblyMoveWidget(const QString& label, const QString& default_entry, const bool move_relative, QWidget* parent) :
+AssemblyMoveWidget::AssemblyMoveWidget(const LStepExpressMotionManager* const manager, const QString& label, const bool move_relative, QWidget* parent) :
   QWidget(parent),
-  moveRelative_(move_relative)
+  manager_(manager),
+  move_relative_(move_relative),
+
+  layout_(nullptr),
+  button_(nullptr),
+
+  XYZA_lay_(nullptr),
+
+  X_lineed_(nullptr),
+  Y_lineed_(nullptr),
+  Z_lineed_(nullptr),
+  A_lineed_(nullptr)
 {
-  layout_ = new QHBoxLayout;
+  // motion manager
+  if(manager_ == nullptr)
+  {
+    NQLog("AssemblyMoveWidget", NQLog::Critical) << "initialization error"
+      << ": null pointer to LStepExpressMotionManager object, exiting constructor";
+
+    return;
+  }
+
+  connect(this, SIGNAL(move_absolute(double, double, double, double)), manager_, SLOT(moveAbsolute(double, double, double, double)));
+  connect(this, SIGNAL(move_relative(double, double, double, double)), manager_, SLOT(moveRelative(double, double, double, double)));
+
+  connect(manager_, SIGNAL(motion_finished()), this, SLOT(enable()));
+  // --------------
+
+  // layout
+  layout_ = new QVBoxLayout;
   this->setLayout(layout_);
 
-  button_ = new QPushButton(label, this);
+  button_ = new QPushButton(label);
   button_->setStyleSheet(
     "Text-align: left;"
     "padding-left:   4px;"
@@ -33,107 +61,160 @@ AssemblyMoveWidget::AssemblyMoveWidget(const QString& label, const QString& defa
     "padding-bottom: 3px;"
   );
 
-  lineed_ = new QLineEdit(this);
-  lineed_->setText(default_entry);
-
   layout_->addWidget(button_);
-  layout_->addWidget(lineed_);
+
+  XYZA_lay_ = new QHBoxLayout;
+
+  QLabel* X_label = new QLabel("X");
+  QLabel* Y_label = new QLabel("Y");
+  QLabel* Z_label = new QLabel("Z");
+  QLabel* A_label = new QLabel("A");
+
+  X_lineed_ = new QLineEdit("");
+  Y_lineed_ = new QLineEdit("");
+  Z_lineed_ = new QLineEdit("");
+  A_lineed_ = new QLineEdit("");
+
+  XYZA_lay_->addWidget(X_label  );
+  XYZA_lay_->addWidget(X_lineed_);
+
+  XYZA_lay_->addWidget(Y_label  );
+  XYZA_lay_->addWidget(Y_lineed_);
+
+  XYZA_lay_->addWidget(Z_label  );
+  XYZA_lay_->addWidget(Z_lineed_);
+
+  XYZA_lay_->addWidget(A_label  );
+  XYZA_lay_->addWidget(A_lineed_);
+
+  layout_->addLayout(XYZA_lay_);
 
   connect(button_, SIGNAL(clicked()), this, SLOT(execute()));
-}
-
-QString AssemblyMoveWidget::get_input_string() const
-{
-  return this->lineed_->text();
-}
-
-void AssemblyMoveWidget::enable(const bool b)
-{
-  button_->setEnabled(b);
-  lineed_->setEnabled(b);
-
-  return;
+  // --------------
 }
 
 void AssemblyMoveWidget::execute()
 {
-  QString line_entry = this->get_input_string();
+  // X ---
+  double X_val(0.);
 
-  // parse lineEdit text to get target coordinates
-  const QStringList entries = line_entry.remove(" ").split(",");
+  const QString X_str = X_lineed_->text().remove(" ");
 
-  if((entries.length() == 4) || (moveRelative_ && (entries.length() == 3)))
+  if(X_str.isEmpty())
   {
-    bool valid_x_d(false);
-    bool valid_y_d(false);
-    bool valid_z_d(false);
-    bool valid_a_d(true);
-
-    const double x_d = entries.value(0).toDouble(&valid_x_d);
-    const double y_d = entries.value(1).toDouble(&valid_y_d);
-    const double z_d = entries.value(2).toDouble(&valid_z_d);
-
-    const double a_d = (entries.length() == 4) ? entries.value(3).toDouble(&valid_a_d) : 0.0;
-
-    if(!valid_x_d)
-    {
-      NQLog("AssemblyMoveWidget", NQLog::Warning) << "execute"
-         << ": invalid format for x-axis value (" << entries.value(0) << "), no action taken";
-
-      return;
-    }
-    else if(!valid_y_d)
-    {
-      NQLog("AssemblyMoveWidget", NQLog::Warning) << "execute"
-         << ": invalid format for y-axis value (" << entries.value(1) << "), no action taken";
-
-      return;
-    }
-    else if(!valid_z_d)
-    {
-      NQLog("AssemblyMoveWidget", NQLog::Warning) << "execute"
-         << ": invalid format for z-axis value (" << entries.value(2) << "), no action taken";
-
-      return;
-    }
-    else if(!valid_a_d)
-    {
-      NQLog("AssemblyMoveWidget", NQLog::Warning) << "execute"
-         << ": invalid format for a-axis value (" << entries.value(3) << "), no action taken";
-
-      return;
-    }
-    // ---
-
-    if(moveRelative_)
-    {
-      NQLog("AssemblyMoveWidget", NQLog::Message) << "execute"
-         << ": emitting signal \"moveRelative("
-         << x_d << ", " << y_d << ", " << z_d << ", " << a_d << ")\"";
-
-      this->enable(false);
-
-      emit moveRelative(x_d, y_d, z_d, a_d);
-    }
-    else
-    {
-      NQLog("AssemblyMoveWidget", NQLog::Message) << "execute"
-         << ": emitting signal \"moveAbsolute("
-         << x_d << ", " << y_d << ", " << z_d << ", " << a_d << ")\"";
-
-      this->enable(false);
-
-      emit moveAbsolute(x_d, y_d, z_d, a_d);
-    }
+    X_val = move_relative_ ? 0. : this->manager()->get_position_X();
   }
   else
   {
-    NQLog("AssemblyMoveWidget", NQLog::Warning) << "execute"
-       << ": [moveRelative=" << moveRelative_ << "] invalid input string format (" << line_entry << "), no action taken";
+    bool valid_X(false);
 
-    return;
+    X_val = X_str.toDouble(&valid_X);
+
+    if(valid_X == false)
+    {
+      NQLog("AssemblyMoveWidget", NQLog::Warning) << "execute"
+         << ": invalid format for x-axis value (" << X_str << "), no action taken";
+
+      return;
+    }
+  }
+  // -----
+
+  // Y ---
+  double Y_val(0.);
+
+  const QString Y_str = Y_lineed_->text().remove(" ");
+
+  if(Y_str.isEmpty())
+  {
+    Y_val = move_relative_ ? 0. : this->manager()->get_position_Y();
+  }
+  else
+  {
+    bool valid_Y(false);
+
+    Y_val = Y_str.toDouble(&valid_Y);
+
+    if(valid_Y == false)
+    {
+      NQLog("AssemblyMoveWidget", NQLog::Warning) << "execute"
+         << ": invalid format for y-axis value (" << Y_str << "), no action taken";
+
+      return;
+    }
+  }
+  // -----
+
+  // Z ---
+  double Z_val(0.);
+
+  const QString Z_str = Z_lineed_->text().remove(" ");
+
+  if(Z_str.isEmpty())
+  {
+    Z_val = move_relative_ ? 0. : this->manager()->get_position_Z();
+  }
+  else
+  {
+    bool valid_Z(false);
+
+    Z_val = Z_str.toDouble(&valid_Z);
+
+    if(valid_Z == false)
+    {
+      NQLog("AssemblyMoveWidget", NQLog::Warning) << "execute"
+         << ": invalid format for z-axis value (" << Z_str << "), no action taken";
+
+      return;
+    }
+  }
+  // -----
+
+  // A ---
+  double A_val(0.);
+
+  const QString A_str = A_lineed_->text().remove(" ");
+
+  if(A_str.isEmpty())
+  {
+    A_val = move_relative_ ? 0. : this->manager()->get_position_A();
+  }
+  else
+  {
+    bool valid_A(false);
+
+    A_val = A_str.toDouble(&valid_A);
+
+    if(valid_A == false)
+    {
+      NQLog("AssemblyMoveWidget", NQLog::Warning) << "execute"
+         << ": invalid format for a-axis value (" << A_str << "), no action taken";
+
+      return;
+    }
+  }
+  // -----
+
+  if(move_relative_)
+  {
+    NQLog("AssemblyMoveWidget", NQLog::Message) << "execute"
+       << ": emitting signal \"move_relative("
+       << X_val << ", " << Y_val << ", " << Z_val << ", " << A_val << ")\"";
+
+    this->disable();
+
+    emit move_relative(X_val, Y_val, Z_val, A_val);
+  }
+  else
+  {
+    NQLog("AssemblyMoveWidget", NQLog::Message) << "execute"
+       << ": emitting signal \"move_absolute("
+       << X_val << ", " << Y_val << ", " << Z_val << ", " << A_val << ")\"";
+
+    this->enable();
+
+    emit move_absolute(X_val, Y_val, Z_val, A_val);
   }
 
   return;
 }
-// ===========================================================================

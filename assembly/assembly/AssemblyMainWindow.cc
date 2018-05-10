@@ -158,7 +158,7 @@ AssemblyMainWindow::AssemblyMainWindow(const unsigned int camera_ID, QWidget* pa
     // ---------------------------------------------------------
 
     // PATTERN-RECOGNITION VIEW --------------------------------
-    const QString tabname_PatRec("Pat Rec");
+    const QString tabname_PatRec("Pattern Recognition");
 
     finder_view_ = new AssemblyObjectFinderPatRecView(motion_manager_, tabWidget_);
     tabWidget_->addTab(finder_view_, tabname_PatRec);

@@ -51,7 +51,7 @@ AssemblyHardwareControlView::AssemblyHardwareControlView(const LStepExpressMotio
   this->setLayout(layout);
 
   //// Motion and Vacuum Widgets
-  QHBoxLayout* g1 = new QHBoxLayout(this);
+  QHBoxLayout* g1 = new QHBoxLayout;
 
   /// Motion Widgets
   QGroupBox* box_move = new QGroupBox(tr("Motion Stage"));
@@ -61,16 +61,12 @@ AssemblyHardwareControlView::AssemblyHardwareControlView(const LStepExpressMotio
   // widget: Move Absolute
   QVBoxLayout* l_moveabs = new QVBoxLayout;
 
-  w_moveabs_ = new AssemblyMoveWidget("Move Absolute [mm] (format: X, Y, Z, A)", "0, 0, 0, 0", this);
-  w_moveabs_->setToolTip("(1) Moves x,y,z,a stage using moveAbsolute routine (with respect to origin)");
-  w_moveabs_->useMoveRelative(false);
+  w_moveabs_ = new AssemblyMoveWidget(manager_, "Move Absolute [mm]");
+  w_moveabs_->setToolTip("Moves to (x,y,z,a) position in the motion stage reference frame");
+  w_moveabs_->use_move_relative(false);
   w_moveabs_->button()->setStyleSheet(QString::fromUtf8("text-align:center;"));
 
-  l_moveabs->addWidget(w_moveabs_->button());
-  l_moveabs->addWidget(w_moveabs_->lineed());
-
-  connect(w_moveabs_, SIGNAL(moveAbsolute(double, double, double, double)), manager_, SLOT(moveAbsolute(double, double, double, double)));
-  connect(manager_, SIGNAL(motion_finished()), w_moveabs_, SLOT(enable()));
+  l_moveabs->addWidget(w_moveabs_);
 
   l_move->addLayout(l_moveabs);
   // -----
@@ -78,16 +74,12 @@ AssemblyHardwareControlView::AssemblyHardwareControlView(const LStepExpressMotio
   // widget: Move Relative
   QVBoxLayout* l_moverel = new QVBoxLayout;
 
-  w_moverel_ = new AssemblyMoveWidget("Move Relative [mm] (format: dX, dY, dZ, dA)", "0, 0, 0, 0", this);
-  w_moverel_->setToolTip("(2) Moves x,y,z,a stage using moveRelative routine (with respect to current position)");
-  w_moverel_->useMoveRelative(true);
+  w_moverel_ = new AssemblyMoveWidget(manager_, "Move Relative [mm]");
+  w_moverel_->setToolTip("Relative movement (x,y,z,a) with respect to current position");
+  w_moverel_->use_move_relative(true);
   w_moverel_->button()->setStyleSheet(QString::fromUtf8("text-align:center;"));
 
-  l_moverel->addWidget(w_moverel_->button());
-  l_moverel->addWidget(w_moverel_->lineed());
-
-  connect(w_moverel_, SIGNAL(moveRelative(double, double, double, double)), manager_, SLOT(moveRelative(double, double, double, double)));
-  connect(manager_, SIGNAL(motion_finished()), w_moverel_, SLOT(enable()));
+  l_moverel->addWidget(w_moverel_);
 
   l_move->addLayout(l_moverel);
   // -----
@@ -151,8 +143,8 @@ AssemblyHardwareControlView::~AssemblyHardwareControlView()
 
 void AssemblyHardwareControlView::stateChanged(const State& newState)
 {
-  w_moverel_->enable(newState == READY);
-  w_moveabs_->enable(newState == READY);
+  w_moverel_->setEnabled(newState == READY);
+  w_moveabs_->setEnabled(newState == READY);
 
   return;
 }

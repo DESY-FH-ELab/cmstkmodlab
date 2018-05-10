@@ -144,7 +144,7 @@ AssemblyImageView::AssemblyImageView(QWidget* parent) :
   QFormLayout* AF_param_lay = new QFormLayout;
   AF_param_box->setLayout(AF_param_lay);
 
-  QLabel* AF_param_maxDZ_label = new QLabel("Max Z-spread [mm]", this);
+  QLabel* AF_param_maxDZ_label = new QLabel("Max delta-Z [mm]", this);
   AF_param_maxDZ_lineed_ = new QLineEdit("", this);
 
   QLabel* AF_param_Nstep_label = new QLabel("# Steps (int)", this);

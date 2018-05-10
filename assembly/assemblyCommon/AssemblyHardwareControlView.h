@@ -32,6 +32,8 @@ class AssemblyHardwareControlView : public QWidget
   explicit AssemblyHardwareControlView(const LStepExpressMotionManager* const, QWidget*);
   virtual ~AssemblyHardwareControlView();
 
+  const LStepExpressMotionManager* manager() const { return manager_; }
+
   AssemblyVacuumWidget* Vacuum_Widget() const { return w_vacuum_; }
 
  protected:

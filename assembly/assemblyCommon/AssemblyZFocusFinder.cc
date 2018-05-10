@@ -331,9 +331,9 @@ void AssemblyZFocusFinder::test_focus()
       emit show_zscan(QString(zscan_plot_path_png.c_str()));
 
       NQLog("AssemblyZFocusFinder", NQLog::Spam) << "test_focus"
-         << ": emitting signal \"update_text_request(" << zposi_best << ")\"";
+         << ": emitting signal \"text_update_request(" << zposi_best << ")\"";
 
-      emit update_text_request(zposi_best);
+      emit text_update_request(zposi_best);
     }
     // ------------------
 

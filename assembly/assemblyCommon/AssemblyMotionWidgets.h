@@ -13,8 +13,11 @@
 #ifndef ASSEMBLYMOTIONWIDGETS_H
 #define ASSEMBLYMOTIONWIDGETS_H
 
+#include <LStepExpressMotionManager.h>
+
 #include <QWidget>
 #include <QString>
+#include <QVBoxLayout>
 #include <QHBoxLayout>
 #include <QPushButton>
 #include <QLineEdit>
@@ -25,35 +28,45 @@ class AssemblyMoveWidget : public QWidget
 
  public:
 
-  explicit AssemblyMoveWidget(const QString&, const QString&, const bool move_relative=false, QWidget* parent=nullptr);
+  explicit AssemblyMoveWidget(const LStepExpressMotionManager* const, const QString&, const bool move_relative=false, QWidget* parent=nullptr);
   virtual ~AssemblyMoveWidget() {}
 
+  const LStepExpressMotionManager* manager() const { return manager_; }
+
+  QVBoxLayout* layout() const { return layout_; }
   QPushButton* button() const { return button_; }
-  QLineEdit*   lineed() const { return lineed_; }
 
-  void useMoveRelative(const bool b=false){ moveRelative_ = b; }
+  QHBoxLayout* XYZA_layout() const { return XYZA_lay_; }
 
-  QString get_input_string() const;
+  void use_move_relative(const bool b=false){ move_relative_ = b; }
 
  protected:
 
-  bool moveRelative_;
+  const LStepExpressMotionManager* const manager_;
 
-  QHBoxLayout* layout_;
+  bool move_relative_;
+
+  QVBoxLayout* layout_;
   QPushButton* button_;
-  QLineEdit*   lineed_;
+
+  QHBoxLayout* XYZA_lay_;
+
+  QLineEdit* X_lineed_;
+  QLineEdit* Y_lineed_;
+  QLineEdit* Z_lineed_;
+  QLineEdit* A_lineed_;
 
  public slots:
 
   void execute();
-    
-  void enable(const bool b=true);
+
+  void  enable(){ this->setEnabled(true) ; }
+  void disable(){ this->setEnabled(false); }
 
  signals:
 
-  void moveAbsolute(const double, const double, const double, const double);
-  void moveRelative(const double, const double, const double, const double);
+  void move_absolute(const double, const double, const double, const double);
+  void move_relative(const double, const double, const double, const double);
 };
-// ===========================================================================
 
 #endif // ASSEMBLYMOTIONWIDGETS_H

@@ -96,7 +96,7 @@ class AssemblyZFocusFinder : public QObject
 
     void show_zscan(const QString&);
 
-    void update_text_request(const double);
+    void text_update_request(const double);
 };
 
 #endif // ASSEMBLYZFOCUSFINDER_H
