@@ -10,12 +10,13 @@
 //                                                                             //
 /////////////////////////////////////////////////////////////////////////////////
 
-#include <AssemblyMainWindow.h>
-#include <SingletonApplication.h>
+#include <nqlogger.h>
 #include <ApplicationConfig.h>
 #include <DeviceState.h>
-#include <nqlogger.h>
-#include <Util.h>
+#include <SingletonApplication.h>
+
+#include <AssemblyMainWindow.h>
+#include <AssemblyUtilities.h>
 
 #include <string>
 
@@ -39,8 +40,8 @@ int main(int argc, char** argv)
     NQLogger::instance()->addActiveModule("*");
     NQLogger::instance()->addDestiniation(stdout, nqloglevel_stdout);
 
-    const QString logdir = Util::QtCacheDirectory();
-    Util::QDir_mkpath(logdir);
+    const QString logdir = assembly::QtCacheDirectory();
+    assembly::QDir_mkpath(logdir);
 
     const QString logfilename = logdir+"/assembly.log";
 

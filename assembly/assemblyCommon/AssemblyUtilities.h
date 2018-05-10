@@ -10,8 +10,8 @@
 //                                                                             //
 /////////////////////////////////////////////////////////////////////////////////
 
-#ifndef UTIL_H
-#define UTIL_H
+#ifndef ASSEMBLYUTILITIES_H
+#define ASSEMBLYUTILITIES_H
 
 #include <string>
 
@@ -19,7 +19,7 @@
 
 #include <opencv2/opencv.hpp>
 
-namespace Util {
+namespace assembly {
 
   // Qt
   QString QtCacheDirectory();
@@ -39,4 +39,4 @@ namespace Util {
 
 }
 
-#endif
+#endif // ASSEMBLYUTILITIES_H

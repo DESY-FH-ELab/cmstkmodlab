@@ -13,8 +13,6 @@
 #ifndef ASSEMBLYOBJECTFINDERMANUAL_H
 #define ASSEMBLYOBJECTFINDERMANUAL_H
 
-#include <nqlogger.h>
-
 #include <vector>
 
 #include <QTimer>

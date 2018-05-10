@@ -10,10 +10,11 @@
 //                                                                             //
 /////////////////////////////////////////////////////////////////////////////////
 
-#include <AssemblyZFocusFinder.h>
-#include <ApplicationConfig.h>
 #include <nqlogger.h>
-#include <Util.h>
+#include <ApplicationConfig.h>
+
+#include <AssemblyZFocusFinder.h>
+#include <AssemblyUtilities.h>
 
 #include <iostream>
 #include <iomanip>
@@ -219,12 +220,12 @@ void AssemblyZFocusFinder::acquire_image()
         exe_counter_str = exe_counter_strss.str();
       }
 
-      output_dir_ = Util::QtCacheDirectory().toStdString()+"/AssemblyZFocusFinder/"+exe_counter_str+"/";
+      output_dir_ = assembly::QtCacheDirectory().toStdString()+"/AssemblyZFocusFinder/"+exe_counter_str+"/";
 
-      output_dir_exists = Util::DirectoryExists(output_dir_);
+      output_dir_exists = assembly::DirectoryExists(output_dir_);
     }
 
-    Util::QDir_mkpath(output_dir_);
+    assembly::QDir_mkpath(output_dir_);
 
     NQLog("AssemblyZFocusFinder", NQLog::Spam) << "acquire_image"
        << ": created output directory: " << output_dir_;

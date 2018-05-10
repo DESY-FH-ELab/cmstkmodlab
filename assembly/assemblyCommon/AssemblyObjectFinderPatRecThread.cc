@@ -10,8 +10,9 @@
 //                                                                             //
 /////////////////////////////////////////////////////////////////////////////////
 
-#include <AssemblyObjectFinderPatRecThread.h>
 #include <nqlogger.h>
+
+#include <AssemblyObjectFinderPatRecThread.h>
 
 AssemblyObjectFinderPatRecThread::AssemblyObjectFinderPatRecThread(AssemblyObjectFinderPatRec* finder, QObject* parent) :
   QThread(parent),

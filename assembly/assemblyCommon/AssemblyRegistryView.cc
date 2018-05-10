@@ -10,11 +10,11 @@
 //                                                                             //
 /////////////////////////////////////////////////////////////////////////////////
 
-#include <AssemblyRegistryView.h>
-#include <LStepExpressWidget.h>
-#include <ApplicationConfig.h>
 #include <nqlogger.h>
-#include <Util.h>
+#include <ApplicationConfig.h>
+
+#include <AssemblyRegistryView.h>
+#include <AssemblyUtilities.h>
 
 #include <QFileDialog>
 #include <QGridLayout>

@@ -10,10 +10,11 @@
 //                                                                             //
 /////////////////////////////////////////////////////////////////////////////////
 
-#include <AssemblyMainWindow.h>
-#include <ApplicationConfig.h>
 #include <nqlogger.h>
-#include <Util.h>
+#include <ApplicationConfig.h>
+
+#include <AssemblyMainWindow.h>
+#include <AssemblyUtilities.h>
 
 #include <string>
 
@@ -67,7 +68,7 @@ AssemblyMainWindow::AssemblyMainWindow(const unsigned int camera_ID, QWidget* pa
     image_ctr_ = nullptr;
 
     // marker finder
-    finder_        = new AssemblyObjectFinderPatRec(Util::QtCacheDirectory()+"/AssemblyObjectFinderPatRec", "rotations");
+    finder_        = new AssemblyObjectFinderPatRec(assembly::QtCacheDirectory()+"/AssemblyObjectFinderPatRec", "rotations");
 //    finder_thread_ = new AssemblyObjectFinderPatRecThread(finder_);
 //    finder_thread_->start();
 

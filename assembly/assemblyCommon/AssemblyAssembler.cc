@@ -10,9 +10,10 @@
 //                                                                             //
 /////////////////////////////////////////////////////////////////////////////////
 
-#include <AssemblyAssembler.h>
-#include <ApplicationConfig.h>
 #include <nqlogger.h>
+#include <ApplicationConfig.h>
+
+#include <AssemblyAssembler.h>
 
 #include <cmath>
 

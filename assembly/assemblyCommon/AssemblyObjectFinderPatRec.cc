@@ -10,10 +10,11 @@
 //                                                                             //
 /////////////////////////////////////////////////////////////////////////////////
 
-#include <AssemblyObjectFinderPatRec.h>
-#include <ApplicationConfig.h>
 #include <nqlogger.h>
-#include <Util.h>
+#include <ApplicationConfig.h>
+
+#include <AssemblyObjectFinderPatRec.h>
+#include <AssemblyUtilities.h>
 
 #include <iostream>
 #include <fstream>
@@ -492,7 +493,7 @@ void AssemblyObjectFinderPatRec::template_matching(const cv::Mat& img_master, co
 
     output_dir = output_dir_path_+"/"+exe_counter_str+"/";
 
-    output_dir_exists = Util::DirectoryExists(output_dir);
+    output_dir_exists = assembly::DirectoryExists(output_dir);
   }
 
   output_subdir = output_dir+output_subdir_name_;
@@ -506,11 +507,11 @@ void AssemblyObjectFinderPatRec::template_matching(const cv::Mat& img_master, co
 //  mutex_.unlock();
   // ------------------------------------
 
-  Util::QDir_mkpath(output_dir);
+  assembly::QDir_mkpath(output_dir);
 
   NQLog("AssemblyObjectFinderPatRec", NQLog::Message) << "template_matching: created output directory: " << output_dir;
 
-  Util::QDir_mkpath(output_subdir);
+  assembly::QDir_mkpath(output_subdir);
 
   NQLog("AssemblyObjectFinderPatRec", NQLog::Message) << "template_matching: created output directory: " << output_subdir;
   // -----------
@@ -553,7 +554,7 @@ void AssemblyObjectFinderPatRec::template_matching(const cv::Mat& img_master, co
   NQLog("AssemblyObjectFinderPatRec", NQLog::Spam) << "template_matching"
      << ": saved PatRec-input master image to " << filepath_img_master_PatRec;
 
-  Util::cv_imwrite_png(filepath_img_templa, img_templa);
+  assembly::cv_imwrite_png(filepath_img_templa, img_templa);
 
   NQLog("AssemblyObjectFinderPatRec", NQLog::Spam) << "template_matching"
      << ": saved template image to " << filepath_img_templa;
@@ -715,7 +716,7 @@ void AssemblyObjectFinderPatRec::template_matching(const cv::Mat& img_master, co
   // ---
 
   const std::string filepath_img_master_copy = output_dir+"/image_master_PatRec.png";
-  Util::cv_imwrite_png(filepath_img_master_copy, img_master_copy);
+  assembly::cv_imwrite_png(filepath_img_master_copy, img_master_copy);
 
   emit image_mat(1, img_master_copy);
   emit image_mat(3, img_master_PatRec);

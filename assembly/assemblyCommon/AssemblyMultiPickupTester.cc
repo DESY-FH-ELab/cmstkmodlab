@@ -10,9 +10,10 @@
 //                                                                             //
 /////////////////////////////////////////////////////////////////////////////////
 
-#include <AssemblyMultiPickupTester.h>
-#include <ApplicationConfig.h>
 #include <nqlogger.h>
+#include <ApplicationConfig.h>
+
+#include <AssemblyMultiPickupTester.h>
 
 AssemblyMultiPickupTester::AssemblyMultiPickupTester(const LStepExpressMotionManager* motion_manager, QObject* parent) :
   QObject(parent),

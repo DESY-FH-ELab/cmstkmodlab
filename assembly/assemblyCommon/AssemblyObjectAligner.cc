@@ -10,9 +10,10 @@
 //                                                                             //
 /////////////////////////////////////////////////////////////////////////////////
 
-#include <AssemblyObjectAligner.h>
-#include <ApplicationConfig.h>
 #include <nqlogger.h>
+#include <ApplicationConfig.h>
+
+#include <AssemblyObjectAligner.h>
 
 #include <cmath>
 

@@ -10,12 +10,12 @@
 //                                                                             //
 /////////////////////////////////////////////////////////////////////////////////
 
+#include <nqlogger.h>
+#include <ApplicationConfig.h>
+
 #include <AssemblyAssemblyView.h>
 #include <AssemblyMotionWidgets.h>
-#include <LStepExpressWidget.h>
-#include <ApplicationConfig.h>
-#include <nqlogger.h>
-#include <Util.h>
+#include <AssemblyUtilities.h>
 
 #include <iostream>
 #include <sstream>

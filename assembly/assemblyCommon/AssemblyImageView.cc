@@ -10,10 +10,10 @@
 //                                                                             //
 /////////////////////////////////////////////////////////////////////////////////
 
-#include <AssemblyImageView.h>
-#include <Util.h>
 #include <nqlogger.h>
-#include <Util.h>
+
+#include <AssemblyImageView.h>
+#include <AssemblyUtilities.h>
 
 #include <QFileDialog>
 #include <QGridLayout>
@@ -194,7 +194,7 @@ void AssemblyImageView::load_image()
   const QString filename = QFileDialog::getOpenFileName(this, tr("Load Image"), QDir::homePath(), tr("PNG Files (*.png);;All Files (*)"));
   if(filename.isNull() || filename.isEmpty()){ return; }
 
-  const cv::Mat img = filename.endsWith(".png") ? Util::cv_imread_png(filename.toStdString(), CV_LOAD_IMAGE_COLOR) : cv::imread(filename.toStdString(), CV_LOAD_IMAGE_COLOR);
+  const cv::Mat img = filename.endsWith(".png") ? assembly::cv_imread_png(filename.toStdString(), CV_LOAD_IMAGE_COLOR) : cv::imread(filename.toStdString(), CV_LOAD_IMAGE_COLOR);
 
   if(img.empty())
   {
@@ -224,7 +224,7 @@ void AssemblyImageView::save_image()
 
   if(filename.endsWith(".png"))
   {
-    Util::cv_imwrite_png(filename.toStdString(), image_);
+    assembly::cv_imwrite_png(filename.toStdString(), image_);
   }
   else
   {
@@ -249,7 +249,7 @@ void AssemblyImageView::save_image_zscan()
 
   if(filename.endsWith(".png"))
   {
-    Util::cv_imwrite_png(filename.toStdString(), image_zscan_);
+    assembly::cv_imwrite_png(filename.toStdString(), image_zscan_);
   }
   else
   {
@@ -349,9 +349,9 @@ void AssemblyImageView::acquire_autofocus_config()
 
 void AssemblyImageView::update_image_zscan(const QString& img_path)
 {
-  if(Util::IsFile(img_path))
+  if(assembly::IsFile(img_path))
   {
-    image_zscan_ = img_path.endsWith(".png") ? Util::cv_imread_png(img_path.toStdString(), CV_LOAD_IMAGE_COLOR) : cv::imread(img_path.toStdString(), CV_LOAD_IMAGE_COLOR);
+    image_zscan_ = img_path.endsWith(".png") ? assembly::cv_imread_png(img_path.toStdString(), CV_LOAD_IMAGE_COLOR) : cv::imread(img_path.toStdString(), CV_LOAD_IMAGE_COLOR);
 
     NQLog("AssemblyImageView", NQLog::Spam) << "update_image_zscan"
        << ": emitting signal \"image_zscan_updated\"";

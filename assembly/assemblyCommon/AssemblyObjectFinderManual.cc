@@ -10,10 +10,11 @@
 //                                                                             //
 /////////////////////////////////////////////////////////////////////////////////
 
-#include <AssemblyObjectFinderManual.h>
-#include <ApplicationConfig.h>
 #include <nqlogger.h>
-#include <Util.h>
+#include <ApplicationConfig.h>
+
+#include <AssemblyObjectFinderManual.h>
+#include <AssemblyUtilities.h>
 
 #include <iostream>
 #include <cmath>
@@ -65,12 +66,12 @@ AssemblyObjectFinderManual::AssemblyObjectFinderManual(QObject* parent) :
 
     generalThreshold_ = 200;   //default threshold value
 
-    const QString      cache_dir = Util::QtCacheDirectory()+"/assembly/calibration";
-    Util::QDir_mkpath (cache_dir);
+    const QString      cache_dir = assembly::QtCacheDirectory()+"/assembly/calibration";
+    assembly::QDir_mkpath (cache_dir);
     cacheDirectory1_ = cache_dir.toStdString();
 
     const QString      cache_subdir = cache_dir+"/RotatedImages";
-    Util::QDir_mkpath (cache_subdir);
+    assembly::QDir_mkpath (cache_subdir);
     cacheDirectory2_ = cache_subdir.toStdString();
 }
 

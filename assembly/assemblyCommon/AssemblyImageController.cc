@@ -10,9 +10,10 @@
 //                                                                             //
 /////////////////////////////////////////////////////////////////////////////////
 
-#include <AssemblyImageController.h>
 #include <nqlogger.h>
-#include <Util.h>
+
+#include <AssemblyImageController.h>
+#include <AssemblyUtilities.h>
 
 AssemblyImageController::AssemblyImageController(const AssemblyVUEyeCamera* camera, const AssemblyZFocusFinder* zfocus_finder, QObject* parent) :
   QObject(parent),

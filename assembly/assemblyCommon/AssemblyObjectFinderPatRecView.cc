@@ -10,11 +10,11 @@
 //                                                                             //
 /////////////////////////////////////////////////////////////////////////////////
 
-#include <AssemblyObjectFinderPatRecView.h>
-#include <LStepExpressWidget.h>
-#include <ApplicationConfig.h>
 #include <nqlogger.h>
-#include <Util.h>
+#include <ApplicationConfig.h>
+
+#include <AssemblyObjectFinderPatRecView.h>
+#include <AssemblyUtilities.h>
 
 #include <iostream>
 #include <sstream>

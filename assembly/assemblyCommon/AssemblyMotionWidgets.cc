@@ -10,9 +10,10 @@
 //                                                                             //
 /////////////////////////////////////////////////////////////////////////////////
 
-#include <AssemblyMotionWidgets.h>
 #include <nqlogger.h>
-#include <Util.h>
+
+#include <AssemblyMotionWidgets.h>
+#include <AssemblyUtilities.h>
 
 #include <QStringList>
 

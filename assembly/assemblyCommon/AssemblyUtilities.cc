@@ -10,7 +10,7 @@
 //                                                                             //
 /////////////////////////////////////////////////////////////////////////////////
 
-#include <Util.h>
+#include <AssemblyUtilities.h>
 
 #if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
 #include <QDesktopServices>
@@ -20,7 +20,7 @@
 #include <QDir>
 #include <QFileInfo>
 
-QString Util::QtCacheDirectory()
+QString assembly::QtCacheDirectory()
 {
  #if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
   return QDesktopServices::storageLocation(QDesktopServices::CacheLocation);
@@ -29,7 +29,7 @@ QString Util::QtCacheDirectory()
  #endif
 }
 
-bool Util::QDir_mkpath(const QString& path)
+bool assembly::QDir_mkpath(const QString& path)
 {
   const QDir dir(path);
   if(dir.exists() == false){ return dir.mkpath("."); }
@@ -37,36 +37,36 @@ bool Util::QDir_mkpath(const QString& path)
   return true;
 }
 
-bool Util::QDir_mkpath(const std::string& path)
+bool assembly::QDir_mkpath(const std::string& path)
 {
-  return Util::QDir_mkpath(QString(path.c_str()));
+  return assembly::QDir_mkpath(QString(path.c_str()));
 }
 
-bool Util::DirectoryExists(const QString& path)
+bool assembly::DirectoryExists(const QString& path)
 {
   const QDir dir(path);
 
   return dir.exists();
 }
 
-bool Util::DirectoryExists(const std::string& path)
+bool assembly::DirectoryExists(const std::string& path)
 {
-  return Util::DirectoryExists(QString(path.c_str()));
+  return assembly::DirectoryExists(QString(path.c_str()));
 }
 
-bool Util::IsFile(const QString& path)
+bool assembly::IsFile(const QString& path)
 {
   const QFileInfo qfileinfo(path);
 
   return (qfileinfo.exists() && qfileinfo.isFile());
 }
 
-bool Util::IsFile(const std::string& path)
+bool assembly::IsFile(const std::string& path)
 {
-  return Util::IsFile(QString(path.c_str()));
+  return assembly::IsFile(QString(path.c_str()));
 }
 
-cv::Mat Util::cv_imread_png(const std::string& path, const int imread_flag)
+cv::Mat assembly::cv_imread_png(const std::string& path, const int imread_flag)
 {
   const cv::Mat img_inp = cv::imread(path, imread_flag);
 
@@ -84,7 +84,7 @@ cv::Mat Util::cv_imread_png(const std::string& path, const int imread_flag)
   return img_out;
 }
 
-void Util::cv_imwrite_png(const std::string& path, const cv::Mat& img)
+void assembly::cv_imwrite_png(const std::string& path, const cv::Mat& img)
 {
   cv::Mat img_conv;
 

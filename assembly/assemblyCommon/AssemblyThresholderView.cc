@@ -10,9 +10,10 @@
 //                                                                             //
 /////////////////////////////////////////////////////////////////////////////////
 
-#include <AssemblyThresholderView.h>
-#include <Util.h>
 #include <nqlogger.h>
+
+#include <AssemblyThresholderView.h>
+#include <AssemblyUtilities.h>
 
 #include <QFileDialog>
 #include <QGridLayout>
@@ -204,7 +205,7 @@ void AssemblyThresholderView::load_image_raw()
   const QString filename = QFileDialog::getOpenFileName(this, tr("Load Image"), QDir::homePath(), tr("PNG Files (*.png);;All Files (*)"));
   if(filename.isNull() || filename.isEmpty()){ return; }
 
-  const cv::Mat img = filename.endsWith(".png") ? Util::cv_imread_png(filename.toStdString(), CV_LOAD_IMAGE_COLOR) : cv::imread(filename.toStdString(), CV_LOAD_IMAGE_COLOR);
+  const cv::Mat img = filename.endsWith(".png") ? assembly::cv_imread_png(filename.toStdString(), CV_LOAD_IMAGE_COLOR) : cv::imread(filename.toStdString(), CV_LOAD_IMAGE_COLOR);
 
   if(img.empty())
   {
@@ -234,7 +235,7 @@ void AssemblyThresholderView::save_image_raw()
 
   if(filename.endsWith(".png"))
   {
-    Util::cv_imwrite_png(filename.toStdString(), imgraw_);
+    assembly::cv_imwrite_png(filename.toStdString(), imgraw_);
   }
   else
   {
@@ -259,7 +260,7 @@ void AssemblyThresholderView::save_image_binary()
 
   if(filename.endsWith(".png"))
   {
-    Util::cv_imwrite_png(filename.toStdString(), imgbin_);
+    assembly::cv_imwrite_png(filename.toStdString(), imgbin_);
   }
   else
   {

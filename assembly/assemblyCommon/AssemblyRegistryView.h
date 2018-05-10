@@ -15,7 +15,6 @@
 
 #include <AssemblyUEyeView.h>
 #include <LStepExpressMotionManager.h>
-#include <nqlogger.h>
 
 #include <vector>
 
