@@ -10,7 +10,7 @@
 //                                                                             //
 /////////////////////////////////////////////////////////////////////////////////
 
-#include <AssemblyImageThresholderView.h>
+#include <AssemblyThresholderView.h>
 #include <Util.h>
 #include <nqlogger.h>
 
@@ -18,7 +18,7 @@
 #include <QGridLayout>
 #include <QFormLayout>
 
-AssemblyImageThresholderView::AssemblyImageThresholderView(QWidget* parent) : QWidget(parent)
+AssemblyThresholderView::AssemblyThresholderView(QWidget* parent) : QWidget(parent)
 {
   QGridLayout* l = new QGridLayout;
   this->setLayout(l);
@@ -127,7 +127,7 @@ AssemblyImageThresholderView::AssemblyImageThresholderView(QWidget* parent) : QW
   //// ---------------
 }
 
-void AssemblyImageThresholderView::apply_threshold()
+void AssemblyThresholderView::apply_threshold()
 {
   bool valid_thr(false);
 
@@ -135,19 +135,19 @@ void AssemblyImageThresholderView::apply_threshold()
 
   if(valid_thr == false)
   {
-    NQLog("AssemblyImageThresholderView", NQLog::Warning) << "apply_threshold"
+    NQLog("AssemblyThresholderView", NQLog::Warning) << "apply_threshold"
        << ": invalid (non-integer) format for threshold value (" << thresh_linee_->text() << "), no action taken";
 
     return;
   }
 
-  NQLog("AssemblyImageThresholderView", NQLog::Debug) << "apply_threshold"
+  NQLog("AssemblyThresholderView", NQLog::Debug) << "apply_threshold"
      << ": emitting signal \"threshold_value(" << thr << ")\"";
 
   emit threshold_request(thr);
 }
 
-void AssemblyImageThresholderView::apply_adaptiveThreshold()
+void AssemblyThresholderView::apply_adaptiveThreshold()
 {
   bool valid_bks(false);
 
@@ -155,39 +155,39 @@ void AssemblyImageThresholderView::apply_adaptiveThreshold()
 
   if(valid_bks == false)
   {
-    NQLog("AssemblyImageThresholderView", NQLog::Warning) << "apply_adaptiveThreshold"
+    NQLog("AssemblyThresholderView", NQLog::Warning) << "apply_adaptiveThreshold"
        << ": invalid (non-integer) format for block-size value (" << adathr_linee_->text() << "), no action taken";
 
     return;
   }
 
-  NQLog("AssemblyImageThresholderView", NQLog::Debug) << "apply_adaptiveThreshold"
+  NQLog("AssemblyThresholderView", NQLog::Debug) << "apply_adaptiveThreshold"
      << ": emitting signal \"adaptiveThreshold_request(" << bks << ")\"";
 
   emit adaptiveThreshold_request(bks);
 }
 
-void AssemblyImageThresholderView::save_image_raw()
+void AssemblyThresholderView::save_image_raw()
 {
-  NQLog("AssemblyImageThresholderView", NQLog::Debug) << "save_image_raw"
+  NQLog("AssemblyThresholderView", NQLog::Debug) << "save_image_raw"
      << ": emitting signal \"image_raw_request\"";
 
   emit image_raw_request();
 }
 
-void AssemblyImageThresholderView::save_image_binary()
+void AssemblyThresholderView::save_image_binary()
 {
-  NQLog("AssemblyImageThresholderView", NQLog::Debug) << "save_image_binary"
+  NQLog("AssemblyThresholderView", NQLog::Debug) << "save_image_binary"
      << ": emitting signal \"image_binary_request\"";
 
   emit image_binary_request();
 }
 
-void AssemblyImageThresholderView::save_image(const cv::Mat& image)
+void AssemblyThresholderView::save_image(const cv::Mat& image)
 {
   if(image.empty() == true)
   {
-    NQLog("AssemblyImageThresholderView", NQLog::Warning) << "save_image"
+    NQLog("AssemblyThresholderView", NQLog::Warning) << "save_image"
        << ": input cv::Mat object is empty, no image saved";
 
     return;
@@ -208,35 +208,35 @@ void AssemblyImageThresholderView::save_image(const cv::Mat& image)
   return;
 }
 
-void AssemblyImageThresholderView::connectImageProducer_1(const QObject* sender, const char* signal)
+void AssemblyThresholderView::connectImageProducer_1(const QObject* sender, const char* signal)
 {
-  NQLog("AssemblyImageThresholderView", NQLog::Debug) << "connectImageProducer";
+  NQLog("AssemblyThresholderView", NQLog::Debug) << "connectImageProducer";
 
   imageView_1_->connectImageProducer(sender, signal);
 }
 
-void AssemblyImageThresholderView::disconnectImageProducer_1(const QObject* sender, const char* signal)
+void AssemblyThresholderView::disconnectImageProducer_1(const QObject* sender, const char* signal)
 {
-  NQLog("AssemblyImageThresholderView", NQLog::Debug) << "disconnectImageProducer";
+  NQLog("AssemblyThresholderView", NQLog::Debug) << "disconnectImageProducer";
 
   imageView_1_->disconnectImageProducer(sender, signal);
 }
 
-void AssemblyImageThresholderView::connectImageProducer_2(const QObject* sender, const char* signal)
+void AssemblyThresholderView::connectImageProducer_2(const QObject* sender, const char* signal)
 {
-  NQLog("AssemblyImageThresholderView", NQLog::Debug) << "connectImageProducer";
+  NQLog("AssemblyThresholderView", NQLog::Debug) << "connectImageProducer";
 
   imageView_2_->connectImageProducer(sender, signal);
 }
 
-void AssemblyImageThresholderView::disconnectImageProducer_2(const QObject* sender, const char* signal)
+void AssemblyThresholderView::disconnectImageProducer_2(const QObject* sender, const char* signal)
 {
-  NQLog("AssemblyImageThresholderView", NQLog::Debug) << "disconnectImageProducer";
+  NQLog("AssemblyThresholderView", NQLog::Debug) << "disconnectImageProducer";
 
   imageView_2_->disconnectImageProducer(sender, signal);
 }
 
-void AssemblyImageThresholderView::keyReleaseEvent(QKeyEvent* event)
+void AssemblyThresholderView::keyReleaseEvent(QKeyEvent* event)
 {
   if(!(event->modifiers() & Qt::ShiftModifier))
   {

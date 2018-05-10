@@ -10,7 +10,7 @@
 //                                                                             //
 /////////////////////////////////////////////////////////////////////////////////
 
-#include <AssemblyImageThresholder.h>
+#include <AssemblyThresholder.h>
 #include <ApplicationConfig.h>
 #include <nqlogger.h>
 #include <Util.h>
@@ -26,23 +26,23 @@
 #include <TCanvas.h>
 #include <TH1.h>
 
-AssemblyImageThresholder::AssemblyImageThresholder(QObject* parent) :
+AssemblyThresholder::AssemblyThresholder(QObject* parent) :
   QObject(parent),
 
-//  method_(AssemblyImageThresholder::ThresholdingMethod::undefined),
+//  method_(AssemblyThresholder::ThresholdingMethod::undefined),
 
   updated_img_raw_(false),
   updated_img_bin_(false)
 {
-  NQLog("AssemblyImageThresholder", NQLog::Debug) << "constructed";
+  NQLog("AssemblyThresholder", NQLog::Debug) << "constructed";
 }
 
-AssemblyImageThresholder::~AssemblyImageThresholder()
+AssemblyThresholder::~AssemblyThresholder()
 {
-  NQLog("AssemblyImageThresholder", NQLog::Debug) << "destructed";
+  NQLog("AssemblyThresholder", NQLog::Debug) << "destructed";
 }
 
-void AssemblyImageThresholder::update_image_raw(const cv::Mat& img)
+void AssemblyThresholder::update_image_raw(const cv::Mat& img)
 {
 //  mutex_.lock();
 
@@ -63,14 +63,14 @@ void AssemblyImageThresholder::update_image_raw(const cv::Mat& img)
 
 //  mutex_.unlock();
 
-  NQLog("AssemblyImageThresholder", NQLog::Spam) << "update_image_raw"
+  NQLog("AssemblyThresholder", NQLog::Spam) << "update_image_raw"
      << ": emitting signal \"updated_image_raw\"";
 
   emit updated_image_raw(img_raw_);
   emit updated_image_raw();
 }
 
-void AssemblyImageThresholder::delete_image_raw()
+void AssemblyThresholder::delete_image_raw()
 {
 //  mutex_.lock();
 
@@ -84,11 +84,11 @@ void AssemblyImageThresholder::delete_image_raw()
   return;
 }
 
-void AssemblyImageThresholder::update_image_binary_threshold(const int threshold_value)
+void AssemblyThresholder::update_image_binary_threshold(const int threshold_value)
 {
   if(img_raw_.empty())
   {
-    NQLog("AssemblyImageThresholder", NQLog::Warning) << "update_image_binary_threshold"
+    NQLog("AssemblyThresholder", NQLog::Warning) << "update_image_binary_threshold"
        << ": empty input image, thresholding not applied to input image";
 
     return;
@@ -102,14 +102,14 @@ void AssemblyImageThresholder::update_image_binary_threshold(const int threshold
 
 //  mutex_.unlock();
 
-  NQLog("AssemblyImageThresholder", NQLog::Spam) << "update_image_binary_threshold(" << threshold_value << ")"
+  NQLog("AssemblyThresholder", NQLog::Spam) << "update_image_binary_threshold(" << threshold_value << ")"
      << ": emitting signal \"updated_image_binary\"";
 
   emit updated_image_binary(img_bin_);
   emit updated_image_binary();
 }
 
-cv::Mat AssemblyImageThresholder::get_image_binary_threshold(const cv::Mat& img, const int threshold) const
+cv::Mat AssemblyThresholder::get_image_binary_threshold(const cv::Mat& img, const int threshold) const
 {
   // greyscale image
   cv::Mat img_gs(img.size(), img.type());
@@ -129,7 +129,7 @@ cv::Mat AssemblyImageThresholder::get_image_binary_threshold(const cv::Mat& img,
 
   if(threshold < 0)
   {
-    NQLog("AssemblyImageThresholder", NQLog::Warning) << "get_image_binary_adaptiveThreshold"
+    NQLog("AssemblyThresholder", NQLog::Warning) << "get_image_binary_adaptiveThreshold"
        << ": negative threshold value (" << threshold << "), thresholding not applied to input image";
 
     img_bin = img_gs.clone();
@@ -142,11 +142,11 @@ cv::Mat AssemblyImageThresholder::get_image_binary_threshold(const cv::Mat& img,
   return img_bin;
 }
 
-void AssemblyImageThresholder::update_image_binary_adaptiveThreshold(const int blocksize_value)
+void AssemblyThresholder::update_image_binary_adaptiveThreshold(const int blocksize_value)
 {
   if(img_raw_.empty())
   {
-    NQLog("AssemblyImageThresholder", NQLog::Warning) << "update_image_binary_adaptiveThreshold"
+    NQLog("AssemblyThresholder", NQLog::Warning) << "update_image_binary_adaptiveThreshold"
        << ": empty input image, thresholding not applied to input image";
 
     return;
@@ -160,14 +160,14 @@ void AssemblyImageThresholder::update_image_binary_adaptiveThreshold(const int b
 
 //  mutex_.unlock();
 
-  NQLog("AssemblyImageThresholder", NQLog::Spam) << "update_image_binary_adaptiveThreshold(" << blocksize_value << ")"
+  NQLog("AssemblyThresholder", NQLog::Spam) << "update_image_binary_adaptiveThreshold(" << blocksize_value << ")"
      << ": emitting signal \"updated_image_binary\"";
 
   emit updated_image_binary(img_bin_);
   emit updated_image_binary();
 }
 
-cv::Mat AssemblyImageThresholder::get_image_binary_adaptiveThreshold(const cv::Mat& img, const int blocksize) const
+cv::Mat AssemblyThresholder::get_image_binary_adaptiveThreshold(const cv::Mat& img, const int blocksize) const
 {
   // greyscale image
   cv::Mat img_gs(img.size(), img.type());
@@ -187,14 +187,14 @@ cv::Mat AssemblyImageThresholder::get_image_binary_adaptiveThreshold(const cv::M
 
   if(blocksize < 0)
   {
-    NQLog("AssemblyImageThresholder", NQLog::Warning) << "get_image_binary_adaptiveThreshold"
+    NQLog("AssemblyThresholder", NQLog::Warning) << "get_image_binary_adaptiveThreshold"
        << ": negative block-size value (" << blocksize << "), thresholding not applied to input image";
 
     img_bin = img_gs.clone();
   }
   else if((blocksize % 2) == 0)
   {
-    NQLog("AssemblyImageThresholder", NQLog::Warning) << "get_image_binary_adaptiveThreshold"
+    NQLog("AssemblyThresholder", NQLog::Warning) << "get_image_binary_adaptiveThreshold"
        << ": invalid (non-odd) block-size value (" << blocksize << "), thresholding not applied to input image";
 
     img_bin = img_gs.clone();
@@ -207,7 +207,7 @@ cv::Mat AssemblyImageThresholder::get_image_binary_adaptiveThreshold(const cv::M
   return img_bin;
 }
 
-void AssemblyImageThresholder::delete_image_binary()
+void AssemblyThresholder::delete_image_binary()
 {
 //  mutex_.lock();
 
@@ -220,33 +220,33 @@ void AssemblyImageThresholder::delete_image_binary()
   return;
 }
 
-void AssemblyImageThresholder::send_image_raw()
+void AssemblyThresholder::send_image_raw()
 {
   if(img_raw_.empty())
   {
-    NQLog("AssemblyImageThresholder", NQLog::Warning) << "send_image_raw"
+    NQLog("AssemblyThresholder", NQLog::Warning) << "send_image_raw"
        << ": raw image is empty, no action taken";
 
     return;
   }
 
-  NQLog("AssemblyImageThresholder", NQLog::Spam) << "send_image_raw"
+  NQLog("AssemblyThresholder", NQLog::Spam) << "send_image_raw"
      << ": emitting signal \"image_sent\"";
 
   emit image_sent(img_raw_);
 }
 
-void AssemblyImageThresholder::send_image_binary()
+void AssemblyThresholder::send_image_binary()
 {
   if(img_bin_.empty())
   {
-    NQLog("AssemblyImageThresholder", NQLog::Warning) << "send_image_binary"
+    NQLog("AssemblyThresholder", NQLog::Warning) << "send_image_binary"
        << ": binary image is empty, no action taken";
 
     return;
   }
 
-  NQLog("AssemblyImageThresholder", NQLog::Spam) << "send_image_binary"
+  NQLog("AssemblyThresholder", NQLog::Spam) << "send_image_binary"
      << ": emitting signal \"image_sent\"";
 
   emit image_sent(img_bin_);

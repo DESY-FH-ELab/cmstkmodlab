@@ -10,8 +10,8 @@
 //                                                                             //
 /////////////////////////////////////////////////////////////////////////////////
 
-#ifndef ASSEMBLYIMAGETHRESHOLDER_H
-#define ASSEMBLYIMAGETHRESHOLDER_H
+#ifndef ASSEMBLYTHRESHOLDER_H
+#define ASSEMBLYTHRESHOLDER_H
 
 /*  Description:
  *   Controller to convert image to binary (BW) image
@@ -23,14 +23,14 @@
 
 #include <opencv2/opencv.hpp>
 
-class AssemblyImageThresholder : public QObject
+class AssemblyThresholder : public QObject
 {
  Q_OBJECT
 
  public:
 
-  explicit AssemblyImageThresholder(QObject* parent=nullptr);
-  virtual ~AssemblyImageThresholder();
+  explicit AssemblyThresholder(QObject* parent=nullptr);
+  virtual ~AssemblyThresholder();
 
   void delete_image_raw();
   void delete_image_binary();
@@ -52,7 +52,7 @@ class AssemblyImageThresholder : public QObject
   bool updated_img_bin_;
 
  private:
-  Q_DISABLE_COPY(AssemblyImageThresholder)
+  Q_DISABLE_COPY(AssemblyThresholder)
 
   mutable QMutex mutex_;
 
@@ -83,4 +83,4 @@ class AssemblyImageThresholder : public QObject
 //!!  void image_mat (const int, const cv::Mat&);
 };
 
-#endif // ASSEMBLYIMAGETHRESHOLDER_H
+#endif // ASSEMBLYTHRESHOLDER_H

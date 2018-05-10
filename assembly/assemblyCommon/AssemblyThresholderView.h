@@ -10,8 +10,8 @@
 //                                                                             //
 /////////////////////////////////////////////////////////////////////////////////
 
-#ifndef ASSEMBLYIMAGETHRESHOLDINGVIEW_H
-#define ASSEMBLYIMAGETHRESHOLDINGVIEW_H
+#ifndef ASSEMBLYTHRESHOLDERVIEW_H
+#define ASSEMBLYTHRESHOLDERVIEW_H
 
 #include <AssemblyUEyeView.h>
 
@@ -24,14 +24,14 @@
 
 #include <opencv2/opencv.hpp>
 
-class AssemblyImageThresholderView : public QWidget
+class AssemblyThresholderView : public QWidget
 {
  Q_OBJECT
 
  public:
 
-  explicit AssemblyImageThresholderView(QWidget* parent=nullptr);
-  virtual ~AssemblyImageThresholderView() {}
+  explicit AssemblyThresholderView(QWidget* parent=nullptr);
+  virtual ~AssemblyThresholderView() {}
 
   void    connectImageProducer_1(const QObject* sender, const char* signal);
   void disconnectImageProducer_1(const QObject* sender, const char* signal);
@@ -79,4 +79,4 @@ class AssemblyImageThresholderView : public QWidget
   void image_binary_request();
 };
 
-#endif // ASSEMBLYIMAGETHRESHOLDINGVIEW_H
+#endif // ASSEMBLYTHRESHOLDERVIEW_H

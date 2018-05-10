@@ -109,9 +109,9 @@ AssemblyMainWindow::AssemblyMainWindow(const unsigned int camera_ID, QWidget* pa
     // IMAGE-THRESHOLDING VIEW ---------------------------------
     const QString tabname_ImageThresholding("Thresholding");
 
-    thresholder_ = new AssemblyImageThresholder();
+    thresholder_ = new AssemblyThresholder();
 
-    thresholder_view_ = new AssemblyImageThresholderView(tabWidget_);
+    thresholder_view_ = new AssemblyThresholderView(tabWidget_);
     tabWidget_->addTab(thresholder_view_, tabname_ImageThresholding);
 
     connect(thresholder_view_, SIGNAL(threshold_request        (int)), thresholder_, SLOT(update_image_binary_threshold        (int)));
@@ -122,7 +122,7 @@ AssemblyMainWindow::AssemblyMainWindow(const unsigned int camera_ID, QWidget* pa
 
     connect(thresholder_, SIGNAL(image_sent(cv::Mat)), thresholder_view_, SLOT(save_image(cv::Mat)));
 
-    // connections: AssemblyObjectFinderPatRec <-> AssemblyImageThresholder
+    // connections: AssemblyObjectFinderPatRec <-> AssemblyThresholder
     connect(finder_           , SIGNAL(updated_image_master())        , finder_          , SLOT(send_image_master()));
     connect(finder_           , SIGNAL(sent_image_master(cv::Mat))    , thresholder_ , SLOT(update_image_raw(cv::Mat)));
     connect(thresholder_  , SIGNAL(updated_image_raw())           , thresholder_view_   , SLOT(apply_threshold())); //!! FIXME: should have configurable parameter, w/o relying on thresholder_view_

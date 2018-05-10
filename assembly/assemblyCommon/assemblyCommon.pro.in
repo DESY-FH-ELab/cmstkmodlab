@@ -88,8 +88,8 @@ HEADERS += AssemblyVUEyeCamera.h \
            AssemblyZFocusFinder.h \
            AssemblyImageController.h \
            AssemblyImageView.h \
-           AssemblyImageThresholder.h \
-           AssemblyImageThresholderView.h \
+           AssemblyThresholder.h \
+           AssemblyThresholderView.h \
            AssemblyObjectFinderManual.h \
            AssemblyObjectFinderPatRec.h \
            AssemblyObjectFinderPatRecView.h \
@@ -139,8 +139,8 @@ SOURCES += AssemblyVUEyeCamera.cc \
            AssemblyZFocusFinder.cc \
            AssemblyImageController.cc \
            AssemblyImageView.cc \
-           AssemblyImageThresholder.cc \
-           AssemblyImageThresholderView.cc \
+           AssemblyThresholder.cc \
+           AssemblyThresholderView.cc \
            AssemblyObjectFinderManual.cc \
            AssemblyObjectFinderPatRec.cc \
            AssemblyObjectFinderPatRecView.cc \
