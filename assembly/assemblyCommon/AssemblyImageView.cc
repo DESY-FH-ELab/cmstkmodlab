@@ -185,7 +185,7 @@ void AssemblyImageView::update_image(const cv::Mat& img, const bool update_image
 
 void AssemblyImageView::load_image()
 {
-  const QString filename = QFileDialog::getOpenFileName(this, tr("Load Image"), "", "PNG Files (*.png);;All Files (*)");
+  const QString filename = QFileDialog::getOpenFileName(this, tr("Load Image"), QDir::homePath(), tr("PNG Files (*.png);;All Files (*)"));
   if(filename.isNull() || filename.isEmpty()){ return; }
 
   const cv::Mat img = filename.endsWith(".png") ? Util::cv_imread_png(filename.toStdString(), CV_LOAD_IMAGE_COLOR) : cv::imread(filename.toStdString(), CV_LOAD_IMAGE_COLOR);
@@ -213,7 +213,7 @@ void AssemblyImageView::save_image()
     return;
   }
 
-  const QString filename = QFileDialog::getSaveFileName(this, tr("Save Image"), "", "PNG Files (*.png);;All Files (*)");
+  const QString filename = QFileDialog::getSaveFileName(this, tr("Save Image"), QDir::homePath(), tr("PNG Files (*.png);;All Files (*)"));
   if(filename.isNull() || filename.isEmpty()){ return; }
 
   if(filename.endsWith(".png"))

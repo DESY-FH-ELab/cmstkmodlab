@@ -18,7 +18,29 @@
 #include <QGridLayout>
 #include <QFormLayout>
 
-AssemblyThresholderView::AssemblyThresholderView(QWidget* parent) : QWidget(parent)
+AssemblyThresholderView::AssemblyThresholderView(QWidget* parent) :
+  QWidget(parent),
+
+  // image raw
+  imgraw_ueye_  (nullptr),
+  imgraw_scroll_(nullptr),
+
+  imgraw_load_button_(nullptr),
+  imgraw_save_button_(nullptr),
+
+  // image binary
+  imgbin_ueye_  (nullptr),
+  imgbin_scroll_(nullptr),
+
+  imgbin_save_button_(nullptr),
+
+  imgbin_thresh_button_(nullptr),
+  imgbin_thresh_label_ (nullptr),
+  imgbin_thresh_linee_ (nullptr),
+
+  imgbin_adathr_button_(nullptr),
+  imgbin_adathr_label_ (nullptr),
+  imgbin_adathr_linee_ (nullptr)
 {
   QGridLayout* l = new QGridLayout;
   this->setLayout(l);
@@ -27,116 +49,236 @@ AssemblyThresholderView::AssemblyThresholderView(QWidget* parent) : QWidget(pare
   QPalette palette;
   palette.setColor(QPalette::Background, QColor(220, 220, 220));
 
-  imageView_1_ = new AssemblyUEyeView(this);
-  imageView_1_->setMinimumSize(500, 300);
-  imageView_1_->setPalette(palette);
-  imageView_1_->setBackgroundRole(QPalette::Background);
-  imageView_1_->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-  imageView_1_->setScaledContents(true);
-  imageView_1_->setAlignment(Qt::AlignCenter);
+  imgraw_ueye_ = new AssemblyUEyeView(this);
+  imgraw_ueye_->setMinimumSize(500, 300);
+  imgraw_ueye_->setPalette(palette);
+  imgraw_ueye_->setBackgroundRole(QPalette::Background);
+  imgraw_ueye_->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+  imgraw_ueye_->setScaledContents(true);
+  imgraw_ueye_->setAlignment(Qt::AlignCenter);
 
-  scrollArea_1_ = new QScrollArea(this);
-  scrollArea_1_->setMinimumSize(500, 300);
-  scrollArea_1_->setPalette(palette);
-  scrollArea_1_->setBackgroundRole(QPalette::Background);
-  scrollArea_1_->setAlignment(Qt::AlignCenter);
-  scrollArea_1_->setWidget(imageView_1_);
-  scrollArea_1_->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+  imgraw_scroll_ = new QScrollArea(this);
+  imgraw_scroll_->setMinimumSize(500, 300);
+  imgraw_scroll_->setPalette(palette);
+  imgraw_scroll_->setBackgroundRole(QPalette::Background);
+  imgraw_scroll_->setAlignment(Qt::AlignCenter);
+  imgraw_scroll_->setWidget(imgraw_ueye_);
+  imgraw_scroll_->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 
-  imageView_2_ = new AssemblyUEyeView(this);
-  imageView_2_->setMinimumSize(500, 300);
-  imageView_2_->setPalette(palette);
-  imageView_2_->setBackgroundRole(QPalette::Background);
-  imageView_2_->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-  imageView_2_->setScaledContents(true);
-  imageView_2_->setAlignment(Qt::AlignCenter);
+  imgbin_ueye_ = new AssemblyUEyeView(this);
+  imgbin_ueye_->setMinimumSize(500, 300);
+  imgbin_ueye_->setPalette(palette);
+  imgbin_ueye_->setBackgroundRole(QPalette::Background);
+  imgbin_ueye_->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+  imgbin_ueye_->setScaledContents(true);
+  imgbin_ueye_->setAlignment(Qt::AlignCenter);
 
-  scrollArea_2_ = new QScrollArea(this);
-  scrollArea_2_->setMinimumSize(500, 300);
-  scrollArea_2_->setPalette(palette);
-  scrollArea_2_->setBackgroundRole(QPalette::Background);
-  scrollArea_2_->setAlignment(Qt::AlignCenter);
-  scrollArea_2_->setWidget(imageView_2_);
-  scrollArea_2_->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+  imgbin_scroll_ = new QScrollArea(this);
+  imgbin_scroll_->setMinimumSize(500, 300);
+  imgbin_scroll_->setPalette(palette);
+  imgbin_scroll_->setBackgroundRole(QPalette::Background);
+  imgbin_scroll_->setAlignment(Qt::AlignCenter);
+  imgbin_scroll_->setWidget(imgbin_ueye_);
+  imgbin_scroll_->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 
-  l->addWidget(scrollArea_1_, 0, 0);
-  l->addWidget(scrollArea_2_, 1, 0);
+  l->addWidget(imgraw_scroll_, 0, 0);
+  l->addWidget(imgbin_scroll_, 1, 0);
 
   this->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
   //// ---------------
 
   //// right-hand side
 
-  // raw image options
+  /// raw image
   QFormLayout* lRaw = new QFormLayout;
   l->addLayout(lRaw, 0, 1);
 
-  imgraw_button_ = new QPushButton("Save Image (before thresholding)", this);
-  lRaw->addRow(imgraw_button_);
+  imgraw_load_button_ = new QPushButton("Load Image", this);
+  lRaw->addRow(imgraw_load_button_);
 
-  // image-thresholding
-  QGridLayout* lTuner = new QGridLayout;
-  l->addLayout(lTuner, 1, 1);
+  imgraw_save_button_ = new QPushButton("Save Image", this);
+  lRaw->addRow(imgraw_save_button_);
 
-  imgbin_button_ = new QPushButton("Save Image (after thresholding)", this);
-  lTuner->addWidget(imgbin_button_, 0, 0);
+  connect(imgraw_load_button_, SIGNAL(clicked()), this, SLOT(load_image_raw()));
+  connect(imgraw_save_button_, SIGNAL(clicked()), this, SLOT(save_image_raw()));
+
+  this->connectImageProducer_raw(this, SIGNAL(image_raw_updated(cv::Mat)));
+
+  /// binary image: thresholding
+  QGridLayout* lBin = new QGridLayout;
+  l->addLayout(lBin, 1, 1);
+
+  imgbin_save_button_ = new QPushButton("Save Image (after thresholding)", this);
+  lBin->addWidget(imgbin_save_button_, 0, 0);
+
+  connect(imgbin_save_button_, SIGNAL(clicked()), this, SLOT(save_image_binary()));
+
+  this->connectImageProducer_binary(this, SIGNAL(image_binary_updated(cv::Mat)));
 
   // method-1: threshold
-  QGridLayout* thresh_layout = new QGridLayout;
-  lTuner->addLayout(thresh_layout, 1, 0);
+  QGridLayout* imgbin_thresh_layout = new QGridLayout;
+  lBin->addLayout(imgbin_thresh_layout, 1, 0);
 
-  thresh_button_ = new QPushButton("openCV::threshold", this);
-  thresh_layout->addWidget(thresh_button_, 0, 0);
+  imgbin_thresh_button_ = new QPushButton("openCV::threshold", this);
+  imgbin_thresh_layout->addWidget(imgbin_thresh_button_, 0, 0);
 
-  QFormLayout* thresh_inputcfg = new QFormLayout;
-  thresh_layout->addLayout(thresh_inputcfg, 1, 0);
+  connect(imgbin_thresh_button_, SIGNAL(clicked()), this, SLOT(apply_threshold()));
 
-  thresh_label_ = new QLabel(this);
-  thresh_label_->setText("Threshold");
+  QFormLayout* imgbin_thresh_inputcfg = new QFormLayout;
+  imgbin_thresh_layout->addLayout(imgbin_thresh_inputcfg, 1, 0);
 
-  thresh_linee_ = new QLineEdit(this);
-  thresh_linee_->setText("100");
+  imgbin_thresh_label_ = new QLabel(this);
+  imgbin_thresh_label_->setText("Threshold");
 
-  thresh_inputcfg->addRow(thresh_label_, thresh_linee_);
-  // -------------------
+  imgbin_thresh_linee_ = new QLineEdit(this);
+  imgbin_thresh_linee_->setText("100");
+
+  imgbin_thresh_inputcfg->addRow(imgbin_thresh_label_, imgbin_thresh_linee_);
 
   // method-2: adaptiveThreshold
-  QGridLayout* adathr_layout = new QGridLayout;
-  lTuner->addLayout(adathr_layout, 2, 0);
+  QGridLayout* imgbin_adathr_layout = new QGridLayout;
+  lBin->addLayout(imgbin_adathr_layout, 2, 0);
 
-  adathr_button_ = new QPushButton("openCV::adaptiveThreshold", this);
-  adathr_layout->addWidget(adathr_button_, 0, 0);
+  imgbin_adathr_button_ = new QPushButton("openCV::adaptiveThreshold", this);
+  imgbin_adathr_layout->addWidget(imgbin_adathr_button_, 0, 0);
 
-  QFormLayout* adathr_inputcfg = new QFormLayout;
-  adathr_layout->addLayout(adathr_inputcfg, 1, 0);
+  connect(imgbin_adathr_button_, SIGNAL(clicked()), this, SLOT(apply_adaptiveThreshold()));
 
-  adathr_label_ = new QLabel(this);
-  adathr_label_->setText("Block Size");
+  QFormLayout* imgbin_adathr_inputcfg = new QFormLayout;
+  imgbin_adathr_layout->addLayout(imgbin_adathr_inputcfg, 1, 0);
 
-  adathr_linee_ = new QLineEdit(this);
-  adathr_linee_->setText("587");
+  imgbin_adathr_label_ = new QLabel(this);
+  imgbin_adathr_label_->setText("Block Size");
 
-  adathr_inputcfg->addRow(adathr_label_, adathr_linee_);
-  // -------------------
+  imgbin_adathr_linee_ = new QLineEdit(this);
+  imgbin_adathr_linee_->setText("587");
 
-  // connection(s)
-  connect(imgraw_button_, SIGNAL(clicked()), this, SLOT(save_image_raw()));
-  connect(imgbin_button_, SIGNAL(clicked()), this, SLOT(save_image_binary()));
-  connect(thresh_button_, SIGNAL(clicked()), this, SLOT(apply_threshold()));
-  connect(adathr_button_, SIGNAL(clicked()), this, SLOT(apply_adaptiveThreshold()));
+  imgbin_adathr_inputcfg->addRow(imgbin_adathr_label_, imgbin_adathr_linee_);
   //// ---------------
+}
+
+void AssemblyThresholderView::update_image_raw(const cv::Mat& img)
+{
+  if(img.channels() == 1)
+  {
+    cv::Mat img_color;
+    cv::cvtColor(img, img_color, cv::COLOR_GRAY2BGR);
+
+    imgraw_ = img_color.clone();
+  }
+  else
+  {
+    imgraw_ = img.clone();
+  }
+
+  NQLog("AssemblyThresholderView", NQLog::Spam) << "update_image_raw"
+     << ": emitting signal \"image_raw_updated\"";
+
+  emit image_raw_updated(imgraw_);
+  emit image_raw_updated();
+}
+
+void AssemblyThresholderView::update_image_binary(const cv::Mat& img)
+{
+  if(img.channels() == 1)
+  {
+    cv::Mat img_color;
+    cv::cvtColor(img, img_color, cv::COLOR_GRAY2BGR);
+
+    imgbin_ = img_color.clone();
+  }
+  else
+  {
+    imgbin_ = img.clone();
+  }
+
+  NQLog("AssemblyThresholderView", NQLog::Spam) << "update_image_binary"
+     << ": emitting signal \"image_binary_updated\"";
+
+  emit image_binary_updated(imgbin_);
+  emit image_binary_updated();
+}
+
+void AssemblyThresholderView::load_image_raw()
+{
+  const QString filename = QFileDialog::getOpenFileName(this, tr("Load Image"), QDir::homePath(), tr("PNG Files (*.png);;All Files (*)"));
+  if(filename.isNull() || filename.isEmpty()){ return; }
+
+  const cv::Mat img = filename.endsWith(".png") ? Util::cv_imread_png(filename.toStdString(), CV_LOAD_IMAGE_COLOR) : cv::imread(filename.toStdString(), CV_LOAD_IMAGE_COLOR);
+
+  if(img.empty())
+  {
+    NQLog("AssemblyThresholderView", NQLog::Warning) << "load_image_raw"
+       << ": input image is empty, no action taken";
+
+    return;
+  }
+
+  this->update_image_raw(img);
+
+  return;
+}
+
+void AssemblyThresholderView::save_image_raw()
+{
+  if(imgraw_.empty())
+  {
+    NQLog("AssemblyThresholderView", NQLog::Warning) << "save_image_raw"
+       << ": input raw image is empty, no action taken";
+
+    return;
+  }
+
+  const QString filename = QFileDialog::getSaveFileName(this, tr("Save Image"), QDir::homePath(), tr("PNG Files (*.png);;All Files (*)"));
+  if(filename.isNull() || filename.isEmpty()){ return; }
+
+  if(filename.endsWith(".png"))
+  {
+    Util::cv_imwrite_png(filename.toStdString(), imgraw_);
+  }
+  else
+  {
+    cv::imwrite(filename.toStdString(), imgraw_);
+  }
+
+  return;
+}
+
+void AssemblyThresholderView::save_image_binary()
+{
+  if(imgbin_.empty())
+  {
+    NQLog("AssemblyThresholderView", NQLog::Warning) << "save_image_binary"
+       << ": input binary image is empty, no action taken";
+
+    return;
+  }
+
+  const QString filename = QFileDialog::getSaveFileName(this, tr("Save Image"), QDir::homePath(), tr("PNG Files (*.png);;All Files (*)"));
+  if(filename.isNull() || filename.isEmpty()){ return; }
+
+  if(filename.endsWith(".png"))
+  {
+    Util::cv_imwrite_png(filename.toStdString(), imgbin_);
+  }
+  else
+  {
+    cv::imwrite(filename.toStdString(), imgbin_);
+  }
+
+  return;
 }
 
 void AssemblyThresholderView::apply_threshold()
 {
   bool valid_thr(false);
 
-  const int thr = thresh_linee_->text().toInt(&valid_thr);
+  const int thr = imgbin_thresh_linee_->text().toInt(&valid_thr);
 
   if(valid_thr == false)
   {
     NQLog("AssemblyThresholderView", NQLog::Warning) << "apply_threshold"
-       << ": invalid (non-integer) format for threshold value (" << thresh_linee_->text() << "), no action taken";
+       << ": invalid (non-integer) format for threshold value (" << imgbin_thresh_linee_->text() << "), no action taken";
 
     return;
   }
@@ -151,12 +293,12 @@ void AssemblyThresholderView::apply_adaptiveThreshold()
 {
   bool valid_bks(false);
 
-  const int bks = adathr_linee_->text().toInt(&valid_bks);
+  const int bks = imgbin_adathr_linee_->text().toInt(&valid_bks);
 
   if(valid_bks == false)
   {
     NQLog("AssemblyThresholderView", NQLog::Warning) << "apply_adaptiveThreshold"
-       << ": invalid (non-integer) format for block-size value (" << adathr_linee_->text() << "), no action taken";
+       << ": invalid (non-integer) format for block-size value (" << imgbin_adathr_linee_->text() << "), no action taken";
 
     return;
   }
@@ -167,73 +309,32 @@ void AssemblyThresholderView::apply_adaptiveThreshold()
   emit adaptiveThreshold_request(bks);
 }
 
-void AssemblyThresholderView::save_image_raw()
+void AssemblyThresholderView::connectImageProducer_raw(const QObject* sender, const char* signal)
 {
-  NQLog("AssemblyThresholderView", NQLog::Debug) << "save_image_raw"
-     << ": emitting signal \"image_raw_request\"";
+  NQLog("AssemblyThresholderView", NQLog::Debug) << "connectImageProducer_raw";
 
-  emit image_raw_request();
+  imgraw_ueye_->connectImageProducer(sender, signal);
 }
 
-void AssemblyThresholderView::save_image_binary()
+void AssemblyThresholderView::disconnectImageProducer_raw(const QObject* sender, const char* signal)
 {
-  NQLog("AssemblyThresholderView", NQLog::Debug) << "save_image_binary"
-     << ": emitting signal \"image_binary_request\"";
+  NQLog("AssemblyThresholderView", NQLog::Debug) << "disconnectImageProducer_raw";
 
-  emit image_binary_request();
+  imgraw_ueye_->disconnectImageProducer(sender, signal);
 }
 
-void AssemblyThresholderView::save_image(const cv::Mat& image)
+void AssemblyThresholderView::connectImageProducer_binary(const QObject* sender, const char* signal)
 {
-  if(image.empty() == true)
-  {
-    NQLog("AssemblyThresholderView", NQLog::Warning) << "save_image"
-       << ": input cv::Mat object is empty, no image saved";
+  NQLog("AssemblyThresholderView", NQLog::Debug) << "connectImageProducer_binary";
 
-    return;
-  }
-
-  const QString filename = QFileDialog::getSaveFileName(this, tr("Save Image"), "", "PNG Files (*.png);;All Files (*)");
-  if(filename.isNull() || filename.isEmpty()){ return; }
-
-  if(filename.endsWith(".png"))
-  {
-    Util::cv_imwrite_png(filename.toStdString(), image);
-  }
-  else
-  {
-    cv::imwrite(filename.toStdString(), image);
-  }
-
-  return;
+  imgbin_ueye_->connectImageProducer(sender, signal);
 }
 
-void AssemblyThresholderView::connectImageProducer_1(const QObject* sender, const char* signal)
+void AssemblyThresholderView::disconnectImageProducer_binary(const QObject* sender, const char* signal)
 {
-  NQLog("AssemblyThresholderView", NQLog::Debug) << "connectImageProducer";
+  NQLog("AssemblyThresholderView", NQLog::Debug) << "disconnectImageProducer_binary";
 
-  imageView_1_->connectImageProducer(sender, signal);
-}
-
-void AssemblyThresholderView::disconnectImageProducer_1(const QObject* sender, const char* signal)
-{
-  NQLog("AssemblyThresholderView", NQLog::Debug) << "disconnectImageProducer";
-
-  imageView_1_->disconnectImageProducer(sender, signal);
-}
-
-void AssemblyThresholderView::connectImageProducer_2(const QObject* sender, const char* signal)
-{
-  NQLog("AssemblyThresholderView", NQLog::Debug) << "connectImageProducer";
-
-  imageView_2_->connectImageProducer(sender, signal);
-}
-
-void AssemblyThresholderView::disconnectImageProducer_2(const QObject* sender, const char* signal)
-{
-  NQLog("AssemblyThresholderView", NQLog::Debug) << "disconnectImageProducer";
-
-  imageView_2_->disconnectImageProducer(sender, signal);
+  imgbin_ueye_->disconnectImageProducer(sender, signal);
 }
 
 void AssemblyThresholderView::keyReleaseEvent(QKeyEvent* event)
@@ -243,26 +344,26 @@ void AssemblyThresholderView::keyReleaseEvent(QKeyEvent* event)
     switch (event->key())
     {
       case Qt::Key_0:
-//        imageView_1_->setZoomFactor(0.25);
-//        imageView_2_->setZoomFactor(0.25);
+//        imgraw_ueye_->setZoomFactor(0.25);
+//        imgbin_ueye_->setZoomFactor(0.25);
         event->accept();
         break;
 
       case Qt::Key_1:
-//        imageView_1_->setZoomFactor(1.00);
-//        imageView_2_->setZoomFactor(1.00);
+//        imgraw_ueye_->setZoomFactor(1.00);
+//        imgbin_ueye_->setZoomFactor(1.00);
         event->accept();
         break;
 
       case Qt::Key_Plus:
-//        imageView_1_->increaseZoomFactor();
-//        imageView_2_->increaseZoomFactor();
+//        imgraw_ueye_->increaseZoomFactor();
+//        imgbin_ueye_->increaseZoomFactor();
         event->accept();
         break;
 
       case Qt::Key_Minus:
-//        imageView_1_->decreaseZoomFactor();
-//        imageView_2_->decreaseZoomFactor();
+//        imgraw_ueye_->decreaseZoomFactor();
+//        imgbin_ueye_->decreaseZoomFactor();
         event->accept();
         break;
 

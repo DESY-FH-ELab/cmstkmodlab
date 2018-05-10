@@ -33,50 +33,67 @@ class AssemblyThresholderView : public QWidget
   explicit AssemblyThresholderView(QWidget* parent=nullptr);
   virtual ~AssemblyThresholderView() {}
 
-  void    connectImageProducer_1(const QObject* sender, const char* signal);
-  void disconnectImageProducer_1(const QObject* sender, const char* signal);
+  void    connectImageProducer_raw   (const QObject* sender, const char* signal);
+  void disconnectImageProducer_raw   (const QObject* sender, const char* signal);
 
-  void    connectImageProducer_2(const QObject* sender, const char* signal);
-  void disconnectImageProducer_2(const QObject* sender, const char* signal);
+  void    connectImageProducer_binary(const QObject* sender, const char* signal);
+  void disconnectImageProducer_binary(const QObject* sender, const char* signal);
 
  protected:
 
   void keyReleaseEvent(QKeyEvent*);
 
-  AssemblyUEyeView* imageView_1_;
-  AssemblyUEyeView* imageView_2_;
+  // image raw
+  cv::Mat imgraw_;
 
-  QScrollArea* scrollArea_1_;
-  QScrollArea* scrollArea_2_;
+  AssemblyUEyeView* imgraw_ueye_;
+  QScrollArea*      imgraw_scroll_;
 
-  QPushButton* imgraw_button_;
-  QPushButton* imgbin_button_;
+  QPushButton* imgraw_load_button_;
+  QPushButton* imgraw_save_button_;
+  // ---------
 
-  QPushButton* thresh_button_;
-  QLabel*      thresh_label_;
-  QLineEdit*   thresh_linee_;
+  // image binary
+  cv::Mat imgbin_;
 
-  QPushButton* adathr_button_;
-  QLabel*      adathr_label_;
-  QLineEdit*   adathr_linee_;
+  AssemblyUEyeView* imgbin_ueye_;
+  QScrollArea*      imgbin_scroll_;
+
+  QPushButton* imgbin_save_button_;
+
+  QPushButton* imgbin_thresh_button_;
+  QLabel*      imgbin_thresh_label_;
+  QLineEdit*   imgbin_thresh_linee_;
+
+  QPushButton* imgbin_adathr_button_;
+  QLabel*      imgbin_adathr_label_;
+  QLineEdit*   imgbin_adathr_linee_;
+  // ---------
 
  public slots:
+
+  void load_image_raw();
+  void save_image_raw();
+  void save_image_binary();
+
+  void update_image_raw   (const cv::Mat&);
+  void update_image_binary(const cv::Mat&);
 
   void apply_threshold();
   void apply_adaptiveThreshold();
 
-  void save_image_raw();
-  void save_image_binary();
-
-  void save_image(const cv::Mat&);
-
  signals:
+
+  void image_raw_request();
+  void image_raw_updated(const cv::Mat&);
+  void image_raw_updated();
+
+  void image_binary_request();
+  void image_binary_updated(const cv::Mat&);
+  void image_binary_updated();
 
   void threshold_request(const int);
   void adaptiveThreshold_request(const int);
-
-  void image_raw_request();
-  void image_binary_request();
 };
 
 #endif // ASSEMBLYTHRESHOLDERVIEW_H
