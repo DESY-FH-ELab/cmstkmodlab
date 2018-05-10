@@ -130,7 +130,7 @@ cv::Mat AssemblyThresholder::get_image_binary_threshold(const cv::Mat& img, cons
 
   if(threshold < 0)
   {
-    NQLog("AssemblyThresholder", NQLog::Warning) << "get_image_binary_adaptiveThreshold"
+    NQLog("AssemblyThresholder", NQLog::Warning) << "get_image_binary_threshold"
        << ": negative threshold value (" << threshold << "), thresholding not applied to input image";
 
     img_bin = img_gs.clone();
@@ -186,17 +186,17 @@ cv::Mat AssemblyThresholder::get_image_binary_adaptiveThreshold(const cv::Mat& i
   // binary image
   cv::Mat img_bin(img_gs.size(), img_gs.type());
 
-  if(blocksize < 0)
+  if(blocksize < 3)
   {
     NQLog("AssemblyThresholder", NQLog::Warning) << "get_image_binary_adaptiveThreshold"
-       << ": negative block-size value (" << blocksize << "), thresholding not applied to input image";
+       << ": invalid (< 3) block-size value (" << blocksize << "), thresholding not applied to input image";
 
     img_bin = img_gs.clone();
   }
   else if((blocksize % 2) == 0)
   {
     NQLog("AssemblyThresholder", NQLog::Warning) << "get_image_binary_adaptiveThreshold"
-       << ": invalid (non-odd) block-size value (" << blocksize << "), thresholding not applied to input image";
+       << ": invalid (even) block-size value (" << blocksize << "), thresholding not applied to input image";
 
     img_bin = img_gs.clone();
   }
