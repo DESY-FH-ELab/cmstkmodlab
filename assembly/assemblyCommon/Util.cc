@@ -66,6 +66,24 @@ bool Util::IsFile(const std::string& path)
   return Util::IsFile(QString(path.c_str()));
 }
 
+cv::Mat Util::cv_imread_png(const std::string& path, const int imread_flag)
+{
+  const cv::Mat img_inp = cv::imread(path, imread_flag);
+
+  cv::Mat img_out;
+
+  if(img_inp.channels() > 1)
+  {
+    cv::cvtColor(img_inp, img_out, CV_RGB2BGR);
+  }
+  else
+  {
+    img_out = img_inp.clone();
+  }
+
+  return img_out;
+}
+
 void Util::cv_imwrite_png(const std::string& path, const cv::Mat& img)
 {
   cv::Mat img_conv;

@@ -28,7 +28,6 @@
 
 #include <opencv2/opencv.hpp>
 
-class AssemblyRegistryImageWidget;
 class AssemblyRegistryPositionWidget;
 
 class AssemblyRegistryView : public QWidget
@@ -40,13 +39,9 @@ class AssemblyRegistryView : public QWidget
   explicit AssemblyRegistryView(const LStepExpressMotionManager*, QWidget* parent=nullptr);
   virtual ~AssemblyRegistryView() {}
 
-  AssemblyRegistryImageWidget* ImageWidget() const { return image_widget_; }
-
  protected:
 
   const LStepExpressMotionManager* motion_manager_;
-
-  AssemblyRegistryImageWidget* image_widget_;
 
   std::vector<AssemblyRegistryPositionWidget*> v_wpos_;
 
@@ -60,45 +55,6 @@ class AssemblyRegistryView : public QWidget
  public slots:
 
   void calculate_relative_distance();
-};
-// ==================================================
-
-class AssemblyRegistryImageWidget : public QWidget
-{
- Q_OBJECT
-
- public:
-
-  explicit AssemblyRegistryImageWidget(QWidget* parent=nullptr);
-  virtual ~AssemblyRegistryImageWidget() {}
-
-  void    connectImageProducer(const QObject* sender, const char* signal);
-  void disconnectImageProducer(const QObject* sender, const char* signal);
-
- protected:
-
-  void keyReleaseEvent(QKeyEvent*);
-
-  AssemblyUEyeView* img_view_;
-  QScrollArea*      img_scroll_;
-  QPushButton*      img_save_button_;
-  QPushButton*      img_celi_button_;
-
-  //!! FIXME: View should not own (copy of) data, add dedicated controller
-  cv::Mat image_;
-  cv::Mat image_raw_;
-
-  bool image_modified_;
-
- public slots:
-
-  void update_image(const cv::Mat&, const bool update_image_raw=true);
-  void save_image();
-  void modify_image_centerlines();
-
- signals:
-
-  void image_updated(const cv::Mat&);
 };
 // ==================================================
 

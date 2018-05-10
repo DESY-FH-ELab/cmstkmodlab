@@ -11,6 +11,7 @@
 /////////////////////////////////////////////////////////////////////////////////
 
 #include <AssemblyImageView.h>
+#include <Util.h>
 #include <nqlogger.h>
 #include <Util.h>
 
@@ -28,6 +29,7 @@ AssemblyImageView::AssemblyImageView(QWidget* parent) :
   img_scroll_(nullptr),
   img_load_button_(nullptr),
   img_save_button_(nullptr),
+  img_celi_button_(nullptr),
 
   // auto-focusing
   AF_ueye_(nullptr),
@@ -107,7 +109,7 @@ AssemblyImageView::AssemblyImageView(QWidget* parent) :
   //// right-hand side ----------------------------------
 
   // image
-  QFormLayout* lImg = new QFormLayout;
+  QFormLayout*  lImg = new QFormLayout;
   g0->addLayout(lImg, 0, 1);
 
   img_load_button_ = new QPushButton("Load Image", this);
@@ -116,8 +118,14 @@ AssemblyImageView::AssemblyImageView(QWidget* parent) :
   img_save_button_ = new QPushButton("Save Image", this);
   lImg->addRow(img_save_button_);
 
+  img_celi_button_ = new QPushButton("Add/Remove Center Lines", this);
+  lImg->addRow(img_celi_button_);
+
   connect(img_load_button_, SIGNAL(clicked()), this, SLOT(load_image()));
   connect(img_save_button_, SIGNAL(clicked()), this, SLOT(save_image()));
+  connect(img_celi_button_, SIGNAL(clicked()), this, SLOT(modify_image_centerlines()));
+
+  this->connectImageProducer_image(this, SIGNAL(image_updated(cv::Mat)));
   // ----------
 
   // auto-focusing
@@ -148,33 +156,106 @@ AssemblyImageView::AssemblyImageView(QWidget* parent) :
   //// --------------------------------------------------
 }
 
-//!!void AssemblyImageView::save_image()
-//!!{
-//!!  NQLog("AssemblyImageView", NQLog::Debug) << "save_image"
-//!!     << ": emitting signal \"image_request\"";
-//!!
-//!!  emit image_request();
-//!!}
+void AssemblyImageView::update_image(const cv::Mat& img, const bool update_image_raw)
+{
+  if(img.channels() == 1)
+  {
+    cv::Mat img_color;
+    cv::cvtColor(img, img_color, cv::COLOR_GRAY2BGR);
 
-//!!void AssemblyImageView::save_image(const cv::Mat& image)
-//!!{
-//!!  if(image.empty() == true)
-//!!  {
-//!!    NQLog("AssemblyImageView", NQLog::Warning) << "save_image"
-//!!       << ": input cv::Mat object is empty, no image saved";
-//!!
-//!!    return;
-//!!  }
-//!!
-//!!  QString filename = QFileDialog::getSaveFileName(this, "save image", ".", "*.png");
-//!!  if(filename.isNull() || filename.isEmpty()){ return; }
-//!!
-//!!  if(filename.endsWith(".png") == false){ filename += ".png"; }
-//!!
-//!!  cv::imwrite(filename.toStdString(), image);
-//!!
-//!!  return;
-//!!}
+    image_ = img_color.clone();
+  }
+  else
+  {
+    image_ = img.clone();
+  }
+
+  NQLog("AssemblyImageView", NQLog::Spam) << "update_image"
+     << ": emitting signal \"image_updated\"";
+
+  if(update_image_raw)
+  {
+    image_raw_ = image_.clone();
+
+    image_modified_ = false;
+  }
+
+  emit image_updated(image_);
+}
+
+void AssemblyImageView::load_image()
+{
+  const QString filename = QFileDialog::getOpenFileName(this, tr("Load Image"), "", "PNG Files (*.png);;All Files (*)");
+  if(filename.isNull() || filename.isEmpty()){ return; }
+
+  const cv::Mat img = filename.endsWith(".png") ? Util::cv_imread_png(filename.toStdString(), CV_LOAD_IMAGE_COLOR) : cv::imread(filename.toStdString(), CV_LOAD_IMAGE_COLOR);
+
+  if(img.empty())
+  {
+    NQLog("AssemblyImageView", NQLog::Warning) << "load_image"
+       << ": input image is empty, no action taken";
+
+    return;
+  }
+
+  this->update_image(img, true);
+
+  return;
+}
+
+void AssemblyImageView::save_image()
+{
+  if(image_.empty())
+  {
+    NQLog("AssemblyImageView", NQLog::Warning) << "save_image"
+       << ": input image is empty, no action taken";
+
+    return;
+  }
+
+  const QString filename = QFileDialog::getSaveFileName(this, tr("Save Image"), "", "PNG Files (*.png);;All Files (*)");
+  if(filename.isNull() || filename.isEmpty()){ return; }
+
+  if(filename.endsWith(".png"))
+  {
+    Util::cv_imwrite_png(filename.toStdString(), image_);
+  }
+  else
+  {
+    cv::imwrite(filename.toStdString(), image_);
+  }
+
+  return;
+}
+
+void AssemblyImageView::modify_image_centerlines()
+{
+  if(image_raw_.empty())
+  {
+    NQLog("AssemblyImageView", NQLog::Warning) << "modify_image_centerlines"
+       << ": input raw image is empty, no action taken";
+
+    return;
+  }
+
+  cv::Mat img = image_raw_.clone();
+
+  if(image_modified_ == false)
+  {
+    line(img, cv::Point(   img.cols/2.0, 0), cv::Point(img.cols/2.0, img.rows    ), cv::Scalar(255,0,0), 2, 8, 0);
+    line(img, cv::Point(0, img.rows/2.0   ), cv::Point(img.cols    , img.rows/2.0), cv::Scalar(255,0,0), 2, 8, 0);
+
+    image_modified_ = true;
+
+    this->update_image(img, false);
+  }
+  else
+  {
+    this->update_image(img, true);
+  }
+
+  return;
+}
 
 void AssemblyImageView::update_text(const double z)
 {
@@ -184,6 +265,75 @@ void AssemblyImageView::update_text(const double z)
      << ": displayed value of best z-position (focal point)";
 
   return;
+}
+
+void AssemblyImageView::update_autofocus_config(const double maxDZ, const int Nstep)
+{
+  AF_param_maxDZ_lineed_->setText(QString::fromStdString(std::to_string(maxDZ)));
+  AF_param_Nstep_lineed_->setText(QString::fromStdString(std::to_string(Nstep)));
+
+  return;
+}
+
+void AssemblyImageView::acquire_autofocus_config()
+{
+  // maximum delta-Z movement
+  const QString maxDZ_str = AF_param_maxDZ_lineed_->text();
+
+  bool maxDZ_valid(false);
+  const double maxDZ = maxDZ_str.toDouble(&maxDZ_valid);
+
+  if(maxDZ_valid == false)
+  {
+    NQLog("AssemblyImageView", NQLog::Warning) << "acquire_autofocus_config"
+       << ": invalid format for maximum delta-Z movement (" << maxDZ_str << "), no action taken";
+
+    return;
+  }
+  // -------------------------
+
+  // number of steps in Z-scan
+  const QString Nstep_str = AF_param_Nstep_lineed_->text();
+
+  bool Nstep_valid(false);
+  const double Nstep = Nstep_str.toInt(&Nstep_valid);
+
+  if(Nstep_valid == false)
+  {
+    NQLog("AssemblyImageView", NQLog::Warning) << "acquire_autofocus_config"
+       << ": invalid format for number of steps in Z-scan (" << Nstep_str << "), no action taken";
+
+    return;
+  }
+  // -------------------------
+
+  NQLog("AssemblyImageView", NQLog::Spam) << "autofocus_config"
+    << ": emitting signal \"autofocus_config("
+    <<   "maxDZ=" << maxDZ
+    << ", Nstep=" << Nstep
+    << ")\"";
+
+  emit autofocus_config(maxDZ, Nstep);
+}
+
+void AssemblyImageView::acquire_image_zscan(const QString& img_path)
+{
+  if(Util::IsFile(img_path))
+  {
+    const cv::Mat img = img_path.endsWith(".png") ? Util::cv_imread_png(img_path.toStdString(), CV_LOAD_IMAGE_COLOR) : cv::imread(img_path.toStdString(), CV_LOAD_IMAGE_COLOR);
+
+    NQLog("AssemblyImageView", NQLog::Spam) << "acquire_zscan_image"
+       << ": emitting signal \"image_zscan_acquired\"";
+
+    emit image_zscan_acquired(img);
+  }
+  else
+  {
+    NQLog("AssemblyImageView", NQLog::Warning) << "acquire_zscan_image"
+       << ": invalid path to input file, no action taken (file=" << img_path << ")";
+
+    return;
+  }
 }
 
 void AssemblyImageView::connectImageProducer_image(const QObject* sender, const char* signal)
@@ -247,74 +397,5 @@ void AssemblyImageView::keyReleaseEvent(QKeyEvent* event)
       default:
         break;
     }
-  }
-}
-
-void AssemblyImageView::update_autofocus_config(const double maxDZ, const int Nstep)
-{
-  AF_param_maxDZ_lineed_->setText(QString::fromStdString(std::to_string(maxDZ)));
-  AF_param_Nstep_lineed_->setText(QString::fromStdString(std::to_string(Nstep)));
-
-  return;
-}
-
-void AssemblyImageView::acquire_autofocus_config()
-{
-  // maximum delta-Z movement
-  const QString maxDZ_str = AF_param_maxDZ_lineed_->text();
-
-  bool maxDZ_valid(false);
-  const double maxDZ = maxDZ_str.toDouble(&maxDZ_valid);
-
-  if(maxDZ_valid == false)
-  {
-    NQLog("AssemblyImageView", NQLog::Warning) << "acquire_autofocus_config"
-       << ": invalid format for maximum delta-Z movement (" << maxDZ_str << "), no action taken";
-
-    return;
-  }
-  // -------------------------
-
-  // number of steps in Z-scan
-  const QString Nstep_str = AF_param_Nstep_lineed_->text();
-
-  bool Nstep_valid(false);
-  const double Nstep = Nstep_str.toInt(&Nstep_valid);
-
-  if(Nstep_valid == false)
-  {
-    NQLog("AssemblyImageView", NQLog::Warning) << "acquire_autofocus_config"
-       << ": invalid format for number of steps in Z-scan (" << Nstep_str << "), no action taken";
-
-    return;
-  }
-  // -------------------------
-
-  NQLog("AssemblyImageView", NQLog::Spam) << "autofocus_config"
-    << ": emitting signal \"autofocus_config("
-    <<   "maxDZ=" << maxDZ
-    << ", Nstep=" << Nstep
-    << ")\"";
-
-  emit autofocus_config(maxDZ, Nstep);
-}
-
-void AssemblyImageView::acquire_image_zscan(const QString& img_path)
-{
-  if(Util::IsFile(img_path))
-  {
-    const cv::Mat img = cv::imread(img_path.toStdString(), CV_LOAD_IMAGE_COLOR);
-
-    NQLog("AssemblyImageView", NQLog::Spam) << "acquire_zscan_image"
-       << ": emitting signal \"image_zscan_acquired\"";
-
-    emit image_zscan_acquired(img);
-  }
-  else
-  {
-    NQLog("AssemblyImageView", NQLog::Warning) << "acquire_zscan_image"
-       << ": invalid path to input file, no action taken (file=" << img_path << ")";
-
-    return;
   }
 }

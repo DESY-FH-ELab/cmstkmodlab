@@ -33,7 +33,8 @@ namespace Util {
   bool IsFile(const QString&);
   bool IsFile(const std::string&);
 
-  // Open CV
+  // openCV
+  cv::Mat cv_imread_png(const std::string&, const int);
   void cv_imwrite_png(const std::string&, const cv::Mat&);
 
 }

@@ -51,6 +51,12 @@ class AssemblyImageView : public QWidget
 
   QPushButton* img_load_button_;
   QPushButton* img_save_button_;
+  QPushButton* img_celi_button_;
+
+  cv::Mat image_;
+  cv::Mat image_raw_;
+
+  bool image_modified_;
   // -------------------
 
   // auto-focusing
@@ -67,6 +73,13 @@ class AssemblyImageView : public QWidget
 
  public slots:
 
+  void update_image(const cv::Mat&, const bool update_image_raw=true);
+
+  void load_image();
+  void save_image();
+
+  void modify_image_centerlines();
+
   void update_text(const double);
 
   void acquire_image_zscan(const QString&);
@@ -75,6 +88,8 @@ class AssemblyImageView : public QWidget
   void acquire_autofocus_config();
 
  signals:
+
+  void image_updated(const cv::Mat&);
 
   void image_zscan_acquired(const cv::Mat&);
 

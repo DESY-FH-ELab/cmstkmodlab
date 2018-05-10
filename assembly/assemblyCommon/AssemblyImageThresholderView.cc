@@ -11,6 +11,7 @@
 /////////////////////////////////////////////////////////////////////////////////
 
 #include <AssemblyImageThresholderView.h>
+#include <Util.h>
 #include <nqlogger.h>
 
 #include <QFileDialog>
@@ -192,12 +193,17 @@ void AssemblyImageThresholderView::save_image(const cv::Mat& image)
     return;
   }
 
-  QString filename = QFileDialog::getSaveFileName(this, "save image", ".", "*.png");
+  const QString filename = QFileDialog::getSaveFileName(this, tr("Save Image"), "", "PNG Files (*.png);;All Files (*)");
   if(filename.isNull() || filename.isEmpty()){ return; }
 
-  if(filename.endsWith(".png") == false){ filename += ".png"; }
-
-  cv::imwrite(filename.toStdString(), image);
+  if(filename.endsWith(".png"))
+  {
+    Util::cv_imwrite_png(filename.toStdString(), image);
+  }
+  else
+  {
+    cv::imwrite(filename.toStdString(), image);
+  }
 
   return;
 }

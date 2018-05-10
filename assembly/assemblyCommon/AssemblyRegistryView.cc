@@ -26,7 +26,6 @@ AssemblyRegistryView::AssemblyRegistryView(const LStepExpressMotionManager* moti
   QWidget(parent),
   motion_manager_(motion_manager)
 {
-  //// INITIALIZATION
   if(motion_manager_ == nullptr)
   {
     NQLog("AssemblyRegistryView", NQLog::Critical) << "initialization error"
@@ -34,25 +33,11 @@ AssemblyRegistryView::AssemblyRegistryView(const LStepExpressMotionManager* moti
 
     return;
   }
-  //// --------------
 
   QFormLayout* l = new QFormLayout;
   this->setLayout(l);
 
-  //// IMAGE
-  QGroupBox* box_image = new QGroupBox(tr("Image"));
-
-  QFormLayout* lay_image = new QFormLayout;
-
-  image_widget_ = new AssemblyRegistryImageWidget(this);
-  lay_image->addRow(image_widget_);
-
-  box_image->setLayout(lay_image);
-
-  l->addRow(box_image);
-  //// ---------------
-
-  //// POSITION(S)
+  //// Registry of Positions
   QGroupBox* box_posit = new QGroupBox(tr("Positions"));
 
   QFormLayout* l2 = new QFormLayout;
@@ -259,183 +244,10 @@ bool AssemblyRegistryView::load_position_4vector(std::vector<double>& vec, QStri
 }
 // ==================================================
 
-AssemblyRegistryImageWidget::AssemblyRegistryImageWidget(QWidget* parent) :
-  QWidget(parent),
-  image_modified_(false)
-{
-  //// layout
-  QGridLayout* g1 = new QGridLayout;
-  this->setLayout(g1);
-
-  QPalette palette;
-  palette.setColor(QPalette::Background, QColor(220, 220, 220));
-
-  img_view_ = new AssemblyUEyeView(this);
-  img_view_->setMinimumSize(500, 300);
-  img_view_->setPalette(palette);
-  img_view_->setBackgroundRole(QPalette::Background);
-  img_view_->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-  img_view_->setScaledContents(true);
-  img_view_->setAlignment(Qt::AlignCenter);
-
-  img_scroll_ = new QScrollArea(this);
-  img_scroll_->setMinimumSize(500, 300);
-  img_scroll_->setPalette(palette);
-  img_scroll_->setBackgroundRole(QPalette::Background);
-  img_scroll_->setAlignment(Qt::AlignCenter);
-  img_scroll_->setWidget(img_view_);
-  img_scroll_->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-
-  g1->addWidget(img_scroll_, 0, 0); 
-
-  this->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-
-  QFormLayout*  lImg = new QFormLayout;
-  g1->addLayout(lImg, 0, 1);
-
-  img_save_button_ = new QPushButton("Save Image", this);
-  lImg->addRow(img_save_button_);
-
-  img_celi_button_ = new QPushButton("Draw Center Lines", this);
-  lImg->addRow(img_celi_button_);
-  //// ---------------
-
-  //// connection(s)
-  connect(img_save_button_, SIGNAL(clicked()), this, SLOT(save_image()));
-  connect(img_celi_button_, SIGNAL(clicked()), this, SLOT(modify_image_centerlines()));
-
-  this->connectImageProducer(this, SIGNAL(image_updated(cv::Mat)));
-  //// ---------------
-}
-
-void AssemblyRegistryImageWidget::update_image(const cv::Mat& img, const bool update_image_raw)
-{
-  if(img.channels() == 1)
-  {
-    cv::Mat img_color;
-    cv::cvtColor(img, img_color, cv::COLOR_GRAY2BGR);
-
-    image_ = img_color.clone();
-  }
-  else
-  {
-    image_ = img.clone();
-  }
-
-  NQLog("AssemblyRegistryImageWidget", NQLog::Spam) << "update_image"
-     << ": emitting signal \"image_updated\"";
-
-  if(update_image_raw)
-  {
-    image_raw_ = image_.clone();
-
-    image_modified_ = false;
-  }
-
-  emit image_updated(image_);
-}
-
-void AssemblyRegistryImageWidget::save_image()
-{
-  if(image_.empty())
-  {
-    NQLog("AssemblyRegistryImageWidget", NQLog::Warning) << "save_image"
-       << ": input image is empty, no action taken";
-
-    return;
-  }
-
-  QString filename = QFileDialog::getSaveFileName(this, "save image", ".", "*.png");
-  if(filename.isNull() || filename.isEmpty()){ return; }
-
-  if(!filename.endsWith(".png")){ filename += ".png"; }
-
-  cv::imwrite(filename.toStdString(), image_);
-
-  return;
-}
-
-void AssemblyRegistryImageWidget::modify_image_centerlines()
-{
-  if(image_raw_.empty())
-  {
-    NQLog("AssemblyRegistryImageWidget", NQLog::Warning) << "modify_image_centerlines"
-       << ": input raw image is empty, no action taken";
-
-    return;
-  }
-
-  cv::Mat img = image_raw_.clone();
-
-  if(image_modified_ == false)
-  {
-    line(img, cv::Point(   img.cols/2.0, 0), cv::Point(img.cols/2.0, img.rows    ), cv::Scalar(255,0,0), 2, 8, 0);
-    line(img, cv::Point(0, img.rows/2.0   ), cv::Point(img.cols    , img.rows/2.0), cv::Scalar(255,0,0), 2, 8, 0);
-
-    image_modified_ = true;
-
-    this->update_image(img, false);
-  }
-  else
-  {
-    this->update_image(img, true);
-  }
-
-  return;
-}
-
-void AssemblyRegistryImageWidget::connectImageProducer(const QObject* sender, const char* signal)
-{
-    NQLog("AssemblyRegistryImageWidget", NQLog::Debug) << "connectImageProducer";
-
-    img_view_->connectImageProducer(sender, signal);
-}
-
-void AssemblyRegistryImageWidget::disconnectImageProducer(const QObject* sender, const char* signal)
-{
-    NQLog("AssemblyRegistryImageWidget", NQLog::Debug) << "disconnectImageProducer";
-
-    img_view_->disconnectImageProducer(sender, signal);
-}
-
-void AssemblyRegistryImageWidget::keyReleaseEvent(QKeyEvent* event)
-{
-  if(!(event->modifiers() & Qt::ShiftModifier))
-  {
-    switch(event->key())
-    {
-      case Qt::Key_0:
-//        img_view_->setZoomFactor(0.25);
-        event->accept();
-        break;
-
-      case Qt::Key_1:
-//        img_view_->setZoomFactor(1.00);
-        event->accept();
-        break;
-
-      case Qt::Key_Plus:
-//        img_view_->increaseZoomFactor();
-        event->accept();
-        break;
-
-      case Qt::Key_Minus:
-//        img_view_->decreaseZoomFactor();
-        event->accept();
-        break;
-
-      default:
-        break;
-    }
-  }
-}
-// ==================================================
-
 AssemblyRegistryPositionWidget::AssemblyRegistryPositionWidget(const QString& qstr, const LStepExpressMotionManager* motion_manager, QWidget* parent) :
   QWidget(parent),
   motion_manager_(motion_manager)
 {
-  //// INITIALIZATION
   if(motion_manager_ == nullptr)
   {
     NQLog("AssemblyRegistryPositionWidget", NQLog::Critical) << "initialization error"
@@ -443,18 +255,20 @@ AssemblyRegistryPositionWidget::AssemblyRegistryPositionWidget(const QString& qs
 
     return;
   }
-  //// --------------
 
   QGridLayout* l = new QGridLayout;
   this->setLayout(l);
 
+  QLabel* pos_label = new QLabel(qstr, this);
+
   pos_button_       = new QPushButton("Read"   , this);
   pos_lineed_value_ = new QLineEdit  (""       , this);
   pos_lineed_comme_ = new QLineEdit  ("Comment", this);
-  l->addWidget(new QLabel(qstr, this), 0, 0);
-  l->addWidget(pos_button_           , 0, 1);
-  l->addWidget(pos_lineed_value_     , 0, 2);
-  l->addWidget(pos_lineed_comme_     , 0, 3);
+
+  l->addWidget(pos_label         , 0, 0);
+  l->addWidget(pos_button_       , 0, 1);
+  l->addWidget(pos_lineed_value_ , 0, 2);
+  l->addWidget(pos_lineed_comme_ , 0, 3);
 
   connect(pos_button_, SIGNAL(clicked()), this, SLOT(update_position()));
 

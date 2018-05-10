@@ -450,16 +450,14 @@ void AssemblyMainWindow::connect_images()
 //  edgeView_  ->connectImageProducer(finder_ , SIGNAL(edgesDetected(const cv::Mat&)));
 //  rawView_   ->connectImageProducer(camera_ , SIGNAL(imageAcquired(const cv::Mat&)));
 
-  image_view_->connectImageProducer_image(image_ctr_, SIGNAL(image_acquired(cv::Mat)));
+  connect(image_ctr_ , SIGNAL(image_acquired(cv::Mat)) , image_view_  , SLOT(update_image(cv::Mat)));
+  connect(image_ctr_ , SIGNAL(image_acquired(cv::Mat)) , thresholder_ , SLOT(update_image_raw   (cv::Mat)));
+  connect(image_ctr_ , SIGNAL(image_acquired(cv::Mat)) , finder_      , SLOT(update_image_master(cv::Mat)));
 
   connect(image_view_->autofocus_button(), SIGNAL(clicked()), image_ctr_, SLOT(acquire_autofocused_image()));
 
   thresholder_view_->connectImageProducer_1(thresholder_, SIGNAL(updated_image_raw   (cv::Mat)));
   thresholder_view_->connectImageProducer_2(thresholder_, SIGNAL(updated_image_binary(cv::Mat)));
-
-  connect(image_ctr_ , SIGNAL(image_acquired(cv::Mat)) , thresholder_ , SLOT(update_image_raw   (cv::Mat)));
-  connect(image_ctr_ , SIGNAL(image_acquired(cv::Mat)) , finder_      , SLOT(update_image_master(cv::Mat)));
-  connect(image_ctr_ , SIGNAL(image_acquired(cv::Mat)) , registryView_->ImageWidget(), SLOT(update_image(cv::Mat)));
 
   connect(finder_, SIGNAL(image_master_request()), image_ctr_, SLOT(acquire_image()));
 
@@ -475,14 +473,14 @@ void AssemblyMainWindow::disconnect_images()
 //  edgeView_  ->disconnectImageProducer(finder_ , SIGNAL(edgesDetected(const cv::Mat&)));
 //  rawView_   ->disconnectImageProducer(camera_ , SIGNAL(imagef       (const cv::Mat&)));
 
-  image_view_->disconnectImageProducer_image(image_ctr_, SIGNAL(image_acquired(cv::Mat)));
+  disconnect(image_ctr_ , SIGNAL(image_acquired(cv::Mat)) , image_view_  , SLOT(update_image(cv::Mat)));
+  disconnect(image_ctr_ , SIGNAL(image_acquired(cv::Mat)) , thresholder_ , SLOT(update_image_raw   (cv::Mat)));
+  disconnect(image_ctr_ , SIGNAL(image_acquired(cv::Mat)) , finder_      , SLOT(update_image_master(cv::Mat)));
+
+  disconnect(image_view_->autofocus_button(), SIGNAL(clicked()), image_ctr_, SLOT(acquire_autofocused_image()));
 
   thresholder_view_->disconnectImageProducer_1(thresholder_, SIGNAL(updated_image_raw   (cv::Mat)));
   thresholder_view_->disconnectImageProducer_2(thresholder_, SIGNAL(updated_image_binary(cv::Mat)));
-
-  disconnect(image_ctr_ , SIGNAL(image_acquired(cv::Mat)) , thresholder_ , SLOT(update_image_raw   (cv::Mat)));
-  disconnect(image_ctr_ , SIGNAL(image_acquired(cv::Mat)) , finder_      , SLOT(update_image_master(cv::Mat)));
-  disconnect(image_ctr_ , SIGNAL(image_acquired(cv::Mat)) , registryView_->ImageWidget(), SLOT(update_image(cv::Mat)));
 
   disconnect(finder_, SIGNAL(image_master_request()), image_ctr_, SLOT(acquire_image()));
 
