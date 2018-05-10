@@ -139,10 +139,10 @@ AssemblyImageView::AssemblyImageView(QWidget* parent) :
   AF_param_lay->addRow(AF_param_maxDZ_label, AF_param_maxDZ_lineed_);
   AF_param_lay->addRow(AF_param_Nstep_label, AF_param_Nstep_lineed_);
 
-//!!  AF_exe_button_ = new QPushButton("Auto-Focus Image", this);
-//!!  AF_lay->addRow(AF_exe_button_);
-//!!
-//!!  connect(AF_exe_button_, SIGNAL(clicked()), this, SIGNAL(autofocus_request()));
+  AF_exe_button_ = new QPushButton("Auto-Focus Image", this);
+  AF_lay->addRow(AF_exe_button_);
+
+  connect(AF_exe_button_, SIGNAL(clicked()), this, SIGNAL(autofocus_request()));
   // ----------
 
   //// --------------------------------------------------

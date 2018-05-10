@@ -33,11 +33,13 @@ class AssemblyImageView : public QWidget
   explicit AssemblyImageView(QWidget* parent=nullptr);
   virtual ~AssemblyImageView() {}
 
-  void    connectImageProducer_image(const QObject* sender, const char* signal);
-  void disconnectImageProducer_image(const QObject* sender, const char* signal);
+  void    connectImageProducer_image    (const QObject* sender, const char* signal);
+  void disconnectImageProducer_image    (const QObject* sender, const char* signal);
 
   void    connectImageProducer_autofocus(const QObject* sender, const char* signal);
   void disconnectImageProducer_autofocus(const QObject* sender, const char* signal);
+
+  QPushButton* autofocus_button() const { return AF_exe_button_; }
 
  protected:
 

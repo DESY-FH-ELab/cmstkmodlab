@@ -45,6 +45,7 @@ class AssemblyImageController : public QObject
 
     bool is_enabled_;
     bool autofocus_is_enabled_;
+    bool autofocus_to_be_disabled_;
 
   public slots:
 
@@ -58,10 +59,11 @@ class AssemblyImageController : public QObject
 
     void retrieve_image(const cv::Mat&);
 
-    void  enable_AutoFocus();
-    void disable_AutoFocus();
+    void  enable_autofocus();
+    void disable_autofocus();
 
-  protected slots:
+    void acquire_autofocused_image();
+    void restore_autofocus_settings();
 
   signals:
 
@@ -77,6 +79,10 @@ class AssemblyImageController : public QObject
     void camera_disabled();
 
     void image_acquired(const cv::Mat&);
+    void image_acquired();
+
+    void autofocused_image_request();
+    void autofocused_image_acquired();
 };
 
 #endif // ASSEMBLYIMAGECONTROLLER_H

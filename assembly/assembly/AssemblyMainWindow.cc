@@ -238,8 +238,8 @@ AssemblyMainWindow::AssemblyMainWindow(const unsigned int camera_ID, QWidget* pa
 //    checkbox3 = new QCheckBox("Assembly", this);
 //    toolBar_->addWidget(checkbox3);
 
-    connect(checkbox1, SIGNAL(stateChanged(int)), this, SLOT(changeState_AutoFocus(int)));
-    connect(checkbox2, SIGNAL(stateChanged(int)), this, SLOT(changeState_Alignment(int)));
+    connect(checkbox1, SIGNAL(stateChanged(int)), this, SLOT(changeState_autofocus(int)));
+    connect(checkbox2, SIGNAL(stateChanged(int)), this, SLOT(changeState_alignment(int)));
 //    connect(checkbox3, SIGNAL(stateChanged(int)), this, SLOT(changeState_SandwichAssembly(int)));
 
     this->setCentralWidget(tabWidget_);
@@ -285,8 +285,8 @@ void AssemblyMainWindow::enable_images()
   connect(image_ctr_, SIGNAL(camera_disabled()), this      , SLOT(disconnect_images()));
 
   connect(this      , SIGNAL(image_request())  , image_ctr_, SLOT(acquire_image()));
-  connect(this      , SIGNAL(AutoFocus_ON ())  , image_ctr_, SLOT( enable_AutoFocus()));
-  connect(this      , SIGNAL(AutoFocus_OFF())  , image_ctr_, SLOT(disable_AutoFocus()));
+  connect(this      , SIGNAL(autofocus_ON ())  , image_ctr_, SLOT( enable_autofocus()));
+  connect(this      , SIGNAL(autofocus_OFF())  , image_ctr_, SLOT(disable_autofocus()));
 
   NQLog("AssemblyMainWindow", NQLog::Message) << "enable_images"
      << ": ImageController connected";
@@ -306,8 +306,8 @@ void AssemblyMainWindow::disable_images()
     disconnect(image_ctr_, SIGNAL(camera_disabled()), this      , SLOT(disconnect_images()));
 
     disconnect(this      , SIGNAL(image_request())  , image_ctr_, SLOT(acquire_image()));
-    disconnect(this      , SIGNAL(AutoFocus_ON())   , image_ctr_, SLOT( enable_AutoFocus()));
-    disconnect(this      , SIGNAL(AutoFocus_OFF())  , image_ctr_, SLOT(disable_AutoFocus()));
+    disconnect(this      , SIGNAL(autofocus_ON())   , image_ctr_, SLOT( enable_autofocus()));
+    disconnect(this      , SIGNAL(autofocus_OFF())  , image_ctr_, SLOT(disable_autofocus()));
 
     NQLog("AssemblyMainWindow", NQLog::Message) << "disable_images"
        << ": ImageController disconnected";
@@ -318,11 +318,11 @@ void AssemblyMainWindow::disable_images()
     emit images_OFF();
 }
 
-void AssemblyMainWindow::changeState_AutoFocus(const int state)
+void AssemblyMainWindow::changeState_autofocus(const int state)
 {
     if(image_ctr_ == nullptr)
     {
-      NQLog("AssemblyMainWindow", NQLog::Warning) << "changeState_AutoFocus"
+      NQLog("AssemblyMainWindow", NQLog::Warning) << "changeState_autofocus"
          << ": ImageController not initialized, no action taken (hint: click \"Camera ON\")";
 
       return;
@@ -330,7 +330,7 @@ void AssemblyMainWindow::changeState_AutoFocus(const int state)
 
     if(motion_model_ == nullptr)
     {
-      NQLog("AssemblyMainWindow", NQLog::Warning) << "changeState_AutoFocus"
+      NQLog("AssemblyMainWindow", NQLog::Warning) << "changeState_autofocus"
          << ": LStepExpressModel not initialized, no action taken (hint: plug-in motion stage cable)";
 
       return;
@@ -338,27 +338,27 @@ void AssemblyMainWindow::changeState_AutoFocus(const int state)
 
     if(state == 2)
     {
-      NQLog("AssemblyMainWindow", NQLog::Spam) << "changeState_AutoFocus"
-         << ": emitting signal \"AutoFocus_ON\"";
+      NQLog("AssemblyMainWindow", NQLog::Spam) << "changeState_autofocus"
+         << ": emitting signal \"autofocus_ON\"";
 
-      emit AutoFocus_ON();
+      emit autofocus_ON();
     }
     else if(state == 0)
     {
-      NQLog("AssemblyMainWindow", NQLog::Spam) << "changeState_AutoFocus"
-         << ": emitting signal \"AutoFocus_OFF\"";
+      NQLog("AssemblyMainWindow", NQLog::Spam) << "changeState_autofocus"
+         << ": emitting signal \"autofocus_OFF\"";
 
-      emit AutoFocus_OFF();
+      emit autofocus_OFF();
     }
 
     return;
 }
 
-void AssemblyMainWindow::changeState_Alignment(const int state)
+void AssemblyMainWindow::changeState_alignment(const int state)
 {
     if(image_ctr_ == nullptr)
     {
-      NQLog("AssemblyMainWindow", NQLog::Warning) << "changeState_Alignment"
+      NQLog("AssemblyMainWindow", NQLog::Warning) << "changeState_alignment"
          << ": ImageController not initialized, no action taken (hint: click \"Camera ON\")";
 
       return;
@@ -388,7 +388,7 @@ void AssemblyMainWindow::changeState_Alignment(const int state)
 
       connect   (module_assembler_ , SIGNAL(motion_finished()), module_assembler_, SLOT(launch_next_alignment_step()));
 
-      NQLog("AssemblyMainWindow", NQLog::Message) << "changeState_Alignment: alignment enabled";
+      NQLog("AssemblyMainWindow", NQLog::Message) << "changeState_alignment: alignment enabled";
     }
     else if(state == 0)
     {
@@ -414,7 +414,7 @@ void AssemblyMainWindow::changeState_Alignment(const int state)
 
       disconnect(module_assembler_ , SIGNAL(motion_finished()), module_assembler_, SLOT(launch_next_alignment_step()));
 
-      NQLog("AssemblyMainWindow", NQLog::Message) << "changeState_Alignment: alignment disabled";
+      NQLog("AssemblyMainWindow", NQLog::Message) << "changeState_alignment: alignment disabled";
     }
 
     return;
@@ -451,6 +451,8 @@ void AssemblyMainWindow::connect_images()
 //  rawView_   ->connectImageProducer(camera_ , SIGNAL(imageAcquired(const cv::Mat&)));
 
   image_view_->connectImageProducer_image(image_ctr_, SIGNAL(image_acquired(cv::Mat)));
+
+  connect(image_view_->autofocus_button(), SIGNAL(clicked()), image_ctr_, SLOT(acquire_autofocused_image()));
 
   thresholder_view_->connectImageProducer_1(thresholder_, SIGNAL(updated_image_raw   (cv::Mat)));
   thresholder_view_->connectImageProducer_2(thresholder_, SIGNAL(updated_image_binary(cv::Mat)));

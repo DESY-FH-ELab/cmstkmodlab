@@ -78,9 +78,8 @@ class AssemblyMainWindow : public QMainWindow
   void    connect_images();
   void disconnect_images();
 
-  void changeState_AutoFocus       (const int);
-//  void changeState_SandwichAssembly(const int);
-  void changeState_Alignment       (const int);
+  void changeState_autofocus(const int);
+  void changeState_alignment(const int);
 
 //!!  void    connect_objectAligner(const AssemblyObjectAligner::Configuration&);
 //!!  void disconnect_objectAligner();
@@ -102,8 +101,8 @@ class AssemblyMainWindow : public QMainWindow
 
   void updateVacuumChannelsStatus();
 
-  void AutoFocus_ON();
-  void AutoFocus_OFF();
+  void autofocus_ON();
+  void autofocus_OFF();
 
   void objectAligner_connected();
   void objectAligner_disconnected();

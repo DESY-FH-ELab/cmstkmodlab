@@ -19,7 +19,8 @@ AssemblyImageController::AssemblyImageController(const AssemblyVUEyeCamera* came
   camera_manager_(camera),
   zfocus_finder_(zfocus_finder),
   is_enabled_(false),
-  autofocus_is_enabled_(false)
+  autofocus_is_enabled_(false),
+  autofocus_to_be_disabled_(false)
 {
   if(camera_manager_ == nullptr)
   {
@@ -103,13 +104,14 @@ void AssemblyImageController::retrieve_image(const cv::Mat& a_mat)
      << ": emitting signal \"image_acquired\"";
 
   emit image_acquired(a_mat);
+  emit image_acquired();
 }
 
-void AssemblyImageController::enable_AutoFocus()
+void AssemblyImageController::enable_autofocus()
 {
   if(zfocus_finder_ == nullptr)
   {
-    NQLog("AssemblyImageController", NQLog::Warning) << "enable_AutoFocus"
+    NQLog("AssemblyImageController", NQLog::Warning) << "enable_autofocus"
        << ": AssemblyZFocusFinder not initialized, auto-focusing not enabled";
 
     return;
@@ -124,17 +126,17 @@ void AssemblyImageController::enable_AutoFocus()
 
   autofocus_is_enabled_ = true;
 
-  NQLog("AssemblyImageController", NQLog::Message) << "enable_AutoFocus"
+  NQLog("AssemblyImageController", NQLog::Message) << "enable_autofocus"
      << ": connected AssemblyZFocusFinder";
 
   return;
 }
 
-void AssemblyImageController::disable_AutoFocus()
+void AssemblyImageController::disable_autofocus()
 {
   if(zfocus_finder_ == nullptr)
   {
-    NQLog("AssemblyImageController", NQLog::Warning) << "disable_AutoFocus"
+    NQLog("AssemblyImageController", NQLog::Warning) << "disable_autofocus"
        << ": AssemblyZFocusFinder not initialized, no action taken";
 
     return;
@@ -149,8 +151,45 @@ void AssemblyImageController::disable_AutoFocus()
 
   autofocus_is_enabled_ = false;
 
-  NQLog("AssemblyImageController", NQLog::Message) << "disable_AutoFocus"
+  NQLog("AssemblyImageController", NQLog::Message) << "disable_autofocus"
      << ": disconnected AssemblyZFocusFinder";
 
   return;
+}
+
+void AssemblyImageController::acquire_autofocused_image()
+{
+  if(this->autofocus_is_enabled())
+  {
+    autofocus_to_be_disabled_ = false;
+  }
+  else
+  {
+    this->enable_autofocus();
+    autofocus_to_be_disabled_ = true;
+  }
+
+  connect(this, SIGNAL(autofocused_image_request()), this, SLOT(acquire_image()));
+  connect(this, SIGNAL(image_acquired()), this, SLOT(restore_autofocus_settings()));
+
+  NQLog("AssemblyImageController", NQLog::Message) << "acquire_autofocused_image"
+     << ": emitting signal \"image_request\"";
+
+  emit autofocused_image_request();
+}
+
+void AssemblyImageController::restore_autofocus_settings()
+{
+  if(autofocus_to_be_disabled_)
+  {
+    this->disable_autofocus();
+  }
+
+  disconnect(this, SIGNAL(autofocused_image_request()), this, SLOT(acquire_image()));
+  disconnect(this, SIGNAL(image_acquired()), this, SLOT(restore_autofocus_settings()));
+
+  NQLog("AssemblyImageController", NQLog::Message) << "restore_autofocus_settings"
+     << ": emitting signal \"autofocused_image_acquired\"";
+
+  emit autofocused_image_acquired();
 }
