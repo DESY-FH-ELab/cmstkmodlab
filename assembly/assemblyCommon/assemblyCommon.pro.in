@@ -97,6 +97,8 @@ HEADERS += AssemblyVUEyeCamera.h \
            AssemblyMultiPickupTester.h \
            AssemblyAssembler.h \
            AssemblyObjectAligner.h \
+           AssemblyHardwareControlView.h \
+           AssemblyVacuumWidget.h \
            ConradManager.h \
            LStepExpressModel.h \
            LStepExpressMotion.h \
@@ -148,6 +150,8 @@ SOURCES += AssemblyVUEyeCamera.cc \
            AssemblyMultiPickupTester.cc \
            AssemblyAssembler.cc \
            AssemblyObjectAligner.cc \
+           AssemblyHardwareControlView.cc \
+           AssemblyVacuumWidget.cc \
            ConradManager.cc \
            LStepExpressModel.cc \
            LStepExpressMotion.cc \

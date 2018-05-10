@@ -142,26 +142,12 @@ AssemblyMainWindow::AssemblyMainWindow(const unsigned int camera_ID, QWidget* pa
     connect(finder_, SIGNAL(threshold_request        (int)), thresholder_, SLOT(update_image_binary_threshold        (int)));
     connect(finder_, SIGNAL(adaptiveThreshold_request(int)), thresholder_, SLOT(update_image_binary_adaptiveThreshold(int)));
 
-    NQLog("AssemblyMainWindow", NQLog::Message) << "added view " << tabname_AutoAssembly;
-
-    // VACUUM connections
-    conradModel_   = new ConradModel(assemblyView_);
-    conradManager_ = new ConradManager(conradModel_);
-
     module_assembler_ = new AssemblyAssembler(motion_manager_);
 
-    connect(assemblyView_->Vacuum_Widget(), SIGNAL(toggleVacuum(int))                  , conradManager_                , SLOT(toggleVacuum(int)));
-    connect(conradManager_                , SIGNAL(updateVacuumChannelState(int, bool)), assemblyView_->Vacuum_Widget(), SLOT(updateVacuumChannelState(int, bool)));
-
-    connect(this                          , SIGNAL(updateVacuumChannelsStatus())       , conradManager_                , SLOT(updateVacuumChannelsStatus()));
-
-    NQLog("AssemblyMainWindow", NQLog::Spam) << "emitting signal \"updateVacuumChannelsStatus\"";
-
-    emit updateVacuumChannelsStatus();
-    // ---
-
-    // ObjectAligner sub-view
+//!!    // ObjectAligner sub-view
 //!!    connect(assemblyView_, SIGNAL(objectAligner_request(const AssemblyObjectAligner::Configuration&)), this, SLOT(connect_objectAligner(const AssemblyObjectAligner::Configuration&)));
+
+    NQLog("AssemblyMainWindow", NQLog::Message) << "added view " << tabname_AutoAssembly;
     // ---
 
     // MultiPickupTester sub-view
@@ -210,13 +196,23 @@ AssemblyMainWindow::AssemblyMainWindow(const unsigned int camera_ID, QWidget* pa
     NQLog("AssemblyMainWindow", NQLog::Message) << "added view " << tabname_MotionSettings;
     // ---------------------------------------------------------
 
-    // MOTION-MANAGER VIEW -------------------------------------
-    const QString tabname_MotionManager("Motion Manager");
+    // HARDWARE CONTROLLERs VIEW (motion/vacuum) ---------------
+    const QString tabname_HWCtrl("HW Controllers (Motion/Vacuum)");
 
-    motion_manager_view_ = new LStepExpressMotionView(motion_model_, motion_manager_, tabWidget_);
-    tabWidget_->addTab(motion_manager_view_, tabname_MotionManager);
+    hwctr_view_ = new AssemblyHardwareControlView(motion_manager_, tabWidget_);
+    tabWidget_->addTab(hwctr_view_, tabname_HWCtrl);
 
-    NQLog("AssemblyMainWindow", NQLog::Message) << "added view " << tabname_MotionManager;
+    // Vacuum Manager
+    conradModel_   = new ConradModel;
+    conradManager_ = new ConradManager(conradModel_);
+
+    connect(hwctr_view_->Vacuum_Widget(), SIGNAL(toggleVacuum(int)), conradManager_, SLOT(toggleVacuum(int)));
+    connect(conradManager_, SIGNAL(updateVacuumChannelState(int, bool)), hwctr_view_->Vacuum_Widget(), SLOT(updateVacuumChannelState(int, bool)));
+
+    conradManager_->updateVacuumChannelsStatus();
+    // --------------
+
+    NQLog("AssemblyMainWindow", NQLog::Message) << "added view " << tabname_HWCtrl;
     // ---------------------------------------------------------
 
     // Upper Toolbar -------------------------------------------

@@ -37,7 +37,6 @@
 
 #include <opencv2/opencv.hpp>
 
-class AssemblyVacuumWidget;
 class AssemblyPatRecWidget;
 class AssemblyAlignmWidget;
 class AssemblyMultiPickupTesterWidget;
@@ -50,7 +49,6 @@ class AssemblyAssemblyView : public QWidget
 
   explicit AssemblyAssemblyView(const LStepExpressMotionManager*, QWidget* parent=nullptr);
 
-  AssemblyVacuumWidget* Vacuum_Widget() const { return w_vacuum_; }
   AssemblyPatRecWidget* PatRec_Widget() const { return w_patrec_; }
   AssemblyAlignmWidget* Alignm_Widget() const { return w_alignm_; }
 
@@ -77,7 +75,6 @@ class AssemblyAssemblyView : public QWidget
   QLineEdit* liedit_3_;
   QLineEdit* liedit_4_;
 
-  AssemblyVacuumWidget* w_vacuum_;
   AssemblyPatRecWidget* w_patrec_;
   AssemblyAlignmWidget* w_alignm_;
 
@@ -99,38 +96,6 @@ class AssemblyAssemblyView : public QWidget
   void launchAlignment(int, double, double, double);
 
 //  void launchSandwichAssembly(double, double, double, double, double, double, double, double, double);
-};
-// ===========================================================================
-
-class AssemblyVacuumWidget : public QWidget
-{
- Q_OBJECT
-
- public:
-
-  explicit AssemblyVacuumWidget(const QString&, QWidget* parent=nullptr);
-  virtual ~AssemblyVacuumWidget() {}
-
-  QFormLayout* layout() const { return layout_; }
-
- protected:
-
-  QFormLayout* layout_;
-  QPushButton* button_;
-
-  std::vector<QRadioButton*> valves_;
-  std::vector<QLabel*>       labels_;
-
- public slots:
-
-  void toggleVacuum();
-  void updateVacuumChannelState(const int, const bool);
-  void enableVacuumButton();
-  void disableVacuumButton();
-
- signals:
-
-  void toggleVacuum(const int);
 };
 // ===========================================================================
 

@@ -10,50 +10,45 @@
 //                                                                             //
 /////////////////////////////////////////////////////////////////////////////////
 
-#ifndef ASSEMBLYMOTIONWIDGETS_H
-#define ASSEMBLYMOTIONWIDGETS_H
+#ifndef ASSEMBLYVACUUMWIDGET_H
+#define ASSEMBLYVACUUMWIDGET_H
 
 #include <QWidget>
 #include <QString>
-#include <QHBoxLayout>
+#include <QVBoxLayout>
 #include <QPushButton>
-#include <QLineEdit>
+#include <QRadioButton>
+#include <QLabel>
 
-class AssemblyMoveWidget : public QWidget
+class AssemblyVacuumWidget : public QWidget
 {
  Q_OBJECT
 
  public:
 
-  explicit AssemblyMoveWidget(const QString&, const QString&, const bool move_relative=false, QWidget* parent=nullptr);
-  virtual ~AssemblyMoveWidget() {}
+  explicit AssemblyVacuumWidget(const QString&, QWidget* parent=nullptr);
+  virtual ~AssemblyVacuumWidget() {}
 
-  QPushButton* button() const { return button_; }
-  QLineEdit*   lineed() const { return lineed_; }
-
-  void useMoveRelative(const bool b=false){ moveRelative_ = b; }
-
-  QString get_input_string() const;
+  QVBoxLayout* layout() const { return layout_; }
 
  protected:
 
-  bool moveRelative_;
-
-  QHBoxLayout* layout_;
+  QVBoxLayout* layout_;
   QPushButton* button_;
-  QLineEdit*   lineed_;
+
+  std::vector<QRadioButton*> valves_;
+  std::vector<QLabel*>       labels_;
 
  public slots:
 
-  void execute();
-    
-  void enable(const bool b=true);
+  void toggleVacuum();
+  void updateVacuumChannelState(const int, const bool);
+  void enableVacuumButton();
+  void disableVacuumButton();
 
  signals:
 
-  void moveAbsolute(const double, const double, const double, const double);
-  void moveRelative(const double, const double, const double, const double);
+  void toggleVacuum(const int);
 };
-// ===========================================================================
 
-#endif // ASSEMBLYMOTIONWIDGETS_H
+#endif // ASSEMBLYVACUUMWIDGET_H

@@ -21,7 +21,7 @@ AssemblyMoveWidget::AssemblyMoveWidget(const QString& label, const QString& defa
   QWidget(parent),
   moveRelative_(move_relative)
 {
-  layout_ = new QFormLayout;
+  layout_ = new QHBoxLayout;
   this->setLayout(layout_);
 
   button_ = new QPushButton(label, this);
@@ -36,7 +36,8 @@ AssemblyMoveWidget::AssemblyMoveWidget(const QString& label, const QString& defa
   lineed_ = new QLineEdit(this);
   lineed_->setText(default_entry);
 
-  layout_->addRow(button_, lineed_);
+  layout_->addWidget(button_);
+  layout_->addWidget(lineed_);
 
   connect(button_, SIGNAL(clicked()), this, SLOT(execute()));
 }

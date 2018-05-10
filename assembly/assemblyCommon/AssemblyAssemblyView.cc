@@ -57,7 +57,6 @@ AssemblyAssemblyView::AssemblyAssemblyView(const LStepExpressMotionManager* moti
   liedit_3_(0),
   liedit_4_(0),
 
-  w_vacuum_(0),
   w_patrec_(0),
   w_mupiup_(0),
 
@@ -185,51 +184,6 @@ AssemblyAssemblyView::AssemblyAssemblyView(const LStepExpressMotionManager* moti
 
   QFormLayout* f01 = new QFormLayout;
   layout->addLayout(f01, 0, 1);
-
-//  // MOVE WIDGETS --------
-//  QGroupBox* box_move = new QGroupBox(tr("Motion Stage"));
-//
-//  QGridLayout* g_move = new QGridLayout;
-//
-//  // widget: move absolute
-//  AssemblyMoveWidget* w_moveabs = new AssemblyMoveWidget("Move Absolute", "0,0,0,0", this);
-//  g_move->addWidget(w_moveabs->button(), 0, 0);
-//  g_move->addWidget(w_moveabs->lineed(), 0, 1);
-//
-//  w_moveabs->useMoveRelative(false);
-//  w_moveabs->setToolTip("(1) Moves x,y,z,a stage using moveAbsolute routine (with respect to origin)");
-//
-//  connect(w_moveabs, SIGNAL(moveAbsolute(double, double, double, double)), motion_manager, SLOT(moveAbsolute(double, double, double, double)));
-//  connect(motion_manager, SIGNAL(motion_finished()), w_moveabs, SLOT(enable()));
-//  // ---------------------
-//
-//  // widget: move relative
-//  AssemblyMoveWidget* w_moverel = new AssemblyMoveWidget("Move Relative", "0,0,0,0", this);
-//  g_move->addWidget(w_moverel->button(), 1, 0);
-//  g_move->addWidget(w_moverel->lineed(), 1, 1);
-//
-//  w_moverel->useMoveRelative(true);
-//  w_moverel->setToolTip("(2) Moves x,y,z,a stage using moveRelative routine (with respect to current position)");
-//
-//  connect(w_moverel, SIGNAL(moveRelative(double, double, double, double)), motion_manager, SLOT(moveRelative(double, double, double, double)));
-//  connect(motion_manager, SIGNAL(motion_finished()), w_moverel, SLOT(enable()));
-//  // ---------------------
-//
-//  box_move->setLayout(g_move);
-//
-//  f01->addRow(box_move);
-//  // ---------------------
-
-  // VACUUM WIDGET -------
-  QGroupBox* box_vacuum = new QGroupBox(tr("Vacuum"));
-
-  w_vacuum_ = new AssemblyVacuumWidget("Toggle Vacuum", this);
-  w_vacuum_->setToolTip("(3) Controls vacuum valves");
-
-  box_vacuum->setLayout(w_vacuum_->layout());
-
-  f01->addRow(box_vacuum);
-  // ---------------------
 
   // PATREC  WIDGET ------
   QGroupBox* box_patrec = new QGroupBox(tr("Pattern Recognition"));
@@ -396,134 +350,6 @@ void AssemblyAssemblyView::keyReleaseEvent(QKeyEvent* event)
       default:
         break;
     }
-  }
-}
-// ===========================================================================
-
-AssemblyVacuumWidget::AssemblyVacuumWidget(const QString& label, QWidget* parent) : QWidget(parent)
-{
-  layout_ = new QFormLayout;
-  this->setLayout(layout_);
-
-  button_ = new QPushButton(label, this);
-  layout_->addRow(button_);
-
-  QGridLayout* grid = new QGridLayout;
-
-  QRadioButton* radio_1 = new QRadioButton(tr("&Pickup")   , this);
-  QRadioButton* radio_2 = new QRadioButton(tr("&Spacers")  , this);
-  QRadioButton* radio_3 = new QRadioButton(tr("&Baseplate"), this);
-//  QRadioButton* radio_4 = new QRadioButton(tr("&Channel 4"), this);
-
-  grid->addWidget(radio_1, 1, 0);
-  grid->addWidget(radio_2, 3, 0);
-  grid->addWidget(radio_3, 5, 0);
-//  grid->addWidget(radio_4, 7, 0);
-
-  QPixmap pixmap(100, 100);
-  pixmap.fill(QColor("transparent"));
-
-  QPainter painter(&pixmap);
-  painter.setBrush(QBrush(Qt::red));
-  painter.drawEllipse(0, 0, 30, 30);
-
-  QLabel* label_1 = new QLabel("", this);
-  label_1->setPixmap(pixmap);
-  label_1->setText(" VACUUM OFF");
-  label_1->setStyleSheet("QLabel { background-color : green; color : black; }");
-
-  QLabel* label_2 = new QLabel("", this);
-  label_2->setPixmap(pixmap);
-  label_2->setText(" VACUUM OFF");
-  label_2->setStyleSheet("QLabel { background-color : green; color : black; }");
-
-  QLabel* label_3 = new QLabel("", this);
-  label_3->setPixmap(pixmap);
-  label_3->setText(" VACUUM OFF");
-  label_3->setStyleSheet("QLabel { background-color : green; color : black; }");
-
-//  QLabel* label_4 = new QLabel("", this);
-//  label_4->setPixmap(pixmap);
-//  label_4->setText(" VACUUM OFF");
-//  label_4->setStyleSheet("QLabel { background-color : green; color : black; }");
-
-  grid->addWidget(label_1, 1, 1);
-  grid->addWidget(label_2, 3, 1);
-  grid->addWidget(label_3, 5, 1);
-//  grid->addWidget(label_4, 7, 1);
-
-  layout_->addRow(grid);
-
-  valves_.clear();
-  valves_.push_back(radio_1);
-  valves_.push_back(radio_2);
-  valves_.push_back(radio_3);
-//  valves_.push_back(radio4);
-
-  labels_.clear();
-  labels_.push_back(label_1);
-  labels_.push_back(label_2);
-  labels_.push_back(label_3);
-//  labels_.push_back(label_4);
-
-  connect(button_, SIGNAL(clicked()), this, SLOT(toggleVacuum()));
-
-  NQLog("AssemblyVacuumWidget", NQLog::Debug) << "constructed";
-}
-
-void AssemblyVacuumWidget::toggleVacuum()
-{
-  NQLog("AssemblyVacuumWidget") << ": toggling vacuum voltage";
-
-  for(unsigned int i=0; i<valves_.size(); ++i)
-  {
-    if(valves_.at(i)->isChecked())
-    {
-      NQLog("AssemblyVacuumWidget") << ": emit signal to channel " << (i+1);
-
-      button_->setEnabled(false);
-
-      emit toggleVacuum(i+1);
-
-      return;
-    }
-  }
-
-  NQLog("AssemblyVacuumWidget") << ": None channel selected! Vacuum is not toggled.";
-}
-
-void AssemblyVacuumWidget::enableVacuumButton()
-{
-  button_->setEnabled(true);
-}
-
-void AssemblyVacuumWidget::disableVacuumButton()
-{
-  button_->setEnabled(false);
-}
-
-void AssemblyVacuumWidget::updateVacuumChannelState(const int channelNumber, const bool channelState)
-{
-  if(channelNumber >= int(labels_.size()))
-  {
-    NQLog("AssemblyVacuumWidget", NQLog::Warning) << "updateVacuumChannelState"
-       << "(" << channelNumber << ", " << channelState << ")"
-       << ": out-of-range input channel number (" << channelNumber << "), no action taken";
-
-    return;
-  }
-
-  emit enableVacuumButton();
-
-  if(channelState)
-  {
-    labels_.at(channelNumber)->setText(" VACUUM ON");
-    labels_.at(channelNumber)->setStyleSheet("QLabel { background-color : red; color : black; }");
-  }
-  else
-  {
-    labels_.at(channelNumber)->setText(" VACUUM OFF");
-    labels_.at(channelNumber)->setStyleSheet("QLabel { background-color : green; color : black; }");
   }
 }
 // ===========================================================================

@@ -38,6 +38,7 @@ typedef AssemblyUEyeModel AssemblyUEyeModel_t;
 #include <AssemblyObjectAligner.h>
 #include <AssemblyMultiPickupTester.h>
 #include <AssemblyAssembler.h>
+#include <AssemblyHardwareControlView.h>
 #include <LStepExpressModel.h>
 #include <LStepExpressMotionManager.h>
 #include <LStepExpressMotionView.h>
@@ -142,9 +143,10 @@ class AssemblyMainWindow : public QMainWindow
 //  AssemblyUEyeSnapShooter* rawView_;
   AssemblyImageView* image_view_;
   AssemblyThresholderView* thresholder_view_;
-  AssemblyAssemblyView*  assemblyView_;
+  AssemblyAssemblyView* assemblyView_;
   AssemblyObjectFinderPatRecView* finder_view_;
-  AssemblyRegistryView*  registryView_;
+  AssemblyRegistryView* registryView_;
+  AssemblyHardwareControlView* hwctr_view_;
 
   QCheckBox* checkbox1;
   QCheckBox* checkbox2;
