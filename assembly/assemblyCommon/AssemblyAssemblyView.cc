@@ -11,54 +11,44 @@
 /////////////////////////////////////////////////////////////////////////////////
 
 #include <nqlogger.h>
-#include <ApplicationConfig.h>
 
 #include <AssemblyAssemblyView.h>
 #include <AssemblyMotionWidgets.h>
 #include <AssemblyUtilities.h>
 
-#include <iostream>
 #include <sstream>
 #include <iomanip>
-#include <vector>
 #include <stdlib.h>
 
 #include <QFormLayout>
-#include <QFileDialog>
-#include <QPushButton>
-#include <QString>
 #include <QStringList>
 #include <QPixmap>
-#include <QLabel>
 #include <QApplication>
 #include <QImageReader>
 #include <QPainter>
 #include <QScriptEngine>
 #include <qnumeric.h>
 
-#include <TGraph.h>
-#include <TCanvas.h>
-
-AssemblyAssemblyView::AssemblyAssemblyView(const LStepExpressMotionManager* motion_manager, QWidget* parent) :
+AssemblyAssemblyView::AssemblyAssemblyView(const LStepExpressMotionManager* const motion_manager, QWidget* parent) :
   QWidget(parent),
 
-  scrollArea_1_(0),
-  scrollArea_2_(0),
-  scrollArea_3_(0),
-  scrollArea_4_(0),
+  scrollArea_1_(nullptr),
+  scrollArea_2_(nullptr),
+  scrollArea_3_(nullptr),
+  scrollArea_4_(nullptr),
 
-  imageView_1_(0),
-  imageView_2_(0),
-  imageView_3_(0),
-  imageView_4_(0),
+  imageView_1_(nullptr),
+  imageView_2_(nullptr),
+  imageView_3_(nullptr),
+  imageView_4_(nullptr),
 
-  liedit_1_(0),
-  liedit_2_(0),
-  liedit_3_(0),
-  liedit_4_(0),
+  liedit_1_(nullptr),
+  liedit_2_(nullptr),
+  liedit_3_(nullptr),
+  liedit_4_(nullptr),
 
-  w_patrec_(0),
-  w_mupiup_(0),
+  w_patrec_(nullptr),
+  w_mupiup_(nullptr),
 
   objfinder_connected_(false)
 {
@@ -171,11 +161,11 @@ AssemblyAssemblyView::AssemblyAssemblyView(const LStepExpressMotionManager* moti
 
   QGroupBox* box_mupiup = new QGroupBox(tr("\"Pickup + PatRec\" Iterations"));
 
-    w_mupiup_ = new AssemblyMultiPickupTesterWidget("Run \"Pickup + PatRec\"", motion_manager);
-    f10->addRow(w_mupiup_);
+  w_mupiup_ = new AssemblyMultiPickupTesterWidget("Run \"Pickup + PatRec\"", motion_manager);
+  f10->addRow(w_mupiup_);
 
-    connect(w_mupiup_, SIGNAL(multipickup_request(const AssemblyMultiPickupTester::Configuration&)),
-            this     , SIGNAL(multipickup_request(const AssemblyMultiPickupTester::Configuration&)));
+  connect(w_mupiup_, SIGNAL(multipickup_request(const AssemblyMultiPickupTester::Configuration&)),
+          this     , SIGNAL(multipickup_request(const AssemblyMultiPickupTester::Configuration&)));
 
   box_mupiup->setLayout(w_mupiup_->layout());
 
@@ -395,26 +385,26 @@ void AssemblyStringWidget::execute()
 AssemblyPatRecWidget::AssemblyPatRecWidget(const QString& label, QWidget* parent) :
   QWidget(parent),
 
-  layout_(0),
-  button_(0),
-  lineed_(0),
-  label_ (0),
+  layout_(nullptr),
+  button_(nullptr),
+  lineed_(nullptr),
+  label_ (nullptr),
 
-  groupBox1_(0),
-  groupBox2_(0),
+  groupBox1_(nullptr),
+  groupBox2_(nullptr),
 
-  radio1_(0),
-  radio2_(0),
-  radio3_(0),
-  radio4_(0),
-  radio5_(0),
-  radio6_(0),
+  radio1_(nullptr),
+  radio2_(nullptr),
+  radio3_(nullptr),
+  radio4_(nullptr),
+  radio5_(nullptr),
+  radio6_(nullptr),
 
-  vbox1_(0),
-  vbox2_(0),
+  vbox1_(nullptr),
+  vbox2_(nullptr),
 
-  sw_angrough_(0),
-  sw_angscanp_(0)
+  sw_angrough_(nullptr),
+  sw_angscanp_(nullptr)
 {
   layout_ = new QFormLayout;
   this->setLayout(layout_);
@@ -689,11 +679,11 @@ void AssemblyAlignmWidget::show_object_angle(const double val)
 }
 // ===========================================================================
 
-AssemblyMultiPickupTesterWidget::AssemblyMultiPickupTesterWidget(const QString& label, const LStepExpressMotionManager* motion_manager, QWidget* parent) :
+AssemblyMultiPickupTesterWidget::AssemblyMultiPickupTesterWidget(const QString& label, const LStepExpressMotionManager* const motion_manager, QWidget* parent) :
   QWidget(parent),
   motion_manager_(motion_manager)
 {
-  if(!motion_manager_)
+  if(motion_manager_ == nullptr)
   {
     NQLog("AssemblyMultiPickupTesterWidget", NQLog::Critical)
        << "input error: null pointer to LStepExpressMotionManager object, exiting constructor";

@@ -236,7 +236,7 @@ class AssemblyMultiPickupTesterWidget : public QWidget
 
  protected:
 
-  const LStepExpressMotionManager* motion_manager_;
+  const LStepExpressMotionManager* const motion_manager_;
 
   QGridLayout* layout_;
 
