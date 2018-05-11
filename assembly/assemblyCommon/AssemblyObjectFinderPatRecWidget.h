@@ -74,9 +74,15 @@ class AssemblyObjectFinderPatRecWidget : public QWidget
 
  public slots:
 
+  void load_image_template();
+  void load_image_template_from_path(const QString&);
+
   void update_configuration();
 
  signals:
+
+  void updated_image_template_line(const QString&);
+  void updated_image_template(const cv::Mat&);
 
   void configuration_updated(const AssemblyObjectFinderPatRec::Configuration&);
   void configuration_updated();

@@ -11,8 +11,10 @@
 /////////////////////////////////////////////////////////////////////////////////
 
 #include <nqlogger.h>
+#include <ApplicationConfig.h>
 
 #include <AssemblyObjectFinderPatRecView.h>
+#include <AssemblyUtilities.h>
 
 #include <sstream>
 #include <iomanip>
@@ -41,19 +43,12 @@ AssemblyObjectFinderPatRecView::AssemblyObjectFinderPatRecView(QWidget* parent) 
   patrec_exe_button_(nullptr),
   patrec_exe_label_(nullptr),
 
-  radio1_(nullptr),
-  radio2_(nullptr),
-  radio3_(nullptr),
-  radio4_(nullptr),
-  radio5_(nullptr),
-  radio6_(nullptr),
-
   w_patrec_(nullptr),
 
   patrec_res1_linee_(nullptr),
   patrec_res2_linee_(nullptr),
 
-  objfinder_connected_(false)
+  finder_connected_(false)
 {
   QHBoxLayout* layout = new QHBoxLayout;
   this->setLayout(layout);
@@ -92,6 +87,7 @@ AssemblyObjectFinderPatRecView::AssemblyObjectFinderPatRecView(QWidget* parent) 
   imageView_2_->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
   imageView_2_->setScaledContents(true);
   imageView_2_->setAlignment(Qt::AlignCenter);
+  imageView_2_->setZoomFactor(0.50);
 
   scrollArea_2_ = new QScrollArea(this);
   scrollArea_2_->setMinimumSize(200, 200);
@@ -128,6 +124,7 @@ AssemblyObjectFinderPatRecView::AssemblyObjectFinderPatRecView(QWidget* parent) 
   imageView_4_->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
   imageView_4_->setScaledContents(true);
   imageView_4_->setAlignment(Qt::AlignCenter);
+  imageView_4_->setZoomFactor(0.35);
 
   scrollArea_4_ = new QScrollArea(this);
   scrollArea_4_->setMinimumSize(200, 200);
@@ -146,10 +143,10 @@ AssemblyObjectFinderPatRecView::AssemblyObjectFinderPatRecView(QWidget* parent) 
 
   QVBoxLayout* patrec_lay = new QVBoxLayout;
 
-  QGridLayout* layout_1 = new QGridLayout;
+  QGridLayout* patrec_exe_lay = new QGridLayout;
 
   patrec_exe_button_ = new QPushButton(tr("Standalone PatRec"), this);
-  layout_1->addWidget(patrec_exe_button_, 0, 0);
+  patrec_exe_lay->addWidget(patrec_exe_button_, 0, 0);
 
   QPixmap pixmap(100, 100);
   pixmap.fill(QColor("transparent"));
@@ -159,46 +156,9 @@ AssemblyObjectFinderPatRecView::AssemblyObjectFinderPatRecView(QWidget* parent) 
   patrec_exe_label_->setText(" WAITING");
   patrec_exe_label_->setStyleSheet("QLabel { background-color : orange; color : black; }");
 
-  layout_1->addWidget(patrec_exe_label_, 0, 1);
+  patrec_exe_lay->addWidget(patrec_exe_label_, 0, 1);
 
-  QGroupBox* groupBox1_ = new QGroupBox(tr("Object"));
-  groupBox1_->setStyleSheet("QGroupBox { font-weight: bold; } ");
-
-  radio1_ = new QRadioButton(tr("Fiducial marker"), this);
-  radio2_ = new QRadioButton(tr("Positioning pin"), this);
-  radio3_ = new QRadioButton(tr("Sensor corner")  , this);
-  radio4_ = new QRadioButton(tr("Spacer corner")  , this);
-
-  radio1_->setChecked(true);
-
-  QVBoxLayout* vbox1_ = new QVBoxLayout;
-  vbox1_->addWidget(radio1_);
-  vbox1_->addWidget(radio2_);
-  vbox1_->addWidget(radio3_);
-  vbox1_->addWidget(radio4_);
-  vbox1_->addStretch(1);
-
-  groupBox1_->setLayout(vbox1_);
-
-  QGroupBox* groupBox2_ = new QGroupBox(tr("Mode"));
-  groupBox2_->setStyleSheet("QGroupBox { font-weight: bold; } ");
-
-  radio5_ = new QRadioButton(tr("Demo"), this);
-  radio6_ = new QRadioButton(tr("Lab") , this);
-
-  radio5_->setChecked(true);
-
-  QVBoxLayout* vbox2_ = new QVBoxLayout;
-  vbox2_->addWidget(radio5_);
-  vbox2_->addWidget(radio6_);
-  vbox2_->addStretch(1);
-
-  groupBox2_->setLayout(vbox2_);
-
-  layout_1->addWidget(groupBox1_, 1, 0);
-  layout_1->addWidget(groupBox2_, 1, 1);
-
-  patrec_lay->addLayout(layout_1);
+  patrec_lay->addLayout(patrec_exe_lay);
   // -----------
 
   // PatRec configuration
@@ -211,6 +171,17 @@ AssemblyObjectFinderPatRecView::AssemblyObjectFinderPatRecView(QWidget* parent) 
 
   w_patrec_ = new AssemblyObjectFinderPatRecWidget;
   w_patrec_->setToolTip("Pattern Recognition Configuration");
+
+  connect(patrec_exe_button_, SIGNAL(clicked()), this->PatRec_Widget(), SLOT(update_configuration()));
+
+  imageView_4_->connectImageProducer(this->PatRec_Widget(), SIGNAL(updated_image_template(cv::Mat)));
+
+  ApplicationConfig* config = ApplicationConfig::instance();
+  if(config != nullptr)
+  {
+    const std::string fpath = config->getValue<std::string>("AssemblyObjectFinderPatRecView_template_fpath", "");
+    if(fpath != ""){ w_patrec_->load_image_template_from_path(QString::fromStdString(Config::CMSTkModLabBasePath+"/"+fpath)); }
+  }
 
   patrec_lay->addWidget(w_patrec_);
   // -----------
@@ -254,7 +225,7 @@ AssemblyObjectFinderPatRecView::AssemblyObjectFinderPatRecView(QWidget* parent) 
   // ---------------------
 }
 
-void AssemblyObjectFinderPatRecView::connect_to_finder(const AssemblyObjectFinderPatRec* finder)
+void AssemblyObjectFinderPatRecView::connect_to_finder(const AssemblyObjectFinderPatRec* const finder)
 {
   if(finder == nullptr)
   {
@@ -264,25 +235,21 @@ void AssemblyObjectFinderPatRecView::connect_to_finder(const AssemblyObjectFinde
     return;
   }
 
-  if(objfinder_connected_ == false)
+  if(finder_connected_ == false)
   {
-    connect(this->PatRec_Widget(), SIGNAL(mode(int, int)), finder, SLOT(run_PatRec(int, int)));
+    connect(this->PatRec_Widget(), SIGNAL(configuration_updated(AssemblyObjectFinderPatRec::Configuration)), finder, SLOT(launch_PatRec(AssemblyObjectFinderPatRec::Configuration)));
 
-    connect(finder, SIGNAL(PatRec_exitcode(int)), this->PatRec_Widget(), SLOT(change_label(int)));
+    connect(finder, SIGNAL(PatRec_exitcode(int)), this, SLOT(change_label(int)));
 
-//!!    connect(this->PatRec_Widget()->widget_angrough(), SIGNAL(input_string(QString)), finder, SLOT(update_rough_angles      (QString)));
-//!!    connect(this->PatRec_Widget()->widget_angscanp(), SIGNAL(input_string(QString)), finder, SLOT(update_angscan_parameters(QString)));
+    connect(finder, SIGNAL(image_path(int, QString)), this, SLOT(updateImage(int, QString)));
+    connect(finder, SIGNAL(image_mat (int, cv::Mat)), this, SLOT(updateImage(int, cv::Mat)));
 
-    connect(this->PatRec_Widget(), SIGNAL(sendPosition(int, double, double, double)), this, SLOT(updateText(int, double, double, double)));
-
-    connect(finder, SIGNAL(image_path          (int, QString))               , this, SLOT(updateImage(int, QString)));
-    connect(finder, SIGNAL(image_mat           (int, cv::Mat))               , this, SLOT(updateImage(int, cv::Mat)));
-    connect(finder, SIGNAL(reportObjectLocation(int, double, double, double)), this, SLOT(updateText (int, double, double, double)));
+    connect(finder, SIGNAL(reportObjectLocation(int, double, double, double)), this, SLOT(updateText(int, double, double, double)));
 
     NQLog("AssemblyObjectFinderPatRecView", NQLog::Spam) << "connect_to_finder"
-       << ": widget connected to object of type AssemblyObjectFinderPatRec";
+       << ": view connected to object of type AssemblyObjectFinderPatRec";
 
-    objfinder_connected_ = true;
+    finder_connected_ = true;
   }
   else
   {
@@ -319,23 +286,11 @@ void AssemblyObjectFinderPatRecView::updateImage(const int stage, const QString&
 {
   NQLog("AssemblyObjectFinderPatRecView", NQLog::Spam) << "updateImage(" << stage << ", file=" << filename << ")";
 
-  const std::string filename_ss = filename.toUtf8().constData();
+  const cv::Mat img = assembly::cv_imread(filename, CV_LOAD_IMAGE_UNCHANGED);
 
-  const cv::Mat img = cv::imread(filename_ss, CV_LOAD_IMAGE_UNCHANGED);
+  this->updateImage(stage, img);
 
-  const QImageReader img_reader(QString::fromStdString(filename_ss));
-
-  if(img_reader.format() == "png" && (img.channels() > 1))
-  {
-    cv::Mat img_1;
-    cv::cvtColor(img, img_1, CV_RGB2BGR);
-
-    this->updateImage(stage, img_1);
-  }
-  else
-  {
-    this->updateImage(stage, img);
-  }
+  return;
 }
 
 void AssemblyObjectFinderPatRecView::updateImage(const int stage, const cv::Mat& img)
@@ -350,7 +305,7 @@ void AssemblyObjectFinderPatRecView::updateImage(const int stage, const cv::Mat&
   else if(stage == 2)
   {
     imageView_2_->setImage(img);
-    imageView_2_->setZoomFactor(0.5);
+//    imageView_2_->setZoomFactor(0.5);
   }
   else if(stage == 3)
   {
@@ -363,6 +318,25 @@ void AssemblyObjectFinderPatRecView::updateImage(const int stage, const cv::Mat&
 //    imageView_4_->setZoomFactor(0.5);
   }
 }
+
+void AssemblyObjectFinderPatRecView::change_label(const int state)
+{
+  NQLog("AssemblyObjectFinderPatRecView", NQLog::Spam) << "change_label(" << state << ")";
+
+  if(state == 0)
+  {
+    patrec_exe_label_->setText(" FOUND MARKER");
+    patrec_exe_label_->setStyleSheet("QLabel { background-color : green; color : black; }");
+  }
+  else
+  {
+    patrec_exe_label_->setText(" ERROR");
+    patrec_exe_label_->setStyleSheet("QLabel { background-color : red; color : black; }");
+  }
+
+  return;
+}
+
 
 void AssemblyObjectFinderPatRecView::keyReleaseEvent(QKeyEvent* event)
 {

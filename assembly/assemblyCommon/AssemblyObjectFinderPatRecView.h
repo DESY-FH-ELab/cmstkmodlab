@@ -13,7 +13,6 @@
 #ifndef ASSEMBLYOBJECTFINDERPATRECVIEW_H
 #define ASSEMBLYOBJECTFINDERPATRECVIEW_H
 
-#include <AssemblyVUEyeCamera.h>
 #include <AssemblyUEyeView.h>
 #include <AssemblyObjectFinderPatRec.h>
 #include <AssemblyObjectFinderPatRecWidget.h>
@@ -24,7 +23,6 @@
 #include <QKeyEvent>
 #include <QPushButton>
 #include <QLineEdit>
-#include <QRadioButton>
 
 #include <opencv2/opencv.hpp>
 
@@ -39,7 +37,7 @@ class AssemblyObjectFinderPatRecView : public QWidget
 
   AssemblyObjectFinderPatRecWidget* PatRec_Widget() const { return w_patrec_; }
 
-  void connect_to_finder(const AssemblyObjectFinderPatRec*);
+  void connect_to_finder(const AssemblyObjectFinderPatRec* const);
 
  protected:
 
@@ -58,19 +56,12 @@ class AssemblyObjectFinderPatRecView : public QWidget
   QPushButton* patrec_exe_button_;
   QLabel*      patrec_exe_label_;
 
-  QRadioButton* radio1_;
-  QRadioButton* radio2_;
-  QRadioButton* radio3_;
-  QRadioButton* radio4_;
-  QRadioButton* radio5_;
-  QRadioButton* radio6_;
-
   AssemblyObjectFinderPatRecWidget* w_patrec_;
 
   QLineEdit* patrec_res1_linee_;
   QLineEdit* patrec_res2_linee_;
 
-  bool objfinder_connected_;
+  bool finder_connected_;
 
  public slots:
 
@@ -79,7 +70,11 @@ class AssemblyObjectFinderPatRecView : public QWidget
 
   void updateText(const int, const double, const double, const double);
 
+  void change_label(const int);
+
  signals:
+
+  void mode(const int, const int);
 };
 
 #endif // ASSEMBLYOBJECTFINDERPATRECVIEW_H

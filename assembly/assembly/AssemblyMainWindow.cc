@@ -25,8 +25,58 @@
 
 AssemblyMainWindow::AssemblyMainWindow(const unsigned int camera_ID, QWidget* parent) :
   QMainWindow(parent),
+
+  // Low-Level Controllers (Motion, Camera, Vacuum)
+  conradModel_(nullptr),
+  conradManager_(nullptr),
+
+  motion_model_(nullptr),
+  motion_manager_(nullptr),
+  motion_manager_view_(nullptr),
+  motion_thread_(nullptr),
+  motionSettings_(nullptr),
+  motionSettingsWidget_(nullptr),
+
+  camera_model_(nullptr),
+  camera_thread_(nullptr),
+//  camera_widget_(nullptr),
+  camera_(nullptr),
   camera_ID_(camera_ID),
+
+  // High-Level Controllers
+  image_ctr_(nullptr),
+  zfocus_finder_(nullptr),
+  thresholder_(nullptr),
+  aligner_(nullptr),
+  multipickup_(nullptr),
+  module_assembler_(nullptr),
+
+  finder_(nullptr),
+  finder_thread_(nullptr),
+
+  // Views
+  toolBar_(nullptr),
+  tabWidget_(nullptr),
+
+//  finderView_(nullptr),
+//  edgeView_(nullptr),
+//  rawView_(nullptr),
+
+  image_view_(nullptr),
+  thresholder_view_(nullptr),
+  assemblyView_(nullptr),
+  finder_view_(nullptr),
+  registryView_(nullptr),
+  hwctr_view_(nullptr),
+
+  checkbox1(nullptr),
+  checkbox2(nullptr),
+//  checkbox3(nullptr),
+
+  // flags
   images_enabled_(false),
+
+  // timing
   testTimerCount_(0.),
   liveTimer_(0)
 {
@@ -62,20 +112,6 @@ AssemblyMainWindow::AssemblyMainWindow(const unsigned int camera_ID, QWidget* pa
       NQLog("AssemblyMainWindow", NQLog::Critical) << "---------------------------------------------------------------------------------";
     }
 
-    // zfocus finder
-    zfocus_finder_ = new AssemblyZFocusFinder(camera_, motion_manager_);
-
-    // image controller
-    image_ctr_ = nullptr;
-
-    // marker finder
-    finder_        = new AssemblyObjectFinderPatRec(assembly::QtCacheDirectory()+"/AssemblyObjectFinderPatRec", "rotations");
-//    finder_thread_ = new AssemblyObjectFinderPatRecThread(finder_);
-//    finder_thread_->start();
-
-    // multi-pickup tester
-    multipickup_ = new AssemblyMultiPickupTester(motion_manager_);
-
     // TAB WIDGET ----------------------------------------------
     tabWidget_ = new QTabWidget(this);
     tabWidget_->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);
@@ -95,13 +131,14 @@ AssemblyMainWindow::AssemblyMainWindow(const unsigned int camera_ID, QWidget* pa
     image_view_ = new AssemblyImageView(tabWidget_);
     tabWidget_->addTab(image_view_, tabname_Image);
 
+    // zfocus finder
+    zfocus_finder_ = new AssemblyZFocusFinder(camera_, motion_manager_);
+
     connect(zfocus_finder_, SIGNAL(show_zscan(QString))          , image_view_   , SLOT(update_image_zscan(QString)));
     connect(zfocus_finder_, SIGNAL(text_update_request(double))  , image_view_   , SLOT(update_text(double)));
 
     connect(zfocus_finder_, SIGNAL(focus_config_request())       , image_view_   , SLOT(acquire_autofocus_config()));
     connect(image_view_   , SIGNAL(autofocus_config(double, int)), zfocus_finder_, SLOT(update_focus_config(double, int)));
-
-    image_view_->connectImageProducer_autofocus(image_view_, SIGNAL(image_zscan_updated(const cv::Mat&)));
 
     image_view_->update_autofocus_config(zfocus_finder_->zrange(), zfocus_finder_->points());
 
@@ -119,13 +156,6 @@ AssemblyMainWindow::AssemblyMainWindow(const unsigned int camera_ID, QWidget* pa
     connect(thresholder_view_, SIGNAL(threshold_request        (int)), thresholder_, SLOT(update_image_binary_threshold        (int)));
     connect(thresholder_view_, SIGNAL(adaptiveThreshold_request(int)), thresholder_, SLOT(update_image_binary_adaptiveThreshold(int)));
 
-    // connections: AssemblyObjectFinderPatRec <-> AssemblyThresholder
-    connect(finder_           , SIGNAL(updated_image_master())        , finder_          , SLOT(send_image_master()));
-    connect(finder_           , SIGNAL(sent_image_master(cv::Mat))    , thresholder_ , SLOT(update_image_raw(cv::Mat)));
-    connect(thresholder_  , SIGNAL(updated_image_raw())           , thresholder_view_   , SLOT(apply_threshold())); //!! FIXME: should have configurable parameter, w/o relying on thresholder_view_
-    connect(thresholder_  , SIGNAL(updated_image_binary(cv::Mat)) , finder_          , SLOT(update_image_master_PatRec(cv::Mat)));
-    // ----------
-
     NQLog("AssemblyMainWindow", NQLog::Message) << "added view " << tabname_ImageThresholding;
     // ---------------------------------------------------------
 
@@ -134,25 +164,17 @@ AssemblyMainWindow::AssemblyMainWindow(const unsigned int camera_ID, QWidget* pa
 
     assemblyView_ = new AssemblyAssemblyView(motion_manager_);//!!, tabWidget_);
 //!!    tabWidget_->addTab(assemblyView_, tabname_AutoAssembly);
-
-    assemblyView_->connect_to_finder(finder_);
-
-//!!    finder_->update_rough_angles      (assemblyView_->PatRec_Widget()->widget_angrough()->get_input_string());
-//!!    finder_->update_angscan_parameters(assemblyView_->PatRec_Widget()->widget_angscanp()->get_input_string());
-
-    connect(finder_, SIGNAL(threshold_request        (int)), thresholder_, SLOT(update_image_binary_threshold        (int)));
-    connect(finder_, SIGNAL(adaptiveThreshold_request(int)), thresholder_, SLOT(update_image_binary_adaptiveThreshold(int)));
+//!!
+//!!    assemblyView_->connect_to_finder(finder_);
 
     module_assembler_ = new AssemblyAssembler(motion_manager_);
 
-//!!    // ObjectAligner sub-view
-//!!    connect(assemblyView_, SIGNAL(objectAligner_request(const AssemblyObjectAligner::Configuration&)), this, SLOT(connect_objectAligner(const AssemblyObjectAligner::Configuration&)));
+    // multi-pickup tester
+    multipickup_ = new AssemblyMultiPickupTester(motion_manager_);
+
+    connect(assemblyView_, SIGNAL(multipickup_request(const AssemblyMultiPickupTester::Configuration&)), this, SLOT(connect_multipickupNpatrec(const AssemblyMultiPickupTester::Configuration&)));
 
     NQLog("AssemblyMainWindow", NQLog::Message) << "added view " << tabname_AutoAssembly;
-    // ---
-
-    // MultiPickupTester sub-view
-    connect(assemblyView_, SIGNAL(multipickup_request(const AssemblyMultiPickupTester::Configuration&)), this, SLOT(connect_multipickupNpatrec(const AssemblyMultiPickupTester::Configuration&)));
     // ---
 
     // ---------------------------------------------------------
@@ -162,6 +184,11 @@ AssemblyMainWindow::AssemblyMainWindow(const unsigned int camera_ID, QWidget* pa
 
     finder_view_ = new AssemblyObjectFinderPatRecView(tabWidget_);
     tabWidget_->addTab(finder_view_, tabname_PatRec);
+
+    // finder
+    finder_ = new AssemblyObjectFinderPatRec(thresholder_, assembly::QtCacheDirectory()+"/AssemblyObjectFinderPatRec", "rotations");
+//    finder_thread_ = new AssemblyObjectFinderPatRecThread(finder_);
+//    finder_thread_->start();
 
     finder_view_->connect_to_finder(finder_);
 
@@ -472,8 +499,6 @@ void AssemblyMainWindow::connect_images()
   connect(thresholder_, SIGNAL(updated_image_raw   (cv::Mat)), thresholder_view_, SLOT(update_image_raw   (cv::Mat)));
   connect(thresholder_, SIGNAL(updated_image_binary(cv::Mat)), thresholder_view_, SLOT(update_image_binary(cv::Mat)));
 
-  connect(finder_, SIGNAL(image_master_request()), image_ctr_, SLOT(acquire_image()));
-
   NQLog("AssemblyMainWindow", NQLog::Message) << "connect_images"
      << ": enabled images in application view(s)";
 
@@ -494,8 +519,6 @@ void AssemblyMainWindow::disconnect_images()
 
   disconnect(thresholder_, SIGNAL(updated_image_raw   (cv::Mat)), thresholder_view_, SLOT(update_image_raw   (cv::Mat)));
   disconnect(thresholder_, SIGNAL(updated_image_binary(cv::Mat)), thresholder_view_, SLOT(update_image_binary(cv::Mat)));
-
-  disconnect(finder_, SIGNAL(image_master_request()), image_ctr_, SLOT(acquire_image()));
 
   NQLog("AssemblyMainWindow", NQLog::Message) << "disconnect_images"
      << ": disabled images in application view(s)";

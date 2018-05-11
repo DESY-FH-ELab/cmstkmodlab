@@ -205,7 +205,7 @@ void AssemblyThresholderView::load_image_raw()
   const QString filename = QFileDialog::getOpenFileName(this, tr("Load Image"), QDir::homePath(), tr("PNG Files (*.png);;All Files (*)"));
   if(filename.isNull() || filename.isEmpty()){ return; }
 
-  const cv::Mat img = filename.endsWith(".png") ? assembly::cv_imread_png(filename.toStdString(), CV_LOAD_IMAGE_COLOR) : cv::imread(filename.toStdString(), CV_LOAD_IMAGE_COLOR);
+  const cv::Mat img = assembly::cv_imread(filename, CV_LOAD_IMAGE_COLOR);
 
   if(img.empty())
   {
@@ -233,14 +233,7 @@ void AssemblyThresholderView::save_image_raw()
   const QString filename = QFileDialog::getSaveFileName(this, tr("Save Image"), QDir::homePath(), tr("PNG Files (*.png);;All Files (*)"));
   if(filename.isNull() || filename.isEmpty()){ return; }
 
-  if(filename.endsWith(".png"))
-  {
-    assembly::cv_imwrite_png(filename.toStdString(), imgraw_);
-  }
-  else
-  {
-    cv::imwrite(filename.toStdString(), imgraw_);
-  }
+  assembly::cv_imwrite(filename, imgraw_);
 
   return;
 }
@@ -258,14 +251,7 @@ void AssemblyThresholderView::save_image_binary()
   const QString filename = QFileDialog::getSaveFileName(this, tr("Save Image"), QDir::homePath(), tr("PNG Files (*.png);;All Files (*)"));
   if(filename.isNull() || filename.isEmpty()){ return; }
 
-  if(filename.endsWith(".png"))
-  {
-    assembly::cv_imwrite_png(filename.toStdString(), imgbin_);
-  }
-  else
-  {
-    cv::imwrite(filename.toStdString(), imgbin_);
-  }
+  assembly::cv_imwrite(filename, imgbin_);
 
   return;
 }

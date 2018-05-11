@@ -21,7 +21,7 @@
 
 namespace assembly {
 
-  // Qt
+  // Qt helpers
   QString QtCacheDirectory();
 
   bool QDir_mkpath(const QString&);
@@ -33,9 +33,14 @@ namespace assembly {
   bool IsFile(const QString&);
   bool IsFile(const std::string&);
 
-  // openCV
-  cv::Mat cv_imread_png(const std::string&, const int);
-  void cv_imwrite_png(const std::string&, const cv::Mat&);
+  // openCV helpers
+  cv::Mat cv_imread(const std::string&, const int);
+  cv::Mat cv_imread(const QString&    , const int);
+
+  void cv_imwrite(const std::string&, const cv::Mat&);
+  void cv_imwrite(const QString&    , const cv::Mat&);
+
+  bool MatIsBlackAndWhite(const cv::Mat&);
 
 }
 

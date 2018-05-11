@@ -117,7 +117,7 @@ class AssemblyMainWindow : public QMainWindow
 
  protected:
 
-  // Model(s) and Model-Manager(s)
+  // Low-Level Controllers (Motion, Camera, Vacuum)
   ConradModel*   conradModel_;
   ConradManager* conradManager_;
 
@@ -134,7 +134,18 @@ class AssemblyMainWindow : public QMainWindow
   AssemblyVUEyeCamera*      camera_;
   unsigned int              camera_ID_;
 
-  // View(s)
+  // High-Level Controllers
+  AssemblyImageController*    image_ctr_;
+  AssemblyZFocusFinder*       zfocus_finder_;
+  AssemblyThresholder*        thresholder_;
+  AssemblyObjectAligner*      aligner_;
+  AssemblyMultiPickupTester*  multipickup_;
+  AssemblyAssembler*          module_assembler_;
+
+  AssemblyObjectFinderPatRec*       finder_;
+  AssemblyObjectFinderPatRecThread* finder_thread_;
+
+  // Views
   QToolBar*   toolBar_;
   QTabWidget* tabWidget_;
 
@@ -152,18 +163,7 @@ class AssemblyMainWindow : public QMainWindow
   QCheckBox* checkbox2;
 //  QCheckBox* checkbox3;
 
-  // Controller(s)
-  AssemblyImageController*    image_ctr_;
-  AssemblyZFocusFinder*       zfocus_finder_;
-  AssemblyThresholder*        thresholder_;
-  AssemblyObjectAligner*      aligner_;
-  AssemblyMultiPickupTester*  multipickup_;
-  AssemblyAssembler*          module_assembler_;
-
-  AssemblyObjectFinderPatRec*       finder_;
-  AssemblyObjectFinderPatRecThread* finder_thread_;
-
-  // switches
+  // flags
   bool images_enabled_;
 
   // timing

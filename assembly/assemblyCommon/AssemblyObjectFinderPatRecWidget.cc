@@ -11,6 +11,7 @@
 /////////////////////////////////////////////////////////////////////////////////
 
 #include <nqlogger.h>
+#include <ApplicationConfig.h>
 
 #include <AssemblyObjectFinderPatRecWidget.h>
 #include <AssemblyUtilities.h>
@@ -20,6 +21,7 @@
 #include <QGridLayout>
 #include <QStringList>
 #include <QPixmap>
+#include <QFileDialog>
 
 AssemblyObjectFinderPatRecWidget::AssemblyObjectFinderPatRecWidget(QWidget* parent) :
   QWidget(parent),
@@ -54,8 +56,13 @@ AssemblyObjectFinderPatRecWidget::AssemblyObjectFinderPatRecWidget(QWidget* pare
   QHBoxLayout* templa_lay = new QHBoxLayout;
 
   templa_load_button_ = new QPushButton(tr("Load Image"));
+
+  connect(templa_load_button_, SIGNAL(clicked()), this, SLOT(load_image_template()));
+
   templa_file_lineed_ = new QLineEdit(tr(""));
   templa_file_lineed_->setReadOnly(true);
+
+  connect(this, SIGNAL(updated_image_template_line(QString)), templa_file_lineed_, SLOT(setText(QString)));
 
   templa_lay->addWidget(templa_load_button_, 34);
   templa_lay->addWidget(templa_file_lineed_, 66);
@@ -81,6 +88,10 @@ AssemblyObjectFinderPatRecWidget::AssemblyObjectFinderPatRecWidget(QWidget* pare
   connect(thresh_adathr_radbu_, SIGNAL(toggled(bool)), thresh_adathr_linee_, SLOT(setEnabled(bool)));
 
   thresh_thresh_radbu_->setChecked(true);
+  thresh_thresh_linee_->setEnabled(true);
+
+  thresh_adathr_radbu_->setChecked(false);
+  thresh_adathr_linee_->setEnabled(false);
 
   thresh_lay->addWidget(thresh_thresh_radbu_, 0, 0);
   thresh_lay->addWidget(thresh_thresh_linee_, 0, 1);
@@ -121,6 +132,40 @@ AssemblyObjectFinderPatRecWidget::AssemblyObjectFinderPatRecWidget(QWidget* pare
 
   layout_->addWidget(angles_box);
   /// ------------------------------
+}
+
+void AssemblyObjectFinderPatRecWidget::load_image_template()
+{
+  const QString fpath = QFileDialog::getOpenFileName(this, tr("Load Image"), QString::fromStdString(Config::CMSTkModLabBasePath+"/share/assembly"), tr("PNG Files (*.png);;All Files (*)"));
+
+  this->load_image_template_from_path(fpath);
+
+  return;
+}
+
+void AssemblyObjectFinderPatRecWidget::load_image_template_from_path(const QString& filename)
+{
+  if(filename.isNull() || filename.isEmpty()){ return; }
+
+  const cv::Mat img = assembly::cv_imread(filename, CV_LOAD_IMAGE_COLOR);
+
+  if(img.empty())
+  {
+    NQLog("AssemblyObjectFinderPatRecWidget", NQLog::Warning) << "load_image_template"
+       << ": input image is empty, no action taken";
+
+    return;
+  }
+
+  NQLog("AssemblyObjectFinderPatRecWidget", NQLog::Spam) << "load_image_template"
+     << ": emitting signal \"updated_image_template_line(" << filename << ")\"";
+
+  emit updated_image_template_line(filename);
+
+  NQLog("AssemblyObjectFinderPatRecWidget", NQLog::Spam) << "load_image_template"
+     << ": emitting signal \"updated_image_template\"";
+
+  emit updated_image_template(img);
 }
 
 void AssemblyObjectFinderPatRecWidget::update_configuration()
@@ -237,39 +282,3 @@ void AssemblyObjectFinderPatRecWidget::update_configuration()
   emit configuration_updated(configuration_);
   emit configuration_updated();
 }
-
-//!!void AssemblyObjectFinderPatRecWidget::execute()
-//!!{
-//!!  int mode_lab(0), mode_obj(0);
-//!!
-//!!  if     (radio1_->isChecked()){ mode_obj = 0; }
-//!!  else if(radio2_->isChecked()){ mode_obj = 1; }
-//!!  else if(radio3_->isChecked()){ mode_obj = 2; }
-//!!  else if(radio4_->isChecked()){ mode_obj = 3; }
-//!!
-//!!  if     (radio5_->isChecked()){ mode_lab = 0; }
-//!!  else if(radio6_->isChecked()){ mode_lab = 1; }
-//!!
-//!!  NQLog("AssemblyObjectFinderPatRecWidget", NQLog::Spam) << "execute"
-//!!     << ": emitting signal \"mode(" << mode_lab << ", " << mode_obj << ")\"";
-//!!
-//!!  emit mode(mode_lab, mode_obj);
-//!!}
-//!!
-//!!void AssemblyObjectFinderPatRecWidget::change_label(const int state)
-//!!{
-//!!  NQLog("AssemblyObjectFinderPatRecWidget", NQLog::Spam) << "change_label(" << state << ")";
-//!!
-//!!  if(state == 0)
-//!!  {
-//!!    label_->setText(" FOUND MARKER");
-//!!    label_->setStyleSheet("QLabel { background-color : green; color : black; }");
-//!!  }
-//!!  else if(state == 2)
-//!!  {
-//!!    label_->setText(" ERROR");
-//!!    label_->setStyleSheet("QLabel { background-color : red; color : black; }");
-//!!  }
-//!!
-//!!  return;
-//!!}

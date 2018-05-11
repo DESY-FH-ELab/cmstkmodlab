@@ -35,13 +35,8 @@ class AssemblyThresholder : public QObject
   void delete_image_raw();
   void delete_image_binary();
 
-//!!  enum ThresholdingMethod {
-//!!    undefined,
-//!!    threshold,
-//!!    adaptiveThreshold
-//!!  };
-//!!
-//!!  ThresholdingMethod method_;
+  const cv::Mat& image_raw()    const { return img_raw_; }
+  const cv::Mat& image_binary() const { return img_bin_; }
 
  protected:
 
@@ -78,9 +73,6 @@ class AssemblyThresholder : public QObject
   void updated_image_binary(const cv::Mat&);
 
   void image_sent(const cv::Mat&);
-
-//!!  void image_path(const int, const QString&);
-//!!  void image_mat (const int, const cv::Mat&);
 };
 
 #endif // ASSEMBLYTHRESHOLDER_H

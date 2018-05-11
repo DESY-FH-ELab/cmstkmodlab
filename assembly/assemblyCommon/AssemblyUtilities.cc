@@ -19,6 +19,7 @@
 #endif
 #include <QDir>
 #include <QFileInfo>
+#include <QImageReader>
 
 QString assembly::QtCacheDirectory()
 {
@@ -66,38 +67,68 @@ bool assembly::IsFile(const std::string& path)
   return assembly::IsFile(QString(path.c_str()));
 }
 
-cv::Mat assembly::cv_imread_png(const std::string& path, const int imread_flag)
+cv::Mat assembly::cv_imread(const std::string& path_str, const int imread_flag)
 {
-  const cv::Mat img_inp = cv::imread(path, imread_flag);
-
-  cv::Mat img_out;
-
-  if(img_inp.channels() > 1)
-  {
-    cv::cvtColor(img_inp, img_out, CV_RGB2BGR);
-  }
-  else
-  {
-    img_out = img_inp.clone();
-  }
-
-  return img_out;
+  return assembly::cv_imread(QString::fromStdString(path_str), imread_flag);
 }
 
-void assembly::cv_imwrite_png(const std::string& path, const cv::Mat& img)
+cv::Mat assembly::cv_imread(const QString& path_qstr, const int imread_flag)
 {
-  cv::Mat img_conv;
+  const std::string path_str = path_qstr.toUtf8().constData();
 
-  if(img.channels() > 1)
+  const cv::Mat img = cv::imread(path_str, imread_flag);
+
+  const QImageReader img_reader(path_qstr);
+
+  cv::Mat img_1;
+
+  if(img_reader.format() == "png" && (img.channels() > 1))
   {
-    cv::cvtColor(img, img_conv, CV_BGR2RGB);
+    cv::cvtColor(img, img_1, CV_RGB2BGR);
   }
   else
   {
-    img_conv = img.clone();
+    img_1 = img.clone();
   }
 
-  cv::imwrite(path, img_conv);
+  return img_1;
+}
+
+void assembly::cv_imwrite(const std::string& path_str, const cv::Mat& img)
+{
+  assembly::cv_imwrite(QString::fromStdString(path_str), img);
+}
+
+void assembly::cv_imwrite(const QString& path_qstr, const cv::Mat& img)
+{
+  cv::Mat img_1;
+
+  if(path_qstr.endsWith(".png", Qt::CaseInsensitive) && (img.channels() > 1))
+  {
+    cv::cvtColor(img, img_1, CV_BGR2RGB);
+  }
+  else
+  {
+    img_1 = img.clone();
+  }
+
+  cv::imwrite(path_qstr.toUtf8().constData(), img_1);
 
   return;
+}
+
+bool assembly::MatIsBlackAndWhite(const cv::Mat& img)
+{
+  cv::Mat bgr[3];
+  cv::split(img, bgr);
+
+  cv::Mat dst;
+
+  cv::absdiff(bgr[0], bgr[1], dst);
+  if(cv::countNonZero(dst)){ return false; }
+
+  cv::absdiff(bgr[0], bgr[2], dst);
+  if(cv::countNonZero(dst)){ return false; }
+
+  return true;
 }

@@ -54,8 +54,8 @@ AssemblyAssemblyView::AssemblyAssemblyView(const LStepExpressMotionManager* cons
 {
   if(motion_manager == nullptr)
   {
-    NQLog("AssemblyAssemblyView", NQLog::Critical)
-       << "input error: null pointer to LStepExpressMotionManager object, exiting constructor";
+    NQLog("AssemblyAssemblyView", NQLog::Critical) << "initialization error"
+       << ": null pointer to LStepExpressMotionManager object, exiting constructor";
 
     return;
   }

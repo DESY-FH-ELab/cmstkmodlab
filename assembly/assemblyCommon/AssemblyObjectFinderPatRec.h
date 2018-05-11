@@ -13,6 +13,8 @@
 #ifndef ASSEMBLYOBJECTFINDERPATREC_H
 #define ASSEMBLYOBJECTFINDERPATREC_H
 
+#include <AssemblyThresholder.h>
+
 #include <QObject>
 #include <QString>
 #include <QMutex>
@@ -25,11 +27,10 @@ class AssemblyObjectFinderPatRec : public QObject
 
  public:
 
-  explicit AssemblyObjectFinderPatRec(const QString&, const QString&, QObject* parent=nullptr);
+  explicit AssemblyObjectFinderPatRec(AssemblyThresholder* const, const QString&, const QString&, QObject* parent=nullptr);
   virtual ~AssemblyObjectFinderPatRec();
 
-//!!  void set_threshold(const int);
-//!!  int  get_threshold() const { return threshold_; }
+  AssemblyThresholder* thresholder() const { return thresholder_; }
 
   void delete_image_master();
   void delete_image_master_PatRec();
@@ -63,15 +64,14 @@ class AssemblyObjectFinderPatRec : public QObject
 
  protected:
 
+  AssemblyThresholder* const thresholder_;
+
   Configuration configuration_;
 
   static int exe_counter_;
 
   std::string output_dir_path_;
   std::string output_subdir_name_;
-
-  int threshold_;
-  int threshold_template_;
 
   cv::Mat img_master_;        // original master image
   cv::Mat img_master_PatRec_; // master image used in PatRec (example: binary/post-thresholding version of original master image)
@@ -96,40 +96,22 @@ class AssemblyObjectFinderPatRec : public QObject
 
  public slots:
 
-//!!  void update_threshold(const int);
-//!!
-//!!  void acquire_image();
-
   void update_image_master       (const cv::Mat&);
   void update_image_master_PatRec(const cv::Mat&);
 
   void send_image_master();
   void send_image_master_PatRec();
 
-//!!  void update_prescan_angles    (QString);
-//!!  void update_angscan_parameters(QString);
+  void launch_PatRec(const AssemblyObjectFinderPatRec::Configuration&);
 
-  void run_PatRec(const int, const int);
-  void run_PatRec_lab_marker(){ this->run_PatRec(1, 0); }
-
-//!!  void launch_PatRec(const AssemblyObjectFinderPatRec::Configuration&);
-//!!  void launch_PatRec();
-
-  void template_matching();
-  void template_matching(const cv::Mat&, const cv::Mat&, const cv::Mat&, const int);
+  void template_matching(const cv::Mat&, const cv::Mat&, const cv::Mat&);
 
  signals:
 
-  void threshold_request();
-  void updated_threshold();
-
-  void master_image_request();
-  void master_image_request(const QString&);
-
   void updated_image_master(const cv::Mat&);
-  void updated_image_master_PatRec(const cv::Mat&);
-
   void updated_image_master();
+
+  void updated_image_master_PatRec(const cv::Mat&);
   void updated_image_master_PatRec();
 
   void sent_image_master       (const cv::Mat&);
@@ -141,7 +123,7 @@ class AssemblyObjectFinderPatRec : public QObject
   void updated_prescan_angles();
   void updated_angscan_parameters();
 
-  void template_matching_request(const cv::Mat&, const cv::Mat&, const cv::Mat&, const int);
+  void template_matching_request(const cv::Mat&, const cv::Mat&, const cv::Mat&);
 
   void reportObjectLocation(int, double, double, double);
 
