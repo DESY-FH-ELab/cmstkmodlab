@@ -11,34 +11,21 @@
 /////////////////////////////////////////////////////////////////////////////////
 
 #include <nqlogger.h>
-#include <ApplicationConfig.h>
 
 #include <AssemblyObjectFinderPatRecView.h>
-#include <AssemblyUtilities.h>
 
-#include <iostream>
 #include <sstream>
 #include <iomanip>
-#include <vector>
-#include <stdlib.h>
 
-#include <QFormLayout>
-#include <QFileDialog>
-#include <QPushButton>
-#include <QString>
-#include <QStringList>
+#include <QVBoxLayout>
+#include <QHBoxLayout>
+#include <QGridLayout>
+#include <QGroupBox>
 #include <QPixmap>
-#include <QLabel>
 #include <QApplication>
 #include <QImageReader>
-#include <QPainter>
-#include <QScriptEngine>
-#include <qnumeric.h>
 
-#include <TGraph.h>
-#include <TCanvas.h>
-
-AssemblyObjectFinderPatRecView::AssemblyObjectFinderPatRecView(const LStepExpressMotionManager* motion_manager, QWidget* parent) :
+AssemblyObjectFinderPatRecView::AssemblyObjectFinderPatRecView(QWidget* parent) :
   QWidget(parent),
 
   scrollArea_1_(0),
@@ -51,35 +38,35 @@ AssemblyObjectFinderPatRecView::AssemblyObjectFinderPatRecView(const LStepExpres
   imageView_3_(0),
   imageView_4_(0),
 
-  liedit_1_(0),
-  liedit_2_(0),
-  liedit_3_(0),
-  liedit_4_(0),
+  patrec_exe_button_(nullptr),
+  patrec_exe_label_(nullptr),
 
-  w_patrec_(0),
+  radio1_(nullptr),
+  radio2_(nullptr),
+  radio3_(nullptr),
+  radio4_(nullptr),
+  radio5_(nullptr),
+  radio6_(nullptr),
+
+  w_patrec_(nullptr),
+
+  patrec_res1_linee_(nullptr),
+  patrec_res2_linee_(nullptr),
 
   objfinder_connected_(false)
 {
-  if(motion_manager == nullptr)
-  {
-    NQLog("AssemblyObjectFinderPatRecView", NQLog::Critical)
-       << "input error: null pointer to LStepExpressMotionManager object, exiting constructor";
-
-    return;
-  }
-
-  QGridLayout* layout = new QGridLayout;
+  QHBoxLayout* layout = new QHBoxLayout;
   this->setLayout(layout);
 
   // IMAGE VIEW(S) -------
   QGridLayout* g0 = new QGridLayout;
-  layout->addLayout(g0, 0, 0);
+  layout->addLayout(g0);
 
   QPalette palette;
   palette.setColor(QPalette::Background, QColor(220, 220, 220));
 
   imageView_1_ = new AssemblyUEyeView(this);
-  imageView_1_->setMinimumSize(300,300);
+  imageView_1_->setMinimumSize(200, 200);
   imageView_1_->setPalette(palette);
   imageView_1_->setBackgroundRole(QPalette::Background);
   imageView_1_->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
@@ -97,11 +84,9 @@ AssemblyObjectFinderPatRecView::AssemblyObjectFinderPatRecView(const LStepExpres
   scrollArea_1_->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 
   g0->addWidget(scrollArea_1_, 0, 0);
-  liedit_1_ = new QLineEdit("Object Location = X,Z");
-  g0->addWidget(liedit_1_, 1, 0);
 
   imageView_2_ = new AssemblyUEyeView(this);
-  imageView_2_->setMinimumSize(200,200);
+  imageView_2_->setMinimumSize(200, 200);
   imageView_2_->setPalette(palette);
   imageView_2_->setBackgroundRole(QPalette::Background);
   imageView_2_->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
@@ -117,8 +102,6 @@ AssemblyObjectFinderPatRecView::AssemblyObjectFinderPatRecView(const LStepExpres
   scrollArea_2_->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 
   g0->addWidget(scrollArea_2_, 0, 1);
-  liedit_2_ = new QLineEdit("Orientation = alpha");
-  g0->addWidget(liedit_2_, 1, 1);
 
   imageView_3_ = new AssemblyUEyeView(this);
   imageView_3_->setMinimumSize(200, 200);
@@ -129,19 +112,17 @@ AssemblyObjectFinderPatRecView::AssemblyObjectFinderPatRecView(const LStepExpres
   imageView_3_->setAlignment(Qt::AlignCenter);
 
   scrollArea_3_ = new QScrollArea(this);
-  scrollArea_3_->setMinimumSize(200,200);
+  scrollArea_3_->setMinimumSize(200, 200);
   scrollArea_3_->setPalette(palette);
   scrollArea_3_->setBackgroundRole(QPalette::Background);
   scrollArea_3_->setAlignment(Qt::AlignCenter);
   scrollArea_3_->setWidget(imageView_3_);
   scrollArea_3_->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 
-  g0->addWidget(scrollArea_3_, 2, 0);
-//  liedit_3_ = new QLineEdit("Mntd pos. (cor. 2) = lE3,X");
-//  g0->addWidget(liedit_3_, 1, 2);
+  g0->addWidget(scrollArea_3_, 1, 0);
 
   imageView_4_ = new AssemblyUEyeView(this);
-  imageView_4_->setMinimumSize(200,200);
+  imageView_4_->setMinimumSize(200, 200);
   imageView_4_->setPalette(palette);
   imageView_4_->setBackgroundRole(QPalette::Background);
   imageView_4_->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
@@ -156,23 +137,120 @@ AssemblyObjectFinderPatRecView::AssemblyObjectFinderPatRecView(const LStepExpres
   scrollArea_4_->setWidget(imageView_4_);
   scrollArea_4_->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 
-  g0->addWidget(scrollArea_4_, 2, 1);
-//  liedit_4_ = new QLineEdit("Dtchd pos. = ,X,X");
-//  g0->addWidget(liedit_4_, 3, 0);
+  g0->addWidget(scrollArea_4_, 1, 1);
   // ---------------------
 
-  QFormLayout* f01 = new QFormLayout;
-  layout->addLayout(f01, 0, 1);
+  // PatRec execution
+  QGroupBox* patrec_box = new QGroupBox(tr("Pattern Recognition"));
+  patrec_box->setStyleSheet("QGroupBox { font-weight: bold; } ");
 
-  // PATREC  WIDGET ------
-  QGroupBox* box_patrec = new QGroupBox(tr("Pattern Recognition"));
+  QVBoxLayout* patrec_lay = new QVBoxLayout;
 
-  w_patrec_ = new AssemblyPatRecWidget_NEW("Standalone PatRec", this);
-  w_patrec_->setToolTip("(4) Runs Pattern Recognition routine to determine sensor (x,y,z,a) position");
+  QGridLayout* layout_1 = new QGridLayout;
 
-  box_patrec->setLayout(w_patrec_->layout());
+  patrec_exe_button_ = new QPushButton(tr("Standalone PatRec"), this);
+  layout_1->addWidget(patrec_exe_button_, 0, 0);
 
-  f01->addRow(box_patrec);
+  QPixmap pixmap(100, 100);
+  pixmap.fill(QColor("transparent"));
+
+  patrec_exe_label_ = new QLabel("", this);
+  patrec_exe_label_->setPixmap(pixmap);
+  patrec_exe_label_->setText(" WAITING");
+  patrec_exe_label_->setStyleSheet("QLabel { background-color : orange; color : black; }");
+
+  layout_1->addWidget(patrec_exe_label_, 0, 1);
+
+  QGroupBox* groupBox1_ = new QGroupBox(tr("Object"));
+  groupBox1_->setStyleSheet("QGroupBox { font-weight: bold; } ");
+
+  radio1_ = new QRadioButton(tr("Fiducial marker"), this);
+  radio2_ = new QRadioButton(tr("Positioning pin"), this);
+  radio3_ = new QRadioButton(tr("Sensor corner")  , this);
+  radio4_ = new QRadioButton(tr("Spacer corner")  , this);
+
+  radio1_->setChecked(true);
+
+  QVBoxLayout* vbox1_ = new QVBoxLayout;
+  vbox1_->addWidget(radio1_);
+  vbox1_->addWidget(radio2_);
+  vbox1_->addWidget(radio3_);
+  vbox1_->addWidget(radio4_);
+  vbox1_->addStretch(1);
+
+  groupBox1_->setLayout(vbox1_);
+
+  QGroupBox* groupBox2_ = new QGroupBox(tr("Mode"));
+  groupBox2_->setStyleSheet("QGroupBox { font-weight: bold; } ");
+
+  radio5_ = new QRadioButton(tr("Demo"), this);
+  radio6_ = new QRadioButton(tr("Lab") , this);
+
+  radio5_->setChecked(true);
+
+  QVBoxLayout* vbox2_ = new QVBoxLayout;
+  vbox2_->addWidget(radio5_);
+  vbox2_->addWidget(radio6_);
+  vbox2_->addStretch(1);
+
+  groupBox2_->setLayout(vbox2_);
+
+  layout_1->addWidget(groupBox1_, 1, 0);
+  layout_1->addWidget(groupBox2_, 1, 1);
+
+  patrec_lay->addLayout(layout_1);
+  // -----------
+
+  // PatRec configuration
+  QLabel* patrec_cfg_title = new QLabel(tr("Configuration"));
+  patrec_cfg_title->setAlignment(Qt::AlignCenter);
+  patrec_cfg_title->setStyleSheet("QLabel { font-weight: bold; color : blue; }");
+
+  patrec_lay->addSpacing(20);
+  patrec_lay->addWidget(patrec_cfg_title);
+
+  w_patrec_ = new AssemblyObjectFinderPatRecWidget;
+  w_patrec_->setToolTip("Pattern Recognition Configuration");
+
+  patrec_lay->addWidget(w_patrec_);
+  // -----------
+
+  // PatRec results
+  QLabel* patrec_res_title = new QLabel(tr("Results"));
+  patrec_res_title->setAlignment(Qt::AlignCenter);
+  patrec_res_title->setStyleSheet("QLabel { font-weight: bold; color : blue; }");
+
+  patrec_lay->addSpacing(10);
+  patrec_lay->addWidget(patrec_res_title);
+  patrec_lay->addSpacing(10);
+
+  QGridLayout* patrec_res_lay = new QGridLayout;
+
+  QLabel* patrec_res1_label = new QLabel(tr("Best-Match XY position [mm]"));
+  patrec_res1_linee_ = new QLineEdit(tr(""));
+  patrec_res1_linee_->setReadOnly(true);
+
+  patrec_res_lay->addWidget(patrec_res1_label , 0, 0);
+  patrec_res_lay->addWidget(patrec_res1_linee_, 0, 1);
+
+  QLabel* patrec_res2_label = new QLabel(tr("Best-Match Template Orientation [deg]"));
+  patrec_res2_linee_ = new QLineEdit(tr(""));
+  patrec_res2_linee_->setReadOnly(true);
+
+  patrec_res_lay->addWidget(patrec_res2_label , 1, 0);
+  patrec_res_lay->addWidget(patrec_res2_linee_, 1, 1);
+
+  patrec_lay->addLayout(patrec_res_lay);
+  // -----------
+
+  patrec_lay->addStretch(1);
+
+  patrec_box->setLayout(patrec_lay);
+
+  layout->addWidget(patrec_box);
+
+  layout->setStretch(0, 55);
+  layout->setStretch(1, 45);
   // ---------------------
 }
 
@@ -192,8 +270,8 @@ void AssemblyObjectFinderPatRecView::connect_to_finder(const AssemblyObjectFinde
 
     connect(finder, SIGNAL(PatRec_exitcode(int)), this->PatRec_Widget(), SLOT(change_label(int)));
 
-    connect(this->PatRec_Widget()->widget_angrough(), SIGNAL(input_string(QString)), finder, SLOT(update_rough_angles      (QString)));
-    connect(this->PatRec_Widget()->widget_angscanp(), SIGNAL(input_string(QString)), finder, SLOT(update_angscan_parameters(QString)));
+//!!    connect(this->PatRec_Widget()->widget_angrough(), SIGNAL(input_string(QString)), finder, SLOT(update_rough_angles      (QString)));
+//!!    connect(this->PatRec_Widget()->widget_angscanp(), SIGNAL(input_string(QString)), finder, SLOT(update_angscan_parameters(QString)));
 
     connect(this->PatRec_Widget(), SIGNAL(sendPosition(int, double, double, double)), this, SLOT(updateText(int, double, double, double)));
 
@@ -232,8 +310,8 @@ void AssemblyObjectFinderPatRecView::updateText(int stage, double x, double y, d
 
   if(stage == 1)
   {
-    liedit_1_->setText("Object location = "   +posi_qstr+" [pixel #, pixel #] (field of view)");
-    liedit_2_->setText("Object orientation = "+orie_qstr+" degrees");
+    patrec_res1_linee_->setText(posi_qstr+" [pixel #, pixel #] (field of view)");
+    patrec_res2_linee_->setText(orie_qstr);
   }
 }
 
@@ -317,174 +395,3 @@ void AssemblyObjectFinderPatRecView::keyReleaseEvent(QKeyEvent* event)
     }
   }
 }
-// ===========================================================================
-
-AssemblyStringWidget_NEW::AssemblyStringWidget_NEW(const QString& label, const QString& default_entry, QWidget* parent) : QWidget(parent)
-{
-  layout_ = new QFormLayout;
-  this->setLayout(layout_);
-
-  button_ = new QPushButton(label, this);
-  button_->setStyleSheet(
-    "Text-align: left;"
-    "padding-left:   4px;"
-    "padding-right:  4px;"
-    "padding-top:    3px;"
-    "padding-bottom: 3px;"
-  );
-
-  lineed_ = new QLineEdit(this);
-  lineed_->setText(default_entry);
-
-  layout_->addRow(button_, lineed_);
-
-  connect(button_, SIGNAL(clicked()), this, SLOT(execute()));
-}
-
-QString AssemblyStringWidget_NEW::get_input_string() const
-{
-  return this->lineed_->text();
-}
-
-void AssemblyStringWidget_NEW::execute()
-{
-  const QString line_entry = this->get_input_string();
-
-  NQLog("AssemblyStringWidget_NEW", NQLog::Spam) << "execute"
-     << ": emitting signal \"input_string(" << line_entry << ")\"";
-
-  emit input_string(line_entry);
-}
-// ===========================================================================
-
-AssemblyPatRecWidget_NEW::AssemblyPatRecWidget_NEW(const QString& label, QWidget* parent) :
-  QWidget(parent),
-
-  layout_(0),
-  button_(0),
-  lineed_(0),
-  label_ (0),
-
-  groupBox1_(0),
-  groupBox2_(0),
-
-  radio1_(0),
-  radio2_(0),
-  radio3_(0),
-  radio4_(0),
-  radio5_(0),
-  radio6_(0),
-
-  vbox1_(0),
-  vbox2_(0),
-
-  sw_angrough_(0),
-  sw_angscanp_(0)
-{
-  layout_ = new QFormLayout;
-  this->setLayout(layout_);
-
-  QGridLayout* layout_1 = new QGridLayout;
-  layout_->addRow(layout_1);
-
-  button_ = new QPushButton(label, this);
-  layout_1->addWidget(button_, 0, 0);
-
-  groupBox1_ = new QGroupBox(tr("Object"));
-  groupBox2_ = new QGroupBox(tr("Mode"));
-
-  radio1_ = new QRadioButton(tr("&Fiducial marker"), this);
-  radio2_ = new QRadioButton(tr("&Positioning pin"), this);
-  radio3_ = new QRadioButton(tr("&Sensor corner")  , this);
-  radio4_ = new QRadioButton(tr("&Spacer corner")  , this);
-
-  radio1_->setChecked(true);
-
-  vbox1_ = new QVBoxLayout;
-  vbox1_->addWidget(radio1_);
-  vbox1_->addWidget(radio2_);
-  vbox1_->addWidget(radio3_);
-  vbox1_->addWidget(radio4_);
-  vbox1_->addStretch(1);
-
-  groupBox1_->setLayout(vbox1_);
-
-  radio5_ = new QRadioButton(tr("&Demo"), this);
-  radio6_ = new QRadioButton(tr("&Lab") , this);
-
-  radio5_->setChecked(true);
-
-  vbox2_ = new QVBoxLayout;
-  vbox2_->addWidget(radio5_);
-  vbox2_->addWidget(radio6_);
-  vbox2_->addStretch(1);
-
-  groupBox2_->setLayout(vbox2_);
-
-  layout_1->addWidget(groupBox1_, 1, 0);
-  layout_1->addWidget(groupBox2_, 1, 1);
-
-  QPixmap pixmap(100, 100);
-  pixmap.fill(QColor("transparent"));
-
-  label_ = new QLabel("", this);
-  label_->setPixmap(pixmap);
-  label_->setText(" WAITING");
-  label_->setStyleSheet("QLabel { background-color : orange; color : black; }");
-
-  layout_1->addWidget(label_, 0, 1);
-
-  // PatRec: angular analysis configuration
-  QGridLayout* layout_2 = new QGridLayout;
-  layout_->addRow(layout_2);
-
-  // widget: PatRec rough angles
-  sw_angrough_ = new AssemblyStringWidget_NEW("Pre-Scan Angles (list)", "0,180", this);
-  layout_2->addWidget(sw_angrough_->button(), 0, 0);
-  layout_2->addWidget(sw_angrough_->lineed(), 0, 1);
-
-  // widget: PatRec angular-scan parameters
-  sw_angscanp_ = new AssemblyStringWidget_NEW("Scan Params (fine-range, fine-step)", "5,0.125", this);
-  layout_2->addWidget(sw_angscanp_->button(), 1, 0);
-  layout_2->addWidget(sw_angscanp_->lineed(), 1, 1);
-  // ---------------------
-
-  connect(button_, SIGNAL(clicked()), this, SLOT(execute()));
-}
-
-void AssemblyPatRecWidget_NEW::execute()
-{
-  int mode_lab(0), mode_obj(0);
-
-  if     (radio1_->isChecked()){ mode_obj = 0; }
-  else if(radio2_->isChecked()){ mode_obj = 1; }
-  else if(radio3_->isChecked()){ mode_obj = 2; }
-  else if(radio4_->isChecked()){ mode_obj = 3; }
-
-  if     (radio5_->isChecked()){ mode_lab = 0; }
-  else if(radio6_->isChecked()){ mode_lab = 1; }
-
-  NQLog("AssemblyPatRecWidget_NEW", NQLog::Spam) << "execute"
-     << ": emitting signal \"mode(" << mode_lab << ", " << mode_obj << ")\"";
-
-  emit mode(mode_lab, mode_obj);
-}
-
-void AssemblyPatRecWidget_NEW::change_label(const int state)
-{
-  NQLog("AssemblyPatRecWidget_NEW", NQLog::Spam) << "change_label(" << state << ")";
-
-  if(state == 0)
-  {
-    label_->setText(" FOUND MARKER");
-    label_->setStyleSheet("QLabel { background-color : green; color : black; }");
-  }
-  else if(state == 2)
-  {
-    label_->setText(" ERROR");
-    label_->setStyleSheet("QLabel { background-color : red; color : black; }");
-  }
-
-  return;
-}
-// ===========================================================================

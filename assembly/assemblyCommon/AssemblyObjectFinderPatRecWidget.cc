@@ -15,135 +15,261 @@
 #include <AssemblyObjectFinderPatRecWidget.h>
 #include <AssemblyUtilities.h>
 
+#include <QGroupBox>
+#include <QHBoxLayout>
+#include <QGridLayout>
+#include <QStringList>
 #include <QPixmap>
 
-AssemblyObjectFinderPatRecWidget::AssemblyObjectFinderPatRecWidget(const QString& label, QWidget* parent) :
+AssemblyObjectFinderPatRecWidget::AssemblyObjectFinderPatRecWidget(QWidget* parent) :
   QWidget(parent),
 
   layout_(nullptr),
-  button_(nullptr),
-  lineed_(nullptr),
-  label_ (nullptr),
 
-  groupBox1_(nullptr),
-  groupBox2_(nullptr),
+  templa_load_button_(nullptr),
+  templa_file_lineed_(nullptr),
 
-  radio1_(nullptr),
-  radio2_(nullptr),
-  radio3_(nullptr),
-  radio4_(nullptr),
-  radio5_(nullptr),
-  radio6_(nullptr),
+  thresh_thresh_radbu_(nullptr),
+  thresh_thresh_linee_(nullptr),
 
-  vbox1_(nullptr),
-  vbox2_(nullptr),
+  thresh_adathr_radbu_(nullptr),
+  thresh_adathr_linee_(nullptr),
 
-  sw_angrough_(nullptr),
-  sw_angscanp_(nullptr)
+  angles_prescan_label_(nullptr),
+  angles_prescan_linee_(nullptr),
+
+  angles_finemax_label_(nullptr),
+  angles_finemax_linee_(nullptr),
+
+  angles_finestep_label_(nullptr),
+  angles_finestep_linee_(nullptr)
 {
-  layout_ = new QFormLayout;
+  layout_ = new QVBoxLayout;
   this->setLayout(layout_);
 
-  QGridLayout* layout_1 = new QGridLayout;
-  layout_->addRow(layout_1);
+  /// Template Image ---------------
+  QGroupBox* templa_box = new QGroupBox(tr("Template Image"));
+  templa_box->setStyleSheet("QGroupBox { font-weight: bold; } ");
 
-  button_ = new QPushButton(label, this);
-  layout_1->addWidget(button_, 0, 0);
+  QHBoxLayout* templa_lay = new QHBoxLayout;
 
-  groupBox1_ = new QGroupBox(tr("Object"));
-  groupBox2_ = new QGroupBox(tr("Mode"));
+  templa_load_button_ = new QPushButton(tr("Load Image"));
+  templa_file_lineed_ = new QLineEdit(tr(""));
+  templa_file_lineed_->setReadOnly(true);
 
-  radio1_ = new QRadioButton(tr("&Fiducial marker"), this);
-  radio2_ = new QRadioButton(tr("&Positioning pin"), this);
-  radio3_ = new QRadioButton(tr("&Sensor corner")  , this);
-  radio4_ = new QRadioButton(tr("&Spacer corner")  , this);
+  templa_lay->addWidget(templa_load_button_, 34);
+  templa_lay->addWidget(templa_file_lineed_, 66);
 
-  radio1_->setChecked(true);
+  templa_box->setLayout(templa_lay);
 
-  vbox1_ = new QVBoxLayout;
-  vbox1_->addWidget(radio1_);
-  vbox1_->addWidget(radio2_);
-  vbox1_->addWidget(radio3_);
-  vbox1_->addWidget(radio4_);
-  vbox1_->addStretch(1);
+  layout_->addWidget(templa_box);
+  /// ------------------------------
 
-  groupBox1_->setLayout(vbox1_);
+  /// Master Image Thresholding ----
+  QGroupBox* thresh_box = new QGroupBox(tr("Master Image Thresholding"));
+  thresh_box->setStyleSheet("QGroupBox { font-weight: bold; } ");
 
-  radio5_ = new QRadioButton(tr("&Demo"), this);
-  radio6_ = new QRadioButton(tr("&Lab") , this);
+  QGridLayout* thresh_lay = new QGridLayout;
 
-  radio5_->setChecked(true);
+  thresh_thresh_radbu_ = new QRadioButton(tr("Threshold (int)"));
+  thresh_thresh_linee_ = new QLineEdit(tr(""));
 
-  vbox2_ = new QVBoxLayout;
-  vbox2_->addWidget(radio5_);
-  vbox2_->addWidget(radio6_);
-  vbox2_->addStretch(1);
+  thresh_adathr_radbu_ = new QRadioButton(tr("Adaptive Threshold (odd int)"));
+  thresh_adathr_linee_ = new QLineEdit(tr(""));
 
-  groupBox2_->setLayout(vbox2_);
+  connect(thresh_thresh_radbu_, SIGNAL(toggled(bool)), thresh_thresh_linee_, SLOT(setEnabled(bool)));
+  connect(thresh_adathr_radbu_, SIGNAL(toggled(bool)), thresh_adathr_linee_, SLOT(setEnabled(bool)));
 
-  layout_1->addWidget(groupBox1_, 1, 0);
-  layout_1->addWidget(groupBox2_, 1, 1);
+  thresh_thresh_radbu_->setChecked(true);
 
-  QPixmap pixmap(100, 100);
-  pixmap.fill(QColor("transparent"));
+  thresh_lay->addWidget(thresh_thresh_radbu_, 0, 0);
+  thresh_lay->addWidget(thresh_thresh_linee_, 0, 1);
 
-  label_ = new QLabel("", this);
-  label_->setPixmap(pixmap);
-  label_->setText(" WAITING");
-  label_->setStyleSheet("QLabel { background-color : orange; color : black; }");
+  thresh_lay->addWidget(thresh_adathr_radbu_, 1, 0);
+  thresh_lay->addWidget(thresh_adathr_linee_, 1, 1);
 
-  layout_1->addWidget(label_, 0, 1);
+  thresh_box->setLayout(thresh_lay);
 
-  // PatRec: angular analysis configuration
-  QGridLayout* layout_2 = new QGridLayout;
-  layout_->addRow(layout_2);
+  layout_->addWidget(thresh_box);
+  /// ------------------------------
 
-  // widget: PatRec rough angles
-  sw_angrough_ = new AssemblyStringWidget("Pre-Scan Angles (list)", "0,180", this);
-  layout_2->addWidget(sw_angrough_->button(), 0, 0);
-  layout_2->addWidget(sw_angrough_->lineed(), 0, 1);
+  /// Template-Matching Angular Scan
+  QGroupBox* angles_box = new QGroupBox(tr("Template-Matching Angular Scan"));
+  angles_box->setStyleSheet("QGroupBox { font-weight: bold; } ");
 
-  // widget: PatRec angular-scan parameters
-  sw_angscanp_ = new AssemblyStringWidget("Scan Params (fine-range, fine-step)", "5,0.125", this);
-  layout_2->addWidget(sw_angscanp_->button(), 1, 0);
-  layout_2->addWidget(sw_angscanp_->lineed(), 1, 1);
-  // ---------------------
+  QGridLayout* angles_lay = new QGridLayout;
 
-  connect(button_, SIGNAL(clicked()), this, SLOT(execute()));
+  angles_prescan_label_ = new QLabel(tr("Pre-Scan Angles (list) [deg]"));
+  angles_prescan_linee_ = new QLineEdit(tr(""));
+
+  angles_finemax_label_ = new QLabel(tr("Fine-Scan Maximum Angle [deg]"));
+  angles_finemax_linee_ = new QLineEdit(tr(""));
+
+  angles_finestep_label_ = new QLabel(tr("Fine-Scan Angular Step [deg]"));
+  angles_finestep_linee_ = new QLineEdit(tr(""));
+
+  angles_lay->addWidget(angles_prescan_label_ , 0, 0);
+  angles_lay->addWidget(angles_prescan_linee_ , 0, 1);
+
+  angles_lay->addWidget(angles_finemax_label_ , 1, 0);
+  angles_lay->addWidget(angles_finemax_linee_ , 1, 1);
+
+  angles_lay->addWidget(angles_finestep_label_, 2, 0);
+  angles_lay->addWidget(angles_finestep_linee_, 2, 1);
+
+  angles_box->setLayout(angles_lay);
+
+  layout_->addWidget(angles_box);
+  /// ------------------------------
 }
 
-void AssemblyObjectFinderPatRecWidget::execute()
+void AssemblyObjectFinderPatRecWidget::update_configuration()
 {
-  int mode_lab(0), mode_obj(0);
+  AssemblyObjectFinderPatRec::Configuration conf;
 
-  if     (radio1_->isChecked()){ mode_obj = 0; }
-  else if(radio2_->isChecked()){ mode_obj = 1; }
-  else if(radio3_->isChecked()){ mode_obj = 2; }
-  else if(radio4_->isChecked()){ mode_obj = 3; }
+  /// Template Image ---------------
+  conf.template_filepath_ = templa_file_lineed_->text();
+  /// ------------------------------
 
-  if     (radio5_->isChecked()){ mode_lab = 0; }
-  else if(radio6_->isChecked()){ mode_lab = 1; }
+  /// Master Image Thresholding ----
+  if(thresh_thresh_radbu_->isChecked() == thresh_adathr_radbu_->isChecked())
+  {
+    NQLog("AssemblyObjectFinderPatRecWidget", NQLog::Critical) << "update_configuration"
+       << ": invalid configuration for master-image thresholding (selected zero or multiple options), no action taken";
 
-  NQLog("AssemblyObjectFinderPatRecWidget", NQLog::Spam) << "execute"
-     << ": emitting signal \"mode(" << mode_lab << ", " << mode_obj << ")\"";
+    return;
+  }
+  else if(thresh_thresh_radbu_->isChecked())
+  {
+    conf.thresholding_useAdaptiveThreshold_ = false;
+    conf.thresholding_blocksize_ = -1;
 
-  emit mode(mode_lab, mode_obj);
+    conf.thresholding_useThreshold_ = true;
+
+    const QString thresh_str = thresh_thresh_linee_->text().remove(" ");
+
+    bool valid_thr(false);
+    conf.thresholding_threshold_ = thresh_str.toInt(&valid_thr);
+
+    if(valid_thr == false)
+    {
+      NQLog("AssemblyObjectFinderPatRecWidget", NQLog::Critical) << "update_configuration"
+         << ": invalid format for threshold value (" << thresh_str << ", not a integer), no action taken";
+
+      return;
+    }
+  }
+  else if(thresh_adathr_radbu_->isChecked())
+  {
+    conf.thresholding_useThreshold_ = false;
+    conf.thresholding_threshold_ = -1;
+
+    conf.thresholding_useAdaptiveThreshold_ = true;
+
+    const QString adathr_str = thresh_adathr_linee_->text().remove(" ");
+
+    bool valid_bks(false);
+    conf.thresholding_blocksize_ = adathr_str.toInt(&valid_bks);
+
+    if(valid_bks == false)
+    {
+      NQLog("AssemblyObjectFinderPatRecWidget", NQLog::Critical) << "update_configuration"
+         << ": invalid format for block-size value (" << adathr_str << ", not a integer), no action taken";
+
+      return;
+    }
+  }
+  /// ------------------------------
+
+  /// Template-Matching Angular Scan
+  const QStringList angles_prescan_vstr = angles_prescan_linee_->text().split(" ");
+
+  conf.angles_prescan_vec_.clear();
+
+  for(const auto& ang_str : angles_prescan_vstr)
+  {
+    bool valid_ang(false);
+    const double ang_val = ang_str.toDouble(&valid_ang);
+
+    if(valid_ang == false)
+    {
+      NQLog("AssemblyObjectFinderPatRecWidget", NQLog::Critical) << "update_configuration"
+         << ": invalid format for pre-scan angle value (" << ang_str << ", not a double), no action taken";
+
+      return;
+    }
+
+    conf.angles_prescan_vec_.emplace_back(ang_val);
+  }
+
+  const QString angfinemax_str = angles_finemax_linee_->text().remove(" ");
+
+  bool valid_afm(false);
+  conf.angles_finemax_ = angfinemax_str.toDouble(&valid_afm);
+
+  if(valid_afm == false)
+  {
+    NQLog("AssemblyObjectFinderPatRecWidget", NQLog::Critical) << "update_configuration"
+       << ": invalid format for fine-scan max-angle value (" << angfinemax_str << ", not a double), no action taken";
+
+    return;
+  }
+
+  const QString angfinestep_str = angles_finestep_linee_->text().remove(" ");
+
+  bool valid_afs(false);
+  conf.angles_finestep_ = angfinestep_str.toDouble(&valid_afs);
+
+  if(valid_afs == false)
+  {
+    NQLog("AssemblyObjectFinderPatRecWidget", NQLog::Critical) << "update_configuration"
+       << ": invalid format for fine-scan step-angle value (" << angfinestep_str << ", not a double), no action taken";
+
+    return;
+  }
+  /// ------------------------------
+
+  configuration_ = conf;
+
+  NQLog("AssemblyObjectFinderPatRecWidget", NQLog::Spam) << "update_configuration"
+     << ": emitting signal \"configuration_updated\"";
+
+  emit configuration_updated(configuration_);
+  emit configuration_updated();
 }
 
-void AssemblyObjectFinderPatRecWidget::change_label(const int state)
-{
-  NQLog("AssemblyObjectFinderPatRecWidget", NQLog::Spam) << "change_label(" << state << ")";
-
-  if(state == 0)
-  {
-    label_->setText(" FOUND MARKER");
-    label_->setStyleSheet("QLabel { background-color : green; color : black; }");
-  }
-  else if(state == 2)
-  {
-    label_->setText(" ERROR");
-    label_->setStyleSheet("QLabel { background-color : red; color : black; }");
-  }
-
-  return;
-}
+//!!void AssemblyObjectFinderPatRecWidget::execute()
+//!!{
+//!!  int mode_lab(0), mode_obj(0);
+//!!
+//!!  if     (radio1_->isChecked()){ mode_obj = 0; }
+//!!  else if(radio2_->isChecked()){ mode_obj = 1; }
+//!!  else if(radio3_->isChecked()){ mode_obj = 2; }
+//!!  else if(radio4_->isChecked()){ mode_obj = 3; }
+//!!
+//!!  if     (radio5_->isChecked()){ mode_lab = 0; }
+//!!  else if(radio6_->isChecked()){ mode_lab = 1; }
+//!!
+//!!  NQLog("AssemblyObjectFinderPatRecWidget", NQLog::Spam) << "execute"
+//!!     << ": emitting signal \"mode(" << mode_lab << ", " << mode_obj << ")\"";
+//!!
+//!!  emit mode(mode_lab, mode_obj);
+//!!}
+//!!
+//!!void AssemblyObjectFinderPatRecWidget::change_label(const int state)
+//!!{
+//!!  NQLog("AssemblyObjectFinderPatRecWidget", NQLog::Spam) << "change_label(" << state << ")";
+//!!
+//!!  if(state == 0)
+//!!  {
+//!!    label_->setText(" FOUND MARKER");
+//!!    label_->setStyleSheet("QLabel { background-color : green; color : black; }");
+//!!  }
+//!!  else if(state == 2)
+//!!  {
+//!!    label_->setText(" ERROR");
+//!!    label_->setStyleSheet("QLabel { background-color : red; color : black; }");
+//!!  }
+//!!
+//!!  return;
+//!!}

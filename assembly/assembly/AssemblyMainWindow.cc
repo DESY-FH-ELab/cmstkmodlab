@@ -132,13 +132,13 @@ AssemblyMainWindow::AssemblyMainWindow(const unsigned int camera_ID, QWidget* pa
     // AUTOMATED-ASSEMBLY VIEW ---------------------------------
     const QString tabname_AutoAssembly("Auto Assembly");
 
-    assemblyView_ = new AssemblyAssemblyView(motion_manager_, tabWidget_);
-    tabWidget_->addTab(assemblyView_, tabname_AutoAssembly);
+    assemblyView_ = new AssemblyAssemblyView(motion_manager_);//!!, tabWidget_);
+//!!    tabWidget_->addTab(assemblyView_, tabname_AutoAssembly);
 
     assemblyView_->connect_to_finder(finder_);
 
-    finder_->update_rough_angles      (assemblyView_->PatRec_Widget()->widget_angrough()->get_input_string());
-    finder_->update_angscan_parameters(assemblyView_->PatRec_Widget()->widget_angscanp()->get_input_string());
+//!!    finder_->update_rough_angles      (assemblyView_->PatRec_Widget()->widget_angrough()->get_input_string());
+//!!    finder_->update_angscan_parameters(assemblyView_->PatRec_Widget()->widget_angscanp()->get_input_string());
 
     connect(finder_, SIGNAL(threshold_request        (int)), thresholder_, SLOT(update_image_binary_threshold        (int)));
     connect(finder_, SIGNAL(adaptiveThreshold_request(int)), thresholder_, SLOT(update_image_binary_adaptiveThreshold(int)));
@@ -160,7 +160,7 @@ AssemblyMainWindow::AssemblyMainWindow(const unsigned int camera_ID, QWidget* pa
     // PATTERN-RECOGNITION VIEW --------------------------------
     const QString tabname_PatRec("Pattern Recognition");
 
-    finder_view_ = new AssemblyObjectFinderPatRecView(motion_manager_, tabWidget_);
+    finder_view_ = new AssemblyObjectFinderPatRecView(tabWidget_);
     tabWidget_->addTab(finder_view_, tabname_PatRec);
 
     finder_view_->connect_to_finder(finder_);
@@ -268,7 +268,7 @@ void AssemblyMainWindow::enable_images()
 {
   if(images_enabled_)
   {
-    NQLog("AssemblyMainWindow", NQLog::Message) << "enable_images"
+    NQLog("AssemblyMainWindow", NQLog::Warning) << "enable_images"
        << ": images already enabled, no action taken";
 
     return;
@@ -304,7 +304,7 @@ void AssemblyMainWindow::disable_images()
 {
   if(images_enabled_ == false)
   {
-    NQLog("AssemblyMainWindow", NQLog::Message) << "disable_images"
+    NQLog("AssemblyMainWindow", NQLog::Warning) << "disable_images"
        << ": images already disabled, no action taken";
 
     return;

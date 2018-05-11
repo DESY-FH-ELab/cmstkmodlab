@@ -39,6 +39,7 @@ AssemblyRegistryView::AssemblyRegistryView(const LStepExpressMotionManager* moti
 
   //// Registry of Positions
   QGroupBox* box_posit = new QGroupBox(tr("Positions"));
+  box_posit->setStyleSheet("QGroupBox { font-weight: bold; } ");
 
   QFormLayout* l2 = new QFormLayout;
   box_posit->setLayout(l2);

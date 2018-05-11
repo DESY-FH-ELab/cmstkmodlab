@@ -24,7 +24,7 @@
 
 #include <QWidget>
 #include <QString>
-#include <QFormLayout>
+#include <QVBoxLayout>
 #include <QScrollArea>
 #include <QKeyEvent>
 #include <QGridLayout>
@@ -43,47 +43,43 @@ class AssemblyObjectFinderPatRecWidget : public QWidget
 
  public:
 
-  explicit AssemblyObjectFinderPatRecWidget(const QString&, QWidget* parent=nullptr);
+  explicit AssemblyObjectFinderPatRecWidget(QWidget* parent=nullptr);
   virtual ~AssemblyObjectFinderPatRecWidget() {}
 
-  QFormLayout* layout() const { return layout_; }
-
-  const AssemblyStringWidget* widget_angrough() { return sw_angrough_; }
-  const AssemblyStringWidget* widget_angscanp() { return sw_angscanp_; }
+  QVBoxLayout* layout() const { return layout_; }
 
  protected:
 
-  QFormLayout* layout_;
-  QPushButton* button_;
-  QLineEdit*   lineed_;
-  QLabel*      label_;
-  QGroupBox*   groupBox1_;
-  QGroupBox*   groupBox2_;
+  QVBoxLayout* layout_;
 
-  QRadioButton* radio1_;
-  QRadioButton* radio2_;
-  QRadioButton* radio3_;
-  QRadioButton* radio4_;
-  QRadioButton* radio5_;
-  QRadioButton* radio6_;
+  QPushButton* templa_load_button_;
+  QLineEdit*   templa_file_lineed_;
 
-  QVBoxLayout* vbox1_;
-  QVBoxLayout* vbox2_;
+  QRadioButton* thresh_thresh_radbu_;
+  QLineEdit*    thresh_thresh_linee_;
 
-  AssemblyStringWidget* sw_angrough_;
-  AssemblyStringWidget* sw_angscanp_;
+  QRadioButton* thresh_adathr_radbu_;
+  QLineEdit*    thresh_adathr_linee_;
+
+  QLabel*    angles_prescan_label_;
+  QLineEdit* angles_prescan_linee_;
+
+  QLabel*    angles_finemax_label_;
+  QLineEdit* angles_finemax_linee_;
+
+  QLabel*    angles_finestep_label_;
+  QLineEdit* angles_finestep_linee_;
+
+  AssemblyObjectFinderPatRec::Configuration configuration_;
 
  public slots:
 
-  void execute();
-
-  void change_label(const int);
+  void update_configuration();
 
  signals:
 
-  void mode(int, int);
-
-  void sendPosition(int, double, double, double);
+  void configuration_updated(const AssemblyObjectFinderPatRec::Configuration&);
+  void configuration_updated();
 };
 
 #endif // ASSEMBLYOBJECTFINDERPATRECWIDGET_H

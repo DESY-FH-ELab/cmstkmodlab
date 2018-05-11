@@ -139,6 +139,8 @@ AssemblyImageView::AssemblyImageView(QWidget* parent) :
   connect(AF_exe_button_, SIGNAL(clicked()), this, SIGNAL(autofocus_request()));
 
   QGroupBox* AF_param_box = new QGroupBox(tr("Auto-Focus Configuration"));
+  AF_param_box->setStyleSheet("QGroupBox { font-weight: bold; } ");
+
   AF_lay->addRow(AF_param_box);
 
   QFormLayout* AF_param_lay = new QFormLayout;

@@ -37,7 +37,6 @@ AssemblyObjectFinderPatRec::AssemblyObjectFinderPatRec(const QString& output_dir
 
   threshold_template_(-1),
 
-//!!  updated_threshold_(false),
   updated_img_master_(false),
   updated_img_master_PatRec_(false)
 {
@@ -56,73 +55,65 @@ AssemblyObjectFinderPatRec::~AssemblyObjectFinderPatRec()
 
 void AssemblyObjectFinderPatRec::Configuration::reset()
 {
-  master_useFilePath_       = false;
-  master_useFilePath_fpath_ = "";
+  template_filepath_ = "";
 
-  master_useThreshold_ = false;
-  master_useThreshold_threshold_ = -1;
+  thresholding_useThreshold_ = false;
+  thresholding_threshold_ = -1;
 
-  master_useAdaptiveThreshold_ = false;
-  master_useAdaptiveThreshold_blocksize_ = -1;
+  thresholding_useAdaptiveThreshold_ = false;
+  thresholding_blocksize_ = -1;
 
-  angscan_rough_angles_.clear();
-  angscan_fine_range_ = -1.0;
-  angscan_fine_step_  = -1.0;
+  angles_prescan_vec_.clear();
+  angles_finemax_  = -1.0;
+  angles_finestep_ = -1.0;
 }
 
-void AssemblyObjectFinderPatRec::launch_PatRec(const AssemblyObjectFinderPatRec::Configuration& conf)
+bool AssemblyObjectFinderPatRec::Configuration::is_valid() const
 {
-  this->set_configuration(conf);
+  if(QFile::exists(template_filepath_) == false){ return false; }
 
-  this->launch_PatRec();
+  if((thresholding_useThreshold_ == true) && (thresholding_useAdaptiveThreshold_ == true))
+  {
+    return false;
+  }
+  else if(thresholding_useThreshold_ == true)
+  {
+    if(thresholding_threshold_ < 0){ return false; }
+  }
+  else if(thresholding_useAdaptiveThreshold_ == true)
+  {
+    if(thresholding_blocksize_ < 3){ return false; }
+
+    if((thresholding_blocksize_ % 2) == 0){ return false; }
+  }
+
+  if(angles_prescan_vec_.size() == 0){ return false; }
+
+  if(angles_finemax_  <= 0.){ return false; }
+  if(angles_finestep_ <= 0.){ return false; }
+
+  if(angles_finestep_ > angles_finemax_){ return false; }
+
+  return true;
 }
 
-void AssemblyObjectFinderPatRec::launch_PatRec()
-{
-  if(configuration_.master_useFilePath_)
-  {
-    emit master_image_request(configuration_.master_useFilePath_fpath_);
-  }
-  else
-  {
-    emit master_image_request();
-  }
-}
-
-//!!void AssemblyObjectFinderPatRec::set_threshold(const int v)
+//!!void AssemblyObjectFinderPatRec::launch_PatRec(const AssemblyObjectFinderPatRec::Configuration& conf)
 //!!{
-//!!  //mutex_.lock();
+//!!  this->set_configuration(conf);
 //!!
-//!!  if(threshold_ != v)
+//!!  this->launch_PatRec();
+//!!}
+//!!
+//!!void AssemblyObjectFinderPatRec::launch_PatRec()
+//!!{
+//!!  if(configuration_.master_useFilePath_)
 //!!  {
-//!!    threshold_ = v;
-//!!
-//!!    if(!updated_threshold_){ updated_threshold_ = true; }
-//!!
-//!!    if(updated_img_master_PatRec_){ updated_img_master_PatRec_ = false; }
+//!!    emit master_image_request(configuration_.master_useFilePath_fpath_);
 //!!  }
-//!!
-//!!  //mutex_.unlock();
-//!!
-//!!  return;
-//!!}
-//!!
-//!!void AssemblyObjectFinderPatRec::update_threshold(const int v)
-//!!{
-//!!  this->set_threshold(v);
-//!!
-//!!  NQLog("AssemblyObjectFinderPatRec", NQLog::Spam) << "update_threshold(" << v << ")"
-//!!     << ": emitting signal \"updated_threshold\"";
-//!!
-//!!  emit updated_threshold();
-//!!}
-//!!
-//!!void AssemblyObjectFinderPatRec::acquire_image()
-//!!{
-//!!  NQLog("AssemblyObjectFinderPatRec", NQLog::Spam) << "acquire_image"
-//!!     << ": emitting signal \"master_image_request\"";
-//!!
-//!!  emit master_image_request();
+//!!  else
+//!!  {
+//!!    emit master_image_request();
+//!!  }
 //!!}
 
 void AssemblyObjectFinderPatRec::update_image_master(const cv::Mat& img)
@@ -210,74 +201,74 @@ void AssemblyObjectFinderPatRec::send_image_master_PatRec()
   emit sent_image_master_PatRec(img_master_PatRec_);
 }
 
-void AssemblyObjectFinderPatRec::update_rough_angles(QString qstr)
-{
-  const QStringList entries = qstr.remove(" ").split(",");
-
-  if(entries.length() > 0)
-  {
-//    mutex_.lock();
-
-    configuration_.angscan_rough_angles_.clear();
-
-    for(int i=0; i<entries.length(); ++i)
-    {
-      configuration_.angscan_rough_angles_.emplace_back(entries.value(i).toDouble());
-    }
-
-//    mutex_.unlock();
-
-    NQLog("AssemblyObjectFinderPatRec", NQLog::Message) << "update_rough_angles"
-       << ": updated list of rough angles: " << qstr;
-
-    NQLog("AssemblyObjectFinderPatRec", NQLog::Spam) << "update_rough_angles"
-       << ": emitting signal \"updated_rough_angles\"";
-
-    emit updated_rough_angles();
-  }
-  else
-  {
-    NQLog("AssemblyObjectFinderPatRec", NQLog::Warning) << "update_rough_angles"
-       << ": input string with invalid format (" << qstr << "), no action taken";
-
-    return;
-  }
-
-  return;
-}
-
-void AssemblyObjectFinderPatRec::update_angscan_parameters(QString qstr)
-{
-  const QStringList entries = qstr.remove(" ").split(",");
-
-  if(entries.length() == 2)
-  {
-//    mutex_.lock();
-
-    configuration_.angscan_fine_range_ = entries.value(0).toDouble();
-    configuration_.angscan_fine_step_  = entries.value(1).toDouble();
-
-//    mutex_.unlock();
-
-    NQLog("AssemblyObjectFinderPatRec", NQLog::Message) << "update_angscan_parameters"
-       << ": updated parameters of angular-scan:"
-       << " (angscan_fine_range=" << configuration_.angscan_fine_range_
-       << ", angscan_fine_step="  << configuration_.angscan_fine_step_
-       << ")";
-
-    NQLog("AssemblyObjectFinderPatRec", NQLog::Spam) << "update_angscan_parameters"
-       << ": emitting signal \"updated_angscan_parameters\"";
-
-    emit updated_angscan_parameters();
-  }
-  else
-  {
-    NQLog("AssemblyObjectFinderPatRec", NQLog::Warning) << "update_angscan_parameters"
-       << ": input string with invalid format (" << qstr << "), no action taken";
-
-    return;
-  }
-}
+//!!void AssemblyObjectFinderPatRec::update_prescan_angles(QString qstr)
+//!!{
+//!!  const QStringList entries = qstr.remove(" ").split(",");
+//!!
+//!!  if(entries.length() > 0)
+//!!  {
+//!!//    mutex_.lock();
+//!!
+//!!    configuration_.angles_prescan_vec_.clear();
+//!!
+//!!    for(int i=0; i<entries.length(); ++i)
+//!!    {
+//!!      configuration_.angles_prescan_vec_.emplace_back(entries.value(i).toDouble());
+//!!    }
+//!!
+//!!//    mutex_.unlock();
+//!!
+//!!    NQLog("AssemblyObjectFinderPatRec", NQLog::Message) << "update_prescan_angles"
+//!!       << ": updated list of pre-scan angles: " << qstr;
+//!!
+//!!    NQLog("AssemblyObjectFinderPatRec", NQLog::Spam) << "update_prescan_angles"
+//!!       << ": emitting signal \"updated_prescan_angles\"";
+//!!
+//!!    emit updated_prescan_angles();
+//!!  }
+//!!  else
+//!!  {
+//!!    NQLog("AssemblyObjectFinderPatRec", NQLog::Warning) << "update_prescan_angles"
+//!!       << ": input string with invalid format (" << qstr << "), no action taken";
+//!!
+//!!    return;
+//!!  }
+//!!
+//!!  return;
+//!!}
+//!!
+//!!void AssemblyObjectFinderPatRec::update_angscan_parameters(QString qstr)
+//!!{
+//!!  const QStringList entries = qstr.remove(" ").split(",");
+//!!
+//!!  if(entries.length() == 2)
+//!!  {
+//!!//    mutex_.lock();
+//!!
+//!!    configuration_.angles_finemax_ = entries.value(0).toDouble();
+//!!    configuration_.angles_finestep_  = entries.value(1).toDouble();
+//!!
+//!!//    mutex_.unlock();
+//!!
+//!!    NQLog("AssemblyObjectFinderPatRec", NQLog::Message) << "update_angscan_parameters"
+//!!       << ": updated parameters of angular-scan:"
+//!!       << " (angles_finemax=" << configuration_.angles_finemax_
+//!!       << ", angles_finestep="  << configuration_.angles_finestep_
+//!!       << ")";
+//!!
+//!!    NQLog("AssemblyObjectFinderPatRec", NQLog::Spam) << "update_angscan_parameters"
+//!!       << ": emitting signal \"updated_angscan_parameters\"";
+//!!
+//!!    emit updated_angscan_parameters();
+//!!  }
+//!!  else
+//!!  {
+//!!    NQLog("AssemblyObjectFinderPatRec", NQLog::Warning) << "update_angscan_parameters"
+//!!       << ": input string with invalid format (" << qstr << "), no action taken";
+//!!
+//!!    return;
+//!!  }
+//!!}
 
 void AssemblyObjectFinderPatRec::run_PatRec(const int mode_lab, const int mode_obj)
 {
@@ -498,11 +489,11 @@ void AssemblyObjectFinderPatRec::template_matching(const cv::Mat& img_master, co
 
   output_subdir = output_dir+output_subdir_name_;
 
-  const double angle_fine_min  = -1.0 * configuration_.angscan_fine_range_;
-  const double angle_fine_max  = +1.0 * configuration_.angscan_fine_range_;
-  const double angle_fine_step =        configuration_.angscan_fine_step_;
+  const double angle_fine_min  = -1.0 * configuration_.angles_finemax_;
+  const double angle_fine_max  = +1.0 * configuration_.angles_finemax_;
+  const double angle_fine_step =        configuration_.angles_finestep_;
 
-  const std::vector<double>& rough_angles = configuration_.angscan_rough_angles_;
+  const std::vector<double>& prescan_angles = configuration_.angles_prescan_vec_;
 
 //  mutex_.unlock();
   // ------------------------------------
@@ -575,16 +566,16 @@ void AssemblyObjectFinderPatRec::template_matching(const cv::Mat& img_master, co
 
   NQLog("AssemblyObjectFinderPatRec", NQLog::Spam) << "template_matching" << ": initiated matching routine with angular scan";
 
-  // First, get angle-rough angle: best guess of central value for finer angular scan
-  double angle_rough(-9999.);
+  // First, get angle-prescan angle: best guess of central value for finer angular scan
+  double angle_prescan(-9999.);
 
-  if(rough_angles.size() > 0)
+  if(prescan_angles.size() > 0)
   {
     double best_FOM(0.);
 
-    for(unsigned int i=0; i<rough_angles.size(); ++i)
+    for(unsigned int i=0; i<prescan_angles.size(); ++i)
     {
-      const double i_angle = rough_angles.at(i);
+      const double i_angle = prescan_angles.at(i);
 
       double i_FOM(0.);
       cv::Point i_matchLoc;
@@ -593,22 +584,22 @@ void AssemblyObjectFinderPatRec::template_matching(const cv::Mat& img_master, co
 
       const bool update = (i==0) || (use_minFOM ? (i_FOM < best_FOM) : (i_FOM > best_FOM));
 
-      if(update){ best_FOM = i_FOM; angle_rough = i_angle; }
+      if(update){ best_FOM = i_FOM; angle_prescan = i_angle; }
     }
   }
   else
   {
     NQLog("AssemblyObjectFinderPatRec", NQLog::Critical) << "template_matching"
-       << ": empty list of rough angles, stopping Pattern Recognition";
+       << ": empty list of pre-scan angles, stopping Pattern Recognition";
 
     return;
   }
 
-  NQLog("AssemblyObjectFinderPatRec", NQLog::Message) << "template_matching" << ": rough estimate of best-angle yields best-angle=" << angle_rough;
+  NQLog("AssemblyObjectFinderPatRec", NQLog::Message) << "template_matching" << ": pre-scan estimate of best-angle yields best-angle=" << angle_prescan;
   // ----------------
 
   NQLog("AssemblyObjectFinderPatRec", NQLog::Message) << "template_matching" << ": angular scan parameters"
-     << "(min="<< angle_rough+angle_fine_min << ", max=" << angle_rough+angle_fine_max << ", step=" << angle_fine_step << ")";
+     << "(min="<< angle_prescan+angle_fine_min << ", max=" << angle_prescan+angle_fine_max << ", step=" << angle_fine_step << ")";
 
   const int N_rotations = (2 * int((angle_fine_max-angle_fine_min) / angle_fine_step));
 
@@ -623,7 +614,7 @@ void AssemblyObjectFinderPatRec::template_matching(const cv::Mat& img_master, co
   {
     const unsigned int scan_counter = vec_angleNfom.size();
 
-    const double i_angle = angle_rough + angle_fine;
+    const double i_angle = angle_prescan + angle_fine;
 
     double i_FOM(0.);
     cv::Point i_matchLoc;

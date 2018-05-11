@@ -55,6 +55,7 @@ AssemblyHardwareControlView::AssemblyHardwareControlView(const LStepExpressMotio
 
   /// Motion Widgets
   QGroupBox* box_move = new QGroupBox(tr("Motion Stage"));
+  box_move->setStyleSheet("QGroupBox { font-weight: bold; } ");
 
   QVBoxLayout* l_move = new QVBoxLayout;
 
@@ -95,6 +96,7 @@ AssemblyHardwareControlView::AssemblyHardwareControlView(const LStepExpressMotio
 
   /// Vacuum Widget
   QGroupBox* box_vacuum = new QGroupBox(tr("Vacuum"));
+  box_vacuum->setStyleSheet("QGroupBox { font-weight: bold; } ");
 
   w_vacuum_ = new AssemblyVacuumWidget("Toggle Vacuum", this);
   w_vacuum_->setToolTip("(3) Controls vacuum valves");
