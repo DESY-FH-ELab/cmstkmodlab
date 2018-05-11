@@ -92,6 +92,7 @@ HEADERS += AssemblyVUEyeCamera.h \
            AssemblyThresholderView.h \
            AssemblyObjectFinderManual.h \
            AssemblyObjectFinderPatRec.h \
+           AssemblyObjectFinderPatRecWidget.h \
            AssemblyObjectFinderPatRecView.h \
            AssemblyObjectFinderPatRecThread.h \
            AssemblyMultiPickupTester.h \
@@ -145,6 +146,7 @@ SOURCES += AssemblyVUEyeCamera.cc \
            AssemblyThresholderView.cc \
            AssemblyObjectFinderManual.cc \
            AssemblyObjectFinderPatRec.cc \
+           AssemblyObjectFinderPatRecWidget.cc \
            AssemblyObjectFinderPatRecView.cc \
            AssemblyObjectFinderPatRecThread.cc \
            AssemblyMultiPickupTester.cc \
