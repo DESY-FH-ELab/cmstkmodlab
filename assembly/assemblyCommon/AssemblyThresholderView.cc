@@ -18,7 +18,8 @@
 
 #include <QFileDialog>
 #include <QGridLayout>
-#include <QFormLayout>
+#include <QHBoxLayout>
+#include <QVBoxLayout>
 
 AssemblyThresholderView::AssemblyThresholderView(QWidget* parent) :
   QWidget(parent),
@@ -92,70 +93,82 @@ AssemblyThresholderView::AssemblyThresholderView(QWidget* parent) :
   //// right-hand side
 
   /// raw image
-  QFormLayout* lRaw = new QFormLayout;
+  QVBoxLayout* lRaw = new QVBoxLayout;
   l->addLayout(lRaw, 0, 1);
 
   imgraw_load_button_ = new QPushButton("Load Image", this);
-  lRaw->addRow(imgraw_load_button_);
+  lRaw->addWidget(imgraw_load_button_);
 
-  imgraw_save_button_ = new QPushButton("Save Image", this);
-  lRaw->addRow(imgraw_save_button_);
+  imgraw_save_button_ = new QPushButton("Save Image (before thresholding)", this);
+  lRaw->addWidget(imgraw_save_button_);
 
   connect(imgraw_load_button_, SIGNAL(clicked()), this, SLOT(load_image_raw()));
   connect(imgraw_save_button_, SIGNAL(clicked()), this, SLOT(save_image_raw()));
 
   this->connectImageProducer_raw(this, SIGNAL(image_raw_updated(cv::Mat)));
 
+  lRaw->addStretch();
+
   /// binary image: thresholding
-  QGridLayout* lBin = new QGridLayout;
+  QVBoxLayout* lBin = new QVBoxLayout;
   l->addLayout(lBin, 1, 1);
 
   imgbin_save_button_ = new QPushButton("Save Image (after thresholding)", this);
-  lBin->addWidget(imgbin_save_button_, 0, 0);
+  lBin->addWidget(imgbin_save_button_);
 
   connect(imgbin_save_button_, SIGNAL(clicked()), this, SLOT(save_image_binary()));
 
   this->connectImageProducer_binary(this, SIGNAL(image_binary_updated(cv::Mat)));
 
   // method-1: threshold
-  QGridLayout* imgbin_thresh_layout = new QGridLayout;
-  lBin->addLayout(imgbin_thresh_layout, 1, 0);
+  lBin->addSpacing(40);
+
+  QVBoxLayout* imgbin_thresh_layout = new QVBoxLayout;
+  lBin->addLayout(imgbin_thresh_layout);
 
   imgbin_thresh_button_ = new QPushButton("openCV::threshold", this);
-  imgbin_thresh_layout->addWidget(imgbin_thresh_button_, 0, 0);
+  imgbin_thresh_layout->addWidget(imgbin_thresh_button_);
 
   connect(imgbin_thresh_button_, SIGNAL(clicked()), this, SLOT(apply_threshold()));
 
-  QFormLayout* imgbin_thresh_inputcfg = new QFormLayout;
-  imgbin_thresh_layout->addLayout(imgbin_thresh_inputcfg, 1, 0);
+  QHBoxLayout* imgbin_thresh_inputcfg = new QHBoxLayout;
+  imgbin_thresh_layout->addLayout(imgbin_thresh_inputcfg);
 
   imgbin_thresh_label_ = new QLabel(this);
-  imgbin_thresh_label_->setText("Threshold (int)");
+  imgbin_thresh_label_->setText("Threshold (pos int)");
 
   imgbin_thresh_linee_ = new QLineEdit(this);
   imgbin_thresh_linee_->setText("100");
 
-  imgbin_thresh_inputcfg->addRow(imgbin_thresh_label_, imgbin_thresh_linee_);
+  imgbin_thresh_inputcfg->addWidget(imgbin_thresh_label_, 40);
+  imgbin_thresh_inputcfg->addWidget(imgbin_thresh_linee_, 60);
+  // -----
 
   // method-2: adaptiveThreshold
-  QGridLayout* imgbin_adathr_layout = new QGridLayout;
-  lBin->addLayout(imgbin_adathr_layout, 2, 0);
+  lBin->addSpacing(40);
+
+  QVBoxLayout* imgbin_adathr_layout = new QVBoxLayout;
+  lBin->addLayout(imgbin_adathr_layout);
 
   imgbin_adathr_button_ = new QPushButton("openCV::adaptiveThreshold", this);
   imgbin_adathr_layout->addWidget(imgbin_adathr_button_, 0, 0);
 
   connect(imgbin_adathr_button_, SIGNAL(clicked()), this, SLOT(apply_adaptiveThreshold()));
 
-  QFormLayout* imgbin_adathr_inputcfg = new QFormLayout;
-  imgbin_adathr_layout->addLayout(imgbin_adathr_inputcfg, 1, 0);
+  QHBoxLayout* imgbin_adathr_inputcfg = new QHBoxLayout;
+  imgbin_adathr_layout->addLayout(imgbin_adathr_inputcfg);
 
   imgbin_adathr_label_ = new QLabel(this);
-  imgbin_adathr_label_->setText("Block Size (odd int)");
+  imgbin_adathr_label_->setText("Block Size (pos odd int)");
 
   imgbin_adathr_linee_ = new QLineEdit(this);
   imgbin_adathr_linee_->setText("587");
 
-  imgbin_adathr_inputcfg->addRow(imgbin_adathr_label_, imgbin_adathr_linee_);
+  imgbin_adathr_inputcfg->addWidget(imgbin_adathr_label_, 40);
+  imgbin_adathr_inputcfg->addWidget(imgbin_adathr_linee_, 60);
+  // -----
+
+  lBin->addStretch();
   //// ---------------
 }
 

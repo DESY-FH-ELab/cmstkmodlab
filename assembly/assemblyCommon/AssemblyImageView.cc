@@ -18,8 +18,8 @@
 
 #include <QFileDialog>
 #include <QGridLayout>
+#include <QHBoxLayout>
 #include <QVBoxLayout>
-#include <QFormLayout>
 #include <QGroupBox>
 
 AssemblyImageView::AssemblyImageView(QWidget* parent) :
@@ -91,13 +91,14 @@ AssemblyImageView::AssemblyImageView(QWidget* parent) :
 
   AF_result_lay->addWidget(AF_scroll_);
 
-  QFormLayout* AF_result_bestZ_lay = new QFormLayout;
+  QHBoxLayout* AF_result_bestZ_lay = new QHBoxLayout;
 
   QLabel* AF_result_bestZ_label = new QLabel("Best-Focus Z-position [mm]", this);
   AF_result_bestZ_lineed_ = new QLineEdit("", this);
   AF_result_bestZ_lineed_->setReadOnly(true);
 
-  AF_result_bestZ_lay->addRow(AF_result_bestZ_label, AF_result_bestZ_lineed_);
+  AF_result_bestZ_lay->addWidget(AF_result_bestZ_label  , 40);
+  AF_result_bestZ_lay->addWidget(AF_result_bestZ_lineed_, 60);
 
   AF_result_lay->addLayout(AF_result_bestZ_lay);
 
@@ -111,57 +112,77 @@ AssemblyImageView::AssemblyImageView(QWidget* parent) :
   //// right-hand side ----------------------------------
 
   // image
-  QFormLayout*  lImg = new QFormLayout;
+  QVBoxLayout* lImg = new QVBoxLayout;
   g0->addLayout(lImg, 0, 1);
 
   img_load_button_ = new QPushButton("Load Image", this);
-  lImg->addRow(img_load_button_);
+  lImg->addWidget(img_load_button_);
 
   img_save_button_ = new QPushButton("Save Image", this);
-  lImg->addRow(img_save_button_);
+  lImg->addWidget(img_save_button_);
 
   img_celi_button_ = new QPushButton("Add/Remove Center Lines", this);
-  lImg->addRow(img_celi_button_);
+  lImg->addWidget(img_celi_button_);
 
   connect(img_load_button_, SIGNAL(clicked()), this, SLOT(load_image()));
   connect(img_save_button_, SIGNAL(clicked()), this, SLOT(save_image()));
   connect(img_celi_button_, SIGNAL(clicked()), this, SLOT(modify_image_centerlines()));
 
   this->connectImageProducer_image(this, SIGNAL(image_updated(cv::Mat)));
+
+  lImg->addStretch();
   // ----------
 
   // auto-focusing
-  QFormLayout* AF_lay = new QFormLayout;
+  QVBoxLayout* AF_lay = new QVBoxLayout;
   g0->addLayout(AF_lay, 1, 1);
 
   AF_exe_button_ = new QPushButton("Auto-Focus Image", this);
-  AF_lay->addRow(AF_exe_button_);
+  AF_lay->addWidget(AF_exe_button_);
 
   connect(AF_exe_button_, SIGNAL(clicked()), this, SIGNAL(autofocus_request()));
+  // -----
+
+  AF_lay->addSpacing(20);
 
   QGroupBox* AF_param_box = new QGroupBox(tr("Auto-Focus Configuration"));
   AF_param_box->setStyleSheet("QGroupBox { font-weight: bold; } ");
 
-  AF_lay->addRow(AF_param_box);
+  AF_lay->addWidget(AF_param_box);
 
-  QFormLayout* AF_param_lay = new QFormLayout;
+  QVBoxLayout* AF_param_lay = new QVBoxLayout;
   AF_param_box->setLayout(AF_param_lay);
+
+  QHBoxLayout* AF_param_maxDZ_lay = new QHBoxLayout;
+  AF_param_lay->addLayout(AF_param_maxDZ_lay);
 
   QLabel* AF_param_maxDZ_label = new QLabel("Max delta-Z [mm]", this);
   AF_param_maxDZ_lineed_ = new QLineEdit("", this);
 
+  AF_param_maxDZ_lay->addWidget(AF_param_maxDZ_label  , 40);
+  AF_param_maxDZ_lay->addWidget(AF_param_maxDZ_lineed_, 60);
+
+  QHBoxLayout* AF_param_Nstep_lay = new QHBoxLayout;
+  AF_param_lay->addLayout(AF_param_Nstep_lay);
+
   QLabel* AF_param_Nstep_label = new QLabel("# Steps (int)", this);
   AF_param_Nstep_lineed_ = new QLineEdit("", this);
 
-  AF_param_lay->addRow(AF_param_maxDZ_label, AF_param_maxDZ_lineed_);
-  AF_param_lay->addRow(AF_param_Nstep_label, AF_param_Nstep_lineed_);
+  AF_param_Nstep_lay->addWidget(AF_param_Nstep_label  , 40);
+  AF_param_Nstep_lay->addWidget(AF_param_Nstep_lineed_, 60);
+  // -----
+
+  AF_lay->addSpacing(20);
 
   AF_save_zscan_button_ = new QPushButton("Save Z-Scan Image", this);
-  AF_lay->addRow(AF_save_zscan_button_);
+  AF_lay->addWidget(AF_save_zscan_button_);
 
   connect(AF_save_zscan_button_, SIGNAL(clicked()), this, SLOT(save_image_zscan()));
 
   this->connectImageProducer_autofocus(this, SIGNAL(image_zscan_updated(const cv::Mat&)));
+  // -----
+
+  AF_lay->addStretch();
   // ----------
 
   //// --------------------------------------------------

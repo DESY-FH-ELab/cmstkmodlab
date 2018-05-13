@@ -78,10 +78,10 @@ AssemblyObjectFinderPatRecWidget::AssemblyObjectFinderPatRecWidget(QWidget* pare
 
   QGridLayout* thresh_lay = new QGridLayout;
 
-  thresh_thresh_radbu_ = new QRadioButton(tr("Threshold (int)"));
+  thresh_thresh_radbu_ = new QRadioButton(tr("Threshold (pos int)"));
   thresh_thresh_linee_ = new QLineEdit(tr(""));
 
-  thresh_adathr_radbu_ = new QRadioButton(tr("Adaptive Threshold (odd int)"));
+  thresh_adathr_radbu_ = new QRadioButton(tr("Adaptive Threshold (pos odd int)"));
   thresh_adathr_linee_ = new QLineEdit(tr(""));
 
   connect(thresh_thresh_radbu_, SIGNAL(toggled(bool)), thresh_thresh_linee_, SLOT(setEnabled(bool)));
