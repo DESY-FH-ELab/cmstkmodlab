@@ -92,6 +92,8 @@ class AssemblyThresholderView : public QWidget
   void image_binary_updated(const cv::Mat&);
   void image_binary_updated();
 
+  void loaded_image_raw(const cv::Mat&);
+
   void threshold_request(const int);
   void adaptiveThreshold_request(const int);
 };

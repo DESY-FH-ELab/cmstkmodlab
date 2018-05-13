@@ -93,6 +93,8 @@ class AssemblyImageView : public QWidget
 
  signals:
 
+  void image_loaded(const cv::Mat&);
+
   void image_updated(const cv::Mat&);
 
   void image_zscan_updated(const cv::Mat&);

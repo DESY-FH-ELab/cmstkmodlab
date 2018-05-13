@@ -89,7 +89,7 @@ void AssemblyThresholder::update_image_binary_threshold(const int threshold_valu
 {
   if(img_raw_.empty())
   {
-    NQLog("AssemblyThresholder", NQLog::Warning) << "update_image_binary_threshold"
+    NQLog("AssemblyThresholder", NQLog::Critical) << "update_image_binary_threshold"
        << ": empty input image, thresholding not applied to input image";
 
     return;
@@ -131,9 +131,16 @@ cv::Mat AssemblyThresholder::get_image_binary_threshold(const cv::Mat& img, cons
   if(threshold < 0)
   {
     NQLog("AssemblyThresholder", NQLog::Warning) << "get_image_binary_threshold"
-       << ": negative threshold value (" << threshold << "), thresholding not applied to input image";
+       << ": invalid threshold value (" << threshold << ", is negative), thresholding not applied to input image (empty binary image)";
 
-    img_bin = img_gs.clone();
+    img_bin = cv::Mat();
+  }
+  else if(threshold > 255)
+  {
+    NQLog("AssemblyThresholder", NQLog::Warning) << "get_image_binary_threshold"
+       << ": invalid threshold value (" << threshold << ", higher than allowed maximum of 255), thresholding not applied to input image (empty binary image)";
+
+    img_bin = cv::Mat();
   }
   else
   {
@@ -147,7 +154,7 @@ void AssemblyThresholder::update_image_binary_adaptiveThreshold(const int blocks
 {
   if(img_raw_.empty())
   {
-    NQLog("AssemblyThresholder", NQLog::Warning) << "update_image_binary_adaptiveThreshold"
+    NQLog("AssemblyThresholder", NQLog::Critical) << "update_image_binary_adaptiveThreshold"
        << ": empty input image, thresholding not applied to input image";
 
     return;
@@ -189,23 +196,23 @@ cv::Mat AssemblyThresholder::get_image_binary_adaptiveThreshold(const cv::Mat& i
   if(blocksize < 3)
   {
     NQLog("AssemblyThresholder", NQLog::Warning) << "get_image_binary_adaptiveThreshold"
-       << ": invalid block-size value (" << blocksize << ", lower than allowed minimum of 3), thresholding not applied to input image";
+       << ": invalid block-size value (" << blocksize << ", lower than allowed minimum of 3), thresholding not applied to input image (empty binary image)";
 
-    img_bin = img_gs.clone();
+    img_bin = cv::Mat();
   }
   else if(blocksize > 1499)
   {
     NQLog("AssemblyThresholder", NQLog::Warning) << "get_image_binary_adaptiveThreshold"
-       << ": invalid block-size value (" << blocksize << ", higher than allowed maximum of 1499), thresholding not applied to input image";
+       << ": invalid block-size value (" << blocksize << ", higher than allowed maximum of 1499), thresholding not applied to input image (empty binary image)";
 
-    img_bin = img_gs.clone();
+    img_bin = cv::Mat();
   }
   else if((blocksize % 2) == 0)
   {
     NQLog("AssemblyThresholder", NQLog::Warning) << "get_image_binary_adaptiveThreshold"
-       << ": invalid block-size value (" << blocksize << ", is even), thresholding not applied to input image";
+       << ": invalid block-size value (" << blocksize << ", is even), thresholding not applied to input image (empty binary image)";
 
-    img_bin = img_gs.clone();
+    img_bin = cv::Mat();
   }
   else
   {
@@ -232,7 +239,7 @@ void AssemblyThresholder::send_image_raw()
 {
   if(img_raw_.empty())
   {
-    NQLog("AssemblyThresholder", NQLog::Warning) << "send_image_raw"
+    NQLog("AssemblyThresholder", NQLog::Critical) << "send_image_raw"
        << ": raw image is empty, no action taken";
 
     return;
@@ -248,7 +255,7 @@ void AssemblyThresholder::send_image_binary()
 {
   if(img_bin_.empty())
   {
-    NQLog("AssemblyThresholder", NQLog::Warning) << "send_image_binary"
+    NQLog("AssemblyThresholder", NQLog::Critical) << "send_image_binary"
        << ": binary image is empty, no action taken";
 
     return;

@@ -11,6 +11,7 @@
 /////////////////////////////////////////////////////////////////////////////////
 
 #include <nqlogger.h>
+#include <ApplicationConfig.h>
 
 #include <AssemblyImageView.h>
 #include <AssemblyUtilities.h>
@@ -180,9 +181,6 @@ void AssemblyImageView::update_image(const cv::Mat& img, const bool update_image
     image_ = img.clone();
   }
 
-  NQLog("AssemblyImageView", NQLog::Spam) << "update_image"
-     << ": emitting signal \"image_updated\"";
-
   if(update_image_raw)
   {
     image_raw_ = image_.clone();
@@ -190,12 +188,15 @@ void AssemblyImageView::update_image(const cv::Mat& img, const bool update_image
     image_modified_ = false;
   }
 
+  NQLog("AssemblyImageView", NQLog::Spam) << "update_image"
+     << ": emitting signal \"image_updated\"";
+
   emit image_updated(image_);
 }
 
 void AssemblyImageView::load_image()
 {
-  const QString filename = QFileDialog::getOpenFileName(this, tr("Load Image"), QDir::homePath(), tr("PNG Files (*.png);;All Files (*)"));
+  const QString filename = QFileDialog::getOpenFileName(this, tr("Load Image"), QString::fromStdString(Config::CMSTkModLabBasePath+"/share/assembly"), tr("PNG Files (*.png);;All Files (*)"));
   if(filename.isNull() || filename.isEmpty()){ return; }
 
   const cv::Mat img = assembly::cv_imread(filename, CV_LOAD_IMAGE_COLOR);
@@ -208,9 +209,10 @@ void AssemblyImageView::load_image()
     return;
   }
 
-  this->update_image(img, true);
+  NQLog("AssemblyImageView", NQLog::Spam) << "load_image"
+     << ": emitting signal \"image_loaded\"";
 
-  return;
+  emit image_loaded(img);
 }
 
 void AssemblyImageView::save_image()

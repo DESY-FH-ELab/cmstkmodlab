@@ -11,6 +11,7 @@
 /////////////////////////////////////////////////////////////////////////////////
 
 #include <nqlogger.h>
+#include <ApplicationConfig.h>
 
 #include <AssemblyThresholderView.h>
 #include <AssemblyUtilities.h>
@@ -202,7 +203,7 @@ void AssemblyThresholderView::update_image_binary(const cv::Mat& img)
 
 void AssemblyThresholderView::load_image_raw()
 {
-  const QString filename = QFileDialog::getOpenFileName(this, tr("Load Image"), QDir::homePath(), tr("PNG Files (*.png);;All Files (*)"));
+  const QString filename = QFileDialog::getOpenFileName(this, tr("Load Image"), QString::fromStdString(Config::CMSTkModLabBasePath+"/share/assembly"), tr("PNG Files (*.png);;All Files (*)"));
   if(filename.isNull() || filename.isEmpty()){ return; }
 
   const cv::Mat img = assembly::cv_imread(filename, CV_LOAD_IMAGE_COLOR);
@@ -215,9 +216,10 @@ void AssemblyThresholderView::load_image_raw()
     return;
   }
 
-  this->update_image_raw(img);
+  NQLog("AssemblyThresholderView", NQLog::Spam) << "load_image_raw"
+     << ": emitting signal \"loaded_image_raw\"";
 
-  return;
+  emit loaded_image_raw(img);
 }
 
 void AssemblyThresholderView::save_image_raw()
