@@ -245,7 +245,7 @@ void AssemblyThresholderView::save_image_raw()
     return;
   }
 
-  const QString filename = QFileDialog::getSaveFileName(this, tr("Save Image"), QDir::homePath(), tr("PNG Files (*.png);;All Files (*)"));
+  const QString filename = QFileDialog::getSaveFileName(this, tr("Save Image"), QString::fromStdString(Config::CMSTkModLabBasePath+"/share/assembly"), tr("PNG Files (*.png);;All Files (*)"));
   if(filename.isNull() || filename.isEmpty()){ return; }
 
   assembly::cv_imwrite(filename, imgraw_);
@@ -263,7 +263,7 @@ void AssemblyThresholderView::save_image_binary()
     return;
   }
 
-  const QString filename = QFileDialog::getSaveFileName(this, tr("Save Image"), QDir::homePath(), tr("PNG Files (*.png);;All Files (*)"));
+  const QString filename = QFileDialog::getSaveFileName(this, tr("Save Image"), QString::fromStdString(Config::CMSTkModLabBasePath+"/share/assembly"), tr("PNG Files (*.png);;All Files (*)"));
   if(filename.isNull() || filename.isEmpty()){ return; }
 
   assembly::cv_imwrite(filename, imgbin_);

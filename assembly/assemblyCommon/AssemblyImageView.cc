@@ -246,7 +246,7 @@ void AssemblyImageView::save_image()
     return;
   }
 
-  const QString filename = QFileDialog::getSaveFileName(this, tr("Save Image"), QDir::homePath(), tr("PNG Files (*.png);;All Files (*)"));
+  const QString filename = QFileDialog::getSaveFileName(this, tr("Save Image"), QString::fromStdString(Config::CMSTkModLabBasePath+"/share/assembly"), tr("PNG Files (*.png);;All Files (*)"));
   if(filename.isNull() || filename.isEmpty()){ return; }
 
   assembly::cv_imwrite(filename, image_);
@@ -264,7 +264,7 @@ void AssemblyImageView::save_image_zscan()
     return;
   }
 
-  const QString filename = QFileDialog::getSaveFileName(this, tr("Save Image"), QDir::homePath(), tr("PNG Files (*.png);;All Files (*)"));
+  const QString filename = QFileDialog::getSaveFileName(this, tr("Save Image"), QString::fromStdString(Config::CMSTkModLabBasePath+"/share/assembly"), tr("PNG Files (*.png);;All Files (*)"));
   if(filename.isNull() || filename.isEmpty()){ return; }
 
   assembly::cv_imwrite(filename, image_zscan_);
