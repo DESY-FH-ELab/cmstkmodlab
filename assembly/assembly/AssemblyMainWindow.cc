@@ -157,6 +157,9 @@ AssemblyMainWindow::AssemblyMainWindow(const unsigned int camera_ID, QWidget* pa
     connect(thresholder_view_, SIGNAL(adaptiveThreshold_request(int)), thresholder_, SLOT(update_image_binary_adaptiveThreshold(int)));
     connect(thresholder_view_, SIGNAL(loaded_image_raw(cv::Mat))     , thresholder_, SLOT(update_image_raw(cv::Mat)));
 
+    connect(thresholder_, SIGNAL(updated_image_raw   (cv::Mat)), thresholder_view_, SLOT(update_image_raw   (cv::Mat)));
+    connect(thresholder_, SIGNAL(updated_image_binary(cv::Mat)), thresholder_view_, SLOT(update_image_binary(cv::Mat)));
+
     NQLog("AssemblyMainWindow", NQLog::Message) << "added view " << tabname_ImageThresholding;
     // ---------------------------------------------------------
 
@@ -499,9 +502,6 @@ void AssemblyMainWindow::connect_images()
 
   connect(image_view_->autofocus_button(), SIGNAL(clicked()), image_ctr_, SLOT(acquire_autofocused_image()));
 
-  connect(thresholder_, SIGNAL(updated_image_raw   (cv::Mat)), thresholder_view_, SLOT(update_image_raw   (cv::Mat)));
-  connect(thresholder_, SIGNAL(updated_image_binary(cv::Mat)), thresholder_view_, SLOT(update_image_binary(cv::Mat)));
-
   NQLog("AssemblyMainWindow", NQLog::Message) << "connect_images"
      << ": enabled images in application view(s)";
 
@@ -518,10 +518,9 @@ void AssemblyMainWindow::disconnect_images()
   disconnect(image_ctr_, SIGNAL(image_acquired(cv::Mat)), thresholder_, SLOT(update_image_raw   (cv::Mat)));
   disconnect(image_ctr_, SIGNAL(image_acquired(cv::Mat)), finder_     , SLOT(update_image_master(cv::Mat)));
 
-  disconnect(image_view_->autofocus_button(), SIGNAL(clicked()), image_ctr_, SLOT(acquire_autofocused_image()));
+  disconnect(image_view_, SIGNAL(image_loaded(cv::Mat)), image_ctr_, SLOT(retrieve_image(cv::Mat)));
 
-  disconnect(thresholder_, SIGNAL(updated_image_raw   (cv::Mat)), thresholder_view_, SLOT(update_image_raw   (cv::Mat)));
-  disconnect(thresholder_, SIGNAL(updated_image_binary(cv::Mat)), thresholder_view_, SLOT(update_image_binary(cv::Mat)));
+  disconnect(image_view_->autofocus_button(), SIGNAL(clicked()), image_ctr_, SLOT(acquire_autofocused_image()));
 
   NQLog("AssemblyMainWindow", NQLog::Message) << "disconnect_images"
      << ": disabled images in application view(s)";
