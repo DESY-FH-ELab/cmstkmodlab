@@ -172,7 +172,7 @@ AssemblyObjectFinderPatRecView::AssemblyObjectFinderPatRecView(QWidget* parent) 
   w_patrec_ = new AssemblyObjectFinderPatRecWidget;
   w_patrec_->setToolTip("Pattern Recognition Configuration");
 
-  connect(patrec_exe_button_, SIGNAL(clicked()), this->PatRec_Widget(), SLOT(update_configuration()));
+  connect(patrec_exe_button_, SIGNAL(clicked()), this->PatRec_Widget(), SLOT(transmit_configuration()));
 
   imageView_4_->connectImageProducer(this->PatRec_Widget(), SIGNAL(updated_image_template(cv::Mat)));
 
@@ -237,7 +237,7 @@ void AssemblyObjectFinderPatRecView::connect_to_finder(const AssemblyObjectFinde
 
   if(finder_connected_ == false)
   {
-    connect(this->PatRec_Widget(), SIGNAL(configuration_updated(AssemblyObjectFinderPatRec::Configuration)), finder, SLOT(launch_PatRec(AssemblyObjectFinderPatRec::Configuration)));
+    connect(this->PatRec_Widget(), SIGNAL(configuration(AssemblyObjectFinderPatRec::Configuration)), finder, SLOT(launch_PatRec(AssemblyObjectFinderPatRec::Configuration)));
 
     connect(finder, SIGNAL(PatRec_exitcode(int)), this, SLOT(change_label(int)));
 

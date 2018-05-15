@@ -98,6 +98,7 @@ HEADERS += AssemblyVUEyeCamera.h \
            AssemblyMultiPickupTester.h \
            AssemblyAssembler.h \
            AssemblyObjectAligner.h \
+           AssemblyObjectAlignerView.h \
            AssemblyHardwareControlView.h \
            AssemblyVacuumWidget.h \
            ConradManager.h \
@@ -152,6 +153,7 @@ SOURCES += AssemblyVUEyeCamera.cc \
            AssemblyMultiPickupTester.cc \
            AssemblyAssembler.cc \
            AssemblyObjectAligner.cc \
+           AssemblyObjectAlignerView.cc \
            AssemblyHardwareControlView.cc \
            AssemblyVacuumWidget.cc \
            ConradManager.cc \

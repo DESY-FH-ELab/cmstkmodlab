@@ -48,6 +48,21 @@ class AssemblyObjectFinderPatRecWidget : public QWidget
 
   QVBoxLayout* layout() const { return layout_; }
 
+  QPushButton* template_load_button() const { return templa_load_button_; }
+  QLineEdit*   template_file_lineed() const { return templa_file_lineed_; }
+
+  QRadioButton* threshold_button()   const { return thresh_thresh_radbu_; }
+  QLineEdit*    threshold_lineEdit() const { return thresh_thresh_linee_; }
+
+  QRadioButton* adaptiveThreshold_button()   const { return thresh_adathr_radbu_; }
+  QLineEdit*    adaptiveThreshold_lineEdit() const { return thresh_adathr_linee_; }
+
+  QLineEdit* angles_prescan_lineEdit()  const { return angles_prescan_linee_; }
+  QLineEdit* angles_finemax_lineEdit()  const { return angles_finemax_linee_; }
+  QLineEdit* angles_finestep_lineEdit() const { return angles_finestep_linee_; }
+
+  AssemblyObjectFinderPatRec::Configuration get_configuration(bool&) const;
+
  protected:
 
   QVBoxLayout* layout_;
@@ -70,22 +85,21 @@ class AssemblyObjectFinderPatRecWidget : public QWidget
   QLabel*    angles_finestep_label_;
   QLineEdit* angles_finestep_linee_;
 
-  AssemblyObjectFinderPatRec::Configuration configuration_;
+//!!  AssemblyObjectFinderPatRec::Configuration configuration_;
 
  public slots:
 
   void load_image_template();
   void load_image_template_from_path(const QString&);
 
-  void update_configuration();
+  void transmit_configuration();
 
  signals:
 
   void updated_image_template_line(const QString&);
   void updated_image_template(const cv::Mat&);
 
-  void configuration_updated(const AssemblyObjectFinderPatRec::Configuration&);
-  void configuration_updated();
+  void configuration(const AssemblyObjectFinderPatRec::Configuration&);
 };
 
 #endif // ASSEMBLYOBJECTFINDERPATRECWIDGET_H

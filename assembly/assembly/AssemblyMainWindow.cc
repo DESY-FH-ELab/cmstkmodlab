@@ -66,6 +66,7 @@ AssemblyMainWindow::AssemblyMainWindow(const unsigned int camera_ID, QWidget* pa
   thresholder_view_(nullptr),
   assemblyView_(nullptr),
   finder_view_(nullptr),
+  aligner_view_(nullptr),
   registryView_(nullptr),
   hwctr_view_(nullptr),
 
@@ -197,6 +198,23 @@ AssemblyMainWindow::AssemblyMainWindow(const unsigned int camera_ID, QWidget* pa
     finder_view_->connect_to_finder(finder_);
 
     NQLog("AssemblyMainWindow", NQLog::Message) << "added view " << tabname_PatRec;
+    // ---------------------------------------------------------
+
+    // ALIGNMENT VIEW ------------------------------------------
+    const QString tabname_Alignm("Alignment");
+
+    aligner_view_ = new AssemblyObjectAlignerView(tabWidget_);
+    tabWidget_->addTab(aligner_view_, tabname_Alignm);
+
+    // aligner
+    aligner_ = new AssemblyObjectAligner(motion_manager_);
+
+    connect(aligner_, SIGNAL(configuration_request()), aligner_view_, SLOT(transmit_configuration()));
+    connect(aligner_view_, SIGNAL(configuration(AssemblyObjectAligner::Configuration)), aligner_, SLOT(update_configuration(AssemblyObjectAligner::Configuration)));
+
+//!!    aligner_view_->connect_to_aligner(aligner_);
+
+    NQLog("AssemblyMainWindow", NQLog::Message) << "added view " << tabname_Alignm;
     // ---------------------------------------------------------
 
 //    // U-EYE VIEW ----------------------------------------------
@@ -528,8 +546,8 @@ void AssemblyMainWindow::disconnect_images()
   liveTimer_->stop();
 }
 
-//!!void AssemblyMainWindow::connect_objectAligner(const AssemblyObjectAligner::Configuration& conf)
-//!!{
+void AssemblyMainWindow::connect_objectAligner(const AssemblyObjectAligner::Configuration& conf)
+{
 //!!    if(image_ctr_ == nullptr)
 //!!    {
 //!!      NQLog("AssemblyMainWindow", NQLog::Warning) << "connect_objectAligner"
@@ -538,36 +556,47 @@ void AssemblyMainWindow::disconnect_images()
 //!!      return;
 //!!    }
 //!!
-//!!    aligner_->set_configuration(conf);
+//!!    aligner_->update_configuration(conf);
 //!!
-//!!    assemblyView_->Alignm_Widget()->enable(true);
+//!!    aligner_view_->setEnabled(false);
+//!!
+//!!
+//!!
+//!!
 //!!
 //!!    connect(this, SIGNAL(objectAligner_connected()), aligner_, SLOT(start_measurement()));
 //!!
-//!!    connect   (assemblyView_->Alignm_Widget(), SIGNAL(measure_angle_request(double, double))    , module_assembler_, SLOT(start_alignment(double, double)));
-//!!    connect   (assemblyView_->Alignm_Widget(), SIGNAL(alignment_request(double, double, double)), module_assembler_, SLOT(start_alignment(double, double, double)));
 //!!
-//!!    connect   (module_assembler_ , SIGNAL(object_angle(double)), assemblyView_->Alignm_Widget(), SLOT(show_object_angle(double)));
-//!!    connect   (module_assembler_ , SIGNAL(alignment_finished()), assemblyView_->Alignm_Widget(), SLOT(enable()));
+//!!//!!      connect   (assemblyView_->Alignm_Widget(), SIGNAL(measure_angle_request(double, double))    , aligner_, SLOT(start_alignment(double, double)));
+//!!//!!      connect   (assemblyView_->Alignm_Widget(), SIGNAL(alignment_request(double, double, double)), aligner_, SLOT(start_alignment(double, double, double)));
 //!!
-//!!    connect   (module_assembler_ , SIGNAL(nextAlignmentStep   (int, double, double, double)), module_assembler_, SLOT(run_alignment(int, double, double, double)));
+//!!      connect   (aligner_ , SIGNAL(object_angle(double)), assemblyView_->Alignm_Widget(), SLOT(show_object_angle(double)));
+//!!      connect   (aligner_ , SIGNAL(alignment_finished()), assemblyView_->Alignm_Widget(), SLOT(enable()));
 //!!
-//!!    connect   (module_assembler_ , SIGNAL(acquireImage())                                   , image_ctr_       , SLOT(acquire_image()));
-//!!    connect   (finder_    , SIGNAL(       updated_image_master())                           , finder_   , SLOT(update_image_master_PatRec()));
-//!!    connect   (finder_    , SIGNAL(updated_image_master_PatRec())                           , finder_   , SLOT(run_PatRec_lab_marker()));
-//!!    connect   (finder_    , SIGNAL(reportObjectLocation(int, double, double, double)), module_assembler_, SLOT(run_alignment(int, double, double, double)));
+//!!      connect   (aligner_ , SIGNAL(nextAlignmentStep(int, double, double, double)), aligner_, SLOT(run_alignment(int, double, double, double)));
 //!!
-//!!    connect   (module_assembler_ , SIGNAL(motion_finished())                                , module_assembler_, SLOT(launch_next_alignment_step()));
+//!!      connect   (aligner_ , SIGNAL(image_request()), image_ctr_  , SLOT(acquire_image()));
+//!!
+//!!//!!      connect   (finder_           , SIGNAL(updated_image_master())        , finder_          , SLOT(send_image_master()));
+//!!//!!      connect   (finder_           , SIGNAL(sent_image_master(cv::Mat))    , thresholder_ , SLOT(update_image_raw(cv::Mat)));
+//!!//!!      connect   (thresholder_  , SIGNAL(updated_image_raw())           , thresholder_view_   , SLOT(apply_threshold())); //!! FIXME: should have configurable parameter, w/o relying on thresholder_view_
+//!!//!!      connect   (thresholder_  , SIGNAL(updated_image_binary(cv::Mat)) , finder_          , SLOT(update_image_master_PatRec(cv::Mat)));
+//!!      connect   (finder_           , SIGNAL(updated_image_master_PatRec()) , finder_          , SLOT(run_PatRec_lab_marker()));
+//!!
+//!!      connect   (finder_, SIGNAL(reportObjectLocation(int, double, double, double)), aligner_, SLOT(run_alignment(int, double, double, double)));
+//!!
+//!!      connect   (aligner_ , SIGNAL(motion_finished()), aligner_, SLOT(launch_next_alignment_step()));
+//!!
 //!!
 //!!    NQLog("AssemblyMainWindow", NQLog::Spam) << "connect_objectAligner"
 //!!       << ": emitting signal \"objectAligner_connected\"";
 //!!
 //!!    emit objectAligner_connected();
-//!!}
-//!!
-//!!void AssemblyMainWindow::disconnect_objectAligner()
-//!!{
-//!!}
+}
+
+void AssemblyMainWindow::disconnect_objectAligner()
+{
+}
 
 void AssemblyMainWindow::connect_multipickupNpatrec(const AssemblyMultiPickupTester::Configuration& conf)
 {

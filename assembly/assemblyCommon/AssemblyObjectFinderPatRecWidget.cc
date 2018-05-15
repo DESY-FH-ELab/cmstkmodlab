@@ -168,7 +168,27 @@ void AssemblyObjectFinderPatRecWidget::load_image_template_from_path(const QStri
   emit updated_image_template(img);
 }
 
-void AssemblyObjectFinderPatRecWidget::update_configuration()
+void AssemblyObjectFinderPatRecWidget::transmit_configuration()
+{
+  bool valid_conf(false);
+
+  const auto& conf = this->get_configuration(valid_conf);
+
+  if(valid_conf == false)
+  {
+    NQLog("AssemblyObjectFinderPatRecWidget", NQLog::Critical) << "transmit_configuration"
+       << ": invalid AssemblyObjectFinderPatRec::Configuration object, no action taken";
+
+    return;
+  }
+
+  NQLog("AssemblyObjectFinderPatRecWidget", NQLog::Spam) << "transmit_configuration"
+     << ": emitting signal \"configuration(AssemblyObjectFinderPatRec::Configuration)\"";
+
+  emit configuration(conf);
+}
+
+AssemblyObjectFinderPatRec::Configuration AssemblyObjectFinderPatRecWidget::get_configuration(bool& valid_conf) const
 {
   AssemblyObjectFinderPatRec::Configuration conf;
 
@@ -179,10 +199,14 @@ void AssemblyObjectFinderPatRecWidget::update_configuration()
   /// Master Image Thresholding ----
   if(thresh_thresh_radbu_->isChecked() == thresh_adathr_radbu_->isChecked())
   {
-    NQLog("AssemblyObjectFinderPatRecWidget", NQLog::Critical) << "update_configuration"
+    NQLog("AssemblyObjectFinderPatRecWidget", NQLog::Critical) << "get_configuration"
        << ": invalid configuration for master-image thresholding (selected zero or multiple options), no action taken";
 
-    return;
+    valid_conf = false;
+
+    conf.reset();
+
+    return conf;
   }
   else if(thresh_thresh_radbu_->isChecked())
   {
@@ -198,10 +222,14 @@ void AssemblyObjectFinderPatRecWidget::update_configuration()
 
     if(valid_thr == false)
     {
-      NQLog("AssemblyObjectFinderPatRecWidget", NQLog::Critical) << "update_configuration"
+      NQLog("AssemblyObjectFinderPatRecWidget", NQLog::Critical) << "get_configuration"
          << ": invalid format for threshold value (" << thresh_str << ", not a integer), no action taken";
 
-      return;
+      valid_conf = false;
+
+      conf.reset();
+
+      return conf;
     }
   }
   else if(thresh_adathr_radbu_->isChecked())
@@ -218,10 +246,14 @@ void AssemblyObjectFinderPatRecWidget::update_configuration()
 
     if(valid_bks == false)
     {
-      NQLog("AssemblyObjectFinderPatRecWidget", NQLog::Critical) << "update_configuration"
+      NQLog("AssemblyObjectFinderPatRecWidget", NQLog::Critical) << "get_configuration"
          << ": invalid format for block-size value (" << adathr_str << ", not a integer), no action taken";
 
-      return;
+      valid_conf = false;
+
+      conf.reset();
+
+      return conf;
     }
   }
   /// ------------------------------
@@ -238,10 +270,14 @@ void AssemblyObjectFinderPatRecWidget::update_configuration()
 
     if(valid_ang == false)
     {
-      NQLog("AssemblyObjectFinderPatRecWidget", NQLog::Critical) << "update_configuration"
+      NQLog("AssemblyObjectFinderPatRecWidget", NQLog::Critical) << "get_configuration"
          << ": invalid format for pre-scan angle value (" << ang_str << ", not a double), no action taken";
 
-      return;
+      valid_conf = false;
+
+      conf.reset();
+
+      return conf;
     }
 
     conf.angles_prescan_vec_.emplace_back(ang_val);
@@ -254,10 +290,14 @@ void AssemblyObjectFinderPatRecWidget::update_configuration()
 
   if(valid_afm == false)
   {
-    NQLog("AssemblyObjectFinderPatRecWidget", NQLog::Critical) << "update_configuration"
+    NQLog("AssemblyObjectFinderPatRecWidget", NQLog::Critical) << "get_configuration"
        << ": invalid format for fine-scan max-angle value (" << angfinemax_str << ", not a double), no action taken";
 
-    return;
+    valid_conf = false;
+
+    conf.reset();
+
+    return conf;
   }
 
   const QString angfinestep_str = angles_finestep_linee_->text().remove(" ");
@@ -267,18 +307,18 @@ void AssemblyObjectFinderPatRecWidget::update_configuration()
 
   if(valid_afs == false)
   {
-    NQLog("AssemblyObjectFinderPatRecWidget", NQLog::Critical) << "update_configuration"
+    NQLog("AssemblyObjectFinderPatRecWidget", NQLog::Critical) << "get_configuration"
        << ": invalid format for fine-scan step-angle value (" << angfinestep_str << ", not a double), no action taken";
 
-    return;
+    valid_conf = false;
+
+    conf.reset();
+
+    return conf;
   }
   /// ------------------------------
 
-  configuration_ = conf;
+  valid_conf = true;
 
-  NQLog("AssemblyObjectFinderPatRecWidget", NQLog::Spam) << "update_configuration"
-     << ": emitting signal \"configuration_updated\"";
-
-  emit configuration_updated(configuration_);
-  emit configuration_updated();
+  return conf;
 }

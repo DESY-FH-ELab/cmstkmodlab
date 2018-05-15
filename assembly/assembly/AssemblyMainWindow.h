@@ -36,6 +36,7 @@ typedef AssemblyUEyeModel AssemblyUEyeModel_t;
 #include <AssemblyObjectFinderPatRecView.h>
 #include <AssemblyObjectFinderPatRecThread.h>
 #include <AssemblyObjectAligner.h>
+#include <AssemblyObjectAlignerView.h>
 #include <AssemblyMultiPickupTester.h>
 #include <AssemblyAssembler.h>
 #include <AssemblyHardwareControlView.h>
@@ -82,8 +83,8 @@ class AssemblyMainWindow : public QMainWindow
   void changeState_autofocus(const int);
   void changeState_alignment(const int);
 
-//!!  void    connect_objectAligner(const AssemblyObjectAligner::Configuration&);
-//!!  void disconnect_objectAligner();
+  void    connect_objectAligner(const AssemblyObjectAligner::Configuration&);
+  void disconnect_objectAligner();
 
   void    connect_multipickupNpatrec(const AssemblyMultiPickupTester::Configuration&);
   void disconnect_multipickupNpatrec();
@@ -156,6 +157,7 @@ class AssemblyMainWindow : public QMainWindow
   AssemblyThresholderView* thresholder_view_;
   AssemblyAssemblyView* assemblyView_;
   AssemblyObjectFinderPatRecView* finder_view_;
+  AssemblyObjectAlignerView* aligner_view_;
   AssemblyRegistryView* registryView_;
   AssemblyHardwareControlView* hwctr_view_;
 

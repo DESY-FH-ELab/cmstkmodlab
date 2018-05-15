@@ -14,6 +14,7 @@
 #define AssemblyObjectAligner_h
 
 #include <LStepExpressMotionManager.h>
+#include <AssemblyObjectFinderPatRec.h>
 
 #include <QObject>
 
@@ -21,17 +22,40 @@ class AssemblyObjectAligner : public QObject
 {
  Q_OBJECT
 
-  public:
-    explicit AssemblyObjectAligner(const LStepExpressMotionManager*, QObject* parent=nullptr);
-    virtual ~AssemblyObjectAligner() {}
+ public:
+  explicit AssemblyObjectAligner(const LStepExpressMotionManager* const, QObject* parent=nullptr);
+  virtual ~AssemblyObjectAligner() {}
+
+  void reset();
+
+  class Configuration {
+
+   public:
+    explicit Configuration() { this->reset(); }
+    virtual ~Configuration() {}
 
     void reset();
 
-    struct Configuration {};
+    bool is_valid() const;
+
+    double object_DeltaX;
+    double object_DeltaY;
+
+    bool only_measure_angle;
+
+    double target_angle;
+
+    AssemblyObjectFinderPatRec::Configuration PatRecOne_configuration;
+    AssemblyObjectFinderPatRec::Configuration PatRecTwo_configuration;
+  };
+
+  const Configuration& configuration() const { return configuration_; }
 
   protected:
 
-    const LStepExpressMotionManager* motion_manager_;
+    const LStepExpressMotionManager* const motion_manager_;
+
+    Configuration configuration_;
 
     bool motion_manager_enabled_;
 
@@ -59,6 +83,8 @@ class AssemblyObjectAligner : public QObject
 
   public slots:
 
+    void update_configuration(const Configuration&);
+
     void start_alignment(const double, const double);
     void start_alignment(const double, const double, const double);
 
@@ -71,6 +97,8 @@ class AssemblyObjectAligner : public QObject
     void finish_motion();
 
   signals:
+
+    void configuration_updated();
 
     void nextAlignmentStep(int, double, double, double);
 

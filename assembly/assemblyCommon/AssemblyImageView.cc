@@ -16,6 +16,8 @@
 #include <AssemblyImageView.h>
 #include <AssemblyUtilities.h>
 
+#include <sstream>
+
 #include <QFileDialog>
 #include <QGridLayout>
 #include <QHBoxLayout>
@@ -313,8 +315,15 @@ void AssemblyImageView::update_text(const double z)
 
 void AssemblyImageView::update_autofocus_config(const double maxDZ, const int Nstep)
 {
-  AF_param_maxDZ_lineed_->setText(QString::fromStdString(std::to_string(maxDZ)));
-  AF_param_Nstep_lineed_->setText(QString::fromStdString(std::to_string(Nstep)));
+  std::stringstream maxDZ_strs;
+  maxDZ_strs << maxDZ;
+
+  AF_param_maxDZ_lineed_->setText(QString::fromStdString(maxDZ_strs.str()));
+
+  std::stringstream Nstep_strs;
+  Nstep_strs << Nstep;
+
+  AF_param_Nstep_lineed_->setText(QString::fromStdString(Nstep_strs.str()));
 
   return;
 }

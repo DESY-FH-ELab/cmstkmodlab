@@ -58,15 +58,15 @@ class AssemblyObjectFinderPatRec : public QObject
     double              angles_finestep_;
   };
 
-  void set_configuration(const Configuration& conf){ configuration_ = conf; }
-
-  Configuration get_configuration() const { return configuration_; }
+//!!  void set_configuration(const Configuration& conf){ configuration_ = conf; }
+//!!
+//!!  const Configuration& configuration() const { return configuration_; }
 
  protected:
 
   AssemblyThresholder* const thresholder_;
 
-  Configuration configuration_;
+//!!  Configuration configuration_;
 
   static int exe_counter_;
 
@@ -104,7 +104,7 @@ class AssemblyObjectFinderPatRec : public QObject
 
   void launch_PatRec(const AssemblyObjectFinderPatRec::Configuration&);
 
-  void template_matching(const cv::Mat&, const cv::Mat&, const cv::Mat&);
+  void template_matching(const Configuration&, const cv::Mat&, const cv::Mat&, const cv::Mat&);
 
  signals:
 
@@ -123,7 +123,7 @@ class AssemblyObjectFinderPatRec : public QObject
   void updated_prescan_angles();
   void updated_angscan_parameters();
 
-  void template_matching_request(const cv::Mat&, const cv::Mat&, const cv::Mat&);
+  void template_matching_request(const Configuration&, const cv::Mat&, const cv::Mat&, const cv::Mat&);
 
   void reportObjectLocation(int, double, double, double);
 

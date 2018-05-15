@@ -166,12 +166,10 @@ void AssemblyObjectFinderPatRec::launch_PatRec(const AssemblyObjectFinderPatRec:
   }
   // ----------
 
-  this->set_configuration(conf);
-
   NQLog("AssemblyObjectFinderPatRec", NQLog::Spam) << "launch_PatRec"
      << ": emitting signal \"template_matching_request\"";
 
-  emit template_matching_request(img_master_, img_master_PatRec_, img_template_);
+  emit template_matching_request(conf, img_master_, img_master_PatRec_, img_template_);
 }
 
 void AssemblyObjectFinderPatRec::update_image_master(const cv::Mat& img)
@@ -259,8 +257,21 @@ void AssemblyObjectFinderPatRec::send_image_master_PatRec()
   emit sent_image_master_PatRec(img_master_PatRec_);
 }
 
-void AssemblyObjectFinderPatRec::template_matching(const cv::Mat& img_master, const cv::Mat& img_master_PatRec, const cv::Mat& img_templa_PatRec)
+void AssemblyObjectFinderPatRec::template_matching(const Configuration& conf, const cv::Mat& img_master, const cv::Mat& img_master_PatRec, const cv::Mat& img_templa_PatRec)
 {
+  // validate configuration parameters
+  if(conf.is_valid() == false)
+  {
+    NQLog("AssemblyObjectFinderPatRec", NQLog::Fatal) << "template_matching"
+       << ": invalid AssemblyObjectFinderPatRec::Configuration object, no action taken";
+
+    NQLog("AssemblyObjectFinderPatRec", NQLog::Spam) << "template_matching"
+       << ": emitting signal \"PatRec_exitcode(1)\"";
+
+    emit PatRec_exitcode(1);
+  }
+  // ----------
+
   NQLog("AssemblyObjectFinderPatRec", NQLog::Spam) << "template_matching";
   NQLog("AssemblyObjectFinderPatRec", NQLog::Spam) << "template_matching: Master   cols = " << img_master.cols;
   NQLog("AssemblyObjectFinderPatRec", NQLog::Spam) << "template_matching: Master   rows = " << img_master.rows;
@@ -318,11 +329,11 @@ void AssemblyObjectFinderPatRec::template_matching(const cv::Mat& img_master, co
 
   output_subdir = output_dir+output_subdir_name_;
 
-  const double angle_fine_min  = -1.0 * configuration_.angles_finemax_;
-  const double angle_fine_max  = +1.0 * configuration_.angles_finemax_;
-  const double angle_fine_step =        configuration_.angles_finestep_;
+  const double angle_fine_min  = -1.0 * conf.angles_finemax_;
+  const double angle_fine_max  = +1.0 * conf.angles_finemax_;
+  const double angle_fine_step =        conf.angles_finestep_;
 
-  const std::vector<double>& prescan_angles = configuration_.angles_prescan_vec_;
+  const std::vector<double>& prescan_angles = conf.angles_prescan_vec_;
 
 //  mutex_.unlock();
   // ------------------------------------

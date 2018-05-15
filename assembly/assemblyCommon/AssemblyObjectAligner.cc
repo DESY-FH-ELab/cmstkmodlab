@@ -17,7 +17,7 @@
 
 #include <cmath>
 
-AssemblyObjectAligner::AssemblyObjectAligner(const LStepExpressMotionManager* motion_manager, QObject* parent) :
+AssemblyObjectAligner::AssemblyObjectAligner(const LStepExpressMotionManager* const motion_manager, QObject* parent) :
   QObject(parent),
   motion_manager_(motion_manager),
   motion_manager_enabled_(false)
@@ -58,6 +58,53 @@ AssemblyObjectAligner::AssemblyObjectAligner(const LStepExpressMotionManager* mo
   this->reset();
 
   NQLog("AssemblyObjectAligner", NQLog::Debug) << "constructed";
+}
+
+void AssemblyObjectAligner::Configuration::reset()
+{
+  object_DeltaX = -999.;
+  object_DeltaY = -999.;
+
+  only_measure_angle = true;
+
+  target_angle = -999.;
+
+  PatRecOne_configuration.reset();
+  PatRecTwo_configuration.reset();
+}
+
+bool AssemblyObjectAligner::Configuration::is_valid() const
+{
+  if(object_DeltaX == -999.){ return false; }
+  if(object_DeltaY == -999.){ return false; }
+
+  if(only_measure_angle == false)
+  {
+    if(fabs(target_angle) > 180.){ return false; }
+  }
+
+  if(PatRecOne_configuration.is_valid() == false){ return false; }
+  if(PatRecTwo_configuration.is_valid() == false){ return false; }
+
+  return true;
+}
+
+void AssemblyObjectAligner::update_configuration(const AssemblyObjectAligner::Configuration& conf)
+{
+  if(conf.is_valid() == false)
+  {
+    NQLog("AssemblyObjectAligner", NQLog::Critical) << "update_configuration"
+       << ": invalid input AssemblyObjectAligner::Configuration object, no action taken";
+
+    return;
+  }
+
+  configuration_ = conf;
+
+  NQLog("AssemblyObjectAligner", NQLog::Spam) << "update_configuration"
+     << ": emitting signal \"configuration_updated\"";
+
+  emit configuration_updated();
 }
 
 void AssemblyObjectAligner::reset()
