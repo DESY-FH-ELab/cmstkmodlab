@@ -204,7 +204,8 @@ AssemblyMainWindow::AssemblyMainWindow(const unsigned int camera_ID, QWidget* pa
 
     connect(aligner_view_, SIGNAL(configuration(AssemblyObjectAligner::Configuration)), this, SLOT(start_objectAligner(AssemblyObjectAligner::Configuration)));
 
-//!!    aligner_view_->connect_to_aligner(aligner_);
+    aligner_view_->PatRecOne_Image()->connectImageProducer(aligner_, SIGNAL(image_PatRecOne(cv::Mat)));
+    aligner_view_->PatRecTwo_Image()->connectImageProducer(aligner_, SIGNAL(image_PatRecTwo(cv::Mat)));
 
     NQLog("AssemblyMainWindow", NQLog::Message) << "added view " << tabname_Alignm;
     // ---------------------------------------------------------
@@ -490,6 +491,8 @@ void AssemblyMainWindow::start_objectAligner(const AssemblyObjectAligner::Config
 
   connect(finder_, SIGNAL(updated_image_master()), aligner_, SLOT(launch_next_alignment_step()));
 
+  connect(finder_, SIGNAL(PatRec_res_image_master_edited(cv::Mat)), aligner_, SLOT(redirect_image(cv::Mat)));
+
   connect(finder_, SIGNAL(PatRec_results(int, double, double, double)), aligner_, SLOT(run_alignment(int, double, double, double)));
 
   connect(aligner_, SIGNAL(measured_angle(double)), aligner_view_, SLOT(show_measured_angle(double)));
@@ -531,6 +534,8 @@ void AssemblyMainWindow::disconnect_objectAligner()
   disconnect(aligner_, SIGNAL(PatRec_request(AssemblyObjectFinderPatRec::Configuration)), finder_, SLOT(launch_PatRec(AssemblyObjectFinderPatRec::Configuration)));
 
   disconnect(finder_, SIGNAL(updated_image_master()), aligner_, SLOT(launch_next_alignment_step()));
+
+  disconnect(finder_, SIGNAL(PatRec_res_image_master_edited(cv::Mat)), aligner_, SLOT(redirect_image(cv::Mat)));
 
   disconnect(finder_, SIGNAL(PatRec_results(int, double, double, double)), aligner_, SLOT(run_alignment(int, double, double, double)));
 

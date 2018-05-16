@@ -39,6 +39,9 @@ class AssemblyObjectAlignerView : public QWidget
   AssemblyObjectFinderPatRecWidget* PatRecOne_Widget() const { return patrecOne_wid_; }
   AssemblyObjectFinderPatRecWidget* PatRecTwo_Widget() const { return patrecTwo_wid_; }
 
+  AssemblyUEyeView* PatRecOne_Image() const { return patrecOne_image_; }
+  AssemblyUEyeView* PatRecTwo_Image() const { return patrecTwo_image_; }
+
 //!!  void connect_to_finder(const AssemblyObjectFinderPatRec* const);
 
   AssemblyObjectAligner::Configuration get_configuration(bool&) const;

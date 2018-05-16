@@ -341,8 +341,6 @@ AssemblyObjectAlignerView::AssemblyObjectAlignerView(QWidget* parent) :
   patrecOne_scroll_->setWidget(patrecOne_image_);
   patrecOne_scroll_->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 
-  patrecOne_image_->connectImageProducer(this->PatRecOne_Widget(), SIGNAL(updated_image_template(cv::Mat)));
-
   alignm_img_lay->addWidget(patrecOne_scroll_, 0, 0);
 
   patrecTwo_image_ = new AssemblyUEyeView(this);
@@ -361,8 +359,6 @@ AssemblyObjectAlignerView::AssemblyObjectAlignerView(QWidget* parent) :
   patrecTwo_scroll_->setAlignment(Qt::AlignCenter);
   patrecTwo_scroll_->setWidget(patrecTwo_image_);
   patrecTwo_scroll_->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-
-  patrecTwo_image_->connectImageProducer(this->PatRecTwo_Widget(), SIGNAL(updated_image_template(cv::Mat)));
 
   alignm_img_lay->addWidget(patrecTwo_scroll_, 0, 1);
   // ---------------------

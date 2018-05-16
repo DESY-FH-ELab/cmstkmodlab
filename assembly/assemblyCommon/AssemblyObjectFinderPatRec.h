@@ -58,15 +58,9 @@ class AssemblyObjectFinderPatRec : public QObject
     double              angles_finestep_;
   };
 
-//!!  void set_configuration(const Configuration& conf){ configuration_ = conf; }
-//!!
-//!!  const Configuration& configuration() const { return configuration_; }
-
  protected:
 
   AssemblyThresholder* const thresholder_;
-
-//!!  Configuration configuration_;
 
   static int exe_counter_;
 
@@ -99,9 +93,6 @@ class AssemblyObjectFinderPatRec : public QObject
   void update_image_master       (const cv::Mat&);
   void update_image_master_PatRec(const cv::Mat&);
 
-//!!  void send_image_master();
-//!!  void send_image_master_PatRec();
-
   void launch_PatRec(const AssemblyObjectFinderPatRec::Configuration&);
 
   void template_matching(const Configuration&, const cv::Mat&, const cv::Mat&, const cv::Mat&);
@@ -113,9 +104,6 @@ class AssemblyObjectFinderPatRec : public QObject
 
   void updated_image_master_PatRec(const cv::Mat&);
   void updated_image_master_PatRec();
-
-//!!  void sent_image_master       (const cv::Mat&);
-//!!  void sent_image_master_PatRec(const cv::Mat&);
 
   void PatRec_res_image_master_edited(const QString&);
   void PatRec_res_image_master_edited(const cv::Mat&);

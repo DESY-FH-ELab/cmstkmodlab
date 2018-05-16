@@ -81,13 +81,15 @@ class AssemblyObjectAligner : public QObject
 
     void update_configuration(const Configuration&);
 
+    void redirect_image(const cv::Mat&);
+
     void execute();
 
     void run_alignment(int, double, double, double);
 
     void launch_next_alignment_step();
 
-    void moveRelative(const double, const double, const double, const double);
+    void move_relative(const double, const double, const double, const double);
 
     void complete_motion();
 
@@ -97,11 +99,16 @@ class AssemblyObjectAligner : public QObject
 
     void nextAlignmentStep(int, double, double, double);
 
-    void move_relative(const double, const double, const double, const double);
+    void image_PatRecOne(const cv::Mat&);
+    void image_PatRecTwo(const cv::Mat&);
+
+    void image_request();
+
+    void PatRec_request(const AssemblyObjectFinderPatRec::Configuration&);
+
+    void move_relative_request(const double, const double, const double, const double);
 
     void motion_completed();
-
-    void acquireImage();
 
     void measured_angle(const double);
 
