@@ -153,7 +153,7 @@ void AssemblyObjectAligner::enable_motion_manager(const bool arg)
 
   if(arg)
   {
-    connect(this, SIGNAL(move_relative_request(double, double, double, double)), motion_manager_, SLOT(move_relative(double, double, double, double)));
+    connect(this, SIGNAL(move_relative_request(double, double, double, double)), motion_manager_, SLOT(moveRelative(double, double, double, double)));
     connect(motion_manager_, SIGNAL(motion_finished()), this, SLOT(complete_motion()));
 
     motion_manager_enabled_ = true;
@@ -163,7 +163,7 @@ void AssemblyObjectAligner::enable_motion_manager(const bool arg)
   }
   else
   {
-    disconnect(this, SIGNAL(move_relative_request(double, double, double, double)), motion_manager_, SLOT(move_relative(double, double, double, double)));
+    disconnect(this, SIGNAL(move_relative_request(double, double, double, double)), motion_manager_, SLOT(moveRelative(double, double, double, double)));
     disconnect(motion_manager_, SIGNAL(motion_finished()), this, SLOT(complete_motion()));
 
     motion_manager_enabled_ = false;

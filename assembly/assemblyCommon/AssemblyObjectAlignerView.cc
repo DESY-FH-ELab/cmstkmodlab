@@ -32,6 +32,9 @@
 AssemblyObjectAlignerView::AssemblyObjectAlignerView(QWidget* parent) :
   QWidget(parent),
 
+  alignm_cfg_wid_(nullptr),
+  alignm_res_wid_(nullptr),
+
   alignm_PSS_radbu_   (nullptr),
   alignm_PSS_dX_linee_(nullptr),
   alignm_PSS_dY_linee_(nullptr),
@@ -71,11 +74,11 @@ AssemblyObjectAlignerView::AssemblyObjectAlignerView(QWidget* parent) :
 
   // Configuration + Execution
 
-  QWidget* alignm_cfg_wid = new QWidget;
-  main_toolbox->addItem(alignm_cfg_wid, tr("Alignment Configuration"));
+  alignm_cfg_wid_ = new QWidget;
+  main_toolbox->addItem(alignm_cfg_wid_, tr("Alignment Configuration"));
 
   QVBoxLayout* alignm_cfg_lay = new QVBoxLayout;
-  alignm_cfg_wid->setLayout(alignm_cfg_lay);
+  alignm_cfg_wid_->setLayout(alignm_cfg_lay);
 
   // Object Configuration + Execution Modes
   QHBoxLayout* alignm_cfgexe_lay = new QHBoxLayout;
@@ -294,11 +297,11 @@ AssemblyObjectAlignerView::AssemblyObjectAlignerView(QWidget* parent) :
   // ---------------------
 
   // Results -------------
-  QWidget* alignm_res_wid = new QWidget;
-  main_toolbox->addItem(alignm_res_wid, "Alignment Results");
+  alignm_res_wid_ = new QWidget;
+  main_toolbox->addItem(alignm_res_wid_, "Alignment Results");
  
   QVBoxLayout* alignm_res_lay = new QVBoxLayout;
-  alignm_res_wid->setLayout(alignm_res_lay);
+  alignm_res_wid_->setLayout(alignm_res_lay);
 
   // Numerical Results
   QHBoxLayout* alignm_mesang_lay = new QHBoxLayout;
@@ -350,7 +353,6 @@ AssemblyObjectAlignerView::AssemblyObjectAlignerView(QWidget* parent) :
   patrecTwo_image_->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
   patrecTwo_image_->setScaledContents(true);
   patrecTwo_image_->setAlignment(Qt::AlignCenter);
-  patrecTwo_image_->setZoomFactor(0.50);
 
   patrecTwo_scroll_ = new QScrollArea(this);
   patrecTwo_scroll_->setMinimumSize(200, 200);

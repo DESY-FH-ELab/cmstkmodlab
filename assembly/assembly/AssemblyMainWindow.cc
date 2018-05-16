@@ -497,9 +497,9 @@ void AssemblyMainWindow::start_objectAligner(const AssemblyObjectAligner::Config
 
   connect(aligner_, SIGNAL(measured_angle(double)), aligner_view_, SLOT(show_measured_angle(double)));
 
-  connect(aligner_, SIGNAL(execution_completed()), this, SLOT(disconnect_objectAligner));
+  connect(aligner_, SIGNAL(execution_completed()), this, SLOT(disconnect_objectAligner()));
 
-  aligner_view_->setEnabled(false);
+  aligner_view_->Configuration_Widget()->setEnabled(false);
 
   aligner_connected_ = true;
 
@@ -541,9 +541,9 @@ void AssemblyMainWindow::disconnect_objectAligner()
 
   disconnect(aligner_, SIGNAL(measured_angle(double)), aligner_view_, SLOT(show_measured_angle(double)));
 
-  disconnect(aligner_, SIGNAL(execution_completed()), this, SLOT(disconnect_objectAligner));
+  disconnect(aligner_, SIGNAL(execution_completed()), this, SLOT(disconnect_objectAligner()));
 
-  aligner_view_->setEnabled(true);
+  aligner_view_->Configuration_Widget()->setEnabled(true);
 
   aligner_connected_ = false;
 

@@ -36,6 +36,9 @@ class AssemblyObjectAlignerView : public QWidget
   explicit AssemblyObjectAlignerView(QWidget* parent=nullptr);
   virtual ~AssemblyObjectAlignerView() {}
 
+  QWidget* Configuration_Widget() const { return alignm_cfg_wid_; }
+  QWidget* Results_Widget()       const { return alignm_res_wid_; }
+
   AssemblyObjectFinderPatRecWidget* PatRecOne_Widget() const { return patrecOne_wid_; }
   AssemblyObjectFinderPatRecWidget* PatRecTwo_Widget() const { return patrecTwo_wid_; }
 
@@ -49,6 +52,9 @@ class AssemblyObjectAlignerView : public QWidget
  protected:
 
   void keyReleaseEvent(QKeyEvent *event);
+
+  QWidget* alignm_cfg_wid_;
+  QWidget* alignm_res_wid_;
 
   QRadioButton* alignm_PSS_radbu_;
   QLineEdit*    alignm_PSS_dX_linee_;
