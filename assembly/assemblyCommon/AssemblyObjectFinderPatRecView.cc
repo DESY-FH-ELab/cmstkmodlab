@@ -43,7 +43,7 @@ AssemblyObjectFinderPatRecView::AssemblyObjectFinderPatRecView(QWidget* parent) 
   patrec_exe_button_(nullptr),
   patrec_exe_label_(nullptr),
 
-  w_patrec_(nullptr),
+  patrec_wid_(nullptr),
 
   patrec_res1_linee_(nullptr),
   patrec_res2_linee_(nullptr),
@@ -169,8 +169,8 @@ AssemblyObjectFinderPatRecView::AssemblyObjectFinderPatRecView(QWidget* parent) 
   patrec_lay->addSpacing(20);
   patrec_lay->addWidget(patrec_cfg_title);
 
-  w_patrec_ = new AssemblyObjectFinderPatRecWidget;
-  w_patrec_->setToolTip("Pattern Recognition Configuration");
+  patrec_wid_ = new AssemblyObjectFinderPatRecWidget;
+  patrec_wid_->setToolTip("Pattern Recognition Configuration");
 
   connect(patrec_exe_button_, SIGNAL(clicked()), this->PatRec_Widget(), SLOT(transmit_configuration()));
 
@@ -180,17 +180,17 @@ AssemblyObjectFinderPatRecView::AssemblyObjectFinderPatRecView(QWidget* parent) 
   if(config != nullptr)
   {
     const std::string fpath = config->getValue<std::string>("AssemblyObjectFinderPatRecView_template_fpath", "");
-    if(fpath != ""){ w_patrec_->load_image_template_from_path(QString::fromStdString(Config::CMSTkModLabBasePath+"/"+fpath)); }
+    if(fpath != ""){ patrec_wid_->load_image_template_from_path(QString::fromStdString(Config::CMSTkModLabBasePath+"/"+fpath)); }
 
-    assembly::QLineEdit_setText(w_patrec_->threshold_lineEdit()        , config->getValue<int>("AssemblyObjectFinderPatRecView_threshold"        , 100));
-    assembly::QLineEdit_setText(w_patrec_->adaptiveThreshold_lineEdit(), config->getValue<int>("AssemblyObjectFinderPatRecView_adaptiveThreshold", 587));
+    assembly::QLineEdit_setText(patrec_wid_->threshold_lineEdit()        , config->getValue<int>("AssemblyObjectFinderPatRecView_threshold"        , 100));
+    assembly::QLineEdit_setText(patrec_wid_->adaptiveThreshold_lineEdit(), config->getValue<int>("AssemblyObjectFinderPatRecView_adaptiveThreshold", 587));
 
-    assembly::QLineEdit_setText(w_patrec_->angles_prescan_lineEdit()   , config->getValue<double>("AssemblyObjectFinderPatRecView_angles_prescan" , 0));
-    assembly::QLineEdit_setText(w_patrec_->angles_finemax_lineEdit()   , config->getValue<double>("AssemblyObjectFinderPatRecView_angles_finemax" , 2));
-    assembly::QLineEdit_setText(w_patrec_->angles_finestep_lineEdit()  , config->getValue<double>("AssemblyObjectFinderPatRecView_angles_finestep", 0.2));
+    assembly::QLineEdit_setText(patrec_wid_->angles_prescan_lineEdit()   , config->getValue<double>("AssemblyObjectFinderPatRecView_angles_prescan" , 0));
+    assembly::QLineEdit_setText(patrec_wid_->angles_finemax_lineEdit()   , config->getValue<double>("AssemblyObjectFinderPatRecView_angles_finemax" , 2));
+    assembly::QLineEdit_setText(patrec_wid_->angles_finestep_lineEdit()  , config->getValue<double>("AssemblyObjectFinderPatRecView_angles_finestep", 0.2));
   }
 
-  patrec_lay->addWidget(w_patrec_);
+  patrec_lay->addWidget(patrec_wid_);
   // -----------
 
   // PatRec results

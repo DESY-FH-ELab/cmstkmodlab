@@ -25,20 +25,22 @@
 #include <QGridLayout>
 #include <QGroupBox>
 #include <QToolBox>
+#include <QLabel>
 #include <QScriptEngine>
 #include <qnumeric.h>
 
 AssemblyObjectAlignerView::AssemblyObjectAlignerView(QWidget* parent) :
   QWidget(parent),
 
-  alignm_objDX_label_(nullptr),
-  alignm_objDX_linee_(nullptr),
+  alignm_PSS_radbu_   (nullptr),
+  alignm_PSS_dX_linee_(nullptr),
+  alignm_PSS_dY_linee_(nullptr),
 
-  alignm_objDY_label_(nullptr),
-  alignm_objDY_linee_(nullptr),
+  alignm_PSP_radbu_   (nullptr),
+  alignm_PSP_dX_linee_(nullptr),
+  alignm_PSP_dY_linee_(nullptr),
 
-  alignm_angtgt_label_(nullptr), 
-  alignm_angtgt_linee_(nullptr), 
+  alignm_angtgt_linee_(nullptr),
 
   alignm_exemeas_radbu_(nullptr),
   alignm_exemeas_pusbu_(nullptr),
@@ -46,10 +48,9 @@ AssemblyObjectAlignerView::AssemblyObjectAlignerView(QWidget* parent) :
   alignm_exealig_radbu_(nullptr),
   alignm_exealig_pusbu_(nullptr),
 
-  w_patrecOne_(nullptr),
-  w_patrecTwo_(nullptr),
+  patrecOne_wid_(nullptr),
+  patrecTwo_wid_(nullptr),
 
-  alignm_mesang_label_(nullptr),
   alignm_mesang_linee_(nullptr),
 
   patrecOne_image_ (nullptr),
@@ -81,34 +82,109 @@ AssemblyObjectAlignerView::AssemblyObjectAlignerView(QWidget* parent) :
   alignm_cfg_lay->addLayout(alignm_cfgexe_lay);
 
   // object configuration
-  QGridLayout* alignm_objcfg_lay = new QGridLayout;
+  QVBoxLayout* alignm_objcfg_lay = new QVBoxLayout;
   alignm_cfgexe_lay->addLayout(alignm_objcfg_lay);
 
-  alignm_objDX_label_ = new QLabel(tr("Delta-X [mm]"));
-  alignm_objDX_linee_ = new QLineEdit("");
+  QGroupBox* alignm_dXY_box = new QGroupBox;
+  alignm_objcfg_lay->addWidget(alignm_dXY_box);
 
-  alignm_objcfg_lay->addWidget(alignm_objDX_label_, 0, 0);
-  alignm_objcfg_lay->addWidget(alignm_objDX_linee_, 0, 1);
+  QVBoxLayout* alignm_dXY_lay = new QVBoxLayout;
+  alignm_dXY_box->setLayout(alignm_dXY_lay);
 
-  alignm_objDY_label_ = new QLabel(tr("Delta-Y [mm]"));
-  alignm_objDY_linee_ = new QLineEdit("");
+  QHBoxLayout* alignm_PSS_lay = new QHBoxLayout;
+  alignm_dXY_lay->addLayout(alignm_PSS_lay);
 
-  alignm_objcfg_lay->addWidget(alignm_objDY_label_, 1, 0);
-  alignm_objcfg_lay->addWidget(alignm_objDY_linee_, 1, 1);
+  alignm_PSS_radbu_ = new QRadioButton(tr("PSS Sensor"));
+  alignm_PSS_radbu_->setStyleSheet("QRadioButton { font-weight : bold; }");
 
-  alignm_angtgt_label_ = new QLabel(tr("Target Angle [deg]"));
-  alignm_angtgt_linee_ = new QLineEdit("");
+  QLabel* alignm_PSS_dX_label = new QLabel(tr("dX [mm]"));
+  alignm_PSS_dX_linee_ = new QLineEdit(tr(""));
 
-  alignm_angtgt_label_->setEnabled(false);
+  QLabel* alignm_PSS_dY_label = new QLabel(tr("dY [mm]"));
+  alignm_PSS_dY_linee_ = new QLineEdit(tr(""));
+
+  alignm_PSS_lay->addWidget(alignm_PSS_radbu_   , 25, Qt::AlignCenter);
+  alignm_PSS_lay->addWidget(alignm_PSS_dX_label , 10);
+  alignm_PSS_lay->addWidget(alignm_PSS_dX_linee_, 10);
+  alignm_PSS_lay->addSpacing(10);
+  alignm_PSS_lay->addWidget(alignm_PSS_dY_label , 10);
+  alignm_PSS_lay->addWidget(alignm_PSS_dY_linee_, 10);
+  alignm_PSS_lay->addSpacing(25);
+
+  alignm_PSS_radbu_   ->setChecked(true);
+  alignm_PSS_dX_label ->setEnabled(true);
+  alignm_PSS_dX_linee_->setEnabled(true);
+  alignm_PSS_dY_label ->setEnabled(true);
+  alignm_PSS_dY_linee_->setEnabled(true);
+
+  connect(alignm_PSS_radbu_, SIGNAL(toggled(bool)), alignm_PSS_dX_label , SLOT(setEnabled(bool)));
+  connect(alignm_PSS_radbu_, SIGNAL(toggled(bool)), alignm_PSS_dX_linee_, SLOT(setEnabled(bool)));
+  connect(alignm_PSS_radbu_, SIGNAL(toggled(bool)), alignm_PSS_dY_label , SLOT(setEnabled(bool)));
+  connect(alignm_PSS_radbu_, SIGNAL(toggled(bool)), alignm_PSS_dY_linee_, SLOT(setEnabled(bool)));
+
+  assembly::QLineEdit_setText(alignm_PSS_dX_linee_, config->getValue<double>("AssemblyObjectAlignerView_PSS_deltaX", 0.));
+  assembly::QLineEdit_setText(alignm_PSS_dY_linee_, config->getValue<double>("AssemblyObjectAlignerView_PSS_deltaY", 0.));
+
+  QHBoxLayout* alignm_PSP_lay = new QHBoxLayout;
+  alignm_dXY_lay->addLayout(alignm_PSP_lay);
+
+  alignm_PSP_radbu_ = new QRadioButton(tr("PSP Sensor"));
+  alignm_PSP_radbu_->setStyleSheet("QRadioButton { font-weight : bold; }");
+
+  QLabel* alignm_PSP_dX_label = new QLabel(tr("dX [mm]"));
+  alignm_PSP_dX_linee_ = new QLineEdit(tr(""));
+
+  QLabel* alignm_PSP_dY_label = new QLabel(tr("dY [mm]"));
+  alignm_PSP_dY_linee_ = new QLineEdit(tr(""));
+
+  alignm_PSP_lay->addWidget(alignm_PSP_radbu_   , 25, Qt::AlignCenter);
+  alignm_PSP_lay->addWidget(alignm_PSP_dX_label , 10);
+  alignm_PSP_lay->addWidget(alignm_PSP_dX_linee_, 10);
+  alignm_PSP_lay->addSpacing(10);
+  alignm_PSP_lay->addWidget(alignm_PSP_dY_label , 10);
+  alignm_PSP_lay->addWidget(alignm_PSP_dY_linee_, 10);
+  alignm_PSP_lay->addSpacing(25);
+
+  alignm_PSP_radbu_   ->setChecked(false);
+  alignm_PSP_dX_label ->setEnabled(false);
+  alignm_PSP_dX_linee_->setEnabled(false);
+  alignm_PSP_dY_label ->setEnabled(false);
+  alignm_PSP_dY_linee_->setEnabled(false);
+
+  connect(alignm_PSP_radbu_, SIGNAL(toggled(bool)), alignm_PSP_dX_label , SLOT(setEnabled(bool)));
+  connect(alignm_PSP_radbu_, SIGNAL(toggled(bool)), alignm_PSP_dX_linee_, SLOT(setEnabled(bool)));
+  connect(alignm_PSP_radbu_, SIGNAL(toggled(bool)), alignm_PSP_dY_label , SLOT(setEnabled(bool)));
+  connect(alignm_PSP_radbu_, SIGNAL(toggled(bool)), alignm_PSP_dY_linee_, SLOT(setEnabled(bool)));
+
+  assembly::QLineEdit_setText(alignm_PSP_dX_linee_, config->getValue<double>("AssemblyObjectAlignerView_PSP_deltaX", 0.));
+  assembly::QLineEdit_setText(alignm_PSP_dY_linee_, config->getValue<double>("AssemblyObjectAlignerView_PSP_deltaY", 0.));
+
+  alignm_objcfg_lay->addSpacing(15);
+
+  QHBoxLayout* alignm_angtgt_lay = new QHBoxLayout;
+  alignm_objcfg_lay->addLayout(alignm_angtgt_lay);
+
+  QLabel* alignm_angtgt_label = new QLabel(tr("Target Angle [deg]"));
+  alignm_angtgt_linee_ = new QLineEdit(tr(""));
+
+  alignm_angtgt_label ->setEnabled(false);
   alignm_angtgt_linee_->setEnabled(false);
 
-  alignm_objcfg_lay->addWidget(alignm_angtgt_label_, 2, 0);
-  alignm_objcfg_lay->addWidget(alignm_angtgt_linee_, 2, 1);
+  alignm_angtgt_lay->addSpacing(80);
+  alignm_angtgt_lay->addWidget(alignm_angtgt_label , 10);
+  alignm_angtgt_lay->addWidget(alignm_angtgt_linee_, 10);
+  alignm_angtgt_lay->addSpacing(80);
   // -----
 
   // execution modes
+  QVBoxLayout* alignm_exe_lay = new QVBoxLayout;
+  alignm_cfgexe_lay->addLayout(alignm_exe_lay);
+
+  QGroupBox* alignm_exemod_box = new QGroupBox;
+  alignm_exe_lay->addWidget(alignm_exemod_box);
+
   QVBoxLayout* alignm_exemod_lay = new QVBoxLayout;
-  alignm_cfgexe_lay->addLayout(alignm_exemod_lay);
+  alignm_exemod_box->setLayout(alignm_exemod_lay);
 
   // mode: measure angle
   QHBoxLayout* alignm_exemeas_lay = new QHBoxLayout;
@@ -140,7 +216,7 @@ AssemblyObjectAlignerView::AssemblyObjectAlignerView(QWidget* parent) :
   alignm_exealig_pusbu_->setEnabled(false);
 
   connect(alignm_exealig_radbu_, SIGNAL(toggled(bool)), alignm_exealig_pusbu_, SLOT(setEnabled(bool)));
-  connect(alignm_exealig_radbu_, SIGNAL(toggled(bool)), alignm_angtgt_label_ , SLOT(setEnabled(bool)));
+  connect(alignm_exealig_radbu_, SIGNAL(toggled(bool)), alignm_angtgt_label  , SLOT(setEnabled(bool)));
   connect(alignm_exealig_radbu_, SIGNAL(toggled(bool)), alignm_angtgt_linee_ , SLOT(setEnabled(bool)));
 
   alignm_exealig_lay->addSpacing(26);
@@ -164,35 +240,49 @@ AssemblyObjectAlignerView::AssemblyObjectAlignerView(QWidget* parent) :
   // PatRecWidget #1
   QGroupBox* patrecOne_cfg_box = new QGroupBox(tr("PatRec Marker #1"));
   patrecOne_cfg_box->setObjectName("patrecOne_cfg_box");
-  patrecOne_cfg_box->setStyleSheet("QWidget#patrecOne_cfg_box { font-weight: bold; color : blue; }");
+  patrecOne_cfg_box->setStyleSheet("QWidget#patrecOne_cfg_box { font-weight : bold; color : blue; }");
 
-  w_patrecOne_ = new AssemblyObjectFinderPatRecWidget;
-  w_patrecOne_->setToolTip("Pattern Recognition Configuration #1");
+  patrecOne_wid_ = new AssemblyObjectFinderPatRecWidget;
+  patrecOne_wid_->setToolTip("Pattern Recognition Configuration #1");
 
   if(config != nullptr)
   {
-    const std::string fpath = config->getValue<std::string>("AssemblyObjectAlignerView_template1_fpath", "");
-    if(fpath != ""){ w_patrecOne_->load_image_template_from_path(QString::fromStdString(Config::CMSTkModLabBasePath+"/"+fpath)); }
+    const std::string fpath = config->getValue<std::string>("AssemblyObjectAlignerView_PatRec1_template_fpath", "");
+    if(fpath != ""){ patrecOne_wid_->load_image_template_from_path(QString::fromStdString(Config::CMSTkModLabBasePath+"/"+fpath)); }
+
+    assembly::QLineEdit_setText(patrecOne_wid_->threshold_lineEdit()        , config->getValue<int>("AssemblyObjectAlignerView_PatRec1_threshold"        , 100));
+    assembly::QLineEdit_setText(patrecOne_wid_->adaptiveThreshold_lineEdit(), config->getValue<int>("AssemblyObjectAlignerView_PatRec1_adaptiveThreshold", 587));
+
+    assembly::QLineEdit_setText(patrecOne_wid_->angles_prescan_lineEdit()   , config->getValue<double>("AssemblyObjectAlignerView_PatRec1_angles_prescan" , 0));
+    assembly::QLineEdit_setText(patrecOne_wid_->angles_finemax_lineEdit()   , config->getValue<double>("AssemblyObjectAlignerView_PatRec1_angles_finemax" , 2));
+    assembly::QLineEdit_setText(patrecOne_wid_->angles_finestep_lineEdit()  , config->getValue<double>("AssemblyObjectAlignerView_PatRec1_angles_finestep", 0.2));
   }
 
-  patrecOne_cfg_box->setLayout(w_patrecOne_->layout());
+  patrecOne_cfg_box->setLayout(patrecOne_wid_->layout());
   // -----
 
   // PatRecWidget #2
   QGroupBox* patrecTwo_cfg_box = new QGroupBox(tr("PatRec Marker #2"));
   patrecTwo_cfg_box->setObjectName("patrecTwo_cfg_box");
-  patrecTwo_cfg_box->setStyleSheet("QWidget#patrecTwo_cfg_box { font-weight: bold; color : blue; }");
+  patrecTwo_cfg_box->setStyleSheet("QWidget#patrecTwo_cfg_box { font-weight : bold; color : blue; }");
 
-  w_patrecTwo_ = new AssemblyObjectFinderPatRecWidget;
-  w_patrecTwo_->setToolTip("Pattern Recognition Configuration #2");
+  patrecTwo_wid_ = new AssemblyObjectFinderPatRecWidget;
+  patrecTwo_wid_->setToolTip("Pattern Recognition Configuration #2");
 
   if(config != nullptr)
   {
-    const std::string fpath = config->getValue<std::string>("AssemblyObjectAlignerView_template2_fpath", "");
-    if(fpath != ""){ w_patrecTwo_->load_image_template_from_path(QString::fromStdString(Config::CMSTkModLabBasePath+"/"+fpath)); }
+    const std::string fpath = config->getValue<std::string>("AssemblyObjectAlignerView_PatRec2_template_fpath", "");
+    if(fpath != ""){ patrecTwo_wid_->load_image_template_from_path(QString::fromStdString(Config::CMSTkModLabBasePath+"/"+fpath)); }
+
+    assembly::QLineEdit_setText(patrecTwo_wid_->threshold_lineEdit()        , config->getValue<int>("AssemblyObjectAlignerView_PatRec2_threshold"        , 100));
+    assembly::QLineEdit_setText(patrecTwo_wid_->adaptiveThreshold_lineEdit(), config->getValue<int>("AssemblyObjectAlignerView_PatRec2_adaptiveThreshold", 587));
+
+    assembly::QLineEdit_setText(patrecTwo_wid_->angles_prescan_lineEdit()   , config->getValue<double>("AssemblyObjectAlignerView_PatRec2_angles_prescan" , 0));
+    assembly::QLineEdit_setText(patrecTwo_wid_->angles_finemax_lineEdit()   , config->getValue<double>("AssemblyObjectAlignerView_PatRec2_angles_finemax" , 2));
+    assembly::QLineEdit_setText(patrecTwo_wid_->angles_finestep_lineEdit()  , config->getValue<double>("AssemblyObjectAlignerView_PatRec2_angles_finestep", 0.2));
   }
 
-  patrecTwo_cfg_box->setLayout(w_patrecTwo_->layout());
+  patrecTwo_cfg_box->setLayout(patrecTwo_wid_->layout());
   // -----
 
   alignm_PRcfg_lay->addWidget(patrecOne_cfg_box, 50);
@@ -214,11 +304,11 @@ AssemblyObjectAlignerView::AssemblyObjectAlignerView(QWidget* parent) :
   QHBoxLayout* alignm_mesang_lay = new QHBoxLayout;
   alignm_res_lay->addLayout(alignm_mesang_lay);
 
-  alignm_mesang_label_ = new QLabel("Measured Angle [deg]");
+  QLabel* alignm_mesang_label = new QLabel("Measured Angle [deg]");
   alignm_mesang_linee_ = new QLineEdit("");
   alignm_mesang_linee_->setReadOnly(true);
 
-  alignm_mesang_lay->addWidget(alignm_mesang_label_);
+  alignm_mesang_lay->addWidget(alignm_mesang_label);
   alignm_mesang_lay->addWidget(alignm_mesang_linee_);
   alignm_mesang_lay->addWidget(new QLabel);
 
@@ -415,12 +505,31 @@ AssemblyObjectAligner::Configuration AssemblyObjectAlignerView::get_configuratio
 {
   AssemblyObjectAligner::Configuration conf;
 
-  /// Object Delta-X ---------------
-  const QString alignm_objDX_qstr = alignm_objDX_linee_->text();
+  /// Object (dX, dY) Dimensions ---
+
+  if(alignm_PSP_radbu_->isChecked() == alignm_PSS_radbu_->isChecked())
+  {
+    NQLog("AssemblyObjectAlignerView", NQLog::Critical) << "get_configuration"
+       << ": failed to identify object (X,Y) dimensions, no action taken";
+
+    valid_conf = false;
+
+    conf.reset();
+
+    return conf;
+  }
+
+  QLineEdit const* objDX_linee = alignm_PSP_radbu_->isChecked() ? alignm_PSP_dX_linee_ : alignm_PSS_dX_linee_;
+  QLineEdit const* objDY_linee = alignm_PSP_radbu_->isChecked() ? alignm_PSP_dY_linee_ : alignm_PSS_dY_linee_;
+
+  const QString alignm_objDX_qstr = objDX_linee->text();
+  const QString alignm_objDY_qstr = objDY_linee->text();
 
   bool valid_alignm_objDX(false);
+  bool valid_alignm_objDY(false);
 
   const double alignm_objDX_val = alignm_objDX_qstr.toDouble(&valid_alignm_objDX);
+  const double alignm_objDY_val = alignm_objDY_qstr.toDouble(&valid_alignm_objDY);
 
   if(valid_alignm_objDX == false)
   {
@@ -433,18 +542,7 @@ AssemblyObjectAligner::Configuration AssemblyObjectAlignerView::get_configuratio
 
     return conf;
   }
-
-  conf.object_deltaX = alignm_objDX_val;
-  /// ------------------------------
-
-  /// Object Delta-Y ---------------
-  const QString alignm_objDY_qstr = alignm_objDY_linee_->text();
-
-  bool valid_alignm_objDY(false);
-
-  const double alignm_objDY_val = alignm_objDY_qstr.toDouble(&valid_alignm_objDY);
-
-  if(valid_alignm_objDY == false)
+  else if(valid_alignm_objDY == false)
   {
     NQLog("AssemblyObjectAlignerView", NQLog::Critical) << "execute"
        << ": invalid format for object delta-Y distance (" << alignm_objDY_qstr << "), no action taken";
@@ -456,6 +554,7 @@ AssemblyObjectAligner::Configuration AssemblyObjectAlignerView::get_configuratio
     return conf;
   }
 
+  conf.object_deltaX = alignm_objDX_val;
   conf.object_deltaY = alignm_objDY_val;
   /// ------------------------------
 
@@ -507,7 +606,7 @@ AssemblyObjectAligner::Configuration AssemblyObjectAlignerView::get_configuratio
   /// PatRec #1 --------------------
   bool valid_PatRecOne_conf(false);
 
-  conf.PatRecOne_configuration = w_patrecOne_->get_configuration(valid_PatRecOne_conf);
+  conf.PatRecOne_configuration = patrecOne_wid_->get_configuration(valid_PatRecOne_conf);
 
   if(valid_PatRecOne_conf == false)
   {
@@ -525,7 +624,7 @@ AssemblyObjectAligner::Configuration AssemblyObjectAlignerView::get_configuratio
   /// PatRec #2 --------------------
   bool valid_PatRecTwo_conf(false);
 
-  conf.PatRecTwo_configuration = w_patrecTwo_->get_configuration(valid_PatRecTwo_conf);
+  conf.PatRecTwo_configuration = patrecTwo_wid_->get_configuration(valid_PatRecTwo_conf);
 
   if(valid_PatRecTwo_conf == false)
   {

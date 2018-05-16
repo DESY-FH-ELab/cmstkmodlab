@@ -25,7 +25,6 @@ typedef AssemblyUEyeModel AssemblyUEyeModel_t;
 #include <AssemblyUEyeWidget.h>
 #include <AssemblyUEyeView.h>
 #include <AssemblyUEyeSnapShooter.h>
-#include <AssemblyAssemblyView.h>
 #include <AssemblyRegistryView.h>
 #include <AssemblyZFocusFinder.h>
 #include <AssemblyImageController.h>
@@ -38,7 +37,6 @@ typedef AssemblyUEyeModel AssemblyUEyeModel_t;
 #include <AssemblyObjectAligner.h>
 #include <AssemblyObjectAlignerView.h>
 #include <AssemblyMultiPickupTester.h>
-#include <AssemblyAssembler.h>
 #include <AssemblyHardwareControlView.h>
 #include <LStepExpressModel.h>
 #include <LStepExpressMotionManager.h>
@@ -81,12 +79,11 @@ class AssemblyMainWindow : public QMainWindow
   void disconnect_images();
 
   void changeState_autofocus(const int);
-  void changeState_alignment(const int);
 
-  void    connect_objectAligner(const AssemblyObjectAligner::Configuration&);
+  void start_objectAligner(const AssemblyObjectAligner::Configuration&);
   void disconnect_objectAligner();
 
-  void    connect_multipickupNpatrec(const AssemblyMultiPickupTester::Configuration&);
+  void start_multipickupNpatrec(const AssemblyMultiPickupTester::Configuration&);
   void disconnect_multipickupNpatrec();
 
   void testTimer();
@@ -140,8 +137,7 @@ class AssemblyMainWindow : public QMainWindow
   AssemblyZFocusFinder*       zfocus_finder_;
   AssemblyThresholder*        thresholder_;
   AssemblyObjectAligner*      aligner_;
-  AssemblyMultiPickupTester*  multipickup_;
-  AssemblyAssembler*          module_assembler_;
+  AssemblyMultiPickupTester*  multipickup_tester_;
 
   AssemblyObjectFinderPatRec*       finder_;
   AssemblyObjectFinderPatRecThread* finder_thread_;
@@ -155,10 +151,9 @@ class AssemblyMainWindow : public QMainWindow
 //  AssemblyUEyeSnapShooter* rawView_;
   AssemblyImageView* image_view_;
   AssemblyThresholderView* thresholder_view_;
-  AssemblyAssemblyView* assemblyView_;
   AssemblyObjectFinderPatRecView* finder_view_;
   AssemblyObjectAlignerView* aligner_view_;
-  AssemblyRegistryView* registryView_;
+  AssemblyRegistryView* registry_view_;
   AssemblyHardwareControlView* hwctr_view_;
 
   QCheckBox* autofocus_checkbox_;

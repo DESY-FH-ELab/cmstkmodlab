@@ -24,7 +24,6 @@
 #include <QRadioButton>
 #include <QPushButton>
 #include <QLineEdit>
-#include <QLabel>
 
 #include <opencv2/opencv.hpp>
 
@@ -37,8 +36,8 @@ class AssemblyObjectAlignerView : public QWidget
   explicit AssemblyObjectAlignerView(QWidget* parent=nullptr);
   virtual ~AssemblyObjectAlignerView() {}
 
-  AssemblyObjectFinderPatRecWidget* PatRecOne_Widget() const { return w_patrecOne_; }
-  AssemblyObjectFinderPatRecWidget* PatRecTwo_Widget() const { return w_patrecTwo_; }
+  AssemblyObjectFinderPatRecWidget* PatRecOne_Widget() const { return patrecOne_wid_; }
+  AssemblyObjectFinderPatRecWidget* PatRecTwo_Widget() const { return patrecTwo_wid_; }
 
 //!!  void connect_to_finder(const AssemblyObjectFinderPatRec* const);
 
@@ -48,13 +47,14 @@ class AssemblyObjectAlignerView : public QWidget
 
   void keyReleaseEvent(QKeyEvent *event);
 
-  QLabel*    alignm_objDX_label_;
-  QLineEdit* alignm_objDX_linee_;
+  QRadioButton* alignm_PSS_radbu_;
+  QLineEdit*    alignm_PSS_dX_linee_;
+  QLineEdit*    alignm_PSS_dY_linee_;
 
-  QLabel*    alignm_objDY_label_;
-  QLineEdit* alignm_objDY_linee_;
+  QRadioButton* alignm_PSP_radbu_;
+  QLineEdit*    alignm_PSP_dX_linee_;
+  QLineEdit*    alignm_PSP_dY_linee_;
 
-  QLabel*    alignm_angtgt_label_;
   QLineEdit* alignm_angtgt_linee_;
 
   QRadioButton* alignm_exemeas_radbu_;
@@ -63,10 +63,9 @@ class AssemblyObjectAlignerView : public QWidget
   QRadioButton* alignm_exealig_radbu_;
   QPushButton*  alignm_exealig_pusbu_;
 
-  AssemblyObjectFinderPatRecWidget* w_patrecOne_;
-  AssemblyObjectFinderPatRecWidget* w_patrecTwo_;
+  AssemblyObjectFinderPatRecWidget* patrecOne_wid_;
+  AssemblyObjectFinderPatRecWidget* patrecTwo_wid_;
 
-  QLabel*    alignm_mesang_label_;
   QLineEdit* alignm_mesang_linee_;
 
   AssemblyUEyeView* patrecOne_image_;

@@ -48,8 +48,7 @@ AssemblyMainWindow::AssemblyMainWindow(const unsigned int camera_ID, QWidget* pa
   zfocus_finder_(nullptr),
   thresholder_(nullptr),
   aligner_(nullptr),
-  multipickup_(nullptr),
-  module_assembler_(nullptr),
+  multipickup_tester_(nullptr),
 
   finder_(nullptr),
   finder_thread_(nullptr),
@@ -63,10 +62,9 @@ AssemblyMainWindow::AssemblyMainWindow(const unsigned int camera_ID, QWidget* pa
 //  rawView_(nullptr),
   image_view_(nullptr),
   thresholder_view_(nullptr),
-  assemblyView_(nullptr),
   finder_view_(nullptr),
   aligner_view_(nullptr),
-  registryView_(nullptr),
+  registry_view_(nullptr),
   hwctr_view_(nullptr),
 
   autofocus_checkbox_(nullptr),
@@ -162,25 +160,22 @@ AssemblyMainWindow::AssemblyMainWindow(const unsigned int camera_ID, QWidget* pa
     NQLog("AssemblyMainWindow", NQLog::Message) << "added view " << tabname_ImageThresholding;
     // ---------------------------------------------------------
 
-    // AUTOMATED-ASSEMBLY VIEW ---------------------------------
-    const QString tabname_AutoAssembly("Auto Assembly");
-
-    assemblyView_ = new AssemblyAssemblyView(motion_manager_);//!!, tabWidget_);
-//!!    tabWidget_->addTab(assemblyView_, tabname_AutoAssembly);
-//!!
-//!!    assemblyView_->connect_to_finder(finder_);
-
-    module_assembler_ = new AssemblyAssembler(motion_manager_);
-
-    // multi-pickup tester
-    multipickup_ = new AssemblyMultiPickupTester(motion_manager_);
-
-    connect(assemblyView_, SIGNAL(multipickup_request(const AssemblyMultiPickupTester::Configuration&)), this, SLOT(connect_multipickupNpatrec(const AssemblyMultiPickupTester::Configuration&)));
-
-    NQLog("AssemblyMainWindow", NQLog::Message) << "added view " << tabname_AutoAssembly;
-    // ---
-
-    // ---------------------------------------------------------
+//    // AUTOMATED-ASSEMBLY VIEW ---------------------------------
+//    const QString tabname_AutoAssembly("Auto Assembly");
+//
+//    assemblyView_ = new AssemblyAssemblyView(motion_manager_);//!!, tabWidget_);
+//    tabWidget_->addTab(assemblyView_, tabname_AutoAssembly);
+//
+//    assemblyView_->connect_to_finder(finder_);
+//
+//    // multi-pickup tester
+//    multipickup_tester_ = new AssemblyMultiPickupTester(motion_manager_);
+//
+//    connect(assemblyView_, SIGNAL(multipickup_request(const AssemblyMultiPickupTester::Configuration&)), this, SLOT(start_multipickupNpatrec(const AssemblyMultiPickupTester::Configuration&)));
+//
+//    NQLog("AssemblyMainWindow", NQLog::Message) << "added view " << tabname_AutoAssembly;
+//
+//    // ---------------------------------------------------------
 
     // PATTERN-RECOGNITION VIEW --------------------------------
     const QString tabname_PatRec("Pattern Recognition");
@@ -207,7 +202,7 @@ AssemblyMainWindow::AssemblyMainWindow(const unsigned int camera_ID, QWidget* pa
     // aligner
     aligner_ = new AssemblyObjectAligner(motion_manager_);
 
-    connect(aligner_view_, SIGNAL(configuration(AssemblyObjectAligner::Configuration)), this, SLOT(connect_objectAligner(AssemblyObjectAligner::Configuration)));
+    connect(aligner_view_, SIGNAL(configuration(AssemblyObjectAligner::Configuration)), this, SLOT(start_objectAligner(AssemblyObjectAligner::Configuration)));
 
 //!!    aligner_view_->connect_to_aligner(aligner_);
 
@@ -226,8 +221,8 @@ AssemblyMainWindow::AssemblyMainWindow(const unsigned int camera_ID, QWidget* pa
     // POSITIONS VIEW --------------------------------------------
     const QString tabname_Registry("Registry");
 
-    registryView_ = new AssemblyRegistryView(motion_manager_, tabWidget_);
-    tabWidget_->addTab(registryView_, tabname_Registry);
+    registry_view_ = new AssemblyRegistryView(motion_manager_, tabWidget_);
+    tabWidget_->addTab(registry_view_, tabname_Registry);
 
     NQLog("AssemblyMainWindow", NQLog::Message) << "added view " << tabname_Registry;
     // -----------------------------------------------------------
@@ -405,72 +400,6 @@ void AssemblyMainWindow::changeState_autofocus(const int state)
     return;
 }
 
-void AssemblyMainWindow::changeState_alignment(const int state)
-{
-    if(image_ctr_ == nullptr)
-    {
-      NQLog("AssemblyMainWindow", NQLog::Warning) << "changeState_alignment"
-         << ": ImageController not initialized, no action taken (hint: click \"Camera ON\")";
-
-      return;
-    }
-
-    if(state == 2)
-    {
-      assemblyView_->Alignm_Widget()->enable(true);
-
-      connect   (assemblyView_->Alignm_Widget(), SIGNAL(measure_angle_request(double, double))    , module_assembler_, SLOT(start_alignment(double, double)));
-      connect   (assemblyView_->Alignm_Widget(), SIGNAL(alignment_request(double, double, double)), module_assembler_, SLOT(start_alignment(double, double, double)));
-
-      connect   (module_assembler_ , SIGNAL(object_angle(double)), assemblyView_->Alignm_Widget(), SLOT(show_object_angle(double)));
-      connect   (module_assembler_ , SIGNAL(alignment_finished()), assemblyView_->Alignm_Widget(), SLOT(enable()));
-
-      connect   (module_assembler_ , SIGNAL(nextAlignmentStep(int, double, double, double)), module_assembler_, SLOT(run_alignment(int, double, double, double)));
-
-      connect   (module_assembler_ , SIGNAL(image_request()), image_ctr_  , SLOT(acquire_image()));
-
-//!!      connect   (finder_           , SIGNAL(updated_image_master())        , finder_          , SLOT(send_image_master()));
-//!!      connect   (finder_           , SIGNAL(sent_image_master(cv::Mat))    , thresholder_ , SLOT(update_image_raw(cv::Mat)));
-//!!      connect   (thresholder_  , SIGNAL(updated_image_raw())           , thresholder_view_   , SLOT(apply_threshold())); //!! FIXME: should have configurable parameter, w/o relying on thresholder_view_
-//!!      connect   (thresholder_  , SIGNAL(updated_image_binary(cv::Mat)) , finder_          , SLOT(update_image_master_PatRec(cv::Mat)));
-      connect   (finder_           , SIGNAL(updated_image_master_PatRec()) , finder_          , SLOT(run_PatRec_lab_marker()));
-
-      connect   (finder_, SIGNAL(PatRec_results(int, double, double, double)), module_assembler_, SLOT(run_alignment(int, double, double, double)));
-
-      connect   (module_assembler_ , SIGNAL(motion_finished()), module_assembler_, SLOT(launch_next_alignment_step()));
-
-      NQLog("AssemblyMainWindow", NQLog::Message) << "changeState_alignment: alignment enabled";
-    }
-    else if(state == 0)
-    {
-      assemblyView_->Alignm_Widget()->enable(false);
-
-      disconnect(assemblyView_->Alignm_Widget(), SIGNAL(measure_angle_request(double, double))    , module_assembler_, SLOT(start_alignment(double, double)));
-      disconnect(assemblyView_->Alignm_Widget(), SIGNAL(alignment_request(double, double, double)), module_assembler_, SLOT(start_alignment(double, double, double)));
-
-      disconnect(module_assembler_ , SIGNAL(object_angle(double)), assemblyView_->Alignm_Widget(), SLOT(show_object_angle(double)));
-      disconnect(module_assembler_ , SIGNAL(alignment_finished()), assemblyView_->Alignm_Widget(), SLOT(enable()));
-
-      disconnect(module_assembler_ , SIGNAL(nextAlignmentStep(int, double, double, double)), module_assembler_, SLOT(run_alignment(int, double, double, double)));
-
-      disconnect(module_assembler_ , SIGNAL(image_request()), image_ctr_  , SLOT(acquire_image()));
-
-//!!      disconnect(finder_           , SIGNAL(updated_image_master())        , finder_          , SLOT(send_image_master()));
-//!!      disconnect(finder_           , SIGNAL(sent_image_master(cv::Mat))    , thresholder_ , SLOT(update_image_raw(cv::Mat)));
-//!!      disconnect(thresholder_  , SIGNAL(updated_image_raw())           , thresholder_view_   , SLOT(apply_threshold())); //!! FIXME: should have configurable parameter, w/o relying on thresholder_view_
-//!!      disconnect(thresholder_  , SIGNAL(updated_image_binary(cv::Mat)) , finder_          , SLOT(update_image_master_PatRec(cv::Mat)));
-      disconnect(finder_           , SIGNAL(updated_image_master_PatRec()) , finder_          , SLOT(run_PatRec_lab_marker()));
-
-      disconnect(finder_, SIGNAL(PatRec_results(int, double, double, double)), module_assembler_, SLOT(run_alignment(int, double, double, double)));
-
-      disconnect(module_assembler_ , SIGNAL(motion_finished()), module_assembler_, SLOT(launch_next_alignment_step()));
-
-      NQLog("AssemblyMainWindow", NQLog::Message) << "changeState_alignment: alignment disabled";
-    }
-
-    return;
-}
-
 void AssemblyMainWindow::get_image()
 {
     if(image_ctr_ == nullptr)
@@ -535,11 +464,11 @@ void AssemblyMainWindow::disconnect_images()
   liveTimer_->stop();
 }
 
-void AssemblyMainWindow::connect_objectAligner(const AssemblyObjectAligner::Configuration& conf)
+void AssemblyMainWindow::start_objectAligner(const AssemblyObjectAligner::Configuration& conf)
 {
   if(image_ctr_ == nullptr)
   {
-    NQLog("AssemblyMainWindow", NQLog::Warning) << "connect_objectAligner"
+    NQLog("AssemblyMainWindow", NQLog::Warning) << "start_objectAligner"
        << ": ImageController not initialized, no action taken (hint: click \"Camera ON\")";
 
     return;
@@ -547,7 +476,7 @@ void AssemblyMainWindow::connect_objectAligner(const AssemblyObjectAligner::Conf
 
   if(aligner_connected_)
   {
-    NQLog("AssemblyMainWindow", NQLog::Warning) << "connect_objectAligner"
+    NQLog("AssemblyMainWindow", NQLog::Warning) << "start_objectAligner"
        << ": AssemblyObjectAligner already connected, no action taken (alignment routine in progress)";
 
     return;
@@ -616,71 +545,75 @@ void AssemblyMainWindow::disconnect_objectAligner()
   return;
 }
 
-void AssemblyMainWindow::connect_multipickupNpatrec(const AssemblyMultiPickupTester::Configuration& conf)
+void AssemblyMainWindow::start_multipickupNpatrec(const AssemblyMultiPickupTester::Configuration& /* conf */)
 {
-    if(image_ctr_ == nullptr)
-    {
-      NQLog("AssemblyMainWindow", NQLog::Warning) << "connect_multipickupNpatrec"
-         << ": ImageController not initialized, no action taken (hint: click \"Camera ON\")";
-
-      return;
-    }
-
-    multipickup_->set_configuration(conf);
-
-    assemblyView_->MultiPickup_Widget()->enable(false);
-
-    connect(this        , SIGNAL(multipickupNpatrec_connected()), multipickup_, SLOT(start_measurement()));
-    connect(multipickup_, SIGNAL(measurement_finished())        , multipickup_, SLOT(start_pickup()));
-    connect(multipickup_, SIGNAL(pickup_finished())             , multipickup_, SLOT(start_measurement()));
-    connect(multipickup_, SIGNAL(test_finished())               , this        , SLOT(disconnect_multipickupNpatrec()));
-
-    // measurement
-    connect(multipickup_  , SIGNAL(measurement_request()) , image_ctr_    , SLOT(acquire_image()));
-    connect(finder_, SIGNAL(       updated_image_master()), finder_, SLOT(update_image_master_PatRec()));
-    connect(finder_, SIGNAL(updated_image_master_PatRec()), finder_, SLOT(run_PatRec_lab_marker()));
-    connect(finder_, SIGNAL(PatRec_exitcode(int))  , multipickup_  , SLOT(finish_measurement(int)));
-    // ---
-
-    // pickup (vacuum)
-    connect(multipickup_  , SIGNAL(vacuum_toggle(int))  , conradManager_, SLOT(toggleVacuum(int)));
-    connect(conradManager_, SIGNAL(enableVacuumButton()), multipickup_  , SLOT(setup_next_step()));
-    // ---
-
-    NQLog("AssemblyMainWindow", NQLog::Spam) << "connect_multipickupNpatrec"
-       << ": emitting signal \"multipickupNpatrec_connected\"";
-
-    emit multipickupNpatrec_connected();
+//    if(image_ctr_ == nullptr)
+//    {
+//      NQLog("AssemblyMainWindow", NQLog::Warning) << "start_multipickupNpatrec"
+//         << ": ImageController not initialized, no action taken (hint: click \"Camera ON\")";
+//
+//      return;
+//    }
+//
+//    multipickup_tester_->set_configuration(conf);
+//
+//    assemblyView_->MultiPickup_Widget()->enable(false);
+//
+//    connect(this               , SIGNAL(multipickupNpatrec_connected()), multipickup_tester_, SLOT(start_measurement()));
+//    connect(multipickup_tester_, SIGNAL(measurement_finished())        , multipickup_tester_, SLOT(start_pickup()));
+//    connect(multipickup_tester_, SIGNAL(pickup_finished())             , multipickup_tester_, SLOT(start_measurement()));
+//    connect(multipickup_tester_, SIGNAL(test_finished())               , this               , SLOT(disconnect_multipickupNpatrec()));
+//
+//    // measurement
+//    connect(multipickup_tester_, SIGNAL(measurement_request()), image_ctr_, SLOT(acquire_image()));
+//
+//    connect(finder_, SIGNAL(updated_image_master()), finder_, SLOT(update_image_master_PatRec()));
+//    connect(finder_, SIGNAL(updated_image_master_PatRec()), finder_, SLOT(run_PatRec_lab_marker()));
+//
+//    connect(finder_, SIGNAL(PatRec_exitcode(int)), multipickup_tester_, SLOT(finish_measurement(int)));
+//    // ---
+//
+//    // pickup (vacuum)
+//    connect(multipickup_tester_  , SIGNAL(vacuum_toggle(int))  , conradManager_, SLOT(toggleVacuum(int)));
+//    connect(conradManager_, SIGNAL(enableVacuumButton()), multipickup_tester_  , SLOT(setup_next_step()));
+//    // ---
+//
+//    NQLog("AssemblyMainWindow", NQLog::Spam) << "start_multipickupNpatrec"
+//       << ": emitting signal \"multipickupNpatrec_connected\"";
+//
+//    emit multipickupNpatrec_connected();
 }
 
 void AssemblyMainWindow::disconnect_multipickupNpatrec()
 {
-    assemblyView_->MultiPickup_Widget()->enable(true);
-
-    disconnect(this        , SIGNAL(multipickupNpatrec_connected()), multipickup_, SLOT(start_measurement()));
-    disconnect(multipickup_, SIGNAL(measurement_finished())        , multipickup_, SLOT(start_pickup()));
-    disconnect(multipickup_, SIGNAL(pickup_finished())             , multipickup_, SLOT(start_measurement()));
-    disconnect(multipickup_, SIGNAL(test_finished())               , this        , SLOT(disconnect_multipickupNpatrec()));
-
-    // measurement
-    disconnect(multipickup_  , SIGNAL(measurement_request())        , image_ctr_    , SLOT(acquire_image()));
-    disconnect(finder_, SIGNAL(updated_image_master())       , finder_, SLOT(update_image_master_PatRec()));
-    disconnect(finder_, SIGNAL(updated_image_master_PatRec()), finder_, SLOT(run_PatRec_lab_marker()));
-    disconnect(finder_, SIGNAL(PatRec_exitcode(int))         , multipickup_  , SLOT(finish_measurement(int)));
-    // ---
-
-    // pickup (vacuum)
-    disconnect(multipickup_  , SIGNAL(vacuum_toggle(int))  , conradManager_, SLOT(toggleVacuum(int)));
-    disconnect(conradManager_, SIGNAL(enableVacuumButton()), multipickup_  , SLOT(setup_next_step()));
-    // ---
-
-    NQLog("AssemblyMainWindow", NQLog::Spam) << "disconnect_multipickupNpatrec"
-       << ": emitting signal \"multipickupNpatrec_disconnected\"";
-
-    emit multipickupNpatrec_disconnected();
-
-    NQLog("AssemblyMainWindow", NQLog::Message) << "disconnect_multipickupNpatrec"
-       << ": multi-pickup test completed";
+//    assemblyView_->MultiPickup_Widget()->enable(true);
+//
+//    disconnect(this, SIGNAL(multipickupNpatrec_connected()), multipickup_tester_, SLOT(start_measurement()));
+//    disconnect(multipickup_tester_, SIGNAL(measurement_finished()), multipickup_tester_, SLOT(start_pickup()));
+//    disconnect(multipickup_tester_, SIGNAL(pickup_finished())     , multipickup_tester_, SLOT(start_measurement()));
+//    disconnect(multipickup_tester_, SIGNAL(test_finished())       , this               , SLOT(disconnect_multipickupNpatrec()));
+//
+//    // measurement
+//    disconnect(multipickup_tester_, SIGNAL(measurement_request()), image_ctr_, SLOT(acquire_image()));
+//
+//    disconnect(finder_, SIGNAL(updated_image_master())       , finder_, SLOT(update_image_master_PatRec()));
+//    disconnect(finder_, SIGNAL(updated_image_master_PatRec()), finder_, SLOT(run_PatRec_lab_marker()));
+//
+//    disconnect(finder_, SIGNAL(PatRec_exitcode(int)), multipickup_tester_, SLOT(finish_measurement(int)));
+//    // ---
+//
+//    // pickup (vacuum)
+//    disconnect(multipickup_tester_  , SIGNAL(vacuum_toggle(int))  , conradManager_, SLOT(toggleVacuum(int)));
+//    disconnect(conradManager_, SIGNAL(enableVacuumButton()), multipickup_tester_  , SLOT(setup_next_step()));
+//    // ---
+//
+//    NQLog("AssemblyMainWindow", NQLog::Spam) << "disconnect_multipickupNpatrec"
+//       << ": emitting signal \"multipickupNpatrec_disconnected\"";
+//
+//    emit multipickupNpatrec_disconnected();
+//
+//    NQLog("AssemblyMainWindow", NQLog::Message) << "disconnect_multipickupNpatrec"
+//       << ": multi-pickup test completed";
 }
 
 void AssemblyMainWindow::testTimer()
