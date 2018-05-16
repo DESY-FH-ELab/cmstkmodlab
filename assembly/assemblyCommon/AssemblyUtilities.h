@@ -13,9 +13,13 @@
 #ifndef ASSEMBLYUTILITIES_H
 #define ASSEMBLYUTILITIES_H
 
+#include <nqlogger.h>
+
 #include <string>
+#include <sstream>
 
 #include <QString>
+#include <QLineEdit>
 
 #include <opencv2/opencv.hpp>
 
@@ -42,6 +46,26 @@ namespace assembly {
 
   bool MatIsBlackAndWhite(const cv::Mat&);
 
+  template <class T> void QLineEdit_setText(QLineEdit* const, const T&);
+}
+
+template <class T>
+void assembly::QLineEdit_setText(QLineEdit* const ptr_le, const T& val)
+{
+  if(ptr_le == nullptr)
+  {
+    NQLog("AssemblyUtilities", NQLog::Critical) << "QLineEdit_setText(" << ptr_le << ", " << val << ")"
+       << ": null pointer to QLineEdit object, no action taken";
+
+    return;
+  }
+
+  std::stringstream strs;
+  strs << val;
+
+  ptr_le->setText(QString::fromStdString(strs.str()));
+
+  return;
 }
 
 #endif // ASSEMBLYUTILITIES_H

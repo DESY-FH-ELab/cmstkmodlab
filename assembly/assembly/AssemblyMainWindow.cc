@@ -61,7 +61,6 @@ AssemblyMainWindow::AssemblyMainWindow(const unsigned int camera_ID, QWidget* pa
 //  finderView_(nullptr),
 //  edgeView_(nullptr),
 //  rawView_(nullptr),
-
   image_view_(nullptr),
   thresholder_view_(nullptr),
   assemblyView_(nullptr),
@@ -70,12 +69,11 @@ AssemblyMainWindow::AssemblyMainWindow(const unsigned int camera_ID, QWidget* pa
   registryView_(nullptr),
   hwctr_view_(nullptr),
 
-  checkbox1(nullptr),
-  checkbox2(nullptr),
-//  checkbox3(nullptr),
+  autofocus_checkbox_(nullptr),
 
   // flags
   images_enabled_(false),
+  aligner_connected_(false),
 
   // timing
   testTimerCount_(0.),
@@ -209,8 +207,7 @@ AssemblyMainWindow::AssemblyMainWindow(const unsigned int camera_ID, QWidget* pa
     // aligner
     aligner_ = new AssemblyObjectAligner(motion_manager_);
 
-    connect(aligner_, SIGNAL(configuration_request()), aligner_view_, SLOT(transmit_configuration()));
-    connect(aligner_view_, SIGNAL(configuration(AssemblyObjectAligner::Configuration)), aligner_, SLOT(update_configuration(AssemblyObjectAligner::Configuration)));
+    connect(aligner_view_, SIGNAL(configuration(AssemblyObjectAligner::Configuration)), this, SLOT(connect_objectAligner(AssemblyObjectAligner::Configuration)));
 
 //!!    aligner_view_->connect_to_aligner(aligner_);
 
@@ -271,18 +268,10 @@ AssemblyMainWindow::AssemblyMainWindow(const unsigned int camera_ID, QWidget* pa
     toolBar_ ->addAction("Camera OFF", this, SLOT(disable_images()));
     toolBar_ ->addAction("Snapshot"  , this, SLOT(    get_image ()));
 
-    checkbox1 = new QCheckBox("Auto-Focusing", this);
-    toolBar_->addWidget(checkbox1);
+    autofocus_checkbox_ = new QCheckBox("Auto-Focusing", this);
+    toolBar_->addWidget(autofocus_checkbox_);
 
-    checkbox2 = new QCheckBox("Alignment", this);
-    toolBar_->addWidget(checkbox2);
-
-//    checkbox3 = new QCheckBox("Assembly", this);
-//    toolBar_->addWidget(checkbox3);
-
-    connect(checkbox1, SIGNAL(stateChanged(int)), this, SLOT(changeState_autofocus(int)));
-    connect(checkbox2, SIGNAL(stateChanged(int)), this, SLOT(changeState_alignment(int)));
-//    connect(checkbox3, SIGNAL(stateChanged(int)), this, SLOT(changeState_SandwichAssembly(int)));
+    connect(autofocus_checkbox_, SIGNAL(stateChanged(int)), this, SLOT(changeState_autofocus(int)));
 
     this->setCentralWidget(tabWidget_);
 
@@ -446,7 +435,7 @@ void AssemblyMainWindow::changeState_alignment(const int state)
 //!!      connect   (thresholder_  , SIGNAL(updated_image_binary(cv::Mat)) , finder_          , SLOT(update_image_master_PatRec(cv::Mat)));
       connect   (finder_           , SIGNAL(updated_image_master_PatRec()) , finder_          , SLOT(run_PatRec_lab_marker()));
 
-      connect   (finder_, SIGNAL(reportObjectLocation(int, double, double, double)), module_assembler_, SLOT(run_alignment(int, double, double, double)));
+      connect   (finder_, SIGNAL(PatRec_results(int, double, double, double)), module_assembler_, SLOT(run_alignment(int, double, double, double)));
 
       connect   (module_assembler_ , SIGNAL(motion_finished()), module_assembler_, SLOT(launch_next_alignment_step()));
 
@@ -472,7 +461,7 @@ void AssemblyMainWindow::changeState_alignment(const int state)
 //!!      disconnect(thresholder_  , SIGNAL(updated_image_binary(cv::Mat)) , finder_          , SLOT(update_image_master_PatRec(cv::Mat)));
       disconnect(finder_           , SIGNAL(updated_image_master_PatRec()) , finder_          , SLOT(run_PatRec_lab_marker()));
 
-      disconnect(finder_, SIGNAL(reportObjectLocation(int, double, double, double)), module_assembler_, SLOT(run_alignment(int, double, double, double)));
+      disconnect(finder_, SIGNAL(PatRec_results(int, double, double, double)), module_assembler_, SLOT(run_alignment(int, double, double, double)));
 
       disconnect(module_assembler_ , SIGNAL(motion_finished()), module_assembler_, SLOT(launch_next_alignment_step()));
 
@@ -548,54 +537,83 @@ void AssemblyMainWindow::disconnect_images()
 
 void AssemblyMainWindow::connect_objectAligner(const AssemblyObjectAligner::Configuration& conf)
 {
-//!!    if(image_ctr_ == nullptr)
-//!!    {
-//!!      NQLog("AssemblyMainWindow", NQLog::Warning) << "connect_objectAligner"
-//!!         << ": ImageController not initialized, no action taken (hint: click \"Camera ON\")";
-//!!
-//!!      return;
-//!!    }
-//!!
-//!!    aligner_->update_configuration(conf);
-//!!
-//!!    aligner_view_->setEnabled(false);
-//!!
-//!!
-//!!
-//!!
-//!!
-//!!    connect(this, SIGNAL(objectAligner_connected()), aligner_, SLOT(start_measurement()));
-//!!
-//!!
-//!!//!!      connect   (assemblyView_->Alignm_Widget(), SIGNAL(measure_angle_request(double, double))    , aligner_, SLOT(start_alignment(double, double)));
-//!!//!!      connect   (assemblyView_->Alignm_Widget(), SIGNAL(alignment_request(double, double, double)), aligner_, SLOT(start_alignment(double, double, double)));
-//!!
-//!!      connect   (aligner_ , SIGNAL(object_angle(double)), assemblyView_->Alignm_Widget(), SLOT(show_object_angle(double)));
-//!!      connect   (aligner_ , SIGNAL(alignment_finished()), assemblyView_->Alignm_Widget(), SLOT(enable()));
-//!!
-//!!      connect   (aligner_ , SIGNAL(nextAlignmentStep(int, double, double, double)), aligner_, SLOT(run_alignment(int, double, double, double)));
-//!!
-//!!      connect   (aligner_ , SIGNAL(image_request()), image_ctr_  , SLOT(acquire_image()));
-//!!
-//!!//!!      connect   (finder_           , SIGNAL(updated_image_master())        , finder_          , SLOT(send_image_master()));
-//!!//!!      connect   (finder_           , SIGNAL(sent_image_master(cv::Mat))    , thresholder_ , SLOT(update_image_raw(cv::Mat)));
-//!!//!!      connect   (thresholder_  , SIGNAL(updated_image_raw())           , thresholder_view_   , SLOT(apply_threshold())); //!! FIXME: should have configurable parameter, w/o relying on thresholder_view_
-//!!//!!      connect   (thresholder_  , SIGNAL(updated_image_binary(cv::Mat)) , finder_          , SLOT(update_image_master_PatRec(cv::Mat)));
-//!!      connect   (finder_           , SIGNAL(updated_image_master_PatRec()) , finder_          , SLOT(run_PatRec_lab_marker()));
-//!!
-//!!      connect   (finder_, SIGNAL(reportObjectLocation(int, double, double, double)), aligner_, SLOT(run_alignment(int, double, double, double)));
-//!!
-//!!      connect   (aligner_ , SIGNAL(motion_finished()), aligner_, SLOT(launch_next_alignment_step()));
-//!!
-//!!
-//!!    NQLog("AssemblyMainWindow", NQLog::Spam) << "connect_objectAligner"
-//!!       << ": emitting signal \"objectAligner_connected\"";
-//!!
-//!!    emit objectAligner_connected();
+  if(image_ctr_ == nullptr)
+  {
+    NQLog("AssemblyMainWindow", NQLog::Warning) << "connect_objectAligner"
+       << ": ImageController not initialized, no action taken (hint: click \"Camera ON\")";
+
+    return;
+  }
+
+  if(aligner_connected_)
+  {
+    NQLog("AssemblyMainWindow", NQLog::Warning) << "connect_objectAligner"
+       << ": AssemblyObjectAligner already connected, no action taken (alignment routine in progress)";
+
+    return;
+  }
+
+  connect(aligner_, SIGNAL(configuration_updated()), aligner_, SLOT(execute()));
+
+  connect(aligner_, SIGNAL(image_request()), image_ctr_, SLOT(acquire_image()));
+
+  connect(aligner_, SIGNAL(PatRec_request(AssemblyObjectFinderPatRec::Configuration)), finder_, SLOT(launch_PatRec(AssemblyObjectFinderPatRec::Configuration)));
+
+  connect(finder_, SIGNAL(updated_image_master()), aligner_, SLOT(launch_next_alignment_step()));
+
+  connect(finder_, SIGNAL(PatRec_results(int, double, double, double)), aligner_, SLOT(run_alignment(int, double, double, double)));
+
+  connect(aligner_, SIGNAL(measured_angle(double)), aligner_view_, SLOT(show_measured_angle(double)));
+
+  connect(aligner_, SIGNAL(execution_completed()), this, SLOT(disconnect_objectAligner));
+
+  aligner_view_->setEnabled(false);
+
+  aligner_connected_ = true;
+
+  // if successful, emits signal "configuration_updated()"
+  aligner_->update_configuration(conf);
+
+  return;
 }
 
 void AssemblyMainWindow::disconnect_objectAligner()
 {
+  if(image_ctr_ == nullptr)
+  {
+    NQLog("AssemblyMainWindow", NQLog::Warning) << "disconnect_objectAligner"
+       << ": ImageController not initialized, no action taken (hint: click \"Camera ON\")";
+
+    return;
+  }
+
+  if(aligner_connected_ == false)
+  {
+    NQLog("AssemblyMainWindow", NQLog::Warning) << "disconnect_objectAligner"
+       << ": AssemblyObjectAligner already disconnected, no action taken";
+
+    return;
+  }
+
+  disconnect(aligner_, SIGNAL(configuration_updated()), aligner_, SLOT(execute()));
+
+  disconnect(aligner_, SIGNAL(image_request()), image_ctr_, SLOT(acquire_image()));
+
+  disconnect(aligner_, SIGNAL(PatRec_request(AssemblyObjectFinderPatRec::Configuration)), finder_, SLOT(launch_PatRec(AssemblyObjectFinderPatRec::Configuration)));
+
+  disconnect(finder_, SIGNAL(updated_image_master()), aligner_, SLOT(launch_next_alignment_step()));
+
+  disconnect(finder_, SIGNAL(PatRec_results(int, double, double, double)), aligner_, SLOT(run_alignment(int, double, double, double)));
+
+  disconnect(aligner_, SIGNAL(measured_angle(double)), aligner_view_, SLOT(show_measured_angle(double)));
+
+  disconnect(aligner_, SIGNAL(execution_completed()), this, SLOT(disconnect_objectAligner));
+
+  aligner_view_->setEnabled(true);
+
+  aligner_connected_ = false;
+
+  return;
 }
 
 void AssemblyMainWindow::connect_multipickupNpatrec(const AssemblyMultiPickupTester::Configuration& conf)

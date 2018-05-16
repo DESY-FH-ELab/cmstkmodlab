@@ -49,7 +49,7 @@ AssemblyObjectFinderPatRec::AssemblyObjectFinderPatRec(AssemblyThresholder* cons
   }
 
   // connections
-  connect(this, SIGNAL(template_matching_request(const cv::Mat&, const cv::Mat&, const cv::Mat&)), this, SLOT(template_matching(const cv::Mat&, const cv::Mat&, const cv::Mat&)));
+  connect(this, SIGNAL(template_matching_request(Configuration, cv::Mat, cv::Mat, cv::Mat)), this, SLOT(template_matching(Configuration, cv::Mat, cv::Mat, cv::Mat)));
   // -----------
 
   NQLog("AssemblyObjectFinderPatRec", NQLog::Debug) << "constructed";
@@ -241,23 +241,23 @@ void AssemblyObjectFinderPatRec::update_image_master_PatRec(const cv::Mat& img)
   }
 }
 
-void AssemblyObjectFinderPatRec::send_image_master()
-{
-  NQLog("AssemblyObjectFinderPatRec", NQLog::Spam) << "send_image_master"
-     << ": emitting signal \"sent_image_master\"";
+//!!void AssemblyObjectFinderPatRec::send_image_master()
+//!!{
+//!!  NQLog("AssemblyObjectFinderPatRec", NQLog::Spam) << "send_image_master"
+//!!     << ": emitting signal \"sent_image_master\"";
+//!!
+//!!  emit sent_image_master(img_master_);
+//!!}
+//!!
+//!!void AssemblyObjectFinderPatRec::send_image_master_PatRec()
+//!!{
+//!!  NQLog("AssemblyObjectFinderPatRec", NQLog::Spam) << "send_image_master_PatRec"
+//!!     << ": emitting signal \"sent_image_master_PatRec\"";
+//!!
+//!!  emit sent_image_master_PatRec(img_master_PatRec_);
+//!!}
 
-  emit sent_image_master(img_master_);
-}
-
-void AssemblyObjectFinderPatRec::send_image_master_PatRec()
-{
-  NQLog("AssemblyObjectFinderPatRec", NQLog::Spam) << "send_image_master_PatRec"
-     << ": emitting signal \"sent_image_master_PatRec\"";
-
-  emit sent_image_master_PatRec(img_master_PatRec_);
-}
-
-void AssemblyObjectFinderPatRec::template_matching(const Configuration& conf, const cv::Mat& img_master, const cv::Mat& img_master_PatRec, const cv::Mat& img_templa_PatRec)
+void AssemblyObjectFinderPatRec::template_matching(const AssemblyObjectFinderPatRec::Configuration& conf, const cv::Mat& img_master, const cv::Mat& img_master_PatRec, const cv::Mat& img_templa_PatRec)
 {
   // validate configuration parameters
   if(conf.is_valid() == false)
@@ -525,16 +525,16 @@ void AssemblyObjectFinderPatRec::template_matching(const Configuration& conf, co
     gr_best.Write();
     o_file.Close();
 
-    emit image_path(2, QString::fromStdString(filepath_FOM_png));
+    emit PatRec_res_image_angscan(QString::fromStdString(filepath_FOM_png));
   }
   // ---
 
   const std::string filepath_img_master_copy = output_dir+"/image_master_PatRec.png";
   assembly::cv_imwrite(filepath_img_master_copy, img_master_copy);
 
-  emit image_mat(1, img_master_copy);
-  emit image_mat(3, img_master_PatRec);
-  emit image_mat(4, img_templa_PatRec);
+  emit PatRec_res_image_master_edited  (img_master_copy);
+  emit PatRec_res_image_master_PatRec  (img_master_PatRec);
+  emit PatRec_res_image_template_PatRec(img_templa_PatRec);
 
   // text output file -
   const QString txt_file_path = QString::fromStdString(output_dir+"/PatRec_results.txt");
@@ -555,9 +555,9 @@ void AssemblyObjectFinderPatRec::template_matching(const Configuration& conf, co
   // PatRec result(s)
 
   NQLog("AssemblyObjectFinderPatRec", NQLog::Spam) << "template_matching"
-     << ": emitting signal \"reportObjectLocation(1, " << best_matchLoc.x << ", " << best_matchLoc.y << ", " << best_angle << ")\"";
+     << ": emitting signal \"PatRec_results(1, " << best_matchLoc.x << ", " << best_matchLoc.y << ", " << best_angle << ")\"";
 
-  emit reportObjectLocation(1, best_matchLoc.x, best_matchLoc.y, best_angle);
+  emit PatRec_results(1, best_matchLoc.x, best_matchLoc.y, best_angle);
 
   NQLog("AssemblyObjectFinderPatRec", NQLog::Spam) << "template_matching"
      << ": emitting signal \"PatRec_exitcode(0)\"";

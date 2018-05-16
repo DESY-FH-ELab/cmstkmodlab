@@ -48,8 +48,8 @@ class AssemblyObjectFinderPatRecWidget : public QWidget
 
   QVBoxLayout* layout() const { return layout_; }
 
-  QPushButton* template_load_button() const { return templa_load_button_; }
-  QLineEdit*   template_file_lineed() const { return templa_file_lineed_; }
+  QPushButton* template_load_button()   const { return templa_load_button_; }
+  QLineEdit*   template_file_lineEdit() const { return templa_file_linee_; }
 
   QRadioButton* threshold_button()   const { return thresh_thresh_radbu_; }
   QLineEdit*    threshold_lineEdit() const { return thresh_thresh_linee_; }
@@ -68,7 +68,7 @@ class AssemblyObjectFinderPatRecWidget : public QWidget
   QVBoxLayout* layout_;
 
   QPushButton* templa_load_button_;
-  QLineEdit*   templa_file_lineed_;
+  QLineEdit*   templa_file_linee_;
 
   QRadioButton* thresh_thresh_radbu_;
   QLineEdit*    thresh_thresh_linee_;
@@ -96,7 +96,7 @@ class AssemblyObjectFinderPatRecWidget : public QWidget
 
  signals:
 
-  void updated_image_template_line(const QString&);
+  void updated_image_template_path(const QString&);
   void updated_image_template(const cv::Mat&);
 
   void configuration(const AssemblyObjectFinderPatRec::Configuration&);

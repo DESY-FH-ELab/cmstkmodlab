@@ -38,8 +38,8 @@ class AssemblyObjectAligner : public QObject
 
     bool is_valid() const;
 
-    double object_DeltaX;
-    double object_DeltaY;
+    double object_deltaX;
+    double object_deltaY;
 
     bool only_measure_angle;
 
@@ -64,29 +64,24 @@ class AssemblyObjectAligner : public QObject
     void    connect_motion_manager() { this->enable_motion_manager(true) ; }
     void disconnect_motion_manager() { this->enable_motion_manager(false); }
 
-    double object_deltaX_;
-    double object_deltaY_;
-    double target_angle_deg_;
-
+    // parameters
     double angle_max_dontIter_;
     double angle_max_complete_;
     double angle_PatRec_offset_;
 
-    int alignment_step;
+    // transient data (values to be updated during alignment)
+    int alignment_step_;
 
     double posi_x1_, posi_y1_;
     double posi_x2_, posi_y2_;
 
     double obj_angle_deg_;
 
-    bool only_measure_ang_;
-
   public slots:
 
     void update_configuration(const Configuration&);
 
-    void start_alignment(const double, const double);
-    void start_alignment(const double, const double, const double);
+    void execute();
 
     void run_alignment(int, double, double, double);
 
@@ -94,7 +89,7 @@ class AssemblyObjectAligner : public QObject
 
     void moveRelative(const double, const double, const double, const double);
 
-    void finish_motion();
+    void complete_motion();
 
   signals:
 
@@ -103,13 +98,14 @@ class AssemblyObjectAligner : public QObject
     void nextAlignmentStep(int, double, double, double);
 
     void move_relative(const double, const double, const double, const double);
-    void motion_finished();
+
+    void motion_completed();
 
     void acquireImage();
 
-    void object_angle(const double);
+    void measured_angle(const double);
 
-    void alignment_finished();
+    void execution_completed();
 };
 
 #endif // AssemblyObjectAligner_h

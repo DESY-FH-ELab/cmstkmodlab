@@ -181,6 +181,13 @@ AssemblyObjectFinderPatRecView::AssemblyObjectFinderPatRecView(QWidget* parent) 
   {
     const std::string fpath = config->getValue<std::string>("AssemblyObjectFinderPatRecView_template_fpath", "");
     if(fpath != ""){ w_patrec_->load_image_template_from_path(QString::fromStdString(Config::CMSTkModLabBasePath+"/"+fpath)); }
+
+    assembly::QLineEdit_setText(w_patrec_->threshold_lineEdit()        , config->getValue<int>("AssemblyObjectFinderPatRecView_threshold"        , 100));
+    assembly::QLineEdit_setText(w_patrec_->adaptiveThreshold_lineEdit(), config->getValue<int>("AssemblyObjectFinderPatRecView_adaptiveThreshold", 587));
+
+    assembly::QLineEdit_setText(w_patrec_->angles_prescan_lineEdit()   , config->getValue<double>("AssemblyObjectFinderPatRecView_angles_prescan" , 0));
+    assembly::QLineEdit_setText(w_patrec_->angles_finemax_lineEdit()   , config->getValue<double>("AssemblyObjectFinderPatRecView_angles_finemax" , 2));
+    assembly::QLineEdit_setText(w_patrec_->angles_finestep_lineEdit()  , config->getValue<double>("AssemblyObjectFinderPatRecView_angles_finestep", 0.2));
   }
 
   patrec_lay->addWidget(w_patrec_);
@@ -239,12 +246,21 @@ void AssemblyObjectFinderPatRecView::connect_to_finder(const AssemblyObjectFinde
   {
     connect(this->PatRec_Widget(), SIGNAL(configuration(AssemblyObjectFinderPatRec::Configuration)), finder, SLOT(launch_PatRec(AssemblyObjectFinderPatRec::Configuration)));
 
-    connect(finder, SIGNAL(PatRec_exitcode(int)), this, SLOT(change_label(int)));
+    connect(finder, SIGNAL(PatRec_exitcode(int)), this, SLOT(update_label(int)));
 
-    connect(finder, SIGNAL(image_path(int, QString)), this, SLOT(updateImage(int, QString)));
-    connect(finder, SIGNAL(image_mat (int, cv::Mat)), this, SLOT(updateImage(int, cv::Mat)));
+    connect(finder, SIGNAL(PatRec_res_image_master_edited(QString))  , this, SLOT(update_image_1(QString)));
+    connect(finder, SIGNAL(PatRec_res_image_master_edited(cv::Mat))  , this, SLOT(update_image_1(cv::Mat)));
 
-    connect(finder, SIGNAL(reportObjectLocation(int, double, double, double)), this, SLOT(updateText(int, double, double, double)));
+    connect(finder, SIGNAL(PatRec_res_image_angscan(QString))        , this, SLOT(update_image_2(QString)));
+    connect(finder, SIGNAL(PatRec_res_image_angscan(cv::Mat))        , this, SLOT(update_image_2(cv::Mat)));
+
+    connect(finder, SIGNAL(PatRec_res_image_master_PatRec(QString))  , this, SLOT(update_image_3(QString)));
+    connect(finder, SIGNAL(PatRec_res_image_master_PatRec(cv::Mat))  , this, SLOT(update_image_3(cv::Mat)));
+
+    connect(finder, SIGNAL(PatRec_res_image_template_PatRec(QString)), this, SLOT(update_image_4(QString)));
+    connect(finder, SIGNAL(PatRec_res_image_template_PatRec(cv::Mat)), this, SLOT(update_image_4(cv::Mat)));
+
+    connect(finder, SIGNAL(PatRec_results(int, double, double, double)), this, SLOT(update_text(int, double, double, double)));
 
     NQLog("AssemblyObjectFinderPatRecView", NQLog::Spam) << "connect_to_finder"
        << ": view connected to object of type AssemblyObjectFinderPatRec";
@@ -262,9 +278,9 @@ void AssemblyObjectFinderPatRecView::connect_to_finder(const AssemblyObjectFinde
   return;
 }
 
-void AssemblyObjectFinderPatRecView::updateText(int stage, double x, double y, double a)
+void AssemblyObjectFinderPatRecView::update_text(int stage, double x, double y, double a)
 {
-  NQLog("AssemblyObjectFinderPatRecView", NQLog::Spam) << "updateText"
+  NQLog("AssemblyObjectFinderPatRecView", NQLog::Spam) << "update_text"
      << "(" << stage << ", " << x << ", " << y << ", " << a << ")";
 
   std::stringstream posi_strs;
@@ -282,20 +298,32 @@ void AssemblyObjectFinderPatRecView::updateText(int stage, double x, double y, d
   }
 }
 
-void AssemblyObjectFinderPatRecView::updateImage(const int stage, const QString& filename)
+void AssemblyObjectFinderPatRecView::update_image_1(const QString& fpath){ this->update_image(1, fpath); }
+void AssemblyObjectFinderPatRecView::update_image_1(const cv::Mat& image){ this->update_image(1, image); }
+
+void AssemblyObjectFinderPatRecView::update_image_2(const QString& fpath){ this->update_image(2, fpath); }
+void AssemblyObjectFinderPatRecView::update_image_2(const cv::Mat& image){ this->update_image(2, image); }
+
+void AssemblyObjectFinderPatRecView::update_image_3(const QString& fpath){ this->update_image(3, fpath); }
+void AssemblyObjectFinderPatRecView::update_image_3(const cv::Mat& image){ this->update_image(3, image); }
+
+void AssemblyObjectFinderPatRecView::update_image_4(const QString& fpath){ this->update_image(4, fpath); }
+void AssemblyObjectFinderPatRecView::update_image_4(const cv::Mat& image){ this->update_image(4, image); }
+
+void AssemblyObjectFinderPatRecView::update_image(const int stage, const QString& filename)
 {
-  NQLog("AssemblyObjectFinderPatRecView", NQLog::Spam) << "updateImage(" << stage << ", file=" << filename << ")";
+  NQLog("AssemblyObjectFinderPatRecView", NQLog::Spam) << "update_image(" << stage << ", file=" << filename << ")";
 
   const cv::Mat img = assembly::cv_imread(filename, CV_LOAD_IMAGE_UNCHANGED);
 
-  this->updateImage(stage, img);
+  this->update_image(stage, img);
 
   return;
 }
 
-void AssemblyObjectFinderPatRecView::updateImage(const int stage, const cv::Mat& img)
+void AssemblyObjectFinderPatRecView::update_image(const int stage, const cv::Mat& img)
 {
-  NQLog("AssemblyObjectFinderPatRecView", NQLog::Spam) << "updateImage(" << stage << ", image)";
+  NQLog("AssemblyObjectFinderPatRecView", NQLog::Spam) << "update_image(" << stage << ", image)";
 
   if(stage == 1)
   {
@@ -319,9 +347,9 @@ void AssemblyObjectFinderPatRecView::updateImage(const int stage, const cv::Mat&
   }
 }
 
-void AssemblyObjectFinderPatRecView::change_label(const int state)
+void AssemblyObjectFinderPatRecView::update_label(const int state)
 {
-  NQLog("AssemblyObjectFinderPatRecView", NQLog::Spam) << "change_label(" << state << ")";
+  NQLog("AssemblyObjectFinderPatRecView", NQLog::Spam) << "update_label(" << state << ")";
 
   if(state == 0)
   {

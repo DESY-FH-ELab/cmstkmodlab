@@ -29,7 +29,7 @@ AssemblyObjectFinderPatRecWidget::AssemblyObjectFinderPatRecWidget(QWidget* pare
   layout_(nullptr),
 
   templa_load_button_(nullptr),
-  templa_file_lineed_(nullptr),
+  templa_file_linee_ (nullptr),
 
   thresh_thresh_radbu_(nullptr),
   thresh_thresh_linee_(nullptr),
@@ -59,13 +59,13 @@ AssemblyObjectFinderPatRecWidget::AssemblyObjectFinderPatRecWidget(QWidget* pare
 
   connect(templa_load_button_, SIGNAL(clicked()), this, SLOT(load_image_template()));
 
-  templa_file_lineed_ = new QLineEdit(tr(""));
-  templa_file_lineed_->setReadOnly(true);
+  templa_file_linee_ = new QLineEdit(tr(""));
+  templa_file_linee_->setReadOnly(true);
 
-  connect(this, SIGNAL(updated_image_template_line(QString)), templa_file_lineed_, SLOT(setText(QString)));
+  connect(this, SIGNAL(updated_image_template_path(QString)), templa_file_linee_, SLOT(setText(QString)));
 
   templa_lay->addWidget(templa_load_button_, 34);
-  templa_lay->addWidget(templa_file_lineed_, 66);
+  templa_lay->addWidget(templa_file_linee_ , 66);
 
   templa_box->setLayout(templa_lay);
 
@@ -158,9 +158,9 @@ void AssemblyObjectFinderPatRecWidget::load_image_template_from_path(const QStri
   }
 
   NQLog("AssemblyObjectFinderPatRecWidget", NQLog::Spam) << "load_image_template"
-     << ": emitting signal \"updated_image_template_line(" << filename << ")\"";
+     << ": emitting signal \"updated_image_template_path(" << filename << ")\"";
 
-  emit updated_image_template_line(filename);
+  emit updated_image_template_path(filename);
 
   NQLog("AssemblyObjectFinderPatRecWidget", NQLog::Spam) << "load_image_template"
      << ": emitting signal \"updated_image_template\"";
@@ -193,7 +193,7 @@ AssemblyObjectFinderPatRec::Configuration AssemblyObjectFinderPatRecWidget::get_
   AssemblyObjectFinderPatRec::Configuration conf;
 
   /// Template Image ---------------
-  conf.template_filepath_ = templa_file_lineed_->text();
+  conf.template_filepath_ = templa_file_linee_->text();
   /// ------------------------------
 
   /// Master Image Thresholding ----

@@ -65,12 +65,24 @@ class AssemblyObjectFinderPatRecView : public QWidget
 
  public slots:
 
-  void updateImage(const int, const QString&);
-  void updateImage(const int, const cv::Mat&);
+  void update_image_1(const QString&);
+  void update_image_1(const cv::Mat&);
 
-  void updateText(const int, const double, const double, const double);
+  void update_image_2(const QString&);
+  void update_image_2(const cv::Mat&);
 
-  void change_label(const int);
+  void update_image_3(const QString&);
+  void update_image_3(const cv::Mat&);
+
+  void update_image_4(const QString&);
+  void update_image_4(const cv::Mat&);
+
+  void update_image(const int, const QString&);
+  void update_image(const int, const cv::Mat&);
+
+  void update_text(const int, const double, const double, const double);
+
+  void update_label(const int);
 
  signals:
 

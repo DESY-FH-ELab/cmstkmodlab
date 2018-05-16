@@ -79,9 +79,11 @@ class AssemblyObjectAlignerView : public QWidget
 
  public slots:
 
+  void enable();
+
   void transmit_configuration();
 
-  void show_object_angle(const double);
+  void show_measured_angle(const double);
 
   void updateImage(const int, const QString&);
   void updateImage(const int, const cv::Mat&);

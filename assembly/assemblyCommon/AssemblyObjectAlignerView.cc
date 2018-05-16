@@ -40,7 +40,10 @@ AssemblyObjectAlignerView::AssemblyObjectAlignerView(QWidget* parent) :
   alignm_angtgt_label_(nullptr), 
   alignm_angtgt_linee_(nullptr), 
 
+  alignm_exemeas_radbu_(nullptr),
   alignm_exemeas_pusbu_(nullptr),
+
+  alignm_exealig_radbu_(nullptr),
   alignm_exealig_pusbu_(nullptr),
 
   w_patrecOne_(nullptr),
@@ -123,7 +126,7 @@ AssemblyObjectAlignerView::AssemblyObjectAlignerView(QWidget* parent) :
   alignm_exemeas_lay->addWidget(alignm_exemeas_radbu_,  4);
   alignm_exemeas_lay->addWidget(alignm_exemeas_pusbu_, 70);
 
-//!!  connect(alignm_exemeas_pusbu_, SIGNAL(clicked()), this, SLOT(measure_angle()));
+  connect(alignm_exemeas_pusbu_, SIGNAL(clicked()), this, SLOT(transmit_configuration()));
   // ---
 
   // mode: align object
@@ -144,7 +147,7 @@ AssemblyObjectAlignerView::AssemblyObjectAlignerView(QWidget* parent) :
   alignm_exealig_lay->addWidget(alignm_exealig_radbu_,  4);
   alignm_exealig_lay->addWidget(alignm_exealig_pusbu_, 70);
 
-//!!  connect(alignm_exealig_pusbu_, SIGNAL(clicked()), this, SLOT(measure_angle()));
+  connect(alignm_exealig_pusbu_, SIGNAL(clicked()), this, SLOT(transmit_configuration()));
   // ---
 
   alignm_cfgexe_lay->setStretch(0, 50);
@@ -307,6 +310,11 @@ void AssemblyObjectAlignerView::keyReleaseEvent(QKeyEvent* event)
   }
 }
 
+void AssemblyObjectAlignerView::enable()
+{
+  this->setEnabled(true);
+}
+
 //!!void AssemblyObjectAlignerView::connect_to_finder(const AssemblyObjectFinderPatRec* const finder)
 //!!{
 //!!  if(finder == nullptr)
@@ -344,7 +352,7 @@ void AssemblyObjectAlignerView::keyReleaseEvent(QKeyEvent* event)
 //!!  return;
 //!!}
 
-void AssemblyObjectAlignerView::show_object_angle(const double val)
+void AssemblyObjectAlignerView::show_measured_angle(const double val)
 {
   std::stringstream posi_strs;
   posi_strs << val;
@@ -426,7 +434,7 @@ AssemblyObjectAligner::Configuration AssemblyObjectAlignerView::get_configuratio
     return conf;
   }
 
-  conf.object_DeltaX = alignm_objDX_val;
+  conf.object_deltaX = alignm_objDX_val;
   /// ------------------------------
 
   /// Object Delta-Y ---------------
@@ -448,7 +456,7 @@ AssemblyObjectAligner::Configuration AssemblyObjectAlignerView::get_configuratio
     return conf;
   }
 
-  conf.object_DeltaY = alignm_objDY_val;
+  conf.object_deltaY = alignm_objDY_val;
   /// ------------------------------
 
   /// Execution Mode ---------------

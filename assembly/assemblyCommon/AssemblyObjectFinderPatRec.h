@@ -99,8 +99,8 @@ class AssemblyObjectFinderPatRec : public QObject
   void update_image_master       (const cv::Mat&);
   void update_image_master_PatRec(const cv::Mat&);
 
-  void send_image_master();
-  void send_image_master_PatRec();
+//!!  void send_image_master();
+//!!  void send_image_master_PatRec();
 
   void launch_PatRec(const AssemblyObjectFinderPatRec::Configuration&);
 
@@ -114,18 +114,27 @@ class AssemblyObjectFinderPatRec : public QObject
   void updated_image_master_PatRec(const cv::Mat&);
   void updated_image_master_PatRec();
 
-  void sent_image_master       (const cv::Mat&);
-  void sent_image_master_PatRec(const cv::Mat&);
+//!!  void sent_image_master       (const cv::Mat&);
+//!!  void sent_image_master_PatRec(const cv::Mat&);
 
-  void image_path(const int, const QString&);
-  void image_mat (const int, const cv::Mat&);
+  void PatRec_res_image_master_edited(const QString&);
+  void PatRec_res_image_master_edited(const cv::Mat&);
+
+  void PatRec_res_image_angscan(const QString&);
+  void PatRec_res_image_angscan(const cv::Mat&);
+
+  void PatRec_res_image_master_PatRec(const QString&);
+  void PatRec_res_image_master_PatRec(const cv::Mat&);
+
+  void PatRec_res_image_template_PatRec(const QString&);
+  void PatRec_res_image_template_PatRec(const cv::Mat&);
 
   void updated_prescan_angles();
   void updated_angscan_parameters();
 
   void template_matching_request(const Configuration&, const cv::Mat&, const cv::Mat&, const cv::Mat&);
 
-  void reportObjectLocation(int, double, double, double);
+  void PatRec_results(int, double, double, double);
 
   void PatRec_exitcode(const int);
 };

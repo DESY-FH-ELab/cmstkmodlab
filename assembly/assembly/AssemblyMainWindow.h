@@ -161,12 +161,11 @@ class AssemblyMainWindow : public QMainWindow
   AssemblyRegistryView* registryView_;
   AssemblyHardwareControlView* hwctr_view_;
 
-  QCheckBox* checkbox1;
-  QCheckBox* checkbox2;
-//  QCheckBox* checkbox3;
+  QCheckBox* autofocus_checkbox_;
 
   // flags
   bool images_enabled_;
+  bool aligner_connected_;
 
   // timing
   double testTimerCount_;
