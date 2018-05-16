@@ -163,7 +163,7 @@ AssemblyMainWindow::AssemblyMainWindow(const unsigned int camera_ID, QWidget* pa
 //    // AUTOMATED-ASSEMBLY VIEW ---------------------------------
 //    const QString tabname_AutoAssembly("Auto Assembly");
 //
-//    assemblyView_ = new AssemblyAssemblyView(motion_manager_);//!!, tabWidget_);
+//    assemblyView_ = new AssemblyAssemblyView(motion_manager_, tabWidget_);
 //    tabWidget_->addTab(assemblyView_, tabname_AutoAssembly);
 //
 //    assemblyView_->connect_to_finder(finder_);

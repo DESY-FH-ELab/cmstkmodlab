@@ -45,8 +45,6 @@ class AssemblyObjectAlignerView : public QWidget
   AssemblyUEyeView* PatRecOne_Image() const { return patrecOne_image_; }
   AssemblyUEyeView* PatRecTwo_Image() const { return patrecTwo_image_; }
 
-//!!  void connect_to_finder(const AssemblyObjectFinderPatRec* const);
-
   AssemblyObjectAligner::Configuration get_configuration(bool&) const;
 
  protected:
@@ -95,8 +93,6 @@ class AssemblyObjectAlignerView : public QWidget
 
   void updateImage(const int, const QString&);
   void updateImage(const int, const cv::Mat&);
-
-//!!  void updateText(const int, const double, const double, const double);
 
  signals:
 

@@ -403,43 +403,6 @@ void AssemblyObjectAlignerView::enable()
   this->setEnabled(true);
 }
 
-//!!void AssemblyObjectAlignerView::connect_to_finder(const AssemblyObjectFinderPatRec* const finder)
-//!!{
-//!!  if(finder == nullptr)
-//!!  {
-//!!    NQLog("AssemblyObjectAlignerView", NQLog::Critical) << "connect_to_finder"
-//!!       << ": null pointer to AssemblyObjectFinderPatRec object, no action taken";
-//!!
-//!!    return;
-//!!  }
-//!!
-//!!  if(finder_connected_ == false)
-//!!  {
-//!!    connect(this->PatRec_Widget(), SIGNAL(configuration_updated(AssemblyObjectFinderPatRec::Configuration)), finder, SLOT(launch_PatRec(AssemblyObjectFinderPatRec::Configuration)));
-//!!
-//!!    connect(finder, SIGNAL(PatRec_exitcode(int)), this, SLOT(change_label(int)));
-//!!
-//!!    connect(finder, SIGNAL(image_path(int, QString)), this, SLOT(updateImage(int, QString)));
-//!!    connect(finder, SIGNAL(image_mat (int, cv::Mat)), this, SLOT(updateImage(int, cv::Mat)));
-//!!
-//!!    connect(finder, SIGNAL(reportObjectLocation(int, double, double, double)), this, SLOT(updateText(int, double, double, double)));
-//!!
-//!!    NQLog("AssemblyObjectAlignerView", NQLog::Spam) << "connect_to_finder"
-//!!       << ": view connected to object of type AssemblyObjectFinderPatRec";
-//!!
-//!!    finder_connected_ = true;
-//!!  }
-//!!  else
-//!!  {
-//!!    NQLog("AssemblyObjectAlignerView", NQLog::Critical) << "connect_to_finder"
-//!!       << ": widget already connected to an object of type AssemblyObjectFinderPatRec, no action taken";
-//!!
-//!!    return;
-//!!  }
-//!!
-//!!  return;
-//!!}
-
 void AssemblyObjectAlignerView::show_measured_angle(const double val)
 {
   std::stringstream posi_strs;

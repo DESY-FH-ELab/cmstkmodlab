@@ -241,22 +241,6 @@ void AssemblyObjectFinderPatRec::update_image_master_PatRec(const cv::Mat& img)
   }
 }
 
-//!!void AssemblyObjectFinderPatRec::send_image_master()
-//!!{
-//!!  NQLog("AssemblyObjectFinderPatRec", NQLog::Spam) << "send_image_master"
-//!!     << ": emitting signal \"sent_image_master\"";
-//!!
-//!!  emit sent_image_master(img_master_);
-//!!}
-//!!
-//!!void AssemblyObjectFinderPatRec::send_image_master_PatRec()
-//!!{
-//!!  NQLog("AssemblyObjectFinderPatRec", NQLog::Spam) << "send_image_master_PatRec"
-//!!     << ": emitting signal \"sent_image_master_PatRec\"";
-//!!
-//!!  emit sent_image_master_PatRec(img_master_PatRec_);
-//!!}
-
 void AssemblyObjectFinderPatRec::template_matching(const AssemblyObjectFinderPatRec::Configuration& conf, const cv::Mat& img_master, const cv::Mat& img_master_PatRec, const cv::Mat& img_templa_PatRec)
 {
   // validate configuration parameters

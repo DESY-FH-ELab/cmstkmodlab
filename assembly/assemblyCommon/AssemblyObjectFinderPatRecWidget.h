@@ -85,8 +85,6 @@ class AssemblyObjectFinderPatRecWidget : public QWidget
   QLabel*    angles_finestep_label_;
   QLineEdit* angles_finestep_linee_;
 
-//!!  AssemblyObjectFinderPatRec::Configuration configuration_;
-
  public slots:
 
   void load_image_template();
