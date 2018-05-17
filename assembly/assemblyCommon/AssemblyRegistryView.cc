@@ -38,7 +38,7 @@ AssemblyRegistryView::AssemblyRegistryView(const LStepExpressMotionManager* moti
   this->setLayout(l);
 
   //// Registry of Positions
-  QGroupBox* box_posit = new QGroupBox(tr("Positions"));
+  QGroupBox* box_posit = new QGroupBox(tr("Record Positions"));
   box_posit->setStyleSheet("QGroupBox { font-weight: bold; } ");
 
   QFormLayout* l2 = new QFormLayout;
@@ -90,7 +90,7 @@ void AssemblyRegistryView::calculate_relative_distance()
   bool idx_from_valid(false);
   const int idx_from = idx_qstr_from.remove(" ").toInt(&idx_from_valid);
 
-  if(!idx_from_valid)
+  if(idx_from_valid == false)
   {
     NQLog("AssemblyRegistryView", NQLog::Critical) << "calculate_relative_distance"
       << ": invalid input format for index of position \"From\" (" << idx_qstr_from << "), no action taken";
@@ -121,7 +121,7 @@ void AssemblyRegistryView::calculate_relative_distance()
   bool idx_to_valid(false);
   const int idx_to = idx_qstr_to.remove(" ").toInt(&idx_to_valid);
 
-  if(!idx_to_valid)
+  if(idx_to_valid == false)
   {
     NQLog("AssemblyRegistryView", NQLog::Critical) << "calculate_relative_distance"
       << ": invalid input format for index of position \"To\" (" << idx_qstr_to << "), no action taken";
@@ -149,10 +149,10 @@ void AssemblyRegistryView::calculate_relative_distance()
   std::vector<double> vpos_from, vpos_to;
 
   const bool pass_vpos_from = this->load_position_4vector(vpos_from, qstr_from);
-  if(!pass_vpos_from){ return; }
+  if(pass_vpos_from == false){ return; }
 
   const bool pass_vpos_to   = this->load_position_4vector(vpos_to, qstr_to);
-  if(!pass_vpos_to){ return; }
+  if(pass_vpos_to == false){ return; }
 
   const double dX = (vpos_to.at(0) - vpos_from.at(0));
   const double dY = (vpos_to.at(1) - vpos_from.at(1));
@@ -188,28 +188,28 @@ bool AssemblyRegistryView::load_position_4vector(std::vector<double>& vec, QStri
     const double z_d = entries.value(2).toDouble(&valid_z);
     const double a_d = entries.value(3).toDouble(&valid_a);
 
-    if(!valid_x)
+    if(valid_x == false)
     {
       NQLog("AssemblyRegistryView", NQLog::Spam) << "load_position_4vector"
          << ": invalid format for x-axis position (" << entries.value(0) << "), returning \"false\"";
 
       return false;
     }
-    else if(!valid_y)
+    else if(valid_y == false)
     {
       NQLog("AssemblyRegistryView", NQLog::Spam) << "load_position_4vector"
          << ": invalid format for y-axis position (" << entries.value(1) << "), returning \"false\"";
 
       return false;
     }
-    else if(!valid_z)
+    else if(valid_z == false)
     {
       NQLog("AssemblyRegistryView", NQLog::Spam) << "load_position_4vector"
          << ": invalid format for z-axis position (" << entries.value(2) << "), returning \"false\"";
 
       return false;
     }
-    else if(!valid_a)
+    else if(valid_a == false)
     {
       NQLog("AssemblyRegistryView", NQLog::Spam) << "load_position_4vector"
          << ": invalid format for a-axis position (" << entries.value(3) << "), returning \"false\"";

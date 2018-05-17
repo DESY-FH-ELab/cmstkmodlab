@@ -41,6 +41,8 @@ class AssemblyObjectAligner : public QObject
     double object_deltaX;
     double object_deltaY;
 
+    bool completeAtPosOne;
+
     bool only_measure_angle;
 
     double target_angle;

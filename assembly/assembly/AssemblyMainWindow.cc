@@ -123,7 +123,7 @@ AssemblyMainWindow::AssemblyMainWindow(const unsigned int camera_ID, QWidget* pa
 //    tabWidget_->addTab(rawView_, "raw");
 
     // IMAGE VIEW ----------------------------------------------
-    const QString tabname_Image("Image");
+    const QString tabname_Image("Image Viewer");
 
     image_view_ = new AssemblyImageView(tabWidget_);
     tabWidget_->addTab(image_view_, tabname_Image);

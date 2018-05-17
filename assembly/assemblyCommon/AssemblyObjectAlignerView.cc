@@ -45,6 +45,8 @@ AssemblyObjectAlignerView::AssemblyObjectAlignerView(QWidget* parent) :
 
   alignm_angtgt_linee_(nullptr),
 
+  alignm_completeAtPosOne_checkbox_(nullptr),
+
   alignm_exemeas_radbu_(nullptr),
   alignm_exemeas_pusbu_(nullptr),
 
@@ -188,6 +190,12 @@ AssemblyObjectAlignerView::AssemblyObjectAlignerView(QWidget* parent) :
 
   QVBoxLayout* alignm_exemod_lay = new QVBoxLayout;
   alignm_exemod_box->setLayout(alignm_exemod_lay);
+
+  // option: go-back to start before stopping
+  alignm_completeAtPosOne_checkbox_ = new QCheckBox("Go back to marker-1 position before completion");
+  alignm_exemod_lay->addWidget(alignm_completeAtPosOne_checkbox_);
+
+  alignm_exemod_lay->addSpacing(20);
 
   // mode: measure angle
   QHBoxLayout* alignm_exemeas_lay = new QHBoxLayout;
@@ -519,7 +527,10 @@ AssemblyObjectAligner::Configuration AssemblyObjectAlignerView::get_configuratio
   conf.object_deltaY = alignm_objDY_val;
   /// ------------------------------
 
-  /// Execution Mode ---------------
+  /// Execution --------------------
+
+  conf.completeAtPosOne = alignm_completeAtPosOne_checkbox_->isChecked();
+
   if(alignm_exemeas_radbu_->isChecked() == alignm_exealig_radbu_->isChecked())
   {
     NQLog("AssemblyObjectAlignerView", NQLog::Critical) << "get_configuration"

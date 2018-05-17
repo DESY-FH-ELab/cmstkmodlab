@@ -21,6 +21,7 @@
 #include <QString>
 #include <QScrollArea>
 #include <QKeyEvent>
+#include <QCheckBox>
 #include <QRadioButton>
 #include <QPushButton>
 #include <QLineEdit>
@@ -63,6 +64,8 @@ class AssemblyObjectAlignerView : public QWidget
   QLineEdit*    alignm_PSP_dY_linee_;
 
   QLineEdit* alignm_angtgt_linee_;
+
+  QCheckBox* alignm_completeAtPosOne_checkbox_;
 
   QRadioButton* alignm_exemeas_radbu_;
   QPushButton*  alignm_exemeas_pusbu_;
