@@ -27,6 +27,7 @@ public:
 
 public slots:
 
+  void printHelp();
   void connectToServer();
   void sendCommand();
   void readResponse();
