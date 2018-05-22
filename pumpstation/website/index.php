@@ -365,6 +365,7 @@ echo ("</div></div>");
         <div style="position:absolute;width:800px;margin-top: 460px;vertical-align:top;">
 	    <hr>        
         <img style="width:32px;" src="data/DESY-Logo.png"/>
+        <img style="width:32px;" src="data/DAF_Logo_color2.png"/>
         <img style="width:32px;" src="data/CMS-Logo.png"/>
         <span style="vertical-align:top;">
 <?php
