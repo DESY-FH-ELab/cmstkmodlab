@@ -30,10 +30,10 @@ function changeSwitch(channel) {
 			//update the index pic
 			if (!(data.localeCompare("0"))) {
 				Switches[channel].src = "data/button_red.png";
-				window.location.reload(true);
+				setTimeout(function(){window.location.reload(true);}, 2000);
 			} else if (!(data.localeCompare("1"))) {
 				Switches[channel].src = "data/button_green.png";
-				window.location.reload(true);
+				setTimeout(function(){window.location.reload(true);}, 2000);
 			} else if (!(data.localeCompare("fail"))) {
 				alert ("Something went wrong!" );
 				return ("fail");
