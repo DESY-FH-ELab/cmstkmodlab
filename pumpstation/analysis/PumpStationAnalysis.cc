@@ -27,7 +27,7 @@ int main(int argc, char *argv[])
 {
 	if (argc<3 || argc>5) {
 		std::cout << "usage:" << std::endl;
-		std::cout << argv[0] << " Output Directory [Start Date YYYY-MM-DD] [End Date YYYY-MM-DD]" << std::endl;
+		std::cout << argv[0] << " Output-File Input-Directory [Start Date YYYY-MM-DD] [End Date YYYY-MM-DD]" << std::endl;
 		exit(0);
 	}
 
