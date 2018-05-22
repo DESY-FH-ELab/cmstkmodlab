@@ -20,7 +20,7 @@
     <meta http-equiv="X-UA-Compatible" content="chrome=1,IE=edge" />
     <meta name="viewport" content="user-scalable=no, width=800" />
     <meta charset="utf-8" />
-    <meta http-equiv="refresh" content="5">
+    <meta http-equiv="refresh" content="15">
     <title>.: CMS Pump Station Status & Control :.</title>
     <style type="text/css">
       body {
