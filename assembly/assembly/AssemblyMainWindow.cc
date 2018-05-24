@@ -180,8 +180,9 @@ AssemblyMainWindow::AssemblyMainWindow(const unsigned int camera_ID, QWidget* pa
 
     // finder
     finder_ = new AssemblyObjectFinderPatRec(thresholder_, assembly::QtCacheDirectory()+"/AssemblyObjectFinderPatRec", "rotations");
-//    finder_thread_ = new AssemblyObjectFinderPatRecThread(finder_);
-//    finder_thread_->start();
+
+    finder_thread_ = new AssemblyObjectFinderPatRecThread(finder_);
+    finder_thread_->start();
 
     finder_view_->connect_to_finder(finder_);
 
@@ -654,9 +655,9 @@ void AssemblyMainWindow::quit()
       camera_ = 0;
     }
 
-    this->quit_thread(motion_thread_       , "terminated LStepExpressMotionThread");
-    this->quit_thread(camera_thread_       , "terminated AssemblyUEyeCameraThread");
-//    this->quit_thread(finder_thread_, "terminated AssemblyObjectFinderPatRecThread");
+    this->quit_thread(motion_thread_, "terminated LStepExpressMotionThread");
+    this->quit_thread(camera_thread_, "terminated AssemblyUEyeCameraThread");
+    this->quit_thread(finder_thread_, "terminated AssemblyObjectFinderPatRecThread");
 
     NQLog("AssemblyMainWindow", NQLog::Message) << "quit: application closed";
 

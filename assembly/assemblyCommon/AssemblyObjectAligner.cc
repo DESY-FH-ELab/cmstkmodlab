@@ -30,6 +30,8 @@ AssemblyObjectAligner::AssemblyObjectAligner(const LStepExpressMotionManager* co
     return;
   }
 
+  qRegisterMetaType<AssemblyObjectAligner::Configuration>("AssemblyObjectAligner::Configuration");
+
   ApplicationConfig* config = ApplicationConfig::instance();
   if(config == nullptr)
   {

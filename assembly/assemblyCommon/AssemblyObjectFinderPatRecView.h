@@ -23,6 +23,7 @@
 #include <QKeyEvent>
 #include <QPushButton>
 #include <QLineEdit>
+#include <QMutex>
 
 #include <opencv2/opencv.hpp>
 
@@ -40,6 +41,11 @@ class AssemblyObjectFinderPatRecView : public QWidget
   QPushButton* PatRec_exe_button() const { return patrec_exe_button_; }
 
   void connect_to_finder(const AssemblyObjectFinderPatRec* const);
+
+ private:
+  Q_DISABLE_COPY(AssemblyObjectFinderPatRecView)
+
+  mutable QMutex mutex_;
 
  protected:
 

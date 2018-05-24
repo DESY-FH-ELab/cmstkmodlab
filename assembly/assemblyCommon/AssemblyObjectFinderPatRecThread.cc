@@ -14,8 +14,9 @@
 
 #include <AssemblyObjectFinderPatRecThread.h>
 
-AssemblyObjectFinderPatRecThread::AssemblyObjectFinderPatRecThread(AssemblyObjectFinderPatRec* finder, QObject* parent) :
+AssemblyObjectFinderPatRecThread::AssemblyObjectFinderPatRecThread(AssemblyObjectFinderPatRec* const finder, QObject* parent) :
   QThread(parent),
+
   finder_(finder)
 {
   if(finder_ == nullptr)
@@ -27,8 +28,6 @@ AssemblyObjectFinderPatRecThread::AssemblyObjectFinderPatRecThread(AssemblyObjec
   }
 
   finder_->moveToThread(this);
-
-//  connect(this, SIGNAL(finished()), this, SLOT(deleteLater()));
 
   NQLog("AssemblyObjectFinderPatRecThread", NQLog::Debug) << "constructed";
 }

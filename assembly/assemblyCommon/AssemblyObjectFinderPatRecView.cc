@@ -26,6 +26,7 @@
 #include <QPixmap>
 #include <QApplication>
 #include <QImageReader>
+#include <QMutexLocker>
 
 AssemblyObjectFinderPatRecView::AssemblyObjectFinderPatRecView(QWidget* parent) :
   QWidget(parent),
@@ -248,17 +249,17 @@ void AssemblyObjectFinderPatRecView::connect_to_finder(const AssemblyObjectFinde
 
     connect(finder, SIGNAL(PatRec_exitcode(int)), this, SLOT(update_label(int)));
 
-    connect(finder, SIGNAL(PatRec_res_image_master_edited(QString))  , this, SLOT(update_image_1(QString)));
-    connect(finder, SIGNAL(PatRec_res_image_master_edited(cv::Mat))  , this, SLOT(update_image_1(cv::Mat)));
+    connect(finder, SIGNAL(PatRec_res_image_master_edited(QString))  , this, SLOT(update_image_1(QString)), Qt::DirectConnection);
+    connect(finder, SIGNAL(PatRec_res_image_master_edited(cv::Mat))  , this, SLOT(update_image_1(cv::Mat)), Qt::DirectConnection);
 
-    connect(finder, SIGNAL(PatRec_res_image_angscan(QString))        , this, SLOT(update_image_2(QString)));
-    connect(finder, SIGNAL(PatRec_res_image_angscan(cv::Mat))        , this, SLOT(update_image_2(cv::Mat)));
+    connect(finder, SIGNAL(PatRec_res_image_angscan(QString))        , this, SLOT(update_image_2(QString)), Qt::DirectConnection);
+    connect(finder, SIGNAL(PatRec_res_image_angscan(cv::Mat))        , this, SLOT(update_image_2(cv::Mat)), Qt::DirectConnection);
 
-    connect(finder, SIGNAL(PatRec_res_image_master_PatRec(QString))  , this, SLOT(update_image_3(QString)));
-    connect(finder, SIGNAL(PatRec_res_image_master_PatRec(cv::Mat))  , this, SLOT(update_image_3(cv::Mat)));
+    connect(finder, SIGNAL(PatRec_res_image_master_PatRec(QString))  , this, SLOT(update_image_3(QString)), Qt::DirectConnection);
+    connect(finder, SIGNAL(PatRec_res_image_master_PatRec(cv::Mat))  , this, SLOT(update_image_3(cv::Mat)), Qt::DirectConnection);
 
-    connect(finder, SIGNAL(PatRec_res_image_template_PatRec(QString)), this, SLOT(update_image_4(QString)));
-    connect(finder, SIGNAL(PatRec_res_image_template_PatRec(cv::Mat)), this, SLOT(update_image_4(cv::Mat)));
+    connect(finder, SIGNAL(PatRec_res_image_template_PatRec(QString)), this, SLOT(update_image_4(QString)), Qt::DirectConnection);
+    connect(finder, SIGNAL(PatRec_res_image_template_PatRec(cv::Mat)), this, SLOT(update_image_4(cv::Mat)), Qt::DirectConnection);
 
     connect(finder, SIGNAL(PatRec_results(int, double, double, double)), this, SLOT(update_text(int, double, double, double)));
 
@@ -325,6 +326,8 @@ void AssemblyObjectFinderPatRecView::update_image(const int stage, const cv::Mat
 {
   NQLog("AssemblyObjectFinderPatRecView", NQLog::Spam) << "update_image(" << stage << ", image)";
 
+  QMutexLocker ml(&mutex_);
+
   if(stage == 1)
   {
     imageView_1_->setImage(img);
@@ -364,7 +367,6 @@ void AssemblyObjectFinderPatRecView::update_label(const int state)
 
   return;
 }
-
 
 void AssemblyObjectFinderPatRecView::keyReleaseEvent(QKeyEvent* event)
 {

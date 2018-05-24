@@ -21,6 +21,7 @@
 
 #include <QFile>
 #include <QTextStream>
+#include <QMutexLocker>
 
 #include <TFile.h>
 #include <TGraph.h>
@@ -51,6 +52,8 @@ AssemblyObjectFinderPatRec::AssemblyObjectFinderPatRec(AssemblyThresholder* cons
   // connections
   connect(this, SIGNAL(template_matching_request(Configuration, cv::Mat, cv::Mat, cv::Mat)), this, SLOT(template_matching(Configuration, cv::Mat, cv::Mat, cv::Mat)));
   // -----------
+
+  qRegisterMetaType<AssemblyObjectFinderPatRec::Configuration>("AssemblyObjectFinderPatRec::Configuration");
 
   NQLog("AssemblyObjectFinderPatRec", NQLog::Debug) << "constructed";
 }
@@ -253,19 +256,21 @@ void AssemblyObjectFinderPatRec::template_matching(const AssemblyObjectFinderPat
        << ": emitting signal \"PatRec_exitcode(1)\"";
 
     emit PatRec_exitcode(1);
+
+    return;
   }
   // ----------
 
-  NQLog("AssemblyObjectFinderPatRec", NQLog::Spam) << "template_matching";
-  NQLog("AssemblyObjectFinderPatRec", NQLog::Spam) << "template_matching: Master   cols = " << img_master.cols;
-  NQLog("AssemblyObjectFinderPatRec", NQLog::Spam) << "template_matching: Master   rows = " << img_master.rows;
-  NQLog("AssemblyObjectFinderPatRec", NQLog::Spam) << "template_matching: Template cols = " << img_templa_PatRec.cols;
-  NQLog("AssemblyObjectFinderPatRec", NQLog::Spam) << "template_matching: Template rows = " << img_templa_PatRec.rows;
-
+  // validate master/template images
   if(img_master.empty())
   {
     NQLog("AssemblyObjectFinderPatRec", NQLog::Critical) << "template_matching"
        << ": empty master image, stopping routine";
+
+    NQLog("AssemblyObjectFinderPatRec", NQLog::Spam) << "template_matching"
+       << ": emitting signal \"PatRec_exitcode(1)\"";
+
+    emit PatRec_exitcode(1);
 
     return;
   }
@@ -275,6 +280,11 @@ void AssemblyObjectFinderPatRec::template_matching(const AssemblyObjectFinderPat
     NQLog("AssemblyObjectFinderPatRec", NQLog::Critical) << "template_matching"
        << ": empty master image for Pattern Recognition, stopping routine";
 
+    NQLog("AssemblyObjectFinderPatRec", NQLog::Spam) << "template_matching"
+       << ": emitting signal \"PatRec_exitcode(1)\"";
+
+    emit PatRec_exitcode(1);
+
     return;
   }
 
@@ -283,11 +293,27 @@ void AssemblyObjectFinderPatRec::template_matching(const AssemblyObjectFinderPat
     NQLog("AssemblyObjectFinderPatRec", NQLog::Critical) << "template_matching"
        << ": empty template image, stopping routine";
 
+    NQLog("AssemblyObjectFinderPatRec", NQLog::Spam) << "template_matching"
+       << ": emitting signal \"PatRec_exitcode(1)\"";
+
+    emit PatRec_exitcode(1);
+
     return;
   }
+  // ----------
 
-  // QMutex lock (accessing data members)
-//  mutex_.lock();
+  NQLog("AssemblyObjectFinderPatRec", NQLog::Spam) << "template_matching: Master   cols = " << img_master.cols;
+  NQLog("AssemblyObjectFinderPatRec", NQLog::Spam) << "template_matching: Master   rows = " << img_master.rows;
+
+  emit PatRec_res_image_master_PatRec(img_master_PatRec);
+
+  NQLog("AssemblyObjectFinderPatRec", NQLog::Spam) << "template_matching: Template cols = " << img_templa_PatRec.cols;
+  NQLog("AssemblyObjectFinderPatRec", NQLog::Spam) << "template_matching: Template rows = " << img_templa_PatRec.rows;
+
+  emit PatRec_res_image_template_PatRec(img_templa_PatRec);
+
+  // QMutex lock
+  QMutexLocker ml(&mutex_);
 
   // output directory
   std::string output_dir(""), output_subdir("");
@@ -516,9 +542,7 @@ void AssemblyObjectFinderPatRec::template_matching(const AssemblyObjectFinderPat
   const std::string filepath_img_master_copy = output_dir+"/image_master_PatRec.png";
   assembly::cv_imwrite(filepath_img_master_copy, img_master_copy);
 
-  emit PatRec_res_image_master_edited  (img_master_copy);
-  emit PatRec_res_image_master_PatRec  (img_master_PatRec);
-  emit PatRec_res_image_template_PatRec(img_templa_PatRec);
+  emit PatRec_res_image_master_edited(img_master_copy);
 
   // text output file -
   const QString txt_file_path = QString::fromStdString(output_dir+"/PatRec_results.txt");
