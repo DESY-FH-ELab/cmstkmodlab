@@ -249,12 +249,12 @@ AssemblyObjectAlignerView::AssemblyObjectAlignerView(QWidget* parent) :
   alignm_cfg_lay->addLayout(alignm_PRcfg_lay);
 
   // PatRecWidget #1
-  QGroupBox* patrecOne_cfg_box = new QGroupBox(tr("PatRec Marker #1"));
+  QGroupBox* patrecOne_cfg_box = new QGroupBox(tr("PatRec Marker #1 [Bottom-Left Marker]"));
   patrecOne_cfg_box->setObjectName("patrecOne_cfg_box");
   patrecOne_cfg_box->setStyleSheet("QWidget#patrecOne_cfg_box { font-weight : bold; color : blue; }");
 
   patrecOne_wid_ = new AssemblyObjectFinderPatRecWidget;
-  patrecOne_wid_->setToolTip("Pattern Recognition Configuration #1");
+  patrecOne_wid_->setToolTip("Pattern Recognition Configuration #1 [Bottom-Left Marker]");
 
   if(config != nullptr)
   {
@@ -273,12 +273,12 @@ AssemblyObjectAlignerView::AssemblyObjectAlignerView(QWidget* parent) :
   // -----
 
   // PatRecWidget #2
-  QGroupBox* patrecTwo_cfg_box = new QGroupBox(tr("PatRec Marker #2"));
+  QGroupBox* patrecTwo_cfg_box = new QGroupBox(tr("PatRec Marker #2 [Top-Right Marker]"));
   patrecTwo_cfg_box->setObjectName("patrecTwo_cfg_box");
   patrecTwo_cfg_box->setStyleSheet("QWidget#patrecTwo_cfg_box { font-weight : bold; color : blue; }");
 
   patrecTwo_wid_ = new AssemblyObjectFinderPatRecWidget;
-  patrecTwo_wid_->setToolTip("Pattern Recognition Configuration #2");
+  patrecTwo_wid_->setToolTip("Pattern Recognition Configuration #2 [Top-Right Marker]");
 
   if(config != nullptr)
   {
