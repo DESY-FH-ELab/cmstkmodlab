@@ -69,15 +69,15 @@ AssemblyObjectAlignerView::AssemblyObjectAlignerView(QWidget* parent) :
   QVBoxLayout* layout = new QVBoxLayout;
   this->setLayout(layout);
 
-  QToolBox* main_toolbox = new QToolBox;
-  layout->addWidget(main_toolbox);
+  QToolBox* toolbox = new QToolBox;
+  layout->addWidget(toolbox);
 
   ApplicationConfig* config = ApplicationConfig::instance();
 
   // Configuration + Execution
 
   alignm_cfg_wid_ = new QWidget;
-  main_toolbox->addItem(alignm_cfg_wid_, tr("Alignment Configuration"));
+  toolbox->addItem(alignm_cfg_wid_, tr("Alignment Configuration"));
 
   QVBoxLayout* alignm_cfg_lay = new QVBoxLayout;
   alignm_cfg_wid_->setLayout(alignm_cfg_lay);
@@ -306,7 +306,7 @@ AssemblyObjectAlignerView::AssemblyObjectAlignerView(QWidget* parent) :
 
   // Results -------------
   alignm_res_wid_ = new QWidget;
-  main_toolbox->addItem(alignm_res_wid_, "Alignment Results");
+  toolbox->addItem(alignm_res_wid_, "Alignment Results");
  
   QVBoxLayout* alignm_res_lay = new QVBoxLayout;
   alignm_res_wid_->setLayout(alignm_res_lay);

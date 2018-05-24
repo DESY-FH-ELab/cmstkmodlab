@@ -25,7 +25,6 @@ typedef AssemblyUEyeModel AssemblyUEyeModel_t;
 #include <AssemblyUEyeWidget.h>
 #include <AssemblyUEyeView.h>
 #include <AssemblyUEyeSnapShooter.h>
-#include <AssemblyRegistryView.h>
 #include <AssemblyZFocusFinder.h>
 #include <AssemblyImageController.h>
 #include <AssemblyImageView.h>
@@ -37,6 +36,7 @@ typedef AssemblyUEyeModel AssemblyUEyeModel_t;
 #include <AssemblyObjectAligner.h>
 #include <AssemblyObjectAlignerView.h>
 #include <AssemblyMultiPickupTester.h>
+#include <AssemblyToolboxView.h>
 #include <AssemblyHardwareControlView.h>
 #include <LStepExpressModel.h>
 #include <LStepExpressMotionManager.h>
@@ -83,12 +83,12 @@ class AssemblyMainWindow : public QMainWindow
   void start_objectAligner(const AssemblyObjectAligner::Configuration&);
   void disconnect_objectAligner();
 
-  void start_multipickupNpatrec(const AssemblyMultiPickupTester::Configuration&);
-  void disconnect_multipickupNpatrec();
+  void start_multiPickupTest(const AssemblyMultiPickupTester::Configuration&);
+  void disconnect_multiPickupTest();
 
   void testTimer();
 
-  void quit_thread(QThread*, const std::string&) const;
+  void quit_thread(QThread*, const QString&) const;
   void quit();
 
  signals:
@@ -106,8 +106,7 @@ class AssemblyMainWindow : public QMainWindow
   void objectAligner_connected();
   void objectAligner_disconnected();
 
-  void multipickupNpatrec_connected();
-  void multipickupNpatrec_disconnected();
+  void multiPickupTest_disconnected();
 
  protected slots:
 
@@ -153,7 +152,7 @@ class AssemblyMainWindow : public QMainWindow
   AssemblyThresholderView* thresholder_view_;
   AssemblyObjectFinderPatRecView* finder_view_;
   AssemblyObjectAlignerView* aligner_view_;
-  AssemblyRegistryView* registry_view_;
+  AssemblyToolboxView* toolbox_view_;
   AssemblyHardwareControlView* hwctr_view_;
 
   QCheckBox* autofocus_checkbox_;

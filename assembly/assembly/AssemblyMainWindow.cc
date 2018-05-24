@@ -64,7 +64,7 @@ AssemblyMainWindow::AssemblyMainWindow(const unsigned int camera_ID, QWidget* pa
   thresholder_view_(nullptr),
   finder_view_(nullptr),
   aligner_view_(nullptr),
-  registry_view_(nullptr),
+  toolbox_view_(nullptr),
   hwctr_view_(nullptr),
 
   autofocus_checkbox_(nullptr),
@@ -168,11 +168,6 @@ AssemblyMainWindow::AssemblyMainWindow(const unsigned int camera_ID, QWidget* pa
 //
 //    assemblyView_->connect_to_finder(finder_);
 //
-//    // multi-pickup tester
-//    multipickup_tester_ = new AssemblyMultiPickupTester(motion_manager_);
-//
-//    connect(assemblyView_, SIGNAL(multipickup_request(const AssemblyMultiPickupTester::Configuration&)), this, SLOT(start_multipickupNpatrec(const AssemblyMultiPickupTester::Configuration&)));
-//
 //    NQLog("AssemblyMainWindow", NQLog::Message) << "added view " << tabname_AutoAssembly;
 //
 //    // ---------------------------------------------------------
@@ -219,13 +214,18 @@ AssemblyMainWindow::AssemblyMainWindow(const unsigned int camera_ID, QWidget* pa
 //    NQLog("AssemblyMainWindow", NQLog::Message) << "added view " << tabname_uEye;
 //    // ---------------------------------------------------------
 
-    // POSITIONS VIEW --------------------------------------------
-    const QString tabname_Registry("Registry");
+    // TOOLBOX VIEW ----------------------------------------------
+    const QString tabname_Toolbox("Toolbox");
 
-    registry_view_ = new AssemblyRegistryView(motion_manager_, tabWidget_);
-    tabWidget_->addTab(registry_view_, tabname_Registry);
+    toolbox_view_ = new AssemblyToolboxView(motion_manager_, tabWidget_);
+    tabWidget_->addTab(toolbox_view_, tabname_Toolbox);
 
-    NQLog("AssemblyMainWindow", NQLog::Message) << "added view " << tabname_Registry;
+    // multi-pickup tester
+    multipickup_tester_ = new AssemblyMultiPickupTester(motion_manager_);
+
+    connect(toolbox_view_->MultiPickupTester_Widget(), SIGNAL(multipickup_request(AssemblyMultiPickupTester::Configuration)), this, SLOT(start_multiPickupTest(AssemblyMultiPickupTester::Configuration)));
+
+    NQLog("AssemblyMainWindow", NQLog::Message) << "added view " << tabname_Toolbox;
     // -----------------------------------------------------------
 
     // MOTION-SETTINGS VIEW ------------------------------------
@@ -550,75 +550,70 @@ void AssemblyMainWindow::disconnect_objectAligner()
   return;
 }
 
-void AssemblyMainWindow::start_multipickupNpatrec(const AssemblyMultiPickupTester::Configuration& /* conf */)
+void AssemblyMainWindow::start_multiPickupTest(const AssemblyMultiPickupTester::Configuration& conf)
 {
-//    if(image_ctr_ == nullptr)
-//    {
-//      NQLog("AssemblyMainWindow", NQLog::Warning) << "start_multipickupNpatrec"
-//         << ": ImageController not initialized, no action taken (hint: click \"Camera ON\")";
-//
-//      return;
-//    }
-//
-//    multipickup_tester_->set_configuration(conf);
-//
-//    assemblyView_->MultiPickup_Widget()->enable(false);
-//
-//    connect(this               , SIGNAL(multipickupNpatrec_connected()), multipickup_tester_, SLOT(start_measurement()));
-//    connect(multipickup_tester_, SIGNAL(measurement_finished())        , multipickup_tester_, SLOT(start_pickup()));
-//    connect(multipickup_tester_, SIGNAL(pickup_finished())             , multipickup_tester_, SLOT(start_measurement()));
-//    connect(multipickup_tester_, SIGNAL(test_finished())               , this               , SLOT(disconnect_multipickupNpatrec()));
-//
-//    // measurement
-//    connect(multipickup_tester_, SIGNAL(measurement_request()), image_ctr_, SLOT(acquire_image()));
-//
-//    connect(finder_, SIGNAL(updated_image_master()), finder_, SLOT(update_image_master_PatRec()));
-//    connect(finder_, SIGNAL(updated_image_master_PatRec()), finder_, SLOT(run_PatRec_lab_marker()));
-//
-//    connect(finder_, SIGNAL(PatRec_exitcode(int)), multipickup_tester_, SLOT(finish_measurement(int)));
-//    // ---
-//
-//    // pickup (vacuum)
-//    connect(multipickup_tester_  , SIGNAL(vacuum_toggle(int))  , conradManager_, SLOT(toggleVacuum(int)));
-//    connect(conradManager_, SIGNAL(enableVacuumButton()), multipickup_tester_  , SLOT(setup_next_step()));
-//    // ---
-//
-//    NQLog("AssemblyMainWindow", NQLog::Spam) << "start_multipickupNpatrec"
-//       << ": emitting signal \"multipickupNpatrec_connected\"";
-//
-//    emit multipickupNpatrec_connected();
+  if(image_ctr_ == nullptr)
+  {
+    NQLog("AssemblyMainWindow", NQLog::Warning) << "start_multiPickupTest"
+       << ": ImageController not initialized, no action taken (hint: click \"Camera ON\")";
+
+    return;
+  }
+
+  toolbox_view_->MultiPickupTester_Widget()->enable(false);
+
+  connect(multipickup_tester_, SIGNAL(measurement_finished()), multipickup_tester_, SLOT(start_pickup()));
+  connect(multipickup_tester_, SIGNAL(pickup_finished())     , multipickup_tester_, SLOT(start_measurement()));
+  connect(multipickup_tester_, SIGNAL(test_finished())       , this               , SLOT(disconnect_multiPickupTest()));
+
+  // measurement
+  connect(multipickup_tester_, SIGNAL(measurement_request()), image_ctr_, SLOT(acquire_image()));
+
+  connect(finder_, SIGNAL(updated_image_master()), finder_view_->PatRec_exe_button(), SLOT(click()));
+  connect(finder_, SIGNAL(PatRec_exitcode(int)), multipickup_tester_, SLOT(finish_measurement(int)));
+  // ---
+
+  // pickup (vacuum)
+  connect(multipickup_tester_, SIGNAL(vacuum_toggle(int)), conradManager_, SLOT(toggleVacuum(int)));
+
+  connect(conradManager_, SIGNAL(enableVacuumButton()), multipickup_tester_, SLOT(setup_next_step()));
+  // ---
+
+  multipickup_tester_->set_configuration(conf);
+
+  multipickup_tester_->start_measurement();
+
+  return;
 }
 
-void AssemblyMainWindow::disconnect_multipickupNpatrec()
+void AssemblyMainWindow::disconnect_multiPickupTest()
 {
-//    assemblyView_->MultiPickup_Widget()->enable(true);
-//
-//    disconnect(this, SIGNAL(multipickupNpatrec_connected()), multipickup_tester_, SLOT(start_measurement()));
-//    disconnect(multipickup_tester_, SIGNAL(measurement_finished()), multipickup_tester_, SLOT(start_pickup()));
-//    disconnect(multipickup_tester_, SIGNAL(pickup_finished())     , multipickup_tester_, SLOT(start_measurement()));
-//    disconnect(multipickup_tester_, SIGNAL(test_finished())       , this               , SLOT(disconnect_multipickupNpatrec()));
-//
-//    // measurement
-//    disconnect(multipickup_tester_, SIGNAL(measurement_request()), image_ctr_, SLOT(acquire_image()));
-//
-//    disconnect(finder_, SIGNAL(updated_image_master())       , finder_, SLOT(update_image_master_PatRec()));
-//    disconnect(finder_, SIGNAL(updated_image_master_PatRec()), finder_, SLOT(run_PatRec_lab_marker()));
-//
-//    disconnect(finder_, SIGNAL(PatRec_exitcode(int)), multipickup_tester_, SLOT(finish_measurement(int)));
-//    // ---
-//
-//    // pickup (vacuum)
-//    disconnect(multipickup_tester_  , SIGNAL(vacuum_toggle(int))  , conradManager_, SLOT(toggleVacuum(int)));
-//    disconnect(conradManager_, SIGNAL(enableVacuumButton()), multipickup_tester_  , SLOT(setup_next_step()));
-//    // ---
-//
-//    NQLog("AssemblyMainWindow", NQLog::Spam) << "disconnect_multipickupNpatrec"
-//       << ": emitting signal \"multipickupNpatrec_disconnected\"";
-//
-//    emit multipickupNpatrec_disconnected();
-//
-//    NQLog("AssemblyMainWindow", NQLog::Message) << "disconnect_multipickupNpatrec"
-//       << ": multi-pickup test completed";
+  disconnect(multipickup_tester_, SIGNAL(measurement_finished()), multipickup_tester_, SLOT(start_pickup()));
+  disconnect(multipickup_tester_, SIGNAL(pickup_finished())     , multipickup_tester_, SLOT(start_measurement()));
+  disconnect(multipickup_tester_, SIGNAL(test_finished())       , this               , SLOT(disconnect_multiPickupTest()));
+
+  // measurement
+  disconnect(multipickup_tester_, SIGNAL(measurement_request()), image_ctr_, SLOT(acquire_image()));
+
+  disconnect(finder_, SIGNAL(updated_image_master()), finder_view_->PatRec_exe_button(), SLOT(click()));
+  disconnect(finder_, SIGNAL(PatRec_exitcode(int)), multipickup_tester_, SLOT(finish_measurement(int)));
+  // ---
+
+  // pickup (vacuum)
+  disconnect(multipickup_tester_, SIGNAL(vacuum_toggle(int)), conradManager_, SLOT(toggleVacuum(int)));
+
+  disconnect(conradManager_, SIGNAL(enableVacuumButton()), multipickup_tester_, SLOT(setup_next_step()));
+  // ---
+
+  toolbox_view_->MultiPickupTester_Widget()->enable(true);
+
+  NQLog("AssemblyMainWindow", NQLog::Spam) << "disconnect_multiPickupTest"
+     << ": emitting signal \"multiPickupTest_disconnected\"";
+
+  emit multiPickupTest_disconnected();
+
+  NQLog("AssemblyMainWindow", NQLog::Message) << "disconnect_multiPickupTest"
+     << ": multi-pickup test completed";
 }
 
 void AssemblyMainWindow::testTimer()
@@ -631,7 +626,7 @@ void AssemblyMainWindow::testTimer()
     return;
 }
 
-void AssemblyMainWindow::quit_thread(QThread* thread, const std::string& msg) const
+void AssemblyMainWindow::quit_thread(QThread* thread, const QString& msg) const
 {
     if(thread)
     {

@@ -10,39 +10,34 @@
 //                                                                             //
 /////////////////////////////////////////////////////////////////////////////////
 
-#ifndef ASSEMBLYREGISTRYVIEW_H
-#define ASSEMBLYREGISTRYVIEW_H
+#ifndef ASSEMBLYPOSITIONSREGISTRYWIDGET_H
+#define ASSEMBLYPOSITIONSREGISTRYWIDGET_H
 
-#include <AssemblyUEyeView.h>
 #include <LStepExpressMotionManager.h>
 
 #include <vector>
 
 #include <QWidget>
-#include <QScrollArea>
-#include <QKeyEvent>
 #include <QPushButton>
 #include <QLineEdit>
-#include <QLabel>
+#include <QString>
 
-#include <opencv2/opencv.hpp>
+class AssemblyPositionWidget;
 
-class AssemblyRegistryPositionWidget;
-
-class AssemblyRegistryView : public QWidget
+class AssemblyPositionsRegistryWidget : public QWidget
 {
  Q_OBJECT
 
  public:
 
-  explicit AssemblyRegistryView(const LStepExpressMotionManager*, QWidget* parent=nullptr);
-  virtual ~AssemblyRegistryView() {}
+  explicit AssemblyPositionsRegistryWidget(const LStepExpressMotionManager* const, QWidget* parent=nullptr);
+  virtual ~AssemblyPositionsRegistryWidget() {}
 
  protected:
 
-  const LStepExpressMotionManager* motion_manager_;
+  const LStepExpressMotionManager* const motion_manager_;
 
-  std::vector<AssemblyRegistryPositionWidget*> v_wpos_;
+  std::vector<AssemblyPositionWidget*> v_wpos_;
 
   QLineEdit*   pos_calc_lineed_from_;
   QLineEdit*   pos_calc_lineed_to_;
@@ -57,20 +52,20 @@ class AssemblyRegistryView : public QWidget
 };
 // ==================================================
 
-class AssemblyRegistryPositionWidget : public QWidget
+class AssemblyPositionWidget : public QWidget
 {
  Q_OBJECT
 
  public:
 
-  explicit AssemblyRegistryPositionWidget(const QString&, const LStepExpressMotionManager*, QWidget* parent=nullptr);
-  virtual ~AssemblyRegistryPositionWidget() {}
+  explicit AssemblyPositionWidget(const QString&, const LStepExpressMotionManager* const, QWidget* parent=nullptr);
+  virtual ~AssemblyPositionWidget() {}
 
   QString position_qstring() const { return pos_lineed_value_->text(); }
 
  protected:
 
-  const LStepExpressMotionManager* motion_manager_;
+  const LStepExpressMotionManager* const motion_manager_;
 
   QPushButton* pos_button_;
   QLineEdit*   pos_lineed_value_;
@@ -82,4 +77,4 @@ class AssemblyRegistryPositionWidget : public QWidget
 };
 // ==================================================
 
-#endif // ASSEMBLYREGISTRYVIEW_H
+#endif // ASSEMBLYPOSITIONSREGISTRYWIDGET_H

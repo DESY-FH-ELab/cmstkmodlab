@@ -82,9 +82,6 @@ HEADERS += AssemblyVUEyeCamera.h \
            AssemblyUEyeCameraThread.h \
            AssemblyUEyeView.h \
            AssemblyUEyeSnapShooter.h \
-           AssemblyAssemblyView.h \
-           AssemblyMotionWidgets.h \
-           AssemblyRegistryView.h \
            AssemblyZFocusFinder.h \
            AssemblyImageController.h \
            AssemblyImageView.h \
@@ -95,12 +92,15 @@ HEADERS += AssemblyVUEyeCamera.h \
            AssemblyObjectFinderPatRecWidget.h \
            AssemblyObjectFinderPatRecView.h \
            AssemblyObjectFinderPatRecThread.h \
-           AssemblyMultiPickupTester.h \
-           AssemblyAssembler.h \
            AssemblyObjectAligner.h \
            AssemblyObjectAlignerView.h \
-           AssemblyHardwareControlView.h \
+           AssemblyMultiPickupTester.h \
+           AssemblyMultiPickupTesterWidget.h \
+           AssemblyPositionsRegistryWidget.h \
+           AssemblyToolboxView.h \
            AssemblyVacuumWidget.h \
+           AssemblyMotionWidgets.h \
+           AssemblyHardwareControlView.h \
            ConradManager.h \
            LStepExpressModel.h \
            LStepExpressMotion.h \
@@ -137,9 +137,6 @@ SOURCES += AssemblyVUEyeCamera.cc \
            AssemblyUEyeCameraThread.cc \
            AssemblyUEyeView.cc \
            AssemblyUEyeSnapShooter.cc \
-           AssemblyAssemblyView.cc \
-           AssemblyMotionWidgets.cc \
-           AssemblyRegistryView.cc \
            AssemblyZFocusFinder.cc \
            AssemblyImageController.cc \
            AssemblyImageView.cc \
@@ -150,12 +147,15 @@ SOURCES += AssemblyVUEyeCamera.cc \
            AssemblyObjectFinderPatRecWidget.cc \
            AssemblyObjectFinderPatRecView.cc \
            AssemblyObjectFinderPatRecThread.cc \
-           AssemblyMultiPickupTester.cc \
-           AssemblyAssembler.cc \
            AssemblyObjectAligner.cc \
            AssemblyObjectAlignerView.cc \
-           AssemblyHardwareControlView.cc \
+           AssemblyMultiPickupTester.cc \
+           AssemblyMultiPickupTesterWidget.cc \
+           AssemblyPositionsRegistryWidget.cc \
+           AssemblyToolboxView.cc \
            AssemblyVacuumWidget.cc \
+           AssemblyMotionWidgets.cc \
+           AssemblyHardwareControlView.cc \
            ConradManager.cc \
            LStepExpressModel.cc \
            LStepExpressMotion.cc \

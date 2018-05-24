@@ -37,6 +37,8 @@ class AssemblyObjectFinderPatRecView : public QWidget
 
   AssemblyObjectFinderPatRecWidget* PatRec_Widget() const { return patrec_wid_; }
 
+  QPushButton* PatRec_exe_button() const { return patrec_exe_button_; }
+
   void connect_to_finder(const AssemblyObjectFinderPatRec* const);
 
  protected:

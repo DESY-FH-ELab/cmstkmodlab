@@ -13,7 +13,7 @@
 #include <nqlogger.h>
 #include <ApplicationConfig.h>
 
-#include <AssemblyRegistryView.h>
+#include <AssemblyPositionsRegistryWidget.h>
 #include <AssemblyUtilities.h>
 
 #include <QFileDialog>
@@ -21,14 +21,16 @@
 #include <QFormLayout>
 #include <QGroupBox>
 #include <QPalette>
+#include <QLabel>
 
-AssemblyRegistryView::AssemblyRegistryView(const LStepExpressMotionManager* motion_manager, QWidget* parent) :
+AssemblyPositionsRegistryWidget::AssemblyPositionsRegistryWidget(const LStepExpressMotionManager* const motion_manager, QWidget* parent) :
   QWidget(parent),
+
   motion_manager_(motion_manager)
 {
   if(motion_manager_ == nullptr)
   {
-    NQLog("AssemblyRegistryView", NQLog::Critical) << "initialization error"
+    NQLog("AssemblyPositionsRegistryWidget", NQLog::Critical) << "initialization error"
        << ": null pointer to LStepExpressMotionManager object, exiting constructor";
 
     return;
@@ -47,7 +49,7 @@ AssemblyRegistryView::AssemblyRegistryView(const LStepExpressMotionManager* moti
   v_wpos_.clear();
   for(unsigned int i=0; i<6; ++i)
   {
-    v_wpos_.emplace_back(new AssemblyRegistryPositionWidget("#"+QString::number(i), motion_manager_));
+    v_wpos_.emplace_back(new AssemblyPositionWidget("#"+QString::number(i), motion_manager_));
     l2->addRow(v_wpos_.back());
   }
 
@@ -82,7 +84,7 @@ AssemblyRegistryView::AssemblyRegistryView(const LStepExpressMotionManager* moti
   //// ---------------
 }
 
-void AssemblyRegistryView::calculate_relative_distance()
+void AssemblyPositionsRegistryWidget::calculate_relative_distance()
 {
   // FROM
   QString idx_qstr_from = pos_calc_lineed_from_->text();
@@ -92,21 +94,21 @@ void AssemblyRegistryView::calculate_relative_distance()
 
   if(idx_from_valid == false)
   {
-    NQLog("AssemblyRegistryView", NQLog::Critical) << "calculate_relative_distance"
+    NQLog("AssemblyPositionsRegistryWidget", NQLog::Critical) << "calculate_relative_distance"
       << ": invalid input format for index of position \"From\" (" << idx_qstr_from << "), no action taken";
 
     return;
   }
   else if(idx_from >= int(v_wpos_.size()))
   {
-    NQLog("AssemblyRegistryView", NQLog::Critical) << "calculate_relative_distance"
+    NQLog("AssemblyPositionsRegistryWidget", NQLog::Critical) << "calculate_relative_distance"
       << ": invalid input value for index of position \"From\" (out-of-range value, " << idx_from << "), no action taken";
 
     return;
   }
   else if(idx_from < 0)
   {
-    NQLog("AssemblyRegistryView", NQLog::Critical) << "calculate_relative_distance"
+    NQLog("AssemblyPositionsRegistryWidget", NQLog::Critical) << "calculate_relative_distance"
       << ": invalid input value for index of position \"From\" (negative value, " << idx_from << "), no action taken";
 
     return;
@@ -123,21 +125,21 @@ void AssemblyRegistryView::calculate_relative_distance()
 
   if(idx_to_valid == false)
   {
-    NQLog("AssemblyRegistryView", NQLog::Critical) << "calculate_relative_distance"
+    NQLog("AssemblyPositionsRegistryWidget", NQLog::Critical) << "calculate_relative_distance"
       << ": invalid input format for index of position \"To\" (" << idx_qstr_to << "), no action taken";
 
     return;
   }
   else if(idx_to >= int(v_wpos_.size()))
   {
-    NQLog("AssemblyRegistryView", NQLog::Critical) << "calculate_relative_distance"
+    NQLog("AssemblyPositionsRegistryWidget", NQLog::Critical) << "calculate_relative_distance"
       << ": invalid input format for index of position \"To\" (out-of-range value, " << idx_to << "), no action taken";
 
     return;
   }
   else if(idx_to < 0)
   {
-    NQLog("AssemblyRegistryView", NQLog::Critical) << "calculate_relative_distance"
+    NQLog("AssemblyPositionsRegistryWidget", NQLog::Critical) << "calculate_relative_distance"
       << ": invalid input format for index of position \"To\" (negative value, " << idx_to << "), no action taken";
 
     return;
@@ -166,13 +168,13 @@ void AssemblyRegistryView::calculate_relative_distance()
 
   pos_calc_lineed_res_->setText(qstr_res);
 
-  NQLog("AssemblyRegistryView", NQLog::Spam) << "calculate_relative_distance"
+  NQLog("AssemblyPositionsRegistryWidget", NQLog::Spam) << "calculate_relative_distance"
     << ": relative distance " << idx_from << "->" << idx_to << " calculated successfully (" << qstr_res << ")";
 
   return;
 }
 
-bool AssemblyRegistryView::load_position_4vector(std::vector<double>& vec, QString line_entry) const
+bool AssemblyPositionsRegistryWidget::load_position_4vector(std::vector<double>& vec, QString line_entry) const
 {
   const QStringList entries = line_entry.remove(" ").split(",");
 
@@ -190,28 +192,28 @@ bool AssemblyRegistryView::load_position_4vector(std::vector<double>& vec, QStri
 
     if(valid_x == false)
     {
-      NQLog("AssemblyRegistryView", NQLog::Spam) << "load_position_4vector"
+      NQLog("AssemblyPositionsRegistryWidget", NQLog::Spam) << "load_position_4vector"
          << ": invalid format for x-axis position (" << entries.value(0) << "), returning \"false\"";
 
       return false;
     }
     else if(valid_y == false)
     {
-      NQLog("AssemblyRegistryView", NQLog::Spam) << "load_position_4vector"
+      NQLog("AssemblyPositionsRegistryWidget", NQLog::Spam) << "load_position_4vector"
          << ": invalid format for y-axis position (" << entries.value(1) << "), returning \"false\"";
 
       return false;
     }
     else if(valid_z == false)
     {
-      NQLog("AssemblyRegistryView", NQLog::Spam) << "load_position_4vector"
+      NQLog("AssemblyPositionsRegistryWidget", NQLog::Spam) << "load_position_4vector"
          << ": invalid format for z-axis position (" << entries.value(2) << "), returning \"false\"";
 
       return false;
     }
     else if(valid_a == false)
     {
-      NQLog("AssemblyRegistryView", NQLog::Spam) << "load_position_4vector"
+      NQLog("AssemblyPositionsRegistryWidget", NQLog::Spam) << "load_position_4vector"
          << ": invalid format for a-axis position (" << entries.value(3) << "), returning \"false\"";
 
       return false;
@@ -226,7 +228,7 @@ bool AssemblyRegistryView::load_position_4vector(std::vector<double>& vec, QStri
       vec.emplace_back(z_d);
       vec.emplace_back(a_d);
 
-      NQLog("AssemblyRegistryView", NQLog::Spam) << "load_position_4vector"
+      NQLog("AssemblyPositionsRegistryWidget", NQLog::Spam) << "load_position_4vector"
          << ": 4-vector position read successfully ("
          << x_d << ", " << y_d << ", " << z_d << ", " << a_d << ")";
 
@@ -235,7 +237,7 @@ bool AssemblyRegistryView::load_position_4vector(std::vector<double>& vec, QStri
   }
   else
   {
-    NQLog("AssemblyRegistryView", NQLog::Warning) << "load_position_4vector"
+    NQLog("AssemblyPositionsRegistryWidget", NQLog::Warning) << "load_position_4vector"
        << ": invalid format in QLineEdit (" << line_entry << "), returning \"false\"";
 
     return false;
@@ -245,13 +247,14 @@ bool AssemblyRegistryView::load_position_4vector(std::vector<double>& vec, QStri
 }
 // ==================================================
 
-AssemblyRegistryPositionWidget::AssemblyRegistryPositionWidget(const QString& qstr, const LStepExpressMotionManager* motion_manager, QWidget* parent) :
+AssemblyPositionWidget::AssemblyPositionWidget(const QString& qstr, const LStepExpressMotionManager* const motion_manager, QWidget* parent) :
   QWidget(parent),
+
   motion_manager_(motion_manager)
 {
   if(motion_manager_ == nullptr)
   {
-    NQLog("AssemblyRegistryPositionWidget", NQLog::Critical) << "initialization error"
+    NQLog("AssemblyPositionWidget", NQLog::Critical) << "initialization error"
        << ": null pointer to LStepExpressMotionManager object, exiting constructor";
 
     return;
@@ -273,10 +276,10 @@ AssemblyRegistryPositionWidget::AssemblyRegistryPositionWidget(const QString& qs
 
   connect(pos_button_, SIGNAL(clicked()), this, SLOT(update_position()));
 
-  NQLog("AssemblyRegistryPositionWidget", NQLog::Debug) << "constructed";
+  NQLog("AssemblyPositionWidget", NQLog::Debug) << "constructed";
 }
 
-void AssemblyRegistryPositionWidget::update_position()
+void AssemblyPositionWidget::update_position()
 {
   const double x = motion_manager_->get_position_X();
   const double y = motion_manager_->get_position_Y();
