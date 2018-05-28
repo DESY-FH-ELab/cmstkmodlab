@@ -434,6 +434,19 @@ void AssemblyObjectFinderPatRec::template_matching(const AssemblyObjectFinderPat
   NQLog("AssemblyObjectFinderPatRec", NQLog::Message) << "template_matching" << ": angular scan parameters"
      << "(min="<< angle_prescan+angle_fine_min << ", max=" << angle_prescan+angle_fine_max << ", step=" << angle_fine_step << ")";
 
+  if(angle_fine_step == 0.)
+  {
+    NQLog("AssemblyObjectFinderPatRec", NQLog::Critical) << "template_matching"
+       << ": invalid value of step-angle for fine angular scan (zero), stopping routine";
+
+    NQLog("AssemblyObjectFinderPatRec", NQLog::Spam) << "template_matching"
+       << ": emitting signal \"PatRec_exitcode(1)\"";
+
+    emit PatRec_exitcode(1);
+
+    return;
+  }
+
   const int N_rotations = (2 * int((angle_fine_max-angle_fine_min) / angle_fine_step));
 
   std::vector<std::pair<double, double> > vec_angleNfom;
@@ -454,7 +467,7 @@ void AssemblyObjectFinderPatRec::template_matching(const AssemblyObjectFinderPat
 
     this->PatRec(i_FOM, i_matchLoc, img_master_PatRec, img_templa_PatRec_gs, i_angle, match_method, output_subdir);
 
-    const bool update = (scan_counter==0) || (use_minFOM ? (i_FOM < best_FOM) : (i_FOM > best_FOM));
+    const bool update = (scan_counter == 0) || (use_minFOM ? (i_FOM < best_FOM) : (i_FOM > best_FOM));
 
     if(update)
     {
@@ -482,7 +495,7 @@ void AssemblyObjectFinderPatRec::template_matching(const AssemblyObjectFinderPat
 
   // the circle of radius 4 is meant to *roughly* represent the x,y precision of the x-y motion stage
   // so that the user can see if the patrec results make sense
-  // (the top left corner of the marker should be within the cirle)
+  // (the top left corner of the marker should be within the circle)
   circle(img_master_copy, best_matchLoc,  4, cv::Scalar(255,0,0), 4, 8, 0); // 1-sigma
   circle(img_master_copy, best_matchLoc, 15, cv::Scalar(255,0,0), 4, 8, 0); // only for visualization
 
