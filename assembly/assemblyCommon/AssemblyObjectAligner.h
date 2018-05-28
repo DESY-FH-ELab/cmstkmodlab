@@ -69,7 +69,6 @@ class AssemblyObjectAligner : public QObject
     // parameters
     double angle_max_dontIter_;
     double angle_max_complete_;
-    double angle_PatRec_offset_;
 
     // transient data (values to be updated during alignment)
     int alignment_step_;
