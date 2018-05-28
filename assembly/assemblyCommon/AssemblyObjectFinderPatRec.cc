@@ -539,7 +539,7 @@ void AssemblyObjectFinderPatRec::template_matching(const AssemblyObjectFinderPat
   }
   // ---
 
-  const std::string filepath_img_master_copy = output_dir+"/image_master_PatRec.png";
+  const std::string filepath_img_master_copy = output_dir+"/image_master_PatRec_edited.png";
   assembly::cv_imwrite(filepath_img_master_copy, img_master_copy);
 
   emit PatRec_res_image_master_edited(img_master_copy);

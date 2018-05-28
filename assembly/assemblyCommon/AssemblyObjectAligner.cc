@@ -47,10 +47,6 @@ AssemblyObjectAligner::AssemblyObjectAligner(const LStepExpressMotionManager* co
   // maximum angular difference acceptable to declare alignment procedure finished
   angle_max_complete_ = config->getValue<double>("AssemblyObjectAligner_angle_max_complete");
 
-  // offset angle to derive (X,Y) from angle determined by PatRec
-  // (this offset derives from the orientation of the sensor in the template image)
-  angle_PatRec_offset_ = config->getValue<double>("AssemblyObjectAligner_angle_PatRec_offset");
-
   configuration_.reset();
 
   this->reset();
@@ -232,7 +228,7 @@ void AssemblyObjectAligner::run_alignment(int /* stage */, double x_pr, double y
   const double patrec_dX = +1.0 * ( y_pr - (1920.0/2.0) ) * mm_per_pixel_x;
   const double patrec_dY = -1.0 * ( x_pr - (2560.0/2.0) ) * mm_per_pixel_y;
 
-  const double patrec_angle = (angle_pr + angle_PatRec_offset_);
+  const double patrec_angle = angle_pr;
 
   // Step #0: request image on marker-1
   if(alignment_step_ == 0)
@@ -269,6 +265,12 @@ void AssemblyObjectAligner::run_alignment(int /* stage */, double x_pr, double y
     posi_y1_ = motion_manager_->get_position_Y() + patrec_dY;
 
     NQLog("AssemblyObjectAligner", NQLog::Message) << "run_alignment step [" << alignment_step_ << "]";
+    NQLog("AssemblyObjectAligner", NQLog::Message) << "run_alignment step [" << alignment_step_ << "]: motion-stage X = " << motion_manager_->get_position_X();
+    NQLog("AssemblyObjectAligner", NQLog::Message) << "run_alignment step [" << alignment_step_ << "]: motion-stage Y = " << motion_manager_->get_position_Y();
+    NQLog("AssemblyObjectAligner", NQLog::Message) << "run_alignment step [" << alignment_step_ << "]";
+    NQLog("AssemblyObjectAligner", NQLog::Message) << "run_alignment step [" << alignment_step_ << "]: PatRec dX = " << patrec_dX;
+    NQLog("AssemblyObjectAligner", NQLog::Message) << "run_alignment step [" << alignment_step_ << "]: PatRec dY = " << patrec_dY;
+    NQLog("AssemblyObjectAligner", NQLog::Message) << "run_alignment step [" << alignment_step_ << "]";
     NQLog("AssemblyObjectAligner", NQLog::Message) << "run_alignment step [" << alignment_step_ << "]: x1-position = " << posi_x1_;
     NQLog("AssemblyObjectAligner", NQLog::Message) << "run_alignment step [" << alignment_step_ << "]: y1-position = " << posi_y1_;
     NQLog("AssemblyObjectAligner", NQLog::Message) << "run_alignment step [" << alignment_step_ << "]";
@@ -277,10 +279,10 @@ void AssemblyObjectAligner::run_alignment(int /* stage */, double x_pr, double y
     const double obj_deltaX = this->configuration().object_deltaX;
     const double obj_deltaY = this->configuration().object_deltaY;
 
-    const double target_deg = (patrec_angle * (M_PI/180.0));
+    const double target_rad = (patrec_angle * (M_PI/180.0));
 
-    const double COS = cos(target_deg);
-    const double SIN = sin(target_deg);
+    const double COS = cos(target_rad);
+    const double SIN = sin(target_rad);
 
     const double dX_1to2 =  COS * obj_deltaX + SIN * obj_deltaY;
     const double dY_1to2 = -SIN * obj_deltaX + COS * obj_deltaY;
