@@ -181,8 +181,8 @@ AssemblyMainWindow::AssemblyMainWindow(const unsigned int camera_ID, QWidget* pa
     // finder
     finder_ = new AssemblyObjectFinderPatRec(thresholder_, assembly::QtCacheDirectory()+"/AssemblyObjectFinderPatRec", "rotations");
 
-    finder_thread_ = new AssemblyObjectFinderPatRecThread(finder_);
-    finder_thread_->start();
+//    finder_thread_ = new AssemblyObjectFinderPatRecThread(finder_, this);
+//    finder_thread_->start();
 
     finder_view_->connect_to_finder(finder_);
 
@@ -629,7 +629,7 @@ void AssemblyMainWindow::testTimer()
 
 void AssemblyMainWindow::quit_thread(QThread* thread, const QString& msg) const
 {
-    if(thread)
+    if(thread != nullptr)
     {
       thread->quit();
 
@@ -645,7 +645,7 @@ void AssemblyMainWindow::quit_thread(QThread* thread, const QString& msg) const
 
 void AssemblyMainWindow::quit()
 {
-    if(camera_)
+    if(camera_ != nullptr)
     {
       NQLog("AssemblyMainWindow", NQLog::Spam) << "quit"
          << ": emitting signal \"images_OFF\"";
