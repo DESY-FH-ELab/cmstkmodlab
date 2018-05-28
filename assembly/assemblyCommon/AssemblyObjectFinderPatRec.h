@@ -122,7 +122,7 @@ class AssemblyObjectFinderPatRec : public QObject
 
   void template_matching_request(const Configuration&, const cv::Mat&, const cv::Mat&, const cv::Mat&);
 
-  void PatRec_results(int, double, double, double);
+  void PatRec_results(const double, const double, const double);
 
   void PatRec_exitcode(const int);
 };

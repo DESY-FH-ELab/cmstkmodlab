@@ -575,10 +575,14 @@ void AssemblyObjectFinderPatRec::template_matching(const AssemblyObjectFinderPat
 
   // PatRec result(s)
 
-  NQLog("AssemblyObjectFinderPatRec", NQLog::Spam) << "template_matching"
-     << ": emitting signal \"PatRec_results(1, " << best_matchLoc.x << ", " << best_matchLoc.y << ", " << best_angle << ")\"";
+  // (x,y) distance in mm between image-center position and PatRec best-match position
+  const double patrec_dX = -1.0 * ( best_matchLoc.y - (img_master_copy.rows / 2.0) ) * assembly::MM_PER_PIXEL_X;
+  const double patrec_dY = -1.0 * ( best_matchLoc.x - (img_master_copy.cols / 2.0) ) * assembly::MM_PER_PIXEL_Y;
 
-  emit PatRec_results(1, best_matchLoc.x, best_matchLoc.y, best_angle);
+  NQLog("AssemblyObjectFinderPatRec", NQLog::Spam) << "template_matching"
+     << ": emitting signal \"PatRec_results(" << patrec_dX << ", " << patrec_dY << ", " << best_angle << ")\"";
+
+  emit PatRec_results(patrec_dX, patrec_dY, best_angle);
 
   NQLog("AssemblyObjectFinderPatRec", NQLog::Spam) << "template_matching"
      << ": emitting signal \"PatRec_exitcode(0)\"";

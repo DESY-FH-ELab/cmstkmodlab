@@ -66,8 +66,9 @@ class AssemblyObjectFinderPatRecView : public QWidget
 
   AssemblyObjectFinderPatRecWidget* patrec_wid_;
 
-  QLineEdit* patrec_res1_linee_;
-  QLineEdit* patrec_res2_linee_;
+  QLineEdit* patrec_res_dX_linee_;
+  QLineEdit* patrec_res_dY_linee_;
+  QLineEdit* patrec_res_ang_linee_;
 
   bool finder_connected_;
 
@@ -88,13 +89,9 @@ class AssemblyObjectFinderPatRecView : public QWidget
   void update_image(const int, const QString&);
   void update_image(const int, const cv::Mat&);
 
-  void update_text(const int, const double, const double, const double);
+  void update_text(const double, const double, const double);
 
   void update_label(const int);
-
- signals:
-
-  void mode(const int, const int);
 };
 
 #endif // ASSEMBLYOBJECTFINDERPATRECVIEW_H

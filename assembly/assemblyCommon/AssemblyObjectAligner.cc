@@ -51,7 +51,7 @@ AssemblyObjectAligner::AssemblyObjectAligner(const LStepExpressMotionManager* co
 
   this->reset();
 
-  connect(this, SIGNAL(nextAlignmentStep(int, double, double, double)), this, SLOT(run_alignment(int, double, double, double)));
+  connect(this, SIGNAL(nextAlignmentStep(double, double, double)), this, SLOT(run_alignment(double, double, double)));
 
   connect(this, SIGNAL(motion_completed()), this, SLOT(launch_next_alignment_step()));
 
@@ -197,17 +197,17 @@ void AssemblyObjectAligner::launch_next_alignment_step()
   NQLog("AssemblyObjectAligner", NQLog::Spam) << "launch_next_alignment_step"
      << ": emitting signal \"nextAlignmentStep(1, 0, 0, 0)\"";
 
-  emit nextAlignmentStep(1, 0.0, 0.0, 0.0);
+  emit nextAlignmentStep(0.0, 0.0, 0.0);
 }
 
 void AssemblyObjectAligner::execute()
 {
   alignment_step_ = 0;
 
-  this->run_alignment(1, 0., 0., 0.);
+  this->run_alignment(0., 0., 0.);
 }
 
-void AssemblyObjectAligner::run_alignment(int /* stage */, double x_pr, double y_pr, double angle_pr)
+void AssemblyObjectAligner::run_alignment(const double patrec_dX, const double patrec_dY, const double patrec_angle)
 {
   //
   // Alignment of 2-marker sensor:
@@ -220,15 +220,6 @@ void AssemblyObjectAligner::run_alignment(int /* stage */, double x_pr, double y
   //  * align to targer orientation (input parameter) by rotating the platform
   //  * iterative procedure to reach target orientation with small-enough rotations
   //
-
-  const double mm_per_pixel_x = 0.0012;
-  const double mm_per_pixel_y = 0.0012;
-
-  // distance (mm) between camera position and PatRec best-match position
-  const double patrec_dX = ( y_pr - (1920.0/2.0) ) * mm_per_pixel_x;
-  const double patrec_dY = ( x_pr - (2560.0/2.0) ) * mm_per_pixel_y;
-
-  const double patrec_angle = angle_pr;
 
   // Step #0: request image on marker-1
   if(alignment_step_ == 0)

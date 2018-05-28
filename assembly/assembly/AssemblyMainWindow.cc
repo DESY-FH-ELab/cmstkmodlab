@@ -494,7 +494,7 @@ void AssemblyMainWindow::start_objectAligner(const AssemblyObjectAligner::Config
 
   connect(finder_, SIGNAL(PatRec_res_image_master_edited(cv::Mat)), aligner_, SLOT(redirect_image(cv::Mat)));
 
-  connect(finder_, SIGNAL(PatRec_results(int, double, double, double)), aligner_, SLOT(run_alignment(int, double, double, double)));
+  connect(finder_, SIGNAL(PatRec_results(double, double, double)), aligner_, SLOT(run_alignment(double, double, double)));
 
   connect(aligner_, SIGNAL(measured_angle(double)), aligner_view_, SLOT(show_measured_angle(double)));
 
@@ -538,7 +538,7 @@ void AssemblyMainWindow::disconnect_objectAligner()
 
   disconnect(finder_, SIGNAL(PatRec_res_image_master_edited(cv::Mat)), aligner_, SLOT(redirect_image(cv::Mat)));
 
-  disconnect(finder_, SIGNAL(PatRec_results(int, double, double, double)), aligner_, SLOT(run_alignment(int, double, double, double)));
+  disconnect(finder_, SIGNAL(PatRec_results(double, double, double)), aligner_, SLOT(run_alignment(double, double, double)));
 
   disconnect(aligner_, SIGNAL(measured_angle(double)), aligner_view_, SLOT(show_measured_angle(double)));
 

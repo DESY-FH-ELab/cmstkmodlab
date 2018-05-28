@@ -46,8 +46,9 @@ AssemblyObjectFinderPatRecView::AssemblyObjectFinderPatRecView(QWidget* parent) 
 
   patrec_wid_(nullptr),
 
-  patrec_res1_linee_(nullptr),
-  patrec_res2_linee_(nullptr),
+  patrec_res_dX_linee_(nullptr),
+  patrec_res_dY_linee_(nullptr),
+  patrec_res_ang_linee_(nullptr),
 
   finder_connected_(false)
 {
@@ -205,19 +206,26 @@ AssemblyObjectFinderPatRecView::AssemblyObjectFinderPatRecView(QWidget* parent) 
 
   QGridLayout* patrec_res_lay = new QGridLayout;
 
-  QLabel* patrec_res1_label = new QLabel(tr("Best-Match XY position [mm]"));
-  patrec_res1_linee_ = new QLineEdit(tr(""));
-  patrec_res1_linee_->setReadOnly(true);
+  QLabel* patrec_res_dX_label = new QLabel(tr("Delta-X to Best-Match Pos. [mm]"));
+  patrec_res_dX_linee_ = new QLineEdit(tr(""));
+  patrec_res_dX_linee_->setReadOnly(true);
 
-  patrec_res_lay->addWidget(patrec_res1_label , 0, 0);
-  patrec_res_lay->addWidget(patrec_res1_linee_, 0, 1);
+  patrec_res_lay->addWidget(patrec_res_dX_label , 0, 0);
+  patrec_res_lay->addWidget(patrec_res_dX_linee_, 0, 1);
 
-  QLabel* patrec_res2_label = new QLabel(tr("Best-Match Template Orientation [deg]"));
-  patrec_res2_linee_ = new QLineEdit(tr(""));
-  patrec_res2_linee_->setReadOnly(true);
+  QLabel* patrec_res_dY_label = new QLabel(tr("Delta-Y to Best-Match Pos. [mm]"));
+  patrec_res_dY_linee_ = new QLineEdit(tr(""));
+  patrec_res_dY_linee_->setReadOnly(true);
 
-  patrec_res_lay->addWidget(patrec_res2_label , 1, 0);
-  patrec_res_lay->addWidget(patrec_res2_linee_, 1, 1);
+  patrec_res_lay->addWidget(patrec_res_dY_label , 1, 0);
+  patrec_res_lay->addWidget(patrec_res_dY_linee_, 1, 1);
+
+  QLabel* patrec_res_ang_label = new QLabel(tr("Best-Match Template Orient. [deg]"));
+  patrec_res_ang_linee_ = new QLineEdit(tr(""));
+  patrec_res_ang_linee_->setReadOnly(true);
+
+  patrec_res_lay->addWidget(patrec_res_ang_label , 2, 0);
+  patrec_res_lay->addWidget(patrec_res_ang_linee_, 2, 1);
 
   patrec_lay->addLayout(patrec_res_lay);
   // -----------
@@ -261,7 +269,7 @@ void AssemblyObjectFinderPatRecView::connect_to_finder(const AssemblyObjectFinde
     connect(finder, SIGNAL(PatRec_res_image_template_PatRec(QString)), this, SLOT(update_image_4(QString)), Qt::DirectConnection);
     connect(finder, SIGNAL(PatRec_res_image_template_PatRec(cv::Mat)), this, SLOT(update_image_4(cv::Mat)), Qt::DirectConnection);
 
-    connect(finder, SIGNAL(PatRec_results(int, double, double, double)), this, SLOT(update_text(int, double, double, double)));
+    connect(finder, SIGNAL(PatRec_results(double, double, double)), this, SLOT(update_text(double, double, double)));
 
     NQLog("AssemblyObjectFinderPatRecView", NQLog::Spam) << "connect_to_finder"
        << ": view connected to object of type AssemblyObjectFinderPatRec";
@@ -279,24 +287,27 @@ void AssemblyObjectFinderPatRecView::connect_to_finder(const AssemblyObjectFinde
   return;
 }
 
-void AssemblyObjectFinderPatRecView::update_text(int stage, double x, double y, double a)
+void AssemblyObjectFinderPatRecView::update_text(const double dx, const double dy, const double ang)
 {
   NQLog("AssemblyObjectFinderPatRecView", NQLog::Spam) << "update_text"
-     << "(" << stage << ", " << x << ", " << y << ", " << a << ")";
+     << "(" << dx << ", " << dy << ", " << ang << ")";
 
-  std::stringstream posi_strs;
-  posi_strs << std::setprecision(3) << x << ", " << y;
-  const QString posi_qstr = QString::fromStdString(posi_strs.str());
+  std::stringstream strs_dX;
+  strs_dX << dx;
 
-  std::stringstream orie_strs;
-  orie_strs << std::setprecision(3) << a;
-  const QString orie_qstr = QString::fromStdString(orie_strs.str());
+  patrec_res_dX_linee_->setText(QString::fromStdString(strs_dX.str()));
 
-  if(stage == 1)
-  {
-    patrec_res1_linee_->setText(posi_qstr+" [pixel #, pixel #] (field of view)");
-    patrec_res2_linee_->setText(orie_qstr);
-  }
+  std::stringstream strs_dY;
+  strs_dY << dy;
+
+  patrec_res_dY_linee_->setText(QString::fromStdString(strs_dY.str()));
+
+  std::stringstream strs_ang;
+  strs_ang << ang;
+
+  patrec_res_ang_linee_->setText(QString::fromStdString(strs_ang.str()));
+
+  return;
 }
 
 void AssemblyObjectFinderPatRecView::update_image_1(const QString& fpath){ this->update_image(1, fpath); }

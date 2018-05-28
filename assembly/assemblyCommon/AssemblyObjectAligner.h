@@ -86,7 +86,7 @@ class AssemblyObjectAligner : public QObject
 
     void execute();
 
-    void run_alignment(int, double, double, double);
+    void run_alignment(const double, const double, const double);
 
     void launch_next_alignment_step();
 
@@ -98,7 +98,7 @@ class AssemblyObjectAligner : public QObject
 
     void configuration_updated();
 
-    void nextAlignmentStep(int, double, double, double);
+    void nextAlignmentStep(const double, const double, const double);
 
     void image_PatRecOne(const cv::Mat&);
     void image_PatRecTwo(const cv::Mat&);
