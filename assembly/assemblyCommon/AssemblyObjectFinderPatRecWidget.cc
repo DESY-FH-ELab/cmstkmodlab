@@ -265,6 +265,8 @@ AssemblyObjectFinderPatRec::Configuration AssemblyObjectFinderPatRecWidget::get_
 
   for(const auto& ang_str : angles_prescan_vstr)
   {
+    if(ang_str.isEmpty()){ continue; }
+
     bool valid_ang(false);
     const double ang_val = ang_str.toDouble(&valid_ang);
 
