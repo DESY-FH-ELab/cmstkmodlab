@@ -225,8 +225,8 @@ void AssemblyObjectAligner::run_alignment(int /* stage */, double x_pr, double y
   const double mm_per_pixel_y = 0.0012;
 
   // distance (mm) between camera position and PatRec best-match position
-  const double patrec_dX = +1.0 * ( y_pr - (1920.0/2.0) ) * mm_per_pixel_x;
-  const double patrec_dY = -1.0 * ( x_pr - (2560.0/2.0) ) * mm_per_pixel_y;
+  const double patrec_dX = ( y_pr - (1920.0/2.0) ) * mm_per_pixel_x;
+  const double patrec_dY = ( x_pr - (2560.0/2.0) ) * mm_per_pixel_y;
 
   const double patrec_angle = angle_pr;
 
