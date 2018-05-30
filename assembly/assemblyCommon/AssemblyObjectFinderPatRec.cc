@@ -149,21 +149,33 @@ void AssemblyObjectFinderPatRec::launch_PatRec(const AssemblyObjectFinderPatRec:
     emit PatRec_exitcode(1);
   }
 
+  mutex_.lock();
+
   img_template_ = img_templa;
+
+  mutex_.unlock();
   // ----------
 
   // update binary image for PatRec
   if(conf.thresholding_useThreshold_)
   {
+    mutex_.lock();
+
     thresholder_->update_image_raw(img_master_);
     thresholder_->update_image_binary_threshold(conf.thresholding_threshold_);
+
+    mutex_.unlock();
 
     this->update_image_master_PatRec(thresholder_->image_binary());
   }
   else if(conf.thresholding_useAdaptiveThreshold_)
   {
+    mutex_.lock();
+
     thresholder_->update_image_raw(img_master_);
     thresholder_->update_image_binary_adaptiveThreshold(conf.thresholding_blocksize_);
+
+    mutex_.unlock();
 
     this->update_image_master_PatRec(thresholder_->image_binary());
   }
@@ -177,7 +189,7 @@ void AssemblyObjectFinderPatRec::launch_PatRec(const AssemblyObjectFinderPatRec:
 
 void AssemblyObjectFinderPatRec::update_image_master(const cv::Mat& img)
 {
-//  mutex_.lock();
+  QMutexLocker ml(&mutex_);
 
   if(img.channels() > 1)
   {
@@ -195,8 +207,6 @@ void AssemblyObjectFinderPatRec::update_image_master(const cv::Mat& img)
 
   if(updated_img_master_PatRec_){ updated_img_master_PatRec_ = false; }
 
-//  mutex_.unlock();
-
   NQLog("AssemblyObjectFinderPatRec", NQLog::Spam) << "update_image_master"
      << ": emitting signal \"updated_image_master\"";
 
@@ -206,28 +216,22 @@ void AssemblyObjectFinderPatRec::update_image_master(const cv::Mat& img)
 
 void AssemblyObjectFinderPatRec::delete_image_master()
 {
-//  mutex_.lock();
-
   img_master_ = cv::Mat();
 
   if(updated_img_master_){ updated_img_master_ = false; }
-
-//  mutex_.unlock();
 
   return;
 }
 
 void AssemblyObjectFinderPatRec::update_image_master_PatRec(const cv::Mat& img)
 {
+  QMutexLocker ml(&mutex_);
+
   if(updated_img_master_)
   {
-//    mutex_.lock();
-
     img_master_PatRec_ = img.clone();
 
     if(!updated_img_master_PatRec_){ updated_img_master_PatRec_ = true; }
-
-//    mutex_.unlock();
 
     NQLog("AssemblyObjectFinderPatRec", NQLog::Spam) << "update_image_master_PatRec"
        << ": emitting signal \"updated_image_master_PatRec\"";

@@ -124,6 +124,8 @@ void AssemblyMultiPickupTester::start_measurement()
 
 void AssemblyMultiPickupTester::finish_measurement(const int exit_code)
 {
+  QMutexLocker ml(&mutex_);
+
   if(exit_code != 0)
   {
     NQLog("AssemblyMultiPickupTester", NQLog::Critical) << "finish_measurement"

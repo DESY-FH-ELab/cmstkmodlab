@@ -66,7 +66,12 @@ class AssemblyMultiPickupTester : public QObject
 
   void set_configuration(const Configuration& conf){ conf_ = conf; }
 
+ private:
+  Q_DISABLE_COPY(AssemblyMultiPickupTester)
+
  protected:
+
+  mutable QMutex mutex_;
 
   const LStepExpressMotionManager* motion_manager_;
 

@@ -184,10 +184,10 @@ AssemblyMainWindow::AssemblyMainWindow(const unsigned int camera_ID, QWidget* pa
     // finder
     finder_ = new AssemblyObjectFinderPatRec(thresholder_, assembly::QtCacheDirectory()+"/AssemblyObjectFinderPatRec", "rotations");
 
-//    finder_thread_ = new AssemblyObjectFinderPatRecThread(finder_, this);
-//    finder_thread_->start();
-
     finder_view_->connect_to_finder(finder_);
+
+    finder_thread_ = new AssemblyObjectFinderPatRecThread(finder_, this);
+    finder_thread_->start();
 
     NQLog("AssemblyMainWindow", NQLog::Message) << "added view " << tabname_PatRec;
     // ---------------------------------------------------------
