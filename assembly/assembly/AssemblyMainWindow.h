@@ -37,6 +37,8 @@ typedef AssemblyUEyeModel AssemblyUEyeModel_t;
 #include <AssemblyObjectAlignerView.h>
 #include <AssemblyMultiPickupTester.h>
 #include <AssemblyToolboxView.h>
+#include <AssemblyParameters.h>
+#include <AssemblyParametersView.h>
 #include <AssemblyHardwareControlView.h>
 #include <LStepExpressModel.h>
 #include <LStepExpressMotionManager.h>
@@ -141,6 +143,8 @@ class AssemblyMainWindow : public QMainWindow
   AssemblyObjectFinderPatRec*       finder_;
   AssemblyObjectFinderPatRecThread* finder_thread_;
 
+  AssemblyParameters* params_;
+
   // Views
   QToolBar*   toolBar_;
   QTabWidget* tabWidget_;
@@ -153,6 +157,7 @@ class AssemblyMainWindow : public QMainWindow
   AssemblyObjectFinderPatRecView* finder_view_;
   AssemblyObjectAlignerView* aligner_view_;
   AssemblyToolboxView* toolbox_view_;
+  AssemblyParametersView* params_view_;
   AssemblyHardwareControlView* hwctr_view_;
 
   QCheckBox* autofocus_checkbox_;

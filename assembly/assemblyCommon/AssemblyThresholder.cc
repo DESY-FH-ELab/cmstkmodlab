@@ -11,21 +11,8 @@
 /////////////////////////////////////////////////////////////////////////////////
 
 #include <nqlogger.h>
-#include <ApplicationConfig.h>
 
 #include <AssemblyThresholder.h>
-#include <AssemblyUtilities.h>
-
-#include <iostream>
-#include <fstream>
-
-#include <QFile>
-#include <QTextStream>
-
-#include <TFile.h>
-#include <TGraph.h>
-#include <TCanvas.h>
-#include <TH1.h>
 
 AssemblyThresholder::AssemblyThresholder(QObject* parent) :
   QObject(parent),

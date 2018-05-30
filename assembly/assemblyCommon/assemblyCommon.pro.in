@@ -98,6 +98,8 @@ HEADERS += AssemblyVUEyeCamera.h \
            AssemblyMultiPickupTesterWidget.h \
            AssemblyPositionsRegistryWidget.h \
            AssemblyToolboxView.h \
+           AssemblyParameters.h \
+           AssemblyParametersView.h \
            AssemblyVacuumWidget.h \
            AssemblyMotionWidgets.h \
            AssemblyHardwareControlView.h \
@@ -153,6 +155,8 @@ SOURCES += AssemblyVUEyeCamera.cc \
            AssemblyMultiPickupTesterWidget.cc \
            AssemblyPositionsRegistryWidget.cc \
            AssemblyToolboxView.cc \
+           AssemblyParameters.cc \
+           AssemblyParametersView.cc \
            AssemblyVacuumWidget.cc \
            AssemblyMotionWidgets.cc \
            AssemblyHardwareControlView.cc \

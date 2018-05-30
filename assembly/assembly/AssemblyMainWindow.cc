@@ -53,6 +53,8 @@ AssemblyMainWindow::AssemblyMainWindow(const unsigned int camera_ID, QWidget* pa
   finder_(nullptr),
   finder_thread_(nullptr),
 
+  params_(nullptr),
+
   // Views
   toolBar_(nullptr),
   tabWidget_(nullptr),
@@ -65,6 +67,7 @@ AssemblyMainWindow::AssemblyMainWindow(const unsigned int camera_ID, QWidget* pa
   finder_view_(nullptr),
   aligner_view_(nullptr),
   toolbox_view_(nullptr),
+  params_view_(nullptr),
   hwctr_view_(nullptr),
 
   autofocus_checkbox_(nullptr),
@@ -228,6 +231,17 @@ AssemblyMainWindow::AssemblyMainWindow(const unsigned int camera_ID, QWidget* pa
 
     NQLog("AssemblyMainWindow", NQLog::Message) << "added view " << tabname_Toolbox;
     // -----------------------------------------------------------
+
+    // PARAMETERS VIEW -------------------------------------------
+    const QString tabname_Parameters("Parameters");
+
+    params_ = new AssemblyParameters;
+
+    params_view_ = new AssemblyParametersView(tabWidget_);
+    tabWidget_->addTab(params_view_, tabname_Parameters);
+
+    NQLog("AssemblyMainWindow", NQLog::Message) << "added view " << tabname_Parameters;
+    // ---------------------------------------------------------
 
     // MOTION-SETTINGS VIEW ------------------------------------
     const QString tabname_MotionSettings("Motion Settings");
