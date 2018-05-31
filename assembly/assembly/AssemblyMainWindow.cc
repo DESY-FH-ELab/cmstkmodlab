@@ -14,6 +14,7 @@
 #include <ApplicationConfig.h>
 
 #include <AssemblyMainWindow.h>
+#include <AssemblyParameters.h>
 #include <AssemblyUtilities.h>
 
 #include <string>
@@ -90,14 +91,15 @@ AssemblyMainWindow::AssemblyMainWindow(const unsigned int camera_ID, QWidget* pa
       return;
     }
 
-    // motion
+    /// Motion
     motion_model_   = new LStepExpressModel(config->getValue<std::string>("LStepExpressDevice").c_str(), 1000, 1000);
     motion_manager_ = new LStepExpressMotionManager(motion_model_);
 
     motion_thread_  = new LStepExpressMotionThread(motion_manager_, this);
     motion_thread_->start();
+    /// -------------------
 
-    // camera
+    /// Camera
     camera_model_ = new AssemblyUEyeModel_t(10);
     camera_model_->updateInformation();
 
@@ -111,6 +113,7 @@ AssemblyMainWindow::AssemblyMainWindow(const unsigned int camera_ID, QWidget* pa
       NQLog("AssemblyMainWindow", NQLog::Critical) << "initialization error: null pointer to AssemblyVUEyeCamera object (camera_ID=" << camera_ID_ << ")";
       NQLog("AssemblyMainWindow", NQLog::Critical) << "---------------------------------------------------------------------------------";
     }
+    /// -------------------
 
     // TAB WIDGET ----------------------------------------------
     tabWidget_ = new QTabWidget(this);
@@ -235,10 +238,13 @@ AssemblyMainWindow::AssemblyMainWindow(const unsigned int camera_ID, QWidget* pa
     // PARAMETERS VIEW -------------------------------------------
     const QString tabname_Parameters("Parameters");
 
-    params_ = new AssemblyParameters;
+    AssemblyParameters* params = AssemblyParameters::instance(config->getValue<std::string>("AssemblyParameters_file_path"));
 
     params_view_ = new AssemblyParametersView(tabWidget_);
     tabWidget_->addTab(params_view_, tabname_Parameters);
+
+    connect(params_view_, SIGNAL(read_from_file_request(QString)), params, SLOT(read_from_file(QString)));
+    connect(params_view_, SIGNAL( write_to_file_request(QString)), params, SLOT( write_to_file(QString)));
 
     NQLog("AssemblyMainWindow", NQLog::Message) << "added view " << tabname_Parameters;
     // ---------------------------------------------------------

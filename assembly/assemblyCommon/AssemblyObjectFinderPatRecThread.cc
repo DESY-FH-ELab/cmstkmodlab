@@ -39,7 +39,7 @@ AssemblyObjectFinderPatRecThread::~AssemblyObjectFinderPatRecThread()
 
 void AssemblyObjectFinderPatRecThread::run()
 {
-  NQLog("AssemblyObjectFinderPatRecThread", NQLog::Spam) << "run";
+  NQLog("AssemblyObjectFinderPatRecThread", NQLog::Debug) << "run";
 
   this->exec();
 

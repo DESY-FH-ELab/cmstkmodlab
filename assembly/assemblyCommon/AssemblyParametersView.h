@@ -18,6 +18,7 @@
 #include <AssemblyPositionsRegistryWidget.h>
 
 #include <QWidget>
+#include <QPushButton>
 
 class AssemblyParametersView : public QWidget
 {
@@ -30,9 +31,18 @@ class AssemblyParametersView : public QWidget
 
  protected:
 
+  QPushButton* paramIO_button_read_;
+  QPushButton* paramIO_button_write_;
+
  public slots:
 
+  void  read_parameters();
+  void write_parameters();
+
  signals:
+
+  void read_from_file_request(const QString&);
+  void  write_to_file_request(const QString&);
 };
 // ===========================================================================
 

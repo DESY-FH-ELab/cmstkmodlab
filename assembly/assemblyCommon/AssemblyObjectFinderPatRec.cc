@@ -14,6 +14,7 @@
 #include <ApplicationConfig.h>
 
 #include <AssemblyObjectFinderPatRec.h>
+#include <AssemblyParameters.h>
 #include <AssemblyUtilities.h>
 
 #include <iostream>
@@ -598,8 +599,20 @@ void AssemblyObjectFinderPatRec::template_matching(const AssemblyObjectFinderPat
   // the conversion depends on the dimension of the image's pixel unit in mm
   // and the direction (sign) of the x-axis and y-axis of the motion stage
   //
-  const double patrec_dX = -1.0 * ( best_matchLoc.y - (img_master_copy.rows / 2.0) ) * assembly::MM_PER_PIXEL_X;
-  const double patrec_dY = -1.0 * ( best_matchLoc.x - (img_master_copy.cols / 2.0) ) * assembly::MM_PER_PIXEL_Y;
+  AssemblyParameters* params = AssemblyParameters::instance();
+  if(params == nullptr)
+  {
+    NQLog("AssemblyObjectFinderPatRec", NQLog::Critical) << "template_matching"
+       << ": invalid (null) pointer to AssemblyParameters::instance(), stopping routine";
+
+    NQLog("AssemblyObjectFinderPatRec", NQLog::Spam) << "template_matching"
+       << ": emitting signal \"PatRec_exitcode(1)\"";
+
+    emit PatRec_exitcode(1);
+  }
+
+  const double patrec_dX = -1.0 * ( best_matchLoc.y - (img_master_copy.rows / 2.0) ) * params->get<double>("mm_per_pixel_X", 0.0012);
+  const double patrec_dY = -1.0 * ( best_matchLoc.x - (img_master_copy.cols / 2.0) ) * params->get<double>("mm_per_pixel_Y", 0.0012);
 
   NQLog("AssemblyObjectFinderPatRec", NQLog::Spam) << "template_matching"
      << ": emitting signal \"PatRec_results(" << patrec_dX << ", " << patrec_dY << ", " << best_angle << ")\"";

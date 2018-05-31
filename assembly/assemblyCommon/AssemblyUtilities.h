@@ -25,10 +25,6 @@
 
 namespace assembly {
 
-  // static parameters
-  static const double MM_PER_PIXEL_X = 0.0012;
-  static const double MM_PER_PIXEL_Y = 0.0012;
-
   // Qt helpers
   QString QtCacheDirectory();
 
