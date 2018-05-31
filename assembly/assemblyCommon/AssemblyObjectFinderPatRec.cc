@@ -460,7 +460,7 @@ void AssemblyObjectFinderPatRec::template_matching(const AssemblyObjectFinderPat
   double    best_angle(0.);
   cv::Point best_matchLoc;
 
-  for(double angle_fine=angle_fine_min; angle_fine<angle_fine_max; angle_fine += angle_fine_step)
+  for(double angle_fine=angle_fine_min; angle_fine<=angle_fine_max; angle_fine += angle_fine_step)
   {
     const unsigned int scan_counter = vec_angleNfom.size();
 
