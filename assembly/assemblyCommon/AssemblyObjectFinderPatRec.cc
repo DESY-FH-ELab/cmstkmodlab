@@ -590,7 +590,14 @@ void AssemblyObjectFinderPatRec::template_matching(const AssemblyObjectFinderPat
 
   // PatRec result(s)
 
-  // (x,y) distance in mm between image-center position and PatRec best-match position
+  //
+  // conversion of PatRec best-match position (image pixels)
+  // into the (X [mm], Y [mm]) movement, in the motion-stage reference frame,
+  // to move the camera on top of the PatRec best-match position
+  //
+  // the conversion depends on the dimension of the image's pixel unit in mm
+  // and the direction (sign) of the x-axis and y-axis of the motion stage
+  //
   const double patrec_dX = -1.0 * ( best_matchLoc.y - (img_master_copy.rows / 2.0) ) * assembly::MM_PER_PIXEL_X;
   const double patrec_dY = -1.0 * ( best_matchLoc.x - (img_master_copy.cols / 2.0) ) * assembly::MM_PER_PIXEL_Y;
 
@@ -599,20 +606,16 @@ void AssemblyObjectFinderPatRec::template_matching(const AssemblyObjectFinderPat
 
   emit PatRec_results(patrec_dX, patrec_dY, best_angle);
 
+  // -----------------------------
+
+  // PatRec completed successfully
+
   NQLog("AssemblyObjectFinderPatRec", NQLog::Spam) << "template_matching"
      << ": emitting signal \"PatRec_exitcode(0)\"";
 
   emit PatRec_exitcode(0);
 
-//  const cv::Rect rect_result = cv::Rect(best_matchLoc, cv::Point(best_matchLoc.x + img_templa_PatRec_gs.cols, best_matchLoc.y + img_templa_PatRec_gs.rows));
-//
-//  // work out match location in field of view
-//  // the origin of the FOV coordinate system is the top left corner
-//  // the match loction (centre of the template) is calculated in mm
-//  // this should be enough for postion correction with moverealtive()
-//
-//  //matchLoc_x_lab = (best_matchLoc.x +  (img_templa_PatRec_gs.cols/2) ) * (5.0/img_master.cols); // need to add the current X pos of the lang
-//  //matchLoc_y_lab = (best_matchLoc.y +  (img_templa_PatRec_gs.rows/2) ) * (4.0/img_master.rows); // need to add the current Y pos of the lang
+  // -----------------------------
 
   return;
 }
