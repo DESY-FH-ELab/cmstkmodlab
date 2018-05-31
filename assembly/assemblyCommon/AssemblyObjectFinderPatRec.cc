@@ -309,10 +309,16 @@ void AssemblyObjectFinderPatRec::template_matching(const AssemblyObjectFinderPat
   NQLog("AssemblyObjectFinderPatRec", NQLog::Spam) << "template_matching: Master   cols = " << img_master.cols;
   NQLog("AssemblyObjectFinderPatRec", NQLog::Spam) << "template_matching: Master   rows = " << img_master.rows;
 
-  emit PatRec_res_image_master_PatRec(img_master_PatRec);
-
   NQLog("AssemblyObjectFinderPatRec", NQLog::Spam) << "template_matching: Template cols = " << img_templa_PatRec.cols;
   NQLog("AssemblyObjectFinderPatRec", NQLog::Spam) << "template_matching: Template rows = " << img_templa_PatRec.rows;
+
+  NQLog("AssemblyObjectFinderPatRec", NQLog::Spam) << "template_matching"
+     << ": emitting signal \"PatRec_res_image_master_PatRec()\"";
+
+  emit PatRec_res_image_master_PatRec(img_master_PatRec);
+
+  NQLog("AssemblyObjectFinderPatRec", NQLog::Spam) << "template_matching"
+     << ": emitting signal \"PatRec_res_image_template_PatRec()\"";
 
   emit PatRec_res_image_template_PatRec(img_templa_PatRec);
 
@@ -349,7 +355,6 @@ void AssemblyObjectFinderPatRec::template_matching(const AssemblyObjectFinderPat
 
   const std::vector<double>& prescan_angles = conf.angles_prescan_vec_;
 
-//  mutex_.unlock();
   // ------------------------------------
 
   assembly::QDir_mkpath(output_dir);
@@ -552,12 +557,18 @@ void AssemblyObjectFinderPatRec::template_matching(const AssemblyObjectFinderPat
     gr_best.Write();
     o_file.Close();
 
+    NQLog("AssemblyObjectFinderPatRec", NQLog::Spam) << "template_matching"
+       << ": emitting signal \"PatRec_res_image_angscan(" << filepath_FOM_png << ")\"";
+
     emit PatRec_res_image_angscan(QString::fromStdString(filepath_FOM_png));
   }
   // ---
 
   const std::string filepath_img_master_copy = output_dir+"/image_master_PatRec_edited.png";
   assembly::cv_imwrite(filepath_img_master_copy, img_master_copy);
+
+  NQLog("AssemblyObjectFinderPatRec", NQLog::Spam) << "template_matching"
+     << ": emitting signal \"PatRec_res_image_master_edited()\"";
 
   emit PatRec_res_image_master_edited(img_master_copy);
 
@@ -592,8 +603,6 @@ void AssemblyObjectFinderPatRec::template_matching(const AssemblyObjectFinderPat
      << ": emitting signal \"PatRec_exitcode(0)\"";
 
   emit PatRec_exitcode(0);
-
-//  mutex_.unlock();
 
 //  const cv::Rect rect_result = cv::Rect(best_matchLoc, cv::Point(best_matchLoc.x + img_templa_PatRec_gs.cols, best_matchLoc.y + img_templa_PatRec_gs.rows));
 //

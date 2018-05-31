@@ -324,9 +324,20 @@ void AssemblyObjectFinderPatRecView::update_image_4(const cv::Mat& image){ this-
 
 void AssemblyObjectFinderPatRecView::update_image(const int stage, const QString& filename)
 {
-  NQLog("AssemblyObjectFinderPatRecView", NQLog::Spam) << "update_image(" << stage << ", file=" << filename << ")";
+  //
+  // NOTE: noticed calling NQLog inside this function can lead to the application crashing
+  //       if AssemblyObjectFinderPatRec and AssemblyObjectFinderPatRecView run on separate threads
+  //       (possibly because AssemblyObjectFinderPatRec::template_matching calls
+  //        the slot AssemblyObjectFinderPatRecView::update_image too frequently)
+  //
+  // Summary: refrain from using NQLog in this method
+  //
+
+  QMutexLocker ml(&mutex_);
 
   const cv::Mat img = assembly::cv_imread(filename, CV_LOAD_IMAGE_UNCHANGED);
+
+  ml.unlock();
 
   this->update_image(stage, img);
 
@@ -335,7 +346,14 @@ void AssemblyObjectFinderPatRecView::update_image(const int stage, const QString
 
 void AssemblyObjectFinderPatRecView::update_image(const int stage, const cv::Mat& img)
 {
-  NQLog("AssemblyObjectFinderPatRecView", NQLog::Spam) << "update_image(" << stage << ", image)";
+  //
+  // NOTE: noticed calling NQLog inside this function can lead to the application crashing
+  //       if AssemblyObjectFinderPatRec and AssemblyObjectFinderPatRecView run on separate threads
+  //       (possibly because AssemblyObjectFinderPatRec::template_matching calls
+  //        the slot AssemblyObjectFinderPatRecView::update_image too frequently)
+  //
+  // Summary: refrain from using NQLog in this method
+  //
 
   QMutexLocker ml(&mutex_);
 
