@@ -249,7 +249,7 @@ AssemblyMainWindow::AssemblyMainWindow(const unsigned int camera_ID, QWidget* pa
     connect(params_view_, SIGNAL(read_from_file_request(QString)), params, SLOT(read_from_file(QString)));
     connect(params_view_, SIGNAL( write_to_file_request(QString)), params, SLOT( write_to_file(QString)));
 
-    connect(params      , SIGNAL(values_requestentries(std::map<std::string, std::string>)), params, SLOT(update(std::map<std::string, std::string>)));
+    connect(params, SIGNAL(update_request()), params_view_, SLOT(read_entries()));
     connect(params_view_, SIGNAL(entries(std::map<std::string, std::string>)), params, SLOT(update(std::map<std::string, std::string>)));
 
     params_view_->copy_values(params->map_double());

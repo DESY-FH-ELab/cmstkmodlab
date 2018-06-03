@@ -61,6 +61,11 @@ class AssemblyParameters : public QObject
   void read_from_file(const std::string&);
 
   void update(const std::map<std::string, std::string>&);
+
+ signals:
+
+  void update_request();
+  void update_completed();
 };
 
 #endif // ASSEMBLYPARAMETERS_H

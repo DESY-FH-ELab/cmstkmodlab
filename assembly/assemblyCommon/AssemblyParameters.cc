@@ -162,7 +162,7 @@ void AssemblyParameters::update(const std::map<std::string, std::string>& map_st
 
     if(i_val_valid == false)
     {
-      NQLog("AssemblyParameters", NQLog::Warning) << "read_from_file"
+      NQLog("AssemblyParameters", NQLog::Warning) << "update"
          << ": invalid format for input parameter \"" << i_val_qstr << "\", cannot be added to AssemblyParameters";
 
       continue;
@@ -171,7 +171,10 @@ void AssemblyParameters::update(const std::map<std::string, std::string>& map_st
     map_double_[i_key] = i_val_double;
   }
 
-  return;
+  NQLog("AssemblyParameters", NQLog::Spam) << "update"
+     << ": emitting signal \"update_completed\"";
+
+  emit update_completed();
 }
 
 double AssemblyParameters::get(const std::string& key) const

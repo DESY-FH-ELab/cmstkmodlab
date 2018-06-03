@@ -57,10 +57,14 @@ class AssemblyParametersView : public QWidget
   void  read_parameters();
   void write_parameters();
 
+  void read_entries();
+
  signals:
 
   void read_from_file_request(const QString&);
   void  write_to_file_request(const QString&);
+
+  void entries(const std::map<std::string, std::string>&);
 };
 // ===========================================================================
 
