@@ -252,7 +252,7 @@ AssemblyMainWindow::AssemblyMainWindow(const unsigned int camera_ID, QWidget* pa
     connect(params      , SIGNAL(values_requestentries(std::map<std::string, std::string>)), params, SLOT(update(std::map<std::string, std::string>)));
     connect(params_view_, SIGNAL(entries(std::map<std::string, std::string>)), params, SLOT(update(std::map<std::string, std::string>)));
 
-//!!    params_view_->copy_values(params->map_double());
+    params_view_->copy_values(params->map_double());
 
     NQLog("AssemblyMainWindow", NQLog::Message) << "added view " << tabname_Parameters;
     // ---------------------------------------------------------

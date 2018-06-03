@@ -24,13 +24,13 @@
 AssemblyParametersView::AssemblyParametersView(QWidget* parent) :
   QWidget(parent),
 
-  paramIO_button_read_ (nullptr),
-  paramIO_button_write_(nullptr),
-
   dime_wid_(nullptr),
   posi_wid_(nullptr),
   move_wid_(nullptr),
-  imag_wid_(nullptr)
+  imag_wid_(nullptr),
+
+  paramIO_button_read_ (nullptr),
+  paramIO_button_write_(nullptr)
 {
   QVBoxLayout* layout = new QVBoxLayout;
   this->setLayout(layout);
@@ -174,81 +174,68 @@ void AssemblyParametersView::write_parameters()
   emit write_to_file_request(f_path);
 }
 
+bool AssemblyParametersView::has(const std::string& key) const
+{
+  return bool(map_lineEdit_.find(key) != map_lineEdit_.end());
+}
 
+QLineEdit* AssemblyParametersView::get(const std::string& key) const
+{
+  QLineEdit* ptr(nullptr);
 
+  if(this->has(key) == false)
+  {
+    NQLog("AssemblyParametersView", NQLog::Fatal) << "get"
+       << ": no QLineEdit object associated to parameter key \"" << key << "\", closing application";
 
+    QMessageBox::critical(0
+     , tr("[AssemblyParametersView::get]")
+     , tr("Failed to find QLineEdit for key: \"%1\"\n.").arg(QString(key.c_str()))
+     , QMessageBox::Abort
+    );
 
+    throw; // must abort
+  }
+  else
+  {
+    ptr = map_lineEdit_.at(key);
+  }
 
-//!!
-//!!
-//!!
-//!!
-//!!
-//!!
-//!!QLineEdit* AssemblyParameters::get_lineEdit(const std::string& key) const
-//!!{
-//!!  QLineEdit* ptr(nullptr);
-//!!
-//!!  if(map_lineEdit_.find(key) == map_lineEdit_.end())
-//!!  {
-//!!    NQLog("AssemblyParameters", NQLog::Critical) << "get_lineEdit"
-//!!       << ": no QLineEdit object associated to parameter key \"" << key << "\", returning NULL pointer";
-//!!
-//!!    QMessageBox::critical(0
-//!!     , tr("[AssemblyParameters::get_lineEdit]")
-//!!     , tr("Failed to find QLineEdit for key: \"%1\"\n.").arg(QString(key.c_str()))
-//!!     , QMessageBox::Ok
-//!!    );
-//!!  }
-//!!  else
-//!!  {
-//!!    ptr = map_lineEdit_.at(key);
-//!!  }
-//!!
-//!!  return ptr;
-//!!}
-//!!
-//!!
-//!!
-//!!
-//!!
-//!!
-//!!
-//!!
-//!!
-//!!
-//!!
-//!!
-//!!
-//!!template <class TYPE>
-//!!void lineEdit_setText(QLineEdit* const ptr_le, const TYPE& val)
-//!!{
-//!!  if(ptr_le != nullptr)
-//!!  {
-//!!    std::stringstream strs;
-//!!    strs << val;
-//!!
-//!!    ptr_le->setText(QString::fromStdString(strs.str()));
-//!!  }
-//!!
-//!!  return;
-//!!}
-//!!
-//!!template <class TYPE>
-//!!TYPE lineEdit_getText(QLineEdit* const ptr_le)
-//!!{
-//!!  if(ptr_le != nullptr)
-//!!  {
-//!!    std::stringstream strs;
-//!!    strs << val;
-//!!
-//!!    ptr_le->setText(QString::fromStdString(strs.str()));
-//!!  }
-//!!
-//!!
-//!!
-//!!
-//!!
-//!!  return;
-//!!}
-//!!
+  if(ptr == nullptr)
+  {
+    NQLog("AssemblyParametersView", NQLog::Fatal) << "get"
+       << ": null pointer to QLineEdit associated to key \"" << key << "\", closing application";
+
+    QMessageBox::critical(0
+     , tr("[AssemblyParametersView::get]")
+     , tr("Null pointer to QLineEdit for key: \"%1\"\n.").arg(QString(key.c_str()))
+     , QMessageBox::Abort
+    );
+
+    throw; // must abort
+  }
+
+  return ptr;
+}
+
+void AssemblyParametersView::copy_values(const std::map<std::string, double>& map_double)
+{
+  for(const auto& key : map_double)
+  {
+    this->setText(key.first, key.second);
+  }
+
+  return;
+}
+
+void AssemblyParametersView::setText(const std::string& key, const double val)
+{
+  QLineEdit* const ptr = this->get(key);
+
+  std::stringstream strs;
+  strs << val;
+
+  ptr->setText(QString::fromStdString(strs.str()));
+
+  return;
+}

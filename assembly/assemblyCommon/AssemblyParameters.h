@@ -41,6 +41,8 @@ class AssemblyParameters : public QObject
 
   double get(const std::string&) const;
 
+  const std::map<std::string, double>& map_double() const { return map_double_; }
+
  private:
   Q_DISABLE_COPY(AssemblyParameters)
 
