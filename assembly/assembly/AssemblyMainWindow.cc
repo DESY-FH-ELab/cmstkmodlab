@@ -91,6 +91,11 @@ AssemblyMainWindow::AssemblyMainWindow(const unsigned int camera_ID, QWidget* pa
       return;
     }
 
+    /// Parameters
+    ///   * instance created up here, so controllers can access it
+    AssemblyParameters* params = AssemblyParameters::instance(config->getValue<std::string>("AssemblyParameters_file_path"));
+    /// -------------------
+
     /// Motion
     motion_model_   = new LStepExpressModel(config->getValue<std::string>("LStepExpressDevice").c_str(), 1000, 1000);
     motion_manager_ = new LStepExpressMotionManager(motion_model_);
@@ -238,13 +243,16 @@ AssemblyMainWindow::AssemblyMainWindow(const unsigned int camera_ID, QWidget* pa
     // PARAMETERS VIEW -------------------------------------------
     const QString tabname_Parameters("Parameters");
 
-    AssemblyParameters* params = AssemblyParameters::instance(config->getValue<std::string>("AssemblyParameters_file_path"));
-
     params_view_ = new AssemblyParametersView(tabWidget_);
     tabWidget_->addTab(params_view_, tabname_Parameters);
 
     connect(params_view_, SIGNAL(read_from_file_request(QString)), params, SLOT(read_from_file(QString)));
     connect(params_view_, SIGNAL( write_to_file_request(QString)), params, SLOT( write_to_file(QString)));
+
+    connect(params      , SIGNAL(values_requestentries(std::map<std::string, std::string>)), params, SLOT(update(std::map<std::string, std::string>)));
+    connect(params_view_, SIGNAL(entries(std::map<std::string, std::string>)), params, SLOT(update(std::map<std::string, std::string>)));
+
+//!!    params_view_->copy_values(params->map_double());
 
     NQLog("AssemblyMainWindow", NQLog::Message) << "added view " << tabname_Parameters;
     // ---------------------------------------------------------

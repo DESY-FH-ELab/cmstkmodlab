@@ -65,6 +65,9 @@ class AssemblyObjectFinderPatRec : public QObject
 
   mutable QMutex mutex_;
 
+  double mm_per_pixel_row_;
+  double mm_per_pixel_col_;
+
   AssemblyThresholder* const thresholder_;
 
   static int exe_counter_;

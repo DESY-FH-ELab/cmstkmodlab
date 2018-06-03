@@ -17,6 +17,8 @@
 #include <AssemblyParameters.h>
 #include <AssemblyUtilities.h>
 
+#include <sstream>
+
 #include <QFile>
 #include <QFileDialog>
 #include <QTextStream>
@@ -54,16 +56,46 @@ AssemblyParameters* AssemblyParameters::instance()
   return instance_;
 }
 
-void AssemblyParameters::issueKeyError(const std::string& key) const
+void AssemblyParameters::issue_key_error(const std::string& key) const
 {
-  NQLog("AssemblyParameters", NQLog::Critical) << "issueKeyError"
-     << " [issueKeyError::getValue] ** ERROR: failed to get value for key: " << key;
+  NQLog("AssemblyParameters", NQLog::Critical) << "issue_key_error"
+     << " [issue_key_error::getValue] ** ERROR: failed to get value for key: " << key;
 
   QMessageBox::critical(0
-   , tr("[AssemblyParameters::issueKeyError]")
-   , tr("Failed to find value for key: \"%1\"\n.").arg(QString(key.c_str()))
-   , QMessageBox::Ok
+   , tr("[AssemblyParameters::issue_key_error]")
+   , tr("Failed to find value for key: \"%1\"\n. Aborting.").arg(QString(key.c_str()))
+   , QMessageBox::Abort
   );
+
+  throw; // must abort
+}
+
+void AssemblyParameters::write_to_file(const QString& f_path)
+{
+  QFile data(f_path);
+
+  if(data.open(QFile::WriteOnly | QFile::Truncate))
+  {
+    QTextStream out(&data);
+
+    for(const auto& i_pair : map_double_)
+    {
+      std::stringstream strs;
+      strs << i_pair.second;
+
+      out
+        << qSetFieldWidth(30) << left  << QString::fromStdString(i_pair.first)
+        << qSetFieldWidth(20) << right << QString::fromStdString(strs.str())
+        << "\n";
+    }
+  }
+
+  return;
+}
+
+void AssemblyParameters::write_to_file(const std::string& f_path)
+{
+  this->write_to_file(QString::fromStdString(f_path));
 }
 
 void AssemblyParameters::read_from_file(const QString& f_path)
@@ -75,34 +107,81 @@ void AssemblyParameters::read_from_file(const std::string& f_path)
 {
   ApplicationConfigReader reader(f_path);
 
-  keymap_.clear();
+  std::multimap<std::string, std::string> multimap_str;
+  reader.fill(multimap_str);
 
-  reader.fill(keymap_);
+  map_double_.clear();
 
-  return;
-}
-
-void AssemblyParameters::write_to_file(const QString& f_path)
-{
-  QFile data(f_path);
-
-  if(data.open(QFile::WriteOnly | QFile::Truncate))
+  for(const auto& i_pair : multimap_str)
   {
-    QTextStream out(&data);
+    const std::string& i_key = i_pair.first;
 
-    for(const auto& key : keymap_)
+    if(map_double_.find(i_key) != map_double_.end())
     {
-      out
-        << qSetFieldWidth(30) << left  << QString::fromStdString(key.first)
-        << qSetFieldWidth(20) << right << QString::fromStdString(key.second)
-        << "\n";
+      NQLog("AssemblyParameters", NQLog::Warning) << "read_from_file"
+         << ": duplicate assembly parameter \"" << i_key << "\", parameter value will be overwritten";
     }
+
+    const QString i_val_qstr = QString::fromStdString(i_pair.second);
+
+    bool i_val_valid(false);
+    const double i_val_double = i_val_qstr.toDouble(&i_val_valid);
+
+    if(i_val_valid == false)
+    {
+      NQLog("AssemblyParameters", NQLog::Warning) << "read_from_file"
+         << ": invalid format for input parameter \"" << i_val_qstr << "\", cannot be added to AssemblyParameters";
+
+      continue;
+    }
+
+    map_double_[i_key] = i_val_double;
   }
 
   return;
 }
 
-void AssemblyParameters::write_to_file(const std::string& f_path)
+void AssemblyParameters::update(const std::map<std::string, std::string>& map_str)
 {
-  this->write_to_file(QString::fromStdString(f_path));
+  map_double_.clear();
+
+  for(const auto& i_pair : map_str)
+  {
+    const std::string& i_key = i_pair.first;
+
+    if(map_double_.find(i_key) != map_double_.end())
+    {
+      NQLog("AssemblyParameters", NQLog::Warning) << "update"
+         << ": duplicate assembly parameter \"" << i_key << "\", parameter value will be overwritten";
+    }
+
+    const QString i_val_qstr = QString::fromStdString(i_pair.second);
+
+    bool i_val_valid(false);
+    const double i_val_double = i_val_qstr.toDouble(&i_val_valid);
+
+    if(i_val_valid == false)
+    {
+      NQLog("AssemblyParameters", NQLog::Warning) << "read_from_file"
+         << ": invalid format for input parameter \"" << i_val_qstr << "\", cannot be added to AssemblyParameters";
+
+      continue;
+    }
+
+    map_double_[i_key] = i_val_double;
+  }
+
+  return;
+}
+
+double AssemblyParameters::get(const std::string& key) const
+{
+  if(map_double_.find(key) == map_double_.end())
+  {
+    this->issue_key_error(key);
+
+    return -1.;
+  }
+
+  return map_double_.at(key);
 }

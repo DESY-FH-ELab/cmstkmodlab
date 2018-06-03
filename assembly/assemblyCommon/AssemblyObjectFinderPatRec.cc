@@ -44,7 +44,7 @@ AssemblyObjectFinderPatRec::AssemblyObjectFinderPatRec(AssemblyThresholder* cons
 {
   if(thresholder_ == nullptr)
   {
-    NQLog("AssemblyObjectFinderPatRec", NQLog::Critical) << "initialization error"
+    NQLog("AssemblyObjectFinderPatRec", NQLog::Fatal) << "initialization error"
        << ": null pointer to AssemblyThresholder object, exiting constructor";
 
     return;
@@ -53,6 +53,24 @@ AssemblyObjectFinderPatRec::AssemblyObjectFinderPatRec(AssemblyThresholder* cons
   // connections
   connect(this, SIGNAL(template_matching_request(Configuration, cv::Mat, cv::Mat, cv::Mat)), this, SLOT(template_matching(Configuration, cv::Mat, cv::Mat, cv::Mat)));
   // -----------
+
+  AssemblyParameters* params = AssemblyParameters::instance();
+  if(params == nullptr)
+  {
+    NQLog("AssemblyObjectFinderPatRec", NQLog::Fatal) << "template_matching"
+       << ": invalid (null) pointer to AssemblyParameters::instance(), exiting constructor";
+
+    NQLog("AssemblyObjectFinderPatRec", NQLog::Warning) << "template_matching"
+       << ": using default values \"mm_per_pixel_row=0.0012\" and \"mm_per_pixel_col=0.0012\"";
+
+    mm_per_pixel_row_ = 0.0012;
+    mm_per_pixel_col_ = 0.0012;
+
+    return;
+  }
+
+  mm_per_pixel_row_ = params->get("mm_per_pixel_row");
+  mm_per_pixel_col_ = params->get("mm_per_pixel_col");
 
   qRegisterMetaType<AssemblyObjectFinderPatRec::Configuration>("AssemblyObjectFinderPatRec::Configuration");
 
@@ -611,8 +629,8 @@ void AssemblyObjectFinderPatRec::template_matching(const AssemblyObjectFinderPat
     emit PatRec_exitcode(1);
   }
 
-  const double patrec_dX = -1.0 * ( best_matchLoc.y - (img_master_copy.rows / 2.0) ) * params->get<double>("mm_per_pixel_X", 0.0012);
-  const double patrec_dY = -1.0 * ( best_matchLoc.x - (img_master_copy.cols / 2.0) ) * params->get<double>("mm_per_pixel_Y", 0.0012);
+  const double patrec_dX = -1.0 * (best_matchLoc.y - (img_master_copy.rows / 2.0)) * mm_per_pixel_row_;
+  const double patrec_dY = -1.0 * (best_matchLoc.x - (img_master_copy.cols / 2.0)) * mm_per_pixel_col_;
 
   NQLog("AssemblyObjectFinderPatRec", NQLog::Spam) << "template_matching"
      << ": emitting signal \"PatRec_results(" << patrec_dX << ", " << patrec_dY << ", " << best_angle << ")\"";

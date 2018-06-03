@@ -17,13 +17,10 @@
  *    - contains parameters for assembly procedure
  *    - can read params from file and write them to file
  *    - params can be updated via AssemblyParametersView
- *    - contains parameters for assembly procedure
  */
 
 #include <string>
-#include <sstream>
 #include <map>
-#include <stdexcept>
 
 #include <QObject>
 #include <QString>
@@ -40,10 +37,9 @@ class AssemblyParameters : public QObject
   static AssemblyParameters* instance(const std::string&, QObject* parent=nullptr);
   static AssemblyParameters* instance();
 
-  void issueKeyError(const std::string&) const;
+  void issue_key_error(const std::string&) const;
 
-  template <class T> T get(const std::string&, const T&) const;
-  template <class T> T get(const std::string&)           const;
+  double get(const std::string&) const;
 
  private:
   Q_DISABLE_COPY(AssemblyParameters)
@@ -52,51 +48,17 @@ class AssemblyParameters : public QObject
 
   static AssemblyParameters* instance_;
 
-  std::multimap<std::string, std::string> keymap_;
+  std::map<std::string, double> map_double_;
 
  public slots:
+
+  void write_to_file(const QString&);
+  void write_to_file(const std::string&);
 
   void read_from_file(const QString&);
   void read_from_file(const std::string&);
 
-  void write_to_file(const QString&);
-  void write_to_file(const std::string&);
+  void update(const std::map<std::string, std::string>&);
 };
-
-template <class T>
-T AssemblyParameters::get(const std::string& key, const T& default_val) const
-{
-  T return_val = default_val;
-
-  auto iter = keymap_.find(key);
-
-  if(iter != keymap_.end())
-  {
-    std::istringstream iss(iter->second.c_str(), std::istringstream::in);
-    iss >> return_val;
-  }
-
-  return return_val;
-}
-
-template <class T>
-T AssemblyParameters::get(const std::string& key) const
-{
-  T return_val;
-
-  auto iter = keymap_.find(key);
-
-  if(iter != keymap_.end())
-  {
-    std::istringstream iss(iter->second.c_str(), std::istringstream::in);
-    iss >> return_val;
-  }
-  else
-  {
-    this->issueKeyError(key);
-  }
-
-  return return_val;
-}
 
 #endif // ASSEMBLYPARAMETERS_H

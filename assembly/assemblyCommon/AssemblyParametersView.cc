@@ -16,6 +16,8 @@
 #include <AssemblyParametersView.h>
 
 #include <QVBoxLayout>
+#include <QHBoxLayout>
+#include <QLabel>
 #include <QToolBox>
 #include <QFileDialog>
 
@@ -23,7 +25,12 @@ AssemblyParametersView::AssemblyParametersView(QWidget* parent) :
   QWidget(parent),
 
   paramIO_button_read_ (nullptr),
-  paramIO_button_write_(nullptr)
+  paramIO_button_write_(nullptr),
+
+  dime_wid_(nullptr),
+  posi_wid_(nullptr),
+  move_wid_(nullptr),
+  imag_wid_(nullptr)
 {
   QVBoxLayout* layout = new QVBoxLayout;
   this->setLayout(layout);
@@ -33,11 +40,86 @@ AssemblyParametersView::AssemblyParametersView(QWidget* parent) :
 
   // ---------------------
 
-  toolbox->addItem(new QWidget, tr("AAA"));
-  toolbox->addItem(new QWidget, tr("BBB"));
-  toolbox->addItem(new QWidget, tr("CCC"));
+  // DIMENSIONS ----------
+  dime_wid_ = new QWidget;
 
+  toolbox->addItem(dime_wid_, tr("Dimensions of Assembly Components"));
+
+//  QVBoxLayout* dime_lay = new QVBoxLayout;
+//  dime_wid_->setLayout(dime_lay);
   // ---------------------
+
+  // POSITIONS -----------
+  posi_wid_ = new QWidget;
+
+  toolbox->addItem(posi_wid_, tr("Reference Positions"));
+
+//  QVBoxLayout* posi_lay = new QVBoxLayout;
+//  posi_wid_->setLayout(posi_lay);
+  // ---------------------
+
+//!!
+//!!  XYZA_lay_ = new QHBoxLayout;
+//!!
+//!!  QLabel* X_label = new QLabel("X");
+//!!  QLabel* Y_label = new QLabel("Y");
+//!!  QLabel* Z_label = new QLabel("Z");
+//!!  QLabel* A_label = new QLabel("A");
+//!!
+//!!  X_lineed_ = new QLineEdit("");
+//!!  Y_lineed_ = new QLineEdit("");
+//!!  Z_lineed_ = new QLineEdit("");
+//!!  A_lineed_ = new QLineEdit("");
+//!!
+//!!  XYZA_lay_->addWidget(X_label  );
+//!!  XYZA_lay_->addWidget(X_lineed_);
+//!!
+//!!  XYZA_lay_->addWidget(Y_label  );
+//!!  XYZA_lay_->addWidget(Y_lineed_);
+//!!
+//!!  XYZA_lay_->addWidget(Z_label  );
+//!!  XYZA_lay_->addWidget(Z_lineed_);
+//!!
+//!!  XYZA_lay_->addWidget(A_label  );
+//!!  XYZA_lay_->addWidget(A_lineed_);
+//!!
+//!!  layout_->addLayout(XYZA_lay_);
+
+  // MOVEMENT ------------
+  move_wid_ = new QWidget;
+
+  toolbox->addItem(move_wid_, tr("Reference Movements"));
+
+//  QVBoxLayout* move_lay = new QVBoxLayout;
+//  move_wid_->setLayout(move_lay);
+  // ---------------------
+
+  /// IMAGE ---------------
+  imag_wid_ = new QWidget;
+
+  toolbox->addItem(imag_wid_, tr("Image Parameters"));
+
+  QVBoxLayout* imag_lay = new QVBoxLayout;
+  imag_wid_->setLayout(imag_lay);
+
+  // pixel dimensions
+  QHBoxLayout* imag_pix_lay = new QHBoxLayout;
+  imag_lay->addLayout(imag_pix_lay);
+
+  map_lineEdit_["mm_per_pixel_row"] = new QLineEdit(tr(""));
+  map_lineEdit_["mm_per_pixel_col"] = new QLineEdit(tr(""));
+
+  imag_pix_lay->addWidget(new QLabel(tr("Pixel Unit Dimensions")), 20);
+
+  imag_pix_lay->addWidget(new QLabel(tr("X")), 5, Qt::AlignRight);
+  imag_pix_lay->addWidget(map_lineEdit_["mm_per_pixel_row"], 15);
+
+  imag_pix_lay->addWidget(new QLabel(tr("Y")), 5, Qt::AlignRight);
+  imag_pix_lay->addWidget(map_lineEdit_["mm_per_pixel_col"], 15);
+
+  imag_pix_lay->addWidget(new QLabel, 40);
+
+  /// ---------------------
 
   layout->addStretch(1);
 
@@ -91,3 +173,82 @@ void AssemblyParametersView::write_parameters()
 
   emit write_to_file_request(f_path);
 }
+
+
+
+
+
+
+//!!
+//!!
+//!!
+//!!
+//!!
+//!!
+//!!QLineEdit* AssemblyParameters::get_lineEdit(const std::string& key) const
+//!!{
+//!!  QLineEdit* ptr(nullptr);
+//!!
+//!!  if(map_lineEdit_.find(key) == map_lineEdit_.end())
+//!!  {
+//!!    NQLog("AssemblyParameters", NQLog::Critical) << "get_lineEdit"
+//!!       << ": no QLineEdit object associated to parameter key \"" << key << "\", returning NULL pointer";
+//!!
+//!!    QMessageBox::critical(0
+//!!     , tr("[AssemblyParameters::get_lineEdit]")
+//!!     , tr("Failed to find QLineEdit for key: \"%1\"\n.").arg(QString(key.c_str()))
+//!!     , QMessageBox::Ok
+//!!    );
+//!!  }
+//!!  else
+//!!  {
+//!!    ptr = map_lineEdit_.at(key);
+//!!  }
+//!!
+//!!  return ptr;
+//!!}
+//!!
+//!!
+//!!
+//!!
+//!!
+//!!
+//!!
+//!!
+//!!
+//!!
+//!!
+//!!
+//!!
+//!!template <class TYPE>
+//!!void lineEdit_setText(QLineEdit* const ptr_le, const TYPE& val)
+//!!{
+//!!  if(ptr_le != nullptr)
+//!!  {
+//!!    std::stringstream strs;
+//!!    strs << val;
+//!!
+//!!    ptr_le->setText(QString::fromStdString(strs.str()));
+//!!  }
+//!!
+//!!  return;
+//!!}
+//!!
+//!!template <class TYPE>
+//!!TYPE lineEdit_getText(QLineEdit* const ptr_le)
+//!!{
+//!!  if(ptr_le != nullptr)
+//!!  {
+//!!    std::stringstream strs;
+//!!    strs << val;
+//!!
+//!!    ptr_le->setText(QString::fromStdString(strs.str()));
+//!!  }
+//!!
+//!!
+//!!
+//!!
+//!!
+//!!  return;
+//!!}
+//!!

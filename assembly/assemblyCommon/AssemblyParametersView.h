@@ -19,6 +19,7 @@
 
 #include <QWidget>
 #include <QPushButton>
+#include <QLineEdit>
 
 class AssemblyParametersView : public QWidget
 {
@@ -29,10 +30,20 @@ class AssemblyParametersView : public QWidget
   explicit AssemblyParametersView(QWidget* parent=nullptr);
   virtual ~AssemblyParametersView() {}
 
+//  bool       has(const std::string&) const;
+//  QLineEdit* get(const std::string&) const;
+
  protected:
 
   QPushButton* paramIO_button_read_;
   QPushButton* paramIO_button_write_;
+
+  QWidget* dime_wid_;
+  QWidget* posi_wid_;
+  QWidget* move_wid_;
+  QWidget* imag_wid_;
+
+  std::map<std::string, QLineEdit*> map_lineEdit_;
 
  public slots:
 
