@@ -93,7 +93,7 @@ AssemblyMainWindow::AssemblyMainWindow(const unsigned int camera_ID, QWidget* pa
 
     /// Parameters
     ///   * instance created up here, so controllers can access it
-    AssemblyParameters* params = AssemblyParameters::instance(config->getValue<std::string>("AssemblyParameters_file_path"));
+    params_ = AssemblyParameters::instance(config->getValue<std::string>("AssemblyParameters_file_path"));
     /// -------------------
 
     /// Motion
@@ -246,13 +246,13 @@ AssemblyMainWindow::AssemblyMainWindow(const unsigned int camera_ID, QWidget* pa
     params_view_ = new AssemblyParametersView(tabWidget_);
     tabWidget_->addTab(params_view_, tabname_Parameters);
 
-    connect(params_view_, SIGNAL(read_from_file_request(QString)), params, SLOT(read_from_file(QString)));
-    connect(params_view_, SIGNAL( write_to_file_request(QString)), params, SLOT( write_to_file(QString)));
+    connect(params_view_, SIGNAL(read_from_file_request(QString)), params_, SLOT(read_from_file(QString)));
+    connect(params_view_, SIGNAL( write_to_file_request(QString)), params_, SLOT( write_to_file(QString)));
 
-    connect(params, SIGNAL(update_request()), params_view_, SLOT(read_entries()));
-    connect(params_view_, SIGNAL(entries(std::map<std::string, std::string>)), params, SLOT(update(std::map<std::string, std::string>)));
+    connect(params_, SIGNAL(update_request()), params_view_, SLOT(read_entries()));
+    connect(params_view_, SIGNAL(entries(std::map<std::string, std::string>)), params_, SLOT(update(std::map<std::string, std::string>)));
 
-    params_view_->copy_values(params->map_double());
+    params_view_->copy_values(params_->map_double());
 
     NQLog("AssemblyMainWindow", NQLog::Message) << "added view " << tabname_Parameters;
     // ---------------------------------------------------------
@@ -512,7 +512,15 @@ void AssemblyMainWindow::start_objectAligner(const AssemblyObjectAligner::Config
     return;
   }
 
-  connect(aligner_, SIGNAL(configuration_updated()), aligner_, SLOT(execute()));
+  if(params_ == nullptr)
+  {
+    connect(aligner_, SIGNAL(configuration_updated()), aligner_, SLOT(execute()));
+  }
+  else
+  {
+    connect(aligner_, SIGNAL(configuration_updated()), params_, SIGNAL(update_request()));
+    connect(params_, SIGNAL(update_completed()), aligner_, SLOT(execute()));
+  }
 
   connect(aligner_, SIGNAL(image_request()), image_ctr_, SLOT(acquire_image()));
 
@@ -556,7 +564,15 @@ void AssemblyMainWindow::disconnect_objectAligner()
     return;
   }
 
-  disconnect(aligner_, SIGNAL(configuration_updated()), aligner_, SLOT(execute()));
+  if(params_ == nullptr)
+  {
+    disconnect(aligner_, SIGNAL(configuration_updated()), aligner_, SLOT(execute()));
+  }
+  else
+  {
+    disconnect(aligner_, SIGNAL(configuration_updated()), params_, SIGNAL(update_request()));
+    disconnect(params_, SIGNAL(update_completed()), aligner_, SLOT(execute()));
+  }
 
   disconnect(aligner_, SIGNAL(image_request()), image_ctr_, SLOT(acquire_image()));
 
@@ -610,7 +626,16 @@ void AssemblyMainWindow::start_multiPickupTest(const AssemblyMultiPickupTester::
 
   multipickup_tester_->set_configuration(conf);
 
-  multipickup_tester_->start_measurement();
+  if((params_ != nullptr) && (params_view_ != nullptr))
+  {
+    connect(params_, SIGNAL(update_completed()), multipickup_tester_, SLOT(start_measurement()));
+
+    params_view_->read_entries();
+  }
+  else
+  {
+    multipickup_tester_->start_measurement();
+  }
 
   return;
 }
@@ -633,6 +658,11 @@ void AssemblyMainWindow::disconnect_multiPickupTest()
 
   disconnect(conradManager_, SIGNAL(enableVacuumButton()), multipickup_tester_, SLOT(setup_next_step()));
   // ---
+
+  if((params_ != nullptr) && (params_view_ != nullptr))
+  {
+    disconnect(params_, SIGNAL(update_completed()), multipickup_tester_, SLOT(start_measurement()));
+  }
 
   toolbox_view_->MultiPickupTester_Widget()->enable(true);
 

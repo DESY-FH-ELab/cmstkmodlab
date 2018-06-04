@@ -90,8 +90,25 @@ AssemblyParametersView::AssemblyParametersView(QWidget* parent) :
 
   toolbox->addItem(move_wid_, tr("Reference Movements"));
 
-//  QVBoxLayout* move_lay = new QVBoxLayout;
-//  move_wid_->setLayout(move_lay);
+  QVBoxLayout* move_lay = new QVBoxLayout;
+  move_wid_->setLayout(move_lay);
+
+  // movement: from marker's ref-point to pickup position
+  QHBoxLayout* move_markerToPickup_lay = new QHBoxLayout;
+  move_lay->addLayout(move_markerToPickup_lay);
+
+  map_lineEdit_["marker_to_pickup_dX"] = new QLineEdit(tr(""));
+  map_lineEdit_["marker_to_pickup_dY"] = new QLineEdit(tr(""));
+
+  move_markerToPickup_lay->addWidget(new QLabel(tr("From Marker's Ref-Point To Pickup position")), 20);
+
+  move_markerToPickup_lay->addWidget(new QLabel(tr("dX")), 5, Qt::AlignRight);
+  move_markerToPickup_lay->addWidget(map_lineEdit_["marker_to_pickup_dX"], 15);
+
+  move_markerToPickup_lay->addWidget(new QLabel(tr("dY")), 5, Qt::AlignRight);
+  move_markerToPickup_lay->addWidget(map_lineEdit_["marker_to_pickup_dY"], 15);
+
+  move_markerToPickup_lay->addWidget(new QLabel, 40);
   // ---------------------
 
   /// IMAGE ---------------
