@@ -100,15 +100,15 @@ AssemblyParametersView::AssemblyParametersView(QWidget* parent) :
   map_lineEdit_["marker_to_pickup_dX"] = new QLineEdit(tr(""));
   map_lineEdit_["marker_to_pickup_dY"] = new QLineEdit(tr(""));
 
-  move_markerToPickup_lay->addWidget(new QLabel(tr("From Marker's Ref-Point To Pickup position")), 20);
+  move_markerToPickup_lay->addWidget(new QLabel(tr("From Marker's Ref-Point To Pickup position :")), 40);
 
-  move_markerToPickup_lay->addWidget(new QLabel(tr("dX")), 5, Qt::AlignRight);
+  move_markerToPickup_lay->addWidget(new QLabel(tr("dX [mm]")), 5, Qt::AlignRight);
   move_markerToPickup_lay->addWidget(map_lineEdit_["marker_to_pickup_dX"], 15);
 
-  move_markerToPickup_lay->addWidget(new QLabel(tr("dY")), 5, Qt::AlignRight);
+  move_markerToPickup_lay->addWidget(new QLabel(tr("dY [mm]")), 5, Qt::AlignRight);
   move_markerToPickup_lay->addWidget(map_lineEdit_["marker_to_pickup_dY"], 15);
 
-  move_markerToPickup_lay->addWidget(new QLabel, 40);
+  move_markerToPickup_lay->addWidget(new QLabel, 20);
   // ---------------------
 
   /// IMAGE ---------------
@@ -126,12 +126,12 @@ AssemblyParametersView::AssemblyParametersView(QWidget* parent) :
   map_lineEdit_["mm_per_pixel_row"] = new QLineEdit(tr(""));
   map_lineEdit_["mm_per_pixel_col"] = new QLineEdit(tr(""));
 
-  imag_pix_lay->addWidget(new QLabel(tr("Pixel Unit Dimensions")), 20);
+  imag_pix_lay->addWidget(new QLabel(tr("Pixel Unit Dimensions :")), 20);
 
-  imag_pix_lay->addWidget(new QLabel(tr("X")), 5, Qt::AlignRight);
+  imag_pix_lay->addWidget(new QLabel(tr("X [mm]")), 5, Qt::AlignRight);
   imag_pix_lay->addWidget(map_lineEdit_["mm_per_pixel_row"], 15);
 
-  imag_pix_lay->addWidget(new QLabel(tr("Y")), 5, Qt::AlignRight);
+  imag_pix_lay->addWidget(new QLabel(tr("Y [mm]")), 5, Qt::AlignRight);
   imag_pix_lay->addWidget(map_lineEdit_["mm_per_pixel_col"], 15);
 
   imag_pix_lay->addWidget(new QLabel, 40);
