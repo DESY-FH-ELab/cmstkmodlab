@@ -182,7 +182,7 @@ AssemblyObjectFinderPatRecView::AssemblyObjectFinderPatRecView(QWidget* parent) 
   }
   else
   {
-    connect(patrec_exe_button_, SIGNAL(clicked()), params, SIGNAL(SIGNAL(update_request())));
+    connect(patrec_exe_button_, SIGNAL(clicked()), params, SIGNAL(update_request()));
     connect(params, SIGNAL(update_completed()), this->PatRec_Widget(), SLOT(transmit_configuration()));
   }
 

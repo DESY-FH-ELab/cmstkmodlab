@@ -171,18 +171,6 @@ AssemblyMainWindow::AssemblyMainWindow(const unsigned int camera_ID, QWidget* pa
     NQLog("AssemblyMainWindow", NQLog::Message) << "added view " << tabname_ImageThresholding;
     // ---------------------------------------------------------
 
-//    // AUTOMATED-ASSEMBLY VIEW ---------------------------------
-//    const QString tabname_AutoAssembly("Auto Assembly");
-//
-//    assemblyView_ = new AssemblyAssemblyView(motion_manager_, tabWidget_);
-//    tabWidget_->addTab(assemblyView_, tabname_AutoAssembly);
-//
-//    assemblyView_->connect_to_finder(finder_);
-//
-//    NQLog("AssemblyMainWindow", NQLog::Message) << "added view " << tabname_AutoAssembly;
-//
-//    // ---------------------------------------------------------
-
     // PATTERN-RECOGNITION VIEW --------------------------------
     const QString tabname_PatRec("Pattern Recognition");
 
@@ -216,6 +204,18 @@ AssemblyMainWindow::AssemblyMainWindow(const unsigned int camera_ID, QWidget* pa
 
     NQLog("AssemblyMainWindow", NQLog::Message) << "added view " << tabname_Alignm;
     // ---------------------------------------------------------
+
+//    // AUTOMATED-ASSEMBLY VIEW ---------------------------------
+//    const QString tabname_AutoAssembly("Auto Assembly");
+//
+//    assemblyView_ = new AssemblyAssemblyView(motion_manager_, tabWidget_);
+//    tabWidget_->addTab(assemblyView_, tabname_AutoAssembly);
+//
+//    assemblyView_->connect_to_finder(finder_);
+//
+//    NQLog("AssemblyMainWindow", NQLog::Message) << "added view " << tabname_AutoAssembly;
+//
+//    // ---------------------------------------------------------
 
 //    // U-EYE VIEW ----------------------------------------------
 //    const QString tabname_uEye("uEye");
