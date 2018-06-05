@@ -13,20 +13,7 @@
 #ifndef ASSEMBLYASSEMBLYVIEW_H
 #define ASSEMBLYASSEMBLYVIEW_H
 
-#include <AssemblyUEyeView.h>
-#include <AssemblyObjectAligner.h>
-#include <AssemblyObjectFinderPatRecWidget.h>
-
 #include <QWidget>
-#include <QString>
-#include <QScrollArea>
-#include <QKeyEvent>
-#include <QCheckBox>
-#include <QRadioButton>
-#include <QPushButton>
-#include <QLineEdit>
-
-#include <opencv2/opencv.hpp>
 
 class AssemblyAssemblyView : public QWidget
 {
@@ -36,6 +23,13 @@ class AssemblyAssemblyView : public QWidget
 
   explicit AssemblyAssemblyView(QWidget* parent=nullptr);
   virtual ~AssemblyAssemblyView() {}
+
+ protected:
+
+  QWidget* CalibRotStage_wid_;
+  QWidget* PSPToBasep_wid_;
+  QWidget* PSSToSpacers_wid_;
+  QWidget* PSSSpacToPSPBas_wid_;
 };
 
 #endif // ASSEMBLYASSEMBLYVIEW_H
