@@ -45,8 +45,74 @@ AssemblyParametersView::AssemblyParametersView(QWidget* parent) :
 
   toolbox->addItem(dime_wid_, tr("Dimensions of Assembly Components"));
 
-//  QVBoxLayout* dime_lay = new QVBoxLayout;
-//  dime_wid_->setLayout(dime_lay);
+  QVBoxLayout* dime_lay = new QVBoxLayout;
+  dime_wid_->setLayout(dime_lay);
+
+  // dimension: baseplate's thickness
+  QHBoxLayout* dime_thicknessBasep_lay = new QHBoxLayout;
+  dime_lay->addLayout(dime_thicknessBasep_lay);
+
+  map_lineEdit_["thickness_baseplate"] = new QLineEdit(tr(""));
+
+  dime_thicknessBasep_lay->addWidget(new QLabel(tr("Baseplate's thickness :")), 50, Qt::AlignLeft);
+
+  dime_thicknessBasep_lay->addWidget(new QLabel, 27);
+
+  dime_thicknessBasep_lay->addWidget(new QLabel(tr("dZ [mm]"))           ,  8, Qt::AlignRight);
+  dime_thicknessBasep_lay->addWidget(map_lineEdit_["thickness_baseplate"], 15, Qt::AlignRight);
+
+  // dimension: PSS sensor's thickness
+  QHBoxLayout* dime_thicknessPSS_lay = new QHBoxLayout;
+  dime_lay->addLayout(dime_thicknessPSS_lay);
+
+  map_lineEdit_["thickness_PSS"] = new QLineEdit(tr(""));
+
+  dime_thicknessPSS_lay->addWidget(new QLabel(tr("PSS Sensor's thickness :")), 50, Qt::AlignLeft);
+
+  dime_thicknessPSS_lay->addWidget(new QLabel, 27);
+
+  dime_thicknessPSS_lay->addWidget(new QLabel(tr("dZ [mm]"))     ,  8, Qt::AlignRight);
+  dime_thicknessPSS_lay->addWidget(map_lineEdit_["thickness_PSS"], 15, Qt::AlignRight);
+
+  // dimension: PSP sensor's thickness
+  QHBoxLayout* dime_thicknessPSP_lay = new QHBoxLayout;
+  dime_lay->addLayout(dime_thicknessPSP_lay);
+
+  map_lineEdit_["thickness_PSP"] = new QLineEdit(tr(""));
+
+  dime_thicknessPSP_lay->addWidget(new QLabel(tr("PSP Sensor's thickness :")), 50, Qt::AlignLeft);
+
+  dime_thicknessPSP_lay->addWidget(new QLabel, 27);
+
+  dime_thicknessPSP_lay->addWidget(new QLabel(tr("dZ [mm]"))     ,  8, Qt::AlignRight);
+  dime_thicknessPSP_lay->addWidget(map_lineEdit_["thickness_PSP"], 15, Qt::AlignRight);
+
+  // dimension: Spacer's thickness
+  QHBoxLayout* dime_thicknessSpacer_lay = new QHBoxLayout;
+  dime_lay->addLayout(dime_thicknessSpacer_lay);
+
+  map_lineEdit_["thickness_spacer"] = new QLineEdit(tr(""));
+
+  dime_thicknessSpacer_lay->addWidget(new QLabel(tr("Spacer's thickness :")), 50, Qt::AlignLeft);
+
+  dime_thicknessSpacer_lay->addWidget(new QLabel, 27);
+
+  dime_thicknessSpacer_lay->addWidget(new QLabel(tr("dZ [mm]"))        ,  8, Qt::AlignRight);
+  dime_thicknessSpacer_lay->addWidget(map_lineEdit_["thickness_spacer"], 15, Qt::AlignRight);
+
+  // dimension: Glue Layer's thickness
+  QHBoxLayout* dime_thicknessGlueLayer_lay = new QHBoxLayout;
+  dime_lay->addLayout(dime_thicknessGlueLayer_lay);
+
+  map_lineEdit_["thickness_glue_layer"] = new QLineEdit(tr(""));
+
+  dime_thicknessGlueLayer_lay->addWidget(new QLabel(tr("Glue Layer's thickness :")), 50, Qt::AlignLeft);
+
+  dime_thicknessGlueLayer_lay->addWidget(new QLabel, 27);
+
+  dime_thicknessGlueLayer_lay->addWidget(new QLabel(tr("dZ [mm]"))            ,  8, Qt::AlignRight);
+  dime_thicknessGlueLayer_lay->addWidget(map_lineEdit_["thickness_glue_layer"], 15, Qt::AlignRight);
+
   // ---------------------
 
   // POSITIONS -----------
@@ -56,34 +122,8 @@ AssemblyParametersView::AssemblyParametersView(QWidget* parent) :
 
 //  QVBoxLayout* posi_lay = new QVBoxLayout;
 //  posi_wid_->setLayout(posi_lay);
-  // ---------------------
 
-//!!
-//!!  XYZA_lay_ = new QHBoxLayout;
-//!!
-//!!  QLabel* X_label = new QLabel("X");
-//!!  QLabel* Y_label = new QLabel("Y");
-//!!  QLabel* Z_label = new QLabel("Z");
-//!!  QLabel* A_label = new QLabel("A");
-//!!
-//!!  X_lineed_ = new QLineEdit("");
-//!!  Y_lineed_ = new QLineEdit("");
-//!!  Z_lineed_ = new QLineEdit("");
-//!!  A_lineed_ = new QLineEdit("");
-//!!
-//!!  XYZA_lay_->addWidget(X_label  );
-//!!  XYZA_lay_->addWidget(X_lineed_);
-//!!
-//!!  XYZA_lay_->addWidget(Y_label  );
-//!!  XYZA_lay_->addWidget(Y_lineed_);
-//!!
-//!!  XYZA_lay_->addWidget(Z_label  );
-//!!  XYZA_lay_->addWidget(Z_lineed_);
-//!!
-//!!  XYZA_lay_->addWidget(A_label  );
-//!!  XYZA_lay_->addWidget(A_lineed_);
-//!!
-//!!  layout_->addLayout(XYZA_lay_);
+  // ---------------------
 
   // DISTANCES -----------
   dist_wid_ = new QWidget;
