@@ -94,6 +94,8 @@ HEADERS += AssemblyVUEyeCamera.h \
            AssemblyObjectFinderPatRecThread.h \
            AssemblyObjectAligner.h \
            AssemblyObjectAlignerView.h \
+           AssemblyAssembly.h \
+           AssemblyAssemblyView.h \
            AssemblyMultiPickupTester.h \
            AssemblyMultiPickupTesterWidget.h \
            AssemblyPositionsRegistryWidget.h \
@@ -151,6 +153,8 @@ SOURCES += AssemblyVUEyeCamera.cc \
            AssemblyObjectFinderPatRecThread.cc \
            AssemblyObjectAligner.cc \
            AssemblyObjectAlignerView.cc \
+           AssemblyAssembly.cc \
+           AssemblyAssemblyView.cc \
            AssemblyMultiPickupTester.cc \
            AssemblyMultiPickupTesterWidget.cc \
            AssemblyPositionsRegistryWidget.cc \

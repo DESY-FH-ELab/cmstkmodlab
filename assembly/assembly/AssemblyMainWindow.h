@@ -35,6 +35,8 @@ typedef AssemblyUEyeModel AssemblyUEyeModel_t;
 #include <AssemblyObjectFinderPatRecThread.h>
 #include <AssemblyObjectAligner.h>
 #include <AssemblyObjectAlignerView.h>
+#include <AssemblyAssembly.h>
+#include <AssemblyAssemblyView.h>
 #include <AssemblyMultiPickupTester.h>
 #include <AssemblyToolboxView.h>
 #include <AssemblyParameters.h>
@@ -138,6 +140,7 @@ class AssemblyMainWindow : public QMainWindow
   AssemblyZFocusFinder*       zfocus_finder_;
   AssemblyThresholder*        thresholder_;
   AssemblyObjectAligner*      aligner_;
+  AssemblyAssembly*           assembly_;
   AssemblyMultiPickupTester*  multipickup_tester_;
 
   AssemblyObjectFinderPatRec*       finder_;
@@ -156,6 +159,7 @@ class AssemblyMainWindow : public QMainWindow
   AssemblyThresholderView* thresholder_view_;
   AssemblyObjectFinderPatRecView* finder_view_;
   AssemblyObjectAlignerView* aligner_view_;
+  AssemblyAssemblyView* assembly_view_;
   AssemblyToolboxView* toolbox_view_;
   AssemblyParametersView* params_view_;
   AssemblyHardwareControlView* hwctr_view_;

@@ -49,6 +49,7 @@ AssemblyMainWindow::AssemblyMainWindow(const unsigned int camera_ID, QWidget* pa
   zfocus_finder_(nullptr),
   thresholder_(nullptr),
   aligner_(nullptr),
+  assembly_(nullptr),
   multipickup_tester_(nullptr),
 
   finder_(nullptr),
@@ -67,6 +68,7 @@ AssemblyMainWindow::AssemblyMainWindow(const unsigned int camera_ID, QWidget* pa
   thresholder_view_(nullptr),
   finder_view_(nullptr),
   aligner_view_(nullptr),
+  assembly_view_(nullptr),
   toolbox_view_(nullptr),
   params_view_(nullptr),
   hwctr_view_(nullptr),
@@ -205,17 +207,16 @@ AssemblyMainWindow::AssemblyMainWindow(const unsigned int camera_ID, QWidget* pa
     NQLog("AssemblyMainWindow", NQLog::Message) << "added view " << tabname_Alignm;
     // ---------------------------------------------------------
 
-//    // AUTOMATED-ASSEMBLY VIEW ---------------------------------
-//    const QString tabname_AutoAssembly("Auto Assembly");
-//
-//    assemblyView_ = new AssemblyAssemblyView(motion_manager_, tabWidget_);
-//    tabWidget_->addTab(assemblyView_, tabname_AutoAssembly);
-//
-//    assemblyView_->connect_to_finder(finder_);
-//
-//    NQLog("AssemblyMainWindow", NQLog::Message) << "added view " << tabname_AutoAssembly;
-//
-//    // ---------------------------------------------------------
+    // ASSEMBLY VIEW -------------------------------------------
+    const QString tabname_Assembly("Assembly");
+
+    assembly_ = new AssemblyAssembly;
+
+    assembly_view_ = new AssemblyAssemblyView(tabWidget_);
+    tabWidget_->addTab(assembly_view_, tabname_Assembly);
+
+    NQLog("AssemblyMainWindow", NQLog::Message) << "added view " << tabname_Assembly;
+    // ---------------------------------------------------------
 
 //    // U-EYE VIEW ----------------------------------------------
 //    const QString tabname_uEye("uEye");
