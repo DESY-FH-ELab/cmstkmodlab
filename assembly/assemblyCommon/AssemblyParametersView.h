@@ -44,7 +44,7 @@ class AssemblyParametersView : public QWidget
 
   QWidget* dime_wid_;
   QWidget* posi_wid_;
-  QWidget* move_wid_;
+  QWidget* dist_wid_;
   QWidget* imag_wid_;
 
   QPushButton* paramIO_button_read_;

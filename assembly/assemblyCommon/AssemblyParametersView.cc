@@ -26,7 +26,7 @@ AssemblyParametersView::AssemblyParametersView(QWidget* parent) :
 
   dime_wid_(nullptr),
   posi_wid_(nullptr),
-  move_wid_(nullptr),
+  dist_wid_(nullptr),
   imag_wid_(nullptr),
 
   paramIO_button_read_ (nullptr),
@@ -85,30 +85,47 @@ AssemblyParametersView::AssemblyParametersView(QWidget* parent) :
 //!!
 //!!  layout_->addLayout(XYZA_lay_);
 
-  // MOVEMENT ------------
-  move_wid_ = new QWidget;
+  // DISTANCES -----------
+  dist_wid_ = new QWidget;
 
-  toolbox->addItem(move_wid_, tr("Reference Movements"));
+  toolbox->addItem(dist_wid_, tr("Reference Distances"));
 
-  QVBoxLayout* move_lay = new QVBoxLayout;
-  move_wid_->setLayout(move_lay);
+  QVBoxLayout* dist_lay = new QVBoxLayout;
+  dist_wid_->setLayout(dist_lay);
 
-  // movement: from marker's ref-point to pickup position
-  QHBoxLayout* move_markerToPickup_lay = new QHBoxLayout;
-  move_lay->addLayout(move_markerToPickup_lay);
+  // distance: from marker's ref-point to pickup position
+  QHBoxLayout* dist_markerToPickup_lay = new QHBoxLayout;
+  dist_lay->addLayout(dist_markerToPickup_lay);
 
   map_lineEdit_["marker_to_pickup_dX"] = new QLineEdit(tr(""));
   map_lineEdit_["marker_to_pickup_dY"] = new QLineEdit(tr(""));
 
-  move_markerToPickup_lay->addWidget(new QLabel(tr("From Marker's Ref-Point To Pickup position :")), 40);
+  dist_markerToPickup_lay->addWidget(new QLabel(tr("From Marker's Ref-Point To Pickup position :")), 50, Qt::AlignLeft);
 
-  move_markerToPickup_lay->addWidget(new QLabel(tr("dX [mm]")), 5, Qt::AlignRight);
-  move_markerToPickup_lay->addWidget(map_lineEdit_["marker_to_pickup_dX"], 15);
+  dist_markerToPickup_lay->addWidget(new QLabel(tr("dX [mm]"))           ,  8, Qt::AlignRight);
+  dist_markerToPickup_lay->addWidget(map_lineEdit_["marker_to_pickup_dX"], 15, Qt::AlignRight);
 
-  move_markerToPickup_lay->addWidget(new QLabel(tr("dY [mm]")), 5, Qt::AlignRight);
-  move_markerToPickup_lay->addWidget(map_lineEdit_["marker_to_pickup_dY"], 15);
+  dist_markerToPickup_lay->addWidget(new QLabel, 4);
 
-  move_markerToPickup_lay->addWidget(new QLabel, 20);
+  dist_markerToPickup_lay->addWidget(new QLabel(tr("dY [mm]"))           ,  8, Qt::AlignRight);
+  dist_markerToPickup_lay->addWidget(map_lineEdit_["marker_to_pickup_dY"], 15, Qt::AlignRight);
+
+  // distance: from platform's ref-pos to marker's ref-pos on baseplate
+  QHBoxLayout* dist_platToMarkOnBasep_lay = new QHBoxLayout;
+  dist_lay->addLayout(dist_platToMarkOnBasep_lay);
+
+  map_lineEdit_["platformRef_to_MarkerOnBaseplate_dX"] = new QLineEdit(tr(""));
+  map_lineEdit_["platformRef_to_MarkerOnBaseplate_dY"] = new QLineEdit(tr(""));
+
+  dist_platToMarkOnBasep_lay->addWidget(new QLabel(tr("From Platform's Ref-Point to Marker's Ref-Point on Baseplate :")), 50, Qt::AlignLeft);
+
+  dist_platToMarkOnBasep_lay->addWidget(new QLabel(tr("dX [mm]"))                           ,  8, Qt::AlignRight);
+  dist_platToMarkOnBasep_lay->addWidget(map_lineEdit_["platformRef_to_MarkerOnBaseplate_dX"], 15, Qt::AlignRight);
+
+  dist_platToMarkOnBasep_lay->addWidget(new QLabel, 4);
+
+  dist_platToMarkOnBasep_lay->addWidget(new QLabel(tr("dY [mm]"))                           ,  8, Qt::AlignRight);
+  dist_platToMarkOnBasep_lay->addWidget(map_lineEdit_["platformRef_to_MarkerOnBaseplate_dY"], 15, Qt::AlignRight);
   // ---------------------
 
   /// IMAGE ---------------
@@ -126,15 +143,15 @@ AssemblyParametersView::AssemblyParametersView(QWidget* parent) :
   map_lineEdit_["mm_per_pixel_row"] = new QLineEdit(tr(""));
   map_lineEdit_["mm_per_pixel_col"] = new QLineEdit(tr(""));
 
-  imag_pix_lay->addWidget(new QLabel(tr("Pixel Unit Dimensions :")), 20);
+  imag_pix_lay->addWidget(new QLabel(tr("Pixel Unit Dimensions :")), 50, Qt::AlignLeft);
 
-  imag_pix_lay->addWidget(new QLabel(tr("X [mm]")), 5, Qt::AlignRight);
-  imag_pix_lay->addWidget(map_lineEdit_["mm_per_pixel_row"], 15);
+  imag_pix_lay->addWidget(new QLabel(tr("X [mm]"))         ,  8, Qt::AlignRight);
+  imag_pix_lay->addWidget(map_lineEdit_["mm_per_pixel_row"], 15, Qt::AlignRight);
 
-  imag_pix_lay->addWidget(new QLabel(tr("Y [mm]")), 5, Qt::AlignRight);
-  imag_pix_lay->addWidget(map_lineEdit_["mm_per_pixel_col"], 15);
+  imag_pix_lay->addWidget(new QLabel, 4);
 
-  imag_pix_lay->addWidget(new QLabel, 40);
+  imag_pix_lay->addWidget(new QLabel(tr("Y [mm]"))         ,  8, Qt::AlignRight);
+  imag_pix_lay->addWidget(map_lineEdit_["mm_per_pixel_col"], 15, Qt::AlignRight);
 
   /// ---------------------
 
