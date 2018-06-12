@@ -14,7 +14,6 @@
 #include <ApplicationConfig.h>
 
 #include <AssemblyObjectFinderPatRecView.h>
-#include <AssemblyParameters.h>
 #include <AssemblyUtilities.h>
 
 #include <sstream>
@@ -175,16 +174,7 @@ AssemblyObjectFinderPatRecView::AssemblyObjectFinderPatRecView(QWidget* parent) 
   patrec_wid_ = new AssemblyObjectFinderPatRecWidget;
   patrec_wid_->setToolTip("Pattern Recognition Configuration");
 
-  AssemblyParameters* params = AssemblyParameters::instance();
-  if(params == nullptr)
-  {
-    connect(patrec_exe_button_, SIGNAL(clicked()), this->PatRec_Widget(), SLOT(transmit_configuration()));
-  }
-  else
-  {
-    connect(patrec_exe_button_, SIGNAL(clicked()), params, SIGNAL(update_request()));
-    connect(params, SIGNAL(update_completed()), this->PatRec_Widget(), SLOT(transmit_configuration()));
-  }
+  connect(patrec_exe_button_, SIGNAL(clicked()), this->PatRec_Widget(), SLOT(transmit_configuration()));
 
   imageView_4_->connectImageProducer(this->PatRec_Widget(), SIGNAL(updated_image_template(cv::Mat)));
 
