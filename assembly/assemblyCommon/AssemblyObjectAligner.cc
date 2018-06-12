@@ -195,7 +195,7 @@ void AssemblyObjectAligner::complete_motion()
 void AssemblyObjectAligner::launch_next_alignment_step()
 {
   NQLog("AssemblyObjectAligner", NQLog::Spam) << "launch_next_alignment_step"
-     << ": emitting signal \"nextAlignmentStep(1, 0, 0, 0)\"";
+     << ": emitting signal \"nextAlignmentStep(0, 0, 0)\"";
 
   emit nextAlignmentStep(0.0, 0.0, 0.0);
 }
@@ -224,9 +224,9 @@ void AssemblyObjectAligner::run_alignment(const double patrec_dX, const double p
   // Step #0: request image on marker-1
   if(alignment_step_ == 0)
   {
-    NQLog("AssemblyObjectAligner", NQLog::Message) << "run_alignment step [" << alignment_step_ << "]";
+    NQLog("AssemblyObjectAligner", NQLog::Message) << "run_alignment: step [" << alignment_step_ << "]";
 
-    NQLog("AssemblyObjectAligner", NQLog::Spam) << "run_alignment step [" << alignment_step_ << "]"
+    NQLog("AssemblyObjectAligner", NQLog::Spam) << "run_alignment: step [" << alignment_step_ << "]"
        << ": emitting signal \"image_request\"";
 
     ++alignment_step_;
@@ -236,9 +236,9 @@ void AssemblyObjectAligner::run_alignment(const double patrec_dX, const double p
   // Step #1: PatRec on marker-1
   else if(alignment_step_ == 1)
   {
-    NQLog("AssemblyObjectAligner", NQLog::Message) << "run_alignment step [" << alignment_step_ << "]";
+    NQLog("AssemblyObjectAligner", NQLog::Message) << "run_alignment: step [" << alignment_step_ << "]";
 
-    NQLog("AssemblyObjectAligner", NQLog::Spam) << "run_alignment step [" << alignment_step_ << "]"
+    NQLog("AssemblyObjectAligner", NQLog::Spam) << "run_alignment: step [" << alignment_step_ << "]"
        << ": emitting signal \"PatRec_request\"";
 
     ++alignment_step_;
@@ -248,23 +248,23 @@ void AssemblyObjectAligner::run_alignment(const double patrec_dX, const double p
   // Step #2: move to marker-2
   else if(alignment_step_ == 2)
   {
-    NQLog("AssemblyObjectAligner", NQLog::Message) << "run_alignment step [" << alignment_step_ << "]"
+    NQLog("AssemblyObjectAligner", NQLog::Message) << "run_alignment: step [" << alignment_step_ << "]"
        << ": determining best-match position of PatRec #1";
 
     // marker-1: position of PatRec best-match
     posi_x1_ = motion_manager_->get_position_X() + patrec_dX;
     posi_y1_ = motion_manager_->get_position_Y() + patrec_dY;
 
-    NQLog("AssemblyObjectAligner", NQLog::Message) << "run_alignment step [" << alignment_step_ << "]";
-    NQLog("AssemblyObjectAligner", NQLog::Message) << "run_alignment step [" << alignment_step_ << "]: motion-stage X = " << motion_manager_->get_position_X();
-    NQLog("AssemblyObjectAligner", NQLog::Message) << "run_alignment step [" << alignment_step_ << "]: motion-stage Y = " << motion_manager_->get_position_Y();
-    NQLog("AssemblyObjectAligner", NQLog::Message) << "run_alignment step [" << alignment_step_ << "]";
-    NQLog("AssemblyObjectAligner", NQLog::Message) << "run_alignment step [" << alignment_step_ << "]: PatRec dX = " << patrec_dX;
-    NQLog("AssemblyObjectAligner", NQLog::Message) << "run_alignment step [" << alignment_step_ << "]: PatRec dY = " << patrec_dY;
-    NQLog("AssemblyObjectAligner", NQLog::Message) << "run_alignment step [" << alignment_step_ << "]";
-    NQLog("AssemblyObjectAligner", NQLog::Message) << "run_alignment step [" << alignment_step_ << "]: x1-position = " << posi_x1_;
-    NQLog("AssemblyObjectAligner", NQLog::Message) << "run_alignment step [" << alignment_step_ << "]: y1-position = " << posi_y1_;
-    NQLog("AssemblyObjectAligner", NQLog::Message) << "run_alignment step [" << alignment_step_ << "]";
+    NQLog("AssemblyObjectAligner", NQLog::Message) << "run_alignment: step [" << alignment_step_ << "]";
+    NQLog("AssemblyObjectAligner", NQLog::Message) << "run_alignment: step [" << alignment_step_ << "]: motion-stage X = " << motion_manager_->get_position_X();
+    NQLog("AssemblyObjectAligner", NQLog::Message) << "run_alignment: step [" << alignment_step_ << "]: motion-stage Y = " << motion_manager_->get_position_Y();
+    NQLog("AssemblyObjectAligner", NQLog::Message) << "run_alignment: step [" << alignment_step_ << "]";
+    NQLog("AssemblyObjectAligner", NQLog::Message) << "run_alignment: step [" << alignment_step_ << "]: PatRec dX = " << patrec_dX;
+    NQLog("AssemblyObjectAligner", NQLog::Message) << "run_alignment: step [" << alignment_step_ << "]: PatRec dY = " << patrec_dY;
+    NQLog("AssemblyObjectAligner", NQLog::Message) << "run_alignment: step [" << alignment_step_ << "]";
+    NQLog("AssemblyObjectAligner", NQLog::Message) << "run_alignment: step [" << alignment_step_ << "]: x1-position = " << posi_x1_;
+    NQLog("AssemblyObjectAligner", NQLog::Message) << "run_alignment: step [" << alignment_step_ << "]: y1-position = " << posi_y1_;
+    NQLog("AssemblyObjectAligner", NQLog::Message) << "run_alignment: step [" << alignment_step_ << "]";
 
     // relative movement to reach the opposite marker
     const double obj_deltaX = this->configuration().object_deltaX;
@@ -282,23 +282,23 @@ void AssemblyObjectAligner::run_alignment(const double patrec_dX, const double p
     const double dX = patrec_dX + dX_1to2;
     const double dY = patrec_dY + dY_1to2;
 
-    NQLog("AssemblyObjectAligner", NQLog::Message) << "run_alignment step [" << alignment_step_ << "]"
+    NQLog("AssemblyObjectAligner", NQLog::Message) << "run_alignment: step [" << alignment_step_ << "]"
        << ": moving to position for PatRec #2";
 
-    ++alignment_step_;
-
-    NQLog("AssemblyObjectAligner", NQLog::Spam) << "run_alignment step [" << alignment_step_ << "]"
+    NQLog("AssemblyObjectAligner", NQLog::Spam) << "run_alignment: step [" << alignment_step_ << "]"
        << ": emitting signal \"move_relative(" << dX << ", " << dY << ", 0, 0)\"";
+
+    ++alignment_step_;
 
     this->move_relative(dX, dY, 0.0, 0.0);
   }
   // Step #3: request image on marker-2
   else if(alignment_step_ == 3)
   {
-    NQLog("AssemblyObjectAligner", NQLog::Message) << "run_alignment step [" << alignment_step_ << "]"
+    NQLog("AssemblyObjectAligner", NQLog::Message) << "run_alignment: step [" << alignment_step_ << "]"
        << ": acquiring image for PatRec #2";
 
-    NQLog("AssemblyObjectAligner", NQLog::Spam) << "run_alignment step [" << alignment_step_ << "]"
+    NQLog("AssemblyObjectAligner", NQLog::Spam) << "run_alignment: step [" << alignment_step_ << "]"
        << ": emitting signal \"image_request\"";
 
     ++alignment_step_;
@@ -308,9 +308,9 @@ void AssemblyObjectAligner::run_alignment(const double patrec_dX, const double p
   // Step #4: PatRec on marker-2
   else if(alignment_step_ == 4)
   {
-    NQLog("AssemblyObjectAligner", NQLog::Message) << "run_alignment step [" << alignment_step_ << "]";
+    NQLog("AssemblyObjectAligner", NQLog::Message) << "run_alignment: step [" << alignment_step_ << "]";
 
-    NQLog("AssemblyObjectAligner", NQLog::Spam) << "run_alignment step [" << alignment_step_ << "]"
+    NQLog("AssemblyObjectAligner", NQLog::Spam) << "run_alignment: step [" << alignment_step_ << "]"
        << ": emitting signal \"PatRec_request\"";
 
     ++alignment_step_;
@@ -323,12 +323,12 @@ void AssemblyObjectAligner::run_alignment(const double patrec_dX, const double p
     posi_x2_ = motion_manager_->get_position_X() + patrec_dX;
     posi_y2_ = motion_manager_->get_position_Y() + patrec_dY;
 
-    NQLog("AssemblyObjectAligner", NQLog::Message) << "run_alignment step [" << alignment_step_ << "]";
-    NQLog("AssemblyObjectAligner", NQLog::Message) << "run_alignment step [" << alignment_step_ << "]: position(X1) = " << posi_x1_;
-    NQLog("AssemblyObjectAligner", NQLog::Message) << "run_alignment step [" << alignment_step_ << "]: position(Y1) = " << posi_y1_;
-    NQLog("AssemblyObjectAligner", NQLog::Message) << "run_alignment step [" << alignment_step_ << "]";
-    NQLog("AssemblyObjectAligner", NQLog::Message) << "run_alignment step [" << alignment_step_ << "]: position(X2) = " << posi_x2_;
-    NQLog("AssemblyObjectAligner", NQLog::Message) << "run_alignment step [" << alignment_step_ << "]: position(Y2) = " << posi_y2_;
+    NQLog("AssemblyObjectAligner", NQLog::Message) << "run_alignment: step [" << alignment_step_ << "]";
+    NQLog("AssemblyObjectAligner", NQLog::Message) << "run_alignment: step [" << alignment_step_ << "]: position(X1) = " << posi_x1_;
+    NQLog("AssemblyObjectAligner", NQLog::Message) << "run_alignment: step [" << alignment_step_ << "]: position(Y1) = " << posi_y1_;
+    NQLog("AssemblyObjectAligner", NQLog::Message) << "run_alignment: step [" << alignment_step_ << "]";
+    NQLog("AssemblyObjectAligner", NQLog::Message) << "run_alignment: step [" << alignment_step_ << "]: position(X2) = " << posi_x2_;
+    NQLog("AssemblyObjectAligner", NQLog::Message) << "run_alignment: step [" << alignment_step_ << "]: position(Y2) = " << posi_y2_;
 
     // measurement of object orientation
     if(posi_x2_ == posi_x1_)
@@ -350,33 +350,33 @@ void AssemblyObjectAligner::run_alignment(const double patrec_dX, const double p
 
     if(this->configuration().only_measure_angle)
     {
-      NQLog("AssemblyObjectAligner", NQLog::Message) << "run_alignment step [" << alignment_step_ << "]";
-      NQLog("AssemblyObjectAligner", NQLog::Message) << "run_alignment step [" << alignment_step_ << "]: mode = ONLY-MEASURE-ANGLE";
-      NQLog("AssemblyObjectAligner", NQLog::Message) << "run_alignment step [" << alignment_step_ << "]";
-      NQLog("AssemblyObjectAligner", NQLog::Message) << "run_alignment step [" << alignment_step_ << "]: object aligned with angle [deg] = " << obj_angle_deg_;
-      NQLog("AssemblyObjectAligner", NQLog::Message) << "run_alignment step [" << alignment_step_ << "]";
+      NQLog("AssemblyObjectAligner", NQLog::Message) << "run_alignment: step [" << alignment_step_ << "]";
+      NQLog("AssemblyObjectAligner", NQLog::Message) << "run_alignment: step [" << alignment_step_ << "]: mode = ONLY-MEASURE-ANGLE";
+      NQLog("AssemblyObjectAligner", NQLog::Message) << "run_alignment: step [" << alignment_step_ << "]";
+      NQLog("AssemblyObjectAligner", NQLog::Message) << "run_alignment: step [" << alignment_step_ << "]: object aligned with angle [deg] = " << obj_angle_deg_;
+      NQLog("AssemblyObjectAligner", NQLog::Message) << "run_alignment: step [" << alignment_step_ << "]";
 
       if(this->configuration().completeAtPosOne)
       {
-        NQLog("AssemblyObjectAligner", NQLog::Message) << "run_alignment step [" << alignment_step_ << "]: alignment completed, moving back to best-match position of PatRec #1";
-        NQLog("AssemblyObjectAligner", NQLog::Message) << "run_alignment step [" << alignment_step_ << "]";
+        NQLog("AssemblyObjectAligner", NQLog::Message) << "run_alignment: step [" << alignment_step_ << "]: alignment completed, moving back to best-match position of PatRec #1";
+        NQLog("AssemblyObjectAligner", NQLog::Message) << "run_alignment: step [" << alignment_step_ << "]";
 
         ++alignment_step_;
 
-        NQLog("AssemblyObjectAligner", NQLog::Spam) << "run_alignment step [" << alignment_step_ << "]"
+        NQLog("AssemblyObjectAligner", NQLog::Spam) << "run_alignment: step [" << alignment_step_ << "]"
            << ": emitting signal \"move_relative(" << dX << ", " << dY << ", 0, 0)\"";
 
         this->move_relative(dX, dY, 0.0, 0.0);
       }
       else
       {
-        NQLog("AssemblyObjectAligner", NQLog::Message) << "run_alignment step [" << alignment_step_ << "]: ===> Alignment routine completed successfully";
-        NQLog("AssemblyObjectAligner", NQLog::Message) << "run_alignment step [" << alignment_step_ << "]";
+        NQLog("AssemblyObjectAligner", NQLog::Message) << "run_alignment: step [" << alignment_step_ << "]: ===> Alignment routine completed successfully";
+        NQLog("AssemblyObjectAligner", NQLog::Message) << "run_alignment: step [" << alignment_step_ << "]";
+
+        NQLog("AssemblyObjectAligner", NQLog::Spam) << "run_alignment: step [" << alignment_step_ << "]"
+           << ": emitting signal \"execution_completed\"";
 
         this->reset();
-
-        NQLog("AssemblyObjectAligner", NQLog::Spam) << "run_alignment step [" << alignment_step_ << "]"
-           << ": emitting signal \"execution_completed\"";
 
         emit execution_completed();
       }
@@ -387,87 +387,87 @@ void AssemblyObjectAligner::run_alignment(const double patrec_dX, const double p
 
       const double delta_angle_deg = (target_angle_deg - obj_angle_deg_);
 
-      NQLog("AssemblyObjectAligner", NQLog::Message) << "run_alignment step [" << alignment_step_ << "]";
-      NQLog("AssemblyObjectAligner", NQLog::Message) << "run_alignment step [" << alignment_step_ << "]: mode = ALIGNMENT";
-      NQLog("AssemblyObjectAligner", NQLog::Message) << "run_alignment step [" << alignment_step_ << "]";
-      NQLog("AssemblyObjectAligner", NQLog::Message) << "run_alignment step [" << alignment_step_ << "]: object aligned with angle    [deg] = " << obj_angle_deg_;
-      NQLog("AssemblyObjectAligner", NQLog::Message) << "run_alignment step [" << alignment_step_ << "]: target alignment angle       [deg] = " << target_angle_deg;
-      NQLog("AssemblyObjectAligner", NQLog::Message) << "run_alignment step [" << alignment_step_ << "]: angular distance from target [deg] = " << delta_angle_deg;
-      NQLog("AssemblyObjectAligner", NQLog::Message) << "run_alignment step [" << alignment_step_ << "]";
+      NQLog("AssemblyObjectAligner", NQLog::Message) << "run_alignment: step [" << alignment_step_ << "]";
+      NQLog("AssemblyObjectAligner", NQLog::Message) << "run_alignment: step [" << alignment_step_ << "]: mode = ALIGNMENT";
+      NQLog("AssemblyObjectAligner", NQLog::Message) << "run_alignment: step [" << alignment_step_ << "]";
+      NQLog("AssemblyObjectAligner", NQLog::Message) << "run_alignment: step [" << alignment_step_ << "]: object aligned with angle    [deg] = " << obj_angle_deg_;
+      NQLog("AssemblyObjectAligner", NQLog::Message) << "run_alignment: step [" << alignment_step_ << "]: target alignment angle       [deg] = " << target_angle_deg;
+      NQLog("AssemblyObjectAligner", NQLog::Message) << "run_alignment: step [" << alignment_step_ << "]: angular distance from target [deg] = " << delta_angle_deg;
+      NQLog("AssemblyObjectAligner", NQLog::Message) << "run_alignment: step [" << alignment_step_ << "]";
 
       if(fabs(delta_angle_deg) > angle_max_complete_)
       {
-        NQLog("AssemblyObjectAligner", NQLog::Message) << "run_alignment step [" << alignment_step_ << "]: angle(object, target) > " << angle_max_complete_ << ", will apply a rotation";
+        NQLog("AssemblyObjectAligner", NQLog::Message) << "run_alignment: step [" << alignment_step_ << "]: angle(object, target) > " << angle_max_complete_ << ", will apply a rotation";
 
         if(fabs(delta_angle_deg) <= angle_max_dontIter_)
         {
-          NQLog("AssemblyObjectAligner", NQLog::Message) << "run_alignment step [" << alignment_step_ << "]";
-          NQLog("AssemblyObjectAligner", NQLog::Message) << "run_alignment step [" << alignment_step_ << "]: angle(object, target) <= " << angle_max_dontIter_ << ", moving to target angle with 1 rotation";
-          NQLog("AssemblyObjectAligner", NQLog::Message) << "run_alignment step [" << alignment_step_ << "]";
+          NQLog("AssemblyObjectAligner", NQLog::Message) << "run_alignment: step [" << alignment_step_ << "]";
+          NQLog("AssemblyObjectAligner", NQLog::Message) << "run_alignment: step [" << alignment_step_ << "]: angle(object, target) <= " << angle_max_dontIter_ << ", moving to target angle with 1 rotation";
+          NQLog("AssemblyObjectAligner", NQLog::Message) << "run_alignment: step [" << alignment_step_ << "]";
 
-          NQLog("AssemblyObjectAligner", NQLog::Message) << "run_alignment step [" << alignment_step_
+          NQLog("AssemblyObjectAligner", NQLog::Message) << "run_alignment: step [" << alignment_step_
              << "]: ===> will rotate by " << delta_angle_deg << " deg, and move back to best-match position of PatRec #1";
 
-          NQLog("AssemblyObjectAligner", NQLog::Message) << "run_alignment step [" << alignment_step_ << "]";
+          NQLog("AssemblyObjectAligner", NQLog::Message) << "run_alignment: step [" << alignment_step_ << "]";
+
+          NQLog("AssemblyObjectAligner", NQLog::Spam) << "run_alignment: step [" << alignment_step_ << "]"
+             << ": emitting signal \"move_relative(" << dX << ", " << dY << ", 0, " << delta_angle_deg << ")\"";
 
           this->reset();
-
-          NQLog("AssemblyObjectAligner", NQLog::Spam) << "run_alignment step [" << alignment_step_ << "]"
-             << ": emitting signal \"move_relative(" << dX << ", " << dY << ", 0, " << delta_angle_deg << ")\"";
 
           this->move_relative(dX, dY, 0.0, delta_angle_deg);
         }
         else
         {
-          NQLog("AssemblyObjectAligner", NQLog::Message) << "run_alignment step [" << alignment_step_ << "]";
-          NQLog("AssemblyObjectAligner", NQLog::Message) << "run_alignment step [" << alignment_step_ << "]: angle(object, target) > " << angle_max_dontIter_ << " deg, large rotation required";
-          NQLog("AssemblyObjectAligner", NQLog::Message) << "run_alignment step [" << alignment_step_ << "]";
+          NQLog("AssemblyObjectAligner", NQLog::Message) << "run_alignment: step [" << alignment_step_ << "]";
+          NQLog("AssemblyObjectAligner", NQLog::Message) << "run_alignment: step [" << alignment_step_ << "]: angle(object, target) > " << angle_max_dontIter_ << " deg, large rotation required";
+          NQLog("AssemblyObjectAligner", NQLog::Message) << "run_alignment: step [" << alignment_step_ << "]";
 
-          NQLog("AssemblyObjectAligner", NQLog::Message) << "run_alignment step [" << alignment_step_
+          NQLog("AssemblyObjectAligner", NQLog::Message) << "run_alignment: step [" << alignment_step_
              << "]: ===> iterative procedure (will rotate by " << angle_max_dontIter_ << " deg, and move back to best-match position of PatRec #1";
 
-          NQLog("AssemblyObjectAligner", NQLog::Message) << "run_alignment step [" << alignment_step_ << "]";
-
-          this->reset();
+          NQLog("AssemblyObjectAligner", NQLog::Message) << "run_alignment: step [" << alignment_step_ << "]";
 
           const double rot_deg = (delta_angle_deg <= 0) ? (-1.0 * angle_max_dontIter_) : (+1.0 * angle_max_dontIter_);
 
-          NQLog("AssemblyObjectAligner", NQLog::Spam) << "run_alignment step [" << alignment_step_ << "]"
+          NQLog("AssemblyObjectAligner", NQLog::Spam) << "run_alignment: step [" << alignment_step_ << "]"
              << ": emitting signal \"move_relative(" << dX << ", " << dY << ", 0, " << rot_deg << ")\"";
+
+          this->reset();
 
           this->move_relative(dX, dY, 0.0, rot_deg);
         }
       }
       else
       {
-        NQLog("AssemblyObjectAligner", NQLog::Message) << "run_alignment step [" << alignment_step_ << "]";
-        NQLog("AssemblyObjectAligner", NQLog::Message) << "run_alignment step [" << alignment_step_ << "]: angle(object, target) < " << angle_max_complete_ << ", will NOT apply a rotation";
-        NQLog("AssemblyObjectAligner", NQLog::Message) << "run_alignment step [" << alignment_step_ << "]";
+        NQLog("AssemblyObjectAligner", NQLog::Message) << "run_alignment: step [" << alignment_step_ << "]";
+        NQLog("AssemblyObjectAligner", NQLog::Message) << "run_alignment: step [" << alignment_step_ << "]: angle(object, target) < " << angle_max_complete_ << ", will NOT apply a rotation";
+        NQLog("AssemblyObjectAligner", NQLog::Message) << "run_alignment: step [" << alignment_step_ << "]";
 
         if(this->configuration().completeAtPosOne)
         {
-          NQLog("AssemblyObjectAligner", NQLog::Message) << "run_alignment step [" << alignment_step_ << "]: alignment completed, moving back to best-match position of PatRec #1";
-          NQLog("AssemblyObjectAligner", NQLog::Message) << "run_alignment step [" << alignment_step_ << "]";
+          NQLog("AssemblyObjectAligner", NQLog::Message) << "run_alignment: step [" << alignment_step_ << "]: alignment completed, moving back to best-match position of PatRec #1";
+          NQLog("AssemblyObjectAligner", NQLog::Message) << "run_alignment: step [" << alignment_step_ << "]";
 
           ++alignment_step_;
 
-          NQLog("AssemblyObjectAligner", NQLog::Spam) << "run_alignment step [" << alignment_step_ << "]"
+          NQLog("AssemblyObjectAligner", NQLog::Spam) << "run_alignment: step [" << alignment_step_ << "]"
              << ": emitting signal \"move_relative(" << dX << ", " << dY << ", 0, 0)\"";
 
           this->move_relative(dX, dY, 0.0, 0.0);
         }
         else
         {
-          NQLog("AssemblyObjectAligner", NQLog::Message) << "run_alignment step [" << alignment_step_ << "]";
-          NQLog("AssemblyObjectAligner", NQLog::Message) << "run_alignment step [" << alignment_step_ << "]: object aligned with angle [deg] = " << obj_angle_deg_;
-          NQLog("AssemblyObjectAligner", NQLog::Message) << "run_alignment step [" << alignment_step_ << "]";
-          NQLog("AssemblyObjectAligner", NQLog::Message) << "run_alignment step [" << alignment_step_ << "]: ===> Alignment routine completed successfully";
-          NQLog("AssemblyObjectAligner", NQLog::Message) << "run_alignment step [" << alignment_step_ << "]";
+          NQLog("AssemblyObjectAligner", NQLog::Message) << "run_alignment: step [" << alignment_step_ << "]";
+          NQLog("AssemblyObjectAligner", NQLog::Message) << "run_alignment: step [" << alignment_step_ << "]: object aligned with angle [deg] = " << obj_angle_deg_;
+          NQLog("AssemblyObjectAligner", NQLog::Message) << "run_alignment: step [" << alignment_step_ << "]";
+          NQLog("AssemblyObjectAligner", NQLog::Message) << "run_alignment: step [" << alignment_step_ << "]: ===> Alignment routine completed successfully";
+          NQLog("AssemblyObjectAligner", NQLog::Message) << "run_alignment: step [" << alignment_step_ << "]";
+
+          NQLog("AssemblyObjectAligner", NQLog::Spam) << "run_alignment: step [" << alignment_step_ << "]"
+             << ": emitting signal \"execution_completed\"";
 
           this->reset();
-
-          NQLog("AssemblyObjectAligner", NQLog::Spam) << "run_alignment step [" << alignment_step_ << "]"
-             << ": emitting signal \"execution_completed\"";
 
           emit execution_completed();
         }
@@ -477,10 +477,10 @@ void AssemblyObjectAligner::run_alignment(const double patrec_dX, const double p
   // Step #6: request image on marker-1
   else if(alignment_step_ == 6)
   {
-    NQLog("AssemblyObjectAligner", NQLog::Message) << "run_alignment step [" << alignment_step_ << "]"
+    NQLog("AssemblyObjectAligner", NQLog::Message) << "run_alignment: step [" << alignment_step_ << "]"
        << ": acquiring image in position of PatRec #1, after completing the alignment";
 
-    NQLog("AssemblyObjectAligner", NQLog::Spam) << "run_alignment step [" << alignment_step_ << "]"
+    NQLog("AssemblyObjectAligner", NQLog::Spam) << "run_alignment: step [" << alignment_step_ << "]"
        << ": emitting signal \"image_request\"";
 
     ++alignment_step_;
@@ -490,11 +490,11 @@ void AssemblyObjectAligner::run_alignment(const double patrec_dX, const double p
   // Step #7: close alignment routine
   else if(alignment_step_ == 7)
   {
-    NQLog("AssemblyObjectAligner", NQLog::Message) << "run_alignment step [" << alignment_step_ << "]";
-    NQLog("AssemblyObjectAligner", NQLog::Message) << "run_alignment step [" << alignment_step_ << "]: object aligned with angle [deg] = " << obj_angle_deg_;
-    NQLog("AssemblyObjectAligner", NQLog::Message) << "run_alignment step [" << alignment_step_ << "]";
-    NQLog("AssemblyObjectAligner", NQLog::Message) << "run_alignment step [" << alignment_step_ << "]: ===> Alignment routine completed successfully";
-    NQLog("AssemblyObjectAligner", NQLog::Message) << "run_alignment step [" << alignment_step_ << "]";
+    NQLog("AssemblyObjectAligner", NQLog::Message) << "run_alignment: step [" << alignment_step_ << "]";
+    NQLog("AssemblyObjectAligner", NQLog::Message) << "run_alignment: step [" << alignment_step_ << "]: object aligned with angle [deg] = " << obj_angle_deg_;
+    NQLog("AssemblyObjectAligner", NQLog::Message) << "run_alignment: step [" << alignment_step_ << "]";
+    NQLog("AssemblyObjectAligner", NQLog::Message) << "run_alignment: step [" << alignment_step_ << "]: ===> Alignment routine completed successfully";
+    NQLog("AssemblyObjectAligner", NQLog::Message) << "run_alignment: step [" << alignment_step_ << "]";
 
     this->reset();
 
