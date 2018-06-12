@@ -523,18 +523,25 @@ void AssemblyMainWindow::start_objectAligner(const AssemblyObjectAligner::Config
     connect(params_, SIGNAL(update_completed()), aligner_, SLOT(execute()));
   }
 
+  // acquire image
   connect(aligner_, SIGNAL(image_request()), image_ctr_, SLOT(acquire_image()));
 
-  connect(aligner_, SIGNAL(PatRec_request(AssemblyObjectFinderPatRec::Configuration)), finder_, SLOT(launch_PatRec(AssemblyObjectFinderPatRec::Configuration)));
-
+  // master-image updated, go to next step (PatRec)
   connect(finder_, SIGNAL(updated_image_master()), aligner_, SLOT(launch_next_alignment_step()));
 
+  // launch PatRec
+  connect(aligner_, SIGNAL(PatRec_request(AssemblyObjectFinderPatRec::Configuration)), finder_, SLOT(launch_PatRec(AssemblyObjectFinderPatRec::Configuration)));
+
+  // show PatRec-edited image in Aligner widget
   connect(finder_, SIGNAL(PatRec_res_image_master_edited(cv::Mat)), aligner_, SLOT(redirect_image(cv::Mat)));
 
+  // use PatRec results for next alignment step
   connect(finder_, SIGNAL(PatRec_results(double, double, double)), aligner_, SLOT(run_alignment(double, double, double)));
 
+  // show measured angle
   connect(aligner_, SIGNAL(measured_angle(double)), aligner_view_, SLOT(show_measured_angle(double)));
 
+  // once completed, disable connections between controllers used for alignment
   connect(aligner_, SIGNAL(execution_completed()), this, SLOT(disconnect_objectAligner()));
 
   aligner_view_->Configuration_Widget()->setEnabled(false);
@@ -575,18 +582,25 @@ void AssemblyMainWindow::disconnect_objectAligner()
     disconnect(params_, SIGNAL(update_completed()), aligner_, SLOT(execute()));
   }
 
+  // acquire image
   disconnect(aligner_, SIGNAL(image_request()), image_ctr_, SLOT(acquire_image()));
 
-  disconnect(aligner_, SIGNAL(PatRec_request(AssemblyObjectFinderPatRec::Configuration)), finder_, SLOT(launch_PatRec(AssemblyObjectFinderPatRec::Configuration)));
-
+  // master-image updated, go to next step (PatRec)
   disconnect(finder_, SIGNAL(updated_image_master()), aligner_, SLOT(launch_next_alignment_step()));
 
+  // launch PatRec
+  disconnect(aligner_, SIGNAL(PatRec_request(AssemblyObjectFinderPatRec::Configuration)), finder_, SLOT(launch_PatRec(AssemblyObjectFinderPatRec::Configuration)));
+
+  // show PatRec-edited image in Aligner widget
   disconnect(finder_, SIGNAL(PatRec_res_image_master_edited(cv::Mat)), aligner_, SLOT(redirect_image(cv::Mat)));
 
+  // use PatRec results for next alignment step
   disconnect(finder_, SIGNAL(PatRec_results(double, double, double)), aligner_, SLOT(run_alignment(double, double, double)));
 
+  // show measured angle
   disconnect(aligner_, SIGNAL(measured_angle(double)), aligner_view_, SLOT(show_measured_angle(double)));
 
+  // once completed, disable connections between controllers used for alignment
   disconnect(aligner_, SIGNAL(execution_completed()), this, SLOT(disconnect_objectAligner()));
 
   aligner_view_->Configuration_Widget()->setEnabled(true);
