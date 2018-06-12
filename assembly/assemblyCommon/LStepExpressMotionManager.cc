@@ -17,7 +17,9 @@ LStepExpressMotionManager::LStepExpressMotionManager(LStepExpressModel* model, Q
   QObject(parent),
   model_(model),
   model_connected_(false),
-  inMotion_(false)
+  use_smart_move_(false),
+  inMotion_(false),
+  timer_(nullptr)
 {
     if(model_ == false)
     {
@@ -27,11 +29,25 @@ LStepExpressMotionManager::LStepExpressMotionManager(LStepExpressModel* model, Q
       return;
     }
 
+    timer_ = new QTimer(this);
+    timer_->setSingleShot(true);
+
     this->connect_model();
 }
 
 LStepExpressMotionManager::~LStepExpressMotionManager()
 {
+}
+
+void LStepExpressMotionManager::wait()
+{
+  if(timer_ != nullptr)
+  {
+    NQLog("LStepExpressMotionManager", NQLog::Spam) << "wait"
+       << ": timer to time-out in " << motion_interval_sec_ << " msec";
+
+    timer_->start(motion_interval_sec_);
+  }
 }
 
 void LStepExpressMotionManager::connect_model()
@@ -41,7 +57,9 @@ void LStepExpressMotionManager::connect_model()
     if(model_connected_ == false)
     {
       connect   (model_, SIGNAL(motionStarted()) , this, SLOT(motionStarted()));
-      connect   (model_, SIGNAL(motionFinished()), this, SLOT(motionFinished()));
+
+      connect   (model_, SIGNAL(motionFinished()), this, SLOT(wait()));
+      connect   (timer_, SIGNAL(timeout()), this, SLOT(finish_motion()));
 
       connect   (this  , SIGNAL(signalMoveAbsolute(double, double, double, double)),
                  model_, SLOT  (      moveAbsolute(double, double, double, double)));
@@ -65,7 +83,9 @@ void LStepExpressMotionManager::disconnect_model()
     if(model_connected_ == true)
     {
       disconnect(model_, SIGNAL(motionStarted()) , this, SLOT(motionStarted()));
-      disconnect(model_, SIGNAL(motionFinished()), this, SLOT(motionFinished()));
+
+      disconnect(model_, SIGNAL(motionFinished()), this, SLOT(wait()));
+      disconnect(timer_, SIGNAL(timeout()), this, SLOT(finish_motion()));
 
       disconnect(this  , SIGNAL(signalMoveAbsolute(double, double, double, double)),
                  model_, SLOT  (      moveAbsolute(double, double, double, double)));
@@ -171,13 +191,47 @@ void LStepExpressMotionManager::moveRelative(const std::vector<double>& values)
     this->run();
 }
 
-void LStepExpressMotionManager::moveRelative(double x, double y, double z, double a)
+void LStepExpressMotionManager::moveRelative(const double dx, const double dy, const double dz, const double da)
 {
-    motions_.enqueue(LStepExpressMotion(x, y, z, a, false));
+    if(use_smart_move_)
+    {
+      if(dz > 0.)
+      {
+        motions_.enqueue(LStepExpressMotion( 0,  0, dz,  0, false));
+        motions_.enqueue(LStepExpressMotion(dx, dy,  0, da, false));
+      }
+      else
+      {
+        motions_.enqueue(LStepExpressMotion(dx, dy,  0, da, false));
+
+        std::vector<double> dz_vec;
+        {
+          double abs_dz_resid = fabs(dz);
+
+          while((abs_dz_resid >  0.1) && (dz_vec.size() <  2)){ abs_dz_resid -=  0.1; dz_vec.emplace_back(- 0.1); }
+          while((abs_dz_resid >  0.2) && (dz_vec.size() <  6)){ abs_dz_resid -=  0.2; dz_vec.emplace_back(- 0.2); }
+          while((abs_dz_resid >  1.0) && (dz_vec.size() < 10)){ abs_dz_resid -=  1.0; dz_vec.emplace_back(- 1.0); }
+          while((abs_dz_resid > 15.0) && (dz_vec.size() < 13)){ abs_dz_resid -= 15.0; dz_vec.emplace_back(-15.0); }
+
+          if(abs_dz_resid > 0.){ dz_vec.emplace_back(-abs_dz_resid); }
+        }
+
+        // reversed loop on dz movements
+        for(unsigned i_dz = dz_vec.size(); i_dz-- > 0; )
+        {
+          motions_.enqueue(LStepExpressMotion(0, 0, dz_vec.at(i_dz), 0, false));
+        }
+      }
+    }
+    else
+    {
+      motions_.enqueue(LStepExpressMotion(dx, dy, dz, da, false));
+    }
+
     this->run();
 }
 
-void LStepExpressMotionManager::moveRelative(unsigned int axis, double value)
+void LStepExpressMotionManager::moveRelative(const unsigned int axis, const double value)
 {
     motions_.enqueue(LStepExpressMotion(axis, value, false));
     this->run();
@@ -189,13 +243,19 @@ void LStepExpressMotionManager::moveAbsolute(const std::vector<double>& values)
     this->run();
 }
 
-void LStepExpressMotionManager::moveAbsolute(double x, double y, double z, double a)
+void LStepExpressMotionManager::moveAbsolute(const double x, const double y, const double z, const double a)
 {
-    motions_.enqueue(LStepExpressMotion(x, y, z, a, true));
+    const double dx = (x - this->get_position_X());
+    const double dy = (y - this->get_position_Y());
+    const double dz = (z - this->get_position_Z());
+    const double da = (a - this->get_position_A());
+
+    this->moveRelative(dx, dy, dz, da);
+
     this->run();
 }
 
-void LStepExpressMotionManager::moveAbsolute(unsigned int axis, double value)
+void LStepExpressMotionManager::moveAbsolute(const unsigned int axis, const double value)
 {
     motions_.enqueue(LStepExpressMotion(axis, value, true));
     this->run();
@@ -203,13 +263,16 @@ void LStepExpressMotionManager::moveAbsolute(unsigned int axis, double value)
 
 void LStepExpressMotionManager::motionStarted()
 {
-    inMotion_ = true;
+  inMotion_ = true;
 }
 
-void LStepExpressMotionManager::motionFinished()
+void LStepExpressMotionManager::finish_motion()
 {
-    inMotion_ = false;
-    this->run();
+  NQLog("LStepExpressMotionManager", NQLog::Spam) << "finish_motion"
+     << ": setting \"inMotion=false\" and calling run() method";
+
+  inMotion_ = false;
+  this->run();
 }
 
 void LStepExpressMotionManager::read_position3D()

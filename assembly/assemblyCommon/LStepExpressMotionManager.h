@@ -19,6 +19,7 @@
 #include <vector>
 
 #include <QQueue>
+#include <QTimer>
 
 class LStepExpressMotionManager : public QObject
 {
@@ -38,6 +39,8 @@ class LStepExpressMotionManager : public QObject
     double get_position_Z() const { return model()->getPosition(2); }
     double get_position_A() const { return model()->getPosition(3); }
 
+    void use_smart_move(const bool b){ use_smart_move_ = b; }
+
     void myMoveToThread(QThread*);
 
   protected:
@@ -50,7 +53,13 @@ class LStepExpressMotionManager : public QObject
 
     bool model_connected_;
 
+    bool use_smart_move_;
+
     bool inMotion_;
+
+    QTimer* timer_;
+
+    const int motion_interval_sec_ = 1000;
 
     QQueue<LStepExpressMotion> motions_;
 
@@ -59,14 +68,16 @@ class LStepExpressMotionManager : public QObject
     void    connect_model();
     void disconnect_model();
 
+    void wait();
+
     void appendMotion(const LStepExpressMotion& motion);
     void appendMotions(const QQueue<LStepExpressMotion>& motions);
     void moveRelative(const std::vector<double>& values);
-    void moveRelative(double x, double y, double z, double a);
-    void moveRelative(unsigned int axis, double value);
+    void moveRelative(const double x, const double y, const double z, const double a);
+    void moveRelative(const unsigned int axis, const double value);
     void moveAbsolute(const std::vector<double>& values);
-    void moveAbsolute(double x=0.0, double y=0.0, double z=0.0, double a=0.0);
-    void moveAbsolute(unsigned int axis, double value);
+    void moveAbsolute(const double x=0.0, const double y=0.0, const double z=0.0, const double a=0.0);
+    void moveAbsolute(const unsigned int axis, const double value);
 
     void read_position3D();
     void read_position4D();
@@ -76,7 +87,7 @@ class LStepExpressMotionManager : public QObject
   protected slots:
 
     void motionStarted();
-    void motionFinished();
+    void finish_motion();
 
   signals:
 
