@@ -74,7 +74,7 @@ AssemblyAssemblyView::AssemblyAssemblyView(QWidget* parent)
   // PSS+Spacers To PSP+Baseplate
   PSSSpacToPSPBas_wid_ = new QWidget;
 
-  toolbox->addItem(PSSSpacToPSPBas_wid_, tr("[4] Assembly: PSS+Spacers To PSP+Baseplate"));
+  toolbox->addItem(PSSSpacToPSPBas_wid_, tr("[3] Assembly: PSS+Spacers To PSP+Baseplate"));
 
   QVBoxLayout* PSSSpacToPSPBas_lay = new QVBoxLayout;
   PSSSpacToPSPBas_wid_->setLayout(PSSSpacToPSPBas_lay);

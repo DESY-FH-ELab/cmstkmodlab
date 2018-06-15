@@ -43,7 +43,7 @@ AssemblyParametersView::AssemblyParametersView(QWidget* parent) :
   // DIMENSIONS ----------
   dime_wid_ = new QWidget;
 
-  toolbox->addItem(dime_wid_, tr("Dimensions of Assembly Components"));
+  toolbox->addItem(dime_wid_, tr("Dimensions of Assembly Components [mm]"));
 
   QVBoxLayout* dime_lay = new QVBoxLayout;
   dime_wid_->setLayout(dime_lay);
@@ -58,7 +58,7 @@ AssemblyParametersView::AssemblyParametersView(QWidget* parent) :
 
   dime_thicknessBasep_lay->addWidget(new QLabel, 27);
 
-  dime_thicknessBasep_lay->addWidget(new QLabel(tr("dZ [mm]"))       ,  8, Qt::AlignRight);
+  dime_thicknessBasep_lay->addWidget(new QLabel(tr("dZ"))            ,  8, Qt::AlignRight);
   dime_thicknessBasep_lay->addWidget(this->get("thickness_baseplate"), 15, Qt::AlignRight);
 
   // dimension: PSS sensor's thickness
@@ -71,7 +71,7 @@ AssemblyParametersView::AssemblyParametersView(QWidget* parent) :
 
   dime_thicknessPSS_lay->addWidget(new QLabel, 27);
 
-  dime_thicknessPSS_lay->addWidget(new QLabel(tr("dZ [mm]")) ,  8, Qt::AlignRight);
+  dime_thicknessPSS_lay->addWidget(new QLabel(tr("dZ"))      ,  8, Qt::AlignRight);
   dime_thicknessPSS_lay->addWidget(this->get("thickness_PSS"), 15, Qt::AlignRight);
 
   // dimension: PSP sensor's thickness
@@ -84,7 +84,7 @@ AssemblyParametersView::AssemblyParametersView(QWidget* parent) :
 
   dime_thicknessPSP_lay->addWidget(new QLabel, 27);
 
-  dime_thicknessPSP_lay->addWidget(new QLabel(tr("dZ [mm]")) ,  8, Qt::AlignRight);
+  dime_thicknessPSP_lay->addWidget(new QLabel(tr("dZ"))      ,  8, Qt::AlignRight);
   dime_thicknessPSP_lay->addWidget(this->get("thickness_PSP"), 15, Qt::AlignRight);
 
   // dimension: Spacer's thickness
@@ -97,7 +97,7 @@ AssemblyParametersView::AssemblyParametersView(QWidget* parent) :
 
   dime_thicknessSpacer_lay->addWidget(new QLabel, 27);
 
-  dime_thicknessSpacer_lay->addWidget(new QLabel(tr("dZ [mm]"))    ,  8, Qt::AlignRight);
+  dime_thicknessSpacer_lay->addWidget(new QLabel(tr("dZ"))         ,  8, Qt::AlignRight);
   dime_thicknessSpacer_lay->addWidget(this->get("thickness_spacer"), 15, Qt::AlignRight);
 
   // dimension: Glue Layer's thickness
@@ -110,7 +110,7 @@ AssemblyParametersView::AssemblyParametersView(QWidget* parent) :
 
   dime_thicknessGlueLayer_lay->addWidget(new QLabel, 27);
 
-  dime_thicknessGlueLayer_lay->addWidget(new QLabel(tr("dZ [mm]"))        ,  8, Qt::AlignRight);
+  dime_thicknessGlueLayer_lay->addWidget(new QLabel(tr("dZ"))             ,  8, Qt::AlignRight);
   dime_thicknessGlueLayer_lay->addWidget(this->get("thickness_glue_layer"), 15, Qt::AlignRight);
 
   // ---------------------
@@ -118,74 +118,81 @@ AssemblyParametersView::AssemblyParametersView(QWidget* parent) :
   // POSITIONS -----------
   posi_wid_ = new QWidget;
 
-  toolbox->addItem(posi_wid_, tr("Reference Positions"));
+  toolbox->addItem(posi_wid_, tr("Reference Positions [mm, deg]"));
 
-  QVBoxLayout* posi_lay = new QVBoxLayout;
+  QGridLayout* posi_lay = new QGridLayout;
   posi_wid_->setLayout(posi_lay);
 
-  // position: XYZ position to point camera on Ref-Point on rotation stage
-  QHBoxLayout* posi_refpoiRotaStage_lay = new QHBoxLayout;
-  posi_lay->addLayout(posi_refpoiRotaStage_lay);
+  // position: XYZA position to point camera on Spacer Ref-Point (bottom-left edge)
+  map_lineEdit_["refPointSpacer_X"] = new QLineEdit(tr(""));
+  map_lineEdit_["refPointSpacer_Y"] = new QLineEdit(tr(""));
+  map_lineEdit_["refPointSpacer_Z"] = new QLineEdit(tr(""));
+  map_lineEdit_["refPointSpacer_A"] = new QLineEdit(tr(""));
 
-  map_lineEdit_["refPointOnRotStage_X"] = new QLineEdit(tr(""));
-  map_lineEdit_["refPointOnRotStage_Y"] = new QLineEdit(tr(""));
-  map_lineEdit_["refPointOnRotStage_Z"] = new QLineEdit(tr(""));
+  posi_lay->addWidget(new QLabel(tr("Bottom-Left Edge of Spacer (aligned to X-axis):")), 0, 0, Qt::AlignLeft);
 
-  posi_refpoiRotaStage_lay->addWidget(new QLabel(tr("Ref-Point on Rotation Stage (L shape):")), 42, Qt::AlignLeft);
+  posi_lay->addWidget(new QLabel(tr("X"))          , 0, 1, Qt::AlignRight);
+  posi_lay->addWidget(this->get("refPointSpacer_X"), 0, 2, Qt::AlignRight);
 
-  posi_refpoiRotaStage_lay->addWidget(new QLabel(tr("X [mm]"))         ,  8, Qt::AlignRight);
-  posi_refpoiRotaStage_lay->addWidget(this->get("refPointOnRotStage_X"), 10, Qt::AlignRight);
+  posi_lay->addWidget(new QLabel(tr("Y"))          , 0, 3, Qt::AlignRight);
+  posi_lay->addWidget(this->get("refPointSpacer_Y"), 0, 4, Qt::AlignRight);
 
-  posi_refpoiRotaStage_lay->addWidget(new QLabel, 2);
+  posi_lay->addWidget(new QLabel(tr("Z"))          , 0, 5, Qt::AlignRight);
+  posi_lay->addWidget(this->get("refPointSpacer_Z"), 0, 6, Qt::AlignRight);
 
-  posi_refpoiRotaStage_lay->addWidget(new QLabel(tr("Y [mm]"))         ,  8, Qt::AlignRight);
-  posi_refpoiRotaStage_lay->addWidget(this->get("refPointOnRotStage_Y"), 10, Qt::AlignRight);
+  posi_lay->addWidget(new QLabel(tr("A"))          , 0, 7, Qt::AlignRight);
+  posi_lay->addWidget(this->get("refPointSpacer_A"), 0, 8, Qt::AlignRight);
 
-  posi_refpoiRotaStage_lay->addWidget(new QLabel, 2);
+  // position: XYZA position to point camera on Baseplate Ref-Point
+  map_lineEdit_["refPointBaseplate_X"] = new QLineEdit(tr(""));
+  map_lineEdit_["refPointBaseplate_Y"] = new QLineEdit(tr(""));
+  map_lineEdit_["refPointBaseplate_Z"] = new QLineEdit(tr(""));
+  map_lineEdit_["refPointBaseplate_A"] = new QLineEdit(tr(""));
 
-  posi_refpoiRotaStage_lay->addWidget(new QLabel(tr("Z [mm]"))         ,  8, Qt::AlignRight);
-  posi_refpoiRotaStage_lay->addWidget(this->get("refPointOnRotStage_Z"), 10, Qt::AlignRight);
+  posi_lay->addWidget(new QLabel(tr("Ref-Point of Baseplate (aligned to X-axis):")), 1, 0, Qt::AlignLeft);
+
+  posi_lay->addWidget(new QLabel(tr("X"))             , 1, 1, Qt::AlignRight);
+  posi_lay->addWidget(this->get("refPointBaseplate_X"), 1, 2, Qt::AlignRight);
+
+  posi_lay->addWidget(new QLabel(tr("Y"))             , 1, 3, Qt::AlignRight);
+  posi_lay->addWidget(this->get("refPointBaseplate_Y"), 1, 4, Qt::AlignRight);
+
+  posi_lay->addWidget(new QLabel(tr("Z"))             , 1, 5, Qt::AlignRight);
+  posi_lay->addWidget(this->get("refPointBaseplate_Z"), 1, 6, Qt::AlignRight);
+
+  posi_lay->addWidget(new QLabel(tr("A"))             , 1, 7, Qt::AlignRight);
+  posi_lay->addWidget(this->get("refPointBaseplate_A"), 1, 8, Qt::AlignRight);
 
   // position: Z-position (height) to put pickup tool in contact with rotation stage
-  QHBoxLayout* posi_pickupRotaStage_lay = new QHBoxLayout;
-  posi_lay->addLayout(posi_pickupRotaStage_lay);
-
   map_lineEdit_["pickupOnRotStage_Z"] = new QLineEdit(tr(""));
 
-  posi_pickupRotaStage_lay->addWidget(new QLabel(tr("Pickup Position on Rotation Stage :")), 85, Qt::AlignLeft);
+  posi_lay->addWidget(new QLabel(tr("Pickup Position on Rotation Stage :")), 2, 0, Qt::AlignLeft);
 
-  posi_pickupRotaStage_lay->addWidget(new QLabel(tr("Z [mm]"))       ,  8, Qt::AlignRight);
-  posi_pickupRotaStage_lay->addWidget(this->get("pickupOnRotStage_Z"), 10, Qt::AlignRight);
+  posi_lay->addWidget(new QLabel(tr("Z"))            , 2, 5, Qt::AlignRight);
+  posi_lay->addWidget(this->get("pickupOnRotStage_Z"), 2, 6, Qt::AlignRight);
 
   // position: XY pickup position on glue-dispensing platform + Z-position (height) to put pickup tool in contact with platform
-  QHBoxLayout* posi_pickupGlueStage_lay = new QHBoxLayout;
-  posi_lay->addLayout(posi_pickupGlueStage_lay);
-
   map_lineEdit_["pickupOnGluingStage_X"] = new QLineEdit(tr(""));
   map_lineEdit_["pickupOnGluingStage_Y"] = new QLineEdit(tr(""));
   map_lineEdit_["pickupOnGluingStage_Z"] = new QLineEdit(tr(""));
 
-  posi_pickupGlueStage_lay->addWidget(new QLabel(tr("Pickup Position on Glue-Dispensing platform :")), 42, Qt::AlignLeft);
+  posi_lay->addWidget(new QLabel(tr("Pickup Position on Glue-Dispensing platform :")), 3, 0, Qt::AlignLeft);
 
-  posi_pickupGlueStage_lay->addWidget(new QLabel(tr("X [mm]"))          ,  8, Qt::AlignRight);
-  posi_pickupGlueStage_lay->addWidget(this->get("pickupOnGluingStage_X"), 10, Qt::AlignRight);
+  posi_lay->addWidget(new QLabel(tr("X"))               , 3, 1, Qt::AlignRight);
+  posi_lay->addWidget(this->get("pickupOnGluingStage_X"), 3, 2, Qt::AlignRight);
 
-  posi_pickupGlueStage_lay->addWidget(new QLabel, 2);
+  posi_lay->addWidget(new QLabel(tr("Y"))               , 3, 3, Qt::AlignRight);
+  posi_lay->addWidget(this->get("pickupOnGluingStage_Y"), 3, 4, Qt::AlignRight);
 
-  posi_pickupGlueStage_lay->addWidget(new QLabel(tr("Y [mm]"))          ,  8, Qt::AlignRight);
-  posi_pickupGlueStage_lay->addWidget(this->get("pickupOnGluingStage_Y"), 10, Qt::AlignRight);
-
-  posi_pickupGlueStage_lay->addWidget(new QLabel, 2);
-
-  posi_pickupGlueStage_lay->addWidget(new QLabel(tr("Z [mm]"))          ,  8, Qt::AlignRight);
-  posi_pickupGlueStage_lay->addWidget(this->get("pickupOnGluingStage_Z"), 10, Qt::AlignRight);
+  posi_lay->addWidget(new QLabel(tr("Z"))               , 3, 5, Qt::AlignRight);
+  posi_lay->addWidget(this->get("pickupOnGluingStage_Z"), 3, 6, Qt::AlignRight);
 
   // ---------------------
 
   // DISTANCES -----------
   dist_wid_ = new QWidget;
 
-  toolbox->addItem(dist_wid_, tr("Reference Distances"));
+  toolbox->addItem(dist_wid_, tr("Reference Distances [mm, deg]"));
 
   QVBoxLayout* dist_lay = new QVBoxLayout;
   dist_wid_->setLayout(dist_lay);
@@ -199,56 +206,15 @@ AssemblyParametersView::AssemblyParametersView(QWidget* parent) :
 
   dist_markerToPickup_lay->addWidget(new QLabel(tr("From Marker's Ref-Point To Pickup position :")), 50, Qt::AlignLeft);
 
-  dist_markerToPickup_lay->addWidget(new QLabel(tr("dX [mm]"))       ,  8, Qt::AlignRight);
+  dist_markerToPickup_lay->addWidget(new QLabel(tr("dX"))            ,  8, Qt::AlignRight);
   dist_markerToPickup_lay->addWidget(this->get("marker_to_pickup_dX"), 15, Qt::AlignRight);
 
   dist_markerToPickup_lay->addWidget(new QLabel, 4);
 
-  dist_markerToPickup_lay->addWidget(new QLabel(tr("dY [mm]"))       ,  8, Qt::AlignRight);
+  dist_markerToPickup_lay->addWidget(new QLabel(tr("dY"))            ,  8, Qt::AlignRight);
   dist_markerToPickup_lay->addWidget(this->get("marker_to_pickup_dY"), 15, Qt::AlignRight);
 
-  // distance: from ref-point on rotation stage to marker's ref-pos on baseplate
-  QHBoxLayout* dist_platToMarkOnBasep_lay = new QHBoxLayout;
-  dist_lay->addLayout(dist_platToMarkOnBasep_lay);
-
-  map_lineEdit_["refPointOnRotStage_to_MarkerOnBaseplate_dX"] = new QLineEdit(tr(""));
-  map_lineEdit_["refPointOnRotStage_to_MarkerOnBaseplate_dY"] = new QLineEdit(tr(""));
-
-  dist_platToMarkOnBasep_lay->addWidget(new QLabel(tr("From Ref-Point on Rot-Stage to Marker's Ref-Point on Baseplate :")), 50, Qt::AlignLeft);
-
-  dist_platToMarkOnBasep_lay->addWidget(new QLabel(tr("dX [mm]"))                              ,  8, Qt::AlignRight);
-  dist_platToMarkOnBasep_lay->addWidget(this->get("refPointOnRotStage_to_MarkerOnBaseplate_dX"), 15, Qt::AlignRight);
-
-  dist_platToMarkOnBasep_lay->addWidget(new QLabel, 4);
-
-  dist_platToMarkOnBasep_lay->addWidget(new QLabel(tr("dY [mm]"))                              ,  8, Qt::AlignRight);
-  dist_platToMarkOnBasep_lay->addWidget(this->get("refPointOnRotStage_to_MarkerOnBaseplate_dY"), 15, Qt::AlignRight);
   // ---------------------
-
-  /// IMAGE ---------------
-  imag_wid_ = new QWidget;
-
-  toolbox->addItem(imag_wid_, tr("Image Parameters"));
-
-  QVBoxLayout* imag_lay = new QVBoxLayout;
-  imag_wid_->setLayout(imag_lay);
-
-  // pixel dimensions
-  QHBoxLayout* imag_pix_lay = new QHBoxLayout;
-  imag_lay->addLayout(imag_pix_lay);
-
-  map_lineEdit_["mm_per_pixel_row"] = new QLineEdit(tr(""));
-  map_lineEdit_["mm_per_pixel_col"] = new QLineEdit(tr(""));
-
-  imag_pix_lay->addWidget(new QLabel(tr("Pixel Unit Dimensions :")), 50, Qt::AlignLeft);
-
-  imag_pix_lay->addWidget(new QLabel(tr("X [mm]"))     ,  8, Qt::AlignRight);
-  imag_pix_lay->addWidget(this->get("mm_per_pixel_row"), 15, Qt::AlignRight);
-
-  imag_pix_lay->addWidget(new QLabel, 4);
-
-  imag_pix_lay->addWidget(new QLabel(tr("Y [mm]"))     ,  8, Qt::AlignRight);
-  imag_pix_lay->addWidget(this->get("mm_per_pixel_col"), 15, Qt::AlignRight);
 
   /// ---------------------
 
