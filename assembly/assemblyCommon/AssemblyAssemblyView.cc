@@ -21,130 +21,476 @@
 #include <QToolBox>
 #include <QLabel>
 
-AssemblyAssemblyView::AssemblyAssemblyView(QWidget* parent)
- :
-   QWidget(parent)
-
- , CalibRotStage_wid_  (nullptr)
- , PSPToBasep_wid_     (nullptr)
- , PSSToSpacers_wid_   (nullptr)
- , PSSSpacToPSPBas_wid_(nullptr)
+AssemblyAssemblyView::AssemblyAssemblyView(const AssemblyAssembly* const assembly, QWidget* parent)
+ : QWidget(parent)
+ , wid_CalibRotStage_(nullptr)
+ , wid_PSSAlignm_    (nullptr)
+ , wid_PSSToSpacers_ (nullptr)
+ , wid_PSSToPSP_     (nullptr)
+ , wid_PSToBasep_    (nullptr)
 {
+  if(assembly == nullptr)
+  {
+    NQLog("AssemblyAssemblyView", NQLog::Fatal) << "initialization error"
+       << ": null pointer to AssemblyAssembly object, exiting constructor";
+
+    return;
+  }
+
   QVBoxLayout* layout = new QVBoxLayout;
   this->setLayout(layout);
 
   QToolBox* toolbox = new QToolBox;
   layout->addWidget(toolbox);
 
-  // ---------------------
+  assembly_step_N_ = 0;
 
-  // Calibration of Rotation Stage
-  CalibRotStage_wid_ = new QWidget;
+//  //// Calibration of Rotation Stage -----------------
+//  wid_CalibRotStage_ = new QWidget;
+//
+//  toolbox->addItem(wid_CalibRotStage_, tr("[0] Calibration of Rotation Stage"));
+//
+//  QVBoxLayout* CalibRotStage_lay = new QVBoxLayout;
+//  wid_CalibRotStage_->setLayout(CalibRotStage_lay);
+//
+//  CalibRotStage_lay->addWidget(new QLabel);
+//
+//  // 1 go to   ref-point on rotation stage
+//  // 2 measure ref-point on rotation stage
+//
+//  CalibRotStage_lay->addStretch(1);
+//  //// -----------------------------------------------
 
-  toolbox->addItem(CalibRotStage_wid_, tr("[0] Calibration of Rotation Stage"));
+  //// PSP To Baseplate ------------------------------
+  wid_PSSAlignm_ = new QWidget;
 
-  QVBoxLayout* CalibRotStage_lay = new QVBoxLayout;
-  CalibRotStage_wid_->setLayout(CalibRotStage_lay);
+  toolbox->addItem(wid_PSSAlignm_, tr("[1] PSS Alignment and Pickup"));
 
-  CalibRotStage_lay->addWidget(new QLabel);
-  // ---------------------
+  QVBoxLayout* PSSAlignm_lay = new QVBoxLayout;
+  wid_PSSAlignm_->setLayout(PSSAlignm_lay);
 
-  // PSP To Baseplate ----
-  PSPToBasep_wid_ = new QWidget;
+  // step: Arrange Assembly Platform for PSS alignment
+  {
+    ++assembly_step_N_;
 
-  toolbox->addItem(PSPToBasep_wid_, tr("[1] PSP + Baseplate"));
+    AssemblyAssemblyActionWidget* tmp_wid = new AssemblyAssemblyActionWidget;
+    tmp_wid->label() ->setText(QString::number(assembly_step_N_));
+    tmp_wid->button()->setText("Arrange Assembly Platform for PSS alignment");
+    PSSAlignm_lay->addWidget(tmp_wid);
 
-  QVBoxLayout* PSPToBasep_lay = new QVBoxLayout;
-  PSPToBasep_wid_->setLayout(PSPToBasep_lay);
+    connect(tmp_wid->button(), SIGNAL(clicked()), assembly, SLOT(GoToPSSPreAlignment()));
+  }
+  // ----------
 
-  PSPToBasep_lay->addWidget(new QLabel);
-  // ---------------------
+  // step: Place PSS on Assembly Platform
+  {
+    ++assembly_step_N_;
 
-  // PSS To Spacers ------
-  PSSToSpacers_wid_ = new QWidget;
+    AssemblyAssemblyTextWidget* tmp_wid = new AssemblyAssemblyTextWidget;
+    tmp_wid->label()->setText(QString::number(assembly_step_N_));
+    tmp_wid->text() ->setText("Place PSS on Assembly Platform");
+    PSSAlignm_lay->addWidget(tmp_wid);
 
-  toolbox->addItem(PSSToSpacers_wid_, tr("[2] PSS + Spacers"));
+//    connect(tmp_wid->button(), SIGNAL(clicked()), assembly, SLOT(GoToPSSPreAlignment()));
+  }
+  // ----------
+
+  // step: Enable Sensor Vacuum
+  {
+    ++assembly_step_N_;
+
+    AssemblyAssemblyActionWidget* tmp_wid = new AssemblyAssemblyActionWidget;
+    tmp_wid->label() ->setText(QString::number(assembly_step_N_));
+    tmp_wid->button()->setText("Enable Sensor Vacuum");
+    PSSAlignm_lay->addWidget(tmp_wid);
+
+//    connect(tmp_wid->button(), SIGNAL(clicked()), assembly, SLOT(GoToPSSPreAlignment()));
+  }
+  // ----------
+
+  // step: Go To Measurement Position on PSS
+  {
+    ++assembly_step_N_;
+
+    AssemblyAssemblyActionWidget* tmp_wid = new AssemblyAssemblyActionWidget;
+    tmp_wid->label() ->setText(QString::number(assembly_step_N_));
+    tmp_wid->button()->setText("Go To Measurement Position on PSS");
+    PSSAlignm_lay->addWidget(tmp_wid);
+
+//    connect(tmp_wid->button(), SIGNAL(clicked()), assembly, SLOT(GoToPSSPreAlignment()));
+  }
+  // ----------
+
+  // step: Align PSS to Motion Stage
+  {
+    ++assembly_step_N_;
+
+    AssemblyAssemblyActionWidget* tmp_wid = new AssemblyAssemblyActionWidget;
+    tmp_wid->label() ->setText(QString::number(assembly_step_N_));
+    tmp_wid->button()->setText("Align PSS to Motion Stage");
+    PSSAlignm_lay->addWidget(tmp_wid);
+
+//    connect(tmp_wid->button(), SIGNAL(clicked()), assembly, SLOT(GoToPSSPreAlignment()));
+  }
+  // ----------
+
+  // step: Pick Up PSS
+  {
+    ++assembly_step_N_;
+
+    AssemblyAssemblyActionWidget* tmp_wid = new AssemblyAssemblyActionWidget;
+    tmp_wid->label() ->setText(QString::number(assembly_step_N_));
+    tmp_wid->button()->setText("Pick Up PSS");
+    PSSAlignm_lay->addWidget(tmp_wid);
+
+//    connect(tmp_wid->button(), SIGNAL(clicked()), assembly, SLOT(GoToPSSPreAlignment()));
+  }
+  // ----------
+
+  PSSAlignm_lay->addStretch(1);
+  //// -----------------------------------------------
+
+  //// PSS To Spacers --------------------------------
+  wid_PSSToSpacers_ = new QWidget;
+
+  toolbox->addItem(wid_PSSToSpacers_, tr("[2] PSS onto Spacers"));
 
   QVBoxLayout* PSSToSpacers_lay = new QVBoxLayout;
-  PSSToSpacers_wid_->setLayout(PSSToSpacers_lay);
+  wid_PSSToSpacers_->setLayout(PSSToSpacers_lay);
 
-  PSSToSpacers_lay->addWidget(new QLabel);
-  // ---------------------
+  // step: Put Spacers on Assembly Platform
+  {
+    ++assembly_step_N_;
 
-  // PSS+Spacers To PSP+Baseplate
-  PSSSpacToPSPBas_wid_ = new QWidget;
+    AssemblyAssemblyTextWidget* tmp_wid = new AssemblyAssemblyTextWidget;
+    tmp_wid->label()->setText(QString::number(assembly_step_N_));
+    tmp_wid->text() ->setText("Put Spacers on Assembly Platform");
+    PSSToSpacers_lay->addWidget(tmp_wid);
 
-  toolbox->addItem(PSSSpacToPSPBas_wid_, tr("[4] Assembly: PSS+Spacers To PSP+Baseplate"));
+//    connect(tmp_wid->button(), SIGNAL(clicked()), assembly, SLOT(GoToPSSPreAlignment()));
+  }
+  // ----------
 
-  QVBoxLayout* PSSSpacToPSPBas_lay = new QVBoxLayout;
-  PSSSpacToPSPBas_wid_->setLayout(PSSSpacToPSPBas_lay);
+  // step: Enable Vacuum on Spacers
+  {
+    ++assembly_step_N_;
 
-  PSSSpacToPSPBas_lay->addWidget(new QLabel);
-  // ---------------------
+    AssemblyAssemblyActionWidget* tmp_wid = new AssemblyAssemblyActionWidget;
+    tmp_wid->label() ->setText(QString::number(assembly_step_N_));
+    tmp_wid->button()->setText("Enable Vacuum on Spacers");
+    PSSToSpacers_lay->addWidget(tmp_wid);
 
-  // go to   ref-point on rotation stage
+//    connect(tmp_wid->button(), SIGNAL(clicked()), assembly, SLOT(GoToPSSPreAlignment()));
+  }
+  // ----------
 
-  // measure ref-point on rotation stage
+  // step: Go To XYA for Spacers Gluing
+  {
+    ++assembly_step_N_;
+
+    AssemblyAssemblyActionWidget* tmp_wid = new AssemblyAssemblyActionWidget;
+    tmp_wid->label() ->setText(QString::number(assembly_step_N_));
+    tmp_wid->button()->setText("Go To XYA for Spacers Gluing");
+    PSSToSpacers_lay->addWidget(tmp_wid);
+
+//    connect(tmp_wid->button(), SIGNAL(clicked()), assembly, SLOT(GoToPSSPreAlignment()));
+  }
+  // ----------
+
+  // step: Lower PSS onto Spacers
+  {
+    ++assembly_step_N_;
+
+    AssemblyAssemblyActionWidget* tmp_wid = new AssemblyAssemblyActionWidget;
+    tmp_wid->label() ->setText(QString::number(assembly_step_N_));
+    tmp_wid->button()->setText("Lower PSS onto Spacers");
+    PSSToSpacers_lay->addWidget(tmp_wid);
+
+//    connect(tmp_wid->button(), SIGNAL(clicked()), assembly, SLOT(GoToPSSPreAlignment()));
+  }
+  // ----------
+
+//!!  // step: wait for glue to cure
+//!!  {
+//!!    ++assembly_step_N_;
+//!!
+//!!    AssemblyAssemblyActionWidget* tmp_wid = new AssemblyAssemblyActionWidget;
+//!!    tmp_wid->label() ->setText(QString::number(assembly_step_N_));
+//!!    tmp_wid->button()->setText("Arrange assembly platform for PSS alignment");
+//!!    PSSToSpacers_lay->addWidget(tmp_wid);
+//!!
+//!!//    connect(tmp_wid->button(), SIGNAL(clicked()), assembly, SLOT(GoToPSSPreAlignment()));
+//!!  }
+//!!  // ----------
+//!!
+//!!  // step: disable spacers vacuum
+//!!  {
+//!!    ++assembly_step_N_;
+//!!
+//!!    AssemblyAssemblyActionWidget* tmp_wid = new AssemblyAssemblyActionWidget;
+//!!    tmp_wid->label() ->setText(QString::number(assembly_step_N_));
+//!!    tmp_wid->button()->setText("Arrange assembly platform for PSS alignment");
+//!!    PSSToSpacers_lay->addWidget(tmp_wid);
+//!!
+//!!//    connect(tmp_wid->button(), SIGNAL(clicked()), assembly, SLOT(GoToPSSPreAlignment()));
+//!!  }
+//!!  // ----------
+//!!
+//!!  // step: move up pickup tool (dZ=+50cm)
+//!!  {
+//!!    ++assembly_step_N_;
+//!!
+//!!    AssemblyAssemblyActionWidget* tmp_wid = new AssemblyAssemblyActionWidget;
+//!!    tmp_wid->label() ->setText(QString::number(assembly_step_N_));
+//!!    tmp_wid->button()->setText("Arrange assembly platform for PSS alignment");
+//!!    PSSToSpacers_lay->addWidget(tmp_wid);
+//!!
+//!!//    connect(tmp_wid->button(), SIGNAL(clicked()), assembly, SLOT(GoToPSSPreAlignment()));
+//!!  }
+//!!  // ----------
+
+  PSSToSpacers_lay->addStretch(1);
+  //// -----------------------------------------------
+
+  //// PSP To PSS ------------------------------------
+  wid_PSSToPSP_ = new QWidget;
+
+  toolbox->addItem(wid_PSSToPSP_, tr("[3] PSP Alignment and PSP+PSS Assembly"));
+
+  QVBoxLayout* PSSToPSP_lay = new QVBoxLayout;
+  wid_PSSToPSP_->setLayout(PSSToPSP_lay);
+
+  PSSToPSP_lay->addWidget(new QLabel);
+
+  PSSToPSP_lay->addStretch(1);
+  //// -----------------------------------------------
+
+  //// PSP+PSS to Baseplate
+  wid_PSToBasep_ = new QWidget;
+
+  toolbox->addItem(wid_PSToBasep_, tr("[4] PSP+PSS onto Baseplate"));
+
+  QVBoxLayout* PSToBasep_lay = new QVBoxLayout;
+  wid_PSToBasep_->setLayout(PSToBasep_lay);
+
+  PSToBasep_lay->addWidget(new QLabel);
+
+  PSToBasep_lay->addStretch(1);
+  //// -----------------------------------------------
+
+  //  1 arrange assembly platform for PSS alignment
+
+  //  2 place PSS on assembly platform
+
+  //  3 enable sensor vacuum
+
+  //  4 go to measurement position on PSS
+
+  //  5 align PSS to motion-stage X-axis
+
+  //  6 pick up PSS
+
+  //  7 put  spacers on platform
+
+  //  8 lock spacers on platform (vacuum)
+
+  //  9 move to XYA for spacers gluing
+
+  // 10 put down PSS on to spacers
+
+  // 11 wait for glue to cure
+
+  // 12 disable spacers vacuum
+
+  // 13 move up pickup tool (dZ=+50cm)
 
   // -----------------------------------------------
   // -----------------------------------------------
 
-  // go to measurement position on PSP
+  // 14 arrange assembly platform for PSP alignment
+  ++assembly_step_N_;
+  // ----------
 
-  // align PSP to motion-stage X-axis
+  // 15 place PSP on assembly platform
+  ++assembly_step_N_;
+  // ----------
 
-  // pick up PSP
+  // 16 enable sensor vacuum
+  ++assembly_step_N_;
+  // ----------
 
-  // put  baseplate on platform
+  // 17 go to measurement position on PSP
+  ++assembly_step_N_;
+  // ----------
 
-  // lock baseplate on platform (vacuum)
+  // 18 align PSP to motion-stage X-axis
+  ++assembly_step_N_;
+  // ----------
 
-  // put down PSP on to baseplate
+  // 19 move up pickup tool (dZ=+50.00cm)
+  ++assembly_step_N_;
+  // ----------
 
-  // wait for glue to cure
+  //// this is where the steps for the
+  //// gluing stage will be introduced
 
-  // release PSP from pickup tool
+  // 20 apply glue on underside of spacers
+  ++assembly_step_N_;
+  // ----------
 
-  // release baseplate from platform
+  // 21 move to XY for PSS onto PSP
+  ++assembly_step_N_;
+  // ----------
 
-  // -----------------------------------------------
-  // -----------------------------------------------
+  // 22 lower PSS onto PSP
+  ++assembly_step_N_;
+  // ----------
 
-  // go to measurement position on PSS
+  // 23 wait for glue to cure
+  ++assembly_step_N_;
+  // ----------
 
-  // align PSS to motion-stage X-axis
-
-  // pick up PSS
-
-  // put  spacers on platform
-
-  // lock spacers on platform (vacuum)
-
-  // put down PSS on to spacers (including shift)
-
-  // wait for glue to cure
-
-  // pick up PSS+spacers
-
-  // put  PSP+baseplate on platform
-
-  // lock PSP+baseplate on platform (vacuum)
-
-  // go to measurement position on PSP+baseplate
-
-  // align PSP+baseplate to motion-stage X-axis
-
-  // move PSS+spacers on to gluing platform
-
-  // apply additional movements to dispense glue on the spacers
-
-  // move PSS+spacers on top of PSP+baseplate in XY (arbitrary height)
-
-  // put down PSS onto PSP+baseplate (including shift)
-
-  // wait for glue to cure
+  // 24 pick up PSP+PSS
+  ++assembly_step_N_;
+  // ----------
 
   // -----------------------------------------------
   // -----------------------------------------------
 
+  // 25 move to XYA to place PSP+PSS onto baseplate
+  ++assembly_step_N_;
+  // ----------
+
+  // 26 switch on baseplate vacuum (after dispensing glue on the baseplate and positioning it on the assembly platform)
+  ++assembly_step_N_;
+  // ----------
+
+  // 27 lower PSP+PSS onto baseplate
+  ++assembly_step_N_;
+  // ----------
+
+  // 28 wait for glue to cure
+  ++assembly_step_N_;
+  // ----------
+
+  // 29 finish assembly procedure: release pickup vacuum, release baseplate vacuum, move up pickup tool (dZ=+50.00cm)
+  ++assembly_step_N_;
+  // ----------
 }
+// ====================================================================================================
+
+AssemblyAssemblyActionWidget::AssemblyAssemblyActionWidget(QWidget* parent)
+ : QWidget(parent)
+ , layout_  (nullptr)
+ , label_   (nullptr)
+ , button_  (nullptr)
+ , checkbox_(nullptr)
+{
+//  connect(this, SIGNAL(move_relative(double, double, double, double)), manager_, SLOT(moveRelative(double, double, double, double)));
+
+  // --------------
+
+  // layout
+  layout_ = new QHBoxLayout;
+  this->setLayout(layout_);
+
+  label_ = new QLabel;
+  label_->setStyleSheet(
+    "QLabel { font-weight : bold; }"
+  );
+
+  button_ = new QPushButton;
+  button_->setStyleSheet(
+    "Text-align: left;"
+    "padding-left:   4px;"
+    "padding-right:  4px;"
+    "padding-top:    3px;"
+    "padding-bottom: 3px;"
+  );
+
+  checkbox_ = new QCheckBox("Done");
+
+  connect(checkbox_, SIGNAL(stateChanged(int)), this, SLOT(disable(int)));
+
+  layout_->addWidget(label_    ,  2, Qt::AlignRight);
+  layout_->addWidget(button_   , 40);
+  layout_->addWidget(new QLabel, 48);
+  layout_->addWidget(checkbox_ , 10);
+
+  connect(button_, SIGNAL(clicked()), this, SLOT(execute()));
+  // --------------
+}
+
+void AssemblyAssemblyActionWidget::disable(const int state)
+{
+  if(state == 2)
+  {
+    label_ ->setEnabled(false);
+    button_->setEnabled(false);
+  }
+  else if(state == 0)
+  {
+    label_ ->setEnabled(true);
+    button_->setEnabled(true);
+  }
+
+  return;
+}
+// ====================================================================================================
+
+AssemblyAssemblyTextWidget::AssemblyAssemblyTextWidget(QWidget* parent)
+ : QWidget(parent)
+ , layout_  (nullptr)
+ , label_   (nullptr)
+ , text_    (nullptr)
+ , checkbox_(nullptr)
+{
+//  connect(this, SIGNAL(move_relative(double, double, double, double)), manager_, SLOT(moveRelative(double, double, double, double)));
+
+  // --------------
+
+  // layout
+  layout_ = new QHBoxLayout;
+  this->setLayout(layout_);
+
+  label_ = new QLabel;
+  label_->setStyleSheet(
+    "QLabel { font-weight : bold; }"
+  );
+
+  text_ = new QLabel;
+  text_->setStyleSheet(
+    "Text-align: left;"
+    "padding-left:   4px;"
+    "padding-right:  4px;"
+    "padding-top:    3px;"
+    "padding-bottom: 3px;"
+  );
+
+  checkbox_ = new QCheckBox("Done");
+
+  connect(checkbox_, SIGNAL(stateChanged(int)), this, SLOT(disable(int)));
+
+  layout_->addWidget(label_    ,  2, Qt::AlignRight);
+  layout_->addWidget(text_     , 40);
+  layout_->addWidget(new QLabel, 48);
+  layout_->addWidget(checkbox_ , 10);
+  // --------------
+}
+
+void AssemblyAssemblyTextWidget::disable(const int state)
+{
+  if(state == 2)
+  {
+    label_->setEnabled(false);
+    text_ ->setEnabled(false);
+  }
+  else if(state == 0)
+  {
+    label_->setEnabled(true);
+    text_ ->setEnabled(true);
+  }
+
+  return;
+}
+// ====================================================================================================

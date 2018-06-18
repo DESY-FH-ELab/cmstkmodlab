@@ -40,6 +40,8 @@ class AssemblyParametersView : public QWidget
 
   void setText(const std::string&, const double);
 
+  std::map<std::string, std::string> entries_map() const;
+
  protected:
 
   QWidget* dime_wid_;
@@ -57,7 +59,7 @@ class AssemblyParametersView : public QWidget
   void  read_parameters();
   void write_parameters();
 
-  void read_entries();
+  void transmit_entries();
 
  signals:
 

@@ -212,7 +212,7 @@ AssemblyMainWindow::AssemblyMainWindow(const unsigned int camera_ID, QWidget* pa
 
     assembly_ = new AssemblyAssembly;
 
-    assembly_view_ = new AssemblyAssemblyView(tabWidget_);
+    assembly_view_ = new AssemblyAssemblyView(assembly_, tabWidget_);
     tabWidget_->addTab(assembly_view_, tabname_Assembly);
 
     NQLog("AssemblyMainWindow", NQLog::Message) << "added view " << tabname_Assembly;
@@ -247,11 +247,7 @@ AssemblyMainWindow::AssemblyMainWindow(const unsigned int camera_ID, QWidget* pa
     params_view_ = new AssemblyParametersView(tabWidget_);
     tabWidget_->addTab(params_view_, tabname_Parameters);
 
-    connect(params_view_, SIGNAL(read_from_file_request(QString)), params_, SLOT(read_from_file(QString)));
-    connect(params_view_, SIGNAL( write_to_file_request(QString)), params_, SLOT( write_to_file(QString)));
-
-    connect(params_, SIGNAL(update_request()), params_view_, SLOT(read_entries()));
-    connect(params_view_, SIGNAL(entries(std::map<std::string, std::string>)), params_, SLOT(update(std::map<std::string, std::string>)));
+    params_->set_view(params_view_);
 
     params_view_->copy_values(params_->map_double());
 
@@ -508,19 +504,22 @@ void AssemblyMainWindow::start_objectAligner(const AssemblyObjectAligner::Config
   if(aligner_connected_)
   {
     NQLog("AssemblyMainWindow", NQLog::Warning) << "start_objectAligner"
-       << ": AssemblyObjectAligner already connected, no action taken (alignment routine in progress)";
+       << ": AssemblyObjectAligner already connected, no action taken";
 
     return;
   }
 
-  if(params_ == nullptr)
+  if(params_ != nullptr)
   {
-    connect(aligner_, SIGNAL(configuration_updated()), aligner_, SLOT(execute()));
-  }
-  else
-  {
-    connect(aligner_, SIGNAL(configuration_updated()), params_, SIGNAL(update_request()));
-    connect(params_, SIGNAL(update_completed()), aligner_, SLOT(execute()));
+    const bool valid_params = params_->update();
+
+    if(valid_params == false)
+    {
+      NQLog("AssemblyMainWindow", NQLog::Warning) << "start_objectAligner"
+         << ": failed to update AssemblyParameters, no action taken";
+
+      return;
+    }
   }
 
   // acquire image
@@ -572,16 +571,6 @@ void AssemblyMainWindow::disconnect_objectAligner()
     return;
   }
 
-  if(params_ == nullptr)
-  {
-    disconnect(aligner_, SIGNAL(configuration_updated()), aligner_, SLOT(execute()));
-  }
-  else
-  {
-    disconnect(aligner_, SIGNAL(configuration_updated()), params_, SIGNAL(update_request()));
-    disconnect(params_, SIGNAL(update_completed()), aligner_, SLOT(execute()));
-  }
-
   // acquire image
   disconnect(aligner_, SIGNAL(image_request()), image_ctr_, SLOT(acquire_image()));
 
@@ -620,6 +609,19 @@ void AssemblyMainWindow::start_multiPickupTest(const AssemblyMultiPickupTester::
     return;
   }
 
+  if(params_ != nullptr)
+  {
+    const bool valid_params = params_->update();
+
+    if(valid_params == false)
+    {
+      NQLog("AssemblyMainWindow", NQLog::Warning) << "start_multiPickupTest"
+         << ": failed to update AssemblyParameters, no action taken";
+
+      return;
+    }
+  }
+
   toolbox_view_->MultiPickupTester_Widget()->enable(false);
 
   connect(multipickup_tester_, SIGNAL(measurement_finished()), multipickup_tester_, SLOT(start_pickup()));
@@ -641,16 +643,7 @@ void AssemblyMainWindow::start_multiPickupTest(const AssemblyMultiPickupTester::
 
   multipickup_tester_->set_configuration(conf);
 
-  if((params_ != nullptr) && (params_view_ != nullptr))
-  {
-    connect(params_, SIGNAL(update_completed()), multipickup_tester_, SLOT(start_measurement()));
-
-    params_view_->read_entries();
-  }
-  else
-  {
-    multipickup_tester_->start_measurement();
-  }
+  multipickup_tester_->start_measurement();
 
   return;
 }
@@ -673,11 +666,6 @@ void AssemblyMainWindow::disconnect_multiPickupTest()
 
   disconnect(conradManager_, SIGNAL(enableVacuumButton()), multipickup_tester_, SLOT(setup_next_step()));
   // ---
-
-  if((params_ != nullptr) && (params_view_ != nullptr))
-  {
-    disconnect(params_, SIGNAL(update_completed()), multipickup_tester_, SLOT(start_measurement()));
-  }
 
   toolbox_view_->MultiPickupTester_Widget()->enable(true);
 

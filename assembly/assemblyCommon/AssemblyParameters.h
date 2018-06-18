@@ -22,6 +22,8 @@
 #include <string>
 #include <map>
 
+#include <AssemblyParametersView.h>
+
 #include <QObject>
 #include <QString>
 
@@ -43,12 +45,18 @@ class AssemblyParameters : public QObject
 
   const std::map<std::string, double>& map_double() const { return map_double_; }
 
+  void set_view(const AssemblyParametersView* const);
+
+  bool update();
+
  private:
   Q_DISABLE_COPY(AssemblyParameters)
 
  protected:
 
   static AssemblyParameters* instance_;
+
+  const AssemblyParametersView* view_;
 
   std::map<std::string, double> map_double_;
 
@@ -60,12 +68,7 @@ class AssemblyParameters : public QObject
   void read_from_file(const QString&);
   void read_from_file(const std::string&);
 
-  void update(const std::map<std::string, std::string>&);
-
  signals:
-
-  void update_request();
-  void update_completed();
 };
 
 #endif // ASSEMBLYPARAMETERS_H

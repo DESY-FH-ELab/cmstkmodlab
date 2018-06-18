@@ -14,7 +14,6 @@
 #include <ApplicationConfig.h>
 
 #include <AssemblyObjectFinderPatRec.h>
-#include <AssemblyParameters.h>
 #include <AssemblyUtilities.h>
 
 #include <iostream>
@@ -54,25 +53,17 @@ AssemblyObjectFinderPatRec::AssemblyObjectFinderPatRec(AssemblyThresholder* cons
   connect(this, SIGNAL(template_matching_request(Configuration, cv::Mat, cv::Mat, cv::Mat)), this, SLOT(template_matching(Configuration, cv::Mat, cv::Mat, cv::Mat)));
   // -----------
 
-  AssemblyParameters* params = AssemblyParameters::instance();
-  if(params == nullptr)
+  ApplicationConfig* config = ApplicationConfig::instance();
+  if(config == nullptr)
   {
-    NQLog("AssemblyObjectFinderPatRec", NQLog::Fatal) << "template_matching"
-       << ": invalid (null) pointer to AssemblyParameters::instance(), exiting constructor";
-
-    NQLog("AssemblyObjectFinderPatRec", NQLog::Warning) << "template_matching"
-       << ": using default values \"mm_per_pixel_row=0.0012\" and \"mm_per_pixel_col=0.0012\"";
-
-    mm_per_pixel_row_ = 0.0012;
-    mm_per_pixel_col_ = 0.0012;
+    NQLog("AssemblyObjectFinderPatRec", NQLog::Fatal) << "initialization error"
+       << ": ApplicationConfig::instance() not initialized (null pointer), exiting constructor";
 
     return;
   }
 
-  mm_per_pixel_row_ = params->get("mm_per_pixel_row");
-  mm_per_pixel_col_ = params->get("mm_per_pixel_col");
-
-  qRegisterMetaType<AssemblyObjectFinderPatRec::Configuration>("AssemblyObjectFinderPatRec::Configuration");
+  mm_per_pixel_row_ = config->getValue<double>("mm_per_pixel_row");
+  mm_per_pixel_col_ = config->getValue<double>("mm_per_pixel_col");
 
   NQLog("AssemblyObjectFinderPatRec", NQLog::Debug) << "constructed";
 }
@@ -617,18 +608,6 @@ void AssemblyObjectFinderPatRec::template_matching(const AssemblyObjectFinderPat
   // the conversion depends on the dimension of the image's pixel unit in mm
   // and the direction (sign) of the x-axis and y-axis of the motion stage
   //
-  AssemblyParameters* params = AssemblyParameters::instance();
-  if(params == nullptr)
-  {
-    NQLog("AssemblyObjectFinderPatRec", NQLog::Critical) << "template_matching"
-       << ": invalid (null) pointer to AssemblyParameters::instance(), stopping routine";
-
-    NQLog("AssemblyObjectFinderPatRec", NQLog::Spam) << "template_matching"
-       << ": emitting signal \"PatRec_exitcode(1)\"";
-
-    emit PatRec_exitcode(1);
-  }
-
   const double patrec_dX = -1.0 * (best_matchLoc.y - (img_master_copy.rows / 2.0)) * mm_per_pixel_row_;
   const double patrec_dY = -1.0 * (best_matchLoc.x - (img_master_copy.cols / 2.0)) * mm_per_pixel_col_;
 

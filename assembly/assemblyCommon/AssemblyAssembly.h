@@ -15,6 +15,8 @@
 
 #include <QObject>
 
+#include <AssemblyParameters.h>
+
 class AssemblyAssembly : public QObject
 {
  Q_OBJECT
@@ -22,6 +24,20 @@ class AssemblyAssembly : public QObject
  public:
   explicit AssemblyAssembly(QObject* parent=nullptr);
   virtual ~AssemblyAssembly() {}
+
+  AssemblyParameters* parameters() const;
+
+ protected:
+
+ public slots:
+
+  void GoToPSSPreAlignment_start();
+  void GoToPSSPreAlignment_finish();
+
+ signals:
+
+  void move_absolute(const double, const double, const double, const double);
+  void move_relative(const double, const double, const double, const double);
 };
 
 #endif // ASSEMBLYASSEMBLY_H
