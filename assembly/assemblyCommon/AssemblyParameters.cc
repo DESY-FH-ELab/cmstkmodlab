@@ -26,7 +26,9 @@
 
 AssemblyParameters* AssemblyParameters::instance_ = nullptr;
 
-AssemblyParameters::AssemblyParameters(const std::string& file_path, QObject* parent) : QObject(parent)
+AssemblyParameters::AssemblyParameters(const std::string& file_path, QObject* parent)
+ : QObject(parent)
+ , view_(nullptr)
 {
   NQLog("AssemblyParameters", NQLog::Debug) << "constructed";
 
@@ -68,6 +70,42 @@ void AssemblyParameters::issue_key_error(const std::string& key) const
   );
 
   throw; // must abort
+}
+
+double AssemblyParameters::get(const std::string& key) const
+{
+  if(map_double_.find(key) == map_double_.end())
+  {
+    this->issue_key_error(key);
+
+    return -1.;
+  }
+
+  return map_double_.at(key);
+}
+
+void AssemblyParameters::set_view(const AssemblyParametersView* const view)
+{
+  if(view == nullptr)
+  {
+    NQLog("AssemblyParameters", NQLog::Critical) << "set_view"
+       << ": NULL pointer to AssemblyParametersView, no action taken";
+
+    return;
+  }
+
+  if(view_ != nullptr)
+  {
+    disconnect(view_, SIGNAL(read_from_file_request(QString)), this, SLOT(read_from_file(QString)));
+    disconnect(view_, SIGNAL( write_to_file_request(QString)), this, SLOT( write_to_file(QString)));
+  }
+
+  view_ = view;
+
+  connect(view_, SIGNAL(read_from_file_request(QString)), this, SLOT(read_from_file(QString)));
+  connect(view_, SIGNAL( write_to_file_request(QString)), this, SLOT( write_to_file(QString)));
+
+  return;
 }
 
 void AssemblyParameters::write_to_file(const QString& f_path)
@@ -141,8 +179,18 @@ void AssemblyParameters::read_from_file(const std::string& f_path)
   return;
 }
 
-void AssemblyParameters::update(const std::map<std::string, std::string>& map_str)
+bool AssemblyParameters::update()
 {
+  if(view_ == nullptr)
+  {
+    NQLog("AssemblyParameters", NQLog::Critical) << "update"
+       << ": NULL pointer to AssemblyParametersView, no action taken";
+
+    return false;
+  }
+
+  const auto& map_str = view_->entries_map();
+
   map_double_.clear();
 
   for(const auto& i_pair : map_str)
@@ -165,26 +213,11 @@ void AssemblyParameters::update(const std::map<std::string, std::string>& map_st
       NQLog("AssemblyParameters", NQLog::Warning) << "update"
          << ": invalid format for input parameter \"" << i_val_qstr << "\", cannot be added to AssemblyParameters";
 
-      continue;
+      return false;
     }
 
     map_double_[i_key] = i_val_double;
   }
 
-  NQLog("AssemblyParameters", NQLog::Spam) << "update"
-     << ": emitting signal \"update_completed\"";
-
-  emit update_completed();
-}
-
-double AssemblyParameters::get(const std::string& key) const
-{
-  if(map_double_.find(key) == map_double_.end())
-  {
-    this->issue_key_error(key);
-
-    return -1.;
-  }
-
-  return map_double_.at(key);
+  return true;
 }

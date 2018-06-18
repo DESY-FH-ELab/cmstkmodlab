@@ -14,7 +14,6 @@
 #include <ApplicationConfig.h>
 
 #include <AssemblyObjectFinderPatRec.h>
-#include <AssemblyParameters.h>
 #include <AssemblyUtilities.h>
 
 #include <iostream>

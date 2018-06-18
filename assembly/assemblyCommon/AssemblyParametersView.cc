@@ -339,7 +339,7 @@ QLineEdit* AssemblyParametersView::get(const std::string& key) const
   return ptr;
 }
 
-void AssemblyParametersView::read_entries()
+std::map<std::string, std::string> AssemblyParametersView::entries_map() const
 {
   std::map<std::string, std::string> map_str;
 
@@ -350,7 +350,14 @@ void AssemblyParametersView::read_entries()
     map_str[key.first] = ptr->text().toUtf8().constData();
   }
 
-  NQLog("AssemblyParametersView", NQLog::Spam) << "read_entries"
+  return map_str;
+}
+
+void AssemblyParametersView::transmit_entries()
+{
+  const std::map<std::string, std::string> map_str = this->entries_map();
+
+  NQLog("AssemblyParametersView", NQLog::Spam) << "transmit_entries"
      << ": emitting signal \"entries\"";
 
   emit entries(map_str);

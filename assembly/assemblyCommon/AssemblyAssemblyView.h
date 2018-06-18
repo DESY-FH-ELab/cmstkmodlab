@@ -13,7 +13,14 @@
 #ifndef ASSEMBLYASSEMBLYVIEW_H
 #define ASSEMBLYASSEMBLYVIEW_H
 
+#include <AssemblyAssembly.h>
+
 #include <QWidget>
+#include <QVBoxLayout>
+#include <QHBoxLayout>
+#include <QPushButton>
+#include <QCheckBox>
+#include <QLabel>
 
 class AssemblyAssemblyView : public QWidget
 {
@@ -21,15 +28,81 @@ class AssemblyAssemblyView : public QWidget
 
  public:
 
-  explicit AssemblyAssemblyView(QWidget* parent=nullptr);
+  explicit AssemblyAssemblyView(const AssemblyAssembly* const, QWidget* parent=nullptr);
   virtual ~AssemblyAssemblyView() {}
 
  protected:
 
-  QWidget* CalibRotStage_wid_;
-  QWidget* PSPToBasep_wid_;
-  QWidget* PSSToSpacers_wid_;
-  QWidget* PSSSpacToPSPBas_wid_;
+  QWidget* wid_CalibRotStage_;
+  QWidget* wid_PSSAlignm_;
+  QWidget* wid_PSSToSpacers_;
+  QWidget* wid_PSSToPSP_;
+  QWidget* wid_PSToBasep_;
+
+  uint assembly_step_N_;
 };
+// ====================================================================================================
+
+class AssemblyAssemblyActionWidget : public QWidget
+{
+ Q_OBJECT
+
+ public:
+
+  explicit AssemblyAssemblyActionWidget(QWidget* parent=nullptr);
+  virtual ~AssemblyAssemblyActionWidget() {}
+
+  QHBoxLayout* layout()   const { return layout_; }
+
+  QLabel*      label()    const { return label_; }
+  QPushButton* button()   const { return button_; }
+  QCheckBox*   checkbox() const { return checkbox_; }
+
+ protected:
+
+  QHBoxLayout* layout_;
+
+  QLabel*      label_;
+  QPushButton* button_;
+  QCheckBox*   checkbox_;
+
+ public slots:
+
+  void disable(const int);
+
+ signals:
+};
+// ====================================================================================================
+
+class AssemblyAssemblyTextWidget : public QWidget
+{
+ Q_OBJECT
+
+ public:
+
+  explicit AssemblyAssemblyTextWidget(QWidget* parent=nullptr);
+  virtual ~AssemblyAssemblyTextWidget() {}
+
+  QHBoxLayout* layout()   const { return layout_; }
+
+  QLabel*      label()    const { return label_; }
+  QLabel*      text()     const { return text_; }
+  QCheckBox*   checkbox() const { return checkbox_; }
+
+ protected:
+
+  QHBoxLayout* layout_;
+
+  QLabel*    label_;
+  QLabel*    text_;
+  QCheckBox* checkbox_;
+
+ public slots:
+
+  void disable(const int);
+
+ signals:
+};
+// ====================================================================================================
 
 #endif // ASSEMBLYASSEMBLYVIEW_H
