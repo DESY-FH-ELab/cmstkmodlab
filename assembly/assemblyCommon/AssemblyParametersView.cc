@@ -17,9 +17,10 @@
 
 #include <QVBoxLayout>
 #include <QHBoxLayout>
-#include <QLabel>
-#include <QToolBox>
+#include <QGridLayout>
 #include <QFileDialog>
+#include <QToolBox>
+#include <QLabel>
 
 AssemblyParametersView::AssemblyParametersView(QWidget* parent) :
   QWidget(parent),
@@ -38,9 +39,7 @@ AssemblyParametersView::AssemblyParametersView(QWidget* parent) :
   QToolBox* toolbox = new QToolBox;
   layout->addWidget(toolbox);
 
-  // ---------------------
-
-  // DIMENSIONS ----------
+  //// DIMENSIONS ----------
   dime_wid_ = new QWidget;
 
   toolbox->addItem(dime_wid_, tr("Dimensions of Assembly Components [mm]"));
@@ -113,9 +112,9 @@ AssemblyParametersView::AssemblyParametersView(QWidget* parent) :
   dime_thicknessGlueLayer_lay->addWidget(new QLabel(tr("dZ"))             ,  8, Qt::AlignRight);
   dime_thicknessGlueLayer_lay->addWidget(this->get("thickness_glue_layer"), 15, Qt::AlignRight);
 
-  // ---------------------
+  //// ---------------------
 
-  // POSITIONS -----------
+  //// POSITIONS -----------
   posi_wid_ = new QWidget;
 
   toolbox->addItem(posi_wid_, tr("Reference Positions [mm, deg]"));
@@ -187,36 +186,61 @@ AssemblyParametersView::AssemblyParametersView(QWidget* parent) :
   posi_lay->addWidget(new QLabel(tr("Z"))               , 3, 5, Qt::AlignRight);
   posi_lay->addWidget(this->get("pickupOnGluingStage_Z"), 3, 6, Qt::AlignRight);
 
-  // ---------------------
+  //// ---------------------
 
-  // DISTANCES -----------
+  //// DISTANCES -----------
   dist_wid_ = new QWidget;
 
   toolbox->addItem(dist_wid_, tr("Reference Distances [mm, deg]"));
 
-  QVBoxLayout* dist_lay = new QVBoxLayout;
+  QGridLayout* dist_lay = new QGridLayout;
   dist_wid_->setLayout(dist_lay);
 
-  // distance: from marker's ref-point to pickup position
-  QHBoxLayout* dist_markerToPickup_lay = new QHBoxLayout;
-  dist_lay->addLayout(dist_markerToPickup_lay);
+  // distance: from baseplate ref-point to position of PSS marker-1 edge relative to baseplate
+  map_lineEdit_["basepRefPoint_to_PSSOnBasep_dX"] = new QLineEdit(tr(""));
+  map_lineEdit_["basepRefPoint_to_PSSOnBasep_dY"] = new QLineEdit(tr(""));
 
+  dist_lay->addWidget(new QLabel(tr("From Baseplate's Ref-Point to PSS Marker-1 on Baseplate :")), 0, 0, Qt::AlignLeft);
+
+  dist_lay->addWidget(new QLabel(tr("dX"))                       , 0, 1, Qt::AlignRight);
+  dist_lay->addWidget(this->get("basepRefPoint_to_PSSOnBasep_dX"), 0, 2, Qt::AlignRight);
+
+  dist_lay->addWidget(new QLabel(tr("dY"))                       , 0, 3, Qt::AlignRight);
+  dist_lay->addWidget(this->get("basepRefPoint_to_PSSOnBasep_dY"), 0, 4, Qt::AlignRight);
+
+  // distance: from marker's ref-point to pickup position
   map_lineEdit_["marker_to_pickup_dX"] = new QLineEdit(tr(""));
   map_lineEdit_["marker_to_pickup_dY"] = new QLineEdit(tr(""));
 
-  dist_markerToPickup_lay->addWidget(new QLabel(tr("From Marker's Ref-Point To Pickup position :")), 50, Qt::AlignLeft);
+  dist_lay->addWidget(new QLabel(tr("From Marker's Ref-Point to Pickup position :")), 1, 0, Qt::AlignLeft);
 
-  dist_markerToPickup_lay->addWidget(new QLabel(tr("dX"))            ,  8, Qt::AlignRight);
-  dist_markerToPickup_lay->addWidget(this->get("marker_to_pickup_dX"), 15, Qt::AlignRight);
+  dist_lay->addWidget(new QLabel(tr("dX"))            , 1, 1, Qt::AlignRight);
+  dist_lay->addWidget(this->get("marker_to_pickup_dX"), 1, 2, Qt::AlignRight);
 
-  dist_markerToPickup_lay->addWidget(new QLabel, 4);
+  dist_lay->addWidget(new QLabel(tr("dY"))            , 1, 3, Qt::AlignRight);
+  dist_lay->addWidget(this->get("marker_to_pickup_dY"), 1, 4, Qt::AlignRight);
 
-  dist_markerToPickup_lay->addWidget(new QLabel(tr("dY"))            ,  8, Qt::AlignRight);
-  dist_markerToPickup_lay->addWidget(this->get("marker_to_pickup_dY"), 15, Qt::AlignRight);
+  // distance: from best-focus z-position to pickup z-position
+  map_lineEdit_["bestfocus_to_pickup_dZ"] = new QLineEdit(tr(""));
 
-  // ---------------------
+  dist_lay->addWidget(new QLabel(tr("From Best-Focus Height to Pickup Height :")), 2, 0, Qt::AlignLeft);
 
-  /// ---------------------
+  dist_lay->addWidget(new QLabel(tr("dZ"))               , 2, 5, Qt::AlignRight);
+  dist_lay->addWidget(this->get("bestfocus_to_pickup_dZ"), 2, 6, Qt::AlignRight);
+
+  // distance: shift from PSP marker-1 edge to PSS marker-1 edge
+  map_lineEdit_["PSP_to_PSS_dX"] = new QLineEdit(tr(""));
+  map_lineEdit_["PSP_to_PSS_dY"] = new QLineEdit(tr(""));
+
+  dist_lay->addWidget(new QLabel(tr("Offset from PSP to PSS :")), 3, 0, Qt::AlignLeft);
+
+  dist_lay->addWidget(new QLabel(tr("dX"))      , 3, 1, Qt::AlignRight);
+  dist_lay->addWidget(this->get("PSP_to_PSS_dX"), 3, 2, Qt::AlignRight);
+
+  dist_lay->addWidget(new QLabel(tr("dY"))      , 3, 3, Qt::AlignRight);
+  dist_lay->addWidget(this->get("PSP_to_PSS_dY"), 3, 4, Qt::AlignRight);
+
+  //// ---------------------
 
   layout->addStretch(1);
 
