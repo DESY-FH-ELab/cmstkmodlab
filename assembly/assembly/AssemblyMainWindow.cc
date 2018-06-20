@@ -279,6 +279,8 @@ AssemblyMainWindow::AssemblyMainWindow(const unsigned int camera_ID, QWidget* pa
     connect(hwctr_view_->Vacuum_Widget(), SIGNAL(toggleVacuum(int)), conradManager_, SLOT(toggleVacuum(int)));
     connect(conradManager_, SIGNAL(updateVacuumChannelState(int, bool)), hwctr_view_->Vacuum_Widget(), SLOT(updateVacuumChannelState(int, bool)));
 
+    connect(conradManager_, SIGNAL(enableVacuumButton()), hwctr_view_->Vacuum_Widget(), SLOT(enableVacuumButton()));
+
     conradManager_->updateVacuumChannelsStatus();
 
     NQLog("AssemblyMainWindow", NQLog::Message) << "added view " << tabname_HWCtrl;
@@ -640,7 +642,7 @@ void AssemblyMainWindow::start_multiPickupTest(const AssemblyMultiPickupTester::
   // pickup (vacuum)
   connect(multipickup_tester_, SIGNAL(vacuum_toggle(int)), conradManager_, SLOT(toggleVacuum(int)));
 
-  connect(conradManager_, SIGNAL(enableVacuumButton()), multipickup_tester_, SLOT(setup_next_step()));
+  connect(conradManager_, SIGNAL(vacuum_toggled()), multipickup_tester_, SLOT(setup_next_step()));
   // ---
 
   multipickup_tester_->set_configuration(conf);
@@ -666,7 +668,7 @@ void AssemblyMainWindow::disconnect_multiPickupTest()
   // pickup (vacuum)
   disconnect(multipickup_tester_, SIGNAL(vacuum_toggle(int)), conradManager_, SLOT(toggleVacuum(int)));
 
-  disconnect(conradManager_, SIGNAL(enableVacuumButton()), multipickup_tester_, SLOT(setup_next_step()));
+  disconnect(conradManager_, SIGNAL(vacuum_toggled()), multipickup_tester_, SLOT(setup_next_step()));
   // ---
 
   toolbox_view_->MultiPickupTester_Widget()->enable(true);

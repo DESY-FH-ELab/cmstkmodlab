@@ -43,12 +43,21 @@ class ConradManager : public QObject
   void vacuumToggled();
   void updateVacuumChannelsStatus();
 
+  void  enableVacuum(const int);
+  void disableVacuum(const int);
+
  //signal to say when vacuum state has changed (needs timer)
  signals:
 
   void updateVacuumChannelState(int, bool);
   void  enableVacuumButton();
   void disableVacuumButton();
+
+  void vacuum_toggled();
+
+  void vacuum_enabled();
+  void vacuum_disabled();
+  void vacuum_error();
 };
 
 #endif // CONRADMANAGER_H

@@ -78,6 +78,11 @@ void ConradManager::vacuumToggled()
      << ": emitting signal \"enableVacuumButton\"";
 
   emit enableVacuumButton();
+
+  NQLog("ConradManager", NQLog::Debug) << "vacuumToggled"
+     << ": emitting signal \"vacuum_toggled\"";
+
+  emit vacuum_toggled();
 }
 
 void ConradManager::updateVacuumChannelsStatus()
@@ -93,3 +98,71 @@ void ConradManager::updateVacuumChannelsStatus()
 }
 
 // maybe need checkStatus SLOT
+
+void ConradManager::enableVacuum(const int chNumber)
+{
+  const auto state = ConradModel_->getSwitchState(chNumber);
+
+  if(state == 0) // vacuum line is OFF
+  {
+    ConradModel_->setSwitchEnabled(chNumber, true);
+    channelNumber = chNumber;
+
+    liveTimer_->start(togglingVacuumDelay);
+  }
+  else if(state == 1) // vacuum line is ON
+  {
+    channelNumber = chNumber;
+
+    NQLog("ConradManager", NQLog::Spam) << "enableVacuum(" << chNumber << ")"
+       << ": emitting signal \"vacuum_enabled\"";
+
+    emit vacuum_enabled();
+  }
+  else
+  {
+    NQLog("ConradManager", NQLog::Critical) << "toggleVacuum(" << chNumber << ")"
+       << ": ERROR! Toggling vacuum error : SwithState != 0|1";
+
+    NQLog("ConradManager", NQLog::Spam) << "enableVacuum(" << chNumber << ")"
+       << ": emitting signal \"vacuum_error\"";
+
+    emit vacuum_error();
+  }
+
+  return;
+}
+
+void ConradManager::disableVacuum(const int chNumber)
+{
+  const auto state = ConradModel_->getSwitchState(chNumber);
+
+  if(state == 0) // vacuum line is OFF
+  {
+    channelNumber = chNumber;
+
+    NQLog("ConradManager", NQLog::Spam) << "disableVacuum(" << chNumber << ")"
+       << ": emitting signal \"vacuum_disabled\"";
+
+    emit vacuum_disabled();
+  }
+  else if(state == 1) // vacuum line is ON
+  {
+    ConradModel_->setSwitchEnabled(chNumber, false);
+    channelNumber = chNumber;
+
+    liveTimer_->start(togglingVacuumDelay);
+  }
+  else
+  {
+    NQLog("ConradManager", NQLog::Critical) << "toggleVacuum(" << chNumber << ")"
+       << ": ERROR! Toggling vacuum error : SwithState != 0|1";
+
+    NQLog("ConradManager", NQLog::Spam) << "disableVacuum(" << chNumber << ")"
+       << ": emitting signal \"vacuum_error\"";
+
+    emit vacuum_error();
+  }
+
+  return;
+}

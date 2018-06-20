@@ -17,12 +17,31 @@
 
 AssemblyAssembly::AssemblyAssembly(const LStepExpressMotionManager* const motion, const ConradManager* const vacuum, QObject* parent)
  : QObject(parent)
+
  , motion_(motion)
  , vacuum_(vacuum)
+
+ , vacuum_pickup_(0)
+ , vacuum_spacer_(0)
+ , vacuum_basepl_(0)
 {
   // validate pointers to controllers
   this->motion();
   this->vacuum();
+
+  // indices of vacuum lines
+  ApplicationConfig* config = ApplicationConfig::instance();
+  if(config == nullptr)
+  {
+    NQLog("AssemblyVacuumWidget", NQLog::Fatal)
+       << "ApplicationConfig::instance() not initialized (null pointer), stopped constructor";
+
+    return;
+  }
+
+  vacuum_pickup_ = config->getValue<int>("Vacuum_PickupTool");
+  vacuum_spacer_ = config->getValue<int>("Vacuum_Spacers");
+  vacuum_basepl_ = config->getValue<int>("Vacuum_Baseplate");
 }
 
 const LStepExpressMotionManager* AssemblyAssembly::motion() const
@@ -114,6 +133,186 @@ void AssemblyAssembly::GoToSensorMarkerPreAlignment_finish()
   disconnect(motion_, SIGNAL(motion_finished()), this, SLOT(GoToSensorMarkerPreAlignment_finish()));
 
   NQLog("AssemblyAssembly", NQLog::Spam) << "GoToSensorMarkerPreAlignment_finish"
+     << ": assembly-step completed";
+
+  return;
+}
+// ----------------------------------------------------------------------------------------------------
+
+// ----------------------------------------------------------------------------------------------------
+void AssemblyAssembly::EnableVacuumPickupTool_start()
+{
+  connect(this, SIGNAL(vacuum_ON_request(int)), this->vacuum(), SLOT(enableVacuum(int)));
+
+  connect(this->vacuum(), SIGNAL(vacuum_enabled()), this, SLOT(EnableVacuumPickupTool_finish()));
+  connect(this->vacuum(), SIGNAL(vacuum_toggled()), this, SLOT(EnableVacuumPickupTool_finish()));
+  connect(this->vacuum(), SIGNAL(vacuum_error  ()), this, SLOT(EnableVacuumPickupTool_finish()));
+
+  NQLog("AssemblyAssembly", NQLog::Spam) << "EnableVacuumPickupTool_start"
+     << ": emitting signal \"vacuum_ON_request(" << vacuum_pickup_ << ")\"";
+
+  emit vacuum_ON_request(vacuum_pickup_);
+}
+
+void AssemblyAssembly::EnableVacuumPickupTool_finish()
+{
+  disconnect(this, SIGNAL(vacuum_ON_request(int)), this->vacuum(), SLOT(enableVacuum(int)));
+
+  disconnect(this->vacuum(), SIGNAL(vacuum_enabled()), this, SLOT(EnableVacuumPickupTool_finish()));
+  disconnect(this->vacuum(), SIGNAL(vacuum_toggled()), this, SLOT(EnableVacuumPickupTool_finish()));
+  disconnect(this->vacuum(), SIGNAL(vacuum_error  ()), this, SLOT(EnableVacuumPickupTool_finish()));
+
+  NQLog("AssemblyAssembly", NQLog::Spam) << "EnableVacuumPickupTool_finish"
+     << ": assembly-step completed";
+
+  return;
+}
+// ----------------------------------------------------------------------------------------------------
+
+// ----------------------------------------------------------------------------------------------------
+void AssemblyAssembly::DisableVacuumPickupTool_start()
+{
+  connect(this, SIGNAL(vacuum_OFF_request(int)), this->vacuum(), SLOT(disableVacuum(int)));
+
+  connect(this->vacuum(), SIGNAL(vacuum_disabled()), this, SLOT(DisableVacuumPickupTool_finish()));
+  connect(this->vacuum(), SIGNAL(vacuum_toggled ()), this, SLOT(DisableVacuumPickupTool_finish()));
+  connect(this->vacuum(), SIGNAL(vacuum_error   ()), this, SLOT(DisableVacuumPickupTool_finish()));
+
+  NQLog("AssemblyAssembly", NQLog::Spam) << "DisableVacuumPickupTool_start"
+     << ": emitting signal \"vacuum_OFF_request(" << vacuum_pickup_ << ")\"";
+
+  emit vacuum_OFF_request(vacuum_pickup_);
+}
+
+void AssemblyAssembly::DisableVacuumPickupTool_finish()
+{
+  disconnect(this, SIGNAL(vacuum_OFF_request(int)), this->vacuum(), SLOT(disableVacuum(int)));
+
+  disconnect(this->vacuum(), SIGNAL(vacuum_disabled()), this, SLOT(DisableVacuumPickupTool_finish()));
+  disconnect(this->vacuum(), SIGNAL(vacuum_toggled ()), this, SLOT(DisableVacuumPickupTool_finish()));
+  disconnect(this->vacuum(), SIGNAL(vacuum_error   ()), this, SLOT(DisableVacuumPickupTool_finish()));
+
+  NQLog("AssemblyAssembly", NQLog::Spam) << "DisableVacuumPickupTool_finish"
+     << ": assembly-step completed";
+
+  return;
+}
+// ----------------------------------------------------------------------------------------------------
+
+// ----------------------------------------------------------------------------------------------------
+void AssemblyAssembly::EnableVacuumSpacers_start()
+{
+  connect(this, SIGNAL(vacuum_ON_request(int)), this->vacuum(), SLOT(enableVacuum(int)));
+
+  connect(this->vacuum(), SIGNAL(vacuum_enabled()), this, SLOT(EnableVacuumSpacers_finish()));
+  connect(this->vacuum(), SIGNAL(vacuum_toggled()), this, SLOT(EnableVacuumSpacers_finish()));
+  connect(this->vacuum(), SIGNAL(vacuum_error  ()), this, SLOT(EnableVacuumSpacers_finish()));
+
+  NQLog("AssemblyAssembly", NQLog::Spam) << "EnableVacuumSpacers_start"
+     << ": emitting signal \"vacuum_ON_request(" << vacuum_spacer_ << ")\"";
+
+  emit vacuum_ON_request(vacuum_spacer_);
+}
+
+void AssemblyAssembly::EnableVacuumSpacers_finish()
+{
+  disconnect(this, SIGNAL(vacuum_ON_request(int)), this->vacuum(), SLOT(enableVacuum(int)));
+
+  disconnect(this->vacuum(), SIGNAL(vacuum_enabled()), this, SLOT(EnableVacuumSpacers_finish()));
+  disconnect(this->vacuum(), SIGNAL(vacuum_toggled()), this, SLOT(EnableVacuumSpacers_finish()));
+  disconnect(this->vacuum(), SIGNAL(vacuum_error  ()), this, SLOT(EnableVacuumSpacers_finish()));
+
+  NQLog("AssemblyAssembly", NQLog::Spam) << "EnableVacuumSpacers_finish"
+     << ": assembly-step completed";
+
+  return;
+}
+// ----------------------------------------------------------------------------------------------------
+
+// ----------------------------------------------------------------------------------------------------
+void AssemblyAssembly::DisableVacuumSpacers_start()
+{
+  connect(this, SIGNAL(vacuum_OFF_request(int)), this->vacuum(), SLOT(disableVacuum(int)));
+
+  connect(this->vacuum(), SIGNAL(vacuum_disabled()), this, SLOT(DisableVacuumSpacers_finish()));
+  connect(this->vacuum(), SIGNAL(vacuum_toggled ()), this, SLOT(DisableVacuumSpacers_finish()));
+  connect(this->vacuum(), SIGNAL(vacuum_error   ()), this, SLOT(DisableVacuumSpacers_finish()));
+
+  NQLog("AssemblyAssembly", NQLog::Spam) << "DisableVacuumSpacers_start"
+     << ": emitting signal \"vacuum_OFF_request(" << vacuum_spacer_ << ")\"";
+
+  emit vacuum_OFF_request(vacuum_spacer_);
+}
+
+void AssemblyAssembly::DisableVacuumSpacers_finish()
+{
+  disconnect(this, SIGNAL(vacuum_OFF_request(int)), this->vacuum(), SLOT(disableVacuum(int)));
+
+  disconnect(this->vacuum(), SIGNAL(vacuum_disabled()), this, SLOT(DisableVacuumSpacers_finish()));
+  disconnect(this->vacuum(), SIGNAL(vacuum_toggled ()), this, SLOT(DisableVacuumSpacers_finish()));
+  disconnect(this->vacuum(), SIGNAL(vacuum_error   ()), this, SLOT(DisableVacuumSpacers_finish()));
+
+  NQLog("AssemblyAssembly", NQLog::Spam) << "DisableVacuumSpacers_finish"
+     << ": assembly-step completed";
+
+  return;
+}
+// ----------------------------------------------------------------------------------------------------
+
+// ----------------------------------------------------------------------------------------------------
+void AssemblyAssembly::EnableVacuumBaseplate_start()
+{
+  connect(this, SIGNAL(vacuum_ON_request(int)), this->vacuum(), SLOT(enableVacuum(int)));
+
+  connect(this->vacuum(), SIGNAL(vacuum_enabled()), this, SLOT(EnableVacuumBaseplate_finish()));
+  connect(this->vacuum(), SIGNAL(vacuum_toggled()), this, SLOT(EnableVacuumBaseplate_finish()));
+  connect(this->vacuum(), SIGNAL(vacuum_error  ()), this, SLOT(EnableVacuumBaseplate_finish()));
+
+  NQLog("AssemblyAssembly", NQLog::Spam) << "EnableVacuumBaseplate_start"
+     << ": emitting signal \"vacuum_ON_request(" << vacuum_basepl_ << ")\"";
+
+  emit vacuum_ON_request(vacuum_basepl_);
+}
+
+void AssemblyAssembly::EnableVacuumBaseplate_finish()
+{
+  disconnect(this, SIGNAL(vacuum_ON_request(int)), this->vacuum(), SLOT(enableVacuum(int)));
+
+  disconnect(this->vacuum(), SIGNAL(vacuum_enabled()), this, SLOT(EnableVacuumBaseplate_finish()));
+  disconnect(this->vacuum(), SIGNAL(vacuum_toggled()), this, SLOT(EnableVacuumBaseplate_finish()));
+  disconnect(this->vacuum(), SIGNAL(vacuum_error  ()), this, SLOT(EnableVacuumBaseplate_finish()));
+
+  NQLog("AssemblyAssembly", NQLog::Spam) << "EnableVacuumBaseplate_finish"
+     << ": assembly-step completed";
+
+  return;
+}
+// ----------------------------------------------------------------------------------------------------
+
+// ----------------------------------------------------------------------------------------------------
+void AssemblyAssembly::DisableVacuumBaseplate_start()
+{
+  connect(this, SIGNAL(vacuum_OFF_request(int)), this->vacuum(), SLOT(disableVacuum(int)));
+
+  connect(this->vacuum(), SIGNAL(vacuum_disabled()), this, SLOT(DisableVacuumBaseplate_finish()));
+  connect(this->vacuum(), SIGNAL(vacuum_toggled ()), this, SLOT(DisableVacuumBaseplate_finish()));
+  connect(this->vacuum(), SIGNAL(vacuum_error   ()), this, SLOT(DisableVacuumBaseplate_finish()));
+
+  NQLog("AssemblyAssembly", NQLog::Spam) << "DisableVacuumBaseplate_start"
+     << ": emitting signal \"vacuum_OFF_request(" << vacuum_basepl_ << ")\"";
+
+  emit vacuum_OFF_request(vacuum_basepl_);
+}
+
+void AssemblyAssembly::DisableVacuumBaseplate_finish()
+{
+  disconnect(this, SIGNAL(vacuum_OFF_request(int)), this->vacuum(), SLOT(disableVacuum(int)));
+
+  disconnect(this->vacuum(), SIGNAL(vacuum_disabled()), this, SLOT(DisableVacuumBaseplate_finish()));
+  disconnect(this->vacuum(), SIGNAL(vacuum_toggled ()), this, SLOT(DisableVacuumBaseplate_finish()));
+  disconnect(this->vacuum(), SIGNAL(vacuum_error   ()), this, SLOT(DisableVacuumBaseplate_finish()));
+
+  NQLog("AssemblyAssembly", NQLog::Spam) << "DisableVacuumBaseplate_finish"
      << ": assembly-step completed";
 
   return;

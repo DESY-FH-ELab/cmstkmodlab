@@ -38,15 +38,44 @@ class AssemblyAssembly : public QObject
   const LStepExpressMotionManager* const motion_;
   const ConradManager*             const vacuum_;
 
+  int vacuum_pickup_;
+  int vacuum_spacer_;
+  int vacuum_basepl_;
+
  public slots:
 
+  // motion
   void GoToSensorMarkerPreAlignment_start();
   void GoToSensorMarkerPreAlignment_finish();
+  // ------
+
+  // vacuum
+  void  EnableVacuumPickupTool_start();
+  void  EnableVacuumPickupTool_finish();
+
+  void DisableVacuumPickupTool_start();
+  void DisableVacuumPickupTool_finish();
+
+  void  EnableVacuumSpacers_start();
+  void  EnableVacuumSpacers_finish();
+
+  void DisableVacuumSpacers_start();
+  void DisableVacuumSpacers_finish();
+
+  void  EnableVacuumBaseplate_start();
+  void  EnableVacuumBaseplate_finish();
+
+  void DisableVacuumBaseplate_start();
+  void DisableVacuumBaseplate_finish();
+  // ------
 
  signals:
 
   void move_absolute(const double, const double, const double, const double);
   void move_relative(const double, const double, const double, const double);
+
+  void vacuum_ON_request (const int);
+  void vacuum_OFF_request(const int);
 };
 
 #endif // ASSEMBLYASSEMBLY_H

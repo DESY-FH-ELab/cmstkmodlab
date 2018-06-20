@@ -77,8 +77,6 @@ AssemblyAssemblyView::AssemblyAssemblyView(const AssemblyAssembly* const assembl
     tmp_wid->label()->setText(QString::number(assembly_step_N_));
     tmp_wid->text() ->setText("Place PSS on Assembly Platform");
     PSSAlignm_lay->addWidget(tmp_wid);
-
-//    connect(tmp_wid->button(), SIGNAL(clicked()), assembly, SLOT(GoToPSSPreAlignment()));
   }
   // ----------
 
@@ -91,7 +89,7 @@ AssemblyAssemblyView::AssemblyAssemblyView(const AssemblyAssembly* const assembl
     tmp_wid->button()->setText("Enable Sensor Vacuum");
     PSSAlignm_lay->addWidget(tmp_wid);
 
-//    connect(tmp_wid->button(), SIGNAL(clicked()), assembly, SLOT(GoToPSSPreAlignment()));
+    connect(tmp_wid->button(), SIGNAL(clicked()), assembly, SLOT(EnableVacuumBaseplate_start()));
   }
   // ----------
 

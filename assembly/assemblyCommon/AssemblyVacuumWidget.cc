@@ -46,7 +46,7 @@ AssemblyVacuumWidget::AssemblyVacuumWidget(const QString& label, QWidget* parent
   }
 
   /// PICKUP TOOL
-  const int vacuum_pickup = config->getValue<int>("AssemblyVacuumWidget_PickupTool");
+  const int vacuum_pickup = config->getValue<int>("Vacuum_PickupTool");
 
   valuemap_[vacuum_pickup] = Entry();
 
@@ -60,7 +60,7 @@ AssemblyVacuumWidget::AssemblyVacuumWidget(const QString& label, QWidget* parent
   /// ------------------------------
 
   /// SPACERS
-  const int vacuum_spacer = config->getValue<int>("AssemblyVacuumWidget_Spacers");
+  const int vacuum_spacer = config->getValue<int>("Vacuum_Spacers");
 
   valuemap_[vacuum_spacer] = Entry();
 
@@ -74,7 +74,7 @@ AssemblyVacuumWidget::AssemblyVacuumWidget(const QString& label, QWidget* parent
   /// ------------------------------
 
   /// BASEPLATE
-  const int vacuum_basepl = config->getValue<int>("AssemblyVacuumWidget_Baseplate");
+  const int vacuum_basepl = config->getValue<int>("Vacuum_Baseplate");
 
   valuemap_[vacuum_basepl] = Entry();
 
@@ -153,8 +153,6 @@ void AssemblyVacuumWidget::updateVacuumChannelState(const int channelNumber, con
     this->get(channelNumber).label_->setText(" VACUUM OFF");
     this->get(channelNumber).label_->setStyleSheet("QLabel { background-color : green; color : black; }");
   }
-
-  this->enableVacuumButton();
 
   return;
 }
