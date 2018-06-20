@@ -122,25 +122,45 @@ AssemblyParametersView::AssemblyParametersView(QWidget* parent) :
   QGridLayout* posi_lay = new QGridLayout;
   posi_wid_->setLayout(posi_lay);
 
-  // position: XYZA position to point camera on Spacer Ref-Point (bottom-left edge)
+  // position: XYZA position to point camera to sensor marker-1 (using reference mark on platform to place sensor)
+  map_lineEdit_["refPointSensor_X"] = new QLineEdit(tr(""));
+  map_lineEdit_["refPointSensor_Y"] = new QLineEdit(tr(""));
+  map_lineEdit_["refPointSensor_Z"] = new QLineEdit(tr(""));
+  map_lineEdit_["refPointSensor_A"] = new QLineEdit(tr(""));
+
+  posi_lay->addWidget(new QLabel(tr("Sensor Marker-1 (using platform mark):")), 0, 0, Qt::AlignLeft);
+
+  posi_lay->addWidget(new QLabel(tr("X"))          , 0, 1, Qt::AlignRight);
+  posi_lay->addWidget(this->get("refPointSensor_X"), 0, 2, Qt::AlignRight);
+
+  posi_lay->addWidget(new QLabel(tr("Y"))          , 0, 3, Qt::AlignRight);
+  posi_lay->addWidget(this->get("refPointSensor_Y"), 0, 4, Qt::AlignRight);
+
+  posi_lay->addWidget(new QLabel(tr("Z"))          , 0, 5, Qt::AlignRight);
+  posi_lay->addWidget(this->get("refPointSensor_Z"), 0, 6, Qt::AlignRight);
+
+  posi_lay->addWidget(new QLabel(tr("A"))          , 0, 7, Qt::AlignRight);
+  posi_lay->addWidget(this->get("refPointSensor_A"), 0, 8, Qt::AlignRight);
+
+  // position: XYZA position to point camera to Spacer Ref-Point (bottom-left edge)
   map_lineEdit_["refPointSpacer_X"] = new QLineEdit(tr(""));
   map_lineEdit_["refPointSpacer_Y"] = new QLineEdit(tr(""));
   map_lineEdit_["refPointSpacer_Z"] = new QLineEdit(tr(""));
   map_lineEdit_["refPointSpacer_A"] = new QLineEdit(tr(""));
 
-  posi_lay->addWidget(new QLabel(tr("Bottom-Left Edge of Spacer (aligned to X-axis):")), 0, 0, Qt::AlignLeft);
+  posi_lay->addWidget(new QLabel(tr("Bottom-Left Edge of Spacer (aligned to X-axis):")), 1, 0, Qt::AlignLeft);
 
-  posi_lay->addWidget(new QLabel(tr("X"))          , 0, 1, Qt::AlignRight);
-  posi_lay->addWidget(this->get("refPointSpacer_X"), 0, 2, Qt::AlignRight);
+  posi_lay->addWidget(new QLabel(tr("X"))          , 1, 1, Qt::AlignRight);
+  posi_lay->addWidget(this->get("refPointSpacer_X"), 1, 2, Qt::AlignRight);
 
-  posi_lay->addWidget(new QLabel(tr("Y"))          , 0, 3, Qt::AlignRight);
-  posi_lay->addWidget(this->get("refPointSpacer_Y"), 0, 4, Qt::AlignRight);
+  posi_lay->addWidget(new QLabel(tr("Y"))          , 1, 3, Qt::AlignRight);
+  posi_lay->addWidget(this->get("refPointSpacer_Y"), 1, 4, Qt::AlignRight);
 
-  posi_lay->addWidget(new QLabel(tr("Z"))          , 0, 5, Qt::AlignRight);
-  posi_lay->addWidget(this->get("refPointSpacer_Z"), 0, 6, Qt::AlignRight);
+  posi_lay->addWidget(new QLabel(tr("Z"))          , 1, 5, Qt::AlignRight);
+  posi_lay->addWidget(this->get("refPointSpacer_Z"), 1, 6, Qt::AlignRight);
 
-  posi_lay->addWidget(new QLabel(tr("A"))          , 0, 7, Qt::AlignRight);
-  posi_lay->addWidget(this->get("refPointSpacer_A"), 0, 8, Qt::AlignRight);
+  posi_lay->addWidget(new QLabel(tr("A"))          , 1, 7, Qt::AlignRight);
+  posi_lay->addWidget(this->get("refPointSpacer_A"), 1, 8, Qt::AlignRight);
 
   // position: XYZA position to point camera on Baseplate Ref-Point
   map_lineEdit_["refPointBaseplate_X"] = new QLineEdit(tr(""));
@@ -148,43 +168,43 @@ AssemblyParametersView::AssemblyParametersView(QWidget* parent) :
   map_lineEdit_["refPointBaseplate_Z"] = new QLineEdit(tr(""));
   map_lineEdit_["refPointBaseplate_A"] = new QLineEdit(tr(""));
 
-  posi_lay->addWidget(new QLabel(tr("Ref-Point of Baseplate (aligned to X-axis):")), 1, 0, Qt::AlignLeft);
+  posi_lay->addWidget(new QLabel(tr("Ref-Point of Baseplate (aligned to X-axis):")), 2, 0, Qt::AlignLeft);
 
-  posi_lay->addWidget(new QLabel(tr("X"))             , 1, 1, Qt::AlignRight);
-  posi_lay->addWidget(this->get("refPointBaseplate_X"), 1, 2, Qt::AlignRight);
+  posi_lay->addWidget(new QLabel(tr("X"))             , 2, 1, Qt::AlignRight);
+  posi_lay->addWidget(this->get("refPointBaseplate_X"), 2, 2, Qt::AlignRight);
 
-  posi_lay->addWidget(new QLabel(tr("Y"))             , 1, 3, Qt::AlignRight);
-  posi_lay->addWidget(this->get("refPointBaseplate_Y"), 1, 4, Qt::AlignRight);
+  posi_lay->addWidget(new QLabel(tr("Y"))             , 2, 3, Qt::AlignRight);
+  posi_lay->addWidget(this->get("refPointBaseplate_Y"), 2, 4, Qt::AlignRight);
 
-  posi_lay->addWidget(new QLabel(tr("Z"))             , 1, 5, Qt::AlignRight);
-  posi_lay->addWidget(this->get("refPointBaseplate_Z"), 1, 6, Qt::AlignRight);
+  posi_lay->addWidget(new QLabel(tr("Z"))             , 2, 5, Qt::AlignRight);
+  posi_lay->addWidget(this->get("refPointBaseplate_Z"), 2, 6, Qt::AlignRight);
 
-  posi_lay->addWidget(new QLabel(tr("A"))             , 1, 7, Qt::AlignRight);
-  posi_lay->addWidget(this->get("refPointBaseplate_A"), 1, 8, Qt::AlignRight);
+  posi_lay->addWidget(new QLabel(tr("A"))             , 2, 7, Qt::AlignRight);
+  posi_lay->addWidget(this->get("refPointBaseplate_A"), 2, 8, Qt::AlignRight);
 
   // position: Z-position (height) to put pickup tool in contact with rotation stage
   map_lineEdit_["pickupOnRotStage_Z"] = new QLineEdit(tr(""));
 
-  posi_lay->addWidget(new QLabel(tr("Pickup Position on Rotation Stage :")), 2, 0, Qt::AlignLeft);
+  posi_lay->addWidget(new QLabel(tr("Pickup Position on Rotation Stage :")), 3, 0, Qt::AlignLeft);
 
-  posi_lay->addWidget(new QLabel(tr("Z"))            , 2, 5, Qt::AlignRight);
-  posi_lay->addWidget(this->get("pickupOnRotStage_Z"), 2, 6, Qt::AlignRight);
+  posi_lay->addWidget(new QLabel(tr("Z"))            , 3, 5, Qt::AlignRight);
+  posi_lay->addWidget(this->get("pickupOnRotStage_Z"), 3, 6, Qt::AlignRight);
 
   // position: XY pickup position on glue-dispensing platform + Z-position (height) to put pickup tool in contact with platform
   map_lineEdit_["pickupOnGluingStage_X"] = new QLineEdit(tr(""));
   map_lineEdit_["pickupOnGluingStage_Y"] = new QLineEdit(tr(""));
   map_lineEdit_["pickupOnGluingStage_Z"] = new QLineEdit(tr(""));
 
-  posi_lay->addWidget(new QLabel(tr("Pickup Position on Glue-Dispensing platform :")), 3, 0, Qt::AlignLeft);
+  posi_lay->addWidget(new QLabel(tr("Pickup Position on Glue-Dispensing platform :")), 4, 0, Qt::AlignLeft);
 
-  posi_lay->addWidget(new QLabel(tr("X"))               , 3, 1, Qt::AlignRight);
-  posi_lay->addWidget(this->get("pickupOnGluingStage_X"), 3, 2, Qt::AlignRight);
+  posi_lay->addWidget(new QLabel(tr("X"))               , 4, 1, Qt::AlignRight);
+  posi_lay->addWidget(this->get("pickupOnGluingStage_X"), 4, 2, Qt::AlignRight);
 
-  posi_lay->addWidget(new QLabel(tr("Y"))               , 3, 3, Qt::AlignRight);
-  posi_lay->addWidget(this->get("pickupOnGluingStage_Y"), 3, 4, Qt::AlignRight);
+  posi_lay->addWidget(new QLabel(tr("Y"))               , 4, 3, Qt::AlignRight);
+  posi_lay->addWidget(this->get("pickupOnGluingStage_Y"), 4, 4, Qt::AlignRight);
 
-  posi_lay->addWidget(new QLabel(tr("Z"))               , 3, 5, Qt::AlignRight);
-  posi_lay->addWidget(this->get("pickupOnGluingStage_Z"), 3, 6, Qt::AlignRight);
+  posi_lay->addWidget(new QLabel(tr("Z"))               , 4, 5, Qt::AlignRight);
+  posi_lay->addWidget(this->get("pickupOnGluingStage_Z"), 4, 6, Qt::AlignRight);
 
   //// ---------------------
 
