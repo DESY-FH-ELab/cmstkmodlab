@@ -69,19 +69,6 @@ AssemblyAssemblyView::AssemblyAssemblyView(const AssemblyAssembly* const assembl
   QVBoxLayout* PSSAlignm_lay = new QVBoxLayout;
   wid_PSSAlignm_->setLayout(PSSAlignm_lay);
 
-  // step: Arrange Assembly Platform for PSS alignment
-  {
-    ++assembly_step_N_;
-
-    AssemblyAssemblyActionWidget* tmp_wid = new AssemblyAssemblyActionWidget;
-    tmp_wid->label() ->setText(QString::number(assembly_step_N_));
-    tmp_wid->button()->setText("Arrange Assembly Platform for PSS alignment");
-    PSSAlignm_lay->addWidget(tmp_wid);
-
-    connect(tmp_wid->button(), SIGNAL(clicked()), assembly, SLOT(GoToPSSPreAlignment()));
-  }
-  // ----------
-
   // step: Place PSS on Assembly Platform
   {
     ++assembly_step_N_;
@@ -90,8 +77,6 @@ AssemblyAssemblyView::AssemblyAssemblyView(const AssemblyAssembly* const assembl
     tmp_wid->label()->setText(QString::number(assembly_step_N_));
     tmp_wid->text() ->setText("Place PSS on Assembly Platform");
     PSSAlignm_lay->addWidget(tmp_wid);
-
-//    connect(tmp_wid->button(), SIGNAL(clicked()), assembly, SLOT(GoToPSSPreAlignment()));
   }
   // ----------
 
@@ -104,7 +89,7 @@ AssemblyAssemblyView::AssemblyAssemblyView(const AssemblyAssembly* const assembl
     tmp_wid->button()->setText("Enable Sensor Vacuum");
     PSSAlignm_lay->addWidget(tmp_wid);
 
-//    connect(tmp_wid->button(), SIGNAL(clicked()), assembly, SLOT(GoToPSSPreAlignment()));
+    connect(tmp_wid->button(), SIGNAL(clicked()), assembly, SLOT(EnableVacuumBaseplate_start()));
   }
   // ----------
 
@@ -117,7 +102,7 @@ AssemblyAssemblyView::AssemblyAssemblyView(const AssemblyAssembly* const assembl
     tmp_wid->button()->setText("Go To Measurement Position on PSS");
     PSSAlignm_lay->addWidget(tmp_wid);
 
-//    connect(tmp_wid->button(), SIGNAL(clicked()), assembly, SLOT(GoToPSSPreAlignment()));
+    connect(tmp_wid->button(), SIGNAL(clicked()), assembly, SLOT(GoToSensorMarkerPreAlignment_start()));
   }
   // ----------
 
@@ -416,8 +401,6 @@ AssemblyAssemblyActionWidget::AssemblyAssemblyActionWidget(QWidget* parent)
   layout_->addWidget(button_   , 40);
   layout_->addWidget(new QLabel, 48);
   layout_->addWidget(checkbox_ , 10);
-
-  connect(button_, SIGNAL(clicked()), this, SLOT(execute()));
   // --------------
 }
 

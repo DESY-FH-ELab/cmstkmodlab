@@ -11,11 +11,13 @@
 /////////////////////////////////////////////////////////////////////////////////
 
 #include <nqlogger.h>
+#include <ApplicationConfig.h>
 
 #include <AssemblyVacuumWidget.h>
 
 #include <QPixmap>
 #include <QPainter>
+#include <QMessageBox>
 
 AssemblyVacuumWidget::AssemblyVacuumWidget(const QString& label, QWidget* parent) : QWidget(parent)
 {
@@ -25,18 +27,6 @@ AssemblyVacuumWidget::AssemblyVacuumWidget(const QString& label, QWidget* parent
   button_ = new QPushButton(label, this);
   layout_->addWidget(button_);
 
-  QGridLayout* grid = new QGridLayout;
-
-  QRadioButton* radio_1 = new QRadioButton(tr("&Pickup")   , this);
-  QRadioButton* radio_2 = new QRadioButton(tr("&Spacers")  , this);
-  QRadioButton* radio_3 = new QRadioButton(tr("&Baseplate"), this);
-//  QRadioButton* radio_4 = new QRadioButton(tr("&Channel 4"), this);
-
-  grid->addWidget(radio_1, 1, 0);
-  grid->addWidget(radio_2, 3, 0);
-  grid->addWidget(radio_3, 5, 0);
-//  grid->addWidget(radio_4, 7, 0);
-
   QPixmap pixmap(100, 100);
   pixmap.fill(QColor("transparent"));
 
@@ -44,44 +34,60 @@ AssemblyVacuumWidget::AssemblyVacuumWidget(const QString& label, QWidget* parent
   painter.setBrush(QBrush(Qt::red));
   painter.drawEllipse(0, 0, 30, 30);
 
-  QLabel* label_1 = new QLabel("", this);
-  label_1->setPixmap(pixmap);
-  label_1->setText(" VACUUM OFF");
-  label_1->setStyleSheet("QLabel { background-color : green; color : black; }");
+  QGridLayout* grid = new QGridLayout;
 
-  QLabel* label_2 = new QLabel("", this);
-  label_2->setPixmap(pixmap);
-  label_2->setText(" VACUUM OFF");
-  label_2->setStyleSheet("QLabel { background-color : green; color : black; }");
+  ApplicationConfig* config = ApplicationConfig::instance();
+  if(config == nullptr)
+  {
+    NQLog("AssemblyVacuumWidget", NQLog::Fatal)
+       << "ApplicationConfig::instance() not initialized (null pointer), stopped constructor";
 
-  QLabel* label_3 = new QLabel("", this);
-  label_3->setPixmap(pixmap);
-  label_3->setText(" VACUUM OFF");
-  label_3->setStyleSheet("QLabel { background-color : green; color : black; }");
+    return;
+  }
 
-//  QLabel* label_4 = new QLabel("", this);
-//  label_4->setPixmap(pixmap);
-//  label_4->setText(" VACUUM OFF");
-//  label_4->setStyleSheet("QLabel { background-color : green; color : black; }");
+  /// PICKUP TOOL
+  const int vacuum_pickup = config->getValue<int>("Vacuum_PickupTool");
 
-  grid->addWidget(label_1, 1, 1);
-  grid->addWidget(label_2, 3, 1);
-  grid->addWidget(label_3, 5, 1);
-//  grid->addWidget(label_4, 7, 1);
+  valuemap_[vacuum_pickup] = Entry();
+
+  valuemap_.at(vacuum_pickup).radioButton_ = new QRadioButton(tr("Pickup"));
+  valuemap_.at(vacuum_pickup).label_ = new QLabel(tr(" VACUUM OFF"));
+  valuemap_.at(vacuum_pickup).label_->setPixmap(pixmap);
+  valuemap_.at(vacuum_pickup).label_->setStyleSheet("QLabel { background-color : green; color : black; }");
+
+  grid->addWidget(valuemap_.at(vacuum_pickup).radioButton_, 1, 0);
+  grid->addWidget(valuemap_.at(vacuum_pickup).label_      , 1, 1);
+  /// ------------------------------
+
+  /// SPACERS
+  const int vacuum_spacer = config->getValue<int>("Vacuum_Spacers");
+
+  valuemap_[vacuum_spacer] = Entry();
+
+  valuemap_.at(vacuum_spacer).radioButton_ = new QRadioButton(tr("Spacers"));
+  valuemap_.at(vacuum_spacer).label_ = new QLabel(tr(" VACUUM OFF"));
+  valuemap_.at(vacuum_spacer).label_->setPixmap(pixmap);
+  valuemap_.at(vacuum_spacer).label_->setStyleSheet("QLabel { background-color : green; color : black; }");
+
+  grid->addWidget(valuemap_.at(vacuum_spacer).radioButton_, 3, 0);
+  grid->addWidget(valuemap_.at(vacuum_spacer).label_      , 3, 1);
+  /// ------------------------------
+
+  /// BASEPLATE
+  const int vacuum_basepl = config->getValue<int>("Vacuum_Baseplate");
+
+  valuemap_[vacuum_basepl] = Entry();
+
+  valuemap_.at(vacuum_basepl).radioButton_ = new QRadioButton(tr("Baseplate"));
+  valuemap_.at(vacuum_basepl).label_ = new QLabel(tr(" VACUUM OFF"));
+  valuemap_.at(vacuum_basepl).label_->setPixmap(pixmap);
+  valuemap_.at(vacuum_basepl).label_->setStyleSheet("QLabel { background-color : green; color : black; }");
+
+  grid->addWidget(valuemap_.at(vacuum_basepl).radioButton_, 5, 0);
+  grid->addWidget(valuemap_.at(vacuum_basepl).label_      , 5, 1);
+  /// ------------------------------
 
   layout_->addLayout(grid);
-
-  valves_.clear();
-  valves_.push_back(radio_1);
-  valves_.push_back(radio_2);
-  valves_.push_back(radio_3);
-//  valves_.push_back(radio4);
-
-  labels_.clear();
-  labels_.push_back(label_1);
-  labels_.push_back(label_2);
-  labels_.push_back(label_3);
-//  labels_.push_back(label_4);
 
   connect(button_, SIGNAL(clicked()), this, SLOT(toggleVacuum()));
 
@@ -90,23 +96,28 @@ AssemblyVacuumWidget::AssemblyVacuumWidget(const QString& label, QWidget* parent
 
 void AssemblyVacuumWidget::toggleVacuum()
 {
-  for(unsigned int i=0; i<valves_.size(); ++i)
+  for(const auto& i_vacuum : valuemap_)
   {
-    if(valves_.at(i)->isChecked())
+    QRadioButton* const radioButton = i_vacuum.second.radioButton_;
+
+    if(radioButton != nullptr)
     {
-      button_->setEnabled(false);
+      if(radioButton->isChecked() == true)
+      {
+        button_->setEnabled(false);
 
-      NQLog("AssemblyVacuumWidget") << "toggleVacuum"
-        << ": emitting signal toggleVacuum(" << i+1 << ")";
+        NQLog("AssemblyVacuumWidget") << "toggleVacuum"
+          << ": emitting signal toggleVacuum(" << i_vacuum.first << ")";
 
-      emit toggleVacuum(i+1);
+        emit toggleVacuum(i_vacuum.first);
 
-      return;
+        return;
+      }
     }
   }
 
   NQLog("AssemblyVacuumWidget", NQLog::Warning) << "toggleVacuum"
-    << ": no channel selected, vacuum not toggled";
+     << ": no channel selected, vacuum not toggled";
 
   return;
 }
@@ -123,25 +134,49 @@ void AssemblyVacuumWidget::disableVacuumButton()
 
 void AssemblyVacuumWidget::updateVacuumChannelState(const int channelNumber, const bool channelState)
 {
-  if(channelNumber >= int(labels_.size()))
+  if(this->has(channelNumber) == false)
   {
     NQLog("AssemblyVacuumWidget", NQLog::Warning) << "updateVacuumChannelState"
        << "(" << channelNumber << ", " << channelState << ")"
-       << ": out-of-range input channel number (" << channelNumber << "), no action taken";
+       << ": vacuum line with index " << channelNumber << " not found, no action taken";
 
     return;
   }
 
-  emit enableVacuumButton();
-
   if(channelState)
   {
-    labels_.at(channelNumber)->setText(" VACUUM ON");
-    labels_.at(channelNumber)->setStyleSheet("QLabel { background-color : red; color : black; }");
+    this->get(channelNumber).label_->setText(" VACUUM ON");
+    this->get(channelNumber).label_->setStyleSheet("QLabel { background-color : red; color : black; }");
   }
   else
   {
-    labels_.at(channelNumber)->setText(" VACUUM OFF");
-    labels_.at(channelNumber)->setStyleSheet("QLabel { background-color : green; color : black; }");
+    this->get(channelNumber).label_->setText(" VACUUM OFF");
+    this->get(channelNumber).label_->setStyleSheet("QLabel { background-color : green; color : black; }");
   }
+
+  return;
+}
+
+bool AssemblyVacuumWidget::has(const int key) const
+{
+  return bool(valuemap_.find(key) != valuemap_.end());
+}
+
+AssemblyVacuumWidget::Entry AssemblyVacuumWidget::get(const int key) const
+{
+  if(this->has(key) == false)
+  {
+    NQLog("AssemblyVacuumWidget", NQLog::Fatal) << "get"
+       << ": no entry associated to index \"" << key << "\", closing application";
+
+    QMessageBox::critical(0
+     , tr("[AssemblyVacuumWidget::get]")
+     , tr("Failed to find entry associated to index \"%1\"\n.").arg(QString::number(key))
+     , QMessageBox::Abort
+    );
+
+    throw; // must abort
+  }
+
+  return valuemap_.at(key);
 }

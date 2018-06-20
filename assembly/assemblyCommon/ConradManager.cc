@@ -13,15 +13,15 @@
 #include <ConradManager.h>
 #include <nqlogger.h>
 
-ConradManager::ConradManager(ConradModel* cnrd1)
+ConradManager::ConradManager(ConradModel* cnrd)
 {
-  ConradModel_ = cnrd1;
+  ConradModel_ = cnrd;
+
   channelNumber = 0;
 
   liveTimer_ = new QTimer(this);
   liveTimer_ -> setSingleShot(true);
 
-//  connect(liveTimer_, SIGNAL(timeout()), this, SIGNAL(updateVacuumChannelState(channelNumber, state)));
   connect(liveTimer_, SIGNAL(timeout()), this, SLOT(vacuumToggled()));
 
   NQLog("ConradManager", NQLog::Debug) << "constructed";
@@ -44,7 +44,7 @@ void ConradManager::toggleVacuum(int chNumber)
     // here will be a QtTimer for about 2 secs
     liveTimer_ -> start(togglingVacuumDelay);
 
-    //emit updateVacuumChannelState(chNumber - 1, true);
+    //emit updateVacuumChannelState(chNumber, true);
   }
   else if(ConradModel_->getSwitchState(chNumber) == 1)
   {
@@ -55,7 +55,7 @@ void ConradManager::toggleVacuum(int chNumber)
     // here will be a QtTimer for about 2 secs
     liveTimer_ -> start(togglingVacuumDelay);
 
-    //emit updateVacuumChannelState(chNumber - 1, false);
+    //emit updateVacuumChannelState(chNumber, false);
   }
   else
   {
@@ -70,26 +70,99 @@ void ConradManager::vacuumToggled()
 {
   NQLog("ConradManager", NQLog::Debug) << "vacuumToggled"
      << ": emitting signal \"updateVacuumChannelState("
-     << (channelNumber-1) << ", " << ConradModel_->getSwitchState(channelNumber) << ")\"";
+     << channelNumber << ", " << ConradModel_->getSwitchState(channelNumber) << ")\"";
 
-  emit updateVacuumChannelState(channelNumber-1, ConradModel_->getSwitchState(channelNumber));
+  emit updateVacuumChannelState(channelNumber, ConradModel_->getSwitchState(channelNumber));
 
   NQLog("ConradManager", NQLog::Debug) << "vacuumToggled"
      << ": emitting signal \"enableVacuumButton\"";
 
   emit enableVacuumButton();
+
+  NQLog("ConradManager", NQLog::Debug) << "vacuumToggled"
+     << ": emitting signal \"vacuum_toggled\"";
+
+  emit vacuum_toggled();
 }
 
 void ConradManager::updateVacuumChannelsStatus()
 {  
-  for(int i=0; i<3; ++i)
+  for(int i=1; i<4; ++i)
   {
     NQLog("ConradManager", NQLog::Debug) << "vacuumToggled"
        << ": emitting signal \"updateVacuumChannelState("
-       << i << ", " << ConradModel_->getSwitchState(i+1) << ")\"";
+       << i << ", " << ConradModel_->getSwitchState(i) << ")\"";
 
-    emit updateVacuumChannelState(i, ConradModel_->getSwitchState(i+1));
+    emit updateVacuumChannelState(i, ConradModel_->getSwitchState(i));
   }
 }
 
 // maybe need checkStatus SLOT
+
+void ConradManager::enableVacuum(const int chNumber)
+{
+  const auto state = ConradModel_->getSwitchState(chNumber);
+
+  if(state == 0) // vacuum line is OFF
+  {
+    ConradModel_->setSwitchEnabled(chNumber, true);
+    channelNumber = chNumber;
+
+    liveTimer_->start(togglingVacuumDelay);
+  }
+  else if(state == 1) // vacuum line is ON
+  {
+    channelNumber = chNumber;
+
+    NQLog("ConradManager", NQLog::Spam) << "enableVacuum(" << chNumber << ")"
+       << ": emitting signal \"vacuum_enabled\"";
+
+    emit vacuum_enabled();
+  }
+  else
+  {
+    NQLog("ConradManager", NQLog::Critical) << "toggleVacuum(" << chNumber << ")"
+       << ": ERROR! Toggling vacuum error : SwithState != 0|1";
+
+    NQLog("ConradManager", NQLog::Spam) << "enableVacuum(" << chNumber << ")"
+       << ": emitting signal \"vacuum_error\"";
+
+    emit vacuum_error();
+  }
+
+  return;
+}
+
+void ConradManager::disableVacuum(const int chNumber)
+{
+  const auto state = ConradModel_->getSwitchState(chNumber);
+
+  if(state == 0) // vacuum line is OFF
+  {
+    channelNumber = chNumber;
+
+    NQLog("ConradManager", NQLog::Spam) << "disableVacuum(" << chNumber << ")"
+       << ": emitting signal \"vacuum_disabled\"";
+
+    emit vacuum_disabled();
+  }
+  else if(state == 1) // vacuum line is ON
+  {
+    ConradModel_->setSwitchEnabled(chNumber, false);
+    channelNumber = chNumber;
+
+    liveTimer_->start(togglingVacuumDelay);
+  }
+  else
+  {
+    NQLog("ConradManager", NQLog::Critical) << "toggleVacuum(" << chNumber << ")"
+       << ": ERROR! Toggling vacuum error : SwithState != 0|1";
+
+    NQLog("ConradManager", NQLog::Spam) << "disableVacuum(" << chNumber << ")"
+       << ": emitting signal \"vacuum_error\"";
+
+    emit vacuum_error();
+  }
+
+  return;
+}

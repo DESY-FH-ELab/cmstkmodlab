@@ -122,7 +122,12 @@ AssemblyMainWindow::AssemblyMainWindow(const unsigned int camera_ID, QWidget* pa
     }
     /// -------------------
 
-    // TAB WIDGET ----------------------------------------------
+    /// Vacuum Manager
+    conradModel_   = new ConradModel;
+    conradManager_ = new ConradManager(conradModel_);
+    /// -------------------
+
+    /// TAB WIDGET ----------------------------------------------
     tabWidget_ = new QTabWidget(this);
     tabWidget_->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);
 
@@ -141,7 +146,7 @@ AssemblyMainWindow::AssemblyMainWindow(const unsigned int camera_ID, QWidget* pa
     image_view_ = new AssemblyImageView(tabWidget_);
     tabWidget_->addTab(image_view_, tabname_Image);
 
-    // zfocus finder
+    // Z-focus finder
     zfocus_finder_ = new AssemblyZFocusFinder(camera_, motion_manager_);
 
     connect(zfocus_finder_, SIGNAL(show_zscan(QString))          , image_view_   , SLOT(update_image_zscan(QString)));
@@ -210,7 +215,7 @@ AssemblyMainWindow::AssemblyMainWindow(const unsigned int camera_ID, QWidget* pa
     // ASSEMBLY VIEW -------------------------------------------
     const QString tabname_Assembly("Assembly");
 
-    assembly_ = new AssemblyAssembly;
+    assembly_ = new AssemblyAssembly(motion_manager_, conradManager_);
 
     assembly_view_ = new AssemblyAssemblyView(assembly_, tabWidget_);
     tabWidget_->addTab(assembly_view_, tabname_Assembly);
@@ -271,20 +276,19 @@ AssemblyMainWindow::AssemblyMainWindow(const unsigned int camera_ID, QWidget* pa
     hwctr_view_ = new AssemblyHardwareControlView(motion_manager_, tabWidget_);
     tabWidget_->addTab(hwctr_view_, tabname_HWCtrl);
 
-    // Vacuum Manager
-    conradModel_   = new ConradModel;
-    conradManager_ = new ConradManager(conradModel_);
-
     connect(hwctr_view_->Vacuum_Widget(), SIGNAL(toggleVacuum(int)), conradManager_, SLOT(toggleVacuum(int)));
     connect(conradManager_, SIGNAL(updateVacuumChannelState(int, bool)), hwctr_view_->Vacuum_Widget(), SLOT(updateVacuumChannelState(int, bool)));
 
+    connect(conradManager_, SIGNAL(enableVacuumButton()), hwctr_view_->Vacuum_Widget(), SLOT(enableVacuumButton()));
+
     conradManager_->updateVacuumChannelsStatus();
-    // --------------
 
     NQLog("AssemblyMainWindow", NQLog::Message) << "added view " << tabname_HWCtrl;
     // ---------------------------------------------------------
 
-    // Upper Toolbar -------------------------------------------
+    /// ---------------------------------------------------------
+
+    /// Upper Toolbar -------------------------------------------
     toolBar_ = addToolBar("Tools");
     toolBar_ ->addAction("Camera ON" , this, SLOT( enable_images()));
     toolBar_ ->addAction("Camera OFF", this, SLOT(disable_images()));
@@ -298,7 +302,7 @@ AssemblyMainWindow::AssemblyMainWindow(const unsigned int camera_ID, QWidget* pa
     this->setCentralWidget(tabWidget_);
 
     this->updateGeometry();
-    // ---------------------------------------------------------
+    /// ---------------------------------------------------------
 
     liveTimer_ = new QTimer(this);
 
@@ -310,7 +314,7 @@ AssemblyMainWindow::AssemblyMainWindow(const unsigned int camera_ID, QWidget* pa
     NQLog("AssemblyMainWindow", NQLog::Message) << "//                                                   //";
     NQLog("AssemblyMainWindow", NQLog::Message) << "//                     DESY-CMS                      //";
     NQLog("AssemblyMainWindow", NQLog::Message) << "//                                                   //";
-    NQLog("AssemblyMainWindow", NQLog::Message) << "//             Automated Module Assembly             //";
+    NQLog("AssemblyMainWindow", NQLog::Message) << "//       Automated Pixel-Strip Module Assembly       //";
     NQLog("AssemblyMainWindow", NQLog::Message) << "//                                                   //";
     NQLog("AssemblyMainWindow", NQLog::Message) << "//  - AssemblyMainWindow initialized successfully -  //";
     NQLog("AssemblyMainWindow", NQLog::Message) << "//                                                   //";
@@ -638,7 +642,7 @@ void AssemblyMainWindow::start_multiPickupTest(const AssemblyMultiPickupTester::
   // pickup (vacuum)
   connect(multipickup_tester_, SIGNAL(vacuum_toggle(int)), conradManager_, SLOT(toggleVacuum(int)));
 
-  connect(conradManager_, SIGNAL(enableVacuumButton()), multipickup_tester_, SLOT(setup_next_step()));
+  connect(conradManager_, SIGNAL(vacuum_toggled()), multipickup_tester_, SLOT(setup_next_step()));
   // ---
 
   multipickup_tester_->set_configuration(conf);
@@ -664,7 +668,7 @@ void AssemblyMainWindow::disconnect_multiPickupTest()
   // pickup (vacuum)
   disconnect(multipickup_tester_, SIGNAL(vacuum_toggle(int)), conradManager_, SLOT(toggleVacuum(int)));
 
-  disconnect(conradManager_, SIGNAL(enableVacuumButton()), multipickup_tester_, SLOT(setup_next_step()));
+  disconnect(conradManager_, SIGNAL(vacuum_toggled()), multipickup_tester_, SLOT(setup_next_step()));
   // ---
 
   toolbox_view_->MultiPickupTester_Widget()->enable(true);

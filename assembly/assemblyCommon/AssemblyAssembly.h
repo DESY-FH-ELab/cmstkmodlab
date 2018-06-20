@@ -15,6 +15,9 @@
 
 #include <QObject>
 
+#include <LStepExpressMotionManager.h>
+#include <ConradManager.h>
+
 #include <AssemblyParameters.h>
 
 class AssemblyAssembly : public QObject
@@ -22,22 +25,57 @@ class AssemblyAssembly : public QObject
  Q_OBJECT
 
  public:
-  explicit AssemblyAssembly(QObject* parent=nullptr);
+  explicit AssemblyAssembly(const LStepExpressMotionManager* const, const ConradManager* const, QObject* parent=nullptr);
   virtual ~AssemblyAssembly() {}
 
   AssemblyParameters* parameters() const;
 
+  const LStepExpressMotionManager* motion() const;
+  const ConradManager*             vacuum() const;
+
  protected:
+
+  const LStepExpressMotionManager* const motion_;
+  const ConradManager*             const vacuum_;
+
+  int vacuum_pickup_;
+  int vacuum_spacer_;
+  int vacuum_basepl_;
 
  public slots:
 
-  void GoToPSSPreAlignment_start();
-  void GoToPSSPreAlignment_finish();
+  // motion
+  void GoToSensorMarkerPreAlignment_start();
+  void GoToSensorMarkerPreAlignment_finish();
+  // ------
+
+  // vacuum
+  void  EnableVacuumPickupTool_start();
+  void  EnableVacuumPickupTool_finish();
+
+  void DisableVacuumPickupTool_start();
+  void DisableVacuumPickupTool_finish();
+
+  void  EnableVacuumSpacers_start();
+  void  EnableVacuumSpacers_finish();
+
+  void DisableVacuumSpacers_start();
+  void DisableVacuumSpacers_finish();
+
+  void  EnableVacuumBaseplate_start();
+  void  EnableVacuumBaseplate_finish();
+
+  void DisableVacuumBaseplate_start();
+  void DisableVacuumBaseplate_finish();
+  // ------
 
  signals:
 
   void move_absolute(const double, const double, const double, const double);
   void move_relative(const double, const double, const double, const double);
+
+  void vacuum_ON_request (const int);
+  void vacuum_OFF_request(const int);
 };
 
 #endif // ASSEMBLYASSEMBLY_H

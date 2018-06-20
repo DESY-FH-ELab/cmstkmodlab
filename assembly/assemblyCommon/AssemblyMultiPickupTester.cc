@@ -15,10 +15,11 @@
 
 #include <AssemblyMultiPickupTester.h>
 
-AssemblyMultiPickupTester::AssemblyMultiPickupTester(const LStepExpressMotionManager* motion_manager, QObject* parent) :
-  QObject(parent),
-  motion_manager_(motion_manager),
-  motion_manager_enabled_(false)
+AssemblyMultiPickupTester::AssemblyMultiPickupTester(const LStepExpressMotionManager* motion_manager, QObject* parent)
+ : QObject(parent)
+
+ , motion_manager_(motion_manager)
+ , motion_manager_enabled_(false)
 {
   if(motion_manager_ == nullptr)
   {
@@ -37,11 +38,12 @@ AssemblyMultiPickupTester::AssemblyMultiPickupTester(const LStepExpressMotionMan
     return;
   }
 
-  pickup_vacuum_ = config->getValue<int>   ("AssemblyMultiPickupTester_pickup_vacuum"   , 1);
-  pickup_basepl_ = config->getValue<int>   ("AssemblyMultiPickupTester_pickup_baseplate", 3);
-  pickup_deltaZ_ = config->getValue<double>("AssemblyMultiPickupTester_pickup_deltaZ"   , 20.);
+  pickup_vacuum_ = config->getValue<int>("Vacuum_PickupTool");
+  pickup_basepl_ = config->getValue<int>("Vacuum_Baseplate");
 
-  use_vacuumBP_ = bool(pickup_basepl_ != 0);
+  pickup_deltaZ_ = config->getValue<double>("AssemblyMultiPickupTester_pickup_deltaZ", 20.);
+
+  use_vacuumBP_  = config->getValue<bool>("AssemblyMultiPickupTester_useBaseplateVacuum");
 
   this->reset();
 

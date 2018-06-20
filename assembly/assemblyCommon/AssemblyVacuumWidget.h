@@ -20,6 +20,8 @@
 #include <QRadioButton>
 #include <QLabel>
 
+#include <map>
+
 class AssemblyVacuumWidget : public QWidget
 {
  Q_OBJECT
@@ -31,19 +33,32 @@ class AssemblyVacuumWidget : public QWidget
 
   QVBoxLayout* layout() const { return layout_; }
 
+  class Entry
+  {
+   public:
+    explicit Entry() : radioButton_(nullptr), label_(nullptr) {}
+    virtual ~Entry() {}
+
+    QRadioButton* radioButton_;
+    QLabel* label_;
+  };
+
+  bool  has(const int) const;
+  Entry get(const int) const;
+
  protected:
 
   QVBoxLayout* layout_;
   QPushButton* button_;
 
-  std::vector<QRadioButton*> valves_;
-  std::vector<QLabel*>       labels_;
+  std::map<int, Entry> valuemap_;
 
  public slots:
 
   void toggleVacuum();
   void updateVacuumChannelState(const int, const bool);
-  void enableVacuumButton();
+
+  void  enableVacuumButton();
   void disableVacuumButton();
 
  signals:
