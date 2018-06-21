@@ -49,6 +49,8 @@ AssemblyObjectFinderPatRec::AssemblyObjectFinderPatRec(AssemblyThresholder* cons
     return;
   }
 
+  qRegisterMetaType<AssemblyObjectFinderPatRec::Configuration>("AssemblyObjectFinderPatRec::Configuration");
+
   // connections
   connect(this, SIGNAL(template_matching_request(Configuration, cv::Mat, cv::Mat, cv::Mat)), this, SLOT(template_matching(Configuration, cv::Mat, cv::Mat, cv::Mat)));
   // -----------

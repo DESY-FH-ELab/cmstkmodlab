@@ -361,10 +361,10 @@ void AssemblyObjectAligner::run_alignment(const double patrec_dX, const double p
         NQLog("AssemblyObjectAligner", NQLog::Message) << "run_alignment: step [" << alignment_step_ << "]: alignment completed, moving back to best-match position of PatRec #1";
         NQLog("AssemblyObjectAligner", NQLog::Message) << "run_alignment: step [" << alignment_step_ << "]";
 
-        ++alignment_step_;
-
         NQLog("AssemblyObjectAligner", NQLog::Spam) << "run_alignment: step [" << alignment_step_ << "]"
            << ": emitting signal \"move_relative(" << dX << ", " << dY << ", 0, 0)\"";
+
+        ++alignment_step_;
 
         this->move_relative(dX, dY, 0.0, 0.0);
       }
@@ -449,10 +449,10 @@ void AssemblyObjectAligner::run_alignment(const double patrec_dX, const double p
           NQLog("AssemblyObjectAligner", NQLog::Message) << "run_alignment: step [" << alignment_step_ << "]: alignment completed, moving back to best-match position of PatRec #1";
           NQLog("AssemblyObjectAligner", NQLog::Message) << "run_alignment: step [" << alignment_step_ << "]";
 
-          ++alignment_step_;
-
           NQLog("AssemblyObjectAligner", NQLog::Spam) << "run_alignment: step [" << alignment_step_ << "]"
              << ": emitting signal \"move_relative(" << dX << ", " << dY << ", 0, 0)\"";
+
+          ++alignment_step_;
 
           this->move_relative(dX, dY, 0.0, 0.0);
         }
