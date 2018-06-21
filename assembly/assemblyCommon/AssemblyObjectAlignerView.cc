@@ -207,6 +207,7 @@ AssemblyObjectAlignerView::AssemblyObjectAlignerView(QWidget* parent) :
   alignm_exemeas_radbu_->setChecked(true);
   alignm_exemeas_pusbu_->setEnabled(true);
 
+  connect(alignm_exemeas_radbu_, SIGNAL(toggled(bool)), alignm_completeAtPosOne_checkbox_, SLOT(setEnabled(bool)));
   connect(alignm_exemeas_radbu_, SIGNAL(toggled(bool)), alignm_exemeas_pusbu_, SLOT(setEnabled(bool)));
 
   alignm_exemeas_lay->addSpacing(26);
