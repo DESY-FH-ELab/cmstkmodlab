@@ -277,11 +277,14 @@ AssemblyMainWindow::AssemblyMainWindow(const unsigned int camera_ID, QWidget* pa
     tabWidget_->addTab(hwctr_view_, tabname_HWCtrl);
 
     connect(hwctr_view_->Vacuum_Widget(), SIGNAL(toggleVacuum(int)), conradManager_, SLOT(toggleVacuum(int)));
-    connect(conradManager_, SIGNAL(updateVacuumChannelState(int, bool)), hwctr_view_->Vacuum_Widget(), SLOT(updateVacuumChannelState(int, bool)));
 
-    connect(conradManager_, SIGNAL(enableVacuumButton()), hwctr_view_->Vacuum_Widget(), SLOT(enableVacuumButton()));
+    connect(hwctr_view_->Vacuum_Widget(), SIGNAL(vacuumChannelState_request(int)), conradManager_, SLOT(transmit_vacuumChannelState(int)));
+    connect(conradManager_, SIGNAL(vacuumChannelState(int, bool)), hwctr_view_->Vacuum_Widget(), SLOT(updateVacuumChannelState(int, bool)));
 
-    conradManager_->updateVacuumChannelsStatus();
+    connect(conradManager_, SIGNAL( enableVacuumButton()), hwctr_view_->Vacuum_Widget(), SLOT( enableVacuumButton()));
+    connect(conradManager_, SIGNAL(disableVacuumButton()), hwctr_view_->Vacuum_Widget(), SLOT(disableVacuumButton()));
+
+    hwctr_view_->Vacuum_Widget()->updateVacuumChannelsStatus();
 
     NQLog("AssemblyMainWindow", NQLog::Message) << "added view " << tabname_HWCtrl;
     // ---------------------------------------------------------

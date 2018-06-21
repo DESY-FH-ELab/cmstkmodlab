@@ -39,9 +39,10 @@ class ConradManager : public QObject
 
  public slots:
 
-  void toggleVacuum(int);
+  void toggleVacuum(const int);
   void vacuumToggled();
-  void updateVacuumChannelsStatus();
+
+  void transmit_vacuumChannelState(const int);
 
   void  enableVacuum(const int);
   void disableVacuum(const int);
@@ -49,7 +50,8 @@ class ConradManager : public QObject
  //signal to say when vacuum state has changed (needs timer)
  signals:
 
-  void updateVacuumChannelState(int, bool);
+  void vacuumChannelState(int, bool);
+
   void  enableVacuumButton();
   void disableVacuumButton();
 

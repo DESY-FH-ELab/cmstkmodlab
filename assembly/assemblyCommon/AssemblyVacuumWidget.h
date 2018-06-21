@@ -43,8 +43,8 @@ class AssemblyVacuumWidget : public QWidget
     QLabel* label_;
   };
 
-  bool  has(const int) const;
-  Entry get(const int) const;
+  bool   has(const int) const;
+  Entry& get(const int);
 
  protected:
 
@@ -58,12 +58,16 @@ class AssemblyVacuumWidget : public QWidget
   void toggleVacuum();
   void updateVacuumChannelState(const int, const bool);
 
+  void updateVacuumChannelsStatus();
+
   void  enableVacuumButton();
   void disableVacuumButton();
 
  signals:
 
   void toggleVacuum(const int);
+
+  void vacuumChannelState_request(const int);
 };
 
 #endif // ASSEMBLYVACUUMWIDGET_H
