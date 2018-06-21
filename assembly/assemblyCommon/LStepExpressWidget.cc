@@ -13,6 +13,9 @@
 #include <LStepExpressWidget.h>
 #include <nqlogger.h>
 
+#include <QVBoxLayout>
+#include <QGridLayout>
+
 LStepExpressWidget::LStepExpressWidget(LStepExpressModel* model, QWidget* parent) :
   QWidget(parent),
   model_(model)
@@ -20,36 +23,27 @@ LStepExpressWidget::LStepExpressWidget(LStepExpressModel* model, QWidget* parent
     QVBoxLayout* layout = new QVBoxLayout(this);
     this->setLayout(layout);
 
-    // ROW #1
-    QHBoxLayout* hlayout = new QHBoxLayout();
-    layout->addLayout(hlayout);
+    // Motion ON/OFF switches and shortcuts
+    QGridLayout* glayout = new QGridLayout();
+    layout->addLayout(glayout);
 
     lstepCheckBox_ = new QCheckBox("Enable Controller", this);
-    hlayout->addWidget(lstepCheckBox_);
+    glayout->addWidget(lstepCheckBox_, 0, 0);
 
     joystickCheckBox_ = new QCheckBox("Enable Joystick", this);
-    hlayout->addWidget(joystickCheckBox_);
+    glayout->addWidget(joystickCheckBox_, 0, 1);
 
     buttonOrigin_ = new QPushButton("Origin", this);
-    hlayout->addWidget(buttonOrigin_);
+    glayout->addWidget(buttonOrigin_, 0, 2);
 
     buttonCalibrate_ = new QPushButton("Calibrate", this);
-    hlayout->addWidget(buttonCalibrate_);
-
-    buttonEmergencyStop_ = new QPushButton("Emergency Stop", this);
-    hlayout->addWidget(buttonEmergencyStop_);
-
-    // ROW #2
-    QHBoxLayout* hlayout_2 = new QHBoxLayout();
-    layout->addLayout(hlayout_2);
-
-    hlayout_2->addStretch(1);
-
-    buttonRotate180CW_ = new QPushButton("Rotate 180 deg (CW)", this);
-    hlayout_2->addWidget(buttonRotate180CW_);
+    glayout->addWidget(buttonCalibrate_, 0, 3);
 
     buttonClearQueue_ = new QPushButton("Clear Motion Queue", this);
-    hlayout_2->addWidget(buttonClearQueue_);
+    glayout->addWidget(buttonClearQueue_, 1, 2);
+
+    buttonEmergencyStop_ = new QPushButton("Emergency Stop", this);
+    glayout->addWidget(buttonEmergencyStop_, 1, 3);
 
     // AXIS
     axisControlWidget_= new QWidget(this);
@@ -76,7 +70,6 @@ LStepExpressWidget::LStepExpressWidget(LStepExpressModel* model, QWidget* parent
     connect(buttonOrigin_       , SIGNAL(clicked()), model_, SLOT(moveAbsolute()));
     connect(buttonCalibrate_    , SIGNAL(clicked()), model_, SLOT(calibrate()));
     connect(buttonEmergencyStop_, SIGNAL(clicked()), model_, SLOT(emergencyStop()));
-    connect(buttonRotate180CW_  , SIGNAL(clicked()), this  , SLOT(moveAngle180CW()));
     connect(buttonClearQueue_   , SIGNAL(clicked()), this  , SIGNAL(clearQueue_request()));
 
     this->lstepStateChanged(model_->getDeviceState());
@@ -94,7 +87,6 @@ LStepExpressWidget::~LStepExpressWidget()
     if(buttonOrigin_       ){ delete buttonOrigin_       ; buttonOrigin_        = nullptr; }
     if(buttonCalibrate_    ){ delete buttonCalibrate_    ; buttonCalibrate_     = nullptr; }
     if(buttonEmergencyStop_){ delete buttonEmergencyStop_; buttonEmergencyStop_ = nullptr; }
-    if(buttonRotate180CW_  ){ delete buttonRotate180CW_  ; buttonRotate180CW_   = nullptr; }
     if(buttonClearQueue_   ){ delete buttonClearQueue_   ; buttonClearQueue_    = nullptr; }
 
     NQLog("LStepExpressWidget", NQLog::Debug) << "destructed";
@@ -115,7 +107,6 @@ void LStepExpressWidget::lstepStateChanged(State newState)
     buttonOrigin_       ->setEnabled(newState == READY);
     buttonCalibrate_    ->setEnabled(newState == READY);
     buttonEmergencyStop_->setEnabled(newState == READY);
-    buttonRotate180CW_  ->setEnabled(newState == READY);
     buttonClearQueue_   ->setEnabled(newState == READY);
 
     axisControlWidget_  ->setEnabled(newState == READY);
@@ -137,7 +128,6 @@ void LStepExpressWidget::controlStateChanged(bool enabled)
       buttonOrigin_       ->setEnabled(false);
       buttonCalibrate_    ->setEnabled(false);
       buttonEmergencyStop_->setEnabled(false);
-      buttonRotate180CW_  ->setEnabled(false);
       buttonClearQueue_   ->setEnabled(false);
 
       axisControlWidget_  ->setEnabled(false);
@@ -152,16 +142,6 @@ void LStepExpressWidget::motionStarted()
 void LStepExpressWidget::motionFinished()
 {
 //    NQLog("LStepExpressWidget", NQLog::Spam)<< "motionFinished()"  ;
-}
-
-void LStepExpressWidget::moveAngle180CW()
-{
-  NQLog("LStepExpressWidget", NQLog::Message) << "moveAngle180CW"
-     << ": rotating platform by 180 degrees (clockwise)";
-
-  model_->moveRelative(LStepExpress_t::A, -180.);
-
-  return;
 }
 // ============================================================================
 

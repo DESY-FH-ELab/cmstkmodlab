@@ -43,7 +43,6 @@ class LStepExpressWidget : public QWidget
   QPushButton* buttonOrigin_;
   QPushButton* buttonCalibrate_;
   QPushButton* buttonEmergencyStop_;
-  QPushButton* buttonRotate180CW_;
   QPushButton* buttonClearQueue_;
 
   QWidget* axisControlWidget_;
@@ -55,8 +54,6 @@ class LStepExpressWidget : public QWidget
   void updateWidgets();
   void motionStarted();
   void motionFinished();
-
-  void moveAngle180CW();
 
  signals:
 
