@@ -71,11 +71,26 @@ class AssemblyAssembly : public QObject
 
  signals:
 
+  // motion
   void move_absolute(const double, const double, const double, const double);
   void move_relative(const double, const double, const double, const double);
 
+  void GoToSensorMarkerPreAlignment_finished();
+  // ------
+
+  // vacuum
   void vacuum_ON_request (const int);
   void vacuum_OFF_request(const int);
+
+  void  EnableVacuumPickupTool_finished();
+  void DisableVacuumPickupTool_finished();
+
+  void  EnableVacuumSpacers_finished();
+  void DisableVacuumSpacers_finished();
+
+  void  EnableVacuumBaseplate_finished();
+  void DisableVacuumBaseplate_finished();
+  // ------
 };
 
 #endif // ASSEMBLYASSEMBLY_H
