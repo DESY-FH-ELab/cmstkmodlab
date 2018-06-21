@@ -63,6 +63,7 @@ class AssemblyObjectAlignerView : public QWidget
   QLineEdit*    alignm_PSP_dX_linee_;
   QLineEdit*    alignm_PSP_dY_linee_;
 
+  QCheckBox* alignm_angtgt_calc_checkbox_;
   QLineEdit* alignm_angtgt_linee_;
 
   QCheckBox* alignm_completeAtPosOne_checkbox_;
@@ -96,6 +97,9 @@ class AssemblyObjectAlignerView : public QWidget
 
   void updateImage(const int, const QString&);
   void updateImage(const int, const cv::Mat&);
+
+  void update_target_angle(const bool);
+  void update_target_angle(const int);
 
  signals:
 

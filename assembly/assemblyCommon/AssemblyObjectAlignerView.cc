@@ -18,6 +18,7 @@
 
 #include <sstream>
 #include <iomanip>
+#include <cmath>
 
 #include <QApplication>
 #include <QVBoxLayout>
@@ -29,42 +30,43 @@
 #include <QScriptEngine>
 #include <qnumeric.h>
 
-AssemblyObjectAlignerView::AssemblyObjectAlignerView(QWidget* parent) :
-  QWidget(parent),
+AssemblyObjectAlignerView::AssemblyObjectAlignerView(QWidget* parent)
+ : QWidget(parent)
 
-  alignm_cfg_wid_(nullptr),
-  alignm_res_wid_(nullptr),
+ , alignm_cfg_wid_(nullptr)
+ , alignm_res_wid_(nullptr)
 
-  alignm_PSS_radbu_   (nullptr),
-  alignm_PSS_dX_linee_(nullptr),
-  alignm_PSS_dY_linee_(nullptr),
+ , alignm_PSS_radbu_   (nullptr)
+ , alignm_PSS_dX_linee_(nullptr)
+ , alignm_PSS_dY_linee_(nullptr)
 
-  alignm_PSP_radbu_   (nullptr),
-  alignm_PSP_dX_linee_(nullptr),
-  alignm_PSP_dY_linee_(nullptr),
+ , alignm_PSP_radbu_   (nullptr)
+ , alignm_PSP_dX_linee_(nullptr)
+ , alignm_PSP_dY_linee_(nullptr)
 
-  alignm_angtgt_linee_(nullptr),
+ , alignm_angtgt_calc_checkbox_(nullptr)
+ , alignm_angtgt_linee_(nullptr)
 
-  alignm_completeAtPosOne_checkbox_(nullptr),
+ , alignm_completeAtPosOne_checkbox_(nullptr)
 
-  alignm_exemeas_radbu_(nullptr),
-  alignm_exemeas_pusbu_(nullptr),
+ , alignm_exemeas_radbu_(nullptr)
+ , alignm_exemeas_pusbu_(nullptr)
 
-  alignm_exealig_radbu_(nullptr),
-  alignm_exealig_pusbu_(nullptr),
+ , alignm_exealig_radbu_(nullptr)
+ , alignm_exealig_pusbu_(nullptr)
 
-  patrecOne_wid_(nullptr),
-  patrecTwo_wid_(nullptr),
+ , patrecOne_wid_(nullptr)
+ , patrecTwo_wid_(nullptr)
 
-  alignm_mesang_linee_(nullptr),
+ , alignm_mesang_linee_(nullptr)
 
-  patrecOne_image_ (nullptr),
-  patrecOne_scroll_(nullptr),
+ , patrecOne_image_ (nullptr)
+ , patrecOne_scroll_(nullptr)
 
-  patrecTwo_image_ (nullptr),
-  patrecTwo_scroll_(nullptr),
+ , patrecTwo_image_ (nullptr)
+ , patrecTwo_scroll_(nullptr)
 
-  finder_connected_(false)
+ , finder_connected_(false)
 {
   QVBoxLayout* layout = new QVBoxLayout;
   this->setLayout(layout);
@@ -99,7 +101,7 @@ AssemblyObjectAlignerView::AssemblyObjectAlignerView(QWidget* parent) :
   QHBoxLayout* alignm_PSS_lay = new QHBoxLayout;
   alignm_dXY_lay->addLayout(alignm_PSS_lay);
 
-  alignm_PSS_radbu_ = new QRadioButton(tr("PSS Sensor"));
+  alignm_PSS_radbu_ = new QRadioButton(tr("PS-s Sensor"));
   alignm_PSS_radbu_->setStyleSheet("QRadioButton { font-weight : bold; }");
 
   QLabel* alignm_PSS_dX_label = new QLabel(tr("dX [mm]"));
@@ -133,7 +135,7 @@ AssemblyObjectAlignerView::AssemblyObjectAlignerView(QWidget* parent) :
   QHBoxLayout* alignm_PSP_lay = new QHBoxLayout;
   alignm_dXY_lay->addLayout(alignm_PSP_lay);
 
-  alignm_PSP_radbu_ = new QRadioButton(tr("PSP Sensor"));
+  alignm_PSP_radbu_ = new QRadioButton(tr("PS-p Sensor"));
   alignm_PSP_radbu_->setStyleSheet("QRadioButton { font-weight : bold; }");
 
   QLabel* alignm_PSP_dX_label = new QLabel(tr("dX [mm]"));
@@ -164,10 +166,28 @@ AssemblyObjectAlignerView::AssemblyObjectAlignerView(QWidget* parent) :
   assembly::QLineEdit_setText(alignm_PSP_dX_linee_, config->getValue<double>("AssemblyObjectAlignerView_PSP_deltaX", 0.));
   assembly::QLineEdit_setText(alignm_PSP_dY_linee_, config->getValue<double>("AssemblyObjectAlignerView_PSP_deltaY", 0.));
 
-  alignm_objcfg_lay->addSpacing(15);
+  alignm_objcfg_lay->addSpacing(10);
 
-  QHBoxLayout* alignm_angtgt_lay = new QHBoxLayout;
-  alignm_objcfg_lay->addLayout(alignm_angtgt_lay);
+  QHBoxLayout* alignm_angtgtOPT_lay = new QHBoxLayout;
+  alignm_objcfg_lay->addLayout(alignm_angtgtOPT_lay);
+
+  alignm_angtgt_calc_checkbox_ = new QCheckBox(tr("Determine Target Angle from Sensor Dimensions"));
+
+  connect(alignm_angtgt_calc_checkbox_, SIGNAL(stateChanged(int)), this, SLOT(update_target_angle(int)));
+
+  connect(alignm_PSS_radbu_, SIGNAL(toggled(bool)), this, SLOT(update_target_angle(bool)));
+  connect(alignm_PSP_radbu_, SIGNAL(toggled(bool)), this, SLOT(update_target_angle(bool)));
+
+  alignm_angtgt_calc_checkbox_->setEnabled(false);
+
+  alignm_angtgtOPT_lay->addSpacing(30);
+  alignm_angtgtOPT_lay->addWidget(alignm_angtgt_calc_checkbox_);
+  alignm_angtgtOPT_lay->addSpacing(30);
+
+  alignm_objcfg_lay->addSpacing(10);
+
+  QHBoxLayout* alignm_angtgtVAL_lay = new QHBoxLayout;
+  alignm_objcfg_lay->addLayout(alignm_angtgtVAL_lay);
 
   QLabel* alignm_angtgt_label = new QLabel(tr("Target Angle [deg]"));
   alignm_angtgt_linee_ = new QLineEdit(tr(""));
@@ -175,10 +195,10 @@ AssemblyObjectAlignerView::AssemblyObjectAlignerView(QWidget* parent) :
   alignm_angtgt_label ->setEnabled(false);
   alignm_angtgt_linee_->setEnabled(false);
 
-  alignm_angtgt_lay->addSpacing(80);
-  alignm_angtgt_lay->addWidget(alignm_angtgt_label , 10);
-  alignm_angtgt_lay->addWidget(alignm_angtgt_linee_, 10);
-  alignm_angtgt_lay->addSpacing(80);
+  alignm_angtgtVAL_lay->addSpacing(80);
+  alignm_angtgtVAL_lay->addWidget(alignm_angtgt_label , 10);
+  alignm_angtgtVAL_lay->addWidget(alignm_angtgt_linee_, 10);
+  alignm_angtgtVAL_lay->addSpacing(80);
   // -----
 
   // execution modes
@@ -207,6 +227,7 @@ AssemblyObjectAlignerView::AssemblyObjectAlignerView(QWidget* parent) :
   alignm_exemeas_radbu_->setChecked(true);
   alignm_exemeas_pusbu_->setEnabled(true);
 
+  connect(alignm_exemeas_radbu_, SIGNAL(toggled(bool)), alignm_completeAtPosOne_checkbox_, SLOT(setEnabled(bool)));
   connect(alignm_exemeas_radbu_, SIGNAL(toggled(bool)), alignm_exemeas_pusbu_, SLOT(setEnabled(bool)));
 
   alignm_exemeas_lay->addSpacing(26);
@@ -229,6 +250,7 @@ AssemblyObjectAlignerView::AssemblyObjectAlignerView(QWidget* parent) :
   connect(alignm_exealig_radbu_, SIGNAL(toggled(bool)), alignm_exealig_pusbu_, SLOT(setEnabled(bool)));
   connect(alignm_exealig_radbu_, SIGNAL(toggled(bool)), alignm_angtgt_label  , SLOT(setEnabled(bool)));
   connect(alignm_exealig_radbu_, SIGNAL(toggled(bool)), alignm_angtgt_linee_ , SLOT(setEnabled(bool)));
+  connect(alignm_exealig_radbu_, SIGNAL(toggled(bool)), alignm_angtgt_calc_checkbox_, SLOT(setEnabled(bool)));
 
   alignm_exealig_lay->addSpacing(26);
   alignm_exealig_lay->addWidget(alignm_exealig_radbu_,  4);
@@ -445,6 +467,112 @@ void AssemblyObjectAlignerView::updateImage(const int stage, const cv::Mat& img)
   {
     patrecTwo_image_->setImage(img);
 //    patrecTwo_image_->setZoomFactor(0.5);
+  }
+
+  return;
+}
+
+void AssemblyObjectAlignerView::update_target_angle(const bool checked)
+{
+  if(checked){ this->update_target_angle(alignm_angtgt_calc_checkbox_->checkState()); }
+}
+
+void AssemblyObjectAlignerView::update_target_angle(const int state)
+{
+  if(state == 2)
+  {
+    if(alignm_PSS_radbu_->isChecked())
+    {
+      bool valid_PSS_DX(false);
+
+      const double PSS_DX_val = alignm_PSS_dX_linee_->text().toDouble(&valid_PSS_DX);
+
+      if(valid_PSS_DX == false)
+      {
+        NQLog("AssemblyObjectAlignerView", NQLog::Critical) << "update_target_angle(" << state << ")"
+           << ": invalid format for PS-s Sensor delta-X distance (" << alignm_PSS_dX_linee_->text() << "), no action taken";
+
+        return;
+      }
+
+      bool valid_PSS_DY(false);
+
+      const double PSS_DY_val = alignm_PSS_dY_linee_->text().toDouble(&valid_PSS_DY);
+
+      if(valid_PSS_DY == false)
+      {
+        NQLog("AssemblyObjectAlignerView", NQLog::Critical) << "update_target_angle(" << state << ")"
+           << ": invalid format for PS-s Sensor delta-Y distance (" << alignm_PSS_dY_linee_->text() << "), no action taken";
+
+        return;
+      }
+
+      if(PSS_DX_val == 0.)
+      {
+        NQLog("AssemblyObjectAlignerView", NQLog::Critical) << "update_target_angle(" << state << ")"
+           << ": null value for PS-s Sensor delta-X distance, angle cannot be calculated, no action taken";
+
+        return;
+      }
+
+      const double angle_PSS = atan(PSS_DY_val / PSS_DX_val) * 180. / M_PI;
+
+      std::stringstream strs_angPSS;
+      strs_angPSS << angle_PSS;
+
+      alignm_angtgt_linee_->setText(QString::fromStdString(strs_angPSS.str()));
+
+      alignm_angtgt_linee_->setReadOnly(true);
+    }
+    else if(alignm_PSP_radbu_->isChecked())
+    {
+      bool valid_PSP_DX(false);
+
+      const double PSP_DX_val = alignm_PSP_dX_linee_->text().toDouble(&valid_PSP_DX);
+
+      if(valid_PSP_DX == false)
+      {
+        NQLog("AssemblyObjectAlignerView", NQLog::Critical) << "update_target_angle(" << state << ")"
+           << ": invalid format for PS-s Sensor delta-X distance (" << alignm_PSP_dX_linee_->text() << "), no action taken";
+
+        return;
+      }
+
+      bool valid_PSP_DY(false);
+
+      const double PSP_DY_val = alignm_PSP_dY_linee_->text().toDouble(&valid_PSP_DY);
+
+      if(valid_PSP_DY == false)
+      {
+        NQLog("AssemblyObjectAlignerView", NQLog::Critical) << "update_target_angle(" << state << ")"
+           << ": invalid format for PS-s Sensor delta-Y distance (" << alignm_PSP_dY_linee_->text() << "), no action taken";
+
+        return;
+      }
+
+      if(PSP_DX_val == 0.)
+      {
+        NQLog("AssemblyObjectAlignerView", NQLog::Critical) << "update_target_angle(" << state << ")"
+           << ": null value for PS-s Sensor delta-X distance, angle cannot be calculated, no action taken";
+
+        return;
+      }
+
+      const double angle_PSP = atan(PSP_DY_val / PSP_DX_val) * 180. / M_PI;
+
+      std::stringstream strs_angPSP;
+      strs_angPSP << angle_PSP;
+
+      alignm_angtgt_linee_->setText(QString::fromStdString(strs_angPSP.str()));
+
+      alignm_angtgt_linee_->setReadOnly(true);
+    }
+  }
+  else if(state == 0)
+  {
+    alignm_angtgt_linee_->setText(tr(""));
+
+    alignm_angtgt_linee_->setReadOnly(false);
   }
 
   return;

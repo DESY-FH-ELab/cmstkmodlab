@@ -47,7 +47,16 @@ class AssemblyAssembly : public QObject
   // motion
   void GoToSensorMarkerPreAlignment_start();
   void GoToSensorMarkerPreAlignment_finish();
-  // ------
+
+  void GoFromSensorMarkerToPickupXY_start();
+  void GoFromSensorMarkerToPickupXY_finish();
+
+  void LowerPickupToolOntoPSS_start();
+  void LowerPickupToolOntoPSS_finish();
+
+  void PickupPSS_start();
+  void PickupPSS_finish();
+  // ---------
 
   // vacuum
   void  EnableVacuumPickupTool_start();
@@ -67,15 +76,36 @@ class AssemblyAssembly : public QObject
 
   void DisableVacuumBaseplate_start();
   void DisableVacuumBaseplate_finish();
-  // ------
+  // ---------
 
  signals:
 
+  // motion
   void move_absolute(const double, const double, const double, const double);
   void move_relative(const double, const double, const double, const double);
 
+  void GoToSensorMarkerPreAlignment_finished();
+
+  void GoFromSensorMarkerToPickupXY_finished();
+
+  void LowerPickupToolOntoPSS_finished();
+
+  void PickupPSS_finished();
+  // ------
+
+  // vacuum
   void vacuum_ON_request (const int);
   void vacuum_OFF_request(const int);
+
+  void  EnableVacuumPickupTool_finished();
+  void DisableVacuumPickupTool_finished();
+
+  void  EnableVacuumSpacers_finished();
+  void DisableVacuumSpacers_finished();
+
+  void  EnableVacuumBaseplate_finished();
+  void DisableVacuumBaseplate_finished();
+  // ------
 };
 
 #endif // ASSEMBLYASSEMBLY_H

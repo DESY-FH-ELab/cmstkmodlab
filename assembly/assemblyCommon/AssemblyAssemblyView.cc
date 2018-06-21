@@ -110,12 +110,62 @@ AssemblyAssemblyView::AssemblyAssemblyView(const AssemblyAssembly* const assembl
   {
     ++assembly_step_N_;
 
+    AssemblyAssemblyTextWidget* tmp_wid = new AssemblyAssemblyTextWidget;
+    tmp_wid->label()->setText(QString::number(assembly_step_N_));
+    tmp_wid->text() ->setText("Align PSS to Motion Stage");
+    PSSAlignm_lay->addWidget(tmp_wid);
+  }
+  // ----------
+
+  // step: Go From Sensor Marker Ref-Point to Pickup XY
+  {
+    ++assembly_step_N_;
+
     AssemblyAssemblyActionWidget* tmp_wid = new AssemblyAssemblyActionWidget;
     tmp_wid->label() ->setText(QString::number(assembly_step_N_));
-    tmp_wid->button()->setText("Align PSS to Motion Stage");
+    tmp_wid->button()->setText("Go From Sensor Marker Ref-Point to Pickup XY");
     PSSAlignm_lay->addWidget(tmp_wid);
 
-//    connect(tmp_wid->button(), SIGNAL(clicked()), assembly, SLOT(GoToPSSPreAlignment()));
+    connect(tmp_wid->button(), SIGNAL(clicked()), assembly, SLOT(GoFromSensorMarkerToPickupXY_start()));
+  }
+  // ----------
+
+  // step: Lower Pickup-Tool onto PSS
+  {
+    ++assembly_step_N_;
+
+    AssemblyAssemblyActionWidget* tmp_wid = new AssemblyAssemblyActionWidget;
+    tmp_wid->label() ->setText(QString::number(assembly_step_N_));
+    tmp_wid->button()->setText("Lower Pickup-Tool onto PSS");
+    PSSAlignm_lay->addWidget(tmp_wid);
+
+    connect(tmp_wid->button(), SIGNAL(clicked()), assembly, SLOT(LowerPickupToolOntoPSS_start()));
+  }
+  // ----------
+
+  // step: Disable Baseplate Vacuum
+  {
+    ++assembly_step_N_;
+
+    AssemblyAssemblyActionWidget* tmp_wid = new AssemblyAssemblyActionWidget;
+    tmp_wid->label() ->setText(QString::number(assembly_step_N_));
+    tmp_wid->button()->setText("Disable Baseplate Vacuum");
+    PSSAlignm_lay->addWidget(tmp_wid);
+
+    connect(tmp_wid->button(), SIGNAL(clicked()), assembly, SLOT(DisableVacuumBaseplate_start()));
+  }
+  // ----------
+
+  // step: Enable Pickup-Tool Vacuum
+  {
+    ++assembly_step_N_;
+
+    AssemblyAssemblyActionWidget* tmp_wid = new AssemblyAssemblyActionWidget;
+    tmp_wid->label() ->setText(QString::number(assembly_step_N_));
+    tmp_wid->button()->setText("Enable Pickup-Tool Vacuum");
+    PSSAlignm_lay->addWidget(tmp_wid);
+
+    connect(tmp_wid->button(), SIGNAL(clicked()), assembly, SLOT(EnableVacuumPickupTool_start()));
   }
   // ----------
 
@@ -128,7 +178,7 @@ AssemblyAssemblyView::AssemblyAssemblyView(const AssemblyAssembly* const assembl
     tmp_wid->button()->setText("Pick Up PSS");
     PSSAlignm_lay->addWidget(tmp_wid);
 
-//    connect(tmp_wid->button(), SIGNAL(clicked()), assembly, SLOT(GoToPSSPreAlignment()));
+    connect(tmp_wid->button(), SIGNAL(clicked()), assembly, SLOT(PickupPSS_start()));
   }
   // ----------
 

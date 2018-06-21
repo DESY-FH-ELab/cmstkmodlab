@@ -101,6 +101,8 @@ AssemblyParameters* AssemblyAssembly::parameters() const
 // ----------------------------------------------------------------------------------------------------
 
 // ----------------------------------------------------------------------------------------------------
+// GoToSensorMarkerPreAlignment -----------------------------------------------------------------------
+// ----------------------------------------------------------------------------------------------------
 void AssemblyAssembly::GoToSensorMarkerPreAlignment_start()
 {
   const bool valid_params = this->parameters()->update();
@@ -133,12 +135,17 @@ void AssemblyAssembly::GoToSensorMarkerPreAlignment_finish()
   disconnect(motion_, SIGNAL(motion_finished()), this, SLOT(GoToSensorMarkerPreAlignment_finish()));
 
   NQLog("AssemblyAssembly", NQLog::Spam) << "GoToSensorMarkerPreAlignment_finish"
-     << ": assembly-step completed";
+     << ": emitting signal \"GoToSensorMarkerPreAlignment_finished\"";
 
-  return;
+  emit GoToSensorMarkerPreAlignment_finished();
+
+  NQLog("AssemblyAssembly", NQLog::Message) << "GoToSensorMarkerPreAlignment_finish"
+     << ": assembly-step completed";
 }
 // ----------------------------------------------------------------------------------------------------
 
+// ----------------------------------------------------------------------------------------------------
+// EnableVacuumPickupTool -----------------------------------------------------------------------------
 // ----------------------------------------------------------------------------------------------------
 void AssemblyAssembly::EnableVacuumPickupTool_start()
 {
@@ -163,12 +170,17 @@ void AssemblyAssembly::EnableVacuumPickupTool_finish()
   disconnect(this->vacuum(), SIGNAL(vacuum_error  ()), this, SLOT(EnableVacuumPickupTool_finish()));
 
   NQLog("AssemblyAssembly", NQLog::Spam) << "EnableVacuumPickupTool_finish"
-     << ": assembly-step completed";
+     << ": emitting signal \"EnableVacuumPickupTool_finished\"";
 
-  return;
+  emit EnableVacuumPickupTool_finished();
+
+  NQLog("AssemblyAssembly", NQLog::Message) << "EnableVacuumPickupTool_finish"
+     << ": assembly-step completed";
 }
 // ----------------------------------------------------------------------------------------------------
 
+// ----------------------------------------------------------------------------------------------------
+// DisableVacuumPickupTool ----------------------------------------------------------------------------
 // ----------------------------------------------------------------------------------------------------
 void AssemblyAssembly::DisableVacuumPickupTool_start()
 {
@@ -193,12 +205,17 @@ void AssemblyAssembly::DisableVacuumPickupTool_finish()
   disconnect(this->vacuum(), SIGNAL(vacuum_error   ()), this, SLOT(DisableVacuumPickupTool_finish()));
 
   NQLog("AssemblyAssembly", NQLog::Spam) << "DisableVacuumPickupTool_finish"
-     << ": assembly-step completed";
+     << ": emitting signal \"DisableVacuumPickupTool_finished\"";
 
-  return;
+  emit DisableVacuumPickupTool_finished();
+
+  NQLog("AssemblyAssembly", NQLog::Message) << "DisableVacuumPickupTool_finish"
+     << ": assembly-step completed";
 }
 // ----------------------------------------------------------------------------------------------------
 
+// ----------------------------------------------------------------------------------------------------
+// EnableVacuumSpacers --------------------------------------------------------------------------------
 // ----------------------------------------------------------------------------------------------------
 void AssemblyAssembly::EnableVacuumSpacers_start()
 {
@@ -223,12 +240,17 @@ void AssemblyAssembly::EnableVacuumSpacers_finish()
   disconnect(this->vacuum(), SIGNAL(vacuum_error  ()), this, SLOT(EnableVacuumSpacers_finish()));
 
   NQLog("AssemblyAssembly", NQLog::Spam) << "EnableVacuumSpacers_finish"
-     << ": assembly-step completed";
+     << ": emitting signal \"EnableVacuumSpacers_finished\"";
 
-  return;
+  emit EnableVacuumSpacers_finished();
+
+  NQLog("AssemblyAssembly", NQLog::Message) << "EnableVacuumSpacers_finish"
+     << ": assembly-step completed";
 }
 // ----------------------------------------------------------------------------------------------------
 
+// ----------------------------------------------------------------------------------------------------
+// DisableVacuumSpacers -------------------------------------------------------------------------------
 // ----------------------------------------------------------------------------------------------------
 void AssemblyAssembly::DisableVacuumSpacers_start()
 {
@@ -253,12 +275,17 @@ void AssemblyAssembly::DisableVacuumSpacers_finish()
   disconnect(this->vacuum(), SIGNAL(vacuum_error   ()), this, SLOT(DisableVacuumSpacers_finish()));
 
   NQLog("AssemblyAssembly", NQLog::Spam) << "DisableVacuumSpacers_finish"
-     << ": assembly-step completed";
+     << ": emitting signal \"DisableVacuumSpacers_finished\"";
 
-  return;
+  emit DisableVacuumSpacers_finished();
+
+  NQLog("AssemblyAssembly", NQLog::Message) << "DisableVacuumSpacers_finish"
+     << ": assembly-step completed";
 }
 // ----------------------------------------------------------------------------------------------------
 
+// ----------------------------------------------------------------------------------------------------
+// EnableVacuumBaseplate ------------------------------------------------------------------------------
 // ----------------------------------------------------------------------------------------------------
 void AssemblyAssembly::EnableVacuumBaseplate_start()
 {
@@ -283,12 +310,17 @@ void AssemblyAssembly::EnableVacuumBaseplate_finish()
   disconnect(this->vacuum(), SIGNAL(vacuum_error  ()), this, SLOT(EnableVacuumBaseplate_finish()));
 
   NQLog("AssemblyAssembly", NQLog::Spam) << "EnableVacuumBaseplate_finish"
-     << ": assembly-step completed";
+     << ": emitting signal \"EnableVacuumBaseplate_finished\"";
 
-  return;
+  emit EnableVacuumBaseplate_finished();
+
+  NQLog("AssemblyAssembly", NQLog::Message) << "EnableVacuumBaseplate_finish"
+     << ": assembly-step completed";
 }
 // ----------------------------------------------------------------------------------------------------
 
+// ----------------------------------------------------------------------------------------------------
+// DisableVacuumBaseplate -----------------------------------------------------------------------------
 // ----------------------------------------------------------------------------------------------------
 void AssemblyAssembly::DisableVacuumBaseplate_start()
 {
@@ -313,8 +345,143 @@ void AssemblyAssembly::DisableVacuumBaseplate_finish()
   disconnect(this->vacuum(), SIGNAL(vacuum_error   ()), this, SLOT(DisableVacuumBaseplate_finish()));
 
   NQLog("AssemblyAssembly", NQLog::Spam) << "DisableVacuumBaseplate_finish"
-     << ": assembly-step completed";
+     << ": emitting signal \"DisableVacuumBaseplate_finished\"";
 
-  return;
+  emit DisableVacuumBaseplate_finished();
+
+  NQLog("AssemblyAssembly", NQLog::Message) << "DisableVacuumBaseplate_finish"
+     << ": assembly-step completed";
+}
+// ----------------------------------------------------------------------------------------------------
+
+// ----------------------------------------------------------------------------------------------------
+// GoFromSensorMarkerToPickupXY -----------------------------------------------------------------------
+// ----------------------------------------------------------------------------------------------------
+void AssemblyAssembly::GoFromSensorMarkerToPickupXY_start()
+{
+  const bool valid_params = this->parameters()->update();
+
+  if(valid_params == false)
+  {
+    NQLog("AssemblyAssembly", NQLog::Fatal) << "GoFromSensorMarkerToPickupXY_start"
+       << ": failed to update content of AssemblyParameters, no action taken";
+
+    return;
+  }
+
+  connect(this, SIGNAL(move_relative(double, double, double, double)), motion_, SLOT(moveRelative(double, double, double, double)));
+  connect(motion_, SIGNAL(motion_finished()), this, SLOT(GoFromSensorMarkerToPickupXY_finish()));
+
+  const double dx0 = this->parameters()->get("marker_to_pickup_dX");
+  const double dy0 = this->parameters()->get("marker_to_pickup_dY");
+  const double dz0 = 0.0;
+  const double da0 = 0.0;
+
+  NQLog("AssemblyAssembly", NQLog::Spam) << "GoFromSensorMarkerToPickupXY_start"
+     << ": emitting signal \"move_relative(" << dx0 << ", " << dy0 << ", " << dz0 << ", " << da0 << ")\"";
+
+  emit move_relative(dx0, dy0, dz0, da0);
+}
+
+void AssemblyAssembly::GoFromSensorMarkerToPickupXY_finish()
+{
+  disconnect(this, SIGNAL(move_relative(double, double, double, double)), motion_, SLOT(moveRelative(double, double, double, double)));
+  disconnect(motion_, SIGNAL(motion_finished()), this, SLOT(GoFromSensorMarkerToPickupXY_finish()));
+
+  NQLog("AssemblyAssembly", NQLog::Spam) << "GoFromSensorMarkerToPickupXY_finish"
+     << ": emitting signal \"GoFromSensorMarkerToPickupXY_finished\"";
+
+  emit GoFromSensorMarkerToPickupXY_finished();
+
+  NQLog("AssemblyAssembly", NQLog::Message) << "GoFromSensorMarkerToPickupXY_finish"
+     << ": assembly-step completed";
+}
+// ----------------------------------------------------------------------------------------------------
+
+// ----------------------------------------------------------------------------------------------------
+// LowerPickupToolOntoPSS -----------------------------------------------------------------------------
+// ----------------------------------------------------------------------------------------------------
+void AssemblyAssembly::LowerPickupToolOntoPSS_start()
+{
+  const bool valid_params = this->parameters()->update();
+
+  if(valid_params == false)
+  {
+    NQLog("AssemblyAssembly", NQLog::Fatal) << "LowerPickupToolOntoPSS_start"
+       << ": failed to update content of AssemblyParameters, no action taken";
+
+    return;
+  }
+
+  connect(this, SIGNAL(move_relative(double, double, double, double)), motion_, SLOT(moveRelative(double, double, double, double)));
+  connect(motion_, SIGNAL(motion_finished()), this, SLOT(LowerPickupToolOntoPSS_finish()));
+
+  const double dx0 = 0.0;
+  const double dy0 = 0.0;
+  const double dz0 = (this->parameters()->get("pickupOnRotStage_Z") + this->parameters()->get("thickness_PSS")) - motion_->get_position_Z() /* !! */ + 1.000;
+  const double da0 = 0.0;
+
+  NQLog("AssemblyAssembly", NQLog::Spam) << "LowerPickupToolOntoPSS_start"
+     << ": emitting signal \"move_relative(" << dx0 << ", " << dy0 << ", " << dz0 << ", " << da0 << ")\"";
+
+  emit move_relative(dx0, dy0, dz0, da0);
+}
+
+void AssemblyAssembly::LowerPickupToolOntoPSS_finish()
+{
+  disconnect(this, SIGNAL(move_relative(double, double, double, double)), motion_, SLOT(moveRelative(double, double, double, double)));
+  disconnect(motion_, SIGNAL(motion_finished()), this, SLOT(LowerPickupToolOntoPSS_finish()));
+
+  NQLog("AssemblyAssembly", NQLog::Spam) << "LowerPickupToolOntoPSS_finish"
+     << ": emitting signal \"LowerPickupToolOntoPSS_finished\"";
+
+  emit LowerPickupToolOntoPSS_finished();
+
+  NQLog("AssemblyAssembly", NQLog::Message) << "LowerPickupToolOntoPSS_finish"
+     << ": assembly-step completed";
+}
+// ----------------------------------------------------------------------------------------------------
+
+// ----------------------------------------------------------------------------------------------------
+// PickupPSS ------------------------------------------------------------------------------------------
+// ----------------------------------------------------------------------------------------------------
+void AssemblyAssembly::PickupPSS_start()
+{
+  const bool valid_params = this->parameters()->update();
+
+  if(valid_params == false)
+  {
+    NQLog("AssemblyAssembly", NQLog::Fatal) << "PickupPSS_start"
+       << ": failed to update content of AssemblyParameters, no action taken";
+
+    return;
+  }
+
+  connect(this, SIGNAL(move_relative(double, double, double, double)), motion_, SLOT(moveRelative(double, double, double, double)));
+  connect(motion_, SIGNAL(motion_finished()), this, SLOT(PickupPSS_finish()));
+
+  const double dx0 =  0.0;
+  const double dy0 =  0.0;
+  const double dz0 = 80.0;
+  const double da0 =  0.0;
+
+  NQLog("AssemblyAssembly", NQLog::Spam) << "PickupPSS_start"
+     << ": emitting signal \"move_relative(" << dx0 << ", " << dy0 << ", " << dz0 << ", " << da0 << ")\"";
+
+  emit move_relative(dx0, dy0, dz0, da0);
+}
+
+void AssemblyAssembly::PickupPSS_finish()
+{
+  disconnect(this, SIGNAL(move_relative(double, double, double, double)), motion_, SLOT(moveRelative(double, double, double, double)));
+  disconnect(motion_, SIGNAL(motion_finished()), this, SLOT(PickupPSS_finish()));
+
+  NQLog("AssemblyAssembly", NQLog::Spam) << "PickupPSS_finish"
+     << ": emitting signal \"PickupPSS_finished\"";
+
+  emit PickupPSS_finished();
+
+  NQLog("AssemblyAssembly", NQLog::Message) << "PickupPSS_finish"
+     << ": assembly-step completed";
 }
 // ----------------------------------------------------------------------------------------------------

@@ -15,8 +15,7 @@
 
 #include <AssemblyVacuumWidget.h>
 
-#include <QPixmap>
-#include <QPainter>
+#include <QGridLayout>
 #include <QMessageBox>
 
 AssemblyVacuumWidget::AssemblyVacuumWidget(const QString& label, QWidget* parent) : QWidget(parent)
@@ -27,13 +26,6 @@ AssemblyVacuumWidget::AssemblyVacuumWidget(const QString& label, QWidget* parent
   button_ = new QPushButton(label, this);
   layout_->addWidget(button_);
 
-  QPixmap pixmap(100, 100);
-  pixmap.fill(QColor("transparent"));
-
-  QPainter painter(&pixmap);
-  painter.setBrush(QBrush(Qt::red));
-  painter.drawEllipse(0, 0, 30, 30);
-
   QGridLayout* grid = new QGridLayout;
 
   ApplicationConfig* config = ApplicationConfig::instance();
@@ -42,7 +34,13 @@ AssemblyVacuumWidget::AssemblyVacuumWidget(const QString& label, QWidget* parent
     NQLog("AssemblyVacuumWidget", NQLog::Fatal)
        << "ApplicationConfig::instance() not initialized (null pointer), stopped constructor";
 
-    return;
+    QMessageBox::critical(0
+     , tr("[AssemblyVacuumWidget]")
+     , tr("ApplicationConfig::instance() not initialized\n.")
+     , QMessageBox::Abort
+    );
+
+    throw; // must abort
   }
 
   /// PICKUP TOOL
@@ -50,13 +48,12 @@ AssemblyVacuumWidget::AssemblyVacuumWidget(const QString& label, QWidget* parent
 
   valuemap_[vacuum_pickup] = Entry();
 
-  valuemap_.at(vacuum_pickup).radioButton_ = new QRadioButton(tr("Pickup"));
-  valuemap_.at(vacuum_pickup).label_ = new QLabel(tr(" VACUUM OFF"));
-  valuemap_.at(vacuum_pickup).label_->setPixmap(pixmap);
-  valuemap_.at(vacuum_pickup).label_->setStyleSheet("QLabel { background-color : green; color : black; }");
+  this->get(vacuum_pickup).radioButton_ = new QRadioButton(tr("Pickup"));
+  this->get(vacuum_pickup).label_ = new QLabel(tr(" UNKNOWN"));
+  this->get(vacuum_pickup).label_->setStyleSheet("QLabel { background-color : grey; color : black; }");
 
-  grid->addWidget(valuemap_.at(vacuum_pickup).radioButton_, 1, 0);
-  grid->addWidget(valuemap_.at(vacuum_pickup).label_      , 1, 1);
+  grid->addWidget(this->get(vacuum_pickup).radioButton_, 1, 0);
+  grid->addWidget(this->get(vacuum_pickup).label_      , 1, 1);
   /// ------------------------------
 
   /// SPACERS
@@ -64,13 +61,12 @@ AssemblyVacuumWidget::AssemblyVacuumWidget(const QString& label, QWidget* parent
 
   valuemap_[vacuum_spacer] = Entry();
 
-  valuemap_.at(vacuum_spacer).radioButton_ = new QRadioButton(tr("Spacers"));
-  valuemap_.at(vacuum_spacer).label_ = new QLabel(tr(" VACUUM OFF"));
-  valuemap_.at(vacuum_spacer).label_->setPixmap(pixmap);
-  valuemap_.at(vacuum_spacer).label_->setStyleSheet("QLabel { background-color : green; color : black; }");
+  this->get(vacuum_spacer).radioButton_ = new QRadioButton(tr("Spacers"));
+  this->get(vacuum_spacer).label_ = new QLabel(tr(" UNKNOWN"));
+  this->get(vacuum_spacer).label_->setStyleSheet("QLabel { background-color : gray; color : black; }");
 
-  grid->addWidget(valuemap_.at(vacuum_spacer).radioButton_, 3, 0);
-  grid->addWidget(valuemap_.at(vacuum_spacer).label_      , 3, 1);
+  grid->addWidget(this->get(vacuum_spacer).radioButton_, 3, 0);
+  grid->addWidget(this->get(vacuum_spacer).label_      , 3, 1);
   /// ------------------------------
 
   /// BASEPLATE
@@ -78,13 +74,12 @@ AssemblyVacuumWidget::AssemblyVacuumWidget(const QString& label, QWidget* parent
 
   valuemap_[vacuum_basepl] = Entry();
 
-  valuemap_.at(vacuum_basepl).radioButton_ = new QRadioButton(tr("Baseplate"));
-  valuemap_.at(vacuum_basepl).label_ = new QLabel(tr(" VACUUM OFF"));
-  valuemap_.at(vacuum_basepl).label_->setPixmap(pixmap);
-  valuemap_.at(vacuum_basepl).label_->setStyleSheet("QLabel { background-color : green; color : black; }");
+  this->get(vacuum_basepl).radioButton_ = new QRadioButton(tr("Baseplate"));
+  this->get(vacuum_basepl).label_ = new QLabel(tr(" UNKNOWN"));
+  this->get(vacuum_basepl).label_->setStyleSheet("QLabel { background-color : gray; color : black; }");
 
-  grid->addWidget(valuemap_.at(vacuum_basepl).radioButton_, 5, 0);
-  grid->addWidget(valuemap_.at(vacuum_basepl).label_      , 5, 1);
+  grid->addWidget(this->get(vacuum_basepl).radioButton_, 5, 0);
+  grid->addWidget(this->get(vacuum_basepl).label_      , 5, 1);
   /// ------------------------------
 
   layout_->addLayout(grid);
@@ -92,6 +87,30 @@ AssemblyVacuumWidget::AssemblyVacuumWidget(const QString& label, QWidget* parent
   connect(button_, SIGNAL(clicked()), this, SLOT(toggleVacuum()));
 
   NQLog("AssemblyVacuumWidget", NQLog::Debug) << "constructed";
+}
+
+bool AssemblyVacuumWidget::has(const int key) const
+{
+  return bool(valuemap_.find(key) != valuemap_.end());
+}
+
+AssemblyVacuumWidget::Entry& AssemblyVacuumWidget::get(const int key)
+{
+  if(this->has(key) == false)
+  {
+    NQLog("AssemblyVacuumWidget", NQLog::Fatal) << "get"
+       << ": no entry associated to index \"" << key << "\", closing application";
+
+    QMessageBox::critical(0
+     , tr("[AssemblyVacuumWidget::get]")
+     , tr("Failed to find entry associated to index \"%1\"\n.").arg(QString::number(key))
+     , QMessageBox::Abort
+    );
+
+    throw; // must abort
+  }
+
+  return valuemap_.at(key);
 }
 
 void AssemblyVacuumWidget::toggleVacuum()
@@ -104,8 +123,6 @@ void AssemblyVacuumWidget::toggleVacuum()
     {
       if(radioButton->isChecked() == true)
       {
-        button_->setEnabled(false);
-
         NQLog("AssemblyVacuumWidget") << "toggleVacuum"
           << ": emitting signal toggleVacuum(" << i_vacuum.first << ")";
 
@@ -157,26 +174,12 @@ void AssemblyVacuumWidget::updateVacuumChannelState(const int channelNumber, con
   return;
 }
 
-bool AssemblyVacuumWidget::has(const int key) const
+void AssemblyVacuumWidget::updateVacuumChannelsStatus()
 {
-  return bool(valuemap_.find(key) != valuemap_.end());
-}
-
-AssemblyVacuumWidget::Entry AssemblyVacuumWidget::get(const int key) const
-{
-  if(this->has(key) == false)
+  for(const auto& i_vacuum : valuemap_)
   {
-    NQLog("AssemblyVacuumWidget", NQLog::Fatal) << "get"
-       << ": no entry associated to index \"" << key << "\", closing application";
+    const int ch_number = i_vacuum.first;
 
-    QMessageBox::critical(0
-     , tr("[AssemblyVacuumWidget::get]")
-     , tr("Failed to find entry associated to index \"%1\"\n.").arg(QString::number(key))
-     , QMessageBox::Abort
-    );
-
-    throw; // must abort
+    emit vacuumChannelState_request(ch_number);
   }
-
-  return valuemap_.at(key);
 }
