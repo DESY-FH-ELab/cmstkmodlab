@@ -110,12 +110,10 @@ AssemblyAssemblyView::AssemblyAssemblyView(const AssemblyAssembly* const assembl
   {
     ++assembly_step_N_;
 
-    AssemblyAssemblyActionWidget* tmp_wid = new AssemblyAssemblyActionWidget;
-    tmp_wid->label() ->setText(QString::number(assembly_step_N_));
-    tmp_wid->button()->setText("Align PSS to Motion Stage");
+    AssemblyAssemblyTextWidget* tmp_wid = new AssemblyAssemblyTextWidget;
+    tmp_wid->label()->setText(QString::number(assembly_step_N_));
+    tmp_wid->text() ->setText("Align PSS to Motion Stage");
     PSSAlignm_lay->addWidget(tmp_wid);
-
-    connect(tmp_wid->button(), SIGNAL(clicked()), assembly, SLOT(AlignmentPSS_start()));
   }
   // ----------
 

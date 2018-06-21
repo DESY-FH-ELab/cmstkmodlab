@@ -78,14 +78,6 @@ class AssemblyAssembly : public QObject
   void DisableVacuumBaseplate_finish();
   // ---------
 
-  // alignment
-  void AlignmentPSS_start();
-  void AlignmentPSS_finish();
-
-  void AlignmentPSP_start();
-  void AlignmentPSP_finish();
-  // ---------
-
  signals:
 
   // motion
@@ -114,11 +106,6 @@ class AssemblyAssembly : public QObject
   void  EnableVacuumBaseplate_finished();
   void DisableVacuumBaseplate_finished();
   // ------
-
-  // alignment
-  void AlignmentPSS_finished();
-  void AlignmentPSP_finished();
-  // ---------
 };
 
 #endif // ASSEMBLYASSEMBLY_H
