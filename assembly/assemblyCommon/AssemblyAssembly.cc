@@ -353,3 +353,223 @@ void AssemblyAssembly::DisableVacuumBaseplate_finish()
      << ": assembly-step completed";
 }
 // ----------------------------------------------------------------------------------------------------
+
+// ----------------------------------------------------------------------------------------------------
+// GoFromSensorMarkerToPickupXY -----------------------------------------------------------------------
+// ----------------------------------------------------------------------------------------------------
+void AssemblyAssembly::GoFromSensorMarkerToPickupXY_start()
+{
+  const bool valid_params = this->parameters()->update();
+
+  if(valid_params == false)
+  {
+    NQLog("AssemblyAssembly", NQLog::Fatal) << "GoFromSensorMarkerToPickupXY_start"
+       << ": failed to update content of AssemblyParameters, no action taken";
+
+    return;
+  }
+
+  connect(this, SIGNAL(move_relative(double, double, double, double)), motion_, SLOT(moveRelative(double, double, double, double)));
+  connect(motion_, SIGNAL(motion_finished()), this, SLOT(GoFromSensorMarkerToPickupXY_finish()));
+
+  const double dx0 = this->parameters()->get("marker_to_pickup_dX");
+  const double dy0 = this->parameters()->get("marker_to_pickup_dY");
+  const double dz0 = 0.0;
+  const double da0 = 0.0;
+
+  NQLog("AssemblyAssembly", NQLog::Spam) << "GoFromSensorMarkerToPickupXY_start"
+     << ": emitting signal \"move_relative(" << dx0 << ", " << dy0 << ", " << dz0 << ", " << da0 << ")\"";
+
+  emit move_relative(dx0, dy0, dz0, da0);
+}
+
+void AssemblyAssembly::GoFromSensorMarkerToPickupXY_finish()
+{
+  disconnect(this, SIGNAL(move_relative(double, double, double, double)), motion_, SLOT(moveRelative(double, double, double, double)));
+  disconnect(motion_, SIGNAL(motion_finished()), this, SLOT(GoFromSensorMarkerToPickupXY_finish()));
+
+  NQLog("AssemblyAssembly", NQLog::Spam) << "GoFromSensorMarkerToPickupXY_finish"
+     << ": emitting signal \"GoFromSensorMarkerToPickupXY_finished\"";
+
+  emit GoFromSensorMarkerToPickupXY_finished();
+
+  NQLog("AssemblyAssembly", NQLog::Message) << "GoFromSensorMarkerToPickupXY_finish"
+     << ": assembly-step completed";
+}
+// ----------------------------------------------------------------------------------------------------
+
+// ----------------------------------------------------------------------------------------------------
+// LowerPickupToolOntoPSS -----------------------------------------------------------------------------
+// ----------------------------------------------------------------------------------------------------
+void AssemblyAssembly::LowerPickupToolOntoPSS_start()
+{
+  const bool valid_params = this->parameters()->update();
+
+  if(valid_params == false)
+  {
+    NQLog("AssemblyAssembly", NQLog::Fatal) << "LowerPickupToolOntoPSS_start"
+       << ": failed to update content of AssemblyParameters, no action taken";
+
+    return;
+  }
+
+  connect(this, SIGNAL(move_relative(double, double, double, double)), motion_, SLOT(moveRelative(double, double, double, double)));
+  connect(motion_, SIGNAL(motion_finished()), this, SLOT(LowerPickupToolOntoPSS_finish()));
+
+  const double dx0 = 0.0;
+  const double dy0 = 0.0;
+  const double dz0 = (this->parameters()->get("pickupOnRotStage_Z") + this->parameters()->get("thickness_PSS")) - motion_->get_position_Z() /* !! */ + 1.000;
+  const double da0 = 0.0;
+
+  NQLog("AssemblyAssembly", NQLog::Spam) << "LowerPickupToolOntoPSS_start"
+     << ": emitting signal \"move_relative(" << dx0 << ", " << dy0 << ", " << dz0 << ", " << da0 << ")\"";
+
+  emit move_relative(dx0, dy0, dz0, da0);
+}
+
+void AssemblyAssembly::LowerPickupToolOntoPSS_finish()
+{
+  disconnect(this, SIGNAL(move_relative(double, double, double, double)), motion_, SLOT(moveRelative(double, double, double, double)));
+  disconnect(motion_, SIGNAL(motion_finished()), this, SLOT(LowerPickupToolOntoPSS_finish()));
+
+  NQLog("AssemblyAssembly", NQLog::Spam) << "LowerPickupToolOntoPSS_finish"
+     << ": emitting signal \"LowerPickupToolOntoPSS_finished\"";
+
+  emit LowerPickupToolOntoPSS_finished();
+
+  NQLog("AssemblyAssembly", NQLog::Message) << "LowerPickupToolOntoPSS_finish"
+     << ": assembly-step completed";
+}
+// ----------------------------------------------------------------------------------------------------
+
+// ----------------------------------------------------------------------------------------------------
+// PickupPSS ------------------------------------------------------------------------------------------
+// ----------------------------------------------------------------------------------------------------
+void AssemblyAssembly::PickupPSS_start()
+{
+  const bool valid_params = this->parameters()->update();
+
+  if(valid_params == false)
+  {
+    NQLog("AssemblyAssembly", NQLog::Fatal) << "PickupPSS_start"
+       << ": failed to update content of AssemblyParameters, no action taken";
+
+    return;
+  }
+
+  connect(this, SIGNAL(move_relative(double, double, double, double)), motion_, SLOT(moveRelative(double, double, double, double)));
+  connect(motion_, SIGNAL(motion_finished()), this, SLOT(PickupPSS_finish()));
+
+  const double dx0 =  0.0;
+  const double dy0 =  0.0;
+  const double dz0 = 80.0;
+  const double da0 =  0.0;
+
+  NQLog("AssemblyAssembly", NQLog::Spam) << "PickupPSS_start"
+     << ": emitting signal \"move_relative(" << dx0 << ", " << dy0 << ", " << dz0 << ", " << da0 << ")\"";
+
+  emit move_relative(dx0, dy0, dz0, da0);
+}
+
+void AssemblyAssembly::PickupPSS_finish()
+{
+  disconnect(this, SIGNAL(move_relative(double, double, double, double)), motion_, SLOT(moveRelative(double, double, double, double)));
+  disconnect(motion_, SIGNAL(motion_finished()), this, SLOT(PickupPSS_finish()));
+
+  NQLog("AssemblyAssembly", NQLog::Spam) << "PickupPSS_finish"
+     << ": emitting signal \"PickupPSS_finished\"";
+
+  emit PickupPSS_finished();
+
+  NQLog("AssemblyAssembly", NQLog::Message) << "PickupPSS_finish"
+     << ": assembly-step completed";
+}
+// ----------------------------------------------------------------------------------------------------
+
+// ----------------------------------------------------------------------------------------------------
+// AlignmentPSS ------------------------------------------------------------------------------------------
+// ----------------------------------------------------------------------------------------------------
+void AssemblyAssembly::AlignmentPSS_start()
+{
+//!!  const bool valid_params = this->parameters()->update();
+//!!
+//!!  if(valid_params == false)
+//!!  {
+//!!    NQLog("AssemblyAssembly", NQLog::Fatal) << "AlignmentPSS_start"
+//!!       << ": failed to update content of AssemblyParameters, no action taken";
+//!!
+//!!    return;
+//!!  }
+//!!
+//!!  connect(this, SIGNAL(move_relative(double, double, double, double)), motion_, SLOT(moveRelative(double, double, double, double)));
+//!!  connect(motion_, SIGNAL(motion_finished()), this, SLOT(AlignmentPSS_finish()));
+//!!
+//!!  const double dx0 =  0.0;
+//!!  const double dy0 =  0.0;
+//!!  const double dz0 = 80.0;
+//!!  const double da0 =  0.0;
+//!!
+//!!  NQLog("AssemblyAssembly", NQLog::Spam) << "AlignmentPSS_start"
+//!!     << ": emitting signal \"move_relative(" << dx0 << ", " << dy0 << ", " << dz0 << ", " << da0 << ")\"";
+//!!
+//!!  emit move_relative(dx0, dy0, dz0, da0);
+}
+
+void AssemblyAssembly::AlignmentPSS_finish()
+{
+//!!  disconnect(this, SIGNAL(move_relative(double, double, double, double)), motion_, SLOT(moveRelative(double, double, double, double)));
+//!!  disconnect(motion_, SIGNAL(motion_finished()), this, SLOT(AlignmentPSS_finish()));
+
+  NQLog("AssemblyAssembly", NQLog::Spam) << "AlignmentPSS_finish"
+     << ": emitting signal \"AlignmentPSS_finished\"";
+
+  emit AlignmentPSS_finished();
+
+  NQLog("AssemblyAssembly", NQLog::Message) << "AlignmentPSS_finish"
+     << ": assembly-step completed";
+}
+// ----------------------------------------------------------------------------------------------------
+
+// ----------------------------------------------------------------------------------------------------
+// AlignmentPSP ------------------------------------------------------------------------------------------
+// ----------------------------------------------------------------------------------------------------
+void AssemblyAssembly::AlignmentPSP_start()
+{
+//!!  const bool valid_params = this->parameters()->update();
+//!!
+//!!  if(valid_params == false)
+//!!  {
+//!!    NQLog("AssemblyAssembly", NQLog::Fatal) << "AlignmentPSP_start"
+//!!       << ": failed to update content of AssemblyParameters, no action taken";
+//!!
+//!!    return;
+//!!  }
+//!!
+//!!  connect(this, SIGNAL(move_relative(double, double, double, double)), motion_, SLOT(moveRelative(double, double, double, double)));
+//!!  connect(motion_, SIGNAL(motion_finished()), this, SLOT(AlignmentPSP_finish()));
+//!!
+//!!  const double dx0 =  0.0;
+//!!  const double dy0 =  0.0;
+//!!  const double dz0 = 80.0;
+//!!  const double da0 =  0.0;
+//!!
+//!!  NQLog("AssemblyAssembly", NQLog::Spam) << "AlignmentPSP_start"
+//!!     << ": emitting signal \"move_relative(" << dx0 << ", " << dy0 << ", " << dz0 << ", " << da0 << ")\"";
+//!!
+//!!  emit move_relative(dx0, dy0, dz0, da0);
+}
+
+void AssemblyAssembly::AlignmentPSP_finish()
+{
+//!!  disconnect(this, SIGNAL(move_relative(double, double, double, double)), motion_, SLOT(moveRelative(double, double, double, double)));
+//!!  disconnect(motion_, SIGNAL(motion_finished()), this, SLOT(AlignmentPSP_finish()));
+
+  NQLog("AssemblyAssembly", NQLog::Spam) << "AlignmentPSP_finish"
+     << ": emitting signal \"AlignmentPSP_finished\"";
+
+  emit AlignmentPSP_finished();
+
+  NQLog("AssemblyAssembly", NQLog::Message) << "AlignmentPSP_finish"
+     << ": assembly-step completed";
+}
+// ----------------------------------------------------------------------------------------------------
