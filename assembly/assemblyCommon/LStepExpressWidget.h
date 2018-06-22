@@ -26,6 +26,8 @@
 #include <QPushButton>
 #include <QTimer>
 
+class LStepExpressAxisWidget;
+
 class LStepExpressWidget : public QWidget
 {
  Q_OBJECT
@@ -38,12 +40,19 @@ class LStepExpressWidget : public QWidget
  protected:
 
   LStepExpressModel* model_;
+
   QCheckBox* lstepCheckBox_;
   QCheckBox* joystickCheckBox_;
+
   QPushButton* buttonOrigin_;
   QPushButton* buttonCalibrate_;
   QPushButton* buttonEmergencyStop_;
   QPushButton* buttonClearQueue_;
+
+  LStepExpressAxisWidget* axisWidget_X_;
+  LStepExpressAxisWidget* axisWidget_Y_;
+  LStepExpressAxisWidget* axisWidget_Z_;
+  LStepExpressAxisWidget* axisWidget_A_;
 
   QWidget* axisControlWidget_;
 
@@ -55,9 +64,13 @@ class LStepExpressWidget : public QWidget
   void motionStarted();
   void motionFinished();
 
+  void enableMotionControllers();
+
  signals:
 
   void clearQueue_request();
+
+  void MotionControllers_enabled();
 };
 
 class LStepExpressAxisWidget : public QWidget

@@ -74,7 +74,7 @@ int main(int argc, char** argv)
 
     AssemblyMainWindow mainWindow;
 
-    mainWindow.setWindowTitle(QString("assembly - ")+APPLICATIONVERSIONSTR);
+    mainWindow.setWindowTitle("Automated Pixel-Strip Module Assembly ["+QString(APPLICATIONVERSIONSTR)+"]");
     mainWindow.show();
 
     return app.exec();

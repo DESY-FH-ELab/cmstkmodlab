@@ -34,6 +34,8 @@ class AssemblyHardwareControlView : public QWidget
 
   const LStepExpressMotionManager* manager() const { return manager_; }
 
+  LStepExpressWidget* LStepExpress_Widget() const { return w_lStep_; }
+
   AssemblyVacuumWidget* Vacuum_Widget() const { return w_vacuum_; }
 
  protected:
