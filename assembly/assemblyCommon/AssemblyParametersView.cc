@@ -39,78 +39,66 @@ AssemblyParametersView::AssemblyParametersView(QWidget* parent) :
   QToolBox* toolbox = new QToolBox;
   layout->addWidget(toolbox);
 
+  std::string tmp_tag("");
+  QString     tmp_des("");
+
   //// DIMENSIONS ----------
   dime_wid_ = new QWidget;
 
   toolbox->addItem(dime_wid_, tr("Dimensions of Assembly Components [mm]"));
 
-  QVBoxLayout* dime_lay = new QVBoxLayout;
+  QGridLayout* dime_lay = new QGridLayout;
   dime_wid_->setLayout(dime_lay);
 
-  // dimension: baseplate's thickness
-  QHBoxLayout* dime_thicknessBasep_lay = new QHBoxLayout;
-  dime_lay->addLayout(dime_thicknessBasep_lay);
+  // dimension: thickness of Baseplate
+  tmp_tag = "Thickness_Baseplate";
+  tmp_des = "Thickness of Baseplate :";
 
-  map_lineEdit_["thickness_baseplate"] = new QLineEdit(tr(""));
+  map_lineEdit_[tmp_tag] = new QLineEdit(tr(""));
 
-  dime_thicknessBasep_lay->addWidget(new QLabel(tr("Baseplate's thickness :")), 50, Qt::AlignLeft);
+  dime_lay->addWidget(new QLabel(tmp_des) , 0, 0, Qt::AlignLeft);
+  dime_lay->addWidget(new QLabel(tr("dZ")), 0, 5, Qt::AlignRight);
+  dime_lay->addWidget(this->get(tmp_tag)  , 0, 6, Qt::AlignRight);
 
-  dime_thicknessBasep_lay->addWidget(new QLabel, 27);
+  // dimension: thickness of PS-s Sensor
+  tmp_tag = "Thickness_PSS";
+  tmp_des = "Thickness of PS-s Sensor :";
 
-  dime_thicknessBasep_lay->addWidget(new QLabel(tr("dZ"))            ,  8, Qt::AlignRight);
-  dime_thicknessBasep_lay->addWidget(this->get("thickness_baseplate"), 15, Qt::AlignRight);
+  map_lineEdit_[tmp_tag] = new QLineEdit(tr(""));
 
-  // dimension: PSS sensor's thickness
-  QHBoxLayout* dime_thicknessPSS_lay = new QHBoxLayout;
-  dime_lay->addLayout(dime_thicknessPSS_lay);
+  dime_lay->addWidget(new QLabel(tmp_des) , 1, 0, Qt::AlignLeft);
+  dime_lay->addWidget(new QLabel(tr("dZ")), 1, 5, Qt::AlignRight);
+  dime_lay->addWidget(this->get(tmp_tag)  , 1, 6, Qt::AlignRight);
 
-  map_lineEdit_["thickness_PSS"] = new QLineEdit(tr(""));
+  // dimension: thickness of PS-p Sensor
+  tmp_tag = "Thickness_PSP";
+  tmp_des = "Thickness of PS-p Sensor :";
 
-  dime_thicknessPSS_lay->addWidget(new QLabel(tr("PSS Sensor's thickness :")), 50, Qt::AlignLeft);
+  map_lineEdit_[tmp_tag] = new QLineEdit(tr(""));
 
-  dime_thicknessPSS_lay->addWidget(new QLabel, 27);
+  dime_lay->addWidget(new QLabel(tmp_des) , 2, 0, Qt::AlignLeft);
+  dime_lay->addWidget(new QLabel(tr("dZ")), 2, 5, Qt::AlignRight);
+  dime_lay->addWidget(this->get(tmp_tag)  , 2, 6, Qt::AlignRight);
 
-  dime_thicknessPSS_lay->addWidget(new QLabel(tr("dZ"))      ,  8, Qt::AlignRight);
-  dime_thicknessPSS_lay->addWidget(this->get("thickness_PSS"), 15, Qt::AlignRight);
+  // dimension: thickness of Spacer
+  tmp_tag = "Thickness_Spacer";
+  tmp_des = "Thickness of Spacers :";
 
-  // dimension: PSP sensor's thickness
-  QHBoxLayout* dime_thicknessPSP_lay = new QHBoxLayout;
-  dime_lay->addLayout(dime_thicknessPSP_lay);
+  map_lineEdit_[tmp_tag] = new QLineEdit(tr(""));
 
-  map_lineEdit_["thickness_PSP"] = new QLineEdit(tr(""));
+  dime_lay->addWidget(new QLabel(tmp_des) , 3, 0, Qt::AlignLeft);
+  dime_lay->addWidget(new QLabel(tr("dZ")), 3, 5, Qt::AlignRight);
+  dime_lay->addWidget(this->get(tmp_tag)  , 3, 6, Qt::AlignRight);
 
-  dime_thicknessPSP_lay->addWidget(new QLabel(tr("PSP Sensor's thickness :")), 50, Qt::AlignLeft);
+  // dimension: thickness of Glue Layer
+  tmp_tag = "Thickness_GlueLayer";
+  tmp_des = "Thickness of Glue Layer :";
 
-  dime_thicknessPSP_lay->addWidget(new QLabel, 27);
+  map_lineEdit_[tmp_tag] = new QLineEdit(tr(""));
 
-  dime_thicknessPSP_lay->addWidget(new QLabel(tr("dZ"))      ,  8, Qt::AlignRight);
-  dime_thicknessPSP_lay->addWidget(this->get("thickness_PSP"), 15, Qt::AlignRight);
-
-  // dimension: Spacer's thickness
-  QHBoxLayout* dime_thicknessSpacer_lay = new QHBoxLayout;
-  dime_lay->addLayout(dime_thicknessSpacer_lay);
-
-  map_lineEdit_["thickness_spacer"] = new QLineEdit(tr(""));
-
-  dime_thicknessSpacer_lay->addWidget(new QLabel(tr("Spacer's thickness :")), 50, Qt::AlignLeft);
-
-  dime_thicknessSpacer_lay->addWidget(new QLabel, 27);
-
-  dime_thicknessSpacer_lay->addWidget(new QLabel(tr("dZ"))         ,  8, Qt::AlignRight);
-  dime_thicknessSpacer_lay->addWidget(this->get("thickness_spacer"), 15, Qt::AlignRight);
-
-  // dimension: Glue Layer's thickness
-  QHBoxLayout* dime_thicknessGlueLayer_lay = new QHBoxLayout;
-  dime_lay->addLayout(dime_thicknessGlueLayer_lay);
-
-  map_lineEdit_["thickness_glue_layer"] = new QLineEdit(tr(""));
-
-  dime_thicknessGlueLayer_lay->addWidget(new QLabel(tr("Glue Layer's thickness :")), 50, Qt::AlignLeft);
-
-  dime_thicknessGlueLayer_lay->addWidget(new QLabel, 27);
-
-  dime_thicknessGlueLayer_lay->addWidget(new QLabel(tr("dZ"))             ,  8, Qt::AlignRight);
-  dime_thicknessGlueLayer_lay->addWidget(this->get("thickness_glue_layer"), 15, Qt::AlignRight);
+  dime_lay->addWidget(new QLabel(tmp_des) , 4, 0, Qt::AlignLeft);
+  dime_lay->addWidget(new QLabel(tr("dZ")), 4, 5, Qt::AlignRight);
+  dime_lay->addWidget(this->get(tmp_tag)  , 4, 6, Qt::AlignRight);
 
   //// ---------------------
 
@@ -123,88 +111,103 @@ AssemblyParametersView::AssemblyParametersView(QWidget* parent) :
   posi_wid_->setLayout(posi_lay);
 
   // position: XYZA position to point camera to sensor marker-1 (using reference mark on platform to place sensor)
-  map_lineEdit_["refPointSensor_X"] = new QLineEdit(tr(""));
-  map_lineEdit_["refPointSensor_Y"] = new QLineEdit(tr(""));
-  map_lineEdit_["refPointSensor_Z"] = new QLineEdit(tr(""));
-  map_lineEdit_["refPointSensor_A"] = new QLineEdit(tr(""));
+  tmp_tag = "RefPointSensor";
+  tmp_des = "Sensor Marker-1 (using platform mark) :";
 
-  posi_lay->addWidget(new QLabel(tr("Sensor Marker-1 (using platform mark):")), 0, 0, Qt::AlignLeft);
+  map_lineEdit_[tmp_tag+"_X"] = new QLineEdit(tr(""));
+  map_lineEdit_[tmp_tag+"_Y"] = new QLineEdit(tr(""));
+  map_lineEdit_[tmp_tag+"_Z"] = new QLineEdit(tr(""));
+  map_lineEdit_[tmp_tag+"_A"] = new QLineEdit(tr(""));
 
-  posi_lay->addWidget(new QLabel(tr("X"))          , 0, 1, Qt::AlignRight);
-  posi_lay->addWidget(this->get("refPointSensor_X"), 0, 2, Qt::AlignRight);
+  posi_lay->addWidget(new QLabel(tmp_des)    , 0, 0, Qt::AlignLeft);
 
-  posi_lay->addWidget(new QLabel(tr("Y"))          , 0, 3, Qt::AlignRight);
-  posi_lay->addWidget(this->get("refPointSensor_Y"), 0, 4, Qt::AlignRight);
+  posi_lay->addWidget(new QLabel(tr("X"))    , 0, 1, Qt::AlignRight);
+  posi_lay->addWidget(this->get(tmp_tag+"_X"), 0, 2, Qt::AlignRight);
 
-  posi_lay->addWidget(new QLabel(tr("Z"))          , 0, 5, Qt::AlignRight);
-  posi_lay->addWidget(this->get("refPointSensor_Z"), 0, 6, Qt::AlignRight);
+  posi_lay->addWidget(new QLabel(tr("Y"))    , 0, 3, Qt::AlignRight);
+  posi_lay->addWidget(this->get(tmp_tag+"_Y"), 0, 4, Qt::AlignRight);
 
-  posi_lay->addWidget(new QLabel(tr("A"))          , 0, 7, Qt::AlignRight);
-  posi_lay->addWidget(this->get("refPointSensor_A"), 0, 8, Qt::AlignRight);
+  posi_lay->addWidget(new QLabel(tr("Z"))    , 0, 5, Qt::AlignRight);
+  posi_lay->addWidget(this->get(tmp_tag+"_Z"), 0, 6, Qt::AlignRight);
 
-  // position: XYZA position to point camera to Spacer Ref-Point (bottom-left edge)
-  map_lineEdit_["refPointSpacer_X"] = new QLineEdit(tr(""));
-  map_lineEdit_["refPointSpacer_Y"] = new QLineEdit(tr(""));
-  map_lineEdit_["refPointSpacer_Z"] = new QLineEdit(tr(""));
-  map_lineEdit_["refPointSpacer_A"] = new QLineEdit(tr(""));
+  posi_lay->addWidget(new QLabel(tr("A"))    , 0, 7, Qt::AlignRight);
+  posi_lay->addWidget(this->get(tmp_tag+"_A"), 0, 8, Qt::AlignRight);
 
-  posi_lay->addWidget(new QLabel(tr("Bottom-Left Edge of Spacer (aligned to X-axis):")), 1, 0, Qt::AlignLeft);
+  // position: XYZA position to point camera to Spacer Ref-Point
+  tmp_tag = "RefPointSpacer";
+  tmp_des = "Spacer Ref-Point :";
 
-  posi_lay->addWidget(new QLabel(tr("X"))          , 1, 1, Qt::AlignRight);
-  posi_lay->addWidget(this->get("refPointSpacer_X"), 1, 2, Qt::AlignRight);
+  map_lineEdit_[tmp_tag+"_X"] = new QLineEdit(tr(""));
+  map_lineEdit_[tmp_tag+"_Y"] = new QLineEdit(tr(""));
+  map_lineEdit_[tmp_tag+"_Z"] = new QLineEdit(tr(""));
+  map_lineEdit_[tmp_tag+"_A"] = new QLineEdit(tr(""));
 
-  posi_lay->addWidget(new QLabel(tr("Y"))          , 1, 3, Qt::AlignRight);
-  posi_lay->addWidget(this->get("refPointSpacer_Y"), 1, 4, Qt::AlignRight);
+  posi_lay->addWidget(new QLabel(tmp_des)    , 1, 0, Qt::AlignLeft);
 
-  posi_lay->addWidget(new QLabel(tr("Z"))          , 1, 5, Qt::AlignRight);
-  posi_lay->addWidget(this->get("refPointSpacer_Z"), 1, 6, Qt::AlignRight);
+  posi_lay->addWidget(new QLabel(tr("X"))    , 1, 1, Qt::AlignRight);
+  posi_lay->addWidget(this->get(tmp_tag+"_X"), 1, 2, Qt::AlignRight);
 
-  posi_lay->addWidget(new QLabel(tr("A"))          , 1, 7, Qt::AlignRight);
-  posi_lay->addWidget(this->get("refPointSpacer_A"), 1, 8, Qt::AlignRight);
+  posi_lay->addWidget(new QLabel(tr("Y"))    , 1, 3, Qt::AlignRight);
+  posi_lay->addWidget(this->get(tmp_tag+"_Y"), 1, 4, Qt::AlignRight);
+
+  posi_lay->addWidget(new QLabel(tr("Z"))    , 1, 5, Qt::AlignRight);
+  posi_lay->addWidget(this->get(tmp_tag+"_Z"), 1, 6, Qt::AlignRight);
+
+  posi_lay->addWidget(new QLabel(tr("A"))    , 1, 7, Qt::AlignRight);
+  posi_lay->addWidget(this->get(tmp_tag+"_A"), 1, 8, Qt::AlignRight);
 
   // position: XYZA position to point camera on Baseplate Ref-Point
-  map_lineEdit_["refPointBaseplate_X"] = new QLineEdit(tr(""));
-  map_lineEdit_["refPointBaseplate_Y"] = new QLineEdit(tr(""));
-  map_lineEdit_["refPointBaseplate_Z"] = new QLineEdit(tr(""));
-  map_lineEdit_["refPointBaseplate_A"] = new QLineEdit(tr(""));
+  tmp_tag = "RefPointBaseplate";
+  tmp_des = "Baseplate Ref-Point :";
 
-  posi_lay->addWidget(new QLabel(tr("Ref-Point of Baseplate (aligned to X-axis):")), 2, 0, Qt::AlignLeft);
+  map_lineEdit_[tmp_tag+"_X"] = new QLineEdit(tr(""));
+  map_lineEdit_[tmp_tag+"_Y"] = new QLineEdit(tr(""));
+  map_lineEdit_[tmp_tag+"_Z"] = new QLineEdit(tr(""));
+  map_lineEdit_[tmp_tag+"_A"] = new QLineEdit(tr(""));
 
-  posi_lay->addWidget(new QLabel(tr("X"))             , 2, 1, Qt::AlignRight);
-  posi_lay->addWidget(this->get("refPointBaseplate_X"), 2, 2, Qt::AlignRight);
+  posi_lay->addWidget(new QLabel(tmp_des)    , 2, 0, Qt::AlignLeft);
 
-  posi_lay->addWidget(new QLabel(tr("Y"))             , 2, 3, Qt::AlignRight);
-  posi_lay->addWidget(this->get("refPointBaseplate_Y"), 2, 4, Qt::AlignRight);
+  posi_lay->addWidget(new QLabel(tr("X"))    , 2, 1, Qt::AlignRight);
+  posi_lay->addWidget(this->get(tmp_tag+"_X"), 2, 2, Qt::AlignRight);
 
-  posi_lay->addWidget(new QLabel(tr("Z"))             , 2, 5, Qt::AlignRight);
-  posi_lay->addWidget(this->get("refPointBaseplate_Z"), 2, 6, Qt::AlignRight);
+  posi_lay->addWidget(new QLabel(tr("Y"))    , 2, 3, Qt::AlignRight);
+  posi_lay->addWidget(this->get(tmp_tag+"_Y"), 2, 4, Qt::AlignRight);
 
-  posi_lay->addWidget(new QLabel(tr("A"))             , 2, 7, Qt::AlignRight);
-  posi_lay->addWidget(this->get("refPointBaseplate_A"), 2, 8, Qt::AlignRight);
+  posi_lay->addWidget(new QLabel(tr("Z"))    , 2, 5, Qt::AlignRight);
+  posi_lay->addWidget(this->get(tmp_tag+"_Z"), 2, 6, Qt::AlignRight);
+
+  posi_lay->addWidget(new QLabel(tr("A"))    , 2, 7, Qt::AlignRight);
+  posi_lay->addWidget(this->get(tmp_tag+"_A"), 2, 8, Qt::AlignRight);
 
   // position: Z-position (height) to put pickup tool in contact with rotation stage
-  map_lineEdit_["pickupOnRotStage_Z"] = new QLineEdit(tr(""));
+  tmp_tag = "PickupToolOnRotStage";
+  tmp_des = "Pickup Tool on Rotation Stage :";
 
-  posi_lay->addWidget(new QLabel(tr("Pickup Position on Rotation Stage :")), 3, 0, Qt::AlignLeft);
+  map_lineEdit_[tmp_tag+"_Z"] = new QLineEdit(tr(""));
 
-  posi_lay->addWidget(new QLabel(tr("Z"))            , 3, 5, Qt::AlignRight);
-  posi_lay->addWidget(this->get("pickupOnRotStage_Z"), 3, 6, Qt::AlignRight);
+  posi_lay->addWidget(new QLabel(tmp_des)    , 3, 0, Qt::AlignLeft);
+
+  posi_lay->addWidget(new QLabel(tr("Z"))    , 3, 5, Qt::AlignRight);
+  posi_lay->addWidget(this->get(tmp_tag+"_Z"), 3, 6, Qt::AlignRight);
 
   // position: XY pickup position on glue-dispensing platform + Z-position (height) to put pickup tool in contact with platform
-  map_lineEdit_["pickupOnGluingStage_X"] = new QLineEdit(tr(""));
-  map_lineEdit_["pickupOnGluingStage_Y"] = new QLineEdit(tr(""));
-  map_lineEdit_["pickupOnGluingStage_Z"] = new QLineEdit(tr(""));
+  tmp_tag = "PickupToolOnGluingStage";
+  tmp_des = "Pickup Tool on Gluing Stage :";
 
-  posi_lay->addWidget(new QLabel(tr("Pickup Position on Glue-Dispensing platform :")), 4, 0, Qt::AlignLeft);
+  map_lineEdit_[tmp_tag+"_X"] = new QLineEdit(tr(""));
+  map_lineEdit_[tmp_tag+"_Y"] = new QLineEdit(tr(""));
+  map_lineEdit_[tmp_tag+"_Z"] = new QLineEdit(tr(""));
 
-  posi_lay->addWidget(new QLabel(tr("X"))               , 4, 1, Qt::AlignRight);
-  posi_lay->addWidget(this->get("pickupOnGluingStage_X"), 4, 2, Qt::AlignRight);
+  posi_lay->addWidget(new QLabel(tmp_des)    , 4, 0, Qt::AlignLeft);
 
-  posi_lay->addWidget(new QLabel(tr("Y"))               , 4, 3, Qt::AlignRight);
-  posi_lay->addWidget(this->get("pickupOnGluingStage_Y"), 4, 4, Qt::AlignRight);
+  posi_lay->addWidget(new QLabel(tr("X"))    , 4, 1, Qt::AlignRight);
+  posi_lay->addWidget(this->get(tmp_tag+"_X"), 4, 2, Qt::AlignRight);
 
-  posi_lay->addWidget(new QLabel(tr("Z"))               , 4, 5, Qt::AlignRight);
-  posi_lay->addWidget(this->get("pickupOnGluingStage_Z"), 4, 6, Qt::AlignRight);
+  posi_lay->addWidget(new QLabel(tr("Y"))    , 4, 3, Qt::AlignRight);
+  posi_lay->addWidget(this->get(tmp_tag+"_Y"), 4, 4, Qt::AlignRight);
+
+  posi_lay->addWidget(new QLabel(tr("Z"))    , 4, 5, Qt::AlignRight);
+  posi_lay->addWidget(this->get(tmp_tag+"_Z"), 4, 6, Qt::AlignRight);
 
   //// ---------------------
 
@@ -217,56 +220,86 @@ AssemblyParametersView::AssemblyParametersView(QWidget* parent) :
   dist_wid_->setLayout(dist_lay);
 
   // distance: angle between the camera frame and the XY reference frame of the motion stage
-  map_lineEdit_["FromCameraFrameToRefFrame_dA"] = new QLineEdit(tr(""));
+  tmp_tag = "FromCameraFrameToRefFrame";
+  tmp_des = "Angle between Camera Frame and XY Ref-Frame :";
 
-  dist_lay->addWidget(new QLabel(tr("Angle between Camera Frame and XY Ref-Frame :")), 0, 0, Qt::AlignLeft);
+  map_lineEdit_[tmp_tag+"_dA"] = new QLineEdit(tr(""));
 
-  dist_lay->addWidget(new QLabel(tr("dA"))                     , 0, 7, Qt::AlignRight);
-  dist_lay->addWidget(this->get("FromCameraFrameToRefFrame_dA"), 0, 8, Qt::AlignRight);
+  dist_lay->addWidget(new QLabel(tmp_des)     , 0, 0, Qt::AlignLeft);
 
-  // distance: from baseplate ref-point to position of PSS marker-1 edge relative to baseplate
-  map_lineEdit_["basepRefPoint_to_PSSOnBasep_dX"] = new QLineEdit(tr(""));
-  map_lineEdit_["basepRefPoint_to_PSSOnBasep_dY"] = new QLineEdit(tr(""));
+  dist_lay->addWidget(new QLabel(tr("dA"))    , 0, 7, Qt::AlignRight);
+  dist_lay->addWidget(this->get(tmp_tag+"_dA"), 0, 8, Qt::AlignRight);
 
-  dist_lay->addWidget(new QLabel(tr("From Baseplate's Ref-Point to PSS Marker-1 on Baseplate :")), 1, 0, Qt::AlignLeft);
+  // distance: from Sensor Ref-Point to Sensor Pickup Position
+  tmp_tag = "FromSensorRefPointToSensorPickup";
+  tmp_des = "From Sensor Ref-Point to Sensor Pickup Position :";
 
-  dist_lay->addWidget(new QLabel(tr("dX"))                       , 1, 1, Qt::AlignRight);
-  dist_lay->addWidget(this->get("basepRefPoint_to_PSSOnBasep_dX"), 1, 2, Qt::AlignRight);
+  map_lineEdit_[tmp_tag+"_dX"] = new QLineEdit(tr(""));
+  map_lineEdit_[tmp_tag+"_dY"] = new QLineEdit(tr(""));
 
-  dist_lay->addWidget(new QLabel(tr("dY"))                       , 1, 3, Qt::AlignRight);
-  dist_lay->addWidget(this->get("basepRefPoint_to_PSSOnBasep_dY"), 1, 4, Qt::AlignRight);
+  dist_lay->addWidget(new QLabel(tmp_des)     , 1, 0, Qt::AlignLeft);
 
-  // distance: from marker's ref-point to pickup position
-  map_lineEdit_["marker_to_pickup_dX"] = new QLineEdit(tr(""));
-  map_lineEdit_["marker_to_pickup_dY"] = new QLineEdit(tr(""));
+  dist_lay->addWidget(new QLabel(tr("dX"))    , 1, 1, Qt::AlignRight);
+  dist_lay->addWidget(this->get(tmp_tag+"_dX"), 1, 2, Qt::AlignRight);
 
-  dist_lay->addWidget(new QLabel(tr("From Marker's Ref-Point to Pickup position :")), 2, 0, Qt::AlignLeft);
+  dist_lay->addWidget(new QLabel(tr("dY"))    , 1, 3, Qt::AlignRight);
+  dist_lay->addWidget(this->get(tmp_tag+"_dY"), 1, 4, Qt::AlignRight);
 
-  dist_lay->addWidget(new QLabel(tr("dX"))            , 2, 1, Qt::AlignRight);
-  dist_lay->addWidget(this->get("marker_to_pickup_dX"), 2, 2, Qt::AlignRight);
+  // distance: shift from PS-p marker-1 Ref-Point to PS-s marker-1 Ref-Point
+  tmp_tag = "FromPSPRefPointToPSSRefPoint";
+  tmp_des = "From PS-p Ref-Point To PS-s Ref-Point :";
 
-  dist_lay->addWidget(new QLabel(tr("dY"))            , 2, 3, Qt::AlignRight);
-  dist_lay->addWidget(this->get("marker_to_pickup_dY"), 2, 4, Qt::AlignRight);
+  map_lineEdit_[tmp_tag+"_dX"] = new QLineEdit(tr(""));
+  map_lineEdit_[tmp_tag+"_dY"] = new QLineEdit(tr(""));
+
+  dist_lay->addWidget(new QLabel(tmp_des)     , 2, 0, Qt::AlignLeft);
+
+  dist_lay->addWidget(new QLabel(tr("dX"))    , 2, 1, Qt::AlignRight);
+  dist_lay->addWidget(this->get(tmp_tag+"_dX"), 2, 2, Qt::AlignRight);
+
+  dist_lay->addWidget(new QLabel(tr("dY"))    , 2, 3, Qt::AlignRight);
+  dist_lay->addWidget(this->get(tmp_tag+"_dY"), 2, 4, Qt::AlignRight);
+
+  // distance: from Spacer Ref-Point to Sensor Ref-Point
+  tmp_tag = "FromSpacerRefPointToSensorRefPoint";
+  tmp_des = "From Spacer Ref-Point to Sensor Ref-Point :";
+
+  map_lineEdit_[tmp_tag+"_dX"] = new QLineEdit(tr(""));
+  map_lineEdit_[tmp_tag+"_dY"] = new QLineEdit(tr(""));
+
+  dist_lay->addWidget(new QLabel(tmp_des)     , 3, 0, Qt::AlignLeft);
+
+  dist_lay->addWidget(new QLabel(tr("dX"))    , 3, 1, Qt::AlignRight);
+  dist_lay->addWidget(this->get(tmp_tag+"_dX"), 3, 2, Qt::AlignRight);
+
+  dist_lay->addWidget(new QLabel(tr("dY"))    , 3, 3, Qt::AlignRight);
+  dist_lay->addWidget(this->get(tmp_tag+"_dY"), 3, 4, Qt::AlignRight);
+
+  // distance: from Baseplate Ref-Point to PS-s Ref-Point relative to Baseplate
+  tmp_tag = "FromBaseplateRefPointToPSPRefPoint";
+  tmp_des = "From Baseplate Ref-Point to PS-p Ref-Point :";
+
+  map_lineEdit_[tmp_tag+"_dX"] = new QLineEdit(tr(""));
+  map_lineEdit_[tmp_tag+"_dY"] = new QLineEdit(tr(""));
+
+  dist_lay->addWidget(new QLabel(tmp_des)     , 4, 0, Qt::AlignLeft);
+
+  dist_lay->addWidget(new QLabel(tr("dX"))    , 4, 1, Qt::AlignRight);
+  dist_lay->addWidget(this->get(tmp_tag+"_dX"), 4, 2, Qt::AlignRight);
+
+  dist_lay->addWidget(new QLabel(tr("dY"))    , 4, 3, Qt::AlignRight);
+  dist_lay->addWidget(this->get(tmp_tag+"_dY"), 4, 4, Qt::AlignRight);
 
   // distance: from best-focus z-position to pickup z-position
-  map_lineEdit_["bestfocus_to_pickup_dZ"] = new QLineEdit(tr(""));
+  tmp_tag = "FromCameraBestFocusToPickupHeight";
+  tmp_des = "From Best-Focus Height to Pickup Height :";
 
-  dist_lay->addWidget(new QLabel(tr("From Best-Focus Height to Pickup Height :")), 3, 0, Qt::AlignLeft);
+  map_lineEdit_[tmp_tag+"_dZ"] = new QLineEdit(tr(""));
 
-  dist_lay->addWidget(new QLabel(tr("dZ"))               , 3, 5, Qt::AlignRight);
-  dist_lay->addWidget(this->get("bestfocus_to_pickup_dZ"), 3, 6, Qt::AlignRight);
+  dist_lay->addWidget(new QLabel(tmp_des)     , 5, 0, Qt::AlignLeft);
 
-  // distance: shift from PSP marker-1 edge to PSS marker-1 edge
-  map_lineEdit_["PSP_to_PSS_dX"] = new QLineEdit(tr(""));
-  map_lineEdit_["PSP_to_PSS_dY"] = new QLineEdit(tr(""));
-
-  dist_lay->addWidget(new QLabel(tr("Offset from PSP to PSS :")), 4, 0, Qt::AlignLeft);
-
-  dist_lay->addWidget(new QLabel(tr("dX"))      , 4, 1, Qt::AlignRight);
-  dist_lay->addWidget(this->get("PSP_to_PSS_dX"), 4, 2, Qt::AlignRight);
-
-  dist_lay->addWidget(new QLabel(tr("dY"))      , 4, 3, Qt::AlignRight);
-  dist_lay->addWidget(this->get("PSP_to_PSS_dY"), 4, 4, Qt::AlignRight);
+  dist_lay->addWidget(new QLabel(tr("dZ"))    , 5, 5, Qt::AlignRight);
+  dist_lay->addWidget(this->get(tmp_tag+"_dZ"), 5, 6, Qt::AlignRight);
 
   //// ---------------------
 
