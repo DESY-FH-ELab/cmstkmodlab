@@ -84,19 +84,6 @@ LStepExpressWidget::LStepExpressWidget(LStepExpressModel* model, QWidget* parent
 
     this->lstepStateChanged(model_->getDeviceState());
 
-    // Default Configuration
-    lstepCheckBox_->setCheckable(true);
-    lstepCheckBox_->setChecked(true);
-
-    if(lstepCheckBox_->isChecked())
-    {
-      axisWidget_X_->enabledCheckBoxToggled(true);
-      axisWidget_Y_->enabledCheckBoxToggled(true);
-      axisWidget_Z_->enabledCheckBoxToggled(true);
-      axisWidget_A_->enabledCheckBoxToggled(true);
-    }
-    // ---------------------
-
     NQLog("LStepExpressWidget", NQLog::Debug) << "constructed";
 }
 
@@ -114,6 +101,24 @@ LStepExpressWidget::~LStepExpressWidget()
 
 void LStepExpressWidget::updateWidgets()
 {
+}
+
+void LStepExpressWidget::enableMotionControllers()
+{
+  lstepCheckBox_->setChecked(true);
+
+  if(model_ && (model_->getDeviceState() == READY))
+  {
+    axisWidget_X_->enabledCheckBoxToggled(true);
+    axisWidget_Y_->enabledCheckBoxToggled(true);
+    axisWidget_Z_->enabledCheckBoxToggled(true);
+    axisWidget_A_->enabledCheckBoxToggled(true);
+  }
+
+  NQLog("LStepExpressWidget", NQLog::Spam) << "enableMotionControllers"
+     << ": emitting signal \"MotionControllers_enabled\"";
+
+  emit MotionControllers_enabled();
 }
 
 /// Updates the GUI when the Keithley multimeter is enabled/disabled.

@@ -40,8 +40,10 @@ class LStepExpressWidget : public QWidget
  protected:
 
   LStepExpressModel* model_;
+
   QCheckBox* lstepCheckBox_;
   QCheckBox* joystickCheckBox_;
+
   QPushButton* buttonOrigin_;
   QPushButton* buttonCalibrate_;
   QPushButton* buttonEmergencyStop_;
@@ -62,9 +64,13 @@ class LStepExpressWidget : public QWidget
   void motionStarted();
   void motionFinished();
 
+  void enableMotionControllers();
+
  signals:
 
   void clearQueue_request();
+
+  void MotionControllers_enabled();
 };
 
 class LStepExpressAxisWidget : public QWidget

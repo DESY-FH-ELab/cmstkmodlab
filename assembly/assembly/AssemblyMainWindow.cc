@@ -255,6 +255,8 @@ AssemblyMainWindow::AssemblyMainWindow(const unsigned int camera_ID, QWidget* pa
 
     hwctr_view_->Vacuum_Widget()->updateVacuumChannelsStatus();
 
+    hwctr_view_->LStepExpress_Widget()->enableMotionControllers();
+
     NQLog("AssemblyMainWindow", NQLog::Message) << "added view " << tabname_HWCtrl;
     // ---------------------------------------------------------
 
