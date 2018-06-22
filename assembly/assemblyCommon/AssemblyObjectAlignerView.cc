@@ -302,11 +302,33 @@ AssemblyObjectAlignerView::AssemblyObjectAlignerView(QWidget* parent)
   // ----------
 
   // Default Configuration
+
+  alignm_completeAtPosOne_checkbox_->setEnabled(false);
+  alignm_completeAtPosOne_checkbox_->setChecked(true);
+
+  alignm_exemeas_radbu_->setChecked(false);
+  alignm_exemeas_pusbu_->setEnabled(false);
+
   alignm_exealig_radbu_->setChecked(true);
+  alignm_exealig_pusbu_->setEnabled(true);
 
   alignm_angtgt_calc_checkbox_->setChecked(true);
 
-  alignm_PSS_radbu_->setChecked(true);
+  alignm_PSS_radbu_   ->setChecked(true);
+  alignm_PSS_dX_label ->setEnabled(true);
+  alignm_PSS_dX_linee_->setEnabled(true);
+  alignm_PSS_dY_label ->setEnabled(true);
+  alignm_PSS_dY_linee_->setEnabled(true);
+
+  alignm_PSP_radbu_   ->setChecked(false);
+  alignm_PSP_dX_label ->setEnabled(false);
+  alignm_PSP_dX_linee_->setEnabled(false);
+  alignm_PSP_dY_label ->setEnabled(false);
+  alignm_PSP_dY_linee_->setEnabled(false);
+
+  alignm_angtgt_label ->setEnabled(true);
+  alignm_angtgt_linee_->setEnabled(true);
+
   // ---------------------
 
   // Results -------------
