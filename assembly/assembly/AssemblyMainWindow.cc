@@ -59,7 +59,6 @@ AssemblyMainWindow::AssemblyMainWindow(const unsigned int camera_ID, QWidget* pa
 
   // Views
   toolBar_(nullptr),
-  tabWidget_(nullptr),
 
 //  finderView_(nullptr),
 //  edgeView_(nullptr),
@@ -127,24 +126,17 @@ AssemblyMainWindow::AssemblyMainWindow(const unsigned int camera_ID, QWidget* pa
     conradManager_ = new ConradManager(conradModel_);
     /// -------------------
 
-    /// TAB WIDGET ----------------------------------------------
-    tabWidget_ = new QTabWidget(this);
-    tabWidget_->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);
+    /// TAB: ASSEMBLY FUNCTIONALITIES --------------------------
+    QTabWidget* assembly_tab = new QTabWidget;
 
-//    finderView_ = new AssemblyUEyeSnapShooter(tabWidget_);
-//    tabWidget_->addTab(finderView_, "finder");
-
-//    edgeView_ = new AssemblyUEyeSnapShooter(tabWidget_);
-//    tabWidget_->addTab(edgeView_, "edges");
-
-//    rawView_ = new AssemblyUEyeSnapShooter(tabWidget_);
-//    tabWidget_->addTab(rawView_, "raw");
+    assembly_tab->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);
+    assembly_tab->setTabPosition(QTabWidget::North);
 
     // IMAGE VIEW ----------------------------------------------
     const QString tabname_Image("Image Viewer");
 
-    image_view_ = new AssemblyImageView(tabWidget_);
-    tabWidget_->addTab(image_view_, tabname_Image);
+    image_view_ = new AssemblyImageView(assembly_tab);
+    assembly_tab->addTab(image_view_, tabname_Image);
 
     // Z-focus finder
     zfocus_finder_ = new AssemblyZFocusFinder(camera_, motion_manager_);
@@ -165,8 +157,8 @@ AssemblyMainWindow::AssemblyMainWindow(const unsigned int camera_ID, QWidget* pa
 
     thresholder_ = new AssemblyThresholder();
 
-    thresholder_view_ = new AssemblyThresholderView(tabWidget_);
-    tabWidget_->addTab(thresholder_view_, tabname_ImageThresholding);
+    thresholder_view_ = new AssemblyThresholderView(assembly_tab);
+    assembly_tab->addTab(thresholder_view_, tabname_ImageThresholding);
 
     connect(thresholder_view_, SIGNAL(threshold_request        (int)), thresholder_, SLOT(update_image_binary_threshold        (int)));
     connect(thresholder_view_, SIGNAL(adaptiveThreshold_request(int)), thresholder_, SLOT(update_image_binary_adaptiveThreshold(int)));
@@ -181,8 +173,8 @@ AssemblyMainWindow::AssemblyMainWindow(const unsigned int camera_ID, QWidget* pa
     // PATTERN-RECOGNITION VIEW --------------------------------
     const QString tabname_PatRec("Pattern Recognition");
 
-    finder_view_ = new AssemblyObjectFinderPatRecView(tabWidget_);
-    tabWidget_->addTab(finder_view_, tabname_PatRec);
+    finder_view_ = new AssemblyObjectFinderPatRecView(assembly_tab);
+    assembly_tab->addTab(finder_view_, tabname_PatRec);
 
     // finder
     finder_ = new AssemblyObjectFinderPatRec(thresholder_, assembly::QtCacheDirectory()+"/AssemblyObjectFinderPatRec", "rotations");
@@ -198,8 +190,8 @@ AssemblyMainWindow::AssemblyMainWindow(const unsigned int camera_ID, QWidget* pa
     // ALIGNMENT VIEW ------------------------------------------
     const QString tabname_Alignm("Alignment");
 
-    aligner_view_ = new AssemblyObjectAlignerView(tabWidget_);
-    tabWidget_->addTab(aligner_view_, tabname_Alignm);
+    aligner_view_ = new AssemblyObjectAlignerView(assembly_tab);
+    assembly_tab->addTab(aligner_view_, tabname_Alignm);
 
     // aligner
     aligner_ = new AssemblyObjectAligner(motion_manager_);
@@ -217,64 +209,41 @@ AssemblyMainWindow::AssemblyMainWindow(const unsigned int camera_ID, QWidget* pa
 
     assembly_ = new AssemblyAssembly(motion_manager_, conradManager_);
 
-    assembly_view_ = new AssemblyAssemblyView(assembly_, tabWidget_);
-    tabWidget_->addTab(assembly_view_, tabname_Assembly);
+    assembly_view_ = new AssemblyAssemblyView(assembly_, assembly_tab);
+    assembly_tab->addTab(assembly_view_, tabname_Assembly);
 
     NQLog("AssemblyMainWindow", NQLog::Message) << "added view " << tabname_Assembly;
     // ---------------------------------------------------------
 
+    /// TAB: MANUAL CONTROLLERS AND PARAMETERS -----------------
+    QTabWidget* controls_tab = new QTabWidget;
+
+    controls_tab->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);
+    controls_tab->setTabPosition(QTabWidget::North);
+
+//    finderView_ = new AssemblyUEyeSnapShooter(assembly_tab);
+//    assembly_tab->addTab(finderView_, "finder");
+//
+//    edgeView_ = new AssemblyUEyeSnapShooter(assembly_tab);
+//    assembly_tab->addTab(edgeView_, "edges");
+//
+//    rawView_ = new AssemblyUEyeSnapShooter(assembly_tab);
+//    assembly_tab->addTab(rawView_, "raw");
+//
 //    // U-EYE VIEW ----------------------------------------------
 //    const QString tabname_uEye("uEye");
 //
 //    camera_widget_ = new AssemblyUEyeWidget(camera_model_, this);
-//    tabWidget_->addTab(camera_widget_, tabname_uEye);
+//    controls_tab->addTab(camera_widget_, tabname_uEye);
 //
 //    NQLog("AssemblyMainWindow", NQLog::Message) << "added view " << tabname_uEye;
 //    // ---------------------------------------------------------
 
-    // TOOLBOX VIEW ----------------------------------------------
-    const QString tabname_Toolbox("Toolbox");
-
-    toolbox_view_ = new AssemblyToolboxView(motion_manager_, tabWidget_);
-    tabWidget_->addTab(toolbox_view_, tabname_Toolbox);
-
-    // multi-pickup tester
-    multipickup_tester_ = new AssemblyMultiPickupTester(motion_manager_);
-
-    connect(toolbox_view_->MultiPickupTester_Widget(), SIGNAL(multipickup_request(AssemblyMultiPickupTester::Configuration)), this, SLOT(start_multiPickupTest(AssemblyMultiPickupTester::Configuration)));
-
-    NQLog("AssemblyMainWindow", NQLog::Message) << "added view " << tabname_Toolbox;
-    // -----------------------------------------------------------
-
-    // PARAMETERS VIEW -------------------------------------------
-    const QString tabname_Parameters("Parameters");
-
-    params_view_ = new AssemblyParametersView(tabWidget_);
-    tabWidget_->addTab(params_view_, tabname_Parameters);
-
-    params_->set_view(params_view_);
-
-    params_view_->copy_values(params_->map_double());
-
-    NQLog("AssemblyMainWindow", NQLog::Message) << "added view " << tabname_Parameters;
-    // ---------------------------------------------------------
-
-    // MOTION-SETTINGS VIEW ------------------------------------
-    const QString tabname_MotionSettings("Motion Settings");
-
-    motionSettings_ = new LStepExpressSettings(motion_model_, tabWidget_);
-
-    motionSettingsWidget_ = new LStepExpressSettingsWidget(motionSettings_, tabWidget_);
-    tabWidget_->addTab(motionSettingsWidget_, tabname_MotionSettings);
-
-    NQLog("AssemblyMainWindow", NQLog::Message) << "added view " << tabname_MotionSettings;
-    // ---------------------------------------------------------
-
     // HARDWARE CONTROLLERs VIEW (motion/vacuum) ---------------
     const QString tabname_HWCtrl("HW Controllers (Motion/Vacuum)");
 
-    hwctr_view_ = new AssemblyHardwareControlView(motion_manager_, tabWidget_);
-    tabWidget_->addTab(hwctr_view_, tabname_HWCtrl);
+    hwctr_view_ = new AssemblyHardwareControlView(motion_manager_, controls_tab);
+    controls_tab->addTab(hwctr_view_, tabname_HWCtrl);
 
     connect(hwctr_view_->Vacuum_Widget(), SIGNAL(toggleVacuum(int)), conradManager_, SLOT(toggleVacuum(int)));
 
@@ -289,6 +258,44 @@ AssemblyMainWindow::AssemblyMainWindow(const unsigned int camera_ID, QWidget* pa
     NQLog("AssemblyMainWindow", NQLog::Message) << "added view " << tabname_HWCtrl;
     // ---------------------------------------------------------
 
+    // PARAMETERS VIEW -------------------------------------------
+    const QString tabname_Parameters("Parameters");
+
+    params_view_ = new AssemblyParametersView(controls_tab);
+    controls_tab->addTab(params_view_, tabname_Parameters);
+
+    params_->set_view(params_view_);
+
+    params_view_->copy_values(params_->map_double());
+
+    NQLog("AssemblyMainWindow", NQLog::Message) << "added view " << tabname_Parameters;
+    // ---------------------------------------------------------
+
+    // MOTION-SETTINGS VIEW ------------------------------------
+    const QString tabname_MotionSettings("Motion Settings");
+
+    motionSettings_ = new LStepExpressSettings(motion_model_, controls_tab);
+
+    motionSettingsWidget_ = new LStepExpressSettingsWidget(motionSettings_, controls_tab);
+    controls_tab->addTab(motionSettingsWidget_, tabname_MotionSettings);
+
+    NQLog("AssemblyMainWindow", NQLog::Message) << "added view " << tabname_MotionSettings;
+    // ---------------------------------------------------------
+
+    // TOOLBOX VIEW ----------------------------------------------
+    const QString tabname_Toolbox("Toolbox");
+
+    toolbox_view_ = new AssemblyToolboxView(motion_manager_, controls_tab);
+    controls_tab->addTab(toolbox_view_, tabname_Toolbox);
+
+    // multi-pickup tester
+    multipickup_tester_ = new AssemblyMultiPickupTester(motion_manager_);
+
+    connect(toolbox_view_->MultiPickupTester_Widget(), SIGNAL(multipickup_request(AssemblyMultiPickupTester::Configuration)), this, SLOT(start_multiPickupTest(AssemblyMultiPickupTester::Configuration)));
+
+    NQLog("AssemblyMainWindow", NQLog::Message) << "added view " << tabname_Toolbox;
+    // -----------------------------------------------------------
+
     /// ---------------------------------------------------------
 
     /// Upper Toolbar -------------------------------------------
@@ -302,7 +309,18 @@ AssemblyMainWindow::AssemblyMainWindow(const unsigned int camera_ID, QWidget* pa
 
     connect(autofocus_checkbox_, SIGNAL(stateChanged(int)), this, SLOT(changeState_autofocus(int)));
 
-    this->setCentralWidget(tabWidget_);
+    QTabWidget* main_tab = new QTabWidget;
+
+    main_tab->setTabPosition(QTabWidget::South);
+
+    main_tab->addTab(assembly_tab, tr("Module Assembly"));
+    main_tab->addTab(controls_tab, tr("Manual Controls and Parameters"));
+
+    assembly_tab->setStyleSheet(assembly_tab->styleSheet()+" QTabBar::tab {width: 375px; }");
+    controls_tab->setStyleSheet(controls_tab->styleSheet()+" QTabBar::tab {width: 375px; }");
+    main_tab    ->setStyleSheet(controls_tab->styleSheet()+" QTabBar::tab {width: 950px; }");
+
+    this->setCentralWidget(main_tab);
 
     this->updateGeometry();
     /// ---------------------------------------------------------
