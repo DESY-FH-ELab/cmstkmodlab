@@ -14,6 +14,7 @@
 #include <ApplicationConfig.h>
 
 #include <AssemblyObjectAligner.h>
+#include <AssemblyParameters.h>
 
 #include <cmath>
 
@@ -270,7 +271,11 @@ void AssemblyObjectAligner::run_alignment(const double patrec_dX, const double p
     const double obj_deltaX = this->configuration().object_deltaX;
     const double obj_deltaY = this->configuration().object_deltaY;
 
-    const double target_rad = (patrec_angle * (M_PI/180.0));
+    AssemblyParameters* params = AssemblyParameters::instance(false);
+
+    const double camera_offset_dA = params->get("FromCameraFrameToRefFrame_dA");
+
+    const double target_rad = ((patrec_angle + camera_offset_dA) * (M_PI/180.0));
 
     const double COS = cos(target_rad);
     const double SIN = sin(target_rad);
@@ -361,10 +366,10 @@ void AssemblyObjectAligner::run_alignment(const double patrec_dX, const double p
         NQLog("AssemblyObjectAligner", NQLog::Message) << "run_alignment: step [" << alignment_step_ << "]: alignment completed, moving back to best-match position of PatRec #1";
         NQLog("AssemblyObjectAligner", NQLog::Message) << "run_alignment: step [" << alignment_step_ << "]";
 
-        ++alignment_step_;
-
         NQLog("AssemblyObjectAligner", NQLog::Spam) << "run_alignment: step [" << alignment_step_ << "]"
            << ": emitting signal \"move_relative(" << dX << ", " << dY << ", 0, 0)\"";
+
+        ++alignment_step_;
 
         this->move_relative(dX, dY, 0.0, 0.0);
       }
@@ -449,10 +454,10 @@ void AssemblyObjectAligner::run_alignment(const double patrec_dX, const double p
           NQLog("AssemblyObjectAligner", NQLog::Message) << "run_alignment: step [" << alignment_step_ << "]: alignment completed, moving back to best-match position of PatRec #1";
           NQLog("AssemblyObjectAligner", NQLog::Message) << "run_alignment: step [" << alignment_step_ << "]";
 
-          ++alignment_step_;
-
           NQLog("AssemblyObjectAligner", NQLog::Spam) << "run_alignment: step [" << alignment_step_ << "]"
              << ": emitting signal \"move_relative(" << dX << ", " << dY << ", 0, 0)\"";
+
+          ++alignment_step_;
 
           this->move_relative(dX, dY, 0.0, 0.0);
         }

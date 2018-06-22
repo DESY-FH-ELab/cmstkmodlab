@@ -118,12 +118,6 @@ AssemblyObjectAlignerView::AssemblyObjectAlignerView(QWidget* parent)
   alignm_PSS_lay->addWidget(alignm_PSS_dY_linee_, 10);
   alignm_PSS_lay->addSpacing(25);
 
-  alignm_PSS_radbu_   ->setChecked(true);
-  alignm_PSS_dX_label ->setEnabled(true);
-  alignm_PSS_dX_linee_->setEnabled(true);
-  alignm_PSS_dY_label ->setEnabled(true);
-  alignm_PSS_dY_linee_->setEnabled(true);
-
   connect(alignm_PSS_radbu_, SIGNAL(toggled(bool)), alignm_PSS_dX_label , SLOT(setEnabled(bool)));
   connect(alignm_PSS_radbu_, SIGNAL(toggled(bool)), alignm_PSS_dX_linee_, SLOT(setEnabled(bool)));
   connect(alignm_PSS_radbu_, SIGNAL(toggled(bool)), alignm_PSS_dY_label , SLOT(setEnabled(bool)));
@@ -152,12 +146,6 @@ AssemblyObjectAlignerView::AssemblyObjectAlignerView(QWidget* parent)
   alignm_PSP_lay->addWidget(alignm_PSP_dY_linee_, 10);
   alignm_PSP_lay->addSpacing(25);
 
-  alignm_PSP_radbu_   ->setChecked(false);
-  alignm_PSP_dX_label ->setEnabled(false);
-  alignm_PSP_dX_linee_->setEnabled(false);
-  alignm_PSP_dY_label ->setEnabled(false);
-  alignm_PSP_dY_linee_->setEnabled(false);
-
   connect(alignm_PSP_radbu_, SIGNAL(toggled(bool)), alignm_PSP_dX_label , SLOT(setEnabled(bool)));
   connect(alignm_PSP_radbu_, SIGNAL(toggled(bool)), alignm_PSP_dX_linee_, SLOT(setEnabled(bool)));
   connect(alignm_PSP_radbu_, SIGNAL(toggled(bool)), alignm_PSP_dY_label , SLOT(setEnabled(bool)));
@@ -178,8 +166,6 @@ AssemblyObjectAlignerView::AssemblyObjectAlignerView(QWidget* parent)
   connect(alignm_PSS_radbu_, SIGNAL(toggled(bool)), this, SLOT(update_target_angle(bool)));
   connect(alignm_PSP_radbu_, SIGNAL(toggled(bool)), this, SLOT(update_target_angle(bool)));
 
-  alignm_angtgt_calc_checkbox_->setEnabled(false);
-
   alignm_angtgtOPT_lay->addSpacing(30);
   alignm_angtgtOPT_lay->addWidget(alignm_angtgt_calc_checkbox_);
   alignm_angtgtOPT_lay->addSpacing(30);
@@ -191,9 +177,6 @@ AssemblyObjectAlignerView::AssemblyObjectAlignerView(QWidget* parent)
 
   QLabel* alignm_angtgt_label = new QLabel(tr("Target Angle [deg]"));
   alignm_angtgt_linee_ = new QLineEdit(tr(""));
-
-  alignm_angtgt_label ->setEnabled(false);
-  alignm_angtgt_linee_->setEnabled(false);
 
   alignm_angtgtVAL_lay->addSpacing(80);
   alignm_angtgtVAL_lay->addWidget(alignm_angtgt_label , 10);
@@ -224,11 +207,8 @@ AssemblyObjectAlignerView::AssemblyObjectAlignerView(QWidget* parent)
   alignm_exemeas_radbu_ = new QRadioButton;
   alignm_exemeas_pusbu_ = new QPushButton(tr("Measure Angle"));
 
-  alignm_exemeas_radbu_->setChecked(true);
-  alignm_exemeas_pusbu_->setEnabled(true);
-
   connect(alignm_exemeas_radbu_, SIGNAL(toggled(bool)), alignm_completeAtPosOne_checkbox_, SLOT(setEnabled(bool)));
-  connect(alignm_exemeas_radbu_, SIGNAL(toggled(bool)), alignm_exemeas_pusbu_, SLOT(setEnabled(bool)));
+  connect(alignm_exemeas_radbu_, SIGNAL(toggled(bool)), alignm_exemeas_pusbu_            , SLOT(setEnabled(bool)));
 
   alignm_exemeas_lay->addSpacing(26);
   alignm_exemeas_lay->addWidget(alignm_exemeas_radbu_,  4);
@@ -244,12 +224,9 @@ AssemblyObjectAlignerView::AssemblyObjectAlignerView(QWidget* parent)
   alignm_exealig_radbu_ = new QRadioButton;
   alignm_exealig_pusbu_ = new QPushButton(tr("Align Object"));
 
-  alignm_exealig_radbu_->setChecked(false);
-  alignm_exealig_pusbu_->setEnabled(false);
-
-  connect(alignm_exealig_radbu_, SIGNAL(toggled(bool)), alignm_exealig_pusbu_, SLOT(setEnabled(bool)));
-  connect(alignm_exealig_radbu_, SIGNAL(toggled(bool)), alignm_angtgt_label  , SLOT(setEnabled(bool)));
-  connect(alignm_exealig_radbu_, SIGNAL(toggled(bool)), alignm_angtgt_linee_ , SLOT(setEnabled(bool)));
+  connect(alignm_exealig_radbu_, SIGNAL(toggled(bool)), alignm_exealig_pusbu_       , SLOT(setEnabled(bool)));
+  connect(alignm_exealig_radbu_, SIGNAL(toggled(bool)), alignm_angtgt_label         , SLOT(setEnabled(bool)));
+  connect(alignm_exealig_radbu_, SIGNAL(toggled(bool)), alignm_angtgt_linee_        , SLOT(setEnabled(bool)));
   connect(alignm_exealig_radbu_, SIGNAL(toggled(bool)), alignm_angtgt_calc_checkbox_, SLOT(setEnabled(bool)));
 
   alignm_exealig_lay->addSpacing(26);
@@ -323,6 +300,34 @@ AssemblyObjectAlignerView::AssemblyObjectAlignerView(QWidget* parent)
 
   alignm_cfg_lay->addStretch(1);
   // ----------
+
+  // Default Configuration
+
+  alignm_completeAtPosOne_checkbox_->setEnabled(false);
+  alignm_completeAtPosOne_checkbox_->setChecked(true);
+
+  alignm_exemeas_radbu_->setChecked(false);
+  alignm_exemeas_pusbu_->setEnabled(false);
+
+  alignm_exealig_radbu_->setChecked(true);
+  alignm_exealig_pusbu_->setEnabled(true);
+
+  alignm_angtgt_calc_checkbox_->setChecked(true);
+
+  alignm_PSS_radbu_   ->setChecked(true);
+  alignm_PSS_dX_label ->setEnabled(true);
+  alignm_PSS_dX_linee_->setEnabled(true);
+  alignm_PSS_dY_label ->setEnabled(true);
+  alignm_PSS_dY_linee_->setEnabled(true);
+
+  alignm_PSP_radbu_   ->setChecked(false);
+  alignm_PSP_dX_label ->setEnabled(false);
+  alignm_PSP_dX_linee_->setEnabled(false);
+  alignm_PSP_dY_label ->setEnabled(false);
+  alignm_PSP_dY_linee_->setEnabled(false);
+
+  alignm_angtgt_label ->setEnabled(true);
+  alignm_angtgt_linee_->setEnabled(true);
 
   // ---------------------
 

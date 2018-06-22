@@ -47,12 +47,23 @@ AssemblyParameters* AssemblyParameters::instance(const std::string& file_path, Q
   return instance_;
 }
 
-AssemblyParameters* AssemblyParameters::instance()
+AssemblyParameters* AssemblyParameters::instance(const bool permissive)
 {
   if(instance_ == nullptr)
   {
     NQLog("AssemblyParameters", NQLog::Critical) << "instance"
        << ": returning invalid (null) pointer to AssemblyParameters instance";
+
+    if(permissive == false)
+    {
+      QMessageBox::critical(0
+       , tr("[AssemblyParameters::instance]")
+       , tr("Pointer to AssemblyParameters instance is NULL. Aborting.")
+       , QMessageBox::Abort
+      );
+
+      throw; // must abort
+    }
   }
 
   return instance_;

@@ -37,7 +37,7 @@ class AssemblyParameters : public QObject
   virtual ~AssemblyParameters();
 
   static AssemblyParameters* instance(const std::string&, QObject* parent=nullptr);
-  static AssemblyParameters* instance();
+  static AssemblyParameters* instance(const bool permissive=true);
 
   void issue_key_error(const std::string&) const;
 
