@@ -26,6 +26,8 @@
 #include <QPushButton>
 #include <QTimer>
 
+class LStepExpressAxisWidget;
+
 class LStepExpressWidget : public QWidget
 {
  Q_OBJECT
@@ -44,6 +46,11 @@ class LStepExpressWidget : public QWidget
   QPushButton* buttonCalibrate_;
   QPushButton* buttonEmergencyStop_;
   QPushButton* buttonClearQueue_;
+
+  LStepExpressAxisWidget* axisWidget_X_;
+  LStepExpressAxisWidget* axisWidget_Y_;
+  LStepExpressAxisWidget* axisWidget_Z_;
+  LStepExpressAxisWidget* axisWidget_A_;
 
   QWidget* axisControlWidget_;
 

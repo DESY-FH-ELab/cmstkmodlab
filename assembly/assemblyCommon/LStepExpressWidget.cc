@@ -16,9 +16,14 @@
 #include <QVBoxLayout>
 #include <QGridLayout>
 
-LStepExpressWidget::LStepExpressWidget(LStepExpressModel* model, QWidget* parent) :
-  QWidget(parent),
-  model_(model)
+LStepExpressWidget::LStepExpressWidget(LStepExpressModel* model, QWidget* parent)
+ : QWidget(parent)
+ , model_(model)
+
+ , axisWidget_X_(nullptr)
+ , axisWidget_Y_(nullptr)
+ , axisWidget_Z_(nullptr)
+ , axisWidget_A_(nullptr)
 {
     QVBoxLayout* layout = new QVBoxLayout(this);
     this->setLayout(layout);
@@ -46,17 +51,22 @@ LStepExpressWidget::LStepExpressWidget(LStepExpressModel* model, QWidget* parent
     glayout->addWidget(buttonEmergencyStop_, 1, 3);
 
     // AXIS
-    axisControlWidget_= new QWidget(this);
+    axisControlWidget_ = new QWidget(this);
     layout->addWidget(axisControlWidget_);
 
     QGridLayout* axisLayout = new QGridLayout(axisControlWidget_);
     axisControlWidget_->setLayout(axisLayout);
 
     // Add all the axes displays
-    for(unsigned int i=0; i<4; ++i)
-    {
-      axisLayout->addWidget(new LStepExpressAxisWidget(model_, i, this), 0, i);
-    }
+    axisWidget_X_ = new LStepExpressAxisWidget(model_, 0, this);
+    axisWidget_Y_ = new LStepExpressAxisWidget(model_, 1, this);
+    axisWidget_Z_ = new LStepExpressAxisWidget(model_, 2, this);
+    axisWidget_A_ = new LStepExpressAxisWidget(model_, 3, this);
+
+    axisLayout->addWidget(axisWidget_X_, 0, 0);
+    axisLayout->addWidget(axisWidget_Y_, 0, 1);
+    axisLayout->addWidget(axisWidget_Z_, 0, 2);
+    axisLayout->addWidget(axisWidget_A_, 0, 3);
 
     connect(lstepCheckBox_   , SIGNAL(toggled(bool)), model_, SLOT(setDeviceEnabled(bool)));
     connect(joystickCheckBox_, SIGNAL(toggled(bool)), model_, SLOT(setJoystickEnabled(bool)));
@@ -74,8 +84,18 @@ LStepExpressWidget::LStepExpressWidget(LStepExpressModel* model, QWidget* parent
 
     this->lstepStateChanged(model_->getDeviceState());
 
+    // Default Configuration
     lstepCheckBox_->setCheckable(true);
     lstepCheckBox_->setChecked(true);
+
+    if(lstepCheckBox_->isChecked())
+    {
+      axisWidget_X_->enabledCheckBoxToggled(true);
+      axisWidget_Y_->enabledCheckBoxToggled(true);
+      axisWidget_Z_->enabledCheckBoxToggled(true);
+      axisWidget_A_->enabledCheckBoxToggled(true);
+    }
+    // ---------------------
 
     NQLog("LStepExpressWidget", NQLog::Debug) << "constructed";
 }
