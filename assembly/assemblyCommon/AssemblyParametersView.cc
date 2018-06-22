@@ -216,49 +216,57 @@ AssemblyParametersView::AssemblyParametersView(QWidget* parent) :
   QGridLayout* dist_lay = new QGridLayout;
   dist_wid_->setLayout(dist_lay);
 
+  // distance: angle between the camera frame and the XY reference frame of the motion stage
+  map_lineEdit_["FromCameraFrameToRefFrame_dA"] = new QLineEdit(tr(""));
+
+  dist_lay->addWidget(new QLabel(tr("Angle between Camera Frame and XY Ref-Frame :")), 0, 0, Qt::AlignLeft);
+
+  dist_lay->addWidget(new QLabel(tr("dA"))                     , 0, 7, Qt::AlignRight);
+  dist_lay->addWidget(this->get("FromCameraFrameToRefFrame_dA"), 0, 8, Qt::AlignRight);
+
   // distance: from baseplate ref-point to position of PSS marker-1 edge relative to baseplate
   map_lineEdit_["basepRefPoint_to_PSSOnBasep_dX"] = new QLineEdit(tr(""));
   map_lineEdit_["basepRefPoint_to_PSSOnBasep_dY"] = new QLineEdit(tr(""));
 
-  dist_lay->addWidget(new QLabel(tr("From Baseplate's Ref-Point to PSS Marker-1 on Baseplate :")), 0, 0, Qt::AlignLeft);
+  dist_lay->addWidget(new QLabel(tr("From Baseplate's Ref-Point to PSS Marker-1 on Baseplate :")), 1, 0, Qt::AlignLeft);
 
-  dist_lay->addWidget(new QLabel(tr("dX"))                       , 0, 1, Qt::AlignRight);
-  dist_lay->addWidget(this->get("basepRefPoint_to_PSSOnBasep_dX"), 0, 2, Qt::AlignRight);
+  dist_lay->addWidget(new QLabel(tr("dX"))                       , 1, 1, Qt::AlignRight);
+  dist_lay->addWidget(this->get("basepRefPoint_to_PSSOnBasep_dX"), 1, 2, Qt::AlignRight);
 
-  dist_lay->addWidget(new QLabel(tr("dY"))                       , 0, 3, Qt::AlignRight);
-  dist_lay->addWidget(this->get("basepRefPoint_to_PSSOnBasep_dY"), 0, 4, Qt::AlignRight);
+  dist_lay->addWidget(new QLabel(tr("dY"))                       , 1, 3, Qt::AlignRight);
+  dist_lay->addWidget(this->get("basepRefPoint_to_PSSOnBasep_dY"), 1, 4, Qt::AlignRight);
 
   // distance: from marker's ref-point to pickup position
   map_lineEdit_["marker_to_pickup_dX"] = new QLineEdit(tr(""));
   map_lineEdit_["marker_to_pickup_dY"] = new QLineEdit(tr(""));
 
-  dist_lay->addWidget(new QLabel(tr("From Marker's Ref-Point to Pickup position :")), 1, 0, Qt::AlignLeft);
+  dist_lay->addWidget(new QLabel(tr("From Marker's Ref-Point to Pickup position :")), 2, 0, Qt::AlignLeft);
 
-  dist_lay->addWidget(new QLabel(tr("dX"))            , 1, 1, Qt::AlignRight);
-  dist_lay->addWidget(this->get("marker_to_pickup_dX"), 1, 2, Qt::AlignRight);
+  dist_lay->addWidget(new QLabel(tr("dX"))            , 2, 1, Qt::AlignRight);
+  dist_lay->addWidget(this->get("marker_to_pickup_dX"), 2, 2, Qt::AlignRight);
 
-  dist_lay->addWidget(new QLabel(tr("dY"))            , 1, 3, Qt::AlignRight);
-  dist_lay->addWidget(this->get("marker_to_pickup_dY"), 1, 4, Qt::AlignRight);
+  dist_lay->addWidget(new QLabel(tr("dY"))            , 2, 3, Qt::AlignRight);
+  dist_lay->addWidget(this->get("marker_to_pickup_dY"), 2, 4, Qt::AlignRight);
 
   // distance: from best-focus z-position to pickup z-position
   map_lineEdit_["bestfocus_to_pickup_dZ"] = new QLineEdit(tr(""));
 
-  dist_lay->addWidget(new QLabel(tr("From Best-Focus Height to Pickup Height :")), 2, 0, Qt::AlignLeft);
+  dist_lay->addWidget(new QLabel(tr("From Best-Focus Height to Pickup Height :")), 3, 0, Qt::AlignLeft);
 
-  dist_lay->addWidget(new QLabel(tr("dZ"))               , 2, 5, Qt::AlignRight);
-  dist_lay->addWidget(this->get("bestfocus_to_pickup_dZ"), 2, 6, Qt::AlignRight);
+  dist_lay->addWidget(new QLabel(tr("dZ"))               , 3, 5, Qt::AlignRight);
+  dist_lay->addWidget(this->get("bestfocus_to_pickup_dZ"), 3, 6, Qt::AlignRight);
 
   // distance: shift from PSP marker-1 edge to PSS marker-1 edge
   map_lineEdit_["PSP_to_PSS_dX"] = new QLineEdit(tr(""));
   map_lineEdit_["PSP_to_PSS_dY"] = new QLineEdit(tr(""));
 
-  dist_lay->addWidget(new QLabel(tr("Offset from PSP to PSS :")), 3, 0, Qt::AlignLeft);
+  dist_lay->addWidget(new QLabel(tr("Offset from PSP to PSS :")), 4, 0, Qt::AlignLeft);
 
-  dist_lay->addWidget(new QLabel(tr("dX"))      , 3, 1, Qt::AlignRight);
-  dist_lay->addWidget(this->get("PSP_to_PSS_dX"), 3, 2, Qt::AlignRight);
+  dist_lay->addWidget(new QLabel(tr("dX"))      , 4, 1, Qt::AlignRight);
+  dist_lay->addWidget(this->get("PSP_to_PSS_dX"), 4, 2, Qt::AlignRight);
 
-  dist_lay->addWidget(new QLabel(tr("dY"))      , 3, 3, Qt::AlignRight);
-  dist_lay->addWidget(this->get("PSP_to_PSS_dY"), 3, 4, Qt::AlignRight);
+  dist_lay->addWidget(new QLabel(tr("dY"))      , 4, 3, Qt::AlignRight);
+  dist_lay->addWidget(this->get("PSP_to_PSS_dY"), 4, 4, Qt::AlignRight);
 
   //// ---------------------
 
