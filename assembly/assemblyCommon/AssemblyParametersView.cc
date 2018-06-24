@@ -230,8 +230,8 @@ AssemblyParametersView::AssemblyParametersView(QWidget* parent) :
   dist_wid_->setLayout(dist_lay);
 
   // distance: angle between the camera frame and the XY reference frame of the motion stage
-  tmp_tag = "FromCameraFrameToRefFrame";
-  tmp_des = "Angle between Camera Frame and XY Ref-Frame :";
+  tmp_tag = "AngleOfCameraFrameInRefFrame";
+  tmp_des = "Angle of Camera Frame in the XY Motion Stage Ref-Frame :";
 
   map_lineEdit_[tmp_tag+"_dA"] = new QLineEdit(tr(""));
 

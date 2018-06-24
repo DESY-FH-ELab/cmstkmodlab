@@ -274,7 +274,7 @@ void AssemblyObjectAligner::run_alignment(const double patrec_dX, const double p
 
     AssemblyParameters* params = AssemblyParameters::instance(false);
 
-    const double camera_offset_dA = params->get("FromCameraFrameToRefFrame_dA");
+    const double camera_offset_dA = (params->get("AngleOfCameraFrameInRefFrame_dA") + 90.0);
 
     double dX_1to2, dY_1to2;
     assembly::rotation2D_deg(dX_1to2, dY_1to2, -(patrec_angle + camera_offset_dA), obj_deltaX, obj_deltaY);
