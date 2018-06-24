@@ -73,6 +73,8 @@ class LStepExpressMotionManager : public QObject
 
     void clear_motion_queue();
 
+    void emergency_stop();
+
   protected slots:
 
     void motionStarted();

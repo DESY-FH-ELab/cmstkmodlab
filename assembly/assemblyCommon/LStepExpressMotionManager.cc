@@ -256,3 +256,18 @@ void LStepExpressMotionManager::clear_motion_queue()
 
   return;
 }
+
+void LStepExpressMotionManager::emergency_stop()
+{
+  if(model_->getDeviceState() == READY)
+  {
+    model_->emergencyStop();
+  }
+  else
+  {
+    NQLog("LStepExpressMotionManager", NQLog::Warning) << "emergency_stop"
+       << ": LStepExpressMotionManager not in READY state, no action taken";
+  }
+
+  return;
+}
