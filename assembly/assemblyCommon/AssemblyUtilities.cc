@@ -132,3 +132,16 @@ bool assembly::MatIsBlackAndWhite(const cv::Mat& img)
 
   return true;
 }
+
+void assembly::rotation2D_deg(double& X_1, double& Y_1, const double angle_deg, const double X_0, const double Y_0)
+{
+  const double angle_rad = (angle_deg * (M_PI/180.0));
+
+  const double COS = std::cos(angle_rad);
+  const double SIN = std::sin(angle_rad);
+
+  X_1 = (COS * X_0) - (SIN * Y_0);
+  Y_1 = (SIN * X_0) + (COS * Y_0);
+
+  return;
+}

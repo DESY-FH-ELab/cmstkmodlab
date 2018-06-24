@@ -15,6 +15,7 @@
 
 #include <AssemblyObjectAligner.h>
 #include <AssemblyParameters.h>
+#include <AssemblyUtilities.h>
 
 #include <cmath>
 
@@ -275,13 +276,8 @@ void AssemblyObjectAligner::run_alignment(const double patrec_dX, const double p
 
     const double camera_offset_dA = params->get("FromCameraFrameToRefFrame_dA");
 
-    const double target_rad = ((patrec_angle + camera_offset_dA) * (M_PI/180.0));
-
-    const double COS = cos(target_rad);
-    const double SIN = sin(target_rad);
-
-    const double dX_1to2 =  COS * obj_deltaX + SIN * obj_deltaY;
-    const double dY_1to2 = -SIN * obj_deltaX + COS * obj_deltaY;
+    double dX_1to2, dY_1to2;
+    assembly::rotation2D_deg(dX_1to2, dY_1to2, -(patrec_angle + camera_offset_dA), obj_deltaX, obj_deltaY);
 
     // combined relative movement
     const double dX = patrec_dX + dX_1to2;
