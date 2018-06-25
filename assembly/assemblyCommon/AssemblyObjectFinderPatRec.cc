@@ -14,6 +14,7 @@
 #include <ApplicationConfig.h>
 
 #include <AssemblyObjectFinderPatRec.h>
+#include <AssemblyParameters.h>
 #include <AssemblyUtilities.h>
 
 #include <iostream>
@@ -608,15 +609,31 @@ void AssemblyObjectFinderPatRec::template_matching(const AssemblyObjectFinderPat
   // PatRec result(s)
 
   //
-  // conversion of PatRec best-match position (image pixels)
+  // conversion of PatRec best-match position (pixels of master image)
   // into the (X [mm], Y [mm]) movement, in the motion-stage reference frame,
   // to move the camera on top of the PatRec best-match position
   //
-  // the conversion depends on the dimension of the image's pixel unit in mm
-  // and the direction (sign) of the x-axis and y-axis of the motion stage
+  // This conversion depends on
+  //   - the dimension of the image's pixel unit in mm
+  //   - the angle of the XY camera frame in the XY motion stage ref-frame
   //
-  const double patrec_dX = -1.0 * (best_matchLoc.y - (img_master_copy.rows / 2.0)) * mm_per_pixel_row_;
-  const double patrec_dY = -1.0 * (best_matchLoc.x - (img_master_copy.cols / 2.0)) * mm_per_pixel_col_;
+  // Note:
+  //   the y-distance in the Camera frame has to be inverted,
+  //   because the cv::Mat object in OpenCV counts
+  //   columns (X) and rows (Y) starting from the top-left corner
+  //   (not from the bottom-left corner as for a normal XY reference frame);
+  //   in order to convert this to a normal XY ref-frame,
+  //   we invert the sign of the value on the Y-axis.
+  //
+  const AssemblyParameters* const params = AssemblyParameters::instance(false);
+
+  const double angle_FromCameraXYtoRefFrameXY_deg = params->get("AngleOfCameraFrameInRefFrame_dA");
+
+  const double dX_0 = +1.0 * (best_matchLoc.x - (img_master_copy.cols / 2.0)) * mm_per_pixel_col_;
+  const double dY_0 = -1.0 * (best_matchLoc.y - (img_master_copy.rows / 2.0)) * mm_per_pixel_row_;
+
+  double patrec_dX, patrec_dY;
+  assembly::rotation2D_deg(patrec_dX, patrec_dY, angle_FromCameraXYtoRefFrameXY_deg, dX_0, dY_0);
 
   NQLog("AssemblyObjectFinderPatRec", NQLog::Spam) << "template_matching"
      << ": emitting signal \"PatRec_results(" << patrec_dX << ", " << patrec_dY << ", " << best_angle << ")\"";
