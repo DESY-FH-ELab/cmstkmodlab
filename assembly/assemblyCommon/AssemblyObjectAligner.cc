@@ -272,12 +272,16 @@ void AssemblyObjectAligner::run_alignment(const double patrec_dX, const double p
     const double obj_deltaX = this->configuration().object_deltaX;
     const double obj_deltaY = this->configuration().object_deltaY;
 
-    AssemblyParameters* params = AssemblyParameters::instance(false);
+    const AssemblyParameters* const params = AssemblyParameters::instance(false);
 
-    const double camera_offset_dA = (params->get("AngleOfCameraFrameInRefFrame_dA") + 90.0);
+    // angle from marker's outer edge to best-match position in the camera ref-frame
+    //   - the 90.0 deg offset corresponds to the angle spanned by the marker (L-shape)
+    const double patrec_angle_full = (patrec_angle + 90.0);
+
+    const double camera_offset_dA = params->get("AngleOfCameraFrameInRefFrame_dA");
 
     double dX_1to2, dY_1to2;
-    assembly::rotation2D_deg(dX_1to2, dY_1to2, (patrec_angle + camera_offset_dA), obj_deltaX, obj_deltaY);
+    assembly::rotation2D_deg(dX_1to2, dY_1to2, (patrec_angle_full + camera_offset_dA), obj_deltaX, obj_deltaY);
 
     // combined relative movement
     const double dX = patrec_dX + dX_1to2;
