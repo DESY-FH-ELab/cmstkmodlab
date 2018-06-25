@@ -517,7 +517,7 @@ void AssemblyObjectFinderPatRec::template_matching(const AssemblyObjectFinderPat
   // drawings on top of master image copy ---
 
   // rectangle representing template in best-match position
-  this->draw_RotatedRect(img_master_copy, best_matchLoc, img_templa_PatRec_gs.cols, img_templa_PatRec_gs.rows, best_angle, cv::Scalar(0,0,255));
+  this->draw_RotatedRect(img_master_copy, best_matchLoc, img_templa_PatRec_gs.cols, img_templa_PatRec_gs.rows, -best_angle, cv::Scalar(0,0,255));
 
   // the circle of radius 4 is meant to *roughly* represent the x,y precision of the x-y motion stage
   // so that the user can see if the patrec results make sense
@@ -644,7 +644,15 @@ void AssemblyObjectFinderPatRec::PatRec(double& fom, cv::Point& match_loc, const
 
   const cv::Point2f src_center(img_master_PatRec.cols/2.0F, img_master_PatRec.rows/2.0F);
 
-  const cv::Mat rot_mat = cv::getRotationMatrix2D(src_center, angle, 1.0);
+  //
+  // angle of rotation of master image:
+  //   - the angle used as function argument ("angle") corresponds to the angle of the template with respect to master image
+  //   - in the PatRec routine what is actually done is that the master image is rotated and compared to the (unrotated) template image
+  //   - the rotation to be applied to the master image corresponds to the opposite value of "angle"
+  //
+  const double angle_master = (-1.0 * angle);
+
+  const cv::Mat rot_mat = cv::getRotationMatrix2D(src_center, angle_master, 1.0);
 
   const cv::Scalar avgPixelIntensity = cv::mean(img_master_PatRec);
 
@@ -652,7 +660,7 @@ void AssemblyObjectFinderPatRec::PatRec(double& fom, cv::Point& match_loc, const
 
   if(out_dir != "")
   {
-    const std::string filepath_img_master_PatRec_rot = out_dir+"/image_master_PatRec_Rotation_"+std::to_string(angle)+".png";
+    const std::string filepath_img_master_PatRec_rot = out_dir+"/image_master_PatRec_Rotation_"+std::to_string(angle_master)+".png";
 
     assembly::cv_imwrite(filepath_img_master_PatRec_rot, img_master_PatRec_rot);
 
@@ -680,7 +688,7 @@ void AssemblyObjectFinderPatRec::PatRec(double& fom, cv::Point& match_loc, const
 
   // convert match-loc val of rotated  master image
   // to pixel-coordinates  in original master image
-  match_loc = this->RotatePoint(src_center, match_loc, angle);
+  match_loc = this->RotatePoint(src_center, match_loc, angle_master);
 
   return;
 }
