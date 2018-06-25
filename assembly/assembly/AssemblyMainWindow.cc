@@ -179,6 +179,8 @@ AssemblyMainWindow::AssemblyMainWindow(const unsigned int camera_ID, QWidget* pa
     // finder
     finder_ = new AssemblyObjectFinderPatRec(thresholder_, assembly::QtCacheDirectory()+"/AssemblyObjectFinderPatRec", "rotations");
 
+    finder_->save_subdir_images(true);
+
     finder_view_->connect_to_finder(finder_);
 
     finder_thread_ = new AssemblyObjectFinderPatRecThread(finder_, this);

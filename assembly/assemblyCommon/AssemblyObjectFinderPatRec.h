@@ -35,6 +35,8 @@ class AssemblyObjectFinderPatRec : public QObject
   void delete_image_master();
   void delete_image_master_PatRec();
 
+  void save_subdir_images(const bool b=true){ save_subdir_images_ = b; }
+
   class Configuration {
 
    public:
@@ -74,6 +76,8 @@ class AssemblyObjectFinderPatRec : public QObject
 
   std::string output_dir_path_;
   std::string output_subdir_name_;
+
+  bool save_subdir_images_;
 
   cv::Mat img_master_;        // original master image
   cv::Mat img_master_PatRec_; // master image used in PatRec (example: binary/post-thresholding version of original master image)
