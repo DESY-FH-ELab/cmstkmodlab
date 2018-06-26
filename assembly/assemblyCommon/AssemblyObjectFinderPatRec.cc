@@ -14,6 +14,7 @@
 #include <ApplicationConfig.h>
 
 #include <AssemblyObjectFinderPatRec.h>
+#include <AssemblyParameters.h>
 #include <AssemblyUtilities.h>
 
 #include <iostream>
@@ -37,6 +38,8 @@ AssemblyObjectFinderPatRec::AssemblyObjectFinderPatRec(AssemblyThresholder* cons
 
   output_dir_path_   (output_dir_path   .toStdString()),
   output_subdir_name_(output_subdir_name.toStdString()),
+
+  save_subdir_images_(true),
 
   updated_img_master_(false),
   updated_img_master_PatRec_(false)
@@ -359,7 +362,7 @@ void AssemblyObjectFinderPatRec::template_matching(const AssemblyObjectFinderPat
     output_dir_exists = assembly::DirectoryExists(output_dir);
   }
 
-  output_subdir = output_dir+output_subdir_name_;
+  output_subdir = save_subdir_images_ ? output_dir+output_subdir_name_ : "";
 
   const double angle_fine_min  = -1.0 * conf.angles_finemax_;
   const double angle_fine_max  = +1.0 * conf.angles_finemax_;
@@ -373,9 +376,12 @@ void AssemblyObjectFinderPatRec::template_matching(const AssemblyObjectFinderPat
 
   NQLog("AssemblyObjectFinderPatRec", NQLog::Message) << "template_matching: created output directory: " << output_dir;
 
-  assembly::QDir_mkpath(output_subdir);
+  if(output_subdir != "")
+  {
+    assembly::QDir_mkpath(output_subdir);
 
-  NQLog("AssemblyObjectFinderPatRec", NQLog::Message) << "template_matching: created output directory: " << output_subdir;
+    NQLog("AssemblyObjectFinderPatRec", NQLog::Message) << "template_matching: created output directory: " << output_subdir;
+  }
   // -----------
 
   // Input images to PatRec
@@ -512,13 +518,13 @@ void AssemblyObjectFinderPatRec::template_matching(const AssemblyObjectFinderPat
   // drawings on top of master image copy ---
 
   // rectangle representing template in best-match position
-  this->draw_RotatedRect(img_master_copy, best_matchLoc, img_templa_PatRec_gs.cols, img_templa_PatRec_gs.rows, best_angle, cv::Scalar(0,0,255));
+  this->draw_RotatedRect(img_master_copy, best_matchLoc, img_templa_PatRec_gs.cols, img_templa_PatRec_gs.rows, -best_angle, cv::Scalar(0,0,255));
 
   // the circle of radius 4 is meant to *roughly* represent the x,y precision of the x-y motion stage
   // so that the user can see if the patrec results make sense
   // (the top left corner of the marker should be within the circle)
-  circle(img_master_copy, best_matchLoc,  4, cv::Scalar(255,0,0), 4, 8, 0); // 1-sigma
-  circle(img_master_copy, best_matchLoc, 15, cv::Scalar(255,0,0), 4, 8, 0); // only for visualization
+  circle(img_master_copy, best_matchLoc,  4, cv::Scalar(255,0,0), 1, 8, 0); // ~ 5um (motion-stage precision)
+  circle(img_master_copy, best_matchLoc, 17, cv::Scalar(255,0,0), 4, 8, 0); // ~20um (only for visualization)
 
   // cross-lines to mark the center of the image
   line(img_master_copy, cv::Point(   img_master_copy.cols/2.0, 0), cv::Point(img_master_copy.cols/2.0, img_master_copy.rows    ), cv::Scalar(255,255,0), 2, 8, 0);
@@ -603,15 +609,31 @@ void AssemblyObjectFinderPatRec::template_matching(const AssemblyObjectFinderPat
   // PatRec result(s)
 
   //
-  // conversion of PatRec best-match position (image pixels)
+  // conversion of PatRec best-match position (pixels of master image)
   // into the (X [mm], Y [mm]) movement, in the motion-stage reference frame,
   // to move the camera on top of the PatRec best-match position
   //
-  // the conversion depends on the dimension of the image's pixel unit in mm
-  // and the direction (sign) of the x-axis and y-axis of the motion stage
+  // This conversion depends on
+  //   - the dimension of the image's pixel unit in mm
+  //   - the angle of the XY camera frame in the XY motion stage ref-frame
   //
-  const double patrec_dX = -1.0 * (best_matchLoc.y - (img_master_copy.rows / 2.0)) * mm_per_pixel_row_;
-  const double patrec_dY = -1.0 * (best_matchLoc.x - (img_master_copy.cols / 2.0)) * mm_per_pixel_col_;
+  // Note:
+  //   the y-distance in the Camera frame has to be inverted,
+  //   because the cv::Mat object in OpenCV counts
+  //   columns (X) and rows (Y) starting from the top-left corner
+  //   (not from the bottom-left corner as for a normal XY reference frame);
+  //   in order to convert this to a normal XY ref-frame,
+  //   we invert the sign of the value on the Y-axis.
+  //
+  const AssemblyParameters* const params = AssemblyParameters::instance(false);
+
+  const double angle_FromCameraXYtoRefFrameXY_deg = params->get("AngleOfCameraFrameInRefFrame_dA");
+
+  const double dX_0 = +1.0 * (best_matchLoc.x - (img_master_copy.cols / 2.0)) * mm_per_pixel_col_;
+  const double dY_0 = -1.0 * (best_matchLoc.y - (img_master_copy.rows / 2.0)) * mm_per_pixel_row_;
+
+  double patrec_dX, patrec_dY;
+  assembly::rotation2D_deg(patrec_dX, patrec_dY, angle_FromCameraXYtoRefFrameXY_deg, dX_0, dY_0);
 
   NQLog("AssemblyObjectFinderPatRec", NQLog::Spam) << "template_matching"
      << ": emitting signal \"PatRec_results(" << patrec_dX << ", " << patrec_dY << ", " << best_angle << ")\"";
@@ -639,7 +661,15 @@ void AssemblyObjectFinderPatRec::PatRec(double& fom, cv::Point& match_loc, const
 
   const cv::Point2f src_center(img_master_PatRec.cols/2.0F, img_master_PatRec.rows/2.0F);
 
-  const cv::Mat rot_mat = cv::getRotationMatrix2D(src_center, angle, 1.0);
+  //
+  // angle of rotation of master image:
+  //   - the angle used as function argument ("angle") corresponds to the angle of the template with respect to master image
+  //   - in the PatRec routine what is actually done is that the master image is rotated and compared to the (unrotated) template image
+  //   - the rotation to be applied to the master image corresponds to the opposite value of "angle"
+  //
+  const double angle_master = (-1.0 * angle);
+
+  const cv::Mat rot_mat = cv::getRotationMatrix2D(src_center, angle_master, 1.0);
 
   const cv::Scalar avgPixelIntensity = cv::mean(img_master_PatRec);
 
@@ -647,7 +677,7 @@ void AssemblyObjectFinderPatRec::PatRec(double& fom, cv::Point& match_loc, const
 
   if(out_dir != "")
   {
-    const std::string filepath_img_master_PatRec_rot = out_dir+"/image_master_PatRec_Rotation_"+std::to_string(angle)+".png";
+    const std::string filepath_img_master_PatRec_rot = out_dir+"/image_master_PatRec_Rotation_"+std::to_string(angle_master)+".png";
 
     assembly::cv_imwrite(filepath_img_master_PatRec_rot, img_master_PatRec_rot);
 
@@ -675,7 +705,7 @@ void AssemblyObjectFinderPatRec::PatRec(double& fom, cv::Point& match_loc, const
 
   // convert match-loc val of rotated  master image
   // to pixel-coordinates  in original master image
-  match_loc = this->RotatePoint(src_center, match_loc, angle);
+  match_loc = this->RotatePoint(src_center, match_loc, angle_master);
 
   return;
 }

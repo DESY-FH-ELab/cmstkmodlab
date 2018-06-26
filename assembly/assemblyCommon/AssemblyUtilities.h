@@ -47,6 +47,10 @@ namespace assembly {
   bool MatIsBlackAndWhite(const cv::Mat&);
 
   template <class T> void QLineEdit_setText(QLineEdit* const, const T&);
+
+  // geometry helpers
+  void rotation2D_deg(double&, double&, const double, const double, const double);
+
 }
 
 template <class T>

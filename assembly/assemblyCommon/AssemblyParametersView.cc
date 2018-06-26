@@ -90,15 +90,25 @@ AssemblyParametersView::AssemblyParametersView(QWidget* parent) :
   dime_lay->addWidget(new QLabel(tr("dZ")), 3, 5, Qt::AlignRight);
   dime_lay->addWidget(this->get(tmp_tag)  , 3, 6, Qt::AlignRight);
 
-  // dimension: thickness of Glue Layer
-  tmp_tag = "Thickness_GlueLayer";
-  tmp_des = "Thickness of Glue Layer :";
+  // dimension: height of spacer slots
+  tmp_tag = "Height_SpacerSlots";
+  tmp_des = "Height of Spacer Slots :";
 
   map_lineEdit_[tmp_tag] = new QLineEdit(tr(""));
 
   dime_lay->addWidget(new QLabel(tmp_des) , 4, 0, Qt::AlignLeft);
   dime_lay->addWidget(new QLabel(tr("dZ")), 4, 5, Qt::AlignRight);
   dime_lay->addWidget(this->get(tmp_tag)  , 4, 6, Qt::AlignRight);
+
+  // dimension: thickness of Glue Layer
+  tmp_tag = "Thickness_GlueLayer";
+  tmp_des = "Thickness of Glue Layer :";
+
+  map_lineEdit_[tmp_tag] = new QLineEdit(tr(""));
+
+  dime_lay->addWidget(new QLabel(tmp_des) , 5, 0, Qt::AlignLeft);
+  dime_lay->addWidget(new QLabel(tr("dZ")), 5, 5, Qt::AlignRight);
+  dime_lay->addWidget(this->get(tmp_tag)  , 5, 6, Qt::AlignRight);
 
   //// ---------------------
 
@@ -220,8 +230,8 @@ AssemblyParametersView::AssemblyParametersView(QWidget* parent) :
   dist_wid_->setLayout(dist_lay);
 
   // distance: angle between the camera frame and the XY reference frame of the motion stage
-  tmp_tag = "FromCameraFrameToRefFrame";
-  tmp_des = "Angle between Camera Frame and XY Ref-Frame :";
+  tmp_tag = "AngleOfCameraFrameInRefFrame";
+  tmp_des = "Angle of Camera Frame in the XY Motion Stage Ref-Frame :";
 
   map_lineEdit_[tmp_tag+"_dA"] = new QLineEdit(tr(""));
 
