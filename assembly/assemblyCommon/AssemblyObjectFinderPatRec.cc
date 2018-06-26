@@ -523,8 +523,8 @@ void AssemblyObjectFinderPatRec::template_matching(const AssemblyObjectFinderPat
   // the circle of radius 4 is meant to *roughly* represent the x,y precision of the x-y motion stage
   // so that the user can see if the patrec results make sense
   // (the top left corner of the marker should be within the circle)
-  circle(img_master_copy, best_matchLoc,  4, cv::Scalar(255,0,0), 4, 8, 0); // 1-sigma
-  circle(img_master_copy, best_matchLoc, 15, cv::Scalar(255,0,0), 4, 8, 0); // only for visualization
+  circle(img_master_copy, best_matchLoc,  4, cv::Scalar(255,0,0), 1, 8, 0); // ~ 5um (motion-stage precision)
+  circle(img_master_copy, best_matchLoc, 17, cv::Scalar(255,0,0), 4, 8, 0); // ~20um (only for visualization)
 
   // cross-lines to mark the center of the image
   line(img_master_copy, cv::Point(   img_master_copy.cols/2.0, 0), cv::Point(img_master_copy.cols/2.0, img_master_copy.rows    ), cv::Scalar(255,255,0), 2, 8, 0);
