@@ -46,6 +46,8 @@ class AssemblyMoveWidget : public QWidget
 
   bool move_relative_;
 
+  bool in_execution_;
+
   QVBoxLayout* layout_;
   QPushButton* button_;
 
@@ -60,8 +62,8 @@ class AssemblyMoveWidget : public QWidget
 
   void execute();
 
-  void  enable(){ this->setEnabled(true) ; }
-  void disable(){ this->setEnabled(false); }
+  void reactivate();
+  void deactivate();
 
  signals:
 
