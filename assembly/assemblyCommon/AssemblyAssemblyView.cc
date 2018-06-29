@@ -64,7 +64,7 @@ AssemblyAssemblyView::AssemblyAssemblyView(const AssemblyAssembly* const assembl
   //// PSP To Baseplate ------------------------------
   wid_PSSAlignm_ = new QWidget;
 
-  toolbox->addItem(wid_PSSAlignm_, tr("[1] PSS Alignment and Pickup"));
+  toolbox->addItem(wid_PSSAlignm_, tr("[1] PS-s Alignment and Pickup"));
 
   QVBoxLayout* PSSAlignm_lay = new QVBoxLayout;
   wid_PSSAlignm_->setLayout(PSSAlignm_lay);
@@ -75,18 +75,18 @@ AssemblyAssemblyView::AssemblyAssemblyView(const AssemblyAssembly* const assembl
 
     AssemblyAssemblyTextWidget* tmp_wid = new AssemblyAssemblyTextWidget;
     tmp_wid->label()->setText(QString::number(assembly_step_N_));
-    tmp_wid->text() ->setText("Place PSS on Assembly Platform");
+    tmp_wid->text() ->setText("Place PS-s on Assembly Platform");
     PSSAlignm_lay->addWidget(tmp_wid);
   }
   // ----------
 
-  // step: Enable Sensor Vacuum
+  // step: Enable Sensor/Baseplate Vacuum
   {
     ++assembly_step_N_;
 
     AssemblyAssemblyActionWidget* tmp_wid = new AssemblyAssemblyActionWidget;
     tmp_wid->label() ->setText(QString::number(assembly_step_N_));
-    tmp_wid->button()->setText("Enable Sensor Vacuum");
+    tmp_wid->button()->setText("Enable Sensor/Baseplate Vacuum");
     PSSAlignm_lay->addWidget(tmp_wid);
 
     connect(tmp_wid->button(), SIGNAL(clicked()), assembly, SLOT(EnableVacuumBaseplate_start()));
@@ -99,7 +99,7 @@ AssemblyAssemblyView::AssemblyAssemblyView(const AssemblyAssembly* const assembl
 
     AssemblyAssemblyActionWidget* tmp_wid = new AssemblyAssemblyActionWidget;
     tmp_wid->label() ->setText(QString::number(assembly_step_N_));
-    tmp_wid->button()->setText("Go To Measurement Position on PSS");
+    tmp_wid->button()->setText("Go To Measurement Position on PS-s");
     PSSAlignm_lay->addWidget(tmp_wid);
 
     connect(tmp_wid->button(), SIGNAL(clicked()), assembly, SLOT(GoToSensorMarkerPreAlignment_start()));
@@ -112,7 +112,7 @@ AssemblyAssemblyView::AssemblyAssemblyView(const AssemblyAssembly* const assembl
 
     AssemblyAssemblyTextWidget* tmp_wid = new AssemblyAssemblyTextWidget;
     tmp_wid->label()->setText(QString::number(assembly_step_N_));
-    tmp_wid->text() ->setText("Align PSS to Motion Stage");
+    tmp_wid->text() ->setText("Align PS-s to Motion Stage");
     PSSAlignm_lay->addWidget(tmp_wid);
   }
   // ----------
@@ -136,20 +136,20 @@ AssemblyAssemblyView::AssemblyAssemblyView(const AssemblyAssembly* const assembl
 
     AssemblyAssemblyActionWidget* tmp_wid = new AssemblyAssemblyActionWidget;
     tmp_wid->label() ->setText(QString::number(assembly_step_N_));
-    tmp_wid->button()->setText("Lower Pickup-Tool onto PSS");
+    tmp_wid->button()->setText("Lower Pickup-Tool onto PS-s");
     PSSAlignm_lay->addWidget(tmp_wid);
 
     connect(tmp_wid->button(), SIGNAL(clicked()), assembly, SLOT(LowerPickupToolOntoPSS_start()));
   }
   // ----------
 
-  // step: Disable Baseplate Vacuum
+  // step: Disable Sensor/Baseplate Vacuum
   {
     ++assembly_step_N_;
 
     AssemblyAssemblyActionWidget* tmp_wid = new AssemblyAssemblyActionWidget;
     tmp_wid->label() ->setText(QString::number(assembly_step_N_));
-    tmp_wid->button()->setText("Disable Baseplate Vacuum");
+    tmp_wid->button()->setText("Disable Sensor/Baseplate Vacuum");
     PSSAlignm_lay->addWidget(tmp_wid);
 
     connect(tmp_wid->button(), SIGNAL(clicked()), assembly, SLOT(DisableVacuumBaseplate_start()));
@@ -175,7 +175,7 @@ AssemblyAssemblyView::AssemblyAssemblyView(const AssemblyAssembly* const assembl
 
     AssemblyAssemblyActionWidget* tmp_wid = new AssemblyAssemblyActionWidget;
     tmp_wid->label() ->setText(QString::number(assembly_step_N_));
-    tmp_wid->button()->setText("Pick Up PSS");
+    tmp_wid->button()->setText("Pick Up PS-s");
     PSSAlignm_lay->addWidget(tmp_wid);
 
     connect(tmp_wid->button(), SIGNAL(clicked()), assembly, SLOT(PickupPSS_start()));
@@ -188,7 +188,7 @@ AssemblyAssemblyView::AssemblyAssemblyView(const AssemblyAssembly* const assembl
   //// PSS To Spacers --------------------------------
   wid_PSSToSpacers_ = new QWidget;
 
-  toolbox->addItem(wid_PSSToSpacers_, tr("[2] PSS onto Spacers"));
+  toolbox->addItem(wid_PSSToSpacers_, tr("[2] PS-s onto Spacers"));
 
   QVBoxLayout* PSSToSpacers_lay = new QVBoxLayout;
   wid_PSSToSpacers_->setLayout(PSSToSpacers_lay);
@@ -238,7 +238,7 @@ AssemblyAssemblyView::AssemblyAssemblyView(const AssemblyAssembly* const assembl
 
     AssemblyAssemblyActionWidget* tmp_wid = new AssemblyAssemblyActionWidget;
     tmp_wid->label() ->setText(QString::number(assembly_step_N_));
-    tmp_wid->button()->setText("Lower PSS onto Spacers");
+    tmp_wid->button()->setText("Lower PS-s onto Spacers");
     PSSToSpacers_lay->addWidget(tmp_wid);
 
 //    connect(tmp_wid->button(), SIGNAL(clicked()), assembly, SLOT(GoToPSSPreAlignment()));
@@ -290,7 +290,7 @@ AssemblyAssemblyView::AssemblyAssemblyView(const AssemblyAssembly* const assembl
   //// PSP To PSS ------------------------------------
   wid_PSSToPSP_ = new QWidget;
 
-  toolbox->addItem(wid_PSSToPSP_, tr("[3] PSP Alignment and PSP+PSS Assembly"));
+  toolbox->addItem(wid_PSSToPSP_, tr("[3] PS-p Alignment and PS-p+PS-s Assembly"));
 
   QVBoxLayout* PSSToPSP_lay = new QVBoxLayout;
   wid_PSSToPSP_->setLayout(PSSToPSP_lay);
@@ -303,7 +303,7 @@ AssemblyAssemblyView::AssemblyAssemblyView(const AssemblyAssembly* const assembl
   //// PSP+PSS to Baseplate
   wid_PSToBasep_ = new QWidget;
 
-  toolbox->addItem(wid_PSToBasep_, tr("[4] PSP+PSS onto Baseplate"));
+  toolbox->addItem(wid_PSToBasep_, tr("[4] PS-p+PS-s onto Baseplate"));
 
   QVBoxLayout* PSToBasep_lay = new QVBoxLayout;
   wid_PSToBasep_->setLayout(PSToBasep_lay);

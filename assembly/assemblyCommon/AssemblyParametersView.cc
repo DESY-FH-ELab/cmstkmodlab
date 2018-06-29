@@ -122,7 +122,7 @@ AssemblyParametersView::AssemblyParametersView(QWidget* parent) :
 
   // position: XYZA position to point camera to sensor marker-1 (using reference mark on platform to place sensor)
   tmp_tag = "RefPointSensor";
-  tmp_des = "Sensor Marker-1 (using platform mark) :";
+  tmp_des = "Sensor Marker-1 :";
 
   map_lineEdit_[tmp_tag+"_X"] = new QLineEdit(tr(""));
   map_lineEdit_[tmp_tag+"_Y"] = new QLineEdit(tr(""));
