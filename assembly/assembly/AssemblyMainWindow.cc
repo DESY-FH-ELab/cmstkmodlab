@@ -317,6 +317,7 @@ AssemblyMainWindow::AssemblyMainWindow(const unsigned int camera_ID, QWidget* pa
     toolBar_->addWidget(autofocus_checkbox_);
 
     connect(autofocus_checkbox_, SIGNAL(stateChanged(int)), this, SLOT(changeState_autofocus(int)));
+    connect(autofocus_checkbox_, SIGNAL(stateChanged(int)), aligner_view_, SLOT(update_autofocusing_checkbox(int)));
 
     QTabWidget* main_tab = new QTabWidget;
 
@@ -558,6 +559,7 @@ void AssemblyMainWindow::start_objectAligner(const AssemblyObjectAligner::Config
 
   // acquire image
   connect(aligner_, SIGNAL(image_request()), image_ctr_, SLOT(acquire_image()));
+  connect(aligner_, SIGNAL(autofocused_image_request()), image_ctr_, SLOT(acquire_autofocused_image()));
 
   // master-image updated, go to next step (PatRec)
   connect(finder_, SIGNAL(updated_image_master()), aligner_, SLOT(launch_next_alignment_step()));
@@ -610,6 +612,7 @@ void AssemblyMainWindow::disconnect_objectAligner()
 
   // acquire image
   disconnect(aligner_, SIGNAL(image_request()), image_ctr_, SLOT(acquire_image()));
+  disconnect(aligner_, SIGNAL(autofocused_image_request()), image_ctr_, SLOT(acquire_autofocused_image()));
 
   // master-image updated, go to next step (PatRec)
   disconnect(finder_, SIGNAL(updated_image_master()), aligner_, SLOT(launch_next_alignment_step()));
