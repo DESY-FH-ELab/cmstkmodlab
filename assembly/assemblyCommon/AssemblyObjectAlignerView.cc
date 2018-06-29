@@ -48,6 +48,7 @@ AssemblyObjectAlignerView::AssemblyObjectAlignerView(QWidget* parent)
  , alignm_angtgt_linee_(nullptr)
 
  , alignm_completeAtPosOne_checkbox_(nullptr)
+ , alignm_useAutoFocusing_checkbox_(nullptr)
 
  , alignm_exemeas_radbu_(nullptr)
  , alignm_exemeas_pusbu_(nullptr)
@@ -197,8 +198,14 @@ AssemblyObjectAlignerView::AssemblyObjectAlignerView(QWidget* parent)
   alignm_exemod_box->setLayout(alignm_exemod_lay);
 
   // option: go-back to start before stopping
+  QHBoxLayout* alignm_exeopt_lay = new QHBoxLayout;
+  alignm_exemod_lay->addLayout(alignm_exeopt_lay);
+
   alignm_completeAtPosOne_checkbox_ = new QCheckBox("Go back to marker-1 position before completion");
-  alignm_exemod_lay->addWidget(alignm_completeAtPosOne_checkbox_);
+  alignm_exeopt_lay->addWidget(alignm_completeAtPosOne_checkbox_);
+
+  alignm_useAutoFocusing_checkbox_ = new QCheckBox("Use Auto-Focusing");
+  alignm_exeopt_lay->addWidget(alignm_useAutoFocusing_checkbox_);
 
   alignm_exemod_lay->addSpacing(20);
 
@@ -307,6 +314,9 @@ AssemblyObjectAlignerView::AssemblyObjectAlignerView(QWidget* parent)
 
   alignm_completeAtPosOne_checkbox_->setEnabled(false);
   alignm_completeAtPosOne_checkbox_->setChecked(true);
+
+  alignm_useAutoFocusing_checkbox_->setEnabled(true);
+  alignm_useAutoFocusing_checkbox_->setChecked(true);
 
   alignm_exemeas_radbu_->setChecked(false);
   alignm_exemeas_pusbu_->setEnabled(false);
@@ -595,6 +605,21 @@ void AssemblyObjectAlignerView::update_target_angle(const int state)
   return;
 }
 
+void AssemblyObjectAlignerView::update_autofocusing_checkbox(const int state)
+{
+  if(state == 2)
+  {
+    alignm_useAutoFocusing_checkbox_->setEnabled(false);
+    alignm_useAutoFocusing_checkbox_->setChecked(true);
+  }
+  else if(state == 0)
+  {
+    alignm_useAutoFocusing_checkbox_->setEnabled(true);
+  }
+
+  return;
+}
+
 void AssemblyObjectAlignerView::transmit_configuration()
 {
   bool valid_conf(false);
@@ -674,7 +699,8 @@ AssemblyObjectAligner::Configuration AssemblyObjectAlignerView::get_configuratio
 
   /// Execution --------------------
 
-  conf.completeAtPosOne = alignm_completeAtPosOne_checkbox_->isChecked();
+  conf.complete_at_position1 = alignm_completeAtPosOne_checkbox_->isChecked();
+  conf.use_autofocusing      = alignm_useAutoFocusing_checkbox_ ->isChecked();
 
   if(alignm_exemeas_radbu_->isChecked() == alignm_exealig_radbu_->isChecked())
   {

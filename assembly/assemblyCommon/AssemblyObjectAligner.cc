@@ -65,11 +65,13 @@ void AssemblyObjectAligner::Configuration::reset()
   object_deltaX = -999.;
   object_deltaY = -999.;
 
-  completeAtPosOne = true;
+  target_angle = -999.;
 
   only_measure_angle = true;
 
-  target_angle = -999.;
+  complete_at_position1 = true;
+
+  use_autofocusing = true;
 
   PatRecOne_configuration.reset();
   PatRecTwo_configuration.reset();
@@ -228,12 +230,24 @@ void AssemblyObjectAligner::run_alignment(const double patrec_dX, const double p
   {
     NQLog("AssemblyObjectAligner", NQLog::Message) << "run_alignment: step [" << alignment_step_ << "]";
 
-    NQLog("AssemblyObjectAligner", NQLog::Spam) << "run_alignment: step [" << alignment_step_ << "]"
-       << ": emitting signal \"image_request\"";
+    if(this->configuration().use_autofocusing)
+    {
+      NQLog("AssemblyObjectAligner", NQLog::Spam) << "run_alignment: step [" << alignment_step_ << "]"
+         << ": emitting signal \"autofocused_image_request\"";
 
-    ++alignment_step_;
+      ++alignment_step_;
 
-    emit image_request();
+      emit autofocused_image_request();
+    }
+    else
+    {
+      NQLog("AssemblyObjectAligner", NQLog::Spam) << "run_alignment: step [" << alignment_step_ << "]"
+         << ": emitting signal \"image_request\"";
+
+      ++alignment_step_;
+
+      emit image_request();
+    }
   } 
   // Step #1: PatRec on marker-1
   else if(alignment_step_ == 1)
@@ -303,12 +317,24 @@ void AssemblyObjectAligner::run_alignment(const double patrec_dX, const double p
     NQLog("AssemblyObjectAligner", NQLog::Message) << "run_alignment: step [" << alignment_step_ << "]"
        << ": acquiring image for PatRec #2";
 
-    NQLog("AssemblyObjectAligner", NQLog::Spam) << "run_alignment: step [" << alignment_step_ << "]"
-       << ": emitting signal \"image_request\"";
+    if(this->configuration().use_autofocusing)
+    {
+      NQLog("AssemblyObjectAligner", NQLog::Spam) << "run_alignment: step [" << alignment_step_ << "]"
+         << ": emitting signal \"autofocused_image_request\"";
 
-    ++alignment_step_;
+      ++alignment_step_;
 
-    emit image_request();
+      emit autofocused_image_request();
+    }
+    else
+    {
+      NQLog("AssemblyObjectAligner", NQLog::Spam) << "run_alignment: step [" << alignment_step_ << "]"
+         << ": emitting signal \"image_request\"";
+
+      ++alignment_step_;
+
+      emit image_request();
+    }
   }
   // Step #4: PatRec on marker-2
   else if(alignment_step_ == 4)
@@ -361,7 +387,7 @@ void AssemblyObjectAligner::run_alignment(const double patrec_dX, const double p
       NQLog("AssemblyObjectAligner", NQLog::Message) << "run_alignment: step [" << alignment_step_ << "]: object aligned with angle [deg] = " << obj_angle_deg_;
       NQLog("AssemblyObjectAligner", NQLog::Message) << "run_alignment: step [" << alignment_step_ << "]";
 
-      if(this->configuration().completeAtPosOne)
+      if(this->configuration().complete_at_position1)
       {
         NQLog("AssemblyObjectAligner", NQLog::Message) << "run_alignment: step [" << alignment_step_ << "]: alignment completed, moving back to best-match position of PatRec #1";
         NQLog("AssemblyObjectAligner", NQLog::Message) << "run_alignment: step [" << alignment_step_ << "]";
@@ -449,7 +475,7 @@ void AssemblyObjectAligner::run_alignment(const double patrec_dX, const double p
         NQLog("AssemblyObjectAligner", NQLog::Message) << "run_alignment: step [" << alignment_step_ << "]: angle(object, target) < " << angle_max_complete_ << ", will NOT apply a rotation";
         NQLog("AssemblyObjectAligner", NQLog::Message) << "run_alignment: step [" << alignment_step_ << "]";
 
-        if(this->configuration().completeAtPosOne)
+        if(this->configuration().complete_at_position1)
         {
           NQLog("AssemblyObjectAligner", NQLog::Message) << "run_alignment: step [" << alignment_step_ << "]: alignment completed, moving back to best-match position of PatRec #1";
           NQLog("AssemblyObjectAligner", NQLog::Message) << "run_alignment: step [" << alignment_step_ << "]";
@@ -485,12 +511,24 @@ void AssemblyObjectAligner::run_alignment(const double patrec_dX, const double p
     NQLog("AssemblyObjectAligner", NQLog::Message) << "run_alignment: step [" << alignment_step_ << "]"
        << ": acquiring image in position of PatRec #1, after completing the alignment";
 
-    NQLog("AssemblyObjectAligner", NQLog::Spam) << "run_alignment: step [" << alignment_step_ << "]"
-       << ": emitting signal \"image_request\"";
+    if(this->configuration().use_autofocusing)
+    {
+      NQLog("AssemblyObjectAligner", NQLog::Spam) << "run_alignment: step [" << alignment_step_ << "]"
+         << ": emitting signal \"autofocused_image_request\"";
 
-    ++alignment_step_;
+      ++alignment_step_;
 
-    emit image_request();
+      emit autofocused_image_request();
+    }
+    else
+    {
+      NQLog("AssemblyObjectAligner", NQLog::Spam) << "run_alignment: step [" << alignment_step_ << "]"
+         << ": emitting signal \"image_request\"";
+
+      ++alignment_step_;
+
+      emit image_request();
+    }
   }
   // Step #7: close alignment routine
   else if(alignment_step_ == 7)

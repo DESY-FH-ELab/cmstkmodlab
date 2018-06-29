@@ -18,20 +18,23 @@
 #include <QStringList>
 #include <QLabel>
 
-AssemblyMoveWidget::AssemblyMoveWidget(const LStepExpressMotionManager* const manager, const QString& label, const bool move_relative, QWidget* parent) :
-  QWidget(parent),
-  manager_(manager),
-  move_relative_(move_relative),
+AssemblyMoveWidget::AssemblyMoveWidget(const LStepExpressMotionManager* const manager, const QString& label, const bool move_relative, QWidget* parent)
+ : QWidget(parent)
 
-  layout_(nullptr),
-  button_(nullptr),
+ , manager_(manager)
 
-  XYZA_lay_(nullptr),
+ , move_relative_(move_relative)
+ , in_execution_(false)
 
-  X_lineed_(nullptr),
-  Y_lineed_(nullptr),
-  Z_lineed_(nullptr),
-  A_lineed_(nullptr)
+ , layout_(nullptr)
+ , button_(nullptr)
+
+ , XYZA_lay_(nullptr)
+
+ , X_lineed_(nullptr)
+ , Y_lineed_(nullptr)
+ , Z_lineed_(nullptr)
+ , A_lineed_(nullptr)
 {
   // motion manager
   if(manager_ == nullptr)
@@ -45,7 +48,7 @@ AssemblyMoveWidget::AssemblyMoveWidget(const LStepExpressMotionManager* const ma
   connect(this, SIGNAL(move_absolute(double, double, double, double)), manager_, SLOT(moveAbsolute(double, double, double, double)));
   connect(this, SIGNAL(move_relative(double, double, double, double)), manager_, SLOT(moveRelative(double, double, double, double)));
 
-  connect(manager_, SIGNAL(motion_finished()), this, SLOT(enable()));
+  connect(manager_, SIGNAL(motion_finished()), this, SLOT(reactivate()));
   // --------------
 
   // layout
@@ -93,8 +96,31 @@ AssemblyMoveWidget::AssemblyMoveWidget(const LStepExpressMotionManager* const ma
   // --------------
 }
 
+void AssemblyMoveWidget::reactivate()
+{
+  if(in_execution_)
+  {
+    this->setEnabled(true);
+
+    in_execution_ = false;
+  }
+
+  return;
+}
+
+void AssemblyMoveWidget::deactivate()
+{
+  in_execution_ = true;
+
+  this->setEnabled(false);
+
+  return;
+}
+
 void AssemblyMoveWidget::execute()
 {
+  in_execution_ = true;
+
   // X ---
   double X_val(0.);
 
@@ -201,7 +227,7 @@ void AssemblyMoveWidget::execute()
        << ": emitting signal \"move_relative("
        << X_val << ", " << Y_val << ", " << Z_val << ", " << A_val << ")\"";
 
-    this->disable();
+    this->deactivate();
 
     emit move_relative(X_val, Y_val, Z_val, A_val);
   }
@@ -211,7 +237,7 @@ void AssemblyMoveWidget::execute()
        << ": emitting signal \"move_absolute("
        << X_val << ", " << Y_val << ", " << Z_val << ", " << A_val << ")\"";
 
-    this->enable();
+    this->deactivate();
 
     emit move_absolute(X_val, Y_val, Z_val, A_val);
   }

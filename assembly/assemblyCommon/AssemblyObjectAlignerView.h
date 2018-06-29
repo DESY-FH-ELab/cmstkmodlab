@@ -69,6 +69,7 @@ class AssemblyObjectAlignerView : public QWidget
   QLineEdit* alignm_angtgt_linee_;
 
   QCheckBox* alignm_completeAtPosOne_checkbox_;
+  QCheckBox* alignm_useAutoFocusing_checkbox_;
 
   QRadioButton* alignm_exemeas_radbu_;
   QPushButton*  alignm_exemeas_pusbu_;
@@ -104,6 +105,8 @@ class AssemblyObjectAlignerView : public QWidget
 
   void update_target_angle(const bool);
   void update_target_angle(const int);
+
+  void update_autofocusing_checkbox(const int);
 
  signals:
 

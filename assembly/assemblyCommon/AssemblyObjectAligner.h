@@ -41,11 +41,13 @@ class AssemblyObjectAligner : public QObject
     double object_deltaX;
     double object_deltaY;
 
-    bool completeAtPosOne;
+    double target_angle;
 
     bool only_measure_angle;
 
-    double target_angle;
+    bool complete_at_position1;
+
+    bool use_autofocusing;
 
     AssemblyObjectFinderPatRec::Configuration PatRecOne_configuration;
     AssemblyObjectFinderPatRec::Configuration PatRecTwo_configuration;
@@ -104,6 +106,7 @@ class AssemblyObjectAligner : public QObject
     void image_PatRecTwo(const cv::Mat&);
 
     void image_request();
+    void autofocused_image_request();
 
     void PatRec_request(const AssemblyObjectFinderPatRec::Configuration&);
 
