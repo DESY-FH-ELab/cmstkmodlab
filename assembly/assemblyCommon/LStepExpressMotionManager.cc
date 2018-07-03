@@ -11,6 +11,9 @@
 /////////////////////////////////////////////////////////////////////////////////
 
 #include <LStepExpressMotionManager.h>
+#include <AssemblyUtilities.h>
+
+#include <ApplicationConfig.h>
 #include <nqlogger.h>
 
 LStepExpressMotionManager::LStepExpressMotionManager(LStepExpressModel* model, QObject* parent)
@@ -27,11 +30,22 @@ LStepExpressMotionManager::LStepExpressMotionManager(LStepExpressModel* model, Q
     NQLog("LStepExpressMotionManager", NQLog::Fatal) << "initialization error"
        << ": null pointer to LStepExpressModel object, exiting constructor";
 
-    return;
+    assembly::kill_application("[LStepExpressMotionManager]", "Invalid (NULL) pointer to LStepExpressModel object, closing application");
   }
 
-  timer_ = new QTimer(this);
-  timer_->setSingleShot(true);
+  motion_interval_sec_ = 0;
+
+  ApplicationConfig* config = ApplicationConfig::instance();
+  if(config != nullptr)
+  {
+    motion_interval_sec_ = config->getValue<int>("LStepExpressMotionManager_timer", motion_interval_sec_);
+  }
+
+  if(motion_interval_sec_ > 0)
+  {
+    timer_ = new QTimer(this);
+    timer_->setSingleShot(true);
+  }
 
   this->connect_model();
 
@@ -59,16 +73,23 @@ void LStepExpressMotionManager::connect_model()
 
   if(model_connected_ == false)
   {
-    connect   (model_, SIGNAL(motionStarted()) , this, SLOT(motionStarted()));
+    connect(model_, SIGNAL(motionStarted()) , this, SLOT(motionStarted()));
 
-    connect   (model_, SIGNAL(motionFinished()), this, SLOT(wait()));
-    connect   (timer_, SIGNAL(timeout()), this, SLOT(finish_motion()));
+    if(timer_ != nullptr)
+    {
+      connect(model_, SIGNAL(motionFinished()), this, SLOT(wait()));
+      connect(timer_, SIGNAL(timeout()), this, SLOT(finish_motion()));
+    }
+    else
+    {
+      connect(model_, SIGNAL(motionFinished()), this, SLOT(finish_motion()));
+    }
 
-    connect   (this  , SIGNAL(signalMoveAbsolute(double, double, double, double)),
-               model_, SLOT  (      moveAbsolute(double, double, double, double)));
+    connect(this  , SIGNAL(signalMoveAbsolute(double, double, double, double)),
+            model_, SLOT  (      moveAbsolute(double, double, double, double)));
 
-    connect   (this  , SIGNAL(signalMoveRelative(double, double, double, double)),
-               model_, SLOT  (      moveRelative(double, double, double, double)));
+    connect(this  , SIGNAL(signalMoveRelative(double, double, double, double)),
+            model_, SLOT  (      moveRelative(double, double, double, double)));
 
     NQLog("LStepExpressMotionManager", NQLog::Spam) << "connect_model"
        << ": manager connected to LStepExpressModel";
@@ -87,8 +108,15 @@ void LStepExpressMotionManager::disconnect_model()
   {
     disconnect(model_, SIGNAL(motionStarted()) , this, SLOT(motionStarted()));
 
-    disconnect(model_, SIGNAL(motionFinished()), this, SLOT(wait()));
-    disconnect(timer_, SIGNAL(timeout()), this, SLOT(finish_motion()));
+    if(timer_ != nullptr)
+    {
+      disconnect(model_, SIGNAL(motionFinished()), this, SLOT(wait()));
+      disconnect(timer_, SIGNAL(timeout()), this, SLOT(finish_motion()));
+    }
+    else
+    {
+      disconnect(model_, SIGNAL(motionFinished()), this, SLOT(finish_motion()));
+    }
 
     disconnect(this  , SIGNAL(signalMoveAbsolute(double, double, double, double)),
                model_, SLOT  (      moveAbsolute(double, double, double, double)));

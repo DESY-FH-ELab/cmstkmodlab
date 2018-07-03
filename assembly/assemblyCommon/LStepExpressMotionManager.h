@@ -73,7 +73,7 @@ class LStepExpressMotionManager : public QObject
 
     QTimer* timer_;
 
-    const int motion_interval_sec_ = 1000;
+    int motion_interval_sec_;
 
     QQueue<LStepExpressMotion> motions_;
 
