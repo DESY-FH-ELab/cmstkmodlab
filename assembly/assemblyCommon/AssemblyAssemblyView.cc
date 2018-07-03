@@ -23,6 +23,9 @@
 
 AssemblyAssemblyView::AssemblyAssemblyView(const AssemblyAssembly* const assembly, QWidget* parent)
  : QWidget(parent)
+
+ , smartMove_checkbox_(nullptr)
+
  , wid_CalibRotStage_(nullptr)
  , wid_PSSAlignm_    (nullptr)
  , wid_PSSToSpacers_ (nullptr)
@@ -39,6 +42,17 @@ AssemblyAssemblyView::AssemblyAssemblyView(const AssemblyAssembly* const assembl
 
   QVBoxLayout* layout = new QVBoxLayout;
   this->setLayout(layout);
+
+  //// Assembly Options --------------------------------
+  QHBoxLayout* opts_lay = new QHBoxLayout;
+  layout->addLayout(opts_lay);
+
+  smartMove_checkbox_ = new QCheckBox(tr("Use SmartMove"));
+
+  smartMove_checkbox_->setChecked(true);
+
+  connect(smartMove_checkbox_, SIGNAL(stateChanged(int)), assembly, SLOT(use_smartMove(int)));
+  //// -------------------------------------------------
 
   QToolBox* toolbox = new QToolBox;
   layout->addWidget(toolbox);

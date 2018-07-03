@@ -25,6 +25,9 @@
 
 namespace assembly {
 
+  // global
+  void kill_application(const QString&, const QString&);
+
   // Qt helpers
   QString QtCacheDirectory();
 

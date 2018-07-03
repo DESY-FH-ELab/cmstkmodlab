@@ -13,26 +13,29 @@
 #include <LStepExpressMotionManager.h>
 #include <nqlogger.h>
 
-LStepExpressMotionManager::LStepExpressMotionManager(LStepExpressModel* model, QObject *parent) :
-  QObject(parent),
-  model_(model),
-  model_connected_(false),
-  use_smart_move_(false),
-  inMotion_(false),
-  timer_(nullptr)
+LStepExpressMotionManager::LStepExpressMotionManager(LStepExpressModel* model, QObject* parent)
+ : QObject(parent)
+
+ , model_(model)
+ , model_connected_(false)
+ , inMotion_(false)
+
+ , timer_(nullptr)
 {
-    if(model_ == false)
-    {
-      NQLog("LStepExpressMotionManager", NQLog::Fatal) << "initialization error"
-         << ": null pointer to LStepExpressModel object, exiting constructor";
+  if(model_ == nullptr)
+  {
+    NQLog("LStepExpressMotionManager", NQLog::Fatal) << "initialization error"
+       << ": null pointer to LStepExpressModel object, exiting constructor";
 
-      return;
-    }
+    return;
+  }
 
-    timer_ = new QTimer(this);
-    timer_->setSingleShot(true);
+  timer_ = new QTimer(this);
+  timer_->setSingleShot(true);
 
-    this->connect_model();
+  this->connect_model();
+
+  qRegisterMetaType<LStepExpressMotionManager::Motion>("LStepExpressMotionManager::Motion");
 }
 
 LStepExpressMotionManager::~LStepExpressMotionManager()
@@ -52,54 +55,54 @@ void LStepExpressMotionManager::wait()
 
 void LStepExpressMotionManager::connect_model()
 {
-    if(model_ == nullptr){ return; }
+  if(model_ == nullptr){ return; }
 
-    if(model_connected_ == false)
-    {
-      connect   (model_, SIGNAL(motionStarted()) , this, SLOT(motionStarted()));
+  if(model_connected_ == false)
+  {
+    connect   (model_, SIGNAL(motionStarted()) , this, SLOT(motionStarted()));
 
-      connect   (model_, SIGNAL(motionFinished()), this, SLOT(wait()));
-      connect   (timer_, SIGNAL(timeout()), this, SLOT(finish_motion()));
+    connect   (model_, SIGNAL(motionFinished()), this, SLOT(wait()));
+    connect   (timer_, SIGNAL(timeout()), this, SLOT(finish_motion()));
 
-      connect   (this  , SIGNAL(signalMoveAbsolute(double, double, double, double)),
-                 model_, SLOT  (      moveAbsolute(double, double, double, double)));
+    connect   (this  , SIGNAL(signalMoveAbsolute(double, double, double, double)),
+               model_, SLOT  (      moveAbsolute(double, double, double, double)));
 
-      connect   (this  , SIGNAL(signalMoveRelative(double, double, double, double)),
-                 model_, SLOT  (      moveRelative(double, double, double, double)));
+    connect   (this  , SIGNAL(signalMoveRelative(double, double, double, double)),
+               model_, SLOT  (      moveRelative(double, double, double, double)));
 
-      NQLog("LStepExpressMotionManager", NQLog::Spam) << "connect_model"
-         << ": manager connected to LStepExpressModel";
+    NQLog("LStepExpressMotionManager", NQLog::Spam) << "connect_model"
+       << ": manager connected to LStepExpressModel";
 
-      model_connected_ = true;
-    }
+    model_connected_ = true;
+  }
 
-    return;
+  return;
 }
 
 void LStepExpressMotionManager::disconnect_model()
 {
-    if(model_ == false){ return; }
+  if(model_ == false){ return; }
 
-    if(model_connected_ == true)
-    {
-      disconnect(model_, SIGNAL(motionStarted()) , this, SLOT(motionStarted()));
+  if(model_connected_ == true)
+  {
+    disconnect(model_, SIGNAL(motionStarted()) , this, SLOT(motionStarted()));
 
-      disconnect(model_, SIGNAL(motionFinished()), this, SLOT(wait()));
-      disconnect(timer_, SIGNAL(timeout()), this, SLOT(finish_motion()));
+    disconnect(model_, SIGNAL(motionFinished()), this, SLOT(wait()));
+    disconnect(timer_, SIGNAL(timeout()), this, SLOT(finish_motion()));
 
-      disconnect(this  , SIGNAL(signalMoveAbsolute(double, double, double, double)),
-                 model_, SLOT  (      moveAbsolute(double, double, double, double)));
+    disconnect(this  , SIGNAL(signalMoveAbsolute(double, double, double, double)),
+               model_, SLOT  (      moveAbsolute(double, double, double, double)));
 
-      disconnect(this  , SIGNAL(signalMoveRelative(double, double, double, double)),
-                 model_, SLOT  (      moveRelative(double, double, double, double)));
+    disconnect(this  , SIGNAL(signalMoveRelative(double, double, double, double)),
+               model_, SLOT  (      moveRelative(double, double, double, double)));
 
-      NQLog("LStepExpressMotionManager", NQLog::Spam) << "disconnect_model"
-         << ": manager disconnected from LStepExpressModel";
+    NQLog("LStepExpressMotionManager", NQLog::Spam) << "disconnect_model"
+       << ": manager disconnected from LStepExpressModel";
 
-      model_connected_ = false;
-    }
+    model_connected_ = false;
+  }
 
-    return;
+  return;
 }
 
 void LStepExpressMotionManager::myMoveToThread(QThread* thread)
@@ -185,6 +188,19 @@ void LStepExpressMotionManager::appendMotions(const QQueue<LStepExpressMotion>& 
     this->run();
 }
 
+void LStepExpressMotionManager::moveRelative(const std::vector<LStepExpressMotionManager::Motion>& motions)
+{
+  for(const auto& mot : motions)
+  {
+    motions_.enqueue(LStepExpressMotion(mot.x(), mot.y(), mot.z(), mot.a(), false));
+  }
+
+  if(motions.size() > 0)
+  {
+    this->run();
+  }
+}
+
 void LStepExpressMotionManager::moveRelative(const std::vector<double>& values)
 {
     motions_.enqueue(LStepExpressMotion(values, false));
@@ -193,41 +209,7 @@ void LStepExpressMotionManager::moveRelative(const std::vector<double>& values)
 
 void LStepExpressMotionManager::moveRelative(const double dx, const double dy, const double dz, const double da)
 {
-    if(use_smart_move_)
-    {
-      if(dz > 0.)
-      {
-        motions_.enqueue(LStepExpressMotion( 0,  0, dz,  0, false));
-        motions_.enqueue(LStepExpressMotion(dx, dy,  0, da, false));
-      }
-      else
-      {
-        motions_.enqueue(LStepExpressMotion(dx, dy,  0, da, false));
-
-        std::vector<double> dz_vec;
-        {
-          double abs_dz_resid = fabs(dz);
-
-          while((abs_dz_resid >  0.1) && (dz_vec.size() <  2)){ abs_dz_resid -=  0.1; dz_vec.emplace_back(- 0.1); }
-          while((abs_dz_resid >  0.2) && (dz_vec.size() <  6)){ abs_dz_resid -=  0.2; dz_vec.emplace_back(- 0.2); }
-          while((abs_dz_resid >  1.0) && (dz_vec.size() < 10)){ abs_dz_resid -=  1.0; dz_vec.emplace_back(- 1.0); }
-          while((abs_dz_resid > 15.0) && (dz_vec.size() < 13)){ abs_dz_resid -= 15.0; dz_vec.emplace_back(-15.0); }
-
-          if(abs_dz_resid > 0.){ dz_vec.emplace_back(-abs_dz_resid); }
-        }
-
-        // reversed loop on dz movements
-        for(unsigned i_dz = dz_vec.size(); i_dz-- > 0; )
-        {
-          motions_.enqueue(LStepExpressMotion(0, 0, dz_vec.at(i_dz), 0, false));
-        }
-      }
-    }
-    else
-    {
-      motions_.enqueue(LStepExpressMotion(dx, dy, dz, da, false));
-    }
-
+    motions_.enqueue(LStepExpressMotion(dx, dy, dz, da, false));
     this->run();
 }
 
@@ -235,6 +217,19 @@ void LStepExpressMotionManager::moveRelative(const unsigned int axis, const doub
 {
     motions_.enqueue(LStepExpressMotion(axis, value, false));
     this->run();
+}
+
+void LStepExpressMotionManager::moveAbsolute(const std::vector<LStepExpressMotionManager::Motion>& motions)
+{
+  for(const auto& mot : motions)
+  {
+    motions_.enqueue(LStepExpressMotion(mot.x(), mot.y(), mot.z(), mot.a(), true));
+  }
+
+  if(motions.size() > 0)
+  {
+    this->run();
+  }
 }
 
 void LStepExpressMotionManager::moveAbsolute(const std::vector<double>& values)
@@ -245,13 +240,7 @@ void LStepExpressMotionManager::moveAbsolute(const std::vector<double>& values)
 
 void LStepExpressMotionManager::moveAbsolute(const double x, const double y, const double z, const double a)
 {
-    const double dx = (x - this->get_position_X());
-    const double dy = (y - this->get_position_Y());
-    const double dz = (z - this->get_position_Z());
-    const double da = (a - this->get_position_A());
-
-    this->moveRelative(dx, dy, dz, da);
-
+    motions_.enqueue(LStepExpressMotion(x, y, z, a, true));
     this->run();
 }
 

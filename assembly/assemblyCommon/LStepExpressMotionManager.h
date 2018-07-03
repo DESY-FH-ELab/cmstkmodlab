@@ -39,9 +39,25 @@ class LStepExpressMotionManager : public QObject
     double get_position_Z() const { return model()->getPosition(2); }
     double get_position_A() const { return model()->getPosition(3); }
 
-    void use_smart_move(const bool b){ use_smart_move_ = b; }
-
     void myMoveToThread(QThread*);
+
+    class Motion
+    {
+     public:
+      explicit Motion(const double X=0., const double Y=0., const double Z=0., const double A=0.): x_(X), y_(Y), z_(Z), a_(A) {}
+      virtual ~Motion() {}
+
+      double x() const { return x_; }
+      double y() const { return y_; }
+      double z() const { return z_; }
+      double a() const { return a_; }
+
+     protected:
+      double x_;
+      double y_;
+      double z_;
+      double a_;
+    };
 
   protected:
 
@@ -52,8 +68,6 @@ class LStepExpressMotionManager : public QObject
     LStepExpressModel* model_;
 
     bool model_connected_;
-
-    bool use_smart_move_;
 
     bool inMotion_;
 
@@ -72,9 +86,13 @@ class LStepExpressMotionManager : public QObject
 
     void appendMotion(const LStepExpressMotion& motion);
     void appendMotions(const QQueue<LStepExpressMotion>& motions);
+
+    void moveRelative(const std::vector<Motion>&);
     void moveRelative(const std::vector<double>& values);
-    void moveRelative(const double x, const double y, const double z, const double a);
+    void moveRelative(const double x=0.0, const double y=0.0, const double z=0.0, const double a=0.0);
     void moveRelative(const unsigned int axis, const double value);
+
+    void moveAbsolute(const std::vector<Motion>&);
     void moveAbsolute(const std::vector<double>& values);
     void moveAbsolute(const double x=0.0, const double y=0.0, const double z=0.0, const double a=0.0);
     void moveAbsolute(const unsigned int axis, const double value);

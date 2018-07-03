@@ -22,7 +22,6 @@
 #include <QFile>
 #include <QFileDialog>
 #include <QTextStream>
-#include <QMessageBox>
 
 AssemblyParameters* AssemblyParameters::instance_ = nullptr;
 
@@ -56,13 +55,7 @@ AssemblyParameters* AssemblyParameters::instance(const bool permissive)
 
     if(permissive == false)
     {
-      QMessageBox::critical(0
-       , tr("[AssemblyParameters::instance]")
-       , tr("Pointer to AssemblyParameters instance is NULL. Aborting.")
-       , QMessageBox::Abort
-      );
-
-      throw; // must abort
+      assembly::kill_application(tr("[AssemblyParameters::instance]"), tr("Pointer to AssemblyParameters instance is NULL. Aborting."));
     }
   }
 
@@ -74,13 +67,7 @@ void AssemblyParameters::issue_key_error(const std::string& key) const
   NQLog("AssemblyParameters", NQLog::Critical) << "issue_key_error"
      << " [issue_key_error::getValue] ** ERROR: failed to get value for key: " << key;
 
-  QMessageBox::critical(0
-   , tr("[AssemblyParameters::issue_key_error]")
-   , tr("Failed to find value for key: \"%1\"\n. Aborting.").arg(QString(key.c_str()))
-   , QMessageBox::Abort
-  );
-
-  throw; // must abort
+  assembly::kill_application(tr("[AssemblyParameters::issue_key_error]"), tr("Failed to find value for key: \"%1\"\n. Aborting.").arg(QString(key.c_str())));
 }
 
 double AssemblyParameters::get(const std::string& key) const

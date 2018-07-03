@@ -14,6 +14,11 @@
 #include <ApplicationConfig.h>
 
 #include <AssemblyAssembly.h>
+#include <AssemblyUtilities.h>
+
+#include <string>
+
+#include <QStringList>
 
 AssemblyAssembly::AssemblyAssembly(const LStepExpressMotionManager* const motion, const ConradManager* const vacuum, QObject* parent)
  : QObject(parent)
@@ -24,6 +29,8 @@ AssemblyAssembly::AssemblyAssembly(const LStepExpressMotionManager* const motion
  , vacuum_pickup_(0)
  , vacuum_spacer_(0)
  , vacuum_basepl_(0)
+
+ , use_smartMove_(true)
 {
   // validate pointers to controllers
   this->motion();
@@ -33,15 +40,42 @@ AssemblyAssembly::AssemblyAssembly(const LStepExpressMotionManager* const motion
   ApplicationConfig* config = ApplicationConfig::instance();
   if(config == nullptr)
   {
-    NQLog("AssemblyVacuumWidget", NQLog::Fatal)
+    NQLog("AssemblyAssembly", NQLog::Fatal)
        << "ApplicationConfig::instance() not initialized (null pointer), stopped constructor";
 
-    return;
+    assembly::kill_application(tr("[AssemblyAssembly]"), tr("ApplicationConfig::instance() not initialized (null pointer), closing application"));
   }
 
   vacuum_pickup_ = config->getValue<int>("Vacuum_PickupTool");
   vacuum_spacer_ = config->getValue<int>("Vacuum_Spacers");
   vacuum_basepl_ = config->getValue<int>("Vacuum_Baseplate");
+
+  // smartMove configuration
+  const std::string smartMove_steps_str = config->getValue<std::string>("AssemblyAssembly_smartMove_steps", "");
+
+  const QStringList smartMove_steps_strlist = QString::fromStdString(smartMove_steps_str).split(",");
+
+  smartMove_steps_.clear();
+
+  for(const auto& step_qstr : smartMove_steps_strlist)
+  {
+    bool valid_step(false);
+
+    const double step_val = step_qstr.toDouble(&valid_step);
+
+    if(valid_step == false)
+    {
+      NQLog("AssemblyAssembly", NQLog::Fatal)
+         << ": invalid format for smartMove step (" << step_qstr << "), closing application";
+
+      assembly::kill_application(tr("[AssemblyAssembly]"), "invalid format for smartMove step ("+step_qstr+"), closing application");
+    }
+
+    smartMove_steps_.emplace_back(step_val);
+  }
+
+  NQLog("AssemblyAssembly", NQLog::Message)
+     << ": loaded " << smartMove_steps_.size() << " smartMove steps (\"" << smartMove_steps_str << "\")";
 }
 
 const LStepExpressMotionManager* AssemblyAssembly::motion() const
@@ -51,11 +85,7 @@ const LStepExpressMotionManager* AssemblyAssembly::motion() const
     NQLog("AssemblyAssembly", NQLog::Fatal) << "motion"
        << ": pointer to LStepExpressMotionManager is NULL, exiting constructor";
 
-    QMessageBox::critical(0
-     , tr("[AssemblyAssembly]")
-     , tr("pointer to LStepExpressMotionManager is NULL, aborting")
-     , QMessageBox::Abort
-    );
+    assembly::kill_application(tr("[AssemblyAssembly]"), tr("pointer to LStepExpressMotionManager is NULL, aborting"));
   }
 
   return motion_;
@@ -68,11 +98,7 @@ const ConradManager* AssemblyAssembly::vacuum() const
     NQLog("AssemblyAssembly", NQLog::Fatal) << "vacuum"
        << ": pointer to ConradManager is NULL, exiting constructor";
 
-    QMessageBox::critical(0
-     , tr("[AssemblyAssembly]")
-     , tr("pointer to ConradManager is NULL, aborting")
-     , QMessageBox::Abort
-    );
+    assembly::kill_application(tr("[AssemblyAssembly]"), tr("pointer to ConradManager is NULL, aborting"));
   }
 
   return vacuum_;
@@ -87,16 +113,35 @@ AssemblyParameters* AssemblyAssembly::parameters() const
     NQLog("AssemblyAssembly", NQLog::Fatal) << "parameters"
        << ": pointer to AssemblyParameters is NULL, exiting constructor";
 
-    QMessageBox::critical(0
-     , tr("[AssemblyAssembly]")
-     , tr("pointer to AssemblyParameters is NULL, aborting")
-     , QMessageBox::Abort
-    );
-
-    throw; // must abort
+    assembly::kill_application(tr("[AssemblyAssembly]"), tr("pointer to AssemblyParameters is NULL, aborting"));
   }
 
   return params;
+}
+
+void AssemblyAssembly::use_smartMove(const int state)
+{
+  if(state == 2)
+  {
+    NQLog("AssemblyAssembly", NQLog::Message) << "use_smartMove(" << state << ")"
+       << ": smartMove option switched ON";
+
+    use_smartMove_ = true;
+  }
+  else if(state == 0)
+  {
+    NQLog("AssemblyAssembly", NQLog::Message) << "use_smartMove(" << state << ")"
+       << ": smartMove option switched ON";
+
+    use_smartMove_ = false;
+  }
+  else
+  {
+    NQLog("AssemblyAssembly", NQLog::Warning) << "use_smartMove(" << state << ")"
+       << ": invalid state value, no action taken (smartMove=" << use_smartMove_ << ")";
+  }
+
+  return;
 }
 // ----------------------------------------------------------------------------------------------------
 

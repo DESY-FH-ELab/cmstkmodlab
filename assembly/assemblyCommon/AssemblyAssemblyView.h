@@ -33,6 +33,8 @@ class AssemblyAssemblyView : public QWidget
 
  protected:
 
+  QCheckBox* smartMove_checkbox_;
+
   QWidget* wid_CalibRotStage_;
   QWidget* wid_PSSAlignm_;
   QWidget* wid_PSSToSpacers_;

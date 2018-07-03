@@ -20,6 +20,14 @@
 #include <QDir>
 #include <QFileInfo>
 #include <QImageReader>
+#include <QMessageBox>
+
+void assembly::kill_application(const QString& log1, const QString& log2)
+{
+  QMessageBox::critical(0, log1, log2, QMessageBox::Abort);
+
+  throw; // must abort
+}
 
 QString assembly::QtCacheDirectory()
 {

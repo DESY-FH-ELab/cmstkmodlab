@@ -14,9 +14,9 @@
 #include <ApplicationConfig.h>
 
 #include <AssemblyVacuumWidget.h>
+#include <AssemblyUtilities.h>
 
 #include <QGridLayout>
-#include <QMessageBox>
 
 AssemblyVacuumWidget::AssemblyVacuumWidget(const QString& label, QWidget* parent) : QWidget(parent)
 {
@@ -34,13 +34,7 @@ AssemblyVacuumWidget::AssemblyVacuumWidget(const QString& label, QWidget* parent
     NQLog("AssemblyVacuumWidget", NQLog::Fatal)
        << "ApplicationConfig::instance() not initialized (null pointer), stopped constructor";
 
-    QMessageBox::critical(0
-     , tr("[AssemblyVacuumWidget]")
-     , tr("ApplicationConfig::instance() not initialized\n.")
-     , QMessageBox::Abort
-    );
-
-    throw; // must abort
+    assembly::kill_application(tr("[AssemblyVacuumWidget]"), tr("ApplicationConfig::instance() not initialized\n."));
   }
 
   /// PICKUP TOOL
@@ -101,13 +95,7 @@ AssemblyVacuumWidget::Entry& AssemblyVacuumWidget::get(const int key)
     NQLog("AssemblyVacuumWidget", NQLog::Fatal) << "get"
        << ": no entry associated to index \"" << key << "\", closing application";
 
-    QMessageBox::critical(0
-     , tr("[AssemblyVacuumWidget::get]")
-     , tr("Failed to find entry associated to index \"%1\"\n.").arg(QString::number(key))
-     , QMessageBox::Abort
-    );
-
-    throw; // must abort
+    assembly::kill_application(tr("[AssemblyVacuumWidget::get]"), tr("Failed to find entry associated to index \"%1\"\n.").arg(QString::number(key)));
   }
 
   return valuemap_.at(key);

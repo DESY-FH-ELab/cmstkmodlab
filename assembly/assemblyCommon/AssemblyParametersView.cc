@@ -14,6 +14,7 @@
 #include <ApplicationConfig.h>
 
 #include <AssemblyParametersView.h>
+#include <AssemblyUtilities.h>
 
 #include <QVBoxLayout>
 #include <QHBoxLayout>
@@ -380,13 +381,7 @@ QLineEdit* AssemblyParametersView::get(const std::string& key) const
     NQLog("AssemblyParametersView", NQLog::Fatal) << "get"
        << ": no QLineEdit object associated to parameter key \"" << key << "\", closing application";
 
-    QMessageBox::critical(0
-     , tr("[AssemblyParametersView::get]")
-     , tr("Failed to find QLineEdit for key: \"%1\"\n.").arg(QString(key.c_str()))
-     , QMessageBox::Abort
-    );
-
-    throw; // must abort
+    assembly::kill_application(tr("[AssemblyParametersView::get]"), tr("Failed to find QLineEdit for key: \"%1\"\n.").arg(QString(key.c_str())));
   }
   else
   {
@@ -398,13 +393,7 @@ QLineEdit* AssemblyParametersView::get(const std::string& key) const
     NQLog("AssemblyParametersView", NQLog::Fatal) << "get"
        << ": null pointer to QLineEdit associated to key \"" << key << "\", closing application";
 
-    QMessageBox::critical(0
-     , tr("[AssemblyParametersView::get]")
-     , tr("Null pointer to QLineEdit for key: \"%1\"\n.").arg(QString(key.c_str()))
-     , QMessageBox::Abort
-    );
-
-    throw; // must abort
+    assembly::kill_application(tr("[AssemblyParametersView::get]"), tr("Null pointer to QLineEdit for key: \"%1\"\n.").arg(QString(key.c_str())));
   }
 
   return ptr;

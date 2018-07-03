@@ -20,6 +20,8 @@
 
 #include <AssemblyParameters.h>
 
+#include <vector>
+
 class AssemblyAssembly : public QObject
 {
  Q_OBJECT
@@ -42,7 +44,13 @@ class AssemblyAssembly : public QObject
   int vacuum_spacer_;
   int vacuum_basepl_;
 
+  bool use_smartMove_;
+
+  std::vector<double> smartMove_steps_;
+
  public slots:
+
+  void use_smartMove(const int);
 
   // motion
   void GoToSensorMarkerPreAlignment_start();
