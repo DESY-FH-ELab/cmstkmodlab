@@ -44,6 +44,8 @@ class AssemblyAssembly : public QObject
   int vacuum_spacer_;
   int vacuum_basepl_;
 
+  double pickup_dZ_;
+
   bool use_smartMove_;
 
   std::vector<double> smartMove_dZ_steps_;
@@ -91,6 +93,8 @@ class AssemblyAssembly : public QObject
   // motion
   void move_absolute(const double, const double, const double, const double);
   void move_relative(const double, const double, const double, const double);
+
+  void move_relative(const std::vector<LStepExpressMotionManager::Motion>&);
 
   void GoToSensorMarkerPreAlignment_finished();
 

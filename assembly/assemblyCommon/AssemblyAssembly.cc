@@ -30,6 +30,8 @@ AssemblyAssembly::AssemblyAssembly(const LStepExpressMotionManager* const motion
  , vacuum_spacer_(0)
  , vacuum_basepl_(0)
 
+ , pickup_dZ_(0.)
+
  , use_smartMove_(true)
 {
   // validate pointers to controllers
@@ -49,6 +51,17 @@ AssemblyAssembly::AssemblyAssembly(const LStepExpressMotionManager* const motion
   vacuum_pickup_ = config->getValue<int>("Vacuum_PickupTool");
   vacuum_spacer_ = config->getValue<int>("Vacuum_Spacers");
   vacuum_basepl_ = config->getValue<int>("Vacuum_Baseplate");
+
+  // positive double for vertical upward movement for pickup
+  pickup_dZ_ = config->getValue<double>("AssemblyAssembly_pickup_dZ");
+
+  if(pickup_dZ_ <= 0.)
+  {
+    NQLog("AssemblyAssembly", NQLog::Fatal)
+       << "invalid (non-positive) value for vertical upward movement for pickup (dZ=" << pickup_dZ_ << "), closing application";
+
+    assembly::kill_application(tr("[AssemblyAssembly]"), "Invalid (non-positive) value for vertical upward movement for pickup (dZ="+QString::number(pickup_dZ_)+"), closing application");
+  }
 
   // smartMove configuration
   const std::string smartMove_dZ_steps_str = config->getValue<std::string>("AssemblyAssembly_smartMove_dZ_steps", "");
@@ -171,10 +184,10 @@ void AssemblyAssembly::GoToSensorMarkerPreAlignment_start()
   connect(this, SIGNAL(move_absolute(double, double, double, double)), motion_, SLOT(moveAbsolute(double, double, double, double)));
   connect(motion_, SIGNAL(motion_finished()), this, SLOT(GoToSensorMarkerPreAlignment_finish()));
 
-  const double x0 = this->parameters()->get("refPointSensor_X");
-  const double y0 = this->parameters()->get("refPointSensor_Y");
-  const double z0 = this->parameters()->get("refPointSensor_Z");
-  const double a0 = this->parameters()->get("refPointSensor_A");
+  const double x0 = this->parameters()->get("RefPointSensor_X");
+  const double y0 = this->parameters()->get("RefPointSensor_Y");
+  const double z0 = this->parameters()->get("RefPointSensor_Z");
+  const double a0 = this->parameters()->get("RefPointSensor_A");
 
   NQLog("AssemblyAssembly", NQLog::Spam) << "GoToSensorMarkerPreAlignment_start"
      << ": emitting signal \"move_absolute(" << x0 << ", " << y0 << ", " << z0 << ", " << a0 << ")\"";
@@ -425,8 +438,8 @@ void AssemblyAssembly::GoFromSensorMarkerToPickupXY_start()
   connect(this, SIGNAL(move_relative(double, double, double, double)), motion_, SLOT(moveRelative(double, double, double, double)));
   connect(motion_, SIGNAL(motion_finished()), this, SLOT(GoFromSensorMarkerToPickupXY_finish()));
 
-  const double dx0 = this->parameters()->get("marker_to_pickup_dX");
-  const double dy0 = this->parameters()->get("marker_to_pickup_dY");
+  const double dx0 = this->parameters()->get("FromSensorRefPointToSensorPickup_dX");
+  const double dy0 = this->parameters()->get("FromSensorRefPointToSensorPickup_dY");
   const double dz0 = 0.0;
   const double da0 = 0.0;
 
@@ -466,22 +479,47 @@ void AssemblyAssembly::LowerPickupToolOntoPSS_start()
     return;
   }
 
-  connect(this, SIGNAL(move_relative(double, double, double, double)), motion_, SLOT(moveRelative(double, double, double, double)));
-  connect(motion_, SIGNAL(motion_finished()), this, SLOT(LowerPickupToolOntoPSS_finish()));
-
   const double dx0 = 0.0;
   const double dy0 = 0.0;
-  const double dz0 = (this->parameters()->get("pickupOnRotStage_Z") + this->parameters()->get("thickness_PSS")) - motion_->get_position_Z() /* !! */ + 1.000;
+  const double dz0 = (this->parameters()->get("PickupToolOnRotStage_Z") + this->parameters()->get("Thickness_PSS")) - motion_->get_position_Z();
   const double da0 = 0.0;
 
-  NQLog("AssemblyAssembly", NQLog::Spam) << "LowerPickupToolOntoPSS_start"
-     << ": emitting signal \"move_relative(" << dx0 << ", " << dy0 << ", " << dz0 << ", " << da0 << ")\"";
+  if(use_smartMove_)
+  {
+    if(smartMove_dZ_steps_.size() == 0)
+    {
+      NQLog("AssemblyAssembly", NQLog::Fatal) << "LowerPickupToolOntoPSS_start"
+         << ": smartMove mode enabled, but empty list of dZ steps, no action taken";
 
-  emit move_relative(dx0, dy0, dz0, da0);
+      return;
+    }
+
+    connect(this, SIGNAL(move_relative(std::vector<LStepExpressMotionManager::Motion>)), motion_, SLOT(moveRelative(std::vector<LStepExpressMotionManager::Motion>)));
+    connect(motion_, SIGNAL(motion_finished()), this, SLOT(LowerPickupToolOntoPSS_finish()));
+
+    const std::vector<LStepExpressMotionManager::Motion> rel_motions = assembly::moveRelative_smartMotions(dx0, dy0, dz0, da0, smartMove_dZ_steps_);
+
+    NQLog("AssemblyAssembly", NQLog::Spam) << "LowerPickupToolOntoPSS_start"
+       << ": emitting signal \"move_relative(motions)";
+
+    emit move_relative(rel_motions);
+  }
+  else
+  {
+    connect(this, SIGNAL(move_relative(double, double, double, double)), motion_, SLOT(moveRelative(double, double, double, double)));
+    connect(motion_, SIGNAL(motion_finished()), this, SLOT(LowerPickupToolOntoPSS_finish()));
+
+    NQLog("AssemblyAssembly", NQLog::Spam) << "LowerPickupToolOntoPSS_start"
+       << ": emitting signal \"move_relative(" << dx0 << ", " << dy0 << ", " << dz0 << ", " << da0 << ")\"";
+
+    emit move_relative(dx0, dy0, dz0, da0);
+  }
+
 }
 
 void AssemblyAssembly::LowerPickupToolOntoPSS_finish()
 {
+  disconnect(this, SIGNAL(move_relative(std::vector<LStepExpressMotionManager::Motion>)), motion_, SLOT(moveRelative(std::vector<LStepExpressMotionManager::Motion>)));
   disconnect(this, SIGNAL(move_relative(double, double, double, double)), motion_, SLOT(moveRelative(double, double, double, double)));
   disconnect(motion_, SIGNAL(motion_finished()), this, SLOT(LowerPickupToolOntoPSS_finish()));
 
@@ -513,10 +551,10 @@ void AssemblyAssembly::PickupPSS_start()
   connect(this, SIGNAL(move_relative(double, double, double, double)), motion_, SLOT(moveRelative(double, double, double, double)));
   connect(motion_, SIGNAL(motion_finished()), this, SLOT(PickupPSS_finish()));
 
-  const double dx0 =  0.0;
-  const double dy0 =  0.0;
-  const double dz0 = 80.0;
-  const double da0 =  0.0;
+  const double dx0 = 0.0;
+  const double dy0 = 0.0;
+  const double dz0 = pickup_dZ_;
+  const double da0 = 0.0;
 
   NQLog("AssemblyAssembly", NQLog::Spam) << "PickupPSS_start"
      << ": emitting signal \"move_relative(" << dx0 << ", " << dy0 << ", " << dz0 << ", " << da0 << ")\"";
