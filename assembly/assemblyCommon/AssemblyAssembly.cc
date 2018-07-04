@@ -96,7 +96,7 @@ AssemblyAssembly::AssemblyAssembly(const LStepExpressMotionManager* const motion
   }
 
   NQLog("AssemblyAssembly", NQLog::Message)
-     << ": loaded " << smartMove_dZ_steps_.size() << " smartMove steps (\"" << smartMove_dZ_steps_str << "\")";
+     << "loaded " << smartMove_dZ_steps_.size() << " smartMove steps (\"" << smartMove_dZ_steps_str << "\")";
 }
 
 const LStepExpressMotionManager* AssemblyAssembly::motion() const

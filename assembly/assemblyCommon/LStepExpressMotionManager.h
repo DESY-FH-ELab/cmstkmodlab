@@ -73,11 +73,16 @@ class LStepExpressMotionManager : public QObject
 
     QTimer* timer_;
 
-    int motion_interval_sec_;
+    bool timer_enabled_;
+
+    const int motion_interval_sec_ = 2000;
 
     QQueue<LStepExpressMotion> motions_;
 
   public slots:
+
+    void  enable_timer();
+    void disable_timer();
 
     void    connect_model();
     void disconnect_model();
@@ -110,6 +115,9 @@ class LStepExpressMotionManager : public QObject
     void finish_motion();
 
   signals:
+
+    void timer_enabled();
+    void timer_disabled();
 
     void motion_finished();
 

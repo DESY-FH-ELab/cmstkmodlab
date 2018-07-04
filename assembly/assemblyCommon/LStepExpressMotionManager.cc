@@ -24,6 +24,7 @@ LStepExpressMotionManager::LStepExpressMotionManager(LStepExpressModel* model, Q
  , inMotion_(false)
 
  , timer_(nullptr)
+ , timer_enabled_(false)
 {
   if(model_ == nullptr)
   {
@@ -33,19 +34,8 @@ LStepExpressMotionManager::LStepExpressMotionManager(LStepExpressModel* model, Q
     assembly::kill_application("[LStepExpressMotionManager]", "Invalid (NULL) pointer to LStepExpressModel object, closing application");
   }
 
-  motion_interval_sec_ = 0;
-
-  ApplicationConfig* config = ApplicationConfig::instance();
-  if(config != nullptr)
-  {
-    motion_interval_sec_ = config->getValue<int>("LStepExpressMotionManager_timer", motion_interval_sec_);
-  }
-
-  if(motion_interval_sec_ > 0)
-  {
-    timer_ = new QTimer(this);
-    timer_->setSingleShot(true);
-  }
+  timer_ = new QTimer(this);
+  timer_->setSingleShot(true);
 
   this->connect_model();
 
@@ -65,6 +55,59 @@ void LStepExpressMotionManager::wait()
 
     timer_->start(motion_interval_sec_);
   }
+  else
+  {
+    NQLog("LStepExpressMotionManager", NQLog::Critical) << "wait"
+       << ": invalid (NULL) pointer to QTimer, no action taken";
+  }
+
+  return;
+}
+
+void LStepExpressMotionManager::enable_timer()
+{
+  if(timer_enabled_)
+  {
+    NQLog("LStepExpressMotionManager", NQLog::Warning) << "enable_timer"
+       << ": timer already enabled, no action taken";
+  }
+  else
+  {
+    timer_enabled_ = true;
+
+    disconnect(model_, SIGNAL(motionFinished()), this, SLOT(finish_motion()));
+
+    connect(model_, SIGNAL(motionFinished()), this, SLOT(wait()));
+    connect(timer_, SIGNAL(timeout()), this, SLOT(finish_motion()));
+  }
+
+  NQLog("LStepExpressMotionManager", NQLog::Spam) << "enable_timer"
+     << ": emitting signal \"timer_enabled\"";
+
+  emit timer_enabled();
+}
+
+void LStepExpressMotionManager::disable_timer()
+{
+  if(timer_enabled_ == false)
+  {
+    NQLog("LStepExpressMotionManager", NQLog::Warning) << "disable_timer"
+       << ": timer already disabled, no action taken";
+  }
+  else
+  {
+    timer_enabled_ = false;
+
+    connect(model_, SIGNAL(motionFinished()), this, SLOT(finish_motion()));
+
+    disconnect(model_, SIGNAL(motionFinished()), this, SLOT(wait()));
+    disconnect(timer_, SIGNAL(timeout()), this, SLOT(finish_motion()));
+  }
+
+  NQLog("LStepExpressMotionManager", NQLog::Spam) << "disable_timer"
+     << ": emitting signal \"timer_disabled\"";
+
+  emit timer_disabled();
 }
 
 void LStepExpressMotionManager::connect_model()
@@ -75,15 +118,7 @@ void LStepExpressMotionManager::connect_model()
   {
     connect(model_, SIGNAL(motionStarted()) , this, SLOT(motionStarted()));
 
-    if(timer_ != nullptr)
-    {
-      connect(model_, SIGNAL(motionFinished()), this, SLOT(wait()));
-      connect(timer_, SIGNAL(timeout()), this, SLOT(finish_motion()));
-    }
-    else
-    {
-      connect(model_, SIGNAL(motionFinished()), this, SLOT(finish_motion()));
-    }
+    connect(model_, SIGNAL(motionFinished()), this, SLOT(finish_motion()));
 
     connect(this  , SIGNAL(signalMoveAbsolute(double, double, double, double)),
             model_, SLOT  (      moveAbsolute(double, double, double, double)));
