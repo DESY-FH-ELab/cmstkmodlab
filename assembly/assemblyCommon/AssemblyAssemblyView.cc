@@ -215,8 +215,6 @@ AssemblyAssemblyView::AssemblyAssemblyView(const AssemblyAssembly* const assembl
     tmp_wid->label()->setText(QString::number(assembly_step_N_));
     tmp_wid->text() ->setText("Put Spacers on Assembly Platform");
     PSSToSpacers_lay->addWidget(tmp_wid);
-
-//    connect(tmp_wid->button(), SIGNAL(clicked()), assembly, SLOT(GoToPSSPreAlignment()));
   }
   // ----------
 
@@ -229,20 +227,33 @@ AssemblyAssemblyView::AssemblyAssemblyView(const AssemblyAssembly* const assembl
     tmp_wid->button()->setText("Enable Vacuum on Spacers");
     PSSToSpacers_lay->addWidget(tmp_wid);
 
-//    connect(tmp_wid->button(), SIGNAL(clicked()), assembly, SLOT(GoToPSSPreAlignment()));
+    connect(tmp_wid->button(), SIGNAL(clicked()), assembly, SLOT(EnableVacuumSpacers_start()));
   }
   // ----------
 
-  // step: Go To XYA for Spacers Gluing
+  // step: Go To XYZA Spacer Ref-Point
   {
     ++assembly_step_N_;
 
     AssemblyAssemblyActionWidget* tmp_wid = new AssemblyAssemblyActionWidget;
     tmp_wid->label() ->setText(QString::number(assembly_step_N_));
-    tmp_wid->button()->setText("Go To XYA for Spacers Gluing");
+    tmp_wid->button()->setText("Go To XYZA Spacer Ref-Point");
     PSSToSpacers_lay->addWidget(tmp_wid);
 
-//    connect(tmp_wid->button(), SIGNAL(clicked()), assembly, SLOT(GoToPSSPreAlignment()));
+    connect(tmp_wid->button(), SIGNAL(clicked()), assembly, SLOT(GoToSpacerRefPoint_start()));
+  }
+  // ----------
+
+  // step: Go To XY Position To Glue Spacers to PS-s
+  {
+    ++assembly_step_N_;
+
+    AssemblyAssemblyActionWidget* tmp_wid = new AssemblyAssemblyActionWidget;
+    tmp_wid->label() ->setText(QString::number(assembly_step_N_));
+    tmp_wid->button()->setText("Go To XY Position To Glue Spacers to PS-s");
+    PSSToSpacers_lay->addWidget(tmp_wid);
+
+    connect(tmp_wid->button(), SIGNAL(clicked()), assembly, SLOT(GoFromSpacerRefPointToSpacerGluingXYPosition_start()));
   }
   // ----------
 
@@ -255,48 +266,46 @@ AssemblyAssemblyView::AssemblyAssemblyView(const AssemblyAssembly* const assembl
     tmp_wid->button()->setText("Lower PS-s onto Spacers");
     PSSToSpacers_lay->addWidget(tmp_wid);
 
-//    connect(tmp_wid->button(), SIGNAL(clicked()), assembly, SLOT(GoToPSSPreAlignment()));
+    connect(tmp_wid->button(), SIGNAL(clicked()), assembly, SLOT(LowerPSSOntoSpacers_start()));
   }
   // ----------
 
-//!!  // step: wait for glue to cure
-//!!  {
-//!!    ++assembly_step_N_;
-//!!
-//!!    AssemblyAssemblyActionWidget* tmp_wid = new AssemblyAssemblyActionWidget;
-//!!    tmp_wid->label() ->setText(QString::number(assembly_step_N_));
-//!!    tmp_wid->button()->setText("Arrange assembly platform for PSS alignment");
-//!!    PSSToSpacers_lay->addWidget(tmp_wid);
-//!!
-//!!//    connect(tmp_wid->button(), SIGNAL(clicked()), assembly, SLOT(GoToPSSPreAlignment()));
-//!!  }
-//!!  // ----------
-//!!
-//!!  // step: disable spacers vacuum
-//!!  {
-//!!    ++assembly_step_N_;
-//!!
-//!!    AssemblyAssemblyActionWidget* tmp_wid = new AssemblyAssemblyActionWidget;
-//!!    tmp_wid->label() ->setText(QString::number(assembly_step_N_));
-//!!    tmp_wid->button()->setText("Arrange assembly platform for PSS alignment");
-//!!    PSSToSpacers_lay->addWidget(tmp_wid);
-//!!
-//!!//    connect(tmp_wid->button(), SIGNAL(clicked()), assembly, SLOT(GoToPSSPreAlignment()));
-//!!  }
-//!!  // ----------
-//!!
-//!!  // step: move up pickup tool (dZ=+50cm)
-//!!  {
-//!!    ++assembly_step_N_;
-//!!
-//!!    AssemblyAssemblyActionWidget* tmp_wid = new AssemblyAssemblyActionWidget;
-//!!    tmp_wid->label() ->setText(QString::number(assembly_step_N_));
-//!!    tmp_wid->button()->setText("Arrange assembly platform for PSS alignment");
-//!!    PSSToSpacers_lay->addWidget(tmp_wid);
-//!!
-//!!//    connect(tmp_wid->button(), SIGNAL(clicked()), assembly, SLOT(GoToPSSPreAlignment()));
-//!!  }
-//!!  // ----------
+  // step: Wait For Glue To Cure
+  {
+    ++assembly_step_N_;
+
+    AssemblyAssemblyTextWidget* tmp_wid = new AssemblyAssemblyTextWidget;
+    tmp_wid->label()->setText(QString::number(assembly_step_N_));
+    tmp_wid->text() ->setText("Wait for Glue To Cure (approx. 10 min)");
+    PSSToSpacers_lay->addWidget(tmp_wid);
+  }
+  // ----------
+
+  // step: Disable Spacers Vacuum
+  {
+    ++assembly_step_N_;
+
+    AssemblyAssemblyActionWidget* tmp_wid = new AssemblyAssemblyActionWidget;
+    tmp_wid->label() ->setText(QString::number(assembly_step_N_));
+    tmp_wid->button()->setText("Disable Vacuum on Spacers");
+    PSSToSpacers_lay->addWidget(tmp_wid);
+
+    connect(tmp_wid->button(), SIGNAL(clicked()), assembly, SLOT(DisableVacuumSpacers_start()));
+  }
+  // ----------
+
+  // step: Pick Up Spacers+PS-s
+  {
+    ++assembly_step_N_;
+
+    AssemblyAssemblyActionWidget* tmp_wid = new AssemblyAssemblyActionWidget;
+    tmp_wid->label() ->setText(QString::number(assembly_step_N_));
+    tmp_wid->button()->setText("Pick Up Spacers+PS-s");
+    PSSToSpacers_lay->addWidget(tmp_wid);
+
+    connect(tmp_wid->button(), SIGNAL(clicked()), assembly, SLOT(PickupSpacersAndPSS_start()));
+  }
+  // ----------
 
   PSSToSpacers_lay->addStretch(1);
   //// -----------------------------------------------

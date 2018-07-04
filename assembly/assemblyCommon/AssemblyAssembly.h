@@ -66,6 +66,18 @@ class AssemblyAssembly : public QObject
 
   void PickupPSS_start();
   void PickupPSS_finish();
+
+  void GoToSpacerRefPoint_start();
+  void GoToSpacerRefPoint_finish();
+
+  void GoFromSpacerRefPointToSpacerGluingXYPosition_start();
+  void GoFromSpacerRefPointToSpacerGluingXYPosition_finish();
+
+  void LowerPSSOntoSpacers_start();
+  void LowerPSSOntoSpacers_finish();
+
+  void PickupSpacersAndPSS_start();
+  void PickupSpacersAndPSS_finish();
   // ---------
 
   // vacuum
@@ -96,6 +108,8 @@ class AssemblyAssembly : public QObject
 
   void move_relative(const std::vector<LStepExpressMotionManager::Motion>&);
 
+  void motion_timer_request();
+
   void GoToSensorMarkerPreAlignment_finished();
 
   void GoFromSensorMarkerToPickupXY_finished();
@@ -103,6 +117,14 @@ class AssemblyAssembly : public QObject
   void LowerPickupToolOntoPSS_finished();
 
   void PickupPSS_finished();
+
+  void GoToSpacerRefPoint_finished();
+
+  void GoFromSpacerRefPointToSpacerGluingXYPosition_finished();
+
+  void LowerPSSOntoSpacers_finished();
+
+  void PickupSpacersAndPSS_finished();
   // ------
 
   // vacuum

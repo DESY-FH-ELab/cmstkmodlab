@@ -494,6 +494,14 @@ void AssemblyAssembly::LowerPickupToolOntoPSS_start()
       return;
     }
 
+    connect(this, SIGNAL(motion_timer_request()), motion_, SLOT(enable_timer()));
+    connect(motion_, SIGNAL(motion_finished()), motion_, SLOT(disable_timer()));
+
+    NQLog("AssemblyAssembly", NQLog::Spam) << "LowerPickupToolOntoPSS_start"
+       << ": emitting signal \"motion_timer_request";
+
+    emit motion_timer_request();
+
     connect(this, SIGNAL(move_relative(std::vector<LStepExpressMotionManager::Motion>)), motion_, SLOT(moveRelative(std::vector<LStepExpressMotionManager::Motion>)));
     connect(motion_, SIGNAL(motion_finished()), this, SLOT(LowerPickupToolOntoPSS_finish()));
 
@@ -514,11 +522,13 @@ void AssemblyAssembly::LowerPickupToolOntoPSS_start()
 
     emit move_relative(dx0, dy0, dz0, da0);
   }
-
 }
 
 void AssemblyAssembly::LowerPickupToolOntoPSS_finish()
 {
+  disconnect(this, SIGNAL(motion_timer_request()), motion_, SLOT(enable_timer()));
+  disconnect(motion_, SIGNAL(motion_finished()), motion_, SLOT(disable_timer()));
+
   disconnect(this, SIGNAL(move_relative(std::vector<LStepExpressMotionManager::Motion>)), motion_, SLOT(moveRelative(std::vector<LStepExpressMotionManager::Motion>)));
   disconnect(this, SIGNAL(move_relative(double, double, double, double)), motion_, SLOT(moveRelative(double, double, double, double)));
   disconnect(motion_, SIGNAL(motion_finished()), this, SLOT(LowerPickupToolOntoPSS_finish()));
@@ -573,6 +583,207 @@ void AssemblyAssembly::PickupPSS_finish()
   emit PickupPSS_finished();
 
   NQLog("AssemblyAssembly", NQLog::Message) << "PickupPSS_finish"
+     << ": assembly-step completed";
+}
+// ----------------------------------------------------------------------------------------------------
+
+// ----------------------------------------------------------------------------------------------------
+// GoToSpacerRefPoint ---------------------------------------------------------------------------------
+// ----------------------------------------------------------------------------------------------------
+void AssemblyAssembly::GoToSpacerRefPoint_start()
+{
+  const bool valid_params = this->parameters()->update();
+
+  if(valid_params == false)
+  {
+    NQLog("AssemblyAssembly", NQLog::Fatal) << "GoToSpacerRefPoint_start"
+       << ": failed to update content of AssemblyParameters, no action taken";
+
+    return;
+  }
+
+  connect(this, SIGNAL(move_absolute(double, double, double, double)), motion_, SLOT(moveAbsolute(double, double, double, double)));
+  connect(motion_, SIGNAL(motion_finished()), this, SLOT(GoToSpacerRefPoint_finish()));
+
+  const double x0 = this->parameters()->get("RefPointSpacer_X");
+  const double y0 = this->parameters()->get("RefPointSpacer_Y");
+  const double z0 = this->parameters()->get("RefPointSpacer_Z");
+  const double a0 = this->parameters()->get("RefPointSpacer_A");
+
+  NQLog("AssemblyAssembly", NQLog::Spam) << "GoToSpacerRefPoint_start"
+     << ": emitting signal \"move_absolute(" << x0 << ", " << y0 << ", " << z0 << ", " << a0 << ")\"";
+
+  emit move_absolute(x0, y0, z0, a0);
+}
+
+void AssemblyAssembly::GoToSpacerRefPoint_finish()
+{
+  disconnect(this, SIGNAL(move_absolute(double, double, double, double)), motion_, SLOT(moveAbsolute(double, double, double, double)));
+  disconnect(motion_, SIGNAL(motion_finished()), this, SLOT(GoToSpacerRefPoint_finish()));
+
+  NQLog("AssemblyAssembly", NQLog::Spam) << "GoToSpacerRefPoint_finish"
+     << ": emitting signal \"GoToSpacerRefPoint_finished\"";
+
+  emit GoToSpacerRefPoint_finished();
+
+  NQLog("AssemblyAssembly", NQLog::Message) << "GoToSpacerRefPoint_finish"
+     << ": assembly-step completed";
+}
+// ----------------------------------------------------------------------------------------------------
+
+// ----------------------------------------------------------------------------------------------------
+// GoFromSpacerRefPointToSpacerGluingXYPosition -------------------------------------------------------
+// ----------------------------------------------------------------------------------------------------
+void AssemblyAssembly::GoFromSpacerRefPointToSpacerGluingXYPosition_start()
+{
+  const bool valid_params = this->parameters()->update();
+
+  if(valid_params == false)
+  {
+    NQLog("AssemblyAssembly", NQLog::Fatal) << "GoFromSpacerRefPointToSpacerGluingXYPosition_start"
+       << ": failed to update content of AssemblyParameters, no action taken";
+
+    return;
+  }
+
+  connect(this, SIGNAL(move_relative(double, double, double, double)), motion_, SLOT(moveRelative(double, double, double, double)));
+  connect(motion_, SIGNAL(motion_finished()), this, SLOT(GoFromSpacerRefPointToSpacerGluingXYPosition_finish()));
+
+  const double dx0 = this->parameters()->get("FromSpacerRefPointToSensorRefPoint_dX") + this->parameters()->get("FromSensorRefPointToSensorPickup_dX");
+  const double dy0 = this->parameters()->get("FromSpacerRefPointToSensorRefPoint_dY") + this->parameters()->get("FromSensorRefPointToSensorPickup_dY");
+  const double dz0 = 0.0;
+  const double da0 = 0.0;
+
+  NQLog("AssemblyAssembly", NQLog::Spam) << "GoFromSpacerRefPointToSpacerGluingXYPosition_start"
+     << ": emitting signal \"move_relative(" << dx0 << ", " << dy0 << ", " << dz0 << ", " << da0 << ")\"";
+
+  emit move_relative(dx0, dy0, dz0, da0);
+}
+
+void AssemblyAssembly::GoFromSpacerRefPointToSpacerGluingXYPosition_finish()
+{
+  disconnect(this, SIGNAL(move_relative(double, double, double, double)), motion_, SLOT(moveRelative(double, double, double, double)));
+  disconnect(motion_, SIGNAL(motion_finished()), this, SLOT(GoFromSpacerRefPointToSpacerGluingXYPosition_finish()));
+
+  NQLog("AssemblyAssembly", NQLog::Spam) << "GoFromSpacerRefPointToSpacerGluingXYPosition_finish"
+     << ": emitting signal \"GoFromSpacerRefPointToSpacerGluingXYPosition_finished\"";
+
+  emit GoFromSpacerRefPointToSpacerGluingXYPosition_finished();
+
+  NQLog("AssemblyAssembly", NQLog::Message) << "GoFromSpacerRefPointToSpacerGluingXYPosition_finish"
+     << ": assembly-step completed";
+}
+// ----------------------------------------------------------------------------------------------------
+
+// ----------------------------------------------------------------------------------------------------
+// LowerPSSOntoSpacers --------------------------------------------------------------------------------
+// ----------------------------------------------------------------------------------------------------
+void AssemblyAssembly::LowerPSSOntoSpacers_start()
+{
+  const bool valid_params = this->parameters()->update();
+
+  if(valid_params == false)
+  {
+    NQLog("AssemblyAssembly", NQLog::Fatal) << "LowerPSSOntoSpacers_start"
+       << ": failed to update content of AssemblyParameters, no action taken";
+
+    return;
+  }
+
+  const double dx0 = 0.0;
+  const double dy0 = 0.0;
+  const double da0 = 0.0;
+
+  const double dz0 = this->parameters()->get("PickupToolOnRotStage_Z") - this->parameters()->get("Height_SpacerSlots") + this->parameters()->get("Thickness_Spacer") + this->parameters()->get("Thickness_GlueLayer") - motion_->get_position_Z();
+
+  if(use_smartMove_)
+  {
+    if(smartMove_dZ_steps_.size() == 0)
+    {
+      NQLog("AssemblyAssembly", NQLog::Fatal) << "LowerPSSOntoSpacers_start"
+         << ": smartMove mode enabled, but empty list of dZ steps, no action taken";
+
+      return;
+    }
+
+    connect(this, SIGNAL(move_relative(std::vector<LStepExpressMotionManager::Motion>)), motion_, SLOT(moveRelative(std::vector<LStepExpressMotionManager::Motion>)));
+    connect(motion_, SIGNAL(motion_finished()), this, SLOT(LowerPSSOntoSpacers_finish()));
+
+    const std::vector<LStepExpressMotionManager::Motion> rel_motions = assembly::moveRelative_smartMotions(dx0, dy0, dz0, da0, smartMove_dZ_steps_);
+
+    NQLog("AssemblyAssembly", NQLog::Spam) << "LowerPSSOntoSpacers_start"
+       << ": emitting signal \"move_relative(motions)";
+
+    emit move_relative(rel_motions);
+  }
+  else
+  {
+    connect(this, SIGNAL(move_relative(double, double, double, double)), motion_, SLOT(moveRelative(double, double, double, double)));
+    connect(motion_, SIGNAL(motion_finished()), this, SLOT(LowerPSSOntoSpacers_finish()));
+
+    NQLog("AssemblyAssembly", NQLog::Spam) << "LowerPSSOntoSpacers_start"
+       << ": emitting signal \"move_relative(" << dx0 << ", " << dy0 << ", " << dz0 << ", " << da0 << ")\"";
+
+    emit move_relative(dx0, dy0, dz0, da0);
+  }
+}
+
+void AssemblyAssembly::LowerPSSOntoSpacers_finish()
+{
+  disconnect(this, SIGNAL(move_relative(std::vector<LStepExpressMotionManager::Motion>)), motion_, SLOT(moveRelative(std::vector<LStepExpressMotionManager::Motion>)));
+  disconnect(this, SIGNAL(move_relative(double, double, double, double)), motion_, SLOT(moveRelative(double, double, double, double)));
+  disconnect(motion_, SIGNAL(motion_finished()), this, SLOT(LowerPSSOntoSpacers_finish()));
+
+  NQLog("AssemblyAssembly", NQLog::Spam) << "LowerPSSOntoSpacers_finish"
+     << ": emitting signal \"LowerPSSOntoSpacers_finished\"";
+
+  emit LowerPSSOntoSpacers_finished();
+
+  NQLog("AssemblyAssembly", NQLog::Message) << "LowerPSSOntoSpacers_finish"
+     << ": assembly-step completed";
+}
+// ----------------------------------------------------------------------------------------------------
+
+// ----------------------------------------------------------------------------------------------------
+// PickupSpacersAndPSS --------------------------------------------------------------------------------
+// ----------------------------------------------------------------------------------------------------
+void AssemblyAssembly::PickupSpacersAndPSS_start()
+{
+  const bool valid_params = this->parameters()->update();
+
+  if(valid_params == false)
+  {
+    NQLog("AssemblyAssembly", NQLog::Fatal) << "PickupSpacersAndPSS_start"
+       << ": failed to update content of AssemblyParameters, no action taken";
+
+    return;
+  }
+
+  connect(this, SIGNAL(move_relative(double, double, double, double)), motion_, SLOT(moveRelative(double, double, double, double)));
+  connect(motion_, SIGNAL(motion_finished()), this, SLOT(PickupSpacersAndPSS_finish()));
+
+  const double dx0 = 0.0;
+  const double dy0 = 0.0;
+  const double dz0 = pickup_dZ_;
+  const double da0 = 0.0;
+
+  NQLog("AssemblyAssembly", NQLog::Spam) << "PickupSpacersAndPSS_start"
+     << ": emitting signal \"move_relative(" << dx0 << ", " << dy0 << ", " << dz0 << ", " << da0 << ")\"";
+
+  emit move_relative(dx0, dy0, dz0, da0);
+}
+
+void AssemblyAssembly::PickupSpacersAndPSS_finish()
+{
+  disconnect(this, SIGNAL(move_relative(double, double, double, double)), motion_, SLOT(moveRelative(double, double, double, double)));
+  disconnect(motion_, SIGNAL(motion_finished()), this, SLOT(PickupSpacersAndPSS_finish()));
+
+  NQLog("AssemblyAssembly", NQLog::Spam) << "PickupSpacersAndPSS_finish"
+     << ": emitting signal \"PickupSpacersAndPSS_finished\"";
+
+  emit PickupSpacersAndPSS_finished();
+
+  NQLog("AssemblyAssembly", NQLog::Message) << "PickupSpacersAndPSS_finish"
      << ": assembly-step completed";
 }
 // ----------------------------------------------------------------------------------------------------
