@@ -51,13 +51,13 @@ AssemblyAssembly::AssemblyAssembly(const LStepExpressMotionManager* const motion
   vacuum_basepl_ = config->getValue<int>("Vacuum_Baseplate");
 
   // smartMove configuration
-  const std::string smartMove_steps_str = config->getValue<std::string>("AssemblyAssembly_smartMove_steps", "");
+  const std::string smartMove_dZ_steps_str = config->getValue<std::string>("AssemblyAssembly_smartMove_dZ_steps", "");
 
-  const QStringList smartMove_steps_strlist = QString::fromStdString(smartMove_steps_str).split(",");
+  const QStringList smartMove_dZ_steps_strlist = QString::fromStdString(smartMove_dZ_steps_str).split(",");
 
-  smartMove_steps_.clear();
+  smartMove_dZ_steps_.clear();
 
-  for(const auto& step_qstr : smartMove_steps_strlist)
+  for(const auto& step_qstr : smartMove_dZ_steps_strlist)
   {
     bool valid_step(false);
 
@@ -71,11 +71,19 @@ AssemblyAssembly::AssemblyAssembly(const LStepExpressMotionManager* const motion
       assembly::kill_application(tr("[AssemblyAssembly]"), "invalid format for smartMove step ("+step_qstr+"), closing application");
     }
 
-    smartMove_steps_.emplace_back(step_val);
+    if(step_val <= 0.)
+    {
+      NQLog("AssemblyAssembly", NQLog::Fatal)
+         << ": invalid (non-positive) value for smartMove step (" << step_qstr << "), closing application";
+
+      assembly::kill_application(tr("[AssemblyAssembly]"), "Invalid (non-positive) value for smartMove step ("+step_qstr+"), closing application");
+    }
+
+    smartMove_dZ_steps_.emplace_back(step_val);
   }
 
   NQLog("AssemblyAssembly", NQLog::Message)
-     << ": loaded " << smartMove_steps_.size() << " smartMove steps (\"" << smartMove_steps_str << "\")";
+     << ": loaded " << smartMove_dZ_steps_.size() << " smartMove steps (\"" << smartMove_dZ_steps_str << "\")";
 }
 
 const LStepExpressMotionManager* AssemblyAssembly::motion() const

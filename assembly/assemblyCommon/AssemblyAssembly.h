@@ -46,7 +46,7 @@ class AssemblyAssembly : public QObject
 
   bool use_smartMove_;
 
-  std::vector<double> smartMove_steps_;
+  std::vector<double> smartMove_dZ_steps_;
 
  public slots:
 

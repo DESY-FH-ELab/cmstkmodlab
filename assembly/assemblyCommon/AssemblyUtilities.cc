@@ -153,3 +153,51 @@ void assembly::rotation2D_deg(double& X_1, double& Y_1, const double angle_deg, 
 
   return;
 }
+
+std::vector<LStepExpressMotionManager::Motion> assembly::moveRelative_smartMotions(const double dx, const double dy, const double dz, const double da, const std::vector<double>& dz_steps)
+{
+  std::vector<LStepExpressMotionManager::Motion> motions;
+
+  if(dz > 0.)
+  {
+    motions.emplace_back(LStepExpressMotionManager::Motion( 0,  0, dz,  0));
+    motions.emplace_back(LStepExpressMotionManager::Motion(dx, dy,  0, da));
+  }
+  else
+  {
+    motions.emplace_back(LStepExpressMotionManager::Motion(dx, dy,  0, da));
+
+    std::vector<double> dz_vec;
+    {
+      double abs_dz_resid = fabs(dz);
+
+      for(unsigned int istep=dz_steps.size(); istep-- > 0;)
+      {
+        const double istep_val = dz_steps.at(istep);
+
+        if(abs_dz_resid > istep_val)
+        {
+          abs_dz_resid -= istep_val;
+          dz_vec.emplace_back(-istep_val);
+        }
+      }
+
+      if(abs_dz_resid > 0.){ dz_vec.emplace_back(-abs_dz_resid); }
+    }
+
+    // reversed loop on dz movements
+    for(unsigned int i_dz=dz_vec.size(); i_dz-- > 0;)
+    {
+      motions.emplace_back(LStepExpressMotionManager::Motion(0,  0, dz_vec.at(i_dz), 0));
+    }
+  }
+
+  return motions;
+}
+
+//!!  const double dx = (x - motion->get_position_X());
+//!!  const double dy = (y - motion->get_position_Y());
+//!!  const double dz = (z - motion->get_position_Z());
+//!!  const double da = (a - motion->get_position_A());
+//!!
+//!!  const auto rel_motions = assembly::moveRelative_smartMotions(dx, dy, dz, da, dz_steps);
