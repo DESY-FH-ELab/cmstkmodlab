@@ -152,7 +152,7 @@ void AssemblyAssembly::use_smartMove(const int state)
   else if(state == 0)
   {
     NQLog("AssemblyAssembly", NQLog::Message) << "use_smartMove(" << state << ")"
-       << ": smartMove option switched ON";
+       << ": smartMove option switched OFF";
 
     use_smartMove_ = false;
   }
@@ -502,13 +502,13 @@ void AssemblyAssembly::LowerPickupToolOntoPSS_start()
 
     emit motion_timer_request();
 
-    connect(this, SIGNAL(move_relative(std::vector<LStepExpressMotionManager::Motion>)), motion_, SLOT(moveRelative(std::vector<LStepExpressMotionManager::Motion>)));
+    connect(this, SIGNAL(move_relative(QQueue<LStepExpressMotion>)), motion_, SLOT(appendMotions(QQueue<LStepExpressMotion>)));
     connect(motion_, SIGNAL(motion_finished()), this, SLOT(LowerPickupToolOntoPSS_finish()));
 
-    const std::vector<LStepExpressMotionManager::Motion> rel_motions = assembly::moveRelative_smartMotions(dx0, dy0, dz0, da0, smartMove_dZ_steps_);
+    const QQueue<LStepExpressMotion> rel_motions = assembly::moveRelative_smartMotions(dx0, dy0, dz0, da0, smartMove_dZ_steps_);
 
     NQLog("AssemblyAssembly", NQLog::Spam) << "LowerPickupToolOntoPSS_start"
-       << ": emitting signal \"move_relative(motions)";
+       << ": emitting signal \"move_relative(motions)\"";
 
     emit move_relative(rel_motions);
   }
@@ -529,7 +529,7 @@ void AssemblyAssembly::LowerPickupToolOntoPSS_finish()
   disconnect(this, SIGNAL(motion_timer_request()), motion_, SLOT(enable_timer()));
   disconnect(motion_, SIGNAL(motion_finished()), motion_, SLOT(disable_timer()));
 
-  disconnect(this, SIGNAL(move_relative(std::vector<LStepExpressMotionManager::Motion>)), motion_, SLOT(moveRelative(std::vector<LStepExpressMotionManager::Motion>)));
+  disconnect(this, SIGNAL(move_relative(QQueue<LStepExpressMotion>)), motion_, SLOT(appendMotions(QQueue<LStepExpressMotion>)));
   disconnect(this, SIGNAL(move_relative(double, double, double, double)), motion_, SLOT(moveRelative(double, double, double, double)));
   disconnect(motion_, SIGNAL(motion_finished()), this, SLOT(LowerPickupToolOntoPSS_finish()));
 
@@ -706,10 +706,10 @@ void AssemblyAssembly::LowerPSSOntoSpacers_start()
       return;
     }
 
-    connect(this, SIGNAL(move_relative(std::vector<LStepExpressMotionManager::Motion>)), motion_, SLOT(moveRelative(std::vector<LStepExpressMotionManager::Motion>)));
+    connect(this, SIGNAL(move_relative(QQueue<LStepExpressMotion>)), motion_, SLOT(appendMotions(QQueue<LStepExpressMotion>)));
     connect(motion_, SIGNAL(motion_finished()), this, SLOT(LowerPSSOntoSpacers_finish()));
 
-    const std::vector<LStepExpressMotionManager::Motion> rel_motions = assembly::moveRelative_smartMotions(dx0, dy0, dz0, da0, smartMove_dZ_steps_);
+    const QQueue<LStepExpressMotion> rel_motions = assembly::moveRelative_smartMotions(dx0, dy0, dz0, da0, smartMove_dZ_steps_);
 
     NQLog("AssemblyAssembly", NQLog::Spam) << "LowerPSSOntoSpacers_start"
        << ": emitting signal \"move_relative(motions)";
@@ -730,7 +730,7 @@ void AssemblyAssembly::LowerPSSOntoSpacers_start()
 
 void AssemblyAssembly::LowerPSSOntoSpacers_finish()
 {
-  disconnect(this, SIGNAL(move_relative(std::vector<LStepExpressMotionManager::Motion>)), motion_, SLOT(moveRelative(std::vector<LStepExpressMotionManager::Motion>)));
+  disconnect(this, SIGNAL(move_relative(QQueue<LStepExpressMotion>)), motion_, SLOT(appendMotions(QQueue<LStepExpressMotion>)));
   disconnect(this, SIGNAL(move_relative(double, double, double, double)), motion_, SLOT(moveRelative(double, double, double, double)));
   disconnect(motion_, SIGNAL(motion_finished()), this, SLOT(LowerPSSOntoSpacers_finish()));
 

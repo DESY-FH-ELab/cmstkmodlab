@@ -26,6 +26,8 @@ LStepExpressMotionManager::LStepExpressMotionManager(LStepExpressModel* model, Q
  , timer_(nullptr)
  , timer_enabled_(false)
 {
+  qRegisterMetaType<QQueue<LStepExpressMotion> >("QQueue<LStepExpressMotion>");
+
   if(model_ == nullptr)
   {
     NQLog("LStepExpressMotionManager", NQLog::Fatal) << "initialization error"
@@ -38,8 +40,6 @@ LStepExpressMotionManager::LStepExpressMotionManager(LStepExpressModel* model, Q
   timer_->setSingleShot(true);
 
   this->connect_model();
-
-  qRegisterMetaType<LStepExpressMotionManager::Motion>("LStepExpressMotionManager::Motion");
 }
 
 LStepExpressMotionManager::~LStepExpressMotionManager()
@@ -251,19 +251,6 @@ void LStepExpressMotionManager::appendMotions(const QQueue<LStepExpressMotion>& 
     this->run();
 }
 
-void LStepExpressMotionManager::moveRelative(const std::vector<LStepExpressMotionManager::Motion>& motions)
-{
-  for(const auto& mot : motions)
-  {
-    motions_.enqueue(LStepExpressMotion(mot.x(), mot.y(), mot.z(), mot.a(), false));
-  }
-
-  if(motions.size() > 0)
-  {
-    this->run();
-  }
-}
-
 void LStepExpressMotionManager::moveRelative(const std::vector<double>& values)
 {
     motions_.enqueue(LStepExpressMotion(values, false));
@@ -280,19 +267,6 @@ void LStepExpressMotionManager::moveRelative(const unsigned int axis, const doub
 {
     motions_.enqueue(LStepExpressMotion(axis, value, false));
     this->run();
-}
-
-void LStepExpressMotionManager::moveAbsolute(const std::vector<LStepExpressMotionManager::Motion>& motions)
-{
-  for(const auto& mot : motions)
-  {
-    motions_.enqueue(LStepExpressMotion(mot.x(), mot.y(), mot.z(), mot.a(), true));
-  }
-
-  if(motions.size() > 0)
-  {
-    this->run();
-  }
 }
 
 void LStepExpressMotionManager::moveAbsolute(const std::vector<double>& values)

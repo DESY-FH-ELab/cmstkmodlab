@@ -41,24 +41,6 @@ class LStepExpressMotionManager : public QObject
 
     void myMoveToThread(QThread*);
 
-    class Motion
-    {
-     public:
-      explicit Motion(const double X=0., const double Y=0., const double Z=0., const double A=0.): x_(X), y_(Y), z_(Z), a_(A) {}
-      virtual ~Motion() {}
-
-      double x() const { return x_; }
-      double y() const { return y_; }
-      double z() const { return z_; }
-      double a() const { return a_; }
-
-     protected:
-      double x_;
-      double y_;
-      double z_;
-      double a_;
-    };
-
   protected:
 
     void run();
@@ -75,7 +57,7 @@ class LStepExpressMotionManager : public QObject
 
     bool timer_enabled_;
 
-    const int motion_interval_sec_ = 2000;
+    const int motion_interval_sec_ = 1000;
 
     QQueue<LStepExpressMotion> motions_;
 
@@ -92,12 +74,10 @@ class LStepExpressMotionManager : public QObject
     void appendMotion(const LStepExpressMotion& motion);
     void appendMotions(const QQueue<LStepExpressMotion>& motions);
 
-    void moveRelative(const std::vector<Motion>&);
     void moveRelative(const std::vector<double>& values);
     void moveRelative(const double x=0.0, const double y=0.0, const double z=0.0, const double a=0.0);
     void moveRelative(const unsigned int axis, const double value);
 
-    void moveAbsolute(const std::vector<Motion>&);
     void moveAbsolute(const std::vector<double>& values);
     void moveAbsolute(const double x=0.0, const double y=0.0, const double z=0.0, const double a=0.0);
     void moveAbsolute(const unsigned int axis, const double value);

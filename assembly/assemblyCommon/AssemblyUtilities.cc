@@ -154,18 +154,27 @@ void assembly::rotation2D_deg(double& X_1, double& Y_1, const double angle_deg, 
   return;
 }
 
-std::vector<LStepExpressMotionManager::Motion> assembly::moveRelative_smartMotions(const double dx, const double dy, const double dz, const double da, const std::vector<double>& dz_steps)
+QQueue<LStepExpressMotion> assembly::moveRelative_smartMotions(const double dx, const double dy, const double dz, const double da, const std::vector<double>& dz_steps)
 {
-  std::vector<LStepExpressMotionManager::Motion> motions;
+  QQueue<LStepExpressMotion> motions;
+
+  const bool move_xya = ((dx != 0) && (dy != 0) && (da != 0));
 
   if(dz > 0.)
   {
-    motions.emplace_back(LStepExpressMotionManager::Motion( 0,  0, dz,  0));
-    motions.emplace_back(LStepExpressMotionManager::Motion(dx, dy,  0, da));
+    motions.enqueue(LStepExpressMotion(0, 0, dz, 0, false));
+
+    if(move_xya)
+    {
+      motions.enqueue(LStepExpressMotion(dx, dy, 0, da, false));
+    }
   }
   else
   {
-    motions.emplace_back(LStepExpressMotionManager::Motion(dx, dy,  0, da));
+    if(move_xya)
+    {
+      motions.enqueue(LStepExpressMotion(dx, dy, 0, da, false));
+    }
 
     std::vector<double> dz_vec;
     {
@@ -177,27 +186,20 @@ std::vector<LStepExpressMotionManager::Motion> assembly::moveRelative_smartMotio
 
         if(abs_dz_resid > istep_val)
         {
-          abs_dz_resid -= istep_val;
-          dz_vec.emplace_back(-istep_val);
+          abs_dz_resid +=  -istep_val;
+          dz_vec.push_back(-istep_val);
         }
       }
 
-      if(abs_dz_resid > 0.){ dz_vec.emplace_back(-abs_dz_resid); }
+      if(abs_dz_resid > 0.){ dz_vec.push_back(-abs_dz_resid); }
     }
 
     // reversed loop on dz movements
     for(unsigned int i_dz=dz_vec.size(); i_dz-- > 0;)
     {
-      motions.emplace_back(LStepExpressMotionManager::Motion(0,  0, dz_vec.at(i_dz), 0));
+      motions.enqueue(LStepExpressMotion(0, 0, dz_vec.at(i_dz), 0, false));
     }
   }
 
   return motions;
 }
-
-//!!  const double dx = (x - motion->get_position_X());
-//!!  const double dy = (y - motion->get_position_Y());
-//!!  const double dz = (z - motion->get_position_Z());
-//!!  const double da = (a - motion->get_position_A());
-//!!
-//!!  const auto rel_motions = assembly::moveRelative_smartMotions(dx, dy, dz, da, dz_steps);

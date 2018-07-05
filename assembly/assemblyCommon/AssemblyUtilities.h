@@ -56,7 +56,7 @@ namespace assembly {
   void rotation2D_deg(double&, double&, const double, const double, const double);
 
   // motion helpers
-  std::vector<LStepExpressMotionManager::Motion> moveRelative_smartMotions(const double, const double, const double, const double, const std::vector<double>&);
+  QQueue<LStepExpressMotion> moveRelative_smartMotions(const double, const double, const double, const double, const std::vector<double>&);
 
 }
 

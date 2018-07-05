@@ -106,7 +106,7 @@ class AssemblyAssembly : public QObject
   void move_absolute(const double, const double, const double, const double);
   void move_relative(const double, const double, const double, const double);
 
-  void move_relative(const std::vector<LStepExpressMotionManager::Motion>&);
+  void move_relative(const QQueue<LStepExpressMotion>&);
 
   void motion_timer_request();
 

@@ -48,8 +48,9 @@ AssemblyAssemblyView::AssemblyAssemblyView(const AssemblyAssembly* const assembl
   layout->addLayout(opts_lay);
 
   smartMove_checkbox_ = new QCheckBox(tr("Use SmartMove"));
-
   smartMove_checkbox_->setChecked(true);
+
+  opts_lay->addWidget(smartMove_checkbox_);
 
   connect(smartMove_checkbox_, SIGNAL(stateChanged(int)), assembly, SLOT(use_smartMove(int)));
   //// -------------------------------------------------
