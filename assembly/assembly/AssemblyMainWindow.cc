@@ -326,9 +326,9 @@ AssemblyMainWindow::AssemblyMainWindow(const unsigned int camera_ID, QWidget* pa
     main_tab->addTab(assembly_tab, tr("Module Assembly"));
     main_tab->addTab(controls_tab, tr("Manual Controls and Parameters"));
 
-    assembly_tab->setStyleSheet(assembly_tab->styleSheet()+" QTabBar::tab {width: 375px; }");
+    assembly_tab->setStyleSheet(assembly_tab->styleSheet()+" QTabBar::tab {width: 300px; }");
     controls_tab->setStyleSheet(controls_tab->styleSheet()+" QTabBar::tab {width: 375px; }");
-    main_tab    ->setStyleSheet(controls_tab->styleSheet()+" QTabBar::tab {width: 950px; }");
+    main_tab    ->setStyleSheet(    main_tab->styleSheet()+" QTabBar::tab {width: 950px; }");
 
     this->setCentralWidget(main_tab);
 
