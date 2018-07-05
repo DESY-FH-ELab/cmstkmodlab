@@ -82,6 +82,9 @@ class AssemblyAssembly : public QObject
   void ApplyPSPToPSSXYOffset_start();
   void ApplyPSPToPSSXYOffset_finish();
 
+  void LiftUpPickupTool_start();
+  void LiftUpPickupTool_finish();
+
   void LowerSpacersAndPSSOntoPSP_start();
   void LowerSpacersAndPSSOntoPSP_finish();
 
@@ -136,6 +139,8 @@ class AssemblyAssembly : public QObject
   void PickupSpacersAndPSS_finished();
 
   void ApplyPSPToPSSXYOffset_finished();
+
+  void LiftUpPickupTool_finished();
 
   void LowerSpacersAndPSSOntoPSP_finished();
 

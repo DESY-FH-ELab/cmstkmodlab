@@ -258,6 +258,17 @@ AssemblyAssemblyView::AssemblyAssemblyView(const AssemblyAssembly* const assembl
   }
   // ----------
 
+  // step: Dispense Fast-Curing Glue on Spacers
+  {
+    ++assembly_step_N_;
+
+    AssemblyAssemblyTextWidget* tmp_wid = new AssemblyAssemblyTextWidget;
+    tmp_wid->label()->setText(QString::number(assembly_step_N_));
+    tmp_wid->text() ->setText("Dispense Fast-Curing Glue on Spacers");
+    PSSToSpacers_lay->addWidget(tmp_wid);
+  }
+  // ----------
+
   // step: Lower PSS onto Spacers
   {
     ++assembly_step_N_;
@@ -392,6 +403,30 @@ AssemblyAssemblyView::AssemblyAssemblyView(const AssemblyAssembly* const assembl
     PSSToPSP_lay->addWidget(tmp_wid);
 
     connect(tmp_wid->button(), SIGNAL(clicked()), assembly, SLOT(ApplyPSPToPSSXYOffset_start()));
+  }
+  // ----------
+
+  // step: Lift Up Pickup-Tool For Glue Dispensing on Spacers
+  {
+    ++assembly_step_N_;
+
+    AssemblyAssemblyActionWidget* tmp_wid = new AssemblyAssemblyActionWidget;
+    tmp_wid->label() ->setText(QString::number(assembly_step_N_));
+    tmp_wid->button()->setText("Lift Up Pickup-Tool For Glue Dispensing on Spacers");
+    PSSToPSP_lay->addWidget(tmp_wid);
+
+    connect(tmp_wid->button(), SIGNAL(clicked()), assembly, SLOT(LiftUpPickupTool_start()));
+  }
+  // ----------
+
+  // step: Dispense Both Glues On Underside Of Spacers
+  {
+    ++assembly_step_N_;
+
+    AssemblyAssemblyTextWidget* tmp_wid = new AssemblyAssemblyTextWidget;
+    tmp_wid->label()->setText(QString::number(assembly_step_N_));
+    tmp_wid->text() ->setText("Dispense Both Glues On Underside Of Spacers");
+    PSSToPSP_lay->addWidget(tmp_wid);
   }
   // ----------
 

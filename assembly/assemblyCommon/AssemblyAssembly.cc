@@ -925,6 +925,50 @@ void AssemblyAssembly::PickupSpacersAndPSS_finish()
 // ----------------------------------------------------------------------------------------------------
 
 // ----------------------------------------------------------------------------------------------------
+// LiftUpPickupTool -----------------------------------------------------------------------------------
+// ----------------------------------------------------------------------------------------------------
+void AssemblyAssembly::LiftUpPickupTool_start()
+{
+  const bool valid_params = this->parameters()->update();
+
+  if(valid_params == false)
+  {
+    NQLog("AssemblyAssembly", NQLog::Fatal) << "LiftUpPickupTool_start"
+       << ": failed to update content of AssemblyParameters, no action taken";
+
+    return;
+  }
+
+  connect(this, SIGNAL(move_relative(double, double, double, double)), motion_, SLOT(moveRelative(double, double, double, double)));
+  connect(motion_, SIGNAL(motion_finished()), this, SLOT(LiftUpPickupTool_finish()));
+
+  const double dx0 =   0.0;
+  const double dy0 =   0.0;
+  const double dz0 = 200.0;
+  const double da0 =   0.0;
+
+  NQLog("AssemblyAssembly", NQLog::Spam) << "LiftUpPickupTool_start"
+     << ": emitting signal \"move_relative(" << dx0 << ", " << dy0 << ", " << dz0 << ", " << da0 << ")\"";
+
+  emit move_relative(dx0, dy0, dz0, da0);
+}
+
+void AssemblyAssembly::LiftUpPickupTool_finish()
+{
+  disconnect(this, SIGNAL(move_relative(double, double, double, double)), motion_, SLOT(moveRelative(double, double, double, double)));
+  disconnect(motion_, SIGNAL(motion_finished()), this, SLOT(LiftUpPickupTool_finish()));
+
+  NQLog("AssemblyAssembly", NQLog::Spam) << "LiftUpPickupTool_finish"
+     << ": emitting signal \"LiftUpPickupTool_finished\"";
+
+  emit LiftUpPickupTool_finished();
+
+  NQLog("AssemblyAssembly", NQLog::Message) << "LiftUpPickupTool_finish"
+     << ": assembly-step completed";
+}
+// ----------------------------------------------------------------------------------------------------
+
+// ----------------------------------------------------------------------------------------------------
 // PickupPSPAndPSS ------------------------------------------------------------------------------------
 // ----------------------------------------------------------------------------------------------------
 void AssemblyAssembly::PickupPSPAndPSS_start()
