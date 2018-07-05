@@ -415,7 +415,7 @@ AssemblyAssemblyView::AssemblyAssemblyView(const AssemblyAssembly* const assembl
     AssemblyAssemblyTextWidget* tmp_wid = new AssemblyAssemblyTextWidget;
     tmp_wid->label()->setText(QString::number(assembly_step_N_));
     tmp_wid->text() ->setText("Wait for Glue To Cure (approx. 10 min)");
-    PSSToSpacers_lay->addWidget(tmp_wid);
+    PSSToPSP_lay->addWidget(tmp_wid);
   }
   // ----------
 

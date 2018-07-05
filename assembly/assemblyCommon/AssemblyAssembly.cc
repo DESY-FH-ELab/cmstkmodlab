@@ -694,7 +694,13 @@ void AssemblyAssembly::LowerPSSOntoSpacers_start()
   const double dy0 = 0.0;
   const double da0 = 0.0;
 
-  const double dz0 = this->parameters()->get("PickupToolOnRotStage_Z") - this->parameters()->get("Height_SpacerSlots") + this->parameters()->get("Thickness_Spacer") + this->parameters()->get("Thickness_GlueLayer") - motion_->get_position_Z();
+  const double dz0 =
+    - motion_->get_position_Z()
+    + this->parameters()->get("Thickness_PSS")
+    + this->parameters()->get("Thickness_GlueLayer")
+    + this->parameters()->get("Thickness_Spacer") - this->parameters()->get("Height_SpacerSlots")
+    + this->parameters()->get("PickupToolOnRotStage_Z")
+  ;
 
   if(use_smartMove_)
   {
