@@ -23,16 +23,16 @@
 #include <QToolBox>
 #include <QLabel>
 
-AssemblyParametersView::AssemblyParametersView(QWidget* parent) :
-  QWidget(parent),
+AssemblyParametersView::AssemblyParametersView(QWidget* parent)
+ : QWidget(parent)
 
-  dime_wid_(nullptr),
-  posi_wid_(nullptr),
-  dist_wid_(nullptr),
-  imag_wid_(nullptr),
+ , dime_wid_(nullptr)
+ , posi_wid_(nullptr)
+ , dist_wid_(nullptr)
+ , imag_wid_(nullptr)
 
-  paramIO_button_read_ (nullptr),
-  paramIO_button_write_(nullptr)
+ , paramIO_button_read_ (nullptr)
+ , paramIO_button_write_(nullptr)
 {
   QVBoxLayout* layout = new QVBoxLayout;
   this->setLayout(layout);
@@ -110,6 +110,16 @@ AssemblyParametersView::AssemblyParametersView(QWidget* parent) :
   dime_lay->addWidget(new QLabel(tmp_des) , 5, 0, Qt::AlignLeft);
   dime_lay->addWidget(new QLabel(tr("dZ")), 5, 5, Qt::AlignRight);
   dime_lay->addWidget(this->get(tmp_tag)  , 5, 6, Qt::AlignRight);
+
+  // dimension: thickness of Vacuum Cups
+  tmp_tag = "Thickness_VacuumCups";
+  tmp_des = "Thickness of Vacuum Cups :";
+
+  map_lineEdit_[tmp_tag] = new QLineEdit(tr(""));
+
+  dime_lay->addWidget(new QLabel(tmp_des) , 0, 0, Qt::AlignLeft);
+  dime_lay->addWidget(new QLabel(tr("dZ")), 0, 5, Qt::AlignRight);
+  dime_lay->addWidget(this->get(tmp_tag)  , 0, 6, Qt::AlignRight);
 
   //// ---------------------
 

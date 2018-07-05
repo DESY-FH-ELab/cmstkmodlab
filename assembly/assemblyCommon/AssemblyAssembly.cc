@@ -481,8 +481,14 @@ void AssemblyAssembly::LowerPickupToolOntoPSS_start()
 
   const double dx0 = 0.0;
   const double dy0 = 0.0;
-  const double dz0 = (this->parameters()->get("PickupToolOnRotStage_Z") + this->parameters()->get("Thickness_PSS")) - motion_->get_position_Z();
   const double da0 = 0.0;
+
+  const double dz0 =
+    - motion_->get_position_Z()
+    + this->parameters()->get("Thickness_PSS")
+    + this->parameters()->get("Thickness_VacuumCups")
+    + this->parameters()->get("PickupToolOnRotStage_Z")
+  ;
 
   if(use_smartMove_)
   {
@@ -696,6 +702,7 @@ void AssemblyAssembly::LowerPSSOntoSpacers_start()
 
   const double dz0 =
     - motion_->get_position_Z()
+    + this->parameters()->get("Thickness_VacuumCups")
     + this->parameters()->get("Thickness_PSS")
     + this->parameters()->get("Thickness_GlueLayer")
     + this->parameters()->get("Thickness_Spacer") - this->parameters()->get("Height_SpacerSlots")
@@ -815,11 +822,13 @@ void AssemblyAssembly::LowerSpacersAndPSSOntoPSP_start()
 
   const double dz0 =
     - motion_->get_position_Z()
+    + this->parameters()->get("Thickness_VacuumCups")
     + this->parameters()->get("Thickness_PSS")
     + this->parameters()->get("Thickness_GlueLayer")
     + this->parameters()->get("Thickness_Spacer")
     + this->parameters()->get("Thickness_GlueLayer")
     + this->parameters()->get("Thickness_PSP")
+    + this->parameters()->get("Thickness_VacuumCups")
     + this->parameters()->get("PickupToolOnRotStage_Z")
   ;
 
