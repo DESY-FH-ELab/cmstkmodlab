@@ -32,7 +32,7 @@ AssemblyAssembly::AssemblyAssembly(const LStepExpressMotionManager* const motion
 
  , pickup_dZ_(0.)
 
- , use_smartMove_(true)
+ , use_smartMove_(false)
 {
   // validate pointers to controllers
   this->motion();
@@ -745,6 +745,127 @@ void AssemblyAssembly::LowerPSSOntoSpacers_finish()
 // ----------------------------------------------------------------------------------------------------
 
 // ----------------------------------------------------------------------------------------------------
+// ApplyPSPToPSSXYOffset ------------------------------------------------------------------------------
+// ----------------------------------------------------------------------------------------------------
+void AssemblyAssembly::ApplyPSPToPSSXYOffset_start()
+{
+  const bool valid_params = this->parameters()->update();
+
+  if(valid_params == false)
+  {
+    NQLog("AssemblyAssembly", NQLog::Fatal) << "ApplyPSPToPSSXYOffset_start"
+       << ": failed to update content of AssemblyParameters, no action taken";
+
+    return;
+  }
+
+  connect(this, SIGNAL(move_relative(double, double, double, double)), motion_, SLOT(moveRelative(double, double, double, double)));
+  connect(motion_, SIGNAL(motion_finished()), this, SLOT(ApplyPSPToPSSXYOffset_finish()));
+
+  const double dx0 = this->parameters()->get("FromPSPRefPointToPSSRefPoint_dX");
+  const double dy0 = this->parameters()->get("FromPSPRefPointToPSSRefPoint_dY");
+  const double dz0 = 0.0;
+  const double da0 = 0.0;
+
+  NQLog("AssemblyAssembly", NQLog::Spam) << "ApplyPSPToPSSXYOffset_start"
+     << ": emitting signal \"move_relative(" << dx0 << ", " << dy0 << ", " << dz0 << ", " << da0 << ")\"";
+
+  emit move_relative(dx0, dy0, dz0, da0);
+}
+
+void AssemblyAssembly::ApplyPSPToPSSXYOffset_finish()
+{
+  disconnect(this, SIGNAL(move_relative(double, double, double, double)), motion_, SLOT(moveRelative(double, double, double, double)));
+  disconnect(motion_, SIGNAL(motion_finished()), this, SLOT(ApplyPSPToPSSXYOffset_finish()));
+
+  NQLog("AssemblyAssembly", NQLog::Spam) << "ApplyPSPToPSSXYOffset_finish"
+     << ": emitting signal \"ApplyPSPToPSSXYOffset_finished\"";
+
+  emit ApplyPSPToPSSXYOffset_finished();
+
+  NQLog("AssemblyAssembly", NQLog::Message) << "ApplyPSPToPSSXYOffset_finish"
+     << ": assembly-step completed";
+}
+// ----------------------------------------------------------------------------------------------------
+
+// ----------------------------------------------------------------------------------------------------
+// LowerSpacersAndPSSOntoPSP --------------------------------------------------------------------------
+// ----------------------------------------------------------------------------------------------------
+void AssemblyAssembly::LowerSpacersAndPSSOntoPSP_start()
+{
+  const bool valid_params = this->parameters()->update();
+
+  if(valid_params == false)
+  {
+    NQLog("AssemblyAssembly", NQLog::Fatal) << "LowerSpacersAndPSSOntoPSP_start"
+       << ": failed to update content of AssemblyParameters, no action taken";
+
+    return;
+  }
+
+  const double dx0 = 0.0;
+  const double dy0 = 0.0;
+  const double da0 = 0.0;
+
+  const double dz0 =
+    - motion_->get_position_Z()
+    + this->parameters()->get("Thickness_PSS")
+    + this->parameters()->get("Thickness_GlueLayer")
+    + this->parameters()->get("Thickness_Spacer")
+    + this->parameters()->get("Thickness_GlueLayer")
+    + this->parameters()->get("Thickness_PSP")
+    + this->parameters()->get("PickupToolOnRotStage_Z")
+  ;
+
+  if(use_smartMove_)
+  {
+    if(smartMove_dZ_steps_.size() == 0)
+    {
+      NQLog("AssemblyAssembly", NQLog::Fatal) << "LowerSpacersAndPSSOntoPSP_start"
+         << ": smartMove mode enabled, but empty list of dZ steps, no action taken";
+
+      return;
+    }
+
+    connect(this, SIGNAL(move_relative(QQueue<LStepExpressMotion>)), motion_, SLOT(appendMotions(QQueue<LStepExpressMotion>)));
+    connect(motion_, SIGNAL(motion_finished()), this, SLOT(LowerSpacersAndPSSOntoPSP_finish()));
+
+    const QQueue<LStepExpressMotion> rel_motions = assembly::moveRelative_smartMotions(dx0, dy0, dz0, da0, smartMove_dZ_steps_);
+
+    NQLog("AssemblyAssembly", NQLog::Spam) << "LowerSpacersAndPSSOntoPSP_start"
+       << ": emitting signal \"move_relative(motions)";
+
+    emit move_relative(rel_motions);
+  }
+  else
+  {
+    connect(this, SIGNAL(move_relative(double, double, double, double)), motion_, SLOT(moveRelative(double, double, double, double)));
+    connect(motion_, SIGNAL(motion_finished()), this, SLOT(LowerSpacersAndPSSOntoPSP_finish()));
+
+    NQLog("AssemblyAssembly", NQLog::Spam) << "LowerSpacersAndPSSOntoPSP_start"
+       << ": emitting signal \"move_relative(" << dx0 << ", " << dy0 << ", " << dz0 << ", " << da0 << ")\"";
+
+    emit move_relative(dx0, dy0, dz0, da0);
+  }
+}
+
+void AssemblyAssembly::LowerSpacersAndPSSOntoPSP_finish()
+{
+  disconnect(this, SIGNAL(move_relative(QQueue<LStepExpressMotion>)), motion_, SLOT(appendMotions(QQueue<LStepExpressMotion>)));
+  disconnect(this, SIGNAL(move_relative(double, double, double, double)), motion_, SLOT(moveRelative(double, double, double, double)));
+  disconnect(motion_, SIGNAL(motion_finished()), this, SLOT(LowerSpacersAndPSSOntoPSP_finish()));
+
+  NQLog("AssemblyAssembly", NQLog::Spam) << "LowerSpacersAndPSSOntoPSP_finish"
+     << ": emitting signal \"LowerSpacersAndPSSOntoPSP_finished\"";
+
+  emit LowerSpacersAndPSSOntoPSP_finished();
+
+  NQLog("AssemblyAssembly", NQLog::Message) << "LowerSpacersAndPSSOntoPSP_finish"
+     << ": assembly-step completed";
+}
+// ----------------------------------------------------------------------------------------------------
+
+// ----------------------------------------------------------------------------------------------------
 // PickupSpacersAndPSS --------------------------------------------------------------------------------
 // ----------------------------------------------------------------------------------------------------
 void AssemblyAssembly::PickupSpacersAndPSS_start()
@@ -784,6 +905,50 @@ void AssemblyAssembly::PickupSpacersAndPSS_finish()
   emit PickupSpacersAndPSS_finished();
 
   NQLog("AssemblyAssembly", NQLog::Message) << "PickupSpacersAndPSS_finish"
+     << ": assembly-step completed";
+}
+// ----------------------------------------------------------------------------------------------------
+
+// ----------------------------------------------------------------------------------------------------
+// PickupPSPAndPSS ------------------------------------------------------------------------------------
+// ----------------------------------------------------------------------------------------------------
+void AssemblyAssembly::PickupPSPAndPSS_start()
+{
+  const bool valid_params = this->parameters()->update();
+
+  if(valid_params == false)
+  {
+    NQLog("AssemblyAssembly", NQLog::Fatal) << "PickupPSPAndPSS_start"
+       << ": failed to update content of AssemblyParameters, no action taken";
+
+    return;
+  }
+
+  connect(this, SIGNAL(move_relative(double, double, double, double)), motion_, SLOT(moveRelative(double, double, double, double)));
+  connect(motion_, SIGNAL(motion_finished()), this, SLOT(PickupPSPAndPSS_finish()));
+
+  const double dx0 = 0.0;
+  const double dy0 = 0.0;
+  const double dz0 = pickup_dZ_;
+  const double da0 = 0.0;
+
+  NQLog("AssemblyAssembly", NQLog::Spam) << "PickupPSPAndPSS_start"
+     << ": emitting signal \"move_relative(" << dx0 << ", " << dy0 << ", " << dz0 << ", " << da0 << ")\"";
+
+  emit move_relative(dx0, dy0, dz0, da0);
+}
+
+void AssemblyAssembly::PickupPSPAndPSS_finish()
+{
+  disconnect(this, SIGNAL(move_relative(double, double, double, double)), motion_, SLOT(moveRelative(double, double, double, double)));
+  disconnect(motion_, SIGNAL(motion_finished()), this, SLOT(PickupPSPAndPSS_finish()));
+
+  NQLog("AssemblyAssembly", NQLog::Spam) << "PickupPSPAndPSS_finish"
+     << ": emitting signal \"PickupPSPAndPSS_finished\"";
+
+  emit PickupPSPAndPSS_finished();
+
+  NQLog("AssemblyAssembly", NQLog::Message) << "PickupPSPAndPSS_finish"
      << ": assembly-step completed";
 }
 // ----------------------------------------------------------------------------------------------------

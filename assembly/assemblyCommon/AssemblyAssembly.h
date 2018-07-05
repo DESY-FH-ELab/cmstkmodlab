@@ -78,6 +78,15 @@ class AssemblyAssembly : public QObject
 
   void PickupSpacersAndPSS_start();
   void PickupSpacersAndPSS_finish();
+
+  void ApplyPSPToPSSXYOffset_start();
+  void ApplyPSPToPSSXYOffset_finish();
+
+  void LowerSpacersAndPSSOntoPSP_start();
+  void LowerSpacersAndPSSOntoPSP_finish();
+
+  void PickupPSPAndPSS_start();
+  void PickupPSPAndPSS_finish();
   // ---------
 
   // vacuum
@@ -125,6 +134,13 @@ class AssemblyAssembly : public QObject
   void LowerPSSOntoSpacers_finished();
 
   void PickupSpacersAndPSS_finished();
+
+  void ApplyPSPToPSSXYOffset_finished();
+
+  void LowerSpacersAndPSSOntoPSP_finished();
+
+  void PickupPSPAndPSS_finished();
+
   // ------
 
   // vacuum

@@ -48,7 +48,7 @@ AssemblyAssemblyView::AssemblyAssemblyView(const AssemblyAssembly* const assembl
   layout->addLayout(opts_lay);
 
   smartMove_checkbox_ = new QCheckBox(tr("Use SmartMove"));
-  smartMove_checkbox_->setChecked(true);
+  smartMove_checkbox_->setChecked(false);
 
   opts_lay->addWidget(smartMove_checkbox_);
 
@@ -158,19 +158,6 @@ AssemblyAssemblyView::AssemblyAssemblyView(const AssemblyAssembly* const assembl
   }
   // ----------
 
-  // step: Disable Sensor/Baseplate Vacuum
-  {
-    ++assembly_step_N_;
-
-    AssemblyAssemblyActionWidget* tmp_wid = new AssemblyAssemblyActionWidget;
-    tmp_wid->label() ->setText(QString::number(assembly_step_N_));
-    tmp_wid->button()->setText("Disable Sensor/Baseplate Vacuum");
-    PSSAlignm_lay->addWidget(tmp_wid);
-
-    connect(tmp_wid->button(), SIGNAL(clicked()), assembly, SLOT(DisableVacuumBaseplate_start()));
-  }
-  // ----------
-
   // step: Enable Pickup-Tool Vacuum
   {
     ++assembly_step_N_;
@@ -181,6 +168,19 @@ AssemblyAssemblyView::AssemblyAssemblyView(const AssemblyAssembly* const assembl
     PSSAlignm_lay->addWidget(tmp_wid);
 
     connect(tmp_wid->button(), SIGNAL(clicked()), assembly, SLOT(EnableVacuumPickupTool_start()));
+  }
+  // ----------
+
+  // step: Disable Sensor/Baseplate Vacuum
+  {
+    ++assembly_step_N_;
+
+    AssemblyAssemblyActionWidget* tmp_wid = new AssemblyAssemblyActionWidget;
+    tmp_wid->label() ->setText(QString::number(assembly_step_N_));
+    tmp_wid->button()->setText("Disable Sensor/Baseplate Vacuum");
+    PSSAlignm_lay->addWidget(tmp_wid);
+
+    connect(tmp_wid->button(), SIGNAL(clicked()), assembly, SLOT(DisableVacuumBaseplate_start()));
   }
   // ----------
 
@@ -320,6 +320,130 @@ AssemblyAssemblyView::AssemblyAssemblyView(const AssemblyAssembly* const assembl
   wid_PSSToPSP_->setLayout(PSSToPSP_lay);
 
   PSSToPSP_lay->addWidget(new QLabel);
+
+  // step: Place PSP on Assembly Platform
+  {
+    ++assembly_step_N_;
+
+    AssemblyAssemblyTextWidget* tmp_wid = new AssemblyAssemblyTextWidget;
+    tmp_wid->label()->setText(QString::number(assembly_step_N_));
+    tmp_wid->text() ->setText("Place PS-p on Assembly Platform");
+    PSSToPSP_lay->addWidget(tmp_wid);
+  }
+  // ----------
+
+  // step: Enable Sensor/Baseplate Vacuum
+  {
+    ++assembly_step_N_;
+
+    AssemblyAssemblyActionWidget* tmp_wid = new AssemblyAssemblyActionWidget;
+    tmp_wid->label() ->setText(QString::number(assembly_step_N_));
+    tmp_wid->button()->setText("Enable Sensor/Baseplate Vacuum");
+    PSSToPSP_lay->addWidget(tmp_wid);
+
+    connect(tmp_wid->button(), SIGNAL(clicked()), assembly, SLOT(EnableVacuumBaseplate_start()));
+  }
+  // ----------
+
+  // step: Go To Measurement Position on PSS
+  {
+    ++assembly_step_N_;
+
+    AssemblyAssemblyActionWidget* tmp_wid = new AssemblyAssemblyActionWidget;
+    tmp_wid->label() ->setText(QString::number(assembly_step_N_));
+    tmp_wid->button()->setText("Go To Measurement Position on PS-p");
+    PSSToPSP_lay->addWidget(tmp_wid);
+
+    connect(tmp_wid->button(), SIGNAL(clicked()), assembly, SLOT(GoToSensorMarkerPreAlignment_start()));
+  }
+  // ----------
+
+  // step: Align PSP to Motion Stage
+  {
+    ++assembly_step_N_;
+
+    AssemblyAssemblyTextWidget* tmp_wid = new AssemblyAssemblyTextWidget;
+    tmp_wid->label()->setText(QString::number(assembly_step_N_));
+    tmp_wid->text() ->setText("Align PS-p to Motion Stage");
+    PSSToPSP_lay->addWidget(tmp_wid);
+  }
+  // ----------
+
+  // step: Go From Sensor Marker Ref-Point to Pickup XY
+  {
+    ++assembly_step_N_;
+
+    AssemblyAssemblyActionWidget* tmp_wid = new AssemblyAssemblyActionWidget;
+    tmp_wid->label() ->setText(QString::number(assembly_step_N_));
+    tmp_wid->button()->setText("Go From Sensor Marker Ref-Point to Pickup XY");
+    PSSToPSP_lay->addWidget(tmp_wid);
+
+    connect(tmp_wid->button(), SIGNAL(clicked()), assembly, SLOT(GoFromSensorMarkerToPickupXY_start()));
+  }
+  // ----------
+
+  // step: Apply PSP-To-PSS XY Offset
+  {
+    ++assembly_step_N_;
+
+    AssemblyAssemblyActionWidget* tmp_wid = new AssemblyAssemblyActionWidget;
+    tmp_wid->label() ->setText(QString::number(assembly_step_N_));
+    tmp_wid->button()->setText("Apply PSP-To-PSS XY Offset");
+    PSSToPSP_lay->addWidget(tmp_wid);
+
+    connect(tmp_wid->button(), SIGNAL(clicked()), assembly, SLOT(ApplyPSPToPSSXYOffset_start()));
+  }
+  // ----------
+
+  // step: Lower Pickup-Tool onto PSP
+  {
+    ++assembly_step_N_;
+
+    AssemblyAssemblyActionWidget* tmp_wid = new AssemblyAssemblyActionWidget;
+    tmp_wid->label() ->setText(QString::number(assembly_step_N_));
+    tmp_wid->button()->setText("Lower Pickup-Tool onto PS-p");
+    PSSToPSP_lay->addWidget(tmp_wid);
+
+    connect(tmp_wid->button(), SIGNAL(clicked()), assembly, SLOT(LowerSpacersAndPSSOntoPSP_start()));
+  }
+  // ----------
+
+  // step: Wait For Glue To Cure
+  {
+    ++assembly_step_N_;
+
+    AssemblyAssemblyTextWidget* tmp_wid = new AssemblyAssemblyTextWidget;
+    tmp_wid->label()->setText(QString::number(assembly_step_N_));
+    tmp_wid->text() ->setText("Wait for Glue To Cure (approx. 10 min)");
+    PSSToSpacers_lay->addWidget(tmp_wid);
+  }
+  // ----------
+
+  // step: Disable Sensor/Baseplate Vacuum
+  {
+    ++assembly_step_N_;
+
+    AssemblyAssemblyActionWidget* tmp_wid = new AssemblyAssemblyActionWidget;
+    tmp_wid->label() ->setText(QString::number(assembly_step_N_));
+    tmp_wid->button()->setText("Disable Sensor/Baseplate Vacuum");
+    PSSToPSP_lay->addWidget(tmp_wid);
+
+    connect(tmp_wid->button(), SIGNAL(clicked()), assembly, SLOT(DisableVacuumBaseplate_start()));
+  }
+  // ----------
+
+  // step: Pick Up PSP+PSS
+  {
+    ++assembly_step_N_;
+
+    AssemblyAssemblyActionWidget* tmp_wid = new AssemblyAssemblyActionWidget;
+    tmp_wid->label() ->setText(QString::number(assembly_step_N_));
+    tmp_wid->button()->setText("Pick Up PS-p+PS-s");
+    PSSToPSP_lay->addWidget(tmp_wid);
+
+    connect(tmp_wid->button(), SIGNAL(clicked()), assembly, SLOT(PickupPSPAndPSS_start()));
+  }
+  // ----------
 
   PSSToPSP_lay->addStretch(1);
   //// -----------------------------------------------
