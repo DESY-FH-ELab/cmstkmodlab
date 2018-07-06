@@ -30,7 +30,8 @@ AssemblyAssembly::AssemblyAssembly(const LStepExpressMotionManager* const motion
  , vacuum_spacer_(0)
  , vacuum_basepl_(0)
 
- , pickup_dZ_(0.)
+ , pickup1_dZ_(0.)
+ , pickup2_dZ_(0.)
 
  , use_smartMove_(false)
 {
@@ -52,15 +53,25 @@ AssemblyAssembly::AssemblyAssembly(const LStepExpressMotionManager* const motion
   vacuum_spacer_ = config->getValue<int>("Vacuum_Spacers");
   vacuum_basepl_ = config->getValue<int>("Vacuum_Baseplate");
 
-  // positive double for vertical upward movement for pickup
-  pickup_dZ_ = config->getValue<double>("AssemblyAssembly_pickup_dZ");
+  // positive double(s) for vertical upward movement(s) for pickup
+  pickup1_dZ_ = config->getValue<double>("AssemblyAssembly_pickup1_dZ");
 
-  if(pickup_dZ_ <= 0.)
+  if(pickup1_dZ_ <= 0.)
   {
     NQLog("AssemblyAssembly", NQLog::Fatal)
-       << "invalid (non-positive) value for vertical upward movement for pickup (dZ=" << pickup_dZ_ << "), closing application";
+       << "invalid (non-positive) value for vertical upward movement for pickup #1 (dZ=" << pickup1_dZ_ << "), closing application";
 
-    assembly::kill_application(tr("[AssemblyAssembly]"), "Invalid (non-positive) value for vertical upward movement for pickup (dZ="+QString::number(pickup_dZ_)+"), closing application");
+    assembly::kill_application(tr("[AssemblyAssembly]"), "Invalid (non-positive) value for vertical upward movement for pickup #1 (dZ="+QString::number(pickup1_dZ_)+"), closing application");
+  }
+
+  pickup2_dZ_ = config->getValue<double>("AssemblyAssembly_pickup2_dZ");
+
+  if(pickup2_dZ_ <= 0.)
+  {
+    NQLog("AssemblyAssembly", NQLog::Fatal)
+       << "invalid (non-positive) value for vertical upward movement for pickup #2 (dZ=" << pickup2_dZ_ << "), closing application";
+
+    assembly::kill_application(tr("[AssemblyAssembly]"), "Invalid (non-positive) value for vertical upward movement for pickup #2 (dZ="+QString::number(pickup2_dZ_)+"), closing application");
   }
 
   // smartMove configuration
@@ -569,7 +580,7 @@ void AssemblyAssembly::PickupPSS_start()
 
   const double dx0 = 0.0;
   const double dy0 = 0.0;
-  const double dz0 = pickup_dZ_;
+  const double dz0 = pickup1_dZ_;
   const double da0 = 0.0;
 
   NQLog("AssemblyAssembly", NQLog::Spam) << "PickupPSS_start"
@@ -900,7 +911,7 @@ void AssemblyAssembly::PickupSpacersAndPSS_start()
 
   const double dx0 = 0.0;
   const double dy0 = 0.0;
-  const double dz0 = pickup_dZ_;
+  const double dz0 = pickup1_dZ_;
   const double da0 = 0.0;
 
   NQLog("AssemblyAssembly", NQLog::Spam) << "PickupSpacersAndPSS_start"
@@ -942,10 +953,10 @@ void AssemblyAssembly::LiftUpPickupTool_start()
   connect(this, SIGNAL(move_relative(double, double, double, double)), motion_, SLOT(moveRelative(double, double, double, double)));
   connect(motion_, SIGNAL(motion_finished()), this, SLOT(LiftUpPickupTool_finish()));
 
-  const double dx0 =   0.0;
-  const double dy0 =   0.0;
-  const double dz0 = 200.0;
-  const double da0 =   0.0;
+  const double dx0 = 0.0;
+  const double dy0 = 0.0;
+  const double dz0 = pickup2_dZ_;
+  const double da0 = 0.0;
 
   NQLog("AssemblyAssembly", NQLog::Spam) << "LiftUpPickupTool_start"
      << ": emitting signal \"move_relative(" << dx0 << ", " << dy0 << ", " << dz0 << ", " << da0 << ")\"";
@@ -988,7 +999,7 @@ void AssemblyAssembly::PickupPSPAndPSS_start()
 
   const double dx0 = 0.0;
   const double dy0 = 0.0;
-  const double dz0 = pickup_dZ_;
+  const double dz0 = pickup1_dZ_;
   const double da0 = 0.0;
 
   NQLog("AssemblyAssembly", NQLog::Spam) << "PickupPSPAndPSS_start"

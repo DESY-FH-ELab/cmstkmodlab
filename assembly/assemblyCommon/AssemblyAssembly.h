@@ -44,7 +44,8 @@ class AssemblyAssembly : public QObject
   int vacuum_spacer_;
   int vacuum_basepl_;
 
-  double pickup_dZ_;
+  double pickup1_dZ_;
+  double pickup2_dZ_;
 
   bool use_smartMove_;
 
