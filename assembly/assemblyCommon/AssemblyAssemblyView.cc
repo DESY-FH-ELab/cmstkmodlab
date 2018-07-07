@@ -325,7 +325,7 @@ AssemblyAssemblyView::AssemblyAssemblyView(const AssemblyAssembly* const assembl
   //// PSP To PSS ------------------------------------
   wid_PSSToPSP_ = new QWidget;
 
-  toolbox->addItem(wid_PSSToPSP_, tr("[3] PS-p Alignment and PS-p+PS-s Assembly"));
+  toolbox->addItem(wid_PSSToPSP_, tr("[3] PS-p Alignment and Sensor-To-Sensor Assembly"));
 
   QVBoxLayout* PSSToPSP_lay = new QVBoxLayout;
   wid_PSSToPSP_->setLayout(PSSToPSP_lay);
@@ -490,7 +490,7 @@ AssemblyAssemblyView::AssemblyAssemblyView(const AssemblyAssembly* const assembl
   //// PSP+PSS to Baseplate
   wid_PSToBasep_ = new QWidget;
 
-  toolbox->addItem(wid_PSToBasep_, tr("[4] PS-p+PS-s onto Baseplate"));
+  toolbox->addItem(wid_PSToBasep_, tr("[4] Sensor-To-Sensor Assembly onto Baseplate"));
 
   QVBoxLayout* PSToBasep_lay = new QVBoxLayout;
   wid_PSToBasep_->setLayout(PSToBasep_lay);
