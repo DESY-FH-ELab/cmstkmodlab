@@ -91,6 +91,15 @@ class AssemblyAssembly : public QObject
 
   void PickupPSPAndPSS_start();
   void PickupPSPAndPSS_finish();
+
+  void GoToBaseplateRefPoint_start();
+  void GoToBaseplateRefPoint_finish();
+
+  void GoFromBaseplateRefPointToBaseplateGluingXYPosition_start();
+  void GoFromBaseplateRefPointToBaseplateGluingXYPosition_finish();
+
+  void LowerSensorAssemblyOntoBaseplate_start();
+  void LowerSensorAssemblyOntoBaseplate_finish();
   // ---------
 
   // vacuum
@@ -147,6 +156,11 @@ class AssemblyAssembly : public QObject
 
   void PickupPSPAndPSS_finished();
 
+  void GoToBaseplateRefPoint_finished();
+
+  void GoFromBaseplateRefPointToBaseplateGluingXYPosition_finished();
+
+  void LowerSensorAssemblyOntoBaseplate_finished();
   // ------
 
   // vacuum

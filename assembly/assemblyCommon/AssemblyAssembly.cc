@@ -1022,3 +1022,172 @@ void AssemblyAssembly::PickupPSPAndPSS_finish()
      << ": assembly-step completed";
 }
 // ----------------------------------------------------------------------------------------------------
+
+// ----------------------------------------------------------------------------------------------------
+// GoToBaseplateRefPoint ---------------------------------------------------------------------------------
+// ----------------------------------------------------------------------------------------------------
+void AssemblyAssembly::GoToBaseplateRefPoint_start()
+{
+  const bool valid_params = this->parameters()->update();
+
+  if(valid_params == false)
+  {
+    NQLog("AssemblyAssembly", NQLog::Fatal) << "GoToBaseplateRefPoint_start"
+       << ": failed to update content of AssemblyParameters, no action taken";
+
+    return;
+  }
+
+  connect(this, SIGNAL(move_absolute(double, double, double, double)), motion_, SLOT(moveAbsolute(double, double, double, double)));
+  connect(motion_, SIGNAL(motion_finished()), this, SLOT(GoToBaseplateRefPoint_finish()));
+
+  const double x0 = this->parameters()->get("RefPointBaseplate_X");
+  const double y0 = this->parameters()->get("RefPointBaseplate_Y");
+  const double z0 = this->parameters()->get("RefPointBaseplate_Z");
+  const double a0 = this->parameters()->get("RefPointBaseplate_A");
+
+  NQLog("AssemblyAssembly", NQLog::Spam) << "GoToBaseplateRefPoint_start"
+     << ": emitting signal \"move_absolute(" << x0 << ", " << y0 << ", " << z0 << ", " << a0 << ")\"";
+
+  emit move_absolute(x0, y0, z0, a0);
+}
+
+void AssemblyAssembly::GoToBaseplateRefPoint_finish()
+{
+  disconnect(this, SIGNAL(move_absolute(double, double, double, double)), motion_, SLOT(moveAbsolute(double, double, double, double)));
+  disconnect(motion_, SIGNAL(motion_finished()), this, SLOT(GoToBaseplateRefPoint_finish()));
+
+  NQLog("AssemblyAssembly", NQLog::Spam) << "GoToBaseplateRefPoint_finish"
+     << ": emitting signal \"GoToBaseplateRefPoint_finished\"";
+
+  emit GoToBaseplateRefPoint_finished();
+
+  NQLog("AssemblyAssembly", NQLog::Message) << "GoToBaseplateRefPoint_finish"
+     << ": assembly-step completed";
+}
+// ----------------------------------------------------------------------------------------------------
+
+// ----------------------------------------------------------------------------------------------------
+// GoFromBaseplateRefPointToBaseplateGluingXYPosition -------------------------------------------------
+// ----------------------------------------------------------------------------------------------------
+void AssemblyAssembly::GoFromBaseplateRefPointToBaseplateGluingXYPosition_start()
+{
+  const bool valid_params = this->parameters()->update();
+
+  if(valid_params == false)
+  {
+    NQLog("AssemblyAssembly", NQLog::Fatal) << "GoFromBaseplateRefPointToBaseplateGluingXYPosition_start"
+       << ": failed to update content of AssemblyParameters, no action taken";
+
+    return;
+  }
+
+  connect(this, SIGNAL(move_relative(double, double, double, double)), motion_, SLOT(moveRelative(double, double, double, double)));
+  connect(motion_, SIGNAL(motion_finished()), this, SLOT(GoFromBaseplateRefPointToBaseplateGluingXYPosition_finish()));
+
+  const double dx0 = this->parameters()->get("FromBaseplateRefPointToPSPRefPoint_dX") + this->parameters()->get("FromPSPRefPointToPSSRefPoint_dX") +this->parameters()->get("FromSensorRefPointToSensorPickup_dX");
+  const double dy0 = this->parameters()->get("FromBaseplateRefPointToPSPRefPoint_dY") + this->parameters()->get("FromPSPRefPointToPSSRefPoint_dY") +this->parameters()->get("FromSensorRefPointToSensorPickup_dY");
+  const double dz0 = 0.0;
+  const double da0 = 0.0;
+
+  NQLog("AssemblyAssembly", NQLog::Spam) << "GoFromBaseplateRefPointToBaseplateGluingXYPosition_start"
+     << ": emitting signal \"move_relative(" << dx0 << ", " << dy0 << ", " << dz0 << ", " << da0 << ")\"";
+
+  emit move_relative(dx0, dy0, dz0, da0);
+}
+
+void AssemblyAssembly::GoFromBaseplateRefPointToBaseplateGluingXYPosition_finish()
+{
+  disconnect(this, SIGNAL(move_relative(double, double, double, double)), motion_, SLOT(moveRelative(double, double, double, double)));
+  disconnect(motion_, SIGNAL(motion_finished()), this, SLOT(GoFromBaseplateRefPointToBaseplateGluingXYPosition_finish()));
+
+  NQLog("AssemblyAssembly", NQLog::Spam) << "GoFromBaseplateRefPointToBaseplateGluingXYPosition_finish"
+     << ": emitting signal \"GoFromBaseplateRefPointToBaseplateGluingXYPosition_finished\"";
+
+  emit GoFromBaseplateRefPointToBaseplateGluingXYPosition_finished();
+
+  NQLog("AssemblyAssembly", NQLog::Message) << "GoFromBaseplateRefPointToBaseplateGluingXYPosition_finish"
+     << ": assembly-step completed";
+}
+// ----------------------------------------------------------------------------------------------------
+
+// ----------------------------------------------------------------------------------------------------
+// LowerSensorAssemblyOntoBaseplate -------------------------------------------------------------------
+// ----------------------------------------------------------------------------------------------------
+void AssemblyAssembly::LowerSensorAssemblyOntoBaseplate_start()
+{
+  const bool valid_params = this->parameters()->update();
+
+  if(valid_params == false)
+  {
+    NQLog("AssemblyAssembly", NQLog::Fatal) << "LowerSensorAssemblyOntoBaseplate_start"
+       << ": failed to update content of AssemblyParameters, no action taken";
+
+    return;
+  }
+
+  const double dx0 = 0.0;
+  const double dy0 = 0.0;
+  const double da0 = 0.0;
+
+  const double dz0 =
+    - motion_->get_position_Z()
+    + this->parameters()->get("Thickness_VacuumCups")
+    + this->parameters()->get("Thickness_PSS")
+    + this->parameters()->get("Thickness_GlueLayer")
+    + this->parameters()->get("Thickness_Spacer")
+    + this->parameters()->get("Thickness_GlueLayer")
+    + this->parameters()->get("Thickness_PSP")
+    + this->parameters()->get("Thickness_GlueLayer")
+    + this->parameters()->get("Thickness_Baseplate")
+    + this->parameters()->get("Thickness_VacuumCups")
+    + this->parameters()->get("PickupToolOnRotStage_Z")
+  ;
+
+  if(use_smartMove_)
+  {
+    if(smartMove_dZ_steps_.size() == 0)
+    {
+      NQLog("AssemblyAssembly", NQLog::Fatal) << "LowerSensorAssemblyOntoBaseplate_start"
+         << ": smartMove mode enabled, but empty list of dZ steps, no action taken";
+
+      return;
+    }
+
+    connect(this, SIGNAL(move_relative(QQueue<LStepExpressMotion>)), motion_, SLOT(appendMotions(QQueue<LStepExpressMotion>)));
+    connect(motion_, SIGNAL(motion_finished()), this, SLOT(LowerSensorAssemblyOntoBaseplate_finish()));
+
+    const QQueue<LStepExpressMotion> rel_motions = assembly::moveRelative_smartMotions(dx0, dy0, dz0, da0, smartMove_dZ_steps_);
+
+    NQLog("AssemblyAssembly", NQLog::Spam) << "LowerSensorAssemblyOntoBaseplate_start"
+       << ": emitting signal \"move_relative(motions)";
+
+    emit move_relative(rel_motions);
+  }
+  else
+  {
+    connect(this, SIGNAL(move_relative(double, double, double, double)), motion_, SLOT(moveRelative(double, double, double, double)));
+    connect(motion_, SIGNAL(motion_finished()), this, SLOT(LowerSensorAssemblyOntoBaseplate_finish()));
+
+    NQLog("AssemblyAssembly", NQLog::Spam) << "LowerSensorAssemblyOntoBaseplate_start"
+       << ": emitting signal \"move_relative(" << dx0 << ", " << dy0 << ", " << dz0 << ", " << da0 << ")\"";
+
+    emit move_relative(dx0, dy0, dz0, da0);
+  }
+}
+
+void AssemblyAssembly::LowerSensorAssemblyOntoBaseplate_finish()
+{
+  disconnect(this, SIGNAL(move_relative(QQueue<LStepExpressMotion>)), motion_, SLOT(appendMotions(QQueue<LStepExpressMotion>)));
+  disconnect(this, SIGNAL(move_relative(double, double, double, double)), motion_, SLOT(moveRelative(double, double, double, double)));
+  disconnect(motion_, SIGNAL(motion_finished()), this, SLOT(LowerSensorAssemblyOntoBaseplate_finish()));
+
+  NQLog("AssemblyAssembly", NQLog::Spam) << "LowerSensorAssemblyOntoBaseplate_finish"
+     << ": emitting signal \"LowerSensorAssemblyOntoBaseplate_finished\"";
+
+  emit LowerSensorAssemblyOntoBaseplate_finished();
+
+  NQLog("AssemblyAssembly", NQLog::Message) << "LowerSensorAssemblyOntoBaseplate_finish"
+     << ": assembly-step completed";
+}
+// ----------------------------------------------------------------------------------------------------

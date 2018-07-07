@@ -208,13 +208,13 @@ AssemblyAssemblyView::AssemblyAssemblyView(const AssemblyAssembly* const assembl
   QVBoxLayout* PSSToSpacers_lay = new QVBoxLayout;
   wid_PSSToSpacers_->setLayout(PSSToSpacers_lay);
 
-  // step: Put Spacers on Assembly Platform
+  // step: Place Spacers on Assembly Platform
   {
     ++assembly_step_N_;
 
     AssemblyAssemblyTextWidget* tmp_wid = new AssemblyAssemblyTextWidget;
     tmp_wid->label()->setText(QString::number(assembly_step_N_));
-    tmp_wid->text() ->setText("Put Spacers on Assembly Platform");
+    tmp_wid->text() ->setText("Place Spacers on Assembly Platform");
     PSSToSpacers_lay->addWidget(tmp_wid);
   }
   // ----------
@@ -406,6 +406,10 @@ AssemblyAssemblyView::AssemblyAssemblyView(const AssemblyAssembly* const assembl
   }
   // ----------
 
+  ////
+  //// This is where the steps for the Gluing Stage will be introduced
+  ////
+
   // step: Lift Up Pickup-Tool For Glue Dispensing on Spacers
   {
     ++assembly_step_N_;
@@ -491,109 +495,144 @@ AssemblyAssemblyView::AssemblyAssemblyView(const AssemblyAssembly* const assembl
   QVBoxLayout* PSToBasep_lay = new QVBoxLayout;
   wid_PSToBasep_->setLayout(PSToBasep_lay);
 
-  PSToBasep_lay->addWidget(new QLabel);
+  // step: Place Baseplate on Assembly Platform
+  {
+    ++assembly_step_N_;
+
+    AssemblyAssemblyTextWidget* tmp_wid = new AssemblyAssemblyTextWidget;
+    tmp_wid->label()->setText(QString::number(assembly_step_N_));
+    tmp_wid->text() ->setText("Place Baseplate on Assembly Platform");
+    PSToBasep_lay->addWidget(tmp_wid);
+  }
+  // ----------
+
+  // step: Enable Sensor/Baseplate Vacuum
+  {
+    ++assembly_step_N_;
+
+    AssemblyAssemblyActionWidget* tmp_wid = new AssemblyAssemblyActionWidget;
+    tmp_wid->label() ->setText(QString::number(assembly_step_N_));
+    tmp_wid->button()->setText("Enable Sensor/Baseplate Vacuum");
+    PSToBasep_lay->addWidget(tmp_wid);
+
+    connect(tmp_wid->button(), SIGNAL(clicked()), assembly, SLOT(EnableVacuumBaseplate_start()));
+  }
+  // ----------
+
+  // step: Go To XYZA Baseplate Ref-Point
+  {
+    ++assembly_step_N_;
+
+    AssemblyAssemblyActionWidget* tmp_wid = new AssemblyAssemblyActionWidget;
+    tmp_wid->label() ->setText(QString::number(assembly_step_N_));
+    tmp_wid->button()->setText("Go To XYZA Baseplate Ref-Point");
+    PSToBasep_lay->addWidget(tmp_wid);
+
+    connect(tmp_wid->button(), SIGNAL(clicked()), assembly, SLOT(GoToBaseplateRefPoint_start()));
+  }
+  // ----------
+
+  // step: Dispense Fast-Curing Glue on Baseplate
+  {
+    ++assembly_step_N_;
+
+    AssemblyAssemblyTextWidget* tmp_wid = new AssemblyAssemblyTextWidget;
+    tmp_wid->label()->setText(QString::number(assembly_step_N_));
+    tmp_wid->text() ->setText("Dispense Fast-Curing Glue on Baseplate");
+    PSToBasep_lay->addWidget(tmp_wid);
+  }
+  // ----------
+
+  // step: Go To XY Position To Glue Sensor Assembly To Baseplate
+  {
+    ++assembly_step_N_;
+
+    AssemblyAssemblyActionWidget* tmp_wid = new AssemblyAssemblyActionWidget;
+    tmp_wid->label() ->setText(QString::number(assembly_step_N_));
+    tmp_wid->button()->setText("Go To XY Position To Glue Sensor Assembly To Baseplate");
+    PSToBasep_lay->addWidget(tmp_wid);
+
+    connect(tmp_wid->button(), SIGNAL(clicked()), assembly, SLOT(GoFromBaseplateRefPointToBaseplateGluingXYPosition_start()));
+  }
+  // ----------
+
+  // step: Lower Sensor Assembly onto Baseplate
+  {
+    ++assembly_step_N_;
+
+    AssemblyAssemblyActionWidget* tmp_wid = new AssemblyAssemblyActionWidget;
+    tmp_wid->label() ->setText(QString::number(assembly_step_N_));
+    tmp_wid->button()->setText("Lower Sensor Assembly onto Baseplate");
+    PSToBasep_lay->addWidget(tmp_wid);
+
+    connect(tmp_wid->button(), SIGNAL(clicked()), assembly, SLOT(LowerSensorAssemblyOntoBaseplate_start()));
+  }
+  // ----------
+
+  // step: Wait For Glue To Cure
+  {
+    ++assembly_step_N_;
+
+    AssemblyAssemblyTextWidget* tmp_wid = new AssemblyAssemblyTextWidget;
+    tmp_wid->label()->setText(QString::number(assembly_step_N_));
+    tmp_wid->text() ->setText("Wait for Glue To Cure (approx. 10 min)");
+    PSToBasep_lay->addWidget(tmp_wid);
+  }
+  // ----------
+
+  // step: Disable Pickup-Tool Vacuum
+  {
+    ++assembly_step_N_;
+
+    AssemblyAssemblyActionWidget* tmp_wid = new AssemblyAssemblyActionWidget;
+    tmp_wid->label() ->setText(QString::number(assembly_step_N_));
+    tmp_wid->button()->setText("Disable Pickup-Tool Vacuum");
+    PSToBasep_lay->addWidget(tmp_wid);
+
+    connect(tmp_wid->button(), SIGNAL(clicked()), assembly, SLOT(DisableVacuumPickupTool_start()));
+  }
+  // ----------
+
+  // step: Lift Up Pickup-Tool
+  {
+    ++assembly_step_N_;
+
+    AssemblyAssemblyActionWidget* tmp_wid = new AssemblyAssemblyActionWidget;
+    tmp_wid->label() ->setText(QString::number(assembly_step_N_));
+    tmp_wid->button()->setText("Lift Up Pickup-Tool");
+    PSToBasep_lay->addWidget(tmp_wid);
+
+    connect(tmp_wid->button(), SIGNAL(clicked()), assembly, SLOT(LiftUpPickupTool_start()));
+  }
+  // ----------
+
+  // step: Disable Sensor/Baseplate Vacuum
+  {
+    ++assembly_step_N_;
+
+    AssemblyAssemblyActionWidget* tmp_wid = new AssemblyAssemblyActionWidget;
+    tmp_wid->label() ->setText(QString::number(assembly_step_N_));
+    tmp_wid->button()->setText("Disable Sensor/Baseplate Vacuum");
+    PSToBasep_lay->addWidget(tmp_wid);
+
+    connect(tmp_wid->button(), SIGNAL(clicked()), assembly, SLOT(DisableVacuumBaseplate_start()));
+  }
+  // ----------
+
+  // step: Remove PS Module from Assembly Platform
+  {
+    ++assembly_step_N_;
+
+    AssemblyAssemblyTextWidget* tmp_wid = new AssemblyAssemblyTextWidget;
+    tmp_wid->label()->setText(QString::number(assembly_step_N_));
+    tmp_wid->text() ->setText("Remove PS Module from Assembly Platform");
+    PSToBasep_lay->addWidget(tmp_wid);
+  }
+  // ----------
 
   PSToBasep_lay->addStretch(1);
   //// -----------------------------------------------
 
-  //  1 arrange assembly platform for PSS alignment
-
-  //  2 place PSS on assembly platform
-
-  //  3 enable sensor vacuum
-
-  //  4 go to measurement position on PSS
-
-  //  5 align PSS to motion-stage X-axis
-
-  //  6 pick up PSS
-
-  //  7 put  spacers on platform
-
-  //  8 lock spacers on platform (vacuum)
-
-  //  9 move to XYA for spacers gluing
-
-  // 10 put down PSS on to spacers
-
-  // 11 wait for glue to cure
-
-  // 12 disable spacers vacuum
-
-  // 13 move up pickup tool (dZ=+50cm)
-
-  // -----------------------------------------------
-  // -----------------------------------------------
-
-  // 14 arrange assembly platform for PSP alignment
-  ++assembly_step_N_;
-  // ----------
-
-  // 15 place PSP on assembly platform
-  ++assembly_step_N_;
-  // ----------
-
-  // 16 enable sensor vacuum
-  ++assembly_step_N_;
-  // ----------
-
-  // 17 go to measurement position on PSP
-  ++assembly_step_N_;
-  // ----------
-
-  // 18 align PSP to motion-stage X-axis
-  ++assembly_step_N_;
-  // ----------
-
-  // 19 move up pickup tool (dZ=+50.00cm)
-  ++assembly_step_N_;
-  // ----------
-
-  //// this is where the steps for the
-  //// gluing stage will be introduced
-
-  // 20 apply glue on underside of spacers
-  ++assembly_step_N_;
-  // ----------
-
-  // 21 move to XY for PSS onto PSP
-  ++assembly_step_N_;
-  // ----------
-
-  // 22 lower PSS onto PSP
-  ++assembly_step_N_;
-  // ----------
-
-  // 23 wait for glue to cure
-  ++assembly_step_N_;
-  // ----------
-
-  // 24 pick up PSP+PSS
-  ++assembly_step_N_;
-  // ----------
-
-  // -----------------------------------------------
-  // -----------------------------------------------
-
-  // 25 move to XYA to place PSP+PSS onto baseplate
-  ++assembly_step_N_;
-  // ----------
-
-  // 26 switch on baseplate vacuum (after dispensing glue on the baseplate and positioning it on the assembly platform)
-  ++assembly_step_N_;
-  // ----------
-
-  // 27 lower PSP+PSS onto baseplate
-  ++assembly_step_N_;
-  // ----------
-
-  // 28 wait for glue to cure
-  ++assembly_step_N_;
-  // ----------
-
-  // 29 finish assembly procedure: release pickup vacuum, release baseplate vacuum, move up pickup tool (dZ=+50.00cm)
-  ++assembly_step_N_;
-  // ----------
 }
 // ====================================================================================================
 
