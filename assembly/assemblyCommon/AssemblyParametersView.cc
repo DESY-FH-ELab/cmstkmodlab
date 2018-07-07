@@ -117,9 +117,9 @@ AssemblyParametersView::AssemblyParametersView(QWidget* parent)
 
   map_lineEdit_[tmp_tag] = new QLineEdit(tr(""));
 
-  dime_lay->addWidget(new QLabel(tmp_des) , 0, 0, Qt::AlignLeft);
-  dime_lay->addWidget(new QLabel(tr("dZ")), 0, 5, Qt::AlignRight);
-  dime_lay->addWidget(this->get(tmp_tag)  , 0, 6, Qt::AlignRight);
+  dime_lay->addWidget(new QLabel(tmp_des) , 6, 0, Qt::AlignLeft);
+  dime_lay->addWidget(new QLabel(tr("dZ")), 6, 5, Qt::AlignRight);
+  dime_lay->addWidget(this->get(tmp_tag)  , 6, 6, Qt::AlignRight);
 
   //// ---------------------
 
