@@ -120,7 +120,7 @@ void AssemblyParameters::write_to_file(const QString& f_path)
       strs << i_pair.second;
 
       out
-        << qSetFieldWidth(30) << left  << QString::fromStdString(i_pair.first)
+        << qSetFieldWidth(40) << left  << QString::fromStdString(i_pair.first)
         << qSetFieldWidth(20) << right << QString::fromStdString(strs.str())
         << "\n";
     }
