@@ -330,8 +330,6 @@ AssemblyAssemblyView::AssemblyAssemblyView(const AssemblyAssembly* const assembl
   QVBoxLayout* PSSToPSP_lay = new QVBoxLayout;
   wid_PSSToPSP_->setLayout(PSSToPSP_lay);
 
-  PSSToPSP_lay->addWidget(new QLabel);
-
   // step: Place PSP on Assembly Platform
   {
     ++assembly_step_N_;
