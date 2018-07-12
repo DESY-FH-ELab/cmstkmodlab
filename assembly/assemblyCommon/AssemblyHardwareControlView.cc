@@ -62,7 +62,7 @@ AssemblyHardwareControlView::AssemblyHardwareControlView(const LStepExpressMotio
   // widget: Move Absolute
   QVBoxLayout* l_moveabs = new QVBoxLayout;
 
-  w_moveabs_ = new AssemblyMoveWidget(manager_, "Move Absolute [mm]");
+  w_moveabs_ = new AssemblyMoveWidget(manager_, "Move Absolute [mm, deg]");
   w_moveabs_->setToolTip("Moves to (x,y,z,a) position in the motion stage reference frame");
   w_moveabs_->use_move_relative(false);
   w_moveabs_->button()->setStyleSheet(QString::fromUtf8("text-align:center;"));
@@ -75,7 +75,7 @@ AssemblyHardwareControlView::AssemblyHardwareControlView(const LStepExpressMotio
   // widget: Move Relative
   QVBoxLayout* l_moverel = new QVBoxLayout;
 
-  w_moverel_ = new AssemblyMoveWidget(manager_, "Move Relative [mm]");
+  w_moverel_ = new AssemblyMoveWidget(manager_, "Move Relative [mm, deg]");
   w_moverel_->setToolTip("Relative movement (x,y,z,a) with respect to current position");
   w_moverel_->use_move_relative(true);
   w_moverel_->button()->setStyleSheet(QString::fromUtf8("text-align:center;"));
