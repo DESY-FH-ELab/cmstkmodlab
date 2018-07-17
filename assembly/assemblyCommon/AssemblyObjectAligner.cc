@@ -19,17 +19,18 @@
 
 #include <cmath>
 
-AssemblyObjectAligner::AssemblyObjectAligner(const LStepExpressMotionManager* const motion_manager, QObject* parent) :
-  QObject(parent),
-  motion_manager_(motion_manager),
-  motion_manager_enabled_(false)
+AssemblyObjectAligner::AssemblyObjectAligner(const LStepExpressMotionManager* const motion_manager, QObject* parent)
+ : QObject(parent)
+
+ , motion_manager_(motion_manager)
+ , motion_manager_enabled_(false)
 {
   if(motion_manager_ == nullptr)
   {
     NQLog("AssemblyObjectAligner", NQLog::Fatal) << "initialization error"
        << ": null pointer to LStepExpressMotionManager object, exiting constructor";
 
-    return;
+    assembly::kill_application(tr("[AssemblyObjectAligner]"), tr("Null pointer to LStepExpressMotionManager. Aborting Application."));
   }
 
   qRegisterMetaType<AssemblyObjectAligner::Configuration>("AssemblyObjectAligner::Configuration");
@@ -40,7 +41,7 @@ AssemblyObjectAligner::AssemblyObjectAligner(const LStepExpressMotionManager* co
     NQLog("AssemblyObjectAligner", NQLog::Fatal)
        << "ApplicationConfig::instance() not initialized (null pointer), stopped constructor";
 
-    return;
+    assembly::kill_application(tr("[AssemblyObjectAligner]"), tr("Null pointer to ApplicationConfig. Aborting Application."));
   }
 
   // maximum angular difference acceptable not to trigger iterative procedure for alignment

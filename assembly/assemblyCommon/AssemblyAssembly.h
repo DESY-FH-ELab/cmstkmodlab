@@ -18,6 +18,7 @@
 #include <LStepExpressMotionManager.h>
 #include <ConradManager.h>
 
+#include <AssemblySmartMotionManager.h>
 #include <AssemblyParameters.h>
 
 #include <vector>
@@ -27,7 +28,7 @@ class AssemblyAssembly : public QObject
  Q_OBJECT
 
  public:
-  explicit AssemblyAssembly(const LStepExpressMotionManager* const, const ConradManager* const, QObject* parent=nullptr);
+  explicit AssemblyAssembly(const LStepExpressMotionManager* const, const ConradManager* const, const AssemblySmartMotionManager* const smart_motion=nullptr, QObject* parent=nullptr);
   virtual ~AssemblyAssembly() {}
 
   AssemblyParameters* parameters() const;
@@ -35,10 +36,14 @@ class AssemblyAssembly : public QObject
   const LStepExpressMotionManager* motion() const;
   const ConradManager*             vacuum() const;
 
+  const AssemblySmartMotionManager* smart_motion() const;
+
  protected:
 
   const LStepExpressMotionManager* const motion_;
   const ConradManager*             const vacuum_;
+
+  const AssemblySmartMotionManager* const smart_motion_;
 
   int vacuum_pickup_;
   int vacuum_spacer_;
@@ -48,8 +53,6 @@ class AssemblyAssembly : public QObject
   double pickup2_dZ_;
 
   bool use_smartMove_;
-
-  std::vector<double> smartMove_dZ_steps_;
 
  public slots:
 
@@ -125,12 +128,8 @@ class AssemblyAssembly : public QObject
  signals:
 
   // motion
-  void move_absolute(const double, const double, const double, const double);
-  void move_relative(const double, const double, const double, const double);
-
-  void move_relative(const QQueue<LStepExpressMotion>&);
-
-  void motion_timer_request();
+  void move_absolute_request(const double, const double, const double, const double);
+  void move_relative_request(const double, const double, const double, const double);
 
   void GoToSensorMarkerPreAlignment_finished();
 

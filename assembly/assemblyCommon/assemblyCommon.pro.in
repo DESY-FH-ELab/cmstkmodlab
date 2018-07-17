@@ -100,6 +100,7 @@ HEADERS += AssemblyVUEyeCamera.h \
            AssemblyMultiPickupTesterWidget.h \
            AssemblyPositionsRegistryWidget.h \
            AssemblyToolboxView.h \
+           AssemblySmartMotionManager.h \
            AssemblyParameters.h \
            AssemblyParametersView.h \
            AssemblyVacuumWidget.h \
@@ -159,6 +160,7 @@ SOURCES += AssemblyVUEyeCamera.cc \
            AssemblyMultiPickupTesterWidget.cc \
            AssemblyPositionsRegistryWidget.cc \
            AssemblyToolboxView.cc \
+           AssemblySmartMotionManager.cc \
            AssemblyParameters.cc \
            AssemblyParametersView.cc \
            AssemblyVacuumWidget.cc \

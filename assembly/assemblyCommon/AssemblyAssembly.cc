@@ -20,11 +20,12 @@
 
 #include <QStringList>
 
-AssemblyAssembly::AssemblyAssembly(const LStepExpressMotionManager* const motion, const ConradManager* const vacuum, QObject* parent)
+AssemblyAssembly::AssemblyAssembly(const LStepExpressMotionManager* const motion, const ConradManager* const vacuum, const AssemblySmartMotionManager* const smart_motion, QObject* parent)
  : QObject(parent)
 
  , motion_(motion)
  , vacuum_(vacuum)
+ , smart_motion_(smart_motion)
 
  , vacuum_pickup_(0)
  , vacuum_spacer_(0)
@@ -73,41 +74,6 @@ AssemblyAssembly::AssemblyAssembly(const LStepExpressMotionManager* const motion
 
     assembly::kill_application(tr("[AssemblyAssembly]"), "Invalid (non-positive) value for vertical upward movement for pickup #2 (dZ="+QString::number(pickup2_dZ_)+"), closing application");
   }
-
-  // smartMove configuration
-  const std::string smartMove_dZ_steps_str = config->getValue<std::string>("AssemblyAssembly_smartMove_dZ_steps", "");
-
-  const QStringList smartMove_dZ_steps_strlist = QString::fromStdString(smartMove_dZ_steps_str).split(",");
-
-  smartMove_dZ_steps_.clear();
-
-  for(const auto& step_qstr : smartMove_dZ_steps_strlist)
-  {
-    bool valid_step(false);
-
-    const double step_val = step_qstr.toDouble(&valid_step);
-
-    if(valid_step == false)
-    {
-      NQLog("AssemblyAssembly", NQLog::Fatal)
-         << ": invalid format for smartMove step (" << step_qstr << "), closing application";
-
-      assembly::kill_application(tr("[AssemblyAssembly]"), "invalid format for smartMove step ("+step_qstr+"), closing application");
-    }
-
-    if(step_val <= 0.)
-    {
-      NQLog("AssemblyAssembly", NQLog::Fatal)
-         << ": invalid (non-positive) value for smartMove step (" << step_qstr << "), closing application";
-
-      assembly::kill_application(tr("[AssemblyAssembly]"), "Invalid (non-positive) value for smartMove step ("+step_qstr+"), closing application");
-    }
-
-    smartMove_dZ_steps_.emplace_back(step_val);
-  }
-
-  NQLog("AssemblyAssembly", NQLog::Message)
-     << "loaded " << smartMove_dZ_steps_.size() << " smartMove steps (\"" << smartMove_dZ_steps_str << "\")";
 }
 
 const LStepExpressMotionManager* AssemblyAssembly::motion() const
@@ -155,10 +121,20 @@ void AssemblyAssembly::use_smartMove(const int state)
 {
   if(state == 2)
   {
-    NQLog("AssemblyAssembly", NQLog::Message) << "use_smartMove(" << state << ")"
-       << ": smartMove option switched ON";
+    if(smart_motion_ == nullptr)
+    {
+      NQLog("AssemblyAssembly", NQLog::Warning) << "use_smartMove(" << state << ")"
+         << ": attemptin to enable smartMove option, but pointer to AssemblySmartMotionManager is invalid (NULL), smartMove option will stay OFF";
 
-    use_smartMove_ = true;
+      use_smartMove_ = false;
+    }
+    else
+    {
+      NQLog("AssemblyAssembly", NQLog::Message) << "use_smartMove(" << state << ")"
+         << ": smartMove option switched ON";
+
+      use_smartMove_ = true;
+    }
   }
   else if(state == 0)
   {
@@ -192,7 +168,7 @@ void AssemblyAssembly::GoToSensorMarkerPreAlignment_start()
     return;
   }
 
-  connect(this, SIGNAL(move_absolute(double, double, double, double)), motion_, SLOT(moveAbsolute(double, double, double, double)));
+  connect(this, SIGNAL(move_absolute_request(double, double, double, double)), motion_, SLOT(moveAbsolute(double, double, double, double)));
   connect(motion_, SIGNAL(motion_finished()), this, SLOT(GoToSensorMarkerPreAlignment_finish()));
 
   const double x0 = this->parameters()->get("RefPointSensor_X");
@@ -201,14 +177,14 @@ void AssemblyAssembly::GoToSensorMarkerPreAlignment_start()
   const double a0 = this->parameters()->get("RefPointSensor_A");
 
   NQLog("AssemblyAssembly", NQLog::Spam) << "GoToSensorMarkerPreAlignment_start"
-     << ": emitting signal \"move_absolute(" << x0 << ", " << y0 << ", " << z0 << ", " << a0 << ")\"";
+     << ": emitting signal \"move_absolute_request(" << x0 << ", " << y0 << ", " << z0 << ", " << a0 << ")\"";
 
-  emit move_absolute(x0, y0, z0, a0);
+  emit move_absolute_request(x0, y0, z0, a0);
 }
 
 void AssemblyAssembly::GoToSensorMarkerPreAlignment_finish()
 {
-  disconnect(this, SIGNAL(move_absolute(double, double, double, double)), motion_, SLOT(moveAbsolute(double, double, double, double)));
+  disconnect(this, SIGNAL(move_absolute_request(double, double, double, double)), motion_, SLOT(moveAbsolute(double, double, double, double)));
   disconnect(motion_, SIGNAL(motion_finished()), this, SLOT(GoToSensorMarkerPreAlignment_finish()));
 
   NQLog("AssemblyAssembly", NQLog::Spam) << "GoToSensorMarkerPreAlignment_finish"
@@ -446,7 +422,7 @@ void AssemblyAssembly::GoFromSensorMarkerToPickupXY_start()
     return;
   }
 
-  connect(this, SIGNAL(move_relative(double, double, double, double)), motion_, SLOT(moveRelative(double, double, double, double)));
+  connect(this, SIGNAL(move_relative_request(double, double, double, double)), motion_, SLOT(moveRelative(double, double, double, double)));
   connect(motion_, SIGNAL(motion_finished()), this, SLOT(GoFromSensorMarkerToPickupXY_finish()));
 
   const double dx0 = this->parameters()->get("FromSensorRefPointToSensorPickup_dX");
@@ -455,14 +431,14 @@ void AssemblyAssembly::GoFromSensorMarkerToPickupXY_start()
   const double da0 = 0.0;
 
   NQLog("AssemblyAssembly", NQLog::Spam) << "GoFromSensorMarkerToPickupXY_start"
-     << ": emitting signal \"move_relative(" << dx0 << ", " << dy0 << ", " << dz0 << ", " << da0 << ")\"";
+     << ": emitting signal \"move_relative_request(" << dx0 << ", " << dy0 << ", " << dz0 << ", " << da0 << ")\"";
 
-  emit move_relative(dx0, dy0, dz0, da0);
+  emit move_relative_request(dx0, dy0, dz0, da0);
 }
 
 void AssemblyAssembly::GoFromSensorMarkerToPickupXY_finish()
 {
-  disconnect(this, SIGNAL(move_relative(double, double, double, double)), motion_, SLOT(moveRelative(double, double, double, double)));
+  disconnect(this, SIGNAL(move_relative_request(double, double, double, double)), motion_, SLOT(moveRelative(double, double, double, double)));
   disconnect(motion_, SIGNAL(motion_finished()), this, SLOT(GoFromSensorMarkerToPickupXY_finish()));
 
   NQLog("AssemblyAssembly", NQLog::Spam) << "GoFromSensorMarkerToPickupXY_finish"
@@ -503,51 +479,27 @@ void AssemblyAssembly::LowerPickupToolOntoPSS_start()
 
   if(use_smartMove_)
   {
-    if(smartMove_dZ_steps_.size() == 0)
-    {
-      NQLog("AssemblyAssembly", NQLog::Fatal) << "LowerPickupToolOntoPSS_start"
-         << ": smartMove mode enabled, but empty list of dZ steps, no action taken";
-
-      return;
-    }
-
-    connect(this, SIGNAL(motion_timer_request()), motion_, SLOT(enable_timer()));
-    connect(motion_, SIGNAL(motion_finished()), motion_, SLOT(disable_timer()));
-
-    NQLog("AssemblyAssembly", NQLog::Spam) << "LowerPickupToolOntoPSS_start"
-       << ": emitting signal \"motion_timer_request";
-
-    emit motion_timer_request();
-
-    connect(this, SIGNAL(move_relative(QQueue<LStepExpressMotion>)), motion_, SLOT(appendMotions(QQueue<LStepExpressMotion>)));
-    connect(motion_, SIGNAL(motion_finished()), this, SLOT(LowerPickupToolOntoPSS_finish()));
-
-    const QQueue<LStepExpressMotion> rel_motions = assembly::moveRelative_smartMotions(dx0, dy0, dz0, da0, smartMove_dZ_steps_);
-
-    NQLog("AssemblyAssembly", NQLog::Spam) << "LowerPickupToolOntoPSS_start"
-       << ": emitting signal \"move_relative(motions)\"";
-
-    emit move_relative(rel_motions);
+    connect(this, SIGNAL(move_relative_request(double, double, double, double)), smart_motion_, SLOT(move_relative(double, double, double, double)));
+    connect(smart_motion_, SIGNAL(motion_completed()), this, SLOT(LowerPickupToolOntoPSS_finish()));
   }
   else
   {
-    connect(this, SIGNAL(move_relative(double, double, double, double)), motion_, SLOT(moveRelative(double, double, double, double)));
+    connect(this, SIGNAL(move_relative_request(double, double, double, double)), motion_, SLOT(moveRelative(double, double, double, double)));
     connect(motion_, SIGNAL(motion_finished()), this, SLOT(LowerPickupToolOntoPSS_finish()));
-
-    NQLog("AssemblyAssembly", NQLog::Spam) << "LowerPickupToolOntoPSS_start"
-       << ": emitting signal \"move_relative(" << dx0 << ", " << dy0 << ", " << dz0 << ", " << da0 << ")\"";
-
-    emit move_relative(dx0, dy0, dz0, da0);
   }
+
+  NQLog("AssemblyAssembly", NQLog::Spam) << "LowerPickupToolOntoPSS_start"
+     << ": emitting signal \"move_relative_request(" << dx0 << ", " << dy0 << ", " << dz0 << ", " << da0 << ")\"";
+
+  emit move_relative_request(dx0, dy0, dz0, da0);
 }
 
 void AssemblyAssembly::LowerPickupToolOntoPSS_finish()
 {
-  disconnect(this, SIGNAL(motion_timer_request()), motion_, SLOT(enable_timer()));
-  disconnect(motion_, SIGNAL(motion_finished()), motion_, SLOT(disable_timer()));
+  disconnect(this, SIGNAL(move_relative_request(double, double, double, double)), smart_motion_, SLOT(move_relative(double, double, double, double)));
+  disconnect(smart_motion_, SIGNAL(motion_completed()), this, SLOT(LowerPickupToolOntoPSS_finish()));
 
-  disconnect(this, SIGNAL(move_relative(QQueue<LStepExpressMotion>)), motion_, SLOT(appendMotions(QQueue<LStepExpressMotion>)));
-  disconnect(this, SIGNAL(move_relative(double, double, double, double)), motion_, SLOT(moveRelative(double, double, double, double)));
+  disconnect(this, SIGNAL(move_relative_request(double, double, double, double)), motion_, SLOT(moveRelative(double, double, double, double)));
   disconnect(motion_, SIGNAL(motion_finished()), this, SLOT(LowerPickupToolOntoPSS_finish()));
 
   NQLog("AssemblyAssembly", NQLog::Spam) << "LowerPickupToolOntoPSS_finish"
@@ -575,7 +527,7 @@ void AssemblyAssembly::PickupPSS_start()
     return;
   }
 
-  connect(this, SIGNAL(move_relative(double, double, double, double)), motion_, SLOT(moveRelative(double, double, double, double)));
+  connect(this, SIGNAL(move_relative_request(double, double, double, double)), motion_, SLOT(moveRelative(double, double, double, double)));
   connect(motion_, SIGNAL(motion_finished()), this, SLOT(PickupPSS_finish()));
 
   const double dx0 = 0.0;
@@ -584,14 +536,14 @@ void AssemblyAssembly::PickupPSS_start()
   const double da0 = 0.0;
 
   NQLog("AssemblyAssembly", NQLog::Spam) << "PickupPSS_start"
-     << ": emitting signal \"move_relative(" << dx0 << ", " << dy0 << ", " << dz0 << ", " << da0 << ")\"";
+     << ": emitting signal \"move_relative_request(" << dx0 << ", " << dy0 << ", " << dz0 << ", " << da0 << ")\"";
 
-  emit move_relative(dx0, dy0, dz0, da0);
+  emit move_relative_request(dx0, dy0, dz0, da0);
 }
 
 void AssemblyAssembly::PickupPSS_finish()
 {
-  disconnect(this, SIGNAL(move_relative(double, double, double, double)), motion_, SLOT(moveRelative(double, double, double, double)));
+  disconnect(this, SIGNAL(move_relative_request(double, double, double, double)), motion_, SLOT(moveRelative(double, double, double, double)));
   disconnect(motion_, SIGNAL(motion_finished()), this, SLOT(PickupPSS_finish()));
 
   NQLog("AssemblyAssembly", NQLog::Spam) << "PickupPSS_finish"
@@ -619,7 +571,7 @@ void AssemblyAssembly::GoToSpacerRefPoint_start()
     return;
   }
 
-  connect(this, SIGNAL(move_absolute(double, double, double, double)), motion_, SLOT(moveAbsolute(double, double, double, double)));
+  connect(this, SIGNAL(move_absolute_request(double, double, double, double)), motion_, SLOT(moveAbsolute(double, double, double, double)));
   connect(motion_, SIGNAL(motion_finished()), this, SLOT(GoToSpacerRefPoint_finish()));
 
   const double x0 = this->parameters()->get("RefPointSpacer_X");
@@ -628,14 +580,14 @@ void AssemblyAssembly::GoToSpacerRefPoint_start()
   const double a0 = this->parameters()->get("RefPointSpacer_A");
 
   NQLog("AssemblyAssembly", NQLog::Spam) << "GoToSpacerRefPoint_start"
-     << ": emitting signal \"move_absolute(" << x0 << ", " << y0 << ", " << z0 << ", " << a0 << ")\"";
+     << ": emitting signal \"move_absolute_request(" << x0 << ", " << y0 << ", " << z0 << ", " << a0 << ")\"";
 
-  emit move_absolute(x0, y0, z0, a0);
+  emit move_absolute_request(x0, y0, z0, a0);
 }
 
 void AssemblyAssembly::GoToSpacerRefPoint_finish()
 {
-  disconnect(this, SIGNAL(move_absolute(double, double, double, double)), motion_, SLOT(moveAbsolute(double, double, double, double)));
+  disconnect(this, SIGNAL(move_absolute_request(double, double, double, double)), motion_, SLOT(moveAbsolute(double, double, double, double)));
   disconnect(motion_, SIGNAL(motion_finished()), this, SLOT(GoToSpacerRefPoint_finish()));
 
   NQLog("AssemblyAssembly", NQLog::Spam) << "GoToSpacerRefPoint_finish"
@@ -663,7 +615,7 @@ void AssemblyAssembly::GoFromSpacerRefPointToSpacerGluingXYPosition_start()
     return;
   }
 
-  connect(this, SIGNAL(move_relative(double, double, double, double)), motion_, SLOT(moveRelative(double, double, double, double)));
+  connect(this, SIGNAL(move_relative_request(double, double, double, double)), motion_, SLOT(moveRelative(double, double, double, double)));
   connect(motion_, SIGNAL(motion_finished()), this, SLOT(GoFromSpacerRefPointToSpacerGluingXYPosition_finish()));
 
   const double dx0 = this->parameters()->get("FromSpacerRefPointToSensorRefPoint_dX") + this->parameters()->get("FromSensorRefPointToSensorPickup_dX");
@@ -672,14 +624,14 @@ void AssemblyAssembly::GoFromSpacerRefPointToSpacerGluingXYPosition_start()
   const double da0 = 0.0;
 
   NQLog("AssemblyAssembly", NQLog::Spam) << "GoFromSpacerRefPointToSpacerGluingXYPosition_start"
-     << ": emitting signal \"move_relative(" << dx0 << ", " << dy0 << ", " << dz0 << ", " << da0 << ")\"";
+     << ": emitting signal \"move_relative_request(" << dx0 << ", " << dy0 << ", " << dz0 << ", " << da0 << ")\"";
 
-  emit move_relative(dx0, dy0, dz0, da0);
+  emit move_relative_request(dx0, dy0, dz0, da0);
 }
 
 void AssemblyAssembly::GoFromSpacerRefPointToSpacerGluingXYPosition_finish()
 {
-  disconnect(this, SIGNAL(move_relative(double, double, double, double)), motion_, SLOT(moveRelative(double, double, double, double)));
+  disconnect(this, SIGNAL(move_relative_request(double, double, double, double)), motion_, SLOT(moveRelative(double, double, double, double)));
   disconnect(motion_, SIGNAL(motion_finished()), this, SLOT(GoFromSpacerRefPointToSpacerGluingXYPosition_finish()));
 
   NQLog("AssemblyAssembly", NQLog::Spam) << "GoFromSpacerRefPointToSpacerGluingXYPosition_finish"
@@ -722,40 +674,27 @@ void AssemblyAssembly::LowerPSSOntoSpacers_start()
 
   if(use_smartMove_)
   {
-    if(smartMove_dZ_steps_.size() == 0)
-    {
-      NQLog("AssemblyAssembly", NQLog::Fatal) << "LowerPSSOntoSpacers_start"
-         << ": smartMove mode enabled, but empty list of dZ steps, no action taken";
-
-      return;
-    }
-
-    connect(this, SIGNAL(move_relative(QQueue<LStepExpressMotion>)), motion_, SLOT(appendMotions(QQueue<LStepExpressMotion>)));
-    connect(motion_, SIGNAL(motion_finished()), this, SLOT(LowerPSSOntoSpacers_finish()));
-
-    const QQueue<LStepExpressMotion> rel_motions = assembly::moveRelative_smartMotions(dx0, dy0, dz0, da0, smartMove_dZ_steps_);
-
-    NQLog("AssemblyAssembly", NQLog::Spam) << "LowerPSSOntoSpacers_start"
-       << ": emitting signal \"move_relative(motions)";
-
-    emit move_relative(rel_motions);
+    connect(this, SIGNAL(move_relative_request(double, double, double, double)), smart_motion_, SLOT(move_relative(double, double, double, double)));
+    connect(smart_motion_, SIGNAL(motion_completed()), this, SLOT(LowerPSSOntoSpacers_finish()));
   }
   else
   {
-    connect(this, SIGNAL(move_relative(double, double, double, double)), motion_, SLOT(moveRelative(double, double, double, double)));
+    connect(this, SIGNAL(move_relative_request(double, double, double, double)), motion_, SLOT(moveRelative(double, double, double, double)));
     connect(motion_, SIGNAL(motion_finished()), this, SLOT(LowerPSSOntoSpacers_finish()));
-
-    NQLog("AssemblyAssembly", NQLog::Spam) << "LowerPSSOntoSpacers_start"
-       << ": emitting signal \"move_relative(" << dx0 << ", " << dy0 << ", " << dz0 << ", " << da0 << ")\"";
-
-    emit move_relative(dx0, dy0, dz0, da0);
   }
+
+  NQLog("AssemblyAssembly", NQLog::Spam) << "LowerPSSOntoSpacers_start"
+     << ": emitting signal \"move_relative_request(" << dx0 << ", " << dy0 << ", " << dz0 << ", " << da0 << ")\"";
+
+  emit move_relative_request(dx0, dy0, dz0, da0);
 }
 
 void AssemblyAssembly::LowerPSSOntoSpacers_finish()
 {
-  disconnect(this, SIGNAL(move_relative(QQueue<LStepExpressMotion>)), motion_, SLOT(appendMotions(QQueue<LStepExpressMotion>)));
-  disconnect(this, SIGNAL(move_relative(double, double, double, double)), motion_, SLOT(moveRelative(double, double, double, double)));
+  disconnect(this, SIGNAL(move_relative_request(double, double, double, double)), smart_motion_, SLOT(move_relative(double, double, double, double)));
+  disconnect(smart_motion_, SIGNAL(motion_completed()), this, SLOT(LowerPSSOntoSpacers_finish()));
+
+  disconnect(this, SIGNAL(move_relative_request(double, double, double, double)), motion_, SLOT(moveRelative(double, double, double, double)));
   disconnect(motion_, SIGNAL(motion_finished()), this, SLOT(LowerPSSOntoSpacers_finish()));
 
   NQLog("AssemblyAssembly", NQLog::Spam) << "LowerPSSOntoSpacers_finish"
@@ -783,7 +722,7 @@ void AssemblyAssembly::ApplyPSPToPSSXYOffset_start()
     return;
   }
 
-  connect(this, SIGNAL(move_relative(double, double, double, double)), motion_, SLOT(moveRelative(double, double, double, double)));
+  connect(this, SIGNAL(move_relative_request(double, double, double, double)), motion_, SLOT(moveRelative(double, double, double, double)));
   connect(motion_, SIGNAL(motion_finished()), this, SLOT(ApplyPSPToPSSXYOffset_finish()));
 
   const double dx0 = this->parameters()->get("FromPSPRefPointToPSSRefPoint_dX");
@@ -792,14 +731,14 @@ void AssemblyAssembly::ApplyPSPToPSSXYOffset_start()
   const double da0 = 0.0;
 
   NQLog("AssemblyAssembly", NQLog::Spam) << "ApplyPSPToPSSXYOffset_start"
-     << ": emitting signal \"move_relative(" << dx0 << ", " << dy0 << ", " << dz0 << ", " << da0 << ")\"";
+     << ": emitting signal \"move_relative_request(" << dx0 << ", " << dy0 << ", " << dz0 << ", " << da0 << ")\"";
 
-  emit move_relative(dx0, dy0, dz0, da0);
+  emit move_relative_request(dx0, dy0, dz0, da0);
 }
 
 void AssemblyAssembly::ApplyPSPToPSSXYOffset_finish()
 {
-  disconnect(this, SIGNAL(move_relative(double, double, double, double)), motion_, SLOT(moveRelative(double, double, double, double)));
+  disconnect(this, SIGNAL(move_relative_request(double, double, double, double)), motion_, SLOT(moveRelative(double, double, double, double)));
   disconnect(motion_, SIGNAL(motion_finished()), this, SLOT(ApplyPSPToPSSXYOffset_finish()));
 
   NQLog("AssemblyAssembly", NQLog::Spam) << "ApplyPSPToPSSXYOffset_finish"
@@ -845,40 +784,27 @@ void AssemblyAssembly::LowerSpacersAndPSSOntoPSP_start()
 
   if(use_smartMove_)
   {
-    if(smartMove_dZ_steps_.size() == 0)
-    {
-      NQLog("AssemblyAssembly", NQLog::Fatal) << "LowerSpacersAndPSSOntoPSP_start"
-         << ": smartMove mode enabled, but empty list of dZ steps, no action taken";
-
-      return;
-    }
-
-    connect(this, SIGNAL(move_relative(QQueue<LStepExpressMotion>)), motion_, SLOT(appendMotions(QQueue<LStepExpressMotion>)));
-    connect(motion_, SIGNAL(motion_finished()), this, SLOT(LowerSpacersAndPSSOntoPSP_finish()));
-
-    const QQueue<LStepExpressMotion> rel_motions = assembly::moveRelative_smartMotions(dx0, dy0, dz0, da0, smartMove_dZ_steps_);
-
-    NQLog("AssemblyAssembly", NQLog::Spam) << "LowerSpacersAndPSSOntoPSP_start"
-       << ": emitting signal \"move_relative(motions)";
-
-    emit move_relative(rel_motions);
+    connect(this, SIGNAL(move_relative_request(double, double, double, double)), smart_motion_, SLOT(move_relative(double, double, double, double)));
+    connect(smart_motion_, SIGNAL(motion_completed()), this, SLOT(LowerSpacersAndPSSOntoPSP_finish()));
   }
   else
   {
-    connect(this, SIGNAL(move_relative(double, double, double, double)), motion_, SLOT(moveRelative(double, double, double, double)));
+    connect(this, SIGNAL(move_relative_request(double, double, double, double)), motion_, SLOT(moveRelative(double, double, double, double)));
     connect(motion_, SIGNAL(motion_finished()), this, SLOT(LowerSpacersAndPSSOntoPSP_finish()));
-
-    NQLog("AssemblyAssembly", NQLog::Spam) << "LowerSpacersAndPSSOntoPSP_start"
-       << ": emitting signal \"move_relative(" << dx0 << ", " << dy0 << ", " << dz0 << ", " << da0 << ")\"";
-
-    emit move_relative(dx0, dy0, dz0, da0);
   }
+
+  NQLog("AssemblyAssembly", NQLog::Spam) << "LowerSpacersAndPSSOntoPSP_start"
+     << ": emitting signal \"move_relative_request(" << dx0 << ", " << dy0 << ", " << dz0 << ", " << da0 << ")\"";
+
+  emit move_relative_request(dx0, dy0, dz0, da0);
 }
 
 void AssemblyAssembly::LowerSpacersAndPSSOntoPSP_finish()
 {
-  disconnect(this, SIGNAL(move_relative(QQueue<LStepExpressMotion>)), motion_, SLOT(appendMotions(QQueue<LStepExpressMotion>)));
-  disconnect(this, SIGNAL(move_relative(double, double, double, double)), motion_, SLOT(moveRelative(double, double, double, double)));
+  disconnect(this, SIGNAL(move_relative_request(double, double, double, double)), smart_motion_, SLOT(move_relative(double, double, double, double)));
+  disconnect(smart_motion_, SIGNAL(motion_completed()), this, SLOT(LowerSpacersAndPSSOntoPSP_finish()));
+
+  disconnect(this, SIGNAL(move_relative_request(double, double, double, double)), motion_, SLOT(moveRelative(double, double, double, double)));
   disconnect(motion_, SIGNAL(motion_finished()), this, SLOT(LowerSpacersAndPSSOntoPSP_finish()));
 
   NQLog("AssemblyAssembly", NQLog::Spam) << "LowerSpacersAndPSSOntoPSP_finish"
@@ -906,7 +832,7 @@ void AssemblyAssembly::PickupSpacersAndPSS_start()
     return;
   }
 
-  connect(this, SIGNAL(move_relative(double, double, double, double)), motion_, SLOT(moveRelative(double, double, double, double)));
+  connect(this, SIGNAL(move_relative_request(double, double, double, double)), motion_, SLOT(moveRelative(double, double, double, double)));
   connect(motion_, SIGNAL(motion_finished()), this, SLOT(PickupSpacersAndPSS_finish()));
 
   const double dx0 = 0.0;
@@ -915,14 +841,14 @@ void AssemblyAssembly::PickupSpacersAndPSS_start()
   const double da0 = 0.0;
 
   NQLog("AssemblyAssembly", NQLog::Spam) << "PickupSpacersAndPSS_start"
-     << ": emitting signal \"move_relative(" << dx0 << ", " << dy0 << ", " << dz0 << ", " << da0 << ")\"";
+     << ": emitting signal \"move_relative_request(" << dx0 << ", " << dy0 << ", " << dz0 << ", " << da0 << ")\"";
 
-  emit move_relative(dx0, dy0, dz0, da0);
+  emit move_relative_request(dx0, dy0, dz0, da0);
 }
 
 void AssemblyAssembly::PickupSpacersAndPSS_finish()
 {
-  disconnect(this, SIGNAL(move_relative(double, double, double, double)), motion_, SLOT(moveRelative(double, double, double, double)));
+  disconnect(this, SIGNAL(move_relative_request(double, double, double, double)), motion_, SLOT(moveRelative(double, double, double, double)));
   disconnect(motion_, SIGNAL(motion_finished()), this, SLOT(PickupSpacersAndPSS_finish()));
 
   NQLog("AssemblyAssembly", NQLog::Spam) << "PickupSpacersAndPSS_finish"
@@ -950,7 +876,7 @@ void AssemblyAssembly::LiftUpPickupTool_start()
     return;
   }
 
-  connect(this, SIGNAL(move_relative(double, double, double, double)), motion_, SLOT(moveRelative(double, double, double, double)));
+  connect(this, SIGNAL(move_relative_request(double, double, double, double)), motion_, SLOT(moveRelative(double, double, double, double)));
   connect(motion_, SIGNAL(motion_finished()), this, SLOT(LiftUpPickupTool_finish()));
 
   const double dx0 = 0.0;
@@ -959,14 +885,14 @@ void AssemblyAssembly::LiftUpPickupTool_start()
   const double da0 = 0.0;
 
   NQLog("AssemblyAssembly", NQLog::Spam) << "LiftUpPickupTool_start"
-     << ": emitting signal \"move_relative(" << dx0 << ", " << dy0 << ", " << dz0 << ", " << da0 << ")\"";
+     << ": emitting signal \"move_relative_request(" << dx0 << ", " << dy0 << ", " << dz0 << ", " << da0 << ")\"";
 
-  emit move_relative(dx0, dy0, dz0, da0);
+  emit move_relative_request(dx0, dy0, dz0, da0);
 }
 
 void AssemblyAssembly::LiftUpPickupTool_finish()
 {
-  disconnect(this, SIGNAL(move_relative(double, double, double, double)), motion_, SLOT(moveRelative(double, double, double, double)));
+  disconnect(this, SIGNAL(move_relative_request(double, double, double, double)), motion_, SLOT(moveRelative(double, double, double, double)));
   disconnect(motion_, SIGNAL(motion_finished()), this, SLOT(LiftUpPickupTool_finish()));
 
   NQLog("AssemblyAssembly", NQLog::Spam) << "LiftUpPickupTool_finish"
@@ -994,7 +920,7 @@ void AssemblyAssembly::PickupPSPAndPSS_start()
     return;
   }
 
-  connect(this, SIGNAL(move_relative(double, double, double, double)), motion_, SLOT(moveRelative(double, double, double, double)));
+  connect(this, SIGNAL(move_relative_request(double, double, double, double)), motion_, SLOT(moveRelative(double, double, double, double)));
   connect(motion_, SIGNAL(motion_finished()), this, SLOT(PickupPSPAndPSS_finish()));
 
   const double dx0 = 0.0;
@@ -1003,14 +929,14 @@ void AssemblyAssembly::PickupPSPAndPSS_start()
   const double da0 = 0.0;
 
   NQLog("AssemblyAssembly", NQLog::Spam) << "PickupPSPAndPSS_start"
-     << ": emitting signal \"move_relative(" << dx0 << ", " << dy0 << ", " << dz0 << ", " << da0 << ")\"";
+     << ": emitting signal \"move_relative_request(" << dx0 << ", " << dy0 << ", " << dz0 << ", " << da0 << ")\"";
 
-  emit move_relative(dx0, dy0, dz0, da0);
+  emit move_relative_request(dx0, dy0, dz0, da0);
 }
 
 void AssemblyAssembly::PickupPSPAndPSS_finish()
 {
-  disconnect(this, SIGNAL(move_relative(double, double, double, double)), motion_, SLOT(moveRelative(double, double, double, double)));
+  disconnect(this, SIGNAL(move_relative_request(double, double, double, double)), motion_, SLOT(moveRelative(double, double, double, double)));
   disconnect(motion_, SIGNAL(motion_finished()), this, SLOT(PickupPSPAndPSS_finish()));
 
   NQLog("AssemblyAssembly", NQLog::Spam) << "PickupPSPAndPSS_finish"
@@ -1038,7 +964,7 @@ void AssemblyAssembly::GoToBaseplateRefPoint_start()
     return;
   }
 
-  connect(this, SIGNAL(move_absolute(double, double, double, double)), motion_, SLOT(moveAbsolute(double, double, double, double)));
+  connect(this, SIGNAL(move_absolute_request(double, double, double, double)), motion_, SLOT(moveAbsolute(double, double, double, double)));
   connect(motion_, SIGNAL(motion_finished()), this, SLOT(GoToBaseplateRefPoint_finish()));
 
   const double x0 = this->parameters()->get("RefPointBaseplate_X");
@@ -1047,14 +973,14 @@ void AssemblyAssembly::GoToBaseplateRefPoint_start()
   const double a0 = this->parameters()->get("RefPointBaseplate_A");
 
   NQLog("AssemblyAssembly", NQLog::Spam) << "GoToBaseplateRefPoint_start"
-     << ": emitting signal \"move_absolute(" << x0 << ", " << y0 << ", " << z0 << ", " << a0 << ")\"";
+     << ": emitting signal \"move_absolute_request(" << x0 << ", " << y0 << ", " << z0 << ", " << a0 << ")\"";
 
-  emit move_absolute(x0, y0, z0, a0);
+  emit move_absolute_request(x0, y0, z0, a0);
 }
 
 void AssemblyAssembly::GoToBaseplateRefPoint_finish()
 {
-  disconnect(this, SIGNAL(move_absolute(double, double, double, double)), motion_, SLOT(moveAbsolute(double, double, double, double)));
+  disconnect(this, SIGNAL(move_absolute_request(double, double, double, double)), motion_, SLOT(moveAbsolute(double, double, double, double)));
   disconnect(motion_, SIGNAL(motion_finished()), this, SLOT(GoToBaseplateRefPoint_finish()));
 
   NQLog("AssemblyAssembly", NQLog::Spam) << "GoToBaseplateRefPoint_finish"
@@ -1082,7 +1008,7 @@ void AssemblyAssembly::GoFromBaseplateRefPointToBaseplateGluingXYPosition_start(
     return;
   }
 
-  connect(this, SIGNAL(move_relative(double, double, double, double)), motion_, SLOT(moveRelative(double, double, double, double)));
+  connect(this, SIGNAL(move_relative_request(double, double, double, double)), motion_, SLOT(moveRelative(double, double, double, double)));
   connect(motion_, SIGNAL(motion_finished()), this, SLOT(GoFromBaseplateRefPointToBaseplateGluingXYPosition_finish()));
 
   const double dx0 = this->parameters()->get("FromBaseplateRefPointToPSPRefPoint_dX") + this->parameters()->get("FromPSPRefPointToPSSRefPoint_dX") +this->parameters()->get("FromSensorRefPointToSensorPickup_dX");
@@ -1091,14 +1017,14 @@ void AssemblyAssembly::GoFromBaseplateRefPointToBaseplateGluingXYPosition_start(
   const double da0 = 0.0;
 
   NQLog("AssemblyAssembly", NQLog::Spam) << "GoFromBaseplateRefPointToBaseplateGluingXYPosition_start"
-     << ": emitting signal \"move_relative(" << dx0 << ", " << dy0 << ", " << dz0 << ", " << da0 << ")\"";
+     << ": emitting signal \"move_relative_request(" << dx0 << ", " << dy0 << ", " << dz0 << ", " << da0 << ")\"";
 
-  emit move_relative(dx0, dy0, dz0, da0);
+  emit move_relative_request(dx0, dy0, dz0, da0);
 }
 
 void AssemblyAssembly::GoFromBaseplateRefPointToBaseplateGluingXYPosition_finish()
 {
-  disconnect(this, SIGNAL(move_relative(double, double, double, double)), motion_, SLOT(moveRelative(double, double, double, double)));
+  disconnect(this, SIGNAL(move_relative_request(double, double, double, double)), motion_, SLOT(moveRelative(double, double, double, double)));
   disconnect(motion_, SIGNAL(motion_finished()), this, SLOT(GoFromBaseplateRefPointToBaseplateGluingXYPosition_finish()));
 
   NQLog("AssemblyAssembly", NQLog::Spam) << "GoFromBaseplateRefPointToBaseplateGluingXYPosition_finish"
@@ -1146,40 +1072,27 @@ void AssemblyAssembly::LowerSensorAssemblyOntoBaseplate_start()
 
   if(use_smartMove_)
   {
-    if(smartMove_dZ_steps_.size() == 0)
-    {
-      NQLog("AssemblyAssembly", NQLog::Fatal) << "LowerSensorAssemblyOntoBaseplate_start"
-         << ": smartMove mode enabled, but empty list of dZ steps, no action taken";
-
-      return;
-    }
-
-    connect(this, SIGNAL(move_relative(QQueue<LStepExpressMotion>)), motion_, SLOT(appendMotions(QQueue<LStepExpressMotion>)));
-    connect(motion_, SIGNAL(motion_finished()), this, SLOT(LowerSensorAssemblyOntoBaseplate_finish()));
-
-    const QQueue<LStepExpressMotion> rel_motions = assembly::moveRelative_smartMotions(dx0, dy0, dz0, da0, smartMove_dZ_steps_);
-
-    NQLog("AssemblyAssembly", NQLog::Spam) << "LowerSensorAssemblyOntoBaseplate_start"
-       << ": emitting signal \"move_relative(motions)";
-
-    emit move_relative(rel_motions);
+    connect(this, SIGNAL(move_relative_request(double, double, double, double)), smart_motion_, SLOT(move_relative(double, double, double, double)));
+    connect(smart_motion_, SIGNAL(motion_completed()), this, SLOT(LowerSensorAssemblyOntoBaseplate_finish()));
   }
   else
   {
-    connect(this, SIGNAL(move_relative(double, double, double, double)), motion_, SLOT(moveRelative(double, double, double, double)));
+    connect(this, SIGNAL(move_relative_request(double, double, double, double)), motion_, SLOT(moveRelative(double, double, double, double)));
     connect(motion_, SIGNAL(motion_finished()), this, SLOT(LowerSensorAssemblyOntoBaseplate_finish()));
-
-    NQLog("AssemblyAssembly", NQLog::Spam) << "LowerSensorAssemblyOntoBaseplate_start"
-       << ": emitting signal \"move_relative(" << dx0 << ", " << dy0 << ", " << dz0 << ", " << da0 << ")\"";
-
-    emit move_relative(dx0, dy0, dz0, da0);
   }
+
+  NQLog("AssemblyAssembly", NQLog::Spam) << "LowerSensorAssemblyOntoBaseplate_start"
+     << ": emitting signal \"move_relative_request(" << dx0 << ", " << dy0 << ", " << dz0 << ", " << da0 << ")\"";
+
+  emit move_relative_request(dx0, dy0, dz0, da0);
 }
 
 void AssemblyAssembly::LowerSensorAssemblyOntoBaseplate_finish()
 {
-  disconnect(this, SIGNAL(move_relative(QQueue<LStepExpressMotion>)), motion_, SLOT(appendMotions(QQueue<LStepExpressMotion>)));
-  disconnect(this, SIGNAL(move_relative(double, double, double, double)), motion_, SLOT(moveRelative(double, double, double, double)));
+  disconnect(this, SIGNAL(move_relative_request(double, double, double, double)), smart_motion_, SLOT(move_relative(double, double, double, double)));
+  disconnect(smart_motion_, SIGNAL(motion_completed()), this, SLOT(LowerSensorAssemblyOntoBaseplate_finish()));
+
+  disconnect(this, SIGNAL(move_relative_request(double, double, double, double)), motion_, SLOT(moveRelative(double, double, double, double)));
   disconnect(motion_, SIGNAL(motion_finished()), this, SLOT(LowerSensorAssemblyOntoBaseplate_finish()));
 
   NQLog("AssemblyAssembly", NQLog::Spam) << "LowerSensorAssemblyOntoBaseplate_finish"

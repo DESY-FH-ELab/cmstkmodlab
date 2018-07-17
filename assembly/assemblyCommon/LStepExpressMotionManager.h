@@ -19,7 +19,6 @@
 #include <vector>
 
 #include <QQueue>
-#include <QTimer>
 
 class LStepExpressMotionManager : public QObject
 {
@@ -53,23 +52,12 @@ class LStepExpressMotionManager : public QObject
 
     bool inMotion_;
 
-    QTimer* timer_;
-
-    bool timer_enabled_;
-
-    const int motion_interval_sec_ = 1000;
-
     QQueue<LStepExpressMotion> motions_;
 
   public slots:
 
-    void  enable_timer();
-    void disable_timer();
-
     void    connect_model();
     void disconnect_model();
-
-    void wait();
 
     void appendMotion(const LStepExpressMotion& motion);
     void appendMotions(const QQueue<LStepExpressMotion>& motions);
@@ -95,9 +83,6 @@ class LStepExpressMotionManager : public QObject
     void finish_motion();
 
   signals:
-
-    void timer_enabled();
-    void timer_disabled();
 
     void motion_finished();
 

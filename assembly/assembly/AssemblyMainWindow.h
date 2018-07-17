@@ -39,6 +39,7 @@ typedef AssemblyUEyeModel AssemblyUEyeModel_t;
 #include <AssemblyAssemblyView.h>
 #include <AssemblyMultiPickupTester.h>
 #include <AssemblyToolboxView.h>
+#include <AssemblySmartMotionManager.h>
 #include <AssemblyParameters.h>
 #include <AssemblyParametersView.h>
 #include <AssemblyHardwareControlView.h>
@@ -145,6 +146,8 @@ class AssemblyMainWindow : public QMainWindow
 
   AssemblyObjectFinderPatRec*       finder_;
   AssemblyObjectFinderPatRecThread* finder_thread_;
+
+  AssemblySmartMotionManager* smart_motion_;
 
   AssemblyParameters* params_;
 

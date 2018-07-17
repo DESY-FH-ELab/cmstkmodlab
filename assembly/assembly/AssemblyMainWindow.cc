@@ -55,6 +55,8 @@ AssemblyMainWindow::AssemblyMainWindow(const unsigned int camera_ID, QWidget* pa
   finder_(nullptr),
   finder_thread_(nullptr),
 
+  smart_motion_(nullptr),
+
   params_(nullptr),
 
   // Views
@@ -214,7 +216,9 @@ AssemblyMainWindow::AssemblyMainWindow(const unsigned int camera_ID, QWidget* pa
     // ASSEMBLY VIEW -------------------------------------------
     const QString tabname_Assembly("Assembly");
 
-    assembly_ = new AssemblyAssembly(motion_manager_, conradManager_);
+    smart_motion_ = new AssemblySmartMotionManager(motion_manager_);
+
+    assembly_ = new AssemblyAssembly(motion_manager_, conradManager_, smart_motion_);
 
     assembly_view_ = new AssemblyAssemblyView(assembly_, assembly_tab);
     assembly_tab->addTab(assembly_view_, tabname_Assembly);

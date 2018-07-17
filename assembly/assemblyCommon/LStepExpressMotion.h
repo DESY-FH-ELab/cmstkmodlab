@@ -19,6 +19,7 @@ class LStepExpressMotion
 {
   public:
 
+    LStepExpressMotion() {}
     LStepExpressMotion(const std::vector<double>& values, const bool mode);
     LStepExpressMotion(const double x, const double y, const double z, const double a, const bool mode);
     LStepExpressMotion(const unsigned int axis, const double value, const bool mode);
