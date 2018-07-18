@@ -118,7 +118,7 @@ void Controller::printHelp()
       " setPumpState <pump (1/2)> <state (0/1)>          set the state of a pump\n"
       " getPumpState <pump (1/2)>                        get the state of a pump\n"
       " setPumpOperatingHours <pump (1/2)> <hours>       set the pump operating hours\n"
-      " getPumpOperatingHours <pump (1/2)>               get the pump operating hours\n"
+      " getPumpOperatingHours                            get the pump operating hours\n"
       " setValveState <valve (1-2)> <state (0/1)>        set the state of a valve\n"
       " getValveState <valve (1-2)>                      get the state of a valve\n"
       "\n"
