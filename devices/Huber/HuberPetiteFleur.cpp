@@ -10,6 +10,8 @@
 //                                                                             //
 /////////////////////////////////////////////////////////////////////////////////
 
+//http://www.huber-online.com/download/manuals/archive/Manual_DataCommunication_EN.pdf
+
 #include <string.h>
 
 #include <cstdlib>
@@ -58,23 +60,27 @@ bool HuberPetiteFleur::SetWorkingTemperature( const float workingTemp ) const {
   sprintf(buffer, "%+06d", iTemp);
 
   std::stringstream theCommand;
-  theCommand << "SP! " << buffer;
+  theCommand << "SP@ " << buffer;
 
   comHandler_->SendCommand( theCommand.str().c_str() );
   usleep( uDelay_ );
 
-  comHandler_->SendCommand( "SP?" );
-  usleep( uDelay_ );
-
+  memset( buffer, 0, sizeof( buffer ) );
   comHandler_->ReceiveString( buffer );
   usleep( uDelay_ );
   StripBuffer( buffer );
+  
+  int oTemp = ToInteger( buffer );
 
-  if( std::fabs( iTemp - ToInteger(buffer) ) > 1 ) {
+  if( iTemp != oTemp ) {
     std::cerr << " [HuberPetiteFleur::SetWorkingTemp] ** ERROR: check failed."
         << std::endl;
-    std::cerr << "  > Expected: T=" << workingTemp << " but received (string):"
-	      << buffer << "." << std::endl;
+    if ( strlen( buffer ) == 0 )
+      std::cerr << "  > Got no reply. (timeout?)" << std::endl;
+    else
+      std::cerr << "  > Expected: T=" << workingTemp
+          << " but received T=" << oTemp / 100 << std::endl;
+
     return false;
   }
   
