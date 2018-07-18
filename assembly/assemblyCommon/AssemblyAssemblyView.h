@@ -70,6 +70,7 @@ class AssemblyAssemblyActionWidget : public QWidget
 
  public slots:
 
+  void disable(const bool b=true);
   void disable(const int);
 
  signals:
@@ -101,6 +102,7 @@ class AssemblyAssemblyTextWidget : public QWidget
 
  public slots:
 
+  void disable(const bool b=true);
   void disable(const int);
 
  signals:

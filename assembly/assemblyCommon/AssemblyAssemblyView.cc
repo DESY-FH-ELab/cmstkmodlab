@@ -105,6 +105,7 @@ AssemblyAssemblyView::AssemblyAssemblyView(const AssemblyAssembly* const assembl
     PSSAlignm_lay->addWidget(tmp_wid);
 
     connect(tmp_wid->button(), SIGNAL(clicked()), assembly, SLOT(EnableVacuumBaseplate_start()));
+    connect(assembly, SIGNAL(EnableVacuumBaseplate_finished()), tmp_wid, SLOT(disable()));
   }
   // ----------
 
@@ -118,6 +119,7 @@ AssemblyAssemblyView::AssemblyAssemblyView(const AssemblyAssembly* const assembl
     PSSAlignm_lay->addWidget(tmp_wid);
 
     connect(tmp_wid->button(), SIGNAL(clicked()), assembly, SLOT(GoToSensorMarkerPreAlignment_start()));
+    connect(assembly, SIGNAL(GoToSensorMarkerPreAlignment_finished()), tmp_wid, SLOT(disable()));
   }
   // ----------
 
@@ -142,6 +144,7 @@ AssemblyAssemblyView::AssemblyAssemblyView(const AssemblyAssembly* const assembl
     PSSAlignm_lay->addWidget(tmp_wid);
 
     connect(tmp_wid->button(), SIGNAL(clicked()), assembly, SLOT(GoFromSensorMarkerToPickupXY_start()));
+    connect(assembly, SIGNAL(GoFromSensorMarkerToPickupXY_finished()), tmp_wid, SLOT(disable()));
   }
   // ----------
 
@@ -155,6 +158,7 @@ AssemblyAssemblyView::AssemblyAssemblyView(const AssemblyAssembly* const assembl
     PSSAlignm_lay->addWidget(tmp_wid);
 
     connect(tmp_wid->button(), SIGNAL(clicked()), assembly, SLOT(LowerPickupToolOntoPSS_start()));
+    connect(assembly, SIGNAL(LowerPickupToolOntoPSS_finished()), tmp_wid, SLOT(disable()));
   }
   // ----------
 
@@ -168,6 +172,7 @@ AssemblyAssemblyView::AssemblyAssemblyView(const AssemblyAssembly* const assembl
     PSSAlignm_lay->addWidget(tmp_wid);
 
     connect(tmp_wid->button(), SIGNAL(clicked()), assembly, SLOT(EnableVacuumPickupTool_start()));
+    connect(assembly, SIGNAL(EnableVacuumPickupTool_finished()), tmp_wid, SLOT(disable()));
   }
   // ----------
 
@@ -181,6 +186,7 @@ AssemblyAssemblyView::AssemblyAssemblyView(const AssemblyAssembly* const assembl
     PSSAlignm_lay->addWidget(tmp_wid);
 
     connect(tmp_wid->button(), SIGNAL(clicked()), assembly, SLOT(DisableVacuumBaseplate_start()));
+    connect(assembly, SIGNAL(DisableVacuumBaseplate_finished()), tmp_wid, SLOT(disable()));
   }
   // ----------
 
@@ -194,6 +200,7 @@ AssemblyAssemblyView::AssemblyAssemblyView(const AssemblyAssembly* const assembl
     PSSAlignm_lay->addWidget(tmp_wid);
 
     connect(tmp_wid->button(), SIGNAL(clicked()), assembly, SLOT(PickupPSS_start()));
+    connect(assembly, SIGNAL(PickupPSS_finished()), tmp_wid, SLOT(disable()));
   }
   // ----------
 
@@ -229,6 +236,7 @@ AssemblyAssemblyView::AssemblyAssemblyView(const AssemblyAssembly* const assembl
     PSSToSpacers_lay->addWidget(tmp_wid);
 
     connect(tmp_wid->button(), SIGNAL(clicked()), assembly, SLOT(EnableVacuumSpacers_start()));
+    connect(assembly, SIGNAL(EnableVacuumSpacers_finished()), tmp_wid, SLOT(disable()));
   }
   // ----------
 
@@ -242,6 +250,7 @@ AssemblyAssemblyView::AssemblyAssemblyView(const AssemblyAssembly* const assembl
     PSSToSpacers_lay->addWidget(tmp_wid);
 
     connect(tmp_wid->button(), SIGNAL(clicked()), assembly, SLOT(GoToSpacerRefPoint_start()));
+    connect(assembly, SIGNAL(GoToSpacerRefPoint_finished()), tmp_wid, SLOT(disable()));
   }
   // ----------
 
@@ -255,6 +264,7 @@ AssemblyAssemblyView::AssemblyAssemblyView(const AssemblyAssembly* const assembl
     PSSToSpacers_lay->addWidget(tmp_wid);
 
     connect(tmp_wid->button(), SIGNAL(clicked()), assembly, SLOT(GoFromSpacerRefPointToSpacerGluingXYPosition_start()));
+    connect(assembly, SIGNAL(GoFromSpacerRefPointToSpacerGluingXYPosition_finished()), tmp_wid, SLOT(disable()));
   }
   // ----------
 
@@ -279,6 +289,7 @@ AssemblyAssemblyView::AssemblyAssemblyView(const AssemblyAssembly* const assembl
     PSSToSpacers_lay->addWidget(tmp_wid);
 
     connect(tmp_wid->button(), SIGNAL(clicked()), assembly, SLOT(LowerPSSOntoSpacers_start()));
+    connect(assembly, SIGNAL(LowerPSSOntoSpacers_finished()), tmp_wid, SLOT(disable()));
   }
   // ----------
 
@@ -303,6 +314,7 @@ AssemblyAssemblyView::AssemblyAssemblyView(const AssemblyAssembly* const assembl
     PSSToSpacers_lay->addWidget(tmp_wid);
 
     connect(tmp_wid->button(), SIGNAL(clicked()), assembly, SLOT(DisableVacuumSpacers_start()));
+    connect(assembly, SIGNAL(DisableVacuumSpacers_finished()), tmp_wid, SLOT(disable()));
   }
   // ----------
 
@@ -316,6 +328,7 @@ AssemblyAssemblyView::AssemblyAssemblyView(const AssemblyAssembly* const assembl
     PSSToSpacers_lay->addWidget(tmp_wid);
 
     connect(tmp_wid->button(), SIGNAL(clicked()), assembly, SLOT(PickupSpacersAndPSS_start()));
+    connect(assembly, SIGNAL(PickupSpacersAndPSS_finished()), tmp_wid, SLOT(disable()));
   }
   // ----------
 
@@ -351,6 +364,7 @@ AssemblyAssemblyView::AssemblyAssemblyView(const AssemblyAssembly* const assembl
     PSSToPSP_lay->addWidget(tmp_wid);
 
     connect(tmp_wid->button(), SIGNAL(clicked()), assembly, SLOT(EnableVacuumBaseplate_start()));
+    connect(assembly, SIGNAL(EnableVacuumBaseplate_finished()), tmp_wid, SLOT(disable()));
   }
   // ----------
 
@@ -364,6 +378,7 @@ AssemblyAssemblyView::AssemblyAssemblyView(const AssemblyAssembly* const assembl
     PSSToPSP_lay->addWidget(tmp_wid);
 
     connect(tmp_wid->button(), SIGNAL(clicked()), assembly, SLOT(GoToSensorMarkerPreAlignment_start()));
+    connect(assembly, SIGNAL(GoToSensorMarkerPreAlignment_finished()), tmp_wid, SLOT(disable()));
   }
   // ----------
 
@@ -388,6 +403,7 @@ AssemblyAssemblyView::AssemblyAssemblyView(const AssemblyAssembly* const assembl
     PSSToPSP_lay->addWidget(tmp_wid);
 
     connect(tmp_wid->button(), SIGNAL(clicked()), assembly, SLOT(GoFromSensorMarkerToPickupXY_start()));
+    connect(assembly, SIGNAL(GoFromSensorMarkerToPickupXY_finished()), tmp_wid, SLOT(disable()));
   }
   // ----------
 
@@ -401,6 +417,7 @@ AssemblyAssemblyView::AssemblyAssemblyView(const AssemblyAssembly* const assembl
     PSSToPSP_lay->addWidget(tmp_wid);
 
     connect(tmp_wid->button(), SIGNAL(clicked()), assembly, SLOT(ApplyPSPToPSSXYOffset_start()));
+    connect(assembly, SIGNAL(ApplyPSPToPSSXYOffset_finished()), tmp_wid, SLOT(disable()));
   }
   // ----------
 
@@ -418,6 +435,7 @@ AssemblyAssemblyView::AssemblyAssemblyView(const AssemblyAssembly* const assembl
     PSSToPSP_lay->addWidget(tmp_wid);
 
     connect(tmp_wid->button(), SIGNAL(clicked()), assembly, SLOT(LiftUpPickupTool_start()));
+    connect(assembly, SIGNAL(LiftUpPickupTool_finished()), tmp_wid, SLOT(disable()));
   }
   // ----------
 
@@ -442,6 +460,7 @@ AssemblyAssemblyView::AssemblyAssemblyView(const AssemblyAssembly* const assembl
     PSSToPSP_lay->addWidget(tmp_wid);
 
     connect(tmp_wid->button(), SIGNAL(clicked()), assembly, SLOT(LowerSpacersAndPSSOntoPSP_start()));
+    connect(assembly, SIGNAL(LowerSpacersAndPSSOntoPSP_finished()), tmp_wid, SLOT(disable()));
   }
   // ----------
 
@@ -466,6 +485,7 @@ AssemblyAssemblyView::AssemblyAssemblyView(const AssemblyAssembly* const assembl
     PSSToPSP_lay->addWidget(tmp_wid);
 
     connect(tmp_wid->button(), SIGNAL(clicked()), assembly, SLOT(DisableVacuumBaseplate_start()));
+    connect(assembly, SIGNAL(DisableVacuumBaseplate_finished()), tmp_wid, SLOT(disable()));
   }
   // ----------
 
@@ -479,6 +499,7 @@ AssemblyAssemblyView::AssemblyAssemblyView(const AssemblyAssembly* const assembl
     PSSToPSP_lay->addWidget(tmp_wid);
 
     connect(tmp_wid->button(), SIGNAL(clicked()), assembly, SLOT(PickupPSPAndPSS_start()));
+    connect(assembly, SIGNAL(PickupPSPAndPSS_finished()), tmp_wid, SLOT(disable()));
   }
   // ----------
 
@@ -514,6 +535,7 @@ AssemblyAssemblyView::AssemblyAssemblyView(const AssemblyAssembly* const assembl
     PSToBasep_lay->addWidget(tmp_wid);
 
     connect(tmp_wid->button(), SIGNAL(clicked()), assembly, SLOT(EnableVacuumBaseplate_start()));
+    connect(assembly, SIGNAL(EnableVacuumBaseplate_finished()), tmp_wid, SLOT(disable()));
   }
   // ----------
 
@@ -527,6 +549,7 @@ AssemblyAssemblyView::AssemblyAssemblyView(const AssemblyAssembly* const assembl
     PSToBasep_lay->addWidget(tmp_wid);
 
     connect(tmp_wid->button(), SIGNAL(clicked()), assembly, SLOT(GoToBaseplateRefPoint_start()));
+    connect(assembly, SIGNAL(GoToBaseplateRefPoint_finished()), tmp_wid, SLOT(disable()));
   }
   // ----------
 
@@ -551,6 +574,7 @@ AssemblyAssemblyView::AssemblyAssemblyView(const AssemblyAssembly* const assembl
     PSToBasep_lay->addWidget(tmp_wid);
 
     connect(tmp_wid->button(), SIGNAL(clicked()), assembly, SLOT(GoFromBaseplateRefPointToBaseplateGluingXYPosition_start()));
+    connect(assembly, SIGNAL(GoFromBaseplateRefPointToBaseplateGluingXYPosition_finished()), tmp_wid, SLOT(disable()));
   }
   // ----------
 
@@ -564,6 +588,7 @@ AssemblyAssemblyView::AssemblyAssemblyView(const AssemblyAssembly* const assembl
     PSToBasep_lay->addWidget(tmp_wid);
 
     connect(tmp_wid->button(), SIGNAL(clicked()), assembly, SLOT(LowerSensorAssemblyOntoBaseplate_start()));
+    connect(assembly, SIGNAL(LowerSensorAssemblyOntoBaseplate_finished()), tmp_wid, SLOT(disable()));
   }
   // ----------
 
@@ -588,6 +613,7 @@ AssemblyAssemblyView::AssemblyAssemblyView(const AssemblyAssembly* const assembl
     PSToBasep_lay->addWidget(tmp_wid);
 
     connect(tmp_wid->button(), SIGNAL(clicked()), assembly, SLOT(DisableVacuumPickupTool_start()));
+    connect(assembly, SIGNAL(DisableVacuumPickupTool_finished()), tmp_wid, SLOT(disable()));
   }
   // ----------
 
@@ -601,6 +627,7 @@ AssemblyAssemblyView::AssemblyAssemblyView(const AssemblyAssembly* const assembl
     PSToBasep_lay->addWidget(tmp_wid);
 
     connect(tmp_wid->button(), SIGNAL(clicked()), assembly, SLOT(LiftUpPickupTool_start()));
+    connect(assembly, SIGNAL(LiftUpPickupTool_finished()), tmp_wid, SLOT(disable()));
   }
   // ----------
 
@@ -614,6 +641,7 @@ AssemblyAssemblyView::AssemblyAssemblyView(const AssemblyAssembly* const assembl
     PSToBasep_lay->addWidget(tmp_wid);
 
     connect(tmp_wid->button(), SIGNAL(clicked()), assembly, SLOT(DisableVacuumBaseplate_start()));
+    connect(assembly, SIGNAL(DisableVacuumBaseplate_finished()), tmp_wid, SLOT(disable()));
   }
   // ----------
 
@@ -674,6 +702,11 @@ AssemblyAssemblyActionWidget::AssemblyAssemblyActionWidget(QWidget* parent)
   // --------------
 }
 
+void AssemblyAssemblyActionWidget::disable(const bool to_be_disabled)
+{
+  this->disable(int(to_be_disabled ? 2 : 0));
+}
+
 void AssemblyAssemblyActionWidget::disable(const int state)
 {
   if(state == 2)
@@ -729,6 +762,11 @@ AssemblyAssemblyTextWidget::AssemblyAssemblyTextWidget(QWidget* parent)
   layout_->addWidget(new QLabel, 48);
   layout_->addWidget(checkbox_ , 10);
   // --------------
+}
+
+void AssemblyAssemblyTextWidget::disable(const bool to_be_disabled)
+{
+  this->disable(int(to_be_disabled ? 2 : 0));
 }
 
 void AssemblyAssemblyTextWidget::disable(const int state)
