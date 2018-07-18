@@ -20,7 +20,7 @@
     <meta http-equiv="X-UA-Compatible" content="chrome=1,IE=edge" />
     <meta name="viewport" content="user-scalable=no, width=800" />
     <meta charset="utf-8" />
-    <meta http-equiv="refresh" content="5">
+    <meta http-equiv="refresh" content="15">
     <title>.: CMS Pump Station Status & Control :.</title>
     <style type="text/css">
       body {
@@ -88,7 +88,7 @@ echo ('<div style="font-size:16px;text-align:right;margin-top:5px;margin-right:1
 if ($P1 >= 10.0) {
 	printf ( "%.0f", $P1);
 } else if ($P1 >= 0.1) {
-	printf ( "%.1f", $P1);
+	printf ( "%.2f", $P1);
 } else {
 	printf ( "%.1E", $P1);
 }
@@ -113,7 +113,7 @@ echo ('<div style="font-size:16px;text-align:right;margin-top:5px;margin-right:1
 if ($P2 >= 10.0) {
 	printf ( "%.0f", $P2);
 } else if ($P2 >= 0.1) {
-	printf ( "%.1f", $P2);
+	printf ( "%.2f", $P2);
 } else {
 	printf ( "%.1E", $P2);
 }
@@ -138,7 +138,7 @@ echo ('<div style="font-size:16px;text-align:right;margin-top:5px;margin-right:1
 if ($PSYS>= 10.0) {
 	printf ( "%.0f", $PSYS);
 } else if ($PSYS>= 0.1) {
-	printf ( "%.1f", $PSYS);
+	printf ( "%.2f", $PSYS);
 } else {
 	printf ( "%.1E", $PSYS);
 }
@@ -215,7 +215,7 @@ echo ("</div></div>");
 // }
 if ($Valve2State== 0) {
 	echo ('<div style="position:absolute;width:68px;height:30px;margin-left:131px;margin-top:29px;background-color:#FF5555;">');
-} else if ($S1 == 1) {
+} else if ($Valve2State== 1) {
 	echo ('<div style="position:absolute;width:68px;height:30px;margin-left:131px;margin-top:29px;background-color:#55FF55;">');
 }
 echo ('<div style="font-size:16px;text-align:center;margin-top:5px;">');
@@ -365,6 +365,7 @@ echo ("</div></div>");
         <div style="position:absolute;width:800px;margin-top: 460px;vertical-align:top;">
 	    <hr>        
         <img style="width:32px;" src="data/DESY-Logo.png"/>
+        <img style="width:32px;" src="data/DAF_Logo_color2.png"/>
         <img style="width:32px;" src="data/CMS-Logo.png"/>
         <span style="vertical-align:top;">
 <?php

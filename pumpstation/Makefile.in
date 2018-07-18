@@ -6,7 +6,7 @@ NOPUMPSTATION = @nopumpstation@
 USEFAKEDEVICES= @usefakedevices@
 
 subdirs	      = daemon controller app analysis
-installsubdirs = daemon website analysis
+installsubdirs = daemon controller website analysis
 
 all:
 	@for dir in $(subdirs); do (cd $$dir; make); done

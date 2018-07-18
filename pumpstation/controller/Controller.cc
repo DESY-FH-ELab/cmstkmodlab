@@ -108,3 +108,31 @@ void Controller::readResponse()
 
   QCoreApplication::quit();
 }
+
+void Controller::printHelp()
+{
+  std::cout <<
+      "\n  Help\n"
+      " ------\n\n"
+      " writeConfig                                      write server configuration file\n"
+      " setPumpState <pump (1/2)> <state (0/1)>          set the state of a pump\n"
+      " getPumpState <pump (1/2)>                        get the state of a pump\n"
+      " setPumpOperatingHours <pump (1/2)> <hours>       set the pump operating hours\n"
+      " getPumpOperatingHours                            get the pump operating hours\n"
+      " setValveState <valve (1-2)> <state (0/1)>        set the state of a valve\n"
+      " getValveState <valve (1-2)>                      get the state of a valve\n"
+      "\n"
+      " setSwitchState <switch (0-4)> <state (0/1)>      set the state of a switch\n"
+      " getSwitchState <switch (0-4)>                    get the state of a switch\n"
+      " setSwitchBlocked <switch (0-4)> <state (0/1)>    block or unblock a switch\n"
+      " getSwitchBlocked <switch (0-4)>                  get the block state of a switch\n"
+      " getSwitchStatus                                  get the status of all switches\n"
+      " getSwitchBlockedStatus                           get the block status of all switches\n"
+      "\n"
+      " getSensorStatus <sensor (1-3)>                   get the status of a vacuum gauge\n"
+      " getPressure <sensor (1-3)>                       get the pressure reading of a vacuum gauge\n"
+      " getVacuumStatus                                  get the vacuum status (sensor status and pressure)\n"
+        << std::endl;
+
+  QCoreApplication::quit();
+}

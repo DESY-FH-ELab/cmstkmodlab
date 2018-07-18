@@ -25,7 +25,13 @@
 
 int main(int argc, char *argv[])
 {
-  QCoreApplication app(argc, argv);
+	if (argc<3 || argc>5) {
+		std::cout << "usage:" << std::endl;
+		std::cout << argv[0] << " Output-File Input-Directory [Start Date YYYY-MM-DD] [End Date YYYY-MM-DD]" << std::endl;
+		exit(0);
+	}
+
+	QCoreApplication app(argc, argv);
 
   QStringList arguments = QCoreApplication::arguments();
   arguments.removeAt(0);
