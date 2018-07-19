@@ -14,10 +14,14 @@
 #define ANALYSER_H
 
 #include <array>
+#include <map>
+#include <string>
 
 #include <QDateTime>
 #include <QStringList>
 #include <QObject>
+#include <QMap>
+#include <QDir>
 
 #include <TFile.h>
 #include <TTree.h>
@@ -30,6 +34,29 @@ typedef struct {
 	int            gaugeState[3];
 	double         pressure[3];
 } Measurement_t;
+
+class DataFileDate
+{
+public:
+
+	DataFileDate();
+	DataFileDate(const DataFileDate& other);
+	DataFileDate(const QDate& date, int n);
+	DataFileDate(int y, int m, int d, int n);
+
+	const QDate& getDate() const { return date_; }
+	int getNumber() const { return n_; }
+
+	bool operator<(const DataFileDate& other) const {
+		if (date_==other.date_) return (n_<other.n_);
+		return date_<other.date_;
+	}
+
+protected:
+
+	QDate date_;
+	int n_;
+};
 
 class Analyser : public QObject
 {
@@ -49,6 +76,9 @@ private:
   void dumpData();
 
   QStringList arguments_;
+
+  QDir dataDirectory_;
+  std::map<DataFileDate, QString> fileMap_;
 
   QDateTime utime_;
   bool dataValid_;

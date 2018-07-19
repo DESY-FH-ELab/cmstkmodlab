@@ -43,7 +43,12 @@ int main(int argc, char *argv[])
   }
 
   Controller controller(arguments);
-  QTimer::singleShot(0, &controller, SLOT(connectToServer()));
+
+  if (arguments.contains("--help")) {
+    QTimer::singleShot(0, &controller, SLOT(printHelp()));
+  } else {
+    QTimer::singleShot(0, &controller, SLOT(connectToServer()));
+  }
 
   return app.exec();
 }
