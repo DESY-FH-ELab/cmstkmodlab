@@ -17,7 +17,7 @@ Please install the following packages via
    `sudo apt-get install pkg-config`<br/>
    `sudo apt-get install libboost-dev`<br/>
    `sudo apt-get install arduino`<br/>
-   `sudo apt-get install arduino-mk`
+   `sudo apt-get install arduino-mk`<br/>
    `sudo apt-get install libcurl4-openssl-dev`<br/>
    `sudo apt-get install python python-dev`<br/>
    `sudo apt-get install libboost-python-dev`
