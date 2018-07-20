@@ -29,13 +29,13 @@
 #include "WatchDog.h"
 
 WatchDog::WatchDog(PumpStationModel* model,
-		               int history,
-		               QObject *parent)
- : QObject(parent),
-   model_(model),
-   pressure1_(HistoryFifo<double>(history)),
-   pressure2_(HistoryFifo<double>(history)),
-   pressure3_(HistoryFifo<double>(history))
+                   int history,
+                   QObject *parent)
+: QObject(parent),
+  model_(model),
+  pressure1_(HistoryFifo<double>(history)),
+  pressure2_(HistoryFifo<double>(history)),
+  pressure3_(HistoryFifo<double>(history))
 {
   connect(model_, SIGNAL(dataValid()),
           this, SLOT(initialize()));
@@ -59,7 +59,7 @@ void WatchDog::initialize()
           model_, SLOT(setSwitchEnabled(int, bool)));
 
   connect(statusTimer_, SIGNAL(timeout()),
-  		    this, SLOT(statusTimeout()));
+          this, SLOT(statusTimeout()));
   statusTimer_->start();
 }
 
@@ -73,7 +73,7 @@ void WatchDog::switchStateChanged(int device, State newState)
   
   switchState_[device] = newState;
 
-	/*
+  /*
 	int pumpChannel;
 	int valveChannel;
 
@@ -99,7 +99,7 @@ void WatchDog::switchStateChanged(int device, State newState)
 			}
 		}
 	}
-  */
+   */
 
 }
 
@@ -107,7 +107,7 @@ void WatchDog::pressureChanged(int sensor, double p)
 {
   QMutexLocker locker(&mutex_);
 
-  // NQLogSpam("WatchDog") << "pressureChanged(" << sensor << ", " << p << ")";
+  NQLog("WatchDog") << "pressureChanged(" << sensor << ", " << p << ")";
 
   switch (sensor) {
   case 1:
@@ -124,65 +124,65 @@ void WatchDog::pressureChanged(int sensor, double p)
 
 void WatchDog::statusTimeout()
 {
-	// NQLogSpam("WatchDog") << "statusTimeout()";
+  NQLog("WatchDog") << "statusTimeout()";
 
-	QTime t = QTime::currentTime();
-	if (t.minute()!=0 && t.minute()!=30) return;
+  QTime t = QTime::currentTime();
+  if (t.minute()!=0 && t.minute()!=30) return;
 
   QMutexLocker locker(&mutex_);
 
-	int pump1 = model_->getPumpChannel(1);
-	int pump2 = model_->getPumpChannel(2);
+  int pump1 = model_->getPumpChannel(1);
+  int pump2 = model_->getPumpChannel(2);
 
-	int valve1 = model_->getValveChannel(1);
-	int valve2 = model_->getValveChannel(2);
-	int valve3 = model_->getValveChannel(3);
+  int valve1 = model_->getValveChannel(1);
+  int valve2 = model_->getValveChannel(2);
+  int valve3 = model_->getValveChannel(3);
 
-	double psys = model_->getPressure(1);
-	double p1 = model_->getPressure(2);
-	double p2 = model_->getPressure(3);
+  double psys = model_->getPressure(1);
+  double p1 = model_->getPressure(2);
+  double p2 = model_->getPressure(3);
 
-	switchState_[pump1] = model_->getSwitchState(pump1);
-	switchState_[pump2] = model_->getSwitchState(pump2);
-	switchState_[valve1] = model_->getSwitchState(valve1);
-	switchState_[valve2] = model_->getSwitchState(valve2);
-	switchState_[valve3] = model_->getSwitchState(valve3);
+  switchState_[pump1] = model_->getSwitchState(pump1);
+  switchState_[pump2] = model_->getSwitchState(pump2);
+  switchState_[valve1] = model_->getSwitchState(valve1);
+  switchState_[valve2] = model_->getSwitchState(valve2);
+  switchState_[valve3] = model_->getSwitchState(valve3);
 
-	if (switchState_[valve3]==OFF) return;
+  if (switchState_[valve3]==OFF) return;
 
-	QString message;
-	message += "pump 1: " + QString::number((int)switchState_[pump1]);
-	message += "/" + QString::number((int)switchState_[valve1]) + " p=";
-	if (p1 >= 10.0) {
-		message += QString::number(p1, 'f', 0);
-	} else if (p1 >= 0.1) {
-		message += QString::number(p1, 'f', 1);
-	} else {
-		message += QString::number(p1, 'E', 1);
-	}
-	message += " mbar\n";
+  QString message;
+  message += "pump 1: " + QString::number((int)switchState_[pump1]);
+  message += "/" + QString::number((int)switchState_[valve1]) + " p=";
+  if (p1 >= 10.0) {
+    message += QString::number(p1, 'f', 0);
+  } else if (p1 >= 0.1) {
+    message += QString::number(p1, 'f', 1);
+  } else {
+    message += QString::number(p1, 'E', 1);
+  }
+  message += " mbar\n";
 
-	message += "pump 2: " + QString::number((int)switchState_[valve2]);
-	message += "/" + QString::number((int)switchState_[valve2]) + " p=";
-	if (p2 >= 10.0) {
-		message += QString::number(p2, 'f', 0);
-	} else if (p2 >= 0.1) {
-		message += QString::number(p2, 'f', 1);
-	} else {
-		message += QString::number(p2, 'E', 1);
-	}
-	message += " mbar\n";
+  message += "pump 2: " + QString::number((int)switchState_[valve2]);
+  message += "/" + QString::number((int)switchState_[valve2]) + " p=";
+  if (p2 >= 10.0) {
+    message += QString::number(p2, 'f', 0);
+  } else if (p2 >= 0.1) {
+    message += QString::number(p2, 'f', 1);
+  } else {
+    message += QString::number(p2, 'E', 1);
+  }
+  message += " mbar\n";
 
-	message += "system: " + QString::number((int)switchState_[valve3]) +" p=";
-	if (psys >= 10.0) {
-		message += QString::number(psys, 'f', 0);
-	} else if (psys >= 0.1) {
-		message += QString::number(psys, 'f', 1);
-	} else {
-		message += QString::number(psys, 'E', 1);
-	}
-	message += " mbar\n";
+  message += "system: " + QString::number((int)switchState_[valve3]) +" p=";
+  if (psys >= 10.0) {
+    message += QString::number(psys, 'f', 0);
+  } else if (psys >= 0.1) {
+    message += QString::number(psys, 'f', 1);
+  } else {
+    message += QString::number(psys, 'E', 1);
+  }
+  message += " mbar\n";
 
-	SlackBot bot("Pump Station");
-	bot.postMessage(message);
+  SlackBot bot("Pump Station");
+  bot.postMessage(message);
 }
