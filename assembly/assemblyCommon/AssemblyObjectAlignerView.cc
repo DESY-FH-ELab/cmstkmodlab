@@ -263,7 +263,7 @@ AssemblyObjectAlignerView::AssemblyObjectAlignerView(QWidget* parent)
   QHBoxLayout* alignm_angmax_dontIter_lay = new QHBoxLayout;
   alignm_angmax_lay->addLayout(alignm_angmax_dontIter_lay);
 
-  QLabel* alignm_angmax_dontIter_label = new QLabel(tr("Max Angle for 1-Rotation [deg]"));
+  QLabel* alignm_angmax_dontIter_label = new QLabel(tr("Max Angle For Single Rotation [deg]"));
   alignm_angmax_dontIter_linee_ = new QLineEdit(tr(""));
 
 //  alignm_angmax_dontIter_lay->addSpacing(10);
@@ -277,7 +277,7 @@ AssemblyObjectAlignerView::AssemblyObjectAlignerView(QWidget* parent)
   QHBoxLayout* alignm_angmax_complete_lay = new QHBoxLayout;
   alignm_angmax_lay->addLayout(alignm_angmax_complete_lay);
 
-  QLabel* alignm_angmax_complete_label = new QLabel(tr("Max Angle To Validate Alignment [deg]"));
+  QLabel* alignm_angmax_complete_label = new QLabel(tr("Max Distance Allowed From Target Angle To Validate Alignment [deg]"));
   alignm_angmax_complete_linee_ = new QLineEdit(tr(""));
 
 //  alignm_angmax_complete_lay->addSpacing(10);

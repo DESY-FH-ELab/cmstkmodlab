@@ -74,26 +74,26 @@ bool AssemblyObjectAligner::Configuration::is_valid() const
   if(only_measure_angle == false)
   {
     if(fabs(target_angle) > 180.){ return false; }
-  }
 
-  if(angle_max_dontIter <= 0.)
-  {
-    return false;
-  }
-  else if(angle_max_dontIter > 1.0)
-  {
-    NQLog("AssemblyObjectAligner::Configuration", NQLog::Warning) << "is_valid"
-       << ": unexpected value for max. angle for 1-rotation (" << angle_max_dontIter << ")";
-  }
+    if(angle_max_dontIter <= 0.)
+    {
+      return false;
+    }
+    else if(angle_max_dontIter > 1.0)
+    {
+      NQLog("AssemblyObjectAligner::Configuration", NQLog::Warning) << "is_valid"
+         << ": unexpected value for max. angle for 1-rotation (" << angle_max_dontIter << ")";
+    }
 
-  if(angle_max_complete <= 0.)
-  {
-    return false;
-  }
-  else if(angle_max_complete > 0.1)
-  {
-    NQLog("AssemblyObjectAligner::Configuration", NQLog::Warning) << "is_valid"
-       << ": unexpected value for max. angle to validate alignment (" << angle_max_complete << ")";
+    if(angle_max_complete <= 0.)
+    {
+      return false;
+    }
+    else if(angle_max_complete > 0.1)
+    {
+      NQLog("AssemblyObjectAligner::Configuration", NQLog::Warning) << "is_valid"
+         << ": unexpected value for max. angle to validate alignment (" << angle_max_complete << ")";
+    }
   }
 
   if(PatRecOne_configuration.is_valid() == false){ return false; }
