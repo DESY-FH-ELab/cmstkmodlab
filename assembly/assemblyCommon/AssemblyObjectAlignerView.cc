@@ -56,6 +56,9 @@ AssemblyObjectAlignerView::AssemblyObjectAlignerView(QWidget* parent)
  , alignm_exealig_radbu_(nullptr)
  , alignm_exealig_pusbu_(nullptr)
 
+ , alignm_angmax_dontIter_linee_(nullptr)
+ , alignm_angmax_complete_linee_(nullptr)
+
  , patrecOne_wid_(nullptr)
  , patrecTwo_wid_(nullptr)
 
@@ -204,6 +207,7 @@ AssemblyObjectAlignerView::AssemblyObjectAlignerView(QWidget* parent)
   alignm_completeAtPosOne_checkbox_ = new QCheckBox("Go back to marker-1 position before completion");
   alignm_exeopt_lay->addWidget(alignm_completeAtPosOne_checkbox_);
 
+  // option: go-back to start before stopping
   alignm_useAutoFocusing_checkbox_ = new QCheckBox("Use Auto-Focusing");
   alignm_exeopt_lay->addWidget(alignm_useAutoFocusing_checkbox_);
 
@@ -250,7 +254,42 @@ AssemblyObjectAlignerView::AssemblyObjectAlignerView(QWidget* parent)
 
   // ----------
 
-  alignm_cfg_lay->addSpacing(20);
+  alignm_cfg_lay->addSpacing(50);
+
+  QVBoxLayout* alignm_angmax_lay = new QVBoxLayout;
+  alignm_cfg_lay->addLayout(alignm_angmax_lay);
+
+  // parameter: maximum angle for single rotation
+  QHBoxLayout* alignm_angmax_dontIter_lay = new QHBoxLayout;
+  alignm_angmax_lay->addLayout(alignm_angmax_dontIter_lay);
+
+  QLabel* alignm_angmax_dontIter_label = new QLabel(tr("Max Angle for 1-Rotation [deg]"));
+  alignm_angmax_dontIter_linee_ = new QLineEdit(tr(""));
+
+//  alignm_angmax_dontIter_lay->addSpacing(10);
+  alignm_angmax_dontIter_lay->addWidget(alignm_angmax_dontIter_label , 10, Qt::AlignRight);
+  alignm_angmax_dontIter_lay->addWidget(alignm_angmax_dontIter_linee_, 10, Qt::AlignLeft);
+//  alignm_angmax_dontIter_lay->addSpacing(10);
+
+  assembly::QLineEdit_setText(alignm_angmax_dontIter_linee_, config->getValue<double>("AssemblyObjectAlignerView_angle_max_dontIter", 0.50));
+
+  // parameter: maximum angle to validate alignment
+  QHBoxLayout* alignm_angmax_complete_lay = new QHBoxLayout;
+  alignm_angmax_lay->addLayout(alignm_angmax_complete_lay);
+
+  QLabel* alignm_angmax_complete_label = new QLabel(tr("Max Angle To Validate Alignment [deg]"));
+  alignm_angmax_complete_linee_ = new QLineEdit(tr(""));
+
+//  alignm_angmax_complete_lay->addSpacing(10);
+  alignm_angmax_complete_lay->addWidget(alignm_angmax_complete_label , 10, Qt::AlignRight);
+  alignm_angmax_complete_lay->addWidget(alignm_angmax_complete_linee_, 10, Qt::AlignLeft);
+//  alignm_angmax_complete_lay->addSpacing(10);
+
+  assembly::QLineEdit_setText(alignm_angmax_complete_linee_, config->getValue<double>("AssemblyObjectAlignerView_angle_max_complete", 0.01));
+
+  // ----------
+
+  alignm_cfg_lay->addSpacing(50);
 
   // PatRec Configuration
   QHBoxLayout* alignm_PRcfg_lay = new QHBoxLayout;
@@ -699,6 +738,49 @@ AssemblyObjectAligner::Configuration AssemblyObjectAlignerView::get_configuratio
 
   /// Execution --------------------
 
+  // parameter: maximum angle for single rotation
+  const QString alignm_angmax_dontIter_qstr = alignm_angmax_dontIter_linee_->text();
+
+  bool valid_alignm_angmax_dontIter(false);
+
+  const double alignm_angmax_dontIter_val = alignm_angmax_dontIter_qstr.toDouble(&valid_alignm_angmax_dontIter);
+
+  if(valid_alignm_angmax_dontIter == false)
+  {
+    NQLog("AssemblyObjectAlignerView", NQLog::Critical) << "execute"
+       << ": invalid format for Max. 1-Rotation Angle (" << alignm_angmax_dontIter_qstr << "), no action taken";
+
+    valid_conf = false;
+
+    conf.reset();
+
+    return conf;
+  }
+
+  conf.angle_max_dontIter = alignm_angmax_dontIter_val;
+
+  // parameter: maximum angle to validate alignment
+  const QString alignm_angmax_complete_qstr = alignm_angmax_complete_linee_->text();
+
+  bool valid_alignm_angmax_complete(false);
+
+  const double alignm_angmax_complete_val = alignm_angmax_complete_qstr.toDouble(&valid_alignm_angmax_complete);
+
+  if(valid_alignm_angmax_complete == false)
+  {
+    NQLog("AssemblyObjectAlignerView", NQLog::Critical) << "execute"
+       << ": invalid format for Max. 1-Rotation Angle (" << alignm_angmax_complete_qstr << "), no action taken";
+
+    valid_conf = false;
+
+    conf.reset();
+
+    return conf;
+  }
+
+  conf.angle_max_complete = alignm_angmax_complete_val;
+
+  // execution option(s)
   conf.complete_at_position1 = alignm_completeAtPosOne_checkbox_->isChecked();
   conf.use_autofocusing      = alignm_useAutoFocusing_checkbox_ ->isChecked();
 

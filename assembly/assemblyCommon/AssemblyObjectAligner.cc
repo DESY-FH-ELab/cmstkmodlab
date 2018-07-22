@@ -35,21 +35,6 @@ AssemblyObjectAligner::AssemblyObjectAligner(const LStepExpressMotionManager* co
 
   qRegisterMetaType<AssemblyObjectAligner::Configuration>("AssemblyObjectAligner::Configuration");
 
-  ApplicationConfig* config = ApplicationConfig::instance();
-  if(config == nullptr)
-  {
-    NQLog("AssemblyObjectAligner", NQLog::Fatal)
-       << "ApplicationConfig::instance() not initialized (null pointer), stopped constructor";
-
-    assembly::kill_application(tr("[AssemblyObjectAligner]"), tr("Null pointer to ApplicationConfig. Aborting Application."));
-  }
-
-  // maximum angular difference acceptable not to trigger iterative procedure for alignment
-  angle_max_dontIter_ = config->getValue<double>("AssemblyObjectAligner_angle_max_dontIter");
-
-  // maximum angular difference acceptable to declare alignment procedure finished
-  angle_max_complete_ = config->getValue<double>("AssemblyObjectAligner_angle_max_complete");
-
   configuration_.reset();
 
   this->reset();
@@ -74,6 +59,9 @@ void AssemblyObjectAligner::Configuration::reset()
 
   use_autofocusing = true;
 
+  angle_max_dontIter = -999.;
+  angle_max_complete = -999.;
+
   PatRecOne_configuration.reset();
   PatRecTwo_configuration.reset();
 }
@@ -86,6 +74,26 @@ bool AssemblyObjectAligner::Configuration::is_valid() const
   if(only_measure_angle == false)
   {
     if(fabs(target_angle) > 180.){ return false; }
+  }
+
+  if(angle_max_dontIter <= 0.)
+  {
+    return false;
+  }
+  else if(angle_max_dontIter > 1.0)
+  {
+    NQLog("AssemblyObjectAligner::Configuration", NQLog::Warning) << "is_valid"
+       << ": unexpected value for max. angle for 1-rotation (" << angle_max_dontIter << ")";
+  }
+
+  if(angle_max_complete <= 0.)
+  {
+    return false;
+  }
+  else if(angle_max_complete > 0.1)
+  {
+    NQLog("AssemblyObjectAligner::Configuration", NQLog::Warning) << "is_valid"
+       << ": unexpected value for max. angle to validate alignment (" << angle_max_complete << ")";
   }
 
   if(PatRecOne_configuration.is_valid() == false){ return false; }
@@ -427,14 +435,14 @@ void AssemblyObjectAligner::run_alignment(const double patrec_dX, const double p
       NQLog("AssemblyObjectAligner", NQLog::Message) << "run_alignment: step [" << alignment_step_ << "]: angular distance from target [deg] = " << delta_angle_deg;
       NQLog("AssemblyObjectAligner", NQLog::Message) << "run_alignment: step [" << alignment_step_ << "]";
 
-      if(fabs(delta_angle_deg) > angle_max_complete_)
+      if(fabs(delta_angle_deg) > this->configuration().angle_max_complete)
       {
-        NQLog("AssemblyObjectAligner", NQLog::Message) << "run_alignment: step [" << alignment_step_ << "]: angle(object, target) > " << angle_max_complete_ << ", will apply a rotation";
+        NQLog("AssemblyObjectAligner", NQLog::Message) << "run_alignment: step [" << alignment_step_ << "]: angle(object, target) > " << this->configuration().angle_max_complete << ", will apply a rotation";
 
-        if(fabs(delta_angle_deg) <= angle_max_dontIter_)
+        if(fabs(delta_angle_deg) <= this->configuration().angle_max_dontIter)
         {
           NQLog("AssemblyObjectAligner", NQLog::Message) << "run_alignment: step [" << alignment_step_ << "]";
-          NQLog("AssemblyObjectAligner", NQLog::Message) << "run_alignment: step [" << alignment_step_ << "]: angle(object, target) <= " << angle_max_dontIter_ << ", moving to target angle with 1 rotation";
+          NQLog("AssemblyObjectAligner", NQLog::Message) << "run_alignment: step [" << alignment_step_ << "]: angle(object, target) <= " << this->configuration().angle_max_dontIter << ", moving to target angle with 1 rotation";
           NQLog("AssemblyObjectAligner", NQLog::Message) << "run_alignment: step [" << alignment_step_ << "]";
 
           NQLog("AssemblyObjectAligner", NQLog::Message) << "run_alignment: step [" << alignment_step_
@@ -452,15 +460,15 @@ void AssemblyObjectAligner::run_alignment(const double patrec_dX, const double p
         else
         {
           NQLog("AssemblyObjectAligner", NQLog::Message) << "run_alignment: step [" << alignment_step_ << "]";
-          NQLog("AssemblyObjectAligner", NQLog::Message) << "run_alignment: step [" << alignment_step_ << "]: angle(object, target) > " << angle_max_dontIter_ << " deg, large rotation required";
+          NQLog("AssemblyObjectAligner", NQLog::Message) << "run_alignment: step [" << alignment_step_ << "]: angle(object, target) > " << this->configuration().angle_max_dontIter << " deg, large rotation required";
           NQLog("AssemblyObjectAligner", NQLog::Message) << "run_alignment: step [" << alignment_step_ << "]";
 
           NQLog("AssemblyObjectAligner", NQLog::Message) << "run_alignment: step [" << alignment_step_
-             << "]: ===> iterative procedure (will rotate by " << angle_max_dontIter_ << " deg, and move back to best-match position of PatRec #1";
+             << "]: ===> iterative procedure: will rotate by " << this->configuration().angle_max_dontIter << " deg, and move back to best-match position of PatRec #1";
 
           NQLog("AssemblyObjectAligner", NQLog::Message) << "run_alignment: step [" << alignment_step_ << "]";
 
-          const double rot_deg = (delta_angle_deg <= 0) ? (-1.0 * angle_max_dontIter_) : (+1.0 * angle_max_dontIter_);
+          const double rot_deg = (delta_angle_deg <= 0) ? (-1.0 * this->configuration().angle_max_dontIter) : (+1.0 * this->configuration().angle_max_dontIter);
 
           NQLog("AssemblyObjectAligner", NQLog::Spam) << "run_alignment: step [" << alignment_step_ << "]"
              << ": emitting signal \"move_relative(" << dX << ", " << dY << ", 0, " << rot_deg << ")\"";
@@ -473,7 +481,7 @@ void AssemblyObjectAligner::run_alignment(const double patrec_dX, const double p
       else
       {
         NQLog("AssemblyObjectAligner", NQLog::Message) << "run_alignment: step [" << alignment_step_ << "]";
-        NQLog("AssemblyObjectAligner", NQLog::Message) << "run_alignment: step [" << alignment_step_ << "]: angle(object, target) < " << angle_max_complete_ << ", will NOT apply a rotation";
+        NQLog("AssemblyObjectAligner", NQLog::Message) << "run_alignment: step [" << alignment_step_ << "]: angle(object, target) < " << this->configuration().angle_max_complete << ", will NOT apply a rotation";
         NQLog("AssemblyObjectAligner", NQLog::Message) << "run_alignment: step [" << alignment_step_ << "]";
 
         if(this->configuration().complete_at_position1)

@@ -49,6 +49,9 @@ class AssemblyObjectAligner : public QObject
 
     bool use_autofocusing;
 
+    double angle_max_dontIter;
+    double angle_max_complete;
+
     AssemblyObjectFinderPatRec::Configuration PatRecOne_configuration;
     AssemblyObjectFinderPatRec::Configuration PatRecTwo_configuration;
   };

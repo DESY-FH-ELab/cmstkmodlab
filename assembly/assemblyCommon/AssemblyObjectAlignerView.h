@@ -77,6 +77,9 @@ class AssemblyObjectAlignerView : public QWidget
   QRadioButton* alignm_exealig_radbu_;
   QPushButton*  alignm_exealig_pusbu_;
 
+  QLineEdit* alignm_angmax_dontIter_linee_;
+  QLineEdit* alignm_angmax_complete_linee_;
+
   AssemblyObjectFinderPatRecWidget* patrecOne_wid_;
   AssemblyObjectFinderPatRecWidget* patrecTwo_wid_;
 
