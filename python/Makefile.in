@@ -21,7 +21,11 @@ CXXFLAGS     += -DUSE_FAKEIO
 endif
 
 CXXFLAGS     += -I$(BASEPATH) -I/usr/local/include $(PYTHONINC)
+ifeq ($(ARCHITECTURE),Darwin)
+SOFLAGS      += -L/usr/local/lib -lboost_python27
+else
 SOFLAGS      += -L/usr/local/lib -lboost_python
+endif
 
 ALLDEPEND     = $(addsuffix .d,$(LIBS))
 ALLLIBS       = $(addsuffix .so,$(LIBS))
