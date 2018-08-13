@@ -30,7 +30,7 @@ LStepExpressStatusWindow::LStepExpressStatusWindow(LStepExpressModel* model,
 
 LStepExpressStatusWindow::~LStepExpressStatusWindow()
 {
-    if(timer_){delete timer_; timer_ = NULL;}
+    if(timer_){delete timer_; timer_ = nullptr;}
 }
 
 void LStepExpressStatusWindow::startTimer(State state)

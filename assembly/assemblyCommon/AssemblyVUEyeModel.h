@@ -13,35 +13,32 @@
 #ifndef ASSEMBLYVUEYEMODEL_H
 #define ASSEMBLYVUEYEMODEL_H
 
-#include <vector>
+#include <AssemblyVUEyeCamera.h>
 
 #include <QObject>
 #include <QTimer>
 #include <QThread>
 #include <QMutex>
-#include <QMutexLocker>
 #include <QVector>
-
-#include "AssemblyVUEyeCamera.h"
 
 class AssemblyVUEyeModel : public QObject
 {
-    Q_OBJECT
-public:
-    explicit AssemblyVUEyeModel(int updateInterval, QObject *parent);
+ Q_OBJECT
+
+  public:
+
+    explicit AssemblyVUEyeModel(int updateInterval, QObject* parent);
     ~AssemblyVUEyeModel();
 
     size_t getCameraCount() const;
     AssemblyVUEyeCamera * getCamera(size_t idx);
     AssemblyVUEyeCamera * getCameraByID(unsigned int id);
 
-public slots:
+  public slots:
 
     virtual void updateInformation() = 0;
 
-protected slots:
-
-protected:
+  protected:
 
     int updateInterval_;
     QTimer* timer_;
@@ -50,9 +47,10 @@ protected:
 
     QVector<QThread*> threads_;
     QVector<AssemblyVUEyeCamera*> cameras_;
+
     void clear();
 
-signals:
+  signals:
 
     void cameraCountChanged(unsigned int);
 };

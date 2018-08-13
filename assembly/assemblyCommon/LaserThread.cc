@@ -10,26 +10,26 @@
 //                                                                             //
 /////////////////////////////////////////////////////////////////////////////////
 
-#include <QApplication>
-#include <iostream>
+#include <LaserThread.h>
 #include <nqlogger.h>
 
-#include "LaserThread.h"
-
-LaserThread::LaserThread(QObject *parent)
-    : QThread(parent)
+LaserThread::LaserThread(QObject* parent) : QThread(parent)
 {
-
+  NQLog("LaserThread ", NQLog::Debug) << "constructed";
 }
 
 LaserThread::~LaserThread()
 {
+  NQLog("LaserThread ", NQLog::Debug) << "destructed";
 }
 
 void LaserThread::run()
 {
-  //    NQLog("LaserThread ", NQLog::Debug) << "run";
-    exec();
+  NQLog("LaserThread ", NQLog::Debug) << "run";
+
+  this->exec();
+
+  return;
 }
 
 

@@ -10,10 +10,8 @@
 //                                                                             //
 /////////////////////////////////////////////////////////////////////////////////
 
-#include <QApplication>
-
+#include <LStepExpressModel.h>
 #include <nqlogger.h>
-#include "LStepExpressModel.h"
 
 LStepExpressModel::LStepExpressModel(const char* port,
                                      int updateInterval,
@@ -47,8 +45,7 @@ LStepExpressModel::LStepExpressModel(const char* port,
     timer_ = new QTimer(this);
     timer_->setInterval(motionUpdateInterval_);
     connect(timer_, SIGNAL(timeout()), this, SLOT(updateMotionInformationFromTimer()));
-    //    connect(this, SIGNAL(informationChanged()), this, SLOT(updateInformation()));
-    
+//    connect(this, SIGNAL(informationChanged()), this, SLOT(updateInformation()));
 }
 
 LStepExpressModel::~LStepExpressModel()
@@ -57,217 +54,315 @@ LStepExpressModel::~LStepExpressModel()
 
 void LStepExpressModel::getStatus(bool& status)
 {
-  QMutexLocker locker(&mutex_);
+    QMutexLocker locker(&mutex_);
     status = controller_->GetStatus();
 }
 
 void LStepExpressModel::getError(int& error)
 {
-  QMutexLocker locker(&mutex_);
+    QMutexLocker locker(&mutex_);
     error = controller_->GetError();
 }
 
 void LStepExpressModel::getSystemStatus(std::string& value)
 {
-  QMutexLocker locker(&mutex_);
+    QMutexLocker locker(&mutex_);
     controller_->GetSystemStatusText(value);
 }
 
 void LStepExpressModel::pauseUpdate()
 {
-  //    NQLog("LStepExpressModel ", NQLog::Spam)<< "pauseUpdate()"  ;
+    NQLog("LStepExpressModel", NQLog::Debug)<< "pauseUpdate";
+
     QMutexLocker locker(&mutex_);
+
     isPaused_ = true;
+
     setControlsEnabled(false);
 }
 
 void LStepExpressModel::continueUpdate()
 {
-  //    NQLog("LStepExpressModel ", NQLog::Spam)<< "continueUpdate()"  ;
+    NQLog("LStepExpressModel", NQLog::Debug) << "continueUpdate";
+
     QMutexLocker locker(&mutex_);
+
     isPaused_ = false;
+
     setControlsEnabled(true);
 }
 
 QString LStepExpressModel::getAxisName(unsigned int axis)
 {
-  //    NQLog("LStepExpressModel ", NQLog::Spam)<< "getAxisName(axis)"  ;
+    NQLog("LStepExpressModel", NQLog::Debug) << "getAxisName(" << axis << ")";
+
     QString temp(controller_->GetAxisName((VLStepExpress::Axis)axis));
+
     return temp;
 }
 
 QString LStepExpressModel::getAxisDimensionShortName(unsigned int axis)
 {
-  //    NQLog("LStepExpressModel ", NQLog::Spam)<< "getAxisDimensionShortName(axis)"  ;
+    NQLog("LStepExpressModel ", NQLog::Debug) << "getAxisDimensionShortName(" << axis << ")";
+
     QString temp(controller_->GetAxisDimensionShortName((VLStepExpress::Dimension)dim_[axis]));
+
     return temp;
 }
 
 QString LStepExpressModel::getAxisStatusText(unsigned int axis)
 {
-  //    NQLog("LStepExpressModel ", NQLog::Spam)<<"getAxisStatusText(axis)"  ;
+    NQLog("LStepExpressModel", NQLog::Debug) << "getAxisStatusText("<< axis <<")";
+
     QString temp(controller_->GetAxisStatusText((VLStepExpress::AxisStatus)axisStatus_[axis]));
-    //  NQLog("LStepExpressModel ", NQLog::Spam)<<"getAxisStatusText(axis) =  "<<temp.toStdString();
+
+    NQLog("LStepExpressModel", NQLog::Debug) << "getAxisStatusText(" << axis << ")=" << temp.toStdString();
+
     return temp;
 }
 
 bool LStepExpressModel::getAxisState(unsigned int axis)
 {
-  //    NQLog("LStepExpressModel ", NQLog::Spam)<< "getAxisState(axis) 1"  ;
+    NQLog("LStepExpressModel", NQLog::Debug) << "getAxisState(" << axis << ")";
+
     QMutexLocker locker(&mutex_);
     std::vector<int> ivalues;
     controller_->GetAxisStatus(ivalues);
     axisStatus_[axis] = (ivalues)[axis];
-    //NQLog("LStepExpressModel ", NQLog::Spam)<< "getAxisState(axis) 2; axis =  "<<axisStatus_[axis]  ;
+
+    NQLog("LStepExpressModel", NQLog::Debug) << "getAxisState(" << axis << ")"
+       << ", axis_status=" << axisStatus_[axis];
+
     return (axisStatus_[axis]!=VLStepExpress::AXISDISABLED);
 }
 
 bool LStepExpressModel::getAxisEnabled(unsigned int axis)
 {
-  //    NQLog("LStepExpressModel ", NQLog::Spam)<< "getAxisEnabled(axis), axis nr =  "<<axis<< " enabled =  "<<axis_[axis]  ;
+    NQLog("LStepExpressModel", NQLog::Debug) << "getAxisEnabled(" << axis << ")"
+       << ", axis_enabled=" << axis_[axis];
 
     return axis_[axis];
 }
 
 double LStepExpressModel::getPosition(unsigned int axis)
 {
-  //    NQLog("LStepExpressModel ", NQLog::Spam)<< "getPosition(axis)"  ;
+    NQLog("LStepExpressModel", NQLog::Debug) << "getPosition(" << axis << ")";
 
     return position_[axis];
 }
 
-void LStepExpressModel::moveRelative(std::vector<double> & values)
+void LStepExpressModel::moveRelative(const std::vector<double>& values)
 {
-  //    NQLog("LStepExpressModel ", NQLog::Spam)<< "moveRelative() v1 x = "<<(values)[0]<<" y = "<<(values)[1]<<" z = "<<(values)[2]<<" a = "<<(values)[3]  ;
-  controller_->MoveRelative(LStepExpress_t::X, (values)[0]);
-  controller_->MoveRelative(LStepExpress_t::Y, (values)[1]);
-  controller_->MoveRelative(LStepExpress_t::Z, (values)[2]);
-  controller_->MoveRelative(LStepExpress_t::A, (values)[3]);
-
-    inMotion_ = true;
-    emit motionStarted();
+    this->moveRelative(
+      values.at(0),
+      values.at(1),
+      values.at(2),
+      values.at(3)
+    );
 }
 
-void LStepExpressModel::moveRelative(double x, double y, double z, double a)
+void LStepExpressModel::moveRelative(const double x, const double y, const double z, const double a)
 {
+    NQLog("LStepExpressModel", NQLog::Spam) << "moveRelative"
+       << "(x=" << x << ", y=" << y << ", z=" << z << ", a=" << a << ")";
 
-      NQLog("LStepExpressModel ", NQLog::Spam)<< "moveRelative() v2 x = "<<x<<" y = "<<y<<" z = "<<z<<" a = "<<a  ;
-  controller_->MoveRelative(LStepExpress_t::X, x);
-  controller_->MoveRelative(LStepExpress_t::Y, y);
-  controller_->MoveRelative(LStepExpress_t::Z, z);
-  controller_->MoveRelative(LStepExpress_t::A, a);
+    if(controller_ == nullptr)
+    {
+      NQLog("LStepExpressModel", NQLog::Critical) << "moveRelative"
+         << ": null pointer to controller, no action taken";
 
-    inMotion_ = true;
-    emit motionStarted();
+      NQLog("LStepExpressModel", NQLog::Spam) << "moveRelative"
+         << ": emitting signal \"motionFinished\"";
 
+      emit motionFinished();
+    }
+    else
+    {
+      controller_->MoveRelative(LStepExpress_t::X, x);
+      controller_->MoveRelative(LStepExpress_t::Y, y);
+      controller_->MoveRelative(LStepExpress_t::Z, z);
+      controller_->MoveRelative(LStepExpress_t::A, a);
 
+      inMotion_ = true;
 
+      NQLog("LStepExpressModel", NQLog::Spam) << "moveRelative"
+         << ": emitting signal \"motionStarted\"";
+
+      emit motionStarted();
+    }
 }
 
-void LStepExpressModel::moveRelative(unsigned int axis, double value)
+void LStepExpressModel::moveRelative(const unsigned int axis, const double value)
 {
-  //    NQLog("LStepExpressModel ", NQLog::Spam)<< "moveRelative v3"  ;
+    NQLog("LStepExpressModel", NQLog::Spam) << "moveRelative"
+       << "(axis="  << axis << ", value=" << value << ")";
+
     controller_->MoveRelative((VLStepExpress::Axis)axis, value);
+
     inMotion_ = true;
+
+    NQLog("LStepExpressModel", NQLog::Spam) << "moveRelative"
+       << ": emitting signal \"motionStarted\"";
+
     emit motionStarted();
 }
 
-void LStepExpressModel::moveAbsolute(std::vector<double> & values)
+void LStepExpressModel::moveAbsolute(const std::vector<double>& values)
 {
-  //    NQLog("LStepExpresModel ", NQLog::Spam)<< "moveAbsolute v1"  ;
-    controller_->MoveAbsolute(LStepExpress_t::X, (values)[0]);
-    controller_->MoveAbsolute(LStepExpress_t::Y, (values)[1]);
-    controller_->MoveAbsolute(LStepExpress_t::Z, (values)[2]);
-    controller_->MoveAbsolute(LStepExpress_t::A, (values)[3]);
-    inMotion_ = true;
-    emit motionStarted();
+    this->moveAbsolute(
+      values.at(0),
+      values.at(1),
+      values.at(2),
+      values.at(3)
+    );
 }
 
-void LStepExpressModel::moveAbsolute(double x, double y, double z, double a)
+void LStepExpressModel::moveAbsolute(const double x, const double y, const double z, const double a)
 {
-  //    NQLog("LStepExpresModel ", NQLog::Spam)<< "moveAbsolute v2, go to " << x << " x,  "<< y <<" y,  "<< z <<" z,  "<< a <<" a"  ;
-    controller_->MoveAbsolute(LStepExpress_t::X, x);
-    controller_->MoveAbsolute(LStepExpress_t::Y, y);
-    controller_->MoveAbsolute(LStepExpress_t::Z, z);
-    controller_->MoveAbsolute(LStepExpress_t::A, a);    
-    inMotion_ = true;
-    emit motionStarted();
+    NQLog("LStepExpressModel", NQLog::Spam) << "moveAbsolute"
+       << "(x=" << x << ", y=" << y << ", z=" << z << ", a=" << a << ")";
+
+    if(controller_ == nullptr)
+    {
+      NQLog("LStepExpressModel", NQLog::Critical) << "moveAbsolute"
+         << ": null pointer to controller, no action taken";
+
+      NQLog("LStepExpressModel", NQLog::Spam) << "moveAbsolute"
+         << ": emitting signal \"motionFinished\"";
+
+      emit motionFinished();
+    }
+    else
+    {
+      controller_->MoveAbsolute(LStepExpress_t::X, x);
+      controller_->MoveAbsolute(LStepExpress_t::Y, y);
+      controller_->MoveAbsolute(LStepExpress_t::Z, z);
+      controller_->MoveAbsolute(LStepExpress_t::A, a);
+
+      inMotion_ = true;
+
+      NQLog("LStepExpressModel", NQLog::Spam) << "moveAbsolute"
+         << ": emitting signal \"motionStarted\"";
+
+      emit motionStarted();
+    }
 }
 
-void LStepExpressModel::moveAbsolute(unsigned int axis, double value)
+void LStepExpressModel::moveAbsolute(const unsigned int axis, const double value)
 {
-  //    NQLog("LStepExpressModel ", NQLog::Spam)<< "moveAbsolute v3"  ;
+    NQLog("LStepExpressModel", NQLog::Spam) << "moveAbsolute"
+       << "(axis="  << axis << ", value=" << value << ")";
+
     controller_->MoveAbsolute((VLStepExpress::Axis)axis, value);
+
     inMotion_ = true;
+
+    NQLog("LStepExpressModel", NQLog::Spam) << "moveAbsolute"
+       << ": emitting signal \"motionStarted\"";
+
     emit motionStarted();
 }
 
 void LStepExpressModel::calibrate()
 {
-  //    NQLog("LStepExpressModel ", NQLog::Spam)<< "calibrate: go to calibrate"  ;
+    NQLog("LStepExpressModel", NQLog::Spam) << "calibrate";
+
     controller_->Calibrate();
+
     inMotion_ = true;
+
     finishedCalibrating_ = true;
-    //NQLog("LStepExpressModel ", NQLog::Spam)<< "calibrate: emit motionStarted"  ;
+
+    NQLog("LStepExpressModel", NQLog::Spam) << "calibrate"
+       << ": emitting signal \"motionStarted\"";
+
     emit motionStarted();
 }
 
 void LStepExpressModel::emergencyStop()
 {
-  //    NQLog("LStepExpressModel ", NQLog::Spam)<< "emergencyStop"  ;
+    NQLog("LStepExpressModel", NQLog::Spam) << "emergencyStop";
+
     controller_->EmergencyStop();
+
     inMotion_ = false;
+
     finishedCalibrating_ = false;
+
+    NQLog("LStepExpressModel", NQLog::Spam) << "emergencyStop"
+       << ": emitting signal \"emergencyStopSignal\"";
+
     emit emergencyStopSignal();
+
+    NQLog("LStepExpressModel", NQLog::Spam) << "emergencyStop"
+       << ": emitting signal \"motionFinished\"";
+
     emit motionFinished();
 }
 
 bool LStepExpressModel::getJoystickEnabled()
 {
-  //    NQLog("LStepExpressModel ", NQLog::Spam)<< "getJoystickEnabled:  "<<joystickEnabled_  ;
+    NQLog("LStepExpressModel", NQLog::Debug) << "getJoystickEnabled";
 
     return (joystickEnabled_==1);
 }
 
 bool LStepExpressModel::getJoystickAxisEnabled(unsigned int axis)
 {
-  //    NQLog("LStepExpressModel ", NQLog::Spam)<< "getJoystickAxisEnabled:  "<<joystickAxisEnabled_[axis]  ;
+    NQLog("LStepExpressModel", NQLog::Debug) << "getJoystickAxisEnabled(" << axis << ")";
 
     return (joystickAxisEnabled_[axis]==1);
 }
 
 void LStepExpressModel::setAxisEnabled(unsigned int axis, bool enabled)
 {
+    NQLog("LStepExpressModel", NQLog::Debug) << "setAxisEnabled(" << axis << ", " << enabled << ")";
+
     int temp = (int)enabled;
-    // NQLog("LStepExpressModel ", NQLog::Spam)<< "setAxisEnabled " << axis << " " << temp  ;
 
     int temp2;
     controller_->GetAxisEnabled((VLStepExpress::Axis)axis, temp2);
     axis_[axis] = temp2;
 
-    if (axis_[axis]!=temp) {
+    if(axis_[axis] != temp)
+    {
         controller_->SetPowerAmplifierStatus((VLStepExpress::Axis)axis, temp);
         controller_->SetAxisEnabled((VLStepExpress::Axis)axis, temp);
         axis_[axis] = temp;
         updateInformation();
+
+        NQLog("LStepExpressModel ", NQLog::Debug) << "setAxisEnabled(" << axis << ", " << enabled << ")"
+           << ": emitting signal \"informationChanged\"";
+
         emit informationChanged();
     }
 }
 
 void LStepExpressModel::setJoystickEnabled(bool enabled)
 {
-  //    NQLog("LStepExpressModel ", NQLog::Spam)<< "setJoystickEnabled  "<<enabled  ;
+    NQLog("LStepExpressModel", NQLog::Debug) << "setJoystickEnabled(" << enabled << ")";
 
     int temp = (int)enabled;
 
-    if (joystickEnabled_!=temp) {
+    if(joystickEnabled_ != temp)
+    {
       std::vector<int> ivalues = {0,0,0,0};
+
       if(temp == 0){controller_->SetJoystickAxisEnabled(ivalues); joystickAxisEnabled_ = ivalues;}
+
       controller_->SetJoystickEnabled(temp);
+
       int temp2 = (int)controller_->GetJoystickEnabled();
+
       joystickEnabled_ = temp;
+
       if(temp2 == 1){controller_->SetJoystickAxisEnabled(ivalues); joystickAxisEnabled_ = ivalues;}
+
       updateInformation();
+
+      NQLog("LStepExpressModel", NQLog::Debug) << "setJoystickEnabled(" << enabled << ")"
+         << ": emitting signal \"informationChanged\"";
+
       emit informationChanged();
     }
 }
@@ -275,9 +370,12 @@ void LStepExpressModel::setJoystickEnabled(bool enabled)
 void LStepExpressModel::setJoystickAxisEnabled(unsigned int axis, bool enabled)
 {
     int temp = (int)enabled;
-    //NQLog("LStepExpressModel ", NQLog::Spam)<< "setJoystickAxisEnabled " << axis << " " << temp << " joystick enabled? =  "<<joystickEnabled_  ;
 
-    if (joystickEnabled_ && joystickAxisEnabled_[axis]!=temp) {
+    NQLog("LStepExpressModel", NQLog::Debug) << "setJoystickAxisEnabled(" << axis << ", " << enabled << ")"
+       << ", joystick_enabled=" << joystickEnabled_;
+
+    if(joystickEnabled_ && joystickAxisEnabled_[axis] != temp)
+    {
       controller_->SetJoystickAxisEnabled((VLStepExpress::Axis)axis, temp);
       joystickAxisEnabled_[axis] = temp;
     }
@@ -285,14 +383,16 @@ void LStepExpressModel::setJoystickAxisEnabled(unsigned int axis, bool enabled)
 
 void LStepExpressModel::setValue(const QString & command, const QString & value)
 {
-  //    NQLog("LStepExpressModel ", NQLog::Spam)<< "setValue"  ;
+    NQLog("LStepExpressModel", NQLog::Debug) << "setValue(" << command << ", " << value << ")";
+
     std::string temp;
     controller_->SetValue(command.toStdString(), value.toStdString());
 }
 
 void LStepExpressModel::getValue(const QString & command, QString & value)
 {
-  // NQLog("LStepExpressModel ", NQLog::Spam)<< "getValue"  ;
+    NQLog("LStepExpressModel", NQLog::Debug) << "setValue(" << command << ", " << value << ")";
+
     std::string temp;
     controller_->GetValue(command.toStdString(), temp);
     value = temp.c_str();
@@ -300,38 +400,45 @@ void LStepExpressModel::getValue(const QString & command, QString & value)
 
 void LStepExpressModel::validConfig()
 {
-  //NQLog("LStepExpressModel ", NQLog::Spam)<< "validConfig"  ;
+    NQLog("LStepExpressModel", NQLog::Debug) << "validConfig";
+
     controller_->ValidConfig();
 }
 
 void LStepExpressModel::validParameter()
 {
-  //    NQLog("LStepExpressModel ", NQLog::Spam)<< "validParameter"  ;
+    NQLog("LStepExpressModel", NQLog::Debug) << "validParameter";
+
     controller_->ValidParameter();
 }
 
 void LStepExpressModel::saveConfig()
 {
-  //    NQLog("LStepExpressModel ", NQLog::Spam)<< "save config"  ;
+    NQLog("LStepExpressModel", NQLog::Debug) << "saveConfig";
+
     controller_->SaveConfig();
 }
 
 void LStepExpressModel::reset()
 {
-  //    NQLog("LStepExpressModel ", NQLog::Spam)<< "reset to start-up conditions"  ;
+    NQLog("LStepExpressModel", NQLog::Debug) << "reset";
+
     controller_->Reset();
 }
 
 void LStepExpressModel::initialize()
 {
+    NQLog("LStepExpressModel", NQLog::Debug) << "initialize";
+
     setDeviceState(INITIALIZING);
 
     renewController(LStepExpress_PORT);
 
-    bool enabled = (controller_ != NULL) && (controller_->DeviceAvailable());
+    bool enabled = (controller_ != nullptr) && (controller_->DeviceAvailable());
 
-    if ( enabled ) {
-        controller_->SetAutoStatus(2);
+    if(enabled)
+    {
+      controller_->SetAutoStatus(2);
       std::vector<int> allZerosI{ 0, 0, 0, 0 };
       std::vector<int> OnI{1,1,1,1};
       controller_->SetPowerAmplifierStatus(allZerosI);
@@ -343,30 +450,36 @@ void LStepExpressModel::initialize()
       joystickAxisEnabled_ = allZerosI;
       setDeviceState(READY);
     }
-    else {
-        setDeviceState( OFF );
-        delete controller_;
-        controller_ = NULL;
+    else
+    {
+      setDeviceState( OFF );
+      delete controller_;
+      controller_ = nullptr;
     }
 }
 
-void LStepExpressModel::setDeviceState( State state )
+void LStepExpressModel::setDeviceState(State state)
 {
-    if ( state_ != state ) {
-        state_ = state;
+    NQLog("LStepExpressModel", NQLog::Debug) << "setDeviceState";
 
-        if ( state_ == READY ) {
-            timer_->start();
-        } else {
-            timer_->stop();
-        }
+    if(state_ != state)
+    {
+      state_ = state;
 
-        emit deviceStateChanged(state);
+      if(state_ == READY){ timer_->start(); }
+      else               { timer_->stop (); }
+
+      NQLog("LStepExpressModel", NQLog::Debug) << "setDeviceState"
+         << ": emitting signal \"deviceStateChanged\"";
+
+      emit deviceStateChanged(state);
     }
 }
 
 void LStepExpressModel::updateInformation()
 {
+    NQLog("LStepExpressModel", NQLog::Debug) << "updateInformation";
+
     /*
       if (thread()==QApplication::instance()->thread()) {
       NQLog("LStepExpressModel "<< " running in main application thread";
@@ -412,14 +525,18 @@ void LStepExpressModel::updateInformation()
         changed = true;
       }
     }
-    if (changed) {
+    if(changed)
+    {
+        NQLog("LStepExpressModel", NQLog::Debug) << "updateInformation"
+           << ": emitting signal \"informationChanged\"";
+
         emit informationChanged();
     }
 }
 
 void LStepExpressModel::updateMotionInformation()
 {
-  NQLog("LStepExpressModel ")<< "updateMotionInformation motion information changed"  ;
+    NQLog("LStepExpressModel", NQLog::Debug) << "updateMotionInformation";
 
     static const int nUpdates = updateInterval_/motionUpdateInterval_;
 
@@ -465,7 +582,15 @@ void LStepExpressModel::updateMotionInformation()
 	    temp = ifaxisenabled || ifaxisnotenabled;
 	    //	    NQLog("LStepExpressModel", NQLog::Spam) <<" axis status =  "<<(ivalues)[i]<<" axis enabled = "<<(axis_)[i]<<" temp = "<<temp;
           }
-          if(temp){inMotion_ = false; emit motionFinished();}
+          if(temp)
+          {
+            inMotion_ = false;
+
+            NQLog("LStepExpressModel", NQLog::Debug) << "updateMotionInformation"
+               << ": emitting signal \"motionFinished\"";
+
+            emit motionFinished();
+          }
           
           /*
 	if (std::all_of(ivalues.begin(), ivalues.end(),
@@ -494,9 +619,12 @@ void LStepExpressModel::updateMotionInformation()
           changed = true;
           finishedCalibrating_ = false;
       }
-      
-      if (changed) {
-	//          NQLog("LStepExpressModel ", NQLog::Spam)<< "updateMotionInformation() motion information changed"  ;
+
+      if(changed)
+      {
+          NQLog("LStepExpressModel", NQLog::Debug) << "updateMotionInformation"
+             << ": emitting signal \"motionInformationChanged\"";
+
           emit motionInformationChanged();
       }
       
@@ -506,8 +634,7 @@ void LStepExpressModel::updateMotionInformation()
 
 void LStepExpressModel::updateMotionInformationFromTimer()
 {
-
-     NQLog("LStepExpressModel ")<< " update from timer"  ;
+    NQLog("LStepExpressModel", NQLog::Debug) << "updateMotionInformationFromTimer";
 
     static const int nUpdates = updateInterval_/motionUpdateInterval_;
     
@@ -545,37 +672,49 @@ void LStepExpressModel::updateMotionInformationFromTimer()
           changed = true;
       }
       
-      if (inMotion_) {
+      if(inMotion_)
+      {
           bool temp = true;
-          for(int i = 0; i < 4; i++){
+          for(int i = 0; i < 4; i++)
+          {
 	    bool ifaxisenabled = ( (ivalues)[i] == LStepExpress_t::AXISSTANDSANDREADY || (ivalues)[i] == LStepExpress_t::AXISACKAFTERCALIBRATION) && (axis_)[i] == 1;
 	    bool ifaxisnotenabled = (axis_)[i] == 0;
 	    temp *= (ifaxisenabled || ifaxisnotenabled);
           }
-	  if(temp){inMotion_ = false;
+	  if(temp)
+          {
+            inMotion_ = false;
 
-	    NQLog("LStepExpressModel ")<< "emitting motion finished signal"  ;
-            emit motionFinished();}
+            NQLog("LStepExpressModel", NQLog::Debug) << "updateMotionInformationFromTimer"
+               << ": emitting signal \"motionFinished\"";
+
+            emit motionFinished();
+          }
       }
-      
-      if( (axis_)[0] || (axis_)[1] || (axis_)[2] || (axis_)[3]){
+
+      if((axis_)[0] || (axis_)[1] || (axis_)[2] || (axis_)[3])
+      {
           controller_->GetPosition(dvalues);
           if (dvalues!=position_) {
 	  position_ = dvalues;
 	  changed = true;
           }
       }
-      
-      if(!inMotion_ && finishedCalibrating_){
+
+      if(!inMotion_ && finishedCalibrating_)
+      {
           std::vector<double> posvalues{0.0, 0.0, 0.0, 0.0};
           controller_->SetPosition(posvalues);
           position_ = posvalues;
           changed = true;
           finishedCalibrating_ = false;
       }
-      
-      if (changed) {
-	//NQLog("LStepExpressModel ", NQLog::Spam)<< "updateMotionInformationFromTimer motion information changed"  ;
+
+      if(changed)
+      {
+          NQLog("LStepExpressModel", NQLog::Debug) << "updateMotionInformationFromTimer"
+             << ": emitting signal \"motionInformationChanged\"";
+
           emit motionInformationChanged();
       }
       
@@ -585,10 +724,13 @@ void LStepExpressModel::updateMotionInformationFromTimer()
 
 void LStepExpressModel::setDeviceEnabled(bool enabled)
 {
-    if (state_ == READY && !enabled) {
-        std::vector<int> allZeros{ 0, 0, 0, 0 };
-        controller_->SetPowerAmplifierStatus(allZeros);
-        controller_->SetAxisEnabled(allZeros);
+    NQLog("LStepExpressModel", NQLog::Debug) << "setDeviceEnabled(" << enabled << ")";
+
+    if(state_ == READY && !enabled)
+    {
+      std::vector<int> allZeros{ 0, 0, 0, 0 };
+      controller_->SetPowerAmplifierStatus(allZeros);
+      controller_->SetAxisEnabled(allZeros);
     }
 
     AbstractDeviceModel<LStepExpress_t>::setDeviceEnabled(enabled);
@@ -596,6 +738,8 @@ void LStepExpressModel::setDeviceEnabled(bool enabled)
 
 void LStepExpressModel::setControlsEnabled(bool enabled)
 {
+    NQLog("LStepExpressModel", NQLog::Debug) << "setControlsEnabled(" << enabled << ")"
+       << ": emitting signal \"controlStateChanged(" << enabled << ")\"";
+
     emit controlStateChanged(enabled);
 }
-

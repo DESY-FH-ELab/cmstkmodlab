@@ -135,10 +135,10 @@ LStepExpressJoystickAxisWidget::LStepExpressJoystickAxisWidget(LStepExpressModel
 
 LStepExpressJoystickAxisWidget::~LStepExpressJoystickAxisWidget()
 {
-    if(layout_){delete layout_; layout_ = NULL;}
-    if(upButton_){delete upButton_; upButton_ = NULL;}
-    if(downButton_){delete downButton_; downButton_ = NULL;}
-    if(stepBox_){delete stepBox_; stepBox_ = NULL;}
+    if(layout_){delete layout_; layout_ = nullptr;}
+    if(upButton_){delete upButton_; upButton_ = nullptr;}
+    if(downButton_){delete downButton_; downButton_ = nullptr;}
+    if(stepBox_){delete stepBox_; stepBox_ = nullptr;}
 }
 
 void LStepExpressJoystickAxisWidget::updateWidgets()

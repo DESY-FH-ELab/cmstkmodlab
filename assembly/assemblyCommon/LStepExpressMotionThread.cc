@@ -10,20 +10,38 @@
 //                                                                             //
 /////////////////////////////////////////////////////////////////////////////////
 
-#include <QApplication>
-#include <iostream>
+#include <LStepExpressMotionThread.h>
 #include <nqlogger.h>
 
-#include "LStepExpressMotionThread.h"
-
-LStepExpressMotionThread::LStepExpressMotionThread(QObject *parent)
-    : QThread(parent)
+LStepExpressMotionThread::LStepExpressMotionThread(LStepExpressMotionManager* motion_manager, QObject* parent) :
+  QThread(parent),
+  motion_manager_(motion_manager)
 {
+  if(motion_manager_ == nullptr)
+  {
+    NQLog("LStepExpressMotionThread", NQLog::Fatal) << "initialization error"
+       << ": null pointer to LStepExpressMotionManager object, exiting constructor";
 
+    return;
+  }
+
+  motion_manager_->myMoveToThread(this);
+
+//  connect(this, SIGNAL(finished()), this, SLOT(deleteLater()));
+
+  NQLog("LStepExpressMotionThread", NQLog::Debug) << "constructed";
+}
+
+LStepExpressMotionThread::~LStepExpressMotionThread()
+{
+  NQLog("LStepExpressMotionThread", NQLog::Debug) << "destructed";
 }
 
 void LStepExpressMotionThread::run()
 {
-  //    NQLog("LStepExpressMotionThread ", NQLog::Debug) << "run";
-    exec();
+  NQLog("LStepExpressMotionThread", NQLog::Debug) << "run";
+
+  this->exec();
+
+  return;
 }

@@ -13,22 +13,22 @@
 #ifndef ASSEMBLYVUEYECAMERA_H
 #define ASSEMBLYVUEYECAMERA_H
 
-#include <opencv2/opencv.hpp>
+#include <DeviceState.h>
 
 #include <QObject>
-
-#include <DeviceState.h>
-#include "AssemblySensorMarkerFinder.h"
-
 #include <QString>
+
+#include <opencv2/opencv.hpp>
 
 class AssemblyVUEyeCamera : public QObject
 {
-    Q_OBJECT
-public:
-    explicit AssemblyVUEyeCamera(QObject *parent);
+ Q_OBJECT
+
+  public:
+
+    explicit AssemblyVUEyeCamera(QObject* parent);
     ~AssemblyVUEyeCamera();
-    AssemblySensorMarkerFinder* loopFind_;
+
     void setCameraID(unsigned int id) { cameraID_ = id; }
     void setDeviceID(unsigned int id) { deviceID_ = id; }
     void setSensorID(unsigned int id) { sensorID_ = id; }
@@ -92,7 +92,7 @@ public:
     virtual bool isOpen() const { return (cameraState_==State::READY); }
     State getDeviceState() const { return cameraState_; }
 
-public slots:
+  public slots:
 
     virtual void open() = 0;
     virtual void close() = 0;
@@ -102,10 +102,7 @@ public slots:
     virtual void setPixelClock(unsigned int) = 0;
     virtual void setExposureTime(double) = 0;
 
-
-protected slots:
-
-protected:
+  protected:
 
     unsigned int cameraID_;
     unsigned int deviceID_;
@@ -142,7 +139,7 @@ protected:
 
     State cameraState_;
 
-signals:
+  signals:
     void resultObtained(double,double,double);
     void moveAbsolute(double,double,double,double);
 
@@ -160,11 +157,6 @@ signals:
 
     void imageAcquired(const cv::Mat&);
     void updateStatus(QString, double);
-
-    
-
-private:
-
 };
 
 #endif // ASSEMBLYVUEYECAMERA_H

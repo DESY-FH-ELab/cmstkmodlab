@@ -158,13 +158,13 @@ LStepExpressMeasurementWidget::LStepExpressMeasurementWidget(LStepExpressModel* 
     
 LStepExpressMeasurementWidget::~LStepExpressMeasurementWidget()
 {
-    if(averageMeasCheckBox_){delete averageMeasCheckBox_; averageMeasCheckBox_ = NULL;}
-    if(buttonGeneratePos_){delete buttonGeneratePos_; buttonGeneratePos_ = NULL;}
-    if(buttonStartMeasurement_){delete buttonStartMeasurement_; buttonStartMeasurement_ = NULL;}
-    if(buttonStopMeasurement_){delete buttonStopMeasurement_; buttonStopMeasurement_ = NULL;}
-    if(buttonStoreMeasurement_){delete buttonStoreMeasurement_; buttonStoreMeasurement_ = NULL;}
-    //if(checkBoxEnableLaser_){delete checkBoxEnableLaser_; checkBoxEnableLaser_ = NULL;}
-    if(zigzagCheckBox_){delete zigzagCheckBox_; zigzagCheckBox_ = NULL;}
+    if(averageMeasCheckBox_){delete averageMeasCheckBox_; averageMeasCheckBox_ = nullptr;}
+    if(buttonGeneratePos_){delete buttonGeneratePos_; buttonGeneratePos_ = nullptr;}
+    if(buttonStartMeasurement_){delete buttonStartMeasurement_; buttonStartMeasurement_ = nullptr;}
+    if(buttonStopMeasurement_){delete buttonStopMeasurement_; buttonStopMeasurement_ = nullptr;}
+    if(buttonStoreMeasurement_){delete buttonStoreMeasurement_; buttonStoreMeasurement_ = nullptr;}
+    //if(checkBoxEnableLaser_){delete checkBoxEnableLaser_; checkBoxEnableLaser_ = nullptr;}
+    if(zigzagCheckBox_){delete zigzagCheckBox_; zigzagCheckBox_ = nullptr;}
 }
 
 void LStepExpressMeasurementWidget::laserStateChanged(State newState)
