@@ -10,29 +10,40 @@
 //                                                                             //
 /////////////////////////////////////////////////////////////////////////////////
 
-#include <QMutex>
-
+#include <AssemblyUEyeCameraThread.h>
 #include <nqlogger.h>
 
-#include "AssemblyUEyeCameraThread.h"
+#include <QMutex>
 
-AssemblyUEyeCameraThread::AssemblyUEyeCameraThread(AssemblyUEyeModel_t* model,
-                                                   QObject *parent)
-    : QThread(parent),
-      model_(model)
+AssemblyUEyeCameraThread::AssemblyUEyeCameraThread(AssemblyUEyeModel_t* model, QObject* parent) :
+  QThread(parent),
+  model_(model)
 {
-    model_->moveToThread(this);
+  if(model_ == nullptr)
+  {
+    NQLog("AssemblyUEyeCameraThread", NQLog::Fatal) << "initialization error"
+       << ": null pointer to AssemblyUEyeModel_t object, exiting constructor";
 
-    NQLog("AssemblyUEyeCameraThread", NQLog::Spam) << "construct";
+    return;
+  }
+
+  model_->moveToThread(this);
+
+//  connect(this, SIGNAL(finished()), this, SLOT(deleteLater()));
+
+  NQLog("AssemblyUEyeCameraThread", NQLog::Debug) << "constructed";
 }
 
 AssemblyUEyeCameraThread::~AssemblyUEyeCameraThread()
 {
-    NQLog("AssemblyUEyeCameraThread", NQLog::Spam) << "delete";
+  NQLog("AssemblyUEyeCameraThread", NQLog::Debug) << "destructed";
 }
 
 void AssemblyUEyeCameraThread::run()
 {
-    NQLog("AssemblyUEyeCameraThread", NQLog::Spam) << "started";
-    exec();
+  NQLog("AssemblyUEyeCameraThread", NQLog::Debug) << "run";
+
+  this->exec();
+
+  return;
 }

@@ -16,13 +16,12 @@
 #include <iostream>
 #include "LStepExpressMeasurement.h"
 
-LStepExpressMeasurement::LStepExpressMeasurement(LStepExpressModel* model, LStepExpressMotionManager* manager, LaserModel* laserModel, LStepExpressMeasurementTable* table,
-				 QObject * /*parent*/)
-    : QObject(),
-      model_(model),
-      manager_(manager),
-      laserModel_(laserModel),
-      table_(table)
+LStepExpressMeasurement::LStepExpressMeasurement(LStepExpressModel* model, LStepExpressMotionManager* manager, LaserModel* laserModel, LStepExpressMeasurementTable* table, QObject*) :
+  QObject(),
+  model_(model),
+  manager_(manager),
+  laserModel_(laserModel),
+  table_(table)
 {
     averageMeasEnabled_ = false;
     isLaserEnabled_ = false;

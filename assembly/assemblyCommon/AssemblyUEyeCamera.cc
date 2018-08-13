@@ -10,28 +10,17 @@
 //                                                                             //
 /////////////////////////////////////////////////////////////////////////////////
 
-#include <iostream>
-
-#include <QApplication>
-
+#include <AssemblyUEyeCamera.h>
 #include <nqlogger.h>
 
-#include "AssemblyUEyeCamera.h"
-#include "AssemblySensorMarkerFinder.h"
-
-
-AssemblyUEyeCameraEventThread::AssemblyUEyeCameraEventThread()
+AssemblyUEyeCameraEventThread::AssemblyUEyeCameraEventThread() :
+  cameraHandle_(0),
+  runEventThread_(false)
 {
-    cameraHandle_ = 0;
-    runEventThread_ = false;
-
-     AssemblySensorMarkerFinder*  finder_ = new AssemblySensorMarkerFinder();
-
 }
 
 AssemblyUEyeCameraEventThread::~AssemblyUEyeCameraEventThread()
 {
-
 }
 
 int AssemblyUEyeCameraEventThread::start(HIDS cameraHandle)
@@ -41,8 +30,10 @@ int AssemblyUEyeCameraEventThread::start(HIDS cameraHandle)
     cameraHandle_ = cameraHandle;
 
     ret = is_EnableEvent(cameraHandle_, IS_SET_EVENT_FRAME);
-    if (ret==0) {
-        NQLog("AssemblyUEyeCameraEventThread::start()", NQLog::Message) << "is_EnableEvent " << ret;
+    if(ret == 0)
+    {
+        NQLog("AssemblyUEyeCameraEventThread", NQLog::Debug) << "start: is_EnableEvent=" << ret;
+
         runEventThread_ = true;
         QThread::start ();
     }
@@ -59,6 +50,10 @@ void AssemblyUEyeCameraEventThread::run ()
 {
     while (runEventThread_) {
         if (is_WaitEvent (cameraHandle_, IS_SET_EVENT_FRAME, 1000) == IS_SUCCESS) {
+
+            NQLog("AssemblyUEyeCamera", NQLog::Debug) << "run"
+               << ": emitting signal \"eventHappened\"";
+
             emit eventHappened();
         }
     }
@@ -67,15 +62,14 @@ void AssemblyUEyeCameraEventThread::run ()
     is_DisableEvent (cameraHandle_, IS_SET_EVENT_FRAME);
 }
 
-AssemblyUEyeCamera::AssemblyUEyeCamera(QObject *parent)
-    : AssemblyVUEyeCamera(parent)
+AssemblyUEyeCamera::AssemblyUEyeCamera(QObject *parent) : AssemblyVUEyeCamera(parent)
 {
     bufferProps_.width = 0;
     bufferProps_.height = 0;
     bufferProps_.bitspp = 8;
     bufferProps_.colorformat = IS_CM_MONO8;
     //bufferProps_.imgformat = QImage::Format_Invalid;
-    //bufferProps_.pRgbTable = NULL;
+    //bufferProps_.pRgbTable = nullptr;
     //bufferProps_.tableentries = 0;
 
     //for (int i = 0; i < 256; i++)
@@ -94,32 +88,37 @@ AssemblyUEyeCamera::~AssemblyUEyeCamera()
 
 void AssemblyUEyeCamera::open()
 {
-    if (cameraState_==State::READY || cameraState_==State::INITIALIZING) return;
+    if (cameraState_==State::READY || cameraState_==State::INITIALIZING){ return; }
 
     cameraState_ = State::INITIALIZING;
 
     cameraHandle_ = getCameraID();
     unsigned int ret = is_InitCamera(&cameraHandle_, 0);
-    NQLog("AssemblyUEyeCamera::initialize()", NQLog::Message) << "is_InitCamera " << ret;
+
+    NQLog("AssemblyUEyeCamera", NQLog::Debug) << "open: is_InitCamera=" << ret;
 
     CAMINFO* cameraInfo = new CAMINFO;
-    if (!is_GetCameraInfo(cameraHandle_, cameraInfo)) {
-
+    if(!is_GetCameraInfo(cameraHandle_, cameraInfo))
+    {
         setID(cameraInfo->ID);
         setVersion(cameraInfo->Version);
         setDate(cameraInfo->Date);
 
-        emit cameraInformationChanged();
+        NQLog("AssemblyUEyeCamera", NQLog::Debug) << "open"
+           << ": emitting signal \"cameraInformationChanged\"";
 
-    } else {
-        NQLog("AssemblyUEyeCamera", NQLog::Fatal) << "cannot read camera information";
+        emit cameraInformationChanged();
+    }
+    else
+    {
+        NQLog("AssemblyUEyeCamera", NQLog::Fatal) << "open: cannot read camera information";
     }
 
     delete cameraInfo;
 
     SENSORINFO* sensorInfo = new SENSORINFO;
-    if (!is_GetSensorInfo(cameraHandle_, sensorInfo)) {
-
+    if(!is_GetSensorInfo(cameraHandle_, sensorInfo))
+    {
         setSensorName(sensorInfo->strSensorName);
         setColorMode(sensorInfo->nColorMode);
         setMaxWidth(sensorInfo->nMaxWidth);
@@ -130,10 +129,9 @@ void AssemblyUEyeCamera::open()
         setBlueGain(sensorInfo->bBGain);
         setGlobalShutter(sensorInfo->bGlobShutter);
         setPixelSize(sensorInfo->wPixelSize);
-        NQLog("AssemblyUEyeCamera, width = ") << sensorInfo->nMaxWidth;
-        NQLog("AssemblyUEyeCamera, height = ") << sensorInfo->nMaxHeight;
 
-
+        NQLog("AssemblyUEyeCamera", NQLog::Debug) << "open: width  = " << sensorInfo->nMaxWidth;
+        NQLog("AssemblyUEyeCamera", NQLog::Debug) << "open: height = " << sensorInfo->nMaxHeight;
 
         int colormode = 0;
         if (sensorInfo->nColorMode >= IS_COLORMODE_BAYER)
@@ -145,22 +143,29 @@ void AssemblyUEyeCamera::open()
             colormode = IS_CM_MONO8;
         }
 
-        if (is_SetColorMode(cameraHandle_, colormode) != IS_SUCCESS) {
-            NQLog("AssemblyUEyeCamera", NQLog::Fatal) << "cannot set color mode";
+        if(is_SetColorMode(cameraHandle_, colormode) != IS_SUCCESS)
+        {
+            NQLog("AssemblyUEyeCamera", NQLog::Fatal) << "open: cannot set color mode";
         }
 
-        emit cameraInformationChanged();
+        NQLog("AssemblyUEyeCamera", NQLog::Debug) << "open"
+           << ": emitting signal \"cameraInformationChanged\"";
 
-    } else {
-        NQLog("AssemblyUEyeCamera", NQLog::Fatal) << "cannot read sensor information";
+        emit cameraInformationChanged();
+    }
+    else
+    {
+        NQLog("AssemblyUEyeCamera", NQLog::Fatal) << "open"
+           << ": cannot read sensor information";
     }
 
     delete sensorInfo;
 
     unsigned int uInitialParameterSet = IS_CONFIG_INITIAL_PARAMETERSET_NONE;
 
-    if (is_Configuration(IS_CONFIG_INITIAL_PARAMETERSET_CMD_GET, &uInitialParameterSet, sizeof(unsigned int))) {
-        NQLog("AssemblyUEyeCamera", NQLog::Fatal) << "cannot read sensor initial parameter set";
+    if(is_Configuration(IS_CONFIG_INITIAL_PARAMETERSET_CMD_GET, &uInitialParameterSet, sizeof(unsigned int)))
+    {
+        NQLog("AssemblyUEyeCamera", NQLog::Fatal) << "open: cannot read sensor initial parameter set";
     }
 
     if (uInitialParameterSet == IS_CONFIG_INITIAL_PARAMETERSET_NONE) {
@@ -202,12 +207,15 @@ void AssemblyUEyeCamera::open()
 
     cameraState_ = State::READY;
 
+    NQLog("AssemblyUEyeCamera", NQLog::Debug) << "open"
+       << ": emitting signal \"cameraOpened\"";
+
     emit cameraOpened();
 }
 
 void AssemblyUEyeCamera::close()
 {
-    if (cameraState_!=State::READY) return;
+    if(cameraState_ != State::READY){ return; }
 
     cameraState_ = State::CLOSING;
 
@@ -215,13 +223,18 @@ void AssemblyUEyeCamera::close()
 
     freeImages();
 
-    if (eventThread_->wait(2000) == FALSE)
+    if (eventThread_->wait(2000) == FALSE){
         eventThread_->terminate();
+    }
 
     unsigned int ret = is_ExitCamera(cameraHandle_);
-    NQLog("AssemblyUEyeCamera::exit()", NQLog::Message) << "is_ExitCamera "  << ret;
+
+    NQLog("AssemblyUEyeCamera", NQLog::Debug) << "close: is_ExitCamera=" << ret;
 
     cameraState_ = State::OFF;
+
+    NQLog("AssemblyUEyeCamera", NQLog::Debug) << "close"
+       << ": emitting signal \"cameraClosed\"";
 
     emit cameraClosed();
 }
@@ -231,14 +244,15 @@ void AssemblyUEyeCamera::updateInformation()
     if (cameraState_!=State::READY) return;
 
     CAMINFO* cameraInfo = new CAMINFO;
-    if (!is_GetCameraInfo(cameraHandle_, cameraInfo)) {
-
+    if(!is_GetCameraInfo(cameraHandle_, cameraInfo))
+    {
         setID(cameraInfo->ID);
         setVersion(cameraInfo->Version);
         setDate(cameraInfo->Date);
-
-    } else {
-        NQLog("AssemblyUEyeCamera", NQLog::Fatal) << "cannot read camera information";
+    }
+    else
+    {
+        NQLog("AssemblyUEyeCamera", NQLog::Fatal) << "updateInformation: cannot read camera information";
     }
 
     delete cameraInfo;
@@ -257,8 +271,10 @@ void AssemblyUEyeCamera::updateInformation()
         setGlobalShutter(sensorInfo->bGlobShutter);
         setPixelSize(sensorInfo->wPixelSize);
 
-    } else {
-        NQLog("AssemblyUEyeCamera", NQLog::Fatal) << "cannot read sensor information";
+    }
+    else
+    {
+        NQLog("AssemblyUEyeCamera", NQLog::Fatal) << "updateInformation: cannot read sensor information";
     }
 
     delete sensorInfo;
@@ -287,7 +303,8 @@ void AssemblyUEyeCamera::updatePixelClock()
       nInc = nRange[2];
     }
 
-    NQLog("AssemblyUEyeCamera", NQLog::Message) << ":updatePixelClock() " << nMin << " " << nMax << " " << nInc;
+    NQLog("AssemblyUEyeCamera", NQLog::Debug) << "updatePixelClock"
+       ": " << nMin << " " << nMax << " " << nInc;
 
     if (nMin!=0) {
 
@@ -306,8 +323,21 @@ void AssemblyUEyeCamera::updatePixelClock()
         pixelClocks_ = newPixelClocks;
         currentPixelClock_ = newPixelClock;
 
-        if (listChanged) emit pixelClockListChanged(newPixelClock);
-        if (valueChanged) emit pixelClockChanged(newPixelClock);
+        if (listChanged)
+        {
+          NQLog("AssemblyUEyeCamera", NQLog::Debug) << "updatePixelClock"
+             << ": emitting signal \"pixelClockListChanged(" << newPixelClock << ")\"";
+
+          emit pixelClockListChanged(newPixelClock);
+        }
+
+        if(valueChanged)
+        {
+          NQLog("AssemblyUEyeCamera", NQLog::Debug) << "updatePixelClock"
+             << ": emitting signal \"pixelClockChanged(" << newPixelClock << ")\"";
+
+          emit pixelClockChanged(newPixelClock);
+        }
 
     } else {
 
@@ -348,15 +378,36 @@ void AssemblyUEyeCamera::updatePixelClock()
                 pixelClocks_ = newPixelClocks;
                 currentPixelClock_ = newPixelClock;
 
-                if (listChanged) emit pixelClockListChanged(newPixelClock);
-                if (valueChanged) emit pixelClockChanged(newPixelClock);
+                if(listChanged)
+                {
+                  NQLog("AssemblyUEyeCamera", NQLog::Debug) << "updatePixelClock"
+                     << ": emitting signal \"pixelClockListChanged(" << newPixelClock << ")\"";
 
-            } else {
+                  emit pixelClockListChanged(newPixelClock);
+                }
+
+                if(valueChanged)
+                {
+                  NQLog("AssemblyUEyeCamera", NQLog::Debug) << "updatePixelClock"
+                     << ": emitting signal \"pixelClockChanged(" << newPixelClock << ")\"";
+
+                  emit pixelClockChanged(newPixelClock);
+                }
+            }
+            else
+            {
                 pixelClocks_.clear();
                 pixelClocks_.push_back(0);
                 currentPixelClock_ = 0;
 
+                NQLog("AssemblyUEyeCamera", NQLog::Debug) << "updatePixelClock"
+                   << ": emitting signal \"pixelClockListChanged(" << 0 << ")\"";
+
                 emit pixelClockListChanged(0);
+
+                NQLog("AssemblyUEyeCamera", NQLog::Debug) << "updatePixelClock"
+                   << ": emitting signal \"pixelClockChanged(" << 0 << ")\"";
+
                 emit pixelClockChanged(0);
             }
         }
@@ -377,14 +428,16 @@ void AssemblyUEyeCamera::updateExposureTime()
 
     INT nRet = is_Exposure(cameraHandle_, IS_EXPOSURE_CMD_GET_EXPOSURE_RANGE, (void*)nRange, sizeof(nRange));
 
-    if (nRet == IS_SUCCESS) {
+    if(nRet == IS_SUCCESS)
+    {
         nMin = nRange[0];
         nMax = nRange[1];
         nInc = nRange[2];
 
-        NQLog("AssemblyUEyeCamera here yes", NQLog::Message) << ":updateExposureTime() " << nMin << " " << nMax << " " << nInc;
+        NQLog("AssemblyUEyeCamera", NQLog::Debug) << "updateExposureTime"
+           ": " << nMin << " " << nMax << " " << nInc;
 
-        bool listChanged = false;
+        bool  listChanged = false;
         bool valueChanged = false;
 
         double newExposureTime;
@@ -399,22 +452,35 @@ void AssemblyUEyeCamera::updateExposureTime()
         exposureTimeInc_ = nInc;
         currentExposureTime_ = newExposureTime;
 
-        if (listChanged) emit exposureTimeRangeChanged(newExposureTime);
-        if (valueChanged) emit exposureTimeChanged(newExposureTime);
+        if(listChanged)
+        {
+          NQLog("AssemblyUEyeCamera", NQLog::Debug) << "updateExposureTime"
+             << ": emitting signal \"exposureTimeRangeChanged(" << newExposureTime << ")\"";
+
+          emit exposureTimeRangeChanged(newExposureTime);
+        }
+
+        if(valueChanged)
+        {
+          NQLog("AssemblyUEyeCamera", NQLog::Debug) << "updateExposureTime"
+             << ": emitting signal \"exposureTimeChanged(" << newExposureTime << ")\"";
+
+          emit exposureTimeChanged(newExposureTime);
+        }
     }
 }
 
 bool AssemblyUEyeCamera::isAvailable() const
 {
-    return (bool)IS_CAMERA_AVAILABLE(getStatus());
+    return ((bool) IS_CAMERA_AVAILABLE(getStatus()));
 }
 
 void AssemblyUEyeCamera::eventHappend()
 {
-    NQLog("AssemblyUEyeCamera::eventHappend()", NQLog::Message) << "new frame available";
+    NQLog("AssemblyUEyeCamera", NQLog::Debug) << "eventHappend: new frame available";
 
     INT dummy = 0;
-    char *pLast = NULL, *pMem = NULL;
+    char *pLast = nullptr, *pMem = nullptr;
 
     is_GetActSeqBuf(cameraHandle_, &dummy, &pMem, &pLast);
     lastBuffer_ = pLast;
@@ -434,22 +500,31 @@ void AssemblyUEyeCamera::eventHappend()
 
     is_UnlockSeqBuf(cameraHandle_, nNum, lastBuffer_);
 
+    NQLog("AssemblyUEyeCamera", NQLog::Debug) << "eventHappend"
+       << ": emitting signal \"imageAcquired\"";
+
     emit imageAcquired(image_);
 }
 
 void AssemblyUEyeCamera::acquireImage()
 {
-  NQLog("AssemblyUEyeCamera::aquireImage()")<< "TEST CONNECTION" ;
+  if(cameraState_ != READY)
+  {
+      NQLog("AssemblyUEyeCamera", NQLog::Critical) << "acquireImage: camera is not ready, no action taken";
 
-    NQLog("AssemblyUEyeCamera::aquireImage() here", NQLog::Message) ;
+      return;
+  }
 
-    if (cameraState_!=READY) return;
+  NQLog("AssemblyUEyeCamera", NQLog::Debug) << "acquireImage: camera is ready";
 
-    NQLog("AssemblyUEyeCamera::aquireImage()", NQLog::Message) << "camera is ready...";
-    unsigned int ret = is_FreezeVideo(cameraHandle_, IS_DONT_WAIT);
+  unsigned int ret = is_FreezeVideo(cameraHandle_, IS_DONT_WAIT);
 
-    if (ret == IS_SUCCESS)
-      NQLog("AssemblyUEyeCamera::aquireImage()", NQLog::Message) << "successfully acquired... " << ret;
+  if(ret == IS_SUCCESS)
+  {
+      NQLog("AssemblyUEyeCamera", NQLog::Debug) << "acquireImage: image acquired successfully";
+  }
+
+  return;
 }
 
 int AssemblyUEyeCamera::searchDefaultImageFormats(int supportMask)
@@ -507,7 +582,7 @@ void AssemblyUEyeCamera::setupCapture()
             colormode = IS_CM_BGR565_PACKED;
         }
 
-        NQLog("AssemblyUEyeCamera::setupCapture()", NQLog::Message) << "color mode = " << colormode;
+        NQLog("AssemblyUEyeCamera", NQLog::Debug) << "setupCapture: color mode = " << colormode;
 
         ZeroMemory(&bufferProps_, sizeof(bufferProps_));
         bufferProps_.width  = width;
@@ -581,7 +656,7 @@ unsigned int AssemblyUEyeCamera::readPixelClock()
     // Get current pixel clock
     INT nRet = is_PixelClock(cameraHandle_, IS_PIXELCLOCK_CMD_GET, (void*)&nPixelClock, sizeof(nPixelClock));
 
-    NQLog("AssemblyUEyeCamera") << ":readPixelClock() " << nPixelClock;
+    NQLog("AssemblyUEyeCamera", NQLog::Debug) << "readPixelClock: nPixelClock=" << nPixelClock;
 
     return nPixelClock;
 }
@@ -592,7 +667,7 @@ void AssemblyUEyeCamera::setPixelClock(unsigned int pixelClock)
 
     if (currentPixelClock_==pixelClock) return;
 
-    NQLog("AssemblyUEyeCamera test") << ":setPixelClock(unsigned int) " << pixelClock;
+    NQLog("AssemblyUEyeCamera", NQLog::Debug) << "setPixelClock: pixelClock" << pixelClock;
 
     UINT nPixelClock = pixelClock;
 
@@ -609,32 +684,31 @@ double AssemblyUEyeCamera::readExposureTime()
     // Get current pixel clock
     INT nRet = is_Exposure(cameraHandle_, IS_EXPOSURE_CMD_GET_EXPOSURE, (void*)&nExposureTime, sizeof(nExposureTime));
 
-    NQLog("AssemblyUEyeCamera") << ":readExposureTime() " << nExposureTime;
+    NQLog("AssemblyUEyeCamera", NQLog::Debug) << "readExposureTime: nExposureTime=" << nExposureTime;
 
     return nExposureTime;
-    //return 1.e-3*std::round(1.e3*nExposureTime);
+//    return 1.e-3*std::round(1.e3*nExposureTime);
 }
 
 void AssemblyUEyeCamera::setExposureTime(double exposureTime)
 {
-    if (cameraState_!=State::READY) return;
+    if(cameraState_ != State::READY){ return; }
 
-    if (currentExposureTime_==exposureTime) return;
-    NQLog("AssemblyUEyeCamera") << ": SETTING EXPOSURE TIME! " << exposureTime;
+    if(currentExposureTime_ == exposureTime){ return; }
 
-    NQLog("AssemblyUEyeCamera") << ":setExposureTime(double) = = =  " << exposureTime;
+    NQLog("AssemblyUEyeCamera", NQLog::Debug) << "setExposureTime: exposureTime=" << exposureTime;
 
     double nExposureTime = exposureTime;
 
     // Get current pixel clock
     INT nRet = is_Exposure(cameraHandle_, IS_EXPOSURE_CMD_SET_EXPOSURE, (void*)&nExposureTime, sizeof(nExposureTime));
 
-    NQLog("AssemblyUEyeCamera") << ":setExposureTime(double) " << 1e6*(nExposureTime - readExposureTime());
+    NQLog("AssemblyUEyeCamera", NQLog::Debug) << "setExposureTime: delta=" << 1e6*(nExposureTime - readExposureTime());
 }
 
 bool AssemblyUEyeCamera::allocImages()
 {
-    lastBuffer_ = NULL;
+    lastBuffer_ = nullptr;
 
     int nWidth = 0;
     int nHeight = 0;
@@ -651,7 +725,7 @@ bool AssemblyUEyeCamera::allocImages()
 
         if (images_[i].pBuf) {
             is_FreeImageMem (cameraHandle_, images_[i].pBuf, images_[i].nImageID);
-            images_[i].pBuf = NULL;
+            images_[i].pBuf = nullptr;
             images_[i].nImageID = 0;
         }
 
@@ -681,13 +755,13 @@ bool AssemblyUEyeCamera::allocImages()
 
 bool AssemblyUEyeCamera::freeImages()
 {
-    lastBuffer_ = NULL;
+    lastBuffer_ = nullptr;
     for (unsigned int i = 0; i < sizeof(images_) / sizeof(images_[0]); i++)
     {
         if (images_[i].pBuf)
         {
             is_FreeImageMem (cameraHandle_, images_[i].pBuf, images_[i].nImageID);
-            images_[i].pBuf = NULL;
+            images_[i].pBuf = nullptr;
             images_[i].nImageID = 0;
         }
     }

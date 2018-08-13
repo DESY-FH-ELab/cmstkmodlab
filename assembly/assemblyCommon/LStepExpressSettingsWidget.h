@@ -47,6 +47,7 @@ class LStepExpressSettingsComboBox : public QComboBox
         
  signals:
 
+        void valueChanged(double);
         void valueChanged(QString, double);
 };
 

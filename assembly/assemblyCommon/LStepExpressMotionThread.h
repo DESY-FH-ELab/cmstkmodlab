@@ -13,17 +13,25 @@
 #ifndef LSTEPEXPRESSMOTIONTHREAD_H
 #define LSTEPEXPRESSMOTIONTHREAD_H
 
+#include <LStepExpressMotionManager.h>
+
+#include <QObject>
 #include <QThread>
 
 class LStepExpressMotionThread : public QThread
 {
-    Q_OBJECT
+ Q_OBJECT
 
-public:
+ public:
 
-    explicit LStepExpressMotionThread(QObject *parent = 0);
+  explicit LStepExpressMotionThread(LStepExpressMotionManager*, QObject* parent=nullptr);
+  virtual ~LStepExpressMotionThread();
 
-    void run();
+  void run();
+
+ protected:
+
+  LStepExpressMotionManager* motion_manager_;
 };
 
 #endif // LSTEPEXPRESSMOTIONTHREAD_H
