@@ -13,6 +13,8 @@
 #ifndef DEVICEPARAMETER_H
 #define DEVICEPARAMETER_H
 
+#include <cmath>
+
 /// A numerical parameter value class bounded by (inclusive) limits.
 template <typename T> class DeviceParameter {
 public:
