@@ -68,7 +68,7 @@ void LStepExpressMotionManager::connect_model()
 
 void LStepExpressMotionManager::disconnect_model()
 {
-  if(model_ == false){ return; }
+  if(model_ == nullptr){ return; }
 
   if(model_connected_ == true)
   {
