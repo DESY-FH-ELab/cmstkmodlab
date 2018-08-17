@@ -85,8 +85,16 @@ void LStepExpress::DeviceInit()
     StripBuffer(buffer);
     buf = buffer;
 
-    if (buf.find("PE43 1.00.01", 0)!=0) {
+    if(buf.find("PE43 1.00.01", 0) != 0)
+    {
+      std::cout << std::endl;
+      std::cout << " LStepExpress::DeviceInit ---";
+      std::cout << " device with invalid version [Command(\"ver\") = " << buf << "]"
+      std::cout << ", device set to NON AVAILABLE";
+      std::cout << std::endl << std::endl;
+
       isDeviceAvailable_ = false;
+
       return;
     }
 
@@ -95,8 +103,17 @@ void LStepExpress::DeviceInit()
     StripBuffer(buffer);
     buf = buffer;
 
-    if (buf.find("E2015.02.27-3012", 0)!=0) {
+    if(   (buf.find("E2015.02.27-3012", 0) != 0) // pre-DAF
+       && (buf.find("E2018.02.27-2002", 0) != 0) // DAF
+    ){
+      std::cout << std::endl;
+      std::cout << " LStepExpress::DeviceInit ---";
+      std::cout << " device with invalid internal version [Command(\"iver\") = " << buf << "]"
+      std::cout << ", device set to NON AVAILABLE";
+      std::cout << std::endl << std::endl;
+
       isDeviceAvailable_ = false;
+
       return;
     }
 
@@ -108,8 +125,18 @@ void LStepExpress::DeviceInit()
     StripBuffer(buffer);
     unsigned long serialNumber = std::atol(buffer);
 
-    if (!(serialNumber==40052435759 || serialNumber==40051635759)) {
+    if(   (serialNumber != 40052435759) // pre-DAF
+       && (serialNumber != 40051635759) // pre-DAF
+       && (serialNumber != 80050323881) // DAF
+    ){
+      std::cout << std::endl;
+      std::cout << " LStepExpress::DeviceInit ---";
+      std::cout << " device with invalid serial number [Command(\"readsn\") = " << serialNumber << "]"
+      std::cout << ", device set to NON AVAILABLE";
+      std::cout << std::endl << std::endl;
+
       isDeviceAvailable_ = false;
+
       return;
     }
 
