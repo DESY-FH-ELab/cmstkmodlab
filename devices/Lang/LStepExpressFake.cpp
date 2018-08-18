@@ -28,6 +28,7 @@ LStepExpressFake::LStepExpressFake( const ioport_t ioPort )
   pa_ = std::vector<int>{ 0, 0, 0, 0 };
   acceleration_ = std::vector<double>{ 50.0, 50.0, 50.0, 50.0 };
   deceleration_ = std::vector<double>{ 50.0, 50.0, 50.0, 50.0 };
+  velocity_ = std::vector<double>{ 20.0, 20.0, 20.0, 20.0 };
   position_ = std::vector<double>{ 0.0, 0.0, 0.0, 0.0 };
   moverel_ = std::vector<double>{ 0.0, 0.0, 0.0, 0.0 };
 
