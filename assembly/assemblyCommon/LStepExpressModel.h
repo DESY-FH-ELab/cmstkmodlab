@@ -51,6 +51,9 @@ class LStepExpressModel : public QObject, public AbstractDeviceModel<LStepExpres
     QString getAxisStatusText(unsigned int axis);
     bool getAxisEnabled(unsigned int axis);
     bool getAxisState(unsigned int axis);
+    double getAcceleration(unsigned int axis);
+    double getDeceleration(unsigned int axis);
+    double getVelocity(unsigned int axis);
     double getPosition(unsigned int axis);
 
     bool isInMotion() const { return inMotion_; }
@@ -78,9 +81,22 @@ class LStepExpressModel : public QObject, public AbstractDeviceModel<LStepExpres
     void setJoystickEnabled(bool enabled);
     void setJoystickAxisEnabled(unsigned int axis, bool enabled);
 
+    void setAcceleration(const std::vector<double>& values);
+    void setAcceleration(const double x, const double y, const double z, const double a);
+    void setAcceleration(const unsigned int axis, const double value);
+
+    void setDeceleration(const std::vector<double>& values);
+    void setDeceleration(const double x, const double y, const double z, const double a);
+    void setDeceleration(const unsigned int axis, const double value);
+
+    void setVelocity(const std::vector<double>& values);
+    void setVelocity(const double x, const double y, const double z, const double a);
+    void setVelocity(const unsigned int axis, const double value);
+
     void moveRelative(const std::vector<double>& values);
     void moveRelative(const double x, const double y, const double z, const double a);
     void moveRelative(const unsigned int axis, const double value);
+
     void moveAbsolute(const std::vector<double> & values);
     void moveAbsolute(const double x=0., const double y=0., const double z=0., const double a=0.);
     void moveAbsolute(const unsigned int axis, const double value);
@@ -111,6 +127,9 @@ class LStepExpressModel : public QObject, public AbstractDeviceModel<LStepExpres
     std::vector<int> joystickAxisEnabled_;
 
     std::vector<int> axisStatus_;
+    std::vector<double> acceleration_;
+    std::vector<double> deceleration_;
+    std::vector<double> velocity_;
     std::vector<double> position_;
 
     bool inMotion_;

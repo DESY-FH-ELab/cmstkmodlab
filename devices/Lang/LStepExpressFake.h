@@ -54,6 +54,21 @@ class LStepExpressFake : public VLStepExpress
   void SetPowerAmplifierStatus(std::vector<int> & values);
   void SetPowerAmplifierStatus(VLStepExpress::Axis axis, int value);
 
+  void GetAcceleration(std::vector<double> & values);
+  void GetAcceleration(VLStepExpress::Axis axis, double & value);
+  void SetAcceleration(std::vector<double> & values);
+  void SetAcceleration(VLStepExpress::Axis axis, double value);
+
+  void GetDeceleration(std::vector<double> & values);
+  void GetDeceleration(VLStepExpress::Axis axis, double & value);
+  void SetDeceleration(std::vector<double> & values);
+  void SetDeceleration(VLStepExpress::Axis axis, double value);
+
+  void GetVelocity(std::vector<double> & values);
+  void GetVelocity(VLStepExpress::Axis axis, double & value);
+  void SetVelocity(std::vector<double> & values);
+  void SetVelocity(VLStepExpress::Axis axis, double value);
+
   void GetPosition(std::vector<double> & values);
   void GetPosition(VLStepExpress::Axis axis, double & value);
   void SetPosition(std::vector<double> & values);
@@ -102,6 +117,9 @@ class LStepExpressFake : public VLStepExpress
   std::vector<int> axisDirection_;
   std::vector<int> dim_;
   std::vector<int> pa_;
+  std::vector<double> acceleration_;
+  std::vector<double> deceleration_;
+  std::vector<double> velocity_;
   std::vector<double> position_;
   std::vector<double> moverel_;
 

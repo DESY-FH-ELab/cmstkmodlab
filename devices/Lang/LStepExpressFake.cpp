@@ -26,6 +26,8 @@ LStepExpressFake::LStepExpressFake( const ioport_t ioPort )
   axisDirection_ = std::vector<int>{ 0, 0, 0, 0 };
   dim_ = std::vector<int>{ 2, 2, 2, 3 };
   pa_ = std::vector<int>{ 0, 0, 0, 0 };
+  acceleration_ = std::vector<double>{ 50.0, 50.0, 50.0, 50.0 };
+  deceleration_ = std::vector<double>{ 50.0, 50.0, 50.0, 50.0 };
   position_ = std::vector<double>{ 0.0, 0.0, 0.0, 0.0 };
   moverel_ = std::vector<double>{ 0.0, 0.0, 0.0, 0.0 };
 
@@ -148,6 +150,66 @@ void LStepExpressFake::SetPowerAmplifierStatus(std::vector<int> & values)
 void LStepExpressFake::SetPowerAmplifierStatus(VLStepExpress::Axis axis, int value)
 {
   pa_[axis] = value;
+}
+
+void LStepExpressFake::GetAcceleration(std::vector<double> & values)
+{
+  values = acceleration_;
+}
+
+void LStepExpressFake::GetAcceleration(VLStepExpress::Axis axis, double & value)
+{
+  value = acceleration_[axis];
+}
+
+void LStepExpressFake::SetAcceleration(std::vector<double> & values)
+{
+  acceleration_ = values;
+}
+
+void LStepExpressFake::SetAcceleration(VLStepExpress::Axis axis, double value)
+{
+  acceleration_[axis] = value;
+}
+
+void LStepExpressFake::GetDeceleration(std::vector<double> & values)
+{
+  values = deceleration_;
+}
+
+void LStepExpressFake::GetDeceleration(VLStepExpress::Axis axis, double & value)
+{
+  value = deceleration_[axis];
+}
+
+void LStepExpressFake::SetDeceleration(std::vector<double> & values)
+{
+  deceleration_ = values;
+}
+
+void LStepExpressFake::SetDeceleration(VLStepExpress::Axis axis, double value)
+{
+  deceleration_[axis] = value;
+}
+
+void LStepExpressFake::GetVelocity(std::vector<double> & values)
+{
+  values = velocity_;
+}
+
+void LStepExpressFake::GetVelocity(VLStepExpress::Axis axis, double & value)
+{
+  value = velocity_[axis];
+}
+
+void LStepExpressFake::SetVelocity(std::vector<double> & values)
+{
+  velocity_ = values;
+}
+
+void LStepExpressFake::SetVelocity(VLStepExpress::Axis axis, double value)
+{
+  velocity_[axis] = value;
 }
 
 void LStepExpressFake::GetPosition(std::vector<double> & values)

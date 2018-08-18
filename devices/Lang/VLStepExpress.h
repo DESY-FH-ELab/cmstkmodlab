@@ -83,6 +83,21 @@ class VLStepExpress {
   virtual void SetPowerAmplifierStatus(std::vector<int> & values) = 0;
   virtual void SetPowerAmplifierStatus(VLStepExpress::Axis axis, int value) = 0;
 
+  virtual void GetAcceleration(std::vector<double> & values) = 0;
+  virtual void GetAcceleration(VLStepExpress::Axis axis, double & value) = 0;
+  virtual void SetAcceleration(std::vector<double> & values) = 0;
+  virtual void SetAcceleration(VLStepExpress::Axis axis, double value) = 0;
+
+  virtual void GetDeceleration(std::vector<double> & values) = 0;
+  virtual void GetDeceleration(VLStepExpress::Axis axis, double & value) = 0;
+  virtual void SetDeceleration(std::vector<double> & values) = 0;
+  virtual void SetDeceleration(VLStepExpress::Axis axis, double value) = 0;
+
+  virtual void GetVelocity(std::vector<double> & values) = 0;
+  virtual void GetVelocity(VLStepExpress::Axis axis, double & value) = 0;
+  virtual void SetVelocity(std::vector<double> & values) = 0;
+  virtual void SetVelocity(VLStepExpress::Axis axis, double value) = 0;
+
   virtual void GetPosition(std::vector<double> & values) = 0;
   virtual void GetPosition(VLStepExpress::Axis axis, double & value) = 0;
   virtual void SetPosition(std::vector<double> & values) = 0;

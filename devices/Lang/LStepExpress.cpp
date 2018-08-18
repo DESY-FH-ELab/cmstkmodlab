@@ -301,6 +301,66 @@ void LStepExpress::SetPowerAmplifierStatus(VLStepExpress::Axis axis, int value)
   SetValue("!pa", axis, value);
 }
 
+void LStepExpress::GetAcceleration(std::vector<double> & values)
+{
+  GetValue("accel", values);
+}
+
+void LStepExpress::GetAcceleration(VLStepExpress::Axis axis, double & value)
+{
+  GetValue("accel", axis, value);
+}
+
+void LStepExpress::SetAcceleration(std::vector<double> & values)
+{
+  SetValue("accel", values);
+}
+
+void LStepExpress::SetAcceleration(VLStepExpress::Axis axis, double value)
+{
+  SetValue("accel", axis, value);
+}
+
+void LStepExpress::GetDeceleration(std::vector<double> & values)
+{
+  GetValue("decel", values);
+}
+
+void LStepExpress::GetDeceleration(VLStepExpress::Axis axis, double & value)
+{
+  GetValue("decel", axis, value);
+}
+
+void LStepExpress::SetDeceleration(std::vector<double> & values)
+{
+  SetValue("decel", values);
+}
+
+void LStepExpress::SetDeceleration(VLStepExpress::Axis axis, double value)
+{
+  SetValue("decel", axis, value);
+}
+
+void LStepExpress::GetVelocity(std::vector<double> & values)
+{
+  GetValue("vel", values);
+}
+
+void LStepExpress::GetVelocity(VLStepExpress::Axis axis, double & value)
+{
+  GetValue("vel", axis, value);
+}
+
+void LStepExpress::SetVelocity(std::vector<double> & values)
+{
+  SetValue("vel", values);
+}
+
+void LStepExpress::SetVelocity(VLStepExpress::Axis axis, double value)
+{
+  SetValue("vel", axis, value);
+}
+
 void LStepExpress::GetPosition(std::vector<double> & values)
 {
   GetValue("pos", values);
