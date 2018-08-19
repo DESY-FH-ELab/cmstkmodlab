@@ -165,6 +165,10 @@ class VLStepExpress {
   char GetAxisName(VLStepExpress::Axis axis);
   const char * GetAxisDimensionShortName(VLStepExpress::Dimension dimension);
   const char * GetAxisDimensionName(VLStepExpress::Dimension dimension);
+  const char * GetAxisVelocityShortName(VLStepExpress::Dimension dimension);
+  const char * GetAxisVelocityName(VLStepExpress::Dimension dimension);
+  const char * GetAxisAccelerationShortName(VLStepExpress::Dimension dimension);
+  const char * GetAxisAccelerationName(VLStepExpress::Dimension dimension);
   char GetAxisStatusText(VLStepExpress::AxisStatus status);
 };
 

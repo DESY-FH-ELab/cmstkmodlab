@@ -113,6 +113,24 @@ QString LStepExpressModel::getAxisDimensionShortName(unsigned int axis)
     return temp;
 }
 
+QString LStepExpressModel::getAxisVelocityShortName(unsigned int axis)
+{
+    NQLog("LStepExpressModel ", NQLog::Debug) << "getAxisVelocityShortName(" << axis << ")";
+
+    QString temp(controller_->GetAxisVelocityShortName((VLStepExpress::Dimension)dim_[axis]));
+
+    return temp;
+}
+
+QString LStepExpressModel::getAxisAccelerationShortName(unsigned int axis)
+{
+    NQLog("LStepExpressModel ", NQLog::Debug) << "getAxisAccelerationShortName(" << axis << ")";
+
+    QString temp(controller_->GetAxisAccelerationShortName((VLStepExpress::Dimension)dim_[axis]));
+
+    return temp;
+}
+
 QString LStepExpressModel::getAxisStatusText(unsigned int axis)
 {
     NQLog("LStepExpressModel", NQLog::Debug) << "getAxisStatusText("<< axis <<")";

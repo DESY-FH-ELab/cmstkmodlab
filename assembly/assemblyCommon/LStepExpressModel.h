@@ -48,6 +48,8 @@ class LStepExpressModel : public QObject, public AbstractDeviceModel<LStepExpres
 
     QString getAxisName(unsigned int axis);
     QString getAxisDimensionShortName(unsigned int axis);
+    QString getAxisVelocityShortName(unsigned int axis);
+    QString getAxisAccelerationShortName(unsigned int axis);
     QString getAxisStatusText(unsigned int axis);
     bool getAxisEnabled(unsigned int axis);
     bool getAxisState(unsigned int axis);
