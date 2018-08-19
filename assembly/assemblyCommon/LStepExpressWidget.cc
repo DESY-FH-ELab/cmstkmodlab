@@ -195,6 +195,21 @@ LStepExpressAxisWidget::LStepExpressAxisWidget(LStepExpressModel* model, unsigne
     positionLabel_->setFont(QFont("Helvetica", 16));
     layout_->addRow(positionLabel_);
 
+    accelerationSpinBox_ = new QDoubleSpinBox(this);
+    accelerationSpinBox_->setDecimals(1);
+    accelerationSpinBox_->setSuffix(" usteps/s^2");
+    layout_->addRow("a", accelerationSpinBox_);
+
+    decelerationSpinBox_ = new QDoubleSpinBox(this);
+    decelerationSpinBox_->setDecimals(1);
+    decelerationSpinBox_->setSuffix(" usteps/s^2");
+    layout_->addRow("d", decelerationSpinBox_);
+
+    velocitySpinBox_ = new QDoubleSpinBox(this);
+    velocitySpinBox_->setDecimals(1);
+    velocitySpinBox_->setSuffix(" usteps/s");
+    layout_->addRow("v", velocitySpinBox_);
+
     connect(enabledCheckBox_ , SIGNAL(toggled(bool)), this, SLOT(enabledCheckBoxToggled(bool)));
     connect(joystickCheckBox_, SIGNAL(toggled(bool)), this, SLOT(joystickCheckBoxToggled(bool)));
 
@@ -224,6 +239,17 @@ void LStepExpressAxisWidget::updateWidgets()
     NQLog("LStepExpressAxisWidget", NQLog::Debug) << "updateWidgets"
        << ": axis " << axis_ << " enabled="<< axis;
 
+    double value;
+
+    value = model_->getAcceleration(axis_);
+    if (value!=accelerationSpinBox_->value()) accelerationSpinBox_->setValue(value);
+
+    value = model_->getDeceleration(axis_);
+    if (value!=decelerationSpinBox_->value()) decelerationSpinBox_->setValue(value);
+
+    value = model_->getVelocity(axis_);
+    if (value!=velocitySpinBox_->value()) velocitySpinBox_->setValue(value);
+
     if(axis && model_->getJoystickEnabled())
     {
       joystickCheckBox_->setEnabled(true);
@@ -233,18 +259,20 @@ void LStepExpressAxisWidget::updateWidgets()
       joystickCheckBox_->setEnabled(false);
     }
 
-    if(axis)
+    const QString temp = model_->getAxisDimensionShortName(axis_);
+    if(axisDimensionName_ != temp)
     {
-      const QString temp = model_->getAxisDimensionShortName(axis_);
-      if(axisDimensionName_ != temp)
-      {
-        axisDimensionName_ = temp;
+      axisDimensionName_ = temp;
 
+      accelerationSpinBox_->setSuffix(QString(" " + model_->getAxisAccelerationShortName(axis_)));
+      decelerationSpinBox_->setSuffix(QString(" " + model_->getAxisAccelerationShortName(axis_)));
+      velocitySpinBox_->setSuffix(QString(" " + model_->getAxisVelocityShortName(axis_)));
+
+      //if (axis)
         this->updateMotionWidgets();
 
-        NQLog("LStepExpressAxisWidget", NQLog::Debug) << "updateWidgets"
-           << ": updated motion widgets";
-      }
+      NQLog("LStepExpressAxisWidget", NQLog::Debug) << "updateWidgets"
+          << ": updated motion widgets";
     }
 }
 
