@@ -319,7 +319,6 @@ void LStepExpressModel::setAcceleration(const unsigned int axis, const double va
   {
     controller_->SetAcceleration((VLStepExpress::Axis)axis, value);
   }
-
 }
 
 void LStepExpressModel::setDeceleration(const std::vector<double>& values)

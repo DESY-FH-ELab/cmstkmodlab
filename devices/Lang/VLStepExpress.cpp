@@ -436,6 +436,7 @@ const char * VLStepExpress::GetAxisAccelerationJerkName(VLStepExpress::Dimension
   }
   return "microsteps/s^3";
 }
+
 char VLStepExpress::GetAxisStatusText(VLStepExpress::AxisStatus status)
 {
   switch (status) {
