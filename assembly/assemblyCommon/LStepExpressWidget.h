@@ -96,6 +96,8 @@ class LStepExpressAxisWidget : public QWidget
   QDoubleSpinBox* velocitySpinBox_;
   QDoubleSpinBox* accelerationSpinBox_;
   QDoubleSpinBox* decelerationSpinBox_;
+  QDoubleSpinBox* accelerationJerkSpinBox_;
+  QDoubleSpinBox* decelerationJerkSpinBox_;
   QString axisDimensionName_;
 
  public slots:

@@ -210,6 +210,16 @@ LStepExpressAxisWidget::LStepExpressAxisWidget(LStepExpressModel* model, unsigne
     decelerationSpinBox_->setSuffix(" usteps/s^2");
     layout_->addRow("d", decelerationSpinBox_);
 
+    accelerationJerkSpinBox_ = new QDoubleSpinBox(this);
+    accelerationJerkSpinBox_->setDecimals(1);
+    accelerationJerkSpinBox_->setSuffix(" usteps/s^3");
+    layout_->addRow("ja", accelerationJerkSpinBox_);
+
+    decelerationJerkSpinBox_ = new QDoubleSpinBox(this);
+    decelerationJerkSpinBox_->setDecimals(1);
+    decelerationJerkSpinBox_->setSuffix(" usteps/s^3");
+    layout_->addRow("jd", decelerationJerkSpinBox_);
+
     connect(enabledCheckBox_ , SIGNAL(toggled(bool)), this, SLOT(enabledCheckBoxToggled(bool)));
     connect(joystickCheckBox_, SIGNAL(toggled(bool)), this, SLOT(joystickCheckBoxToggled(bool)));
 
@@ -241,6 +251,12 @@ void LStepExpressAxisWidget::updateWidgets()
 
     double value;
 
+    value = model_->getAccelerationJerk(axis_);
+    if (value!=accelerationJerkSpinBox_->value()) accelerationJerkSpinBox_->setValue(value);
+
+    value = model_->getDecelerationJerk(axis_);
+    if (value!=decelerationJerkSpinBox_->value()) decelerationJerkSpinBox_->setValue(value);
+
     value = model_->getAcceleration(axis_);
     if (value!=accelerationSpinBox_->value()) accelerationSpinBox_->setValue(value);
 
@@ -264,6 +280,8 @@ void LStepExpressAxisWidget::updateWidgets()
     {
       axisDimensionName_ = temp;
 
+      accelerationJerkSpinBox_->setSuffix(QString(" " + model_->getAxisAccelerationJerkShortName(axis_)));
+      decelerationJerkSpinBox_->setSuffix(QString(" " + model_->getAxisAccelerationJerkShortName(axis_)));
       accelerationSpinBox_->setSuffix(QString(" " + model_->getAxisAccelerationShortName(axis_)));
       decelerationSpinBox_->setSuffix(QString(" " + model_->getAxisAccelerationShortName(axis_)));
       velocitySpinBox_->setSuffix(QString(" " + model_->getAxisVelocityShortName(axis_)));
