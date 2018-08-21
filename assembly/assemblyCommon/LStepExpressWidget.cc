@@ -195,6 +195,11 @@ LStepExpressAxisWidget::LStepExpressAxisWidget(LStepExpressModel* model, unsigne
     positionLabel_->setFont(QFont("Helvetica", 16));
     layout_->addRow(positionLabel_);
 
+    velocitySpinBox_ = new QDoubleSpinBox(this);
+    velocitySpinBox_->setDecimals(1);
+    velocitySpinBox_->setSuffix(" usteps/s");
+    layout_->addRow("v", velocitySpinBox_);
+
     accelerationSpinBox_ = new QDoubleSpinBox(this);
     accelerationSpinBox_->setDecimals(1);
     accelerationSpinBox_->setSuffix(" usteps/s^2");
@@ -204,11 +209,6 @@ LStepExpressAxisWidget::LStepExpressAxisWidget(LStepExpressModel* model, unsigne
     decelerationSpinBox_->setDecimals(1);
     decelerationSpinBox_->setSuffix(" usteps/s^2");
     layout_->addRow("d", decelerationSpinBox_);
-
-    velocitySpinBox_ = new QDoubleSpinBox(this);
-    velocitySpinBox_->setDecimals(1);
-    velocitySpinBox_->setSuffix(" usteps/s");
-    layout_->addRow("v", velocitySpinBox_);
 
     connect(enabledCheckBox_ , SIGNAL(toggled(bool)), this, SLOT(enabledCheckBoxToggled(bool)));
     connect(joystickCheckBox_, SIGNAL(toggled(bool)), this, SLOT(joystickCheckBoxToggled(bool)));
