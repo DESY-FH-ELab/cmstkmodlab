@@ -108,6 +108,11 @@ class LStepExpressAxisWidget : public QWidget
   void updateMotionWidgets();
   void enabledCheckBoxToggled(bool enabled);
   void joystickCheckBoxToggled(bool enabled);
+  void setVelocity(double value);
+  void setAcceleration(double value);
+  void setDeceleration(double value);
+  void setAccelerationJerk(double value);
+  void setDecelerationJerk(double value);
   void motionStarted();
   void motionFinished();
 };

@@ -223,6 +223,12 @@ LStepExpressAxisWidget::LStepExpressAxisWidget(LStepExpressModel* model, unsigne
     connect(enabledCheckBox_ , SIGNAL(toggled(bool)), this, SLOT(enabledCheckBoxToggled(bool)));
     connect(joystickCheckBox_, SIGNAL(toggled(bool)), this, SLOT(joystickCheckBoxToggled(bool)));
 
+    connect(velocitySpinBox_, SIGNAL(valueChanged(double)), this, SLOT(setVelocity(double)));
+    connect(accelerationSpinBox_, SIGNAL(valueChanged(double)), this, SLOT(setAcceleration(double)));
+    connect(decelerationSpinBox_, SIGNAL(valueChanged(double)), this, SLOT(setDeceleration(double)));
+    connect(accelerationJerkSpinBox_, SIGNAL(valueChanged(double)), this, SLOT(setAccelerationJerk(double)));
+    connect(decelerationJerkSpinBox_, SIGNAL(valueChanged(double)), this, SLOT(setDecelerationJerk(double)));
+
     connect(model_, SIGNAL(deviceStateChanged(State)) , this, SLOT(lStepStateChanged(State)));
     connect(model_, SIGNAL(controlStateChanged(bool)) , this, SLOT(controlStateChanged(bool)));
     connect(model_, SIGNAL(informationChanged())      , this, SLOT(updateWidgets()));
@@ -341,6 +347,31 @@ void LStepExpressAxisWidget::enabledCheckBoxToggled(bool enabled)
 void LStepExpressAxisWidget::joystickCheckBoxToggled(bool enabled)
 {
     model_->setJoystickAxisEnabled(axis_, enabled);
+}
+
+void LStepExpressAxisWidget::setVelocity(double value)
+{
+  model_->setVelocity(axis_, value);
+}
+
+void LStepExpressAxisWidget::setAcceleration(double value)
+{
+  model_->setAcceleration(axis_, value);
+}
+
+void LStepExpressAxisWidget::setDeceleration(double value)
+{
+  model_->setDeceleration(axis_, value);
+}
+
+void LStepExpressAxisWidget::setAccelerationJerk(double value)
+{
+  model_->setAccelerationJerk(axis_, value);
+}
+
+void LStepExpressAxisWidget::setDecelerationJerk(double value)
+{
+  model_->setDecelerationJerk(axis_, value);
 }
 
 void LStepExpressAxisWidget::motionStarted()
