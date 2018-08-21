@@ -301,6 +301,46 @@ void LStepExpress::SetPowerAmplifierStatus(VLStepExpress::Axis axis, int value)
   SetValue("!pa", axis, value);
 }
 
+void LStepExpress::GetAccelerationJerk(std::vector<double> & values)
+{
+  GetValue("acceljerk", values);
+}
+
+void LStepExpress::GetAccelerationJerk(VLStepExpress::Axis axis, double & value)
+{
+  GetValue("acceljerk", axis, value);
+}
+
+void LStepExpress::SetAccelerationJerk(const std::vector<double> & values)
+{
+  SetValue("acceljerk", values);
+}
+
+void LStepExpress::SetAccelerationJerk(VLStepExpress::Axis axis, double value)
+{
+  SetValue("acceljerk", axis, value);
+}
+
+void LStepExpress::GetDecelerationJerk(std::vector<double> & values)
+{
+  GetValue("deceljerk", values);
+}
+
+void LStepExpress::GetDecelerationJerk(VLStepExpress::Axis axis, double & value)
+{
+  GetValue("deceljerk", axis, value);
+}
+
+void LStepExpress::SetDecelerationJerk(const std::vector<double> & values)
+{
+  SetValue("deceljerk", values);
+}
+
+void LStepExpress::SetDecelerationJerk(VLStepExpress::Axis axis, double value)
+{
+  SetValue("deceljerk", axis, value);
+}
+
 void LStepExpress::GetAcceleration(std::vector<double> & values)
 {
   GetValue("accel", values);

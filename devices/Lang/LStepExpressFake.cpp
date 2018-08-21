@@ -26,6 +26,8 @@ LStepExpressFake::LStepExpressFake( const ioport_t ioPort )
   axisDirection_ = std::vector<int>{ 0, 0, 0, 0 };
   dim_ = std::vector<int>{ 2, 2, 2, 3 };
   pa_ = std::vector<int>{ 0, 0, 0, 0 };
+  accelerationJerk_ = std::vector<double>{ 100.0, 100.0, 100.0, 60.0 };
+  decelerationJerk_ = std::vector<double>{ 100.0, 100.0, 100.0, 30.0 };
   acceleration_ = std::vector<double>{ 50.0, 50.0, 50.0, 50.0 };
   deceleration_ = std::vector<double>{ 50.0, 50.0, 50.0, 50.0 };
   velocity_ = std::vector<double>{ 20.0, 20.0, 20.0, 20.0 };
@@ -151,6 +153,46 @@ void LStepExpressFake::SetPowerAmplifierStatus(std::vector<int> & values)
 void LStepExpressFake::SetPowerAmplifierStatus(VLStepExpress::Axis axis, int value)
 {
   pa_[axis] = value;
+}
+
+void LStepExpressFake::GetAccelerationJerk(std::vector<double> & values)
+{
+  values = accelerationJerk_;
+}
+
+void LStepExpressFake::GetAccelerationJerk(VLStepExpress::Axis axis, double & value)
+{
+  value = accelerationJerk_[axis];
+}
+
+void LStepExpressFake::SetAccelerationJerk(const std::vector<double> & values)
+{
+  accelerationJerk_ = values;
+}
+
+void LStepExpressFake::SetAccelerationJerk(VLStepExpress::Axis axis, double value)
+{
+  accelerationJerk_[axis] = value;
+}
+
+void LStepExpressFake::GetDecelerationJerk(std::vector<double> & values)
+{
+  values = decelerationJerk_;
+}
+
+void LStepExpressFake::GetDecelerationJerk(VLStepExpress::Axis axis, double & value)
+{
+  value = decelerationJerk_[axis];
+}
+
+void LStepExpressFake::SetDecelerationJerk(const std::vector<double> & values)
+{
+  decelerationJerk_ = values;
+}
+
+void LStepExpressFake::SetDecelerationJerk(VLStepExpress::Axis axis, double value)
+{
+  decelerationJerk_[axis] = value;
 }
 
 void LStepExpressFake::GetAcceleration(std::vector<double> & values)

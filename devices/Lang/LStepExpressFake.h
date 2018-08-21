@@ -54,6 +54,16 @@ class LStepExpressFake : public VLStepExpress
   void SetPowerAmplifierStatus(std::vector<int> & values);
   void SetPowerAmplifierStatus(VLStepExpress::Axis axis, int value);
 
+  void GetAccelerationJerk(std::vector<double> & values);
+  void GetAccelerationJerk(VLStepExpress::Axis axis, double & value);
+  void SetAccelerationJerk(const std::vector<double> & values);
+  void SetAccelerationJerk(VLStepExpress::Axis axis, double value);
+
+  void GetDecelerationJerk(std::vector<double> & values);
+  void GetDecelerationJerk(VLStepExpress::Axis axis, double & value);
+  void SetDecelerationJerk(const std::vector<double> & values);
+  void SetDecelerationJerk(VLStepExpress::Axis axis, double value);
+
   void GetAcceleration(std::vector<double> & values);
   void GetAcceleration(VLStepExpress::Axis axis, double & value);
   void SetAcceleration(std::vector<double> & values);
@@ -117,6 +127,8 @@ class LStepExpressFake : public VLStepExpress
   std::vector<int> axisDirection_;
   std::vector<int> dim_;
   std::vector<int> pa_;
+  std::vector<double> accelerationJerk_;
+  std::vector<double> decelerationJerk_;
   std::vector<double> acceleration_;
   std::vector<double> deceleration_;
   std::vector<double> velocity_;

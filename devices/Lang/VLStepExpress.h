@@ -83,6 +83,16 @@ class VLStepExpress {
   virtual void SetPowerAmplifierStatus(std::vector<int> & values) = 0;
   virtual void SetPowerAmplifierStatus(VLStepExpress::Axis axis, int value) = 0;
 
+  virtual void GetAccelerationJerk(std::vector<double> & values) = 0;
+  virtual void GetAccelerationJerk(VLStepExpress::Axis axis, double & value) = 0;
+  virtual void SetAccelerationJerk(const std::vector<double> & values) = 0;
+  virtual void SetAccelerationJerk(VLStepExpress::Axis axis, double value) = 0;
+
+  virtual void GetDecelerationJerk(std::vector<double> & values) = 0;
+  virtual void GetDecelerationJerk(VLStepExpress::Axis axis, double & value) = 0;
+  virtual void SetDecelerationJerk(const std::vector<double> & values) = 0;
+  virtual void SetDecelerationJerk(VLStepExpress::Axis axis, double value) = 0;
+
   virtual void GetAcceleration(std::vector<double> & values) = 0;
   virtual void GetAcceleration(VLStepExpress::Axis axis, double & value) = 0;
   virtual void SetAcceleration(std::vector<double> & values) = 0;
@@ -169,6 +179,8 @@ class VLStepExpress {
   const char * GetAxisVelocityName(VLStepExpress::Dimension dimension);
   const char * GetAxisAccelerationShortName(VLStepExpress::Dimension dimension);
   const char * GetAxisAccelerationName(VLStepExpress::Dimension dimension);
+  const char * GetAxisAccelerationJerkShortName(VLStepExpress::Dimension dimension);
+  const char * GetAxisAccelerationJerkName(VLStepExpress::Dimension dimension);
   char GetAxisStatusText(VLStepExpress::AxisStatus status);
 };
 

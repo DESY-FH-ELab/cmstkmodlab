@@ -50,6 +50,16 @@ class LStepExpress : public VLStepExpress
   void SetAxisDirection(std::vector<int> & values);
   void SetAxisDirection(VLStepExpress::Axis axis, int value);
 
+  void GetAccelerationJerk(std::vector<double> & values);
+  void GetAccelerationJerk(VLStepExpress::Axis axis, double & value);
+  void SetAccelerationJerk(const std::vector<double> & values);
+  void SetAccelerationJerk(VLStepExpress::Axis axis, double value);
+
+  void GetDecelerationJerk(std::vector<double> & values);
+  void GetDecelerationJerk(VLStepExpress::Axis axis, double & value);
+  void SetDecelerationJerk(const std::vector<double> & values);
+  void SetDecelerationJerk(VLStepExpress::Axis axis, double value);
+
   void GetAcceleration(std::vector<double> & values);
   void GetAcceleration(VLStepExpress::Axis axis, double & value);
   void SetAcceleration(std::vector<double> & values);

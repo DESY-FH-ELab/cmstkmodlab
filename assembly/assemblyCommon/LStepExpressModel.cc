@@ -35,6 +35,8 @@ LStepExpressModel::LStepExpressModel(const char* port,
     joystickAxisEnabled_ = std::vector<int>{ 0, 0, 0, 0 };
 
     axisStatus_ = std::vector<int>{ 0x0b, 0x0b, 0x0b, 0x0b };
+    accelerationJerk_ = allZerosD;
+    decelerationJerk_ = allZerosD;
     acceleration_ = allZerosD;
     deceleration_ = allZerosD;
     velocity_ = allZerosD;
@@ -131,6 +133,15 @@ QString LStepExpressModel::getAxisAccelerationShortName(unsigned int axis)
     return temp;
 }
 
+QString LStepExpressModel::getAxisAccelerationJerkShortName(unsigned int axis)
+{
+    NQLog("LStepExpressModel ", NQLog::Debug) << "getAxisAccelerationJerkShortName(" << axis << ")";
+
+    QString temp(controller_->GetAxisAccelerationJerkShortName((VLStepExpress::Dimension)dim_[axis]));
+
+    return temp;
+}
+
 QString LStepExpressModel::getAxisStatusText(unsigned int axis)
 {
     NQLog("LStepExpressModel", NQLog::Debug) << "getAxisStatusText("<< axis <<")";
@@ -165,6 +176,20 @@ bool LStepExpressModel::getAxisEnabled(unsigned int axis)
     return axis_[axis];
 }
 
+double LStepExpressModel::getAccelerationJerk(unsigned int axis)
+{
+  NQLog("LStepExpressModel", NQLog::Debug) << "getAccelerationJerk(" << axis << ")";
+
+  return accelerationJerk_[axis];
+}
+
+double LStepExpressModel::getDecelerationJerk(unsigned int axis)
+{
+  NQLog("LStepExpressModel", NQLog::Debug) << "getDecelerationJerk(" << axis << ")";
+
+  return decelerationJerk_[axis];
+}
+
 double LStepExpressModel::getAcceleration(unsigned int axis)
 {
   NQLog("LStepExpressModel", NQLog::Debug) << "getAcceleration(" << axis << ")";
@@ -191,6 +216,74 @@ double LStepExpressModel::getPosition(unsigned int axis)
     NQLog("LStepExpressModel", NQLog::Debug) << "getPosition(" << axis << ")";
 
     return position_[axis];
+}
+
+void LStepExpressModel::setAccelerationJerk(const std::vector<double>& values)
+{
+  NQLog("LStepExpressModel", NQLog::Spam) << "setAccelerationJerk"
+     << "(x=" << values[0] << ", y=" << values[1] << ", z=" << values[2] << ", a=" << values[3] << ")";
+
+  if (controller_ != nullptr)
+  {
+    controller_->SetAccelerationJerk(values);
+  }
+}
+
+void LStepExpressModel::setAccelerationJerk(const double x, const double y, const double z, const double a)
+{
+  NQLog("LStepExpressModel", NQLog::Spam) << "setAccelerationJerk"
+     << "(x=" << x << ", y=" << y << ", z=" << z << ", a=" << a << ")";
+
+  if (controller_ != nullptr)
+  {
+    std::vector<double> values{ x, y, z, a };
+    controller_->SetAccelerationJerk(values);
+  }
+}
+
+void LStepExpressModel::setAccelerationJerk(const unsigned int axis, const double value)
+{
+  NQLog("LStepExpressModel", NQLog::Spam) << "setAccelerationJerk"
+     << "(axis="  << axis << ", value=" << value << ")";
+
+  if (controller_ != nullptr)
+  {
+    controller_->SetAccelerationJerk((VLStepExpress::Axis)axis, value);
+  }
+}
+
+void LStepExpressModel::setDecelerationJerk(const std::vector<double>& values)
+{
+  NQLog("LStepExpressModel", NQLog::Spam) << "setDecelerationJerk"
+     << "(x=" << values[0] << ", y=" << values[1] << ", z=" << values[2] << ", a=" << values[3] << ")";
+
+  if (controller_ != nullptr)
+  {
+    controller_->SetDecelerationJerk(values);
+  }
+}
+
+void LStepExpressModel::setDecelerationJerk(const double x, const double y, const double z, const double a)
+{
+  NQLog("LStepExpressModel", NQLog::Spam) << "setDecelerationJerk"
+      << "(x=" << x << ", y=" << y << ", z=" << z << ", a=" << a << ")";
+
+  if (controller_ != nullptr)
+  {
+    std::vector<double> values{ x, y, z, a };
+    controller_->SetDecelerationJerk(values);
+  }
+}
+
+void LStepExpressModel::setDecelerationJerk(const unsigned int axis, const double value)
+{
+  NQLog("LStepExpressModel", NQLog::Spam) << "setDecelerationJerk"
+     << "(axis="  << axis << ", value=" << value << ")";
+
+  if (controller_ != nullptr)
+  {
+    controller_->SetDecelerationJerk((VLStepExpress::Axis)axis, value);
+  }
 }
 
 void LStepExpressModel::setAcceleration(const std::vector<double>& values)

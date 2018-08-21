@@ -50,9 +50,12 @@ class LStepExpressModel : public QObject, public AbstractDeviceModel<LStepExpres
     QString getAxisDimensionShortName(unsigned int axis);
     QString getAxisVelocityShortName(unsigned int axis);
     QString getAxisAccelerationShortName(unsigned int axis);
+    QString getAxisAccelerationJerkShortName(unsigned int axis);
     QString getAxisStatusText(unsigned int axis);
     bool getAxisEnabled(unsigned int axis);
     bool getAxisState(unsigned int axis);
+    double getAccelerationJerk(unsigned int axis);
+    double getDecelerationJerk(unsigned int axis);
     double getAcceleration(unsigned int axis);
     double getDeceleration(unsigned int axis);
     double getVelocity(unsigned int axis);
@@ -82,6 +85,14 @@ class LStepExpressModel : public QObject, public AbstractDeviceModel<LStepExpres
     void setAxisEnabled(unsigned int axis, bool enabled);
     void setJoystickEnabled(bool enabled);
     void setJoystickAxisEnabled(unsigned int axis, bool enabled);
+
+    void setAccelerationJerk(const std::vector<double>& values);
+    void setAccelerationJerk(const double x, const double y, const double z, const double a);
+    void setAccelerationJerk(const unsigned int axis, const double value);
+
+    void setDecelerationJerk(const std::vector<double>& values);
+    void setDecelerationJerk(const double x, const double y, const double z, const double a);
+    void setDecelerationJerk(const unsigned int axis, const double value);
 
     void setAcceleration(const std::vector<double>& values);
     void setAcceleration(const double x, const double y, const double z, const double a);
@@ -129,6 +140,8 @@ class LStepExpressModel : public QObject, public AbstractDeviceModel<LStepExpres
     std::vector<int> joystickAxisEnabled_;
 
     std::vector<int> axisStatus_;
+    std::vector<double> accelerationJerk_;
+    std::vector<double> decelerationJerk_;
     std::vector<double> acceleration_;
     std::vector<double> deceleration_;
     std::vector<double> velocity_;
