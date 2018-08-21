@@ -761,6 +761,18 @@ void LStepExpressModel::updateInformation()
       changed = true;
     }
 
+    controller_->GetAccelerationJerk(dvalues);
+    if (dvalues!=accelerationJerk_) {
+      accelerationJerk_ = dvalues;
+      changed = true;
+    }
+
+    controller_->GetDecelerationJerk(dvalues);
+    if (dvalues!=decelerationJerk_) {
+      decelerationJerk_ = dvalues;
+      changed = true;
+    }
+
     controller_->GetVelocity(dvalues);
     if (dvalues!=velocity_) {
       velocity_ = dvalues;
