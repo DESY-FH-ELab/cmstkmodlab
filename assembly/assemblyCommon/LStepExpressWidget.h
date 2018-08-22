@@ -48,6 +48,7 @@ class LStepExpressWidget : public QWidget
   QPushButton* buttonCalibrate_;
   QPushButton* buttonEmergencyStop_;
   QPushButton* buttonClearQueue_;
+  QPushButton* buttonErrorQuit_;
 
   LStepExpressAxisWidget* axisWidget_X_;
   LStepExpressAxisWidget* axisWidget_Y_;
