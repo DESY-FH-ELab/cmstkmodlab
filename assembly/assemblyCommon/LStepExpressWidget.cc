@@ -50,20 +50,20 @@ LStepExpressWidget::LStepExpressWidget(LStepExpressModel* model, QWidget* parent
     joystickCheckBox_ = new QCheckBox("Enable Joystick", this);
     glayout->addWidget(joystickCheckBox_, 0, 1);
 
-    buttonOrigin_ = new QPushButton("Origin", this);
-    glayout->addWidget(buttonOrigin_, 0, 2);
+    buttonClearQueue_ = new QPushButton("Clear Motion Queue", this);
+    glayout->addWidget(buttonClearQueue_, 0, 2);
 
     buttonCalibrate_ = new QPushButton("Calibrate", this);
     glayout->addWidget(buttonCalibrate_, 0, 3);
 
-    buttonClearQueue_ = new QPushButton("Clear Motion Queue", this);
-    glayout->addWidget(buttonClearQueue_, 1, 2);
-
     buttonEmergencyStop_ = new QPushButton("Emergency Stop", this);
-    glayout->addWidget(buttonEmergencyStop_, 1, 3);
+    glayout->addWidget(buttonEmergencyStop_, 0, 4);
+
+    buttonOrigin_ = new QPushButton("Origin", this);
+    glayout->addWidget(buttonOrigin_, 1, 3);
 
     buttonErrorQuit_ = new QPushButton("Error Quit", this);
-    glayout->addWidget(buttonErrorQuit_, 0, 4);
+    glayout->addWidget(buttonErrorQuit_, 1, 4);
 
     // AXIS
     axisControlWidget_ = new QWidget(this);
