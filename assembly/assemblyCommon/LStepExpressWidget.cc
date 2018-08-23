@@ -291,15 +291,6 @@ void LStepExpressAxisWidget::updateWidgets()
     value = model_->getVelocity(axis_);
     if (value!=velocitySpinBox_->value()) velocitySpinBox_->setValue(value);
 
-    if(axis && model_->getJoystickEnabled())
-    {
-      joystickCheckBox_->setEnabled(true);
-    }
-    else
-    {
-      joystickCheckBox_->setEnabled(false);
-    }
-
     const QString temp = model_->getAxisDimensionShortName(axis_);
     if(axisDimensionName_ != temp)
     {
@@ -311,8 +302,20 @@ void LStepExpressAxisWidget::updateWidgets()
       decelerationSpinBox_->setSuffix(QString(" " + model_->getAxisAccelerationShortName(axis_)));
       velocitySpinBox_->setSuffix(QString(" " + model_->getAxisVelocityShortName(axis_)));
 
-      //if (axis)
-        this->updateMotionWidgets();
+      positionLabel_->setText(QString::number(model_->getPosition(axis_), 'f', 4)+" "+axisDimensionName_);
+    }
+
+    if(axis && model_->getJoystickEnabled())
+    {
+      joystickCheckBox_->setEnabled(true);
+    }
+    else
+    {
+      joystickCheckBox_->setEnabled(false);
+    }
+
+    if (axis) {
+      this->updateMotionWidgets();
 
       NQLog("LStepExpressAxisWidget", NQLog::Debug) << "updateWidgets"
           << ": updated motion widgets";
