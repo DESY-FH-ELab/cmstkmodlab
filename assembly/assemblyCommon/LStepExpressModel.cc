@@ -101,6 +101,8 @@ QString LStepExpressModel::getAxisName(unsigned int axis)
 {
     NQLog("LStepExpressModel", NQLog::Debug) << "getAxisName(" << axis << ")";
 
+    QMutexLocker locker(&mutex_);
+
     QString temp(controller_->GetAxisName((VLStepExpress::Axis)axis));
 
     return temp;
@@ -109,6 +111,8 @@ QString LStepExpressModel::getAxisName(unsigned int axis)
 QString LStepExpressModel::getAxisDimensionShortName(unsigned int axis)
 {
     NQLog("LStepExpressModel ", NQLog::Debug) << "getAxisDimensionShortName(" << axis << ")";
+
+    QMutexLocker locker(&mutex_);
 
     QString temp(controller_->GetAxisDimensionShortName((VLStepExpress::Dimension)dim_[axis]));
 
@@ -119,6 +123,8 @@ QString LStepExpressModel::getAxisVelocityShortName(unsigned int axis)
 {
     NQLog("LStepExpressModel ", NQLog::Debug) << "getAxisVelocityShortName(" << axis << ")";
 
+    QMutexLocker locker(&mutex_);
+
     QString temp(controller_->GetAxisVelocityShortName((VLStepExpress::Dimension)dim_[axis]));
 
     return temp;
@@ -127,6 +133,8 @@ QString LStepExpressModel::getAxisVelocityShortName(unsigned int axis)
 QString LStepExpressModel::getAxisAccelerationShortName(unsigned int axis)
 {
     NQLog("LStepExpressModel ", NQLog::Debug) << "getAxisAccelerationShortName(" << axis << ")";
+
+    QMutexLocker locker(&mutex_);
 
     QString temp(controller_->GetAxisAccelerationShortName((VLStepExpress::Dimension)dim_[axis]));
 
@@ -137,6 +145,8 @@ QString LStepExpressModel::getAxisAccelerationJerkShortName(unsigned int axis)
 {
     NQLog("LStepExpressModel ", NQLog::Debug) << "getAxisAccelerationJerkShortName(" << axis << ")";
 
+    QMutexLocker locker(&mutex_);
+
     QString temp(controller_->GetAxisAccelerationJerkShortName((VLStepExpress::Dimension)dim_[axis]));
 
     return temp;
@@ -145,6 +155,8 @@ QString LStepExpressModel::getAxisAccelerationJerkShortName(unsigned int axis)
 QString LStepExpressModel::getAxisStatusText(unsigned int axis)
 {
     NQLog("LStepExpressModel", NQLog::Debug) << "getAxisStatusText("<< axis <<")";
+
+    QMutexLocker locker(&mutex_);
 
     QString temp(controller_->GetAxisStatusText((VLStepExpress::AxisStatus)axisStatus_[axis]));
 
@@ -158,6 +170,7 @@ bool LStepExpressModel::getAxisState(unsigned int axis)
     NQLog("LStepExpressModel", NQLog::Debug) << "getAxisState(" << axis << ")";
 
     QMutexLocker locker(&mutex_);
+
     std::vector<int> ivalues;
     controller_->GetAxisStatus(ivalues);
     axisStatus_[axis] = (ivalues)[axis];
@@ -243,12 +256,15 @@ void LStepExpressModel::setAccelerationJerk(const double x, const double y, cons
 
 void LStepExpressModel::setAccelerationJerk(const unsigned int axis, const double value)
 {
+  if (value==accelerationJerk_[axis]) return;
+
   NQLog("LStepExpressModel", NQLog::Spam) << "setAccelerationJerk"
-     << "(axis="  << axis << ", value=" << value << ")";
+     << "(axis="  << axis << ", value=" << value << ", old value=" << accelerationJerk_[axis] << ")";
 
   if (controller_ != nullptr)
   {
     controller_->SetAccelerationJerk((VLStepExpress::Axis)axis, value);
+    decelerationJerk_[axis] = value;
   }
 }
 
@@ -277,12 +293,15 @@ void LStepExpressModel::setDecelerationJerk(const double x, const double y, cons
 
 void LStepExpressModel::setDecelerationJerk(const unsigned int axis, const double value)
 {
+  if (value==decelerationJerk_[axis]) return;
+
   NQLog("LStepExpressModel", NQLog::Spam) << "setDecelerationJerk"
-     << "(axis="  << axis << ", value=" << value << ")";
+     << "(axis="  << axis << ", value=" << value << ", old value=" << decelerationJerk_[axis] << ")";
 
   if (controller_ != nullptr)
   {
     controller_->SetDecelerationJerk((VLStepExpress::Axis)axis, value);
+    decelerationJerk_[axis] = value;
   }
 }
 
@@ -312,12 +331,15 @@ void LStepExpressModel::setAcceleration(const double x, const double y, const do
 
 void LStepExpressModel::setAcceleration(const unsigned int axis, const double value)
 {
+  if (value==acceleration_[axis]) return;
+
   NQLog("LStepExpressModel", NQLog::Spam) << "setAcceleration"
-     << "(axis="  << axis << ", value=" << value << ")";
+     << "(axis="  << axis << ", value=" << value << ", old value=" << acceleration_[axis] << ")";
 
   if (controller_ != nullptr)
   {
     controller_->SetAcceleration((VLStepExpress::Axis)axis, value);
+    acceleration_[axis] = value;
   }
 }
 
@@ -347,12 +369,15 @@ void LStepExpressModel::setDeceleration(const double x, const double y, const do
 
 void LStepExpressModel::setDeceleration(const unsigned int axis, const double value)
 {
+  if (value==deceleration_[axis]) return;
+
   NQLog("LStepExpressModel", NQLog::Spam) << "setDeceleration"
-     << "(axis="  << axis << ", value=" << value << ")";
+     << "(axis="  << axis << ", value=" << value << ", old value=" << deceleration_[axis] << ")";
 
   if (controller_ != nullptr)
   {
     controller_->SetDeceleration((VLStepExpress::Axis)axis, value);
+    deceleration_[axis] = value;
   }
 }
 
@@ -382,12 +407,15 @@ void LStepExpressModel::setVelocity(const double x, const double y, const double
 
 void LStepExpressModel::setVelocity(const unsigned int axis, const double value)
 {
+  if (value==velocity_[axis]) return;
+
   NQLog("LStepExpressModel", NQLog::Spam) << "setVelocity"
-     << "(axis="  << axis << ", value=" << value << ")";
+     << "(axis="  << axis << ", value=" << value << ", old value=" << velocity_[axis] << ")";
 
   if (controller_ != nullptr)
   {
     controller_->SetVelocity((VLStepExpress::Axis)axis, value);
+    velocity_[axis] = value;
   }
 }
 
@@ -689,16 +717,23 @@ void LStepExpressModel::initialize()
 
     if(enabled)
     {
+      QMutexLocker locker(&mutex_);
+
       controller_->SetAutoStatus(2);
+
       std::vector<int> allZerosI{ 0, 0, 0, 0 };
       std::vector<int> OnI{1,1,1,1};
+
       controller_->SetPowerAmplifierStatus(allZerosI);
       controller_->SetAxisEnabled(allZerosI);
       controller_->SetJoystickEnabled(false);
-      QMutexLocker locker(&mutex_);
+
       axis_ = allZerosI;
       joystickEnabled_ = false;
       joystickAxisEnabled_ = allZerosI;
+
+      updateInformation();
+
       setDeviceState(READY);
     }
     else
