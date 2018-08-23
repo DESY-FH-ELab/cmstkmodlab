@@ -48,22 +48,20 @@ MCommanderMainWindow::MCommanderMainWindow(QWidget *parent)
 
   tabWidget_->addTab(widget, "Motion Manager");
 
-//  widget = new QWidget(tabWidget_);
-
   QHBoxLayout * layout = new QHBoxLayout(widget);
   widget->setLayout(layout);
 
-  QVBoxLayout * layoutv = new QVBoxLayout(widget);
+  QVBoxLayout * layoutv1 = new QVBoxLayout();
   
   LStepExpressWidget *lStepExpressWidget = new LStepExpressWidget(lStepExpressModel_, widget);
-  layoutv->addWidget(lStepExpressWidget);
+  layoutv1->addWidget(lStepExpressWidget);
   
   LStepExpressJoystickWidget *lStepJoystick = new LStepExpressJoystickWidget(lStepExpressModel_, widget);
-  layoutv->addWidget(lStepJoystick);
+  layoutv1->addWidget(lStepJoystick);
   
-  layout->addLayout(layoutv);
+  layout->addLayout(layoutv1);
 
-  QVBoxLayout * layoutv2 = new QVBoxLayout(widget);
+  QVBoxLayout * layoutv2 = new QVBoxLayout();
   
   //LStepExpressStatusWindow *lStepStatusWindow = new LStepExpressStatusWindow(lStepExpressModel_, widget);
   //layoutv2->addWidget(lStepStatusWindow);
