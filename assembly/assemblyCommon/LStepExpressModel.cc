@@ -482,6 +482,13 @@ void LStepExpressModel::moveAbsolute(const unsigned int axis, const double value
   }
 }
 
+void LStepExpressModel::errorQuit()
+{
+    NQLog("LStepExpressModel", NQLog::Spam) << "errorQuit";
+
+    controller_->ErrorQuit();
+}
+
 void LStepExpressModel::calibrate()
 {
     NQLog("LStepExpressModel", NQLog::Spam) << "calibrate";

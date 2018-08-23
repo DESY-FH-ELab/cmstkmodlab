@@ -18,12 +18,24 @@
 
 LStepExpressWidget::LStepExpressWidget(LStepExpressModel* model, QWidget* parent)
  : QWidget(parent)
+
  , model_(model)
+
+ , lstepCheckBox_(nullptr)
+ , joystickCheckBox_(nullptr)
+
+ , buttonOrigin_(nullptr)
+ , buttonCalibrate_(nullptr)
+ , buttonEmergencyStop_(nullptr)
+ , buttonClearQueue_(nullptr)
+ , buttonErrorQuit_(nullptr)
 
  , axisWidget_X_(nullptr)
  , axisWidget_Y_(nullptr)
  , axisWidget_Z_(nullptr)
  , axisWidget_A_(nullptr)
+
+ , axisControlWidget_(nullptr)
 {
     QVBoxLayout* layout = new QVBoxLayout(this);
     this->setLayout(layout);
@@ -38,17 +50,20 @@ LStepExpressWidget::LStepExpressWidget(LStepExpressModel* model, QWidget* parent
     joystickCheckBox_ = new QCheckBox("Enable Joystick", this);
     glayout->addWidget(joystickCheckBox_, 0, 1);
 
-    buttonOrigin_ = new QPushButton("Origin", this);
-    glayout->addWidget(buttonOrigin_, 0, 2);
+    buttonClearQueue_ = new QPushButton("Clear Motion Queue", this);
+    glayout->addWidget(buttonClearQueue_, 0, 2);
 
     buttonCalibrate_ = new QPushButton("Calibrate", this);
     glayout->addWidget(buttonCalibrate_, 0, 3);
 
-    buttonClearQueue_ = new QPushButton("Clear Motion Queue", this);
-    glayout->addWidget(buttonClearQueue_, 1, 2);
-
     buttonEmergencyStop_ = new QPushButton("Emergency Stop", this);
-    glayout->addWidget(buttonEmergencyStop_, 1, 3);
+    glayout->addWidget(buttonEmergencyStop_, 0, 4);
+
+    buttonOrigin_ = new QPushButton("Origin", this);
+    glayout->addWidget(buttonOrigin_, 1, 3);
+
+    buttonErrorQuit_ = new QPushButton("Error Quit", this);
+    glayout->addWidget(buttonErrorQuit_, 1, 4);
 
     // AXIS
     axisControlWidget_ = new QWidget(this);
@@ -81,6 +96,7 @@ LStepExpressWidget::LStepExpressWidget(LStepExpressModel* model, QWidget* parent
     connect(buttonCalibrate_    , SIGNAL(clicked()), model_, SLOT(calibrate()));
     connect(buttonEmergencyStop_, SIGNAL(clicked()), model_, SLOT(emergencyStop()));
     connect(buttonClearQueue_   , SIGNAL(clicked()), this  , SIGNAL(clearQueue_request()));
+    connect(buttonErrorQuit_    , SIGNAL(clicked()), model_, SLOT(errorQuit()));
 
     this->lstepStateChanged(model_->getDeviceState());
 
@@ -95,6 +111,7 @@ LStepExpressWidget::~LStepExpressWidget()
     if(buttonCalibrate_    ){ delete buttonCalibrate_    ; buttonCalibrate_     = nullptr; }
     if(buttonEmergencyStop_){ delete buttonEmergencyStop_; buttonEmergencyStop_ = nullptr; }
     if(buttonClearQueue_   ){ delete buttonClearQueue_   ; buttonClearQueue_    = nullptr; }
+    if(buttonErrorQuit_    ){ delete buttonErrorQuit_    ; buttonErrorQuit_     = nullptr; }
 
     NQLog("LStepExpressWidget", NQLog::Debug) << "destructed";
 }
@@ -133,6 +150,7 @@ void LStepExpressWidget::lstepStateChanged(State newState)
     buttonCalibrate_    ->setEnabled(newState == READY);
     buttonEmergencyStop_->setEnabled(newState == READY);
     buttonClearQueue_   ->setEnabled(newState == READY);
+    buttonErrorQuit_    ->setEnabled(newState == READY);
 
     axisControlWidget_  ->setEnabled(newState == READY);
 }
@@ -154,6 +172,7 @@ void LStepExpressWidget::controlStateChanged(bool enabled)
       buttonCalibrate_    ->setEnabled(false);
       buttonEmergencyStop_->setEnabled(false);
       buttonClearQueue_   ->setEnabled(false);
+      buttonErrorQuit_    ->setEnabled(false);
 
       axisControlWidget_  ->setEnabled(false);
     }

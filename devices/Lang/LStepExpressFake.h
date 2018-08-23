@@ -98,6 +98,7 @@ class LStepExpressFake : public VLStepExpress
   void GetSystemStatusText(std::string& value);
   void GetSystemStatus(VLStepExpress::Axis axis, int & value);
   int GetError() { return 0; }
+  void ErrorQuit() { }
 
   bool GetJoystickEnabled();
   void SetJoystickEnabled(bool enabled);
