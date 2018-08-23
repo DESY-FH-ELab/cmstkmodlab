@@ -775,6 +775,7 @@ void LStepExpressModel::updateInformation()
     */
 
     bool changed = false;
+    bool positionChanged = false;
 
     std::vector<int> ivalues;
     std::vector<double> dvalues;
@@ -824,7 +825,7 @@ void LStepExpressModel::updateInformation()
     controller_->GetPosition(dvalues);
     if (dvalues!=position_) {
       position_ = dvalues;
-      changed = true;
+      positionChanged = true;
     }
 
     int joystick = controller_->GetJoystickEnabled();
@@ -841,12 +842,21 @@ void LStepExpressModel::updateInformation()
         changed = true;
       }
     }
+
     if(changed)
     {
         NQLog("LStepExpressModel", NQLog::Debug) << "updateInformation"
            << ": emitting signal \"informationChanged\"";
 
         emit informationChanged();
+    }
+
+    if(positionChanged)
+    {
+        NQLog("LStepExpressModel", NQLog::Debug) << "updateInformation"
+           << ": emitting signal \"motionInformationChanged\"";
+
+        emit motionInformationChanged();
     }
 }
 
