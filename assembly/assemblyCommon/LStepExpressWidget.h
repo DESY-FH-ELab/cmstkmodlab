@@ -17,6 +17,7 @@
 
 #include <QCheckBox>
 #include <QFormLayout>
+#include <QDoubleSpinBox>
 #include <QGridLayout>
 #include <QLCDNumber>
 #include <QVBoxLayout>
@@ -93,6 +94,13 @@ class LStepExpressAxisWidget : public QWidget
   QCheckBox* joystickCheckBox_;
   QLabel* statusLabel_;
   QLabel* positionLabel_;
+  QDoubleSpinBox* velocitySpinBox_;
+  QDoubleSpinBox* accelerationSpinBox_;
+  QDoubleSpinBox* decelerationSpinBox_;
+  QDoubleSpinBox* accelerationJerkSpinBox_;
+  QDoubleSpinBox* decelerationJerkSpinBox_;
+  QPushButton* buttonWriteParameter_;
+
   QString axisDimensionName_;
 
  public slots:
@@ -103,6 +111,12 @@ class LStepExpressAxisWidget : public QWidget
   void updateMotionWidgets();
   void enabledCheckBoxToggled(bool enabled);
   void joystickCheckBoxToggled(bool enabled);
+  void setVelocity(double value);
+  void setAcceleration(double value);
+  void setDeceleration(double value);
+  void setAccelerationJerk(double value);
+  void setDecelerationJerk(double value);
+  void writeParameter();
   void motionStarted();
   void motionFinished();
 };

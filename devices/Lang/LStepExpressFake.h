@@ -36,34 +36,59 @@ class LStepExpressFake : public VLStepExpress
 
   void GetAxisEnabled(std::vector<int> & values);
   void GetAxisEnabled(VLStepExpress::Axis axis, int & value);
-  void SetAxisEnabled(std::vector<int> & values);
+  void SetAxisEnabled(const std::vector<int> & values);
   void SetAxisEnabled(VLStepExpress::Axis axis, int value);
 
   void GetAxisDirection(std::vector<int> & values);
   void GetAxisDirection(VLStepExpress::Axis axis, int & value);
-  void SetAxisDirection(std::vector<int> & values);
+  void SetAxisDirection(const std::vector<int> & values);
   void SetAxisDirection(VLStepExpress::Axis axis, int value);
 
   void GetDimension(std::vector<int> & values);
   void GetDimension(VLStepExpress::Axis axis, int & value);
-  void SetDimension(std::vector<int> & values);
+  void SetDimension(const std::vector<int> & values);
   void SetDimension(VLStepExpress::Axis axis, int value);
 
   void GetPowerAmplifierStatus(std::vector<int> & values);
   void GetPowerAmplifierStatus(VLStepExpress::Axis axis, int & value);
-  void SetPowerAmplifierStatus(std::vector<int> & values);
+  void SetPowerAmplifierStatus(const std::vector<int> & values);
   void SetPowerAmplifierStatus(VLStepExpress::Axis axis, int value);
+
+  void GetAccelerationJerk(std::vector<double> & values);
+  void GetAccelerationJerk(VLStepExpress::Axis axis, double & value);
+  void SetAccelerationJerk(const std::vector<double> & values);
+  void SetAccelerationJerk(VLStepExpress::Axis axis, double value);
+
+  void GetDecelerationJerk(std::vector<double> & values);
+  void GetDecelerationJerk(VLStepExpress::Axis axis, double & value);
+  void SetDecelerationJerk(const std::vector<double> & values);
+  void SetDecelerationJerk(VLStepExpress::Axis axis, double value);
+
+  void GetAcceleration(std::vector<double> & values);
+  void GetAcceleration(VLStepExpress::Axis axis, double & value);
+  void SetAcceleration(const std::vector<double> & values);
+  void SetAcceleration(VLStepExpress::Axis axis, double value);
+
+  void GetDeceleration(std::vector<double> & values);
+  void GetDeceleration(VLStepExpress::Axis axis, double & value);
+  void SetDeceleration(const std::vector<double> & values);
+  void SetDeceleration(VLStepExpress::Axis axis, double value);
+
+  void GetVelocity(std::vector<double> & values);
+  void GetVelocity(VLStepExpress::Axis axis, double & value);
+  void SetVelocity(const std::vector<double> & values);
+  void SetVelocity(VLStepExpress::Axis axis, double value);
 
   void GetPosition(std::vector<double> & values);
   void GetPosition(VLStepExpress::Axis axis, double & value);
-  void SetPosition(std::vector<double> & values);
+  void SetPosition(const std::vector<double> & values);
   void SetPosition(VLStepExpress::Axis axis, double value);
 
-  void MoveAbsolute(std::vector<double> & values);
+  void MoveAbsolute(const std::vector<double> & values);
   void MoveAbsolute(double x, double y, double z, double a);
   void MoveAbsolute(VLStepExpress::Axis axis, double value);
 
-  void MoveRelative(std::vector<double> & values);
+  void MoveRelative(const std::vector<double> & values);
   void MoveRelative(double x, double y, double z, double a);
   void MoveRelative(VLStepExpress::Axis axis, double value);
   void MoveRelative();
@@ -80,7 +105,7 @@ class LStepExpressFake : public VLStepExpress
 
   void GetJoystickAxisEnabled(std::vector<int> & values);
   void GetJoystickAxisEnabled(VLStepExpress::Axis axis, int & value);
-  void SetJoystickAxisEnabled(std::vector<int> & values);
+  void SetJoystickAxisEnabled(const std::vector<int> & values);
   void SetJoystickAxisEnabled(VLStepExpress::Axis axis, int value);
 
   void Reset() {}
@@ -103,6 +128,11 @@ class LStepExpressFake : public VLStepExpress
   std::vector<int> axisDirection_;
   std::vector<int> dim_;
   std::vector<int> pa_;
+  std::vector<double> accelerationJerk_;
+  std::vector<double> decelerationJerk_;
+  std::vector<double> acceleration_;
+  std::vector<double> deceleration_;
+  std::vector<double> velocity_;
   std::vector<double> position_;
   std::vector<double> moverel_;
 

@@ -63,7 +63,7 @@ LStepExpressWidget::LStepExpressWidget(LStepExpressModel* model, QWidget* parent
     glayout->addWidget(buttonOrigin_, 1, 3);
 
     buttonErrorQuit_ = new QPushButton("Error Quit", this);
-    glayout->addWidget(buttonErrorQuit_, 1, 4);
+    glayout->addWidget(buttonErrorQuit_, 1, 0);
 
     // AXIS
     axisControlWidget_ = new QWidget(this);
@@ -214,8 +214,43 @@ LStepExpressAxisWidget::LStepExpressAxisWidget(LStepExpressModel* model, unsigne
     positionLabel_->setFont(QFont("Helvetica", 16));
     layout_->addRow(positionLabel_);
 
+    velocitySpinBox_ = new QDoubleSpinBox(this);
+    velocitySpinBox_->setDecimals(1);
+    velocitySpinBox_->setSuffix(" usteps/s");
+    layout_->addRow("v", velocitySpinBox_);
+
+    accelerationSpinBox_ = new QDoubleSpinBox(this);
+    accelerationSpinBox_->setDecimals(1);
+    accelerationSpinBox_->setSuffix(" usteps/s^2");
+    layout_->addRow("a", accelerationSpinBox_);
+
+    decelerationSpinBox_ = new QDoubleSpinBox(this);
+    decelerationSpinBox_->setDecimals(1);
+    decelerationSpinBox_->setSuffix(" usteps/s^2");
+    layout_->addRow("d", decelerationSpinBox_);
+
+    accelerationJerkSpinBox_ = new QDoubleSpinBox(this);
+    accelerationJerkSpinBox_->setDecimals(1);
+    accelerationJerkSpinBox_->setSuffix(" usteps/s^3");
+    layout_->addRow("ja", accelerationJerkSpinBox_);
+
+    decelerationJerkSpinBox_ = new QDoubleSpinBox(this);
+    decelerationJerkSpinBox_->setDecimals(1);
+    decelerationJerkSpinBox_->setSuffix(" usteps/s^3");
+    layout_->addRow("jd", decelerationJerkSpinBox_);
+
+    buttonWriteParameter_ = new QPushButton("Write", this);
+    layout_->addRow(buttonWriteParameter_);
+
     connect(enabledCheckBox_ , SIGNAL(toggled(bool)), this, SLOT(enabledCheckBoxToggled(bool)));
     connect(joystickCheckBox_, SIGNAL(toggled(bool)), this, SLOT(joystickCheckBoxToggled(bool)));
+
+    connect(velocitySpinBox_, SIGNAL(valueChanged(double)), this, SLOT(setVelocity(double)));
+    connect(accelerationSpinBox_, SIGNAL(valueChanged(double)), this, SLOT(setAcceleration(double)));
+    connect(decelerationSpinBox_, SIGNAL(valueChanged(double)), this, SLOT(setDeceleration(double)));
+    connect(accelerationJerkSpinBox_, SIGNAL(valueChanged(double)), this, SLOT(setAccelerationJerk(double)));
+    connect(decelerationJerkSpinBox_, SIGNAL(valueChanged(double)), this, SLOT(setDecelerationJerk(double)));
+    connect(buttonWriteParameter_, SIGNAL(clicked()), this, SLOT(writeParameter()));
 
     connect(model_, SIGNAL(deviceStateChanged(State)) , this, SLOT(lStepStateChanged(State)));
     connect(model_, SIGNAL(controlStateChanged(bool)) , this, SLOT(controlStateChanged(bool)));
@@ -243,6 +278,37 @@ void LStepExpressAxisWidget::updateWidgets()
     NQLog("LStepExpressAxisWidget", NQLog::Debug) << "updateWidgets"
        << ": axis " << axis_ << " enabled="<< axis;
 
+    double value;
+
+    value = model_->getAccelerationJerk(axis_);
+    if (value!=accelerationJerkSpinBox_->value()) accelerationJerkSpinBox_->setValue(value);
+
+    value = model_->getDecelerationJerk(axis_);
+    if (value!=decelerationJerkSpinBox_->value()) decelerationJerkSpinBox_->setValue(value);
+
+    value = model_->getAcceleration(axis_);
+    if (value!=accelerationSpinBox_->value()) accelerationSpinBox_->setValue(value);
+
+    value = model_->getDeceleration(axis_);
+    if (value!=decelerationSpinBox_->value()) decelerationSpinBox_->setValue(value);
+
+    value = model_->getVelocity(axis_);
+    if (value!=velocitySpinBox_->value()) velocitySpinBox_->setValue(value);
+
+    const QString temp = model_->getAxisDimensionShortName(axis_);
+    if(axisDimensionName_ != temp)
+    {
+      axisDimensionName_ = temp;
+
+      accelerationJerkSpinBox_->setSuffix(QString(" " + model_->getAxisAccelerationJerkShortName(axis_)));
+      decelerationJerkSpinBox_->setSuffix(QString(" " + model_->getAxisAccelerationJerkShortName(axis_)));
+      accelerationSpinBox_->setSuffix(QString(" " + model_->getAxisAccelerationShortName(axis_)));
+      decelerationSpinBox_->setSuffix(QString(" " + model_->getAxisAccelerationShortName(axis_)));
+      velocitySpinBox_->setSuffix(QString(" " + model_->getAxisVelocityShortName(axis_)));
+
+      positionLabel_->setText(QString::number(model_->getPosition(axis_), 'f', 4)+" "+axisDimensionName_);
+    }
+
     if(axis && model_->getJoystickEnabled())
     {
       joystickCheckBox_->setEnabled(true);
@@ -252,18 +318,11 @@ void LStepExpressAxisWidget::updateWidgets()
       joystickCheckBox_->setEnabled(false);
     }
 
-    if(axis)
-    {
-      const QString temp = model_->getAxisDimensionShortName(axis_);
-      if(axisDimensionName_ != temp)
-      {
-        axisDimensionName_ = temp;
+    if (axis) {
+      this->updateMotionWidgets();
 
-        this->updateMotionWidgets();
-
-        NQLog("LStepExpressAxisWidget", NQLog::Debug) << "updateWidgets"
-           << ": updated motion widgets";
-      }
+      NQLog("LStepExpressAxisWidget", NQLog::Debug) << "updateWidgets"
+          << ": updated motion widgets";
     }
 }
 
@@ -314,6 +373,42 @@ void LStepExpressAxisWidget::enabledCheckBoxToggled(bool enabled)
 void LStepExpressAxisWidget::joystickCheckBoxToggled(bool enabled)
 {
     model_->setJoystickAxisEnabled(axis_, enabled);
+}
+
+void LStepExpressAxisWidget::setVelocity(double /* value */)
+{
+  //model_->setVelocity(axis_, value);
+}
+
+void LStepExpressAxisWidget::setAcceleration(double /* value */)
+{
+  //model_->setAcceleration(axis_, value);
+}
+
+void LStepExpressAxisWidget::setDeceleration(double /* value */)
+{
+  //model_->setDeceleration(axis_, value);
+}
+
+void LStepExpressAxisWidget::setAccelerationJerk(double /* value */)
+{
+  //model_->setAccelerationJerk(axis_, value);
+}
+
+void LStepExpressAxisWidget::setDecelerationJerk(double /* value */)
+{
+  //model_->setDecelerationJerk(axis_, value);
+}
+
+void LStepExpressAxisWidget::writeParameter()
+{
+  NQLog("LStepExpressAxisWidget ", NQLog::Spam)<< "writeParameter";
+
+  model_->setAccelerationJerk(axis_, accelerationJerkSpinBox_->value());
+  model_->setDecelerationJerk(axis_, decelerationJerkSpinBox_->value());
+  model_->setAcceleration(axis_, accelerationSpinBox_->value());
+  model_->setDeceleration(axis_, decelerationSpinBox_->value());
+  model_->setVelocity(axis_, velocitySpinBox_->value());
 }
 
 void LStepExpressAxisWidget::motionStarted()
