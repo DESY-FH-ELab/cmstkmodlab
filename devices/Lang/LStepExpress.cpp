@@ -231,7 +231,7 @@ void LStepExpress::GetAxisEnabled(VLStepExpress::Axis axis, int & value)
   GetValue("axis", axis, value);
 }
 
-void LStepExpress::SetAxisEnabled(std::vector<int> & values)
+void LStepExpress::SetAxisEnabled(const std::vector<int> & values)
 {
   SetValue("!axis", values);
 }
@@ -251,7 +251,7 @@ void LStepExpress::GetAxisDirection(VLStepExpress::Axis axis, int & value)
   GetValue("axisdir", axis, value);
 }
 
-void LStepExpress::SetAxisDirection(std::vector<int> & values)
+void LStepExpress::SetAxisDirection(const std::vector<int> & values)
 {
   SetValue("!axisdir", values);
 }
@@ -271,7 +271,7 @@ void LStepExpress::GetDimension(VLStepExpress::Axis axis, int & value)
   GetValue("dim", axis, value);
 }
 
-void LStepExpress::SetDimension(std::vector<int> & values)
+void LStepExpress::SetDimension(const std::vector<int> & values)
 {
   SetValue("!dim", values);
 }
@@ -291,7 +291,7 @@ void LStepExpress::GetPowerAmplifierStatus(VLStepExpress::Axis axis, int & value
   GetValue("pa", axis, value);
 }
 
-void LStepExpress::SetPowerAmplifierStatus(std::vector<int> & values)
+void LStepExpress::SetPowerAmplifierStatus(const std::vector<int> & values)
 {
   SetValue("!pa", values);
 }
@@ -351,7 +351,7 @@ void LStepExpress::GetAcceleration(VLStepExpress::Axis axis, double & value)
   GetValue("accel", axis, value);
 }
 
-void LStepExpress::SetAcceleration(std::vector<double> & values)
+void LStepExpress::SetAcceleration(const std::vector<double> & values)
 {
   SetValue("accel", values);
 }
@@ -371,7 +371,7 @@ void LStepExpress::GetDeceleration(VLStepExpress::Axis axis, double & value)
   GetValue("decel", axis, value);
 }
 
-void LStepExpress::SetDeceleration(std::vector<double> & values)
+void LStepExpress::SetDeceleration(const std::vector<double> & values)
 {
   SetValue("decel", values);
 }
@@ -391,7 +391,7 @@ void LStepExpress::GetVelocity(VLStepExpress::Axis axis, double & value)
   GetValue("vel", axis, value);
 }
 
-void LStepExpress::SetVelocity(std::vector<double> & values)
+void LStepExpress::SetVelocity(const std::vector<double> & values)
 {
   SetValue("vel", values);
 }
@@ -411,7 +411,7 @@ void LStepExpress::GetPosition(VLStepExpress::Axis axis, double & value)
   GetValue("pos", axis, value);
 }
 
-void LStepExpress::SetPosition(std::vector<double> & values)
+void LStepExpress::SetPosition(const std::vector<double> & values)
 {
   SetValue("!pos", values);
 }
@@ -421,7 +421,7 @@ void LStepExpress::SetPosition(VLStepExpress::Axis axis, double value)
   SetValue("!pos", axis, value);
 }
 
-void LStepExpress::MoveAbsolute(std::vector<double> & values)
+void LStepExpress::MoveAbsolute(const std::vector<double> & values)
 {
   SetValue("!moa", values);
 }
@@ -436,7 +436,7 @@ void LStepExpress::MoveAbsolute(VLStepExpress::Axis axis, double value)
   SetValue("!moa", axis, value);
 }
 
-void LStepExpress::MoveRelative(std::vector<double> & values)
+void LStepExpress::MoveRelative(const std::vector<double> & values)
 {
   SetValue("!mor", values);
 }
@@ -507,7 +507,7 @@ void LStepExpress::GetJoystickAxisEnabled(VLStepExpress::Axis axis, int & value)
   GetValue("joyenable", axis, value);
 }
 
-void LStepExpress::SetJoystickAxisEnabled(std::vector<int> & values)
+void LStepExpress::SetJoystickAxisEnabled(const std::vector<int> & values)
 {
   SetValue("!joyenable", values);
   usleep(100000);
