@@ -532,6 +532,11 @@ int LStepExpress::GetError()
   return value;
 }
 
+void LStepExpress::ErrorQuit()
+{
+  this->SendCommand("!quit");
+}
+
 void LStepExpress::Reset()
 {
   this->SendCommand("!Reset");

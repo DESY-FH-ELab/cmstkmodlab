@@ -114,6 +114,7 @@ class LStepExpressModel : public QObject, public AbstractDeviceModel<LStepExpres
     void moveAbsolute(const double x=0., const double y=0., const double z=0., const double a=0.);
     void moveAbsolute(const unsigned int axis, const double value);
 
+    void errorQuit();
     void calibrate();
 
     void emergencyStop();

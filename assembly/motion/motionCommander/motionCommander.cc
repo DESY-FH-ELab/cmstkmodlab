@@ -35,7 +35,7 @@
 int main( int argc, char** argv )
 {
     NQLogger::instance()->addActiveModule("*");
-    NQLogger::instance()->addDestiniation(stdout, NQLog::Debug);
+    NQLogger::instance()->addDestiniation(stdout, NQLog::Spam);
 
 #if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
     QString logdir = QDesktopServices::storageLocation(QDesktopServices::CacheLocation);
@@ -54,7 +54,7 @@ int main( int argc, char** argv )
     QFile * logfile = new QFile(logfilename);
     //if (logfile->open(QIODevice::WriteOnly | QIODevice::Append | QIODevice::Text)) {
     if (logfile->open(QIODevice::WriteOnly | QIODevice::Truncate | QIODevice::Text)) {
-      NQLogger::instance()->addDestiniation(logfile, NQLog::Debug);
+      NQLogger::instance()->addDestiniation(logfile, NQLog::Spam);
     }
 
     qRegisterMetaType<State>("State");
