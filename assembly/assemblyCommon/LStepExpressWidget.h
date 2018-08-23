@@ -99,6 +99,8 @@ class LStepExpressAxisWidget : public QWidget
   QDoubleSpinBox* decelerationSpinBox_;
   QDoubleSpinBox* accelerationJerkSpinBox_;
   QDoubleSpinBox* decelerationJerkSpinBox_;
+  QPushButton* buttonWriteParameter_;
+
   QString axisDimensionName_;
 
  public slots:
@@ -114,6 +116,7 @@ class LStepExpressAxisWidget : public QWidget
   void setDeceleration(double value);
   void setAccelerationJerk(double value);
   void setDecelerationJerk(double value);
+  void writeParameter();
   void motionStarted();
   void motionFinished();
 };

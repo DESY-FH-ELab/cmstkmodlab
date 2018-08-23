@@ -63,7 +63,7 @@ LStepExpressWidget::LStepExpressWidget(LStepExpressModel* model, QWidget* parent
     glayout->addWidget(buttonOrigin_, 1, 3);
 
     buttonErrorQuit_ = new QPushButton("Error Quit", this);
-    glayout->addWidget(buttonErrorQuit_, 1, 4);
+    glayout->addWidget(buttonErrorQuit_, 1, 0);
 
     // AXIS
     axisControlWidget_ = new QWidget(this);
@@ -239,6 +239,9 @@ LStepExpressAxisWidget::LStepExpressAxisWidget(LStepExpressModel* model, unsigne
     decelerationJerkSpinBox_->setSuffix(" usteps/s^3");
     layout_->addRow("jd", decelerationJerkSpinBox_);
 
+    buttonWriteParameter_ = new QPushButton("Write", this);
+    layout_->addRow(buttonWriteParameter_);
+
     connect(enabledCheckBox_ , SIGNAL(toggled(bool)), this, SLOT(enabledCheckBoxToggled(bool)));
     connect(joystickCheckBox_, SIGNAL(toggled(bool)), this, SLOT(joystickCheckBoxToggled(bool)));
 
@@ -247,6 +250,7 @@ LStepExpressAxisWidget::LStepExpressAxisWidget(LStepExpressModel* model, unsigne
     connect(decelerationSpinBox_, SIGNAL(valueChanged(double)), this, SLOT(setDeceleration(double)));
     connect(accelerationJerkSpinBox_, SIGNAL(valueChanged(double)), this, SLOT(setAccelerationJerk(double)));
     connect(decelerationJerkSpinBox_, SIGNAL(valueChanged(double)), this, SLOT(setDecelerationJerk(double)));
+    connect(buttonWriteParameter_, SIGNAL(clicked()), this, SLOT(writeParameter()));
 
     connect(model_, SIGNAL(deviceStateChanged(State)) , this, SLOT(lStepStateChanged(State)));
     connect(model_, SIGNAL(controlStateChanged(bool)) , this, SLOT(controlStateChanged(bool)));
@@ -371,29 +375,40 @@ void LStepExpressAxisWidget::joystickCheckBoxToggled(bool enabled)
     model_->setJoystickAxisEnabled(axis_, enabled);
 }
 
-void LStepExpressAxisWidget::setVelocity(double value)
+void LStepExpressAxisWidget::setVelocity(double /* value */)
 {
-  model_->setVelocity(axis_, value);
+  //model_->setVelocity(axis_, value);
 }
 
-void LStepExpressAxisWidget::setAcceleration(double value)
+void LStepExpressAxisWidget::setAcceleration(double /* value */)
 {
-  model_->setAcceleration(axis_, value);
+  //model_->setAcceleration(axis_, value);
 }
 
-void LStepExpressAxisWidget::setDeceleration(double value)
+void LStepExpressAxisWidget::setDeceleration(double /* value */)
 {
-  model_->setDeceleration(axis_, value);
+  //model_->setDeceleration(axis_, value);
 }
 
-void LStepExpressAxisWidget::setAccelerationJerk(double value)
+void LStepExpressAxisWidget::setAccelerationJerk(double /* value */)
 {
-  model_->setAccelerationJerk(axis_, value);
+  //model_->setAccelerationJerk(axis_, value);
 }
 
-void LStepExpressAxisWidget::setDecelerationJerk(double value)
+void LStepExpressAxisWidget::setDecelerationJerk(double /* value */)
 {
-  model_->setDecelerationJerk(axis_, value);
+  //model_->setDecelerationJerk(axis_, value);
+}
+
+void LStepExpressAxisWidget::writeParameter()
+{
+  NQLog("LStepExpressAxisWidget ", NQLog::Spam)<< "writeParameter";
+
+  model_->setAccelerationJerk(axis_, accelerationJerkSpinBox_->value());
+  model_->setDecelerationJerk(axis_, decelerationJerkSpinBox_->value());
+  model_->setAcceleration(axis_, accelerationSpinBox_->value());
+  model_->setDeceleration(axis_, decelerationSpinBox_->value());
+  model_->setVelocity(axis_, velocitySpinBox_->value());
 }
 
 void LStepExpressAxisWidget::motionStarted()
