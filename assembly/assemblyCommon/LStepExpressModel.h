@@ -86,6 +86,8 @@ class LStepExpressModel : public QObject, public AbstractDeviceModel<LStepExpres
     void setJoystickEnabled(bool enabled);
     void setJoystickAxisEnabled(unsigned int axis, bool enabled);
 
+    void setPositionControllerEnabled(const bool enable);
+
     void setAccelerationJerk(const std::vector<double>& values);
     void setAccelerationJerk(const double x, const double y, const double z, const double a);
     void setAccelerationJerk(const unsigned int axis, const double value);

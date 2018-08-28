@@ -23,6 +23,7 @@ LStepExpressWidget::LStepExpressWidget(LStepExpressModel* model, QWidget* parent
 
  , lstepCheckBox_(nullptr)
  , joystickCheckBox_(nullptr)
+ , posCtrlCheckBox_(nullptr)
 
  , buttonOrigin_(nullptr)
  , buttonCalibrate_(nullptr)
@@ -47,23 +48,26 @@ LStepExpressWidget::LStepExpressWidget(LStepExpressModel* model, QWidget* parent
     lstepCheckBox_ = new QCheckBox("Enable Controller", this);
     glayout->addWidget(lstepCheckBox_, 0, 0);
 
-    joystickCheckBox_ = new QCheckBox("Enable Joystick", this);
-    glayout->addWidget(joystickCheckBox_, 0, 1);
+    posCtrlCheckBox_ = new QCheckBox("Enable Position Controller", this);
+    glayout->addWidget(posCtrlCheckBox_, 0, 1);
 
-    buttonClearQueue_ = new QPushButton("Clear Motion Queue", this);
-    glayout->addWidget(buttonClearQueue_, 0, 2);
+    joystickCheckBox_ = new QCheckBox("Enable Joystick", this);
+    glayout->addWidget(joystickCheckBox_, 0, 2);
 
     buttonCalibrate_ = new QPushButton("Calibrate", this);
-    glayout->addWidget(buttonCalibrate_, 0, 3);
+    glayout->addWidget(buttonCalibrate_, 0, 4);
 
     buttonEmergencyStop_ = new QPushButton("Emergency Stop", this);
-    glayout->addWidget(buttonEmergencyStop_, 0, 4);
-
-    buttonOrigin_ = new QPushButton("Origin", this);
-    glayout->addWidget(buttonOrigin_, 1, 3);
+    glayout->addWidget(buttonEmergencyStop_, 0, 5);
 
     buttonErrorQuit_ = new QPushButton("Error Quit", this);
     glayout->addWidget(buttonErrorQuit_, 1, 0);
+
+    buttonOrigin_ = new QPushButton("Origin", this);
+    glayout->addWidget(buttonOrigin_, 1, 4);
+
+    buttonClearQueue_ = new QPushButton("Clear Motion Queue", this);
+    glayout->addWidget(buttonClearQueue_, 1, 5);
 
     // AXIS
     axisControlWidget_ = new QWidget(this);
@@ -85,6 +89,7 @@ LStepExpressWidget::LStepExpressWidget(LStepExpressModel* model, QWidget* parent
 
     connect(lstepCheckBox_   , SIGNAL(toggled(bool)), model_, SLOT(setDeviceEnabled(bool)));
     connect(joystickCheckBox_, SIGNAL(toggled(bool)), model_, SLOT(setJoystickEnabled(bool)));
+    connect(posCtrlCheckBox_ , SIGNAL(toggled(bool)), model_, SLOT(setPositionControllerEnabled(bool)));
 
     connect(model_, SIGNAL(deviceStateChanged(State)), this, SLOT(lstepStateChanged(State)));
     connect(model_, SIGNAL(controlStateChanged(bool)), this, SLOT(controlStateChanged(bool)));
@@ -107,6 +112,7 @@ LStepExpressWidget::~LStepExpressWidget()
 {
     if(lstepCheckBox_      ){ delete lstepCheckBox_      ; lstepCheckBox_       = nullptr; }
     if(joystickCheckBox_   ){ delete joystickCheckBox_   ; joystickCheckBox_    = nullptr; }
+    if(posCtrlCheckBox_    ){ delete posCtrlCheckBox_    ; posCtrlCheckBox_     = nullptr; }
     if(buttonOrigin_       ){ delete buttonOrigin_       ; buttonOrigin_        = nullptr; }
     if(buttonCalibrate_    ){ delete buttonCalibrate_    ; buttonCalibrate_     = nullptr; }
     if(buttonEmergencyStop_){ delete buttonEmergencyStop_; buttonEmergencyStop_ = nullptr; }
@@ -141,11 +147,12 @@ void LStepExpressWidget::enableMotionControllers()
 /// Updates the GUI when the Keithley multimeter is enabled/disabled.
 void LStepExpressWidget::lstepStateChanged(State newState)
 {
-//    NQLog("LStepExpressWidget", NQLog::Spam)<< "lStepStateChanged(State newState) " << newState  ;
+    NQLog("LStepExpressWidget", NQLog::Debug) << "lStepStateChanged(" << newState << ")";
 
     lstepCheckBox_->setChecked(newState == READY || newState == INITIALIZING);
 
     joystickCheckBox_   ->setEnabled(newState == READY);
+    posCtrlCheckBox_    ->setEnabled(newState == READY);
     buttonOrigin_       ->setEnabled(newState == READY);
     buttonCalibrate_    ->setEnabled(newState == READY);
     buttonEmergencyStop_->setEnabled(newState == READY);
@@ -158,7 +165,7 @@ void LStepExpressWidget::lstepStateChanged(State newState)
 /// Updates the GUI when the controler is enabled/disabled.
 void LStepExpressWidget::controlStateChanged(bool enabled)
 {
-//    NQLog("LStepExpressWidget", NQLog::Spam)<< "controlStateChanged(bool enabled) " << enabled  ;
+    NQLog("LStepExpressWidget", NQLog::Debug) << "controlStateChanged(" << enabled << ")";
 
     if(enabled)
     {
@@ -173,6 +180,7 @@ void LStepExpressWidget::controlStateChanged(bool enabled)
       buttonEmergencyStop_->setEnabled(false);
       buttonClearQueue_   ->setEnabled(false);
       buttonErrorQuit_    ->setEnabled(false);
+      posCtrlCheckBox_    ->setEnabled(false);
 
       axisControlWidget_  ->setEnabled(false);
     }

@@ -1044,3 +1044,13 @@ void LStepExpressModel::setControlsEnabled(bool enabled)
 
     emit controlStateChanged(enabled);
 }
+
+void LStepExpressModel::setPositionControllerEnabled(const bool enable)
+{
+    NQLog("LStepExpressModel", NQLog::Debug) << "setPositionControllerEnabled(" << enable << ")";
+
+    controller_->SetPositionControllerEnabled(enable);
+
+    NQLog("LStepExpressModel", NQLog::Message) << "setPositionControllerEnabled(" << enable << ")"
+       << ": Position Controller switched " << (controller_->GetPositionControllerEnabled() ? "ON" : "OFF");
+}

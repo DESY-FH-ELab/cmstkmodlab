@@ -44,6 +44,7 @@ class LStepExpressWidget : public QWidget
 
   QCheckBox* lstepCheckBox_;
   QCheckBox* joystickCheckBox_;
+  QCheckBox* posCtrlCheckBox_;
 
   QPushButton* buttonOrigin_;
   QPushButton* buttonCalibrate_;
