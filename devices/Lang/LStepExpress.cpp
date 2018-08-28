@@ -537,6 +537,20 @@ void LStepExpress::ErrorQuit()
   this->SendCommand("!quit");
 }
 
+bool LStepExpress::GetPositionControllerEnabled()
+{
+  int posctrl_status(-1);
+  GetValue("?poscon", posctrl_status);
+
+  return bool(posctrl_status == 1);
+}
+
+void LStepExpress::SetPositionControllerEnabled(const bool enable)
+{
+  if(enable){ this->SendCommand("!poscon 1"); }
+  else      { this->SendCommand("!poscon 0"); }
+}
+
 void LStepExpress::Reset()
 {
   this->SendCommand("!Reset");
