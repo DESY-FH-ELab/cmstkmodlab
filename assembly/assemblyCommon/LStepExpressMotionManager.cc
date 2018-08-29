@@ -261,10 +261,23 @@ void LStepExpressMotionManager::clear_motion_queue()
     return;
   }
 
+  const auto mots = motions_;
+
   motions_.clear();
 
+  for(const auto& i_mot : mots)
+  {
+    NQLog("LStepExpressMotionManager", NQLog::Spam) << "clear_motion_queue"
+       << ": removed LStepExpressMotion"
+       << " (x=" << i_mot.getX()
+       << ", y=" << i_mot.getY()
+       << ", z=" << i_mot.getZ()
+       << ", a=" << i_mot.getA()
+       << ")[absolute=" << i_mot.getMode() << "]";
+  }
+
   NQLog("LStepExpressMotionManager", NQLog::Message) << "clear_motion_queue"
-     << ": motion queue cleared";
+     << ": motion queue cleared (removed " << mots.size() << " motions)";
 
   return;
 }
