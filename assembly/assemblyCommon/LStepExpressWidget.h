@@ -72,6 +72,9 @@ class LStepExpressWidget : public QWidget
   void  enableMotionTools(const bool enable=true);
   void disableMotionTools();
 
+  void   lockMotionSettings(const bool disable=true);
+  void unlockMotionSettings();
+
  signals:
 
   void clearQueue_request();
@@ -107,6 +110,8 @@ class LStepExpressAxisWidget : public QWidget
 
   QString axisDimensionName_;
 
+  bool motionSettings_locked_;
+
  public slots:
 
   void lStepStateChanged(State state);
@@ -126,6 +131,9 @@ class LStepExpressAxisWidget : public QWidget
 
   void  enableMotionTools(const bool enable=true);
   void disableMotionTools();
+
+  void   lockMotionSettings(const bool disable=true);
+  void unlockMotionSettings();
 };
 
 #endif // LSTEPEXPRESSWIDGET_H

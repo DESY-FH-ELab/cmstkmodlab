@@ -18,17 +18,19 @@
 #include <QVBoxLayout>
 #include <QGroupBox>
 
-AssemblyHardwareControlView::AssemblyHardwareControlView(const LStepExpressMotionManager* const manager, QWidget* parent) :
-  QWidget(parent),
-  manager_(manager),
+AssemblyHardwareControlView::AssemblyHardwareControlView(const LStepExpressMotionManager* const manager, QWidget* parent)
+ : QWidget(parent)
+ , manager_(manager)
 
-  w_lStep_        (nullptr),
-  w_lStepJoystick_(nullptr),
-  w_lStepPosition_(nullptr),
+ , w_moveabs_(nullptr)
+ , w_moverel_(nullptr)
+ , w_vacuum_ (nullptr)
 
-  w_moveabs_(nullptr),
-  w_moverel_(nullptr),
-  w_vacuum_ (nullptr)
+ , cb_lockMotionSettings_(nullptr)
+
+ , w_lStep_        (nullptr)
+ , w_lStepJoystick_(nullptr)
+ , w_lStepPosition_(nullptr)
 {
   if(manager_ == nullptr)
   {
@@ -101,7 +103,7 @@ AssemblyHardwareControlView::AssemblyHardwareControlView(const LStepExpressMotio
   QGroupBox* box_vacuum = new QGroupBox(tr("Vacuum"));
   box_vacuum->setStyleSheet("QGroupBox { font-weight: bold; } ");
 
-  w_vacuum_ = new AssemblyVacuumWidget("Toggle Vacuum", this);
+  w_vacuum_ = new AssemblyVacuumWidget("Toggle Vacuum");
   w_vacuum_->setToolTip("(3) Controls vacuum valves");
 
   box_vacuum->setLayout(w_vacuum_->layout());
@@ -113,11 +115,16 @@ AssemblyHardwareControlView::AssemblyHardwareControlView(const LStepExpressMotio
 
   //// ------------------
 
+  cb_lockMotionSettings_ = new QCheckBox("Lock Controller Settings");
+  layout->addWidget(cb_lockMotionSettings_);
+
   //// LStepExpressWidget
   w_lStep_ = new LStepExpressWidget(manager_->model(), this);
   layout->addWidget(w_lStep_);
 
   connect(w_lStep_, SIGNAL(clearQueue_request()), manager_, SLOT(clear_motion_queue()));
+
+  connect(cb_lockMotionSettings_, SIGNAL(toggled(bool)), w_lStep_, SLOT(lockMotionSettings(bool)));
   //// ------------------
 
   //// LStepExpressJoystickWidget

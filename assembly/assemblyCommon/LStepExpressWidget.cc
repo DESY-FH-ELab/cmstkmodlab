@@ -45,29 +45,32 @@ LStepExpressWidget::LStepExpressWidget(LStepExpressModel* model, QWidget* parent
     QGridLayout* glayout = new QGridLayout();
     layout->addLayout(glayout);
 
-    lstepCheckBox_ = new QCheckBox("Enable Controller", this);
+    lstepCheckBox_ = new QCheckBox("Enable Controller");
     glayout->addWidget(lstepCheckBox_, 0, 0);
 
-    posCtrlCheckBox_ = new QCheckBox("Enable Position Controller", this);
+    joystickCheckBox_ = new QCheckBox("Enable Joystick");
+    glayout->addWidget(joystickCheckBox_, 1, 0);
+
+    posCtrlCheckBox_ = new QCheckBox("Enable Position Controller");
     glayout->addWidget(posCtrlCheckBox_, 0, 1);
 
-    joystickCheckBox_ = new QCheckBox("Enable Joystick", this);
-    glayout->addWidget(joystickCheckBox_, 0, 2);
+    buttonErrorQuit_ = new QPushButton("Error Quit");
+    glayout->addWidget(buttonErrorQuit_, 1, 1);
 
-    buttonCalibrate_ = new QPushButton("Calibrate", this);
-    glayout->addWidget(buttonCalibrate_, 0, 4);
+    glayout->addWidget(new QLabel, 0, 2);
+    glayout->addWidget(new QLabel, 1, 2);
 
-    buttonEmergencyStop_ = new QPushButton("Emergency Stop", this);
-    glayout->addWidget(buttonEmergencyStop_, 0, 5);
+    buttonCalibrate_ = new QPushButton("Calibrate");
+    glayout->addWidget(buttonCalibrate_, 0, 3);
 
-    buttonErrorQuit_ = new QPushButton("Error Quit", this);
-    glayout->addWidget(buttonErrorQuit_, 1, 0);
+    buttonOrigin_ = new QPushButton("Origin");
+    glayout->addWidget(buttonOrigin_, 1, 3);
 
-    buttonOrigin_ = new QPushButton("Origin", this);
-    glayout->addWidget(buttonOrigin_, 1, 4);
+    buttonEmergencyStop_ = new QPushButton("Emergency Stop");
+    glayout->addWidget(buttonEmergencyStop_, 0, 4);
 
-    buttonClearQueue_ = new QPushButton("Clear Motion Queue", this);
-    glayout->addWidget(buttonClearQueue_, 1, 5);
+    buttonClearQueue_ = new QPushButton("Clear Motion Queue");
+    glayout->addWidget(buttonClearQueue_, 1, 4);
 
     // AXIS
     axisControlWidget_ = new QWidget(this);
@@ -77,10 +80,10 @@ LStepExpressWidget::LStepExpressWidget(LStepExpressModel* model, QWidget* parent
     axisControlWidget_->setLayout(axisLayout);
 
     // Add all the axes displays
-    axisWidget_X_ = new LStepExpressAxisWidget(model_, 0, this);
-    axisWidget_Y_ = new LStepExpressAxisWidget(model_, 1, this);
-    axisWidget_Z_ = new LStepExpressAxisWidget(model_, 2, this);
-    axisWidget_A_ = new LStepExpressAxisWidget(model_, 3, this);
+    axisWidget_X_ = new LStepExpressAxisWidget(model_, 0);
+    axisWidget_Y_ = new LStepExpressAxisWidget(model_, 1);
+    axisWidget_Z_ = new LStepExpressAxisWidget(model_, 2);
+    axisWidget_A_ = new LStepExpressAxisWidget(model_, 3);
 
     axisLayout->addWidget(axisWidget_X_, 0, 0);
     axisLayout->addWidget(axisWidget_Y_, 0, 1);
@@ -124,6 +127,24 @@ LStepExpressWidget::~LStepExpressWidget()
 
 void LStepExpressWidget::updateWidgets()
 {
+}
+
+void LStepExpressWidget::lockMotionSettings(const bool disable)
+{
+  if(lstepCheckBox_   ){ lstepCheckBox_   ->setDisabled(disable); }
+  if(joystickCheckBox_){ joystickCheckBox_->setDisabled(disable); }
+  if(posCtrlCheckBox_ ){ posCtrlCheckBox_ ->setDisabled(disable); }
+  if(buttonErrorQuit_ ){ buttonErrorQuit_ ->setDisabled(disable); }
+
+  if(axisWidget_X_){ axisWidget_X_->lockMotionSettings(disable); }
+  if(axisWidget_Y_){ axisWidget_Y_->lockMotionSettings(disable); }
+  if(axisWidget_Z_){ axisWidget_Z_->lockMotionSettings(disable); }
+  if(axisWidget_A_){ axisWidget_A_->lockMotionSettings(disable); }
+}
+
+void LStepExpressWidget::unlockMotionSettings()
+{
+  this->lockMotionSettings(false);
 }
 
 void LStepExpressWidget::enableMotionControllers()
@@ -218,6 +239,7 @@ LStepExpressAxisWidget::LStepExpressAxisWidget(LStepExpressModel* model, unsigne
  , model_(model)
  , axis_(axis)
  , axisDimensionName_("usteps")
+ , motionSettings_locked_(false)
 {
     layout_ = new QFormLayout(this);
     setLayout(layout_);
@@ -447,11 +469,31 @@ void LStepExpressAxisWidget::motionFinished()
 
 void LStepExpressAxisWidget::enableMotionTools(const bool enable)
 {
-  if(buttonWriteParameter_){ buttonWriteParameter_->setEnabled(enable); }
+  if(motionSettings_locked_ == false)
+  {
+    if(buttonWriteParameter_){ buttonWriteParameter_->setEnabled(enable); }
+  }
 }
 
 void LStepExpressAxisWidget::disableMotionTools()
 {
   this->enableMotionTools(false);
+}
+
+void LStepExpressAxisWidget::lockMotionSettings(const bool disable)
+{
+  if(velocitySpinBox_        ){ velocitySpinBox_        ->setDisabled(disable); }
+  if(accelerationSpinBox_    ){ accelerationSpinBox_    ->setDisabled(disable); }
+  if(decelerationSpinBox_    ){ decelerationSpinBox_    ->setDisabled(disable); }
+  if(accelerationJerkSpinBox_){ accelerationJerkSpinBox_->setDisabled(disable); }
+  if(decelerationJerkSpinBox_){ decelerationJerkSpinBox_->setDisabled(disable); }
+  if(buttonWriteParameter_   ){ buttonWriteParameter_   ->setDisabled(disable); }
+
+  motionSettings_locked_ = disable;
+}
+
+void LStepExpressAxisWidget::unlockMotionSettings()
+{
+  this->lockMotionSettings(false);
 }
 // ============================================================================
