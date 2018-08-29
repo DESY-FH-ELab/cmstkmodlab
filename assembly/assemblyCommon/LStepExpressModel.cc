@@ -110,7 +110,7 @@ QString LStepExpressModel::getAxisName(unsigned int axis)
 
 QString LStepExpressModel::getAxisDimensionShortName(unsigned int axis)
 {
-    NQLog("LStepExpressModel ", NQLog::Debug) << "getAxisDimensionShortName(" << axis << ")";
+    NQLog("LStepExpressModel", NQLog::Debug) << "getAxisDimensionShortName(" << axis << ")";
 
     QMutexLocker locker(&mutex_);
 
@@ -121,7 +121,7 @@ QString LStepExpressModel::getAxisDimensionShortName(unsigned int axis)
 
 QString LStepExpressModel::getAxisVelocityShortName(unsigned int axis)
 {
-    NQLog("LStepExpressModel ", NQLog::Debug) << "getAxisVelocityShortName(" << axis << ")";
+    NQLog("LStepExpressModel", NQLog::Debug) << "getAxisVelocityShortName(" << axis << ")";
 
     QMutexLocker locker(&mutex_);
 
@@ -132,7 +132,7 @@ QString LStepExpressModel::getAxisVelocityShortName(unsigned int axis)
 
 QString LStepExpressModel::getAxisAccelerationShortName(unsigned int axis)
 {
-    NQLog("LStepExpressModel ", NQLog::Debug) << "getAxisAccelerationShortName(" << axis << ")";
+    NQLog("LStepExpressModel", NQLog::Debug) << "getAxisAccelerationShortName(" << axis << ")";
 
     QMutexLocker locker(&mutex_);
 
@@ -143,7 +143,7 @@ QString LStepExpressModel::getAxisAccelerationShortName(unsigned int axis)
 
 QString LStepExpressModel::getAxisAccelerationJerkShortName(unsigned int axis)
 {
-    NQLog("LStepExpressModel ", NQLog::Debug) << "getAxisAccelerationJerkShortName(" << axis << ")";
+    NQLog("LStepExpressModel", NQLog::Debug) << "getAxisAccelerationJerkShortName(" << axis << ")";
 
     QMutexLocker locker(&mutex_);
 
@@ -585,7 +585,7 @@ void LStepExpressModel::setAxisEnabled(unsigned int axis, bool enabled)
         axis_[axis] = temp;
         updateInformation();
 
-        NQLog("LStepExpressModel ", NQLog::Debug) << "setAxisEnabled(" << axis << ", " << enabled << ")"
+        NQLog("LStepExpressModel", NQLog::Debug) << "setAxisEnabled(" << axis << ", " << enabled << ")"
            << ": emitting signal \"informationChanged\"";
 
         emit informationChanged();
@@ -743,9 +743,9 @@ void LStepExpressModel::updateInformation()
 
     /*
       if (thread()==QApplication::instance()->thread()) {
-      NQLog("LStepExpressModel "<< " running in main application thread";
+      NQLog("LStepExpressModel"<< " running in main application thread";
       } else {
-      NQLog("LStepExpressModel "<< " running in dedicated thread";
+      NQLog("LStepExpressModel"<< " running in dedicated thread";
       }
     */
 
@@ -853,9 +853,9 @@ void LStepExpressModel::updateMotionInformation()
 
       /*
         if (thread()==QApplication::instance()->thread()) {
-        NQLog("LStepExpressModel "<< " running in main application thread";
+        NQLog("LStepExpressModel"<< " running in main application thread";
         } else {
-        NQLog("LStepExpressModel "<< " running in dedicated thread";
+        NQLog("LStepExpressModel"<< " running in dedicated thread";
         }
       */
 
@@ -895,8 +895,8 @@ void LStepExpressModel::updateMotionInformation()
           
           /*
 	if (std::all_of(ivalues.begin(), ivalues.end(),
-	[](int i){	  NQLog("LStepExpressModel ", NQLog::Spam)<< "updateMotionInformation() axis status =  "<<i; bool temp = (i==LStepExpress_t::AXISSTANDSANDREADY || i==LStepExpress_t::AXISACKAFTERCALIBRATION) && (axis_)[i]==1; return temp;})) {
-	NQLog("LStepExpressModel ", NQLog::Spam)<< "updateMotionInformation() finished moving inMotion_ = false";
+	[](int i){	  NQLog("LStepExpressModel", NQLog::Spam)<< "updateMotionInformation() axis status =  "<<i; bool temp = (i==LStepExpress_t::AXISSTANDSANDREADY || i==LStepExpress_t::AXISACKAFTERCALIBRATION) && (axis_)[i]==1; return temp;})) {
+	NQLog("LStepExpressModel", NQLog::Spam)<< "updateMotionInformation() finished moving inMotion_ = false";
 	inMotion_ = false;
 	emit motionFinished();
 	}*/
@@ -905,15 +905,15 @@ void LStepExpressModel::updateMotionInformation()
       if( (axis_)[0] || (axis_)[1] || (axis_)[2] || (axis_)[3]){
         controller_->GetPosition(dvalues);
         if (dvalues!=position_) {
-          //NQLog("LStepExpressModel ", NQLog::Spam)<< "updateMotionInformation() new position values"  ;
+          //NQLog("LStepExpressModel", NQLog::Spam)<< "updateMotionInformation() new position values"  ;
           position_ = dvalues;
           changed = true;
         }
       }
       
-      //      NQLog("LStepExpressModel ", NQLog::Spam)<< "updateMotionInformation() finishedCalibrating_ =  "<<finishedCalibrating_<<" in motion =  "<<inMotion_  ;
+      //      NQLog("LStepExpressModel", NQLog::Spam)<< "updateMotionInformation() finishedCalibrating_ =  "<<finishedCalibrating_<<" in motion =  "<<inMotion_  ;
       if(!inMotion_ && finishedCalibrating_){
-        //  NQLog("LStepExpressModel ", NQLog::Spam)<< "updateMotionInformation() after calibration, setting position values to zero"  ;
+        //  NQLog("LStepExpressModel", NQLog::Spam)<< "updateMotionInformation() after calibration, setting position values to zero"  ;
         std::vector<double> posvalues{0.0, 0.0, 0.0, 0.0};
         controller_->SetPosition(posvalues);
         position_ = posvalues;
@@ -951,9 +951,9 @@ void LStepExpressModel::updateMotionInformationFromTimer()
       
       /*
         if (thread()==QApplication::instance()->thread()) {
-        NQLog("LStepExpressModel "<< " running in main application thread";
+        NQLog("LStepExpressModel"<< " running in main application thread";
         } else {
-        NQLog("LStepExpressModel "<< " running in dedicated thread";
+        NQLog("LStepExpressModel"<< " running in dedicated thread";
         }
       */
       
