@@ -388,6 +388,17 @@ void LStepExpressModel::setVelocity(const unsigned int axis, const double value)
 
 void LStepExpressModel::moveRelative(const std::vector<double>& values)
 {
+  if(values.size() != 4)
+  {
+    NQLog("LStepExpressModel", NQLog::Critical) << "moveRelative"
+       << ": length of input vector differs from 4, no action taken";
+
+    NQLog("LStepExpressModel", NQLog::Spam) << "moveRelative"
+       << ": emitting signal \"motionFinished\"";
+
+    emit motionFinished();
+  }
+
   NQLog("LStepExpressModel", NQLog::Spam) << "moveRelative"
       << "(x=" << values[0] << ", y=" << values[1] << ", z=" << values[2] << ", a=" << values[3] << ")";
 
@@ -450,6 +461,17 @@ void LStepExpressModel::moveRelative(const unsigned int axis, const double value
 
 void LStepExpressModel::moveAbsolute(const std::vector<double>& values)
 {
+  if(values.size() != 4)
+  {
+    NQLog("LStepExpressModel", NQLog::Critical) << "moveAbsolute"
+       << ": length of input vector differs from 4, no action taken";
+
+    NQLog("LStepExpressModel", NQLog::Spam) << "moveAbsolute"
+       << ": emitting signal \"motionFinished\"";
+
+    emit motionFinished();
+  }
+
   NQLog("LStepExpressModel", NQLog::Spam) << "moveAbsolute"
       << "(x=" << values[0] << ", y=" << values[1] << ", z=" << values[2] << ", a=" << values[3] << ")";
 
@@ -499,12 +521,12 @@ void LStepExpressModel::moveAbsolute(const unsigned int axis, const double value
   }
   else
   {
-    controller_->MoveAbsolute((VLStepExpress::Axis)axis, value);
+    controller_->MoveAbsolute((VLStepExpress::Axis) axis, value);
 
     inMotion_ = true;
 
     NQLog("LStepExpressModel", NQLog::Spam) << "moveAbsolute"
-        << ": emitting signal \"motionStarted\"";
+       << ": emitting signal \"motionStarted\"";
 
     emit motionStarted();
   }
@@ -928,7 +950,7 @@ void LStepExpressModel::updateMotionInformation()
 
         emit motionInformationChanged();
       }
-      
+
       isUpdating_ = false;
     }
 }
@@ -938,17 +960,17 @@ void LStepExpressModel::updateMotionInformationFromTimer()
     NQLog("LStepExpressModel", NQLog::Debug) << "updateMotionInformationFromTimer";
 
     static const int nUpdates = updateInterval_/motionUpdateInterval_;
-    
+
     if ( state_ == READY && !isPaused_) {
-      
+
       isUpdating_ = true;
-      
+
       updateCount_++;
       if (updateCount_==nUpdates) {
         updateInformation();
         updateCount_ = 0;
       }
-      
+
       /*
         if (thread()==QApplication::instance()->thread()) {
         NQLog("LStepExpressModel"<< " running in main application thread";
@@ -956,9 +978,9 @@ void LStepExpressModel::updateMotionInformationFromTimer()
         NQLog("LStepExpressModel"<< " running in dedicated thread";
         }
       */
-      
+
       bool changed = false;
-      
+
       std::vector<int> ivalues;
       std::vector<int> pavalues;
       std::vector<int> evalues;
@@ -967,12 +989,12 @@ void LStepExpressModel::updateMotionInformationFromTimer()
       controller_->GetAxisStatus(ivalues);
       controller_->GetPowerAmplifierStatus(pavalues);
       controller_->GetAxisEnabled(evalues);
-      
+
       if (ivalues!=axisStatus_) {
         axisStatus_ = ivalues;
         changed = true;
       }
-      
+
       if(inMotion_)
       {
         bool temp = true;
