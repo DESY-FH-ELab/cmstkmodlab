@@ -36,6 +36,8 @@ LStepExpressFake::LStepExpressFake( const ioport_t ioPort )
 
   joystickEnabled_ = false;
   joystickAxisEnabled_ = std::vector<int>{ 1, 1, 1, 1 };
+
+  posCtrl_enabled_ = false;
 }
 
 LStepExpressFake::~LStepExpressFake()
@@ -391,4 +393,14 @@ void LStepExpressFake::SetJoystickAxisEnabled(VLStepExpress::Axis axis, int valu
 void LStepExpressFake::SendCommand(const std::string & command)
 {
   std::cout << "SendCommand: " << command << std::endl;
+}
+
+bool LStepExpressFake::GetPositionControllerEnabled()
+{
+  return posCtrl_enabled_;
+}
+
+void LStepExpressFake::SetPositionControllerEnabled(const bool enable)
+{
+  posCtrl_enabled_ = enable;
 }
