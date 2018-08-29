@@ -195,13 +195,29 @@ void LStepExpressWidget::motionFinished()
 {
 //    NQLog("LStepExpressWidget", NQLog::Spam)<< "motionFinished()"  ;
 }
+
+void LStepExpressWidget::enableMotionTools(const bool enable)
+{
+  if(buttonOrigin_   ){ buttonOrigin_   ->setEnabled(enable); }
+  if(buttonCalibrate_){ buttonCalibrate_->setEnabled(enable); }
+
+  if(axisWidget_X_){ axisWidget_X_->enableMotionTools(enable); }
+  if(axisWidget_Y_){ axisWidget_Y_->enableMotionTools(enable); }
+  if(axisWidget_Z_){ axisWidget_Z_->enableMotionTools(enable); }
+  if(axisWidget_A_){ axisWidget_A_->enableMotionTools(enable); }
+}
+
+void LStepExpressWidget::disableMotionTools()
+{
+  this->enableMotionTools(false);
+}
 // ============================================================================
 
-LStepExpressAxisWidget::LStepExpressAxisWidget(LStepExpressModel* model, unsigned int axis, QWidget* parent) :
-  QWidget(parent),
-  model_(model),
-  axis_(axis),
-  axisDimensionName_("usteps")
+LStepExpressAxisWidget::LStepExpressAxisWidget(LStepExpressModel* model, unsigned int axis, QWidget* parent)
+ : QWidget(parent)
+ , model_(model)
+ , axis_(axis)
+ , axisDimensionName_("usteps")
 {
     layout_ = new QFormLayout(this);
     setLayout(layout_);
@@ -410,7 +426,7 @@ void LStepExpressAxisWidget::setDecelerationJerk(double /* value */)
 
 void LStepExpressAxisWidget::writeParameter()
 {
-  NQLog("LStepExpressAxisWidget ", NQLog::Spam)<< "writeParameter";
+  NQLog("LStepExpressAxisWidget", NQLog::Spam) << "writeParameter";
 
   model_->setAccelerationJerk(axis_, accelerationJerkSpinBox_->value());
   model_->setDecelerationJerk(axis_, decelerationJerkSpinBox_->value());
@@ -421,11 +437,21 @@ void LStepExpressAxisWidget::writeParameter()
 
 void LStepExpressAxisWidget::motionStarted()
 {
-//    NQLog("LStepExpressAxisWidget ", NQLog::Spam)<< "motionStarted";
+//  NQLog("LStepExpressAxisWidget", NQLog::Spam) << "motionStarted";
 }
 
 void LStepExpressAxisWidget::motionFinished()
 {
-//    NQLog("LStepExpressAxisWidget ", NQLog::Spam)<< "motionFinished";
+//  NQLog("LStepExpressAxisWidget", NQLog::Spam) << "motionFinished";
+}
+
+void LStepExpressAxisWidget::enableMotionTools(const bool enable)
+{
+  if(buttonWriteParameter_){ buttonWriteParameter_->setEnabled(enable); }
+}
+
+void LStepExpressAxisWidget::disableMotionTools()
+{
+  this->enableMotionTools(false);
 }
 // ============================================================================

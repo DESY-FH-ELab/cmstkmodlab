@@ -15,15 +15,13 @@
 #include "ApplicationConfig.h"
 #include "LStepExpressPositionWidget.h"
 
-//LStepExpressPositionWidget::LStepExpressPositionWidget(LStepExpressModel* model, QWidget *parent)
-//    : QWidget(parent),
-//      model_(model)
 LStepExpressPositionWidget::LStepExpressPositionWidget(LStepExpressMotionManager* manager, LStepExpressModel* model, QWidget *parent)
-    : QWidget(parent),
-      model_(model),
-      manager_(manager)
+ : QWidget(parent)
+
+ , model_(model)
+ , manager_(manager)
 {
-    position_ = std::vector<double>{0.0,0.0,0.0,0.0};
+    position_ = std::vector<double>{0.0, 0.0, 0.0, 0.0};
 
     QVBoxLayout* layout = new QVBoxLayout(this);
     setLayout(layout);
@@ -35,6 +33,7 @@ LStepExpressPositionWidget::LStepExpressPositionWidget(LStepExpressMotionManager
     ypos_ = new LStepExpressPositionAxisWidget(manager_, model_, 1, this);
     zpos_ = new LStepExpressPositionAxisWidget(manager_, model_, 2, this);
     apos_ = new LStepExpressPositionAxisWidget(manager_, model_, 3, this);
+
     layout->addWidget(xpos_);
     layout->addWidget(ypos_);
     layout->addWidget(zpos_);
@@ -46,33 +45,29 @@ LStepExpressPositionWidget::LStepExpressPositionWidget(LStepExpressMotionManager
     moveRelativeButton_ = new QPushButton("Move Relative", this);
     layout->addWidget(moveRelativeButton_);
 
-    connect(moveAbsoluteButton_, SIGNAL(clicked()),
-	this, SLOT(moveAbsoluteButtonClicked()));
-    connect(moveRelativeButton_, SIGNAL(clicked()),
-	this, SLOT(moveRelativeButtonClicked()));
-    connect(model_, SIGNAL(deviceStateChanged(State)),
-            this, SLOT(lStepStateChanged(State)));
+    connect(moveAbsoluteButton_, SIGNAL(clicked()), this, SLOT(moveAbsoluteButtonClicked()));
+    connect(moveRelativeButton_, SIGNAL(clicked()), this, SLOT(moveRelativeButtonClicked()));
 
-    connect(xpos_, SIGNAL(positionChanged(double, unsigned int)),
-	this, SLOT(positionChanged(double, unsigned int)));
-    connect(ypos_, SIGNAL(positionChanged(double, unsigned int)),
-	this, SLOT(positionChanged(double, unsigned int)));
-    connect(zpos_, SIGNAL(positionChanged(double, unsigned int)),
-	this, SLOT(positionChanged(double, unsigned int)));
-    connect(apos_, SIGNAL(positionChanged(double, unsigned int)),
-	this, SLOT(positionChanged(double, unsigned int)));
+    connect(model_, SIGNAL(deviceStateChanged(State)), this, SLOT(lStepStateChanged(State)));
+
+    connect(xpos_, SIGNAL(positionChanged(double, unsigned int)), this, SLOT(positionChanged(double, unsigned int)));
+    connect(ypos_, SIGNAL(positionChanged(double, unsigned int)), this, SLOT(positionChanged(double, unsigned int)));
+    connect(zpos_, SIGNAL(positionChanged(double, unsigned int)), this, SLOT(positionChanged(double, unsigned int)));
+    connect(apos_, SIGNAL(positionChanged(double, unsigned int)), this, SLOT(positionChanged(double, unsigned int)));
 
     lStepStateChanged(model_->getDeviceState());
-
 }
 
 void LStepExpressPositionWidget::lStepStateChanged( State newState)
 {
-  //    NQLog("LStepExpressPositionWidget ", NQLog::Spam) << "lStepStateChanged, newstate = "<<newState;
-    if(newState == READY || newState == INITIALIZING){
+//    NQLog("LStepExpressPositionWidget ", NQLog::Spam) << "lStepStateChanged, newstate = "<<newState;
+    if(newState == READY || newState == INITIALIZING)
+    {
         moveAbsoluteButton_->setEnabled(true);
         moveRelativeButton_->setEnabled(true);
-    }else{
+    }
+    else
+    {
         moveAbsoluteButton_->setEnabled(false);
         moveRelativeButton_->setEnabled(false);
     }
@@ -94,6 +89,18 @@ void LStepExpressPositionWidget::positionChanged(double value, unsigned int axis
 {
     (position_)[axis] = value;
 }
+
+void LStepExpressPositionWidget::enableMotionTools(const bool enable)
+{
+  if(moveAbsoluteButton_){ moveAbsoluteButton_->setEnabled(enable); }
+  if(moveRelativeButton_){ moveRelativeButton_->setEnabled(enable); }
+}
+
+void LStepExpressPositionWidget::disableMotionTools()
+{
+  this->enableMotionTools(false);
+}
+// ============================================================================
 
 LStepExpressPositionAxisWidget::LStepExpressPositionAxisWidget(LStepExpressMotionManager* manager, LStepExpressModel* model, unsigned int axis, QWidget *parent)
     : QWidget(parent),
@@ -137,3 +144,4 @@ void LStepExpressPositionAxisWidget::updateWidgets()
         Unit_->setText(axisDimensionName_);
     }
 }
+// ============================================================================

@@ -167,7 +167,7 @@ LStepExpressMeasurementWidget::~LStepExpressMeasurementWidget()
     if(zigzagCheckBox_){delete zigzagCheckBox_; zigzagCheckBox_ = nullptr;}
 }
 
-void LStepExpressMeasurementWidget::laserStateChanged(State newState)
+void LStepExpressMeasurementWidget::laserStateChanged(State /* newState */)
 {
   //    NQLog("LStepExpressMeasurementWidget ", NQLog::Debug) << "laserStateChanged(State newState) " << newState    ;
   //  checkBoxEnableLaser_->setChecked(newState == READY || newState == INITIALIZING);

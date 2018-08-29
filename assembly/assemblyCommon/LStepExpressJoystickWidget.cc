@@ -16,39 +16,42 @@
 
 #include "LStepExpressJoystickWidget.h"
 
-LStepExpressJoystickWidget::LStepExpressJoystickWidget(LStepExpressModel* model,
-                                                       QWidget *parent)
-    : QWidget(parent),
-      model_(model)
+LStepExpressJoystickWidget::LStepExpressJoystickWidget(LStepExpressModel* model, QWidget *parent)
+ : QWidget(parent)
+
+ , model_(model)
+
+ , w_joyax_X_(nullptr)
+ , w_joyax_Y_(nullptr)
+ , w_joyax_Z_(nullptr)
+ , w_joyax_A_(nullptr)
 {
     QVBoxLayout* layout = new QVBoxLayout(this);
     setLayout(layout);
 
-    axisControlWidget_= new QWidget(this);
+    axisControlWidget_ = new QWidget(this);
     layout->addWidget(axisControlWidget_);
 
     QGridLayout* axisLayout = new QGridLayout(axisControlWidget_);
     axisControlWidget_->setLayout(axisLayout);
 
     // Add all the axes displays
-    for (unsigned int i=0;i<4;++i) {
-        axisLayout->addWidget(new LStepExpressJoystickAxisWidget(model_, i, this),
-                              0, i);
-    }
+    w_joyax_X_ = new LStepExpressJoystickAxisWidget(model_, 0);
+    w_joyax_Y_ = new LStepExpressJoystickAxisWidget(model_, 1);
+    w_joyax_Z_ = new LStepExpressJoystickAxisWidget(model_, 2);
+    w_joyax_A_ = new LStepExpressJoystickAxisWidget(model_, 3);
 
-    connect(model_, SIGNAL(deviceStateChanged(State)),
-            this, SLOT(lstepStateChanged(State)));
+    axisLayout->addWidget(w_joyax_X_, 0, 0);
+    axisLayout->addWidget(w_joyax_X_, 0, 1);
+    axisLayout->addWidget(w_joyax_X_, 0, 2);
+    axisLayout->addWidget(w_joyax_X_, 0, 3);
 
-    connect(model_, SIGNAL(controlStateChanged(bool)),
-            this, SLOT(controlStateChanged(bool)));
+    connect(model_, SIGNAL(deviceStateChanged(State)), this, SLOT(lstepStateChanged(State)));
+    connect(model_, SIGNAL(controlStateChanged(bool)), this, SLOT(controlStateChanged(bool)));
+    connect(model_, SIGNAL(motionStarted())          , this, SLOT(motionStarted()));
+    connect(model_, SIGNAL(motionFinished())         , this, SLOT(motionFinished()));
 
-    connect(model_, SIGNAL(motionStarted()),
-            this, SLOT(motionStarted()));
-
-    connect(model_, SIGNAL(motionFinished()),
-            this, SLOT(motionFinished()));
-
-    lstepStateChanged(model_->getDeviceState());
+    this->lstepStateChanged(model_->getDeviceState());
 }
 
 LStepExpressJoystickWidget::~LStepExpressJoystickWidget()
@@ -57,7 +60,7 @@ LStepExpressJoystickWidget::~LStepExpressJoystickWidget()
 
 void LStepExpressJoystickWidget::lstepStateChanged(State newState)
 {
-  //    NQLog("LStepExpressJoystickWidget", NQLog::Spam)<<" lStepStateChanged(State newState) " << newState    ;
+//  NQLog("LStepExpressJoystickWidget", NQLog::Spam) << "lStepStateChanged(" << newState << ")";
 
   axisControlWidget_->setEnabled(newState == READY);
 }
@@ -65,31 +68,46 @@ void LStepExpressJoystickWidget::lstepStateChanged(State newState)
 /// Updates the GUI when the controler is enabled/disabled.
 void LStepExpressJoystickWidget::controlStateChanged(bool enabled)
 {
-  //    NQLog("LStepExpressJoystickWidget", NQLog::Spam)<<" controlStateChanged(bool enabled) " << enabled    ;
+//  NQLog("LStepExpressJoystickWidget", NQLog::Spam) << "controlStateChanged(" << enabled << ")";
 
-    if (enabled) {
-        lstepStateChanged(model_->getDeviceState());
-    } else {
-        axisControlWidget_->setEnabled(false);
-    }
+  if(enabled)
+  {
+    lstepStateChanged(model_->getDeviceState());
+  }
+  else
+  {
+    axisControlWidget_->setEnabled(false);
+  }
 }
 
 void LStepExpressJoystickWidget::motionStarted()
 {
-  //  NQLog("LStepExpressJoystickWidget", NQLog::Spam) << " motionStarted()"    ;
+//  NQLog("LStepExpressJoystickWidget", NQLog::Spam) << "motionStarted()";
 }
 
 void LStepExpressJoystickWidget::motionFinished()
 {
-  //  NQLog("LStepExpressJoystickWidget", NQLog::Spam)<<" motionFinished()"    ;
+//  NQLog("LStepExpressJoystickWidget", NQLog::Spam) << "motionFinished()";
 }
 
-LStepExpressJoystickAxisWidget::LStepExpressJoystickAxisWidget(LStepExpressModel* model,
-                                                               unsigned int axis,
-                                                               QWidget *parent)
-    : QWidget(parent),
-      model_(model),
-      axis_(axis)
+void LStepExpressJoystickWidget::enableMotionTools(const bool enable)
+{
+  if(w_joyax_X_){ w_joyax_X_->enableMotionTools(enable); }
+  if(w_joyax_Y_){ w_joyax_Y_->enableMotionTools(enable); }
+  if(w_joyax_Z_){ w_joyax_Z_->enableMotionTools(enable); }
+  if(w_joyax_A_){ w_joyax_A_->enableMotionTools(enable); }
+}
+
+void LStepExpressJoystickWidget::disableMotionTools()
+{
+  this->enableMotionTools(false);
+}
+// ============================================================================
+
+LStepExpressJoystickAxisWidget::LStepExpressJoystickAxisWidget(LStepExpressModel* model, unsigned int axis, QWidget *parent)
+ : QWidget(parent)
+ , model_(model)
+ , axis_(axis)
 {
     layout_ = new QVBoxLayout(this);
     setLayout(layout_);
@@ -143,21 +161,15 @@ LStepExpressJoystickAxisWidget::~LStepExpressJoystickAxisWidget()
 
 void LStepExpressJoystickAxisWidget::updateWidgets()
 {
-    bool axis = model_->getAxisEnabled(axis_);
+    const bool axis_enabled = model_->getAxisEnabled(axis_);
 
-    //NQLog("LStepExpressJoystickAxisWidget", NQLog::Spam)<<" updateWidgets() " << axis    ;
+//    NQLog("LStepExpressJoystickAxisWidget", NQLog::Spam)<<" updateWidgets() " << axis    ;
 
     stepBox_->setSuffix(QString(" ") + model_->getAxisDimensionShortName(axis_));
 
-    if (model_->getAxisEnabled(axis_)) {
-        stepBox_->setEnabled(true);
-        upButton_->setEnabled(true);
-        downButton_->setEnabled(true);
-    } else {
-        stepBox_->setEnabled(false);
-        upButton_->setEnabled(false);
-        downButton_->setEnabled(false);
-    }
+    stepBox_   ->setEnabled(axis_enabled);
+    upButton_  ->setEnabled(axis_enabled);
+    downButton_->setEnabled(axis_enabled);
 }
 
 void LStepExpressJoystickAxisWidget::updateMotionWidgets()
@@ -224,3 +236,15 @@ void LStepExpressJoystickAxisWidget::motionFinished()
 {
   //    NQLog("LStepExpressJoystickAxisWidget", NQLog::Spam)<<" motionFinished()"    ;
 }
+
+void LStepExpressJoystickAxisWidget::enableMotionTools(const bool enable)
+{
+  if(  upButton_){   upButton_->setEnabled(enable); }
+  if(downButton_){ downButton_->setEnabled(enable); }
+}
+
+void LStepExpressJoystickAxisWidget::disableMotionTools()
+{
+  this->enableMotionTools(false);
+}
+// ============================================================================

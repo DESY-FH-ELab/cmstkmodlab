@@ -89,6 +89,9 @@ AssemblyHardwareControlView::AssemblyHardwareControlView(const LStepExpressMotio
 
   connect(manager_->model(), SIGNAL(deviceStateChanged(State)), this, SLOT(stateChanged(State)));
 
+  connect(manager_->model(), SIGNAL(motionStarted ()), this, SLOT(disableMotionTools()));
+  connect(manager_->model(), SIGNAL(motionFinished()), this, SLOT( enableMotionTools()));
+
   box_move->setLayout(l_move);
 
   g1->addWidget(box_move, 60);
@@ -145,8 +148,21 @@ AssemblyHardwareControlView::~AssemblyHardwareControlView()
 
 void AssemblyHardwareControlView::stateChanged(const State& newState)
 {
-  w_moverel_->setEnabled(newState == READY);
-  w_moveabs_->setEnabled(newState == READY);
+  if(w_moveabs_){ w_moveabs_->setEnabled(newState == READY); }
+  if(w_moverel_){ w_moverel_->setEnabled(newState == READY); }
+}
 
-  return;
+void AssemblyHardwareControlView::enableMotionTools(const bool enable)
+{
+  if(w_lStep_        ){ w_lStep_        ->enableMotionTools(enable); }
+  if(w_lStepJoystick_){ w_lStepJoystick_->enableMotionTools(enable); }
+  if(w_lStepPosition_){ w_lStepPosition_->enableMotionTools(enable); }
+
+  if(w_moveabs_){ w_moveabs_->setEnabled(enable); }
+  if(w_moverel_){ w_moverel_->setEnabled(enable); }
+}
+
+void AssemblyHardwareControlView::disableMotionTools()
+{
+  this->enableMotionTools(false);
 }

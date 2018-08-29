@@ -69,6 +69,9 @@ class LStepExpressWidget : public QWidget
 
   void enableMotionControllers();
 
+  void  enableMotionTools(const bool enable=true);
+  void disableMotionTools();
+
  signals:
 
   void clearQueue_request();
@@ -120,6 +123,9 @@ class LStepExpressAxisWidget : public QWidget
   void writeParameter();
   void motionStarted();
   void motionFinished();
+
+  void  enableMotionTools(const bool enable=true);
+  void disableMotionTools();
 };
 
 #endif // LSTEPEXPRESSWIDGET_H
