@@ -42,9 +42,9 @@ LStepExpressJoystickWidget::LStepExpressJoystickWidget(LStepExpressModel* model,
     w_joyax_A_ = new LStepExpressJoystickAxisWidget(model_, 3);
 
     axisLayout->addWidget(w_joyax_X_, 0, 0);
-    axisLayout->addWidget(w_joyax_X_, 0, 1);
-    axisLayout->addWidget(w_joyax_X_, 0, 2);
-    axisLayout->addWidget(w_joyax_X_, 0, 3);
+    axisLayout->addWidget(w_joyax_Y_, 0, 1);
+    axisLayout->addWidget(w_joyax_Z_, 0, 2);
+    axisLayout->addWidget(w_joyax_A_, 0, 3);
 
     connect(model_, SIGNAL(deviceStateChanged(State)), this, SLOT(lstepStateChanged(State)));
     connect(model_, SIGNAL(controlStateChanged(bool)), this, SLOT(controlStateChanged(bool)));
