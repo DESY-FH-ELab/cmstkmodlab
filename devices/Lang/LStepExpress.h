@@ -106,6 +106,8 @@ class LStepExpress : public VLStepExpress
   int  GetError();
   void ErrorQuit();
 
+  void Restart();
+
   bool GetPositionControllerEnabled();
   void SetPositionControllerEnabled(const bool enable);
 

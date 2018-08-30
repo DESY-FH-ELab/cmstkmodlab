@@ -100,6 +100,8 @@ class LStepExpressFake : public VLStepExpress
   int  GetError() { return 0; }
   void ErrorQuit() { }
 
+  void Restart() {}
+
   bool GetPositionControllerEnabled();
   void SetPositionControllerEnabled(const bool enable);
 

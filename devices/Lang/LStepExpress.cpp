@@ -543,6 +543,11 @@ void LStepExpress::ErrorQuit()
   this->SendCommand("!quit");
 }
 
+void LStepExpress::Restart()
+{
+//  this->SendCommand("!quit");
+}
+
 bool LStepExpress::GetPositionControllerEnabled()
 {
   int posctrl_status(-1);
