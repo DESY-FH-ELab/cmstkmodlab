@@ -419,7 +419,8 @@ void LStepExpressAxisWidget::updateWidgets()
 
 void LStepExpressAxisWidget::updateMotionWidgets()
 {
-//    NQLog("LStepExpressAxisWidget ", NQLog::Spam)<< "updateMotionWidgets()"  ;
+    NQLog("LStepExpressAxisWidget", NQLog::Debug) << "updateMotionWidgets";
+
     statusLabel_  ->setText(model_->getAxisStatusText(axis_));
     positionLabel_->setText(QString::number(model_->getPosition(axis_), 'f', 4)+" "+axisDimensionName_);
 }
@@ -468,12 +469,12 @@ void LStepExpressAxisWidget::controlStateChanged(bool enabled)
 
 void LStepExpressAxisWidget::enabledCheckBoxToggled(bool enabled)
 {
-    model_->setAxisEnabled(axis_, enabled);
+  model_->setAxisEnabled(axis_, enabled);
 }
 
 void LStepExpressAxisWidget::joystickCheckBoxToggled(bool enabled)
 {
-    model_->setJoystickAxisEnabled(axis_, enabled);
+  model_->setJoystickAxisEnabled(axis_, enabled);
 }
 
 void LStepExpressAxisWidget::setVelocity(double /* value */)

@@ -123,13 +123,13 @@ void LStepExpressModel::continueUpdate()
 
 QString LStepExpressModel::getAxisName(unsigned int axis)
 {
-    if(controller_ == nullptr)
-    {
-      NQLog("LStepExpressModel", NQLog::Critical) << "getAxisName(" << axis << ")"
-         << ": null pointer to controller, no action taken";
-
-      return "";
-    }
+//    if(controller_ == nullptr)
+//    {
+//      NQLog("LStepExpressModel", NQLog::Critical) << "getAxisName(" << axis << ")"
+//         << ": null pointer to controller, no action taken";
+//
+//      return "";
+//    }
 
     NQLog("LStepExpressModel", NQLog::Debug) << "getAxisName(" << axis << ")";
 
@@ -142,13 +142,13 @@ QString LStepExpressModel::getAxisName(unsigned int axis)
 
 QString LStepExpressModel::getAxisDimensionShortName(unsigned int axis)
 {
-    if(controller_ == nullptr)
-    {
-      NQLog("LStepExpressModel", NQLog::Critical) << "getAxisDimensionShortName(" << axis << ")"
-         << ": null pointer to controller, no action taken";
-
-      return "";
-    }
+//    if(controller_ == nullptr)
+//    {
+//      NQLog("LStepExpressModel", NQLog::Critical) << "getAxisDimensionShortName(" << axis << ")"
+//         << ": null pointer to controller, no action taken";
+//
+//      return "";
+//    }
 
     NQLog("LStepExpressModel", NQLog::Debug) << "getAxisDimensionShortName(" << axis << ")";
 
@@ -161,13 +161,13 @@ QString LStepExpressModel::getAxisDimensionShortName(unsigned int axis)
 
 QString LStepExpressModel::getAxisVelocityShortName(unsigned int axis)
 {
-    if(controller_ == nullptr)
-    {
-      NQLog("LStepExpressModel", NQLog::Critical) << "getAxisVelocityShortName(" << axis << ")"
-         << ": null pointer to controller, no action taken";
-
-      return "";
-    }
+//    if(controller_ == nullptr)
+//    {
+//      NQLog("LStepExpressModel", NQLog::Critical) << "getAxisVelocityShortName(" << axis << ")"
+//         << ": null pointer to controller, no action taken";
+//
+//      return "";
+//    }
 
     NQLog("LStepExpressModel", NQLog::Debug) << "getAxisVelocityShortName(" << axis << ")";
 
@@ -180,13 +180,13 @@ QString LStepExpressModel::getAxisVelocityShortName(unsigned int axis)
 
 QString LStepExpressModel::getAxisAccelerationShortName(unsigned int axis)
 {
-    if(controller_ == nullptr)
-    {
-      NQLog("LStepExpressModel", NQLog::Critical) << "getAxisAccelerationShortName(" << axis << ")"
-         << ": null pointer to controller, no action taken";
-
-      return "";
-    }
+//    if(controller_ == nullptr)
+//    {
+//      NQLog("LStepExpressModel", NQLog::Critical) << "getAxisAccelerationShortName(" << axis << ")"
+//         << ": null pointer to controller, no action taken";
+//
+//      return "";
+//    }
 
     NQLog("LStepExpressModel", NQLog::Debug) << "getAxisAccelerationShortName(" << axis << ")";
 
@@ -199,13 +199,13 @@ QString LStepExpressModel::getAxisAccelerationShortName(unsigned int axis)
 
 QString LStepExpressModel::getAxisAccelerationJerkShortName(unsigned int axis)
 {
-    if(controller_ == nullptr)
-    {
-      NQLog("LStepExpressModel", NQLog::Critical) << "getAxisAccelerationJerkShortName(" << axis << ")"
-         << ": null pointer to controller, no action taken";
-
-      return "";
-    }
+//    if(controller_ == nullptr)
+//    {
+//      NQLog("LStepExpressModel", NQLog::Critical) << "getAxisAccelerationJerkShortName(" << axis << ")"
+//         << ": null pointer to controller, no action taken";
+//
+//      return "";
+//    }
 
     NQLog("LStepExpressModel", NQLog::Debug) << "getAxisAccelerationJerkShortName(" << axis << ")";
 
@@ -218,13 +218,13 @@ QString LStepExpressModel::getAxisAccelerationJerkShortName(unsigned int axis)
 
 QString LStepExpressModel::getAxisStatusText(unsigned int axis)
 {
-    if(controller_ == nullptr)
-    {
-      NQLog("LStepExpressModel", NQLog::Critical) << "getAxisStatusText(" << axis << ")"
-         << ": null pointer to controller, no action taken";
-
-      return "";
-    }
+//    if(controller_ == nullptr)
+//    {
+//      NQLog("LStepExpressModel", NQLog::Critical) << "getAxisStatusText(" << axis << ")"
+//         << ": null pointer to controller, no action taken";
+//
+//      return "";
+//    }
 
     NQLog("LStepExpressModel", NQLog::Debug) << "getAxisStatusText("<< axis <<")";
 
@@ -737,84 +737,88 @@ void LStepExpressModel::errorQuit()
 
 void LStepExpressModel::restart()
 {
-  if(controller_ == nullptr)
-  {
-    NQLog("LStepExpressModel", NQLog::Critical) << "restart"
-       << ": null pointer to controller, no action taken";
-
-    return;
-  }
-
-  NQLog("LStepExpressModel", NQLog::Spam) << "restart";
-
-  if(this->isInMotion())
-  {
-    NQLog("LStepExpressModel", NQLog::Critical) << "restart"
-       << "motion stage is moving [isInMotion()=true], no action taken";
-
-    return;
-  }
-
-  bool axes_enabled(false);
-
-  uint attempts(0);
-
-  while(axes_enabled == false)
-  {
-    // switch axes OFF
-    if(this->getAxisEnabled(0) == true){ this->setAxisEnabled(0, false); }
-    if(this->getAxisEnabled(1) == true){ this->setAxisEnabled(1, false); }
-    if(this->getAxisEnabled(2) == true){ this->setAxisEnabled(2, false); }
-    if(this->getAxisEnabled(3) == true){ this->setAxisEnabled(3, false); }
-
-    // switch axes back ON
-    if(this->getAxisEnabled(0) == false){ this->setAxisEnabled(0, true); }
-    if(this->getAxisEnabled(1) == false){ this->setAxisEnabled(1, true); }
-    if(this->getAxisEnabled(2) == false){ this->setAxisEnabled(2, true); }
-    if(this->getAxisEnabled(3) == false){ this->setAxisEnabled(3, true); }
-
-    const bool x_inError = (this->getAxisStatusText(0) == "F");
-    const bool y_inError = (this->getAxisStatusText(1) == "F");
-    const bool z_inError = (this->getAxisStatusText(2) == "F");
-    const bool a_inError = (this->getAxisStatusText(3) == "F");
-
-    axes_enabled = !(x_inError || y_inError || z_inError || a_inError);
-
-    if(axes_enabled == false)
-    {
-      if(attempts >= 2){ break; }
-
-      ++attempts;
-
-      NQLog("LStepExpressMotionManager", NQLog::Spam) << "restart"
-         << ": axes not in READY state"
-         << " (x=" << this->getAxisStatusText(0)
-         << ", y=" << this->getAxisStatusText(1)
-         << ", z=" << this->getAxisStatusText(2)
-         << ", a=" << this->getAxisStatusText(3)
-         << "), calling ErrorQuit() [attempt #" << attempts << "]";
-
-      this->errorQuit();
-    }
-  }
-
-  if(axes_enabled)
-  {
-    NQLog("LStepExpressMotionManager", NQLog::Spam) << "restart"
-       << ": restart completed [attempts=" << attempts << "], axes status"
-       << " (x=" << this->getAxisStatusText(0)
-       << ", y=" << this->getAxisStatusText(1)
-       << ", z=" << this->getAxisStatusText(2)
-       << ", a=" << this->getAxisStatusText(3)
-       << ")";
-  }
-  else
-  {
-    NQLog("LStepExpressMotionManager", NQLog::Critical) << "restart"
-       << ": restart failed (stopped after " << attempts << " calls to QuitError()";
-  }
-
-  return;
+//  if(controller_ == nullptr)
+//  {
+//    NQLog("LStepExpressModel", NQLog::Critical) << "restart"
+//       << ": null pointer to controller, no action taken";
+//
+//    return;
+//  }
+//
+//  if(this->isInMotion())
+//  {
+//    NQLog("LStepExpressModel", NQLog::Critical) << "restart"
+//       << "motion stage is moving [isInMotion()=true], no action taken";
+//
+//    return;
+//  }
+//
+//  NQLog("LStepExpressModel", NQLog::Spam) << "restart";
+//
+//  bool axes_enabled = false;
+//
+//  uint attempts = 0;
+//
+//  while(axes_enabled == false)
+//  {
+//    // switch axes OFF
+//    if(this->getAxisEnabled(0) == true){ this->setAxisEnabled(0, false); }
+//    if(this->getAxisEnabled(1) == true){ this->setAxisEnabled(1, false); }
+//    if(this->getAxisEnabled(2) == true){ this->setAxisEnabled(2, false); }
+//    if(this->getAxisEnabled(3) == true){ this->setAxisEnabled(3, false); }
+//
+//    this->updateInformation();
+//
+//    // switch axes back ON
+//    if(this->getAxisEnabled(0) == false){ this->setAxisEnabled(0, true); }
+//    if(this->getAxisEnabled(1) == false){ this->setAxisEnabled(1, true); }
+//    if(this->getAxisEnabled(2) == false){ this->setAxisEnabled(2, true); }
+//    if(this->getAxisEnabled(3) == false){ this->setAxisEnabled(3, true); }
+//
+//    this->updateInformation();
+//
+//    const bool x_inError = (this->getAxisStatusText(0) == "F");
+//    const bool y_inError = (this->getAxisStatusText(1) == "F");
+//    const bool z_inError = (this->getAxisStatusText(2) == "F");
+//    const bool a_inError = (this->getAxisStatusText(3) == "F");
+//
+//    axes_enabled = !(x_inError || y_inError || z_inError || a_inError);
+//
+//    if(axes_enabled == false)
+//    {
+//      if(attempts >= 2){ break; }
+//
+//      ++attempts;
+//
+//      NQLog("LStepExpressMotionManager", NQLog::Spam) << "restart"
+//         << ": axes not in READY state"
+//         << " (x=" << this->getAxisStatusText(0)
+//         << ", y=" << this->getAxisStatusText(1)
+//         << ", z=" << this->getAxisStatusText(2)
+//         << ", a=" << this->getAxisStatusText(3)
+//         << "), calling ErrorQuit() [attempt #" << attempts << "]";
+//
+//      this->errorQuit();
+//    }
+//  }
+//
+//  if(axes_enabled)
+//  {
+//    NQLog("LStepExpressMotionManager", NQLog::Spam) << "restart"
+//       << ": restart completed [attempts=" << attempts << "], axes status"
+//       << " (x=" << this->getAxisStatusText(0)
+//       << ", y=" << this->getAxisStatusText(1)
+//       << ", z=" << this->getAxisStatusText(2)
+//       << ", a=" << this->getAxisStatusText(3)
+//       << ")";
+//  }
+//  else
+//  {
+//    NQLog("LStepExpressMotionManager", NQLog::Critical) << "restart"
+//       << ": restart procedure failed (stopped after " << attempts << " calls to ErrorQuit)";
+//  }
+//
+//  return;
 }
 
 void LStepExpressModel::calibrate()
@@ -1351,8 +1355,8 @@ void LStepExpressModel::updateMotionInformationFromTimer()
 
     static const int nUpdates = updateInterval_/motionUpdateInterval_;
 
-    if ( state_ == READY && !isPaused_) {
-
+    if((state_ == READY) && (isPaused_ == false))
+    {
       isUpdating_ = true;
 
       updateCount_++;
@@ -1375,7 +1379,7 @@ void LStepExpressModel::updateMotionInformationFromTimer()
       std::vector<int> pavalues;
       std::vector<int> evalues;
       std::vector<double> dvalues;
-      
+
       controller_->GetAxisStatus(ivalues);
       controller_->GetPowerAmplifierStatus(pavalues);
       controller_->GetAxisEnabled(evalues);
@@ -1430,7 +1434,7 @@ void LStepExpressModel::updateMotionInformationFromTimer()
 
         emit motionInformationChanged();
       }
-      
+
       isUpdating_ = false;
     }
 }
