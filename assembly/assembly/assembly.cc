@@ -75,6 +75,8 @@ int main(int argc, char** argv)
     AssemblyMainWindow mainWindow;
 
     mainWindow.setWindowTitle("Automated Pixel-Strip Module Assembly ["+QString(APPLICATIONVERSIONSTR)+"]");
+    mainWindow.setWindowState(Qt::WindowMaximized);
+
     mainWindow.show();
 
     return app.exec();
