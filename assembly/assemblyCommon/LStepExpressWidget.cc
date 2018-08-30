@@ -14,6 +14,8 @@
 #include <nqlogger.h>
 
 #include <QVBoxLayout>
+#include <QHBoxLayout>
+#include <QGroupBox>
 #include <QGridLayout>
 
 LStepExpressWidget::LStepExpressWidget(LStepExpressModel* model, QWidget* parent)
@@ -21,9 +23,9 @@ LStepExpressWidget::LStepExpressWidget(LStepExpressModel* model, QWidget* parent
 
  , model_(model)
 
- , lstepCheckBox_(nullptr)
+ , lstepCheckBox_   (nullptr)
  , joystickCheckBox_(nullptr)
- , posCtrlCheckBox_(nullptr)
+ , posCtrlCheckBox_ (nullptr)
 
  , buttonOrigin_(nullptr)
  , buttonCalibrate_(nullptr)
@@ -41,36 +43,48 @@ LStepExpressWidget::LStepExpressWidget(LStepExpressModel* model, QWidget* parent
     QVBoxLayout* layout = new QVBoxLayout(this);
     this->setLayout(layout);
 
-    // Motion ON/OFF switches and shortcuts
-    QGridLayout* glayout = new QGridLayout();
-    layout->addLayout(glayout);
+    QHBoxLayout* hlayout = new QHBoxLayout();
+    layout->addLayout(hlayout);
+
+    // Motion Stage Settings
+    QGroupBox* mot_settings_box = new QGroupBox(tr("Motion Stage Settings"));
+    hlayout->addWidget(mot_settings_box);
+
+    mot_settings_box->setStyleSheet("QGroupBox { font-weight: bold; } ");
+
+    QGridLayout* mot_settings_grid = new QGridLayout;
+    mot_settings_box->setLayout(mot_settings_grid);
 
     lstepCheckBox_ = new QCheckBox("Enable Controller");
-    glayout->addWidget(lstepCheckBox_, 0, 0);
+    mot_settings_grid->addWidget(lstepCheckBox_, 0, 0);
 
     posCtrlCheckBox_ = new QCheckBox("Enable Position Controller");
-    glayout->addWidget(posCtrlCheckBox_, 0, 1);
+    mot_settings_grid->addWidget(posCtrlCheckBox_, 0, 1);
 
 //    buttonRestart_ = new QPushButton("Restart Controller");
-//    glayout->addWidget(buttonRestart_, 1, 0);
+//    mot_settings_grid->addWidget(buttonRestart_, 1, 0);
 
     buttonErrorQuit_ = new QPushButton("Error Quit");
-    glayout->addWidget(buttonErrorQuit_, 1, 1);
+    mot_settings_grid->addWidget(buttonErrorQuit_, 1, 1);
 
     joystickCheckBox_ = new QCheckBox("Enable Joystick");
-    glayout->addWidget(joystickCheckBox_, 0, 2);
+    mot_settings_grid->addWidget(joystickCheckBox_, 0, 2);
+
+    // Motion Stage Basic Commands (e.g. Calibrate)
+    QGridLayout* mot_basicmoves_grid = new QGridLayout;
+    hlayout->addLayout(mot_basicmoves_grid);
 
     buttonCalibrate_ = new QPushButton("Calibrate");
-    glayout->addWidget(buttonCalibrate_, 0, 3);
+    mot_basicmoves_grid->addWidget(buttonCalibrate_, 0, 0);
 
     buttonOrigin_ = new QPushButton("Origin");
-    glayout->addWidget(buttonOrigin_, 1, 3);
+    mot_basicmoves_grid->addWidget(buttonOrigin_, 1, 0);
 
     buttonEmergencyStop_ = new QPushButton("Emergency Stop");
-    glayout->addWidget(buttonEmergencyStop_, 0, 4);
+    mot_basicmoves_grid->addWidget(buttonEmergencyStop_, 0, 1);
 
     buttonClearQueue_ = new QPushButton("Clear Motion Queue");
-    glayout->addWidget(buttonClearQueue_, 1, 4);
+    mot_basicmoves_grid->addWidget(buttonClearQueue_, 1, 1);
 
     // AXIS
     axisControlWidget_ = new QWidget(this);

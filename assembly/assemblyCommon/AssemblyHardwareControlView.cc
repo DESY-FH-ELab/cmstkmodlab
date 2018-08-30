@@ -115,7 +115,7 @@ AssemblyHardwareControlView::AssemblyHardwareControlView(const LStepExpressMotio
 
   //// ------------------
 
-  cb_lockMotionSettings_ = new QCheckBox("Lock Controller Settings");
+  cb_lockMotionSettings_ = new QCheckBox("Lock Motion Stage Settings");
   layout->addWidget(cb_lockMotionSettings_);
 
   //// LStepExpressWidget
