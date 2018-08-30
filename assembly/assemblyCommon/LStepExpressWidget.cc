@@ -32,6 +32,7 @@ LStepExpressWidget::LStepExpressWidget(LStepExpressModel* model, QWidget* parent
  , buttonEmergencyStop_(nullptr)
  , buttonClearQueue_(nullptr)
  , buttonErrorQuit_(nullptr)
+ , buttonRestart_(nullptr)
 
  , axisWidget_X_(nullptr)
  , axisWidget_Y_(nullptr)
@@ -61,8 +62,8 @@ LStepExpressWidget::LStepExpressWidget(LStepExpressModel* model, QWidget* parent
     posCtrlCheckBox_ = new QCheckBox("Enable Position Controller");
     mot_settings_grid->addWidget(posCtrlCheckBox_, 0, 1);
 
-//    buttonRestart_ = new QPushButton("Restart Controller");
-//    mot_settings_grid->addWidget(buttonRestart_, 1, 0);
+    buttonRestart_ = new QPushButton("Restart LStep");
+    mot_settings_grid->addWidget(buttonRestart_, 1, 0);
 
     buttonErrorQuit_ = new QPushButton("Error Quit");
     mot_settings_grid->addWidget(buttonErrorQuit_, 1, 1);
@@ -119,6 +120,7 @@ LStepExpressWidget::LStepExpressWidget(LStepExpressModel* model, QWidget* parent
     connect(buttonEmergencyStop_, SIGNAL(clicked()), model_, SLOT(emergencyStop()));
     connect(buttonClearQueue_   , SIGNAL(clicked()), this  , SIGNAL(clearQueue_request()));
     connect(buttonErrorQuit_    , SIGNAL(clicked()), model_, SLOT(errorQuit()));
+    connect(buttonRestart_      , SIGNAL(clicked()), this  , SLOT(restart()));
 
     this->lstepStateChanged(model_->getDeviceState());
 
@@ -135,6 +137,7 @@ LStepExpressWidget::~LStepExpressWidget()
     if(buttonEmergencyStop_){ delete buttonEmergencyStop_; buttonEmergencyStop_ = nullptr; }
     if(buttonClearQueue_   ){ delete buttonClearQueue_   ; buttonClearQueue_    = nullptr; }
     if(buttonErrorQuit_    ){ delete buttonErrorQuit_    ; buttonErrorQuit_     = nullptr; }
+    if(buttonRestart_      ){ delete buttonRestart_      ; buttonRestart_       = nullptr; }
 
     NQLog("LStepExpressWidget", NQLog::Debug) << "destructed";
 }
@@ -157,6 +160,7 @@ void LStepExpressWidget::lstepStateChanged(State newState)
     buttonEmergencyStop_->setEnabled(newState == READY);
     buttonClearQueue_   ->setEnabled(newState == READY);
     buttonErrorQuit_    ->setEnabled(newState == READY);
+    buttonRestart_      ->setEnabled(newState == READY);
 
     axisControlWidget_  ->setEnabled(newState == READY);
 }
@@ -174,12 +178,13 @@ void LStepExpressWidget::controlStateChanged(bool enabled)
     {
       lstepCheckBox_      ->setEnabled(false);
       joystickCheckBox_   ->setEnabled(false);
+      posCtrlCheckBox_    ->setEnabled(false);
       buttonOrigin_       ->setEnabled(false);
       buttonCalibrate_    ->setEnabled(false);
       buttonEmergencyStop_->setEnabled(false);
       buttonClearQueue_   ->setEnabled(false);
       buttonErrorQuit_    ->setEnabled(false);
-      posCtrlCheckBox_    ->setEnabled(false);
+      buttonRestart_      ->setEnabled(false);
 
       axisControlWidget_  ->setEnabled(false);
     }
@@ -213,6 +218,13 @@ void LStepExpressWidget::enableMotionControllers()
   emit MotionControllers_enabled();
 }
 
+void LStepExpressWidget::restart()
+{
+  if(model_){ model_->restart(); }
+
+  posCtrlCheckBox_->setChecked(true);
+}
+
 void LStepExpressWidget::lockMotionSettings(const bool disable)
 {
   motionSettings_locked_ = disable;
@@ -221,6 +233,7 @@ void LStepExpressWidget::lockMotionSettings(const bool disable)
   if(joystickCheckBox_){ joystickCheckBox_->setDisabled(disable); }
   if(posCtrlCheckBox_ ){ posCtrlCheckBox_ ->setDisabled(disable); }
   if(buttonErrorQuit_ ){ buttonErrorQuit_ ->setDisabled(disable); }
+  if(buttonRestart_   ){ buttonRestart_   ->setDisabled(disable); }
 
   if(axisWidget_X_){ axisWidget_X_->lockMotionSettings(disable); }
   if(axisWidget_Y_){ axisWidget_Y_->lockMotionSettings(disable); }
@@ -244,6 +257,7 @@ void LStepExpressWidget::enableMotionTools(const bool enable)
     if(joystickCheckBox_){ joystickCheckBox_->setEnabled(enable); }
     if(posCtrlCheckBox_ ){ posCtrlCheckBox_ ->setEnabled(enable); }
     if(buttonErrorQuit_ ){ buttonErrorQuit_ ->setEnabled(enable); }
+    if(buttonRestart_   ){ buttonRestart_   ->setEnabled(enable); }
   }
 
   if(axisWidget_X_){ axisWidget_X_->enableMotionTools(enable); }

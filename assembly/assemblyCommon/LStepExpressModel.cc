@@ -539,6 +539,13 @@ void LStepExpressModel::errorQuit()
     controller_->ErrorQuit();
 }
 
+void LStepExpressModel::restart()
+{
+    NQLog("LStepExpressModel", NQLog::Spam) << "restart";
+
+//    controller_->ErrorQuit();
+}
+
 void LStepExpressModel::calibrate()
 {
     NQLog("LStepExpressModel", NQLog::Spam) << "calibrate";
