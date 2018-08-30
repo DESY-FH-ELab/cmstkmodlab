@@ -75,6 +75,8 @@ protected:
     QPushButton *downButton_;
     QDoubleSpinBox *stepBox_;
 
+    bool motionTools_enabled_;
+
 public slots:
     void lStepStateChanged( State state );
     void controlStateChanged(bool);

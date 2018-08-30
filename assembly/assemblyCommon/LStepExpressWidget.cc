@@ -48,17 +48,17 @@ LStepExpressWidget::LStepExpressWidget(LStepExpressModel* model, QWidget* parent
     lstepCheckBox_ = new QCheckBox("Enable Controller");
     glayout->addWidget(lstepCheckBox_, 0, 0);
 
-    joystickCheckBox_ = new QCheckBox("Enable Joystick");
-    glayout->addWidget(joystickCheckBox_, 1, 0);
-
     posCtrlCheckBox_ = new QCheckBox("Enable Position Controller");
     glayout->addWidget(posCtrlCheckBox_, 0, 1);
+
+//    buttonRestart_ = new QPushButton("Restart Controller");
+//    glayout->addWidget(buttonRestart_, 1, 0);
 
     buttonErrorQuit_ = new QPushButton("Error Quit");
     glayout->addWidget(buttonErrorQuit_, 1, 1);
 
-    glayout->addWidget(new QLabel, 0, 2);
-    glayout->addWidget(new QLabel, 1, 2);
+    joystickCheckBox_ = new QCheckBox("Enable Joystick");
+    glayout->addWidget(joystickCheckBox_, 0, 2);
 
     buttonCalibrate_ = new QPushButton("Calibrate");
     glayout->addWidget(buttonCalibrate_, 0, 3);
@@ -129,42 +129,6 @@ void LStepExpressWidget::updateWidgets()
 {
 }
 
-void LStepExpressWidget::lockMotionSettings(const bool disable)
-{
-  if(lstepCheckBox_   ){ lstepCheckBox_   ->setDisabled(disable); }
-  if(joystickCheckBox_){ joystickCheckBox_->setDisabled(disable); }
-  if(posCtrlCheckBox_ ){ posCtrlCheckBox_ ->setDisabled(disable); }
-  if(buttonErrorQuit_ ){ buttonErrorQuit_ ->setDisabled(disable); }
-
-  if(axisWidget_X_){ axisWidget_X_->lockMotionSettings(disable); }
-  if(axisWidget_Y_){ axisWidget_Y_->lockMotionSettings(disable); }
-  if(axisWidget_Z_){ axisWidget_Z_->lockMotionSettings(disable); }
-  if(axisWidget_A_){ axisWidget_A_->lockMotionSettings(disable); }
-}
-
-void LStepExpressWidget::unlockMotionSettings()
-{
-  this->lockMotionSettings(false);
-}
-
-void LStepExpressWidget::enableMotionControllers()
-{
-  lstepCheckBox_->setChecked(true);
-
-  if(model_ && (model_->getDeviceState() == READY))
-  {
-    axisWidget_X_->enabledCheckBoxToggled(true);
-    axisWidget_Y_->enabledCheckBoxToggled(true);
-    axisWidget_Z_->enabledCheckBoxToggled(true);
-    axisWidget_A_->enabledCheckBoxToggled(true);
-  }
-
-  NQLog("LStepExpressWidget", NQLog::Spam) << "enableMotionControllers"
-     << ": emitting signal \"MotionControllers_enabled\"";
-
-  emit MotionControllers_enabled();
-}
-
 /// Updates the GUI when the Keithley multimeter is enabled/disabled.
 void LStepExpressWidget::lstepStateChanged(State newState)
 {
@@ -217,10 +181,56 @@ void LStepExpressWidget::motionFinished()
 //    NQLog("LStepExpressWidget", NQLog::Spam)<< "motionFinished()"  ;
 }
 
+void LStepExpressWidget::enableMotionControllers()
+{
+  lstepCheckBox_->setChecked(true);
+
+  if(model_ && (model_->getDeviceState() == READY))
+  {
+    axisWidget_X_->enabledCheckBoxToggled(true);
+    axisWidget_Y_->enabledCheckBoxToggled(true);
+    axisWidget_Z_->enabledCheckBoxToggled(true);
+    axisWidget_A_->enabledCheckBoxToggled(true);
+  }
+
+  NQLog("LStepExpressWidget", NQLog::Spam) << "enableMotionControllers"
+     << ": emitting signal \"MotionControllers_enabled\"";
+
+  emit MotionControllers_enabled();
+}
+
+void LStepExpressWidget::lockMotionSettings(const bool disable)
+{
+  motionSettings_locked_ = disable;
+
+  if(lstepCheckBox_   ){ lstepCheckBox_   ->setDisabled(disable); }
+  if(joystickCheckBox_){ joystickCheckBox_->setDisabled(disable); }
+  if(posCtrlCheckBox_ ){ posCtrlCheckBox_ ->setDisabled(disable); }
+  if(buttonErrorQuit_ ){ buttonErrorQuit_ ->setDisabled(disable); }
+
+  if(axisWidget_X_){ axisWidget_X_->lockMotionSettings(disable); }
+  if(axisWidget_Y_){ axisWidget_Y_->lockMotionSettings(disable); }
+  if(axisWidget_Z_){ axisWidget_Z_->lockMotionSettings(disable); }
+  if(axisWidget_A_){ axisWidget_A_->lockMotionSettings(disable); }
+}
+
+void LStepExpressWidget::unlockMotionSettings()
+{
+  this->lockMotionSettings(false);
+}
+
 void LStepExpressWidget::enableMotionTools(const bool enable)
 {
   if(buttonOrigin_   ){ buttonOrigin_   ->setEnabled(enable); }
   if(buttonCalibrate_){ buttonCalibrate_->setEnabled(enable); }
+
+  if(motionSettings_locked_ == false)
+  {
+    if(lstepCheckBox_   ){ lstepCheckBox_   ->setEnabled(enable); }
+    if(joystickCheckBox_){ joystickCheckBox_->setEnabled(enable); }
+    if(posCtrlCheckBox_ ){ posCtrlCheckBox_ ->setEnabled(enable); }
+    if(buttonErrorQuit_ ){ buttonErrorQuit_ ->setEnabled(enable); }
+  }
 
   if(axisWidget_X_){ axisWidget_X_->enableMotionTools(enable); }
   if(axisWidget_Y_){ axisWidget_Y_->enableMotionTools(enable); }
@@ -239,6 +249,7 @@ LStepExpressAxisWidget::LStepExpressAxisWidget(LStepExpressModel* model, unsigne
  , model_(model)
  , axis_(axis)
  , axisDimensionName_("usteps")
+ , motionTools_enabled_(true)
  , motionSettings_locked_(false)
 {
     layout_ = new QFormLayout(this);
@@ -355,16 +366,20 @@ void LStepExpressAxisWidget::updateWidgets()
       positionLabel_->setText(QString::number(model_->getPosition(axis_), 'f', 4)+" "+axisDimensionName_);
     }
 
-    if(axis && model_->getJoystickEnabled())
+    if(motionTools_enabled_)
     {
-      joystickCheckBox_->setEnabled(true);
-    }
-    else
-    {
-      joystickCheckBox_->setEnabled(false);
+      if(axis && model_->getJoystickEnabled())
+      {
+        joystickCheckBox_->setEnabled(true);
+      }
+      else
+      {
+        joystickCheckBox_->setEnabled(false);
+      }
     }
 
-    if (axis) {
+    if(axis)
+    {
       this->updateMotionWidgets();
 
       NQLog("LStepExpressAxisWidget", NQLog::Debug) << "updateWidgets"
@@ -381,33 +396,43 @@ void LStepExpressAxisWidget::updateMotionWidgets()
 
 void LStepExpressAxisWidget::lStepStateChanged(State newState)
 {
-//    NQLog("LStepExpressAxisWidget ", NQLog::Spam)<< "lStepStateChanged(State newState) " << newState  ;
-//    NQLog("LStepExpressAxisWidget ", NQLog::Spam)<< "                             axis " << model_->getAxisEnabled(axis_)  ;
+    NQLog("LStepExpressAxisWidget", NQLog::Debug) <<  "lStepStateChanged(" << newState << ")";
 
-    if (newState == READY || newState == INITIALIZING)
+    if(motionTools_enabled_)
     {
-      enabledCheckBox_->setEnabled(true);
-      joystickCheckBox_->setEnabled(model_->getJoystickEnabled());
-      updateWidgets();
+      if((newState == READY) || (newState == INITIALIZING))
+      {
+         enabledCheckBox_->setEnabled(true);
+        joystickCheckBox_->setEnabled(model_->getJoystickEnabled());
+        updateWidgets();
+      }
+      else
+      {
+         enabledCheckBox_->setEnabled(false);
+        joystickCheckBox_->setEnabled(false);
+      }
     }
     else
     {
-      enabledCheckBox_->setEnabled(false);
-      joystickCheckBox_->setEnabled(false);
+      NQLog("LStepExpressAxisWidget", NQLog::Debug) <<  "lStepStateChanged(" << newState << ")"
+         << ": motions tools disabled, no action taken";
     }
 }
 
 void LStepExpressAxisWidget::controlStateChanged(bool enabled)
 {
-//    NQLog("LStepExpressAxisWidget ", NQLog::Spam)<< "controlStateChanged(bool enabled) " << enabled;
+    NQLog("LStepExpressAxisWidget", NQLog::Debug) << "controlStateChanged(" << enabled << ")";
 
-    if(enabled)
+    if(motionTools_enabled_)
     {
-      lStepStateChanged(model_->getDeviceState());
-    }
-    else
-    {
-      enabledCheckBox_->setEnabled(false);
+      if(enabled)
+      {
+        lStepStateChanged(model_->getDeviceState());
+      }
+      else
+      {
+        enabledCheckBox_->setEnabled(false);
+      }
     }
 }
 
@@ -469,6 +494,15 @@ void LStepExpressAxisWidget::motionFinished()
 
 void LStepExpressAxisWidget::enableMotionTools(const bool enable)
 {
+  motionTools_enabled_ = enable;
+
+  if(enabledCheckBox_){ enabledCheckBox_->setEnabled(enable); }
+
+  if(joystickCheckBox_ && model_->getJoystickEnabled())
+  {
+    joystickCheckBox_->setEnabled(enable);
+  }
+
   if(motionSettings_locked_ == false)
   {
     if(buttonWriteParameter_){ buttonWriteParameter_->setEnabled(enable); }
@@ -482,14 +516,14 @@ void LStepExpressAxisWidget::disableMotionTools()
 
 void LStepExpressAxisWidget::lockMotionSettings(const bool disable)
 {
+  motionSettings_locked_ = disable;
+
   if(velocitySpinBox_        ){ velocitySpinBox_        ->setDisabled(disable); }
   if(accelerationSpinBox_    ){ accelerationSpinBox_    ->setDisabled(disable); }
   if(decelerationSpinBox_    ){ decelerationSpinBox_    ->setDisabled(disable); }
   if(accelerationJerkSpinBox_){ accelerationJerkSpinBox_->setDisabled(disable); }
   if(decelerationJerkSpinBox_){ decelerationJerkSpinBox_->setDisabled(disable); }
   if(buttonWriteParameter_   ){ buttonWriteParameter_   ->setDisabled(disable); }
-
-  motionSettings_locked_ = disable;
 }
 
 void LStepExpressAxisWidget::unlockMotionSettings()

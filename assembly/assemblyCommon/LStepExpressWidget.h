@@ -59,6 +59,8 @@ class LStepExpressWidget : public QWidget
 
   QWidget* axisControlWidget_;
 
+  bool motionSettings_locked_;
+
  public slots:
 
   void lstepStateChanged(State newState);
@@ -69,11 +71,11 @@ class LStepExpressWidget : public QWidget
 
   void enableMotionControllers();
 
-  void  enableMotionTools(const bool enable=true);
-  void disableMotionTools();
-
   void   lockMotionSettings(const bool disable=true);
   void unlockMotionSettings();
+
+  void  enableMotionTools(const bool enable=true);
+  void disableMotionTools();
 
  signals:
 
@@ -110,6 +112,7 @@ class LStepExpressAxisWidget : public QWidget
 
   QString axisDimensionName_;
 
+  bool motionTools_enabled_;
   bool motionSettings_locked_;
 
  public slots:
