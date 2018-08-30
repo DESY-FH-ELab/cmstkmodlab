@@ -204,14 +204,6 @@ void LStepExpressWidget::enableMotionControllers()
 {
   lstepCheckBox_->setChecked(true);
 
-  if(model_ && (model_->getDeviceState() == READY))
-  {
-    axisWidget_X_->enabledCheckBoxToggled(true);
-    axisWidget_Y_->enabledCheckBoxToggled(true);
-    axisWidget_Z_->enabledCheckBoxToggled(true);
-    axisWidget_A_->enabledCheckBoxToggled(true);
-  }
-
   NQLog("LStepExpressWidget", NQLog::Spam) << "enableMotionControllers"
      << ": emitting signal \"MotionControllers_enabled\"";
 
@@ -220,8 +212,18 @@ void LStepExpressWidget::enableMotionControllers()
 
 void LStepExpressWidget::restart()
 {
-  if(model_){ model_->restart(); }
+  if(posCtrlCheckBox_->isEnabled() == true)
+  {
+    posCtrlCheckBox_->setEnabled(false);
+  }
 
+  if(model_)
+  {
+    model_->setPositionControllerEnabled(false);
+    model_->restart();
+  }
+
+  posCtrlCheckBox_->setEnabled(true);
   posCtrlCheckBox_->setChecked(true);
 }
 
