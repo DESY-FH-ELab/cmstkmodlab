@@ -1437,14 +1437,6 @@ void LStepExpressModel::updateMotionInformationFromTimer()
 
 void LStepExpressModel::setDeviceEnabled(bool enabled)
 {
-    if(controller_ == nullptr)
-    {
-      NQLog("LStepExpressModel", NQLog::Critical) << "setDeviceEnabled(" << enabled << ")"
-         << ": null pointer to controller, no action taken";
-
-      return;
-    }
-
     NQLog("LStepExpressModel", NQLog::Debug) << "setDeviceEnabled(" << enabled << ")";
 
     if(state_ == READY && !enabled)
