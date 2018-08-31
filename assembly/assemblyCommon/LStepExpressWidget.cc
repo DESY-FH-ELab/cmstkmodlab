@@ -219,6 +219,14 @@ void LStepExpressWidget::enableMotionControllers()
 
 void LStepExpressWidget::restart()
 {
+  if(model_->getDeviceState() != READY)
+  {
+    NQLog("LStepExpressWidget", NQLog::Critical) << "restart [step=" << restart_step_ << "]"
+       << ": logic error, motion stage NOT READY (hint: click on \"Enable Controller\")";
+
+    return;
+  }
+
   if(restart_step_ == 0)
   {
     if(restart_timer_ != nullptr)

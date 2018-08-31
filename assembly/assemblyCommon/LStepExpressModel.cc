@@ -573,7 +573,7 @@ void LStepExpressModel::moveRelative(const std::vector<double>& values)
     NQLog("LStepExpressModel", NQLog::Critical) << "moveRelative(values)"
        << ": length of input vector (" << values.size() << ") differs from 4, no action taken";
 
-    NQLog("LStepExpressModel", NQLog::Spam) << "moveRelative"
+    NQLog("LStepExpressModel", NQLog::Spam) << "moveRelative(values)"
        << ": emitting signal \"motionFinished\"";
 
     emit motionFinished();
@@ -650,7 +650,7 @@ void LStepExpressModel::moveAbsolute(const std::vector<double>& values)
     NQLog("LStepExpressModel", NQLog::Critical) << "moveAbsolute(values)"
        << ": length of input vector (" << values.size() << ") differs from 4, no action taken";
 
-    NQLog("LStepExpressModel", NQLog::Spam) << "moveAbsolute"
+    NQLog("LStepExpressModel", NQLog::Spam) << "moveAbsolute(values)"
        << ": emitting signal \"motionFinished\"";
 
     emit motionFinished();
