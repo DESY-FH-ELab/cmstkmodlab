@@ -40,6 +40,13 @@ LStepExpressWidget::LStepExpressWidget(LStepExpressModel* model, QWidget* parent
  , axisWidget_A_(nullptr)
 
  , axisControlWidget_(nullptr)
+
+ , motionSettings_locked_(false)
+
+ , restart_timer_(nullptr)
+ , restart_step_(0)
+ , restart_attempts_(0)
+ , restart_completed_(false)
 {
     QVBoxLayout* layout = new QVBoxLayout(this);
     this->setLayout(layout);
@@ -212,19 +219,166 @@ void LStepExpressWidget::enableMotionControllers()
 
 void LStepExpressWidget::restart()
 {
-  if(posCtrlCheckBox_->isEnabled() == true)
+  if(restart_step_ == 0)
   {
-    posCtrlCheckBox_->setEnabled(false);
-  }
+    if(restart_timer_ != nullptr)
+    {
+      delete restart_timer_;
 
-  if(model_)
+      restart_timer_ = nullptr;
+
+      NQLog("LStepExpressWidget", NQLog::Critical) << "restart [step=" << restart_step_ << "]"
+         << ": logic error, restart-timer was already initialized (disabled now), restart procedure stopped";
+
+      return;
+    }
+
+    NQLog("LStepExpressWidget", NQLog::Spam) << "restart [step=" << restart_step_ << "]"
+       << ": dedicated timer started";
+
+    // disable widget (prevent further actions)
+    this->setEnabled(false);
+
+    // start restart timer
+    restart_timer_ = new QTimer(this);
+    restart_timer_->setInterval(2 * std::max(model_->updateInterval(), model_->motionUpdateInterval()));
+
+    connect(restart_timer_, SIGNAL(timeout()), this, SLOT(restart()));
+
+    restart_timer_->start();
+
+    // proceed to next step
+    ++restart_step_;
+  }
+  else if(restart_step_ == 1)
   {
-    model_->setPositionControllerEnabled(false);
-    model_->restart();
-  }
+    NQLog("LStepExpressWidget", NQLog::Spam) << "restart [step=" << restart_step_ << "]"
+       << ": switching OFF motion stage axes and position-controller";
 
-  posCtrlCheckBox_->setEnabled(true);
-  posCtrlCheckBox_->setChecked(true);
+    // switch axes OFF
+    if(axisWidget_X_->enabledCheckBox()->isChecked() == true){ axisWidget_X_->enabledCheckBox()->setChecked(false); }
+    if(axisWidget_Y_->enabledCheckBox()->isChecked() == true){ axisWidget_Y_->enabledCheckBox()->setChecked(false); }
+    if(axisWidget_Z_->enabledCheckBox()->isChecked() == true){ axisWidget_Z_->enabledCheckBox()->setChecked(false); }
+    if(axisWidget_A_->enabledCheckBox()->isChecked() == true){ axisWidget_A_->enabledCheckBox()->setChecked(false); }
+
+    // disable position controller
+    if(posCtrlCheckBox_->isChecked() == true){ posCtrlCheckBox_->setChecked(false); }
+
+    // proceed to next step
+    ++restart_step_;
+  }
+  else if(restart_step_ == 2)
+  {
+    NQLog("LStepExpressWidget", NQLog::Spam) << "restart [step=" << restart_step_ << "]"
+       << ": switching motion stage axes back ON";
+
+    // switch axes back ON
+    if(axisWidget_X_->enabledCheckBox()->isChecked() == false){ axisWidget_X_->enabledCheckBox()->setChecked(true); }
+    if(axisWidget_Y_->enabledCheckBox()->isChecked() == false){ axisWidget_Y_->enabledCheckBox()->setChecked(true); }
+    if(axisWidget_Z_->enabledCheckBox()->isChecked() == false){ axisWidget_Z_->enabledCheckBox()->setChecked(true); }
+    if(axisWidget_A_->enabledCheckBox()->isChecked() == false){ axisWidget_A_->enabledCheckBox()->setChecked(true); }
+
+    // proceed to next step
+    ++restart_step_;
+  }
+  else if(restart_step_ == 3)
+  {
+    const auto x_status = model_->getAxisStatusText(0);
+    const auto y_status = model_->getAxisStatusText(1);
+    const auto z_status = model_->getAxisStatusText(2);
+    const auto a_status = model_->getAxisStatusText(3);
+
+    const bool x_ready = (x_status == "@");
+    const bool y_ready = (y_status == "@");
+    const bool z_ready = (z_status == "@");
+    const bool a_ready = (a_status == "@");
+
+    const bool axes_enabled = (x_ready && y_ready && z_ready && a_ready);
+
+    if(axes_enabled == true)
+    {
+      restart_completed_ = true;
+
+      NQLog("LStepExpressWidget", NQLog::Spam) << "restart [step=" << restart_step_ << "]"
+         << ": axes status"
+         << " (x=" << x_status
+         << ", y=" << y_status
+         << ", z=" << z_status
+         << ", a=" << a_status
+         << "), axes are READY";
+
+      // proceed to next step
+      ++restart_step_;
+    }
+    else
+    {
+      restart_completed_ = false;
+
+      NQLog("LStepExpressWidget", NQLog::Spam) << "restart [step=" << restart_step_ << "]"
+         << ": axes status"
+         << " (x=" << x_status
+         << ", y=" << y_status
+         << ", z=" << z_status
+         << ", a=" << a_status
+         << "), axes are NOT READY";
+
+      if(restart_attempts_ >= 2)
+      {
+        // proceed to next step
+        ++restart_step_;
+      }
+      else
+      {
+        ++restart_attempts_;
+
+        NQLog("LStepExpressWidget", NQLog::Spam) << "restart [step=" << restart_step_ << "]"
+           << ": calling LStepExpressModel::errorQuit (attempt #" << restart_attempts_ << ")";
+
+        model_->errorQuit();
+
+        // back to step #1
+        restart_step_ = 1;
+      }
+    }
+  }
+  else if(restart_step_ == 4)
+  {
+    if(restart_completed_)
+    {
+      NQLog("LStepExpressWidget", NQLog::Message) << "restart [step=" << restart_step_ << "]"
+         << ": restart completed successfully [" << restart_attempts_ << " attempts], axes status"
+         << " (x=" << model_->getAxisStatusText(0)
+         << ", y=" << model_->getAxisStatusText(1)
+         << ", z=" << model_->getAxisStatusText(2)
+         << ", a=" << model_->getAxisStatusText(3)
+         << ")";
+    }
+    else
+    {
+      NQLog("LStepExpressWidget", NQLog::Critical) << "restart [step=" << restart_step_ << "]"
+         << ": restart procedure failed (stopped after " << restart_attempts_ << " calls to LStepExpressModel::errorQuit)";
+    }
+
+    // enable position controller
+    if(posCtrlCheckBox_->isChecked() == true){ posCtrlCheckBox_->setChecked(false); }
+
+    // stop timer
+    restart_timer_->stop();
+
+    disconnect(restart_timer_, SIGNAL(timeout()), this, SLOT(restart()));
+
+    if(restart_timer_){ delete restart_timer_; restart_timer_ = nullptr; }
+
+    // re-enable widget
+    this->setEnabled(true);
+
+    // reset restart variables
+    restart_completed_ = false;
+
+    restart_attempts_ = 0;
+
+    restart_step_ = 0;
+  }
 }
 
 void LStepExpressWidget::lockMotionSettings(const bool disable)

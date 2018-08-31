@@ -78,6 +78,9 @@ class LStepExpressModel : public QObject, public AbstractDeviceModel<LStepExpres
     void saveConfig();
     void reset();
 
+    int       updateInterval() const { return       updateInterval_; }
+    int motionUpdateInterval() const { return motionUpdateInterval_; }
+
   public slots:
 
     void setDeviceEnabled(bool enabled=true);
@@ -117,8 +120,6 @@ class LStepExpressModel : public QObject, public AbstractDeviceModel<LStepExpres
     void moveAbsolute(const unsigned int axis, const double value);
 
     void errorQuit();
-
-    void restart();
 
     void calibrate();
 

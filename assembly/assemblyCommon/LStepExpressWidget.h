@@ -62,6 +62,11 @@ class LStepExpressWidget : public QWidget
 
   bool motionSettings_locked_;
 
+  QTimer* restart_timer_;
+  uint    restart_step_;
+  uint    restart_attempts_;
+  bool    restart_completed_;
+
  public slots:
 
   void lstepStateChanged(State newState);
@@ -95,6 +100,8 @@ class LStepExpressAxisWidget : public QWidget
 
   explicit LStepExpressAxisWidget(LStepExpressModel* model, unsigned int axis, QWidget* parent=nullptr);
   virtual ~LStepExpressAxisWidget();
+
+  QCheckBox* enabledCheckBox() const { return enabledCheckBox_; }
 
  protected:
 
