@@ -128,7 +128,6 @@ class VLStepExpress {
   virtual void GetSystemStatus(VLStepExpress::Axis axis, int & value) = 0;
   virtual int  GetError() = 0;
   virtual void ErrorQuit() = 0;
-  virtual void Restart() = 0;
 
   virtual bool GetPositionControllerEnabled() = 0;
   virtual void SetPositionControllerEnabled(const bool enable) = 0;
