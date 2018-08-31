@@ -346,7 +346,7 @@ void LStepExpressWidget::restart()
     if(restart_completed_)
     {
       NQLog("LStepExpressWidget", NQLog::Message) << "restart [step=" << restart_step_ << "]"
-         << ": restart completed successfully [" << restart_attempts_ << " attempts], axes status"
+         << ": restart completed successfully [attempts=" << restart_attempts_ << "], axes status"
          << " (x=" << model_->getAxisStatusText(0)
          << ", y=" << model_->getAxisStatusText(1)
          << ", z=" << model_->getAxisStatusText(2)
@@ -360,7 +360,7 @@ void LStepExpressWidget::restart()
     }
 
     // enable position controller
-    if(posCtrlCheckBox_->isChecked() == true){ posCtrlCheckBox_->setChecked(false); }
+    if(posCtrlCheckBox_->isChecked() == false){ posCtrlCheckBox_->setChecked(true); }
 
     // stop timer
     restart_timer_->stop();
@@ -378,6 +378,11 @@ void LStepExpressWidget::restart()
     restart_attempts_ = 0;
 
     restart_step_ = 0;
+
+    NQLog("LStepExpressWidget", NQLog::Spam) << "restart"
+       << ": emitting signal \"restart_completed\"";
+
+    emit restart_completed();
   }
 }
 

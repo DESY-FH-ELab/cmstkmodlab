@@ -90,6 +90,8 @@ class LStepExpressWidget : public QWidget
   void clearQueue_request();
 
   void MotionControllers_enabled();
+
+  void restart_completed();
 };
 
 class LStepExpressAxisWidget : public QWidget
