@@ -269,7 +269,7 @@ AssemblyMainWindow::AssemblyMainWindow(const unsigned int camera_ID, QWidget* pa
     hwctr_view_->LStepExpress_Widget()->enableMotionControllers();
 
     // single-shot signal to switch ON motion stage axes automatically
-    const int time_to_axes_startup(motion_manager_->model()->updateInterval());
+    const int time_to_axes_startup(1.5 * motion_manager_->model()->updateInterval());
     QTimer::singleShot(time_to_axes_startup, hwctr_view_->LStepExpress_Widget(), SLOT(restart()));
 
     NQLog("AssemblyMainWindow", NQLog::Message) << "added view " << tabname_HWCtrl;

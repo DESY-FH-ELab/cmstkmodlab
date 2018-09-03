@@ -291,29 +291,35 @@ void LStepExpressWidget::restart()
   }
   else if(restart_step_ == 3)
   {
-    const auto x_status = model_->getAxisStatusText(0);
-    const auto y_status = model_->getAxisStatusText(1);
-    const auto z_status = model_->getAxisStatusText(2);
-    const auto a_status = model_->getAxisStatusText(3);
+    const auto x_status  = model_->getAxisStatusText(0);
+    const auto y_status  = model_->getAxisStatusText(1);
+    const auto z_status  = model_->getAxisStatusText(2);
+    const auto a_status  = model_->getAxisStatusText(3);
 
     const bool x_ready = (x_status == "@");
     const bool y_ready = (y_status == "@");
     const bool z_ready = (z_status == "@");
     const bool a_ready = (a_status == "@");
 
-    const bool axes_enabled = (x_ready && y_ready && z_ready && a_ready);
+    const auto x_enabled = model_->getAxisEnabled(0);
+    const auto y_enabled = model_->getAxisEnabled(1);
+    const auto z_enabled = model_->getAxisEnabled(2);
+    const auto a_enabled = model_->getAxisEnabled(3);
 
-    if(axes_enabled == true)
+    const bool axes_ready   = (x_ready   && y_ready   && z_ready   && a_ready  );
+    const bool axes_enabled = (x_enabled && y_enabled && z_enabled && a_enabled);
+
+    if(axes_ready && axes_enabled)
     {
       restart_completed_ = true;
 
       NQLog("LStepExpressWidget", NQLog::Spam) << "restart [step=" << restart_step_ << "]"
-         << ": axes status"
-         << " (x=" << x_status
+         << ": axes READY (status"
+         << ": x=" << x_status
          << ", y=" << y_status
          << ", z=" << z_status
          << ", a=" << a_status
-         << "), axes are READY";
+         << ") and ENABLED";
 
       // proceed to next step
       ++restart_step_;
@@ -322,30 +328,89 @@ void LStepExpressWidget::restart()
     {
       restart_completed_ = false;
 
-      NQLog("LStepExpressWidget", NQLog::Spam) << "restart [step=" << restart_step_ << "]"
-         << ": axes status"
-         << " (x=" << x_status
-         << ", y=" << y_status
-         << ", z=" << z_status
-         << ", a=" << a_status
-         << "), axes are NOT READY";
-
-      if(restart_attempts_ >= 2)
+      if(axes_ready == false)
       {
-        // proceed to next step
-        ++restart_step_;
-      }
-      else
-      {
-        ++restart_attempts_;
-
         NQLog("LStepExpressWidget", NQLog::Spam) << "restart [step=" << restart_step_ << "]"
-           << ": calling LStepExpressModel::errorQuit (attempt #" << restart_attempts_ << ")";
+           << ": axes NOT READY (status"
+           << ": x=" << x_status
+           << ", y=" << y_status
+           << ", z=" << z_status
+           << ", a=" << a_status
+           << ")";
 
-        model_->errorQuit();
+        if(restart_attempts_ >= RESTART_MAX_ATTEMPTS_)
+        {
+          // proceed to next step
+          ++restart_step_;
+        }
+        else
+        {
+          ++restart_attempts_;
 
-        // back to step #1
-        restart_step_ = 1;
+          NQLog("LStepExpressWidget", NQLog::Spam) << "restart [step=" << restart_step_ << "]"
+             << ": calling LStepExpressModel::errorQuit (attempt #" << restart_attempts_ << ")";
+
+          model_->errorQuit();
+
+          // back to step #1
+          restart_step_ = 1;
+        }
+      }
+      else //if(axes_enabled == false)
+      {
+        NQLog("LStepExpressWidget", NQLog::Spam) << "restart [step=" << restart_step_ << "]"
+           << ": axes NOT ENABLED (enabled"
+           << ": x=" << x_enabled
+           << ", y=" << y_enabled
+           << ", z=" << z_enabled
+           << ", a=" << a_enabled
+           << ")";
+
+        if(restart_attempts_ >= RESTART_MAX_ATTEMPTS_)
+        {
+          // proceed to next step
+          ++restart_step_;
+        }
+        else
+        {
+          ++restart_attempts_;
+
+          // switch ON axes
+          if(x_enabled == false)
+          {
+            NQLog("LStepExpressWidget", NQLog::Spam) << "restart [step=" << restart_step_ << "]"
+               << ": switching ON axis #0 (X)";
+
+            axisWidget_X_->enabledCheckBox()->setChecked(true);
+          }
+
+          if(y_enabled == false)
+          {
+            NQLog("LStepExpressWidget", NQLog::Spam) << "restart [step=" << restart_step_ << "]"
+               << ": switching ON axis #1 (Y)";
+
+            axisWidget_Y_->enabledCheckBox()->setChecked(true);
+          }
+
+          if(z_enabled == false)
+          {
+            NQLog("LStepExpressWidget", NQLog::Spam) << "restart [step=" << restart_step_ << "]"
+               << ": switching ON axis #2 (Z)";
+
+            axisWidget_Z_->enabledCheckBox()->setChecked(true);
+          }
+
+          if(a_enabled == false)
+          {
+            NQLog("LStepExpressWidget", NQLog::Spam) << "restart [step=" << restart_step_ << "]"
+               << ": switching ON axis #3 (A)";
+
+            axisWidget_A_->enabledCheckBox()->setChecked(true);
+          }
+
+          // back to step #3
+          restart_step_ = 3;
+        }
       }
     }
   }
@@ -556,9 +621,9 @@ void LStepExpressAxisWidget::updateWidgets()
 
       accelerationJerkSpinBox_->setSuffix(QString(" " + model_->getAxisAccelerationJerkShortName(axis_)));
       decelerationJerkSpinBox_->setSuffix(QString(" " + model_->getAxisAccelerationJerkShortName(axis_)));
-      accelerationSpinBox_->setSuffix(QString(" " + model_->getAxisAccelerationShortName(axis_)));
-      decelerationSpinBox_->setSuffix(QString(" " + model_->getAxisAccelerationShortName(axis_)));
-      velocitySpinBox_->setSuffix(QString(" " + model_->getAxisVelocityShortName(axis_)));
+      accelerationSpinBox_    ->setSuffix(QString(" " + model_->getAxisAccelerationShortName    (axis_)));
+      decelerationSpinBox_    ->setSuffix(QString(" " + model_->getAxisAccelerationShortName    (axis_)));
+      velocitySpinBox_        ->setSuffix(QString(" " + model_->getAxisVelocityShortName        (axis_)));
 
       positionLabel_->setText(QString::number(model_->getPosition(axis_), 'f', 4)+" "+axisDimensionName_);
     }

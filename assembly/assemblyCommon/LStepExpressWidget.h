@@ -67,6 +67,8 @@ class LStepExpressWidget : public QWidget
   uint    restart_attempts_;
   bool    restart_completed_;
 
+  const uint RESTART_MAX_ATTEMPTS_ = 2;
+
  public slots:
 
   void lstepStateChanged(State newState);
