@@ -266,6 +266,7 @@ AssemblyMainWindow::AssemblyMainWindow(const unsigned int camera_ID, QWidget* pa
 
     hwctr_view_->Vacuum_Widget()->updateVacuumChannelsStatus();
 
+    // enable motion stage controllers
     hwctr_view_->LStepExpress_Widget()->enableMotionControllers();
 
     // single-shot signal to switch ON motion stage axes automatically
