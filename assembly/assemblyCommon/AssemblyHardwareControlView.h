@@ -43,8 +43,7 @@ class AssemblyHardwareControlView : public QWidget
 
   const LStepExpressMotionManager* const manager_;
 
-  AssemblyMoveWidget*   w_moveabs_;
-  AssemblyMoveWidget*   w_moverel_;
+  AssemblyMoveWidget*   w_move_;
   AssemblyVacuumWidget* w_vacuum_;
 
   QCheckBox* cb_lockMotionSettings_;

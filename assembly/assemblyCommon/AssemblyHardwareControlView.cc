@@ -22,9 +22,8 @@ AssemblyHardwareControlView::AssemblyHardwareControlView(const LStepExpressMotio
  : QWidget(parent)
  , manager_(manager)
 
- , w_moveabs_(nullptr)
- , w_moverel_(nullptr)
- , w_vacuum_ (nullptr)
+ , w_move_  (nullptr)
+ , w_vacuum_(nullptr)
 
  , cb_lockMotionSettings_(nullptr)
 
@@ -49,7 +48,7 @@ AssemblyHardwareControlView::AssemblyHardwareControlView(const LStepExpressMotio
   }
 
   //// Main Layout -----------------------------
-  QVBoxLayout* layout = new QVBoxLayout(this);
+  QVBoxLayout* layout = new QVBoxLayout;
   this->setLayout(layout);
 
   //// Motion and Vacuum Widgets
@@ -60,31 +59,12 @@ AssemblyHardwareControlView::AssemblyHardwareControlView(const LStepExpressMotio
   box_move->setStyleSheet("QGroupBox { font-weight: bold; } ");
 
   QVBoxLayout* l_move = new QVBoxLayout;
+  box_move->setLayout(l_move);
 
-  // widget: Move Absolute
-  QVBoxLayout* l_moveabs = new QVBoxLayout;
+  w_move_ = new AssemblyMoveWidget(manager_);
+  w_move_->setToolTip("Single-Motion interface");
 
-  w_moveabs_ = new AssemblyMoveWidget(manager_, "Move Absolute [mm, deg]");
-  w_moveabs_->setToolTip("Moves to (x,y,z,a) position in the motion stage reference frame");
-  w_moveabs_->use_move_relative(false);
-  w_moveabs_->button()->setStyleSheet(QString::fromUtf8("text-align:center;"));
-
-  l_moveabs->addWidget(w_moveabs_);
-
-  l_move->addLayout(l_moveabs);
-  // -----
-
-  // widget: Move Relative
-  QVBoxLayout* l_moverel = new QVBoxLayout;
-
-  w_moverel_ = new AssemblyMoveWidget(manager_, "Move Relative [mm, deg]");
-  w_moverel_->setToolTip("Relative movement (x,y,z,a) with respect to current position");
-  w_moverel_->use_move_relative(true);
-  w_moverel_->button()->setStyleSheet(QString::fromUtf8("text-align:center;"));
-
-  l_moverel->addWidget(w_moverel_);
-
-  l_move->addLayout(l_moverel);
+  l_move->addWidget(w_move_);
   // -----
 
   this->stateChanged(manager_->model()->getDeviceState());
@@ -93,8 +73,6 @@ AssemblyHardwareControlView::AssemblyHardwareControlView(const LStepExpressMotio
 
   connect(manager_->model(), SIGNAL(motionStarted ()), this, SLOT(disableMotionTools()));
   connect(manager_->model(), SIGNAL(motionFinished()), this, SLOT( enableMotionTools()));
-
-  box_move->setLayout(l_move);
 
   g1->addWidget(box_move, 60);
   /// -------------
@@ -119,7 +97,7 @@ AssemblyHardwareControlView::AssemblyHardwareControlView(const LStepExpressMotio
   layout->addWidget(cb_lockMotionSettings_);
 
   //// LStepExpressWidget
-  w_lStep_ = new LStepExpressWidget(manager_->model(), this);
+  w_lStep_ = new LStepExpressWidget(manager_->model());
   layout->addWidget(w_lStep_);
 
   connect(w_lStep_, SIGNAL(clearQueue_request()), manager_, SLOT(clear_motion_queue()));
@@ -128,12 +106,12 @@ AssemblyHardwareControlView::AssemblyHardwareControlView(const LStepExpressMotio
   //// ------------------
 
   //// LStepExpressJoystickWidget
-  w_lStepJoystick_ = new LStepExpressJoystickWidget(manager_->model(), this);
+  w_lStepJoystick_ = new LStepExpressJoystickWidget(manager_->model());
   layout->addWidget(w_lStepJoystick_);
   //// ------------------
 
 //  // LStepExpressPositionWidget
-//  w_lStepPosition_ = new LStepExpressPositionWidget(manager_, manager_->model(), this);
+//  w_lStepPosition_ = new LStepExpressPositionWidget(manager_, manager_->model());
 //  layout->addWidget(w_lStepPosition_);
 //  //// ------------------
 
@@ -146,8 +124,7 @@ AssemblyHardwareControlView::~AssemblyHardwareControlView()
 {
   if(w_lStep_){ delete w_lStep_; w_lStep_ = nullptr; }
 
-  if(w_moveabs_){ delete w_moveabs_; w_moveabs_ = nullptr; }
-  if(w_moverel_){ delete w_moverel_; w_moverel_ = nullptr; }
+  if(w_move_){ delete w_move_; w_move_ = nullptr; }
 
   if(w_lStepJoystick_){ delete w_lStepJoystick_; w_lStepJoystick_ = nullptr; }
   if(w_lStepPosition_){ delete w_lStepPosition_; w_lStepPosition_ = nullptr; }
@@ -155,8 +132,7 @@ AssemblyHardwareControlView::~AssemblyHardwareControlView()
 
 void AssemblyHardwareControlView::stateChanged(const State& newState)
 {
-  if(w_moveabs_){ w_moveabs_->setEnabled(newState == READY); }
-  if(w_moverel_){ w_moverel_->setEnabled(newState == READY); }
+  if(w_move_){ w_move_->setEnabled(newState == READY); }
 }
 
 void AssemblyHardwareControlView::enableMotionTools(const bool enable)
@@ -165,8 +141,7 @@ void AssemblyHardwareControlView::enableMotionTools(const bool enable)
   if(w_lStepJoystick_){ w_lStepJoystick_->enableMotionTools(enable); }
   if(w_lStepPosition_){ w_lStepPosition_->enableMotionTools(enable); }
 
-  if(w_moveabs_){ w_moveabs_->setEnabled(enable); }
-  if(w_moverel_){ w_moverel_->setEnabled(enable); }
+  if(w_move_){ w_move_->setEnabled(enable); }
 }
 
 void AssemblyHardwareControlView::disableMotionTools()

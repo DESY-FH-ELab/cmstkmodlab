@@ -28,39 +28,46 @@ class AssemblyMoveWidget : public QWidget
 
  public:
 
-  explicit AssemblyMoveWidget(const LStepExpressMotionManager* const, const QString&, const bool move_relative=false, QWidget* parent=nullptr);
+  explicit AssemblyMoveWidget(const LStepExpressMotionManager* const, QWidget* parent=nullptr);
   virtual ~AssemblyMoveWidget() {}
 
   const LStepExpressMotionManager* manager() const { return manager_; }
 
   QVBoxLayout* layout() const { return layout_; }
-  QPushButton* button() const { return button_; }
 
-  QHBoxLayout* XYZA_layout() const { return XYZA_lay_; }
-
-  void use_move_relative(const bool b=false){ move_relative_ = b; }
+  QHBoxLayout* layout_XYZA() const { return lay_XYZA_; }
 
  protected:
 
   const LStepExpressMotionManager* const manager_;
 
-  bool move_relative_;
-
   bool in_execution_;
 
   QVBoxLayout* layout_;
-  QPushButton* button_;
 
-  QHBoxLayout* XYZA_lay_;
+  QHBoxLayout* lay_XYZA_;
 
   QLineEdit* X_lineed_;
   QLineEdit* Y_lineed_;
   QLineEdit* Z_lineed_;
   QLineEdit* A_lineed_;
 
+  QHBoxLayout* lay_cmds_;
+
+  QPushButton* button_moveabs_;
+  QPushButton* button_moverel_;
+  QPushButton* button_readpos_;
+  QPushButton* button_clear_;
+
  public slots:
 
-  void execute();
+  void execute(const bool);
+
+  void move_absolute(){ this->execute(false); }
+  void move_relative(){ this->execute(true); }
+
+  void  read_positions();
+  void clear_positions();
 
   void reactivate();
   void deactivate();
