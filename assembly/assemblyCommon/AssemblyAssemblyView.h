@@ -60,6 +60,8 @@ class AssemblyAssemblyActionWidget : public QWidget
   QPushButton* button()   const { return button_; }
   QCheckBox*   checkbox() const { return checkbox_; }
 
+  void connect_action(const QObject*, const char*, const char*);
+
  protected:
 
   QHBoxLayout* layout_;
@@ -68,12 +70,22 @@ class AssemblyAssemblyActionWidget : public QWidget
   QPushButton* button_;
   QCheckBox*   checkbox_;
 
+  const QObject* qobject_;
+  const char* start_slot_;
+  const char* stop_signal_;
+
  public slots:
 
   void disable(const bool b=true);
   void disable(const int);
 
+  void   reset_action();
+  void   start_action();
+  void disable_action();
+
  signals:
+
+  void action_request();
 };
 // ====================================================================================================
 
