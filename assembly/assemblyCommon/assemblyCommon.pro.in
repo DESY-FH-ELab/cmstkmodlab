@@ -106,6 +106,7 @@ HEADERS += AssemblyVUEyeCamera.h \
            AssemblyVacuumWidget.h \
            AssemblyMotionWidgets.h \
            AssemblyHardwareControlView.h \
+           AssemblyLogView.h \
            ConradManager.h \
            LStepExpressModel.h \
            LStepExpressMotion.h \
@@ -166,6 +167,7 @@ SOURCES += AssemblyVUEyeCamera.cc \
            AssemblyVacuumWidget.cc \
            AssemblyMotionWidgets.cc \
            AssemblyHardwareControlView.cc \
+           AssemblyLogView.cc \
            ConradManager.cc \
            LStepExpressModel.cc \
            LStepExpressMotion.cc \

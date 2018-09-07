@@ -14,17 +14,17 @@
 #include <ApplicationConfig.h>
 
 #include <AssemblyMainWindow.h>
+#include <AssemblyLogView.h>
 #include <AssemblyParameters.h>
 #include <AssemblyUtilities.h>
 
 #include <string>
 
 #include <QApplication>
-#include <QString>
 
 #include <opencv2/opencv.hpp>
 
-AssemblyMainWindow::AssemblyMainWindow(const unsigned int camera_ID, QWidget* parent) :
+AssemblyMainWindow::AssemblyMainWindow(const QString& logfile_path, const unsigned int camera_ID, QWidget* parent) :
   QMainWindow(parent),
 
   // Low-Level Controllers (Motion, Camera, Vacuum)
@@ -312,6 +312,17 @@ AssemblyMainWindow::AssemblyMainWindow(const unsigned int camera_ID, QWidget* pa
     connect(toolbox_view_->MultiPickupTester_Widget(), SIGNAL(multipickup_request(AssemblyMultiPickupTester::Configuration)), this, SLOT(start_multiPickupTest(AssemblyMultiPickupTester::Configuration)));
 
     NQLog("AssemblyMainWindow", NQLog::Message) << "added view " << tabname_Toolbox;
+    // -----------------------------------------------------------
+
+    // TERMINAL VIEW ---------------------------------------------
+    const QString tabname_Terminal("Terminal View");
+
+    AssemblyLogView* logview = new AssemblyLogView(logfile_path);
+    controls_tab->addTab(logview, tabname_Terminal);
+
+    logview->setReadOnly(true);
+
+    NQLog("AssemblyMainWindow", NQLog::Message) << "added view " << tabname_Terminal;
     // -----------------------------------------------------------
 
     /// ---------------------------------------------------------

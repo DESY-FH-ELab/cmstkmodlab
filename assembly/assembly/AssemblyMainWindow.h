@@ -59,6 +59,7 @@ typedef AssemblyUEyeModel AssemblyUEyeModel_t;
 #include <ConradManager.h>
 
 #include <QMainWindow>
+#include <QString>
 #include <QTabWidget>
 #include <QDir>
 #include <QTimer>
@@ -71,7 +72,7 @@ class AssemblyMainWindow : public QMainWindow
 
  public:
 
-  explicit AssemblyMainWindow(const unsigned int camera_ID=10, QWidget* parent=nullptr);
+  explicit AssemblyMainWindow(const QString& logfile_path, const unsigned int camera_ID=10, QWidget* parent=nullptr);
   virtual ~AssemblyMainWindow() {}
 
  public slots:

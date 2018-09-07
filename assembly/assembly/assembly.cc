@@ -31,6 +31,23 @@ static const char* assemblyGUID = "{5F9DC7D7-54C2-4625-A7C6-2EBE4C37C8F5}";
 
 int main(int argc, char** argv)
 {
+    // Qt application -------
+    qRegisterMetaType<State>("State");
+    qRegisterMetaType<cv::Mat>("cv::Mat");
+
+#ifdef SINGLETON
+    SingletonApplication app(argc, argv, assemblyGUID);
+    if(!app.lock())
+    {
+      NQLog("assembly", NQLog::Message) << "Application instance already running!";
+      exit(1);
+    }
+#else
+    QApplication app(argc, argv);
+#endif
+
+    app.setStyle("cleanlooks");
+
     // log output -----------
     ApplicationConfig* config = ApplicationConfig::instance(std::string(Config::CMSTkModLabBasePath)+"/assembly/assembly.cfg");
 
@@ -49,30 +66,13 @@ int main(int argc, char** argv)
     NQLog("assembly", NQLog::Message) << "log file : " << logfilename;
 
     QFile* logfile = new QFile(logfilename);
-    if(logfile->open(QIODevice::WriteOnly | QIODevice::Append | QIODevice::Text))
+    if(logfile->open(QIODevice::WriteOnly | QIODevice::Truncate | QIODevice::Text))
     {
       NQLogger::instance()->addDestiniation(logfile, nqloglevel_logfile);
     }
     // ----------------------
 
-    // Qt application -------
-    qRegisterMetaType<State>("State");
-    qRegisterMetaType<cv::Mat>("cv::Mat");
-
-#ifdef SINGLETON
-    SingletonApplication app(argc, argv, assemblyGUID);
-    if(!app.lock())
-    {
-      NQLog("assembly", NQLog::Message) << "Application instance already running!";
-      exit(1);
-    }
-#else
-    QApplication app(argc, argv);
-#endif
-
-    app.setStyle("cleanlooks");
-
-    AssemblyMainWindow mainWindow;
+    AssemblyMainWindow mainWindow(logfilename);
 
     mainWindow.setWindowTitle("Automated Pixel-Strip Module Assembly ["+QString(APPLICATIONVERSIONSTR)+"]");
     mainWindow.setWindowState(Qt::WindowMaximized);
