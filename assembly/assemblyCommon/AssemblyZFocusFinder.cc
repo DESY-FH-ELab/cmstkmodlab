@@ -29,21 +29,23 @@
 
 int AssemblyZFocusFinder::exe_counter_ = -1;
 
-AssemblyZFocusFinder::AssemblyZFocusFinder(const AssemblyVUEyeCamera* camera, const LStepExpressMotionManager* motion_manager, QObject* parent) :
-  QObject(parent),
+AssemblyZFocusFinder::AssemblyZFocusFinder(const QString& output_dir_prepath, const AssemblyVUEyeCamera* camera, const LStepExpressMotionManager* motion_manager, QObject* parent)
+ : QObject(parent)
 
-  camera_manager_(camera),
-  motion_manager_(motion_manager),
+ , output_dir_prepath_(output_dir_prepath)
 
-  motion_enabled_(false),
+ , camera_manager_(camera)
+ , motion_manager_(motion_manager)
 
-  focus_completed_(false),
+ , motion_enabled_(false)
 
-  zposi_init_(-9999.),
+ , focus_completed_(false)
 
-  zrelm_index_(0),
+ , zposi_init_(-9999.)
 
-  output_dir_("")
+ , zrelm_index_(0)
+
+ , output_dir_("")
 {
   // initialization
   ApplicationConfig* config = ApplicationConfig::instance();
@@ -220,7 +222,7 @@ void AssemblyZFocusFinder::acquire_image()
         exe_counter_str = exe_counter_strss.str();
       }
 
-      output_dir_ = assembly::QtCacheDirectory().toStdString()+"/AssemblyZFocusFinder/"+exe_counter_str+"/";
+      output_dir_ = output_dir_prepath_.toStdString()+"/"+exe_counter_str+"/";
 
       output_dir_exists = assembly::DirectoryExists(output_dir_);
     }

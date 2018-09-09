@@ -24,7 +24,7 @@
 
 #include <opencv2/opencv.hpp>
 
-AssemblyMainWindow::AssemblyMainWindow(const QString& logfile_path, const unsigned int camera_ID, QWidget* parent) :
+AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QString& logfile_path, const unsigned int camera_ID, QWidget* parent) :
   QMainWindow(parent),
 
   // Low-Level Controllers (Motion, Camera, Vacuum)
@@ -141,7 +141,7 @@ AssemblyMainWindow::AssemblyMainWindow(const QString& logfile_path, const unsign
     assembly_tab->addTab(image_view_, tabname_Image);
 
     // Z-focus finder
-    zfocus_finder_ = new AssemblyZFocusFinder(camera_, motion_manager_);
+    zfocus_finder_ = new AssemblyZFocusFinder(outputdir_path+"/AssemblyZFocusFinder", camera_, motion_manager_);
 
     connect(zfocus_finder_, SIGNAL(show_zscan(QString))          , image_view_   , SLOT(update_image_zscan(QString)));
     connect(zfocus_finder_, SIGNAL(text_update_request(double))  , image_view_   , SLOT(update_text(double)));
@@ -179,7 +179,7 @@ AssemblyMainWindow::AssemblyMainWindow(const QString& logfile_path, const unsign
     assembly_tab->addTab(finder_view_, tabname_PatRec);
 
     // finder
-    finder_ = new AssemblyObjectFinderPatRec(thresholder_, assembly::QtCacheDirectory()+"/AssemblyObjectFinderPatRec", "rotations");
+    finder_ = new AssemblyObjectFinderPatRec(thresholder_, outputdir_path+"/AssemblyObjectFinderPatRec", "rotations");
 
     finder_->save_subdir_images(true);
 
