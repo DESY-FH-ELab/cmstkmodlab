@@ -83,8 +83,8 @@ void AssemblyLogView::update()
 
     file.close();
 
-    // Scrolls to the bottom
-    this->verticalScrollBar()->setValue(this->verticalScrollBar()->maximum());
+//    // Scrolls to the bottom
+//    this->verticalScrollBar()->setValue(this->verticalScrollBar()->maximum());
 
     reading_ = false;
   }
