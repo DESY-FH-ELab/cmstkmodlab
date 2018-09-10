@@ -10,32 +10,24 @@
 //                                                                             //
 /////////////////////////////////////////////////////////////////////////////////
 
-#include <iostream>
-
 #include <nqlogger.h>
 
-#include <AssemblyLogView.h>
+#include <AssemblyLogFileController.h>
 
 #include <QFont>
 #include <QFile>
 #include <QTextStream>
 #include <QScrollBar>
 
-AssemblyLogView::AssemblyLogView(const QString& file_path)
- : file_path_(file_path)
+AssemblyLogFileController::AssemblyLogFileController(const QString& file_path, QObject* parent)
+ : QObject(parent)
+
+ , file_path_(file_path)
  , last_read_endline_(0)
  , reading_(false)
 
  , update_timer_(nullptr)
 {
-  // font
-  QFont font("Monospace");
-  font.setStyleHint(QFont::Monospace);
-  this->setFont(font);
-
-  // color
-  this->setStyleSheet("color: white; background-color: black");
-
   // timer
   update_timer_ = new QTimer;
   update_timer_->setInterval(500);
@@ -45,7 +37,7 @@ AssemblyLogView::AssemblyLogView(const QString& file_path)
   update_timer_->start();
 };
 
-AssemblyLogView::~AssemblyLogView()
+AssemblyLogFileController::~AssemblyLogFileController()
 {
   update_timer_->stop();
 
@@ -54,7 +46,7 @@ AssemblyLogView::~AssemblyLogView()
   update_timer_ = nullptr;
 }
 
-void AssemblyLogView::update()
+void AssemblyLogFileController::update()
 {
   if(reading_ == false)
   {
@@ -67,6 +59,8 @@ void AssemblyLogView::update()
 
     uint line_number(0);
 
+    QStringList qstr_list;
+
     while(in.atEnd() == false)
     {
       const QString line = in.readLine();
@@ -75,9 +69,14 @@ void AssemblyLogView::update()
 
       if(line_number > last_read_endline_)
       {
-        this->appendPlainText(line);
+        qstr_list.append(line);
       }
     }
+
+    NQLog("AssemblyLogFileController", NQLog::Debug) << "update"
+       << ": emitting signal \"new_lines(QStringList)\"";
+
+    emit new_lines(qstr_list);
 
     last_read_endline_ = line_number;
 

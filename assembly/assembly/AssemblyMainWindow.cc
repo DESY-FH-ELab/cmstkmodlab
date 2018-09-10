@@ -14,7 +14,8 @@
 #include <ApplicationConfig.h>
 
 #include <AssemblyMainWindow.h>
-#include <AssemblyLogView.h>
+#include <AssemblyLogFileController.h>
+#include <AssemblyLogFileView.h>
 #include <AssemblyParameters.h>
 #include <AssemblyUtilities.h>
 
@@ -317,10 +318,20 @@ AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QStr
     // TERMINAL VIEW ---------------------------------------------
     const QString tabname_Terminal("Terminal View");
 
-    AssemblyLogView* logview = new AssemblyLogView(logfile_path);
+    // list of keywords for skimmed outputs in Terminal View
+    const QStringList log_skim_keys({
+      "[AssemblyZFocusFinder]",
+      "[AssemblyObjectFinderPatRec]",
+      "[AssemblyObjectAligner]",
+      "[AssemblyAssembly]",
+    });
+
+    AssemblyLogFileView* logview = new AssemblyLogFileView(log_skim_keys);
     controls_tab->addTab(logview, tabname_Terminal);
 
-    logview->setReadOnly(true);
+    AssemblyLogFileController* logctrl = new AssemblyLogFileController(logfile_path);
+
+    connect(logctrl, SIGNAL(new_lines(QStringList)), logview, SLOT(append_text(QStringList)));
 
     NQLog("AssemblyMainWindow", NQLog::Message) << "added view " << tabname_Terminal;
     // -----------------------------------------------------------

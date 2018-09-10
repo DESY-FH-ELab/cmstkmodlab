@@ -12,29 +12,38 @@
 
 #include <nqlogger.h>
 
+#include <QWidget>
 #include <QPlainTextEdit>
 #include <QString>
-#include <QTimer>
+#include <QStringList>
+#include <QMap>
 
-class AssemblyLogView : public QPlainTextEdit
+class AssemblyLogTextViewer;
+
+class AssemblyLogFileView : public QWidget
 {
  Q_OBJECT
 
  public:
 
-  explicit AssemblyLogView(const QString&);
-  virtual ~AssemblyLogView();
+  explicit AssemblyLogFileView(const QStringList&, QWidget* parent=nullptr);
+  virtual ~AssemblyLogFileView();
 
  protected:
 
-  QString file_path_;
-  uint last_read_endline_;
-
-  bool reading_;
-
-  QTimer* update_timer_;
+  QMap<QString, AssemblyLogTextViewer*> viewers_;
 
  public slots:
 
-  void update();
+  void append_text(const QStringList&);
+};
+
+class AssemblyLogTextViewer : public QPlainTextEdit
+{
+ Q_OBJECT
+
+ public:
+
+  explicit AssemblyLogTextViewer();
+  virtual ~AssemblyLogTextViewer();
 };
