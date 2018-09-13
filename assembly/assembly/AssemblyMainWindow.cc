@@ -257,9 +257,9 @@ AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QStr
     hwctr_view_ = new AssemblyHardwareControlView(motion_manager_, controls_tab);
     controls_tab->addTab(hwctr_view_, tabname_HWCtrl);
 
-    connect(hwctr_view_->Vacuum_Widget(), SIGNAL(toggleVacuum(int)), conradManager_, SLOT(toggleVacuum(int)));
-
+    connect(hwctr_view_->Vacuum_Widget(), SIGNAL(toggleVacuum(int))              , conradManager_, SLOT(toggleVacuum(int)));
     connect(hwctr_view_->Vacuum_Widget(), SIGNAL(vacuumChannelState_request(int)), conradManager_, SLOT(transmit_vacuumChannelState(int)));
+
     connect(conradManager_, SIGNAL(vacuumChannelState(int, bool)), hwctr_view_->Vacuum_Widget(), SLOT(updateVacuumChannelState(int, bool)));
 
     connect(conradManager_, SIGNAL( enableVacuumButton()), hwctr_view_->Vacuum_Widget(), SLOT( enableVacuumButton()));
@@ -268,16 +268,21 @@ AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QStr
     hwctr_view_->Vacuum_Widget()->updateVacuumChannelsStatus();
 
     // enable motion stage controllers
-    hwctr_view_->LStepExpress_Widget()->enableMotionControllers();
+    const bool enable_motion_stage_at_startup = config->getValue<bool>("enable_motion_stage_at_startup", false)
 
-    // single-shot signal to switch ON motion stage axes automatically
-    const int time_to_axes_startup(1.5 * motion_manager_->model()->updateInterval());
-    QTimer::singleShot(time_to_axes_startup, hwctr_view_->LStepExpress_Widget(), SLOT(restart()));
+    if(enable_motion_stage_at_startup)
+    {
+      hwctr_view_->LStepExpress_Widget()->enableMotionControllers();
 
-    NQLog("AssemblyMainWindow", NQLog::Message) << "added view " << tabname_HWCtrl;
+      // single-shot signal to switch ON motion stage axes automatically
+      const int time_to_axes_startup(1.5 * motion_manager_->model()->updateInterval());
+      QTimer::singleShot(time_to_axes_startup, hwctr_view_->LStepExpress_Widget(), SLOT(restart()));
+
+      NQLog("AssemblyMainWindow", NQLog::Message) << "added view " << tabname_HWCtrl;
+    }
     // ---------------------------------------------------------
 
-    // PARAMETERS VIEW -------------------------------------------
+    // PARAMETERS VIEW -----------------------------------------
     const QString tabname_Parameters("Parameters");
 
     params_view_ = new AssemblyParametersView(controls_tab);
@@ -301,7 +306,7 @@ AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QStr
     NQLog("AssemblyMainWindow", NQLog::Message) << "added view " << tabname_MotionSettings;
     // ---------------------------------------------------------
 
-    // TOOLBOX VIEW ----------------------------------------------
+    // TOOLBOX VIEW --------------------------------------------
     const QString tabname_Toolbox("Toolbox");
 
     toolbox_view_ = new AssemblyToolboxView(motion_manager_, controls_tab);
@@ -313,9 +318,9 @@ AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QStr
     connect(toolbox_view_->MultiPickupTester_Widget(), SIGNAL(multipickup_request(AssemblyMultiPickupTester::Configuration)), this, SLOT(start_multiPickupTest(AssemblyMultiPickupTester::Configuration)));
 
     NQLog("AssemblyMainWindow", NQLog::Message) << "added view " << tabname_Toolbox;
-    // -----------------------------------------------------------
+    // ---------------------------------------------------------
 
-    // TERMINAL VIEW ---------------------------------------------
+    // TERMINAL VIEW -------------------------------------------
     const QString tabname_Terminal("Terminal View");
 
     // list of keywords for skimmed outputs in Terminal View
@@ -335,11 +340,11 @@ AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QStr
     connect(logctrl, SIGNAL(new_lines(QStringList)), logview, SLOT(append_text(QStringList)));
 
     NQLog("AssemblyMainWindow", NQLog::Message) << "added view " << tabname_Terminal;
-    // -----------------------------------------------------------
+    // ---------------------------------------------------------
 
-    /// ---------------------------------------------------------
+    /// --------------------------------------------------------
 
-    /// Upper Toolbar -------------------------------------------
+    /// Upper Toolbar ------------------------------------------
     toolBar_ = addToolBar("Tools");
     toolBar_ ->addAction("Camera ON" , this, SLOT( enable_images()));
     toolBar_ ->addAction("Camera OFF", this, SLOT(disable_images()));
@@ -365,7 +370,7 @@ AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QStr
     this->setCentralWidget(main_tab);
 
     this->updateGeometry();
-    /// ---------------------------------------------------------
+    /// --------------------------------------------------------
 
     liveTimer_ = new QTimer(this);
 
