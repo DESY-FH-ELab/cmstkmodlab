@@ -268,7 +268,7 @@ AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QStr
     hwctr_view_->Vacuum_Widget()->updateVacuumChannelsStatus();
 
     // enable motion stage controllers
-    const bool enable_motion_stage_at_startup = config->getValue<bool>("enable_motion_stage_at_startup", false)
+    const bool enable_motion_stage_at_startup = config->getValue<bool>("enable_motion_stage_at_startup", false);
 
     if(enable_motion_stage_at_startup)
     {
