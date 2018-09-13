@@ -320,6 +320,7 @@ AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QStr
 
     // list of keywords for skimmed outputs in Terminal View
     const QStringList log_skim_keys({
+      "[AssemblyImageController]",
       "[AssemblyZFocusFinder]",
       "[AssemblyObjectFinderPatRec]",
       "[AssemblyObjectAligner]",
@@ -418,7 +419,7 @@ void AssemblyMainWindow::enable_images()
   connect(this      , SIGNAL(autofocus_OFF())  , image_ctr_, SLOT(disable_autofocus()));
 
   NQLog("AssemblyMainWindow", NQLog::Message) << "enable_images"
-     << ": ImageController connected";
+     << ": connecting AssemblyImageController";
 
   NQLog("AssemblyMainWindow", NQLog::Spam) << "enable_images"
      << ": emitting signal \"images_ON\"";
@@ -436,6 +437,14 @@ void AssemblyMainWindow::disable_images()
     return;
   }
 
+  if(image_ctr_ == nullptr)
+  {
+    NQLog("AssemblyMainWindow", NQLog::Warning) << "disable_images"
+       << ": logic error (images enabled, but NULL pointer to AssemblyImageController), no action taken";
+
+    return;
+  }
+
   images_enabled_ = false;
 
   disconnect(this      , SIGNAL(images_ON())      , image_ctr_, SLOT(enable()));
@@ -449,12 +458,9 @@ void AssemblyMainWindow::disable_images()
   disconnect(this      , SIGNAL(autofocus_OFF())  , image_ctr_, SLOT(disable_autofocus()));
 
   NQLog("AssemblyMainWindow", NQLog::Message) << "disable_images"
-     << ": ImageController disconnected";
+     << ": disabling AssemblyImageController";
 
-  NQLog("AssemblyMainWindow", NQLog::Spam) << "enable_images"
-     << ": emitting signal \"images_OFF\"";
-
-  emit images_OFF();
+  image_ctr_->disable();
 }
 
 void AssemblyMainWindow::changeState_autofocus(const int state)
