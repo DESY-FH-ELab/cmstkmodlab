@@ -16,15 +16,33 @@ $ini_array = parse_ini_file ( "pumpstation.ini" );
 
 $command = $ini_array ['DocumentRoot'] . "/PumpStationControl --web getSwitchBlockedStatus";
 exec ( $command, $result, $return );
-$SB = split(';', $result);
+list ($SwitchBlocked0, $SwitchBlocked1, $SwitchBlocked2, $SwitchBlocked3, $SwitchBlocked4) = split(';', $result[0]);
 
 $command = $ini_array ['DocumentRoot'] . "/PumpStationControl --web getSwitchStatus";
 exec ( $command, $result, $return );
-$SS = split(';', $result);
+list ($SwitchState0, $SwitchState1, $SwitchState2, $SwitchState3, $SwitchState4) = split(';', $result[0]);
 
-json = array(
-	'SB0' => $SB[0], 'SB1' => $SB[1], 'SB2' => $SB[2], 'SB3' => $SB[3], 'SB4' => $SB[4], 
-	'SS0' => $SS[0], 'SS1' => $SS[1], 'SS2' => $SS[2], 'SS3' => $SS[3], 'SS4' => $SS[4], 
+$command = $ini_array ['DocumentRoot'] . "/PumpStationControl --web getVacuumStatus";
+exec ( $command, $result, $return );
+list ($SensorState0, $Pressure0, $SensorState1, $Pressure1, $SensorState2, $Pressure2) = split(';', $result[0]);
+
+$json = array(
+  'SwitchBlocked0' => $SwitchBlocked0,
+  'SwitchBlocked1' => $SwitchBlocked1,
+  'SwitchBlocked2' => $SwitchBlocked2,
+  'SwitchBlocked3' => $SwitchBlocked3,
+  'SwitchBlocked4' => $SwitchBlocked4, 
+  'SwitchState0' => $SwitchState0,
+  'SwitchState1' => $SwitchState1,
+  'SwitchState2' => $SwitchState2,
+  'SwitchState3' => $SwitchState3,
+  'SwitchState4' => $SwitchState4,
+  'SensorState0' => $SensorState0,
+  'Pressure0' => $Pressure0,  
+  'SensorState1' => $SensorState1,
+  'Pressure1' => $Pressure1,  
+  'SensorState2' => $SensorState2,
+  'Pressure2' => $Pressure2,  
 );
 
 echo (json_encode($json));
