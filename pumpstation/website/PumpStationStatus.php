@@ -15,34 +15,34 @@
 $ini_array = parse_ini_file ( "pumpstation.ini" );
 
 $command = $ini_array ['DocumentRoot'] . "/PumpStationControl --web getSwitchBlockedStatus";
-exec ( $command, $result, $return );
-list ($SwitchBlocked0, $SwitchBlocked1, $SwitchBlocked2, $SwitchBlocked3, $SwitchBlocked4) = split(';', $result[0]);
+exec ( $command, $switchblocked, $return );
+list ($SwitchBlocked0, $SwitchBlocked1, $SwitchBlocked2, $SwitchBlocked3, $SwitchBlocked4) = split(';', $switchblocked[0]);
 
 $command = $ini_array ['DocumentRoot'] . "/PumpStationControl --web getSwitchStatus";
-exec ( $command, $result, $return );
-list ($SwitchState0, $SwitchState1, $SwitchState2, $SwitchState3, $SwitchState4) = split(';', $result[0]);
+exec ( $command, $switchstate, $return );
+list ($SwitchState0, $SwitchState1, $SwitchState2, $SwitchState3, $SwitchState4) = split(';', $switchstate[0]);
 
 $command = $ini_array ['DocumentRoot'] . "/PumpStationControl --web getVacuumStatus";
-exec ( $command, $result, $return );
-list ($SensorState0, $Pressure0, $SensorState1, $Pressure1, $SensorState2, $Pressure2) = split(';', $result[0]);
+exec ( $command, $vacuumstate, $return );
+list ($SensorState0, $Pressure0, $SensorState1, $Pressure1, $SensorState2, $Pressure2) = split(';', $vacuumstate[0]);
 
 $json = array(
   'SwitchBlocked0' => $SwitchBlocked0,
   'SwitchBlocked1' => $SwitchBlocked1,
   'SwitchBlocked2' => $SwitchBlocked2,
   'SwitchBlocked3' => $SwitchBlocked3,
-  'SwitchBlocked4' => $SwitchBlocked4, 
+  'SwitchBlocked4' => $SwitchBlocked4,
   'SwitchState0' => $SwitchState0,
   'SwitchState1' => $SwitchState1,
   'SwitchState2' => $SwitchState2,
   'SwitchState3' => $SwitchState3,
   'SwitchState4' => $SwitchState4,
   'SensorState0' => $SensorState0,
-  'Pressure0' => $Pressure0,  
+  'Pressure0' => $Pressure0,
   'SensorState1' => $SensorState1,
-  'Pressure1' => $Pressure1,  
+  'Pressure1' => $Pressure1,
   'SensorState2' => $SensorState2,
-  'Pressure2' => $Pressure2,  
+  'Pressure2' => $Pressure2
 );
 
 echo (json_encode($json));
