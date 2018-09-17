@@ -1,6 +1,6 @@
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //
-//               Copyright (C) 2011-2017 - The DESY CMS Group                  //
+//               Copyright (C) 2011-2018 - The DESY CMS Group                  //
 //                           All rights reserved                               //
 //                                                                             //
 //      The CMStkModLab source code is licensed under the GNU GPL v3.0.        //
@@ -10,47 +10,38 @@
 //                                                                             //
 /////////////////////////////////////////////////////////////////////////////////
 
-#ifndef PUMPSTATIONMAINWINDOW_H
-#define PUMPSTATIONMAINWINDOW_H
+#ifndef PUMPSTATIONDIALOGS_H
+#define PUMPSTATIONDIALOGS_H
 
-#include <QMainWindow>
-#include <QTimer>
+#include <QWidget>
+#include <QDialog>
+#include <QLineEdit>
 
-#include "PumpStationHTTPModel.h"
-#include "PumpStationSVGWidget.h"
-
-class PumpStationMainWindow : public QMainWindow
+class PumpStationDialog : public QDialog
 {
   Q_OBJECT
-
 public:
 
-  explicit PumpStationMainWindow(PumpStationHTTPModel* model,
-                                 QWidget *parent = 0);
+  PumpStationDialog(const QString & message, QWidget* parent = 0);
+};
 
-public slots:
+class PumpStationPINDialog : public QDialog
+{
+  Q_OBJECT
+public:
 
-  void lock();
-  void unlock();
-  void updateSketch();
-  void buttonDoubleClicked(int);
-  void enableWidgets();
+  PumpStationPINDialog(const QString & message, QWidget* parent = 0);
 
-signals:
-
-  void toggleSwitch(int);
-
-protected slots:
+  const QString getPIN();
 
 protected:
 
-  PumpStationHTTPModel* model_;
+  QLineEdit * pinLabel_;
 
-  QString sketchSource_;
-  PumpStationSVGWidget * sketch_;
+protected slots:
 
-  const QString pin_;
-  bool locked_;
+  void addNumber(int);
+  void removeNumber();
 };
 
-#endif // PUMPSTATIONMAINWINDOW_H
+#endif // DEFOGEOMETRYWIDGET_H

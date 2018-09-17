@@ -58,7 +58,12 @@ greaterThan(QT_MAJOR_VERSION, 4) {
 }
 
 # Input
-HEADERS += PumpStationMainWindow.h
+HEADERS += PumpStationSingletonApplication.h \
+           PumpStationHTTPModel.h \
+		   PumpStationMainWindow.h \
+		   PumpStationSVG.h \
+		   PumpStationSVGWidget.h \
+		   PumpStationDialogs.h
            
 equals(USEFAKEDEVICES,"X0") {
 HEADERS += 
@@ -67,7 +72,11 @@ HEADERS +=
 }
 
 SOURCES += pumpstation.cc \
-           PumpStationMainWindow.cc
+		   PumpStationSingletonApplication.cc \
+           PumpStationHTTPModel.cc \
+           PumpStationMainWindow.cc \
+           PumpStationSVGWidget.cc \
+		   PumpStationDialogs.cc
 
 equals(USEFAKEDEVICES,"X0") {
 SOURCES += 
