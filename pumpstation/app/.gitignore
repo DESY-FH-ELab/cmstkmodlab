@@ -1,5 +1,5 @@
-pumpstation.pro
-pumpstation.pro.user
+CMSPumpStationControl.pro
+CMSPumpStationControl.pro.user
 .qmake.cache
 .qmake.stash
 Makefile
@@ -7,6 +7,6 @@ Makefile
 *.o
 *~
 moc_*
-pumpstation.app
-pumpstation
+CMSPumpStationControl.app
+CMSPumpStationControl
 

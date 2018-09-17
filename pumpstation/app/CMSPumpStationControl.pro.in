@@ -40,7 +40,7 @@ greaterThan(QT_MAJOR_VERSION, 4) {
   QT += webkit
 }
 
-TARGET = pumpstation
+TARGET = CMSPumpStationControl
 TEMPLATE = app
 
 macx {
