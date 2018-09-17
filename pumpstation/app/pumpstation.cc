@@ -13,7 +13,7 @@
 #include <QDebug>
 #include <QApplication>
 
-#include "SingletonApplication.h"
+#include "PumpStationSingletonApplication.h"
 
 #include "PumpStationMainWindow.h"
 #include "PumpStationHTTPModel.h"
@@ -22,7 +22,7 @@ static const char* CMSPumpStationControlGUID = "{DDF04062-A7ED-4B47-B5E0-AEB2A86
 
 int main( int argc, char** argv )
 {
-  SingletonApplication app(argc, argv, CMSPumpStationControlGUID);
+  PumpStationSingletonApplication app(argc, argv, CMSPumpStationControlGUID);
   if (!app.lock()) {
     qDebug() << "Application instance already running!";
     exit(1);
@@ -34,7 +34,7 @@ int main( int argc, char** argv )
 
   PumpStationMainWindow mainWindow(model);
 
-  mainWindow.setWindowTitle(QString("CMSPumpStationControl - ") + APPLICATIONVERSIONSTR);
+  mainWindow.setWindowTitle("CMSPumpStationControl");
   mainWindow.show();
 
   model->updateInformation();
