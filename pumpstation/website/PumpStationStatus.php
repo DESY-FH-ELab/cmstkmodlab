@@ -26,6 +26,11 @@ $command = $ini_array ['DocumentRoot'] . "/PumpStationControl --web getVacuumSta
 exec ( $command, $vacuumstate, $return );
 list ($SensorState0, $Pressure0, $SensorState1, $Pressure1, $SensorState2, $Pressure2) = split(';', $vacuumstate[0]);
 
+$command = $ini_array ['DocumentRoot'] . "/PumpStationControl --web getPumpOperatingHours";
+exec ( $command, $pumphours, $return );
+list ($Pump0Hours, $Pump1Hours) = split(';', $pumphours[0]);
+
+
 $json = array(
   'SwitchBlocked0' => $SwitchBlocked0,
   'SwitchBlocked1' => $SwitchBlocked1,
@@ -42,7 +47,9 @@ $json = array(
   'SensorState1' => $SensorState1,
   'Pressure1' => $Pressure1,
   'SensorState2' => $SensorState2,
-  'Pressure2' => $Pressure2
+  'Pressure2' => $Pressure2,
+  'Pump0Hours' => $Pump0Hours,
+  'Pump1Hours' => $Pump1Hours
 );
 
 echo (json_encode($json));
