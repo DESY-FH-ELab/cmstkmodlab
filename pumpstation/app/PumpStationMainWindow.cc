@@ -22,9 +22,6 @@
 #include <QPalette>
 #include <QLabel>
 
-#include <nqlogger.h>
-#include <ApplicationConfig.h>
-
 #include "PumpStationMainWindow.h"
 #include "PumpStationSVG.h"
 #include "PumpStationDialogs.h"
