@@ -30,6 +30,7 @@ $command = $ini_array ['DocumentRoot'] . "/PumpStationControl --web getPumpOpera
 exec ( $command, $pumphours, $return );
 list ($Pump0Hours, $Pump1Hours) = split(';', $pumphours[0]);
 
+$Timestamp = date('c');
 
 $json = array(
   'SwitchBlocked0' => $SwitchBlocked0,
@@ -49,7 +50,8 @@ $json = array(
   'SensorState2' => $SensorState2,
   'Pressure2' => $Pressure2,
   'Pump0Hours' => $Pump0Hours,
-  'Pump1Hours' => $Pump1Hours
+  'Pump1Hours' => $Pump1Hours,
+  'Timestamp' => $Timestamp
 );
 
 echo (json_encode($json));
