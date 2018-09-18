@@ -11,33 +11,34 @@
 /////////////////////////////////////////////////////////////////////////////////
 
 #include <QDebug>
-#include <QApplication>
 
 #include "PumpStationSingletonApplication.h"
 
-#include "PumpStationMainWindow.h"
-#include "PumpStationHTTPModel.h"
-
-static const char* CMSPumpStationControlGUID = "{DDF04062-A7ED-4B47-B5E0-AEB2A86F6CA9}";
-
-int main( int argc, char** argv )
+PumpStationSingletonApplication::PumpStationSingletonApplication(int &argc, char **argv,
+                                                                 const char *uniqueKey)
+  : QApplication(argc, argv, true)
 {
-  PumpStationSingletonApplication app(argc, argv, CMSPumpStationControlGUID);
-  if (!app.lock()) {
-    qDebug() << "Application instance already running!";
-    exit(1);
+  singular_ = new QSharedMemory(this);
+  singular_->setKey(uniqueKey);
+}
+
+PumpStationSingletonApplication::~PumpStationSingletonApplication()
+{
+  if (singular_->isAttached())
+    singular_->detach();
+
+  delete singular_;
+}
+
+bool PumpStationSingletonApplication::lock()
+{
+  if (singular_->attach(QSharedMemory::ReadOnly)) {
+    singular_->detach();
+    return false;
   }
 
-  app.setStyle("cleanlooks");
+  if (singular_->create(1))
+    return true;
 
-  PumpStationHTTPModel * model = new PumpStationHTTPModel(10);
-
-  PumpStationMainWindow mainWindow(model);
-
-  mainWindow.setWindowTitle("CMSPumpStationControl");
-  mainWindow.show();
-
-  model->updateInformation();
-
-  return app.exec();
+  return false;
 }

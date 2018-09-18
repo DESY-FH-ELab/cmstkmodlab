@@ -15,12 +15,10 @@
 
 #include <QMainWindow>
 #include <QTimer>
+#include <QLabel>
 
-#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
-#include <QWebView>
-#else
-#include <QWebEngineView>
-#endif
+#include "PumpStationHTTPModel.h"
+#include "PumpStationSVGWidget.h"
 
 class PumpStationMainWindow : public QMainWindow
 {
@@ -28,29 +26,34 @@ class PumpStationMainWindow : public QMainWindow
 
 public:
 
-  explicit PumpStationMainWindow(double updateInterval,
+  explicit PumpStationMainWindow(PumpStationHTTPModel* model,
                                  QWidget *parent = 0);
 
 public slots:
 
-  void quit();
+  void lock();
+  void unlock();
+  void updateSketch();
+  void updateTimestamp();
+  void buttonDoubleClicked(int);
+  void enableWidgets();
 
 signals:
 
-protected slots:
+  void toggleSwitch(int);
 
+protected slots:
 
 protected:
 
-#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
-  QWebView* view_;
-#else
-  QWebEngineView* view_;
-#endif
+  PumpStationHTTPModel* model_;
 
-  /// Time interval between cache refreshes; in seconds.
-  const double updateInterval_;
-  QTimer* timer_;
+  QString sketchSource_;
+  PumpStationSVGWidget * sketch_;
+  QLabel * timestampLabel_;
+
+  const QString pin_;
+  bool locked_;
 };
 
 #endif // PUMPSTATIONMAINWINDOW_H

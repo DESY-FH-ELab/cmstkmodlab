@@ -1,6 +1,6 @@
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //
-//               Copyright (C) 2011-2017 - The DESY CMS Group                  //
+//               Copyright (C) 2011-2018 - The DESY CMS Group                  //
 //                           All rights reserved                               //
 //                                                                             //
 //      The CMStkModLab source code is licensed under the GNU GPL v3.0.        //
@@ -10,34 +10,38 @@
 //                                                                             //
 /////////////////////////////////////////////////////////////////////////////////
 
-#include <QDebug>
-#include <QApplication>
+#ifndef PUMPSTATIONDIALOGS_H
+#define PUMPSTATIONDIALOGS_H
 
-#include "PumpStationSingletonApplication.h"
+#include <QWidget>
+#include <QDialog>
+#include <QLineEdit>
 
-#include "PumpStationMainWindow.h"
-#include "PumpStationHTTPModel.h"
-
-static const char* CMSPumpStationControlGUID = "{DDF04062-A7ED-4B47-B5E0-AEB2A86F6CA9}";
-
-int main( int argc, char** argv )
+class PumpStationDialog : public QDialog
 {
-  PumpStationSingletonApplication app(argc, argv, CMSPumpStationControlGUID);
-  if (!app.lock()) {
-    qDebug() << "Application instance already running!";
-    exit(1);
-  }
+  Q_OBJECT
+public:
 
-  app.setStyle("cleanlooks");
+  PumpStationDialog(const QString & message, QWidget* parent = 0);
+};
 
-  PumpStationHTTPModel * model = new PumpStationHTTPModel(10);
+class PumpStationPINDialog : public QDialog
+{
+  Q_OBJECT
+public:
 
-  PumpStationMainWindow mainWindow(model);
+  PumpStationPINDialog(const QString & message, QWidget* parent = 0);
 
-  mainWindow.setWindowTitle("CMSPumpStationControl");
-  mainWindow.show();
+  const QString getPIN();
 
-  model->updateInformation();
+protected:
 
-  return app.exec();
-}
+  QLineEdit * pinLabel_;
+
+protected slots:
+
+  void addNumber(int);
+  void removeNumber();
+};
+
+#endif // DEFOGEOMETRYWIDGET_H

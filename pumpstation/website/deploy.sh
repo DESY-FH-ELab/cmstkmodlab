@@ -9,6 +9,7 @@ echo $DEPLOYMENTPATH
 cp -f $SOURCEPATH/pumpstation.ini $DEPLOYMENTPATH
 cp -f $SOURCEPATH/index.php $DEPLOYMENTPATH
 cp -f $SOURCEPATH/ConradSwitch.php $DEPLOYMENTPATH
+cp -f $SOURCEPATH/PumpStationStatus.php $DEPLOYMENTPATH
 cp -f $SOURCEPATH/script.js $DEPLOYMENTPATH
 cp -rf $SOURCEPATH/data $DEPLOYMENTPATH
 cp -f $SOURCEPATH/../controller/PumpStationControl $DEPLOYMENTPATH
