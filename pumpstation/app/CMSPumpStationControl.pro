@@ -45,7 +45,6 @@ macx {
   DEPLOY_COMMAND = macdeployqt
 }
 
-
 CONFIG( debug, debug|release ) {
   # debug
   win32 {
