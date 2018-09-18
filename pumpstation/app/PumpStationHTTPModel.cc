@@ -86,6 +86,7 @@ void PumpStationHTTPModel::getRequestReceived(QNetworkReply* reply)
   bool changed = false;
 
   QJsonValue jvalue;
+  QString svalue;
   bool bvalue;
   int ivalue;
   double dvalue;
@@ -233,6 +234,13 @@ void PumpStationHTTPModel::getRequestReceived(QNetworkReply* reply)
     Pump1Hours_ = dvalue;
     qDebug() << "Pump1Hours changed:" <<  Pump1Hours_;
   }
+
+  jvalue = jobj.value(QString("Timestamp"));
+  svalue = jvalue.toString();
+  timestamp_ = QDateTime::fromString(svalue, Qt::ISODate);
+  qDebug() << "timestamp: " << svalue;
+
+  emit timestampChanged();
 
   if (changed) emit valuesChanged();
 }

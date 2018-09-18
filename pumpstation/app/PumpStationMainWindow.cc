@@ -20,7 +20,6 @@
 #include <QFileDialog>
 #include <QApplication>
 #include <QPalette>
-#include <QLabel>
 
 #include "PumpStationMainWindow.h"
 #include "PumpStationSVG.h"
@@ -46,15 +45,23 @@ PumpStationMainWindow::PumpStationMainWindow(PumpStationHTTPModel* model,
 
   QLabel * label = new QLabel("CMS Pump Station Control", w);
   QFont font = label->font();
-  font.setPointSize(36);
+  font.setPointSize(24);
   font.setBold(true);
   label->setFont(font);
   label->setAlignment(Qt::AlignHCenter);
   layout->addWidget(label);
 
+  QDateTime dt = QDateTime::currentDateTime();
+  timestampLabel_ = new QLabel(dt.toString(Qt::ISODate), w);
+  font = timestampLabel_->font();
+  font.setPointSize(10);
+  timestampLabel_->setFont(font);
+  timestampLabel_->setAlignment(Qt::AlignRight);
+  layout->addWidget(timestampLabel_);
+
   sketch_ = new PumpStationSVGWidget(w);
-  sketch_->setMinimumSize(800, sketch_->heightForWidth(800));
-  sketch_->resize(800, sketch_->heightForWidth(800));
+  sketch_->setMinimumSize(1.25*800, sketch_->heightForWidth(1.25*800));
+  sketch_->resize(1.25*800, sketch_->heightForWidth(1.25*800));
   layout->addWidget(sketch_);
 
   connect(sketch_, SIGNAL(buttonDoubleClicked(int)), this, SLOT(buttonDoubleClicked(int)));
@@ -62,6 +69,7 @@ PumpStationMainWindow::PumpStationMainWindow(PumpStationHTTPModel* model,
   sketchSource_ = svgString;
 
   connect(model_, SIGNAL(valuesChanged()), this, SLOT(updateSketch()));
+  connect(model_, SIGNAL(timestampChanged()), this, SLOT(updateTimestamp()));
   connect(this, SIGNAL(toggleSwitch(int)), model_, SLOT(toggleSwitch(int)));
   connect(model_, SIGNAL(enableWidgets()), this, SLOT(enableWidgets()));
 
@@ -224,6 +232,11 @@ void PumpStationMainWindow::updateSketch()
   }
 
   sketch_->load(tempSketch.toLocal8Bit());
+}
+
+void PumpStationMainWindow::updateTimestamp()
+{
+  timestampLabel_->setText(model_->getTimestamp().toString(Qt::ISODate));
 }
 
 void PumpStationMainWindow::buttonDoubleClicked(int button)

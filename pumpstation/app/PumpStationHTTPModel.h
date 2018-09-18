@@ -16,6 +16,7 @@
 #include <QNetworkAccessManager>
 #include <QNetworkReply>
 #include <QTimer>
+#include <QDateTime>
 
 class PumpStationHTTPModel : public QObject
 {
@@ -48,6 +49,7 @@ public:
   double getPump1Hours() { return Pump0Hours_; }
   double getPump2Hours() { return Pump1Hours_; }
 
+  const QDateTime& getTimestamp() { return timestamp_; }
 public slots:
 
   void updateInformation();
@@ -72,10 +74,12 @@ protected:
   int SensorState0_, SensorState1_, SensorState2_;
   double Pressure0_, Pressure1_, Pressure2_;
   double Pump0Hours_, Pump1Hours_;
+  QDateTime timestamp_;
 
 signals:
 
   void valuesChanged();
+  void timestampChanged();
   void enableWidgets();
 };
 

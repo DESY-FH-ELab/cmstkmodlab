@@ -15,6 +15,7 @@
 
 #include <QMainWindow>
 #include <QTimer>
+#include <QLabel>
 
 #include "PumpStationHTTPModel.h"
 #include "PumpStationSVGWidget.h"
@@ -33,6 +34,7 @@ public slots:
   void lock();
   void unlock();
   void updateSketch();
+  void updateTimestamp();
   void buttonDoubleClicked(int);
   void enableWidgets();
 
@@ -48,6 +50,7 @@ protected:
 
   QString sketchSource_;
   PumpStationSVGWidget * sketch_;
+  QLabel * timestampLabel_;
 
   const QString pin_;
   bool locked_;
