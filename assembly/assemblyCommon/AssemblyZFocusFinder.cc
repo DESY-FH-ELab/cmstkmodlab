@@ -415,7 +415,7 @@ void AssemblyZFocusFinder::process_image(const cv::Mat& img)
     this_focus.z_position = motion_manager_->get_position_Z();
     this_focus.focus_disc = this->image_focus_value(img);
 
-    if(fabs(this_focus.z_position - zposi_init_) > focus_zrange_)
+    if((fabs(this_focus.z_position - zposi_init_) - focus_zrange_) > 1e-3)
     {
       NQLog("AssemblyZFocusFinder", NQLog::Spam) << "process_image"
          << ": logic error, current Z-position (" << this_focus.z_position
