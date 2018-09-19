@@ -40,7 +40,7 @@ class LStepExpressModel : public QObject, public AbstractDeviceModel<LStepExpres
     explicit LStepExpressModel(const char* port, int updateInterval=1000, int motionUpdateInterval=100, QObject *parent=nullptr);
     ~LStepExpressModel();
 
-    bool isUpdating() { return isUpdating_; }
+    bool isUpdating() const { return isUpdating_; }
     void pauseUpdate();
     void continueUpdate();
 

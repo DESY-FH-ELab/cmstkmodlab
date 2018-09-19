@@ -296,3 +296,14 @@ void LStepExpressMotionManager::emergency_stop()
 
   return;
 }
+
+double LStepExpressMotionManager::get_position(const int axis) const
+{
+  // hack to avoid reading position while model is updating internally
+  while(model()->isUpdating())
+  {
+    for(unsigned int i=0; i<1e6; ++i){}
+  }
+
+  return this->model()->getPosition(axis);
+}
