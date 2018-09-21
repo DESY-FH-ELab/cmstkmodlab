@@ -61,6 +61,8 @@ class LStepExpressModel : public QObject, public AbstractDeviceModel<LStepExpres
     double getVelocity(unsigned int axis);
     double getPosition(unsigned int axis);
 
+    const std::vector<double>& getPositions() const { return position_; }
+
     bool isInMotion() const { return inMotion_; }
 
     bool getJoystickEnabled();

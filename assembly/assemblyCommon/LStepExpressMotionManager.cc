@@ -16,6 +16,8 @@
 #include <ApplicationConfig.h>
 #include <nqlogger.h>
 
+#include <unistd.h>
+
 LStepExpressMotionManager::LStepExpressMotionManager(LStepExpressModel* model, QObject* parent)
  : QObject(parent)
 
@@ -299,10 +301,48 @@ void LStepExpressMotionManager::emergency_stop()
 
 double LStepExpressMotionManager::get_position(const int axis) const
 {
-  // hack to avoid reading position while model is updating internally
-  while(model()->isUpdating())
+  //
+  // position validation:
+  //  * read position only after ensuring model is not updating internally,
+  //  * the motion stage is not moving and the list of positions has a valid format
+  //
+  // output:
+  //  * it is not safe to return if all the above conditions are not met
+  //  * this means the 'while' shoud not be broken or shortcut (a priori, it might never finish)
+  //  * after a certain number of attempts, explicit warnings are printed
+  //
+  uint tries(0);
+
+  while(model()->isUpdating() || model()->isInMotion() || inMotion_ || (this->model()->getPositions().size() != 4))
   {
-    for(unsigned int i=0; i<1e6; ++i){}
+    if(tries > 5)
+    {
+      if(model()->isUpdating())
+      {
+        NQLog("LStepExpressMotionManager", NQLog::Warning) << "get_position(" << axis << ")"
+           << ": cannot return motion stage position [try #" << tries << "] because LStepExpressModel is still updating";
+      }
+      else if(model()->isInMotion())
+      {
+        NQLog("LStepExpressMotionManager", NQLog::Warning) << "get_position(" << axis << ")"
+           << ": cannot return motion stage position [try #" << tries << "] because LStepExpressModel is still in motion";
+      }
+      else if(inMotion_)
+      {
+        NQLog("LStepExpressMotionManager", NQLog::Warning) << "get_position(" << axis << ")"
+           << ": cannot return motion stage position [try #" << tries << "] because LStepExpressMotionManager is still in motion";
+      }
+      else if(this->model()->getPositions().size() != 4)
+      {
+        NQLog("LStepExpressMotionManager", NQLog::Warning) << "get_position(" << axis << ")"
+           << ": cannot return motion stage position [try #" << tries << "] because positions vector has invalid size ("
+           << this->model()->getPositions().size() << ")";
+      }
+    }
+
+    ++tries;
+
+    usleep(model()->updateInterval() * 400); // from ms to us, times 0.4
   }
 
   return this->model()->getPosition(axis);

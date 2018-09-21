@@ -60,6 +60,7 @@ class AssemblyZFocusFinder : public QObject
     int    focus_pointN_;
     double focus_zrange_max_;
     double focus_zrange_;
+    double focus_stepsize_min_;
 
     double zposi_init_;
 

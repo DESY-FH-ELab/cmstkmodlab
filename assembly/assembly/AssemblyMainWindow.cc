@@ -267,10 +267,10 @@ AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QStr
 
     hwctr_view_->Vacuum_Widget()->updateVacuumChannelsStatus();
 
-    // enable motion stage controllers
-    const bool enable_motion_stage_at_startup = config->getValue<bool>("enable_motion_stage_at_startup", false);
+    // enable motion stage controllers at startup
+    const bool startup_motion_stage = config->getValue<bool>("startup_motion_stage", false);
 
-    if(enable_motion_stage_at_startup)
+    if(startup_motion_stage)
     {
       hwctr_view_->LStepExpress_Widget()->enableMotionControllers();
 
@@ -387,6 +387,15 @@ AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QStr
     NQLog("AssemblyMainWindow", NQLog::Message) << "//  - AssemblyMainWindow initialized successfully -  //";
     NQLog("AssemblyMainWindow", NQLog::Message) << "//                                                   //";
     NQLog("AssemblyMainWindow", NQLog::Message) << "///////////////////////////////////////////////////////";
+
+    // enable camera at startup
+    const bool startup_camera = config->getValue<bool>("startup_camera", false);
+
+    if(startup_camera)
+    {
+      this->enable_images();
+    }
+    // ------------------------
 }
 
 void AssemblyMainWindow::liveUpdate()
