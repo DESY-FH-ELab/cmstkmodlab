@@ -304,7 +304,7 @@ double LStepExpressMotionManager::get_position(const int axis) const
   //
   // position validation:
   //  * read position only after ensuring model is not updating internally,
-  //  * the motion stage is not moving and the list of positions has a valid format
+  //    the motion stage is not moving and the list of positions has a valid format
   //
   // output:
   //  * it is not safe to return if all the above conditions are not met
@@ -315,6 +315,8 @@ double LStepExpressMotionManager::get_position(const int axis) const
 
   while(model()->isUpdating() || model()->isInMotion() || inMotion_ || (this->model()->getPositions().size() != 4))
   {
+    ++tries;
+
     if(tries > 5)
     {
       if(model()->isUpdating())
@@ -339,8 +341,6 @@ double LStepExpressMotionManager::get_position(const int axis) const
            << this->model()->getPositions().size() << ")";
       }
     }
-
-    ++tries;
 
     usleep(model()->updateInterval() * 400); // from ms to us, times 0.4
   }
