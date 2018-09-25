@@ -44,12 +44,14 @@ class LStepExpressWidget : public QWidget
 
   QCheckBox* lstepCheckBox_;
   QCheckBox* joystickCheckBox_;
+  QCheckBox* posCtrlCheckBox_;
 
   QPushButton* buttonOrigin_;
   QPushButton* buttonCalibrate_;
   QPushButton* buttonEmergencyStop_;
   QPushButton* buttonClearQueue_;
   QPushButton* buttonErrorQuit_;
+  QPushButton* buttonRestart_;
 
   LStepExpressAxisWidget* axisWidget_X_;
   LStepExpressAxisWidget* axisWidget_Y_;
@@ -57,6 +59,15 @@ class LStepExpressWidget : public QWidget
   LStepExpressAxisWidget* axisWidget_A_;
 
   QWidget* axisControlWidget_;
+
+  bool motionSettings_locked_;
+
+  QTimer* restart_timer_;
+  uint    restart_step_;
+  uint    restart_attempts_;
+  bool    restart_completed_;
+
+  const uint RESTART_MAX_ATTEMPTS_ = 2;
 
  public slots:
 
@@ -68,11 +79,21 @@ class LStepExpressWidget : public QWidget
 
   void enableMotionControllers();
 
+  void restart();
+
+  void   lockMotionSettings(const bool disable=true);
+  void unlockMotionSettings();
+
+  void  enableMotionTools(const bool enable=true);
+  void disableMotionTools();
+
  signals:
 
   void clearQueue_request();
 
   void MotionControllers_enabled();
+
+  void restart_completed();
 };
 
 class LStepExpressAxisWidget : public QWidget
@@ -83,6 +104,8 @@ class LStepExpressAxisWidget : public QWidget
 
   explicit LStepExpressAxisWidget(LStepExpressModel* model, unsigned int axis, QWidget* parent=nullptr);
   virtual ~LStepExpressAxisWidget();
+
+  QCheckBox* enabledCheckBox() const { return enabledCheckBox_; }
 
  protected:
 
@@ -103,6 +126,9 @@ class LStepExpressAxisWidget : public QWidget
 
   QString axisDimensionName_;
 
+  bool motionTools_enabled_;
+  bool motionSettings_locked_;
+
  public slots:
 
   void lStepStateChanged(State state);
@@ -119,6 +145,12 @@ class LStepExpressAxisWidget : public QWidget
   void writeParameter();
   void motionStarted();
   void motionFinished();
+
+  void  enableMotionTools(const bool enable=true);
+  void disableMotionTools();
+
+  void   lockMotionSettings(const bool disable=true);
+  void unlockMotionSettings();
 };
 
 #endif // LSTEPEXPRESSWIDGET_H

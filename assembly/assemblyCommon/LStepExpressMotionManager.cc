@@ -16,6 +16,8 @@
 #include <ApplicationConfig.h>
 #include <nqlogger.h>
 
+#include <unistd.h>
+
 LStepExpressMotionManager::LStepExpressMotionManager(LStepExpressModel* model, QObject* parent)
  : QObject(parent)
 
@@ -261,10 +263,23 @@ void LStepExpressMotionManager::clear_motion_queue()
     return;
   }
 
+  const auto mots = motions_;
+
   motions_.clear();
 
+  for(const auto& i_mot : mots)
+  {
+    NQLog("LStepExpressMotionManager", NQLog::Spam) << "clear_motion_queue"
+       << ": removed LStepExpressMotion"
+       << " (x=" << i_mot.getX()
+       << ", y=" << i_mot.getY()
+       << ", z=" << i_mot.getZ()
+       << ", a=" << i_mot.getA()
+       << ")[absolute=" << i_mot.getMode() << "]";
+  }
+
   NQLog("LStepExpressMotionManager", NQLog::Message) << "clear_motion_queue"
-     << ": motion queue cleared";
+     << ": motion queue cleared (removed " << mots.size() << " motions)";
 
   return;
 }
@@ -282,4 +297,53 @@ void LStepExpressMotionManager::emergency_stop()
   }
 
   return;
+}
+
+double LStepExpressMotionManager::get_position(const int axis) const
+{
+  //
+  // position validation:
+  //  * read position only after ensuring model is not updating internally,
+  //    the motion stage is not moving and the list of positions has a valid format
+  //
+  // output:
+  //  * it is not safe to return if all the above conditions are not met
+  //  * this means the 'while' shoud not be broken or shortcut (a priori, it might never finish)
+  //  * after a certain number of attempts, explicit warnings are printed
+  //
+  uint tries(0);
+
+  while(model()->isUpdating() || model()->isInMotion() || inMotion_ || (this->model()->getPositions().size() != 4))
+  {
+    ++tries;
+
+    if(tries > 5)
+    {
+      if(model()->isUpdating())
+      {
+        NQLog("LStepExpressMotionManager", NQLog::Warning) << "get_position(" << axis << ")"
+           << ": cannot return motion stage position [try #" << tries << "] because LStepExpressModel is still updating";
+      }
+      else if(model()->isInMotion())
+      {
+        NQLog("LStepExpressMotionManager", NQLog::Warning) << "get_position(" << axis << ")"
+           << ": cannot return motion stage position [try #" << tries << "] because LStepExpressModel is still in motion";
+      }
+      else if(inMotion_)
+      {
+        NQLog("LStepExpressMotionManager", NQLog::Warning) << "get_position(" << axis << ")"
+           << ": cannot return motion stage position [try #" << tries << "] because LStepExpressMotionManager is still in motion";
+      }
+      else if(this->model()->getPositions().size() != 4)
+      {
+        NQLog("LStepExpressMotionManager", NQLog::Warning) << "get_position(" << axis << ")"
+           << ": cannot return motion stage position [try #" << tries << "] because positions vector has invalid size ("
+           << this->model()->getPositions().size() << ")";
+      }
+    }
+
+    usleep(model()->updateInterval() * 400); // from ms to us, times 0.4
+  }
+
+  return this->model()->getPosition(axis);
 }

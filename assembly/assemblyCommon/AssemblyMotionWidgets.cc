@@ -18,23 +18,28 @@
 #include <QStringList>
 #include <QLabel>
 
-AssemblyMoveWidget::AssemblyMoveWidget(const LStepExpressMotionManager* const manager, const QString& label, const bool move_relative, QWidget* parent)
+AssemblyMoveWidget::AssemblyMoveWidget(const LStepExpressMotionManager* const manager, QWidget* parent)
  : QWidget(parent)
 
  , manager_(manager)
 
- , move_relative_(move_relative)
  , in_execution_(false)
 
  , layout_(nullptr)
- , button_(nullptr)
 
- , XYZA_lay_(nullptr)
+ , lay_XYZA_(nullptr)
 
  , X_lineed_(nullptr)
  , Y_lineed_(nullptr)
  , Z_lineed_(nullptr)
  , A_lineed_(nullptr)
+
+ , lay_cmds_(nullptr)
+
+ , button_moveabs_(nullptr)
+ , button_moverel_(nullptr)
+ , button_readpos_(nullptr)
+ , button_clear_  (nullptr)
 {
   // motion manager
   if(manager_ == nullptr)
@@ -44,55 +49,62 @@ AssemblyMoveWidget::AssemblyMoveWidget(const LStepExpressMotionManager* const ma
 
     return;
   }
-
-  connect(this, SIGNAL(move_absolute(double, double, double, double)), manager_, SLOT(moveAbsolute(double, double, double, double)));
-  connect(this, SIGNAL(move_relative(double, double, double, double)), manager_, SLOT(moveRelative(double, double, double, double)));
-
-  connect(manager_, SIGNAL(motion_finished()), this, SLOT(reactivate()));
   // --------------
 
   // layout
   layout_ = new QVBoxLayout;
   this->setLayout(layout_);
 
-  button_ = new QPushButton(label);
-  button_->setStyleSheet(
-    "Text-align: left;"
-    "padding-left:   4px;"
-    "padding-right:  4px;"
-    "padding-top:    3px;"
-    "padding-bottom: 3px;"
-  );
+  lay_XYZA_ = new QHBoxLayout;
+  layout_->addLayout(lay_XYZA_);
 
-  layout_->addWidget(button_);
-
-  XYZA_lay_ = new QHBoxLayout;
-
-  QLabel* X_label = new QLabel("X");
-  QLabel* Y_label = new QLabel("Y");
-  QLabel* Z_label = new QLabel("Z");
-  QLabel* A_label = new QLabel("A");
+  QLabel* X_label = new QLabel("X [mm]");
+  QLabel* Y_label = new QLabel("Y [mm]");
+  QLabel* Z_label = new QLabel("Z [mm]");
+  QLabel* A_label = new QLabel("A [deg]");
 
   X_lineed_ = new QLineEdit("");
   Y_lineed_ = new QLineEdit("");
   Z_lineed_ = new QLineEdit("");
   A_lineed_ = new QLineEdit("");
 
-  XYZA_lay_->addWidget(X_label  );
-  XYZA_lay_->addWidget(X_lineed_);
+  lay_XYZA_->addWidget(X_label);
+  lay_XYZA_->addWidget(X_lineed_);
 
-  XYZA_lay_->addWidget(Y_label  );
-  XYZA_lay_->addWidget(Y_lineed_);
+  lay_XYZA_->addWidget(Y_label);
+  lay_XYZA_->addWidget(Y_lineed_);
 
-  XYZA_lay_->addWidget(Z_label  );
-  XYZA_lay_->addWidget(Z_lineed_);
+  lay_XYZA_->addWidget(Z_label);
+  lay_XYZA_->addWidget(Z_lineed_);
 
-  XYZA_lay_->addWidget(A_label  );
-  XYZA_lay_->addWidget(A_lineed_);
+  lay_XYZA_->addWidget(A_label);
+  lay_XYZA_->addWidget(A_lineed_);
+  // ------
 
-  layout_->addLayout(XYZA_lay_);
+  lay_cmds_ = new QHBoxLayout;
+  layout_->addLayout(lay_cmds_);
 
-  connect(button_, SIGNAL(clicked()), this, SLOT(execute()));
+  button_moveabs_ = new QPushButton("Move Absolute");
+  button_moverel_ = new QPushButton("Move Relative");
+  button_readpos_ = new QPushButton("Read Current XYZA");
+  button_clear_   = new QPushButton("Clear XYZA");
+
+  lay_cmds_->addWidget(button_moveabs_);
+  lay_cmds_->addWidget(button_moverel_);
+  lay_cmds_->addWidget(button_readpos_);
+  lay_cmds_->addWidget(button_clear_);
+  // ------
+
+  connect(this, SIGNAL(move_absolute(double, double, double, double)), manager_, SLOT(moveAbsolute(double, double, double, double)));
+  connect(this, SIGNAL(move_relative(double, double, double, double)), manager_, SLOT(moveRelative(double, double, double, double)));
+
+  connect(manager_, SIGNAL(motion_finished()), this, SLOT(reactivate()));
+
+  connect(button_moveabs_, SIGNAL(clicked()), this, SLOT(move_absolute()));
+  connect(button_moverel_, SIGNAL(clicked()), this, SLOT(move_relative()));
+
+  connect(button_readpos_, SIGNAL(clicked()), this, SLOT( read_positions()));
+  connect(button_clear_  , SIGNAL(clicked()), this, SLOT(clear_positions()));
   // --------------
 }
 
@@ -117,7 +129,33 @@ void AssemblyMoveWidget::deactivate()
   return;
 }
 
-void AssemblyMoveWidget::execute()
+void AssemblyMoveWidget::clear_positions()
+{
+  X_lineed_->setText(tr(""));
+  Y_lineed_->setText(tr(""));
+  Z_lineed_->setText(tr(""));
+  A_lineed_->setText(tr(""));
+}
+
+void AssemblyMoveWidget::read_positions()
+{
+  const double x = manager_->get_position_X();
+  const double y = manager_->get_position_Y();
+  const double z = manager_->get_position_Z();
+  const double a = manager_->get_position_A();
+
+  std::stringstream posi_strs_X; posi_strs_X << x;
+  std::stringstream posi_strs_Y; posi_strs_Y << y;
+  std::stringstream posi_strs_Z; posi_strs_Z << z;
+  std::stringstream posi_strs_A; posi_strs_A << a;
+
+  X_lineed_->setText(QString::fromStdString(posi_strs_X.str()));
+  Y_lineed_->setText(QString::fromStdString(posi_strs_Y.str()));
+  Z_lineed_->setText(QString::fromStdString(posi_strs_Z.str()));
+  A_lineed_->setText(QString::fromStdString(posi_strs_A.str()));
+}
+
+void AssemblyMoveWidget::execute(const bool relative_move)
 {
   in_execution_ = true;
 
@@ -128,7 +166,7 @@ void AssemblyMoveWidget::execute()
 
   if(X_str.isEmpty())
   {
-    X_val = move_relative_ ? 0. : this->manager()->get_position_X();
+    X_val = relative_move ? 0. : this->manager()->get_position_X();
   }
   else
   {
@@ -153,7 +191,7 @@ void AssemblyMoveWidget::execute()
 
   if(Y_str.isEmpty())
   {
-    Y_val = move_relative_ ? 0. : this->manager()->get_position_Y();
+    Y_val = relative_move ? 0. : this->manager()->get_position_Y();
   }
   else
   {
@@ -178,7 +216,7 @@ void AssemblyMoveWidget::execute()
 
   if(Z_str.isEmpty())
   {
-    Z_val = move_relative_ ? 0. : this->manager()->get_position_Z();
+    Z_val = relative_move ? 0. : this->manager()->get_position_Z();
   }
   else
   {
@@ -203,7 +241,7 @@ void AssemblyMoveWidget::execute()
 
   if(A_str.isEmpty())
   {
-    A_val = move_relative_ ? 0. : this->manager()->get_position_A();
+    A_val = relative_move ? 0. : this->manager()->get_position_A();
   }
   else
   {
@@ -221,7 +259,7 @@ void AssemblyMoveWidget::execute()
   }
   // -----
 
-  if(move_relative_)
+  if(relative_move)
   {
     NQLog("AssemblyMoveWidget", NQLog::Message) << "execute"
        << ": emitting signal \"move_relative("

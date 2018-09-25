@@ -45,6 +45,7 @@ void LStepExpress::SendCommand(const std::string & command)
 #ifdef LSTEPDEBUG
   std::cout << "Device SendCommand: " << command << std::endl;
 #endif
+
   comHandler_->SendCommand(command.c_str());
 }
 
@@ -54,6 +55,11 @@ void LStepExpress::ReceiveString(std::string & buffer)
 
   char buf[1000];
   comHandler_->ReceiveString(buf);
+
+#ifdef LSTEPDEBUG
+  std::cout << "Device ReceiveString: " << buf << std::endl;
+#endif
+
   StripBuffer(buf);
   buffer = buf;
 }
@@ -535,6 +541,20 @@ int LStepExpress::GetError()
 void LStepExpress::ErrorQuit()
 {
   this->SendCommand("!quit");
+}
+
+bool LStepExpress::GetPositionControllerEnabled()
+{
+  int posctrl_status(-1);
+  GetValue("?poscon", posctrl_status);
+
+  return bool(posctrl_status == 1);
+}
+
+void LStepExpress::SetPositionControllerEnabled(const bool enable)
+{
+  if(enable){ this->SendCommand("!poscon 1"); }
+  else      { this->SendCommand("!poscon 0"); }
 }
 
 void LStepExpress::Reset()

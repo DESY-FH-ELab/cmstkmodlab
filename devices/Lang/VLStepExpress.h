@@ -126,8 +126,11 @@ class VLStepExpress {
   virtual void GetSystemStatus(std::vector<int>& values) = 0;
   virtual void GetSystemStatusText(std::string& value) = 0;
   virtual void GetSystemStatus(VLStepExpress::Axis axis, int & value) = 0;
-  virtual int GetError() = 0;
+  virtual int  GetError() = 0;
   virtual void ErrorQuit() = 0;
+
+  virtual bool GetPositionControllerEnabled() = 0;
+  virtual void SetPositionControllerEnabled(const bool enable) = 0;
 
   virtual bool GetJoystickEnabled() = 0;
   virtual void SetJoystickEnabled(bool enabled) = 0;

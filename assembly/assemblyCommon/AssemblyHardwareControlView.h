@@ -22,6 +22,7 @@
 #include <AssemblyVacuumWidget.h>
 
 #include <QWidget>
+#include <QCheckBox>
 
 class AssemblyHardwareControlView : public QWidget
 {
@@ -42,17 +43,21 @@ class AssemblyHardwareControlView : public QWidget
 
   const LStepExpressMotionManager* const manager_;
 
+  AssemblyMoveWidget*   w_move_;
+  AssemblyVacuumWidget* w_vacuum_;
+
+  QCheckBox* cb_lockMotionSettings_;
+
   LStepExpressWidget*         w_lStep_;
   LStepExpressJoystickWidget* w_lStepJoystick_;
   LStepExpressPositionWidget* w_lStepPosition_;
 
-  AssemblyMoveWidget*   w_moveabs_;
-  AssemblyMoveWidget*   w_moverel_;
-  AssemblyVacuumWidget* w_vacuum_;
-
  public slots:
 
   void stateChanged(const State&);
+
+  void  enableMotionTools(const bool enable=true);
+  void disableMotionTools();
 };
 
 #endif // ASSEMBLYHARDWARECONTROLVIEW_H

@@ -103,8 +103,11 @@ class LStepExpress : public VLStepExpress
   void GetSystemStatus(std::vector<int>& values);
   void GetSystemStatusText(std::string& value);
   void GetSystemStatus(VLStepExpress::Axis axis, int & value);
-  int GetError();
+  int  GetError();
   void ErrorQuit();
+
+  bool GetPositionControllerEnabled();
+  void SetPositionControllerEnabled(const bool enable);
 
   bool GetJoystickEnabled();
   void SetJoystickEnabled(bool enabled);

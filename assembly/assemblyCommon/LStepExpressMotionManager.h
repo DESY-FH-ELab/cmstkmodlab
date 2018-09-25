@@ -33,10 +33,12 @@ class LStepExpressMotionManager : public QObject
 
     bool model_connected() const { return model_connected_; }
 
-    double get_position_X() const { return model()->getPosition(0); }
-    double get_position_Y() const { return model()->getPosition(1); }
-    double get_position_Z() const { return model()->getPosition(2); }
-    double get_position_A() const { return model()->getPosition(3); }
+    double get_position(const int) const;
+
+    double get_position_X() const { return this->get_position(0); }
+    double get_position_Y() const { return this->get_position(1); }
+    double get_position_Z() const { return this->get_position(2); }
+    double get_position_A() const { return this->get_position(3); }
 
     void myMoveToThread(QThread*);
 

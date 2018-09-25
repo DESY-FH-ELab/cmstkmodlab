@@ -515,13 +515,13 @@ void AssemblyUEyeCamera::acquireImage()
       return;
   }
 
-  NQLog("AssemblyUEyeCamera", NQLog::Debug) << "acquireImage: camera is ready";
+  NQLog("AssemblyUEyeCamera", NQLog::Spam) << "acquireImage: camera is ready";
 
   unsigned int ret = is_FreezeVideo(cameraHandle_, IS_DONT_WAIT);
 
   if(ret == IS_SUCCESS)
   {
-      NQLog("AssemblyUEyeCamera", NQLog::Debug) << "acquireImage: image acquired successfully";
+      NQLog("AssemblyUEyeCamera", NQLog::Spam) << "acquireImage: image acquired successfully";
   }
 
   return;

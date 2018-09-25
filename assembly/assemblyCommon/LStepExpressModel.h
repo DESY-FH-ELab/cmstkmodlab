@@ -40,7 +40,7 @@ class LStepExpressModel : public QObject, public AbstractDeviceModel<LStepExpres
     explicit LStepExpressModel(const char* port, int updateInterval=1000, int motionUpdateInterval=100, QObject *parent=nullptr);
     ~LStepExpressModel();
 
-    bool isUpdating() { return isUpdating_; }
+    bool isUpdating() const { return isUpdating_; }
     void pauseUpdate();
     void continueUpdate();
 
@@ -61,6 +61,8 @@ class LStepExpressModel : public QObject, public AbstractDeviceModel<LStepExpres
     double getVelocity(unsigned int axis);
     double getPosition(unsigned int axis);
 
+    const std::vector<double>& getPositions() const { return position_; }
+
     bool isInMotion() const { return inMotion_; }
 
     bool getJoystickEnabled();
@@ -78,6 +80,9 @@ class LStepExpressModel : public QObject, public AbstractDeviceModel<LStepExpres
     void saveConfig();
     void reset();
 
+    int       updateInterval() const { return       updateInterval_; }
+    int motionUpdateInterval() const { return motionUpdateInterval_; }
+
   public slots:
 
     void setDeviceEnabled(bool enabled=true);
@@ -85,6 +90,8 @@ class LStepExpressModel : public QObject, public AbstractDeviceModel<LStepExpres
     void setAxisEnabled(unsigned int axis, bool enabled);
     void setJoystickEnabled(bool enabled);
     void setJoystickAxisEnabled(unsigned int axis, bool enabled);
+
+    void setPositionControllerEnabled(const bool enable);
 
     void setAccelerationJerk(const std::vector<double>& values);
     void setAccelerationJerk(const double x, const double y, const double z, const double a);
@@ -115,6 +122,7 @@ class LStepExpressModel : public QObject, public AbstractDeviceModel<LStepExpres
     void moveAbsolute(const unsigned int axis, const double value);
 
     void errorQuit();
+
     void calibrate();
 
     void emergencyStop();

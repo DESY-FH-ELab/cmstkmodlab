@@ -21,6 +21,7 @@
 #include <string>
 
 #include <QApplication>
+#include <QDateTime>
 #include <QFile>
 
 #include <opencv2/opencv.hpp>
@@ -31,30 +32,6 @@ static const char* assemblyGUID = "{5F9DC7D7-54C2-4625-A7C6-2EBE4C37C8F5}";
 
 int main(int argc, char** argv)
 {
-    // log output -----------
-    ApplicationConfig* config = ApplicationConfig::instance(std::string(Config::CMSTkModLabBasePath)+"/assembly/assembly.cfg");
-
-    const NQLog::LogLevel nqloglevel_stdout  = ((NQLog::LogLevel) config->getValue<int>("LogLevel_stdout" , 2));
-    const NQLog::LogLevel nqloglevel_logfile = ((NQLog::LogLevel) config->getValue<int>("LogLevel_logfile", 2));
-
-    NQLogger::instance()->addActiveModule("*");
-    NQLogger::instance()->addDestiniation(stdout, nqloglevel_stdout);
-
-    const QString logdir = assembly::QtCacheDirectory();
-    assembly::QDir_mkpath(logdir);
-
-    const QString logfilename = logdir+"/assembly.log";
-
-    NQLog("assembly", NQLog::Message) << "version  : " << APPLICATIONVERSIONSTR;
-    NQLog("assembly", NQLog::Message) << "log file : " << logfilename;
-
-    QFile* logfile = new QFile(logfilename);
-    if(logfile->open(QIODevice::WriteOnly | QIODevice::Append | QIODevice::Text))
-    {
-      NQLogger::instance()->addDestiniation(logfile, nqloglevel_logfile);
-    }
-    // ----------------------
-
     // Qt application -------
     qRegisterMetaType<State>("State");
     qRegisterMetaType<cv::Mat>("cv::Mat");
@@ -72,9 +49,48 @@ int main(int argc, char** argv)
 
     app.setStyle("cleanlooks");
 
-    AssemblyMainWindow mainWindow;
+    // log output -----------
+    ApplicationConfig* config = ApplicationConfig::instance(std::string(Config::CMSTkModLabBasePath)+"/assembly/assembly.cfg");
+
+    const NQLog::LogLevel nqloglevel_stdout  = ((NQLog::LogLevel) config->getValue<int>("LogLevel_stdout" , 2));
+    const NQLog::LogLevel nqloglevel_logfile = ((NQLog::LogLevel) config->getValue<int>("LogLevel_logfile", 2));
+
+    NQLogger::instance()->addActiveModule("*");
+    NQLogger::instance()->addDestiniation(stdout, nqloglevel_stdout);
+
+    const QString timestamp = QDateTime::currentDateTime().toString("yyyyMMdd_hhmmss");
+
+    const QString outputdir_path = assembly::QtCacheDirectory()+"/"+timestamp;
+
+    if(assembly::DirectoryExists(outputdir_path))
+    {
+      NQLog("assembly", NQLog::Fatal) << "target output directory already exists: " << outputdir_path;
+
+      return 1;
+    }
+    else
+    {
+      assembly::QDir_mkpath(outputdir_path);
+    }
+
+    const QString logfile_path = outputdir_path+"/assembly.log";
+
+    NQLog("assembly", NQLog::Message) << "VERSION  : " << APPLICATIONVERSIONSTR;
+    NQLog("assembly", NQLog::Message) << "SESSION  : " << timestamp;
+    NQLog("assembly", NQLog::Message) << "LOG FILE : " << logfile_path;
+
+    QFile* logfile = new QFile(logfile_path);
+    if(logfile->open(QIODevice::WriteOnly | QIODevice::Truncate | QIODevice::Text))
+    {
+      NQLogger::instance()->addDestiniation(logfile, nqloglevel_logfile);
+    }
+    // ----------------------
+
+    AssemblyMainWindow mainWindow(outputdir_path, logfile_path);
 
     mainWindow.setWindowTitle("Automated Pixel-Strip Module Assembly ["+QString(APPLICATIONVERSIONSTR)+"]");
+    mainWindow.setWindowState(Qt::WindowMaximized);
+
     mainWindow.show();
 
     return app.exec();

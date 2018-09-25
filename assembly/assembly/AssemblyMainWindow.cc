@@ -14,17 +14,18 @@
 #include <ApplicationConfig.h>
 
 #include <AssemblyMainWindow.h>
+#include <AssemblyLogFileController.h>
+#include <AssemblyLogFileView.h>
 #include <AssemblyParameters.h>
 #include <AssemblyUtilities.h>
 
 #include <string>
 
 #include <QApplication>
-#include <QString>
 
 #include <opencv2/opencv.hpp>
 
-AssemblyMainWindow::AssemblyMainWindow(const unsigned int camera_ID, QWidget* parent) :
+AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QString& logfile_path, const unsigned int camera_ID, QWidget* parent) :
   QMainWindow(parent),
 
   // Low-Level Controllers (Motion, Camera, Vacuum)
@@ -141,7 +142,7 @@ AssemblyMainWindow::AssemblyMainWindow(const unsigned int camera_ID, QWidget* pa
     assembly_tab->addTab(image_view_, tabname_Image);
 
     // Z-focus finder
-    zfocus_finder_ = new AssemblyZFocusFinder(camera_, motion_manager_);
+    zfocus_finder_ = new AssemblyZFocusFinder(outputdir_path+"/AssemblyZFocusFinder", camera_, motion_manager_);
 
     connect(zfocus_finder_, SIGNAL(show_zscan(QString))          , image_view_   , SLOT(update_image_zscan(QString)));
     connect(zfocus_finder_, SIGNAL(text_update_request(double))  , image_view_   , SLOT(update_text(double)));
@@ -179,7 +180,7 @@ AssemblyMainWindow::AssemblyMainWindow(const unsigned int camera_ID, QWidget* pa
     assembly_tab->addTab(finder_view_, tabname_PatRec);
 
     // finder
-    finder_ = new AssemblyObjectFinderPatRec(thresholder_, assembly::QtCacheDirectory()+"/AssemblyObjectFinderPatRec", "rotations");
+    finder_ = new AssemblyObjectFinderPatRec(thresholder_, outputdir_path+"/AssemblyObjectFinderPatRec", "rotations");
 
     finder_->save_subdir_images(true);
 
@@ -256,9 +257,9 @@ AssemblyMainWindow::AssemblyMainWindow(const unsigned int camera_ID, QWidget* pa
     hwctr_view_ = new AssemblyHardwareControlView(motion_manager_, controls_tab);
     controls_tab->addTab(hwctr_view_, tabname_HWCtrl);
 
-    connect(hwctr_view_->Vacuum_Widget(), SIGNAL(toggleVacuum(int)), conradManager_, SLOT(toggleVacuum(int)));
-
+    connect(hwctr_view_->Vacuum_Widget(), SIGNAL(toggleVacuum(int))              , conradManager_, SLOT(toggleVacuum(int)));
     connect(hwctr_view_->Vacuum_Widget(), SIGNAL(vacuumChannelState_request(int)), conradManager_, SLOT(transmit_vacuumChannelState(int)));
+
     connect(conradManager_, SIGNAL(vacuumChannelState(int, bool)), hwctr_view_->Vacuum_Widget(), SLOT(updateVacuumChannelState(int, bool)));
 
     connect(conradManager_, SIGNAL( enableVacuumButton()), hwctr_view_->Vacuum_Widget(), SLOT( enableVacuumButton()));
@@ -266,12 +267,22 @@ AssemblyMainWindow::AssemblyMainWindow(const unsigned int camera_ID, QWidget* pa
 
     hwctr_view_->Vacuum_Widget()->updateVacuumChannelsStatus();
 
-    hwctr_view_->LStepExpress_Widget()->enableMotionControllers();
+    // enable motion stage controllers at startup
+    const bool startup_motion_stage = config->getValue<bool>("startup_motion_stage", false);
 
-    NQLog("AssemblyMainWindow", NQLog::Message) << "added view " << tabname_HWCtrl;
+    if(startup_motion_stage)
+    {
+      hwctr_view_->LStepExpress_Widget()->enableMotionControllers();
+
+      // single-shot signal to switch ON motion stage axes automatically
+      const int time_to_axes_startup(1.5 * motion_manager_->model()->updateInterval());
+      QTimer::singleShot(time_to_axes_startup, hwctr_view_->LStepExpress_Widget(), SLOT(restart()));
+
+      NQLog("AssemblyMainWindow", NQLog::Message) << "added view " << tabname_HWCtrl;
+    }
     // ---------------------------------------------------------
 
-    // PARAMETERS VIEW -------------------------------------------
+    // PARAMETERS VIEW -----------------------------------------
     const QString tabname_Parameters("Parameters");
 
     params_view_ = new AssemblyParametersView(controls_tab);
@@ -295,7 +306,7 @@ AssemblyMainWindow::AssemblyMainWindow(const unsigned int camera_ID, QWidget* pa
     NQLog("AssemblyMainWindow", NQLog::Message) << "added view " << tabname_MotionSettings;
     // ---------------------------------------------------------
 
-    // TOOLBOX VIEW ----------------------------------------------
+    // TOOLBOX VIEW --------------------------------------------
     const QString tabname_Toolbox("Toolbox");
 
     toolbox_view_ = new AssemblyToolboxView(motion_manager_, controls_tab);
@@ -307,11 +318,33 @@ AssemblyMainWindow::AssemblyMainWindow(const unsigned int camera_ID, QWidget* pa
     connect(toolbox_view_->MultiPickupTester_Widget(), SIGNAL(multipickup_request(AssemblyMultiPickupTester::Configuration)), this, SLOT(start_multiPickupTest(AssemblyMultiPickupTester::Configuration)));
 
     NQLog("AssemblyMainWindow", NQLog::Message) << "added view " << tabname_Toolbox;
-    // -----------------------------------------------------------
+    // ---------------------------------------------------------
 
-    /// ---------------------------------------------------------
+    // TERMINAL VIEW -------------------------------------------
+    const QString tabname_Terminal("Terminal View");
 
-    /// Upper Toolbar -------------------------------------------
+    // list of keywords for skimmed outputs in Terminal View
+    const QStringList log_skim_keys({
+      "[AssemblyImageController]",
+      "[AssemblyZFocusFinder]",
+      "[AssemblyObjectFinderPatRec]",
+      "[AssemblyObjectAligner]",
+      "[AssemblyAssembly]",
+    });
+
+    AssemblyLogFileView* logview = new AssemblyLogFileView(log_skim_keys);
+    controls_tab->addTab(logview, tabname_Terminal);
+
+    AssemblyLogFileController* logctrl = new AssemblyLogFileController(logfile_path);
+
+    connect(logctrl, SIGNAL(new_lines(QStringList)), logview, SLOT(append_text(QStringList)));
+
+    NQLog("AssemblyMainWindow", NQLog::Message) << "added view " << tabname_Terminal;
+    // ---------------------------------------------------------
+
+    /// --------------------------------------------------------
+
+    /// Upper Toolbar ------------------------------------------
     toolBar_ = addToolBar("Tools");
     toolBar_ ->addAction("Camera ON" , this, SLOT( enable_images()));
     toolBar_ ->addAction("Camera OFF", this, SLOT(disable_images()));
@@ -337,7 +370,7 @@ AssemblyMainWindow::AssemblyMainWindow(const unsigned int camera_ID, QWidget* pa
     this->setCentralWidget(main_tab);
 
     this->updateGeometry();
-    /// ---------------------------------------------------------
+    /// --------------------------------------------------------
 
     liveTimer_ = new QTimer(this);
 
@@ -354,6 +387,15 @@ AssemblyMainWindow::AssemblyMainWindow(const unsigned int camera_ID, QWidget* pa
     NQLog("AssemblyMainWindow", NQLog::Message) << "//  - AssemblyMainWindow initialized successfully -  //";
     NQLog("AssemblyMainWindow", NQLog::Message) << "//                                                   //";
     NQLog("AssemblyMainWindow", NQLog::Message) << "///////////////////////////////////////////////////////";
+
+    // enable camera at startup
+    const bool startup_camera = config->getValue<bool>("startup_camera", false);
+
+    if(startup_camera)
+    {
+      this->enable_images();
+    }
+    // ------------------------
 }
 
 void AssemblyMainWindow::liveUpdate()
@@ -391,7 +433,7 @@ void AssemblyMainWindow::enable_images()
   connect(this      , SIGNAL(autofocus_OFF())  , image_ctr_, SLOT(disable_autofocus()));
 
   NQLog("AssemblyMainWindow", NQLog::Message) << "enable_images"
-     << ": ImageController connected";
+     << ": connecting AssemblyImageController";
 
   NQLog("AssemblyMainWindow", NQLog::Spam) << "enable_images"
      << ": emitting signal \"images_ON\"";
@@ -409,6 +451,14 @@ void AssemblyMainWindow::disable_images()
     return;
   }
 
+  if(image_ctr_ == nullptr)
+  {
+    NQLog("AssemblyMainWindow", NQLog::Warning) << "disable_images"
+       << ": logic error (images enabled, but NULL pointer to AssemblyImageController), no action taken";
+
+    return;
+  }
+
   images_enabled_ = false;
 
   disconnect(this      , SIGNAL(images_ON())      , image_ctr_, SLOT(enable()));
@@ -422,12 +472,9 @@ void AssemblyMainWindow::disable_images()
   disconnect(this      , SIGNAL(autofocus_OFF())  , image_ctr_, SLOT(disable_autofocus()));
 
   NQLog("AssemblyMainWindow", NQLog::Message) << "disable_images"
-     << ": ImageController disconnected";
+     << ": disabling AssemblyImageController";
 
-  NQLog("AssemblyMainWindow", NQLog::Spam) << "enable_images"
-     << ": emitting signal \"images_OFF\"";
-
-  emit images_OFF();
+  image_ctr_->disable();
 }
 
 void AssemblyMainWindow::changeState_autofocus(const int state)
