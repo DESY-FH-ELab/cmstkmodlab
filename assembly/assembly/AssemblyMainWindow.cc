@@ -209,7 +209,7 @@ AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QStr
     connect(aligner_view_->button_emergencyStop(), SIGNAL(clicked()), this, SLOT(disconnect_objectAligner()));
     connect(aligner_view_->button_emergencyStop(), SIGNAL(clicked()), motion_manager_, SLOT(emergency_stop()));
 
-    connect(motion_manager_->model(), SIGNAL(emergencyStopSignal()), motion_manager_, SLOT(clear_motion_queue()));
+    connect(motion_manager_->model(), SIGNAL(emergencyStop_request()), motion_manager_, SLOT(clear_motion_queue()));
 
     NQLog("AssemblyMainWindow", NQLog::Message) << "added view " << tabname_Alignm;
     // ---------------------------------------------------------
@@ -346,16 +346,20 @@ AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QStr
 
     /// Upper Toolbar ------------------------------------------
     toolBar_ = addToolBar("Tools");
-    toolBar_ ->addAction("Camera ON" , this, SLOT( enable_images()));
-    toolBar_ ->addAction("Camera OFF", this, SLOT(disable_images()));
-    toolBar_ ->addAction("Snapshot"  , this, SLOT(    get_image ()));
+    toolBar_ ->addAction("Camera ON"     , this, SLOT( enable_images()));
+    toolBar_ ->addAction("Camera OFF"    , this, SLOT(disable_images()));
+    toolBar_ ->addAction("Snapshot"      , this, SLOT(    get_image ()));
+
+    toolBar_ ->addAction("Emergency Stop", motion_manager_->model(), SLOT(emergencyStop()));
 
     autofocus_checkbox_ = new QCheckBox("Auto-Focusing", this);
     toolBar_->addWidget(autofocus_checkbox_);
 
     connect(autofocus_checkbox_, SIGNAL(stateChanged(int)), this, SLOT(changeState_autofocus(int)));
     connect(autofocus_checkbox_, SIGNAL(stateChanged(int)), aligner_view_, SLOT(update_autofocusing_checkbox(int)));
+    /// --------------------------------------------------------
 
+    /// Main Tab -----------------------------------------------
     QTabWidget* main_tab = new QTabWidget;
 
     main_tab->setTabPosition(QTabWidget::South);
