@@ -11,7 +11,6 @@
 /////////////////////////////////////////////////////////////////////////////////
 
 #include <AssemblyUEyeView.h>
-#include <nqlogger.h>
 
 #include <QPainter>
 
@@ -41,18 +40,12 @@ void AssemblyUEyeView::setImage(const cv::Mat& newImage)
         cv::Mat temp;
         cvtColor(newImage, temp, CV_GRAY2RGB);
 
-        image_ = QImage((const uchar *) temp.data,
-                        temp.cols, temp.rows,
-                        temp.step, QImage::Format_RGB888);
-
+        image_ = QImage((const uchar *) temp.data, temp.cols, temp.rows, temp.step, QImage::Format_RGB888);
         image_.bits();
     }
     else
     {
-        image_ = QImage((const uchar *) newImage.data,
-                        newImage.cols, newImage.rows,
-                        newImage.step, QImage::Format_RGB888);
-
+        image_ = QImage((const uchar *) newImage.data, newImage.cols, newImage.rows, newImage.step, QImage::Format_RGB888);
         image_.bits();
     }
 
@@ -65,9 +58,7 @@ void AssemblyUEyeView::paintEvent(QPaintEvent*)
 {
     if(image_.isNull() == false)
     {
-        QImage image = image_.scaled(image_.width()  * zoomFactor_,
-                                     image_.height() * zoomFactor_,
-                                     Qt::KeepAspectRatio);
+        const QImage image = image_.scaled(image_.width()  * zoomFactor_, image_.height() * zoomFactor_, Qt::KeepAspectRatio);
 
         resize(image.width(), image.height());
 
