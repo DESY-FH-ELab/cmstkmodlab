@@ -17,8 +17,6 @@
 #include <QImage>
 #include <QMutex>
 
-#include <AssemblyVUEyeCamera.h>
-
 #include <opencv2/opencv.hpp>
 
 class AssemblyUEyeView : public QLabel
