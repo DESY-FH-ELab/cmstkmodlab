@@ -177,7 +177,7 @@ void PumpStationMainWindow::updateSketch()
     }
   }
 
-  dvalue = model_->getPressure1();
+  dvalue = model_->getPressure2();
   if (dvalue<1) {
     s = QString::number(dvalue, 'e', 2);
   } else if (dvalue<100) {
@@ -195,7 +195,7 @@ void PumpStationMainWindow::updateSketch()
     tempSketch.replace("@P00BG@", red);
   }
 
-  dvalue = model_->getPressure2();
+  dvalue = model_->getPressure3();
   if (dvalue<1) {
     s = QString::number(dvalue, 'e', 2);
   } else if (dvalue<100) {
@@ -213,7 +213,7 @@ void PumpStationMainWindow::updateSketch()
     tempSketch.replace("@P01BG@", red);
   }
 
-  dvalue = model_->getPressure3();
+  dvalue = model_->getPressure1();
   if (dvalue<1) {
     s = QString::number(dvalue, 'e', 2);
   } else if (dvalue<100) {
