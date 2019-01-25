@@ -97,23 +97,23 @@
         </g>
         <g id="S00BOX" transform="matrix(1,0,0,1.5,0,-2)">
             <rect id="S00BG" x="550" y="44" width="110" height="32" style="fill:rgb(255,0,0);fill-rule:nonzero;"/>
-            <rect x="550" y="44" width="110" height="32" style="fill-opacity:0;fill-rule:nonzero;stroke:black;stroke-width:1.66px;"/>
+            <rect x="550" y="44" width="110" height="32" style="fill-opacity:0;fill-rule:nonzero;stroke:black;stroke-width:1.18px;"/>
         </g>
         <g id="S01BOX" transform="matrix(1,0,0,1.5,0,-2)">
             <rect id="S01BG" x="550" y="4" width="110" height="32" style="fill:rgb(255,0,0);fill-rule:nonzero;"/>
-            <rect x="550" y="4" width="110" height="32" style="fill-opacity:0;fill-rule:nonzero;stroke:black;stroke-width:1.57px;"/>
+            <rect x="550" y="4" width="110" height="32" style="fill-opacity:0;fill-rule:nonzero;stroke:black;stroke-width:1.18px;"/>
         </g>
         <g id="S02BOX" transform="matrix(1,0,0,1.5,0,-24)">
             <rect id="S02BG" x="220" y="28" width="70" height="32" style="fill:rgb(255,0,0);fill-rule:nonzero;"/>
-            <rect x="220" y="28" width="70" height="32" style="fill-opacity:0;fill-rule:nonzero;stroke:black;stroke-width:1.66px;"/>
+            <rect x="220" y="28" width="70" height="32" style="fill-opacity:0;fill-rule:nonzero;stroke:black;stroke-width:1.18px;"/>
         </g>
         <g id="S03BOX" transform="matrix(1,0,0,1.5,0,-24)">
             <rect id="S03BG" x="130" y="28" width="70" height="32" style="fill:rgb(255,0,0);fill-rule:nonzero;"/>
-            <rect x="130" y="28" width="70" height="32" style="fill-opacity:0;fill-rule:nonzero;stroke:black;stroke-width:1.66px;"/>
+            <rect x="130" y="28" width="70" height="32" style="fill-opacity:0;fill-rule:nonzero;stroke:black;stroke-width:1.18px;"/>
         </g>
         <g id="S04BOX" transform="matrix(1,0,0,1.5,0,-24)">
             <rect id="S04BG" x="40" y="28" width="70" height="32" style="fill:rgb(255,0,0);fill-rule:nonzero;"/>
-            <rect x="40" y="28" width="70" height="32" style="fill-opacity:0;fill-rule:nonzero;stroke:black;stroke-width:1.66px;"/>
+            <rect x="40" y="28" width="70" height="32" style="fill-opacity:0;fill-rule:nonzero;stroke:black;stroke-width:1.18px;"/>
         </g>
         <g id="P1Gauge">
             <path id="P1GaugeBG" d="M583.794,190.759C573.429,190.759 565.026,182.356 565.026,171.991C565.026,161.626 573.429,153.223 583.794,153.223C594.159,153.223 602.561,161.626 602.561,171.991C602.561,182.356 594.159,190.759 583.794,190.759Z" style="fill:rgb(255,0,0);fill-rule:nonzero;"/>
