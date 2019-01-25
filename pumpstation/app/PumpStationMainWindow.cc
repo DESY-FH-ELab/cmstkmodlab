@@ -202,10 +202,10 @@ void PumpStationMainWindow::updateSketch()
   }
   tempSketch.replace("@P00@", s + " mbar");
 
-  if (dvalue<50) {
+  if (dvalue<100) {
     tempSketch.replace("@P00BG@", green);
     tempSketch.replace("@P1GaugeBG@", green);
-  } else if (dvalue<180) {
+  } else if (dvalue<200) {
     tempSketch.replace("@P00BG@", orange);
     tempSketch.replace("@P1GaugeBG@", orange);
   } else {
@@ -223,10 +223,10 @@ void PumpStationMainWindow::updateSketch()
   }
   tempSketch.replace("@P01@", s + " mbar");
 
-  if (dvalue<50) {
+  if (dvalue<100) {
     tempSketch.replace("@P01BG@", green);
     tempSketch.replace("@P2GaugeBG@", green);
-  } else if (dvalue<180) {
+  } else if (dvalue<200) {
     tempSketch.replace("@P01BG@", orange);
     tempSketch.replace("@P2GaugeBG@", orange);
   } else {
@@ -244,15 +244,18 @@ void PumpStationMainWindow::updateSketch()
   }
   tempSketch.replace("@P02@", s + " mbar");
 
-  if (dvalue<50) {
+  if (dvalue<100) {
     tempSketch.replace("@P02BG@", green);
     tempSketch.replace("@SYSGaugeBG@", green);
-  } else if (dvalue<180) {
+    tempSketch.replace("@VesselBG@", green);
+  } else if (dvalue<200) {
     tempSketch.replace("@P02BG@", orange);
     tempSketch.replace("@SYSGaugeBG@", orange);
+    tempSketch.replace("@VesselBG@", orange);
   } else {
     tempSketch.replace("@P02BG@", red);
     tempSketch.replace("@SYSGaugeBG@", red);
+    tempSketch.replace("@VesselBG@", red);
   }
 
   sketch_->load(tempSketch.toLocal8Bit());
