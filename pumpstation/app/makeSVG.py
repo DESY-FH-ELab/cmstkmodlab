@@ -40,6 +40,29 @@ with open("../../share/PumpStationSchematic.svg", "r") as f:
 		if "P02BG" in line:
 			line = line.replace('255,0,0', '@P02BG@')
 		
+		if "Pump1BG" in line:
+			line = line.replace('255,0,0', '@Pump1BG@')
+		if "Pump2BG" in line:
+			line = line.replace('255,0,0', '@Pump2BG@')
+			
+		if "P1GaugeBG" in line:
+			line = line.replace('255,0,0', '@P1GaugeBG@')
+		if "P2GaugeBG" in line:
+			line = line.replace('255,0,0', '@P2GaugeBG@')
+		if "SYSGaugeBG" in line:
+			line = line.replace('255,0,0', '@SYSGaugeBG@')
+			
+		if "Valve1BG" in line:
+			line = line.replace('255,0,0', '@Valve1BG@')
+		if "Valve2BG" in line:
+			line = line.replace('255,0,0', '@Valve2BG@')
+		if "Valve3BG" in line:
+			line = line.replace('255,0,0', '@Valve3BG@')
+
+		if "VesselBG" in line:
+			line = line.replace('255,0,0', '@VesselBG@')
+		
+		
 		line = line.replace('"', '\\"')
 		line = line.replace('\n', '')
 		ofile.write (line)
