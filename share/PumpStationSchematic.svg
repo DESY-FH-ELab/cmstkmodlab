@@ -134,22 +134,18 @@
             <path d="M157.896,218.911L169.156,237.679L180.417,218.911" style="fill-opacity:0;fill-rule:nonzero;stroke:black;stroke-width:1px;"/>
         </g>
         <g id="Valve1">
-            <g id="Valve1BG" transform="matrix(1,0,0,1,405.383,-56.303)">
-                <path d="M97.578,280.844L97.578,258.323L135.114,280.844L135.114,258.323L97.578,280.844Z" style="fill:rgb(255,0,0);fill-rule:nonzero;"/>
-            </g>
-            <path d="M502.962,224.541L502.962,202.02L540.497,224.541L540.497,202.02L502.962,224.541Z" style="fill-opacity:0;fill-rule:nonzero;stroke:black;stroke-width:1px;"/>
+            <path id="Valve1BG" d="M502.962,224.541L502.962,202.02L540.497,224.541L540.497,202.02L502.962,224.541Z" style="fill:rgb(255,0,0);fill-rule:nonzero;"/>
+            <path d="M502.962,224.541L502.962,202.02L540.497,224.541L540.497,202.02L502.962,224.541Z" style="fill:none;stroke:black;stroke-width:1px;"/>
             <path d="M529.237,190.759L521.73,190.759L521.73,213.28L521.73,190.759L514.223,190.759L514.223,168.238L529.237,168.238L529.237,190.759Z" style="fill-opacity:0;fill-rule:nonzero;stroke:black;stroke-width:1px;"/>
         </g>
         <g id="Valve2">
-            <g id="Valve2BG" transform="matrix(1,0,0,1,405.383,56.303)">
-                <path d="M97.578,280.844L97.578,258.323L135.114,280.844L135.114,258.323L97.578,280.844Z" style="fill:rgb(255,0,0);fill-rule:nonzero;"/>
-            </g>
-            <path d="M502.962,337.148L502.962,314.626L540.497,337.148L540.497,314.626L502.962,337.148Z" style="fill-opacity:0;fill-rule:nonzero;stroke:black;stroke-width:1px;"/>
+            <path id="Valve2BG" d="M502.962,337.148L502.962,314.626L540.497,337.148L540.497,314.626L502.962,337.148Z" style="fill:rgb(255,0,0);fill-rule:nonzero;"/>
+            <path d="M502.962,337.148L502.962,314.626L540.497,337.148L540.497,314.626L502.962,337.148Z" style="fill:none;stroke:black;stroke-width:1px;"/>
             <path d="M529.237,303.366L521.73,303.366L521.73,325.887L521.73,303.366L514.223,303.366L514.223,280.844L529.237,280.844L529.237,303.366Z" style="fill-opacity:0;fill-rule:nonzero;stroke:black;stroke-width:1px;"/>
         </g>
         <g id="Valve3">
             <path id="Valve3BG" d="M97.578,280.844L97.578,258.323L135.114,280.844L135.114,258.323L97.578,280.844Z" style="fill:rgb(255,0,0);fill-rule:nonzero;"/>
-            <path d="M97.578,280.844L97.578,258.323L135.114,280.844L135.114,258.323L97.578,280.844Z" style="fill-opacity:0;fill-rule:nonzero;stroke:black;stroke-width:1px;"/>
+            <path d="M97.578,280.844L97.578,258.323L135.114,280.844L135.114,258.323L97.578,280.844Z" style="fill:none;stroke:black;stroke-width:1px;"/>
             <path d="M123.853,247.062L116.346,247.062L116.346,269.584L116.346,247.062L108.839,247.062L108.839,224.541L123.853,224.541L123.853,247.062Z" style="fill-opacity:0;fill-rule:nonzero;stroke:black;stroke-width:1px;"/>
         </g>
         <g transform="matrix(1,0,0,1,514.728,229.918)">
