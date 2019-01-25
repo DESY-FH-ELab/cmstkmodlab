@@ -31,11 +31,15 @@ PumpStationDialog::PumpStationDialog(const QString & message, QWidget* parent)
 
   QHBoxLayout * hlayout = new QHBoxLayout();
 
+  const int buttonSize = 60;
+
   QPushButton * ButtonOk = new QPushButton("Yes", this);
+  ButtonOk->setFixedHeight(buttonSize);
   connect(ButtonOk, SIGNAL(clicked()), this, SLOT(accept()));
   hlayout->addWidget(ButtonOk);
 
   QPushButton * ButtonCancel = new QPushButton("No", this);
+  ButtonCancel->setFixedHeight(buttonSize);
   ButtonCancel->setDefault(true);
   connect(ButtonCancel, SIGNAL(clicked()), this, SLOT(reject()));
   hlayout->addWidget(ButtonCancel);
@@ -75,29 +79,37 @@ PumpStationPINDialog::PumpStationPINDialog(const QString & message, QWidget* par
   grid->setHorizontalSpacing(4);
   grid->setVerticalSpacing(4);
   QPushButton * button;
+
+  const int buttonSize = 60;
+
   for (int i=0;i<3;++i) {
     button = new QPushButton(QString::number(i+1), this);
+    button->setFixedSize(buttonSize, buttonSize);
     connect(button, SIGNAL(clicked()), mapper, SLOT(map()));
     mapper->setMapping(button, i+1);
     grid->addWidget(button, 0, i);
 
     button = new QPushButton(QString::number(i+4), this);
+    button->setFixedSize(buttonSize, buttonSize);
     connect(button, SIGNAL(clicked()), mapper, SLOT(map()));
     mapper->setMapping(button, i+4);
     grid->addWidget(button, 1, i);
 
     button = new QPushButton(QString::number(i+7), this);
+    button->setFixedSize(buttonSize, buttonSize);
     connect(button, SIGNAL(clicked()), mapper, SLOT(map()));
     mapper->setMapping(button, i+7);
     grid->addWidget(button, 2, i);
   }
 
   button = new QPushButton(QString::number(0), this);
+  button->setFixedSize(buttonSize, buttonSize);
   connect(button, SIGNAL(clicked()), mapper, SLOT(map()));
   mapper->setMapping(button, 0);
   grid->addWidget(button, 3, 1);
 
   button = new QPushButton("<-", this);
+  button->setFixedSize(buttonSize, buttonSize);
   connect(button, SIGNAL(clicked()), this, SLOT(removeNumber()));
   grid->addWidget(button, 3, 2);
 
@@ -106,10 +118,12 @@ PumpStationPINDialog::PumpStationPINDialog(const QString & message, QWidget* par
   hlayout = new QHBoxLayout();
 
   QPushButton * ButtonOk = new QPushButton("Yes", this);
+  ButtonOk->setFixedHeight(buttonSize);
   connect(ButtonOk, SIGNAL(clicked()), this, SLOT(accept()));
   hlayout->addWidget(ButtonOk);
 
   QPushButton * ButtonCancel = new QPushButton("No", this);
+  ButtonCancel->setFixedHeight(buttonSize);
   ButtonCancel->setDefault(true);
   connect(ButtonCancel, SIGNAL(clicked()), this, SLOT(reject()));
   hlayout->addWidget(ButtonCancel);
