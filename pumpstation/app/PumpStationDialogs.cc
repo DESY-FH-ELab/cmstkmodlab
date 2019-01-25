@@ -18,6 +18,7 @@
 #include <QSignalMapper>
 #include <QCryptographicHash>
 #include <QIntValidator>
+#include <QTimer>
 
 #include "PumpStationDialogs.h"
 
@@ -45,6 +46,8 @@ PumpStationDialog::PumpStationDialog(const QString & message, QWidget* parent)
   hlayout->addWidget(ButtonCancel);
 
   vlayout->addLayout(hlayout);
+
+  QTimer::singleShot(30000, this, SLOT(reject()));
 }
 
 PumpStationPINDialog::PumpStationPINDialog(const QString & message, QWidget* parent)
@@ -129,6 +132,8 @@ PumpStationPINDialog::PumpStationPINDialog(const QString & message, QWidget* par
   hlayout->addWidget(ButtonCancel);
 
   vlayout->addLayout(hlayout);
+
+  QTimer::singleShot(30000, this, SLOT(reject()));
 }
 
 void PumpStationPINDialog::addNumber(int n)
