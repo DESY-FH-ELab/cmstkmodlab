@@ -44,11 +44,8 @@ private:
     QRect button1_0_;
     QRect button1_1_;
     QRect button2_0_;
-    QRect button2_1_;
     QRect button3_0_;
-    QRect button3_1_;
     QRect button4_0_;
-    QRect button4_1_;
 };
 
 #endif // DEFOGEOMETRYWIDGET_H
