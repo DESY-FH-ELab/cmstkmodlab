@@ -17,17 +17,17 @@
 PumpStationSVGWidget::PumpStationSVGWidget(QWidget* parent)
   : QSvgWidget(parent)
 {
-  button0_0_ = QRect(646,  32, 110, 48);
-  button0_1_ = QRect(596, 109,  80, 80);
+  button0_0_ = QRect( 45,  32, 110, 48);
+  button0_1_ = QRect(125, 110,  80, 80);
 
-  button1_0_ = QRect(646, 232, 110, 48);
-  button1_1_ = QRect(596, 309,  80, 80);
+  button1_0_ = QRect( 45, 232, 110, 48);
+  button1_1_ = QRect(125, 310,  80, 80);
 
-  button2_0_ = QRect(464,  97,  50, 70);
+  button2_0_ = QRect(287,  98,  50, 70);
 
-  button3_0_ = QRect(464, 299,  50, 70);
+  button3_0_ = QRect(287, 300,  50, 70);
 
-  button4_0_ = QRect( 97, 198,  50, 70);
+  button4_0_ = QRect(654, 198,  50, 70);
 
   setSizePolicy(QSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding));
   sizePolicy().setHeightForWidth(true);
