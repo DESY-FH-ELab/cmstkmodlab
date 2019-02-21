@@ -101,12 +101,15 @@ void PumpStationMainWindow::updateSketch()
   bvalue = model_->getPumpState1();
   blocked = model_->getPumpBlocked1();
   if (blocked) {
-    tempSketch.replace("@S00BG@", grey);
+    // tempSketch.replace("@S00BG@", grey);
+    tempSketch.replace("@Pump1BG@", grey);
   } else {
     if (bvalue) {
-      tempSketch.replace("@S00BG@", green);
+      // tempSketch.replace("@S00BG@", green);
+      tempSketch.replace("@Pump1BG@", green);
     } else {
-      tempSketch.replace("@S00BG@", red);
+      // tempSketch.replace("@S00BG@", red);
+      tempSketch.replace("@Pump1BG@", red);
     }
   }
 
@@ -117,63 +120,81 @@ void PumpStationMainWindow::updateSketch()
   bvalue = model_->getPumpState2();
   blocked = model_->getPumpBlocked2();
   if (blocked) {
-    tempSketch.replace("@S01BG@", grey);
+    // tempSketch.replace("@S01BG@", grey);
+    tempSketch.replace("@Pump2BG@", grey);
   } else {
     if (bvalue) {
-      tempSketch.replace("@S01BG@", green);
+      // tempSketch.replace("@S01BG@", green);
+      tempSketch.replace("@Pump2BG@", green);
     } else {
-      tempSketch.replace("@S01BG@", red);
-    }
+      // tempSketch.replace("@S01BG@", red);
+      tempSketch.replace("@Pump2BG@", red);
+   }
   }
 
   bvalue = model_->getValveState1();
   blocked = model_->getValveBlocked1();
+  /*
   if (bvalue) {
     tempSketch.replace("@S02@", "open");
   } else {
     tempSketch.replace("@S02@", "closed");
   }
+  */
   if (blocked) {
-    tempSketch.replace("@S02BG@", grey);
+    // tempSketch.replace("@S02BG@", grey);
+    tempSketch.replace("@Valve1BG@", grey);
   } else {
     if (bvalue) {
-      tempSketch.replace("@S02BG@", green);
+      // tempSketch.replace("@S02BG@", green);
+      tempSketch.replace("@Valve1BG@", green);
     } else {
-      tempSketch.replace("@S02BG@", red);
+      // tempSketch.replace("@S02BG@", red);
+      tempSketch.replace("@Valve1BG@", red);
     }
   }
 
   bvalue = model_->getValveState2();
   blocked = model_->getValveBlocked2();
+  /*
   if (bvalue) {
     tempSketch.replace("@S03@", "open");
   } else {
     tempSketch.replace("@S03@", "closed");
   }
+  */
   if (blocked) {
-    tempSketch.replace("@S03BG@", grey);
+    // tempSketch.replace("@S03BG@", grey);
+    tempSketch.replace("@Valve2BG@", grey);
   } else {
     if (bvalue) {
-      tempSketch.replace("@S03BG@", green);
+      // tempSketch.replace("@S03BG@", green);
+      tempSketch.replace("@Valve2BG@", green);
     } else {
-      tempSketch.replace("@S03BG@", red);
+      // tempSketch.replace("@S03BG@", red);
+      tempSketch.replace("@Valve2BG@", red);
     }
   }
 
-  bvalue = model_->getValveState3();
-  blocked = model_->getValveBlocked3();
+  bool bvalue3 = model_->getValveState3();
+  bool blocked3 = model_->getValveBlocked3();
+  /*
   if (bvalue) {
     tempSketch.replace("@S04@", "open");
   } else {
     tempSketch.replace("@S04@", "closed");
   }
-  if (blocked) {
-    tempSketch.replace("@S04BG@", grey);
+  */
+  if (blocked3) {
+    // tempSketch.replace("@S04BG@", grey);
+    tempSketch.replace("@Valve3BG@", grey);
   } else {
-    if (bvalue) {
-      tempSketch.replace("@S04BG@", green);
+    if (bvalue3) {
+      // tempSketch.replace("@S04BG@", green);
+      tempSketch.replace("@Valve3BG@", green);
     } else {
-      tempSketch.replace("@S04BG@", red);
+      // tempSketch.replace("@S04BG@", red);
+      tempSketch.replace("@Valve3BG@", red);
     }
   }
 
@@ -187,12 +208,18 @@ void PumpStationMainWindow::updateSketch()
   }
   tempSketch.replace("@P00@", s + " mbar");
 
-  if (dvalue<50) {
+  if (dvalue<100) {
     tempSketch.replace("@P00BG@", green);
-  } else if (dvalue<180) {
+    tempSketch.replace("@P1GaugeBG@", green);
+    tempSketch.replace("@P1Curve@", green);
+  } else if (dvalue<200) {
     tempSketch.replace("@P00BG@", orange);
+    tempSketch.replace("@P1GaugeBG@", orange);
+    tempSketch.replace("@P1Curve@", orange);
   } else {
     tempSketch.replace("@P00BG@", red);
+    tempSketch.replace("@P1GaugeBG@", red);
+    tempSketch.replace("@P1Curve@", red);
   }
 
   dvalue = model_->getPressure3();
@@ -205,12 +232,18 @@ void PumpStationMainWindow::updateSketch()
   }
   tempSketch.replace("@P01@", s + " mbar");
 
-  if (dvalue<50) {
+  if (dvalue<100) {
     tempSketch.replace("@P01BG@", green);
-  } else if (dvalue<180) {
+    tempSketch.replace("@P2GaugeBG@", green);
+    tempSketch.replace("@P2Curve@", green);
+  } else if (dvalue<200) {
     tempSketch.replace("@P01BG@", orange);
+    tempSketch.replace("@P2GaugeBG@", orange);
+    tempSketch.replace("@P2Curve@", orange);
   } else {
     tempSketch.replace("@P01BG@", red);
+    tempSketch.replace("@P2GaugeBG@", red);
+    tempSketch.replace("@P2Curve@", red);
   }
 
   dvalue = model_->getPressure1();
@@ -223,12 +256,40 @@ void PumpStationMainWindow::updateSketch()
   }
   tempSketch.replace("@P02@", s + " mbar");
 
-  if (dvalue<50) {
+  if (dvalue<100) {
     tempSketch.replace("@P02BG@", green);
-  } else if (dvalue<180) {
+    tempSketch.replace("@SYSGaugeBG@", green);
+    tempSketch.replace("@VesselBG@", green);
+    tempSketch.replace("@SYSCurve1@", green);
+    tempSketch.replace("@SYSCurve2@", green);
+  } else if (dvalue<200) {
     tempSketch.replace("@P02BG@", orange);
+    tempSketch.replace("@SYSGaugeBG@", orange);
+    tempSketch.replace("@VesselBG@", orange);
+    tempSketch.replace("@SYSCurve1@", orange);
+    tempSketch.replace("@SYSCurve2@", orange);
   } else {
     tempSketch.replace("@P02BG@", red);
+    tempSketch.replace("@SYSGaugeBG@", red);
+    tempSketch.replace("@VesselBG@", red);
+    tempSketch.replace("@SYSCurve1@", red);
+    tempSketch.replace("@SYSCurve2@", red);
+  }
+
+  if (blocked3 || !bvalue3) {
+    tempSketch.replace("@SYSCurve3@", red);
+    tempSketch.replace("@SYSCurve4@", red);
+  } else {
+    if (dvalue<100) {
+      tempSketch.replace("@SYSCurve3@", green);
+      tempSketch.replace("@SYSCurve4@", green);
+    } else if (dvalue<200) {
+      tempSketch.replace("@SYSCurve3@", orange);
+      tempSketch.replace("@SYSCurve4@", orange);
+    } else {
+      tempSketch.replace("@SYSCurve3@", red);
+      tempSketch.replace("@SYSCurve4@", red);
+    }
   }
 
   sketch_->load(tempSketch.toLocal8Bit());
@@ -319,7 +380,7 @@ void PumpStationMainWindow::lock()
 void PumpStationMainWindow::unlock()
 {
   locked_ = false;
-  QTimer::singleShot(20*1000, this, SLOT(lock()));
+  QTimer::singleShot(30*1000, this, SLOT(lock()));
 }
 
 void PumpStationMainWindow::enableWidgets()
