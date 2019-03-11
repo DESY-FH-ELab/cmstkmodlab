@@ -88,7 +88,7 @@ AssemblyZFocusFinder::AssemblyZFocusFinder(const QString& output_dir_prepath, co
   // --------------
 
   // connection(s)
-  connect(this , SIGNAL(next_zpoint()), this, SLOT(test_focus()));
+  connect(this, SIGNAL(next_zpoint()), this, SLOT(test_focus()));
   // --------------
 
   NQLog("AssemblyZFocusFinder", NQLog::Debug) << "constructed";
@@ -386,6 +386,29 @@ void AssemblyZFocusFinder::test_focus()
 
   return;
 }
+
+void AssemblyZFocusFinder::emergencyStop()
+{
+  NQLog("AssemblyZFocusFinder", NQLog::Message) << "emergencyStop"
+     << ": will stop execution of AssemblyZFocusFinder";
+
+  this->disable_motion();
+
+  v_zrelm_vals_.clear();
+
+  v_focus_vals_.clear();
+
+  focus_completed_ = false;
+
+  zrelm_index_ = -1;
+
+  NQLog("AssemblyZFocusFinder", NQLog::Message) << "emergencyStop"
+     << ": emitting signal \"emergencyStopped\"";
+
+  emit emergencyStopped();
+}
+
+
 
 void AssemblyZFocusFinder::process_image(const cv::Mat& img)
 {

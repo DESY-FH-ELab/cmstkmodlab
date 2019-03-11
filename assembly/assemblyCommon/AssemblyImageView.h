@@ -40,6 +40,7 @@ class AssemblyImageView : public QWidget
   void disconnectImageProducer_autofocus(const QObject* sender, const char* signal);
 
   QPushButton* autofocus_button() const { return AF_exe_button_; }
+  QPushButton* autofocus_emergencyStop_button() const { return AF_stop_button_; }
 
  protected:
 
@@ -66,6 +67,7 @@ class AssemblyImageView : public QWidget
   QLineEdit* AF_result_bestZ_lineed_;
 
   QPushButton* AF_exe_button_;
+  QPushButton* AF_stop_button_;
 
   QLineEdit* AF_param_maxDZ_lineed_;
   QLineEdit* AF_param_Nstep_lineed_;
@@ -103,6 +105,8 @@ class AssemblyImageView : public QWidget
   void autofocus_config(const double, const int);
 
   void autofocus_request();
+
+  void autofocus_emergencyStop_request();
 };
 
 #endif // ASSEMBLYIMAGEVIEW_H

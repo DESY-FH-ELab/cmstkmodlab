@@ -39,6 +39,7 @@ AssemblyImageView::AssemblyImageView(QWidget* parent) :
   AF_scroll_(nullptr),
   AF_result_bestZ_lineed_(nullptr),
   AF_exe_button_(nullptr),
+  AF_stop_button_(nullptr),
   AF_param_maxDZ_lineed_(nullptr),
   AF_param_Nstep_lineed_(nullptr),
   AF_save_zscan_button_(nullptr)
@@ -142,7 +143,8 @@ AssemblyImageView::AssemblyImageView(QWidget* parent) :
   AF_exe_button_ = new QPushButton("Auto-Focus Image", this);
   AF_lay->addWidget(AF_exe_button_);
 
-  connect(AF_exe_button_, SIGNAL(clicked()), this, SIGNAL(autofocus_request()));
+  AF_stop_button_ = new QPushButton("Stop Auto-Focus", this);
+  AF_lay->addWidget(AF_stop_button_);
   // -----
 
   AF_lay->addSpacing(20);

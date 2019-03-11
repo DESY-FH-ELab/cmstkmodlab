@@ -208,6 +208,7 @@ AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QStr
 
     connect(aligner_view_->button_emergencyStop(), SIGNAL(clicked()), this, SLOT(disconnect_objectAligner()));
     connect(aligner_view_->button_emergencyStop(), SIGNAL(clicked()), motion_manager_, SLOT(emergency_stop()));
+    connect(aligner_view_->button_emergencyStop(), SIGNAL(clicked()), zfocus_finder_ , SLOT(emergency_stop()));
 
     connect(motion_manager_->model(), SIGNAL(emergencyStop_request()), motion_manager_, SLOT(clear_motion_queue()));
 
@@ -554,6 +555,8 @@ void AssemblyMainWindow::connect_images()
   connect(image_view_, SIGNAL(image_loaded(cv::Mat)), image_ctr_, SLOT(retrieve_image(cv::Mat)));
 
   connect(image_view_->autofocus_button(), SIGNAL(clicked()), image_ctr_, SLOT(acquire_autofocused_image()));
+
+  connect(image_view_->autofocus_emergencyStop_button(), SIGNAL(clicked()), zfocus_finder_, SLOT(emergencyStop()));
 
   NQLog("AssemblyMainWindow", NQLog::Message) << "connect_images"
      << ": enabled images in application view(s)";
