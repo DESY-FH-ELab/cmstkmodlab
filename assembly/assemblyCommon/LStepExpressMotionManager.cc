@@ -319,7 +319,7 @@ double LStepExpressMotionManager::get_position(const int axis) const
   {
     ++tries;
 
-    if(tries > 20)
+    if(tries > 10)
     {
       NQLog("LStepExpressMotionManager", NQLog::Warning) << "get_position(" << axis << ")"
          << ": after try #" << tries << ", call for LStepExpressMotionManager::emergency_stop()";
