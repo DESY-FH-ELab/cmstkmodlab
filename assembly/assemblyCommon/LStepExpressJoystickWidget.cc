@@ -98,9 +98,9 @@ void LStepExpressJoystickWidget::enableMotionTools(const bool enable)
   if(w_joyax_A_){ w_joyax_A_->enableMotionTools(enable); }
 }
 
-void LStepExpressJoystickWidget::disableMotionTools()
+void LStepExpressJoystickWidget::disableMotionTools(const bool disable)
 {
-  this->enableMotionTools(false);
+  this->enableMotionTools(!disable);
 }
 // ============================================================================
 

@@ -50,8 +50,8 @@ class LStepExpressWidget : public QWidget
   QPushButton* buttonCalibrate_;
   QPushButton* buttonEmergencyStop_;
   QPushButton* buttonClearQueue_;
-  QPushButton* buttonErrorQuit_;
   QPushButton* buttonRestart_;
+  QPushButton* buttonErrorQuit_;
 
   LStepExpressAxisWidget* axisWidget_X_;
   LStepExpressAxisWidget* axisWidget_Y_;
@@ -84,8 +84,8 @@ class LStepExpressWidget : public QWidget
   void   lockMotionSettings(const bool disable=true);
   void unlockMotionSettings();
 
-  void  enableMotionTools(const bool enable=true);
-  void disableMotionTools();
+  void  enableMotionTools(const bool  enable=true);
+  void disableMotionTools(const bool disable=true);
 
  signals:
 
