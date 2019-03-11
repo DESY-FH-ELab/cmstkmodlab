@@ -31,8 +31,8 @@ AssemblyAssembly::AssemblyAssembly(const LStepExpressMotionManager* const motion
  , vacuum_spacer_(0)
  , vacuum_basepl_(0)
 
- , pickup1_dZ_(0.)
- , pickup2_dZ_(0.)
+ , pickup1_Z_(0.)
+ , pickup2_Z_(0.)
 
  , use_smartMove_(false)
 {
@@ -54,26 +54,10 @@ AssemblyAssembly::AssemblyAssembly(const LStepExpressMotionManager* const motion
   vacuum_spacer_ = config->getValue<int>("Vacuum_Spacers");
   vacuum_basepl_ = config->getValue<int>("Vacuum_Baseplate");
 
-  // positive double(s) for vertical upward movement(s) for pickup
-  pickup1_dZ_ = config->getValue<double>("AssemblyAssembly_pickup1_dZ");
-
-  if(pickup1_dZ_ <= 0.)
-  {
-    NQLog("AssemblyAssembly", NQLog::Fatal)
-       << "invalid (non-positive) value for vertical upward movement for pickup #1 (dZ=" << pickup1_dZ_ << "), closing application";
-
-    assembly::kill_application(tr("[AssemblyAssembly]"), "Invalid (non-positive) value for vertical upward movement for pickup #1 (dZ="+QString::number(pickup1_dZ_)+"), closing application");
-  }
-
-  pickup2_dZ_ = config->getValue<double>("AssemblyAssembly_pickup2_dZ");
-
-  if(pickup2_dZ_ <= 0.)
-  {
-    NQLog("AssemblyAssembly", NQLog::Fatal)
-       << "invalid (non-positive) value for vertical upward movement for pickup #2 (dZ=" << pickup2_dZ_ << "), closing application";
-
-    assembly::kill_application(tr("[AssemblyAssembly]"), "Invalid (non-positive) value for vertical upward movement for pickup #2 (dZ="+QString::number(pickup2_dZ_)+"), closing application");
-  }
+  // absolute Z-position of motion stage for pickup of object after gluing
+  // (1: PSs to Spacers, 2: PSs+Spacers to PSp)
+  pickup1_Z_ = config->getValue<double>("AssemblyAssembly_pickup1_Z");
+  pickup2_Z_ = config->getValue<double>("AssemblyAssembly_pickup2_Z");
 }
 
 const LStepExpressMotionManager* AssemblyAssembly::motion() const
@@ -162,7 +146,7 @@ void AssemblyAssembly::GoToSensorMarkerPreAlignment_start()
 
   if(valid_params == false)
   {
-    NQLog("AssemblyAssembly", NQLog::Fatal) << "GoToSensorMarkerPreAlignment_start"
+    NQLog("AssemblyAssembly", NQLog::Critical) << "GoToSensorMarkerPreAlignment_start"
        << ": failed to update content of AssemblyParameters, no action taken";
 
     return;
@@ -416,7 +400,7 @@ void AssemblyAssembly::GoFromSensorMarkerToPickupXY_start()
 
   if(valid_params == false)
   {
-    NQLog("AssemblyAssembly", NQLog::Fatal) << "GoFromSensorMarkerToPickupXY_start"
+    NQLog("AssemblyAssembly", NQLog::Critical) << "GoFromSensorMarkerToPickupXY_start"
        << ": failed to update content of AssemblyParameters, no action taken";
 
     return;
@@ -460,7 +444,7 @@ void AssemblyAssembly::LowerPickupToolOntoPSS_start()
 
   if(valid_params == false)
   {
-    NQLog("AssemblyAssembly", NQLog::Fatal) << "LowerPickupToolOntoPSS_start"
+    NQLog("AssemblyAssembly", NQLog::Critical) << "LowerPickupToolOntoPSS_start"
        << ": failed to update content of AssemblyParameters, no action taken";
 
     return;
@@ -470,12 +454,7 @@ void AssemblyAssembly::LowerPickupToolOntoPSS_start()
   const double dy0 = 0.0;
   const double da0 = 0.0;
 
-  const double dz0 =
-    - motion_->get_position_Z()
-    + this->parameters()->get("Thickness_PSS")
-    + this->parameters()->get("Thickness_VacuumCups")
-    + this->parameters()->get("PickupToolOnRotStage_Z")
-  ;
+  const double dz0 = this->parameters()->get("FromCameraBestFocusToPickupHeight_dZ");
 
   if(use_smartMove_)
   {
@@ -521,19 +500,27 @@ void AssemblyAssembly::PickupPSS_start()
 
   if(valid_params == false)
   {
-    NQLog("AssemblyAssembly", NQLog::Fatal) << "PickupPSS_start"
+    NQLog("AssemblyAssembly", NQLog::Critical) << "PickupPSS_start"
        << ": failed to update content of AssemblyParameters, no action taken";
+
+    return;
+  }
+
+  const double dx0 = 0.0;
+  const double dy0 = 0.0;
+  const double dz0 = (pickup1_Z_ - motion_->get_position_Z());
+  const double da0 = 0.0;
+
+  if(dz0 <= 0.)
+  {
+    NQLog("AssemblyAssembly", NQLog::Critical) << "PickupPSS_start"
+       << ": invalid (non-positive) value for vertical upward movement for pickup #1 (dZ=" << dz0 << "), no action taken";
 
     return;
   }
 
   connect(this, SIGNAL(move_relative_request(double, double, double, double)), motion_, SLOT(moveRelative(double, double, double, double)));
   connect(motion_, SIGNAL(motion_finished()), this, SLOT(PickupPSS_finish()));
-
-  const double dx0 = 0.0;
-  const double dy0 = 0.0;
-  const double dz0 = pickup1_dZ_;
-  const double da0 = 0.0;
 
   NQLog("AssemblyAssembly", NQLog::Spam) << "PickupPSS_start"
      << ": emitting signal \"move_relative_request(" << dx0 << ", " << dy0 << ", " << dz0 << ", " << da0 << ")\"";
@@ -565,7 +552,7 @@ void AssemblyAssembly::GoToSpacerRefPoint_start()
 
   if(valid_params == false)
   {
-    NQLog("AssemblyAssembly", NQLog::Fatal) << "GoToSpacerRefPoint_start"
+    NQLog("AssemblyAssembly", NQLog::Critical) << "GoToSpacerRefPoint_start"
        << ": failed to update content of AssemblyParameters, no action taken";
 
     return;
@@ -609,7 +596,7 @@ void AssemblyAssembly::GoFromSpacerRefPointToSpacerGluingXYPosition_start()
 
   if(valid_params == false)
   {
-    NQLog("AssemblyAssembly", NQLog::Fatal) << "GoFromSpacerRefPointToSpacerGluingXYPosition_start"
+    NQLog("AssemblyAssembly", NQLog::Critical) << "GoFromSpacerRefPointToSpacerGluingXYPosition_start"
        << ": failed to update content of AssemblyParameters, no action taken";
 
     return;
@@ -653,7 +640,7 @@ void AssemblyAssembly::LowerPSSOntoSpacers_start()
 
   if(valid_params == false)
   {
-    NQLog("AssemblyAssembly", NQLog::Fatal) << "LowerPSSOntoSpacers_start"
+    NQLog("AssemblyAssembly", NQLog::Critical) << "LowerPSSOntoSpacers_start"
        << ": failed to update content of AssemblyParameters, no action taken";
 
     return;
@@ -664,12 +651,9 @@ void AssemblyAssembly::LowerPSSOntoSpacers_start()
   const double da0 = 0.0;
 
   const double dz0 =
-    - motion_->get_position_Z()
-    + this->parameters()->get("Thickness_VacuumCups")
+      this->parameters()->get("FromCameraBestFocusToPickupHeight_dZ")
     + this->parameters()->get("Thickness_PSS")
     + this->parameters()->get("Thickness_GlueLayer")
-    + this->parameters()->get("Thickness_Spacer") - this->parameters()->get("Height_SpacerSlots")
-    + this->parameters()->get("PickupToolOnRotStage_Z")
   ;
 
   if(use_smartMove_)
@@ -716,7 +700,7 @@ void AssemblyAssembly::ApplyPSPToPSSXYOffset_start()
 
   if(valid_params == false)
   {
-    NQLog("AssemblyAssembly", NQLog::Fatal) << "ApplyPSPToPSSXYOffset_start"
+    NQLog("AssemblyAssembly", NQLog::Critical) << "ApplyPSPToPSSXYOffset_start"
        << ": failed to update content of AssemblyParameters, no action taken";
 
     return;
@@ -760,7 +744,7 @@ void AssemblyAssembly::LowerSpacersAndPSSOntoPSP_start()
 
   if(valid_params == false)
   {
-    NQLog("AssemblyAssembly", NQLog::Fatal) << "LowerSpacersAndPSSOntoPSP_start"
+    NQLog("AssemblyAssembly", NQLog::Critical) << "LowerSpacersAndPSSOntoPSP_start"
        << ": failed to update content of AssemblyParameters, no action taken";
 
     return;
@@ -771,15 +755,11 @@ void AssemblyAssembly::LowerSpacersAndPSSOntoPSP_start()
   const double da0 = 0.0;
 
   const double dz0 =
-    - motion_->get_position_Z()
-    + this->parameters()->get("Thickness_VacuumCups")
+      this->parameters()->get("FromCameraBestFocusToPickupHeight_dZ")
     + this->parameters()->get("Thickness_PSS")
     + this->parameters()->get("Thickness_GlueLayer")
     + this->parameters()->get("Thickness_Spacer")
     + this->parameters()->get("Thickness_GlueLayer")
-    + this->parameters()->get("Thickness_PSP")
-    + this->parameters()->get("Thickness_VacuumCups")
-    + this->parameters()->get("PickupToolOnRotStage_Z")
   ;
 
   if(use_smartMove_)
@@ -826,19 +806,27 @@ void AssemblyAssembly::PickupSpacersAndPSS_start()
 
   if(valid_params == false)
   {
-    NQLog("AssemblyAssembly", NQLog::Fatal) << "PickupSpacersAndPSS_start"
+    NQLog("AssemblyAssembly", NQLog::Critical) << "PickupSpacersAndPSS_start"
        << ": failed to update content of AssemblyParameters, no action taken";
+
+    return;
+  }
+
+  const double dx0 = 0.0;
+  const double dy0 = 0.0;
+  const double dz0 = (pickup1_Z_ - motion_->get_position_Z());
+  const double da0 = 0.0;
+
+  if(dz0 <= 0.)
+  {
+    NQLog("AssemblyAssembly", NQLog::Critical) << "PickupSpacersAndPSS_start"
+       << ": invalid (non-positive) value for vertical upward movement for pickup #1 (dZ=" << dz0 << "), no action taken";
 
     return;
   }
 
   connect(this, SIGNAL(move_relative_request(double, double, double, double)), motion_, SLOT(moveRelative(double, double, double, double)));
   connect(motion_, SIGNAL(motion_finished()), this, SLOT(PickupSpacersAndPSS_finish()));
-
-  const double dx0 = 0.0;
-  const double dy0 = 0.0;
-  const double dz0 = pickup1_dZ_;
-  const double da0 = 0.0;
 
   NQLog("AssemblyAssembly", NQLog::Spam) << "PickupSpacersAndPSS_start"
      << ": emitting signal \"move_relative_request(" << dx0 << ", " << dy0 << ", " << dz0 << ", " << da0 << ")\"";
@@ -870,19 +858,27 @@ void AssemblyAssembly::LiftUpPickupTool_start()
 
   if(valid_params == false)
   {
-    NQLog("AssemblyAssembly", NQLog::Fatal) << "LiftUpPickupTool_start"
+    NQLog("AssemblyAssembly", NQLog::Critical) << "LiftUpPickupTool_start"
        << ": failed to update content of AssemblyParameters, no action taken";
+
+    return;
+  }
+
+  const double dx0 = 0.0;
+  const double dy0 = 0.0;
+  const double dz0 = (pickup2_Z_ - motion_->get_position_Z());
+  const double da0 = 0.0;
+
+  if(dz0 <= 0.)
+  {
+    NQLog("AssemblyAssembly", NQLog::Critical) << "LiftUpPickupTool_start"
+       << ": invalid (non-positive) value for vertical upward movement for pickup #2 (dZ=" << dz0 << "), no action taken";
 
     return;
   }
 
   connect(this, SIGNAL(move_relative_request(double, double, double, double)), motion_, SLOT(moveRelative(double, double, double, double)));
   connect(motion_, SIGNAL(motion_finished()), this, SLOT(LiftUpPickupTool_finish()));
-
-  const double dx0 = 0.0;
-  const double dy0 = 0.0;
-  const double dz0 = pickup2_dZ_;
-  const double da0 = 0.0;
 
   NQLog("AssemblyAssembly", NQLog::Spam) << "LiftUpPickupTool_start"
      << ": emitting signal \"move_relative_request(" << dx0 << ", " << dy0 << ", " << dz0 << ", " << da0 << ")\"";
@@ -914,19 +910,27 @@ void AssemblyAssembly::PickupPSPAndPSS_start()
 
   if(valid_params == false)
   {
-    NQLog("AssemblyAssembly", NQLog::Fatal) << "PickupPSPAndPSS_start"
+    NQLog("AssemblyAssembly", NQLog::Critical) << "PickupPSPAndPSS_start"
        << ": failed to update content of AssemblyParameters, no action taken";
+
+    return;
+  }
+
+  const double dx0 = 0.0;
+  const double dy0 = 0.0;
+  const double dz0 = (pickup1_Z_ - motion_->get_position_Z());
+  const double da0 = 0.0;
+
+  if(dz0 <= 0.)
+  {
+    NQLog("AssemblyAssembly", NQLog::Critical) << "PickupPSPAndPSS_start"
+       << ": invalid (non-positive) value for vertical upward movement for pickup #1 (dZ=" << dz0 << "), no action taken";
 
     return;
   }
 
   connect(this, SIGNAL(move_relative_request(double, double, double, double)), motion_, SLOT(moveRelative(double, double, double, double)));
   connect(motion_, SIGNAL(motion_finished()), this, SLOT(PickupPSPAndPSS_finish()));
-
-  const double dx0 = 0.0;
-  const double dy0 = 0.0;
-  const double dz0 = pickup1_dZ_;
-  const double da0 = 0.0;
 
   NQLog("AssemblyAssembly", NQLog::Spam) << "PickupPSPAndPSS_start"
      << ": emitting signal \"move_relative_request(" << dx0 << ", " << dy0 << ", " << dz0 << ", " << da0 << ")\"";
@@ -958,7 +962,7 @@ void AssemblyAssembly::GoToBaseplateRefPoint_start()
 
   if(valid_params == false)
   {
-    NQLog("AssemblyAssembly", NQLog::Fatal) << "GoToBaseplateRefPoint_start"
+    NQLog("AssemblyAssembly", NQLog::Critical) << "GoToBaseplateRefPoint_start"
        << ": failed to update content of AssemblyParameters, no action taken";
 
     return;
@@ -1002,7 +1006,7 @@ void AssemblyAssembly::GoFromBaseplateRefPointToBaseplateGluingXYPosition_start(
 
   if(valid_params == false)
   {
-    NQLog("AssemblyAssembly", NQLog::Fatal) << "GoFromBaseplateRefPointToBaseplateGluingXYPosition_start"
+    NQLog("AssemblyAssembly", NQLog::Critical) << "GoFromBaseplateRefPointToBaseplateGluingXYPosition_start"
        << ": failed to update content of AssemblyParameters, no action taken";
 
     return;
@@ -1046,7 +1050,7 @@ void AssemblyAssembly::LowerSensorAssemblyOntoBaseplate_start()
 
   if(valid_params == false)
   {
-    NQLog("AssemblyAssembly", NQLog::Fatal) << "LowerSensorAssemblyOntoBaseplate_start"
+    NQLog("AssemblyAssembly", NQLog::Critical) << "LowerSensorAssemblyOntoBaseplate_start"
        << ": failed to update content of AssemblyParameters, no action taken";
 
     return;
@@ -1057,17 +1061,13 @@ void AssemblyAssembly::LowerSensorAssemblyOntoBaseplate_start()
   const double da0 = 0.0;
 
   const double dz0 =
-    - motion_->get_position_Z()
-    + this->parameters()->get("Thickness_VacuumCups")
+      this->parameters()->get("FromCameraBestFocusToPickupHeight_dZ")
     + this->parameters()->get("Thickness_PSS")
     + this->parameters()->get("Thickness_GlueLayer")
     + this->parameters()->get("Thickness_Spacer")
     + this->parameters()->get("Thickness_GlueLayer")
     + this->parameters()->get("Thickness_PSP")
     + this->parameters()->get("Thickness_GlueLayer")
-    + this->parameters()->get("Thickness_Baseplate")
-    + this->parameters()->get("Thickness_VacuumCups")
-    + this->parameters()->get("PickupToolOnRotStage_Z")
   ;
 
   if(use_smartMove_)

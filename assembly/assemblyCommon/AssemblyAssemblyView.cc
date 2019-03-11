@@ -208,13 +208,13 @@ AssemblyAssemblyView::AssemblyAssemblyView(const AssemblyAssembly* const assembl
   QVBoxLayout* PSSToSpacers_lay = new QVBoxLayout;
   wid_PSSToSpacers_->setLayout(PSSToSpacers_lay);
 
-  // step: Place Spacers on Assembly Platform
+  // step: Dispense Glue on Spacers
   {
     ++assembly_step_N_;
 
     AssemblyAssemblyTextWidget* tmp_wid = new AssemblyAssemblyTextWidget;
     tmp_wid->label()->setText(QString::number(assembly_step_N_));
-    tmp_wid->text() ->setText("Place Spacers on Assembly Platform");
+    tmp_wid->text() ->setText("Dispense Glue on Spacers and Place them on Assembly Platform");
     PSSToSpacers_lay->addWidget(tmp_wid);
   }
   // ----------
@@ -255,17 +255,6 @@ AssemblyAssemblyView::AssemblyAssemblyView(const AssemblyAssembly* const assembl
     PSSToSpacers_lay->addWidget(tmp_wid);
 
     tmp_wid->connect_action(assembly, SLOT(GoFromSpacerRefPointToSpacerGluingXYPosition_start()), SIGNAL(GoFromSpacerRefPointToSpacerGluingXYPosition_finished()));
-  }
-  // ----------
-
-  // step: Dispense Fast-Curing Glue on Spacers
-  {
-    ++assembly_step_N_;
-
-    AssemblyAssemblyTextWidget* tmp_wid = new AssemblyAssemblyTextWidget;
-    tmp_wid->label()->setText(QString::number(assembly_step_N_));
-    tmp_wid->text() ->setText("Dispense Fast-Curing Glue on Spacers");
-    PSSToSpacers_lay->addWidget(tmp_wid);
   }
   // ----------
 
