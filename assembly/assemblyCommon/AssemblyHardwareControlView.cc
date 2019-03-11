@@ -138,7 +138,7 @@ void AssemblyHardwareControlView::stateChanged(const State& newState)
 void AssemblyHardwareControlView::enableMotionTools(const bool enable)
 {
   if(w_lStep_        ){ w_lStep_        ->enableMotionTools(enable); }
-  if(w_lStepJoystick_){ w_lStepJoystick_->enableMotionTools(enable); }
+//  if(w_lStepJoystick_){ w_lStepJoystick_->enableMotionTools(enable); }
   if(w_lStepPosition_){ w_lStepPosition_->enableMotionTools(enable); }
 
   if(w_move_){ w_move_->setEnabled(enable); }

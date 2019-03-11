@@ -23,6 +23,7 @@ LStepExpressWidget::LStepExpressWidget(LStepExpressModel* model, QWidget* parent
 
  , model_(model)
 
+ , mot_settings_box_(nullptr)
  , lstepCheckBox_   (nullptr)
  , joystickCheckBox_(nullptr)
  , posCtrlCheckBox_ (nullptr)
@@ -55,13 +56,12 @@ LStepExpressWidget::LStepExpressWidget(LStepExpressModel* model, QWidget* parent
     layout->addLayout(hlayout);
 
     // Motion Stage Settings
-    QGroupBox* mot_settings_box = new QGroupBox(tr("Motion Stage Settings"));
-    hlayout->addWidget(mot_settings_box);
-
-    mot_settings_box->setStyleSheet("QGroupBox { font-weight: bold; } ");
+    mot_settings_box_ = new QGroupBox(tr("Motion Stage Settings"));
+    mot_settings_box_->setStyleSheet("QGroupBox { font-weight: bold; } ");
+    hlayout->addWidget(mot_settings_box_);
 
     QGridLayout* mot_settings_grid = new QGridLayout;
-    mot_settings_box->setLayout(mot_settings_grid);
+    mot_settings_box_->setLayout(mot_settings_grid);
 
     lstepCheckBox_ = new QCheckBox("Enable Controller");
     mot_settings_grid->addWidget(lstepCheckBox_, 0, 0);
@@ -462,6 +462,8 @@ void LStepExpressWidget::restart()
 void LStepExpressWidget::lockMotionSettings(const bool disable)
 {
   motionSettings_locked_ = disable;
+
+  mot_settings_box_->setDisabled(disable);
 
   if(lstepCheckBox_   ){ lstepCheckBox_   ->setDisabled(disable); }
   if(joystickCheckBox_){ joystickCheckBox_->setDisabled(disable); }

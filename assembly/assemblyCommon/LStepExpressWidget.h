@@ -15,14 +15,13 @@
 
 #include <LStepExpressModel.h>
 
+#include <QWidget>
+#include <QGroupBox>
 #include <QCheckBox>
 #include <QFormLayout>
 #include <QDoubleSpinBox>
 #include <QGridLayout>
-#include <QLCDNumber>
 #include <QVBoxLayout>
-#include <QComboBox>
-#include <QWidget>
 #include <QLabel>
 #include <QPushButton>
 #include <QTimer>
@@ -42,6 +41,7 @@ class LStepExpressWidget : public QWidget
 
   LStepExpressModel* model_;
 
+  QGroupBox* mot_settings_box_;
   QCheckBox* lstepCheckBox_;
   QCheckBox* joystickCheckBox_;
   QCheckBox* posCtrlCheckBox_;
