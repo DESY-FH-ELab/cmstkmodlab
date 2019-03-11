@@ -277,7 +277,7 @@ AssemblyAssemblyView::AssemblyAssemblyView(const AssemblyAssembly* const assembl
 
     AssemblyAssemblyTextWidget* tmp_wid = new AssemblyAssemblyTextWidget;
     tmp_wid->label()->setText(QString::number(assembly_step_N_));
-    tmp_wid->text() ->setText("Wait for Glue To Cure (approx. 10 min)");
+    tmp_wid->text() ->setText("Wait for Glue To Cure (approx. 15 min)");
     PSSToSpacers_lay->addWidget(tmp_wid);
   }
   // ----------
@@ -440,7 +440,7 @@ AssemblyAssemblyView::AssemblyAssemblyView(const AssemblyAssembly* const assembl
 
     AssemblyAssemblyTextWidget* tmp_wid = new AssemblyAssemblyTextWidget;
     tmp_wid->label()->setText(QString::number(assembly_step_N_));
-    tmp_wid->text() ->setText("Wait for Glue To Cure (approx. 10 min)");
+    tmp_wid->text() ->setText("Wait for Glue To Cure (approx. 15 min)");
     PSSToPSP_lay->addWidget(tmp_wid);
   }
   // ----------
@@ -482,13 +482,13 @@ AssemblyAssemblyView::AssemblyAssemblyView(const AssemblyAssembly* const assembl
   QVBoxLayout* PSToBasep_lay = new QVBoxLayout;
   wid_PSToBasep_->setLayout(PSToBasep_lay);
 
-  // step: Place Baseplate on Assembly Platform
+  // step: Dispense Glue on Baseplate and Place it on Assembly Platform
   {
     ++assembly_step_N_;
 
     AssemblyAssemblyTextWidget* tmp_wid = new AssemblyAssemblyTextWidget;
     tmp_wid->label()->setText(QString::number(assembly_step_N_));
-    tmp_wid->text() ->setText("Place Baseplate on Assembly Platform");
+    tmp_wid->text() ->setText("Dispense Glue on Baseplate and Place it on Assembly Platform");
     PSToBasep_lay->addWidget(tmp_wid);
   }
   // ----------
@@ -516,17 +516,6 @@ AssemblyAssemblyView::AssemblyAssemblyView(const AssemblyAssembly* const assembl
     PSToBasep_lay->addWidget(tmp_wid);
 
     tmp_wid->connect_action(assembly, SLOT(GoToBaseplateRefPoint_start()), SIGNAL(GoToBaseplateRefPoint_finished()));
-  }
-  // ----------
-
-  // step: Dispense Fast-Curing Glue on Baseplate
-  {
-    ++assembly_step_N_;
-
-    AssemblyAssemblyTextWidget* tmp_wid = new AssemblyAssemblyTextWidget;
-    tmp_wid->label()->setText(QString::number(assembly_step_N_));
-    tmp_wid->text() ->setText("Dispense Fast-Curing Glue on Baseplate");
-    PSToBasep_lay->addWidget(tmp_wid);
   }
   // ----------
 
@@ -562,7 +551,7 @@ AssemblyAssemblyView::AssemblyAssemblyView(const AssemblyAssembly* const assembl
 
     AssemblyAssemblyTextWidget* tmp_wid = new AssemblyAssemblyTextWidget;
     tmp_wid->label()->setText(QString::number(assembly_step_N_));
-    tmp_wid->text() ->setText("Wait for Glue To Cure (approx. 10 min)");
+    tmp_wid->text() ->setText("Wait for Glue To Cure (approx. 15 min)");
     PSToBasep_lay->addWidget(tmp_wid);
   }
   // ----------
