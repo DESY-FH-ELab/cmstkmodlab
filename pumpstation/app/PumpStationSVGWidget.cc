@@ -17,20 +17,17 @@
 PumpStationSVGWidget::PumpStationSVGWidget(QWidget* parent)
   : QSvgWidget(parent)
 {
-  button0_0_ = QRect(550,  44, 110, 32);
-  button0_1_ = QRect(620, 168,  90, 90);
+  button0_0_ = QRect( 45,  32, 110, 48);
+  button0_1_ = QRect(125, 110,  80, 80);
 
-  button1_0_ = QRect(550,   4, 110, 32);
-  button1_1_ = QRect(620, 280,  90, 90);
+  button1_0_ = QRect( 45, 232, 110, 48);
+  button1_1_ = QRect(125, 310,  80, 80);
 
-  button2_0_ = QRect(220,  10,  70, 50);
-  button2_1_ = QRect(496, 155,  50, 80);
+  button2_0_ = QRect(287,  98,  50, 70);
 
-  button3_0_ = QRect(130,  10,  70, 50);
-  button3_1_ = QRect(496, 270,  50, 80);
+  button3_0_ = QRect(287, 300,  50, 70);
 
-  button4_0_ = QRect( 40,  10,  70, 50);
-  button4_1_ = QRect( 91, 215,  50, 80);
+  button4_0_ = QRect(654, 198,  50, 70);
 
   setSizePolicy(QSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding));
   sizePolicy().setHeightForWidth(true);
@@ -38,12 +35,12 @@ PumpStationSVGWidget::PumpStationSVGWidget(QWidget* parent)
 
 int PumpStationSVGWidget::heightForWidth(int w) const
 {
-  return w*370/800;
+  return w*400/800;
 }
 
 int PumpStationSVGWidget::widthForHeight(int h) const
 {
-  return h*800/370;
+  return h*400/370;
 }
 
 void PumpStationSVGWidget::resizeEvent(QResizeEvent *event)
@@ -81,19 +78,10 @@ void PumpStationSVGWidget::mouseDoubleClickEvent(QMouseEvent *event)
   } else if (button2_0_.contains(x, y)) {
     emit buttonDoubleClicked(2);
 
-  } else if (button2_1_.contains(x, y)) {
-    emit buttonDoubleClicked(2);
-
   } else if (button3_0_.contains(x, y)) {
     emit buttonDoubleClicked(3);
 
-  } else if (button3_1_.contains(x, y)) {
-    emit buttonDoubleClicked(3);
-
   } else if (button4_0_.contains(x, y)) {
-    emit buttonDoubleClicked(4);
-
-  } else if (button4_1_.contains(x, y)) {
     emit buttonDoubleClicked(4);
 
   }

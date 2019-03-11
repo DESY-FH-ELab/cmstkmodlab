@@ -275,9 +275,9 @@ void PumpStationHTTPModel::setRequestReceived(QNetworkReply* reply)
 
 void PumpStationHTTPModel::toggleFinished()
 {
-  timer_->start();
-
   updateInformation();
+
+  timer_->start();
 
   emit enableWidgets();
 }

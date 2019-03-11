@@ -7,4 +7,6 @@ Makefile
 moc_*
 CMSPumpStationControl.app
 CMSPumpStationControl
-
+debug
+release
+*_resource.rc
