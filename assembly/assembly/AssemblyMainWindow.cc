@@ -208,7 +208,7 @@ AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QStr
 
     connect(aligner_view_->button_emergencyStop(), SIGNAL(clicked()), this, SLOT(disconnect_objectAligner()));
     connect(aligner_view_->button_emergencyStop(), SIGNAL(clicked()), motion_manager_, SLOT(emergency_stop()));
-    connect(aligner_view_->button_emergencyStop(), SIGNAL(clicked()), zfocus_finder_ , SLOT(emergency_stop()));
+    connect(aligner_view_->button_emergencyStop(), SIGNAL(clicked()), zfocus_finder_ , SLOT(emergencyStop()));
 
     connect(motion_manager_->model(), SIGNAL(emergencyStop_request()), motion_manager_, SLOT(clear_motion_queue()));
 
