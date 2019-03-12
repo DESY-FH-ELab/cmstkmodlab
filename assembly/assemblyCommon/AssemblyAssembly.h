@@ -54,6 +54,11 @@ class AssemblyAssembly : public QObject
 
   bool use_smartMove_;
 
+  double PSPToPSSPosition_X_;
+  double PSPToPSSPosition_Y_;
+  double PSPToPSSPosition_Z_;
+  double PSPToPSSPosition_A_;
+
  public slots:
 
   void use_smartMove(const int);
@@ -86,8 +91,17 @@ class AssemblyAssembly : public QObject
   void ApplyPSPToPSSXYOffset_start();
   void ApplyPSPToPSSXYOffset_finish();
 
-  void LiftUpPickupTool_start();
-  void LiftUpPickupTool_finish();
+  void RegisterPSPToPSSPosition_start();
+  void RegisterPSPToPSSPosition_finish();
+
+  void GoFromPSPToPSSPosToGluingStageRefPoint_start();
+  void GoFromPSPToPSSPosToGluingStageRefPoint_finish();
+
+  void LowerSpacersAndPSSOntoGluingStage_start();
+  void LowerSpacersAndPSSOntoGluingStage_finish();
+
+  void ReturnToPSPToPSSPosition_start();
+  void ReturnToPSPToPSSPosition_finish();
 
   void LowerSpacersAndPSSOntoPSP_start();
   void LowerSpacersAndPSSOntoPSP_finish();
@@ -103,6 +117,9 @@ class AssemblyAssembly : public QObject
 
   void LowerSensorAssemblyOntoBaseplate_start();
   void LowerSensorAssemblyOntoBaseplate_finish();
+
+  void LiftUpPickupTool_start();
+  void LiftUpPickupTool_finish();
   // ---------
 
   // vacuum
@@ -148,6 +165,15 @@ class AssemblyAssembly : public QObject
   void PickupSpacersAndPSS_finished();
 
   void ApplyPSPToPSSXYOffset_finished();
+
+  void RegisterPSPToPSSPosition_finished();
+  void PSPToPSSPosition_registered();
+
+  void GoFromPSPToPSSPosToGluingStageRefPoint_finished();
+
+  void ReturnToPSPToPSSPosition_finished();
+
+  void LowerSpacersAndPSSOntoGluingStage_finished();
 
   void LiftUpPickupTool_finished();
 
