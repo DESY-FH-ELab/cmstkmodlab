@@ -142,7 +142,7 @@ void AssemblySmartMotionManager::move_relative(const double dx0, const double dy
 {
   if(smartMove_steps_dZ_.size() == 0)
   {
-    NQLog("AssemblySmartMotionManager", NQLog::Fatal) << "move_relative"
+    NQLog("AssemblySmartMotionManager", NQLog::Critical) << "move_relative"
        << ": smartMove mode enabled, but empty list of dZ steps, no action taken";
 
     motions_.clear();
@@ -240,7 +240,7 @@ QQueue<LStepExpressMotion> AssemblySmartMotionManager::smartMotions_relative(con
 
   smart_motions_N = 0;
 
-  const bool move_xya = ((dx != 0.) && (dy != 0.) && (dz != 0.));
+  const bool move_xya = ((dx != 0.) || (dy != 0.) || (da != 0.));
 
   if(dz > 0.)
   {
