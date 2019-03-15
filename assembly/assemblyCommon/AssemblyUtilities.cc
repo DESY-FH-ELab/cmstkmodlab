@@ -10,6 +10,7 @@
 //                                                                             //
 /////////////////////////////////////////////////////////////////////////////////
 
+#include <nqlogger.h>
 #include <AssemblyUtilities.h>
 
 #if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
@@ -109,18 +110,23 @@ void assembly::cv_imwrite(const std::string& path_str, const cv::Mat& img)
 
 void assembly::cv_imwrite(const QString& path_qstr, const cv::Mat& img)
 {
-  cv::Mat img_1;
-
-  if(path_qstr.endsWith(".png", Qt::CaseInsensitive) && (img.channels() > 1))
+  if(path_qstr.endsWith(".png", Qt::CaseInsensitive) == false)
   {
+    NQLog("AssemblyUtilities", NQLog::Warning) << "cv_imwrite(" << path_qstr << ", cv::Mat)"
+       << ": target output path does not end with \".png\", file not saved to disk";
+
+    return;
+  }
+  else if(img.channels() > 1)
+  {
+    cv::Mat img_1;
     cv::cvtColor(img, img_1, CV_BGR2RGB);
+    cv::imwrite(path_qstr.toUtf8().constData(), img_1);
   }
   else
   {
-    img_1 = img.clone();
+    cv::imwrite(path_qstr.toUtf8().constData(), img);
   }
-
-  cv::imwrite(path_qstr.toUtf8().constData(), img_1);
 
   return;
 }

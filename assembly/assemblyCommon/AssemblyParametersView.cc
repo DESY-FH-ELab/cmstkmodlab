@@ -230,6 +230,17 @@ AssemblyParametersView::AssemblyParametersView(QWidget* parent)
   posi_lay->addWidget(new QLabel(tr("Z"))    , 4, 5, Qt::AlignRight);
   posi_lay->addWidget(this->get(tmp_tag+"_Z"), 4, 6, Qt::AlignRight);
 
+  // position: z-position where camera is focused on Gluing Stage surface
+  tmp_tag = "CamerFocusOnGluingStage";
+  tmp_des = "Camera Focused on Gluing Stage Surface :";
+
+  map_lineEdit_[tmp_tag+"_Z"] = new QLineEdit(tr(""));
+
+  posi_lay->addWidget(new QLabel(tmp_des)    , 5, 0, Qt::AlignLeft);
+
+  posi_lay->addWidget(new QLabel(tr("Z"))    , 5, 5, Qt::AlignRight);
+  posi_lay->addWidget(this->get(tmp_tag+"_Z"), 5, 6, Qt::AlignRight);
+
   //// ---------------------
 
   //// DISTANCES -----------
@@ -311,16 +322,31 @@ AssemblyParametersView::AssemblyParametersView(QWidget* parent)
   dist_lay->addWidget(new QLabel(tr("dY"))    , 4, 3, Qt::AlignRight);
   dist_lay->addWidget(this->get(tmp_tag+"_dY"), 4, 4, Qt::AlignRight);
 
-//  // distance: from best-focus z-position to pickup z-position
-//  tmp_tag = "FromCameraBestFocusToPickupHeight";
-//  tmp_des = "From Best-Focus Height to Pickup Height :";
-//
-//  map_lineEdit_[tmp_tag+"_dZ"] = new QLineEdit(tr(""));
-//
-//  dist_lay->addWidget(new QLabel(tmp_des)     , 5, 0, Qt::AlignLeft);
-//
-//  dist_lay->addWidget(new QLabel(tr("dZ"))    , 5, 5, Qt::AlignRight);
-//  dist_lay->addWidget(this->get(tmp_tag+"_dZ"), 5, 6, Qt::AlignRight);
+  // distance: from Baseplate Ref-Point to PS-s Ref-Point relative to Baseplate
+  tmp_tag = "FromPSPToPSSPosToGluingStage";
+  tmp_des = "From PSS-To-PSP Position to PSS-To-GluingStage Position :";
+
+  map_lineEdit_[tmp_tag+"_dX"] = new QLineEdit(tr(""));
+  map_lineEdit_[tmp_tag+"_dY"] = new QLineEdit(tr(""));
+
+  dist_lay->addWidget(new QLabel(tmp_des)     , 5, 0, Qt::AlignLeft);
+
+  dist_lay->addWidget(new QLabel(tr("dX"))    , 5, 1, Qt::AlignRight);
+  dist_lay->addWidget(this->get(tmp_tag+"_dX"), 5, 2, Qt::AlignRight);
+
+  dist_lay->addWidget(new QLabel(tr("dY"))    , 5, 3, Qt::AlignRight);
+  dist_lay->addWidget(this->get(tmp_tag+"_dY"), 5, 4, Qt::AlignRight);
+
+  // distance: from best-focus z-position to pickup z-position
+  tmp_tag = "FromCameraBestFocusToPickupHeight";
+  tmp_des = "From Best-Focus Height to Pickup Height :";
+
+  map_lineEdit_[tmp_tag+"_dZ"] = new QLineEdit(tr(""));
+
+  dist_lay->addWidget(new QLabel(tmp_des)     , 6, 0, Qt::AlignLeft);
+
+  dist_lay->addWidget(new QLabel(tr("dZ"))    , 6, 5, Qt::AlignRight);
+  dist_lay->addWidget(this->get(tmp_tag+"_dZ"), 6, 6, Qt::AlignRight);
 
   //// ---------------------
 

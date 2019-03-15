@@ -39,22 +39,17 @@ LStepExpressMeasurement::LStepExpressMeasurement(LStepExpressModel* model, LStep
     currentIndex_ = -1;
     tableSize_ = 0;
 
-    connect(model_, SIGNAL(emergencyStopSignal()),
-	this, SLOT(stopMeasurement()));
-    
-    connect(model_, SIGNAL(motionFinished()),
-	this, SLOT(takeMeasurement()));
-    
-    connect(this, SIGNAL(nextScanStep()),
-	this, SLOT(doNextScanStep()));
+    connect(model_, SIGNAL(emergencyStop_request()), this, SLOT(stopMeasurement()));
 
-    connect(laserModel_, SIGNAL(deviceStateChanged(State)),
-            this,SLOT(setLaserEnabled(State)));
+    connect(model_, SIGNAL(motionFinished()), this, SLOT(takeMeasurement()));
+
+    connect(this, SIGNAL(nextScanStep()), this, SLOT(doNextScanStep()));
+
+    connect(laserModel_, SIGNAL(deviceStateChanged(State)), this, SLOT(setLaserEnabled(State)));
 
     generateCirclePositions();
-
 }
-    
+
 LStepExpressMeasurement::~LStepExpressMeasurement()
 {
 }

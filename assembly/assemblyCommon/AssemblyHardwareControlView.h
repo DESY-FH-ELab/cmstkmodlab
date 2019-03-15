@@ -56,8 +56,8 @@ class AssemblyHardwareControlView : public QWidget
 
   void stateChanged(const State&);
 
-  void  enableMotionTools(const bool enable=true);
-  void disableMotionTools();
+  void  enableMotionTools(const bool  enable=true);
+  void disableMotionTools(const bool disable=true);
 };
 
 #endif // ASSEMBLYHARDWARECONTROLVIEW_H

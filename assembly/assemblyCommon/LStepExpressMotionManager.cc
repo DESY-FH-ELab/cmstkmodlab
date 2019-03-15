@@ -36,6 +36,8 @@ LStepExpressMotionManager::LStepExpressMotionManager(LStepExpressModel* model, Q
     assembly::kill_application("[LStepExpressMotionManager]", "Invalid (NULL) pointer to LStepExpressModel object, closing application");
   }
 
+  connect(this, SIGNAL(emergencyStop_request()), this, SLOT(emergency_stop()));
+
   this->connect_model();
 }
 
@@ -317,7 +319,17 @@ double LStepExpressMotionManager::get_position(const int axis) const
   {
     ++tries;
 
-    if(tries > 5)
+    if(tries > 10)
+    {
+      NQLog("LStepExpressMotionManager", NQLog::Warning) << "get_position(" << axis << ")"
+         << ": after try #" << tries << ", call for LStepExpressMotionManager::emergency_stop()";
+
+      NQLog("LStepExpressMotionManager", NQLog::Spam) << "get_position(" << axis << ")"
+         << ": emitting signal \"emergencyStop_request\"";
+
+      emit emergencyStop_request();
+    }
+    else if(tries > 5)
     {
       if(model()->isUpdating())
       {

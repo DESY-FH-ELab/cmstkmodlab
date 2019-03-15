@@ -23,6 +23,7 @@ LStepExpressWidget::LStepExpressWidget(LStepExpressModel* model, QWidget* parent
 
  , model_(model)
 
+ , mot_settings_box_(nullptr)
  , lstepCheckBox_   (nullptr)
  , joystickCheckBox_(nullptr)
  , posCtrlCheckBox_ (nullptr)
@@ -31,8 +32,8 @@ LStepExpressWidget::LStepExpressWidget(LStepExpressModel* model, QWidget* parent
  , buttonCalibrate_(nullptr)
  , buttonEmergencyStop_(nullptr)
  , buttonClearQueue_(nullptr)
- , buttonErrorQuit_(nullptr)
  , buttonRestart_(nullptr)
+ , buttonErrorQuit_(nullptr)
 
  , axisWidget_X_(nullptr)
  , axisWidget_Y_(nullptr)
@@ -55,13 +56,12 @@ LStepExpressWidget::LStepExpressWidget(LStepExpressModel* model, QWidget* parent
     layout->addLayout(hlayout);
 
     // Motion Stage Settings
-    QGroupBox* mot_settings_box = new QGroupBox(tr("Motion Stage Settings"));
-    hlayout->addWidget(mot_settings_box);
-
-    mot_settings_box->setStyleSheet("QGroupBox { font-weight: bold; } ");
+    mot_settings_box_ = new QGroupBox(tr("Motion Stage Settings"));
+    mot_settings_box_->setStyleSheet("QGroupBox { font-weight: bold; } ");
+    hlayout->addWidget(mot_settings_box_);
 
     QGridLayout* mot_settings_grid = new QGridLayout;
-    mot_settings_box->setLayout(mot_settings_grid);
+    mot_settings_box_->setLayout(mot_settings_grid);
 
     lstepCheckBox_ = new QCheckBox("Enable Controller");
     mot_settings_grid->addWidget(lstepCheckBox_, 0, 0);
@@ -69,30 +69,30 @@ LStepExpressWidget::LStepExpressWidget(LStepExpressModel* model, QWidget* parent
     posCtrlCheckBox_ = new QCheckBox("Enable Position Controller");
     mot_settings_grid->addWidget(posCtrlCheckBox_, 0, 1);
 
-    buttonRestart_ = new QPushButton("Restart LStep");
-    mot_settings_grid->addWidget(buttonRestart_, 1, 0);
-
-    buttonErrorQuit_ = new QPushButton("Error Quit");
-    mot_settings_grid->addWidget(buttonErrorQuit_, 1, 1);
-
     joystickCheckBox_ = new QCheckBox("Enable Joystick");
     mot_settings_grid->addWidget(joystickCheckBox_, 0, 2);
 
     // Motion Stage Basic Commands (e.g. Calibrate)
-    QGridLayout* mot_basicmoves_grid = new QGridLayout;
-    hlayout->addLayout(mot_basicmoves_grid);
+    QGridLayout* mot_basicfunc_grid = new QGridLayout;
+    hlayout->addLayout(mot_basicfunc_grid);
 
     buttonCalibrate_ = new QPushButton("Calibrate");
-    mot_basicmoves_grid->addWidget(buttonCalibrate_, 0, 0);
+    mot_basicfunc_grid->addWidget(buttonCalibrate_, 0, 0);
 
     buttonOrigin_ = new QPushButton("Origin");
-    mot_basicmoves_grid->addWidget(buttonOrigin_, 1, 0);
+    mot_basicfunc_grid->addWidget(buttonOrigin_, 1, 0);
+
+    buttonRestart_ = new QPushButton("Restart Motion Stage");
+    mot_basicfunc_grid->addWidget(buttonRestart_, 2, 0);
 
     buttonEmergencyStop_ = new QPushButton("Emergency Stop");
-    mot_basicmoves_grid->addWidget(buttonEmergencyStop_, 0, 1);
+    mot_basicfunc_grid->addWidget(buttonEmergencyStop_, 0, 1);
 
     buttonClearQueue_ = new QPushButton("Clear Motion Queue");
-    mot_basicmoves_grid->addWidget(buttonClearQueue_, 1, 1);
+    mot_basicfunc_grid->addWidget(buttonClearQueue_, 1, 1);
+
+    buttonErrorQuit_ = new QPushButton("Error Quit");
+    mot_basicfunc_grid->addWidget(buttonErrorQuit_, 2, 1);
 
     // AXIS
     axisControlWidget_ = new QWidget(this);
@@ -126,8 +126,8 @@ LStepExpressWidget::LStepExpressWidget(LStepExpressModel* model, QWidget* parent
     connect(buttonCalibrate_    , SIGNAL(clicked()), model_, SLOT(calibrate()));
     connect(buttonEmergencyStop_, SIGNAL(clicked()), model_, SLOT(emergencyStop()));
     connect(buttonClearQueue_   , SIGNAL(clicked()), this  , SIGNAL(clearQueue_request()));
-    connect(buttonErrorQuit_    , SIGNAL(clicked()), model_, SLOT(errorQuit()));
     connect(buttonRestart_      , SIGNAL(clicked()), this  , SLOT(restart()));
+    connect(buttonErrorQuit_    , SIGNAL(clicked()), model_, SLOT(errorQuit()));
 
     this->lstepStateChanged(model_->getDeviceState());
 
@@ -143,8 +143,8 @@ LStepExpressWidget::~LStepExpressWidget()
     if(buttonCalibrate_    ){ delete buttonCalibrate_    ; buttonCalibrate_     = nullptr; }
     if(buttonEmergencyStop_){ delete buttonEmergencyStop_; buttonEmergencyStop_ = nullptr; }
     if(buttonClearQueue_   ){ delete buttonClearQueue_   ; buttonClearQueue_    = nullptr; }
-    if(buttonErrorQuit_    ){ delete buttonErrorQuit_    ; buttonErrorQuit_     = nullptr; }
     if(buttonRestart_      ){ delete buttonRestart_      ; buttonRestart_       = nullptr; }
+    if(buttonErrorQuit_    ){ delete buttonErrorQuit_    ; buttonErrorQuit_     = nullptr; }
 
     NQLog("LStepExpressWidget", NQLog::Debug) << "destructed";
 }
@@ -166,8 +166,8 @@ void LStepExpressWidget::lstepStateChanged(State newState)
     buttonCalibrate_    ->setEnabled(newState == READY);
     buttonEmergencyStop_->setEnabled(newState == READY);
     buttonClearQueue_   ->setEnabled(newState == READY);
-    buttonErrorQuit_    ->setEnabled(newState == READY);
     buttonRestart_      ->setEnabled(newState == READY);
+    buttonErrorQuit_    ->setEnabled(newState == READY);
 
     axisControlWidget_  ->setEnabled(newState == READY);
 }
@@ -190,8 +190,8 @@ void LStepExpressWidget::controlStateChanged(bool enabled)
       buttonCalibrate_    ->setEnabled(false);
       buttonEmergencyStop_->setEnabled(false);
       buttonClearQueue_   ->setEnabled(false);
-      buttonErrorQuit_    ->setEnabled(false);
       buttonRestart_      ->setEnabled(false);
+      buttonErrorQuit_    ->setEnabled(false);
 
       axisControlWidget_  ->setEnabled(false);
     }
@@ -463,11 +463,11 @@ void LStepExpressWidget::lockMotionSettings(const bool disable)
 {
   motionSettings_locked_ = disable;
 
+  mot_settings_box_->setDisabled(disable);
+
   if(lstepCheckBox_   ){ lstepCheckBox_   ->setDisabled(disable); }
   if(joystickCheckBox_){ joystickCheckBox_->setDisabled(disable); }
   if(posCtrlCheckBox_ ){ posCtrlCheckBox_ ->setDisabled(disable); }
-  if(buttonErrorQuit_ ){ buttonErrorQuit_ ->setDisabled(disable); }
-  if(buttonRestart_   ){ buttonRestart_   ->setDisabled(disable); }
 
   if(axisWidget_X_){ axisWidget_X_->lockMotionSettings(disable); }
   if(axisWidget_Y_){ axisWidget_Y_->lockMotionSettings(disable); }
@@ -482,17 +482,19 @@ void LStepExpressWidget::unlockMotionSettings()
 
 void LStepExpressWidget::enableMotionTools(const bool enable)
 {
-  if(buttonOrigin_   ){ buttonOrigin_   ->setEnabled(enable); }
-  if(buttonCalibrate_){ buttonCalibrate_->setEnabled(enable); }
-
   if(motionSettings_locked_ == false)
   {
     if(lstepCheckBox_   ){ lstepCheckBox_   ->setEnabled(enable); }
     if(joystickCheckBox_){ joystickCheckBox_->setEnabled(enable); }
     if(posCtrlCheckBox_ ){ posCtrlCheckBox_ ->setEnabled(enable); }
-    if(buttonErrorQuit_ ){ buttonErrorQuit_ ->setEnabled(enable); }
-    if(buttonRestart_   ){ buttonRestart_   ->setEnabled(enable); }
   }
+
+  if(buttonOrigin_       ){ buttonOrigin_       ->setEnabled(enable); }
+  if(buttonCalibrate_    ){ buttonCalibrate_    ->setEnabled(enable); }
+  if(buttonEmergencyStop_){ buttonEmergencyStop_->setEnabled(enable); }
+  if(buttonClearQueue_   ){ buttonClearQueue_   ->setEnabled(enable); }
+  if(buttonRestart_      ){ buttonRestart_      ->setEnabled(enable); }
+  if(buttonErrorQuit_    ){ buttonErrorQuit_    ->setEnabled(enable); }
 
   if(axisWidget_X_){ axisWidget_X_->enableMotionTools(enable); }
   if(axisWidget_Y_){ axisWidget_Y_->enableMotionTools(enable); }
@@ -500,9 +502,9 @@ void LStepExpressWidget::enableMotionTools(const bool enable)
   if(axisWidget_A_){ axisWidget_A_->enableMotionTools(enable); }
 }
 
-void LStepExpressWidget::disableMotionTools()
+void LStepExpressWidget::disableMotionTools(const bool disable)
 {
-  this->enableMotionTools(false);
+  this->enableMotionTools(!disable);
 }
 // ============================================================================
 
