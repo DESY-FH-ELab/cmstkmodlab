@@ -156,7 +156,7 @@ AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QStr
     // ---------------------------------------------------------
 
     // IMAGE-THRESHOLDING VIEW ---------------------------------
-    const QString tabname_ImageThresholding("Thresholding");
+    const QString tabname_ImageThresholding("Convert Image to B/W");
 
     thresholder_ = new AssemblyThresholder();
 
