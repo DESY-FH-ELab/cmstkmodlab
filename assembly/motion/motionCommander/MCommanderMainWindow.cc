@@ -1,64 +1,67 @@
-#include <stdlib.h>
+/////////////////////////////////////////////////////////////////////////////////
+//                                                                             //
+//               Copyright (C) 2011-2017 - The DESY CMS Group                  //
+//                           All rights reserved                               //
+//                                                                             //
+//      The CMStkModLab source code is licensed under the GNU GPL v3.0.        //
+//      You have the right to modify and/or redistribute this source code      //
+//      under the terms specified in the license, which may be found online    //
+//      at http://www.gnu.org/licenses or at License.txt.                      //
+//                                                                             //
+/////////////////////////////////////////////////////////////////////////////////
+
+#include <MCommanderMainWindow.h>
+#include <ApplicationConfig.h>
+#include <nqlogger.h>
 
 #include <string>
-#include <iostream>
 
 #include <QGroupBox>
 #include <QFileDialog>
 #include <QApplication>
 #include <QPalette>
 
-#include <nqlogger.h>
-#include <ApplicationConfig.h>
-
-#include "MCommanderMainWindow.h"
-
 MCommanderMainWindow::MCommanderMainWindow(QWidget *parent)
 : QMainWindow(parent)
 {
   ApplicationConfig* config = ApplicationConfig::instance();
-  
-  connect(QApplication::instance(), SIGNAL(aboutToQuit()),
-          this, SLOT(quit()));
-  
-  lStepExpressModel_ = new LStepExpressModel(config->getValue<std::string>("LStepExpressDevice").c_str(),
-                                             1000, 100);
+
+  connect(QApplication::instance(), SIGNAL(aboutToQuit()), this, SLOT(quit()));
+
+  lStepExpressModel_ = new LStepExpressModel(config->getValue<std::string>("LStepExpressDevice").c_str(), 1000, 100);
   //lStepExpressSettings_ = new LStepExpressSettings(lStepExpressModel_);
   motionManager_ = new LStepExpressMotionManager(lStepExpressModel_);
-  motionThread_ = new LStepExpressMotionThread(this);
-  motionThread_->start();
+  motionThread_ = new LStepExpressMotionThread(motionManager_, this);
   //lStepExpressSettings_->moveToThread(motionThread_);
-  motionManager_->myMoveToThread(motionThread_);
-  
+  motionThread_->start();
+
   laserModel_ = new LaserModel(config->getValue<std::string>("KeyenceDevice").c_str());
   laserThread_ = new LaserThread(this);
   laserModel_->moveToThread(laserThread_);
   laserThread_->start();
-  
+
   tabWidget_ = new QTabWidget(this);
- 
+
   QWidget * widget;
-  
+
   widget= new QWidget(tabWidget_);
-  
+
   tabWidget_->addTab(widget, "Motion Manager");
-  
-  // widget = new QWidget(tabWidget_);
-  
+
   QHBoxLayout * layout = new QHBoxLayout(widget);
   widget->setLayout(layout);
-  
-  QVBoxLayout * layoutv = new QVBoxLayout(widget);
+
+  QVBoxLayout * layoutv1 = new QVBoxLayout();
   
   LStepExpressWidget *lStepExpressWidget = new LStepExpressWidget(lStepExpressModel_, widget);
-  layoutv->addWidget(lStepExpressWidget);
+  layoutv1->addWidget(lStepExpressWidget);
   
   LStepExpressJoystickWidget *lStepJoystick = new LStepExpressJoystickWidget(lStepExpressModel_, widget);
-  layoutv->addWidget(lStepJoystick);
+  layoutv1->addWidget(lStepJoystick);
   
-  layout->addLayout(layoutv);
+  layout->addLayout(layoutv1);
 
-  QVBoxLayout * layoutv2 = new QVBoxLayout(widget);
+  QVBoxLayout * layoutv2 = new QVBoxLayout();
   
   //LStepExpressStatusWindow *lStepStatusWindow = new LStepExpressStatusWindow(lStepExpressModel_, widget);
   //layoutv2->addWidget(lStepStatusWindow);

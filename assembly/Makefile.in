@@ -15,3 +15,5 @@ clean:
 	@rm -f *~
 	@for dir in $(subdirs); do (cd $$dir; make clean); done
 	@rm -rf lib
+
+anew: clean all

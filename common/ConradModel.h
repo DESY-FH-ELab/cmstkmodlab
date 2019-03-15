@@ -1,3 +1,15 @@
+/////////////////////////////////////////////////////////////////////////////////
+//                                                                             //
+//               Copyright (C) 2011-2017 - The DESY CMS Group                  //
+//                           All rights reserved                               //
+//                                                                             //
+//      The CMStkModLab source code is licensed under the GNU GPL v3.0.        //
+//      You have the right to modify and/or redistribute this source code      //
+//      under the terms specified in the license, which may be found online    //
+//      at http://www.gnu.org/licenses or at License.txt.                      //
+//                                                                             //
+/////////////////////////////////////////////////////////////////////////////////
+
 #ifndef CONRADMODEL_H
 #define CONRADMODEL_H
 
@@ -42,11 +54,12 @@ public:
 
   // TODO Add initialisation parameters
   explicit ConradModel(QObject *parent = 0);
+  explicit ConradModel(const char* port,
+                       QObject *parent = 0);
   virtual ~ConradModel();
 
   // Methods for power control and status querying of the devices connected to
   // the switch
-  void setSwitchEnabled( int device, bool enabled );
   const State& getSwitchState( int device ) const;
 
 public slots:
@@ -56,8 +69,12 @@ public slots:
   void enableSwitch( int device );
   void disableSwitch( int device );
   void setControlsEnabled(bool enabled);
+  void setSwitchEnabled(int device, bool enabled);
 
 protected:
+
+  QString port_;
+  
   void initialize();
   void close();
 
@@ -76,7 +93,6 @@ signals:
   // Classname identifiers are needed because Qt can't resolve internal enums
   void deviceStateChanged(State newState);
   void switchStateChanged(int device, State newState);
-  void defoMessage(const QString & text);
   void controlStateChanged(bool);
 };
 

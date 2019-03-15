@@ -27,7 +27,13 @@ equals(NOUEYE,"X0") {
 }
 
 CONFIG += link_pkgconfig
-CONFIG += qtestlib
+greaterThan(QT_MAJOR_VERSION, 4) {
+  CONFIG += testlib
+} else {
+  CONFIG += qtestlib
+}
+
+
 PKGCONFIG += opencv
 
 QMAKE = @qmake@

@@ -77,23 +77,46 @@ greaterThan(QT_MAJOR_VERSION, 4) {
 # Input
 HEADERS += AssemblyVUEyeCamera.h \
            AssemblyVUEyeModel.h \
-           AssemblyUEyeCameraThread.h \
            AssemblyUEyeWidget.h \
            AssemblyUEyeCameraWidget.h \
+           AssemblyUEyeCameraThread.h \
            AssemblyUEyeView.h \
            AssemblyUEyeSnapShooter.h \
-           AssemblyModuleAssembler.h \
-           AssemblyMarkerFinderThread.h \
-           AssemblyVMarkerFinder.h \
-           AssemblySensorMarkerFinder.h \
-           AssemblySensorMarkerFinderWidget.h \
+           AssemblyZFocusFinder.h \
+           AssemblyImageController.h \
+           AssemblyImageView.h \
+           AssemblyThresholder.h \
+           AssemblyThresholderView.h \
+           AssemblyObjectFinderManual.h \
+           AssemblyObjectFinderPatRec.h \
+           AssemblyObjectFinderPatRecWidget.h \
+           AssemblyObjectFinderPatRecView.h \
+           AssemblyObjectFinderPatRecThread.h \
+           AssemblyObjectAligner.h \
+           AssemblyObjectAlignerView.h \
+           AssemblyAssembly.h \
+           AssemblyAssemblyView.h \
+           AssemblyMultiPickupTester.h \
+           AssemblyMultiPickupTesterWidget.h \
+           AssemblyPositionsRegistryWidget.h \
+           AssemblyToolboxView.h \
+           AssemblySmartMotionManager.h \
+           AssemblyParameters.h \
+           AssemblyParametersView.h \
+           AssemblyVacuumWidget.h \
+           AssemblyMotionWidgets.h \
+           AssemblyHardwareControlView.h \
+           AssemblyLogFileController.h \
+           AssemblyLogFileView.h \
+           ConradManager.h \
            LStepExpressModel.h \
-           LStepExpressSettings.h \
            LStepExpressMotion.h \
            LStepExpressMotionManager.h \
+           LStepExpressMotionView.h \
            LStepExpressMotionThread.h \
            LStepExpressWidget.h \
            LStepExpressJoystickWidget.h \
+           LStepExpressSettings.h \
            LStepExpressSettingsWidget.h \
            LStepExpressMeasurement.h \
            LStepExpressMeasurementWidget.h \
@@ -101,9 +124,10 @@ HEADERS += AssemblyVUEyeCamera.h \
            LStepExpressPositionWidget.h \
            LStepExpressStatusWindow.h \
            LaserModel.h \
-           LaserWidget.h \
            LaserThread.h \
-           LaserControlsWidget.h 
+           LaserWidget.h \
+           LaserControlsWidget.h \
+           AssemblyUtilities.h
 
 equals(NOUEYE,"X0") {
 HEADERS += AssemblyUEyeCamera.h \
@@ -115,23 +139,46 @@ HEADERS += AssemblyUEyeFakeCamera.h \
 
 SOURCES += AssemblyVUEyeCamera.cc \
            AssemblyVUEyeModel.cc \
-           AssemblyUEyeCameraThread.cc \
            AssemblyUEyeWidget.cc \
            AssemblyUEyeCameraWidget.cc \
+           AssemblyUEyeCameraThread.cc \
            AssemblyUEyeView.cc \
            AssemblyUEyeSnapShooter.cc \
-           AssemblyModuleAssembler.cc \
-           AssemblyMarkerFinderThread.cc \
-           AssemblyVMarkerFinder.cc \
-           AssemblySensorMarkerFinder.cc \
-           AssemblySensorMarkerFinderWidget.cc \
+           AssemblyZFocusFinder.cc \
+           AssemblyImageController.cc \
+           AssemblyImageView.cc \
+           AssemblyThresholder.cc \
+           AssemblyThresholderView.cc \
+           AssemblyObjectFinderManual.cc \
+           AssemblyObjectFinderPatRec.cc \
+           AssemblyObjectFinderPatRecWidget.cc \
+           AssemblyObjectFinderPatRecView.cc \
+           AssemblyObjectFinderPatRecThread.cc \
+           AssemblyObjectAligner.cc \
+           AssemblyObjectAlignerView.cc \
+           AssemblyAssembly.cc \
+           AssemblyAssemblyView.cc \
+           AssemblyMultiPickupTester.cc \
+           AssemblyMultiPickupTesterWidget.cc \
+           AssemblyPositionsRegistryWidget.cc \
+           AssemblyToolboxView.cc \
+           AssemblySmartMotionManager.cc \
+           AssemblyParameters.cc \
+           AssemblyParametersView.cc \
+           AssemblyVacuumWidget.cc \
+           AssemblyMotionWidgets.cc \
+           AssemblyHardwareControlView.cc \
+           AssemblyLogFileController.cc \
+           AssemblyLogFileView.cc \
+           ConradManager.cc \
            LStepExpressModel.cc \
-           LStepExpressSettings.cc \
            LStepExpressMotion.cc \
            LStepExpressMotionManager.cc \
+           LStepExpressMotionView.cc \
            LStepExpressMotionThread.cc \
            LStepExpressWidget.cc \
            LStepExpressJoystickWidget.cc \
+           LStepExpressSettings.cc \
            LStepExpressSettingsWidget.cc \
            LStepExpressMeasurement.cc \
            LStepExpressMeasurementWidget.cc \
@@ -140,8 +187,9 @@ SOURCES += AssemblyVUEyeCamera.cc \
            LStepExpressStatusWindow.cc \
            LaserModel.cc \
            LaserWidget.cc \
-           LaserThread.cc \ 
-           LaserControlsWidget.cc
+           LaserThread.cc \
+           LaserControlsWidget.cc \
+           AssemblyUtilities.cc
 
 equals(NOUEYE,"X0") {
 SOURCES += AssemblyUEyeCamera.cc \

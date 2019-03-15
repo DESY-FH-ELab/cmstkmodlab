@@ -1,5 +1,6 @@
 plasmacleaner.pro
 plasmacleaner.pro.user
+.qmake.cache
 .qmake.stash
 Makefile
 *.d

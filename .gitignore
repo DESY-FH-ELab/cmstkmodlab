@@ -1,6 +1,8 @@
+reconfigure
 Makefile
 config.status
 tkmodlabenv.csh
 tkmodlabenv.sh
 .cproject
 .project
+share/assembly/*png

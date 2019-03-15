@@ -1,3 +1,15 @@
+/////////////////////////////////////////////////////////////////////////////////
+//                                                                             //
+//               Copyright (C) 2011-2017 - The DESY CMS Group                  //
+//                           All rights reserved                               //
+//                                                                             //
+//      The CMStkModLab source code is licensed under the GNU GPL v3.0.        //
+//      You have the right to modify and/or redistribute this source code      //
+//      under the terms specified in the license, which may be found online    //
+//      at http://www.gnu.org/licenses or at License.txt.                      //
+//                                                                             //
+/////////////////////////////////////////////////////////////////////////////////
+
 #ifndef __NANOTECSMCI36_H
 #define __NANOTECSMCI36_H
 
@@ -38,14 +50,17 @@ class NanotecSMCI36 : public VNanotecSMCI36
   void SetStepMode(int mode);
   int GetStepMode() const;
 
+  void SetDriveAddress(int address);
+  int GetDriveAddress();
+
   void SetMotorID(int ID);
   int GetMotorID() const;
 
   void SetErrorCorrectionMode(int mode);
   int GetErrorCorrectionMode() const;
 
-  void SetEncoderDirection(int direction);
-  int GetEncoderDirection() const;
+  void SetEncoderDirection(bool direction);
+  bool GetEncoderDirection() const;
 
   void SetSwingOutTime(int time);
   int GetSwingOutTime() const;
@@ -121,6 +136,8 @@ class NanotecSMCI36 : public VNanotecSMCI36
 
   NanotecComHandler* comHandler_;
   bool isDeviceAvailable_;
+
+  int driveAddress_;
 };
 
 #endif

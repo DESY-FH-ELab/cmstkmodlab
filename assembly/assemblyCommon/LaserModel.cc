@@ -1,11 +1,22 @@
+/////////////////////////////////////////////////////////////////////////////////
+//                                                                             //
+//               Copyright (C) 2011-2017 - The DESY CMS Group                  //
+//                           All rights reserved                               //
+//                                                                             //
+//      The CMStkModLab source code is licensed under the GNU GPL v3.0.        //
+//      You have the right to modify and/or redistribute this source code      //
+//      under the terms specified in the license, which may be found online    //
+//      at http://www.gnu.org/licenses or at License.txt.                      //
+//                                                                             //
+/////////////////////////////////////////////////////////////////////////////////
+
 #include <QApplication>
 
 #include <nqlogger.h>
 
 #include "LaserModel.h"
 
-LaserModel::LaserModel(const char* port,
-	           QObject * /*parent*/)
+LaserModel::LaserModel(const char* port, QObject*)
     : QObject(),
       AbstractDeviceModel<Keyence_t>(),
       Laser_PORT(port)
@@ -21,7 +32,7 @@ LaserModel::LaserModel(const char* port,
 
 LaserModel::~LaserModel()
 {
-  if(timer_) {delete timer_; timer_ = NULL;}
+  if(timer_) {delete timer_; timer_ = nullptr;}
 }
 
 void LaserModel::setLaserHead(int out)
@@ -102,7 +113,7 @@ void LaserModel::initialize()
 
     renewController(Laser_PORT);
 
-    bool enabled = (controller_ != NULL) && (controller_->DeviceAvailable());
+    bool enabled = (controller_ != nullptr) && (controller_->DeviceAvailable());
 
     if ( enabled ) {
         setLaserHead(2);
@@ -113,7 +124,7 @@ void LaserModel::initialize()
     else {
         setDeviceState( OFF );
         delete controller_;
-        controller_ = NULL;
+        controller_ = nullptr;
     }
 }
 

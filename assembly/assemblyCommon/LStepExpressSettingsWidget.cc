@@ -1,3 +1,15 @@
+/////////////////////////////////////////////////////////////////////////////////
+//                                                                             //
+//               Copyright (C) 2011-2017 - The DESY CMS Group                  //
+//                           All rights reserved                               //
+//                                                                             //
+//      The CMStkModLab source code is licensed under the GNU GPL v3.0.        //
+//      You have the right to modify and/or redistribute this source code      //
+//      under the terms specified in the license, which may be found online    //
+//      at http://www.gnu.org/licenses or at License.txt.                      //
+//                                                                             //
+/////////////////////////////////////////////////////////////////////////////////
+
 #include <QFileDialog>
 #include <QMessageBox>
 
@@ -14,21 +26,16 @@ LStepExpressSettingsComboBox::LStepExpressSettingsComboBox(LStepExpressSettings*
       settings_(settings),
       key_(key)
 {
-    connect(this, SIGNAL(valueChanged(double)),
-            this, SLOT(valueChanged(double)));
+    connect(this, SIGNAL(valueChanged(QString, double)), settings_, SLOT(valueChanged(QString, double)));
 
-    connect(this, SIGNAL(valueChanged(QString, double)),
-            settings_, SLOT(valueChanged(QString, double)));
-
-    connect(settings_, SIGNAL(settingChanged(QString, QVariant)),
-            this, SLOT(settingChanged(QString, QVariant)));
+    connect(settings_, SIGNAL(settingChanged(QString, QVariant)), this, SLOT(settingChanged(QString, QVariant)));
 }
 
 void LStepExpressSettingsComboBox::settingChanged(QString key, QVariant value)
 {
-    if (key!=key_) return;
+    if(key != key_){ return; }
 
-    //    NQLog("LStepExpressSettingsComboBox", NQLog::Spam) << "settingChanged(" << key.toStdString() << ")"    ;
+//    NQLog("LStepExpressSettingsComboBox", NQLog::Spam) << "settingChanged(" << key.toStdString() << ")"    ;
 
     setCurrentIndex(value.toInt());
 }
@@ -254,7 +261,8 @@ LStepExpressSettingsWidget::LStepExpressSettingsWidget(LStepExpressSettings* set
     mainToolBox_->addItem(extraToolBox_, "Extra");
 
     QWidget * buttons = new QWidget(this);
-    QHBoxLayout* hlayout = new QHBoxLayout(this);
+
+    QHBoxLayout* hlayout = new QHBoxLayout();
     hlayout->setContentsMargins(4, 4, 4, 4);
     buttons->setLayout(hlayout);
 

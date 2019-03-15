@@ -1,55 +1,125 @@
+/////////////////////////////////////////////////////////////////////////////////
+//                                                                             //
+//               Copyright (C) 2011-2017 - The DESY CMS Group                  //
+//                           All rights reserved                               //
+//                                                                             //
+//      The CMStkModLab source code is licensed under the GNU GPL v3.0.        //
+//      You have the right to modify and/or redistribute this source code      //
+//      under the terms specified in the license, which may be found online    //
+//      at http://www.gnu.org/licenses or at License.txt.                      //
+//                                                                             //
+/////////////////////////////////////////////////////////////////////////////////
+
 #include "VNanotecSMCI36.h"
 
 VNanotecSMCI36::VNanotecSMCI36( const ioport_t ioPort )
 {
-  stepModeNames_.push_back(std::pair<int,std::string>(smci01MicroStepsPerFullStep, "1 uStep per Full Step"));
-  stepModeNames_.push_back(std::pair<int,std::string>(smci02MicroStepsPerFullStep, "2 uStep per Full Step"));
-  stepModeNames_.push_back(std::pair<int,std::string>(smci04MicroStepsPerFullStep, "4 uStep per Full Step"));
-  stepModeNames_.push_back(std::pair<int,std::string>(smci05MicroStepsPerFullStep, "5 uStep per Full Step"));
-  stepModeNames_.push_back(std::pair<int,std::string>(smci08MicroStepsPerFullStep, "8 uStep per Full Step"));
-  stepModeNames_.push_back(std::pair<int,std::string>(smci10MicroStepsPerFullStep, "10 uStep per Full Step"));
-  stepModeNames_.push_back(std::pair<int,std::string>(smci16MicroStepsPerFullStep, "16 uStep per Full Step"));
-  stepModeNames_.push_back(std::pair<int,std::string>(smci32MicroStepsPerFullStep, "32 uStep per Full Step"));
-  stepModeNames_.push_back(std::pair<int,std::string>(smci64MicroStepsPerFullStep, "64 uStep per Full Step"));
-  // stepModeNames_.push_back(std::pair<int,std::string>(smciFeedRateMode, "Feed Rate Mode"));
-  // stepModeNames_.push_back(std::pair<int,std::string>(smciAdaptiveStepMode, "Adaptive Step Mode"));
+  stepModeNames_[smci01MicroStepsPerFullStep] = "1 uStep per Full Step";
+  stepModeNames_[smci02MicroStepsPerFullStep] = "2 uSteps per Full Step";
+  stepModeNames_[smci04MicroStepsPerFullStep] = "4 uSteps per Full Step";
+  stepModeNames_[smci05MicroStepsPerFullStep] = "5 uSteps per Full Step";
+  stepModeNames_[smci08MicroStepsPerFullStep] = "8 uSteps per Full Step";
+  stepModeNames_[smci10MicroStepsPerFullStep] = "10 uSteps per Full Step";
+  stepModeNames_[smci16MicroStepsPerFullStep] = "16 uSteps per Full Step";
+  stepModeNames_[smci32MicroStepsPerFullStep] = "32 uSteps per Full Step";
+  stepModeNames_[smci64MicroStepsPerFullStep] = "64 uSteps per Full Step";
+  // stepModeNames_[smciFeedRateMode] = "Feed Rate Mode";
+  // stepModeNames_[smciAdaptiveStepMode] = "Adaptive Step Mode";
 
-  errorCorrectionModeNames_.push_back(std::pair<int,std::string>(smciErrCorrectionOff, "Off"));
-  errorCorrectionModeNames_.push_back(std::pair<int,std::string>(smciErrCorrectionAfterTravel, "Correction After Travel"));
-  errorCorrectionModeNames_.push_back(std::pair<int,std::string>(smciErrCorrectionDuringTravel, "Correction During Travel"));
+  errorCorrectionModeNames_[smciErrCorrectionOff] =          "Off";
+  errorCorrectionModeNames_[smciErrCorrectionAfterTravel] =  "Correction After Travel";
+  errorCorrectionModeNames_[smciErrCorrectionDuringTravel] = "Correction During Travel";
 
-  inputPinFunctionNames_.push_back(std::pair<int,std::string>(smciIPinUserDefined, "User Defined"));
-  inputPinFunctionNames_.push_back(std::pair<int,std::string>(smciIStartRecordErrorReset, "Start Record / Error Reset"));
-  inputPinFunctionNames_.push_back(std::pair<int,std::string>(smciIRecordSelect0, "Record Selection Bit 0"));
-  inputPinFunctionNames_.push_back(std::pair<int,std::string>(smciIRecordSelect1, "Record Selection Bit 1"));
-  inputPinFunctionNames_.push_back(std::pair<int,std::string>(smciIRecordSelect2, "Record Selection Bit 2"));
-  inputPinFunctionNames_.push_back(std::pair<int,std::string>(smciIRecordSelect3, "Record Selection Bit 3"));
-  inputPinFunctionNames_.push_back(std::pair<int,std::string>(smciIRecordSelect4, "Record Selection Bit 4"));
-  inputPinFunctionNames_.push_back(std::pair<int,std::string>(smciIExternalReferenceSwitch, "External Reference Switch"));
-  inputPinFunctionNames_.push_back(std::pair<int,std::string>(smciITrigger, "Trigger"));
-  inputPinFunctionNames_.push_back(std::pair<int,std::string>(smciIDirection, "Direction"));
-  inputPinFunctionNames_.push_back(std::pair<int,std::string>(smciIEnable, "Enable"));
-  inputPinFunctionNames_.push_back(std::pair<int,std::string>(smciIClock, "Clock"));
-  inputPinFunctionNames_.push_back(std::pair<int,std::string>(smciIClockDirectionMode1, "Clock Direction Mode 1"));
-  inputPinFunctionNames_.push_back(std::pair<int,std::string>(smciIClockDirectionMode2, "Clock Direction Mode 2"));
+  inputPinFunctionNames_[smciIPinUserDefined] =          "User Defined";
+  inputPinFunctionNames_[smciIStartRecordErrorReset] =   "Start Record / Error Reset";
+  inputPinFunctionNames_[smciIRecordSelect0] =           "Record Selection Bit 0";
+  inputPinFunctionNames_[smciIRecordSelect1] =           "Record Selection Bit 1";
+  inputPinFunctionNames_[smciIRecordSelect2] =           "Record Selection Bit 2";
+  inputPinFunctionNames_[smciIRecordSelect3] =           "Record Selection Bit 3";
+  inputPinFunctionNames_[smciIRecordSelect4] =           "Record Selection Bit 4";
+  inputPinFunctionNames_[smciIExternalReferenceSwitch] = "External Reference Switch";
+  inputPinFunctionNames_[smciITrigger] =                 "Trigger";
+  inputPinFunctionNames_[smciIDirection] =               "Direction";
+  inputPinFunctionNames_[smciIEnable] =                  "Enable";
+  inputPinFunctionNames_[smciIClock] =                   "Clock";
+  inputPinFunctionNames_[smciIClockDirectionMode1] =     "Clock Direction Mode 1";
+  inputPinFunctionNames_[smciIClockDirectionMode2] =     "Clock Direction Mode 2";
 
-  outputPinFunctionNames_.push_back(std::pair<int,std::string>(smciOPinUserDefined, "User Defined"));
-  outputPinFunctionNames_.push_back(std::pair<int,std::string>(smciOReady, "Ready"));
-  outputPinFunctionNames_.push_back(std::pair<int,std::string>(smciORunning, "Running"));
-  outputPinFunctionNames_.push_back(std::pair<int,std::string>(smciOError, "Error"));
+  outputPinFunctionNames_[smciOPinUserDefined] = "User Defined";
+  outputPinFunctionNames_[smciOReady] =          "Ready";
+  outputPinFunctionNames_[smciORunning] =        "Running";
+  outputPinFunctionNames_[smciOError] =          "Error";
 
-  rampModeNames_.push_back(std::pair<int,std::string>(smciTrapezoidalRamp, "Trapezoidal Ramp"));
-  rampModeNames_.push_back(std::pair<int,std::string>(smciSinusRamp, "Sinus Ramp"));
-  rampModeNames_.push_back(std::pair<int,std::string>(smciJerkFreeRamp, "Jerk-Free Ramp"));
+  rampModeNames_[smciTrapezoidalRamp] = "Trapezoidal Ramp";
+  rampModeNames_[smciSinusRamp] =       "Sinus Ramp";
+  rampModeNames_[smciJerkFreeRamp] =    "Jerk-Free Ramp";
 
-  positioningModeNames_.push_back(std::pair<int,std::string>(smciRelativePositioning, "Relative Positioning"));
-  positioningModeNames_.push_back(std::pair<int,std::string>(smciAbsolutePositioning, "Absolute Positioning"));
-  positioningModeNames_.push_back(std::pair<int,std::string>(smciExternalRefRun, "External Reference Run"));
+  positioningModeNames_[smciRelativePositioning] = "Relative Positioning";
+  positioningModeNames_[smciAbsolutePositioning] = "Absolute Positioning";
+  positioningModeNames_[smciExternalRefRun] =      "External Reference Run";
+
+  minFrequencyLimits_ = std::pair<int,int>(1, 160000);
+  maxFrequencyLimits_ = std::pair<int,int>(1, 1000000);
+  maxFrequency2Limits_ = std::pair<int,int>(1, 1000000);
 }
 
 VNanotecSMCI36::~VNanotecSMCI36()
 {
 
+}
+
+const std::string VNanotecSMCI36::GetStepModeName(int mode) const
+{
+  auto search = stepModeNames_.find(GetStepMode());
+  if (search != stepModeNames_.end()) {
+    return search->second;
+  }
+  return "unknown";
+}
+
+const std::string VNanotecSMCI36::GetErrorCorrectionModeName(int mode) const
+{
+  auto search = errorCorrectionModeNames_.find(GetErrorCorrectionMode());
+  if (search != errorCorrectionModeNames_.end()) {
+    return search->second;
+  }
+  return "unknown";
+}
+
+const std::string VNanotecSMCI36::GetInputPinFunctionName(int function) const
+{
+  auto search = inputPinFunctionNames_.find(function);
+  if (search != inputPinFunctionNames_.end()) {
+    return search->second;
+  }
+  return "unknown";
+}
+
+const std::string VNanotecSMCI36::GetOutputPinFunctionName(int function) const
+{
+  auto search = outputPinFunctionNames_.find(function);
+  if (search != outputPinFunctionNames_.end()) {
+    return search->second;
+  }
+  return "unknown";
+}
+
+const std::string VNanotecSMCI36::GetRampModeName(int mode) const
+{
+  auto search = rampModeNames_.find(mode);
+  if (search != rampModeNames_.end()) {
+    return search->second;
+  }
+  return "unknown";
+}
+
+const std::string VNanotecSMCI36::GetPositioningModeName(int mode) const
+{
+  auto search = positioningModeNames_.find(mode);
+  if (search != positioningModeNames_.end()) {
+    return search->second;
+  }
+  return "unknown";
 }
 
 unsigned int VNanotecSMCI36::GetInputBitForPin(int pin) const

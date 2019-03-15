@@ -3,7 +3,10 @@ NOTHERMAL     = @nothermal@
 NODEFO        = @nodefo@
 NOASSEMBLY    = @noassembly@
 NOPLASMA      = @noplasma@
+NOPUMPSTATION = @nopumpstation@
+
 USEFAKEDEVICES= @usefakedevices@
+
 QMAKE         = @qmake@
 
 subdirs	      = devices python external tools common common_test
@@ -18,6 +21,9 @@ subdirs      += assembly
 endif
 ifeq ($(NOPLASMA),0)
 subdirs      += plasma
+endif
+ifeq ($(NOPUMPSTATION),0)
+subdirs      += pumpstation
 endif
 
 qtsubdirs     = common common_test
@@ -35,12 +41,20 @@ endif
 ifeq ($(NOPLASMA),0)
 qtsubdirs    += plasma
 endif
+ifeq ($(NOPUMPSTATION),0)
+qtsubdirs    += pumpstation/daemon pumpstation/controller pumpstation/app pumpstation/analysis
+endif
+
+installsubdirs = devices external common pumpstation
 
 all: qt
 	@for dir in $(subdirs); do (cd $$dir; make); done
 
 qt:
 	@for dir in $(qtsubdirs); do (cd $$dir; @qmake@); done
+
+install:
+	@for dir in $(installsubdirs); do (cd $$dir; make install); done
 
 Makefile: Makefile.in @basepath@/config.status
 	@basepath@/config.status Makefile.in
