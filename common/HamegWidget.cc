@@ -1,3 +1,15 @@
+/////////////////////////////////////////////////////////////////////////////////
+//                                                                             //
+//               Copyright (C) 2011-2017 - The DESY CMS Group                  //
+//                           All rights reserved                               //
+//                                                                             //
+//      The CMStkModLab source code is licensed under the GNU GPL v3.0.        //
+//      You have the right to modify and/or redistribute this source code      //
+//      under the terms specified in the license, which may be found online    //
+//      at http://www.gnu.org/licenses or at License.txt.                      //
+//                                                                             //
+/////////////////////////////////////////////////////////////////////////////////
+
 #include <iostream>
 
 #include <QGridLayout>
@@ -141,14 +153,14 @@ void HamegChannelWidget::updateInfo()
     }
   }
 
-  char dummy[10];
+  char dummy[30];
 
   if (!voltageSpinner_->hasFocus()) {
     float setVoltage = model_->getVoltageParameter(channel_).getValue();
     voltageSpinner_->setValue(setVoltage);
   }
   float voltage = model_->getVoltage(channel_);
-  sprintf(dummy, "%.02f", voltage);
+  snprintf(dummy, sizeof(dummy), "%.02f", voltage);
   voltageDisplay_->display(dummy);
 
   if (!currentSpinner_->hasFocus()) {
@@ -156,7 +168,7 @@ void HamegChannelWidget::updateInfo()
     currentSpinner_->setValue(setCurrent);
   }
   float current = model_->getCurrent(channel_);
-  sprintf(dummy, "%.03f", current);
+  snprintf(dummy, sizeof(dummy), "%.03f", current);
   currentDisplay_->display(dummy);
 }
 

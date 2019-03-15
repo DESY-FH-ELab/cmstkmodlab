@@ -1,49 +1,57 @@
+/////////////////////////////////////////////////////////////////////////////////
+//                                                                             //
+//               Copyright (C) 2011-2017 - The DESY CMS Group                  //
+//                           All rights reserved                               //
+//                                                                             //
+//      The CMStkModLab source code is licensed under the GNU GPL v3.0.        //
+//      You have the right to modify and/or redistribute this source code      //
+//      under the terms specified in the license, which may be found online    //
+//      at http://www.gnu.org/licenses or at License.txt.                      //
+//                                                                             //
+/////////////////////////////////////////////////////////////////////////////////
+
 #ifndef ASSEMBLYUEYEFAKECAMERA_H
 #define ASSEMBLYUEYEFAKECAMERA_H
 
-#include <map>
+#include <AssemblyVUEyeCamera.h>
+
 #include <vector>
+#include <map>
 
 #include <opencv2/opencv.hpp>
 
-#include "AssemblyVUEyeCamera.h"
-
 class AssemblyUEyeFakeCamera : public AssemblyVUEyeCamera
 {
-    Q_OBJECT
-public:
-    explicit AssemblyUEyeFakeCamera(QObject *parent);
-    ~AssemblyUEyeFakeCamera();
+ Q_OBJECT
 
-    void updateInformation();
-    void updatePixelClock();
-    void updateExposureTime();
+ public:
 
-    bool isAvailable() const { return true; }
+  explicit AssemblyUEyeFakeCamera(QObject *parent);
+  ~AssemblyUEyeFakeCamera();
 
-public slots:
+  void updateInformation();
+  void updatePixelClock();
+  void updateExposureTime();
 
-    void open();
-    void close();
+  bool isAvailable() const { return true; }
 
-    void acquireImage();
+ public slots:
 
-    void setPixelClock(unsigned int pc);
-    void setExposureTime(double et);
+  void open();
+  void close();
 
-protected slots:
+  void acquireImage();
 
-protected:
+  void setPixelClock(unsigned int pc);
+  void setExposureTime(double et);
 
-    cv::Mat image_;
-    std::vector<std::string> imageFilenames_;
-    size_t imageIndex_;
+ protected:
 
-    std::map<unsigned int, std::vector<std::string> > imageFilenamesForPixelClock_;
+  cv::Mat image_;
+  std::vector<std::string> imageFilenames_;
+  size_t imageIndex_;
 
-signals:
-
-private:
+  std::map<unsigned int, std::vector<std::string> > imageFilenamesForPixelClock_;
 };
 
 #endif // ASSEMBLYUEYEFAKECAMERA_H

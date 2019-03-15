@@ -1,3 +1,15 @@
+/////////////////////////////////////////////////////////////////////////////////
+//                                                                             //
+//               Copyright (C) 2011-2017 - The DESY CMS Group                  //
+//                           All rights reserved                               //
+//                                                                             //
+//      The CMStkModLab source code is licensed under the GNU GPL v3.0.        //
+//      You have the right to modify and/or redistribute this source code      //
+//      under the terms specified in the license, which may be found online    //
+//      at http://www.gnu.org/licenses or at License.txt.                      //
+//                                                                             //
+/////////////////////////////////////////////////////////////////////////////////
+
 #include <unistd.h>
 
 #include <cstring>
@@ -33,6 +45,7 @@ void LStepExpress::SendCommand(const std::string & command)
 #ifdef LSTEPDEBUG
   std::cout << "Device SendCommand: " << command << std::endl;
 #endif
+
   comHandler_->SendCommand(command.c_str());
 }
 
@@ -42,6 +55,11 @@ void LStepExpress::ReceiveString(std::string & buffer)
 
   char buf[1000];
   comHandler_->ReceiveString(buf);
+
+#ifdef LSTEPDEBUG
+  std::cout << "Device ReceiveString: " << buf << std::endl;
+#endif
+
   StripBuffer(buf);
   buffer = buf;
 }
@@ -73,8 +91,16 @@ void LStepExpress::DeviceInit()
     StripBuffer(buffer);
     buf = buffer;
 
-    if (buf.find("PE43 1.00.01", 0)!=0) {
+    if(buf.find("PE43 1.00.01", 0) != 0)
+    {
+      std::cout << std::endl;
+      std::cout << " LStepExpress::DeviceInit ---";
+      std::cout << " device with invalid version [Command(\"ver\") = " << buf << "]";
+      std::cout << ", device set to NON AVAILABLE";
+      std::cout << std::endl << std::endl;
+
       isDeviceAvailable_ = false;
+
       return;
     }
 
@@ -83,8 +109,17 @@ void LStepExpress::DeviceInit()
     StripBuffer(buffer);
     buf = buffer;
 
-    if (buf.find("E2015.02.27-3012", 0)!=0) {
+    if(   (buf.find("E2015.02.27-3012", 0) != 0) // pre-DAF
+       && (buf.find("E2018.02.27-2002", 0) != 0) // DAF
+    ){
+      std::cout << std::endl;
+      std::cout << " LStepExpress::DeviceInit ---";
+      std::cout << " device with invalid internal version [Command(\"iver\") = " << buf << "]";
+      std::cout << ", device set to NON AVAILABLE";
+      std::cout << std::endl << std::endl;
+
       isDeviceAvailable_ = false;
+
       return;
     }
 
@@ -96,8 +131,18 @@ void LStepExpress::DeviceInit()
     StripBuffer(buffer);
     unsigned long serialNumber = std::atol(buffer);
 
-    if (!(serialNumber==40052435759 || serialNumber==40051635759)) {
+    if(   (serialNumber != 40052435759) // pre-DAF
+       && (serialNumber != 40051635759) // pre-DAF
+       && (serialNumber != 80050323881) // DAF
+    ){
+      std::cout << std::endl;
+      std::cout << " LStepExpress::DeviceInit ---";
+      std::cout << " device with invalid serial number [Command(\"readsn\") = " << serialNumber << "]";
+      std::cout << ", device set to NON AVAILABLE";
+      std::cout << std::endl << std::endl;
+
       isDeviceAvailable_ = false;
+
       return;
     }
 
@@ -192,7 +237,7 @@ void LStepExpress::GetAxisEnabled(VLStepExpress::Axis axis, int & value)
   GetValue("axis", axis, value);
 }
 
-void LStepExpress::SetAxisEnabled(std::vector<int> & values)
+void LStepExpress::SetAxisEnabled(const std::vector<int> & values)
 {
   SetValue("!axis", values);
 }
@@ -212,7 +257,7 @@ void LStepExpress::GetAxisDirection(VLStepExpress::Axis axis, int & value)
   GetValue("axisdir", axis, value);
 }
 
-void LStepExpress::SetAxisDirection(std::vector<int> & values)
+void LStepExpress::SetAxisDirection(const std::vector<int> & values)
 {
   SetValue("!axisdir", values);
 }
@@ -232,7 +277,7 @@ void LStepExpress::GetDimension(VLStepExpress::Axis axis, int & value)
   GetValue("dim", axis, value);
 }
 
-void LStepExpress::SetDimension(std::vector<int> & values)
+void LStepExpress::SetDimension(const std::vector<int> & values)
 {
   SetValue("!dim", values);
 }
@@ -252,7 +297,7 @@ void LStepExpress::GetPowerAmplifierStatus(VLStepExpress::Axis axis, int & value
   GetValue("pa", axis, value);
 }
 
-void LStepExpress::SetPowerAmplifierStatus(std::vector<int> & values)
+void LStepExpress::SetPowerAmplifierStatus(const std::vector<int> & values)
 {
   SetValue("!pa", values);
 }
@@ -260,6 +305,106 @@ void LStepExpress::SetPowerAmplifierStatus(std::vector<int> & values)
 void LStepExpress::SetPowerAmplifierStatus(VLStepExpress::Axis axis, int value)
 {
   SetValue("!pa", axis, value);
+}
+
+void LStepExpress::GetAccelerationJerk(std::vector<double> & values)
+{
+  GetValue("acceljerk", values);
+}
+
+void LStepExpress::GetAccelerationJerk(VLStepExpress::Axis axis, double & value)
+{
+  GetValue("acceljerk", axis, value);
+}
+
+void LStepExpress::SetAccelerationJerk(const std::vector<double> & values)
+{
+  SetValue("acceljerk", values);
+}
+
+void LStepExpress::SetAccelerationJerk(VLStepExpress::Axis axis, double value)
+{
+  SetValue("acceljerk", axis, value);
+}
+
+void LStepExpress::GetDecelerationJerk(std::vector<double> & values)
+{
+  GetValue("deceljerk", values);
+}
+
+void LStepExpress::GetDecelerationJerk(VLStepExpress::Axis axis, double & value)
+{
+  GetValue("deceljerk", axis, value);
+}
+
+void LStepExpress::SetDecelerationJerk(const std::vector<double> & values)
+{
+  SetValue("deceljerk", values);
+}
+
+void LStepExpress::SetDecelerationJerk(VLStepExpress::Axis axis, double value)
+{
+  SetValue("deceljerk", axis, value);
+}
+
+void LStepExpress::GetAcceleration(std::vector<double> & values)
+{
+  GetValue("accel", values);
+}
+
+void LStepExpress::GetAcceleration(VLStepExpress::Axis axis, double & value)
+{
+  GetValue("accel", axis, value);
+}
+
+void LStepExpress::SetAcceleration(const std::vector<double> & values)
+{
+  SetValue("accel", values);
+}
+
+void LStepExpress::SetAcceleration(VLStepExpress::Axis axis, double value)
+{
+  SetValue("accel", axis, value);
+}
+
+void LStepExpress::GetDeceleration(std::vector<double> & values)
+{
+  GetValue("decel", values);
+}
+
+void LStepExpress::GetDeceleration(VLStepExpress::Axis axis, double & value)
+{
+  GetValue("decel", axis, value);
+}
+
+void LStepExpress::SetDeceleration(const std::vector<double> & values)
+{
+  SetValue("decel", values);
+}
+
+void LStepExpress::SetDeceleration(VLStepExpress::Axis axis, double value)
+{
+  SetValue("decel", axis, value);
+}
+
+void LStepExpress::GetVelocity(std::vector<double> & values)
+{
+  GetValue("vel", values);
+}
+
+void LStepExpress::GetVelocity(VLStepExpress::Axis axis, double & value)
+{
+  GetValue("vel", axis, value);
+}
+
+void LStepExpress::SetVelocity(const std::vector<double> & values)
+{
+  SetValue("vel", values);
+}
+
+void LStepExpress::SetVelocity(VLStepExpress::Axis axis, double value)
+{
+  SetValue("vel", axis, value);
 }
 
 void LStepExpress::GetPosition(std::vector<double> & values)
@@ -272,7 +417,7 @@ void LStepExpress::GetPosition(VLStepExpress::Axis axis, double & value)
   GetValue("pos", axis, value);
 }
 
-void LStepExpress::SetPosition(std::vector<double> & values)
+void LStepExpress::SetPosition(const std::vector<double> & values)
 {
   SetValue("!pos", values);
 }
@@ -282,7 +427,7 @@ void LStepExpress::SetPosition(VLStepExpress::Axis axis, double value)
   SetValue("!pos", axis, value);
 }
 
-void LStepExpress::MoveAbsolute(std::vector<double> & values)
+void LStepExpress::MoveAbsolute(const std::vector<double> & values)
 {
   SetValue("!moa", values);
 }
@@ -297,7 +442,7 @@ void LStepExpress::MoveAbsolute(VLStepExpress::Axis axis, double value)
   SetValue("!moa", axis, value);
 }
 
-void LStepExpress::MoveRelative(std::vector<double> & values)
+void LStepExpress::MoveRelative(const std::vector<double> & values)
 {
   SetValue("!mor", values);
 }
@@ -368,7 +513,7 @@ void LStepExpress::GetJoystickAxisEnabled(VLStepExpress::Axis axis, int & value)
   GetValue("joyenable", axis, value);
 }
 
-void LStepExpress::SetJoystickAxisEnabled(std::vector<int> & values)
+void LStepExpress::SetJoystickAxisEnabled(const std::vector<int> & values)
 {
   SetValue("!joyenable", values);
   usleep(100000);
@@ -391,6 +536,25 @@ int LStepExpress::GetError()
   int value;
   this->GetValue("err", value);
   return value;
+}
+
+void LStepExpress::ErrorQuit()
+{
+  this->SendCommand("!quit");
+}
+
+bool LStepExpress::GetPositionControllerEnabled()
+{
+  int posctrl_status(-1);
+  GetValue("?poscon", posctrl_status);
+
+  return bool(posctrl_status == 1);
+}
+
+void LStepExpress::SetPositionControllerEnabled(const bool enable)
+{
+  if(enable){ this->SendCommand("!poscon 1"); }
+  else      { this->SendCommand("!poscon 0"); }
 }
 
 void LStepExpress::Reset()

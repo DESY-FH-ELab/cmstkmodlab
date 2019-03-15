@@ -1,7 +1,18 @@
+/////////////////////////////////////////////////////////////////////////////////
+//                                                                             //
+//               Copyright (C) 2011-2017 - The DESY CMS Group                  //
+//                           All rights reserved                               //
+//                                                                             //
+//      The CMStkModLab source code is licensed under the GNU GPL v3.0.        //
+//      You have the right to modify and/or redistribute this source code      //
+//      under the terms specified in the license, which may be found online    //
+//      at http://www.gnu.org/licenses or at License.txt.                      //
+//                                                                             //
+/////////////////////////////////////////////////////////////////////////////////
+
 #ifndef LSTEPEXPRESSMODEL_H
 #define LSTEPEXPRESSMODEL_H
 
-#include <cmath>
 #include <vector>
 
 #include <QString>
@@ -22,18 +33,14 @@ typedef LStepExpress LStepExpress_t;
 
 class LStepExpressModel : public QObject, public AbstractDeviceModel<LStepExpress_t>
 {
-    Q_OBJECT
+ Q_OBJECT
 
-public:
+  public:
 
-    explicit LStepExpressModel(const char* port,
-                               int updateInterval = 1000,
-                               int motionUpdateInterval = 100,
-                               QObject *parent = 0);
-
+    explicit LStepExpressModel(const char* port, int updateInterval=1000, int motionUpdateInterval=100, QObject *parent=nullptr);
     ~LStepExpressModel();
 
-    bool isUpdating() { return isUpdating_; }
+    bool isUpdating() const { return isUpdating_; }
     void pauseUpdate();
     void continueUpdate();
 
@@ -41,10 +48,20 @@ public:
 
     QString getAxisName(unsigned int axis);
     QString getAxisDimensionShortName(unsigned int axis);
+    QString getAxisVelocityShortName(unsigned int axis);
+    QString getAxisAccelerationShortName(unsigned int axis);
+    QString getAxisAccelerationJerkShortName(unsigned int axis);
     QString getAxisStatusText(unsigned int axis);
     bool getAxisEnabled(unsigned int axis);
     bool getAxisState(unsigned int axis);
+    double getAccelerationJerk(unsigned int axis);
+    double getDecelerationJerk(unsigned int axis);
+    double getAcceleration(unsigned int axis);
+    double getDeceleration(unsigned int axis);
+    double getVelocity(unsigned int axis);
     double getPosition(unsigned int axis);
+
+    const std::vector<double>& getPositions() const { return position_; }
 
     bool isInMotion() const { return inMotion_; }
 
@@ -63,28 +80,56 @@ public:
     void saveConfig();
     void reset();
 
-public slots:
+    int       updateInterval() const { return       updateInterval_; }
+    int motionUpdateInterval() const { return motionUpdateInterval_; }
 
-    void setDeviceEnabled(bool enabled = true);
+  public slots:
+
+    void setDeviceEnabled(bool enabled=true);
     void setControlsEnabled(bool enabled);
     void setAxisEnabled(unsigned int axis, bool enabled);
     void setJoystickEnabled(bool enabled);
     void setJoystickAxisEnabled(unsigned int axis, bool enabled);
 
-    void moveRelative(std::vector<double> & values);
-    void moveRelative(double x, double y, double z, double a);
-    void moveRelative(unsigned int axis, double value);
-    void moveAbsolute(std::vector<double> & values);
-    void moveAbsolute(double x = 0.0, double y = 0.0, double z = 0.0, double a = 0.0);
-    void moveAbsolute(unsigned int axis, double value);
+    void setPositionControllerEnabled(const bool enable);
+
+    void setAccelerationJerk(const std::vector<double>& values);
+    void setAccelerationJerk(const double x, const double y, const double z, const double a);
+    void setAccelerationJerk(const unsigned int axis, const double value);
+
+    void setDecelerationJerk(const std::vector<double>& values);
+    void setDecelerationJerk(const double x, const double y, const double z, const double a);
+    void setDecelerationJerk(const unsigned int axis, const double value);
+
+    void setAcceleration(const std::vector<double>& values);
+    void setAcceleration(const double x, const double y, const double z, const double a);
+    void setAcceleration(const unsigned int axis, const double value);
+
+    void setDeceleration(const std::vector<double>& values);
+    void setDeceleration(const double x, const double y, const double z, const double a);
+    void setDeceleration(const unsigned int axis, const double value);
+
+    void setVelocity(const std::vector<double>& values);
+    void setVelocity(const double x, const double y, const double z, const double a);
+    void setVelocity(const unsigned int axis, const double value);
+
+    void moveRelative(const std::vector<double>& values);
+    void moveRelative(const double x, const double y, const double z, const double a);
+    void moveRelative(const unsigned int axis, const double value);
+
+    void moveAbsolute(const std::vector<double> & values);
+    void moveAbsolute(const double x=0., const double y=0., const double z=0., const double a=0.);
+    void moveAbsolute(const unsigned int axis, const double value);
+
+    void errorQuit();
+
     void calibrate();
+
     void emergencyStop();
 
-protected:
+  protected:
 
     const QString LStepExpress_PORT;
-
-  
 
     QMutex mutex_;
 
@@ -104,6 +149,11 @@ protected:
     std::vector<int> joystickAxisEnabled_;
 
     std::vector<int> axisStatus_;
+    std::vector<double> accelerationJerk_;
+    std::vector<double> decelerationJerk_;
+    std::vector<double> acceleration_;
+    std::vector<double> deceleration_;
+    std::vector<double> velocity_;
     std::vector<double> position_;
 
     bool inMotion_;
@@ -111,13 +161,13 @@ protected:
     bool isUpdating_;
     bool finishedCalibrating_;
 
-protected slots:
+  protected slots:
 
     void updateInformation();
     void updateMotionInformation();
     void updateMotionInformationFromTimer();
 
-signals:
+  signals:
 
     void deviceStateChanged(State newState);
     void informationChanged();

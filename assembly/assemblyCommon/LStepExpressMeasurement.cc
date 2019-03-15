@@ -1,16 +1,27 @@
+/////////////////////////////////////////////////////////////////////////////////
+//                                                                             //
+//               Copyright (C) 2011-2017 - The DESY CMS Group                  //
+//                           All rights reserved                               //
+//                                                                             //
+//      The CMStkModLab source code is licensed under the GNU GPL v3.0.        //
+//      You have the right to modify and/or redistribute this source code      //
+//      under the terms specified in the license, which may be found online    //
+//      at http://www.gnu.org/licenses or at License.txt.                      //
+//                                                                             //
+/////////////////////////////////////////////////////////////////////////////////
+
 #include <nqlogger.h>
 #include <QString>
 #include <QDateTime>
 #include <iostream>
 #include "LStepExpressMeasurement.h"
 
-LStepExpressMeasurement::LStepExpressMeasurement(LStepExpressModel* model, LStepExpressMotionManager* manager, LaserModel* laserModel, LStepExpressMeasurementTable* table,
-				 QObject * /*parent*/)
-    : QObject(),
-      model_(model),
-      manager_(manager),
-      laserModel_(laserModel),
-      table_(table)
+LStepExpressMeasurement::LStepExpressMeasurement(LStepExpressModel* model, LStepExpressMotionManager* manager, LaserModel* laserModel, LStepExpressMeasurementTable* table, QObject*) :
+  QObject(),
+  model_(model),
+  manager_(manager),
+  laserModel_(laserModel),
+  table_(table)
 {
     averageMeasEnabled_ = false;
     isLaserEnabled_ = false;

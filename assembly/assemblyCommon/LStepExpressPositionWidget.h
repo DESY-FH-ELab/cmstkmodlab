@@ -1,3 +1,15 @@
+/////////////////////////////////////////////////////////////////////////////////
+//                                                                             //
+//               Copyright (C) 2011-2017 - The DESY CMS Group                  //
+//                           All rights reserved                               //
+//                                                                             //
+//      The CMStkModLab source code is licensed under the GNU GPL v3.0.        //
+//      You have the right to modify and/or redistribute this source code      //
+//      under the terms specified in the license, which may be found online    //
+//      at http://www.gnu.org/licenses or at License.txt.                      //
+//                                                                             //
+/////////////////////////////////////////////////////////////////////////////////
+
 #ifndef LSTEPEXPRESSPOSITIONWIDGET_H
 #define LSTEPEXPRESSPOSITIONWIDGET_H
 
@@ -41,7 +53,7 @@ class LStepExpressPositionAxisWidget : public QWidget
 
 class LStepExpressPositionWidget : public QWidget
 {
-    Q_OBJECT
+ Q_OBJECT
 
  public:
 //    explicit LStepExpressPositionWidget(LStepExpressModel* model, QWidget *parent = 0);
@@ -64,6 +76,9 @@ class LStepExpressPositionWidget : public QWidget
      void moveAbsoluteButtonClicked();
      void moveRelativeButtonClicked();
      void positionChanged(double value, unsigned int axis);
+
+     void  enableMotionTools(const bool enable=true);
+     void disableMotionTools();
 };
 
 #endif //LSTEPEXPRESSPOSITIONWIDGET_H

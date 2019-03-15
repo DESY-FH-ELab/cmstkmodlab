@@ -1,3 +1,15 @@
+/////////////////////////////////////////////////////////////////////////////////
+//                                                                             //
+//               Copyright (C) 2011-2017 - The DESY CMS Group                  //
+//                           All rights reserved                               //
+//                                                                             //
+//      The CMStkModLab source code is licensed under the GNU GPL v3.0.        //
+//      You have the right to modify and/or redistribute this source code      //
+//      under the terms specified in the license, which may be found online    //
+//      at http://www.gnu.org/licenses or at License.txt.                      //
+//                                                                             //
+/////////////////////////////////////////////////////////////////////////////////
+
 #include <nqlogger.h>
 #include <QString>
 #include <QDateTime>
@@ -146,16 +158,16 @@ LStepExpressMeasurementWidget::LStepExpressMeasurementWidget(LStepExpressModel* 
     
 LStepExpressMeasurementWidget::~LStepExpressMeasurementWidget()
 {
-    if(averageMeasCheckBox_){delete averageMeasCheckBox_; averageMeasCheckBox_ = NULL;}
-    if(buttonGeneratePos_){delete buttonGeneratePos_; buttonGeneratePos_ = NULL;}
-    if(buttonStartMeasurement_){delete buttonStartMeasurement_; buttonStartMeasurement_ = NULL;}
-    if(buttonStopMeasurement_){delete buttonStopMeasurement_; buttonStopMeasurement_ = NULL;}
-    if(buttonStoreMeasurement_){delete buttonStoreMeasurement_; buttonStoreMeasurement_ = NULL;}
-    //if(checkBoxEnableLaser_){delete checkBoxEnableLaser_; checkBoxEnableLaser_ = NULL;}
-    if(zigzagCheckBox_){delete zigzagCheckBox_; zigzagCheckBox_ = NULL;}
+    if(averageMeasCheckBox_){delete averageMeasCheckBox_; averageMeasCheckBox_ = nullptr;}
+    if(buttonGeneratePos_){delete buttonGeneratePos_; buttonGeneratePos_ = nullptr;}
+    if(buttonStartMeasurement_){delete buttonStartMeasurement_; buttonStartMeasurement_ = nullptr;}
+    if(buttonStopMeasurement_){delete buttonStopMeasurement_; buttonStopMeasurement_ = nullptr;}
+    if(buttonStoreMeasurement_){delete buttonStoreMeasurement_; buttonStoreMeasurement_ = nullptr;}
+    //if(checkBoxEnableLaser_){delete checkBoxEnableLaser_; checkBoxEnableLaser_ = nullptr;}
+    if(zigzagCheckBox_){delete zigzagCheckBox_; zigzagCheckBox_ = nullptr;}
 }
 
-void LStepExpressMeasurementWidget::laserStateChanged(State newState)
+void LStepExpressMeasurementWidget::laserStateChanged(State /* newState */)
 {
   //    NQLog("LStepExpressMeasurementWidget ", NQLog::Debug) << "laserStateChanged(State newState) " << newState    ;
   //  checkBoxEnableLaser_->setChecked(newState == READY || newState == INITIALIZING);

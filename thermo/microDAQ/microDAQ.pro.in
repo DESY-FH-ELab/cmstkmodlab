@@ -7,7 +7,6 @@ LIBS += -L@basepath@/devices/lib -lTkModLabHuber
 LIBS += -L@basepath@/devices/lib -lTkModLabArduino
 LIBS += -L@basepath@/devices/lib -lTkModLabCori
 LIBS += -L@basepath@/common -lCommon
-LIBS += -L@basepath@/external/twitcurl -ltwitcurl -lcurl
 LIBS += @qwtlibs@
 
 QMAKE = @qmake@
@@ -52,7 +51,6 @@ INCLUDEPATH += .
 INCLUDEPATH += ..
 INCLUDEPATH += @basepath@
 INCLUDEPATH += @basepath@/common
-INCLUDEPATH += @basepath@/external/twitcurl
 
 greaterThan(QT_MAJOR_VERSION, 4) {
   cache()

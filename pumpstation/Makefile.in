@@ -1,0 +1,20 @@
+BASEPATH      = @basepath@
+NOTHERMAL     = @nothermal@
+NODEFO        = @nodefo@
+NOPUMPSTATION = @nopumpstation@
+
+USEFAKEDEVICES= @usefakedevices@
+
+subdirs	      = daemon controller app analysis
+installsubdirs = daemon controller website analysis
+
+all:
+	@for dir in $(subdirs); do (cd $$dir; make); done
+
+install:
+	@for dir in $(installsubdirs); do (cd $$dir; make install); done
+
+clean:
+	@rm -f *~
+	@for dir in $(subdirs); do (cd $$dir; make clean); done
+	@rm -rf lib

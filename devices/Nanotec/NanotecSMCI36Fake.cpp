@@ -1,3 +1,15 @@
+/////////////////////////////////////////////////////////////////////////////////
+//                                                                             //
+//               Copyright (C) 2011-2017 - The DESY CMS Group                  //
+//                           All rights reserved                               //
+//                                                                             //
+//      The CMStkModLab source code is licensed under the GNU GPL v3.0.        //
+//      You have the right to modify and/or redistribute this source code      //
+//      under the terms specified in the license, which may be found online    //
+//      at http://www.gnu.org/licenses or at License.txt.                      //
+//                                                                             //
+/////////////////////////////////////////////////////////////////////////////////
+
 #include <cmath>
 #include <iostream>
 
@@ -14,11 +26,13 @@ NanotecSMCI36Fake::NanotecSMCI36Fake( const ioport_t ioPort )
 
   stepMode_ = smci02MicroStepsPerFullStep;
 
-  motorID_ = 1;
+  driveAddress_ = 2;
+  motorID_ = 0;
+
   errorCorrectionMode_ = smciErrCorrectionAfterTravel;
-  encoderDirection_ = 0;
+  encoderDirection_ = false;
   swingOutTime_ = 5;
-  maxEncoderDeviation_ = 2;
+  maxEncoderDeviation_ = 4;
 
   position_ = 0;
   encoderPosition_ = 0;
@@ -58,7 +72,7 @@ NanotecSMCI36Fake::~NanotecSMCI36Fake()
 
 std::string NanotecSMCI36Fake::GetFirmwareVersion() const
 {
-  return std::string("001v SMCI47-S_RS485_17-05-2011-rev3711");
+  return std::string("SMCI47-S_RS485_17-05-2011-rev3711");
 }
 
 int NanotecSMCI36Fake::GetStatus() const
@@ -121,6 +135,16 @@ int NanotecSMCI36Fake::GetStepMode() const
   return stepMode_;
 }
 
+void NanotecSMCI36Fake::SetDriveAddress(int address)
+{
+  driveAddress_ = address;
+}
+
+int NanotecSMCI36Fake::GetDriveAddress()
+{
+  return driveAddress_;
+}
+
 void NanotecSMCI36Fake::SetMotorID(int ID)
 {
   motorID_ = ID;
@@ -142,13 +166,12 @@ int NanotecSMCI36Fake::GetErrorCorrectionMode() const
   return errorCorrectionMode_;
 }
 
-void NanotecSMCI36Fake::SetEncoderDirection(int direction)
+void NanotecSMCI36Fake::SetEncoderDirection(bool direction)
 {
-  if (direction < 0 || direction > 1) return;
   encoderDirection_ = direction;
 }
 
-int NanotecSMCI36Fake::GetEncoderDirection() const
+bool NanotecSMCI36Fake::GetEncoderDirection() const
 {
   return encoderDirection_;
 }
@@ -363,7 +386,7 @@ bool NanotecSMCI36Fake::GetDirection() const
 
 void NanotecSMCI36Fake::SetMinimumFrequency(int frequency)
 {
-  if (frequency < 1 || frequency > 160000) return;
+  if (frequency < minFrequencyLimits_.first || frequency > minFrequencyLimits_.second) return;
   minFrequency_ = frequency;
 }
 
@@ -374,18 +397,18 @@ int NanotecSMCI36Fake::GetMinimumFrequency() const
 
 void NanotecSMCI36Fake::SetMaximumFrequency(int frequency)
 {
-  if (frequency < 1 || frequency > 1000000) return;
+  if (frequency < maxFrequencyLimits_.first || frequency > maxFrequencyLimits_.second) return;
   maxFrequency_ = frequency;
 }
 
 int NanotecSMCI36Fake::GetMaximumFrequency() const
 {
-  return maxFrequency2_;
+  return maxFrequency_;
 }
 
 void NanotecSMCI36Fake::SetMaximumFrequency2(int frequency)
 {
-  if (frequency < 1 || frequency > 1000000) return;
+  if (frequency < maxFrequency2Limits_.first || frequency > maxFrequency2Limits_.second) return;
   maxFrequency2_ = frequency;
 }
 

@@ -1,3 +1,15 @@
+/////////////////////////////////////////////////////////////////////////////////
+//                                                                             //
+//               Copyright (C) 2011-2017 - The DESY CMS Group                  //
+//                           All rights reserved                               //
+//                                                                             //
+//      The CMStkModLab source code is licensed under the GNU GPL v3.0.        //
+//      You have the right to modify and/or redistribute this source code      //
+//      under the terms specified in the license, which may be found online    //
+//      at http://www.gnu.org/licenses or at License.txt.                      //
+//                                                                             //
+/////////////////////////////////////////////////////////////////////////////////
+
 #ifndef APPLICATIONCONFIG_H
 #define APPLICATIONCONFIG_H
 
@@ -5,6 +17,7 @@
 #include <sstream>
 #include <map>
 #include <vector>
+#include <iomanip>
 
 #include <QObject>
 #include <QVariant>
@@ -78,7 +91,6 @@ public:
     }
     return returnVector;
   }
-
   
   std::string getValue(std::string const& key, std::string defaultValue) const {
     std::multimap<std::string,std::string>::const_iterator it = keyvalueMap_.find(key);
@@ -91,6 +103,7 @@ public:
   
   template <class aType> void setValue(std::string const& key, aType value) {
     QVariant variant(value);
+    keyvalueMap_.erase(key);
     keyvalueMap_.insert(std::make_pair(key, variant.toString().toStdString()));
   }
   
@@ -109,5 +122,13 @@ protected:
 template <> std::string ApplicationConfig::getValue(std::string const& key) const;
 template <> std::vector<std::string> ApplicationConfig::getValueVector(std::string const& key) const;
 template <> std::string ApplicationConfig::getValue(std::string const& key, std::string defaultValue) const;
+
+template <> int ApplicationConfig::getValue(std::string const& key) const;
+template <> std::vector<int> ApplicationConfig::getValueVector(std::string const& key) const;
+template <> int ApplicationConfig::getValue(std::string const& key, int defaultValue) const;
+
+template <> unsigned int ApplicationConfig::getValue(std::string const& key) const;
+template <> std::vector<unsigned int> ApplicationConfig::getValueVector(std::string const& key) const;
+template <> unsigned int ApplicationConfig::getValue(std::string const& key, unsigned int defaultValue) const;
 
 #endif // APPLICATIONCONFIG_H

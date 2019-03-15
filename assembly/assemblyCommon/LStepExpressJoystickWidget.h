@@ -1,3 +1,15 @@
+/////////////////////////////////////////////////////////////////////////////////
+//                                                                             //
+//               Copyright (C) 2011-2017 - The DESY CMS Group                  //
+//                           All rights reserved                               //
+//                                                                             //
+//      The CMStkModLab source code is licensed under the GNU GPL v3.0.        //
+//      You have the right to modify and/or redistribute this source code      //
+//      under the terms specified in the license, which may be found online    //
+//      at http://www.gnu.org/licenses or at License.txt.                      //
+//                                                                             //
+/////////////////////////////////////////////////////////////////////////////////
+
 #ifndef LSTEPEXPRESSJOYSTICKWIDGET_H
 #define LSTEPEXPRESSJOYSTICKWIDGET_H
 
@@ -15,6 +27,8 @@
 
 #include "LStepExpressModel.h"
 
+class LStepExpressJoystickAxisWidget;
+
 class LStepExpressJoystickWidget : public QWidget
 {
     Q_OBJECT
@@ -27,11 +41,19 @@ protected:
     LStepExpressModel* model_;
     QWidget* axisControlWidget_;
 
+    LStepExpressJoystickAxisWidget* w_joyax_X_;
+    LStepExpressJoystickAxisWidget* w_joyax_Y_;
+    LStepExpressJoystickAxisWidget* w_joyax_Z_;
+    LStepExpressJoystickAxisWidget* w_joyax_A_;
+
 public slots:
     void lstepStateChanged(State newState);
     void controlStateChanged(bool);
     void motionStarted();
     void motionFinished();
+
+    void  enableMotionTools(const bool enable=true);
+    void disableMotionTools();
 };
 
 class LStepExpressJoystickAxisWidget : public QWidget
@@ -53,6 +75,8 @@ protected:
     QPushButton *downButton_;
     QDoubleSpinBox *stepBox_;
 
+    bool motionTools_enabled_;
+
 public slots:
     void lStepStateChanged( State state );
     void controlStateChanged(bool);
@@ -62,6 +86,9 @@ public slots:
     void downButtonClicked();
     void motionStarted();
     void motionFinished();
+
+    void  enableMotionTools(const bool enable=true);
+    void disableMotionTools();
 };
 
 #endif // LSTEPEXPRESSJOYSTICKWIDGET_H

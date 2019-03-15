@@ -1,0 +1,11 @@
+PumpStationDaemon.pro
+PumpStationDaemon.pro.user
+.qmake.cache
+.qmake.stash
+Makefile
+*.d
+*.o
+*~
+moc_*
+PumpStationDaemon
+pumpstation.service

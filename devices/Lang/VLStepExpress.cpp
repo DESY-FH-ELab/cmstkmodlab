@@ -1,3 +1,15 @@
+/////////////////////////////////////////////////////////////////////////////////
+//                                                                             //
+//               Copyright (C) 2011-2017 - The DESY CMS Group                  //
+//                           All rights reserved                               //
+//                                                                             //
+//      The CMStkModLab source code is licensed under the GNU GPL v3.0.        //
+//      You have the right to modify and/or redistribute this source code      //
+//      under the terms specified in the license, which may be found online    //
+//      at http://www.gnu.org/licenses or at License.txt.                      //
+//                                                                             //
+/////////////////////////////////////////////////////////////////////////////////
+
 #include <sstream>
 
 #include "VLStepExpress.h"
@@ -321,6 +333,108 @@ const char * VLStepExpress::GetAxisDimensionName(VLStepExpress::Dimension dimens
     return "rotations";
   }
   return "microsteps";
+}
+
+const char * VLStepExpress::GetAxisVelocityShortName(VLStepExpress::Dimension dimension)
+{
+  switch (dimension) {
+  case MICROSTEPS:
+    return "usteps/s";
+  case MICROMETER:
+    return "um/s";
+  case MILLIMETER:
+    return "mm/s";
+  case DEGREE:
+    return "deg/s";
+  case ROTATIONS:
+    return "rot/s";
+  }
+  return "usteps/s";
+}
+
+const char * VLStepExpress::GetAxisVelocityName(VLStepExpress::Dimension dimension)
+{
+  switch (dimension) {
+  case MICROSTEPS:
+    return "microsteps/s";
+  case MICROMETER:
+    return "micrometer/s";
+  case MILLIMETER:
+    return "millimeter/s";
+  case DEGREE:
+    return "degree/s";
+  case ROTATIONS:
+    return "rotations/s";
+  }
+  return "microsteps/s";
+}
+
+const char * VLStepExpress::GetAxisAccelerationShortName(VLStepExpress::Dimension dimension)
+{
+  switch (dimension) {
+  case MICROSTEPS:
+    return "usteps/s^2";
+  case MICROMETER:
+    return "um/s^2";
+  case MILLIMETER:
+    return "mm/s^2";
+  case DEGREE:
+    return "deg/s^2";
+  case ROTATIONS:
+    return "rot/s^2";
+  }
+  return "usteps/s^2";
+}
+
+const char * VLStepExpress::GetAxisAccelerationName(VLStepExpress::Dimension dimension)
+{
+  switch (dimension) {
+  case MICROSTEPS:
+    return "microsteps/s^2";
+  case MICROMETER:
+    return "micrometer/s^2";
+  case MILLIMETER:
+    return "millimeter/s^2";
+  case DEGREE:
+    return "degree/s^2";
+  case ROTATIONS:
+    return "rotations/s^2";
+  }
+  return "microsteps/s^2";
+}
+
+const char * VLStepExpress::GetAxisAccelerationJerkShortName(VLStepExpress::Dimension dimension)
+{
+  switch (dimension) {
+  case MICROSTEPS:
+    return "usteps/s^3";
+  case MICROMETER:
+    return "um/s^3";
+  case MILLIMETER:
+    return "mm/s^3";
+  case DEGREE:
+    return "deg/s^3";
+  case ROTATIONS:
+    return "rot/s^3";
+  }
+  return "usteps/s^3";
+}
+
+const char * VLStepExpress::GetAxisAccelerationJerkName(VLStepExpress::Dimension dimension)
+{
+  switch (dimension) {
+  case MICROSTEPS:
+    return "microsteps/s^3";
+  case MICROMETER:
+    return "micrometer/s^3";
+  case MILLIMETER:
+    return "millimeter/s^3";
+  case DEGREE:
+    return "degree/s^3";
+  case ROTATIONS:
+    return "rotations/s^3";
+  }
+  return "microsteps/s^3";
 }
 
 char VLStepExpress::GetAxisStatusText(VLStepExpress::AxisStatus status)

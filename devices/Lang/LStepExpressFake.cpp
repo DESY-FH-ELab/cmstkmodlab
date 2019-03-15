@@ -1,3 +1,15 @@
+/////////////////////////////////////////////////////////////////////////////////
+//                                                                             //
+//               Copyright (C) 2011-2017 - The DESY CMS Group                  //
+//                           All rights reserved                               //
+//                                                                             //
+//      The CMStkModLab source code is licensed under the GNU GPL v3.0.        //
+//      You have the right to modify and/or redistribute this source code      //
+//      under the terms specified in the license, which may be found online    //
+//      at http://www.gnu.org/licenses or at License.txt.                      //
+//                                                                             //
+/////////////////////////////////////////////////////////////////////////////////
+
 #include <iostream>
 
 #include "LStepExpressFake.h"
@@ -14,11 +26,18 @@ LStepExpressFake::LStepExpressFake( const ioport_t ioPort )
   axisDirection_ = std::vector<int>{ 0, 0, 0, 0 };
   dim_ = std::vector<int>{ 2, 2, 2, 3 };
   pa_ = std::vector<int>{ 0, 0, 0, 0 };
+  accelerationJerk_ = std::vector<double>{ 100.0, 100.0, 100.0, 60.0 };
+  decelerationJerk_ = std::vector<double>{ 100.0, 100.0, 100.0, 30.0 };
+  acceleration_ = std::vector<double>{ 50.0, 50.0, 50.0, 50.0 };
+  deceleration_ = std::vector<double>{ 50.0, 50.0, 50.0, 50.0 };
+  velocity_ = std::vector<double>{ 20.0, 20.0, 20.0, 20.0 };
   position_ = std::vector<double>{ 0.0, 0.0, 0.0, 0.0 };
   moverel_ = std::vector<double>{ 0.0, 0.0, 0.0, 0.0 };
 
   joystickEnabled_ = false;
   joystickAxisEnabled_ = std::vector<int>{ 1, 1, 1, 1 };
+
+  posCtrl_enabled_ = false;
 }
 
 LStepExpressFake::~LStepExpressFake()
@@ -51,7 +70,7 @@ void LStepExpressFake::GetAxisEnabled(VLStepExpress::Axis axis, int & value)
   value = axis_[axis];
 }
 
-void LStepExpressFake::SetAxisEnabled(std::vector<int> & values)
+void LStepExpressFake::SetAxisEnabled(const std::vector<int> & values)
 {
   axis_ = values;
 
@@ -88,7 +107,7 @@ void LStepExpressFake::GetAxisDirection(VLStepExpress::Axis axis, int & value)
   value = axisDirection_[axis];
 }
 
-void LStepExpressFake::SetAxisDirection(std::vector<int> & values)
+void LStepExpressFake::SetAxisDirection(const std::vector<int> & values)
 {
   axisDirection_ = values;
 }
@@ -108,7 +127,7 @@ void LStepExpressFake::GetDimension(VLStepExpress::Axis axis, int & value)
   value = dim_[axis];
 }
 
-void LStepExpressFake::SetDimension(std::vector<int> & values)
+void LStepExpressFake::SetDimension(const std::vector<int> & values)
 {
   dim_ = values;
 }
@@ -128,7 +147,7 @@ void LStepExpressFake::GetPowerAmplifierStatus(VLStepExpress::Axis axis, int & v
   value = pa_[axis];
 }
 
-void LStepExpressFake::SetPowerAmplifierStatus(std::vector<int> & values)
+void LStepExpressFake::SetPowerAmplifierStatus(const std::vector<int> & values)
 {
   pa_ = values;
 }
@@ -136,6 +155,106 @@ void LStepExpressFake::SetPowerAmplifierStatus(std::vector<int> & values)
 void LStepExpressFake::SetPowerAmplifierStatus(VLStepExpress::Axis axis, int value)
 {
   pa_[axis] = value;
+}
+
+void LStepExpressFake::GetAccelerationJerk(std::vector<double> & values)
+{
+  values = accelerationJerk_;
+}
+
+void LStepExpressFake::GetAccelerationJerk(VLStepExpress::Axis axis, double & value)
+{
+  value = accelerationJerk_[axis];
+}
+
+void LStepExpressFake::SetAccelerationJerk(const std::vector<double> & values)
+{
+  accelerationJerk_ = values;
+}
+
+void LStepExpressFake::SetAccelerationJerk(VLStepExpress::Axis axis, double value)
+{
+  accelerationJerk_[axis] = value;
+}
+
+void LStepExpressFake::GetDecelerationJerk(std::vector<double> & values)
+{
+  values = decelerationJerk_;
+}
+
+void LStepExpressFake::GetDecelerationJerk(VLStepExpress::Axis axis, double & value)
+{
+  value = decelerationJerk_[axis];
+}
+
+void LStepExpressFake::SetDecelerationJerk(const std::vector<double> & values)
+{
+  decelerationJerk_ = values;
+}
+
+void LStepExpressFake::SetDecelerationJerk(VLStepExpress::Axis axis, double value)
+{
+  decelerationJerk_[axis] = value;
+}
+
+void LStepExpressFake::GetAcceleration(std::vector<double> & values)
+{
+  values = acceleration_;
+}
+
+void LStepExpressFake::GetAcceleration(VLStepExpress::Axis axis, double & value)
+{
+  value = acceleration_[axis];
+}
+
+void LStepExpressFake::SetAcceleration(const std::vector<double> & values)
+{
+  acceleration_ = values;
+}
+
+void LStepExpressFake::SetAcceleration(VLStepExpress::Axis axis, double value)
+{
+  acceleration_[axis] = value;
+}
+
+void LStepExpressFake::GetDeceleration(std::vector<double> & values)
+{
+  values = deceleration_;
+}
+
+void LStepExpressFake::GetDeceleration(VLStepExpress::Axis axis, double & value)
+{
+  value = deceleration_[axis];
+}
+
+void LStepExpressFake::SetDeceleration(const std::vector<double> & values)
+{
+  deceleration_ = values;
+}
+
+void LStepExpressFake::SetDeceleration(VLStepExpress::Axis axis, double value)
+{
+  deceleration_[axis] = value;
+}
+
+void LStepExpressFake::GetVelocity(std::vector<double> & values)
+{
+  values = velocity_;
+}
+
+void LStepExpressFake::GetVelocity(VLStepExpress::Axis axis, double & value)
+{
+  value = velocity_[axis];
+}
+
+void LStepExpressFake::SetVelocity(const std::vector<double> & values)
+{
+  velocity_ = values;
+}
+
+void LStepExpressFake::SetVelocity(VLStepExpress::Axis axis, double value)
+{
+  velocity_[axis] = value;
 }
 
 void LStepExpressFake::GetPosition(std::vector<double> & values)
@@ -148,7 +267,7 @@ void LStepExpressFake::GetPosition(VLStepExpress::Axis axis, double & value)
   value = position_[axis];
 }
 
-void LStepExpressFake::SetPosition(std::vector<double> & values)
+void LStepExpressFake::SetPosition(const std::vector<double> & values)
 {
   position_ = values;
 }
@@ -158,7 +277,7 @@ void LStepExpressFake::SetPosition(VLStepExpress::Axis axis, double value)
   position_[axis] = value;
 }
 
-void LStepExpressFake::MoveAbsolute(std::vector<double> & values)
+void LStepExpressFake::MoveAbsolute(const std::vector<double> & values)
 {
   position_ = values;
 }
@@ -176,7 +295,7 @@ void LStepExpressFake::MoveAbsolute(VLStepExpress::Axis axis, double value)
   position_[axis] = value;
 }
 
-void LStepExpressFake::MoveRelative(std::vector<double> & values)
+void LStepExpressFake::MoveRelative(const std::vector<double> & values)
 {
   moverel_ = values;
   std::vector<double>::iterator itpos = position_.begin();
@@ -261,7 +380,7 @@ void LStepExpressFake::GetJoystickAxisEnabled(VLStepExpress::Axis axis, int & va
   value = joystickAxisEnabled_[axis];
 }
 
-void LStepExpressFake::SetJoystickAxisEnabled(std::vector<int> & values)
+void LStepExpressFake::SetJoystickAxisEnabled(const std::vector<int> & values)
 {
   joystickAxisEnabled_ = values;
 }
@@ -274,4 +393,14 @@ void LStepExpressFake::SetJoystickAxisEnabled(VLStepExpress::Axis axis, int valu
 void LStepExpressFake::SendCommand(const std::string & command)
 {
   std::cout << "SendCommand: " << command << std::endl;
+}
+
+bool LStepExpressFake::GetPositionControllerEnabled()
+{
+  return posCtrl_enabled_;
+}
+
+void LStepExpressFake::SetPositionControllerEnabled(const bool enable)
+{
+  posCtrl_enabled_ = enable;
 }

@@ -1,126 +1,349 @@
-#include <QApplication>
+/////////////////////////////////////////////////////////////////////////////////
+//                                                                             //
+//               Copyright (C) 2011-2017 - The DESY CMS Group                  //
+//                           All rights reserved                               //
+//                                                                             //
+//      The CMStkModLab source code is licensed under the GNU GPL v3.0.        //
+//      You have the right to modify and/or redistribute this source code      //
+//      under the terms specified in the license, which may be found online    //
+//      at http://www.gnu.org/licenses or at License.txt.                      //
+//                                                                             //
+/////////////////////////////////////////////////////////////////////////////////
 
+#include <LStepExpressMotionManager.h>
+#include <AssemblyUtilities.h>
+
+#include <ApplicationConfig.h>
 #include <nqlogger.h>
 
-#include "LStepExpressMotionManager.h"
+#include <unistd.h>
 
-LStepExpressMotionManager::LStepExpressMotionManager(LStepExpressModel* model, QObject *parent)
-    : QObject(parent),
-      model_(model),
-      inMotion_(false)
+LStepExpressMotionManager::LStepExpressMotionManager(LStepExpressModel* model, QObject* parent)
+ : QObject(parent)
+
+ , model_(model)
+ , model_connected_(false)
+ , inMotion_(false)
 {
-    connect(model_, SIGNAL(motionStarted()),
-            this, SLOT(motionStarted()));
+  qRegisterMetaType<LStepExpressMotion>("LStepExpressMotion");
+  qRegisterMetaType<QQueue<LStepExpressMotion> >("QQueue<LStepExpressMotion>");
 
-    connect(model_, SIGNAL(motionFinished()),
-            this, SLOT(motionFinished()));
+  if(model_ == nullptr)
+  {
+    NQLog("LStepExpressMotionManager", NQLog::Fatal) << "initialization error"
+       << ": null pointer to LStepExpressModel object, exiting constructor";
 
-    connect(this, SIGNAL(signalMoveAbsolute(double,double,double,double)),
-            model_, SLOT(moveAbsolute(double,double,double,double)));
+    assembly::kill_application("[LStepExpressMotionManager]", "Invalid (NULL) pointer to LStepExpressModel object, closing application");
+  }
 
-    connect(this, SIGNAL(signalMoveRelative(double,double,double,double)),
-            model_, SLOT(moveRelative(double,double,double,double)));
-
+  this->connect_model();
 }
 
 LStepExpressMotionManager::~LStepExpressMotionManager()
 {
 }
 
+void LStepExpressMotionManager::connect_model()
+{
+  if(model_ == nullptr){ return; }
+
+  if(model_connected_ == false)
+  {
+    connect(model_, SIGNAL(motionStarted()) , this, SLOT(motionStarted()));
+
+    connect(model_, SIGNAL(motionFinished()), this, SLOT(finish_motion()));
+
+    connect(this  , SIGNAL(signalMoveAbsolute(double, double, double, double)),
+            model_, SLOT  (      moveAbsolute(double, double, double, double)));
+
+    connect(this  , SIGNAL(signalMoveRelative(double, double, double, double)),
+            model_, SLOT  (      moveRelative(double, double, double, double)));
+
+    NQLog("LStepExpressMotionManager", NQLog::Spam) << "connect_model"
+       << ": manager connected to LStepExpressModel";
+
+    model_connected_ = true;
+  }
+
+  return;
+}
+
+void LStepExpressMotionManager::disconnect_model()
+{
+  if(model_ == nullptr){ return; }
+
+  if(model_connected_ == true)
+  {
+    disconnect(model_, SIGNAL(motionStarted()) , this, SLOT(motionStarted()));
+
+    disconnect(model_, SIGNAL(motionFinished()), this, SLOT(finish_motion()));
+
+    disconnect(this  , SIGNAL(signalMoveAbsolute(double, double, double, double)),
+               model_, SLOT  (      moveAbsolute(double, double, double, double)));
+
+    disconnect(this  , SIGNAL(signalMoveRelative(double, double, double, double)),
+               model_, SLOT  (      moveRelative(double, double, double, double)));
+
+    NQLog("LStepExpressMotionManager", NQLog::Spam) << "disconnect_model"
+       << ": manager disconnected from LStepExpressModel";
+
+    model_connected_ = false;
+  }
+
+  return;
+}
+
+void LStepExpressMotionManager::myMoveToThread(QThread* thread)
+{
+    model_->moveToThread(thread);
+    this  ->moveToThread(thread);
+}
+
 void LStepExpressMotionManager::run()
 {
+    if(inMotion_){ return; }
 
-    if (inMotion_) return;
+    if(motions_.empty())
+    {
+      NQLog("LStepExpressMotionManager", NQLog::Spam) << "run"
+         << ": emitting signal \"motion_finished\"";
 
-    if (motions_.empty()) return;
+      emit motion_finished();
 
-//    NQLog("LStepExpressMotionManager", NQLog::Debug) << "run";
+      return;
+    }
+
+    // check on axes ----
+    this->AxisIsReady(0);
+    this->AxisIsReady(1);
+    this->AxisIsReady(2);
+    this->AxisIsReady(3);
+    // ------------------
 
     LStepExpressMotion motion = motions_.dequeue();
 
     inMotion_ = true;
 
-    if (motion.getMode()==true) {
-    NQLog("LStepExpressMotionManager") << "run2 mode==true"<< motion.getX()   <<" y "<<  motion.getY()  <<" z "<<motion.getZ()    << " a "<< motion.getA()   ;
+    if(motion.getMode() == true)
+    {
+      NQLog("LStepExpressMotionManager", NQLog::Spam) << "run: emitting signal \"signalMoveAbsolute("
+        <<   "x=" << motion.getX()
+        << ", y=" << motion.getY()
+        << ", z=" << motion.getZ()
+        << ", a=" << motion.getA()
+        << ")\"";
 
-
-        emit signalMoveAbsolute(motion.getX(), motion.getY(), motion.getZ(), motion.getA());
-    } else {
-    NQLog("LStepExpressMotionManager") << "run3 mode==false";
-
-        emit signalMoveRelative(motion.getX(), motion.getY(), motion.getZ(), motion.getA());
+      emit signalMoveAbsolute(motion.getX(), motion.getY(), motion.getZ(), motion.getA());
     }
+    else
+    {
+      NQLog("LStepExpressMotionManager", NQLog::Spam) << "run: emitting signal \"signalMoveRelative("
+        <<   "x=" << motion.getX()
+        << ", y=" << motion.getY()
+        << ", z=" << motion.getZ()
+        << ", a=" << motion.getA()
+        << ")\"";
+
+      emit signalMoveRelative(motion.getX(), motion.getY(), motion.getZ(), motion.getA());
+    }
+
+    return;
 }
 
-void LStepExpressMotionManager::myMoveToThread(QThread *thread)
+bool LStepExpressMotionManager::AxisIsReady(const int axis) const
 {
-    model_->moveToThread(thread);
-    this->moveToThread(thread);
+  const bool axis_ready = (model_->getAxisStatusText(axis) == "@");
+
+  if(axis_ready == false)
+  {
+    NQLog("LStepExpressMotionManager", NQLog::Warning) << "AxisIsReady"
+       << ": invalid state (" << model_->getAxisStatusText(axis)
+       << ") for axis #" << axis << " of motion stage, axis not ready";
+  }
+
+  return axis_ready;
 }
 
 void LStepExpressMotionManager::appendMotion(const LStepExpressMotion& motion)
 {
     motions_.enqueue(motion);
-    run();
+    this->run();
 }
 
 void LStepExpressMotionManager::appendMotions(const QQueue<LStepExpressMotion>& motions)
 {
     motions_.append(motions);
-    run();
+    this->run();
 }
 
-void LStepExpressMotionManager::moveRelative(std::vector<double> & values)
+void LStepExpressMotionManager::moveRelative(const std::vector<double>& values)
 {
     motions_.enqueue(LStepExpressMotion(values, false));
-    run();
+    this->run();
 }
 
-void LStepExpressMotionManager::moveRelative(double x, double y, double z, double a)
+void LStepExpressMotionManager::moveRelative(const double dx, const double dy, const double dz, const double da)
 {
-    motions_.enqueue(LStepExpressMotion(x, y, z, a, false));
-    run();
+    motions_.enqueue(LStepExpressMotion(dx, dy, dz, da, false));
+    this->run();
 }
 
-void LStepExpressMotionManager::moveRelative(unsigned int axis, double value)
+void LStepExpressMotionManager::moveRelative(const unsigned int axis, const double value)
 {
     motions_.enqueue(LStepExpressMotion(axis, value, false));
-    run();
+    this->run();
 }
 
-void LStepExpressMotionManager::moveAbsolute(std::vector<double> & values)
+void LStepExpressMotionManager::moveAbsolute(const std::vector<double>& values)
 {
-
     motions_.enqueue(LStepExpressMotion(values, true));
-    run();
+    this->run();
 }
 
-void LStepExpressMotionManager::moveAbsolute(double x, double y, double z, double a)
+void LStepExpressMotionManager::moveAbsolute(const double x, const double y, const double z, const double a)
 {
-  NQLog("LStepExpressMotionManager") << "moveAbsolute";
-
     motions_.enqueue(LStepExpressMotion(x, y, z, a, true));
-    NQLog("LStepExpressMotionManager") << "motionsEnquee x "<<  x  <<" y "<< y<<" z "<< z << " a "<< a;
-    run();
-  NQLog("LStepExpressMotionManager") << "run Done";
+    this->run();
 }
 
-void LStepExpressMotionManager::moveAbsolute(unsigned int axis, double value)
+void LStepExpressMotionManager::moveAbsolute(const unsigned int axis, const double value)
 {
     motions_.enqueue(LStepExpressMotion(axis, value, true));
-    run();
+    this->run();
 }
 
 void LStepExpressMotionManager::motionStarted()
 {
-  // NQLog("LStepExpressMotionManager", NQLog::Debug) << "motionStarted()";
-    inMotion_ = true;
+  inMotion_ = true;
 }
 
-void LStepExpressMotionManager::motionFinished()
+void LStepExpressMotionManager::finish_motion()
 {
-  //    NQLog("LStepExpressMotionManager", NQLog::Debug) << "motionFinished()";
-    inMotion_ = false;
+  NQLog("LStepExpressMotionManager", NQLog::Spam) << "finish_motion"
+     << ": setting \"inMotion=false\" and calling run() method";
 
-    this->run();
+  inMotion_ = false;
+  this->run();
+}
+
+void LStepExpressMotionManager::read_position3D()
+{
+  const double x = this->get_position_X();
+  const double y = this->get_position_Y();
+  const double z = this->get_position_Z();
+
+  NQLog("LStepExpressMotionManager", NQLog::Spam) << "read_position3D"
+     << ": emitting signal \"position4D"
+     << "(x=" << x << ", y=" << y << ", z=" << z << ")\"";
+
+  emit position3D(x, y, z);
+}
+
+void LStepExpressMotionManager::read_position4D()
+{
+  const double x = this->get_position_X();
+  const double y = this->get_position_Y();
+  const double z = this->get_position_Z();
+  const double a = this->get_position_A();
+
+  NQLog("LStepExpressMotionManager", NQLog::Spam) << "read_position4D"
+     << ": emitting signal \"position4D"
+     << "(x=" << x << ", y=" << y << ", z=" << z << ", a=" << a << ")\"";
+
+  emit position4D(x, y, z, a);
+}
+
+void LStepExpressMotionManager::clear_motion_queue()
+{
+  if(inMotion_)
+  {
+    NQLog("LStepExpressMotionManager", NQLog::Warning) << "clear_motion_queue"
+       << ": motion stage is moving, no action taken";
+
+    return;
+  }
+
+  const auto mots = motions_;
+
+  motions_.clear();
+
+  for(const auto& i_mot : mots)
+  {
+    NQLog("LStepExpressMotionManager", NQLog::Spam) << "clear_motion_queue"
+       << ": removed LStepExpressMotion"
+       << " (x=" << i_mot.getX()
+       << ", y=" << i_mot.getY()
+       << ", z=" << i_mot.getZ()
+       << ", a=" << i_mot.getA()
+       << ")[absolute=" << i_mot.getMode() << "]";
+  }
+
+  NQLog("LStepExpressMotionManager", NQLog::Message) << "clear_motion_queue"
+     << ": motion queue cleared (removed " << mots.size() << " motions)";
+
+  return;
+}
+
+void LStepExpressMotionManager::emergency_stop()
+{
+  if(model_->getDeviceState() == READY)
+  {
+    model_->emergencyStop();
+  }
+  else
+  {
+    NQLog("LStepExpressMotionManager", NQLog::Warning) << "emergency_stop"
+       << ": LStepExpressMotionManager not in READY state, no action taken";
+  }
+
+  return;
+}
+
+double LStepExpressMotionManager::get_position(const int axis) const
+{
+  //
+  // position validation:
+  //  * read position only after ensuring model is not updating internally,
+  //    the motion stage is not moving and the list of positions has a valid format
+  //
+  // output:
+  //  * it is not safe to return if all the above conditions are not met
+  //  * this means the 'while' shoud not be broken or shortcut (a priori, it might never finish)
+  //  * after a certain number of attempts, explicit warnings are printed
+  //
+  uint tries(0);
+
+  while(model()->isUpdating() || model()->isInMotion() || inMotion_ || (this->model()->getPositions().size() != 4))
+  {
+    ++tries;
+
+    if(tries > 5)
+    {
+      if(model()->isUpdating())
+      {
+        NQLog("LStepExpressMotionManager", NQLog::Warning) << "get_position(" << axis << ")"
+           << ": cannot return motion stage position [try #" << tries << "] because LStepExpressModel is still updating";
+      }
+      else if(model()->isInMotion())
+      {
+        NQLog("LStepExpressMotionManager", NQLog::Warning) << "get_position(" << axis << ")"
+           << ": cannot return motion stage position [try #" << tries << "] because LStepExpressModel is still in motion";
+      }
+      else if(inMotion_)
+      {
+        NQLog("LStepExpressMotionManager", NQLog::Warning) << "get_position(" << axis << ")"
+           << ": cannot return motion stage position [try #" << tries << "] because LStepExpressMotionManager is still in motion";
+      }
+      else if(this->model()->getPositions().size() != 4)
+      {
+        NQLog("LStepExpressMotionManager", NQLog::Warning) << "get_position(" << axis << ")"
+           << ": cannot return motion stage position [try #" << tries << "] because positions vector has invalid size ("
+           << this->model()->getPositions().size() << ")";
+      }
+    }
+
+    usleep(model()->updateInterval() * 400); // from ms to us, times 0.4
+  }
+
+  return this->model()->getPosition(axis);
 }

@@ -1,17 +1,24 @@
+/////////////////////////////////////////////////////////////////////////////////
+//                                                                             //
+//               Copyright (C) 2011-2017 - The DESY CMS Group                  //
+//                           All rights reserved                               //
+//                                                                             //
+//      The CMStkModLab source code is licensed under the GNU GPL v3.0.        //
+//      You have the right to modify and/or redistribute this source code      //
+//      under the terms specified in the license, which may be found online    //
+//      at http://www.gnu.org/licenses or at License.txt.                      //
+//                                                                             //
+/////////////////////////////////////////////////////////////////////////////////
+
+#include <AssemblyUEyeFakeCamera.h>
+#include <ApplicationConfig.h>
+#include <nqlogger.h>
+
 #include <unistd.h>
 
-#include <iostream>
-
-#include <QApplication>
-
-#include <nqlogger.h>
-#include <ApplicationConfig.h>
-
-#include "AssemblyUEyeFakeCamera.h"
-
-AssemblyUEyeFakeCamera::AssemblyUEyeFakeCamera(QObject *parent)
-    : AssemblyVUEyeCamera(parent),
-      imageIndex_(0)
+AssemblyUEyeFakeCamera::AssemblyUEyeFakeCamera(QObject* parent) :
+  AssemblyVUEyeCamera(parent),
+  imageIndex_(0)
 {
     cameraState_ = State::OFF;
 
@@ -27,11 +34,16 @@ AssemblyUEyeFakeCamera::AssemblyUEyeFakeCamera(QObject *parent)
     imageFilenamesForPixelClock_[5] = filenames;
 
     filenames.clear();
-    filenames.push_back(QString(filename + "/share/assembly/sensor_24MHz_333ms_1.png").toStdString());
-    filenames.push_back(QString(filename + "/share/assembly/sensor_24MHz_333ms_2.png").toStdString());
-    filenames.push_back(QString(filename + "/share/assembly/sensor_24MHz_333ms_3.png").toStdString());
-    filenames.push_back(QString(filename + "/share/assembly/sensor_24MHz_333ms_4.png").toStdString());
-    filenames.push_back(QString(filename + "/share/assembly/sensor_24MHz_333ms_5.png").toStdString());
+    filenames.push_back(QString(filename + "/share/assembly/sensor_24MHz_333ms_1.png"      ).toStdString());
+    filenames.push_back(QString(filename + "/share/assembly/sensor_24MHz_333ms_2.png"      ).toStdString());
+    filenames.push_back(QString(filename + "/share/assembly/sensor_24MHz_333ms_3.png"      ).toStdString());
+    filenames.push_back(QString(filename + "/share/assembly/sensor_24MHz_333ms_4.png"      ).toStdString());
+    filenames.push_back(QString(filename + "/share/assembly/sensor_24MHz_333ms_5.png"      ).toStdString());
+    filenames.push_back(QString(filename + "/share/assembly/markedglass_marker1_master.png").toStdString());
+    filenames.push_back(QString(filename + "/share/assembly/markedglass_marker2_master.png").toStdString());
+    filenames.push_back(QString(filename + "/share/assembly/spacer_corner1.png"            ).toStdString());
+    filenames.push_back(QString(filename + "/share/assembly/SensorPiece_1.png"             ).toStdString());
+    filenames.push_back(QString(filename + "/share/assembly/SensorPiece_1_degM8.png"       ).toStdString());
     imageFilenamesForPixelClock_[24] = filenames;
 
     filenames.clear();
@@ -65,16 +77,16 @@ AssemblyUEyeFakeCamera::AssemblyUEyeFakeCamera(QObject *parent)
 
 AssemblyUEyeFakeCamera::~AssemblyUEyeFakeCamera()
 {
-    if (cameraState_==READY) close();
+    if (cameraState_==READY){ close(); }
 }
 
 void AssemblyUEyeFakeCamera::open()
 {
-    if (cameraState_==State::READY || cameraState_==State::INITIALIZING) return;
+    if(cameraState_==State::READY || cameraState_==State::INITIALIZING){ return; }
 
     cameraState_ = State::INITIALIZING;
 
-    NQLog("AssemblyUEyeFakeCamera") << ":open()";
+    NQLog("AssemblyUEyeFakeCamera", NQLog::Debug) << "open";
 
     setID("IDS GmbH");
     setVersion("");
@@ -109,15 +121,18 @@ void AssemblyUEyeFakeCamera::open()
 
 void AssemblyUEyeFakeCamera::close()
 {
-    if (cameraState_!=State::READY) return;
+    NQLog("AssemblyUEyeFakeCamera", NQLog::Debug) << "close";
 
-    NQLog("AssemblyUEyeFakeCamera") << ":close()";
+    if(cameraState_ != State::READY){ return; }
 
     cameraState_ = State::CLOSING;
 
     usleep(500000);
 
     cameraState_ = State::OFF;
+
+    NQLog("AssemblyUEyeFakeCamera", NQLog::Debug) << "close"
+       << ": emitting signal \"cameraClosed\"";
 
     emit cameraClosed();
 }
@@ -226,13 +241,14 @@ void AssemblyUEyeFakeCamera::setExposureTime(double et)
 
 void AssemblyUEyeFakeCamera::acquireImage()
 {
-    if (cameraState_!=State::READY) return;
-
-    NQLog("AssemblyUEyeFakeCamera") << ":acquireImage()";
+    if(cameraState_ != State::READY){ return; }
 
     image_ = cv::imread(imageFilenames_[imageIndex_++], CV_LOAD_IMAGE_GRAYSCALE);
 
+    NQLog("AssemblyUEyeFakeCamera", NQLog::Debug) << "acquireImage"
+       << ": emitting signal \"imageAcquired\"";
+
     emit imageAcquired(image_);
 
-    if (imageIndex_==imageFilenames_.size()) imageIndex_ = 0;
+    if(imageIndex_ == imageFilenames_.size()){ imageIndex_ = 0; }
 }
