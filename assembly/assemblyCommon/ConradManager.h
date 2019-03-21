@@ -35,7 +35,7 @@ class ConradManager : public QObject
 
  private:
 
-  const int togglingVacuumDelay = 3000;
+  const int togglingVacuumDelay = 2000;
 
  public slots:
 
