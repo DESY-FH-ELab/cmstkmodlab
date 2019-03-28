@@ -36,6 +36,7 @@ AssemblyAssembly::AssemblyAssembly(const LStepExpressMotionManager* const motion
 
  , use_smartMove_(false)
 
+ , PSPToPSSPosition_isRegistered_(false)
  , PSPToPSSPosition_X_(0.)
  , PSPToPSSPosition_Y_(0.)
  , PSPToPSSPosition_Z_(0.)
@@ -778,6 +779,8 @@ void AssemblyAssembly::RegisterPSPToPSSPosition_start()
   PSPToPSSPosition_Z_ = motion_->get_position_Z();
   PSPToPSSPosition_A_ = motion_->get_position_A();
 
+  PSPToPSSPosition_isRegistered_ = true;
+
   NQLog("AssemblyAssembly", NQLog::Message) << "RegisterPSPToPSSPosition_start"
      << ": registered position (x=" << PSPToPSSPosition_X_ << ", y=" << PSPToPSSPosition_Y_ << ", z=" << PSPToPSSPosition_Z_ << ", a=" << PSPToPSSPosition_A_ << ")";
 
@@ -934,6 +937,23 @@ void AssemblyAssembly::LowerSpacersAndPSSOntoGluingStage_finish()
 // ----------------------------------------------------------------------------------------------------
 void AssemblyAssembly::ReturnToPSPToPSSPosition_start()
 {
+  if(PSPToPSSPosition_isRegistered_ == false)
+  {
+    NQLog("AssemblyAssembly", NQLog::Critical) << "ReturnToPSPToPSSPosition_start"
+       << ": PSP-To-PSS Position was not registered, which is mandatory for this step";
+
+    QMessageBox msgBox;
+    msgBox.setText(tr("AssemblyAssembly::ReturnToPSPToPSSPosition_start -- PSP-To-PSS Position was not registered, which is mandatory for this step (see dedicated button in \"Assembly\" tab)"));
+    msgBox.exec();
+
+    NQLog("AssemblyAssembly", NQLog::Spam) << "ReturnToPSPToPSSPosition_finish"
+       << ": emitting signal \"ReturnToPSPToPSSPosition_finished\"";
+
+    emit ReturnToPSPToPSSPosition_finished();
+
+    return;
+  }
+
   if(use_smartMove_)
   {
     const double dx0 = PSPToPSSPosition_X_ - motion_->get_position_X();
@@ -984,9 +1004,6 @@ void AssemblyAssembly::ReturnToPSPToPSSPosition_finish()
 {
   disconnect(this, SIGNAL(move_relative_request(double, double, double, double)), smart_motion_, SLOT(move_relative(double, double, double, double)));
   disconnect(smart_motion_, SIGNAL(motion_completed()), this, SLOT(ReturnToPSPToPSSPosition_finish()));
-
-  disconnect(this, SIGNAL(move_relative_request(double, double, double, double)), motion_, SLOT(moveRelative(double, double, double, double)));
-  disconnect(motion_, SIGNAL(motion_finished()), this, SLOT(ReturnToPSPToPSSPosition_finish()));
 
   NQLog("AssemblyAssembly", NQLog::Spam) << "ReturnToPSPToPSSPosition_finish"
      << ": emitting signal \"ReturnToPSPToPSSPosition_finished\"";

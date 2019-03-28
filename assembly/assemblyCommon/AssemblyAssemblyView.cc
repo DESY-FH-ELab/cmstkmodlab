@@ -416,7 +416,7 @@ AssemblyAssemblyView::AssemblyAssemblyView(const AssemblyAssembly* const assembl
     tmp_wid->button()->setText("Go From PSP-To-PSS Position to Gluing Stage (XY) Ref-Point");
     PSSToPSP_lay->addWidget(tmp_wid);
 
-    tmp_wid->connect_action(assembly, SLOT(GoFromPSPToPSSPosToGluingStageXY_start()), SIGNAL(GoFromPSPToPSSPosToGluingStageXY_finished()));
+    tmp_wid->connect_action(assembly, SLOT(GoFromPSPToPSSPosToGluingStageRefPoint_start()), SIGNAL(GoFromPSPToPSSPosToGluingStageRefPoint_finished()));
   }
   // ----------
 

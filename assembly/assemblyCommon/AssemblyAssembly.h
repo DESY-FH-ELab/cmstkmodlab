@@ -54,6 +54,7 @@ class AssemblyAssembly : public QObject
 
   bool use_smartMove_;
 
+  bool   PSPToPSSPosition_isRegistered_;
   double PSPToPSSPosition_X_;
   double PSPToPSSPosition_Y_;
   double PSPToPSSPosition_Z_;
