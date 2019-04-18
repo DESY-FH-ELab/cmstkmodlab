@@ -363,7 +363,7 @@ AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QStr
     /// Main Tab -----------------------------------------------
     QTabWidget* main_tab = new QTabWidget;
 
-    main_tab->setTabPosition(QTabWidget::South);
+    main_tab->setTabPosition(QTabWidget::North);
 
     main_tab->addTab(assembly_tab, tr("Module Assembly"));
     main_tab->addTab(controls_tab, tr("Manual Controls and Parameters"));
