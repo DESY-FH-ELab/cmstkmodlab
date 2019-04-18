@@ -1291,8 +1291,16 @@ void AssemblyAssembly::GoFromBaseplateRefPointToBaseplateGluingXYPosition_start(
     return;
   }
 
-  const double dx0 = this->parameters()->get("FromBaseplateRefPointToPSPRefPoint_dX") + this->parameters()->get("FromPSPRefPointToPSSRefPoint_dX") +this->parameters()->get("FromSensorRefPointToSensorPickup_dX");
-  const double dy0 = this->parameters()->get("FromBaseplateRefPointToPSPRefPoint_dY") + this->parameters()->get("FromPSPRefPointToPSSRefPoint_dY") +this->parameters()->get("FromSensorRefPointToSensorPickup_dY");
+  const double dx0 =
+      this->parameters()->get("FromBaseplateRefPointToPSPRefPoint_dX")
+    + this->parameters()->get("FromPSPRefPointToPSSRefPoint_dX")
+    + this->parameters()->get("FromSensorRefPointToSensorPickup_dX")
+  ;
+  const double dy0 =
+      this->parameters()->get("FromBaseplateRefPointToPSPRefPoint_dY")
+    + this->parameters()->get("FromPSPRefPointToPSSRefPoint_dY")
+    + this->parameters()->get("FromSensorRefPointToSensorPickup_dY")
+  ;
   const double dz0 = 0.0;
   const double da0 = 0.0;
 
