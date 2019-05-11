@@ -35,14 +35,14 @@ AssemblyImageView::AssemblyImageView(QWidget* parent) :
   img_celi_button_(nullptr),
 
   // auto-focusing
-  AF_ueye_(nullptr),
-  AF_scroll_(nullptr),
-  AF_result_bestZ_lineed_(nullptr),
-  AF_exe_button_(nullptr),
-  AF_stop_button_(nullptr),
-  AF_param_maxDZ_lineed_(nullptr),
-  AF_param_Nstep_lineed_(nullptr),
-  AF_save_zscan_button_(nullptr)
+  autofocus_ueye_(nullptr),
+  autofocus_scroll_(nullptr),
+  autofocus_result_bestZ_lineed_(nullptr),
+  autofocus_exe_button_(nullptr),
+  autofocus_stop_button_(nullptr),
+  autofocus_param_maxDZ_lineed_(nullptr),
+  autofocus_param_Nstep_lineed_(nullptr),
+  autofocus_save_zscan_button_(nullptr)
 {
   QGridLayout* g0 = new QGridLayout;
   this->setLayout(g0);
@@ -73,39 +73,39 @@ AssemblyImageView::AssemblyImageView(QWidget* parent) :
   // ----------
 
   // auto-focusing
-  QVBoxLayout* AF_result_lay = new QVBoxLayout;
+  QVBoxLayout* autofocus_result_lay = new QVBoxLayout;
 
-  AF_ueye_ = new AssemblyUEyeView(this);
-  AF_ueye_->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-  AF_ueye_->setMinimumSize(500, 300);
-  AF_ueye_->setPalette(palette);
-  AF_ueye_->setBackgroundRole(QPalette::Background);
-  AF_ueye_->setScaledContents(true);
-  AF_ueye_->setAlignment(Qt::AlignCenter);
-  AF_ueye_->setZoomFactor(0.75);
+  autofocus_ueye_ = new AssemblyUEyeView(this);
+  autofocus_ueye_->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+  autofocus_ueye_->setMinimumSize(500, 300);
+  autofocus_ueye_->setPalette(palette);
+  autofocus_ueye_->setBackgroundRole(QPalette::Background);
+  autofocus_ueye_->setScaledContents(true);
+  autofocus_ueye_->setAlignment(Qt::AlignCenter);
+  autofocus_ueye_->setZoomFactor(0.75);
 
-  AF_scroll_ = new QScrollArea(this);
-  AF_scroll_->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-  AF_scroll_->setMinimumSize(500, 300);
-  AF_scroll_->setPalette(palette);
-  AF_scroll_->setBackgroundRole(QPalette::Background);
-  AF_scroll_->setAlignment(Qt::AlignCenter);
-  AF_scroll_->setWidget(AF_ueye_);
+  autofocus_scroll_ = new QScrollArea(this);
+  autofocus_scroll_->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+  autofocus_scroll_->setMinimumSize(500, 300);
+  autofocus_scroll_->setPalette(palette);
+  autofocus_scroll_->setBackgroundRole(QPalette::Background);
+  autofocus_scroll_->setAlignment(Qt::AlignCenter);
+  autofocus_scroll_->setWidget(autofocus_ueye_);
 
-  AF_result_lay->addWidget(AF_scroll_);
+  autofocus_result_lay->addWidget(autofocus_scroll_);
 
-  QHBoxLayout* AF_result_bestZ_lay = new QHBoxLayout;
+  QHBoxLayout* autofocus_result_bestZ_lay = new QHBoxLayout;
 
-  QLabel* AF_result_bestZ_label = new QLabel("Best-Focus Z-position [mm]", this);
-  AF_result_bestZ_lineed_ = new QLineEdit("", this);
-  AF_result_bestZ_lineed_->setReadOnly(true);
+  QLabel* autofocus_result_bestZ_label = new QLabel("Best-Focus Z-position [mm]", this);
+  autofocus_result_bestZ_lineed_ = new QLineEdit("", this);
+  autofocus_result_bestZ_lineed_->setReadOnly(true);
 
-  AF_result_bestZ_lay->addWidget(AF_result_bestZ_label  , 40);
-  AF_result_bestZ_lay->addWidget(AF_result_bestZ_lineed_, 60);
+  autofocus_result_bestZ_lay->addWidget(autofocus_result_bestZ_label  , 40);
+  autofocus_result_bestZ_lay->addWidget(autofocus_result_bestZ_lineed_, 60);
 
-  AF_result_lay->addLayout(AF_result_bestZ_lay);
+  autofocus_result_lay->addLayout(autofocus_result_bestZ_lay);
 
-  g0->addLayout(AF_result_lay, 1, 0);
+  g0->addLayout(autofocus_result_lay, 1, 0);
   // ----------
 
   this->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
@@ -137,56 +137,56 @@ AssemblyImageView::AssemblyImageView(QWidget* parent) :
   // ----------
 
   // auto-focusing
-  QVBoxLayout* AF_lay = new QVBoxLayout;
-  g0->addLayout(AF_lay, 1, 1);
+  QVBoxLayout* autofocus_lay = new QVBoxLayout;
+  g0->addLayout(autofocus_lay, 1, 1);
 
-  AF_exe_button_ = new QPushButton("Auto-Focus Image", this);
-  AF_lay->addWidget(AF_exe_button_);
+  autofocus_exe_button_ = new QPushButton("Auto-Focus Image", this);
+  autofocus_lay->addWidget(autofocus_exe_button_);
 
-  AF_stop_button_ = new QPushButton("Stop Auto-Focus", this);
-  AF_lay->addWidget(AF_stop_button_);
+  autofocus_stop_button_ = new QPushButton("Stop Auto-Focus", this);
+  autofocus_lay->addWidget(autofocus_stop_button_);
   // -----
 
-  AF_lay->addSpacing(20);
+  autofocus_lay->addSpacing(20);
 
-  QGroupBox* AF_param_box = new QGroupBox(tr("Auto-Focus Configuration"));
-  AF_param_box->setStyleSheet("QGroupBox { font-weight: bold; } ");
+  QGroupBox* autofocus_param_box = new QGroupBox(tr("Auto-Focus Configuration"));
+  autofocus_param_box->setStyleSheet("QGroupBox { font-weight: bold; } ");
 
-  AF_lay->addWidget(AF_param_box);
+  autofocus_lay->addWidget(autofocus_param_box);
 
-  QVBoxLayout* AF_param_lay = new QVBoxLayout;
-  AF_param_box->setLayout(AF_param_lay);
+  QVBoxLayout* autofocus_param_lay = new QVBoxLayout;
+  autofocus_param_box->setLayout(autofocus_param_lay);
 
-  QHBoxLayout* AF_param_maxDZ_lay = new QHBoxLayout;
-  AF_param_lay->addLayout(AF_param_maxDZ_lay);
+  QHBoxLayout* autofocus_param_maxDZ_lay = new QHBoxLayout;
+  autofocus_param_lay->addLayout(autofocus_param_maxDZ_lay);
 
-  QLabel* AF_param_maxDZ_label = new QLabel("Max delta-Z [mm]", this);
-  AF_param_maxDZ_lineed_ = new QLineEdit("", this);
+  QLabel* autofocus_param_maxDZ_label = new QLabel("Max delta-Z [mm]", this);
+  autofocus_param_maxDZ_lineed_ = new QLineEdit("", this);
 
-  AF_param_maxDZ_lay->addWidget(AF_param_maxDZ_label  , 40);
-  AF_param_maxDZ_lay->addWidget(AF_param_maxDZ_lineed_, 60);
+  autofocus_param_maxDZ_lay->addWidget(autofocus_param_maxDZ_label  , 40);
+  autofocus_param_maxDZ_lay->addWidget(autofocus_param_maxDZ_lineed_, 60);
 
-  QHBoxLayout* AF_param_Nstep_lay = new QHBoxLayout;
-  AF_param_lay->addLayout(AF_param_Nstep_lay);
+  QHBoxLayout* autofocus_param_Nstep_lay = new QHBoxLayout;
+  autofocus_param_lay->addLayout(autofocus_param_Nstep_lay);
 
-  QLabel* AF_param_Nstep_label = new QLabel("# Steps (int)", this);
-  AF_param_Nstep_lineed_ = new QLineEdit("", this);
+  QLabel* autofocus_param_Nstep_label = new QLabel("# Steps (int)", this);
+  autofocus_param_Nstep_lineed_ = new QLineEdit("", this);
 
-  AF_param_Nstep_lay->addWidget(AF_param_Nstep_label  , 40);
-  AF_param_Nstep_lay->addWidget(AF_param_Nstep_lineed_, 60);
+  autofocus_param_Nstep_lay->addWidget(autofocus_param_Nstep_label  , 40);
+  autofocus_param_Nstep_lay->addWidget(autofocus_param_Nstep_lineed_, 60);
   // -----
 
-  AF_lay->addSpacing(20);
+  autofocus_lay->addSpacing(20);
 
-  AF_save_zscan_button_ = new QPushButton("Save Z-Scan Image", this);
-  AF_lay->addWidget(AF_save_zscan_button_);
+  autofocus_save_zscan_button_ = new QPushButton("Save Z-Scan Image", this);
+  autofocus_lay->addWidget(autofocus_save_zscan_button_);
 
-  connect(AF_save_zscan_button_, SIGNAL(clicked()), this, SLOT(save_image_zscan()));
+  connect(autofocus_save_zscan_button_, SIGNAL(clicked()), this, SLOT(save_image_zscan()));
 
   this->connectImageProducer_autofocus(this, SIGNAL(image_zscan_updated(const cv::Mat&)));
   // -----
 
-  AF_lay->addStretch();
+  autofocus_lay->addStretch();
   // ----------
 
   //// --------------------------------------------------
@@ -307,7 +307,7 @@ void AssemblyImageView::modify_image_centerlines()
 
 void AssemblyImageView::update_text(const double z)
 {
-  AF_result_bestZ_lineed_->setText(QString::fromStdString(std::to_string(z)));
+  autofocus_result_bestZ_lineed_->setText(QString::fromStdString(std::to_string(z)));
 
   NQLog("AssemblyImageView", NQLog::Spam) << "update_text"
      << ": displayed value of best z-position (focal point)";
@@ -320,12 +320,12 @@ void AssemblyImageView::update_autofocus_config(const double maxDZ, const int Ns
   std::stringstream maxDZ_strs;
   maxDZ_strs << maxDZ;
 
-  AF_param_maxDZ_lineed_->setText(QString::fromStdString(maxDZ_strs.str()));
+  autofocus_param_maxDZ_lineed_->setText(QString::fromStdString(maxDZ_strs.str()));
 
   std::stringstream Nstep_strs;
   Nstep_strs << Nstep;
 
-  AF_param_Nstep_lineed_->setText(QString::fromStdString(Nstep_strs.str()));
+  autofocus_param_Nstep_lineed_->setText(QString::fromStdString(Nstep_strs.str()));
 
   return;
 }
@@ -333,7 +333,7 @@ void AssemblyImageView::update_autofocus_config(const double maxDZ, const int Ns
 void AssemblyImageView::acquire_autofocus_config()
 {
   // maximum delta-Z movement
-  const QString maxDZ_str = AF_param_maxDZ_lineed_->text();
+  const QString maxDZ_str = autofocus_param_maxDZ_lineed_->text();
 
   bool maxDZ_valid(false);
   const double maxDZ = maxDZ_str.toDouble(&maxDZ_valid);
@@ -348,7 +348,7 @@ void AssemblyImageView::acquire_autofocus_config()
   // -------------------------
 
   // number of steps in Z-scan
-  const QString Nstep_str = AF_param_Nstep_lineed_->text();
+  const QString Nstep_str = autofocus_param_Nstep_lineed_->text();
 
   bool Nstep_valid(false);
   const double Nstep = Nstep_str.toInt(&Nstep_valid);
@@ -410,14 +410,14 @@ void AssemblyImageView::connectImageProducer_autofocus(const QObject* sender, co
 {
   NQLog("AssemblyImageView", NQLog::Debug) << "connectImageProducer_autofocus";
 
-  AF_ueye_->connectImageProducer(sender, signal);
+  autofocus_ueye_->connectImageProducer(sender, signal);
 }
 
 void AssemblyImageView::disconnectImageProducer_autofocus(const QObject* sender, const char* signal)
 {
   NQLog("AssemblyImageView", NQLog::Debug) << "disconnectImageProducer_autofocus";
 
-  AF_ueye_->disconnectImageProducer(sender, signal);
+  autofocus_ueye_->disconnectImageProducer(sender, signal);
 }
 
 void AssemblyImageView::keyReleaseEvent(QKeyEvent* event)
@@ -428,25 +428,25 @@ void AssemblyImageView::keyReleaseEvent(QKeyEvent* event)
     {
       case Qt::Key_0:
 //        img_ueye_->setZoomFactor(0.25);
-//        AF_ueye_ ->setZoomFactor(0.25);
+//        autofocus_ueye_ ->setZoomFactor(0.25);
         event->accept();
         break;
 
       case Qt::Key_1:
 //        img_ueye_->setZoomFactor(1.00);
-//        AF_ueye_ ->setZoomFactor(1.00);
+//        autofocus_ueye_ ->setZoomFactor(1.00);
         event->accept();
         break;
 
       case Qt::Key_Plus:
 //        img_ueye_->increaseZoomFactor();
-//        AF_ueye_ ->increaseZoomFactor();
+//        autofocus_ueye_ ->increaseZoomFactor();
         event->accept();
         break;
 
       case Qt::Key_Minus:
 //        img_ueye_->decreaseZoomFactor();
-//        AF_ueye_ ->decreaseZoomFactor();
+//        autofocus_ueye_ ->decreaseZoomFactor();
         event->accept();
         break;
 
