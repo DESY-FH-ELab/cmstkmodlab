@@ -92,8 +92,8 @@ AssemblyParametersView::AssemblyParametersView(QWidget* parent)
   dime_lay->addWidget(this->get(tmp_tag)  , 3, 6, Qt::AlignRight);
 
   // dimension: height of spacer slots
-  tmp_tag = "Height_SpacerSlots";
-  tmp_des = "Height of Spacer Slots :";
+  tmp_tag = "Depth_SpacerSlots";
+  tmp_des = "Depth of Spacer Slots :";
 
   map_lineEdit_[tmp_tag] = new QLineEdit(tr(""));
 
@@ -110,16 +110,6 @@ AssemblyParametersView::AssemblyParametersView(QWidget* parent)
   dime_lay->addWidget(new QLabel(tmp_des) , 5, 0, Qt::AlignLeft);
   dime_lay->addWidget(new QLabel(tr("dZ")), 5, 5, Qt::AlignRight);
   dime_lay->addWidget(this->get(tmp_tag)  , 5, 6, Qt::AlignRight);
-
-  // dimension: thickness of Vacuum Cups
-  tmp_tag = "Thickness_VacuumCups";
-  tmp_des = "Thickness of Vacuum Cups :";
-
-  map_lineEdit_[tmp_tag] = new QLineEdit(tr(""));
-
-  dime_lay->addWidget(new QLabel(tmp_des) , 6, 0, Qt::AlignLeft);
-  dime_lay->addWidget(new QLabel(tr("dZ")), 6, 5, Qt::AlignRight);
-  dime_lay->addWidget(this->get(tmp_tag)  , 6, 6, Qt::AlignRight);
 
   //// ---------------------
 
