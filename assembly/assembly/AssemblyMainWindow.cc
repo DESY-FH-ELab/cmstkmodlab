@@ -385,13 +385,11 @@ AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QStr
 
     NQLog("AssemblyMainWindow", NQLog::Message) << "///////////////////////////////////////////////////////";
     NQLog("AssemblyMainWindow", NQLog::Message) << "//                                                   //";
-    NQLog("AssemblyMainWindow", NQLog::Message) << "//                     DESY-CMS                      //";
-    NQLog("AssemblyMainWindow", NQLog::Message) << "//                                                   //";
     NQLog("AssemblyMainWindow", NQLog::Message) << "//       Automated Pixel-Strip Module Assembly       //";
     NQLog("AssemblyMainWindow", NQLog::Message) << "//                                                   //";
-    NQLog("AssemblyMainWindow", NQLog::Message) << "//  - AssemblyMainWindow initialized successfully -  //";
-    NQLog("AssemblyMainWindow", NQLog::Message) << "//                                                   //";
     NQLog("AssemblyMainWindow", NQLog::Message) << "///////////////////////////////////////////////////////";
+
+    NQLog("AssemblyMainWindow", NQLog::Message) << "application initialized successfully";
 
     // enable camera at startup
     const bool startup_camera = config->getValue<bool>("startup_camera", false);
