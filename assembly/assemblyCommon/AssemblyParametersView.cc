@@ -407,6 +407,36 @@ AssemblyParametersView::AssemblyParametersView(QWidget* parent)
   dist_lay->addWidget(new QLabel(tr("dZ"))    , row_index, 5, Qt::AlignRight);
   dist_lay->addWidget(this->get(tmp_tag+"_dZ"), row_index, 6, Qt::AlignRight);
 
+  // distance: from ref-point on assembly platform (for spacers' calibration) to spacer's edge
+  ++row_index;
+
+  tmp_tag = "FromRefPointCalibrationSpacersToSpacerEdge";
+  tmp_des = "From Ref-Point of Spacers-Calibration to Spacer's Edge :";
+
+  map_lineEdit_[tmp_tag+"_dX"] = new QLineEdit(tr(""));
+  map_lineEdit_[tmp_tag+"_dY"] = new QLineEdit(tr(""));
+
+  dist_lay->addWidget(new QLabel(tmp_des)     , row_index, 0, Qt::AlignLeft);
+  dist_lay->addWidget(new QLabel(tr("dX"))    , row_index, 1, Qt::AlignRight);
+  dist_lay->addWidget(this->get(tmp_tag+"_dX"), row_index, 2, Qt::AlignRight);
+  dist_lay->addWidget(new QLabel(tr("dY"))    , row_index, 3, Qt::AlignRight);
+  dist_lay->addWidget(this->get(tmp_tag+"_dY"), row_index, 4, Qt::AlignRight);
+
+  // distance: from ref-point on assembly platform (for baseplates' calibration) to baseplate's edge
+  ++row_index;
+
+  tmp_tag = "FromRefPointCalibrationBaseplateToBaseplateEdge";
+  tmp_des = "From Ref-Point of Baseplate-Calibration to Baseplate's Edge :";
+
+  map_lineEdit_[tmp_tag+"_dX"] = new QLineEdit(tr(""));
+  map_lineEdit_[tmp_tag+"_dY"] = new QLineEdit(tr(""));
+
+  dist_lay->addWidget(new QLabel(tmp_des)     , row_index, 0, Qt::AlignLeft);
+  dist_lay->addWidget(new QLabel(tr("dX"))    , row_index, 1, Qt::AlignRight);
+  dist_lay->addWidget(this->get(tmp_tag+"_dX"), row_index, 2, Qt::AlignRight);
+  dist_lay->addWidget(new QLabel(tr("dY"))    , row_index, 3, Qt::AlignRight);
+  dist_lay->addWidget(this->get(tmp_tag+"_dY"), row_index, 4, Qt::AlignRight);
+
   //// ---------------------
 
   layout->addStretch(1);
