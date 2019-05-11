@@ -190,39 +190,39 @@ AssemblyParametersView::AssemblyParametersView(QWidget* parent)
   posi_lay->addWidget(new QLabel(tr("A"))    , 2, 7, Qt::AlignRight);
   posi_lay->addWidget(this->get(tmp_tag+"_A"), 2, 8, Qt::AlignRight);
 
-  // position: Z-position (height) to put pickup tool in contact with rotation stage
-  tmp_tag = "PickupToolOnRotStage";
-  tmp_des = "Pickup Tool on Rotation Stage :";
+//!!  // position: Z-position (height) to put pickup tool in contact with rotation stage
+//!!  tmp_tag = "PickupToolOnRotStage";
+//!!  tmp_des = "Pickup Tool on Rotation Stage :";
+//!!
+//!!  map_lineEdit_[tmp_tag+"_Z"] = new QLineEdit(tr(""));
+//!!
+//!!  posi_lay->addWidget(new QLabel(tmp_des)    , 3, 0, Qt::AlignLeft);
+//!!
+//!!  posi_lay->addWidget(new QLabel(tr("Z"))    , 3, 5, Qt::AlignRight);
+//!!  posi_lay->addWidget(this->get(tmp_tag+"_Z"), 3, 6, Qt::AlignRight);
+//!!
+//!!  // position: XY pickup position on glue-dispensing platform + Z-position (height) to put pickup tool in contact with platform
+//!!  tmp_tag = "PickupToolOnGluingStage";
+//!!  tmp_des = "Pickup Tool on Gluing Stage :";
+//!!
+//!!  map_lineEdit_[tmp_tag+"_X"] = new QLineEdit(tr(""));
+//!!  map_lineEdit_[tmp_tag+"_Y"] = new QLineEdit(tr(""));
+//!!  map_lineEdit_[tmp_tag+"_Z"] = new QLineEdit(tr(""));
+//!!
+//!!  posi_lay->addWidget(new QLabel(tmp_des)    , 4, 0, Qt::AlignLeft);
+//!!
+//!!  posi_lay->addWidget(new QLabel(tr("X"))    , 4, 1, Qt::AlignRight);
+//!!  posi_lay->addWidget(this->get(tmp_tag+"_X"), 4, 2, Qt::AlignRight);
+//!!
+//!!  posi_lay->addWidget(new QLabel(tr("Y"))    , 4, 3, Qt::AlignRight);
+//!!  posi_lay->addWidget(this->get(tmp_tag+"_Y"), 4, 4, Qt::AlignRight);
+//!!
+//!!  posi_lay->addWidget(new QLabel(tr("Z"))    , 4, 5, Qt::AlignRight);
+//!!  posi_lay->addWidget(this->get(tmp_tag+"_Z"), 4, 6, Qt::AlignRight);
 
-  map_lineEdit_[tmp_tag+"_Z"] = new QLineEdit(tr(""));
-
-  posi_lay->addWidget(new QLabel(tmp_des)    , 3, 0, Qt::AlignLeft);
-
-  posi_lay->addWidget(new QLabel(tr("Z"))    , 3, 5, Qt::AlignRight);
-  posi_lay->addWidget(this->get(tmp_tag+"_Z"), 3, 6, Qt::AlignRight);
-
-  // position: XY pickup position on glue-dispensing platform + Z-position (height) to put pickup tool in contact with platform
-  tmp_tag = "PickupToolOnGluingStage";
-  tmp_des = "Pickup Tool on Gluing Stage :";
-
-  map_lineEdit_[tmp_tag+"_X"] = new QLineEdit(tr(""));
-  map_lineEdit_[tmp_tag+"_Y"] = new QLineEdit(tr(""));
-  map_lineEdit_[tmp_tag+"_Z"] = new QLineEdit(tr(""));
-
-  posi_lay->addWidget(new QLabel(tmp_des)    , 4, 0, Qt::AlignLeft);
-
-  posi_lay->addWidget(new QLabel(tr("X"))    , 4, 1, Qt::AlignRight);
-  posi_lay->addWidget(this->get(tmp_tag+"_X"), 4, 2, Qt::AlignRight);
-
-  posi_lay->addWidget(new QLabel(tr("Y"))    , 4, 3, Qt::AlignRight);
-  posi_lay->addWidget(this->get(tmp_tag+"_Y"), 4, 4, Qt::AlignRight);
-
-  posi_lay->addWidget(new QLabel(tr("Z"))    , 4, 5, Qt::AlignRight);
-  posi_lay->addWidget(this->get(tmp_tag+"_Z"), 4, 6, Qt::AlignRight);
-
-  // position: z-position where camera is focused on Gluing Stage surface
-  tmp_tag = "CamerFocusOnGluingStage";
-  tmp_des = "Camera Focused on Gluing Stage Surface :";
+  // position: z-position where camera is focused on Assembly Stage surface
+  tmp_tag = "CameraFocusOnAssemblyStage";
+  tmp_des = "Camera Focused on Assembly Stage Surface :";
 
   map_lineEdit_[tmp_tag+"_Z"] = new QLineEdit(tr(""));
 
@@ -230,6 +230,17 @@ AssemblyParametersView::AssemblyParametersView(QWidget* parent)
 
   posi_lay->addWidget(new QLabel(tr("Z"))    , 5, 5, Qt::AlignRight);
   posi_lay->addWidget(this->get(tmp_tag+"_Z"), 5, 6, Qt::AlignRight);
+
+  // position: z-position where camera is focused on Gluing Stage surface
+  tmp_tag = "CameraFocusOnGluingStage";
+  tmp_des = "Camera Focused on Gluing Stage Surface :";
+
+  map_lineEdit_[tmp_tag+"_Z"] = new QLineEdit(tr(""));
+
+  posi_lay->addWidget(new QLabel(tmp_des)    , 6, 0, Qt::AlignLeft);
+
+  posi_lay->addWidget(new QLabel(tr("Z"))    , 6, 5, Qt::AlignRight);
+  posi_lay->addWidget(this->get(tmp_tag+"_Z"), 6, 6, Qt::AlignRight);
 
   //// ---------------------
 

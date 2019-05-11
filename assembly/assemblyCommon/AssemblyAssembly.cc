@@ -828,7 +828,7 @@ void AssemblyAssembly::GoFromPSPToPSSPosToGluingStageRefPoint_start()
 
   const double dx0 = this->parameters()->get("FromPSPToPSSPosToGluingStage_dX");
   const double dy0 = this->parameters()->get("FromPSPToPSSPosToGluingStage_dY");
-  const double dz0 = this->parameters()->get("CamerFocusOnGluingStage_Z") - motion_->get_position_Z();
+  const double dz0 = this->parameters()->get("CameraFocusOnGluingStage_Z") - motion_->get_position_Z();
   const double da0 = 0.0;
 
   if(use_smartMove_)
