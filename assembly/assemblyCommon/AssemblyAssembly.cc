@@ -559,99 +559,65 @@ void AssemblyAssembly::PickupPSS_finish()
 // ----------------------------------------------------------------------------------------------------
 
 // ----------------------------------------------------------------------------------------------------
-// GoToSpacerRefPoint ---------------------------------------------------------------------------------
+// GoToXYAPositionToGluePSSToSpacers ------------------------------------------------------------------
 // ----------------------------------------------------------------------------------------------------
-void AssemblyAssembly::GoToSpacerRefPoint_start()
+void AssemblyAssembly::GoToXYAPositionToGluePSSToSpacers_start()
 {
   const bool valid_params = this->parameters()->update();
 
   if(valid_params == false)
   {
-    NQLog("AssemblyAssembly", NQLog::Critical) << "GoToSpacerRefPoint_start"
+    NQLog("AssemblyAssembly", NQLog::Critical) << "GoToXYAPositionToGluePSSToSpacers_start"
        << ": failed to update content of AssemblyParameters, no action taken";
 
-    NQLog("AssemblyAssembly", NQLog::Spam) << "GoToSpacerRefPoint_finish"
-       << ": emitting signal \"GoToSpacerRefPoint_finished\"";
+    NQLog("AssemblyAssembly", NQLog::Spam) << "GoToXYAPositionToGluePSSToSpacers_finish"
+       << ": emitting signal \"GoToXYAPositionToGluePSSToSpacers_finished\"";
 
-    emit GoToSpacerRefPoint_finished();
+    emit GoToXYAPositionToGluePSSToSpacers_finished();
 
     return;
   }
 
-  const double x0 = this->parameters()->get("RefPointSpacer_X");
-  const double y0 = this->parameters()->get("RefPointSpacer_Y");
-  const double z0 = this->parameters()->get("RefPointSpacer_Z");
-  const double a0 = this->parameters()->get("RefPointSpacer_A");
+  const double dx0 =
+     this->parameters()->get("RefPointCalibrationSpacers_X")
+   + this->parameters()->get("FromRefPointCalibrationSpacersToSpacerEdge_dX")
+   + this->parameters()->get("FromSpacerRefPointToSensorRefPoint_dX")
+   + this->parameters()->get("FromSensorRefPointToSensorPickup_dX")
+   - motion_->get_position_X();
 
-  connect(this, SIGNAL(move_absolute_request(double, double, double, double)), motion_, SLOT(moveAbsolute(double, double, double, double)));
-  connect(motion_, SIGNAL(motion_finished()), this, SLOT(GoToSpacerRefPoint_finish()));
+  const double dy0 =
+     this->parameters()->get("RefPointCalibrationSpacers_Y")
+   + this->parameters()->get("FromRefPointCalibrationSpacersToSpacerEdge_dY")
+   + this->parameters()->get("FromSpacerRefPointToSensorRefPoint_dY")
+   + this->parameters()->get("FromSensorRefPointToSensorPickup_dY")
+   - motion_->get_position_Y();
 
-  NQLog("AssemblyAssembly", NQLog::Spam) << "GoToSpacerRefPoint_start"
-     << ": emitting signal \"move_absolute_request(" << x0 << ", " << y0 << ", " << z0 << ", " << a0 << ")\"";
-
-  emit move_absolute_request(x0, y0, z0, a0);
-}
-
-void AssemblyAssembly::GoToSpacerRefPoint_finish()
-{
-  disconnect(this, SIGNAL(move_absolute_request(double, double, double, double)), motion_, SLOT(moveAbsolute(double, double, double, double)));
-  disconnect(motion_, SIGNAL(motion_finished()), this, SLOT(GoToSpacerRefPoint_finish()));
-
-  NQLog("AssemblyAssembly", NQLog::Spam) << "GoToSpacerRefPoint_finish"
-     << ": emitting signal \"GoToSpacerRefPoint_finished\"";
-
-  emit GoToSpacerRefPoint_finished();
-
-  NQLog("AssemblyAssembly", NQLog::Message) << "GoToSpacerRefPoint_finish"
-     << ": assembly-step completed";
-}
-// ----------------------------------------------------------------------------------------------------
-
-// ----------------------------------------------------------------------------------------------------
-// GoFromSpacerRefPointToSpacerGluingXYPosition -------------------------------------------------------
-// ----------------------------------------------------------------------------------------------------
-void AssemblyAssembly::GoFromSpacerRefPointToSpacerGluingXYPosition_start()
-{
-  const bool valid_params = this->parameters()->update();
-
-  if(valid_params == false)
-  {
-    NQLog("AssemblyAssembly", NQLog::Critical) << "GoFromSpacerRefPointToSpacerGluingXYPosition_start"
-       << ": failed to update content of AssemblyParameters, no action taken";
-
-    NQLog("AssemblyAssembly", NQLog::Spam) << "GoFromSpacerRefPointToSpacerGluingXYPosition_finish"
-       << ": emitting signal \"GoFromSpacerRefPointToSpacerGluingXYPosition_finished\"";
-
-    emit GoFromSpacerRefPointToSpacerGluingXYPosition_finished();
-
-    return;
-  }
-
-  const double dx0 = this->parameters()->get("FromSpacerRefPointToSensorRefPoint_dX") + this->parameters()->get("FromSensorRefPointToSensorPickup_dX");
-  const double dy0 = this->parameters()->get("FromSpacerRefPointToSensorRefPoint_dY") + this->parameters()->get("FromSensorRefPointToSensorPickup_dY");
   const double dz0 = 0.0;
-  const double da0 = 0.0;
+
+  const double da0 =
+     this->parameters()->get("RefPointCalibrationSpacers_A")
+   - motion_->get_position_A();
 
   connect(this, SIGNAL(move_relative_request(double, double, double, double)), motion_, SLOT(moveRelative(double, double, double, double)));
-  connect(motion_, SIGNAL(motion_finished()), this, SLOT(GoFromSpacerRefPointToSpacerGluingXYPosition_finish()));
+  connect(motion_, SIGNAL(motion_finished()), this, SLOT(GoToXYAPositionToGluePSSToSpacers_finish()));
 
-  NQLog("AssemblyAssembly", NQLog::Spam) << "GoFromSpacerRefPointToSpacerGluingXYPosition_start"
+  NQLog("AssemblyAssembly", NQLog::Spam) << "GoToXYAPositionToGluePSSToSpacers_start"
      << ": emitting signal \"move_relative_request(" << dx0 << ", " << dy0 << ", " << dz0 << ", " << da0 << ")\"";
 
   emit move_relative_request(dx0, dy0, dz0, da0);
 }
 
-void AssemblyAssembly::GoFromSpacerRefPointToSpacerGluingXYPosition_finish()
+void AssemblyAssembly::GoToXYAPositionToGluePSSToSpacers_finish()
 {
   disconnect(this, SIGNAL(move_relative_request(double, double, double, double)), motion_, SLOT(moveRelative(double, double, double, double)));
-  disconnect(motion_, SIGNAL(motion_finished()), this, SLOT(GoFromSpacerRefPointToSpacerGluingXYPosition_finish()));
+  disconnect(motion_, SIGNAL(motion_finished()), this, SLOT(GoToXYAPositionToGluePSSToSpacers_finish()));
 
-  NQLog("AssemblyAssembly", NQLog::Spam) << "GoFromSpacerRefPointToSpacerGluingXYPosition_finish"
-     << ": emitting signal \"GoFromSpacerRefPointToSpacerGluingXYPosition_finished\"";
+  NQLog("AssemblyAssembly", NQLog::Spam) << "GoToXYAPositionToGluePSSToSpacers_finish"
+     << ": emitting signal \"GoToXYAPositionToGluePSSToSpacers_finished\"";
 
-  emit GoFromSpacerRefPointToSpacerGluingXYPosition_finished();
+  emit GoToXYAPositionToGluePSSToSpacers_finished();
 
-  NQLog("AssemblyAssembly", NQLog::Message) << "GoFromSpacerRefPointToSpacerGluingXYPosition_finish"
+  NQLog("AssemblyAssembly", NQLog::Message) << "GoToXYAPositionToGluePSSToSpacers_finish"
      << ": assembly-step completed";
 }
 // ----------------------------------------------------------------------------------------------------
@@ -1223,107 +1189,67 @@ void AssemblyAssembly::PickupPSPAndPSS_finish()
 // ----------------------------------------------------------------------------------------------------
 
 // ----------------------------------------------------------------------------------------------------
-// GoToBaseplateRefPoint ---------------------------------------------------------------------------------
+// GoToXYAPositionToGlueSensorAssemblyToBaseplate -------------------------------------------------------
 // ----------------------------------------------------------------------------------------------------
-void AssemblyAssembly::GoToBaseplateRefPoint_start()
+void AssemblyAssembly::GoToXYAPositionToGlueSensorAssemblyToBaseplate_start()
 {
   const bool valid_params = this->parameters()->update();
 
   if(valid_params == false)
   {
-    NQLog("AssemblyAssembly", NQLog::Critical) << "GoToBaseplateRefPoint_start"
+    NQLog("AssemblyAssembly", NQLog::Critical) << "GoToXYAPositionToGlueSensorAssemblyToBaseplate_start"
        << ": failed to update content of AssemblyParameters, no action taken";
 
-    NQLog("AssemblyAssembly", NQLog::Spam) << "GoToBaseplateRefPoint_finish"
-       << ": emitting signal \"GoToBaseplateRefPoint_finished\"";
+    NQLog("AssemblyAssembly", NQLog::Spam) << "GoToXYAPositionToGlueSensorAssemblyToBaseplate_finish"
+       << ": emitting signal \"GoToXYAPositionToGlueSensorAssemblyToBaseplate_finished\"";
 
-    emit GoToBaseplateRefPoint_finished();
-
-    return;
-  }
-
-  const double x0 = this->parameters()->get("RefPointBaseplate_X");
-  const double y0 = this->parameters()->get("RefPointBaseplate_Y");
-  const double z0 = this->parameters()->get("RefPointBaseplate_Z");
-  const double a0 = this->parameters()->get("RefPointBaseplate_A");
-
-  connect(this, SIGNAL(move_absolute_request(double, double, double, double)), motion_, SLOT(moveAbsolute(double, double, double, double)));
-  connect(motion_, SIGNAL(motion_finished()), this, SLOT(GoToBaseplateRefPoint_finish()));
-
-  NQLog("AssemblyAssembly", NQLog::Spam) << "GoToBaseplateRefPoint_start"
-     << ": emitting signal \"move_absolute_request(" << x0 << ", " << y0 << ", " << z0 << ", " << a0 << ")\"";
-
-  emit move_absolute_request(x0, y0, z0, a0);
-}
-
-void AssemblyAssembly::GoToBaseplateRefPoint_finish()
-{
-  disconnect(this, SIGNAL(move_absolute_request(double, double, double, double)), motion_, SLOT(moveAbsolute(double, double, double, double)));
-  disconnect(motion_, SIGNAL(motion_finished()), this, SLOT(GoToBaseplateRefPoint_finish()));
-
-  NQLog("AssemblyAssembly", NQLog::Spam) << "GoToBaseplateRefPoint_finish"
-     << ": emitting signal \"GoToBaseplateRefPoint_finished\"";
-
-  emit GoToBaseplateRefPoint_finished();
-
-  NQLog("AssemblyAssembly", NQLog::Message) << "GoToBaseplateRefPoint_finish"
-     << ": assembly-step completed";
-}
-// ----------------------------------------------------------------------------------------------------
-
-// ----------------------------------------------------------------------------------------------------
-// GoFromBaseplateRefPointToBaseplateGluingXYPosition -------------------------------------------------
-// ----------------------------------------------------------------------------------------------------
-void AssemblyAssembly::GoFromBaseplateRefPointToBaseplateGluingXYPosition_start()
-{
-  const bool valid_params = this->parameters()->update();
-
-  if(valid_params == false)
-  {
-    NQLog("AssemblyAssembly", NQLog::Critical) << "GoFromBaseplateRefPointToBaseplateGluingXYPosition_start"
-       << ": failed to update content of AssemblyParameters, no action taken";
-
-    NQLog("AssemblyAssembly", NQLog::Spam) << "GoFromBaseplateRefPointToBaseplateGluingXYPosition_finish"
-       << ": emitting signal \"GoFromBaseplateRefPointToBaseplateGluingXYPosition_finished\"";
-
-    emit GoFromBaseplateRefPointToBaseplateGluingXYPosition_finished();
+    emit GoToXYAPositionToGlueSensorAssemblyToBaseplate_finished();
 
     return;
   }
 
   const double dx0 =
-      this->parameters()->get("FromBaseplateRefPointToPSPRefPoint_dX")
-    + this->parameters()->get("FromPSPRefPointToPSSRefPoint_dX")
-    + this->parameters()->get("FromSensorRefPointToSensorPickup_dX")
-  ;
+     this->parameters()->get("RefPointCalibrationBaseplate_X")
+   + this->parameters()->get("FromRefPointCalibrationBaseplateToBaseplateEdge_dX")
+   + this->parameters()->get("FromBaseplateRefPointToPSPRefPoint_dX")
+   + this->parameters()->get("FromPSPRefPointToPSSRefPoint_dX")
+   + this->parameters()->get("FromSensorRefPointToSensorPickup_dX")
+   - motion_->get_position_X();
+
   const double dy0 =
-      this->parameters()->get("FromBaseplateRefPointToPSPRefPoint_dY")
-    + this->parameters()->get("FromPSPRefPointToPSSRefPoint_dY")
-    + this->parameters()->get("FromSensorRefPointToSensorPickup_dY")
-  ;
+     this->parameters()->get("RefPointCalibrationBaseplate_Y")
+   + this->parameters()->get("FromRefPointCalibrationBaseplateToBaseplateEdge_dY")
+   + this->parameters()->get("FromBaseplateRefPointToPSPRefPoint_dY")
+   + this->parameters()->get("FromPSPRefPointToPSSRefPoint_dY")
+   + this->parameters()->get("FromSensorRefPointToSensorPickup_dY")
+   - motion_->get_position_Y();
+
   const double dz0 = 0.0;
-  const double da0 = 0.0;
+
+  const double da0 =
+     this->parameters()->get("RefPointCalibrationBaseplate_A")
+   - motion_->get_position_A();
 
   connect(this, SIGNAL(move_relative_request(double, double, double, double)), motion_, SLOT(moveRelative(double, double, double, double)));
-  connect(motion_, SIGNAL(motion_finished()), this, SLOT(GoFromBaseplateRefPointToBaseplateGluingXYPosition_finish()));
+  connect(motion_, SIGNAL(motion_finished()), this, SLOT(GoToXYAPositionToGlueSensorAssemblyToBaseplate_finish()));
 
-  NQLog("AssemblyAssembly", NQLog::Spam) << "GoFromBaseplateRefPointToBaseplateGluingXYPosition_start"
+  NQLog("AssemblyAssembly", NQLog::Spam) << "GoToXYAPositionToGlueSensorAssemblyToBaseplate_start"
      << ": emitting signal \"move_relative_request(" << dx0 << ", " << dy0 << ", " << dz0 << ", " << da0 << ")\"";
 
   emit move_relative_request(dx0, dy0, dz0, da0);
 }
 
-void AssemblyAssembly::GoFromBaseplateRefPointToBaseplateGluingXYPosition_finish()
+void AssemblyAssembly::GoToXYAPositionToGlueSensorAssemblyToBaseplate_finish()
 {
   disconnect(this, SIGNAL(move_relative_request(double, double, double, double)), motion_, SLOT(moveRelative(double, double, double, double)));
-  disconnect(motion_, SIGNAL(motion_finished()), this, SLOT(GoFromBaseplateRefPointToBaseplateGluingXYPosition_finish()));
+  disconnect(motion_, SIGNAL(motion_finished()), this, SLOT(GoToXYAPositionToGlueSensorAssemblyToBaseplate_finish()));
 
-  NQLog("AssemblyAssembly", NQLog::Spam) << "GoFromBaseplateRefPointToBaseplateGluingXYPosition_finish"
-     << ": emitting signal \"GoFromBaseplateRefPointToBaseplateGluingXYPosition_finished\"";
+  NQLog("AssemblyAssembly", NQLog::Spam) << "GoToXYAPositionToGlueSensorAssemblyToBaseplate_finish"
+     << ": emitting signal \"GoToXYAPositionToGlueSensorAssemblyToBaseplate_finished\"";
 
-  emit GoFromBaseplateRefPointToBaseplateGluingXYPosition_finished();
+  emit GoToXYAPositionToGlueSensorAssemblyToBaseplate_finished();
 
-  NQLog("AssemblyAssembly", NQLog::Message) << "GoFromBaseplateRefPointToBaseplateGluingXYPosition_finish"
+  NQLog("AssemblyAssembly", NQLog::Message) << "GoToXYAPositionToGlueSensorAssemblyToBaseplate_finish"
      << ": assembly-step completed";
 }
 // ----------------------------------------------------------------------------------------------------

@@ -233,29 +233,16 @@ AssemblyAssemblyView::AssemblyAssemblyView(const AssemblyAssembly* const assembl
   }
   // ----------
 
-  // step: Go To XYZA Spacer Ref-Point
+  // step: Go To XYA Position To Glue PS-s to Spacers
   {
     ++assembly_step_N_;
 
     AssemblyAssemblyActionWidget* tmp_wid = new AssemblyAssemblyActionWidget;
     tmp_wid->label() ->setText(QString::number(assembly_step_N_));
-    tmp_wid->button()->setText("Go To XYZA Spacer Ref-Point");
+    tmp_wid->button()->setText("Go To XYA Position To Glue Sensor Assembly To Baseplate");
     PSSToSpacers_lay->addWidget(tmp_wid);
 
-    tmp_wid->connect_action(assembly, SLOT(GoToSpacerRefPoint_start()), SIGNAL(GoToSpacerRefPoint_finished()));
-  }
-  // ----------
-
-  // step: Go To XY Position To Glue Spacers to PS-s
-  {
-    ++assembly_step_N_;
-
-    AssemblyAssemblyActionWidget* tmp_wid = new AssemblyAssemblyActionWidget;
-    tmp_wid->label() ->setText(QString::number(assembly_step_N_));
-    tmp_wid->button()->setText("Go To XY Position To Glue Spacers to PS-s");
-    PSSToSpacers_lay->addWidget(tmp_wid);
-
-    tmp_wid->connect_action(assembly, SLOT(GoFromSpacerRefPointToSpacerGluingXYPosition_start()), SIGNAL(GoFromSpacerRefPointToSpacerGluingXYPosition_finished()));
+    tmp_wid->connect_action(assembly, SLOT(GoToXYAPositionToGluePSSToSpacers_start()), SIGNAL(GoToXYAPositionToGluePSSToSpacers_finished()));
   }
   // ----------
 
@@ -531,29 +518,16 @@ AssemblyAssemblyView::AssemblyAssemblyView(const AssemblyAssembly* const assembl
   }
   // ----------
 
-  // step: Go To XYZA Baseplate Ref-Point
+  // step: Go To XYA Position To Glue Sensor Assembly To Baseplate
   {
     ++assembly_step_N_;
 
     AssemblyAssemblyActionWidget* tmp_wid = new AssemblyAssemblyActionWidget;
     tmp_wid->label() ->setText(QString::number(assembly_step_N_));
-    tmp_wid->button()->setText("Go To XYZA Baseplate Ref-Point");
+    tmp_wid->button()->setText("Go To XYA Position To Glue Sensor Assembly To Baseplate");
     PSToBasep_lay->addWidget(tmp_wid);
 
-    tmp_wid->connect_action(assembly, SLOT(GoToBaseplateRefPoint_start()), SIGNAL(GoToBaseplateRefPoint_finished()));
-  }
-  // ----------
-
-  // step: Go To XY Position To Glue Sensor Assembly To Baseplate
-  {
-    ++assembly_step_N_;
-
-    AssemblyAssemblyActionWidget* tmp_wid = new AssemblyAssemblyActionWidget;
-    tmp_wid->label() ->setText(QString::number(assembly_step_N_));
-    tmp_wid->button()->setText("Go To XY Position To Glue Sensor Assembly To Baseplate");
-    PSToBasep_lay->addWidget(tmp_wid);
-
-    tmp_wid->connect_action(assembly, SLOT(GoFromBaseplateRefPointToBaseplateGluingXYPosition_start()), SIGNAL(GoFromBaseplateRefPointToBaseplateGluingXYPosition_finished()));
+    tmp_wid->connect_action(assembly, SLOT(GoToXYAPositionToGlueSensorAssemblyToBaseplate_start()), SIGNAL(GoToXYAPositionToGlueSensorAssemblyToBaseplate_finished()));
   }
   // ----------
 
