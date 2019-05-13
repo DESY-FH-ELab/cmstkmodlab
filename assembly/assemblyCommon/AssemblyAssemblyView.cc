@@ -239,7 +239,7 @@ AssemblyAssemblyView::AssemblyAssemblyView(const AssemblyAssembly* const assembl
 
     AssemblyAssemblyActionWidget* tmp_wid = new AssemblyAssemblyActionWidget;
     tmp_wid->label() ->setText(QString::number(assembly_step_N_));
-    tmp_wid->button()->setText("Go To XYA Position To Glue Sensor Assembly To Baseplate");
+    tmp_wid->button()->setText("Go To XYA Position To Glue PS-s to Spacers");
     PSSToSpacers_lay->addWidget(tmp_wid);
 
     tmp_wid->connect_action(assembly, SLOT(GoToXYAPositionToGluePSSToSpacers_start()), SIGNAL(GoToXYAPositionToGluePSSToSpacers_finished()));
