@@ -555,6 +555,7 @@ void AssemblyMainWindow::connect_images()
   connect(image_view_->autofocus_button(), SIGNAL(clicked()), image_ctr_, SLOT(acquire_autofocused_image()));
 
   connect(image_view_->autofocus_emergencyStop_button(), SIGNAL(clicked()), zfocus_finder_, SLOT(emergencyStop()));
+  connect(image_view_->autofocus_emergencyStop_button(), SIGNAL(clicked()), image_ctr_    , SLOT(restore_autofocus_settings()));
 
   NQLog("AssemblyMainWindow", NQLog::Message) << "connect_images"
      << ": enabled images in application view(s)";
