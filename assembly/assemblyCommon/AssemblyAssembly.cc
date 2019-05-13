@@ -587,23 +587,23 @@ void AssemblyAssembly::GoToXYAPositionToGluePSSToSpacers_start()
   }
 
   const double dx0 =
-     this->parameters()->get("RefPointCalibrationSpacers_X")
-   + this->parameters()->get("FromRefPointCalibrationSpacersToSpacerEdge_dX")
-   + this->parameters()->get("FromSpacerRefPointToSensorRefPoint_dX")
+     this->parameters()->get("PlatformRefPointCalibrationSpacers_X")
+   + this->parameters()->get("FromPlatformRefPointCalibrationSpacersToSpacerEdge_dX")
+   + this->parameters()->get("FromSpacerEdgeToPSSRefPoint_dX")
    + this->parameters()->get("FromSensorRefPointToSensorPickup_dX")
    - motion_->get_position_X();
 
   const double dy0 =
-     this->parameters()->get("RefPointCalibrationSpacers_Y")
-   + this->parameters()->get("FromRefPointCalibrationSpacersToSpacerEdge_dY")
-   + this->parameters()->get("FromSpacerRefPointToSensorRefPoint_dY")
+     this->parameters()->get("PlatformRefPointCalibrationSpacers_Y")
+   + this->parameters()->get("FromPlatformRefPointCalibrationSpacersToSpacerEdge_dY")
+   + this->parameters()->get("FromSpacerEdgeToPSSRefPoint_dY")
    + this->parameters()->get("FromSensorRefPointToSensorPickup_dY")
    - motion_->get_position_Y();
 
   const double dz0 = 0.0;
 
   const double da0 =
-     this->parameters()->get("RefPointCalibrationSpacers_A")
+     this->parameters()->get("PlatformRefPointCalibrationSpacers_A")
    - motion_->get_position_A();
 
   connect(this, SIGNAL(move_relative_request(double, double, double, double)), motion_, SLOT(moveRelative(double, double, double, double)));
@@ -1256,17 +1256,17 @@ void AssemblyAssembly::GoToXYAPositionToGlueSensorAssemblyToBaseplate_start()
   }
 
   const double dx0 =
-     this->parameters()->get("RefPointCalibrationBaseplate_X")
-   + this->parameters()->get("FromRefPointCalibrationBaseplateToBaseplateEdge_dX")
-   + this->parameters()->get("FromBaseplateRefPointToPSPRefPoint_dX")
+     this->parameters()->get("PlatformRefPointCalibrationBaseplate_X")
+   + this->parameters()->get("FromPlatformRefPointCalibrationBaseplateToPSPEdge_dX")
+   + this->parameters()->get("FromPSPEdgeToPSPRefPoint_dX")
    + this->parameters()->get("FromPSPRefPointToPSSRefPoint_dX")
    + this->parameters()->get("FromSensorRefPointToSensorPickup_dX")
    - motion_->get_position_X();
 
   const double dy0 =
-     this->parameters()->get("RefPointCalibrationBaseplate_Y")
-   + this->parameters()->get("FromRefPointCalibrationBaseplateToBaseplateEdge_dY")
-   + this->parameters()->get("FromBaseplateRefPointToPSPRefPoint_dY")
+     this->parameters()->get("PlatformRefPointCalibrationBaseplate_Y")
+   + this->parameters()->get("FromPlatformRefPointCalibrationBaseplateToPSPEdge_dY")
+   + this->parameters()->get("FromPSPEdgeToPSPRefPoint_dY")
    + this->parameters()->get("FromPSPRefPointToPSSRefPoint_dY")
    + this->parameters()->get("FromSensorRefPointToSensorPickup_dY")
    - motion_->get_position_Y();
@@ -1274,7 +1274,7 @@ void AssemblyAssembly::GoToXYAPositionToGlueSensorAssemblyToBaseplate_start()
   const double dz0 = 0.0;
 
   const double da0 =
-     this->parameters()->get("RefPointCalibrationBaseplate_A")
+     this->parameters()->get("PlatformRefPointCalibrationBaseplate_A")
    - motion_->get_position_A();
 
   connect(this, SIGNAL(move_relative_request(double, double, double, double)), motion_, SLOT(moveRelative(double, double, double, double)));

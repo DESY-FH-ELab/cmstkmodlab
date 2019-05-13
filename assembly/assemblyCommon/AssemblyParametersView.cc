@@ -161,7 +161,7 @@ AssemblyParametersView::AssemblyParametersView(QWidget* parent)
   // position: XYZA position of ref-point on assembly platform for calibration of spacers
   ++row_index;
 
-  tmp_tag = "RefPointCalibrationSpacers";
+  tmp_tag = "PlatformRefPointCalibrationSpacers";
   tmp_des = "[Calibration: Spacers] Ref-Point :";
 
   map_lineEdit_[tmp_tag+"_X"] = new QLineEdit(tr(""));
@@ -182,7 +182,7 @@ AssemblyParametersView::AssemblyParametersView(QWidget* parent)
   // position: XYZA position of ref-point on assembly platform for calibration of baseplate
   ++row_index;
 
-  tmp_tag = "RefPointCalibrationBaseplate";
+  tmp_tag = "PlatformRefPointCalibrationBaseplate";
   tmp_des = "[Calibration: Baseplate] Ref-Point :";
 
   map_lineEdit_[tmp_tag+"_X"] = new QLineEdit(tr(""));
@@ -326,11 +326,11 @@ AssemblyParametersView::AssemblyParametersView(QWidget* parent)
   dist_lay->addWidget(new QLabel(tr("dY"))    , row_index, 3, Qt::AlignRight);
   dist_lay->addWidget(this->get(tmp_tag+"_dY"), row_index, 4, Qt::AlignRight);
 
-  // distance: from Spacer Ref-Point to Sensor Ref-Point
+  // distance: from Spacer's Edge to PS-s Sensor Ref-Point
   ++row_index;
 
-  tmp_tag = "FromSpacerRefPointToSensorRefPoint";
-  tmp_des = "From Spacer Ref-Point to Sensor Ref-Point :";
+  tmp_tag = "FromSpacerEdgeToPSSRefPoint";
+  tmp_des = "From Spacer's Edge to PS-s Ref-Point :";
 
   map_lineEdit_[tmp_tag+"_dX"] = new QLineEdit(tr(""));
   map_lineEdit_[tmp_tag+"_dY"] = new QLineEdit(tr(""));
@@ -341,11 +341,11 @@ AssemblyParametersView::AssemblyParametersView(QWidget* parent)
   dist_lay->addWidget(new QLabel(tr("dY"))    , row_index, 3, Qt::AlignRight);
   dist_lay->addWidget(this->get(tmp_tag+"_dY"), row_index, 4, Qt::AlignRight);
 
-  // distance: from Baseplate Ref-Point to PS-s Ref-Point relative to Baseplate
+  // distance: from Edge of PS-p Sensor to PS-p Ref-Point
   ++row_index;
 
-  tmp_tag = "FromBaseplateRefPointToPSPRefPoint";
-  tmp_des = "From Baseplate Ref-Point to PS-p Ref-Point :";
+  tmp_tag = "FromPSPEdgeToPSPRefPoint";
+  tmp_des = "From Edge of PS-p Sensor to PS-p Ref-Point :";
 
   map_lineEdit_[tmp_tag+"_dX"] = new QLineEdit(tr(""));
   map_lineEdit_[tmp_tag+"_dY"] = new QLineEdit(tr(""));
@@ -386,8 +386,8 @@ AssemblyParametersView::AssemblyParametersView(QWidget* parent)
   // distance: from ref-point on assembly platform (for spacers' calibration) to spacer's edge
   ++row_index;
 
-  tmp_tag = "FromRefPointCalibrationSpacersToSpacerEdge";
-  tmp_des = "From Ref-Point of Spacers-Calibration to Spacer's Edge :";
+  tmp_tag = "FromPlatformRefPointCalibrationSpacersToSpacerEdge";
+  tmp_des = "From Platform Ref-Point for Spacers-Calibration to Spacer's Edge :";
 
   map_lineEdit_[tmp_tag+"_dX"] = new QLineEdit(tr(""));
   map_lineEdit_[tmp_tag+"_dY"] = new QLineEdit(tr(""));
@@ -398,11 +398,11 @@ AssemblyParametersView::AssemblyParametersView(QWidget* parent)
   dist_lay->addWidget(new QLabel(tr("dY"))    , row_index, 3, Qt::AlignRight);
   dist_lay->addWidget(this->get(tmp_tag+"_dY"), row_index, 4, Qt::AlignRight);
 
-  // distance: from ref-point on assembly platform (for baseplates' calibration) to baseplate's edge
+  // distance: from ref-point on assembly platform (for baseplate's calibration) to edge of PS-p sensor
   ++row_index;
 
-  tmp_tag = "FromRefPointCalibrationBaseplateToBaseplateEdge";
-  tmp_des = "From Ref-Point of Baseplate-Calibration to Baseplate's Edge :";
+  tmp_tag = "FromPlatformRefPointCalibrationBaseplateToPSPEdge";
+  tmp_des = "From Platform Ref-Point for Baseplate-Calibration to PS-p Edge :";
 
   map_lineEdit_[tmp_tag+"_dX"] = new QLineEdit(tr(""));
   map_lineEdit_[tmp_tag+"_dY"] = new QLineEdit(tr(""));
