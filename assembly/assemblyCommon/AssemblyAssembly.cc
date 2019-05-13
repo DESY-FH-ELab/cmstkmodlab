@@ -1053,7 +1053,6 @@ void AssemblyAssembly::LowerSpacersAndPSSOntoPSP_start()
 
     const double da0 = 0.0;
 
-
     connect(this, SIGNAL(move_relative_request(double, double, double, double)), smart_motion_, SLOT(move_relative(double, double, double, double)));
     connect(smart_motion_, SIGNAL(motion_completed()), this, SLOT(LowerSpacersAndPSSOntoPSP_finish()));
 
@@ -1329,7 +1328,6 @@ void AssemblyAssembly::LowerSensorAssemblyOntoBaseplate_start()
 
     const double dz0 =
         this->parameters()->get("CameraFocusOnAssemblyStage_Z")
-      + this->parameters()->get("Thickness_Baseplate")
       + this->parameters()->get("FromCameraBestFocusToPickupHeight_dZ")
       + this->parameters()->get("Thickness_PSS")
       + this->parameters()->get("Thickness_GlueLayer")
@@ -1337,6 +1335,7 @@ void AssemblyAssembly::LowerSensorAssemblyOntoBaseplate_start()
       + this->parameters()->get("Thickness_GlueLayer")
       + this->parameters()->get("Thickness_PSP")
       + this->parameters()->get("Thickness_GlueLayer")
+      + this->parameters()->get("Thickness_Baseplate")
       - motion_->get_position_Z();
 
     const double da0 = 0.0;
