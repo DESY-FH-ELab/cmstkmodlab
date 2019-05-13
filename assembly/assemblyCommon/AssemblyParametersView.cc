@@ -141,49 +141,7 @@ AssemblyParametersView::AssemblyParametersView(QWidget* parent)
   ++row_index;
 
   tmp_tag = "RefPointSensor";
-  tmp_des = "Sensor Marker-1 :";
-
-  map_lineEdit_[tmp_tag+"_X"] = new QLineEdit(tr(""));
-  map_lineEdit_[tmp_tag+"_Y"] = new QLineEdit(tr(""));
-  map_lineEdit_[tmp_tag+"_Z"] = new QLineEdit(tr(""));
-  map_lineEdit_[tmp_tag+"_A"] = new QLineEdit(tr(""));
-
-  posi_lay->addWidget(new QLabel(tmp_des)    , row_index, 0, Qt::AlignLeft);
-  posi_lay->addWidget(new QLabel(tr("X"))    , row_index, 1, Qt::AlignRight);
-  posi_lay->addWidget(this->get(tmp_tag+"_X"), row_index, 2, Qt::AlignRight);
-  posi_lay->addWidget(new QLabel(tr("Y"))    , row_index, 3, Qt::AlignRight);
-  posi_lay->addWidget(this->get(tmp_tag+"_Y"), row_index, 4, Qt::AlignRight);
-  posi_lay->addWidget(new QLabel(tr("Z"))    , row_index, 5, Qt::AlignRight);
-  posi_lay->addWidget(this->get(tmp_tag+"_Z"), row_index, 6, Qt::AlignRight);
-  posi_lay->addWidget(new QLabel(tr("A"))    , row_index, 7, Qt::AlignRight);
-  posi_lay->addWidget(this->get(tmp_tag+"_A"), row_index, 8, Qt::AlignRight);
-
-  // position: XYZA position to point camera to Spacer Ref-Point
-  ++row_index;
-
-  tmp_tag = "RefPointSpacer";
-  tmp_des = "Spacer Ref-Point :";
-
-  map_lineEdit_[tmp_tag+"_X"] = new QLineEdit(tr(""));
-  map_lineEdit_[tmp_tag+"_Y"] = new QLineEdit(tr(""));
-  map_lineEdit_[tmp_tag+"_Z"] = new QLineEdit(tr(""));
-  map_lineEdit_[tmp_tag+"_A"] = new QLineEdit(tr(""));
-
-  posi_lay->addWidget(new QLabel(tmp_des)    , row_index, 0, Qt::AlignLeft);
-  posi_lay->addWidget(new QLabel(tr("X"))    , row_index, 1, Qt::AlignRight);
-  posi_lay->addWidget(this->get(tmp_tag+"_X"), row_index, 2, Qt::AlignRight);
-  posi_lay->addWidget(new QLabel(tr("Y"))    , row_index, 3, Qt::AlignRight);
-  posi_lay->addWidget(this->get(tmp_tag+"_Y"), row_index, 4, Qt::AlignRight);
-  posi_lay->addWidget(new QLabel(tr("Z"))    , row_index, 5, Qt::AlignRight);
-  posi_lay->addWidget(this->get(tmp_tag+"_Z"), row_index, 6, Qt::AlignRight);
-  posi_lay->addWidget(new QLabel(tr("A"))    , row_index, 7, Qt::AlignRight);
-  posi_lay->addWidget(this->get(tmp_tag+"_A"), row_index, 8, Qt::AlignRight);
-
-  // position: XYZA position to point camera on Baseplate Ref-Point
-  ++row_index;
-
-  tmp_tag = "RefPointBaseplate";
-  tmp_des = "Baseplate Ref-Point :";
+  tmp_des = "Sensor Marker-1 Ref-Point :";
 
   map_lineEdit_[tmp_tag+"_X"] = new QLineEdit(tr(""));
   map_lineEdit_[tmp_tag+"_Y"] = new QLineEdit(tr(""));
