@@ -92,8 +92,8 @@ class AssemblyAssembly : public QObject
   void RegisterPSPToPSSPosition_start();
   void RegisterPSPToPSSPosition_finish();
 
-  void GoFromPSPToPSSPosToGluingStageRefPoint_start();
-  void GoFromPSPToPSSPosToGluingStageRefPoint_finish();
+  void GoFromPSPToPSSPosToGluingStageRefPointXY_start();
+  void GoFromPSPToPSSPosToGluingStageRefPointXY_finish();
 
   void LowerSpacersAndPSSOntoGluingStage_start();
   void LowerSpacersAndPSSOntoGluingStage_finish();
@@ -164,7 +164,7 @@ class AssemblyAssembly : public QObject
   void RegisterPSPToPSSPosition_finished();
   void PSPToPSSPosition_registered();
 
-  void GoFromPSPToPSSPosToGluingStageRefPoint_finished();
+  void GoFromPSPToPSSPosToGluingStageRefPointXY_finished();
 
   void ReturnToPSPToPSSPosition_finished();
 

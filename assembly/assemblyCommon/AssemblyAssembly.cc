@@ -794,9 +794,9 @@ void AssemblyAssembly::RegisterPSPToPSSPosition_finish()
 // ----------------------------------------------------------------------------------------------------
 
 // ----------------------------------------------------------------------------------------------------
-// GoFromPSPToPSSPosToGluingStageRefPoint -------------------------------------------------------------
+// GoFromPSPToPSSPosToGluingStageRefPointXY -----------------------------------------------------------
 // ----------------------------------------------------------------------------------------------------
-void AssemblyAssembly::GoFromPSPToPSSPosToGluingStageRefPoint_start()
+void AssemblyAssembly::GoFromPSPToPSSPosToGluingStageRefPointXY_start()
 {
   if(use_smartMove_)
   {
@@ -804,59 +804,59 @@ void AssemblyAssembly::GoFromPSPToPSSPosToGluingStageRefPoint_start()
 
     if(valid_params == false)
     {
-      NQLog("AssemblyAssembly", NQLog::Critical) << "GoFromPSPToPSSPosToGluingStageRefPoint_start"
+      NQLog("AssemblyAssembly", NQLog::Critical) << "GoFromPSPToPSSPosToGluingStageRefPointXY_start"
          << ": failed to update content of AssemblyParameters, no action taken";
 
-      NQLog("AssemblyAssembly", NQLog::Spam) << "GoFromPSPToPSSPosToGluingStageRefPoint_finish"
-         << ": emitting signal \"GoFromPSPToPSSPosToGluingStageRefPoint_finished\"";
+      NQLog("AssemblyAssembly", NQLog::Spam) << "GoFromPSPToPSSPosToGluingStageRefPointXY_finish"
+         << ": emitting signal \"GoFromPSPToPSSPosToGluingStageRefPointXY_finished\"";
 
-      emit GoFromPSPToPSSPosToGluingStageRefPoint_finished();
+      emit GoFromPSPToPSSPosToGluingStageRefPointXY_finished();
 
       return;
     }
 
     const double dx0 = this->parameters()->get("FromPSPToPSSPosToGluingStage_dX");
     const double dy0 = this->parameters()->get("FromPSPToPSSPosToGluingStage_dY");
-    const double dz0 = this->parameters()->get("CameraFocusOnGluingStage_Z") - motion_->get_position_Z();
+    const double dz0 = 0.0;
     const double da0 = 0.0;
 
     connect(this, SIGNAL(move_relative_request(double, double, double, double)), smart_motion_, SLOT(move_relative(double, double, double, double)));
-    connect(smart_motion_, SIGNAL(motion_completed()), this, SLOT(GoFromPSPToPSSPosToGluingStageRefPoint_finish()));
+    connect(smart_motion_, SIGNAL(motion_completed()), this, SLOT(GoFromPSPToPSSPosToGluingStageRefPointXY_finish()));
 
-    NQLog("AssemblyAssembly", NQLog::Spam) << "GoFromPSPToPSSPosToGluingStageRefPoint_start"
+    NQLog("AssemblyAssembly", NQLog::Spam) << "GoFromPSPToPSSPosToGluingStageRefPointXY_start"
        << ": emitting signal \"move_relative_request(" << dx0 << ", " << dy0 << ", " << dz0 << ", " << da0 << ")\"";
 
     emit move_relative_request(dx0, dy0, dz0, da0);
   }
   else
   {
-    NQLog("AssemblyAssembly", NQLog::Critical) << "GoFromPSPToPSSPosToGluingStageRefPoint_start"
+    NQLog("AssemblyAssembly", NQLog::Critical) << "GoFromPSPToPSSPosToGluingStageRefPointXY_start"
        << ": please enable \"smartMove\" mode (tick box in top-left corner of Assembly tab), required for this step";
 
     QMessageBox msgBox;
-    msgBox.setText(tr("AssemblyAssembly::GoFromPSPToPSSPosToGluingStageRefPoint_start -- please enable \"smartMove\" mode (tick box in top-left corner of Assembly tab), required for this step"));
+    msgBox.setText(tr("AssemblyAssembly::GoFromPSPToPSSPosToGluingStageRefPointXY_start -- please enable \"smartMove\" mode (tick box in top-left corner of Assembly tab), required for this step"));
     msgBox.exec();
 
-    NQLog("AssemblyAssembly", NQLog::Spam) << "GoFromPSPToPSSPosToGluingStageRefPoint_finish"
-       << ": emitting signal \"GoFromPSPToPSSPosToGluingStageRefPoint_finished\"";
+    NQLog("AssemblyAssembly", NQLog::Spam) << "GoFromPSPToPSSPosToGluingStageRefPointXY_finish"
+       << ": emitting signal \"GoFromPSPToPSSPosToGluingStageRefPointXY_finished\"";
 
-    emit GoFromPSPToPSSPosToGluingStageRefPoint_finished();
+    emit GoFromPSPToPSSPosToGluingStageRefPointXY_finished();
 
     return;
   }
 }
 
-void AssemblyAssembly::GoFromPSPToPSSPosToGluingStageRefPoint_finish()
+void AssemblyAssembly::GoFromPSPToPSSPosToGluingStageRefPointXY_finish()
 {
   disconnect(this, SIGNAL(move_relative_request(double, double, double, double)), smart_motion_, SLOT(move_relative(double, double, double, double)));
-  disconnect(smart_motion_, SIGNAL(motion_completed()), this, SLOT(GoFromPSPToPSSPosToGluingStageRefPoint_finish()));
+  disconnect(smart_motion_, SIGNAL(motion_completed()), this, SLOT(GoFromPSPToPSSPosToGluingStageRefPointXY_finish()));
 
-  NQLog("AssemblyAssembly", NQLog::Spam) << "GoFromPSPToPSSPosToGluingStageRefPoint_finish"
-     << ": emitting signal \"GoFromPSPToPSSPosToGluingStageRefPoint_finished\"";
+  NQLog("AssemblyAssembly", NQLog::Spam) << "GoFromPSPToPSSPosToGluingStageRefPointXY_finish"
+     << ": emitting signal \"GoFromPSPToPSSPosToGluingStageRefPointXY_finished\"";
 
-  emit GoFromPSPToPSSPosToGluingStageRefPoint_finished();
+  emit GoFromPSPToPSSPosToGluingStageRefPointXY_finished();
 
-  NQLog("AssemblyAssembly", NQLog::Message) << "GoFromPSPToPSSPosToGluingStageRefPoint_finish"
+  NQLog("AssemblyAssembly", NQLog::Message) << "GoFromPSPToPSSPosToGluingStageRefPointXY_finish"
      << ": assembly-step completed";
 }
 // ----------------------------------------------------------------------------------------------------
@@ -887,11 +887,13 @@ void AssemblyAssembly::LowerSpacersAndPSSOntoGluingStage_start()
     const double dy0 = 0.0;
 
     const double dz0 =
-        this->parameters()->get("FromCameraBestFocusToPickupHeight_dZ")
+        this->parameters()->get("CameraFocusOnGluingStage_Z")
+      + this->parameters()->get("FromCameraBestFocusToPickupHeight_dZ")
       + this->parameters()->get("Thickness_PSS")
       + this->parameters()->get("Thickness_GlueLayer")
       + this->parameters()->get("Thickness_Spacer")
-      + this->parameters()->get("Thickness_GlueLayer");
+      + this->parameters()->get("Thickness_GlueLayer")
+      - motion_->get_position_Z();
 
     const double da0 = 0.0;
 
