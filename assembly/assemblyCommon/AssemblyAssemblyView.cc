@@ -209,7 +209,20 @@ AssemblyAssemblyView::AssemblyAssemblyView(const AssemblyAssembly* const assembl
   QVBoxLayout* PSSToSpacers_lay = new QVBoxLayout;
   wid_PSSToSpacers_->setLayout(PSSToSpacers_lay);
 
-  // step: Dispense Glue on Spacers
+  // step: Go To XYA Position To Glue PS-s to Spacers
+  {
+    ++assembly_step_N_;
+
+    AssemblyAssemblyActionWidget* tmp_wid = new AssemblyAssemblyActionWidget;
+    tmp_wid->label() ->setText(QString::number(assembly_step_N_));
+    tmp_wid->button()->setText("Go To XYA Position To Glue PS-s to Spacers");
+    PSSToSpacers_lay->addWidget(tmp_wid);
+
+    tmp_wid->connect_action(assembly, SLOT(GoToXYAPositionToGluePSSToSpacers_start()), SIGNAL(GoToXYAPositionToGluePSSToSpacers_finished()));
+  }
+  // ----------
+
+  // step: Dispense Glue on Spacers and Place them on Assembly Platform
   {
     ++assembly_step_N_;
 
@@ -230,19 +243,6 @@ AssemblyAssemblyView::AssemblyAssemblyView(const AssemblyAssembly* const assembl
     PSSToSpacers_lay->addWidget(tmp_wid);
 
     tmp_wid->connect_action(assembly, SLOT(EnableVacuumSpacers_start()), SIGNAL(EnableVacuumSpacers_finished()));
-  }
-  // ----------
-
-  // step: Go To XYA Position To Glue PS-s to Spacers
-  {
-    ++assembly_step_N_;
-
-    AssemblyAssemblyActionWidget* tmp_wid = new AssemblyAssemblyActionWidget;
-    tmp_wid->label() ->setText(QString::number(assembly_step_N_));
-    tmp_wid->button()->setText("Go To XYA Position To Glue PS-s to Spacers");
-    PSSToSpacers_lay->addWidget(tmp_wid);
-
-    tmp_wid->connect_action(assembly, SLOT(GoToXYAPositionToGluePSSToSpacers_start()), SIGNAL(GoToXYAPositionToGluePSSToSpacers_finished()));
   }
   // ----------
 
