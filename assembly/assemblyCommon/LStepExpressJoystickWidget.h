@@ -31,29 +31,29 @@ class LStepExpressJoystickAxisWidget;
 
 class LStepExpressJoystickWidget : public QWidget
 {
-    Q_OBJECT
+  Q_OBJECT
 
-public:
-    explicit LStepExpressJoystickWidget(LStepExpressModel* model, QWidget *parent = 0);
-    ~LStepExpressJoystickWidget();
+  public:
+   explicit LStepExpressJoystickWidget(LStepExpressModel* model, QWidget *parent = 0);
+   ~LStepExpressJoystickWidget();
 
-protected:
-    LStepExpressModel* model_;
-    QWidget* axisControlWidget_;
+  protected:
+   LStepExpressModel* model_;
+   QWidget* axisControlWidget_;
 
-    LStepExpressJoystickAxisWidget* w_joyax_X_;
-    LStepExpressJoystickAxisWidget* w_joyax_Y_;
-    LStepExpressJoystickAxisWidget* w_joyax_Z_;
-    LStepExpressJoystickAxisWidget* w_joyax_A_;
+   LStepExpressJoystickAxisWidget* w_joyax_X_;
+   LStepExpressJoystickAxisWidget* w_joyax_Y_;
+   LStepExpressJoystickAxisWidget* w_joyax_Z_;
+   LStepExpressJoystickAxisWidget* w_joyax_A_;
 
-public slots:
-    void lstepStateChanged(State newState);
-    void controlStateChanged(bool);
-    void motionStarted();
-    void motionFinished();
+  public slots:
+   void lstepStateChanged(State newState);
+   void controlStateChanged(bool);
+   void motionStarted();
+   void motionFinished();
 
-    void  enableMotionTools(const bool enable=true);
-    void disableMotionTools();
+   void  enableMotionTools(const bool  enable=true);
+   void disableMotionTools(const bool disable=true);
 };
 
 class LStepExpressJoystickAxisWidget : public QWidget

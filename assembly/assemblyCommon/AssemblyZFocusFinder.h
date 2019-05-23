@@ -86,6 +86,8 @@ class AssemblyZFocusFinder : public QObject
 
     void process_image(const cv::Mat&);
 
+    void emergencyStop();
+
   signals:
 
     void next_zpoint();
@@ -100,6 +102,8 @@ class AssemblyZFocusFinder : public QObject
     void show_zscan(const QString&);
 
     void text_update_request(const double);
+
+    void emergencyStopped();
 };
 
 #endif // ASSEMBLYZFOCUSFINDER_H

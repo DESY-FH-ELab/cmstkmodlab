@@ -1,6 +1,6 @@
 #!/bin/bash
 
-if [ -d ${TKMODLABBASE} ]; then
+if [ ! -z ${TKMODLABBASE} ] && [ -d ${TKMODLABBASE} ]; then
 
   cd ${TKMODLABBASE}
 

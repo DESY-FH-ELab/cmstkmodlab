@@ -63,6 +63,7 @@ AssemblyHardwareControlView::AssemblyHardwareControlView(const LStepExpressMotio
 
   w_move_ = new AssemblyMoveWidget(manager_);
   w_move_->setToolTip("Single-Motion interface");
+  w_move_->setEnabled(false);
 
   l_move->addWidget(w_move_);
   // -----
@@ -71,8 +72,8 @@ AssemblyHardwareControlView::AssemblyHardwareControlView(const LStepExpressMotio
 
   connect(manager_->model(), SIGNAL(deviceStateChanged(State)), this, SLOT(stateChanged(State)));
 
-  connect(manager_->model(), SIGNAL(motionStarted ()), this, SLOT(disableMotionTools()));
-  connect(manager_->model(), SIGNAL(motionFinished()), this, SLOT( enableMotionTools()));
+//  connect(manager_->model(), SIGNAL(motionStarted ()), this, SLOT(disableMotionTools()));
+//  connect(manager_->model(), SIGNAL(motionFinished()), this, SLOT( enableMotionTools()));
 
   g1->addWidget(box_move, 60);
   /// -------------
@@ -101,8 +102,6 @@ AssemblyHardwareControlView::AssemblyHardwareControlView(const LStepExpressMotio
   layout->addWidget(w_lStep_);
 
   connect(w_lStep_, SIGNAL(clearQueue_request()), manager_, SLOT(clear_motion_queue()));
-
-  connect(cb_lockMotionSettings_, SIGNAL(toggled(bool)), w_lStep_, SLOT(lockMotionSettings(bool)));
   //// ------------------
 
   //// LStepExpressJoystickWidget
@@ -114,6 +113,8 @@ AssemblyHardwareControlView::AssemblyHardwareControlView(const LStepExpressMotio
 //  w_lStepPosition_ = new LStepExpressPositionWidget(manager_, manager_->model());
 //  layout->addWidget(w_lStepPosition_);
 //  //// ------------------
+
+  connect(cb_lockMotionSettings_, SIGNAL(toggled(bool)), w_lStep_, SLOT(lockMotionSettings(bool)));
 
   // -------------------------------------------
 
@@ -137,14 +138,14 @@ void AssemblyHardwareControlView::stateChanged(const State& newState)
 
 void AssemblyHardwareControlView::enableMotionTools(const bool enable)
 {
+  if(w_move_){ w_move_->setEnabled(enable); }
+
   if(w_lStep_        ){ w_lStep_        ->enableMotionTools(enable); }
   if(w_lStepJoystick_){ w_lStepJoystick_->enableMotionTools(enable); }
   if(w_lStepPosition_){ w_lStepPosition_->enableMotionTools(enable); }
-
-  if(w_move_){ w_move_->setEnabled(enable); }
 }
 
-void AssemblyHardwareControlView::disableMotionTools()
+void AssemblyHardwareControlView::disableMotionTools(const bool disable)
 {
-  this->enableMotionTools(false);
+  this->enableMotionTools(!disable);
 }

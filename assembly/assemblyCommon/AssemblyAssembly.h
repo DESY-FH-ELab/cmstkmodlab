@@ -49,10 +49,16 @@ class AssemblyAssembly : public QObject
   int vacuum_spacer_;
   int vacuum_basepl_;
 
-  double pickup1_dZ_;
-  double pickup2_dZ_;
+  double pickup1_Z_;
+  double pickup2_Z_;
 
   bool use_smartMove_;
+
+  bool   PSPToPSSPosition_isRegistered_;
+  double PSPToPSSPosition_X_;
+  double PSPToPSSPosition_Y_;
+  double PSPToPSSPosition_Z_;
+  double PSPToPSSPosition_A_;
 
  public slots:
 
@@ -71,11 +77,8 @@ class AssemblyAssembly : public QObject
   void PickupPSS_start();
   void PickupPSS_finish();
 
-  void GoToSpacerRefPoint_start();
-  void GoToSpacerRefPoint_finish();
-
-  void GoFromSpacerRefPointToSpacerGluingXYPosition_start();
-  void GoFromSpacerRefPointToSpacerGluingXYPosition_finish();
+  void GoToXYAPositionToGluePSSToSpacers_start();
+  void GoToXYAPositionToGluePSSToSpacers_finish();
 
   void LowerPSSOntoSpacers_start();
   void LowerPSSOntoSpacers_finish();
@@ -86,8 +89,17 @@ class AssemblyAssembly : public QObject
   void ApplyPSPToPSSXYOffset_start();
   void ApplyPSPToPSSXYOffset_finish();
 
-  void LiftUpPickupTool_start();
-  void LiftUpPickupTool_finish();
+  void RegisterPSPToPSSPosition_start();
+  void RegisterPSPToPSSPosition_finish();
+
+  void GoFromPSPToPSSPosToGluingStageRefPointXY_start();
+  void GoFromPSPToPSSPosToGluingStageRefPointXY_finish();
+
+  void LowerSpacersAndPSSOntoGluingStage_start();
+  void LowerSpacersAndPSSOntoGluingStage_finish();
+
+  void ReturnToPSPToPSSPosition_start();
+  void ReturnToPSPToPSSPosition_finish();
 
   void LowerSpacersAndPSSOntoPSP_start();
   void LowerSpacersAndPSSOntoPSP_finish();
@@ -95,14 +107,14 @@ class AssemblyAssembly : public QObject
   void PickupPSPAndPSS_start();
   void PickupPSPAndPSS_finish();
 
-  void GoToBaseplateRefPoint_start();
-  void GoToBaseplateRefPoint_finish();
-
-  void GoFromBaseplateRefPointToBaseplateGluingXYPosition_start();
-  void GoFromBaseplateRefPointToBaseplateGluingXYPosition_finish();
+  void GoToXYAPositionToGlueSensorAssemblyToBaseplate_start();
+  void GoToXYAPositionToGlueSensorAssemblyToBaseplate_finish();
 
   void LowerSensorAssemblyOntoBaseplate_start();
   void LowerSensorAssemblyOntoBaseplate_finish();
+
+  void LiftUpPickupTool_start();
+  void LiftUpPickupTool_finish();
   // ---------
 
   // vacuum
@@ -141,7 +153,7 @@ class AssemblyAssembly : public QObject
 
   void GoToSpacerRefPoint_finished();
 
-  void GoFromSpacerRefPointToSpacerGluingXYPosition_finished();
+  void GoToXYAPositionToGluePSSToSpacers_finished();
 
   void LowerPSSOntoSpacers_finished();
 
@@ -149,15 +161,22 @@ class AssemblyAssembly : public QObject
 
   void ApplyPSPToPSSXYOffset_finished();
 
+  void RegisterPSPToPSSPosition_finished();
+  void PSPToPSSPosition_registered();
+
+  void GoFromPSPToPSSPosToGluingStageRefPointXY_finished();
+
+  void ReturnToPSPToPSSPosition_finished();
+
+  void LowerSpacersAndPSSOntoGluingStage_finished();
+
   void LiftUpPickupTool_finished();
 
   void LowerSpacersAndPSSOntoPSP_finished();
 
   void PickupPSPAndPSS_finished();
 
-  void GoToBaseplateRefPoint_finished();
-
-  void GoFromBaseplateRefPointToBaseplateGluingXYPosition_finished();
+  void GoToXYAPositionToGlueSensorAssemblyToBaseplate_finished();
 
   void LowerSensorAssemblyOntoBaseplate_finished();
   // ------

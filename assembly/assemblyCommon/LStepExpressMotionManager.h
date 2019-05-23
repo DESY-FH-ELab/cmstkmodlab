@@ -86,6 +86,8 @@ class LStepExpressMotionManager : public QObject
 
   signals:
 
+    void emergencyStop_request() const;
+
     void motion_finished();
 
     void signalMoveRelative(double x, double y, double z, double a);

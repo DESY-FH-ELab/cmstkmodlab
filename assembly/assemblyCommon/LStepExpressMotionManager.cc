@@ -36,6 +36,8 @@ LStepExpressMotionManager::LStepExpressMotionManager(LStepExpressModel* model, Q
     assembly::kill_application("[LStepExpressMotionManager]", "Invalid (NULL) pointer to LStepExpressModel object, closing application");
   }
 
+  connect(this, SIGNAL(emergencyStop_request()), this, SLOT(emergency_stop()));
+
   this->connect_model();
 }
 
@@ -307,7 +309,7 @@ double LStepExpressMotionManager::get_position(const int axis) const
   //    the motion stage is not moving and the list of positions has a valid format
   //
   // output:
-  //  * it is not safe to return if all the above conditions are not met
+  //  * it is not safe to return if any of the conditions above is not satisfied
   //  * this means the 'while' shoud not be broken or shortcut (a priori, it might never finish)
   //  * after a certain number of attempts, explicit warnings are printed
   //
@@ -317,7 +319,17 @@ double LStepExpressMotionManager::get_position(const int axis) const
   {
     ++tries;
 
-    if(tries > 5)
+    if(tries > 10)
+    {
+      NQLog("LStepExpressMotionManager", NQLog::Warning) << "get_position(" << axis << ")"
+         << ": after try #" << tries << ", call for LStepExpressMotionManager::emergency_stop()";
+
+      NQLog("LStepExpressMotionManager", NQLog::Spam) << "get_position(" << axis << ")"
+         << ": emitting signal \"emergencyStop_request\"";
+
+      emit emergencyStop_request();
+    }
+    else if(tries > 5)
     {
       if(model()->isUpdating())
       {

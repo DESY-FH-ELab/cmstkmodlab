@@ -48,11 +48,12 @@ AssemblyAssemblyView::AssemblyAssemblyView(const AssemblyAssembly* const assembl
   layout->addLayout(opts_lay);
 
   smartMove_checkbox_ = new QCheckBox(tr("Use SmartMove"));
-  smartMove_checkbox_->setChecked(false);
 
   opts_lay->addWidget(smartMove_checkbox_);
 
   connect(smartMove_checkbox_, SIGNAL(stateChanged(int)), assembly, SLOT(use_smartMove(int)));
+
+  smartMove_checkbox_->setChecked(true);
   //// -------------------------------------------------
 
   QToolBox* toolbox = new QToolBox;
@@ -76,7 +77,7 @@ AssemblyAssemblyView::AssemblyAssemblyView(const AssemblyAssembly* const assembl
 //  CalibRotStage_lay->addStretch(1);
 //  //// -----------------------------------------------
 
-  //// PSP To Baseplate ------------------------------
+  //// PS-s Alignment and Pick-up --------------------
   wid_PSSAlignm_ = new QWidget;
 
   toolbox->addItem(wid_PSSAlignm_, tr("[1] PS-s Alignment and Pickup"));
@@ -84,7 +85,7 @@ AssemblyAssemblyView::AssemblyAssemblyView(const AssemblyAssembly* const assembl
   QVBoxLayout* PSSAlignm_lay = new QVBoxLayout;
   wid_PSSAlignm_->setLayout(PSSAlignm_lay);
 
-  // step: Place PSS on Assembly Platform
+  // step: Place PS-s on Assembly Platform
   {
     ++assembly_step_N_;
 
@@ -108,7 +109,7 @@ AssemblyAssemblyView::AssemblyAssemblyView(const AssemblyAssembly* const assembl
   }
   // ----------
 
-  // step: Go To Measurement Position on PSS
+  // step: Go To Measurement Position on PS-s
   {
     ++assembly_step_N_;
 
@@ -121,13 +122,13 @@ AssemblyAssemblyView::AssemblyAssemblyView(const AssemblyAssembly* const assembl
   }
   // ----------
 
-  // step: Align PSS to Motion Stage
+  // step: Align PS-s to Motion Stage
   {
     ++assembly_step_N_;
 
     AssemblyAssemblyTextWidget* tmp_wid = new AssemblyAssemblyTextWidget;
     tmp_wid->label()->setText(QString::number(assembly_step_N_));
-    tmp_wid->text() ->setText("Align PS-s to Motion Stage");
+    tmp_wid->text() ->setText("Align PS-s to Motion Stage (Go to \"Alignment\" Tab)");
     PSSAlignm_lay->addWidget(tmp_wid);
   }
   // ----------
@@ -145,7 +146,7 @@ AssemblyAssemblyView::AssemblyAssemblyView(const AssemblyAssembly* const assembl
   }
   // ----------
 
-  // step: Lower Pickup-Tool onto PSS
+  // step: Lower Pickup-Tool onto PS-s
   {
     ++assembly_step_N_;
 
@@ -184,7 +185,7 @@ AssemblyAssemblyView::AssemblyAssemblyView(const AssemblyAssembly* const assembl
   }
   // ----------
 
-  // step: Pick Up PSS
+  // step: Pick Up PS-s
   {
     ++assembly_step_N_;
 
@@ -200,7 +201,7 @@ AssemblyAssemblyView::AssemblyAssemblyView(const AssemblyAssembly* const assembl
   PSSAlignm_lay->addStretch(1);
   //// -----------------------------------------------
 
-  //// PSS To Spacers --------------------------------
+  //// PS-s To Spacers -------------------------------
   wid_PSSToSpacers_ = new QWidget;
 
   toolbox->addItem(wid_PSSToSpacers_, tr("[2] PS-s onto Spacers"));
@@ -208,13 +209,13 @@ AssemblyAssemblyView::AssemblyAssemblyView(const AssemblyAssembly* const assembl
   QVBoxLayout* PSSToSpacers_lay = new QVBoxLayout;
   wid_PSSToSpacers_->setLayout(PSSToSpacers_lay);
 
-  // step: Place Spacers on Assembly Platform
+  // step: Dispense Glue on Spacers
   {
     ++assembly_step_N_;
 
     AssemblyAssemblyTextWidget* tmp_wid = new AssemblyAssemblyTextWidget;
     tmp_wid->label()->setText(QString::number(assembly_step_N_));
-    tmp_wid->text() ->setText("Place Spacers on Assembly Platform");
+    tmp_wid->text() ->setText("Dispense Glue on Spacers and Place them on Assembly Platform");
     PSSToSpacers_lay->addWidget(tmp_wid);
   }
   // ----------
@@ -232,44 +233,20 @@ AssemblyAssemblyView::AssemblyAssemblyView(const AssemblyAssembly* const assembl
   }
   // ----------
 
-  // step: Go To XYZA Spacer Ref-Point
+  // step: Go To XYA Position To Glue PS-s to Spacers
   {
     ++assembly_step_N_;
 
     AssemblyAssemblyActionWidget* tmp_wid = new AssemblyAssemblyActionWidget;
     tmp_wid->label() ->setText(QString::number(assembly_step_N_));
-    tmp_wid->button()->setText("Go To XYZA Spacer Ref-Point");
+    tmp_wid->button()->setText("Go To XYA Position To Glue PS-s to Spacers");
     PSSToSpacers_lay->addWidget(tmp_wid);
 
-    tmp_wid->connect_action(assembly, SLOT(GoToSpacerRefPoint_start()), SIGNAL(GoToSpacerRefPoint_finished()));
+    tmp_wid->connect_action(assembly, SLOT(GoToXYAPositionToGluePSSToSpacers_start()), SIGNAL(GoToXYAPositionToGluePSSToSpacers_finished()));
   }
   // ----------
 
-  // step: Go To XY Position To Glue Spacers to PS-s
-  {
-    ++assembly_step_N_;
-
-    AssemblyAssemblyActionWidget* tmp_wid = new AssemblyAssemblyActionWidget;
-    tmp_wid->label() ->setText(QString::number(assembly_step_N_));
-    tmp_wid->button()->setText("Go To XY Position To Glue Spacers to PS-s");
-    PSSToSpacers_lay->addWidget(tmp_wid);
-
-    tmp_wid->connect_action(assembly, SLOT(GoFromSpacerRefPointToSpacerGluingXYPosition_start()), SIGNAL(GoFromSpacerRefPointToSpacerGluingXYPosition_finished()));
-  }
-  // ----------
-
-  // step: Dispense Fast-Curing Glue on Spacers
-  {
-    ++assembly_step_N_;
-
-    AssemblyAssemblyTextWidget* tmp_wid = new AssemblyAssemblyTextWidget;
-    tmp_wid->label()->setText(QString::number(assembly_step_N_));
-    tmp_wid->text() ->setText("Dispense Fast-Curing Glue on Spacers");
-    PSSToSpacers_lay->addWidget(tmp_wid);
-  }
-  // ----------
-
-  // step: Lower PSS onto Spacers
+  // step: Lower PS-s onto Spacers
   {
     ++assembly_step_N_;
 
@@ -288,7 +265,7 @@ AssemblyAssemblyView::AssemblyAssemblyView(const AssemblyAssembly* const assembl
 
     AssemblyAssemblyTextWidget* tmp_wid = new AssemblyAssemblyTextWidget;
     tmp_wid->label()->setText(QString::number(assembly_step_N_));
-    tmp_wid->text() ->setText("Wait for Glue To Cure (approx. 10 min)");
+    tmp_wid->text() ->setText("Wait for Glue To Cure (approx. 25 min)");
     PSSToSpacers_lay->addWidget(tmp_wid);
   }
   // ----------
@@ -322,7 +299,7 @@ AssemblyAssemblyView::AssemblyAssemblyView(const AssemblyAssembly* const assembl
   PSSToSpacers_lay->addStretch(1);
   //// -----------------------------------------------
 
-  //// PSP To PSS ------------------------------------
+  //// PS-s To PS-p ----------------------------------
   wid_PSSToPSP_ = new QWidget;
 
   toolbox->addItem(wid_PSSToPSP_, tr("[3] PS-p Alignment and Sensor-To-Sensor Assembly"));
@@ -330,7 +307,7 @@ AssemblyAssemblyView::AssemblyAssemblyView(const AssemblyAssembly* const assembl
   QVBoxLayout* PSSToPSP_lay = new QVBoxLayout;
   wid_PSSToPSP_->setLayout(PSSToPSP_lay);
 
-  // step: Place PSP on Assembly Platform
+  // step: Place PS-p on Assembly Platform
   {
     ++assembly_step_N_;
 
@@ -354,7 +331,7 @@ AssemblyAssemblyView::AssemblyAssemblyView(const AssemblyAssembly* const assembl
   }
   // ----------
 
-  // step: Go To Measurement Position on PSS
+  // step: Go To Measurement Position on PS-p
   {
     ++assembly_step_N_;
 
@@ -367,13 +344,13 @@ AssemblyAssemblyView::AssemblyAssemblyView(const AssemblyAssembly* const assembl
   }
   // ----------
 
-  // step: Align PSP to Motion Stage
+  // step: Align PS-p to Motion Stage
   {
     ++assembly_step_N_;
 
     AssemblyAssemblyTextWidget* tmp_wid = new AssemblyAssemblyTextWidget;
     tmp_wid->label()->setText(QString::number(assembly_step_N_));
-    tmp_wid->text() ->setText("Align PS-p to Motion Stage");
+    tmp_wid->text() ->setText("Align PS-p to Motion Stage (Go to \"Alignment\" Tab)");
     PSSToPSP_lay->addWidget(tmp_wid);
   }
   // ----------
@@ -391,48 +368,72 @@ AssemblyAssemblyView::AssemblyAssemblyView(const AssemblyAssembly* const assembl
   }
   // ----------
 
-  // step: Apply PSP-To-PSS XY Offset
+  // step: Apply "PS-p To PS-s" XY Offset
   {
     ++assembly_step_N_;
 
     AssemblyAssemblyActionWidget* tmp_wid = new AssemblyAssemblyActionWidget;
     tmp_wid->label() ->setText(QString::number(assembly_step_N_));
-    tmp_wid->button()->setText("Apply PSP-To-PSS XY Offset");
+    tmp_wid->button()->setText("Apply \"PS-p To PS-s\" XY Offset");
     PSSToPSP_lay->addWidget(tmp_wid);
 
     tmp_wid->connect_action(assembly, SLOT(ApplyPSPToPSSXYOffset_start()), SIGNAL(ApplyPSPToPSSXYOffset_finished()));
   }
   // ----------
 
-  ////
-  //// This is where the steps for the Gluing Stage will be introduced
-  ////
-
-  // step: Lift Up Pickup-Tool For Glue Dispensing on Spacers
+  // step: Register "PS-p To PS-s" XYZA Position (before lowering pickup tool, camera focused on PS-p surface)
   {
     ++assembly_step_N_;
 
     AssemblyAssemblyActionWidget* tmp_wid = new AssemblyAssemblyActionWidget;
     tmp_wid->label() ->setText(QString::number(assembly_step_N_));
-    tmp_wid->button()->setText("Lift Up Pickup-Tool For Glue Dispensing on Spacers");
+    tmp_wid->button()->setText("Register \"PS-p To PS-s XYZA Position\"");
     PSSToPSP_lay->addWidget(tmp_wid);
 
-    tmp_wid->connect_action(assembly, SLOT(LiftUpPickupTool_start()), SIGNAL(LiftUpPickupTool_finished()));
+    tmp_wid->connect_action(assembly, SLOT(RegisterPSPToPSSPosition_start()), SIGNAL(RegisterPSPToPSSPosition_finished()));
   }
   // ----------
 
-  // step: Dispense Both Glues On Underside Of Spacers
+  // step: Go From "PS-p To PS-s" Position to Gluing Stage (XY) Ref-Point
   {
     ++assembly_step_N_;
 
-    AssemblyAssemblyTextWidget* tmp_wid = new AssemblyAssemblyTextWidget;
-    tmp_wid->label()->setText(QString::number(assembly_step_N_));
-    tmp_wid->text() ->setText("Dispense Both Glues On Underside Of Spacers");
+    AssemblyAssemblyActionWidget* tmp_wid = new AssemblyAssemblyActionWidget;
+    tmp_wid->label() ->setText(QString::number(assembly_step_N_));
+    tmp_wid->button()->setText("Go From \"PS-p To PS-s Position\" to Gluing Stage (XY) Ref-Point");
     PSSToPSP_lay->addWidget(tmp_wid);
+
+    tmp_wid->connect_action(assembly, SLOT(GoFromPSPToPSSPosToGluingStageRefPointXY_start()), SIGNAL(GoFromPSPToPSSPosToGluingStageRefPointXY_finished()));
   }
   // ----------
 
-  // step: Lower Pickup-Tool onto PSP
+  // step: Lower Pickup-Tool onto Gluing Stage
+  {
+    ++assembly_step_N_;
+
+    AssemblyAssemblyActionWidget* tmp_wid = new AssemblyAssemblyActionWidget;
+    tmp_wid->label() ->setText(QString::number(assembly_step_N_));
+    tmp_wid->button()->setText("Lower Pickup-Tool onto Gluing Stage");
+    PSSToPSP_lay->addWidget(tmp_wid);
+
+    tmp_wid->connect_action(assembly, SLOT(LowerSpacersAndPSSOntoGluingStage_start()), SIGNAL(LowerSpacersAndPSSOntoGluingStage_finished()));
+  }
+  // ----------
+
+  // step: Return To "PS-p To PS-s" XYZA Position (before lowering pickup tool, camera focused on PS-p surface)
+  {
+    ++assembly_step_N_;
+
+    AssemblyAssemblyActionWidget* tmp_wid = new AssemblyAssemblyActionWidget;
+    tmp_wid->label() ->setText(QString::number(assembly_step_N_));
+    tmp_wid->button()->setText("Return To \"PS-p To PS-s XYZA Position\"");
+    PSSToPSP_lay->addWidget(tmp_wid);
+
+    tmp_wid->connect_action(assembly, SLOT(ReturnToPSPToPSSPosition_start()), SIGNAL(ReturnToPSPToPSSPosition_finished()));
+  }
+  // ----------
+
+  // step: Lower Pickup-Tool onto PS-p
   {
     ++assembly_step_N_;
 
@@ -451,7 +452,7 @@ AssemblyAssemblyView::AssemblyAssemblyView(const AssemblyAssembly* const assembl
 
     AssemblyAssemblyTextWidget* tmp_wid = new AssemblyAssemblyTextWidget;
     tmp_wid->label()->setText(QString::number(assembly_step_N_));
-    tmp_wid->text() ->setText("Wait for Glue To Cure (approx. 10 min)");
+    tmp_wid->text() ->setText("Wait for Glue To Cure (approx. 25 min)");
     PSSToPSP_lay->addWidget(tmp_wid);
   }
   // ----------
@@ -469,13 +470,13 @@ AssemblyAssemblyView::AssemblyAssemblyView(const AssemblyAssembly* const assembl
   }
   // ----------
 
-  // step: Pick Up PSP+PSS
+  // step: Pick Up "PS-p + PS-s"
   {
     ++assembly_step_N_;
 
     AssemblyAssemblyActionWidget* tmp_wid = new AssemblyAssemblyActionWidget;
     tmp_wid->label() ->setText(QString::number(assembly_step_N_));
-    tmp_wid->button()->setText("Pick Up PS-p+PS-s");
+    tmp_wid->button()->setText("Pick Up \"PS-p + PS-s\"");
     PSSToPSP_lay->addWidget(tmp_wid);
 
     tmp_wid->connect_action(assembly, SLOT(PickupPSPAndPSS_start()), SIGNAL(PickupPSPAndPSS_finished()));
@@ -485,7 +486,7 @@ AssemblyAssemblyView::AssemblyAssemblyView(const AssemblyAssembly* const assembl
   PSSToPSP_lay->addStretch(1);
   //// -----------------------------------------------
 
-  //// PSP+PSS to Baseplate
+  //// "PS-p + PS-s" to Baseplate --------------------
   wid_PSToBasep_ = new QWidget;
 
   toolbox->addItem(wid_PSToBasep_, tr("[4] Sensor-To-Sensor Assembly onto Baseplate"));
@@ -493,13 +494,13 @@ AssemblyAssemblyView::AssemblyAssemblyView(const AssemblyAssembly* const assembl
   QVBoxLayout* PSToBasep_lay = new QVBoxLayout;
   wid_PSToBasep_->setLayout(PSToBasep_lay);
 
-  // step: Place Baseplate on Assembly Platform
+  // step: Dispense Glue on Baseplate and Place it on Assembly Platform
   {
     ++assembly_step_N_;
 
     AssemblyAssemblyTextWidget* tmp_wid = new AssemblyAssemblyTextWidget;
     tmp_wid->label()->setText(QString::number(assembly_step_N_));
-    tmp_wid->text() ->setText("Place Baseplate on Assembly Platform");
+    tmp_wid->text() ->setText("Dispense Glue on Baseplate and Place it on Assembly Platform");
     PSToBasep_lay->addWidget(tmp_wid);
   }
   // ----------
@@ -517,40 +518,16 @@ AssemblyAssemblyView::AssemblyAssemblyView(const AssemblyAssembly* const assembl
   }
   // ----------
 
-  // step: Go To XYZA Baseplate Ref-Point
+  // step: Go To XYA Position To Glue Sensor Assembly To Baseplate
   {
     ++assembly_step_N_;
 
     AssemblyAssemblyActionWidget* tmp_wid = new AssemblyAssemblyActionWidget;
     tmp_wid->label() ->setText(QString::number(assembly_step_N_));
-    tmp_wid->button()->setText("Go To XYZA Baseplate Ref-Point");
+    tmp_wid->button()->setText("Go To XYA Position To Glue Sensor Assembly To Baseplate");
     PSToBasep_lay->addWidget(tmp_wid);
 
-    tmp_wid->connect_action(assembly, SLOT(GoToBaseplateRefPoint_start()), SIGNAL(GoToBaseplateRefPoint_finished()));
-  }
-  // ----------
-
-  // step: Dispense Fast-Curing Glue on Baseplate
-  {
-    ++assembly_step_N_;
-
-    AssemblyAssemblyTextWidget* tmp_wid = new AssemblyAssemblyTextWidget;
-    tmp_wid->label()->setText(QString::number(assembly_step_N_));
-    tmp_wid->text() ->setText("Dispense Fast-Curing Glue on Baseplate");
-    PSToBasep_lay->addWidget(tmp_wid);
-  }
-  // ----------
-
-  // step: Go To XY Position To Glue Sensor Assembly To Baseplate
-  {
-    ++assembly_step_N_;
-
-    AssemblyAssemblyActionWidget* tmp_wid = new AssemblyAssemblyActionWidget;
-    tmp_wid->label() ->setText(QString::number(assembly_step_N_));
-    tmp_wid->button()->setText("Go To XY Position To Glue Sensor Assembly To Baseplate");
-    PSToBasep_lay->addWidget(tmp_wid);
-
-    tmp_wid->connect_action(assembly, SLOT(GoFromBaseplateRefPointToBaseplateGluingXYPosition_start()), SIGNAL(GoFromBaseplateRefPointToBaseplateGluingXYPosition_finished()));
+    tmp_wid->connect_action(assembly, SLOT(GoToXYAPositionToGlueSensorAssemblyToBaseplate_start()), SIGNAL(GoToXYAPositionToGlueSensorAssemblyToBaseplate_finished()));
   }
   // ----------
 
@@ -573,7 +550,7 @@ AssemblyAssemblyView::AssemblyAssemblyView(const AssemblyAssembly* const assembl
 
     AssemblyAssemblyTextWidget* tmp_wid = new AssemblyAssemblyTextWidget;
     tmp_wid->label()->setText(QString::number(assembly_step_N_));
-    tmp_wid->text() ->setText("Wait for Glue To Cure (approx. 10 min)");
+    tmp_wid->text() ->setText("Wait for Glue To Cure (approx. 25 min)");
     PSToBasep_lay->addWidget(tmp_wid);
   }
   // ----------

@@ -39,7 +39,8 @@ class AssemblyImageView : public QWidget
   void    connectImageProducer_autofocus(const QObject* sender, const char* signal);
   void disconnectImageProducer_autofocus(const QObject* sender, const char* signal);
 
-  QPushButton* autofocus_button() const { return AF_exe_button_; }
+  QPushButton* autofocus_button() const { return autofocus_exe_button_; }
+  QPushButton* autofocus_emergencyStop_button() const { return autofocus_stop_button_; }
 
  protected:
 
@@ -60,17 +61,14 @@ class AssemblyImageView : public QWidget
   // -------------------
 
   // auto-focusing
-  AssemblyUEyeView* AF_ueye_;
-  QScrollArea*      AF_scroll_;
-
-  QLineEdit* AF_result_bestZ_lineed_;
-
-  QPushButton* AF_exe_button_;
-
-  QLineEdit* AF_param_maxDZ_lineed_;
-  QLineEdit* AF_param_Nstep_lineed_;
-
-  QPushButton* AF_save_zscan_button_;
+  AssemblyUEyeView *autofocus_ueye_;
+  QScrollArea      *autofocus_scroll_;
+  QLineEdit        *autofocus_result_bestZ_lineed_;
+  QPushButton      *autofocus_exe_button_;
+  QPushButton      *autofocus_stop_button_;
+  QLineEdit        *autofocus_param_maxDZ_lineed_;
+  QLineEdit        *autofocus_param_Nstep_lineed_;
+  QPushButton      *autofocus_save_zscan_button_;
 
   cv::Mat image_zscan_;
   // -------------------
@@ -103,6 +101,8 @@ class AssemblyImageView : public QWidget
   void autofocus_config(const double, const int);
 
   void autofocus_request();
+
+  void autofocus_emergencyStop_request();
 };
 
 #endif // ASSEMBLYIMAGEVIEW_H

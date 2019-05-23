@@ -95,7 +95,7 @@ void LStepExpress::DeviceInit()
     {
       std::cout << std::endl;
       std::cout << " LStepExpress::DeviceInit ---";
-      std::cout << " device with invalid version [Command(\"ver\") = " << buf << "]";
+      std::cout << " device with invalid version [Command(\"ver\") = \"" << buf << "\"]";
       std::cout << ", device set to NON AVAILABLE";
       std::cout << std::endl << std::endl;
 
@@ -114,7 +114,7 @@ void LStepExpress::DeviceInit()
     ){
       std::cout << std::endl;
       std::cout << " LStepExpress::DeviceInit ---";
-      std::cout << " device with invalid internal version [Command(\"iver\") = " << buf << "]";
+      std::cout << " device with invalid internal version [Command(\"iver\") = \"" << buf << "\"]";
       std::cout << ", device set to NON AVAILABLE";
       std::cout << std::endl << std::endl;
 
@@ -137,7 +137,7 @@ void LStepExpress::DeviceInit()
     ){
       std::cout << std::endl;
       std::cout << " LStepExpress::DeviceInit ---";
-      std::cout << " device with invalid serial number [Command(\"readsn\") = " << serialNumber << "]";
+      std::cout << " device with invalid serial number [Command(\"readsn\") = \"" << serialNumber << "\"]";
       std::cout << ", device set to NON AVAILABLE";
       std::cout << std::endl << std::endl;
 

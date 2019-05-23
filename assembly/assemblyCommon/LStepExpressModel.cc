@@ -778,9 +778,9 @@ void LStepExpressModel::emergencyStop()
     finishedCalibrating_ = false;
 
     NQLog("LStepExpressModel", NQLog::Spam) << "emergencyStop"
-       << ": emitting signal \"emergencyStopSignal\"";
+       << ": emitting signal \"emergencyStop_request\"";
 
-    emit emergencyStopSignal();
+    emit emergencyStop_request();
 
     NQLog("LStepExpressModel", NQLog::Spam) << "emergencyStop"
        << ": emitting signal \"motionFinished\"";

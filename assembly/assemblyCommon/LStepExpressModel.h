@@ -177,7 +177,8 @@ class LStepExpressModel : public QObject, public AbstractDeviceModel<LStepExpres
 
     void motionStarted();
     void motionFinished();
-    void emergencyStopSignal();
+
+    void emergencyStop_request();
 };
 
 #endif // LSTEPEXPRESSMODEL_H
