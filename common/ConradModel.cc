@@ -102,23 +102,21 @@ void ConradModel::initialize( void )
   	// Only loop over list when not empty
   	if (!list.empty()) {
 
-  		// browse and try initialize() until conradController_ gets an answer
-  		QStringList::const_iterator it = list.begin();
-  		QString port = QString( "/dev/" ) + *it;
+                // browse and try initialize() until ConradController gets an answer
+                bool controller_initialized(false);
 
-  		renewController( port );
+                for(const auto& port : list)
+                {
+                  renewController("/dev/"+port);
 
-  		while (it < list.end() && !controller_->initialize()) {
+                  controller_initialized = controller_->initialize();
 
-  			// Compose full absolute location of USB device
-  			port = QString( "/dev/" ) + *it;
-  			renewController( port );
-
-  			++it;
-  		}
+                  // Conrad controller initialized successfully, break loop and proceed
+                  if(controller_initialized == true){ break; }
+                }
 
   		// check communication; if it is not at the end, switch was found
-  		if (it != list.end()) {
+  		if (controller_initialized) {
 
   			// read and init status
   			std::vector<bool> status = controller_->queryStatus();
@@ -133,11 +131,11 @@ void ConradModel::initialize( void )
   				//    if( debugLevel_ >= 1 )
   				NQLog("ConradModel::initialize()", NQLog::Message)
   				<< "connection to conrad via: "
-					<< port.toStdString() << ".";
+					<< controller_->comPort() << ".";
 
   			} else {
 
-  				/*
+ 				/*
 	    would be 0 if query failed (according to ConradController::queryStatus)
 	    This means device malfunction, so set state accordingly
   				 */
