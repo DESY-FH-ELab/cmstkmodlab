@@ -29,6 +29,8 @@ public:
   bool sendCommand(unsigned char command, unsigned char address, unsigned char data) const;
   bool receiveAnswer(unsigned char* answer, unsigned char* address, unsigned char* data) const;
 
+  const char* comPort() const { return m_comPort; }
+
 private:
   const char* m_comPort;
   int m_ioPort;

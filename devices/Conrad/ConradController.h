@@ -33,6 +33,8 @@ public:
   bool setChannel(unsigned channel, bool value) const;
   bool setSingleChannel(unsigned channel, bool value) const;
 
+  const char* comPort() const;
+
 private:
   bool queryRawStatus(unsigned char& status) const;
 

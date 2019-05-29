@@ -70,6 +70,14 @@ bool ConradController::initialize()
   return true;
 }
 
+//! Return name of port used to initialize ConradCommunication
+const char* ConradController::comPort() const
+{
+  assert(m_communication);
+
+  return m_communication->comPort();
+}
+
 //! Internal helper function
 static inline bool isBitSet(unsigned char data, unsigned bit)
 {
