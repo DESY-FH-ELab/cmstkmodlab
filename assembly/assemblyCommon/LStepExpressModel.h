@@ -129,7 +129,7 @@ class LStepExpressModel : public QObject, public AbstractDeviceModel<LStepExpres
 
   protected:
 
-    const QString LStepExpress_PORT;
+    QString LStepExpress_PORT_;
 
     QMutex mutex_;
 
