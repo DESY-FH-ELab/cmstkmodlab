@@ -13,16 +13,22 @@
 #include <LStepExpressModel.h>
 #include <nqlogger.h>
 
-LStepExpressModel::LStepExpressModel(const char* port,
-                                     int updateInterval,
-                                     int motionUpdateInterval,
-                                     QObject * /*parent*/)
-    : QObject(),
-      AbstractDeviceModel<LStepExpress_t>(),
-      LStepExpress_PORT(port),
-      updateInterval_(updateInterval),
-      motionUpdateInterval_(motionUpdateInterval),
-      updateCount_(0)
+LStepExpressModel::LStepExpressModel(
+  const char* port,
+  const std::string& lstep_ver,
+  const std::string& lstep_iver,
+  const int updateInterval,
+  const int motionUpdateInterval,
+  QObject* /*parent*/
+)
+ : QObject()
+ , AbstractDeviceModel<LStepExpress_t>()
+ , LStepExpress_PORT_(port)
+ , lstep_ver_ (lstep_ver)
+ , lstep_iver_(lstep_iver)
+ , updateInterval_(updateInterval)
+ , motionUpdateInterval_(motionUpdateInterval)
+ , updateCount_(0)
 {
     std::vector<int> allZerosI{ 0, 0, 0, 0 };
     std::vector<double> allZerosD{ 0.0, 0.0, 0.0, 0.0 };
@@ -55,6 +61,13 @@ LStepExpressModel::LStepExpressModel(const char* port,
 
 LStepExpressModel::~LStepExpressModel()
 {
+}
+
+void LStepExpressModel::renewController(const QString& port)
+{
+  if(controller_ != nullptr){ delete controller_; }
+
+  controller_ = new LStepExpress_t(port.toStdString().c_str(), lstep_ver_, lstep_iver_);
 }
 
 void LStepExpressModel::getStatus(bool& status)
@@ -992,7 +1005,7 @@ void LStepExpressModel::initialize()
 
     setDeviceState(INITIALIZING);
 
-    renewController(LStepExpress_PORT);
+    renewController(LStepExpress_PORT_);
 
     bool enabled = (controller_ != nullptr) && (controller_->DeviceAvailable());
 

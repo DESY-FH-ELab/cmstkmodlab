@@ -14,14 +14,17 @@
 
 #include "LStepExpressFake.h"
 
-LStepExpressFake::LStepExpressFake( const ioport_t ioPort )
-  :VLStepExpress(ioPort),
-   autoStatus_(1)
+LStepExpressFake::LStepExpressFake(const ioport_t ioPort, const std::string& /* lstep_ver */, const std::string& /* lstep_iver */)
+ : VLStepExpress(ioPort)
+ , autoStatus_(1)
 {
-  axisStatus_ = std::vector<int>{ VLStepExpress::AXISSTANDSANDREADY,
-                                  VLStepExpress::AXISSTANDSANDREADY,
-                                  VLStepExpress::AXISSTANDSANDREADY,
-                                  VLStepExpress::AXISSTANDSANDREADY };
+  axisStatus_ = std::vector<int>{
+    VLStepExpress::AXISSTANDSANDREADY,
+    VLStepExpress::AXISSTANDSANDREADY,
+    VLStepExpress::AXISSTANDSANDREADY,
+    VLStepExpress::AXISSTANDSANDREADY,
+  };
+
   axis_ = std::vector<int>{ 1, 1, 1, 1 };
   axisDirection_ = std::vector<int>{ 0, 0, 0, 0 };
   dim_ = std::vector<int>{ 2, 2, 2, 3 };

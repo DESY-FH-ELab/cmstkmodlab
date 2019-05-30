@@ -14,6 +14,7 @@
 #define LSTEPEXPRESSMODEL_H
 
 #include <vector>
+#include <string>
 
 #include <QString>
 #include <QTimer>
@@ -37,7 +38,7 @@ class LStepExpressModel : public QObject, public AbstractDeviceModel<LStepExpres
 
   public:
 
-    explicit LStepExpressModel(const char* port, int updateInterval=1000, int motionUpdateInterval=100, QObject *parent=nullptr);
+    explicit LStepExpressModel(const char* port, const std::string& lstep_ver="", const std::string& lstep_iver="", const int updateInterval=1000, const int motionUpdateInterval=100, QObject* parent=nullptr);
     ~LStepExpressModel();
 
     bool isUpdating() const { return isUpdating_; }
@@ -129,7 +130,12 @@ class LStepExpressModel : public QObject, public AbstractDeviceModel<LStepExpres
 
   protected:
 
-    const QString LStepExpress_PORT;
+    void renewController(const QString& port) override;
+
+    const QString LStepExpress_PORT_;
+
+    const std::string lstep_ver_;
+    const std::string lstep_iver_;
 
     QMutex mutex_;
 

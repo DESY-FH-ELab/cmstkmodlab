@@ -21,12 +21,12 @@
 
 //#define LSTEPDEBUG 0
 
-LStepExpress::LStepExpress( const ioport_t ioPort )
-  :VLStepExpress(ioPort),
-   isDeviceAvailable_(false)
+LStepExpress::LStepExpress(const ioport_t ioPort, const std::string& lstep_ver, const std::string& lstep_iver)
+ : VLStepExpress(ioPort)
+ , isDeviceAvailable_(false)
 {
   comHandler_ = new LStepExpressComHandler( ioPort );
-  DeviceInit();
+  DeviceInit(lstep_ver, lstep_iver);
 }
 
 LStepExpress::~LStepExpress()
@@ -74,7 +74,7 @@ void LStepExpress::StripBuffer(char* buffer) const
   }
 }
 
-void LStepExpress::DeviceInit()
+void LStepExpress::DeviceInit(const std::string& lstep_ver, const std::string& lstep_iver)
 {
   isDeviceAvailable_ = false;
 
@@ -91,11 +91,11 @@ void LStepExpress::DeviceInit()
     StripBuffer(buffer);
     buf = buffer;
 
-    if(buf.find("PE43 1.00.01", 0) != 0)
+    if(buf == lstep_ver)
     {
       std::cout << std::endl;
-      std::cout << " LStepExpress::DeviceInit ---";
-      std::cout << " device with invalid version [Command(\"ver\") = \"" << buf << "\"]";
+      std::cout << " LStepExpress::DeviceInit(\"" << lstep_ver << "\", \"" << lstep_iver << "\") ---";
+      std::cout << " device with invalid version [Command(\"ver\") = \"" << buf << "\", differs from \"" << lstep_ver << "\"]";
       std::cout << ", device set to NON AVAILABLE";
       std::cout << std::endl << std::endl;
 
@@ -109,12 +109,11 @@ void LStepExpress::DeviceInit()
     StripBuffer(buffer);
     buf = buffer;
 
-    if(   (buf.find("E2015.02.27-3012", 0) != 0) // pre-DAF
-       && (buf.find("E2018.02.27-2002", 0) != 0) // DAF
-    ){
+    if(buf == lstep_iver)
+    {
       std::cout << std::endl;
-      std::cout << " LStepExpress::DeviceInit ---";
-      std::cout << " device with invalid internal version [Command(\"iver\") = \"" << buf << "\"]";
+      std::cout << " LStepExpress::DeviceInit(\"" << lstep_ver << "\", \"" << lstep_iver << "\") ---";
+      std::cout << " device with invalid internal version [Command(\"iver\") = \"" << buf << "\", differs from \"" << lstep_iver << "\"]";
       std::cout << ", device set to NON AVAILABLE";
       std::cout << std::endl << std::endl;
 
