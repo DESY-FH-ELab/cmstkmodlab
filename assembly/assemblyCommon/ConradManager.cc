@@ -13,18 +13,13 @@
 #include <ConradManager.h>
 #include <nqlogger.h>
 
+#include <cassert>
+
 ConradManager::ConradManager(ConradModel* const cnrd)
  : conradModel_(cnrd)
  , channelNumber_(0)
 {
-  if(conradModel_ == nullptr)
-  {
-    // to be improved
-    NQLog("ConradManager", NQLog::Fatal) << "initialization error"
-       << ": null pointer to ConradModel, exiting constructor";
-
-    return;
-  }
+  conradModel();
 
   liveTimer_ = new QTimer(this);
   liveTimer_->setSingleShot(true);
@@ -36,13 +31,15 @@ ConradManager::ConradManager(ConradModel* const cnrd)
 
 ConradModel* ConradManager::conradModel() const
 {
+  assert(conradModel_);
+
   return conradModel_;
 }
 
 /// toggleVacuum slot description
 void ConradManager::toggleVacuum(const int chNumber)
 {
-  if(conradModel_->getSwitchState(chNumber) == 0)
+  if(conradModel()->getSwitchState(chNumber) == 0)
   {
     NQLog("ConradManager", NQLog::Debug) << "toggleVacuum(" << chNumber << ")"
        << ": emitting signal \"disableVacuumButton\"";
@@ -50,13 +47,13 @@ void ConradManager::toggleVacuum(const int chNumber)
     emit disableVacuumButton();
 
     //NQLog("ConradManager") << ": attempt to turn ON the vacuum on channel " << chNumber;
-    conradModel_->setSwitchEnabled(chNumber, true);
+    conradModel()->setSwitchEnabled(chNumber, true);
     channelNumber_ = chNumber;
 
     // here will be a QtTimer for about 2 secs
     liveTimer_->start(togglingVacuumDelay);
   }
-  else if(conradModel_->getSwitchState(chNumber) == 1)
+  else if(conradModel()->getSwitchState(chNumber) == 1)
   {
     NQLog("ConradManager", NQLog::Debug) << "toggleVacuum(" << chNumber << ")"
        << ": emitting signal \"disableVacuumButton\"";
@@ -64,7 +61,7 @@ void ConradManager::toggleVacuum(const int chNumber)
     emit disableVacuumButton();
 
     //NQLog("ConradManager") << ": attempt to turn OFF the vacuum on channel " << chNumber;
-    conradModel_->setSwitchEnabled(chNumber, false);
+    conradModel()->setSwitchEnabled(chNumber, false);
     channelNumber_ = chNumber;
 
     // here will be a QtTimer for about 2 secs
@@ -82,9 +79,9 @@ void ConradManager::toggleVacuum(const int chNumber)
 void ConradManager::vacuumToggled()
 {
   NQLog("ConradManager", NQLog::Debug) << "vacuumToggled"
-     << ": emitting signal \"vacuumChannelState(" << channelNumber_ << ", " << conradModel_->getSwitchState(channelNumber_) << ")\"";
+     << ": emitting signal \"vacuumChannelState(" << channelNumber_ << ", " << conradModel()->getSwitchState(channelNumber_) << ")\"";
 
-  emit vacuumChannelState(channelNumber_, conradModel_->getSwitchState(channelNumber_));
+  emit vacuumChannelState(channelNumber_, conradModel()->getSwitchState(channelNumber_));
 
   NQLog("ConradManager", NQLog::Debug) << "vacuumToggled"
      << ": emitting signal \"enableVacuumButton\"";
@@ -101,20 +98,20 @@ void ConradManager::transmit_vacuumChannelState(const int chNumber)
 {
   NQLog("ConradManager", NQLog::Debug) << "transmit_vacuumChannelState(" << chNumber << ")"
      << ": emitting signal \"vacuumChannelState("
-     << chNumber << ", " << conradModel_->getSwitchState(chNumber) << ")\"";
+     << chNumber << ", " << conradModel()->getSwitchState(chNumber) << ")\"";
 
-  emit vacuumChannelState(chNumber, conradModel_->getSwitchState(chNumber));
+  emit vacuumChannelState(chNumber, conradModel()->getSwitchState(chNumber));
 }
 
 // maybe need checkStatus SLOT
 
 void ConradManager::enableVacuum(const int chNumber)
 {
-  const auto state = conradModel_->getSwitchState(chNumber);
+  const auto state = conradModel()->getSwitchState(chNumber);
 
   if(state == 0) // vacuum line is OFF
   {
-    conradModel_->setSwitchEnabled(chNumber, true);
+    conradModel()->setSwitchEnabled(chNumber, true);
     channelNumber_ = chNumber;
 
     liveTimer_->start(togglingVacuumDelay);
@@ -144,7 +141,7 @@ void ConradManager::enableVacuum(const int chNumber)
 
 void ConradManager::disableVacuum(const int chNumber)
 {
-  const auto state = conradModel_->getSwitchState(chNumber);
+  const auto state = conradModel()->getSwitchState(chNumber);
 
   if(state == 0) // vacuum line is OFF
   {
@@ -157,7 +154,7 @@ void ConradManager::disableVacuum(const int chNumber)
   }
   else if(state == 1) // vacuum line is ON
   {
-    conradModel_->setSwitchEnabled(chNumber, false);
+    conradModel()->setSwitchEnabled(chNumber, false);
     channelNumber_ = chNumber;
 
     liveTimer_->start(togglingVacuumDelay);
