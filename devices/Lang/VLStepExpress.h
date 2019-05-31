@@ -53,7 +53,8 @@ class VLStepExpress {
     AXISSTATEUNKNOWN           = 0xff
   };
 
-  VLStepExpress( const ioport_t );
+  VLStepExpress(const ioport_t);
+
   virtual ~VLStepExpress();
 
   virtual bool DeviceAvailable() const = 0;
