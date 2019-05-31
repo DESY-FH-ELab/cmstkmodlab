@@ -132,7 +132,7 @@ class LStepExpressModel : public QObject, public AbstractDeviceModel<LStepExpres
 
     void renewController(const QString& port) override;
 
-    const QString LStepExpress_PORT_;
+    QString LStepExpress_PORT_;
 
     const std::string lstep_ver_;
     const std::string lstep_iver_;

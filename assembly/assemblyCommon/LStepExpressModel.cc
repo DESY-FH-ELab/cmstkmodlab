@@ -13,6 +13,9 @@
 #include <LStepExpressModel.h>
 #include <nqlogger.h>
 
+#include <QStringList>
+#include <QDir>
+
 LStepExpressModel::LStepExpressModel(
   const char* port,
   const std::string& lstep_ver,
@@ -1005,9 +1008,39 @@ void LStepExpressModel::initialize()
 
     setDeviceState(INITIALIZING);
 
-    renewController(LStepExpress_PORT_);
+    // browse ports, and choose the first one for which
+    // LStep controller is successfully enabled
+    bool enabled(false);
 
-    bool enabled = (controller_ != nullptr) && (controller_->DeviceAvailable());
+    QStringList filters("ttyUSB*");
+
+    QDir devDir("/dev");
+    devDir.setNameFilters(filters);
+    devDir.setFilter(QDir::System);
+
+    QStringList ports_list = devDir.entryList();
+
+    for(const auto& port : ports_list)
+    {
+
+std::cout << "AAA PORT " << port.toStdString() << " " << enabled << std::endl;//!!
+
+      renewController("/dev/"+port);
+
+      enabled = (controller_ != nullptr) && (controller_->DeviceAvailable());
+
+std::cout << "BBB PORT " << port.toStdString() << " " << enabled << std::endl;//!!
+
+      if(enabled)
+      {
+        LStepExpress_PORT_ = port;
+
+        NQLog("LStepExpressModel", NQLog::Message) << "initialize"
+           << "successfully accessed port: " << LStepExpress_PORT_;
+
+        break;
+      }
+    }
 
     if(enabled)
     {
