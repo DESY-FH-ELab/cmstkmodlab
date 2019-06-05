@@ -29,7 +29,7 @@ ConradModel::ConradModel(const QString& port_dirpath, const QString& port_basena
   setControlsEnabled(true);
 }
 
-ConradModel::ConradModel(const char* port, QObject* /* parent */)
+ConradModel::ConradModel(const QString& port, QObject* /* parent */)
  : QObject()
  , AbstractDeviceModel()
  , port_(port)
