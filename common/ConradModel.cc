@@ -14,10 +14,13 @@
 
 #include "ConradModel.h"
 
-ConradModel::ConradModel(QObject * /* parent */)
-: QObject(),
-  AbstractDeviceModel(),
-  switchStates_(8, OFF)
+ConradModel::ConradModel(const QString& port_dirpath, const QString& port_basename, QObject* /* parent */)
+ : QObject()
+ , AbstractDeviceModel()
+ , port_("")
+ , port_dirpath_(port_dirpath)
+ , port_basename_(port_basename)
+ , switchStates_(8, OFF)
 {
   setDeviceEnabled(true);
   setControlsEnabled(true);
@@ -25,11 +28,13 @@ ConradModel::ConradModel(QObject * /* parent */)
   NQLog("ConradModel") << "constructed";
 }
 
-ConradModel::ConradModel(const char* port, QObject * /* parent */)
-: QObject(),
-  AbstractDeviceModel(),
-  port_(port),
-  switchStates_(8, OFF)
+ConradModel::ConradModel(const char* port, QObject* /* parent */)
+ : QObject()
+ , AbstractDeviceModel()
+ , port_(port)
+ , port_dirpath_("")
+ , port_basename_("")
+ , switchStates_(8, OFF)
 {
   setDeviceEnabled(true);
   setControlsEnabled(true);
@@ -79,7 +84,7 @@ void ConradModel::initialize( void )
 
   controller_->initialize();
 
-  std::vector<bool> status = controller_->queryStatus();
+  const std::vector<bool> status = controller_->queryStatus();
 
   // Announce new states
   if (status.size() == 8) {
@@ -91,23 +96,24 @@ void ConradModel::initialize( void )
 #else
 
   if (port_.isEmpty()) {
-  	// create a list with all available ttyUSB device (system) files
-  	QStringList filters("ttyUSB*");
 
-  	QDir devDir("/dev");
-  	devDir.setNameFilters(filters);
-  	devDir.setFilter(QDir::System);
-  	QStringList list = devDir.entryList();
+       // create a list with all available device (system) files
+       QStringList filters(port_basename_);
 
-  	// Only loop over list when not empty
-  	if (!list.empty()) {
+       QDir devDir(port_dirpath_);
+       devDir.setNameFilters(filters);
+       devDir.setFilter(QDir::System);
+       const QStringList ports_list = devDir.entryList();
+
+       // Only loop over list when not empty
+       if (!ports_list.empty()) {
 
                 // browse and try initialize() until ConradController gets an answer
                 bool controller_initialized(false);
 
-                for(const auto& port : list)
+                for(const auto& port : ports_list)
                 {
-                  renewController("/dev/"+port);
+                  renewController(port_dirpath_+"/"+port);
 
                   controller_initialized = controller_->initialize();
 
@@ -118,8 +124,8 @@ void ConradModel::initialize( void )
   		// check communication; if it is not at the end, switch was found
   		if (controller_initialized) {
 
-  			// read and init status
-  			std::vector<bool> status = controller_->queryStatus();
+                        // read and init status
+                        const std::vector<bool> status = controller_->queryStatus();
 
   			// Announce new states
   			if (status.size() == 8) {
@@ -171,19 +177,19 @@ void ConradModel::initialize( void )
   	}
   } else {
 
-    NQLog("ConradModel") << "initialize() " << port_;
+        NQLog("ConradModel") << "initialize() " << port_;
 
   	renewController(port_);
 
   	controller_->initialize();
 
-  	std::vector<bool> status = controller_->queryStatus();
+        const std::vector<bool> status = controller_->queryStatus();
 
   	// Announce new states
-  	if (status.size() == 8) {
-
-  		setAllSwitchesReady(status);
-  		setDeviceState( READY );
+        if(status.size() == 8)
+        {
+          setAllSwitchesReady(status);
+          setDeviceState( READY );
   	}
   }
 #endif

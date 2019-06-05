@@ -132,7 +132,7 @@ AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QStr
     /// -------------------
 
     /// Vacuum Manager
-    conradModel_   = new ConradModel;
+    conradModel_   = new ConradModel("/dev", "ttyUSB*");
     conradManager_ = new ConradManager(conradModel_);
     /// -------------------
 

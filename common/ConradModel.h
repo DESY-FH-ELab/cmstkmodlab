@@ -52,14 +52,11 @@ class ConradModel :
 
 public:
 
-  // TODO Add initialisation parameters
-  explicit ConradModel(QObject *parent = 0);
-  explicit ConradModel(const char* port,
-                       QObject *parent = 0);
+  explicit ConradModel(const QString& port_dirpath, const QString& port_basename, QObject* parent=nullptr);
+  explicit ConradModel(const char* port, QObject* parent=nullptr);
   virtual ~ConradModel();
 
-  // Methods for power control and status querying of the devices connected to
-  // the switch
+  // Methods for power control and status querying of the devices connected to the switch
   const State& getSwitchState( int device ) const;
 
 public slots:
@@ -73,8 +70,10 @@ public slots:
 
 protected:
 
-  QString port_;
-  
+  const QString port_;
+  const QString port_dirpath_;
+  const QString port_basename_;
+
   void initialize();
   void close();
 
