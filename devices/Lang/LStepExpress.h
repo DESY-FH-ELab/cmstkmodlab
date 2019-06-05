@@ -33,6 +33,8 @@ class LStepExpress : public VLStepExpress
 
  public:
 
+  ioport_t ioPort() const;
+
   bool DeviceAvailable() const;
 
   void GetAutoStatus(int & value);

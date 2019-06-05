@@ -35,6 +35,8 @@ class LStepExpressComHandler {
   //! Default bitwise copy constructor.
   LStepExpressComHandler( const LStepExpressComHandler & );
 
+  ioport_t ioPort() const { return fIoPort; }
+
   void SendCommand( const char* );
   void ReceiveString( char* );
 

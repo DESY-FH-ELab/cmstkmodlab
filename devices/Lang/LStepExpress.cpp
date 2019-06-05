@@ -10,6 +10,7 @@
 //                                                                             //
 /////////////////////////////////////////////////////////////////////////////////
 
+#include <assert.h>
 #include <unistd.h>
 
 #include <cstring>
@@ -32,6 +33,14 @@ LStepExpress::LStepExpress(const ioport_t ioPort, const std::string& lstep_ver, 
 LStepExpress::~LStepExpress()
 {
   delete comHandler_;
+}
+
+//! Return name of port used to initialize LStepExpressComHandler
+ioport_t LStepExpress::ioPort() const
+{
+  assert(comHandler_);
+
+  return comHandler_->ioPort();
 }
 
 bool LStepExpress::DeviceAvailable() const
