@@ -38,8 +38,16 @@ class LStepExpressModel : public QObject, public AbstractDeviceModel<LStepExpres
 
   public:
 
-    explicit LStepExpressModel(const char* port, const std::string& lstep_ver="", const std::string& lstep_iver="", const int updateInterval=1000, const int motionUpdateInterval=100, QObject* parent=nullptr);
-    ~LStepExpressModel();
+    explicit LStepExpressModel(const QString& port, const QString& port_dirpath, const QString& port_basename,
+      const std::string& lstep_ver="", const std::string& lstep_iver="", const int updateInterval=1000, const int motionUpdateInterval=100, QObject* parent=nullptr);
+
+    explicit LStepExpressModel(const QString& port,
+      const std::string& lstep_ver="", const std::string& lstep_iver="", const int updateInterval=1000, const int motionUpdateInterval=100, QObject* parent=nullptr);
+
+    explicit LStepExpressModel(const QString& port_dirpath, const QString& port_basename,
+      const std::string& lstep_ver="", const std::string& lstep_iver="", const int updateInterval=1000, const int motionUpdateInterval=100, QObject* parent=nullptr);
+
+    virtual ~LStepExpressModel();
 
     bool isUpdating() const { return isUpdating_; }
     void pauseUpdate();
@@ -132,7 +140,9 @@ class LStepExpressModel : public QObject, public AbstractDeviceModel<LStepExpres
 
     void renewController(const QString& port) override;
 
-    QString LStepExpress_PORT_;
+    const QString port_;
+    const QString port_dirpath_;
+    const QString port_basename_;
 
     const std::string lstep_ver_;
     const std::string lstep_iver_;

@@ -17,7 +17,9 @@
 #include <QDir>
 
 LStepExpressModel::LStepExpressModel(
-  const char* port,
+  const QString& port,
+  const QString& port_dirpath,
+  const QString& port_basename,
   const std::string& lstep_ver,
   const std::string& lstep_iver,
   const int updateInterval,
@@ -25,23 +27,25 @@ LStepExpressModel::LStepExpressModel(
   QObject* /*parent*/
 )
  : QObject()
- , AbstractDeviceModel<LStepExpress_t>()
- , LStepExpress_PORT_(port)
+ , port_(port)
+ , port_dirpath_(port_dirpath)
+ , port_basename_(port_basename)
  , lstep_ver_ (lstep_ver)
  , lstep_iver_(lstep_iver)
  , updateInterval_(updateInterval)
  , motionUpdateInterval_(motionUpdateInterval)
  , updateCount_(0)
 {
-    std::vector<int> allZerosI{ 0, 0, 0, 0 };
-    std::vector<double> allZerosD{ 0.0, 0.0, 0.0, 0.0 };
+    const std::vector<int> allZerosI{ 0, 0, 0, 0 };
+    const std::vector<double> allZerosD{ 0.0, 0.0, 0.0, 0.0 };
 
     axis_ = allZerosI;
     axisDirection_ = allZerosI;
     dim_ = allZerosI;
     pa_ = allZerosI;
+
     joystickEnabled_ = 0;
-    joystickAxisEnabled_ = std::vector<int>{ 0, 0, 0, 0 };
+    joystickAxisEnabled_ = allZerosI;
 
     axisStatus_ = std::vector<int>{ 0x0b, 0x0b, 0x0b, 0x0b };
     accelerationJerk_ = allZerosD;
@@ -61,6 +65,18 @@ LStepExpressModel::LStepExpressModel(
     connect(timer_, SIGNAL(timeout()), this, SLOT(updateMotionInformationFromTimer()));
 //    connect(this, SIGNAL(informationChanged()), this, SLOT(updateInformation()));
 }
+
+LStepExpressModel::LStepExpressModel(const QString& port,
+  const std::string& lstep_ver, const std::string& lstep_iver, const int updateInterval, const int motionUpdateInterval, QObject* parent
+)
+ : LStepExpressModel(port, "", "", lstep_ver, lstep_iver, updateInterval, motionUpdateInterval, parent)
+{}
+
+LStepExpressModel::LStepExpressModel(const QString& port_dirpath, const QString& port_basename,
+  const std::string& lstep_ver, const std::string& lstep_iver, const int updateInterval, const int motionUpdateInterval, QObject* parent
+)
+ : LStepExpressModel("", port_dirpath, port_basename, lstep_ver, lstep_iver, updateInterval, motionUpdateInterval, parent)
+{}
 
 LStepExpressModel::~LStepExpressModel()
 {
@@ -1008,42 +1024,41 @@ void LStepExpressModel::initialize()
 
     setDeviceState(INITIALIZING);
 
-    // browse ports, and choose the first one for which
-    // LStep controller is successfully enabled
     bool enabled(false);
 
-    QStringList filters("ttyUSB*");
-
-    QDir devDir("/dev");
-    devDir.setNameFilters(filters);
-    devDir.setFilter(QDir::System);
-
-    QStringList ports_list = devDir.entryList();
-
-    for(const auto& port : ports_list)
+    if(port_.isEmpty())
     {
+      // browse ports, and choose the first one for which
+      // LStep controller is successfully enabled
+      const QStringList filters(port_basename_);
 
-std::cout << "AAA PORT " << port.toStdString() << " " << enabled << std::endl;//!!
+      QDir portDir(port_dirpath_);
+      portDir.setNameFilters(filters);
+      portDir.setFilter(QDir::System);
 
-      renewController("/dev/"+port);
+      const QStringList ports_list = portDir.entryList();
+
+      for(const auto& port : ports_list)
+      {
+        renewController(portDir.canonicalPath()+"/"+port);
+
+        enabled = (controller_ != nullptr) && (controller_->DeviceAvailable());
+
+        if(enabled){ break; }
+      }
+    }
+    else
+    {
+      renewController(port_);
 
       enabled = (controller_ != nullptr) && (controller_->DeviceAvailable());
-
-std::cout << "BBB PORT " << port.toStdString() << " " << enabled << std::endl;//!!
-
-      if(enabled)
-      {
-        LStepExpress_PORT_ = port;
-
-        NQLog("LStepExpressModel", NQLog::Message) << "initialize"
-           << "successfully accessed port: " << LStepExpress_PORT_;
-
-        break;
-      }
     }
 
     if(enabled)
     {
+      NQLog("LStepExpressModel", NQLog::Message) << "initialize"
+         << "successfully accessed port: " << controller_->ioPort();
+
       QMutexLocker locker(&mutex_);
 
       controller_->SetAutoStatus(2);

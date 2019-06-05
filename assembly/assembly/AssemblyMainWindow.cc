@@ -101,13 +101,7 @@ AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QStr
     /// -------------------
 
     /// Motion
-    motion_model_ = new LStepExpressModel(
-      config->getValue<std::string>("LStepExpressDevice").c_str(),
-      config->getValue<std::string>("LStepExpressDevice_ver"),
-      config->getValue<std::string>("LStepExpressDevice_iver"),
-      1000,
-      1000
-    );
+    motion_model_ = new LStepExpressModel("/dev", "ttyUSB*", config->getValue<std::string>("LStepExpressDevice_ver"), config->getValue<std::string>("LStepExpressDevice_iver"), 1000, 1000);
 
     motion_manager_ = new LStepExpressMotionManager(motion_model_);
 
