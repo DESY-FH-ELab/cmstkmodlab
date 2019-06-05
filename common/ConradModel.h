@@ -13,9 +13,7 @@
 #ifndef CONRADMODEL_H
 #define CONRADMODEL_H
 
-#include <QStringList>
 #include <QString>
-#include <QDir>
 
 #include "DeviceState.h"
 
@@ -53,7 +51,7 @@ class ConradModel :
 public:
 
   explicit ConradModel(const QString& port_dirpath, const QString& port_basename, QObject* parent=nullptr);
-  explicit ConradModel(const char* port, QObject* parent=nullptr);
+  explicit ConradModel(const QString& port, QObject* parent=nullptr);
   virtual ~ConradModel();
 
   // Methods for power control and status querying of the devices connected to the switch

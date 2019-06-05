@@ -12,6 +12,9 @@
 
 #include <nqlogger.h>
 
+#include <QStringList>
+#include <QDir>
+
 #include "ConradModel.h"
 
 ConradModel::ConradModel(const QString& port_dirpath, const QString& port_basename, QObject* /* parent */)
@@ -24,8 +27,6 @@ ConradModel::ConradModel(const QString& port_dirpath, const QString& port_basena
 {
   setDeviceEnabled(true);
   setControlsEnabled(true);
-
-  NQLog("ConradModel") << "constructed";
 }
 
 ConradModel::ConradModel(const char* port, QObject* /* parent */)
@@ -98,12 +99,12 @@ void ConradModel::initialize( void )
   if (port_.isEmpty()) {
 
        // create a list with all available device (system) files
-       QStringList filters(port_basename_);
+       const QStringList filters(port_basename_);
 
-       QDir devDir(port_dirpath_);
-       devDir.setNameFilters(filters);
-       devDir.setFilter(QDir::System);
-       const QStringList ports_list = devDir.entryList();
+       QDir portDir(port_dirpath_);
+       portDir.setNameFilters(filters);
+       portDir.setFilter(QDir::System);
+       const QStringList ports_list = portDir.entryList();
 
        // Only loop over list when not empty
        if (!ports_list.empty()) {
@@ -113,7 +114,7 @@ void ConradModel::initialize( void )
 
                 for(const auto& port : ports_list)
                 {
-                  renewController(port_dirpath_+"/"+port);
+                  renewController(portDir.canonicalPath()+"/"+port);
 
                   controller_initialized = controller_->initialize();
 
