@@ -24,7 +24,7 @@ class ConradController : public VConradController {
 
 public:
 
-  ConradController( const ioport_t );
+  ConradController(const char*);
   ~ConradController();
 
   bool initialize();

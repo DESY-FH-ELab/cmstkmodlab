@@ -22,12 +22,17 @@
 
 //#define LSTEPDEBUG 0
 
-LStepExpress::LStepExpress(const ioport_t ioPort, const std::string& lstep_ver, const std::string& lstep_iver)
- : VLStepExpress(ioPort)
+LStepExpress::LStepExpress(const std::string& ioport, const std::string& lstep_ver, const std::string& lstep_iver)
+ : VLStepExpress(ioport)
  , isDeviceAvailable_(false)
 {
-  comHandler_ = new LStepExpressComHandler( ioPort );
+  comHandler_ = new LStepExpressComHandler(ioport);
+
+  std::cout << "AAAA " << ioPort() << " " << comHandler_->ioPort() << std::endl;
+
   DeviceInit(lstep_ver, lstep_iver);
+
+  std::cout << "BBBB " << ioPort() << " " << comHandler_->ioPort() << std::endl;
 }
 
 LStepExpress::~LStepExpress()
@@ -36,10 +41,10 @@ LStepExpress::~LStepExpress()
 }
 
 //! Return name of port used to initialize LStepExpressComHandler
-ioport_t LStepExpress::ioPort() const
+std::string LStepExpress::ioPort() const
 {
   assert(comHandler_);
-
+std::cout << "!!!!! " << comHandler_->ioPort() << std::endl;
   return comHandler_->ioPort();
 }
 
@@ -87,6 +92,8 @@ void LStepExpress::DeviceInit(const std::string& lstep_ver, const std::string& l
 {
   isDeviceAvailable_ = false;
 
+  std::cout << "CCCC " << ioPort() << std::endl;
+
   if (comHandler_->DeviceAvailable()) {
 
     isDeviceAvailable_ = true;
@@ -131,6 +138,7 @@ void LStepExpress::DeviceInit(const std::string& lstep_ver, const std::string& l
       return;
     }
 
+  std::cout << "DDDD " << comHandler_->ioPort() << std::endl;
     /*
 
     comHandler_->SendCommand("readsn"); // read serial number
@@ -156,6 +164,8 @@ void LStepExpress::DeviceInit(const std::string& lstep_ver, const std::string& l
 
     */
   }
+
+  std::cout << "EEEE " << comHandler_->ioPort() << std::endl;
 }
 
 void LStepExpress::GetAutoStatus(int & value)

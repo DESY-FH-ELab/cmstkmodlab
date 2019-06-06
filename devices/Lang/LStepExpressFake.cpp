@@ -14,7 +14,7 @@
 
 #include "LStepExpressFake.h"
 
-LStepExpressFake::LStepExpressFake(const ioport_t ioPort, const std::string& /* lstep_ver */, const std::string& /* lstep_iver */)
+LStepExpressFake::LStepExpressFake(const std::string& ioPort, const std::string& /* lstep_ver */, const std::string& /* lstep_iver */)
  : VLStepExpress(ioPort)
  , autoStatus_(1)
 {

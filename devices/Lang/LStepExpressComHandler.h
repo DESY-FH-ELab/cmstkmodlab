@@ -19,15 +19,14 @@
 #include <fcntl.h>
 #include <unistd.h>
 
-typedef const char* ioport_t;
 typedef struct termios termios_t;
 
 class LStepExpressComHandler {
 
  public:
-  
+
   //! Constructor.
-  LStepExpressComHandler( ioport_t );
+  LStepExpressComHandler(const std::string&);
 
   //! Destructor.
   ~LStepExpressComHandler();
@@ -35,7 +34,7 @@ class LStepExpressComHandler {
   //! Default bitwise copy constructor.
   LStepExpressComHandler( const LStepExpressComHandler & );
 
-  ioport_t ioPort() const { return fIoPort; }
+  const std::string& ioPort() const { return fIoPort; }
 
   void SendCommand( const char* );
   void ReceiveString( char* );
@@ -53,7 +52,7 @@ class LStepExpressComHandler {
   bool fDeviceAvailable;
   int fIoPortFileDescriptor;
 
-  ioport_t fIoPort;
+  const std::string fIoPort;
   termios_t fCurrentTermios, fThisTermios;
 };
 

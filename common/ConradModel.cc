@@ -134,11 +134,8 @@ void ConradModel::initialize( void )
   				setAllSwitchesReady( status );
   				setDeviceState( READY );
 
-  				// FIXME Redirect to central logger
-  				//    if( debugLevel_ >= 1 )
-  				NQLog("ConradModel::initialize()", NQLog::Message)
-  				<< "connection to conrad via: "
-					<< controller_->comPort() << ".";
+                                NQLog("ConradModel", NQLog::Message) << "initialize"
+                                   << ": successfully connected ConradModel to port " << controller_->comPort();
 
   			} else {
 

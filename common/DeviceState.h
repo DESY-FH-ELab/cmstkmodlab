@@ -69,6 +69,7 @@ protected:
   /// Renews the current Controller* for the given port.
   virtual void renewController( const QString& port ) {
     if ( controller_ ) delete controller_;
+std::cout<<"DeviceState.renewController " << __LINE__ << " " << port.toStdString().c_str() << std::endl;
     controller_ = new Controller( port.toStdString().c_str() );
   }
 

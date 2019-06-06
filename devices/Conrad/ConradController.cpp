@@ -21,7 +21,7 @@
 #include <iostream>
 
 //! Default constructor
-ConradController::ConradController( const ioport_t ioPort)
+ConradController::ConradController(const char* ioPort)
   : VConradController(ioPort),
     m_communication(new ConradCommunication(ioPort))
 {

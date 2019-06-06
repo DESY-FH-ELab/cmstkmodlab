@@ -36,6 +36,7 @@ LStepExpressModel::LStepExpressModel(
  , motionUpdateInterval_(motionUpdateInterval)
  , updateCount_(0)
 {
+std::cout << "Model " << __LINE__ << " " << (controller_ ? controller_->ioPort() : "NULL") << std::endl;
     const std::vector<int> allZerosI{ 0, 0, 0, 0 };
     const std::vector<double> allZerosD{ 0.0, 0.0, 0.0, 0.0 };
 
@@ -85,8 +86,10 @@ LStepExpressModel::~LStepExpressModel()
 void LStepExpressModel::renewController(const QString& port)
 {
   if(controller_ != nullptr){ delete controller_; }
-
-  controller_ = new LStepExpress_t(port.toStdString().c_str(), lstep_ver_, lstep_iver_);
+std::cout<<"LStepExpressModel::renewController " << __LINE__ << " " << port.toStdString().c_str() << std::endl;
+  controller_ = new LStepExpress_t(port.toStdString(), lstep_ver_, lstep_iver_);
+std::cout<<"LStepExpressModel::renewController " << __LINE__ << " " << controller_->ioPort() << " " << controller_ << std::endl;
+std::cout<<"LStepExpressModel::renewController " << __LINE__ << " " << controller_->ioPort() << " " << controller_ << std::endl;
 }
 
 void LStepExpressModel::getStatus(bool& status)
@@ -1025,6 +1028,7 @@ void LStepExpressModel::initialize()
     setDeviceState(INITIALIZING);
 
     bool enabled(false);
+std::cout << "Model " << __LINE__ << " " << (controller_ ? controller_->ioPort() : "NULL") << std::endl;
 
     if(port_.isEmpty())
     {
@@ -1037,10 +1041,14 @@ void LStepExpressModel::initialize()
       portDir.setFilter(QDir::System);
 
       const QStringList ports_list = portDir.entryList();
+std::cout << "Model " << __LINE__ << " " << (controller_ ? controller_->ioPort() : "NULL") << std::endl;
 
       for(const auto& port : ports_list)
       {
+std::cout << "Model " << __LINE__ << " " << (controller_ ? controller_->ioPort() : "NULL") << " " << (portDir.canonicalPath()+"/"+port).toStdString() << std::endl;
         renewController(portDir.canonicalPath()+"/"+port);
+std::cout << "Model " << __LINE__ << " " << controller_ << " " << (controller_ ? controller_->ioPort() : "NULL") << " " << (portDir.canonicalPath()+"/"+port).toStdString() << std::endl;
+std::cout << "Model " << __LINE__ << " " << controller_ << " " << (controller_ ? controller_->ioPort() : "NULL") << " " << (portDir.canonicalPath()+"/"+port).toStdString() << std::endl;
 
         enabled = (controller_ != nullptr) && (controller_->DeviceAvailable());
 
@@ -1057,8 +1065,8 @@ void LStepExpressModel::initialize()
     if(enabled)
     {
       NQLog("LStepExpressModel", NQLog::Message) << "initialize"
-         << "successfully accessed port: " << controller_->ioPort();
-
+         << ": successfully accessed port " << controller_->ioPort();
+std::cout << "Model " << __LINE__ << " " << (controller_ ? controller_->ioPort() : "NULL") << std::endl;
       QMutexLocker locker(&mutex_);
 
       controller_->SetAutoStatus(2);

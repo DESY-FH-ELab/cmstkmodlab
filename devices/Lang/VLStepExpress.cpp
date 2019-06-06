@@ -1,4 +1,5 @@
-/////////////////////////////////////////////////////////////////////////////////
+
+ ////////////////////////////////////////////////////////////////////////////////
 //                                                                             //
 //               Copyright (C) 2011-2017 - The DESY CMS Group                  //
 //                           All rights reserved                               //
@@ -14,7 +15,7 @@
 
 #include "VLStepExpress.h"
 
-VLStepExpress::VLStepExpress(const ioport_t /* ioPort */)
+VLStepExpress::VLStepExpress(const std::string& /* ioPort */)
 {
 }
 

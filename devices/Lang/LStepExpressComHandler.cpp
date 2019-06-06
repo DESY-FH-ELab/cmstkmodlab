@@ -21,11 +21,11 @@
   ttyUSB0 ... ttyUSB3<br>
   "/dev/ttyUSB0" ... "/dev/ttyUSB3"
 */
-LStepExpressComHandler::LStepExpressComHandler(ioport_t ioPort)
+LStepExpressComHandler::LStepExpressComHandler(const std::string& ioPort) : fIoPort(ioPort)
 {
-  // save ioport 
-  fIoPort = ioPort;
-
+//  // save ioport 
+//  fIoPort = ioPort;
+std::cout << "LStepExpressComHandler::LStepExpressComHandler " << __LINE__ << " " << ioPort << std::endl;
   // initialize
   OpenIoPort();
   InitializeIoPort();
@@ -102,7 +102,7 @@ void LStepExpressComHandler::ReceiveString( char *receiveString )
 void LStepExpressComHandler::OpenIoPort( void )
 {
   // open io port ( read/write | no term control | no DCD line check )
-  fIoPortFileDescriptor = open( fIoPort, O_RDWR | O_NOCTTY  | O_NDELAY );
+  fIoPortFileDescriptor = open( fIoPort.c_str(), O_RDWR | O_NOCTTY  | O_NDELAY );
 
   // check if successful
   if ( fIoPortFileDescriptor == -1 ) {
