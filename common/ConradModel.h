@@ -49,7 +49,6 @@ class ConradModel :
 
 public:
 
-  explicit ConradModel(const QString& port_dirpath, const QString& port_basename, QObject* parent=nullptr);
   explicit ConradModel(const QString& port, QObject* parent=nullptr);
   virtual ~ConradModel();
 
@@ -68,8 +67,6 @@ public slots:
 protected:
 
   const QString port_;
-  const QString port_dirpath_;
-  const QString port_basename_;
 
   void initialize();
   void close();

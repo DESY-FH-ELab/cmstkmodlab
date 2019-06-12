@@ -13,13 +13,12 @@
 #include <LStepExpressModel.h>
 #include <nqlogger.h>
 
-#include <QStringList>
+#include <QFileInfo>
 #include <QDir>
+#include <QStringList>
 
 LStepExpressModel::LStepExpressModel(
   const QString& port,
-  const QString& port_dirpath,
-  const QString& port_basename,
   const std::string& lstep_ver,
   const std::string& lstep_iver,
   const int updateInterval,
@@ -28,8 +27,6 @@ LStepExpressModel::LStepExpressModel(
 )
  : QObject()
  , port_(port)
- , port_dirpath_(port_dirpath)
- , port_basename_(port_basename)
  , lstep_ver_ (lstep_ver)
  , lstep_iver_(lstep_iver)
  , updateInterval_(updateInterval)
@@ -65,18 +62,6 @@ LStepExpressModel::LStepExpressModel(
     connect(timer_, SIGNAL(timeout()), this, SLOT(updateMotionInformationFromTimer()));
 //    connect(this, SIGNAL(informationChanged()), this, SLOT(updateInformation()));
 }
-
-LStepExpressModel::LStepExpressModel(const QString& port,
-  const std::string& lstep_ver, const std::string& lstep_iver, const int updateInterval, const int motionUpdateInterval, QObject* parent
-)
- : LStepExpressModel(port, "", "", lstep_ver, lstep_iver, updateInterval, motionUpdateInterval, parent)
-{}
-
-LStepExpressModel::LStepExpressModel(const QString& port_dirpath, const QString& port_basename,
-  const std::string& lstep_ver, const std::string& lstep_iver, const int updateInterval, const int motionUpdateInterval, QObject* parent
-)
- : LStepExpressModel("", port_dirpath, port_basename, lstep_ver, lstep_iver, updateInterval, motionUpdateInterval, parent)
-{}
 
 LStepExpressModel::~LStepExpressModel()
 {
@@ -1030,10 +1015,10 @@ void LStepExpressModel::initialize()
     {
       // browse ports, and choose the first one for which
       // LStep controller is successfully enabled
-      const QStringList filters(port_basename_);
+      const QFileInfo port_qfileinfo(port_);
 
-      QDir portDir(port_dirpath_);
-      portDir.setNameFilters(filters);
+      QDir portDir(port_qfileinfo.dir().canonicalPath());
+      portDir.setNameFilters(QStringList(port_qfileinfo.fileName()));
       portDir.setFilter(QDir::System);
 
       const QStringList ports_list = portDir.entryList();
@@ -1049,9 +1034,8 @@ void LStepExpressModel::initialize()
     }
     else
     {
-      renewController(port_);
-
-      enabled = (controller_ != nullptr) && (controller_->DeviceAvailable());
+      NQLog("LStepExpressModel", NQLog::Warning) << "initialize"
+         << ": path to device file is empty, LStepExpressModel will not be initialized";
     }
 
     if(enabled)

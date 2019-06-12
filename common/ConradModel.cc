@@ -12,29 +12,16 @@
 
 #include <nqlogger.h>
 
-#include <QStringList>
+#include <QFileInfo>
 #include <QDir>
+#include <QStringList>
 
 #include "ConradModel.h"
-
-ConradModel::ConradModel(const QString& port_dirpath, const QString& port_basename, QObject* /* parent */)
- : QObject()
- , AbstractDeviceModel()
- , port_("")
- , port_dirpath_(port_dirpath)
- , port_basename_(port_basename)
- , switchStates_(8, OFF)
-{
-  setDeviceEnabled(true);
-  setControlsEnabled(true);
-}
 
 ConradModel::ConradModel(const QString& port, QObject* /* parent */)
  : QObject()
  , AbstractDeviceModel()
  , port_(port)
- , port_dirpath_("")
- , port_basename_("")
  , switchStates_(8, OFF)
 {
   setDeviceEnabled(true);
@@ -96,14 +83,15 @@ void ConradModel::initialize( void )
 
 #else
 
-  if (port_.isEmpty()) {
-
+  if(port_.isEmpty())
+  {
        // create a list with all available device (system) files
-       const QStringList filters(port_basename_);
+       const QFileInfo port_qfileinfo(port_);
 
-       QDir portDir(port_dirpath_);
-       portDir.setNameFilters(filters);
+       QDir portDir(port_qfileinfo.dir().canonicalPath());
+       portDir.setNameFilters(QStringList(port_qfileinfo.fileName()));
        portDir.setFilter(QDir::System);
+
        const QStringList ports_list = portDir.entryList();
 
        // Only loop over list when not empty
@@ -171,24 +159,14 @@ void ConradModel::initialize( void )
   		<< "/dev/ttyUSB* is present and readable and no other process";
   		NQLog("ConradModel::initialize()", NQLog::Fatal)
   		<< "is connecting to the device.";
-
   	}
-  } else {
-
-        NQLog("ConradModel") << "initialize() " << port_;
-
-  	renewController(port_);
-
-  	controller_->initialize();
-
-        const std::vector<bool> status = controller_->queryStatus();
-
-  	// Announce new states
-        if(status.size() == 8)
-        {
-          setAllSwitchesReady(status);
-          setDeviceState( READY );
-  	}
+  }
+  else
+  {
+    setDeviceFullOff();
+    NQLog("ConradModel::initialize()", NQLog::Fatal) << "Cannot connect to Conrad. Make sure that " << port_;
+    NQLog("ConradModel::initialize()", NQLog::Fatal) << "is present and readable and no other process";
+    NQLog("ConradModel::initialize()", NQLog::Fatal) << "is connecting to the device.";
   }
 #endif
 }
