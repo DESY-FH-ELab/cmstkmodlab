@@ -393,7 +393,7 @@ void LStepExpressFake::SetJoystickAxisEnabled(VLStepExpress::Axis axis, int valu
   joystickAxisEnabled_[axis] = value;
 }
 
-void LStepExpressFake::SendCommand(const std::string & command)
+void LStepExpressFake::SendCommand(const std::string& command)
 {
   std::cout << "SendCommand: " << command << std::endl;
 }

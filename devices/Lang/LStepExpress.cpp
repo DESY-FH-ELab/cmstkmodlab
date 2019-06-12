@@ -156,8 +156,6 @@ void LStepExpress::DeviceInit(const std::string& lstep_ver, const std::string& l
     }
 */
   }
-
-  std::cout << "EEEE " << comHandler_->ioPort() << std::endl;
 }
 
 void LStepExpress::GetAutoStatus(int & value)
