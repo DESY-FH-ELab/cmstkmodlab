@@ -19,7 +19,7 @@
 #include "ConradControllerFake.h"
 
 //! Default constructor
-ConradControllerFake::ConradControllerFake( const ioport_t ioPort )
+ConradControllerFake::ConradControllerFake(const std::string& ioPort)
   : VConradController(ioPort)
 {
   for (int c=0;c<8;++c) status_[c] = false;

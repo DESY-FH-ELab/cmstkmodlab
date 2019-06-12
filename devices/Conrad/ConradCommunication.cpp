@@ -22,7 +22,7 @@
 #include <iostream>
 
 //! Default constructor
-ConradCommunication::ConradCommunication(const char* comPort)
+ConradCommunication::ConradCommunication(const std::string& comPort)
   : m_comPort(comPort),
     m_ioPort(-1)
 {
@@ -40,13 +40,11 @@ ConradCommunication::~ConradCommunication()
 //! Initialize Conrad IO communication
 bool ConradCommunication::initialize()
 {
-    
-    assert(m_ioPort == -1);
-    
+  assert(m_ioPort == -1);
+
   // open io port (read/write | no term control | no DCD line check)
-  m_ioPort = open(m_comPort, O_RDWR | O_NOCTTY  | O_NDELAY);
-  if (m_ioPort == -1)
-    return false;
+  m_ioPort = open(m_comPort.c_str(), O_RDWR | O_NOCTTY  | O_NDELAY);
+  if (m_ioPort == -1){ return false; }
 
   // get and save current ioport settings for later restoring
   tcgetattr(m_ioPort, &m_termiosInitial);

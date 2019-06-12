@@ -13,6 +13,7 @@
 #ifndef ConradCommunication_h
 #define ConradCommunication_h
 
+#include <string>
 #include <termios.h>
 
 /// \brief Class handling raw IO communication with Conrad relais card
@@ -20,7 +21,7 @@ class ConradCommunication {
 
 public:
 
-  ConradCommunication(const char* comPort);
+  ConradCommunication(const std::string& comPort);
   ~ConradCommunication();
 
   bool initialize();
@@ -29,10 +30,11 @@ public:
   bool sendCommand(unsigned char command, unsigned char address, unsigned char data) const;
   bool receiveAnswer(unsigned char* answer, unsigned char* address, unsigned char* data) const;
 
-  const char* comPort() const { return m_comPort; }
+  const std::string& comPort() const { return m_comPort; }
 
 private:
-  const char* m_comPort;
+
+  const std::string m_comPort;
   int m_ioPort;
 
   struct termios m_termiosInitial;

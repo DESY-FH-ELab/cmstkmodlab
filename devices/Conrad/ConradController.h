@@ -24,7 +24,7 @@ class ConradController : public VConradController {
 
 public:
 
-  ConradController(const char*);
+  ConradController(const std::string&);
   ~ConradController();
 
   bool initialize();
@@ -33,7 +33,7 @@ public:
   bool setChannel(unsigned channel, bool value) const;
   bool setSingleChannel(unsigned channel, bool value) const;
 
-  const char* comPort() const;
+  std::string comPort() const;
 
 private:
   bool queryRawStatus(unsigned char& status) const;

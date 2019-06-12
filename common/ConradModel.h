@@ -39,8 +39,7 @@ typedef ConradController ConradController_t;
   CLOSING signify that no operations on that device should be attempted!
 
   Currently any state changing command that does not comply with the ongoing
-  operation will be ignored (e.g. disable switch while switch state is
-  INITIALIZING).
+  operation will be ignored (e.g. disable switch while switch state is INITIALIZING).
   */
 class ConradModel :
     public QObject
