@@ -28,8 +28,7 @@ MCommanderMainWindow::MCommanderMainWindow(QWidget *parent)
 
   connect(QApplication::instance(), SIGNAL(aboutToQuit()), this, SLOT(quit()));
 
-  lStepExpressModel_ = new LStepExpressModel(config->getValue<std::string>("LStepExpressDevice").c_str());
-//  lStepExpressModel_ = new LStepExpressModel("/dev", "ttyUSB*"); //config->getValue<std::string>("LStepExpressDevice").c_str());
+  lStepExpressModel_ = new LStepExpressModel("/dev", "ttyUSB*");
   //lStepExpressSettings_ = new LStepExpressSettings(lStepExpressModel_);
   motionManager_ = new LStepExpressMotionManager(lStepExpressModel_);
   motionThread_ = new LStepExpressMotionThread(motionManager_, this);
