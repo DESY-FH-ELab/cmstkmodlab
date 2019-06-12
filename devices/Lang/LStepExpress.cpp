@@ -28,11 +28,7 @@ LStepExpress::LStepExpress(const std::string& ioport, const std::string& lstep_v
 {
   comHandler_ = new LStepExpressComHandler(ioport);
 
-  std::cout << "AAAA " << ioPort() << " " << comHandler_->ioPort() << std::endl;
-
   DeviceInit(lstep_ver, lstep_iver);
-
-  std::cout << "BBBB " << ioPort() << " " << comHandler_->ioPort() << std::endl;
 }
 
 LStepExpress::~LStepExpress()
@@ -44,7 +40,7 @@ LStepExpress::~LStepExpress()
 std::string LStepExpress::ioPort() const
 {
   assert(comHandler_);
-std::cout << "!!!!! " << comHandler_->ioPort() << std::endl;
+
   return comHandler_->ioPort();
 }
 
@@ -92,22 +88,20 @@ void LStepExpress::DeviceInit(const std::string& lstep_ver, const std::string& l
 {
   isDeviceAvailable_ = false;
 
-  std::cout << "CCCC " << ioPort() << std::endl;
-
-  if (comHandler_->DeviceAvailable()) {
-
+  if(comHandler_->DeviceAvailable())
+  {
     isDeviceAvailable_ = true;
 
     char buffer[1000];
     std::string buf;
 
-    comHandler_->SendCommand("ver"); // read version
-
+    // read version
+    comHandler_->SendCommand("ver");
     comHandler_->ReceiveString(buffer);
     StripBuffer(buffer);
     buf = buffer;
 
-    if(buf == lstep_ver)
+    if(buf != lstep_ver)
     {
       std::cout << std::endl;
       std::cout << " LStepExpress::DeviceInit(\"" << lstep_ver << "\", \"" << lstep_iver << "\") ---";
@@ -120,12 +114,13 @@ void LStepExpress::DeviceInit(const std::string& lstep_ver, const std::string& l
       return;
     }
 
-    comHandler_->SendCommand("iver"); // read internal version
+    // read internal version
+    comHandler_->SendCommand("iver");
     comHandler_->ReceiveString(buffer);
     StripBuffer(buffer);
     buf = buffer;
 
-    if(buf == lstep_iver)
+    if(buf != lstep_iver)
     {
       std::cout << std::endl;
       std::cout << " LStepExpress::DeviceInit(\"" << lstep_ver << "\", \"" << lstep_iver << "\") ---";
@@ -138,9 +133,7 @@ void LStepExpress::DeviceInit(const std::string& lstep_ver, const std::string& l
       return;
     }
 
-  std::cout << "DDDD " << comHandler_->ioPort() << std::endl;
-    /*
-
+/*
     comHandler_->SendCommand("readsn"); // read serial number
     comHandler_->ReceiveString(buffer);
 
@@ -161,8 +154,7 @@ void LStepExpress::DeviceInit(const std::string& lstep_ver, const std::string& l
 
       return;
     }
-
-    */
+*/
   }
 
   std::cout << "EEEE " << comHandler_->ioPort() << std::endl;
