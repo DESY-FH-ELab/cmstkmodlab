@@ -12,6 +12,7 @@
 
 #include <fstream>
 #include <sstream>
+#include <iomanip>
 
 #include <QMessageBox>
 
@@ -28,9 +29,9 @@ ApplicationConfigReader::~ApplicationConfigReader()
 
 void ApplicationConfigReader::fill(std::multimap<std::string,std::string> &keyvalueMap)
 {
-  std::ifstream file( inputFileName_.c_str(), std::ios::in );
+  std::ifstream file(inputFileName_.c_str(), std::ios::in);
 
-  if(!file.good())
+  if(not file.good())
   {
     std::cerr << " [ApplicationConfigReader::openAndCheckFile] ** ERROR: failed to open file: " << inputFileName_ << "." << std::endl;
 
@@ -51,19 +52,23 @@ void ApplicationConfigReader::fill(std::multimap<std::string,std::string> &keyva
 
   while(std::getline(file, buffer))
   {
-    if(buffer[0] == '"'){ continue; }
+    // ignore all characters after (and including) hashtag
+    if(buffer.find("#") != std::string::npos)
+    {
+      buffer = buffer.substr(0, buffer.find("#"));
+    }
 
-    while(buffer[0] == ' '){ buffer = buffer.substr(1, buffer.length()); }
-
-    if (buffer[0] == '\0'){ continue; }
-    if (buffer[0] == '#'){ continue; }
+    if(buffer.empty()){ continue; }
 
     std::istringstream iss(buffer.c_str(), std::istringstream::in);
     iss >> Key;
-    while (iss >> Value) {
-    	keyvalueMap.insert(std::make_pair(Key, Value));
+    while(iss >> std::quoted(Value))
+    {
+      std::cout << "!!!!!!!!!!!!!!!!!!! " << Key << " " << Value << std::endl;
+
+      keyvalueMap.insert(std::make_pair(Key, Value));
     }
   }
-  
+
   file.close();
 }
