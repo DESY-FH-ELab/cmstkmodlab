@@ -48,8 +48,6 @@ void ApplicationConfigReader::fill(std::multimap<std::string,std::string> &keyva
   std::string Value;
   std::string buffer;
 
-//  bool inside_str = false;
-
   while(std::getline(file, buffer))
   {
     // ignore all characters after (and including) hashtag
@@ -64,8 +62,6 @@ void ApplicationConfigReader::fill(std::multimap<std::string,std::string> &keyva
     iss >> Key;
     while(iss >> std::quoted(Value))
     {
-      std::cout << "!!!!!!!!!!!!!!!!!!! " << Key << " " << Value << std::endl;
-
       keyvalueMap.insert(std::make_pair(Key, Value));
     }
   }
