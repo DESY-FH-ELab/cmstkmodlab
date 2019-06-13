@@ -13,6 +13,8 @@
 #ifndef CONRADMODEL_H
 #define CONRADMODEL_H
 
+#include <string>
+
 #include <QString>
 
 #include "DeviceState.h"
@@ -41,15 +43,13 @@ typedef ConradController ConradController_t;
   Currently any state changing command that does not comply with the ongoing
   operation will be ignored (e.g. disable switch while switch state is INITIALIZING).
   */
-class ConradModel :
-    public QObject
-  , public AbstractDeviceModel<ConradController_t>
+class ConradModel : public QObject, public AbstractDeviceModel<ConradController_t>
 {
   Q_OBJECT
 
 public:
 
-  explicit ConradModel(const QString& port, QObject* parent=nullptr);
+  explicit ConradModel(const std::string& port, QObject* parent=nullptr);
   virtual ~ConradModel();
 
   // Methods for power control and status querying of the devices connected to the switch

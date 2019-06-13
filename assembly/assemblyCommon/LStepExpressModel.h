@@ -38,7 +38,7 @@ class LStepExpressModel : public QObject, public AbstractDeviceModel<LStepExpres
 
   public:
 
-    explicit LStepExpressModel(const QString& port, const std::string& lstep_ver="", const std::string& lstep_iver="", const int updateInterval=1000, const int motionUpdateInterval=100, QObject* parent=nullptr);
+    explicit LStepExpressModel(const std::string& port, const std::string& lstep_ver, const std::string& lstep_iver, const int updateInterval=1000, const int motionUpdateInterval=100, QObject* parent=nullptr);
     virtual ~LStepExpressModel();
 
     bool isUpdating() const { return isUpdating_; }
@@ -134,8 +134,8 @@ class LStepExpressModel : public QObject, public AbstractDeviceModel<LStepExpres
 
     const QString port_;
 
-    const std::string lstep_ver_;
-    const std::string lstep_iver_;
+    const QString lstep_ver_;
+    const QString lstep_iver_;
 
     QMutex mutex_;
 

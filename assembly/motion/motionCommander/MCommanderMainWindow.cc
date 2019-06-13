@@ -28,7 +28,16 @@ MCommanderMainWindow::MCommanderMainWindow(QWidget *parent)
 
   connect(QApplication::instance(), SIGNAL(aboutToQuit()), this, SLOT(quit()));
 
-  lStepExpressModel_ = new LStepExpressModel("/dev", "ttyUSB*");
+  lStepExpressModel_ = new LStepExpressModel(
+
+    config->getValue<std::string>("LStepExpressDevice"),
+    "PE43 1.00.01",
+//    config->getValue<std::string>("LStepExpressDevice_ver"),
+    config->getValue<std::string>("LStepExpressDevice_iver"),
+    1000,
+    1000
+  );
+
   //lStepExpressSettings_ = new LStepExpressSettings(lStepExpressModel_);
   motionManager_ = new LStepExpressMotionManager(lStepExpressModel_);
   motionThread_ = new LStepExpressMotionThread(motionManager_, this);

@@ -18,7 +18,7 @@
 #include <QStringList>
 
 LStepExpressModel::LStepExpressModel(
-  const QString& port,
+  const std::string& port,
   const std::string& lstep_ver,
   const std::string& lstep_iver,
   const int updateInterval,
@@ -26,9 +26,9 @@ LStepExpressModel::LStepExpressModel(
   QObject* /*parent*/
 )
  : QObject()
- , port_(port)
- , lstep_ver_ (lstep_ver)
- , lstep_iver_(lstep_iver)
+ , port_(port.c_str())
+ , lstep_ver_ (lstep_ver.c_str())
+ , lstep_iver_(lstep_iver.c_str())
  , updateInterval_(updateInterval)
  , motionUpdateInterval_(motionUpdateInterval)
  , updateCount_(0)
@@ -71,7 +71,7 @@ void LStepExpressModel::renewController(const QString& port)
 {
   if(controller_ != nullptr){ delete controller_; }
 
-  controller_ = new LStepExpress_t(port.toStdString(), lstep_ver_, lstep_iver_);
+  controller_ = new LStepExpress_t(port.toStdString(), lstep_ver_.toStdString(), lstep_iver_.toStdString());
 }
 
 void LStepExpressModel::getStatus(bool& status)
@@ -1013,6 +1013,11 @@ void LStepExpressModel::initialize()
 
     if(port_.isEmpty())
     {
+      NQLog("LStepExpressModel", NQLog::Warning) << "initialize"
+         << ": path to device file is empty, LStepExpressModel will not be initialized";
+    }
+    else
+    {
       // browse ports, and choose the first one for which
       // LStep controller is successfully enabled
       const QFileInfo port_qfileinfo(port_);
@@ -1031,11 +1036,6 @@ void LStepExpressModel::initialize()
 
         if(enabled){ break; }
       }
-    }
-    else
-    {
-      NQLog("LStepExpressModel", NQLog::Warning) << "initialize"
-         << ": path to device file is empty, LStepExpressModel will not be initialized";
     }
 
     if(enabled)

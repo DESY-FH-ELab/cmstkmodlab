@@ -18,10 +18,10 @@
 
 #include "ConradModel.h"
 
-ConradModel::ConradModel(const QString& port, QObject* /* parent */)
+ConradModel::ConradModel(const std::string& port, QObject* /* parent */)
  : QObject()
  , AbstractDeviceModel()
- , port_(port)
+ , port_(port.c_str())
  , switchStates_(8, OFF)
 {
   setDeviceEnabled(true);
@@ -67,7 +67,6 @@ void ConradModel::initialize( void )
   setDeviceState( INITIALIZING );
 
 #ifdef USE_FAKEIO
-
   renewController("/dev/ttyUSBFake");
 
   controller_->initialize();
@@ -80,10 +79,15 @@ void ConradModel::initialize( void )
   	setAllSwitchesReady(status);
   	setDeviceState( READY );
   }
-
 #else
-
   if(port_.isEmpty())
+  {
+    setDeviceFullOff();
+
+    NQLog("ConradModel", NQLog::Critical) << "initialize"
+       << ": path to device file is empty, ConradModel will not be initialized";
+  }
+  else
   {
        // create a list with all available device (system) files
        const QFileInfo port_qfileinfo(port_);
@@ -160,13 +164,6 @@ void ConradModel::initialize( void )
   		NQLog("ConradModel::initialize()", NQLog::Fatal)
   		<< "is connecting to the device.";
   	}
-  }
-  else
-  {
-    setDeviceFullOff();
-    NQLog("ConradModel::initialize()", NQLog::Fatal) << "Cannot connect to Conrad. Make sure that " << port_;
-    NQLog("ConradModel::initialize()", NQLog::Fatal) << "is present and readable and no other process";
-    NQLog("ConradModel::initialize()", NQLog::Fatal) << "is connecting to the device.";
   }
 #endif
 }
