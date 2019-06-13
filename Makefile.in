@@ -70,4 +70,3 @@ clean:
 	@for dir in $(subdirs); do (cd $$dir; make clean); done
 	@rm -f tkmodlabenv.sh
 	@rm -f tkmodlabenv.csh
-	@rm -f config.status
