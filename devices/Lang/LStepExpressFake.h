@@ -22,7 +22,7 @@ class LStepExpressFake : public VLStepExpress
 {
  public:
 
-  LStepExpressFake( const ioport_t );
+  LStepExpressFake(const std::string&, const std::string& lstep_ver="", const std::string& lstep_iver="");
   ~LStepExpressFake();
 
  public:

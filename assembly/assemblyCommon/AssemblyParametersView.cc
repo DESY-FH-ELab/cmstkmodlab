@@ -200,36 +200,6 @@ AssemblyParametersView::AssemblyParametersView(QWidget* parent)
   posi_lay->addWidget(new QLabel(tr("A"))    , row_index, 7, Qt::AlignRight);
   posi_lay->addWidget(this->get(tmp_tag+"_A"), row_index, 8, Qt::AlignRight);
 
-//!!  // position: Z-position (height) to put pickup tool in contact with rotation stage
-//!!  ++row_index;
-//!!
-//!!  tmp_tag = "PickupToolOnRotStage";
-//!!  tmp_des = "Pickup Tool on Rotation Stage :";
-//!!
-//!!  map_lineEdit_[tmp_tag+"_Z"] = new QLineEdit(tr(""));
-//!!
-//!!  posi_lay->addWidget(new QLabel(tmp_des)    , row_index, 0, Qt::AlignLeft);
-//!!  posi_lay->addWidget(new QLabel(tr("Z"))    , row_index, 5, Qt::AlignRight);
-//!!  posi_lay->addWidget(this->get(tmp_tag+"_Z"), row_index, 6, Qt::AlignRight);
-//!!
-//!!  // position: XY pickup position on glue-dispensing platform + Z-position (height) to put pickup tool in contact with platform
-//!!  ++row_index;
-//!!
-//!!  tmp_tag = "PickupToolOnGluingStage";
-//!!  tmp_des = "Pickup Tool on Gluing Stage :";
-//!!
-//!!  map_lineEdit_[tmp_tag+"_X"] = new QLineEdit(tr(""));
-//!!  map_lineEdit_[tmp_tag+"_Y"] = new QLineEdit(tr(""));
-//!!  map_lineEdit_[tmp_tag+"_Z"] = new QLineEdit(tr(""));
-//!!
-//!!  posi_lay->addWidget(new QLabel(tmp_des)    , row_index, 0, Qt::AlignLeft);
-//!!  posi_lay->addWidget(new QLabel(tr("X"))    , row_index, 1, Qt::AlignRight);
-//!!  posi_lay->addWidget(this->get(tmp_tag+"_X"), row_index, 2, Qt::AlignRight);
-//!!  posi_lay->addWidget(new QLabel(tr("Y"))    , row_index, 3, Qt::AlignRight);
-//!!  posi_lay->addWidget(this->get(tmp_tag+"_Y"), row_index, 4, Qt::AlignRight);
-//!!  posi_lay->addWidget(new QLabel(tr("Z"))    , row_index, 5, Qt::AlignRight);
-//!!  posi_lay->addWidget(this->get(tmp_tag+"_Z"), row_index, 6, Qt::AlignRight);
-
   // position: z-position where camera is focused on Assembly Stage surface
   ++row_index;
 

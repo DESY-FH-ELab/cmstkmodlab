@@ -13,7 +13,7 @@
 #include "VConradController.h"
 
 //! Default constructor
-VConradController::VConradController(const ioport_t)
+VConradController::VConradController(const std::string&)
 {
 
 }

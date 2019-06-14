@@ -5,7 +5,7 @@ site_author: Andreas Mussgiller
 
 repo_url: https://github.com/DESY-FH-ELab/cmstkmodlab
 
-pages:
+nav:
 - Home: index.md
 - Build:
     - configure: build/configure.md

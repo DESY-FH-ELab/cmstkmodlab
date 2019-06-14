@@ -46,7 +46,7 @@ template<typename T, typename A> void dumpVectorHex(const std::vector<T,A>& v)
 
 int main()
 {
-  LStepExpress_t lstep("/dev/ttyUSB0");
+  LStepExpress_t lstep("/dev/ttyUSB0", "PE43 1.00.01", "E2018.02.27-2002");
 
   std::string svalue;
   int ivalue;

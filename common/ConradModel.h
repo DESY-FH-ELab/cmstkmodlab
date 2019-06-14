@@ -13,9 +13,9 @@
 #ifndef CONRADMODEL_H
 #define CONRADMODEL_H
 
-#include <QStringList>
+#include <string>
+
 #include <QString>
-#include <QDir>
 
 #include "DeviceState.h"
 
@@ -41,25 +41,18 @@ typedef ConradController ConradController_t;
   CLOSING signify that no operations on that device should be attempted!
 
   Currently any state changing command that does not comply with the ongoing
-  operation will be ignored (e.g. disable switch while switch state is
-  INITIALIZING).
+  operation will be ignored (e.g. disable switch while switch state is INITIALIZING).
   */
-class ConradModel :
-    public QObject
-  , public AbstractDeviceModel<ConradController_t>
+class ConradModel : public QObject, public AbstractDeviceModel<ConradController_t>
 {
   Q_OBJECT
 
 public:
 
-  // TODO Add initialisation parameters
-  explicit ConradModel(QObject *parent = 0);
-  explicit ConradModel(const char* port,
-                       QObject *parent = 0);
+  explicit ConradModel(const std::string& port, QObject* parent=nullptr);
   virtual ~ConradModel();
 
-  // Methods for power control and status querying of the devices connected to
-  // the switch
+  // Methods for power control and status querying of the devices connected to the switch
   const State& getSwitchState( int device ) const;
 
 public slots:
@@ -73,8 +66,8 @@ public slots:
 
 protected:
 
-  QString port_;
-  
+  const QString port_;
+
   void initialize();
   void close();
 
