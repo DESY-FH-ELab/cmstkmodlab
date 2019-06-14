@@ -118,7 +118,7 @@ void Iota300ComHandler::ReceiveString( char *receiveString ) {
 /*!
   \internal
 */
-void Iota300ComHandler::OpenIoPort( void ) throw (int) {
+void Iota300ComHandler::OpenIoPort( void ) noexcept(false) {
 
   // open io port ( read/write | no term control | no DCD line check )
   fIoPortFileDescriptor = open( fIoPort, O_RDWR | O_NOCTTY  | O_NDELAY );

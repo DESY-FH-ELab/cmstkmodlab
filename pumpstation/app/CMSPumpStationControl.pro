@@ -13,7 +13,7 @@ win32 {
 CONFIG += link_pkgconfig
 PKGCONFIG += 
 
-QMAKE_CXXFLAGS += -std=c++11
+QMAKE_CXXFLAGS += -std=c++17
 
 QT += core gui network script svg
 greaterThan(QT_MAJOR_VERSION, 4) {
