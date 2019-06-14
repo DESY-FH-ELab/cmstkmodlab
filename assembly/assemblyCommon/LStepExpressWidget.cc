@@ -222,7 +222,7 @@ void LStepExpressWidget::restart()
   if(model_->getDeviceState() != READY)
   {
     NQLog("LStepExpressWidget", NQLog::Critical) << "restart [step=" << restart_step_ << "]"
-       << ": logic error, motion stage NOT READY (hint: click on \"Enable Controller\")";
+       << ": logic error, motion stage NOT READY (try to initialize LStepExpressModel by ticking the \"Enable Controller\" box)";
 
     return;
   }

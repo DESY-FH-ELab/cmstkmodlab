@@ -22,7 +22,7 @@
 #include <iostream>
 
 //! Default constructor
-ConradCommunication::ConradCommunication(const char* comPort)
+ConradCommunication::ConradCommunication(const std::string& comPort)
   : m_comPort(comPort),
     m_ioPort(-1)
 {
@@ -40,13 +40,11 @@ ConradCommunication::~ConradCommunication()
 //! Initialize Conrad IO communication
 bool ConradCommunication::initialize()
 {
-    
-    assert(m_ioPort == -1);
-    
+  assert(m_ioPort == -1);
+
   // open io port (read/write | no term control | no DCD line check)
-  m_ioPort = open(m_comPort, O_RDWR | O_NOCTTY  | O_NDELAY);
-  if (m_ioPort == -1)
-    return false;
+  m_ioPort = open(m_comPort.c_str(), O_RDWR | O_NOCTTY  | O_NDELAY);
+  if (m_ioPort == -1){ return false; }
 
   // get and save current ioport settings for later restoring
   tcgetattr(m_ioPort, &m_termiosInitial);
@@ -117,7 +115,7 @@ bool ConradCommunication::sendCommand(unsigned char command, unsigned char addre
   tcdrain(m_ioPort);
 
   if (wroteBytes != 4) {
-    fprintf(stderr, "[Conrad] ERROR: Could send only %d of 4 bytes\n", wroteBytes);
+    fprintf(stderr, "[Conrad] ERROR (port: %s): Could send only %d of 4 bytes\n", comPort().c_str(), wroteBytes);
     return false;
   }
 
@@ -134,18 +132,18 @@ bool ConradCommunication::receiveAnswer(unsigned char* answer, unsigned char* ad
 
   int readBytes = read(m_ioPort, buffer, 4);
   if (readBytes == -1) {
-    fprintf(stderr, "[Conrad] ERROR: Reading from card failed\n");
+    fprintf(stderr, "[Conrad] ERROR (port: %s): Reading from card failed\n", comPort().c_str());
     return false;
   }
 
   if (readBytes != 4) {
-    fprintf(stderr, "[Conrad] ERROR: Could receive only %d of 4 bytes\n", readBytes);
+    fprintf(stderr, "[Conrad] ERROR (port: %s): Could receive only %d of 4 bytes\n", comPort().c_str(), readBytes);
     return false;
   }
 
   int checksum = buffer[0] ^ buffer[1] ^ buffer[2];
   if (checksum != buffer[3]) {
-    fprintf(stderr, "[Conrad] ERROR: XOR checksum is %x but should be %x\n", checksum, buffer[3]);
+    fprintf(stderr, "[Conrad] ERROR (port: %s): XOR checksum is %x but should be %x\n", comPort().c_str(), checksum, buffer[3]);
     return false;
   }
 

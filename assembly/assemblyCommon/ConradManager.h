@@ -25,15 +25,18 @@ class ConradManager : public QObject
  public:
 
   //add constructor
-  explicit ConradManager(ConradModel* ConradModel_);
+  explicit ConradManager(ConradModel* const);
+
+  ConradModel* conradModel() const;
 
  protected:
 
-  ConradModel* ConradModel_;
-  int channelNumber;
+  ConradModel* const conradModel_;
+
+  int channelNumber_;
   QTimer* liveTimer_;
 
- private:
+ protected:
 
   const int togglingVacuumDelay = 3000;
 
@@ -47,7 +50,6 @@ class ConradManager : public QObject
   void  enableVacuum(const int);
   void disableVacuum(const int);
 
- //signal to say when vacuum state has changed (needs timer)
  signals:
 
   void vacuumChannelState(int, bool);

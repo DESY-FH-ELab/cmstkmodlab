@@ -24,7 +24,7 @@ class ConradController : public VConradController {
 
 public:
 
-  ConradController( const ioport_t );
+  ConradController(const std::string&);
   ~ConradController();
 
   bool initialize();
@@ -32,6 +32,8 @@ public:
   std::vector<bool> queryStatus() const;
   bool setChannel(unsigned channel, bool value) const;
   bool setSingleChannel(unsigned channel, bool value) const;
+
+  std::string comPort() const;
 
 private:
   bool queryRawStatus(unsigned char& status) const;

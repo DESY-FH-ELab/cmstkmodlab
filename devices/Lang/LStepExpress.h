@@ -28,10 +28,12 @@ class LStepExpress : public VLStepExpress
 {
  public:
 
-  LStepExpress( const ioport_t );
+  LStepExpress(const std::string& ioPort, const std::string& lstep_ver="", const std::string& lstep_iver="");
   ~LStepExpress();
 
  public:
+
+  std::string ioPort() const;
 
   bool DeviceAvailable() const;
 
@@ -132,7 +134,7 @@ class LStepExpress : public VLStepExpress
  private:
 
   void StripBuffer( char* ) const;
-  void DeviceInit();
+  void DeviceInit(const std::string& lstep_ver, const std::string& lstep_iver);
 
   LStepExpressComHandler* comHandler_;
   bool isDeviceAvailable_;

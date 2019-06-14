@@ -10,6 +10,7 @@
 //                                                                             //
 /////////////////////////////////////////////////////////////////////////////////
 
+#include <assert.h>
 #include <unistd.h>
 
 #include <cstring>
@@ -21,17 +22,26 @@
 
 //#define LSTEPDEBUG 0
 
-LStepExpress::LStepExpress( const ioport_t ioPort )
-  :VLStepExpress(ioPort),
-   isDeviceAvailable_(false)
+LStepExpress::LStepExpress(const std::string& ioport, const std::string& lstep_ver, const std::string& lstep_iver)
+ : VLStepExpress(ioport)
+ , isDeviceAvailable_(false)
 {
-  comHandler_ = new LStepExpressComHandler( ioPort );
-  DeviceInit();
+  comHandler_ = new LStepExpressComHandler(ioport);
+
+  DeviceInit(lstep_ver, lstep_iver);
 }
 
 LStepExpress::~LStepExpress()
 {
   delete comHandler_;
+}
+
+//! Return name of port used to initialize LStepExpressComHandler
+std::string LStepExpress::ioPort() const
+{
+  assert(comHandler_);
+
+  return comHandler_->ioPort();
 }
 
 bool LStepExpress::DeviceAvailable() const
@@ -74,28 +84,28 @@ void LStepExpress::StripBuffer(char* buffer) const
   }
 }
 
-void LStepExpress::DeviceInit()
+void LStepExpress::DeviceInit(const std::string& lstep_ver, const std::string& lstep_iver)
 {
   isDeviceAvailable_ = false;
 
-  if (comHandler_->DeviceAvailable()) {
-
+  if(comHandler_->DeviceAvailable())
+  {
     isDeviceAvailable_ = true;
 
     char buffer[1000];
     std::string buf;
 
-    comHandler_->SendCommand("ver"); // read version
-
+    // read version
+    comHandler_->SendCommand("ver");
     comHandler_->ReceiveString(buffer);
     StripBuffer(buffer);
     buf = buffer;
 
-    if(buf.find("PE43 1.00.01", 0) != 0)
+    if(buf != lstep_ver)
     {
       std::cout << std::endl;
-      std::cout << " LStepExpress::DeviceInit ---";
-      std::cout << " device with invalid version [Command(\"ver\") = \"" << buf << "\"]";
+      std::cout << " LStepExpress::DeviceInit(\"" << lstep_ver << "\", \"" << lstep_iver << "\") ---";
+      std::cout << " device with invalid version [Command(\"ver\") = \"" << buf << "\", differs from \"" << lstep_ver << "\"]";
       std::cout << ", device set to NON AVAILABLE";
       std::cout << std::endl << std::endl;
 
@@ -104,17 +114,17 @@ void LStepExpress::DeviceInit()
       return;
     }
 
-    comHandler_->SendCommand("iver"); // read internal version
+    // read internal version
+    comHandler_->SendCommand("iver");
     comHandler_->ReceiveString(buffer);
     StripBuffer(buffer);
     buf = buffer;
 
-    if(   (buf.find("E2015.02.27-3012", 0) != 0) // pre-DAF
-       && (buf.find("E2018.02.27-2002", 0) != 0) // DAF
-    ){
+    if(buf != lstep_iver)
+    {
       std::cout << std::endl;
-      std::cout << " LStepExpress::DeviceInit ---";
-      std::cout << " device with invalid internal version [Command(\"iver\") = \"" << buf << "\"]";
+      std::cout << " LStepExpress::DeviceInit(\"" << lstep_ver << "\", \"" << lstep_iver << "\") ---";
+      std::cout << " device with invalid internal version [Command(\"iver\") = \"" << buf << "\", differs from \"" << lstep_iver << "\"]";
       std::cout << ", device set to NON AVAILABLE";
       std::cout << std::endl << std::endl;
 
@@ -123,8 +133,7 @@ void LStepExpress::DeviceInit()
       return;
     }
 
-    /*
-
+/*
     comHandler_->SendCommand("readsn"); // read serial number
     comHandler_->ReceiveString(buffer);
 
@@ -145,8 +154,7 @@ void LStepExpress::DeviceInit()
 
       return;
     }
-
-    */
+*/
   }
 }
 

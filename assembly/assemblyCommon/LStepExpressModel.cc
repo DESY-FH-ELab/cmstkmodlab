@@ -13,26 +13,36 @@
 #include <LStepExpressModel.h>
 #include <nqlogger.h>
 
-LStepExpressModel::LStepExpressModel(const char* port,
-                                     int updateInterval,
-                                     int motionUpdateInterval,
-                                     QObject * /*parent*/)
-    : QObject(),
-      AbstractDeviceModel<LStepExpress_t>(),
-      LStepExpress_PORT(port),
-      updateInterval_(updateInterval),
-      motionUpdateInterval_(motionUpdateInterval),
-      updateCount_(0)
+#include <QFileInfo>
+#include <QDir>
+#include <QStringList>
+
+LStepExpressModel::LStepExpressModel(
+  const std::string& port,
+  const std::string& lstep_ver,
+  const std::string& lstep_iver,
+  const int updateInterval,
+  const int motionUpdateInterval,
+  QObject* /*parent*/
+)
+ : QObject()
+ , port_(port.c_str())
+ , lstep_ver_ (lstep_ver.c_str())
+ , lstep_iver_(lstep_iver.c_str())
+ , updateInterval_(updateInterval)
+ , motionUpdateInterval_(motionUpdateInterval)
+ , updateCount_(0)
 {
-    std::vector<int> allZerosI{ 0, 0, 0, 0 };
-    std::vector<double> allZerosD{ 0.0, 0.0, 0.0, 0.0 };
+    const std::vector<int> allZerosI{ 0, 0, 0, 0 };
+    const std::vector<double> allZerosD{ 0.0, 0.0, 0.0, 0.0 };
 
     axis_ = allZerosI;
     axisDirection_ = allZerosI;
     dim_ = allZerosI;
     pa_ = allZerosI;
+
     joystickEnabled_ = 0;
-    joystickAxisEnabled_ = std::vector<int>{ 0, 0, 0, 0 };
+    joystickAxisEnabled_ = allZerosI;
 
     axisStatus_ = std::vector<int>{ 0x0b, 0x0b, 0x0b, 0x0b };
     accelerationJerk_ = allZerosD;
@@ -55,6 +65,13 @@ LStepExpressModel::LStepExpressModel(const char* port,
 
 LStepExpressModel::~LStepExpressModel()
 {
+}
+
+void LStepExpressModel::renewController(const QString& port)
+{
+  if(controller_ != nullptr){ delete controller_; }
+
+  controller_ = new LStepExpress_t(port.toStdString(), lstep_ver_.toStdString(), lstep_iver_.toStdString());
 }
 
 void LStepExpressModel::getStatus(bool& status)
@@ -992,12 +1009,40 @@ void LStepExpressModel::initialize()
 
     setDeviceState(INITIALIZING);
 
-    renewController(LStepExpress_PORT);
+    bool enabled(false);
 
-    bool enabled = (controller_ != nullptr) && (controller_->DeviceAvailable());
+    if(port_.isEmpty())
+    {
+      NQLog("LStepExpressModel", NQLog::Warning) << "initialize"
+         << ": path to device file is empty, LStepExpressModel will not be initialized";
+    }
+    else
+    {
+      // browse ports, and choose the first one for which
+      // LStep controller is successfully enabled
+      const QFileInfo port_qfileinfo(port_);
+
+      QDir portDir(port_qfileinfo.dir().canonicalPath());
+      portDir.setNameFilters(QStringList(port_qfileinfo.fileName()));
+      portDir.setFilter(QDir::System);
+
+      const QStringList ports_list = portDir.entryList();
+
+      for(const auto& port : ports_list)
+      {
+        renewController(portDir.canonicalPath()+"/"+port);
+
+        enabled = (controller_ != nullptr) && (controller_->DeviceAvailable());
+
+        if(enabled){ break; }
+      }
+    }
 
     if(enabled)
     {
+      NQLog("LStepExpressModel", NQLog::Message) << "initialize"
+         << ": successfully accessed port " << controller_->ioPort();
+
       QMutexLocker locker(&mutex_);
 
       controller_->SetAutoStatus(2);
@@ -1019,6 +1064,9 @@ void LStepExpressModel::initialize()
     }
     else
     {
+      NQLog("LStepExpressModel", NQLog::Message) << "initialize"
+         << ": failed to initialize LStepExpressModel (no valid device file found under path " << port_ << ")";
+
       setDeviceState( OFF );
       delete controller_;
       controller_ = nullptr;
