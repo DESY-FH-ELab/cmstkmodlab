@@ -28,7 +28,14 @@ MCommanderMainWindow::MCommanderMainWindow(QWidget *parent)
 
   connect(QApplication::instance(), SIGNAL(aboutToQuit()), this, SLOT(quit()));
 
-  lStepExpressModel_ = new LStepExpressModel(config->getValue<std::string>("LStepExpressDevice").c_str(), 1000, 100);
+  lStepExpressModel_ = new LStepExpressModel(
+    config->getValue<std::string>("LStepExpressDevice"),
+    config->getValue<std::string>("LStepExpressDevice_ver"),
+    config->getValue<std::string>("LStepExpressDevice_iver"),
+    1000,
+    1000
+  );
+
   //lStepExpressSettings_ = new LStepExpressSettings(lStepExpressModel_);
   motionManager_ = new LStepExpressMotionManager(lStepExpressModel_);
   motionThread_ = new LStepExpressMotionThread(motionManager_, this);

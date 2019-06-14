@@ -13,16 +13,15 @@
 #ifndef VConradController_h
 #define VConradController_h
 
+#include <string>
 #include <vector>
-
-typedef const char* ioport_t;
 
 /// \brief Class handling readout of Conrad multimeter
 class VConradController {
 
 public:
 
-  VConradController( const ioport_t );
+  VConradController(const std::string&);
   virtual ~VConradController();
 
   virtual bool initialize() = 0;

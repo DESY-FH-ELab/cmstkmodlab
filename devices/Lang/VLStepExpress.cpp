@@ -14,14 +14,12 @@
 
 #include "VLStepExpress.h"
 
-VLStepExpress::VLStepExpress( const ioport_t ioPort )
+VLStepExpress::VLStepExpress(const std::string& /* ioPort */)
 {
-
 }
 
 VLStepExpress::~VLStepExpress()
 {
-
 }
 
 void VLStepExpress::ValidConfig()
