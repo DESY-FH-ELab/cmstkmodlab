@@ -35,8 +35,7 @@ void ApplicationConfigReader::fill(std::multimap<std::string,std::string> &keyva
   {
     std::cerr << " [ApplicationConfigReader::openAndCheckFile] ** ERROR: failed to open file: " << inputFileName_ << "." << std::endl;
 
-    QMessageBox::critical(0,
-      tr("[ApplicationConfigReader::fill]"),
+    QMessageBox::critical(0, tr("[ApplicationConfigReader::fill]"),
       QString("Failed to open configuration file: \"%1\". No chance!").arg(QString(inputFileName_.c_str())),
       QMessageBox::Abort
     );

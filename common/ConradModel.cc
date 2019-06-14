@@ -99,8 +99,8 @@ void ConradModel::initialize( void )
        const QStringList ports_list = portDir.entryList();
 
        // Only loop over list when not empty
-       if (!ports_list.empty()) {
-
+       if(not ports_list.empty())
+       {
                 // browse and try initialize() until ConradController gets an answer
                 bool controller_initialized(false);
 
@@ -114,56 +114,49 @@ void ConradModel::initialize( void )
                   if(controller_initialized == true){ break; }
                 }
 
-  		// check communication; if it is not at the end, switch was found
-  		if (controller_initialized) {
-
+                // check communication; if it is not at the end, switch was found
+                if(controller_initialized)
+                {
                         // read and init status
                         const std::vector<bool> status = controller_->queryStatus();
 
-  			// Announce new states
-  			if (status.size() == 8) {
+                        // Announce new states
+                        if(status.size() == 8)
+                        {
+                          setAllSwitchesReady( status );
+                          setDeviceState( READY );
 
-  				setAllSwitchesReady( status );
-  				setDeviceState( READY );
+                          NQLog("ConradModel", NQLog::Message) << "initialize"
+                             << ": successfully connected ConradModel to port " << controller_->comPort();
+                        }
+                        else
+                        {
+                          // would be 0 if query failed (according to ConradController::queryStatus);
+                          // this means device malfunction, so set state accordingly.
+                          setDeviceFullOff();
 
-                                NQLog("ConradModel", NQLog::Message) << "initialize"
-                                   << ": successfully connected ConradModel to port " << controller_->comPort();
+                          NQLog("ConradModel", NQLog::Fatal) << "initialize"
+                             << ": ** ERROR: received malformed state vector from device (port: " << controller_->comPort() << ")";
+                        }
+                }
+                else
+                {
+                  // if not successful, i.e. DEVICE NOT FOUND
+                  setDeviceFullOff();
 
-  			} else {
+                  // TODO Log why it failed
+                  NQLog("ConradModel::initialize()", NQLog::Fatal) << "Cannot connect to Conrad. Make sure that";
+                  NQLog("ConradModel::initialize()", NQLog::Fatal) << port_ << " is present and readable and no other process";
+                  NQLog("ConradModel::initialize()", NQLog::Fatal) << "is connecting to the device.";
+                }
+        }
+        else
+        {
+          setDeviceFullOff();
 
- 				/*
-	    would be 0 if query failed (according to ConradController::queryStatus)
-	    This means device malfunction, so set state accordingly
-  				 */
-
-  				setDeviceFullOff();
-
-  				NQLog("ConradModel::initialize()", NQLog::Fatal)
-  				<< "** ERROR: received malformed state vector.";
-
-  			}
-  		} else {
-  			// if not successful; i.e. DEVICE NOT FOUND
-  			setDeviceFullOff();
-  			// TODO Log why it failed
-  			NQLog("ConradModel::initialize()", NQLog::Fatal)
-  			<< "Cannot connect to Conrad. Make sure that";
-  			NQLog("ConradModel::initialize()", NQLog::Fatal)
-  			<< "/dev/ttyUSB* is present and readable and no other process";
-  			NQLog("ConradModel::initialize()", NQLog::Fatal)
-  			<< "is connecting to the device.";
-  		}
-  	} else {
-
-  		setDeviceFullOff();
-
-  		NQLog("ConradModel::initialize()", NQLog::Fatal)
-  		<< "Cannot connect to Conrad. Make sure that";
-  		NQLog("ConradModel::initialize()", NQLog::Fatal)
-  		<< "/dev/ttyUSB* is present and readable and no other process";
-  		NQLog("ConradModel::initialize()", NQLog::Fatal)
-  		<< "is connecting to the device.";
-  	}
+          NQLog("ConradModel", NQLog::Fatal) << "initialize"
+             << "failed to initialize ConradModel: empty list of device files to be checked (specified port(s): " << port_ << ")";
+        }
   }
 #endif
 }
