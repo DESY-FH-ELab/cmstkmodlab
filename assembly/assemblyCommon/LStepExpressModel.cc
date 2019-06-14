@@ -1064,6 +1064,9 @@ void LStepExpressModel::initialize()
     }
     else
     {
+      NQLog("LStepExpressModel", NQLog::Message) << "initialize"
+         << ": failed to initialize LStepExpressModel (no valid device file found under path " << port_ << ")";
+
       setDeviceState( OFF );
       delete controller_;
       controller_ = nullptr;
