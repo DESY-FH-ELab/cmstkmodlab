@@ -43,7 +43,7 @@ class PetiteFleurComHandler {
 
  private:
 
-  void OpenIoPort( void ) throw (int);
+  void OpenIoPort( void ) noexcept(false);
   void InitializeIoPort( void );
   void RestoreIoPort( void );
   void CloseIoPort( void );
