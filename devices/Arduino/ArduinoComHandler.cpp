@@ -104,7 +104,7 @@ void ArduinoComHandler::ReceiveString( char *receiveString ) {
 /*!
   \internal
 */
-void ArduinoComHandler::OpenIoPort( void ) throw (int) {
+void ArduinoComHandler::OpenIoPort( void ) noexcept(false) {
 
   // open io port ( read/write | no term control | no DCD line check )
   fIoPortFileDescriptor = open( fIoPort, O_RDWR | O_NOCTTY  | O_NDELAY );

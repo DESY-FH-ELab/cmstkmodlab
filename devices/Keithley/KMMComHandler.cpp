@@ -108,7 +108,7 @@ void KMMComHandler::ReceiveString( char *receiveString ) {
 /*!
   \internal
 */
-void KMMComHandler::OpenIoPort( void ) throw (int)
+void KMMComHandler::OpenIoPort( void ) noexcept(false)
 {
 
   // open io port ( read/write | no term control | no DCD line check )
