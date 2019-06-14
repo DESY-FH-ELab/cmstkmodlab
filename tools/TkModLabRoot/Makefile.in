@@ -34,7 +34,7 @@ endif
 
 CC            = @cc@
 CXX           = @cxx@
-CXXFLAGS      = -fPIC -std=c++11
+CXXFLAGS      = -fPIC -std=c++17
 LD            = @cxx@
 SOFLAGS       = @soflags@
 

@@ -25,7 +25,7 @@ macx {
 CONFIG += link_pkgconfig
 PKGCONFIG += opencv
 
-QMAKE_CXXFLAGS += -std=c++11
+QMAKE_CXXFLAGS += -std=c++17
 macx {
   QMAKE_CXXFLAGS += -DAPPLICATIONVERSIONSTR=\\\"unknown\\\"
 }
