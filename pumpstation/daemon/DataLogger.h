@@ -18,6 +18,7 @@
 #include <QFile>
 #include <QMutex>
 #include <QTimer>
+#include <QDir>
 #include <QDateTime>
 #include <QXmlStreamWriter>
 #include <QSocketNotifier>
