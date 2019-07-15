@@ -72,7 +72,7 @@ class AssemblyMainWindow : public QMainWindow
 
  public:
 
-  explicit AssemblyMainWindow(const QString& outputdir_path, const QString& logfile_path, const unsigned int camera_ID=10, QWidget* parent=nullptr);
+  explicit AssemblyMainWindow(const QString& outputdir_path, const QString& logfile_path, const unsigned int camera_ID=1, QWidget* parent=nullptr);
   virtual ~AssemblyMainWindow() {}
 
  public slots:
@@ -133,7 +133,7 @@ class AssemblyMainWindow : public QMainWindow
 
   AssemblyUEyeModel_t*      camera_model_;
   AssemblyUEyeCameraThread* camera_thread_;
-//  AssemblyUEyeWidget*      camera_widget_;
+  //  AssemblyUEyeWidget*      camera_widget_;
   AssemblyVUEyeCamera*      camera_;
   unsigned int              camera_ID_;
 

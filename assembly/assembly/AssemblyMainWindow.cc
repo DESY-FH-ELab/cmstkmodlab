@@ -41,7 +41,7 @@ AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QStr
 
   camera_model_(nullptr),
   camera_thread_(nullptr),
-//  camera_widget_(nullptr),
+  //  camera_widget_(nullptr),
   camera_(nullptr),
   camera_ID_(camera_ID),
 
@@ -250,14 +250,14 @@ AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QStr
 //    rawView_ = new AssemblyUEyeSnapShooter(assembly_tab);
 //    assembly_tab->addTab(rawView_, "raw");
 //
-//    // U-EYE VIEW ----------------------------------------------
-//    const QString tabname_uEye("uEye");
-//
-//    camera_widget_ = new AssemblyUEyeWidget(camera_model_, this);
-//    controls_tab->addTab(camera_widget_, tabname_uEye);
-//
-//    NQLog("AssemblyMainWindow", NQLog::Message) << "added view " << tabname_uEye;
-//    // ---------------------------------------------------------
+   // // U-EYE VIEW ----------------------------------------------
+   // const QString tabname_uEye("uEye");
+
+   // camera_widget_ = new AssemblyUEyeWidget(camera_model_, this);
+   // controls_tab->addTab(camera_widget_, tabname_uEye);
+
+   // NQLog("AssemblyMainWindow", NQLog::Message) << "added view " << tabname_uEye;
+   // // ---------------------------------------------------------
 
     // HARDWARE CONTROLLERs VIEW (motion/vacuum) ---------------
     const QString tabname_HWCtrl("HW Controllers (Motion/Vacuum)");
