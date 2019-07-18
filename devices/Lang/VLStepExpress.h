@@ -55,6 +55,8 @@ class VLStepExpress {
 
   virtual ~VLStepExpress();
 
+  virtual std::string ioPort() const = 0;
+
   virtual bool DeviceAvailable() const = 0;
 
   virtual void GetAutoStatus(int & value) = 0;
