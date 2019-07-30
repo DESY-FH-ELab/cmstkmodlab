@@ -1,0 +1,21 @@
+/////////////////////////////////////////////////////////////////////////////////
+//                                                                             //
+//                                                                             //
+//                                                                             //
+//                   Written by Elise Hinkle (Brown CMS Group)                 //
+//            Modeled on cmstkmodlab/devices/Conrad/ConradController.cpp       //
+//                           Last Updated July 30, 2019                        //
+//                                                                             //
+//                                                                             //
+//                                                                             //
+/////////////////////////////////////////////////////////////////////////////////
+
+#include <assert.h>
+#include <math.h>
+#include <stdio.h>
+#include <unistd.h>
+
+#include "VellemanCommunication.h"
+#include "VellemanController.h"
+
+#include <iostream>

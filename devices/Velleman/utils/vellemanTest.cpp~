@@ -1,0 +1,20 @@
+/////////////////////////////////////////////////////////////////////////////////
+//                                                                             //
+//                                                                             //
+//                                                                             //
+//                   Written by Elise Hinkle (Brown CMS Group)                 //
+//            Modeled on cmstkmodlab/devices/Conrad/utils/conradTest.cpp       //
+//                           Last Updated July 30, 2019                        //                
+//                                                                             //
+//                                                                             //
+//                                                                             //
+/////////////////////////////////////////////////////////////////////////////////
+
+
+#include <uistd.h>
+#include <string.h>
+#include <stdlib.h>
+#include <stdio.h>
+#include "ConradController.h"
+
+#include <iostream>
