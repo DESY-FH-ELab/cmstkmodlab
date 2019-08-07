@@ -21,11 +21,9 @@
   ttyUSB0 ... ttyUSB3<br>
   "/dev/ttyUSB0" ... "/dev/ttyUSB3"
 */
-LStepExpressComHandler::LStepExpressComHandler(ioport_t ioPort)
+LStepExpressComHandler::LStepExpressComHandler(const std::string& ioPort)
+ : fIoPort(ioPort)
 {
-  // save ioport 
-  fIoPort = ioPort;
-
   // initialize
   OpenIoPort();
   InitializeIoPort();
@@ -48,7 +46,7 @@ void LStepExpressComHandler::SendCommand( const char *commandString )
   char singleCharacter = 0; 
 
   for ( unsigned int i = 0; i < strlen( commandString ); i++ ) {
-    
+
     // scan command string character wise & write
     singleCharacter = commandString[i];
     write( fIoPortFileDescriptor, &singleCharacter, 1 );
@@ -102,17 +100,20 @@ void LStepExpressComHandler::ReceiveString( char *receiveString )
 void LStepExpressComHandler::OpenIoPort( void )
 {
   // open io port ( read/write | no term control | no DCD line check )
-  fIoPortFileDescriptor = open( fIoPort, O_RDWR | O_NOCTTY  | O_NDELAY );
+  fIoPortFileDescriptor = open( fIoPort.c_str(), O_RDWR | O_NOCTTY  | O_NDELAY );
 
   // check if successful
-  if ( fIoPortFileDescriptor == -1 ) {
-    std::cerr << "[LStepExpressComHandler::OpenIoPort] ** ERROR: could not open device file "
-              << fIoPort << "." << std::endl;
-    std::cerr << "                               (probably it's not user-writable)."
-              << std::endl;
+  if(fIoPortFileDescriptor == -1)
+  {
+    std::cout << "[LStepExpressComHandler::OpenIoPort] ** ERROR: could not open device file " << fIoPort << "." << std::endl;
+    std::cout << "                                               (probably it's not user-writable)." << std::endl;
+
     fDeviceAvailable = false;
+
     return;
-  } else {
+  }
+  else
+  {
     // configure port with no delay
     int flags = fcntl(fIoPortFileDescriptor, F_GETFL, 0);
     flags |= O_NONBLOCK;

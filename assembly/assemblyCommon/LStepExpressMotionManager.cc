@@ -309,7 +309,7 @@ double LStepExpressMotionManager::get_position(const int axis) const
   //    the motion stage is not moving and the list of positions has a valid format
   //
   // output:
-  //  * it is not safe to return if all the above conditions are not met
+  //  * it is not safe to return if any of the conditions above is not satisfied
   //  * this means the 'while' shoud not be broken or shortcut (a priori, it might never finish)
   //  * after a certain number of attempts, explicit warnings are printed
   //

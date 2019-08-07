@@ -21,9 +21,9 @@
 #include <iostream>
 
 //! Default constructor
-ConradController::ConradController( const ioport_t ioPort)
-  : VConradController(ioPort),
-    m_communication(new ConradCommunication(ioPort))
+ConradController::ConradController(const std::string& ioPort)
+  : VConradController(ioPort)
+  , m_communication(new ConradCommunication(ioPort))
 {
 
 }
@@ -32,14 +32,15 @@ ConradController::ConradController( const ioport_t ioPort)
 ConradController::~ConradController()
 {
   m_communication->finish();
+
   delete m_communication;
 }
 
 //! Initialize Conrad IO communication
 bool ConradController::initialize()
 {
-    assert(m_communication);
-    
+  assert(m_communication);
+
   // Initialize communication
   if (!m_communication->initialize())
     return false;
@@ -68,6 +69,14 @@ bool ConradController::initialize()
   }
 
   return true;
+}
+
+//! Return name of port used to initialize ConradCommunication
+std::string ConradController::comPort() const
+{
+  assert(m_communication);
+
+  return m_communication->comPort();
 }
 
 //! Internal helper function

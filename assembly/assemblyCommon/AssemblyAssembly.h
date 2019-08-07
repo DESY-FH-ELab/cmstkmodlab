@@ -77,11 +77,8 @@ class AssemblyAssembly : public QObject
   void PickupPSS_start();
   void PickupPSS_finish();
 
-  void GoToSpacerRefPoint_start();
-  void GoToSpacerRefPoint_finish();
-
-  void GoFromSpacerRefPointToSpacerGluingXYPosition_start();
-  void GoFromSpacerRefPointToSpacerGluingXYPosition_finish();
+  void GoToXYAPositionToGluePSSToSpacers_start();
+  void GoToXYAPositionToGluePSSToSpacers_finish();
 
   void LowerPSSOntoSpacers_start();
   void LowerPSSOntoSpacers_finish();
@@ -95,8 +92,8 @@ class AssemblyAssembly : public QObject
   void RegisterPSPToPSSPosition_start();
   void RegisterPSPToPSSPosition_finish();
 
-  void GoFromPSPToPSSPosToGluingStageRefPoint_start();
-  void GoFromPSPToPSSPosToGluingStageRefPoint_finish();
+  void GoFromPSPToPSSPosToGluingStageRefPointXY_start();
+  void GoFromPSPToPSSPosToGluingStageRefPointXY_finish();
 
   void LowerSpacersAndPSSOntoGluingStage_start();
   void LowerSpacersAndPSSOntoGluingStage_finish();
@@ -110,11 +107,8 @@ class AssemblyAssembly : public QObject
   void PickupPSPAndPSS_start();
   void PickupPSPAndPSS_finish();
 
-  void GoToBaseplateRefPoint_start();
-  void GoToBaseplateRefPoint_finish();
-
-  void GoFromBaseplateRefPointToBaseplateGluingXYPosition_start();
-  void GoFromBaseplateRefPointToBaseplateGluingXYPosition_finish();
+  void GoToXYAPositionToGlueSensorAssemblyToBaseplate_start();
+  void GoToXYAPositionToGlueSensorAssemblyToBaseplate_finish();
 
   void LowerSensorAssemblyOntoBaseplate_start();
   void LowerSensorAssemblyOntoBaseplate_finish();
@@ -159,7 +153,7 @@ class AssemblyAssembly : public QObject
 
   void GoToSpacerRefPoint_finished();
 
-  void GoFromSpacerRefPointToSpacerGluingXYPosition_finished();
+  void GoToXYAPositionToGluePSSToSpacers_finished();
 
   void LowerPSSOntoSpacers_finished();
 
@@ -170,7 +164,7 @@ class AssemblyAssembly : public QObject
   void RegisterPSPToPSSPosition_finished();
   void PSPToPSSPosition_registered();
 
-  void GoFromPSPToPSSPosToGluingStageRefPoint_finished();
+  void GoFromPSPToPSSPosToGluingStageRefPointXY_finished();
 
   void ReturnToPSPToPSSPosition_finished();
 
@@ -182,9 +176,7 @@ class AssemblyAssembly : public QObject
 
   void PickupPSPAndPSS_finished();
 
-  void GoToBaseplateRefPoint_finished();
-
-  void GoFromBaseplateRefPointToBaseplateGluingXYPosition_finished();
+  void GoToXYAPositionToGlueSensorAssemblyToBaseplate_finished();
 
   void LowerSensorAssemblyOntoBaseplate_finished();
   // ------

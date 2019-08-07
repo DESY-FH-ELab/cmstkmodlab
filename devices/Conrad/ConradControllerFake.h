@@ -22,7 +22,7 @@ class ConradControllerFake : public VConradController {
 
 public:
 
-  ConradControllerFake( const ioport_t );
+  ConradControllerFake(const std::string&);
   virtual ~ConradControllerFake();
 
   bool initialize();

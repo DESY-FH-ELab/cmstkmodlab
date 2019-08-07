@@ -101,7 +101,14 @@ AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QStr
     /// -------------------
 
     /// Motion
-    motion_model_   = new LStepExpressModel(config->getValue<std::string>("LStepExpressDevice").c_str(), 1000, 1000);
+    motion_model_ = new LStepExpressModel(
+      config->getValue<std::string>("LStepExpressDevice"),
+      config->getValue<std::string>("LStepExpressDevice_ver"),
+      config->getValue<std::string>("LStepExpressDevice_iver"),
+      1000,
+      1000
+    );
+
     motion_manager_ = new LStepExpressMotionManager(motion_model_);
 
     motion_thread_  = new LStepExpressMotionThread(motion_manager_, this);
@@ -125,7 +132,7 @@ AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QStr
     /// -------------------
 
     /// Vacuum Manager
-    conradModel_   = new ConradModel;
+    conradModel_   = new ConradModel(config->getValue<std::string>("ConradDevice"));
     conradManager_ = new ConradManager(conradModel_);
     /// -------------------
 
@@ -363,7 +370,7 @@ AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QStr
     /// Main Tab -----------------------------------------------
     QTabWidget* main_tab = new QTabWidget;
 
-    main_tab->setTabPosition(QTabWidget::South);
+    main_tab->setTabPosition(QTabWidget::North);
 
     main_tab->addTab(assembly_tab, tr("Module Assembly"));
     main_tab->addTab(controls_tab, tr("Manual Controls and Parameters"));
@@ -385,13 +392,11 @@ AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QStr
 
     NQLog("AssemblyMainWindow", NQLog::Message) << "///////////////////////////////////////////////////////";
     NQLog("AssemblyMainWindow", NQLog::Message) << "//                                                   //";
-    NQLog("AssemblyMainWindow", NQLog::Message) << "//                     DESY-CMS                      //";
-    NQLog("AssemblyMainWindow", NQLog::Message) << "//                                                   //";
     NQLog("AssemblyMainWindow", NQLog::Message) << "//       Automated Pixel-Strip Module Assembly       //";
     NQLog("AssemblyMainWindow", NQLog::Message) << "//                                                   //";
-    NQLog("AssemblyMainWindow", NQLog::Message) << "//  - AssemblyMainWindow initialized successfully -  //";
-    NQLog("AssemblyMainWindow", NQLog::Message) << "//                                                   //";
     NQLog("AssemblyMainWindow", NQLog::Message) << "///////////////////////////////////////////////////////";
+
+    NQLog("AssemblyMainWindow", NQLog::Message) << "application initialized successfully";
 
     // enable camera at startup
     const bool startup_camera = config->getValue<bool>("startup_camera", false);
@@ -557,6 +562,7 @@ void AssemblyMainWindow::connect_images()
   connect(image_view_->autofocus_button(), SIGNAL(clicked()), image_ctr_, SLOT(acquire_autofocused_image()));
 
   connect(image_view_->autofocus_emergencyStop_button(), SIGNAL(clicked()), zfocus_finder_, SLOT(emergencyStop()));
+  connect(image_view_->autofocus_emergencyStop_button(), SIGNAL(clicked()), image_ctr_    , SLOT(restore_autofocus_settings()));
 
   NQLog("AssemblyMainWindow", NQLog::Message) << "connect_images"
      << ": enabled images in application view(s)";

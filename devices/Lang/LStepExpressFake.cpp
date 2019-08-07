@@ -14,14 +14,18 @@
 
 #include "LStepExpressFake.h"
 
-LStepExpressFake::LStepExpressFake( const ioport_t ioPort )
-  :VLStepExpress(ioPort),
-   autoStatus_(1)
+LStepExpressFake::LStepExpressFake(const std::string& ioPort, const std::string& /* lstep_ver */, const std::string& /* lstep_iver */)
+ : VLStepExpress(ioPort)
+ , ioPort_(ioPort)
+ , autoStatus_(1)
 {
-  axisStatus_ = std::vector<int>{ VLStepExpress::AXISSTANDSANDREADY,
-                                  VLStepExpress::AXISSTANDSANDREADY,
-                                  VLStepExpress::AXISSTANDSANDREADY,
-                                  VLStepExpress::AXISSTANDSANDREADY };
+  axisStatus_ = std::vector<int>{
+    VLStepExpress::AXISSTANDSANDREADY,
+    VLStepExpress::AXISSTANDSANDREADY,
+    VLStepExpress::AXISSTANDSANDREADY,
+    VLStepExpress::AXISSTANDSANDREADY,
+  };
+
   axis_ = std::vector<int>{ 1, 1, 1, 1 };
   axisDirection_ = std::vector<int>{ 0, 0, 0, 0 };
   dim_ = std::vector<int>{ 2, 2, 2, 3 };
@@ -38,6 +42,12 @@ LStepExpressFake::LStepExpressFake( const ioport_t ioPort )
   joystickAxisEnabled_ = std::vector<int>{ 1, 1, 1, 1 };
 
   posCtrl_enabled_ = false;
+}
+
+//! Return name of port used to initialize LStepExpressFake
+std::string LStepExpressFake::ioPort() const
+{
+  return ioPort_;
 }
 
 LStepExpressFake::~LStepExpressFake()
@@ -390,7 +400,7 @@ void LStepExpressFake::SetJoystickAxisEnabled(VLStepExpress::Axis axis, int valu
   joystickAxisEnabled_[axis] = value;
 }
 
-void LStepExpressFake::SendCommand(const std::string & command)
+void LStepExpressFake::SendCommand(const std::string& command)
 {
   std::cout << "SendCommand: " << command << std::endl;
 }

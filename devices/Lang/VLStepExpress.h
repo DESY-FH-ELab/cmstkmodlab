@@ -16,8 +16,6 @@
 #include <string>
 #include <vector>
 
-typedef const char* ioport_t;
-
 class VLStepExpress {
 
  public:
@@ -53,8 +51,11 @@ class VLStepExpress {
     AXISSTATEUNKNOWN           = 0xff
   };
 
-  VLStepExpress( const ioport_t );
+  VLStepExpress(const std::string&);
+
   virtual ~VLStepExpress();
+
+  virtual std::string ioPort() const = 0;
 
   virtual bool DeviceAvailable() const = 0;
 
