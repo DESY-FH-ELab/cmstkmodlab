@@ -3,18 +3,21 @@
 //                                                                             //
 //                                                                             //
 //                   Written by Elise Hinkle (Brown CMS Group)                 //
-//            Modeled on cmstkmodlab/devices/Conrad/utils/conradTest.cpp       //
-//                           Last Updated July 30, 2019                        //                
+//            Modeled on cmstkmodlab/devices/Conrad/VConradController.cpp      //
+//                           Last Updated August 2, 2019                       //                
 //                                                                             //
 //                                                                             //
 //                                                                             //
 /////////////////////////////////////////////////////////////////////////////////
 
+#include "IVellemanController.h"
 
-#include <uistd.h>
-#include <string.h>
-#include <stdlib.h>
-#include <stdio.h>
-#include "ConradController.h"
+//! Default constructor
+IVellemanController::IVellemanController(const std::string&)
+{
+}
 
-#include <iostream>
+//! Default destructor
+IVellemanController::~IVellemanController()
+{
+}
