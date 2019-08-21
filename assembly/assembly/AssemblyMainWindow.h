@@ -56,8 +56,10 @@ typedef AssemblyUEyeModel AssemblyUEyeModel_t;
 #include <LStepExpressMeasurementWidget.h>
 #include <LStepExpressPositionWidget.h>
 #include <LStepExpressStatusWindow.h>
-#include <ConradModel.h>
-#include <ConradManager.h>
+// #include <ConradModel.h>   // CONRAD
+// #include <ConradManager.h> // CONRAD
+#include <VellemanModel.h>    // VELLEMAN
+#include <VellemanManager.h>  // VELLEMAN
 
 #include <QMainWindow>
 #include <QString>
@@ -122,8 +124,10 @@ class AssemblyMainWindow : public QMainWindow
  protected:
 
   // Low-Level Controllers (Motion, Camera, Vacuum)
-  ConradModel*   conradModel_;
-  ConradManager* conradManager_;
+  //  ConradModel*   conradModel_;   // CONRAD
+  //  ConradManager* conradManager_; // CONRAD
+  VellemanModel*   vellemanModel_;   // VELLEMAN
+  VellemanManager* vellemanManager_; // VELLEMAN
 
   LStepExpressModel*          motion_model_;
   LStepExpressMotionManager*  motion_manager_;

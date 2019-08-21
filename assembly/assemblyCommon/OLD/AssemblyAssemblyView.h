@@ -13,7 +13,8 @@
 #ifndef ASSEMBLYASSEMBLYVIEW_H
 #define ASSEMBLYASSEMBLYVIEW_H
 
-#include <ConradModel.h>
+// #include <ConradModel.h> // CONRAD
+#include <VellemanModel.h>  // VELLEMAN
 #include <LStepExpressMotionManager.h>
 #include <AssemblyVUEyeCamera.h>
 #include <AssemblyUEyeView.h>

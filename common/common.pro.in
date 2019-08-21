@@ -15,6 +15,7 @@ LIBS += -L@basepath@/devices/lib -lTkModLabArduino
 LIBS += -L@basepath@/devices/lib -lTkModLabCori
 LIBS += -L@basepath@/devices/lib -lTkModLabNanotec
 LIBS += -L@basepath@/devices/lib -lTkModLabConrad
+LIBS += -L@basepath@/devices/lib -lTkModLabVelleman
 LIBS += -L@basepath@/devices/lib -lTkModLabLeybold
 LIBS += -L@basepath@/external/ddierckx -lddierckx
 LIBS += -lcurl
@@ -107,6 +108,7 @@ HEADERS += nqlogger.h \
            NanotecSMCI36Model.h \
            NanotecSMCI36Widget.h \
            ConradModel.h \
+           VellemanModel.h \
            LeyboldGraphixThreeModel.h
 
 SOURCES += nqlogger.cc \
@@ -153,4 +155,5 @@ SOURCES += nqlogger.cc \
            NanotecSMCI36Model.cc \
            NanotecSMCI36Widget.cc \
            ConradModel.cc \
+           VellemanModel.cc \
            LeyboldGraphixThreeModel.cc

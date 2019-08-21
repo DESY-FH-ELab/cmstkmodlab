@@ -29,8 +29,10 @@ AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QStr
   QMainWindow(parent),
 
   // Low-Level Controllers (Motion, Camera, Vacuum)
-  conradModel_(nullptr),
-  conradManager_(nullptr),
+  // conradModel_(nullptr),   // CONRAD 
+  // conradManager_(nullptr), // CONRAD 
+  vellemanModel_(nullptr),      // VELLEMAN
+  vellemanManager_(nullptr),    // VELLEMAN
 
   motion_model_(nullptr),
   motion_manager_(nullptr),
@@ -131,9 +133,11 @@ AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QStr
     }
     /// -------------------
 
-    /// Vacuum Manager
-    conradModel_   = new ConradModel(config->getValue<std::string>("ConradDevice"));
-    conradManager_ = new ConradManager(conradModel_);
+    /// Vacuum Manager (use Conrad lines OR Velleman lines depending on relay card used)
+    // conradModel_   = new ConradModel(config->getValue<std::string>("ConradDevice"));    // CONRAD
+    // conradManager_ = new ConradManager(conradModel_);                                   // CONRAD
+    vellemanModel_   = new VellemanModel(config->getValue<std::string>("VellemanDevice")); // VELLEMAN
+    vellemanManager_ = new VellemanManager(vellemanModel_);                                // VELLEMAN
     /// -------------------
 
     /// TAB: ASSEMBLY FUNCTIONALITIES --------------------------
@@ -227,7 +231,8 @@ AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QStr
 
     smart_motion_ = new AssemblySmartMotionManager(motion_manager_);
 
-    assembly_ = new AssemblyAssembly(motion_manager_, conradManager_, smart_motion_);
+    // assembly_ = new AssemblyAssembly(motion_manager_, conradManager_, smart_motion_); // CONRAD
+    assembly_ = new AssemblyAssembly(motion_manager_, vellemanManager_, smart_motion_);  // VELLEMAN 
 
     assembly_view_ = new AssemblyAssemblyView(assembly_, assembly_tab);
     assembly_tab->addTab(assembly_view_, tabname_Assembly);
@@ -266,6 +271,8 @@ AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QStr
     hwctr_view_ = new AssemblyHardwareControlView(motion_manager_, controls_tab);
     controls_tab->addTab(hwctr_view_, tabname_HWCtrl);
 
+    /// *****LEAVE BLOCK (5 lines of code) UNCOMMENTED IF USING CONRAD RELAY CARD***** ///
+    /*
     connect(hwctr_view_->Vacuum_Widget(), SIGNAL(toggleVacuum(int))              , conradManager_, SLOT(toggleVacuum(int)));
     connect(hwctr_view_->Vacuum_Widget(), SIGNAL(vacuumChannelState_request(int)), conradManager_, SLOT(transmit_vacuumChannelState(int)));
 
@@ -273,7 +280,19 @@ AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QStr
 
     connect(conradManager_, SIGNAL( enableVacuumButton()), hwctr_view_->Vacuum_Widget(), SLOT( enableVacuumButton()));
     connect(conradManager_, SIGNAL(disableVacuumButton()), hwctr_view_->Vacuum_Widget(), SLOT(disableVacuumButton()));
+    */
 
+    /// *****LEAVE BLOCK (5 lines of code) UNCOMMENTED IF USING VELLEMAN RELAY CARD***** ///
+    /**/
+    connect(hwctr_view_->Vacuum_Widget(), SIGNAL(toggleVacuum(int))              , vellemanManager_, SLOT(toggleVacuum(int)));
+    connect(hwctr_view_->Vacuum_Widget(), SIGNAL(vacuumChannelState_request(int)), vellemanManager_, SLOT(transmit_vacuumRelayState(int)));
+
+    connect(vellemanManager_, SIGNAL(vacuumRelayState(int, bool)), hwctr_view_->Vacuum_Widget(), SLOT(updateVacuumChannelState(int, bool)));
+
+    connect(vellemanManager_, SIGNAL( enableVacuumButton()), hwctr_view_->Vacuum_Widget(), SLOT( enableVacuumButton()));
+    connect(vellemanManager_, SIGNAL(disableVacuumButton()), hwctr_view_->Vacuum_Widget(), SLOT(disableVacuumButton()));
+    /**/
+    
     hwctr_view_->Vacuum_Widget()->updateVacuumChannelsStatus();
 
     // enable motion stage controllers at startup
@@ -744,9 +763,11 @@ void AssemblyMainWindow::start_multiPickupTest(const AssemblyMultiPickupTester::
   // ---
 
   // pickup (vacuum)
-  connect(multipickup_tester_, SIGNAL(vacuum_toggle(int)), conradManager_, SLOT(toggleVacuum(int)));
+  // connect(multipickup_tester_, SIGNAL(vacuum_toggle(int)), conradManager_, SLOT(toggleVacuum(int))); // CONRAD
+  // connect(conradManager_, SIGNAL(vacuum_toggled()), multipickup_tester_, SLOT(setup_next_step()));   // CONRAD
 
-  connect(conradManager_, SIGNAL(vacuum_toggled()), multipickup_tester_, SLOT(setup_next_step()));
+  connect(multipickup_tester_, SIGNAL(vacuum_toggle(int)), vellemanManager_, SLOT(toggleVacuum(int)));  // VELLEMAN
+  connect(vellemanManager_, SIGNAL(vacuum_toggled()), multipickup_tester_, SLOT(setup_next_step()));    // VELLEMAN
   // ---
 
   multipickup_tester_->set_configuration(conf);
@@ -770,9 +791,10 @@ void AssemblyMainWindow::disconnect_multiPickupTest()
   // ---
 
   // pickup (vacuum)
-  disconnect(multipickup_tester_, SIGNAL(vacuum_toggle(int)), conradManager_, SLOT(toggleVacuum(int)));
-
-  disconnect(conradManager_, SIGNAL(vacuum_toggled()), multipickup_tester_, SLOT(setup_next_step()));
+  // disconnect(multipickup_tester_, SIGNAL(vacuum_toggle(int)), conradManager_, SLOT(toggleVacuum(int))); // CONRAD
+  // disconnect(conradManager_, SIGNAL(vacuum_toggled()), multipickup_tester_, SLOT(setup_next_step()));   // CONRAD
+  disconnect(multipickup_tester_, SIGNAL(vacuum_toggle(int)), vellemanManager_, SLOT(toggleVacuum(int)));  // VELLEMAN
+  disconnect(vellemanManager_, SIGNAL(vacuum_toggled()), multipickup_tester_, SLOT(setup_next_step()));    // VELLEMAN
   // ---
 
   toolbox_view_->MultiPickupTester_Widget()->enable(true);

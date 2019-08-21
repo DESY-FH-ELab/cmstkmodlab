@@ -4,6 +4,7 @@ NOUEYE="X@noueye@"
 
 LIBS += -L@basepath@/devices/lib -lTkModLabLang
 LIBS += -L@basepath@/devices/lib -lTkModLabConrad
+LIBS += -L@basepath@/devices/lib -lTkModLabVelleman
 LIBS += -L@basepath@/devices/lib -lTkModLabArduino
 LIBS += -L@basepath@/devices/lib -lTkModLabKeyence
 LIBS += -L@basepath@/common -lCommon
@@ -109,6 +110,7 @@ HEADERS += AssemblyVUEyeCamera.h \
            AssemblyLogFileController.h \
            AssemblyLogFileView.h \
            ConradManager.h \
+           VellemanManager.h \
            LStepExpressModel.h \
            LStepExpressMotion.h \
            LStepExpressMotionManager.h \
@@ -127,7 +129,7 @@ HEADERS += AssemblyVUEyeCamera.h \
            LaserThread.h \
            LaserWidget.h \
            LaserControlsWidget.h \
-           AssemblyUtilities.h
+           AssemblyUtilities.h \
 
 equals(NOUEYE,"X0") {
 HEADERS += AssemblyUEyeCamera.h \
@@ -171,6 +173,7 @@ SOURCES += AssemblyVUEyeCamera.cc \
            AssemblyLogFileController.cc \
            AssemblyLogFileView.cc \
            ConradManager.cc \
+           VellemanManager.cc \
            LStepExpressModel.cc \
            LStepExpressMotion.cc \
            LStepExpressMotionManager.cc \
@@ -189,7 +192,7 @@ SOURCES += AssemblyVUEyeCamera.cc \
            LaserWidget.cc \
            LaserThread.cc \
            LaserControlsWidget.cc \
-           AssemblyUtilities.cc
+           AssemblyUtilities.cc \
 
 equals(NOUEYE,"X0") {
 SOURCES += AssemblyUEyeCamera.cc \

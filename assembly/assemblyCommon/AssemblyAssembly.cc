@@ -20,8 +20,10 @@
 
 #include <QMessageBox>
 
-AssemblyAssembly::AssemblyAssembly(const LStepExpressMotionManager* const motion, const ConradManager* const vacuum, const AssemblySmartMotionManager* const smart_motion, QObject* parent)
- : QObject(parent)
+// AssemblyAssembly::AssemblyAssembly(const LStepExpressMotionManager* const motion, const ConradManager* const vacuum, const AssemblySmartMotionManager* const smart_motion, QObject* parent) // CONRAD
+AssemblyAssembly::AssemblyAssembly(const LStepExpressMotionManager* const motion, const VellemanManager* const vacuum, const AssemblySmartMotionManager* const smart_motion, QObject* parent) // VELLEMAN
+
+  : QObject(parent)
 
  , motion_(motion)
  , vacuum_(vacuum)
@@ -79,14 +81,30 @@ const LStepExpressMotionManager* AssemblyAssembly::motion() const
   return motion_;
 }
 
-const ConradManager* AssemblyAssembly::vacuum() const
+// *****LEAVE METHOD UNCOMMENTED FOR USE WITH CONRAD RELAY CARD***** // 
+/* const ConradManager* AssemblyAssembly::vacuum() const
 {
-  if(motion_ == nullptr)
+  if(vacuum_ == nullptr) // NOTE: CHANGED FROM motion_ TO vacuum_
   {
     NQLog("AssemblyAssembly", NQLog::Fatal) << "vacuum"
        << ": pointer to ConradManager is NULL, exiting constructor";
 
     assembly::kill_application(tr("[AssemblyAssembly]"), tr("pointer to ConradManager is NULL, aborting"));
+  }
+
+  return vacuum_;
+}
+*/
+
+// *****LEAVE METHOD UNCOMMENTED FOR USE WITH VELLEMAN RELAY CARD***** // 
+const VellemanManager* AssemblyAssembly::vacuum() const
+{
+  if(vacuum_ == nullptr) // THIS WAS ORIGINALLY MOTION_ BUT I THINK THAT MAY HAVE BEEN A COPY/PASTE ERROR
+  {
+    NQLog("AssemblyAssembly", NQLog::Fatal) << "vacuum"
+       << ": pointer to VellemanManager is NULL, exiting constructor";
+
+    assembly::kill_application(tr("[AssemblyAssembly]"), tr("pointer to VellemanManager is NULL, aborting"));
   }
 
   return vacuum_;
