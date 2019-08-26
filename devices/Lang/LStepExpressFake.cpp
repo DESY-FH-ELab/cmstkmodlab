@@ -17,6 +17,7 @@
 LStepExpressFake::LStepExpressFake(const std::string& ioPort, const std::string& /* lstep_ver */, const std::string& /* lstep_iver */)
  : VLStepExpress(ioPort)
  , autoStatus_(1)
+ , port_(ioPort)
 {
   axisStatus_ = std::vector<int>{
     VLStepExpress::AXISSTANDSANDREADY,
@@ -47,6 +48,8 @@ LStepExpressFake::~LStepExpressFake()
 {
 
 }
+
+std::string LStepExpressFake::ioPort() const {return port_;}
 
 void LStepExpressFake::GetAutoStatus(int & value)
 {

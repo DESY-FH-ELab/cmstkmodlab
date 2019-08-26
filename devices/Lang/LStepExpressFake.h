@@ -27,6 +27,8 @@ class LStepExpressFake : public VLStepExpress
 
  public:
 
+  std::string ioPort() const;
+
   bool DeviceAvailable() const { return true; }
 
   void GetAutoStatus(int & value);
@@ -138,6 +140,7 @@ class LStepExpressFake : public VLStepExpress
   std::vector<double> velocity_;
   std::vector<double> position_;
   std::vector<double> moverel_;
+  std::string port_;
 
   bool joystickEnabled_;
   std::vector<int> joystickAxisEnabled_;
