@@ -97,9 +97,10 @@ const LStepExpressMotionManager* AssemblyAssembly::motion() const
 */
 
 // *****LEAVE METHOD UNCOMMENTED FOR USE WITH VELLEMAN RELAY CARD***** // 
+/**/
 const VellemanManager* AssemblyAssembly::vacuum() const
 {
-  if(vacuum_ == nullptr) // THIS WAS ORIGINALLY MOTION_ BUT I THINK THAT MAY HAVE BEEN A COPY/PASTE ERROR
+  if(vacuum_ == nullptr) // THIS WAS ORIGINALLY MOTION_ BUT I THINK THAT MAY HAVE BEEN A COPY/PASTE ERROR ABOVE
   {
     NQLog("AssemblyAssembly", NQLog::Fatal) << "vacuum"
        << ": pointer to VellemanManager is NULL, exiting constructor";
@@ -109,6 +110,7 @@ const VellemanManager* AssemblyAssembly::vacuum() const
 
   return vacuum_;
 }
+/**/
 
 AssemblyParameters* AssemblyAssembly::parameters() const
 {

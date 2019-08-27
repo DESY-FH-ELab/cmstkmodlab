@@ -4,7 +4,7 @@
 //                                                                             //
 //                   Written by Elise Hinkle (Brown CMS Group)                 //
 //               Modeled on cmstkmodlab/python/PyTkModLabConrad.cc             //
-//                          Last Updated August 21, 2019                       //
+//                          Last Updated August 27, 2019                       //
 //                                                                             //
 //                                                                             //
 //                                                                             //
@@ -31,9 +31,9 @@ BOOST_PYTHON_MODULE(PyTkModLabVelleman)
     .def(vector_indexing_suite<std::vector<bool>>() );
 
   class_<VellemanController_t>("Velleman", init<const std::string&>())
-    .def("queryRelayStatus", &VellemanController_t::queryRelayStatus)
-    .def("setRelay", &VellemanController_t::setRelay)
-    .def("setSingleRelay", &VellemanController_t::setSingleRelay)
-    .def("setMultiRelays", &VellemanController_t::setMultiRelays)
+    .def("queryChannelStatus", &VellemanController_t::queryRelayStatus)
+    .def("setChannel", &VellemanController_t::setRelay)
+    .def("setSingleChannel", &VellemanController_t::setSingleRelay)
+    .def("setMultiChannels", &VellemanController_t::setMultiRelays)
     ;
 };

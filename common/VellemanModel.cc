@@ -4,7 +4,7 @@
 //                                                                             //
 //                   Written by Elise Hinkle (Brown CMS Group)                 //
 //                 Modeled on cmstkmodlab/common/ConradModel.cc                //
-//                         Last Updated August 23, 2019                        //
+//                         Last Updated August 27, 2019                        //
 //                                                                             //
 //                                                                             //
 //                                                                             //
@@ -34,7 +34,7 @@ VellemanModel::VellemanModel(const std::string& port, QObject* /* parent */)
   : QObject()
   , AbstractDeviceModel()
   , port_(port.c_str())
-  , relayStates_(8, OFF)
+  , channelStates_(8, OFF)
 {
   setDeviceEnabled(true); // public slot
   setControlsEnabled(true); // public slot
@@ -59,14 +59,14 @@ void VellemanModel::setDeviceEnabled(bool enabled)
 /* 
    Slots to enable and disable relays
 */
-void VellemanModel::enableRelay(int relay)
+void VellemanModel::enableChannel(int channel)
 {
-  setRelayEnabled(relay, true);
+  setChannelEnabled(channel, true);
 }
 
-void VellemanModel::disableRelay(int relay)
+void VellemanModel::disableChannel(int channel)
 {
-  setRelayEnabled(relay, false);
+  setChannelEnabled(channel, false);
 }
 
 /*
@@ -97,14 +97,14 @@ void VellemanModel::initialize( void )
   // Announce new states
   if (status.size() == 8) {
 
-    setAllRelaysSame(status);
+    setAllChannelsSame(status);
     setDeviceState( READY );
 
   }
 #else
   if(port_.isEmpty())
     {
-      setDeviceFullOff();
+      setAllChannelsOff();
 
       NQLog("VellemanModel", NQLog::Critical) << "initialize"
 	<< ": path to device file is empty, VellemanModel will not be initialized";
@@ -136,8 +136,7 @@ void VellemanModel::initialize( void )
 	      if(controller_initialized == true) { break; }
 	    }
 
-	  // Check communication. If it is not at the end, relay was found
-	  // NOTE: what does this mean??
+	  // Check communication. If it is not at the end, of the whole method, card was found.
 	  if(controller_initialized)
 	    {
 	      // Read and initialize status of relays
@@ -146,7 +145,7 @@ void VellemanModel::initialize( void )
 	      // Announce new states of relays
 	      if(status.size() == 8)
 		{
-		  setAllRelaysSame(status);
+		  setAllChannelsSame(status);
 		  setDeviceState( READY );
 
 		  NQLog("VellemanModel", NQLog::Message) << "initialize"
@@ -156,7 +155,7 @@ void VellemanModel::initialize( void )
 		{
 		  // Size of status would be 0 if query failed (see VellemanController::queryRelayStatus).
 		  // This status size indicates a device malfunction, so set state accordingly.
-		  setDeviceFullOff();
+		  setAllChannelsOff();
 
 		  NQLog("VellemanModel", NQLog::Fatal) << "initialize"
 		    << ": ** ERROR: received malformed status vector from device (port: " << controller_->comPort() << ")";
@@ -165,7 +164,7 @@ void VellemanModel::initialize( void )
 	  else
 	    {
 	      // If controller not successfully initialized (i.e. DEVICE NOTE FOUND)
-	      setDeviceFullOff();
+	      setAllChannelsOff();
 
 	      // TODO Log why this initialization failed
 	      NQLog("VellemanModel::intialize()", NQLog::Fatal) << "Cannot connect to Velleman. Make sure that";
@@ -175,7 +174,7 @@ void VellemanModel::initialize( void )
 	}
       else
 	{
-	  setDeviceFullOff();
+	  setAllChannelsOff();
 
 	  NQLog("VellemanModel", NQLog::Fatal) << "initialize"
 	    << "Failed to initialize VellemanModel due to empty list of device files to be checked (specified port(s): " << port_ << ")";
@@ -187,10 +186,10 @@ void VellemanModel::initialize( void )
 /*
   Sets all of the  states to OFF
 */
-void VellemanModel::setDeviceFullOff()
+void VellemanModel::setAllChannelsOff()
 {
   setDeviceState( OFF );
-  setAllRelaysSame(std::vector<bool>(8, false));
+  setAllChannelsSame(std::vector<bool>(8, false));
 }
 
 /*
@@ -208,7 +207,7 @@ void VellemanModel::close()
 
     // Disable all connected devices
     for (int i = 0; i < 8; ++i)
-      setRelayEnabledRaw(i, false);
+      setChannelEnabledRaw(i+1, false);
 
     // Disable relay card
     destroyController();
@@ -220,7 +219,7 @@ void VellemanModel::close()
 
 /*
   Sets the current state of the relay card and emits a
-  relayStateChanged signal upon this change.
+  deviceStateChanged signal upon this change.
 */
 void VellemanModel::setDeviceState(State state)
 {
@@ -231,18 +230,18 @@ void VellemanModel::setDeviceState(State state)
 }
 
 /*
-  Enables or disables a certain device relay on the relay
+  Enables or disables a certain device channel on the relay
   card.
 */
-void VellemanModel::setRelayEnabled(int relay, bool enabled)
+void VellemanModel::setChannelEnabled(int channel, bool enabled)
 {
   // TODO Upon failure, check if the relay is still reachable
 
   // Check if the relay communication is ready
   if (getDeviceState() == READY)
-    setRelayEnabledRaw(relay, enabled);
+    setChannelEnabledRaw(channel, enabled);
   else
-    setRelayState(relay, OFF);
+    setChannelState(channel, OFF);
 
   // TODO Notify of malfunction
 }
@@ -250,53 +249,53 @@ void VellemanModel::setRelayEnabled(int relay, bool enabled)
 /* 
    Returns whether the requested device is currently enabled.
 */
-const State& VellemanModel::getRelayState(int relay) const
+const State& VellemanModel::getChannelState(int channel) const
 {
-  return relayStates_.at(relay); // NOTE: relays here are offset by 1 (0-7)
+  return channelStates_.at(channel-1); // NOTE: relays here are NO LONGER offset by 1 (0-7)
 }
 
 /*
   Sets the current state for a device and emits a signal if 
   necessary.
 */
-void VellemanModel::setRelayState(int relay, State state)
+void VellemanModel::setChannelState(int channel, State state)
 {
-  if (relayStates_.at(relay) != state) { // NOTE: relays here are offset by 1 (0-7)
-    relayStates_[relay] = state; // NOTE: relays here are offset by 1 (0-7)
-    emit relayStateChanged(relay, state);
+  if (channelStates_.at(channel-1) != state) { // NOTE: relays here are NO LONGER offset by 1 (0-7)
+    channelStates_[channel-1] = state; // NOTE: relays here are NO LONGER offset by 1 (0-7)
+    emit channelStateChanged(channel, state);
   }
 }
 
 /*
-  Small convenience method to set all device relay states using
+  Small convenience method to set all device channel states using
   the vector provided by VellemanController::queryRelayStatus().
 */
-void VellemanModel::setAllRelaysSame(const std::vector<bool>& status)
+void VellemanModel::setAllChannelsSame(const std::vector<bool>& status)
 {
   for (unsigned int i = 0; i < status.size(); ++i) {
     // Set device state according to relay status received
-    setRelayState(i, status.at(i) ? READY : OFF);
+    setChannelState(i+1, status.at(i) ? READY : OFF);
   }
 }
 
 /* 
-   Sets the relay state without checking the device state.
+   Sets the channel state without checking the device state.
 */
-void VellemanModel::setRelayEnabledRaw(int relay, bool enabled)
+void VellemanModel::setChannelEnabledRaw(int channel, bool enabled)
 {
-  if (enabled && getRelayState(relay) == OFF) {
+  if (enabled && getChannelState(channel) == OFF) {
 
-    setRelayState(relay, INITIALIZING);
+    setChannelState(channel, INITIALIZING);
 
-    // Add 1 to relay because of shift required by setRelay
-    bool success = controller_->setRelay(relay+1, enabled ? CMD_SWITCH_RELAY_ON : CMD_SWITCH_RELAY_OFF);
-    setRelayState(relay, success ? READY : OFF);
+    // NO LONGER NEED TO Add 1 to relay because of shift required by setRelay
+    bool success = controller_->setRelay(channel, enabled ? CMD_SWITCH_RELAY_ON : CMD_SWITCH_RELAY_OFF);
+    setChannelState(channel, success ? READY : OFF);
   }
-  else if (!enabled && getRelayState(relay) == READY) {
+  else if (!enabled && getChannelState(channel) == READY) {
 
-    setRelayState(relay, CLOSING);
-    // Add 1 to relay because of shift required by setRelay
-    bool success = controller_->setRelay(relay+1, enabled ? CMD_SWITCH_RELAY_ON : CMD_SWITCH_RELAY_OFF);
-    setRelayState(relay, success ? OFF : READY);
+    setChannelState(channel, CLOSING);
+    // NO LONGER NEED TO Add 1 to relay because of shift required by setRelay
+    bool success = controller_->setRelay(channel, enabled ? CMD_SWITCH_RELAY_ON : CMD_SWITCH_RELAY_OFF);
+    setChannelState(channel, success ? OFF : READY);
   }
 }

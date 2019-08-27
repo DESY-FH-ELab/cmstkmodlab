@@ -4,7 +4,7 @@
 //                                                                             //
 //                   Written by Elise Hinkle (Brown CMS Group)                 //
 //        Modeled on cmstkmodlab/assembly/assemblyCommon/ConradManager.h       //
-//                         Last Updated August 26, 2019                        //
+//                         Last Updated August 27, 2019                        //
 //                                                                             //
 //                                                                             //
 //                                                                             //
@@ -34,7 +34,7 @@ class VellemanManager : public QObject
 
   VellemanModel* const vellemanModel_;
 
-  int relayNumber_;
+  int channelNumber_;
   QTimer* liveTimer_;
 
  protected:
@@ -46,14 +46,14 @@ class VellemanManager : public QObject
    void toggleVacuum(const int);
    void vacuumToggled();
 
-   void transmit_vacuumRelayState(const int);
+   void transmit_vacuumChannelState(const int);
 
    void enableVacuum(const int);
    void disableVacuum(const int);
    
  signals:
 
-   void vacuumRelayState(int, bool);
+   void vacuumChannelState(int, bool);
 
    void enableVacuumButton();
    void disableVacuumButton();

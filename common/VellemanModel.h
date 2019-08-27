@@ -4,7 +4,7 @@
 //                                                                             //
 //                   Written by Elise Hinkle (Brown CMS Group)                 //
 //                  Modeled on cmstkmodlab/common/ConradModel.h                //
-//                          Last Updated August 23, 2019                       //
+//                          Last Updated August 27, 2019                       //
 //                                                                             //
 //                                                                             //
 //                                                                             //
@@ -47,8 +47,8 @@ typedef VellemanController VellemanController_t;
     while relay state is INITIALIZING). 
 
     Here, "device" primarily refers to the relay card as a whole, 
-    while "relay" primarily refers to the relay controlling a 
-    particular vacuum channel.
+    while "channel" primarily refers to a specific vacuum channel
+    controlled by one relay in the relay card.
 ***/
 
 class VellemanModel : public QObject, public AbstractDeviceModel<VellemanController_t>
@@ -61,16 +61,16 @@ public:
   virtual ~VellemanModel();
 
   // Methods for power control and querying statuses of devices connected to relay
-  const State& getRelayState(int device) const;
+  const State& getChannelState(int channel) const;
 
 public slots:
   // Methods for control and querying statuses of device itself (as specified
   // by abstract parent class)
   void setDeviceEnabled(bool enabled);
-  void enableRelay(int relay);
-  void disableRelay(int relay);
+  void enableChannel(int channel);
+  void disableChannel(int channel);
   void setControlsEnabled(bool enabled);
-  void setRelayEnabled(int relay, bool enabled);
+  void setChannelEnabled(int channel, bool enabled);
 
 protected:
 
@@ -82,20 +82,20 @@ protected:
   // Last known communication state of device
   void setDeviceState(State state);
 
-  std::vector<State> relayStates_;
-  void setRelayState(int relay, State state);
+  std::vector<State> channelStates_;
+  void setChannelState(int channel, State state);
 
 private:
 
-  void setDeviceFullOff();
-  void setAllRelaysSame(const std::vector<bool>& status);
-  void setRelayEnabledRaw(int relay, bool enabled);
+  void setAllChannelsOff();
+  void setAllChannelsSame(const std::vector<bool>& ready);
+  void setChannelEnabledRaw(int channel, bool enabled);
   
 signals:
   // Classname identifiers needed because Qt can't resolve internal enums
   // NOTE: is this happening here though? 
   void deviceStateChanged(State newState);
-  void relayStateChanged(int relay, State newState);
+  void channelStateChanged(int channel, State newState);
   void controlStateChanged(bool);
   
 };

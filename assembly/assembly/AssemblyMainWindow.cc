@@ -285,9 +285,9 @@ AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QStr
     /// *****LEAVE BLOCK (5 lines of code) UNCOMMENTED IF USING VELLEMAN RELAY CARD***** ///
     /**/
     connect(hwctr_view_->Vacuum_Widget(), SIGNAL(toggleVacuum(int))              , vellemanManager_, SLOT(toggleVacuum(int)));
-    connect(hwctr_view_->Vacuum_Widget(), SIGNAL(vacuumChannelState_request(int)), vellemanManager_, SLOT(transmit_vacuumRelayState(int)));
+    connect(hwctr_view_->Vacuum_Widget(), SIGNAL(vacuumChannelState_request(int)), vellemanManager_, SLOT(transmit_vacuumChannelState(int)));
 
-    connect(vellemanManager_, SIGNAL(vacuumRelayState(int, bool)), hwctr_view_->Vacuum_Widget(), SLOT(updateVacuumChannelState(int, bool)));
+    connect(vellemanManager_, SIGNAL(vacuumChannelState(int, bool)), hwctr_view_->Vacuum_Widget(), SLOT(updateVacuumChannelState(int, bool)));
 
     connect(vellemanManager_, SIGNAL( enableVacuumButton()), hwctr_view_->Vacuum_Widget(), SLOT( enableVacuumButton()));
     connect(vellemanManager_, SIGNAL(disableVacuumButton()), hwctr_view_->Vacuum_Widget(), SLOT(disableVacuumButton()));

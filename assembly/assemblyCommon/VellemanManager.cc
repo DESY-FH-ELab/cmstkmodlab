@@ -17,7 +17,7 @@
 
 VellemanManager::VellemanManager(VellemanModel* const vlmn)
   : vellemanModel_(vlmn)
-  , relayNumber_(0)
+  , channelNumber_(0)
 {
   vellemanModel();
 
@@ -43,40 +43,40 @@ VellemanModel* VellemanManager::vellemanModel() const
 }
 
 // Toggle vacuum (SLOT)
-void VellemanManager::toggleVacuum(const int relNumber)
+void VellemanManager::toggleVacuum(const int chNumber)
 {
-  if (vellemanModel()->getRelayState(relNumber) == 0)
+  if (vellemanModel()->getChannelState(chNumber) == 0)
     {
-      NQLog("VellemanManager", NQLog::Debug) << "toggleVacuum(" << relNumber+1 << ")" // NOTE -> relNumber should be relay-1 right now?
+      NQLog("VellemanManager", NQLog::Debug) << "toggleVacuum(" << chNumber << ")" // NOTE -> chNumber should be same as relay number right now
 					     << ": emitting signal \"disableVacuumButton\"";
 
       emit disableVacuumButton();
 
-      // NQLog("VellemanManager") << ": attempt to turn ON the vacuum on relay " << relNumber + 1;
-      vellemanModel()->setRelayEnabled(relNumber, true);
-      relayNumber_ = relNumber;
+      // NQLog("VellemanManager") << ": attempt to turn ON the vacuum on channel " << chNumber;
+      vellemanModel()->setChannelEnabled(chNumber, true);
+      channelNumber_ = chNumber;
 
       // Here is a QTimer for about 2 seconds
       liveTimer_->start(togglingVacuumDelay);
     }
-  else if(vellemanModel()->getRelayState(relNumber) == 1)
+  else if(vellemanModel()->getChannelState(chNumber) == 1)
     {
-      NQLog("VellemanManager", NQLog::Debug) << "toggleVacuum(" << relNumber + 1 << ")" // NOTE -> relNumber should be relay-1 right now?
-					     << ": emitting signal \"disalbeVacuumButton\"";
+      NQLog("VellemanManager", NQLog::Debug) << "toggleVacuum(" << chNumber  << ")" // NOTE -> chNumber should be same as relay number right now
+					     << ": emitting signal \"disableVacuumButton\"";
 
       emit disableVacuumButton();
 
-      //NQLog("VellemanManager") << ": attempt to turn OFF the vacuum on relay " << relNumber + 1;
-      vellemanModel()->setRelayEnabled(relNumber, false);
-      relayNumber_ = relNumber;
+      //NQLog("VellemanManager") << ": attempt to turn OFF the vacuum on channel " << chNumber;
+      vellemanModel()->setChannelEnabled(chNumber, false);
+      channelNumber_ = chNumber;
 
       // Here is a QTimer for about 2 seconds
       liveTimer_->start(togglingVacuumDelay);
     }
   else
     {
-      NQLog("VellemanManager", NQLog::Critical) << "toggleVacuum(" << relNumber + 1 << ")" // NOTE -> relNumber should be relay-1 right now?
-						<< ": ERROR! Toggling vacuum error : RelayState != 0|1";
+      NQLog("VellemanManager", NQLog::Critical) << "toggleVacuum(" << chNumber << ")" // NOTE -> chNumber should be same as relay number right now
+						<< ": ERROR! Toggling vacuum error : ChannelState != 0|1";
     }
   // looped status checking with qt timer --> NOTE: what does this mean??
 }
@@ -84,9 +84,9 @@ void VellemanManager::toggleVacuum(const int relNumber)
 void VellemanManager::vacuumToggled()
 {
   NQLog("VellemanManager", NQLog::Debug) << "vacuumToggled"
-					 << ": emitting signal \"vacuumRelayState(" << relayNumber_ + 1 << ", " << vellemanModel()->getRelayState(relayNumber_) << ")\"";
+					 << ": emitting signal \"vacuumChannelState(" << channelNumber_ << ", " << vellemanModel()->getChannelState(channelNumber_) << ")\"";
 
-  emit vacuumRelayState(relayNumber_, vellemanModel()->getRelayState(relayNumber_));
+  emit vacuumChannelState(channelNumber_, vellemanModel()->getChannelState(channelNumber_));
 
   NQLog("VellemanManager", NQLog::Debug) << "vacuumToggled"
 					 << ": emitting signal \"enableVacuumButton\"";
@@ -99,44 +99,44 @@ void VellemanManager::vacuumToggled()
   emit vacuum_toggled();
 }
 
-void VellemanManager::transmit_vacuumRelayState(const int relNumber)
+void VellemanManager::transmit_vacuumChannelState(const int chNumber)
 {
-  NQLog("VellemanManager", NQLog::Debug) << "transmit_vacuumRelayState(" << relNumber << ")"
-					 << ": emitting signal \"vacuumRelayState("
-					 << relNumber << ", " << vellemanModel()->getRelayState(relNumber) << ")\"";
+  NQLog("VellemanManager", NQLog::Debug) << "transmit_vacuumChannelState(" << chNumber << ")"
+					 << ": emitting signal \"vacuumChannelState("
+					 << chNumber << ", " << vellemanModel()->getChannelState(chNumber) << ")\"";
 
-  emit vacuumRelayState(relNumber, vellemanModel()->getRelayState(relNumber));
+  emit vacuumChannelState(chNumber, vellemanModel()->getChannelState(chNumber));
 }
 
 
 // maybe need checkStatus SLOT (NOTE FROM CONRAD MANAGER)
 
-void VellemanManager::enableVacuum(const int relNumber)
+void VellemanManager::enableVacuum(const int chNumber)
 {
-  const auto state = vellemanModel()->getRelayState(relNumber);
+  const auto state = vellemanModel()->getChannelState(chNumber);
 
   if(state==0) // vacuum line is OFF
     {
-      vellemanModel()->setRelayEnabled(relNumber, true);
-      relayNumber_ = relNumber;
+      vellemanModel()->setChannelEnabled(chNumber, true);
+      channelNumber_ = chNumber;
 
       liveTimer_->start(togglingVacuumDelay);
     }
   else if(state==1) // vacuum line is ON (READY)
     {
-      relayNumber_ = relNumber;
+      channelNumber_ = chNumber;
 
-      NQLog("VellemanManager", NQLog::Debug) << "enableVacuum(" << relNumber << ")"
+      NQLog("VellemanManager", NQLog::Debug) << "enableVacuum(" << chNumber << ")"
 					     << ": emitting signal \"vacuum_enabled\"";
 
       emit vacuum_enabled();
     }
   else
     {
-      NQLog("VellemanManager", NQLog::Critical) << "toggleVacuum(" << relNumber << ")"
-						<< ": ERROR! Toggling vacuum error : RelayState != 0|1";
+      NQLog("VellemanManager", NQLog::Critical) << "toggleVacuum(" << chNumber << ")"
+						<< ": ERROR! Toggling vacuum error : ChannelState != 0|1";
 
-      NQLog("VellemanManager", NQLog::Debug) << "enableVacuum(" << relNumber << ")"
+      NQLog("VellemanManager", NQLog::Debug) << "enableVacuum(" << chNumber << ")"
 					     << ": emitting signal \"vacuum_error\"";
 
       emit vacuum_error();
@@ -145,32 +145,32 @@ void VellemanManager::enableVacuum(const int relNumber)
   return;
 }
 
-void VellemanManager::disableVacuum(const int relNumber)
+void VellemanManager::disableVacuum(const int chNumber)
 {
-  const auto state = vellemanModel()->getRelayState(relNumber);
+  const auto state = vellemanModel()->getChannelState(chNumber);
 
   if(state==0) // vacuum line is OFF
     {
-      relayNumber_ = relNumber;
+      channelNumber_ = chNumber;
 
-      NQLog("VellemanManager", NQLog::Debug) << "disableVacuum(" << relNumber << ")"
+      NQLog("VellemanManager", NQLog::Debug) << "disableVacuum(" << chNumber << ")"
 					     << ": emitting signal \"vacuum_disabled\"";
 
       emit vacuum_disabled();
     }
   else if(state == 1) // vacuum line is ON (READY)
     {
-      vellemanModel()->setRelayEnabled(relNumber, false);
-      relayNumber_ = relNumber;
+      vellemanModel()->setChannelEnabled(chNumber, false);
+      channelNumber_ = chNumber;
 
       liveTimer_->start(togglingVacuumDelay);
     }
   else
     {
-      NQLog("VellemanManager", NQLog::Critical) << "toggleVacuum(" << relNumber << ")"
-						<< ": ERROR! Toggling vacuum error : RelayState (" << state << ") != 0|1";
+      NQLog("VellemanManager", NQLog::Critical) << "toggleVacuum(" << chNumber << ")"
+						<< ": ERROR! Toggling vacuum error : ChannelState (" << state << ") != 0|1";
 
-      NQLog("VellemanManager", NQLog::Debug) << "disableVacuum(" << relNumber << ")"
+      NQLog("VellemanManager", NQLog::Debug) << "disableVacuum(" << chNumber << ")"
 					     << ": emitting signal \"vacuum_error\"";
 
       emit vacuum_error();
