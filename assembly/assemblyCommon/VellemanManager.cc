@@ -31,8 +31,13 @@ VellemanManager::VellemanManager(VellemanModel* const vlmn)
 
 VellemanModel* VellemanManager::vellemanModel() const
 {
-  // NOTE: change assert statement???
-  assert(vellemanModel_);
+  // NOTE: changed from assert statement to guard against issues caused by program quitting from
+  //       failed assert (even if possibility is unlikely)
+  if(!vellemanModel_)
+    {
+      NQLog("VellemanManager", NQLog::Critical) << "vellemanModel()"
+						<< ": ERROR! Pointer to VellemanModel instance is NULL";
+    }
 
   return vellemanModel_;
 }
