@@ -4,7 +4,7 @@
 //                                                                             //
 //                   Written by Elise Hinkle (Brown CMS Group)                 //
 //            Modeled on cmstkmodlab/devices/Conrad/ConradController.cpp       //
-//                          Last Updated August 20, 2019                       //
+//                          Last Updated August 30, 2019                       //
 //                                                                             //
 //                                                                             //
 //                                                                             //
@@ -46,7 +46,7 @@ bool VellemanController::initialize()
 
   // Initialize communication connection
   if (!m_communication->initialize()) {
-    fprintf(stderr, "[Velleman] ERROR: Cannot initialize communication with Velleman relay card, ERRNO: %i", errno);
+    fprintf(stderr, "[Velleman] ERROR: Cannot initialize communication with Velleman relay card, ERRNO: %i\n", errno);
     return false;
   }
  
@@ -144,7 +144,7 @@ std::vector<bool> VellemanController::queryRelayStatus() const
 
 //! Function to read status check from card even if no relays change status after a command is sent
 ///*** NOTE: No WARNINGS sent as long as at least one relay changes state. ***///
-bool VellemanController::readStatus(unsigned char cmd, unsigned char mask, unsigned char param1, unsigned char param2, std::string relays) const
+bool VellemanController::readStatus(unsigned char& cmd, unsigned char& mask, unsigned char& param1, unsigned char& param2, std::string relays) const
 {
   if (!m_communication->receiveAnswer(&cmd, &mask, &param1, &param2)) {
     if (!m_communication->sendCommand(CMD_QUERY_RELAY_STATUS, 0x00, 0x00, 0x00)) {
@@ -187,7 +187,7 @@ bool VellemanController::setRelay(unsigned relay, unsigned char relayCMD) const
   if (!readStatus(cmd, mask, param1, param2, ("|" + std::to_string(relay)) + "|")) return false;
   
   if (!isBitSet(mask, relay) ^ !isBitSet(param1, relay)) {
-    fprintf(stderr, "[Velleman] ERROR (port: %s): Changing status of relay |%u| failed, ERRNO %i/n", comPort().c_str(), relay, errno);
+    fprintf(stderr, "[Velleman] ERROR (port: %s): Changing status of relay |%u| failed, ERRNO %i\n", comPort().c_str(), relay, errno);
     return false;
   }
 
@@ -273,7 +273,7 @@ bool VellemanController::setMultiRelays(std::vector<unsigned> relays, unsigned c
   // // Receive output of second command
   // unsigned char c, m, p1, p2;
   // std::string offRelays = ("other than relays " + relayString); 
-  // if (!readStatus(&c, &m, &p1, &p2, offRelays)) return false;
+  // if (!readStatus(c, m, p1, p2, offRelays)) return false;
   
   // Check that relays in input have been set to the expect value (on/off)
   for (; it != end; ++it)

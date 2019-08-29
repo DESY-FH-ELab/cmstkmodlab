@@ -4,7 +4,7 @@
 //                                                                             //
 //                   Written by Elise Hinkle (Brown CMS Group)                 //
 //                 Modeled on cmstkmodlab/common/ConradModel.cc                //
-//                         Last Updated August 27, 2019                        //
+//                         Last Updated August 28, 2019                        //
 //                                                                             //
 //                                                                             //
 //                                                                             //
@@ -155,7 +155,7 @@ void VellemanModel::initialize( void )
 		{
 		  // Size of status would be 0 if query failed (see VellemanController::queryRelayStatus).
 		  // This status size indicates a device malfunction, so set state accordingly.
-		  setAllChannelsOff();
+ 		  setAllChannelsOff();
 
 		  NQLog("VellemanModel", NQLog::Fatal) << "initialize"
 		    << ": ** ERROR: received malformed status vector from device (port: " << controller_->comPort() << ")";
@@ -163,13 +163,19 @@ void VellemanModel::initialize( void )
 	    }
 	  else
 	    {
-	      // If controller not successfully initialized (i.e. DEVICE NOTE FOUND)
+	      // If controller not successfully initialized (i.e. DEVICE NOT FOUND)
 	      setAllChannelsOff();
 
-	      // TODO Log why this initialization failed
-	      NQLog("VellemanModel::intialize()", NQLog::Fatal) << "Cannot connect to Velleman. Make sure that";
-	      NQLog("VellemanModel::intialize()", NQLog::Fatal) << port_ << " is present and readable and no other process";
-	      NQLog("VellemanModel::intialize()", NQLog::Fatal) << "is connecting to the device.";
+	      // Log why this initialization failed
+	      NQLog("VellemanModel::initialize()", NQLog::Fatal) << "Cannot connect to Velleman. List of potential ports";
+	      NQLog("VellemanModel::initialize()", NQLog::Fatal) << "came up empty (i.e. device was not found).";
+	      NQLog("VellemanModel::initialize()", NQLog::Fatal) << "Make sure that port path is correctly";
+	      NQLog("VellemanModel::initialize()", NQLog::Fatal) << "entered under the VellemanDevices keyword in";
+	      NQLog("VellemanModel::initialize()", NQLog::Fatal) << "/assembly/assembly.cfg and that there are no other";
+	      NQLog("VellemanModel::initialize()", NQLog::Fatal) << "blocks to making port list in /common/VellemanModel.";
+	      NQLog("VellemanModel::initialize()", NQLog::Fatal) << "Also ensure that " << port_ << " is present and";
+	      NQLog("VellemanModel::initialize()", NQLog::Fatal) << "readable and no other process is connecting";
+	      NQLog("VellemanModel::initialize()", NQLog::Fatal) << "to the device.";
 	    }
 	}
       else
@@ -198,22 +204,34 @@ void VellemanModel::setAllChannelsOff()
 */
 void VellemanModel::close()
 {
+
+  if (getDeviceState() == READY)
+    {
+      // Notify that no enable commands should be sent.
+      setDeviceState( CLOSING );
+
+      // Disable all connected devices
+      for (int i = 0; i < 8; ++i)
+	setChannelEnabledRaw(i+1, false);
+
+      // Disable relay card
+      destroyController();
+
+      setDeviceState( OFF );
+    }
+  else if ((getDeviceState() == CLOSING) || (getDeviceState() == OFF))
+    {
+      NQLog("VellemanModel::close()", NQLog::Message) << "Device is already closed or is process of";
+      NQLog("VellemanModel::close()", NQLog::Message) << "shutting down. No further action required.";
+    }
   // TODO Controlled shutdown for busy (initializing) device.
+  else if (getDeviceState() == INITIALIZING)
+    {
+      NQLog("VellemanModel::close()", NQLog::Message) << "Device was in the process of turning on,";
+      NQLog("VellemanModel::close()", NQLog::Message) << "but is now shutting down.";
 
-  if (getDeviceState() == READY) {
-
-    // Notify that no enable commands should be sent.
-    setDeviceState( CLOSING );
-
-    // Disable all connected devices
-    for (int i = 0; i < 8; ++i)
-      setChannelEnabledRaw(i+1, false);
-
-    // Disable relay card
-    destroyController();
-
-    setDeviceState( OFF );
-  }
+      // NOTE: How can this be a controlled shut down?
+    }
 }
 
 
@@ -251,7 +269,7 @@ void VellemanModel::setChannelEnabled(int channel, bool enabled)
 */
 const State& VellemanModel::getChannelState(int channel) const
 {
-  return channelStates_.at(channel-1); // NOTE: relays here are NO LONGER offset by 1 (0-7)
+  return channelStates_.at(channel-1); // NOTE: channels here are NO LONGER offset by 1 (0-7)
 }
 
 /*
@@ -260,8 +278,8 @@ const State& VellemanModel::getChannelState(int channel) const
 */
 void VellemanModel::setChannelState(int channel, State state)
 {
-  if (channelStates_.at(channel-1) != state) { // NOTE: relays here are NO LONGER offset by 1 (0-7)
-    channelStates_[channel-1] = state; // NOTE: relays here are NO LONGER offset by 1 (0-7)
+  if (channelStates_.at(channel-1) != state) { // NOTE: channels here are NO LONGER offset by 1 (0-7)
+    channelStates_[channel-1] = state; // NOTE: channels here are NO LONGER offset by 1 (0-7)
     emit channelStateChanged(channel, state);
   }
 }
@@ -287,14 +305,14 @@ void VellemanModel::setChannelEnabledRaw(int channel, bool enabled)
 
     setChannelState(channel, INITIALIZING);
 
-    // NO LONGER NEED TO Add 1 to relay because of shift required by setRelay
+    // NO LONGER NEED TO Add 1 to channel because of shift required by setRelay
     bool success = controller_->setRelay(channel, enabled ? CMD_SWITCH_RELAY_ON : CMD_SWITCH_RELAY_OFF);
     setChannelState(channel, success ? READY : OFF);
   }
   else if (!enabled && getChannelState(channel) == READY) {
 
     setChannelState(channel, CLOSING);
-    // NO LONGER NEED TO Add 1 to relay because of shift required by setRelay
+    // NO LONGER NEED TO Add 1 to channel because of shift required by setRelay
     bool success = controller_->setRelay(channel, enabled ? CMD_SWITCH_RELAY_ON : CMD_SWITCH_RELAY_OFF);
     setChannelState(channel, success ? OFF : READY);
   }

@@ -4,7 +4,7 @@
 //                                                                             //
 //                   Written by Elise Hinkle (Brown CMS Group)                 //
 //        Modeled on cmstkmodlab/assembly/assemblyCommon/ConradManager.h       //
-//                         Last Updated August 27, 2019                        //
+//                        Last Updated September 5, 2019                       //
 //                                                                             //
 //                                                                             //
 //                                                                             //
@@ -68,17 +68,3 @@ class VellemanManager : public QObject
 
 #endif // VELLEMANMANAGER_H
 
-/*
-
-QUESTIONS (from ConradManager):
-1) conradModel() is not initialized in MainWindow but is sent to AssemblyModuleAssembler
-2) qt timer in ConradManager SLOT
-3) qt timer constructor
-4) ConradManager thread safe version, relayNumber, state
-5) debugSlot
-6) add checking to all USB ports for every device
-7) add try-catch in setNewThreshold slot.
-
-Link to uEye datasheet
-https://www.ids-imaging.us/manuals/uEye_SDK/EN/uEye_Manual_4.92.2/index.html
-*/

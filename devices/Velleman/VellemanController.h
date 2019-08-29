@@ -4,7 +4,7 @@
 //                                                                             //
 //                   Written by Elise Hinkle (Brown CMS Group)                 //
 //            Modeled on cmstkmodlab/devices/Conrad/ConradController.h         //
-//                          Last Updated August 19, 2019                       //
+//                          Last Updated August 30, 2019                       //
 //                                                                             //
 //                                                                             //
 //                                                                             //
@@ -37,7 +37,7 @@ public:
   
 private:
 
-  bool readStatus(unsigned char cmd, unsigned char mask, unsigned char param1, unsigned char param2, std::string relays) const;
+  bool readStatus(unsigned char& cmd, unsigned char& mask, unsigned char& param1, unsigned char& param2, std::string relays) const;
   bool queryRawStatus(unsigned char& status) const;
 
   VellemanCommunication* m_communication;
