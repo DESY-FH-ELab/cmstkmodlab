@@ -10,6 +10,13 @@
 //                                                                             //
 /////////////////////////////////////////////////////////////////////////////////
 
+/////////////////////////////////////////////////////////////////////////////////
+//                                                                             //
+//            Fourth Vacuum Line Capability Added by Elise Hinkle              //
+//                       Last Modified October 7, 2019                         //
+//                                                                             //
+/////////////////////////////////////////////////////////////////////////////////
+
 #include <nqlogger.h>
 #include <ApplicationConfig.h>
 
@@ -32,6 +39,7 @@ AssemblyAssembly::AssemblyAssembly(const LStepExpressMotionManager* const motion
  , vacuum_pickup_(0)
  , vacuum_spacer_(0)
  , vacuum_basepl_(0)
+ , vacuum_stage_(0)
 
  , pickup1_Z_(0.)
  , pickup2_Z_(0.)
@@ -61,6 +69,7 @@ AssemblyAssembly::AssemblyAssembly(const LStepExpressMotionManager* const motion
   vacuum_pickup_ = config->getValue<int>("Vacuum_PickupTool");
   vacuum_spacer_ = config->getValue<int>("Vacuum_Spacers");
   vacuum_basepl_ = config->getValue<int>("Vacuum_Baseplate");
+  vacuum_stage_ = config->getValue<int>("Vacuum_Stage");
 
   // absolute Z-position of motion stage for pickup of object after gluing
   // (1: PSs to Spacers, 2: PSs+Spacers to PSp)
@@ -421,6 +430,77 @@ void AssemblyAssembly::DisableVacuumBaseplate_finish()
      << ": assembly-step completed";
 }
 // ----------------------------------------------------------------------------------------------------
+
+// ----------------------------------------------------------------------------------------------------
+// EnableVacuumStage ------------------------------------------------------------------------------
+// ----------------------------------------------------------------------------------------------------
+void AssemblyAssembly::EnableVacuumStage_start()
+{
+  connect(this, SIGNAL(vacuum_ON_request(int)), this->vacuum(), SLOT(enableVacuum(int)));
+
+  connect(this->vacuum(), SIGNAL(vacuum_enabled()), this, SLOT(EnableVacuumStage_finish()));
+  connect(this->vacuum(), SIGNAL(vacuum_toggled()), this, SLOT(EnableVacuumStage_finish()));
+  connect(this->vacuum(), SIGNAL(vacuum_error  ()), this, SLOT(EnableVacuumStage_finish()));
+
+  NQLog("AssemblyAssembly", NQLog::Spam) << "EnableVacuumStage_start"
+     << ": emitting signal \"vacuum_ON_request(" << vacuum_stage_ << ")\"";
+
+  emit vacuum_ON_request(vacuum_stage_);
+}
+
+void AssemblyAssembly::EnableVacuumStage_finish()
+{
+  disconnect(this, SIGNAL(vacuum_ON_request(int)), this->vacuum(), SLOT(enableVacuum(int)));
+
+  disconnect(this->vacuum(), SIGNAL(vacuum_enabled()), this, SLOT(EnableVacuumStage_finish()));
+  disconnect(this->vacuum(), SIGNAL(vacuum_toggled()), this, SLOT(EnableVacuumStage_finish()));
+  disconnect(this->vacuum(), SIGNAL(vacuum_error  ()), this, SLOT(EnableVacuumStage_finish()));
+
+  NQLog("AssemblyAssembly", NQLog::Spam) << "EnableVacuumStage_finish"
+     << ": emitting signal \"EnableVacuumStage_finished\"";
+
+  emit EnableVacuumStage_finished();
+
+  NQLog("AssemblyAssembly", NQLog::Message) << "EnableVacuumStage_finish"
+     << ": assembly-step completed";
+}
+// ----------------------------------------------------------------------------------------------------
+
+// ----------------------------------------------------------------------------------------------------
+// DisableVacuumStage -----------------------------------------------------------------------------
+// ----------------------------------------------------------------------------------------------------
+void AssemblyAssembly::DisableVacuumStage_start()
+{
+  connect(this, SIGNAL(vacuum_OFF_request(int)), this->vacuum(), SLOT(disableVacuum(int)));
+
+  connect(this->vacuum(), SIGNAL(vacuum_disabled()), this, SLOT(DisableVacuumStage_finish()));
+  connect(this->vacuum(), SIGNAL(vacuum_toggled ()), this, SLOT(DisableVacuumStage_finish()));
+  connect(this->vacuum(), SIGNAL(vacuum_error   ()), this, SLOT(DisableVacuumStage_finish()));
+
+  NQLog("AssemblyAssembly", NQLog::Spam) << "DisableVacuumStage_start"
+     << ": emitting signal \"vacuum_OFF_request(" << vacuum_stage_ << ")\"";
+
+  emit vacuum_OFF_request(vacuum_stage_);
+}
+
+void AssemblyAssembly::DisableVacuumStage_finish()
+{
+  disconnect(this, SIGNAL(vacuum_OFF_request(int)), this->vacuum(), SLOT(disableVacuum(int)));
+
+  disconnect(this->vacuum(), SIGNAL(vacuum_disabled()), this, SLOT(DisableVacuumStage_finish()));
+  disconnect(this->vacuum(), SIGNAL(vacuum_toggled ()), this, SLOT(DisableVacuumStage_finish()));
+  disconnect(this->vacuum(), SIGNAL(vacuum_error   ()), this, SLOT(DisableVacuumStage_finish()));
+
+  NQLog("AssemblyAssembly", NQLog::Spam) << "DisableVacuumStage_finish"
+     << ": emitting signal \"DisableVacuumStage_finished\"";
+
+  emit DisableVacuumStage_finished();
+
+  NQLog("AssemblyAssembly", NQLog::Message) << "DisableVacuumStage_finish"
+     << ": assembly-step completed";
+}
+// ----------------------------------------------------------------------------------------------------
+
 
 // ----------------------------------------------------------------------------------------------------
 // GoFromSensorMarkerToPickupXY -----------------------------------------------------------------------

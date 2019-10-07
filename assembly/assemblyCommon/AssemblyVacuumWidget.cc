@@ -10,6 +10,14 @@
 //                                                                             //
 /////////////////////////////////////////////////////////////////////////////////
 
+/////////////////////////////////////////////////////////////////////////////////
+//                                                                             //
+//            Fourth Vacuum Line Capability Added by Elise Hinkle              //
+//                       Last Modified October 7, 2019                         //
+//                                                                             //
+/////////////////////////////////////////////////////////////////////////////////
+
+
 #include <nqlogger.h>
 #include <ApplicationConfig.h>
 
@@ -76,6 +84,20 @@ AssemblyVacuumWidget::AssemblyVacuumWidget(const QString& label, QWidget* parent
   grid->addWidget(this->get(vacuum_basepl).label_      , 5, 1);
   /// ------------------------------
 
+  /// SECONDARY STAGE
+  const int vacuum_stage = config->getValue<int>("Vacuum_Stage");
+
+  valuemap_[vacuum_stage] = Entry();
+
+  this->get(vacuum_stage).radioButton_ = new QRadioButton(tr("Stage"));
+  this->get(vacuum_stage).label_ = new QLabel(tr(" UNKNOWN"));
+  this->get(vacuum_stage).label_->setStyleSheet("QLabel { background-color : gray; color : black; }");
+
+  grid->addWidget(this->get(vacuum_stage).radioButton_, 7, 0);
+  grid->addWidget(this->get(vacuum_stage).label_      , 7, 1);
+  /// ------------------------------
+
+  
   layout_->addLayout(grid);
 
   connect(button_, SIGNAL(clicked()), this, SLOT(toggleVacuum()));
@@ -151,12 +173,12 @@ void AssemblyVacuumWidget::updateVacuumChannelState(const int channelNumber, con
   if(channelState)
   {
     this->get(channelNumber).label_->setText(" VACUUM ON");
-    this->get(channelNumber).label_->setStyleSheet("QLabel { background-color : red; color : black; }");
+    this->get(channelNumber).label_->setStyleSheet("QLabel { background-color : green; color : black; }");
   }
   else
   {
     this->get(channelNumber).label_->setText(" VACUUM OFF");
-    this->get(channelNumber).label_->setStyleSheet("QLabel { background-color : green; color : black; }");
+    this->get(channelNumber).label_->setStyleSheet("QLabel { background-color : red; color : black; }");
   }
 
   return;

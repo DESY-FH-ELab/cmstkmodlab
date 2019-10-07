@@ -10,6 +10,13 @@
 //                                                                             //
 /////////////////////////////////////////////////////////////////////////////////
 
+/////////////////////////////////////////////////////////////////////////////////
+//                                                                             //
+//            Fourth Vacuum Line Capability Added by Elise Hinkle              //
+//                       Last Modified October 7, 2019                         //
+//                                                                             //
+/////////////////////////////////////////////////////////////////////////////////
+
 #ifndef ASSEMBLYASSEMBLY_H
 #define ASSEMBLYASSEMBLY_H
 
@@ -53,6 +60,7 @@ class AssemblyAssembly : public QObject
   int vacuum_pickup_;
   int vacuum_spacer_;
   int vacuum_basepl_;
+  int vacuum_stage_;
 
   double pickup1_Z_;
   double pickup2_Z_;
@@ -140,6 +148,12 @@ class AssemblyAssembly : public QObject
 
   void DisableVacuumBaseplate_start();
   void DisableVacuumBaseplate_finish();
+
+  void  EnableVacuumStage_start();
+  void  EnableVacuumStage_finish();
+
+  void DisableVacuumStage_start();
+  void DisableVacuumStage_finish();
   // ---------
 
  signals:
@@ -198,6 +212,9 @@ class AssemblyAssembly : public QObject
 
   void  EnableVacuumBaseplate_finished();
   void DisableVacuumBaseplate_finished();
+
+  void  EnableVacuumStage_finished();
+  void DisableVacuumStage_finished();
   // ------
 };
 
