@@ -8,27 +8,28 @@
 /////////////////////////////////////////////////////////////////////////////////
 
 // MEASUREMENTS
-const double ANGDEG_PATREC = -2.2;
+const double ANGDEG_PATREC = -0.275; // P1 -> -0.2, P2 -> -0.35
 
-const int PR1_PIXEL_X = 929;
-const int PR1_PIXEL_Y = 780;
+const int PR1_PIXEL_X = 298.1; 
+const int PR1_PIXEL_Y = 413.1; 
 
-const double PR1_MOTION_STAGE_POS_X = -46.5506;
-const double PR1_MOTION_STAGE_POS_Y = -100.940;
+const double PR1_MOTION_STAGE_POS_X = 41.094;
+const double PR1_MOTION_STAGE_POS_Y = -90.591;
 
-const int PR2_PIXEL_X = 1711;
-const int PR2_PIXEL_Y = 1253;
+const int PR2_PIXEL_X = 222.3;
+const int PR2_PIXEL_Y = 234.6;
 
-const double PR2_MOTION_STAGE_POS_X = 46.7431;
-const double PR2_MOTION_STAGE_POS_Y = -151.628;
+const double PR2_MOTION_STAGE_POS_X = 89.094;
+const double PR2_MOTION_STAGE_POS_Y = -90.591;
 
 // SENSOR, IMAGE SPECIFICATIONS
-const double ANGDEG_REFERC = -27.313500; // PS-s
+const double ANGDEG_REFERC = 0.000; // two fiducials used aligned along x-axis
+//const double ANGDEG_REFERC = -27.313500; // PS-s
 //const double ANGDEG_REFERC = -26.706931; // PS-p
 
 const double MM_PER_PIXEL = 0.0012;
 
-const int IMAGE_PIXEL_WIDTH  = 2560;
+const int IMAGE_PIXEL_WIDTH  = 2560; 
 const int IMAGE_PIXEL_HEIGHT = 1920;
 
 // ANALYSIS PARAMETERS
