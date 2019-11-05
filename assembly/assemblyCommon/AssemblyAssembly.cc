@@ -629,6 +629,7 @@ void AssemblyAssembly::PickupPSS_start()
   const double dz0 = (pickup1_Z_ - motion_->get_position_Z());
   const double da0 = 0.0;
 
+
   if(dz0 <= 0.)
   {
     NQLog("AssemblyAssembly", NQLog::Critical) << "PickupPSS_start"
@@ -1067,7 +1068,8 @@ void AssemblyAssembly::ReturnToPSPToPSSPosition_start()
     const double dz0 = PSPToPSSPosition_Z_ - motion_->get_position_Z();
     const double da0 = 0.;
 
-    if(dz0 <= 0.)
+
+    if(dz0 <= 0.) 
     {
       NQLog("AssemblyAssembly", NQLog::Critical) << "ReturnToPSPToPSSPosition_start"
          << ": invalid (non-positive) value for vertical upward movement (dz=" << dz0 << "), no action taken";
@@ -1206,6 +1208,7 @@ void AssemblyAssembly::PickupSpacersAndPSS_start()
   const double dz0 = (pickup1_Z_ - motion_->get_position_Z());
   const double da0 = 0.0;
 
+
   if(dz0 <= 0.)
   {
     NQLog("AssemblyAssembly", NQLog::Critical) << "PickupSpacersAndPSS_start"
@@ -1253,11 +1256,13 @@ void AssemblyAssembly::LiftUpPickupTool_start()
   const double dz0 = (pickup2_Z_ - motion_->get_position_Z());
   const double da0 = 0.0;
 
+
   if(dz0 <= 0.)
   {
     NQLog("AssemblyAssembly", NQLog::Critical) << "LiftUpPickupTool_start"
-       << ": invalid (non-positive) value for vertical upward movement for pickup #2 (dz=" << dz0 << "), no action taken";
+       << ": invalid (non-positive) value for vertical upward movement for pickup #1 (dz=" << dz0 << "), no action taken";
 
+    
     NQLog("AssemblyAssembly", NQLog::Spam) << "LiftUpPickupTool_finish"
        << ": emitting signal \"LiftUpPickupTool_finished\"";
 
@@ -1300,10 +1305,12 @@ void AssemblyAssembly::PickupPSPAndPSS_start()
   const double dz0 = (pickup1_Z_ - motion_->get_position_Z());
   const double da0 = 0.0;
 
+
   if(dz0 <= 0.)
   {
     NQLog("AssemblyAssembly", NQLog::Critical) << "PickupPSPAndPSS_start"
        << ": invalid (non-positive) value for vertical upward movement for pickup #1 (dz=" << dz0 << "), no action taken";
+
 
     NQLog("AssemblyAssembly", NQLog::Spam) << "PickupPSPAndPSS_finish"
        << ": emitting signal \"PickupPSPAndPSS_finished\"";

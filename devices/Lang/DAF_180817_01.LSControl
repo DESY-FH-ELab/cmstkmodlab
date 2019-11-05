@@ -133,7 +133,7 @@
 !pitch z 5
 !gearnumerator z 1
 !geardenominator z 1
-!axisdir z 1
+!axisdir z 1 
 !dim a 3
 !motorbrake a 1
 !motorbrakeswitchondelay a 0

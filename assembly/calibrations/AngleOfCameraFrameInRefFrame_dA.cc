@@ -8,19 +8,19 @@
 /////////////////////////////////////////////////////////////////////////////////
 
 // MEASUREMENTS
-const double ANGDEG_PATREC = -0.275; // P1 -> -0.2, P2 -> -0.35
+const double ANGDEG_PATREC = -0.125; // P1 -> -0.2, P2 -> -0.05
 
-const int PR1_PIXEL_X = 298.1; 
-const int PR1_PIXEL_Y = 413.1; 
+const int PR1_PIXEL_X = 530.8;
+const int PR1_PIXEL_Y = 180.6;
 
-const double PR1_MOTION_STAGE_POS_X = 41.094;
-const double PR1_MOTION_STAGE_POS_Y = -90.591;
+const double PR1_MOTION_STAGE_POS_X = 16.654;
+const double PR1_MOTION_STAGE_POS_Y = -113.000;
 
-const int PR2_PIXEL_X = 222.3;
-const int PR2_PIXEL_Y = 234.6;
+const int PR2_PIXEL_X = 71.3;
+const int PR2_PIXEL_Y = 103.5;
 
-const double PR2_MOTION_STAGE_POS_X = 89.094;
-const double PR2_MOTION_STAGE_POS_Y = -90.591;
+const double PR2_MOTION_STAGE_POS_X = 112.154; 
+const double PR2_MOTION_STAGE_POS_Y = -113.000;
 
 // SENSOR, IMAGE SPECIFICATIONS
 const double ANGDEG_REFERC = 0.000; // two fiducials used aligned along x-axis
