@@ -22,9 +22,9 @@ class VRohdeSchwarzNGE103B {
  public:
 
   enum OutputMode {
-    nge103B_OFF = 0x00,
-    nge103B_CV =  0x01,
-    nge103B_CC =  0x02
+    RohdeSchwarzNGE103B_OFF = 0x00,
+    RohdeSchwarzNGE103B_CV =  0x01,
+    RohdeSchwarzNGE103B_CC =  0x02
   };
 
   VRohdeSchwarzNGE103B( const ioport_t );

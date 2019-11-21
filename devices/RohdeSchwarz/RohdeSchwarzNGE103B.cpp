@@ -201,16 +201,16 @@ unsigned int RohdeSchwarzNGE103B::GetOutputMode() const
 
     while (!OperationCompleted()) { usleep(10); } 
 
-std::string buf = buffer;
-   
-if (buf.find("OFF", 0)==0) return nge103B_OFF;
-if (buf.find("CV", 0)==0) return nge103B_CV;
-if (buf.find("CC", 0)==0) return nge103B_CC;
+    std::string buf = buffer;
 
-   return nge103B_OFF;
+    if (buf.find("OFF", 0)==0) return RohdeSchwarzNGE103B_OFF;
+    if (buf.find("CV", 0)==0) return RohdeSchwarzNGE103B_CV;
+    if (buf.find("CC", 0)==0) return RohdeSchwarzNGE103B_CC;
+
+    return RohdeSchwarzNGE103B_OFF;
   }
 
-  return nge103B_OFF;
+  return RohdeSchwarzNGE103B_OFF;
 }
 
 void RohdeSchwarzNGE103B::StripBuffer(char* buffer) const
