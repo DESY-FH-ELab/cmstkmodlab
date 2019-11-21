@@ -7,20 +7,21 @@ NOASSEMBLY    = @noassembly@
 USEFAKEDEVICES= @usefakedevices@
 
 subdirs	      = Julabo \
-		        Huber \
-		        Keithley \
+                Huber \
+                Keithley \
                 Greisinger \
-		        Hameg \
+                Hameg \
                 Canon \
-		        Conrad \
-		        Pfeiffer \
+                Conrad \
+                Pfeiffer \
                 Iota \
                 Cori \
                 Arduino \
-		        Lang \
-		        Keyence \
-		        Nanotec \
-		        Leybold
+                Lang \
+                Keyence \
+                Nanotec \
+                Leybold \
+                RohdeSchwarz
 
 all:
 	@for dir in $(subdirs); do (cd $$dir; make); done
