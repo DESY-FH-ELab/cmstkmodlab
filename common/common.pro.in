@@ -16,6 +16,7 @@ LIBS += -L@basepath@/devices/lib -lTkModLabCori
 LIBS += -L@basepath@/devices/lib -lTkModLabNanotec
 LIBS += -L@basepath@/devices/lib -lTkModLabConrad
 LIBS += -L@basepath@/devices/lib -lTkModLabLeybold
+LIBS += -L@basepath@/devices/lib -lTkModLabRohdeSchwarz
 LIBS += -L@basepath@/external/ddierckx -lddierckx
 LIBS += -lcurl
 
@@ -107,7 +108,9 @@ HEADERS += nqlogger.h \
            NanotecSMCI36Model.h \
            NanotecSMCI36Widget.h \
            ConradModel.h \
-           LeyboldGraphixThreeModel.h
+           LeyboldGraphixThreeModel.h \
+           RohdeSchwarzNGE103BModel.h \
+           RohdeSchwarzNGE103BWidget.h
 
 SOURCES += nqlogger.cc \
            npoint2D.cc \
@@ -153,4 +156,6 @@ SOURCES += nqlogger.cc \
            NanotecSMCI36Model.cc \
            NanotecSMCI36Widget.cc \
            ConradModel.cc \
-           LeyboldGraphixThreeModel.cc
+           LeyboldGraphixThreeModel.cc \
+           RohdeSchwarzNGE103BModel.cc \
+           RohdeSchwarzNGE103BWidget.cc
