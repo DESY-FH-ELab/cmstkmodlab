@@ -37,10 +37,28 @@ class RohdeSchwarzNGE103B : public VRohdeSchwarzNGE103B
 
   void GetIdentification(std::string& id) const;
 
+  void SelectChannel(unsigned int ch);
+  unsigned int SelectedChannel() const;
+
+  void SetVoltage(float v);
+  float GetVoltage() const;
+  float MeasureVoltage() const;
+
+  void SetCurrent(float i) ;
+  float GetCurrent() const;
+  float MeasureCurrent() const;
+
+  void SetOutputState(bool s);
+  bool GetOutputState() const;
+
+  unsigned int GetOutputMode() const;
+
  private:
 
   void StripBuffer( char* ) const;
   void DeviceInit();
+
+  bool OperationCompleted() const;
 
   NGE103BComHandler* comHandler_;
   bool isDeviceAvailable_;

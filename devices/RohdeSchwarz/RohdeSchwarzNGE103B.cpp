@@ -36,11 +36,181 @@ bool RohdeSchwarzNGE103B::DeviceAvailable() const
 
 void RohdeSchwarzNGE103B::GetIdentification(std::string& id) const
 {
+  if (DeviceAvailable()) {
   comHandler_->SendCommand("*IDN?");
   char buffer[1000];
   comHandler_->ReceiveString(buffer);
   StripBuffer(buffer);
   id = buffer;
+
+  while (!OperationCompleted()) { usleep(10); } 
+
+  } else {
+  id = "Unknown";
+  }
+}
+
+void RohdeSchwarzNGE103B::SelectChannel(unsigned int ch)
+{
+  if (DeviceAvailable()) {
+    char cmd[100];
+    sprintf(cmd, "INST:NSEL %d", ch);
+    comHandler_->SendCommand(cmd);
+
+    while (!OperationCompleted()) { usleep(10); } 
+  }
+}
+
+unsigned int RohdeSchwarzNGE103B::SelectedChannel() const
+{
+  if (DeviceAvailable()) {
+    comHandler_->SendCommand("INST:NSEL?");
+  char buffer[1000];
+  comHandler_->ReceiveString(buffer);
+  StripBuffer(buffer);
+
+     while (!OperationCompleted()) { usleep(10); } 
+
+   return std::atoi(buffer);
+  }
+  return 0;
+}
+
+void RohdeSchwarzNGE103B::SetVoltage(float v)
+{
+  if (DeviceAvailable()) {
+    char cmd[100];
+    sprintf(cmd, "VOLT %f", v);
+    comHandler_->SendCommand(cmd);
+
+    while (!OperationCompleted()) { usleep(10); } 
+  }
+}
+
+float RohdeSchwarzNGE103B::GetVoltage() const 
+{
+  if (DeviceAvailable()) {
+    comHandler_->SendCommand("VOLT?");
+  char buffer[1000];
+  comHandler_->ReceiveString(buffer);
+  StripBuffer(buffer);
+
+    while (!OperationCompleted()) { usleep(10); } 
+
+
+   return std::atof(buffer);
+  }
+
+  return -1;
+}
+
+float RohdeSchwarzNGE103B::MeasureVoltage() const
+{
+  if (DeviceAvailable()) {
+    comHandler_->SendCommand("MEAS:VOLT?");
+  char buffer[1000];
+  comHandler_->ReceiveString(buffer);
+  StripBuffer(buffer);
+
+    while (!OperationCompleted()) { usleep(10); } 
+
+   return std::atof(buffer);
+  }
+
+  return -1;
+}
+
+void RohdeSchwarzNGE103B::SetCurrent(float i)
+{
+  if (DeviceAvailable()) {
+    char cmd[100];
+    sprintf(cmd, "CURR %f", i);
+    comHandler_->SendCommand(cmd);
+
+    while (!OperationCompleted()) { usleep(10); } 
+  }
+}
+
+float RohdeSchwarzNGE103B::GetCurrent() const
+{
+  if (DeviceAvailable()) {
+    comHandler_->SendCommand("CURR?");
+  char buffer[1000];
+  comHandler_->ReceiveString(buffer);
+  StripBuffer(buffer);
+
+    while (!OperationCompleted()) { usleep(10); } 
+
+
+   return std::atof(buffer);
+  }
+
+  return -1;
+}
+
+float RohdeSchwarzNGE103B::MeasureCurrent() const
+{
+  if (DeviceAvailable()) {
+    comHandler_->SendCommand("MEAS:CURR?");
+  char buffer[1000];
+  comHandler_->ReceiveString(buffer);
+  StripBuffer(buffer);
+
+    while (!OperationCompleted()) { usleep(10); } 
+
+   return std::atof(buffer);
+  }
+
+  return -1;
+}
+
+void RohdeSchwarzNGE103B::SetOutputState(bool s)
+{
+  if (DeviceAvailable()) {
+    char cmd[100];
+    sprintf(cmd, "OUTP:STAT %i", s);
+    comHandler_->SendCommand(cmd);
+
+    while (!OperationCompleted()) { usleep(10); } 
+  }
+}
+
+bool RohdeSchwarzNGE103B::GetOutputState() const
+{
+  if (DeviceAvailable()) {
+    comHandler_->SendCommand("OUTP:STAT?");
+  char buffer[1000];
+  comHandler_->ReceiveString(buffer);
+  StripBuffer(buffer);
+
+    while (!OperationCompleted()) { usleep(10); } 
+
+   return std::atoi(buffer);
+  }
+
+  return false;
+}
+
+unsigned int RohdeSchwarzNGE103B::GetOutputMode() const
+{
+    if (DeviceAvailable()) {
+    comHandler_->SendCommand("OUTP:MODE?");
+  char buffer[1000];
+  comHandler_->ReceiveString(buffer);
+  StripBuffer(buffer);
+
+    while (!OperationCompleted()) { usleep(10); } 
+
+std::string buf = buffer;
+   
+if (buf.find("OFF", 0)==0) return nge103B_OFF;
+if (buf.find("CV", 0)==0) return nge103B_CV;
+if (buf.find("CC", 0)==0) return nge103B_CC;
+
+   return nge103B_OFF;
+  }
+
+  return nge103B_OFF;
 }
 
 void RohdeSchwarzNGE103B::StripBuffer(char* buffer) const
@@ -65,10 +235,25 @@ void RohdeSchwarzNGE103B::DeviceInit()
     StripBuffer(buffer);
     std::string buf = buffer;
     
-    if (buf.find("HAMEG Instruments,HM8143", 0)==0) {
+    if (buf.find("Rohde&Schwarz,NGE103B,5601.3800k03", 0)==0) {
       isDeviceAvailable_ = true;
     } else {
       isDeviceAvailable_ = false;
     }
   }
 }
+
+bool RohdeSchwarzNGE103B::OperationCompleted() const
+{
+if (DeviceAvailable()) {
+    comHandler_->SendCommand("*OPC?");
+  char buffer[1000];
+  comHandler_->ReceiveString(buffer);
+  StripBuffer(buffer);
+  // std::cout << "*OPCX?\t" << buffer << std::endl;
+   return std::atoi(buffer);
+  }
+  
+  return true;
+}
+
