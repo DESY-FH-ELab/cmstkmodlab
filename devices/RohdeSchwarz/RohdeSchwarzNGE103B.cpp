@@ -78,6 +78,8 @@ unsigned int RohdeSchwarzNGE103B::SelectedChannel() const
 
 void RohdeSchwarzNGE103B::SetVoltage(float v)
 {
+  if (v<0 || v>MaxVoltage) return;
+
   if (DeviceAvailable()) {
     char cmd[100];
     sprintf(cmd, "VOLT %f", v);
@@ -122,6 +124,8 @@ float RohdeSchwarzNGE103B::MeasureVoltage() const
 
 void RohdeSchwarzNGE103B::SetCurrent(float i)
 {
+  if (i<0 || i>MaxCurrent) return;
+
   if (DeviceAvailable()) {
     char cmd[100];
     sprintf(cmd, "CURR %f", i);
