@@ -48,6 +48,8 @@ class RohdeSchwarzNGE103B : public VRohdeSchwarzNGE103B
   float GetCurrent() const;
   float MeasureCurrent() const;
 
+  float MeasurePower() const;
+
   void SetOutputState(bool s);
   bool GetOutputState() const;
 

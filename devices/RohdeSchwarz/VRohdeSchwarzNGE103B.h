@@ -47,6 +47,8 @@ class VRohdeSchwarzNGE103B {
   virtual float GetCurrent() const = 0;
   virtual float MeasureCurrent() const = 0;
 
+  virtual float MeasurePower() const = 0;
+
   virtual void SetOutputState(bool s) = 0;
   virtual bool GetOutputState() const = 0;
 

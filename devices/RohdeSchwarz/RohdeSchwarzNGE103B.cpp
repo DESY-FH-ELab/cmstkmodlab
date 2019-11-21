@@ -159,6 +159,18 @@ float RohdeSchwarzNGE103B::MeasureCurrent() const
     while (!OperationCompleted()) { usleep(10); } 
 
    return std::atof(buffer);
+
+float RohdeSchwarzNGE103B::MeasurePower() const
+{
+  if (DeviceAvailable()) {
+    comHandler_->SendCommand("MEAS:POW?");
+    char buffer[1000];
+    comHandler_->ReceiveString(buffer);
+    StripBuffer(buffer);
+
+    while (!OperationCompleted()) { usleep(10); }
+
+    return std::atof(buffer);
   }
 
   return -1;
