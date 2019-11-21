@@ -21,6 +21,12 @@ class VRohdeSchwarzNGE103B {
 
  public:
 
+  enum OutputMode {
+    nge103B_OFF = 0x00,
+    nge103B_CV =  0x01,
+    nge103B_CC =  0x02
+  };
+
   VRohdeSchwarzNGE103B( const ioport_t );
   virtual ~VRohdeSchwarzNGE103B();
 
@@ -29,6 +35,22 @@ class VRohdeSchwarzNGE103B {
   virtual bool DeviceAvailable() const = 0;
 
   virtual void GetIdentification(std::string& id) const = 0;
+
+  virtual void SelectChannel(unsigned int ch) = 0;
+  virtual unsigned int SelectedChannel() const = 0;
+
+  virtual void SetVoltage(float v) = 0;
+  virtual float GetVoltage() const = 0;
+  virtual float MeasureVoltage() const = 0;
+
+  virtual void SetCurrent(float i) = 0;
+  virtual float GetCurrent() const = 0;
+  virtual float MeasureCurrent() const = 0;
+
+  virtual void SetOutputState(bool s) = 0;
+  virtual bool GetOutputState() const = 0;
+
+  virtual unsigned int GetOutputMode() const = 0;
 };
 
 #endif // __VROHDESCHWARZNGE103B_H

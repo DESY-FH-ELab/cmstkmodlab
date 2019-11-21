@@ -26,10 +26,31 @@ int main()
 
   std::string buffer;
 
-  RohdeSchwarzNGE103B_t NGE103B("/dev/ttyUSB0");
+  RohdeSchwarzNGE103B_t nge103B("/dev/ttyACM1");
 
-  NGE103B.GetIdentification(buffer);
+  std::cout << (int) nge103B.DeviceAvailable() << std::endl;
+
+  nge103B.GetIdentification(buffer);
+  std::cout << "OUTP:STAT?\t" << nge103B.GetOutputState() << std::endl;
   std::cout << buffer << std::endl;
+
+  nge103B.SelectChannel(1);
+  std::cout << "INST:NSEL?\t" << nge103B.SelectedChannel() << std::endl;
+
+  nge103B.SetVoltage(2.3);
+  std::cout << "VOLT?\t" << nge103B.GetVoltage() << std::endl;
+
+  std::cout << "INST:NSEL?\t" << nge103B.SelectedChannel() << std::endl;
+
+  nge103B.SetCurrent(0.1);
+  std::cout << "CURR?\t" << nge103B.GetCurrent() << std::endl;
+
+  std::cout << "MEAS:VOLT?\t" << nge103B.MeasureVoltage() << std::endl;
+  std::cout << "MEAS:CURR?\t" << nge103B.MeasureCurrent() << std::endl;
+
+  //nge103B.SetOutputState(1);
+  std::cout << "OUTP:STAT?\t" << nge103B.GetOutputState() << std::endl;
+  std::cout << "OUTP:MODE?\t" << nge103B.GetOutputMode() << std::endl;
 
   return 0;
 }
