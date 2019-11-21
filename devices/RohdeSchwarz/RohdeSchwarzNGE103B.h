@@ -26,12 +26,12 @@
 
 class RohdeSchwarzNGE103B : public VRohdeSchwarzNGE103B
 {
- public:
+public:
 
   RohdeSchwarzNGE103B( const ioport_t );
   ~RohdeSchwarzNGE103B();
 
- public:
+public:
 
   bool DeviceAvailable() const;
 

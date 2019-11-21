@@ -17,9 +17,9 @@
 
 typedef const char* ioport_t;
 
-class VRohdeSchwarzNGE103B {
-
- public:
+class VRohdeSchwarzNGE103B
+{
+public:
 
   enum OutputMode {
     RohdeSchwarzNGE103B_OFF = 0x00,
@@ -30,7 +30,7 @@ class VRohdeSchwarzNGE103B {
   VRohdeSchwarzNGE103B( const ioport_t );
   virtual ~VRohdeSchwarzNGE103B();
 
- public:
+public:
 
   virtual bool DeviceAvailable() const = 0;
 

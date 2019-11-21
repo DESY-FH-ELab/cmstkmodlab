@@ -37,16 +37,16 @@ bool RohdeSchwarzNGE103B::DeviceAvailable() const
 void RohdeSchwarzNGE103B::GetIdentification(std::string& id) const
 {
   if (DeviceAvailable()) {
-  comHandler_->SendCommand("*IDN?");
-  char buffer[1000];
-  comHandler_->ReceiveString(buffer);
-  StripBuffer(buffer);
-  id = buffer;
+    comHandler_->SendCommand("*IDN?");
+    char buffer[1000];
+    comHandler_->ReceiveString(buffer);
+    StripBuffer(buffer);
+    id = buffer;
 
-  while (!OperationCompleted()) { usleep(10); } 
+    while (!OperationCompleted()) { usleep(10); }
 
   } else {
-  id = "Unknown";
+    id = "Unknown";
   }
 }
 
@@ -65,13 +65,13 @@ unsigned int RohdeSchwarzNGE103B::SelectedChannel() const
 {
   if (DeviceAvailable()) {
     comHandler_->SendCommand("INST:NSEL?");
-  char buffer[1000];
-  comHandler_->ReceiveString(buffer);
-  StripBuffer(buffer);
+    char buffer[1000];
+    comHandler_->ReceiveString(buffer);
+    StripBuffer(buffer);
 
-     while (!OperationCompleted()) { usleep(10); } 
+    while (!OperationCompleted()) { usleep(10); }
 
-   return std::atoi(buffer);
+    return std::atoi(buffer);
   }
   return 0;
 }
@@ -91,14 +91,14 @@ float RohdeSchwarzNGE103B::GetVoltage() const
 {
   if (DeviceAvailable()) {
     comHandler_->SendCommand("VOLT?");
-  char buffer[1000];
-  comHandler_->ReceiveString(buffer);
-  StripBuffer(buffer);
+    char buffer[1000];
+    comHandler_->ReceiveString(buffer);
+    StripBuffer(buffer);
 
     while (!OperationCompleted()) { usleep(10); } 
 
 
-   return std::atof(buffer);
+    return std::atof(buffer);
   }
 
   return -1;
@@ -108,13 +108,13 @@ float RohdeSchwarzNGE103B::MeasureVoltage() const
 {
   if (DeviceAvailable()) {
     comHandler_->SendCommand("MEAS:VOLT?");
-  char buffer[1000];
-  comHandler_->ReceiveString(buffer);
-  StripBuffer(buffer);
+    char buffer[1000];
+    comHandler_->ReceiveString(buffer);
+    StripBuffer(buffer);
 
     while (!OperationCompleted()) { usleep(10); } 
 
-   return std::atof(buffer);
+    return std::atof(buffer);
   }
 
   return -1;
@@ -135,14 +135,14 @@ float RohdeSchwarzNGE103B::GetCurrent() const
 {
   if (DeviceAvailable()) {
     comHandler_->SendCommand("CURR?");
-  char buffer[1000];
-  comHandler_->ReceiveString(buffer);
-  StripBuffer(buffer);
+    char buffer[1000];
+    comHandler_->ReceiveString(buffer);
+    StripBuffer(buffer);
 
     while (!OperationCompleted()) { usleep(10); } 
 
 
-   return std::atof(buffer);
+    return std::atof(buffer);
   }
 
   return -1;
@@ -152,13 +152,17 @@ float RohdeSchwarzNGE103B::MeasureCurrent() const
 {
   if (DeviceAvailable()) {
     comHandler_->SendCommand("MEAS:CURR?");
-  char buffer[1000];
-  comHandler_->ReceiveString(buffer);
-  StripBuffer(buffer);
+    char buffer[1000];
+    comHandler_->ReceiveString(buffer);
+    StripBuffer(buffer);
 
     while (!OperationCompleted()) { usleep(10); } 
 
-   return std::atof(buffer);
+    return std::atof(buffer);
+  }
+
+  return -1;
+}
 
 float RohdeSchwarzNGE103B::MeasurePower() const
 {
@@ -191,13 +195,13 @@ bool RohdeSchwarzNGE103B::GetOutputState() const
 {
   if (DeviceAvailable()) {
     comHandler_->SendCommand("OUTP:STAT?");
-  char buffer[1000];
-  comHandler_->ReceiveString(buffer);
-  StripBuffer(buffer);
+    char buffer[1000];
+    comHandler_->ReceiveString(buffer);
+    StripBuffer(buffer);
 
     while (!OperationCompleted()) { usleep(10); } 
 
-   return std::atoi(buffer);
+    return std::atoi(buffer);
   }
 
   return false;
@@ -205,11 +209,11 @@ bool RohdeSchwarzNGE103B::GetOutputState() const
 
 unsigned int RohdeSchwarzNGE103B::GetOutputMode() const
 {
-    if (DeviceAvailable()) {
+  if (DeviceAvailable()) {
     comHandler_->SendCommand("OUTP:MODE?");
-  char buffer[1000];
-  comHandler_->ReceiveString(buffer);
-  StripBuffer(buffer);
+    char buffer[1000];
+    comHandler_->ReceiveString(buffer);
+    StripBuffer(buffer);
 
     while (!OperationCompleted()) { usleep(10); } 
 
@@ -257,15 +261,13 @@ void RohdeSchwarzNGE103B::DeviceInit()
 
 bool RohdeSchwarzNGE103B::OperationCompleted() const
 {
-if (DeviceAvailable()) {
+  if (DeviceAvailable()) {
     comHandler_->SendCommand("*OPC?");
-  char buffer[1000];
-  comHandler_->ReceiveString(buffer);
-  StripBuffer(buffer);
-  // std::cout << "*OPCX?\t" << buffer << std::endl;
-   return std::atoi(buffer);
+    char buffer[1000];
+    comHandler_->ReceiveString(buffer);
+    StripBuffer(buffer);
+    return std::atoi(buffer);
   }
   
   return true;
 }
-
