@@ -13,6 +13,8 @@
 #ifndef __ROHDESCHWARZNGE103BFAKE_H
 #define __ROHDESCHWARZNGE103BFAKE_H
 
+#include <array>
+
 #include "VRohdeSchwarzNGE103B.h"
 
 class RohdeSchwarzNGE103BFake : public VRohdeSchwarzNGE103B
@@ -28,8 +30,30 @@ class RohdeSchwarzNGE103BFake : public VRohdeSchwarzNGE103B
 
   void GetIdentification(std::string& id) const;
 
+  void SelectChannel(unsigned int ch);
+  unsigned int SelectedChannel() const;
+
+  void SetVoltage(float v);
+  float GetVoltage() const;
+  float MeasureVoltage() const;
+
+  void SetCurrent(float i) ;
+  float GetCurrent() const;
+  float MeasureCurrent() const;
+
+  float MeasurePower() const;
+
+  void SetOutputState(bool s);
+  bool GetOutputState() const;
+
+  unsigned int GetOutputMode() const;
+
   private:
 
+  unsigned int selectedChannel_;
+  std::array<float,3> voltage_;
+  std::array<float,3> current_;
+  std::array<bool,3> outputState_;
 };
 
 #endif
