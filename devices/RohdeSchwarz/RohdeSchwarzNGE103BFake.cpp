@@ -27,5 +27,5 @@ RohdeSchwarzNGE103BFake::~RohdeSchwarzNGE103BFake()
 
 void RohdeSchwarzNGE103BFake::GetIdentification(std::string& id) const
 {
-  id = "Rohde&Schwarz,NGE103B,5601.1414k03/100421,1.20";
+  id = "Rohde&Schwarz,NGE103B,5601.3800k03/100897,1.52";
 }
