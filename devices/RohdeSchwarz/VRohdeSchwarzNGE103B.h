@@ -39,14 +39,17 @@ public:
   virtual void SelectChannel(unsigned int ch) = 0;
   virtual unsigned int SelectedChannel() const = 0;
 
+  constexpr static float MaxVoltage = 32.0;
   virtual void SetVoltage(float v) = 0;
   virtual float GetVoltage() const = 0;
   virtual float MeasureVoltage() const = 0;
 
+  constexpr static float MaxCurrent = 3.0;
   virtual void SetCurrent(float i) = 0;
   virtual float GetCurrent() const = 0;
   virtual float MeasureCurrent() const = 0;
 
+  constexpr static float MaxPower = 33.6;
   virtual float MeasurePower() const = 0;
 
   virtual void SetOutputState(bool s) = 0;
