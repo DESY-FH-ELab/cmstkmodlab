@@ -14,6 +14,7 @@
 #define ROHDESCHWARZNGE103BMODEL_H
 
 #include <cmath>
+#include <array>
 
 #include <QString>
 #include <QTimer>
@@ -36,16 +37,28 @@ class RohdeSchwarzNGE103BModel :
     public QObject
   , public AbstractDeviceModel<RohdeSchwarzNGE103B_t>
 {
-
   Q_OBJECT
 public:
   explicit RohdeSchwarzNGE103BModel(const char* port,
 		      float updateInterval = 5,
 		      QObject *parent = 0);
 
+  bool getOutputState(int channel) const;
+  unsigned int getOutputMode(int channel) const;
+  float getVoltage(int channel) const;
+  float getMeasuredVoltage(int channel) const;
+  float getCurrent(int channel) const;
+  float getMeasuredCurrent(int channel) const;
+  float getEasyRampDuration(int channel) const;
+
 public slots:
   void setDeviceEnabled(bool enabled);
   void setControlsEnabled(bool enabled);
+
+  void setOutputState(int channel, bool state);
+  void setVoltage(int channel, float voltage);
+  void setCurrent(int channel, float current);
+  void setEasyRampDuration(int channel, float duration);
 
 protected:
 
@@ -58,6 +71,19 @@ protected:
   QTimer* timer_;
 
   void setDeviceState( State state );
+
+  DeviceParameterFloat voltageParameter_;
+  DeviceParameterFloat currentParameter_;
+  DeviceParameterFloat easyRampDurationParameter_;
+
+  std::array<bool,3> outputState_;
+  std::array<unsigned int,3> outputMode_;
+  std::array<float,3> voltage_;
+  std::array<float,3> measuredVoltage_;
+  std::array<float,3> current_;
+  std::array<float,3> measuredCurrent_;
+  std::array<float,3> easyRampDuration_;
+  std::array<bool,3> easyRampState_;
 
 protected slots:
   void updateInformation();
