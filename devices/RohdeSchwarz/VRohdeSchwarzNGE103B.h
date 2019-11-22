@@ -39,7 +39,8 @@ public:
   virtual void SelectChannel(unsigned int ch) = 0;
   virtual unsigned int SelectedChannel() const = 0;
 
-  constexpr static float MaxVoltage = 32.0;
+  constexpr static float MinVoltage = 0.0;
+  constexpr static float MaxVoltage = 32.2;
   virtual void SetVoltage(float v) = 0;
   virtual float GetVoltage() const = 0;
   virtual float MeasureVoltage() const = 0;
@@ -51,7 +52,8 @@ public:
   virtual void SetEasyRampState(bool s) = 0;
   virtual bool GetEasyRampState() const = 0;
 
-  constexpr static float MaxCurrent = 3.0;
+  constexpr static float MinCurrent = 0.003;
+  constexpr static float MaxCurrent = 3.025;
   virtual void SetCurrent(float i) = 0;
   virtual float GetCurrent() const = 0;
   virtual float MeasureCurrent() const = 0;

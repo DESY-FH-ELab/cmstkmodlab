@@ -19,7 +19,7 @@ RohdeSchwarzNGE103BFake::RohdeSchwarzNGE103BFake( const ioport_t ioPort )
 {
   selectedChannel_ = 1;
   voltage_ = { 0., 0., 0. };
-  current_ = { 0., 0., 0. };
+  current_ = { MinCurrent, MinCurrent, MinCurrent };
   outputState_ = { false, false, false };
   easyRampDuration_ = { 0.01, 0.01, 0.01 };
   easyRampState_ = { false, false, false };
@@ -47,7 +47,7 @@ unsigned int RohdeSchwarzNGE103BFake::SelectedChannel() const
 
 void RohdeSchwarzNGE103BFake::SetVoltage(float v)
 {
-  if (v>=0 && v<=MaxVoltage)
+  if (v>=MinVoltage && v<=MaxVoltage)
     voltage_[selectedChannel_] = v;
 }
 
@@ -97,7 +97,7 @@ bool RohdeSchwarzNGE103BFake::GetEasyRampState() const
 
 void RohdeSchwarzNGE103BFake::SetCurrent(float i)
 {
-  if (i>=0 && i<=MaxCurrent)
+  if (i>=MinCurrent && i<=MaxCurrent)
     current_[selectedChannel_] = i;
 }
 

@@ -78,7 +78,7 @@ unsigned int RohdeSchwarzNGE103B::SelectedChannel() const
 
 void RohdeSchwarzNGE103B::SetVoltage(float v)
 {
-  if (v<0 || v>MaxVoltage) return;
+  if (v<MinVoltage || v>MaxVoltage) return;
 
   if (DeviceAvailable()) {
     char cmd[100];
@@ -182,7 +182,7 @@ bool RohdeSchwarzNGE103B::GetEasyRampState() const
 
 void RohdeSchwarzNGE103B::SetCurrent(float i)
 {
-  if (i<0 || i>MaxCurrent) return;
+  if (i<MinCurrent || i>MaxCurrent) return;
 
   if (DeviceAvailable()) {
     char cmd[100];
