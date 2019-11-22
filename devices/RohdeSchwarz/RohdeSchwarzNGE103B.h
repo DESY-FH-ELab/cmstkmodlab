@@ -44,6 +44,11 @@ public:
   float GetVoltage() const;
   float MeasureVoltage() const;
 
+  void SetEasyRampDuration(float d);
+  float GetEasyRampDuration() const;
+  void SetEasyRampState(bool s);
+  bool GetEasyRampState() const;
+
   void SetCurrent(float i) ;
   float GetCurrent() const;
   float MeasureCurrent() const;

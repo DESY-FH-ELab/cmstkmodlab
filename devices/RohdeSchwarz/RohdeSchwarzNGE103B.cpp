@@ -122,6 +122,64 @@ float RohdeSchwarzNGE103B::MeasureVoltage() const
   return -1;
 }
 
+void RohdeSchwarzNGE103B::SetEasyRampDuration(float d)
+{
+  if (d<MinEasyRampDuration || d>MaxEasyRampDuration) return;
+
+  if (DeviceAvailable()) {
+    char cmd[100];
+    sprintf(cmd, "VOLT:RAMP:DUR %.2f", d);
+    comHandler_->SendCommand(cmd);
+
+    while (!OperationCompleted()) { usleep(10); }
+  }
+}
+
+float RohdeSchwarzNGE103B::GetEasyRampDuration() const
+{
+  if (DeviceAvailable()) {
+    comHandler_->SendCommand("VOLT:RAMP:DUR?");
+    char buffer[1000];
+    comHandler_->ReceiveString(buffer);
+    StripBuffer(buffer);
+
+    while (!OperationCompleted()) { usleep(10); }
+
+
+    return std::atof(buffer);
+  }
+
+  return -1;
+}
+
+void RohdeSchwarzNGE103B::SetEasyRampState(bool s)
+{
+  if (DeviceAvailable()) {
+    char cmd[100];
+    sprintf(cmd, "VOLT:RAMP %i", s);
+    comHandler_->SendCommand(cmd);
+
+    while (!OperationCompleted()) { usleep(10); }
+  }
+}
+
+bool RohdeSchwarzNGE103B::GetEasyRampState() const
+{
+  if (DeviceAvailable()) {
+    comHandler_->SendCommand("VOLT:RAMP?");
+    char buffer[1000];
+    comHandler_->ReceiveString(buffer);
+    StripBuffer(buffer);
+
+    while (!OperationCompleted()) { usleep(10); }
+
+
+    return std::atoi(buffer);
+  }
+
+  return -1;
+}
+
 void RohdeSchwarzNGE103B::SetCurrent(float i)
 {
   if (i<0 || i>MaxCurrent) return;

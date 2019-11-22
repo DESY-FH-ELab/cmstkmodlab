@@ -37,6 +37,11 @@ class RohdeSchwarzNGE103BFake : public VRohdeSchwarzNGE103B
   float GetVoltage() const;
   float MeasureVoltage() const;
 
+  void SetEasyRampDuration(float d);
+  float GetEasyRampDuration() const;
+  void SetEasyRampState(bool s);
+  bool GetEasyRampState() const;
+
   void SetCurrent(float i) ;
   float GetCurrent() const;
   float MeasureCurrent() const;
@@ -54,6 +59,8 @@ class RohdeSchwarzNGE103BFake : public VRohdeSchwarzNGE103B
   std::array<float,3> voltage_;
   std::array<float,3> current_;
   std::array<bool,3> outputState_;
+  std::array<float,3> easyRampDuration_;
+  std::array<bool,3> easyRampState_;
 };
 
 #endif

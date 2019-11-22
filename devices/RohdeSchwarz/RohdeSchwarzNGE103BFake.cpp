@@ -21,6 +21,8 @@ RohdeSchwarzNGE103BFake::RohdeSchwarzNGE103BFake( const ioport_t ioPort )
   voltage_ = { 0., 0., 0. };
   current_ = { 0., 0., 0. };
   outputState_ = { false, false, false };
+  easyRampDuration_ = { 0.01, 0.01, 0.01 };
+  easyRampState_ = { false, false, false };
 }
 
 RohdeSchwarzNGE103BFake::~RohdeSchwarzNGE103BFake()
@@ -68,6 +70,29 @@ float RohdeSchwarzNGE103BFake::MeasureVoltage() const
   }
 
   return 0;
+}
+
+void RohdeSchwarzNGE103BFake::SetEasyRampDuration(float d)
+{
+  if (d>=MinEasyRampDuration && d<=MaxEasyRampDuration) {
+    float temp = 0.01 * int(100.*d);
+    easyRampDuration_[selectedChannel_] = temp;
+  }
+}
+
+float RohdeSchwarzNGE103BFake::GetEasyRampDuration() const
+{
+  return easyRampDuration_[selectedChannel_];
+}
+
+void RohdeSchwarzNGE103BFake::SetEasyRampState(bool s)
+{
+  easyRampState_[selectedChannel_] = s;
+}
+
+bool RohdeSchwarzNGE103BFake::GetEasyRampState() const
+{
+  return easyRampState_[selectedChannel_];
 }
 
 void RohdeSchwarzNGE103BFake::SetCurrent(float i)

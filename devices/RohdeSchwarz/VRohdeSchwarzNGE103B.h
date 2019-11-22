@@ -44,6 +44,13 @@ public:
   virtual float GetVoltage() const = 0;
   virtual float MeasureVoltage() const = 0;
 
+  constexpr static float MinEasyRampDuration = 0.01;
+  constexpr static float MaxEasyRampDuration = 10.0;
+  virtual void SetEasyRampDuration(float d) = 0;
+  virtual float GetEasyRampDuration() const = 0;
+  virtual void SetEasyRampState(bool s) = 0;
+  virtual bool GetEasyRampState() const = 0;
+
   constexpr static float MaxCurrent = 3.0;
   virtual void SetCurrent(float i) = 0;
   virtual float GetCurrent() const = 0;
