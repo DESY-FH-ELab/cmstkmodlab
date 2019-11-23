@@ -28,7 +28,7 @@
 //#include "ThermoMainWindow.h"
 #include "TestWindow.h"
 
-static const char* thermoDAQGUID = "{2F9BC7D7-44A2-4625-A7C6-2EBE3C27C7F5}";
+static const char* thermoDAQ2GUID = "{2F9BC7D7-44A2-4625-A7C6-2EBE3C27C7F5}";
 //#define SINGLETON 1
 //#define AUTOSTARTTHERMODISPLAY 1
 
@@ -44,11 +44,11 @@ int main( int argc, char** argv )
 #endif
     QDir dir(logdir);
     if (!dir.exists()) dir.mkpath(".");
-    QString logfilename = logdir + "/thermoDAQ.log";
+    QString logfilename = logdir + "/thermoDAQ2.log";
 
-    NQLog("thermoDAQ") << "version " << APPLICATIONVERSIONSTR;
+    NQLog("thermoDAQ2") << "version " << APPLICATIONVERSIONSTR;
 
-    NQLog("thermoDAQ") << "using " << logfilename << " for logging";
+    NQLog("thermoDAQ2") << "using " << logfilename << " for logging";
 
     QFile * logfile = new QFile(logfilename);
     if (logfile->open(QIODevice::WriteOnly | QIODevice::Append | QIODevice::Text)) {
@@ -58,9 +58,9 @@ int main( int argc, char** argv )
     qRegisterMetaType<State>("State");
 
 #ifdef SINGLETON
-    SingletonApplication app(argc, argv, thermoDAQGUID);
+    SingletonApplication app(argc, argv, thermoDAQ2GUID);
     if(!app.lock()){
-        NQLog("thermoDAQ") << "Application instance already running!";
+        NQLog("thermoDAQ2") << "Application instance already running!";
         exit(1);
     }
 #else
