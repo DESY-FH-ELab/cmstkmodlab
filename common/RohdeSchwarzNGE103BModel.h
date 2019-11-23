@@ -50,6 +50,7 @@ public:
   float getCurrent(int channel) const;
   float getMeasuredCurrent(int channel) const;
   float getEasyRampDuration(int channel) const;
+  bool getEasyRampState(int channel) const;
 
 public slots:
   void setDeviceEnabled(bool enabled);
@@ -59,6 +60,7 @@ public slots:
   void setVoltage(int channel, float voltage);
   void setCurrent(int channel, float current);
   void setEasyRampDuration(int channel, float duration);
+  void setEasyRampState(int channel, bool state);
 
 protected:
 

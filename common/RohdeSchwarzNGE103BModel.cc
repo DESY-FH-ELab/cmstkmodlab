@@ -150,6 +150,26 @@ void RohdeSchwarzNGE103BModel::setEasyRampDuration(int channel, float duration)
   easyRampDuration_[channel-1] = duration;
 }
 
+bool RohdeSchwarzNGE103BModel::getEasyRampState(int channel) const
+{
+  if (channel>=1 && channel<=3) return easyRampState_[channel-1];
+  return false;
+}
+
+void RohdeSchwarzNGE103BModel::setEasyRampState(int channel, bool state)
+{
+  if (state_!=READY) return;
+
+  if (channel<1 || channel>3) return;
+
+  if (state==easyRampState_[channel-1]) return;
+
+  controller_->SelectChannel(channel);
+  controller_->SetEasyRampState(state);
+
+  easyRampState_[channel-1] = state;
+}
+
 /**
   Sets up the communication with the RohdeSchwarzNGE103B power supply and retrieves the
   settings and read-outs.
