@@ -110,8 +110,9 @@ HEADERS += nqlogger.h \
            ConradModel.h \
            LeyboldGraphixThreeModel.h \
            RohdeSchwarzNGE103BModel.h \
-           RohdeSchwarzNGE103BWidget.h
 
+           RohdeSchwarzNGE103BWidget.h \
+           ScriptableRohdeSchwarzNGE103B.h
 SOURCES += nqlogger.cc \
            npoint2D.cc \
            npoint3D.cc \
@@ -158,4 +159,5 @@ SOURCES += nqlogger.cc \
            ConradModel.cc \
            LeyboldGraphixThreeModel.cc \
            RohdeSchwarzNGE103BModel.cc \
-           RohdeSchwarzNGE103BWidget.cc
+           RohdeSchwarzNGE103BWidget.cc \
+           ScriptableRohdeSchwarzNGE103B.cc
