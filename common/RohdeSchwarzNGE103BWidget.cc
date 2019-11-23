@@ -25,62 +25,86 @@ RohdeSchwarzNGE103BChannelWidget::RohdeSchwarzNGE103BChannelWidget(RohdeSchwarzN
   model_(model),
   channel_(channel)
 {
-  setTitle(QString("channel %1").arg(channel));
+  setTitle(QString("Channel %1").arg(channel));
 
   QGridLayout* layout = new QGridLayout();
   setLayout(layout);
 
-  QButtonGroup* modeGroup = new QButtonGroup(this);
-  cvModeButton_ = new QRadioButton("Constant Voltage Mode", this);
-  cvModeButton_->setEnabled(false);
-  modeGroup->addButton(cvModeButton_);
-  layout->addWidget(cvModeButton_, 0, 0);
-  ccModeButton_ = new QRadioButton("Constant Current Mode", this);
-  ccModeButton_->setEnabled(false);
-  modeGroup->addButton(ccModeButton_);
-  layout->addWidget(ccModeButton_, 1, 0);
+  QVBoxLayout* vlayout;
 
-  QHBoxLayout* hlayout;
-
-  hlayout= new QHBoxLayout();
+  vlayout= new QVBoxLayout();
   QGroupBox* voltageGroup = new QGroupBox("Voltage", this);
-  voltageGroup->setLayout(hlayout);
+  voltageGroup->setLayout(vlayout);
 
   voltageDisplay_ = new QLCDNumber(LCD_SIZE, voltageGroup);
   voltageDisplay_->setSegmentStyle(QLCDNumber::Flat);
   voltageDisplay_->setSmallDecimalPoint(true);
   voltageDisplay_->setDigitCount(6);
-  hlayout->addWidget(voltageDisplay_);
+  vlayout->addWidget(voltageDisplay_);
+
+  lcdOFFPalette_ = voltageDisplay_->palette();
+  lcdCVPalette_ = lcdOFFPalette_;
+  lcdCVPalette_.setColor(QPalette::WindowText, Qt::green);
+  lcdCVPalette_.setColor(QPalette::Dark, Qt::green);
+  lcdCCPalette_ = lcdOFFPalette_;
+  lcdCCPalette_.setColor(QPalette::WindowText, Qt::red);
+  lcdCCPalette_.setColor(QPalette::Dark, Qt::red);
 
   voltageSpinner_ = new QDoubleSpinBox(voltageGroup);
   voltageSpinner_->setMinimum(0.0);
-  voltageSpinner_->setMaximum(30.0);
-  voltageSpinner_->setSingleStep(0.01);
-  voltageSpinner_->setDecimals(2);
+  voltageSpinner_->setMaximum(32.0);
+  voltageSpinner_->setSingleStep(0.1);
+  voltageSpinner_->setDecimals(3);
   voltageSpinner_->setKeyboardTracking(false);
-  hlayout->addWidget(voltageSpinner_);
+  voltageSpinner_->setSuffix(" V");
+  voltageSpinner_->setAlignment(Qt::AlignRight);
+  vlayout->addWidget(voltageSpinner_);
 
-  layout->addWidget(voltageGroup, 0, 1);
+  layout->addWidget(voltageGroup, 0, 0);
 
-  hlayout= new QHBoxLayout();
+  vlayout= new QVBoxLayout();
   QGroupBox* currentGroup = new QGroupBox("Current", this);
-  currentGroup->setLayout(hlayout);
+  currentGroup->setLayout(vlayout);
 
   currentDisplay_ = new QLCDNumber(LCD_SIZE, currentGroup);
   currentDisplay_->setSegmentStyle(QLCDNumber::Flat);
   currentDisplay_->setSmallDecimalPoint(true);
   currentDisplay_->setDigitCount(8);
-  hlayout->addWidget(currentDisplay_);
+  vlayout->addWidget(currentDisplay_);
 
   currentSpinner_ = new QDoubleSpinBox(voltageGroup);
   currentSpinner_->setMinimum(0.0);
-  currentSpinner_->setMaximum(0.31);
-  currentSpinner_->setSingleStep(0.001);
+  currentSpinner_->setMaximum(3.00);
+  currentSpinner_->setSingleStep(0.01);
   currentSpinner_->setDecimals(3);
   currentSpinner_->setKeyboardTracking(false);
-  hlayout->addWidget(currentSpinner_);
+  currentSpinner_->setSuffix(" A");
+  currentSpinner_->setAlignment(Qt::AlignRight);
+  vlayout->addWidget(currentSpinner_);
 
-  layout->addWidget(currentGroup, 1, 1);
+  layout->addWidget(currentGroup, 0, 1);
+
+  vlayout= new QVBoxLayout();
+  QGroupBox* easyRampGroup = new QGroupBox("Easy Ramp", this);
+  easyRampGroup->setLayout(vlayout);
+
+  easyRampStateBox_ = new QCheckBox("Enabled", this);
+  vlayout->addWidget(easyRampStateBox_);
+
+  easyRampDurationSpinner_ = new QDoubleSpinBox(easyRampGroup);
+  easyRampDurationSpinner_->setMinimum(0.0);
+  easyRampDurationSpinner_->setMaximum(10.00);
+  easyRampDurationSpinner_->setSingleStep(0.01);
+  easyRampDurationSpinner_->setDecimals(2);
+  easyRampDurationSpinner_->setKeyboardTracking(false);
+  easyRampDurationSpinner_->setSuffix(" s");
+  easyRampDurationSpinner_->setAlignment(Qt::AlignRight);
+  vlayout->addWidget(easyRampDurationSpinner_);
+
+  layout->addWidget(easyRampGroup, 0, 2);
+
+  outputStateBox_ = new QCheckBox("Output Enabled", this);
+  layout->addWidget(outputStateBox_, 1, 0, 1, 3);
 
   connect(model_, SIGNAL(deviceStateChanged(State)),
           this, SLOT(updateDeviceState(State)));
@@ -91,36 +115,46 @@ RohdeSchwarzNGE103BChannelWidget::RohdeSchwarzNGE103BChannelWidget(RohdeSchwarzN
   connect(model_, SIGNAL(informationChanged()),
           this, SLOT(updateInfo()));
 
-  connect(modeGroup, SIGNAL(buttonClicked(int)),
-          this, SLOT(modeChanged(int)));
-
   connect(voltageSpinner_, SIGNAL(valueChanged(double)),
           this, SLOT(voltageSpinnerChanged(double)));
   connect(currentSpinner_, SIGNAL(valueChanged(double)),
           this, SLOT(currentSpinnerChanged(double)));
+  connect(easyRampDurationSpinner_, SIGNAL(valueChanged(double)),
+          this, SLOT(easyRampDurationSpinnerChanged(double)));
 
-  // Set GUI according to the current chiller state
+  connect(easyRampStateBox_, SIGNAL(toggled(bool)),
+          this, SLOT(easyRampStateChanged(bool)));
+
+  connect(outputStateBox_, SIGNAL(toggled(bool)),
+          this, SLOT(setOutputStateChanged(bool)));
+
   updateDeviceState(model_->getDeviceState());
   updateInfo();
 }
 
-void RohdeSchwarzNGE103BChannelWidget::modeChanged(int button)
-{
-  if (button==0) {
-    // model_->setVoltage(channel_, voltageSpinner_->value());
-  } else {
-    // model_->setCurrent(channel_, currentSpinner_->value());
-  }
-}
-
 void RohdeSchwarzNGE103BChannelWidget::voltageSpinnerChanged(double voltage)
 {
-  // model_->setVoltage(channel_, voltage);
+  model_->setVoltage(channel_, voltage);
 }
 
-void RohdeSchwarzNGE103BChannelWidget::currentSpinnerChanged(double voltage)
+void RohdeSchwarzNGE103BChannelWidget::currentSpinnerChanged(double current)
 {
-  // model_->setCurrent(channel_, voltage);
+  model_->setCurrent(channel_, current);
+}
+
+void RohdeSchwarzNGE103BChannelWidget::easyRampDurationSpinnerChanged(double duration)
+{
+  model_->setEasyRampDuration(channel_, duration);
+}
+
+void RohdeSchwarzNGE103BChannelWidget::easyRampStateChanged(bool state)
+{
+  model_->setEasyRampState(channel_, state);
+}
+
+void RohdeSchwarzNGE103BChannelWidget::setOutputStateChanged(bool state)
+{
+  model_->setOutputState(channel_, state);
 }
 
 void RohdeSchwarzNGE103BChannelWidget::updateDeviceState(State /*state*/)
@@ -137,43 +171,64 @@ void RohdeSchwarzNGE103BChannelWidget::updateInfo()
 {
   NQLog("RohdeSchwarzNGE103BChannelWidget", NQLog::Debug) << "updateInfo()";
 
-  /*
-  unsigned int status = model_->getStatus();
+  unsigned int outputMode = model_->getOutputMode(channel_);
 
-  if (channel_==1) {
+  NQLog("RohdeSchwarzNGE103BChannelWidget", NQLog::Debug) << "outputMode " << outputMode;
 
-    if (status&VRohdeSchwarzNGE103B8143::hmCV1) {
-      cvModeButton_->setChecked(true);
-    } else if (status&VRohdeSchwarzNGE103B8143::hmCC1) {
-      ccModeButton_->setChecked(true);
-    }
-  } else {
-    if (status&VRohdeSchwarzNGE103B8143::hmCV2) {
-      cvModeButton_->setChecked(true);
-    } else if (status&VRohdeSchwarzNGE103B8143::hmCC2) {
-      ccModeButton_->setChecked(true);
-    }
+  switch (outputMode) {
+  case VRohdeSchwarzNGE103B::RohdeSchwarzNGE103B_OFF: {
+    setPalette(lcdOFFPalette_);
+    voltageDisplay_->setPalette(lcdOFFPalette_);
+    currentDisplay_->setPalette(lcdOFFPalette_);
+    break;
+  }
+  case VRohdeSchwarzNGE103B::RohdeSchwarzNGE103B_CV: {
+    setPalette(lcdCVPalette_);
+    voltageDisplay_->setPalette(lcdCVPalette_);
+    currentDisplay_->setPalette(lcdCVPalette_);
+    break;
+  }
+  case VRohdeSchwarzNGE103B::RohdeSchwarzNGE103B_CC: {
+    setPalette(lcdCCPalette_);
+    voltageDisplay_->setPalette(lcdCCPalette_);
+    currentDisplay_->setPalette(lcdCCPalette_);
+    break;
+  }
+  default: {
+    setPalette(lcdOFFPalette_);
+    voltageDisplay_->setPalette(lcdOFFPalette_);
+    currentDisplay_->setPalette(lcdOFFPalette_);
+  }
   }
 
   char dummy[30];
 
   if (!voltageSpinner_->hasFocus()) {
-    float setVoltage = model_->getVoltageParameter(channel_).getValue();
+    float setVoltage = model_->getVoltage(channel_);
     voltageSpinner_->setValue(setVoltage);
   }
-  float voltage = model_->getVoltage(channel_);
-  snprintf(dummy, sizeof(dummy), "%.02f", voltage);
+  snprintf(dummy, sizeof(dummy), "%.03f", model_->getMeasuredVoltage(channel_));
   voltageDisplay_->display(dummy);
 
   if (!currentSpinner_->hasFocus()) {
-    float setCurrent = model_->getCurrentParameter(channel_).getValue();
+    float setCurrent = model_->getCurrent(channel_);
     currentSpinner_->setValue(setCurrent);
   }
-  float current = model_->getCurrent(channel_);
-  snprintf(dummy, sizeof(dummy), "%.03f", current);
+  snprintf(dummy, sizeof(dummy), "%.03f", model_->getMeasuredCurrent(channel_));
   currentDisplay_->display(dummy);
 
-  */
+  if (!easyRampDurationSpinner_->hasFocus()) {
+    float setEasyRampDuration = model_->getCurrent(channel_);
+    easyRampDurationSpinner_->setValue(setEasyRampDuration);
+  }
+
+  if (model_->getEasyRampState(channel_) != easyRampStateBox_->isChecked()) {
+    easyRampStateBox_->setChecked(model_->getEasyRampState(channel_));
+  }
+
+  if (model_->getOutputState(channel_) != outputStateBox_->isChecked()) {
+    outputStateBox_->setChecked(model_->getOutputState(channel_));
+  }
 }
 
 /**
@@ -187,30 +242,21 @@ RohdeSchwarzNGE103BWidget::RohdeSchwarzNGE103BWidget(RohdeSchwarzNGE103BModel* m
   QVBoxLayout* layout = new QVBoxLayout();
   setLayout(layout);
 
-  hamegCheckBox_ = new QCheckBox("Enable power supply", this);
-  layout->addWidget(hamegCheckBox_);
+  deviceCheckBox_ = new QCheckBox("Enable Power Supply", this);
+  layout->addWidget(deviceCheckBox_);
 
   operationPanel_ = new QWidget(this);
   QVBoxLayout* layout2 = new QVBoxLayout();
   operationPanel_->setLayout(layout2);
   layout->addWidget(operationPanel_);
 
-  QHBoxLayout* hlayout = new QHBoxLayout();
-  QWidget* buttonPanel = new QWidget(operationPanel_);
-  buttonPanel->setLayout(hlayout);
-  layout2->addWidget(buttonPanel);
-
-  hamegRemoteBox_ = new QCheckBox("Remote mode", buttonPanel);
-  hlayout->addWidget(hamegRemoteBox_);
-
-  hamegOutputBox_= new QCheckBox("Outputs enabled", buttonPanel);
-  hlayout->addWidget(hamegOutputBox_);
-
   // Create all the nescessary widgets
   channel1_ = new RohdeSchwarzNGE103BChannelWidget(model_, 1, operationPanel_);
   layout2->addWidget(channel1_);
   channel2_ = new RohdeSchwarzNGE103BChannelWidget(model_, 2, operationPanel_);
   layout2->addWidget(channel2_);
+  channel3_ = new RohdeSchwarzNGE103BChannelWidget(model_, 3, operationPanel_);
+  layout2->addWidget(channel3_);
 
   // Connect all the signals
   connect(model_, SIGNAL(deviceStateChanged(State)),
@@ -220,17 +266,10 @@ RohdeSchwarzNGE103BWidget::RohdeSchwarzNGE103BWidget(RohdeSchwarzNGE103BModel* m
   connect(model_, SIGNAL(informationChanged()),
           this, SLOT(updateInfo()));
 
-  /*
-  connect(hamegCheckBox_, SIGNAL(toggled(bool)),
+  connect(deviceCheckBox_, SIGNAL(toggled(bool)),
           model_, SLOT(setDeviceEnabled(bool)));
 
-  connect(hamegRemoteBox_, SIGNAL(toggled(bool)),
-          model_, SLOT(setRemoteMode(bool)));
-  connect(hamegOutputBox_, SIGNAL(toggled(bool)),
-          model_, SLOT(switchOutputOn(bool)));
-  */
-
-  // Set GUI according to the current chiller state
+  // Set GUI according to the current power supply state
   updateDeviceState(model_->getDeviceState());
   updateInfo();
 }
@@ -241,14 +280,14 @@ RohdeSchwarzNGE103BWidget::RohdeSchwarzNGE103BWidget(RohdeSchwarzNGE103BModel* m
 void RohdeSchwarzNGE103BWidget::updateDeviceState(State newState)
 {
   bool ready = (newState == READY);
-  hamegCheckBox_->setChecked(ready);
+  deviceCheckBox_->setChecked(ready);
   operationPanel_->setEnabled(ready);
 }
 
-/// Updates the GUI when the Keithley multimeter is enabled/disabled.
+/// Updates the GUI when the power supply is enabled/disabled.
 void RohdeSchwarzNGE103BWidget::controlStateChanged(bool enabled)
 {
-  hamegCheckBox_->setEnabled(enabled);
+  deviceCheckBox_->setEnabled(enabled);
   if (enabled) {
     //State state = model_->getDeviceState();
   }
@@ -261,27 +300,4 @@ void RohdeSchwarzNGE103BWidget::controlStateChanged(bool enabled)
 void RohdeSchwarzNGE103BWidget::updateInfo()
 {
   NQLog("RohdeSchwarzNGE103BWidget", NQLog::Debug) << "updateInfo()";
-
-  /*
-
-  unsigned int status = model_->getStatus();
-
-  if (status&VRohdeSchwarzNGE103B8143::hmRM0) {
-    hamegRemoteBox_->setChecked(false);
-    channel1_->setEnabled(false);
-    channel2_->setEnabled(false);
-    hamegOutputBox_->setEnabled(false);
-  } else if (status&VRohdeSchwarzNGE103B8143::hmRM1) {
-    hamegRemoteBox_->setChecked(true);
-    channel1_->setEnabled(true);
-    channel2_->setEnabled(true);
-    hamegOutputBox_->setEnabled(true);
-  }
-
-  if (status&VRohdeSchwarzNGE103B8143::hmOP0)
-    hamegOutputBox_->setChecked(false);
-  else if (status&VRohdeSchwarzNGE103B8143::hmOP1)
-    hamegOutputBox_->setChecked(true);
-
-  */
 }

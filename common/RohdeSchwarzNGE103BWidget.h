@@ -30,55 +30,62 @@
 
 class RohdeSchwarzNGE103BChannelWidget : public QGroupBox
 {
-    Q_OBJECT
+  Q_OBJECT
 public:
-    explicit RohdeSchwarzNGE103BChannelWidget(RohdeSchwarzNGE103BModel* model, int channel, QWidget *parent = 0);
+  explicit RohdeSchwarzNGE103BChannelWidget(RohdeSchwarzNGE103BModel* model,
+                                            int channel, QWidget *parent = 0);
 
 protected:
-    const static int LCD_SIZE = 8;
 
-    RohdeSchwarzNGE103BModel* model_;
-    int channel_;
+  const static int LCD_SIZE = 8;
 
-    QRadioButton* cvModeButton_;
-    QRadioButton* ccModeButton_;
+  RohdeSchwarzNGE103BModel* model_;
+  int channel_;
 
-    QLCDNumber* voltageDisplay_;
-    QLCDNumber* currentDisplay_;
+  QLCDNumber* voltageDisplay_;
+  QLCDNumber* currentDisplay_;
 
-    QDoubleSpinBox* voltageSpinner_;
-    QDoubleSpinBox* currentSpinner_;
+  QDoubleSpinBox* voltageSpinner_;
+  QDoubleSpinBox* currentSpinner_;
+  QDoubleSpinBox* easyRampDurationSpinner_;
+  QCheckBox* easyRampStateBox_;
+  QCheckBox* outputStateBox_;
 
-protected slots:
+  QPalette lcdOFFPalette_;
+  QPalette lcdCVPalette_;
+  QPalette lcdCCPalette_;
 
-    void modeChanged(int button);
-    void voltageSpinnerChanged(double);
-    void currentSpinnerChanged(double);
+  protected slots:
 
-    void updateDeviceState(State);
-    void controlStateChanged(bool);
-    void updateInfo();
+  void voltageSpinnerChanged(double);
+  void currentSpinnerChanged(double);
+  void easyRampDurationSpinnerChanged(double);
+  void easyRampStateChanged(bool);
+  void setOutputStateChanged(bool);
+
+  void updateDeviceState(State);
+  void controlStateChanged(bool);
+  void updateInfo();
 };
 
 class RohdeSchwarzNGE103BWidget : public QWidget
 {
-    Q_OBJECT
+  Q_OBJECT
 public:
   explicit RohdeSchwarzNGE103BWidget(RohdeSchwarzNGE103BModel* model, QWidget *parent = 0);
 
 protected:
   RohdeSchwarzNGE103BModel* model_;
 
-  QCheckBox* hamegCheckBox_;
-  QCheckBox* hamegRemoteBox_;
-  QCheckBox* hamegOutputBox_;
+  QCheckBox* deviceCheckBox_;
 
   QWidget* operationPanel_;
 
   RohdeSchwarzNGE103BChannelWidget* channel1_;
   RohdeSchwarzNGE103BChannelWidget* channel2_;
+  RohdeSchwarzNGE103BChannelWidget* channel3_;
 
-public slots:
+  public slots:
   void updateDeviceState( State newState );
   void controlStateChanged(bool);
   void updateInfo();
