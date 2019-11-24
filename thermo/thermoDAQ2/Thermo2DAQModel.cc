@@ -62,23 +62,6 @@ void Thermo2DAQModel::startMeasurement()
   NQLogMessage("thermo2DAQ") << "measurement started";
 }
 
-const Measurement_t& Thermo2DAQModel::getMeasurement()
-{
-//  measurement_.dt = currentTime();
-//  measurement_.daqState = daqState();
-//
-//  measurement_.circulator = huberCirculator_;
-//  measurement_.workingTemperature = huberWorkingTemperature_;
-//  measurement_.bathTemperature = huberBathTemperature_;
-//
-//  for (int i=0;i<10;++i) {
-//    measurement_.channelActive[i] = (int)keithleySensorState_[i];
-//    measurement_.temperature[i] = keithleyTemperature_[i];
-//  }
-
-  return measurement_;
-}
-
 void Thermo2DAQModel::createDAQStatusMessage(QString &buffer)
 {
   QDateTime& utime = currentTime();
