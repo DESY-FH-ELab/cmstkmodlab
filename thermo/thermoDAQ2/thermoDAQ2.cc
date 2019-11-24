@@ -25,7 +25,7 @@
 #include "SingletonApplication.h"
 #include "ApplicationConfig.h"
 
-//#include "ThermoMainWindow.h"
+#include "Thermo2MainWindow.h"
 #include "TestWindow.h"
 
 static const char* thermoDAQ2GUID = "{2F9BC7D7-44A2-4625-A7C6-2EBE3C27C7F5}";
@@ -77,8 +77,8 @@ int main( int argc, char** argv )
 
   ApplicationConfig::instance(std::string(Config::CMSTkModLabBasePath) + "/thermo/thermo2.cfg");
 
-  //ThermoMainWindow mainWindow;
-  TestWindow mainWindow;
+  //TestWindow mainWindow;
+  Thermo2MainWindow mainWindow;
 
   mainWindow.show();
 
