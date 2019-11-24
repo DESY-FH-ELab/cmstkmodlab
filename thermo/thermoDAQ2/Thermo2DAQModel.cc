@@ -28,15 +28,6 @@ Thermo2DAQModel::Thermo2DAQModel(RohdeSchwarzNGE103BModel* nge103BModel,
     daqState_(false),
     nge103BModel_(nge103BModel)
 {
-  for (int i=0;i<3;++i) {
-    nge103BOutputState_[i] = false;
-    nge103BOutputMode_[i] = 0;
-    nge103BVoltage_[i] = 0.;
-    nge103BCurrent_[i] = 0.;
-    nge103BMeasuredVoltage_[i] = 0.;
-    nge103BMeasuredCurrent_[i] = 0.;
-  }
-
   currentTime_ = QDateTime::currentDateTime();
 
   connect(nge103BModel_, SIGNAL(informationChanged()),
@@ -55,6 +46,15 @@ void Thermo2DAQModel::startMeasurement()
   daqState_ = true;
   emit daqStateChanged(true);
 
+  for (int i=0;i<3;++i) {
+    nge103BOutputState_[i] = false;
+    nge103BOutputMode_[i] = 0;
+    nge103BVoltage_[i] = -1.0;
+    nge103BCurrent_[i] = -1.0;
+    nge103BMeasuredVoltage_[i] = 0.;
+    nge103BMeasuredCurrent_[i] = 0.;
+  }
+
   QString buffer;
   createDAQStatusMessage(buffer);
   emit daqMessage(buffer);
@@ -72,26 +72,17 @@ void Thermo2DAQModel::createDAQStatusMessage(QString &buffer)
   //
   // Start of Rohde & Schwarz NGE103B
   //
-  for (int i=0;i<3;++i) {
-    nge103BOutputState_[i] = nge103BModel_->getOutputState(i+1);
-    nge103BOutputMode_[i] = nge103BModel_->getOutputMode(i+1);
-    nge103BVoltage_[i] = nge103BModel_->getVoltage(i+1);
-    nge103BCurrent_[i] = nge103BModel_->getCurrent(i+1);
-    nge103BMeasuredVoltage_[i] = nge103BModel_->getMeasuredVoltage(i+1);
-    nge103BMeasuredCurrent_[i] = nge103BModel_->getMeasuredCurrent(i+1);
-  }
-
   xml.writeStartElement("RohdeSchwarzNGE103B");
   xml.writeAttribute("time", utime.toString(Qt::ISODate));
   for (int i=0;i<3;++i) {
     xml.writeStartElement(QString("Channel"));
     xml.writeAttribute("id", QString::number(i+1));
-    xml.writeAttribute("State", nge103BOutputState_[i]==true ? "1" : "0");
-    xml.writeAttribute("Mode", QString::number(nge103BOutputMode_[i]));
-    xml.writeAttribute("V", QString::number(nge103BVoltage_[i], 'f', 3));
-    xml.writeAttribute("mV", QString::number(nge103BMeasuredVoltage_[i], 'f', 3));
-    xml.writeAttribute("I", QString::number(nge103BCurrent_[i], 'f', 3));
-    xml.writeAttribute("mI", QString::number(nge103BMeasuredCurrent_[i], 'f', 3));
+    xml.writeAttribute("State", nge103BModel_->getOutputState(i+1)==true ? "1" : "0");
+    xml.writeAttribute("Mode", QString::number(nge103BModel_->getOutputMode(i+1)));
+    xml.writeAttribute("V", QString::number(nge103BModel_->getVoltage(i+1), 'f', 3));
+    xml.writeAttribute("mV", QString::number(nge103BModel_->getMeasuredVoltage(i+1), 'f', 3));
+    xml.writeAttribute("I", QString::number(nge103BModel_->getCurrent(i+1), 'f', 3));
+    xml.writeAttribute("mI", QString::number(nge103BModel_->getMeasuredCurrent(i+1), 'f', 3));
     xml.writeEndElement();
   }
   xml.writeEndElement();
