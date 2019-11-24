@@ -75,7 +75,7 @@ int main( int argc, char** argv )
   myProcess.start(thermoDisplay.c_str());
 #endif
 
-  ApplicationConfig::instance(std::string(Config::CMSTkModLabBasePath) + "/thermo/thermo.cfg");
+  ApplicationConfig::instance(std::string(Config::CMSTkModLabBasePath) + "/thermo/thermo2.cfg");
 
   //ThermoMainWindow mainWindow;
   TestWindow mainWindow;
