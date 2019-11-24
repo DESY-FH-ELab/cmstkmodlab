@@ -61,6 +61,7 @@ HEADERS += TestWindow.h \
            Thermo2DAQWidget.h \
            Thermo2DAQThread.h \
            Thermo2DAQStreamer.h \
+           Thermo2DAQServer.h \
            Thermo2ScriptModel.h \
            Thermo2ScriptWidget.h \
            Thermo2ScriptThread.h \
@@ -73,6 +74,7 @@ SOURCES += thermoDAQ2.cc \
            Thermo2DAQWidget.cc \
            Thermo2DAQThread.cc \
            Thermo2DAQStreamer.cc \
+           Thermo2DAQServer.cc \
            Thermo2ScriptModel.cc \
            Thermo2ScriptWidget.cc \
            Thermo2ScriptThread.cc \

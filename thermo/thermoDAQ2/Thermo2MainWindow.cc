@@ -78,9 +78,9 @@ Thermo2MainWindow::Thermo2MainWindow(QWidget *parent)
 //  if (webuser==getenv("USER")) {
 //    daqWebInfo_ = new ThermoDAQWebInfo(daqModel_, this);
 //  }
-//
-//  daqServer_ = new ThermoDAQServer(daqModel_, this);
-//  daqServer_->listen(QHostAddress::LocalHost, 55555);
+
+  daqServer_ = new Thermo2DAQServer(daqModel_, this);
+  daqServer_->listen(QHostAddress::LocalHost, config->getValue<unsigned int>("ServerPort"));
 
   daqThread_ = new Thermo2DAQThread(daqModel_, this);
   connect(QApplication::instance(), SIGNAL(aboutToQuit()),
@@ -158,8 +158,8 @@ Thermo2MainWindow::Thermo2MainWindow(QWidget *parent)
 
 void Thermo2MainWindow::quit()
 {
-//  if (daqThread_) {
-//    daqThread_->quit();
-//    daqThread_->wait();
-//  }
+  if (daqThread_) {
+    daqThread_->quit();
+    daqThread_->wait();
+  }
 }

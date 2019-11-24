@@ -34,7 +34,7 @@
 #include "Thermo2DAQThread.h"
 #include "Thermo2DAQStreamer.h"
 //#include "ThermoDAQWebInfo.h"
-//#include "ThermoDAQServer.h"
+#include "Thermo2DAQServer.h"
 #include "Thermo2ScriptModel.h"
 
 class Thermo2MainWindow : public QMainWindow
@@ -64,7 +64,7 @@ protected:
   Thermo2DAQThread* daqThread_;
   Thermo2DAQStreamer* daqStreamer_;
   //ThermoDAQWebInfo* daqWebInfo_;
-  //ThermoDAQServer* daqServer_;
+  Thermo2DAQServer* daqServer_;
   Thermo2ScriptModel* scriptModel_;
 };
 
