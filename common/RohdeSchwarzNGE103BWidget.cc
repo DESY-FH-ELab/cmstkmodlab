@@ -51,8 +51,8 @@ RohdeSchwarzNGE103BChannelWidget::RohdeSchwarzNGE103BChannelWidget(RohdeSchwarzN
   lcdCCPalette_.setColor(QPalette::Dark, Qt::red);
 
   voltageSpinner_ = new QDoubleSpinBox(voltageGroup);
-  voltageSpinner_->setMinimum(0.0);
-  voltageSpinner_->setMaximum(32.0);
+  voltageSpinner_->setMinimum(VRohdeSchwarzNGE103B::MinVoltage);
+  voltageSpinner_->setMaximum(VRohdeSchwarzNGE103B::MaxVoltage);
   voltageSpinner_->setSingleStep(0.1);
   voltageSpinner_->setDecimals(3);
   voltageSpinner_->setKeyboardTracking(false);
@@ -69,12 +69,12 @@ RohdeSchwarzNGE103BChannelWidget::RohdeSchwarzNGE103BChannelWidget(RohdeSchwarzN
   currentDisplay_ = new QLCDNumber(LCD_SIZE, currentGroup);
   currentDisplay_->setSegmentStyle(QLCDNumber::Flat);
   currentDisplay_->setSmallDecimalPoint(true);
-  currentDisplay_->setDigitCount(8);
+  currentDisplay_->setDigitCount(6);
   vlayout->addWidget(currentDisplay_);
 
   currentSpinner_ = new QDoubleSpinBox(voltageGroup);
-  currentSpinner_->setMinimum(0.0);
-  currentSpinner_->setMaximum(3.00);
+  currentSpinner_->setMinimum(VRohdeSchwarzNGE103B::MinCurrent);
+  currentSpinner_->setMaximum(VRohdeSchwarzNGE103B::MaxCurrent);
   currentSpinner_->setSingleStep(0.01);
   currentSpinner_->setDecimals(3);
   currentSpinner_->setKeyboardTracking(false);
@@ -92,9 +92,9 @@ RohdeSchwarzNGE103BChannelWidget::RohdeSchwarzNGE103BChannelWidget(RohdeSchwarzN
   vlayout->addWidget(easyRampStateBox_);
 
   easyRampDurationSpinner_ = new QDoubleSpinBox(easyRampGroup);
-  easyRampDurationSpinner_->setMinimum(0.0);
-  easyRampDurationSpinner_->setMaximum(10.00);
-  easyRampDurationSpinner_->setSingleStep(0.01);
+  easyRampDurationSpinner_->setMinimum(VRohdeSchwarzNGE103B::MinEasyRampDuration);
+  easyRampDurationSpinner_->setMaximum(VRohdeSchwarzNGE103B::MaxEasyRampDuration);
+  easyRampDurationSpinner_->setSingleStep(0.1);
   easyRampDurationSpinner_->setDecimals(2);
   easyRampDurationSpinner_->setKeyboardTracking(false);
   easyRampDurationSpinner_->setSuffix(" s");
