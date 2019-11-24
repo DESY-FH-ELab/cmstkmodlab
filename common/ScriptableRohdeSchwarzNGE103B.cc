@@ -19,8 +19,8 @@
 #include "ScriptableRohdeSchwarzNGE103B.h"
 
 ScriptableRohdeSchwarzNGE103B::ScriptableRohdeSchwarzNGE103B(RohdeSchwarzNGE103BModel* model,
-                                                           QObject *parent) :
-    QObject(parent),
+                                                             QObject *parent)
+  : QObject(parent),
     model_(model)
 {
   connect(this, SIGNAL(changeOutputState(int, bool)),

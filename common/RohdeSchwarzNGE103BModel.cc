@@ -238,7 +238,7 @@ void RohdeSchwarzNGE103BModel::updateInformation()
     NQLogDebug("RohdeSchwarzNGE103BModel") << "running in dedicated DAQ thread";
   }
 
-  if ( state_ == READY ) {
+  if (state_ == READY) {
 
     std::array<bool,3> newOutputState;
     std::array<unsigned int,3> newOutputMode;

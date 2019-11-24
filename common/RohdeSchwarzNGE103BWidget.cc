@@ -21,9 +21,9 @@
 RohdeSchwarzNGE103BChannelWidget::RohdeSchwarzNGE103BChannelWidget(RohdeSchwarzNGE103BModel* model,
                                                                    int channel,
                                                                    QWidget *parent)
-: QGroupBox(parent),
-  model_(model),
-  channel_(channel)
+  : QGroupBox(parent),
+    model_(model),
+    channel_(channel)
 {
   setTitle(QString("Channel %1").arg(channel));
 
@@ -233,9 +233,10 @@ void RohdeSchwarzNGE103BChannelWidget::updateInfo()
   \brief Creates a new panel with all the controls and read-outs for the RohdeSchwarzNGE103B
   chiller.
  */
-RohdeSchwarzNGE103BWidget::RohdeSchwarzNGE103BWidget(RohdeSchwarzNGE103BModel* model, QWidget *parent)
-: QWidget(parent),
-  model_(model)
+RohdeSchwarzNGE103BWidget::RohdeSchwarzNGE103BWidget(RohdeSchwarzNGE103BModel* model,
+                                                     QWidget *parent)
+  : QWidget(parent),
+    model_(model)
 {
   QVBoxLayout* layout = new QVBoxLayout();
   setLayout(layout);
