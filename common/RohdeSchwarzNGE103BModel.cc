@@ -64,6 +64,8 @@ void RohdeSchwarzNGE103BModel::setOutputState(int channel, bool state)
   controller_->SetOutputState(state);
 
   outputState_[channel-1] = state;
+
+  updateInformation();
 }
 
 unsigned int RohdeSchwarzNGE103BModel::getOutputMode(int channel) const
@@ -96,6 +98,8 @@ void RohdeSchwarzNGE103BModel::setVoltage(int channel, float voltage)
   controller_->SetVoltage(voltage);
 
   voltage_[channel-1] = voltage;
+
+  updateInformation();
 }
 
 float RohdeSchwarzNGE103BModel::getMeasuredVoltage(int channel) const
@@ -128,6 +132,8 @@ void RohdeSchwarzNGE103BModel::setCurrent(int channel, float current)
   controller_->SetCurrent(current);
 
   current_[channel-1] = current;
+
+  updateInformation();
 }
 
 float RohdeSchwarzNGE103BModel::getMeasuredCurrent(int channel) const
@@ -160,6 +166,8 @@ void RohdeSchwarzNGE103BModel::setEasyRampDuration(int channel, float duration)
   controller_->SetEasyRampDuration(duration);
 
   easyRampDuration_[channel-1] = duration;
+
+  emit informationChanged();
 }
 
 bool RohdeSchwarzNGE103BModel::getEasyRampState(int channel) const
@@ -183,6 +191,8 @@ void RohdeSchwarzNGE103BModel::setEasyRampState(int channel, bool state)
   controller_->SetEasyRampState(state);
 
   easyRampState_[channel-1] = state;
+
+  emit informationChanged();
 }
 
 /**
