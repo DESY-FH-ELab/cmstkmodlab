@@ -14,6 +14,8 @@
 
 #include <QMutexLocker>
 
+#include <nqlogger.h>
+
 #include "ScriptableRohdeSchwarzNGE103B.h"
 
 ScriptableRohdeSchwarzNGE103B::ScriptableRohdeSchwarzNGE103B(RohdeSchwarzNGE103BModel* model,
@@ -42,6 +44,9 @@ QScriptValue ScriptableRohdeSchwarzNGE103B::getOutputState(int channel)
 
 void ScriptableRohdeSchwarzNGE103B::setOutputState(int channel, bool state)
 {
+  NQLogDebug("ScriptableRohdeSchwarzNGE103B") << "setOutputState(int channel, bool state) "
+      << channel << " " << state;
+
   if (channel<1 || channel>3) return;
   QMutexLocker locker(&mutex_);
   emit changeOutputState(channel, state);
@@ -57,6 +62,9 @@ QScriptValue ScriptableRohdeSchwarzNGE103B::getVoltage(int channel)
 
 void ScriptableRohdeSchwarzNGE103B::setVoltage(int channel, float voltage)
 {
+  NQLogDebug("ScriptableRohdeSchwarzNGE103B") << "setVoltage(int channel, float voltage) "
+      << channel << " " << voltage;
+
   if (channel<1 || channel>3 || voltage<0) return;
   QMutexLocker locker(&mutex_);
   emit changeSetVoltage(channel, voltage);
@@ -80,6 +88,9 @@ QScriptValue ScriptableRohdeSchwarzNGE103B::getCurrent(int channel)
 
 void ScriptableRohdeSchwarzNGE103B::setCurrent(int channel, float current)
 {
+  NQLogDebug("ScriptableRohdeSchwarzNGE103B") << "setCurrent(int channel, float current) "
+      << channel << " " << current;
+
   if (channel<1 || channel>3 || current<0) return;
   QMutexLocker locker(&mutex_);
   emit changeSetCurrent(channel, current);
@@ -103,6 +114,9 @@ QScriptValue ScriptableRohdeSchwarzNGE103B::getEasyRampDuration(int channel)
 
 void ScriptableRohdeSchwarzNGE103B::setEasyRampDuration(int channel, float duration)
 {
+  NQLogDebug("ScriptableRohdeSchwarzNGE103B") << "setEasyRampDuration(int channel, float duration) "
+      << channel << " " << duration;
+
   if (channel<1 || channel>3 || duration<0) return;
   QMutexLocker locker(&mutex_);
   emit changeEasyRampDuration(channel, duration);
@@ -117,6 +131,9 @@ QScriptValue ScriptableRohdeSchwarzNGE103B::getEasyRampState(int channel)
 
 void ScriptableRohdeSchwarzNGE103B::setEasyRampState(int channel, bool state)
 {
+  NQLogDebug("ScriptableRohdeSchwarzNGE103B") << "setEasyRampState(int channel, bool state) "
+      << channel << " " << state;
+
   if (channel<1 || channel>3) return;
   QMutexLocker locker(&mutex_);
   emit changeEasyRampState(channel, state);

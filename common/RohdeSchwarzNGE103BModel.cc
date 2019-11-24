@@ -51,6 +51,9 @@ bool RohdeSchwarzNGE103BModel::getOutputState(int channel) const
 
 void RohdeSchwarzNGE103BModel::setOutputState(int channel, bool state)
 {
+  NQLogDebug("RohdeSchwarzNGE103BModel") << "setOutputState(int channel, bool state) "
+      << channel << " " << state;
+
   if (state_!=READY) return;
 
   if (channel<1 || channel>3) return;
@@ -77,6 +80,9 @@ float RohdeSchwarzNGE103BModel::getVoltage(int channel) const
 
 void RohdeSchwarzNGE103BModel::setVoltage(int channel, float voltage)
 {
+  NQLogDebug("RohdeSchwarzNGE103BModel") << "setVoltage(int channel, float voltage) "
+      << channel << " " << voltage;
+
   if (state_!=READY) return;
 
   if (channel<1 || channel>3) return;
@@ -106,6 +112,9 @@ float RohdeSchwarzNGE103BModel::getCurrent(int channel) const
 
 void RohdeSchwarzNGE103BModel::setCurrent(int channel, float current)
 {
+  NQLogDebug("RohdeSchwarzNGE103BModel") << "setCurrent(int channel, float current) "
+      << channel << " " << current;
+
   if (state_!=READY) return;
 
   if (channel<1 || channel>3) return;
@@ -135,6 +144,9 @@ float RohdeSchwarzNGE103BModel::getEasyRampDuration(int channel) const
 
 void RohdeSchwarzNGE103BModel::setEasyRampDuration(int channel, float duration)
 {
+  NQLogDebug("RohdeSchwarzNGE103BModel") << "setEasyRampDuration(int channel, float duration) "
+      << channel << " " << duration;
+
   if (state_!=READY) return;
 
   if (channel<1 || channel>3) return;
@@ -158,6 +170,9 @@ bool RohdeSchwarzNGE103BModel::getEasyRampState(int channel) const
 
 void RohdeSchwarzNGE103BModel::setEasyRampState(int channel, bool state)
 {
+  NQLogDebug("RohdeSchwarzNGE103BModel") << "setEasyRampState(int channel, bool state) "
+      << channel << " " << state;
+
   if (state_!=READY) return;
 
   if (channel<1 || channel>3) return;
@@ -215,12 +230,12 @@ void RohdeSchwarzNGE103BModel::setDeviceState( State state )
   */
 void RohdeSchwarzNGE103BModel::updateInformation()
 {
-  NQLog("RohdeSchwarzNGE103BModel", NQLog::Debug) << "updateInformation()";
+  NQLogDebug("RohdeSchwarzNGE103BModel") << "updateInformation()";
 
   if (thread()==QApplication::instance()->thread()) {
-      NQLog("RohdeSchwarzNGE103BModel", NQLog::Debug) << " running in main application thread";
+    NQLogDebug("RohdeSchwarzNGE103BModel") << "running in main application thread";
   } else {
-      NQLog("RohdeSchwarzNGE103BModel", NQLog::Debug) << " running in dedicated DAQ thread";
+    NQLogDebug("RohdeSchwarzNGE103BModel") << "running in dedicated DAQ thread";
   }
 
   if ( state_ == READY ) {
@@ -265,7 +280,7 @@ void RohdeSchwarzNGE103BModel::updateInformation()
       easyRampDuration_ = newEasyRampDuration;
       easyRampState_ = newEasyRampState;
 
-      NQLog("RohdeSchwarzNGE103BModel", NQLog::Spam) << "information changed";
+      NQLogDebug("RohdeSchwarzNGE103BModel") << "information changed";
 
       emit informationChanged();
     }

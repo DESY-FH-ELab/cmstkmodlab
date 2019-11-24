@@ -169,11 +169,9 @@ void RohdeSchwarzNGE103BChannelWidget::controlStateChanged(bool /*state*/)
 
 void RohdeSchwarzNGE103BChannelWidget::updateInfo()
 {
-  NQLog("RohdeSchwarzNGE103BChannelWidget", NQLog::Debug) << "updateInfo()";
+  NQLogDebug("RohdeSchwarzNGE103BChannelWidget") << "updateInfo()";
 
   unsigned int outputMode = model_->getOutputMode(channel_);
-
-  NQLog("RohdeSchwarzNGE103BChannelWidget", NQLog::Debug) << "outputMode " << outputMode;
 
   switch (outputMode) {
   case VRohdeSchwarzNGE103B::RohdeSchwarzNGE103B_OFF: {
@@ -299,5 +297,5 @@ void RohdeSchwarzNGE103BWidget::controlStateChanged(bool enabled)
  */
 void RohdeSchwarzNGE103BWidget::updateInfo()
 {
-  NQLog("RohdeSchwarzNGE103BWidget", NQLog::Debug) << "updateInfo()";
+  NQLogDebug("RohdeSchwarzNGE103BWidget") << "updateInfo()";
 }
