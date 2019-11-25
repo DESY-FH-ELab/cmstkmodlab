@@ -14,6 +14,7 @@ nav:
     - OSX El Capitan: build/OSXElCapitan.md
 - Thermo:
     - thermoDAQ: thermo/thermoDAQ.md
+    - thermoDAQ2: thermo/thermoDAQ2.md
 - Defo:
     - defoDAQ: defo/defoDAQ.md
     - defoDAQ Scripting: defo/defoDAQScripting.md
