@@ -44,17 +44,17 @@ RohdeSchwarzNGE103BChannelWidget::RohdeSchwarzNGE103BChannelWidget(RohdeSchwarzN
 
   lcdOFFPalette_ = voltageDisplay_->palette();
   lcdCVPalette_ = lcdOFFPalette_;
-  lcdCVPalette_.setColor(QPalette::WindowText, Qt::green);
   lcdCVPalette_.setColor(QPalette::Dark, Qt::green);
+  lcdCVPalette_.setColor(QPalette::Light, Qt::green);
   lcdCCPalette_ = lcdOFFPalette_;
-  lcdCCPalette_.setColor(QPalette::WindowText, Qt::red);
   lcdCCPalette_.setColor(QPalette::Dark, Qt::red);
+  lcdCCPalette_.setColor(QPalette::Light, Qt::red);
 
   voltageSpinner_ = new QDoubleSpinBox(voltageGroup);
   voltageSpinner_->setMinimum(VRohdeSchwarzNGE103B::MinVoltage);
   voltageSpinner_->setMaximum(VRohdeSchwarzNGE103B::MaxVoltage);
   voltageSpinner_->setSingleStep(0.1);
-  voltageSpinner_->setDecimals(3);
+  voltageSpinner_->setDecimals(2);
   voltageSpinner_->setKeyboardTracking(false);
   voltageSpinner_->setSuffix(" V");
   voltageSpinner_->setAlignment(Qt::AlignRight);
@@ -150,6 +150,11 @@ void RohdeSchwarzNGE103BChannelWidget::easyRampDurationSpinnerChanged(double dur
 void RohdeSchwarzNGE103BChannelWidget::easyRampStateChanged(bool state)
 {
   model_->setEasyRampState(channel_, state);
+  if (state) {
+    easyRampDurationSpinner_->setEnabled(false);
+  } else {
+    easyRampDurationSpinner_->setEnabled(true);
+  }
 }
 
 void RohdeSchwarzNGE103BChannelWidget::setOutputStateChanged(bool state)
@@ -175,25 +180,21 @@ void RohdeSchwarzNGE103BChannelWidget::updateInfo()
 
   switch (outputMode) {
   case VRohdeSchwarzNGE103B::RohdeSchwarzNGE103B_OFF: {
-    setPalette(lcdOFFPalette_);
     voltageDisplay_->setPalette(lcdOFFPalette_);
     currentDisplay_->setPalette(lcdOFFPalette_);
     break;
   }
   case VRohdeSchwarzNGE103B::RohdeSchwarzNGE103B_CV: {
-    setPalette(lcdCVPalette_);
     voltageDisplay_->setPalette(lcdCVPalette_);
     currentDisplay_->setPalette(lcdCVPalette_);
     break;
   }
   case VRohdeSchwarzNGE103B::RohdeSchwarzNGE103B_CC: {
-    setPalette(lcdCCPalette_);
     voltageDisplay_->setPalette(lcdCCPalette_);
     currentDisplay_->setPalette(lcdCCPalette_);
     break;
   }
   default: {
-    setPalette(lcdOFFPalette_);
     voltageDisplay_->setPalette(lcdOFFPalette_);
     currentDisplay_->setPalette(lcdOFFPalette_);
   }
@@ -205,7 +206,7 @@ void RohdeSchwarzNGE103BChannelWidget::updateInfo()
     float setVoltage = model_->getVoltage(channel_);
     voltageSpinner_->setValue(setVoltage);
   }
-  snprintf(dummy, sizeof(dummy), "%.03f", model_->getMeasuredVoltage(channel_));
+  snprintf(dummy, sizeof(dummy), "%.02f", model_->getMeasuredVoltage(channel_));
   voltageDisplay_->display(dummy);
 
   if (!currentSpinner_->hasFocus()) {
@@ -216,7 +217,7 @@ void RohdeSchwarzNGE103BChannelWidget::updateInfo()
   currentDisplay_->display(dummy);
 
   if (!easyRampDurationSpinner_->hasFocus()) {
-    float setEasyRampDuration = model_->getCurrent(channel_);
+    float setEasyRampDuration = model_->getEasyRampDuration(channel_);
     easyRampDurationSpinner_->setValue(setEasyRampDuration);
   }
 
@@ -278,18 +279,15 @@ RohdeSchwarzNGE103BWidget::RohdeSchwarzNGE103BWidget(RohdeSchwarzNGE103BModel* m
  */
 void RohdeSchwarzNGE103BWidget::updateDeviceState(State newState)
 {
-  bool ready = (newState == READY);
+  bool ready = (newState == READY || newState == INITIALIZING);
   deviceCheckBox_->setChecked(ready);
-  operationPanel_->setEnabled(ready);
+  controlStateChanged(ready);
 }
 
 /// Updates the GUI when the power supply is enabled/disabled.
 void RohdeSchwarzNGE103BWidget::controlStateChanged(bool enabled)
 {
-  deviceCheckBox_->setEnabled(enabled);
-  if (enabled) {
-    //State state = model_->getDeviceState();
-  }
+  operationPanel_->setEnabled(enabled);
 }
 
 /**
@@ -298,5 +296,5 @@ void RohdeSchwarzNGE103BWidget::controlStateChanged(bool enabled)
  */
 void RohdeSchwarzNGE103BWidget::updateInfo()
 {
-  NQLogDebug("RohdeSchwarzNGE103BWidget") << "updateInfo()";
+
 }

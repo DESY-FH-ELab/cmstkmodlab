@@ -112,8 +112,8 @@ HEADERS += nqlogger.h \
            RohdeSchwarzNGE103BModel.h \
            RohdeSchwarzNGE103BWidget.h \
            ScriptableRohdeSchwarzNGE103B.h \
-           ValueHistory.h
-           
+
+>>>>>>> 42b320c6da45503800eaba44a5e372468216c17e
 SOURCES += nqlogger.cc \
            npoint2D.cc \
            npoint3D.cc \
