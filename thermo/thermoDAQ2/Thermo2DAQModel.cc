@@ -56,13 +56,13 @@ void Thermo2DAQModel::startMeasurement()
   }
 
   QString buffer;
-  createDAQStatusMessage(buffer);
+  createDAQStatusMessage(buffer, true);
   emit daqMessage(buffer);
 
   NQLogMessage("thermo2DAQ") << "measurement started";
 }
 
-void Thermo2DAQModel::createDAQStatusMessage(QString &buffer)
+void Thermo2DAQModel::createDAQStatusMessage(QString &buffer, bool start)
 {
   QDateTime& utime = currentTime();
 
@@ -89,6 +89,12 @@ void Thermo2DAQModel::createDAQStatusMessage(QString &buffer)
   //
   // End of Rohde & Schwarz NGE103B
   //
+
+  if (start) {
+    xml.writeStartElement("DAQStarted");
+    xml.writeAttribute("time", utime.toString(Qt::ISODate));
+    xml.writeEndElement();
+  }
 }
 
 void Thermo2DAQModel::stopMeasurement()

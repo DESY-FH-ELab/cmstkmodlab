@@ -33,7 +33,7 @@ public:
   QDateTime& currentTime();
 
   void customDAQMessage(const QString & message);
-  void createDAQStatusMessage(QString & buffer);
+  void createDAQStatusMessage(QString & buffer, bool start=false);
 
   void myMoveToThread(QThread *thread);
 
