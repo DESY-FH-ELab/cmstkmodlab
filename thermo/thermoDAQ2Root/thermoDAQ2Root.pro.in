@@ -35,7 +35,9 @@ greaterThan(QT_MAJOR_VERSION, 4) {
   cache()
 }
 
-HEADERS += ThermoDAQStreamReader.h
+HEADERS += ThermoDAQStreamReader.h \
+           ThermoDAQ2StreamReader.h
 
 SOURCES += main.cc \
-           ThermoDAQStreamReader.cc
+           ThermoDAQStreamReader.cc \
+           ThermoDAQ2StreamReader.cc
