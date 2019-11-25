@@ -30,6 +30,15 @@ public:
     	currentFirstIndex_ = 0;
     }
 
+    void resize(int N) {
+        buffer_.resize(N);
+        capacity_ = N;
+    }
+
+    int capacity() const {
+        return capacity_;
+    }
+
     int size() const {
     	return size_;
     }
