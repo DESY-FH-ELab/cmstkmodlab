@@ -54,7 +54,7 @@ RohdeSchwarzNGE103BChannelWidget::RohdeSchwarzNGE103BChannelWidget(RohdeSchwarzN
   voltageSpinner_->setMinimum(VRohdeSchwarzNGE103B::MinVoltage);
   voltageSpinner_->setMaximum(VRohdeSchwarzNGE103B::MaxVoltage);
   voltageSpinner_->setSingleStep(0.1);
-  voltageSpinner_->setDecimals(3);
+  voltageSpinner_->setDecimals(2);
   voltageSpinner_->setKeyboardTracking(false);
   voltageSpinner_->setSuffix(" V");
   voltageSpinner_->setAlignment(Qt::AlignRight);
