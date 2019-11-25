@@ -212,7 +212,7 @@ void RohdeSchwarzNGE103BChannelWidget::updateInfo()
   currentDisplay_->display(dummy);
 
   if (!easyRampDurationSpinner_->hasFocus()) {
-    float setEasyRampDuration = model_->getCurrent(channel_);
+    float setEasyRampDuration = model_->getEasyRampDuration(channel_);
     easyRampDurationSpinner_->setValue(setEasyRampDuration);
   }
 
