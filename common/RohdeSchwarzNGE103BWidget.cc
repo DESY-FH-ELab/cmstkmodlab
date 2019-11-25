@@ -294,5 +294,5 @@ void RohdeSchwarzNGE103BWidget::controlStateChanged(bool enabled)
  */
 void RohdeSchwarzNGE103BWidget::updateInfo()
 {
-  NQLogDebug("RohdeSchwarzNGE103BWidget") << "updateInfo()";
+
 }
