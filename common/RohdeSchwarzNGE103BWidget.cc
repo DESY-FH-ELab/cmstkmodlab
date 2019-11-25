@@ -274,18 +274,15 @@ RohdeSchwarzNGE103BWidget::RohdeSchwarzNGE103BWidget(RohdeSchwarzNGE103BModel* m
  */
 void RohdeSchwarzNGE103BWidget::updateDeviceState(State newState)
 {
-  bool ready = (newState == READY);
+  bool ready = (newState == READY || newState == INITIALIZING);
   deviceCheckBox_->setChecked(ready);
-  operationPanel_->setEnabled(ready);
+  controlStateChanged(ready);
 }
 
 /// Updates the GUI when the power supply is enabled/disabled.
 void RohdeSchwarzNGE103BWidget::controlStateChanged(bool enabled)
 {
-  deviceCheckBox_->setEnabled(enabled);
-  if (enabled) {
-    //State state = model_->getDeviceState();
-  }
+  operationPanel_->setEnabled(enabled);
 }
 
 /**
