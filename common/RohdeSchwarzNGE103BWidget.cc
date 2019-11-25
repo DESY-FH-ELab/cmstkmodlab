@@ -44,11 +44,11 @@ RohdeSchwarzNGE103BChannelWidget::RohdeSchwarzNGE103BChannelWidget(RohdeSchwarzN
 
   lcdOFFPalette_ = voltageDisplay_->palette();
   lcdCVPalette_ = lcdOFFPalette_;
-  lcdCVPalette_.setColor(QPalette::WindowText, Qt::green);
   lcdCVPalette_.setColor(QPalette::Dark, Qt::green);
+  lcdCVPalette_.setColor(QPalette::Light, Qt::green);
   lcdCCPalette_ = lcdOFFPalette_;
-  lcdCCPalette_.setColor(QPalette::WindowText, Qt::red);
   lcdCCPalette_.setColor(QPalette::Dark, Qt::red);
+  lcdCCPalette_.setColor(QPalette::Light, Qt::red);
 
   voltageSpinner_ = new QDoubleSpinBox(voltageGroup);
   voltageSpinner_->setMinimum(VRohdeSchwarzNGE103B::MinVoltage);
@@ -175,25 +175,21 @@ void RohdeSchwarzNGE103BChannelWidget::updateInfo()
 
   switch (outputMode) {
   case VRohdeSchwarzNGE103B::RohdeSchwarzNGE103B_OFF: {
-    setPalette(lcdOFFPalette_);
     voltageDisplay_->setPalette(lcdOFFPalette_);
     currentDisplay_->setPalette(lcdOFFPalette_);
     break;
   }
   case VRohdeSchwarzNGE103B::RohdeSchwarzNGE103B_CV: {
-    setPalette(lcdCVPalette_);
     voltageDisplay_->setPalette(lcdCVPalette_);
     currentDisplay_->setPalette(lcdCVPalette_);
     break;
   }
   case VRohdeSchwarzNGE103B::RohdeSchwarzNGE103B_CC: {
-    setPalette(lcdCCPalette_);
     voltageDisplay_->setPalette(lcdCCPalette_);
     currentDisplay_->setPalette(lcdCCPalette_);
     break;
   }
   default: {
-    setPalette(lcdOFFPalette_);
     voltageDisplay_->setPalette(lcdOFFPalette_);
     currentDisplay_->setPalette(lcdOFFPalette_);
   }
@@ -205,7 +201,7 @@ void RohdeSchwarzNGE103BChannelWidget::updateInfo()
     float setVoltage = model_->getVoltage(channel_);
     voltageSpinner_->setValue(setVoltage);
   }
-  snprintf(dummy, sizeof(dummy), "%.03f", model_->getMeasuredVoltage(channel_));
+  snprintf(dummy, sizeof(dummy), "%.02f", model_->getMeasuredVoltage(channel_));
   voltageDisplay_->display(dummy);
 
   if (!currentSpinner_->hasFocus()) {
