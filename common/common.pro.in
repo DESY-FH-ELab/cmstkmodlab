@@ -110,9 +110,10 @@ HEADERS += nqlogger.h \
            ConradModel.h \
            LeyboldGraphixThreeModel.h \
            RohdeSchwarzNGE103BModel.h \
-
            RohdeSchwarzNGE103BWidget.h \
-           ScriptableRohdeSchwarzNGE103B.h
+           ScriptableRohdeSchwarzNGE103B.h \
+           ValueHistory.h
+           
 SOURCES += nqlogger.cc \
            npoint2D.cc \
            npoint3D.cc \
