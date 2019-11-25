@@ -150,6 +150,11 @@ void RohdeSchwarzNGE103BChannelWidget::easyRampDurationSpinnerChanged(double dur
 void RohdeSchwarzNGE103BChannelWidget::easyRampStateChanged(bool state)
 {
   model_->setEasyRampState(channel_, state);
+  if (state) {
+    easyRampDurationSpinner_->setEnabled(false);
+  } else {
+    easyRampDurationSpinner_->setEnabled(true);
+  }
 }
 
 void RohdeSchwarzNGE103BChannelWidget::setOutputStateChanged(bool state)
