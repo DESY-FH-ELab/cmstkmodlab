@@ -75,12 +75,12 @@ void Thermo2DAQModel::createDAQStatusMessage(QString &buffer)
   xml.writeStartElement("RohdeSchwarzNGE103B");
   xml.writeAttribute("time", utime.toString(Qt::ISODate));
   for (int i=0;i<3;++i) {
-    xml.writeStartElement(QString("Channel"));
+    xml.writeStartElement(QString("RohdeSchwarzNGE103BChannel"));
     xml.writeAttribute("id", QString::number(i+1));
     xml.writeAttribute("State", nge103BModel_->getOutputState(i+1)==true ? "1" : "0");
     xml.writeAttribute("Mode", QString::number(nge103BModel_->getOutputMode(i+1)));
-    xml.writeAttribute("V", QString::number(nge103BModel_->getVoltage(i+1), 'f', 3));
-    xml.writeAttribute("mV", QString::number(nge103BModel_->getMeasuredVoltage(i+1), 'f', 3));
+    xml.writeAttribute("U", QString::number(nge103BModel_->getVoltage(i+1), 'f', 3));
+    xml.writeAttribute("mU", QString::number(nge103BModel_->getMeasuredVoltage(i+1), 'f', 3));
     xml.writeAttribute("I", QString::number(nge103BModel_->getCurrent(i+1), 'f', 3));
     xml.writeAttribute("mI", QString::number(nge103BModel_->getMeasuredCurrent(i+1), 'f', 3));
     xml.writeEndElement();
@@ -89,10 +89,6 @@ void Thermo2DAQModel::createDAQStatusMessage(QString &buffer)
   //
   // End of Rohde & Schwarz NGE103B
   //
-
-  xml.writeStartElement("DAQStarted");
-  xml.writeAttribute("time", utime.toString(Qt::ISODate));
-  xml.writeEndElement();
 }
 
 void Thermo2DAQModel::stopMeasurement()
@@ -156,8 +152,8 @@ void Thermo2DAQModel::nge103BInfoChanged()
       xml.writeAttribute("id", QString::number(i+1));
       xml.writeAttribute("State", nge103BOutputState_[i]==true ? "1" : "0");
       xml.writeAttribute("Mode", QString::number(nge103BOutputMode_[i]));
-      xml.writeAttribute("V", QString::number(nge103BVoltage_[i], 'f', 3));
-      xml.writeAttribute("mV", QString::number(nge103BMeasuredVoltage_[i], 'f', 3));
+      xml.writeAttribute("U", QString::number(nge103BVoltage_[i], 'f', 3));
+      xml.writeAttribute("mU", QString::number(nge103BMeasuredVoltage_[i], 'f', 3));
       xml.writeAttribute("I", QString::number(nge103BCurrent_[i], 'f', 3));
       xml.writeAttribute("mI", QString::number(nge103BMeasuredCurrent_[i], 'f', 3));
       xml.writeEndElement();
