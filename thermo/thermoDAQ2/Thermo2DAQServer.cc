@@ -69,8 +69,11 @@ Thermo2DAQServerThread::Thermo2DAQServerThread(qintptr socketDescriptor,
 
 void Thermo2DAQServerThread::run()
 {
+  NQLogDebug("Thermo2DAQServerThread") << "run()";
+
   QTcpSocket tcpSocket;
   if (!tcpSocket.setSocketDescriptor(socketDescriptor_)) {
+    NQLogDebug("Thermo2DAQServerThread") << "error setting socket descriptor";
     emit error(tcpSocket.error());
     return;
   }
