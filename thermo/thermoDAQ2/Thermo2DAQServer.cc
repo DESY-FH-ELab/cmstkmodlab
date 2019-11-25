@@ -25,6 +25,7 @@ Thermo2DAQServer::Thermo2DAQServer(Thermo2DAQModel* model, QObject *parent)
 
 }
 
+#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
 void Thermo2DAQServer::incomingConnection(int socketDescriptor)
 {
   NQLogMessage("ThermoDAQServer") << "incomingConnection(int socketDescriptor)";
@@ -33,16 +34,38 @@ void Thermo2DAQServer::incomingConnection(int socketDescriptor)
   connect(thread, SIGNAL(finished()), thread, SLOT(deleteLater()));
   thread->start();
 }
+#else
+void Thermo2DAQServer::incomingConnection(qintptr socketDescriptor)
+{
+  NQLogMessage("ThermoDAQServer") << "incomingConnection(qintptr socketDescriptor)";
 
+  Thermo2DAQServerThread *thread = new Thermo2DAQServerThread(socketDescriptor, model_, this);
+  connect(thread, SIGNAL(finished()), thread, SLOT(deleteLater()));
+  thread->start();
+}
+#endif
+
+#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
 Thermo2DAQServerThread::Thermo2DAQServerThread(int socketDescriptor,
-                                             Thermo2DAQModel* model,
-                                             QObject *parent)
+                                               Thermo2DAQModel* model,
+                                               QObject *parent)
   : QThread(parent),
     socketDescriptor_(socketDescriptor),
     model_(model)
 {
 
 }
+#else
+Thermo2DAQServerThread::Thermo2DAQServerThread(qintptr socketDescriptor,
+                                               Thermo2DAQModel* model,
+                                               QObject *parent)
+  : QThread(parent),
+    socketDescriptor_(socketDescriptor),
+    model_(model)
+{
+
+}
+#endif
 
 void Thermo2DAQServerThread::run()
 {

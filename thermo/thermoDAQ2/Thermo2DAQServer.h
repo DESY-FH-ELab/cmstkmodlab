@@ -24,9 +24,15 @@ class Thermo2DAQServerThread : public QThread
   Q_OBJECT
 
 public:
+#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
   Thermo2DAQServerThread(int socketDescriptor,
                          Thermo2DAQModel* model,
                          QObject *parent);
+#else
+  Thermo2DAQServerThread(qintptr socketDescriptor,
+                         Thermo2DAQModel* model,
+                         QObject *parent);
+#endif
 
   void run();
 
@@ -36,7 +42,12 @@ signals:
 
 private:
 
+#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
   int socketDescriptor_;
+#else
+  qintptr socketDescriptor_;
+#endif
+
   Thermo2DAQModel* model_;
 };
 
@@ -49,7 +60,11 @@ public:
 
 protected:
 
+#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
   void incomingConnection(int socketDescriptor);
+#else
+  void incomingConnection(qintptr socketDescriptor);
+#endif
 
 private:
 
