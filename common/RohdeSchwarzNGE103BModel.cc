@@ -74,7 +74,7 @@ void RohdeSchwarzNGE103BModel::setOutputState(int channel, bool state)
 
   if (easyRampState_[channel-1]) {
     QTimer::singleShot(1000*easyRampDuration_[channel-1], this,
-		       SLOT(updateInformation()));
+                       SLOT(updateInformation()));
   }
 }
 
