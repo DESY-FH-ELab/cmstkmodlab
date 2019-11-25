@@ -154,7 +154,7 @@ void Thermo2DAQModel::nge103BInfoChanged()
     changed |= updateIfChanged<float>(nge103BMeasuredCurrent_[i], nge103BModel_->getMeasuredCurrent(i+1));
 
     if (changed) {
-      xml.writeStartElement(QString("Channel"));
+      xml.writeStartElement(QString("RohdeSchwarzNGE103BChannel"));
       xml.writeAttribute("id", QString::number(i+1));
       xml.writeAttribute("State", nge103BOutputState_[i]==true ? "1" : "0");
       xml.writeAttribute("Mode", QString::number(nge103BOutputMode_[i]));
