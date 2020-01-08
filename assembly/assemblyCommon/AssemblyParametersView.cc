@@ -158,11 +158,11 @@ AssemblyParametersView::AssemblyParametersView(QWidget* parent)
   posi_lay->addWidget(new QLabel(tr("A"))    , row_index, 7, Qt::AlignRight);
   posi_lay->addWidget(this->get(tmp_tag+"_A"), row_index, 8, Qt::AlignRight);
 
-  // position: XYZA position of ref-point on assembly platform for calibration of spacers
+  // position: XYZA position of ref-point on assembly platform for calibration of baseplate
   ++row_index;
 
-  tmp_tag = "PlatformRefPointCalibrationSpacers";
-  tmp_des = "[Calibration: Spacers] Ref-Point :";
+  tmp_tag = "PlatformRefPointCalibrationBaseplate";
+  tmp_des = "[Calibration: Baseplate] Ref-Point :";
 
   map_lineEdit_[tmp_tag+"_X"] = new QLineEdit(tr(""));
   map_lineEdit_[tmp_tag+"_Y"] = new QLineEdit(tr(""));
@@ -179,11 +179,11 @@ AssemblyParametersView::AssemblyParametersView(QWidget* parent)
   posi_lay->addWidget(new QLabel(tr("A"))    , row_index, 7, Qt::AlignRight);
   posi_lay->addWidget(this->get(tmp_tag+"_A"), row_index, 8, Qt::AlignRight);
 
-  // position: XYZA position of ref-point on assembly platform for calibration of baseplate
+  // position: XYZA position of ref-point on assembly platform for calibration of spacers
   ++row_index;
 
-  tmp_tag = "PlatformRefPointCalibrationBaseplate";
-  tmp_des = "[Calibration: Baseplate] Ref-Point :";
+  tmp_tag = "PlatformRefPointCalibrationSpacers";
+  tmp_des = "[Calibration: Spacers] Ref-Point :";
 
   map_lineEdit_[tmp_tag+"_X"] = new QLineEdit(tr(""));
   map_lineEdit_[tmp_tag+"_Y"] = new QLineEdit(tr(""));
