@@ -11,7 +11,11 @@ LIB           = TkModLabKeithley
 MODULES       = KMMComHandler \
                 VKeithley2700 \
                 Keithley2700Fake \
-                Keithley2700
+                Keithley2700 \
+                KeithleyUSBTMCComHandler \
+                VKeithleyDAQ6510 \
+                KeithleyDAQ6510Fake \
+                KeithleyDAQ6510
 
 ALLDEPEND = $(addsuffix .d,$(MODULES))
 
