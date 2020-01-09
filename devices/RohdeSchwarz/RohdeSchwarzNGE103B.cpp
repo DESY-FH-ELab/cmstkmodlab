@@ -313,7 +313,7 @@ void RohdeSchwarzNGE103B::DeviceInit()
     StripBuffer(buffer);
     std::string buf = buffer;
     
-    if (buf.find("Rohde&Schwarz,NGE103B,5601.3800k03", 0)==0) {
+    if (buf.find("Rohde&Schwarz,NGE103B", 0)==0) {
       isDeviceAvailable_ = true;
     } else {
       isDeviceAvailable_ = false;
