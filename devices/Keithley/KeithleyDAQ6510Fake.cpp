@@ -38,3 +38,8 @@ void KeithleyDAQ6510Fake::ActivateChannel(unsigned int card, unsigned int channe
   if (channel<1 || channel>10) return;
   activeChannels_[card-1][channel-1] = active;
 }
+
+float KeithleyDAQ6510Fake::GetScanDuration() const
+{
+  return 0.2 * GetActiveChannelCount();
+}

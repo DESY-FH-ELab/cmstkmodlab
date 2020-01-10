@@ -44,6 +44,8 @@ class KeithleyDAQ6510Fake : public VKeithleyDAQ6510
   void Reset() { }
   */
   
+  float GetScanDuration() const;
+
 protected:
 
 };

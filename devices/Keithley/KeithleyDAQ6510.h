@@ -46,7 +46,9 @@ class KeithleyDAQ6510 : public VKeithleyDAQ6510
   static constexpr int DelayMin = 1700000;
   static constexpr int DelayMax = 7000000;
   */
-  
+
+  float GetScanDuration() const;
+
  private:
 
   KeithleyUSBTMCComHandler* comHandler_;

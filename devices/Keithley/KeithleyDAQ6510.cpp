@@ -196,6 +196,14 @@ void KeithleyDAQ6510::Dump( void ) const {
 }
 */
 
+
+float KeithleyDAQ6510::GetScanDuration() const
+{
+  unsigned int channelCount = GetActiveChannelCount();
+
+  return channelCount * (0.1 + 0.1 + 0.1);
+}
+
 void KeithleyDAQ6510::DeviceSetChannels()
 {
   std::stringstream ss;
