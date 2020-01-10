@@ -200,3 +200,14 @@ std::string VKeithleyDAQ6510::CreateChannelString(unsigned int card, channels_t&
 
   return ss.str();
 }
+
+unsigned int VKeithleyDAQ6510::GetActiveChannelCount() const
+{
+  unsigned int count = 0;
+  for (unsigned int card = 1;card<=2;++card) {
+    for (unsigned int channel = 1;channel<=10;++channel) {
+      if (activeChannels_[card-1][channel-1]) count++;
+    }
+  }
+  return count;
+}

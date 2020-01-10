@@ -33,6 +33,9 @@ class KeithleyDAQ6510Fake : public VKeithleyDAQ6510
   void ActivateChannel(unsigned int card, unsigned int channel,
                        bool active);
 
+  bool GetScanStatus() const { return true; }
+  void Scan();
+
   /*
   void SetActiveChannels( std::string );
   void SetActiveChannels( channels_t );
@@ -44,6 +47,8 @@ class KeithleyDAQ6510Fake : public VKeithleyDAQ6510
   void Reset() { }
   */
   
+  float GetScanDuration() const;
+
 protected:
 
 };

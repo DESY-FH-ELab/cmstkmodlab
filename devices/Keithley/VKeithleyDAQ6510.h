@@ -38,6 +38,10 @@ class VKeithleyDAQ6510
   
   virtual void ActivateChannel(unsigned int card, unsigned int channel,
                                bool active) = 0;
+  unsigned int GetActiveChannelCount() const;
+
+  virtual bool GetScanStatus() const = 0;
+  virtual void Scan() = 0;
 
   /*
   virtual void SetActiveChannels( std::string ) = 0;
@@ -57,6 +61,7 @@ class VKeithleyDAQ6510
   static constexpr unsigned int RangeMax = 9;
   */
   
+  virtual float GetScanDuration() const = 0;
   std::string CreateChannelString(unsigned int card, channels_t& channels);
 
  protected:
