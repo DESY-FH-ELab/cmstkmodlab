@@ -228,6 +228,23 @@ void KeithleyDAQ6510::Scan()
   std::cout << buf << std::endl;
 }
 
+void KeithleyDAQ6510::GetScanData(reading_t & data)
+{
+  char buffer[1000];
+  std::string buf;
+
+  std::stringstream ss;
+  ss << "TRAC:DATA? 1, ";
+  ss << GetActiveChannelCount();
+  ss << ", 'defbuffer1', CHAN, READ, REL";
+
+  comHandler_->SendCommand(ss.str().c_str());
+  comHandler_->ReceiveString(buffer);
+  StripBuffer(buffer);
+  buf = buffer;
+  std::cout << buf << std::endl;
+}
+
 float KeithleyDAQ6510::GetScanDuration() const
 {
   unsigned int channelCount = GetActiveChannelCount();

@@ -15,9 +15,12 @@
 
 #include <string>
 #include <array>
+#include <vector>
+#include <tuple>
 
 typedef std::array<bool, 10> channels_t;
 typedef std::array<channels_t,2> cards_t;
+typedef std::vector<std::tuple<unsigned int,double,double>> reading_t;
 
 typedef const char* ioport_t;
 
@@ -42,6 +45,7 @@ class VKeithleyDAQ6510
 
   virtual bool GetScanStatus() const = 0;
   virtual void Scan() = 0;
+  virtual void GetScanData(reading_t & data) = 0;
 
   /*
   virtual void SetActiveChannels( std::string ) = 0;

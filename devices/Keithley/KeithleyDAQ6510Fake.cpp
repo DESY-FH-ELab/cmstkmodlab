@@ -41,7 +41,26 @@ void KeithleyDAQ6510Fake::ActivateChannel(unsigned int card, unsigned int channe
 
 void KeithleyDAQ6510Fake::Scan()
 {
+  data_.clear();
 
+  unsigned int i = 0;
+  for (unsigned int card = 1;card<=2;++card) {
+    for (unsigned int channel = 1;channel<=10;++channel) {
+      if (activeChannels_[card-1][channel-1]) {
+        double temperature = channel;
+        temperature /= 100.;
+        temperature += 20 + card;
+        unsigned int sensor = card * 100 + channel;
+        data_.push_back(std::tuple<unsigned int,double,double>(sensor,temperature,i*0.1));
+        i++;
+      }
+    }
+  }
+}
+
+void KeithleyDAQ6510Fake::GetScanData(reading_t & data)
+{
+  data = data_;
 }
 
 float KeithleyDAQ6510Fake::GetScanDuration() const
