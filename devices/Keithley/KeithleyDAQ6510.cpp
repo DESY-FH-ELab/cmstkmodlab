@@ -196,6 +196,37 @@ void KeithleyDAQ6510::Dump( void ) const {
 }
 */
 
+bool KeithleyDAQ6510::GetScanStatus() const
+{
+  char buffer[1000];
+  std::string buf;
+
+  comHandler_->SendCommand("ROUT:SCAN:STAT?");
+  comHandler_->ReceiveString(buffer);
+  StripBuffer(buffer);
+  buf = buffer;
+  std::cout << buf << std::endl;
+
+  return true;
+}
+
+void KeithleyDAQ6510::Scan()
+{
+  char buffer[1000];
+  std::string buf;
+
+  comHandler_->SendCommand("TRAC:CLE");
+  comHandler_->ReceiveString(buffer);
+  StripBuffer(buffer);
+  buf = buffer;
+  std::cout << buf << std::endl;
+
+  comHandler_->SendCommand("INIT");
+  comHandler_->ReceiveString(buffer);
+  StripBuffer(buffer);
+  buf = buffer;
+  std::cout << buf << std::endl;
+}
 
 float KeithleyDAQ6510::GetScanDuration() const
 {
@@ -259,6 +290,12 @@ void KeithleyDAQ6510::DeviceInit()
     buf = buffer;
     std::cout << buf << std::endl;
     
+    comHandler_->SendCommand( "ROUT:OPEN:ALL" );
+    comHandler_->ReceiveString(buffer);
+    StripBuffer(buffer);
+    buf = buffer;
+    std::cout << buf << std::endl;
+
     comHandler_->SendCommand("FORM:ASC:PREC 9");
     comHandler_->ReceiveString(buffer);
     StripBuffer(buffer);
@@ -277,12 +314,14 @@ void KeithleyDAQ6510::DeviceInit()
         activeChannels_[0][channel-1] = false;
       }
       
-      comHandler_->SendCommand("SENS:FUNC 'TEMP', (@SLOT1)");
+      comHandler_->SendCommand("SENS:FUNC 'VOLT', (@SLOT1)");
+      //comHandler_->SendCommand("SENS:FUNC 'TEMP', (@SLOT1)");
       comHandler_->ReceiveString(buffer);
       StripBuffer(buffer);
       buf = buffer;
       std::cout << buf << std::endl;
       
+      /*
       comHandler_->SendCommand("SENS:TEMP:TRAN FRTD, (@SLOT1)");
       comHandler_->ReceiveString(buffer);
       StripBuffer(buffer);
@@ -296,6 +335,13 @@ void KeithleyDAQ6510::DeviceInit()
       std::cout << buf << std::endl;
 
       comHandler_->SendCommand("SENS:TEMP:UNIT CELS, (@SLOT1)");
+      comHandler_->ReceiveString(buffer);
+      StripBuffer(buffer);
+      buf = buffer;
+      std::cout << buf << std::endl;
+      */
+
+      comHandler_->SendCommand("ROUT:DEL 0.1, (@SLOT1)");
       comHandler_->ReceiveString(buffer);
       StripBuffer(buffer);
       buf = buffer;
@@ -314,12 +360,6 @@ void KeithleyDAQ6510::DeviceInit()
         activeChannels_[1][channel-1] = false;
       }
     }
-    
-    comHandler_->SendCommand( "ROUT:OPEN:ALL" );
-    comHandler_->ReceiveString(buffer);
-    StripBuffer(buffer);
-    buf = buffer;
-    std::cout << buf << std::endl;
 
     isDeviceAvailable_ = true;
   }
@@ -334,18 +374,3 @@ void KeithleyDAQ6510::StripBuffer(char* buffer) const
     }
   }
 }
-
-/*
-///
-///
-///
-void KeithleyDAQ6510::CalculateDelay( void ) {
-
-  uSecDelay_ = DelayMin + ( DelayMax - DelayMin) / 10 * enabledChannels_.size();
-
-  if( isDebug_ ) {
-    std::cout << " [KeithleyDAQ6510::CalculateDelay] -- DEBUG: Delay is now: "
-              << uSecDelay_ << " usec." << std::endl;
-  }
-}
-*/

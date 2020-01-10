@@ -31,6 +31,9 @@ class KeithleyDAQ6510 : public VKeithleyDAQ6510
   void ActivateChannel(unsigned int card, unsigned int channel,
                        bool active);
 
+  bool GetScanStatus() const;
+  void Scan();
+
   /*
   void SetActiveChannels( std::string );
   void SetActiveChannels( channels_t );

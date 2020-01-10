@@ -40,6 +40,8 @@ class VKeithleyDAQ6510
                                bool active) = 0;
   unsigned int GetActiveChannelCount() const;
 
+  virtual bool GetScanStatus() const = 0;
+  virtual void Scan() = 0;
 
   /*
   virtual void SetActiveChannels( std::string ) = 0;
