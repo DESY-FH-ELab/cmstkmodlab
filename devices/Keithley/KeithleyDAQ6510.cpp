@@ -243,6 +243,19 @@ void KeithleyDAQ6510::GetScanData(reading_t & data)
   StripBuffer(buffer);
   buf = buffer;
   std::cout << buf << std::endl;
+
+  std::vector<std::string> tokens(0);
+  Tokenize(buf, tokens, ",");
+
+  for (std::vector<std::string>::iterator it=tokens.begin();
+       it!=tokens.end();
+       ++it) {
+    unsigned int sensor = std::atoi(it->c_str()); ++it;
+    double temperature = std::atof(it->c_str()); ++it;
+    double relTime = std::atof(it->c_str());
+
+    data.push_back(std::tuple<unsigned int,double,double>(sensor,temperature,relTime));
+  }
 }
 
 float KeithleyDAQ6510::GetScanDuration() const
