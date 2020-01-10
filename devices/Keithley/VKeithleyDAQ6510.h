@@ -38,6 +38,8 @@ class VKeithleyDAQ6510
   
   virtual void ActivateChannel(unsigned int card, unsigned int channel,
                                bool active) = 0;
+  unsigned int GetActiveChannelCount() const;
+
 
   /*
   virtual void SetActiveChannels( std::string ) = 0;
