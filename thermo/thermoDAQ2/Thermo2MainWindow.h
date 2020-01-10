@@ -27,8 +27,7 @@
 //#include "HuberPetiteFleurModel.h"
 //#include "HuberPetiteFleurWidget.h"
 
-//#include "KeithleyModel.h"
-//#include "KeithleyWidget.h"
+#include "KeithleyDAQ6510Model.h"
 
 #include "Thermo2DAQModel.h"
 #include "Thermo2DAQThread.h"
@@ -55,7 +54,7 @@ protected:
 
   RohdeSchwarzNGE103BModel* nge103BModel_;
   //HuberPetiteFleurModel* huberModel_;
-  //KeithleyModel* keithleyModel_;
+  KeithleyDAQ6510Model* keithleyModel_;
   //PfeifferModel* pfeifferModel_;
   //IotaModel* iotaModel_;
   //ArduinoPresModel* arduinoPresModel_;

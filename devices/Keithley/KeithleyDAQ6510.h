@@ -33,6 +33,7 @@ class KeithleyDAQ6510 : public VKeithleyDAQ6510
 
   bool GetScanStatus() const;
   void Scan();
+  void GetScanData(reading_t & data);
 
   /*
   void SetActiveChannels( std::string );

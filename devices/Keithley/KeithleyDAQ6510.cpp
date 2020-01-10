@@ -229,6 +229,36 @@ void KeithleyDAQ6510::Scan()
   std::cout << buf << std::endl;
 }
 
+void KeithleyDAQ6510::GetScanData(reading_t & data)
+{
+  char buffer[1000];
+  std::string buf;
+
+  std::stringstream ss;
+  ss << "TRAC:DATA? 1, ";
+  ss << GetActiveChannelCount();
+  ss << ", 'defbuffer1', CHAN, READ, REL";
+
+  comHandler_->SendCommand(ss.str().c_str());
+  comHandler_->ReceiveString(buffer);
+  StripBuffer(buffer);
+  buf = buffer;
+  std::cout << buf << std::endl;
+
+  std::vector<std::string> tokens(0);
+  Tokenize(buf, tokens, ",");
+
+  for (std::vector<std::string>::iterator it=tokens.begin();
+       it!=tokens.end();
+       ++it) {
+    unsigned int sensor = std::atoi(it->c_str()); ++it;
+    double temperature = std::atof(it->c_str()); ++it;
+    double relTime = std::atof(it->c_str());
+
+    data.push_back(std::tuple<unsigned int,double,double>(sensor,temperature,relTime));
+  }
+}
+
 float KeithleyDAQ6510::GetScanDuration() const
 {
   unsigned int channelCount = GetActiveChannelCount();
@@ -239,15 +269,31 @@ float KeithleyDAQ6510::GetScanDuration() const
 void KeithleyDAQ6510::DeviceSetChannels()
 {
   std::stringstream ss;
+  unsigned int count;
 
   // build rout:scan command
   ss << "ROUT:SCAN (@";
   
-  ss << CreateChannelString(1, activeChannels_[0]);
-  ss << ",";
-  ss << CreateChannelString(2, activeChannels_[1]);
+  count = 0;
+  for (unsigned int channel = 1;channel<=10;++channel) {
+    if (activeChannels_[0][channel-1]) count++;
+  }
+  if (count) {
+    ss << CreateChannelString(1, activeChannels_[0]);
+  }
+
+  count = 0;
+  for (unsigned int channel = 1;channel<=10;++channel) {
+    if (activeChannels_[0][channel-1]) count++;
+  }
+  if (count) {
+    ss << ",";
+    ss << CreateChannelString(2, activeChannels_[1]);
+  }
 
   ss << ")";
+
+  std::cout << ss.str() << std::endl;
 
   comHandler_->SendCommand(ss.str().c_str());
 }
