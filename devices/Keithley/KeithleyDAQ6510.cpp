@@ -18,6 +18,7 @@
 #include <cstdlib>
 #include <algorithm>
 #include <sstream>
+#include <chrono>
 
 #include "KeithleyDAQ6510.h"
 
@@ -41,6 +42,22 @@ KeithleyDAQ6510::KeithleyDAQ6510(ioport_t port)
   DeviceInit();
 }
 
+void KeithleyDAQ6510::SetTime(int year, int month, int day,
+                              int hour, int minute, int second)
+{
+  std::stringstream ss;
+
+  ss << "SYST:TIME ";
+  ss << year << ", ";
+  ss << month << ", ";
+  ss << day << ", ";
+  ss << hour << ", ";
+  ss << minute << ", ";
+  ss << second;
+
+  comHandler_->SendCommand(ss.str().c_str());
+}
+
 void KeithleyDAQ6510::ActivateChannel(unsigned int card, unsigned int channel,
                                       bool active)
 {
@@ -50,152 +67,6 @@ void KeithleyDAQ6510::ActivateChannel(unsigned int card, unsigned int channel,
 
   DeviceSetChannels();
 }
-
-/*
-///
-/// enables the channels given by string
-/// format: see ::ParseChannelString
-///
-void KeithleyDAQ6510::SetActiveChannels( std::string channelString )
-{
-  enabledChannels_.resize( 0 );
-  enabledChannels_ = ParseChannelString( channelString );
-
-  CalculateDelay();
-
-  Device_SetChannels();
-}
-
-void KeithleyDAQ6510::SetActiveChannels( channels_t channels )
-{
-  enabledChannels_ = channels;
-
-  CalculateDelay();
-
-  Device_SetChannels();
-}
-
-///
-/// adds the channels given by string to the list of enabled ones
-/// format: see ParseChannelString
-///
-void KeithleyDAQ6510::AddActiveChannels( std::string channelString ) {
-
-  // append new channels
-  const channels_t& newChannels = ParseChannelString( channelString );
-  enabledChannels_.insert( enabledChannels_.end(), newChannels.begin(), newChannels.end() );
-
-  // re-sort and remove duplicates
-  std::sort( enabledChannels_.begin(), enabledChannels_.end() );
-  enabledChannels_.erase( std::unique( enabledChannels_.begin(), enabledChannels_.end() ), enabledChannels_.end() );
-
-  CalculateDelay();
-
-  Device_SetChannels();
-}
-
-///
-/// removes the channels given by string from the list of enabled ones
-/// format: see ParseChannelString
-///
-void KeithleyDAQ6510::DisableActiveChannels( std::string channelString ) {
-
-  const channels_t& newChannels = ParseChannelString( channelString );
-
-  for( channels_t::const_iterator it = newChannels.begin(); it < newChannels.end(); ++it ) {
-    
-    channels_t::iterator pos = find( enabledChannels_.begin(), enabledChannels_.end(), *it );
-    if( enabledChannels_.end() == pos ) {
-      std::cerr << " [KeithleyDAQ6510::DisableActiveChannels] ** WARNING:" << std::endl;
-      std::cerr << "  Request to disable channel: " << *it
-                << " which is currently inactive. Skipping." << std::endl;
-    } else {
-      enabledChannels_.erase( pos );
-    }
-
-  }
-  
-  CalculateDelay();
-
-  Device_SetChannels();
-}
-
-///
-///
-///
-const reading_t KeithleyDAQ6510::Scan( void ) {
-
-  reading_t theReading(0);
-  char buffer[1000];
-
-  // presume that it will work..
-  isScanOk_ = true;
-
-  // clear buffer
-  comHandler_->SendCommand( "TRAC:CLE" );
-
-  // enable scan
-  comHandler_->SendCommand( "ROUT:SCAN:LSEL INT" );
-  
-  // go!
-  comHandler_->SendCommand( "READ?" );
-
-  // wait until scanned
-  usleep( uSecDelay_ );
-
-  // get output
-  comHandler_->ReceiveString( buffer );
-
-  // disable scan
-  comHandler_->SendCommand( "ROUT:SCAN:LSEL NONE" );
-
-  // tokenize output
-  std::vector<std::string> tokens(0);
-  Tokenize( std::string( buffer ), tokens, "," );
-
-  if( isDebug_ ) {
-    std::cout << " [KeithleyDAQ6510::Scan] -- DEBUG: Received "
-              <<  tokens.size() / 3 << " reading(s)" << std::endl;
-    std::string bufferStr( buffer );
-    bufferStr.erase( std::remove( bufferStr.begin(), bufferStr.end(), '\n' ), bufferStr.end() );
-    std::cout << " [KeithleyDAQ6510::Scan] -- DEBUG: <RAWOUTPUT.BEGIN> "
-              << bufferStr << " <RAWOUTPUT.END>" << std::endl;;
-  }
-
-  if( tokens.size() / 3 != enabledChannels_.size() ) {
-    std::cerr << " [KeithleyDAQ6510::Scan] ** ERROR: expect "
-              << enabledChannels_.size() << " reading(s) but received "
-              << tokens.size() / 3 << "." << std::endl;
-    std::cerr << "                         Probably a timing problem.." << std::endl;
-    isScanOk_ = false;
-    if( isDebug_ ) throw;
-  }
-  
-  std::vector<std::string>::const_iterator tokensIt = tokens.begin();
-  channels_t::const_iterator channelsIt = enabledChannels_.begin();
-  for( ; tokensIt < tokens.end(); tokensIt += 3, ++channelsIt ) {
-    const double convertedReading = atof( tokensIt->c_str() );
-    theReading.push_back( std::pair<unsigned int, double>( *channelsIt, convertedReading ) );
-  }
-
-  return theReading;
-}
-
-///
-///
-///
-void KeithleyDAQ6510::Dump( void ) const {
-
-  std::cout << " [KeithleyDAQ6510::Dump] -- Channels enabled in scan: \n ";
-
-  for( channels_t::const_iterator it = enabledChannels_.begin();
-      it < enabledChannels_.end();
-      ++it ) {
-    std::cout << " " << *it;
-  }
-  std::cout << std::endl;
-}
-*/
 
 bool KeithleyDAQ6510::GetScanStatus() const
 {
@@ -324,6 +195,16 @@ void KeithleyDAQ6510::DeviceInit()
 
     // reset the device
     comHandler_->SendCommand("*RST");
+
+    std::chrono::system_clock::time_point now = std::chrono::system_clock::now();
+    time_t tt = std::chrono::system_clock::to_time_t(now);
+    tm local_tm = *localtime(&tt);
+    SetTime(local_tm.tm_year + 1900,
+            local_tm.tm_mon + 1,
+            local_tm.tm_mday,
+            local_tm.tm_hour,
+            local_tm.tm_min,
+            local_tm.tm_sec);
 
     // abort a possibly running scan
     //comHandler_->SendCommand("TRAC:ABOR"); //check

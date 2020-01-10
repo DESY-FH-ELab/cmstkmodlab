@@ -30,6 +30,9 @@ class KeithleyDAQ6510Fake : public VKeithleyDAQ6510
 
   bool DeviceAvailable() const { return true; }
 
+  void SetTime(int /* year */, int /* month */, int /* day */,
+               int /* hour */, int /* minute */, int /* second */) { }
+
   void ActivateChannel(unsigned int card, unsigned int channel,
                        bool active);
 

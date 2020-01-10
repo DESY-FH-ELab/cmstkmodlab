@@ -34,6 +34,9 @@ class VKeithleyDAQ6510
 
   const std::array<bool,2> & GetAvailableCards() const { return availableCards_; }
   bool IsCardAvailable(unsigned int card) const;
+
+  virtual void SetTime(int year, int month, int day,
+                       int hour, int minute, int second) = 0;
   
   const cards_t & GetAvailableChannels() const { return availableChannels_; }
   bool IsChannelAvailable(unsigned int card, unsigned int channel) const;
