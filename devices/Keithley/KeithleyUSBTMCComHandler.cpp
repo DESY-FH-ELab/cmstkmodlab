@@ -43,19 +43,16 @@ KeithleyUSBTMCComHandler::~KeithleyUSBTMCComHandler( void )
 //! Send the command string &lt;commandString&gt; to device.
 void KeithleyUSBTMCComHandler::SendCommand( const char *commandString )
 {
+  std::cout << "void KeithleyUSBTMCComHandler::SendCommand( const char *commandString )" << std::endl;
+  
   if (!fDeviceAvailable) return;
 
-  char singleCharacter = 0; 
-
-  for ( unsigned int i = 0; i < strlen( commandString ); i++ ) {
-    
-    // scan command string character wise & write
-    singleCharacter = commandString[i];
-    write( fIoPortFileDescriptor, &singleCharacter, 1 );
-  }
-
-  // send feed characters
-  SendFeedString();
+  std::cout << "void KeithleyUSBTMCComHandler::SendCommand( const char *commandString ) " << commandString << std::endl;
+  
+  std::string theCommand = commandString;
+  theCommand += "\n";
+  
+  write( fIoPortFileDescriptor, theCommand.c_str(), theCommand.length());
 }
 
 //! Read a string from device.
@@ -150,21 +147,6 @@ void KeithleyUSBTMCComHandler::CloseIoPort( void )
   if (!fDeviceAvailable) return;
 
   close( fIoPortFileDescriptor );
-}
-
-//! Send command termination string (<CR><NL>).
-/*!
-  \internal
-*/
-void KeithleyUSBTMCComHandler::SendFeedString( void )
-{
-  if (!fDeviceAvailable) return;
-
-  // feed string is <NL>
-  char feedString = 10;
-
-  // write <CR> and get echo
-  write( fIoPortFileDescriptor, &feedString, 1 );
 }
 
 bool KeithleyUSBTMCComHandler::DeviceAvailable()

@@ -46,7 +46,6 @@ class KeithleyUSBTMCComHandler {
   void InitializeIoPort( void );
   void RestoreIoPort( void );
   void CloseIoPort( void );
-  void SendFeedString( void );
 
   bool fDeviceAvailable;
   int fIoPortFileDescriptor;
