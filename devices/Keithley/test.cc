@@ -11,6 +11,9 @@
 /////////////////////////////////////////////////////////////////////////////////
 
 #include <iostream>
+#include <tuple>
+#include <chrono>
+#include <thread>
 
 #ifdef USE_FAKEIO
 #include "KeithleyDAQ6510Fake.h"
@@ -22,6 +25,8 @@ typedef KeithleyDAQ6510 KeithleyDAQ6510_t;
 
 int main()
 {
+  using namespace std::chrono_literals;
+
   std::string buffer;
 
   KeithleyDAQ6510_t daq("/dev/ttyACM1");
@@ -43,6 +48,30 @@ int main()
   buffer = daq.CreateChannelString(1, channels);
   
   std::cout << buffer << std::endl;
+
+  daq.ActivateChannel(1,3, true);
+  daq.ActivateChannel(1,8, true);
+  daq.ActivateChannel(2,4, true);
+  daq.ActivateChannel(2,5, true);
+
+  daq.Scan();
+
+  std::this_thread::sleep_for(2s);
+
+  reading_t data;
+  daq.GetScanData(data);
+
+  for (reading_t::iterator it=data.begin();it!=data.end();++it) {
+    unsigned int sensor;
+    double temperature;
+    double relativeTime;
+    std::tie(sensor, temperature, relativeTime) = *it;
+
+    unsigned int card = sensor / 100 - 1;
+    unsigned int channel = sensor % 100 - 1;
+
+    std::cout << "data: " << sensor << " " << temperature << " " << relativeTime << std::endl;
+  }
 
   return 0;
 }
