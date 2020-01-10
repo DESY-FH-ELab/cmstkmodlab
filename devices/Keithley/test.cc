@@ -24,7 +24,7 @@ int main()
 {
   std::string buffer;
 
-  KeithleyDAQ6510_t daq("/dev/ttyACM1");
+  KeithleyDAQ6510_t daq("/dev/usbtmc0");
 
   std::cout << (int) daq.DeviceAvailable() << std::endl;
 
