@@ -17,6 +17,10 @@
 
 #include "KeithleyUSBTMCComHandler.h"
 
+/************************************************
+ * USB Vendor ID:  0x05E6
+ * USB Product ID: 0x6510
+ ************************************************/
 class KeithleyDAQ6510 : public VKeithleyDAQ6510
 {
  public:
