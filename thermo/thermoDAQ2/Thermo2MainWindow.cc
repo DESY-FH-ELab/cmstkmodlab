@@ -23,6 +23,7 @@
 #include "ApplicationConfig.h"
 
 #include "RohdeSchwarzNGE103BWidget.h"
+#include "KeithleyDAQ6510Widget.h"
 
 #include "Thermo2DAQWidget.h"
 #include "Thermo2ScriptWidget.h"
@@ -46,9 +47,9 @@ Thermo2MainWindow::Thermo2MainWindow(QWidget *parent)
 //  huberModel_ = new HuberPetiteFleurModel(config->getValue<std::string>("HuberPetiteFleurDevice").c_str(),
 //                                          5, this);
 
-//  // KEITHLEY MODEL
-//  keithleyModel_ = new KeithleyModel(config->getValue<std::string>("KeithleyDevice").c_str(),
-//                                     20, this);
+  // KEITHLEY MODEL
+  keithleyModel_ = new KeithleyDAQ6510Model(config->getValue<std::string>("KeithleyDevice").c_str(),
+                                            30, this);
 
 //  // PFEIFFER MODEL
 //  pfeifferModel_ = new PfeifferModel(config->getValue<std::string>("PfeifferDevice").c_str(),
@@ -114,11 +115,11 @@ Thermo2MainWindow::Thermo2MainWindow(QWidget *parent)
   //nge103BWidget->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);
   tabWidget_->addTab(nge103BWidget, "Power Supply");
 
-//  // KEITHLEY MODEL
-//  KeithleyWidget* keithleyWidget = new KeithleyWidget(keithleyModel_);
-//  keithleyWidget->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);
-//  tabWidget_->addTab(keithleyWidget, "Multimeter");
-//
+  // KEITHLEY MODEL
+  KeithleyDAQ6510Widget* keithleyWidget = new KeithleyDAQ6510Widget(keithleyModel_);
+  keithleyWidget->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);
+  tabWidget_->addTab(keithleyWidget, "Multimeter");
+
 //  widget = new QWidget();
 //  wlayout = new QHBoxLayout();
 //  widget->setLayout(wlayout);
