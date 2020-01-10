@@ -255,15 +255,31 @@ float KeithleyDAQ6510::GetScanDuration() const
 void KeithleyDAQ6510::DeviceSetChannels()
 {
   std::stringstream ss;
+  unsigned int count;
 
   // build rout:scan command
   ss << "ROUT:SCAN (@";
   
-  ss << CreateChannelString(1, activeChannels_[0]);
-  ss << ",";
-  ss << CreateChannelString(2, activeChannels_[1]);
+  count = 0;
+  for (unsigned int channel = 1;channel<=10;++channel) {
+    if (activeChannels_[0][channel-1]) count++;
+  }
+  if (count) {
+    ss << CreateChannelString(1, activeChannels_[0]);
+  }
+
+  count = 0;
+  for (unsigned int channel = 1;channel<=10;++channel) {
+    if (activeChannels_[0][channel-1]) count++;
+  }
+  if (count) {
+    ss << ",";
+    ss << CreateChannelString(2, activeChannels_[1]);
+  }
 
   ss << ")";
+
+  std::cout << ss.str() << std::endl;
 
   comHandler_->SendCommand(ss.str().c_str());
 }
