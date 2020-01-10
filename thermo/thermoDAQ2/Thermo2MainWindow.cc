@@ -48,7 +48,7 @@ Thermo2MainWindow::Thermo2MainWindow(QWidget *parent)
 //                                          5, this);
 
   // KEITHLEY MODEL
-  keithleyModel_ = new KeithleyDAQ6510Model(config->getValue<std::string>("KeithleyDevice").c_str(),
+  keithleyModel_ = new KeithleyDAQ6510Model(config->getValue<std::string>("KeithleyDAQ6510").c_str(),
                                             30, this);
 
 //  // PFEIFFER MODEL
