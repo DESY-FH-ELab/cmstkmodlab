@@ -14,6 +14,7 @@
 #include <vector>
 #include <utility>
 #include <string>
+#include <cstring>
 #include <cstdlib>
 #include <algorithm>
 #include <sstream>
@@ -23,10 +24,10 @@
 ///
 ///
 ///
-KeithleyDAQ6510::KeithleyDAQ6510( ioport_t port )
+KeithleyDAQ6510::KeithleyDAQ6510(ioport_t port)
     : VKeithleyDAQ6510(port)
 {
-  comHandler_ = new KeithleyUSBTMCComHandler( port );
+  comHandler_ = new KeithleyUSBTMCComHandler(port);
 
   /*
   isDebug_ = false;
@@ -227,12 +228,16 @@ void KeithleyDAQ6510::DeviceInit()
 {
   isDeviceAvailable_ = false;
 
+  std::cout << "void KeithleyDAQ6510::DeviceInit()" << std::endl;
+  
   if (comHandler_->DeviceAvailable()) {
+ 
+  std::cout << "void KeithleyDAQ6510::DeviceInit()" << std::endl;
     
     char buffer[1000];
     std::string buf;
     
-    comHandler_->SendCommand("*IDN?");
+    comHandler_->SendCommand("*idn?");
     comHandler_->ReceiveString(buffer);
     StripBuffer(buffer);
     buf = buffer;
@@ -319,7 +324,7 @@ void KeithleyDAQ6510::DeviceInit()
 
 void KeithleyDAQ6510::StripBuffer(char* buffer) const
 {
-  for (unsigned int c=0; c<strlen(buffer);++c) {
+  for (unsigned int c=0;c<std::strlen(buffer);++c) {
     if(buffer[c]=='\n') {
       buffer[c] = 0;
       break;
