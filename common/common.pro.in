@@ -112,7 +112,9 @@ HEADERS += nqlogger.h \
            RohdeSchwarzNGE103BModel.h \
            RohdeSchwarzNGE103BWidget.h \
            ScriptableRohdeSchwarzNGE103B.h \
-           ValueHistory.h
+           ValueHistory.h \
+           KeithleyDAQ6510Model.h \
+           KeithleyDAQ6510Widget.h
 
 SOURCES += nqlogger.cc \
            npoint2D.cc \
@@ -161,4 +163,6 @@ SOURCES += nqlogger.cc \
            LeyboldGraphixThreeModel.cc \
            RohdeSchwarzNGE103BModel.cc \
            RohdeSchwarzNGE103BWidget.cc \
-           ScriptableRohdeSchwarzNGE103B.cc
+           ScriptableRohdeSchwarzNGE103B.cc \
+           KeithleyDAQ6510Model.cc \
+           KeithleyDAQ6510Widget.cc
