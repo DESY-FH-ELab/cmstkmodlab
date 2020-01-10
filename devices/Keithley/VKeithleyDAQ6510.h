@@ -73,6 +73,9 @@ class VKeithleyDAQ6510
   std::array<bool,2> availableCards_;
   cards_t availableChannels_;
   cards_t activeChannels_;
+
+  void Tokenize( const std::string&, std::vector<std::string>&,
+                 const std::string& ) const;
 };
 
 #endif
