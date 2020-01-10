@@ -24,6 +24,10 @@
 #include "VRohdeSchwarzNGE103B.h"
 #include "NGE103BComHandler.h"
 
+/************************************************
+ * USB Vendor ID:  0x0AAD
+ * USB Product ID: 0x013C
+ ************************************************/
 class RohdeSchwarzNGE103B : public VRohdeSchwarzNGE103B
 {
 public:
