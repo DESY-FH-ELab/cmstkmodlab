@@ -72,14 +72,18 @@ void KeithleyUSBTMCComHandler::ReceiveString( char *receiveString )
     return;
   }
 
-  usleep( 10000 );
+  std::cout << "void KeithleyUSBTMCComHandler::ReceiveString( char *receiveString )" << std::endl;
+  
+  usleep(10000);
 
   int timeout = 0, readResult = 0;
 
-  while ( timeout < 100000 )  {
+  while (timeout < 100000)  {
 
     readResult = read( fIoPortFileDescriptor, receiveString, 1024 );
 
+    std::cout << "receiveString: " << readResult << " " << receiveString << std::endl;
+    
     if ( readResult > 0 ) {
       receiveString[readResult] = 0;
       break;
