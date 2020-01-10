@@ -1,6 +1,6 @@
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //
-//               Copyright (C) 2011-2019 - The DESY CMS Group                  //
+//               Copyright (C) 2011-2020 - The DESY CMS Group                  //
 //                           All rights reserved                               //
 //                                                                             //
 //      The CMStkModLab source code is licensed under the GNU GPL v3.0.        //
@@ -23,10 +23,12 @@
 
 Thermo2ScriptModel::Thermo2ScriptModel(Thermo2DAQModel* daqModel,
                                        RohdeSchwarzNGE103BModel* nge103BModel,
+                                       KeithleyDAQ6510Model* keithleyModel,
                                        QObject *parent)
   : QObject(parent),
     daqModel_(daqModel),
-    nge103BModel_(nge103BModel)
+    nge103BModel_(nge103BModel),
+    keithleyModel_(keithleyModel)
 {
   script_ = new QTextDocument(this);
   script_->setDocumentLayout(new QPlainTextDocumentLayout(script_));
@@ -36,11 +38,15 @@ Thermo2ScriptModel::Thermo2ScriptModel(Thermo2DAQModel* daqModel,
 
   scriptThread_ = new Thermo2ScriptThread(this,
                                           nge103BModel_,
+                                          keithleyModel_,
                                           this);
   connect(scriptThread_, SIGNAL(started()), this, SLOT(executionStarted()));
   connect(scriptThread_, SIGNAL(finished()), this, SLOT(executionFinished()));
 
   connect(nge103BModel_, SIGNAL(message(const QString &)),
+          this, SLOT(doAppendMessageText(const QString &)));
+
+  connect(keithleyModel_, SIGNAL(message(const QString &)),
           this, SLOT(doAppendMessageText(const QString &)));
 
   connect(&executionTimer_, SIGNAL(timeout()), this, SLOT(executionHeartBeat()));

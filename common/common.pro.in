@@ -114,7 +114,8 @@ HEADERS += nqlogger.h \
            ScriptableRohdeSchwarzNGE103B.h \
            ValueHistory.h \
            KeithleyDAQ6510Model.h \
-           KeithleyDAQ6510Widget.h
+           KeithleyDAQ6510Widget.h \
+           ScriptableKeithleyDAQ6510.h
 
 SOURCES += nqlogger.cc \
            npoint2D.cc \
@@ -165,4 +166,5 @@ SOURCES += nqlogger.cc \
            RohdeSchwarzNGE103BWidget.cc \
            ScriptableRohdeSchwarzNGE103B.cc \
            KeithleyDAQ6510Model.cc \
-           KeithleyDAQ6510Widget.cc
+           KeithleyDAQ6510Widget.cc \
+           ScriptableKeithleyDAQ6510.cc

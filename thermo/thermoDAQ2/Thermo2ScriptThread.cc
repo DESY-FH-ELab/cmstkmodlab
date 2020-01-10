@@ -1,6 +1,6 @@
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //
-//               Copyright (C) 2011-2019 - The DESY CMS Group                  //
+//               Copyright (C) 2011-2020 - The DESY CMS Group                  //
 //                           All rights reserved                               //
 //                                                                             //
 //      The CMStkModLab source code is licensed under the GNU GPL v3.0.        //
@@ -21,13 +21,16 @@
 #include "Thermo2ScriptableGlobals.h"
 
 #include "ScriptableRohdeSchwarzNGE103B.h"
+#include "ScriptableKeithleyDAQ6510.h"
 
 Thermo2ScriptThread::Thermo2ScriptThread(Thermo2ScriptModel* scriptModel,
                                          RohdeSchwarzNGE103BModel* nge103BModel,
+                                         KeithleyDAQ6510Model* keithleyModel,
                                          QObject *parent)
   : QThread(parent),
     scriptModel_(scriptModel),
-    nge103BModel_(nge103BModel)
+    nge103BModel_(nge103BModel),
+    keithleyModel_(keithleyModel)
 {
 
 }
@@ -46,6 +49,10 @@ void Thermo2ScriptThread::executeScript(const QString & script)
   ScriptableRohdeSchwarzNGE103B *nge103BObj = new ScriptableRohdeSchwarzNGE103B(nge103BModel_, this);
   QScriptValue nge103BValue = engine_->newQObject(nge103BObj);
   engine_->globalObject().setProperty("nge103b", nge103BValue);
+
+  ScriptableKeithleyDAQ6510 *keithleyObj = new ScriptableKeithleyDAQ6510(keithleyModel_, this);
+  QScriptValue keithleyValue = engine_->newQObject(keithleyObj);
+  engine_->globalObject().setProperty("daq6510", keithleyValue);
 
   start();
 }

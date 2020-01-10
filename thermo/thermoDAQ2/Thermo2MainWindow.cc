@@ -1,6 +1,6 @@
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //
-//               Copyright (C) 2011-2019 - The DESY CMS Group                  //
+//               Copyright (C) 2011-2020 - The DESY CMS Group                  //
 //                           All rights reserved                               //
 //                                                                             //
 //      The CMStkModLab source code is licensed under the GNU GPL v3.0.        //
@@ -71,6 +71,7 @@ Thermo2MainWindow::Thermo2MainWindow(QWidget *parent)
   // SCRIPT MODEL
   scriptModel_ = new Thermo2ScriptModel(daqModel_,
                                         nge103BModel_,
+                                        keithleyModel_,
                                         this);
 
   daqStreamer_ = new Thermo2DAQStreamer(daqModel_, this);
