@@ -100,7 +100,7 @@ void KeithleyUSBTMCComHandler::ReceiveString( char *receiveString )
 void KeithleyUSBTMCComHandler::OpenIoPort( void )
 {
   // open io port ( read/write | no term control | no DCD line check )
-  fIoPortFileDescriptor = open( fIoPort, O_RDWR | O_NOCTTY  | O_NDELAY );
+  fIoPortFileDescriptor = open( fIoPort, O_RDWR);
 
   // check if successful
   if ( fIoPortFileDescriptor == -1 ) {
