@@ -217,16 +217,8 @@ void KeithleyDAQ6510::Scan()
   std::string buf;
 
   comHandler_->SendCommand("TRAC:CLE");
-  comHandler_->ReceiveString(buffer);
-  StripBuffer(buffer);
-  buf = buffer;
-  std::cout << buf << std::endl;
 
   comHandler_->SendCommand("INIT");
-  comHandler_->ReceiveString(buffer);
-  StripBuffer(buffer);
-  buf = buffer;
-  std::cout << buf << std::endl;
 }
 
 void KeithleyDAQ6510::GetScanData(reading_t & data)
@@ -321,82 +313,46 @@ void KeithleyDAQ6510::DeviceInit()
     
     char buffer[1000];
     std::string buf;
-    
-    comHandler_->SendCommand("*idn?");
+
+    // get device identifyer
+    comHandler_->SendCommand("*IDN?");
     comHandler_->ReceiveString(buffer);
     StripBuffer(buffer);
     buf = buffer;
     std::cout << buf << std::endl;
     if (buf.find("KEITHLEY INSTRUMENTS,MODEL DAQ6510", 0)!=0) return;
-    
-    comHandler_->SendCommand("*RST");
-    comHandler_->ReceiveString(buffer);
-    StripBuffer(buffer);
-    buf = buffer;
-    std::cout << buf << std::endl;
-    
-    comHandler_->SendCommand("TRAC:ABOR");
-    comHandler_->ReceiveString(buffer);
-    StripBuffer(buffer);
-    buf = buffer;
-    std::cout << buf << std::endl;
-    
-    comHandler_->SendCommand( "ROUT:OPEN:ALL" );
-    comHandler_->ReceiveString(buffer);
-    StripBuffer(buffer);
-    buf = buffer;
-    std::cout << buf << std::endl;
 
+    // reset the device
+    comHandler_->SendCommand("*RST");
+
+    // abort a possibly running scan
+    //comHandler_->SendCommand("TRAC:ABOR"); //check
+
+    // open all routings
+    comHandler_->SendCommand("ROUT:OPEN:ALL");
+
+    // set ascii format precision
     comHandler_->SendCommand("FORM:ASC:PREC 9");
-    comHandler_->ReceiveString(buffer);
-    StripBuffer(buffer);
-    buf = buffer;
-    std::cout << buf << std::endl;
 
     comHandler_->SendCommand("SYST:CARD1:IDN?");
     comHandler_->ReceiveString(buffer);
     StripBuffer(buffer);
     buf = buffer;
     std::cout << buf << std::endl;
-    if (buf.find("7700,Pseudo 20Ch Mux w/CJC", 0)==0) {
+    if (buf.find("7700,20Ch Mux w/CJC", 0)==0) {
       availableCards_[0] = true;
       for (unsigned int channel = 1;channel<=10;++channel) {
         availableChannels_[0][channel-1] = true;
         activeChannels_[0][channel-1] = false;
       }
-      
-      comHandler_->SendCommand("SENS:FUNC 'VOLT', (@SLOT1)");
-      //comHandler_->SendCommand("SENS:FUNC 'TEMP', (@SLOT1)");
-      comHandler_->ReceiveString(buffer);
-      StripBuffer(buffer);
-      buf = buffer;
-      std::cout << buf << std::endl;
-      
-      /*
-      comHandler_->SendCommand("SENS:TEMP:TRAN FRTD, (@SLOT1)");
-      comHandler_->ReceiveString(buffer);
-      StripBuffer(buffer);
-      buf = buffer;
-      std::cout << buf << std::endl;
 
-      comHandler_->SendCommand("SENS:TEMP:RTD:FOUR PT100, (@SLOT1)");
-      comHandler_->ReceiveString(buffer);
-      StripBuffer(buffer);
-      buf = buffer;
-      std::cout << buf << std::endl;
+      comHandler_->SendCommand("SENS:FUNC 'VOLT', (@101:120)");
+      //comHandler_->SendCommand("SENS:FUNC 'TEMP', (@101:110)");
+      //comHandler_->SendCommand("SENS:TEMP:TRAN FRTD, (@101:110)");
+      //comHandler_->SendCommand("SENS:TEMP:RTD:FOUR PT100, (@101:110)");
+      //comHandler_->SendCommand("SENS:TEMP:UNIT CELS, (@101:110)");
 
-      comHandler_->SendCommand("SENS:TEMP:UNIT CELS, (@SLOT1)");
-      comHandler_->ReceiveString(buffer);
-      StripBuffer(buffer);
-      buf = buffer;
-      std::cout << buf << std::endl;
-      */
-
-      comHandler_->SendCommand("ROUT:DEL 0.1, (@SLOT1)");
-      comHandler_->ReceiveString(buffer);
-      StripBuffer(buffer);
-      buf = buffer;
-      std::cout << buf << std::endl;
+      comHandler_->SendCommand("ROUT:DEL 0.1, (@101:110)");
     }
 
     comHandler_->SendCommand("SYST:CARD2:IDN?");
@@ -404,14 +360,22 @@ void KeithleyDAQ6510::DeviceInit()
     StripBuffer(buffer);
     buf = buffer;
     std::cout << buf << std::endl;
-    if (buf.find("7700,Pseudo 20Ch Mux w/CJC", 0)==0) {
+    if (buf.find("7700,20Ch Mux w/CJC", 0)==0) {
       availableCards_[1] = true;
       for (unsigned int channel = 1;channel<=10;++channel) {
         availableChannels_[1][channel-1] = true;
         activeChannels_[1][channel-1] = false;
       }
-    }
 
+      comHandler_->SendCommand("SENS:FUNC 'VOLT', (@201:220)");
+      //comHandler_->SendCommand("SENS:FUNC 'TEMP', (@201:210)");
+      //comHandler_->SendCommand("SENS:TEMP:TRAN FRTD, (@201:210)");
+      //comHandler_->SendCommand("SENS:TEMP:RTD:FOUR PT100, (@201:210)");
+      //comHandler_->SendCommand("SENS:TEMP:UNIT CELS, (@201:210)");
+
+      comHandler_->SendCommand("ROUT:DEL 0.1, (@201:210)");
+    }
+    
     isDeviceAvailable_ = true;
   }
 }
