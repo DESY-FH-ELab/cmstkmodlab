@@ -28,6 +28,11 @@ class KeithleyDAQ6510Fake : public VKeithleyDAQ6510
  public:
   KeithleyDAQ6510Fake( ioport_t );
 
+  bool DeviceAvailable() const { return true; }
+
+  void ActivateChannel(unsigned int card, unsigned int channel,
+                       bool active);
+
   /*
   void SetActiveChannels( std::string );
   void SetActiveChannels( channels_t );
@@ -41,7 +46,6 @@ class KeithleyDAQ6510Fake : public VKeithleyDAQ6510
   
 protected:
 
-  // std::vector<int> activeChannels_;
 };
 
 #endif

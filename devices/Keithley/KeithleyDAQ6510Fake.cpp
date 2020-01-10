@@ -22,97 +22,19 @@ using namespace std;
 KeithleyDAQ6510Fake::KeithleyDAQ6510Fake( ioport_t port )
     : VKeithleyDAQ6510(port)
 {
-
-}
-
-/*
-///
-/// enables the channels given by string
-/// format: see ::ParseChannelString
-///
-void KeithleyDAQ6510Fake::SetActiveChannels( string channelString )
-{
-  enabledChannels_.resize( 0 );
-  enabledChannels_ = ParseChannelString( channelString );
-}
-
-void KeithleyDAQ6510Fake::SetActiveChannels( channels_t channels )
-{
-  enabledChannels_ = channels;
-}
-
-///
-/// adds the channels given by string to the list of enabled ones
-/// format: see ParseChannelString
-///
-void KeithleyDAQ6510Fake::AddActiveChannels( string channelString )
-{
-  // append new channels
-  const channels_t& newChannels = ParseChannelString( channelString );
-  enabledChannels_.insert( enabledChannels_.end(), newChannels.begin(), newChannels.end() );
-
-  // re-sort and remove duplicates
-  std::sort( enabledChannels_.begin(), enabledChannels_.end() );
-  enabledChannels_.erase( std::unique( enabledChannels_.begin(), enabledChannels_.end() ), enabledChannels_.end() );
-}
-
-///
-/// removes the channels given by string from the list of enabled ones
-/// format: see ParseChannelString
-///
-void KeithleyDAQ6510Fake::DisableActiveChannels( string channelString ) {
-
-  const channels_t& newChannels = ParseChannelString( channelString );
-
-  for( channels_t::const_iterator it = newChannels.begin(); it < newChannels.end(); ++it ) {
-    
-    channels_t::iterator pos = find( enabledChannels_.begin(), enabledChannels_.end(), *it );
-    if( enabledChannels_.end() == pos ) {
-      std::cerr << " [KeithleyDAQ6510::DisableActiveChannels] ** WARNING:" << std::endl;
-      std::cerr << "  Request to disable channel: " << *it << " which is currently inactive. Skipping." << std::endl;
+  for (unsigned int card = 1;card<=2;++card) {
+    availableCards_[card-1] = true;
+    for (unsigned int channel = 1;channel<=10;++channel) {
+      availableChannels_[card-1][channel-1] = true;
+      activeChannels_[card-1][channel-1] = false;
     }
-    else {
-      enabledChannels_.erase( pos );
-    }
-
   }
 }
 
-///
-///
-///
-const reading_t KeithleyDAQ6510Fake::Scan( void )
+void KeithleyDAQ6510Fake::ActivateChannel(unsigned int card, unsigned int channel,
+                                          bool active)
 {
-  reading_t theReading;
-
-  for (channels_t::const_iterator channelsIt = enabledChannels_.begin();
-       channelsIt != enabledChannels_.end();
-       ++channelsIt) {
-    theReading.push_back( std::pair<unsigned int, double>( *channelsIt, 10.0 + *channelsIt + (std::rand() % 100)/100. ) );
-    usleep(500);
-  }
-
-  return theReading;
+  if (card<1 || card>2) return;
+  if (channel<1 || channel>10) return;
+  activeChannels_[card-1][channel-1] = active;
 }
-
-///
-///
-///
-bool KeithleyDAQ6510Fake::IsScanOk( void )
-{
-  return true;
-}
-
-///
-///
-///
-void KeithleyDAQ6510Fake::Dump( void ) const
-{
-  std::cout << " [KeithleyDAQ6510Fake::Dump] -- Channels enabled in scan: \n ";
-
-  for( channels_t::const_iterator it = enabledChannels_.begin(); it < enabledChannels_.end(); ++it ) {
-    std::cout << " " << *it;
-  }
-  std::cout << std::endl;
-}
-*/

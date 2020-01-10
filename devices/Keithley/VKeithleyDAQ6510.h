@@ -14,11 +14,10 @@
 #define __VKEITHLEYDAQ6510_H
 
 #include <string>
-#include <vector>
+#include <array>
 
-// typedef std::vector<std::pair<unsigned int, double> > reading_t;
-// typedef std::vector<unsigned int> channels_t;
-// typedef std::pair<unsigned int, unsigned int> range_t;
+typedef std::array<bool, 10> channels_t;
+typedef std::array<channels_t,2> cards_t;
 
 typedef const char* ioport_t;
 
@@ -27,7 +26,19 @@ class VKeithleyDAQ6510
  public:
   VKeithleyDAQ6510( ioport_t );
   virtual ~VKeithleyDAQ6510();
+    
+  virtual bool DeviceAvailable() const = 0;
+
+  const std::array<bool,2> & GetAvailableCards() const { return availableCards_; }
+  bool IsCardAvailable(unsigned int card) const;
   
+  const cards_t & GetAvailableChannels() const { return availableChannels_; }
+  bool IsChannelAvailable(unsigned int card, unsigned int channel) const;
+  bool IsChannelAvailable(unsigned int channel) const;
+  
+  virtual void ActivateChannel(unsigned int card, unsigned int channel,
+                               bool active) = 0;
+
   /*
   virtual void SetActiveChannels( std::string ) = 0;
   virtual void SetActiveChannels( channels_t ) = 0;
@@ -46,18 +57,13 @@ class VKeithleyDAQ6510
   static constexpr unsigned int RangeMax = 9;
   */
   
+  std::string CreateChannelString(unsigned int card, channels_t& channels);
+
  protected:
 
-  /*
-  const channels_t ParseChannelString( const std::string& ) const;
-  void Tokenize( const std::string&, std::vector<std::string>&,
-                 const std::string& ) const;
-  unsigned int EvaluateChannelToken( const std::string& ) const;
-  const range_t EvaluateRangeToken( const std::string& ) const;
-
-  channels_t enabledChannels_;
-  
-  */
+  std::array<bool,2> availableCards_;
+  cards_t availableChannels_;
+  cards_t activeChannels_;
 };
 
 #endif

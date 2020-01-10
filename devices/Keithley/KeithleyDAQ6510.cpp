@@ -40,6 +40,16 @@ KeithleyDAQ6510::KeithleyDAQ6510( ioport_t port )
   DeviceInit();
 }
 
+void KeithleyDAQ6510::ActivateChannel(unsigned int card, unsigned int channel,
+                                      bool active)
+{
+  if (card<1 || card>2) return;
+  if (channel<1 || channel>10) return;
+  activeChannels_[card-1][channel-1] = active;
+
+  DeviceSetChannels();
+}
+
 /*
 ///
 /// enables the channels given by string
@@ -184,53 +194,25 @@ void KeithleyDAQ6510::Dump( void ) const {
   }
   std::cout << std::endl;
 }
+*/
 
-///
-/// communicate the currently active channels
-/// to the device
-///
-void KeithleyDAQ6510::Device_SetChannels( void ) const {
-
-  std::stringstream theCommand;
+void KeithleyDAQ6510::DeviceSetChannels()
+{
+  std::stringstream ss;
 
   // build rout:scan command
-  theCommand << "ROUT:SCAN (@";
+  ss << "ROUT:SCAN (@";
   
-  for( unsigned int channel = 0; channel < enabledChannels_.size(); ++channel ) {
-    unsigned int theChannel = enabledChannels_.at( channel );
-    if (theChannel<10) {
-      theCommand << enabledChannels_.at( channel ) + 101;
-    } else {
-      theCommand << enabledChannels_.at( channel ) + 201 - 10;
-    }
-    if( channel < enabledChannels_.size() - 1 ) theCommand << ",";
-  }
+  ss << CreateChannelString(1, activeChannels_[0]);
+  ss << ",";
+  ss << CreateChannelString(2, activeChannels_[1]);
 
-  theCommand << ")";
+  ss << ")";
 
-  // send
-  if( isDebug_ ) {
-    std::cout << " [KeithleyDAQ6510::Device_SetChannels] -- DEBUG: Sent: \""
-              << theCommand.str() << "\"" << std::endl;
-  }
-  comHandler_->SendCommand( theCommand.str().c_str() );
-
-  // cleanup
-  theCommand.str("");
-
-  // build samp:coun command
-  
-  theCommand << "SAMP:COUN ";
-  theCommand << enabledChannels_.size();
-  
-  // send
-  if( isDebug_ ) {
-    std::cout << " [KeithleyDAQ6510::Device_SetChannels] -- DEBUG: Sent: \""
-              << theCommand.str() << "\"" << std::endl;
-  }
-  comHandler_->SendCommand( theCommand.str().c_str() );
+  comHandler_->SendCommand(ss.str().c_str());
 }
-  
+
+/*
 void KeithleyDAQ6510::Reset()
 {
   comHandler_->SendCommand( "ROUT:SCAN:LSEL NONE" );
@@ -241,9 +223,6 @@ void KeithleyDAQ6510::Reset()
 }
 */
 
-///
-/// all initialization of device
-///
 void KeithleyDAQ6510::DeviceInit()
 {
   isDeviceAvailable_ = false;
@@ -260,65 +239,82 @@ void KeithleyDAQ6510::DeviceInit()
     std::cout << buf << std::endl;
     if (buf.find("KEITHLEY INSTRUMENTS,MODEL DAQ6510", 0)!=0) return;
     
-    comHandler_->SendCommand("syst:card1:idn?");
+    comHandler_->SendCommand("*RST");
     comHandler_->ReceiveString(buffer);
     StripBuffer(buffer);
     buf = buffer;
     std::cout << buf << std::endl;
-    if (buf.find("7700,Pseudo 20Ch Mux w/CJC", 0)!=0) return;
-
-    comHandler_->SendCommand("syst:card2:idn?");
-    comHandler_->ReceiveString(buffer);
-    StripBuffer(buffer);
-    buf = buffer;
-    std::cout << buf << std::endl;
-    if (buf.find("7700,Pseudo 20Ch Mux w/CJC", 0)!=0) return;
     
+    comHandler_->SendCommand("TRAC:ABOR");
+    comHandler_->ReceiveString(buffer);
+    StripBuffer(buffer);
+    buf = buffer;
+    std::cout << buf << std::endl;
+    
+    comHandler_->SendCommand("FORM:ASC:PREC 9");
+    comHandler_->ReceiveString(buffer);
+    StripBuffer(buffer);
+    buf = buffer;
+    std::cout << buf << std::endl;
+
+    comHandler_->SendCommand("SYST:CARD1:IDN?");
+    comHandler_->ReceiveString(buffer);
+    StripBuffer(buffer);
+    buf = buffer;
+    std::cout << buf << std::endl;
+    if (buf.find("7700,Pseudo 20Ch Mux w/CJC", 0)==0) {
+      availableCards_[0] = true;
+      for (unsigned int channel = 1;channel<=10;++channel) {
+        availableChannels_[0][channel-1] = true;
+        activeChannels_[0][channel-1] = false;
+      }
+      
+      comHandler_->SendCommand("SENS:FUNC 'TEMP', (@SLOT1)");
+      comHandler_->ReceiveString(buffer);
+      StripBuffer(buffer);
+      buf = buffer;
+      std::cout << buf << std::endl;
+      
+      comHandler_->SendCommand("SENS:TEMP:TRAN FRTD, (@SLOT1)");
+      comHandler_->ReceiveString(buffer);
+      StripBuffer(buffer);
+      buf = buffer;
+      std::cout << buf << std::endl;
+
+      comHandler_->SendCommand("SENS:TEMP:RTD:FOUR PT100, (@SLOT1)");
+      comHandler_->ReceiveString(buffer);
+      StripBuffer(buffer);
+      buf = buffer;
+      std::cout << buf << std::endl;
+
+      comHandler_->SendCommand("SENS:TEMP:UNIT CELS, (@SLOT1)");
+      comHandler_->ReceiveString(buffer);
+      StripBuffer(buffer);
+      buf = buffer;
+      std::cout << buf << std::endl;
+    }
+
+    comHandler_->SendCommand("SYST:CARD2:IDN?");
+    comHandler_->ReceiveString(buffer);
+    StripBuffer(buffer);
+    buf = buffer;
+    std::cout << buf << std::endl;
+    if (buf.find("7700,Pseudo 20Ch Mux w/CJC", 0)==0) {
+      availableCards_[1] = true;
+      for (unsigned int channel = 1;channel<=10;++channel) {
+        availableChannels_[1][channel-1] = true;
+        activeChannels_[1][channel-1] = false;
+      }
+    }
+    
+    comHandler_->SendCommand( "ROUT:OPEN:ALL" );
+    comHandler_->ReceiveString(buffer);
+    StripBuffer(buffer);
+    buf = buffer;
+    std::cout << buf << std::endl;
+
     isDeviceAvailable_ = true;
   }
-
-  /*
-  // enable buffer auto clear
-  comHandler_->SendCommand( "TRAC:CLE:AUTO ON" );
-
-  // disable scan
-  // in case still enabled from previous (aborted) scan call
-  // otherwise we get a settings conflict (ERR -221)
-  comHandler_->SendCommand( "ROUT:SCAN:LSEL NONE" );
-
-  // we want to measure temperature on channels 101 - 110
-  comHandler_->SendCommand( "SENS:FUNC 'TEMP',(@101:110)" );
-
-  // number of digits
-  comHandler_->SendCommand( "SENSE:TEMP:DIG 4" );
-
-  // and we use 4-wire sensors there
-  comHandler_->SendCommand( "SENS:TEMP:TRAN FRTD,(@101:110)" );
-
-  // pt100, exactly speaking
-  comHandler_->SendCommand( "SENS:TEMP:FRTD:TYPE PT100,(@101:110)" );
-
-  // disable continuous initiation
-  comHandler_->SendCommand( "INIT:CONT OFF" );
-
-  // trigger control = immediate
-  comHandler_->SendCommand( "TRIG:SOUR IMM" );
-
-  // one reading per scan
-  comHandler_->SendCommand( "TRIG:COUN 1" );
-
-  // scan path,
-  // init with full channel list,
-  // will be overwritten
-  comHandler_->SendCommand( "ROUT:SCAN (@101:110)" );
-  comHandler_->SendCommand( "SAMP:COUN 10" );
-
-  // scanning trigger source = immediate
-  comHandler_->SendCommand( "ROUT:SCAN:TSO IMM" );
-
-  // open all channels
-  //  comHandler_->SendCommand( "ROUT:OPEN:ALL" );
-  */
 }
 
 void KeithleyDAQ6510::StripBuffer(char* buffer) const

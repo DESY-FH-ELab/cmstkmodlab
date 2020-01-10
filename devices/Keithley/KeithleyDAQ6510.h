@@ -22,6 +22,11 @@ class KeithleyDAQ6510 : public VKeithleyDAQ6510
  public:
   KeithleyDAQ6510( ioport_t );
 
+  bool DeviceAvailable() const { return isDeviceAvailable_; }
+
+  void ActivateChannel(unsigned int card, unsigned int channel,
+                       bool active);
+
   /*
   void SetActiveChannels( std::string );
   void SetActiveChannels( channels_t );
@@ -43,15 +48,15 @@ class KeithleyDAQ6510 : public VKeithleyDAQ6510
   KeithleyUSBTMCComHandler* comHandler_;
   bool isDeviceAvailable_;
   
-  void StripBuffer( char* ) const;
+  void StripBuffer(char*) const;
   void DeviceInit();
+  void DeviceSetChannels();
 
   /*
   bool isDebug_;
   bool isScanOk_;
   unsigned int uSecDelay_;
   
-  void Device_SetChannels( void ) const;
   void CalculateDelay( void );
   */
 };

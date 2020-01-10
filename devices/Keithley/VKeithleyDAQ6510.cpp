@@ -18,20 +18,34 @@
 
 #include "VKeithleyDAQ6510.h"
 
-///
-///
-///
 VKeithleyDAQ6510::VKeithleyDAQ6510( ioport_t port )
 {
 
 }
 
-///
-///
-///
 VKeithleyDAQ6510::~VKeithleyDAQ6510()
 {
 
+}
+
+bool VKeithleyDAQ6510::IsCardAvailable(unsigned int card) const
+{
+  if (card<1 || card>2) return false;
+  return availableCards_[card-1];
+}
+
+bool VKeithleyDAQ6510::IsChannelAvailable(unsigned int card, unsigned int channel) const
+{
+  if (card<1 || card>2) return false;
+  if (channel<1 || channel>10) return false;
+  return availableChannels_[card-1][channel-1];
+}
+
+bool VKeithleyDAQ6510::IsChannelAvailable(unsigned int channel) const
+{
+  unsigned int card = channel / 100;
+  unsigned int ch = channel % 100;
+  return IsChannelAvailable(card, ch);
 }
 
 /*
@@ -145,3 +159,44 @@ const range_t VKeithleyDAQ6510::EvaluateRangeToken( const std::string& string ) 
   throw;
 }
 */
+
+
+std::string VKeithleyDAQ6510::CreateChannelString(unsigned int card, channels_t& channels)
+{
+  std::stringstream ss;
+  
+  bool inRange = false;
+  unsigned int rangeStart = 0;
+  unsigned int rangeEnd = 0;
+  bool hasPrevious = false;
+  for (int i=0;i<10;++i) {
+    
+    // std::cout << card*100+i+1 << ": " << channels[i] << std::endl;
+    
+    if (channels[i]) {
+      if (!inRange) {
+        rangeStart = i;
+      }
+      rangeEnd = i;
+      
+      if (!inRange) {
+        if (hasPrevious) ss << ",";
+        ss << card * 100 + i+1;
+      }
+      
+      if (inRange && i==9) {
+        if (rangeEnd>rangeStart) ss << ":" << card * 100 + rangeEnd+1;
+      }
+      
+      inRange = true;
+      hasPrevious = true;
+    } else {
+      if (inRange) {
+        if (rangeEnd>rangeStart) ss << ":" << card * 100 + rangeEnd+1;
+        inRange = false;
+      }
+    }
+  }
+
+  return ss.str();
+}
