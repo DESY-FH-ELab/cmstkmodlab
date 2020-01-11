@@ -75,7 +75,7 @@ Thermo2MainWindow::Thermo2MainWindow(QWidget *parent)
                                         this);
 
   daqStreamer_ = new Thermo2DAQStreamer(daqModel_, this);
-//
+
 //  QString webuser(config->getValue<std::string>("Webuser").c_str());
 //  if (webuser==getenv("USER")) {
 //    daqWebInfo_ = new ThermoDAQWebInfo(daqModel_, this);
