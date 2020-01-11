@@ -20,6 +20,7 @@
 #include <cstdlib>
 #include <algorithm>
 #include <sstream>
+#include <random>
 
 #include "VKeithleyDAQ6510.h"
 
@@ -54,6 +55,10 @@ class KeithleyDAQ6510Fake : public VKeithleyDAQ6510
   float GetScanDuration() const;
 
 protected:
+
+  std::random_device randomDevice_{};
+  std::mt19937 randomGenerator_{randomDevice_()};
+  std::normal_distribution<> normalDistribution_{0,0.025};
 
   reading_t data_;
 };

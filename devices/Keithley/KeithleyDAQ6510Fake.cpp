@@ -48,8 +48,9 @@ void KeithleyDAQ6510Fake::Scan()
     for (unsigned int channel = 1;channel<=10;++channel) {
       if (activeChannels_[card-1][channel-1]) {
         double temperature = channel;
-        temperature /= 100.;
-        temperature += 20 + card;
+        temperature /= 10.;
+        temperature += card * 10;
+        temperature += normalDistribution_(randomGenerator_);
         unsigned int sensor = card * 100 + channel;
         data_.push_back(std::tuple<unsigned int,double,double>(sensor,temperature,i*0.1));
         i++;
