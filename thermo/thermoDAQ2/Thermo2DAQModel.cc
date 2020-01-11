@@ -23,15 +23,20 @@
 #include "Thermo2DAQModel.h"
 
 Thermo2DAQModel::Thermo2DAQModel(RohdeSchwarzNGE103BModel* nge103BModel,
+                                 KeithleyDAQ6510Model* keithleyModel,
                                  QObject *parent)
   : QObject(),
     daqState_(false),
-    nge103BModel_(nge103BModel)
+    nge103BModel_(nge103BModel),
+    keithleyModel_(keithleyModel)
 {
   currentTime_ = QDateTime::currentDateTime();
 
   connect(nge103BModel_, SIGNAL(informationChanged()),
           this, SLOT(nge103BInfoChanged()));
+
+  connect(keithleyModel_, SIGNAL(informationChanged()),
+          this, SLOT(keithleyInfoChanged()));
 }
 
 void Thermo2DAQModel::myMoveToThread(QThread *thread)
@@ -53,6 +58,13 @@ void Thermo2DAQModel::startMeasurement()
     nge103BCurrent_[i] = -1.0;
     nge103BMeasuredVoltage_[i] = 0.;
     nge103BMeasuredCurrent_[i] = 0.;
+  }
+
+  for (unsigned int card=0;card<2;++card) {
+    for (unsigned int channel=0;channel<10;++channel) {
+      keithleyState_[card][channel] = false;
+      keithleyTemperature_[card][channel] = 0.;
+    }
   }
 
   QString buffer;
@@ -88,6 +100,26 @@ void Thermo2DAQModel::createDAQStatusMessage(QString &buffer, bool start)
   xml.writeEndElement();
   //
   // End of Rohde & Schwarz NGE103B
+  //
+
+  //
+  // Start of Keithley DAQ6510
+  //
+  xml.writeStartElement("KeithleyDAQ6510");
+  xml.writeAttribute("time", utime.toString(Qt::ISODate));
+  for (unsigned int card=1;card<=2;++card) {
+    for (unsigned int channel=1;channel<=10;++channel) {
+      unsigned int sensor = card*100 + channel;
+      xml.writeStartElement(QString("KeithleyDAQ6510Sensor"));
+      xml.writeAttribute("id", QString::number(sensor));
+      xml.writeAttribute("State", keithleyModel_->getSensorState(sensor)==READY ? "1" : "0");
+      xml.writeAttribute("T", QString::number(keithleyModel_->getTemperature(sensor), 'f', 4));
+      xml.writeEndElement();
+    }
+  }
+  xml.writeEndElement();
+  //
+  // End of Keithley DAQ6510
   //
 
   if (start) {
@@ -163,6 +195,52 @@ void Thermo2DAQModel::nge103BInfoChanged()
       xml.writeAttribute("I", QString::number(nge103BCurrent_[i], 'f', 3));
       xml.writeAttribute("mI", QString::number(nge103BMeasuredCurrent_[i], 'f', 3));
       xml.writeEndElement();
+    }
+  }
+  xml.writeEndElement();
+
+  if (buffer.length()>0) {
+    emit daqMessage(buffer);
+    emit newDataAvailable();
+  }
+}
+
+void Thermo2DAQModel::keithleyInfoChanged()
+{
+  NQLogDebug("Thermo2DAQModel") << "keithleyInfoChanged()";
+
+  if (thread()==QApplication::instance()->thread()) {
+    NQLogDebug("Thermo2DAQModel") << "running in main application thread";
+  } else {
+    NQLogDebug("Thermo2DAQModel") << "running in dedicated DAQ thread";
+  }
+
+  QMutexLocker locker(&mutex_);
+
+  QDateTime& utime = currentTime();
+
+  QString buffer;
+  QXmlStreamWriter xml(&buffer);
+  xml.setAutoFormatting(true);
+
+  xml.writeStartElement("KeithleyDAQ6510");
+  xml.writeAttribute("time", utime.toString(Qt::ISODate));
+
+  for (unsigned int card=0;card<2;++card) {
+    for (unsigned int channel=0;channel<10;++channel) {
+      unsigned int sensor = (card+1)*100 + channel + 1;
+
+      bool changed = false;
+      changed |= updateIfChanged<bool>(keithleyState_[card][channel], keithleyModel_->getSensorState(sensor)==READY ? "1" : "0");
+      changed |= updateIfChanged<float>(keithleyTemperature_[card][channel], keithleyModel_->getTemperature(sensor));
+
+      if (changed) {
+        xml.writeStartElement(QString("KeithleyDAQ6510Sensor"));
+        xml.writeAttribute("id", QString::number(sensor));
+        xml.writeAttribute("State", keithleyState_[card][channel]==true ? "1" : "0");
+        xml.writeAttribute("T", QString::number(keithleyTemperature_[card][channel], 'f', 4));
+        xml.writeEndElement();
+      }
     }
   }
   xml.writeEndElement();

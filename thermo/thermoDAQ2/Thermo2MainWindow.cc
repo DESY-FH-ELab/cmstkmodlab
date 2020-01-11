@@ -66,6 +66,7 @@ Thermo2MainWindow::Thermo2MainWindow(QWidget *parent)
 //  arduinoPresModel_->setDeviceEnabled(false);
 
   daqModel_ = new Thermo2DAQModel(nge103BModel_,
+                                  keithleyModel_,
                                   this);
 
   // SCRIPT MODEL

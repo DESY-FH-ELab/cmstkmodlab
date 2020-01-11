@@ -187,6 +187,8 @@ void KeithleyDAQ6510Model::scanComplete()
 
   NQLogDebug("KeithleyDAQ6510Model") << "data size: " << data.size();
 
+  bool changed = false;
+
   for (reading_t::iterator it=data.begin();it!=data.end();++it) {
     unsigned int sensor;
     double temperature;
@@ -201,8 +203,11 @@ void KeithleyDAQ6510Model::scanComplete()
     if (temperatures_[card][channel] != temperature) {
       temperatures_[card][channel] = temperature;
       emit temperatureChanged(sensor, temperature);
+      changed = true;
     }
   }
+
+  if (changed) emit informationChanged();
 }
 
 void KeithleyDAQ6510Model::statusMessage(const QString & text)

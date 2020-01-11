@@ -86,6 +86,7 @@ signals:
   void deviceStateChanged(State newState);
   void sensorStateChanged(unsigned int sensor, State newState);
   void temperatureChanged(unsigned int sensor, double temperature);
+  void informationChanged();
   void temperatureGradientChanged(unsigned int sensor, double gradient);
   void message(const QString & text);
   void controlStateChanged(bool);

@@ -13,6 +13,8 @@
 #ifndef THERMO2DAQMODEL_H
 #define THERMO2DAQMODEL_H
 
+#include <array>
+
 #include <QObject>
 #include <QVector>
 #include <QDateTime>
@@ -21,6 +23,7 @@
 #include <QMutexLocker>
 
 #include "RohdeSchwarzNGE103BModel.h"
+#include "KeithleyDAQ6510Model.h"
 
 class Thermo2DAQModel : public QObject
 {
@@ -28,6 +31,7 @@ class Thermo2DAQModel : public QObject
 public:
 
   explicit Thermo2DAQModel(RohdeSchwarzNGE103BModel* nge103BModel,
+                           KeithleyDAQ6510Model* keithleyModel,
                            QObject *parent = 0);
 
   QDateTime& currentTime();
@@ -47,6 +51,7 @@ public slots:
 protected slots:
 
   void nge103BInfoChanged();
+  void keithleyInfoChanged();
 
   void clearHistory();
 
@@ -55,6 +60,7 @@ protected:
   bool daqState_;
 
   RohdeSchwarzNGE103BModel* nge103BModel_;
+  KeithleyDAQ6510Model* keithleyModel_;
 
   QMutex mutex_;
 
@@ -73,6 +79,10 @@ protected:
   float nge103BCurrent_[3];
   float nge103BMeasuredVoltage_[3];
   float nge103BMeasuredCurrent_[3];
+
+  // Keithley DAQ6510 Data
+  std::array<std::array<bool,10>,2> keithleyState_;
+  std::array<std::array<float,10>,2> keithleyTemperature_;
 
 signals:
 
