@@ -53,7 +53,7 @@ int main( int argc, char** argv )
 
   QFile * logfile = new QFile(logfilename);
   if (logfile->open(QIODevice::WriteOnly | QIODevice::Append | QIODevice::Text)) {
-    NQLogger::instance()->addDestiniation(logfile, NQLog::Message);
+    NQLogger::instance()->addDestiniation(logfile, NQLog::Debug);
   }
 
 #ifdef SINGLETON
