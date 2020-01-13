@@ -612,7 +612,7 @@ ThermoDAQ2TemperatureDisplayWidget::ThermoDAQ2TemperatureDisplayWidget(QWidget *
                                                                          Qt::LocalTime);
 
   internalLegend_ = new ThermoDAQ2InternalLegend();
-  internalLegend_->setMaxColumns(1);
+  internalLegend_->setMaxColumns(2);
   internalLegend_->setAlignment(Qt::AlignLeft | Qt::AlignVCenter);
   internalLegend_->attach(this);
 
