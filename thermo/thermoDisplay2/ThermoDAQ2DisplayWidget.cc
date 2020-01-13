@@ -548,7 +548,7 @@ ThermoDAQ2VoltageDisplayWidget::ThermoDAQ2VoltageDisplayWidget(QWidget *parent)
   this->setAxisScaleEngine(QwtPlot::yLeft, yscaleEngine);
   this->setAxisTitle(QwtPlot::yLeft, QString::fromUtf8("Voltage [V]"));
 
-  ThermoDAQ2VoltagePicker * picker = new ThermoDAQ2VoltagePicker(this->canvas(),
+  /*ThermoDAQ2VoltagePicker * picker = */new ThermoDAQ2VoltagePicker(this->canvas(),
                                                                  Qt::LocalTime);
 
   internalLegend_ = new ThermoDAQ2InternalLegend();
@@ -578,7 +578,7 @@ ThermoDAQ2CurrentDisplayWidget::ThermoDAQ2CurrentDisplayWidget(QWidget *parent)
   this->setAxisScaleEngine(QwtPlot::yLeft, yscaleEngine);
   this->setAxisTitle(QwtPlot::yLeft, QString::fromUtf8("Current [A]"));
 
-  ThermoDAQ2CurrentPicker * picker = new ThermoDAQ2CurrentPicker(this->canvas(),
+  /*ThermoDAQ2CurrentPicker * picker = */new ThermoDAQ2CurrentPicker(this->canvas(),
                                                                  Qt::LocalTime);
 
   internalLegend_ = new ThermoDAQ2InternalLegend();
@@ -608,7 +608,7 @@ ThermoDAQ2TemperatureDisplayWidget::ThermoDAQ2TemperatureDisplayWidget(QWidget *
   this->setAxisScaleEngine(QwtPlot::yLeft, yscaleEngine);
   this->setAxisTitle(QwtPlot::yLeft, QString::fromUtf8("T [°C]"));
 
-  ThermoDAQ2TemperaturePicker * picker = new ThermoDAQ2TemperaturePicker(this->canvas(),
+  /*ThermoDAQ2TemperaturePicker * picker = */new ThermoDAQ2TemperaturePicker(this->canvas(),
                                                                          Qt::LocalTime);
 
   internalLegend_ = new ThermoDAQ2InternalLegend();
@@ -641,7 +641,7 @@ ThermoDAQ2PressureDisplayWidget::ThermoDAQ2PressureDisplayWidget(QWidget *parent
   ThermoDAQ2PressureScaleDraw* pscaleDraw = new ThermoDAQ2PressureScaleDraw();
   this->setAxisScaleDraw(QwtPlot::yLeft, pscaleDraw);
 
-  ThermoDAQ2PressurePicker * picker = new ThermoDAQ2PressurePicker(this->canvas(),
+  /*ThermoDAQ2PressurePicker * picker = */new ThermoDAQ2PressurePicker(this->canvas(),
                                                                    Qt::LocalTime);
 
   internalLegend_ = new ThermoDAQ2InternalLegend();

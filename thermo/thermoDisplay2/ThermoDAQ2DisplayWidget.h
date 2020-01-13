@@ -213,7 +213,7 @@ public:
   void attachToPlot(ThermoDAQ2DisplayWidget *plot) {
     QwtPlotCurve::attach(plot);
   }
-  void detachFromPlot(ThermoDAQ2DisplayWidget *plot) {
+  void detachFromPlot(ThermoDAQ2DisplayWidget * /*plot*/) {
     QwtPlotCurve::detach();
   }
 
