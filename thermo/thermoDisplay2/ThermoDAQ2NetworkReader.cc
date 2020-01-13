@@ -52,106 +52,27 @@ void ThermoDAQ2NetworkReader::processRohdeSchwarzNGE103BChannel(QXmlStreamReader
   measurement_.nge103BCurrent[id-1] = mI;
 }
 
-/*
-void ThermoDAQ2NetworkReader::processHuberTemperature(QXmlStreamReader& xml)
+void ThermoDAQ2NetworkReader::processKeithleyDAQ6510(QXmlStreamReader& xml)
 {
+  NQLogDebug("ThermoDAQ2NetworkReader") << "processKeithleyDAQ6510(QXmlStreamReader& xml)";
+
   QString time = xml.attributes().value("time").toString();
   measurement_.dt = QDateTime::fromString(time, Qt::ISODate);
-
-  measurement_.bathTemperature = xml.attributes().value("bath").toString().toFloat();
-  measurement_.workingTemperature = xml.attributes().value("work").toString().toFloat();
-  measurement_.circulator = xml.attributes().value("circulator").toString().toInt();
 }
 
-void ThermoDAQ2NetworkReader::processKeithleyState(QXmlStreamReader& xml)
+void ThermoDAQ2NetworkReader::processKeithleyDAQ6510Sensor(QXmlStreamReader& xml)
 {
-  QString time = xml.attributes().value("time").toString();
-  measurement_.dt = QDateTime::fromString(time, Qt::ISODate);
+  NQLogDebug("ThermoDAQ2NetworkReader") << "processKeithleyDAQ6510Sensor(QXmlStreamReader& xml)";
 
-  int idx = xml.attributes().value("sensor").toString().toInt();
-  measurement_.channelActive[idx] = xml.attributes().value("state").toString().toInt();
+  int id = xml.attributes().value("id").toString().toInt();
+  unsigned int card = id / 100 - 1;
+  unsigned int channel = id % 100 - 1;
+  float temp = xml.attributes().value("T").toString().toFloat();
+
+  NQLogDebug("ThermoDAQ2NetworkReader") << "card " << card+1 << " channel " << channel << " -> " << temp;
+
+  measurement_.keithleyTemperature[card][channel] = temp;
 }
-
-void ThermoDAQ2NetworkReader::processKeithleyTemperature(QXmlStreamReader& xml)
-{
-  QString time = xml.attributes().value("time").toString();
-  measurement_.dt = QDateTime::fromString(time, Qt::ISODate);
-
-  int idx = xml.attributes().value("sensor").toString().toInt();
-  measurement_.temperature[idx] = xml.attributes().value("temperature").toString().toFloat();
-}
-
-void ThermoDAQ2NetworkReader::processPfeifferPressure(QXmlStreamReader& xml)
-{
-  QString time = xml.attributes().value("time").toString();
-  measurement_.dt = QDateTime::fromString(time, Qt::ISODate);
-
-  measurement_.gaugeStatus1 = xml.attributes().value("s1").toString().toInt();
-  measurement_.gaugePressure1 = xml.attributes().value("p1").toString().toFloat();
-  measurement_.gaugeStatus2 = xml.attributes().value("s2").toString().toInt();
-  measurement_.gaugePressure2 = xml.attributes().value("p2").toString().toFloat();
-}
-
-void ThermoDAQ2NetworkReader::processHamegSetup(QXmlStreamReader& xml)
-{
-  QString time = xml.attributes().value("time").toString();
-  measurement_.dt = QDateTime::fromString(time, Qt::ISODate);
-
-  measurement_.powerRemote = xml.attributes().value("remote").toString().toInt();
-  measurement_.powerOn = xml.attributes().value("outputs").toString().toInt();
-  measurement_.cv1 = xml.attributes().value("CV1").toString().toInt();
-  measurement_.cv2 = xml.attributes().value("CV2").toString().toInt();
-}
-
-void ThermoDAQ2NetworkReader::processHamegSetvalues(QXmlStreamReader& xml)
-{
-  QString time = xml.attributes().value("time").toString();
-  measurement_.dt = QDateTime::fromString(time, Qt::ISODate);
-
-  measurement_.setVoltage1 = xml.attributes().value("V1").toString().toFloat();
-  measurement_.setCurrent1 = xml.attributes().value("C1").toString().toFloat();
-  measurement_.setVoltage2 = xml.attributes().value("V2").toString().toFloat();
-  measurement_.setCurrent2 = xml.attributes().value("C2").toString().toFloat();
-}
-
-void ThermoDAQ2NetworkReader::processHamegValues(QXmlStreamReader& xml)
-{
-  QString time = xml.attributes().value("time").toString();
-  measurement_.dt = QDateTime::fromString(time, Qt::ISODate);
-
-  measurement_.voltage1 = xml.attributes().value("V1").toString().toFloat();
-  measurement_.current1 = xml.attributes().value("C1").toString().toFloat();
-  measurement_.voltage2 = xml.attributes().value("V2").toString().toFloat();
-  measurement_.current2 = xml.attributes().value("C2").toString().toFloat();
-}
-void ThermoDAQ2NetworkReader::processIotaSetup(QXmlStreamReader& xml)
-{
-  QString time = xml.attributes().value("time").toString();
-  measurement_.dt = QDateTime::fromString(time, Qt::ISODate);
-
-  measurement_.iotaPumpEnabled = xml.attributes().value("enabled").toString().toInt();
-  measurement_.iotaSetPressure = xml.attributes().value("pressure").toString().toFloat();
-  measurement_.iotaSetFlow = xml.attributes().value("flow").toString().toFloat();
-}
-
-void ThermoDAQ2NetworkReader::processIotaValues(QXmlStreamReader& xml)
-{
-  QString time = xml.attributes().value("time").toString();
-  measurement_.dt = QDateTime::fromString(time, Qt::ISODate);
-
-  measurement_.iotaActPressure = xml.attributes().value("pressure").toString().toFloat();
-  measurement_.iotaActFlow = xml.attributes().value("flow").toString().toFloat();
-}
-
-void ThermoDAQ2NetworkReader::processArduinoPressure(QXmlStreamReader& xml)
-{
-  QString time = xml.attributes().value("time").toString();
-  measurement_.dt = QDateTime::fromString(time, Qt::ISODate);
-
-  measurement_.arduinoPressureA = xml.attributes().value("pA").toString().toFloat();
-  measurement_.arduinoPressureB = xml.attributes().value("pB").toString().toFloat();
-}
-*/
 
 void ThermoDAQ2NetworkReader::processLine(QString& line)
 {
@@ -167,35 +88,12 @@ void ThermoDAQ2NetworkReader::processLine(QString& line)
         processRohdeSchwarzNGE103BChannel(xml);
       }
 
-      /*
-      if (xml.name()=="KeithleyState") {
-        processKeithleyState(xml);
+      if (xml.name()=="KeithleyDAQ6510") {
+        processKeithleyDAQ6510(xml);
       }
-      if (xml.name()=="KeithleyTemperature") {
-        processKeithleyTemperature(xml);
+      if (xml.name()=="KeithleyDAQ6510Sensor") {
+        processKeithleyDAQ6510Sensor(xml);
       }
-      if (xml.name()=="PfeifferPressure") {
-        processPfeifferPressure(xml);
-      }
-      if (xml.name()=="HamegSetup") {
-        processHamegSetup(xml);
-      }
-      if (xml.name()=="HamegSetvalues") {
-        processHamegSetvalues(xml);
-      }
-      if (xml.name()=="HamegValues") {
-        processHamegValues(xml);
-      }
-      if (xml.name()=="IotaSetup") {
-        processIotaSetup(xml);
-      }
-      if (xml.name()=="IotaValues") {
-        processIotaValues(xml);
-      }
-      if (xml.name()=="ArduinoPressure") {
-        processArduinoPressure(xml);
-      }
-      */
     }
   }
 }

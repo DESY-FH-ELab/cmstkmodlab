@@ -117,20 +117,6 @@ ThermoDisplay2MainWindow::ThermoDisplay2MainWindow(QWidget *parent)
   tempDisplay_->setMinimumHeight(400);
   tabWidget_->addTab(tempDisplay_, "Temperature");
 
-//  bathTemperaturePlot_ = new ThermoDAQ2DisplayPlotItem(QwtText("Bath"), &bathTemperature_);
-//  bathTemperaturePlot_->setPen(Qt::green, 2);
-//  bathTemperaturePlot_->setStyle(QwtPlotCurve::Lines);
-//  bathTemperaturePlot_->setSymbol(new QwtSymbol(QwtSymbol::Cross, Qt::NoBrush,
-//                                                QPen(Qt::green), QSize(5,5)));
-//  bathTemperaturePlot_->attachToPlot(tempDisplay_);
-//
-//  workingTemperaturePlot_ = new ThermoDAQ2DisplayPlotItem(QwtText("Work"), &workingTemperature_);
-//  workingTemperaturePlot_->setPen(Qt::cyan, 2);
-//  workingTemperaturePlot_->setStyle(QwtPlotCurve::Lines);
-//  workingTemperaturePlot_->setSymbol(new QwtSymbol(QwtSymbol::Cross, Qt::NoBrush,
-//                                                   QPen(Qt::cyan), QSize(5,5)));
-//  workingTemperaturePlot_->attachToPlot(tempDisplay_);
-
   const char * colors[] = {
                            "LightSalmon",
                            "SteelBlue",
@@ -144,37 +130,23 @@ ThermoDisplay2MainWindow::ThermoDisplay2MainWindow(QWidget *parent)
                            "Maroon"
   };
 
-//  for (int i=0;i<10;++i) {
-//    temperaturePlot_[i] = new ThermoDAQ2DisplayPlotItem(QwtText(QString("T%1").arg(i)),
-//                                                        &temperature_[i]);
-//    QColor color(colors[i]);
-//    temperaturePlot_[i]->setPen(color, 2);
-//    temperaturePlot_[i]->setStyle(QwtPlotCurve::Lines);
-//    temperaturePlot_[i]->setSymbol(new QwtSymbol(QwtSymbol::Cross, Qt::NoBrush,
-//                                                 QPen(color), QSize(5,5)));
-//    temperaturePlot_[i]->setEnabled(false);
-//    temperaturePlot_[i]->setVisible(false);
-//    temperaturePlot_[i]->attachToPlot(tempDisplay_);
-//  }
+  for (unsigned int card = 0;card<2;++card) {
+    for (unsigned int channel = 0;channel<10;++channel) {
+      unsigned int sensor = (card+1)*100 + channel + 1;
+      temperaturePlot_[card][channel] = new ThermoDAQ2DisplayPlotItem(QwtText(QString("T%1").arg(sensor)),
+                                                                      &temperature_[card][channel]);
 
-//  pDisplay_ = new ThermoDAQ2PressureDisplayWidget(tabWidget_);
-//  pDisplay_->setMinimumWidth(600);
-//  pDisplay_->setMinimumHeight(400);
-//  tabWidget_->addTab(pDisplay_, "Pressure");
-//
-//  pressure1Plot_ = new ThermoDAQ2DisplayPlotItem(QwtText("p1"), &pressure1_);
-//  pressure1Plot_->setPen(Qt::green, 2);
-//  pressure1Plot_->setStyle(QwtPlotCurve::Lines);
-//  pressure1Plot_->setSymbol(new QwtSymbol(QwtSymbol::Cross, Qt::NoBrush,
-//                                          QPen(Qt::green), QSize(5,5)));
-//  pressure1Plot_->attachToPlot(pDisplay_);
-//
-//  pressure2Plot_ = new ThermoDAQ2DisplayPlotItem(QwtText("p2"), &pressure2_);
-//  pressure2Plot_->setPen(Qt::cyan, 2);
-//  pressure2Plot_->setStyle(QwtPlotCurve::Lines);
-//  pressure2Plot_->setSymbol(new QwtSymbol(QwtSymbol::Cross, Qt::NoBrush,
-//                                          QPen(Qt::cyan), QSize(5,5)));
-//  pressure2Plot_->attachToPlot(pDisplay_);
+      QColor color(colors[channel]);
+      temperaturePlot_[card][channel]->setPen(color, 2);
+      temperaturePlot_[card][channel]->setStyle(QwtPlotCurve::Lines);
+      temperaturePlot_[card][channel]->setSymbol(new QwtSymbol(QwtSymbol::Cross, Qt::NoBrush,
+                                                               QPen(color), QSize(5,5)));
+      temperaturePlot_[card][channel]->setEnabled(true);
+      temperaturePlot_[card][channel]->setVisible(true);
+      temperaturePlot_[card][channel]->attachToPlot(tempDisplay_);
+
+    }
+  }
 
   client_ = new ThermoDAQ2Client(config->getValue<unsigned int>("ServerPort"));
   reader_ = new ThermoDAQ2NetworkReader(this);
@@ -201,8 +173,6 @@ void ThermoDisplay2MainWindow::exportPlot()
 
   if (tabIndex==0) voltageDisplay_->exportPlot();
   if (tabIndex==1) tempDisplay_->exportPlot();
-//  if (tabIndex==1) pDisplay_->exportPlot();
-//  if (tabIndex==2) microPressureDisplay_->exportPlot();
 }
 
 void ThermoDisplay2MainWindow::clearData()
@@ -215,19 +185,11 @@ void ThermoDisplay2MainWindow::clearData()
   I2_.clear();
   I3_.clear();
 
-  //  bathTemperature_.clearData();
-//  workingTemperature_.clearData();
-//
-//  for (int i=0;i<10;++i) {
-//    temperature_[i].clearData();
-//  }
-//  pressure1_.clearData();
-//  pressure2_.clearData();
-//
-//  arduinoA_.clearData();
-//  arduinoB_.clearData();
-//  iotaActPressure_.clearData();
-//  iotaSetPressure_.clearData();
+  for (unsigned int card = 0;card<2;++card) {
+    for (unsigned int channel = 0;channel<10;++channel) {
+      temperature_[card][channel].clear();
+    }
+  }
 }
 
 void ThermoDisplay2MainWindow::requestData()
@@ -252,32 +214,20 @@ void ThermoDisplay2MainWindow::updateInfo()
   if (I2_.push(m.dt, m.nge103BCurrent[1])) I2Plot_->refresh();
   if (I3_.push(m.dt, m.nge103BCurrent[2])) I3Plot_->refresh();
 
-//  if (bathTemperature_.push(m.dt, m.bathTemperature)) bathTemperaturePlot_->refresh();
-//  if (workingTemperature_.push(m.dt, m.workingTemperature)) workingTemperaturePlot_->refresh();
-//  for (int i=0;i<10;++i) {
-//    if (m.channelActive[i]) {
-//      if (temperaturePlot_[i]->isEnabled()==false) updateLegend = true;
-//      temperaturePlot_[i]->setEnabled(true);
-//      // if (!temperaturePlot_[i]->isVisible()) temperaturePlot_[i]->setVisible(true);
-//    }
-//    if (!m.channelActive[i]) {
-//      if (temperaturePlot_[i]->isEnabled()==true) updateLegend = true;
-//      temperaturePlot_[i]->setEnabled(false);
-//      // if (temperaturePlot_[i]->isVisible()) temperaturePlot_[i]->setVisible(false);
-//    }
-//    if (m.channelActive[i]) {
-//      if (temperature_[i].push(m.dt, m.temperature[i])) temperaturePlot_[i]->refresh();
-//    }
-//  }
+  for (unsigned int card = 0;card<2;++card) {
+    for (unsigned int channel = 0;channel<10;++channel) {
+      if (temperature_[card][channel].push(m.dt, m.keithleyTemperature[card][channel]))
+        temperaturePlot_[card][channel]->refresh();
+    }
+  }
 
   if (updateLegend) {
     voltageDisplay_->updateLegend();
     currentDisplay_->updateLegend();
+    tempDisplay_->updateLegend();
   }
+  
   voltageDisplay_->replot();
   currentDisplay_->replot();
-
-//  if (pressure1_.push(m.dt, m.gaugePressure1)) pressure1Plot_->refresh();
-//  if (pressure2_.push(m.dt, m.gaugePressure2)) pressure2Plot_->refresh();
-//  pDisplay_->replot();
+  tempDisplay_->replot();
 }

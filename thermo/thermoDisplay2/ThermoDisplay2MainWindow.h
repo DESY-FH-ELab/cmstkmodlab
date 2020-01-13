@@ -59,37 +59,13 @@ protected:
   ThermoDAQ2ValueVector<double> I3_;
   ThermoDAQ2DisplayPlotItem* I3Plot_;
 
-  /*
-    ThermoDAQ2ValueVector<double> bathTemperature_;
-    ThermoDAQ2DisplayPlotItem* bathTemperaturePlot_;
-    ThermoDAQ2ValueVector<double> workingTemperature_;
-    ThermoDAQ2DisplayPlotItem* workingTemperaturePlot_;
-    ThermoDAQ2ValueVector<double> temperature_[10];
-    ThermoDAQ2DisplayPlotItem* temperaturePlot_[10];
-
-    ThermoDAQ2ValueVector<double> pressure1_;
-    ThermoDAQ2DisplayPlotItem* pressure1Plot_;
-    ThermoDAQ2ValueVector<double> pressure2_;
-    ThermoDAQ2DisplayPlotItem* pressure2Plot_;
-
-    ThermoDAQ2ValueVector<double> arduinoA_;
-    ThermoDAQDisplayPlotItem* arduinoAPlot_;
-    ThermoDAQValueVector<double> arduinoB_;
-    ThermoDAQDisplayPlotItem* arduinoBPlot_;
-    ThermoDAQValueVector<double> iotaActPressure_;
-    ThermoDAQDisplayPlotItem* iotaActPressurePlot_;
-    ThermoDAQValueVector<double> iotaSetPressure_;
-    ThermoDAQDisplayPlotItem* iotaSetPressurePlot_;
-   */
+  ThermoDAQ2ValueVector<double> temperature_[2][10];
+  ThermoDAQ2DisplayPlotItem* temperaturePlot_[2][10];
 
   ThermoDAQ2VoltageDisplayWidget* voltageDisplay_;
   ThermoDAQ2CurrentDisplayWidget* currentDisplay_;
 
   ThermoDAQ2TemperatureDisplayWidget* tempDisplay_;
-  /*
-    ThermoDAQPressureDisplayWidget* pDisplay_;
-    ThermoDAQMicroPressureDisplayWidget* microPressureDisplay_;
-   */
 };
 
 #endif // THERMODISPLAY2MAINWINDOW_H

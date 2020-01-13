@@ -25,6 +25,7 @@ typedef struct {
 
   float          nge103BVoltage[3];
   float          nge103BCurrent[3];
+  float          keithleyTemperature[2][10];
 } Measurement_t;
 
 class ThermoDAQ2NetworkReader : public QObject
@@ -48,18 +49,8 @@ signals:
   void processRohdeSchwarzNGE103B(QXmlStreamReader& xml);
   void processRohdeSchwarzNGE103BChannel(QXmlStreamReader& xml);
 
-  /*
-    void processHuberTemperature(QXmlStreamReader& xml);
-    void processKeithleyState(QXmlStreamReader& xml);
-    void processKeithleyTemperature(QXmlStreamReader& xml);
-    void processPfeifferPressure(QXmlStreamReader& xml);
-    void processHamegSetup(QXmlStreamReader& xml);
-    void processHamegSetvalues(QXmlStreamReader& xml);
-    void processHamegValues(QXmlStreamReader& xml);
-    void processIotaSetup(QXmlStreamReader& xml);
-    void processIotaValues(QXmlStreamReader& xml);
-    void processArduinoPressure(QXmlStreamReader& xml);
-    */
+  void processKeithleyDAQ6510(QXmlStreamReader& xml);
+  void processKeithleyDAQ6510Sensor(QXmlStreamReader& xml);
 
   Measurement_t measurement_;
 };
