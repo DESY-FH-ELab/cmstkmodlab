@@ -18,10 +18,18 @@
 #include <QVector>
 #include <QTabWidget>
 
+#include <QtCharts/QChartView>
+#include <QtCharts/QChart>
+#include <QtCharts/QLineSeries>
+
 #include "ThermoDAQ2Client.h"
 #include "ThermoDAQ2NetworkReader.h"
-#include "ThermoDAQ2DisplayWidget.h"
-#include "ThermoDAQ2ValueVector.h"
+
+#include "ThermoDisplay2ChartView.h"
+#include "ThermoDisplay2Chart.h"
+#include "ThermoDisplay2LineSeries.h"
+
+QT_CHARTS_USE_NAMESPACE
 
 class ThermoDisplay2MainWindow : public QMainWindow
 {
@@ -33,7 +41,6 @@ public slots:
 
   void requestData();
   void updateInfo();
-  void exportPlot();
   void clearData();
 
 protected:
@@ -45,27 +52,21 @@ protected:
   ThermoDAQ2Client* client_;
   ThermoDAQ2NetworkReader* reader_;
 
-  ThermoDAQ2ValueVector<double> U1_;
-  ThermoDAQ2DisplayPlotItem* U1Plot_;
-  ThermoDAQ2ValueVector<double> U2_;
-  ThermoDAQ2DisplayPlotItem* U2Plot_;
-  ThermoDAQ2ValueVector<double> U3_;
-  ThermoDAQ2DisplayPlotItem* U3Plot_;
+  ThermoDisplay2ChartView *UChartView_;
+  ThermoDisplay2VoltageChart *UChart_;
+  ThermoDisplay2LineSeries *U1Series_;
+  ThermoDisplay2LineSeries *U2Series_;
+  ThermoDisplay2LineSeries *U3Series_;
 
-  ThermoDAQ2ValueVector<double> I1_;
-  ThermoDAQ2DisplayPlotItem* I1Plot_;
-  ThermoDAQ2ValueVector<double> I2_;
-  ThermoDAQ2DisplayPlotItem* I2Plot_;
-  ThermoDAQ2ValueVector<double> I3_;
-  ThermoDAQ2DisplayPlotItem* I3Plot_;
+  ThermoDisplay2ChartView *IChartView_;
+  ThermoDisplay2CurrentChart *IChart_;
+  ThermoDisplay2LineSeries *I1Series_;
+  ThermoDisplay2LineSeries *I2Series_;
+  ThermoDisplay2LineSeries *I3Series_;
 
-  ThermoDAQ2ValueVector<double> temperature_[2][10];
-  ThermoDAQ2DisplayPlotItem* temperaturePlot_[2][10];
-
-  ThermoDAQ2VoltageDisplayWidget* voltageDisplay_;
-  ThermoDAQ2CurrentDisplayWidget* currentDisplay_;
-
-  ThermoDAQ2TemperatureDisplayWidget* tempDisplay_;
+  ThermoDisplay2ChartView *TChartView_[2];
+  ThermoDisplay2TemperatureChart *TChart_[2];
+  ThermoDisplay2LineSeries *TSeries_[2][10];
 };
 
 #endif // THERMODISPLAY2MAINWINDOW_H

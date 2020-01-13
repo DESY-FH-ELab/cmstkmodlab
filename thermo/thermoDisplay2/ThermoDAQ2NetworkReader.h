@@ -23,8 +23,11 @@
 typedef struct {
   QDateTime      dt;
 
+  bool           nge103BState[3];
   float          nge103BVoltage[3];
   float          nge103BCurrent[3];
+
+  bool           keithleyState[2][10];
   float          keithleyTemperature[2][10];
 } Measurement_t;
 

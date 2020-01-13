@@ -5,7 +5,6 @@ LIBS += -L@basepath@/devices/lib -lTkModLabHameg
 LIBS += -L@basepath@/devices/lib -lTkModLabPfeiffer
 LIBS += -L@basepath@/devices/lib -lTkModLabHuber
 LIBS += -L@basepath@/common -lCommon
-LIBS += @qwtlibs@
 
 QMAKE = @qmake@
 
@@ -29,10 +28,9 @@ macx {
   QMAKE_CXXFLAGS += -DAPPLICATIONVERSIONSTR=\\\"`git describe --dirty --always --tags`\\\"
 }
 
-INCLUDEPATH += @qwtincludes@
 DEFINES += @configdefines@
 
-QT += core gui xml network
+QT += core gui xml network charts
 greaterThan(QT_MAJOR_VERSION, 4) {
   QT += widgets
 } 
@@ -58,11 +56,16 @@ greaterThan(QT_MAJOR_VERSION, 4) {
 HEADERS += ThermoDisplay2MainWindow.h \
            ThermoDAQ2Client.h \
            ThermoDAQ2NetworkReader.h \
-           ThermoDAQ2DisplayWidget.h \
-           ThermoDAQ2ValueVector.h
+           ThermoDisplay2ChartView.h \
+           ThermoDisplay2Callout.h \
+           ThermoDisplay2Chart.h \
+           ThermoDisplay2LineSeries.h
 
 SOURCES += thermoDisplay2.cc \
            ThermoDisplay2MainWindow.cc \
            ThermoDAQ2Client.cc \
            ThermoDAQ2NetworkReader.cc \
-           ThermoDAQ2DisplayWidget.cc
+           ThermoDisplay2ChartView.cc \
+           ThermoDisplay2Callout.cc \
+           ThermoDisplay2Chart.cc \
+           ThermoDisplay2LineSeries.cc
