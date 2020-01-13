@@ -48,8 +48,13 @@ Thermo2MainWindow::Thermo2MainWindow(QWidget *parent)
 //                                          5, this);
 
   // KEITHLEY MODEL
+#ifdef USE_FAKEIO
+  keithleyModel_ = new KeithleyDAQ6510Model(config->getValue<std::string>("KeithleyDAQ6510").c_str(),
+                                            5, this);
+#else
   keithleyModel_ = new KeithleyDAQ6510Model(config->getValue<std::string>("KeithleyDAQ6510").c_str(),
                                             30, this);
+#endif
 
 //  // PFEIFFER MODEL
 //  pfeifferModel_ = new PfeifferModel(config->getValue<std::string>("PfeifferDevice").c_str(),
