@@ -53,6 +53,7 @@ class AssemblyAssembly : public QObject
   double pickup2_Z_;
 
   bool use_smartMove_;
+  bool in_action_;
 
   bool   PSPToPSSPosition_isRegistered_;
   double PSPToPSSPosition_X_;

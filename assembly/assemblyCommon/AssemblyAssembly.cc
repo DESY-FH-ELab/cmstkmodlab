@@ -35,6 +35,7 @@ AssemblyAssembly::AssemblyAssembly(const LStepExpressMotionManager* const motion
  , pickup2_Z_(0.)
 
  , use_smartMove_(false)
+ , in_action_(false)
 
  , PSPToPSSPosition_isRegistered_(false)
  , PSPToPSSPosition_X_(0.)
@@ -148,6 +149,9 @@ void AssemblyAssembly::use_smartMove(const int state)
 // ----------------------------------------------------------------------------------------------------
 void AssemblyAssembly::GoToSensorMarkerPreAlignment_start()
 {
+  if(in_action_){ return; }
+  else{ in_action_ = true; }
+
   const bool valid_params = this->parameters()->update();
 
   if(valid_params == false)
@@ -189,6 +193,8 @@ void AssemblyAssembly::GoToSensorMarkerPreAlignment_finish()
 
   NQLog("AssemblyAssembly", NQLog::Message) << "GoToSensorMarkerPreAlignment_finish"
      << ": assembly-step completed";
+
+  in_action_ = false;
 }
 // ----------------------------------------------------------------------------------------------------
 
@@ -197,6 +203,9 @@ void AssemblyAssembly::GoToSensorMarkerPreAlignment_finish()
 // ----------------------------------------------------------------------------------------------------
 void AssemblyAssembly::EnableVacuumPickupTool_start()
 {
+  if(in_action_){ return; }
+  else{ in_action_ = true; }
+
   connect(this, SIGNAL(vacuum_ON_request(int)), this->vacuum(), SLOT(enableVacuum(int)));
 
   connect(this->vacuum(), SIGNAL(vacuum_enabled()), this, SLOT(EnableVacuumPickupTool_finish()));
@@ -224,6 +233,8 @@ void AssemblyAssembly::EnableVacuumPickupTool_finish()
 
   NQLog("AssemblyAssembly", NQLog::Message) << "EnableVacuumPickupTool_finish"
      << ": assembly-step completed";
+
+  in_action_ = false;
 }
 // ----------------------------------------------------------------------------------------------------
 
@@ -232,6 +243,9 @@ void AssemblyAssembly::EnableVacuumPickupTool_finish()
 // ----------------------------------------------------------------------------------------------------
 void AssemblyAssembly::DisableVacuumPickupTool_start()
 {
+  if(in_action_){ return; }
+  else{ in_action_ = true; }
+
   connect(this, SIGNAL(vacuum_OFF_request(int)), this->vacuum(), SLOT(disableVacuum(int)));
 
   connect(this->vacuum(), SIGNAL(vacuum_disabled()), this, SLOT(DisableVacuumPickupTool_finish()));
@@ -259,6 +273,8 @@ void AssemblyAssembly::DisableVacuumPickupTool_finish()
 
   NQLog("AssemblyAssembly", NQLog::Message) << "DisableVacuumPickupTool_finish"
      << ": assembly-step completed";
+
+  in_action_ = false;
 }
 // ----------------------------------------------------------------------------------------------------
 
@@ -267,6 +283,9 @@ void AssemblyAssembly::DisableVacuumPickupTool_finish()
 // ----------------------------------------------------------------------------------------------------
 void AssemblyAssembly::EnableVacuumSpacers_start()
 {
+  if(in_action_){ return; }
+  else{ in_action_ = true; }
+
   connect(this, SIGNAL(vacuum_ON_request(int)), this->vacuum(), SLOT(enableVacuum(int)));
 
   connect(this->vacuum(), SIGNAL(vacuum_enabled()), this, SLOT(EnableVacuumSpacers_finish()));
@@ -294,6 +313,8 @@ void AssemblyAssembly::EnableVacuumSpacers_finish()
 
   NQLog("AssemblyAssembly", NQLog::Message) << "EnableVacuumSpacers_finish"
      << ": assembly-step completed";
+
+  in_action_ = false;
 }
 // ----------------------------------------------------------------------------------------------------
 
@@ -302,6 +323,9 @@ void AssemblyAssembly::EnableVacuumSpacers_finish()
 // ----------------------------------------------------------------------------------------------------
 void AssemblyAssembly::DisableVacuumSpacers_start()
 {
+  if(in_action_){ return; }
+  else{ in_action_ = true; }
+
   connect(this, SIGNAL(vacuum_OFF_request(int)), this->vacuum(), SLOT(disableVacuum(int)));
 
   connect(this->vacuum(), SIGNAL(vacuum_disabled()), this, SLOT(DisableVacuumSpacers_finish()));
@@ -329,6 +353,8 @@ void AssemblyAssembly::DisableVacuumSpacers_finish()
 
   NQLog("AssemblyAssembly", NQLog::Message) << "DisableVacuumSpacers_finish"
      << ": assembly-step completed";
+
+  in_action_ = false;
 }
 // ----------------------------------------------------------------------------------------------------
 
@@ -337,6 +363,9 @@ void AssemblyAssembly::DisableVacuumSpacers_finish()
 // ----------------------------------------------------------------------------------------------------
 void AssemblyAssembly::EnableVacuumBaseplate_start()
 {
+  if(in_action_){ return; }
+  else{ in_action_ = true; }
+
   connect(this, SIGNAL(vacuum_ON_request(int)), this->vacuum(), SLOT(enableVacuum(int)));
 
   connect(this->vacuum(), SIGNAL(vacuum_enabled()), this, SLOT(EnableVacuumBaseplate_finish()));
@@ -364,6 +393,8 @@ void AssemblyAssembly::EnableVacuumBaseplate_finish()
 
   NQLog("AssemblyAssembly", NQLog::Message) << "EnableVacuumBaseplate_finish"
      << ": assembly-step completed";
+
+  in_action_ = false;
 }
 // ----------------------------------------------------------------------------------------------------
 
@@ -372,6 +403,9 @@ void AssemblyAssembly::EnableVacuumBaseplate_finish()
 // ----------------------------------------------------------------------------------------------------
 void AssemblyAssembly::DisableVacuumBaseplate_start()
 {
+  if(in_action_){ return; }
+  else{ in_action_ = true; }
+
   connect(this, SIGNAL(vacuum_OFF_request(int)), this->vacuum(), SLOT(disableVacuum(int)));
 
   connect(this->vacuum(), SIGNAL(vacuum_disabled()), this, SLOT(DisableVacuumBaseplate_finish()));
@@ -399,6 +433,8 @@ void AssemblyAssembly::DisableVacuumBaseplate_finish()
 
   NQLog("AssemblyAssembly", NQLog::Message) << "DisableVacuumBaseplate_finish"
      << ": assembly-step completed";
+
+  in_action_ = false;
 }
 // ----------------------------------------------------------------------------------------------------
 
@@ -407,6 +443,9 @@ void AssemblyAssembly::DisableVacuumBaseplate_finish()
 // ----------------------------------------------------------------------------------------------------
 void AssemblyAssembly::GoFromSensorMarkerToPickupXY_start()
 {
+  if(in_action_){ return; }
+  else{ in_action_ = true; }
+
   const bool valid_params = this->parameters()->update();
 
   if(valid_params == false)
@@ -448,6 +487,8 @@ void AssemblyAssembly::GoFromSensorMarkerToPickupXY_finish()
 
   NQLog("AssemblyAssembly", NQLog::Message) << "GoFromSensorMarkerToPickupXY_finish"
      << ": assembly-step completed";
+
+  in_action_ = false;
 }
 // ----------------------------------------------------------------------------------------------------
 
@@ -456,6 +497,9 @@ void AssemblyAssembly::GoFromSensorMarkerToPickupXY_finish()
 // ----------------------------------------------------------------------------------------------------
 void AssemblyAssembly::LowerPickupToolOntoPSS_start()
 {
+  if(in_action_){ return; }
+  else{ in_action_ = true; }
+
   if(use_smartMove_)
   {
     const bool valid_params = this->parameters()->update();
@@ -516,6 +560,8 @@ void AssemblyAssembly::LowerPickupToolOntoPSS_finish()
 
   NQLog("AssemblyAssembly", NQLog::Message) << "LowerPickupToolOntoPSS_finish"
      << ": assembly-step completed";
+
+  in_action_ = false;
 }
 // ----------------------------------------------------------------------------------------------------
 
@@ -524,6 +570,9 @@ void AssemblyAssembly::LowerPickupToolOntoPSS_finish()
 // ----------------------------------------------------------------------------------------------------
 void AssemblyAssembly::PickupPSS_start()
 {
+  if(in_action_){ return; }
+  else{ in_action_ = true; }
+
   const double dx0 = 0.0;
   const double dy0 = 0.0;
   const double dz0 = (pickup1_Z_ - motion_->get_position_Z());
@@ -563,6 +612,8 @@ void AssemblyAssembly::PickupPSS_finish()
 
   NQLog("AssemblyAssembly", NQLog::Message) << "PickupPSS_finish"
      << ": assembly-step completed";
+
+  in_action_ = false;
 }
 // ----------------------------------------------------------------------------------------------------
 
@@ -571,6 +622,9 @@ void AssemblyAssembly::PickupPSS_finish()
 // ----------------------------------------------------------------------------------------------------
 void AssemblyAssembly::GoToXYAPositionToGluePSSToSpacers_start()
 {
+  if(in_action_){ return; }
+  else{ in_action_ = true; }
+
   const bool valid_params = this->parameters()->update();
 
   if(valid_params == false)
@@ -627,6 +681,8 @@ void AssemblyAssembly::GoToXYAPositionToGluePSSToSpacers_finish()
 
   NQLog("AssemblyAssembly", NQLog::Message) << "GoToXYAPositionToGluePSSToSpacers_finish"
      << ": assembly-step completed";
+
+  in_action_ = false;
 }
 // ----------------------------------------------------------------------------------------------------
 
@@ -635,6 +691,9 @@ void AssemblyAssembly::GoToXYAPositionToGluePSSToSpacers_finish()
 // ----------------------------------------------------------------------------------------------------
 void AssemblyAssembly::LowerPSSOntoSpacers_start()
 {
+  if(in_action_){ return; }
+  else{ in_action_ = true; }
+
   if(use_smartMove_)
   {
     const bool valid_params = this->parameters()->update();
@@ -704,6 +763,8 @@ void AssemblyAssembly::LowerPSSOntoSpacers_finish()
 
   NQLog("AssemblyAssembly", NQLog::Message) << "LowerPSSOntoSpacers_finish"
      << ": assembly-step completed";
+
+  in_action_ = false;
 }
 // ----------------------------------------------------------------------------------------------------
 
@@ -712,6 +773,9 @@ void AssemblyAssembly::LowerPSSOntoSpacers_finish()
 // ----------------------------------------------------------------------------------------------------
 void AssemblyAssembly::ApplyPSPToPSSXYOffset_start()
 {
+  if(in_action_){ return; }
+  else{ in_action_ = true; }
+
   const bool valid_params = this->parameters()->update();
 
   if(valid_params == false)
@@ -753,6 +817,8 @@ void AssemblyAssembly::ApplyPSPToPSSXYOffset_finish()
 
   NQLog("AssemblyAssembly", NQLog::Message) << "ApplyPSPToPSSXYOffset_finish"
      << ": assembly-step completed";
+
+  in_action_ = false;
 }
 // ----------------------------------------------------------------------------------------------------
 
@@ -761,6 +827,9 @@ void AssemblyAssembly::ApplyPSPToPSSXYOffset_finish()
 // ----------------------------------------------------------------------------------------------------
 void AssemblyAssembly::RegisterPSPToPSSPosition_start()
 {
+  if(in_action_){ return; }
+  else{ in_action_ = true; }
+
   PSPToPSSPosition_X_ = motion_->get_position_X();
   PSPToPSSPosition_Y_ = motion_->get_position_Y();
   PSPToPSSPosition_Z_ = motion_->get_position_Z();
@@ -790,6 +859,8 @@ void AssemblyAssembly::RegisterPSPToPSSPosition_finish()
 
   NQLog("AssemblyAssembly", NQLog::Message) << "RegisterPSPToPSSPosition_finish"
      << ": assembly-step completed";
+
+  in_action_ = false;
 }
 // ----------------------------------------------------------------------------------------------------
 
@@ -798,6 +869,9 @@ void AssemblyAssembly::RegisterPSPToPSSPosition_finish()
 // ----------------------------------------------------------------------------------------------------
 void AssemblyAssembly::GoFromPSPToPSSPosToGluingStageRefPointXY_start()
 {
+  if(in_action_){ return; }
+  else{ in_action_ = true; }
+
   if(use_smartMove_)
   {
     const bool valid_params = this->parameters()->update();
@@ -858,6 +932,8 @@ void AssemblyAssembly::GoFromPSPToPSSPosToGluingStageRefPointXY_finish()
 
   NQLog("AssemblyAssembly", NQLog::Message) << "GoFromPSPToPSSPosToGluingStageRefPointXY_finish"
      << ": assembly-step completed";
+
+  in_action_ = false;
 }
 // ----------------------------------------------------------------------------------------------------
 
@@ -866,6 +942,9 @@ void AssemblyAssembly::GoFromPSPToPSSPosToGluingStageRefPointXY_finish()
 // ----------------------------------------------------------------------------------------------------
 void AssemblyAssembly::LowerSpacersAndPSSOntoGluingStage_start()
 {
+  if(in_action_){ return; }
+  else{ in_action_ = true; }
+
   if(use_smartMove_)
   {
     const bool valid_params = this->parameters()->update();
@@ -935,6 +1014,8 @@ void AssemblyAssembly::LowerSpacersAndPSSOntoGluingStage_finish()
 
   NQLog("AssemblyAssembly", NQLog::Message) << "LowerSpacersAndPSSOntoGluingStage_finish"
      << ": assembly-step completed";
+
+  in_action_ = false;
 }
 // ----------------------------------------------------------------------------------------------------
 
@@ -943,6 +1024,9 @@ void AssemblyAssembly::LowerSpacersAndPSSOntoGluingStage_finish()
 // ----------------------------------------------------------------------------------------------------
 void AssemblyAssembly::ReturnToPSPToPSSPosition_start()
 {
+  if(in_action_){ return; }
+  else{ in_action_ = true; }
+
   if(PSPToPSSPosition_isRegistered_ == false)
   {
     NQLog("AssemblyAssembly", NQLog::Critical) << "ReturnToPSPToPSSPosition_start"
@@ -1018,6 +1102,8 @@ void AssemblyAssembly::ReturnToPSPToPSSPosition_finish()
 
   NQLog("AssemblyAssembly", NQLog::Message) << "ReturnToPSPToPSSPosition_finish"
      << ": assembly-step completed";
+
+  in_action_ = false;
 }
 // ----------------------------------------------------------------------------------------------------
 
@@ -1026,6 +1112,9 @@ void AssemblyAssembly::ReturnToPSPToPSSPosition_finish()
 // ----------------------------------------------------------------------------------------------------
 void AssemblyAssembly::LowerSpacersAndPSSOntoPSP_start()
 {
+  if(in_action_){ return; }
+  else{ in_action_ = true; }
+
   if(use_smartMove_)
   {
     const bool valid_params = this->parameters()->update();
@@ -1093,6 +1182,8 @@ void AssemblyAssembly::LowerSpacersAndPSSOntoPSP_finish()
 
   NQLog("AssemblyAssembly", NQLog::Message) << "LowerSpacersAndPSSOntoPSP_finish"
      << ": assembly-step completed";
+
+  in_action_ = false;
 }
 // ----------------------------------------------------------------------------------------------------
 
@@ -1101,6 +1192,9 @@ void AssemblyAssembly::LowerSpacersAndPSSOntoPSP_finish()
 // ----------------------------------------------------------------------------------------------------
 void AssemblyAssembly::PickupSpacersAndPSS_start()
 {
+  if(in_action_){ return; }
+  else{ in_action_ = true; }
+
   const double dx0 = 0.0;
   const double dy0 = 0.0;
   const double dz0 = (pickup1_Z_ - motion_->get_position_Z());
@@ -1140,6 +1234,8 @@ void AssemblyAssembly::PickupSpacersAndPSS_finish()
 
   NQLog("AssemblyAssembly", NQLog::Message) << "PickupSpacersAndPSS_finish"
      << ": assembly-step completed";
+
+  in_action_ = false;
 }
 // ----------------------------------------------------------------------------------------------------
 
@@ -1148,6 +1244,9 @@ void AssemblyAssembly::PickupSpacersAndPSS_finish()
 // ----------------------------------------------------------------------------------------------------
 void AssemblyAssembly::LiftUpPickupTool_start()
 {
+  if(in_action_){ return; }
+  else{ in_action_ = true; }
+
   const double dx0 = 0.0;
   const double dy0 = 0.0;
   const double dz0 = (pickup2_Z_ - motion_->get_position_Z());
@@ -1187,6 +1286,8 @@ void AssemblyAssembly::LiftUpPickupTool_finish()
 
   NQLog("AssemblyAssembly", NQLog::Message) << "LiftUpPickupTool_finish"
      << ": assembly-step completed";
+
+  in_action_ = false;
 }
 // ----------------------------------------------------------------------------------------------------
 
@@ -1195,6 +1296,9 @@ void AssemblyAssembly::LiftUpPickupTool_finish()
 // ----------------------------------------------------------------------------------------------------
 void AssemblyAssembly::PickupPSPAndPSS_start()
 {
+  if(in_action_){ return; }
+  else{ in_action_ = true; }
+
   const double dx0 = 0.0;
   const double dy0 = 0.0;
   const double dz0 = (pickup1_Z_ - motion_->get_position_Z());
@@ -1234,6 +1338,8 @@ void AssemblyAssembly::PickupPSPAndPSS_finish()
 
   NQLog("AssemblyAssembly", NQLog::Message) << "PickupPSPAndPSS_finish"
      << ": assembly-step completed";
+
+  in_action_ = false;
 }
 // ----------------------------------------------------------------------------------------------------
 
@@ -1242,6 +1348,9 @@ void AssemblyAssembly::PickupPSPAndPSS_finish()
 // ----------------------------------------------------------------------------------------------------
 void AssemblyAssembly::GoToXYAPositionToGlueSensorAssemblyToBaseplate_start()
 {
+  if(in_action_){ return; }
+  else{ in_action_ = true; }
+
   const bool valid_params = this->parameters()->update();
 
   if(valid_params == false)
@@ -1300,6 +1409,8 @@ void AssemblyAssembly::GoToXYAPositionToGlueSensorAssemblyToBaseplate_finish()
 
   NQLog("AssemblyAssembly", NQLog::Message) << "GoToXYAPositionToGlueSensorAssemblyToBaseplate_finish"
      << ": assembly-step completed";
+
+  in_action_ = false;
 }
 // ----------------------------------------------------------------------------------------------------
 
@@ -1308,6 +1419,9 @@ void AssemblyAssembly::GoToXYAPositionToGlueSensorAssemblyToBaseplate_finish()
 // ----------------------------------------------------------------------------------------------------
 void AssemblyAssembly::LowerSensorAssemblyOntoBaseplate_start()
 {
+  if(in_action_){ return; }
+  else{ in_action_ = true; }
+
   if(use_smartMove_)
   {
     const bool valid_params = this->parameters()->update();
@@ -1380,5 +1494,7 @@ void AssemblyAssembly::LowerSensorAssemblyOntoBaseplate_finish()
 
   NQLog("AssemblyAssembly", NQLog::Message) << "LowerSensorAssemblyOntoBaseplate_finish"
      << ": assembly-step completed";
+
+  in_action_ = false;
 }
 // ----------------------------------------------------------------------------------------------------
