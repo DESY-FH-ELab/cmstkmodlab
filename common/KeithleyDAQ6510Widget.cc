@@ -17,6 +17,7 @@ KeithleyDAQ6510UpdateIntervalBox::KeithleyDAQ6510UpdateIntervalBox(KeithleyDAQ65
 : QComboBox(parent),
   model_(model)
 {
+  addItem("10 seconds", 10);
   addItem("20 seconds", 20);
   addItem("30 seconds", 30);
   addItem("45 seconds", 45);
