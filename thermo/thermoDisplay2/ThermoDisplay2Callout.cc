@@ -12,6 +12,7 @@
 
 #include <iostream>
 
+#include <QWidget>
 #include <QDateTime>
 #include <QtCharts/QLegendMarker>
 #include <QtGui/QPainter>
@@ -85,8 +86,14 @@ void ThermoDisplay2Callout::paint(QPainter *painter,
     path.lineTo(point2);
     path = path.simplified();
   }
-  painter->setBrush(QColor(0, 0, 0));
+
+  QPalette pal = widget->palette();
+  QColor bgColor(pal.color(QPalette::Window));
+  QColor fgColor(pal.color(QPalette::WindowText));
+
+  painter->setBrush(bgColor);
   painter->drawPath(path);
+  painter->setPen(QPen(fgColor));
   painter->drawText(textRect_, text_);
 }
 
