@@ -125,7 +125,7 @@ ThermoDisplay2MainWindow::ThermoDisplay2MainWindow(QWidget *parent)
 
   QPalette pal = palette();
   QColor color = pal.color(QPalette::Window);
-  if (color.lightnessF()) {
+  if (color.lightnessF()<0.4) {
     UChart_->setTheme(QChart::ChartThemeDark);
     IChart_->setTheme(QChart::ChartThemeDark);
     TChart_[0]->setTheme(QChart::ChartThemeDark);
