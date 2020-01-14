@@ -200,21 +200,17 @@ void RohdeSchwarzNGE103BChannelWidget::updateInfo()
   }
   }
 
-  char dummy[30];
-
   if (!voltageSpinner_->hasFocus()) {
     float setVoltage = model_->getVoltage(channel_);
     voltageSpinner_->setValue(setVoltage);
   }
-  snprintf(dummy, sizeof(dummy), "%.02f", model_->getMeasuredVoltage(channel_));
-  voltageDisplay_->display(dummy);
+  voltageDisplay_->display(QString::number(model_->getMeasuredVoltage(channel_), 'f', 2));
 
   if (!currentSpinner_->hasFocus()) {
     float setCurrent = model_->getCurrent(channel_);
     currentSpinner_->setValue(setCurrent);
   }
-  snprintf(dummy, sizeof(dummy), "%.03f", model_->getMeasuredCurrent(channel_));
-  currentDisplay_->display(dummy);
+  currentDisplay_->display(QString::number(model_->getMeasuredCurrent(channel_), 'f', 3));
 
   if (!easyRampDurationSpinner_->hasFocus()) {
     float setEasyRampDuration = model_->getEasyRampDuration(channel_);
