@@ -33,6 +33,8 @@ public:
 
   virtual void refreshAxes() = 0;
 
+  void setTheme(QChart::ChartTheme theme);
+
 public slots:
 
   void connectMarkers();

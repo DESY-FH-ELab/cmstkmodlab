@@ -119,6 +119,12 @@ void ThermoDisplay2Chart::clearData()
   }
 }
 
+void ThermoDisplay2Chart::setTheme(QChart::ChartTheme theme)
+{
+  QChart::setTheme(theme);
+  updateLegend();
+}
+
 ThermoDisplay2VoltageChart::ThermoDisplay2VoltageChart()
   : ThermoDisplay2Chart()
 {

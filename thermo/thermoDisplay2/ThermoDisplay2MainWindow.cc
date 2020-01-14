@@ -123,6 +123,15 @@ ThermoDisplay2MainWindow::ThermoDisplay2MainWindow(QWidget *parent)
 
   setCentralWidget(tabWidget_);
 
+  QPalette pal = palette();
+  QColor color = pal.color(QPalette::Window);
+  if (color.lightnessF()) {
+    UChart_->setTheme(QChart::ChartThemeDark);
+    IChart_->setTheme(QChart::ChartThemeDark);
+    TChart_[0]->setTheme(QChart::ChartThemeDark);
+    TChart_[1]->setTheme(QChart::ChartThemeDark);
+  }
+
   requestData();
 
   timer_ = new QTimer(this);
