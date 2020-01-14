@@ -37,7 +37,7 @@ public:
 
 protected:
 
-  const static int LCD_SIZE = 8;
+  const static int LCD_SIZE = 5;
 
   RohdeSchwarzNGE103BModel* model_;
   int channel_;
