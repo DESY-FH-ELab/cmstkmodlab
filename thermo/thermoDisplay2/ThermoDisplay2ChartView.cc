@@ -58,7 +58,7 @@ void ThermoDisplay2VoltageChartView::tooltip(QPointF point, bool state)
 {
   QDateTime dt = QDateTime::fromMSecsSinceEpoch(point.x());
 
-  if (callout_ == nullptr)
+  if (callout_==nullptr)
     callout_ = new ThermoDisplay2Callout(chart_);
 
   if (state) {
