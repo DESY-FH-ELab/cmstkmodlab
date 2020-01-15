@@ -115,7 +115,10 @@ HEADERS += nqlogger.h \
            ValueHistory.h \
            KeithleyDAQ6510Model.h \
            KeithleyDAQ6510Widget.h \
-           ScriptableKeithleyDAQ6510.h
+           ScriptableKeithleyDAQ6510.h \
+           HuberUnistat525wModel.h \
+           HuberUnistat525wWidget.h \
+           ScriptableHuberUnistat525w.h
 
 SOURCES += nqlogger.cc \
            npoint2D.cc \
@@ -167,4 +170,7 @@ SOURCES += nqlogger.cc \
            ScriptableRohdeSchwarzNGE103B.cc \
            KeithleyDAQ6510Model.cc \
            KeithleyDAQ6510Widget.cc \
-           ScriptableKeithleyDAQ6510.cc
+           ScriptableKeithleyDAQ6510.cc \
+           HuberUnistat525wModel.cc \
+           HuberUnistat525wWidget.cc \
+           ScriptableHuberUnistat525w.cc
