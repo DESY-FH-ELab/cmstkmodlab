@@ -16,17 +16,8 @@
 #include <QMainWindow>
 #include <QTabWidget>
 #include <QDir>
-//#include <QPushButton>
-//#include <QFileDialog>
-//#include <QComboBox>
-//#include <QImage>
-//#include <QTimer>
 
 #include "RohdeSchwarzNGE103BModel.h"
-
-//#include "HuberPetiteFleurModel.h"
-//#include "HuberPetiteFleurWidget.h"
-
 #include "KeithleyDAQ6510Model.h"
 
 #include "Thermo2DAQModel.h"
@@ -53,11 +44,7 @@ protected:
   QTabWidget* tabWidget_;
 
   RohdeSchwarzNGE103BModel* nge103BModel_;
-  //HuberPetiteFleurModel* huberModel_;
   KeithleyDAQ6510Model* keithleyModel_;
-  //PfeifferModel* pfeifferModel_;
-  //IotaModel* iotaModel_;
-  //ArduinoPresModel* arduinoPresModel_;
 
   Thermo2DAQModel* daqModel_;
   Thermo2DAQThread* daqThread_;
