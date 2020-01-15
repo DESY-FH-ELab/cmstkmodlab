@@ -22,6 +22,7 @@
 
 #include "ApplicationConfig.h"
 
+#include "HuberUnistat525wWidget.h"
 #include "RohdeSchwarzNGE103BWidget.h"
 #include "KeithleyDAQ6510Widget.h"
 
@@ -32,22 +33,28 @@
 
 Thermo2MainWindow::Thermo2MainWindow(QWidget *parent)
   : QMainWindow(parent)
-//    daqThread_(0)
 {
   ApplicationConfig* config = ApplicationConfig::instance();
 
   QWidget * widget;
   QBoxLayout * wlayout;
 
-  // Rohde & Schwarz NGE130B Model
+#ifdef USE_FAKEIO
+  huberModel_ = new HuberUnistat525wModel(config->getValue<std::string>("HuberUnistatDevice").c_str(),
+                                          5, this);
+#else
+  huberModel_ = new HuberUnistat525wModel(config->getValue<std::string>("HuberUnistatDevice").c_str(),
+                                          20, this);
+#endif
+
+#ifdef USE_FAKEIO
+  nge103BModel_ = new RohdeSchwarzNGE103BModel(config->getValue<std::string>("RohdeSchwarzNGE103B").c_str(),
+                                               5, this);
+#else
   nge103BModel_ = new RohdeSchwarzNGE103BModel(config->getValue<std::string>("RohdeSchwarzNGE103B").c_str(),
                                                10, this);
+#endif
 
-//  // HUBER MODEL
-//  huberModel_ = new HuberPetiteFleurModel(config->getValue<std::string>("HuberPetiteFleurDevice").c_str(),
-//                                          5, this);
-
-  // KEITHLEY MODEL
 #ifdef USE_FAKEIO
   keithleyModel_ = new KeithleyDAQ6510Model(config->getValue<std::string>("KeithleyDAQ6510").c_str(),
                                             5, this);
@@ -56,12 +63,14 @@ Thermo2MainWindow::Thermo2MainWindow(QWidget *parent)
                                             30, this);
 #endif
 
-  daqModel_ = new Thermo2DAQModel(nge103BModel_,
+  daqModel_ = new Thermo2DAQModel(huberModel_,
+                                  nge103BModel_,
                                   keithleyModel_,
                                   this);
 
   // SCRIPT MODEL
   scriptModel_ = new Thermo2ScriptModel(daqModel_,
+                                        huberModel_,
                                         nge103BModel_,
                                         keithleyModel_,
                                         this);
@@ -86,22 +95,24 @@ Thermo2MainWindow::Thermo2MainWindow(QWidget *parent)
   tabWidget_->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);
 
 
-//  widget = new QWidget();
-//  wlayout = new QVBoxLayout();
-//  widget->setLayout(wlayout);
-//
-//  // HUBER MODEL
-//  HuberPetiteFleurWidget* huberWidget = new HuberPetiteFleurWidget(huberModel_, widget);
-//  huberWidget->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);
-//  wlayout->addWidget(huberWidget);
-//
+  widget = new QWidget();
+  wlayout = new QVBoxLayout();
+  widget->setLayout(wlayout);
+
+  // HUBER MODEL
+  HuberUnistat525wWidget* huberWidget = new HuberUnistat525wWidget(huberModel_, widget);
+  huberWidget->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);
+  wlayout->addWidget(huberWidget);
+
 //  // PFEIFFER MODEL
 //  //PfeifferWidget* pfeifferWidget = new PfeifferWidget(pfeifferModel_, widget);
 //  ThermoPfeifferWidget* pfeifferWidget = new ThermoPfeifferWidget(pfeifferModel_, widget);
 //  pfeifferWidget->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);
 //  wlayout->addWidget(pfeifferWidget);
-//
-//  tabWidget_->addTab(widget, "Chiller + Vacuum");
+
+  wlayout->addWidget(new QWidget());
+
+  tabWidget_->addTab(widget, "Chiller");
 
   // Rohde & Schwarz NGE130B Widget
   RohdeSchwarzNGE103BWidget* nge103BWidget = new RohdeSchwarzNGE103BWidget(nge103BModel_);

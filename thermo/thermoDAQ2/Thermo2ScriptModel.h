@@ -18,6 +18,7 @@
 #include <QTextDocument>
 
 #include "Thermo2DAQModel.h"
+#include "HuberUnistat525wModel.h"
 #include "RohdeSchwarzNGE103BModel.h"
 #include "KeithleyDAQ6510Model.h"
 
@@ -29,6 +30,7 @@ class Thermo2ScriptModel : public QObject
 public:
 
   explicit Thermo2ScriptModel(Thermo2DAQModel* daqModel,
+                              HuberUnistat525wModel* huberModel,
                               RohdeSchwarzNGE103BModel* nge103BModel,
                               KeithleyDAQ6510Model* keithleyModel,
                               QObject *parent = 0);
@@ -66,7 +68,10 @@ protected:
 
   QTimer executionTimer_;
   int executionTime_;
+
   Thermo2DAQModel* daqModel_;
+
+  HuberUnistat525wModel* huberModel_;
   RohdeSchwarzNGE103BModel* nge103BModel_;
   KeithleyDAQ6510Model* keithleyModel_;
   Thermo2ScriptThread* scriptThread_;

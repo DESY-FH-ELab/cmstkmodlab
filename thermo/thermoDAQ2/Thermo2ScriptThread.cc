@@ -20,15 +20,18 @@
 #include "Thermo2ScriptThread.h"
 #include "Thermo2ScriptableGlobals.h"
 
+#include "ScriptableHuberUnistat525w.h"
 #include "ScriptableRohdeSchwarzNGE103B.h"
 #include "ScriptableKeithleyDAQ6510.h"
 
 Thermo2ScriptThread::Thermo2ScriptThread(Thermo2ScriptModel* scriptModel,
+                                         HuberUnistat525wModel* huberModel,
                                          RohdeSchwarzNGE103BModel* nge103BModel,
                                          KeithleyDAQ6510Model* keithleyModel,
                                          QObject *parent)
   : QThread(parent),
     scriptModel_(scriptModel),
+    huberModel_(huberModel),
     nge103BModel_(nge103BModel),
     keithleyModel_(keithleyModel)
 {
@@ -45,6 +48,10 @@ void Thermo2ScriptThread::executeScript(const QString & script)
   Thermo2ScriptableGlobals *globalsObj = new Thermo2ScriptableGlobals(scriptModel_, this);
   QScriptValue globalsValue = engine_->newQObject(globalsObj);
   engine_->globalObject().setProperty("thermo2", globalsValue);
+
+  ScriptableHuberUnistat525w* huberobj = new ScriptableHuberUnistat525w(huberModel_, this);
+  QScriptValue huberValue = engine_->newQObject(huberobj);
+  engine_->globalObject().setProperty("huber", huberValue);
 
   ScriptableRohdeSchwarzNGE103B *nge103BObj = new ScriptableRohdeSchwarzNGE103B(nge103BModel_, this);
   QScriptValue nge103BValue = engine_->newQObject(nge103BObj);

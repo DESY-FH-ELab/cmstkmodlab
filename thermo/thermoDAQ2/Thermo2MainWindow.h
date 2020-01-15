@@ -17,6 +17,7 @@
 #include <QTabWidget>
 #include <QDir>
 
+#include "HuberUnistat525wModel.h"
 #include "RohdeSchwarzNGE103BModel.h"
 #include "KeithleyDAQ6510Model.h"
 
@@ -43,6 +44,7 @@ protected:
 
   QTabWidget* tabWidget_;
 
+  HuberUnistat525wModel* huberModel_;
   RohdeSchwarzNGE103BModel* nge103BModel_;
   KeithleyDAQ6510Model* keithleyModel_;
 

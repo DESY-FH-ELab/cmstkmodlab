@@ -22,15 +22,20 @@
 
 #include "Thermo2DAQModel.h"
 
-Thermo2DAQModel::Thermo2DAQModel(RohdeSchwarzNGE103BModel* nge103BModel,
+Thermo2DAQModel::Thermo2DAQModel(HuberUnistat525wModel* huberModel,
+                                 RohdeSchwarzNGE103BModel* nge103BModel,
                                  KeithleyDAQ6510Model* keithleyModel,
                                  QObject *parent)
   : QObject(),
     daqState_(false),
+    huberModel_(huberModel),
     nge103BModel_(nge103BModel),
     keithleyModel_(keithleyModel)
 {
   currentTime_ = QDateTime::currentDateTime();
+
+  connect(huberModel_, SIGNAL(informationChanged()),
+          this, SLOT(huberInfoChanged()));
 
   connect(nge103BModel_, SIGNAL(informationChanged()),
           this, SLOT(nge103BInfoChanged()));
@@ -41,7 +46,9 @@ Thermo2DAQModel::Thermo2DAQModel(RohdeSchwarzNGE103BModel* nge103BModel,
 
 void Thermo2DAQModel::myMoveToThread(QThread *thread)
 {
+  huberModel_->moveToThread(thread);
   nge103BModel_->moveToThread(thread);
+  keithleyModel_->moveToThread(thread);
 
   this->moveToThread(thread);
 }
@@ -80,6 +87,34 @@ void Thermo2DAQModel::createDAQStatusMessage(QString &buffer, bool start)
 
   QXmlStreamWriter xml(&buffer);
   xml.setAutoFormatting(true);
+
+  //
+  // Start of Huber Unistat 525w
+  //
+  xml.writeStartElement("HuberUnistat525w");
+  xml.writeAttribute("time", utime.toString(Qt::ISODate));
+  xml.writeAttribute("State", huberModel_->getDeviceState()==READY ? "1" : "0");
+
+  xml.writeStartElement("HuberUnistat525wControl");
+  xml.writeAttribute("SetPoint", QString::number(huberModel_->getTemperatureSetPoint(), 'f', 2));
+  xml.writeAttribute("ControlMode", QString::number(huberModel_->getTemperatureControlMode()));
+  xml.writeAttribute("ControlEnabled", QString::number(huberModel_->getTemperatureControlEnabled()));
+  xml.writeAttribute("CirculatorEnabled", QString::number(huberModel_->getCirculatorEnabled()));
+  xml.writeEndElement();
+
+  xml.writeStartElement("HuberUnistat525wInfo");
+  xml.writeAttribute("Bath", QString::number(huberModel_->getBathTemperature(), 'f', 2));
+  xml.writeAttribute("Return", QString::number(huberModel_->getReturnTemperature(), 'f', 2));
+  xml.writeAttribute("Pressure", QString::number(huberModel_->getPumpPressure(), 'f', 3));
+  xml.writeAttribute("Power", QString::number(huberModel_->getPower()));
+  xml.writeAttribute("CWI", QString::number(huberModel_->getCoolingWaterInletTemperature(), 'f', 2));
+  xml.writeAttribute("CWO", QString::number(huberModel_->getCoolingWaterOutletTemperature(), 'f', 2));
+  xml.writeEndElement();
+
+  xml.writeEndElement();
+  //
+  // End of Huber Unistat 525w
+  //
 
   //
   // Start of Rohde & Schwarz NGE103B
@@ -152,6 +187,69 @@ QDateTime& Thermo2DAQModel::currentTime()
 void Thermo2DAQModel::customDAQMessage(const QString & message)
 {
   emit daqMessage(message);
+}
+
+
+void Thermo2DAQModel::huberInfoChanged()
+{
+  NQLogDebug("Thermo2DAQModel") << "huberInfoChanged()";
+
+  if (thread()==QApplication::instance()->thread()) {
+    NQLogDebug("Thermo2DAQModel") << "running in main application thread";
+  } else {
+    NQLogDebug("Thermo2DAQModel") << "running in dedicated DAQ thread";
+  }
+
+  QMutexLocker locker(&mutex_);
+
+  QDateTime& utime = currentTime();
+
+  QString buffer;
+
+  bool changed = false;
+  changed |= updateIfChanged<bool>(u525wState_, huberModel_->getDeviceState()==READY ? true : false);
+  changed |= updateIfChanged<float>(u525wTemperatureSetPoint_, huberModel_->getTemperatureSetPoint());
+  changed |= updateIfChanged<bool>(u525wTemperatureControlMode_, huberModel_->getTemperatureControlMode());
+  changed |= updateIfChanged<bool>(u525wTemperatureControlEnabled_, huberModel_->getTemperatureControlEnabled());
+  changed |= updateIfChanged<bool>(u525wCirculatorEnabled_, huberModel_->getCirculatorEnabled());
+  changed |= updateIfChanged<float>(u525wBathTemperature_, huberModel_->getBathTemperature());
+  changed |= updateIfChanged<float>(u525wReturnTemperature_, huberModel_->getReturnTemperature());
+  changed |= updateIfChanged<float>(u525wPumpPressure_, huberModel_->getPumpPressure());
+  changed |= updateIfChanged<int>(u525wPower_, huberModel_->getPower());
+  changed |= updateIfChanged<float>(u525wCWInletTemperature_, huberModel_->getCoolingWaterInletTemperature());
+  changed |= updateIfChanged<float>(u525wCWOutletTemperature_, huberModel_->getCoolingWaterOutletTemperature());
+
+  if (changed) {
+    QXmlStreamWriter xml(&buffer);
+    xml.setAutoFormatting(true);
+
+    xml.writeStartElement("HuberUnistat525w");
+    xml.writeAttribute("time", utime.toString(Qt::ISODate));
+    xml.writeAttribute("State", QString::number(u525wState_));
+
+    xml.writeStartElement("HuberUnistat525wControl");
+    xml.writeAttribute("SetPoint", QString::number(u525wTemperatureSetPoint_, 'f', 2));
+    xml.writeAttribute("ControlMode", QString::number(u525wTemperatureControlMode_));
+    xml.writeAttribute("ControlEnabled", QString::number(u525wTemperatureControlEnabled_));
+    xml.writeAttribute("CirculatorEnabled", QString::number(u525wCirculatorEnabled_));
+    xml.writeEndElement();
+
+    xml.writeStartElement("HuberUnistat525wInfo");
+    xml.writeAttribute("Bath", QString::number(u525wBathTemperature_, 'f', 2));
+    xml.writeAttribute("Return", QString::number(u525wReturnTemperature_, 'f', 2));
+    xml.writeAttribute("Pressure", QString::number(u525wPumpPressure_, 'f', 3));
+    xml.writeAttribute("Power", QString::number(u525wPower_));
+    xml.writeAttribute("CWI", QString::number(u525wCWInletTemperature_, 'f', 2));
+    xml.writeAttribute("CWO", QString::number(u525wCWOutletTemperature_, 'f', 2));
+    xml.writeEndElement();
+
+    xml.writeEndElement();
+  }
+
+  if (buffer.length()>0) {
+    emit daqMessage(buffer);
+    emit newDataAvailable();
+  }
 }
 
 void Thermo2DAQModel::nge103BInfoChanged()

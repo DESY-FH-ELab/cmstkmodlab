@@ -22,11 +22,13 @@
 #include "Thermo2ScriptModel.h"
 
 Thermo2ScriptModel::Thermo2ScriptModel(Thermo2DAQModel* daqModel,
+                                       HuberUnistat525wModel* huberModel,
                                        RohdeSchwarzNGE103BModel* nge103BModel,
                                        KeithleyDAQ6510Model* keithleyModel,
                                        QObject *parent)
   : QObject(parent),
     daqModel_(daqModel),
+    huberModel_(huberModel),
     nge103BModel_(nge103BModel),
     keithleyModel_(keithleyModel)
 {
@@ -37,11 +39,15 @@ Thermo2ScriptModel::Thermo2ScriptModel(Thermo2DAQModel* daqModel,
   currentScriptFilename_ = QString();
 
   scriptThread_ = new Thermo2ScriptThread(this,
+                                          huberModel_,
                                           nge103BModel_,
                                           keithleyModel_,
                                           this);
   connect(scriptThread_, SIGNAL(started()), this, SLOT(executionStarted()));
   connect(scriptThread_, SIGNAL(finished()), this, SLOT(executionFinished()));
+
+  connect(huberModel_, SIGNAL(message(const QString &)),
+          this, SLOT(doAppendMessageText(const QString &)));
 
   connect(nge103BModel_, SIGNAL(message(const QString &)),
           this, SLOT(doAppendMessageText(const QString &)));

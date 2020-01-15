@@ -22,6 +22,7 @@
 #include <QMutex>
 #include <QMutexLocker>
 
+#include "HuberUnistat525wModel.h"
 #include "RohdeSchwarzNGE103BModel.h"
 #include "KeithleyDAQ6510Model.h"
 
@@ -30,7 +31,8 @@ class Thermo2DAQModel : public QObject
   Q_OBJECT
 public:
 
-  explicit Thermo2DAQModel(RohdeSchwarzNGE103BModel* nge103BModel,
+  explicit Thermo2DAQModel(HuberUnistat525wModel* huberModel,
+                           RohdeSchwarzNGE103BModel* nge103BModel,
                            KeithleyDAQ6510Model* keithleyModel,
                            QObject *parent = 0);
 
@@ -50,6 +52,7 @@ public slots:
 
 protected slots:
 
+  void huberInfoChanged();
   void nge103BInfoChanged();
   void keithleyInfoChanged();
 
@@ -59,6 +62,7 @@ protected:
 
   bool daqState_;
 
+  HuberUnistat525wModel* huberModel_;
   RohdeSchwarzNGE103BModel* nge103BModel_;
   KeithleyDAQ6510Model* keithleyModel_;
 
@@ -71,6 +75,19 @@ protected:
     variable = newValue;
     return true;
   }
+
+  // Huber Unistat 525w Data
+  bool u525wState_;
+  float u525wTemperatureSetPoint_;
+  bool u525wTemperatureControlMode_;
+  bool u525wTemperatureControlEnabled_;
+  bool u525wCirculatorEnabled_;
+  float u525wBathTemperature_;
+  float u525wReturnTemperature_;
+  float u525wPumpPressure_;
+  int u525wPower_;
+  float u525wCWInletTemperature_;
+  float u525wCWOutletTemperature_;
 
   // Rohde & Schwarz NGE130B Data
   bool nge103BOutputState_[3];
