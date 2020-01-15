@@ -14,6 +14,7 @@
 #define THERMODISPLAY2CALLOUT_H
 
 #include <QtCharts/QChartGlobal>
+#include <QtCharts/QAbstractSeries>
 #include <QtWidgets/QGraphicsItem>
 #include <QtGui/QFont>
 
@@ -36,7 +37,7 @@ public:
   explicit ThermoDisplay2Callout(ThermoDisplay2Chart *chart);
 
   void setText(const QString &text);
-  void setAnchor(QPointF point);
+  void setAnchor(QPointF point, QAbstractSeries *series = nullptr);
   void updateGeometry();
 
   QRectF boundingRect() const;
@@ -55,6 +56,7 @@ protected:
   QRectF textRect_;
   QRectF rect_;
   QPointF anchor_;
+  QAbstractSeries* series_;
   QFont font_;
   ThermoDisplay2Chart * chart_;
 };

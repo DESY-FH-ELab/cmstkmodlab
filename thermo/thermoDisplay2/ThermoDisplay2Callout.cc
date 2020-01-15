@@ -34,7 +34,7 @@ ThermoDisplay2Callout::ThermoDisplay2Callout(ThermoDisplay2Chart *chart)
 
 QRectF ThermoDisplay2Callout::boundingRect() const
 {
-  QPointF anchor = mapFromParent(chart_->mapToPosition(anchor_));
+  QPointF anchor = mapFromParent(chart_->mapToPosition(anchor_, series_));
   QRectF rect;
   rect.setLeft(qMin(rect_.left(), anchor.x()));
   rect.setRight(qMax(rect_.right(), anchor.x()));
@@ -50,7 +50,7 @@ void ThermoDisplay2Callout::paint(QPainter *painter,
   QPainterPath path;
   path.addRoundedRect(rect_, 5, 5);
 
-  QPointF anchor = mapFromParent(chart_->mapToPosition(anchor_));
+  QPointF anchor = mapFromParent(chart_->mapToPosition(anchor_, series_));
   if (!rect_.contains(anchor_)) {
     QPointF point1, point2;
 
@@ -122,13 +122,14 @@ void ThermoDisplay2Callout::setText(const QString &text)
   rect_ = textRect_.adjusted(-5, -5, 5, 5);
 }
 
-void ThermoDisplay2Callout::setAnchor(QPointF point)
+void ThermoDisplay2Callout::setAnchor(QPointF point, QAbstractSeries *series)
 {
   anchor_ = point;
+  series_ = series;
 }
 
 void ThermoDisplay2Callout::updateGeometry()
 {
   prepareGeometryChange();
-  setPos(chart_->mapToPosition(anchor_) + QPoint(10, -50));
+  setPos(chart_->mapToPosition(anchor_, series_) + QPoint(10, -50));
 }

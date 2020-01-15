@@ -43,6 +43,47 @@ void ThermoDAQ2NetworkReader::run(QString& buffer)
   emit finished();
 }
 
+void ThermoDAQ2NetworkReader::processHuberUnistat525w(QXmlStreamReader& xml)
+{
+  // NQLogDebug("ThermoDAQ2NetworkReader") << "processHuberUnistat525w(QXmlStreamReader& xml)";
+
+  QString time = xml.attributes().value("time").toString();
+  measurement_.dt = QDateTime::fromString(time, Qt::ISODate);
+  measurement_.u525wState_ = xml.attributes().value("State").toString().toInt();
+}
+
+void ThermoDAQ2NetworkReader::processHuberUnistat525wControl(QXmlStreamReader& xml)
+{
+  // NQLogDebug("ThermoDAQ2NetworkReader") << "processHuberUnistat525wControl(QXmlStreamReader& xml)";
+
+  float SetPoint = xml.attributes().value("SetPoint").toString().toFloat();
+  bool ControlMode = xml.attributes().value("ControlMode").toString().toInt();
+  bool ControlEnabled = xml.attributes().value("ControlEnabled").toString().toInt();
+  bool CirculatorEnabled = xml.attributes().value("CirculatorEnabled").toString().toInt();
+
+  measurement_.u525wTemperatureSetPoint_ = SetPoint;
+  measurement_.u525wTemperatureControlMode_ = ControlMode;
+  measurement_.u525wTemperatureControlEnabled_ = ControlEnabled;
+  measurement_.u525wCirculatorEnabled_ = CirculatorEnabled;
+}
+
+void ThermoDAQ2NetworkReader::processHuberUnistat525wInfo(QXmlStreamReader& xml)
+{
+  float Bath = xml.attributes().value("Bath").toString().toFloat();
+  float Return = xml.attributes().value("Return").toString().toFloat();
+  float Pressure = xml.attributes().value("Pressure").toString().toFloat();
+  int Power = xml.attributes().value("Power").toString().toInt();
+  float CWI = xml.attributes().value("CWI").toString().toFloat();
+  float CWO = xml.attributes().value("CWO").toString().toFloat();
+
+  measurement_.u525wBathTemperature_ = Bath;
+  measurement_.u525wReturnTemperature_ = Return;
+  measurement_.u525wPumpPressure_ = Pressure;
+  measurement_.u525wPower_ = Power;
+  measurement_.u525wCWInletTemperature_ = CWI;
+  measurement_.u525wCWOutletTemperature_ = CWO;
+}
+
 void ThermoDAQ2NetworkReader::processRohdeSchwarzNGE103B(QXmlStreamReader& xml)
 {
   // NQLogDebug("ThermoDAQ2NetworkReader") << "processRohdeSchwarzNGE103B(QXmlStreamReader& xml)";
@@ -93,6 +134,16 @@ void ThermoDAQ2NetworkReader::processLine(QString& line)
   while (!xml.atEnd()) {
     xml.readNextStartElement();
     if (xml.isStartElement()) {
+
+      if (xml.name()=="HuberUnistat525w") {
+        processHuberUnistat525w(xml);
+      }
+      if (xml.name()=="HuberUnistat525wControl") {
+        processHuberUnistat525wControl(xml);
+      }
+      if (xml.name()=="HuberUnistat525wInfo") {
+        processHuberUnistat525wInfo(xml);
+      }
 
       if (xml.name()=="RohdeSchwarzNGE103B") {
         processRohdeSchwarzNGE103B(xml);

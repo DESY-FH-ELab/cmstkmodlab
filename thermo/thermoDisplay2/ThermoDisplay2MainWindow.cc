@@ -48,6 +48,63 @@ ThermoDisplay2MainWindow::ThermoDisplay2MainWindow(QWidget *parent)
   w = new QWidget(tabWidget_);
   layout = new QVBoxLayout(w);
 
+  ChillerTSChart_ = new ThermoDisplay2TemperatureStateChart();
+
+  ChillerTBathSeries_ = new ThermoDisplay2LineSeries();
+  ChillerTBathSeries_->setName("Bath");
+  ChillerTSChart_->addSeries(ChillerTBathSeries_);
+
+  ChillerTReturnSeries_ = new ThermoDisplay2LineSeries();
+  ChillerTReturnSeries_->setName("Return");
+  ChillerTSChart_->addSeries(ChillerTReturnSeries_);
+
+  ChillerTCWISeries_ = new ThermoDisplay2LineSeries();
+  ChillerTCWISeries_->setName("CW Inlet");
+  ChillerTSChart_->addSeries(ChillerTCWISeries_);
+
+  ChillerTCWOSeries_ = new ThermoDisplay2LineSeries();
+  ChillerTCWOSeries_->setName("CW Outlet");
+  ChillerTSChart_->addSeries(ChillerTCWOSeries_);
+
+  ChillerSTCSeries_ = new ThermoDisplay2LineSeries();
+  ChillerSTCSeries_->setName("T Control");
+  ChillerTSChart_->addStateSeries(ChillerSTCSeries_);
+
+  ChillerSCSeries_ = new ThermoDisplay2LineSeries();
+  ChillerSCSeries_->setName("Circulator");
+  ChillerTSChart_->addStateSeries(ChillerSCSeries_);
+
+  ChillerTSChartView_ = new ThermoDisplay2TemperatureStateChartView(ChillerTSChart_);
+  ChillerTSChartView_->setRenderHint(QPainter::Antialiasing);
+  ChillerTSChartView_->setMinimumSize(800, 300);
+  layout->addWidget(ChillerTSChartView_);
+
+  ChillerTSChart_->connectMarkers();
+  ChillerTSChart_->updateLegend();
+
+  ChillerPPChart_ = new ThermoDisplay2PowerPressureChart();
+
+  ChillerPowerSeries_ = new ThermoDisplay2LineSeries();
+  ChillerPowerSeries_->setName("Power");
+  ChillerPPChart_->addPowerSeries(ChillerPowerSeries_);
+
+  ChillerPressureSeries_ = new ThermoDisplay2LineSeries();
+  ChillerPressureSeries_->setName("Pressure");
+  ChillerPPChart_->addPressureSeries(ChillerPressureSeries_);
+
+  ChillerPPChartView_ = new ThermoDisplay2PowerPressureChartView(ChillerPPChart_);
+  ChillerPPChartView_->setRenderHint(QPainter::Antialiasing);
+  ChillerPPChartView_->setMinimumSize(800, 300);
+  layout->addWidget(ChillerPPChartView_);
+
+  ChillerPPChart_->connectMarkers();
+  ChillerPPChart_->updateLegend();
+
+  tabWidget_->addTab(w, "Chiller");
+
+  w = new QWidget(tabWidget_);
+  layout = new QVBoxLayout(w);
+
   U1Series_ = new ThermoDisplay2LineSeries();
   U1Series_->setName("U1");
   U2Series_ = new ThermoDisplay2LineSeries();
@@ -123,14 +180,17 @@ ThermoDisplay2MainWindow::ThermoDisplay2MainWindow(QWidget *parent)
 
   setCentralWidget(tabWidget_);
 
+  /*
   QPalette pal = palette();
   QColor color = pal.color(QPalette::Window);
   if (color.lightnessF()<0.4) {
+    ChillerTSChart_->setTheme(QChart::ChartThemeDark);
     UChart_->setTheme(QChart::ChartThemeDark);
     IChart_->setTheme(QChart::ChartThemeDark);
     TChart_[0]->setTheme(QChart::ChartThemeDark);
     TChart_[1]->setTheme(QChart::ChartThemeDark);
   }
+  */
 
   requestData();
 
@@ -143,6 +203,8 @@ ThermoDisplay2MainWindow::ThermoDisplay2MainWindow(QWidget *parent)
 
 void ThermoDisplay2MainWindow::clearData()
 {
+  ChillerTSChart_->clearData();
+  ChillerPPChart_->clearData();
   UChart_->clearData();
   IChart_->clearData();
   TChart_[0]->clearData();
@@ -160,6 +222,33 @@ void ThermoDisplay2MainWindow::updateInfo()
   NQLogDebug("ThermoDisplay2MainWindow") << "updateInfo()";
 
   const Measurement_t& m = reader_->getMeasurement();
+
+  {
+    bool updateLegend = false;
+
+    if (ChillerTBathSeries_->isEnabled()!=m.u525wState_) updateLegend = true;
+    ChillerTBathSeries_->setEnabled(m.u525wState_);
+    ChillerTReturnSeries_->setEnabled(m.u525wState_);
+    ChillerTCWISeries_->setEnabled(m.u525wState_);
+    ChillerTCWOSeries_->setEnabled(m.u525wState_);
+    ChillerPowerSeries_->setEnabled(m.u525wState_);
+    ChillerPressureSeries_->setEnabled(m.u525wState_);
+    ChillerSTCSeries_->setEnabled(m.u525wState_);
+    ChillerSCSeries_->setEnabled(m.u525wState_);
+    ChillerTBathSeries_->append(m.dt.toMSecsSinceEpoch(), m.u525wBathTemperature_);
+    ChillerTReturnSeries_->append(m.dt.toMSecsSinceEpoch(), m.u525wReturnTemperature_);
+    ChillerTCWISeries_->append(m.dt.toMSecsSinceEpoch(), m.u525wCWInletTemperature_);
+    ChillerTCWOSeries_->append(m.dt.toMSecsSinceEpoch(), m.u525wCWOutletTemperature_);
+    ChillerPowerSeries_->append(m.dt.toMSecsSinceEpoch(), m.u525wPower_/1000.);
+    ChillerPressureSeries_->append(m.dt.toMSecsSinceEpoch(), m.u525wPumpPressure_);
+    ChillerSTCSeries_->append(m.dt.toMSecsSinceEpoch(), m.u525wTemperatureControlEnabled_);
+    ChillerSCSeries_->append(m.dt.toMSecsSinceEpoch(), m.u525wCirculatorEnabled_);
+
+    if (updateLegend) {
+      ChillerTSChart_->updateLegend();
+      ChillerPPChart_->updateLegend();
+    }
+  }
 
   {
     bool updateLegend = false;
@@ -200,6 +289,8 @@ void ThermoDisplay2MainWindow::updateInfo()
     }
   }
 
+  ChillerTSChartView_->refreshAxes();
+  ChillerPPChartView_->refreshAxes();
   UChartView_->refreshAxes();
   IChartView_->refreshAxes();
   TChartView_[0]->refreshAxes();

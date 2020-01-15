@@ -23,6 +23,18 @@
 typedef struct {
   QDateTime      dt;
 
+  bool           u525wState_;
+  float          u525wTemperatureSetPoint_;
+  bool           u525wTemperatureControlMode_;
+  bool           u525wTemperatureControlEnabled_;
+  bool           u525wCirculatorEnabled_;
+  float          u525wBathTemperature_;
+  float          u525wReturnTemperature_;
+  float          u525wPumpPressure_;
+  int            u525wPower_;
+  float          u525wCWInletTemperature_;
+  float          u525wCWOutletTemperature_;
+
   bool           nge103BState[3];
   float          nge103BVoltage[3];
   float          nge103BCurrent[3];
@@ -48,6 +60,10 @@ signals:
   protected:
   void process(QString& buffer);
   void processLine(QString& line);
+
+  void processHuberUnistat525w(QXmlStreamReader& xml);
+  void processHuberUnistat525wControl(QXmlStreamReader& xml);
+  void processHuberUnistat525wInfo(QXmlStreamReader& xml);
 
   void processRohdeSchwarzNGE103B(QXmlStreamReader& xml);
   void processRohdeSchwarzNGE103BChannel(QXmlStreamReader& xml);

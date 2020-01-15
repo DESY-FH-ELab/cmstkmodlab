@@ -52,6 +52,20 @@ protected:
   ThermoDAQ2Client* client_;
   ThermoDAQ2NetworkReader* reader_;
 
+  ThermoDisplay2ChartView *ChillerTSChartView_;
+  ThermoDisplay2TemperatureStateChart *ChillerTSChart_;
+  ThermoDisplay2LineSeries *ChillerTBathSeries_;
+  ThermoDisplay2LineSeries *ChillerTReturnSeries_;
+  ThermoDisplay2LineSeries *ChillerTCWISeries_;
+  ThermoDisplay2LineSeries *ChillerTCWOSeries_;
+  ThermoDisplay2LineSeries *ChillerSTCSeries_;
+  ThermoDisplay2LineSeries *ChillerSCSeries_;
+
+  ThermoDisplay2ChartView *ChillerPPChartView_;
+  ThermoDisplay2PowerPressureChart *ChillerPPChart_;
+  ThermoDisplay2LineSeries *ChillerPowerSeries_;
+  ThermoDisplay2LineSeries *ChillerPressureSeries_;
+
   ThermoDisplay2ChartView *UChartView_;
   ThermoDisplay2VoltageChart *UChart_;
   ThermoDisplay2LineSeries *U1Series_;

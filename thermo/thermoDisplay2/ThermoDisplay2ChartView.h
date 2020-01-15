@@ -44,6 +44,30 @@ protected:
   ThermoDisplay2Callout * callout_;
 };
 
+class ThermoDisplay2TemperatureChartView : public ThermoDisplay2ChartView
+{
+  Q_OBJECT
+public:
+
+  explicit ThermoDisplay2TemperatureChartView(ThermoDisplay2Chart *chart, QWidget *parent = nullptr);
+
+public slots:
+
+  void tooltip(QPointF point, bool state);
+};
+
+class ThermoDisplay2TemperatureStateChartView : public ThermoDisplay2ChartView
+{
+  Q_OBJECT
+public:
+
+  explicit ThermoDisplay2TemperatureStateChartView(ThermoDisplay2Chart *chart, QWidget *parent = nullptr);
+
+public slots:
+
+  void tooltip(QPointF point, bool state);
+};
+
 class ThermoDisplay2VoltageChartView : public ThermoDisplay2ChartView
 {
   Q_OBJECT
@@ -68,12 +92,12 @@ public slots:
   void tooltip(QPointF point, bool state);
 };
 
-class ThermoDisplay2TemperatureChartView : public ThermoDisplay2ChartView
+class ThermoDisplay2PowerPressureChartView : public ThermoDisplay2ChartView
 {
   Q_OBJECT
 public:
 
-  explicit ThermoDisplay2TemperatureChartView(ThermoDisplay2Chart *chart, QWidget *parent = nullptr);
+  explicit ThermoDisplay2PowerPressureChartView(ThermoDisplay2Chart *chart, QWidget *parent = nullptr);
 
 public slots:
 

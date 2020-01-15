@@ -19,6 +19,7 @@
 #include <QtCharts/QLineSeries>
 #include <QtCharts/QDateTimeAxis>
 #include <QtCharts/QValueAxis>
+#include <QtCharts/QCategoryAxis>
 
 QT_CHARTS_USE_NAMESPACE
 
@@ -43,13 +44,61 @@ public slots:
   void clearData();
 };
 
+class ThermoDisplay2TemperatureChart : public ThermoDisplay2Chart
+{
+  Q_OBJECT
+public:
+
+  explicit ThermoDisplay2TemperatureChart();
+
+  void addSeries(QAbstractSeries *series);
+
+  void refreshAxes();
+
+protected slots:
+
+signals:
+
+protected:
+
+  QDateTimeAxis *axisX_;
+  QValueAxis *axisY_;
+};
+
+class ThermoDisplay2TemperatureStateChart : public ThermoDisplay2Chart
+{
+  Q_OBJECT
+public:
+
+  explicit ThermoDisplay2TemperatureStateChart();
+
+  void addSeries(QAbstractSeries *series);
+  void addTemperatureSeries(QAbstractSeries *series);
+  void addStateSeries(QAbstractSeries *series);
+
+  void refreshAxes();
+
+protected slots:
+
+signals:
+
+protected:
+
+  void refreshXAxis();
+  void refreshTemperatureAxis();
+
+  QDateTimeAxis *axisX_;
+  QValueAxis *axisTemperatureY_;
+  QCategoryAxis *axisStateY_;
+};
+
 class ThermoDisplay2VoltageChart : public ThermoDisplay2Chart
 {
   Q_OBJECT
 public:
 
   explicit ThermoDisplay2VoltageChart();
- 
+
   void addSeries(QAbstractSeries *series);
 
   void refreshAxes();
@@ -85,14 +134,16 @@ protected:
   QValueAxis *axisY_;
 };
 
-class ThermoDisplay2TemperatureChart : public ThermoDisplay2Chart
+class ThermoDisplay2PowerPressureChart : public ThermoDisplay2Chart
 {
   Q_OBJECT
 public:
 
-  explicit ThermoDisplay2TemperatureChart();
+  explicit ThermoDisplay2PowerPressureChart();
 
   void addSeries(QAbstractSeries *series);
+  void addPowerSeries(QAbstractSeries *series);
+  void addPressureSeries(QAbstractSeries *series);
 
   void refreshAxes();
 
@@ -102,8 +153,13 @@ signals:
 
 protected:
 
+  void refreshXAxis();
+  void refreshPowerAxis();
+  void refreshPressureAxis();
+
   QDateTimeAxis *axisX_;
-  QValueAxis *axisY_;
+  QValueAxis *axisPowerY_;
+  QValueAxis *axisPressureY_;
 };
 
 #endif // THERMODISPLAY2CHART_H
