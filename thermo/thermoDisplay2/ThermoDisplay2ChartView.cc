@@ -42,6 +42,12 @@ ThermoDisplay2ChartView::ThermoDisplay2ChartView(ThermoDisplay2Chart *chart, QWi
   setMouseTracking(true);
 }
 
+void ThermoDisplay2ChartView::refreshAxes()
+{
+  if (callout_) callout_->hide();
+  chart_->refreshAxes();
+}
+
 ThermoDisplay2VoltageChartView::ThermoDisplay2VoltageChartView(ThermoDisplay2Chart *chart, QWidget *parent)
   : ThermoDisplay2ChartView(chart, parent)
 {

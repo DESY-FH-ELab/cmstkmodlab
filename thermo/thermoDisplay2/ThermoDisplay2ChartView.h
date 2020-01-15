@@ -32,6 +32,8 @@ public:
 
   explicit ThermoDisplay2ChartView(ThermoDisplay2Chart *chart, QWidget *parent = nullptr);
 
+  void refreshAxes();
+
 public slots:
 
   virtual void tooltip(QPointF point, bool state) = 0;

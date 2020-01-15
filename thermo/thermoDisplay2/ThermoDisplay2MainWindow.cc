@@ -200,8 +200,8 @@ void ThermoDisplay2MainWindow::updateInfo()
     }
   }
 
-  UChart_->refreshAxes();
-  IChart_->refreshAxes();
-  TChart_[0]->refreshAxes();
-  TChart_[1]->refreshAxes();
+  UChartView_->refreshAxes();
+  IChartView_->refreshAxes();
+  TChartView_[0]->refreshAxes();
+  TChartView_[1]->refreshAxes();
 }
