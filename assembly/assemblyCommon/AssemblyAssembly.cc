@@ -699,13 +699,13 @@ void AssemblyAssembly::GoToXYAPositionToGluePSSToSpacers_start()
    + this->parameters()->get("FromPlatformRefPointCalibrationSpacersToSpacerEdge_dY")
    + this->parameters()->get("FromSpacerEdgeToPSSRefPoint_dY")
    + this->parameters()->get("FromSensorRefPointToSensorPickup_dY")
-   - 1.175
+   - 1.16
    - motion_->get_position_Y();
 
   const double dz0 = 0.0;
 
-  const double da0 = 2.50
-    /**     this->parameters()->get("PlatformRefPointCalibrationSpacers_A") **/
+  const double da0 =
+          this->parameters()->get("PlatformRefPointCalibrationSpacers_A")
 	- motion_->get_position_A();
 
   connect(this, SIGNAL(move_relative_request(double, double, double, double)), motion_, SLOT(moveRelative(double, double, double, double)));
