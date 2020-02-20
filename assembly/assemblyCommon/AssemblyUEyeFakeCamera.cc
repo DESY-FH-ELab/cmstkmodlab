@@ -44,6 +44,7 @@ AssemblyUEyeFakeCamera::AssemblyUEyeFakeCamera(QObject* parent) :
     filenames.push_back(QString(filename + "/share/assembly/spacer_corner1.png"            ).toStdString());
     filenames.push_back(QString(filename + "/share/assembly/SensorPiece_1.png"             ).toStdString());
     filenames.push_back(QString(filename + "/share/assembly/SensorPiece_1_degM8.png"       ).toStdString());
+    filenames.push_back(QString(filename + "/share/assembly/master_dummyPSp_200120.png"    ).toStdString());
     filenames.push_back(QString(filename + "/share/assembly/master_dummyPSp_200218.png"    ).toStdString());
     imageFilenamesForPixelClock_[24] = filenames;
 
