@@ -89,7 +89,19 @@ AssemblyParametersView::AssemblyParametersView(QWidget* parent)
   dime_lay->addWidget(new QLabel(tr("dZ")), row_index, 5, Qt::AlignRight);
   dime_lay->addWidget(this->get(tmp_tag)  , row_index, 6, Qt::AlignRight);
 
-  // dimension: thickness of Spacer
+  // dimension: thickness of MPA attached to PS-p (including bump-bond)
+  ++row_index;
+
+  tmp_tag = "Thickness_MPA";
+  tmp_des = "Thickness of MPA (incl. bump-bond) :";
+
+  map_lineEdit_[tmp_tag] = new QLineEdit(tr(""));
+
+  dime_lay->addWidget(new QLabel(tmp_des) , row_index, 0, Qt::AlignLeft);
+  dime_lay->addWidget(new QLabel(tr("dZ")), row_index, 5, Qt::AlignRight);
+  dime_lay->addWidget(this->get(tmp_tag)  , row_index, 6, Qt::AlignRight);
+
+  // dimension: thickness of Spacers
   ++row_index;
 
   tmp_tag = "Thickness_Spacer";

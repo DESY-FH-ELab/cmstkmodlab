@@ -102,8 +102,8 @@ class AssemblyAssembly : public QObject
   void ReturnToPSPToPSSPosition_start();
   void ReturnToPSPToPSSPosition_finish();
 
-  void LowerSpacersAndPSSOntoPSP_start();
-  void LowerSpacersAndPSSOntoPSP_finish();
+  void LowerSpacersAndPSSOntoMaPSA_start();
+  void LowerSpacersAndPSSOntoMaPSA_finish();
 
   void PickupPSPAndPSS_start();
   void PickupPSPAndPSS_finish();
@@ -173,7 +173,7 @@ class AssemblyAssembly : public QObject
 
   void LiftUpPickupTool_finished();
 
-  void LowerSpacersAndPSSOntoPSP_finished();
+  void LowerSpacersAndPSSOntoMaPSA_finished();
 
   void PickupPSPAndPSS_finished();
 
