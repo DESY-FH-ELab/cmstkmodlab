@@ -105,8 +105,8 @@ class AssemblyAssembly : public QObject
   void LowerSpacersAndPSSOntoMaPSA_start();
   void LowerSpacersAndPSSOntoMaPSA_finish();
 
-  void PickupPSPAndPSS_start();
-  void PickupPSPAndPSS_finish();
+  void PickupSensorAssembly_start();
+  void PickupSensorAssembly_finish();
 
   void GoToXYAPositionToGlueSensorAssemblyToBaseplate_start();
   void GoToXYAPositionToGlueSensorAssemblyToBaseplate_finish();
@@ -175,7 +175,7 @@ class AssemblyAssembly : public QObject
 
   void LowerSpacersAndPSSOntoMaPSA_finished();
 
-  void PickupPSPAndPSS_finished();
+  void PickupSensorAssembly_finished();
 
   void GoToXYAPositionToGlueSensorAssemblyToBaseplate_finished();
 

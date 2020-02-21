@@ -470,7 +470,7 @@ AssemblyAssemblyView::AssemblyAssemblyView(const AssemblyAssembly* const assembl
   }
   // ----------
 
-  // step: Pick Up "PS-p + PS-s"
+  // step: Pick Up Sensor Assembly ("MaPSA + Spacers + PS-s")
   {
     ++assembly_step_N_;
 
@@ -479,7 +479,7 @@ AssemblyAssemblyView::AssemblyAssemblyView(const AssemblyAssembly* const assembl
     tmp_wid->button()->setText("Pick Up \"PS-p + PS-s\"");
     PSSToMaPSA_lay->addWidget(tmp_wid);
 
-    tmp_wid->connect_action(assembly, SLOT(PickupPSPAndPSS_start()), SIGNAL(PickupPSPAndPSS_finished()));
+    tmp_wid->connect_action(assembly, SLOT(PickupSensorAssembly_start()), SIGNAL(PickupSensorAssembly_finished()));
   }
   // ----------
 

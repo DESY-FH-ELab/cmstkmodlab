@@ -1293,9 +1293,9 @@ void AssemblyAssembly::LiftUpPickupTool_finish()
 // ----------------------------------------------------------------------------------------------------
 
 // ----------------------------------------------------------------------------------------------------
-// PickupPSPAndPSS ------------------------------------------------------------------------------------
+// PickupSensorAssembly ------------------------------------------------------------------------------------
 // ----------------------------------------------------------------------------------------------------
-void AssemblyAssembly::PickupPSPAndPSS_start()
+void AssemblyAssembly::PickupSensorAssembly_start()
 {
   if(in_action_){ return; }
   else{ in_action_ = true; }
@@ -1307,37 +1307,37 @@ void AssemblyAssembly::PickupPSPAndPSS_start()
 
   if(dz0 <= 0.)
   {
-    NQLog("AssemblyAssembly", NQLog::Critical) << "PickupPSPAndPSS_start"
+    NQLog("AssemblyAssembly", NQLog::Critical) << "PickupSensorAssembly_start"
        << ": invalid (non-positive) value for vertical upward movement for pickup #1 (dz=" << dz0 << "), no action taken";
 
-    NQLog("AssemblyAssembly", NQLog::Spam) << "PickupPSPAndPSS_finish"
-       << ": emitting signal \"PickupPSPAndPSS_finished\"";
+    NQLog("AssemblyAssembly", NQLog::Spam) << "PickupSensorAssembly_finish"
+       << ": emitting signal \"PickupSensorAssembly_finished\"";
 
-    emit PickupPSPAndPSS_finished();
+    emit PickupSensorAssembly_finished();
 
     return;
   }
 
   connect(this, SIGNAL(move_relative_request(double, double, double, double)), motion_, SLOT(moveRelative(double, double, double, double)));
-  connect(motion_, SIGNAL(motion_finished()), this, SLOT(PickupPSPAndPSS_finish()));
+  connect(motion_, SIGNAL(motion_finished()), this, SLOT(PickupSensorAssembly_finish()));
 
-  NQLog("AssemblyAssembly", NQLog::Spam) << "PickupPSPAndPSS_start"
+  NQLog("AssemblyAssembly", NQLog::Spam) << "PickupSensorAssembly_start"
      << ": emitting signal \"move_relative_request(" << dx0 << ", " << dy0 << ", " << dz0 << ", " << da0 << ")\"";
 
   emit move_relative_request(dx0, dy0, dz0, da0);
 }
 
-void AssemblyAssembly::PickupPSPAndPSS_finish()
+void AssemblyAssembly::PickupSensorAssembly_finish()
 {
   disconnect(this, SIGNAL(move_relative_request(double, double, double, double)), motion_, SLOT(moveRelative(double, double, double, double)));
-  disconnect(motion_, SIGNAL(motion_finished()), this, SLOT(PickupPSPAndPSS_finish()));
+  disconnect(motion_, SIGNAL(motion_finished()), this, SLOT(PickupSensorAssembly_finish()));
 
-  NQLog("AssemblyAssembly", NQLog::Spam) << "PickupPSPAndPSS_finish"
-     << ": emitting signal \"PickupPSPAndPSS_finished\"";
+  NQLog("AssemblyAssembly", NQLog::Spam) << "PickupSensorAssembly_finish"
+     << ": emitting signal \"PickupSensorAssembly_finished\"";
 
-  emit PickupPSPAndPSS_finished();
+  emit PickupSensorAssembly_finished();
 
-  NQLog("AssemblyAssembly", NQLog::Message) << "PickupPSPAndPSS_finish"
+  NQLog("AssemblyAssembly", NQLog::Message) << "PickupSensorAssembly_finish"
      << ": assembly-step completed";
 
   in_action_ = false;
