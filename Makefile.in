@@ -36,7 +36,7 @@ ifeq ($(NODEFO),0)
 qtsubdirs    += defo/defoCommon defo/defoDAQ defo/defoDisplay defo/defoReco defo/defoCalib defo/defoDAQ2Root
 endif
 ifeq ($(NOASSEMBLY),0)
-qtsubdirs    += assembly/assemblyCommon assembly/vision/circleCalibration assembly/motion/motionCommander assembly/assembly
+qtsubdirs    += assembly/assemblyCommon assembly/motion/motionCommander assembly/assembly
 endif
 ifeq ($(NOPLASMA),0)
 qtsubdirs    += plasma
