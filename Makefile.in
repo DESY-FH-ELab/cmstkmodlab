@@ -70,3 +70,6 @@ clean:
 	@for dir in $(subdirs); do (cd $$dir && make clean); done
 	@rm -f tkmodlabenv.sh
 	@rm -f tkmodlabenv.csh
+
+anew:
+	@if [ -f ./reconfigure ]; then make clean && ./reconfigure && make all; fi;
