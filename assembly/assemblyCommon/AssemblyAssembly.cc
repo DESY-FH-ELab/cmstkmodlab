@@ -1140,7 +1140,8 @@ void AssemblyAssembly::LowerSpacersAndPSSOntoMaPSA_start()
       + this->parameters()->get("Thickness_PSS")
       + this->parameters()->get("Thickness_GlueLayer")
       + this->parameters()->get("Thickness_Spacer")
-      + this->parameters()->get("Thickness_GlueLayer");
+      + this->parameters()->get("Thickness_GlueLayer")
+      + this->parameters()->get("Thickness_MPA");
 
     const double da0 = 0.0;
 
@@ -1449,6 +1450,7 @@ void AssemblyAssembly::LowerSensorAssemblyOntoBaseplate_start()
       + this->parameters()->get("Thickness_GlueLayer")
       + this->parameters()->get("Thickness_Spacer")
       + this->parameters()->get("Thickness_GlueLayer")
+      + this->parameters()->get("Thickness_MPA")
       + this->parameters()->get("Thickness_PSP")
       + this->parameters()->get("Thickness_GlueLayer")
       + this->parameters()->get("Thickness_Baseplate")
