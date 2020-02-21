@@ -37,11 +37,11 @@ AssemblyAssembly::AssemblyAssembly(const LStepExpressMotionManager* const motion
  , use_smartMove_(false)
  , in_action_(false)
 
- , PSPToPSSPosition_isRegistered_(false)
- , PSPToPSSPosition_X_(0.)
- , PSPToPSSPosition_Y_(0.)
- , PSPToPSSPosition_Z_(0.)
- , PSPToPSSPosition_A_(0.)
+ , PSSPlusSpacersToMaPSAPosition_isRegistered_(false)
+ , PSSPlusSpacersToMaPSAPosition_X_(0.)
+ , PSSPlusSpacersToMaPSAPosition_Y_(0.)
+ , PSSPlusSpacersToMaPSAPosition_Z_(0.)
+ , PSSPlusSpacersToMaPSAPosition_A_(0.)
 {
   // validate pointers to controllers
   this->motion();
@@ -62,7 +62,7 @@ AssemblyAssembly::AssemblyAssembly(const LStepExpressMotionManager* const motion
   vacuum_basepl_ = config->getValue<int>("Vacuum_Baseplate");
 
   // absolute Z-position of motion stage for pickup of object after gluing
-  // (1: PSs to Spacers, 2: PSs+Spacers to PSp)
+  // (1: PSs to Spacers, 2: PSs+Spacers to MaPSA)
   pickup1_Z_ = config->getValue<double>("AssemblyAssembly_pickup1_Z");
   pickup2_Z_ = config->getValue<double>("AssemblyAssembly_pickup2_Z");
 }
@@ -823,41 +823,42 @@ void AssemblyAssembly::ApplyPSPToPSSXYOffset_finish()
 // ----------------------------------------------------------------------------------------------------
 
 // ----------------------------------------------------------------------------------------------------
-// RegisterPSPToPSSPosition ---------------------------------------------------------------------------
+// RegisterPSSPlusSpacersToMaPSAPosition --------------------------------------------------------------
 // ----------------------------------------------------------------------------------------------------
-void AssemblyAssembly::RegisterPSPToPSSPosition_start()
+void AssemblyAssembly::RegisterPSSPlusSpacersToMaPSAPosition_start()
 {
   if(in_action_){ return; }
   else{ in_action_ = true; }
 
-  PSPToPSSPosition_X_ = motion_->get_position_X();
-  PSPToPSSPosition_Y_ = motion_->get_position_Y();
-  PSPToPSSPosition_Z_ = motion_->get_position_Z();
-  PSPToPSSPosition_A_ = motion_->get_position_A();
+  PSSPlusSpacersToMaPSAPosition_X_ = motion_->get_position_X();
+  PSSPlusSpacersToMaPSAPosition_Y_ = motion_->get_position_Y();
+  PSSPlusSpacersToMaPSAPosition_Z_ = motion_->get_position_Z();
+  PSSPlusSpacersToMaPSAPosition_A_ = motion_->get_position_A();
 
-  PSPToPSSPosition_isRegistered_ = true;
+  PSSPlusSpacersToMaPSAPosition_isRegistered_ = true;
 
-  NQLog("AssemblyAssembly", NQLog::Message) << "RegisterPSPToPSSPosition_start"
-     << ": registered position (x=" << PSPToPSSPosition_X_ << ", y=" << PSPToPSSPosition_Y_ << ", z=" << PSPToPSSPosition_Z_ << ", a=" << PSPToPSSPosition_A_ << ")";
+  NQLog("AssemblyAssembly", NQLog::Message) << "RegisterPSSPlusSpacersToMaPSAPosition_start"
+     << ": registered position (x=" << PSSPlusSpacersToMaPSAPosition_X_ << ", y=" << PSSPlusSpacersToMaPSAPosition_Y_
+     << ", z=" << PSSPlusSpacersToMaPSAPosition_Z_ << ", a=" << PSSPlusSpacersToMaPSAPosition_A_ << ")";
 
-  connect(this, SIGNAL(PSPToPSSPosition_registered()), this, SLOT(RegisterPSPToPSSPosition_finish()));
+  connect(this, SIGNAL(PSSPlusSpacersToMaPSAPosition_registered()), this, SLOT(RegisterPSSPlusSpacersToMaPSAPosition_finish()));
 
-  NQLog("AssemblyAssembly", NQLog::Spam) << "RegisterPSPToPSSPosition_start"
-     << ": emitting signal \"PSPToPSSPosition_registered\"";
+  NQLog("AssemblyAssembly", NQLog::Spam) << "RegisterPSSPlusSpacersToMaPSAPosition_start"
+     << ": emitting signal \"PSSPlusSpacersToMaPSAPosition_registered\"";
 
-  emit PSPToPSSPosition_registered();
+  emit PSSPlusSpacersToMaPSAPosition_registered();
 }
 
-void AssemblyAssembly::RegisterPSPToPSSPosition_finish()
+void AssemblyAssembly::RegisterPSSPlusSpacersToMaPSAPosition_finish()
 {
-  disconnect(this, SIGNAL(PSPToPSSPosition_registered()), this, SLOT(RegisterPSPToPSSPosition_finish()));
+  disconnect(this, SIGNAL(PSSPlusSpacersToMaPSAPosition_registered()), this, SLOT(RegisterPSSPlusSpacersToMaPSAPosition_finish()));
 
-  NQLog("AssemblyAssembly", NQLog::Spam) << "RegisterPSPToPSSPosition_finish"
-     << ": emitting signal \"RegisterPSPToPSSPosition_finished\"";
+  NQLog("AssemblyAssembly", NQLog::Spam) << "RegisterPSSPlusSpacersToMaPSAPosition_finish"
+     << ": emitting signal \"RegisterPSSPlusSpacersToMaPSAPosition_finished\"";
 
-  emit RegisterPSPToPSSPosition_finished();
+  emit RegisterPSSPlusSpacersToMaPSAPosition_finished();
 
-  NQLog("AssemblyAssembly", NQLog::Message) << "RegisterPSPToPSSPosition_finish"
+  NQLog("AssemblyAssembly", NQLog::Message) << "RegisterPSSPlusSpacersToMaPSAPosition_finish"
      << ": assembly-step completed";
 
   in_action_ = false;
@@ -865,9 +866,9 @@ void AssemblyAssembly::RegisterPSPToPSSPosition_finish()
 // ----------------------------------------------------------------------------------------------------
 
 // ----------------------------------------------------------------------------------------------------
-// GoFromPSPToPSSPosToGluingStageRefPointXY -----------------------------------------------------------
+// GoFromPSSPlusSpacersToMaPSAPositionToGluingStageRefPointXY -----------------------------------------
 // ----------------------------------------------------------------------------------------------------
-void AssemblyAssembly::GoFromPSPToPSSPosToGluingStageRefPointXY_start()
+void AssemblyAssembly::GoFromPSSPlusSpacersToMaPSAPositionToGluingStageRefPointXY_start()
 {
   if(in_action_){ return; }
   else{ in_action_ = true; }
@@ -878,59 +879,59 @@ void AssemblyAssembly::GoFromPSPToPSSPosToGluingStageRefPointXY_start()
 
     if(valid_params == false)
     {
-      NQLog("AssemblyAssembly", NQLog::Critical) << "GoFromPSPToPSSPosToGluingStageRefPointXY_start"
+      NQLog("AssemblyAssembly", NQLog::Critical) << "GoFromPSSPlusSpacersToMaPSAPositionToGluingStageRefPointXY_start"
          << ": failed to update content of AssemblyParameters, no action taken";
 
-      NQLog("AssemblyAssembly", NQLog::Spam) << "GoFromPSPToPSSPosToGluingStageRefPointXY_finish"
-         << ": emitting signal \"GoFromPSPToPSSPosToGluingStageRefPointXY_finished\"";
+      NQLog("AssemblyAssembly", NQLog::Spam) << "GoFromPSSPlusSpacersToMaPSAPositionToGluingStageRefPointXY_finish"
+         << ": emitting signal \"GoFromPSSPlusSpacersToMaPSAPositionToGluingStageRefPointXY_finished\"";
 
-      emit GoFromPSPToPSSPosToGluingStageRefPointXY_finished();
+      emit GoFromPSSPlusSpacersToMaPSAPositionToGluingStageRefPointXY_finished();
 
       return;
     }
 
-    const double dx0 = this->parameters()->get("FromPSPToPSSPosToGluingStage_dX");
-    const double dy0 = this->parameters()->get("FromPSPToPSSPosToGluingStage_dY");
+    const double dx0 = this->parameters()->get("FromPSSPlusSpacersToMaPSAPositionToGluingStage_dX");
+    const double dy0 = this->parameters()->get("FromPSSPlusSpacersToMaPSAPositionToGluingStage_dY");
     const double dz0 = 0.0;
     const double da0 = 0.0;
 
     connect(this, SIGNAL(move_relative_request(double, double, double, double)), smart_motion_, SLOT(move_relative(double, double, double, double)));
-    connect(smart_motion_, SIGNAL(motion_completed()), this, SLOT(GoFromPSPToPSSPosToGluingStageRefPointXY_finish()));
+    connect(smart_motion_, SIGNAL(motion_completed()), this, SLOT(GoFromPSSPlusSpacersToMaPSAPositionToGluingStageRefPointXY_finish()));
 
-    NQLog("AssemblyAssembly", NQLog::Spam) << "GoFromPSPToPSSPosToGluingStageRefPointXY_start"
+    NQLog("AssemblyAssembly", NQLog::Spam) << "GoFromPSSPlusSpacersToMaPSAPositionToGluingStageRefPointXY_start"
        << ": emitting signal \"move_relative_request(" << dx0 << ", " << dy0 << ", " << dz0 << ", " << da0 << ")\"";
 
     emit move_relative_request(dx0, dy0, dz0, da0);
   }
   else
   {
-    NQLog("AssemblyAssembly", NQLog::Critical) << "GoFromPSPToPSSPosToGluingStageRefPointXY_start"
+    NQLog("AssemblyAssembly", NQLog::Critical) << "GoFromPSSPlusSpacersToMaPSAPositionToGluingStageRefPointXY_start"
        << ": please enable \"smartMove\" mode (tick box in top-left corner of Assembly tab), required for this step";
 
     QMessageBox msgBox;
-    msgBox.setText(tr("AssemblyAssembly::GoFromPSPToPSSPosToGluingStageRefPointXY_start -- please enable \"smartMove\" mode (tick box in top-left corner of Assembly tab), required for this step"));
+    msgBox.setText(tr("AssemblyAssembly::GoFromPSSPlusSpacersToMaPSAPositionToGluingStageRefPointXY_start -- please enable \"smartMove\" mode (tick box in top-left corner of Assembly tab), required for this step"));
     msgBox.exec();
 
-    NQLog("AssemblyAssembly", NQLog::Spam) << "GoFromPSPToPSSPosToGluingStageRefPointXY_finish"
-       << ": emitting signal \"GoFromPSPToPSSPosToGluingStageRefPointXY_finished\"";
+    NQLog("AssemblyAssembly", NQLog::Spam) << "GoFromPSSPlusSpacersToMaPSAPositionToGluingStageRefPointXY_finish"
+       << ": emitting signal \"GoFromPSSPlusSpacersToMaPSAPositionToGluingStageRefPointXY_finished\"";
 
-    emit GoFromPSPToPSSPosToGluingStageRefPointXY_finished();
+    emit GoFromPSSPlusSpacersToMaPSAPositionToGluingStageRefPointXY_finished();
 
     return;
   }
 }
 
-void AssemblyAssembly::GoFromPSPToPSSPosToGluingStageRefPointXY_finish()
+void AssemblyAssembly::GoFromPSSPlusSpacersToMaPSAPositionToGluingStageRefPointXY_finish()
 {
   disconnect(this, SIGNAL(move_relative_request(double, double, double, double)), smart_motion_, SLOT(move_relative(double, double, double, double)));
-  disconnect(smart_motion_, SIGNAL(motion_completed()), this, SLOT(GoFromPSPToPSSPosToGluingStageRefPointXY_finish()));
+  disconnect(smart_motion_, SIGNAL(motion_completed()), this, SLOT(GoFromPSSPlusSpacersToMaPSAPositionToGluingStageRefPointXY_finish()));
 
-  NQLog("AssemblyAssembly", NQLog::Spam) << "GoFromPSPToPSSPosToGluingStageRefPointXY_finish"
-     << ": emitting signal \"GoFromPSPToPSSPosToGluingStageRefPointXY_finished\"";
+  NQLog("AssemblyAssembly", NQLog::Spam) << "GoFromPSSPlusSpacersToMaPSAPositionToGluingStageRefPointXY_finish"
+     << ": emitting signal \"GoFromPSSPlusSpacersToMaPSAPositionToGluingStageRefPointXY_finished\"";
 
-  emit GoFromPSPToPSSPosToGluingStageRefPointXY_finished();
+  emit GoFromPSSPlusSpacersToMaPSAPositionToGluingStageRefPointXY_finished();
 
-  NQLog("AssemblyAssembly", NQLog::Message) << "GoFromPSPToPSSPosToGluingStageRefPointXY_finish"
+  NQLog("AssemblyAssembly", NQLog::Message) << "GoFromPSSPlusSpacersToMaPSAPositionToGluingStageRefPointXY_finish"
      << ": assembly-step completed";
 
   in_action_ = false;
@@ -1020,87 +1021,87 @@ void AssemblyAssembly::LowerSpacersAndPSSOntoGluingStage_finish()
 // ----------------------------------------------------------------------------------------------------
 
 // ----------------------------------------------------------------------------------------------------
-// ReturnToPSPToPSSPosition ---------------------------------------------------------------------------
+// ReturnToPSSPlusSpacersToMaPSAPosition --------------------------------------------------------------
 // ----------------------------------------------------------------------------------------------------
-void AssemblyAssembly::ReturnToPSPToPSSPosition_start()
+void AssemblyAssembly::ReturnToPSSPlusSpacersToMaPSAPosition_start()
 {
   if(in_action_){ return; }
   else{ in_action_ = true; }
 
-  if(PSPToPSSPosition_isRegistered_ == false)
+  if(PSSPlusSpacersToMaPSAPosition_isRegistered_ == false)
   {
-    NQLog("AssemblyAssembly", NQLog::Critical) << "ReturnToPSPToPSSPosition_start"
-       << ": PSP-To-PSS Position was not registered, which is mandatory for this step";
+    NQLog("AssemblyAssembly", NQLog::Critical) << "ReturnToPSSPlusSpacersToMaPSAPosition_start"
+       << ": \"PSS+Spacers To MaPSA\" position not registered, but mandatory for this step (see button in \"Assembly\" tab)";
 
     QMessageBox msgBox;
-    msgBox.setText(tr("AssemblyAssembly::ReturnToPSPToPSSPosition_start -- PSP-To-PSS Position was not registered, which is mandatory for this step (see dedicated button in \"Assembly\" tab)"));
+    msgBox.setText(tr("AssemblyAssembly::ReturnToPSSPlusSpacersToMaPSAPosition_start -- \"PSS+Spacers To MaPSA\" position not registered, but mandatory for this step (see button in \"Assembly\" tab)"));
     msgBox.exec();
 
-    NQLog("AssemblyAssembly", NQLog::Spam) << "ReturnToPSPToPSSPosition_finish"
-       << ": emitting signal \"ReturnToPSPToPSSPosition_finished\"";
+    NQLog("AssemblyAssembly", NQLog::Spam) << "ReturnToPSSPlusSpacersToMaPSAPosition_finish"
+       << ": emitting signal \"ReturnToPSSPlusSpacersToMaPSAPosition_finished\"";
 
-    emit ReturnToPSPToPSSPosition_finished();
+    emit ReturnToPSSPlusSpacersToMaPSAPosition_finished();
 
     return;
   }
 
   if(use_smartMove_)
   {
-    const double dx0 = PSPToPSSPosition_X_ - motion_->get_position_X();
-    const double dy0 = PSPToPSSPosition_Y_ - motion_->get_position_Y();
-    const double dz0 = PSPToPSSPosition_Z_ - motion_->get_position_Z();
+    const double dx0 = PSSPlusSpacersToMaPSAPosition_X_ - motion_->get_position_X();
+    const double dy0 = PSSPlusSpacersToMaPSAPosition_Y_ - motion_->get_position_Y();
+    const double dz0 = PSSPlusSpacersToMaPSAPosition_Z_ - motion_->get_position_Z();
     const double da0 = 0.;
 
     if(dz0 <= 0.)
     {
-      NQLog("AssemblyAssembly", NQLog::Critical) << "ReturnToPSPToPSSPosition_start"
+      NQLog("AssemblyAssembly", NQLog::Critical) << "ReturnToPSSPlusSpacersToMaPSAPosition_start"
          << ": invalid (non-positive) value for vertical upward movement (dz=" << dz0 << "), no action taken";
 
-      NQLog("AssemblyAssembly", NQLog::Spam) << "ReturnToPSPToPSSPosition_finish"
-         << ": emitting signal \"ReturnToPSPToPSSPosition_finished\"";
+      NQLog("AssemblyAssembly", NQLog::Spam) << "ReturnToPSSPlusSpacersToMaPSAPosition_finish"
+         << ": emitting signal \"ReturnToPSSPlusSpacersToMaPSAPosition_finished\"";
 
-      emit ReturnToPSPToPSSPosition_finished();
+      emit ReturnToPSSPlusSpacersToMaPSAPosition_finished();
 
       return;
     }
 
     connect(this, SIGNAL(move_relative_request(double, double, double, double)), smart_motion_, SLOT(move_relative(double, double, double, double)));
-    connect(smart_motion_, SIGNAL(motion_completed()), this, SLOT(ReturnToPSPToPSSPosition_finish()));
+    connect(smart_motion_, SIGNAL(motion_completed()), this, SLOT(ReturnToPSSPlusSpacersToMaPSAPosition_finish()));
 
-    NQLog("AssemblyAssembly", NQLog::Spam) << "ReturnToPSPToPSSPosition_start"
+    NQLog("AssemblyAssembly", NQLog::Spam) << "ReturnToPSSPlusSpacersToMaPSAPosition_start"
        << ": emitting signal \"move_relative_request(" << dx0 << ", " << dy0 << ", " << dz0 << ", " << da0 << ")\"";
 
     emit move_relative_request(dx0, dy0, dz0, da0);
   }
   else
   {
-    NQLog("AssemblyAssembly", NQLog::Critical) << "ReturnToPSPToPSSPosition_start"
+    NQLog("AssemblyAssembly", NQLog::Critical) << "ReturnToPSSPlusSpacersToMaPSAPosition_start"
        << ": please enable \"smartMove\" mode (tick box in top-left corner of Assembly tab), required for this step";
 
     QMessageBox msgBox;
-    msgBox.setText(tr("AssemblyAssembly::ReturnToPSPToPSSPosition_start -- please enable \"smartMove\" mode (tick box in top-left corner of Assembly tab), required for this step"));
+    msgBox.setText(tr("AssemblyAssembly::ReturnToPSSPlusSpacersToMaPSAPosition_start -- please enable \"smartMove\" mode (tick box in top-left corner of Assembly tab), required for this step"));
     msgBox.exec();
 
-    NQLog("AssemblyAssembly", NQLog::Spam) << "ReturnToPSPToPSSPosition_finish"
-       << ": emitting signal \"ReturnToPSPToPSSPosition_finished\"";
+    NQLog("AssemblyAssembly", NQLog::Spam) << "ReturnToPSSPlusSpacersToMaPSAPosition_finish"
+       << ": emitting signal \"ReturnToPSSPlusSpacersToMaPSAPosition_finished\"";
 
-    emit ReturnToPSPToPSSPosition_finished();
+    emit ReturnToPSSPlusSpacersToMaPSAPosition_finished();
 
     return;
   }
 }
 
-void AssemblyAssembly::ReturnToPSPToPSSPosition_finish()
+void AssemblyAssembly::ReturnToPSSPlusSpacersToMaPSAPosition_finish()
 {
   disconnect(this, SIGNAL(move_relative_request(double, double, double, double)), smart_motion_, SLOT(move_relative(double, double, double, double)));
-  disconnect(smart_motion_, SIGNAL(motion_completed()), this, SLOT(ReturnToPSPToPSSPosition_finish()));
+  disconnect(smart_motion_, SIGNAL(motion_completed()), this, SLOT(ReturnToPSSPlusSpacersToMaPSAPosition_finish()));
 
-  NQLog("AssemblyAssembly", NQLog::Spam) << "ReturnToPSPToPSSPosition_finish"
-     << ": emitting signal \"ReturnToPSPToPSSPosition_finished\"";
+  NQLog("AssemblyAssembly", NQLog::Spam) << "ReturnToPSSPlusSpacersToMaPSAPosition_finish"
+     << ": emitting signal \"ReturnToPSSPlusSpacersToMaPSAPosition_finished\"";
 
-  emit ReturnToPSPToPSSPosition_finished();
+  emit ReturnToPSSPlusSpacersToMaPSAPosition_finished();
 
-  NQLog("AssemblyAssembly", NQLog::Message) << "ReturnToPSPToPSSPosition_finish"
+  NQLog("AssemblyAssembly", NQLog::Message) << "ReturnToPSSPlusSpacersToMaPSAPosition_finish"
      << ": assembly-step completed";
 
   in_action_ = false;

@@ -55,11 +55,11 @@ class AssemblyAssembly : public QObject
   bool use_smartMove_;
   bool in_action_;
 
-  bool   PSPToPSSPosition_isRegistered_;
-  double PSPToPSSPosition_X_;
-  double PSPToPSSPosition_Y_;
-  double PSPToPSSPosition_Z_;
-  double PSPToPSSPosition_A_;
+  bool   PSSPlusSpacersToMaPSAPosition_isRegistered_;
+  double PSSPlusSpacersToMaPSAPosition_X_;
+  double PSSPlusSpacersToMaPSAPosition_Y_;
+  double PSSPlusSpacersToMaPSAPosition_Z_;
+  double PSSPlusSpacersToMaPSAPosition_A_;
 
  public slots:
 
@@ -90,17 +90,17 @@ class AssemblyAssembly : public QObject
   void ApplyPSPToPSSXYOffset_start();
   void ApplyPSPToPSSXYOffset_finish();
 
-  void RegisterPSPToPSSPosition_start();
-  void RegisterPSPToPSSPosition_finish();
+  void RegisterPSSPlusSpacersToMaPSAPosition_start();
+  void RegisterPSSPlusSpacersToMaPSAPosition_finish();
 
-  void GoFromPSPToPSSPosToGluingStageRefPointXY_start();
-  void GoFromPSPToPSSPosToGluingStageRefPointXY_finish();
+  void GoFromPSSPlusSpacersToMaPSAPositionToGluingStageRefPointXY_start();
+  void GoFromPSSPlusSpacersToMaPSAPositionToGluingStageRefPointXY_finish();
 
   void LowerSpacersAndPSSOntoGluingStage_start();
   void LowerSpacersAndPSSOntoGluingStage_finish();
 
-  void ReturnToPSPToPSSPosition_start();
-  void ReturnToPSPToPSSPosition_finish();
+  void ReturnToPSSPlusSpacersToMaPSAPosition_start();
+  void ReturnToPSSPlusSpacersToMaPSAPosition_finish();
 
   void LowerSpacersAndPSSOntoMaPSA_start();
   void LowerSpacersAndPSSOntoMaPSA_finish();
@@ -162,12 +162,12 @@ class AssemblyAssembly : public QObject
 
   void ApplyPSPToPSSXYOffset_finished();
 
-  void RegisterPSPToPSSPosition_finished();
-  void PSPToPSSPosition_registered();
+  void RegisterPSSPlusSpacersToMaPSAPosition_finished();
+  void PSSPlusSpacersToMaPSAPosition_registered();
 
-  void GoFromPSPToPSSPosToGluingStageRefPointXY_finished();
+  void GoFromPSSPlusSpacersToMaPSAPositionToGluingStageRefPointXY_finished();
 
-  void ReturnToPSPToPSSPosition_finished();
+  void ReturnToPSSPlusSpacersToMaPSAPosition_finished();
 
   void LowerSpacersAndPSSOntoGluingStage_finished();
 
