@@ -149,8 +149,13 @@ void AssemblyAssembly::use_smartMove(const int state)
 // ----------------------------------------------------------------------------------------------------
 void AssemblyAssembly::GoToSensorMarkerPreAlignment_start()
 {
-  if(in_action_){ return; }
-  else{ in_action_ = true; }
+  if(in_action_){
+
+    NQLog("AssemblyAssembly", NQLog::Warning) << "GoToSensorMarkerPreAlignment_start"
+       << ": logic error, an assembly step is still in progress, will not take further action";
+
+    return;
+  }
 
   const bool valid_params = this->parameters()->update();
 
@@ -175,6 +180,8 @@ void AssemblyAssembly::GoToSensorMarkerPreAlignment_start()
   connect(this, SIGNAL(move_absolute_request(double, double, double, double)), motion_, SLOT(moveAbsolute(double, double, double, double)));
   connect(motion_, SIGNAL(motion_finished()), this, SLOT(GoToSensorMarkerPreAlignment_finish()));
 
+  in_action_ = true;
+
   NQLog("AssemblyAssembly", NQLog::Spam) << "GoToSensorMarkerPreAlignment_start"
      << ": emitting signal \"move_absolute_request(" << x0 << ", " << y0 << ", " << z0 << ", " << a0 << ")\"";
 
@@ -186,6 +193,8 @@ void AssemblyAssembly::GoToSensorMarkerPreAlignment_finish()
   disconnect(this, SIGNAL(move_absolute_request(double, double, double, double)), motion_, SLOT(moveAbsolute(double, double, double, double)));
   disconnect(motion_, SIGNAL(motion_finished()), this, SLOT(GoToSensorMarkerPreAlignment_finish()));
 
+  if(in_action_){ in_action_ = false; }
+
   NQLog("AssemblyAssembly", NQLog::Spam) << "GoToSensorMarkerPreAlignment_finish"
      << ": emitting signal \"GoToSensorMarkerPreAlignment_finished\"";
 
@@ -193,8 +202,6 @@ void AssemblyAssembly::GoToSensorMarkerPreAlignment_finish()
 
   NQLog("AssemblyAssembly", NQLog::Message) << "GoToSensorMarkerPreAlignment_finish"
      << ": assembly-step completed";
-
-  in_action_ = false;
 }
 // ----------------------------------------------------------------------------------------------------
 
@@ -203,14 +210,21 @@ void AssemblyAssembly::GoToSensorMarkerPreAlignment_finish()
 // ----------------------------------------------------------------------------------------------------
 void AssemblyAssembly::EnableVacuumPickupTool_start()
 {
-  if(in_action_){ return; }
-  else{ in_action_ = true; }
+  if(in_action_){
+
+    NQLog("AssemblyAssembly", NQLog::Warning) << "EnableVacuumPickupTool_start"
+       << ": logic error, an assembly step is still in progress, will not take further action";
+
+    return;
+  }
 
   connect(this, SIGNAL(vacuum_ON_request(int)), this->vacuum(), SLOT(enableVacuum(int)));
 
   connect(this->vacuum(), SIGNAL(vacuum_enabled()), this, SLOT(EnableVacuumPickupTool_finish()));
   connect(this->vacuum(), SIGNAL(vacuum_toggled()), this, SLOT(EnableVacuumPickupTool_finish()));
   connect(this->vacuum(), SIGNAL(vacuum_error  ()), this, SLOT(EnableVacuumPickupTool_finish()));
+
+  in_action_ = true;
 
   NQLog("AssemblyAssembly", NQLog::Spam) << "EnableVacuumPickupTool_start"
      << ": emitting signal \"vacuum_ON_request(" << vacuum_pickup_ << ")\"";
@@ -226,6 +240,8 @@ void AssemblyAssembly::EnableVacuumPickupTool_finish()
   disconnect(this->vacuum(), SIGNAL(vacuum_toggled()), this, SLOT(EnableVacuumPickupTool_finish()));
   disconnect(this->vacuum(), SIGNAL(vacuum_error  ()), this, SLOT(EnableVacuumPickupTool_finish()));
 
+  if(in_action_){ in_action_ = false; }
+
   NQLog("AssemblyAssembly", NQLog::Spam) << "EnableVacuumPickupTool_finish"
      << ": emitting signal \"EnableVacuumPickupTool_finished\"";
 
@@ -233,8 +249,6 @@ void AssemblyAssembly::EnableVacuumPickupTool_finish()
 
   NQLog("AssemblyAssembly", NQLog::Message) << "EnableVacuumPickupTool_finish"
      << ": assembly-step completed";
-
-  in_action_ = false;
 }
 // ----------------------------------------------------------------------------------------------------
 
@@ -243,14 +257,21 @@ void AssemblyAssembly::EnableVacuumPickupTool_finish()
 // ----------------------------------------------------------------------------------------------------
 void AssemblyAssembly::DisableVacuumPickupTool_start()
 {
-  if(in_action_){ return; }
-  else{ in_action_ = true; }
+  if(in_action_){
+
+    NQLog("AssemblyAssembly", NQLog::Warning) << "DisableVacuumPickupTool_start"
+       << ": logic error, an assembly step is still in progress, will not take further action";
+
+    return;
+  }
 
   connect(this, SIGNAL(vacuum_OFF_request(int)), this->vacuum(), SLOT(disableVacuum(int)));
 
   connect(this->vacuum(), SIGNAL(vacuum_disabled()), this, SLOT(DisableVacuumPickupTool_finish()));
   connect(this->vacuum(), SIGNAL(vacuum_toggled ()), this, SLOT(DisableVacuumPickupTool_finish()));
   connect(this->vacuum(), SIGNAL(vacuum_error   ()), this, SLOT(DisableVacuumPickupTool_finish()));
+
+  in_action_ = true;
 
   NQLog("AssemblyAssembly", NQLog::Spam) << "DisableVacuumPickupTool_start"
      << ": emitting signal \"vacuum_OFF_request(" << vacuum_pickup_ << ")\"";
@@ -266,6 +287,8 @@ void AssemblyAssembly::DisableVacuumPickupTool_finish()
   disconnect(this->vacuum(), SIGNAL(vacuum_toggled ()), this, SLOT(DisableVacuumPickupTool_finish()));
   disconnect(this->vacuum(), SIGNAL(vacuum_error   ()), this, SLOT(DisableVacuumPickupTool_finish()));
 
+  if(in_action_){ in_action_ = false; }
+
   NQLog("AssemblyAssembly", NQLog::Spam) << "DisableVacuumPickupTool_finish"
      << ": emitting signal \"DisableVacuumPickupTool_finished\"";
 
@@ -273,8 +296,6 @@ void AssemblyAssembly::DisableVacuumPickupTool_finish()
 
   NQLog("AssemblyAssembly", NQLog::Message) << "DisableVacuumPickupTool_finish"
      << ": assembly-step completed";
-
-  in_action_ = false;
 }
 // ----------------------------------------------------------------------------------------------------
 
@@ -283,14 +304,21 @@ void AssemblyAssembly::DisableVacuumPickupTool_finish()
 // ----------------------------------------------------------------------------------------------------
 void AssemblyAssembly::EnableVacuumSpacers_start()
 {
-  if(in_action_){ return; }
-  else{ in_action_ = true; }
+  if(in_action_){
+
+    NQLog("AssemblyAssembly", NQLog::Warning) << "EnableVacuumSpacers_start"
+       << ": logic error, an assembly step is still in progress, will not take further action";
+
+    return;
+  }
 
   connect(this, SIGNAL(vacuum_ON_request(int)), this->vacuum(), SLOT(enableVacuum(int)));
 
   connect(this->vacuum(), SIGNAL(vacuum_enabled()), this, SLOT(EnableVacuumSpacers_finish()));
   connect(this->vacuum(), SIGNAL(vacuum_toggled()), this, SLOT(EnableVacuumSpacers_finish()));
   connect(this->vacuum(), SIGNAL(vacuum_error  ()), this, SLOT(EnableVacuumSpacers_finish()));
+
+  in_action_ = true;
 
   NQLog("AssemblyAssembly", NQLog::Spam) << "EnableVacuumSpacers_start"
      << ": emitting signal \"vacuum_ON_request(" << vacuum_spacer_ << ")\"";
@@ -306,6 +334,8 @@ void AssemblyAssembly::EnableVacuumSpacers_finish()
   disconnect(this->vacuum(), SIGNAL(vacuum_toggled()), this, SLOT(EnableVacuumSpacers_finish()));
   disconnect(this->vacuum(), SIGNAL(vacuum_error  ()), this, SLOT(EnableVacuumSpacers_finish()));
 
+  if(in_action_){ in_action_ = false; }
+
   NQLog("AssemblyAssembly", NQLog::Spam) << "EnableVacuumSpacers_finish"
      << ": emitting signal \"EnableVacuumSpacers_finished\"";
 
@@ -313,8 +343,6 @@ void AssemblyAssembly::EnableVacuumSpacers_finish()
 
   NQLog("AssemblyAssembly", NQLog::Message) << "EnableVacuumSpacers_finish"
      << ": assembly-step completed";
-
-  in_action_ = false;
 }
 // ----------------------------------------------------------------------------------------------------
 
@@ -323,14 +351,21 @@ void AssemblyAssembly::EnableVacuumSpacers_finish()
 // ----------------------------------------------------------------------------------------------------
 void AssemblyAssembly::DisableVacuumSpacers_start()
 {
-  if(in_action_){ return; }
-  else{ in_action_ = true; }
+  if(in_action_){
+
+    NQLog("AssemblyAssembly", NQLog::Warning) << "DisableVacuumSpacers_start"
+       << ": logic error, an assembly step is still in progress, will not take further action";
+
+    return;
+  }
 
   connect(this, SIGNAL(vacuum_OFF_request(int)), this->vacuum(), SLOT(disableVacuum(int)));
 
   connect(this->vacuum(), SIGNAL(vacuum_disabled()), this, SLOT(DisableVacuumSpacers_finish()));
   connect(this->vacuum(), SIGNAL(vacuum_toggled ()), this, SLOT(DisableVacuumSpacers_finish()));
   connect(this->vacuum(), SIGNAL(vacuum_error   ()), this, SLOT(DisableVacuumSpacers_finish()));
+
+  in_action_ = true;
 
   NQLog("AssemblyAssembly", NQLog::Spam) << "DisableVacuumSpacers_start"
      << ": emitting signal \"vacuum_OFF_request(" << vacuum_spacer_ << ")\"";
@@ -346,6 +381,8 @@ void AssemblyAssembly::DisableVacuumSpacers_finish()
   disconnect(this->vacuum(), SIGNAL(vacuum_toggled ()), this, SLOT(DisableVacuumSpacers_finish()));
   disconnect(this->vacuum(), SIGNAL(vacuum_error   ()), this, SLOT(DisableVacuumSpacers_finish()));
 
+  if(in_action_){ in_action_ = false; }
+
   NQLog("AssemblyAssembly", NQLog::Spam) << "DisableVacuumSpacers_finish"
      << ": emitting signal \"DisableVacuumSpacers_finished\"";
 
@@ -353,8 +390,6 @@ void AssemblyAssembly::DisableVacuumSpacers_finish()
 
   NQLog("AssemblyAssembly", NQLog::Message) << "DisableVacuumSpacers_finish"
      << ": assembly-step completed";
-
-  in_action_ = false;
 }
 // ----------------------------------------------------------------------------------------------------
 
@@ -363,14 +398,21 @@ void AssemblyAssembly::DisableVacuumSpacers_finish()
 // ----------------------------------------------------------------------------------------------------
 void AssemblyAssembly::EnableVacuumBaseplate_start()
 {
-  if(in_action_){ return; }
-  else{ in_action_ = true; }
+  if(in_action_){
+
+    NQLog("AssemblyAssembly", NQLog::Warning) << "EnableVacuumBaseplate_start"
+       << ": logic error, an assembly step is still in progress, will not take further action";
+
+    return;
+  }
 
   connect(this, SIGNAL(vacuum_ON_request(int)), this->vacuum(), SLOT(enableVacuum(int)));
 
   connect(this->vacuum(), SIGNAL(vacuum_enabled()), this, SLOT(EnableVacuumBaseplate_finish()));
   connect(this->vacuum(), SIGNAL(vacuum_toggled()), this, SLOT(EnableVacuumBaseplate_finish()));
   connect(this->vacuum(), SIGNAL(vacuum_error  ()), this, SLOT(EnableVacuumBaseplate_finish()));
+
+  in_action_ = true;
 
   NQLog("AssemblyAssembly", NQLog::Spam) << "EnableVacuumBaseplate_start"
      << ": emitting signal \"vacuum_ON_request(" << vacuum_basepl_ << ")\"";
@@ -386,6 +428,8 @@ void AssemblyAssembly::EnableVacuumBaseplate_finish()
   disconnect(this->vacuum(), SIGNAL(vacuum_toggled()), this, SLOT(EnableVacuumBaseplate_finish()));
   disconnect(this->vacuum(), SIGNAL(vacuum_error  ()), this, SLOT(EnableVacuumBaseplate_finish()));
 
+  if(in_action_){ in_action_ = false; }
+
   NQLog("AssemblyAssembly", NQLog::Spam) << "EnableVacuumBaseplate_finish"
      << ": emitting signal \"EnableVacuumBaseplate_finished\"";
 
@@ -393,8 +437,6 @@ void AssemblyAssembly::EnableVacuumBaseplate_finish()
 
   NQLog("AssemblyAssembly", NQLog::Message) << "EnableVacuumBaseplate_finish"
      << ": assembly-step completed";
-
-  in_action_ = false;
 }
 // ----------------------------------------------------------------------------------------------------
 
@@ -403,14 +445,21 @@ void AssemblyAssembly::EnableVacuumBaseplate_finish()
 // ----------------------------------------------------------------------------------------------------
 void AssemblyAssembly::DisableVacuumBaseplate_start()
 {
-  if(in_action_){ return; }
-  else{ in_action_ = true; }
+  if(in_action_){
+
+    NQLog("AssemblyAssembly", NQLog::Warning) << "DisableVacuumBaseplate_start"
+       << ": logic error, an assembly step is still in progress, will not take further action";
+
+    return;
+  }
 
   connect(this, SIGNAL(vacuum_OFF_request(int)), this->vacuum(), SLOT(disableVacuum(int)));
 
   connect(this->vacuum(), SIGNAL(vacuum_disabled()), this, SLOT(DisableVacuumBaseplate_finish()));
   connect(this->vacuum(), SIGNAL(vacuum_toggled ()), this, SLOT(DisableVacuumBaseplate_finish()));
   connect(this->vacuum(), SIGNAL(vacuum_error   ()), this, SLOT(DisableVacuumBaseplate_finish()));
+
+  in_action_ = true;
 
   NQLog("AssemblyAssembly", NQLog::Spam) << "DisableVacuumBaseplate_start"
      << ": emitting signal \"vacuum_OFF_request(" << vacuum_basepl_ << ")\"";
@@ -426,6 +475,8 @@ void AssemblyAssembly::DisableVacuumBaseplate_finish()
   disconnect(this->vacuum(), SIGNAL(vacuum_toggled ()), this, SLOT(DisableVacuumBaseplate_finish()));
   disconnect(this->vacuum(), SIGNAL(vacuum_error   ()), this, SLOT(DisableVacuumBaseplate_finish()));
 
+  if(in_action_){ in_action_ = false; }
+
   NQLog("AssemblyAssembly", NQLog::Spam) << "DisableVacuumBaseplate_finish"
      << ": emitting signal \"DisableVacuumBaseplate_finished\"";
 
@@ -433,8 +484,6 @@ void AssemblyAssembly::DisableVacuumBaseplate_finish()
 
   NQLog("AssemblyAssembly", NQLog::Message) << "DisableVacuumBaseplate_finish"
      << ": assembly-step completed";
-
-  in_action_ = false;
 }
 // ----------------------------------------------------------------------------------------------------
 
@@ -443,8 +492,13 @@ void AssemblyAssembly::DisableVacuumBaseplate_finish()
 // ----------------------------------------------------------------------------------------------------
 void AssemblyAssembly::GoFromSensorMarkerToPickupXY_start()
 {
-  if(in_action_){ return; }
-  else{ in_action_ = true; }
+  if(in_action_){
+
+    NQLog("AssemblyAssembly", NQLog::Warning) << "GoFromSensorMarkerToPickupXY_start"
+       << ": logic error, an assembly step is still in progress, will not take further action";
+
+    return;
+  }
 
   const bool valid_params = this->parameters()->update();
 
@@ -469,6 +523,8 @@ void AssemblyAssembly::GoFromSensorMarkerToPickupXY_start()
   connect(this, SIGNAL(move_relative_request(double, double, double, double)), motion_, SLOT(moveRelative(double, double, double, double)));
   connect(motion_, SIGNAL(motion_finished()), this, SLOT(GoFromSensorMarkerToPickupXY_finish()));
 
+  in_action_ = true;
+
   NQLog("AssemblyAssembly", NQLog::Spam) << "GoFromSensorMarkerToPickupXY_start"
      << ": emitting signal \"move_relative_request(" << dx0 << ", " << dy0 << ", " << dz0 << ", " << da0 << ")\"";
 
@@ -480,6 +536,8 @@ void AssemblyAssembly::GoFromSensorMarkerToPickupXY_finish()
   disconnect(this, SIGNAL(move_relative_request(double, double, double, double)), motion_, SLOT(moveRelative(double, double, double, double)));
   disconnect(motion_, SIGNAL(motion_finished()), this, SLOT(GoFromSensorMarkerToPickupXY_finish()));
 
+  if(in_action_){ in_action_ = false; }
+
   NQLog("AssemblyAssembly", NQLog::Spam) << "GoFromSensorMarkerToPickupXY_finish"
      << ": emitting signal \"GoFromSensorMarkerToPickupXY_finished\"";
 
@@ -487,8 +545,6 @@ void AssemblyAssembly::GoFromSensorMarkerToPickupXY_finish()
 
   NQLog("AssemblyAssembly", NQLog::Message) << "GoFromSensorMarkerToPickupXY_finish"
      << ": assembly-step completed";
-
-  in_action_ = false;
 }
 // ----------------------------------------------------------------------------------------------------
 
@@ -497,8 +553,13 @@ void AssemblyAssembly::GoFromSensorMarkerToPickupXY_finish()
 // ----------------------------------------------------------------------------------------------------
 void AssemblyAssembly::LowerPickupToolOntoPSS_start()
 {
-  if(in_action_){ return; }
-  else{ in_action_ = true; }
+  if(in_action_){
+
+    NQLog("AssemblyAssembly", NQLog::Warning) << "LowerPickupToolOntoPSS_start"
+       << ": logic error, an assembly step is still in progress, will not take further action";
+
+    return;
+  }
 
   if(use_smartMove_)
   {
@@ -524,6 +585,8 @@ void AssemblyAssembly::LowerPickupToolOntoPSS_start()
 
     connect(this, SIGNAL(move_relative_request(double, double, double, double)), smart_motion_, SLOT(move_relative(double, double, double, double)));
     connect(smart_motion_, SIGNAL(motion_completed()), this, SLOT(LowerPickupToolOntoPSS_finish()));
+
+    in_action_ = true;
 
     NQLog("AssemblyAssembly", NQLog::Spam) << "LowerPickupToolOntoPSS_start"
        << ": emitting signal \"move_relative_request(" << dx0 << ", " << dy0 << ", " << dz0 << ", " << da0 << ")\"";
@@ -553,6 +616,8 @@ void AssemblyAssembly::LowerPickupToolOntoPSS_finish()
   disconnect(this, SIGNAL(move_relative_request(double, double, double, double)), smart_motion_, SLOT(move_relative(double, double, double, double)));
   disconnect(smart_motion_, SIGNAL(motion_completed()), this, SLOT(LowerPickupToolOntoPSS_finish()));
 
+  if(in_action_){ in_action_ = false; }
+
   NQLog("AssemblyAssembly", NQLog::Spam) << "LowerPickupToolOntoPSS_finish"
      << ": emitting signal \"LowerPickupToolOntoPSS_finished\"";
 
@@ -560,8 +625,6 @@ void AssemblyAssembly::LowerPickupToolOntoPSS_finish()
 
   NQLog("AssemblyAssembly", NQLog::Message) << "LowerPickupToolOntoPSS_finish"
      << ": assembly-step completed";
-
-  in_action_ = false;
 }
 // ----------------------------------------------------------------------------------------------------
 
@@ -570,8 +633,13 @@ void AssemblyAssembly::LowerPickupToolOntoPSS_finish()
 // ----------------------------------------------------------------------------------------------------
 void AssemblyAssembly::PickupPSS_start()
 {
-  if(in_action_){ return; }
-  else{ in_action_ = true; }
+  if(in_action_){
+
+    NQLog("AssemblyAssembly", NQLog::Warning) << "PickupPSS_start"
+       << ": logic error, an assembly step is still in progress, will not take further action";
+
+    return;
+  }
 
   const double dx0 = 0.0;
   const double dy0 = 0.0;
@@ -594,6 +662,8 @@ void AssemblyAssembly::PickupPSS_start()
   connect(this, SIGNAL(move_relative_request(double, double, double, double)), motion_, SLOT(moveRelative(double, double, double, double)));
   connect(motion_, SIGNAL(motion_finished()), this, SLOT(PickupPSS_finish()));
 
+  in_action_ = true;
+
   NQLog("AssemblyAssembly", NQLog::Spam) << "PickupPSS_start"
      << ": emitting signal \"move_relative_request(" << dx0 << ", " << dy0 << ", " << dz0 << ", " << da0 << ")\"";
 
@@ -605,6 +675,8 @@ void AssemblyAssembly::PickupPSS_finish()
   disconnect(this, SIGNAL(move_relative_request(double, double, double, double)), motion_, SLOT(moveRelative(double, double, double, double)));
   disconnect(motion_, SIGNAL(motion_finished()), this, SLOT(PickupPSS_finish()));
 
+  if(in_action_){ in_action_ = false; }
+
   NQLog("AssemblyAssembly", NQLog::Spam) << "PickupPSS_finish"
      << ": emitting signal \"PickupPSS_finished\"";
 
@@ -612,8 +684,6 @@ void AssemblyAssembly::PickupPSS_finish()
 
   NQLog("AssemblyAssembly", NQLog::Message) << "PickupPSS_finish"
      << ": assembly-step completed";
-
-  in_action_ = false;
 }
 // ----------------------------------------------------------------------------------------------------
 
@@ -622,8 +692,13 @@ void AssemblyAssembly::PickupPSS_finish()
 // ----------------------------------------------------------------------------------------------------
 void AssemblyAssembly::GoToXYAPositionToGluePSSToSpacers_start()
 {
-  if(in_action_){ return; }
-  else{ in_action_ = true; }
+  if(in_action_){
+
+    NQLog("AssemblyAssembly", NQLog::Warning) << "GoToXYAPositionToGluePSSToSpacers_start"
+       << ": logic error, an assembly step is still in progress, will not take further action";
+
+    return;
+  }
 
   const bool valid_params = this->parameters()->update();
 
@@ -663,6 +738,8 @@ void AssemblyAssembly::GoToXYAPositionToGluePSSToSpacers_start()
   connect(this, SIGNAL(move_relative_request(double, double, double, double)), motion_, SLOT(moveRelative(double, double, double, double)));
   connect(motion_, SIGNAL(motion_finished()), this, SLOT(GoToXYAPositionToGluePSSToSpacers_finish()));
 
+  in_action_ = true;
+
   NQLog("AssemblyAssembly", NQLog::Spam) << "GoToXYAPositionToGluePSSToSpacers_start"
      << ": emitting signal \"move_relative_request(" << dx0 << ", " << dy0 << ", " << dz0 << ", " << da0 << ")\"";
 
@@ -674,6 +751,8 @@ void AssemblyAssembly::GoToXYAPositionToGluePSSToSpacers_finish()
   disconnect(this, SIGNAL(move_relative_request(double, double, double, double)), motion_, SLOT(moveRelative(double, double, double, double)));
   disconnect(motion_, SIGNAL(motion_finished()), this, SLOT(GoToXYAPositionToGluePSSToSpacers_finish()));
 
+  if(in_action_){ in_action_ = false; }
+
   NQLog("AssemblyAssembly", NQLog::Spam) << "GoToXYAPositionToGluePSSToSpacers_finish"
      << ": emitting signal \"GoToXYAPositionToGluePSSToSpacers_finished\"";
 
@@ -681,8 +760,6 @@ void AssemblyAssembly::GoToXYAPositionToGluePSSToSpacers_finish()
 
   NQLog("AssemblyAssembly", NQLog::Message) << "GoToXYAPositionToGluePSSToSpacers_finish"
      << ": assembly-step completed";
-
-  in_action_ = false;
 }
 // ----------------------------------------------------------------------------------------------------
 
@@ -691,8 +768,13 @@ void AssemblyAssembly::GoToXYAPositionToGluePSSToSpacers_finish()
 // ----------------------------------------------------------------------------------------------------
 void AssemblyAssembly::LowerPSSOntoSpacers_start()
 {
-  if(in_action_){ return; }
-  else{ in_action_ = true; }
+  if(in_action_){
+
+    NQLog("AssemblyAssembly", NQLog::Warning) << "LowerPSSOntoSpacers_start"
+       << ": logic error, an assembly step is still in progress, will not take further action";
+
+    return;
+  }
 
   if(use_smartMove_)
   {
@@ -728,6 +810,8 @@ void AssemblyAssembly::LowerPSSOntoSpacers_start()
     connect(this, SIGNAL(move_relative_request(double, double, double, double)), smart_motion_, SLOT(move_relative(double, double, double, double)));
     connect(smart_motion_, SIGNAL(motion_completed()), this, SLOT(LowerPSSOntoSpacers_finish()));
 
+    in_action_ = true;
+
     NQLog("AssemblyAssembly", NQLog::Spam) << "LowerPSSOntoSpacers_start"
        << ": emitting signal \"move_relative_request(" << dx0 << ", " << dy0 << ", " << dz0 << ", " << da0 << ")\"";
 
@@ -756,6 +840,8 @@ void AssemblyAssembly::LowerPSSOntoSpacers_finish()
   disconnect(this, SIGNAL(move_relative_request(double, double, double, double)), smart_motion_, SLOT(move_relative(double, double, double, double)));
   disconnect(smart_motion_, SIGNAL(motion_completed()), this, SLOT(LowerPSSOntoSpacers_finish()));
 
+  if(in_action_){ in_action_ = false; }
+
   NQLog("AssemblyAssembly", NQLog::Spam) << "LowerPSSOntoSpacers_finish"
      << ": emitting signal \"LowerPSSOntoSpacers_finished\"";
 
@@ -763,8 +849,6 @@ void AssemblyAssembly::LowerPSSOntoSpacers_finish()
 
   NQLog("AssemblyAssembly", NQLog::Message) << "LowerPSSOntoSpacers_finish"
      << ": assembly-step completed";
-
-  in_action_ = false;
 }
 // ----------------------------------------------------------------------------------------------------
 
@@ -773,8 +857,13 @@ void AssemblyAssembly::LowerPSSOntoSpacers_finish()
 // ----------------------------------------------------------------------------------------------------
 void AssemblyAssembly::ApplyPSPToPSSXYOffset_start()
 {
-  if(in_action_){ return; }
-  else{ in_action_ = true; }
+  if(in_action_){
+
+    NQLog("AssemblyAssembly", NQLog::Warning) << "ApplyPSPToPSSXYOffset_start"
+       << ": logic error, an assembly step is still in progress, will not take further action";
+
+    return;
+  }
 
   const bool valid_params = this->parameters()->update();
 
@@ -799,6 +888,8 @@ void AssemblyAssembly::ApplyPSPToPSSXYOffset_start()
   connect(this, SIGNAL(move_relative_request(double, double, double, double)), motion_, SLOT(moveRelative(double, double, double, double)));
   connect(motion_, SIGNAL(motion_finished()), this, SLOT(ApplyPSPToPSSXYOffset_finish()));
 
+  in_action_ = true;
+
   NQLog("AssemblyAssembly", NQLog::Spam) << "ApplyPSPToPSSXYOffset_start"
      << ": emitting signal \"move_relative_request(" << dx0 << ", " << dy0 << ", " << dz0 << ", " << da0 << ")\"";
 
@@ -810,6 +901,8 @@ void AssemblyAssembly::ApplyPSPToPSSXYOffset_finish()
   disconnect(this, SIGNAL(move_relative_request(double, double, double, double)), motion_, SLOT(moveRelative(double, double, double, double)));
   disconnect(motion_, SIGNAL(motion_finished()), this, SLOT(ApplyPSPToPSSXYOffset_finish()));
 
+  if(in_action_){ in_action_ = false; }
+
   NQLog("AssemblyAssembly", NQLog::Spam) << "ApplyPSPToPSSXYOffset_finish"
      << ": emitting signal \"ApplyPSPToPSSXYOffset_finished\"";
 
@@ -817,8 +910,6 @@ void AssemblyAssembly::ApplyPSPToPSSXYOffset_finish()
 
   NQLog("AssemblyAssembly", NQLog::Message) << "ApplyPSPToPSSXYOffset_finish"
      << ": assembly-step completed";
-
-  in_action_ = false;
 }
 // ----------------------------------------------------------------------------------------------------
 
@@ -827,8 +918,13 @@ void AssemblyAssembly::ApplyPSPToPSSXYOffset_finish()
 // ----------------------------------------------------------------------------------------------------
 void AssemblyAssembly::RegisterPSSPlusSpacersToMaPSAPosition_start()
 {
-  if(in_action_){ return; }
-  else{ in_action_ = true; }
+  if(in_action_){
+
+    NQLog("AssemblyAssembly", NQLog::Warning) << "RegisterPSSPlusSpacersToMaPSAPosition_start"
+       << ": logic error, an assembly step is still in progress, will not take further action";
+
+    return;
+  }
 
   PSSPlusSpacersToMaPSAPosition_X_ = motion_->get_position_X();
   PSSPlusSpacersToMaPSAPosition_Y_ = motion_->get_position_Y();
@@ -843,6 +939,8 @@ void AssemblyAssembly::RegisterPSSPlusSpacersToMaPSAPosition_start()
 
   connect(this, SIGNAL(PSSPlusSpacersToMaPSAPosition_registered()), this, SLOT(RegisterPSSPlusSpacersToMaPSAPosition_finish()));
 
+  in_action_ = true;
+
   NQLog("AssemblyAssembly", NQLog::Spam) << "RegisterPSSPlusSpacersToMaPSAPosition_start"
      << ": emitting signal \"PSSPlusSpacersToMaPSAPosition_registered\"";
 
@@ -853,6 +951,8 @@ void AssemblyAssembly::RegisterPSSPlusSpacersToMaPSAPosition_finish()
 {
   disconnect(this, SIGNAL(PSSPlusSpacersToMaPSAPosition_registered()), this, SLOT(RegisterPSSPlusSpacersToMaPSAPosition_finish()));
 
+  if(in_action_){ in_action_ = false; }
+
   NQLog("AssemblyAssembly", NQLog::Spam) << "RegisterPSSPlusSpacersToMaPSAPosition_finish"
      << ": emitting signal \"RegisterPSSPlusSpacersToMaPSAPosition_finished\"";
 
@@ -860,8 +960,6 @@ void AssemblyAssembly::RegisterPSSPlusSpacersToMaPSAPosition_finish()
 
   NQLog("AssemblyAssembly", NQLog::Message) << "RegisterPSSPlusSpacersToMaPSAPosition_finish"
      << ": assembly-step completed";
-
-  in_action_ = false;
 }
 // ----------------------------------------------------------------------------------------------------
 
@@ -870,8 +968,13 @@ void AssemblyAssembly::RegisterPSSPlusSpacersToMaPSAPosition_finish()
 // ----------------------------------------------------------------------------------------------------
 void AssemblyAssembly::GoFromPSSPlusSpacersToMaPSAPositionToGluingStageRefPointXY_start()
 {
-  if(in_action_){ return; }
-  else{ in_action_ = true; }
+  if(in_action_){
+
+    NQLog("AssemblyAssembly", NQLog::Warning) << "GoFromPSSPlusSpacersToMaPSAPositionToGluingStageRefPointXY_start"
+       << ": logic error, an assembly step is still in progress, will not take further action";
+
+    return;
+  }
 
   if(use_smartMove_)
   {
@@ -897,6 +1000,8 @@ void AssemblyAssembly::GoFromPSSPlusSpacersToMaPSAPositionToGluingStageRefPointX
 
     connect(this, SIGNAL(move_relative_request(double, double, double, double)), smart_motion_, SLOT(move_relative(double, double, double, double)));
     connect(smart_motion_, SIGNAL(motion_completed()), this, SLOT(GoFromPSSPlusSpacersToMaPSAPositionToGluingStageRefPointXY_finish()));
+
+    in_action_ = true;
 
     NQLog("AssemblyAssembly", NQLog::Spam) << "GoFromPSSPlusSpacersToMaPSAPositionToGluingStageRefPointXY_start"
        << ": emitting signal \"move_relative_request(" << dx0 << ", " << dy0 << ", " << dz0 << ", " << da0 << ")\"";
@@ -926,6 +1031,8 @@ void AssemblyAssembly::GoFromPSSPlusSpacersToMaPSAPositionToGluingStageRefPointX
   disconnect(this, SIGNAL(move_relative_request(double, double, double, double)), smart_motion_, SLOT(move_relative(double, double, double, double)));
   disconnect(smart_motion_, SIGNAL(motion_completed()), this, SLOT(GoFromPSSPlusSpacersToMaPSAPositionToGluingStageRefPointXY_finish()));
 
+  if(in_action_){ in_action_ = false; }
+
   NQLog("AssemblyAssembly", NQLog::Spam) << "GoFromPSSPlusSpacersToMaPSAPositionToGluingStageRefPointXY_finish"
      << ": emitting signal \"GoFromPSSPlusSpacersToMaPSAPositionToGluingStageRefPointXY_finished\"";
 
@@ -933,8 +1040,6 @@ void AssemblyAssembly::GoFromPSSPlusSpacersToMaPSAPositionToGluingStageRefPointX
 
   NQLog("AssemblyAssembly", NQLog::Message) << "GoFromPSSPlusSpacersToMaPSAPositionToGluingStageRefPointXY_finish"
      << ": assembly-step completed";
-
-  in_action_ = false;
 }
 // ----------------------------------------------------------------------------------------------------
 
@@ -943,8 +1048,13 @@ void AssemblyAssembly::GoFromPSSPlusSpacersToMaPSAPositionToGluingStageRefPointX
 // ----------------------------------------------------------------------------------------------------
 void AssemblyAssembly::LowerPSSPlusSpacersOntoGluingStage_start()
 {
-  if(in_action_){ return; }
-  else{ in_action_ = true; }
+  if(in_action_){
+
+    NQLog("AssemblyAssembly", NQLog::Warning) << "LowerPSSPlusSpacersOntoGluingStage_start"
+       << ": logic error, an assembly step is still in progress, will not take further action";
+
+    return;
+  }
 
   if(use_smartMove_)
   {
@@ -980,6 +1090,8 @@ void AssemblyAssembly::LowerPSSPlusSpacersOntoGluingStage_start()
     connect(this, SIGNAL(move_relative_request(double, double, double, double)), smart_motion_, SLOT(move_relative(double, double, double, double)));
     connect(smart_motion_, SIGNAL(motion_completed()), this, SLOT(LowerPSSPlusSpacersOntoGluingStage_finish()));
 
+    in_action_ = true;
+
     NQLog("AssemblyAssembly", NQLog::Spam) << "LowerPSSPlusSpacersOntoGluingStage_start"
        << ": emitting signal \"move_relative_request(" << dx0 << ", " << dy0 << ", " << dz0 << ", " << da0 << ")\"";
 
@@ -1008,6 +1120,8 @@ void AssemblyAssembly::LowerPSSPlusSpacersOntoGluingStage_finish()
   disconnect(this, SIGNAL(move_relative_request(double, double, double, double)), smart_motion_, SLOT(move_relative(double, double, double, double)));
   disconnect(smart_motion_, SIGNAL(motion_completed()), this, SLOT(LowerPSSPlusSpacersOntoGluingStage_finish()));
 
+  if(in_action_){ in_action_ = false; }
+
   NQLog("AssemblyAssembly", NQLog::Spam) << "LowerPSSPlusSpacersOntoGluingStage_finish"
      << ": emitting signal \"LowerPSSPlusSpacersOntoGluingStage_finished\"";
 
@@ -1015,8 +1129,6 @@ void AssemblyAssembly::LowerPSSPlusSpacersOntoGluingStage_finish()
 
   NQLog("AssemblyAssembly", NQLog::Message) << "LowerPSSPlusSpacersOntoGluingStage_finish"
      << ": assembly-step completed";
-
-  in_action_ = false;
 }
 // ----------------------------------------------------------------------------------------------------
 
@@ -1025,8 +1137,13 @@ void AssemblyAssembly::LowerPSSPlusSpacersOntoGluingStage_finish()
 // ----------------------------------------------------------------------------------------------------
 void AssemblyAssembly::ReturnToPSSPlusSpacersToMaPSAPosition_start()
 {
-  if(in_action_){ return; }
-  else{ in_action_ = true; }
+  if(in_action_){
+
+    NQLog("AssemblyAssembly", NQLog::Warning) << "ReturnToPSSPlusSpacersToMaPSAPosition_start"
+       << ": logic error, an assembly step is still in progress, will not take further action";
+
+    return;
+  }
 
   if(PSSPlusSpacersToMaPSAPosition_isRegistered_ == false)
   {
@@ -1068,6 +1185,8 @@ void AssemblyAssembly::ReturnToPSSPlusSpacersToMaPSAPosition_start()
     connect(this, SIGNAL(move_relative_request(double, double, double, double)), smart_motion_, SLOT(move_relative(double, double, double, double)));
     connect(smart_motion_, SIGNAL(motion_completed()), this, SLOT(ReturnToPSSPlusSpacersToMaPSAPosition_finish()));
 
+    in_action_ = true;
+
     NQLog("AssemblyAssembly", NQLog::Spam) << "ReturnToPSSPlusSpacersToMaPSAPosition_start"
        << ": emitting signal \"move_relative_request(" << dx0 << ", " << dy0 << ", " << dz0 << ", " << da0 << ")\"";
 
@@ -1096,6 +1215,8 @@ void AssemblyAssembly::ReturnToPSSPlusSpacersToMaPSAPosition_finish()
   disconnect(this, SIGNAL(move_relative_request(double, double, double, double)), smart_motion_, SLOT(move_relative(double, double, double, double)));
   disconnect(smart_motion_, SIGNAL(motion_completed()), this, SLOT(ReturnToPSSPlusSpacersToMaPSAPosition_finish()));
 
+  if(in_action_){ in_action_ = false; }
+
   NQLog("AssemblyAssembly", NQLog::Spam) << "ReturnToPSSPlusSpacersToMaPSAPosition_finish"
      << ": emitting signal \"ReturnToPSSPlusSpacersToMaPSAPosition_finished\"";
 
@@ -1103,8 +1224,6 @@ void AssemblyAssembly::ReturnToPSSPlusSpacersToMaPSAPosition_finish()
 
   NQLog("AssemblyAssembly", NQLog::Message) << "ReturnToPSSPlusSpacersToMaPSAPosition_finish"
      << ": assembly-step completed";
-
-  in_action_ = false;
 }
 // ----------------------------------------------------------------------------------------------------
 
@@ -1113,8 +1232,13 @@ void AssemblyAssembly::ReturnToPSSPlusSpacersToMaPSAPosition_finish()
 // ----------------------------------------------------------------------------------------------------
 void AssemblyAssembly::LowerPSSPlusSpacersOntoMaPSA_start()
 {
-  if(in_action_){ return; }
-  else{ in_action_ = true; }
+  if(in_action_){
+
+    NQLog("AssemblyAssembly", NQLog::Warning) << "LowerPSSPlusSpacersOntoMaPSA_start"
+       << ": logic error, an assembly step is still in progress, will not take further action";
+
+    return;
+  }
 
   if(use_smartMove_)
   {
@@ -1149,6 +1273,8 @@ void AssemblyAssembly::LowerPSSPlusSpacersOntoMaPSA_start()
     connect(this, SIGNAL(move_relative_request(double, double, double, double)), smart_motion_, SLOT(move_relative(double, double, double, double)));
     connect(smart_motion_, SIGNAL(motion_completed()), this, SLOT(LowerPSSPlusSpacersOntoMaPSA_finish()));
 
+    in_action_ = true;
+
     NQLog("AssemblyAssembly", NQLog::Spam) << "LowerPSSPlusSpacersOntoMaPSA_start"
        << ": emitting signal \"move_relative_request(" << dx0 << ", " << dy0 << ", " << dz0 << ", " << da0 << ")\"";
 
@@ -1177,6 +1303,8 @@ void AssemblyAssembly::LowerPSSPlusSpacersOntoMaPSA_finish()
   disconnect(this, SIGNAL(move_relative_request(double, double, double, double)), smart_motion_, SLOT(move_relative(double, double, double, double)));
   disconnect(smart_motion_, SIGNAL(motion_completed()), this, SLOT(LowerPSSPlusSpacersOntoMaPSA_finish()));
 
+  if(in_action_){ in_action_ = false; }
+
   NQLog("AssemblyAssembly", NQLog::Spam) << "LowerPSSPlusSpacersOntoMaPSA_finish"
      << ": emitting signal \"LowerPSSPlusSpacersOntoMaPSA_finished\"";
 
@@ -1184,8 +1312,6 @@ void AssemblyAssembly::LowerPSSPlusSpacersOntoMaPSA_finish()
 
   NQLog("AssemblyAssembly", NQLog::Message) << "LowerPSSPlusSpacersOntoMaPSA_finish"
      << ": assembly-step completed";
-
-  in_action_ = false;
 }
 // ----------------------------------------------------------------------------------------------------
 
@@ -1194,8 +1320,13 @@ void AssemblyAssembly::LowerPSSPlusSpacersOntoMaPSA_finish()
 // ----------------------------------------------------------------------------------------------------
 void AssemblyAssembly::PickupPSSPlusSpacers_start()
 {
-  if(in_action_){ return; }
-  else{ in_action_ = true; }
+  if(in_action_){
+
+    NQLog("AssemblyAssembly", NQLog::Warning) << "PickupPSSPlusSpacers_start"
+       << ": logic error, an assembly step is still in progress, will not take further action";
+
+    return;
+  }
 
   const double dx0 = 0.0;
   const double dy0 = 0.0;
@@ -1218,6 +1349,8 @@ void AssemblyAssembly::PickupPSSPlusSpacers_start()
   connect(this, SIGNAL(move_relative_request(double, double, double, double)), motion_, SLOT(moveRelative(double, double, double, double)));
   connect(motion_, SIGNAL(motion_finished()), this, SLOT(PickupPSSPlusSpacers_finish()));
 
+  in_action_ = true;
+
   NQLog("AssemblyAssembly", NQLog::Spam) << "PickupPSSPlusSpacers_start"
      << ": emitting signal \"move_relative_request(" << dx0 << ", " << dy0 << ", " << dz0 << ", " << da0 << ")\"";
 
@@ -1229,6 +1362,8 @@ void AssemblyAssembly::PickupPSSPlusSpacers_finish()
   disconnect(this, SIGNAL(move_relative_request(double, double, double, double)), motion_, SLOT(moveRelative(double, double, double, double)));
   disconnect(motion_, SIGNAL(motion_finished()), this, SLOT(PickupPSSPlusSpacers_finish()));
 
+  if(in_action_){ in_action_ = false; }
+
   NQLog("AssemblyAssembly", NQLog::Spam) << "PickupPSSPlusSpacers_finish"
      << ": emitting signal \"PickupPSSPlusSpacers_finished\"";
 
@@ -1236,8 +1371,6 @@ void AssemblyAssembly::PickupPSSPlusSpacers_finish()
 
   NQLog("AssemblyAssembly", NQLog::Message) << "PickupPSSPlusSpacers_finish"
      << ": assembly-step completed";
-
-  in_action_ = false;
 }
 // ----------------------------------------------------------------------------------------------------
 
@@ -1246,8 +1379,13 @@ void AssemblyAssembly::PickupPSSPlusSpacers_finish()
 // ----------------------------------------------------------------------------------------------------
 void AssemblyAssembly::LiftUpPickupTool_start()
 {
-  if(in_action_){ return; }
-  else{ in_action_ = true; }
+  if(in_action_){
+
+    NQLog("AssemblyAssembly", NQLog::Warning) << "LiftUpPickupTool_start"
+       << ": logic error, an assembly step is still in progress, will not take further action";
+
+    return;
+  }
 
   const double dx0 = 0.0;
   const double dy0 = 0.0;
@@ -1270,6 +1408,8 @@ void AssemblyAssembly::LiftUpPickupTool_start()
   connect(this, SIGNAL(move_relative_request(double, double, double, double)), motion_, SLOT(moveRelative(double, double, double, double)));
   connect(motion_, SIGNAL(motion_finished()), this, SLOT(LiftUpPickupTool_finish()));
 
+  in_action_ = true;
+
   NQLog("AssemblyAssembly", NQLog::Spam) << "LiftUpPickupTool_start"
      << ": emitting signal \"move_relative_request(" << dx0 << ", " << dy0 << ", " << dz0 << ", " << da0 << ")\"";
 
@@ -1281,6 +1421,8 @@ void AssemblyAssembly::LiftUpPickupTool_finish()
   disconnect(this, SIGNAL(move_relative_request(double, double, double, double)), motion_, SLOT(moveRelative(double, double, double, double)));
   disconnect(motion_, SIGNAL(motion_finished()), this, SLOT(LiftUpPickupTool_finish()));
 
+  if(in_action_){ in_action_ = false; }
+
   NQLog("AssemblyAssembly", NQLog::Spam) << "LiftUpPickupTool_finish"
      << ": emitting signal \"LiftUpPickupTool_finished\"";
 
@@ -1288,8 +1430,6 @@ void AssemblyAssembly::LiftUpPickupTool_finish()
 
   NQLog("AssemblyAssembly", NQLog::Message) << "LiftUpPickupTool_finish"
      << ": assembly-step completed";
-
-  in_action_ = false;
 }
 // ----------------------------------------------------------------------------------------------------
 
@@ -1298,8 +1438,13 @@ void AssemblyAssembly::LiftUpPickupTool_finish()
 // ----------------------------------------------------------------------------------------------------
 void AssemblyAssembly::PickupSensorAssembly_start()
 {
-  if(in_action_){ return; }
-  else{ in_action_ = true; }
+  if(in_action_){
+
+    NQLog("AssemblyAssembly", NQLog::Warning) << "PickupSensorAssembly_start"
+       << ": logic error, an assembly step is still in progress, will not take further action";
+
+    return;
+  }
 
   const double dx0 = 0.0;
   const double dy0 = 0.0;
@@ -1322,6 +1467,8 @@ void AssemblyAssembly::PickupSensorAssembly_start()
   connect(this, SIGNAL(move_relative_request(double, double, double, double)), motion_, SLOT(moveRelative(double, double, double, double)));
   connect(motion_, SIGNAL(motion_finished()), this, SLOT(PickupSensorAssembly_finish()));
 
+  in_action_ = true;
+
   NQLog("AssemblyAssembly", NQLog::Spam) << "PickupSensorAssembly_start"
      << ": emitting signal \"move_relative_request(" << dx0 << ", " << dy0 << ", " << dz0 << ", " << da0 << ")\"";
 
@@ -1333,6 +1480,8 @@ void AssemblyAssembly::PickupSensorAssembly_finish()
   disconnect(this, SIGNAL(move_relative_request(double, double, double, double)), motion_, SLOT(moveRelative(double, double, double, double)));
   disconnect(motion_, SIGNAL(motion_finished()), this, SLOT(PickupSensorAssembly_finish()));
 
+  if(in_action_){ in_action_ = false; }
+
   NQLog("AssemblyAssembly", NQLog::Spam) << "PickupSensorAssembly_finish"
      << ": emitting signal \"PickupSensorAssembly_finished\"";
 
@@ -1340,8 +1489,6 @@ void AssemblyAssembly::PickupSensorAssembly_finish()
 
   NQLog("AssemblyAssembly", NQLog::Message) << "PickupSensorAssembly_finish"
      << ": assembly-step completed";
-
-  in_action_ = false;
 }
 // ----------------------------------------------------------------------------------------------------
 
@@ -1350,8 +1497,13 @@ void AssemblyAssembly::PickupSensorAssembly_finish()
 // ----------------------------------------------------------------------------------------------------
 void AssemblyAssembly::GoToXYAPositionToGlueSensorAssemblyToBaseplate_start()
 {
-  if(in_action_){ return; }
-  else{ in_action_ = true; }
+  if(in_action_){
+
+    NQLog("AssemblyAssembly", NQLog::Warning) << "GoToXYAPositionToGlueSensorAssemblyToBaseplate_start"
+       << ": logic error, an assembly step is still in progress, will not take further action";
+
+    return;
+  }
 
   const bool valid_params = this->parameters()->update();
 
@@ -1393,6 +1545,8 @@ void AssemblyAssembly::GoToXYAPositionToGlueSensorAssemblyToBaseplate_start()
   connect(this, SIGNAL(move_relative_request(double, double, double, double)), motion_, SLOT(moveRelative(double, double, double, double)));
   connect(motion_, SIGNAL(motion_finished()), this, SLOT(GoToXYAPositionToGlueSensorAssemblyToBaseplate_finish()));
 
+  in_action_ = true;
+
   NQLog("AssemblyAssembly", NQLog::Spam) << "GoToXYAPositionToGlueSensorAssemblyToBaseplate_start"
      << ": emitting signal \"move_relative_request(" << dx0 << ", " << dy0 << ", " << dz0 << ", " << da0 << ")\"";
 
@@ -1404,6 +1558,8 @@ void AssemblyAssembly::GoToXYAPositionToGlueSensorAssemblyToBaseplate_finish()
   disconnect(this, SIGNAL(move_relative_request(double, double, double, double)), motion_, SLOT(moveRelative(double, double, double, double)));
   disconnect(motion_, SIGNAL(motion_finished()), this, SLOT(GoToXYAPositionToGlueSensorAssemblyToBaseplate_finish()));
 
+  if(in_action_){ in_action_ = false; }
+
   NQLog("AssemblyAssembly", NQLog::Spam) << "GoToXYAPositionToGlueSensorAssemblyToBaseplate_finish"
      << ": emitting signal \"GoToXYAPositionToGlueSensorAssemblyToBaseplate_finished\"";
 
@@ -1411,8 +1567,6 @@ void AssemblyAssembly::GoToXYAPositionToGlueSensorAssemblyToBaseplate_finish()
 
   NQLog("AssemblyAssembly", NQLog::Message) << "GoToXYAPositionToGlueSensorAssemblyToBaseplate_finish"
      << ": assembly-step completed";
-
-  in_action_ = false;
 }
 // ----------------------------------------------------------------------------------------------------
 
@@ -1421,8 +1575,13 @@ void AssemblyAssembly::GoToXYAPositionToGlueSensorAssemblyToBaseplate_finish()
 // ----------------------------------------------------------------------------------------------------
 void AssemblyAssembly::LowerSensorAssemblyOntoBaseplate_start()
 {
-  if(in_action_){ return; }
-  else{ in_action_ = true; }
+  if(in_action_){
+
+    NQLog("AssemblyAssembly", NQLog::Warning) << "LowerSensorAssemblyOntoBaseplate_start"
+       << ": logic error, an assembly step is still in progress, will not take further action";
+
+    return;
+  }
 
   if(use_smartMove_)
   {
@@ -1462,6 +1621,8 @@ void AssemblyAssembly::LowerSensorAssemblyOntoBaseplate_start()
     connect(this, SIGNAL(move_relative_request(double, double, double, double)), smart_motion_, SLOT(move_relative(double, double, double, double)));
     connect(smart_motion_, SIGNAL(motion_completed()), this, SLOT(LowerSensorAssemblyOntoBaseplate_finish()));
 
+    in_action_ = true;
+
     NQLog("AssemblyAssembly", NQLog::Spam) << "LowerSensorAssemblyOntoBaseplate_start"
        << ": emitting signal \"move_relative_request(" << dx0 << ", " << dy0 << ", " << dz0 << ", " << da0 << ")\"";
 
@@ -1490,6 +1651,8 @@ void AssemblyAssembly::LowerSensorAssemblyOntoBaseplate_finish()
   disconnect(this, SIGNAL(move_relative_request(double, double, double, double)), smart_motion_, SLOT(move_relative(double, double, double, double)));
   disconnect(smart_motion_, SIGNAL(motion_completed()), this, SLOT(LowerSensorAssemblyOntoBaseplate_finish()));
 
+  if(in_action_){ in_action_ = false; }
+
   NQLog("AssemblyAssembly", NQLog::Spam) << "LowerSensorAssemblyOntoBaseplate_finish"
      << ": emitting signal \"LowerSensorAssemblyOntoBaseplate_finished\"";
 
@@ -1497,7 +1660,5 @@ void AssemblyAssembly::LowerSensorAssemblyOntoBaseplate_finish()
 
   NQLog("AssemblyAssembly", NQLog::Message) << "LowerSensorAssemblyOntoBaseplate_finish"
      << ": assembly-step completed";
-
-  in_action_ = false;
 }
 // ----------------------------------------------------------------------------------------------------

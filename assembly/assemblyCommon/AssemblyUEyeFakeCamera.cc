@@ -32,8 +32,6 @@ AssemblyUEyeFakeCamera::AssemblyUEyeFakeCamera(QObject* parent) :
 
     filenames.clear();
     filenames.push_back(QString(filename + "/share/assembly/oldSpareSensor_master.png").toStdString());
-    filenames.push_back(QString(filename + "/share/assembly/markedglass_marker1_drawing_588x588_TL.png").toStdString());
-    filenames.push_back(QString(filename + "/share/assembly/markedglass_marker1_drawing_588x588_BL.png").toStdString());
     filenames.push_back(QString(filename + "/share/assembly/markedglass_marker1_master.png").toStdString());
     filenames.push_back(QString(filename + "/share/assembly/markedglass_marker2_master.png").toStdString());
     filenames.push_back(QString(filename + "/share/assembly/SiDummyPSp_master_200218.png").toStdString());
