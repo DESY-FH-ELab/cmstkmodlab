@@ -27,49 +27,29 @@ AssemblyUEyeFakeCamera::AssemblyUEyeFakeCamera(QObject* parent) :
     std::vector<std::string> filenames;
 
     filenames.clear();
-    filenames.push_back(QString(filename + "/share/assembly/first_real_image.png").toStdString());
-    //filenames.push_back(QString(filename + "/share/assembly/SensorMarker1.png").toStdString());
-    //filenames.push_back(QString(filename + "/share/assembly/SensorMarker2.png").toStdString());
-    //filenames.push_back(QString(filename + "/share/assembly/SensorMarker3.png").toStdString());
+    filenames.push_back(QString(filename + "/share/assembly/oldSpareSensor_master.png").toStdString());
     imageFilenamesForPixelClock_[5] = filenames;
 
     filenames.clear();
-    filenames.push_back(QString(filename + "/share/assembly/sensor_24MHz_333ms_1.png"      ).toStdString());
-    filenames.push_back(QString(filename + "/share/assembly/sensor_24MHz_333ms_2.png"      ).toStdString());
-    filenames.push_back(QString(filename + "/share/assembly/sensor_24MHz_333ms_3.png"      ).toStdString());
-    filenames.push_back(QString(filename + "/share/assembly/sensor_24MHz_333ms_4.png"      ).toStdString());
-    filenames.push_back(QString(filename + "/share/assembly/sensor_24MHz_333ms_5.png"      ).toStdString());
+    filenames.push_back(QString(filename + "/share/assembly/oldSpareSensor_master.png").toStdString());
+    filenames.push_back(QString(filename + "/share/assembly/markedglass_marker1_drawing_588x588_TL.png").toStdString());
+    filenames.push_back(QString(filename + "/share/assembly/markedglass_marker1_drawing_588x588_BL.png").toStdString());
     filenames.push_back(QString(filename + "/share/assembly/markedglass_marker1_master.png").toStdString());
     filenames.push_back(QString(filename + "/share/assembly/markedglass_marker2_master.png").toStdString());
-    filenames.push_back(QString(filename + "/share/assembly/spacer_corner1.png"            ).toStdString());
-    filenames.push_back(QString(filename + "/share/assembly/SensorPiece_1.png"             ).toStdString());
-    filenames.push_back(QString(filename + "/share/assembly/SensorPiece_1_degM8.png"       ).toStdString());
+    filenames.push_back(QString(filename + "/share/assembly/SiDummyPSp_master_200218.png").toStdString());
+    filenames.push_back(QString(filename + "/share/assembly/SiDummyPSp_master_200120.png").toStdString());
     imageFilenamesForPixelClock_[24] = filenames;
 
     filenames.clear();
-    filenames.push_back(QString(filename + "/share/assembly/sensor_36MHz_222ms_1.png").toStdString());
-    filenames.push_back(QString(filename + "/share/assembly/sensor_36MHz_222ms_2.png").toStdString());
-    filenames.push_back(QString(filename + "/share/assembly/sensor_36MHz_222ms_3.png").toStdString());
-    filenames.push_back(QString(filename + "/share/assembly/sensor_36MHz_222ms_4.png").toStdString());
-    filenames.push_back(QString(filename + "/share/assembly/sensor_36MHz_222ms_5.png").toStdString());
+    filenames.push_back(QString(filename + "/share/assembly/oldSpareSensor_master.png").toStdString());
     imageFilenamesForPixelClock_[36] = filenames;
 
     filenames.clear();
-    filenames.push_back(QString(filename + "/share/assembly/sensor_43MHz_186ms_1.png").toStdString());
-    filenames.push_back(QString(filename + "/share/assembly/sensor_43MHz_186ms_2.png").toStdString());
-    filenames.push_back(QString(filename + "/share/assembly/sensor_43MHz_186ms_3.png").toStdString());
-    filenames.push_back(QString(filename + "/share/assembly/sensor_43MHz_186ms_4.png").toStdString());
-    filenames.push_back(QString(filename + "/share/assembly/sensor_43MHz_186ms_5.png").toStdString());
+    filenames.push_back(QString(filename + "/share/assembly/oldSpareSensor_master.png").toStdString());
     imageFilenamesForPixelClock_[43] = filenames;
 
     filenames.clear();
-    filenames.push_back(QString(filename + "/share/assembly/bumps_24MHz_333ms_1.png").toStdString());
-    filenames.push_back(QString(filename + "/share/assembly/bumps_24MHz_333ms_2.png").toStdString());
-    filenames.push_back(QString(filename + "/share/assembly/bumps_24MHz_333ms_3.png").toStdString());
-    filenames.push_back(QString(filename + "/share/assembly/bumps_24MHz_333ms_4.png").toStdString());
-    filenames.push_back(QString(filename + "/share/assembly/bumps_24MHz_333ms_5.png").toStdString());
-    filenames.push_back(QString(filename + "/share/assembly/background_24MHz_333ms_1.png").toStdString());
-    filenames.push_back(QString(filename + "/share/assembly/background_24MHz_333ms_2.png").toStdString());
+    filenames.push_back(QString(filename + "/share/assembly/oldSpareSensor_master.png").toStdString());
     imageFilenamesForPixelClock_[4] = filenames;
 
     imageFilenames_ = imageFilenamesForPixelClock_[24];
@@ -77,7 +57,7 @@ AssemblyUEyeFakeCamera::AssemblyUEyeFakeCamera(QObject* parent) :
 
 AssemblyUEyeFakeCamera::~AssemblyUEyeFakeCamera()
 {
-    if (cameraState_==READY){ close(); }
+    if (cameraState_ == READY){ close(); }
 }
 
 void AssemblyUEyeFakeCamera::open()

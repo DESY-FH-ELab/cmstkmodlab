@@ -27,10 +27,10 @@ AssemblyAssemblyView::AssemblyAssemblyView(const AssemblyAssembly* const assembl
  , smartMove_checkbox_(nullptr)
 
  , wid_CalibRotStage_(nullptr)
- , wid_PSSAlignm_    (nullptr)
- , wid_PSSToSpacers_ (nullptr)
- , wid_PSSToPSP_     (nullptr)
- , wid_PSToBasep_    (nullptr)
+ , wid_PSSAlignm_(nullptr)
+ , wid_PSSToSpacers_(nullptr)
+ , wid_PSSToMaPSA_(nullptr)
+ , wid_PSToBasep_(nullptr)
 {
   if(assembly == nullptr)
   {
@@ -265,7 +265,7 @@ AssemblyAssemblyView::AssemblyAssemblyView(const AssemblyAssembly* const assembl
 
     AssemblyAssemblyTextWidget* tmp_wid = new AssemblyAssemblyTextWidget;
     tmp_wid->label()->setText(QString::number(assembly_step_N_));
-    tmp_wid->text() ->setText("Wait for Glue To Cure (approx. 25 min)");
+    tmp_wid->text() ->setText("Wait for Glue To Cure (approx. 20 min)");
     PSSToSpacers_lay->addWidget(tmp_wid);
   }
   // ----------
@@ -292,7 +292,7 @@ AssemblyAssemblyView::AssemblyAssemblyView(const AssemblyAssembly* const assembl
     tmp_wid->button()->setText("Pick Up Spacers+PS-s");
     PSSToSpacers_lay->addWidget(tmp_wid);
 
-    tmp_wid->connect_action(assembly, SLOT(PickupSpacersAndPSS_start()), SIGNAL(PickupSpacersAndPSS_finished()));
+    tmp_wid->connect_action(assembly, SLOT(PickupPSSPlusSpacers_start()), SIGNAL(PickupPSSPlusSpacers_finished()));
   }
   // ----------
 
@@ -300,12 +300,12 @@ AssemblyAssemblyView::AssemblyAssemblyView(const AssemblyAssembly* const assembl
   //// -----------------------------------------------
 
   //// PS-s To PS-p ----------------------------------
-  wid_PSSToPSP_ = new QWidget;
+  wid_PSSToMaPSA_ = new QWidget;
 
-  toolbox->addItem(wid_PSSToPSP_, tr("[3] PS-p Alignment and Sensor-To-Sensor Assembly"));
+  toolbox->addItem(wid_PSSToMaPSA_, tr("[3] PS-p Alignment and Sensor-To-Sensor Assembly"));
 
-  QVBoxLayout* PSSToPSP_lay = new QVBoxLayout;
-  wid_PSSToPSP_->setLayout(PSSToPSP_lay);
+  QVBoxLayout* PSSToMaPSA_lay = new QVBoxLayout;
+  wid_PSSToMaPSA_->setLayout(PSSToMaPSA_lay);
 
   // step: Place PS-p on Assembly Platform
   {
@@ -314,7 +314,7 @@ AssemblyAssemblyView::AssemblyAssemblyView(const AssemblyAssembly* const assembl
     AssemblyAssemblyTextWidget* tmp_wid = new AssemblyAssemblyTextWidget;
     tmp_wid->label()->setText(QString::number(assembly_step_N_));
     tmp_wid->text() ->setText("Place PS-p on Assembly Platform");
-    PSSToPSP_lay->addWidget(tmp_wid);
+    PSSToMaPSA_lay->addWidget(tmp_wid);
   }
   // ----------
 
@@ -325,7 +325,7 @@ AssemblyAssemblyView::AssemblyAssemblyView(const AssemblyAssembly* const assembl
     AssemblyAssemblyActionWidget* tmp_wid = new AssemblyAssemblyActionWidget;
     tmp_wid->label() ->setText(QString::number(assembly_step_N_));
     tmp_wid->button()->setText("Enable Sensor/Baseplate Vacuum");
-    PSSToPSP_lay->addWidget(tmp_wid);
+    PSSToMaPSA_lay->addWidget(tmp_wid);
 
     tmp_wid->connect_action(assembly, SLOT(EnableVacuumBaseplate_start()), SIGNAL(EnableVacuumBaseplate_finished()));
   }
@@ -338,7 +338,7 @@ AssemblyAssemblyView::AssemblyAssemblyView(const AssemblyAssembly* const assembl
     AssemblyAssemblyActionWidget* tmp_wid = new AssemblyAssemblyActionWidget;
     tmp_wid->label() ->setText(QString::number(assembly_step_N_));
     tmp_wid->button()->setText("Go To Measurement Position on PS-p");
-    PSSToPSP_lay->addWidget(tmp_wid);
+    PSSToMaPSA_lay->addWidget(tmp_wid);
 
     tmp_wid->connect_action(assembly, SLOT(GoToSensorMarkerPreAlignment_start()), SIGNAL(GoToSensorMarkerPreAlignment_finished()));
   }
@@ -351,7 +351,7 @@ AssemblyAssemblyView::AssemblyAssemblyView(const AssemblyAssembly* const assembl
     AssemblyAssemblyTextWidget* tmp_wid = new AssemblyAssemblyTextWidget;
     tmp_wid->label()->setText(QString::number(assembly_step_N_));
     tmp_wid->text() ->setText("Align PS-p to Motion Stage (Go to \"Alignment\" Tab)");
-    PSSToPSP_lay->addWidget(tmp_wid);
+    PSSToMaPSA_lay->addWidget(tmp_wid);
   }
   // ----------
 
@@ -362,7 +362,7 @@ AssemblyAssemblyView::AssemblyAssemblyView(const AssemblyAssembly* const assembl
     AssemblyAssemblyActionWidget* tmp_wid = new AssemblyAssemblyActionWidget;
     tmp_wid->label() ->setText(QString::number(assembly_step_N_));
     tmp_wid->button()->setText("Go From Sensor Marker Ref-Point to Pickup XY");
-    PSSToPSP_lay->addWidget(tmp_wid);
+    PSSToMaPSA_lay->addWidget(tmp_wid);
 
     tmp_wid->connect_action(assembly, SLOT(GoFromSensorMarkerToPickupXY_start()), SIGNAL(GoFromSensorMarkerToPickupXY_finished()));
   }
@@ -375,7 +375,7 @@ AssemblyAssemblyView::AssemblyAssemblyView(const AssemblyAssembly* const assembl
     AssemblyAssemblyActionWidget* tmp_wid = new AssemblyAssemblyActionWidget;
     tmp_wid->label() ->setText(QString::number(assembly_step_N_));
     tmp_wid->button()->setText("Apply \"PS-p To PS-s\" XY Offset");
-    PSSToPSP_lay->addWidget(tmp_wid);
+    PSSToMaPSA_lay->addWidget(tmp_wid);
 
     tmp_wid->connect_action(assembly, SLOT(ApplyPSPToPSSXYOffset_start()), SIGNAL(ApplyPSPToPSSXYOffset_finished()));
   }
@@ -388,9 +388,9 @@ AssemblyAssemblyView::AssemblyAssemblyView(const AssemblyAssembly* const assembl
     AssemblyAssemblyActionWidget* tmp_wid = new AssemblyAssemblyActionWidget;
     tmp_wid->label() ->setText(QString::number(assembly_step_N_));
     tmp_wid->button()->setText("Register \"PS-p To PS-s XYZA Position\"");
-    PSSToPSP_lay->addWidget(tmp_wid);
+    PSSToMaPSA_lay->addWidget(tmp_wid);
 
-    tmp_wid->connect_action(assembly, SLOT(RegisterPSPToPSSPosition_start()), SIGNAL(RegisterPSPToPSSPosition_finished()));
+    tmp_wid->connect_action(assembly, SLOT(RegisterPSSPlusSpacersToMaPSAPosition_start()), SIGNAL(RegisterPSSPlusSpacersToMaPSAPosition_finished()));
   }
   // ----------
 
@@ -401,9 +401,9 @@ AssemblyAssemblyView::AssemblyAssemblyView(const AssemblyAssembly* const assembl
     AssemblyAssemblyActionWidget* tmp_wid = new AssemblyAssemblyActionWidget;
     tmp_wid->label() ->setText(QString::number(assembly_step_N_));
     tmp_wid->button()->setText("Go From \"PS-p To PS-s Position\" to Gluing Stage (XY) Ref-Point");
-    PSSToPSP_lay->addWidget(tmp_wid);
+    PSSToMaPSA_lay->addWidget(tmp_wid);
 
-    tmp_wid->connect_action(assembly, SLOT(GoFromPSPToPSSPosToGluingStageRefPointXY_start()), SIGNAL(GoFromPSPToPSSPosToGluingStageRefPointXY_finished()));
+    tmp_wid->connect_action(assembly, SLOT(GoFromPSSPlusSpacersToMaPSAPositionToGluingStageRefPointXY_start()), SIGNAL(GoFromPSSPlusSpacersToMaPSAPositionToGluingStageRefPointXY_finished()));
   }
   // ----------
 
@@ -414,9 +414,9 @@ AssemblyAssemblyView::AssemblyAssemblyView(const AssemblyAssembly* const assembl
     AssemblyAssemblyActionWidget* tmp_wid = new AssemblyAssemblyActionWidget;
     tmp_wid->label() ->setText(QString::number(assembly_step_N_));
     tmp_wid->button()->setText("Lower Pickup-Tool onto Gluing Stage");
-    PSSToPSP_lay->addWidget(tmp_wid);
+    PSSToMaPSA_lay->addWidget(tmp_wid);
 
-    tmp_wid->connect_action(assembly, SLOT(LowerSpacersAndPSSOntoGluingStage_start()), SIGNAL(LowerSpacersAndPSSOntoGluingStage_finished()));
+    tmp_wid->connect_action(assembly, SLOT(LowerPSSPlusSpacersOntoGluingStage_start()), SIGNAL(LowerPSSPlusSpacersOntoGluingStage_finished()));
   }
   // ----------
 
@@ -427,22 +427,22 @@ AssemblyAssemblyView::AssemblyAssemblyView(const AssemblyAssembly* const assembl
     AssemblyAssemblyActionWidget* tmp_wid = new AssemblyAssemblyActionWidget;
     tmp_wid->label() ->setText(QString::number(assembly_step_N_));
     tmp_wid->button()->setText("Return To \"PS-p To PS-s XYZA Position\"");
-    PSSToPSP_lay->addWidget(tmp_wid);
+    PSSToMaPSA_lay->addWidget(tmp_wid);
 
-    tmp_wid->connect_action(assembly, SLOT(ReturnToPSPToPSSPosition_start()), SIGNAL(ReturnToPSPToPSSPosition_finished()));
+    tmp_wid->connect_action(assembly, SLOT(ReturnToPSSPlusSpacersToMaPSAPosition_start()), SIGNAL(ReturnToPSSPlusSpacersToMaPSAPosition_finished()));
   }
   // ----------
 
-  // step: Lower Pickup-Tool onto PS-p
+  // step: Lower Pickup-Tool onto MaPSA
   {
     ++assembly_step_N_;
 
     AssemblyAssemblyActionWidget* tmp_wid = new AssemblyAssemblyActionWidget;
     tmp_wid->label() ->setText(QString::number(assembly_step_N_));
-    tmp_wid->button()->setText("Lower Pickup-Tool onto PS-p");
-    PSSToPSP_lay->addWidget(tmp_wid);
+    tmp_wid->button()->setText("Lower Pickup-Tool onto MaPSA");
+    PSSToMaPSA_lay->addWidget(tmp_wid);
 
-    tmp_wid->connect_action(assembly, SLOT(LowerSpacersAndPSSOntoPSP_start()), SIGNAL(LowerSpacersAndPSSOntoPSP_finished()));
+    tmp_wid->connect_action(assembly, SLOT(LowerPSSPlusSpacersOntoMaPSA_start()), SIGNAL(LowerPSSPlusSpacersOntoMaPSA_finished()));
   }
   // ----------
 
@@ -452,8 +452,8 @@ AssemblyAssemblyView::AssemblyAssemblyView(const AssemblyAssembly* const assembl
 
     AssemblyAssemblyTextWidget* tmp_wid = new AssemblyAssemblyTextWidget;
     tmp_wid->label()->setText(QString::number(assembly_step_N_));
-    tmp_wid->text() ->setText("Wait for Glue To Cure (approx. 25 min)");
-    PSSToPSP_lay->addWidget(tmp_wid);
+    tmp_wid->text() ->setText("Wait for Glue To Cure (approx. 20 min)");
+    PSSToMaPSA_lay->addWidget(tmp_wid);
   }
   // ----------
 
@@ -464,26 +464,26 @@ AssemblyAssemblyView::AssemblyAssemblyView(const AssemblyAssembly* const assembl
     AssemblyAssemblyActionWidget* tmp_wid = new AssemblyAssemblyActionWidget;
     tmp_wid->label() ->setText(QString::number(assembly_step_N_));
     tmp_wid->button()->setText("Disable Sensor/Baseplate Vacuum");
-    PSSToPSP_lay->addWidget(tmp_wid);
+    PSSToMaPSA_lay->addWidget(tmp_wid);
 
     tmp_wid->connect_action(assembly, SLOT(DisableVacuumBaseplate_start()), SIGNAL(DisableVacuumBaseplate_finished()));
   }
   // ----------
 
-  // step: Pick Up "PS-p + PS-s"
+  // step: Pick Up Sensor Assembly ("MaPSA + Spacers + PS-s")
   {
     ++assembly_step_N_;
 
     AssemblyAssemblyActionWidget* tmp_wid = new AssemblyAssemblyActionWidget;
     tmp_wid->label() ->setText(QString::number(assembly_step_N_));
     tmp_wid->button()->setText("Pick Up \"PS-p + PS-s\"");
-    PSSToPSP_lay->addWidget(tmp_wid);
+    PSSToMaPSA_lay->addWidget(tmp_wid);
 
-    tmp_wid->connect_action(assembly, SLOT(PickupPSPAndPSS_start()), SIGNAL(PickupPSPAndPSS_finished()));
+    tmp_wid->connect_action(assembly, SLOT(PickupSensorAssembly_start()), SIGNAL(PickupSensorAssembly_finished()));
   }
   // ----------
 
-  PSSToPSP_lay->addStretch(1);
+  PSSToMaPSA_lay->addStretch(1);
   //// -----------------------------------------------
 
   //// "PS-p + PS-s" to Baseplate --------------------
@@ -550,7 +550,7 @@ AssemblyAssemblyView::AssemblyAssemblyView(const AssemblyAssembly* const assembl
 
     AssemblyAssemblyTextWidget* tmp_wid = new AssemblyAssemblyTextWidget;
     tmp_wid->label()->setText(QString::number(assembly_step_N_));
-    tmp_wid->text() ->setText("Wait for Glue To Cure (approx. 25 min)");
+    tmp_wid->text() ->setText("Wait for Glue To Cure (approx. 20 min)");
     PSToBasep_lay->addWidget(tmp_wid);
   }
   // ----------
