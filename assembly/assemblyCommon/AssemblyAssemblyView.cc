@@ -292,7 +292,7 @@ AssemblyAssemblyView::AssemblyAssemblyView(const AssemblyAssembly* const assembl
     tmp_wid->button()->setText("Pick Up Spacers+PS-s");
     PSSToSpacers_lay->addWidget(tmp_wid);
 
-    tmp_wid->connect_action(assembly, SLOT(PickupSpacersAndPSS_start()), SIGNAL(PickupSpacersAndPSS_finished()));
+    tmp_wid->connect_action(assembly, SLOT(PickupPSSPlusSpacers_start()), SIGNAL(PickupPSSPlusSpacers_finished()));
   }
   // ----------
 
@@ -390,7 +390,7 @@ AssemblyAssemblyView::AssemblyAssemblyView(const AssemblyAssembly* const assembl
     tmp_wid->button()->setText("Register \"PS-p To PS-s XYZA Position\"");
     PSSToMaPSA_lay->addWidget(tmp_wid);
 
-    tmp_wid->connect_action(assembly, SLOT(RegisterPSPToPSSPosition_start()), SIGNAL(RegisterPSPToPSSPosition_finished()));
+    tmp_wid->connect_action(assembly, SLOT(RegisterPSSPlusSpacersToMaPSAPosition_start()), SIGNAL(RegisterPSSPlusSpacersToMaPSAPosition_finished()));
   }
   // ----------
 
@@ -403,7 +403,7 @@ AssemblyAssemblyView::AssemblyAssemblyView(const AssemblyAssembly* const assembl
     tmp_wid->button()->setText("Go From \"PS-p To PS-s Position\" to Gluing Stage (XY) Ref-Point");
     PSSToMaPSA_lay->addWidget(tmp_wid);
 
-    tmp_wid->connect_action(assembly, SLOT(GoFromPSPToPSSPositionToGluingStageRefPointXY_start()), SIGNAL(GoFromPSPToPSSPositionToGluingStageRefPointXY_finished()));
+    tmp_wid->connect_action(assembly, SLOT(GoFromPSSPlusSpacersToMaPSAPositionToGluingStageRefPointXY_start()), SIGNAL(GoFromPSSPlusSpacersToMaPSAPositionToGluingStageRefPointXY_finished()));
   }
   // ----------
 
@@ -416,7 +416,7 @@ AssemblyAssemblyView::AssemblyAssemblyView(const AssemblyAssembly* const assembl
     tmp_wid->button()->setText("Lower Pickup-Tool onto Gluing Stage");
     PSSToMaPSA_lay->addWidget(tmp_wid);
 
-    tmp_wid->connect_action(assembly, SLOT(LowerSpacersAndPSSOntoGluingStage_start()), SIGNAL(LowerSpacersAndPSSOntoGluingStage_finished()));
+    tmp_wid->connect_action(assembly, SLOT(LowerPSSPlusSpacersOntoGluingStage_start()), SIGNAL(LowerPSSPlusSpacersOntoGluingStage_finished()));
   }
   // ----------
 
@@ -429,7 +429,7 @@ AssemblyAssemblyView::AssemblyAssemblyView(const AssemblyAssembly* const assembl
     tmp_wid->button()->setText("Return To \"PS-p To PS-s XYZA Position\"");
     PSSToMaPSA_lay->addWidget(tmp_wid);
 
-    tmp_wid->connect_action(assembly, SLOT(ReturnToPSPToPSSPosition_start()), SIGNAL(ReturnToPSPToPSSPosition_finished()));
+    tmp_wid->connect_action(assembly, SLOT(ReturnToPSSPlusSpacersToMaPSAPosition_start()), SIGNAL(ReturnToPSSPlusSpacersToMaPSAPosition_finished()));
   }
   // ----------
 
@@ -439,10 +439,10 @@ AssemblyAssemblyView::AssemblyAssemblyView(const AssemblyAssembly* const assembl
 
     AssemblyAssemblyActionWidget* tmp_wid = new AssemblyAssemblyActionWidget;
     tmp_wid->label() ->setText(QString::number(assembly_step_N_));
-    tmp_wid->button()->setText("Lower Pickup-Tool onto PS-p");
+    tmp_wid->button()->setText("Lower Pickup-Tool onto MaPSA");
     PSSToMaPSA_lay->addWidget(tmp_wid);
 
-    tmp_wid->connect_action(assembly, SLOT(LowerSpacersAndPSSOntoMaPSA_start()), SIGNAL(LowerSpacersAndPSSOntoMaPSA_finished()));
+    tmp_wid->connect_action(assembly, SLOT(LowerPSSPlusSpacersOntoMaPSA_start()), SIGNAL(LowerPSSPlusSpacersOntoMaPSA_finished()));
   }
   // ----------
 

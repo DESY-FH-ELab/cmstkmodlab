@@ -939,9 +939,9 @@ void AssemblyAssembly::GoFromPSSPlusSpacersToMaPSAPositionToGluingStageRefPointX
 // ----------------------------------------------------------------------------------------------------
 
 // ----------------------------------------------------------------------------------------------------
-// LowerSpacersAndPSSOntoGluingStage ------------------------------------------------------------------
+// LowerPSSPlusSpacersOntoGluingStage -----------------------------------------------------------------
 // ----------------------------------------------------------------------------------------------------
-void AssemblyAssembly::LowerSpacersAndPSSOntoGluingStage_start()
+void AssemblyAssembly::LowerPSSPlusSpacersOntoGluingStage_start()
 {
   if(in_action_){ return; }
   else{ in_action_ = true; }
@@ -952,13 +952,13 @@ void AssemblyAssembly::LowerSpacersAndPSSOntoGluingStage_start()
 
     if(valid_params == false)
     {
-      NQLog("AssemblyAssembly", NQLog::Critical) << "LowerSpacersAndPSSOntoGluingStage_start"
+      NQLog("AssemblyAssembly", NQLog::Critical) << "LowerPSSPlusSpacersOntoGluingStage_start"
          << ": failed to update content of AssemblyParameters, no action taken";
 
-      NQLog("AssemblyAssembly", NQLog::Spam) << "LowerSpacersAndPSSOntoGluingStage_finish"
-         << ": emitting signal \"LowerSpacersAndPSSOntoGluingStage_finished\"";
+      NQLog("AssemblyAssembly", NQLog::Spam) << "LowerPSSPlusSpacersOntoGluingStage_finish"
+         << ": emitting signal \"LowerPSSPlusSpacersOntoGluingStage_finished\"";
 
-      emit LowerSpacersAndPSSOntoGluingStage_finished();
+      emit LowerPSSPlusSpacersOntoGluingStage_finished();
 
       return;
     }
@@ -978,42 +978,42 @@ void AssemblyAssembly::LowerSpacersAndPSSOntoGluingStage_start()
     const double da0 = 0.0;
 
     connect(this, SIGNAL(move_relative_request(double, double, double, double)), smart_motion_, SLOT(move_relative(double, double, double, double)));
-    connect(smart_motion_, SIGNAL(motion_completed()), this, SLOT(LowerSpacersAndPSSOntoGluingStage_finish()));
+    connect(smart_motion_, SIGNAL(motion_completed()), this, SLOT(LowerPSSPlusSpacersOntoGluingStage_finish()));
 
-    NQLog("AssemblyAssembly", NQLog::Spam) << "LowerSpacersAndPSSOntoGluingStage_start"
+    NQLog("AssemblyAssembly", NQLog::Spam) << "LowerPSSPlusSpacersOntoGluingStage_start"
        << ": emitting signal \"move_relative_request(" << dx0 << ", " << dy0 << ", " << dz0 << ", " << da0 << ")\"";
 
     emit move_relative_request(dx0, dy0, dz0, da0);
   }
   else
   {
-    NQLog("AssemblyAssembly", NQLog::Critical) << "LowerSpacersAndPSSOntoGluingStage_start"
+    NQLog("AssemblyAssembly", NQLog::Critical) << "LowerPSSPlusSpacersOntoGluingStage_start"
        << ": please enable \"smartMove\" mode (tick box in top-left corner of Assembly tab), required for this step";
 
     QMessageBox msgBox;
-    msgBox.setText(tr("AssemblyAssembly::LowerSpacersAndPSSOntoGluingStage_start -- please enable \"smartMove\" mode (tick box in top-left corner of Assembly tab), required for this step"));
+    msgBox.setText(tr("AssemblyAssembly::LowerPSSPlusSpacersOntoGluingStage_start -- please enable \"smartMove\" mode (tick box in top-left corner of Assembly tab), required for this step"));
     msgBox.exec();
 
-    NQLog("AssemblyAssembly", NQLog::Spam) << "LowerSpacersAndPSSOntoGluingStage_finish"
-       << ": emitting signal \"LowerSpacersAndPSSOntoGluingStage_finished\"";
+    NQLog("AssemblyAssembly", NQLog::Spam) << "LowerPSSPlusSpacersOntoGluingStage_finish"
+       << ": emitting signal \"LowerPSSPlusSpacersOntoGluingStage_finished\"";
 
-    emit LowerSpacersAndPSSOntoGluingStage_finished();
+    emit LowerPSSPlusSpacersOntoGluingStage_finished();
 
     return;
   }
 }
 
-void AssemblyAssembly::LowerSpacersAndPSSOntoGluingStage_finish()
+void AssemblyAssembly::LowerPSSPlusSpacersOntoGluingStage_finish()
 {
   disconnect(this, SIGNAL(move_relative_request(double, double, double, double)), smart_motion_, SLOT(move_relative(double, double, double, double)));
-  disconnect(smart_motion_, SIGNAL(motion_completed()), this, SLOT(LowerSpacersAndPSSOntoGluingStage_finish()));
+  disconnect(smart_motion_, SIGNAL(motion_completed()), this, SLOT(LowerPSSPlusSpacersOntoGluingStage_finish()));
 
-  NQLog("AssemblyAssembly", NQLog::Spam) << "LowerSpacersAndPSSOntoGluingStage_finish"
-     << ": emitting signal \"LowerSpacersAndPSSOntoGluingStage_finished\"";
+  NQLog("AssemblyAssembly", NQLog::Spam) << "LowerPSSPlusSpacersOntoGluingStage_finish"
+     << ": emitting signal \"LowerPSSPlusSpacersOntoGluingStage_finished\"";
 
-  emit LowerSpacersAndPSSOntoGluingStage_finished();
+  emit LowerPSSPlusSpacersOntoGluingStage_finished();
 
-  NQLog("AssemblyAssembly", NQLog::Message) << "LowerSpacersAndPSSOntoGluingStage_finish"
+  NQLog("AssemblyAssembly", NQLog::Message) << "LowerPSSPlusSpacersOntoGluingStage_finish"
      << ": assembly-step completed";
 
   in_action_ = false;
@@ -1109,9 +1109,9 @@ void AssemblyAssembly::ReturnToPSSPlusSpacersToMaPSAPosition_finish()
 // ----------------------------------------------------------------------------------------------------
 
 // ----------------------------------------------------------------------------------------------------
-// LowerSpacersAndPSSOntoMaPSA ------------------------------------------------------------------------
+// LowerPSSPlusSpacersOntoMaPSA -----------------------------------------------------------------------
 // ----------------------------------------------------------------------------------------------------
-void AssemblyAssembly::LowerSpacersAndPSSOntoMaPSA_start()
+void AssemblyAssembly::LowerPSSPlusSpacersOntoMaPSA_start()
 {
   if(in_action_){ return; }
   else{ in_action_ = true; }
@@ -1122,13 +1122,13 @@ void AssemblyAssembly::LowerSpacersAndPSSOntoMaPSA_start()
 
     if(valid_params == false)
     {
-      NQLog("AssemblyAssembly", NQLog::Critical) << "LowerSpacersAndPSSOntoMaPSA_start"
+      NQLog("AssemblyAssembly", NQLog::Critical) << "LowerPSSPlusSpacersOntoMaPSA_start"
          << ": failed to update content of AssemblyParameters, no action taken";
 
-      NQLog("AssemblyAssembly", NQLog::Spam) << "LowerSpacersAndPSSOntoMaPSA_finish"
-         << ": emitting signal \"LowerSpacersAndPSSOntoMaPSA_finished\"";
+      NQLog("AssemblyAssembly", NQLog::Spam) << "LowerPSSPlusSpacersOntoMaPSA_finish"
+         << ": emitting signal \"LowerPSSPlusSpacersOntoMaPSA_finished\"";
 
-      emit LowerSpacersAndPSSOntoMaPSA_finished();
+      emit LowerPSSPlusSpacersOntoMaPSA_finished();
 
       return;
     }
@@ -1147,42 +1147,42 @@ void AssemblyAssembly::LowerSpacersAndPSSOntoMaPSA_start()
     const double da0 = 0.0;
 
     connect(this, SIGNAL(move_relative_request(double, double, double, double)), smart_motion_, SLOT(move_relative(double, double, double, double)));
-    connect(smart_motion_, SIGNAL(motion_completed()), this, SLOT(LowerSpacersAndPSSOntoMaPSA_finish()));
+    connect(smart_motion_, SIGNAL(motion_completed()), this, SLOT(LowerPSSPlusSpacersOntoMaPSA_finish()));
 
-    NQLog("AssemblyAssembly", NQLog::Spam) << "LowerSpacersAndPSSOntoMaPSA_start"
+    NQLog("AssemblyAssembly", NQLog::Spam) << "LowerPSSPlusSpacersOntoMaPSA_start"
        << ": emitting signal \"move_relative_request(" << dx0 << ", " << dy0 << ", " << dz0 << ", " << da0 << ")\"";
 
     emit move_relative_request(dx0, dy0, dz0, da0);
   }
   else
   {
-    NQLog("AssemblyAssembly", NQLog::Critical) << "LowerSpacersAndPSSOntoMaPSA_start"
+    NQLog("AssemblyAssembly", NQLog::Critical) << "LowerPSSPlusSpacersOntoMaPSA_start"
        << ": please enable \"smartMove\" mode (tick box in top-left corner of Assembly tab), required for this step";
 
     QMessageBox msgBox;
-    msgBox.setText(tr("AssemblyAssembly::LowerSpacersAndPSSOntoMaPSA_start -- please enable \"smartMove\" mode (tick box in top-left corner of Assembly tab), required for this step"));
+    msgBox.setText(tr("AssemblyAssembly::LowerPSSPlusSpacersOntoMaPSA_start -- please enable \"smartMove\" mode (tick box in top-left corner of Assembly tab), required for this step"));
     msgBox.exec();
 
-    NQLog("AssemblyAssembly", NQLog::Spam) << "LowerSpacersAndPSSOntoMaPSA_finish"
-       << ": emitting signal \"LowerSpacersAndPSSOntoMaPSA_finished\"";
+    NQLog("AssemblyAssembly", NQLog::Spam) << "LowerPSSPlusSpacersOntoMaPSA_finish"
+       << ": emitting signal \"LowerPSSPlusSpacersOntoMaPSA_finished\"";
 
-    emit LowerSpacersAndPSSOntoMaPSA_finished();
+    emit LowerPSSPlusSpacersOntoMaPSA_finished();
 
     return;
   }
 }
 
-void AssemblyAssembly::LowerSpacersAndPSSOntoMaPSA_finish()
+void AssemblyAssembly::LowerPSSPlusSpacersOntoMaPSA_finish()
 {
   disconnect(this, SIGNAL(move_relative_request(double, double, double, double)), smart_motion_, SLOT(move_relative(double, double, double, double)));
-  disconnect(smart_motion_, SIGNAL(motion_completed()), this, SLOT(LowerSpacersAndPSSOntoMaPSA_finish()));
+  disconnect(smart_motion_, SIGNAL(motion_completed()), this, SLOT(LowerPSSPlusSpacersOntoMaPSA_finish()));
 
-  NQLog("AssemblyAssembly", NQLog::Spam) << "LowerSpacersAndPSSOntoMaPSA_finish"
-     << ": emitting signal \"LowerSpacersAndPSSOntoMaPSA_finished\"";
+  NQLog("AssemblyAssembly", NQLog::Spam) << "LowerPSSPlusSpacersOntoMaPSA_finish"
+     << ": emitting signal \"LowerPSSPlusSpacersOntoMaPSA_finished\"";
 
-  emit LowerSpacersAndPSSOntoMaPSA_finished();
+  emit LowerPSSPlusSpacersOntoMaPSA_finished();
 
-  NQLog("AssemblyAssembly", NQLog::Message) << "LowerSpacersAndPSSOntoMaPSA_finish"
+  NQLog("AssemblyAssembly", NQLog::Message) << "LowerPSSPlusSpacersOntoMaPSA_finish"
      << ": assembly-step completed";
 
   in_action_ = false;
@@ -1190,9 +1190,9 @@ void AssemblyAssembly::LowerSpacersAndPSSOntoMaPSA_finish()
 // ----------------------------------------------------------------------------------------------------
 
 // ----------------------------------------------------------------------------------------------------
-// PickupSpacersAndPSS --------------------------------------------------------------------------------
+// PickupPSSPlusSpacers -------------------------------------------------------------------------------
 // ----------------------------------------------------------------------------------------------------
-void AssemblyAssembly::PickupSpacersAndPSS_start()
+void AssemblyAssembly::PickupPSSPlusSpacers_start()
 {
   if(in_action_){ return; }
   else{ in_action_ = true; }
@@ -1204,37 +1204,37 @@ void AssemblyAssembly::PickupSpacersAndPSS_start()
 
   if(dz0 <= 0.)
   {
-    NQLog("AssemblyAssembly", NQLog::Critical) << "PickupSpacersAndPSS_start"
+    NQLog("AssemblyAssembly", NQLog::Critical) << "PickupPSSPlusSpacers_start"
        << ": invalid (non-positive) value for vertical upward movement for pickup #1 (dz=" << dz0 << "), no action taken";
 
-    NQLog("AssemblyAssembly", NQLog::Spam) << "PickupSpacersAndPSS_finish"
-       << ": emitting signal \"PickupSpacersAndPSS_finished\"";
+    NQLog("AssemblyAssembly", NQLog::Spam) << "PickupPSSPlusSpacers_finish"
+       << ": emitting signal \"PickupPSSPlusSpacers_finished\"";
 
-    emit PickupSpacersAndPSS_finished();
+    emit PickupPSSPlusSpacers_finished();
 
     return;
   }
 
   connect(this, SIGNAL(move_relative_request(double, double, double, double)), motion_, SLOT(moveRelative(double, double, double, double)));
-  connect(motion_, SIGNAL(motion_finished()), this, SLOT(PickupSpacersAndPSS_finish()));
+  connect(motion_, SIGNAL(motion_finished()), this, SLOT(PickupPSSPlusSpacers_finish()));
 
-  NQLog("AssemblyAssembly", NQLog::Spam) << "PickupSpacersAndPSS_start"
+  NQLog("AssemblyAssembly", NQLog::Spam) << "PickupPSSPlusSpacers_start"
      << ": emitting signal \"move_relative_request(" << dx0 << ", " << dy0 << ", " << dz0 << ", " << da0 << ")\"";
 
   emit move_relative_request(dx0, dy0, dz0, da0);
 }
 
-void AssemblyAssembly::PickupSpacersAndPSS_finish()
+void AssemblyAssembly::PickupPSSPlusSpacers_finish()
 {
   disconnect(this, SIGNAL(move_relative_request(double, double, double, double)), motion_, SLOT(moveRelative(double, double, double, double)));
-  disconnect(motion_, SIGNAL(motion_finished()), this, SLOT(PickupSpacersAndPSS_finish()));
+  disconnect(motion_, SIGNAL(motion_finished()), this, SLOT(PickupPSSPlusSpacers_finish()));
 
-  NQLog("AssemblyAssembly", NQLog::Spam) << "PickupSpacersAndPSS_finish"
-     << ": emitting signal \"PickupSpacersAndPSS_finished\"";
+  NQLog("AssemblyAssembly", NQLog::Spam) << "PickupPSSPlusSpacers_finish"
+     << ": emitting signal \"PickupPSSPlusSpacers_finished\"";
 
-  emit PickupSpacersAndPSS_finished();
+  emit PickupPSSPlusSpacers_finished();
 
-  NQLog("AssemblyAssembly", NQLog::Message) << "PickupSpacersAndPSS_finish"
+  NQLog("AssemblyAssembly", NQLog::Message) << "PickupPSSPlusSpacers_finish"
      << ": assembly-step completed";
 
   in_action_ = false;
@@ -1294,7 +1294,7 @@ void AssemblyAssembly::LiftUpPickupTool_finish()
 // ----------------------------------------------------------------------------------------------------
 
 // ----------------------------------------------------------------------------------------------------
-// PickupSensorAssembly ------------------------------------------------------------------------------------
+// PickupSensorAssembly -------------------------------------------------------------------------------
 // ----------------------------------------------------------------------------------------------------
 void AssemblyAssembly::PickupSensorAssembly_start()
 {
