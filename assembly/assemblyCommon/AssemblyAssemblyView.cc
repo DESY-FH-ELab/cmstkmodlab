@@ -289,7 +289,7 @@ AssemblyAssemblyView::AssemblyAssemblyView(const AssemblyAssembly* const assembl
 
     AssemblyAssemblyActionWidget* tmp_wid = new AssemblyAssemblyActionWidget;
     tmp_wid->label()->setText(QString::number(assembly_step_N_));
-    tmp_wid->button()->setText("Pick Up Spacers+PS-s");
+    tmp_wid->button()->setText("Pick Up \"PS-s + Spacers\"");
     PSSToSpacers_lay->addWidget(tmp_wid);
 
     tmp_wid->connect_action(assembly, SLOT(PickupPSSPlusSpacers_start()), SIGNAL(PickupPSSPlusSpacers_finished()));
@@ -493,7 +493,7 @@ AssemblyAssemblyView::AssemblyAssemblyView(const AssemblyAssembly* const assembl
   //// Sensor Assembly to Baseplate ------------------
   wid_PSToBasep_ = new QWidget;
 
-  toolbox->addItem(wid_PSToBasep_, tr("[4] Attach Sensor Assembly to Baseplate"));
+  toolbox->addItem(wid_PSToBasep_, tr("[4] Sensor Assembly to Baseplate"));
 
   QVBoxLayout* PSToBasep_lay = new QVBoxLayout;
   wid_PSToBasep_->setLayout(PSToBasep_lay);
