@@ -381,26 +381,29 @@ AssemblyAssemblyView::AssemblyAssemblyView(const AssemblyAssembly* const assembl
   }
   // ----------
 
-  // step: Register "PS-p To PS-s" XYZA Position (before lowering pickup tool, camera focused on PS-p surface)
+  // step: Register "PS-s to MaPSA" XYZA Position
+  // (position that will be used as starting point to lower "PS-s + Spacers" on MaPSA;
+  //  the height corresponds to the best-focus height on PS-p surface, as resulting from the PS-p alignment,
+  //  if the latter completed successfully and was executed with auto-focusing enabled)
   {
     ++assembly_step_N_;
 
     AssemblyAssemblyActionWidget* tmp_wid = new AssemblyAssemblyActionWidget;
     tmp_wid->label() ->setText(QString::number(assembly_step_N_));
-    tmp_wid->button()->setText("Register \"PS-p To PS-s XYZA Position\"");
+    tmp_wid->button()->setText("Register \"PS-s to MaPSA\" XYZA Position");
     PSSToMaPSA_lay->addWidget(tmp_wid);
 
     tmp_wid->connect_action(assembly, SLOT(RegisterPSSPlusSpacersToMaPSAPosition_start()), SIGNAL(RegisterPSSPlusSpacersToMaPSAPosition_finished()));
   }
   // ----------
 
-  // step: Go From "PS-p To PS-s" Position to Gluing Stage (XY) Ref-Point
+  // step: Go From "PS-s to MaPSA" Position to Gluing Stage (XY) Ref-Point
   {
     ++assembly_step_N_;
 
     AssemblyAssemblyActionWidget* tmp_wid = new AssemblyAssemblyActionWidget;
     tmp_wid->label() ->setText(QString::number(assembly_step_N_));
-    tmp_wid->button()->setText("Go From \"PS-p To PS-s Position\" to Gluing Stage (XY) Ref-Point");
+    tmp_wid->button()->setText("Go From \"PS-s To MaPSA\" Position to Gluing Stage (XY) Ref-Point");
     PSSToMaPSA_lay->addWidget(tmp_wid);
 
     tmp_wid->connect_action(assembly, SLOT(GoFromPSSPlusSpacersToMaPSAPositionToGluingStageRefPointXY_start()), SIGNAL(GoFromPSSPlusSpacersToMaPSAPositionToGluingStageRefPointXY_finished()));
@@ -420,13 +423,14 @@ AssemblyAssemblyView::AssemblyAssemblyView(const AssemblyAssembly* const assembl
   }
   // ----------
 
-  // step: Return To "PS-p To PS-s" XYZA Position (before lowering pickup tool, camera focused on PS-p surface)
+  // step: Return To "PS-s to MaPSA" XYZA Position
+  // (step prior to lowering pickup tool; camera height must correspond to best-focus height on PS-p surface)
   {
     ++assembly_step_N_;
 
     AssemblyAssemblyActionWidget* tmp_wid = new AssemblyAssemblyActionWidget;
     tmp_wid->label() ->setText(QString::number(assembly_step_N_));
-    tmp_wid->button()->setText("Return To \"PS-p To PS-s XYZA Position\"");
+    tmp_wid->button()->setText("Return To \"PS-s to MaPSA\" Position (XYZA)");
     PSSToMaPSA_lay->addWidget(tmp_wid);
 
     tmp_wid->connect_action(assembly, SLOT(ReturnToPSSPlusSpacersToMaPSAPosition_start()), SIGNAL(ReturnToPSSPlusSpacersToMaPSAPosition_finished()));
