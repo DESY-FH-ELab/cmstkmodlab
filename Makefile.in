@@ -1,5 +1,6 @@
 BASEPATH      = @basepath@
 NOTHERMAL     = @nothermal@
+NOTHERMAL2    = @nothermal2@
 NODEFO        = @nodefo@
 NOASSEMBLY    = @noassembly@
 NOPLASMA      = @noplasma@
@@ -12,6 +13,9 @@ QMAKE         = @qmake@
 subdirs	      = devices python external tools common common_test
 ifeq ($(NOTHERMAL),0)
 subdirs      += thermo
+endif
+ifeq ($(NOTHERMAL2),0)
+subdirs      += thermo2
 endif
 ifeq ($(NODEFO),0)
 subdirs      += defo
@@ -31,6 +35,9 @@ ifeq ($(NOTHERMAL),0)
 qtsubdirs    += thermo/thermoDAQ thermo/thermoDisplay
 qtsubdirs    += thermo/microDAQ thermo/microDisplay
 qtsubdirs    += thermo/thermoDAQ2Root thermo/thermoDAQ2Log thermo/thermoDAQ2Plots
+endif
+ifeq ($(NOTHERMAL2),0)
+qtsubdirs    += thermo2/thermoDAQ2 thermo/thermoDisplay2
 endif
 ifeq ($(NODEFO),0)
 qtsubdirs    += defo/defoCommon defo/defoDAQ defo/defoDisplay defo/defoReco defo/defoCalib defo/defoDAQ2Root
