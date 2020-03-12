@@ -12,7 +12,7 @@
 
 // https://www.huber-online.com/download/manuals/Handbuch_Datenkommunikation_PB_en.pdf
 
-#include <string>
+#include <cstring>
 #include <iomanip>
 #include <cstdlib>
 #include <iostream>
