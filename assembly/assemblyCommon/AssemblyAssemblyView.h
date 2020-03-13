@@ -38,7 +38,7 @@ class AssemblyAssemblyView : public QWidget
   QWidget* wid_CalibRotStage_;
   QWidget* wid_PSSAlignm_;
   QWidget* wid_PSSToSpacers_;
-  QWidget* wid_PSSToPSP_;
+  QWidget* wid_PSSToMaPSA_;
   QWidget* wid_PSToBasep_;
 
   uint assembly_step_N_;
