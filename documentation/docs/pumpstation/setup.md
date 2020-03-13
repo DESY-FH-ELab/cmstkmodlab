@@ -29,6 +29,7 @@ and the Conrad relay card via `/dev/ttyConrad`. A udev rules file `99-usb-serial
 available in the `pumpstation` directory of the repository. Please copy it to the directory
 `/etc/udev/rules.d/` and restart the system.
 
+<<<<<<< Updated upstream
 In order to automatically synchronise the data to the DESY cloud, perform the following steps:
 
 - create a directory to be used as a mount point for the DESY cloud via</br>
@@ -45,3 +46,5 @@ In order to automatically synchronise the data to the DESY cloud, perform the fo
    
 - add the following entry to the crontab for the user `pi`</br>
    `0 7,19 * * * /home/pi/cmstkmodlab/pumpstation/cloudSync.sh > /dev/null 2>&1`
+=======
+>>>>>>> Stashed changes
