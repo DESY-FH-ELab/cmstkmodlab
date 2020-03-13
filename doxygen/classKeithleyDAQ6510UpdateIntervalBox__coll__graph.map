@@ -1,0 +1,9 @@
+<map id="KeithleyDAQ6510UpdateIntervalBox" name="KeithleyDAQ6510UpdateIntervalBox">
+<area shape="rect" id="node1" title=" " alt="" coords="5,341,242,367"/>
+<area shape="rect" id="node2" title=" " alt="" coords="54,255,151,280"/>
+<area shape="rect" id="node3" href="$classKeithleyDAQ6510Model.html" title=" " alt="" coords="175,255,339,280"/>
+<area shape="rect" id="node4" title=" " alt="" coords="179,173,250,199"/>
+<area shape="rect" id="node5" href="$classAbstractDeviceModel.html" title=" " alt="" coords="274,167,435,205"/>
+<area shape="rect" id="node6" href="$classKeithleyDAQ6510.html" title=" " alt="" coords="291,80,418,105"/>
+<area shape="rect" id="node7" href="$classVKeithleyDAQ6510.html" title=" " alt="" coords="286,5,423,31"/>
+</map>

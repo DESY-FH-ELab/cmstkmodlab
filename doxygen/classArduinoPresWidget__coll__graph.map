@@ -1,0 +1,9 @@
+<map id="ArduinoPresWidget" name="ArduinoPresWidget">
+<area shape="rect" id="node1" title=" " alt="" coords="5,341,142,367"/>
+<area shape="rect" id="node2" title=" " alt="" coords="16,255,89,280"/>
+<area shape="rect" id="node3" href="$classArduinoPresModel.html" title=" " alt="" coords="113,255,244,280"/>
+<area shape="rect" id="node4" title=" " alt="" coords="102,173,173,199"/>
+<area shape="rect" id="node5" href="$classAbstractDeviceModel.html" title=" " alt="" coords="197,167,344,205"/>
+<area shape="rect" id="node6" href="$classArduinoPres.html" title=" " alt="" coords="223,80,318,105"/>
+<area shape="rect" id="node7" href="$classVArduinoPres.html" title=" " alt="" coords="219,5,322,31"/>
+</map>

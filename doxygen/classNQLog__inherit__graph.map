@@ -1,0 +1,9 @@
+<map id="NQLog" name="NQLog">
+<area shape="rect" id="node1" title=" " alt="" coords="340,5,404,31"/>
+<area shape="rect" id="node2" href="$classNQLogCritical.html" title=" " alt="" coords="5,79,110,104"/>
+<area shape="rect" id="node3" href="$classNQLogDebug.html" title=" " alt="" coords="134,79,237,104"/>
+<area shape="rect" id="node4" href="$classNQLogFatal.html" title=" " alt="" coords="262,79,355,104"/>
+<area shape="rect" id="node5" href="$classNQLogMessage.html" title=" " alt="" coords="379,79,496,104"/>
+<area shape="rect" id="node6" href="$classNQLogSpam.html" title=" " alt="" coords="520,79,619,104"/>
+<area shape="rect" id="node7" href="$classNQLogWarning.html" title=" " alt="" coords="642,79,755,104"/>
+</map>

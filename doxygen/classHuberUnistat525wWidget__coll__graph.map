@@ -1,0 +1,11 @@
+<map id="HuberUnistat525wWidget" name="HuberUnistat525wWidget">
+<area shape="rect" id="node1" title=" " alt="" coords="70,441,243,467"/>
+<area shape="rect" id="node2" title=" " alt="" coords="5,348,79,373"/>
+<area shape="rect" id="node3" href="$classHuberUnistat525wModel.html" title=" " alt="" coords="276,255,443,280"/>
+<area shape="rect" id="node8" href="$classHuberUnistat525wTemperatureControlModeBox.html" title=" " alt="" coords="103,341,309,380"/>
+<area shape="rect" id="node4" title=" " alt="" coords="283,173,353,199"/>
+<area shape="rect" id="node5" href="$classAbstractDeviceModel.html" title=" " alt="" coords="378,167,525,205"/>
+<area shape="rect" id="node6" href="$classHuberPilotOne.html" title=" " alt="" coords="397,80,506,105"/>
+<area shape="rect" id="node7" href="$classVHuberPilotOne.html" title=" " alt="" coords="392,5,510,31"/>
+<area shape="rect" id="node9" title=" " alt="" coords="154,255,252,280"/>
+</map>

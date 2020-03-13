@@ -1,0 +1,11 @@
+<map id="KeithleyTemperatureWidget" name="KeithleyTemperatureWidget">
+<area shape="rect" id="node1" title=" " alt="" coords="909,72,1094,97"/>
+<area shape="rect" id="node2" title=" " alt="" coords="724,47,798,72"/>
+<area shape="rect" id="node3" href="$classKeithleyModel.html" title=" " alt="" coords="708,96,814,121"/>
+<area shape="rect" id="node4" title=" " alt="" coords="423,5,493,31"/>
+<area shape="rect" id="node5" href="$classAbstractDeviceModel.html" title=" " alt="" coords="385,55,532,93"/>
+<area shape="rect" id="node6" href="$classKeithley2700.html" title=" " alt="" coords="162,61,260,87"/>
+<area shape="rect" id="node7" href="$classVKeithley2700.html" title=" " alt="" coords="5,61,113,87"/>
+<area shape="rect" id="node8" href="$classRingbuffer.html" title=" " alt="" coords="374,117,542,169"/>
+<area shape="rect" id="node9" href="$classRingbuffer.html" title=" " alt="" coords="380,193,536,232"/>
+</map>

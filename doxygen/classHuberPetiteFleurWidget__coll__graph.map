@@ -1,0 +1,10 @@
+<map id="HuberPetiteFleurWidget" name="HuberPetiteFleurWidget">
+<area shape="rect" id="node1" title=" " alt="" coords="5,353,169,379"/>
+<area shape="rect" id="node2" title=" " alt="" coords="29,267,102,292"/>
+<area shape="rect" id="node3" href="$classHuberPetiteFleurModel.html" title=" " alt="" coords="127,267,285,292"/>
+<area shape="rect" id="node4" title=" " alt="" coords="33,173,104,199"/>
+<area shape="rect" id="node5" href="$classAbstractDeviceModel.html" title=" " alt="" coords="128,167,284,205"/>
+<area shape="rect" id="node6" href="$classHuberPetiteFleur.html" title=" " alt="" coords="145,80,267,105"/>
+<area shape="rect" id="node7" href="$classVHuberPetiteFleur.html" title=" " alt="" coords="140,5,271,31"/>
+<area shape="rect" id="node8" href="$classDeviceParameter.html" title=" " alt="" coords="308,173,480,199"/>
+</map>
