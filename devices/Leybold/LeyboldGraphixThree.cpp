@@ -1,6 +1,6 @@
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //
-//               Copyright (C) 2011-2017 - The DESY CMS Group                  //
+//               Copyright (C) 2011-2020 - The DESY CMS Group                  //
 //                           All rights reserved                               //
 //                                                                             //
 //      The CMStkModLab source code is licensed under the GNU GPL v3.0.        //
@@ -17,7 +17,7 @@
 #include "LeyboldGraphixThree.h"
 
 LeyboldGraphixThree::LeyboldGraphixThree( const ioport_t ioPort )
-  :VLeyboldGraphixThree(ioPort),
+  :VLeyboldGraphix(ioPort),
    isDeviceAvailable_(false)
 {
   comHandler_ = new LeyboldComHandler( ioPort );
@@ -101,7 +101,7 @@ int LeyboldGraphixThree::GetNumberOfChannels() const
   return std::atoi(buffer.c_str());
 }
 
-VLeyboldGraphixThree::SensorDetectionMode LeyboldGraphixThree::GetSensorDetectionMode(int sensor) const
+VLeyboldGraphix::SensorDetectionMode LeyboldGraphixThree::GetSensorDetectionMode(int sensor) const
 {
   std::string command;
 
@@ -122,7 +122,7 @@ VLeyboldGraphixThree::SensorDetectionMode LeyboldGraphixThree::GetSensorDetectio
   }
 }
 
-void LeyboldGraphixThree::SetSensorDetectionMode(int sensor, VLeyboldGraphixThree::SensorDetectionMode mode)
+void LeyboldGraphixThree::SetSensorDetectionMode(int sensor, VLeyboldGraphix::SensorDetectionMode mode)
 {
   std::string command;
 
@@ -316,7 +316,7 @@ void LeyboldGraphixThree::SetDisplayUnit(LeyboldGraphixThree::DisplayUnit unit)
   bool isACK = ReceiveData(buffer);
 }
 
-VLeyboldGraphixThree::SetPointChannel LeyboldGraphixThree::GetSetPointChannelAssignment(int sp) const
+VLeyboldGraphix::SetPointChannel LeyboldGraphixThree::GetSetPointChannelAssignment(int sp) const
 {
   if (sp<1 || sp>6) return SetPointChannelOff;
 
@@ -345,7 +345,7 @@ VLeyboldGraphixThree::SetPointChannel LeyboldGraphixThree::GetSetPointChannelAss
   return SetPointChannelOff;
 }
 
-void LeyboldGraphixThree::SetSetPointChannelAssignment(int sp, VLeyboldGraphixThree::SetPointChannel channel)
+void LeyboldGraphixThree::SetSetPointChannelAssignment(int sp, VLeyboldGraphix::SetPointChannel channel)
 {
   if (sp<1 || sp>6) return;
 

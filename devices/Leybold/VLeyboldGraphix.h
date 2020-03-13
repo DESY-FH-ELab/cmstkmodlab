@@ -1,6 +1,6 @@
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //
-//               Copyright (C) 2011-2017 - The DESY CMS Group                  //
+//               Copyright (C) 2011-2020 - The DESY CMS Group                  //
 //                           All rights reserved                               //
 //                                                                             //
 //      The CMStkModLab source code is licensed under the GNU GPL v3.0.        //
@@ -10,8 +10,8 @@
 //                                                                             //
 /////////////////////////////////////////////////////////////////////////////////
 
-#ifndef _VLEYBOLDGRAPHIXTHREE_H_
-#define _VLEYBOLDGRAPHIXTHREE_H_
+#ifndef _VLEYBOLDGRAPHIX_H_
+#define _VLEYBOLDGRAPHIX_H_
 
 #include <string>
 #include <map>
@@ -19,7 +19,7 @@
 
 typedef const char* ioport_t;
 
-class VLeyboldGraphixThree
+class VLeyboldGraphix
 {
  public:
 
@@ -63,8 +63,8 @@ class VLeyboldGraphixThree
     SetPointChannel3     = 3
   };
 
-  VLeyboldGraphixThree( const ioport_t );
-  virtual ~VLeyboldGraphixThree();
+  VLeyboldGraphix( const ioport_t );
+  virtual ~VLeyboldGraphix();
 
   virtual bool DeviceAvailable() const = 0;
 
@@ -126,4 +126,4 @@ class VLeyboldGraphixThree
   std::map<std::string,DisplayUnit> displayNameUnits_;
 };
 
-#endif // _VLEYBOLDGRAPHIXTHREE_H_
+#endif // _VLEYBOLDGRAPHIX_H_

@@ -109,6 +109,8 @@ HEADERS += nqlogger.h \
            NanotecSMCI36Widget.h \
            ConradModel.h \
            LeyboldGraphixThreeModel.h \
+           LeyboldGraphixOneModel.h \
+           LeyboldGraphixOneWidget.h \
            RohdeSchwarzNGE103BModel.h \
            RohdeSchwarzNGE103BWidget.h \
            ScriptableRohdeSchwarzNGE103B.h \
@@ -165,6 +167,8 @@ SOURCES += nqlogger.cc \
            NanotecSMCI36Widget.cc \
            ConradModel.cc \
            LeyboldGraphixThreeModel.cc \
+           LeyboldGraphixOneModel.cc \
+           LeyboldGraphixOneWidget.cc \
            RohdeSchwarzNGE103BModel.cc \
            RohdeSchwarzNGE103BWidget.cc \
            ScriptableRohdeSchwarzNGE103B.cc \

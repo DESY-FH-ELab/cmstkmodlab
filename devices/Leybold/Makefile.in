@@ -9,9 +9,11 @@ LIBDIR        = $(BASEPATH)/devices/lib
 LIB           = TkModLabLeybold
 
 MODULES       = LeyboldComHandler \
-                VLeyboldGraphixThree \
+                VLeyboldGraphix \
                 LeyboldGraphixThree \
-                LeyboldGraphixThreeFake
+                LeyboldGraphixThreeFake \
+                LeyboldGraphixOne \
+                LeyboldGraphixOneFake
 
 LLDEPEND = $(addsuffix .d,$(MODULES))
 

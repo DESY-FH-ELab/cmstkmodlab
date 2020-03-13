@@ -1,6 +1,6 @@
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //
-//               Copyright (C) 2011-2017 - The DESY CMS Group                  //
+//               Copyright (C) 2011-2020 - The DESY CMS Group                  //
 //                           All rights reserved                               //
 //                                                                             //
 //      The CMStkModLab source code is licensed under the GNU GPL v3.0.        //
@@ -35,8 +35,8 @@ int main()
   std::cout << "serial number:           " << leybold.GetSerialNumber() << std::endl;
   std::cout << "item number:             " << leybold.GetItemNumber() << std::endl;
 
-  leybold.SetDisplayUnit(VLeyboldGraphixThree::DisplayUnit_mbar);
-  VLeyboldGraphixThree::DisplayUnit unit = leybold.GetDisplayUnit();
+  leybold.SetDisplayUnit(VLeyboldGraphix::DisplayUnit_mbar);
+  VLeyboldGraphix::DisplayUnit unit = leybold.GetDisplayUnit();
   std::cout << "display unit:            " << leybold.GetDisplayUnitName(unit) << std::endl << std::endl;
 
   std::cout << "number of channels:      " << leybold.GetNumberOfChannels() << std::endl << std::endl;
@@ -45,28 +45,28 @@ int main()
   leybold.SetSensorName(2, "P1");
   leybold.SetSensorName(3, "P2");
 
-  leybold.SetSetPointChannelAssignment(1, VLeyboldGraphixThree::SetPointChannelOff);
-  leybold.SetSetPointChannelAssignment(2, VLeyboldGraphixThree::SetPointChannelOff);
-  leybold.SetSetPointChannelAssignment(3, VLeyboldGraphixThree::SetPointChannelOff);
-  leybold.SetSetPointChannelAssignment(4, VLeyboldGraphixThree::SetPointChannelOff);
-  leybold.SetSetPointChannelAssignment(5, VLeyboldGraphixThree::SetPointChannelOff);
-  leybold.SetSetPointChannelAssignment(6, VLeyboldGraphixThree::SetPointChannelOff);
+  leybold.SetSetPointChannelAssignment(1, VLeyboldGraphix::SetPointChannelOff);
+  leybold.SetSetPointChannelAssignment(2, VLeyboldGraphix::SetPointChannelOff);
+  leybold.SetSetPointChannelAssignment(3, VLeyboldGraphix::SetPointChannelOff);
+  leybold.SetSetPointChannelAssignment(4, VLeyboldGraphix::SetPointChannelOff);
+  leybold.SetSetPointChannelAssignment(5, VLeyboldGraphix::SetPointChannelOff);
+  leybold.SetSetPointChannelAssignment(6, VLeyboldGraphix::SetPointChannelOff);
 
   for (int i=1;i<4;++i) {
 
-    if (leybold.GetSensorDetectionMode(i)!=VLeyboldGraphixThree::SensorDetectionAuto) {
-      leybold.SetSensorDetectionMode(i, VLeyboldGraphixThree::SensorDetectionAuto);
+    if (leybold.GetSensorDetectionMode(i)!=VLeyboldGraphix::SensorDetectionAuto) {
+      leybold.SetSensorDetectionMode(i, VLeyboldGraphix::SensorDetectionAuto);
     }
 
-    VLeyboldGraphixThree::SensorType type = leybold.GetSensorType(i);
+    VLeyboldGraphix::SensorType type = leybold.GetSensorType(i);
 
-    if (type==VLeyboldGraphixThree::SensorType_NOSEN) continue;
+    if (type==VLeyboldGraphix::SensorType_NOSEN) continue;
 
-    if (type==VLeyboldGraphixThree::SensorType_TTRx) {
-      leybold.SetSensorType(i, VLeyboldGraphixThree::SensorType_TTR91N);
+    if (type==VLeyboldGraphix::SensorType_TTRx) {
+      leybold.SetSensorType(i, VLeyboldGraphix::SensorType_TTR91N);
     }
 
-    // leybold.SetSensorType(i, VLeyboldGraphixThree::SensorType_TTRx);
+    // leybold.SetSensorType(i, VLeyboldGraphix::SensorType_TTRx);
 
     std::cout << "sensor " << i << std::endl;
 
@@ -74,7 +74,7 @@ int main()
     std::cout << "  type:                  " << leybold.GetSensorTypeName(i) << std::endl;
     leybold.SetSensorName(i, std::string("SENSOR")+std::to_string(i));
     std::cout << "  name:                  " << leybold.GetSensorName(i) << std::endl;
-    VLeyboldGraphixThree::SensorStatus status = leybold.GetSensorStatus(i);
+    VLeyboldGraphix::SensorStatus status = leybold.GetSensorStatus(i);
     std::cout << "  status:                " << leybold.GetSensorStatusText(status) << std::endl;
     std::cout << "  pressure:              " << leybold.GetPressure(i) << std::endl;
 

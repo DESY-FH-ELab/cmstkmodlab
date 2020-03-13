@@ -1,6 +1,6 @@
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //
-//               Copyright (C) 2011-2017 - The DESY CMS Group                  //
+//               Copyright (C) 2011-2020 - The DESY CMS Group                  //
 //                           All rights reserved                               //
 //                                                                             //
 //      The CMStkModLab source code is licensed under the GNU GPL v3.0.        //
@@ -18,7 +18,7 @@
 #include "LeyboldGraphixThreeFake.h"
 
 LeyboldGraphixThreeFake::LeyboldGraphixThreeFake( const ioport_t ioPort )
-  :VLeyboldGraphixThree(ioPort)
+  :VLeyboldGraphix(ioPort)
 {
   sensorDetectionMode_[0] = SensorDetectionAuto;
   sensorDetectionMode_[1] = SensorDetectionAuto;
@@ -66,58 +66,58 @@ int LeyboldGraphixThreeFake::GetNumberOfChannels() const
   return 3;
 }
 
-VLeyboldGraphixThree::SensorDetectionMode LeyboldGraphixThreeFake::GetSensorDetectionMode(int sensor) const
+VLeyboldGraphix::SensorDetectionMode LeyboldGraphixThreeFake::GetSensorDetectionMode(int sensor) const
 {
-  if (sensor<1 || sensor>3) return SensorDetectionAuto;
+  if (sensor<1 || sensor>GetNumberOfChannels()) return SensorDetectionAuto;
 
   return sensorDetectionMode_[sensor-1];
 }
 
-void LeyboldGraphixThreeFake::SetSensorDetectionMode(int sensor, VLeyboldGraphixThree::SensorDetectionMode mode)
+void LeyboldGraphixThreeFake::SetSensorDetectionMode(int sensor, VLeyboldGraphix::SensorDetectionMode mode)
 {
-  if (sensor<1 || sensor>3) return;
+  if (sensor<1 || sensor>GetNumberOfChannels()) return;
 
   sensorDetectionMode_[sensor-1] = mode;
 }
 
 std::string LeyboldGraphixThreeFake::GetSensorTypeName(int sensor) const
 {
-  if (sensor<1 || sensor>3) return std::string("out of range");
+  if (sensor<1 || sensor>GetNumberOfChannels()) return std::string("out of range");
 
   return sensorType_[sensor-1];
 }
 
 void LeyboldGraphixThreeFake::SetSensorTypeName(int sensor, std::string type)
 {
-  if (sensor<1 || sensor>3) return;
+  if (sensor<1 || sensor>GetNumberOfChannels()) return;
 
   sensorType_[sensor-1] = type;
 }
 
 std::string LeyboldGraphixThreeFake::GetSensorName(int sensor) const
 {
-  if (sensor<1 || sensor>3) return std::string("out of range");
+  if (sensor<1 || sensor>GetNumberOfChannels()) return std::string("out of range");
 
   return sensorName_[sensor-1];
 }
 
 void LeyboldGraphixThreeFake::SetSensorName(int sensor, const std::string& name)
 {
-  if (sensor<1 || sensor>3) return;
+  if (sensor<1 || sensor>GetNumberOfChannels()) return;
 
   sensorName_[sensor-1] = name;
 }
 
 LeyboldGraphixThreeFake::SensorStatus LeyboldGraphixThreeFake::GetSensorStatus(int sensor) const
 {
-  if (sensor<1 || sensor>3) return SensorStatus_nosen;
+  if (sensor<1 || sensor>GetNumberOfChannels()) return SensorStatus_nosen;
 
   return SensorStatus_ok;
 }
 
 double LeyboldGraphixThreeFake::GetPressure(int sensor) const
 {
-  if (sensor<1 || sensor>3) return -1;
+  if (sensor<1 || sensor>GetNumberOfChannels()) return -1;
   return pressure_[sensor-1] + rand() % 10;
 }
 
@@ -131,13 +131,13 @@ void LeyboldGraphixThreeFake::SetDisplayUnit(LeyboldGraphixThreeFake::DisplayUni
   displayUnit_ = unit;
 }
 
-VLeyboldGraphixThree::SetPointChannel LeyboldGraphixThreeFake::GetSetPointChannelAssignment(int sp) const
+VLeyboldGraphix::SetPointChannel LeyboldGraphixThreeFake::GetSetPointChannelAssignment(int sp) const
 {
   if (sp<1 || sp>6) return SetPointChannelOff;
   return setPointChannel_[sp-1];
 }
 
-void LeyboldGraphixThreeFake::SetSetPointChannelAssignment(int sp, VLeyboldGraphixThree::SetPointChannel channel)
+void LeyboldGraphixThreeFake::SetSetPointChannelAssignment(int sp, VLeyboldGraphix::SetPointChannel channel)
 {
   if (sp<1 || sp>6) return;
   setPointChannel_[sp-1] = channel;

@@ -1,6 +1,6 @@
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //
-//               Copyright (C) 2011-2017 - The DESY CMS Group                  //
+//               Copyright (C) 2011-2020 - The DESY CMS Group                  //
 //                           All rights reserved                               //
 //                                                                             //
 //      The CMStkModLab source code is licensed under the GNU GPL v3.0.        //
@@ -13,9 +13,9 @@
 #ifndef _LEYBOLDGRAPHIXTHREEFAKE_H_
 #define _LEYBOLDGRAPHIXTHREEFAKE_H_
 
-#include "VLeyboldGraphixThree.h"
+#include "VLeyboldGraphix.h"
 
-class LeyboldGraphixThreeFake : public VLeyboldGraphixThree
+class LeyboldGraphixThreeFake : public VLeyboldGraphix
 {
  public:
 
@@ -28,7 +28,7 @@ class LeyboldGraphixThreeFake : public VLeyboldGraphixThree
   int GetSerialNumber() const;
   std::string GetItemNumber() const;
 
-  int GetNumberOfChannels() const;
+  virtual int GetNumberOfChannels() const;
 
   SensorDetectionMode GetSensorDetectionMode(int sensor) const;
   void SetSensorDetectionMode(int sensor, SensorDetectionMode mode);

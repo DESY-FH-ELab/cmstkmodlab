@@ -1,6 +1,6 @@
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //
-//               Copyright (C) 2011-2017 - The DESY CMS Group                  //
+//               Copyright (C) 2011-2020 - The DESY CMS Group                  //
 //                           All rights reserved                               //
 //                                                                             //
 //      The CMStkModLab source code is licensed under the GNU GPL v3.0.        //
@@ -10,9 +10,9 @@
 //                                                                             //
 /////////////////////////////////////////////////////////////////////////////////
 
-#include "VLeyboldGraphixThree.h"
+#include "VLeyboldGraphix.h"
 
-VLeyboldGraphixThree::VLeyboldGraphixThree( const ioport_t ioPort )
+VLeyboldGraphix::VLeyboldGraphix( const ioport_t ioPort )
 {
   sensorStatusText_["NO-SEN"] = SensorStatus_nosen;
   sensorStatusText_["OK"] = SensorStatus_ok;
@@ -43,15 +43,15 @@ VLeyboldGraphixThree::VLeyboldGraphixThree( const ioport_t ioPort )
   displayNameUnits_["Micron"] = DisplayUnit_Micron;
 }
 
-VLeyboldGraphixThree::~VLeyboldGraphixThree()
+VLeyboldGraphix::~VLeyboldGraphix()
 {
 
 }
 
 
-VLeyboldGraphixThree::SensorType VLeyboldGraphixThree::GetSensorType(int sensor) const
+VLeyboldGraphix::SensorType VLeyboldGraphix::GetSensorType(int sensor) const
 {
-  if (sensor<1 || sensor>3) return SensorType_NOSEN;
+  if (sensor<1 || sensor>GetNumberOfChannels()) return SensorType_NOSEN;
 
   std::string type = GetSensorTypeName(sensor);
 
@@ -64,9 +64,9 @@ VLeyboldGraphixThree::SensorType VLeyboldGraphixThree::GetSensorType(int sensor)
   return SensorType_NOSEN;
 }
 
-void VLeyboldGraphixThree::SetSensorType(int sensor, VLeyboldGraphixThree::SensorType type)
+void VLeyboldGraphix::SetSensorType(int sensor, VLeyboldGraphix::SensorType type)
 {
-  if (sensor<1 || sensor>3) return;
+  if (sensor<1 || sensor>GetNumberOfChannels()) return;
 
   switch (type) {
   case SensorType_NOSEN:
@@ -87,7 +87,7 @@ void VLeyboldGraphixThree::SetSensorType(int sensor, VLeyboldGraphixThree::Senso
   }
 }
 
-std::string VLeyboldGraphixThree::GetSensorStatusText(SensorStatus status) const
+std::string VLeyboldGraphix::GetSensorStatusText(SensorStatus status) const
 {
   std::map<SensorStatus,std::string>::const_iterator itFind = sensorTextStatus_.find(status);
   if (itFind!=sensorTextStatus_.end()) {
@@ -97,7 +97,7 @@ std::string VLeyboldGraphixThree::GetSensorStatusText(SensorStatus status) const
   return "NO-SEN";
 }
 
-std::string VLeyboldGraphixThree::GetDisplayUnitName(DisplayUnit unit) const
+std::string VLeyboldGraphix::GetDisplayUnitName(DisplayUnit unit) const
 {
   std::map<DisplayUnit,std::string>::const_iterator itFind = displayUnitNames_.find(unit);
   if (itFind!=displayUnitNames_.end()) {
