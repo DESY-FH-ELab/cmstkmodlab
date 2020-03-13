@@ -37,7 +37,7 @@ qtsubdirs    += thermo/microDAQ thermo/microDisplay
 qtsubdirs    += thermo/thermoDAQ2Root thermo/thermoDAQ2Log thermo/thermoDAQ2Plots
 endif
 ifeq ($(NOTHERMAL2),0)
-qtsubdirs    += thermo2/thermoDAQ2 thermo/thermoDisplay2
+qtsubdirs    += thermo2/thermoDAQ2 thermo2/thermoDisplay2
 endif
 ifeq ($(NODEFO),0)
 qtsubdirs    += defo/defoCommon defo/defoDAQ defo/defoDisplay defo/defoReco defo/defoCalib defo/defoDAQ2Root
