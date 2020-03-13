@@ -1,0 +1,5 @@
+<map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
+<area shape="rect" id="node1" href="$classVConradController.html" title="Class handling readout of Conrad multimeter." alt="" coords="5,31,137,56"/>
+<area shape="rect" id="node2" href="$classConradController.html" title="Class handling readout of Conrad multimeter." alt="" coords="200,5,323,31"/>
+<area shape="rect" id="node3" href="$classConradControllerFake.html" title="Class handling readout of Conrad multimeter." alt="" coords="185,55,338,80"/>
+</map>
