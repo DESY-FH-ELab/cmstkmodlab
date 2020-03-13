@@ -6,3 +6,5 @@ tkmodlabenv.sh
 .cproject
 .project
 share/assembly/*png
+*~
+html/
