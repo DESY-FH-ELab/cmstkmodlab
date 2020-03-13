@@ -23,12 +23,14 @@
 #include "Thermo2DAQModel.h"
 
 Thermo2DAQModel::Thermo2DAQModel(HuberUnistat525wModel* huberModel,
+                                 LeyboldGraphixOneModel* leyboldModel,
                                  RohdeSchwarzNGE103BModel* nge103BModel,
                                  KeithleyDAQ6510Model* keithleyModel,
                                  QObject *parent)
   : QObject(),
     daqState_(false),
     huberModel_(huberModel),
+    leyboldModel_(leyboldModel),
     nge103BModel_(nge103BModel),
     keithleyModel_(keithleyModel)
 {
@@ -36,6 +38,9 @@ Thermo2DAQModel::Thermo2DAQModel(HuberUnistat525wModel* huberModel,
 
   connect(huberModel_, SIGNAL(informationChanged()),
           this, SLOT(huberInfoChanged()));
+
+  connect(leyboldModel_, SIGNAL(informationChanged()),
+          this, SLOT(leyboldInfoChanged()));
 
   connect(nge103BModel_, SIGNAL(informationChanged()),
           this, SLOT(nge103BInfoChanged()));
@@ -47,6 +52,7 @@ Thermo2DAQModel::Thermo2DAQModel(HuberUnistat525wModel* huberModel,
 void Thermo2DAQModel::myMoveToThread(QThread *thread)
 {
   huberModel_->moveToThread(thread);
+  leyboldModel_->moveToThread(thread);
   nge103BModel_->moveToThread(thread);
   keithleyModel_->moveToThread(thread);
 
@@ -66,6 +72,9 @@ void Thermo2DAQModel::startMeasurement()
     nge103BMeasuredVoltage_[i] = 0.;
     nge103BMeasuredCurrent_[i] = 0.;
   }
+
+  leyboldState_ = false;
+  leyboldPressure_ = 1.013;
 
   for (unsigned int card=0;card<2;++card) {
     for (unsigned int channel=0;channel<10;++channel) {
@@ -114,6 +123,20 @@ void Thermo2DAQModel::createDAQStatusMessage(QString &buffer, bool start)
   xml.writeEndElement();
   //
   // End of Huber Unistat 525w
+  //
+
+  //
+  // Start of Leybold Graphix One
+  //
+
+  xml.writeStartElement("LeyboldGraphixOne");
+  xml.writeAttribute("time", utime.toString(Qt::ISODate));
+  xml.writeAttribute("State", leyboldModel_->getDeviceState()==READY ? "1" : "0");
+  xml.writeAttribute("Pressure", QString::number(leyboldModel_->getPressure(), 'e', 3));
+  xml.writeEndElement();
+
+  //
+  // End of Leybold Graphix One
   //
 
   //
@@ -241,6 +264,45 @@ void Thermo2DAQModel::huberInfoChanged()
     xml.writeAttribute("Power", QString::number(u525wPower_));
     xml.writeAttribute("CWI", QString::number(u525wCWInletTemperature_, 'f', 2));
     xml.writeAttribute("CWO", QString::number(u525wCWOutletTemperature_, 'f', 2));
+    xml.writeEndElement();
+
+    xml.writeEndElement();
+  }
+
+  if (buffer.length()>0) {
+    emit daqMessage(buffer);
+    emit newDataAvailable();
+  }
+}
+
+void Thermo2DAQModel::leyboldInfoChanged()
+{
+  NQLogDebug("Thermo2DAQModel") << "leyboldInfoChanged()";
+
+  if (thread()==QApplication::instance()->thread()) {
+    NQLogDebug("Thermo2DAQModel") << "running in main application thread";
+  } else {
+    NQLogDebug("Thermo2DAQModel") << "running in dedicated DAQ thread";
+  }
+
+  QMutexLocker locker(&mutex_);
+
+  QDateTime& utime = currentTime();
+
+  QString buffer;
+
+  bool changed = false;
+  changed |= updateIfChanged<bool>(leyboldState_, leyboldModel_->getDeviceState()==READY ? true : false);
+  changed |= updateIfChanged<double>(leyboldPressure_, leyboldModel_->getPressure());
+
+  if (changed) {
+    QXmlStreamWriter xml(&buffer);
+    xml.setAutoFormatting(true);
+
+    xml.writeStartElement("LeyboldGraphixOne");
+    xml.writeAttribute("time", utime.toString(Qt::ISODate));
+    xml.writeAttribute("State", leyboldState_==READY ? "1" : "0");
+    xml.writeAttribute("Pressure", QString::number(leyboldPressure_, 'e', 3));
     xml.writeEndElement();
 
     xml.writeEndElement();

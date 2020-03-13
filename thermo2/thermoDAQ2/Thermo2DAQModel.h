@@ -23,6 +23,7 @@
 #include <QMutexLocker>
 
 #include "HuberUnistat525wModel.h"
+#include "LeyboldGraphixOneModel.h"
 #include "RohdeSchwarzNGE103BModel.h"
 #include "KeithleyDAQ6510Model.h"
 
@@ -32,6 +33,7 @@ class Thermo2DAQModel : public QObject
 public:
 
   explicit Thermo2DAQModel(HuberUnistat525wModel* huberModel,
+                           LeyboldGraphixOneModel* leyboldModel,
                            RohdeSchwarzNGE103BModel* nge103BModel,
                            KeithleyDAQ6510Model* keithleyModel,
                            QObject *parent = 0);
@@ -53,6 +55,7 @@ public slots:
 protected slots:
 
   void huberInfoChanged();
+  void leyboldInfoChanged();
   void nge103BInfoChanged();
   void keithleyInfoChanged();
 
@@ -63,6 +66,7 @@ protected:
   bool daqState_;
 
   HuberUnistat525wModel* huberModel_;
+  LeyboldGraphixOneModel* leyboldModel_;
   RohdeSchwarzNGE103BModel* nge103BModel_;
   KeithleyDAQ6510Model* keithleyModel_;
 
@@ -88,6 +92,10 @@ protected:
   int u525wPower_;
   float u525wCWInletTemperature_;
   float u525wCWOutletTemperature_;
+
+  // Leybold GraphixOne Data;
+  bool leyboldState_;
+  double leyboldPressure_;
 
   // Rohde & Schwarz NGE130B Data
   bool nge103BOutputState_[3];

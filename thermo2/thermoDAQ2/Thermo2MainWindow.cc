@@ -23,6 +23,7 @@
 #include "ApplicationConfig.h"
 
 #include "HuberUnistat525wWidget.h"
+#include "LeyboldGraphixOneWidget.h"
 #include "RohdeSchwarzNGE103BWidget.h"
 #include "KeithleyDAQ6510Widget.h"
 
@@ -48,6 +49,14 @@ Thermo2MainWindow::Thermo2MainWindow(QWidget *parent)
 #endif
 
 #ifdef USE_FAKEIO
+  leyboldModel_ = new LeyboldGraphixOneModel(config->getValue<std::string>("LeyboldGraphixOneDevice").c_str(),
+                                             5, this);
+#else
+  leyboldModel_ = new LeyboldGraphixOneModel(config->getValue<std::string>("LeyboldGraphixOneDevice").c_str(),
+                                             20, this);
+#endif
+
+#ifdef USE_FAKEIO
   nge103BModel_ = new RohdeSchwarzNGE103BModel(config->getValue<std::string>("RohdeSchwarzNGE103B").c_str(),
                                                5, this);
 #else
@@ -64,6 +73,7 @@ Thermo2MainWindow::Thermo2MainWindow(QWidget *parent)
 #endif
 
   daqModel_ = new Thermo2DAQModel(huberModel_,
+                                  leyboldModel_,
                                   nge103BModel_,
                                   keithleyModel_,
                                   this);
@@ -104,15 +114,14 @@ Thermo2MainWindow::Thermo2MainWindow(QWidget *parent)
   huberWidget->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);
   wlayout->addWidget(huberWidget);
 
-//  // PFEIFFER MODEL
-//  //PfeifferWidget* pfeifferWidget = new PfeifferWidget(pfeifferModel_, widget);
-//  ThermoPfeifferWidget* pfeifferWidget = new ThermoPfeifferWidget(pfeifferModel_, widget);
-//  pfeifferWidget->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);
-//  wlayout->addWidget(pfeifferWidget);
+  // LEYBOLD MODEL
+  LeyboldGraphixOneWidget* leyboldWidget = new LeyboldGraphixOneWidget(leyboldModel_, widget);
+  leyboldWidget->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);
+  wlayout->addWidget(leyboldWidget);
 
   wlayout->addWidget(new QWidget());
 
-  tabWidget_->addTab(widget, "Chiller");
+  tabWidget_->addTab(widget, "Chiller & Vacuum");
 
   // Rohde & Schwarz NGE130B Widget
   RohdeSchwarzNGE103BWidget* nge103BWidget = new RohdeSchwarzNGE103BWidget(nge103BModel_);

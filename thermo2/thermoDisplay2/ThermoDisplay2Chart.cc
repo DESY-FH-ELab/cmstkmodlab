@@ -11,6 +11,7 @@
 /////////////////////////////////////////////////////////////////////////////////
 
 #include <iostream>
+#include <cmath>
 
 #include <QtCharts/QLegendMarker>
 
@@ -601,4 +602,103 @@ void ThermoDisplay2PowerPressureChart::refreshPressureAxis()
   qreal deltaY = maxY-minY;
   if (deltaY<1.0) deltaY = 1.0;
   axisPressureY_->setRange(minY-0.1*deltaY, maxY+0.1*deltaY);
+}
+
+ThermoDisplay2PressureChart::ThermoDisplay2PressureChart()
+  : ThermoDisplay2Chart()
+{
+  axisX_ = new QDateTimeAxis();
+  axisX_->setFormat("dd.MM. hh:mm:ss");
+  axisX_->setTitleText("Time");
+  addAxis(axisX_, Qt::AlignBottom);
+
+  axisPressureY_ = new QLogValueAxis();
+  axisPressureY_->setLabelFormat("%.2f");
+  axisPressureY_->setTitleText("Pressure [mbar]");
+  addAxis(axisPressureY_, Qt::AlignLeft);
+
+  legend()->setAlignment(Qt::AlignTop);
+}
+
+void ThermoDisplay2PressureChart::addSeries(QAbstractSeries *series)
+{
+  QChart::addSeries(series);
+
+  series->attachAxis(axisX_);
+  series->attachAxis(axisPressureY_);
+}
+
+void ThermoDisplay2PressureChart::refreshAxes()
+{
+  refreshXAxis();
+  refreshPressureAxis();
+}
+
+void ThermoDisplay2PressureChart::refreshXAxis()
+{
+  qreal minX = std::numeric_limits<qreal>::max();
+  qreal maxX = -std::numeric_limits<qreal>::max();
+
+  bool hasValues = false;
+  for (QList<QAbstractSeries*>::Iterator it = series().begin();
+       it!=series().end();
+       ++it) {
+    ThermoDisplay2LineSeries* s = dynamic_cast<ThermoDisplay2LineSeries*>(*it);
+    if (s && s->isInitialized()) {
+      minX = std::min(minX, s->minX());
+      maxX = std::max(maxX, s->maxX());
+      hasValues = true;
+    }
+  }
+  if (!hasValues) return;
+
+  QDateTime dtMin = QDateTime::fromMSecsSinceEpoch(minX);
+  int temp = dtMin.time().msec();
+  dtMin = dtMin.addMSecs(-temp);
+  temp = dtMin.time().second();
+  dtMin = dtMin.addSecs(-temp);
+
+  QDateTime dtMax = QDateTime::fromMSecsSinceEpoch(maxX);
+  temp = dtMin.time().msec();
+  dtMax = dtMax.addMSecs(-temp);
+
+  qint64 deltaX = dtMin.secsTo(dtMax) / 60;
+  deltaX = 0.1*deltaX + 1;
+
+  temp = dtMax.time().second();
+  dtMax = dtMax.addSecs(-temp+deltaX*60);
+
+  axisX_->setRange(dtMin, dtMax);
+}
+
+void ThermoDisplay2PressureChart::refreshPressureAxis()
+{
+  qreal minY = std::numeric_limits<qreal>::max();
+  qreal maxY = -std::numeric_limits<qreal>::max();
+
+  bool hasValues = false;
+  for (QList<QAbstractSeries*>::Iterator it = series().begin();
+      it!=series().end();
+      ++it) {
+    ThermoDisplay2LineSeries* s = dynamic_cast<ThermoDisplay2LineSeries*>(*it);
+    if (s && s->isInitialized()) {
+
+      QList<QAbstractAxis*> axes = s->attachedAxes();
+      for (QList<QAbstractAxis*>::Iterator ita = axes.begin();
+          ita!=axes.end();
+          ++ita) {
+
+        if ((*ita)->alignment()==Qt::AlignLeft) {
+          minY = std::min(minY, s->minY());
+          maxY = std::max(maxY, s->maxY());
+          hasValues = true;
+        }
+      }
+    }
+  }
+  if (!hasValues) return;
+
+  minY = (int)std::log10(minY);
+  maxY = (int)std::log10(maxY);
+  axisPressureY_->setRange(std::pow(10,minY-1.05), std::pow(10,maxY+1.05));
 }

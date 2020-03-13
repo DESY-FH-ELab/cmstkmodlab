@@ -84,6 +84,16 @@ void ThermoDAQ2NetworkReader::processHuberUnistat525wInfo(QXmlStreamReader& xml)
   measurement_.u525wCWOutletTemperature_ = CWO;
 }
 
+void ThermoDAQ2NetworkReader::processLeyboldGraphixOne(QXmlStreamReader& xml)
+{
+  // NQLogDebug("ThermoDAQ2NetworkReader") << "processLeyboldGraphixOne(QXmlStreamReader& xml)";
+
+  QString time = xml.attributes().value("time").toString();
+  measurement_.dt = QDateTime::fromString(time, Qt::ISODate);
+  measurement_.leyboldState_ = xml.attributes().value("State").toString().toInt();
+  measurement_.leyboldPressure_ = xml.attributes().value("Pressure").toString().toDouble();
+}
+
 void ThermoDAQ2NetworkReader::processRohdeSchwarzNGE103B(QXmlStreamReader& xml)
 {
   // NQLogDebug("ThermoDAQ2NetworkReader") << "processRohdeSchwarzNGE103B(QXmlStreamReader& xml)";
@@ -143,6 +153,10 @@ void ThermoDAQ2NetworkReader::processLine(QString& line)
       }
       if (xml.name()=="HuberUnistat525wInfo") {
         processHuberUnistat525wInfo(xml);
+      }
+
+      if (xml.name()=="LeyboldGraphixOne") {
+        processLeyboldGraphixOne(xml);
       }
 
       if (xml.name()=="RohdeSchwarzNGE103B") {

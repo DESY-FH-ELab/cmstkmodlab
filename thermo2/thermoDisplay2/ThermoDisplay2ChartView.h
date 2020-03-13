@@ -104,4 +104,16 @@ public slots:
   void tooltip(QPointF point, bool state);
 };
 
+class ThermoDisplay2PressureChartView : public ThermoDisplay2ChartView
+{
+  Q_OBJECT
+public:
+
+  explicit ThermoDisplay2PressureChartView(ThermoDisplay2Chart *chart, QWidget *parent = nullptr);
+
+public slots:
+
+  void tooltip(QPointF point, bool state);
+};
+
 #endif // THERMODISPLAY2CHART_H

@@ -186,3 +186,43 @@ void ThermoDisplay2PowerPressureChartView::tooltip(QPointF point, bool state)
     callout_->hide();
   }
 }
+
+ThermoDisplay2PressureChartView::ThermoDisplay2PressureChartView(ThermoDisplay2Chart *chart,
+                                                                 QWidget *parent)
+  : ThermoDisplay2ChartView(chart, parent)
+{
+
+}
+
+void ThermoDisplay2PressureChartView::tooltip(QPointF point, bool state)
+{
+  QDateTime dt = QDateTime::fromMSecsSinceEpoch(point.x());
+
+  if (callout_ == nullptr)
+    callout_ = new ThermoDisplay2Callout(chart_);
+
+  if (state) {
+
+    ThermoDisplay2LineSeries *ls = qobject_cast<ThermoDisplay2LineSeries*>(sender());
+
+    QAbstractAxis* axis = ls->attachedAxes().at(1);
+
+    double pressure = point.y();
+    char dummy[40];
+    if (pressure<1) {
+      sprintf(dummy, "%.02E", pressure);
+    } else if (pressure<10) {
+      sprintf(dummy, "%.01f", pressure);
+    } else {
+      sprintf(dummy, "%d", (int)pressure);
+    }
+
+    callout_->setText(QString("%1\n%2\n%3 mbar").arg(dt.toString("dd/MM/yyyy")).arg(dt.toString("hh:mm:ss")).arg(dummy));
+    callout_->setAnchor(point, ls);
+    callout_->setZValue(11);
+    callout_->updateGeometry();
+    callout_->show();
+  } else {
+    callout_->hide();
+  }
+}

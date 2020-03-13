@@ -105,6 +105,25 @@ ThermoDisplay2MainWindow::ThermoDisplay2MainWindow(QWidget *parent)
   w = new QWidget(tabWidget_);
   layout = new QVBoxLayout(w);
 
+  VacuumPressureSeries_ = new ThermoDisplay2LineSeries();
+  VacuumPressureSeries_->setName("pressure");
+
+  VacuumPressureChart_ = new ThermoDisplay2PressureChart();
+  VacuumPressureChart_->addSeries(VacuumPressureSeries_);
+
+  VacuumChartView_ = new ThermoDisplay2PressureChartView(VacuumPressureChart_);
+  VacuumChartView_->setRenderHint(QPainter::Antialiasing);
+  VacuumChartView_->setMinimumSize(800, 300);
+  layout->addWidget(VacuumChartView_);
+
+  VacuumPressureChart_->connectMarkers();
+  VacuumPressureChart_->updateLegend();
+
+  tabWidget_->addTab(w, "Vacuum");
+
+  w = new QWidget(tabWidget_);
+  layout = new QVBoxLayout(w);
+
   U1Series_ = new ThermoDisplay2LineSeries();
   U1Series_->setName("U1");
   U2Series_ = new ThermoDisplay2LineSeries();
@@ -205,6 +224,7 @@ void ThermoDisplay2MainWindow::clearData()
 {
   ChillerTSChart_->clearData();
   ChillerPPChart_->clearData();
+  VacuumPressureChart_->clearData();
   UChart_->clearData();
   IChart_->clearData();
   TChart_[0]->clearData();
@@ -253,6 +273,21 @@ void ThermoDisplay2MainWindow::updateInfo()
   {
     bool updateLegend = false;
 
+    NQLogDebug("ThermoDisplay2MainWindow") << "updateInfo() " << m.leyboldState_;
+    NQLogDebug("ThermoDisplay2MainWindow") << "updateInfo() " << m.leyboldPressure_;
+
+    if (VacuumPressureSeries_->isEnabled()!=m.leyboldState_) updateLegend = true;
+    VacuumPressureSeries_->setEnabled(m.leyboldState_);
+    VacuumPressureSeries_->append(m.dt.toMSecsSinceEpoch(), m.leyboldPressure_);
+
+    if (updateLegend) {
+      VacuumPressureChart_->updateLegend();
+    }
+  }
+
+  {
+    bool updateLegend = false;
+
     if (U1Series_->isEnabled()!=m.nge103BState[0]) updateLegend = true;
     U1Series_->setEnabled(m.nge103BState[0]);
     I1Series_->setEnabled(m.nge103BState[0]);
@@ -291,6 +326,7 @@ void ThermoDisplay2MainWindow::updateInfo()
 
   ChillerTSChartView_->refreshAxes();
   ChillerPPChartView_->refreshAxes();
+  VacuumChartView_->refreshAxes();
   UChartView_->refreshAxes();
   IChartView_->refreshAxes();
   TChartView_[0]->refreshAxes();

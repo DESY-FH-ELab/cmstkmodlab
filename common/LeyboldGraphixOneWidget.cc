@@ -99,8 +99,6 @@ LeyboldGraphixOneGaugeWidget::LeyboldGraphixOneGaugeWidget(LeyboldGraphixOneMode
  : QGroupBox(parent),
    model_(model)
 {
-  setTitle("1");
-
   QFormLayout* layout = new QFormLayout(this);
   setLayout(layout);
 

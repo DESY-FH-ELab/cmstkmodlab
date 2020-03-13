@@ -25,7 +25,7 @@ LeyboldGraphixOneModel::LeyboldGraphixOneModel(const char* port,
     updateInterval_(updateInterval)
 {
   status_ = LeyboldGraphixOne_t::SensorStatus_unknown;
-  pressure_ = -999;
+  pressure_ = 1.013;
   displayUnit_ = LeyboldGraphixOne_t::DisplayUnit_unknown;
 
   timer_ = new QTimer(this);
@@ -120,7 +120,7 @@ void LeyboldGraphixOneModel::setDateTime(const QDateTime& dt)
 
 void LeyboldGraphixOneModel::initialize()
 {
-  NQLog("LeyboldGraphixOneModel") << "initialize() " << LeyboldGraphixOne_PORT;
+  NQLog("LeyboldGraphixOneModel") << "initialize() ";
 
   setDeviceState(INITIALIZING);
 
@@ -158,7 +158,7 @@ void LeyboldGraphixOneModel::setDeviceState( State state )
 
 void LeyboldGraphixOneModel::updateInformation()
 {
-  // NQLog("LeyboldGraphixOneModel", NQLog::Debug) << "updateInformation()";
+  NQLog("LeyboldGraphixOneModel", NQLog::Debug) << "updateInformation()";
 
   if (thread()==QApplication::instance()->thread()) {
     // NQLog("LeyboldGraphixOneModel", NQLog::Debug) << " running in main application thread";
@@ -187,7 +187,7 @@ void LeyboldGraphixOneModel::updateInformation()
 
       displayUnit_ = displayUnit;
 
-      // NQLog("LeyboldGraphixOneModel", NQLog::Spam) << "information changed";
+      NQLog("LeyboldGraphixOneModel", NQLog::Spam) << "information changed";
 
       emit informationChanged();
     }

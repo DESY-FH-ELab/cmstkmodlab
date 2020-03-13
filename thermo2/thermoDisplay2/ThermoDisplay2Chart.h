@@ -19,6 +19,7 @@
 #include <QtCharts/QLineSeries>
 #include <QtCharts/QDateTimeAxis>
 #include <QtCharts/QValueAxis>
+#include <QtCharts/QLogValueAxis>
 #include <QtCharts/QCategoryAxis>
 
 QT_CHARTS_USE_NAMESPACE
@@ -160,6 +161,30 @@ protected:
   QDateTimeAxis *axisX_;
   QValueAxis *axisPowerY_;
   QValueAxis *axisPressureY_;
+};
+
+class ThermoDisplay2PressureChart : public ThermoDisplay2Chart
+{
+  Q_OBJECT
+public:
+
+  explicit ThermoDisplay2PressureChart();
+
+  void addSeries(QAbstractSeries *series);
+
+  void refreshAxes();
+
+protected slots:
+
+signals:
+
+protected:
+
+  void refreshXAxis();
+  void refreshPressureAxis();
+
+  QDateTimeAxis *axisX_;
+  QLogValueAxis *axisPressureY_;
 };
 
 #endif // THERMODISPLAY2CHART_H

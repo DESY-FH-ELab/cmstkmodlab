@@ -66,6 +66,10 @@ protected:
   ThermoDisplay2LineSeries *ChillerPowerSeries_;
   ThermoDisplay2LineSeries *ChillerPressureSeries_;
 
+  ThermoDisplay2ChartView *VacuumChartView_;
+  ThermoDisplay2PressureChart *VacuumPressureChart_;
+  ThermoDisplay2LineSeries *VacuumPressureSeries_;
+
   ThermoDisplay2ChartView *UChartView_;
   ThermoDisplay2VoltageChart *UChart_;
   ThermoDisplay2LineSeries *U1Series_;

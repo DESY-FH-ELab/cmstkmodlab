@@ -35,6 +35,9 @@ typedef struct {
   float          u525wCWInletTemperature_;
   float          u525wCWOutletTemperature_;
 
+  bool           leyboldState_;
+  double         leyboldPressure_;
+
   bool           nge103BState[3];
   float          nge103BVoltage[3];
   float          nge103BCurrent[3];
@@ -64,6 +67,8 @@ signals:
   void processHuberUnistat525w(QXmlStreamReader& xml);
   void processHuberUnistat525wControl(QXmlStreamReader& xml);
   void processHuberUnistat525wInfo(QXmlStreamReader& xml);
+
+  void processLeyboldGraphixOne(QXmlStreamReader& xml);
 
   void processRohdeSchwarzNGE103B(QXmlStreamReader& xml);
   void processRohdeSchwarzNGE103BChannel(QXmlStreamReader& xml);
