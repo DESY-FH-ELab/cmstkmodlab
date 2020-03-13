@@ -2,67 +2,77 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <url>
      <loc>http://desy-fh-elab.github.io/cmstkmodlab/</loc>
-     <lastmod>2019-05-23</lastmod>
+     <lastmod>2020-03-13</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
      <loc>http://desy-fh-elab.github.io/cmstkmodlab/build/configure/</loc>
-     <lastmod>2019-05-23</lastmod>
+     <lastmod>2020-03-13</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
      <loc>http://desy-fh-elab.github.io/cmstkmodlab/build/UbuntuLinux/</loc>
-     <lastmod>2019-05-23</lastmod>
+     <lastmod>2020-03-13</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
      <loc>http://desy-fh-elab.github.io/cmstkmodlab/build/RaspbianLinux/</loc>
-     <lastmod>2019-05-23</lastmod>
+     <lastmod>2020-03-13</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
      <loc>http://desy-fh-elab.github.io/cmstkmodlab/build/OSXElCapitan/</loc>
-     <lastmod>2019-05-23</lastmod>
+     <lastmod>2020-03-13</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
      <loc>http://desy-fh-elab.github.io/cmstkmodlab/thermo/thermoDAQ/</loc>
-     <lastmod>2019-05-23</lastmod>
+     <lastmod>2020-03-13</lastmod>
+     <changefreq>daily</changefreq>
+    </url>
+    <url>
+     <loc>http://desy-fh-elab.github.io/cmstkmodlab/thermo/thermoDAQ2/</loc>
+     <lastmod>2020-03-13</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
      <loc>http://desy-fh-elab.github.io/cmstkmodlab/defo/defoDAQ/</loc>
-     <lastmod>2019-05-23</lastmod>
+     <lastmod>2020-03-13</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
      <loc>http://desy-fh-elab.github.io/cmstkmodlab/defo/defoDAQScripting/</loc>
-     <lastmod>2019-05-23</lastmod>
+     <lastmod>2020-03-13</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
      <loc>http://desy-fh-elab.github.io/cmstkmodlab/assembly/</loc>
-     <lastmod>2019-05-23</lastmod>
+     <lastmod>2020-03-13</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
      <loc>http://desy-fh-elab.github.io/cmstkmodlab/plasma/</loc>
-     <lastmod>2019-05-23</lastmod>
+     <lastmod>2020-03-13</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
      <loc>http://desy-fh-elab.github.io/cmstkmodlab/pumpstation/</loc>
-     <lastmod>2019-05-23</lastmod>
+     <lastmod>2020-03-13</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
      <loc>http://desy-fh-elab.github.io/cmstkmodlab/pumpstation/setup/</loc>
-     <lastmod>2019-05-23</lastmod>
+     <lastmod>2020-03-13</lastmod>
+     <changefreq>daily</changefreq>
+    </url>
+    <url>
+     <loc></loc>
+     
      <changefreq>daily</changefreq>
     </url>
     <url>
      <loc>http://desy-fh-elab.github.io/cmstkmodlab/license/</loc>
-     <lastmod>2019-05-23</lastmod>
+     <lastmod>2020-03-13</lastmod>
      <changefreq>daily</changefreq>
     </url>
 </urlset>
