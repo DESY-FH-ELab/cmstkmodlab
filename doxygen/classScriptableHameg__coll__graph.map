@@ -1,9 +1,0 @@
-<map id="ScriptableHameg" name="ScriptableHameg">
-<area shape="rect" id="node1" title=" " alt="" coords="7,420,130,445"/>
-<area shape="rect" id="node2" title=" " alt="" coords="5,173,76,199"/>
-<area shape="rect" id="node3" href="$classHamegModel.html" title=" " alt="" coords="95,333,196,359"/>
-<area shape="rect" id="node4" href="$classAbstractDeviceModel.html" title=" " alt="" coords="100,167,247,205"/>
-<area shape="rect" id="node5" href="$classHameg8143.html" title=" " alt="" coords="127,80,221,105"/>
-<area shape="rect" id="node6" href="$classVHameg8143.html" title=" " alt="" coords="122,5,225,31"/>
-<area shape="rect" id="node7" href="$classDeviceParameter.html" title=" " alt="" coords="272,173,444,199"/>
-</map>

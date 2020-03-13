@@ -1,5 +1,0 @@
-<map id="ConradModel" name="ConradModel">
-<area shape="rect" id="node1" title="Model for controlling the Conrad switch. This model can be used to set and query the state of the swi..." alt="" coords="58,92,159,117"/>
-<area shape="rect" id="node2" title=" " alt="" coords="5,12,76,37"/>
-<area shape="rect" id="node3" href="$classAbstractDeviceModel.html" title=" " alt="" coords="99,5,256,44"/>
-</map>

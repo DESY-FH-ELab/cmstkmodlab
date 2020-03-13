@@ -1,9 +1,0 @@
-<map id="PfeifferWidget" name="PfeifferWidget">
-<area shape="rect" id="node1" title=" " alt="" coords="11,341,116,367"/>
-<area shape="rect" id="node2" title=" " alt="" coords="5,255,79,280"/>
-<area shape="rect" id="node3" href="$classPfeifferModel.html" title=" " alt="" coords="103,255,202,280"/>
-<area shape="rect" id="node4" title=" " alt="" coords="76,173,146,199"/>
-<area shape="rect" id="node5" href="$classAbstractDeviceModel.html" title=" " alt="" coords="171,167,318,205"/>
-<area shape="rect" id="node6" href="$classPfeifferTPG262.html" title=" " alt="" coords="188,80,301,105"/>
-<area shape="rect" id="node7" href="$classVPfeifferTPG262.html" title=" " alt="" coords="184,5,306,31"/>
-</map>

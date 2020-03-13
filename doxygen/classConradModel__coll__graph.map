@@ -1,7 +1,0 @@
-<map id="ConradModel" name="ConradModel">
-<area shape="rect" id="node1" title="Model for controlling the Conrad switch. This model can be used to set and query the state of the swi..." alt="" coords="32,255,134,280"/>
-<area shape="rect" id="node2" title=" " alt="" coords="5,173,76,199"/>
-<area shape="rect" id="node3" href="$classAbstractDeviceModel.html" title=" " alt="" coords="99,167,256,205"/>
-<area shape="rect" id="node4" href="$classConradController.html" title="Class handling readout of Conrad multimeter." alt="" coords="116,80,239,105"/>
-<area shape="rect" id="node5" href="$classVConradController.html" title="Class handling readout of Conrad multimeter." alt="" coords="112,5,244,31"/>
-</map>

@@ -1,9 +1,0 @@
-<map id="JulaboModel" name="JulaboModel">
-<area shape="rect" id="node1" title=" " alt="" coords="729,92,826,117"/>
-<area shape="rect" id="node2" title=" " alt="" coords="422,5,493,31"/>
-<area shape="rect" id="node3" href="$classAbstractDeviceModel.html" title=" " alt="" coords="384,55,531,93"/>
-<area shape="rect" id="node4" href="$classJulaboFP50.html" title=" " alt="" coords="156,61,249,87"/>
-<area shape="rect" id="node5" href="$classVJulaboFP50.html" title=" " alt="" coords="5,61,107,87"/>
-<area shape="rect" id="node6" href="$classDeviceParameter.html" title=" " alt="" coords="363,117,552,156"/>
-<area shape="rect" id="node7" href="$classDeviceParameter.html" title=" " alt="" coords="371,180,544,205"/>
-</map>

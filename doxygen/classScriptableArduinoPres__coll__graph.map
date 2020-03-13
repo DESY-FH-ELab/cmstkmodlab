@@ -1,8 +1,0 @@
-<map id="ScriptableArduinoPres" name="ScriptableArduinoPres">
-<area shape="rect" id="node1" title=" " alt="" coords="5,341,159,367"/>
-<area shape="rect" id="node2" title=" " alt="" coords="26,173,96,199"/>
-<area shape="rect" id="node3" href="$classArduinoPresModel.html" title=" " alt="" coords="98,255,229,280"/>
-<area shape="rect" id="node4" href="$classAbstractDeviceModel.html" title=" " alt="" coords="121,167,268,205"/>
-<area shape="rect" id="node5" href="$classArduinoPres.html" title=" " alt="" coords="147,80,242,105"/>
-<area shape="rect" id="node6" href="$classVArduinoPres.html" title=" " alt="" coords="143,5,246,31"/>
-</map>

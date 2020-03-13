@@ -84,10 +84,6 @@
                     
     <a class="" href="../../thermo/thermoDAQ/">thermoDAQ</a>
                 </li>
-                <li class="">
-                    
-    <a class="" href="../../thermo/thermoDAQ2/">thermoDAQ2</a>
-                </li>
     </ul>
 	    </li>
           
@@ -215,7 +211,8 @@ be correctly found. The Leybold GraphixThree controller is supposed to accessabl
 and the Conrad relay card via <code>/dev/ttyConrad</code>. A udev rules file <code>99-usb-serial.rules</code> is
 available in the <code>pumpstation</code> directory of the repository. Please copy it to the directory
 <code>/etc/udev/rules.d/</code> and restart the system.</p>
-<p>In order to automatically synchronise the data to the DESY cloud, perform the following steps:</p>
+<p>&lt;&lt;&lt;&lt;&lt;&lt;&lt; Updated upstream
+In order to automatically synchronise the data to the DESY cloud, perform the following steps:</p>
 <ul>
 <li>
 <p>create a directory to be used as a mount point for the DESY cloud via</br>
@@ -235,7 +232,23 @@ available in the <code>pumpstation</code> directory of the repository. Please co
 </li>
 <li>
 <p>add the following entry to the crontab for the user <code>pi</code></br>
-   <code>0 7,19 * * * /home/pi/cmstkmodlab/pumpstation/cloudSync.sh &gt; /dev/null 2&gt;&amp;1</code></p>
+   <code>0 7,19 * * * /home/pi/cmstkmodlab/pumpstation/cloudSync.sh &gt; /dev/null 2&gt;&amp;1</code>
+=======</p>
+<blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<p>Stashed changes</p>
+</blockquote>
+</blockquote>
+</blockquote>
+</blockquote>
+</blockquote>
+</blockquote>
+</blockquote>
 </li>
 </ul>
               

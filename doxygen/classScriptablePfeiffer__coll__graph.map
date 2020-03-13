@@ -1,8 +1,0 @@
-<map id="ScriptablePfeiffer" name="ScriptablePfeiffer">
-<area shape="rect" id="node1" title=" " alt="" coords="5,341,128,367"/>
-<area shape="rect" id="node2" title=" " alt="" coords="10,173,80,199"/>
-<area shape="rect" id="node3" href="$classPfeifferModel.html" title=" " alt="" coords="82,255,182,280"/>
-<area shape="rect" id="node4" href="$classAbstractDeviceModel.html" title=" " alt="" coords="105,167,252,205"/>
-<area shape="rect" id="node5" href="$classPfeifferTPG262.html" title=" " alt="" coords="122,80,235,105"/>
-<area shape="rect" id="node6" href="$classVPfeifferTPG262.html" title=" " alt="" coords="118,5,240,31"/>
-</map>

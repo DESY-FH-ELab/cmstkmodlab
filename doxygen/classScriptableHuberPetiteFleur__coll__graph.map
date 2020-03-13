@@ -1,9 +1,0 @@
-<map id="ScriptableHuberPetiteFleur" name="ScriptableHuberPetiteFleur">
-<area shape="rect" id="node1" title=" " alt="" coords="5,353,187,379"/>
-<area shape="rect" id="node2" title=" " alt="" coords="37,173,107,199"/>
-<area shape="rect" id="node3" href="$classHuberPetiteFleurModel.html" title=" " alt="" coords="117,267,275,292"/>
-<area shape="rect" id="node4" href="$classAbstractDeviceModel.html" title=" " alt="" coords="131,167,287,205"/>
-<area shape="rect" id="node5" href="$classHuberPetiteFleur.html" title=" " alt="" coords="148,80,270,105"/>
-<area shape="rect" id="node6" href="$classVHuberPetiteFleur.html" title=" " alt="" coords="144,5,275,31"/>
-<area shape="rect" id="node7" href="$classDeviceParameter.html" title=" " alt="" coords="311,173,484,199"/>
-</map>

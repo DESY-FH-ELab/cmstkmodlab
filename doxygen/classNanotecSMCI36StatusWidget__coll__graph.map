@@ -1,9 +1,0 @@
-<map id="NanotecSMCI36StatusWidget" name="NanotecSMCI36StatusWidget">
-<area shape="rect" id="node1" title=" " alt="" coords="5,341,204,367"/>
-<area shape="rect" id="node2" title=" " alt="" coords="47,255,120,280"/>
-<area shape="rect" id="node3" href="$classNanotecSMCI36Model.html" title=" " alt="" coords="144,255,300,280"/>
-<area shape="rect" id="node4" title=" " alt="" coords="145,173,216,199"/>
-<area shape="rect" id="node5" href="$classAbstractDeviceModel.html" title=" " alt="" coords="240,167,393,205"/>
-<area shape="rect" id="node6" href="$classNanotecSMCI36.html" title=" " alt="" coords="257,80,376,105"/>
-<area shape="rect" id="node7" href="$classVNanotecSMCI36.html" title=" " alt="" coords="253,5,381,31"/>
-</map>
