@@ -16,8 +16,6 @@
 #include <QDateTime>
 #include <QXmlStreamWriter>
 
-#include <qwt_date.h>
-
 #include <nqlogger.h>
 
 #include "Thermo2DAQModel.h"
