@@ -49,12 +49,12 @@ void LeyboldGraphixOneModel::setSensorDetectionMode(LeyboldGraphixOne_t::SensorD
 
 LeyboldGraphixOne_t::SensorType LeyboldGraphixOneModel::getSensorType() const
 {
-  return controller_->GetSensorType(1);
+  return controller_->GetSensorType();
 }
 
 void LeyboldGraphixOneModel::setSensorType(LeyboldGraphixOne_t::SensorType type)
 {
-  controller_->SetSensorType(1, type);
+  controller_->SetSensorType(type);
 }
 
 const std::string LeyboldGraphixOneModel::getSensorName() const
@@ -167,8 +167,6 @@ void LeyboldGraphixOneModel::updateInformation()
   }
 
   if ( state_ == READY ) {
-
-    // unsigned int status = controller_->GetStatus();
 
     LeyboldGraphixOne_t::SensorStatus status;
     double pressure;

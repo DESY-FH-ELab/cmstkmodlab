@@ -1,6 +1,6 @@
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //
-//               Copyright (C) 2011-2020 - The DESY CMS Group                  //
+//               Copyright (C) 2011-2017 - The DESY CMS Group                  //
 //                           All rights reserved                               //
 //                                                                             //
 //      The CMStkModLab source code is licensed under the GNU GPL v3.0.        //
@@ -17,7 +17,7 @@
 #include "LeyboldGraphixThree.h"
 
 LeyboldGraphixThree::LeyboldGraphixThree( const ioport_t ioPort )
-  :VLeyboldGraphix(ioPort),
+  :VLeyboldGraphixThree(ioPort),
    isDeviceAvailable_(false)
 {
   comHandler_ = new LeyboldComHandler( ioPort );
@@ -219,7 +219,7 @@ void LeyboldGraphixThree::SetSensorName(int sensor, const std::string& name)
   bool isACK = ReceiveData(buffer);
 }
 
-LeyboldGraphixThree::SensorStatus LeyboldGraphixThree::GetSensorStatus(int sensor) const
+VLeyboldGraphix::SensorStatus LeyboldGraphixThree::GetSensorStatus(int sensor) const
 {
   if (sensor<1 || sensor>3) return SensorStatus_nosen;
 
@@ -268,7 +268,7 @@ double LeyboldGraphixThree::GetPressure(int sensor) const
   return std::atof(buffer.c_str());
 }
 
-LeyboldGraphixThree::DisplayUnit LeyboldGraphixThree::GetDisplayUnit() const
+VLeyboldGraphix::DisplayUnit LeyboldGraphixThree::GetDisplayUnit() const
 {
   std::string command;
 
@@ -290,7 +290,7 @@ LeyboldGraphixThree::DisplayUnit LeyboldGraphixThree::GetDisplayUnit() const
   return DisplayUnit_unknown;
 }
 
-void LeyboldGraphixThree::SetDisplayUnit(LeyboldGraphixThree::DisplayUnit unit)
+void LeyboldGraphixThree::SetDisplayUnit(VLeyboldGraphix::DisplayUnit unit)
 {
   std::string name;
 

@@ -13,14 +13,20 @@
 #ifndef _LEYBOLDGRAPHIXONEFAKE_H_
 #define _LEYBOLDGRAPHIXONEFAKE_H_
 
-#include "LeyboldGraphixThreeFake.h"
+#include "VLeyboldGraphixOne.h"
 
-class LeyboldGraphixOneFake : public LeyboldGraphixThreeFake
+class LeyboldGraphixOneFake : public VLeyboldGraphixOne
 {
  public:
 
   LeyboldGraphixOneFake( const ioport_t );
   ~LeyboldGraphixOneFake();
+
+  bool DeviceAvailable() const { return true; }
+
+  std::string GetVersion() const;
+  int GetSerialNumber() const;
+  std::string GetItemNumber() const;
 
   int GetNumberOfChannels() const;
 
@@ -37,16 +43,36 @@ class LeyboldGraphixOneFake : public LeyboldGraphixThreeFake
 
   double GetPressure() const;
 
+  DisplayUnit GetDisplayUnit() const;
+  void SetDisplayUnit(DisplayUnit);
+
+  SetPointChannel GetSetPointChannelAssignment(int sp) const;
+  void SetSetPointChannelAssignment(int sp, SetPointChannel channel);
+
+  double GetSetPointOnPressure(int sp) const;
+  void SetSetPointOnPressure(int sp, double pressure);
+
+  double GetSetPointOffPressure(int sp) const;
+  void SetSetPointOffPressure(int sp, double pressure);
+
+  bool GetSetPointStatus(int sp) const;
+
+  std::string GetDate() const;
+  void SetDate(const std::string& date);
+
+  std::string GetTime() const;
+  void SetTime(const std::string& date);
+
  protected:
 
-  using LeyboldGraphixThreeFake::GetSensorDetectionMode;
-  using LeyboldGraphixThreeFake::SetSensorDetectionMode;
-  using LeyboldGraphixThreeFake::GetSensorTypeName;
-  using LeyboldGraphixThreeFake::SetSensorTypeName;
-  using LeyboldGraphixThreeFake::GetSensorName;
-  using LeyboldGraphixThreeFake::SetSensorName;
-  using LeyboldGraphixThreeFake::GetSensorStatus;
-  using LeyboldGraphixThreeFake::GetPressure;
+  SensorDetectionMode sensorDetectionMode_;
+  std::string sensorType_;
+  std::string sensorName_;
+  double pressure_;
+  DisplayUnit displayUnit_;
+  SetPointChannel setPointChannel_[6];
+  double setPointOnPressure_[6];
+  double setPointOffPressure_[6];
 };
 
 #endif // _LEYBOLDGRAPHIXONEFAKE_H_
