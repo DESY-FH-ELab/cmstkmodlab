@@ -26,7 +26,7 @@ int main()
 
   std::string buffer;
 
-  RohdeSchwarzNGE103B_t nge103B("/dev/ttyACM1");
+  RohdeSchwarzNGE103B_t nge103B("/dev/ttyACM0");
 
   std::cout << (int) nge103B.DeviceAvailable() << std::endl;
 
