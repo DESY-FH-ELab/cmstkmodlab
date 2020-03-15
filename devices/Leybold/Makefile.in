@@ -10,10 +10,12 @@ LIB           = TkModLabLeybold
 
 MODULES       = LeyboldComHandler \
                 VLeyboldGraphix \
-                LeyboldGraphixThree \
-                LeyboldGraphixThreeFake \
+                VLeyboldGraphixOne \
                 LeyboldGraphixOne \
-                LeyboldGraphixOneFake
+                LeyboldGraphixOneFake \
+                VLeyboldGraphixThree \
+                LeyboldGraphixThree \
+                LeyboldGraphixThreeFake
 
 LLDEPEND = $(addsuffix .d,$(MODULES))
 

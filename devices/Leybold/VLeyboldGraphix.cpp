@@ -48,45 +48,6 @@ VLeyboldGraphix::~VLeyboldGraphix()
 
 }
 
-
-VLeyboldGraphix::SensorType VLeyboldGraphix::GetSensorType(int sensor) const
-{
-  if (sensor<1 || sensor>GetNumberOfChannels()) return SensorType_NOSEN;
-
-  std::string type = GetSensorTypeName(sensor);
-
-  if (type=="NOSEN")  return SensorType_NOSEN;
-  if (type=="TTR?")   return SensorType_TTRx;
-  if (type=="TTR90")  return SensorType_TTR90;
-  if (type=="TTR91")  return SensorType_TTR91;
-  if (type=="TTR91N") return SensorType_TTR91N;
-
-  return SensorType_NOSEN;
-}
-
-void VLeyboldGraphix::SetSensorType(int sensor, VLeyboldGraphix::SensorType type)
-{
-  if (sensor<1 || sensor>GetNumberOfChannels()) return;
-
-  switch (type) {
-  case SensorType_NOSEN:
-    SetSensorTypeName(sensor, "NOSEN");
-    break;
-  case SensorType_TTRx:
-    SetSensorTypeName(sensor, "TTR?");
-    break;
-  case SensorType_TTR90:
-    SetSensorTypeName(sensor, "TTR90");
-    break;
-  case SensorType_TTR91:
-    SetSensorTypeName(sensor, "TTR91");
-    break;
-  case SensorType_TTR91N:
-    SetSensorTypeName(sensor, "TTR91N");
-    break;
-  }
-}
-
 std::string VLeyboldGraphix::GetSensorStatusText(SensorStatus status) const
 {
   std::map<SensorStatus,std::string>::const_iterator itFind = sensorTextStatus_.find(status);

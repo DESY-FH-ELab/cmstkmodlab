@@ -74,24 +74,22 @@ class VLeyboldGraphix
 
   virtual int GetNumberOfChannels() const = 0;
 
-  virtual SensorDetectionMode GetSensorDetectionMode(int sensor) const = 0;
-  virtual void SetSensorDetectionMode(int sensor, SensorDetectionMode mode) = 0;
+  //virtual SensorDetectionMode GetSensorDetectionMode(int sensor) const = 0;
+  //virtual void SetSensorDetectionMode(int sensor, SensorDetectionMode mode) = 0;
 
-  virtual std::string GetSensorTypeName(int sensor) const = 0;
-  SensorType GetSensorType(int sensor) const;
-  virtual void SetSensorTypeName(int sensor, std::string type) = 0;
-  void SetSensorType(int sensor, SensorType type);
+  //virtual std::string GetSensorTypeName(int sensor) const = 0;
+  //virtual void SetSensorTypeName(int sensor, std::string type) = 0;
 
-  virtual std::string GetSensorName(int sensor) const = 0;
-  virtual void SetSensorName(int sensor, const std::string& name) = 0;
+  //virtual std::string GetSensorName(int sensor) const = 0;
+  //virtual void SetSensorName(int sensor, const std::string& name) = 0;
 
-  virtual SensorStatus GetSensorStatus(int sensor) const = 0;
+  //virtual SensorStatus GetSensorStatus(int sensor) const = 0;
   std::string GetSensorStatusText(SensorStatus status) const;
   const std::map<SensorStatus,std::string>& GetSensorStatusTexts() const {
     return sensorTextStatus_;
   }
 
-  virtual double GetPressure(int sensor) const = 0;
+  //virtual double GetPressure(int sensor) const = 0;
 
   virtual DisplayUnit GetDisplayUnit() const = 0;
   virtual void SetDisplayUnit(DisplayUnit unit) = 0;
