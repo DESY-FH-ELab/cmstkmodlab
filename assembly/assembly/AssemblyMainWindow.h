@@ -29,6 +29,10 @@ typedef AssemblyUEyeModel AssemblyUEyeModel_t;
 #include <AssemblyZFocusFinder.h>
 #include <AssemblyImageController.h>
 #include <AssemblyImageView.h>
+
+#include <AlignmentCheck.h>
+#include <AlignmentCheckView.h>
+
 #include <AssemblyThresholder.h>
 #include <AssemblyThresholderView.h>
 #include <AssemblyObjectFinderPatRec.h>
@@ -92,6 +96,8 @@ class AssemblyMainWindow : public QMainWindow
   void start_objectAligner(const AssemblyObjectAligner::Configuration&);
   void disconnect_objectAligner();
 
+  void start_alignmentCheck(const AlignmentCheck::Configuration&);
+  void disconnect_alignmentCheck();
   void start_multiPickupTest(const AssemblyMultiPickupTester::Configuration&);
   void disconnect_multiPickupTest();
 
@@ -149,6 +155,7 @@ class AssemblyMainWindow : public QMainWindow
   AssemblyObjectAligner*      aligner_;
   AssemblyAssembly*           assembly_;
   AssemblyMultiPickupTester*  multipickup_tester_;
+  AlignmentCheck* alignmentCheck_;
 
   AssemblyObjectFinderPatRec*       finder_;
   AssemblyObjectFinderPatRecThread* finder_thread_;
@@ -161,9 +168,9 @@ class AssemblyMainWindow : public QMainWindow
   QToolBar*   toolBar_;
   QTabWidget* tabWidget_;
 
-//  AssemblyUEyeSnapShooter* finderView_;
-//  AssemblyUEyeSnapShooter* edgeView_;
-//  AssemblyUEyeSnapShooter* rawView_;
+  // AssemblyUEyeSnapShooter* finderView_;
+  // AssemblyUEyeSnapShooter* edgeView_;
+  // AssemblyUEyeSnapShooter* rawView_;
   AssemblyImageView* image_view_;
   AssemblyThresholderView* thresholder_view_;
   AssemblyObjectFinderPatRecView* finder_view_;
@@ -172,7 +179,7 @@ class AssemblyMainWindow : public QMainWindow
   AssemblyToolboxView* toolbox_view_;
   AssemblyParametersView* params_view_;
   AssemblyHardwareControlView* hwctr_view_;
-
+  AlignmentCheckView* alignmentCheck_view_;
   QCheckBox* autofocus_checkbox_;
 
   // flags
