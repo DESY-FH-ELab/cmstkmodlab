@@ -11,12 +11,9 @@ USEFAKEDEVICES= @usefakedevices@
 QMAKE         = @qmake@
 
 subdirs	      = devices python external tools common common_test
-ifeq ($(NOTHERMAL),0)
+
 subdirs      += thermo
-endif
-ifeq ($(NOTHERMAL2),0)
-subdirs      += thermo2
-endif
+
 ifeq ($(NODEFO),0)
 subdirs      += defo
 endif
@@ -31,14 +28,21 @@ subdirs      += pumpstation
 endif
 
 qtsubdirs     = common common_test
+
 ifeq ($(NOTHERMAL),0)
-qtsubdirs    += thermo/thermoDAQ thermo/thermoDisplay
-qtsubdirs    += thermo/microDAQ thermo/microDisplay
-qtsubdirs    += thermo/thermoDAQ2Root thermo/thermoDAQ2Log thermo/thermoDAQ2Plots
+ifeq ($(NOTHERMAL2),0)
+qtsubdirs    += thermo/thermoDAQ2Root
+endif
+endif
+ifeq ($(NOTHERMAL),0)
+qtsubdirs    += thermo1/thermoDAQ thermo1/thermoDisplay
+qtsubdirs    += thermo1/microDAQ thermo1/microDisplay
+qtsubdirs    += thermo1/thermoDAQ2Log thermo1/thermoDAQ2Plots
 endif
 ifeq ($(NOTHERMAL2),0)
 qtsubdirs    += thermo2/thermoDAQ2 thermo2/thermoDisplay2
 endif
+
 ifeq ($(NODEFO),0)
 qtsubdirs    += defo/defoCommon defo/defoDAQ defo/defoDisplay defo/defoReco defo/defoCalib defo/defoDAQ2Root
 endif
