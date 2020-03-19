@@ -2,7 +2,7 @@
 
 #### Manually generate Doxygen pages in HTML format
 
-Execute the following command from the base directory of the project:
+Execute the following command from the `documentation/` directory:
 ```
 doxygen Doxyfile
 ```
