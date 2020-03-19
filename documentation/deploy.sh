@@ -1,5 +1,7 @@
 #!/bin/sh
 
+set -e
+
 #mkdocs gh-deploy --clean --message "new documentation version"
 
 mkdocs build
