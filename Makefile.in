@@ -35,12 +35,12 @@ qtsubdirs    += thermo/thermoDAQ2Root
 endif
 endif
 ifeq ($(NOTHERMAL),0)
-qtsubdirs    += thermo1/thermoDAQ thermo1/thermoDisplay
-qtsubdirs    += thermo1/microDAQ thermo1/microDisplay
-qtsubdirs    += thermo1/thermoDAQ2Log thermo1/thermoDAQ2Plots
+qtsubdirs    += thermo/thermo1/thermoDAQ thermo/thermo1/thermoDisplay
+qtsubdirs    += thermo/thermo1/microDAQ thermo/thermo1/microDisplay
+qtsubdirs    += thermo/thermo1/thermoDAQ2Log thermo/thermo1/thermoDAQ2Plots
 endif
 ifeq ($(NOTHERMAL2),0)
-qtsubdirs    += thermo2/thermoDAQ2 thermo2/thermoDisplay2
+qtsubdirs    += thermo/thermo2/thermoDAQ2 thermo/thermo2/thermoDisplay2
 endif
 
 ifeq ($(NODEFO),0)
