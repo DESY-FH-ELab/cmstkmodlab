@@ -17,6 +17,15 @@
 
 typedef const char* ioport_t;
 
+/** @addtogroup devices
+ *  @{
+ */
+
+
+/** @addtogroup RohdeSchwarz
+ *  @{
+ */
+
 class VRohdeSchwarzNGE103B
 {
 public:
@@ -66,5 +75,9 @@ public:
 
   virtual unsigned int GetOutputMode() const = 0;
 };
+ 
+/** @} */
+
+/** @} */
 
 #endif // __VROHDESCHWARZNGE103B_H

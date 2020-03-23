@@ -17,6 +17,14 @@
 #include <map>
 #include <utility>
 
+/** @addtogroup devices
+ *  @{
+ */
+
+/** @addtogroup Leybold
+ *  @{
+ */
+
 typedef const char* ioport_t;
 
 class VLeyboldGraphix
@@ -123,5 +131,9 @@ class VLeyboldGraphix
   std::map<DisplayUnit,std::string> displayUnitNames_;
   std::map<std::string,DisplayUnit> displayNameUnits_;
 };
+ 
+/** @} */
+
+/** @} */
 
 #endif // _VLEYBOLDGRAPHIX_H_

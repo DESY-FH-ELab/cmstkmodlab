@@ -19,6 +19,15 @@
 #include <fcntl.h>
 #include <unistd.h>
 
+/** @addtogroup devices
+ *  @{
+ */
+
+/** @defgroup RohdeSchwarz Rohde & Schwarz
+ * Classes to handle low level communication with Rohde & Schwarz devices
+ *  @{
+ */
+
 typedef const char* ioport_t;
 typedef struct termios termios_t;
 
@@ -54,8 +63,9 @@ class NGE103BComHandler {
   ioport_t fIoPort;
   termios_t fCurrentTermios, fThisTermios;
 };
+ 
+/** @} */
 
-#endif
+/** @} */
 
-
-
+#endif // _NGE103BCOMHANDLER_H_

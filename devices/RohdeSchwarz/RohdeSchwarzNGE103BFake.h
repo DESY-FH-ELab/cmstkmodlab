@@ -17,6 +17,15 @@
 
 #include "VRohdeSchwarzNGE103B.h"
 
+/** @addtogroup devices
+ *  @{
+ */
+
+
+/** @addtogroup RohdeSchwarz
+ *  @{
+ */
+
 class RohdeSchwarzNGE103BFake : public VRohdeSchwarzNGE103B
 {
  public:
@@ -62,5 +71,9 @@ class RohdeSchwarzNGE103BFake : public VRohdeSchwarzNGE103B
   std::array<float,3> easyRampDuration_;
   std::array<bool,3> easyRampState_;
 };
+ 
+/** @} */
+
+/** @} */
 
 #endif

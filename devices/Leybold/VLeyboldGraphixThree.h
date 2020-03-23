@@ -15,6 +15,14 @@
 
 #include "VLeyboldGraphix.h"
 
+/** @addtogroup devices
+ *  @{
+ */
+
+/** @addtogroup Leybold
+ *  @{
+ */
+
 class VLeyboldGraphixThree : public VLeyboldGraphix
 {
  public:
@@ -68,5 +76,9 @@ class VLeyboldGraphixThree : public VLeyboldGraphix
  protected:
 
 };
+ 
+/** @} */
+
+/** @} */
 
 #endif // _VLEYBOLDGRAPHIXTHREE_H_

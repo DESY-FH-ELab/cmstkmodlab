@@ -25,6 +25,14 @@
 #include "VLeyboldGraphixOne.h"
 #include "LeyboldComHandler.h"
 
+/** @addtogroup devices
+ *  @{
+ */
+
+/** @addtogroup Leybold
+ *  @{
+ */
+
 class LeyboldGraphixOne : public VLeyboldGraphixOne
 {
  public:
@@ -94,5 +102,9 @@ class LeyboldGraphixOne : public VLeyboldGraphixOne
 
   mutable SensorStatus sensorStatus_;
 };
+ 
+/** @} */
+
+/** @} */
 
 #endif // _LEYBOLDGRAPHIXONE_H_

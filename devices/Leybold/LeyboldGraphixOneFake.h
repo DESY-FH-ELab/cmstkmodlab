@@ -15,6 +15,14 @@
 
 #include "VLeyboldGraphixOne.h"
 
+/** @addtogroup devices
+ *  @{
+ */
+
+/** @addtogroup Leybold
+ *  @{
+ */
+
 class LeyboldGraphixOneFake : public VLeyboldGraphixOne
 {
  public:
@@ -74,5 +82,9 @@ class LeyboldGraphixOneFake : public VLeyboldGraphixOne
   double setPointOnPressure_[6];
   double setPointOffPressure_[6];
 };
+ 
+/** @} */
+
+/** @} */
 
 #endif // _LEYBOLDGRAPHIXONEFAKE_H_
