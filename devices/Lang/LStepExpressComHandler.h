@@ -19,6 +19,14 @@
 #include <fcntl.h>
 #include <unistd.h>
 
+/** @addtogroup devices
+ *  @{
+ */
+
+/** @addtogroup Lang
+ *  @{
+ */
+
 typedef struct termios termios_t;
 
 class LStepExpressComHandler {
@@ -55,6 +63,10 @@ class LStepExpressComHandler {
   const std::string fIoPort;
   termios_t fCurrentTermios, fThisTermios;
 };
+
+/** @} */
+
+/** @} */
 
 #endif
 

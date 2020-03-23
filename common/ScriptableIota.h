@@ -19,6 +19,14 @@
 
 #include <IotaModel.h>
 
+/** @addtogroup common
+ *  @{
+ */
+
+/** @addtogroup scripting
+ *  @{
+ */
+
 class ScriptableIota : public QObject
 {
   Q_OBJECT
@@ -60,5 +68,9 @@ public:
   // For thread safety
   QMutex mutex_;
 };
+
+/** @} */
+
+/** @} */
 
 #endif // SCRIPTABLEIOTA_H

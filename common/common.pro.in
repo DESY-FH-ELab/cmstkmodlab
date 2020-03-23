@@ -80,6 +80,7 @@ HEADERS += nqlogger.h \
            ApplicationConfigReader.h \
            ApplicationConfigWriter.h \
            SlackBot.h \
+           MattermostBot.h \
            JulaboModel.h \
            ScriptableJulabo.h \
            JulaboWidget.h \
@@ -138,6 +139,7 @@ SOURCES += nqlogger.cc \
            ApplicationConfigReader.cc \
            ApplicationConfigWriter.cc \
            SlackBot.cc \
+           MattermostBot.cc \
            JulaboModel.cc \
            ScriptableJulabo.cc \
            JulaboWidget.cc \

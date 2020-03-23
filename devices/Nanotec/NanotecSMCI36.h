@@ -24,6 +24,14 @@
 #include "VNanotecSMCI36.h"
 #include "NanotecComHandler.h"
 
+/** @addtogroup devices
+ *  @{
+ */
+
+/** @addtogroup Nanotec
+ *  @{
+ */
+
 class NanotecSMCI36 : public VNanotecSMCI36
 {
  public:
@@ -139,5 +147,9 @@ class NanotecSMCI36 : public VNanotecSMCI36
 
   int driveAddress_;
 };
+
+/** @} */
+
+/** @} */
 
 #endif

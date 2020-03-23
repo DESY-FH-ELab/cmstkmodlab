@@ -33,16 +33,15 @@
  *  @{
  */
 
-/** @defgroup Keithley Keithley
- * Classes to handle low level communication with Keithley devices
+/** @addtogroup Keithley
  *  @{
  */
 
 typedef const char* ioport_t;
 typedef struct termios termios_t;
 
-class KMMComHandler {
-
+class KMMComHandler
+{
  public:
   
   //! Constructor.

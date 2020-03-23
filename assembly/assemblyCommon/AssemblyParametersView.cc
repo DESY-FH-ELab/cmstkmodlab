@@ -57,7 +57,7 @@ AssemblyParametersView::AssemblyParametersView(QWidget* parent)
   ++row_index;
 
   tmp_tag = "Thickness_Baseplate";
-  tmp_des = "Thickness of Baseplate :";
+  tmp_des = "Thickness of Baseplate (incl. kapton sheet) :";
 
   map_lineEdit_[tmp_tag] = new QLineEdit(tr(""));
 

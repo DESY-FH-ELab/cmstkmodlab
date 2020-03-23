@@ -29,9 +29,14 @@ typedef ArduinoPresFake ArduinoPres_t;
 typedef ArduinoPres ArduinoPres_t;
 #endif
 
-/**
-  Command and control model of the petiteFleur chiller.
-  */
+/** @addtogroup common
+ *  @{
+ */
+
+/** @addtogroup models
+ *  @{
+ */
+
 class ArduinoPresModel : public QObject,
                          public AbstractDeviceModel<ArduinoPres_t>
 {
@@ -78,5 +83,9 @@ public:
   void message(const QString & text);
   void controlStateChanged(bool);
 };
+
+/** @} */
+
+/** @} */
 
 #endif // ARDUINOPRESMODEL_H

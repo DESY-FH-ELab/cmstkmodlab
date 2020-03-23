@@ -15,6 +15,10 @@
 
 #include <cmath>
 
+/** @addtogroup common
+ *  @{
+ */
+
 /// A numerical parameter value class bounded by (inclusive) limits.
 template <typename T> class DeviceParameter {
 public:
@@ -71,9 +75,12 @@ protected:
   const unsigned int precision_; ///< Resolution of the parameter, i.e. 1e-RES.
   T value_; ///< Current value of the parameter.
 };
+
 typedef DeviceParameter<double> DeviceParameterDouble;
 typedef DeviceParameter<float> DeviceParameterFloat;
 typedef DeviceParameter<int> DeviceParameterInt;
 typedef DeviceParameter<unsigned int> DeviceParameterUInt;
+
+/** @} */
 
 #endif // DEVICEPARAMETER_H

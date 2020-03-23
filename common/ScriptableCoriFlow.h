@@ -19,6 +19,14 @@
 
 #include <CoriFlowModel.h>
 
+/** @addtogroup common
+ *  @{
+ */
+
+/** @addtogroup scripting
+ *  @{
+ */
+
 class ScriptableCoriFlow : public QObject
 {
   Q_OBJECT
@@ -40,5 +48,9 @@ public:
   // For thread safety
   QMutex mutex_;
 };
+
+/** @} */
+
+/** @} */
 
 #endif // SCRIPTABLEARDUINOPRES_H

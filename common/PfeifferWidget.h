@@ -27,6 +27,14 @@
 #include "PfeifferModel.h"
 #include "DeviceState.h"
 
+/** @addtogroup common
+ *  @{
+ */
+
+/** @addtogroup widgets
+ *  @{
+ */
+
 class PfeifferWidget : public QWidget
 {
     Q_OBJECT
@@ -74,5 +82,9 @@ public slots:
   void controlStateChanged(bool);
   void updateInfo();
 };
+
+/** @} */
+
+/** @} */
 
 #endif // PFEIFFERWIDGET_H
