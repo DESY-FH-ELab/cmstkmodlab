@@ -24,7 +24,8 @@
 
 #include <nqlogger.h>
 #include <ApplicationConfig.h>
-#include <SlackBot.h>
+
+#include <MattermostBot.h>
 
 #include "WatchDog.h"
 
@@ -191,6 +192,6 @@ void WatchDog::statusTimeout()
   }
   message += " mbar\n";
 
-  SlackBot bot("Pump Station");
+  MattermostBot bot;
   bot.postMessage(message);
 }
