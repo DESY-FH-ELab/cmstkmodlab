@@ -17,6 +17,14 @@
 
 #include "VGMH3750.h"
 
+/** @addtogroup devices
+ *  @{
+ */
+
+/** @addtogroup Greisinger
+ *  @{
+ */
+
 class GMH3750 : public VGMH3750
 {
  public:
@@ -33,5 +41,9 @@ class GMH3750 : public VGMH3750
 
   GMH3750ComHandler* comHandler_;
 };
+
+/** @} */
+
+/** @} */
 
 #endif

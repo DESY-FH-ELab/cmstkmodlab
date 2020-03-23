@@ -13,6 +13,14 @@
 #include "CoriFlowModel.h"
 #include "DeviceState.h"
 
+/** @addtogroup common
+ *  @{
+ */
+
+/** @addtogroup widgets
+ *  @{
+ */
+
 class CoriFlowWidget : public QWidget
 {
   Q_OBJECT
@@ -37,5 +45,9 @@ protected:
   void controlStateChanged(bool);
   void updateInfo();
 };
+
+/** @} */
+
+/** @} */
 
 #endif // CORIFLOWWIDGET_H

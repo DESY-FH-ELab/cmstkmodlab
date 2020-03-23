@@ -29,6 +29,10 @@
 #include <QIODevice>
 #include <QTextStream>
 
+/** @addtogroup common
+ *  @{
+ */
+
 class NQLog
 {
 public:
@@ -152,5 +156,7 @@ protected:
     std::set<std::pair<QString,bool> > activeModules_;
     std::vector<std::pair<NQLog::LogLevel,QTextStream*> > destinations_;
 };
+
+/** @} */
 
 #endif // NQLOGGER_H

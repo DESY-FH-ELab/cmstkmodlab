@@ -28,6 +28,10 @@
 
 class NPlane3D;
 
+/** @addtogroup common
+ *  @{
+ */
+
 class NLine3D
 {
 public:
@@ -48,5 +52,7 @@ protected:
   NPoint3D point_;
   NDirection3D direction_;
 };
+
+/** @} */
 
 #endif // NLINE3D_H

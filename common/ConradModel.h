@@ -27,6 +27,13 @@ typedef ConradControllerFake ConradController_t;
 typedef ConradController ConradController_t;
 #endif
 
+/** @addtogroup common
+ *  @{
+ */
+
+/** @addtogroup models
+ *  @{
+ */
 
 /*
   Original code by Jan Olzem and Andreas Mussgiller.
@@ -88,5 +95,9 @@ signals:
   void switchStateChanged(int device, State newState);
   void controlStateChanged(bool);
 };
+
+/** @} */
+
+/** @} */
 
 #endif // CONRADMODEL_H
