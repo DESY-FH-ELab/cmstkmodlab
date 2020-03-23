@@ -1,14 +1,20 @@
 export TKMODLABBASE="@basepath@"
+
 export PATH="@basepath@/tools/bin:$PATH"
-export PATH="@basepath@/thermo/thermoDAQ:$PATH"
-export PATH="@basepath@/thermo/thermoDisplay:$PATH"
+
 export PATH="@basepath@/thermo/thermoDAQ2Root:$PATH"
-export PATH="@basepath@/thermo/thermoDAQ2Log:$PATH"
+export PATH="@basepath@/thermo/thermo1/thermoDAQ:$PATH"
+export PATH="@basepath@/thermo/thermo1/thermoDisplay:$PATH"
+export PATH="@basepath@/thermo/thermo1/thermoDAQ2Log:$PATH"
+export PATH="@basepath@/thermo/thermo2/thermoDAQ2:$PATH"
+export PATH="@basepath@/thermo/thermo2/thermoDisplay2:$PATH"
+
 export PATH="@basepath@/defo/defoDAQ:$PATH"
 export PATH="@basepath@/defo/defoReco:$PATH"
 export PATH="@basepath@/defo/defoDAQ2Root:$PATH"
+
 export PATH="@basepath@/assembly/assembly:$PATH"
-export PATH="@basepath@/defo/defoDAQ2Root:$PATH"
+
 export LD_LIBRARY_PATH="@basepath@/devices/lib:$LD_LIBRARY_PATH"
 export LD_LIBRARY_PATH="@basepath@/external/ddierckx:$LD_LIBRARY_PATH"
 export LD_LIBRARY_PATH="@basepath@/external/twitcurl:$LD_LIBRARY_PATH"
