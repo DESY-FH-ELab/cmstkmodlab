@@ -30,13 +30,7 @@ VLeyboldGraphixThree::SensorType VLeyboldGraphixThree::GetSensorType(int sensor)
 
   std::string type = GetSensorTypeName(sensor);
 
-  if (type=="NOSEN")  return SensorType_NOSEN;
-  if (type=="TTR?")   return SensorType_TTRx;
-  if (type=="TTR90")  return SensorType_TTR90;
-  if (type=="TTR91")  return SensorType_TTR91;
-  if (type=="TTR91N") return SensorType_TTR91N;
-
-  return SensorType_NOSEN;
+  return GetSensorTypeByTypeName(type);
 }
 
 void VLeyboldGraphixThree::SetSensorType(int sensor, VLeyboldGraphix::SensorType type)

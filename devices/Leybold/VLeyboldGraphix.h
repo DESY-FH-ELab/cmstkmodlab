@@ -14,7 +14,6 @@
 #define _VLEYBOLDGRAPHIX_H_
 
 #include <string>
-#include <map>
 #include <utility>
 
 /** @addtogroup devices
@@ -82,29 +81,11 @@ class VLeyboldGraphix
 
   virtual int GetNumberOfChannels() const = 0;
 
-  //virtual SensorDetectionMode GetSensorDetectionMode(int sensor) const = 0;
-  //virtual void SetSensorDetectionMode(int sensor, SensorDetectionMode mode) = 0;
-
-  //virtual std::string GetSensorTypeName(int sensor) const = 0;
-  //virtual void SetSensorTypeName(int sensor, std::string type) = 0;
-
-  //virtual std::string GetSensorName(int sensor) const = 0;
-  //virtual void SetSensorName(int sensor, const std::string& name) = 0;
-
-  //virtual SensorStatus GetSensorStatus(int sensor) const = 0;
   std::string GetSensorStatusText(SensorStatus status) const;
-  const std::map<SensorStatus,std::string>& GetSensorStatusTexts() const {
-    return sensorTextStatus_;
-  }
-
-  //virtual double GetPressure(int sensor) const = 0;
 
   virtual DisplayUnit GetDisplayUnit() const = 0;
   virtual void SetDisplayUnit(DisplayUnit unit) = 0;
   std::string GetDisplayUnitName(DisplayUnit unit) const;
-  const std::map<DisplayUnit,std::string>& GetDisplayUnitNames() const {
-    return displayUnitNames_;
-  }
 
   virtual SetPointChannel GetSetPointChannelAssignment(int sp) const = 0;
   virtual void SetSetPointChannelAssignment(int sp, SetPointChannel channel) = 0;
@@ -125,11 +106,9 @@ class VLeyboldGraphix
   
  protected:
 
-  std::map<std::string,SensorStatus> sensorStatusText_;
-  std::map<SensorStatus, std::string> sensorTextStatus_;
-
-  std::map<DisplayUnit,std::string> displayUnitNames_;
-  std::map<std::string,DisplayUnit> displayNameUnits_;
+  SensorType GetSensorTypeByTypeName(const std::string& name) const;
+  SensorStatus GetSensorStatusByStatusText(const std::string& status) const;
+  DisplayUnit GetDisplayUnitByUnitText(const std::string& unit) const;
 };
  
 /** @} */

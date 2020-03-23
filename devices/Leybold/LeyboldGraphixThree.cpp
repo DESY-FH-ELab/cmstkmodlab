@@ -235,13 +235,7 @@ VLeyboldGraphix::SensorStatus LeyboldGraphixThree::GetSensorStatus(int sensor) c
   std::string buffer;
   bool isACK = ReceiveData(buffer);
 
-  std::map<std::string,SensorStatus>::const_iterator itFind = sensorStatusText_.find(buffer);
-  if (itFind!=sensorStatusText_.end()) {
-    sensorStatus_[sensor-1] = itFind->second;
-    return itFind->second;
-  }
-
-  return SensorStatus_nosen;
+  return GetSensorStatusByStatusText(buffer);
 }
 
 double LeyboldGraphixThree::GetPressure(int sensor) const
@@ -282,24 +276,12 @@ VLeyboldGraphix::DisplayUnit LeyboldGraphixThree::GetDisplayUnit() const
   std::string buffer;
   bool isACK = ReceiveData(buffer);
 
-  std::map<std::string,DisplayUnit>::const_iterator itFind = displayNameUnits_.find(buffer);
-  if (itFind!=displayNameUnits_.end()) {
-    return itFind->second;
-  }
-
-  return DisplayUnit_unknown;
+  return GetDisplayUnitByUnitText(buffer);
 }
 
 void LeyboldGraphixThree::SetDisplayUnit(VLeyboldGraphix::DisplayUnit unit)
 {
-  std::string name;
-
-  std::map<DisplayUnit,std::string>::const_iterator itFind = displayUnitNames_.find(unit);
-  if (itFind!=displayUnitNames_.end()) {
-    name = itFind->second;
-  } else {
-    return;
-  }
+  std::string name = GetDisplayUnitName(unit);
 
   std::string command;
 
