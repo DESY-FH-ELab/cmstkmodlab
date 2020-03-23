@@ -19,6 +19,10 @@
 
 #include <QObject>
 
+/** @addtogroup common
+ *  @{
+ */
+
 class ApplicationConfigWriter : public QObject
 {
   Q_OBJECT
@@ -38,5 +42,7 @@ class ApplicationConfigWriter : public QObject
   void writeMerge(std::multimap<std::string,std::string> &keyvalueMap);
   void writeNew(std::multimap<std::string,std::string> &keyvalueMap);
 };
+
+/** @} */
 
 #endif // APPLICATIONCONFIGWRITER_H

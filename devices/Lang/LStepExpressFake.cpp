@@ -16,6 +16,7 @@
 
 LStepExpressFake::LStepExpressFake(const std::string& ioPort, const std::string& /* lstep_ver */, const std::string& /* lstep_iver */)
  : VLStepExpress(ioPort)
+ , ioPort_(ioPort)
  , autoStatus_(1)
 {
   axisStatus_ = std::vector<int>{
@@ -41,6 +42,12 @@ LStepExpressFake::LStepExpressFake(const std::string& ioPort, const std::string&
   joystickAxisEnabled_ = std::vector<int>{ 1, 1, 1, 1 };
 
   posCtrl_enabled_ = false;
+}
+
+//! Return name of port used to initialize LStepExpressFake
+std::string LStepExpressFake::ioPort() const
+{
+  return ioPort_;
 }
 
 LStepExpressFake::~LStepExpressFake()

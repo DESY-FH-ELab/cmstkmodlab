@@ -3,6 +3,10 @@
 
 #include <vector>
 
+/** @addtogroup common
+ *  @{
+ */
+
 class NSpline2D
 {
 
@@ -47,5 +51,7 @@ class NSpline2D
   int ky_;
   double fp_;
 };
+
+/** @} */
 
 #endif //NSPLINE2D_H

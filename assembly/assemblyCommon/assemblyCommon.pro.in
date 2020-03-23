@@ -87,7 +87,6 @@ HEADERS += AssemblyVUEyeCamera.h \
            AssemblyImageView.h \
            AssemblyThresholder.h \
            AssemblyThresholderView.h \
-           AssemblyObjectFinderManual.h \
            AssemblyObjectFinderPatRec.h \
            AssemblyObjectFinderPatRecWidget.h \
            AssemblyObjectFinderPatRecView.h \
@@ -149,7 +148,6 @@ SOURCES += AssemblyVUEyeCamera.cc \
            AssemblyImageView.cc \
            AssemblyThresholder.cc \
            AssemblyThresholderView.cc \
-           AssemblyObjectFinderManual.cc \
            AssemblyObjectFinderPatRec.cc \
            AssemblyObjectFinderPatRecWidget.cc \
            AssemblyObjectFinderPatRecView.cc \

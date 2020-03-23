@@ -15,6 +15,14 @@
 
 #include "VNanotecSMCI36.h"
 
+/** @addtogroup devices
+ *  @{
+ */
+
+/** @addtogroup Nanotec
+ *  @{
+ */
+
 class NanotecSMCI36Fake : public VNanotecSMCI36
 {
  public:
@@ -151,5 +159,9 @@ class NanotecSMCI36Fake : public VNanotecSMCI36
   int maxFrequency_;
   int maxFrequency2_;
 };
+
+/** @} */
+
+/** @} */
 
 #endif

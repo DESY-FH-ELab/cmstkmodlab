@@ -8,23 +8,23 @@
 /////////////////////////////////////////////////////////////////////////////////
 
 // MEASUREMENTS
-const double ANGDEG_PATREC = -2.2;
+const double ANGDEG_PATREC = 0.1;
 
-const int PR1_PIXEL_X = 929;
-const int PR1_PIXEL_Y = 780;
+const int PR1_PIXEL_X = 1109;
+const int PR1_PIXEL_Y = 643;
 
-const double PR1_MOTION_STAGE_POS_X = -46.5506;
-const double PR1_MOTION_STAGE_POS_Y = -100.940;
+const double PR1_MOTION_STAGE_POS_X = -70.028;
+const double PR1_MOTION_STAGE_POS_Y = -79.495;
 
-const int PR2_PIXEL_X = 1711;
-const int PR2_PIXEL_Y = 1253;
+const int PR2_PIXEL_X = 1217;
+const int PR2_PIXEL_Y = 728;
 
-const double PR2_MOTION_STAGE_POS_X = 46.7431;
-const double PR2_MOTION_STAGE_POS_Y = -151.628;
+const double PR2_MOTION_STAGE_POS_X = 24.9708;
+const double PR2_MOTION_STAGE_POS_Y = -78.4949;
 
-// SENSOR, IMAGE SPECIFICATIONS
-const double ANGDEG_REFERC = -27.313500; // PS-s
-//const double ANGDEG_REFERC = -26.706931; // PS-p
+// SENSOR, IMAGE SPECIFICATIONS - using markers in one line
+const double ANGDEG_REFERC = 0.00; // PS-s
+//const double ANGDEG_REFERC = 0.00; // PS-p
 
 const double MM_PER_PIXEL = 0.0012;
 

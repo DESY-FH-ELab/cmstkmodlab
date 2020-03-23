@@ -16,6 +16,10 @@
 #include <QObject>
 #include <iostream>
 
+/** @addtogroup common
+ *  @{
+ */
+
 /**
   \brief Enumeration of possible states the device communication can be in.
   As initialization and closing might take a while, corresponding states are
@@ -104,5 +108,7 @@ protected:
   virtual void setDeviceState( State state ) = 0;
 
 };
+
+/** @} */
 
 #endif // DEVICESTATE_H

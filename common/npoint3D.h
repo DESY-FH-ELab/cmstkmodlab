@@ -27,6 +27,10 @@ class NVector3D;
 class NLine3D;
 class NPlane3D;
 
+/** @addtogroup common
+ *  @{
+ */
+
 class NPoint3D
 {
 public:
@@ -58,5 +62,7 @@ protected:
 
   double x_, y_, z_;
 };
+
+/** @} */
 
 #endif // NPOINT3D_H

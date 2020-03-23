@@ -25,6 +25,14 @@
 #include "HuberPetiteFleurModel.h"
 #include "DeviceState.h"
 
+/** @addtogroup common
+ *  @{
+ */
+
+/** @addtogroup widgets
+ *  @{
+ */
+
 class HuberPetiteFleurWidget : public QWidget
 {
     Q_OBJECT
@@ -50,5 +58,9 @@ public slots:
   void controlStateChanged(bool);
   void updateInfo();
 };
+
+/** @} */
+
+/** @} */
 
 #endif // HUBERHuberPetiteFLEURWIDGET_H

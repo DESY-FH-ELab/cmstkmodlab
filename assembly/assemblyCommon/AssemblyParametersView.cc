@@ -57,7 +57,7 @@ AssemblyParametersView::AssemblyParametersView(QWidget* parent)
   ++row_index;
 
   tmp_tag = "Thickness_Baseplate";
-  tmp_des = "Thickness of Baseplate :";
+  tmp_des = "Thickness of Baseplate (incl. kapton sheet) :";
 
   map_lineEdit_[tmp_tag] = new QLineEdit(tr(""));
 
@@ -89,7 +89,19 @@ AssemblyParametersView::AssemblyParametersView(QWidget* parent)
   dime_lay->addWidget(new QLabel(tr("dZ")), row_index, 5, Qt::AlignRight);
   dime_lay->addWidget(this->get(tmp_tag)  , row_index, 6, Qt::AlignRight);
 
-  // dimension: thickness of Spacer
+  // dimension: thickness of MPA attached to PS-p (including bump-bond)
+  ++row_index;
+
+  tmp_tag = "Thickness_MPA";
+  tmp_des = "Thickness of MPA (incl. bump-bond) :";
+
+  map_lineEdit_[tmp_tag] = new QLineEdit(tr(""));
+
+  dime_lay->addWidget(new QLabel(tmp_des) , row_index, 0, Qt::AlignLeft);
+  dime_lay->addWidget(new QLabel(tr("dZ")), row_index, 5, Qt::AlignRight);
+  dime_lay->addWidget(this->get(tmp_tag)  , row_index, 6, Qt::AlignRight);
+
+  // dimension: thickness of Spacers
   ++row_index;
 
   tmp_tag = "Thickness_Spacer";
@@ -158,11 +170,11 @@ AssemblyParametersView::AssemblyParametersView(QWidget* parent)
   posi_lay->addWidget(new QLabel(tr("A"))    , row_index, 7, Qt::AlignRight);
   posi_lay->addWidget(this->get(tmp_tag+"_A"), row_index, 8, Qt::AlignRight);
 
-  // position: XYZA position of ref-point on assembly platform for calibration of spacers
+  // position: XYZA position of ref-point on assembly platform for calibration of baseplate
   ++row_index;
 
-  tmp_tag = "PlatformRefPointCalibrationSpacers";
-  tmp_des = "[Calibration: Spacers] Ref-Point :";
+  tmp_tag = "PlatformRefPointCalibrationBaseplate";
+  tmp_des = "[Calibration: Baseplate] Ref-Point :";
 
   map_lineEdit_[tmp_tag+"_X"] = new QLineEdit(tr(""));
   map_lineEdit_[tmp_tag+"_Y"] = new QLineEdit(tr(""));
@@ -179,11 +191,11 @@ AssemblyParametersView::AssemblyParametersView(QWidget* parent)
   posi_lay->addWidget(new QLabel(tr("A"))    , row_index, 7, Qt::AlignRight);
   posi_lay->addWidget(this->get(tmp_tag+"_A"), row_index, 8, Qt::AlignRight);
 
-  // position: XYZA position of ref-point on assembly platform for calibration of baseplate
+  // position: XYZA position of ref-point on assembly platform for calibration of spacers
   ++row_index;
 
-  tmp_tag = "PlatformRefPointCalibrationBaseplate";
-  tmp_des = "[Calibration: Baseplate] Ref-Point :";
+  tmp_tag = "PlatformRefPointCalibrationSpacers";
+  tmp_des = "[Calibration: Spacers] Ref-Point :";
 
   map_lineEdit_[tmp_tag+"_X"] = new QLineEdit(tr(""));
   map_lineEdit_[tmp_tag+"_Y"] = new QLineEdit(tr(""));
@@ -326,10 +338,10 @@ AssemblyParametersView::AssemblyParametersView(QWidget* parent)
   dist_lay->addWidget(new QLabel(tr("dY"))    , row_index, 3, Qt::AlignRight);
   dist_lay->addWidget(this->get(tmp_tag+"_dY"), row_index, 4, Qt::AlignRight);
 
-  // distance: from Baseplate Ref-Point to PS-s Ref-Point relative to Baseplate
+  // distance: from PSS-To-PSP Position to PSS-To-GluingStage Position
   ++row_index;
 
-  tmp_tag = "FromPSPToPSSPosToGluingStage";
+  tmp_tag = "FromPSSPlusSpacersToMaPSAPositionToGluingStage";
   tmp_des = "From PSS-To-PSP Position to PSS-To-GluingStage Position :";
 
   map_lineEdit_[tmp_tag+"_dX"] = new QLineEdit(tr(""));

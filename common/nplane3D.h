@@ -26,6 +26,10 @@
 #include <npoint3D.h>
 #include <ndirection3D.h>
 
+/** @addtogroup common
+ *  @{
+ */
+
 class NPlane3D
 {
 public:
@@ -42,5 +46,7 @@ protected:
   NPoint3D point_;
   NDirection3D normal_;
 };
+
+/** @} */
 
 #endif // NPLANE3D_H

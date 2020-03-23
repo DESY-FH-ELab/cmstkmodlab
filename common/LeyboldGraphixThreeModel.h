@@ -32,6 +32,14 @@ typedef LeyboldGraphixThreeFake LeyboldGraphixThree_t;
 typedef LeyboldGraphixThree LeyboldGraphixThree_t;
 #endif
 
+/** @addtogroup common
+ *  @{
+ */
+
+/** @addtogroup models
+ *  @{
+ */
+
 /**
   Command and control model of the Leybold vacuum controller.
   */
@@ -92,5 +100,9 @@ signals:
   void informationChanged();
   void controlStateChanged(bool);
 };
+
+/** @} */
+
+/** @} */
 
 #endif // LEYBOLDGRAPHIXTHREEMODEL_H

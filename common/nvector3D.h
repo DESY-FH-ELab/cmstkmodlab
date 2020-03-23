@@ -25,6 +25,10 @@
 
 class NPoint3D;
 
+/** @addtogroup common
+ *  @{
+ */
+
 class NVector3D
 {
 public:
@@ -61,5 +65,7 @@ protected:
 
   double x_, y_, z_;
 };
+
+/** @} */
 
 #endif // NVECTOR3D_H

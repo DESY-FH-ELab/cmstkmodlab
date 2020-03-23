@@ -19,6 +19,14 @@
 #include <fcntl.h>
 #include <unistd.h>
 
+/** @addtogroup devices
+ *  @{
+ */
+
+/** @addtogroup Hameg
+ *  @{
+ */
+
 typedef const char* ioport_t;
 typedef struct termios termios_t;
 
@@ -54,6 +62,10 @@ class HO820ComHandler {
   ioport_t fIoPort;
   termios_t fCurrentTermios, fThisTermios;
 };
+
+/** @} */
+
+/** @} */
 
 #endif
 

@@ -20,11 +20,19 @@
 #include <fcntl.h>
 #include <unistd.h>
 
+/** @addtogroup devices
+ *  @{
+ */
+
+/** @addtogroup Nanotec
+ *  @{
+ */
+
 typedef const char* ioport_t;
 typedef struct termios termios_t;
 
-class NanotecComHandler {
-
+class NanotecComHandler
+{
  public:
   
   //! Constructor.
@@ -55,6 +63,10 @@ class NanotecComHandler {
   ioport_t fIoPort;
   termios_t fCurrentTermios, fThisTermios;
 };
+
+/** @} */
+
+/** @} */
 
 #endif
 

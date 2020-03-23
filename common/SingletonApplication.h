@@ -16,6 +16,10 @@
 #include <QApplication>
 #include <QSharedMemory>
 
+/** @addtogroup common
+ *  @{
+ */
+
 class SingletonApplication : public QApplication
 {
     Q_OBJECT
@@ -30,5 +34,7 @@ public:
 private:
     QSharedMemory* singular_;
 };
+
+/** @} */
 
 #endif // SINGLETONAPPLICATION_H
