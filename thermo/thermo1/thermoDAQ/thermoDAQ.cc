@@ -70,12 +70,12 @@ int main( int argc, char** argv )
   app.setStyle("cleanlooks");
 
 #ifdef AUTOSTARTTHERMODISPLAY
-  std::string thermoDisplay = std::string(Config::CMSTkModLabBasePath) + "/thermo/thermoDisplay/thermoDisplay";
+  std::string thermoDisplay = std::string(Config::CMSTkModLabBasePath) + "/thermo/thermo1/thermoDisplay/thermoDisplay";
   QProcess myProcess(&app);
   myProcess.start(thermoDisplay.c_str());
 #endif
 
-  ApplicationConfig::instance(std::string(Config::CMSTkModLabBasePath) + "/thermo/thermo.cfg");
+  ApplicationConfig::instance(std::string(Config::CMSTkModLabBasePath) + "/thermo/thermo1/thermo.cfg");
 
   ThermoMainWindow mainWindow;
   //TestWindow mainWindow;

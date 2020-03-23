@@ -55,12 +55,12 @@ int main( int argc, char** argv )
   app.setStyle("cleanlooks");
 
 #ifdef AUTOSTARTmicroDISPLAY
-  std::string microDisplay = std::string(Config::CMSTkModLabBasePath) + "/thermo/thermoDisplay/thermoDisplay";
+  std::string microDisplay = std::string(Config::CMSTkModLabBasePath) + "/thermo/thermo1/thermoDisplay/thermoDisplay";
   QProcess myProcess(&app);
   myProcess.start(microDisplay.c_str());
 #endif
 
-  ApplicationConfig::instance(std::string(Config::CMSTkModLabBasePath) + "/thermo/thermo.cfg");
+  ApplicationConfig::instance(std::string(Config::CMSTkModLabBasePath) + "/thermo/thermo1/thermo.cfg");
 
   MicroMainWindow mainWindow;
 

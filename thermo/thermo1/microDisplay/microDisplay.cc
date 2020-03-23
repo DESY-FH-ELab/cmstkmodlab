@@ -54,7 +54,7 @@ int main( int argc, char** argv )
 
     app.setStyle("cleanlooks");
 
-    ApplicationConfig::instance(std::string(Config::CMSTkModLabBasePath) + "/thermo/thermo.cfg");
+    ApplicationConfig::instance(std::string(Config::CMSTkModLabBasePath) + "/thermo/thermo1/thermo.cfg");
 
     if (app.arguments().size()==2 &&
         app.arguments().at(1)=="--nogui") {
