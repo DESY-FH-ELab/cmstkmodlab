@@ -24,7 +24,7 @@ HuberUnistat525wTemperatureControlModeBox::HuberUnistat525wTemperatureControlMod
   if (idx!=-1) setCurrentIndex(idx);
 
   connect(model_, SIGNAL(informationChanged()),
-          this, SLOT(updateInfo()));
+          this, SLOT(updateInformation()));
 
   connect(this, SIGNAL(currentIndexChanged(int)),
           this, SLOT(currentItemChanged(int)));
