@@ -21,7 +21,7 @@
 #include <QDir>
 
 #include <nqlogger.h>
-#include <SlackBot.h>
+#include <MattermostBot.h>
 
 #include "Thermo2ScriptableGlobals.h"
 
@@ -120,8 +120,8 @@ QScriptValue Thermo2ScriptableGlobals::mkUTime(int year, int month, int day,
   return QScriptValue(utime);
 }
 
-void Thermo2ScriptableGlobals::slack(const QString& message)
+void Thermo2ScriptableGlobals::mattermost(const QString& message)
 {
-  SlackBot bot("thermoDAQ2");
+  MattermostBot bot;
   bot.postMessage(message);
 }

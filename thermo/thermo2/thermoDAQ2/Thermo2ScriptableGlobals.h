@@ -44,7 +44,7 @@ public slots:
   QScriptValue mkUTime(int year, int month, int day,
                        int hour, int minute, int second) const;
 
-  void slack(const QString& message);
+  void mattermost(const QString& message);
 
 protected:
 
