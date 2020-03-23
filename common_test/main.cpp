@@ -29,6 +29,8 @@
 
 #include <SlackBot.h>
 
+#include <MattermostBot.h>
+
 #include <Fifo.h>
 #include <HistoryFifo.h>
 
@@ -425,4 +427,12 @@ int main(int /* argc */, char ** /* argv */)
   	bot.postMessage("message from Qt");
   }
   */
+
+  {
+    ApplicationConfig * config = ApplicationConfig::instance("mattermost.cfg");
+
+    MattermostBot bot("test", "cmstkmodlab");
+
+    bot.postMessage("message from cmstkmodlab");
+  }
 }
