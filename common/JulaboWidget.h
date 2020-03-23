@@ -25,6 +25,14 @@
 #include "JulaboModel.h"
 #include "DeviceState.h"
 
+/** @addtogroup common
+ *  @{
+ */
+
+/** @addtogroup widgets
+ *  @{
+ */
+
 class JulaboWidget : public QWidget
 {
     Q_OBJECT
@@ -56,5 +64,9 @@ public slots:
   void controlStateChanged(bool);
   void updateChillerInfo();
 };
+
+/** @} */
+
+/** @} */
 
 #endif // JULABOWIDGET_H

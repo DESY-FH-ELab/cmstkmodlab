@@ -15,6 +15,14 @@
 
 #include "VGMH3750.h"
 
+/** @addtogroup devices
+ *  @{
+ */
+
+/** @addtogroup Greisinger
+ *  @{
+ */
+
 class GMH3750Fake : public VGMH3750
 {
  public:
@@ -27,5 +35,9 @@ class GMH3750Fake : public VGMH3750
 
   bool Read(double & temperature);
 };
+
+/** @} */
+
+/** @} */
 
 #endif

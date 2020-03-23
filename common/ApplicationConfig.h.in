@@ -23,6 +23,10 @@
 #include <QVariant>
 #include <QMessageBox>
 
+/** @addtogroup common
+ *  @{
+ */
+
 namespace Config {
   extern const std::string CMSTkModLabBasePath;
 }
@@ -130,5 +134,7 @@ template <> int ApplicationConfig::getValue(std::string const& key, int defaultV
 template <> unsigned int ApplicationConfig::getValue(std::string const& key) const;
 template <> std::vector<unsigned int> ApplicationConfig::getValueVector(std::string const& key) const;
 template <> unsigned int ApplicationConfig::getValue(std::string const& key, unsigned int defaultValue) const;
+
+/** @} */
 
 #endif // APPLICATIONCONFIG_H

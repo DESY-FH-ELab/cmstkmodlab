@@ -26,6 +26,14 @@
 
 #include "KeithleyModel.h"
 
+/** @addtogroup common
+ *  @{
+ */
+
+/** @addtogroup widgets
+ *  @{
+ */
+
 class KeithleyUpdateIntervalBox : public QComboBox
 {
   Q_OBJECT
@@ -95,5 +103,9 @@ public slots:
 
   void enabledCheckBoxToggled(bool enabled);
 };
+
+/** @} */
+
+/** @} */
 
 #endif // KEITHLEYWIDGET_H

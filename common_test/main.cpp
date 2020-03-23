@@ -29,6 +29,8 @@
 
 #include <SlackBot.h>
 
+#include <MattermostBot.h>
+
 #include <Fifo.h>
 #include <HistoryFifo.h>
 
@@ -45,177 +47,179 @@ double imageScale(double focalLength)
 
 int main(int /* argc */, char ** /* argv */)
 {
-	{
-		ApplicationConfig * config = ApplicationConfig::instance("test.cfg");
+  /*
+  {
+    ApplicationConfig * config = ApplicationConfig::instance("test.cfg");
 
-		double double1 = config->getValue<double>("double1");
+    double double1 = config->getValue<double>("double1");
 
-		std::cout << double1 << std::endl;
+    std::cout << double1 << std::endl;
 
-		double1 = 4.3;
+    double1 = 4.3;
 
-		config->setValue<double>("double1", double1);
+    config->setValue<double>("double1", double1);
 
-		double1 = config->getValue<double>("double1");
+    double1 = config->getValue<double>("double1");
 
-		std::cout << double1 << std::endl;
+    std::cout << double1 << std::endl;
 
-		config->safe("testout.cfg");
-	}
-
-	/*
-	{
-		ApplicationConfig * config = ApplicationConfig::instance("test.cfg");
-
-	  std::vector<int> integer1 = config->getValueVector<int>("integer1");
-	  std::cout << "integer1: ";
-	  for (std::vector<int>::iterator it = integer1.begin();
-	  		 it!=integer1.end();
-	  		 ++it) {
-	  	 std::cout << *it << " ";
-	  }
-	  std::cout << std::endl;
-
-	  config->safe("testout.cfg");
-	}
+    config->safe("testout.cfg");
+  }
   */
 
-	/*
-	{
-		HistoryFifo<double> fifo(5);
+  /*
+  {
+    ApplicationConfig * config = ApplicationConfig::instance("test.cfg");
 
-		fifo.push(QDateTime::fromString("2017-06-13T09:09:11", Qt::ISODate), 10);
-		fifo.push(QDateTime::fromString("2017-06-13T09:09:12", Qt::ISODate), 20);
-		fifo.push(QDateTime::fromString("2017-06-13T09:09:13", Qt::ISODate), 30);
-		fifo.push(QDateTime::fromString("2017-06-13T09:09:14", Qt::ISODate), 40);
-		fifo.push(QDateTime::fromString("2017-06-13T09:09:15", Qt::ISODate), 50);
-		fifo.push(QDateTime::fromString("2017-06-13T09:09:16", Qt::ISODate), 60);
-		fifo.push(QDateTime::fromString("2017-06-13T09:09:17", Qt::ISODate), 70);
-		fifo.push(QDateTime::fromString("2017-06-13T09:09:18", Qt::ISODate), 80);
-		fifo.push(QDateTime::fromString("2017-06-13T09:09:19", Qt::ISODate), 90);
+    std::vector<int> integer1 = config->getValueVector<int>("integer1");
+    std::cout << "integer1: ";
+    for (std::vector<int>::iterator it = integer1.begin();
+        it!=integer1.end();
+        ++it) {
+      std::cout << *it << " ";
+    }
+    std::cout << std::endl;
 
-		for (int i=0;i<fifo.size();++i) {
-			std::cout << fifo.timeAt(i).toString(Qt::ISODate).toStdString() << " : " << fifo.at(i) << std::endl;
-		}
-
-		std::cout << fifo.sizeInSecs() << std::endl;
-		std::cout << fifo.deltaTime(0, 4) << std::endl;
-		std::cout << fifo.delta(0, 4) << std::endl;
-		std::cout << fifo.gradient(0, 4) << std::endl;
-	}
+    config->safe("testout.cfg");
+  }
   */
 
-	/*
-	{
-		Fifo<int> fifo(5);
+  /*
+  {
+    HistoryFifo<double> fifo(5);
 
-		fifo.push(1);
-		fifo.push(2); // 1
-		fifo.push(3); // 1
-		fifo.push(4); // 1
-		fifo.push(5); // 1
-		fifo.push(6); // 2
-		fifo.push(7); // 3
-		fifo.push(8); // 4
+    fifo.push(QDateTime::fromString("2017-06-13T09:09:11", Qt::ISODate), 10);
+    fifo.push(QDateTime::fromString("2017-06-13T09:09:12", Qt::ISODate), 20);
+    fifo.push(QDateTime::fromString("2017-06-13T09:09:13", Qt::ISODate), 30);
+    fifo.push(QDateTime::fromString("2017-06-13T09:09:14", Qt::ISODate), 40);
+    fifo.push(QDateTime::fromString("2017-06-13T09:09:15", Qt::ISODate), 50);
+    fifo.push(QDateTime::fromString("2017-06-13T09:09:16", Qt::ISODate), 60);
+    fifo.push(QDateTime::fromString("2017-06-13T09:09:17", Qt::ISODate), 70);
+    fifo.push(QDateTime::fromString("2017-06-13T09:09:18", Qt::ISODate), 80);
+    fifo.push(QDateTime::fromString("2017-06-13T09:09:19", Qt::ISODate), 90);
 
-		for (int i=0;i<fifo.size();++i) {
-			std::cout << fifo.at(i) << " ";
-		}
-		std::cout << std::endl;
-	}
+    for (int i=0;i<fifo.size();++i) {
+      std::cout << fifo.timeAt(i).toString(Qt::ISODate).toStdString() << " : " << fifo.at(i) << std::endl;
+    }
+
+    std::cout << fifo.sizeInSecs() << std::endl;
+    std::cout << fifo.deltaTime(0, 4) << std::endl;
+    std::cout << fifo.delta(0, 4) << std::endl;
+    std::cout << fifo.gradient(0, 4) << std::endl;
+  }
   */
 
-	/*
-	{
-		double f = 50.0;
-		double gamma = imageScale(f);
-		double imageDistance = f * (gamma + 1.0);
-		double objectDistance = imageDistance / gamma;
+  /*
+  {
+    Fifo<int> fifo(5);
 
-		NVector3D height1(0., 0., 1720.); // HEIGHT1
-		NVector3D height2(0., 0., 150.);  // HEIGHT2
-		NVector3D distance(0., -1.0*437., 0.); // DISTANCE
-		double angle1 = 20.9 * M_PI / 180.;
-		double angle2 = 16.2 * M_PI / 180.;
-		double angle3 =  0.4 * M_PI / 180.;
+    fifo.push(1);
+    fifo.push(2); // 1
+    fifo.push(3); // 1
+    fifo.push(4); // 1
+    fifo.push(5); // 1
+    fifo.push(6); // 2
+    fifo.push(7); // 3
+    fifo.push(8); // 4
 
-		distance.print();
-		distance.rotateX(angle2);
-		distance.print();
-
-		std::cout << std::endl;
-
-		NPoint3D cameraPoint(0., 0., 0.);
-		cameraPoint.print();
-		cameraPoint.move(height1);
-		cameraPoint.move(distance);
-		cameraPoint.print();
-
-		std::cout << std::endl;
-
-		NPoint3D objectPoint(0., 0., 0.);
-		objectPoint.move(height2);
-		NDirection3D objectNormal(0., 0., 1.);
-		NPlane3D objectPlane(objectPoint, objectNormal);
-
-		NDirection3D centerRayDirection(0., 0., -1.);
-		centerRayDirection.print();
-		centerRayDirection.rotateX(angle2 + angle3);
-		centerRayDirection.print();
-
-		std::cout << std::endl;
-
-		NLine3D centerRay(cameraPoint, centerRayDirection);
-		objectPoint.print();
-		centerRay.intersection(objectPlane, objectPoint);
-		objectPoint.print();
-
-		std::cout << std::endl;
-
-		NVector3D imageDistanceVector(objectPoint, cameraPoint);
-		imageDistanceVector.print();
-		imageDistanceVector *= objectDistance / imageDistanceVector.length();
-		imageDistanceVector.print();
-
-		std::cout << std::endl;
-
-		NPoint3D imagePoint(objectPoint);
-		imagePoint.print();
-		imagePoint.move(imageDistanceVector);
-		imagePoint.print();
-
-		std::cout << std::endl;
-
-		NPoint3D gridPoint(0., 0., 0.);
-		gridPoint.move(height1);
-
-		NDirection3D gridNormal(0., 0., -1.);
-		gridNormal.print();
-		gridNormal.rotateX(-angle1);
-		gridNormal.print();
-
-		std::cout << std::endl;
-
-		NPlane3D gridPlane(gridPoint, gridNormal);
-
-		NPoint3D objectIntersection;
-		NPoint3D gridIntersection;
-		NDirection3D imageBeamDirection(0., 0., -1.);
-		imageBeamDirection.rotateX(angle2 + angle3);
-		NLine3D imageBeam(imagePoint, imageBeamDirection);
-		imageBeam.intersection(objectPlane, objectIntersection);
-
-		NDirection3D gridBeamDirection(imageBeamDirection);
-		gridBeamDirection.rotateZ(M_PI);
-		NLine3D gridBeam(objectIntersection, gridBeamDirection);
-		gridBeam.intersection(gridPlane, gridIntersection);
-
-		objectIntersection.print();
-		gridIntersection.print();
-	}
+    for (int i=0;i<fifo.size();++i) {
+      std::cout << fifo.at(i) << " ";
+    }
+    std::cout << std::endl;
+  }
   */
 
-	/*
+  /*
+  {
+    double f = 50.0;
+    double gamma = imageScale(f);
+    double imageDistance = f * (gamma + 1.0);
+    double objectDistance = imageDistance / gamma;
+
+    NVector3D height1(0., 0., 1720.); // HEIGHT1
+    NVector3D height2(0., 0., 150.);  // HEIGHT2
+    NVector3D distance(0., -1.0*437., 0.); // DISTANCE
+    double angle1 = 20.9 * M_PI / 180.;
+    double angle2 = 16.2 * M_PI / 180.;
+    double angle3 =  0.4 * M_PI / 180.;
+
+    distance.print();
+    distance.rotateX(angle2);
+    distance.print();
+
+    std::cout << std::endl;
+
+    NPoint3D cameraPoint(0., 0., 0.);
+    cameraPoint.print();
+    cameraPoint.move(height1);
+    cameraPoint.move(distance);
+    cameraPoint.print();
+
+    std::cout << std::endl;
+
+    NPoint3D objectPoint(0., 0., 0.);
+    objectPoint.move(height2);
+    NDirection3D objectNormal(0., 0., 1.);
+    NPlane3D objectPlane(objectPoint, objectNormal);
+
+    NDirection3D centerRayDirection(0., 0., -1.);
+    centerRayDirection.print();
+    centerRayDirection.rotateX(angle2 + angle3);
+    centerRayDirection.print();
+
+    std::cout << std::endl;
+
+    NLine3D centerRay(cameraPoint, centerRayDirection);
+    objectPoint.print();
+    centerRay.intersection(objectPlane, objectPoint);
+    objectPoint.print();
+
+    std::cout << std::endl;
+
+    NVector3D imageDistanceVector(objectPoint, cameraPoint);
+    imageDistanceVector.print();
+    imageDistanceVector *= objectDistance / imageDistanceVector.length();
+    imageDistanceVector.print();
+
+    std::cout << std::endl;
+
+    NPoint3D imagePoint(objectPoint);
+    imagePoint.print();
+    imagePoint.move(imageDistanceVector);
+    imagePoint.print();
+
+    std::cout << std::endl;
+
+    NPoint3D gridPoint(0., 0., 0.);
+    gridPoint.move(height1);
+
+    NDirection3D gridNormal(0., 0., -1.);
+    gridNormal.print();
+    gridNormal.rotateX(-angle1);
+    gridNormal.print();
+
+    std::cout << std::endl;
+
+    NPlane3D gridPlane(gridPoint, gridNormal);
+
+    NPoint3D objectIntersection;
+    NPoint3D gridIntersection;
+    NDirection3D imageBeamDirection(0., 0., -1.);
+    imageBeamDirection.rotateX(angle2 + angle3);
+    NLine3D imageBeam(imagePoint, imageBeamDirection);
+    imageBeam.intersection(objectPlane, objectIntersection);
+
+    NDirection3D gridBeamDirection(imageBeamDirection);
+    gridBeamDirection.rotateZ(M_PI);
+    NLine3D gridBeam(objectIntersection, gridBeamDirection);
+    gridBeam.intersection(gridPlane, gridIntersection);
+
+    objectIntersection.print();
+    gridIntersection.print();
+  }
+  */
+
+  /*
   {
     int ix, iy;
     double x, y, zx, zy;
@@ -423,4 +427,12 @@ int main(int /* argc */, char ** /* argv */)
   	bot.postMessage("message from Qt");
   }
   */
+
+  {
+    ApplicationConfig * config = ApplicationConfig::instance("mattermost.cfg");
+
+    MattermostBot bot("test", "cmstkmodlab");
+
+    bot.postMessage("message from cmstkmodlab");
+  }
 }

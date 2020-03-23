@@ -13,6 +13,14 @@
 #include "IotaModel.h"
 #include "DeviceState.h"
 
+/** @addtogroup common
+ *  @{
+ */
+
+/** @addtogroup widgets
+ *  @{
+ */
+
 class IotaWidget : public QWidget
 {
   Q_OBJECT
@@ -40,5 +48,9 @@ protected:
   void controlStateChanged(bool);
   void updateInfo();
 };
+
+/** @} */
+
+/** @} */
 
 #endif // IOTAWIDGET_H

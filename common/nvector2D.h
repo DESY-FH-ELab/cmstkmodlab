@@ -25,6 +25,10 @@
 
 class NPoint2D;
 
+/** @addtogroup common
+ *  @{
+ */
+
 class NVector2D
 {
 public:
@@ -47,5 +51,7 @@ protected:
 
   double x_, y_;
 };
+
+/** @} */
 
 #endif // NVECTOR2D_H

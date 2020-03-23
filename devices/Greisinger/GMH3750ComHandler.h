@@ -32,6 +32,14 @@
 
 #define _COMHANDLER_DELAY 1000
 
+/** @addtogroup devices
+ *  @{
+ */
+
+/** @addtogroup Greisinger
+ *  @{
+ */
+
 typedef const char* ioport_t;
 typedef struct termios termios_t;
 
@@ -64,7 +72,10 @@ class GMH3750ComHandler
 
   ioport_t fIoPort;
   termios_t fCurrentTermios, fThisTermios;
-
 };
+
+/** @} */
+
+/** @} */
 
 #endif

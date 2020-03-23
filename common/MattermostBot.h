@@ -1,6 +1,6 @@
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //
-//               Copyright (C) 2011-2017 - The DESY CMS Group                  //
+//               Copyright (C) 2011-2020 - The DESY CMS Group                  //
 //                           All rights reserved                               //
 //                                                                             //
 //      The CMStkModLab source code is licensed under the GNU GPL v3.0.        //
@@ -10,42 +10,39 @@
 //                                                                             //
 /////////////////////////////////////////////////////////////////////////////////
 
-#ifndef INTEGERCOMBOBOX_H
-#define INTEGERCOMBOBOX_H
+#ifndef MATTERMOSTBOT_H
+#define MATTERMOSTBOT_H
 
-#include <QComboBox>
+#include <QObject>
+#include <QMutex>
+#include <QString>
 
 /** @addtogroup common
  *  @{
  */
 
-/** @addtogroup widgets
- *  @{
- */
-
-class IntegerComboBox : public QComboBox
+class MattermostBot : public QObject
 {
-    Q_OBJECT
+  Q_OBJECT
 public:
-    explicit IntegerComboBox(QWidget* parent=0);
-
-    void addItem(int value);
+  explicit MattermostBot(QObject *parent = 0);
+  explicit MattermostBot(QString channel, QObject *parent = 0);
+  explicit MattermostBot(QString channel, QString username, QObject *parent = 0);
+  explicit MattermostBot(QString channel, QString username, QString webhook, QObject *parent = 0);
+  ~MattermostBot();
 
 public slots:
 
+  void postMessage(const QString& message);
+
 protected:
 
-protected slots:
-
-    void currentItemChanged(int index);
-
-signals:
-
-    void valueChanged(int value);
+  QString channel_;
+  QString username_;
+  QString webhook_;
+  QMutex mutex_;
 };
 
 /** @} */
 
-/** @} */
-
-#endif // INTEGERCOMBOBOX_H
+#endif // MATTERMOSTBOT_H

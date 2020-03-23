@@ -18,6 +18,10 @@
 #include <QVector>
 #include <QDateTime>
 
+/** @addtogroup common
+ *  @{
+ */
+
 template <class T> class HistoryFifo
 {
 public:
@@ -186,5 +190,7 @@ protected:
     QVector<QDateTime> timestamp_;
     QVector<T> buffer_;
 };
+
+/** @} */
 
 #endif // RINGBUFFER_H

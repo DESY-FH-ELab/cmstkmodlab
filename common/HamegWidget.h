@@ -28,6 +28,14 @@
 #include "HamegModel.h"
 #include "DeviceState.h"
 
+/** @addtogroup common
+ *  @{
+ */
+
+/** @addtogroup widgets
+ *  @{
+ */
+
 class HamegChannelWidget : public QGroupBox
 {
     Q_OBJECT
@@ -83,5 +91,9 @@ public slots:
   void controlStateChanged(bool);
   void updateInfo();
 };
+
+/** @} */
+
+/** @} */
 
 #endif // HAMEGWIDGET_H

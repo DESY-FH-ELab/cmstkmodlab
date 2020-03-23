@@ -24,6 +24,14 @@
 #include "VHameg8143.h"
 #include "HO820ComHandler.h"
 
+/** @addtogroup devices
+ *  @{
+ */
+
+/** @addtogroup Hameg
+ *  @{
+ */
+
 class Hameg8143 : public VHameg8143
 {
  public:
@@ -58,5 +66,9 @@ class Hameg8143 : public VHameg8143
   HO820ComHandler* comHandler_;
   bool isDeviceAvailable_;
 };
+
+/** @} */
+
+/** @} */
 
 #endif

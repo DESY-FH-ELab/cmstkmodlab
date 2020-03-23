@@ -19,6 +19,14 @@
 
 #include <PfeifferModel.h>
 
+/** @addtogroup common
+ *  @{
+ */
+
+/** @addtogroup scripting
+ *  @{
+ */
+
 class ScriptablePfeiffer : public QObject
 {
   Q_OBJECT
@@ -36,5 +44,9 @@ protected:
   // For thread safety
   QMutex mutex_;
 };
+
+/** @} */
+
+/** @} */
 
 #endif // SCRIPTABLEPFEIFFER_H

@@ -7,6 +7,14 @@
 
 #include <ArduinoPresModel.h>
 
+/** @addtogroup common
+ *  @{
+ */
+
+/** @addtogroup scripting
+ *  @{
+ */
+
 class ScriptableArduinoPres : public QObject
 {
   Q_OBJECT
@@ -34,5 +42,9 @@ public:
   // For thread safety
   QMutex mutex_;
 };
+
+/** @} */
+
+/** @} */
 
 #endif // SCRIPTABLEARDUINOPRES_H

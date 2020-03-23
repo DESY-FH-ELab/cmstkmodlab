@@ -29,6 +29,14 @@ typedef PfeifferTPG262Fake PfeifferTPG262_t;
 typedef PfeifferTPG262 PfeifferTPG262_t;
 #endif
 
+/** @addtogroup common
+ *  @{
+ */
+
+/** @addtogroup models
+ *  @{
+ */
+
 /**
   Command and control model of the Pfeiffer TPG262 gauge.
   */
@@ -78,5 +86,9 @@ signals:
   void message(const QString & text);
   void controlStateChanged(bool);
 };
+
+/** @} */
+
+/** @} */
 
 #endif // PFEIFFERMODEL_H

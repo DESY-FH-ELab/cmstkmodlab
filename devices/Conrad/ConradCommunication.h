@@ -16,9 +16,16 @@
 #include <string>
 #include <termios.h>
 
-/// \brief Class handling raw IO communication with Conrad relais card
-class ConradCommunication {
+/** @addtogroup devices
+ *  @{
+ */
 
+/** @addtogroup Conrad
+ *  @{
+ */
+
+class ConradCommunication
+{
 public:
 
   ConradCommunication(const std::string& comPort);
@@ -40,5 +47,9 @@ private:
   struct termios m_termiosInitial;
   struct termios m_termios;
 };
+
+/** @} */
+
+/** @} */
 
 #endif
