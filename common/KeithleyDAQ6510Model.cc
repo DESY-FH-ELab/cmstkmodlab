@@ -35,7 +35,7 @@ KeithleyDAQ6510Model::KeithleyDAQ6510Model(const char* port,
   timer_->setInterval(updateInterval_ * 1000);
   connect( timer_, SIGNAL(timeout()), this, SLOT(scanTemperatures()) );
 
-  setDeviceEnabled(false);
+  setDeviceEnabled(true);
   setControlsEnabled(true);
 }
 
