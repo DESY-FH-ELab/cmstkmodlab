@@ -161,6 +161,7 @@ Thermo2MainWindow::Thermo2MainWindow(QWidget *parent)
   widget = new QWidget();
   widget->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);
   vlayout = new QVBoxLayout();
+  vlayout->setSpacing(16*(vlayout->spacing()+1));
   widget->setLayout(vlayout);
 
   // DAQ Widget
