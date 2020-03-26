@@ -19,8 +19,9 @@
 
 #include "Thermo2DAQWidget.h"
 
-Thermo2DAQWidget::Thermo2DAQWidget(Thermo2DAQModel* daqModel, QWidget *parent)
-  : QWidget(parent),
+Thermo2DAQWidget::Thermo2DAQWidget(const QString& title,
+                                   Thermo2DAQModel* daqModel, QWidget *parent)
+  : QGroupBox(title, parent),
     daqModel_(daqModel)
 {
   // Layouts to put everything into place

@@ -14,6 +14,7 @@
 #define THERMO2DAQWIDGET_H
 
 #include <QWidget>
+#include <QGroupBox>
 #include <QPushButton>
 #include <QCheckBox>
 #include <QGridLayout>
@@ -24,11 +25,13 @@
 
 #include "Thermo2DAQModel.h"
 
-class Thermo2DAQWidget : public QWidget
+class Thermo2DAQWidget : public QGroupBox
 {
     Q_OBJECT
 public:
-    explicit Thermo2DAQWidget(Thermo2DAQModel* DAQModel, QWidget *parent = 0);
+    explicit Thermo2DAQWidget(const QString& title,
+                              Thermo2DAQModel* DAQModel,
+                              QWidget *parent = 0);
 
 protected:
     // Models

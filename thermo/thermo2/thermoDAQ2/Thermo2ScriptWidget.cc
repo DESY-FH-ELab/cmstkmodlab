@@ -15,9 +15,10 @@
 
 #include "Thermo2ScriptWidget.h"
 
-Thermo2ScriptWidget::Thermo2ScriptWidget(Thermo2ScriptModel* scriptModel,
+Thermo2ScriptWidget::Thermo2ScriptWidget(const QString& title,
+                                         Thermo2ScriptModel* scriptModel,
                                          QWidget *parent)
-  : QWidget(parent),
+  : QGroupBox(title, parent),
     scriptModel_(scriptModel)
 {
   // Layouts to put everything into place

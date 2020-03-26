@@ -164,12 +164,14 @@ Thermo2MainWindow::Thermo2MainWindow(QWidget *parent)
   widget->setLayout(vlayout);
 
   // DAQ Widget
-  Thermo2DAQWidget* daqWidget = new Thermo2DAQWidget(daqModel_, widget);
+  Thermo2DAQWidget* daqWidget = new Thermo2DAQWidget("DAQ",
+                                                     daqModel_, widget);
   daqWidget->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);
   vlayout->addWidget(daqWidget);
 
   // Script Widget
-  Thermo2ScriptWidget* scriptWidget = new Thermo2ScriptWidget(scriptModel_, widget);
+  Thermo2ScriptWidget* scriptWidget = new Thermo2ScriptWidget("Scripting",
+                                                              scriptModel_, widget);
   scriptWidget->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);
   vlayout->addWidget(scriptWidget);
 

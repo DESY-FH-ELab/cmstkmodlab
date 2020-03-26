@@ -14,6 +14,7 @@
 #define THERMO2SCRIPTWIDGET_H
 
 #include <QWidget>
+#include <QGroupBox>
 #include <QPushButton>
 #include <QCheckBox>
 #include <QGridLayout>
@@ -37,16 +38,17 @@ public:
   virtual QSize sizeHint() const { return QSize(500, 100); }
 };
 
-class Thermo2ScriptWidget : public QWidget
+class Thermo2ScriptWidget : public QGroupBox
 {
   Q_OBJECT
 public:
-  explicit Thermo2ScriptWidget(Thermo2ScriptModel* scriptModel,
+  explicit Thermo2ScriptWidget(const QString& title,
+                               Thermo2ScriptModel* scriptModel,
                                QWidget *parent = 0);
 
 public slots:
   void clearMessageText();
- void appendMessageText( const QString & text );
+  void appendMessageText( const QString & text );
 
 protected:
 
