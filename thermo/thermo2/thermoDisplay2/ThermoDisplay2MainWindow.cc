@@ -13,6 +13,7 @@
 #include <iostream>
 #include <string>
 
+#include <QApplication>
 #include <QGroupBox>
 #include <QToolBar>
 #include <QToolButton>
@@ -251,8 +252,16 @@ void ThermoDisplay2MainWindow::savePlots()
 
   if (dir.isEmpty()) return;
 
+  int currentTab = tabWidget_->currentIndex();
+  for (int idx=0;idx<4;++idx) {
+    if (idx!=currentTab) tabWidget_->setCurrentIndex(idx);
+  }
+  tabWidget_->setCurrentIndex(currentTab);
+
   config->setValue("PlotSaveDirectory", dir);
   config->safe(std::string(Config::CMSTkModLabBasePath) + "/thermo/thermo2/thermo2.cfg");
+
+  QApplication::processEvents();
 
   {
     auto dpr = 2.0*ChillerTSChartView_->devicePixelRatioF();
@@ -269,6 +278,8 @@ void ThermoDisplay2MainWindow::savePlots()
     buffer.save(&file, "PNG");
   }
 
+  QApplication::processEvents();
+
   {
     auto dpr = 2.0*ChillerPPChartView_->devicePixelRatioF();
     QPixmap buffer(ChillerPPChartView_->width() * dpr,
@@ -284,6 +295,8 @@ void ThermoDisplay2MainWindow::savePlots()
     buffer.save(&file, "PNG");
   }
 
+  QApplication::processEvents();
+
   {
     auto dpr = 2.0*VacuumChartView_->devicePixelRatioF();
     QPixmap buffer(VacuumChartView_->width() * dpr,
@@ -291,13 +304,14 @@ void ThermoDisplay2MainWindow::savePlots()
     buffer.fill(Qt::transparent);
 
     QPainter *painter = new QPainter(&buffer);
-    painter->setPen(*(new QColor(255,34,255,255)));
     VacuumChartView_->render(painter);
 
     QFile file(dir + "/" + dt.toString("yyyy-MM-dd-hh-mm-ss") + "_thermo2_vacuum.png");
     file.open(QIODevice::WriteOnly);
     buffer.save(&file, "PNG");
   }
+
+  QApplication::processEvents();
 
   {
     auto dpr = 2.0*UChartView_->devicePixelRatioF();
@@ -314,6 +328,8 @@ void ThermoDisplay2MainWindow::savePlots()
     buffer.save(&file, "PNG");
   }
 
+  QApplication::processEvents();
+
   {
     auto dpr = 2.0*IChartView_->devicePixelRatioF();
     QPixmap buffer(IChartView_->width() * dpr,
@@ -329,6 +345,8 @@ void ThermoDisplay2MainWindow::savePlots()
     buffer.save(&file, "PNG");
   }
 
+  QApplication::processEvents();
+
   {
     auto dpr = 2.0*TChartView_[0]->devicePixelRatioF();
     QPixmap buffer(TChartView_[0]->width() * dpr,
@@ -343,6 +361,8 @@ void ThermoDisplay2MainWindow::savePlots()
     file.open(QIODevice::WriteOnly);
     buffer.save(&file, "PNG");
   }
+
+  QApplication::processEvents();
 
   {
     auto dpr = 2.0*TChartView_[1]->devicePixelRatioF();
