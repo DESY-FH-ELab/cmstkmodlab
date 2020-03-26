@@ -21,6 +21,7 @@
 #include "Thermo2DAQModel.h"
 
 Thermo2DAQModel::Thermo2DAQModel(HuberUnistat525wModel* huberModel,
+                                 AgilentTwisTorr304Model* agilentModel,
                                  LeyboldGraphixOneModel* leyboldModel,
                                  RohdeSchwarzNGE103BModel* nge103BModel,
                                  KeithleyDAQ6510Model* keithleyModel,
@@ -28,6 +29,7 @@ Thermo2DAQModel::Thermo2DAQModel(HuberUnistat525wModel* huberModel,
   : QObject(),
     daqState_(false),
     huberModel_(huberModel),
+    agilentModel_(agilentModel),
     leyboldModel_(leyboldModel),
     nge103BModel_(nge103BModel),
     keithleyModel_(keithleyModel)
@@ -36,6 +38,9 @@ Thermo2DAQModel::Thermo2DAQModel(HuberUnistat525wModel* huberModel,
 
   connect(huberModel_, SIGNAL(informationChanged()),
           this, SLOT(huberInfoChanged()));
+
+  connect(agilentModel_, SIGNAL(informationChanged()),
+          this, SLOT(agilentInfoChanged()));
 
   connect(leyboldModel_, SIGNAL(informationChanged()),
           this, SLOT(leyboldInfoChanged()));
@@ -50,6 +55,7 @@ Thermo2DAQModel::Thermo2DAQModel(HuberUnistat525wModel* huberModel,
 void Thermo2DAQModel::myMoveToThread(QThread *thread)
 {
   huberModel_->moveToThread(thread);
+  agilentModel_->moveToThread(thread);
   leyboldModel_->moveToThread(thread);
   nge103BModel_->moveToThread(thread);
   keithleyModel_->moveToThread(thread);
@@ -70,6 +76,11 @@ void Thermo2DAQModel::startMeasurement()
     nge103BMeasuredVoltage_[i] = 0.;
     nge103BMeasuredCurrent_[i] = 0.;
   }
+
+  agilentState_ = false;
+  agilentPumpState_ = false;
+  agilentPumpStatus_ = 0;
+  agilentErrorCode_ = 0;
 
   leyboldState_ = false;
   leyboldPressure_ = 1.013;
@@ -121,6 +132,22 @@ void Thermo2DAQModel::createDAQStatusMessage(QString &buffer, bool start)
   xml.writeEndElement();
   //
   // End of Huber Unistat 525w
+  //
+
+  //
+  // Start of Agilent TwisTorr 304
+  //
+
+  xml.writeStartElement("AgilentTwisTorr304");
+  xml.writeAttribute("time", utime.toString(Qt::ISODate));
+  xml.writeAttribute("State", agilentModel_->getDeviceState()==READY ? "1" : "0");
+  xml.writeAttribute("PumpState", agilentModel_->getPumpState()==true ? "1" : "0");
+  xml.writeAttribute("PumpStatus", QString::number(agilentModel_->getPumpStatus()));
+  xml.writeAttribute("ErrorCode", QString::number(agilentModel_->getErrorCode()));
+  xml.writeEndElement();
+
+  //
+  // End of Agilent TwisTorr 304
   //
 
   //
@@ -263,6 +290,48 @@ void Thermo2DAQModel::huberInfoChanged()
     xml.writeAttribute("CWI", QString::number(u525wCWInletTemperature_, 'f', 2));
     xml.writeAttribute("CWO", QString::number(u525wCWOutletTemperature_, 'f', 2));
     xml.writeEndElement();
+
+    xml.writeEndElement();
+  }
+
+  if (buffer.length()>0) {
+    emit daqMessage(buffer);
+    emit newDataAvailable();
+  }
+}
+
+void Thermo2DAQModel::agilentInfoChanged()
+{
+  NQLogDebug("Thermo2DAQModel") << "agilentInfoChanged()";
+
+  if (thread()==QApplication::instance()->thread()) {
+    NQLogDebug("Thermo2DAQModel") << "running in main application thread";
+  } else {
+    NQLogDebug("Thermo2DAQModel") << "running in dedicated DAQ thread";
+  }
+
+  QMutexLocker locker(&mutex_);
+
+  QDateTime& utime = currentTime();
+
+  QString buffer;
+
+  bool changed = false;
+  changed |= updateIfChanged<bool>(agilentState_, agilentModel_->getDeviceState()==READY ? true : false);
+  changed |= updateIfChanged<bool>(agilentPumpState_, agilentModel_->getPumpState());
+  changed |= updateIfChanged<unsigned int>(agilentPumpStatus_, agilentModel_->getPumpStatus());
+  changed |= updateIfChanged<unsigned int>(agilentErrorCode_, agilentModel_->getErrorCode());
+
+  if (changed) {
+    QXmlStreamWriter xml(&buffer);
+    xml.setAutoFormatting(true);
+
+    xml.writeStartElement("AgilentTwisTorr304");
+    xml.writeAttribute("time", utime.toString(Qt::ISODate));
+    xml.writeAttribute("State", agilentState_==READY ? "1" : "0");
+    xml.writeAttribute("PumpState", agilentPumpState_==true ? "1" : "0");
+    xml.writeAttribute("PumpStatus", QString::number(agilentPumpStatus_));
+    xml.writeAttribute("ErrorCode", QString::number(agilentErrorCode_));
 
     xml.writeEndElement();
   }
