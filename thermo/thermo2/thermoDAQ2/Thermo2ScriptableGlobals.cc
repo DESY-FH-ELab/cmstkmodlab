@@ -113,7 +113,7 @@ QScriptValue Thermo2ScriptableGlobals::eTime()
 }
 
 QScriptValue Thermo2ScriptableGlobals::mkUTime(int year, int month, int day,
-                                              int hour, int minute, int second) const
+                                               int hour, int minute, int second) const
 {
   QDateTime dt(QDate(year, month, day), QTime(hour, minute, second), Qt::UTC);
   uint utime = dt.toTime_t();
