@@ -35,7 +35,7 @@ AgilentTwisTorr304Model::AgilentTwisTorr304Model(const char* port,
   pumpStatus_ = 0;
   errorCode_ = 0;
 
-  setDeviceEnabled(false);
+  setDeviceEnabled(true);
   setControlsEnabled(true);
 }
 
