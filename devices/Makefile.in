@@ -21,7 +21,8 @@ subdirs	      = Julabo \
                 Keyence \
                 Nanotec \
                 Leybold \
-                RohdeSchwarz
+                RohdeSchwarz \
+                Agilent
 
 all:
 	@for dir in $(subdirs); do (cd $$dir; make); done

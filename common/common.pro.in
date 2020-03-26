@@ -17,6 +17,7 @@ LIBS += -L@basepath@/devices/lib -lTkModLabNanotec
 LIBS += -L@basepath@/devices/lib -lTkModLabConrad
 LIBS += -L@basepath@/devices/lib -lTkModLabLeybold
 LIBS += -L@basepath@/devices/lib -lTkModLabRohdeSchwarz
+LIBS += -L@basepath@/devices/lib -lTkModLabAgilent
 LIBS += -L@basepath@/external/ddierckx -lddierckx
 LIBS += -lcurl
 
@@ -121,7 +122,9 @@ HEADERS += nqlogger.h \
            ScriptableKeithleyDAQ6510.h \
            HuberUnistat525wModel.h \
            HuberUnistat525wWidget.h \
-           ScriptableHuberUnistat525w.h
+           ScriptableHuberUnistat525w.h \
+           AgilentTwisTorr304Model.h \
+           AgilentTwisTorr304Widget.h
 
 SOURCES += nqlogger.cc \
            npoint2D.cc \
@@ -179,4 +182,6 @@ SOURCES += nqlogger.cc \
            ScriptableKeithleyDAQ6510.cc \
            HuberUnistat525wModel.cc \
            HuberUnistat525wWidget.cc \
-           ScriptableHuberUnistat525w.cc
+           ScriptableHuberUnistat525w.cc \
+           AgilentTwisTorr304Model.cc \
+           AgilentTwisTorr304Widget.cc

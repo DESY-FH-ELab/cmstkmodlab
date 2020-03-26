@@ -23,6 +23,7 @@
 #include "ApplicationConfig.h"
 
 #include "HuberUnistat525wWidget.h"
+#include "AgilentTwisTorr304Widget.h"
 #include "LeyboldGraphixOneWidget.h"
 #include "RohdeSchwarzNGE103BWidget.h"
 #include "KeithleyDAQ6510Widget.h"
@@ -38,7 +39,9 @@ Thermo2MainWindow::Thermo2MainWindow(QWidget *parent)
   ApplicationConfig* config = ApplicationConfig::instance();
 
   QWidget * widget;
-  QBoxLayout * wlayout;
+  QBoxLayout * vlayout;
+  QBoxLayout * vlayout2;
+  QBoxLayout * hlayout;
 
 #ifdef USE_FAKEIO
   huberModel_ = new HuberUnistat525wModel(config->getValue<std::string>("HuberUnistatDevice").c_str(),
@@ -46,6 +49,14 @@ Thermo2MainWindow::Thermo2MainWindow(QWidget *parent)
 #else
   huberModel_ = new HuberUnistat525wModel(config->getValue<std::string>("HuberUnistatDevice").c_str(),
                                           20, this);
+#endif
+
+#ifdef USE_FAKEIO
+  agilentModel_ = new AgilentTwisTorr304Model(config->getValue<std::string>("AgilentTwisTorr304Device").c_str(),
+                                              5, this);
+#else
+  agilentModel_ = new AgilentTwisTorr304Model(config->getValue<std::string>("AgilentTwisTorr304Device").c_str(),
+                                              20, this);
 #endif
 
 #ifdef USE_FAKEIO
@@ -106,20 +117,33 @@ Thermo2MainWindow::Thermo2MainWindow(QWidget *parent)
 
 
   widget = new QWidget();
-  wlayout = new QVBoxLayout();
-  widget->setLayout(wlayout);
+  vlayout = new QVBoxLayout();
+  widget->setLayout(vlayout);
+
+  hlayout = new QHBoxLayout();
+  vlayout->addLayout(hlayout);
 
   // HUBER MODEL
   HuberUnistat525wWidget* huberWidget = new HuberUnistat525wWidget(huberModel_, widget);
   huberWidget->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);
-  wlayout->addWidget(huberWidget);
+  hlayout->addWidget(huberWidget);
+
+  vlayout2 = new QVBoxLayout();
+  hlayout->addLayout(vlayout2);
+
+  // AGILET MODEL
+  AgilentTwisTorr304Widget* agilentWidget = new AgilentTwisTorr304Widget(agilentModel_, widget);
+  agilentWidget->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);
+  vlayout2->addWidget(agilentWidget);
 
   // LEYBOLD MODEL
   LeyboldGraphixOneWidget* leyboldWidget = new LeyboldGraphixOneWidget(leyboldModel_, widget);
   leyboldWidget->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);
-  wlayout->addWidget(leyboldWidget);
+  vlayout2->addWidget(leyboldWidget);
 
-  wlayout->addWidget(new QWidget());
+  vlayout2->addWidget(new QWidget());
+
+  vlayout->addWidget(new QWidget());
 
   tabWidget_->addTab(widget, "Chiller & Vacuum");
 
@@ -135,18 +159,18 @@ Thermo2MainWindow::Thermo2MainWindow(QWidget *parent)
 
   widget = new QWidget();
   widget->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);
-  wlayout = new QVBoxLayout();
-  widget->setLayout(wlayout);
+  vlayout = new QVBoxLayout();
+  widget->setLayout(vlayout);
 
   // DAQ Widget
   Thermo2DAQWidget* daqWidget = new Thermo2DAQWidget(daqModel_, widget);
   daqWidget->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);
-  wlayout->addWidget(daqWidget);
+  vlayout->addWidget(daqWidget);
 
   // Script Widget
   Thermo2ScriptWidget* scriptWidget = new Thermo2ScriptWidget(scriptModel_, widget);
   scriptWidget->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);
-  wlayout->addWidget(scriptWidget);
+  vlayout->addWidget(scriptWidget);
 
   tabWidget_->addTab(widget, "DAQ + Scripting");
 
