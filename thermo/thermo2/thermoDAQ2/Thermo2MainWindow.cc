@@ -39,6 +39,7 @@ Thermo2MainWindow::Thermo2MainWindow(QWidget *parent)
   ApplicationConfig* config = ApplicationConfig::instance();
 
   QWidget * widget;
+  QGroupBox * gbox;
   QBoxLayout * vlayout;
   QBoxLayout * vlayout2;
   QBoxLayout * hlayout;
@@ -116,7 +117,6 @@ Thermo2MainWindow::Thermo2MainWindow(QWidget *parent)
   tabWidget_ = new QTabWidget(this);
   tabWidget_->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);
 
-
   widget = new QWidget();
   vlayout = new QVBoxLayout();
   widget->setLayout(vlayout);
@@ -124,13 +124,20 @@ Thermo2MainWindow::Thermo2MainWindow(QWidget *parent)
   hlayout = new QHBoxLayout();
   vlayout->addLayout(hlayout);
 
+  gbox = new QGroupBox("Chiller");
+  vlayout2 = new QVBoxLayout();
+  gbox->setLayout(vlayout2);
+
   // HUBER MODEL
   HuberUnistat525wWidget* huberWidget = new HuberUnistat525wWidget(huberModel_, widget);
   huberWidget->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);
-  hlayout->addWidget(huberWidget);
+  vlayout2->addWidget(huberWidget);
 
+  hlayout->addWidget(gbox);
+
+  gbox = new QGroupBox("Vacuum");
   vlayout2 = new QVBoxLayout();
-  hlayout->addLayout(vlayout2);
+  gbox->setLayout(vlayout2);
 
   // AGILET MODEL
   AgilentTwisTorr304Widget* agilentWidget = new AgilentTwisTorr304Widget(agilentModel_, widget);
@@ -143,6 +150,8 @@ Thermo2MainWindow::Thermo2MainWindow(QWidget *parent)
   vlayout2->addWidget(leyboldWidget);
 
   vlayout2->addWidget(new QWidget());
+
+  hlayout->addWidget(gbox);
 
   vlayout->addWidget(new QWidget());
 
