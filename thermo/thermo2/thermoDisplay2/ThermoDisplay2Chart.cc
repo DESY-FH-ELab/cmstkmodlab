@@ -313,7 +313,8 @@ void ThermoDisplay2TemperatureStateChart::refreshTemperatureAxis()
 
   qreal deltaY = maxY-minY;
   if (deltaY<5.0) deltaY = 5.0;
-  axisTemperatureY_->setRange(minY-0.1*deltaY, maxY+0.1*deltaY);
+  deltaY = std::floor(deltaY);
+  axisTemperatureY_->setRange(std::floor(minY)-0.1*deltaY, std::ceil(maxY)+0.1*deltaY);
 }
 
 ThermoDisplay2VoltageChart::ThermoDisplay2VoltageChart()
