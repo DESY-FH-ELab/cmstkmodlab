@@ -135,6 +135,8 @@ template <> unsigned int ApplicationConfig::getValue(std::string const& key) con
 template <> std::vector<unsigned int> ApplicationConfig::getValueVector(std::string const& key) const;
 template <> unsigned int ApplicationConfig::getValue(std::string const& key, unsigned int defaultValue) const;
 
+template <> void ApplicationConfig::setValue(std::string const& key, std::string value);
+
 /** @} */
 
 #endif // APPLICATIONCONFIG_H
