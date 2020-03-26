@@ -62,6 +62,7 @@ HEADERS += TestWindow.h \
            Thermo2DAQServer.h \
            Thermo2ScriptModel.h \
            Thermo2ScriptWidget.h \
+           Thermo2ScriptSnippets.h \
            Thermo2ScriptThread.h \
            Thermo2ScriptableGlobals.h
     
@@ -75,5 +76,6 @@ SOURCES += thermoDAQ2.cc \
            Thermo2DAQServer.cc \
            Thermo2ScriptModel.cc \
            Thermo2ScriptWidget.cc \
+           Thermo2ScriptSnippets.cc \
            Thermo2ScriptThread.cc \
            Thermo2ScriptableGlobals.cc

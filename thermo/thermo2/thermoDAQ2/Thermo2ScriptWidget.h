@@ -23,6 +23,7 @@
 #include <QPlainTextEdit>
 
 #include "Thermo2ScriptModel.h"
+#include "Thermo2ScriptSnippets.h"
 
 class Thermo2ScriptEdit : public QPlainTextEdit
 {
@@ -61,7 +62,10 @@ protected:
   QPushButton* saveAsScriptButton_;
   QPushButton* executeScriptButton_;
   QPushButton* abortScriptButton_;
-  QWidget* buttons_;
+
+  Thermo2ScriptSnippets* scriptSnippets_;
+  QPushButton* insertSnippetButton_;
+
   Thermo2ScriptEdit* scriptEditor_;
   Thermo2MessageDisplay* messageDisplay_;
 
@@ -72,6 +76,8 @@ protected slots:
   void saveAsScriptButtonClicked();
   void executeScriptButtonClicked();
   void abortScriptButtonClicked();
+
+  void insertSnippetButtonClicked();
 
   void scriptChanged();
 };

@@ -26,39 +26,57 @@ Thermo2ScriptWidget::Thermo2ScriptWidget(const QString& title,
   setLayout(layout);
   //setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);
 
-  // Camera buttons
-  QHBoxLayout *buttonLayout = new QHBoxLayout();
-  buttons_ = new QWidget(this);
+  QWidget *buttons;
+  QHBoxLayout *buttonLayout;
+
+  // script buttons
+  buttonLayout = new QHBoxLayout();
+  buttons = new QWidget(this);
   //buttons_->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);
-  buttons_->setLayout(buttonLayout);
-  layout->addWidget(buttons_);
+  buttons->setLayout(buttonLayout);
+  layout->addWidget(buttons);
 
   // load a script
-  openScriptButton_ = new QPushButton("&Open", buttons_);
+  openScriptButton_ = new QPushButton("&Open", buttons);
   connect(openScriptButton_, SIGNAL(clicked()), this, SLOT(openScriptButtonClicked()));
   buttonLayout->addWidget(openScriptButton_);
 
   // save a script
-  saveScriptButton_ = new QPushButton("&Save", buttons_);
+  saveScriptButton_ = new QPushButton("&Save", buttons);
   connect(saveScriptButton_, SIGNAL(clicked()), this, SLOT(saveScriptButtonClicked()));
   buttonLayout->addWidget(saveScriptButton_);
 
   // save a script with new name
-  saveAsScriptButton_ = new QPushButton("&Save as", buttons_);
+  saveAsScriptButton_ = new QPushButton("&Save as", buttons);
   connect(saveAsScriptButton_, SIGNAL(clicked()), this, SLOT(saveAsScriptButtonClicked()));
   buttonLayout->addWidget(saveAsScriptButton_);
 
   // buttonLayout->addSpacing(100);
 
   // save a script
-  executeScriptButton_ = new QPushButton("&Execute", buttons_);
+  executeScriptButton_ = new QPushButton("&Execute", buttons);
   connect(executeScriptButton_, SIGNAL(clicked()), this, SLOT(executeScriptButtonClicked()));
   buttonLayout->addWidget(executeScriptButton_);
 
   // execute script
-  abortScriptButton_ = new QPushButton("&Abort", buttons_);
+  abortScriptButton_ = new QPushButton("&Abort", buttons);
   connect(abortScriptButton_, SIGNAL(clicked()), this, SLOT(abortScriptButtonClicked()));
   buttonLayout->addWidget(abortScriptButton_);
+
+  // script buttons
+  buttonLayout = new QHBoxLayout();
+  buttons = new QWidget(this);
+  //buttons_->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);
+  buttons->setLayout(buttonLayout);
+  layout->addWidget(buttons);
+
+  scriptSnippets_ = new Thermo2ScriptSnippets(buttons);
+  buttonLayout->addWidget(scriptSnippets_);
+
+  // execute script
+  insertSnippetButton_ = new QPushButton("&Insert snippet", buttons);
+  connect(insertSnippetButton_, SIGNAL(clicked()), this, SLOT(insertSnippetButtonClicked()));
+  buttonLayout->addWidget(insertSnippetButton_);
 
   // script editor
   scriptEditor_ = new Thermo2ScriptEdit(this);
@@ -138,6 +156,14 @@ void Thermo2ScriptWidget::abortScriptButtonClicked()
 void Thermo2ScriptWidget::scriptChanged()
 {
 
+}
+
+void Thermo2ScriptWidget::insertSnippetButtonClicked()
+{
+  scriptEditor_->moveCursor(QTextCursor::StartOfLine);
+
+  QString snippet = scriptSnippets_->currentData().toString();
+  scriptEditor_->insertPlainText(snippet);
 }
 
 void Thermo2ScriptWidget::clearMessageText( )
