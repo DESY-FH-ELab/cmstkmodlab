@@ -40,6 +40,12 @@ ThermoDisplay2MainWindow::ThermoDisplay2MainWindow(QWidget *parent)
   connect(btnClear, SIGNAL(clicked()), this, SLOT(clearData()));
   toolBar->addWidget(btnClear);
 
+  QToolButton * btnSavePlots = new QToolButton(toolBar);
+  btnSavePlots->setText("Save Plots");
+  btnSavePlots->setToolButtonStyle( Qt::ToolButtonTextUnderIcon );
+  connect(btnSavePlots, SIGNAL(clicked()), this, SLOT(savePlots()));
+  toolBar->addWidget(btnSavePlots);
+
   addToolBar(toolBar);
 
   QWidget *w;
@@ -229,6 +235,129 @@ void ThermoDisplay2MainWindow::clearData()
   IChart_->clearData();
   TChart_[0]->clearData();
   TChart_[1]->clearData();
+}
+
+void ThermoDisplay2MainWindow::savePlots()
+{
+  QDateTime dt = QDateTime::currentDateTime();
+
+  ApplicationConfig* config = ApplicationConfig::instance();
+
+  QString startDir = config->getValue<std::string>("PlotSaveDirectory").c_str();
+
+  QString dir = QFileDialog::getExistingDirectory(this, "Save Directory",
+                                                  startDir,
+                                                  QFileDialog::ShowDirsOnly);
+
+  if (dir.isEmpty()) return;
+
+  config->setValue("PlotSaveDirectory", dir);
+  config->safe(std::string(Config::CMSTkModLabBasePath) + "/thermo/thermo2/thermo2.cfg");
+
+  {
+    auto dpr = 2.0*ChillerTSChartView_->devicePixelRatioF();
+    QPixmap buffer(ChillerTSChartView_->width() * dpr,
+                   ChillerTSChartView_->height() * dpr);
+    buffer.fill(Qt::transparent);
+
+    QPainter *painter = new QPainter(&buffer);
+    painter->setPen(*(new QColor(255,34,255,255)));
+    ChillerTSChartView_->render(painter);
+
+    QFile file(dir + "/" + dt.toString("yyyy-MM-dd-hh-mm-ss") + "_thermo2_chillerTS.png");
+    file.open(QIODevice::WriteOnly);
+    buffer.save(&file, "PNG");
+  }
+
+  {
+    auto dpr = 2.0*ChillerPPChartView_->devicePixelRatioF();
+    QPixmap buffer(ChillerPPChartView_->width() * dpr,
+                   ChillerPPChartView_->height() * dpr);
+    buffer.fill(Qt::transparent);
+
+    QPainter *painter = new QPainter(&buffer);
+    painter->setPen(*(new QColor(255,34,255,255)));
+    ChillerPPChartView_->render(painter);
+
+    QFile file(dir + "/" + dt.toString("yyyy-MM-dd-hh-mm-ss") + "_thermo2_chillerPP.png");
+    file.open(QIODevice::WriteOnly);
+    buffer.save(&file, "PNG");
+  }
+
+  {
+    auto dpr = 2.0*VacuumChartView_->devicePixelRatioF();
+    QPixmap buffer(VacuumChartView_->width() * dpr,
+                   VacuumChartView_->height() * dpr);
+    buffer.fill(Qt::transparent);
+
+    QPainter *painter = new QPainter(&buffer);
+    painter->setPen(*(new QColor(255,34,255,255)));
+    VacuumChartView_->render(painter);
+
+    QFile file(dir + "/" + dt.toString("yyyy-MM-dd-hh-mm-ss") + "_thermo2_vacuum.png");
+    file.open(QIODevice::WriteOnly);
+    buffer.save(&file, "PNG");
+  }
+
+  {
+    auto dpr = 2.0*UChartView_->devicePixelRatioF();
+    QPixmap buffer(UChartView_->width() * dpr,
+                   UChartView_->height() * dpr);
+    buffer.fill(Qt::transparent);
+
+    QPainter *painter = new QPainter(&buffer);
+    painter->setPen(*(new QColor(255,34,255,255)));
+    UChartView_->render(painter);
+
+    QFile file(dir + "/" + dt.toString("yyyy-MM-dd-hh-mm-ss") + "_thermo2_voltage.png");
+    file.open(QIODevice::WriteOnly);
+    buffer.save(&file, "PNG");
+  }
+
+  {
+    auto dpr = 2.0*IChartView_->devicePixelRatioF();
+    QPixmap buffer(IChartView_->width() * dpr,
+                   IChartView_->height() * dpr);
+    buffer.fill(Qt::transparent);
+
+    QPainter *painter = new QPainter(&buffer);
+    painter->setPen(*(new QColor(255,34,255,255)));
+    IChartView_->render(painter);
+
+    QFile file(dir + "/" + dt.toString("yyyy-MM-dd-hh-mm-ss") + "_thermo2_current.png");
+    file.open(QIODevice::WriteOnly);
+    buffer.save(&file, "PNG");
+  }
+
+  {
+    auto dpr = 2.0*TChartView_[0]->devicePixelRatioF();
+    QPixmap buffer(TChartView_[0]->width() * dpr,
+                   TChartView_[0]->height() * dpr);
+    buffer.fill(Qt::transparent);
+
+    QPainter *painter = new QPainter(&buffer);
+    painter->setPen(*(new QColor(255,34,255,255)));
+    TChartView_[0]->render(painter);
+
+    QFile file(dir + "/" + dt.toString("yyyy-MM-dd-hh-mm-ss") + "_thermo2_temperatures1.png");
+    file.open(QIODevice::WriteOnly);
+    buffer.save(&file, "PNG");
+  }
+
+  {
+    auto dpr = 2.0*TChartView_[1]->devicePixelRatioF();
+    QPixmap buffer(TChartView_[1]->width() * dpr,
+                   TChartView_[1]->height() * dpr);
+    buffer.fill(Qt::transparent);
+
+    QPainter *painter = new QPainter(&buffer);
+    painter->setPen(*(new QColor(255,34,255,255)));
+    TChartView_[1]->render(painter);
+
+    QFile file(dir + "/" + dt.toString("yyyy-MM-dd-hh-mm-ss") + "_thermo2_temperatures2.png");
+    file.open(QIODevice::WriteOnly);
+    buffer.save(&file, "PNG");
+  }
 }
 
 void ThermoDisplay2MainWindow::requestData()

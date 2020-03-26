@@ -41,7 +41,9 @@ public slots:
 
   void requestData();
   void updateInfo();
+
   void clearData();
+  void savePlots();
 
 protected:
 
