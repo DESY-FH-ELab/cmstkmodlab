@@ -146,7 +146,7 @@ Thermo2MainWindow::Thermo2MainWindow(QWidget *parent)
 
   vlayout->addWidget(new QWidget());
 
-  tabWidget_->addTab(widget, "Chiller & Vacuum");
+  tabWidget_->addTab(widget, "Chiller && Vacuum");
 
   // Rohde & Schwarz NGE130B Widget
   RohdeSchwarzNGE103BWidget* nge103BWidget = new RohdeSchwarzNGE103BWidget(nge103BModel_);
@@ -175,7 +175,7 @@ Thermo2MainWindow::Thermo2MainWindow(QWidget *parent)
   scriptWidget->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);
   vlayout->addWidget(scriptWidget);
 
-  tabWidget_->addTab(widget, "DAQ + Scripting");
+  tabWidget_->addTab(widget, "DAQ && Scripting");
 
   setCentralWidget(tabWidget_);
   updateGeometry();
