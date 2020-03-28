@@ -198,18 +198,36 @@ void LStepExpressMotionManager::moveRelative(const unsigned int axis, const doub
 
 void LStepExpressMotionManager::moveAbsolute(const std::vector<double>& values)
 {
+    if(values[0] > 150 || values[0] < -150 || values[1] > 150 || values[1] < -150 || values[2] > 150 || values[2] < -150) //MS boundaries : 150mm in x,y,z
+    {
+        NQLog("LStepExpressMotionManager", NQLog::Warning) << "\e[1;31ERROR ! Absolute move would exceed motion stage physical boundaries ! Ignored...\e[0m";
+        return;
+    }
+
     motions_.enqueue(LStepExpressMotion(values, true));
     this->run();
 }
 
 void LStepExpressMotionManager::moveAbsolute(const double x, const double y, const double z, const double a)
 {
+    if(x > 150 || x < -150 || y > 150 || y < -150 || z > 150 || z < -150) //MS boundaries : 150mm in x,y,z
+    {
+        NQLog("LStepExpressMotionManager", NQLog::Warning) << "\e[1;31ERROR ! Absolute move would exceed motion stage physical boundaries ! Ignored...\e[0m";
+        return;
+    }
+
     motions_.enqueue(LStepExpressMotion(x, y, z, a, true));
     this->run();
 }
 
 void LStepExpressMotionManager::moveAbsolute(const unsigned int axis, const double value)
 {
+    if((axis == 0 || axis == 1 || axis == 2) && (value < -150 || value > 150)) //MS boundaries : 150mm in x,y,z
+    {
+        NQLog("LStepExpressMotionManager", NQLog::Warning) << "\e[1;31ERROR ! Absolute move would exceed motion stage physical boundaries ! Ignored...\e[0m";
+        return;
+    }
+
     motions_.enqueue(LStepExpressMotion(axis, value, true));
     this->run();
 }
