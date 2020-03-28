@@ -75,6 +75,7 @@ AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QStr
   params_view_(nullptr),
   hwctr_view_(nullptr),
 
+  button_emergencyStop_(nullptr), //NT
   autofocus_checkbox_(nullptr),
 
   // flags
@@ -88,9 +89,9 @@ AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QStr
     ApplicationConfig* config = ApplicationConfig::instance();
     if(config == nullptr)
     {
-      NQLog("AssemblyMainWindow", NQLog::Fatal) << "-------------------------------------------------------------------------------------------------------";
-      NQLog("AssemblyMainWindow", NQLog::Fatal) << "initialization error: ApplicationConfig::instance() not initialized (null pointer), exiting constructor";
-      NQLog("AssemblyMainWindow", NQLog::Fatal) << "-------------------------------------------------------------------------------------------------------";
+      NQLog("AssemblyMainWindow", NQLog::Fatal) << "\e[1;31m-------------------------------------------------------------------------------------------------------\e[0m";
+      NQLog("AssemblyMainWindow", NQLog::Fatal) << "\e[1;31mInitialization error: ApplicationConfig::instance() not initialized (null pointer), exiting constructor\e[0m";
+      NQLog("AssemblyMainWindow", NQLog::Fatal) << "\e[1;31m-------------------------------------------------------------------------------------------------------\e[0m";
 
       return;
     }
@@ -98,6 +99,14 @@ AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QStr
     /// Parameters
     ///   * instance created up here, so controllers can access it
     params_ = AssemblyParameters::instance(config->getValue<std::string>("AssemblyParameters_file_path"));
+    if(params_->isValidConfig() == false)
+    {
+      NQLog("AssemblyMainWindow", NQLog::Fatal) << "\e[1;31m-------------------------------------------------------------------------------------------------------\e[0m";
+      NQLog("AssemblyMainWindow", NQLog::Fatal) << "\e[1;31mInitialization error: AssemblyParameters::instance() is invalid ! Abort !\e[0m";
+      NQLog("AssemblyMainWindow", NQLog::Fatal) << "\e[1;31m-------------------------------------------------------------------------------------------------------\e[0m";
+
+      return;
+    }
     /// -------------------
 
     /// Motion
@@ -358,13 +367,18 @@ AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QStr
     toolBar_ ->addAction("Camera OFF"    , this, SLOT(disable_images()));
     toolBar_ ->addAction("Snapshot"      , this, SLOT(    get_image ()));
 
-    toolBar_ ->addAction("Emergency Stop", motion_manager_->model(), SLOT(emergencyStop()));
-
     autofocus_checkbox_ = new QCheckBox("Auto-Focusing", this);
     toolBar_->addWidget(autofocus_checkbox_);
-
     connect(autofocus_checkbox_, SIGNAL(stateChanged(int)), this, SLOT(changeState_autofocus(int)));
     connect(autofocus_checkbox_, SIGNAL(stateChanged(int)), aligner_view_, SLOT(update_autofocusing_checkbox(int)));
+
+    //NT
+    // toolBar_ ->addAction("Emergency Stop", motion_manager_->model(), SLOT(emergencyStop()));
+    button_emergencyStop_ = new QPushButton(tr("Emergency STOP"));
+    // button_emergencyStop_->setStyleSheet("QPushButton { background-color: red; border-style: outset; border-width: 3px; border-color: black; font: bold 18px; border-radius: 10px; padding: 5px; }"); //NT
+    button_emergencyStop_->setStyleSheet("QPushButton { background-color: rgb(255, 129, 123); font: bold 18px; border-radius: 8px; padding: 7px; }"); //NT
+    toolBar_->addWidget(button_emergencyStop_);
+    connect(button_emergencyStop_, SIGNAL(clicked()), motion_manager_->model(), SLOT(emergencyStop()));
     /// --------------------------------------------------------
 
     /// Main Tab -----------------------------------------------
@@ -649,6 +663,8 @@ void AssemblyMainWindow::start_objectAligner(const AssemblyObjectAligner::Config
   aligner_view_->Configuration_Widget()->setEnabled(false);
 
   aligner_connected_ = true;
+
+  aligner_->reset_counter_AlignIterations(); //NT -- reset counter of iterations of alignment procedure
 
   // if successful, emits signal "configuration_updated()"
   aligner_->update_configuration(conf);

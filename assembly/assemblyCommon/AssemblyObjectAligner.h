@@ -28,6 +28,8 @@ class AssemblyObjectAligner : public QObject
 
   void reset();
 
+  void reset_counter_AlignIterations(); //NT
+
   class Configuration {
 
    public:
@@ -52,6 +54,9 @@ class AssemblyObjectAligner : public QObject
     double angle_max_dontIter;
     double angle_max_complete;
 
+    int max_nIter_AlignProcedure; //NT
+
+    //Cfg instances which must ne transmitted when running PatRec on markers 1 and 2
     AssemblyObjectFinderPatRec::Configuration PatRecOne_configuration;
     AssemblyObjectFinderPatRec::Configuration PatRecTwo_configuration;
   };
@@ -71,12 +76,13 @@ class AssemblyObjectAligner : public QObject
     void    connect_motion_manager() { this->enable_motion_manager(true) ; }
     void disconnect_motion_manager() { this->enable_motion_manager(false); }
 
-    // parameters
-    double angle_max_dontIter_;
-    double angle_max_complete_;
+    // parameters //NT -- can remove ?
+    // double angle_max_dontIter_;
+    // double angle_max_complete_;
 
     // transient data (values to be updated during alignment)
     int alignment_step_;
+    int counter_nofAlignments_; //NT -- Count the number of times the alignment routine was executed
 
     double posi_x1_, posi_y1_;
     double posi_x2_, posi_y2_;
