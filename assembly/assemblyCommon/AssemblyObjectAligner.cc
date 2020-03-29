@@ -127,9 +127,9 @@ void AssemblyObjectAligner::reset()
   return;
 }
 
-void AssemblyObjectAligner::reset_counter_AlignIterations() //NT
+void AssemblyObjectAligner::reset_counter_AlignIterations()
 {
-    counter_nofAlignments_ = 0;
+    counter_nofAlignments_ = 0; 
 
     return;
 }

@@ -75,7 +75,7 @@ AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QStr
   params_view_(nullptr),
   hwctr_view_(nullptr),
 
-  button_emergencyStop_(nullptr), //NT
+  button_mainEmergencyStop_(nullptr),
   autofocus_checkbox_(nullptr),
 
   // flags
@@ -119,6 +119,7 @@ AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QStr
     );
 
     motion_manager_ = new LStepExpressMotionManager(motion_model_);
+    connect(motion_manager_->model(), SIGNAL(emergencyStop_request()), motion_manager_, SLOT(clear_motion_queue()));
 
     motion_thread_  = new LStepExpressMotionThread(motion_manager_, this);
     motion_thread_->start();
@@ -222,11 +223,9 @@ AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QStr
     aligner_view_->PatRecOne_Image()->connectImageProducer(aligner_, SIGNAL(image_PatRecOne(cv::Mat)));
     aligner_view_->PatRecTwo_Image()->connectImageProducer(aligner_, SIGNAL(image_PatRecTwo(cv::Mat)));
 
-    connect(aligner_view_->button_emergencyStop(), SIGNAL(clicked()), this, SLOT(disconnect_objectAligner()));
-    connect(aligner_view_->button_emergencyStop(), SIGNAL(clicked()), motion_manager_, SLOT(emergency_stop()));
-    connect(aligner_view_->button_emergencyStop(), SIGNAL(clicked()), zfocus_finder_ , SLOT(emergencyStop()));
-
-    connect(motion_manager_->model(), SIGNAL(emergencyStop_request()), motion_manager_, SLOT(clear_motion_queue()));
+    connect(aligner_view_->button_alignerEmergencyStop(), SIGNAL(clicked()), this, SLOT(disconnect_objectAligner()));
+    connect(aligner_view_->button_alignerEmergencyStop(), SIGNAL(clicked()), motion_manager_, SLOT(emergency_stop()));
+    connect(aligner_view_->button_alignerEmergencyStop(), SIGNAL(clicked()), zfocus_finder_ , SLOT(emergencyStop()));
 
     NQLog("AssemblyMainWindow", NQLog::Message) << "added view " << tabname_Alignm;
     // ---------------------------------------------------------
@@ -372,13 +371,16 @@ AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QStr
     connect(autofocus_checkbox_, SIGNAL(stateChanged(int)), this, SLOT(changeState_autofocus(int)));
     connect(autofocus_checkbox_, SIGNAL(stateChanged(int)), aligner_view_, SLOT(update_autofocusing_checkbox(int)));
 
-    //NT
     // toolBar_ ->addAction("Emergency Stop", motion_manager_->model(), SLOT(emergencyStop()));
-    button_emergencyStop_ = new QPushButton(tr("Emergency STOP"));
-    // button_emergencyStop_->setStyleSheet("QPushButton { background-color: red; border-style: outset; border-width: 3px; border-color: black; font: bold 18px; border-radius: 10px; padding: 5px; }"); //NT
-    button_emergencyStop_->setStyleSheet("QPushButton { background-color: rgb(255, 129, 123); font: bold 18px; border-radius: 8px; padding: 7px; }"); //NT
-    toolBar_->addWidget(button_emergencyStop_);
-    connect(button_emergencyStop_, SIGNAL(clicked()), motion_manager_->model(), SLOT(emergencyStop()));
+    button_mainEmergencyStop_ = new QPushButton(tr("Emergency STOP"));
+    button_mainEmergencyStop_->setStyleSheet("QPushButton { background-color: rgb(255, 129, 123); font: bold 18px; border-radius: 8px; padding: 7px; }");
+    toolBar_->addWidget(button_mainEmergencyStop_);
+
+    connect(button_mainEmergencyStop_, SIGNAL(clicked()), motion_manager_, SLOT(emergency_stop()));
+
+    //NT -- also connect main emergency button to these 'stop signals' ?
+    connect(button_mainEmergencyStop_, SIGNAL(clicked()), this, SLOT(disconnect_objectAligner()));
+    connect(button_mainEmergencyStop_, SIGNAL(clicked()), zfocus_finder_ , SLOT(emergencyStop()));
     /// --------------------------------------------------------
 
     /// Main Tab -----------------------------------------------
@@ -664,7 +666,7 @@ void AssemblyMainWindow::start_objectAligner(const AssemblyObjectAligner::Config
 
   aligner_connected_ = true;
 
-  aligner_->reset_counter_AlignIterations(); //NT -- reset counter of iterations of alignment procedure
+  aligner_->reset_counter_AlignIterations(); //Reset counter of iterations for alignment procedure
 
   // if successful, emits signal "configuration_updated()"
   aligner_->update_configuration(conf);

@@ -168,7 +168,7 @@ class AssemblyMainWindow : public QMainWindow
   AssemblyParametersView* params_view_;
   AssemblyHardwareControlView* hwctr_view_;
 
-  QPushButton* button_emergencyStop_; //NT
+  QPushButton* button_mainEmergencyStop_;
   QCheckBox* autofocus_checkbox_;
 
   // flags

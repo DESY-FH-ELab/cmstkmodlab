@@ -70,7 +70,7 @@ AssemblyObjectAlignerView::AssemblyObjectAlignerView(QWidget* parent)
  , patrecTwo_image_ (nullptr)
  , patrecTwo_scroll_(nullptr)
 
- , button_emergencyStop_(nullptr)
+ , button_alignerEmergencyStop_(nullptr)
 
  , finder_connected_(false)
 {
@@ -453,11 +453,11 @@ AssemblyObjectAlignerView::AssemblyObjectAlignerView(QWidget* parent)
 
   QHBoxLayout* buttons_lay = new QHBoxLayout;
 
-  button_emergencyStop_ = new QPushButton(tr("Emergency Stop"));
+  button_alignerEmergencyStop_ = new QPushButton(tr("Emergency Stop"));
 
   buttons_lay->addWidget(new QLabel, 33);
   buttons_lay->addWidget(new QLabel, 33);
-  buttons_lay->addWidget(button_emergencyStop_, 33);
+  buttons_lay->addWidget(button_alignerEmergencyStop_, 33);
 
   layout->addLayout(buttons_lay);
 
