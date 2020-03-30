@@ -235,7 +235,8 @@ void AssemblyObjectAligner::launch_next_alignment_step()
 
 void AssemblyObjectAligner::execute()
 {
-  alignment_step_ = 0;
+  this->reset();
+  this->reset_counter_numOfRotations();
 
   this->run_alignment(0., 0., 0.);
 }
