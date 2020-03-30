@@ -664,8 +664,6 @@ void AssemblyMainWindow::start_objectAligner(const AssemblyObjectAligner::Config
 
   aligner_connected_ = true;
 
-  aligner_->reset_counter_AlignIterations(); //Reset counter of iterations for alignment procedure
-
   // if successful, emits signal "configuration_updated()"
   aligner_->update_configuration(conf);
 

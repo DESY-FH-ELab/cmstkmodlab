@@ -33,17 +33,30 @@ AssemblyObjectAligner::AssemblyObjectAligner(const LStepExpressMotionManager* co
     assembly::kill_application(tr("[AssemblyObjectAligner]"), tr("Null pointer to LStepExpressMotionManager. Aborting Application."));
   }
 
+  //When launching alignment routine, most params get read by AssemblyObjectAlignerView, and copied into this->configuration_.
+  //But other params are not related to the View (not editable in GUI), so must read their values manually here
+  ApplicationConfig* config = ApplicationConfig::instance(); //Access config file parameters
+  if(not config)
+  {
+    NQLog("AssemblyObjectAligner", NQLog::Fatal)
+       << "ApplicationConfig::instance() not initialized (null pointer), stopped constructor";
+
+    assembly::kill_application(tr("[AssemblyObjectAligner]"), tr("ApplicationConfig::instance() not initialized (null pointer), closing application"));
+  }
+  else {
+    max_numOfRotations_ = config->getValue<int>("AssemblyObjectAligner_maxNumberOfRotations", 10);
+  }
+
   qRegisterMetaType<AssemblyObjectAligner::Configuration>("AssemblyObjectAligner::Configuration"); //"After a type has been registered, you can create and destroy objects of that type dynamically at run-time"
 
   configuration_.reset();
 
   this->reset();
+  this->reset_counter_numOfRotations();
 
   connect(this, SIGNAL(nextAlignmentStep(double, double, double)), this, SLOT(run_alignment(double, double, double)));
 
   connect(this, SIGNAL(motion_completed()), this, SLOT(launch_next_alignment_step()));
-
-  counter_nofAlignments_ = 0; //Init it here (not in the reset() function, because this param should not be reset everytime the routine restarts)
 
   NQLog("AssemblyObjectAligner", NQLog::Debug) << "constructed";
 }
@@ -63,8 +76,6 @@ void AssemblyObjectAligner::Configuration::reset()
 
   angle_max_dontIter = -999.;
   angle_max_complete = -999.;
-
-  max_nIter_AlignProcedure = -999.;
 
   PatRecOne_configuration.reset();
   PatRecTwo_configuration.reset();
@@ -120,11 +131,9 @@ void AssemblyObjectAligner::reset()
   return;
 }
 
-void AssemblyObjectAligner::reset_counter_AlignIterations()
+void AssemblyObjectAligner::reset_counter_numOfRotations()
 {
-    counter_nofAlignments_ = 0;
-
-    return;
+  counter_numOfRotations_ = 0;
 }
 
 void AssemblyObjectAligner::update_configuration(const AssemblyObjectAligner::Configuration& conf)
@@ -138,11 +147,6 @@ void AssemblyObjectAligner::update_configuration(const AssemblyObjectAligner::Co
   }
 
   configuration_ = conf;
-
-  //When launching alignment routine, most params get read by AssemblyObjectAlignerView, and copied above into this->configuration_. But other params are not related to the View (not editable in GUI), so must read their values manually here
-  ApplicationConfig* config = ApplicationConfig::instance(); //Access config file parameters
-  configuration_.max_nIter_AlignProcedure = config->getValue<int>("AssemblyObjectAlignerView_max_nIter_AlignProcedure", 10);
-
 
   NQLog("AssemblyObjectAligner", NQLog::Spam) << "update_configuration"
      << ": emitting signal \"configuration_updated\"";
@@ -253,21 +257,23 @@ void AssemblyObjectAligner::run_alignment(const double patrec_dX, const double p
   // Step #0: request image on marker-1
   if(alignment_step_ == 0)
   {
-      counter_nofAlignments_++; //Step0 is called only once per alignment routine --> Can count here the number of times that the alignment routine will be called
-
-      NQLog("AssemblyObjectAligner", NQLog::Message) << "\e[1;32m=== Starting alignment procedure\e[0m (iteration "<<counter_nofAlignments_<<")";
-
-    if(counter_nofAlignments_ > this->configuration().max_nIter_AlignProcedure)
+    if(counter_numOfRotations_ >= max_numOfRotations_)
     {
-      NQLog("AssemblyObjectAligner", NQLog::Warning) << "\e[1;35mrun_alignment() : reached maximum number of iterations for the alignment procedure -- Stopping here !\e[0m"
-          << " Emitting signal \"execution_completed\"";
+       NQLog("AssemblyObjectAligner", NQLog::Warning) << "\e[1;35mrun_alignment() : reached maximum number of iterations ("
+          << max_numOfRotations_ << ") for the alignment procedure -- Stopping here !\e[0m";
+
+       NQLog("AssemblyObjectAligner", NQLog::Spam) << "run_alignment: step [" << alignment_step_ << "]"
+          << ": emitting signal \"execution_completed\"";
 
        this->reset();
+       this->reset_counter_numOfRotations();
 
        emit execution_completed();
 
        return;
     }
+
+    NQLog("AssemblyObjectAligner", NQLog::Message) << "\e[1;32m=== Starting alignment procedure\e[0m (iteration: " << counter_numOfRotations_ << ")";
 
     NQLog("AssemblyObjectAligner", NQLog::Message) << "run_alignment: step [" << alignment_step_ << "]";
 
@@ -428,7 +434,7 @@ void AssemblyObjectAligner::run_alignment(const double patrec_dX, const double p
       NQLog("AssemblyObjectAligner", NQLog::Message) << "run_alignment: step [" << alignment_step_ << "]: object aligned with angle [deg] = " << obj_angle_deg_;
       NQLog("AssemblyObjectAligner", NQLog::Message) << "run_alignment: step [" << alignment_step_ << "]";
 
-      if(this->configuration().complete_at_position1) //If box "Go back to marker-1 position before completion" is ticked, continue routine (go to marker1, run PatRec, terminate)
+      if(this->configuration().complete_at_position1) //If box "Go back to marker-1 position before completion" is ticked, continue routine (go to marker1, take image, terminate)
       {
         NQLog("AssemblyObjectAligner", NQLog::Message) << "run_alignment: step [" << alignment_step_ << "]: alignment completed, moving back to best-match position of PatRec #1";
         NQLog("AssemblyObjectAligner", NQLog::Message) << "run_alignment: step [" << alignment_step_ << "]";
@@ -449,6 +455,7 @@ void AssemblyObjectAligner::run_alignment(const double patrec_dX, const double p
            << ": emitting signal \"execution_completed\"";
 
         this->reset();
+        this->reset_counter_numOfRotations();
 
         emit execution_completed();
       }
@@ -487,6 +494,8 @@ void AssemblyObjectAligner::run_alignment(const double patrec_dX, const double p
 
           this->reset();
 
+          ++counter_numOfRotations_;
+
           this->move_relative(dX, dY, 0.0, delta_angle_deg);
         }
         else //Else, if exceeds the 'angle_max_dontIter' parameter, rotate motion stage by max. allowed value '+-angle_max_dontIter', and restart routine
@@ -506,6 +515,8 @@ void AssemblyObjectAligner::run_alignment(const double patrec_dX, const double p
              << ": emitting signal \"move_relative(" << dX << ", " << dY << ", 0, " << rot_deg << ")\"";
 
           this->reset();
+
+          ++counter_numOfRotations_;
 
           this->move_relative(dX, dY, 0.0, rot_deg);
         }
@@ -540,6 +551,7 @@ void AssemblyObjectAligner::run_alignment(const double patrec_dX, const double p
              << ": emitting signal \"execution_completed\"";
 
           this->reset();
+          this->reset_counter_numOfRotations();
 
           emit execution_completed();
         }
@@ -581,6 +593,7 @@ void AssemblyObjectAligner::run_alignment(const double patrec_dX, const double p
     NQLog("AssemblyObjectAligner", NQLog::Message) << "run_alignment: step [" << alignment_step_ << "]";
 
     this->reset();
+    this->reset_counter_numOfRotations();
 
     emit execution_completed();
   }
