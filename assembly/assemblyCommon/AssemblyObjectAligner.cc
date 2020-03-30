@@ -33,7 +33,7 @@ AssemblyObjectAligner::AssemblyObjectAligner(const LStepExpressMotionManager* co
     assembly::kill_application(tr("[AssemblyObjectAligner]"), tr("Null pointer to LStepExpressMotionManager. Aborting Application."));
   }
 
-  qRegisterMetaType<AssemblyObjectAligner::Configuration>("AssemblyObjectAligner::Configuration");
+  qRegisterMetaType<AssemblyObjectAligner::Configuration>("AssemblyObjectAligner::Configuration"); //"After a type has been registered, you can create and destroy objects of that type dynamically at run-time"
 
   configuration_.reset();
 
@@ -42,6 +42,8 @@ AssemblyObjectAligner::AssemblyObjectAligner(const LStepExpressMotionManager* co
   connect(this, SIGNAL(nextAlignmentStep(double, double, double)), this, SLOT(run_alignment(double, double, double)));
 
   connect(this, SIGNAL(motion_completed()), this, SLOT(launch_next_alignment_step()));
+
+  counter_nofAlignments_ = 0; //Init it here (not in the reset() function, because this param should not be reset everytime the routine restarts)
 
   NQLog("AssemblyObjectAligner", NQLog::Debug) << "constructed";
 }
@@ -61,6 +63,8 @@ void AssemblyObjectAligner::Configuration::reset()
 
   angle_max_dontIter = -999.;
   angle_max_complete = -999.;
+
+  max_nIter_AlignProcedure = -999.;
 
   PatRecOne_configuration.reset();
   PatRecTwo_configuration.reset();
@@ -116,6 +120,13 @@ void AssemblyObjectAligner::reset()
   return;
 }
 
+void AssemblyObjectAligner::reset_counter_AlignIterations()
+{
+    counter_nofAlignments_ = 0;
+
+    return;
+}
+
 void AssemblyObjectAligner::update_configuration(const AssemblyObjectAligner::Configuration& conf)
 {
   if(conf.is_valid() == false)
@@ -127,6 +138,11 @@ void AssemblyObjectAligner::update_configuration(const AssemblyObjectAligner::Co
   }
 
   configuration_ = conf;
+
+  //When launching alignment routine, most params get read by AssemblyObjectAlignerView, and copied above into this->configuration_. But other params are not related to the View (not editable in GUI), so must read their values manually here
+  ApplicationConfig* config = ApplicationConfig::instance(); //Access config file parameters
+  configuration_.max_nIter_AlignProcedure = config->getValue<int>("AssemblyObjectAlignerView_max_nIter_AlignProcedure", 10);
+
 
   NQLog("AssemblyObjectAligner", NQLog::Spam) << "update_configuration"
      << ": emitting signal \"configuration_updated\"";
@@ -237,6 +253,22 @@ void AssemblyObjectAligner::run_alignment(const double patrec_dX, const double p
   // Step #0: request image on marker-1
   if(alignment_step_ == 0)
   {
+      counter_nofAlignments_++; //Step0 is called only once per alignment routine --> Can count here the number of times that the alignment routine will be called
+
+      NQLog("AssemblyObjectAligner", NQLog::Message) << "\e[1;32m=== Starting alignment procedure\e[0m (iteration "<<counter_nofAlignments_<<")";
+
+    if(counter_nofAlignments_ > this->configuration().max_nIter_AlignProcedure)
+    {
+      NQLog("AssemblyObjectAligner", NQLog::Warning) << "\e[1;35mrun_alignment() : reached maximum number of iterations for the alignment procedure -- Stopping here !\e[0m"
+          << " Emitting signal \"execution_completed\"";
+
+       this->reset();
+
+       emit execution_completed();
+
+       return;
+    }
+
     NQLog("AssemblyObjectAligner", NQLog::Message) << "run_alignment: step [" << alignment_step_ << "]";
 
     if(this->configuration().use_autofocusing)
@@ -257,7 +289,7 @@ void AssemblyObjectAligner::run_alignment(const double patrec_dX, const double p
 
       emit image_request();
     }
-  } 
+  }
   // Step #1: PatRec on marker-1
   else if(alignment_step_ == 1)
   {
@@ -384,11 +416,11 @@ void AssemblyObjectAligner::run_alignment(const double patrec_dX, const double p
 
     emit measured_angle(obj_angle_deg_);
 
-    // relative (X,Y) movement to reach the opposite marker
+    // relative (X,Y) movement to reach the opposite marker (marker-1)
     const double dX = (posi_x1_ - motion_manager_->get_position_X());
     const double dY = (posi_y1_ - motion_manager_->get_position_Y());
 
-    if(this->configuration().only_measure_angle)
+    if(this->configuration().only_measure_angle) //If box "Measure Angle" is ticked --> Only measure angle, don't align motion stage
     {
       NQLog("AssemblyObjectAligner", NQLog::Message) << "run_alignment: step [" << alignment_step_ << "]";
       NQLog("AssemblyObjectAligner", NQLog::Message) << "run_alignment: step [" << alignment_step_ << "]: mode = ONLY-MEASURE-ANGLE";
@@ -396,7 +428,7 @@ void AssemblyObjectAligner::run_alignment(const double patrec_dX, const double p
       NQLog("AssemblyObjectAligner", NQLog::Message) << "run_alignment: step [" << alignment_step_ << "]: object aligned with angle [deg] = " << obj_angle_deg_;
       NQLog("AssemblyObjectAligner", NQLog::Message) << "run_alignment: step [" << alignment_step_ << "]";
 
-      if(this->configuration().complete_at_position1)
+      if(this->configuration().complete_at_position1) //If box "Go back to marker-1 position before completion" is ticked, continue routine (go to marker1, run PatRec, terminate)
       {
         NQLog("AssemblyObjectAligner", NQLog::Message) << "run_alignment: step [" << alignment_step_ << "]: alignment completed, moving back to best-match position of PatRec #1";
         NQLog("AssemblyObjectAligner", NQLog::Message) << "run_alignment: step [" << alignment_step_ << "]";
@@ -408,7 +440,7 @@ void AssemblyObjectAligner::run_alignment(const double patrec_dX, const double p
 
         this->move_relative(dX, dY, 0.0, 0.0);
       }
-      else
+      else //Else, finish there and emit 'execution_completed' signal
       {
         NQLog("AssemblyObjectAligner", NQLog::Message) << "run_alignment: step [" << alignment_step_ << "]: ===> Alignment routine completed successfully";
         NQLog("AssemblyObjectAligner", NQLog::Message) << "run_alignment: step [" << alignment_step_ << "]";
@@ -421,11 +453,11 @@ void AssemblyObjectAligner::run_alignment(const double patrec_dX, const double p
         emit execution_completed();
       }
     }
-    else
+    else //(If 'Align object' box is ticked)
     {
-      const double target_angle_deg = this->configuration().target_angle;
+      const double target_angle_deg = this->configuration().target_angle; //Angle between the line (between 2 markers) and the MS, in the MS ref. frame
 
-      const double delta_angle_deg = (target_angle_deg - obj_angle_deg_);
+      const double delta_angle_deg = (target_angle_deg - obj_angle_deg_); //Difference between current measured angle, and 'target angle' parameter
 
       NQLog("AssemblyObjectAligner", NQLog::Message) << "run_alignment: step [" << alignment_step_ << "]";
       NQLog("AssemblyObjectAligner", NQLog::Message) << "run_alignment: step [" << alignment_step_ << "]: mode = ALIGNMENT";
@@ -435,11 +467,11 @@ void AssemblyObjectAligner::run_alignment(const double patrec_dX, const double p
       NQLog("AssemblyObjectAligner", NQLog::Message) << "run_alignment: step [" << alignment_step_ << "]: angular distance from target [deg] = " << delta_angle_deg;
       NQLog("AssemblyObjectAligner", NQLog::Message) << "run_alignment: step [" << alignment_step_ << "]";
 
-      if(fabs(delta_angle_deg) > this->configuration().angle_max_complete)
+      if(fabs(delta_angle_deg) > this->configuration().angle_max_complete) //If 'delta_angle_deg' exceeds the 'Max Distance Allowed From Target Angle To Validate Alignment' tolerance parameter (<-> the motion stage needs to be better aligned)
       {
         NQLog("AssemblyObjectAligner", NQLog::Message) << "run_alignment: step [" << alignment_step_ << "]: angle(object, target) > " << this->configuration().angle_max_complete << ", will apply a rotation";
 
-        if(fabs(delta_angle_deg) <= this->configuration().angle_max_dontIter)
+        if(fabs(delta_angle_deg) <= this->configuration().angle_max_dontIter) //If 'delta_angle_deg' is smaller than 'Max Angle For Single Rotation [deg]' parameter -> rotate the motion stage accordingly, and restart the routine
         {
           NQLog("AssemblyObjectAligner", NQLog::Message) << "run_alignment: step [" << alignment_step_ << "]";
           NQLog("AssemblyObjectAligner", NQLog::Message) << "run_alignment: step [" << alignment_step_ << "]: angle(object, target) <= " << this->configuration().angle_max_dontIter << ", moving to target angle with 1 rotation";
@@ -457,7 +489,7 @@ void AssemblyObjectAligner::run_alignment(const double patrec_dX, const double p
 
           this->move_relative(dX, dY, 0.0, delta_angle_deg);
         }
-        else
+        else //Else, if exceeds the 'angle_max_dontIter' parameter, rotate motion stage by max. allowed value '+-angle_max_dontIter', and restart routine
         {
           NQLog("AssemblyObjectAligner", NQLog::Message) << "run_alignment: step [" << alignment_step_ << "]";
           NQLog("AssemblyObjectAligner", NQLog::Message) << "run_alignment: step [" << alignment_step_ << "]: angle(object, target) > " << this->configuration().angle_max_dontIter << " deg, large rotation required";
@@ -478,13 +510,13 @@ void AssemblyObjectAligner::run_alignment(const double patrec_dX, const double p
           this->move_relative(dX, dY, 0.0, rot_deg);
         }
       }
-      else
+      else //If a sufficiently small angle value has been found
       {
         NQLog("AssemblyObjectAligner", NQLog::Message) << "run_alignment: step [" << alignment_step_ << "]";
         NQLog("AssemblyObjectAligner", NQLog::Message) << "run_alignment: step [" << alignment_step_ << "]: angle(object, target) < " << this->configuration().angle_max_complete << ", will NOT apply a rotation";
         NQLog("AssemblyObjectAligner", NQLog::Message) << "run_alignment: step [" << alignment_step_ << "]";
 
-        if(this->configuration().complete_at_position1)
+        if(this->configuration().complete_at_position1) //If box "Go back to marker-1 position before completion" is ticked, continue routine (go to marker1, take image, terminate)
         {
           NQLog("AssemblyObjectAligner", NQLog::Message) << "run_alignment: step [" << alignment_step_ << "]: alignment completed, moving back to best-match position of PatRec #1";
           NQLog("AssemblyObjectAligner", NQLog::Message) << "run_alignment: step [" << alignment_step_ << "]";
@@ -496,7 +528,7 @@ void AssemblyObjectAligner::run_alignment(const double patrec_dX, const double p
 
           this->move_relative(dX, dY, 0.0, 0.0);
         }
-        else
+        else //Else stop there, emit 'execution_completed' signal
         {
           NQLog("AssemblyObjectAligner", NQLog::Message) << "run_alignment: step [" << alignment_step_ << "]";
           NQLog("AssemblyObjectAligner", NQLog::Message) << "run_alignment: step [" << alignment_step_ << "]: object aligned with angle [deg] = " << obj_angle_deg_;

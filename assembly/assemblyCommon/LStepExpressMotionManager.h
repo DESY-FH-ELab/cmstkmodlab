@@ -56,6 +56,14 @@ class LStepExpressMotionManager : public QObject
 
     QQueue<LStepExpressMotion> motions_;
 
+    //Physical bounds of the motion stage
+    double physBound_xLow;
+    double physBound_xUp;
+    double physBound_yLow;
+    double physBound_yUp;
+    double physBound_zLow;
+    double physBound_zUp;
+
   public slots:
 
     void    connect_model();
