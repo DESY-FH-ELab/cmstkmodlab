@@ -221,7 +221,7 @@ bool AssemblyParameters::update()
 }
 
 //Check validity of some parameters
-bool AssemblyParameters::isValidConfig() //NT
+bool AssemblyParameters::isValidConfig()
 {
     for(std::map<std::string, double>::iterator it = map_double_.begin(); it != map_double_.end(); it++)
     {

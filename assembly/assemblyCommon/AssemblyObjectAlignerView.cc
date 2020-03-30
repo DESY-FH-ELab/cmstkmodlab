@@ -460,8 +460,6 @@ AssemblyObjectAlignerView::AssemblyObjectAlignerView(QWidget* parent)
   buttons_lay->addWidget(button_alignerEmergencyStop_, 33);
 
   layout->addLayout(buttons_lay);
-
-  max_nIter_AlignProcedure_ = config->getValue<double>("AssemblyObjectAlignerView_max_nIter_AlignProcedure", 5);
 }
 
 void AssemblyObjectAlignerView::keyReleaseEvent(QKeyEvent* event)
@@ -781,8 +779,6 @@ AssemblyObjectAligner::Configuration AssemblyObjectAlignerView::get_configuratio
   }
 
   conf.angle_max_complete = alignm_angmax_complete_val;
-
-  conf.max_nIter_AlignProcedure = max_nIter_AlignProcedure_;
 
   // execution option(s)
   conf.complete_at_position1 = alignm_completeAtPosOne_checkbox_->isChecked();

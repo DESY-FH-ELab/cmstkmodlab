@@ -39,6 +39,14 @@ LStepExpressMotionManager::LStepExpressMotionManager(LStepExpressModel* model, Q
   connect(this, SIGNAL(emergencyStop_request()), this, SLOT(emergency_stop()));
 
   this->connect_model();
+
+  ApplicationConfig* config = ApplicationConfig::instance(); //Access config file parameters
+  this->physBound_xLow = config->getValue<double>("MotionStageBound_xLow", -150);
+  this->physBound_xUp = config->getValue<double>("MotionStageBound_xUp", +150);
+  this->physBound_yLow = config->getValue<double>("MotionStageBound_yLow", -150);
+  this->physBound_yUp = config->getValue<double>("MotionStageBound_yUp", +150);
+  this->physBound_zLow = config->getValue<double>("MotionStageBound_zLow", -150);
+  this->physBound_zUp = config->getValue<double>("MotionStageBound_zUp", +150);
 }
 
 LStepExpressMotionManager::~LStepExpressMotionManager()
@@ -180,25 +188,52 @@ void LStepExpressMotionManager::appendMotions(const QQueue<LStepExpressMotion>& 
 
 void LStepExpressMotionManager::moveRelative(const std::vector<double>& values)
 {
+    const double x = this->get_position_X();
+    const double y = this->get_position_Y();
+    const double z = this->get_position_Z();
+    if(x+values[0] < physBound_xLow || x+values[0] > physBound_xUp || y+values[1] < physBound_yLow || y+values[1] > physBound_yUp || z+values[2] < physBound_zLow || z+values[2] > physBound_zUp) //MS physical boundaries
+    {
+        NQLog("LStepExpressMotionManager", NQLog::Warning) << "\e[1;31ERROR ! Absolute move would exceed motion stage physical boundaries ! Ignored...\e[0m";
+        return;
+    }
+
     motions_.enqueue(LStepExpressMotion(values, false));
     this->run();
 }
 
 void LStepExpressMotionManager::moveRelative(const double dx, const double dy, const double dz, const double da)
 {
+    const double x = this->get_position_X();
+    const double y = this->get_position_Y();
+    const double z = this->get_position_Z();
+    if(x+dx < physBound_xLow || x+dx > physBound_xUp || y+dy < physBound_yLow || y+dy > physBound_yUp || z+dz < physBound_zLow || z+dz > physBound_zUp) //MS physical boundaries
+    {
+        NQLog("LStepExpressMotionManager", NQLog::Warning) << "\e[1;31ERROR ! Absolute move would exceed motion stage physical boundaries ! Ignored...\e[0m";
+        return;
+    }
+
     motions_.enqueue(LStepExpressMotion(dx, dy, dz, da, false));
     this->run();
 }
 
 void LStepExpressMotionManager::moveRelative(const unsigned int axis, const double value)
 {
+    const double x = this->get_position_X();
+    const double y = this->get_position_Y();
+    const double z = this->get_position_Z();
+    if((axis == 0 && (x+value < physBound_xLow || x+value > physBound_xUp)) || (axis == 1 && (y+value < physBound_yLow || y+value > physBound_yUp)) || (axis == 2 && (z+value < physBound_zLow || z+value > physBound_zUp))) //MS physical boundaries
+    {
+        NQLog("LStepExpressMotionManager", NQLog::Warning) << "\e[1;31ERROR ! Absolute move would exceed motion stage physical boundaries ! Ignored...\e[0m";
+        return;
+    }
+
     motions_.enqueue(LStepExpressMotion(axis, value, false));
     this->run();
 }
 
 void LStepExpressMotionManager::moveAbsolute(const std::vector<double>& values)
 {
-    if(values[0] > 150 || values[0] < -150 || values[1] > 150 || values[1] < -150 || values[2] > 150 || values[2] < -150) //MS boundaries : 150mm in x,y,z
+    if(values[0] < physBound_xLow || values[0] > physBound_xUp || values[1] < physBound_yLow || values[1] > physBound_yUp || values[2] < physBound_zLow || values[2] > physBound_zUp) //MS physical boundaries
     {
         NQLog("LStepExpressMotionManager", NQLog::Warning) << "\e[1;31ERROR ! Absolute move would exceed motion stage physical boundaries ! Ignored...\e[0m";
         return;
@@ -210,7 +245,7 @@ void LStepExpressMotionManager::moveAbsolute(const std::vector<double>& values)
 
 void LStepExpressMotionManager::moveAbsolute(const double x, const double y, const double z, const double a)
 {
-    if(x > 150 || x < -150 || y > 150 || y < -150 || z > 150 || z < -150) //MS boundaries : 150mm in x,y,z
+    if(x < physBound_xLow || x > physBound_xUp || y < physBound_yLow || y > physBound_yUp || z < physBound_zLow || z > physBound_zUp) //MS physical boundaries
     {
         NQLog("LStepExpressMotionManager", NQLog::Warning) << "\e[1;31ERROR ! Absolute move would exceed motion stage physical boundaries ! Ignored...\e[0m";
         return;
@@ -222,7 +257,7 @@ void LStepExpressMotionManager::moveAbsolute(const double x, const double y, con
 
 void LStepExpressMotionManager::moveAbsolute(const unsigned int axis, const double value)
 {
-    if((axis == 0 || axis == 1 || axis == 2) && (value < -150 || value > 150)) //MS boundaries : 150mm in x,y,z
+    if((axis == 0 && (value < physBound_xLow || value > physBound_xUp)) || (axis == 1 && (value < physBound_yLow || value > physBound_yUp)) || (axis == 2 && (value < physBound_zLow || value > physBound_zUp))) //MS physical boundaries
     {
         NQLog("LStepExpressMotionManager", NQLog::Warning) << "\e[1;31ERROR ! Absolute move would exceed motion stage physical boundaries ! Ignored...\e[0m";
         return;

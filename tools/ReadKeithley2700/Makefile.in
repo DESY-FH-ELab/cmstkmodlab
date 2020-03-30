@@ -10,7 +10,7 @@ SOURCE        = ReadKeithley2700
 
 ARCHITECTURE := @architecture@
 
-CXXFLAGS      = -Wall -fPIC -std=c++17 -I$(BASEPATH)/devices/Keithley
+CXXFLAGS      = -Wall -fPIC  -I$(BASEPATH)/devices/Keithley
 
 ifeq ($(USEFAKEDEVICES),1)
 CXXFLAGS     += -DUSE_FAKEIO

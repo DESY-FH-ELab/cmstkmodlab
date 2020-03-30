@@ -95,8 +95,6 @@ class AssemblyObjectAlignerView : public QWidget
 
   bool finder_connected_;
 
-  int max_nIter_AlignProcedure_;
-
  public slots:
 
   void enable();

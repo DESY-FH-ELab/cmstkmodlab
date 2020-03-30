@@ -11,7 +11,7 @@ MODULES       = TkMLVector \
 
 CC            = @cc@
 CXX           = @cxx@
-CXXFLAGS      = -fPIC -std=c++17 -I.
+CXXFLAGS      = -fPIC  -I.
 LD            = @cxx@
 SOFLAGS       = @soflags@
 

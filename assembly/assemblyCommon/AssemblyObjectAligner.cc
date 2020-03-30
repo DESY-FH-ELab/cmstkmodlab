@@ -64,7 +64,7 @@ void AssemblyObjectAligner::Configuration::reset()
   angle_max_dontIter = -999.;
   angle_max_complete = -999.;
 
-  max_nIter_AlignProcedure = -999;
+  max_nIter_AlignProcedure = -999.;
 
   PatRecOne_configuration.reset();
   PatRecTwo_configuration.reset();
@@ -100,13 +100,6 @@ bool AssemblyObjectAligner::Configuration::is_valid() const
     }
   }
 
-  if(max_nIter_AlignProcedure < 0)
-  {
-    NQLog("AssemblyObjectAligner::Configuration", NQLog::Warning) << "is_valid"
-           << ": unexpected value for max. number of alignment routines (" << max_nIter_AlignProcedure << ")";
-    return false;
-  }
-
   if(PatRecOne_configuration.is_valid() == false){ return false; }
   if(PatRecTwo_configuration.is_valid() == false){ return false; }
 
@@ -129,7 +122,7 @@ void AssemblyObjectAligner::reset()
 
 void AssemblyObjectAligner::reset_counter_AlignIterations()
 {
-    counter_nofAlignments_ = 0; 
+    counter_nofAlignments_ = 0;
 
     return;
 }
@@ -145,6 +138,11 @@ void AssemblyObjectAligner::update_configuration(const AssemblyObjectAligner::Co
   }
 
   configuration_ = conf;
+
+  //When launching alignment routine, most params get read by AssemblyObjectAlignerView, and copied above into this->configuration_. But other params are not related to the View (not editable in GUI), so must read their values manually here
+  ApplicationConfig* config = ApplicationConfig::instance(); //Access config file parameters
+  configuration_.max_nIter_AlignProcedure = config->getValue<int>("AssemblyObjectAlignerView_max_nIter_AlignProcedure", 10);
+
 
   NQLog("AssemblyObjectAligner", NQLog::Spam) << "update_configuration"
      << ": emitting signal \"configuration_updated\"";
@@ -457,7 +455,7 @@ void AssemblyObjectAligner::run_alignment(const double patrec_dX, const double p
     }
     else //(If 'Align object' box is ticked)
     {
-      const double target_angle_deg = this->configuration().target_angle; //Angle between the line (between 2 markers) and the MS, in the MS ref. frame ; target value is 0 by default (<-> perfect alignment)
+      const double target_angle_deg = this->configuration().target_angle; //Angle between the line (between 2 markers) and the MS, in the MS ref. frame
 
       const double delta_angle_deg = (target_angle_deg - obj_angle_deg_); //Difference between current measured angle, and 'target angle' parameter
 
@@ -518,7 +516,7 @@ void AssemblyObjectAligner::run_alignment(const double patrec_dX, const double p
         NQLog("AssemblyObjectAligner", NQLog::Message) << "run_alignment: step [" << alignment_step_ << "]: angle(object, target) < " << this->configuration().angle_max_complete << ", will NOT apply a rotation";
         NQLog("AssemblyObjectAligner", NQLog::Message) << "run_alignment: step [" << alignment_step_ << "]";
 
-        if(this->configuration().complete_at_position1) //If box "Go back to marker-1 position before completion" is ticked, continue routine (go to marker1, run PatRec, terminate)
+        if(this->configuration().complete_at_position1) //If box "Go back to marker-1 position before completion" is ticked, continue routine (go to marker1, take image, terminate)
         {
           NQLog("AssemblyObjectAligner", NQLog::Message) << "run_alignment: step [" << alignment_step_ << "]: alignment completed, moving back to best-match position of PatRec #1";
           NQLog("AssemblyObjectAligner", NQLog::Message) << "run_alignment: step [" << alignment_step_ << "]";

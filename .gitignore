@@ -1,3 +1,6 @@
+#NT
+.gitignore
+
 reconfigure
 Makefile
 config.status

@@ -377,8 +377,6 @@ AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QStr
     toolBar_->addWidget(button_mainEmergencyStop_);
 
     connect(button_mainEmergencyStop_, SIGNAL(clicked()), motion_manager_, SLOT(emergency_stop()));
-
-    //NT -- also connect main emergency button to these 'stop signals' ?
     connect(button_mainEmergencyStop_, SIGNAL(clicked()), this, SLOT(disconnect_objectAligner()));
     connect(button_mainEmergencyStop_, SIGNAL(clicked()), zfocus_finder_ , SLOT(emergencyStop()));
     /// --------------------------------------------------------

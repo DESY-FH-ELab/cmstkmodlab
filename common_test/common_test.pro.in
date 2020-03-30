@@ -23,7 +23,7 @@ macx {
 }
 
 CONFIG+=c++17
-QMAKE_CXXFLAGS += -std=c++17
+QMAKE_CXXFLAGS += 
 macx {
   QMAKE_CXXFLAGS += -DAPPLICATIONVERSIONSTR=\\\"unknown\\\"
 } else {
