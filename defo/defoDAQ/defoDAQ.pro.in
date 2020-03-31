@@ -1,0 +1,114 @@
+LIBS += -L@basepath@/devices/lib -lTkModLabKeithley
+LIBS += -L@basepath@/devices/lib -lTkModLabGreisinger
+LIBS += -L@basepath@/devices/lib -lTkModLabJulabo
+LIBS += -L@basepath@/devices/lib -lTkModLabHameg
+LIBS += -L@basepath@/devices/lib -lTkModLabConrad
+LIBS += -L@basepath@/devices/lib -lTkModLabCanon
+LIBS += -L@basepath@/devices/lib -lTkModLabHuber
+LIBS += -L@basepath@/devices/lib -lTkModLabPfeiffer
+LIBS += -L@basepath@/devices/lib -lTkModLabArduino
+LIBS += -L@basepath@/devices/lib -lTkModLabIota
+LIBS += -L@basepath@/common -lCommon
+LIBS += -L@basepath@/defo/defoCommon -lDefoCommon
+
+QMAKE = @qmake@
+
+macx {
+  CONFIG+=x86_64
+  QMAKE_CXXFLAGS += -stdlib=libc++
+  #QMAKE_MAC_SDK = macosx10.11
+  QMAKE_MACOSX_DEPLOYMENT_TARGET = 10.11
+  LIBS += -framework AppKit
+  LIBS += -framework QuartzCore
+  LIBS += -framework QTKit
+  LIBS += -framework Cocoa
+}
+
+CONFIG += link_pkgconfig
+PKGCONFIG += opencv exiv2 libgphoto2
+
+CONFIG+=c++17
+QMAKE_CXXFLAGS += -std=c++17
+macx {
+  QMAKE_CXXFLAGS += -DAPPLICATIONVERSIONSTR=\\\"unknown\\\"
+} else {
+  QMAKE_CXXFLAGS += -DAPPLICATIONVERSIONSTR=\\\"`git describe --dirty --always --tags`\\\"
+}
+
+#QMAKE_CXXFLAGS += @rootcflags@
+#LIBS += @rootlibs@
+
+INCLUDEPATH += @qwtincludes@
+DEFINES += @configdefines@
+
+QT += core gui xml network script
+greaterThan(QT_MAJOR_VERSION, 4) {
+  QT += widgets
+} 
+
+TARGET = defoDAQ
+TEMPLATE = app
+
+macx {
+  QMAKE_POST_LINK = install_name_tool -change libCommon.1.dylib @basepath@/common/libCommon.1.dylib $(TARGET)
+  QMAKE_POST_LINK += && install_name_tool -change libDefoCommon.1.dylib @basepath@/defo/defoCommon/libDefoCommon.1.dylib $(TARGET)
+}
+
+DEPENDPATH += ../../common ../defoCommon
+INCLUDEPATH += .
+INCLUDEPATH += ..
+INCLUDEPATH += @basepath@
+INCLUDEPATH += @basepath@/common
+INCLUDEPATH += @basepath@/defo/defoCommon
+
+greaterThan(QT_MAJOR_VERSION, 4) {
+  cache()
+}
+
+# Input
+HEADERS += DefoMainWindow.h \
+           DefoJulaboWidget.h \
+           DefoCameraWidget.h \
+           DefoCameraOptionComboBox.h \
+           DefoConradWidget.h \
+           DefoConradPanelWidget.h \
+           DefoConradCheckbox.h \
+           DefoConradButton.h \
+           DefoScriptModel.h \
+           DefoScriptThread.h \
+           DefoScriptWidget.h \
+           DefoScriptableGlobals.h \
+           DefoScriptableConrad.h \
+           DefoScriptableCamera.h \
+           DefoScriptableJulabo.h \
+           ../TestWindow.h \
+           DefoTemperatureHistoryModel.h \
+           DefoTemperatureHistoryWidget.h \
+           DefoDAQModel.h \
+           DefoDAQThread.h \
+           DefoDAQStreamer.h \
+           DefoDAQServer.h
+    
+SOURCES += defoDAQ.cc \
+           DefoMainWindow.cc \
+           DefoJulaboWidget.cc \
+           DefoCameraWidget.cc \
+           DefoCameraOptionComboBox.cc \
+           DefoConradWidget.cc \
+           DefoConradPanelWidget.cc \
+           DefoConradCheckbox.cc \
+           DefoConradButton.cc \
+           DefoScriptModel.cc \
+           DefoScriptThread.cc \
+           DefoScriptWidget.cc \
+           DefoScriptableGlobals.cc \
+           DefoScriptableConrad.cc \
+           DefoScriptableCamera.cc \
+           DefoScriptableJulabo.cc \
+           ../TestWindow.cc \
+           DefoTemperatureHistoryModel.cc \
+           DefoTemperatureHistoryWidget.cc \
+           DefoDAQModel.cc \
+           DefoDAQThread.cc \
+           DefoDAQStreamer.cc \
+           DefoDAQServer.cc

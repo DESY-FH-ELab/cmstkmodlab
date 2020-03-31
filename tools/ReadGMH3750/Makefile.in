@@ -1,0 +1,35 @@
+BINDIR        = ../bin
+
+USEFAKEDEVICES=@usefakedevices@
+BASEPATH      = @basepath@
+include $(BASEPATH)/devices/Makefile.common
+
+TARGET 	      = ReadGMH3750
+
+SOURCE        = ReadGMH3750
+
+ARCHITECTURE := $(shell uname)
+
+CXXFLAGS      = -Wall -fPIC -I$(BASEPATH)/devices/Greisinger
+
+ifeq ($(USEFAKEDEVICES),1)
+CXXFLAGS     += -DUSE_FAKEIO
+endif
+
+LIBS          = -L@basepath@/devices/lib -lTkModLabGreisinger
+
+all: $(BINDIR)/$(TARGET)
+
+$(BINDIR)/$(TARGET): $(addsuffix .o,$(SOURCE)) 
+	@(test -e $(BINDIR) || mkdir $(BINDIR))
+	@echo "Building binary $@"
+	$(CXX) $(CXXFLAGS) -o $(BINDIR)/$(TARGET) $< $(LIBS)
+
+%.o: %.cpp
+	@echo "Compiling $<"
+	$(CXX) $(CXXFLAGS) -c $< -o $@
+
+clean:
+	rm -f $(BINDIR)/$(TARGET)
+	rm -f $(addsuffix .o,$(SOURCE))
+	rm -f *~

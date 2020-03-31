@@ -1,0 +1,100 @@
+BASEPATH      = @basepath@
+
+#
+# TARGET is the basename of the file containing main()
+# This should be a separate file 
+
+TARGET	= 	TkModLabRoot
+
+#
+# MODULES are all .cc/.hh file combinations containing your
+# own classes except the ones which have to put in a
+# shared library
+# The ROOT linkage has to be specified in 'LinkDef.hh'
+
+MODULES	= TkModLabSpline2D
+# 
+# Starting from here no changes should be necessary
+# 
+
+ARCHITECTURE := $(shell uname)
+
+ROOTCFLAGS   := $(shell root-config --cflags)
+ROOTLIBS     := $(shell root-config --libs)
+ROOTGLIBS    := $(shell root-config --glibs)
+ROOTMAJOR    := $(shell root-config --version | cut -d . -f 1)
+
+ifeq ($(ROOTMAJOR),5)
+OBJECTS      := $(addsuffix .o,$(MODULES)) $(TARGET)5Dict.o
+endif
+
+ifeq ($(ROOTMAJOR),6)
+OBJECTS      := $(addsuffix .o,$(MODULES)) $(TARGET)6Dict.o
+endif
+
+CC            = @cc@
+CXX           = @cxx@
+CXXFLAGS      = -fPIC -std=c++17
+LD            = @cxx@
+SOFLAGS       = @soflags@
+
+CXXFLAGS     += $(ROOTCFLAGS)
+
+RLIBMAP      := rlibmap
+RLIBDEP      := libSmatrix.so libGraf.so
+RML          := $(addprefix -rml ,$(RLIBDEP)) $(addprefix -rml ,lib$(TARGET).so)
+
+ELIBS        := $(BASEPATH)/external/ddierckx/*.o
+
+ALLDEPEND = $(addsuffix .d,$(MODULES))
+EXISTDEPEND = $(shell find . -name \*.d -type f -print)
+
+ifeq ($(ROOTMAJOR),5)
+all:  depend lib$(TARGET).so lib$(TARGET).rootmap
+endif
+
+ifeq ($(ROOTMAJOR),6)
+all:  depend lib$(TARGET).so
+endif
+
+lib$(TARGET).so: $(OBJECTS)
+	@echo "Linking shared library $@"
+	$(LD) $(SOFLAGS) $^ -o $@ $(ELIBS)
+
+lib$(TARGET).rootmap: lib$(TARGET).so LinkDef.h
+	@echo "Creating library rootmap $@"
+	$(RLIBMAP) -f -o $@ -d lib$(TARGET).so $(RLIBDEP) -c LinkDef.h
+
+$(TARGET)5Dict.cc: $(addsuffix .h,$(MODULES)) LinkDef.h
+	@echo "Generating dictionary $@"
+	rootcint -f $(TARGET)5Dict.cc -c $(CPPFLAGS) -p $(addsuffix .h,$(MODULES)) LinkDef.h
+
+$(TARGET)6Dict.cc: $(addsuffix .h,$(MODULES)) LinkDef.h
+	@echo "Generating dictionary $@"
+	rootcling -f $(TARGET)6Dict.cc -rmf lib$(TARGET).rootmap $(RML) $(addsuffix .h,$(MODULES)) LinkDef.h
+
+%.d: %.cc
+	@echo Making dependency for file $< ...
+	@set -e;\
+	$(CXX) -M $(CPPFLAGS) $(CXXFLAGS) $< |\
+	sed 's!$*\.o!& $@!' >$@;\
+	[ -s $@ ] || rm -f $@
+
+%.o: %.cc
+	@echo "Compiling $<"
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $< -o $@
+
+depend: $(ALLDEPEND)
+
+clean:
+	@rm -f $(addsuffix .o,$(MODULES))
+	@rm -f *Dict.*
+	@rm -f *Dict_rdict.pcm
+	@rm -f lib$(TARGET).so
+	@rm -f lib$(TARGET).rootmap
+	@rm -f *.d
+	@rm -f *\~
+
+ifneq ($(EXISTDEPEND),)
+-include $(EXISTDEPEND)
+endif

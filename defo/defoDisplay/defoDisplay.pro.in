@@ -1,17 +1,12 @@
-#-------------------------------------------------
-#
-# Project created by QtCreator 2013-05-28T10:50:39
-#
-#-------------------------------------------------
-
 LIBS += -L@basepath@/devices/lib -lTkModLabKeithley
 LIBS += -L@basepath@/devices/lib -lTkModLabGreisinger
 LIBS += -L@basepath@/devices/lib -lTkModLabJulabo
 LIBS += -L@basepath@/devices/lib -lTkModLabHameg
-LIBS += -L@basepath@/devices/lib -lTkModLabConrad
-LIBS += -L@basepath@/devices/lib -lTkModLabCanon
-LIBS += -L@basepath@/external/ddierckx -lddierckx
+LIBS += -L@basepath@/devices/lib -lTkModLabPfeiffer
+LIBS += -L@basepath@/devices/lib -lTkModLabHuber
 LIBS += -L@basepath@/common -lCommon
+LIBS += @qwtlibs@
+LIBS += -L@basepath@/defo/defoCommon -lDefoCommon
 
 QMAKE = @qmake@
 
@@ -20,6 +15,10 @@ macx {
   QMAKE_CXXFLAGS += -stdlib=libc++
   #QMAKE_MAC_SDK = macosx10.11
   QMAKE_MACOSX_DEPLOYMENT_TARGET = 10.11
+  LIBS += -framework AppKit
+  LIBS += -framework QuartzCore
+  LIBS += -framework QTKit
+  LIBS += -framework Cocoa
 }
 
 CONFIG+=c++17
@@ -30,21 +29,20 @@ macx {
   QMAKE_CXXFLAGS += -DAPPLICATIONVERSIONSTR=\\\"`git describe --dirty --always --tags`\\\"
 }
 
-CONFIG += link_pkgconfig
-PKGCONFIG += libgphoto2
-PKGCONFIG += opencv
-PKGCONFIG += exiv2
+INCLUDEPATH += @qwtincludes@
+DEFINES += @configdefines@
 
-QT += core xml
+QT += core gui xml network
 greaterThan(QT_MAJOR_VERSION, 4) {
   QT += widgets
 } 
 
-TARGET = common_test
+TARGET = defoDisplay
 TEMPLATE = app
 
 macx {
   QMAKE_POST_LINK = install_name_tool -change libCommon.1.dylib @basepath@/common/libCommon.1.dylib $(TARGET)
+  QMAKE_POST_LINK += && install_name_tool -change libDefoCommon.1.dylib @basepath@/defo/defoCommon/libDefoCommon.1.dylib $(TARGET)
 }
 
 DEPENDPATH += @basepath@/common
@@ -57,7 +55,15 @@ greaterThan(QT_MAJOR_VERSION, 4) {
   cache()
 }
 
-CONFIG   += console
-CONFIG   -= app_bundle
-
-SOURCES += main.cpp
+# Input
+HEADERS += DefoDAQClient.h \
+           DefoDAQNetworkReader.h \
+           DefoDisplayMainWindow.h \
+           DefoDAQDisplayWidget.h \
+           DefoDAQValueVector.h
+    
+SOURCES += defoDisplay.cc \
+           DefoDAQClient.cc \
+           DefoDAQNetworkReader.cc \
+           DefoDisplayMainWindow.cc \
+           DefoDAQDisplayWidget.cc

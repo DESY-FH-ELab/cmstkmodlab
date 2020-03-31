@@ -1,0 +1,129 @@
+#-------------------------------------------------
+#
+# Project created by QtCreator 2012-10-25T14:54:37
+#
+#-------------------------------------------------
+
+LIBS += -L@basepath@/devices/lib -lTkModLabKeithley
+LIBS += -L@basepath@/devices/lib -lTkModLabJulabo
+LIBS += -L@basepath@/devices/lib -lTkModLabConrad
+LIBS += -L@basepath@/devices/lib -lTkModLabCanon
+LIBS += -L@basepath@/devices/lib -lTkModLabHuber
+LIBS += -L@basepath@/external/ddierckx -lddierckx
+LIBS += -L@basepath@/common -lCommon
+
+QMAKE = @qmake@
+
+macx {
+  CONFIG+=x86_64
+  QMAKE_CXXFLAGS += -stdlib=libc++
+  QMAKE_MACOSX_DEPLOYMENT_TARGET = 10.11
+}
+
+CONFIG += link_pkgconfig
+PKGCONFIG += opencv exiv2 libgphoto2
+
+CONFIG+=c++17
+QMAKE_CXXFLAGS += -std=c++17
+macx {
+  QMAKE_CXXFLAGS += -DAPPLICATIONVERSIONSTR=\\\"unknown\\\"
+} else {
+  QMAKE_CXXFLAGS += -DAPPLICATIONVERSIONSTR=\\\"`git describe --dirty --always --tags`\\\"
+}
+
+DEFINES += @configdefines@
+QT += core gui widgets opengl script xml
+
+TARGET = DefoCommon
+TEMPLATE = lib
+
+macx {
+  QMAKE_POST_LINK = install_name_tool -change libCommon.1.dylib @basepath@/common/libCommon.1.dylib $(TARGET)
+}
+
+DEPENDPATH += .
+INCLUDEPATH += .
+INCLUDEPATH += @basepath@
+INCLUDEPATH += @basepath@/common
+
+greaterThan(QT_MAJOR_VERSION, 4) {
+  cache()
+}
+
+HEADERS += DefoExifReader.h \
+           DefoJulaboModel.h \
+           DefoKeithleyModel.h \
+           DefoCameraModel.h \
+           DefoConradModel.h \
+           DefoMeasurement.h \
+           DefoMeasurementListModel.h \
+           DefoMeasurementSelectionModel.h \
+           DefoMeasurementListComboBox.h \
+           DefoImageAverager.h \
+           DefoPointRecognitionModel.h \
+           DefoPointRecognitionWidget.h \
+           DefoThresholdSpinBox.h \
+           DefoHalfSquareWidthSpinBox.h \
+           DefoImageWidget.h \
+           DefoImageZoomModel.h \
+           DefoPoint.h \
+           DefoPointBin.h \
+           DefoSquare.h \
+           DefoSpline.h \
+           DefoRecoSurface.h \
+           DefoSurface.h \
+           DefoPointFinder.h \
+           DefoPointSaver.h \
+           DefoROI.h \
+           DefoROIModel.h \
+           DefoAlignmentModel.h \
+           DefoGeometryModel.h \
+           DefoCalibrationModel.h \
+           Defo2DSplineInterpolationModel.h \
+           DefoColorSelectionModel.h \
+           DefoPointIndexerModel.h \
+           DefoPointIndexerListComboBox.h \
+           DefoVPointIndexer.h \
+           DefoPointIndexer.h \
+           DefoPropagationPointIndexer.h \
+           DefoLensModel.h \
+           DefoLensComboBox.h
+
+SOURCES += DefoExifReader.cc \
+           DefoJulaboModel.cc \
+           DefoKeithleyModel.cc \
+           DefoCameraModel.cc \
+           DefoConradModel.cc \
+           DefoMeasurement.cc \
+           DefoMeasurementListModel.cc \
+           DefoMeasurementSelectionModel.cc \
+           DefoMeasurementListComboBox.cc \
+           DefoImageAverager.cc \
+           DefoPointRecognitionModel.cc \
+           DefoPointRecognitionWidget.cc \
+           DefoThresholdSpinBox.cc \
+           DefoHalfSquareWidthSpinBox.cc \
+           DefoImageWidget.cc \
+           DefoImageZoomModel.cc \
+           DefoPoint.cc \
+           DefoPointBin.cc \
+           DefoSquare.cc \
+           DefoSpline.cc \
+           DefoRecoSurface.cc \
+           DefoSurface.cc \
+           DefoPointFinder.cc \
+           DefoPointSaver.cc \
+           DefoROI.cc \
+           DefoROIModel.cc \
+           DefoAlignmentModel.cc \
+           DefoGeometryModel.cc \
+           DefoCalibrationModel.cc \
+           Defo2DSplineInterpolationModel.cc \
+           DefoColorSelectionModel.cc \
+           DefoPointIndexerModel.cc \
+           DefoPointIndexerListComboBox.cc \
+           DefoVPointIndexer.cc \
+           DefoPointIndexer.cc \
+           DefoPropagationPointIndexer.cc \
+           DefoLensModel.cc \
+           DefoLensComboBox.cc

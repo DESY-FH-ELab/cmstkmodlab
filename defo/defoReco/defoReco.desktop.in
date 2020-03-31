@@ -1,0 +1,18 @@
+[Desktop Entry]
+Comment[en_US]=
+Comment=
+Exec=sh @basepath@/defo/defoReco/startDefoReco.sh
+GenericName[en_US]=
+GenericName=
+Icon=@basepath@/share/crushedcan.png
+MimeType=
+Name[en_US]=defoReco
+Name=defoReco
+StartupNotify=false
+Terminal=true
+TerminalOptions=
+Type=Application
+X-DBUS-ServiceName=
+X-DBUS-StartupType=
+X-KDE-SubstituteUID=false
+X-KDE-Username=

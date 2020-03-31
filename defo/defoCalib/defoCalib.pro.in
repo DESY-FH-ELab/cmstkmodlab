@@ -10,8 +10,8 @@ LIBS += -L@basepath@/devices/lib -lTkModLabJulabo
 LIBS += -L@basepath@/devices/lib -lTkModLabHameg
 LIBS += -L@basepath@/devices/lib -lTkModLabConrad
 LIBS += -L@basepath@/devices/lib -lTkModLabCanon
-LIBS += -L@basepath@/external/ddierckx -lddierckx
 LIBS += -L@basepath@/common -lCommon
+LIBS += -L@basepath@/defo/defoCommon -lDefoCommon
 
 QMAKE = @qmake@
 
@@ -20,7 +20,14 @@ macx {
   QMAKE_CXXFLAGS += -stdlib=libc++
   #QMAKE_MAC_SDK = macosx10.11
   QMAKE_MACOSX_DEPLOYMENT_TARGET = 10.11
+  #LIBS += -framework AppKit
+  #LIBS += -framework QuartzCore
+  #LIBS += -framework QTKit
+  #LIBS += -framework Cocoa
 }
+
+CONFIG += link_pkgconfig
+PKGCONFIG += opencv exiv2 libgphoto2
 
 CONFIG+=c++17
 QMAKE_CXXFLAGS += -std=c++17
@@ -30,28 +37,16 @@ macx {
   QMAKE_CXXFLAGS += -DAPPLICATIONVERSIONSTR=\\\"`git describe --dirty --always --tags`\\\"
 }
 
-CONFIG += link_pkgconfig
-PKGCONFIG += libgphoto2
-PKGCONFIG += opencv
-PKGCONFIG += exiv2
+QT += core widgets xml
 
-QT += core xml
-greaterThan(QT_MAJOR_VERSION, 4) {
-  QT += widgets
-} 
+TARGET = defoCalib
 
-TARGET = common_test
-TEMPLATE = app
-
-macx {
-  QMAKE_POST_LINK = install_name_tool -change libCommon.1.dylib @basepath@/common/libCommon.1.dylib $(TARGET)
-}
-
-DEPENDPATH += @basepath@/common
+DEPENDPATH += ../../common ../defoCommon
 INCLUDEPATH += .
 INCLUDEPATH += ..
 INCLUDEPATH += @basepath@
 INCLUDEPATH += @basepath@/common
+INCLUDEPATH += @basepath@/defo/defoCommon
 
 greaterThan(QT_MAJOR_VERSION, 4) {
   cache()
@@ -59,5 +54,7 @@ greaterThan(QT_MAJOR_VERSION, 4) {
 
 CONFIG   += console
 CONFIG   -= app_bundle
+
+TEMPLATE = app
 
 SOURCES += main.cpp

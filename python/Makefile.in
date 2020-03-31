@@ -12,7 +12,7 @@ PYTHONINC    := $(shell python-config --cflags)
 
 CC            = @cc@
 CXX           = @cxx@
-CXXFLAGS      = -fPIC 
+CXXFLAGS      = -fPIC -std=c++17
 LD            = @cxx@
 SOFLAGS       = @soflags@
 
