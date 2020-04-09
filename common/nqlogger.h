@@ -28,6 +28,7 @@
 #include <QObject>
 #include <QIODevice>
 #include <QTextStream>
+#include <QMutex>
 
 /** @addtogroup common
  *  @{
@@ -152,6 +153,8 @@ protected:
 
     explicit NQLogger(QObject *parent = 0);
     static NQLogger* instance_;
+
+    QMutex mutex_;
 
     std::set<std::pair<QString,bool> > activeModules_;
     std::vector<std::pair<NQLog::LogLevel,QTextStream*> > destinations_;
