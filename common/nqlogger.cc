@@ -21,6 +21,7 @@
 #include <iostream>
 
 #include <QDateTime>
+#include <QMutexLocker>
 
 #include "nqlogger.h"
 
@@ -97,6 +98,7 @@ void NQLogger::write(const QString& module, NQLog::LogLevel level, const QString
   for (std::pair<NQLog::LogLevel,QTextStream*> v : destinations_) {
     if (level>=v.first) {
       QTextStream* stream = v.second;
+      QMutexLocker locker(&mutex_);
       stream->operator <<(message);
       stream->flush();
     }
