@@ -22,6 +22,7 @@ nav:
 - Pump Station:
     - usage: pumpstation/index.md
     - setup: pumpstation/setup.md
+- Doxygen: http://desy-fh-elab.github.io/cmstkmodlab/doxygen
 - License: license.md
 
 theme: readthedocs
