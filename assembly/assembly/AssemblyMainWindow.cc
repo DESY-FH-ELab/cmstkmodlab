@@ -51,6 +51,7 @@ AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QStr
   thresholder_(nullptr),
   aligner_(nullptr),
   assembly_(nullptr),
+  assemblyV2_(nullptr),
   multipickup_tester_(nullptr),
 
   finder_(nullptr),
@@ -71,6 +72,7 @@ AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QStr
   finder_view_(nullptr),
   aligner_view_(nullptr),
   assembly_view_(nullptr),
+  assemblyV2_view_(nullptr),
   toolbox_view_(nullptr),
   params_view_(nullptr),
   hwctr_view_(nullptr),
@@ -227,12 +229,33 @@ AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QStr
 
     smart_motion_ = new AssemblySmartMotionManager(motion_manager_);
 
-    assembly_ = new AssemblyAssembly(motion_manager_, conradManager_, smart_motion_);
+    const int assembly_sequence(config->getValue<int>("assembly_sequence", 1));
 
-    assembly_view_ = new AssemblyAssemblyView(assembly_, assembly_tab);
-    assembly_tab->addTab(assembly_view_, tabname_Assembly);
+    if(assembly_sequence == 1)
+    {
+      assembly_ = new AssemblyAssembly(motion_manager_, conradManager_, smart_motion_);
 
-    NQLog("AssemblyMainWindow", NQLog::Message) << "added view " << tabname_Assembly;
+      assembly_view_ = new AssemblyAssemblyView(assembly_, assembly_tab);
+      assembly_tab->addTab(assembly_view_, tabname_Assembly);
+
+      NQLog("AssemblyMainWindow", NQLog::Message) << "added view " << tabname_Assembly
+         << " (assembly_sequence = " << assembly_sequence << ")";
+    }
+    else if(assembly_sequence == 2)
+    {
+      assemblyV2_ = new AssemblyAssemblyV2(motion_manager_, conradManager_, smart_motion_);
+
+      assemblyV2_view_ = new AssemblyAssemblyV2View(assemblyV2_, assembly_tab);
+      assembly_tab->addTab(assemblyV2_view_, tabname_Assembly);
+
+      NQLog("AssemblyMainWindow", NQLog::Message) << "added view " << tabname_Assembly
+         << " (assembly_sequence = " << assembly_sequence << ")";
+    }
+    else
+    {
+      NQLog("AssemblyMainWindow", NQLog::Fatal) << "invalid value for configuration parameter \"assembly_sequence\" ("
+         << assembly_sequence << ") -> GUI Tab " << tabname_Assembly << " will not be created";
+    }
     // ---------------------------------------------------------
 
     /// TAB: MANUAL CONTROLLERS AND PARAMETERS -----------------
