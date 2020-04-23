@@ -18,7 +18,7 @@ equals(USEFAKEDEVICES,"X1") {
 macx {
   NOUEYE="X1"
   CONFIG+=x86_64
-  
+
   #QMAKE_CXXFLAGS += -stdlib=libc++
 
   #QMAKE_MAC_SDK = macosx10.11
@@ -55,7 +55,7 @@ equals(NOUEYE,"X1") {
 QT += core gui xml network script svg
 greaterThan(QT_MAJOR_VERSION, 4) {
   QT += widgets
-} 
+}
 
 TARGET = AssemblyCommon
 TEMPLATE = lib
@@ -126,7 +126,10 @@ HEADERS += AssemblyVUEyeCamera.h \
            LaserThread.h \
            LaserWidget.h \
            LaserControlsWidget.h \
-           AssemblyUtilities.h
+           AssemblyUtilities.h \
+           AssemblyDBLoggerController.h \
+           AssemblyDBLoggerModel.h \
+           AssemblyDBLoggerView.h
 
 equals(NOUEYE,"X0") {
 HEADERS += AssemblyUEyeCamera.h \
@@ -187,7 +190,10 @@ SOURCES += AssemblyVUEyeCamera.cc \
            LaserWidget.cc \
            LaserThread.cc \
            LaserControlsWidget.cc \
-           AssemblyUtilities.cc
+           AssemblyUtilities.cc \
+           AssemblyDBLoggerController.cc \
+           AssemblyDBLoggerModel.cc \
+           AssemblyDBLoggerView.cc
 
 equals(NOUEYE,"X0") {
 SOURCES += AssemblyUEyeCamera.cc \

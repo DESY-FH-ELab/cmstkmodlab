@@ -25,7 +25,7 @@
 
 #include <opencv2/opencv.hpp>
 
-AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QString& logfile_path, const unsigned int camera_ID, QWidget* parent) :
+AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QString& logfile_path, const QString& DBlogfile_path, const unsigned int camera_ID, QWidget* parent) :
   QMainWindow(parent),
 
   // Low-Level Controllers (Motion, Camera, Vacuum)
@@ -74,6 +74,10 @@ AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QStr
   toolbox_view_(nullptr),
   params_view_(nullptr),
   hwctr_view_(nullptr),
+
+  DBLog_model_(nullptr),
+  DBLog_ctrl_(nullptr),
+  DBLog_view_(nullptr),
 
   button_mainEmergencyStop_(nullptr),
   autofocus_checkbox_(nullptr),
@@ -248,6 +252,7 @@ AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QStr
 
     controls_tab->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);
     controls_tab->setTabPosition(QTabWidget::North);
+    // controls_tab->setUsesScrollButtons(false); //Make all the widgets fit in the tab's width (else : scroll to invisible widgets)
 
 //    finderView_ = new AssemblyUEyeSnapShooter(assembly_tab);
 //    assembly_tab->addTab(finderView_, "finder");
@@ -358,6 +363,22 @@ AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QStr
     NQLog("AssemblyMainWindow", NQLog::Message) << "added view " << tabname_Terminal;
     // ---------------------------------------------------------
 
+    // DATABASE LOG VIEW ---------------------------------------
+    //Logfile stored in TkUpgrade database, containing relevant info related to each assembly
+
+    const QString tabname_DBLog("Database Log");
+    DBLog_view_ = new AssemblyDBLoggerView(outputdir_path); //View
+
+    DBLog_model_ = new AssemblyDBLoggerModel(DBlogfile_path); //Model
+
+    DBLog_ctrl_ = new AssemblyDBLoggerController(DBLog_model_, DBLog_view_); //Controller
+
+    connect_DBLogger();
+
+    controls_tab->addTab(DBLog_view_, tabname_DBLog);
+    NQLog("AssemblyMainWindow", NQLog::Message) << "added view " << tabname_DBLog;
+    // ---------------------------------------------------------
+
     /// --------------------------------------------------------
 
     /// Upper Toolbar ------------------------------------------
@@ -373,12 +394,13 @@ AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QStr
 
     // toolBar_ ->addAction("Emergency Stop", motion_manager_->model(), SLOT(emergencyStop()));
     button_mainEmergencyStop_ = new QPushButton(tr("Emergency STOP"));
-    button_mainEmergencyStop_->setStyleSheet("QPushButton { background-color: rgb(255, 129, 123); font: bold 18px; border-radius: 8px; padding: 7px; }");
+    button_mainEmergencyStop_->setStyleSheet("QPushButton { background-color: rgb(255, 129, 123); font: 18px; border-radius: 8px; padding: 7px; } QPushButton:hover { background-color: red; font: bold 18px; border-radius: 8px; padding: 2px; }");
     toolBar_->addWidget(button_mainEmergencyStop_);
 
     connect(button_mainEmergencyStop_, SIGNAL(clicked()), motion_manager_, SLOT(emergency_stop()));
     connect(button_mainEmergencyStop_, SIGNAL(clicked()), this, SLOT(disconnect_objectAligner()));
     connect(button_mainEmergencyStop_, SIGNAL(clicked()), zfocus_finder_ , SLOT(emergencyStop()));
+    connect(button_mainEmergencyStop_, SIGNAL(clicked()), this , SLOT(writeDBLog_emergencyStop()));
     /// --------------------------------------------------------
 
     /// Main Tab -----------------------------------------------
@@ -806,6 +828,23 @@ void AssemblyMainWindow::testTimer()
 
     testTimerCount_ += 0.1;
 
+    return;
+}
+
+void AssemblyMainWindow::connect_DBLogger() //FIXME
+{
+    connect(this, SIGNAL(DBLogMessage(const QString)), this->DBLog_ctrl_, SLOT(writeMessageToLog(const QString)));
+    connect(aligner_, SIGNAL(DBLogMessage(const QString)), this->DBLog_ctrl_, SLOT(writeMessageToLog(const QString)));
+    connect(finder_, SIGNAL(DBLogMessage(const QString)), this->DBLog_ctrl_, SLOT(writeMessageToLog(const QString)));
+    connect(conradManager_, SIGNAL(DBLogMessage(const QString)), this->DBLog_ctrl_, SLOT(writeMessageToLog(const QString)));
+    connect(assembly_, SIGNAL(DBLogMessage(const QString)), this->DBLog_ctrl_, SLOT(writeMessageToLog(const QString)));
+
+    return;
+}
+
+void AssemblyMainWindow::writeDBLog_emergencyStop()
+{
+    emit DBLogMessage("!! MAIN EMERGENCY BUTTON CLICKED !!");
     return;
 }
 

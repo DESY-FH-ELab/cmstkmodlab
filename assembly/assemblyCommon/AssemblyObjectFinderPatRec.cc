@@ -164,6 +164,8 @@ void AssemblyObjectFinderPatRec::launch_PatRec(const AssemblyObjectFinderPatRec:
     emit PatRec_exitcode(1);
   }
 
+  // emit DBLogMessage("Starting Pattern Recognition");
+
   mutex_.lock();
 
   img_template_ = img_templa;
@@ -601,6 +603,12 @@ void AssemblyObjectFinderPatRec::template_matching(const AssemblyObjectFinderPat
     txts << "# best_matchLoc.x best_matchLoc.y best_angle\n";
     txts << best_matchLoc.x << " " << best_matchLoc.y << " " << best_angle << "\n";
   }
+
+  // const QString mess_tmp = "PatRec results:\n" +
+  //                 QString("-- Best match X = ")     + QString::number(best_matchLoc.x) + "\n" +
+  //                 QString("-- Best match Y = ")     + QString::number(best_matchLoc.y) + "\n" +
+  //                 QString("-- Best match angle = ") + QString::number(best_angle);
+  // emit DBLogMessage(mess_tmp);
 
   NQLog("AssemblyObjectFinderPatRec", NQLog::Spam) << "template_matching"
      << ": created output file: " << txt_file_path;

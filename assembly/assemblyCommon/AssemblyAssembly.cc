@@ -202,6 +202,8 @@ void AssemblyAssembly::GoToSensorMarkerPreAlignment_finish()
 
   NQLog("AssemblyAssembly", NQLog::Message) << "GoToSensorMarkerPreAlignment_finish"
      << ": assembly-step completed";
+
+  DBLogMessage("== Assembly step completed : [Move to sensor's ref marker (pre-alignment)]");
 }
 // ----------------------------------------------------------------------------------------------------
 
@@ -249,6 +251,9 @@ void AssemblyAssembly::EnableVacuumPickupTool_finish()
 
   NQLog("AssemblyAssembly", NQLog::Message) << "EnableVacuumPickupTool_finish"
      << ": assembly-step completed";
+
+  DBLogMessage("== Assembly step completed : [Enable pickup tool vacuum]");
+
 }
 // ----------------------------------------------------------------------------------------------------
 
@@ -296,6 +301,8 @@ void AssemblyAssembly::DisableVacuumPickupTool_finish()
 
   NQLog("AssemblyAssembly", NQLog::Message) << "DisableVacuumPickupTool_finish"
      << ": assembly-step completed";
+
+  DBLogMessage("== Assembly step completed : [Disable pickup tool vacuum]");
 }
 // ----------------------------------------------------------------------------------------------------
 
@@ -343,6 +350,8 @@ void AssemblyAssembly::EnableVacuumSpacers_finish()
 
   NQLog("AssemblyAssembly", NQLog::Message) << "EnableVacuumSpacers_finish"
      << ": assembly-step completed";
+
+  DBLogMessage("== Assembly step completed : [Enable spacers vacuum]");
 }
 // ----------------------------------------------------------------------------------------------------
 
@@ -390,6 +399,8 @@ void AssemblyAssembly::DisableVacuumSpacers_finish()
 
   NQLog("AssemblyAssembly", NQLog::Message) << "DisableVacuumSpacers_finish"
      << ": assembly-step completed";
+
+  DBLogMessage("== Assembly step completed : [Disable spacers vacuum]");
 }
 // ----------------------------------------------------------------------------------------------------
 
@@ -437,6 +448,8 @@ void AssemblyAssembly::EnableVacuumBaseplate_finish()
 
   NQLog("AssemblyAssembly", NQLog::Message) << "EnableVacuumBaseplate_finish"
      << ": assembly-step completed";
+
+  DBLogMessage("== Assembly step completed : [Enable baseplate vacuum]");
 }
 // ----------------------------------------------------------------------------------------------------
 
@@ -484,6 +497,8 @@ void AssemblyAssembly::DisableVacuumBaseplate_finish()
 
   NQLog("AssemblyAssembly", NQLog::Message) << "DisableVacuumBaseplate_finish"
      << ": assembly-step completed";
+
+  DBLogMessage("== Assembly step completed : [Disable baseplate vacuum]");
 }
 // ----------------------------------------------------------------------------------------------------
 
@@ -545,6 +560,8 @@ void AssemblyAssembly::GoFromSensorMarkerToPickupXY_finish()
 
   NQLog("AssemblyAssembly", NQLog::Message) << "GoFromSensorMarkerToPickupXY_finish"
      << ": assembly-step completed";
+
+  DBLogMessage("== Assembly step completed : [Move from sensor's ref marker to pickup position]");
 }
 // ----------------------------------------------------------------------------------------------------
 
@@ -625,6 +642,8 @@ void AssemblyAssembly::LowerPickupToolOntoPSS_finish()
 
   NQLog("AssemblyAssembly", NQLog::Message) << "LowerPickupToolOntoPSS_finish"
      << ": assembly-step completed";
+
+  DBLogMessage("== Assembly step completed : [Lower pickup tool onto PS-s]");
 }
 // ----------------------------------------------------------------------------------------------------
 
@@ -684,6 +703,8 @@ void AssemblyAssembly::PickupPSS_finish()
 
   NQLog("AssemblyAssembly", NQLog::Message) << "PickupPSS_finish"
      << ": assembly-step completed";
+
+  DBLogMessage("== Assembly step completed : [Pick up PS-s]");
 }
 // ----------------------------------------------------------------------------------------------------
 
@@ -760,6 +781,8 @@ void AssemblyAssembly::GoToXYAPositionToGluePSSToSpacers_finish()
 
   NQLog("AssemblyAssembly", NQLog::Message) << "GoToXYAPositionToGluePSSToSpacers_finish"
      << ": assembly-step completed";
+
+  DBLogMessage("== Assembly step completed : [Move to XYZ position for gluing PS-s to spacers]");
 }
 // ----------------------------------------------------------------------------------------------------
 
@@ -849,6 +872,8 @@ void AssemblyAssembly::LowerPSSOntoSpacers_finish()
 
   NQLog("AssemblyAssembly", NQLog::Message) << "LowerPSSOntoSpacers_finish"
      << ": assembly-step completed";
+
+  DBLogMessage("== Assembly step completed : [Lower PS-s onto spacers]");
 }
 // ----------------------------------------------------------------------------------------------------
 
@@ -910,6 +935,8 @@ void AssemblyAssembly::ApplyPSPToPSSXYOffset_finish()
 
   NQLog("AssemblyAssembly", NQLog::Message) << "ApplyPSPToPSSXYOffset_finish"
      << ": assembly-step completed";
+
+  DBLogMessage("== Assembly step completed : [Move by PS-s/PS-p relative XY offset]");
 }
 // ----------------------------------------------------------------------------------------------------
 
@@ -960,6 +987,8 @@ void AssemblyAssembly::RegisterPSSPlusSpacersToMaPSAPosition_finish()
 
   NQLog("AssemblyAssembly", NQLog::Message) << "RegisterPSSPlusSpacersToMaPSAPosition_finish"
      << ": assembly-step completed";
+
+  DBLogMessage("== Assembly step completed : [Register {PS-s + spacers} Z position]");
 }
 // ----------------------------------------------------------------------------------------------------
 
@@ -1040,6 +1069,8 @@ void AssemblyAssembly::GoFromPSSPlusSpacersToMaPSAPositionToGluingStageRefPointX
 
   NQLog("AssemblyAssembly", NQLog::Message) << "GoFromPSSPlusSpacersToMaPSAPositionToGluingStageRefPointXY_finish"
      << ": assembly-step completed";
+
+  DBLogMessage("== Assembly step completed : [Move from {PS-s + spacers --> MaPSA} position to gluing state XY position]");
 }
 // ----------------------------------------------------------------------------------------------------
 
@@ -1129,6 +1160,8 @@ void AssemblyAssembly::LowerPSSPlusSpacersOntoGluingStage_finish()
 
   NQLog("AssemblyAssembly", NQLog::Message) << "LowerPSSPlusSpacersOntoGluingStage_finish"
      << ": assembly-step completed";
+
+  DBLogMessage("== Assembly step completed : [Lower {PS-s + spacers} onto gluing stage]");
 }
 // ----------------------------------------------------------------------------------------------------
 
@@ -1224,6 +1257,8 @@ void AssemblyAssembly::ReturnToPSSPlusSpacersToMaPSAPosition_finish()
 
   NQLog("AssemblyAssembly", NQLog::Message) << "ReturnToPSSPlusSpacersToMaPSAPosition_finish"
      << ": assembly-step completed";
+
+  DBLogMessage("== Assembly step completed : [Move {PS-s + spacers} from gluing stage to motion station for gluing to MaPSA]");
 }
 // ----------------------------------------------------------------------------------------------------
 
@@ -1312,6 +1347,8 @@ void AssemblyAssembly::LowerPSSPlusSpacersOntoMaPSA_finish()
 
   NQLog("AssemblyAssembly", NQLog::Message) << "LowerPSSPlusSpacersOntoMaPSA_finish"
      << ": assembly-step completed";
+
+  DBLogMessage("== Assembly step completed : [Lower {PS-s + spacers} onto MaPSA]");
 }
 // ----------------------------------------------------------------------------------------------------
 
@@ -1371,6 +1408,8 @@ void AssemblyAssembly::PickupPSSPlusSpacers_finish()
 
   NQLog("AssemblyAssembly", NQLog::Message) << "PickupPSSPlusSpacers_finish"
      << ": assembly-step completed";
+
+  DBLogMessage("== Assembly step completed : [Pickup {PS-s + spacers}]");
 }
 // ----------------------------------------------------------------------------------------------------
 
@@ -1430,6 +1469,8 @@ void AssemblyAssembly::LiftUpPickupTool_finish()
 
   NQLog("AssemblyAssembly", NQLog::Message) << "LiftUpPickupTool_finish"
      << ": assembly-step completed";
+
+  DBLogMessage("== Assembly step completed : [Lift up pickup tool]");
 }
 // ----------------------------------------------------------------------------------------------------
 
@@ -1489,6 +1530,8 @@ void AssemblyAssembly::PickupSensorAssembly_finish()
 
   NQLog("AssemblyAssembly", NQLog::Message) << "PickupSensorAssembly_finish"
      << ": assembly-step completed";
+
+  DBLogMessage("== Assembly step completed : [Pickup {PS-s + spacers + MaPSA}]");
 }
 // ----------------------------------------------------------------------------------------------------
 
@@ -1567,6 +1610,8 @@ void AssemblyAssembly::GoToXYAPositionToGlueSensorAssemblyToBaseplate_finish()
 
   NQLog("AssemblyAssembly", NQLog::Message) << "GoToXYAPositionToGlueSensorAssemblyToBaseplate_finish"
      << ": assembly-step completed";
+
+  DBLogMessage("== Assembly step completed : [Move to XYZ position for gluing of {PS-s + spacers + MaPSA} to baseplate]");
 }
 // ----------------------------------------------------------------------------------------------------
 
@@ -1660,5 +1705,7 @@ void AssemblyAssembly::LowerSensorAssemblyOntoBaseplate_finish()
 
   NQLog("AssemblyAssembly", NQLog::Message) << "LowerSensorAssemblyOntoBaseplate_finish"
      << ": assembly-step completed";
+
+  DBLogMessage("== Assembly step completed : [Lower {PS-s + spacers + MaPSA} onto baseplate]");
 }
 // ----------------------------------------------------------------------------------------------------
