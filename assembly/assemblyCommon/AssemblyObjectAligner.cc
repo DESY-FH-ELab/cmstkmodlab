@@ -260,8 +260,10 @@ void AssemblyObjectAligner::run_alignment(const double patrec_dX, const double p
   {
     if(counter_numOfRotations_ >= max_numOfRotations_)
     {
-       NQLog("AssemblyObjectAligner", NQLog::Warning) << "\e[1;35mrun_alignment() : reached maximum number of iterations ("
+       NQLog("AssemblyObjectAligner", NQLog::Warning) << "\e[1;35mrun_alignment() : reached maximum number of rotations ("
           << max_numOfRotations_ << ") for the alignment procedure -- Stopping here !\e[0m";
+
+       emit DBLogMessage("=== Reached maximum number of rotations (" + QString::number(counter_numOfRotations_) + ") for the alignment procedure. Stopping there !");
 
        NQLog("AssemblyObjectAligner", NQLog::Spam) << "run_alignment: step [" << alignment_step_ << "]"
           << ": emitting signal \"execution_completed\"";
@@ -275,6 +277,8 @@ void AssemblyObjectAligner::run_alignment(const double patrec_dX, const double p
     }
 
     NQLog("AssemblyObjectAligner", NQLog::Message) << "\e[1;32m=== Starting alignment procedure\e[0m (iteration: " << counter_numOfRotations_ << ")";
+
+    emit DBLogMessage("=== Starting alignment procedure (iteration: " + QString::number(counter_numOfRotations_) + ")" );
 
     NQLog("AssemblyObjectAligner", NQLog::Message) << "run_alignment: step [" << alignment_step_ << "]";
 

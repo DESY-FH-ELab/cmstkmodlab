@@ -604,12 +604,6 @@ void AssemblyObjectFinderPatRec::template_matching(const AssemblyObjectFinderPat
     txts << best_matchLoc.x << " " << best_matchLoc.y << " " << best_angle << "\n";
   }
 
-  // const QString mess_tmp = "PatRec results:\n" +
-  //                 QString("-- Best match X = ")     + QString::number(best_matchLoc.x) + "\n" +
-  //                 QString("-- Best match Y = ")     + QString::number(best_matchLoc.y) + "\n" +
-  //                 QString("-- Best match angle = ") + QString::number(best_angle);
-  // emit DBLogMessage(mess_tmp);
-
   NQLog("AssemblyObjectFinderPatRec", NQLog::Spam) << "template_matching"
      << ": created output file: " << txt_file_path;
   // ------------------
@@ -648,6 +642,12 @@ void AssemblyObjectFinderPatRec::template_matching(const AssemblyObjectFinderPat
 
   NQLog("AssemblyObjectFinderPatRec", NQLog::Spam) << "template_matching"
      << ": emitting signal \"PatRec_results(" << patrec_dX << ", " << patrec_dY << ", " << best_angle << ")\"";
+
+  const QString mess_tmp = "PatRec results:\n" +
+                QString("-- Best match X = ")     + QString::number(best_matchLoc.x) + " (px) \n" +
+                QString("-- Best match Y = ")     + QString::number(best_matchLoc.y) + " (px) \n" +
+                QString("-- Best match angle = ") + QString::number(best_angle) + " (deg)";
+  emit DBLogMessage(mess_tmp);
 
   emit PatRec_results(patrec_dX, patrec_dY, best_angle);
 

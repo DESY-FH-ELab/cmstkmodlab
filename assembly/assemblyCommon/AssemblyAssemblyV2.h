@@ -192,6 +192,8 @@ class AssemblyAssemblyV2 : public QObject
   void EnableVacuumBaseplate_finished();
   void DisableVacuumBaseplate_finished();
   // ------
+
+  void DBLogMessage(const QString);
 };
 
 #endif // ASSEMBLYASSEMBLYV2_H

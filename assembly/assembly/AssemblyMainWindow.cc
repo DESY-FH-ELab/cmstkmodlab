@@ -252,6 +252,8 @@ AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QStr
 
       NQLog("AssemblyMainWindow", NQLog::Message) << "added view " << tabname_Assembly
          << " (assembly_sequence = " << assembly_sequence << ")";
+
+      emit DBLogMessage("== Using default assembly sequence == (MaPSA glued to baseplate last)");
     }
     else if(assembly_sequence == 2)
     {
@@ -262,6 +264,8 @@ AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QStr
 
       NQLog("AssemblyMainWindow", NQLog::Message) << "added view " << tabname_Assembly
          << " (assembly_sequence = " << assembly_sequence << ")";
+
+      emit DBLogMessage("== Using modified assembly sequence == (MaPSA glued to baseplate first)");
     }
     else
     {
@@ -397,6 +401,9 @@ AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QStr
     DBLog_ctrl_ = new AssemblyDBLoggerController(DBLog_model_, DBLog_view_); //Controller
 
     connect_DBLogger();
+
+    if(assembly_sequence == 1) {emit DBLogMessage("== Using default assembly sequence == (MaPSA glued to baseplate last)");}
+    else if(assembly_sequence == 2) {emit DBLogMessage("== Using modified assembly sequence == (MaPSA glued to baseplate first)");}
 
     controls_tab->addTab(DBLog_view_, tabname_DBLog);
     NQLog("AssemblyMainWindow", NQLog::Message) << "added view " << tabname_DBLog;
@@ -854,13 +861,14 @@ void AssemblyMainWindow::testTimer()
     return;
 }
 
-void AssemblyMainWindow::connect_DBLogger() //FIXME
+void AssemblyMainWindow::connect_DBLogger()
 {
     connect(this, SIGNAL(DBLogMessage(const QString)), this->DBLog_ctrl_, SLOT(writeMessageToLog(const QString)));
     connect(aligner_, SIGNAL(DBLogMessage(const QString)), this->DBLog_ctrl_, SLOT(writeMessageToLog(const QString)));
     connect(finder_, SIGNAL(DBLogMessage(const QString)), this->DBLog_ctrl_, SLOT(writeMessageToLog(const QString)));
     connect(conradManager_, SIGNAL(DBLogMessage(const QString)), this->DBLog_ctrl_, SLOT(writeMessageToLog(const QString)));
-    connect(assembly_, SIGNAL(DBLogMessage(const QString)), this->DBLog_ctrl_, SLOT(writeMessageToLog(const QString)));
+    if(assembly_ != nullptr) {connect(assembly_, SIGNAL(DBLogMessage(const QString)), this->DBLog_ctrl_, SLOT(writeMessageToLog(const QString)));}
+    else if(assemblyV2_ != nullptr) {connect(assemblyV2_, SIGNAL(DBLogMessage(const QString)), this->DBLog_ctrl_, SLOT(writeMessageToLog(const QString)));}
 
     return;
 }

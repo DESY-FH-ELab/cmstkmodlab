@@ -122,6 +122,8 @@ class AssemblyObjectAligner : public QObject
     void measured_angle(const double);
 
     void execution_completed();
+
+    void DBLogMessage(const QString);
 };
 
 #endif // AssemblyObjectAligner_h
