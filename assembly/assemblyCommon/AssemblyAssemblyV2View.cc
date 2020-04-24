@@ -637,13 +637,13 @@ AssemblyAssemblyV2View::AssemblyAssemblyV2View(const QObject* const assembly, QW
   }
   // ----------
 
-  // step: Lower Pickup-Tool onto Gluing Stage
+  // step: Lower "PS-s + Spacers" onto Gluing Stage
   {
     ++assembly_step_N;
 
     AssemblyAssemblyActionWidget* tmp_wid = new AssemblyAssemblyActionWidget;
     tmp_wid->label()->setText(QString::number(assembly_step_N));
-    tmp_wid->button()->setText("Lower Pickup-Tool onto Gluing Stage");
+    tmp_wid->button()->setText("Lower \"PS-s + Spacers\" onto Gluing Stage");
     PSSToMaPSA_lay->addWidget(tmp_wid);
 
     tmp_wid->connect_action(assembly, SLOT(LowerPSSPlusSpacersOntoGluingStage_start()), SIGNAL(LowerPSSPlusSpacersOntoGluingStage_finished()));
@@ -664,13 +664,13 @@ AssemblyAssemblyV2View::AssemblyAssemblyV2View(const QObject* const assembly, QW
   }
   // ----------
 
-  // step: Lower Pickup-Tool onto MaPSA
+  // step: Lower "PS-s + Spacers" onto MaPSA
   {
     ++assembly_step_N;
 
     AssemblyAssemblyActionWidget* tmp_wid = new AssemblyAssemblyActionWidget;
     tmp_wid->label()->setText(QString::number(assembly_step_N));
-    tmp_wid->button()->setText("Lower Pickup-Tool onto MaPSA");
+    tmp_wid->button()->setText("Lower \"PS-s + Spacers\" onto MaPSA");
     PSSToMaPSA_lay->addWidget(tmp_wid);
 
     tmp_wid->connect_action(assembly, SLOT(LowerPSSPlusSpacersOntoMaPSA_start()), SIGNAL(LowerPSSPlusSpacersOntoMaPSA_finished()));
