@@ -61,6 +61,8 @@ class AssemblyParametersView : public QWidget
 
   void transmit_entries();
 
+  void display_infoTab();
+
  signals:
 
   void read_from_file_request(const QString&);

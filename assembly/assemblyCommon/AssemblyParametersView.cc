@@ -527,3 +527,14 @@ void AssemblyParametersView::setText(const std::string& key, const double val)
 
   return;
 }
+
+//-- Information about this tab in GUI
+//HTML markup (<xxx></xxx>): p paragraph, b bold, em emphasize, i italic, s small, section, summary, var variable, ...
+//Ex: <p style="color:red">This is a red paragraph.</p>
+void AssemblyParametersView::display_infoTab()
+{
+    QMessageBox::information(this, tr("Information - Parameters"),
+            tr("<p>Some information about the content of this tab.</p>"));
+
+    return;
+}

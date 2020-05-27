@@ -12,7 +12,7 @@
 
 #include <AssemblyDBLoggerView.h>
 
-AssemblyDBLoggerView::AssemblyDBLoggerView(const QString& outputdir_path, QWidget* parent) :
+AssemblyDBLoggerView::AssemblyDBLoggerView(const QString& outputdir_path) :
 outputdir_path_(outputdir_path)
 {
 //--------------------------------------------
@@ -167,7 +167,7 @@ void AssemblyDBLoggerView::load_logfile()
 //Prompt dialog box for user to select path where to save current logfile
 void AssemblyDBLoggerView::save_logfile()
 {
-    ApplicationConfig* config = ApplicationConfig::instance();
+    // ApplicationConfig* config = ApplicationConfig::instance();
 
     const QString filename = QFileDialog::getSaveFileName(this, tr("Save Logfile"), QString::fromStdString(Config::CMSTkModLabBasePath+"/share/assembly"), tr("Log Files (*.log);;All Files (*)"));
     if(filename.isNull() || filename.isEmpty()) {return;}
@@ -186,16 +186,16 @@ void AssemblyDBLoggerView::clear_content()
     return;
 }
 
-/*
-void AssemblyDBLoggerView::setInteger()
+//-- Information about this tab in GUI
+//HTML markup (<xxx></xxx>): p paragraph, b bold, em emphasize, i italic, s small, section, summary, var variable, ...
+//Ex: <p style="color:red">This is a red paragraph.</p>
+void AssemblyDBLoggerView::display_infoTab()
 {
-    bool ok;
-    int i = QInputDialog::getInt(this, tr("QInputDialog::getInt()"), tr("Percentage:"), 25, 0, 100, 1, &ok);
-    if(ok) {integerLabel->setText(tr("%1%").arg(i));}
+    QMessageBox::information(this, tr("Information - Database Log"),
+            tr("<p>Some information about the content of this tab.</p>"));
 
     return;
 }
-*/
 
 // ===============================================================================
 

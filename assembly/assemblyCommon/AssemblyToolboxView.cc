@@ -63,3 +63,14 @@ AssemblyToolboxView::AssemblyToolboxView(const LStepExpressMotionManager* const 
 
   layout->addStretch(1);
 }
+
+//-- Information about this tab in GUI
+//HTML markup (<xxx></xxx>): p paragraph, b bold, em emphasize, i italic, s small, section, summary, var variable, ...
+//Ex: <p style="color:red">This is a red paragraph.</p>
+void AssemblyToolboxView::display_infoTab()
+{
+    QMessageBox::information(this, tr("Information - Toolbox"),
+            tr("<p>Some information about the content of this tab.</p>"));
+
+    return;
+}

@@ -63,6 +63,7 @@ AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QStr
 
   // Views
   toolBar_(nullptr),
+  main_tab(nullptr),
 
 //  finderView_(nullptr),
 //  edgeView_(nullptr),
@@ -82,6 +83,7 @@ AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QStr
   DBLog_view_(nullptr),
 
   button_mainEmergencyStop_(nullptr),
+  button_info_(nullptr),
   autofocus_checkbox_(nullptr),
 
   // flags
@@ -431,10 +433,17 @@ AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QStr
     connect(button_mainEmergencyStop_, SIGNAL(clicked()), this, SLOT(disconnect_objectAligner()));
     connect(button_mainEmergencyStop_, SIGNAL(clicked()), zfocus_finder_ , SLOT(emergencyStop()));
     connect(button_mainEmergencyStop_, SIGNAL(clicked()), this , SLOT(writeDBLog_emergencyStop()));
+
+    QWidget *spacer = new QWidget();
+    spacer->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+    toolBar_->addWidget(spacer);
+    button_info_ = new QPushButton(tr("Information"));
+    button_info_->setStyleSheet("QPushButton { background-color: rgb(215, 214, 213); font: 16px;} QPushButton:hover { background-color: rgb(174, 173, 172); font: bold 16px;}");
+    toolBar_->addWidget(button_info_);
     /// --------------------------------------------------------
 
     /// Main Tab -----------------------------------------------
-    QTabWidget* main_tab = new QTabWidget;
+    main_tab = new QTabWidget;
 
     main_tab->setTabPosition(QTabWidget::North);
 
@@ -448,6 +457,8 @@ AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QStr
     this->setCentralWidget(main_tab);
 
     this->updateGeometry();
+
+    connect(button_info_, SIGNAL(clicked()), this, SLOT(displayInfo_activeTab()));
     /// --------------------------------------------------------
 
     liveTimer_ = new QTimer(this);
@@ -876,6 +887,26 @@ void AssemblyMainWindow::connect_DBLogger()
 void AssemblyMainWindow::writeDBLog_emergencyStop()
 {
     emit DBLogMessage("!! MAIN EMERGENCY BUTTON CLICKED !!");
+    return;
+}
+
+//When the "Information" button is clicked: get the active widget (currently displayed in the GUI), and call its specific message function //NB: consider only 'sub-tabs', not main tabs
+void AssemblyMainWindow::displayInfo_activeTab()
+{
+    //Get the active widget by index //NB: the 2 children of the QTabWidget 'main_tab' are also QTabWidget
+    QWidget* widget_tmp = main_tab->widget(main_tab->currentIndex());
+
+    //Cast into a QTabWidget
+    QTabWidget* qtabwidget_active = dynamic_cast<QTabWidget*>(widget_tmp);
+
+    //Get the actual active sub-widget
+    QWidget* widget_active = qtabwidget_active->currentWidget();
+
+    //Connect signal to info slot of this widget, emit signal, then disconnect
+    connect(this, SIGNAL(display_info()), widget_active, SLOT(display_infoTab()));
+    emit display_info();
+    disconnect(this, SIGNAL(display_info()), widget_active, SLOT(display_infoTab()));
+
     return;
 }
 

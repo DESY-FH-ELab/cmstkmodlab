@@ -624,6 +624,17 @@ AssemblyAssemblyV2View::AssemblyAssemblyV2View(const QObject* const assembly, QW
   }
   // ----------
 
+  // step: Place spacers on gluing stage
+  {
+    ++assembly_step_N;
+
+    AssemblyAssemblyTextWidget* tmp_wid = new AssemblyAssemblyTextWidget;
+    tmp_wid->label()->setText(QString::number(assembly_step_N));
+    tmp_wid->text()->setText("Dispense Glue on Blocks and Place them on Gluing Stage");
+    PSSToMaPSA_lay->addWidget(tmp_wid);
+  }
+  // ----------
+
   // step: Go From "PS-s to MaPSA" Position to Gluing Stage (XY) Ref-Point
   {
     ++assembly_step_N;
@@ -740,4 +751,15 @@ AssemblyAssemblyV2View::AssemblyAssemblyV2View(const QObject* const assembly, QW
 
   PSSToMaPSA_lay->addStretch(1);
   //// -----------------------------------------------
+}
+
+//-- Information about this tab in GUI
+//HTML markup (<xxx></xxx>): p paragraph, b bold, em emphasize, i italic, s small, section, summary, var variable, ...
+//Ex: <p style="color:red">This is a red paragraph.</p>
+void AssemblyAssemblyV2View::display_infoTab()
+{
+    QMessageBox::information(this, tr("Information - Assembly"),
+            tr("<p>Some information about the content of this tab.</p>"));
+
+    return;
 }

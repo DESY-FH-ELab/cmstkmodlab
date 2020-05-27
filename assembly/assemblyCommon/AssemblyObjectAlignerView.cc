@@ -868,3 +868,14 @@ AssemblyObjectAligner::Configuration AssemblyObjectAlignerView::get_configuratio
 
   return conf;
 }
+
+//-- Information about this tab in GUI
+//HTML markup (<xxx></xxx>): p paragraph, b bold, em emphasize, i italic, s small, section, summary, var variable, ...
+//Ex: <p style="color:red">This is a red paragraph.</p>
+void AssemblyObjectAlignerView::display_infoTab()
+{
+    QMessageBox::information(this, tr("Information - Alignment"),
+            tr("<p>Some information about the content of this tab.</p>"));
+
+    return;
+}
