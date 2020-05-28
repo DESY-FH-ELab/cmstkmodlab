@@ -10,31 +10,52 @@
 //                                                                             //
 /////////////////////////////////////////////////////////////////////////////////
 
-#ifndef ASSEMBLYASSEMBLYVIEW_H
-#define ASSEMBLYASSEMBLYVIEW_H
+#ifndef ASSEMBLYASSEMBLYACTIONWIDGET_H
+#define ASSEMBLYASSEMBLYACTIONWIDGET_H
 
 #include <QWidget>
-#include <QVBoxLayout>
 #include <QHBoxLayout>
 #include <QPushButton>
 #include <QCheckBox>
 #include <QLabel>
 
-class AssemblyAssemblyView : public QWidget
+class AssemblyAssemblyActionWidget : public QWidget
 {
  Q_OBJECT
 
  public:
-  explicit AssemblyAssemblyView(const QObject* const, QWidget* parent=nullptr);
-  virtual ~AssemblyAssemblyView() {}
+  explicit AssemblyAssemblyActionWidget(QWidget* parent=nullptr);
+  virtual ~AssemblyAssemblyActionWidget() {}
+
+  QHBoxLayout* layout() const { return layout_; }
+
+  QLabel* label() const { return label_; }
+  QPushButton* button() const { return button_; }
+  QCheckBox* checkbox() const { return checkbox_; }
+
+  void connect_action(const QObject*, const char*, const char*);
 
  protected:
-  QCheckBox* smartMove_checkbox_;
+  QHBoxLayout* layout_;
 
-  QWidget* wid_PSSAlignm_;
-  QWidget* wid_PSSToSpacers_;
-  QWidget* wid_PSSToMaPSA_;
-  QWidget* wid_PSToBasep_;
+  QLabel* label_;
+  QPushButton* button_;
+  QCheckBox* checkbox_;
+
+  const QObject* qobject_;
+  const char* start_slot_;
+  const char* stop_signal_;
+
+ public slots:
+  void disable(const bool b=true);
+  void disable(const int);
+
+  void reset_action();
+  void start_action();
+  void disable_action();
+
+ signals:
+  void action_request();
 };
 
-#endif // ASSEMBLYASSEMBLYVIEW_H
+#endif // ASSEMBLYASSEMBLYACTIONWIDGET_H
