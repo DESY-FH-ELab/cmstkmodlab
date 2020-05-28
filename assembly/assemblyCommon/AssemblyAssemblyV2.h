@@ -10,8 +10,8 @@
 //                                                                             //
 /////////////////////////////////////////////////////////////////////////////////
 
-#ifndef ASSEMBLYASSEMBLY_H
-#define ASSEMBLYASSEMBLY_H
+#ifndef ASSEMBLYASSEMBLYV2_H
+#define ASSEMBLYASSEMBLYV2_H
 
 #include <QObject>
 
@@ -21,15 +21,13 @@
 #include <AssemblySmartMotionManager.h>
 #include <AssemblyParameters.h>
 
-#include <vector>
-
-class AssemblyAssembly : public QObject
+class AssemblyAssemblyV2 : public QObject
 {
  Q_OBJECT
 
  public:
-  explicit AssemblyAssembly(const LStepExpressMotionManager* const, const ConradManager* const, const AssemblySmartMotionManager* const smart_motion=nullptr, QObject* parent=nullptr);
-  virtual ~AssemblyAssembly() {}
+  explicit AssemblyAssemblyV2(const LStepExpressMotionManager* const, const ConradManager* const, const AssemblySmartMotionManager* const smart_motion=nullptr, QObject* parent=nullptr);
+  virtual ~AssemblyAssemblyV2() {}
 
   AssemblyParameters* parameters() const;
 
@@ -39,7 +37,6 @@ class AssemblyAssembly : public QObject
   const AssemblySmartMotionManager* smart_motion() const;
 
  protected:
-
   const LStepExpressMotionManager* const motion_;
   const ConradManager* const vacuum_;
 
@@ -55,7 +52,7 @@ class AssemblyAssembly : public QObject
   bool use_smartMove_;
   bool in_action_;
 
-  bool   PSSPlusSpacersToMaPSAPosition_isRegistered_;
+  bool PSSPlusSpacersToMaPSAPosition_isRegistered_;
   double PSSPlusSpacersToMaPSAPosition_X_;
   double PSSPlusSpacersToMaPSAPosition_Y_;
   double PSSPlusSpacersToMaPSAPosition_Z_;
@@ -72,6 +69,9 @@ class AssemblyAssembly : public QObject
   void GoFromSensorMarkerToPickupXY_start();
   void GoFromSensorMarkerToPickupXY_finish();
 
+  void LowerPickupToolOntoMaPSA_start();
+  void LowerPickupToolOntoMaPSA_finish();
+
   void LowerPickupToolOntoPSS_start();
   void LowerPickupToolOntoPSS_finish();
 
@@ -86,6 +86,9 @@ class AssemblyAssembly : public QObject
 
   void PickupPSSPlusSpacers_start();
   void PickupPSSPlusSpacers_finish();
+
+  void GoToPSPMarkerIdealPosition_start();
+  void GoToPSPMarkerIdealPosition_finish();
 
   void ApplyPSPToPSSXYOffset_start();
   void ApplyPSPToPSSXYOffset_finish();
@@ -105,14 +108,14 @@ class AssemblyAssembly : public QObject
   void LowerPSSPlusSpacersOntoMaPSA_start();
   void LowerPSSPlusSpacersOntoMaPSA_finish();
 
-  void PickupSensorAssembly_start();
-  void PickupSensorAssembly_finish();
+  void PickupMaPSA_start();
+  void PickupMaPSA_finish();
 
-  void GoToXYAPositionToGlueSensorAssemblyToBaseplate_start();
-  void GoToXYAPositionToGlueSensorAssemblyToBaseplate_finish();
+  void GoToXYAPositionToGlueMaPSAToBaseplate_start();
+  void GoToXYAPositionToGlueMaPSAToBaseplate_finish();
 
-  void LowerSensorAssemblyOntoBaseplate_start();
-  void LowerSensorAssemblyOntoBaseplate_finish();
+  void LowerMaPSAOntoBaseplate_start();
+  void LowerMaPSAOntoBaseplate_finish();
 
   void LiftUpPickupTool_start();
   void LiftUpPickupTool_finish();
@@ -148,36 +151,32 @@ class AssemblyAssembly : public QObject
 
   void GoFromSensorMarkerToPickupXY_finished();
 
-  void LowerPickupToolOntoPSS_finished();
+  void LowerPickupToolOntoMaPSA_finished();
+  void PickupMaPSA_finished();
 
+  void GoToXYAPositionToGlueMaPSAToBaseplate_finished();
+  void LowerMaPSAOntoBaseplate_finished();
+
+  void LowerPickupToolOntoPSS_finished();
   void PickupPSS_finished();
 
   void GoToXYAPositionToGluePSSToSpacers_finished();
-
   void LowerPSSOntoSpacers_finished();
-
   void PickupPSSPlusSpacers_finished();
 
-  void ApplyPSPToPSSXYOffset_finished();
+  void GoToPSPMarkerIdealPosition_finished();
 
+  void ApplyPSPToPSSXYOffset_finished();
   void RegisterPSSPlusSpacersToMaPSAPosition_finished();
   void PSSPlusSpacersToMaPSAPosition_registered();
 
   void GoFromPSSPlusSpacersToMaPSAPositionToGluingStageRefPointXY_finished();
-
+  void LowerPSSPlusSpacersOntoGluingStage_finished();
   void ReturnToPSSPlusSpacersToMaPSAPosition_finished();
 
-  void LowerPSSPlusSpacersOntoGluingStage_finished();
-
+  void LowerPSSPlusSpacersOntoMaPSA_finished();
   void LiftUpPickupTool_finished();
 
-  void LowerPSSPlusSpacersOntoMaPSA_finished();
-
-  void PickupSensorAssembly_finished();
-
-  void GoToXYAPositionToGlueSensorAssemblyToBaseplate_finished();
-
-  void LowerSensorAssemblyOntoBaseplate_finished();
   // ------
 
   // vacuum
@@ -192,9 +191,9 @@ class AssemblyAssembly : public QObject
 
   void EnableVacuumBaseplate_finished();
   void DisableVacuumBaseplate_finished();
+  // ------
 
   void DBLogMessage(const QString);
-  // ------
 };
 
-#endif // ASSEMBLYASSEMBLY_H
+#endif // ASSEMBLYASSEMBLYV2_H

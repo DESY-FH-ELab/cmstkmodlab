@@ -25,7 +25,7 @@
 
 #include <opencv2/opencv.hpp>
 
-AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QString& logfile_path, const unsigned int camera_ID, QWidget* parent) :
+AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QString& logfile_path, const QString& DBlogfile_path, const unsigned int camera_ID, QWidget* parent) :
   QMainWindow(parent),
 
   // Low-Level Controllers (Motion, Camera, Vacuum)
@@ -51,6 +51,7 @@ AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QStr
   thresholder_(nullptr),
   aligner_(nullptr),
   assembly_(nullptr),
+  assemblyV2_(nullptr),
   multipickup_tester_(nullptr),
 
   finder_(nullptr),
@@ -71,10 +72,16 @@ AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QStr
   finder_view_(nullptr),
   aligner_view_(nullptr),
   assembly_view_(nullptr),
+  assemblyV2_view_(nullptr),
   toolbox_view_(nullptr),
   params_view_(nullptr),
   hwctr_view_(nullptr),
 
+  DBLog_model_(nullptr),
+  DBLog_ctrl_(nullptr),
+  DBLog_view_(nullptr),
+
+  button_mainEmergencyStop_(nullptr),
   autofocus_checkbox_(nullptr),
 
   // flags
@@ -88,9 +95,9 @@ AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QStr
     ApplicationConfig* config = ApplicationConfig::instance();
     if(config == nullptr)
     {
-      NQLog("AssemblyMainWindow", NQLog::Fatal) << "-------------------------------------------------------------------------------------------------------";
-      NQLog("AssemblyMainWindow", NQLog::Fatal) << "initialization error: ApplicationConfig::instance() not initialized (null pointer), exiting constructor";
-      NQLog("AssemblyMainWindow", NQLog::Fatal) << "-------------------------------------------------------------------------------------------------------";
+      NQLog("AssemblyMainWindow", NQLog::Fatal) << "\e[1;31m-------------------------------------------------------------------------------------------------------\e[0m";
+      NQLog("AssemblyMainWindow", NQLog::Fatal) << "\e[1;31mInitialization error: ApplicationConfig::instance() not initialized (null pointer), exiting constructor\e[0m";
+      NQLog("AssemblyMainWindow", NQLog::Fatal) << "\e[1;31m-------------------------------------------------------------------------------------------------------\e[0m";
 
       return;
     }
@@ -98,6 +105,14 @@ AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QStr
     /// Parameters
     ///   * instance created up here, so controllers can access it
     params_ = AssemblyParameters::instance(config->getValue<std::string>("AssemblyParameters_file_path"));
+    if(params_->isValidConfig() == false)
+    {
+      NQLog("AssemblyMainWindow", NQLog::Fatal) << "\e[1;31m-------------------------------------------------------------------------------------------------------\e[0m";
+      NQLog("AssemblyMainWindow", NQLog::Fatal) << "\e[1;31mInitialization error: AssemblyParameters::instance() is invalid ! Abort !\e[0m";
+      NQLog("AssemblyMainWindow", NQLog::Fatal) << "\e[1;31m-------------------------------------------------------------------------------------------------------\e[0m";
+
+      return;
+    }
     /// -------------------
 
     /// Motion
@@ -110,6 +125,7 @@ AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QStr
     );
 
     motion_manager_ = new LStepExpressMotionManager(motion_model_);
+    connect(motion_manager_->model(), SIGNAL(emergencyStop_request()), motion_manager_, SLOT(clear_motion_queue()));
 
     motion_thread_  = new LStepExpressMotionThread(motion_manager_, this);
     motion_thread_->start();
@@ -213,11 +229,9 @@ AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QStr
     aligner_view_->PatRecOne_Image()->connectImageProducer(aligner_, SIGNAL(image_PatRecOne(cv::Mat)));
     aligner_view_->PatRecTwo_Image()->connectImageProducer(aligner_, SIGNAL(image_PatRecTwo(cv::Mat)));
 
-    connect(aligner_view_->button_emergencyStop(), SIGNAL(clicked()), this, SLOT(disconnect_objectAligner()));
-    connect(aligner_view_->button_emergencyStop(), SIGNAL(clicked()), motion_manager_, SLOT(emergency_stop()));
-    connect(aligner_view_->button_emergencyStop(), SIGNAL(clicked()), zfocus_finder_ , SLOT(emergencyStop()));
-
-    connect(motion_manager_->model(), SIGNAL(emergencyStop_request()), motion_manager_, SLOT(clear_motion_queue()));
+    connect(aligner_view_->button_alignerEmergencyStop(), SIGNAL(clicked()), this, SLOT(disconnect_objectAligner()));
+    connect(aligner_view_->button_alignerEmergencyStop(), SIGNAL(clicked()), motion_manager_, SLOT(emergency_stop()));
+    connect(aligner_view_->button_alignerEmergencyStop(), SIGNAL(clicked()), zfocus_finder_ , SLOT(emergencyStop()));
 
     NQLog("AssemblyMainWindow", NQLog::Message) << "added view " << tabname_Alignm;
     // ---------------------------------------------------------
@@ -227,12 +241,37 @@ AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QStr
 
     smart_motion_ = new AssemblySmartMotionManager(motion_manager_);
 
-    assembly_ = new AssemblyAssembly(motion_manager_, conradManager_, smart_motion_);
+    const int assembly_sequence(config->getValue<int>("assembly_sequence", 1));
 
-    assembly_view_ = new AssemblyAssemblyView(assembly_, assembly_tab);
-    assembly_tab->addTab(assembly_view_, tabname_Assembly);
+    if(assembly_sequence == 1)
+    {
+      assembly_ = new AssemblyAssembly(motion_manager_, conradManager_, smart_motion_);
 
-    NQLog("AssemblyMainWindow", NQLog::Message) << "added view " << tabname_Assembly;
+      assembly_view_ = new AssemblyAssemblyView(assembly_, assembly_tab);
+      assembly_tab->addTab(assembly_view_, tabname_Assembly);
+
+      NQLog("AssemblyMainWindow", NQLog::Message) << "added view " << tabname_Assembly
+         << " (assembly_sequence = " << assembly_sequence << ")";
+
+      emit DBLogMessage("== Using default assembly sequence == (MaPSA glued to baseplate last)");
+    }
+    else if(assembly_sequence == 2)
+    {
+      assemblyV2_ = new AssemblyAssemblyV2(motion_manager_, conradManager_, smart_motion_);
+
+      assemblyV2_view_ = new AssemblyAssemblyV2View(assemblyV2_, assembly_tab);
+      assembly_tab->addTab(assemblyV2_view_, tabname_Assembly);
+
+      NQLog("AssemblyMainWindow", NQLog::Message) << "added view " << tabname_Assembly
+         << " (assembly_sequence = " << assembly_sequence << ")";
+
+      emit DBLogMessage("== Using modified assembly sequence == (MaPSA glued to baseplate first)");
+    }
+    else
+    {
+      NQLog("AssemblyMainWindow", NQLog::Fatal) << "invalid value for configuration parameter \"assembly_sequence\" ("
+         << assembly_sequence << ") -> GUI Tab " << tabname_Assembly << " will not be created";
+    }
     // ---------------------------------------------------------
 
     /// TAB: MANUAL CONTROLLERS AND PARAMETERS -----------------
@@ -240,6 +279,7 @@ AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QStr
 
     controls_tab->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);
     controls_tab->setTabPosition(QTabWidget::North);
+    // controls_tab->setUsesScrollButtons(false); //Make all the widgets fit in the tab's width (else : scroll to invisible widgets)
 
 //    finderView_ = new AssemblyUEyeSnapShooter(assembly_tab);
 //    assembly_tab->addTab(finderView_, "finder");
@@ -350,6 +390,25 @@ AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QStr
     NQLog("AssemblyMainWindow", NQLog::Message) << "added view " << tabname_Terminal;
     // ---------------------------------------------------------
 
+    // DATABASE LOG VIEW ---------------------------------------
+    //Logfile stored in TkUpgrade database, containing relevant info related to each assembly
+
+    const QString tabname_DBLog("Database Log");
+    DBLog_view_ = new AssemblyDBLoggerView(outputdir_path); //View
+
+    DBLog_model_ = new AssemblyDBLoggerModel(DBlogfile_path); //Model
+
+    DBLog_ctrl_ = new AssemblyDBLoggerController(DBLog_model_, DBLog_view_); //Controller
+
+    connect_DBLogger();
+
+    if(assembly_sequence == 1) {emit DBLogMessage("== Using default assembly sequence == (MaPSA glued to baseplate last)");}
+    else if(assembly_sequence == 2) {emit DBLogMessage("== Using modified assembly sequence == (MaPSA glued to baseplate first)");}
+
+    controls_tab->addTab(DBLog_view_, tabname_DBLog);
+    NQLog("AssemblyMainWindow", NQLog::Message) << "added view " << tabname_DBLog;
+    // ---------------------------------------------------------
+
     /// --------------------------------------------------------
 
     /// Upper Toolbar ------------------------------------------
@@ -358,13 +417,20 @@ AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QStr
     toolBar_ ->addAction("Camera OFF"    , this, SLOT(disable_images()));
     toolBar_ ->addAction("Snapshot"      , this, SLOT(    get_image ()));
 
-    toolBar_ ->addAction("Emergency Stop", motion_manager_->model(), SLOT(emergencyStop()));
-
     autofocus_checkbox_ = new QCheckBox("Auto-Focusing", this);
     toolBar_->addWidget(autofocus_checkbox_);
-
     connect(autofocus_checkbox_, SIGNAL(stateChanged(int)), this, SLOT(changeState_autofocus(int)));
     connect(autofocus_checkbox_, SIGNAL(stateChanged(int)), aligner_view_, SLOT(update_autofocusing_checkbox(int)));
+
+    // toolBar_ ->addAction("Emergency Stop", motion_manager_->model(), SLOT(emergencyStop()));
+    button_mainEmergencyStop_ = new QPushButton(tr("Emergency STOP"));
+    button_mainEmergencyStop_->setStyleSheet("QPushButton { background-color: rgb(255, 129, 123); font: 18px; border-radius: 8px; padding: 7px; } QPushButton:hover { background-color: red; font: bold 18px; border-radius: 8px; padding: 2px; }");
+    toolBar_->addWidget(button_mainEmergencyStop_);
+
+    connect(button_mainEmergencyStop_, SIGNAL(clicked()), motion_manager_, SLOT(emergency_stop()));
+    connect(button_mainEmergencyStop_, SIGNAL(clicked()), this, SLOT(disconnect_objectAligner()));
+    connect(button_mainEmergencyStop_, SIGNAL(clicked()), zfocus_finder_ , SLOT(emergencyStop()));
+    connect(button_mainEmergencyStop_, SIGNAL(clicked()), this , SLOT(writeDBLog_emergencyStop()));
     /// --------------------------------------------------------
 
     /// Main Tab -----------------------------------------------
@@ -792,6 +858,24 @@ void AssemblyMainWindow::testTimer()
 
     testTimerCount_ += 0.1;
 
+    return;
+}
+
+void AssemblyMainWindow::connect_DBLogger()
+{
+    connect(this, SIGNAL(DBLogMessage(const QString)), this->DBLog_ctrl_, SLOT(writeMessageToLog(const QString)));
+    connect(aligner_, SIGNAL(DBLogMessage(const QString)), this->DBLog_ctrl_, SLOT(writeMessageToLog(const QString)));
+    connect(finder_, SIGNAL(DBLogMessage(const QString)), this->DBLog_ctrl_, SLOT(writeMessageToLog(const QString)));
+    connect(conradManager_, SIGNAL(DBLogMessage(const QString)), this->DBLog_ctrl_, SLOT(writeMessageToLog(const QString)));
+    if(assembly_ != nullptr) {connect(assembly_, SIGNAL(DBLogMessage(const QString)), this->DBLog_ctrl_, SLOT(writeMessageToLog(const QString)));}
+    else if(assemblyV2_ != nullptr) {connect(assemblyV2_, SIGNAL(DBLogMessage(const QString)), this->DBLog_ctrl_, SLOT(writeMessageToLog(const QString)));}
+
+    return;
+}
+
+void AssemblyMainWindow::writeDBLog_emergencyStop()
+{
+    emit DBLogMessage("!! MAIN EMERGENCY BUTTON CLICKED !!");
     return;
 }
 

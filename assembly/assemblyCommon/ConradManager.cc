@@ -52,6 +52,8 @@ void ConradManager::toggleVacuum(const int chNumber)
 
     // here will be a QtTimer for about 2 secs
     liveTimer_->start(togglingVacuumDelay);
+
+    emit DBLogMessage("Turned vacuum ON");
   }
   else if(conradModel()->getSwitchState(chNumber) == 1)
   {
@@ -66,6 +68,8 @@ void ConradManager::toggleVacuum(const int chNumber)
 
     // here will be a QtTimer for about 2 secs
     liveTimer_->start(togglingVacuumDelay);
+
+    emit DBLogMessage("Turned vacuum OFF");
   }
   else
   {
@@ -115,6 +119,8 @@ void ConradManager::enableVacuum(const int chNumber)
     channelNumber_ = chNumber;
 
     liveTimer_->start(togglingVacuumDelay);
+
+    emit DBLogMessage("Turned vacuum ON");
   }
   else if(state == 1) // vacuum line is ON
   {
@@ -158,6 +164,8 @@ void ConradManager::disableVacuum(const int chNumber)
     channelNumber_ = chNumber;
 
     liveTimer_->start(togglingVacuumDelay);
+
+    emit DBLogMessage("Turned vacuum OFF");
   }
   else
   {

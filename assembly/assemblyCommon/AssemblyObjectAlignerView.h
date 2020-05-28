@@ -46,7 +46,7 @@ class AssemblyObjectAlignerView : public QWidget
   AssemblyUEyeView* PatRecOne_Image() const { return patrecOne_image_; }
   AssemblyUEyeView* PatRecTwo_Image() const { return patrecTwo_image_; }
 
-  QPushButton* button_emergencyStop() const { return button_emergencyStop_; }
+  QPushButton* button_alignerEmergencyStop() const { return button_alignerEmergencyStop_; }
 
   AssemblyObjectAligner::Configuration get_configuration(bool&) const;
 
@@ -91,7 +91,7 @@ class AssemblyObjectAlignerView : public QWidget
   AssemblyUEyeView* patrecTwo_image_;
   QScrollArea*      patrecTwo_scroll_;
 
-  QPushButton* button_emergencyStop_;
+  QPushButton* button_alignerEmergencyStop_;
 
   bool finder_connected_;
 
