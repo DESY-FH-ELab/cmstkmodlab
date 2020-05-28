@@ -10,8 +10,8 @@
 //                                                                             //
 /////////////////////////////////////////////////////////////////////////////////
 
-#ifndef ASSEMBLYASSEMBLYVIEW_H
-#define ASSEMBLYASSEMBLYVIEW_H
+#ifndef ASSEMBLYASSEMBLYTEXTWIDGET_H
+#define ASSEMBLYASSEMBLYTEXTWIDGET_H
 
 #include <QWidget>
 #include <QVBoxLayout>
@@ -20,21 +20,33 @@
 #include <QCheckBox>
 #include <QLabel>
 
-class AssemblyAssemblyView : public QWidget
+class AssemblyAssemblyTextWidget : public QWidget
 {
  Q_OBJECT
 
  public:
-  explicit AssemblyAssemblyView(const QObject* const, QWidget* parent=nullptr);
-  virtual ~AssemblyAssemblyView() {}
+  explicit AssemblyAssemblyTextWidget(QWidget* parent=nullptr);
+  virtual ~AssemblyAssemblyTextWidget() {}
+
+  QHBoxLayout* layout() const { return layout_; }
+
+  QLabel* label() const { return label_; }
+  QLabel* text() const { return text_; }
+  QCheckBox* checkbox() const { return checkbox_; }
 
  protected:
-  QCheckBox* smartMove_checkbox_;
+  QHBoxLayout* layout_;
 
-  QWidget* wid_PSSAlignm_;
-  QWidget* wid_PSSToSpacers_;
-  QWidget* wid_PSSToMaPSA_;
-  QWidget* wid_PSToBasep_;
+  QLabel* label_;
+  QLabel* text_;
+  QCheckBox* checkbox_;
+
+ public slots:
+  void disable(const bool b=true);
+  void disable(const int);
+
+ signals:
 };
+// ====================================================================================================
 
-#endif // ASSEMBLYASSEMBLYVIEW_H
+#endif // ASSEMBLYASSEMBLYTEXTWIDGET_H
