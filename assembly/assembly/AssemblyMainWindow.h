@@ -78,7 +78,10 @@ class AssemblyMainWindow : public QMainWindow
  public:
 
   explicit AssemblyMainWindow(const QString& outputdir_path, const QString& logfile_path, const QString& DBlogfile_path, const unsigned int camera_ID=10, QWidget* parent=nullptr);
-  virtual ~AssemblyMainWindow() {}
+  virtual ~AssemblyMainWindow()
+  {
+      disconnect_otherSlots();
+  }
 
  public slots:
 
@@ -96,6 +99,8 @@ class AssemblyMainWindow : public QMainWindow
 
   void start_multiPickupTest(const AssemblyMultiPickupTester::Configuration&);
   void disconnect_multiPickupTest();
+
+  void disconnect_otherSlots();
 
   void testTimer();
 

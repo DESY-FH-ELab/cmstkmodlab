@@ -32,11 +32,15 @@ AssemblyParameters::AssemblyParameters(const std::string& file_path, QObject* pa
   NQLog("AssemblyParameters", NQLog::Debug) << "constructed";
 
   this->read_from_file(file_path);
+
+  connect(view_ , SIGNAL(request_moveToPosition(double,double,double,double)), this, SLOT(requestMoveAbsolute(double,double,double,double)));
 }
 
 AssemblyParameters::~AssemblyParameters()
 {
   NQLog("AssemblyParameters", NQLog::Debug) << "destructed";
+
+  disconnect(view_ , SIGNAL(request_moveToPosition(double,double,double,double)), this, SLOT(requestMoveAbsolute(double,double,double,double)));
 }
 
 AssemblyParameters* AssemblyParameters::instance(const std::string& file_path, QObject* parent)
@@ -263,4 +267,11 @@ bool AssemblyParameters::isValidConfig()
     }
 
     return true;
+}
+
+void AssemblyParameters::requestMoveAbsolute(double x,double y ,double z,double a)
+{
+    emit sigRequestMoveAbsolute(x,y,z,a);
+
+    return;
 }

@@ -170,6 +170,9 @@ AssemblyParametersView::AssemblyParametersView(QWidget* parent)
   posi_lay->addWidget(new QLabel(tr("A"))    , row_index, 7, Qt::AlignRight);
   posi_lay->addWidget(this->get(tmp_tag+"_A"), row_index, 8, Qt::AlignRight);
 
+  button_moveTo1_  = new QPushButton(tr("Move to Position"));
+  posi_lay->addWidget(button_moveTo1_, row_index, 9, Qt::AlignRight);
+
   // position: XYZA position of ref-point on assembly platform for calibration of baseplate
   ++row_index;
 
@@ -190,6 +193,9 @@ AssemblyParametersView::AssemblyParametersView(QWidget* parent)
   posi_lay->addWidget(this->get(tmp_tag+"_Z"), row_index, 6, Qt::AlignRight);
   posi_lay->addWidget(new QLabel(tr("A"))    , row_index, 7, Qt::AlignRight);
   posi_lay->addWidget(this->get(tmp_tag+"_A"), row_index, 8, Qt::AlignRight);
+
+  button_moveTo2_  = new QPushButton(tr("Move to Position"));
+  posi_lay->addWidget(button_moveTo2_, row_index, 9, Qt::AlignRight);
 
   // position: XYZA position of ref-point on assembly platform for calibration of spacers
   ++row_index;
@@ -212,6 +218,9 @@ AssemblyParametersView::AssemblyParametersView(QWidget* parent)
   posi_lay->addWidget(new QLabel(tr("A"))    , row_index, 7, Qt::AlignRight);
   posi_lay->addWidget(this->get(tmp_tag+"_A"), row_index, 8, Qt::AlignRight);
 
+  button_moveTo3_  = new QPushButton(tr("Move to Position"));
+  posi_lay->addWidget(button_moveTo3_, row_index, 9, Qt::AlignRight);
+
   // position: z-position where camera is focused on Assembly Stage surface
   ++row_index;
 
@@ -233,6 +242,9 @@ AssemblyParametersView::AssemblyParametersView(QWidget* parent)
   posi_lay->addWidget(new QLabel(tr("A"))    , row_index, 7, Qt::AlignRight);
   posi_lay->addWidget(this->get(tmp_tag+"_A"), row_index, 8, Qt::AlignRight);
 
+  button_moveTo4_  = new QPushButton(tr("Move to Position"));
+  posi_lay->addWidget(button_moveTo4_, row_index, 9, Qt::AlignRight);
+
   // position: z-position where camera is focused on Gluing Stage surface
   ++row_index;
 
@@ -253,6 +265,9 @@ AssemblyParametersView::AssemblyParametersView(QWidget* parent)
   posi_lay->addWidget(this->get(tmp_tag+"_Z"), row_index, 6, Qt::AlignRight);
   posi_lay->addWidget(new QLabel(tr("A"))    , row_index, 7, Qt::AlignRight);
   posi_lay->addWidget(this->get(tmp_tag+"_A"), row_index, 8, Qt::AlignRight);
+
+  button_moveTo5_  = new QPushButton(tr("Move to Position"));
+  posi_lay->addWidget(button_moveTo5_, row_index, 9, Qt::AlignRight);
 
   //// ---------------------
 
@@ -412,6 +427,31 @@ AssemblyParametersView::AssemblyParametersView(QWidget* parent)
   paramIO_lay->addWidget(paramIO_button_write_, 50);
 
   layout->addLayout(paramIO_lay);
+
+  //Connections
+  connect(button_moveTo1_ , SIGNAL(clicked()), this, SLOT(moveToPos1()));
+  connect(button_moveTo2_ , SIGNAL(clicked()), this, SLOT(moveToPos2()));
+  connect(button_moveTo3_ , SIGNAL(clicked()), this, SLOT(moveToPos3()));
+  connect(button_moveTo4_ , SIGNAL(clicked()), this, SLOT(moveToPos4()));
+  connect(button_moveTo5_ , SIGNAL(clicked()), this, SLOT(moveToPos5()));
+
+  connect(this , SIGNAL(click_moveToPos(int)), this, SLOT(askConfirmMoveToRefPoint(int)));
+}
+
+AssemblyParametersView::~AssemblyParametersView()
+{
+    //-- Disconnect slots
+    disconnect(paramIO_button_read_ , SIGNAL(clicked()), this, SLOT( read_parameters()));
+    disconnect(paramIO_button_write_, SIGNAL(clicked()), this, SLOT(write_parameters()));
+
+    //Disconnections
+    disconnect(button_moveTo1_ , SIGNAL(clicked()), this, SLOT(moveToPos1()));
+    disconnect(button_moveTo2_ , SIGNAL(clicked()), this, SLOT(moveToPos2()));
+    disconnect(button_moveTo3_ , SIGNAL(clicked()), this, SLOT(moveToPos3()));
+    disconnect(button_moveTo4_ , SIGNAL(clicked()), this, SLOT(moveToPos4()));
+    disconnect(button_moveTo5_ , SIGNAL(clicked()), this, SLOT(moveToPos5()));
+
+    disconnect(this , SIGNAL(click_moveToPos(int)), this, SLOT(askConfirmMoveToRefPoint(int)));
 }
 
 void AssemblyParametersView::read_parameters()
@@ -535,6 +575,53 @@ void AssemblyParametersView::display_infoTab()
 {
     QMessageBox::information(this, tr("Information - Parameters"),
             tr("<p>Some information about the content of this tab.</p>"));
+
+    return;
+}
+
+//Prompt message box. If asked, move to selected ref point position
+void AssemblyParametersView::askConfirmMoveToRefPoint(int refPoint)
+{
+    //Get the coordinates (in GUI) of the selected refPoint
+    std::string tmp_tag("");
+    switch(refPoint)
+    {
+        case 1: tmp_tag = "RefPointSensor";
+            break;
+        case 2: tmp_tag = "PlatformRefPointCalibrationBaseplate";
+            break;
+        case 3: tmp_tag = "PlatformRefPointCalibrationSpacers";
+            break;
+        case 4: tmp_tag = "CameraFocusOnAssemblyStage";
+            break;
+        case 5: tmp_tag = "CameraFocusOnGluingStage";
+            break;
+        default: return;
+    }
+    double x = this->get(tmp_tag+"_X")->text().toDouble();
+    double y = this->get(tmp_tag+"_Y")->text().toDouble();
+    double z = this->get(tmp_tag+"_Z")->text().toDouble();
+    double a = this->get(tmp_tag+"_A")->text().toDouble();
+
+    QMessageBox msgBox;
+    msgBox.setWindowTitle(tr("Move to absolute position"));
+    msgBox.setText(QString("<p>x: %1 / y: %2 / z: %3 / a: %4.</p>").arg(x).arg(y).arg(z).arg(a));
+    msgBox.setInformativeText("Do you want to move the camera to this absolute position ?");
+    msgBox.setStandardButtons(QMessageBox::No | QMessageBox::Yes);
+    msgBox.setDefaultButton(QMessageBox::No);
+    int ret = msgBox.exec();
+
+    switch(ret)
+    {
+      case QMessageBox::No: return; //Exit
+      case QMessageBox::Yes: break; //Continue function execution
+      default: return; //Exit
+    }
+
+    NQLog("AssemblyParametersView", NQLog::Spam) << "moveToPosition"
+       << ": moving to absolute ref. position " << refPoint << " (x="<<x<<" / y="<<y<<" / z="<<z<<" / a="<<a<<")";
+
+    emit request_moveToPosition(x,y,z,a);
 
     return;
 }

@@ -274,6 +274,9 @@ AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QStr
       NQLog("AssemblyMainWindow", NQLog::Fatal) << "invalid value for configuration parameter \"assembly_sequence\" ("
          << assembly_sequence << ") -> GUI Tab " << tabname_Assembly << " will not be created";
     }
+
+    connect(params_, SIGNAL(sigRequestMoveAbsolute(double,double,double,double)), smart_motion_, SLOT(move_absolute(double,double,double,double)));
+    connect(image_view_, SIGNAL(sigRequestMoveRelative(double,double,double,double)), smart_motion_, SLOT(move_relative(double,double,double,double)));
     // ---------------------------------------------------------
 
     /// TAB: MANUAL CONTROLLERS AND PARAMETERS -----------------
@@ -860,6 +863,15 @@ void AssemblyMainWindow::disconnect_multiPickupTest()
 
   NQLog("AssemblyMainWindow", NQLog::Message) << "disconnect_multiPickupTest"
      << ": multi-pickup test completed";
+}
+
+//Disconnect remaining signal/slots, which did not get disconnected via specific functions
+void AssemblyMainWindow::disconnect_otherSlots()
+{
+    disconnect(params_, SIGNAL(sigRequestMoveAbsolute(double,double,double,double)), smart_motion_, SLOT(move_absolute(double,double,double,double)));
+    disconnect(image_view_, SIGNAL(sigRequestMoveRelative(double,double,double,double)), smart_motion_, SLOT(move_relative(double,double,double,double)));
+
+    return;
 }
 
 void AssemblyMainWindow::testTimer()

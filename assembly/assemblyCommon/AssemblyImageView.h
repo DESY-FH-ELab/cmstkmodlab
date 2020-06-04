@@ -117,6 +117,8 @@ class AssemblyImageView : public QWidget
   void autofocus_request();
 
   void autofocus_emergencyStop_request();
+
+  void sigRequestMoveRelative(double, double, double, double);
 };
 
 #endif // ASSEMBLYIMAGEVIEW_H

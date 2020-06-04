@@ -352,6 +352,10 @@ void AssemblyImageView::modify_image_axesConventions()
   putText(img, "+y", cv::Point(padding, img.rows/2.0+2*padding), fontFace, fontScale, cv::Scalar(255,0,0), linethick, CV_AA);
   putText(img, "-y", cv::Point(img.cols-5*padding, img.rows/2.0+2*padding), fontFace, fontScale, cv::Scalar(255,0,0), linethick, CV_AA);
 
+  // also add line/label for distance scale
+  line   (img, cv::Point(0, 125), cv::Point(0+167, 125), cv::Scalar(0,255,0), 2, 8, 0);
+  putText(img, "200 um", cv::Point(100, 100), cv::FONT_HERSHEY_SCRIPT_SIMPLEX, 1.5, cv::Scalar(0,255,0), 3, 8);
+
   this->update_image(img, false);
 
   return;
@@ -630,11 +634,22 @@ void AssemblyImageView::mouseDoubleClickEvent(QMouseEvent* event)
     msgBox.setText(QString("<p>Distance x: %1. Distance y: %2.</p>").arg(distx).arg(disty));
     msgBox.setInformativeText("Do you want to propagate these coordinates ?");
     msgBox.setStandardButtons(QMessageBox::No | QMessageBox::Yes);
-    msgBox.setDefaultButton(QMessageBox::Yes);
-    int answer = msgBox.exec();
+    msgBox.setDefaultButton(QMessageBox::No);
+    int ret = msgBox.exec();
 
-    //Restore original image
-    this->update_image(img_original, true);
+    this->update_image(img_original, true); //Restore original image
+
+    switch(ret)
+    {
+      case QMessageBox::No: return; //Exit
+      case QMessageBox::Yes: break; //Continue function execution
+      default: return; //Exit
+    }
+
+    emit sigRequestMoveRelative(distx, disty, 0, 0);
+
+    NQLog("AssemblyImageView", NQLog::Spam) << "mouseDoubleClickEvent"
+       << ": apply relative movement (dx="<<distx<<" / dy="<<disty<<")";
 
     return;
 }
@@ -646,6 +661,5 @@ void AssemblyImageView::display_infoTab()
 {
     QMessageBox::information(this, tr("Information - Image Viewer"),
             tr("<p>Some information about the content of this tab.</p>"));
-
     return;
 }

@@ -31,7 +31,8 @@ class AssemblyParametersView : public QWidget
  public:
 
   explicit AssemblyParametersView(QWidget* parent=nullptr);
-  virtual ~AssemblyParametersView() {}
+  // virtual ~AssemblyParametersView() {};
+  ~AssemblyParametersView();
 
   bool       has(const std::string&) const;
   QLineEdit* get(const std::string&) const;
@@ -52,6 +53,8 @@ class AssemblyParametersView : public QWidget
   QPushButton* paramIO_button_read_;
   QPushButton* paramIO_button_write_;
 
+  QPushButton *button_moveTo1_, *button_moveTo2_, *button_moveTo3_, *button_moveTo4_, *button_moveTo5_;
+
   std::map<std::string, QLineEdit*> map_lineEdit_;
 
  public slots:
@@ -63,12 +66,22 @@ class AssemblyParametersView : public QWidget
 
   void display_infoTab();
 
+  void moveToPos1() {emit click_moveToPos(1);};
+  void moveToPos2() {emit click_moveToPos(2);};
+  void moveToPos3() {emit click_moveToPos(3);};
+  void moveToPos4() {emit click_moveToPos(4);};
+  void moveToPos5() {emit click_moveToPos(5);};
+  void askConfirmMoveToRefPoint(int);
+
  signals:
 
   void read_from_file_request(const QString&);
   void  write_to_file_request(const QString&);
 
   void entries(const std::map<std::string, std::string>&);
+
+  void click_moveToPos(int);
+  void request_moveToPosition(double,double,double,double);
 };
 // ===========================================================================
 
