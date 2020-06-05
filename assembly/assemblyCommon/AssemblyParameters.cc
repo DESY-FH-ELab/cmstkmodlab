@@ -27,20 +27,20 @@ AssemblyParameters* AssemblyParameters::instance_ = nullptr;
 
 AssemblyParameters::AssemblyParameters(const std::string& file_path, QObject* parent)
  : QObject(parent)
- , view_(nullptr)
+ , view_(nullptr) //FIXME -- can remove ? 
 {
   NQLog("AssemblyParameters", NQLog::Debug) << "constructed";
 
   this->read_from_file(file_path);
 
-  connect(view_ , SIGNAL(request_moveToPosition(double,double,double,double)), this, SLOT(requestMoveAbsolute(double,double,double,double)));
+  //connect(view_ , SIGNAL(request_moveToPosition(double,double,double,double)), this, SLOT(requestMoveAbsolute(double,double,double,double))); //FIXME
 }
 
 AssemblyParameters::~AssemblyParameters()
 {
   NQLog("AssemblyParameters", NQLog::Debug) << "destructed";
 
-  disconnect(view_ , SIGNAL(request_moveToPosition(double,double,double,double)), this, SLOT(requestMoveAbsolute(double,double,double,double)));
+  //disconnect(view_ , SIGNAL(request_moveToPosition(double,double,double,double)), this, SLOT(requestMoveAbsolute(double,double,double,double))); //FIXME
 }
 
 AssemblyParameters* AssemblyParameters::instance(const std::string& file_path, QObject* parent)

@@ -556,7 +556,7 @@ void AssemblyImageView::mouseMoveEvent(QMouseEvent* event)
     // cout<<"newX "<<newX<<endl;
     // cout<<"newY "<<newY<<endl;
 
-    //Convert mm to um
+    //Convert mm to um //FOR DISPLAY ONLY !
     newX*= 1000;
     newY*= 1000;
 
@@ -620,9 +620,9 @@ void AssemblyImageView::mouseDoubleClickEvent(QMouseEvent* event)
     double distx, disty;
     assembly::rotation2D_deg(distx, disty, angle_FromCameraXYtoRefFrameXY_deg_, dX_0, dY_0);
 
-    //Convert mm to um
-    distx*= 1000;
-    disty*= 1000;
+    //Convert mm to um //FIXME -- REMOVE !
+    //distx*= 1000;
+    //disty*= 1000;
 
     //Display message box
     // QMessageBox::question(this, tr("Information - Image Viewer"),
@@ -631,7 +631,7 @@ void AssemblyImageView::mouseDoubleClickEvent(QMouseEvent* event)
 
     QMessageBox msgBox;
     msgBox.setWindowTitle(tr("Save selected position"));
-    msgBox.setText(QString("<p>Distance x: %1. Distance y: %2.</p>").arg(distx).arg(disty));
+    msgBox.setText(QString("<p>Rel. dx: %1 mm. Rel dy: %2 mm.</p>").arg(distx).arg(disty));
     msgBox.setInformativeText("Do you want to propagate these coordinates ?");
     msgBox.setStandardButtons(QMessageBox::No | QMessageBox::Yes);
     msgBox.setDefaultButton(QMessageBox::No);

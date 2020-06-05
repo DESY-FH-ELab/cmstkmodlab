@@ -275,8 +275,9 @@ AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QStr
          << assembly_sequence << ") -> GUI Tab " << tabname_Assembly << " will not be created";
     }
 
-    connect(params_, SIGNAL(sigRequestMoveAbsolute(double,double,double,double)), smart_motion_, SLOT(move_absolute(double,double,double,double)));
-    connect(image_view_, SIGNAL(sigRequestMoveRelative(double,double,double,double)), smart_motion_, SLOT(move_relative(double,double,double,double)));
+    //connect(params_, SIGNAL(sigRequestMoveAbsolute(double,double,double,double)), smart_motion_, SLOT(move_absolute(double,double,double,double))); //FIXME
+    //connect(image_view_, SIGNAL(sigRequestMoveRelative(double,double,double,double)), smart_motion_, SLOT(move_relative(double,double,double,double))); //FIXME    
+	connect(image_view_, SIGNAL(sigRequestMoveRelative(double,double,double,double)), motion_model_, SLOT(moveRelative(double,double,double,double))); //FIXME
     // ---------------------------------------------------------
 
     /// TAB: MANUAL CONTROLLERS AND PARAMETERS -----------------
@@ -346,6 +347,9 @@ AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QStr
     params_view_->copy_values(params_->map_double());
 
     NQLog("AssemblyMainWindow", NQLog::Message) << "added view " << tabname_Parameters;
+
+	//connect(params_view_, SIGNAL(request_moveToPosition(double,double,double,double)), smart_motion_, SLOT(move_absolute(double,double,double,double))); //FIXME
+	connect(params_view_, SIGNAL(request_moveToPosition(double,double,double,double)), motion_model_, SLOT(moveAbsolute(double,double,double,double))); //FIXME
     // ---------------------------------------------------------
 
     // MOTION-SETTINGS VIEW ------------------------------------
@@ -868,8 +872,11 @@ void AssemblyMainWindow::disconnect_multiPickupTest()
 //Disconnect remaining signal/slots, which did not get disconnected via specific functions
 void AssemblyMainWindow::disconnect_otherSlots()
 {
-    disconnect(params_, SIGNAL(sigRequestMoveAbsolute(double,double,double,double)), smart_motion_, SLOT(move_absolute(double,double,double,double)));
-    disconnect(image_view_, SIGNAL(sigRequestMoveRelative(double,double,double,double)), smart_motion_, SLOT(move_relative(double,double,double,double)));
+    //disconnect(params_, SIGNAL(sigRequestMoveAbsolute(double,double,double,double)), smart_motion_, SLOT(move_absolute(double,double,double,double))); //FIXME
+
+	//FIXME : smart -> motion_model_
+    disconnect(params_view_, SIGNAL(request_moveToPosition(double,double,double,double)), motion_model_, SLOT(moveAbsolute(double,double,double,double))); //FIXME
+    disconnect(image_view_, SIGNAL(sigRequestMoveRelative(double,double,double,double)), motion_model_, SLOT(moveRelative(double,double,double,double))); //FIXME
 
     return;
 }
