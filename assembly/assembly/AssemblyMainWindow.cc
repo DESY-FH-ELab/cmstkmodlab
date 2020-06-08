@@ -275,9 +275,8 @@ AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QStr
          << assembly_sequence << ") -> GUI Tab " << tabname_Assembly << " will not be created";
     }
 
-    //connect(params_, SIGNAL(sigRequestMoveAbsolute(double,double,double,double)), smart_motion_, SLOT(move_absolute(double,double,double,double))); //FIXME
-    //connect(image_view_, SIGNAL(sigRequestMoveRelative(double,double,double,double)), smart_motion_, SLOT(move_relative(double,double,double,double))); //FIXME    
-	connect(image_view_, SIGNAL(sigRequestMoveRelative(double,double,double,double)), motion_model_, SLOT(moveRelative(double,double,double,double))); //FIXME
+    connect(image_view_, SIGNAL(sigRequestMoveRelative(double,double,double,double)), motion_model_, SLOT(moveRelative(double,double,double,double)));
+    connect(motion_manager_, SIGNAL(motion_finished()), image_view_, SLOT(InfoMotionFinished()));
     // ---------------------------------------------------------
 
     /// TAB: MANUAL CONTROLLERS AND PARAMETERS -----------------
@@ -348,8 +347,8 @@ AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QStr
 
     NQLog("AssemblyMainWindow", NQLog::Message) << "added view " << tabname_Parameters;
 
-	//connect(params_view_, SIGNAL(request_moveToPosition(double,double,double,double)), smart_motion_, SLOT(move_absolute(double,double,double,double))); //FIXME
-	connect(params_view_, SIGNAL(request_moveToPosition(double,double,double,double)), motion_model_, SLOT(moveAbsolute(double,double,double,double))); //FIXME
+    connect(params_view_, SIGNAL(request_moveToAbsRefPosition(double,double,double,double)), motion_model_, SLOT(moveAbsolute(double,double,double,double)));
+    connect(params_view_, SIGNAL(request_moveByRelRefDistance(double,double,double,double)), motion_model_, SLOT(moveRelative(double,double,double,double)));
     // ---------------------------------------------------------
 
     // MOTION-SETTINGS VIEW ------------------------------------
@@ -445,7 +444,7 @@ AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QStr
     spacer->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
     toolBar_->addWidget(spacer);
     button_info_ = new QPushButton(tr("Information"));
-    button_info_->setStyleSheet("QPushButton { background-color: rgb(215, 214, 213); font: 16px;} QPushButton:hover { background-color: rgb(174, 173, 172); font: bold 16px;}");
+    button_info_->setStyleSheet("QPushButton { background-color: rgb(215, 214, 213); font: 16px;} QPushButton:hover { background-color: rgb(174, 173, 172); font: 16px;}");
     toolBar_->addWidget(button_info_);
     /// --------------------------------------------------------
 
@@ -525,6 +524,7 @@ void AssemblyMainWindow::enable_images()
   connect(this      , SIGNAL(image_request())  , image_ctr_, SLOT(acquire_image()));
   connect(this      , SIGNAL(autofocus_ON ())  , image_ctr_, SLOT( enable_autofocus()));
   connect(this      , SIGNAL(autofocus_OFF())  , image_ctr_, SLOT(disable_autofocus()));
+  connect(image_view_, SIGNAL(request_image()), image_ctr_, SLOT(acquire_image()));
 
   NQLog("AssemblyMainWindow", NQLog::Message) << "enable_images"
      << ": connecting AssemblyImageController";
@@ -564,6 +564,7 @@ void AssemblyMainWindow::disable_images()
   disconnect(this      , SIGNAL(image_request())  , image_ctr_, SLOT(acquire_image()));
   disconnect(this      , SIGNAL(autofocus_ON())   , image_ctr_, SLOT( enable_autofocus()));
   disconnect(this      , SIGNAL(autofocus_OFF())  , image_ctr_, SLOT(disable_autofocus()));
+  disconnect(image_view_, SIGNAL(request_image()), image_ctr_, SLOT(acquire_image()));
 
   NQLog("AssemblyMainWindow", NQLog::Message) << "disable_images"
      << ": disabling AssemblyImageController";
@@ -872,11 +873,9 @@ void AssemblyMainWindow::disconnect_multiPickupTest()
 //Disconnect remaining signal/slots, which did not get disconnected via specific functions
 void AssemblyMainWindow::disconnect_otherSlots()
 {
-    //disconnect(params_, SIGNAL(sigRequestMoveAbsolute(double,double,double,double)), smart_motion_, SLOT(move_absolute(double,double,double,double))); //FIXME
-
-	//FIXME : smart -> motion_model_
-    disconnect(params_view_, SIGNAL(request_moveToPosition(double,double,double,double)), motion_model_, SLOT(moveAbsolute(double,double,double,double))); //FIXME
-    disconnect(image_view_, SIGNAL(sigRequestMoveRelative(double,double,double,double)), motion_model_, SLOT(moveRelative(double,double,double,double))); //FIXME
+    disconnect(params_view_, SIGNAL(request_moveToAbsRefPosition(double,double,double,double)), motion_model_, SLOT(moveAbsolute(double,double,double,double)));
+    disconnect(params_view_, SIGNAL(request_moveByRelRefDistance(double,double,double,double)), motion_model_, SLOT(moveRelative(double,double,double,double)));
+    disconnect(image_view_, SIGNAL(sigRequestMoveRelative(double,double,double,double)), motion_model_, SLOT(moveRelative(double,double,double,double)));
 
     return;
 }
