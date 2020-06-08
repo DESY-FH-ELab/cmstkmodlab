@@ -65,6 +65,8 @@ AssemblyAssemblyV2::AssemblyAssemblyV2(const LStepExpressMotionManager* const mo
   // (1: PSs to Spacers, 2: PSs+Spacers to MaPSA)
   pickup1_Z_ = config->getValue<double>("AssemblyAssembly_pickup1_Z");
   pickup2_Z_ = config->getValue<double>("AssemblyAssembly_pickup2_Z");
+
+  alreadyClicked_LowerPickupToolOntoMaPSA = false; alreadyClicked_LowerPickupToolOntoPSS = false; alreadyClicked_LowerMaPSAOntoBaseplate = false; alreadyClicked_LowerPSSOntoSpacers = false; alreadyClicked_LowerPSSPlusSpacersOntoGluingStage = false; alreadyClicked_LowerPSSPlusSpacersOntoMaPSA = false;
 }
 
 const LStepExpressMotionManager* AssemblyAssemblyV2::motion() const
@@ -577,6 +579,25 @@ void AssemblyAssemblyV2::LowerPickupToolOntoMaPSA_start()
     return;
   }
 
+  if(alreadyClicked_LowerPickupToolOntoMaPSA)
+  {
+    NQLog("AssemblyAssemblyV2", NQLog::Warning) << "LowerPickupToolOntoMaPSA_start"
+        << ": this button was pressed more than once already";
+
+    QMessageBox* msgBox = new QMessageBox;
+    msgBox->setInformativeText("WARNING: this button was already clicked at least once. Do you want to proceed?");
+    msgBox->setStandardButtons(QMessageBox::No | QMessageBox::Yes);
+    msgBox->setDefaultButton(QMessageBox::No);
+    int ret = msgBox->exec();
+    switch(ret)
+    {
+      case QMessageBox::No: return; //Exit
+      case QMessageBox::Yes: break; //Continue function execution
+      default: return; //Exit
+    }
+  }
+  alreadyClicked_LowerPickupToolOntoMaPSA = true; //Remember that this button already got clicked (repeating this action involuntarily can cause crash)
+
   if(use_smartMove_)
   {
     const bool valid_params = this->parameters()->update();
@@ -661,6 +682,25 @@ void AssemblyAssemblyV2::LowerPickupToolOntoPSS_start()
 
     return;
   }
+
+  if(alreadyClicked_LowerPickupToolOntoPSS)
+  {
+    NQLog("AssemblyAssemblyV2", NQLog::Warning) << "LowerPickupToolOntoPSS_start"
+        << ": this button was pressed more than once already";
+
+    QMessageBox* msgBox = new QMessageBox;
+    msgBox->setInformativeText("WARNING: this button was already clicked at least once. Do you want to proceed?");
+    msgBox->setStandardButtons(QMessageBox::No | QMessageBox::Yes);
+    msgBox->setDefaultButton(QMessageBox::No);
+    int ret = msgBox->exec();
+    switch(ret)
+    {
+      case QMessageBox::No: return; //Exit
+      case QMessageBox::Yes: break; //Continue function execution
+      default: return; //Exit
+    }
+  }
+  alreadyClicked_LowerPickupToolOntoPSS = true; //Remember that this button already got clicked (repeating this action involuntarily can cause crash)
 
   if(use_smartMove_)
   {
@@ -942,6 +982,25 @@ void AssemblyAssemblyV2::LowerMaPSAOntoBaseplate_start()
     return;
   }
 
+  if(alreadyClicked_LowerMaPSAOntoBaseplate)
+  {
+    NQLog("AssemblyAssemblyV2", NQLog::Warning) << "LowerMaPSAOntoBaseplate_start"
+        << ": this button was pressed more than once already";
+
+    QMessageBox* msgBox = new QMessageBox;
+    msgBox->setInformativeText("WARNING: this button was already clicked at least once. Do you want to proceed?");
+    msgBox->setStandardButtons(QMessageBox::No | QMessageBox::Yes);
+    msgBox->setDefaultButton(QMessageBox::No);
+    int ret = msgBox->exec();
+    switch(ret)
+    {
+      case QMessageBox::No: return; //Exit
+      case QMessageBox::Yes: break; //Continue function execution
+      default: return; //Exit
+    }
+  }
+  alreadyClicked_LowerMaPSAOntoBaseplate = true; //Remember that this button already got clicked (repeating this action involuntarily can cause crash)
+
   if(use_smartMove_)
   {
     const bool valid_params = this->parameters()->update();
@@ -1110,6 +1169,25 @@ void AssemblyAssemblyV2::LowerPSSOntoSpacers_start()
 
     return;
   }
+
+  if(alreadyClicked_LowerPSSOntoSpacers)
+  {
+    NQLog("AssemblyAssemblyV2", NQLog::Warning) << "LowerPSSOntoSpacers_start"
+        << ": this button was pressed more than once already";
+
+    QMessageBox* msgBox = new QMessageBox;
+    msgBox->setInformativeText("WARNING: this button was already clicked at least once. Do you want to proceed?");
+    msgBox->setStandardButtons(QMessageBox::No | QMessageBox::Yes);
+    msgBox->setDefaultButton(QMessageBox::No);
+    int ret = msgBox->exec();
+    switch(ret)
+    {
+      case QMessageBox::No: return; //Exit
+      case QMessageBox::Yes: break; //Continue function execution
+      default: return; //Exit
+    }
+  }
+  alreadyClicked_LowerPSSOntoSpacers = true; //Remember that this button already got clicked (repeating this action involuntarily can cause crash)
 
   if(use_smartMove_)
   {
@@ -1473,6 +1551,25 @@ void AssemblyAssemblyV2::LowerPSSPlusSpacersOntoGluingStage_start()
     return;
   }
 
+  if(alreadyClicked_LowerPSSPlusSpacersOntoGluingStage)
+  {
+    NQLog("AssemblyAssemblyV2", NQLog::Warning) << "LowerPSSPlusSpacersOntoGluingStage_start"
+        << ": this button was pressed more than once already";
+
+    QMessageBox* msgBox = new QMessageBox;
+    msgBox->setInformativeText("WARNING: this button was already clicked at least once. Do you want to proceed?");
+    msgBox->setStandardButtons(QMessageBox::No | QMessageBox::Yes);
+    msgBox->setDefaultButton(QMessageBox::No);
+    int ret = msgBox->exec();
+    switch(ret)
+    {
+      case QMessageBox::No: return; //Exit
+      case QMessageBox::Yes: break; //Continue function execution
+      default: return; //Exit
+    }
+  }
+  alreadyClicked_LowerPSSPlusSpacersOntoGluingStage = true; //Remember that this button already got clicked (repeating this action involuntarily can cause crash)
+
   if(use_smartMove_)
   {
     const bool valid_params = this->parameters()->update();
@@ -1660,6 +1757,25 @@ void AssemblyAssemblyV2::LowerPSSPlusSpacersOntoMaPSA_start()
 
     return;
   }
+
+  if(alreadyClicked_LowerPSSPlusSpacersOntoMaPSA)
+  {
+    NQLog("AssemblyAssemblyV2", NQLog::Warning) << "LowerPSSPlusSpacersOntoMaPSA_start"
+        << ": this button was pressed more than once already";
+
+    QMessageBox* msgBox = new QMessageBox;
+    msgBox->setInformativeText("WARNING: this button was already clicked at least once. Do you want to proceed?");
+    msgBox->setStandardButtons(QMessageBox::No | QMessageBox::Yes);
+    msgBox->setDefaultButton(QMessageBox::No);
+    int ret = msgBox->exec();
+    switch(ret)
+    {
+      case QMessageBox::No: return; //Exit
+      case QMessageBox::Yes: break; //Continue function execution
+      default: return; //Exit
+    }
+  }
+  alreadyClicked_LowerPSSPlusSpacersOntoMaPSA = true; //Remember that this button already got clicked (repeating this action involuntarily can cause crash)
 
   if(use_smartMove_)
   {
