@@ -70,11 +70,7 @@ class AssemblyParameters : public QObject
 
   bool isValidConfig();
 
-  void requestMoveAbsolute(double, double, double, double);
-
  signals:
-
-  void sigRequestMoveAbsolute(double, double, double, double);
 };
 
 #endif // ASSEMBLYPARAMETERS_H
