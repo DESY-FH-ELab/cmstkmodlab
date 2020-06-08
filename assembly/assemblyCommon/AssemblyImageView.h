@@ -23,6 +23,7 @@
 #include <QLineEdit>
 #include <QLabel>
 #include <QToolTip>
+#include <QEventLoop>
 
 #include <opencv2/opencv.hpp>
 
@@ -103,6 +104,8 @@ class AssemblyImageView : public QWidget
 
   void display_infoTab();
 
+  void InfoMotionFinished();
+
  signals:
 
   void image_loaded(const cv::Mat&);
@@ -119,6 +122,10 @@ class AssemblyImageView : public QWidget
   void autofocus_emergencyStop_request();
 
   void sigRequestMoveRelative(double, double, double, double);
+
+  void request_image();
+
+  void cameraMotionIsFinished();
 };
 
 #endif // ASSEMBLYIMAGEVIEW_H

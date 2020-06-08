@@ -64,7 +64,7 @@ AssemblyImageView::AssemblyImageView(QWidget* parent) :
   img_ueye_->setScaledContents(true);
   img_ueye_->setAlignment(Qt::AlignCenter);
 
-  this->setStyleSheet("QToolTip {background-color: blue; border-style: outset; border-width: 2px; border-color: beige; font: bold 15px; }"); //NT
+  this->setStyleSheet("QToolTip {background-color: blue; border-style: outset; border-width: 2px; border-color: beige; font: bold 15px; }");
   const ApplicationConfig* config = ApplicationConfig::instance();
   if(config == nullptr)
   {
@@ -515,27 +515,23 @@ void AssemblyImageView::keyReleaseEvent(QKeyEvent* event)
 //Upon holding mouse click within image area, display mouse position w.r.t. image center, preoperly converted into a physical distance expressed in um
 void AssemblyImageView::mouseMoveEvent(QMouseEvent* event)
 {
-    // if(countNonZero(image_) < 1) {return;} //No action if image not yet loaded
     if(image_.empty()) {return;} //No action if image not yet loaded
 
     //Get height and width of displayed image (QT coordinates -- based on screen pixels ?)
     int img_height_QTCoord = img_ueye_->height();
     int img_width_QTCoord = img_ueye_->width();
-    // cout<<"img_height_QTCoord "<<img_height_QTCoord<<endl;
-    // cout<<"img_width_QTCoord "<<img_width_QTCoord<<endl;
+
+    //For the record: alternative way to access QT coordinates of image
+    // QPoint globalPosTopLeftImg = img_ueye_->mapToGlobal(img_ueye_->rect().topLeft());
 
     //Get nof rows and colums of displayed image (image coordinates -- based on camera pixels ?)
     int nrows = image_raw_.rows;
     int ncols = image_raw_.cols;
-    // cout<<"rows "<<nrows<<endl;
-    // cout<<"cols "<<ncols<<endl;
 
     //Get mouse cursor QT coordinates (in image's rest frame)
     QPoint pt = img_ueye_->mapFrom(this, event->pos());
     double x = pt.x();
     double y = pt.y();
-    // cout<<"pt.x() "<<x<<endl;
-    // cout<<"pt.y() "<<y<<endl;
 
     //If detect that mouse is outside of image's boundaries -> Ignore
     if(x > img_width_QTCoord || x < 0) {event->ignore(); return;}
@@ -547,26 +543,16 @@ void AssemblyImageView::mouseMoveEvent(QMouseEvent* event)
     //NB: the y-distance in the Camera frame has to be inverted, because the cv::Mat object in OpenCV counts columns (X) and rows (Y) starting from the top-left corner (not from the bottom-left corner as for a normal XY reference frame); in order to convert this to a normal XY ref-frame, we invert the sign of the value on the Y-axis.
     const double dX_0 = +1.0 * (x * ((double) ncols / img_width_QTCoord) - (image_raw_.cols / 2.0)) * mm_per_pixel_col_;
     const double dY_0 = -1.0 * (y * ((double) nrows / img_height_QTCoord) - (image_raw_.rows / 2.0)) * mm_per_pixel_row_;
-    // cout<<"dX_0 "<<dX_0<<endl;
-    // cout<<"dY_0 "<<dY_0<<endl;
 
     //Account for angle of Camera Frame in the XY Motion Stage Ref-Frame
     double newX, newY;
     assembly::rotation2D_deg(newX, newY, angle_FromCameraXYtoRefFrameXY_deg_, dX_0, dY_0);
-    // cout<<"newX "<<newX<<endl;
-    // cout<<"newY "<<newY<<endl;
 
-    //Convert mm to um //FOR DISPLAY ONLY !
-    newX*= 1000;
-    newY*= 1000;
+    //Convert mm to um //For display only
+    newX*= 1000; newY*= 1000;
 
     //Display physical distances next to mouse cursor
     QToolTip::showText(event->globalPos(), "(x,y)[um]= " + QString::number(newX) + ", " + QString::number(newY), this, rect());
-
-    //-- Alternative way to access QT coordinates of image
-    // QPoint globalPosTopLeftImg = img_ueye_->mapToGlobal(img_ueye_->rect().topLeft());
-    // QPoint globalPosTopRightImg = img_ueye_->mapToGlobal(img_ueye_->rect().topRight());
-    // QPoint globalPosBottomLeftImg = img_ueye_->mapToGlobal(img_ueye_->rect().bottomLeft());
 
     return;
 }
@@ -620,19 +606,10 @@ void AssemblyImageView::mouseDoubleClickEvent(QMouseEvent* event)
     double distx, disty;
     assembly::rotation2D_deg(distx, disty, angle_FromCameraXYtoRefFrameXY_deg_, dX_0, dY_0);
 
-    //Convert mm to um //FIXME -- REMOVE !
-    //distx*= 1000;
-    //disty*= 1000;
-
-    //Display message box
-    // QMessageBox::question(this, tr("Information - Image Viewer"),
-    //         QString("<p>Distance x: %1."
-    //             "Distance y: %2.</p>").arg(distx).arg(disty));
-
     QMessageBox msgBox;
-    msgBox.setWindowTitle(tr("Save selected position"));
-    msgBox.setText(QString("<p>Rel. dx: %1 mm. Rel dy: %2 mm.</p>").arg(distx).arg(disty));
-    msgBox.setInformativeText("Do you want to propagate these coordinates ?");
+    msgBox.setWindowTitle(tr("Apply relative movement"));
+    msgBox.setText(QString("<p>Rel. dX=%1 mm / Rel. dY=%2 mm</p>").arg(distx).arg(disty));
+    msgBox.setInformativeText("Do you want to apply this relative movement?");
     msgBox.setStandardButtons(QMessageBox::No | QMessageBox::Yes);
     msgBox.setDefaultButton(QMessageBox::No);
     int ret = msgBox.exec();
@@ -649,7 +626,20 @@ void AssemblyImageView::mouseDoubleClickEvent(QMouseEvent* event)
     emit sigRequestMoveRelative(distx, disty, 0, 0);
 
     NQLog("AssemblyImageView", NQLog::Spam) << "mouseDoubleClickEvent"
-       << ": apply relative movement (dx="<<distx<<" / dy="<<disty<<")";
+       << ": will apply relative movement: dx="<<distx<<" / dy="<<disty;
+
+    //Wait for the movement to be finished (or for timeout), then automatically update the snapshot image displayed in GUI
+    QEventLoop loop;
+    QTimer *timeoutTimer = new QTimer(this);
+    timeoutTimer->start(5000); //5s
+    connect(this, SIGNAL(cameraMotionIsFinished()), &loop, SLOT(quit()));
+    connect(timeoutTimer, SIGNAL(timeout()), &loop, SLOT(quit()));
+    loop.exec(); //blocks thread until either the signal or timeout gets 'fired'
+
+    //Then, re-acquire new snapshot image
+    emit request_image();
+
+    delete timeoutTimer;
 
     return;
 }
@@ -661,5 +651,12 @@ void AssemblyImageView::display_infoTab()
 {
     QMessageBox::information(this, tr("Information - Image Viewer"),
             tr("<p>Some information about the content of this tab.</p>"));
+    return;
+}
+
+void AssemblyImageView::InfoMotionFinished()
+{
+    emit cameraMotionIsFinished();
+
     return;
 }
