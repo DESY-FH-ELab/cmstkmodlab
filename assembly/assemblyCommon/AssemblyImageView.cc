@@ -650,7 +650,7 @@ void AssemblyImageView::mouseDoubleClickEvent(QMouseEvent* event)
 void AssemblyImageView::display_infoTab()
 {
     QMessageBox::information(this, tr("Information - Image Viewer"),
-            tr("<p>Some information about the content of this tab.</p>"));
+            tr("<p>There is no available information about the content of this tab yet.</p>"));
     return;
 }
 

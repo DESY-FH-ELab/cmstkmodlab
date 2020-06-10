@@ -759,7 +759,7 @@ AssemblyAssemblyV2View::AssemblyAssemblyV2View(const QObject* const assembly, QW
 void AssemblyAssemblyV2View::display_infoTab()
 {
     QMessageBox::information(this, tr("Information - Assembly"),
-            tr("<p>Some information about the content of this tab.</p>"));
+            tr("<p>There is no available information about the content of this tab yet.</p>"));
 
     return;
 }

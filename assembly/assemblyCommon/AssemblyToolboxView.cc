@@ -70,7 +70,7 @@ AssemblyToolboxView::AssemblyToolboxView(const LStepExpressMotionManager* const 
 void AssemblyToolboxView::display_infoTab()
 {
     QMessageBox::information(this, tr("Information - Toolbox"),
-            tr("<p>Some information about the content of this tab.</p>"));
+            tr("<p>There is no available information about the content of this tab yet.</p>"));
 
     return;
 }

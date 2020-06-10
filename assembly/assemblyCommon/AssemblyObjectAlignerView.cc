@@ -875,7 +875,7 @@ AssemblyObjectAligner::Configuration AssemblyObjectAlignerView::get_configuratio
 void AssemblyObjectAlignerView::display_infoTab()
 {
     QMessageBox::information(this, tr("Information - Alignment"),
-            tr("<p>Some information about the content of this tab.</p>"));
+            tr("<p>There is no available information about the content of this tab yet.</p>"));
 
     return;
 }

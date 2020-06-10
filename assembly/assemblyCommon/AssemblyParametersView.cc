@@ -727,7 +727,7 @@ void AssemblyParametersView::askConfirmMoveByRelRefDist(int refPoint)
 void AssemblyParametersView::display_infoTab()
 {
     QMessageBox::information(this, tr("Information - Parameters"),
-            tr("<p>Some information about the content of this tab.</p>"));
+            tr("<p>There is no available information about the content of this tab yet.</p>"));
 
     return;
 }

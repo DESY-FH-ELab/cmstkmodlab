@@ -156,7 +156,7 @@ void AssemblyHardwareControlView::disableMotionTools(const bool disable)
 void AssemblyHardwareControlView::display_infoTab()
 {
     QMessageBox::information(this, tr("Information - HW Controllers"),
-            tr("<p>Some information about the content of this tab.</p>"));
+            tr("<p>There is no available information about the content of this tab yet.</p>"));
 
     return;
 }

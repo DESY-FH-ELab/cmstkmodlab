@@ -612,7 +612,7 @@ AssemblyAssemblyView::AssemblyAssemblyView(const QObject* const assembly, QWidge
 void AssemblyAssemblyView::display_infoTab()
 {
     QMessageBox::information(this, tr("Information - Assembly"),
-            tr("<p>Some information about the content of this tab.</p>"));
+            tr("<p>There is no available information about the content of this tab yet.</p>"));
 
     return;
 }

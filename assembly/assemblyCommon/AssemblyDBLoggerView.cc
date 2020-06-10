@@ -192,7 +192,7 @@ void AssemblyDBLoggerView::clear_content()
 void AssemblyDBLoggerView::display_infoTab()
 {
     QMessageBox::information(this, tr("Information - Database Log"),
-            tr("<p>Some information about the content of this tab.</p>"));
+            tr("<p>There is no available information about the content of this tab yet.</p>"));
 
     return;
 }

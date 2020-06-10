@@ -383,7 +383,7 @@ void AssemblyThresholderView::keyReleaseEvent(QKeyEvent* event)
 void AssemblyThresholderView::display_infoTab()
 {
     QMessageBox::information(this, tr("Information - Convert Image to B/W"),
-            tr("<p>Some information about the content of this tab.</p>"));
+            tr("<p>There is no available information about the content of this tab yet.</p>"));
 
     return;
 }

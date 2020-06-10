@@ -1107,7 +1107,7 @@ void LStepExpressSettingsWidget::writeToFileClicked()
 void LStepExpressSettingsWidget::display_infoTab()
 {
     QMessageBox::information(this, tr("Information - Motion Settings"),
-            tr("<p>Some information about the content of this tab.</p>"));
+            tr("<p>There is no available information about the content of this tab yet.</p>"));
 
     return;
 }

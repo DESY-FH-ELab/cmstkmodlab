@@ -64,7 +64,7 @@ void AssemblyLogFileView::append_text(const QStringList& qstr_list)
 void AssemblyLogFileView::display_infoTab()
 {
     QMessageBox::information(this, tr("Information - Terminal View"),
-            tr("<p>Some information about the content of this tab.</p>"));
+            tr("<p>There is no available information about the content of this tab yet.</p>"));
 
     return;
 }
