@@ -184,7 +184,7 @@ AssemblyAssemblyV2View::AssemblyAssemblyV2View(const QObject* const assembly, QW
 
     AssemblyAssemblyTextWidget* tmp_wid = new AssemblyAssemblyTextWidget;
     tmp_wid->label()->setText(QString::number(assembly_step_N));
-    tmp_wid->text()->setText("Dispense Glue on Baseplate and Place it on Assembly Platform");
+    tmp_wid->text()->setText("Dispense (Slow+Fast) Glue on Baseplate and Place it on Assembly Platform");
     PSPToBasep_lay->addWidget(tmp_wid);
   }
   // ----------

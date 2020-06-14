@@ -372,7 +372,7 @@ AssemblyParametersView::AssemblyParametersView(QWidget* parent)
   ++row_index;
 
   tmp_tag = "FromPSSPlusSpacersToMaPSAPositionToGluingStage";
-  tmp_des = "From PSS-To-PSP Position to PSS-To-GluingStage Position :";
+  tmp_des = "From PSs-To-PSp Position to PSs-To-GluingStage Position :";
 
   map_lineEdit_[tmp_tag+"_dX"] = new QLineEdit(tr(""));
   map_lineEdit_[tmp_tag+"_dY"] = new QLineEdit(tr(""));

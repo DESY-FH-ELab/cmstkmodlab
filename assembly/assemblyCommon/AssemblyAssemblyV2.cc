@@ -619,7 +619,7 @@ void AssemblyAssemblyV2::LowerPickupToolOntoMaPSA_start()
     const double dy0 = 0.0;
     const double dz0 =
         this->parameters()->get("FromCameraBestFocusToPickupHeight_dZ")
-      + this->parameters()->get("Thickness_MPA")
+      + this->parameters()->get("Thickness_MPA") //NB: focused on PS-p marker --> to get correct distance to MaPSA, only need to account for additional width due to MPAs (not that of PS-p itself)
     ;
     const double da0 = 0.0;
 
@@ -1306,7 +1306,9 @@ void AssemblyAssemblyV2::GoToPSPMarkerIdealPosition_start()
    + this->parameters()->get("FromPSPEdgeToPSPRefPoint_dY");
 
   const double z0 =
-     this->parameters()->get("RefPointSensor_Z")
+     // this->parameters()->get("RefPointSensor_Z") //Changed -- can remove ?
+     this->parameters()->get("CameraFocusOnAssemblyStage_Z")
+   + this->parameters()->get("Thickness_MPA") //FIXME -- check in DAF
    + this->parameters()->get("Thickness_PSP")
    + this->parameters()->get("Thickness_GlueLayer")
    + this->parameters()->get("Thickness_Baseplate");
@@ -1803,7 +1805,7 @@ void AssemblyAssemblyV2::LowerPSSPlusSpacersOntoMaPSA_start()
       + this->parameters()->get("Thickness_GlueLayer")
       + this->parameters()->get("Thickness_Spacer")
       + this->parameters()->get("Thickness_GlueLayer")
-      + this->parameters()->get("Thickness_MPA");
+      + this->parameters()->get("Thickness_MPA"); //NB: focused on PS-p marker --> to get correct distance to MaPSA, only need to account for additional width due to MPAs (not that of PS-p itself)
 
     const double da0 = 0.0;
 
