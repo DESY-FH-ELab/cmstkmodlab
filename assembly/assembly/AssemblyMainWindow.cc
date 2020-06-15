@@ -25,7 +25,7 @@
 
 #include <opencv2/opencv.hpp>
 
-AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QString& logfile_path, const unsigned int camera_ID, QWidget* parent) :
+AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QString& logfile_path, const QString& DBlogfile_path, const unsigned int camera_ID, QWidget* parent) :
   QMainWindow(parent),
 
   // Low-Level Controllers (Motion, Camera, Vacuum)
@@ -51,6 +51,7 @@ AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QStr
   thresholder_(nullptr),
   aligner_(nullptr),
   assembly_(nullptr),
+  assemblyV2_(nullptr),
   multipickup_tester_(nullptr),
 
   finder_(nullptr),
@@ -62,6 +63,7 @@ AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QStr
 
   // Views
   toolBar_(nullptr),
+  main_tab(nullptr),
 
 //  finderView_(nullptr),
 //  edgeView_(nullptr),
@@ -71,10 +73,17 @@ AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QStr
   finder_view_(nullptr),
   aligner_view_(nullptr),
   assembly_view_(nullptr),
+  assemblyV2_view_(nullptr),
   toolbox_view_(nullptr),
   params_view_(nullptr),
   hwctr_view_(nullptr),
 
+  DBLog_model_(nullptr),
+  DBLog_ctrl_(nullptr),
+  DBLog_view_(nullptr),
+
+  button_mainEmergencyStop_(nullptr),
+  button_info_(nullptr),
   autofocus_checkbox_(nullptr),
 
   // flags
@@ -88,9 +97,9 @@ AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QStr
     ApplicationConfig* config = ApplicationConfig::instance();
     if(config == nullptr)
     {
-      NQLog("AssemblyMainWindow", NQLog::Fatal) << "-------------------------------------------------------------------------------------------------------";
-      NQLog("AssemblyMainWindow", NQLog::Fatal) << "initialization error: ApplicationConfig::instance() not initialized (null pointer), exiting constructor";
-      NQLog("AssemblyMainWindow", NQLog::Fatal) << "-------------------------------------------------------------------------------------------------------";
+      NQLog("AssemblyMainWindow", NQLog::Fatal) << "\e[1;31m-------------------------------------------------------------------------------------------------------\e[0m";
+      NQLog("AssemblyMainWindow", NQLog::Fatal) << "\e[1;31mInitialization error: ApplicationConfig::instance() not initialized (null pointer), exiting constructor\e[0m";
+      NQLog("AssemblyMainWindow", NQLog::Fatal) << "\e[1;31m-------------------------------------------------------------------------------------------------------\e[0m";
 
       return;
     }
@@ -98,6 +107,14 @@ AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QStr
     /// Parameters
     ///   * instance created up here, so controllers can access it
     params_ = AssemblyParameters::instance(config->getValue<std::string>("AssemblyParameters_file_path"));
+    if(params_->isValidConfig() == false)
+    {
+      NQLog("AssemblyMainWindow", NQLog::Fatal) << "\e[1;31m-------------------------------------------------------------------------------------------------------\e[0m";
+      NQLog("AssemblyMainWindow", NQLog::Fatal) << "\e[1;31mInitialization error: AssemblyParameters::instance() is invalid ! Abort !\e[0m";
+      NQLog("AssemblyMainWindow", NQLog::Fatal) << "\e[1;31m-------------------------------------------------------------------------------------------------------\e[0m";
+
+      return;
+    }
     /// -------------------
 
     /// Motion
@@ -110,6 +127,7 @@ AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QStr
     );
 
     motion_manager_ = new LStepExpressMotionManager(motion_model_);
+    connect(motion_manager_->model(), SIGNAL(emergencyStop_request()), motion_manager_, SLOT(clear_motion_queue()));
 
     motion_thread_  = new LStepExpressMotionThread(motion_manager_, this);
     motion_thread_->start();
@@ -213,11 +231,9 @@ AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QStr
     aligner_view_->PatRecOne_Image()->connectImageProducer(aligner_, SIGNAL(image_PatRecOne(cv::Mat)));
     aligner_view_->PatRecTwo_Image()->connectImageProducer(aligner_, SIGNAL(image_PatRecTwo(cv::Mat)));
 
-    connect(aligner_view_->button_emergencyStop(), SIGNAL(clicked()), this, SLOT(disconnect_objectAligner()));
-    connect(aligner_view_->button_emergencyStop(), SIGNAL(clicked()), motion_manager_, SLOT(emergency_stop()));
-    connect(aligner_view_->button_emergencyStop(), SIGNAL(clicked()), zfocus_finder_ , SLOT(emergencyStop()));
-
-    connect(motion_manager_->model(), SIGNAL(emergencyStop_request()), motion_manager_, SLOT(clear_motion_queue()));
+    connect(aligner_view_->button_alignerEmergencyStop(), SIGNAL(clicked()), this, SLOT(disconnect_objectAligner()));
+    connect(aligner_view_->button_alignerEmergencyStop(), SIGNAL(clicked()), motion_manager_, SLOT(emergency_stop()));
+    connect(aligner_view_->button_alignerEmergencyStop(), SIGNAL(clicked()), zfocus_finder_ , SLOT(emergencyStop()));
 
     NQLog("AssemblyMainWindow", NQLog::Message) << "added view " << tabname_Alignm;
     // ---------------------------------------------------------
@@ -227,12 +243,40 @@ AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QStr
 
     smart_motion_ = new AssemblySmartMotionManager(motion_manager_);
 
-    assembly_ = new AssemblyAssembly(motion_manager_, conradManager_, smart_motion_);
+    const int assembly_sequence(config->getValue<int>("assembly_sequence", 1));
 
-    assembly_view_ = new AssemblyAssemblyView(assembly_, assembly_tab);
-    assembly_tab->addTab(assembly_view_, tabname_Assembly);
+    if(assembly_sequence == 1)
+    {
+      assembly_ = new AssemblyAssembly(motion_manager_, conradManager_, smart_motion_);
 
-    NQLog("AssemblyMainWindow", NQLog::Message) << "added view " << tabname_Assembly;
+      assembly_view_ = new AssemblyAssemblyView(assembly_, assembly_tab);
+      assembly_tab->addTab(assembly_view_, tabname_Assembly);
+
+      NQLog("AssemblyMainWindow", NQLog::Message) << "added view " << tabname_Assembly
+         << " (assembly_sequence = " << assembly_sequence << ")";
+
+      emit DBLogMessage("== Using default assembly sequence == (MaPSA glued to baseplate last)");
+    }
+    else if(assembly_sequence == 2)
+    {
+      assemblyV2_ = new AssemblyAssemblyV2(motion_manager_, conradManager_, smart_motion_);
+
+      assemblyV2_view_ = new AssemblyAssemblyV2View(assemblyV2_, assembly_tab);
+      assembly_tab->addTab(assemblyV2_view_, tabname_Assembly);
+
+      NQLog("AssemblyMainWindow", NQLog::Message) << "added view " << tabname_Assembly
+         << " (assembly_sequence = " << assembly_sequence << ")";
+
+      emit DBLogMessage("== Using modified assembly sequence == (MaPSA glued to baseplate first)");
+    }
+    else
+    {
+      NQLog("AssemblyMainWindow", NQLog::Fatal) << "invalid value for configuration parameter \"assembly_sequence\" ("
+         << assembly_sequence << ") -> GUI Tab " << tabname_Assembly << " will not be created";
+    }
+
+    connect(image_view_, SIGNAL(sigRequestMoveRelative(double,double,double,double)), motion_model_, SLOT(moveRelative(double,double,double,double)));
+    connect(motion_manager_, SIGNAL(motion_finished()), image_view_, SLOT(InfoMotionFinished()));
     // ---------------------------------------------------------
 
     /// TAB: MANUAL CONTROLLERS AND PARAMETERS -----------------
@@ -240,6 +284,7 @@ AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QStr
 
     controls_tab->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);
     controls_tab->setTabPosition(QTabWidget::North);
+    // controls_tab->setUsesScrollButtons(false); //Make all the widgets fit in the tab's width (else : scroll to invisible widgets)
 
 //    finderView_ = new AssemblyUEyeSnapShooter(assembly_tab);
 //    assembly_tab->addTab(finderView_, "finder");
@@ -301,6 +346,9 @@ AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QStr
     params_view_->copy_values(params_->map_double());
 
     NQLog("AssemblyMainWindow", NQLog::Message) << "added view " << tabname_Parameters;
+
+    connect(params_view_, SIGNAL(request_moveToAbsRefPosition(double,double,double,double)), motion_model_, SLOT(moveAbsolute(double,double,double,double)));
+    connect(params_view_, SIGNAL(request_moveByRelRefDistance(double,double,double,double)), motion_model_, SLOT(moveRelative(double,double,double,double)));
     // ---------------------------------------------------------
 
     // MOTION-SETTINGS VIEW ------------------------------------
@@ -350,6 +398,25 @@ AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QStr
     NQLog("AssemblyMainWindow", NQLog::Message) << "added view " << tabname_Terminal;
     // ---------------------------------------------------------
 
+    // DATABASE LOG VIEW ---------------------------------------
+    //Logfile stored in TkUpgrade database, containing relevant info related to each assembly
+
+    const QString tabname_DBLog("Database Log");
+    DBLog_view_ = new AssemblyDBLoggerView(outputdir_path); //View
+
+    DBLog_model_ = new AssemblyDBLoggerModel(DBlogfile_path); //Model
+
+    DBLog_ctrl_ = new AssemblyDBLoggerController(DBLog_model_, DBLog_view_); //Controller
+
+    connect_DBLogger();
+
+    if(assembly_sequence == 1) {emit DBLogMessage("== Using default assembly sequence == (MaPSA glued to baseplate last)");}
+    else if(assembly_sequence == 2) {emit DBLogMessage("== Using modified assembly sequence == (MaPSA glued to baseplate first)");}
+
+    controls_tab->addTab(DBLog_view_, tabname_DBLog);
+    NQLog("AssemblyMainWindow", NQLog::Message) << "added view " << tabname_DBLog;
+    // ---------------------------------------------------------
+
     /// --------------------------------------------------------
 
     /// Upper Toolbar ------------------------------------------
@@ -358,17 +425,31 @@ AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QStr
     toolBar_ ->addAction("Camera OFF"    , this, SLOT(disable_images()));
     toolBar_ ->addAction("Snapshot"      , this, SLOT(    get_image ()));
 
-    toolBar_ ->addAction("Emergency Stop", motion_manager_->model(), SLOT(emergencyStop()));
-
     autofocus_checkbox_ = new QCheckBox("Auto-Focusing", this);
     toolBar_->addWidget(autofocus_checkbox_);
-
     connect(autofocus_checkbox_, SIGNAL(stateChanged(int)), this, SLOT(changeState_autofocus(int)));
     connect(autofocus_checkbox_, SIGNAL(stateChanged(int)), aligner_view_, SLOT(update_autofocusing_checkbox(int)));
+
+    // toolBar_ ->addAction("Emergency Stop", motion_manager_->model(), SLOT(emergencyStop()));
+    button_mainEmergencyStop_ = new QPushButton(tr("Emergency STOP"));
+    button_mainEmergencyStop_->setStyleSheet("QPushButton { background-color: rgb(255, 129, 123); font: 18px; border-radius: 8px; padding: 7px; } QPushButton:hover { background-color: red; font: bold 18px; border-radius: 8px; padding: 2px; }");
+    toolBar_->addWidget(button_mainEmergencyStop_);
+
+    connect(button_mainEmergencyStop_, SIGNAL(clicked()), motion_manager_, SLOT(emergency_stop()));
+    connect(button_mainEmergencyStop_, SIGNAL(clicked()), this, SLOT(disconnect_objectAligner()));
+    connect(button_mainEmergencyStop_, SIGNAL(clicked()), zfocus_finder_ , SLOT(emergencyStop()));
+    connect(button_mainEmergencyStop_, SIGNAL(clicked()), this , SLOT(writeDBLog_emergencyStop()));
+
+    QWidget *spacer = new QWidget();
+    spacer->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+    toolBar_->addWidget(spacer);
+    button_info_ = new QPushButton(tr("Information"));
+    button_info_->setStyleSheet("QPushButton { background-color: rgb(215, 214, 213); font: 16px;} QPushButton:hover { background-color: rgb(174, 173, 172); font: 16px;}");
+    toolBar_->addWidget(button_info_);
     /// --------------------------------------------------------
 
     /// Main Tab -----------------------------------------------
-    QTabWidget* main_tab = new QTabWidget;
+    main_tab = new QTabWidget;
 
     main_tab->setTabPosition(QTabWidget::North);
 
@@ -382,6 +463,8 @@ AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QStr
     this->setCentralWidget(main_tab);
 
     this->updateGeometry();
+
+    connect(button_info_, SIGNAL(clicked()), this, SLOT(displayInfo_activeTab()));
     /// --------------------------------------------------------
 
     liveTimer_ = new QTimer(this);
@@ -441,6 +524,7 @@ void AssemblyMainWindow::enable_images()
   connect(this      , SIGNAL(image_request())  , image_ctr_, SLOT(acquire_image()));
   connect(this      , SIGNAL(autofocus_ON ())  , image_ctr_, SLOT( enable_autofocus()));
   connect(this      , SIGNAL(autofocus_OFF())  , image_ctr_, SLOT(disable_autofocus()));
+  connect(image_view_, SIGNAL(request_image()), image_ctr_, SLOT(acquire_image()));
 
   NQLog("AssemblyMainWindow", NQLog::Message) << "enable_images"
      << ": connecting AssemblyImageController";
@@ -480,6 +564,7 @@ void AssemblyMainWindow::disable_images()
   disconnect(this      , SIGNAL(image_request())  , image_ctr_, SLOT(acquire_image()));
   disconnect(this      , SIGNAL(autofocus_ON())   , image_ctr_, SLOT( enable_autofocus()));
   disconnect(this      , SIGNAL(autofocus_OFF())  , image_ctr_, SLOT(disable_autofocus()));
+  disconnect(image_view_, SIGNAL(request_image()), image_ctr_, SLOT(acquire_image()));
 
   NQLog("AssemblyMainWindow", NQLog::Message) << "disable_images"
      << ": disabling AssemblyImageController";
@@ -785,12 +870,60 @@ void AssemblyMainWindow::disconnect_multiPickupTest()
      << ": multi-pickup test completed";
 }
 
+//Disconnect remaining signal/slots, which did not get disconnected via specific functions
+void AssemblyMainWindow::disconnect_otherSlots()
+{
+    disconnect(params_view_, SIGNAL(request_moveToAbsRefPosition(double,double,double,double)), motion_model_, SLOT(moveAbsolute(double,double,double,double)));
+    disconnect(params_view_, SIGNAL(request_moveByRelRefDistance(double,double,double,double)), motion_model_, SLOT(moveRelative(double,double,double,double)));
+    disconnect(image_view_, SIGNAL(sigRequestMoveRelative(double,double,double,double)), motion_model_, SLOT(moveRelative(double,double,double,double)));
+
+    return;
+}
+
 void AssemblyMainWindow::testTimer()
 {
     NQLog("AssemblyMainWindow", NQLog::Spam) << "testTimer"
        << ": timeOut=" << testTimerCount_;
 
     testTimerCount_ += 0.1;
+
+    return;
+}
+
+void AssemblyMainWindow::connect_DBLogger()
+{
+    connect(this, SIGNAL(DBLogMessage(const QString)), this->DBLog_ctrl_, SLOT(writeMessageToLog(const QString)));
+    connect(aligner_, SIGNAL(DBLogMessage(const QString)), this->DBLog_ctrl_, SLOT(writeMessageToLog(const QString)));
+    connect(finder_, SIGNAL(DBLogMessage(const QString)), this->DBLog_ctrl_, SLOT(writeMessageToLog(const QString)));
+    connect(conradManager_, SIGNAL(DBLogMessage(const QString)), this->DBLog_ctrl_, SLOT(writeMessageToLog(const QString)));
+    if(assembly_ != nullptr) {connect(assembly_, SIGNAL(DBLogMessage(const QString)), this->DBLog_ctrl_, SLOT(writeMessageToLog(const QString)));}
+    else if(assemblyV2_ != nullptr) {connect(assemblyV2_, SIGNAL(DBLogMessage(const QString)), this->DBLog_ctrl_, SLOT(writeMessageToLog(const QString)));}
+
+    return;
+}
+
+void AssemblyMainWindow::writeDBLog_emergencyStop()
+{
+    emit DBLogMessage("!! MAIN EMERGENCY BUTTON CLICKED !!");
+    return;
+}
+
+//When the "Information" button is clicked: get the active widget (currently displayed in the GUI), and call its specific message function //NB: consider only 'sub-tabs', not main tabs
+void AssemblyMainWindow::displayInfo_activeTab()
+{
+    //Get the active widget by index //NB: the 2 children of the QTabWidget 'main_tab' are also QTabWidget
+    QWidget* widget_tmp = main_tab->widget(main_tab->currentIndex());
+
+    //Cast into a QTabWidget
+    QTabWidget* qtabwidget_active = dynamic_cast<QTabWidget*>(widget_tmp);
+
+    //Get the actual active sub-widget
+    QWidget* widget_active = qtabwidget_active->currentWidget();
+
+    //Connect signal to info slot of this widget, emit signal, then disconnect
+    connect(this, SIGNAL(display_info()), widget_active, SLOT(display_infoTab()));
+    emit display_info();
+    disconnect(this, SIGNAL(display_info()), widget_active, SLOT(display_infoTab()));
 
     return;
 }

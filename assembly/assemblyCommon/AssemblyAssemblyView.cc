@@ -10,23 +10,21 @@
 //                                                                             //
 /////////////////////////////////////////////////////////////////////////////////
 
-#include <nqlogger.h>
-#include <ApplicationConfig.h>
-
-#include <AssemblyAssemblyView.h>
-#include <AssemblyUtilities.h>
-
 #include <QVBoxLayout>
 #include <QHBoxLayout>
 #include <QToolBox>
 #include <QLabel>
 
-AssemblyAssemblyView::AssemblyAssemblyView(const AssemblyAssembly* const assembly, QWidget* parent)
+#include <nqlogger.h>
+#include <ApplicationConfig.h>
+
+#include <AssemblyAssemblyView.h>
+#include <AssemblyAssemblyActionWidget.h>
+#include <AssemblyAssemblyTextWidget.h>
+
+AssemblyAssemblyView::AssemblyAssemblyView(const QObject* const assembly, QWidget* parent)
  : QWidget(parent)
-
  , smartMove_checkbox_(nullptr)
-
- , wid_CalibRotStage_(nullptr)
  , wid_PSSAlignm_(nullptr)
  , wid_PSSToSpacers_(nullptr)
  , wid_PSSToMaPSA_(nullptr)
@@ -34,8 +32,8 @@ AssemblyAssemblyView::AssemblyAssemblyView(const AssemblyAssembly* const assembl
 {
   if(assembly == nullptr)
   {
-    NQLog("AssemblyAssemblyView", NQLog::Fatal) << "initialization error"
-       << ": null pointer to AssemblyAssembly object, exiting constructor";
+    NQLog("AssemblyAssemblyView", NQLog::Fatal) << "AssemblyAssemblyView(" << assembly << ", " << parent << ")"
+       << ": null pointer to QObject --> GUI layout will not be created";
 
     return;
   }
@@ -59,23 +57,7 @@ AssemblyAssemblyView::AssemblyAssemblyView(const AssemblyAssembly* const assembl
   QToolBox* toolbox = new QToolBox;
   layout->addWidget(toolbox);
 
-  assembly_step_N_ = 0;
-
-//  //// Calibration of Rotation Stage -----------------
-//  wid_CalibRotStage_ = new QWidget;
-//
-//  toolbox->addItem(wid_CalibRotStage_, tr("[0] Calibration of Rotation Stage"));
-//
-//  QVBoxLayout* CalibRotStage_lay = new QVBoxLayout;
-//  wid_CalibRotStage_->setLayout(CalibRotStage_lay);
-//
-//  CalibRotStage_lay->addWidget(new QLabel);
-//
-//  // 1 go to   ref-point on rotation stage
-//  // 2 measure ref-point on rotation stage
-//
-//  CalibRotStage_lay->addStretch(1);
-//  //// -----------------------------------------------
+  uint assembly_step_N(0);
 
   //// PS-s Alignment and Pick-up --------------------
   wid_PSSAlignm_ = new QWidget;
@@ -87,10 +69,10 @@ AssemblyAssemblyView::AssemblyAssemblyView(const AssemblyAssembly* const assembl
 
   // step: Place PS-s on Assembly Platform
   {
-    ++assembly_step_N_;
+    ++assembly_step_N;
 
     AssemblyAssemblyTextWidget* tmp_wid = new AssemblyAssemblyTextWidget;
-    tmp_wid->label()->setText(QString::number(assembly_step_N_));
+    tmp_wid->label()->setText(QString::number(assembly_step_N));
     tmp_wid->text()->setText("Place PS-s on Assembly Platform");
     PSSAlignm_lay->addWidget(tmp_wid);
   }
@@ -98,10 +80,10 @@ AssemblyAssemblyView::AssemblyAssemblyView(const AssemblyAssembly* const assembl
 
   // step: Enable Vacuum on PS-s
   {
-    ++assembly_step_N_;
+    ++assembly_step_N;
 
     AssemblyAssemblyActionWidget* tmp_wid = new AssemblyAssemblyActionWidget;
-    tmp_wid->label()->setText(QString::number(assembly_step_N_));
+    tmp_wid->label()->setText(QString::number(assembly_step_N));
     tmp_wid->button()->setText("Enable Vacuum on PS-s");
     PSSAlignm_lay->addWidget(tmp_wid);
 
@@ -111,10 +93,10 @@ AssemblyAssemblyView::AssemblyAssemblyView(const AssemblyAssembly* const assembl
 
   // step: Go To Measurement Position on PS-s
   {
-    ++assembly_step_N_;
+    ++assembly_step_N;
 
     AssemblyAssemblyActionWidget* tmp_wid = new AssemblyAssemblyActionWidget;
-    tmp_wid->label()->setText(QString::number(assembly_step_N_));
+    tmp_wid->label()->setText(QString::number(assembly_step_N));
     tmp_wid->button()->setText("Go To Measurement Position on PS-s");
     PSSAlignm_lay->addWidget(tmp_wid);
 
@@ -124,21 +106,21 @@ AssemblyAssemblyView::AssemblyAssemblyView(const AssemblyAssembly* const assembl
 
   // step: Align PS-s to Motion Stage
   {
-    ++assembly_step_N_;
+    ++assembly_step_N;
 
     AssemblyAssemblyTextWidget* tmp_wid = new AssemblyAssemblyTextWidget;
-    tmp_wid->label()->setText(QString::number(assembly_step_N_));
-    tmp_wid->text()->setText("Align PS-s to Motion Stage (Go to \"Alignment\" Tab)");
+    tmp_wid->label()->setText(QString::number(assembly_step_N));
+    tmp_wid->text()->setText("Align PS-s to Motion Stage (Go to \"Alignment\" Tab and select \"PS-s Sensor\")");
     PSSAlignm_lay->addWidget(tmp_wid);
   }
   // ----------
 
   // step: Go From Sensor Marker Ref-Point to Pickup XY
   {
-    ++assembly_step_N_;
+    ++assembly_step_N;
 
     AssemblyAssemblyActionWidget* tmp_wid = new AssemblyAssemblyActionWidget;
-    tmp_wid->label()->setText(QString::number(assembly_step_N_));
+    tmp_wid->label()->setText(QString::number(assembly_step_N));
     tmp_wid->button()->setText("Go From Sensor Marker Ref-Point to Pickup XY");
     PSSAlignm_lay->addWidget(tmp_wid);
 
@@ -148,10 +130,10 @@ AssemblyAssemblyView::AssemblyAssemblyView(const AssemblyAssembly* const assembl
 
   // step: Lower Pickup-Tool onto PS-s
   {
-    ++assembly_step_N_;
+    ++assembly_step_N;
 
     AssemblyAssemblyActionWidget* tmp_wid = new AssemblyAssemblyActionWidget;
-    tmp_wid->label()->setText(QString::number(assembly_step_N_));
+    tmp_wid->label()->setText(QString::number(assembly_step_N));
     tmp_wid->button()->setText("Lower Pickup-Tool onto PS-s");
     PSSAlignm_lay->addWidget(tmp_wid);
 
@@ -161,10 +143,10 @@ AssemblyAssemblyView::AssemblyAssemblyView(const AssemblyAssembly* const assembl
 
   // step: Enable Vacuum on Pickup-Tool
   {
-    ++assembly_step_N_;
+    ++assembly_step_N;
 
     AssemblyAssemblyActionWidget* tmp_wid = new AssemblyAssemblyActionWidget;
-    tmp_wid->label()->setText(QString::number(assembly_step_N_));
+    tmp_wid->label()->setText(QString::number(assembly_step_N));
     tmp_wid->button()->setText("Enable Vacuum on Pickup-Tool");
     PSSAlignm_lay->addWidget(tmp_wid);
 
@@ -174,10 +156,10 @@ AssemblyAssemblyView::AssemblyAssemblyView(const AssemblyAssembly* const assembl
 
   // step: Disable Vacuum on PS-s
   {
-    ++assembly_step_N_;
+    ++assembly_step_N;
 
     AssemblyAssemblyActionWidget* tmp_wid = new AssemblyAssemblyActionWidget;
-    tmp_wid->label()->setText(QString::number(assembly_step_N_));
+    tmp_wid->label()->setText(QString::number(assembly_step_N));
     tmp_wid->button()->setText("Disable Vacuum on PS-s");
     PSSAlignm_lay->addWidget(tmp_wid);
 
@@ -187,10 +169,10 @@ AssemblyAssemblyView::AssemblyAssemblyView(const AssemblyAssembly* const assembl
 
   // step: Pick Up PS-s
   {
-    ++assembly_step_N_;
+    ++assembly_step_N;
 
     AssemblyAssemblyActionWidget* tmp_wid = new AssemblyAssemblyActionWidget;
-    tmp_wid->label()->setText(QString::number(assembly_step_N_));
+    tmp_wid->label()->setText(QString::number(assembly_step_N));
     tmp_wid->button()->setText("Pick Up PS-s");
     PSSAlignm_lay->addWidget(tmp_wid);
 
@@ -209,12 +191,23 @@ AssemblyAssemblyView::AssemblyAssemblyView(const AssemblyAssembly* const assembl
   QVBoxLayout* PSSToSpacers_lay = new QVBoxLayout;
   wid_PSSToSpacers_->setLayout(PSSToSpacers_lay);
 
+  // step: Dispense Glue on Spacers and Place them on Assembly Platform
+  {
+    ++assembly_step_N;
+
+    AssemblyAssemblyTextWidget* tmp_wid = new AssemblyAssemblyTextWidget;
+    tmp_wid->label()->setText(QString::number(assembly_step_N));
+    tmp_wid->text()->setText("Dispense Glue on Spacers and Place them on Assembly Platform");
+    PSSToSpacers_lay->addWidget(tmp_wid);
+  }
+  // ----------
+
   // step: Go To XYA Position To Glue PS-s to Spacers
   {
-    ++assembly_step_N_;
+    ++assembly_step_N;
 
     AssemblyAssemblyActionWidget* tmp_wid = new AssemblyAssemblyActionWidget;
-    tmp_wid->label()->setText(QString::number(assembly_step_N_));
+    tmp_wid->label()->setText(QString::number(assembly_step_N));
     tmp_wid->button()->setText("Go To XYA Position To Glue PS-s to Spacers");
     PSSToSpacers_lay->addWidget(tmp_wid);
 
@@ -222,23 +215,12 @@ AssemblyAssemblyView::AssemblyAssemblyView(const AssemblyAssembly* const assembl
   }
   // ----------
 
-  // step: Dispense Glue on Spacers and Place them on Assembly Platform
-  {
-    ++assembly_step_N_;
-
-    AssemblyAssemblyTextWidget* tmp_wid = new AssemblyAssemblyTextWidget;
-    tmp_wid->label()->setText(QString::number(assembly_step_N_));
-    tmp_wid->text()->setText("Dispense Glue on Spacers and Place them on Assembly Platform");
-    PSSToSpacers_lay->addWidget(tmp_wid);
-  }
-  // ----------
-
   // step: Enable Vacuum on Spacers
   {
-    ++assembly_step_N_;
+    ++assembly_step_N;
 
     AssemblyAssemblyActionWidget* tmp_wid = new AssemblyAssemblyActionWidget;
-    tmp_wid->label()->setText(QString::number(assembly_step_N_));
+    tmp_wid->label()->setText(QString::number(assembly_step_N));
     tmp_wid->button()->setText("Enable Vacuum on Spacers");
     PSSToSpacers_lay->addWidget(tmp_wid);
 
@@ -248,10 +230,10 @@ AssemblyAssemblyView::AssemblyAssemblyView(const AssemblyAssembly* const assembl
 
   // step: Lower PS-s onto Spacers
   {
-    ++assembly_step_N_;
+    ++assembly_step_N;
 
     AssemblyAssemblyActionWidget* tmp_wid = new AssemblyAssemblyActionWidget;
-    tmp_wid->label()->setText(QString::number(assembly_step_N_));
+    tmp_wid->label()->setText(QString::number(assembly_step_N));
     tmp_wid->button()->setText("Lower PS-s onto Spacers");
     PSSToSpacers_lay->addWidget(tmp_wid);
 
@@ -261,10 +243,10 @@ AssemblyAssemblyView::AssemblyAssemblyView(const AssemblyAssembly* const assembl
 
   // step: Wait For Glue To Cure
   {
-    ++assembly_step_N_;
+    ++assembly_step_N;
 
     AssemblyAssemblyTextWidget* tmp_wid = new AssemblyAssemblyTextWidget;
-    tmp_wid->label()->setText(QString::number(assembly_step_N_));
+    tmp_wid->label()->setText(QString::number(assembly_step_N));
     tmp_wid->text()->setText("Wait for Glue To Cure (approx. 20 min)");
     PSSToSpacers_lay->addWidget(tmp_wid);
   }
@@ -272,10 +254,10 @@ AssemblyAssemblyView::AssemblyAssemblyView(const AssemblyAssembly* const assembl
 
   // step: Disable Spacers Vacuum
   {
-    ++assembly_step_N_;
+    ++assembly_step_N;
 
     AssemblyAssemblyActionWidget* tmp_wid = new AssemblyAssemblyActionWidget;
-    tmp_wid->label()->setText(QString::number(assembly_step_N_));
+    tmp_wid->label()->setText(QString::number(assembly_step_N));
     tmp_wid->button()->setText("Disable Vacuum on Spacers");
     PSSToSpacers_lay->addWidget(tmp_wid);
 
@@ -285,10 +267,10 @@ AssemblyAssemblyView::AssemblyAssemblyView(const AssemblyAssembly* const assembl
 
   // step: Pick Up Spacers+PS-s
   {
-    ++assembly_step_N_;
+    ++assembly_step_N;
 
     AssemblyAssemblyActionWidget* tmp_wid = new AssemblyAssemblyActionWidget;
-    tmp_wid->label()->setText(QString::number(assembly_step_N_));
+    tmp_wid->label()->setText(QString::number(assembly_step_N));
     tmp_wid->button()->setText("Pick Up \"PS-s + Spacers\"");
     PSSToSpacers_lay->addWidget(tmp_wid);
 
@@ -309,10 +291,10 @@ AssemblyAssemblyView::AssemblyAssemblyView(const AssemblyAssembly* const assembl
 
   // step: Place PS-p on Assembly Platform
   {
-    ++assembly_step_N_;
+    ++assembly_step_N;
 
     AssemblyAssemblyTextWidget* tmp_wid = new AssemblyAssemblyTextWidget;
-    tmp_wid->label()->setText(QString::number(assembly_step_N_));
+    tmp_wid->label()->setText(QString::number(assembly_step_N));
     tmp_wid->text()->setText("Place MaPSA on Assembly Platform");
     PSSToMaPSA_lay->addWidget(tmp_wid);
   }
@@ -320,10 +302,10 @@ AssemblyAssemblyView::AssemblyAssemblyView(const AssemblyAssembly* const assembl
 
   // step: Enable Sensor/Baseplate Vacuum
   {
-    ++assembly_step_N_;
+    ++assembly_step_N;
 
     AssemblyAssemblyActionWidget* tmp_wid = new AssemblyAssemblyActionWidget;
-    tmp_wid->label()->setText(QString::number(assembly_step_N_));
+    tmp_wid->label()->setText(QString::number(assembly_step_N));
     tmp_wid->button()->setText("Enable Vacuum on MaPSA");
     PSSToMaPSA_lay->addWidget(tmp_wid);
 
@@ -333,10 +315,10 @@ AssemblyAssemblyView::AssemblyAssemblyView(const AssemblyAssembly* const assembl
 
   // step: Go To Measurement Position on PS-p
   {
-    ++assembly_step_N_;
+    ++assembly_step_N;
 
     AssemblyAssemblyActionWidget* tmp_wid = new AssemblyAssemblyActionWidget;
-    tmp_wid->label()->setText(QString::number(assembly_step_N_));
+    tmp_wid->label()->setText(QString::number(assembly_step_N));
     tmp_wid->button()->setText("Go To Measurement Position on PS-p");
     PSSToMaPSA_lay->addWidget(tmp_wid);
 
@@ -346,21 +328,21 @@ AssemblyAssemblyView::AssemblyAssemblyView(const AssemblyAssembly* const assembl
 
   // step: Align PS-p to Motion Stage
   {
-    ++assembly_step_N_;
+    ++assembly_step_N;
 
     AssemblyAssemblyTextWidget* tmp_wid = new AssemblyAssemblyTextWidget;
-    tmp_wid->label()->setText(QString::number(assembly_step_N_));
-    tmp_wid->text()->setText("Align PS-p to Motion Stage (Go to \"Alignment\" Tab)");
+    tmp_wid->label()->setText(QString::number(assembly_step_N));
+    tmp_wid->text()->setText("Align PS-p to Motion Stage (Go to \"Alignment\" Tab and select \"PS-p Sensor\")");
     PSSToMaPSA_lay->addWidget(tmp_wid);
   }
   // ----------
 
   // step: Go From Sensor Marker Ref-Point to Pickup XY
   {
-    ++assembly_step_N_;
+    ++assembly_step_N;
 
     AssemblyAssemblyActionWidget* tmp_wid = new AssemblyAssemblyActionWidget;
-    tmp_wid->label()->setText(QString::number(assembly_step_N_));
+    tmp_wid->label()->setText(QString::number(assembly_step_N));
     tmp_wid->button()->setText("Go From Sensor Marker Ref-Point to Pickup XY");
     PSSToMaPSA_lay->addWidget(tmp_wid);
 
@@ -370,10 +352,10 @@ AssemblyAssemblyView::AssemblyAssemblyView(const AssemblyAssembly* const assembl
 
   // step: Apply "PS-p To PS-s" XY Offset
   {
-    ++assembly_step_N_;
+    ++assembly_step_N;
 
     AssemblyAssemblyActionWidget* tmp_wid = new AssemblyAssemblyActionWidget;
-    tmp_wid->label()->setText(QString::number(assembly_step_N_));
+    tmp_wid->label()->setText(QString::number(assembly_step_N));
     tmp_wid->button()->setText("Apply \"PS-p To PS-s\" XY Offset");
     PSSToMaPSA_lay->addWidget(tmp_wid);
 
@@ -384,12 +366,12 @@ AssemblyAssemblyView::AssemblyAssemblyView(const AssemblyAssembly* const assembl
   // step: Register "PS-s to MaPSA" XYZA Position
   // (position that will be used as starting point to lower "PS-s + Spacers" on MaPSA;
   //  the height corresponds to the best-focus height on PS-p surface, as resulting from the PS-p alignment,
-  //  if the latter completed successfully and was executed with auto-focusing enabled)
+  //  if the latter step completed successfully and was executed with auto-focusing enabled)
   {
-    ++assembly_step_N_;
+    ++assembly_step_N;
 
     AssemblyAssemblyActionWidget* tmp_wid = new AssemblyAssemblyActionWidget;
-    tmp_wid->label()->setText(QString::number(assembly_step_N_));
+    tmp_wid->label()->setText(QString::number(assembly_step_N));
     tmp_wid->button()->setText("Register \"PS-s to MaPSA\" XYZA Position");
     PSSToMaPSA_lay->addWidget(tmp_wid);
 
@@ -399,10 +381,10 @@ AssemblyAssemblyView::AssemblyAssemblyView(const AssemblyAssembly* const assembl
 
   // step: Go From "PS-s to MaPSA" Position to Gluing Stage (XY) Ref-Point
   {
-    ++assembly_step_N_;
+    ++assembly_step_N;
 
     AssemblyAssemblyActionWidget* tmp_wid = new AssemblyAssemblyActionWidget;
-    tmp_wid->label()->setText(QString::number(assembly_step_N_));
+    tmp_wid->label()->setText(QString::number(assembly_step_N));
     tmp_wid->button()->setText("Go From \"PS-s To MaPSA\" Position to Gluing Stage (XY) Ref-Point");
     PSSToMaPSA_lay->addWidget(tmp_wid);
 
@@ -412,10 +394,10 @@ AssemblyAssemblyView::AssemblyAssemblyView(const AssemblyAssembly* const assembl
 
   // step: Lower Pickup-Tool onto Gluing Stage
   {
-    ++assembly_step_N_;
+    ++assembly_step_N;
 
     AssemblyAssemblyActionWidget* tmp_wid = new AssemblyAssemblyActionWidget;
-    tmp_wid->label()->setText(QString::number(assembly_step_N_));
+    tmp_wid->label()->setText(QString::number(assembly_step_N));
     tmp_wid->button()->setText("Lower Pickup-Tool onto Gluing Stage");
     PSSToMaPSA_lay->addWidget(tmp_wid);
 
@@ -426,10 +408,10 @@ AssemblyAssemblyView::AssemblyAssemblyView(const AssemblyAssembly* const assembl
   // step: Return To "PS-s to MaPSA" XYZA Position
   // (step prior to lowering pickup tool; camera height must correspond to best-focus height on PS-p surface)
   {
-    ++assembly_step_N_;
+    ++assembly_step_N;
 
     AssemblyAssemblyActionWidget* tmp_wid = new AssemblyAssemblyActionWidget;
-    tmp_wid->label()->setText(QString::number(assembly_step_N_));
+    tmp_wid->label()->setText(QString::number(assembly_step_N));
     tmp_wid->button()->setText("Return To \"PS-s to MaPSA\" Position (XYZA)");
     PSSToMaPSA_lay->addWidget(tmp_wid);
 
@@ -439,10 +421,10 @@ AssemblyAssemblyView::AssemblyAssemblyView(const AssemblyAssembly* const assembl
 
   // step: Lower Pickup-Tool onto MaPSA
   {
-    ++assembly_step_N_;
+    ++assembly_step_N;
 
     AssemblyAssemblyActionWidget* tmp_wid = new AssemblyAssemblyActionWidget;
-    tmp_wid->label()->setText(QString::number(assembly_step_N_));
+    tmp_wid->label()->setText(QString::number(assembly_step_N));
     tmp_wid->button()->setText("Lower Pickup-Tool onto MaPSA");
     PSSToMaPSA_lay->addWidget(tmp_wid);
 
@@ -452,10 +434,10 @@ AssemblyAssemblyView::AssemblyAssemblyView(const AssemblyAssembly* const assembl
 
   // step: Wait For Glue To Cure
   {
-    ++assembly_step_N_;
+    ++assembly_step_N;
 
     AssemblyAssemblyTextWidget* tmp_wid = new AssemblyAssemblyTextWidget;
-    tmp_wid->label()->setText(QString::number(assembly_step_N_));
+    tmp_wid->label()->setText(QString::number(assembly_step_N));
     tmp_wid->text()->setText("Wait for Glue To Cure (approx. 20 min)");
     PSSToMaPSA_lay->addWidget(tmp_wid);
   }
@@ -463,10 +445,10 @@ AssemblyAssemblyView::AssemblyAssemblyView(const AssemblyAssembly* const assembl
 
   // step: Disable Sensor/Baseplate Vacuum
   {
-    ++assembly_step_N_;
+    ++assembly_step_N;
 
     AssemblyAssemblyActionWidget* tmp_wid = new AssemblyAssemblyActionWidget;
-    tmp_wid->label()->setText(QString::number(assembly_step_N_));
+    tmp_wid->label()->setText(QString::number(assembly_step_N));
     tmp_wid->button()->setText("Disable Vacuum on MaPSA");
     PSSToMaPSA_lay->addWidget(tmp_wid);
 
@@ -476,10 +458,10 @@ AssemblyAssemblyView::AssemblyAssemblyView(const AssemblyAssembly* const assembl
 
   // step: Pick Up Sensor Assembly ("MaPSA + Spacers + PS-s")
   {
-    ++assembly_step_N_;
+    ++assembly_step_N;
 
     AssemblyAssemblyActionWidget* tmp_wid = new AssemblyAssemblyActionWidget;
-    tmp_wid->label()->setText(QString::number(assembly_step_N_));
+    tmp_wid->label()->setText(QString::number(assembly_step_N));
     tmp_wid->button()->setText("Pick Up Sensor Assembly (\"PS-s + Spacers + MaPSA\")");
     PSSToMaPSA_lay->addWidget(tmp_wid);
 
@@ -500,10 +482,10 @@ AssemblyAssemblyView::AssemblyAssemblyView(const AssemblyAssembly* const assembl
 
   // step: Dispense Glue on Baseplate and Place it on Assembly Platform
   {
-    ++assembly_step_N_;
+    ++assembly_step_N;
 
     AssemblyAssemblyTextWidget* tmp_wid = new AssemblyAssemblyTextWidget;
-    tmp_wid->label()->setText(QString::number(assembly_step_N_));
+    tmp_wid->label()->setText(QString::number(assembly_step_N));
     tmp_wid->text()->setText("Dispense Glue on Baseplate and Place it on Assembly Platform");
     PSToBasep_lay->addWidget(tmp_wid);
   }
@@ -511,10 +493,10 @@ AssemblyAssemblyView::AssemblyAssemblyView(const AssemblyAssembly* const assembl
 
   // step: Enable Vacuum on Baseplate
   {
-    ++assembly_step_N_;
+    ++assembly_step_N;
 
     AssemblyAssemblyActionWidget* tmp_wid = new AssemblyAssemblyActionWidget;
-    tmp_wid->label()->setText(QString::number(assembly_step_N_));
+    tmp_wid->label()->setText(QString::number(assembly_step_N));
     tmp_wid->button()->setText("Enable Vacuum on Baseplate");
     PSToBasep_lay->addWidget(tmp_wid);
 
@@ -524,10 +506,10 @@ AssemblyAssemblyView::AssemblyAssemblyView(const AssemblyAssembly* const assembl
 
   // step: Go To XYA Position To Glue Sensor Assembly To Baseplate
   {
-    ++assembly_step_N_;
+    ++assembly_step_N;
 
     AssemblyAssemblyActionWidget* tmp_wid = new AssemblyAssemblyActionWidget;
-    tmp_wid->label()->setText(QString::number(assembly_step_N_));
+    tmp_wid->label()->setText(QString::number(assembly_step_N));
     tmp_wid->button()->setText("Go To XYA Position To Glue Sensor Assembly To Baseplate");
     PSToBasep_lay->addWidget(tmp_wid);
 
@@ -537,10 +519,10 @@ AssemblyAssemblyView::AssemblyAssemblyView(const AssemblyAssembly* const assembl
 
   // step: Lower Sensor Assembly onto Baseplate
   {
-    ++assembly_step_N_;
+    ++assembly_step_N;
 
     AssemblyAssemblyActionWidget* tmp_wid = new AssemblyAssemblyActionWidget;
-    tmp_wid->label()->setText(QString::number(assembly_step_N_));
+    tmp_wid->label()->setText(QString::number(assembly_step_N));
     tmp_wid->button()->setText("Lower Sensor Assembly onto Baseplate");
     PSToBasep_lay->addWidget(tmp_wid);
 
@@ -550,10 +532,10 @@ AssemblyAssemblyView::AssemblyAssemblyView(const AssemblyAssembly* const assembl
 
   // step: Wait For Glue To Cure
   {
-    ++assembly_step_N_;
+    ++assembly_step_N;
 
     AssemblyAssemblyTextWidget* tmp_wid = new AssemblyAssemblyTextWidget;
-    tmp_wid->label()->setText(QString::number(assembly_step_N_));
+    tmp_wid->label()->setText(QString::number(assembly_step_N));
     tmp_wid->text()->setText("Wait for Glue To Cure (approx. 20 min)");
     PSToBasep_lay->addWidget(tmp_wid);
   }
@@ -561,10 +543,10 @@ AssemblyAssemblyView::AssemblyAssemblyView(const AssemblyAssembly* const assembl
 
   // step: Disable Vacuum on Pickup-Tool
   {
-    ++assembly_step_N_;
+    ++assembly_step_N;
 
     AssemblyAssemblyActionWidget* tmp_wid = new AssemblyAssemblyActionWidget;
-    tmp_wid->label()->setText(QString::number(assembly_step_N_));
+    tmp_wid->label()->setText(QString::number(assembly_step_N));
     tmp_wid->button()->setText("Disable Vacuum on Pickup-Tool");
     PSToBasep_lay->addWidget(tmp_wid);
 
@@ -574,10 +556,10 @@ AssemblyAssemblyView::AssemblyAssemblyView(const AssemblyAssembly* const assembl
 
   // step: Lift Up Pickup-Tool
   {
-    ++assembly_step_N_;
+    ++assembly_step_N;
 
     AssemblyAssemblyActionWidget* tmp_wid = new AssemblyAssemblyActionWidget;
-    tmp_wid->label()->setText(QString::number(assembly_step_N_));
+    tmp_wid->label()->setText(QString::number(assembly_step_N));
     tmp_wid->button()->setText("Lift Up Pickup-Tool");
     PSToBasep_lay->addWidget(tmp_wid);
 
@@ -585,12 +567,23 @@ AssemblyAssemblyView::AssemblyAssemblyView(const AssemblyAssembly* const assembl
   }
   // ----------
 
+  // step: Remove Baseplate Pins from Assembly Platform
+  {
+    ++assembly_step_N;
+
+    AssemblyAssemblyTextWidget* tmp_wid = new AssemblyAssemblyTextWidget;
+    tmp_wid->label()->setText(QString::number(assembly_step_N));
+    tmp_wid->text()->setText("Remove Baseplate Pins from Assembly Platform");
+    PSToBasep_lay->addWidget(tmp_wid);
+  }
+  // ----------
+
   // step: Disable Vacuum on Baseplate
   {
-    ++assembly_step_N_;
+    ++assembly_step_N;
 
     AssemblyAssemblyActionWidget* tmp_wid = new AssemblyAssemblyActionWidget;
-    tmp_wid->label()->setText(QString::number(assembly_step_N_));
+    tmp_wid->label()->setText(QString::number(assembly_step_N));
     tmp_wid->button()->setText("Disable Vacuum on Baseplate");
     PSToBasep_lay->addWidget(tmp_wid);
 
@@ -600,10 +593,10 @@ AssemblyAssemblyView::AssemblyAssemblyView(const AssemblyAssembly* const assembl
 
   // step: Remove PS Module from Assembly Platform
   {
-    ++assembly_step_N_;
+    ++assembly_step_N;
 
     AssemblyAssemblyTextWidget* tmp_wid = new AssemblyAssemblyTextWidget;
-    tmp_wid->label()->setText(QString::number(assembly_step_N_));
+    tmp_wid->label()->setText(QString::number(assembly_step_N));
     tmp_wid->text()->setText("Remove PS Module from Assembly Platform");
     PSToBasep_lay->addWidget(tmp_wid);
   }
@@ -611,192 +604,15 @@ AssemblyAssemblyView::AssemblyAssemblyView(const AssemblyAssembly* const assembl
 
   PSToBasep_lay->addStretch(1);
   //// -----------------------------------------------
-
 }
-// ====================================================================================================
 
-AssemblyAssemblyActionWidget::AssemblyAssemblyActionWidget(QWidget* parent)
- : QWidget(parent)
-
- , layout_  (nullptr)
-
- , label_   (nullptr)
- , button_  (nullptr)
- , checkbox_(nullptr)
-
- , qobject_    (nullptr)
- , start_slot_ (nullptr)
- , stop_signal_(nullptr)
+//-- Information about this tab in GUI
+//HTML markup (<xxx></xxx>): p paragraph, b bold, em emphasize, i italic, s small, section, summary, var variable, ...
+//Ex: <p style="color:red">This is a red paragraph.</p>
+void AssemblyAssemblyView::display_infoTab()
 {
-  // layout
-  layout_ = new QHBoxLayout;
-  this->setLayout(layout_);
+    QMessageBox::information(this, tr("Information - Assembly"),
+            tr("<p>There is no available information about the content of this tab yet.</p>"));
 
-  label_ = new QLabel;
-  label_->setStyleSheet(
-    "QLabel { font-weight : bold; }"
-  );
-
-  button_ = new QPushButton;
-  button_->setStyleSheet(
-    "Text-align: left;"
-    "padding-left:   4px;"
-    "padding-right:  4px;"
-    "padding-top:    3px;"
-    "padding-bottom: 3px;"
-  );
-
-  checkbox_ = new QCheckBox("Done");
-
-  connect(checkbox_, SIGNAL(stateChanged(int)), this, SLOT(disable(int)));
-
-  layout_->addWidget(label_    ,  2, Qt::AlignRight);
-  layout_->addWidget(button_   , 40);
-  layout_->addWidget(new QLabel, 48);
-  layout_->addWidget(checkbox_ , 10);
+    return;
 }
-
-void AssemblyAssemblyActionWidget::disable(const bool to_be_disabled)
-{
-  this->disable(int(to_be_disabled ? 2 : 0));
-}
-
-void AssemblyAssemblyActionWidget::disable(const int state)
-{
-  if(state == 2)
-  {
-    label_->setEnabled(false);
-    button_->setEnabled(false);
-  }
-  else if(state == 0)
-  {
-    label_->setEnabled(true);
-    button_->setEnabled(true);
-  }
-
-  return;
-}
-
-void AssemblyAssemblyActionWidget::connect_action(const QObject* qobject, const char* start_slot, const char* stop_signal)
-{
-  if(qobject_){ this->reset_action(); }
-
-  if(qobject)
-  {
-    qobject_     = qobject;
-    start_slot_  = start_slot;
-    stop_signal_ = stop_signal;
-
-    connect(this->button(), SIGNAL(clicked()), this, SLOT(start_action()));
-  }
-  else
-  {
-    NQLog("AssemblyAssemblyActionWidget", NQLog::Warning) << "connect_action"
-       << ": invalid (NULL) input pointer to QObject, no action taken";
-  }
-}
-
-void AssemblyAssemblyActionWidget::reset_action()
-{
-  qobject_     = nullptr;
-  start_slot_  = nullptr;
-  stop_signal_ = nullptr;
-}
-
-void AssemblyAssemblyActionWidget::start_action()
-{
-  if(qobject_)
-  {
-    connect(this, SIGNAL(action_request()), qobject_, start_slot_);
-
-    connect(qobject_, stop_signal_, this, SLOT(disable_action()));
-
-    emit action_request();
-  }
-  else
-  {
-    NQLog("AssemblyAssemblyActionWidget", NQLog::Warning) << "start_action"
-       << ": invalid (NULL) pointer to QObject, no action taken";
-  }
-}
-
-void AssemblyAssemblyActionWidget::disable_action()
-{
-  if(qobject_)
-  {
-    disconnect(this, SIGNAL(action_request()), qobject_, start_slot_);
-
-    disconnect(qobject_, stop_signal_, this, SLOT(disable_action()));
-
-    checkbox_->setChecked(true);
-  }
-  else
-  {
-    NQLog("AssemblyAssemblyActionWidget", NQLog::Warning) << "disable_action"
-       << ": invalid (NULL) pointer to QObject, no action taken";
-  }
-}
-// ====================================================================================================
-
-AssemblyAssemblyTextWidget::AssemblyAssemblyTextWidget(QWidget* parent)
- : QWidget(parent)
-
- , layout_  (nullptr)
- , label_   (nullptr)
- , text_    (nullptr)
- , checkbox_(nullptr)
-{
-//  connect(this, SIGNAL(move_relative(double, double, double, double)), manager_, SLOT(moveRelative(double, double, double, double)));
-
-  // --------------
-
-  // layout
-  layout_ = new QHBoxLayout;
-  this->setLayout(layout_);
-
-  label_ = new QLabel;
-  label_->setStyleSheet(
-    "QLabel { font-weight : bold; }"
-  );
-
-  text_ = new QLabel;
-  text_->setStyleSheet(
-    "Text-align: left;"
-    "padding-left:   4px;"
-    "padding-right:  4px;"
-    "padding-top:    3px;"
-    "padding-bottom: 3px;"
-  );
-
-  checkbox_ = new QCheckBox("Done");
-
-  connect(checkbox_, SIGNAL(stateChanged(int)), this, SLOT(disable(int)));
-
-  layout_->addWidget(label_    ,  2, Qt::AlignRight);
-  layout_->addWidget(text_     , 40);
-  layout_->addWidget(new QLabel, 48);
-  layout_->addWidget(checkbox_ , 10);
-  // --------------
-}
-
-void AssemblyAssemblyTextWidget::disable(const bool to_be_disabled)
-{
-  this->disable(int(to_be_disabled ? 2 : 0));
-}
-
-void AssemblyAssemblyTextWidget::disable(const int state)
-{
-  if(state == 2)
-  {
-    label_->setEnabled(false);
-    text_->setEnabled(false);
-  }
-  else if(state == 0)
-  {
-    label_->setEnabled(true);
-    text_->setEnabled(true);
-  }
-
-  return;
-}
-// ====================================================================================================

@@ -23,6 +23,10 @@
 
 #include <vector>
 
+/** @addtogroup common
+ *  @{
+ */
+
 template<typename T> class NMatrix
 {
 public:
@@ -51,5 +55,7 @@ protected:
   unsigned int M_;
   std::vector<T> data_;
 };
+
+/** @} */
 
 #endif // NMATRIX_H

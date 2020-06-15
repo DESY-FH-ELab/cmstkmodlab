@@ -15,6 +15,10 @@
 
 #include <iostream>
 
+/** @addtogroup common
+ *  @{
+ */
+
 template <class T,size_t N=5> class Ringbuffer
 {
 public:
@@ -47,5 +51,7 @@ protected:
     size_t currentReadPointer_;
     T* buffer_;
 };
+
+/** @} */
 
 #endif // RINGBUFFER_H

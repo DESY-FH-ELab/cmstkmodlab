@@ -18,6 +18,14 @@
 
 #include "VLStepExpress.h"
 
+/** @addtogroup devices
+ *  @{
+ */
+
+/** @addtogroup Lang Lang
+ *  @{
+ */
+
 class LStepExpressFake : public VLStepExpress
 {
  public:
@@ -146,5 +154,9 @@ class LStepExpressFake : public VLStepExpress
 
   bool posCtrl_enabled_;
 };
+
+/** @} */
+
+/** @} */
 
 #endif

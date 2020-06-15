@@ -17,9 +17,16 @@
 
 #include "VConradController.h"
 
-/// \brief Class handling readout of Conrad multimeter
-class ConradControllerFake : public VConradController {
+/** @addtogroup devices
+ *  @{
+ */
 
+/** @addtogroup Conrad
+ *  @{
+ */
+
+class ConradControllerFake : public VConradController
+{
 public:
 
   ConradControllerFake(const std::string&);
@@ -35,5 +42,9 @@ private:
 
   mutable bool status_[8];
 };
+
+/** @} */
+
+/** @} */
 
 #endif

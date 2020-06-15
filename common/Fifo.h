@@ -17,6 +17,10 @@
 
 #include <QVector>
 
+/** @addtogroup common
+ *  @{
+ */
+
 template <class T> class Fifo
 {
 public:
@@ -91,5 +95,7 @@ protected:
 
     QVector<T> buffer_;
 };
+
+/** @} */
 
 #endif // RINGBUFFER_H

@@ -31,6 +31,14 @@ typedef NanotecSMCI36Fake NanotecSMCI36_t;
 typedef NanotecSMCI36 NanotecSMCI36_t;
 #endif
 
+/** @addtogroup common
+ *  @{
+ */
+
+/** @addtogroup models
+ *  @{
+ */
+
 /**
   Command and control model of the Nanotec SMCI36 controller.
   */
@@ -207,5 +215,9 @@ signals:
   void motionStarted();
   void motionFinished();
 };
+
+/** @} */
+
+/** @} */
 
 #endif // NANOTECSMCI36MODEL_H

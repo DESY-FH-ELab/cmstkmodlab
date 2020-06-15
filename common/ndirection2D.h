@@ -25,6 +25,10 @@
 
 #include <nvector2D.h>
 
+/** @addtogroup common
+ *  @{
+ */
+
 class NDirection2D : public NVector2D
 {
 public:
@@ -39,5 +43,7 @@ protected:
 
   void normalize();
 };
+
+/** @} */
 
 #endif // NDIRECTION2D_H

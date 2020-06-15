@@ -17,6 +17,14 @@ typedef CoriFlowFake CoriFlow_t;
 typedef CoriFlow CoriFlow_t;
 #endif
 
+/** @addtogroup common
+ *  @{
+ */
+
+/** @addtogroup models
+ *  @{
+ */
+
 /**
   Command and control model of the Cori flow.
   */
@@ -66,5 +74,9 @@ public:
   void message(const QString & text);
   void controlStateChanged(bool);
 };
+
+/** @} */
+
+/** @} */
 
 #endif // CORIFLOWMODEL_H

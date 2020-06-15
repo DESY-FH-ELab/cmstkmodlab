@@ -31,7 +31,8 @@ class AssemblyParametersView : public QWidget
  public:
 
   explicit AssemblyParametersView(QWidget* parent=nullptr);
-  virtual ~AssemblyParametersView() {}
+  // virtual ~AssemblyParametersView() {};
+  ~AssemblyParametersView();
 
   bool       has(const std::string&) const;
   QLineEdit* get(const std::string&) const;
@@ -52,6 +53,9 @@ class AssemblyParametersView : public QWidget
   QPushButton* paramIO_button_read_;
   QPushButton* paramIO_button_write_;
 
+  QPushButton *button_moveAbsRefPos1_, *button_moveAbsRefPos2_, *button_moveAbsRefPos3_, *button_moveAbsRefPos4_, *button_moveAbsRefPos5_;
+  QPushButton *button_moveRelRefDist1_, *button_moveRelRefDist2_, *button_moveRelRefDist3_, *button_moveRelRefDist4_, *button_moveRelRefDist5_, *button_moveRelRefDist6_, *button_moveRelRefDist7_, *button_moveRelRefDist8_, *button_moveRelRefDist9_;
+
   std::map<std::string, QLineEdit*> map_lineEdit_;
 
  public slots:
@@ -61,12 +65,37 @@ class AssemblyParametersView : public QWidget
 
   void transmit_entries();
 
+  void display_infoTab();
+
+  void moveToAbsRefPos1() {emit click_moveToAbsRefPos(1);};
+  void moveToAbsRefPos2() {emit click_moveToAbsRefPos(2);};
+  void moveToAbsRefPos3() {emit click_moveToAbsRefPos(3);};
+  void moveToAbsRefPos4() {emit click_moveToAbsRefPos(4);};
+  void moveToAbsRefPos5() {emit click_moveToAbsRefPos(5);};
+  void askConfirmMoveToAbsRefPoint(int);
+
+  void moveByRelRefDist1() {emit click_moveByRelRefDist(1);};
+  void moveByRelRefDist2() {emit click_moveByRelRefDist(2);};
+  void moveByRelRefDist3() {emit click_moveByRelRefDist(3);};
+  void moveByRelRefDist4() {emit click_moveByRelRefDist(4);};
+  void moveByRelRefDist5() {emit click_moveByRelRefDist(5);};
+  void moveByRelRefDist6() {emit click_moveByRelRefDist(6);};
+  void moveByRelRefDist7() {emit click_moveByRelRefDist(7);};
+  void moveByRelRefDist8() {emit click_moveByRelRefDist(8);};
+  void moveByRelRefDist9() {emit click_moveByRelRefDist(9);};
+  void askConfirmMoveByRelRefDist(int);
+
  signals:
 
   void read_from_file_request(const QString&);
   void  write_to_file_request(const QString&);
 
   void entries(const std::map<std::string, std::string>&);
+
+  void click_moveToAbsRefPos(int);
+  void request_moveToAbsRefPosition(double,double,double,double);
+  void click_moveByRelRefDist(int);
+  void request_moveByRelRefDistance(double,double,double,double);
 };
 // ===========================================================================
 

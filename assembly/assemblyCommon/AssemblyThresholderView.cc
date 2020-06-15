@@ -376,3 +376,14 @@ void AssemblyThresholderView::keyReleaseEvent(QKeyEvent* event)
     }
   }
 }
+
+//-- Information about this tab in GUI
+//HTML markup (<xxx></xxx>): p paragraph, b bold, em emphasize, i italic, s small, section, summary, var variable, ...
+//Ex: <p style="color:red">This is a red paragraph.</p>
+void AssemblyThresholderView::display_infoTab()
+{
+    QMessageBox::information(this, tr("Information - Convert Image to B/W"),
+            tr("<p>There is no available information about the content of this tab yet.</p>"));
+
+    return;
+}

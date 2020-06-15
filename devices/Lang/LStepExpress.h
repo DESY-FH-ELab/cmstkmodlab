@@ -24,6 +24,14 @@
 #include "VLStepExpress.h"
 #include "LStepExpressComHandler.h"
 
+/** @addtogroup devices
+ *  @{
+ */
+
+/** @addtogroup Lang Lang
+ *  @{
+ */
+
 class LStepExpress : public VLStepExpress
 {
  public:
@@ -139,5 +147,9 @@ class LStepExpress : public VLStepExpress
   LStepExpressComHandler* comHandler_;
   bool isDeviceAvailable_;
 };
+
+/** @} */
+
+/** @} */
 
 #endif

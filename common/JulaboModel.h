@@ -29,6 +29,14 @@ typedef JulaboFP50Fake JulaboFP50_t;
 typedef JulaboFP50 JulaboFP50_t;
 #endif
 
+/** @addtogroup common
+ *  @{
+ */
+
+/** @addtogroup models
+ *  @{
+ */
+
 /**
   Command and control model of the Julabo chiller.
   */
@@ -110,5 +118,9 @@ signals:
   void message(const QString & text);
   void controlStateChanged(bool);
 };
+
+/** @} */
+
+/** @} */
 
 #endif // JULABOMODEL_H
