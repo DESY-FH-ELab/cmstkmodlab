@@ -1306,10 +1306,8 @@ void AssemblyAssemblyV2::GoToPSPMarkerIdealPosition_start()
    + this->parameters()->get("FromPSPEdgeToPSPRefPoint_dY");
 
   const double z0 =
-     // this->parameters()->get("RefPointSensor_Z") //Changed -- can remove ?
      this->parameters()->get("CameraFocusOnAssemblyStage_Z")
-   + this->parameters()->get("Thickness_MPA") //FIXME -- check in DAF
-   + this->parameters()->get("Thickness_PSP")
+   + this->parameters()->get("Thickness_PSP") //NB: don't need to account for thickness of MPAs here, since we simply just to focus on the PS-p marker (no pickup)
    + this->parameters()->get("Thickness_GlueLayer")
    + this->parameters()->get("Thickness_Baseplate");
 
