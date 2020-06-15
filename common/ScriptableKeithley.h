@@ -19,6 +19,14 @@
 
 #include <KeithleyModel.h>
 
+/** @addtogroup common
+ *  @{
+ */
+
+/** @addtogroup scripting
+ *  @{
+ */
+
 class ScriptableKeithley : public QObject
 {
   Q_OBJECT
@@ -47,5 +55,9 @@ protected:
   // For thread safety
   QMutex mutex_;
 };
+
+/** @} */
+
+/** @} */
 
 #endif // SCRIPTABLEKEITHLEY_H

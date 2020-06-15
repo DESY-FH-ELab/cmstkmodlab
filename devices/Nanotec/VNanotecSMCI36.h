@@ -17,6 +17,14 @@
 #include <map>
 #include <utility>
 
+/** @addtogroup devices
+ *  @{
+ */
+
+/** @addtogroup Nanotec
+ *  @{
+ */
+
 typedef const char* ioport_t;
 
 class VNanotecSMCI36
@@ -270,5 +278,9 @@ class VNanotecSMCI36
   std::pair<int,int> maxFrequencyLimits_;
   std::pair<int,int> maxFrequency2Limits_;
 };
+
+/** @} */
+
+/** @} */
 
 #endif

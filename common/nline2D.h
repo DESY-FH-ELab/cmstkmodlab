@@ -26,6 +26,10 @@
 #include <npoint2D.h>
 #include <ndirection2D.h>
 
+/** @addtogroup common
+ *  @{
+ */
+
 class NLine2D
 {
 public:
@@ -44,5 +48,7 @@ protected:
   NPoint2D point_;
   NDirection2D direction_;
 };
+
+/** @} */
 
 #endif // NLINE2D_H

@@ -24,6 +24,8 @@
 #include <QVBoxLayout>
 #include <QGroupBox>
 
+using namespace std;
+
 AssemblyImageView::AssemblyImageView(QWidget* parent) :
   QWidget(parent),
 
@@ -33,6 +35,7 @@ AssemblyImageView::AssemblyImageView(QWidget* parent) :
   img_load_button_(nullptr),
   img_save_button_(nullptr),
   img_celi_button_(nullptr),
+  img_axes_button_(nullptr),
 
   // auto-focusing
   autofocus_ueye_(nullptr),
@@ -60,6 +63,21 @@ AssemblyImageView::AssemblyImageView(QWidget* parent) :
   img_ueye_->setBackgroundRole(QPalette::Background);
   img_ueye_->setScaledContents(true);
   img_ueye_->setAlignment(Qt::AlignCenter);
+
+  this->setStyleSheet("QToolTip {background-color: blue; border-style: outset; border-width: 2px; border-color: beige; font: bold 15px; }");
+  const ApplicationConfig* config = ApplicationConfig::instance();
+  if(config == nullptr)
+  {
+    NQLog("AssemblyObjectFinderPatRec", NQLog::Fatal) << "initialization error"
+       << ": ApplicationConfig::instance() not initialized (null pointer), exiting constructor";
+
+    return;
+  }
+  mm_per_pixel_row_ = config->getValue<double>("mm_per_pixel_row");
+  mm_per_pixel_col_ = config->getValue<double>("mm_per_pixel_col");
+  const AssemblyParameters* const params = AssemblyParameters::instance(false);
+  angle_FromCameraXYtoRefFrameXY_deg_ = params->get("AngleOfCameraFrameInRefFrame_dA");
+//--------------------------------------------
 
   img_scroll_ = new QScrollArea(this);
   img_scroll_->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
@@ -124,12 +142,16 @@ AssemblyImageView::AssemblyImageView(QWidget* parent) :
   img_save_button_ = new QPushButton("Save Image", this);
   lImg->addWidget(img_save_button_);
 
-  img_celi_button_ = new QPushButton("Add/Remove Center Lines", this);
+  img_celi_button_ = new QPushButton("Show/hide Center Lines", this);
   lImg->addWidget(img_celi_button_);
+
+  img_axes_button_ = new QPushButton("Show XY Axis Conventions", this);
+  lImg->addWidget(img_axes_button_);
 
   connect(img_load_button_, SIGNAL(clicked()), this, SLOT(load_image()));
   connect(img_save_button_, SIGNAL(clicked()), this, SLOT(save_image()));
   connect(img_celi_button_, SIGNAL(clicked()), this, SLOT(modify_image_centerlines()));
+  connect(img_axes_button_, SIGNAL(clicked()), this, SLOT(modify_image_axesConventions()));
 
   this->connectImageProducer_image(this, SIGNAL(image_updated(cv::Mat)));
 
@@ -188,8 +210,6 @@ AssemblyImageView::AssemblyImageView(QWidget* parent) :
 
   autofocus_lay->addStretch();
   // ----------
-
-  //// --------------------------------------------------
 }
 
 void AssemblyImageView::update_image(const cv::Mat& img, const bool update_image_raw)
@@ -297,10 +317,46 @@ void AssemblyImageView::modify_image_centerlines()
 
     this->update_image(img, false);
   }
-  else
+  else //Remove lines (reload raw image)
   {
     this->update_image(img, true);
   }
+
+  return;
+}
+
+//Add/remove XY axis conventions from the image (for illustration)
+//(0,0) = top left corner
+void AssemblyImageView::modify_image_axesConventions()
+{
+  if(image_.empty())
+  {
+    NQLog("AssemblyImageView", NQLog::Warning) << "modify_image_axesConventions"
+       << ": input raw image is empty, no action taken";
+
+    return;
+  }
+
+  int padding = 50; //don't show axes exactly at image boundaries
+
+  cv::Mat img = image_.clone(); //Use current image (possibly with center lines displayed), not raw image
+
+  //See: https://docs.opencv.org/2.4/modules/core/doc/drawing_functions.html#puttext
+  //CV_AA = anti-aliased linetype
+  //Text position is hardcoded
+  int fontFace = cv::FONT_HERSHEY_PLAIN; //FONT_HERSHEY_SIMPLEX, ...
+  double fontScale = 8;
+  int linethick = 3;
+  putText(img, "+x", cv::Point(img.cols/2.0+padding, 2*padding), fontFace, fontScale, cv::Scalar(255,0,0), linethick, CV_AA);
+  putText(img, "-x", cv::Point(img.cols/2.0+padding, img.rows-padding), fontFace, fontScale, cv::Scalar(255,0,0), linethick, CV_AA);
+  putText(img, "+y", cv::Point(padding, img.rows/2.0+2*padding), fontFace, fontScale, cv::Scalar(255,0,0), linethick, CV_AA);
+  putText(img, "-y", cv::Point(img.cols-5*padding, img.rows/2.0+2*padding), fontFace, fontScale, cv::Scalar(255,0,0), linethick, CV_AA);
+
+  // also add line/label for distance scale
+  line   (img, cv::Point(0, 125), cv::Point(0+167, 125), cv::Scalar(0,255,0), 2, 8, 0);
+  putText(img, "200 um", cv::Point(100, 100), cv::FONT_HERSHEY_SCRIPT_SIMPLEX, 1.5, cv::Scalar(0,255,0), 3, 8);
+
+  this->update_image(img, false);
 
   return;
 }
@@ -454,4 +510,153 @@ void AssemblyImageView::keyReleaseEvent(QKeyEvent* event)
         break;
     }
   }
+}
+
+//Upon holding mouse click within image area, display mouse position w.r.t. image center, preoperly converted into a physical distance expressed in um
+void AssemblyImageView::mouseMoveEvent(QMouseEvent* event)
+{
+    if(image_.empty()) {return;} //No action if image not yet loaded
+
+    //Get height and width of displayed image (QT coordinates -- based on screen pixels ?)
+    int img_height_QTCoord = img_ueye_->height();
+    int img_width_QTCoord = img_ueye_->width();
+
+    //For the record: alternative way to access QT coordinates of image
+    // QPoint globalPosTopLeftImg = img_ueye_->mapToGlobal(img_ueye_->rect().topLeft());
+
+    //Get nof rows and colums of displayed image (image coordinates -- based on camera pixels ?)
+    int nrows = image_raw_.rows;
+    int ncols = image_raw_.cols;
+
+    //Get mouse cursor QT coordinates (in image's rest frame)
+    QPoint pt = img_ueye_->mapFrom(this, event->pos());
+    double x = pt.x();
+    double y = pt.y();
+
+    //If detect that mouse is outside of image's boundaries -> Ignore
+    if(x > img_width_QTCoord || x < 0) {event->ignore(); return;}
+    if(y > img_height_QTCoord || y < 0) {event->ignore(); return;}
+
+    //Coordinates transformation
+    //QT coord --> image pixel coord (w.r.t. image center)
+    //Image pixel coord --> physical distance
+    //NB: the y-distance in the Camera frame has to be inverted, because the cv::Mat object in OpenCV counts columns (X) and rows (Y) starting from the top-left corner (not from the bottom-left corner as for a normal XY reference frame); in order to convert this to a normal XY ref-frame, we invert the sign of the value on the Y-axis.
+    const double dX_0 = +1.0 * (x * ((double) ncols / img_width_QTCoord) - (image_raw_.cols / 2.0)) * mm_per_pixel_col_;
+    const double dY_0 = -1.0 * (y * ((double) nrows / img_height_QTCoord) - (image_raw_.rows / 2.0)) * mm_per_pixel_row_;
+
+    //Account for angle of Camera Frame in the XY Motion Stage Ref-Frame
+    double newX, newY;
+    assembly::rotation2D_deg(newX, newY, angle_FromCameraXYtoRefFrameXY_deg_, dX_0, dY_0);
+
+    //Convert mm to um //For display only
+    newX*= 1000; newY*= 1000;
+
+    //Display physical distances next to mouse cursor
+    QToolTip::showText(event->globalPos(), "(x,y)[um]= " + QString::number(newX) + ", " + QString::number(newY), this, rect());
+
+    return;
+}
+
+//Upon double-click within image area, display lines at mouse position, and prompt a message box to user for action
+//Mostly duplicated from mouseMoveEvent()
+void AssemblyImageView::mouseDoubleClickEvent(QMouseEvent* event)
+{
+    if(event->button() != Qt::LeftButton) {return;} //Only consider left-click
+
+    // if(countNonZero(image_) < 1) {return;} //No action if image not yet loaded
+    if(image_.empty()) {return;} //No action if image not yet loaded
+
+    cv::Mat img_original = image_.clone(); //Save image before modification
+    cv::Mat img_modif = image_.clone(); //Image copy to be modified
+
+    //Get height and width of displayed image (QT coordinates -- based on screen pixels ?)
+    int img_height_QTCoord = img_ueye_->height();
+    int img_width_QTCoord = img_ueye_->width();
+
+    //Get nof rows and colums of displayed image (image coordinates -- based on camera pixels ?)
+    int nrows = image_raw_.rows;
+    int ncols = image_raw_.cols;
+
+    //Get mouse cursor QT coordinates (in image's rest frame)
+    QPoint pt = img_ueye_->mapFrom(this, event->pos());
+    double x = pt.x();
+    double y = pt.y();
+
+    //If detect that mouse is outside of image's boundaries -> Ignore
+    if(x > img_width_QTCoord || x < 0) {event->ignore(); return;}
+    if(y > img_height_QTCoord || y < 0) {event->ignore(); return;}
+
+    //Coordinates transformation //QT coord --> image pixel coord (w.r.t. image center)
+    double posLine_x = x * ((double) ncols / img_width_QTCoord);
+    double posLine_y = y * ((double) nrows  / img_height_QTCoord);
+
+    //Display lines
+    line(img_modif, cv::Point(posLine_x, 0), cv::Point(posLine_x, img_modif.rows), cv::Scalar(0,255,0), 8, 8, 0);
+    line(img_modif, cv::Point(0, posLine_y), cv::Point(img_modif.cols, posLine_y), cv::Scalar(0,255,0), 8, 8, 0);
+    this->update_image(img_modif, false);
+
+    //Coordinates transformation
+    //QT coord --> image pixel coord (w.r.t. image center)
+    //Image pixel coord --> physical distance
+    //NB: the y-distance in the Camera frame has to be inverted, because the cv::Mat object in OpenCV counts columns (X) and rows (Y) starting from the top-left corner (not from the bottom-left corner as for a normal XY reference frame); in order to convert this to a normal XY ref-frame, we invert the sign of the value on the Y-axis.
+    const double dX_0 = +1.0 * (x * ((double) ncols / img_width_QTCoord) - (image_raw_.cols / 2.0)) * mm_per_pixel_col_;
+    const double dY_0 = -1.0 * (y * ((double) nrows / img_height_QTCoord) - (image_raw_.rows / 2.0)) * mm_per_pixel_row_;
+
+    //Account for angle of Camera Frame in the XY Motion Stage Ref-Frame
+    double distx, disty;
+    assembly::rotation2D_deg(distx, disty, angle_FromCameraXYtoRefFrameXY_deg_, dX_0, dY_0);
+
+    QMessageBox msgBox;
+    msgBox.setWindowTitle(tr("Apply relative movement"));
+    msgBox.setText(QString("<p>Rel. dX=%1 mm / Rel. dY=%2 mm</p>").arg(distx).arg(disty));
+    msgBox.setInformativeText("Do you want to apply this relative movement?");
+    msgBox.setStandardButtons(QMessageBox::No | QMessageBox::Yes);
+    msgBox.setDefaultButton(QMessageBox::No);
+    int ret = msgBox.exec();
+
+    this->update_image(img_original, true); //Restore original image
+
+    switch(ret)
+    {
+      case QMessageBox::No: return; //Exit
+      case QMessageBox::Yes: break; //Continue function execution
+      default: return; //Exit
+    }
+
+    emit sigRequestMoveRelative(distx, disty, 0, 0);
+
+    NQLog("AssemblyImageView", NQLog::Spam) << "mouseDoubleClickEvent"
+       << ": will apply relative movement: dx="<<distx<<" / dy="<<disty;
+
+    //Wait for the movement to be finished (or for timeout), then automatically update the snapshot image displayed in GUI
+    QEventLoop loop;
+    QTimer *timeoutTimer = new QTimer(this);
+    timeoutTimer->start(5000); //5s
+    connect(this, SIGNAL(cameraMotionIsFinished()), &loop, SLOT(quit()));
+    connect(timeoutTimer, SIGNAL(timeout()), &loop, SLOT(quit()));
+    loop.exec(); //blocks thread until either the signal or timeout gets 'fired'
+
+    //Then, re-acquire new snapshot image
+    emit request_image();
+
+    delete timeoutTimer;
+
+    return;
+}
+
+//-- Information about this tab in GUI
+//HTML markup (<xxx></xxx>): p paragraph, b bold, em emphasize, i italic, s small, section, summary, var variable, ...
+//Ex: <p style="color:red">This is a red paragraph.</p>
+void AssemblyImageView::display_infoTab()
+{
+    QMessageBox::information(this, tr("Information - Image Viewer"),
+            tr("<p>There is no available information about the content of this tab yet.</p>"));
+    return;
+}
+
+void AssemblyImageView::InfoMotionFinished()
+{
+    emit cameraMotionIsFinished();
+
+    return;
 }

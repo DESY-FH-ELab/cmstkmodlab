@@ -68,6 +68,8 @@ class AssemblyParameters : public QObject
   void read_from_file(const QString&);
   void read_from_file(const std::string&);
 
+  bool isValidConfig();
+
  signals:
 };
 

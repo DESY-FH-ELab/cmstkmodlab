@@ -37,6 +37,8 @@ typedef AssemblyUEyeModel AssemblyUEyeModel_t;
 #include <AssemblyObjectAlignerView.h>
 #include <AssemblyAssembly.h>
 #include <AssemblyAssemblyView.h>
+#include <AssemblyAssemblyV2.h>
+#include <AssemblyAssemblyV2View.h>
 #include <AssemblyMultiPickupTester.h>
 #include <AssemblyToolboxView.h>
 #include <AssemblySmartMotionManager.h>
@@ -57,6 +59,9 @@ typedef AssemblyUEyeModel AssemblyUEyeModel_t;
 #include <LStepExpressStatusWindow.h>
 #include <ConradModel.h>
 #include <ConradManager.h>
+#include <AssemblyDBLoggerModel.h>
+#include <AssemblyDBLoggerController.h>
+#include <AssemblyDBLoggerView.h>
 
 #include <QMainWindow>
 #include <QString>
@@ -72,8 +77,11 @@ class AssemblyMainWindow : public QMainWindow
 
  public:
 
-  explicit AssemblyMainWindow(const QString& outputdir_path, const QString& logfile_path, const unsigned int camera_ID=10, QWidget* parent=nullptr);
-  virtual ~AssemblyMainWindow() {}
+  explicit AssemblyMainWindow(const QString& outputdir_path, const QString& logfile_path, const QString& DBlogfile_path, const unsigned int camera_ID=10, QWidget* parent=nullptr);
+  virtual ~AssemblyMainWindow()
+  {
+      disconnect_otherSlots();
+  }
 
  public slots:
 
@@ -92,7 +100,14 @@ class AssemblyMainWindow : public QMainWindow
   void start_multiPickupTest(const AssemblyMultiPickupTester::Configuration&);
   void disconnect_multiPickupTest();
 
+  void disconnect_otherSlots();
+
   void testTimer();
+
+  void connect_DBLogger();
+  void writeDBLog_emergencyStop();
+
+  void displayInfo_activeTab();
 
   void quit_thread(QThread*, const QString&) const;
   void quit();
@@ -113,6 +128,10 @@ class AssemblyMainWindow : public QMainWindow
   void objectAligner_disconnected();
 
   void multiPickupTest_disconnected();
+
+  void DBLogMessage(const QString);
+
+  void display_info();
 
  protected slots:
 
@@ -143,6 +162,7 @@ class AssemblyMainWindow : public QMainWindow
   AssemblyThresholder*        thresholder_;
   AssemblyObjectAligner*      aligner_;
   AssemblyAssembly*           assembly_;
+  AssemblyAssemblyV2*         assemblyV2_;
   AssemblyMultiPickupTester*  multipickup_tester_;
 
   AssemblyObjectFinderPatRec*       finder_;
@@ -154,6 +174,7 @@ class AssemblyMainWindow : public QMainWindow
 
   // Views
   QToolBar*   toolBar_;
+  QTabWidget* main_tab;
   QTabWidget* tabWidget_;
 
 //  AssemblyUEyeSnapShooter* finderView_;
@@ -164,10 +185,17 @@ class AssemblyMainWindow : public QMainWindow
   AssemblyObjectFinderPatRecView* finder_view_;
   AssemblyObjectAlignerView* aligner_view_;
   AssemblyAssemblyView* assembly_view_;
+  AssemblyAssemblyV2View* assemblyV2_view_;
   AssemblyToolboxView* toolbox_view_;
   AssemblyParametersView* params_view_;
   AssemblyHardwareControlView* hwctr_view_;
 
+  AssemblyDBLoggerModel* DBLog_model_;
+  AssemblyDBLoggerController* DBLog_ctrl_;
+  AssemblyDBLoggerView* DBLog_view_;
+
+  QPushButton* button_mainEmergencyStop_;
+  QPushButton* button_info_;
   QCheckBox* autofocus_checkbox_;
 
   // flags

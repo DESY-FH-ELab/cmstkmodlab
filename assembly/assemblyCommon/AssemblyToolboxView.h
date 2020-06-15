@@ -18,6 +18,7 @@
 #include <AssemblyPositionsRegistryWidget.h>
 
 #include <QWidget>
+#include <QMessageBox>
 
 class AssemblyToolboxView : public QWidget
 {
@@ -37,6 +38,8 @@ class AssemblyToolboxView : public QWidget
   AssemblyMultiPickupTesterWidget* mupite_wid_;
 
  public slots:
+
+  void display_infoTab();
 
  signals:
 

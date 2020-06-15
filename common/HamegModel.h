@@ -29,6 +29,14 @@ typedef Hameg8143Fake Hameg8143_t;
 typedef Hameg8143 Hameg8143_t;
 #endif
 
+/** @addtogroup common
+ *  @{
+ */
+
+/** @addtogroup models
+ *  @{
+ */
+
 /**
   Command and control model of the Hameg chiller.
   */
@@ -94,5 +102,9 @@ signals:
   void message(const QString & text);
   void controlStateChanged(bool);
 };
+
+/** @} */
+
+/** @} */
 
 #endif // HAMEGMODEL_H

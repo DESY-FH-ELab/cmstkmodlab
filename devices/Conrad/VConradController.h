@@ -16,9 +16,16 @@
 #include <string>
 #include <vector>
 
-/// \brief Class handling readout of Conrad multimeter
-class VConradController {
+/** @addtogroup devices
+ *  @{
+ */
 
+/** @addtogroup Conrad
+ *  @{
+ */
+
+class VConradController
+{
 public:
 
   VConradController(const std::string&);
@@ -30,5 +37,9 @@ public:
   virtual bool setChannel(unsigned channel, bool value) const = 0;
   virtual bool setSingleChannel(unsigned channel, bool value) const = 0;
 };
+
+/** @} */
+
+/** @} */
 
 #endif

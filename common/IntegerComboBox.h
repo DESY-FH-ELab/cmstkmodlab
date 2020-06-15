@@ -15,6 +15,14 @@
 
 #include <QComboBox>
 
+/** @addtogroup common
+ *  @{
+ */
+
+/** @addtogroup widgets
+ *  @{
+ */
+
 class IntegerComboBox : public QComboBox
 {
     Q_OBJECT
@@ -35,5 +43,9 @@ signals:
 
     void valueChanged(int value);
 };
+
+/** @} */
+
+/** @} */
 
 #endif // INTEGERCOMBOBOX_H

@@ -16,8 +16,16 @@
 #include <string>
 #include <vector>
 
-class VLStepExpress {
+/** @addtogroup devices
+ *  @{
+ */
 
+/** @addtogroup Lang Lang
+ *  @{
+ */
+
+class VLStepExpress
+{
  public:
 
   enum Axis {
@@ -188,5 +196,9 @@ class VLStepExpress {
   const char * GetAxisAccelerationJerkName(VLStepExpress::Dimension dimension);
   char GetAxisStatusText(VLStepExpress::AxisStatus status);
 };
+
+/** @} */
+
+/** @} */
 
 #endif

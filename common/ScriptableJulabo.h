@@ -19,6 +19,14 @@
 
 #include <JulaboModel.h>
 
+/** @addtogroup common
+ *  @{
+ */
+
+/** @addtogroup scripting
+ *  @{
+ */
+
 class ScriptableJulabo : public QObject
 {
   Q_OBJECT
@@ -50,5 +58,9 @@ protected:
   // For thread safety
   QMutex mutex_;
 };
+
+/** @} */
+
+/** @} */
 
 #endif // SCRIPTABLEJULABO_H

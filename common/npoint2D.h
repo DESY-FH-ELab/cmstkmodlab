@@ -26,6 +26,10 @@
 class NVector2D;
 class NLine2D;
 
+/** @addtogroup common
+ *  @{
+ */
+
 class NPoint2D
 {
 public:
@@ -52,5 +56,7 @@ protected:
 
   double x_, y_;
 };
+
+/** @} */
 
 #endif // NPOINT2D_H

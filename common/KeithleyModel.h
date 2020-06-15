@@ -32,6 +32,14 @@ typedef Keithley2700Fake Keithley2700_t;
 typedef Keithley2700 Keithley2700_t;
 #endif
 
+/** @addtogroup common
+ *  @{
+ */
+
+/** @addtogroup models
+ *  @{
+ */
+
 class KeithleyModel : public QObject,
                       public AbstractDeviceModel<Keithley2700_t>
 {
@@ -94,5 +102,9 @@ signals:
   void message(const QString & text);
   void controlStateChanged(bool);
 };
+
+/** @} */
+
+/** @} */
 
 #endif // KEITHLEYMODEL_H

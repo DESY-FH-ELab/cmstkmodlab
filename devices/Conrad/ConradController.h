@@ -17,11 +17,18 @@
 
 #include "VConradController.h"
 
+/** @addtogroup devices
+ *  @{
+ */
+
+/** @addtogroup Conrad
+ *  @{
+ */
+
 class ConradCommunication;
 
-/// \brief Class handling readout of Conrad multimeter
-class ConradController : public VConradController {
-
+class ConradController : public VConradController
+{
 public:
 
   ConradController(const std::string&);
@@ -40,5 +47,9 @@ private:
 
   ConradCommunication* m_communication;
 };
+
+/** @} */
+
+/** @} */
 
 #endif

@@ -19,6 +19,14 @@
 
 #include <HuberPetiteFleurModel.h>
 
+/** @addtogroup common
+ *  @{
+ */
+
+/** @addtogroup scripting
+ *  @{
+ */
+
 class ScriptableHuberPetiteFleur : public QObject
 {
   Q_OBJECT
@@ -50,5 +58,9 @@ protected:
   // For thread safety
   QMutex mutex_;
 };
+
+/** @} */
+
+/** @} */
 
 #endif // SCRIPTABLEHUBERPETITEFLEUR_H

@@ -17,6 +17,14 @@ typedef Iota300Fake Iota_t;
 typedef Iota300 Iota_t;
 #endif
 
+/** @addtogroup common
+ *  @{
+ */
+
+/** @addtogroup models
+ *  @{
+ */
+
 /**
   Command and control model of the petiteFleur chiller.
   */
@@ -78,5 +86,9 @@ public:
   void message(const QString & text);
   void controlStateChanged(bool);
 };
+
+/** @} */
+
+/** @} */
 
 #endif // IOTAMODEL_H

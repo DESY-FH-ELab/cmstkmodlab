@@ -62,6 +62,8 @@ class ConradManager : public QObject
   void vacuum_enabled();
   void vacuum_disabled();
   void vacuum_error();
+
+  void DBLogMessage(const QString);
 };
 
 #endif // CONRADMANAGER_H

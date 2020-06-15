@@ -14,6 +14,7 @@
 #define ASSEMBLYIMAGEVIEW_H
 
 #include <AssemblyUEyeView.h>
+#include <AssemblyParameters.h>
 
 #include <QWidget>
 #include <QScrollArea>
@@ -21,6 +22,8 @@
 #include <QPushButton>
 #include <QLineEdit>
 #include <QLabel>
+#include <QToolTip>
+#include <QEventLoop>
 
 #include <opencv2/opencv.hpp>
 
@@ -53,6 +56,8 @@ class AssemblyImageView : public QWidget
   QPushButton* img_load_button_;
   QPushButton* img_save_button_;
   QPushButton* img_celi_button_;
+  QPushButton* img_axes_button_;
+  QPushButton* info_button;
 
   cv::Mat image_;
   cv::Mat image_raw_;
@@ -71,6 +76,10 @@ class AssemblyImageView : public QWidget
   QPushButton      *autofocus_save_zscan_button_;
 
   cv::Mat image_zscan_;
+
+  double mm_per_pixel_row_;
+  double mm_per_pixel_col_;
+  double angle_FromCameraXYtoRefFrameXY_deg_;
   // -------------------
 
  public slots:
@@ -80,6 +89,7 @@ class AssemblyImageView : public QWidget
   void load_image();
   void save_image();
   void modify_image_centerlines();
+  void modify_image_axesConventions();
 
   void update_text(const double);
 
@@ -88,6 +98,13 @@ class AssemblyImageView : public QWidget
 
   void  update_autofocus_config(const double, const int);
   void acquire_autofocus_config();
+
+  void mouseMoveEvent(QMouseEvent*);
+  void mouseDoubleClickEvent(QMouseEvent*);
+
+  void display_infoTab();
+
+  void InfoMotionFinished();
 
  signals:
 
@@ -103,6 +120,12 @@ class AssemblyImageView : public QWidget
   void autofocus_request();
 
   void autofocus_emergencyStop_request();
+
+  void sigRequestMoveRelative(double, double, double, double);
+
+  void request_image();
+
+  void cameraMotionIsFinished();
 };
 
 #endif // ASSEMBLYIMAGEVIEW_H
