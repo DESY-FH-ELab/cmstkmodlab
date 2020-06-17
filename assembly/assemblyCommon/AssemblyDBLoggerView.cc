@@ -191,8 +191,20 @@ void AssemblyDBLoggerView::clear_content()
 //Ex: <p style="color:red">This is a red paragraph.</p>
 void AssemblyDBLoggerView::display_infoTab()
 {
-    QMessageBox::information(this, tr("Information - Database Log"),
-            tr("<p>There is no available information about the content of this tab yet.</p>"));
+    QMessageBox messageBox;
+    messageBox.setWindowTitle(tr("Information - Database log"));
+
+    messageBox.setText(tr("<p>This tab allows to browse the content of the database (DB) log, and provides interactive editing functionalities.</p>"
+    "<p>The DB log is automatically generated whenever the program is launched <i>(NB: the path to the logfile is printed in the terminal at startup; it is stored in the cache assembly-specific directory)</i>."
+    "<br>This log is filled with relevant information related to the assembly procedure, such as: timestamps of the different steps, quality critera for PatRec, etc." 
+    "<br>In the future, this file will be uploaded into the central upgrade database.</p>"
+    "<p>The 'Edit Log' functionality allows to interactively prepend or append additional messages to the DB log.</p>"
+    ));
+
+    QSpacerItem* horizontalSpacer = new QSpacerItem(3000, 0, QSizePolicy::Minimum, QSizePolicy::Expanding); //Use this to enlarge box width
+    QGridLayout* layout = (QGridLayout*) messageBox.layout();
+    layout->addItem(horizontalSpacer, layout->rowCount(), 0, 1, layout->columnCount());
+    messageBox.exec();
 
     return;
 }
