@@ -130,7 +130,10 @@ HEADERS += AssemblyVUEyeCamera.h \
            LaserWidget.h \
            LaserControlsWidget.h \
            AssemblyUtilities.h \
-
+           AlignmentCheckView.h \
+           AlignmentCheck.h \
+           AlignmentCheckPatRecWidget.h \
+           
 equals(NOUEYE,"X0") {
 HEADERS += AssemblyUEyeCamera.h \
            AssemblyUEyeModel.h
@@ -193,7 +196,10 @@ SOURCES += AssemblyVUEyeCamera.cc \
            LaserThread.cc \
            LaserControlsWidget.cc \
            AssemblyUtilities.cc \
-
+           AlignmentCheckView.cc \
+           AlignmentCheck.cc \
+           AlignmentCheckPatRecWidget.cc\
+           
 equals(NOUEYE,"X0") {
 SOURCES += AssemblyUEyeCamera.cc \
            AssemblyUEyeModel.cc
