@@ -42,14 +42,14 @@ void ApplicationConfig::safe(const std::string filename)
 }
 
 void ApplicationConfig::issueKeyError(std::string const& key) const
-{  
+{
   std::cerr << " [issueKeyError::getValue] ** ERROR: failed to get value for key: "
       << key << "." << std::endl;
-  
+
   QMessageBox::critical(0,
                         QString("[ApplicationConfigReader::issueKeyError]"),
                         QString("Failed to find value for key: \"%1\"\n.").arg( QString( key.c_str() ) ),
-                        QMessageBox::Ok); 
+                        QMessageBox::Ok);
 }
 
 template <> std::string ApplicationConfig::getValue(std::string const& key) const

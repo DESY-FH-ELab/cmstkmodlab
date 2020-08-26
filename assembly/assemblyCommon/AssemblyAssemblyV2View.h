@@ -10,31 +10,27 @@
 //                                                                             //
 /////////////////////////////////////////////////////////////////////////////////
 
-#ifndef ASSEMBLYASSEMBLYVIEW_H
-#define ASSEMBLYASSEMBLYVIEW_H
+#ifndef ASSEMBLYASSEMBLYV2VIEW_H
+#define ASSEMBLYASSEMBLYV2VIEW_H
 
+#include <QObject>
 #include <QWidget>
-#include <QVBoxLayout>
-#include <QHBoxLayout>
-#include <QPushButton>
 #include <QCheckBox>
-#include <QLabel>
 
-class AssemblyAssemblyView : public QWidget
+class AssemblyAssemblyV2View : public QWidget
 {
  Q_OBJECT
 
  public:
-  explicit AssemblyAssemblyView(const QObject* const, QWidget* parent=nullptr);
-  virtual ~AssemblyAssemblyView() {}
+  explicit AssemblyAssemblyV2View(const QObject* const, QWidget* parent=nullptr);
+  virtual ~AssemblyAssemblyV2View() {}
 
  protected:
   QCheckBox* smartMove_checkbox_;
 
-  QWidget* wid_PSSAlignm_;
+  QWidget* wid_PSPToBasep_;
   QWidget* wid_PSSToSpacers_;
   QWidget* wid_PSSToMaPSA_;
-  QWidget* wid_PSToBasep_;
 };
 
-#endif // ASSEMBLYASSEMBLYVIEW_H
+#endif // ASSEMBLYASSEMBLYV2VIEW_H

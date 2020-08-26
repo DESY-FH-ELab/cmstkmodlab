@@ -132,6 +132,8 @@ class AssemblyObjectFinderPatRec : public QObject
   void PatRec_results(const double, const double, const double);
 
   void PatRec_exitcode(const int);
+
+  void DBLogMessage(const QString);
 };
 
 #endif // ASSEMBLYOBJECTFINDERPATREC_H
