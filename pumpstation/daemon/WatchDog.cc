@@ -24,7 +24,8 @@
 
 #include <nqlogger.h>
 #include <ApplicationConfig.h>
-#include <SlackBot.h>
+
+#include <MattermostBot.h>
 
 #include "WatchDog.h"
 
@@ -107,7 +108,7 @@ void WatchDog::pressureChanged(int sensor, double p)
 {
   QMutexLocker locker(&mutex_);
 
-  NQLog("WatchDog") << "pressureChanged(" << sensor << ", " << p << ")";
+  // NQLog("WatchDog") << "pressureChanged(" << sensor << ", " << p << ")";
 
   switch (sensor) {
   case 1:
@@ -124,11 +125,6 @@ void WatchDog::pressureChanged(int sensor, double p)
 
 void WatchDog::statusTimeout()
 {
-  NQLog("WatchDog") << "statusTimeout()";
-
-  QTime t = QTime::currentTime();
-  if (t.minute()!=0 && t.minute()!=30) return;
-
   QMutexLocker locker(&mutex_);
 
   int pump1 = model_->getPumpChannel(1);
@@ -147,6 +143,19 @@ void WatchDog::statusTimeout()
   switchState_[valve1] = model_->getSwitchState(valve1);
   switchState_[valve2] = model_->getSwitchState(valve2);
   switchState_[valve3] = model_->getSwitchState(valve3);
+
+  pressure1_.push(psys);
+  pressure2_.push(p1);
+  pressure3_.push(p2);
+
+  NQLog("WatchDog") << pressure1_.deltaTime();
+  
+  if (pressure1_.deltaTime()>0) {
+    NQLog("WatchDog") << "slopes: " << pressure1_.gradient();
+  }
+  
+  QTime t = QTime::currentTime();
+  if (t.minute()!=0 && t.minute()!=30) return;
 
   if (switchState_[valve3]==OFF) return;
 
@@ -183,6 +192,6 @@ void WatchDog::statusTimeout()
   }
   message += " mbar\n";
 
-  SlackBot bot("Pump Station");
+  MattermostBot bot;
   bot.postMessage(message);
 }

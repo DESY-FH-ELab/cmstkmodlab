@@ -1,6 +1,6 @@
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //
-//               Copyright (C) 2011-2017 - The DESY CMS Group                  //
+//               Copyright (C) 2011-2019 - The DESY CMS Group                  //
 //                           All rights reserved                               //
 //                                                                             //
 //      The CMStkModLab source code is licensed under the GNU GPL v3.0.        //
@@ -33,6 +33,7 @@
 
 #include <Fifo.h>
 #include <HistoryFifo.h>
+#include <ValueHistory.h>
 
 #include <ApplicationConfig.h>
 
@@ -47,6 +48,16 @@ double imageScale(double focalLength)
 
 int main(int /* argc */, char ** /* argv */)
 {
+  {
+    ValueHistory<float> history(10, 200);
+
+    for (int i=0;i<=40;++i) {
+      history.push(i);
+
+      std::cout << i << "\t" << history.at(0) << "\t" << history.secondsAgo(30) << std::endl;
+    }
+  }
+
   /*
   {
     ApplicationConfig * config = ApplicationConfig::instance("test.cfg");
@@ -60,8 +71,6 @@ int main(int /* argc */, char ** /* argv */)
     config->setValue<double>("double1", double1);
 
     double1 = config->getValue<double>("double1");
-
-    std::cout << double1 << std::endl;
 
     config->safe("testout.cfg");
   }

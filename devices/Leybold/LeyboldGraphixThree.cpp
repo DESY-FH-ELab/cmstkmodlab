@@ -101,7 +101,7 @@ int LeyboldGraphixThree::GetNumberOfChannels() const
   return std::atoi(buffer.c_str());
 }
 
-VLeyboldGraphixThree::SensorDetectionMode LeyboldGraphixThree::GetSensorDetectionMode(int sensor) const
+VLeyboldGraphix::SensorDetectionMode LeyboldGraphixThree::GetSensorDetectionMode(int sensor) const
 {
   std::string command;
 
@@ -122,7 +122,7 @@ VLeyboldGraphixThree::SensorDetectionMode LeyboldGraphixThree::GetSensorDetectio
   }
 }
 
-void LeyboldGraphixThree::SetSensorDetectionMode(int sensor, VLeyboldGraphixThree::SensorDetectionMode mode)
+void LeyboldGraphixThree::SetSensorDetectionMode(int sensor, VLeyboldGraphix::SensorDetectionMode mode)
 {
   std::string command;
 
@@ -219,7 +219,7 @@ void LeyboldGraphixThree::SetSensorName(int sensor, const std::string& name)
   bool isACK = ReceiveData(buffer);
 }
 
-LeyboldGraphixThree::SensorStatus LeyboldGraphixThree::GetSensorStatus(int sensor) const
+VLeyboldGraphix::SensorStatus LeyboldGraphixThree::GetSensorStatus(int sensor) const
 {
   if (sensor<1 || sensor>3) return SensorStatus_nosen;
 
@@ -235,13 +235,7 @@ LeyboldGraphixThree::SensorStatus LeyboldGraphixThree::GetSensorStatus(int senso
   std::string buffer;
   bool isACK = ReceiveData(buffer);
 
-  std::map<std::string,SensorStatus>::const_iterator itFind = sensorStatusText_.find(buffer);
-  if (itFind!=sensorStatusText_.end()) {
-    sensorStatus_[sensor-1] = itFind->second;
-    return itFind->second;
-  }
-
-  return SensorStatus_nosen;
+  return GetSensorStatusByStatusText(buffer);
 }
 
 double LeyboldGraphixThree::GetPressure(int sensor) const
@@ -268,7 +262,7 @@ double LeyboldGraphixThree::GetPressure(int sensor) const
   return std::atof(buffer.c_str());
 }
 
-LeyboldGraphixThree::DisplayUnit LeyboldGraphixThree::GetDisplayUnit() const
+VLeyboldGraphix::DisplayUnit LeyboldGraphixThree::GetDisplayUnit() const
 {
   std::string command;
 
@@ -282,24 +276,12 @@ LeyboldGraphixThree::DisplayUnit LeyboldGraphixThree::GetDisplayUnit() const
   std::string buffer;
   bool isACK = ReceiveData(buffer);
 
-  std::map<std::string,DisplayUnit>::const_iterator itFind = displayNameUnits_.find(buffer);
-  if (itFind!=displayNameUnits_.end()) {
-    return itFind->second;
-  }
-
-  return DisplayUnit_unknown;
+  return GetDisplayUnitByUnitText(buffer);
 }
 
-void LeyboldGraphixThree::SetDisplayUnit(LeyboldGraphixThree::DisplayUnit unit)
+void LeyboldGraphixThree::SetDisplayUnit(VLeyboldGraphix::DisplayUnit unit)
 {
-  std::string name;
-
-  std::map<DisplayUnit,std::string>::const_iterator itFind = displayUnitNames_.find(unit);
-  if (itFind!=displayUnitNames_.end()) {
-    name = itFind->second;
-  } else {
-    return;
-  }
+  std::string name = GetDisplayUnitName(unit);
 
   std::string command;
 
@@ -316,7 +298,7 @@ void LeyboldGraphixThree::SetDisplayUnit(LeyboldGraphixThree::DisplayUnit unit)
   bool isACK = ReceiveData(buffer);
 }
 
-VLeyboldGraphixThree::SetPointChannel LeyboldGraphixThree::GetSetPointChannelAssignment(int sp) const
+VLeyboldGraphix::SetPointChannel LeyboldGraphixThree::GetSetPointChannelAssignment(int sp) const
 {
   if (sp<1 || sp>6) return SetPointChannelOff;
 
@@ -345,7 +327,7 @@ VLeyboldGraphixThree::SetPointChannel LeyboldGraphixThree::GetSetPointChannelAss
   return SetPointChannelOff;
 }
 
-void LeyboldGraphixThree::SetSetPointChannelAssignment(int sp, VLeyboldGraphixThree::SetPointChannel channel)
+void LeyboldGraphixThree::SetSetPointChannelAssignment(int sp, VLeyboldGraphix::SetPointChannel channel)
 {
   if (sp<1 || sp>6) return;
 

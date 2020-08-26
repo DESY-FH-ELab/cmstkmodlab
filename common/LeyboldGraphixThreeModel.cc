@@ -25,7 +25,7 @@ LeyboldGraphixThreeModel::LeyboldGraphixThreeModel(const char* port,
     updateInterval_(updateInterval)
 {
   for (int i=0;i<3;i++) status_[i] = LeyboldGraphixThree_t::SensorStatus_unknown;
-  for (int i=0;i<3;i++) pressure_[i] = -999;
+  for (int i=0;i<3;i++) pressure_[i] = 1.013;
   displayUnit_ = LeyboldGraphixThree_t::DisplayUnit_unknown;
 
   timer_ = new QTimer(this);

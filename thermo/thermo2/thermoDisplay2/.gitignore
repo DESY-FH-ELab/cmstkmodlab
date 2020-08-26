@@ -1,0 +1,13 @@
+thermoDisplay2.pro
+thermoDisplay2.pro.user
+.qmake.stash
+.qmake.cache
+Makefile
+*.d
+*.o
+*~
+moc_*
+thermoDisplay2
+thermoDisplay2.app
+thermoDisplay2.desktop
+startThermoDisplay2.sh

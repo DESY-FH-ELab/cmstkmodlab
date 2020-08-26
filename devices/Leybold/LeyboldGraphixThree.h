@@ -25,6 +25,14 @@
 #include "VLeyboldGraphixThree.h"
 #include "LeyboldComHandler.h"
 
+/** @addtogroup devices
+ *  @{
+ */
+
+/** @addtogroup Leybold
+ *  @{
+ */
+
 class LeyboldGraphixThree : public VLeyboldGraphixThree
 {
  public:
@@ -94,5 +102,9 @@ class LeyboldGraphixThree : public VLeyboldGraphixThree
 
   mutable std::array<SensorStatus,3> sensorStatus_;
 };
+ 
+/** @} */
+
+/** @} */
 
 #endif // _LEYBOLDGRAPHIXTHREE_H_
