@@ -595,7 +595,7 @@ void LeyboldGraphixOne::DeviceInit()
     
     std::string itemNumber = GetItemNumber();
 
-    if (itemNumber=="230682V01") {
+    if (itemNumber=="230680V01") {
       isDeviceAvailable_ = true;
     } else {
       isDeviceAvailable_ = false;
