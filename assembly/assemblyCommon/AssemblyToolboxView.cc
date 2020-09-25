@@ -60,6 +60,5 @@ AssemblyToolboxView::AssemblyToolboxView(const LStepExpressMotionManager* const 
 
   toolbox->addItem(mupite_wid_, tr("Multi-Pickup Tester (PatRec + pick-up + put-down)"));
   // ---------------------
-
   layout->addStretch(1);
 }

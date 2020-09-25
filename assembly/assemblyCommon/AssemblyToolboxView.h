@@ -39,8 +39,9 @@ class AssemblyToolboxView : public QWidget
  public slots:
 
  signals:
-
+  
   void multipickup_request(const AssemblyMultiPickupTester::Configuration&);
+
 };
 // ===========================================================================
 
