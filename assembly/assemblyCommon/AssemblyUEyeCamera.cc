@@ -300,7 +300,7 @@ void AssemblyUEyeCamera::updatePixelClock()
     if (nRet == IS_SUCCESS) {
       nMin = nRange[0];
       nMax = nRange[1];
-      nInc = nRange[2];
+      nInc = nRange[2] ? nRange[2] : 1;
     }
 
     NQLog("AssemblyUEyeCamera", NQLog::Debug) << "updatePixelClock"
