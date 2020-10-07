@@ -78,7 +78,10 @@ class AssemblyMainWindow : public QMainWindow
  public:
 
   explicit AssemblyMainWindow(const QString& outputdir_path, const QString& logfile_path, const QString& DBlogfile_path, const unsigned int camera_ID=10, QWidget* parent=nullptr);
-  virtual ~AssemblyMainWindow() {}
+  virtual ~AssemblyMainWindow()
+  {
+      disconnect_otherSlots();
+  }
 
  public slots:
 
@@ -97,10 +100,14 @@ class AssemblyMainWindow : public QMainWindow
   void start_multiPickupTest(const AssemblyMultiPickupTester::Configuration&);
   void disconnect_multiPickupTest();
 
+  void disconnect_otherSlots();
+
   void testTimer();
 
   void connect_DBLogger();
   void writeDBLog_emergencyStop();
+
+  void displayInfo_activeTab();
 
   void quit_thread(QThread*, const QString&) const;
   void quit();
@@ -123,6 +130,8 @@ class AssemblyMainWindow : public QMainWindow
   void multiPickupTest_disconnected();
 
   void DBLogMessage(const QString);
+
+  void display_info();
 
  protected slots:
 
@@ -165,6 +174,7 @@ class AssemblyMainWindow : public QMainWindow
 
   // Views
   QToolBar*   toolBar_;
+  QTabWidget* main_tab;
   QTabWidget* tabWidget_;
 
 //  AssemblyUEyeSnapShooter* finderView_;
@@ -185,6 +195,7 @@ class AssemblyMainWindow : public QMainWindow
   AssemblyDBLoggerView* DBLog_view_;
 
   QPushButton* button_mainEmergencyStop_;
+  QPushButton* button_info_;
   QCheckBox* autofocus_checkbox_;
 
   // flags

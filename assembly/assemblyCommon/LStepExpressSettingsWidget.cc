@@ -312,7 +312,7 @@ LStepExpressSettingsWidget::LStepExpressSettingsWidget(LStepExpressSettings* set
 }
 
 /*
-/// Updates the GUI when the lstepcontroller is enabled/disabled.                                                                                                                                        
+/// Updates the GUI when the lstepcontroller is enabled/disabled.
 void LStepExpressSettingsWidget::lstepStateChanged(State newState)
 {
     NQLog("LStepExpressSettingsWidget", NQLog::Spam) << "lStepStateChanged(State newState) " << newState;
@@ -855,7 +855,7 @@ void LStepExpressSettingsWidget::fillLimitToolBox()
     layout->addWidget(new LStepExpressSettingsTripleCheckBox(settings_, "X-LimitSwitchOn", limitToolBox_), 4, 1);
     layout->addWidget(new LStepExpressSettingsTripleCheckBox(settings_, "Y-LimitSwitchOn", limitToolBox_), 4, 2);
     layout->addWidget(new LStepExpressSettingsTripleCheckBox(settings_, "Z-LimitSwitchOn", limitToolBox_), 4, 3);
-    layout->addWidget(new LStepExpressSettingsTripleCheckBox(settings_, "A-LimitSwitchOn", limitToolBox_), 4, 4);  
+    layout->addWidget(new LStepExpressSettingsTripleCheckBox(settings_, "A-LimitSwitchOn", limitToolBox_), 4, 4);
 
     layout->addWidget(new QWidget(generalToolBox_), 5, 0);
     layout->setRowStretch(5, 100);
@@ -950,31 +950,31 @@ void LStepExpressSettingsWidget::fillExtraToolBox()
     layout->addWidget(new LStepExpressSettingsDoubleSpinBox(settings_, "X-JogModeVelocity", 0.0, 70.0, extraToolBox_), 2, 1);
     layout->addWidget(new LStepExpressSettingsDoubleSpinBox(settings_, "Y-JogModeVelocity", 0.0, 70.0, extraToolBox_), 2, 2);
     layout->addWidget(new LStepExpressSettingsDoubleSpinBox(settings_, "Z-JogModeVelocity", 0.0, 70.0, extraToolBox_), 2, 3);
-    layout->addWidget(new LStepExpressSettingsDoubleSpinBox(settings_, "A-JogModeVelocity", 0.0, 70.0, extraToolBox_), 2, 4);    
+    layout->addWidget(new LStepExpressSettingsDoubleSpinBox(settings_, "A-JogModeVelocity", 0.0, 70.0, extraToolBox_), 2, 4);
 
     layout->addWidget(new QLabel("Filter time", extraToolBox_), 3, 0);
     layout->addWidget(new LStepExpressSettingsDoubleSpinBox(settings_, "X-JogModeFilterTime", 0.0, 500000.0, extraToolBox_), 3, 1);
     layout->addWidget(new LStepExpressSettingsDoubleSpinBox(settings_, "Y-JogModeFilterTime", 0.0, 500000.0, extraToolBox_), 3, 2);
     layout->addWidget(new LStepExpressSettingsDoubleSpinBox(settings_, "Z-JogModeFilterTime", 0.0, 500000.0, extraToolBox_), 3, 3);
-    layout->addWidget(new LStepExpressSettingsDoubleSpinBox(settings_, "A-JogModeFilterTime", 0.0, 500000.0, extraToolBox_), 3, 4);    
+    layout->addWidget(new LStepExpressSettingsDoubleSpinBox(settings_, "A-JogModeFilterTime", 0.0, 500000.0, extraToolBox_), 3, 4);
 
     layout->addWidget(new QLabel("Direction", extraToolBox_), 4, 0);
     layout->addWidget(new LStepExpressSettingsCheckBox(settings_, "X-JogModeDirection", extraToolBox_), 4, 1);
     layout->addWidget(new LStepExpressSettingsCheckBox(settings_, "Y-JogModeDirection", extraToolBox_), 4, 2);
     layout->addWidget(new LStepExpressSettingsCheckBox(settings_, "Z-JogModeDirection", extraToolBox_), 4, 3);
-    layout->addWidget(new LStepExpressSettingsCheckBox(settings_, "A-JogModeDirection", extraToolBox_), 4, 4);    
+    layout->addWidget(new LStepExpressSettingsCheckBox(settings_, "A-JogModeDirection", extraToolBox_), 4, 4);
 
     layout->addWidget(new QLabel("Axis Enabled", extraToolBox_), 5, 0);
     layout->addWidget(new LStepExpressSettingsCheckBox(settings_, "X-JogModeAxesEnabled", extraToolBox_), 5, 1);
     layout->addWidget(new LStepExpressSettingsCheckBox(settings_, "Y-JogModeAxesEnabled", extraToolBox_), 5, 2);
     layout->addWidget(new LStepExpressSettingsCheckBox(settings_, "Z-JogModeAxesEnabled", extraToolBox_), 5, 3);
-    layout->addWidget(new LStepExpressSettingsCheckBox(settings_, "A-JogModeAxesEnabled", extraToolBox_), 5, 4);    
+    layout->addWidget(new LStepExpressSettingsCheckBox(settings_, "A-JogModeAxesEnabled", extraToolBox_), 5, 4);
 
     layout->addWidget(new QLabel("Current Reduction", extraToolBox_), 6, 0);
     layout->addWidget(new LStepExpressSettingsCheckBox(settings_, "X-JogModeCurrentReduction", extraToolBox_), 6, 1);
     layout->addWidget(new LStepExpressSettingsCheckBox(settings_, "Y-JogModeCurrentReduction", extraToolBox_), 6, 2);
     layout->addWidget(new LStepExpressSettingsCheckBox(settings_, "Z-JogModeCurrentReduction", extraToolBox_), 6, 3);
-    layout->addWidget(new LStepExpressSettingsCheckBox(settings_, "A-JogModeCurrentReduction", extraToolBox_), 6, 4);    
+    layout->addWidget(new LStepExpressSettingsCheckBox(settings_, "A-JogModeCurrentReduction", extraToolBox_), 6, 4);
 
     layout->addWidget(new QLabel("Trackball Mode", extraToolBox_), 7, 0);
     layout->addWidget(new LStepExpressSettingsCheckBox(settings_, "TrackBallOn", extraToolBox_), 7, 1);
@@ -983,37 +983,37 @@ void LStepExpressSettingsWidget::fillExtraToolBox()
     layout->addWidget(new LStepExpressSettingsDoubleSpinBox(settings_, "X-TrackBallVelocity", 0.0, 70.0, extraToolBox_), 8, 1);
     layout->addWidget(new LStepExpressSettingsDoubleSpinBox(settings_, "Y-TrackBallVelocity", 0.0, 70.0, extraToolBox_), 8, 2);
     layout->addWidget(new LStepExpressSettingsDoubleSpinBox(settings_, "Z-TrackBallVelocity", 0.0, 70.0, extraToolBox_), 8, 3);
-    layout->addWidget(new LStepExpressSettingsDoubleSpinBox(settings_, "A-TrackBallVelocity", 0.0, 70.0, extraToolBox_), 8, 4);    
+    layout->addWidget(new LStepExpressSettingsDoubleSpinBox(settings_, "A-TrackBallVelocity", 0.0, 70.0, extraToolBox_), 8, 4);
 
     layout->addWidget(new QLabel("Filter time", extraToolBox_), 9, 0);
     layout->addWidget(new LStepExpressSettingsDoubleSpinBox(settings_, "X-TrackBallFilterTime", 0.0, 500000.0, extraToolBox_), 9, 1);
     layout->addWidget(new LStepExpressSettingsDoubleSpinBox(settings_, "Y-TrackBallFilterTime", 0.0, 500000.0, extraToolBox_), 9, 2);
     layout->addWidget(new LStepExpressSettingsDoubleSpinBox(settings_, "Z-TrackBallFilterTime", 0.0, 500000.0, extraToolBox_), 9, 3);
-    layout->addWidget(new LStepExpressSettingsDoubleSpinBox(settings_, "A-TrackBallFilterTime", 0.0, 500000.0, extraToolBox_), 9, 4);    
+    layout->addWidget(new LStepExpressSettingsDoubleSpinBox(settings_, "A-TrackBallFilterTime", 0.0, 500000.0, extraToolBox_), 9, 4);
 
     layout->addWidget(new QLabel("Direction", extraToolBox_), 10, 0);
     layout->addWidget(new LStepExpressSettingsCheckBox(settings_, "X-TrackBallDirection", extraToolBox_), 10, 1);
     layout->addWidget(new LStepExpressSettingsCheckBox(settings_, "Y-TrackBallDirection", extraToolBox_), 10, 2);
     layout->addWidget(new LStepExpressSettingsCheckBox(settings_, "Z-TrackBallDirection", extraToolBox_), 10, 3);
-    layout->addWidget(new LStepExpressSettingsCheckBox(settings_, "A-TrackBallDirection", extraToolBox_), 10, 4);    
+    layout->addWidget(new LStepExpressSettingsCheckBox(settings_, "A-TrackBallDirection", extraToolBox_), 10, 4);
 
     layout->addWidget(new QLabel("Axis Enabled", extraToolBox_), 11, 0);
     layout->addWidget(new LStepExpressSettingsCheckBox(settings_, "X-TrackBallAxesEnabled", extraToolBox_), 11, 1);
     layout->addWidget(new LStepExpressSettingsCheckBox(settings_, "Y-TrackBallAxesEnabled", extraToolBox_), 11, 2);
     layout->addWidget(new LStepExpressSettingsCheckBox(settings_, "Z-TrackBallAxesEnabled", extraToolBox_), 11, 3);
-    layout->addWidget(new LStepExpressSettingsCheckBox(settings_, "A-TrackBallAxesEnabled", extraToolBox_), 11, 4);    
+    layout->addWidget(new LStepExpressSettingsCheckBox(settings_, "A-TrackBallAxesEnabled", extraToolBox_), 11, 4);
 
     layout->addWidget(new QLabel("Current Reduction", extraToolBox_), 12, 0);
     layout->addWidget(new LStepExpressSettingsCheckBox(settings_, "X-TrackBallCurrentReduction", extraToolBox_), 12, 1);
     layout->addWidget(new LStepExpressSettingsCheckBox(settings_, "Y-TrackBallCurrentReduction", extraToolBox_), 12, 2);
     layout->addWidget(new LStepExpressSettingsCheckBox(settings_, "Z-TrackBallCurrentReduction", extraToolBox_), 12, 3);
-    layout->addWidget(new LStepExpressSettingsCheckBox(settings_, "A-TrackBallCurrentReduction", extraToolBox_), 12, 4);    
+    layout->addWidget(new LStepExpressSettingsCheckBox(settings_, "A-TrackBallCurrentReduction", extraToolBox_), 12, 4);
 
     layout->addWidget(new QLabel("Axis Assignment", extraToolBox_), 13, 0);
     layout->addWidget(new LStepExpressSettingsIntSpinBox(settings_, "X-TrackBallAxisAssignment", 0, 4, extraToolBox_), 13, 1);
     layout->addWidget(new LStepExpressSettingsIntSpinBox(settings_, "Y-TrackBallAxisAssignment", 0, 4, extraToolBox_), 13, 2);
     layout->addWidget(new LStepExpressSettingsIntSpinBox(settings_, "Z-TrackBallAxisAssignment", 0, 4, extraToolBox_), 13, 3);
-    layout->addWidget(new LStepExpressSettingsIntSpinBox(settings_, "A-TrackBallAxisAssignment", 0, 4, extraToolBox_), 13, 4);    
+    layout->addWidget(new LStepExpressSettingsIntSpinBox(settings_, "A-TrackBallAxisAssignment", 0, 4, extraToolBox_), 13, 4);
 
     layout->addWidget(new QWidget(generalToolBox_), 14, 0);
     layout->setRowStretch(14, 100);
@@ -1028,8 +1028,8 @@ void LStepExpressSettingsWidget::controlStateChanged(bool enabled)
         readFromDeviceButton_->setEnabled(settings_->getDeviceState());
         //readFromFileButton_->setEnabled(settings_->getDeviceState());
         applyButton_->setEnabled(settings_->getDeviceState());
-        resetButton_->setEnabled(settings_->getDeviceState());                                                                                                                                              
-        writeToDeviceButton_->setEnabled(settings_->getDeviceState());                                                                                                                                       
+        resetButton_->setEnabled(settings_->getDeviceState());
+        writeToDeviceButton_->setEnabled(settings_->getDeviceState());
         //writeToFileButton_->setEnabled(settings_->getDeviceState());
     } else {
         mainToolBox_->setEnabled(false);
@@ -1068,7 +1068,7 @@ void LStepExpressSettingsWidget::applyClicked()
 void LStepExpressSettingsWidget::resetClicked()
 {
   //    NQLog("LStepExpressSettingsWidget ", NQLog::Spam) << "resetClicked()"    ;
-    
+
     settings_->resetSettings();
 }
 
@@ -1099,4 +1099,15 @@ void LStepExpressSettingsWidget::writeToFileClicked()
     if (filename.isNull()) return;
 
     settings_->writeSettingsToFile(filename);
+}
+
+//-- Information about this tab in GUI
+//HTML markup (<xxx></xxx>): p paragraph, b bold, em emphasize, i italic, s small, section, summary, var variable, ...
+//Ex: <p style="color:red">This is a red paragraph.</p>
+void LStepExpressSettingsWidget::display_infoTab()
+{
+    QMessageBox::information(this, tr("Information - Motion Settings"),
+            tr("<p>There is no available information about the content of this tab yet.</p>"));
+
+    return;
 }

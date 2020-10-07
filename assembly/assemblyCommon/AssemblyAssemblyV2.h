@@ -58,6 +58,8 @@ class AssemblyAssemblyV2 : public QObject
   double PSSPlusSpacersToMaPSAPosition_Z_;
   double PSSPlusSpacersToMaPSAPosition_A_;
 
+  bool alreadyClicked_LowerPickupToolOntoMaPSA, alreadyClicked_LowerPickupToolOntoPSS, alreadyClicked_LowerMaPSAOntoBaseplate, alreadyClicked_LowerPSSOntoSpacers, alreadyClicked_LowerPSSPlusSpacersOntoGluingStage, alreadyClicked_LowerPSSPlusSpacersOntoMaPSA;
+
  public slots:
 
   void use_smartMove(const int);

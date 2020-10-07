@@ -45,7 +45,7 @@ class AssemblyDBLoggerView : public QWidget
 
     public:
 
-        AssemblyDBLoggerView(const QString&, QWidget* parent=nullptr);
+        AssemblyDBLoggerView(const QString&); //, QWidget* parent=nullptr
         virtual ~AssemblyDBLoggerView();
 
         QPushButton* get_DBLogger_button_edit() const {return button_edit_;}
@@ -84,6 +84,7 @@ class AssemblyDBLoggerView : public QWidget
         void load_logfile();
         void save_logfile();
         void clear_content();
+        void display_infoTab();
 
     signals:
 
