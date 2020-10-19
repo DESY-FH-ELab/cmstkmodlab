@@ -28,6 +28,9 @@ class AssemblyAssemblyView : public QWidget
   explicit AssemblyAssemblyView(const QObject* const, QWidget* parent=nullptr);
   virtual ~AssemblyAssemblyView() {}
 
+ public slots:
+  void display_infoTab();
+
  protected:
   QCheckBox* smartMove_checkbox_;
 

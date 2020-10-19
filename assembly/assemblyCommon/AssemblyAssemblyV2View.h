@@ -16,6 +16,7 @@
 #include <QObject>
 #include <QWidget>
 #include <QCheckBox>
+#include <QMessageBox>
 
 class AssemblyAssemblyV2View : public QWidget
 {
@@ -24,6 +25,9 @@ class AssemblyAssemblyV2View : public QWidget
  public:
   explicit AssemblyAssemblyV2View(const QObject* const, QWidget* parent=nullptr);
   virtual ~AssemblyAssemblyV2View() {}
+
+ public slots:
+  void display_infoTab();
 
  protected:
   QCheckBox* smartMove_checkbox_;

@@ -111,6 +111,8 @@ class AssemblyObjectAlignerView : public QWidget
 
   void update_autofocusing_checkbox(const int);
 
+  void display_infoTab();
+
  signals:
 
   void configuration(AssemblyObjectAligner::Configuration);

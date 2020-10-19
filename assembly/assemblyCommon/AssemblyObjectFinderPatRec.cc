@@ -644,8 +644,10 @@ void AssemblyObjectFinderPatRec::template_matching(const AssemblyObjectFinderPat
      << ": emitting signal \"PatRec_results(" << patrec_dX << ", " << patrec_dY << ", " << best_angle << ")\"";
 
   const QString mess_tmp = "PatRec results:\n" +
-                QString("-- Best match X = ")     + QString::number(best_matchLoc.x) + " (px) \n" +
-                QString("-- Best match Y = ")     + QString::number(best_matchLoc.y) + " (px) \n" +
+                // QString("-- Best match X = ")     + QString::number(best_matchLoc.x) + " (px) \n" +
+                // QString("-- Best match X = ")     + QString::number(best_matchLoc.x) + " (px) \n" +
+                QString("-- Best match X = ")     + QString::number(patrec_dX) + " (mm) \n" +
+                QString("-- Best match Y = ")     + QString::number(patrec_dY) + " (mm) \n" +
                 QString("-- Best match angle = ") + QString::number(best_angle) + " (deg)";
   emit DBLogMessage(mess_tmp);
 

@@ -23,6 +23,7 @@
 
 #include <QWidget>
 #include <QCheckBox>
+#include <QMessageBox>
 
 class AssemblyHardwareControlView : public QWidget
 {
@@ -58,6 +59,8 @@ class AssemblyHardwareControlView : public QWidget
 
   void  enableMotionTools(const bool  enable=true);
   void disableMotionTools(const bool disable=true);
+
+  void display_infoTab();
 };
 
 #endif // ASSEMBLYHARDWARECONTROLVIEW_H
