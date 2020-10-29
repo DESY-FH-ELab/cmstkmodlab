@@ -170,3 +170,9 @@ template <> unsigned int ApplicationConfig::getValue(std::string const& key,
   }
   return returnValue;
 }
+
+template <> void ApplicationConfig::setValue(std::string const& key, std::string value)
+{
+  keyvalueMap_.erase(key);
+  keyvalueMap_.insert(std::make_pair(key, value));
+}

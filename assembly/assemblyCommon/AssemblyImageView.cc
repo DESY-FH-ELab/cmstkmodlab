@@ -352,9 +352,13 @@ void AssemblyImageView::modify_image_axesConventions()
   putText(img, "+y", cv::Point(padding, img.rows/2.0+2*padding), fontFace, fontScale, cv::Scalar(255,0,0), linethick, CV_AA);
   putText(img, "-y", cv::Point(img.cols-5*padding, img.rows/2.0+2*padding), fontFace, fontScale, cv::Scalar(255,0,0), linethick, CV_AA);
 
-  // also add line/label for distance scale
+  //Add line/label for distance scale
   line   (img, cv::Point(0, 125), cv::Point(0+167, 125), cv::Scalar(0,255,0), 2, 8, 0);
   putText(img, "200 um", cv::Point(100, 100), cv::FONT_HERSHEY_SCRIPT_SIMPLEX, 1.5, cv::Scalar(0,255,0), 3, 8);
+
+  //Add line/label for rotation angle convention (positive angle <-> anti-clockwise)
+  line   (img, cv::Point(10, img.rows-180), cv::Point(150, img.rows-80), cv::Scalar(255,0,0), 2, 8, 0);
+  putText(img, "+a", cv::Point(180, img.rows-15), fontFace, fontScale, cv::Scalar(255,0,0), linethick, CV_AA);
 
   this->update_image(img, false);
 

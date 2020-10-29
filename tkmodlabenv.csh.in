@@ -1,13 +1,20 @@
 setenv TKMODLABBASE "@basepath@"
+
 setenv PATH "@basepath@/tools/bin:$PATH"
-setenv PATH "@basepath@/thermo/thermoDAQ:$PATH"
-setenv PATH "@basepath@/thermo/thermoDisplay:$PATH"
+
 setenv PATH "@basepath@/thermo/thermoDAQ2Root:$PATH"
-setenv PATH "@basepath@/thermo/thermoDAQ2Log:$PATH"
+setenv PATH "@basepath@/thermo/thermo1/thermoDAQ:$PATH"
+setenv PATH "@basepath@/thermo/thermo1/thermoDisplay:$PATH"
+setenv PATH "@basepath@/thermo/thermo1/thermoDAQ2Log:$PATH"
+setenv PATH "@basepath@/thermo/thermo2/thermoDAQ2:$PATH"
+setenv PATH "@basepath@/thermo/thermo2/thermoDisplay2:$PATH"
+
 setenv PATH "@basepath@/defo/defoDAQ:$PATH"
 setenv PATH "@basepath@/defo/defoReco:$PATH"
 setenv PATH "@basepath@/defo/defoDAQ2Root:$PATH"
+
 setenv PATH "@basepath@/assembly/assembly:$PATH"
+
 setenv LD_LIBRARY_PATH "@basepath@/devices/lib:$LD_LIBRARY_PATH"
 setenv LD_LIBRARY_PATH "@basepath@/external/ddierckx:$LD_LIBRARY_PATH"
 setenv LD_LIBRARY_PATH "@basepath@/external/twitcurl:$LD_LIBRARY_PATH"

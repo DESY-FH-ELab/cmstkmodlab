@@ -66,14 +66,14 @@ int LeyboldGraphixThreeFake::GetNumberOfChannels() const
   return 3;
 }
 
-VLeyboldGraphixThree::SensorDetectionMode LeyboldGraphixThreeFake::GetSensorDetectionMode(int sensor) const
+VLeyboldGraphix::SensorDetectionMode LeyboldGraphixThreeFake::GetSensorDetectionMode(int sensor) const
 {
   if (sensor<1 || sensor>3) return SensorDetectionAuto;
 
   return sensorDetectionMode_[sensor-1];
 }
 
-void LeyboldGraphixThreeFake::SetSensorDetectionMode(int sensor, VLeyboldGraphixThree::SensorDetectionMode mode)
+void LeyboldGraphixThreeFake::SetSensorDetectionMode(int sensor, VLeyboldGraphix::SensorDetectionMode mode)
 {
   if (sensor<1 || sensor>3) return;
 
@@ -108,7 +108,7 @@ void LeyboldGraphixThreeFake::SetSensorName(int sensor, const std::string& name)
   sensorName_[sensor-1] = name;
 }
 
-LeyboldGraphixThreeFake::SensorStatus LeyboldGraphixThreeFake::GetSensorStatus(int sensor) const
+VLeyboldGraphix::SensorStatus LeyboldGraphixThreeFake::GetSensorStatus(int sensor) const
 {
   if (sensor<1 || sensor>3) return SensorStatus_nosen;
 
@@ -121,23 +121,23 @@ double LeyboldGraphixThreeFake::GetPressure(int sensor) const
   return pressure_[sensor-1] + rand() % 10;
 }
 
-LeyboldGraphixThreeFake::DisplayUnit LeyboldGraphixThreeFake::GetDisplayUnit() const
+VLeyboldGraphix::DisplayUnit LeyboldGraphixThreeFake::GetDisplayUnit() const
 {
   return displayUnit_;
 }
 
-void LeyboldGraphixThreeFake::SetDisplayUnit(LeyboldGraphixThreeFake::DisplayUnit unit)
+void LeyboldGraphixThreeFake::SetDisplayUnit(VLeyboldGraphix::DisplayUnit unit)
 {
   displayUnit_ = unit;
 }
 
-VLeyboldGraphixThree::SetPointChannel LeyboldGraphixThreeFake::GetSetPointChannelAssignment(int sp) const
+VLeyboldGraphix::SetPointChannel LeyboldGraphixThreeFake::GetSetPointChannelAssignment(int sp) const
 {
   if (sp<1 || sp>6) return SetPointChannelOff;
   return setPointChannel_[sp-1];
 }
 
-void LeyboldGraphixThreeFake::SetSetPointChannelAssignment(int sp, VLeyboldGraphixThree::SetPointChannel channel)
+void LeyboldGraphixThreeFake::SetSetPointChannelAssignment(int sp, VLeyboldGraphix::SetPointChannel channel)
 {
   if (sp<1 || sp>6) return;
   setPointChannel_[sp-1] = channel;

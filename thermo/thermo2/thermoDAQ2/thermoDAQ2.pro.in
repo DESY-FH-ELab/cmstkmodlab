@@ -1,0 +1,81 @@
+LIBS += -L@basepath@/devices/lib -lTkModLabKeithley
+LIBS += -L@basepath@/devices/lib -lTkModLabGreisinger
+LIBS += -L@basepath@/devices/lib -lTkModLabJulabo
+LIBS += -L@basepath@/devices/lib -lTkModLabHameg
+LIBS += -L@basepath@/devices/lib -lTkModLabPfeiffer
+LIBS += -L@basepath@/devices/lib -lTkModLabHuber
+LIBS += -L@basepath@/devices/lib -lTkModLabRohdeSchwarz
+LIBS += -L@basepath@/common -lCommon
+
+QMAKE = @qmake@
+
+macx {
+  CONFIG+=x86_64
+  QMAKE_CXXFLAGS += -stdlib=libc++
+  #QMAKE_MAC_SDK = macosx10.11
+  QMAKE_MACOSX_DEPLOYMENT_TARGET = 10.11
+  #LIBS += -framework AppKit
+  #LIBS += -framework QuartzCore
+  #LIBS += -framework QTKit
+  #LIBS += -framework Cocoa
+}
+
+CONFIG+=c++17
+QMAKE_CXXFLAGS += -std=c++17
+
+macx {
+  QMAKE_CXXFLAGS += -DAPPLICATIONVERSIONSTR=\\\"unknown\\\"
+} else {
+  QMAKE_CXXFLAGS += -DAPPLICATIONVERSIONSTR=\\\"`git describe --dirty --always --tags`\\\"
+}
+
+DEFINES += @configdefines@
+
+QT += core gui xml network script svg
+greaterThan(QT_MAJOR_VERSION, 4) {
+  QT += widgets
+} 
+
+TARGET = thermoDAQ2
+TEMPLATE = app
+
+macx {
+  QMAKE_POST_LINK = install_name_tool -change libCommon.1.dylib @basepath@/common/libCommon.1.dylib $(TARGET)
+}
+
+DEPENDPATH += @basepath@/common
+INCLUDEPATH += .
+INCLUDEPATH += ..
+INCLUDEPATH += @basepath@
+INCLUDEPATH += @basepath@/common
+
+greaterThan(QT_MAJOR_VERSION, 4){
+  cache()
+}
+
+HEADERS += TestWindow.h \
+           Thermo2MainWindow.h \
+           Thermo2DAQModel.h \
+           Thermo2DAQWidget.h \
+           Thermo2DAQThread.h \
+           Thermo2DAQStreamer.h \
+           Thermo2DAQServer.h \
+           Thermo2ScriptModel.h \
+           Thermo2ScriptWidget.h \
+           Thermo2ScriptSnippets.h \
+           Thermo2ScriptThread.h \
+           Thermo2ScriptableGlobals.h
+    
+SOURCES += thermoDAQ2.cc \
+           TestWindow.cc \
+           Thermo2MainWindow.cc \
+           Thermo2DAQModel.cc \
+           Thermo2DAQWidget.cc \
+           Thermo2DAQThread.cc \
+           Thermo2DAQStreamer.cc \
+           Thermo2DAQServer.cc \
+           Thermo2ScriptModel.cc \
+           Thermo2ScriptWidget.cc \
+           Thermo2ScriptSnippets.cc \
+           Thermo2ScriptThread.cc \
+           Thermo2ScriptableGlobals.cc

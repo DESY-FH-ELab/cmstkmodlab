@@ -15,6 +15,14 @@
 
 #include "VLeyboldGraphixThree.h"
 
+/** @addtogroup devices
+ *  @{
+ */
+
+/** @addtogroup Leybold
+ *  @{
+ */
+
 class LeyboldGraphixThreeFake : public VLeyboldGraphixThree
 {
  public:
@@ -74,5 +82,9 @@ class LeyboldGraphixThreeFake : public VLeyboldGraphixThree
   double setPointOnPressure_[6];
   double setPointOffPressure_[6];
 };
+ 
+/** @} */
+
+/** @} */
 
 #endif // _LEYBOLDGRAPHIXTHREEFAKE_H_

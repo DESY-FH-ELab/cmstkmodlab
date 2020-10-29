@@ -29,9 +29,6 @@
 #define ttyS2 "/dev/ttyS2"
 #define ttyS3 "/dev/ttyS3"
 
-typedef const char* ioport_t;
-typedef struct termios termios_t;
-
 /** @addtogroup devices
  *  @{
  */
@@ -39,6 +36,9 @@ typedef struct termios termios_t;
 /** @addtogroup Keithley
  *  @{
  */
+
+typedef const char* ioport_t;
+typedef struct termios termios_t;
 
 class KMMComHandler
 {
@@ -75,6 +75,3 @@ class KMMComHandler
 /** @} */
 
 #endif
-
-
-

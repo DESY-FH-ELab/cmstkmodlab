@@ -16,6 +16,8 @@ LIBS += -L@basepath@/devices/lib -lTkModLabCori
 LIBS += -L@basepath@/devices/lib -lTkModLabNanotec
 LIBS += -L@basepath@/devices/lib -lTkModLabConrad
 LIBS += -L@basepath@/devices/lib -lTkModLabLeybold
+LIBS += -L@basepath@/devices/lib -lTkModLabRohdeSchwarz
+LIBS += -L@basepath@/devices/lib -lTkModLabAgilent
 LIBS += -L@basepath@/external/ddierckx -lddierckx
 LIBS += -lcurl
 
@@ -108,7 +110,21 @@ HEADERS += nqlogger.h \
            NanotecSMCI36Model.h \
            NanotecSMCI36Widget.h \
            ConradModel.h \
-           LeyboldGraphixThreeModel.h
+           LeyboldGraphixThreeModel.h \
+           LeyboldGraphixOneModel.h \
+           LeyboldGraphixOneWidget.h \
+           RohdeSchwarzNGE103BModel.h \
+           RohdeSchwarzNGE103BWidget.h \
+           ScriptableRohdeSchwarzNGE103B.h \
+           ValueHistory.h \
+           KeithleyDAQ6510Model.h \
+           KeithleyDAQ6510Widget.h \
+           ScriptableKeithleyDAQ6510.h \
+           HuberUnistat525wModel.h \
+           HuberUnistat525wWidget.h \
+           ScriptableHuberUnistat525w.h \
+           AgilentTwisTorr304Model.h \
+           AgilentTwisTorr304Widget.h
 
 SOURCES += nqlogger.cc \
            npoint2D.cc \
@@ -155,4 +171,17 @@ SOURCES += nqlogger.cc \
            NanotecSMCI36Model.cc \
            NanotecSMCI36Widget.cc \
            ConradModel.cc \
-           LeyboldGraphixThreeModel.cc
+           LeyboldGraphixThreeModel.cc \
+           LeyboldGraphixOneModel.cc \
+           LeyboldGraphixOneWidget.cc \
+           RohdeSchwarzNGE103BModel.cc \
+           RohdeSchwarzNGE103BWidget.cc \
+           ScriptableRohdeSchwarzNGE103B.cc \
+           KeithleyDAQ6510Model.cc \
+           KeithleyDAQ6510Widget.cc \
+           ScriptableKeithleyDAQ6510.cc \
+           HuberUnistat525wModel.cc \
+           HuberUnistat525wWidget.cc \
+           ScriptableHuberUnistat525w.cc \
+           AgilentTwisTorr304Model.cc \
+           AgilentTwisTorr304Widget.cc

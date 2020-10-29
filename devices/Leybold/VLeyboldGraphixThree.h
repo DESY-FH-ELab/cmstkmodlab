@@ -1,6 +1,6 @@
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //
-//               Copyright (C) 2011-2017 - The DESY CMS Group                  //
+//               Copyright (C) 2011-2020 - The DESY CMS Group                  //
 //                           All rights reserved                               //
 //                                                                             //
 //      The CMStkModLab source code is licensed under the GNU GPL v3.0.        //
@@ -13,55 +13,19 @@
 #ifndef _VLEYBOLDGRAPHIXTHREE_H_
 #define _VLEYBOLDGRAPHIXTHREE_H_
 
-#include <string>
-#include <map>
-#include <utility>
+#include "VLeyboldGraphix.h"
 
-typedef const char* ioport_t;
+/** @addtogroup devices
+ *  @{
+ */
 
-class VLeyboldGraphixThree
+/** @addtogroup Leybold
+ *  @{
+ */
+
+class VLeyboldGraphixThree : public VLeyboldGraphix
 {
  public:
-
-  enum SensorDetectionMode {
-    SensorDetectionAuto    = 0,
-    SensorDetectionManual  = 1
-  };
-
-  enum SensorType {
-    SensorType_NOSEN     = 0,
-    SensorType_TTRx      = 1000,
-    SensorType_TTR90     = 1900,
-    SensorType_TTR91     = 1910,
-    SensorType_TTR91N    = 1911
-  };
-
-  enum SensorStatus {
-    SensorStatus_nosen   = 0,
-    SensorStatus_ok      = 1,
-    SensorStatus_range   = 2,
-    SensorStatus_soff    = 3,
-    SensorStatus_ErrorH  = 4,
-    SensorStatus_ErrorL  = 5,
-    SensorStatus_ErrorS  = 6,
-    SensorStatus_unknown
-  };
-
-  enum DisplayUnit {
-    DisplayUnit_mbar   = 0,
-    DisplayUnit_Torr   = 1,
-    DisplayUnit_Pa     = 2,
-    DisplayUnit_psi    = 3,
-    DisplayUnit_Micron = 4,
-    DisplayUnit_unknown
-  };
-
-  enum SetPointChannel {
-    SetPointChannelOff   = 0,
-    SetPointChannel1     = 1,
-    SetPointChannel2     = 2,
-    SetPointChannel3     = 3
-  };
 
   VLeyboldGraphixThree( const ioport_t );
   virtual ~VLeyboldGraphixThree();
@@ -86,19 +50,11 @@ class VLeyboldGraphixThree
   virtual void SetSensorName(int sensor, const std::string& name) = 0;
 
   virtual SensorStatus GetSensorStatus(int sensor) const = 0;
-  std::string GetSensorStatusText(SensorStatus status) const;
-  const std::map<SensorStatus,std::string>& GetSensorStatusTexts() const {
-    return sensorTextStatus_;
-  }
 
   virtual double GetPressure(int sensor) const = 0;
 
   virtual DisplayUnit GetDisplayUnit() const = 0;
   virtual void SetDisplayUnit(DisplayUnit unit) = 0;
-  std::string GetDisplayUnitName(DisplayUnit unit) const;
-  const std::map<DisplayUnit,std::string>& GetDisplayUnitNames() const {
-    return displayUnitNames_;
-  }
 
   virtual SetPointChannel GetSetPointChannelAssignment(int sp) const = 0;
   virtual void SetSetPointChannelAssignment(int sp, SetPointChannel channel) = 0;
@@ -119,11 +75,10 @@ class VLeyboldGraphixThree
   
  protected:
 
-  std::map<std::string,SensorStatus> sensorStatusText_;
-  std::map<SensorStatus, std::string> sensorTextStatus_;
-
-  std::map<DisplayUnit,std::string> displayUnitNames_;
-  std::map<std::string,DisplayUnit> displayNameUnits_;
 };
+ 
+/** @} */
+
+/** @} */
 
 #endif // _VLEYBOLDGRAPHIXTHREE_H_
