@@ -275,7 +275,7 @@ AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QStr
          << assembly_sequence << ") -> GUI Tab " << tabname_Assembly << " will not be created";
     }
 
-    connect(image_view_, SIGNAL(sigRequestMoveRelative(double,double,double,double)), motion_model_, SLOT(moveRelative(double,double,double,double)));
+    connect(image_view_, SIGNAL(sigRequestMoveRelative(double,double,double,double)), motion_manager_, SLOT(moveRelative(double,double,double,double)));
     connect(motion_manager_, SIGNAL(motion_finished()), image_view_, SLOT(InfoMotionFinished()));
     // ---------------------------------------------------------
 
@@ -347,8 +347,8 @@ AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QStr
 
     NQLog("AssemblyMainWindow", NQLog::Message) << "added view " << tabname_Parameters;
 
-    connect(params_view_, SIGNAL(request_moveToAbsRefPosition(double,double,double,double)), motion_model_, SLOT(moveAbsolute(double,double,double,double)));
-    connect(params_view_, SIGNAL(request_moveByRelRefDistance(double,double,double,double)), motion_model_, SLOT(moveRelative(double,double,double,double)));
+    connect(params_view_, SIGNAL(request_moveToAbsRefPosition(double,double,double,double)), motion_manager_, SLOT(moveAbsolute(double,double,double,double)));
+    connect(params_view_, SIGNAL(request_moveByRelRefDistance(double,double,double,double)), motion_manager_, SLOT(moveRelative(double,double,double,double)));
     // ---------------------------------------------------------
 
     // MOTION-SETTINGS VIEW ------------------------------------
@@ -873,9 +873,9 @@ void AssemblyMainWindow::disconnect_multiPickupTest()
 //Disconnect remaining signal/slots, which did not get disconnected via specific functions
 void AssemblyMainWindow::disconnect_otherSlots()
 {
-    disconnect(params_view_, SIGNAL(request_moveToAbsRefPosition(double,double,double,double)), motion_model_, SLOT(moveAbsolute(double,double,double,double)));
-    disconnect(params_view_, SIGNAL(request_moveByRelRefDistance(double,double,double,double)), motion_model_, SLOT(moveRelative(double,double,double,double)));
-    disconnect(image_view_, SIGNAL(sigRequestMoveRelative(double,double,double,double)), motion_model_, SLOT(moveRelative(double,double,double,double)));
+    disconnect(params_view_, SIGNAL(request_movetoabsrefposition(double,double,double,double)), motion_manager_, SLOT(moveAbsolute(double,double,double,double)));
+    disconnect(params_view_, SIGNAL(request_moveByRelRefDistance(double,double,double,double)), motion_manager_, SLOT(moveRelative(double,double,double,double)));
+    disconnect(image_view_, SIGNAL(sigRequestMoveRelative(double,double,double,double)), motion_manager_, SLOT(moveRelative(double,double,double,double)));
 
     return;
 }
