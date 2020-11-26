@@ -730,14 +730,14 @@ void AssemblyParametersView::display_infoTab()
     messageBox.setWindowTitle(tr("Information - Parameters"));
 
     messageBox.setText(tr("<p>This tab stores reference values (dimensions, distances, etc.) necessary to the assembly procedure.<br>"
-    "The values are read from a config file (whose path is hardcoded as option <i>[AssemblyParameters_file_path]</i> in the file <i>[assembly/assembly.cfg])</i>, and may be edited interactively and non-permanently by the user.</p>"
-    "<p style=color:orange>NB: make sure to read the proper config file, which differs for glass or silicon assembly !</p>"
+    "The values are read from a config file (whose path is hardcoded as option <i>AssemblyParameters_file_path</i> in the file <i>assembly/assembly.cfg)</i>, and may be edited interactively by the user in this interface (non-permanent changes).</p>"
+    "<p style=color:orange>NB: make sure to read the proper config file, which differs for glass/silicon and different spacer thicknesses !</p>"
     "<p>[<b>Dimensions of Assembly Components</b>] -- Reference thickness values of assembly components, used to compute distances along the Z-axis and apply the corresponding movements during assembly.</p>"
     "<p>[<b>Reference Positions</b>] -- Absolute positions of several reference points <i>(related to assembly platform, spacer slots, gluing stage, ec.)</i> expressed in the reference frame of the motion stage (MS). These values must be determined manually as part of a periodic calibration procedure."
     "<ul>"
     "<li> <u>Sensor Marker-1 Ref Point</u>: position of the top-left fiducial marker of a sensor. This position is arbitrary and only used as a starting point for PatRec, which ultimately determines the exact marker position. The purpose of this constant is solely to provide a good starting point for the PatRec to run as fast as possible.</li>"
-    "<li> <u>Baseplate Ref Point</u>: position of the inner edge of the black right angle engraved on the bottom-left corner of the platform. This point provides all the necessary information about the positions of the platform in the MS reference frame, since all point-to-point distances on the platform are assumed to be known exactly.</li>"
-    "<li> <u>Spacers Ref Point</u>: position of the same platform edge mentioned above, after a -90degrees rotation has been applied to the platform. The XYZ coordinates must be determined independently, while the angle is assumed to be shifted by exactly -90deg w.r.t. its initial value. <i>NB: the axis of rotation of the platform is not assumed to be known exactly, hence this position is measured rather than deduced from other quantities.</i></li>"
+    "<li> <u>Baseplate Ref Point</u>: position of the inner edge of the right angle engraved on the bottom-left corner of the platform. This point provides all the necessary information about the positions of the platform in the MS reference frame, since all point-to-point distances on the platform are assumed to be known exactly.</li>"
+    "<li> <u>Spacers Ref Point</u>: position of the same platform edge mentioned above, after a -90degrees rotation has been applied to the platform. The XYZ coordinates must be determined independently, while the angle is assumed to be shifted by exactly -90deg w.r.t. its initial value. <i>NB: the axis of rotation of the platform is not assumed to be known exactly, hence this position is measured rather than deduced from other quantities. [OBSOLETE with new assembly platform -- now identical to above]</i></li>"
     "</ul></p>"
     "<p>[<b>Reference Distances</b>] -- Distances between reference points.</p>"
     ));
