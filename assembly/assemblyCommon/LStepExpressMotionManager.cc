@@ -542,6 +542,13 @@ double LStepExpressMotionManager::get_position(const int axis) const
       }
       else if(this->model()->getPositions().size() != 4)
       {
+	//FIXME -- debugging recurrent MS instability (returning incorrect pos vector)
+	std::cout<<"this->model()->getPositions().size() = "<<this->model()->getPositions().size()<<std::endl;
+	for(int i=0; i<this->model()->getPositions().size(); i++)
+	{
+		std::cout<<"this->model()->getPositions().at("<<i<<") = "<<this->model()->getPositions().at(i)<<std::endl;	
+	}
+
         NQLog("LStepExpressMotionManager", NQLog::Warning) << "get_position(" << axis << ")"
            << ": cannot return motion stage position [try #" << tries << "] because positions vector has invalid size ("
            << this->model()->getPositions().size() << ")";
