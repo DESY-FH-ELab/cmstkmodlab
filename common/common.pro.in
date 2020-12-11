@@ -18,8 +18,10 @@ LIBS += -L@basepath@/devices/lib -lTkModLabConrad
 LIBS += -L@basepath@/devices/lib -lTkModLabLeybold
 LIBS += -L@basepath@/devices/lib -lTkModLabRohdeSchwarz
 LIBS += -L@basepath@/devices/lib -lTkModLabAgilent
+LIBS += -L@basepath@/devices/lib -lTkModLabMarta
 LIBS += -L@basepath@/external/ddierckx -lddierckx
 LIBS += -lcurl
+LIBS += -lmodbus
 
 QMAKE = @qmake@
 
@@ -124,7 +126,8 @@ HEADERS += nqlogger.h \
            HuberUnistat525wWidget.h \
            ScriptableHuberUnistat525w.h \
            AgilentTwisTorr304Model.h \
-           AgilentTwisTorr304Widget.h
+           AgilentTwisTorr304Widget.h \
+           MartaModel.h
 
 SOURCES += nqlogger.cc \
            npoint2D.cc \
@@ -184,4 +187,5 @@ SOURCES += nqlogger.cc \
            HuberUnistat525wWidget.cc \
            ScriptableHuberUnistat525w.cc \
            AgilentTwisTorr304Model.cc \
-           AgilentTwisTorr304Widget.cc
+           AgilentTwisTorr304Widget.cc \
+           MartaModel.cc
