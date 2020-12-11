@@ -27,7 +27,7 @@ MartaComHandler::MartaComHandler( ipaddress_t IPAddress, port_t Port)
   // save IPAddress and port 
   fIPAddress = IPAddress;
   fPort = Port;
-
+  
   Connect();
   Disconnect();
 }
@@ -48,7 +48,7 @@ void MartaComHandler::ReadRegisters(int addr, int nb, uint16_t *dest)
 
 void MartaComHandler::Connect()
 {
-  fMB = modbus_new_tcp(fIPAddress, fPort);
+  fMB = modbus_new_tcp(fIPAddress.c_str(), fPort);
 
   if (modbus_connect(fMB) == -1) {
     printf("Connection failed: %s\n", modbus_strerror(errno));

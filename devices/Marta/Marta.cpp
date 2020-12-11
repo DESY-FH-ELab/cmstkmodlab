@@ -13,8 +13,21 @@
 #include <cstring>
 #include <cmath>
 #include <sstream>
+#include <iostream>
 
 #include "Marta.h"
+
+Marta::Marta( ipaddress_t ipaddress )
+  :VMarta(ipaddress),
+   isDeviceAvailable_(false)
+{
+  std::string ipandport = ipaddress;
+  auto const pos = ipandport.find_last_of(':');
+  std::string ip = ipandport.substr(0, pos);
+  std::string port = ipandport.substr(pos+1);
+  
+  comHandler_ = new MartaComHandler(ip.c_str(), std::atoi(port.c_str()));
+}
 
 Marta::Marta( ipaddress_t ipaddress, port_t port )
   :VMarta(ipaddress, port),

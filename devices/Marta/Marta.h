@@ -37,6 +37,7 @@ class Marta : public VMarta
 {
 public:
 
+  Marta( ipaddress_t );
   Marta( ipaddress_t, port_t );
   ~Marta();
 

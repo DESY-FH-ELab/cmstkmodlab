@@ -19,7 +19,9 @@
 #include <fcntl.h>
 #include <unistd.h>
 
-#include <modbus.h>
+#include <string>
+
+#include <modbus/modbus.h>
 
 /** @addtogroup devices
  *  @{
@@ -57,7 +59,7 @@ class MartaComHandler {
   
   bool fDeviceAvailable;
 
-  ipaddress_t fIPAddress;
+  std::string fIPAddress;
   port_t fPort;
 
   modbus_t *fMB;

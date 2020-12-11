@@ -31,6 +31,7 @@ class VMarta
 {
 public:
 
+  VMarta( ipaddress_t );
   VMarta( ipaddress_t, port_t );
   virtual ~VMarta();
 

@@ -16,6 +16,11 @@
 
 #include "VMarta.h"
 
+VMarta::VMarta( ipaddress_t )
+{
+
+}
+
 VMarta::VMarta( ipaddress_t, port_t )
 {
 
