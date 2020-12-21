@@ -51,7 +51,7 @@ double imageScale(double focalLength)
 int main(int /* argc */, char ** /* argv */)
 {
   {
-    MartaModel *marta = new MartaModel("131.169.43.224:502");
+    MartaModel *marta = new MartaModel("10.255.21.224:502");
 
     delete marta;
   }

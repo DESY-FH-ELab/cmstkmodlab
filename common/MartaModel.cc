@@ -98,18 +98,62 @@ void MartaModel::updateInformation()
 
     uint16_t tab_reg[74];
     
-    controller_->ReadRegisters(1, 16, tab_reg);
+    controller_->ReadRegisters(0, 72, tab_reg);
     
     // printf("0x%04x 0x%04x\n", tab_reg[0], tab_reg[1]);
     
-    printf("PT03:     %f\n", controller_->ToFloatDCBA(&tab_reg[0]));
-    printf("PT05:     %f\n", controller_->ToFloatDCBA(&tab_reg[2]));
-    printf("PT01CO2:  %f\n", controller_->ToFloatDCBA(&tab_reg[4]));
-    printf("PT02CO2:  %f\n", controller_->ToFloatDCBA(&tab_reg[6]));
-    printf("PT03CO2:  %f\n", controller_->ToFloatDCBA(&tab_reg[8]));
-    printf("PT04CO2:  %f\n", controller_->ToFloatDCBA(&tab_reg[10]));
-    printf("PT05CO2:  %f\n", controller_->ToFloatDCBA(&tab_reg[12]));
-    printf("PT06CO2:  %f\n", controller_->ToFloatDCBA(&tab_reg[14]));
+    printf("PT03:     %f\n", controller_->ToFloatBADC(&tab_reg[0]));
+    printf("PT05:     %f\n", controller_->ToFloatBADC(&tab_reg[2]));
+    printf("PT01CO2:  %f\n", controller_->ToFloatBADC(&tab_reg[4]));
+    printf("PT02CO2:  %f\n", controller_->ToFloatBADC(&tab_reg[6]));
+    printf("PT03CO2:  %f\n", controller_->ToFloatBADC(&tab_reg[8]));
+    printf("PT04CO2:  %f\n", controller_->ToFloatBADC(&tab_reg[10]));
+    printf("PT05CO2:  %f\n", controller_->ToFloatBADC(&tab_reg[12]));
+    printf("PT06CO2:  %f\n", controller_->ToFloatBADC(&tab_reg[14]));
+    printf("TT02:     %f\n", controller_->ToFloatBADC(&tab_reg[16]));
+    printf("TT01CO2:  %f\n", controller_->ToFloatBADC(&tab_reg[18]));
+    printf("TT02CO2:  %f\n", controller_->ToFloatBADC(&tab_reg[20]));
+    printf("TT03CO2:  %f\n", controller_->ToFloatBADC(&tab_reg[22]));
+    printf("TT04CO2:  %f\n", controller_->ToFloatBADC(&tab_reg[24]));
+    printf("TT05CO2:  %f\n", controller_->ToFloatBADC(&tab_reg[26]));
+    printf("TT06CO2:  %f\n", controller_->ToFloatBADC(&tab_reg[28]));
+    printf("TT07CO2:  %f\n", controller_->ToFloatBADC(&tab_reg[30]));
+    printf("SH05:     %f\n", controller_->ToFloatBADC(&tab_reg[32]));
+    printf("SC01CO2:  %f\n", controller_->ToFloatBADC(&tab_reg[34]));
+    printf("SC02CO2:  %f\n", controller_->ToFloatBADC(&tab_reg[36]));
+    printf("SC03CO2:  %f\n", controller_->ToFloatBADC(&tab_reg[38]));
+    printf("SC05CO2:  %f\n", controller_->ToFloatBADC(&tab_reg[40]));
+    printf("SC06CO2:  %f\n", controller_->ToFloatBADC(&tab_reg[42]));
+    printf("dP01CO2:  %f\n", controller_->ToFloatBADC(&tab_reg[44]));
+    printf("dP02CO2:  %f\n", controller_->ToFloatBADC(&tab_reg[46]));
+    printf("dP03CO2:  %f\n", controller_->ToFloatBADC(&tab_reg[48]));
+    printf("dP04CO2:  %f\n", controller_->ToFloatBADC(&tab_reg[50]));
+    printf("dT02CO2:  %f\n", controller_->ToFloatBADC(&tab_reg[52]));
+    printf("dT03CO2:  %f\n", controller_->ToFloatBADC(&tab_reg[54]));
+    printf("ST01CO2:  %f\n", controller_->ToFloatBADC(&tab_reg[56]));
+    printf("ST02CO2:  %f\n", controller_->ToFloatBADC(&tab_reg[58]));
+    printf("ST03CO2:  %f\n", controller_->ToFloatBADC(&tab_reg[60]));
+    printf("ST04CO2:  %f\n", controller_->ToFloatBADC(&tab_reg[62]));
+
+    printf("FT01CO2:  %f\n", controller_->ToFloatBADC(&tab_reg[64]));
+    printf("SpeedSetpoint: %f\n", controller_->ToFloatBADC(&tab_reg[66]));
+    printf("FlowSetpoint:  %f\n", controller_->ToFloatBADC(&tab_reg[68]));
+    printf("TempSetpoint:  %f\n", controller_->ToFloatBADC(&tab_reg[70]));
+
+    controller_->ReadRegisters(80, 5, tab_reg);
+    printf("Status:   0x%04x\n", (int16_t)tab_reg[0]);
+    printf("Status:   0x%04x\n", (int16_t)tab_reg[1]);
+    printf("Status:   0x%04x\n", (int16_t)tab_reg[2]);
+    printf("Status:   0x%04x\n", (int16_t)tab_reg[3]);
+    printf("Status:   %d\n", (int16_t)tab_reg[4]);
+    //printf("Status:   0x%04d\n", tab_reg[2]);
+    //printf("Status:   0x%04d\n", tab_reg[3]);
+    
+    controller_->ReadRegisters(100, 7, tab_reg);
+    printf("Status:   0x%02x\n", tab_reg[0]);
+    printf("TempSetpoint:  %f\n", controller_->ToFloatBADC(&tab_reg[1]));    
+    printf("SpeedSetpoint: %f\n", controller_->ToFloatBADC(&tab_reg[3]));    
+    printf("FlowSetpoint: %f\n", controller_->ToFloatBADC(&tab_reg[5]));    
     
     /*
     double newTemperatureSetPoint = controller_->GetTemperatureSetPoint();
