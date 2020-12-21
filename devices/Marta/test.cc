@@ -26,8 +26,9 @@ int main()
 
   std::string buffer;
 
-  //Marta_t marta("131.169.43.224", 502);
-  Marta_t marta("131.169.43.224:502");
+  // Marta_t marta("131.169.43.224", 502);
+  // Marta_t marta("131.169.43.224:502");
+  Marta_t marta("10.255.21.224", 502);
 
   std::cout << (int) marta.DeviceAvailable() << std::endl;
 
