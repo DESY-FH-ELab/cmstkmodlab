@@ -44,6 +44,7 @@ public:
 public:
 
   void ReadRegisters(int addr, int nb, uint16_t *dest);
+  void WriteRegisters(int addr, int nb, const uint16_t *src);
   
   bool DeviceAvailable() const;
   

@@ -46,6 +46,11 @@ void Marta::ReadRegisters(int addr, int nb, uint16_t *dest)
   comHandler_->ReadRegisters(addr, nb, dest);
 }
 
+void Marta::WriteRegisters(int addr, int nb, const uint16_t *src)
+{
+  comHandler_->WriteRegisters(addr, nb, src);
+}
+
 bool Marta::DeviceAvailable() const
 {
   return comHandler_->DeviceAvailable();

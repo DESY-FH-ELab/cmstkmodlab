@@ -46,6 +46,15 @@ void MartaComHandler::ReadRegisters(int addr, int nb, uint16_t *dest)
   }
 }
 
+void MartaComHandler::WriteRegisters(int addr, int nb, const uint16_t *src)
+{
+  Connect();
+
+  if (fMB) {
+    modbus_write_registers(fMB, addr, nb, src);
+  }
+}
+
 void MartaComHandler::Connect()
 {
   fMB = modbus_new_tcp(fIPAddress.c_str(), fPort);

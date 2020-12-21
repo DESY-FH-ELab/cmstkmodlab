@@ -38,6 +38,7 @@ public:
 public:
 
   virtual void ReadRegisters(int addr, int nb, uint16_t *dest) = 0;
+  virtual void WriteRegisters(int addr, int nb, const uint16_t *src) = 0;
   
   virtual bool DeviceAvailable() const = 0;
 
@@ -45,6 +46,11 @@ public:
   float ToFloatBADC(uint16_t *reg);
   float ToFloatCDAB(uint16_t *reg);
   float ToFloatDCBA(uint16_t *reg);
+
+  void FromFloatABCD(float f, uint16_t *reg);
+  void FromFloatDCBA(float f, uint16_t *reg);
+  void FromFloatBADC(float f, uint16_t *reg);
+  void FromFloatCDAB(float f, uint16_t *reg);
 };
  
 /** @} */
