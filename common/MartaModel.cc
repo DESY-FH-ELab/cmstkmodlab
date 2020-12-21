@@ -153,6 +153,12 @@ void MartaModel::updateInformation()
     printf("SpeedSetpoint: %f\n", controller_->ToFloatBADC(&tab_reg[3]));    
     printf("FlowSetpoint: %f\n", controller_->ToFloatBADC(&tab_reg[5]));    
     
+    tab_reg[0] = 0x0004;
+    controller_->WriteRegisters(100, 1, &tab_reg[0]);
+
+    controller_->ReadRegisters(100, 7, tab_reg);
+    printf("Status:   0x%02x\n", tab_reg[0]);
+
     /*
     double newTemperatureSetPoint = controller_->GetTemperatureSetPoint();
     bool newTemperatureControlMode = controller_->GetTemperatureControlMode();
