@@ -146,8 +146,6 @@ void MartaModel::updateInformation()
     printf("Status:   0x%04x\n", (int16_t)tab_reg[2]);
     printf("Status:   0x%04x\n", (int16_t)tab_reg[3]);
     printf("Status:   %d\n", (int16_t)tab_reg[4]);
-    //printf("Status:   0x%04d\n", tab_reg[2]);
-    //printf("Status:   0x%04d\n", tab_reg[3]);
     
     controller_->ReadRegisters(100, 7, tab_reg);
     printf("Status:   0x%02x\n", tab_reg[0]);

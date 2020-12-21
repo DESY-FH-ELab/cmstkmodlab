@@ -91,8 +91,8 @@ void VMarta::FromFloatDCBA(float f, uint16_t *reg)
 
   memcpy(&i, &f, sizeof(uint32_t));
   i = bswap_32(htonl(i));
-  dest[0] = (uint16_t)(i >> 16);
-  dest[1] = (uint16_t)i;
+  reg[0] = (uint16_t)(i >> 16);
+  reg[1] = (uint16_t)i;
 }
 
 void VMarta::FromFloatBADC(float f, uint16_t *reg)
@@ -101,8 +101,8 @@ void VMarta::FromFloatBADC(float f, uint16_t *reg)
 
   memcpy(&i, &f, sizeof(uint32_t));
   i = htonl(i);
-  dest[0] = (uint16_t)bswap_16(i >> 16);
-  dest[1] = (uint16_t)bswap_16(i & 0xFFFF);
+  reg[0] = (uint16_t)bswap_16(i >> 16);
+  reg[1] = (uint16_t)bswap_16(i & 0xFFFF);
 }
 
 void VMarta::FromFloatCDAB(float f, uint16_t *reg)
@@ -111,6 +111,6 @@ void VMarta::FromFloatCDAB(float f, uint16_t *reg)
 
   memcpy(&i, &f, sizeof(uint32_t));
   i = htonl(i);
-  dest[0] = (uint16_t)i;
-  dest[1] = (uint16_t)(i >> 16);
+  reg[0] = (uint16_t)i;
+  reg[1] = (uint16_t)(i >> 16);
 }
