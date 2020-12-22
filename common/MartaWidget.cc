@@ -185,6 +185,10 @@ void MartaWidget::controlStateChanged(bool enabled)
 */
 void MartaWidget::updateInfo()
 {
+  static QString red("255,0,0");
+  static QString yellow("215,180,0");
+  static QString green("120,200,0");
+
   if (!temperatureSetPointSpinner_->hasFocus())
     temperatureSetPointSpinner_->setValue(model_->getTemperatureSetpoint());
 
@@ -211,9 +215,176 @@ void MartaWidget::updateInfo()
   QString s;
 
   value = model_->getPT03();
-  s = QString::number(value, 'f', 1);
-  svg.replace("PT03§", s);
+  s = QString::number(value, 'f', 2);
+  svg.replace("§PT03§", s);
+
+  value = model_->getPT05();
+  s = QString::number(value, 'f', 2);
+  svg.replace("§PT05§", s);
   
+  value = model_->getPT01CO2();
+  s = QString::number(value, 'f', 2);
+  svg.replace("§PT01CO2§", s);
+
+  value = model_->getPT02CO2();
+  s = QString::number(value, 'f', 2);
+  svg.replace("§PT02CO2§", s);
+
+  value = model_->getPT03CO2();
+  s = QString::number(value, 'f', 2);
+  svg.replace("§PT03CO2§", s);
+
+  value = model_->getPT04CO2();
+  s = QString::number(value, 'f', 2);
+  svg.replace("§PT04CO2§", s);
+
+  /*
+  // missing in schematics
+  value = model_->getPT05CO2();
+  s = QString::number(value, 'f', 2);
+  svg.replace("§PT05CO2§", s);
+  */
+
+  value = model_->getPT06CO2();
+  s = QString::number(value, 'f', 2);
+  svg.replace("§PT06CO2§", s);
+
+  value = model_->getTT02();
+  s = QString::number(value, 'f', 1);
+  svg.replace("§TT02§", s);
+
+  value = model_->getTT01CO2();
+  s = QString::number(value, 'f', 1);
+  svg.replace("§TT01CO2§", s);
+
+  value = model_->getTT02CO2();
+  s = QString::number(value, 'f', 1);
+  svg.replace("§TT02CO2§", s);
+
+  value = model_->getTT03CO2();
+  s = QString::number(value, 'f', 1);
+  svg.replace("§TT03CO2§", s);
+
+  value = model_->getTT04CO2();
+  s = QString::number(value, 'f', 1);
+  svg.replace("§TT04CO2§", s);
+
+  /*
+  // missing in schematics
+  value = model_->getTT05CO2();
+  s = QString::number(value, 'f', 1);
+  svg.replace("§TT05CO2§", s);
+  */
+
+  value = model_->getTT06CO2();
+  s = QString::number(value, 'f', 1);
+  svg.replace("§TT06CO2§", s);
+
+  value = model_->getTT07CO2();
+  s = QString::number(value, 'f', 1);
+  svg.replace("§TT07CO2§", s);
+
+  value = model_->getSH05();
+  s = QString::number(value, 'f', 1);
+  svg.replace("§SH05§", s);
+
+  /*
+  // missing in MODBUS
+  value = model_->getST05();
+  s = QString::number(value, 'f', 1);
+  svg.replace("§ST05§", s);
+  */
+
+  value = model_->getSC01CO2();
+  s = QString::number(value, 'f', 1);
+  svg.replace("§SC01CO2§", s);
+
+  value = model_->getSC02CO2();
+  s = QString::number(value, 'f', 1);
+  svg.replace("§SC02CO2§", s);
+
+  value = model_->getSC03CO2();
+  s = QString::number(value, 'f', 1);
+  svg.replace("§SC03CO2§", s);
+
+  /*
+  // missing in schematics
+  value = model_->getSC05CO2();
+  s = QString::number(value, 'f', 1);
+  svg.replace("§SC05CO2§", s);
+  */
+
+  value = model_->getSC06CO2();
+  s = QString::number(value, 'f', 1);
+  svg.replace("§SC06CO2§", s);
+
+  /*
+  // missing in schematics
+  value = model_->getdP01CO2();
+  s = QString::number(value, 'f', 1);
+  svg.replace("§dP01CO2§", s);
+  */
+
+  /*
+  // missing in schematics
+  value = model_->getdP02CO2();
+  s = QString::number(value, 'f', 1);
+  svg.replace("§dP02CO2§", s);
+  */
+
+  value = model_->getdP03CO2();
+  s = QString::number(value, 'f', 1);
+  svg.replace("§dP03CO2§", s);
+
+  /*
+  // missing in schematics
+  value = model_->getdP04CO2();
+  s = QString::number(value, 'f', 1);
+  svg.replace("§dP04CO2§", s);
+  */
+
+  /*
+  // missing in schematics
+  value = model_->getdT02CO2();
+  s = QString::number(value, 'f', 1);
+  svg.replace("§dT02CO2§", s);
+  */
+
+  value = model_->getdT03CO2();
+  s = QString::number(value, 'f', 1);
+  svg.replace("§dT03CO2§", s);
+
+  value = model_->getST01CO2();
+  s = QString::number(value, 'f', 2);
+  svg.replace("§ST01CO2§", s);
+
+  value = model_->getST02CO2();
+  s = QString::number(value, 'f', 2);
+  svg.replace("§ST02CO2§", s);
+
+  value = model_->getST03CO2();
+  s = QString::number(value, 'f', 2);
+  svg.replace("§ST03CO2§", s);
+
+  value = model_->getST04CO2();
+  s = QString::number(value, 'f', 2);
+  svg.replace("§ST04CO2§", s);
+
+  value = model_->getFT01CO2();
+  s = QString::number(value, 'f', 2);
+  svg.replace("§FT01CO2§", s);
+
+  switch (model_->getAlarmStatus()) {
+    case 0:
+      svg.replace("§AlarmColor§", green);
+      break;
+    case 1:
+      svg.replace("§AlarmColor§", yellow);
+      break;
+    default:
+      svg.replace("§AlarmColor§", red);
+  }
+
   svgWidget_->load(svg.toLocal8Bit());
 
   /*
