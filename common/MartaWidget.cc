@@ -342,22 +342,22 @@ void MartaWidget::updateInfo()
 
   // missing in schematics
   value = model_->getdP01CO2();
-  s = QString::number(value, 'f', 1);
+  s = QString::number(value, 'f', 3);
   svg.replace("§dP01CO2§", s);
 
   // missing in schematics
   value = model_->getdP02CO2();
-  s = QString::number(value, 'f', 1);
+  s = QString::number(value, 'f', 3);
   svg.replace("§dP02CO2§", s);
 
   value = model_->getdP03CO2();
-  s = QString::number(value, 'f', 1);
+  s = QString::number(value, 'f', 3);
   svg.replace("§dP03CO2§", s);
 
   /*
   // missing in schematics
   value = model_->getdP04CO2();
-  s = QString::number(value, 'f', 1);
+  s = QString::number(value, 'f', 3);
   svg.replace("§dP04CO2§", s);
   */
 
