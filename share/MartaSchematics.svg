@@ -196,7 +196,7 @@
             <circle cx="511.53" cy="104.435" r="4.74" style="fill:white;stroke:black;stroke-width:0.67px;"/>
         </g>
         <g id="AlarmStatus">
-            <text x="578.134px" y="469.635px" style="font-family:'ArialMT', 'Arial', sans-serif;font-size:21.333px;">Alarm Status:</text>
+            <text x="568.134px" y="469.635px" style="font-family:'ArialMT', 'Arial', sans-serif;font-size:21.333px;">Alarm Status:</text>
             <g>
                 <circle cx="747" cy="462" r="22" style="fill:rgb(56,56,56);"/>
                 <circle id="AlarmButton" cx="747" cy="462" r="20" style="fill:rgb(0,255,0);"/>
