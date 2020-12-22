@@ -30,12 +30,12 @@ class VAgilentTwisTorr304
  public:
 
   enum CommandCode {
-    STX    = 0x02,
-    ETX    = 0x03,
-    RD     = 0x30,
-    WR     = 0x31,
-    OFF    = 0x30,
-    ON     = 0x31
+    STX_    = 0x02,
+    ETX_    = 0x03,
+    RD_     = 0x30,
+    WR_     = 0x31,
+    OFF_    = 0x30,
+    ON_     = 0x31
   };
 
   enum StatusCode {
