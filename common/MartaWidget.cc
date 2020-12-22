@@ -157,6 +157,9 @@ MartaWidget::MartaWidget(MartaModel* model,
   connect(martaCheckBox_, SIGNAL(toggled(bool)),
           model_, SLOT(setDeviceEnabled(bool)));
 
+  connect(svgWidget_, SIGNAL(alarmStatusDoubleClicked()),
+          this, SLOT(showAlarmDialog()));
+
   connect(temperatureSetPointSpinner_, SIGNAL(valueChanged(double)),
           model_, SLOT(setTemperatureSetpoint(double)));
 
@@ -186,6 +189,7 @@ void MartaWidget::updateDeviceState(State newState)
 {
   bool ready = (newState == READY || newState == INITIALIZING);
   martaCheckBox_->setChecked(ready);
+  svgWidget_->setEnabled(ready);
   operationPanel_->setEnabled(ready);
 }
 
@@ -336,19 +340,15 @@ void MartaWidget::updateInfo()
   s = QString::number(value, 'f', 1);
   svg.replace("§SC06CO2§", s);
 
-  /*
   // missing in schematics
   value = model_->getdP01CO2();
   s = QString::number(value, 'f', 1);
   svg.replace("§dP01CO2§", s);
-  */
 
-  /*
   // missing in schematics
   value = model_->getdP02CO2();
   s = QString::number(value, 'f', 1);
   svg.replace("§dP02CO2§", s);
-  */
 
   value = model_->getdP03CO2();
   s = QString::number(value, 'f', 1);
@@ -419,4 +419,9 @@ void MartaWidget::updateInfo()
   alarmView_->clear();
   alarmView_->setPlainText(alarmText);
   */
+}
+
+void MartaWidget::showAlarmDialog()
+{
+
 }

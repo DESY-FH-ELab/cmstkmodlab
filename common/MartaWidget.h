@@ -85,11 +85,15 @@ class MartaWidget : public QWidget
 
   QTextEdit* alarmView_;
   
-public slots:
+ public slots:
 
   void updateDeviceState( State newState );
   void controlStateChanged(bool);
   void updateInfo();
+
+ protected slots:
+
+  void showAlarmDialog();
 };
 
 #endif // MARTAWIDGET_H
