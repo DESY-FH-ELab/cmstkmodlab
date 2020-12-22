@@ -48,16 +48,15 @@ void MartaSVGWidget::resizeEvent(QResizeEvent *event)
 
 void MartaSVGWidget::mouseDoubleClickEvent(QMouseEvent *event)
 {
-	if (!isEnabled()) return;
+  if (!isEnabled()) return;
 
   double scale = 800./width();
   QPoint p(scale * event->x(), scale * event->y());
 
   if (buttonAlarmStatus_.contains(p)) {
-    QPoint c = buttonAlarmStatus_.center();
-    int length = std::sqrt(QPoint::dotProduct(p, c));
-    if (lengthSquared<=buttonAlarmStatus_.width()/2) {
-    		printf("click\n");
+    QPoint d = p - buttonAlarmStatus_.center();
+    double length = std::sqrt(std::pow(d.x(), 2) + std::pow(d.y(), 2));
+    if (length<=buttonAlarmStatus_.width()/2) {
       emit alarmStatusDoubleClicked();
     }
   }
