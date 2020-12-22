@@ -373,16 +373,16 @@ void MartaWidget::updateInfo()
   value = model_->getFT01CO2();
   s = QString::number(value, 'f', 2);
   svg.replace("§FT01CO2§", s);
-
+  
   switch (model_->getAlarmStatus()) {
     case 0:
-      svg.replace("§AlarmColor§", green);
+      svg.replace("@AlarmColor@", green);
       break;
     case 1:
-      svg.replace("§AlarmColor§", yellow);
+      svg.replace("@AlarmColor@", yellow);
       break;
     default:
-      svg.replace("§AlarmColor§", red);
+      svg.replace("@AlarmColor@", red);
   }
 
   svgWidget_->load(svg.toLocal8Bit());
