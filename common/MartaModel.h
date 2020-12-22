@@ -14,8 +14,10 @@
 #define MARTAMODEL_H
 
 #include <string>
+#include <array>
 
 #include <QString>
+#include <QStringList>
 #include <QTimer>
 
 #include "DeviceState.h"
@@ -48,14 +50,56 @@ public:
   explicit MartaModel(const char* ipaddress,
 		      float updateInterval = 10, QObject* parent=nullptr);
   virtual ~MartaModel();
+  
+  double getPT03() const { return PT03_; }
+  double getPT05() const { return PT05_; }
+  double getPT01CO2() const { return PT01CO2_; }
+  double getPT02CO2() const { return PT02CO2_; }
+  double getPT03CO2() const { return PT03CO2_; }
+  double getPT04CO2() const { return PT04CO2_; }
+  double getPT05CO2() const { return PT05CO2_; }
+  double getPT06CO2() const { return PT06CO2_; }
+  double getTT02() const { return TT02_; }
+  double getTT01CO2() const { return TT01CO2_; }
+  double getTT02CO2() const { return TT02CO2_; }
+  double getTT03CO2() const { return TT03CO2_; }
+  double getTT04CO2() const { return TT04CO2_; }
+  double getTT05CO2() const { return TT05CO2_; }
+  double getTT06CO2() const { return TT06CO2_; }
+  double getTT07CO2() const { return TT07CO2_; }
+  double getSH05() const { return SH05_; }
+  double getSC01CO2() const { return SC01CO2_; }
+  double getSC02CO2() const { return SC02CO2_; }
+  double getSC03CO2() const { return SC03CO2_; }
+  double getSC05CO2() const { return SC05CO2_; }
+  double getSC06CO2() const { return SC06CO2_; }
+  double getdP01CO2() const { return dP01CO2_; }
+  double getdP02CO2() const { return dP02CO2_; }
+  double getdP03CO2() const { return dP03CO2_; }
+  double getdP04CO2() const { return dP04CO2_; }
+  double getdT02CO2() const { return dT02CO2_; }
+  double getdT03CO2() const { return dT03CO2_; }
+  double getST01CO2() const { return ST01CO2_; }
+  double getST02CO2() const { return ST02CO2_; }
+  double getST03CO2() const { return ST03CO2_; }
+  double getST04CO2() const { return ST04CO2_; }
+  double getFT01CO2() const { return FT01CO2_; }
+  
+  double getSpeedSetpoint() const { return SpeedSetpoint_; }
+  double getFlowSetpoint() const { return FlowSetpoint_; }
+  double getTemperatureSetpoint() const { return TemperatureSetpoint_; }
 
-  void ReadRegisters(int addr, int nb, uint16_t *dest);
+  uint16_t getAlarms(int idx) const;
+  const QStringList& getCurrentAlarms() const;
+  uint16_t getAlarmStatus() const { return AlarmStatus_; }
   
-  float ToFloatABCD(uint16_t *reg);
-  float ToFloatBADC(uint16_t *reg);
-  float ToFloatCDAB(uint16_t *reg);
-  float ToFloatDCBA(uint16_t *reg);
-  
+  bool getChillerOn() const;
+  bool getCO2On() const;
+  bool getPumpFixedFlow() const;
+  double getTemperatureSetpoint2() const { return TemperatureSetpoint2_; }
+  double getSpeedSetpoint2() const { return SpeedSetpoint2_; }
+  double getFlowSetpoint2() const { return FlowSetpoint2_; }
+
 public slots:
 
   // Methods for control and status querying of the device itself, as specified
@@ -63,6 +107,13 @@ public slots:
   void setDeviceEnabled( bool enabled );
   void setControlsEnabled(bool enabled);
 
+  void setStartChiller(bool value);
+  void setStartCO2(bool value);
+  void setPumpFixedFlow(bool value);
+  void setTemperatureSetpoint(double value);
+  void setSpeedSetpoint(double value);
+  void setFlowSetpoint(double value);
+  
 protected:
 
   const QString ipaddress_;
@@ -76,41 +127,57 @@ protected:
   // Last known communication state
   void setDeviceState( State state );
 
-  bool valueChanged(float &storage, float value, unsigned int precision = 3);
+  bool valueChanged(double &storage, double value, unsigned int precision = 3);
+  bool valueChanged(uint16_t &storage, uint16_t value);
 
-  float PT03_;
-  float PT05_;
-  float PT01CO2_;
-  float PT02CO2_;
-  float PT03CO2_;
-  float PT04CO2_;
-  float PT05CO2_;
-  float PT06CO2_;
-  float TT02_;
-  float TT01CO2_;
-  float TT02CO2_;
-  float TT03CO2_;
-  float TT04CO2_;
-  float TT05CO2_;
-  float TT06CO2_;
-  float TT07CO2_;
-  float SH05_;
-  float SC01CO2_;
-  float SC02CO2_;
-  float SC03CO2_;
-  float SC05CO2_;
-  float SC06CO2_;
-  float dP01CO2_;
-  float dP02CO2_;
-  float dP03CO2_;
-  float dP04CO2_;
-  float dT02CO2_;
-  float dT03CO2_;
-  float ST01CO2_;
-  float ST02CO2_;
-  float ST03CO2_;
-  float ST04CO2_;
+  double PT03_;
+  double PT05_;
+  double PT01CO2_;
+  double PT02CO2_;
+  double PT03CO2_;
+  double PT04CO2_;
+  double PT05CO2_;
+  double PT06CO2_;
+  double TT02_;
+  double TT01CO2_;
+  double TT02CO2_;
+  double TT03CO2_;
+  double TT04CO2_;
+  double TT05CO2_;
+  double TT06CO2_;
+  double TT07CO2_;
+  double SH05_;
+  double SC01CO2_;
+  double SC02CO2_;
+  double SC03CO2_;
+  double SC05CO2_;
+  double SC06CO2_;
+  double dP01CO2_;
+  double dP02CO2_;
+  double dP03CO2_;
+  double dP04CO2_;
+  double dT02CO2_;
+  double dT03CO2_;
+  double ST01CO2_;
+  double ST02CO2_;
+  double ST03CO2_;
+  double ST04CO2_;
+  double FT01CO2_;
+  double SpeedSetpoint_;
+  double FlowSetpoint_;
+  double TemperatureSetpoint_;
 
+  std::array<uint16_t,4> Alarms_;
+  QStringList CurrentAlarmTexts_;
+  void initializeAlarmTexts();
+  std::array<std::map<uint16_t,std::string>,4> AllAlarmTexts_;
+  uint16_t AlarmStatus_;
+
+  uint16_t Status_;
+  double TemperatureSetpoint2_;
+  double SpeedSetpoint2_;
+  double FlowSetpoint2_;
+  
 protected slots:
 
   void updateInformation();

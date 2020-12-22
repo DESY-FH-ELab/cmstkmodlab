@@ -10,6 +10,8 @@
 //                                                                             //
 /////////////////////////////////////////////////////////////////////////////////
 
+#include <cmath>
+
 #include <QApplication>
 
 #include <nqlogger.h>
@@ -28,21 +30,47 @@ MartaModel::MartaModel(const char* ipaddress,
 {
   PT03_ = 0.0;
 
-  /*
+  initializeAlarmTexts();
+  
   timer_ = new QTimer(this);
   timer_->setInterval(updateInterval_ * 1000);
   connect( timer_, SIGNAL(timeout()), this, SLOT(updateInformation()) );
-  */
   
   setDeviceEnabled(true);
   setControlsEnabled(true);
 
-  //updateInformation();
+  updateInformation();
 }
 
 MartaModel::~MartaModel()
 {
 
+}
+
+uint16_t MartaModel::getAlarms(int idx) const
+{
+  if (idx<0 || idx>3) return 0x0000;
+  return Alarms_[idx];
+}
+
+const QStringList& MartaModel::getCurrentAlarms() const
+{
+  return CurrentAlarmTexts_;
+}
+
+bool MartaModel::getChillerOn() const
+{
+  return Status_&0x0001;
+}
+
+bool MartaModel::getCO2On() const
+{
+  return Status_&0x0002;
+}
+
+bool MartaModel::getPumpFixedFlow() const
+{
+  return Status_&0x0004;
 }
 
 void MartaModel::initialize()
@@ -70,13 +98,11 @@ void MartaModel::setDeviceState( State state )
   if ( state_ != state ) {
     state_ = state;
 
-    /*
     // No need to run the timer if the chiller is not ready
     if ( state_ == READY )
       timer_->start();
     else
       timer_->stop();
-    */
     
     emit deviceStateChanged(state);
   }
@@ -84,7 +110,6 @@ void MartaModel::setDeviceState( State state )
 
 void MartaModel::updateInformation()
 {
-  /*
   NQLog("MartaModel", NQLog::Debug) << "updateInformation()";
 
   if (thread()==QApplication::instance()->thread()) {
@@ -92,71 +117,116 @@ void MartaModel::updateInformation()
   } else {
     NQLog("MartaModel", NQLog::Debug) << " running in dedicated DAQ thread";
   }
-  */
-
-  std::cout << "void MartaModel::updateInformation()" << std::endl;
   
   if ( state_ == READY ) {
 
     bool changed = false;
+    bool alarmChanged = false;
     uint16_t tab_reg[74];
     
     controller_->ReadRegisters(0, 72, tab_reg);
     
-    // printf("0x%04x 0x%04x\n", tab_reg[0], tab_reg[1]);
     changed |= valueChanged(PT03_, controller_->ToFloatBADC(&tab_reg[0]), 3);
+    changed |= valueChanged(PT05_, controller_->ToFloatBADC(&tab_reg[2]), 3);
+    changed |= valueChanged(PT01CO2_, controller_->ToFloatBADC(&tab_reg[4]), 3);
+    changed |= valueChanged(PT02CO2_, controller_->ToFloatBADC(&tab_reg[6]), 3);
+    changed |= valueChanged(PT03CO2_, controller_->ToFloatBADC(&tab_reg[8]), 3);
+    changed |= valueChanged(PT04CO2_, controller_->ToFloatBADC(&tab_reg[10]), 3);
+    changed |= valueChanged(PT05CO2_, controller_->ToFloatBADC(&tab_reg[12]), 3);
+    changed |= valueChanged(PT06CO2_, controller_->ToFloatBADC(&tab_reg[14]), 3);
+    changed |= valueChanged(TT02_, controller_->ToFloatBADC(&tab_reg[16]), 3);
+    changed |= valueChanged(TT01CO2_, controller_->ToFloatBADC(&tab_reg[18]), 3);
+    changed |= valueChanged(TT02CO2_, controller_->ToFloatBADC(&tab_reg[20]), 3);
+    changed |= valueChanged(TT03CO2_, controller_->ToFloatBADC(&tab_reg[22]), 3);
+    changed |= valueChanged(TT04CO2_, controller_->ToFloatBADC(&tab_reg[24]), 3);
+    changed |= valueChanged(TT05CO2_, controller_->ToFloatBADC(&tab_reg[26]), 3);
+    changed |= valueChanged(TT06CO2_, controller_->ToFloatBADC(&tab_reg[28]), 3);
+    changed |= valueChanged(TT07CO2_, controller_->ToFloatBADC(&tab_reg[30]), 3);
+    changed |= valueChanged(SH05_, controller_->ToFloatBADC(&tab_reg[32]), 3);
+    changed |= valueChanged(SC01CO2_, controller_->ToFloatBADC(&tab_reg[34]), 3);
+    changed |= valueChanged(SC02CO2_, controller_->ToFloatBADC(&tab_reg[36]), 3);
+    changed |= valueChanged(SC03CO2_, controller_->ToFloatBADC(&tab_reg[38]), 3);
+    changed |= valueChanged(SC05CO2_, controller_->ToFloatBADC(&tab_reg[40]), 3);
+    changed |= valueChanged(SC06CO2_, controller_->ToFloatBADC(&tab_reg[42]), 3);
+    changed |= valueChanged(dP01CO2_, controller_->ToFloatBADC(&tab_reg[44]), 3);
+    changed |= valueChanged(dP02CO2_, controller_->ToFloatBADC(&tab_reg[46]), 3);
+    changed |= valueChanged(dP03CO2_, controller_->ToFloatBADC(&tab_reg[48]), 3);
+    changed |= valueChanged(dP04CO2_, controller_->ToFloatBADC(&tab_reg[50]), 3);
+    changed |= valueChanged(dT02CO2_, controller_->ToFloatBADC(&tab_reg[52]), 3);
+    changed |= valueChanged(dT03CO2_, controller_->ToFloatBADC(&tab_reg[54]), 3);
+    changed |= valueChanged(ST01CO2_, controller_->ToFloatBADC(&tab_reg[56]), 3);
+    changed |= valueChanged(ST02CO2_, controller_->ToFloatBADC(&tab_reg[58]), 3);
+    changed |= valueChanged(ST03CO2_, controller_->ToFloatBADC(&tab_reg[60]), 3);
+    changed |= valueChanged(ST04CO2_, controller_->ToFloatBADC(&tab_reg[62]), 3);
+    changed |= valueChanged(FT01CO2_, controller_->ToFloatBADC(&tab_reg[64]), 6);
+    changed |= valueChanged(SpeedSetpoint_, controller_->ToFloatBADC(&tab_reg[66]), 3);
+    changed |= valueChanged(FlowSetpoint_, controller_->ToFloatBADC(&tab_reg[68]), 3);
+    changed |= valueChanged(TemperatureSetpoint_, controller_->ToFloatBADC(&tab_reg[70]), 3);
     
-    printf("PT03:     %f\n", controller_->ToFloatBADC(&tab_reg[0]));
-    printf("PT05:     %f\n", controller_->ToFloatBADC(&tab_reg[2]));
-    printf("PT01CO2:  %f\n", controller_->ToFloatBADC(&tab_reg[4]));
-    printf("PT02CO2:  %f\n", controller_->ToFloatBADC(&tab_reg[6]));
-    printf("PT03CO2:  %f\n", controller_->ToFloatBADC(&tab_reg[8]));
-    printf("PT04CO2:  %f\n", controller_->ToFloatBADC(&tab_reg[10]));
-    printf("PT05CO2:  %f\n", controller_->ToFloatBADC(&tab_reg[12]));
-    printf("PT06CO2:  %f\n", controller_->ToFloatBADC(&tab_reg[14]));
-    printf("TT02:     %f\n", controller_->ToFloatBADC(&tab_reg[16]));
-    printf("TT01CO2:  %f\n", controller_->ToFloatBADC(&tab_reg[18]));
-    printf("TT02CO2:  %f\n", controller_->ToFloatBADC(&tab_reg[20]));
-    printf("TT03CO2:  %f\n", controller_->ToFloatBADC(&tab_reg[22]));
-    printf("TT04CO2:  %f\n", controller_->ToFloatBADC(&tab_reg[24]));
-    printf("TT05CO2:  %f\n", controller_->ToFloatBADC(&tab_reg[26]));
-    printf("TT06CO2:  %f\n", controller_->ToFloatBADC(&tab_reg[28]));
-    printf("TT07CO2:  %f\n", controller_->ToFloatBADC(&tab_reg[30]));
-    printf("SH05:     %f\n", controller_->ToFloatBADC(&tab_reg[32]));
-    printf("SC01CO2:  %f\n", controller_->ToFloatBADC(&tab_reg[34]));
-    printf("SC02CO2:  %f\n", controller_->ToFloatBADC(&tab_reg[36]));
-    printf("SC03CO2:  %f\n", controller_->ToFloatBADC(&tab_reg[38]));
-    printf("SC05CO2:  %f\n", controller_->ToFloatBADC(&tab_reg[40]));
-    printf("SC06CO2:  %f\n", controller_->ToFloatBADC(&tab_reg[42]));
-    printf("dP01CO2:  %f\n", controller_->ToFloatBADC(&tab_reg[44]));
-    printf("dP02CO2:  %f\n", controller_->ToFloatBADC(&tab_reg[46]));
-    printf("dP03CO2:  %f\n", controller_->ToFloatBADC(&tab_reg[48]));
-    printf("dP04CO2:  %f\n", controller_->ToFloatBADC(&tab_reg[50]));
-    printf("dT02CO2:  %f\n", controller_->ToFloatBADC(&tab_reg[52]));
-    printf("dT03CO2:  %f\n", controller_->ToFloatBADC(&tab_reg[54]));
-    printf("ST01CO2:  %f\n", controller_->ToFloatBADC(&tab_reg[56]));
-    printf("ST02CO2:  %f\n", controller_->ToFloatBADC(&tab_reg[58]));
-    printf("ST03CO2:  %f\n", controller_->ToFloatBADC(&tab_reg[60]));
-    printf("ST04CO2:  %f\n", controller_->ToFloatBADC(&tab_reg[62]));
-
-    printf("FT01CO2:  %f\n", controller_->ToFloatBADC(&tab_reg[64]));
-    printf("SpeedSetpoint: %f\n", controller_->ToFloatBADC(&tab_reg[66]));
-    printf("FlowSetpoint:  %f\n", controller_->ToFloatBADC(&tab_reg[68]));
-    printf("TempSetpoint:  %f\n", controller_->ToFloatBADC(&tab_reg[70]));
+    printf("PT03:            %f\n", PT03_);
+    printf("PT05:            %f\n", PT05_);
+    printf("PT01CO2:         %f\n", PT01CO2_);
+    printf("PT02CO2:         %f\n", PT02CO2_);
+    printf("PT03CO2:         %f\n", PT03CO2_);
+    printf("PT04CO2:         %f\n", PT04CO2_);
+    printf("PT05CO2:         %f\n", PT05CO2_);
+    printf("PT06CO2:         %f\n", PT06CO2_);
+    printf("TT02:            %f\n", TT02_);
+    printf("TT01CO2:         %f\n", TT01CO2_);
+    printf("TT02CO2:         %f\n", TT02CO2_);
+    printf("TT03CO2:         %f\n", TT03CO2_);
+    printf("TT04CO2:         %f\n", TT04CO2_);
+    printf("TT05CO2:         %f\n", TT05CO2_);
+    printf("TT06CO2:         %f\n", TT06CO2_);
+    printf("TT07CO2:         %f\n", TT07CO2_);
+    printf("SH05:            %f\n", SH05_);
+    printf("SC01CO2:         %f\n", SC01CO2_);
+    printf("SC02CO2:         %f\n", SC02CO2_);
+    printf("SC03CO2:         %f\n", SC03CO2_);
+    printf("SC05CO2:         %f\n", SC05CO2_);
+    printf("SC06CO2:         %f\n", SC06CO2_);
+    printf("dP01CO2:         %f\n", dP01CO2_);
+    printf("dP02CO2:         %f\n", dP02CO2_);
+    printf("dP03CO2:         %f\n", dP03CO2_);
+    printf("dP04CO2:         %f\n", dP04CO2_);
+    printf("dT02CO2:         %f\n", dT02CO2_);
+    printf("dT03CO2:         %f\n", dT03CO2_);
+    printf("ST01CO2:         %f\n", ST01CO2_);
+    printf("ST02CO2:         %f\n", ST02CO2_);
+    printf("ST03CO2:         %f\n", ST03CO2_);
+    printf("ST04CO2:         %f\n", ST04CO2_);
+    printf("FT01CO2:         %f\n", FT01CO2_);
+    printf("SpeedSetpoint:   %f\n", SpeedSetpoint_);
+    printf("FlowSetpoint:    %f\n", FlowSetpoint_);
+    printf("TempSetpoint:    %f\n", TemperatureSetpoint_);
 
     controller_->ReadRegisters(80, 5, tab_reg);
-    printf("Status:   0x%04x\n", (int16_t)tab_reg[0]);
-    printf("Status:   0x%04x\n", (int16_t)tab_reg[1]);
-    printf("Status:   0x%04x\n", (int16_t)tab_reg[2]);
-    printf("Status:   0x%04x\n", (int16_t)tab_reg[3]);
-    printf("Status:   %d\n", (int16_t)tab_reg[4]);
+    
+    alarmChanged |= valueChanged(Alarms_[0], tab_reg[0]);
+    alarmChanged |= valueChanged(Alarms_[1], tab_reg[1]);
+    alarmChanged |= valueChanged(Alarms_[2], tab_reg[2]);
+    alarmChanged |= valueChanged(Alarms_[3], tab_reg[3]);
+    alarmChanged |= valueChanged(AlarmStatus_, tab_reg[4]);
+    
+    printf("Alarm 1:     0x%04x\n", Alarms_[0]);
+    printf("Alarm 2:     0x%04x\n", Alarms_[1]);
+    printf("Alarm 3:     0x%04x\n", Alarms_[2]);
+    printf("Alarm 4:     0x%04x\n", Alarms_[3]);
+    printf("AlarmStatus:   %d\n", AlarmStatus_);
 
     controller_->ReadRegisters(100, 7, tab_reg);
-    printf("Status:   0x%02x\n", tab_reg[0]);
-    printf("TempSetpoint:  %f\n", controller_->ToFloatBADC(&tab_reg[1]));
-    printf("SpeedSetpoint: %f\n", controller_->ToFloatBADC(&tab_reg[3]));
-    printf("FlowSetpoint: %f\n", controller_->ToFloatBADC(&tab_reg[5]));
+    
+    changed |= valueChanged(Status_, tab_reg[0]);
+    changed |= valueChanged(TemperatureSetpoint2_, controller_->ToFloatBADC(&tab_reg[1]), 3);
+    changed |= valueChanged(SpeedSetpoint2_, controller_->ToFloatBADC(&tab_reg[3]), 3);
+    changed |= valueChanged(FlowSetpoint2_, controller_->ToFloatBADC(&tab_reg[5]), 3);
 
+    printf("Status:        0x%04x\n", Status_);
+    printf("TempSetpoint2:   %f\n", TemperatureSetpoint2_);
+    printf("SpeedSetpoint2:  %f\n", SpeedSetpoint2_);
+    printf("FlowSetpoint2:   %f\n", FlowSetpoint2_);
+
+    /*
     tab_reg[0] = 0x0004;
     controller_->WriteRegisters(100, 1, &tab_reg[0]);
 
@@ -174,46 +244,32 @@ void MartaModel::updateInformation()
     printf("TempSetpoint:  %f\n", controller_->ToFloatBADC(&tab_reg[1]));
     printf("SpeedSetpoint: %f\n", controller_->ToFloatBADC(&tab_reg[3]));
     printf("FlowSetpoint: %f\n", controller_->ToFloatBADC(&tab_reg[5]));
+    */
 
-    /*
-    double newTemperatureSetPoint = controller_->GetTemperatureSetPoint();
-    bool newTemperatureControlMode = controller_->GetTemperatureControlMode();
-    bool newTemperatureControlEnabled = controller_->GetTemperatureControlEnabled();
-    bool newCirculatorEnabled = controller_->GetCirculatorEnabled();
-    double newBathTemperature = controller_->GetBathTemperature();
-    double newReturnTemperature = controller_->GetReturnTemperature();
-    double newCWInletTemperature = controller_->GetCoolingWaterInletTemperature();
-    double newCWOutletTemperature = controller_->GetCoolingWaterOutletTemperature();
-    double newPumpPressure = controller_->GetPumpPressure();
-    int newPower = controller_->GetPower();
+    if (alarmChanged) {
 
-    if (newTemperatureSetPoint != temperatureSetPoint_ ||
-        newTemperatureControlMode != temperatureControlMode_ ||
-        newTemperatureControlEnabled != temperatureControlEnabled_ ||
-        newCirculatorEnabled != circulatorEnabled_ ||
-        newBathTemperature != bathTemperature_ ||
-        newReturnTemperature != returnTemperature_ ||
-        newCWInletTemperature != cwInletTemperature_ ||
-        newCWOutletTemperature != cwOutletTemperature_ ||
-        newPumpPressure != pumpPressure_ ||
-        newPower != power_) {
+      CurrentAlarmTexts_.clear();
 
-      temperatureSetPoint_ = newTemperatureSetPoint;
-      temperatureControlMode_ = newTemperatureControlMode;
-      temperatureControlEnabled_ = newTemperatureControlEnabled;
-      circulatorEnabled_ = newCirculatorEnabled;
-      bathTemperature_ = newBathTemperature;
-      returnTemperature_ = newReturnTemperature;
-      pumpPressure_ = newPumpPressure;
-      power_ = newPower;
-      cwInletTemperature_ = newCWInletTemperature;
-      cwOutletTemperature_ = newCWOutletTemperature;
+      for (int idx=0;idx<4;++idx) {
+	uint16_t bit = 1;
+	for (int b=0;b<16;++b) {
 
+	  if (Alarms_[idx] & bit) {
+	    std::map<uint16_t,std::string>::iterator itfind = AllAlarmTexts_[idx].find(bit);
+	    if (itfind!=AllAlarmTexts_[idx].end()) {
+	      CurrentAlarmTexts_.append(QString(itfind->second.c_str()));
+	    }
+	  }
+
+	  bit <<= 1;
+	}
+      }
+    }
+    
+    if (changed || alarmChanged) {
       NQLog("MartaModel", NQLog::Spam) << "information changed";
-
       emit informationChanged();
     }
-    */
   }
 }
 
@@ -227,36 +283,180 @@ void MartaModel::setControlsEnabled(bool enabled)
   emit controlStateChanged(enabled);
 }
 
-bool MartaModel::valueChanged(float &storage, float value, unsigned int precision)
+void MartaModel::setStartChiller(bool value)
 {
-  float power = std::math(10, precision);
-  float ftemp = std::round(value * power)/power;
+  if (state_!=READY) return;
+
+  bool stateChiller = getChillerOn();
+  
+  if (value==stateChiller) return;
+
+  uint16_t temp = Status_;
+  if (value) {
+    temp |= 0x0001;
+  } else {
+    temp &= ~0x0003;
+  }
+
+  controller_->WriteRegisters(100, 1, &temp);
+}
+
+void MartaModel::setStartCO2(bool value)
+{
+  if (state_!=READY) return;
+
+  bool stateChiller = getChillerOn();
+  bool stateCO2 = getCO2On();
+  
+  if (value==stateCO2) return;
+
+  if (value && !stateChiller) return;
+
+  uint16_t temp = Status_;
+  if (value) {
+    temp |= 0x0002;
+  } else {
+    temp &= ~0x0002;
+  }
+
+  controller_->WriteRegisters(100, 1, &temp);
+}
+
+void MartaModel::setPumpFixedFlow(bool value)
+{
+  if (state_!=READY) return;
+
+  bool state = getPumpFixedFlow();
+  if (value==state) return;
+  
+  uint16_t temp = Status_;
+  if (value) {
+    temp |= 0x0004;
+  } else {
+    temp &= ~0x0004;
+  }
+
+  controller_->WriteRegisters(100, 1, &temp);
+
+  //QTimer::singleShot(1000, this, SLOT(updateInformation()));
+}
+
+void MartaModel::setTemperatureSetpoint(double value)
+{
+  if (state_!=READY) return;
+
+  if (value<-35.0 || value>25.0) return;
+
+  uint16_t temp[2];
+  controller_->FromFloatBADC(value, &temp[0]);
+  controller_->WriteRegisters(101, 2, &temp[0]);
+}
+
+void MartaModel::setSpeedSetpoint(double value)
+{
+  if (state_!=READY) return;
+
+  if (value<500.0 || value>6000.0) return;
+
+  uint16_t temp[2];
+  controller_->FromFloatBADC(value, &temp[0]);
+  controller_->WriteRegisters(103, 2, &temp[0]);
+}
+
+void MartaModel::setFlowSetpoint(double value)
+{
+  if (state_!=READY) return;
+
+  if (value<0.1 || value>6.0) return;
+
+  uint16_t temp[2];
+  controller_->FromFloatBADC(value, &temp[0]);
+  controller_->WriteRegisters(105, 2, &temp[0]);
+}
+
+bool MartaModel::valueChanged(double &storage, double value, unsigned int precision)
+{
+  double power = std::pow(10, precision);
+  double ftemp = std::round(value * power);
   bool ret = (storage!=ftemp);
-  storage = ftemp;
+  storage = ftemp/power;
   return ret;
 }
 
-void MartaModel::ReadRegisters(int addr, int nb, uint16_t *dest)
+bool MartaModel::valueChanged(uint16_t &storage, uint16_t value)
 {
-  controller_->ReadRegisters(addr, nb, dest);
+  bool ret = (storage!=value);
+  storage = value;
+  return ret;
 }
 
-float MartaModel::ToFloatABCD(uint16_t *reg)
+void MartaModel::initializeAlarmTexts()
 {
-  return controller_->ToFloatABCD(reg);
-}
+  AllAlarmTexts_[0][0x0001] = "b_dP01_CO2_AL";
+  AllAlarmTexts_[0][0x0002] = "b_dP01_CO2_FS";
+  AllAlarmTexts_[0][0x0004] = "b_dP02_CO2_AL";
+  AllAlarmTexts_[0][0x0008] = "b_dP02_CO2_FS";
+  AllAlarmTexts_[0][0x0010] = "b_dP03_CO2_LP_AL";
+  AllAlarmTexts_[0][0x0020] = "b_dP03_CO2_LP_FS";
+  AllAlarmTexts_[0][0x0040] = "b_dP03_CO2_HP_AL";
+  AllAlarmTexts_[0][0x0080] = "b_dP03_CO2_HP_FS";
+  AllAlarmTexts_[0][0x0100] = "b_dP04_CO2_HP_FS";
+  AllAlarmTexts_[0][0x0200] = "b_dT03_CO2_HT_AL";
+  AllAlarmTexts_[0][0x0400] = "b_PT03_CO2_HP_FS";
+  AllAlarmTexts_[0][0x0800] = "b_SC01_CO2_AL";
+  AllAlarmTexts_[0][0x1000] = "b_SC01_CO2_FS";
+  AllAlarmTexts_[0][0x2000] = "b_TT01_CO2_LT_FS";
+  AllAlarmTexts_[0][0x4000] = "b_PT04_CO2_HP_TS";
+  AllAlarmTexts_[0][0x8000] = "b_PT04_CO2_HP_FS";
 
-float MartaModel::ToFloatBADC(uint16_t *reg)
-{
-  return controller_->ToFloatBADC(reg);
-}
+  AllAlarmTexts_[1][0x0001] = "b_TT04_CO2_HT_AL";
+  AllAlarmTexts_[1][0x0002] = "b_TT04_CO2_HT_TS";
+  AllAlarmTexts_[1][0x0004] = "b_TT04_CO2_HT_FS";
+  AllAlarmTexts_[1][0x0008] = "b_Compressor_FS";
+  AllAlarmTexts_[1][0x0010] = "b_Vent_FS";
+  AllAlarmTexts_[1][0x0020] = "b_Heater_FS";
+  AllAlarmTexts_[1][0x0040] = "b_Pump_FS";
+  AllAlarmTexts_[1][0x0080] = "b_Pressure_Switch_LP_FS";
+  AllAlarmTexts_[1][0x0100] = "b_Pressure_Switch_HP_FS";
+  AllAlarmTexts_[1][0x0200] = "b_Switching_Off_Pressure";
+  AllAlarmTexts_[1][0x0400] = "b_Supply_Error_FS";
+  AllAlarmTexts_[1][0x0800] = "b_Emergency_Stop";
+  AllAlarmTexts_[1][0x1000] = "bInterlock_IN_HMI";
+  AllAlarmTexts_[1][0x2000] = "bKill_Switch_HMI";
+  AllAlarmTexts_[1][0x4000] = "b_PT03_R507A_IOError_FS";
+  AllAlarmTexts_[1][0x8000] = "b_PT05_R507A_IOError_FS";
 
-float MartaModel::ToFloatCDAB(uint16_t *reg)
-{
-  return controller_->ToFloatCDAB(reg);
-}
+  AllAlarmTexts_[2][0x0001] = "b_PT01_CO2_IOError_FS";
+  AllAlarmTexts_[2][0x0002] = "b_PT02_CO2_IOError_FS";
+  AllAlarmTexts_[2][0x0004] = "b_PT03_CO2_IOError_FS";
+  AllAlarmTexts_[2][0x0008] = "b_PT04_CO2_IOError_FS";
+  AllAlarmTexts_[2][0x0010] = "b_PT05_CO2_IOError_FS";
+  AllAlarmTexts_[2][0x0020] = "b_PT06_CO2_IOError_FS";
+  AllAlarmTexts_[2][0x0040] = "b_Flowmeter_IOError_FS";
+  AllAlarmTexts_[2][0x0080] = "b_TT02_R507A_IOError_FS";
+  AllAlarmTexts_[2][0x0100] = "b_TT01_CO2_IOError_FS";
+  AllAlarmTexts_[2][0x0200] = "b_TT02_CO2_IOError_FS";
+  AllAlarmTexts_[2][0x0400] = "b_TT03_CO2_IOError_FS";
+  AllAlarmTexts_[2][0x0800] = "b_TT04_CO2_IOError_FS";
+  AllAlarmTexts_[2][0x1000] = "b_TT05_CO2_IOError_FS";
+  AllAlarmTexts_[2][0x2000] = "b_TT06_CO2_IOError_FS";
+  AllAlarmTexts_[2][0x4000] = "b_Compressor_LP_AL";
+  AllAlarmTexts_[2][0x8000] = "b_Compressor_LP_FS";
 
-float MartaModel::ToFloatDCBA(uint16_t *reg)
-{
-  return controller_->ToFloatDCBA(reg);
+  AllAlarmTexts_[3][0x0001] = "b_Compressor_HP_AL";
+  AllAlarmTexts_[3][0x0002] = "b_Compressor_HP_FS";
+  AllAlarmTexts_[3][0x0004] = "b_Compressor_Cnt_Alarm";
+  AllAlarmTexts_[3][0x0008] = "bEV1_Error_FS";
+  AllAlarmTexts_[3][0x0010] = "bEV2_Error_FS";
+  AllAlarmTexts_[3][0x0020] = "bEV3_Error_FS";
+  AllAlarmTexts_[3][0x0040] = "b_dT03_CO2_HT_FS";
+  AllAlarmTexts_[3][0x0080] = "b_Chiller_SH05_TS";
+  AllAlarmTexts_[3][0x0100] = "Reserve";
+  AllAlarmTexts_[3][0x0200] = "Reserve";
+  AllAlarmTexts_[3][0x0400] = "Reserve";
+  AllAlarmTexts_[3][0x0800] = "Reserve";
+  AllAlarmTexts_[3][0x1000] = "Reserve";
+  AllAlarmTexts_[3][0x2000] = "Reserve";
+  AllAlarmTexts_[3][0x4000] = "Reserve";
+  AllAlarmTexts_[3][0x8000] = "Reserve";
 }
