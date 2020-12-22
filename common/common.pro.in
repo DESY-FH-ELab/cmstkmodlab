@@ -41,7 +41,7 @@ else {
 }
 
 DEFINES += @configdefines@
-QT += core gui widgets opengl script xml
+QT += core gui widgets opengl script xml svg
 TARGET = Common
 TEMPLATE = lib
 
@@ -127,7 +127,8 @@ HEADERS += nqlogger.h \
            ScriptableHuberUnistat525w.h \
            AgilentTwisTorr304Model.h \
            AgilentTwisTorr304Widget.h \
-           MartaModel.h
+           MartaModel.h \
+           MartaWidget.h
 
 SOURCES += nqlogger.cc \
            npoint2D.cc \
@@ -188,4 +189,5 @@ SOURCES += nqlogger.cc \
            ScriptableHuberUnistat525w.cc \
            AgilentTwisTorr304Model.cc \
            AgilentTwisTorr304Widget.cc \
-           MartaModel.cc
+           MartaModel.cc \
+           MartaWidget.cc
