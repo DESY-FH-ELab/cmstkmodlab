@@ -76,6 +76,41 @@ protected:
   // Last known communication state
   void setDeviceState( State state );
 
+  bool valueChanged(float &storage, float value, unsigned int precision = 3);
+
+  float PT03_;
+  float PT05_;
+  float PT01CO2_;
+  float PT02CO2_;
+  float PT03CO2_;
+  float PT04CO2_;
+  float PT05CO2_;
+  float PT06CO2_;
+  float TT02_;
+  float TT01CO2_;
+  float TT02CO2_;
+  float TT03CO2_;
+  float TT04CO2_;
+  float TT05CO2_;
+  float TT06CO2_;
+  float TT07CO2_;
+  float SH05_;
+  float SC01CO2_;
+  float SC02CO2_;
+  float SC03CO2_;
+  float SC05CO2_;
+  float SC06CO2_;
+  float dP01CO2_;
+  float dP02CO2_;
+  float dP03CO2_;
+  float dP04CO2_;
+  float dT02CO2_;
+  float dT03CO2_;
+  float ST01CO2_;
+  float ST02CO2_;
+  float ST03CO2_;
+  float ST04CO2_;
+
 protected slots:
 
   void updateInformation();

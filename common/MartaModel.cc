@@ -26,6 +26,8 @@ MartaModel::MartaModel(const char* ipaddress,
     ipaddress_(ipaddress),
     updateInterval_(updateInterval)
 {
+  PT03_ = 0.0;
+
   /*
   timer_ = new QTimer(this);
   timer_->setInterval(updateInterval_ * 1000);
@@ -96,11 +98,13 @@ void MartaModel::updateInformation()
   
   if ( state_ == READY ) {
 
+    bool changed = false;
     uint16_t tab_reg[74];
     
     controller_->ReadRegisters(0, 72, tab_reg);
     
     // printf("0x%04x 0x%04x\n", tab_reg[0], tab_reg[1]);
+    changed |= valueChanged(PT03_, controller_->ToFloatBADC(&tab_reg[0]), 3);
     
     printf("PT03:     %f\n", controller_->ToFloatBADC(&tab_reg[0]));
     printf("PT05:     %f\n", controller_->ToFloatBADC(&tab_reg[2]));
@@ -221,6 +225,15 @@ void MartaModel::setDeviceEnabled(bool enabled)
 void MartaModel::setControlsEnabled(bool enabled)
 {
   emit controlStateChanged(enabled);
+}
+
+bool MartaModel::valueChanged(float &storage, float value, unsigned int precision)
+{
+  float power = std::math(10, precision);
+  float ftemp = std::round(value * power)/power;
+  bool ret = (storage!=ftemp);
+  storage = ftemp;
+  return ret;
 }
 
 void MartaModel::ReadRegisters(int addr, int nb, uint16_t *dest)
