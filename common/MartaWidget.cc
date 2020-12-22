@@ -18,6 +18,8 @@
 MartaSVGWidget::MartaSVGWidget(QWidget* parent)
   : QSvgWidget(parent)
 {
+  buttonAlarmStatus_ = QRect(725, 440, 44, 44);
+
   setSizePolicy(QSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding));
   sizePolicy().setHeightForWidth(true);
 }
@@ -41,6 +43,23 @@ void MartaSVGWidget::resizeEvent(QResizeEvent *event)
   } else {
     int w = widthForHeight(s.height());
     resize(w, s.height());
+  }
+}
+
+void MartaSVGWidget::mouseDoubleClickEvent(QMouseEvent *event)
+{
+	if (!isEnabled()) return;
+
+  double scale = 800./width();
+  QPoint p(scale * event->x(), scale * event->y());
+
+  if (buttonAlarmStatus_.contains(p)) {
+    QPoint c = buttonAlarmStatus_.center();
+    int length = std::sqrt(QPoint::dotProduct(p, c));
+    if (lengthSquared<=buttonAlarmStatus_.width()/2) {
+    		printf("click\n");
+      emit alarmStatusDoubleClicked();
+    }
   }
 }
 

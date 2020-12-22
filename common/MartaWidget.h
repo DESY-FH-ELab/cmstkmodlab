@@ -25,6 +25,7 @@
 #include <QComboBox>
 #include <QSvgWidget>
 #include <QResizeEvent>
+#include <QMouseEvent>
 #include <QTextEdit>
 
 #include "MartaModel.h"
@@ -42,6 +43,15 @@ class MartaSVGWidget : public QSvgWidget
  protected:
 
   virtual void resizeEvent(QResizeEvent *event);
+  virtual void mouseDoubleClickEvent(QMouseEvent *event);
+
+ signals:
+
+  void alarmStatusDoubleClicked();
+
+ private:
+
+  QRect buttonAlarmStatus_;
 };
 
 class MartaWidget : public QWidget
