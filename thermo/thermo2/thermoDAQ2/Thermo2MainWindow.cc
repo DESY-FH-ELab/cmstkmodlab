@@ -23,6 +23,7 @@
 #include "ApplicationConfig.h"
 
 #include "HuberUnistat525wWidget.h"
+#include "MartaWidget.h"
 #include "AgilentTwisTorr304Widget.h"
 #include "LeyboldGraphixOneWidget.h"
 #include "RohdeSchwarzNGE103BWidget.h"
@@ -50,6 +51,14 @@ Thermo2MainWindow::Thermo2MainWindow(QWidget *parent)
 #else
   huberModel_ = new HuberUnistat525wModel(config->getValue<std::string>("HuberUnistatDevice").c_str(),
                                           20, this);
+#endif
+
+#ifdef USE_FAKEIO
+  martaModel_ = new MartaModel(config->getValue<std::string>("MartaIPAddress").c_str(),
+			       5, this);
+#else
+  martaModel_ = new MartaModel(config->getValue<std::string>("MartaIPAddress").c_str(),
+			       10, this);
 #endif
 
 #ifdef USE_FAKEIO
@@ -156,6 +165,11 @@ Thermo2MainWindow::Thermo2MainWindow(QWidget *parent)
   vlayout->addWidget(new QWidget());
 
   tabWidget_->addTab(widget, "Chiller && Vacuum");
+
+  // MARTA MODEL
+  MartaWidget* martaWidget = new MartaWidget(martaModel_);
+  martaWidget->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);
+  tabWidget_->addTab(martaWidget, "Marta");
 
   // Rohde & Schwarz NGE130B Widget
   RohdeSchwarzNGE103BWidget* nge103BWidget = new RohdeSchwarzNGE103BWidget(nge103BModel_);
