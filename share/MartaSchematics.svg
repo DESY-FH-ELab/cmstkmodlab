@@ -1,0 +1,397 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg width="100%" height="100%" viewBox="0 0 800 500" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" xmlns:serif="http://www.serif.com/" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linejoin:round;stroke-miterlimit:1.5;">
+    <g transform="matrix(4.48472,0,0,3.27795,-144.61,-618.382)">
+        <rect x="32.245" y="188.649" width="178.384" height="152.534" style="fill:rgb(90,90,90);"/>
+    </g>
+    <g transform="matrix(1.87985,0,0,1.89814,-534.522,-146.432)">
+        <rect x="587.611" y="241.929" width="79.793" height="57.534" style="fill:rgb(230,230,230);"/>
+        <path d="M667.405,241.929L587.611,241.929L587.611,299.463L667.405,299.463L667.405,241.929ZM588.675,242.983L588.675,298.409L666.341,298.409L666.341,242.983L588.675,242.983Z"/>
+    </g>
+    <g transform="matrix(1.68318,0,0,0.991858,-599.609,119.547)">
+        <rect x="587.611" y="241.929" width="79.793" height="57.534" style="fill:rgb(230,230,230);"/>
+        <path d="M667.405,241.929L587.611,241.929L587.611,299.463L667.405,299.463L667.405,241.929ZM588.799,243.946L588.799,297.446L666.216,297.446L666.216,243.946L588.799,243.946Z"/>
+    </g>
+    <g transform="matrix(1,0,0,1,469.849,67.6389)">
+        <text x="126.281px" y="262.838px" style="font-family:'ArialMT', 'Arial', sans-serif;font-size:13.333px;">Local Box</text>
+    </g>
+    <g transform="matrix(1,0,0,1,286.765,117.46)">
+        <text x="108.491px" y="262.838px" style="font-family:'ArialMT', 'Arial', sans-serif;font-size:13.333px;">Connection Box</text>
+    </g>
+    <path d="M373.313,206.003L373.313,393.114L561.985,393.114L561.985,374.704L720.101,374.657" style="fill:none;stroke:rgb(255,0,0);stroke-width:3.33px;"/>
+    <g transform="matrix(1,0,0,1,0,40)">
+        <path d="M454.433,221.103L421.077,221.103L421.077,166.003" style="fill:none;stroke:rgb(0,192,255);stroke-width:3.33px;"/>
+    </g>
+    <path d="M235.018,343.878L330.583,343.878L330.583,206.003L446.56,206.003" style="fill:none;stroke:rgb(255,0,0);stroke-width:3.33px;"/>
+    <path d="M486.972,186.003L538.765,186.003L538.765,338.479L720.101,338.479" style="fill:none;stroke:rgb(0,192,255);stroke-width:3.33px;"/>
+    <path d="M21.976,355.339L21.976,159.963L71.269,159.963L71.269,101.987" style="fill:none;stroke:rgb(225,0,225);stroke-width:3.33px;"/>
+    <path d="M78.667,413.874L57.115,413.874L57.136,239.342L226.096,239.342L226.096,214.797L44.651,214.797L44.651,413.874L22.664,413.817C22.664,413.874 21.976,384.429 21.976,384.429" style="fill:none;stroke:rgb(225,0,225);stroke-width:3.33px;"/>
+    <path d="M135.599,413.817L105.374,413.931" style="fill:none;stroke:rgb(225,0,225);stroke-width:3.33px;"/>
+    <path d="M198.428,142.721L180.928,142.721" style="fill:none;stroke:rgb(225,0,225);stroke-width:3.33px;"/>
+    <path d="M232.838,413.817L351.615,413.817L352.207,144.936L442.245,145.088" style="fill:none;stroke:rgb(0,192,255);stroke-width:3.33px;"/>
+    <path d="M150.772,142.721L124.599,142.721L124.599,413.817L205.018,413.817" style="fill:none;stroke:rgb(225,0,225);stroke-width:3.33px;"/>
+    <path d="M85.341,85.717L198.428,85.717L198.428,343.878L205.018,343.878" style="fill:none;stroke:rgb(225,0,225);stroke-width:3.33px;"/>
+    <path d="M198.428,271.174L209.518,271.174L209.518,324.57L198.428,324.568" style="fill:none;stroke:rgb(213,179,0);stroke-width:1.33px;stroke-dasharray:1.33,1.33;"/>
+    <g transform="matrix(1,0,0,1,391.814,94.0254)">
+        <path d="M275.58,280.631L275.58,291.346L203.58,291.346L203.58,280.631" style="fill:none;stroke:rgb(213,179,0);stroke-width:1.33px;stroke-dasharray:1.33,1.33;"/>
+    </g>
+    <g transform="matrix(1,0,0,1,352.489,-73.5683)">
+        <path d="M152.993,259.572L152.993,225.403L240.539,225.403L240.539,277.66L186.709,277.66" style="fill:none;stroke:rgb(213,179,0);stroke-width:1.33px;stroke-dasharray:1.33,1.33;"/>
+    </g>
+    <g transform="matrix(1,0,0,1,352.489,-73.5683)">
+        <path d="M14.332,218.478L14.332,233.871L29.993,233.871L29.993,218.478" style="fill:none;stroke:rgb(213,179,0);stroke-width:1.33px;stroke-dasharray:1.33,1.33;"/>
+    </g>
+    <g transform="matrix(1,0,0,1,352.489,-73.5683)">
+        <path d="M-79.971,487.385L-79.971,206.69L14.332,206.69L14.332,218.478" style="fill:none;stroke:rgb(213,179,0);stroke-width:1.33px;stroke-dasharray:1.33,1.33;"/>
+    </g>
+    <g transform="matrix(1,0,0,1,352.489,-73.5683)">
+        <path d="M-61.42,487.385L-61.42,167.69L29.993,167.69L29.993,218.478" style="fill:none;stroke:rgb(213,179,0);stroke-width:1.33px;stroke-dasharray:1.33,1.33;"/>
+    </g>
+    <g id="Heat-Exchanger" serif:id="Heat Exchanger" transform="matrix(0.9375,0,0,1,13.5967,0)">
+        <g transform="matrix(0.958039,0,0,1.01645,8.73566,-6.18832)">
+            <rect x="204.008" y="331.896" width="8.35" height="88.543" style="fill:white;stroke:black;stroke-width:0.7px;"/>
+        </g>
+        <g transform="matrix(0.958039,0,0,1.01645,16.7357,-6.18832)">
+            <rect x="204.008" y="331.896" width="8.35" height="88.543" style="fill:rgb(158,158,158);stroke:black;stroke-width:0.7px;"/>
+        </g>
+        <g transform="matrix(0.958039,0,0,1.01645,24.7357,-6.18832)">
+            <rect x="204.008" y="331.896" width="8.35" height="88.543" style="fill:white;stroke:black;stroke-width:0.7px;"/>
+        </g>
+        <g transform="matrix(0.958039,0,0,1.01645,32.7357,-6.18832)">
+            <rect x="204.008" y="331.896" width="8.35" height="88.543" style="fill:rgb(158,158,158);stroke:black;stroke-width:0.7px;"/>
+        </g>
+    </g>
+    <g id="PT03" transform="matrix(1,0,0,1,0,-3)">
+        <g transform="matrix(0.83709,0,0,1.06306,31.309,-7.25366)">
+            <ellipse cx="199.642" cy="107.711" rx="5.376" ry="4.233" style="fill:white;stroke:black;stroke-width:0.7px;"/>
+        </g>
+        <g transform="matrix(1,0,0,1,9.19738,-155.957)">
+            <text x="151.967px" y="262.838px" style="font-family:'ArialMT', 'Arial', sans-serif;font-size:13.333px;">P<tspan x="160.194px 167.672px 174.421px " y="262.838px 262.838px 262.838px ">T03</tspan></text>
+        </g>
+        <g transform="matrix(1,0,0,1,42.9384,-173.602)">
+            <text x="105.234px" y="291.573px" style="font-family:'ArialMT', 'Arial', sans-serif;font-size:13.333px;">P<tspan x="113.461px 120.939px 127.687px 134.436px " y="291.573px 291.573px 291.573px 291.573px ">T03@</tspan></text>
+        </g>
+    </g>
+    <g id="FT01" transform="matrix(1,0,0,1,399.997,198.841)">
+        <g transform="matrix(0.83709,0,0,1.06306,-28.9175,-6.25366)">
+            <ellipse cx="199.642" cy="107.711" rx="5.376" ry="4.233" style="fill:white;stroke:black;stroke-width:0.7px;"/>
+        </g>
+        <g transform="matrix(1,0,0,1,-47.438,-155.75)">
+            <text x="151.967px" y="262.838px" style="font-family:'ArialMT', 'Arial', sans-serif;font-size:13.333px;">F<tspan x="159.445px 166.923px 173.672px " y="262.838px 262.838px 262.838px ">T01</tspan></text>
+        </g>
+        <g transform="matrix(1,0,0,1,-15.5395,-172.602)">
+            <text x="105.234px" y="291.573px" style="font-family:'ArialMT', 'Arial', sans-serif;font-size:13.333px;">F<tspan x="112.712px 120.19px 126.939px 133.687px " y="291.573px 291.573px 291.573px 291.573px ">T01@</tspan></text>
+        </g>
+    </g>
+    <g id="PT03CO2" transform="matrix(1,0,0,1,400.997,110.841)">
+        <g transform="matrix(0.83709,0,0,1.06306,-28.9175,-21.2537)">
+            <ellipse cx="199.642" cy="107.711" rx="5.376" ry="4.233" style="fill:white;stroke:black;stroke-width:0.7px;"/>
+        </g>
+        <g transform="matrix(1,0,0,1,-7.52658,-155.75)">
+            <text x="152.634px" y="262.838px" style="font-family:'ArialMT', 'Arial', sans-serif;font-size:13.333px;">P<tspan x="160.861px 168.338px 175.087px 181.836px 190.798px 200.503px " y="262.838px 262.838px 262.838px 262.838px 262.838px 262.838px ">T03CO2</tspan></text>
+        </g>
+        <g transform="matrix(1,0,0,1,39.2066,-172.602)">
+            <text x="105.901px" y="291.573px" style="font-family:'ArialMT', 'Arial', sans-serif;font-size:13.333px;">P<tspan x="114.127px 121.605px 128.354px 135.103px 144.065px 153.769px 160.518px " y="291.573px 291.573px 291.573px 291.573px 291.573px 291.573px 291.573px ">T03CO2@</tspan></text>
+        </g>
+    </g>
+    <g id="ST03CO2" transform="matrix(1,0,0,1,400.997,136.841)">
+        <g transform="matrix(1,0,0,1,-7.52658,-155.75)">
+            <text x="152.634px" y="262.838px" style="font-family:'ArialMT', 'Arial', sans-serif;font-size:13.333px;fill:rgb(213,179,0);">S<tspan x="160.861px 168.338px 175.087px 181.836px 190.798px 200.503px " y="262.838px 262.838px 262.838px 262.838px 262.838px 262.838px ">T03CO2</tspan></text>
+        </g>
+        <g transform="matrix(1,0,0,1,39.2066,-172.602)">
+            <text x="105.901px" y="291.573px" style="font-family:'ArialMT', 'Arial', sans-serif;font-size:13.333px;fill:rgb(213,179,0);">S<tspan x="114.127px 121.605px 128.354px 135.103px 144.065px 153.769px 160.518px " y="291.573px 291.573px 291.573px 291.573px 291.573px 291.573px 291.573px ">T03CO2@</tspan></text>
+        </g>
+    </g>
+    <g id="ST04CO2" transform="matrix(1,0,0,1,337.614,-27.8698)">
+        <g transform="matrix(1,0,0,1,-5.52658,-155.75)">
+            <text x="152.634px" y="262.838px" style="font-family:'ArialMT', 'Arial', sans-serif;font-size:13.333px;fill:rgb(213,179,0);">S<tspan x="160.861px 168.338px 175.087px 181.836px 190.798px 200.503px " y="262.838px 262.838px 262.838px 262.838px 262.838px 262.838px ">T04CO2</tspan></text>
+        </g>
+        <g transform="matrix(1,0,0,1,41.2066,-172.602)">
+            <text x="105.901px" y="291.573px" style="font-family:'ArialMT', 'Arial', sans-serif;font-size:13.333px;fill:rgb(213,179,0);">S<tspan x="114.127px 121.605px 128.354px 135.103px 144.065px 153.769px 160.518px " y="291.573px 291.573px 291.573px 291.573px 291.573px 291.573px 291.573px ">T04CO2@</tspan></text>
+        </g>
+    </g>
+    <g id="TT03CO2" transform="matrix(1,0,0,1,374.166,45.7003)">
+        <g transform="matrix(0.83709,0,0,1.06306,-35.8028,25.7992)">
+            <ellipse cx="199.642" cy="107.711" rx="5.376" ry="4.233" style="fill:white;stroke:black;stroke-width:0.7px;"/>
+        </g>
+        <g transform="matrix(1,0,0,1,-17.6307,-141.223)">
+            <text x="152.634px" y="262.838px" style="font-family:'ArialMT', 'Arial', sans-serif;font-size:13.333px;">T<tspan x="160.112px 167.59px 174.338px 181.087px 190.049px 199.754px " y="262.838px 262.838px 262.838px 262.838px 262.838px 262.838px ">T03CO2</tspan></text>
+        </g>
+        <g transform="matrix(1,0,0,1,29.1025,-158.075)">
+            <text x="105.901px" y="291.573px" style="font-family:'ArialMT', 'Arial', sans-serif;font-size:13.333px;">T<tspan x="113.379px 120.857px 127.605px 134.354px 143.316px 153.021px 159.769px " y="291.573px 291.573px 291.573px 291.573px 291.573px 291.573px 291.573px ">T03CO2@</tspan></text>
+        </g>
+    </g>
+    <g id="TT06CO2" transform="matrix(1,0,0,1,424.921,30.2159)">
+        <g transform="matrix(1,0,0,1,-3.22263,61.9143)">
+            <text x="153.383px" y="262.838px" style="font-family:'ArialMT', 'Arial', sans-serif;font-size:13.333px;">T<tspan x="160.861px 168.338px 175.087px 181.836px 190.798px 200.503px " y="262.838px 262.838px 262.838px 262.838px 262.838px 262.838px ">T06CO2</tspan></text>
+        </g>
+        <g transform="matrix(1,0,0,1,43.5106,44.0623)">
+            <text x="106.65px" y="291.573px" style="font-family:'ArialMT', 'Arial', sans-serif;font-size:13.333px;">T<tspan x="114.127px 121.605px 128.354px 135.103px 144.065px 153.769px 160.518px " y="291.573px 291.573px 291.573px 291.573px 291.573px 291.573px 291.573px ">T06CO2@</tspan></text>
+        </g>
+        <g transform="matrix(0.83709,0,0,1.06306,3.35388,229.937)">
+            <ellipse cx="199.642" cy="107.711" rx="5.376" ry="4.233" style="fill:white;stroke:black;stroke-width:0.7px;"/>
+        </g>
+    </g>
+    <g id="TT07CO2" transform="matrix(1,0,0,1,281.531,48.5308)">
+        <g transform="matrix(1,0,0,1,-39.4179,97.1864)">
+            <text x="153.383px" y="262.838px" style="font-family:'ArialMT', 'Arial', sans-serif;font-size:13.333px;">T<tspan x="160.861px 168.338px 175.087px 181.836px 190.798px 200.503px " y="262.838px 262.838px 262.838px 262.838px 262.838px 262.838px ">T07CO2</tspan></text>
+        </g>
+        <g transform="matrix(1,0,0,1,63.5106,68.5883)">
+            <text x="106.65px" y="291.573px" style="font-family:'ArialMT', 'Arial', sans-serif;font-size:13.333px;">T<tspan x="114.127px 121.605px 128.354px 135.103px 144.065px 153.769px 160.518px " y="291.573px 291.573px 291.573px 291.573px 291.573px 291.573px 291.573px ">T07CO2@</tspan></text>
+        </g>
+        <g transform="matrix(0.83709,0,0,1.06306,3.35388,229.937)">
+            <ellipse cx="199.642" cy="107.711" rx="5.376" ry="4.233" style="fill:white;stroke:black;stroke-width:0.7px;"/>
+        </g>
+    </g>
+    <g id="PT06CO2" transform="matrix(1,0,0,1,496.921,30.2159)">
+        <g transform="matrix(1,0,0,1,-3.22263,61.9143)">
+            <text x="153.383px" y="262.838px" style="font-family:'ArialMT', 'Arial', sans-serif;font-size:13.333px;">P<tspan x="161.609px 169.087px 175.836px 182.585px 191.547px 201.251px " y="262.838px 262.838px 262.838px 262.838px 262.838px 262.838px ">T06CO2</tspan></text>
+        </g>
+        <g transform="matrix(1,0,0,1,43.5106,44.0623)">
+            <text x="106.65px" y="291.573px" style="font-family:'ArialMT', 'Arial', sans-serif;font-size:13.333px;">P<tspan x="114.876px 122.354px 129.103px 135.851px 144.814px 154.518px 161.267px " y="291.573px 291.573px 291.573px 291.573px 291.573px 291.573px 291.573px ">T06CO2@</tspan></text>
+        </g>
+        <g transform="matrix(0.83709,0,0,1.06306,3.35388,229.937)">
+            <ellipse cx="199.642" cy="107.711" rx="5.376" ry="4.233" style="fill:white;stroke:black;stroke-width:0.7px;"/>
+        </g>
+    </g>
+    <g id="TT02" transform="matrix(1,0,0,1,0,3)">
+        <g transform="matrix(1,0,0,1,9.29503,57.5676)">
+            <text x="152.716px" y="262.838px" style="font-family:'ArialMT', 'Arial', sans-serif;font-size:13.333px;">T<tspan x="160.194px 167.672px 174.421px " y="262.838px 262.838px 262.838px ">T02</tspan></text>
+        </g>
+        <g transform="matrix(1,0,0,1,42.9384,40.7156)">
+            <text x="105.983px" y="291.573px" style="font-family:'ArialMT', 'Arial', sans-serif;font-size:13.333px;">T<tspan x="113.461px 120.939px 127.687px 134.436px " y="291.573px 291.573px 291.573px 291.573px ">T02@</tspan></text>
+        </g>
+        <g transform="matrix(0.83709,0,0,1.06306,31.309,207.064)">
+            <ellipse cx="199.642" cy="107.711" rx="5.376" ry="4.233" style="fill:white;stroke:black;stroke-width:0.7px;"/>
+        </g>
+    </g>
+    <g id="TT01CO2" transform="matrix(1,0,0,1,89.7844,122.226)">
+        <g transform="matrix(1,0,0,1,-0.398976,61.2156)">
+            <text x="127.301px" y="262.838px" style="font-family:'ArialMT', 'Arial', sans-serif;font-size:13.333px;">T<tspan x="134.779px 142.256px 149.005px 155.754px 164.716px 174.421px " y="262.838px 262.838px 262.838px 262.838px 262.838px 262.838px ">T01CO2</tspan></text>
+        </g>
+        <g transform="matrix(1,0,0,1,33.2444,44.3636)">
+            <text x="80.568px" y="291.573px" style="font-family:'ArialMT', 'Arial', sans-serif;font-size:13.333px;">T<tspan x="88.045px 95.523px 102.272px 109.021px 117.983px 127.687px 134.436px " y="291.573px 291.573px 291.573px 291.573px 291.573px 291.573px 291.573px ">T01CO2@</tspan></text>
+        </g>
+        <g transform="matrix(1,0,0,1,240.835,-274.895)">
+            <path d="M-58.102,566.486L-58.102,613.362" style="fill:none;stroke:black;stroke-width:1.33px;stroke-dasharray:1.33,1.33;"/>
+        </g>
+        <g transform="matrix(0.83709,0,0,1.06306,15.615,177.087)">
+            <ellipse cx="199.642" cy="107.711" rx="5.376" ry="4.233" style="fill:white;stroke:black;stroke-width:0.7px;"/>
+        </g>
+    </g>
+    <g id="TT02CO2" transform="matrix(1,0,0,1,184.088,-146.682)">
+        <g transform="matrix(1,0,0,1,56.4539,-66.1529)">
+            <text x="127.967px" y="262.838px" style="font-family:'ArialMT', 'Arial', sans-serif;font-size:13.333px;">T<tspan x="135.445px 142.923px 149.672px 156.421px 165.383px 175.087px " y="262.838px 262.838px 262.838px 262.838px 262.838px 262.838px ">T02CO2</tspan></text>
+        </g>
+        <g transform="matrix(1,0,0,1,103.187,-83.0049)">
+            <text x="81.234px" y="291.573px" style="font-family:'ArialMT', 'Arial', sans-serif;font-size:13.333px;">T<tspan x="88.712px 96.19px 102.939px 109.687px 118.65px 128.354px 135.103px " y="291.573px 291.573px 291.573px 291.573px 291.573px 291.573px 291.573px ">T02CO2@</tspan></text>
+        </g>
+        <g transform="matrix(1,0,0,1,240.835,-274.895)">
+            <path d="M-58.102,566.486L-58.102,461.867" style="fill:none;stroke:black;stroke-width:1.33px;stroke-dasharray:1.33,1.33;"/>
+        </g>
+        <g transform="matrix(0.83709,0,0,1.06306,15.615,177.087)">
+            <ellipse cx="199.642" cy="107.711" rx="5.376" ry="4.233" style="fill:white;stroke:black;stroke-width:0.7px;"/>
+        </g>
+    </g>
+    <g id="PT01CO2" transform="matrix(1,0,0,1,110.478,124.152)">
+        <g transform="matrix(1,0,0,1,55.5945,59.2156)">
+            <text x="127.219px" y="262.838px" style="font-family:'ArialMT', 'Arial', sans-serif;font-size:13.333px;">P<tspan x="135.445px 142.923px 149.672px 156.421px 165.383px 175.087px " y="262.838px 262.838px 262.838px 262.838px 262.838px 262.838px ">T01CO2</tspan></text>
+        </g>
+        <g transform="matrix(1,0,0,1,102.328,42.3636)">
+            <text x="80.485px" y="291.573px" style="font-family:'ArialMT', 'Arial', sans-serif;font-size:13.333px;">P<tspan x="88.712px 96.19px 102.939px 109.687px 118.65px 128.354px 135.103px " y="291.573px 291.573px 291.573px 291.573px 291.573px 291.573px 291.573px ">T01CO2@</tspan></text>
+        </g>
+        <g transform="matrix(1,0,0,1,200.141,-276.822)">
+            <path d="M-19.551,566.486L-19.551,639.564" style="fill:none;stroke:black;stroke-width:1.33px;stroke-dasharray:1.33,1.33;"/>
+        </g>
+        <g transform="matrix(0.83709,0,0,1.06306,13.4718,175.161)">
+            <ellipse cx="199.642" cy="107.711" rx="5.376" ry="4.233" style="fill:white;stroke:black;stroke-width:0.7px;"/>
+        </g>
+    </g>
+    <g id="ST01CO2" transform="matrix(1,0,0,1,111.478,152.152)">
+        <g transform="matrix(1,0,0,1,54.5945,57.2156)">
+            <text x="127.219px" y="262.838px" style="font-family:'ArialMT', 'Arial', sans-serif;font-size:13.333px;fill:rgb(213,179,0);">S<tspan x="135.445px 142.923px 149.672px 156.421px 165.383px 175.087px " y="262.838px 262.838px 262.838px 262.838px 262.838px 262.838px ">T01CO2</tspan></text>
+        </g>
+        <g transform="matrix(1,0,0,1,101.328,40.3636)">
+            <text x="80.485px" y="291.573px" style="font-family:'ArialMT', 'Arial', sans-serif;font-size:13.333px;fill:rgb(213,179,0);">S<tspan x="88.712px 96.19px 102.939px 109.687px 118.65px 128.354px 135.103px " y="291.573px 291.573px 291.573px 291.573px 291.573px 291.573px 291.573px ">T01CO2@</tspan></text>
+        </g>
+    </g>
+    <g id="PT02CO2" transform="matrix(1,0,0,1,201.892,-217.613)">
+        <g transform="matrix(1,0,0,1,55.5945,59.2156)">
+            <text x="127.219px" y="262.838px" style="font-family:'ArialMT', 'Arial', sans-serif;font-size:13.333px;">P<tspan x="135.445px 142.923px 149.672px 156.421px 165.383px 175.087px " y="262.838px 262.838px 262.838px 262.838px 262.838px 262.838px ">T02CO2</tspan></text>
+        </g>
+        <g transform="matrix(1,0,0,1,102.328,42.3636)">
+            <text x="80.485px" y="291.573px" style="font-family:'ArialMT', 'Arial', sans-serif;font-size:13.333px;">P<tspan x="88.712px 96.19px 102.939px 109.687px 118.65px 128.354px 135.103px " y="291.573px 291.573px 291.573px 291.573px 291.573px 291.573px 291.573px ">T02CO2@</tspan></text>
+        </g>
+        <g transform="matrix(1,0,0,1,200.141,-276.822)">
+            <path d="M-19.551,564.486L-19.551,639.486" style="fill:none;stroke:black;stroke-width:1.33px;stroke-dasharray:1.33,1.33;"/>
+        </g>
+        <g transform="matrix(0.83709,0,0,1.06306,13.4718,248.161)">
+            <ellipse cx="199.642" cy="107.711" rx="5.376" ry="4.233" style="fill:white;stroke:black;stroke-width:0.7px;"/>
+        </g>
+    </g>
+    <g id="ST02CO2" transform="matrix(1,0,0,1,203.322,-240.288)">
+        <g transform="matrix(1,0,0,1,54.5945,57.2156)">
+            <text x="127.219px" y="262.838px" style="font-family:'ArialMT', 'Arial', sans-serif;font-size:13.333px;fill:rgb(213,179,0);">S<tspan x="135.445px 142.923px 149.672px 156.421px 165.383px 175.087px " y="262.838px 262.838px 262.838px 262.838px 262.838px 262.838px ">T02CO2</tspan></text>
+        </g>
+        <g transform="matrix(1,0,0,1,101.328,40.3636)">
+            <text x="80.485px" y="291.573px" style="font-family:'ArialMT', 'Arial', sans-serif;font-size:13.333px;fill:rgb(213,179,0);">S<tspan x="88.712px 96.19px 102.939px 109.687px 118.65px 128.354px 135.103px " y="291.573px 291.573px 291.573px 291.573px 291.573px 291.573px 291.573px ">T02CO2@</tspan></text>
+        </g>
+    </g>
+    <g id="PT05" transform="matrix(1,0,0,1,0,-14)">
+        <g transform="matrix(0.83709,0,0,1.06306,31.309,170.67)">
+            <ellipse cx="199.642" cy="107.711" rx="5.376" ry="4.233" style="fill:white;stroke:black;stroke-width:0.7px;"/>
+        </g>
+        <g transform="matrix(1,0,0,1,9.12576,21.1735)">
+            <text x="151.967px" y="262.838px" style="font-family:'ArialMT', 'Arial', sans-serif;font-size:13.333px;">P<tspan x="160.194px 167.672px 174.421px " y="262.838px 262.838px 262.838px ">T05</tspan></text>
+        </g>
+        <g transform="matrix(1,0,0,1,42.9384,3.32146)">
+            <text x="105.234px" y="291.573px" style="font-family:'ArialMT', 'Arial', sans-serif;font-size:13.333px;">P<tspan x="113.461px 120.939px 127.687px 134.436px " y="291.573px 291.573px 291.573px 291.573px ">T05@</tspan></text>
+        </g>
+    </g>
+    <g transform="matrix(0.83709,0,0,1.06306,105.399,46.351)">
+        <ellipse cx="199.642" cy="107.711" rx="5.376" ry="4.233" style="fill:rgb(213,179,0);stroke:black;stroke-width:0.7px;"/>
+    </g>
+    <g transform="matrix(0.83709,0,0,1.06306,148.051,-20.3823)">
+        <ellipse cx="199.642" cy="107.711" rx="5.376" ry="4.233" style="fill:rgb(213,179,0);stroke:black;stroke-width:0.7px;"/>
+    </g>
+    <g id="SH05ST05" transform="matrix(1,0,0,1,0.210286,8.41467)">
+        <g transform="matrix(0.83709,0,0,1.06306,42.1892,170.67)">
+            <ellipse cx="199.642" cy="107.711" rx="5.376" ry="4.233" style="fill:rgb(213,179,0);stroke:black;stroke-width:0.7px;"/>
+        </g>
+        <g transform="matrix(1,0,0,1,65.5593,7.17345)">
+            <text x="151.15px" y="262.838px" style="font-family:'ArialMT', 'Arial', sans-serif;font-size:13.333px;fill:rgb(213,179,0);">S<tspan x="159.376px 168.338px 175.087px " y="262.838px 262.838px 262.838px ">H05</tspan></text>
+        </g>
+        <g transform="matrix(1,0,0,1,112.292,-9.67854)">
+            <text x="104.416px" y="291.573px" style="font-family:'ArialMT', 'Arial', sans-serif;font-size:13.333px;fill:rgb(213,179,0);">S<tspan x="112.643px 121.605px 128.354px 135.103px " y="291.573px 291.573px 291.573px 291.573px ">H05@</tspan></text>
+        </g>
+        <g transform="matrix(1,0,0,1,65.5593,35.1735)">
+            <text x="151.15px" y="262.838px" style="font-family:'ArialMT', 'Arial', sans-serif;font-size:13.333px;fill:rgb(213,179,0);">S<tspan x="159.376px 166.854px 173.603px " y="262.838px 262.838px 262.838px ">T05</tspan></text>
+        </g>
+        <g transform="matrix(1,0,0,1,112.292,18.3215)">
+            <text x="104.416px" y="291.573px" style="font-family:'ArialMT', 'Arial', sans-serif;font-size:13.333px;fill:rgb(213,179,0);">S<tspan x="112.643px 120.121px 126.87px 133.618px " y="291.573px 291.573px 291.573px 291.573px ">T05@</tspan></text>
+        </g>
+    </g>
+    <g id="SC06CO2" transform="matrix(1,0,0,1,397.059,118.086)">
+        <g transform="matrix(0.83709,0,0,1.06306,67.1462,152.781)">
+            <ellipse cx="199.642" cy="107.711" rx="5.376" ry="4.233" style="fill:rgb(213,179,0);stroke:black;stroke-width:0.7px;"/>
+        </g>
+        <g transform="matrix(1,0,0,1,65.446,20.8453)">
+            <text x="151.15px" y="262.838px" style="font-family:'ArialMT', 'Arial', sans-serif;font-size:13.333px;fill:rgb(213,179,0);">S<tspan x="159.376px 168.338px 175.087px 181.836px 190.798px 200.503px " y="262.838px 262.838px 262.838px 262.838px 262.838px 262.838px ">C06CO2</tspan></text>
+        </g>
+        <g transform="matrix(1,0,0,1,112.179,3.99334)">
+            <text x="104.416px" y="291.573px" style="font-family:'ArialMT', 'Arial', sans-serif;font-size:13.333px;fill:rgb(213,179,0);">S<tspan x="112.643px 121.605px 128.354px 135.103px 144.065px 153.769px 160.518px " y="291.573px 291.573px 291.573px 291.573px 291.573px 291.573px 291.573px ">C06CO2@</tspan></text>
+        </g>
+    </g>
+    <g id="SC02CO2" transform="matrix(1,0,0,1,358.521,-90.0446)">
+        <g transform="matrix(0.83709,0,0,1.06306,67.1462,152.781)">
+            <ellipse cx="199.642" cy="107.711" rx="5.376" ry="4.233" style="fill:rgb(213,179,0);stroke:black;stroke-width:0.7px;"/>
+        </g>
+        <g transform="matrix(1,0,0,1,89.446,14.8453)">
+            <text x="151.15px" y="262.838px" style="font-family:'ArialMT', 'Arial', sans-serif;font-size:13.333px;fill:rgb(213,179,0);">S<tspan x="159.376px 168.338px 175.087px 181.836px 190.798px 200.503px " y="262.838px 262.838px 262.838px 262.838px 262.838px 262.838px ">C02CO2</tspan></text>
+        </g>
+        <g transform="matrix(1,0,0,1,136.179,-2.00666)">
+            <text x="104.416px" y="291.573px" style="font-family:'ArialMT', 'Arial', sans-serif;font-size:13.333px;fill:rgb(213,179,0);">S<tspan x="112.643px 121.605px 128.354px 135.103px 144.065px 153.769px 160.518px " y="291.573px 291.573px 291.573px 291.573px 291.573px 291.573px 291.573px ">C02CO2@</tspan></text>
+        </g>
+    </g>
+    <g id="SC03CO2" transform="matrix(1,0,0,1,121.332,-101.368)">
+        <g transform="matrix(0.83709,0,0,1.06306,86.3625,147.358)">
+            <ellipse cx="199.642" cy="107.711" rx="5.376" ry="4.233" style="fill:rgb(213,179,0);stroke:black;stroke-width:0.7px;"/>
+        </g>
+        <g transform="matrix(1,0,0,1,89.446,15.8453)">
+            <text x="151.15px" y="262.838px" style="font-family:'ArialMT', 'Arial', sans-serif;font-size:13.333px;fill:rgb(213,179,0);">S<tspan x="159.376px 168.338px 175.087px 181.836px 190.798px 200.503px " y="262.838px 262.838px 262.838px 262.838px 262.838px 262.838px ">C03CO2</tspan></text>
+        </g>
+        <g transform="matrix(1,0,0,1,136.179,-1.00666)">
+            <text x="104.416px" y="291.573px" style="font-family:'ArialMT', 'Arial', sans-serif;font-size:13.333px;fill:rgb(213,179,0);">S<tspan x="112.643px 121.605px 128.354px 135.103px 144.065px 153.769px 160.518px " y="291.573px 291.573px 291.573px 291.573px 291.573px 291.573px 291.573px ">C03CO2@</tspan></text>
+        </g>
+    </g>
+    <g id="Tank" transform="matrix(1.06477,0,0,0.987135,-0.61031,1.86493)">
+        <path d="M9.457,144.963L71.491,144.963C79.686,151.192 79.798,168.557 71.491,175.354L9.457,175.354C0.368,169.697 0.117,150.516 9.457,144.963Z" style="fill:rgb(158,158,158);stroke:black;stroke-width:1.95px;"/>
+    </g>
+    <g id="R507-Pump" serif:id="R507 Pump">
+        <g transform="matrix(1.10194,0,0,1.4568,-18.8118,-89.5518)">
+            <ellipse cx="197.144" cy="184.306" rx="15.881" ry="12.013" style="fill:white;stroke:black;stroke-width:1.55px;"/>
+        </g>
+        <path d="M203.008,162.051L214.028,186.877" style="fill:none;stroke:black;stroke-width:2px;"/>
+        <g transform="matrix(-1,0,0,1,397.252,0)">
+            <path d="M203.404,162.051L214.424,186.877" style="fill:none;stroke:black;stroke-width:2px;"/>
+        </g>
+    </g>
+    <g id="CO2-Pump" serif:id="CO2 Pump" transform="matrix(-1.83697e-16,1,-1,-1.83697e-16,500.477,214.463)">
+        <g transform="matrix(1.10194,0,0,1.4568,-18.8118,-89.5518)">
+            <ellipse cx="197.144" cy="184.306" rx="15.881" ry="12.013" style="fill:white;stroke:black;stroke-width:1.55px;"/>
+        </g>
+        <path d="M203.008,162.051L214.028,186.877" style="fill:none;stroke:black;stroke-width:2px;"/>
+        <g transform="matrix(-1,0,0,1,397.252,0)">
+            <path d="M203.404,162.051L214.424,186.877" style="fill:none;stroke:black;stroke-width:2px;"/>
+        </g>
+    </g>
+    <g id="Heat-Exchanger1" serif:id="Heat Exchanger" transform="matrix(1,0,0,1,0,59.5553)">
+        <g transform="matrix(1.10194,0,0,1.4568,-18.8118,-89.5518)">
+            <ellipse cx="197.144" cy="184.306" rx="15.881" ry="12.013" style="fill:white;stroke:black;stroke-width:1.55px;"/>
+        </g>
+        <g transform="matrix(1,0,0,1,0,-59.5553)">
+            <path d="M198.428,221L198.428,225.963L192.493,231.943L204.008,244.4L198.428,250.409L198.428,256" style="fill:none;stroke:black;stroke-width:1.33px;"/>
+        </g>
+    </g>
+    <path id="Valve-EV2" serif:id="Valve EV2" d="M142.549,131.5L185.832,153.942L185.832,131.5L142.549,153.942L142.549,131.5Z" style="fill:rgb(253,253,253);stroke:black;stroke-width:2px;"/>
+    <g id="Valve-SV1" serif:id="Valve SV1" transform="matrix(6.12323e-17,-1,1,6.12323e-17,-120.745,532.805)">
+        <path d="M142.549,131.5L185.832,153.942L185.832,131.5L142.549,153.942L142.549,131.5Z" style="fill:rgb(253,253,253);stroke:black;stroke-width:2px;"/>
+    </g>
+    <g id="Valve-EV1" serif:id="Valve EV1" transform="matrix(1,0,0,1,-72.8421,271.21)">
+        <path d="M142.549,131.5L185.832,153.942L185.832,131.5L142.549,153.942L142.549,131.5Z" style="fill:rgb(253,253,253);stroke:black;stroke-width:2px;"/>
+    </g>
+    <g transform="matrix(1,0,0,1,0,40)">
+        <path d="M522.601,146.003L522.601,221.103L483.761,221.103" style="fill:none;stroke:rgb(0,192,255);stroke-width:3.33px;"/>
+    </g>
+    <g id="Valve-EV3" serif:id="Valve EV3" transform="matrix(1,0,0,1,305.554,118.382)">
+        <path d="M142.549,131.5L185.832,153.942L185.832,131.5L142.549,153.942L142.549,131.5Z" style="fill:rgb(253,253,253);stroke:black;stroke-width:2px;"/>
+    </g>
+    <g id="Fan">
+        <g transform="matrix(1.00835,0,0,1.04762,-0.120173,-4.58486)">
+            <ellipse cx="71.018" cy="92.723" rx="20.352" ry="19.568" style="fill:white;stroke:black;stroke-width:1.95px;"/>
+        </g>
+        <g transform="matrix(0.122839,0,0,0.127758,62.7673,80.7075)">
+            <ellipse cx="71.018" cy="92.723" rx="20.352" ry="19.568" style="fill:none;stroke:black;stroke-width:10.64px;"/>
+        </g>
+        <g transform="matrix(0.184455,0,0,0.349396,58.3914,50.8196)">
+            <ellipse cx="71.018" cy="92.723" rx="20.352" ry="19.568" style="fill:none;stroke:black;stroke-width:4.77px;"/>
+        </g>
+        <g transform="matrix(-0.0922276,-0.159743,0.302586,-0.174698,41.2716,124.814)">
+            <ellipse cx="71.018" cy="92.723" rx="20.352" ry="19.568" style="fill:none;stroke:black;stroke-width:4.77px;"/>
+        </g>
+        <g transform="matrix(-0.0922276,0.159743,-0.302586,-0.174698,114.81,102.124)">
+            <ellipse cx="71.018" cy="92.723" rx="20.352" ry="19.568" style="fill:none;stroke:black;stroke-width:4.77px;"/>
+        </g>
+    </g>
+    <g transform="matrix(1,0,0,1,40,40)">
+        <path d="M399,84.99L453.386,84.99L453.386,179.136C434.729,185.312 416.596,185.361 399,179.136L399,84.99Z" style="fill:rgb(158,158,158);stroke:black;stroke-width:2px;"/>
+    </g>
+    <g id="PT04CO2" transform="matrix(1,0,0,1,344.119,32.0585)">
+        <g transform="matrix(1,0,0,1,-33.4989,-184.728)">
+            <path d="M171.7,277.978L171.7,218.728" style="fill:none;stroke:black;stroke-width:1.33px;stroke-dasharray:1.33,1.33;"/>
+        </g>
+        <g transform="matrix(0.83709,0,0,1.06306,-28.9175,-21.2537)">
+            <ellipse cx="199.642" cy="107.711" rx="5.376" ry="4.233" style="fill:white;stroke:black;stroke-width:0.7px;"/>
+        </g>
+        <g transform="matrix(1,0,0,1,-12.4615,-189.276)">
+            <text x="152.634px" y="262.838px" style="font-family:'ArialMT', 'Arial', sans-serif;font-size:13.333px;">P<tspan x="160.861px 168.338px 175.087px 181.836px 190.798px 200.503px " y="262.838px 262.838px 262.838px 262.838px 262.838px 262.838px ">T04CO2</tspan></text>
+        </g>
+        <g transform="matrix(1,0,0,1,34.2717,-206.128)">
+            <text x="105.901px" y="291.573px" style="font-family:'ArialMT', 'Arial', sans-serif;font-size:13.333px;">P<tspan x="114.127px 121.605px 128.354px 135.103px 144.065px 153.769px 160.518px " y="291.573px 291.573px 291.573px 291.573px 291.573px 291.573px 291.573px ">T04CO2@</tspan></text>
+        </g>
+    </g>
+    <g id="TT04CO2" transform="matrix(1,0,0,1,284.24,-166.498)">
+        <g transform="matrix(1,0,0,1,56.4539,-45.9702)">
+            <text x="127.967px" y="262.838px" style="font-family:'ArialMT', 'Arial', sans-serif;font-size:13.333px;">T<tspan x="135.445px 142.923px 149.672px 156.421px 165.383px 175.087px " y="262.838px 262.838px 262.838px 262.838px 262.838px 262.838px ">T04CO2</tspan></text>
+        </g>
+        <g transform="matrix(1,0,0,1,103.187,-62.8221)">
+            <text x="81.234px" y="291.573px" style="font-family:'ArialMT', 'Arial', sans-serif;font-size:13.333px;">T<tspan x="88.712px 96.19px 102.939px 109.687px 118.65px 128.354px 135.103px " y="291.573px 291.573px 291.573px 291.573px 291.573px 291.573px 291.573px ">T04CO2@</tspan></text>
+        </g>
+        <g transform="matrix(1,0,0,1,29.3797,13.828)">
+            <path d="M153.354,277.66L153.354,192.326" style="fill:none;stroke:black;stroke-width:1.33px;stroke-dasharray:1.33,1.33;"/>
+        </g>
+        <g transform="matrix(0.83709,0,0,1.06306,15.615,177.087)">
+            <ellipse cx="199.642" cy="107.711" rx="5.376" ry="4.233" style="fill:white;stroke:black;stroke-width:0.7px;"/>
+        </g>
+    </g>
+</svg>
