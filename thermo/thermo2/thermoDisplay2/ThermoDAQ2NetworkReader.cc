@@ -84,6 +84,61 @@ void ThermoDAQ2NetworkReader::processHuberUnistat525wInfo(QXmlStreamReader& xml)
   measurement_.u525wCWOutletTemperature_ = CWO;
 }
 
+void ThermoDAQ2NetworkReader::processMarta(QXmlStreamReader& xml)
+{
+
+}
+
+void ThermoDAQ2NetworkReader::processMartaR507(QXmlStreamReader& xml)
+{
+
+}
+
+void ThermoDAQ2NetworkReader::processMartaPTCO2(QXmlStreamReader& xml)
+{
+
+}
+
+void ThermoDAQ2NetworkReader::processMartaTTCO2(QXmlStreamReader& xml)
+{
+
+}
+
+void ThermoDAQ2NetworkReader::processMartaSCCO2(QXmlStreamReader& xml)
+{
+
+}
+
+void ThermoDAQ2NetworkReader::processMartaDPCO2(QXmlStreamReader& xml)
+{
+
+}
+
+void ThermoDAQ2NetworkReader::processMartaDTCO2(QXmlStreamReader& xml)
+{
+
+}
+
+void ThermoDAQ2NetworkReader::processMartaSTCO2(QXmlStreamReader& xml)
+{
+
+}
+
+void ThermoDAQ2NetworkReader::processMartaFlow(QXmlStreamReader& xml)
+{
+
+}
+
+void ThermoDAQ2NetworkReader::processMartaSettings(QXmlStreamReader& xml)
+{
+
+}
+
+void ThermoDAQ2NetworkReader::processMartaAlarms(QXmlStreamReader& xml)
+{
+
+}
+
 void ThermoDAQ2NetworkReader::processLeyboldGraphixOne(QXmlStreamReader& xml)
 {
   // NQLogDebug("ThermoDAQ2NetworkReader") << "processLeyboldGraphixOne(QXmlStreamReader& xml)";
@@ -153,6 +208,40 @@ void ThermoDAQ2NetworkReader::processLine(QString& line)
       }
       if (xml.name()=="HuberUnistat525wInfo") {
         processHuberUnistat525wInfo(xml);
+      }
+
+      if (xml.name()=="Marta") {
+        processMarta(xml);
+      }
+      if (xml.name()=="MartaR507") {
+        processMartaR507(xml);
+      }
+      if (xml.name()=="MartaPTCO2") {
+        processMartaPTCO2(xml);
+      }
+      if (xml.name()=="MartaTTCO2") {
+        processMartaTTCO2(xml);
+      }
+      if (xml.name()=="MartaSCCO2") {
+        processMartaSCCO2(xml);
+      }
+      if (xml.name()=="MartaDPCO2") {
+        processMartaDPCO2(xml);
+      }
+      if (xml.name()=="MartaDTCO2") {
+        processMartaDTCO2(xml);
+      }
+      if (xml.name()=="MartaSTCO2") {
+        processMartaSTCO2(xml);
+      }
+      if (xml.name()=="MartaFlow") {
+        processMartaFlow(xml);
+      }
+      if (xml.name()=="MartaSettings") {
+        processMartaSettings(xml);
+      }
+      if (xml.name()=="MartaAlarms") {
+        processMartaAlarms(xml);
       }
 
       if (xml.name()=="LeyboldGraphixOne") {
