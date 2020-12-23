@@ -19,7 +19,7 @@
  *  @{
  */
 
-/** @addtogroup Nanotec
+/** @addtogroup Agilent
  *  @{
  */
 
