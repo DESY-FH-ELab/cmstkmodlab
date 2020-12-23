@@ -13,8 +13,8 @@
         <path d="M498.319,247.712l-35.138,-0l-0,-58.044" style="fill:none;stroke:rgb(0,192,255);stroke-width:3.33px;"/>
         <path d="M227.181,334.909l140.67,0l0,-145.241l122.174,-0" style="fill:none;stroke:rgb(255,0,0);stroke-width:3.33px;"/>
         <path d="M532.597,168.599l114.56,0l-0,99.773l-60,0l-0,60.85l191.025,-0" style="fill:none;stroke:rgb(0,192,255);stroke-width:3.33px;"/>
-        <path d="M42.756,346.982l-0,-205.814l51.926,0l0,-91.074" style="fill:none;stroke:rgb(225,0,225);stroke-width:3.33px;"/>
-        <path d="M130.609,408.645l-40.837,0l0.022,-183.857l137.988,-0l0,-25.856l-161.14,-0l0,209.713l-23.162,-0.06c0,0.06 -0.724,-30.957 -0.724,-30.957" style="fill:none;stroke:rgb(225,0,225);stroke-width:3.33px;"/>
+        <path d="M66.642,198.932l-23.886,-0l-0,-57.764l51.926,0l0,-91.074" style="fill:none;stroke:rgb(225,0,225);stroke-width:3.33px;"/>
+        <path d="M130.609,408.645l-80.837,0l0.022,-183.857l177.988,-0l0,-25.856l-133.1,-0" style="fill:none;stroke:rgb(225,0,225);stroke-width:3.33px;"/>
         <path d="M162.449,408.585l-31.84,0.12" style="fill:none;stroke:rgb(225,0,225);stroke-width:3.33px;"/>
         <path d="M198.635,123.005l-28.435,-0" style="fill:none;stroke:rgb(225,0,225);stroke-width:3.33px;"/>
         <path d="M224.885,408.585l165.123,0l0.623,-283.247l94.849,0.16" style="fill:none;stroke:rgb(0,192,255);stroke-width:3.33px;"/>
@@ -157,12 +157,12 @@
         </g>
         <path id="Tank" d="M29.57,125.367l69.581,-0c9.193,6.476 9.317,24.534 0,31.603l-69.581,-0c-10.195,-5.883 -10.476,-25.83 0,-31.603Z" style="fill:rgb(158,158,158);stroke:black;stroke-width:2px;"/>
         <g id="R507-Pump" serif:id="R507 Pump">
-            <circle cx="198.635" cy="161.164" r="18.435" style="fill:white;stroke:black;stroke-width:2px;"/>
+            <circle id="R507PumpBG" cx="198.635" cy="161.164" r="18.435" style="fill:rgb(0,255,0);stroke:black;stroke-width:2px;"/>
             <path d="M203.46,143.367l11.609,26.153" style="fill:none;stroke:black;stroke-width:2px;"/>
             <path d="M193.811,143.367l-11.61,26.153" style="fill:none;stroke:black;stroke-width:2px;"/>
         </g>
         <g id="CO2-Pump" serif:id="CO2 Pump">
-            <path d="M376.752,407.609c0,10.175 -8.26,18.435 -18.435,18.435c-10.174,0 -18.435,-8.26 -18.435,-18.435c0,-10.174 8.261,-18.435 18.435,-18.435c10.175,0 18.435,8.261 18.435,18.435Z" style="fill:white;stroke:black;stroke-width:2px;"/>
+            <path id="CO2PumpBG" d="M376.752,407.609c0,10.175 -8.26,18.435 -18.435,18.435c-10.174,0 -18.435,-8.26 -18.435,-18.435c0,-10.174 8.261,-18.435 18.435,-18.435c10.175,0 18.435,8.261 18.435,18.435Z" style="fill:rgb(0,255,0);stroke:black;stroke-width:2px;"/>
             <path d="M376.113,412.434l-26.152,11.61" style="fill:none;stroke:black;stroke-width:2px;"/>
             <path d="M376.113,402.785l-26.152,-11.61" style="fill:none;stroke:black;stroke-width:2px;"/>
         </g>
@@ -170,11 +170,23 @@
             <circle cx="198.635" cy="223.901" r="18.435" style="fill:white;stroke:black;stroke-width:2px;"/>
             <path d="M198.635,205.466l0,5.229l-6.252,6.299l12.13,13.122l-5.878,6.33l0,5.89" style="fill:none;stroke:black;stroke-width:1.33px;"/>
         </g>
-        <path id="Valve-EV2" serif:id="Valve EV2" d="M134.771,111.184l45.595,23.641l0,-23.641l-45.595,23.641l-0,-23.641Z" style="fill:rgb(253,253,253);stroke:black;stroke-width:2px;"/>
-        <path id="Valve-SV1" serif:id="Valve SV1" d="M30.935,383.765l23.641,-45.595l-23.641,-0l23.641,45.595l-23.641,0Z" style="fill:rgb(253,253,253);stroke:black;stroke-width:2px;"/>
-        <path id="Valve-EV1" serif:id="Valve EV1" d="M77.935,383.765l23.641,-45.595l-23.641,-0l23.641,45.595l-23.641,0Z" style="fill:rgb(253,253,253);stroke:black;stroke-width:2px;"/>
+        <g id="SV1">
+            <text x="72.436px" y="183.981px" style="font-family:'ArialMT', 'Arial', sans-serif;font-size:10.667px;">S<tspan x="79.017px 85.599px " y="183.981px 183.981px ">V1</tspan></text>
+            <path id="Valve-SV1" serif:id="Valve SV1" d="M58.446,187.111l45.596,23.641l-0,-23.641l-45.596,23.641l0,-23.641Z" style="fill:rgb(253,253,253);stroke:black;stroke-width:2px;"/>
+        </g>
+        <g id="EV2">
+            <text x="147.88px" y="108.184px" style="font-family:'ArialMT', 'Arial', sans-serif;font-size:10.667px;">E<tspan x="154.462px 161.043px " y="108.184px 108.184px ">V2</tspan></text>
+            <path id="Valve-EV2" serif:id="Valve EV2" d="M134.771,111.184l45.595,23.641l0,-23.641l-45.595,23.641l-0,-23.641Z" style="fill:rgb(253,253,253);stroke:black;stroke-width:2px;"/>
+        </g>
+        <g id="EV1">
+            <text x="64.097px" y="364.785px" style="font-family:'ArialMT', 'Arial', sans-serif;font-size:10.667px;">E<tspan x="70.679px 77.26px " y="364.785px 364.785px ">V1</tspan></text>
+            <path id="Valve-EV1" serif:id="Valve EV1" d="M37.935,383.765l23.641,-45.595l-23.641,-0l23.641,45.595l-23.641,0Z" style="fill:rgb(253,253,253);stroke:black;stroke-width:2px;"/>
+        </g>
         <path d="M596.129,168.599l0,79.113l-66.915,-0" style="fill:none;stroke:rgb(0,192,255);stroke-width:3.33px;"/>
-        <path id="Valve-EV3" serif:id="Valve EV3" d="M491.65,235.891l45.596,23.641l0,-23.641l-45.596,23.641l0,-23.641Z" style="fill:rgb(253,253,253);stroke:black;stroke-width:2px;"/>
+        <g id="EV3">
+            <text x="504.721px" y="232.737px" style="font-family:'ArialMT', 'Arial', sans-serif;font-size:10.667px;">E<tspan x="511.303px 517.884px " y="232.737px 232.737px ">V3</tspan></text>
+            <path id="Valve-EV3" serif:id="Valve EV3" d="M491.65,235.891l45.596,23.641l0,-23.641l-45.596,23.641l0,-23.641Z" style="fill:rgb(253,253,253);stroke:black;stroke-width:2px;"/>
+        </g>
         <g id="FL2">
             <path d="M568.692,153.59l14.991,15.009l-14.991,15.01l-15.009,-15.01l15.009,-15.009Z" style="fill:rgb(253,253,253);stroke:black;stroke-width:2px;"/>
             <path d="M568.692,153.59l0,30.019" style="fill:none;stroke:black;stroke-width:2px;"/>

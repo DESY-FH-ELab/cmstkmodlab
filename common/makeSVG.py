@@ -26,6 +26,12 @@ with open("../share/MartaSchematics.svg", "r") as f:
 		
 		if "AlarmButton" in line:
 			line = line.replace('0,255,0', '@AlarmColor@')
+
+		if "R507PumpBG" in line:
+			line = line.replace('0,255,0', '@R507PumpColor@')
+		
+		if "CO2PumpBG" in line:
+			line = line.replace('0,255,0', '@CO2PumpColor@')
 		
 		previousLine = line
 		

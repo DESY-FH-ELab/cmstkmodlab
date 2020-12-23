@@ -207,6 +207,7 @@ void MartaWidget::controlStateChanged(bool enabled)
 */
 void MartaWidget::updateInfo()
 {
+  static QString white("255,255,255");
   static QString red("255,0,0");
   static QString yellow("215,180,0");
   static QString green("120,200,0");
@@ -401,6 +402,18 @@ void MartaWidget::updateInfo()
       break;
     default:
       svg.replace("@AlarmColor@", red);
+  }
+
+  if (model_->getChillerOn()) {
+  	svg.replace("@R507PumpColor@", green);
+  } else {
+  	svg.replace("@R507PumpColor@", white);
+  }
+
+  if (model_->getCO2On()) {
+  	svg.replace("@CO2PumpColor@", green);
+  } else {
+  	svg.replace("@CO2PumpColor@", white);
   }
 
   svgWidget_->load(svg.toLocal8Bit());
