@@ -12,7 +12,26 @@
 
 #include <string.h>
 #include <arpa/inet.h>
+
+#ifndef __Darwin__
 #include <byteswap.h>
+#else
+#if !defined(bswap_16)
+#  warning "Fallback on C functions for bswap_16"
+static inline uint16_t bswap_16(uint16_t x)
+{
+	return (x >> 8) | (x << 8);
+}
+#endif
+#if !defined(bswap_32)
+#  warning "Fallback on C functions for bswap_32"
+static inline uint32_t bswap_32(uint32_t x)
+{
+	return (bswap_16(x & 0xffff) << 16) | (bswap_16(x >> 16));
+}
+#endif
+
+#endif
 
 #include "VMarta.h"
 

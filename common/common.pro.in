@@ -21,14 +21,15 @@ LIBS += -L@basepath@/devices/lib -lTkModLabAgilent
 LIBS += -L@basepath@/devices/lib -lTkModLabMarta
 LIBS += -L@basepath@/external/ddierckx -lddierckx
 LIBS += -lcurl
-LIBS += -lmodbus
+LIBS += `pkg-config --libs libmodbus`
 
 QMAKE = @qmake@
 
 macx {
   CONFIG+=x86_64
   QMAKE_CXXFLAGS += -stdlib=libc++
-  QMAKE_MACOSX_DEPLOYMENT_TARGET = 11.0
+  QMAKE_CXXFLAGS += -D__Darwin__
+  QMAKE_MACOSX_DEPLOYMENT_TARGET = 11.1
 }
 
 CONFIG+=c++17
@@ -39,6 +40,8 @@ macx {
 else {
   QMAKE_CXXFLAGS += -DAPPLICATIONVERSIONSTR=\\\"`git describe --dirty --always --tags`\\\"
 }
+
+QMAKE_CXXFLAGS += `pkg-config --cflags libmodbus`
 
 DEFINES += @configdefines@
 QT += core gui widgets opengl script xml svg

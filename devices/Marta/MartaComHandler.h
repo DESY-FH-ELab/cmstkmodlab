@@ -21,7 +21,11 @@
 
 #include <string>
 
+#ifndef __Darwin__
 #include <modbus/modbus.h>
+#else
+#include <modbus.h>
+#endif
 
 /** @addtogroup devices
  *  @{
