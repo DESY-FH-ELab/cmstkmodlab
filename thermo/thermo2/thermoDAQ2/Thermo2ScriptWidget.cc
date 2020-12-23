@@ -116,7 +116,6 @@ void Thermo2ScriptWidget::openScriptButtonClicked()
                                                   "open script",
                                                   "./",
                                                   "Thermo Scripts (*.tsr)",
-                                                  0,
                                                   0);
   if (!filename.isNull()) scriptModel_->openScript(filename);
 }
@@ -136,7 +135,6 @@ void Thermo2ScriptWidget::saveAsScriptButtonClicked()
                                                   "save script",
                                                   "./",
                                                   "Thermo Scripts (*.tsr)",
-                                                  0,
                                                   0);
   if (filename.isNull()) return;
   if (!filename.endsWith(".tsr")) filename += ".tsr";
