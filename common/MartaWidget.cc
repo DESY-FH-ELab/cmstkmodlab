@@ -70,10 +70,15 @@ MartaAlarmDialog::MartaAlarmDialog(MartaModel* model,
   setMinimumWidth(600);
   setMinimumHeight(400);
 
+  QVBoxLayout* layout = new QVBoxLayout(this);
+  setLayout(layout);
+  
   alarmView_ = new QTextEdit(this);
   alarmView_->setReadOnly(true);
 
-  connect(model_, SIGNAL(informationChanged()),
+  layout->addWidget(alarmView_);
+  
+  connect(model_, SIGNAL(alarmsChanged()),
           this, SLOT(updateInfo()));
 
   updateInfo();
