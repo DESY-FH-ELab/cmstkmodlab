@@ -94,6 +94,7 @@ Thermo2MainWindow::Thermo2MainWindow(QWidget *parent)
 #endif
 
   daqModel_ = new Thermo2DAQModel(huberModel_,
+																	martaModel_,
                                   agilentModel_,
                                   leyboldModel_,
                                   nge103BModel_,
