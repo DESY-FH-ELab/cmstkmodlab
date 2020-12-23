@@ -62,10 +62,44 @@ void MartaSVGWidget::mouseDoubleClickEvent(QMouseEvent *event)
   }
 }
 
+MartaAlarmDialog::MartaAlarmDialog(MartaModel* model,
+				   QWidget* parent)
+ : QDialog(parent),
+   model_(model)
+{
+  setMinimumWidth(600);
+  setMinimumHeight(400);
+
+  alarmView_ = new QTextEdit(this);
+  alarmView_->setReadOnly(true);
+
+  connect(model_, SIGNAL(informationChanged()),
+          this, SLOT(updateInfo()));
+
+  updateInfo();
+}
+
+void MartaAlarmDialog::updateInfo()
+{
+  QString alarmText;
+  const QStringList &alarms = model_->getCurrentAlarms();
+  QStringList::const_iterator constIterator;
+  for (constIterator = alarms.constBegin();
+       constIterator != alarms.constEnd();
+       ++constIterator) {
+    alarmText += *constIterator;
+    alarmText += "\n";
+  }
+  
+  alarmView_->clear();
+  alarmView_->setPlainText(alarmText);
+}
+
 MartaWidget::MartaWidget(MartaModel* model,
 			 QWidget *parent)
  : QWidget(parent),
-   model_(model)
+   model_(model),
+   alarmDialog_(0)
 {
   QVBoxLayout* layout = new QVBoxLayout(this);
   setLayout(layout);
@@ -136,13 +170,6 @@ MartaWidget::MartaWidget(MartaModel* model,
   hlayout->addWidget(groupBox);
   
   operationLayout->addRow("", control);
-
-  /*
-  alarmView_ = new QTextEdit(this);
-  alarmView_->setReadOnly(true);
-  alarmView_->setMaximumHeight(100);
-  operationLayout->addRow("Alarms", alarmView_);
-  */
   
   // Connect all the signals
   connect(model_, SIGNAL(deviceStateChanged(State)),
@@ -417,24 +444,15 @@ void MartaWidget::updateInfo()
   }
 
   svgWidget_->load(svg.toLocal8Bit());
-
-  /*
-  QString alarmText;
-  const QStringList &alarms = model_->getCurrentAlarms();
-  QStringList::const_iterator constIterator;
-  for (constIterator = alarms.constBegin();
-       constIterator != alarms.constEnd();
-       ++constIterator) {
-    alarmText += *constIterator;
-    alarmText += "\n";
-  }
-  
-  alarmView_->clear();
-  alarmView_->setPlainText(alarmText);
-  */
 }
 
 void MartaWidget::showAlarmDialog()
 {
+  if (!alarmDialog_) {
+    alarmDialog_ = new MartaAlarmDialog(model_, this);
+  }
 
+  alarmDialog_->show();
+  alarmDialog_->raise();
+  alarmDialog_->activateWindow();
 }

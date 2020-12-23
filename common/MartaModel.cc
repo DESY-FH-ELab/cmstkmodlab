@@ -264,6 +264,8 @@ void MartaModel::updateInformation()
 	  bit <<= 1;
 	}
       }
+
+      emit alarmsChanged();
     }
     
     if (changed || alarmChanged) {

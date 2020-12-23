@@ -186,6 +186,7 @@ signals:
 
   void deviceStateChanged(State newState);
   void informationChanged();
+  void alarmsChanged();
   void controlStateChanged(bool);
 };
 

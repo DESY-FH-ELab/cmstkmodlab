@@ -26,6 +26,7 @@
 #include <QSvgWidget>
 #include <QResizeEvent>
 #include <QMouseEvent>
+#include <QDialog>
 #include <QTextEdit>
 
 #include "MartaModel.h"
@@ -52,6 +53,24 @@ class MartaSVGWidget : public QSvgWidget
  private:
 
   QRect buttonAlarmStatus_;
+};
+
+class MartaAlarmDialog : public QDialog
+{
+  Q_OBJECT
+ public:
+
+  MartaAlarmDialog(MartaModel* model,
+		   QWidget* parent = 0);
+ protected:
+
+  MartaModel* model_;
+  
+  QTextEdit* alarmView_;
+  
+ public slots:
+
+  void updateInfo();
 };
 
 class MartaWidget : public QWidget
@@ -83,7 +102,7 @@ class MartaWidget : public QWidget
   QRadioButton* fixedSpeedButton_;
   QRadioButton* fixedFlowButton_;
 
-  QTextEdit* alarmView_;
+  MartaAlarmDialog* alarmDialog_;
   
  public slots:
 
