@@ -40,8 +40,8 @@
         </g>
         <g id="FT01">
             <circle cx="586.56" cy="296.157" r="4.74" style="fill:white;stroke:black;stroke-width:0.67px;"/>
-            <text x="552.148px" y="294.932px" style="font-family:'ArialMT', 'Arial', sans-serif;font-size:10.667px;">F<tspan x="558.13px 564.112px 569.511px " y="294.932px 294.932px 294.932px ">T01</tspan></text>
-            <text x="539.279px" y="307.45px" style="font-family:'ArialMT', 'Arial', sans-serif;font-size:10.667px;"><tspan x="539.279px 544.678px 550.66px 556.642px 562.041px 567.44px " y="307.45px 307.45px 307.45px 307.45px 307.45px 307.45px ">§FT01§</tspan></text>
+            <text x="531.816px" y="294.932px" style="font-family:'ArialMT', 'Arial', sans-serif;font-size:10.667px;">F<tspan x="537.798px 543.78px 549.179px 554.578px 561.748px 569.511px " y="294.932px 294.932px 294.932px 294.932px 294.932px 294.932px ">T01CO2</tspan></text>
+            <text x="520.945px" y="307.45px" style="font-family:'ArialMT', 'Arial', sans-serif;font-size:10.667px;"><tspan x="520.945px 526.344px 532.326px 538.308px 543.707px 549.106px 556.276px 564.039px 569.438px " y="307.45px 307.45px 307.45px 307.45px 307.45px 307.45px 307.45px 307.45px 307.45px ">§FT01CO2§</tspan></text>
         </g>
         <g id="PT03CO2">
             <circle cx="647.613" cy="187.654" r="4.74" style="fill:white;stroke:black;stroke-width:0.67px;"/>
@@ -82,8 +82,8 @@
             <circle cx="198.635" cy="314.568" r="4.74" style="fill:white;stroke:black;stroke-width:0.67px;"/>
         </g>
         <g id="TT01CO2">
-            <text x="248.654px" y="469.782px" style="font-family:'ArialMT', 'Arial', sans-serif;font-size:10.667px;">T<tspan x="254.636px 260.618px 266.017px 271.416px 278.586px 286.349px " y="469.782px 469.782px 469.782px 469.782px 469.782px 469.782px ">T01CO2</tspan></text>
-            <text x="240.006px" y="482.3px" style="font-family:'ArialMT', 'Arial', sans-serif;font-size:10.667px;"><tspan x="240.006px 245.405px 251.387px 257.369px 262.768px 268.167px 275.337px 283.101px 288.5px " y="482.3px 482.3px 482.3px 482.3px 482.3px 482.3px 482.3px 482.3px 482.3px ">§TT01CO2§</tspan></text>
+            <text x="251.343px" y="469.782px" style="font-family:'ArialMT', 'Arial', sans-serif;font-size:10.667px;">T<tspan x="257.326px 263.308px 268.707px 274.106px 281.276px 289.039px " y="469.782px 469.782px 469.782px 469.782px 469.782px 469.782px ">T01CO2</tspan></text>
+            <text x="240.472px" y="482.3px" style="font-family:'ArialMT', 'Arial', sans-serif;font-size:10.667px;"><tspan x="240.472px 245.871px 251.854px 257.836px 263.235px 268.634px 275.804px 283.567px 288.966px " y="482.3px 482.3px 482.3px 482.3px 482.3px 482.3px 482.3px 482.3px 482.3px ">§TT01CO2§</tspan></text>
             <path d="M300.684,408.585l0,76.38" style="fill:none;stroke:black;stroke-width:1.33px;stroke-dasharray:1.33,1.33;"/>
             <circle cx="300.684" cy="408.585" r="4.74" style="fill:white;stroke:black;stroke-width:0.67px;"/>
         </g>

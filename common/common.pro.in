@@ -128,7 +128,8 @@ HEADERS += nqlogger.h \
            AgilentTwisTorr304Model.h \
            AgilentTwisTorr304Widget.h \
            MartaModel.h \
-           MartaWidget.h
+           MartaWidget.h \
+           MartaSVG.h
 
 SOURCES += nqlogger.cc \
            npoint2D.cc \
