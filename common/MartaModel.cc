@@ -226,26 +226,6 @@ void MartaModel::updateInformation()
     printf("SpeedSetpoint2:  %f\n", SpeedSetpoint2_);
     printf("FlowSetpoint2:   %f\n", FlowSetpoint2_);
 
-    /*
-    tab_reg[0] = 0x0004;
-    controller_->WriteRegisters(100, 1, &tab_reg[0]);
-
-    controller_->FromFloatBADC(-5.0, &tab_reg[0]);
-    controller_->WriteRegisters(101, 2, &tab_reg[0]);
-
-    controller_->FromFloatBADC(3000.0, &tab_reg[0]);
-    controller_->WriteRegisters(103, 2, &tab_reg[0]);
-
-    controller_->FromFloatBADC(2.5, &tab_reg[0]);
-    controller_->WriteRegisters(105, 2, &tab_reg[0]);
-
-    controller_->ReadRegisters(100, 7, tab_reg);
-    printf("Status:   0x%02x\n", tab_reg[0]);
-    printf("TempSetpoint:  %f\n", controller_->ToFloatBADC(&tab_reg[1]));
-    printf("SpeedSetpoint: %f\n", controller_->ToFloatBADC(&tab_reg[3]));
-    printf("FlowSetpoint: %f\n", controller_->ToFloatBADC(&tab_reg[5]));
-    */
-
     if (alarmChanged) {
 
       CurrentAlarmTexts_.clear();

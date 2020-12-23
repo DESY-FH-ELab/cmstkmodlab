@@ -417,7 +417,7 @@ void MartaWidget::updateInfo()
   svg.replace("§ST04CO2§", s);
 
   value = model_->getFT01CO2();
-  s = QString::number(value, 'f', 2);
+  s = QString::number(value, 'f', 3);
   svg.replace("§FT01CO2§", s);
   
   switch (model_->getAlarmStatus()) {
