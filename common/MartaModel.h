@@ -93,6 +93,7 @@ public:
   const QStringList& getCurrentAlarms() const;
   uint16_t getAlarmStatus() const { return AlarmStatus_; }
   
+  uint16_t getStatus() const { return Status_; }
   bool getChillerOn() const;
   bool getCO2On() const;
   bool getPumpFixedFlow() const;
