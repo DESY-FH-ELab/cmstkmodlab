@@ -103,6 +103,7 @@ Thermo2MainWindow::Thermo2MainWindow(QWidget *parent)
   // SCRIPT MODEL
   scriptModel_ = new Thermo2ScriptModel(daqModel_,
                                         huberModel_,
+																				martaModel_,
                                         nge103BModel_,
                                         keithleyModel_,
                                         this);
