@@ -156,7 +156,7 @@ MartaWidget::MartaWidget(MartaModel* model,
                           flowSetPointSpinner_);
 
   QWidget* control = new QWidget(this);
-  QHBoxLayout* hlayout = new QHBoxLayout(this);
+  QHBoxLayout* hlayout = new QHBoxLayout(control);
   control->setLayout(hlayout);
   
   chillerCheckBox_ = new QCheckBox("Chiller enabled");
