@@ -123,6 +123,7 @@ protected:
 
   /// Time interval between cache refreshes; in seconds.
   const double updateInterval_;
+  const double autoUpdateDelay_;
   QTimer* timer_;
 
   // Last known communication state

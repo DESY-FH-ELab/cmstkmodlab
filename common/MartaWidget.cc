@@ -244,6 +244,22 @@ void MartaWidget::updateInfo()
   static QString yellow("215,180,0");
   static QString green("120,200,0");
 
+  if (model_->getPumpFixedFlow()) {
+    fixedSpeedButton_->setChecked(false);
+    fixedFlowButton_->setChecked(true);
+    
+    speedSetPointSpinner_->setEnabled(false);
+
+    flowSetPointSpinner_->setEnabled(true);
+  } else {
+    fixedSpeedButton_->setChecked(true);
+    fixedFlowButton_->setChecked(false);
+    
+    speedSetPointSpinner_->setEnabled(true);
+
+    flowSetPointSpinner_->setEnabled(false);
+  }
+
   if (!temperatureSetPointSpinner_->hasFocus())
     temperatureSetPointSpinner_->setValue(model_->getTemperatureSetpoint());
 
@@ -255,14 +271,6 @@ void MartaWidget::updateInfo()
 
   chillerCheckBox_->setChecked(model_->getChillerOn());
   co2CheckBox_->setChecked(model_->getCO2On());
-
-  if (model_->getPumpFixedFlow()) {
-    fixedSpeedButton_->setChecked(false);
-    fixedFlowButton_->setChecked(true);
-  } else {
-    fixedSpeedButton_->setChecked(true);
-    fixedFlowButton_->setChecked(false);
-  }
 
   QString svg = svgString;
 

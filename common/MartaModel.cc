@@ -26,7 +26,8 @@ MartaModel::MartaModel(const char* ipaddress,
   : QObject(),
     AbstractDeviceModel<Marta_t>(),
     ipaddress_(ipaddress),
-    updateInterval_(updateInterval)
+    updateInterval_(updateInterval),
+    autoUpdateDelay_(500)
 {
   PT03_ = 0.0;
 
@@ -281,6 +282,8 @@ void MartaModel::setStartChiller(bool value)
   }
 
   controller_->WriteRegisters(100, 1, &temp);
+
+  QTimer::singleShot(autoUpdateDelay_, this, SLOT(updateInformation()));
 }
 
 void MartaModel::setStartCO2(bool value)
@@ -302,6 +305,8 @@ void MartaModel::setStartCO2(bool value)
   }
 
   controller_->WriteRegisters(100, 1, &temp);
+
+  QTimer::singleShot(autoUpdateDelay_, this, SLOT(updateInformation()));
 }
 
 void MartaModel::setPumpFixedFlow(bool value)
@@ -320,7 +325,7 @@ void MartaModel::setPumpFixedFlow(bool value)
 
   controller_->WriteRegisters(100, 1, &temp);
 
-  //QTimer::singleShot(1000, this, SLOT(updateInformation()));
+  QTimer::singleShot(autoUpdateDelay_, this, SLOT(updateInformation()));
 }
 
 void MartaModel::setTemperatureSetpoint(double value)
@@ -332,6 +337,8 @@ void MartaModel::setTemperatureSetpoint(double value)
   uint16_t temp[2];
   controller_->FromFloatBADC(value, &temp[0]);
   controller_->WriteRegisters(101, 2, &temp[0]);
+
+  QTimer::singleShot(autoUpdateDelay_, this, SLOT(updateInformation()));
 }
 
 void MartaModel::setSpeedSetpoint(double value)
@@ -343,6 +350,8 @@ void MartaModel::setSpeedSetpoint(double value)
   uint16_t temp[2];
   controller_->FromFloatBADC(value, &temp[0]);
   controller_->WriteRegisters(103, 2, &temp[0]);
+
+  QTimer::singleShot(autoUpdateDelay_, this, SLOT(updateInformation()));
 }
 
 void MartaModel::setFlowSetpoint(double value)
@@ -354,6 +363,8 @@ void MartaModel::setFlowSetpoint(double value)
   uint16_t temp[2];
   controller_->FromFloatBADC(value, &temp[0]);
   controller_->WriteRegisters(105, 2, &temp[0]);
+
+  QTimer::singleShot(autoUpdateDelay_, this, SLOT(updateInformation()));
 }
 
 bool MartaModel::valueChanged(double &storage, double value, unsigned int precision)
