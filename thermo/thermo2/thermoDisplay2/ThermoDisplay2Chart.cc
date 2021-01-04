@@ -24,7 +24,7 @@ ThermoDisplay2Chart::ThermoDisplay2Chart()
   : QChart()
 {
   axisX_ = new ThermoDisplay2DateTimeAxis();
-  axisX_->setFormat("dd.MM. hh:mm:ss");
+  axisX_->setFormat("dd.MM. hh:mm");
   axisX_->setTitleText("Time");
   addAxis(axisX_, Qt::AlignBottom);
 

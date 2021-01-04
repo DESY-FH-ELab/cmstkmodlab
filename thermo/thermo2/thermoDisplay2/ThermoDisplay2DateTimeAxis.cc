@@ -16,6 +16,7 @@
 #include <QBoxLayout>
 #include <QFormLayout>
 #include <QGroupBox>
+#include <QButtonGroup>
 #include <QDialogButtonBox>
 
 #include <nqlogger.h>
@@ -122,13 +123,26 @@ ThermoDisplay2DateTimeAxisDialog::ThermoDisplay2DateTimeAxisDialog(QWidget* pare
 
   QGroupBox *groupBox = new QGroupBox("Axis mode");
 
+  QButtonGroup * buttonGroup = new QButtonGroup();
+  buttonGroup->setExclusive(true);
+
   modeFull_ = new QRadioButton("Auto range");
+  buttonGroup->addButton(modeFull_, ThermoDisplay2DateTimeAxis::AxisModeFull);
   mode1Hour_ = new QRadioButton("Last hour");
+  buttonGroup->addButton(mode1Hour_, ThermoDisplay2DateTimeAxis::AxisMode1Hour);
   mode2Hour_ = new QRadioButton("Last 2 hours");
+  buttonGroup->addButton(mode2Hour_, ThermoDisplay2DateTimeAxis::AxisMode2Hour);
   mode6Hour_ = new QRadioButton("Last 6 hours");
+  buttonGroup->addButton(mode6Hour_, ThermoDisplay2DateTimeAxis::AxisMode6Hour);
   mode12Hour_ = new QRadioButton("Last 12 hours");
+  buttonGroup->addButton(mode12Hour_, ThermoDisplay2DateTimeAxis::AxisMode12Hour);
   mode24Hour_ = new QRadioButton("Last 24 hours");
+  buttonGroup->addButton(mode24Hour_, ThermoDisplay2DateTimeAxis::AxisMode24Hour);
   modeUser_ = new QRadioButton("User range");
+  buttonGroup->addButton(modeUser_, ThermoDisplay2DateTimeAxis::AxisModeUser);
+
+  connect(buttonGroup, SIGNAL(idClicked(int)),
+          this, SLOT(idClicked(int)));
 
   layout->addWidget(groupBox);
 
@@ -167,23 +181,25 @@ ThermoDisplay2DateTimeAxisDialog::ThermoDisplay2DateTimeAxisDialog(QWidget* pare
 
 void ThermoDisplay2DateTimeAxisDialog::setAxisMode(ThermoDisplay2DateTimeAxis::AxisMode axisMode)
 {
-  if (axisMode==ThermoDisplay2DateTimeAxis::AxisMode1Hour) {
+  axisMode_ = axisMode;
+
+  if (axisMode_==ThermoDisplay2DateTimeAxis::AxisMode1Hour) {
     mode1Hour_->setChecked(true);
-  } else if (axisMode==ThermoDisplay2DateTimeAxis::AxisMode2Hour) {
+  } else if (axisMode_==ThermoDisplay2DateTimeAxis::AxisMode2Hour) {
     mode2Hour_->setChecked(true);
-  } else if (axisMode==ThermoDisplay2DateTimeAxis::AxisMode6Hour) {
+  } else if (axisMode_==ThermoDisplay2DateTimeAxis::AxisMode6Hour) {
     mode6Hour_->setChecked(true);
-  } else if (axisMode==ThermoDisplay2DateTimeAxis::AxisMode12Hour) {
+  } else if (axisMode_==ThermoDisplay2DateTimeAxis::AxisMode12Hour) {
     mode12Hour_->setChecked(true);
-  } else if (axisMode==ThermoDisplay2DateTimeAxis::AxisMode24Hour) {
+  } else if (axisMode_==ThermoDisplay2DateTimeAxis::AxisMode24Hour) {
     mode24Hour_->setChecked(true);
-  } else if (axisMode==ThermoDisplay2DateTimeAxis::AxisModeUser) {
+  } else if (axisMode_==ThermoDisplay2DateTimeAxis::AxisModeUser) {
     modeUser_->setChecked(true);
-  } else if (axisMode==ThermoDisplay2DateTimeAxis::AxisModeFull) {
+  } else if (axisMode_==ThermoDisplay2DateTimeAxis::AxisModeFull) {
     modeFull_->setChecked(true);
   }
 
-  if (axisMode==ThermoDisplay2DateTimeAxis::AxisModeUser) {
+  if (axisMode_==ThermoDisplay2DateTimeAxis::AxisModeUser) {
     userMin_->setEnabled(true);
     userMax_->setEnabled(true);
   } else {
@@ -209,28 +225,37 @@ void ThermoDisplay2DateTimeAxisDialog::setUserRange(const QDateTime& dtMin,
   userMax_->setDateTime(dtMax);
 }
 
-ThermoDisplay2DateTimeAxis::AxisMode ThermoDisplay2DateTimeAxisDialog::getAxisMode() const
-{
-  if (mode1Hour_->isChecked()) {
-    return ThermoDisplay2DateTimeAxis::AxisMode1Hour;
-  } else if (mode2Hour_->isChecked()) {
-    return ThermoDisplay2DateTimeAxis::AxisMode2Hour;
-  } else if (mode6Hour_->isChecked()) {
-    return ThermoDisplay2DateTimeAxis::AxisMode6Hour;
-  } else if (mode12Hour_->isChecked()) {
-    return ThermoDisplay2DateTimeAxis::AxisMode12Hour;
-  } else if (mode24Hour_->isChecked()) {
-    return ThermoDisplay2DateTimeAxis::AxisMode24Hour;
-  } else if (modeUser_->isChecked()) {
-    return ThermoDisplay2DateTimeAxis::AxisModeUser;
-  } else {
-    return ThermoDisplay2DateTimeAxis::AxisModeFull;
-  }
-}
-
 void ThermoDisplay2DateTimeAxisDialog::getUserRange(QDateTime& dtMin,
                                                     QDateTime& dtMax)
 {
   dtMin = userMin_->dateTime();
   dtMax = userMax_->dateTime();
 }
+
+void ThermoDisplay2DateTimeAxisDialog::idClicked(int id)
+{
+  if (id==ThermoDisplay2DateTimeAxis::AxisMode1Hour) {
+    axisMode_ = ThermoDisplay2DateTimeAxis::AxisMode1Hour;
+  } else if (id==ThermoDisplay2DateTimeAxis::AxisMode2Hour) {
+    axisMode_ = ThermoDisplay2DateTimeAxis::AxisMode2Hour;
+  } else if (id==ThermoDisplay2DateTimeAxis::AxisMode6Hour) {
+    axisMode_ = ThermoDisplay2DateTimeAxis::AxisMode6Hour;
+  } else if (id==ThermoDisplay2DateTimeAxis::AxisMode12Hour) {
+    axisMode_ = ThermoDisplay2DateTimeAxis::AxisMode12Hour;
+  } else if (id==ThermoDisplay2DateTimeAxis::AxisMode24Hour) {
+    axisMode_ = ThermoDisplay2DateTimeAxis::AxisMode24Hour;
+  } else if (id==ThermoDisplay2DateTimeAxis::AxisModeUser) {
+    axisMode_ = ThermoDisplay2DateTimeAxis::AxisModeUser;
+  } else {
+    axisMode_ = ThermoDisplay2DateTimeAxis::AxisModeFull;
+  }
+
+  if (axisMode_==ThermoDisplay2DateTimeAxis::AxisModeUser) {
+    userMin_->setEnabled(true);
+    userMax_->setEnabled(true);
+  } else {
+    userMin_->setEnabled(false);
+    userMax_->setEnabled(false);
+  }
+}
+
