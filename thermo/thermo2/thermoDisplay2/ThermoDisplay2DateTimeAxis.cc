@@ -117,6 +117,7 @@ ThermoDisplay2DateTimeAxisDialog::ThermoDisplay2DateTimeAxisDialog(QWidget* pare
 
   layout->addWidget(groupBox);
 
+<<<<<<< HEAD
   QVBoxLayout *vbox = new QVBoxLayout;
   vbox->addWidget(mode1Hour_);
   vbox->addWidget(mode2Hour_);
@@ -132,4 +133,7 @@ ThermoDisplay2DateTimeAxisDialog::ThermoDisplay2DateTimeAxisDialog(QWidget* pare
   groupBox = new QGroupBox("User Range");
 
   layout->addWidget(groupBox);
+=======
+
+>>>>>>> d7e5022e5ab87f5373318356a752b6c8d265d3c1
 }
