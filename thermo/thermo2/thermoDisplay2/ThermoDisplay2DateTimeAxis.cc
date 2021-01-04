@@ -54,17 +54,8 @@ void ThermoDisplay2DateTimeAxis::refresh(QList<QAbstractSeries*> series)
     max_ = QDateTime::fromMSecsSinceEpoch(maxX);
 
     dtMin = min_;
-    temp = dtMin.time().msec();
-    dtMin = dtMin.addMSecs(-temp);
-    temp = dtMin.time().second();
-    dtMin = dtMin.addSecs(-temp);
-
     dtMax = max_;
-    temp = dtMin.time().msec();
-    dtMax = dtMax.addMSecs(-temp);
-    temp = dtMin.time().second();
-    dtMax = dtMax.addSecs(60-temp);
-
+   
     QDateTime dtTemp = dtMax;
     if (axisMode_==AxisMode1Hour) {
       dtTemp = dtTemp.addSecs(-1 * 60 * 60);
@@ -86,11 +77,14 @@ void ThermoDisplay2DateTimeAxis::refresh(QList<QAbstractSeries*> series)
     dtMax = userMax_;
   }
 
-  qint64 deltaX = dtMin.secsTo(dtMax) / 60;
-  deltaX = 0.1*deltaX + 1;
+  qint64 deltaX = 0.01 * dtMin.secsTo(dtMax);
+  dtMin = dtMin.addSecs(-deltaX);
+  temp = dtMin.time().second();
+  dtMin = dtMin.addSecs(-temp);
 
+  dtMax = dtMax.addSecs(deltaX);
   temp = dtMax.time().second();
-  dtMax = dtMax.addSecs(-temp+deltaX*60);
+  dtMax = dtMax.addSecs(60-temp);
 
   setRange(dtMin, dtMax);
 }
