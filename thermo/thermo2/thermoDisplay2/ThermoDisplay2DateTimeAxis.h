@@ -16,6 +16,7 @@
 #include <QObject>
 #include <QDialog>
 #include <QDateTime>
+#include <QRadioButton>
 #include <QtCharts/QChart>
 #include <QtCharts/QLineSeries>
 #include <QtCharts/QDateTimeAxis>
@@ -57,6 +58,14 @@ class ThermoDisplay2DateTimeAxisDialog : public QDialog
 	ThermoDisplay2DateTimeAxisDialog(QWidget* parent = 0);
 
  protected:
+
+  QRadioButton *mode1Hour_;
+  QRadioButton *mode2Hour_;
+  QRadioButton *mode6Hour_;
+  QRadioButton *mode12Hour_;
+  QRadioButton *mode24Hour_;
+  QRadioButton *modeUser_;
+  QRadioButton *modeFull_;
 
  public slots:
 

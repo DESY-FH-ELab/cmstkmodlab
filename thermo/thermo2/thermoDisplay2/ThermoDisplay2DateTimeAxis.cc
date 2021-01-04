@@ -14,6 +14,7 @@
 #include <algorithm>
 
 #include <QBoxLayout>
+#include <QGroupBox>
 
 #include <nqlogger.h>
 
@@ -101,6 +102,34 @@ ThermoDisplay2DateTimeAxisDialog::ThermoDisplay2DateTimeAxisDialog(QWidget* pare
   setMinimumWidth(600);
   setMinimumHeight(400);
 
-  QVBoxLayout* layout = new QVBoxLayout(this);
+  QHBoxLayout* layout = new QHBoxLayout(this);
   setLayout(layout);
+
+  QGroupBox *groupBox = new QGroupBox("Axis mode");
+
+  mode1Hour_ = new QRadioButton("Last hour");
+  mode2Hour_ = new QRadioButton("Last 2 hours");
+  mode6Hour_ = new QRadioButton("Last 6 hours");
+  mode12Hour_ = new QRadioButton("Last 12 hours");
+  mode24Hour_ = new QRadioButton("Last 24 hours");
+  modeUser_ = new QRadioButton("User range");
+  modeFull_ = new QRadioButton("Auto range");
+
+  layout->addWidget(groupBox);
+
+  QVBoxLayout *vbox = new QVBoxLayout;
+  vbox->addWidget(mode1Hour_);
+  vbox->addWidget(mode2Hour_);
+  vbox->addWidget(mode6Hour_);
+  vbox->addWidget(mode12Hour_);
+  vbox->addWidget(mode24Hour_);
+  vbox->addWidget(modeUser_);
+  vbox->addWidget(modeFull_);
+    
+  vbox->addStretch(1);
+  groupBox->setLayout(vbox);
+  
+  groupBox = new QGroupBox("User Range");
+
+  layout->addWidget(groupBox);
 }
