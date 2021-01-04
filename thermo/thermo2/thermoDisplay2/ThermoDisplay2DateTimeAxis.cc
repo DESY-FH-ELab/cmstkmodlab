@@ -76,19 +76,20 @@ void ThermoDisplay2DateTimeAxis::refresh(QList<QAbstractSeries*> series)
     if (axisMode_!=AxisModeFull) {
       if (dtMin<dtTemp) dtMin = dtTemp;
     }
+    
+    qint64 deltaX = 0.01 * dtMin.secsTo(dtMax);
+    dtMin = dtMin.addSecs(-deltaX);
+    temp = dtMin.time().second();
+    dtMin = dtMin.addSecs(-temp);
+    
+    dtMax = dtMax.addSecs(deltaX);
+    temp = dtMax.time().second();
+    dtMax = dtMax.addSecs(60-temp);
+    
   } else {
     dtMin = userMin_;
     dtMax = userMax_;
   }
-
-  qint64 deltaX = 0.01 * dtMin.secsTo(dtMax);
-  dtMin = dtMin.addSecs(-deltaX);
-  temp = dtMin.time().second();
-  dtMin = dtMin.addSecs(-temp);
-
-  dtMax = dtMax.addSecs(deltaX);
-  temp = dtMax.time().second();
-  dtMax = dtMax.addSecs(60-temp);
 
   setRange(dtMin, dtMax);
 }
@@ -123,26 +124,26 @@ ThermoDisplay2DateTimeAxisDialog::ThermoDisplay2DateTimeAxisDialog(QWidget* pare
 
   QGroupBox *groupBox = new QGroupBox("Axis mode");
 
-  QButtonGroup * buttonGroup = new QButtonGroup();
-  buttonGroup->setExclusive(true);
+  buttonGroup_ = new QButtonGroup();
+  buttonGroup_->setExclusive(true);
 
   modeFull_ = new QRadioButton("Auto range");
-  buttonGroup->addButton(modeFull_, ThermoDisplay2DateTimeAxis::AxisModeFull);
+  buttonGroup_->addButton(modeFull_, ThermoDisplay2DateTimeAxis::AxisModeFull);
   mode1Hour_ = new QRadioButton("Last hour");
-  buttonGroup->addButton(mode1Hour_, ThermoDisplay2DateTimeAxis::AxisMode1Hour);
+  buttonGroup_->addButton(mode1Hour_, ThermoDisplay2DateTimeAxis::AxisMode1Hour);
   mode2Hour_ = new QRadioButton("Last 2 hours");
-  buttonGroup->addButton(mode2Hour_, ThermoDisplay2DateTimeAxis::AxisMode2Hour);
+  buttonGroup_->addButton(mode2Hour_, ThermoDisplay2DateTimeAxis::AxisMode2Hour);
   mode6Hour_ = new QRadioButton("Last 6 hours");
-  buttonGroup->addButton(mode6Hour_, ThermoDisplay2DateTimeAxis::AxisMode6Hour);
+  buttonGroup_->addButton(mode6Hour_, ThermoDisplay2DateTimeAxis::AxisMode6Hour);
   mode12Hour_ = new QRadioButton("Last 12 hours");
-  buttonGroup->addButton(mode12Hour_, ThermoDisplay2DateTimeAxis::AxisMode12Hour);
+  buttonGroup_->addButton(mode12Hour_, ThermoDisplay2DateTimeAxis::AxisMode12Hour);
   mode24Hour_ = new QRadioButton("Last 24 hours");
-  buttonGroup->addButton(mode24Hour_, ThermoDisplay2DateTimeAxis::AxisMode24Hour);
+  buttonGroup_->addButton(mode24Hour_, ThermoDisplay2DateTimeAxis::AxisMode24Hour);
   modeUser_ = new QRadioButton("User range");
-  buttonGroup->addButton(modeUser_, ThermoDisplay2DateTimeAxis::AxisModeUser);
+  buttonGroup_->addButton(modeUser_, ThermoDisplay2DateTimeAxis::AxisModeUser);
 
-  connect(buttonGroup, SIGNAL(idClicked(int)),
-          this, SLOT(idClicked(int)));
+  connect(buttonGroup_, SIGNAL(buttonClicked(QAbstractButton *)),
+          this, SLOT(buttonClicked(QAbstractButton *)));
 
   layout->addWidget(groupBox);
 
@@ -232,8 +233,10 @@ void ThermoDisplay2DateTimeAxisDialog::getUserRange(QDateTime& dtMin,
   dtMax = userMax_->dateTime();
 }
 
-void ThermoDisplay2DateTimeAxisDialog::idClicked(int id)
+void ThermoDisplay2DateTimeAxisDialog::buttonClicked(QAbstractButton *)
 {
+  int id = buttonGroup_->checkedId();
+  
   if (id==ThermoDisplay2DateTimeAxis::AxisMode1Hour) {
     axisMode_ = ThermoDisplay2DateTimeAxis::AxisMode1Hour;
   } else if (id==ThermoDisplay2DateTimeAxis::AxisMode2Hour) {

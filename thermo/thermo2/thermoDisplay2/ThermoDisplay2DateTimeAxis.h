@@ -18,6 +18,7 @@
 #include <QDateTime>
 #include <QRadioButton>
 #include <QDateTimeEdit>
+#include <QButtonGroup>
 #include <QtCharts/QChart>
 #include <QtCharts/QLineSeries>
 #include <QtCharts/QDateTimeAxis>
@@ -71,6 +72,7 @@ class ThermoDisplay2DateTimeAxisDialog : public QDialog
 
  protected:
 
+  QButtonGroup *buttonGroup_;
   QRadioButton *mode1Hour_;
   QRadioButton *mode2Hour_;
   QRadioButton *mode6Hour_;
@@ -86,7 +88,7 @@ class ThermoDisplay2DateTimeAxisDialog : public QDialog
 
  public slots:
 
-  void idClicked(int id);
+  void buttonClicked(QAbstractButton *);
 };
 
 #endif // THERMODISPLAY2DATETIMEAXIS_H
