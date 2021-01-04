@@ -44,6 +44,12 @@ public slots:
   void handleMarkerClicked();
   void clearData();
   void xAxisDoubleClicked();
+
+protected:
+
+  void refreshXAxis();
+
+  QDateTimeAxis *axisX_;
 };
 
 class ThermoDisplay2TemperatureChart : public ThermoDisplay2Chart
@@ -57,13 +63,8 @@ public:
 
   void refreshAxes();
 
-protected slots:
-
-signals:
-
 protected:
 
-  QDateTimeAxis *axisX_;
   QValueAxis *axisY_;
 };
 
@@ -80,16 +81,10 @@ public:
 
   void refreshAxes();
 
-protected slots:
-
-signals:
-
 protected:
 
-  void refreshXAxis();
   void refreshTemperatureAxis();
 
-  QDateTimeAxis *axisX_;
   QValueAxis *axisTemperatureY_;
   QCategoryAxis *axisStateY_;
 };
@@ -105,13 +100,8 @@ public:
 
   void refreshAxes();
 
-protected slots:
-
-signals:
-
 protected:
 
-  QDateTimeAxis *axisX_;
   QValueAxis *axisY_;
 };
 
@@ -126,13 +116,8 @@ public:
 
   void refreshAxes();
 
-protected slots:
-
-signals:
-
 protected:
 
-  QDateTimeAxis *axisX_;
   QValueAxis *axisY_;
 };
 
@@ -149,17 +134,11 @@ public:
 
   void refreshAxes();
 
-protected slots:
-
-signals:
-
 protected:
 
-  void refreshXAxis();
   void refreshPowerAxis();
   void refreshPressureAxis();
 
-  QDateTimeAxis *axisX_;
   QValueAxis *axisPowerY_;
   QValueAxis *axisPressureY_;
 };
@@ -175,16 +154,10 @@ public:
 
   void refreshAxes();
 
-protected slots:
-
-signals:
-
 protected:
 
-  void refreshXAxis();
   void refreshPressureAxis();
 
-  QDateTimeAxis *axisX_;
   QValueAxis *axisPressureY_;
 };
 
@@ -199,16 +172,10 @@ public:
 
   void refreshAxes();
 
-protected slots:
-
-signals:
-
 protected:
 
-  void refreshXAxis();
   void refreshPressureAxis();
 
-  QDateTimeAxis *axisX_;
   QLogValueAxis *axisPressureY_;
 };
 
