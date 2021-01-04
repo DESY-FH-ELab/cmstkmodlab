@@ -106,6 +106,10 @@ protected:
   ThermoDisplay2LineSeries *MartaTT05CO2Series_;
   ThermoDisplay2LineSeries *MartaTT06CO2Series_;
   ThermoDisplay2LineSeries *MartaTT07CO2Series_;
+  ThermoDisplay2LineSeries *MartaST01CO2Series_;
+  ThermoDisplay2LineSeries *MartaST02CO2Series_;
+  ThermoDisplay2LineSeries *MartaST03CO2Series_;
+  ThermoDisplay2LineSeries *MartaST04CO2Series_;
 };
 
 #endif // THERMODISPLAY2MAINWINDOW_H

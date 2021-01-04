@@ -251,6 +251,18 @@ ThermoDisplay2MainWindow::ThermoDisplay2MainWindow(QWidget *parent)
   MartaTT07CO2Series_ = new ThermoDisplay2LineSeries();
   MartaTT07CO2Series_->setName("TT07CO2");
 
+  MartaST01CO2Series_ = new ThermoDisplay2LineSeries();
+  MartaST01CO2Series_->setName("ST01CO2");
+
+  MartaST02CO2Series_ = new ThermoDisplay2LineSeries();
+  MartaST02CO2Series_->setName("ST02CO2");
+
+  MartaST03CO2Series_ = new ThermoDisplay2LineSeries();
+  MartaST03CO2Series_->setName("ST03CO2");
+
+  MartaST04CO2Series_ = new ThermoDisplay2LineSeries();
+  MartaST04CO2Series_->setName("ST04CO2");
+
   MartaTemperatureChart_ = new ThermoDisplay2TemperatureChart();
   MartaTemperatureChart_->addSeries(MartaTT01CO2Series_);
   MartaTemperatureChart_->addSeries(MartaTT02CO2Series_);
@@ -259,6 +271,10 @@ ThermoDisplay2MainWindow::ThermoDisplay2MainWindow(QWidget *parent)
   MartaTemperatureChart_->addSeries(MartaTT05CO2Series_);
   MartaTemperatureChart_->addSeries(MartaTT06CO2Series_);
   MartaTemperatureChart_->addSeries(MartaTT07CO2Series_);
+  MartaTemperatureChart_->addSeries(MartaST01CO2Series_);
+  MartaTemperatureChart_->addSeries(MartaST02CO2Series_);
+  MartaTemperatureChart_->addSeries(MartaST03CO2Series_);
+  MartaTemperatureChart_->addSeries(MartaST04CO2Series_);
 
   MartaTemperatureChartView_ = new ThermoDisplay2TemperatureChartView(MartaTemperatureChart_);
   MartaTemperatureChartView_->setRenderHint(QPainter::Antialiasing);
@@ -597,6 +613,11 @@ void ThermoDisplay2MainWindow::updateInfo()
     MartaTT06CO2Series_->setEnabled(m.martaState_);
     MartaTT07CO2Series_->setEnabled(m.martaState_);
 
+    MartaST01CO2Series_->setEnabled(m.martaState_);
+    MartaST02CO2Series_->setEnabled(m.martaState_);
+    MartaST03CO2Series_->setEnabled(m.martaState_);
+    MartaST04CO2Series_->setEnabled(m.martaState_);
+
     MartaPT01CO2Series_->append(m.dt.toMSecsSinceEpoch(), m.martaPT01CO2_);
     MartaPT02CO2Series_->append(m.dt.toMSecsSinceEpoch(), m.martaPT02CO2_);
     MartaPT03CO2Series_->append(m.dt.toMSecsSinceEpoch(), m.martaPT03CO2_);
@@ -611,6 +632,11 @@ void ThermoDisplay2MainWindow::updateInfo()
     MartaTT05CO2Series_->append(m.dt.toMSecsSinceEpoch(), m.martaTT05CO2_);
     MartaTT06CO2Series_->append(m.dt.toMSecsSinceEpoch(), m.martaTT06CO2_);
     MartaTT07CO2Series_->append(m.dt.toMSecsSinceEpoch(), m.martaTT07CO2_);
+
+    MartaST01CO2Series_->append(m.dt.toMSecsSinceEpoch(), m.martaST01CO2_);
+    MartaST02CO2Series_->append(m.dt.toMSecsSinceEpoch(), m.martaST02CO2_);
+    MartaST03CO2Series_->append(m.dt.toMSecsSinceEpoch(), m.martaST03CO2_);
+    MartaST04CO2Series_->append(m.dt.toMSecsSinceEpoch(), m.martaST04CO2_);
 
     if (updateLegend) {
     	MartaPressureChart_->updateLegend();
