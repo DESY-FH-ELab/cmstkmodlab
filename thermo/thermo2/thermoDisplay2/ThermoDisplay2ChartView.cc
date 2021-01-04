@@ -40,12 +40,43 @@ ThermoDisplay2ChartView::ThermoDisplay2ChartView(ThermoDisplay2Chart *chart, QWi
   }
 
   setMouseTracking(true);
+
+  connect(this, SIGNAL(xAxisDoubleClicked()),
+	  chart_, SLOT(xAxisDoubleClicked()));
 }
 
 void ThermoDisplay2ChartView::refreshAxes()
 {
   if (callout_) callout_->hide();
   chart_->refreshAxes();
+}
+
+void ThermoDisplay2ChartView::mouseDoubleClickEvent(QMouseEvent *event)
+{
+  NQLogDebug("ThermoDisplay2ChartView") << "mouseDoubleClickEvent(QMouseEvent *event)";
+
+  QPointF localPos = event->localPos();
+  qreal x = localPos.x();
+  qreal y = localPos.y();
+
+  QRectF plotArea = chart_->plotArea();
+  qreal left = plotArea.x();
+  qreal right = plotArea.x() + plotArea.width();
+  qreal top = plotArea.y();
+  qreal bottom = plotArea.y() + plotArea.height();
+
+  if (x < left && y > top && y < bottom) {
+    NQLogDebug("ThermoDisplay2ChartView") << "left y-axis";
+    emit leftYAxisDoubleClicked();
+  }
+  if (x > right && y > top && y < bottom) {
+    NQLogDebug("ThermoDisplay2ChartView") << "right y-axis";
+    emit rightYAxisDoubleClicked();
+  }
+  if (x > left && x < right && y > bottom) {
+    NQLogDebug("ThermoDisplay2ChartView") << "x-axis";
+    emit xAxisDoubleClicked();
+  }
 }
 
 ThermoDisplay2TemperatureChartView::ThermoDisplay2TemperatureChartView(ThermoDisplay2Chart *chart, QWidget *parent)

@@ -126,6 +126,11 @@ void ThermoDisplay2Chart::setTheme(QChart::ChartTheme theme)
   updateLegend();
 }
 
+void ThermoDisplay2Chart::xAxisDoubleClicked()
+{
+  NQLogDebug("ThermoDisplay2Chart") << "xAxisDoubleClicked()";
+}
+
 ThermoDisplay2TemperatureChart::ThermoDisplay2TemperatureChart()
   : ThermoDisplay2Chart()
 {

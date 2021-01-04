@@ -40,8 +40,16 @@ public slots:
 
 protected:
 
+  virtual void mouseDoubleClickEvent(QMouseEvent *event) override;
+ 
   ThermoDisplay2Chart * chart_;
   ThermoDisplay2Callout * callout_;
+
+ signals:
+
+  void leftYAxisDoubleClicked();
+  void rightYAxisDoubleClicked();
+  void xAxisDoubleClicked();
 };
 
 class ThermoDisplay2TemperatureChartView : public ThermoDisplay2ChartView

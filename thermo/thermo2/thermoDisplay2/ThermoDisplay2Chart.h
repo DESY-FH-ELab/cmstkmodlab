@@ -43,6 +43,7 @@ public slots:
   void updateLegend();
   void handleMarkerClicked();
   void clearData();
+  void xAxisDoubleClicked();
 };
 
 class ThermoDisplay2TemperatureChart : public ThermoDisplay2Chart
