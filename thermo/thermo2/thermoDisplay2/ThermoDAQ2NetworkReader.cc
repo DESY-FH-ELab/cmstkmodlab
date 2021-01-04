@@ -34,6 +34,8 @@ ThermoDAQ2NetworkReader::ThermoDAQ2NetworkReader(QObject* parent)
       measurement_.keithleyTemperature[card][channel] = 0.0;
     }
   }
+
+  measurement_.martaState_ = false;
 }
 
 void ThermoDAQ2NetworkReader::run(QString& buffer)
