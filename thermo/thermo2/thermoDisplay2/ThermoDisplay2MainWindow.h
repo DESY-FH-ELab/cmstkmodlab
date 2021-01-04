@@ -69,7 +69,7 @@ protected:
   ThermoDisplay2LineSeries *ChillerPressureSeries_;
 
   ThermoDisplay2ChartView *VacuumChartView_;
-  ThermoDisplay2PressureChart *VacuumPressureChart_;
+  ThermoDisplay2LogPressureChart *VacuumPressureChart_;
   ThermoDisplay2LineSeries *VacuumPressureSeries_;
 
   ThermoDisplay2ChartView *UChartView_;
@@ -89,7 +89,7 @@ protected:
   ThermoDisplay2LineSeries *TSeries_[2][10];
 
   ThermoDisplay2ChartView *MartaPressureChartView_;
-  ThermoDisplay2PressureChart *MartaPressureChart_;
+  ThermoDisplay2LinPressureChart *MartaPressureChart_;
   ThermoDisplay2LineSeries *MartaPT01CO2Series_;
   ThermoDisplay2LineSeries *MartaPT02CO2Series_;
   ThermoDisplay2LineSeries *MartaPT03CO2Series_;

@@ -115,7 +115,7 @@ ThermoDisplay2MainWindow::ThermoDisplay2MainWindow(QWidget *parent)
   VacuumPressureSeries_ = new ThermoDisplay2LineSeries();
   VacuumPressureSeries_->setName("pressure");
 
-  VacuumPressureChart_ = new ThermoDisplay2PressureChart();
+  VacuumPressureChart_ = new ThermoDisplay2LogPressureChart();
   VacuumPressureChart_->addSeries(VacuumPressureSeries_);
 
   VacuumChartView_ = new ThermoDisplay2PressureChartView(VacuumPressureChart_);
@@ -217,7 +217,7 @@ ThermoDisplay2MainWindow::ThermoDisplay2MainWindow(QWidget *parent)
   MartaPT06CO2Series_ = new ThermoDisplay2LineSeries();
   MartaPT06CO2Series_->setName("PT06CO2");
 
-  MartaPressureChart_ = new ThermoDisplay2PressureChart();
+  MartaPressureChart_ = new ThermoDisplay2LinPressureChart();
   MartaPressureChart_->addSeries(MartaPT01CO2Series_);
   MartaPressureChart_->addSeries(MartaPT02CO2Series_);
   MartaPressureChart_->addSeries(MartaPT03CO2Series_);

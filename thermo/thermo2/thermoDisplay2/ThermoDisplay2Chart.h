@@ -163,12 +163,36 @@ protected:
   QValueAxis *axisPressureY_;
 };
 
-class ThermoDisplay2PressureChart : public ThermoDisplay2Chart
+class ThermoDisplay2LinPressureChart : public ThermoDisplay2Chart
 {
   Q_OBJECT
 public:
 
-  explicit ThermoDisplay2PressureChart();
+  explicit ThermoDisplay2LinPressureChart();
+
+  void addSeries(QAbstractSeries *series);
+
+  void refreshAxes();
+
+protected slots:
+
+signals:
+
+protected:
+
+  void refreshXAxis();
+  void refreshPressureAxis();
+
+  QDateTimeAxis *axisX_;
+  QValueAxis *axisPressureY_;
+};
+
+class ThermoDisplay2LogPressureChart : public ThermoDisplay2Chart
+{
+  Q_OBJECT
+public:
+
+  explicit ThermoDisplay2LogPressureChart();
 
   void addSeries(QAbstractSeries *series);
 
