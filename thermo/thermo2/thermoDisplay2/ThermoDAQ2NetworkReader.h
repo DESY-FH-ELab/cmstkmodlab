@@ -76,6 +76,7 @@ typedef struct {
   float          martaTemperatureSetpoint2_;
   float          martaSpeedSetpoint2_;
   float          martaFlowSetpoint2_;
+  uint16_t       martaAlarms_[4];
 
   bool           leyboldState_;
   double         leyboldPressure_;
