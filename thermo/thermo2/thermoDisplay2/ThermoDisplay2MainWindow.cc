@@ -61,6 +61,16 @@ ThermoDisplay2MainWindow::ThermoDisplay2MainWindow(QWidget *parent)
   ChillerTBathSeries_->setName("Bath");
   ChillerTSChart_->addSeries(ChillerTBathSeries_);
 
+  {
+    ChillerTBathSeries_->setEnabled(true);
+    QDateTime dtEnd = QDateTime::currentDateTime();
+    QDateTime dtStart = dtEnd.addSecs(-2 *  24 * 60 * 60);
+    while (dtStart<=dtEnd) {
+      ChillerTBathSeries_->append(dtStart.toMSecsSinceEpoch(), 1.23);
+      dtStart = dtStart.addSecs(60);
+    }
+  }
+  
   ChillerTReturnSeries_ = new ThermoDisplay2LineSeries();
   ChillerTReturnSeries_->setName("Return");
   ChillerTSChart_->addSeries(ChillerTReturnSeries_);
@@ -88,7 +98,8 @@ ThermoDisplay2MainWindow::ThermoDisplay2MainWindow(QWidget *parent)
 
   ChillerTSChart_->connectMarkers();
   ChillerTSChart_->updateLegend();
-
+  ChillerTSChart_->refreshAxes();
+  
   ChillerPPChart_ = new ThermoDisplay2PowerPressureChart();
 
   ChillerPowerSeries_ = new ThermoDisplay2LineSeries();
