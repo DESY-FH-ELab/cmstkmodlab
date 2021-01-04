@@ -114,8 +114,8 @@ void ThermoDisplay2DateTimeAxis::configure()
 ThermoDisplay2DateTimeAxisDialog::ThermoDisplay2DateTimeAxisDialog(QWidget* parent)
  : QDialog(parent)
 {
-  setMinimumWidth(600);
-  setMinimumHeight(400);
+  // setMinimumWidth(600);
+  // setMinimumHeight(400);
 
   QVBoxLayout* layout = new QVBoxLayout(this);
   setLayout(layout);
