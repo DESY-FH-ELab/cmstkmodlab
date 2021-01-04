@@ -230,6 +230,9 @@ ThermoDisplay2MainWindow::ThermoDisplay2MainWindow(QWidget *parent)
   MartaPressureChartView_->setMinimumSize(800, 300);
   layout->addWidget(MartaPressureChartView_);
 
+  MartaPressureChart_->connectMarkers();
+  MartaPressureChart_->updateLegend();
+
   MartaTT01CO2Series_ = new ThermoDisplay2LineSeries();
   MartaTT01CO2Series_->setName("TT01CO2");
 
@@ -280,6 +283,9 @@ ThermoDisplay2MainWindow::ThermoDisplay2MainWindow(QWidget *parent)
   MartaTemperatureChartView_->setRenderHint(QPainter::Antialiasing);
   MartaTemperatureChartView_->setMinimumSize(800, 300);
   layout->addWidget(MartaTemperatureChartView_);
+
+  MartaTemperatureChart_->connectMarkers();
+  MartaTemperatureChart_->updateLegend();
 
   tabWidget_->addTab(w, "Marta");
 
@@ -471,7 +477,7 @@ void ThermoDisplay2MainWindow::savePlots()
   {
     auto dpr = 2.0*MartaPressureChartView_->devicePixelRatioF();
     QPixmap buffer(MartaPressureChartView_->width() * dpr,
-									 MartaPressureChartView_->height() * dpr);
+		   MartaPressureChartView_->height() * dpr);
     buffer.fill(Qt::transparent);
 
     QPainter *painter = new QPainter(&buffer);
@@ -486,7 +492,7 @@ void ThermoDisplay2MainWindow::savePlots()
   {
     auto dpr = 2.0*MartaTemperatureChartView_->devicePixelRatioF();
     QPixmap buffer(MartaTemperatureChartView_->width() * dpr,
-									 MartaTemperatureChartView_->height() * dpr);
+		   MartaTemperatureChartView_->height() * dpr);
     buffer.fill(Qt::transparent);
 
     QPainter *painter = new QPainter(&buffer);
@@ -639,8 +645,8 @@ void ThermoDisplay2MainWindow::updateInfo()
     MartaST04CO2Series_->append(m.dt.toMSecsSinceEpoch(), m.martaST04CO2_);
 
     if (updateLegend) {
-    	MartaPressureChart_->updateLegend();
-    	MartaTemperatureChart_->updateLegend();
+      MartaPressureChart_->updateLegend();
+      MartaTemperatureChart_->updateLegend();
     }
   }
 
