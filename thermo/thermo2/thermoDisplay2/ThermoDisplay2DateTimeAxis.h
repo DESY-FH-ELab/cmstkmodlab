@@ -17,6 +17,7 @@
 #include <QDialog>
 #include <QDateTime>
 #include <QRadioButton>
+#include <QDateTimeEdit>
 #include <QtCharts/QChart>
 #include <QtCharts/QLineSeries>
 #include <QtCharts/QDateTimeAxis>
@@ -43,6 +44,10 @@ public:
   void refresh(QList<QAbstractSeries*> series);
   void configure();
 
+signals:
+
+  void axisModeChanged();
+
 protected:
 
   AxisMode axisMode_;
@@ -57,6 +62,13 @@ class ThermoDisplay2DateTimeAxisDialog : public QDialog
 
 	ThermoDisplay2DateTimeAxisDialog(QWidget* parent = 0);
 
+	void setAxisMode(ThermoDisplay2DateTimeAxis::AxisMode axisMode);
+  void setMinMaxRange(const QDateTime& dtMin, const QDateTime& dtMax);
+  void setUserRange(const QDateTime& dtMin, const QDateTime& dtMax);
+
+  ThermoDisplay2DateTimeAxis::AxisMode getAxisMode() const;
+  void getUserRange(QDateTime& dtMin, QDateTime& dtMax);
+
  protected:
 
   QRadioButton *mode1Hour_;
@@ -66,6 +78,9 @@ class ThermoDisplay2DateTimeAxisDialog : public QDialog
   QRadioButton *mode24Hour_;
   QRadioButton *modeUser_;
   QRadioButton *modeFull_;
+
+  QDateTimeEdit *userMin_;
+  QDateTimeEdit *userMax_;
 
  public slots:
 

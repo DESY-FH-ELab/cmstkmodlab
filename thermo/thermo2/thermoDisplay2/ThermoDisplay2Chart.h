@@ -46,10 +46,9 @@ public slots:
   void handleMarkerClicked();
   void clearData();
   void xAxisDoubleClicked();
+  void refreshXAxis();
 
 protected:
-
-  void refreshXAxis();
 
   ThermoDisplay2DateTimeAxis *axisX_;
 };

@@ -27,6 +27,9 @@ ThermoDisplay2Chart::ThermoDisplay2Chart()
   axisX_->setFormat("dd.MM. hh:mm:ss");
   axisX_->setTitleText("Time");
   addAxis(axisX_, Qt::AlignBottom);
+
+  connect(axisX_, SIGNAL(axisModeChanged()),
+          this, SLOT(refreshXAxis()));
 }
 
 void ThermoDisplay2Chart::connectMarkers()
