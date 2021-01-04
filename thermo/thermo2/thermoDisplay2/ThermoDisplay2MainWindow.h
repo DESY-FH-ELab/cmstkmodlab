@@ -87,6 +87,25 @@ protected:
   ThermoDisplay2ChartView *TChartView_[2];
   ThermoDisplay2TemperatureChart *TChart_[2];
   ThermoDisplay2LineSeries *TSeries_[2][10];
+
+  ThermoDisplay2ChartView *MartaPressureChartView_;
+  ThermoDisplay2PressureChart *MartaPressureChart_;
+  ThermoDisplay2LineSeries *MartaPT01CO2Series_;
+  ThermoDisplay2LineSeries *MartaPT02CO2Series_;
+  ThermoDisplay2LineSeries *MartaPT03CO2Series_;
+  ThermoDisplay2LineSeries *MartaPT04CO2Series_;
+  ThermoDisplay2LineSeries *MartaPT05CO2Series_;
+  ThermoDisplay2LineSeries *MartaPT06CO2Series_;
+
+  ThermoDisplay2ChartView *MartaTemperatureChartView_;
+  ThermoDisplay2TemperatureChart *MartaTemperatureChart_;
+  ThermoDisplay2LineSeries *MartaTT01CO2Series_;
+  ThermoDisplay2LineSeries *MartaTT02CO2Series_;
+  ThermoDisplay2LineSeries *MartaTT03CO2Series_;
+  ThermoDisplay2LineSeries *MartaTT04CO2Series_;
+  ThermoDisplay2LineSeries *MartaTT05CO2Series_;
+  ThermoDisplay2LineSeries *MartaTT06CO2Series_;
+  ThermoDisplay2LineSeries *MartaTT07CO2Series_;
 };
 
 #endif // THERMODISPLAY2MAINWINDOW_H
