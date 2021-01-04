@@ -23,7 +23,7 @@
 ThermoDisplay2Chart::ThermoDisplay2Chart()
   : QChart()
 {
-  axisX_ = new QDateTimeAxis();
+  axisX_ = new ThermoDisplay2DateTimeAxis();
   axisX_->setFormat("dd.MM. hh:mm:ss");
   axisX_->setTitleText("Time");
   addAxis(axisX_, Qt::AlignBottom);
@@ -131,44 +131,14 @@ void ThermoDisplay2Chart::setTheme(QChart::ChartTheme theme)
 
 void ThermoDisplay2Chart::refreshXAxis()
 {
-  qreal minX = std::numeric_limits<qreal>::max();
-  qreal maxX = -std::numeric_limits<qreal>::max();
-
-  bool hasValues = false;
-  for (QList<QAbstractSeries*>::Iterator it = series().begin();
-       it!=series().end();
-       ++it) {
-    ThermoDisplay2LineSeries* s = dynamic_cast<ThermoDisplay2LineSeries*>(*it);
-    if (s && s->isInitialized()) {
-      minX = std::min(minX, s->minX());
-      maxX = std::max(maxX, s->maxX());
-      hasValues = true;
-    }
-  }
-  if (!hasValues) return;
-
-  QDateTime dtMin = QDateTime::fromMSecsSinceEpoch(minX);
-  int temp = dtMin.time().msec();
-  dtMin = dtMin.addMSecs(-temp);
-  temp = dtMin.time().second();
-  dtMin = dtMin.addSecs(-temp);
-
-  QDateTime dtMax = QDateTime::fromMSecsSinceEpoch(maxX);
-  temp = dtMin.time().msec();
-  dtMax = dtMax.addMSecs(-temp);
-
-  qint64 deltaX = dtMin.secsTo(dtMax) / 60;
-  deltaX = 0.1*deltaX + 1;
-
-  temp = dtMax.time().second();
-  dtMax = dtMax.addSecs(-temp+deltaX*60);
-
-  axisX_->setRange(dtMin, dtMax);
+	axisX_->refresh(series());
 }
 
 void ThermoDisplay2Chart::xAxisDoubleClicked()
 {
   NQLogDebug("ThermoDisplay2Chart") << "xAxisDoubleClicked()";
+
+  axisX_->configure();
 }
 
 ThermoDisplay2TemperatureChart::ThermoDisplay2TemperatureChart()

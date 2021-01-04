@@ -56,7 +56,8 @@ HEADERS += ThermoDisplay2MainWindow.h \
            ThermoDisplay2ChartView.h \
            ThermoDisplay2Callout.h \
            ThermoDisplay2Chart.h \
-           ThermoDisplay2LineSeries.h
+           ThermoDisplay2LineSeries.h \
+           ThermoDisplay2DateTimeAxis.h
 
 SOURCES += thermoDisplay2.cc \
            ThermoDisplay2MainWindow.cc \
@@ -65,4 +66,5 @@ SOURCES += thermoDisplay2.cc \
            ThermoDisplay2ChartView.cc \
            ThermoDisplay2Callout.cc \
            ThermoDisplay2Chart.cc \
-           ThermoDisplay2LineSeries.cc
+           ThermoDisplay2LineSeries.cc \
+           ThermoDisplay2DateTimeAxis.cc

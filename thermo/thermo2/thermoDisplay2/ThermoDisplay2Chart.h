@@ -22,6 +22,8 @@
 #include <QtCharts/QLogValueAxis>
 #include <QtCharts/QCategoryAxis>
 
+#include "ThermoDisplay2DateTimeAxis.h"
+
 QT_CHARTS_USE_NAMESPACE
 
 class ThermoDisplay2Chart : public QChart
@@ -49,7 +51,7 @@ protected:
 
   void refreshXAxis();
 
-  QDateTimeAxis *axisX_;
+  ThermoDisplay2DateTimeAxis *axisX_;
 };
 
 class ThermoDisplay2TemperatureChart : public ThermoDisplay2Chart
